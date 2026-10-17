@@ -1,0 +1,8 @@
+{"experiment": "trackBD_scalar", "script": "src/trackBD/exp_scalar.py",
+ "runs": [
+  {"family": "balanced", "bits": [16, 20, 24, 28, 32], "inst": 200, "K": 4000},
+  {"family": "balanced", "bits": [36, 40], "inst": 60, "K": 4000},
+  {"family": "diag_bigg", "bits": [24, 32], "s": [1, 2, 4, 8, 16, 32], "inst": 30, "K": 4000},
+  {"family": "carmichael", "inst": "all CARMICHAEL_SMALL", "K": 2000}],
+ "c_sampling": "c = rng.randint(2, N-2), rng = random.Random('trackBD_scalar|N|seed'); NULL u = rng.randrange(N)",
+ "census_max_prime": 1048576}

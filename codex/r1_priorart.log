@@ -1,0 +1,1999 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection/codex
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14b94-2a29-7d71-8bc0-b034769860a2
+--------
+user
+You are doing a primary-source prior-art map for a research project on classical integer factorization (brief below). Use web search. For EACH of the following, open the primary source (arXiv/ECCC/author page), record: exact title, authors, version/date consulted, URL, the exact problem solved, input representation, the main theorem statement (quote or near-quote, with theorem number), hypotheses (known prime? field? characteristic? sparsity bounds?), complexity variables, and the precise primitive it provides that our project could consume or that is relevant. Mark anything you could not verify as UNVERIFIED.
+
+Required items: [AKS] Lemma 2.1 + Sec 2; [BGS] 2007 (the factorization application: exact cost in terms of the interval length and what is computed modulo N); [Harvey] arXiv 2010.05450; [HH] arXiv 2105.11105; [Sparse] van der Hoeven–Lecerf ffsparse; [Tal] ECCC TR26-211 (2026) — read in detail if accessible: which identities need a known prime or known group structure; [Coppersmith] 1997 (exact theorem for factoring with high bits known: fraction of bits needed, lattice dimension, cost); [Regev] 2308.06572, [Pilatte] 2404.16450, [EG] 2311.05545 (what classical postprocessing consumes: number of samples, noise, precision); [Gao] arXiv 2512.19076; [Cleve] quant-ph/9911124.
+
+ALSO search for and map these (closest prior formulations of the brief's seed ideas — this matters for novelty):
+1. Lipton 1994, "Straight-line complexity and integer factorization" (ANTS I) — exact statement relating short SLPs for n! (or related sequences) to factoring.
+2. Shub–Smale tau conjecture; Bürgisser's work connecting factorials/tau to factoring and to VP vs VNP; "Cheng: on the tau conjecture / factorial" etc.
+3. Hardness of computing a coefficient / testing whether a coefficient of a straight-line program (or of a power of a sparse polynomial) is zero; "order of vanishing" of an SLP at 0; "degree of SLP" problems (Allender–Bürgisser–Kjeldgaard-Pedersen–Miltersen; Kayal–Saha; Koiran; Perrucci). Especially anything about over Z/NZ with composite N.
+4. Known observations that the smallest index k with binom(N,k) != 0 mod N equals the least prime factor, or that binom(N,k) mod N / factorials mod N reveal factors (folklore; Strassen; "Wilson's theorem factoring"; "computing (N-1)! mod N is as hard as factoring").
+5. Polynomial identity testing over Z/NZ with composite N / AKS-style tests attempting factor extraction ("constructive AKS", Agrawal–Biswas identity testing over Z_n, Bernstein's AKS notes).
+6. Recent (2023–2026) classical factoring preprints with new mechanisms that are serious (e.g., Hittmeir, Harvey, lattice-based "factoring via second vector", any 2025-2026 ECCC/arXiv items claiming subexponential/deterministic improvements).
+7. Polynomial-time factoring of restricted families (e.g., N = p^r q with large r (Boneh–Durfee–Howgrave-Graham), p-1 smooth, implicit factoring, factoring with hints) — what partial-information formats suffice.
+
+Output: Markdown file content, one entry per item with the fields above, then a compact table "primitive provided / assumption / complexity variable / relevance to our support-index or prefix-predicate problem". Be precise; do not pad.
+
+=== BRIEF (for context) ===
+# Research agent brief: find a simple classical connection for integer factorization
+
+**Prepared:** 17 October 2026  
+**Mode:** Active mathematical research, with exact computational experiments  
+**Primary target:** A classical polynomial-time factorization algorithm, or a concrete new mechanism that materially advances toward one
+
+## 1. Mission
+
+Investigate whether a simple connection between explicit integer arithmetic and compressed algebraic representations can produce an efficient classical factorization algorithm.
+
+The working hypothesis is that the eventual mechanism may be conceptually simple and may not resemble sieving or classical simulation of a quantum algorithm. Treat this as a productive hypothesis, not an established fact. Do not dismiss a direction because factoring has been studied for a long time. Equally, do not mistake a short identity, a short program describing an enormous object, or successful toy examples for an efficient algorithm.
+
+**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+
+Begin with the polynomial lead below, but do not become attached to it. You may replace it with a better representation if you explain what new operation becomes possible.
+
+The central question is:
+
+> Which factor-revealing feature has a compact exact representation, and what operation would let us extract that feature without expanding the representation?
+
+### Problem and computational model
+
+Input is an integer `N > 1`, in binary. Write `n = N.bit_length()` and `R_N = Z/NZ`.
+
+The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+
+The first algorithmic goal is to return any `d` with `1 < d < N` and `N % d == 0`. Recursive splitting and primality testing turn a sufficiently uniform splitting algorithm into full factorization; account for those costs when making a final claim.
+
+Use ordinary classical bit complexity. Deterministic polynomial time or randomized expected/bounded-error polynomial time would satisfy the main objective; state which one a proposal targets. Count preprocessing, repetitions, memory, bit precision, coefficient lengths, and representation conversion. A polynomial bound in `N`, `p`, a polynomial degree near `sqrt(N)`, or a group order is not a polynomial bound in `n`.
+
+A restricted-family improvement, a new constructive lemma, a useful reduction with a smaller missing primitive, or a carefully delimited obstruction is worthwhile intermediate progress. Label it accurately and use it to choose the next experiment.
+
+## 2. Mathematical starting point
+
+The elementary claims in this section are supplied with proofs. They are research scaffolding, **not claims of novelty**. Check them independently and search for prior formulations before attributing originality.
+
+### 2.1 The polynomial and its first surviving coefficient
+
+Define
+
+\[
+F_N(X)=(1+X)^N-1-X^N\in R_N[X].
+\]
+
+The prime/composite polynomial identity is the starting point of the AKS primality test; see [AKS], Lemma 2.1 and Section 2. AKS uses suitable low-degree quotient rings to obtain a primality test. It does not supply the factor-extraction operation sought here.
+
+Let `N` be composite and let `p` be its smallest prime divisor. For `1 <= k < p`,
+
+\[
+\binom Nk=\frac{N(N-1)\cdots(N-k+1)}{k!}\equiv0\pmod N,
+\]
+
+because `k!` is invertible modulo `N`.
+
+At `k = p`, use the exact integer identity
+
+\[
+\binom Np=\frac Np\binom{N-1}{p-1}.
+\]
+
+All denominators in the product for the second binomial coefficient are units modulo `N`, so
+
+\[
+\binom{N-1}{p-1}
+=\prod_{j=1}^{p-1}\frac{N-j}{j}
+\equiv(-1)^{p-1}\pmod N.
+\]
+
+For odd `p`, the sign is positive. For `p = 2`, `-N/2` and `N/2` are the same residue modulo `N`. Therefore the least nonnegative residue is exactly
+
+\[
+\boxed{[X^p]F_N=N/p\pmod N.}
+\]
+
+Consequently,
+
+\[
+\boxed{\min\{k:[X^k]F_N\ne0\}=p.}
+\]
+
+This holds for every composite `N`, including prime powers, not just squarefree semiprimes. Since `p < N`, the removed endpoint `X^N` causes no issue. For prime `N`, `F_N` is the zero polynomial instead.
+
+Examples:
+
+| N | First surviving degree p | Coefficient residue N/p |
+|---|---:|---:|
+| 9 | 3 | 3 |
+| 15 | 3 | 5 |
+| 35 | 5 | 7 |
+| 45 | 3 | 15 |
+| 49 | 7 | 7 |
+| 143 | 11 | 13 |
+
+The expression for `F_N` has an arithmetic circuit with `O(n)` gates using repeated squaring. This is a statement about circuit description size, not expanded polynomial size or the cost of coefficient extraction.
+
+### 2.2 A weaker extraction task already suffices: any surviving index
+
+Write `a_k = binom(N,k) mod N` for an interior coefficient. The integer identity
+
+\[
+k\binom Nk=N\binom{N-1}{k-1}
+\]
+
+gives
+
+\[
+k a_k=0\quad\text{in }R_N.
+\]
+
+Thus, for `0 < k < N`,
+
+\[
+a_k\ne0\Longrightarrow1<\gcd(k,N)<N.
+\]
+
+**We do not need the first coefficient, or even its value. Finding any index of a nonzero coefficient gives a factor immediately.**
+
+Target the weaker problem whenever it permits a simpler construction:
+
+> Given the compact circuit for `F_N`, find one exponent in its nonzero support without enumerating the support.
+
+### 2.3 Why individual coefficient queries do not provide the missing information
+
+Suppose an algorithm asks for `a_k` at an explicitly chosen interior index `k`.
+
+If `gcd(k,N) = 1`, its answer is already known to be zero. Otherwise, computing that GCD has already found a nontrivial factor.
+
+Therefore an individual-coefficient oracle can be simulated up to factor discovery: compute the GCD first; either return zero or terminate with a factor. This does not prove factoring hard. It shows that **merely making coefficient evaluation fast is insufficient for this polynomial**. The useful operation must act on many indices at once, reveal a support index, or exploit different arithmetic information.
+
+This is a particularly important filter for proposals based on random coefficient sampling, a binomial-coefficient library, or a fast high-order derivative at one guessed index.
+
+### 2.4 Prefix testing and its factorial connection
+
+For `K >= 1`, define
+
+\[
+Z(N,K):=[F_N(X)\equiv0\pmod{N,X^K}].
+\]
+
+For composite `N`,
+
+\[
+Z(N,K)\Longleftrightarrow K\le p
+\Longleftrightarrow\gcd\bigl(N,(K-1)!\bigr)=1.
+\]
+
+For finding `p`, it suffices to use `2 <= K <= floor(sqrt(N))+1`. A uniform polynomial-time prefix predicate would recover `p` by `O(n)` binary-search queries. A randomized predicate must have sufficiently amplified error for the adaptive search.
+
+This is an exact connection to bounded divisibility and modular factorials. It is not, by itself, a speedup. Investigate whether the polynomial representation makes the unit/nonunit predicate cheaper than evaluating the factorial, and whether factorial or recurrence techniques suggest a better compression. Read [BGS] and the related classical constructions [Harvey], [HH].
+
+Do not require full factorial evaluation unnecessarily: the predicate asks only whether it is a unit modulo `N`. Conversely, do not treat an efficient unit predicate as already available.
+
+### 2.5 Ordinary differentiation loses the signal
+
+\[
+F_N'(X)=N(1+X)^{N-1}-NX^{N-1}=0\quad\text{in }R_N[X].
+\]
+
+Every positive-order ordinary derivative is therefore zero. A characteristic-zero method based on the logarithmic derivative or derivative ratios cannot simply be transferred to this ring.
+
+Hasse derivatives retain coefficient information:
+
+\[
+D^{[k]}F_N(0)=[X^k]F_N.
+\]
+
+But evaluating them at individually selected orders has the limitation in Section 2.3. A potentially useful derivative construction must aggregate orders, preserve additional lifted information, or access a different invariant.
+
+### 2.6 Scalar evaluations and sparse recovery have specific traps
+
+A nonzero polynomial over `R_N` can define the zero function on all scalar residues. For example, `F_561(a) = 0 mod 561` for every scalar `a`: modulo each of `3, 11, 17`, exponentiation to `561` acts as the identity. Yet `F_561` is not the zero polynomial, by Section 2.1.
+
+Therefore scalar random evaluation in `R_N` is not automatically a sound polynomial identity test. Distinguish formal polynomial identity from equality as functions on a finite ring.
+
+Nor is the expanded support polynomially small in general. For `N = p*q`, `p < q`, reduction modulo `q` gives
+
+\[
+F_N(X)\equiv(1+X^q)^p-1-X^{pq}\pmod q.
+\]
+
+For every `1 <= j < p`, `binom(p,j)` is nonzero modulo `q`, because its prime divisors are at most `p`. Thus `F_N` has at least `p-1` nonzero coefficients. On balanced semiprimes this is exponentially many in `n`.
+
+The relevant opportunity is structured or partial support recovery, not an unsupported assumption of ordinary sparsity.
+
+## 3. Priority research tracks
+
+These are starting directions, not a compulsory architecture. First investigate A and B, connect them to C and D, and keep one genuinely independent alternative alive. The proposed modifications below are hypotheses, not results established by the cited papers.
+
+### Track A — Binary coefficient sections and compressed witness extraction
+
+For any polynomial `P`, define
+
+\[
+E(P)(Y)=\sum_j[X^{2j}]P\,Y^j,
+\qquad
+O(P)(Y)=\sum_j[X^{2j+1}]P\,Y^j.
+\]
+
+Then
+
+\[
+P(X)=E(P)(X^2)+X\,O(P)(X^2).
+\]
+
+If `P` is nonzero, at least one section is nonzero. Repeatedly selecting a nonzero section reconstructs the bits of a support index in `O(log degree(P))` levels.
+
+There are elementary gate rules. Writing `f=f_e(X^2)+Xf_o(X^2)` and similarly for `g`,
+
+\[
+E(fg)=f_e g_e+Yf_o g_o,
+\qquad
+O(fg)=f_e g_o+f_o g_e.
+\]
+
+Addition is componentwise. A single section transformation has constant-factor circuit overhead with appropriate sharing. Repeating it `O(n)` times need not: a constant-factor increase at every level can still become exponential.
+
+**Precise conditional target:** Construct a representation for all sections reached along one search path that remains polynomial in `n`, together with a polynomial-time formal zero test for those representations over `R_N`. This would turn the support-index reduction into a factorizer.
+
+Tasks:
+
+1. Derive and implement section transformations on arithmetic circuits, preserving shared subexpressions. Measure growth in unique nodes, not printed expression length alone.
+2. Exploit the special repeated-power structure of `(1+X)^N`. Investigate matrix recurrences, rational generating functions, and reusable formulas for sections; do not default to a generic circuit expansion.
+3. Determine what information a zero test actually needs. Test whether a weaker certificate or a small family of quotient evaluations can select a nonzero child without reconstructing either child.
+4. Study coefficientwise products with interval or bit-pattern masks. The mask may have a short description, but prove or measure the cost of applying it.
+5. Look for a class closed under both sectioning and zero testing. It need only contain the required descendants, not arbitrary arithmetic circuits.
+
+Record separately the cost of constructing a section, representing it, evaluating it, and testing its formal identity. Making only one of these cheap is partial progress, not the full algorithm.
+
+**First experiment:** Follow both diagnostic paths chosen with known support information and operational paths chosen without factors. Diagnostic paths measure representation growth only; they are not factoring results.
+
+### Track B — Quotient sketches that retain useful exponent information
+
+Compute compact projections such as
+
+\[
+F_N(X)\bmod(X^r-1),\qquad
+F_N(X)\bmod(X^r-c),
+\]
+
+with polynomially bounded `r` and cheaply chosen `c`. Repeated squaring evaluates each projection without expanding degree `N`.
+
+Modulo `X^r-1`, a coefficient at position `j` is the sum of original coefficients at `j, j+r, j+2r, ...`. A unit-valued sum can mix contributions divisible by different hidden prime factors. A nonzero projected coefficient is therefore not automatically a factor-revealing coefficient of the original polynomial.
+
+Modulo `X^r-c`, folded terms acquire weights `c^t` according to the quotient of their exponent by `r`. Investigate whether several weights or several quotient rings expose a useful exponent, a nonunit, or enough partial information for another method.
+
+Concrete questions:
+
+- Can paired sketches isolate one hidden characteristic's contribution without knowing that characteristic?
+- Can small-degree resultants, subresultants, annihilators, ranks, or failed inversions reveal a nontrivial GCD?
+- Can a small family of weighted projections identify one support exponent modulo enough small moduli without enumerating exponentially many matching choices?
+- Can the relation `F_N' = 0` constrain the information discarded by reduction? Differentiation before and after reduction need not commute: retain the quotient terms in the derivation.
+- Can a sketch answer a prefix or binary-section question rather than reconstruct the full polynomial?
+
+Read [AKS] for the distinction between proving compositeness and extracting a witness, and [Sparse] for interpolation mechanisms and their assumptions. Characteristic, number of terms, roots of unity, discrete-log steps, and field-versus-ring behavior must all be audited before transfer.
+
+Do not use generic sketch collisions to claim an impossibility theorem for this family: the decoder receives `N` and can exploit its explicit arithmetic. A negative result must identify the restricted sketch/decoder model it actually addresses.
+
+**First experiment:** Exhaustively inspect several small families of weighted projections, their coefficient GCDs, and basic invariants on tiny semiprimes. Derive the reason for any successful pattern before scaling it.
+
+### Track C — Factorial unit tests and compressed recurrence evaluation
+
+The prefix predicate is precisely a factorial-unit predicate. This links the polynomial lead to algorithms for products of consecutive terms and linear recurrences with polynomial coefficients [BGS].
+
+Investigate whether unit/nonunit information admits a simpler recurrence than the factorial value itself. Candidate tools include product trees, block products, multipoint evaluation, cancellation-aware recurrences, and transformations that isolate an interval containing a divisor.
+
+Every proposed recurrence should state whether its dimension, polynomial degree, or number of blocks grows with `K` rather than `log K`. If a recurrence uses division modulo `N`, compute the GCD of each denominator before inversion: a nonunit can be useful output, not merely an implementation failure.
+
+A particularly relevant new lead is Yann Tal's September 2026 preprint [Tal]. Its abstract describes modular-factorial improvements through Jacobi sums, reconstruction, and recursive reductions. **Its setting supplies a known prime modulus, or specified prime-power settings, and appropriate divisor conditions.** It is not a general unknown-factor-modulus algorithm. Inspect the full construction and ask which identities survive without knowing the prime or its group structure.
+
+A useful adaptation must avoid assuming a factorization of `N`, its totient, auxiliary quantities of comparable unknown difficulty, or a known prime underlying `R_N`. Character sums are useful here only if the proposed way to construct or evaluate them is explicit and affordable.
+
+**First experiment:** Implement a transparent block-product baseline, then one recurrence or invariant that attempts to answer only the unit predicate. Compare actual arithmetic counts and largest representation sizes.
+
+### Track D — Hidden characteristic, lifted information, and annihilators
+
+For `N = p*q`, the polynomial has different Frobenius structure in its two hidden components:
+
+\[
+F_N\bmod p=(1+X^p)^q-1-X^{pq},
+\]
+
+\[
+F_N\bmod q=(1+X^q)^p-1-X^{pq}.
+\]
+
+The goal is not to perform these reductions using known factors. It is to find an operation over `R_N` that separates the two structures without knowing them.
+
+Investigate Hasse derivatives, divided-power constructions, formal-series sections, finite differences, recurrence singularities, and annihilating ideals. Consider modest lifts such as modulus `N^t` where `t` is polynomially bounded, but derive what survives the lift and how it is extracted. Ordinary differentiation becomes zero after reduction modulo `N`; differentiation before reduction or in a lift retains other data, whose usefulness must be demonstrated rather than assumed.
+
+A promising failure mode of a field algorithm is encountering a nonunit pivot. Instrument such algorithms to return `gcd(pivot,N)`. However, selecting a pivot guaranteed to become a useful nonunit is part of the research problem.
+
+Avoid circular use of Lucas/Kummer digits in base `p`, a `p`-Frobenius map, or Cartier operators parameterized by an unknown factor. They can guide identities in the proof, but an operational algorithm must construct its own parameters from `N`.
+
+**First experiment:** Build small lifted or sectioned representations and classify the denominators, pivots, and annihilators that arise. Separate structural factor discovery from accidental divisibility by a small tested integer.
+
+### Track E — Transfer partial information into lattices or hidden relations
+
+A sketch does not have to reveal a complete factor. Determine whether it yields a rigorously specified interval, congruence, or correlated set of bits that existing small-root methods can use. Coppersmith's work [Coppersmith] is the relevant reference, but extract the precise theorem and parameter requirements before applying it.
+
+For hidden-relation approaches, use [Regev], [Pilatte], and [EG] to identify the information that classical postprocessing consumes. A short-relation existence theorem is not a procedure for finding those relations; a decoder is not a sampler.
+
+One exact interface is multiplicative characters. With generators `a_i`, define
+
+\[
+\mathcal L=\{z\in\mathbb Z^d:\prod_i a_i^{z_i}=1\pmod N\}.
+\]
+
+If a computable character satisfies `chi(a_i)=exp(2*pi*i*w_i)`, then
+
+\[
+\langle w,z\rangle\in\mathbb Z\quad\text{for every }z\in\mathcal L.
+\]
+
+The question is whether explicit arithmetic supplies useful character phases or partial phase constraints efficiently. For squared generators `a_i=b_i^2`, ambient characters taking values only in `{+1,-1}` become trivial. A proposed source of phases must avoid that degeneracy and avoid constructing the unknown group decomposition first.
+
+Also inspect [Gao] for the neighboring classical idea of deliberately avoiding uninformative shortest vectors. Transfer a concrete objective or construction, not merely the instruction to use lattice reduction.
+
+Treat [Cleve] as a model-specific warning about generic oracle order finding, not as a lower bound for explicit integer arithmetic.
+
+**First experiment:** Specify an exact partial-information format and demonstrate its downstream usefulness with a diagnostic oracle. Then separately attempt to produce it from `N` alone. Never combine those two stages into an unsupported end-to-end speed claim.
+
+### Track F — One independent connection
+
+Reserve some effort for a route not suggested by the polynomial lead. Examples include a different low-description-length generating function, a nonunit-producing algebraic identity, or an arithmetic invariant of a low-dimensional object.
+
+The proposal must specify an executable operation and why it sees the hidden factors. Merely restating `pq=N` as optimization, SAT, a spectral problem, or a dynamical system is not enough. Show where the representation gives a cheaper operation or a smaller search problem.
+
+## 4. Research procedure
+
+### Phase 1: establish the mathematical and literature baseline
+
+Reproduce the elementary lemmas and tests in this brief. Read the core sources needed for the two most promising tracks; do not read every listed paper before doing mathematics.
+
+Create a compact map of the nearest prior art. For each relevant result record its exact problem, input representation, theorem assumptions, complexity variables, and the primitive it provides. Use primary sources. Verify title, authors, date, and theorem statement; earlier conversational summaries are leads, not evidence.
+
+Keep discovery work separate from verification. In the first generation pass, propose at least six mechanisms, including one outside the supplied tracks. Then select two or three with the clearest operation and smallest missing lemma.
+
+### Phase 2: write a candidate card before substantial coding
+
+Use this template for each serious candidate:
+
+```text
+ID and one-sentence mechanism:
+Target problem / supported input family:
+Representation and how it is built from N:
+Exact operation that extracts information:
+Why that information exposes a factor:
+Known lemmas being used:
+New lemma required:
+Correctness argument or conjecture:
+Cost in n, including construction and extraction:
+Randomness and success probability:
+Closest prior method and the actual difference:
+Smallest informative experiment:
+Counterexample or scaling behavior that would refute this version:
+Possible repair if that happens:
+```
+
+Reject or repair proposals that name the missing operation without implementing or bounding it. Do not abandon a promising representation merely because the first naive implementation expands it.
+
+### Phase 3: alternate construction and criticism
+
+For each selected mechanism:
+
+1. Derive the strongest statement you can justify.
+2. Implement the smallest exact experiment that distinguishes it from the obvious baseline.
+3. Search for boundary cases and counterexamples.
+4. Audit representation growth and total work.
+5. Produce a revised mechanism or a narrow obstruction identifying what a revision must change.
+
+Use a separate mathematical critic and complexity auditor if real subagents are available. Give the critic the candidate and code, not a persuasive narrative about expected success. Without subagents, perform separately documented review passes. Do not claim independent review unless it actually occurred.
+
+The critic must state which assumption fails and give an example, derivation, or missing bound. “Factoring is believed hard” is not a technical critique.
+
+Do not stop after a survey or after one failed proposal. Complete at least one repair cycle on the best candidate, unless a complete proof and independently checked implementation are already obtained.
+
+### Phase 4: keep the result reproducible
+
+Preserve proofs, candidate versions, failed constructions, seeds, raw measurements, and exact commands. A negative result about one representation is useful when its scope is explicit and it points to a different operation to try.
+
+Allocate most effort to mathematical construction and discriminating experiments, not ever-expanding bibliographies or GPU optimization. Use exact integer/ring arithmetic initially. Floating-point exploration is allowed only with a later precision analysis.
+
+## 5. Experimental design and leakage controls
+
+### Input families
+
+Begin with exhaustive small composites for algebraic correctness. Then use reproducibly generated balanced semiprimes at increasing bit lengths, for example `16, 24, 32, 48, 64`, extending only as resources permit. Successful factoring of small inputs is a correctness check, not evidence of polynomial scaling.
+
+Include independent-prime balanced semiprimes, prime powers, composites with several distinct factors, highly unbalanced semiprimes, Carmichael numbers, and prime inputs. Near-equal primes, special algebraic forms, and deliberately smooth `p-1` or `q-1` belong in separately labeled diagnostic families.
+
+### Separate algorithm inputs from diagnostic truth
+
+The candidate receives only `N`, public configuration, and a random seed. A separate test harness may retain factors to compute labels and understand failures.
+
+Never leak factors through filenames, seeds deterministically encoding factors, candidate-specific parameter choices, precomputed group orders, smoothness-selected instances, library factorization calls, or a simulator initialized with the factors.
+
+Use actual random generation of the intended family and record the sampling procedure. Freeze candidate choices before the holdout evaluation. Special test families are useful but must not silently replace the intended distribution.
+
+### Record meaningful costs
+
+For each run record at least:
+
+- Correctness, result, seed, wall time, timeout, and peak memory.
+- Ring operations and GCD calls, with operand bit lengths.
+- Largest polynomial degree actually materialized and number of stored coefficients.
+- Circuit nodes, recurrence dimension, matrix size, section depth, and rank where relevant.
+- Number of sketches, candidate combinations, restarts, and rejected trials.
+- Numerical precision and error bounds for any approximate component.
+
+Separate preprocessing, information acquisition, decoding, and verification. Count all work, including unsuccessful attempts. Distinguish parallel depth from total classical work.
+
+Compare against transparent trial division and Pollard-rho implementations on small tests, a relevant product/block baseline for Track C, and the nearest prior construction for the actual proposed operation. Use controlled same-language arithmetic comparisons where possible. Do not claim superiority to GNFS from a small-input benchmark or an improvement over trial division.
+
+Empirical fits are diagnostics, not complexity proofs. Show raw counters versus both `n` and the actual structural parameters. In particular, a method polynomial in a hidden factor can look innocuous on tiny bit lengths.
+
+## 6. Mandatory complexity and correctness audit
+
+For every proposed breakthrough, answer the following before calling it an algorithmic improvement.
+
+**Representation.** Is the object genuinely stored in polynomial space, or merely described by a short program that later expands? Are all required operations efficient on that representation?
+
+**Coefficient access.** Does the method require sequential coefficients up to `p`, a dense truncation at `K`, or exponentially many terms after sectioning? Section 2.3 rules out individual coefficient evaluation as the missing advantage here.
+
+**Field assumptions.** Does a theorem require a known prime, an algebraically closed field, a characteristic bound, or invertible denominators? Prove the needed ring version or report factor-revealing nonunits.
+
+**Hidden inputs.** Is any step using `p`, `q`, `phi(N)`, `lambda(N)`, an unknown order, a hidden lattice basis, or informative samples supplied by an oracle? State exactly how it is obtained.
+
+**Numerical cost.** An error tolerance `2^(-poly(n))` uses polynomially many bits. An error tolerance `2^(-p)` needs order-`p` bits. A tiny error written with a short exponent is not automatically cheap to achieve. Conversely, do not call every exponentially small error an exponential-precision requirement.
+
+**State-space cost.** A short diffusion rule, tensor description, or matrix-power expression is not enough. Bound the represented state, ranks, contractions, and the cost of the final observable.
+
+**Degree and root bounds.** Check polynomial identity-test assumptions when formal degree is exponential. Over a finite ring, nonzero polynomials can vanish at every scalar point. Auxiliary prime moduli also change coefficient divisibility: reducing modulo an unrelated prime does not preserve vanishing modulo `N` for free.
+
+**Randomness.** Bound the success probability and cost per attempt, including constructing the distribution and rejecting bad outputs. Distinguish worst-case, average-case, and restricted-family claims.
+
+**Certificates.** A candidate factor is cheaply verifiable. That does not bound search time or certify an average-case/polynomial-time theorem. A decoder's correctness with ideal samples does not validate the source of those samples.
+
+**Novelty.** Compare with the closest specific method. A new notation, a different implementation of a known identity, or a known reduction rediscovered here is not an asymptotic breakthrough. It can still be useful scaffolding for the next modification.
+
+Use these checks to improve proposals, not to replace proposal generation.
+
+## 7. Workspace and required deliverables
+
+Suggested layout:
+
+```text
+factoring-connection/
+  README.md
+  STATUS.md
+  references.md
+  notes/
+    seed_lemmas.md
+    prior_art_map.md
+    candidate_001.md
+    candidate_002.md
+    review_and_repairs.md
+  src/
+    seed_checks.py
+    ring_polynomials.py
+    circuit_sections.py
+    quotient_sketches.py
+    candidates/
+  tests/
+  experiments/
+    configs/
+    raw/
+    analysis/
+  REPORT.md
+  NEXT_STEPS.md
+```
+
+Use Python with exact arithmetic for the first prototypes; use existing computer-algebra packages where appropriate, but inspect any operation that may internally factor a modulus. Optimize only after identifying an informative mechanism. Do not buy cloud resources, publish results, or contact authors without authorization.
+
+A candidate interface should accept `N` and public configuration only, return a factor or explicit failure, and emit an auditable metrics record. Reference factorization functions belong in the harness, never inside the purported new factorizer.
+
+The final report must contain:
+
+1. **Best surviving mechanism:** its precise new operation and the strongest supported claim.
+2. **Mathematics:** proved lemmas, conjectures, counterexamples, and any remaining proof obligation, clearly separated.
+3. **Experiments:** reproducible commands, raw results, input distributions, failures, and scaling diagnostics.
+4. **Comparison:** closest prior art and exactly what changed.
+5. **Continuation:** the next most decisive mathematical question or experiment, with a concrete proposed attack.
+
+Use status labels such as `proved`, `experimentally supported`, `conjectured`, `refuted for this model`, and `not yet tested`. A useful report may contain a novel mechanism plus a sharply identified unresolved lemma. Do not inflate that into a completed factorizer, and do not stop at “no breakthrough found” when the work supports a more specific next step.
+
+## 8. Primary-source reading list
+
+These are selected starting points, not a claim of an exhaustive literature search. Bibliographic/abstract pages were checked when preparing this brief; the AKS seed identity was also checked in the paper. Except for the elementary derivations above, do not assume that every cited theorem or implementation has been independently verified here. Open the relevant full papers, record the version consulted, and verify exact conditions before relying on them.
+
+**[AKS]** Manindra Agrawal, Neeraj Kayal, Nitin Saxena. *PRIMES is in P*. Annals of Mathematics 160 (2004), 781–793. [Paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf). Focus on Lemma 2.1 and the quotient-ring reduction in Section 2; distinguish primality detection from factor extraction.
+
+**[BGS]** Alin Bostan, Pierrick Gaudry, Éric Schost. *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM Journal on Computing 36(6) (2007), 1777–1806. [Author-hosted paper](https://mathexp.eu/bostan/publications/BoGaSc07.pdf). This directly connects distant recurrence terms, product computations, and classical factorization. Audit the dependence on the recurrence index.
+
+**[Harvey]** David Harvey. *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450 (2020). [Record](https://arxiv.org/abs/2010.05450). A rigorous `N^(1/5+o(1))` classical factoring construction; a useful structured-search baseline, not polynomial in input bit length.
+
+**[HH]** David Harvey, Markus Hittmeir. *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105 (2021). [Record](https://arxiv.org/abs/2105.11105). Study the arithmetic structure and the actual batching operation, not just its asymptotic headline.
+
+**[Sparse]** Joris van der Hoeven, Grégoire Lecerf. *Sparse polynomial interpolation: Faster strategies over finite fields*. Author-hosted final version dated 2 May 2024. [Text](https://www.texmacs.org/joris/ffsparse/ffsparse.html). Relevant to projections, support reconstruction, and circuit access. Its field, sparsity, characteristic, and root-of-unity assumptions require explicit checking for our setting.
+
+**[Tal]** Yann Tal. *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211, September 2026 preprint. [Record and paper access](https://eccc.weizmann.ac.il/report/2026/211/). A recent lead involving known prime/prime-power moduli, Jacobi sums, and recursive factorial computations. Treat the claims as preprint results to inspect, and preserve the known-modulus/divisor conditions. No general unknown-factor-modulus speedup is asserted by this brief.
+
+**[Coppersmith]** Don Coppersmith. *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. Journal of Cryptology 10 (1997), 233–260. [Publisher record](https://link.springer.com/article/10.1007/s001459900030). Use to specify exactly what partial factor information would suffice, rather than casually assuming that arbitrary correlated bits are usable.
+
+**[Regev]** Oded Regev. *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572 (2023; consult current version). [Record](https://arxiv.org/abs/2308.06572). A source for the hidden-relation formulation and the separation between quantum information acquisition and classical postprocessing.
+
+**[Pilatte]** Cédric Pilatte. *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450; Forum of Mathematics, Pi 14 (2026), e5. [Record](https://arxiv.org/abs/2404.16450). Structural existence/correctness results for suitable modified constructions; do not equate existence of short relations with constructive classical access to them.
+
+**[EG]** Martin Ekerå, Joel Gärtner. *Extending Regev's factoring algorithm to compute discrete logarithms*. arXiv:2311.05545 (2023; consult current version). [Record](https://arxiv.org/abs/2311.05545). Relevant to what approximate lattice information suffices for classical recovery. Extract the exact noise, distribution, and precision requirements.
+
+**[Gao]** Yiming Gao, Yansong Feng, Honggang Hu, Yanbin Pan. *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076 (December 2025 preprint). [Record](https://arxiv.org/abs/2512.19076). A concrete neighboring classical lead emphasizing useful rather than merely shortest vectors. Reproduce and inspect the construction before generalizing it.
+
+**[Cleve]** Richard Cleve. *The query complexity of order-finding*. arXiv:quant-ph/9911124 (1999). [Record](https://arxiv.org/abs/quant-ph/9911124). Read the oracle model carefully. Its lower-bound conclusions do not automatically apply to algorithms exploiting the explicit representation of modular integers.
+
+For additional searches, combine terms such as “arithmetic circuit coefficient sections,” “order of vanishing straight-line programs,” “polynomial identity testing composite characteristic,” “Hadamard product compressed polynomials,” “factorial unit test composite modulus,” “holonomic recurrence distant terms,” and “constructive AKS factor extraction.” Treat these as search directions, not as claims that a particular theorem already exists.
+
+## 9. Small exact smoke test
+
+Save this as `src/seed_checks.py`. It is reference/testing code using trial division and explicit coefficients. It is deliberately not a fast factoring algorithm and must not appear as the hidden implementation of a candidate.
+
+```python
+"""Exact tests for the elementary seed lemmas; small instances only."""
+from math import comb, gcd, isqrt
+
+
+def least_divisor_reference(value: int) -> int:
+    if value < 2:
+        raise ValueError("value must be at least 2")
+    for divisor in range(2, isqrt(value) + 1):
+        if value % divisor == 0:
+            return divisor
+    return value
+
+
+def check_seed_lemmas(limit: int = 200) -> int:
+    if not 4 <= limit <= 2000:
+        raise ValueError("use a small test limit between 4 and 2000")
+    composites = 0
+    for modulus in range(2, limit + 1):
+        first = least_divisor_reference(modulus)
+        # Only interior coefficients: the endpoints of F_N are removed.
+        coeffs = [comb(modulus, k) % modulus
+                  for k in range(1, modulus)]
+        if first == modulus:
+            assert not any(coeffs), (modulus, "prime identity")
+            continue
+
+        composites += 1
+        assert not any(coeffs[:first - 1])
+        assert coeffs[first - 1] == modulus // first
+        for k, coefficient in enumerate(coeffs, start=1):
+            assert k * coefficient % modulus == 0
+            if coefficient:
+                assert 1 < gcd(k, modulus) < modulus
+
+        # product = (K-1)! mod modulus at each iteration.
+        product = 1
+        for cutoff in range(1, isqrt(modulus) + 2):
+            prefix_zero = not any(coeffs[:cutoff - 1])
+            assert prefix_zero == (cutoff <= first)
+            assert prefix_zero == (gcd(product, modulus) == 1)
+            product = product * cutoff % modulus
+
+    for point in range(561):
+        assert (pow(1 + point, 561, 561)
+                - 1 - pow(point, 561, 561)) % 561 == 0
+    return composites
+
+
+if __name__ == "__main__":
+    count = check_seed_lemmas()
+    print(f"Seed checks passed for {count} small composites.")
+```
+
+During preparation, the first-index/value and coefficient-annihilator identities were also checked directly for all 831 composites up to 1,000, and the scalar-zero property of `F_561` was checked at all 561 residues. These checks supplement the proofs; they are not evidence of a fast extraction procedure.
+
+## 10. Start here
+
+Read Sections 1–2, run the smoke tests, and create `STATUS.md`. Then investigate binary sectioning and weighted quotient sketches in parallel or as separate passes. Produce explicit candidate cards, implement the most discriminating small experiment for each, and perform a repair cycle after criticism.
+
+The aim is to find the connection, not merely describe why existing approaches are expensive. Keep asking what information a representation exposes cheaply that was not cheaply accessible before, and make that operation concrete.
+
+codex
+I’ll check the primary sources and build the map around their exact computational interfaces. I’ll mark inaccessible papers and unverified theorem details explicitly, with particular care around field assumptions and complexity measured in \(N\) versus \(\log N\).
+
+exec
+/bin/bash -lc pwd in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection/codex
+
+web search: 
+web search: https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf
+web search: 
+web search: https://arxiv.org/abs/2010.05450
+web search: 
+web search: https://arxiv.org/pdf/2010.05450
+web search: 
+web search: 'Theorem 1'
+web search: 
+web search: Lipton "Straight-line complexity and integer factorization" pdf ...
+web search: 
+web search: site:arxiv.org Bürgisser "factorials" ...
+web search: 
+web search: 
+codex
+Tal’s full preprint is accessible. Its theorem explicitly takes a known prime \(p\), a supplied cyclotomic divisor, and—where required—a finite-field representation and compatible character. I’m checking the identities behind that interface and tracing the older factorial/straight-line-program reductions for the novelty comparison.
+
+web search: 
+web search: 'Lemma 4.1'
+web search: 
+web search: "Lipton" "1994" "Straight" site:cs.princeton.edu ...
+web search: 
+web search: 'Theorem'
+web search: 
+web search: site:math.tu-berlin.de buergisser defining integers pdf ...
+web search: 
+web search: Neeraj Kayal Chandan Saha "degree" polynomial radical 2011 ...
+exec
+/bin/bash -lc "python - <<'PY'
+import importlib.util
+for m in ['requests','fitz','pypdf']:
+ print(m, bool(importlib.util.find_spec(m)))
+import urllib.request
+try:
+ r=urllib.request.urlopen('https://arxiv.org/html/2308.06572v3', timeout=20)
+ print(r.status)
+except Exception as e: print(type(e).__name__, str(e))
+PY" in /home/knielsen/code/factoring-connection/codex
+ exited 127 in 0ms:
+/bin/bash: line 1: python: command not found
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+import importlib.util
+for m in ['requests','fitz','pypdf']:
+ print(m, bool(importlib.util.find_spec(m)))
+import urllib.request
+try:
+ r=urllib.request.urlopen('https://arxiv.org/html/2308.06572v3', timeout=20)
+ print(r.status)
+except Exception as e: print(type(e).__name__, str(e))
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+requests True
+fitz False
+pypdf True
+URLError <urlopen error [Errno -3] Temporary failure in name resolution>
+
+web search: 
+web search: site:eccc.weizmann.ac.il "factoring" "2026" ...
+web search: 
+web search: "Lipton" "Straight-line complexity and integer factorization" filetype:pdf ...
+web search: 
+web search: "Shub" "Smale" "tau" site:shub.ccny.cuny.edu ...
+web search: 
+web search: 'Proposition 1.4'
+web search: 
+web search: https://arxiv.org/pdf/2308.06572v3
+web search: 
+web search: "The Complexity of two Problems on Arithmetic Circuits" Koiran Perifel pdf ...
+web search: 
+web search: https://link.springer.com/content/pdf/10.1007/s00037-009-0260-x.pdf
+codex
+I found a direct prior statement of the first-support-index observation: OEIS A020639 includes an attributed 2017 proof. Lipton’s own 2009 exposition also gives the factorial-GCD binary-search reduction. Those cover two seed ideas, but neither supplies an efficient formal prefix-zero test on the compressed binomial circuit.
+
+web search: 
+web search: 'Nullstellensatz'
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+mcp: codex_apps/search_service.web_run started
+mcp: codex_apps/search_service.web_run (completed)
+mcp: codex_apps/search_service.web_run started
+mcp: codex_apps/search_service.web_run (completed)
+web search: 
+web search: https://www.researchgate.net/publication/226946788_On_Defining_Integers_And_Proving_Arithmetic_Circuit_Lower_Bounds
+mcp: codex_apps/search_service.web_run started
+mcp: codex_apps/search_service.web_run (completed)
+mcp: codex_apps/search_service.web_run started
+mcp: codex_apps/search_service.web_run (completed)
+web search: 
+web search: https://repository.ias.ac.in/92018/1/4-p.pdf
+web search: 
+web search: "Primality and Identity" "Theorem" "size" ...
+web search: 
+web search: Boneh Durfee Howgrave Graham factoring N p r q r log N pdf ...
+web search: 
+web search: https://arxiv.org/abs/2601.11131
+mcp: codex_apps/search_service.web_run started
+mcp: codex_apps/search_service.web_run (completed)
+web search: 
+web search: 'Theorem'
+web search: 
+web search: site:crypto.stanford.edu "Factoring N" "Large" ...
+web search: 
+web search: "coefficient" "sparse polynomial" "#P" power ...
+codex
+Two findings matter for the map. First, \((N-1)!\bmod N\) is easy to compute using primality testing: it is \(0\) for composite \(N>4\), so the variable-cutoff factorial is the relevant interface. Second, Harvey–Hittmeir’s June 2026 revision removes the earlier lower-bound restriction on the target order \(D\); I’ll include its exact replacement theorem.
+
+web search: 
+web search: https://fileserver-az.core.ac.uk/download/52328879.pdf
+web search: 
+web search: 'Corollary 4.2'
+web search: 
+web search: 
+web search: 
+web search: https://qcheng2023.github.io/
+web search: 
+web search: http://repository.ias.ac.in/92018/1/4-p.pdf
+web search: 
+web search: https://www.cambridge.org/core/services/aop-cambridge-core/content/view/6762E84DBD34AEF13E6B1D1A8334A989/S0305004100049252a.pdf/theorems_on_factorization_and_primality_testing.pdf
+web search: 
+web search: site:cse.iitk.ac.in/users/manindra/algebra/identity.pdf "theorem" "4" ...
+web search: 
+web search: site:cse.iitk.ac.in/users/manindra/algebra/identity.pdf "Theorem 4.8" "s5" ...
+web search: 
+web search: "The Complexity of two Problems on Arithmetic Circuits" "Theorem 1" ...
+web search: 
+web search: https://qcheng2023.github.io/paper/torsion.pdf
+web search: 
+web search: 
+codex
+The composite-ring PIT result is stronger than the brief’s caution suggests. Agrawal–Biswas Theorem 4.8 gives randomized formal identity testing for arithmetic circuits over \(\mathbb Z/m\mathbb Z\) without knowing its factors. That sharpens Track A: the unresolved step is keeping the selected sections compact and constructing them efficiently; formal zero testing of those circuits is already available.
+
+web search: 
+web search: site:fileserver-az.core.ac.uk/download/52328879.pdf "Proposition" "characteristic" ...
+web search: 
+web search: 'Theorem'
+web search: 
+web search: 
+web search: 
+web search: 'Stanislav'
+web search: 
+web search: Strassen 1977 Einige Resultate Berechnungskomplexität pdf integer factorization ...
+web search: 
+web search: 
+web search: 
+web search: https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TM-091.pdf
+codex
+# Primary-source prior-art map
+
+**Consulted:** 17 October 2026.  
+**Notation:** \(n=\lceil\log_2N\rceil\); \(M(b)\) is the bit cost of multiplying \(b\)-bit integers. Other variables retain each paper’s meaning. Theorem statements below are paraphrases unless explicitly quoted. **VERIFIED** means checked against the source, not an independent verification of its proof. **UNVERIFIED** identifies inaccessible text, unresolved transcription, or missing attribution.
+
+## 1. [AKS] Polynomial characterization and quotient-ring testing
+
+**Source:** Manindra Agrawal, Neeraj Kayal, Nitin Saxena, *PRIMES is in P*. Annals of Mathematics 160 (2004), 781–793; journal PDF consulted. [Primary PDF](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf).
+
+- **Problem/input:** Decide primality of a binary integer \(N>1\). Polynomial expressions are evaluated by repeated squaring in explicit finite quotient rings.
+- **Statement:** **Lemma 2.1:** for \(a\in\mathbb Z\), \(N\ge2\), and \(\gcd(a,N)=1\),
+  \[
+  N\text{ prime}\iff (X+a)^N=X^N+a\pmod N.
+  \]
+  Its composite-case proof explicitly uses the coefficient indexed by a prime divisor.
+- **Section 2:** Replace the full polynomial identity by congruences modulo \(X^r-1\). Suitable polynomially bounded \(r\) and sufficiently many shifts \(a\) characterize prime powers; perfect-power detection completes primality testing.
+- **Complexity:** The consulted journal algorithm has \(\widetilde O((\log N)^{15/2})\) bit complexity.
+- **Primitive/relevance:** Efficient computation and comparison of folded coefficient vectors. Neither Lemma 2.1 nor Section 2 supplies an original support index or a factor from an arbitrary failed polynomial congruence. **VERIFIED.**
+
+## 2. [BGS] Bounded-divisor search by batched products
+
+**Source:** Alin Bostan, Pierrick Gaudry, Éric Schost, *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM J. Comput. 36(6) (2007), 1777–1806; final author-hosted PDF. [Primary PDF](https://mathexp.eu/bostan/publications/BoGaSc07.pdf).
+
+- **Problem/input:** Binary \(N,b\), \(2\le b<N\); find a prime divisor at most \(b\), or certify its absence.
+- **Statement:** **Lemma 13** gives deterministic cost
+  \[
+  O\!\left(M(\sqrt b\log N)+\log b\,M(\log N)\log\log N\right),
+  \]
+  with \(O(\sqrt b\log N)\) bits of space.
+- **What is computed:** With \(c=\lfloor\sqrt b\rfloor\), compute modulo \(N\)
+  \[
+  F(i)=\prod_{k=0}^{c-1}(ck+i+1),\qquad 0\le i<c.
+  \]
+  These transposed blocks cover \(1,\ldots,c^2\); the short remaining tail is handled separately.
+- **Hypotheses:** **Theorem 8** requires specified interpolation denominators to be units. Lemmas 12–13 test these conditions; a failed inversion becomes divisor information.
+- **Full factorization:** **Theorem 11:** \(O(M(N^{1/4}\log N))\) bit operations.
+- **Primitive/relevance:** Direct implementation of the factorial-unit/bounded-divisor predicate, with square-root dependence on the numeric cutoff \(b\). **VERIFIED.**
+
+## 3. [Harvey] Exponent-one-fifth deterministic factoring
+
+**Source:** David Harvey, *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450v1, 12 October 2020. [Primary PDF](https://arxiv.org/pdf/2010.05450v1).
+
+- **Problem/input:** Complete prime factorization of binary \(N>2\), without supplied factors or group orders.
+- **Statement:** **Theorem 1.1:**
+  \[
+  F(N)=O(N^{1/5}\log^{16/5}N)
+  \]
+  deterministic classical bit operations.
+- **Mechanism:** Search for suitable linear combinations \(aq+bp\), using congruences such as
+  \[
+  \alpha^{aq+bp}\equiv\alpha^{aN+b}\pmod p,
+  \]
+  although computations are performed modulo \(N\). Polynomial arithmetic batches collisions modulo hidden prime divisors.
+- **Useful subsidiary statements:** **Proposition 2.5** tests for a prime divisor at most \(B\), returning the smallest if present, in \(O(\sqrt B\log^3N)\). **Lemma 2.4** evaluates a degree-\(d\) polynomial on a length-\(m\) geometric progression modulo \(N\) in \(O((d+m)\log^2N)\), under its stated size bounds.
+- **Primitive/relevance:** Hidden-prime collision detection and geometric multipoint evaluation over a composite ring. Work remains polynomial in materialized degree/list length, not their logarithms. **VERIFIED.**
+
+## 4. [HH] Log-log improvement
+
+**Source:** David Harvey, Markus Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105v1, 24 May 2021. [Primary PDF](https://arxiv.org/pdf/2105.11105v1).
+
+- **Problem/input:** Complete factorization of arbitrary binary \(N>2\).
+- **Statement:** **Theorem 1.1:** deterministic bit complexity
+  \[
+  O\!\left(
+  \frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+  \right).
+  \]
+- **Hypotheses:** Unconditional; no known factorization of \(N\). Reduction handles inputs outside the distinct-semiprime core.
+- **Mechanism:** Restrict possible factors to residue classes coprime to a product of small primes. Short lattice vectors select useful linear combinations for the giant steps; polynomial arithmetic batches hidden-prime collisions.
+- **Complexity variables:** Numeric \(N\), sizes of baby-step/giant-step lists, and explicit polynomial degrees.
+- **Primitive/relevance:** A rigorous example of combining public congruence restrictions with batched factor extraction. It does not evaluate exponentially long factorials or prefix predicates in polynomial time in \(n\). **VERIFIED.**
+
+## 5. [Sparse] Sparse interpolation and support reconstruction
+
+**Source:** Joris van der Hoeven, Grégoire Lecerf, *Sparse polynomial interpolation: Faster strategies over finite fields*. Final version, 2 May 2024. [Primary text](https://www.texmacs.org/joris/ffsparse/ffsparse.html), [PDF](https://www.texmacs.org/joris/ffsparse/ffsparse.pdf).
+
+- **Problem/input:** Recover a polynomial from black-box evaluations, with degree bound \(D\), term bound \(T\), evaluation-program length \(L\), over a known finite field \(\mathbb F_q\). Some methods require evaluation over extensions or algebras.
+- **Statement:** **Proposition 2:** assuming heuristic \(H_{\rm red}\), \(\log D=O(T)\), and diversification, a Monte Carlo algorithm recovers at least \((1-\eta)t\) terms in
+  \[
+  O^\flat(LT\log D\log q).
+  \]
+  \(H_{\rm red}\) assumes suitable uniformity and independence of exponent reductions.
+- **Other interfaces:** **Algorithm 4** uses \(2T\) geometric evaluations, root finding, and discrete logarithms. Suitable root-of-unity orders must distinguish exponents.
+- **Characteristic restriction:** Section 3.2’s derivative-ratio recovery requires characteristic zero or characteristic exceeding every individual degree; it divides \(e_ic\) by \(c\).
+- **Primitive/relevance:** Recover isolated terms from cyclic projections under sparsity and field assumptions. The brief’s \(F_N\) has exponentially large support on balanced semiprimes; neither ordinary sparsity nor the derivative-ratio interface transfers. **VERIFIED.**
+
+## 6. [Tal] Modular factorials below the square-root barrier
+
+**Source:** Yann Tal, *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211; submitted 25 September, published 26 September 2026; 69-page September PDF. [Record](https://eccc.weizmann.ac.il/report/2026/211/), [primary PDF](https://eccc.weizmann.ac.il/report/2026/211/download).
+
+- **Input/problem:** Known prime \(p\), binary cutoff \(t\), supplied divisor \(q\), and prime-power modulus \(p^k\).
+- **Statements:** **Theorems 1.1–1.2**, \(q\mid p-1\): compute \(t!\bmod p\) or \(p^2\) in \(\widetilde O(q^c+\sqrt{p/q})\). **Theorem 1.3**, fixed odd prime-power \(r\), \(q\mid\Phi_r(p)\), supplied \(\mathbb F_{p^r}\) and compatible character:
+  \[
+  \widetilde O_r\!\left(k^{O_r(1)}
+  \left[q^{c_r}+(\Phi_r(p)/q)^{1/(2\varphi(r))}\right]\right).
+  \]
+  Field/character construction makes the corresponding bound Las Vegas expected.
+- **Identity audit:** Equation (2),
+  \[
+  (aK)!\equiv(-1)^{a-1}\rho_{\mathfrak p}(J_a(\chi))(K!)^a,\quad K=(p-1)/q,
+  \]
+  requires compatible order-\(q\) characters and reduction above known \(p\). **Theorem 1.5** reconstructs Jacobi sums from known prime-ideal data. **Propositions 5.1, 7.1** use base-\(p\) digits, normalized Gauss sums, and \(p\)-adic gamma identities. Wilson complementation also requires prime \(p\).
+- **Primitive/relevance:** Known-prime factorial ratios; elementary interval-product identities survive over rings, but these character and local-reduction procedures do not give an unknown-factor-modulus routine. **VERIFIED statements; transferred algorithm UNVERIFIED.**
+
+## 7. [Coppersmith] Exactly which known bits suffice
+
+**Source:** Don Coppersmith, *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. Journal of Cryptology 10 (1997), 233–260; journal PDF, Sections 10–11. [Primary PDF](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf).
+
+- **Problem/input:** Binary \(N=PQ\), with contiguous leading bits of one factor supplied.
+- **Statement:** **Theorem 4:** polynomial-time factorization given the high-order \(\frac14\log_2N\) bits of \(P\). For balanced factors, this is approximately half of \(P\)’s bits. **Theorem 5** gives the corresponding low-order-bit result.
+- **Construction/hypotheses:** Use the irreducible integer polynomial
+  \[
+  f(x,y)=(P_0+x)(Q_0+y)-N.
+  \]
+  **Theorem 2** requires individual degrees at most \(\delta\), scaled coefficient height \(W\), and
+  \[
+  XY<W^{2/(3\delta)-\epsilon}2^{-14\delta/3}.
+  \]
+  **Corollary 2** reaches \(XY\le W^{2/(3\delta)}\) using additional guessing.
+- **Dimension/cost:** Reduced lattice dimension \(2k\delta+\delta^2\), \(k=O(1/\epsilon)\). At the boundary, \(\epsilon=1/\log W\); here \(\delta=1\), giving \(O(\log N)\) dimension and polynomial bit cost. A single explicit polynomial exponent for that cost is **not stated**.
+- **Primitive/relevance:** Decode a sufficiently accurate contiguous-bit approximation; arbitrary correlated bits are not this interface. **VERIFIED.**
+
+## 8. [Regev] Noisy dual samples and classical decoding
+
+**Source:** Oded Regev, *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572v3, 7 January 2024. [Primary text](https://arxiv.org/html/2308.06572v3).
+
+- **Problem/input:** Binary \(N\); small coprime \(b_i\), squared generators \(a_i=b_i^2\), and
+  \[
+  \mathcal L=\{z:\prod_i a_i^{z_i}=1\bmod N\}.
+  \]
+- **Statement:** **Theorem 1.1** provides factoring using \(d+4\) quantum runs and polynomial classical processing, conditional on a sufficiently short \(u\in\mathcal L\setminus\mathcal L_0\), where \(\mathcal L_0\) corresponds to \(\prod b_i^{u_i}=\pm1\).
+- **Consumed samples:** **Lemma 4.4:** \(m\ge d+4\) independent uniform dual cosets \(v_i\), observed as \(w_i\) with torus Euclidean error below \(\delta\).
+- **Exact separation:** Set \(S=\delta^{-1}\). Lifted vectors shorter than
+  \[
+  \delta^{-1}(4\det\mathcal L)^{-1/m}/6
+  \]
+  project into \(\mathcal L\), with probability at least \(1/4\).
+- **Parameters/precision:** \(d\approx\sqrt n\), \(R=\exp(C\sqrt n)\), \(\delta=\sqrt d/(\sqrt2R)\); dyadic denominator \(D=\Theta(\sqrt dR)\). Thus coordinates need \(O(\sqrt n+\log n)\) bits.
+- **Primitive/relevance:** Decode supplied informative samples. No classical sampler is furnished. **VERIFIED.**
+
+## 9. [Pilatte] Unconditional short-basis existence for modified generators
+
+**Source:** Cédric Pilatte, *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450v3, 24 August 2026. [Primary text](https://arxiv.org/html/2404.16450v3).
+
+- **Problem/input:** Binary \(N\), independently sampled prime generators \(b_i\le X\), excluding divisors of \(N\); optional arbitrary unit generators \(x_j\).
+- **Statement:** **Theorem 3.18:** with
+  \[
+  d=\lceil\sqrt{\log N}\rceil,\qquad X=d^{1000d},
+  \]
+  the relation lattice in dimension \(d+r\) has a basis of norm
+  \[
+  \ll e^{42(d+r)}
+  \]
+  with probability \(1-O(d^{-d})\).
+- **Algorithmic theorem:** **Theorem 1.1:** constant-success factoring with \(O(\sqrt n)\) quantum calls, \(O(n^{3/2}\log^3n)\) gates per circuit, and randomized polynomial classical work.
+- **Postprocessing interface:** Uses the Ekerå–Gärtner decoder below: \(O(d)\) sufficiently accurate independent dual samples, exponentially small error in \(d\), hence \(O(d)\)-scale coordinate precision. Factoring uses a relation lattice augmented by a random unit whose order is recovered.
+- **Primitive/relevance:** Removes a structural conjecture for the modified generator distribution. It proves existence of a short basis and correctness of quantum acquisition plus decoding; it does not construct that basis classically from \(N\). **VERIFIED.**
+
+## 10. [EG] A separately stated classical recovery lemma
+
+**Source:** Martin Ekerå, Joel Gärtner, *Extending Regev’s factoring algorithm to compute discrete logarithms*. arXiv:2311.05545v2, 30 January 2024. [Primary text](https://arxiv.org/html/2311.05545v2).
+
+- **Problem/input:** Explicit approximate dual-coset samples for an unknown integer lattice \(\mathcal L\subseteq\mathbb Z^d\).
+- **Statement:** **Lemma 2:** let \(d+4\le m=O(d)\), \(\det\mathcal L<2^{d^2}\), and \(T=\exp(O(d))\). Given approximations \(w_i\) to independent uniform dual cosets with sufficiently small error \(\delta=\exp(-O(d))\), an efficient classical algorithm recovers a sublattice containing every vector of \(\mathcal L\) of norm at most \(T\), with probability at least \(1/4\).
+- **Quantitative requirement:** Its proof requires
+  \[
+  2^{(d+m)/2}\sqrt{d+m}\sqrt{m+1}\,T
+  <\delta^{-1}(4\det\mathcal L)^{-1/m}/6.
+  \]
+- **Precision/noise:** Error bounds apply to every consumed sample; this lemma does not license arbitrary outliers. Rounding each coordinate sufficiently finely requires \(O(d+\log d)\) bits for these parameters.
+- **Primitive/relevance:** Basis recovery when short vectors generate the full lattice; otherwise only the stated sublattice guarantee. The decoder consumes samples, not merely a short-relation existence assertion. **VERIFIED.**
+
+## 11. [Gao] Rank-three lattices and the second vector
+
+**Source:** Yiming Gao, Yansong Feng, Honggang Hu, Yanbin Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076v1, 22 December 2025. [Primary text](https://arxiv.org/html/2512.19076v1).
+
+- **Problem/input:** Binary balanced semiprime \(N=pq\), with \(p,q=\Theta(N^{1/2})\); algorithmically chosen moduli and candidate residues.
+- **Statement:** **Theorem 1.1** claims deterministic cost
+  \[
+  O\!\left(N^{1/5}\log^{13/5}N/(\log\log N)^{3/5}\right).
+  \]
+- **Concrete construction:** For a candidate \(p\equiv j\bmod m\), use \(f(x)=x+jm^{-1}\bmod N\), and the rank-three lattice generated by coefficient vectors of
+  \[
+  N,\quad f(xX),\quad f(xX)^2.
+  \]
+- **Hypotheses:** **Lemma 4.4** specifies \(j\in\mathbb Z_m^\times\), invertible \(m\bmod N\), \(X=\lfloor N^\beta/m\rfloor\), \(1/3\le\beta\le1/2\), and \(72<m<N^{(1-\beta)/2}/2\). It identifies the trivial shortest vector and asserts a nonzero quadratic coordinate in the second LLL vector.
+- **Primitive/relevance:** Construct a useful quadratic congruence while avoiding a predetermined uninformative linear relation. Candidate-residue enumeration remains charged.
+- **Status:** **VERIFIED as preprint statements; proof and implementation not independently reproduced.**
+
+## 12. [Cleve] Oracle order-finding lower bounds
+
+**Source:** Richard Cleve, *The query complexity of order-finding*. arXiv:quant-ph/9911124v1, 30 November 1999. [Primary PDF](https://arxiv.org/pdf/quant-ph/9911124v1).
+
+- **Problem/input:** Unknown permutation \(\pi\) of \(2^a\) labels, supplied \(y_0\), access only through queries returning \(\pi^x(y)\), with \(0\le x<2^b\).
+- **Statements:** For \(b\ge a\), **Theorem 1** requires
+  \[
+  \Omega\!\left(\sqrt{2^a/b}\right)
+  \]
+  deterministic queries. **Theorem 2** requires
+  \[
+  \Omega(2^{a/3}/\sqrt b)
+  \]
+  randomized queries for success probability bounded away from zero.
+- **Complexity variables:** Label length \(a\), exponent length \(b\), and oracle queries; arbitrary local computation is outside this resource measure.
+- **Primitive/relevance:** A lower bound for a precisely restricted information-access model. It does not establish a classical lower bound for explicit modular integers, whose arithmetic representation can be exploited. **VERIFIED.**
+
+## 13. Lipton 1994: many rational roots versus factoring
+
+**Source:** Richard J. Lipton, *Straight-line complexity and integer factorization*. ANTS I, LNCS 877 (1994), 71–79. [Publisher record](https://link.springer.com/chapter/10.1007/3-540-58691-1_45), [primary two-page preview](https://page-one.springer.com/pdf/preview/10.1007/3-540-58691-1_45).
+
+- **Problem/input:** Relate short arithmetic descriptions of polynomials with many distinct rational roots to the cryptographic hardness of factoring.
+- **Verified introductory statement:** If, for every \(m\), some polynomial
+  \[
+  (X-a_1)\cdots(X-a_m)g(X)
+  \]
+  with distinct rational \(a_i\) has sufficiently short polylogarithmic straight-line complexity, factoring cannot have the asserted cryptographic hardness.
+- **Representation/hypotheses:** Section 2 starts computations from \(1\) and variables and permits rational-function intermediates. Arbitrary integer constants are explicitly discussed as a conjectural extension.
+- **UNVERIFIED:** Full numbered theorem, precise root-height bounds, success distribution, quantitative circuit-size tradeoff, and exact allowed operation set: the available preview ends before the theorem.
+- **Primitive/relevance:** Direct prior formulation of the connection between compressed products/many roots and factoring. Do not attribute a precise factorial theorem to this paper without the missing pages.
+
+## 14. Lipton 2009: the factorial-GCD binary search
+
+**Source:** Richard J. Lipton, *Factoring and Factorials*, 23 February 2009; author exposition. [Primary author article](https://rjlipton.com/2009/02/23/factoring-and-factorials/).
+
+- **Problem/input:** Factor binary \(N\), given efficient straight-line factorial computations.
+- **Statement:** **Theorem 1** asserts that \(O(\log^c t)\)-length straight-line computations for \(t!\) imply polynomial-size factoring circuits; the article separately identifies uniformity as necessary for a uniform conclusion.
+- **Operational reduction:** Evaluate \(t!\bmod N\), compute \(\gcd(t!,N)\), and binary-search cutoffs. A proper GCD ends the search; otherwise the GCD is \(1\) or \(N\), determining the next interval.
+- **Complexity:** \(O(\log N)\) factorial queries; each supplied division-free program can be evaluated modulo \(N\), avoiding enormous integer intermediates.
+- **Primitive/relevance:** This is a close prior formulation of the brief’s prefix/factorial-unit strategy.
+- **Qualification:** For the project, require a uniformly available factorial evaluator or explicitly bounded advice. Mere existence of unrelated short programs should not be silently promoted into an implementable uniform oracle. **VERIFIED author statement and reduction.**
+
+## 15. Shub–Smale: factorial multiples and the \(\tau\)-conjecture
+
+**Source:** Michael Shub, Steve Smale, *On the intractability of Hilbert’s Nullstellensatz and an algebraic version of “NP ≠ P?”*. Duke Math. J. 81 (1995), 47–54; readable manuscript dated 21 June 1994. [Author-hosted paper](https://profshub.github.io/articles/1995-Intractability_of_Hilberts_Nullstellensatz.pdf), [readable manuscript copy](https://janos.cs.technion.ac.il/COURSES/238900-13/Papers-1/ShubSmale-pap97.pdf).
+
+- **Problem/representation:** Constant-free straight-line computation from \(1\), using \(+,-,\times\); arithmetic-operation complexity.
+- **Statement:** The unnumbered **Main Theorem:** if factorials are not ultimately easy—there is no sequence of nonzero multiples \(m_t t!\) with polylogarithmic straight-line complexity—then Hilbert’s Nullstellensatz is intractable and \(P_{\mathbb C}\ne NP_{\mathbb C}\).
+- **Intermediate theorem:** **Theorem 2:** a polylogarithmic BSS algorithm deciding whether \(z\in\{1,\ldots,t\}\) would make \(t!\) ultimately easy.
+- **Conjecture:** The standard \(\tau\)-conjecture bounds the number of distinct integer roots of nonzero \(f\in\mathbb Z[X]\) by \((1+\tau(f))^C\).
+- **Primitive/relevance:** Conditional complexity connections, not an evaluator. Exact factorials, arbitrary multiples, uniform algorithms, and arithmetic-operation bounds are different interfaces. **VERIFIED; standard conjecture formulation also checked in Bürgisser below.**
+
+## 16. Bürgisser: factorial complexity versus permanent complexity
+
+**Source:** Peter Bürgisser, *On Defining Integers And Proving Arithmetic Circuit Lower Bounds*. Computational Complexity 18 (2009), 81–103; author-uploaded manuscript. [Primary author upload](https://www.researchgate.net/publication/226946788_On_Defining_Integers_And_Proving_Arithmetic_Circuit_Lower_Bounds), [publisher record](https://link.springer.com/article/10.1007/s00037-009-0260-x).
+
+- **Problem/representation:** Complexity of integer sequences and univariate polynomial families, measured by constant-free division-free circuit size \(\tau\), or rational circuit complexity allowing divisions.
+- **Statement:** **Main Theorem 1.2:** hardness of factorials, truth of the \(\tau\)-conjecture, and the specified Taylor-approximation hardness statements each imply that the permanent lacks polynomial-size constant-free division-free circuits.
+- **Equivalent useful direction:** Polynomial \(\tau(\mathrm{Per}_m)\) implies \(\tau(t!)=(\log t)^{O(1)}\); corresponding compressed Pochhammer and Taylor families follow through the paper’s general theorem.
+- **Hypothesis audit:** The paper expressly warns that its permanent condition is not known equivalent to ordinary \(VP\ne VNP\). **Corollary 4.2** uses GRH for an implication involving arbitrary complex constants.
+- **Primitive/relevance:** A precise conditional barrier to proving factorial or truncation hardness. It supplies no unconditional factoring algorithm or composite-ring prefix test. **VERIFIED.**
+
+## 17. Cheng: short programs for multiples of factorials
+
+**Source:** Qi Cheng, *On the Ultimate Complexity of Factorials*. Theoretical Computer Science 326 (2004), 419–429; 12-page author manuscript, internally undated. [Primary PDF](https://qcheng2023.github.io/paper/factorial.pdf).
+
+- **Problem/input:** Given binary \(t\), construct a short constant-free division-free straight-line program for a nonzero multiple of \(t!\).
+- **Statement:** **Theorem 1**, assuming **Conjecture 1** on smooth-number density in Hasse-length intervals: there are constants \(c_1,c_2\) such that program length is at most
+  \[
+  L_t[c_1]=\exp(c_1\sqrt{\log t\log\log t}),
+  \]
+  and randomized construction takes \(L_t[c_2]\) time.
+- **Mechanism/hypotheses:** Elliptic-curve division polynomials compactly produce integers divisible by many primes; the smoothness conjecture controls coverage.
+- **Complexity variables:** Numeric factorial index \(t\), program length, and actual construction time.
+- **Primitive/relevance:** A compressed divisibility-cover integer. It is an arbitrary multiple, potentially introducing extra prime divisors and valuations. Consequently, taking its GCD with \(N\) does not implement the exact predicate \(\gcd(N,t!)=1\). **VERIFIED conditional statement; manuscript revision date UNVERIFIED.**
+
+## 18. Cheng: the related paper is about torsion, not a new factorizer
+
+**Source:** Qi Cheng, *Straight Line Programs and Torsion Points on Elliptic Curves*. Computational Complexity 12 (2003), 150–161; author manuscript. Preliminary version: *Some Remarks on the L-Conjecture*, ISAAC 2002. [Primary PDF](https://qcheng2023.github.io/paper/BSS.pdf), [author publication list](https://qcheng2023.github.io/pub.html).
+
+- **Problem/representation:** Bound rational roots and low-degree irreducible factors of small arithmetic circuits over a fixed number field \(k\).
+- **Hypothesis:** **Conjecture 2**, the WL-conjecture, posits
+  \[
+  N_{d,k}(f)\le c_1\,2^{c_2L(f)}d^{c_3},
+  \qquad c_2<1/72.
+  \]
+- **Statement:** **Theorem 1:** under WL, torsion over an extension \(K/k\) of degree \(D\) is bounded by \(c_4D^{c_5}\), with constants depending only on \(k\).
+- **Concrete ingredient:** Division polynomial \(P_m\) has a straight-line program of length at most \(72\log m+60\); rational torsion produces many roots.
+- **Primitive/relevance:** Explains why elliptic-curve constructions of many-root polynomials interact with root-count conjectures. No factorial-unit or support-index algorithm follows.
+- **Status:** **VERIFIED; author manuscript’s revision date UNVERIFIED.**
+
+## 19. Allender–Bürgisser–Kjeldgaard-Pedersen–Miltersen: succinct numeric properties
+
+**Source:** Eric Allender, Peter Bürgisser, Johan Kjeldgaard-Pedersen, Peter Bro Miltersen, *On the Complexity of Numerical Analysis*. SIAM J. Comput. 38(5) (2009), 1987–2006; author-hosted prepublication manuscript. [Primary PDF](https://www3.math.tu-berlin.de/algebra/work/submitted.july.pdf).
+
+- **Problem/input:** Division-free integer SLP, plus a binary degree threshold or bit index; determine degree, sign, equality, or a bit of its represented integer.
+- **Statements:** **Proposition 2.3:** \(\mathrm{DegSLP}\) polynomial-time many-one reduces to \(\mathrm{PosSLP}\). **Proposition 2.4:** \(\mathrm{BitSLP}\) is hard for \(\#P\). Section 4 places these problems in the counting hierarchy.
+- **Representation/hypotheses:** Integer arithmetic circuits can encode exponentially long integers and exponentially large polynomial degrees.
+- **Complexity variables:** Circuit description size and binary query length—not expanded integer length or polynomial degree.
+- **Primitive/relevance:** Formalizes why reading a degree, sign, or digit from a compact arithmetic description can be a substantial operation. This is not a hardness theorem specifically for \(F_N\), and its ordered-integer reductions do not automatically apply over \(\mathbb Z/N\mathbb Z\).
+- **Status:** **VERIFIED in the consulted manuscript; exact manuscript date UNVERIFIED.**
+
+## 20. Koiran–Perifel: coefficient-zero and degree problems
+
+**Source:** Pascal Koiran, Sylvain Perifel, *The Complexity of two Problems on Arithmetic Circuits*. Manuscript dated 24 August 2007; HAL deposit ensl-00167613v1, 21 August 2007; TCS 389 (2007), 172–181. [Author publication page](https://sites.google.com/view/pascal-koiran/publications), [HAL destination](https://prunel.ccsd.cnrs.fr/ensl-00167613).
+
+- **Problem/input:** Arithmetic circuit and a specified monomial, or a binary degree threshold.
+- **Results:** Coefficient-zero testing is \(P^{\#P}\)-hard under strong nondeterministic Turing reductions, even with polynomially bounded formal degree. Over a field of positive characteristic \(p\), the coefficient-zero problem is classified using \(\mathrm{Mod}_pP\); degree testing has a \(\mathrm{coNP}^{\mathrm{Mod}_pP}\) upper bound.
+- **Representation/hypotheses:** Field arithmetic circuits with constants restricted in the stated model; characteristic is a field characteristic.
+- **Primitive/relevance:** Complexity classification of specified-coefficient queries. These are general-circuit results, not lower bounds for the particular binomial family or for unknown composite characteristic.
+- **Status:** Bibliography and indexed primary manuscript text checked. HAL full-text access was blocked; **exact numbered positive-characteristic theorem and full reduction conditions UNVERIFIED**. The accessible FMM results below provide cleaner verified coefficient-zero statements.
+
+## 21. Fournier–Malod–Mengel: cleaner coefficient-zero classifications
+
+**Source:** Hervé Fournier, Guillaume Malod, Stefan Mengel, *Monomials in arithmetic circuits: Complete problems in the counting hierarchy*. Author manuscript dated 11 April 2012; STACS 2012. [Primary PDF](https://www3.math.tu-berlin.de/algebra/work/monomialsSTACS12.pdf).
+
+- **Problem/input:** Integer arithmetic circuit \(C\) and explicitly encoded monomial \(m\); decide whether \([m]C=0\).
+- **Statements:** **Theorem 3.1:** ZMC is \(C_{=}P\)-complete for multiplicatively disjoint circuits and formulas. **Theorem 3.2:** unrestricted ZMC belongs to \(\mathrm{coRP}^{PP}\). **Theorem 3.3:** ZMC is coNP-complete for monotone formulas and monotone circuits.
+- **Hypotheses:** Exact integer coefficients; monotonicity excludes cancellation but not combinatorial coefficient difficulty.
+- **Complexity variables:** Circuit size, variables, and exponent encodings. Formula restrictions and unrestricted shared circuits have different classifications.
+- **Primitive/relevance:** Strong evidence against treating generic coefficient access as a routine compressed-polynomial operation. Finding any support index of a nonzero polynomial is a different task: the theorems do not directly classify that search problem for \(F_N\). **VERIFIED.**
+
+## 22. Kayal–Saha: degree testing and restricted valuation bounds
+
+**Source:** Neeraj Kayal, Chandan Saha, *On the Sum of Square Roots of Polynomials and Related Problems*. ECCC TR10-189, 2010; 15-page report consulted. [Record](https://eccc.weizmann.ac.il/report/2010/189/), [primary PDF](https://eccc.weizmann.ac.il/report/2010/189/download/).
+
+- **Problem/input:** Arithmetic circuit plus binary degree threshold; separately, explicitly bounded-degree radical expressions.
+- **Statements:** **Theorem 1.5 / Theorem 4.5:** \(\mathrm{DegSLP}\in\mathrm{coRP}^{PP}\).
+- **Valuation theorem:** **Theorem 2.1:** over a characteristic-zero field, for
+  \[
+  S=\sum_{i=1}^{m}c_i g_i(X)\sqrt{f_i(X)},
+  \quad \deg f_i,\deg g_i\le d,\quad f_i(0)\ne0,
+  \]
+  either \(S=0\), or its first nonzero power-series exponent is at most \(dm^2+m\).
+- **Hypotheses:** Characteristic zero; formal power-series square roots in an appropriate extension. The argument uses Wronskians and ordinary derivatives.
+- **Complexity variables:** Number of summands \(m\), explicit degree bound \(d\), or circuit/query size for DegSLP.
+- **Primitive/relevance:** A bounded-prefix certificate for a restricted expression class. It does not extend to arbitrary exponential-degree SLPs or to \(R_N\), where the brief’s ordinary derivatives vanish. **VERIFIED.**
+
+## 23. Perrucci–Sabia: real-root hardness is a different problem
+
+**Source:** Daniel Perrucci, Juan Sabia, *Real roots of univariate polynomials and straight line programs*. Journal of Discrete Algorithms 5 (2007), 471–478; journal PDF. [Primary institutional PDF](https://bibliotecadigital.exactas.uba.ar/download/paper/paper_15708667_v5_n3_p471_Perrucci.pdf).
+
+- **Problem/input:** Univariate integer polynomial represented by a straight-line program using \(1,-1,X\) and \(+,-,\times\).
+- **Statement:** **Theorem 7:** deciding whether the polynomial has a real root is NP-hard. The construction also places possible roots in \((-1,1)\); later results concern approximation.
+- **Hypotheses:** Ordered characteristic-zero setting. Chebyshev polynomials encode Boolean assignments.
+- **Complexity variables:** SLP length and binary rational endpoint descriptions.
+- **Primitive/relevance:** An obstruction to generic real-root extraction from compact circuits. It is not a theorem that deciding whether the fixed point \(0\) is a root is hard: that is ordinary evaluation. Nor is it a composite-modulus valuation theorem. **VERIFIED.**
+
+## 24. Dutta–Jindal–Pandey–Sinhababu: truncation is already close prior art
+
+**Source:** Pranjal Dutta, Gorav Jindal, Anurag Pandey, Amit Sinhababu, *Arithmetic Circuit Complexity of Division and Truncation*. CCC 2021, Article 25. [Primary proceedings PDF](https://drops.dagstuhl.de/storage/00lipics/lipics-vol200-ccc2021/LIPIcs.CCC.2021.25/LIPIcs.CCC.2021.25.pdf).
+
+- **Problem/input:** Compressed rational/algebraic series; circuit size of their degree-\(d\) truncations.
+- **Statements:** **Theorem 6 / 26:** if \(\deg g\le d\), \(\deg h=d_h\), \(g\) has circuit size \(s\), and \(g/h\in\mathbb F[[X]]\), its truncation has circuit size \(\mathrm{poly}(s,d_h,\log d)\).
+- **Conditional hardness:** **Theorem 30:** polylogarithmic constant-free circuits for both indicated adjacent truncations of \((1+X)^{-d-1}\) imply \(\tau(t!)=O(\log^{c+1}t)\). **Theorem 32:** small truncations of all \((1+k^2X)^{i/k}\), \(1\le i<k\), imply nonuniform polynomial-time factoring.
+- **Hypotheses:** Field setting; constant-free restrictions matter. The low-denominator-degree proof uses factorization over an algebraic closure and derivative identities.
+- **Complexity variables:** Denominator degree \(d_h\), not merely its circuit size; distinction between circuit existence and uniform construction.
+- **Primitive/relevance:** Particularly close to the proposed compact-prefix operation. No composite-ring extension or efficient general truncation construction is established. **VERIFIED.**
+
+## 25. Power of a sparse polynomial: a precise hardness reduction
+
+**Published attribution:** A matching primary theorem specifically phrased this way was **UNVERIFIED** in this search. The following is a direct reduction, not an attributed novelty claim.
+
+- **Problem/input:** Sparse \(f\in\mathbb Z[X]\), positive integer \(m\), binary target exponent \(K\); decide whether \([X^K]f^m=0\).
+- **Derived statement:** Nonzeroness is NP-hard even for unit coefficients.
+- **Proof/interface:** For Exact-3-Cover on \(3m\) elements, set \(B=m+1\) and
+  \[
+  f(X)=\sum_{S}X^{\sum_{j\in S}B^j},
+  \qquad K=\sum_{j=1}^{3m}B^j.
+  \]
+  Choosing \(m\) terms creates no base-\(B\) carries. Thus \([X^K]f^m\) is \(m!\) times the number of exact covers.
+- **Representation/cost:** Sparse input and all exponents have polynomial binary length; the power has a compact repeated-squaring circuit.
+- **Hypotheses:** Exact characteristic-zero nonnegative coefficients.
+- **Composite-ring qualification:** Modulo \(N\), a positive count can disappear, including through \(m!\). Therefore this reduction does not automatically prove the corresponding composite-modulus hardness.
+- **Relevance:** Short powering descriptions do not make specified-coefficient extraction generically easy.
+
+## 26. First surviving binomial index: explicit prior formulation
+
+**Source:** OEIS A020639, *Least prime factor of n*; sequence author David W. Wilson; relevant contribution and proof by Stanislav Sykora, 29 July 2017. Current entry consulted. [Primary attributed contribution](https://oeis.org/A020639).
+
+- **Problem/input:** Integer \(N>1\); characterize its smallest prime divisor.
+- **Statement:** The contribution identifies it as the smallest \(k\), \(1<k\le N\), for which \(N\nmid\binom Nk\).
+- **Proof content:** It explicitly uses
+  \[
+  k\binom Nk=N\binom{N-1}{k-1}
+  \]
+  for coprime indices, and a prime-adic valuation argument at a prime divisor.
+- **Hypotheses:** All integers \(N>1\), including prime powers. For prime \(N\), the permitted endpoint \(k=N\) survives.
+- **Complexity:** A characterization, not a fast support-search algorithm.
+- **Primitive/relevance:** Direct prior formulation of the first-index identity and the coprime-index obstruction.
+- **Status:** **VERIFIED.** A prior source for the stronger exact residue \(\binom Np\equiv N/p\bmod N\) was **UNVERIFIED**; its proof in the brief remains valid.
+
+## 27. Wilson-factorial folklore: correct the endpoint claim
+
+**Claim audited:** “Computing \((N-1)!\bmod N\) is as hard as factoring.”
+
+- **Status:** False for this exact input/output task; historical attribution of that phrasing is **UNVERIFIED**.
+- **Elementary statement:**
+  \[
+  (N-1)!\equiv
+  \begin{cases}
+  -1\pmod N,&N\text{ prime},\\
+  2\pmod4,&N=4,\\
+  0\pmod N,&N>4\text{ composite}.
+  \end{cases}
+  \]
+- **Proof for composites:** Write \(N=ab\), \(1<a\le b<N\). If \(a<b\), both factors occur in the factorial. If \(a=b\ge3\), the distinct terms \(a,2a<N\) have product \(2N\).
+- **Input/complexity:** Binary \(N\); the residue follows from polynomial-time primality testing and the \(N=4\) exception. [Primary primality theorem](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf).
+- **Relevant stronger interface:** Arbitrary binary cutoff \(K\mapsto K!\bmod N\), or just its unit status. Lipton’s reduction and BGS’s bounded-divisor search address that interface.
+- **Relevance:** The endpoint factorial loses the information needed for the prefix search.
+
+## 28. Agrawal–Biswas: formal PIT over unknown composite modulus
+
+**Source:** Manindra Agrawal, Somenath Biswas, *Primality and Identity Testing via Chinese Remaindering*. Author manuscript dated 21 February 2003; JACM 50(4) (2003), 429–443. [Primary PDF](https://cse.iitk.ac.in/users/manindra/algebra/identity.pdf).
+
+- **Problem/input:** Arithmetic circuit of size \(s\) for \(P(X_1,\ldots,X_v)\) over \(\mathbb Z/m\mathbb Z\), degree bounds \(d_i\), binary \(m\), error parameter \(\epsilon\).
+- **Statement:** **Theorem 4.8:** Algorithm C tests formal identity, with false-zero probability at most \(\epsilon\), using
+  \[
+  \widetilde O\!\left(s^5v^5(sv+1/\epsilon)(\log m)^3\right)
+  \]
+  time and the stated logarithmic-in-degree randomness.
+- **Hypotheses:** \(m\) need not be prime or factored. Division-free circuit evaluation uses explicit low-degree polynomial quotients.
+- **Why no hidden prime input:** **Lemma 4.7** reduces soundness analytically to a prime-power component. Algorithm C tries auxiliary primes up to its specified polynomial bound instead of learning that hidden prime.
+- **Primitive/relevance:** Randomized **formal** zero testing for compact circuits over \(R_N\) is already available. It does not construct truncations or binary sections.
+- **Status:** **VERIFIED from indexed primary text; the PDF’s ordinary text extraction was garbled.**
+
+## 29. Bernstein AKS notes and “constructive AKS”
+
+**Source:** Daniel J. Bernstein, *An exposition of the Agrawal–Kayal–Saxena primality-proving theorem*, version identified as 10 August 2002. [Author PDF URL](https://cr.yp.to/papers/aks-20020810.pdf).
+
+- **Access:** Author URL was located but could not be fetched. Full theorem statements, numbering, and exact hypotheses are **UNVERIFIED**.
+- **Problem/representation:** AKS-style primality criteria using explicit polynomial quotient rings; exact consulted full-text version unavailable.
+- **Primitive/relevance:** Do not cite these notes as establishing polynomial-time factor extraction from failed AKS identities.
+- **Search result:** No verified primary theorem called “constructive AKS” was found that converts general AKS compositeness detection into polynomial-time factoring.
+- **Usable verified replacement:** AKS itself specifies where factors can be exposed by small GCDs; Agrawal–Biswas supplies composite-ring formal PIT. Neither implies the missing support/prefix extraction operation.
+
+## 30. Oznovich–Volk 2025: high order or a factor
+
+**Source:** Ziv Oznovich, Ben Lee Volk, *On Deterministically Finding an Element of High Order Modulo a Composite*. arXiv:2506.07668v3, 11 October 2025. [Primary PDF](https://arxiv.org/pdf/2506.07668v3).
+
+- **Problem/input:** Binary composite \(N\), target order \(D\).
+- **Statement:** **Theorem 1.1:** for \(D\ge N^{1/6}\), deterministically find an element of order at least \(D\), or a nontrivial factor, in \(D^{1/2+o(1)}\) time.
+- **Extension:** The \(r\)-power-divisor setting permits \(D\ge N^{1/(6r)}\), with the corresponding alternative output.
+- **Hypotheses:** No supplied factorization or group order. The threshold on numeric \(D\) is essential to this version.
+- **Mechanism:** Accumulate orders of small elements. Failure to separate prime components supplies congruence restrictions on every prime factor; lattice methods exploit those restrictions.
+- **Primitive/relevance:** A rigorously computable order-threshold certificate or factor. It does not supply exact large orders or informative dual-lattice samples in polynomial time in \(n\).
+- **Status:** **VERIFIED; superseded in target-order range by the next entry.**
+
+## 31. Harvey–Hittmeir 2026: unrestricted target-order range
+
+**Source:** David Harvey, Markus Hittmeir, *Deterministic methods for finding elements of large multiplicative order*. arXiv:2601.11131v2, 5 June 2026. [Primary text](https://arxiv.org/html/2601.11131v2).
+
+- **Problem/input:** Binary integers \(N\ge3\), \(1\le D<N-1\).
+- **Statement:** **Theorem 1.1:** deterministically return \(\alpha\in(\mathbb Z/N\mathbb Z)^\times\) with \(\operatorname{ord}_N(\alpha)>D\), or a nontrivial divisor of \(N\), in
+  \[
+  O\!\left(
+  \frac{\sqrt D\log D}{\sqrt{\log\log D}}\log N
+  \right)
+  \]
+  bit operations, with the paper’s small-\(D\) convention.
+- **Hypotheses:** No lower bound \(D\ge N^\eta\); no known factorization. On prime \(N\), the output must be the large-order element.
+- **Mechanism:** Smooth-number density makes the accumulated common order grow sufficiently fast. The final factor search uses an arithmetic progression.
+- **Primitive/relevance:** For polynomially bounded \(D\), this is a polynomial-time certified order-threshold-or-factor routine over the unknown composite modulus. Large order alone does not resolve support positions or supply character phases.
+- **Status:** **VERIFIED.** The theorem improves a subroutine; it does not itself claim a new general factoring exponent.
+
+## 32. Umans–Wang 2025: compressed divisibility covers
+
+**Source:** Chris Umans, Siki Wang, *A number-theoretic conjecture implying faster algorithms for polynomial factorization and integer factorization*. arXiv:2511.10851v1, 13 November 2025. [Primary PDF](https://arxiv.org/pdf/2511.10851v1).
+
+- **Problem/input:** Factor binary \(N\) using a structured sequence \(A_1,\ldots,A_k\); put \(B=\lfloor\sqrt N\rfloor\).
+- **Statement:** **Theorem 5.2:** if every integer at most \(B\) divides \(\prod A_i\), interval products modulo \(d\le N\) cost \(\widetilde O(\log d\,B^\gamma)\), and each \(A_i\)’s prime factors can be produced in \(\widetilde O(B^\gamma)\), then factoring costs
+  \[
+  \widetilde O(N^{\gamma/2}\log k).
+  \]
+- **Conditional improvement:** **Theorem 5.5** assumes the **Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture** and claims \(\widetilde O(N^{\max(\alpha,\beta)/2+o(1)})\). The optimal proposed \(\alpha=\beta=1/3\) gives exponent \(1/6\).
+- **Hypotheses:** Structured sets \(S,T\), bounded-size differences \(s-t\), divisor coverage, and efficient factorization of those differences. Existence of a short covering product alone is insufficient.
+- **Primitive/relevance:** Very close prior formulation of “compressed divisibility object plus efficient interval extraction.” **VERIFIED conditional statements; conjecture unresolved.**
+
+## 33. Hittmeir 2023: Smooth Subsum Search
+
+**Source:** Markus Hittmeir, *Smooth Subsum Search: A heuristic for practical integer factorization*. arXiv:2301.10529v2, 11 July 2023. [Primary text](https://arxiv.org/html/2301.10529v2).
+
+- **Problem/input:** Binary \(N\), factor base, and modular roots of \(f(X)=(X+\lceil\sqrt N\rceil)^2-N\) modulo known small primes.
+- **Result:** Sections 3–4 give an explicit heuristic smoothness-candidate generator and computational comparisons; no theorem there proves a new general factoring exponent.
+- **Mechanism:** Chinese remaindering expresses candidates as subsums satisfying selected small-prime divisibility constraints. Search for small representatives relative to the selected modulus, then test residual smoothness and perform ordinary relation processing.
+- **Hypotheses:** Practical smoothness behavior and parameter choices; modular roots concern known factor-base primes.
+- **Complexity variables:** Factor-base sizes, selected subset size, candidate generation and filtering costs.
+- **Primitive/relevance:** Produces candidates with deliberately imposed divisibility, offering an independent arithmetic-search mechanism. It does not compute the brief’s prefix predicate.
+- **Status:** **VERIFIED as a heuristic algorithm; polynomial-time or improved asymptotic general factoring claim UNVERIFIED.**
+
+## 34. Stănică–Mulder–Hittmeir 2026: exact sieve-set limitations
+
+**Source:** Pantelimon Stănică, Erik Mulder, Markus Hittmeir, *Multi-target hyperbolic sieves and elliptic trace obstructions*. arXiv:2606.13018v2, 5 October 2026. [Primary text](https://arxiv.org/html/2606.13018v2).
+
+- **Problem/input:** Known auxiliary odd prime \(\ell\nmid N\); sieve candidates for \(ap+q\bmod\ell\), where \(N=pq\).
+- **Representation:**
+  \[
+  H_a(N;\ell)=\{ax+Nx^{-1}:x\in\mathbb F_\ell^\times\}.
+  \]
+- **Statements:** **Theorem 3.12:**
+  \[
+  K(A,cA)=-1-\chi(A)t_c,
+  \]
+  relating the relevant quartic character sum to an elliptic-curve trace. **Corollary 3.16:**
+  \[
+  \left||H_a\cup H_b|-3\ell/4\right|
+  \le(2\sqrt\ell+7)/4.
+  \]
+- **Hypotheses:** Distinct nonzero \(a,b\); known field \(\mathbb F_\ell\). Stronger proposed uniform bounds fail in supplied counterexamples.
+- **Complexity:** A local sieve-analysis result; no new complete-factorization time bound.
+- **Primitive/relevance:** Explicit public residue filters, together with quantitative limits on batching several target forms. Useful for evaluating novelty of quotient/congruence sketches. **VERIFIED.**
+
+## 35. Boneh–Durfee–Howgrave-Graham: large prime-power divisors
+
+**Source:** Dan Boneh, Glenn Durfee, Nick Howgrave-Graham, *Factoring \(N=p^rq\) for Large \(r\)*. CRYPTO ’99, LNCS 1666, 326–337; author-uploaded full paper consulted. [Author record](https://crypto.stanford.edu/~dabo/pubs/abstracts/prq.html), [primary author upload](https://www.researchgate.net/publication/225776879_Factoring_N_p_r_q_for_Large_r).
+
+- **Problem/input:** Binary \(N=p^rq\), supplied \(r,c\), with \(q<p^c\).
+- **Statement:** **Theorem 2:** recover \(p\) deterministically in
+  \[
+  2^{\frac{c+1}{r+c}\log_2p}\,O(\gamma),
+  \]
+  where \(\gamma\) is LLL time for dimension \(O(r^2)\), entries of \(O(r\log N)\) bits; polynomial space.
+- **Hint interface:** **Lemma 1:** an approximation \(P\) satisfying
+  \[
+  |P-p|<p^{1-c/(r+c)-2r/d}
+  \]
+  suffices using a dimension-\(d\) lattice.
+- **Restricted polynomial-time family:** Fixed \(c\), \(r=\Theta(\log p)\).
+- **Primitive/relevance:** Decode a coarse factor approximation when multiplicity is large; exhaustive guessing of the remaining required leading bits is explicitly charged.
+- **Status:** **VERIFIED.** This does not cover ordinary balanced semiprimes, where \(r=1\).
+
+## 36. Pollard \(p-1\): smooth order as sufficient partial structure
+
+**Source:** J. M. Pollard, *Theorems on factorization and primality testing*. Proc. Cambridge Philos. Soc. 76 (1974), 521–528. [Primary publisher record](https://www.cambridge.org/core/journals/mathematical-proceedings-of-the-cambridge-philosophical-society/article/theorems-on-factorization-and-primality-testing/6762E84DBD34AEF13E6B1D1A8334A989).
+
+- **Access status:** Publisher extract opened; full paper unavailable. Original numbered theorem and original cost statement **UNVERIFIED**.
+- **Exact elementary interface:** For a known exponent \(E\) and unit \(a\bmod N\),
+  \[
+  p-1\mid E\Longrightarrow p\mid a^E-1.
+  \]
+  A factor follows if \(1<\gcd(a^E-1,N)<N\).
+- **Restricted-family hypothesis:** Taking \(E=\operatorname{lcm}(1,\ldots,B)\) succeeds when the relevant prime-power divisors of \(p-1\) are covered and another prime component does not also become \(1\).
+- **Derived cost:** Binary exponentiation costs \(O(\log E)\) modular multiplications; \(\log E=O(B)\), plus exponent construction and GCDs.
+- **Primitive/relevance:** A known multiple of a hidden component order is usable information. Smoothness alone must be strong enough at the prime-power level; simultaneous annihilation of every component gives an unhelpful GCD \(N\).
+
+## 37. May–Ritzenhofen: implicit shared-bit hints
+
+**Source:** Alexander May, Maike Ritzenhofen, *Implicit Factoring: On Polynomial Time Factoring Given Only an Implicit Hint*. PKC 2009; full proceedings paper. [Primary PDF](https://www.iacr.org/archive/pkc2009/54430001/54430001.pdf).
+
+- **Problem/input:** Two different RSA moduli \(N_i=p_iq_i\); promise that \(p_1,p_2\) share \(t\) least significant bits. The common bits themselves are not supplied.
+- **Statement:** **Theorem 5:** if \(q_i\) have \(\alpha\) bits and
+  \[
+  t>2(\alpha+1),
+  \]
+  both moduli can be factored in quadratic time.
+- **Representation/hypotheses:** Odd RSA factors permit inversion modulo \(2^t\). A two-dimensional lattice contains \((q_1,q_2)\); Gauss reduction and the stronger inequality give the rigorous result.
+- **Multiple-modulus qualification:** **Theorem 7** uses \(t\ge k\alpha/(k-1)\), but depends on **Assumption 6** identifying the desired shortest vector; it is not unconditional.
+- **Primitive/relevance:** A concrete correlated-information format that suffices without revealing the common bit string. The rigorous two-modulus regime is substantially unbalanced; do not transfer it to two ordinary balanced RSA moduli. **VERIFIED.**
+
+## 38. Sica: “factoring with hints” can require exponentially many hints
+
+**Source:** Francesco Sica, *Factoring with Hints*. arXiv:0912.1585v6, last revised 8 August 2017; downloaded PDF internally dated 26 October 2018. [Record](https://arxiv.org/abs/0912.1585v6), [primary PDF](https://arxiv.org/pdf/0912.1585v6).
+
+- **Problem/input:** Binary semiprime \(N=pq\), plus complete factorizations of integers near \(N\).
+- **Statement:** **Theorem 1:** for arbitrary \(\epsilon>0\), factorizations of \(O(N^{1/3+\epsilon})\) nearest integers suffice to recover \(p,q\) in \(O(N^{1/3+\epsilon})\) bit operations.
+- **Hypotheses/representation:** Explicit neighboring-integer factorizations; their acquisition is external to the recovery theorem.
+- **Complexity variables:** Numeric \(N\), number of hints, and bit-operation recovery cost. This is exponential in the original bit length \(n\).
+- **Primitive/relevance:** A downstream decoder for a precisely specified arithmetic hint collection. It does not justify treating a short description of neighboring factorizations as access to those factorizations.
+- **Status:** **VERIFIED theorem; the record/PDF date discrepancy is preserved rather than resolved.**
+
+## 39. Consequences for the project’s exact interfaces
+
+These are deductions from the verified interfaces above, not literature priority claims.
+
+- **Binary sections:** If the sections selected along a path can be **uniformly constructed as polynomial-size division-free circuits over \(R_N\)**, Agrawal–Biswas supplies the needed randomized formal zero tests. Amplify across \(O(n)\) adaptive decisions. Thus compact, efficient section construction is a sufficient remaining primitive; a separate new composite-ring PIT theorem is unnecessary.
+- **Order of vanishing:** For degree bound \(D\), reversal gives
+  \[
+  \operatorname{ord}_0P=D-\deg(X^DP(X^{-1})).
+  \]
+  Gatewise reversal with syntactic degree bounds yields a polynomial-size division-free circuit, including over composite rings. This connects valuation queries to semantic degree queries, but supplies no efficient degree algorithm.
+- **Factorial prefixes:** BGS already solves the exact bounded-divisor task with square-root dependence on cutoff length. Lipton and Umans–Wang already formulate extraction from compressed divisibility products.
+- **Novelty boundary:** A substantive advance would be an efficient new section/truncation representation, a cheaper exact unit predicate, or an efficiently produced hint matching a verified decoder—not another equivalence between factorial prefixes and factoring.
+
+## Primitive provided / assumption / complexity variable / relevance to our support-index or prefix-predicate problem
+
+| Source | Primitive provided | Assumption | Complexity variable | Relevance |
+|---|---|---|---|---|
+| AKS | Folded polynomial identities | Explicit small quotient degree | \(\log N,r\), shifts | Compositeness; no original support index |
+| BGS Lemma 13 | Bounded-divisor decision and extraction | Unknown composite modulus allowed | \(\sqrt b,\log N\) | Direct prefix-predicate baseline |
+| Harvey | Batched hidden-prime collisions | Unconditional | Numeric \(N\), explicit list sizes | Factor extraction from aggregate congruences |
+| HH 2021 | Sieved collision search | Unconditional | \(N^{1/5}\), logarithms | Public residue restrictions |
+| Sparse | Partial/full sparse support recovery | Field, sparsity; some bounds heuristic | \(L,T,\log D,\log q\) | Requires a genuinely small support interface |
+| Tal | Factorial ratios and factorial residues | Known prime; suitable divisor/character data | \(p,q,k,r\) | Known-prime recurrence lead |
+| Coppersmith | Approximation-to-factor decoding | Sufficient contiguous known bits | \(\log N\), lattice dimension | Precise downstream hint target |
+| Regev | Relation decoding from dual samples | Accurate uniform samples; short useful relation | \(d,m,\delta,T,\det\mathcal L\) | Decoder interface; acquisition remains |
+| Pilatte | Short-basis existence | Modified random-prime generators | \(d,r,\log N\) | Removes structural heuristic |
+| EG Lemma 2 | Recover short-vector-containing sublattice | All samples accurate; uniform dual cosets | \(d,m,\delta,T\) | Explicit classical postprocessing contract |
+| Gao | Informative second lattice vector | Specified rank-three construction and ranges | \(N,m,X,\beta\) | Avoids a known trivial relation |
+| Cleve | Oracle query lower bound | Opaque permutation-power oracle | Label/exponent lengths | Model-specific limitation |
+| Lipton 1994 | Many-root/factoring connection | Exact full hypotheses **UNVERIFIED** | Root count, SLP length | Strong novelty predecessor |
+| Lipton 2009 | Factorial-GCD binary search | Available short factorial computations | Cutoff bit length; query cost | Direct prefix reduction |
+| Shub–Smale | Factorial-multiple hardness implication | Constant-free arithmetic model | \(\tau(t!)\), \(\log t\) | Distinguishes exact values from multiples |
+| Bürgisser | Factorial/permanent complexity implications | Constant-free model; GRH for stated extension | Circuit sizes | Conditional representation barrier |
+| Cheng factorials | Short divisibility-cover SLP | Smoothness conjecture | \(\exp(O(\sqrt{\log t\log\log t}))\) | Extra factors prevent exact unit testing |
+| Cheng torsion | Root-count/torsion connection | WL-conjecture over number fields | \(L(f),d,[K:k]\) | Related structural complexity |
+| ABKPM | Degree-to-sign reduction | Integer SLP model | Description/query length | Semantic degree is substantial |
+| Koiran–Perifel | Coefficient/degree classifications | Fields; full numbered details partly **UNVERIFIED** | Circuit size, characteristic | Generic complexity context |
+| FMM | Coefficient-zero classifications | Integer circuits; specified restrictions | Circuit and monomial size | Coefficient access can be hard |
+| Kayal–Saha | Restricted valuation bound | Characteristic zero radical sums | Number of summands, explicit degree | Prefix certificates for a limited class |
+| Perrucci–Sabia | Real-root NP-hardness | Integer SLP, real roots | SLP length | Different from fixed-point valuation |
+| Division and Truncation | Compact low-denominator-degree truncations | Field; denominator degree charged | \(s,d_h,\log d\) | Closest representation-closure lead |
+| Sparse-power reduction | Coefficient-nonzero NP-hardness | Nonnegative integer coefficients | Sparse encoding, binary exponents | No automatic composite-ring transfer |
+| OEIS/Sykora | Least surviving binomial index | All \(N>1\) | Characterization only | Seed-index observation already recorded |
+| Wilson endpoint audit | \((N-1)!\bmod N\) | Primality test | \(\log N\) | Endpoint is easy; variable cutoff matters |
+| Agrawal–Biswas | Formal PIT over \(\mathbb Z/m\mathbb Z\) | Compact arithmetic circuit | Circuit size, \(\log m,\epsilon^{-1}\) | Already supplies randomized section zero test |
+| Bernstein notes | AKS exposition | Full text **UNVERIFIED** | **UNVERIFIED** | No verified factor-extraction theorem |
+| Oznovich–Volk | High-order element or factor | \(D\ge N^{1/6}\) | \(D^{1/2+o(1)}\) | Earlier certified-order interface |
+| HH 2026 | High-order element or factor | Any \(1\le D<N-1\) | \(\sqrt D,\log D,\log N\) | Useful with polynomial target order |
+| Umans–Wang | Extract factors from interval-product covers | Fast intervals and factorable leaves | \(N^{\gamma/2},\log k\) | Very close compressed-product formulation |
+| Smooth Subsum Search | Constrained smoothness candidates | Heuristic performance | Factor base and search sizes | Independent arithmetic-search route |
+| Hyperbolic sieves | Exact residue filters and union bounds | Known auxiliary prime field | \(\ell\), target count | Audits information retained by congruence sketches |
+| BDHG | Approximation decoding for \(p^rq\) | Large multiplicity; bounded cofactor size | \(r,\log N\), guessed bits | Restricted polynomial-time family |
+| Pollard \(p-1\) | Component-order annihilation | Suitable smooth order; separation | \(B,\log E,\log N\) | Known annihilating exponent suffices |
+| May–Ritzenhofen | Decode implicit shared LSBs | Precise imbalance/shared-bit bounds | Modulus length, shared-bit count | Concrete correlated-hint format |
+| Sica | Decode neighboring factorizations | Explicit large hint collection | \(N^{1/3+\epsilon}\) | Hint acquisition cannot be omitted |
+tokens used
+455,552
+# Primary-source prior-art map
+
+**Consulted:** 17 October 2026.  
+**Notation:** \(n=\lceil\log_2N\rceil\); \(M(b)\) is the bit cost of multiplying \(b\)-bit integers. Other variables retain each paper’s meaning. Theorem statements below are paraphrases unless explicitly quoted. **VERIFIED** means checked against the source, not an independent verification of its proof. **UNVERIFIED** identifies inaccessible text, unresolved transcription, or missing attribution.
+
+## 1. [AKS] Polynomial characterization and quotient-ring testing
+
+**Source:** Manindra Agrawal, Neeraj Kayal, Nitin Saxena, *PRIMES is in P*. Annals of Mathematics 160 (2004), 781–793; journal PDF consulted. [Primary PDF](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf).
+
+- **Problem/input:** Decide primality of a binary integer \(N>1\). Polynomial expressions are evaluated by repeated squaring in explicit finite quotient rings.
+- **Statement:** **Lemma 2.1:** for \(a\in\mathbb Z\), \(N\ge2\), and \(\gcd(a,N)=1\),
+  \[
+  N\text{ prime}\iff (X+a)^N=X^N+a\pmod N.
+  \]
+  Its composite-case proof explicitly uses the coefficient indexed by a prime divisor.
+- **Section 2:** Replace the full polynomial identity by congruences modulo \(X^r-1\). Suitable polynomially bounded \(r\) and sufficiently many shifts \(a\) characterize prime powers; perfect-power detection completes primality testing.
+- **Complexity:** The consulted journal algorithm has \(\widetilde O((\log N)^{15/2})\) bit complexity.
+- **Primitive/relevance:** Efficient computation and comparison of folded coefficient vectors. Neither Lemma 2.1 nor Section 2 supplies an original support index or a factor from an arbitrary failed polynomial congruence. **VERIFIED.**
+
+## 2. [BGS] Bounded-divisor search by batched products
+
+**Source:** Alin Bostan, Pierrick Gaudry, Éric Schost, *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM J. Comput. 36(6) (2007), 1777–1806; final author-hosted PDF. [Primary PDF](https://mathexp.eu/bostan/publications/BoGaSc07.pdf).
+
+- **Problem/input:** Binary \(N,b\), \(2\le b<N\); find a prime divisor at most \(b\), or certify its absence.
+- **Statement:** **Lemma 13** gives deterministic cost
+  \[
+  O\!\left(M(\sqrt b\log N)+\log b\,M(\log N)\log\log N\right),
+  \]
+  with \(O(\sqrt b\log N)\) bits of space.
+- **What is computed:** With \(c=\lfloor\sqrt b\rfloor\), compute modulo \(N\)
+  \[
+  F(i)=\prod_{k=0}^{c-1}(ck+i+1),\qquad 0\le i<c.
+  \]
+  These transposed blocks cover \(1,\ldots,c^2\); the short remaining tail is handled separately.
+- **Hypotheses:** **Theorem 8** requires specified interpolation denominators to be units. Lemmas 12–13 test these conditions; a failed inversion becomes divisor information.
+- **Full factorization:** **Theorem 11:** \(O(M(N^{1/4}\log N))\) bit operations.
+- **Primitive/relevance:** Direct implementation of the factorial-unit/bounded-divisor predicate, with square-root dependence on the numeric cutoff \(b\). **VERIFIED.**
+
+## 3. [Harvey] Exponent-one-fifth deterministic factoring
+
+**Source:** David Harvey, *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450v1, 12 October 2020. [Primary PDF](https://arxiv.org/pdf/2010.05450v1).
+
+- **Problem/input:** Complete prime factorization of binary \(N>2\), without supplied factors or group orders.
+- **Statement:** **Theorem 1.1:**
+  \[
+  F(N)=O(N^{1/5}\log^{16/5}N)
+  \]
+  deterministic classical bit operations.
+- **Mechanism:** Search for suitable linear combinations \(aq+bp\), using congruences such as
+  \[
+  \alpha^{aq+bp}\equiv\alpha^{aN+b}\pmod p,
+  \]
+  although computations are performed modulo \(N\). Polynomial arithmetic batches collisions modulo hidden prime divisors.
+- **Useful subsidiary statements:** **Proposition 2.5** tests for a prime divisor at most \(B\), returning the smallest if present, in \(O(\sqrt B\log^3N)\). **Lemma 2.4** evaluates a degree-\(d\) polynomial on a length-\(m\) geometric progression modulo \(N\) in \(O((d+m)\log^2N)\), under its stated size bounds.
+- **Primitive/relevance:** Hidden-prime collision detection and geometric multipoint evaluation over a composite ring. Work remains polynomial in materialized degree/list length, not their logarithms. **VERIFIED.**
+
+## 4. [HH] Log-log improvement
+
+**Source:** David Harvey, Markus Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105v1, 24 May 2021. [Primary PDF](https://arxiv.org/pdf/2105.11105v1).
+
+- **Problem/input:** Complete factorization of arbitrary binary \(N>2\).
+- **Statement:** **Theorem 1.1:** deterministic bit complexity
+  \[
+  O\!\left(
+  \frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+  \right).
+  \]
+- **Hypotheses:** Unconditional; no known factorization of \(N\). Reduction handles inputs outside the distinct-semiprime core.
+- **Mechanism:** Restrict possible factors to residue classes coprime to a product of small primes. Short lattice vectors select useful linear combinations for the giant steps; polynomial arithmetic batches hidden-prime collisions.
+- **Complexity variables:** Numeric \(N\), sizes of baby-step/giant-step lists, and explicit polynomial degrees.
+- **Primitive/relevance:** A rigorous example of combining public congruence restrictions with batched factor extraction. It does not evaluate exponentially long factorials or prefix predicates in polynomial time in \(n\). **VERIFIED.**
+
+## 5. [Sparse] Sparse interpolation and support reconstruction
+
+**Source:** Joris van der Hoeven, Grégoire Lecerf, *Sparse polynomial interpolation: Faster strategies over finite fields*. Final version, 2 May 2024. [Primary text](https://www.texmacs.org/joris/ffsparse/ffsparse.html), [PDF](https://www.texmacs.org/joris/ffsparse/ffsparse.pdf).
+
+- **Problem/input:** Recover a polynomial from black-box evaluations, with degree bound \(D\), term bound \(T\), evaluation-program length \(L\), over a known finite field \(\mathbb F_q\). Some methods require evaluation over extensions or algebras.
+- **Statement:** **Proposition 2:** assuming heuristic \(H_{\rm red}\), \(\log D=O(T)\), and diversification, a Monte Carlo algorithm recovers at least \((1-\eta)t\) terms in
+  \[
+  O^\flat(LT\log D\log q).
+  \]
+  \(H_{\rm red}\) assumes suitable uniformity and independence of exponent reductions.
+- **Other interfaces:** **Algorithm 4** uses \(2T\) geometric evaluations, root finding, and discrete logarithms. Suitable root-of-unity orders must distinguish exponents.
+- **Characteristic restriction:** Section 3.2’s derivative-ratio recovery requires characteristic zero or characteristic exceeding every individual degree; it divides \(e_ic\) by \(c\).
+- **Primitive/relevance:** Recover isolated terms from cyclic projections under sparsity and field assumptions. The brief’s \(F_N\) has exponentially large support on balanced semiprimes; neither ordinary sparsity nor the derivative-ratio interface transfers. **VERIFIED.**
+
+## 6. [Tal] Modular factorials below the square-root barrier
+
+**Source:** Yann Tal, *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211; submitted 25 September, published 26 September 2026; 69-page September PDF. [Record](https://eccc.weizmann.ac.il/report/2026/211/), [primary PDF](https://eccc.weizmann.ac.il/report/2026/211/download).
+
+- **Input/problem:** Known prime \(p\), binary cutoff \(t\), supplied divisor \(q\), and prime-power modulus \(p^k\).
+- **Statements:** **Theorems 1.1–1.2**, \(q\mid p-1\): compute \(t!\bmod p\) or \(p^2\) in \(\widetilde O(q^c+\sqrt{p/q})\). **Theorem 1.3**, fixed odd prime-power \(r\), \(q\mid\Phi_r(p)\), supplied \(\mathbb F_{p^r}\) and compatible character:
+  \[
+  \widetilde O_r\!\left(k^{O_r(1)}
+  \left[q^{c_r}+(\Phi_r(p)/q)^{1/(2\varphi(r))}\right]\right).
+  \]
+  Field/character construction makes the corresponding bound Las Vegas expected.
+- **Identity audit:** Equation (2),
+  \[
+  (aK)!\equiv(-1)^{a-1}\rho_{\mathfrak p}(J_a(\chi))(K!)^a,\quad K=(p-1)/q,
+  \]
+  requires compatible order-\(q\) characters and reduction above known \(p\). **Theorem 1.5** reconstructs Jacobi sums from known prime-ideal data. **Propositions 5.1, 7.1** use base-\(p\) digits, normalized Gauss sums, and \(p\)-adic gamma identities. Wilson complementation also requires prime \(p\).
+- **Primitive/relevance:** Known-prime factorial ratios; elementary interval-product identities survive over rings, but these character and local-reduction procedures do not give an unknown-factor-modulus routine. **VERIFIED statements; transferred algorithm UNVERIFIED.**
+
+## 7. [Coppersmith] Exactly which known bits suffice
+
+**Source:** Don Coppersmith, *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. Journal of Cryptology 10 (1997), 233–260; journal PDF, Sections 10–11. [Primary PDF](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf).
+
+- **Problem/input:** Binary \(N=PQ\), with contiguous leading bits of one factor supplied.
+- **Statement:** **Theorem 4:** polynomial-time factorization given the high-order \(\frac14\log_2N\) bits of \(P\). For balanced factors, this is approximately half of \(P\)’s bits. **Theorem 5** gives the corresponding low-order-bit result.
+- **Construction/hypotheses:** Use the irreducible integer polynomial
+  \[
+  f(x,y)=(P_0+x)(Q_0+y)-N.
+  \]
+  **Theorem 2** requires individual degrees at most \(\delta\), scaled coefficient height \(W\), and
+  \[
+  XY<W^{2/(3\delta)-\epsilon}2^{-14\delta/3}.
+  \]
+  **Corollary 2** reaches \(XY\le W^{2/(3\delta)}\) using additional guessing.
+- **Dimension/cost:** Reduced lattice dimension \(2k\delta+\delta^2\), \(k=O(1/\epsilon)\). At the boundary, \(\epsilon=1/\log W\); here \(\delta=1\), giving \(O(\log N)\) dimension and polynomial bit cost. A single explicit polynomial exponent for that cost is **not stated**.
+- **Primitive/relevance:** Decode a sufficiently accurate contiguous-bit approximation; arbitrary correlated bits are not this interface. **VERIFIED.**
+
+## 8. [Regev] Noisy dual samples and classical decoding
+
+**Source:** Oded Regev, *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572v3, 7 January 2024. [Primary text](https://arxiv.org/html/2308.06572v3).
+
+- **Problem/input:** Binary \(N\); small coprime \(b_i\), squared generators \(a_i=b_i^2\), and
+  \[
+  \mathcal L=\{z:\prod_i a_i^{z_i}=1\bmod N\}.
+  \]
+- **Statement:** **Theorem 1.1** provides factoring using \(d+4\) quantum runs and polynomial classical processing, conditional on a sufficiently short \(u\in\mathcal L\setminus\mathcal L_0\), where \(\mathcal L_0\) corresponds to \(\prod b_i^{u_i}=\pm1\).
+- **Consumed samples:** **Lemma 4.4:** \(m\ge d+4\) independent uniform dual cosets \(v_i\), observed as \(w_i\) with torus Euclidean error below \(\delta\).
+- **Exact separation:** Set \(S=\delta^{-1}\). Lifted vectors shorter than
+  \[
+  \delta^{-1}(4\det\mathcal L)^{-1/m}/6
+  \]
+  project into \(\mathcal L\), with probability at least \(1/4\).
+- **Parameters/precision:** \(d\approx\sqrt n\), \(R=\exp(C\sqrt n)\), \(\delta=\sqrt d/(\sqrt2R)\); dyadic denominator \(D=\Theta(\sqrt dR)\). Thus coordinates need \(O(\sqrt n+\log n)\) bits.
+- **Primitive/relevance:** Decode supplied informative samples. No classical sampler is furnished. **VERIFIED.**
+
+## 9. [Pilatte] Unconditional short-basis existence for modified generators
+
+**Source:** Cédric Pilatte, *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450v3, 24 August 2026. [Primary text](https://arxiv.org/html/2404.16450v3).
+
+- **Problem/input:** Binary \(N\), independently sampled prime generators \(b_i\le X\), excluding divisors of \(N\); optional arbitrary unit generators \(x_j\).
+- **Statement:** **Theorem 3.18:** with
+  \[
+  d=\lceil\sqrt{\log N}\rceil,\qquad X=d^{1000d},
+  \]
+  the relation lattice in dimension \(d+r\) has a basis of norm
+  \[
+  \ll e^{42(d+r)}
+  \]
+  with probability \(1-O(d^{-d})\).
+- **Algorithmic theorem:** **Theorem 1.1:** constant-success factoring with \(O(\sqrt n)\) quantum calls, \(O(n^{3/2}\log^3n)\) gates per circuit, and randomized polynomial classical work.
+- **Postprocessing interface:** Uses the Ekerå–Gärtner decoder below: \(O(d)\) sufficiently accurate independent dual samples, exponentially small error in \(d\), hence \(O(d)\)-scale coordinate precision. Factoring uses a relation lattice augmented by a random unit whose order is recovered.
+- **Primitive/relevance:** Removes a structural conjecture for the modified generator distribution. It proves existence of a short basis and correctness of quantum acquisition plus decoding; it does not construct that basis classically from \(N\). **VERIFIED.**
+
+## 10. [EG] A separately stated classical recovery lemma
+
+**Source:** Martin Ekerå, Joel Gärtner, *Extending Regev’s factoring algorithm to compute discrete logarithms*. arXiv:2311.05545v2, 30 January 2024. [Primary text](https://arxiv.org/html/2311.05545v2).
+
+- **Problem/input:** Explicit approximate dual-coset samples for an unknown integer lattice \(\mathcal L\subseteq\mathbb Z^d\).
+- **Statement:** **Lemma 2:** let \(d+4\le m=O(d)\), \(\det\mathcal L<2^{d^2}\), and \(T=\exp(O(d))\). Given approximations \(w_i\) to independent uniform dual cosets with sufficiently small error \(\delta=\exp(-O(d))\), an efficient classical algorithm recovers a sublattice containing every vector of \(\mathcal L\) of norm at most \(T\), with probability at least \(1/4\).
+- **Quantitative requirement:** Its proof requires
+  \[
+  2^{(d+m)/2}\sqrt{d+m}\sqrt{m+1}\,T
+  <\delta^{-1}(4\det\mathcal L)^{-1/m}/6.
+  \]
+- **Precision/noise:** Error bounds apply to every consumed sample; this lemma does not license arbitrary outliers. Rounding each coordinate sufficiently finely requires \(O(d+\log d)\) bits for these parameters.
+- **Primitive/relevance:** Basis recovery when short vectors generate the full lattice; otherwise only the stated sublattice guarantee. The decoder consumes samples, not merely a short-relation existence assertion. **VERIFIED.**
+
+## 11. [Gao] Rank-three lattices and the second vector
+
+**Source:** Yiming Gao, Yansong Feng, Honggang Hu, Yanbin Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076v1, 22 December 2025. [Primary text](https://arxiv.org/html/2512.19076v1).
+
+- **Problem/input:** Binary balanced semiprime \(N=pq\), with \(p,q=\Theta(N^{1/2})\); algorithmically chosen moduli and candidate residues.
+- **Statement:** **Theorem 1.1** claims deterministic cost
+  \[
+  O\!\left(N^{1/5}\log^{13/5}N/(\log\log N)^{3/5}\right).
+  \]
+- **Concrete construction:** For a candidate \(p\equiv j\bmod m\), use \(f(x)=x+jm^{-1}\bmod N\), and the rank-three lattice generated by coefficient vectors of
+  \[
+  N,\quad f(xX),\quad f(xX)^2.
+  \]
+- **Hypotheses:** **Lemma 4.4** specifies \(j\in\mathbb Z_m^\times\), invertible \(m\bmod N\), \(X=\lfloor N^\beta/m\rfloor\), \(1/3\le\beta\le1/2\), and \(72<m<N^{(1-\beta)/2}/2\). It identifies the trivial shortest vector and asserts a nonzero quadratic coordinate in the second LLL vector.
+- **Primitive/relevance:** Construct a useful quadratic congruence while avoiding a predetermined uninformative linear relation. Candidate-residue enumeration remains charged.
+- **Status:** **VERIFIED as preprint statements; proof and implementation not independently reproduced.**
+
+## 12. [Cleve] Oracle order-finding lower bounds
+
+**Source:** Richard Cleve, *The query complexity of order-finding*. arXiv:quant-ph/9911124v1, 30 November 1999. [Primary PDF](https://arxiv.org/pdf/quant-ph/9911124v1).
+
+- **Problem/input:** Unknown permutation \(\pi\) of \(2^a\) labels, supplied \(y_0\), access only through queries returning \(\pi^x(y)\), with \(0\le x<2^b\).
+- **Statements:** For \(b\ge a\), **Theorem 1** requires
+  \[
+  \Omega\!\left(\sqrt{2^a/b}\right)
+  \]
+  deterministic queries. **Theorem 2** requires
+  \[
+  \Omega(2^{a/3}/\sqrt b)
+  \]
+  randomized queries for success probability bounded away from zero.
+- **Complexity variables:** Label length \(a\), exponent length \(b\), and oracle queries; arbitrary local computation is outside this resource measure.
+- **Primitive/relevance:** A lower bound for a precisely restricted information-access model. It does not establish a classical lower bound for explicit modular integers, whose arithmetic representation can be exploited. **VERIFIED.**
+
+## 13. Lipton 1994: many rational roots versus factoring
+
+**Source:** Richard J. Lipton, *Straight-line complexity and integer factorization*. ANTS I, LNCS 877 (1994), 71–79. [Publisher record](https://link.springer.com/chapter/10.1007/3-540-58691-1_45), [primary two-page preview](https://page-one.springer.com/pdf/preview/10.1007/3-540-58691-1_45).
+
+- **Problem/input:** Relate short arithmetic descriptions of polynomials with many distinct rational roots to the cryptographic hardness of factoring.
+- **Verified introductory statement:** If, for every \(m\), some polynomial
+  \[
+  (X-a_1)\cdots(X-a_m)g(X)
+  \]
+  with distinct rational \(a_i\) has sufficiently short polylogarithmic straight-line complexity, factoring cannot have the asserted cryptographic hardness.
+- **Representation/hypotheses:** Section 2 starts computations from \(1\) and variables and permits rational-function intermediates. Arbitrary integer constants are explicitly discussed as a conjectural extension.
+- **UNVERIFIED:** Full numbered theorem, precise root-height bounds, success distribution, quantitative circuit-size tradeoff, and exact allowed operation set: the available preview ends before the theorem.
+- **Primitive/relevance:** Direct prior formulation of the connection between compressed products/many roots and factoring. Do not attribute a precise factorial theorem to this paper without the missing pages.
+
+## 14. Lipton 2009: the factorial-GCD binary search
+
+**Source:** Richard J. Lipton, *Factoring and Factorials*, 23 February 2009; author exposition. [Primary author article](https://rjlipton.com/2009/02/23/factoring-and-factorials/).
+
+- **Problem/input:** Factor binary \(N\), given efficient straight-line factorial computations.
+- **Statement:** **Theorem 1** asserts that \(O(\log^c t)\)-length straight-line computations for \(t!\) imply polynomial-size factoring circuits; the article separately identifies uniformity as necessary for a uniform conclusion.
+- **Operational reduction:** Evaluate \(t!\bmod N\), compute \(\gcd(t!,N)\), and binary-search cutoffs. A proper GCD ends the search; otherwise the GCD is \(1\) or \(N\), determining the next interval.
+- **Complexity:** \(O(\log N)\) factorial queries; each supplied division-free program can be evaluated modulo \(N\), avoiding enormous integer intermediates.
+- **Primitive/relevance:** This is a close prior formulation of the brief’s prefix/factorial-unit strategy.
+- **Qualification:** For the project, require a uniformly available factorial evaluator or explicitly bounded advice. Mere existence of unrelated short programs should not be silently promoted into an implementable uniform oracle. **VERIFIED author statement and reduction.**
+
+## 15. Shub–Smale: factorial multiples and the \(\tau\)-conjecture
+
+**Source:** Michael Shub, Steve Smale, *On the intractability of Hilbert’s Nullstellensatz and an algebraic version of “NP ≠ P?”*. Duke Math. J. 81 (1995), 47–54; readable manuscript dated 21 June 1994. [Author-hosted paper](https://profshub.github.io/articles/1995-Intractability_of_Hilberts_Nullstellensatz.pdf), [readable manuscript copy](https://janos.cs.technion.ac.il/COURSES/238900-13/Papers-1/ShubSmale-pap97.pdf).
+
+- **Problem/representation:** Constant-free straight-line computation from \(1\), using \(+,-,\times\); arithmetic-operation complexity.
+- **Statement:** The unnumbered **Main Theorem:** if factorials are not ultimately easy—there is no sequence of nonzero multiples \(m_t t!\) with polylogarithmic straight-line complexity—then Hilbert’s Nullstellensatz is intractable and \(P_{\mathbb C}\ne NP_{\mathbb C}\).
+- **Intermediate theorem:** **Theorem 2:** a polylogarithmic BSS algorithm deciding whether \(z\in\{1,\ldots,t\}\) would make \(t!\) ultimately easy.
+- **Conjecture:** The standard \(\tau\)-conjecture bounds the number of distinct integer roots of nonzero \(f\in\mathbb Z[X]\) by \((1+\tau(f))^C\).
+- **Primitive/relevance:** Conditional complexity connections, not an evaluator. Exact factorials, arbitrary multiples, uniform algorithms, and arithmetic-operation bounds are different interfaces. **VERIFIED; standard conjecture formulation also checked in Bürgisser below.**
+
+## 16. Bürgisser: factorial complexity versus permanent complexity
+
+**Source:** Peter Bürgisser, *On Defining Integers And Proving Arithmetic Circuit Lower Bounds*. Computational Complexity 18 (2009), 81–103; author-uploaded manuscript. [Primary author upload](https://www.researchgate.net/publication/226946788_On_Defining_Integers_And_Proving_Arithmetic_Circuit_Lower_Bounds), [publisher record](https://link.springer.com/article/10.1007/s00037-009-0260-x).
+
+- **Problem/representation:** Complexity of integer sequences and univariate polynomial families, measured by constant-free division-free circuit size \(\tau\), or rational circuit complexity allowing divisions.
+- **Statement:** **Main Theorem 1.2:** hardness of factorials, truth of the \(\tau\)-conjecture, and the specified Taylor-approximation hardness statements each imply that the permanent lacks polynomial-size constant-free division-free circuits.
+- **Equivalent useful direction:** Polynomial \(\tau(\mathrm{Per}_m)\) implies \(\tau(t!)=(\log t)^{O(1)}\); corresponding compressed Pochhammer and Taylor families follow through the paper’s general theorem.
+- **Hypothesis audit:** The paper expressly warns that its permanent condition is not known equivalent to ordinary \(VP\ne VNP\). **Corollary 4.2** uses GRH for an implication involving arbitrary complex constants.
+- **Primitive/relevance:** A precise conditional barrier to proving factorial or truncation hardness. It supplies no unconditional factoring algorithm or composite-ring prefix test. **VERIFIED.**
+
+## 17. Cheng: short programs for multiples of factorials
+
+**Source:** Qi Cheng, *On the Ultimate Complexity of Factorials*. Theoretical Computer Science 326 (2004), 419–429; 12-page author manuscript, internally undated. [Primary PDF](https://qcheng2023.github.io/paper/factorial.pdf).
+
+- **Problem/input:** Given binary \(t\), construct a short constant-free division-free straight-line program for a nonzero multiple of \(t!\).
+- **Statement:** **Theorem 1**, assuming **Conjecture 1** on smooth-number density in Hasse-length intervals: there are constants \(c_1,c_2\) such that program length is at most
+  \[
+  L_t[c_1]=\exp(c_1\sqrt{\log t\log\log t}),
+  \]
+  and randomized construction takes \(L_t[c_2]\) time.
+- **Mechanism/hypotheses:** Elliptic-curve division polynomials compactly produce integers divisible by many primes; the smoothness conjecture controls coverage.
+- **Complexity variables:** Numeric factorial index \(t\), program length, and actual construction time.
+- **Primitive/relevance:** A compressed divisibility-cover integer. It is an arbitrary multiple, potentially introducing extra prime divisors and valuations. Consequently, taking its GCD with \(N\) does not implement the exact predicate \(\gcd(N,t!)=1\). **VERIFIED conditional statement; manuscript revision date UNVERIFIED.**
+
+## 18. Cheng: the related paper is about torsion, not a new factorizer
+
+**Source:** Qi Cheng, *Straight Line Programs and Torsion Points on Elliptic Curves*. Computational Complexity 12 (2003), 150–161; author manuscript. Preliminary version: *Some Remarks on the L-Conjecture*, ISAAC 2002. [Primary PDF](https://qcheng2023.github.io/paper/BSS.pdf), [author publication list](https://qcheng2023.github.io/pub.html).
+
+- **Problem/representation:** Bound rational roots and low-degree irreducible factors of small arithmetic circuits over a fixed number field \(k\).
+- **Hypothesis:** **Conjecture 2**, the WL-conjecture, posits
+  \[
+  N_{d,k}(f)\le c_1\,2^{c_2L(f)}d^{c_3},
+  \qquad c_2<1/72.
+  \]
+- **Statement:** **Theorem 1:** under WL, torsion over an extension \(K/k\) of degree \(D\) is bounded by \(c_4D^{c_5}\), with constants depending only on \(k\).
+- **Concrete ingredient:** Division polynomial \(P_m\) has a straight-line program of length at most \(72\log m+60\); rational torsion produces many roots.
+- **Primitive/relevance:** Explains why elliptic-curve constructions of many-root polynomials interact with root-count conjectures. No factorial-unit or support-index algorithm follows.
+- **Status:** **VERIFIED; author manuscript’s revision date UNVERIFIED.**
+
+## 19. Allender–Bürgisser–Kjeldgaard-Pedersen–Miltersen: succinct numeric properties
+
+**Source:** Eric Allender, Peter Bürgisser, Johan Kjeldgaard-Pedersen, Peter Bro Miltersen, *On the Complexity of Numerical Analysis*. SIAM J. Comput. 38(5) (2009), 1987–2006; author-hosted prepublication manuscript. [Primary PDF](https://www3.math.tu-berlin.de/algebra/work/submitted.july.pdf).
+
+- **Problem/input:** Division-free integer SLP, plus a binary degree threshold or bit index; determine degree, sign, equality, or a bit of its represented integer.
+- **Statements:** **Proposition 2.3:** \(\mathrm{DegSLP}\) polynomial-time many-one reduces to \(\mathrm{PosSLP}\). **Proposition 2.4:** \(\mathrm{BitSLP}\) is hard for \(\#P\). Section 4 places these problems in the counting hierarchy.
+- **Representation/hypotheses:** Integer arithmetic circuits can encode exponentially long integers and exponentially large polynomial degrees.
+- **Complexity variables:** Circuit description size and binary query length—not expanded integer length or polynomial degree.
+- **Primitive/relevance:** Formalizes why reading a degree, sign, or digit from a compact arithmetic description can be a substantial operation. This is not a hardness theorem specifically for \(F_N\), and its ordered-integer reductions do not automatically apply over \(\mathbb Z/N\mathbb Z\).
+- **Status:** **VERIFIED in the consulted manuscript; exact manuscript date UNVERIFIED.**
+
+## 20. Koiran–Perifel: coefficient-zero and degree problems
+
+**Source:** Pascal Koiran, Sylvain Perifel, *The Complexity of two Problems on Arithmetic Circuits*. Manuscript dated 24 August 2007; HAL deposit ensl-00167613v1, 21 August 2007; TCS 389 (2007), 172–181. [Author publication page](https://sites.google.com/view/pascal-koiran/publications), [HAL destination](https://prunel.ccsd.cnrs.fr/ensl-00167613).
+
+- **Problem/input:** Arithmetic circuit and a specified monomial, or a binary degree threshold.
+- **Results:** Coefficient-zero testing is \(P^{\#P}\)-hard under strong nondeterministic Turing reductions, even with polynomially bounded formal degree. Over a field of positive characteristic \(p\), the coefficient-zero problem is classified using \(\mathrm{Mod}_pP\); degree testing has a \(\mathrm{coNP}^{\mathrm{Mod}_pP}\) upper bound.
+- **Representation/hypotheses:** Field arithmetic circuits with constants restricted in the stated model; characteristic is a field characteristic.
+- **Primitive/relevance:** Complexity classification of specified-coefficient queries. These are general-circuit results, not lower bounds for the particular binomial family or for unknown composite characteristic.
+- **Status:** Bibliography and indexed primary manuscript text checked. HAL full-text access was blocked; **exact numbered positive-characteristic theorem and full reduction conditions UNVERIFIED**. The accessible FMM results below provide cleaner verified coefficient-zero statements.
+
+## 21. Fournier–Malod–Mengel: cleaner coefficient-zero classifications
+
+**Source:** Hervé Fournier, Guillaume Malod, Stefan Mengel, *Monomials in arithmetic circuits: Complete problems in the counting hierarchy*. Author manuscript dated 11 April 2012; STACS 2012. [Primary PDF](https://www3.math.tu-berlin.de/algebra/work/monomialsSTACS12.pdf).
+
+- **Problem/input:** Integer arithmetic circuit \(C\) and explicitly encoded monomial \(m\); decide whether \([m]C=0\).
+- **Statements:** **Theorem 3.1:** ZMC is \(C_{=}P\)-complete for multiplicatively disjoint circuits and formulas. **Theorem 3.2:** unrestricted ZMC belongs to \(\mathrm{coRP}^{PP}\). **Theorem 3.3:** ZMC is coNP-complete for monotone formulas and monotone circuits.
+- **Hypotheses:** Exact integer coefficients; monotonicity excludes cancellation but not combinatorial coefficient difficulty.
+- **Complexity variables:** Circuit size, variables, and exponent encodings. Formula restrictions and unrestricted shared circuits have different classifications.
+- **Primitive/relevance:** Strong evidence against treating generic coefficient access as a routine compressed-polynomial operation. Finding any support index of a nonzero polynomial is a different task: the theorems do not directly classify that search problem for \(F_N\). **VERIFIED.**
+
+## 22. Kayal–Saha: degree testing and restricted valuation bounds
+
+**Source:** Neeraj Kayal, Chandan Saha, *On the Sum of Square Roots of Polynomials and Related Problems*. ECCC TR10-189, 2010; 15-page report consulted. [Record](https://eccc.weizmann.ac.il/report/2010/189/), [primary PDF](https://eccc.weizmann.ac.il/report/2010/189/download/).
+
+- **Problem/input:** Arithmetic circuit plus binary degree threshold; separately, explicitly bounded-degree radical expressions.
+- **Statements:** **Theorem 1.5 / Theorem 4.5:** \(\mathrm{DegSLP}\in\mathrm{coRP}^{PP}\).
+- **Valuation theorem:** **Theorem 2.1:** over a characteristic-zero field, for
+  \[
+  S=\sum_{i=1}^{m}c_i g_i(X)\sqrt{f_i(X)},
+  \quad \deg f_i,\deg g_i\le d,\quad f_i(0)\ne0,
+  \]
+  either \(S=0\), or its first nonzero power-series exponent is at most \(dm^2+m\).
+- **Hypotheses:** Characteristic zero; formal power-series square roots in an appropriate extension. The argument uses Wronskians and ordinary derivatives.
+- **Complexity variables:** Number of summands \(m\), explicit degree bound \(d\), or circuit/query size for DegSLP.
+- **Primitive/relevance:** A bounded-prefix certificate for a restricted expression class. It does not extend to arbitrary exponential-degree SLPs or to \(R_N\), where the brief’s ordinary derivatives vanish. **VERIFIED.**
+
+## 23. Perrucci–Sabia: real-root hardness is a different problem
+
+**Source:** Daniel Perrucci, Juan Sabia, *Real roots of univariate polynomials and straight line programs*. Journal of Discrete Algorithms 5 (2007), 471–478; journal PDF. [Primary institutional PDF](https://bibliotecadigital.exactas.uba.ar/download/paper/paper_15708667_v5_n3_p471_Perrucci.pdf).
+
+- **Problem/input:** Univariate integer polynomial represented by a straight-line program using \(1,-1,X\) and \(+,-,\times\).
+- **Statement:** **Theorem 7:** deciding whether the polynomial has a real root is NP-hard. The construction also places possible roots in \((-1,1)\); later results concern approximation.
+- **Hypotheses:** Ordered characteristic-zero setting. Chebyshev polynomials encode Boolean assignments.
+- **Complexity variables:** SLP length and binary rational endpoint descriptions.
+- **Primitive/relevance:** An obstruction to generic real-root extraction from compact circuits. It is not a theorem that deciding whether the fixed point \(0\) is a root is hard: that is ordinary evaluation. Nor is it a composite-modulus valuation theorem. **VERIFIED.**
+
+## 24. Dutta–Jindal–Pandey–Sinhababu: truncation is already close prior art
+
+**Source:** Pranjal Dutta, Gorav Jindal, Anurag Pandey, Amit Sinhababu, *Arithmetic Circuit Complexity of Division and Truncation*. CCC 2021, Article 25. [Primary proceedings PDF](https://drops.dagstuhl.de/storage/00lipics/lipics-vol200-ccc2021/LIPIcs.CCC.2021.25/LIPIcs.CCC.2021.25.pdf).
+
+- **Problem/input:** Compressed rational/algebraic series; circuit size of their degree-\(d\) truncations.
+- **Statements:** **Theorem 6 / 26:** if \(\deg g\le d\), \(\deg h=d_h\), \(g\) has circuit size \(s\), and \(g/h\in\mathbb F[[X]]\), its truncation has circuit size \(\mathrm{poly}(s,d_h,\log d)\).
+- **Conditional hardness:** **Theorem 30:** polylogarithmic constant-free circuits for both indicated adjacent truncations of \((1+X)^{-d-1}\) imply \(\tau(t!)=O(\log^{c+1}t)\). **Theorem 32:** small truncations of all \((1+k^2X)^{i/k}\), \(1\le i<k\), imply nonuniform polynomial-time factoring.
+- **Hypotheses:** Field setting; constant-free restrictions matter. The low-denominator-degree proof uses factorization over an algebraic closure and derivative identities.
+- **Complexity variables:** Denominator degree \(d_h\), not merely its circuit size; distinction between circuit existence and uniform construction.
+- **Primitive/relevance:** Particularly close to the proposed compact-prefix operation. No composite-ring extension or efficient general truncation construction is established. **VERIFIED.**
+
+## 25. Power of a sparse polynomial: a precise hardness reduction
+
+**Published attribution:** A matching primary theorem specifically phrased this way was **UNVERIFIED** in this search. The following is a direct reduction, not an attributed novelty claim.
+
+- **Problem/input:** Sparse \(f\in\mathbb Z[X]\), positive integer \(m\), binary target exponent \(K\); decide whether \([X^K]f^m=0\).
+- **Derived statement:** Nonzeroness is NP-hard even for unit coefficients.
+- **Proof/interface:** For Exact-3-Cover on \(3m\) elements, set \(B=m+1\) and
+  \[
+  f(X)=\sum_{S}X^{\sum_{j\in S}B^j},
+  \qquad K=\sum_{j=1}^{3m}B^j.
+  \]
+  Choosing \(m\) terms creates no base-\(B\) carries. Thus \([X^K]f^m\) is \(m!\) times the number of exact covers.
+- **Representation/cost:** Sparse input and all exponents have polynomial binary length; the power has a compact repeated-squaring circuit.
+- **Hypotheses:** Exact characteristic-zero nonnegative coefficients.
+- **Composite-ring qualification:** Modulo \(N\), a positive count can disappear, including through \(m!\). Therefore this reduction does not automatically prove the corresponding composite-modulus hardness.
+- **Relevance:** Short powering descriptions do not make specified-coefficient extraction generically easy.
+
+## 26. First surviving binomial index: explicit prior formulation
+
+**Source:** OEIS A020639, *Least prime factor of n*; sequence author David W. Wilson; relevant contribution and proof by Stanislav Sykora, 29 July 2017. Current entry consulted. [Primary attributed contribution](https://oeis.org/A020639).
+
+- **Problem/input:** Integer \(N>1\); characterize its smallest prime divisor.
+- **Statement:** The contribution identifies it as the smallest \(k\), \(1<k\le N\), for which \(N\nmid\binom Nk\).
+- **Proof content:** It explicitly uses
+  \[
+  k\binom Nk=N\binom{N-1}{k-1}
+  \]
+  for coprime indices, and a prime-adic valuation argument at a prime divisor.
+- **Hypotheses:** All integers \(N>1\), including prime powers. For prime \(N\), the permitted endpoint \(k=N\) survives.
+- **Complexity:** A characterization, not a fast support-search algorithm.
+- **Primitive/relevance:** Direct prior formulation of the first-index identity and the coprime-index obstruction.
+- **Status:** **VERIFIED.** A prior source for the stronger exact residue \(\binom Np\equiv N/p\bmod N\) was **UNVERIFIED**; its proof in the brief remains valid.
+
+## 27. Wilson-factorial folklore: correct the endpoint claim
+
+**Claim audited:** “Computing \((N-1)!\bmod N\) is as hard as factoring.”
+
+- **Status:** False for this exact input/output task; historical attribution of that phrasing is **UNVERIFIED**.
+- **Elementary statement:**
+  \[
+  (N-1)!\equiv
+  \begin{cases}
+  -1\pmod N,&N\text{ prime},\\
+  2\pmod4,&N=4,\\
+  0\pmod N,&N>4\text{ composite}.
+  \end{cases}
+  \]
+- **Proof for composites:** Write \(N=ab\), \(1<a\le b<N\). If \(a<b\), both factors occur in the factorial. If \(a=b\ge3\), the distinct terms \(a,2a<N\) have product \(2N\).
+- **Input/complexity:** Binary \(N\); the residue follows from polynomial-time primality testing and the \(N=4\) exception. [Primary primality theorem](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf).
+- **Relevant stronger interface:** Arbitrary binary cutoff \(K\mapsto K!\bmod N\), or just its unit status. Lipton’s reduction and BGS’s bounded-divisor search address that interface.
+- **Relevance:** The endpoint factorial loses the information needed for the prefix search.
+
+## 28. Agrawal–Biswas: formal PIT over unknown composite modulus
+
+**Source:** Manindra Agrawal, Somenath Biswas, *Primality and Identity Testing via Chinese Remaindering*. Author manuscript dated 21 February 2003; JACM 50(4) (2003), 429–443. [Primary PDF](https://cse.iitk.ac.in/users/manindra/algebra/identity.pdf).
+
+- **Problem/input:** Arithmetic circuit of size \(s\) for \(P(X_1,\ldots,X_v)\) over \(\mathbb Z/m\mathbb Z\), degree bounds \(d_i\), binary \(m\), error parameter \(\epsilon\).
+- **Statement:** **Theorem 4.8:** Algorithm C tests formal identity, with false-zero probability at most \(\epsilon\), using
+  \[
+  \widetilde O\!\left(s^5v^5(sv+1/\epsilon)(\log m)^3\right)
+  \]
+  time and the stated logarithmic-in-degree randomness.
+- **Hypotheses:** \(m\) need not be prime or factored. Division-free circuit evaluation uses explicit low-degree polynomial quotients.
+- **Why no hidden prime input:** **Lemma 4.7** reduces soundness analytically to a prime-power component. Algorithm C tries auxiliary primes up to its specified polynomial bound instead of learning that hidden prime.
+- **Primitive/relevance:** Randomized **formal** zero testing for compact circuits over \(R_N\) is already available. It does not construct truncations or binary sections.
+- **Status:** **VERIFIED from indexed primary text; the PDF’s ordinary text extraction was garbled.**
+
+## 29. Bernstein AKS notes and “constructive AKS”
+
+**Source:** Daniel J. Bernstein, *An exposition of the Agrawal–Kayal–Saxena primality-proving theorem*, version identified as 10 August 2002. [Author PDF URL](https://cr.yp.to/papers/aks-20020810.pdf).
+
+- **Access:** Author URL was located but could not be fetched. Full theorem statements, numbering, and exact hypotheses are **UNVERIFIED**.
+- **Problem/representation:** AKS-style primality criteria using explicit polynomial quotient rings; exact consulted full-text version unavailable.
+- **Primitive/relevance:** Do not cite these notes as establishing polynomial-time factor extraction from failed AKS identities.
+- **Search result:** No verified primary theorem called “constructive AKS” was found that converts general AKS compositeness detection into polynomial-time factoring.
+- **Usable verified replacement:** AKS itself specifies where factors can be exposed by small GCDs; Agrawal–Biswas supplies composite-ring formal PIT. Neither implies the missing support/prefix extraction operation.
+
+## 30. Oznovich–Volk 2025: high order or a factor
+
+**Source:** Ziv Oznovich, Ben Lee Volk, *On Deterministically Finding an Element of High Order Modulo a Composite*. arXiv:2506.07668v3, 11 October 2025. [Primary PDF](https://arxiv.org/pdf/2506.07668v3).
+
+- **Problem/input:** Binary composite \(N\), target order \(D\).
+- **Statement:** **Theorem 1.1:** for \(D\ge N^{1/6}\), deterministically find an element of order at least \(D\), or a nontrivial factor, in \(D^{1/2+o(1)}\) time.
+- **Extension:** The \(r\)-power-divisor setting permits \(D\ge N^{1/(6r)}\), with the corresponding alternative output.
+- **Hypotheses:** No supplied factorization or group order. The threshold on numeric \(D\) is essential to this version.
+- **Mechanism:** Accumulate orders of small elements. Failure to separate prime components supplies congruence restrictions on every prime factor; lattice methods exploit those restrictions.
+- **Primitive/relevance:** A rigorously computable order-threshold certificate or factor. It does not supply exact large orders or informative dual-lattice samples in polynomial time in \(n\).
+- **Status:** **VERIFIED; superseded in target-order range by the next entry.**
+
+## 31. Harvey–Hittmeir 2026: unrestricted target-order range
+
+**Source:** David Harvey, Markus Hittmeir, *Deterministic methods for finding elements of large multiplicative order*. arXiv:2601.11131v2, 5 June 2026. [Primary text](https://arxiv.org/html/2601.11131v2).
+
+- **Problem/input:** Binary integers \(N\ge3\), \(1\le D<N-1\).
+- **Statement:** **Theorem 1.1:** deterministically return \(\alpha\in(\mathbb Z/N\mathbb Z)^\times\) with \(\operatorname{ord}_N(\alpha)>D\), or a nontrivial divisor of \(N\), in
+  \[
+  O\!\left(
+  \frac{\sqrt D\log D}{\sqrt{\log\log D}}\log N
+  \right)
+  \]
+  bit operations, with the paper’s small-\(D\) convention.
+- **Hypotheses:** No lower bound \(D\ge N^\eta\); no known factorization. On prime \(N\), the output must be the large-order element.
+- **Mechanism:** Smooth-number density makes the accumulated common order grow sufficiently fast. The final factor search uses an arithmetic progression.
+- **Primitive/relevance:** For polynomially bounded \(D\), this is a polynomial-time certified order-threshold-or-factor routine over the unknown composite modulus. Large order alone does not resolve support positions or supply character phases.
+- **Status:** **VERIFIED.** The theorem improves a subroutine; it does not itself claim a new general factoring exponent.
+
+## 32. Umans–Wang 2025: compressed divisibility covers
+
+**Source:** Chris Umans, Siki Wang, *A number-theoretic conjecture implying faster algorithms for polynomial factorization and integer factorization*. arXiv:2511.10851v1, 13 November 2025. [Primary PDF](https://arxiv.org/pdf/2511.10851v1).
+
+- **Problem/input:** Factor binary \(N\) using a structured sequence \(A_1,\ldots,A_k\); put \(B=\lfloor\sqrt N\rfloor\).
+- **Statement:** **Theorem 5.2:** if every integer at most \(B\) divides \(\prod A_i\), interval products modulo \(d\le N\) cost \(\widetilde O(\log d\,B^\gamma)\), and each \(A_i\)’s prime factors can be produced in \(\widetilde O(B^\gamma)\), then factoring costs
+  \[
+  \widetilde O(N^{\gamma/2}\log k).
+  \]
+- **Conditional improvement:** **Theorem 5.5** assumes the **Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture** and claims \(\widetilde O(N^{\max(\alpha,\beta)/2+o(1)})\). The optimal proposed \(\alpha=\beta=1/3\) gives exponent \(1/6\).
+- **Hypotheses:** Structured sets \(S,T\), bounded-size differences \(s-t\), divisor coverage, and efficient factorization of those differences. Existence of a short covering product alone is insufficient.
+- **Primitive/relevance:** Very close prior formulation of “compressed divisibility object plus efficient interval extraction.” **VERIFIED conditional statements; conjecture unresolved.**
+
+## 33. Hittmeir 2023: Smooth Subsum Search
+
+**Source:** Markus Hittmeir, *Smooth Subsum Search: A heuristic for practical integer factorization*. arXiv:2301.10529v2, 11 July 2023. [Primary text](https://arxiv.org/html/2301.10529v2).
+
+- **Problem/input:** Binary \(N\), factor base, and modular roots of \(f(X)=(X+\lceil\sqrt N\rceil)^2-N\) modulo known small primes.
+- **Result:** Sections 3–4 give an explicit heuristic smoothness-candidate generator and computational comparisons; no theorem there proves a new general factoring exponent.
+- **Mechanism:** Chinese remaindering expresses candidates as subsums satisfying selected small-prime divisibility constraints. Search for small representatives relative to the selected modulus, then test residual smoothness and perform ordinary relation processing.
+- **Hypotheses:** Practical smoothness behavior and parameter choices; modular roots concern known factor-base primes.
+- **Complexity variables:** Factor-base sizes, selected subset size, candidate generation and filtering costs.
+- **Primitive/relevance:** Produces candidates with deliberately imposed divisibility, offering an independent arithmetic-search mechanism. It does not compute the brief’s prefix predicate.
+- **Status:** **VERIFIED as a heuristic algorithm; polynomial-time or improved asymptotic general factoring claim UNVERIFIED.**
+
+## 34. Stănică–Mulder–Hittmeir 2026: exact sieve-set limitations
+
+**Source:** Pantelimon Stănică, Erik Mulder, Markus Hittmeir, *Multi-target hyperbolic sieves and elliptic trace obstructions*. arXiv:2606.13018v2, 5 October 2026. [Primary text](https://arxiv.org/html/2606.13018v2).
+
+- **Problem/input:** Known auxiliary odd prime \(\ell\nmid N\); sieve candidates for \(ap+q\bmod\ell\), where \(N=pq\).
+- **Representation:**
+  \[
+  H_a(N;\ell)=\{ax+Nx^{-1}:x\in\mathbb F_\ell^\times\}.
+  \]
+- **Statements:** **Theorem 3.12:**
+  \[
+  K(A,cA)=-1-\chi(A)t_c,
+  \]
+  relating the relevant quartic character sum to an elliptic-curve trace. **Corollary 3.16:**
+  \[
+  \left||H_a\cup H_b|-3\ell/4\right|
+  \le(2\sqrt\ell+7)/4.
+  \]
+- **Hypotheses:** Distinct nonzero \(a,b\); known field \(\mathbb F_\ell\). Stronger proposed uniform bounds fail in supplied counterexamples.
+- **Complexity:** A local sieve-analysis result; no new complete-factorization time bound.
+- **Primitive/relevance:** Explicit public residue filters, together with quantitative limits on batching several target forms. Useful for evaluating novelty of quotient/congruence sketches. **VERIFIED.**
+
+## 35. Boneh–Durfee–Howgrave-Graham: large prime-power divisors
+
+**Source:** Dan Boneh, Glenn Durfee, Nick Howgrave-Graham, *Factoring \(N=p^rq\) for Large \(r\)*. CRYPTO ’99, LNCS 1666, 326–337; author-uploaded full paper consulted. [Author record](https://crypto.stanford.edu/~dabo/pubs/abstracts/prq.html), [primary author upload](https://www.researchgate.net/publication/225776879_Factoring_N_p_r_q_for_Large_r).
+
+- **Problem/input:** Binary \(N=p^rq\), supplied \(r,c\), with \(q<p^c\).
+- **Statement:** **Theorem 2:** recover \(p\) deterministically in
+  \[
+  2^{\frac{c+1}{r+c}\log_2p}\,O(\gamma),
+  \]
+  where \(\gamma\) is LLL time for dimension \(O(r^2)\), entries of \(O(r\log N)\) bits; polynomial space.
+- **Hint interface:** **Lemma 1:** an approximation \(P\) satisfying
+  \[
+  |P-p|<p^{1-c/(r+c)-2r/d}
+  \]
+  suffices using a dimension-\(d\) lattice.
+- **Restricted polynomial-time family:** Fixed \(c\), \(r=\Theta(\log p)\).
+- **Primitive/relevance:** Decode a coarse factor approximation when multiplicity is large; exhaustive guessing of the remaining required leading bits is explicitly charged.
+- **Status:** **VERIFIED.** This does not cover ordinary balanced semiprimes, where \(r=1\).
+
+## 36. Pollard \(p-1\): smooth order as sufficient partial structure
+
+**Source:** J. M. Pollard, *Theorems on factorization and primality testing*. Proc. Cambridge Philos. Soc. 76 (1974), 521–528. [Primary publisher record](https://www.cambridge.org/core/journals/mathematical-proceedings-of-the-cambridge-philosophical-society/article/theorems-on-factorization-and-primality-testing/6762E84DBD34AEF13E6B1D1A8334A989).
+
+- **Access status:** Publisher extract opened; full paper unavailable. Original numbered theorem and original cost statement **UNVERIFIED**.
+- **Exact elementary interface:** For a known exponent \(E\) and unit \(a\bmod N\),
+  \[
+  p-1\mid E\Longrightarrow p\mid a^E-1.
+  \]
+  A factor follows if \(1<\gcd(a^E-1,N)<N\).
+- **Restricted-family hypothesis:** Taking \(E=\operatorname{lcm}(1,\ldots,B)\) succeeds when the relevant prime-power divisors of \(p-1\) are covered and another prime component does not also become \(1\).
+- **Derived cost:** Binary exponentiation costs \(O(\log E)\) modular multiplications; \(\log E=O(B)\), plus exponent construction and GCDs.
+- **Primitive/relevance:** A known multiple of a hidden component order is usable information. Smoothness alone must be strong enough at the prime-power level; simultaneous annihilation of every component gives an unhelpful GCD \(N\).
+
+## 37. May–Ritzenhofen: implicit shared-bit hints
+
+**Source:** Alexander May, Maike Ritzenhofen, *Implicit Factoring: On Polynomial Time Factoring Given Only an Implicit Hint*. PKC 2009; full proceedings paper. [Primary PDF](https://www.iacr.org/archive/pkc2009/54430001/54430001.pdf).
+
+- **Problem/input:** Two different RSA moduli \(N_i=p_iq_i\); promise that \(p_1,p_2\) share \(t\) least significant bits. The common bits themselves are not supplied.
+- **Statement:** **Theorem 5:** if \(q_i\) have \(\alpha\) bits and
+  \[
+  t>2(\alpha+1),
+  \]
+  both moduli can be factored in quadratic time.
+- **Representation/hypotheses:** Odd RSA factors permit inversion modulo \(2^t\). A two-dimensional lattice contains \((q_1,q_2)\); Gauss reduction and the stronger inequality give the rigorous result.
+- **Multiple-modulus qualification:** **Theorem 7** uses \(t\ge k\alpha/(k-1)\), but depends on **Assumption 6** identifying the desired shortest vector; it is not unconditional.
+- **Primitive/relevance:** A concrete correlated-information format that suffices without revealing the common bit string. The rigorous two-modulus regime is substantially unbalanced; do not transfer it to two ordinary balanced RSA moduli. **VERIFIED.**
+
+## 38. Sica: “factoring with hints” can require exponentially many hints
+
+**Source:** Francesco Sica, *Factoring with Hints*. arXiv:0912.1585v6, last revised 8 August 2017; downloaded PDF internally dated 26 October 2018. [Record](https://arxiv.org/abs/0912.1585v6), [primary PDF](https://arxiv.org/pdf/0912.1585v6).
+
+- **Problem/input:** Binary semiprime \(N=pq\), plus complete factorizations of integers near \(N\).
+- **Statement:** **Theorem 1:** for arbitrary \(\epsilon>0\), factorizations of \(O(N^{1/3+\epsilon})\) nearest integers suffice to recover \(p,q\) in \(O(N^{1/3+\epsilon})\) bit operations.
+- **Hypotheses/representation:** Explicit neighboring-integer factorizations; their acquisition is external to the recovery theorem.
+- **Complexity variables:** Numeric \(N\), number of hints, and bit-operation recovery cost. This is exponential in the original bit length \(n\).
+- **Primitive/relevance:** A downstream decoder for a precisely specified arithmetic hint collection. It does not justify treating a short description of neighboring factorizations as access to those factorizations.
+- **Status:** **VERIFIED theorem; the record/PDF date discrepancy is preserved rather than resolved.**
+
+## 39. Consequences for the project’s exact interfaces
+
+These are deductions from the verified interfaces above, not literature priority claims.
+
+- **Binary sections:** If the sections selected along a path can be **uniformly constructed as polynomial-size division-free circuits over \(R_N\)**, Agrawal–Biswas supplies the needed randomized formal zero tests. Amplify across \(O(n)\) adaptive decisions. Thus compact, efficient section construction is a sufficient remaining primitive; a separate new composite-ring PIT theorem is unnecessary.
+- **Order of vanishing:** For degree bound \(D\), reversal gives
+  \[
+  \operatorname{ord}_0P=D-\deg(X^DP(X^{-1})).
+  \]
+  Gatewise reversal with syntactic degree bounds yields a polynomial-size division-free circuit, including over composite rings. This connects valuation queries to semantic degree queries, but supplies no efficient degree algorithm.
+- **Factorial prefixes:** BGS already solves the exact bounded-divisor task with square-root dependence on cutoff length. Lipton and Umans–Wang already formulate extraction from compressed divisibility products.
+- **Novelty boundary:** A substantive advance would be an efficient new section/truncation representation, a cheaper exact unit predicate, or an efficiently produced hint matching a verified decoder—not another equivalence between factorial prefixes and factoring.
+
+## Primitive provided / assumption / complexity variable / relevance to our support-index or prefix-predicate problem
+
+| Source | Primitive provided | Assumption | Complexity variable | Relevance |
+|---|---|---|---|---|
+| AKS | Folded polynomial identities | Explicit small quotient degree | \(\log N,r\), shifts | Compositeness; no original support index |
+| BGS Lemma 13 | Bounded-divisor decision and extraction | Unknown composite modulus allowed | \(\sqrt b,\log N\) | Direct prefix-predicate baseline |
+| Harvey | Batched hidden-prime collisions | Unconditional | Numeric \(N\), explicit list sizes | Factor extraction from aggregate congruences |
+| HH 2021 | Sieved collision search | Unconditional | \(N^{1/5}\), logarithms | Public residue restrictions |
+| Sparse | Partial/full sparse support recovery | Field, sparsity; some bounds heuristic | \(L,T,\log D,\log q\) | Requires a genuinely small support interface |
+| Tal | Factorial ratios and factorial residues | Known prime; suitable divisor/character data | \(p,q,k,r\) | Known-prime recurrence lead |
+| Coppersmith | Approximation-to-factor decoding | Sufficient contiguous known bits | \(\log N\), lattice dimension | Precise downstream hint target |
+| Regev | Relation decoding from dual samples | Accurate uniform samples; short useful relation | \(d,m,\delta,T,\det\mathcal L\) | Decoder interface; acquisition remains |
+| Pilatte | Short-basis existence | Modified random-prime generators | \(d,r,\log N\) | Removes structural heuristic |
+| EG Lemma 2 | Recover short-vector-containing sublattice | All samples accurate; uniform dual cosets | \(d,m,\delta,T\) | Explicit classical postprocessing contract |
+| Gao | Informative second lattice vector | Specified rank-three construction and ranges | \(N,m,X,\beta\) | Avoids a known trivial relation |
+| Cleve | Oracle query lower bound | Opaque permutation-power oracle | Label/exponent lengths | Model-specific limitation |
+| Lipton 1994 | Many-root/factoring connection | Exact full hypotheses **UNVERIFIED** | Root count, SLP length | Strong novelty predecessor |
+| Lipton 2009 | Factorial-GCD binary search | Available short factorial computations | Cutoff bit length; query cost | Direct prefix reduction |
+| Shub–Smale | Factorial-multiple hardness implication | Constant-free arithmetic model | \(\tau(t!)\), \(\log t\) | Distinguishes exact values from multiples |
+| Bürgisser | Factorial/permanent complexity implications | Constant-free model; GRH for stated extension | Circuit sizes | Conditional representation barrier |
+| Cheng factorials | Short divisibility-cover SLP | Smoothness conjecture | \(\exp(O(\sqrt{\log t\log\log t}))\) | Extra factors prevent exact unit testing |
+| Cheng torsion | Root-count/torsion connection | WL-conjecture over number fields | \(L(f),d,[K:k]\) | Related structural complexity |
+| ABKPM | Degree-to-sign reduction | Integer SLP model | Description/query length | Semantic degree is substantial |
+| Koiran–Perifel | Coefficient/degree classifications | Fields; full numbered details partly **UNVERIFIED** | Circuit size, characteristic | Generic complexity context |
+| FMM | Coefficient-zero classifications | Integer circuits; specified restrictions | Circuit and monomial size | Coefficient access can be hard |
+| Kayal–Saha | Restricted valuation bound | Characteristic zero radical sums | Number of summands, explicit degree | Prefix certificates for a limited class |
+| Perrucci–Sabia | Real-root NP-hardness | Integer SLP, real roots | SLP length | Different from fixed-point valuation |
+| Division and Truncation | Compact low-denominator-degree truncations | Field; denominator degree charged | \(s,d_h,\log d\) | Closest representation-closure lead |
+| Sparse-power reduction | Coefficient-nonzero NP-hardness | Nonnegative integer coefficients | Sparse encoding, binary exponents | No automatic composite-ring transfer |
+| OEIS/Sykora | Least surviving binomial index | All \(N>1\) | Characterization only | Seed-index observation already recorded |
+| Wilson endpoint audit | \((N-1)!\bmod N\) | Primality test | \(\log N\) | Endpoint is easy; variable cutoff matters |
+| Agrawal–Biswas | Formal PIT over \(\mathbb Z/m\mathbb Z\) | Compact arithmetic circuit | Circuit size, \(\log m,\epsilon^{-1}\) | Already supplies randomized section zero test |
+| Bernstein notes | AKS exposition | Full text **UNVERIFIED** | **UNVERIFIED** | No verified factor-extraction theorem |
+| Oznovich–Volk | High-order element or factor | \(D\ge N^{1/6}\) | \(D^{1/2+o(1)}\) | Earlier certified-order interface |
+| HH 2026 | High-order element or factor | Any \(1\le D<N-1\) | \(\sqrt D,\log D,\log N\) | Useful with polynomial target order |
+| Umans–Wang | Extract factors from interval-product covers | Fast intervals and factorable leaves | \(N^{\gamma/2},\log k\) | Very close compressed-product formulation |
+| Smooth Subsum Search | Constrained smoothness candidates | Heuristic performance | Factor base and search sizes | Independent arithmetic-search route |
+| Hyperbolic sieves | Exact residue filters and union bounds | Known auxiliary prime field | \(\ell\), target count | Audits information retained by congruence sketches |
+| BDHG | Approximation decoding for \(p^rq\) | Large multiplicity; bounded cofactor size | \(r,\log N\), guessed bits | Restricted polynomial-time family |
+| Pollard \(p-1\) | Component-order annihilation | Suitable smooth order; separation | \(B,\log E,\log N\) | Known annihilating exponent suffices |
+| May–Ritzenhofen | Decode implicit shared LSBs | Precise imbalance/shared-bit bounds | Modulus length, shared-bit count | Concrete correlated-hint format |
+| Sica | Decode neighboring factorizations | Explicit large hint collection | \(N^{1/3+\epsilon}\) | Hint acquisition cannot be omitted |

@@ -1,0 +1,3 @@
+{"experiment": "trackA_circuits", "family": "balanced_semiprime", "bits": [16, 24, 32], "seeds": [0, 1], "levels": 9, "node_cap": 2500000,
+ "paths": ["diag_q", "diag_pp", "op_zero", "op_random", "op_exact"], "variants": ["naive (4 mults/gate)", "karatsuba (3 mults/gate)"],
+ "command": ".venv/bin/python -m src.trackA.run_circuits --bits 16 24 32 --seeds 2 --levels 9 --out experiments/raw/trackA_circuits.jsonl"}

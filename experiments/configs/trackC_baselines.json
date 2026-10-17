@@ -1,0 +1,9 @@
+{
+ "bits": [64, 128],
+ "seed": 0,
+ "logK_min": 10,
+ "fit_min_K": 65536,
+ "runs": [["naive", "-", 24], ["ps", "flint", 30], ["bgs", "flint", 32], ["ps", "py", 20], ["bgs", "py", 22]],
+ "out": "experiments/raw/trackC_baselines.jsonl",
+ "fit_out": "experiments/analysis/trackC_baselines_fit.json"
+}

@@ -1,0 +1,3 @@
+{"experiment": "trackA_descent", "family": "balanced_semiprime", "bits": [16, 20, 24, 28, 32], "seeds": [0, 1, 2, 3, 4],
+ "selectors": ["random", "exact_scalar(tries=3, ext_s=2)", "budget_1024"], "max_rank": 1048576,
+ "command": ".venv/bin/python -m src.trackA.run_descent --bits 16 20 24 28 32 --seeds 5 --max-rank 1048576 --out experiments/raw/trackA_descent.jsonl"}
