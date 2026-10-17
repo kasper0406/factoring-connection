@@ -1,0 +1,207 @@
+> Source: GPT-6.1-sol round 4 (codex/r4_sos.md → r4_sos.out), 2026-10-17: sum-of-two-squares bit, higher bits of s, class-group (Track F) cards. Curated copy; not yet independently re-verified.
+
+Assume throughout that \(p\ne q\) are odd primes and \(n=\lceil\log_2N\rceil\). **PROVED** includes elementary derivations below; **UNVERIFIED** means that the claimed algorithm or reduction was not established in the primary sources checked.
+
+**1. Decision versus search**
+
+**PROVED.** Under your semiprime promise,
+\[
+N=x^2+y^2
+\iff p\equiv q\equiv1\pmod4
+\iff -1\in(\mathbb Z/N\mathbb Z)^{\times2}.
+\]
+Consequently,
+\[
+\mathrm{SOS\text{-}decision}
+=\mathrm{QR}_{-1}
+\le_P\mathrm{general\ QR}
+\le_P\mathrm{factoring}.
+\]
+For arbitrary integers, the first equivalence needs qualification: \(45=3^2+6^2\), but \(-1\) is not a square modulo \(45\).
+
+**UNVERIFIED converses.** I found no primary-source reduction establishing that this fixed-\(-1\) decision problem is factoring-equivalent or general-QR-equivalent, and no classical polynomial-time algorithm for it. It is a special case whose precise relationship to those problems remains unresolved in the literature checked. Standard QR hardness does **not** establish fixed-\(-1\) hardness: on Blum integers, \(-1\) is always a nonsquare.
+
+The relevant literature separates as follows:
+
+| Primary source | What it establishes—and its limitation |
+|---|---|
+| Adleman–McCurley, *Open problems in number theoretic complexity, II* (1994), C11/O11a–b | Explicitly asks whether general QR is in \(P\), and whether factoring reduces to QR. Rem14\(_{94}\) records Schoof’s fixed-\(a\), **prime-modulus** result. It does not establish your proposed fixed-\(-1\) equivalence. [Author’s text](https://www.mccurley.org/papers/open.ps.gz) |
+| Schoof, *Elliptic Curves over Finite Fields and the Computation of Square Roots mod \(p\)* (1985), §4 | **PROVED:** for fixed integer \(a\), extract \(\sqrt a\bmod p\), when it exists, deterministically in \(O((\log p)^9)\) bit operations, with an \(a\)-dependent constant. The modulus is a known prime. This supplies prime two-square representations using Gaussian Euclid/Cornacchia. [Paper](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf) |
+| Rabin–Shallit, *Randomized algorithms in number theory* (1986) | The relevant fast two-square construction handles primes; the arbitrary-integer algorithms concern four squares. They do not solve unfactored composite two-square decision. **UNVERIFIED here:** original theorem numbering; publisher full text was inaccessible. [Original](https://doi.org/10.1002/cpa.3160390713), [Pollack–Treviño’s subsequent treatment](https://math.colgate.edu/~integers/sjs15/sjs15.pdf) |
+| Bach–Shallit, *Algorithmic Number Theory*, vol. I (1996) | Verified coverage of QR/Jacobi symbols and finite-field root extraction, §§5.7–5.9, 7.1–7.2. **UNVERIFIED:** any claimed composite SOS/factoring-equivalence theorem in this book. [Author’s contents](https://cs.uwaterloo.ca/~shallit/antdesc.html) |
+| Jager–Schwenk, *On the Analysis of Cryptographic Assumptions in the Generic Ring Model* (2013) | **PROVED:** general QR is factoring-equivalent within their generic-ring model. They also prove this for Jacobi-symbol computation, which is easy with ordinary integer representations. Thus the result neither proves standard-model hardness nor automatically covers a fixed public element such as \(-1\). [Paper abstract](https://doi.org/10.1007/s00145-012-9120-y) |
+| Rybalov, *On generic complexity … sum of two squares* (2020) | **PROVED, conditional:** worst-case hardness of SOS decision together with \(P=BPP\) excludes a polynomial strongly generic algorithm. This assumes hardness; it does not reduce factoring to SOS. “Generic” here means generic-case complexity, unlike Jager–Schwenk’s model. [Paper](https://www.mathnet.ru/php/getFT.phtml?jrnid=pdm&paperid=707&what=fullt) |
+
+For fixed \(2\) or \(-2\), Jacobi symbol \(-1\) already answers “nonsquare.” The unresolved information lies in the Jacobi-\(+1\) cases: distinguishing two positive local symbols from two negative ones. **CONJECTURED:** these fixed-character decisions are difficult on suitable semiprime distributions. That requires an additional hardness assumption.
+
+**One root of \(-1\) does not have the asserted factoring reduction.**
+
+**PROVED:**
+\[
+\boxed{\text{one root of }-1\bmod N
+\ \longleftrightarrow\
+\text{one primitive representation }N=a^2+b^2}
+\]
+in deterministic polynomial time:
+
+- From \(r^2\equiv-1\pmod N\), compute \(g=\gcd_{\mathbb Z[i]}(N,r+i)\). Its norm is \(N\).
+- From \(N=a^2+b^2\), squarefreeness makes \(b\) invertible modulo \(N\), and \(ab^{-1}\) is a root of \(-1\).
+
+But the unit-group argument stops there: \(r\) has order \(4\), and \(r^2=-1\) globally. It does not produce a nontrivial square root of \(1\).
+
+**PROVED:** two roots \(r,t\) with \(t\not\equiv\pm r\pmod N\) give a factor through \(\gcd(r-t,N)\). Uniform independent root sampling therefore factors with constant probability. An arbitrary root algorithm could always return the same pair \(\{\pm r\}\).
+
+**UNVERIFIED:** a general reduction from factoring to finding just one arbitrary root of the fixed element \(-1\). The standard randomized-square extraction reduction does not establish it.
+
+**2. Exact informative bits**
+
+Set
+\[
+\epsilon=\left(\frac{-1}{p}\right)=\left(\frac{-1}{q}\right),\qquad
+b_p=\left(\frac2p\right),\quad b_q=\left(\frac2q\right).
+\]
+Write \(p=\epsilon+4u,\ q=\epsilon+4v\). Then **PROVED, exactly**
+\[
+\boxed{s=\epsilon(N+1)-16\epsilon uv.}
+\]
+
+In particular,
+\[
+\boxed{s\equiv\epsilon(N+1)\pmod{16}.}
+\]
+
+| \(N\bmod16\) | \(s\bmod16,\ \epsilon=+1\) | \(s\bmod16,\ \epsilon=-1\) |
+|---:|---:|---:|
+| 1 | 2 | 14 |
+| 5 | 6 | 10 |
+| 9 | 10 | 6 |
+| 13 | 14 | 2 |
+
+Thus:
+
+- **PROVED:** modulo \(8\), the first informative bit decides \(\epsilon\).
+- **PROVED:** modulo \(16\), there is **no additional informative bit** once \(\epsilon\) is known.
+
+Since \(u\bmod2=(1-b_p)/2\),
+\[
+\boxed{s\equiv\epsilon(N+1)
+-16\epsilon\,\frac{1-b_p}{2}\frac{1-b_q}{2}\pmod{32}.}
+\]
+
+**When \(N\equiv1\pmod8\):** \(b_p=b_q\). The next informative bit, at modulus \(32\), is exactly whether \(2\) is a square modulo \(N\).
+
+**When \(N\equiv5\pmod8\):** \(b_p=-b_q\), so modulus \(32\) supplies no new bit. Let \(r\in\{p,q\}\) be the unique prime with \((2/r)=+1\). Then
+\[
+\boxed{s\equiv\epsilon(N+1)
+-32\epsilon\left(\frac{r-\epsilon}{8}\bmod2\right)\pmod{64}.}
+\]
+Here the next information distinguishes \(r\bmod16\), with the prime selected by its quadratic character.
+
+For a precise character formulation, define the quartic Dirichlet character modulo \(16\) by
+\[
+\psi(-1)=1,\qquad \psi(5)=i.
+\]
+Then \(\psi^2=(2/\cdot)\), and
+\[
+\psi(p)=i^{\epsilon u}.
+\]
+Thus \(\epsilon,\psi(p),\psi(q)\) determine \(s\bmod64\). These are **Dirichlet-character values of hidden primes**, not automatically quartic residue symbols involving a variable numerator.
+
+More generally, the exact identity above says that subsequent bits require \(uv\bmod2^{k-4}\). There is no universal rule assigning one new residue symbol to every successive bit.
+
+**CONJECTURED:** extracting the missing individual character values efficiently is difficult. Their products, such as
+\[
+\psi(p)\psi(q)=\psi(N),
+\]
+are public. **UNVERIFIED:** factoring-equivalence for each individual higher-bit predicate.
+
+**3. Genus theory and an exact rank connection**
+
+The premise that *all genus characters are efficiently computable from unfactored \(N\)* needs correction.
+
+For \(D=-4N\), the prime-discriminant decomposition is
+\[
+D=(-4)(\epsilon p)(\epsilon q).
+\]
+**PROVED:** \(C=\mathrm{Cl}(D)\) has \(2\)-rank \(2\). But its complete genus-character description uses those hidden prime discriminants. For an appropriately represented integer \(m\), the hidden coordinates include \((m/p)\) and \((m/q)\). Public products do not recover them individually.
+
+The standard Rédei matrix needs the prime-discriminant factors to index its rows and columns and evaluate their pairwise symbols. Once those factors are supplied, its \(4\)-rank computation is polynomial-time linear algebra. [Stevenhagen, Theorems 2.1 and 3.1, equation (16)](https://arxiv.org/pdf/1806.06250)
+
+There is, however, a useful public class:
+\[
+T=[(2,2,(N+1)/2)]\in C[2].
+\]
+Evaluating its genus characters gives **PROVED**
+\[
+\boxed{T\in C^2\iff (2/p)=(2/q)=+1.}
+\]
+Indeed, \(T\) represents \(m=(N+1)/2\), and
+\[
+(m/p)=(2/p),\qquad(m/q)=(2/q).
+\]
+
+So the second-bit quantity is already **genus-determined mathematically**. Its obstacle is computing the hidden genus coordinates without factoring.
+
+A stronger rank-only formulation follows when \(N\equiv1\pmod8\). Define
+\[
+\beta=\frac{1-b_p}{2},\quad
+\eta=\frac{1-\epsilon}{2},\quad
+\lambda=\frac{1-(p/q)}2.
+\]
+The genus maps on bases of ambiguous classes have matrices
+\[
+M_{-4N}=
+\begin{pmatrix}\beta&\lambda+\eta\\ \beta&\lambda\end{pmatrix},
+\qquad
+M_{-8N}=
+\begin{pmatrix}\beta&\beta+\lambda+\eta\\ \beta&\lambda\end{pmatrix}.
+\]
+Their entries are in \(\mathbb F_2\), and \(r_4=2-\operatorname{rank}M\). Therefore **PROVED**
+\[
+\boxed{
+2\text{ square mod }N
+\iff
+\begin{cases}
+r_4\mathrm{Cl}(-8N)>0,&\epsilon=+1,\\
+r_4\mathrm{Cl}(-4N)>0,&\epsilon=-1.
+\end{cases}}
+\]
+These matrices are a proof device: constructing their hidden-prime basis is not an algorithm from \(N\).
+
+The maximal-rank special case for \(\epsilon=+1\),
+\[
+r_4\mathrm{Cl}(-4N)=2
+\iff p\equiv q\equiv1\pmod8,\quad(p/q)=1,
+\]
+is explicitly recorded in [Milović, Proposition 1](https://discovery.ucl.ac.uk/10073324/1/dpq8rank.pdf). The extra mutual symbol explains why \(\mathrm{Cl}(-4N)\)’s rank alone can conflate the desired bit.
+
+**PROVED:** \(8\)-ranks involve additional Rédei-symbol/Frobenius information beyond the ordinary genus quotient. **UNVERIFIED:** any universal identification of these ranks with successive bits of \(p+q\). They contain interaction data beyond prime congruences. [Stevenhagen’s corrected Rédei reciprocity treatment](https://doi.org/10.1017/S0305004121000335)
+
+**4. Three candidate cards**
+
+**F1 — Decide square membership of the public ramified class.**
+
+- **Target / representation:** \(N\equiv1\pmod8\); reduced forms of discriminant \(-4N\), with public \(T\) above.
+- **Operation / information:** decide whether \(X^2=T\) has a class-group solution. This exactly supplies the modulus-\(32\) bit.
+- **Known lemma / missing lemma:** principal genus \(=C^2\); missing is an efficient membership decision using unfactored \(D\).
+- **Cost / randomness:** composition and reduction are polynomial in \(n\). Exhaustively enumerate reduced forms and compare their squares with \(T\): a deterministic \(O(N\,\mathrm{poly}(n))\) baseline. No polynomial extraction bound.
+- **Closest method / difference:** classical principal-genus testing; ask only for membership of this one public class.
+- **Experiment / failure / repair:** enumerate the square fibre of \(T\). Class-list growth defeats enumeration; try the rank-only reformulation F2.
+
+**F2 — Compute only positivity of the selected \(4\)-rank.**
+
+- **Target / representation:** given the first bit \(\epsilon\), use \(D=-8N\) or \(-4N\) according to the boxed criterion.
+- **Operation / information:** obtain \(r_4>0\), for example from a complete relation presentation and its Smith invariants. It exactly decides the next bit.
+- **Known lemma / missing lemma:** the genus-map calculation above; missing is efficient rank extraction without building the hidden Rédei matrix or a complete expensive presentation.
+- **Cost / randomness:** polynomial arithmetic per form/relation; exhaustive group construction remains exponential in \(n\). No polynomial relation-collection guarantee.
+- **Experiment / failure / repair:** both rank formulas passed checks on 238 distinct prime pairs below \(200\). A method requiring explicit ramified-prime generators has already factored \(N\); retain only rank information and public split-prime forms.
+
+**F3 — Project public forms onto useful ambiguous classes.**
+
+- **Target / representation:** construct forms \((\ell,b,c)\) using small public split primes \(\ell\), solving \(b^2\equiv D\pmod{4\ell}\).
+- **Operation / factor extraction:** raise classes to an odd smooth exponent, then square repeatedly to obtain order-\(2\) classes; extract a factor from a useful ambiguous form.
+- **Known lemma / missing lemma:** classical class-group factoring. Missing is a polynomial-cost way to eliminate the odd-order component and reach useful torsion with adequate probability.
+- **Cost / randomness:** a smoothness bound \(B\) costs roughly \(B\,\mathrm{poly}(n)\) per attempt; success depends on class orders and the torsion reached. No uniform polynomial guarantee.
+- **Closest method / experiment / failure:** Schnorr–Lenstra/SPAR; measure useful-torsion frequency and smoothness costs. Adding multipliers may repair individual failures, not the asymptotic bound. The original blanket SPAR smoothness analysis was subsequently invalidated. [Original](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf), [Lenstra–Pomerance](https://community.ams.org/journals/jams/1992-05-03/S0894-0347-1992-1137100-0/S0894-0347-1992-1137100-0.pdf)
+
+Finally, **“finding an ambiguous form IS factoring” needs “useful” qualification here**. The principal class and the nonprincipal public class \(T\) are already ambiguous and reveal no odd factor. For \(-4pq\), finding an ambiguous class outside \(\langle T\rangle\) does reveal \(p,q\); conversely, the factors construct such a class. That task is factoring-equivalent. Reduced ambiguous forms encode discriminant factorizations, some trivial or confined to the known multiplier—precisely the distinction used by SQUFOF. [Schoof, pp. 265–266](https://reneschoof.github.io/mcpaper.pdf), [Gower–Wagstaff, §4.5](https://homes.cerias.purdue.edu/~ssw/squfof.pdf)
