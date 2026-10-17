@@ -26,3 +26,9 @@ Chronological index of every review, audit and repair in this project, with poin
   Rybalov, Milović) (`notes/codex_r4_sos_classgroup.md`).
 * GPT-6.1-sol prior-art map entries not re-read by an agent (`references.md` marks provenance).
 * C-HHloc (Harvey–Hittmeir restricted to a certified interval): not yet tested.
+
+## Appended 2026-10-17 (agent `writer`): r5 report review
+
+| # | Date | Review / repair | Reviewer (independence) | Scope | Outcome | Where recorded |
+|---|---|---|---|---|---|---|
+| 11 | 2026-10-17 | GPT-6.1-sol round 5 review of the first REPORT.md | GPT-6.1-sol (independent of `writer`); orchestrator agreed with all 14 items | REPORT.md, NEXT_STEPS.md | 14 items. Two computational items verified by `writer`: item 3 (`uv ≡ b(1+2[N≡1 mod 16]) mod 4` for `N ≡ 1 mod 8`, so `s mod 64` needs no class-group rank; 3 418 pairs `p<q<1000`, 0 failures) and item 10 (`p=257, m=8, E=70, v=186` is an exact non-character fold with `d = 7 < 9`; two implementations). New diagnostic: `s mod 128` is not determined by `r4`, `r8` of `Cl(−4N)`, `Cl(−8N)` (73/248 keys ambiguous). NEXT_STEPS rewritten for items 1, 3, 7, 9, 11; revised report text handed to the orchestrator | `codex/r5_report_review.out`; `src/repair/verify_r5.py`; `tests/test_repair_r5.py`; `experiments/raw/verify_r5.json`; `NEXT_STEPS.md` |

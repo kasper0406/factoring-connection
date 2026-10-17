@@ -84,6 +84,7 @@ Section pointers name the note that records what was checked.
 - P. Stevenhagen, arXiv:1806.06250 (Rédei matrices; Thms 2.1, 3.1, eq. (16)); corrected Rédei reciprocity, Math. Proc. Cambridge Philos. Soc. (doi 10.1017/S0305004121000335). [G] `codex_r4_sos_classgroup.md` §3.
 - P. Milović, 4-ranks of `Cl(−4pq)` (UCL Discovery `dpq8rank.pdf`), Prop. 1. [G] `codex_r4_sos_classgroup.md` §3; consequence verified numerically by `src/repair/verify_r4.py`.
 - C. P. Schnorr, H. W. Lenstra Jr., class-group factoring (1984); H. W. Lenstra Jr., C. Pomerance, JAMS 5(3) (1992). [G] `codex_r4_sos_classgroup.md` §4.
+- Negative Pell equation `x² − Ny² = −1` (odd continued-fraction period of `√N` ⇒ solvable ⇒ all odd prime factors ≡ 1 mod 4); discussion cited by the GPT-6.1-sol r5 review: math.toronto.edu/~eknight/Pell.pdf. [G] `codex/r5_report_review.out` item 9; used as the positive control in NEXT_STEPS item 1.
 - R. Schoof, *Quadratic fields and factorization* (reneschoof.github.io `mcpaper.pdf`), pp. 265–266; J. E. Gower, S. S. Wagstaff Jr., *Square form factorization*, §4.5. [G] `codex_r4_sos_classgroup.md` §4.
 
 The full GPT-6.1-sol prior-art map, with the exact hypotheses and complexity variables of each entry, is
