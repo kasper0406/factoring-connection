@@ -12,10 +12,13 @@ RAW = "experiments/raw"
 
 
 def rd(name):
+    import gzip
     path = os.path.join(RAW, name)
-    if not os.path.exists(path):
-        return []
-    return [json.loads(l) for l in open(path)]
+    if os.path.exists(path):
+        return [json.loads(l) for l in open(path)]
+    if os.path.exists(path + ".gz"):
+        return [json.loads(l) for l in gzip.open(path + ".gz", "rt")]
+    return []
 
 
 def xor(a, b):

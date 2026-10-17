@@ -1,0 +1,379 @@
+## B1 tiny exhaustive (all composites 4 <= N < 5000)
+Theorem B1 root-level check violations: 0
+
+### group odd_semiprime
+binom cmp sketches=57540
+   coef     hits=  28924 (0.5027/sketch)  (TD incl. res_phi3):1338, ACC:11286, FULL_FROB:2513, FULL_SPORADIC:15, SUPPORT:12077, TD:3033
+   content  hits=   5080 (0.0883/sketch)  (TD incl. res_phi3):857, FULL_FROB:2513, FULL_SPORADIC:15, TD:2552
+   euclid   hits=  32364 (0.5625/sketch)  (TD incl. res_phi3):2180, ACC:22671, SPLIT_FROB:5053, SPLIT_FROB+SPORADIC:4, SPLIT_SPORADIC:767, TD:3869
+binom unc sketches=922460
+   coef     hits= 921204 (0.9986/sketch)  (TD incl. res_phi3):45814, ACC:283, FULL_FROB:1509, SUPPORT:634700, TD:284712
+   content  hits=  11099 (0.0120/sketch)  (TD incl. res_phi3):1105, FULL_FROB:1509, TD:9590
+   euclid   hits= 918521 (0.9957/sketch)  (TD incl. res_phi3):63867, ACC:487916, SPLIT_FROB:105387, SPLIT_FROB+SPORADIC:255, SPLIT_SPORADIC:7054, TD:317909
+cyclo cmp sketches=22547
+   coef     hits=  10700 (0.4746/sketch)  (TD incl. res_phi3):259, ACC:7615, FULL_FROB:876, FULL_SPORADIC:10, TD:2199
+   content  hits=   2570 (0.1140/sketch)  (TD incl. res_phi3):259, FULL_FROB:876, FULL_SPORADIC:10, TD:1684
+   euclid   hits=  11719 (0.5198/sketch)  (TD incl. res_phi3):259, ACC:8259, SPLIT_FROB:1043, SPLIT_SPORADIC:218, TD:2199
+cyclo unc sketches=75453
+   coef     hits=  73171 (0.9698/sketch)  (TD incl. res_phi3):1618, ACC:58541, FULL_FROB:639, TD:13991
+   content  hits=   2921 (0.0387/sketch)  (TD incl. res_phi3):1004, FULL_FROB:639, TD:2282
+   euclid   hits=  73044 (0.9681/sketch)  (TD incl. res_phi3):1624, ACC:57684, SPLIT_FROB:883, SPLIT_SPORADIC:253, TD:14224
+rand  cmp sketches=11304
+   coef     hits=   4580 (0.4052/sketch)  (TD incl. res_phi3):790, ACC:2731, FULL_FROB:160, TD:1689
+   content  hits=    944 (0.0835/sketch)  (TD incl. res_phi3):434, FULL_FROB:160, TD:784
+   euclid   hits=   5308 (0.4696/sketch)  (TD incl. res_phi3):1190, ACC:1951, SPLIT_FROB:952, SPLIT_SPORADIC:104, TD:2301
+rand  unc sketches=8296
+   coef     hits=   7126 (0.8590/sketch)  (TD incl. res_phi3):2174, ACC:3141, FULL_FROB:340, FULL_SPORADIC:2, TD:3643
+   content  hits=   1012 (0.1220/sketch)  (TD incl. res_phi3):603, FULL_FROB:340, FULL_SPORADIC:2, TD:670
+   euclid   hits=   7266 (0.8758/sketch)  (TD incl. res_phi3):2371, ACC:2361, SPLIT_FROB:879, SPLIT_SPORADIC:2, TD:4024
+
+### group odd_3plus
+binom cmp sketches=12220
+   coef     hits=   8483 (0.6942/sketch)  (TD incl. res_phi3):1466, ACC:1370, FULL_FROB:2300, FULL_FROB+SPORADIC:1, FULL_SPORADIC:1, SUPPORT:315, TD:4496
+   content  hits=   6715 (0.5495/sketch)  (TD incl. res_phi3):1383, FULL_FROB:2300, FULL_FROB+SPORADIC:1, FULL_SPORADIC:1, TD:4413
+   euclid   hits=   8880 (0.7267/sketch)  (TD incl. res_phi3):2144, ACC:1350, SPLIT_FROB:2638, SPLIT_FROB+SPORADIC:4, SPLIT_SPORADIC:14, TD:4874
+binom unc sketches=807780
+   coef     hits= 805018 (0.9966/sketch)  (TD incl. res_phi3):102410, ACC:12054, FULL_FROB:2454, SUPPORT:244598, TD:545912
+   content  hits=  33116 (0.0410/sketch)  (TD incl. res_phi3):1699, FULL_FROB:2628, FULL_SPORADIC:3, TD:30485
+   euclid   hits= 806884 (0.9989/sketch)  (TD incl. res_phi3):125569, ACC:169287, SPLIT_FROB:85876, SPLIT_FROB+SPORADIC:900, SPLIT_SPORADIC:2630, TD:548191
+cyclo cmp sketches=5696
+   coef     hits=   3605 (0.6329/sketch)  (TD incl. res_phi3):563, ACC:504, FULL_FROB:892, FULL_SPORADIC:6, TD:2203
+   content  hits=   2971 (0.5216/sketch)  (TD incl. res_phi3):563, FULL_FROB:892, FULL_SPORADIC:6, TD:2073
+   euclid   hits=   3700 (0.6496/sketch)  (TD incl. res_phi3):563, ACC:591, SPLIT_FROB:892, SPLIT_FROB+SPORADIC:1, SPLIT_SPORADIC:13, TD:2203
+cyclo unc sketches=76304
+   coef     hits=  75042 (0.9835/sketch)  (TD incl. res_phi3):2562, ACC:45538, FULL_FROB:1214, FULL_SPORADIC:4, TD:28286
+   content  hits=   6979 (0.0915/sketch)  (TD incl. res_phi3):1624, FULL_FROB:1214, FULL_SPORADIC:12, TD:5753
+   euclid   hits=  75434 (0.9886/sketch)  (TD incl. res_phi3):3154, ACC:45193, SPLIT_FROB:1694, SPLIT_FROB+SPORADIC:17, SPLIT_SPORADIC:448, TD:28082
+rand  cmp sketches=2868
+   coef     hits=   2304 (0.8033/sketch)  (TD incl. res_phi3):832, ACC:572, FULL_FROB:122, TD:1610
+   content  hits=   1192 (0.4156/sketch)  (TD incl. res_phi3):701, FULL_FROB:130, TD:1062
+   euclid   hits=   2522 (0.8794/sketch)  (TD incl. res_phi3):1079, ACC:278, SPLIT_FROB:396, SPLIT_SPORADIC:2, TD:1846
+rand  unc sketches=13532
+   coef     hits=  12636 (0.9338/sketch)  (TD incl. res_phi3):4412, ACC:4451, FULL_FROB:576, FULL_SPORADIC:139, TD:7470
+   content  hits=   2228 (0.1646/sketch)  (TD incl. res_phi3):1209, FULL_FROB:684, FULL_SPORADIC:140, TD:1404
+   euclid   hits=  12706 (0.9390/sketch)  (TD incl. res_phi3):5480, ACC:2507, SPLIT_FROB:1311, SPLIT_FROB+SPORADIC:16, SPLIT_SPORADIC:138, TD:8734
+
+### group prime_power
+binom cmp sketches=3100
+   coef     hits=   3021 (0.9745/sketch)  PRIMEPOW:3021
+   content  hits=   3021 (0.9745/sketch)  PRIMEPOW:3021
+   euclid   hits=   3021 (0.9745/sketch)  PRIMEPOW:3021
+binom unc sketches=27900
+   coef     hits=  27819 (0.9971/sketch)  PRIMEPOW:27819
+   content  hits=  27819 (0.9971/sketch)  PRIMEPOW:27819
+   euclid   hits=  27819 (0.9971/sketch)  PRIMEPOW:27819
+cyclo cmp sketches=1101
+   coef     hits=   1017 (0.9237/sketch)  PRIMEPOW:1017
+   content  hits=   1017 (0.9237/sketch)  PRIMEPOW:1017
+   euclid   hits=   1017 (0.9237/sketch)  PRIMEPOW:1017
+cyclo unc sketches=1999
+   coef     hits=   1967 (0.9840/sketch)  PRIMEPOW:1967
+   content  hits=   1967 (0.9840/sketch)  PRIMEPOW:1967
+   euclid   hits=   1967 (0.9840/sketch)  PRIMEPOW:1967
+rand  cmp sketches=424
+   coef     hits=    421 (0.9929/sketch)  PRIMEPOW:421
+   content  hits=    421 (0.9929/sketch)  PRIMEPOW:421
+   euclid   hits=    421 (0.9929/sketch)  PRIMEPOW:421
+rand  unc sketches=196
+   coef     hits=    196 (1.0000/sketch)  PRIMEPOW:196
+   content  hits=    196 (1.0000/sketch)  PRIMEPOW:196
+   euclid   hits=    196 (1.0000/sketch)  PRIMEPOW:196
+
+### group even
+binom cmp sketches=12490
+   coef     hits=  12461 (0.9977/sketch)  FULL_TRIVIAL:2487, PRIMEPOW:44, TD:9930
+   content  hits=  12461 (0.9977/sketch)  FULL_TRIVIAL:2487, PRIMEPOW:44, TD:9930
+   euclid   hits=  12461 (0.9977/sketch)  (TD incl. res_phi3):1462, PRIMEPOW:44, SPLIT_TRIVIAL:2487, TD:9930
+binom unc sketches=2485510
+   coef     hits=2485128 (0.9998/sketch)  (TD incl. res_phi3):468178, ACC:4188, FULL_FROB:2516, PRIMEPOW:10934, SUPPORT:148437, TD:2319053
+   content  hits= 122733 (0.0494/sketch)  (TD incl. res_phi3):25760, FULL_FROB:2516, FULL_SPORADIC:338, PRIMEPOW:10934, TD:108945
+   euclid   hits=2485475 (1.0000/sketch)  (TD incl. res_phi3):686868, PRIMEPOW:10934, SPLIT_FROB:17573, SPLIT_FROB+SPORADIC:863, SPLIT_SPORADIC:2938, SPLIT_TRIVIAL:128592, TD:2324575
+cyclo cmp sketches=4996
+   coef     hits=   4996 (1.0000/sketch)  FULL_TRIVIAL:2487, PRIMEPOW:22, TD:2487
+   content  hits=   4996 (1.0000/sketch)  FULL_TRIVIAL:2487, PRIMEPOW:22, TD:2487
+   euclid   hits=   4996 (1.0000/sketch)  (TD incl. res_phi3):833, PRIMEPOW:22, SPLIT_TRIVIAL:2487, TD:2487
+cyclo unc sketches=244804
+   coef     hits= 241588 (0.9869/sketch)  (TD incl. res_phi3):14344, ACC:133841, FULL_FROB:7295, FULL_SPORADIC:241, FULL_TRIVIAL:1654, PRIMEPOW:1078, TD:97479
+   content  hits=  27086 (0.1106/sketch)  (TD incl. res_phi3):5878, FULL_FROB:7295, FULL_SPORADIC:619, FULL_TRIVIAL:1654, PRIMEPOW:1078, TD:16440
+   euclid   hits= 242122 (0.9890/sketch)  (TD incl. res_phi3):16363, ACC:132010, PRIMEPOW:1078, SPLIT_FROB:8311, SPLIT_FROB+SPORADIC:101, SPLIT_SPORADIC:1372, SPLIT_TRIVIAL:1654, TD:97596
+rand  unc sketches=49960
+   coef     hits=  49508 (0.9910/sketch)  (TD incl. res_phi3):16593, ACC:8999, FULL_FROB:1427, FULL_SPORADIC:10, PRIMEPOW:220, TD:38852
+   content  hits=  17276 (0.3458/sketch)  (TD incl. res_phi3):6698, FULL_FROB:1684, FULL_SPORADIC:14, PRIMEPOW:220, TD:15358
+   euclid   hits=  49768 (0.9962/sketch)  (TD incl. res_phi3):21811, ACC:5789, PRIMEPOW:220, SPLIT_FROB:2711, SPLIT_FROB+SPORADIC:118, SPLIT_SPORADIC:384, TD:40546
+
+### group carmichael
+binom cmp sketches=110
+   coef     hits=     60 (0.5455/sketch)  (TD incl. res_phi3):14, ACC:15, FULL_FROB:24, TD:21
+   content  hits=     42 (0.3818/sketch)  (TD incl. res_phi3):11, FULL_FROB:24, TD:18
+   euclid   hits=     62 (0.5636/sketch)  (TD incl. res_phi3):16, ACC:15, SPLIT_FROB:24, TD:23
+binom unc sketches=4890
+   coef     hits=   4884 (0.9988/sketch)  (TD incl. res_phi3):821, ACC:195, FULL_FROB:54, SUPPORT:1975, TD:2660
+   content  hits=    324 (0.0663/sketch)  (TD incl. res_phi3):29, FULL_FROB:55, TD:269
+   euclid   hits=   4883 (0.9986/sketch)  (TD incl. res_phi3):910, ACC:1322, SPLIT_FROB:877, SPLIT_FROB+SPORADIC:4, TD:2680
+cyclo cmp sketches=49
+   coef     hits=     26 (0.5306/sketch)  ACC:2, FULL_FROB:14, TD:10
+   content  hits=     24 (0.4898/sketch)  FULL_FROB:14, TD:10
+   euclid   hits=     27 (0.5510/sketch)  ACC:3, SPLIT_FROB:14, TD:10
+cyclo unc sketches=451
+   coef     hits=    449 (0.9956/sketch)  (TD incl. res_phi3):18, ACC:291, FULL_FROB:20, TD:138
+   content  hits=     86 (0.1907/sketch)  (TD incl. res_phi3):13, FULL_FROB:20, TD:66
+   euclid   hits=    451 (1.0000/sketch)  (TD incl. res_phi3):19, ACC:279, SPLIT_FROB:34, TD:138
+rand  cmp sketches=35
+   coef     hits=     32 (0.9143/sketch)  (TD incl. res_phi3):9, ACC:5, FULL_FROB:5, TD:22
+   content  hits=     22 (0.6286/sketch)  (TD incl. res_phi3):6, FULL_FROB:5, TD:17
+   euclid   hits=     34 (0.9714/sketch)  (TD incl. res_phi3):14, ACC:1, SPLIT_FROB:7, TD:26
+rand  unc sketches=65
+   coef     hits=     59 (0.9077/sketch)  (TD incl. res_phi3):17, ACC:22, FULL_FROB:4, TD:33
+   content  hits=     11 (0.1692/sketch)  (TD incl. res_phi3):5, FULL_FROB:4, TD:7
+   euclid   hits=     64 (0.9846/sketch)  (TD incl. res_phi3):20, ACC:4, SPLIT_FROB:23, TD:37
+
+## B2/D2 scalar sketches: trackBD_scalar.jsonl
+key  inst  K/inst | F: TD_0 TD_m1 TD_phi3 FROB SPOR all (pred) | G1: ORDER TD_half all (pred) | NULL | mean p | E[frob+spor on F_p] | E[g] | spor mod 6
+(16, 0) 200 4000 | F: 6891 7099 7858 1835 5392 29075 (29220.1) | G1: 27208 7003 34211 (34349.3) | 7023 | 213 | 1.29 | 6.11 | {0: 400}
+(20, 0) 200 4000 | F: 1859 1772 1703 21 1399 6754 (6785.6) | G1: 5553 1678 7231 (7319.7) | 1789 | 853 | 1.11 | 5.17 | {0: 400}
+(24, 0) 200 4000 | F: 466 436 415 186 375 1878 (1964.5) | G1: 3997 474 4471 (4402.0) | 478 | 3409 | 1.14 | 11.16 | {0: 400}
+(28, 0) 200 4000 | F: 95 104 119 0 127 445 (467.3) | G1: 710 112 822 (894.8) | 119 | 13622 | 0.90 | 9.11 | {0: 400}
+(32, 0) 200 4000 | F: 17 26 43 0 33 119 (114.1) | G1: 272 30 302 (314.9) | 27 | 54575 | 1.14 | 12.06 | {0: 400}
+(36, 0) 60 4000 | F: 3 0 3 0 2 8 (8.5) | G1: 27 3 30 (28.6) | 0 | 218322 | 1.40 | 15.07 | {0: 120}
+(40, 0) 60 4000 | F: 1 0 1 0 0 2 (1.9) | G1: 6 0 6 (3.7) | 0 | 879733 | 0.70 | 8.00 | {0: 120}
+
+## B2/D2 scalar sketches: trackBD_scalar_diag.jsonl
+key  inst  K/inst | F: TD_0 TD_m1 TD_phi3 FROB SPOR all (pred) | G1: ORDER TD_half all (pred) | NULL | mean p | E[frob+spor on F_p] | E[g] | spor mod 6
+(24, 1) 30 4000 | F: 26 32 67 89896 0 90021 (89984.0) | G1: 60017 24 60041 (60032.0) | 66 | 2928 | 2924.20 | 2927.20 | {0: 60}
+(24, 2) 30 4000 | F: 47 45 61 57885 0 58038 (58007.8) | G1: 59904 36 59940 (60000.0) | 68 | 2937 | 1615.20 | 2056.80 | {0: 60}
+(24, 4) 30 4000 | F: 65 65 68 7656 28 7882 (7699.9) | G1: 14538 72 14610 (14455.3) | 63 | 2978 | 157.00 | 347.73 | {0: 60}
+(24, 8) 30 4000 | F: 84 76 100 1549 80 1889 (1975.6) | G1: 5119 76 5195 (5220.9) | 87 | 2680 | 28.50 | 88.20 | {0: 60}
+(24, 16) 30 4000 | F: 74 74 113 830 26 1117 (1153.4) | G1: 4260 94 4354 (4314.1) | 85 | 2740 | 13.00 | 73.73 | {0: 60}
+(24, 32) 30 4000 | F: 74 99 111 27 82 393 (370.5) | G1: 875 77 952 (999.9) | 91 | 2697 | 1.60 | 12.47 | {0: 60}
+(32, 1) 30 4000 | F: 1 1 3 90025 0 90030 (89999.1) | G1: 60129 2 60131 (60001.8) | 3 | 51699 | 51695.20 | 51698.20 | {0: 60}
+(32, 2) 30 4000 | F: 1 4 2 63339 0 63346 (63333.9) | G1: 59802 1 59803 (60000.3) | 2 | 47929 | 29897.60 | 35909.20 | {0: 60}
+(32, 4) 30 4000 | F: 7 3 3 12556 1 12570 (12572.7) | G1: 17617 3 17620 (17644.2) | 4 | 46563 | 4806.00 | 7554.60 | {0: 60}
+(32, 8) 30 4000 | F: 8 5 6 3960 5 3984 (3969.4) | G1: 10639 1 10640 (10471.7) | 7 | 45701 | 1049.70 | 2971.87 | {0: 60}
+(32, 16) 30 4000 | F: 8 8 5 873 2 896 (914.6) | G1: 5038 3 5041 (5092.7) | 6 | 43929 | 233.40 | 1320.73 | {0: 60}
+(32, 32) 30 4000 | F: 7 6 8 1208 4 1233 (1278.1) | G1: 2474 6 2480 (2516.5) | 6 | 44131 | 358.50 | 812.27 | {0: 60}
+
+Carmichael (n=33, K=2000 each): {'G1|ORDER|p': 5472, 'G1|ORDER|q': 44631, 'G1|TD_half|p': 1701, 'G1|TD_half|q': 2243, 'G1|any': 23483, 'NULL|NULL|p': 8129, 'NULL|NULL|q': 5736, 'NULL|any': 12831}
+
+## B3b exact rank distributions, X^r - c, uniform admissible c
+11413=101*113 r=2 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=3 P_gap=0/10780 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=4 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=5 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=6 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=7 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=8 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=12 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+11413=101*113 r=16 P_gap=0/10989 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=2 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=3 P_gap=0/19760 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=4 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=5 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=6 P_gap=0/20055 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=7 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=8 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=12 P_gap=0/20055 F_l-roots(p,q)=(0,0) attrib p={} q={}
+20651=107*193 r=16 P_gap=0/19845 F_l-roots(p,q)=(0,0) attrib p={} q={}
+47959=199*241 r=2 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=3 P_gap=1428/46648 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=4 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=5 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=6 P_gap=1434/47083 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=7 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=8 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=12 P_gap=1434/47083 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+47959=199*241 r=16 P_gap=1422/46215 F_l-roots(p,q)=(6,0) attrib p={'Fl': 6} q={}
+1494329=1009*1481 r=2 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=3 P_gap=0/1486868 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=4 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=5 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=6 P_gap=0/1489353 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=7 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=8 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=12 P_gap=0/1489353 F_l-roots(p,q)=(0,0) attrib p={} q={}
+1494329=1009*1481 r=16 P_gap=0/1486395 F_l-roots(p,q)=(0,0) attrib p={} q={}
+tag r n mean_Pgap mean_pred_from_F_l_roots frac_inst_with_gap ext_c_total mean(Pgap*p)
+balanced16 2 28 0.00778 0.00776 0.14 0 1.56
+balanced16 3 28 0.00713 0.00712 0.14 0 1.43
+balanced16 4 28 0.00627 0.00626 0.14 0 1.26
+balanced16 5 28 0.00876 0.00876 0.14 0 1.75
+balanced16 6 28 0.00497 0.00495 0.14 0 1.01
+balanced16 7 28 0.00876 0.00876 0.14 0 1.75
+balanced16 8 28 0.00579 0.00579 0.14 0 1.17
+balanced16 12 28 0.00399 0.00383 0.18 1 0.82
+balanced16 16 28 0.00377 0.00361 0.14 1 0.79
+balanced20 2 37 0.00267 0.00261 0.35 2 2.30
+balanced20 3 37 0.00261 0.00261 0.35 0 2.24
+balanced20 4 37 0.00267 0.00261 0.35 2 2.30
+balanced20 5 37 0.00261 0.00261 0.35 0 2.24
+balanced20 6 37 0.00266 0.00261 0.35 2 2.29
+balanced20 7 37 0.00261 0.00261 0.35 0 2.24
+balanced20 8 37 0.00254 0.00249 0.35 2 2.19
+balanced20 12 37 0.00266 0.00261 0.35 2 2.29
+balanced20 16 37 0.00254 0.00249 0.35 2 2.19
+balanced24 2 40 0.00078 0.00078 0.30 0 2.57
+balanced24 3 40 0.00078 0.00078 0.30 0 2.57
+balanced24 4 40 0.00075 0.00075 0.30 0 2.47
+balanced24 5 40 0.00078 0.00078 0.30 0 2.57
+balanced24 6 40 0.00078 0.00078 0.30 0 2.57
+balanced24 7 40 0.00072 0.00072 0.30 0 2.37
+balanced24 8 40 0.00074 0.00074 0.30 0 2.42
+balanced24 12 40 0.00074 0.00074 0.30 0 2.42
+balanced24 16 40 0.00071 0.00071 0.30 0 2.33
+
+## B3 rank-split (column-gcd elimination) on balanced semiprimes
+violations: none
+M1   bits=16 n=3300 splits=57 rate=0.0173 accidental_nonunit_entries/matrix=0.161
+M1   bits=20 n=3300 splits=5 rate=0.0015 accidental_nonunit_entries/matrix=0.057
+M1   bits=24 n=3300 splits=4 rate=0.0012 accidental_nonunit_entries/matrix=0.006
+M1   bits=28 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.001
+M1   bits=32 n=3300 splits=1 rate=0.0003 accidental_nonunit_entries/matrix=0.000
+M1   bits=40 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M2   bits=16 n=3300 splits=91 rate=0.0276 accidental_nonunit_entries/matrix=0.048
+M2   bits=20 n=3300 splits=12 rate=0.0036 accidental_nonunit_entries/matrix=0.013
+M2   bits=24 n=3300 splits=6 rate=0.0018 accidental_nonunit_entries/matrix=0.003
+M2   bits=28 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.001
+M2   bits=32 n=3300 splits=2 rate=0.0006 accidental_nonunit_entries/matrix=0.001
+M2   bits=40 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M3   bits=16 n=3300 splits=12 rate=0.0036 accidental_nonunit_entries/matrix=0.009
+M3   bits=20 n=3300 splits=2 rate=0.0006 accidental_nonunit_entries/matrix=0.003
+M3   bits=24 n=3300 splits=1 rate=0.0003 accidental_nonunit_entries/matrix=0.001
+M3   bits=28 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M3   bits=32 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M3   bits=40 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M3b  bits=16 n=3300 splits=100 rate=0.0303 accidental_nonunit_entries/matrix=0.015
+M3b  bits=20 n=3300 splits=18 rate=0.0055 accidental_nonunit_entries/matrix=0.003
+M3b  bits=24 n=3300 splits=12 rate=0.0036 accidental_nonunit_entries/matrix=0.000
+M3b  bits=28 n=3300 splits=2 rate=0.0006 accidental_nonunit_entries/matrix=0.000
+M3b  bits=32 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M3b  bits=40 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M5   bits=16 n=3300 splits=87 rate=0.0264 accidental_nonunit_entries/matrix=0.079
+M5   bits=20 n=3300 splits=12 rate=0.0036 accidental_nonunit_entries/matrix=0.024
+M5   bits=24 n=3300 splits=24 rate=0.0073 accidental_nonunit_entries/matrix=0.004
+M5   bits=28 n=3300 splits=1 rate=0.0003 accidental_nonunit_entries/matrix=0.002
+M5   bits=32 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+M5   bits=40 n=3300 splits=0 rate=0.0000 accidental_nonunit_entries/matrix=0.000
+
+## D5 Berlekamp-Massey over Z/N
+('S1', 16) n=30 STRUCT=18 ACC=12 none=0 LC_p==e_p:30 step/(2LC)[STRUCT]=0.99 meanstep ACC=14 mean p=206 T=768
+('S1', 20) n=30 STRUCT=21 ACC=9 none=0 LC_p==e_p:30 step/(2LC)[STRUCT]=1.00 meanstep ACC=68 mean p=862 T=2560
+('S1', 24) n=30 STRUCT=20 ACC=10 none=0 LC_p==e_p:30 step/(2LC)[STRUCT]=1.00 meanstep ACC=311 mean p=3343 T=4096
+('S2', 16) n=30 STRUCT=0 ACC=30 none=0 LC_p==e_p:- step/(2LC)[STRUCT]=0.00 meanstep ACC=83 mean p=206 T=768
+('S2', 20) n=30 STRUCT=2 ACC=28 none=0 LC_p==e_p:- step/(2LC)[STRUCT]=1.00 meanstep ACC=345 mean p=862 T=2560
+('S2', 24) n=30 STRUCT=0 ACC=25 none=5 LC_p==e_p:- step/(2LC)[STRUCT]=0.00 meanstep ACC=1386 mean p=3343 T=4096
+('S3', 16) n=30 STRUCT=0 ACC=28 none=2 LC_p==e_p:- step/(2LC)[STRUCT]=0.00 meanstep ACC=101 mean p=206 T=768
+('S3', 20) n=30 STRUCT=0 ACC=30 none=0 LC_p==e_p:- step/(2LC)[STRUCT]=0.00 meanstep ACC=408 mean p=862 T=2560
+('S3', 24) n=30 STRUCT=0 ACC=27 none=3 LC_p==e_p:- step/(2LC)[STRUCT]=0.00 meanstep ACC=920 mean p=3343 T=4096
+
+## B2b degree-r sketches on balanced semiprimes (per-sketch rates; hits by class)
+
+### bits=16 instances=100 mean p=210 null/coef=8.99e-03
+  binom1    n=10000 pred_split/sketch=1.11e-02 null_coef/sketch~8.99e-03 | coef: FULL_FROB=30,FULL_SPORADIC=52,TD=272 | content: FULL_FROB=30,FULL_SPORADIC=52,TD=272 | euclid: SPLIT_FROB=30,SPLIT_SPORADIC=52,TD=272
+  binom12   n=10000 pred_split/sketch=6.70e-03 null_coef/sketch~1.08e-01 | coef: ACC=884,SUPPORT=985,TD=94 | content: TD=92 | euclid: ACC=810,ACC_sparse=897,SPLIT_FROB=7,SPLIT_SPORADIC=51,TD=176
+  binom128  n=10000 pred_split/sketch=5.86e-03 null_coef/sketch~1.00e+00 | coef: SUPPORT=9804,TD=196 | content: TD=98 | euclid: ACC_sparse=9515,SPLIT_SPORADIC=41,TD=279
+  binom16   n=10000 pred_split/sketch=6.89e-03 null_coef/sketch~1.44e-01 | coef: ACC=1009,SUPPORT=2158,TD=120 | content: TD=91 | euclid: ACC=963,ACC_sparse=1118,SPLIT_SPORADIC=47,TD=275
+  binom2    n=10000 pred_split/sketch=1.02e-02 null_coef/sketch~1.80e-02 | coef: ACC=249,FULL_FROB=6,FULL_SPORADIC=1,TD=86 | content: FULL_FROB=6,FULL_SPORADIC=1,TD=86 | euclid: ACC=128,SPLIT_FROB=34,SPLIT_SPORADIC=70,TD=269
+  binom200  n=10000 pred_split/sketch=8.55e-03 null_coef/sketch~1.00e+00 | coef: SUPPORT=9816,TD=184 | content: TD=60 | euclid: ACC_sparse=9639,SPLIT_FROB=6,SPLIT_SPORADIC=75,TD=280
+  binom3    n=10000 pred_split/sketch=9.74e-03 null_coef/sketch~2.70e-02 | coef: ACC=271,TD=164 | content: TD=98 | euclid: ACC=297,SPLIT_FROB=38,SPLIT_SPORADIC=73,TD=258
+  binom32   n=10000 pred_split/sketch=6.43e-03 null_coef/sketch~2.88e-01 | coef: ACC=1259,SUPPORT=5196,TD=145 | content: TD=93 | euclid: ACC=1144,ACC_sparse=2874,SPLIT_SPORADIC=47,TD=258
+  binom4    n=10000 pred_split/sketch=9.04e-03 null_coef/sketch~3.60e-02 | coef: ACC=274,TD=84 | content: TD=84 | euclid: ACC=256,SPLIT_FROB=14,SPLIT_SPORADIC=65,TD=275
+  binom6    n=10000 pred_split/sketch=7.61e-03 null_coef/sketch~5.39e-02 | coef: ACC=481,SUPPORT=397,TD=95 | content: TD=93 | euclid: ACC=327,ACC_sparse=156,SPLIT_FROB=26,SPLIT_SPORADIC=44,TD=186
+  binom64   n=10000 pred_split/sketch=5.86e-03 null_coef/sketch~5.75e-01 | coef: SUPPORT=9812,TD=188 | content: TD=87 | euclid: ACC_sparse=8393,SPLIT_SPORADIC=45,TD=262
+  binom8    n=10000 pred_split/sketch=8.83e-03 null_coef/sketch~7.19e-02 | coef: ACC=682,SUPPORT=491,TD=100 | content: TD=97 | euclid: ACC=545,ACC_sparse=400,SPLIT_FROB=7,SPLIT_SPORADIC=76,TD=295
+  cyclo     n=5800 | coef: ACC=1351,FULL_FROB=8,SUPPORT=27 | content: FULL_FROB=8 | euclid: ACC=1297,ACC_sparse=14,SPLIT_FROB=20,SPLIT_SPORADIC=37
+  rand      n=2000 | coef: ACC=115 | euclid: ACC=73,SPLIT_FROB=8,SPLIT_SPORADIC=10
+
+### bits=20 instances=100 mean p=854 null/coef=2.24e-03
+  binom1    n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~2.24e-03 | coef: FULL_FROB=1,FULL_SPORADIC=15,TD=74 | content: FULL_FROB=1,FULL_SPORADIC=15,TD=74 | euclid: SPLIT_FROB=1,SPLIT_SPORADIC=15,TD=74
+  binom12   n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~2.69e-02 | coef: ACC=288,SUPPORT=398,TD=18 | content: TD=18 | euclid: ACC=221,ACC_sparse=397,SPLIT_FROB=1,SPLIT_SPORADIC=24,TD=38
+  binom128  n=10000 pred_split/sketch=2.19e-03 null_coef/sketch~2.87e-01 | coef: ACC=860,SUPPORT=6379,TD=36 | content: TD=21 | euclid: ACC=908,ACC_sparse=4466,SPLIT_SPORADIC=18,TD=61
+  binom16   n=10000 pred_split/sketch=2.28e-03 null_coef/sketch~3.59e-02 | coef: ACC=324,SUPPORT=495,TD=29 | content: TD=25 | euclid: ACC=311,ACC_sparse=308,SPLIT_FROB=1,SPLIT_SPORADIC=25,TD=58
+  binom2    n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~4.49e-03 | coef: ACC=41,TD=22 | content: TD=22 | euclid: ACC=14,SPLIT_SPORADIC=20,TD=58
+  binom200  n=10000 pred_split/sketch=2.26e-03 null_coef/sketch~4.49e-01 | coef: ACC=478,SUPPORT=8559,TD=49 | content: TD=29 | euclid: ACC=485,ACC_sparse=6680,SPLIT_FROB=1,SPLIT_SPORADIC=23,TD=73
+  binom3    n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~6.73e-03 | coef: ACC=96,TD=46 | content: TD=20 | euclid: ACC=60,SPLIT_FROB=1,SPLIT_SPORADIC=22,TD=68
+  binom32   n=10000 pred_split/sketch=2.26e-03 null_coef/sketch~7.18e-02 | coef: ACC=580,SUPPORT=1688,TD=33 | content: TD=23 | euclid: ACC=553,ACC_sparse=941,SPLIT_FROB=1,SPLIT_SPORADIC=28,TD=69
+  binom4    n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~8.98e-03 | coef: ACC=101,TD=19 | content: TD=19 | euclid: ACC=72,SPLIT_SPORADIC=23,TD=62
+  binom6    n=10000 pred_split/sketch=2.32e-03 null_coef/sketch~1.35e-02 | coef: ACC=121,SUPPORT=100,TD=27 | content: TD=27 | euclid: ACC=120,ACC_sparse=100,SPLIT_FROB=1,SPLIT_SPORADIC=24,TD=49
+  binom64   n=10000 pred_split/sketch=2.24e-03 null_coef/sketch~1.44e-01 | coef: ACC=799,SUPPORT=3883,TD=29 | content: TD=20 | euclid: ACC=821,ACC_sparse=2137,SPLIT_FROB=2,SPLIT_SPORADIC=32,TD=64
+  binom8    n=10000 pred_split/sketch=2.28e-03 null_coef/sketch~1.80e-02 | coef: ACC=184,SUPPORT=100,TD=26 | content: TD=25 | euclid: ACC=139,ACC_sparse=100,SPLIT_FROB=3,SPLIT_SPORADIC=19,TD=75
+  cyclo     n=5800 | coef: ACC=390,SUPPORT=6 | euclid: ACC=345,ACC_sparse=4,SPLIT_FROB=4,SPLIT_SPORADIC=9
+  rand      n=2000 | coef: ACC=18 | euclid: ACC=12,SPLIT_SPORADIC=5
+
+### bits=24 instances=100 mean p=3395 null/coef=5.63e-04
+  binom1    n=10000 pred_split/sketch=1.07e-03 null_coef/sketch~5.63e-04 | coef: FULL_FROB=2,FULL_SPORADIC=7,TD=13 | content: FULL_FROB=2,FULL_SPORADIC=7,TD=13 | euclid: SPLIT_FROB=2,SPLIT_SPORADIC=7,TD=13
+  binom12   n=10000 pred_split/sketch=8.73e-04 null_coef/sketch~6.75e-03 | coef: ACC=65,SUPPORT=100,TD=7 | content: TD=7 | euclid: ACC=57,ACC_sparse=1,SPLIT_FROB=1,SPLIT_SPORADIC=5,TD=11
+  binom128  n=10000 pred_split/sketch=8.12e-04 null_coef/sketch~7.20e-02 | coef: ACC=625,SUPPORT=1099,TD=10 | content: TD=9 | euclid: ACC=659,ACC_sparse=639,SPLIT_FROB=3,SPLIT_SPORADIC=6,TD=17
+  binom16   n=10000 pred_split/sketch=8.43e-04 null_coef/sketch~9.01e-03 | coef: ACC=90,SUPPORT=100,TD=3 | content: TD=3 | euclid: ACC=74,ACC_sparse=1,SPLIT_FROB=1,SPLIT_SPORADIC=10,TD=14
+  binom2    n=10000 pred_split/sketch=1.04e-03 null_coef/sketch~1.13e-03 | coef: ACC=12,FULL_FROB=1,TD=5 | content: FULL_FROB=1,TD=5 | euclid: ACC=8,SPLIT_FROB=6,SPLIT_SPORADIC=7,TD=17
+  binom200  n=10000 pred_split/sketch=9.14e-04 null_coef/sketch~1.13e-01 | coef: ACC=763,SUPPORT=1799,TD=5 | content: TD=4 | euclid: ACC=894,ACC_sparse=1169,SPLIT_FROB=5,SPLIT_SPORADIC=4,TD=14
+  binom3    n=10000 pred_split/sketch=1.03e-03 null_coef/sketch~1.69e-03 | coef: ACC=26,TD=14 | content: TD=8 | euclid: ACC=20,SPLIT_FROB=3,SPLIT_SPORADIC=7,TD=21
+  binom32   n=10000 pred_split/sketch=8.12e-04 null_coef/sketch~1.80e-02 | coef: ACC=166,SUPPORT=199,TD=9 | content: TD=9 | euclid: ACC=154,ACC_sparse=102,SPLIT_FROB=1,SPLIT_SPORADIC=5,TD=19
+  binom4    n=10000 pred_split/sketch=9.90e-04 null_coef/sketch~2.25e-03 | coef: ACC=15,TD=2 | content: TD=2 | euclid: ACC=17,SPLIT_FROB=7,SPLIT_SPORADIC=5,TD=15
+  binom6    n=10000 pred_split/sketch=9.88e-04 null_coef/sketch~3.38e-03 | coef: ACC=37,TD=9 | content: TD=9 | euclid: ACC=31,SPLIT_FROB=2,SPLIT_SPORADIC=5,TD=12
+  binom64   n=10000 pred_split/sketch=8.12e-04 null_coef/sketch~3.60e-02 | coef: ACC=309,SUPPORT=600,TD=3 | content: TD=3 | euclid: ACC=297,ACC_sparse=309,SPLIT_FROB=1,SPLIT_SPORADIC=4,TD=15
+  binom8    n=10000 pred_split/sketch=9.20e-04 null_coef/sketch~4.50e-03 | coef: ACC=47,TD=8 | content: TD=8 | euclid: ACC=31,SPLIT_FROB=3,SPLIT_SPORADIC=4,TD=17
+  cyclo     n=5800 | coef: ACC=89,SUPPORT=1 | euclid: ACC=91,SPLIT_FROB=9,SPLIT_SPORADIC=1
+  rand      n=2000 | coef: ACC=4 | euclid: ACC=6,SPLIT_FROB=1,SPLIT_SPORADIC=2
+
+### bits=28 instances=100 mean p=13602 null/coef=1.41e-04
+  binom1    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~1.41e-04 | coef: FULL_SPORADIC=2,TD=4 | content: FULL_SPORADIC=2,TD=4 | euclid: SPLIT_SPORADIC=2,TD=4
+  binom12   n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~1.69e-03 | coef: ACC=20,SUPPORT=100 | euclid: ACC=13,TD=3
+  binom128  n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~1.80e-02 | coef: ACC=188,SUPPORT=200,TD=3 | content: TD=3 | euclid: ACC=194,ACC_sparse=100,SPLIT_SPORADIC=2,TD=5
+  binom16   n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~2.25e-03 | coef: ACC=24,SUPPORT=98,TD=3 | content: TD=2 | euclid: ACC=14,ACC_sparse=98,SPLIT_SPORADIC=2,TD=4
+  binom2    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~2.81e-04 | coef: ACC=1 | euclid: ACC=1,TD=1
+  binom200  n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~2.81e-02 | coef: ACC=248,SUPPORT=300,TD=2 | content: TD=2 | euclid: ACC=265,ACC_sparse=200,SPLIT_SPORADIC=1,TD=7
+  binom3    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~4.22e-04 | coef: ACC=3,TD=1 | euclid: ACC=4,SPLIT_SPORADIC=3,TD=4
+  binom32   n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~4.50e-03 | coef: ACC=35,SUPPORT=100,TD=1 | content: TD=1 | euclid: ACC=47,ACC_sparse=100,TD=3
+  binom4    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~5.63e-04 | coef: ACC=7,TD=2 | content: TD=2 | euclid: ACC=8,SPLIT_SPORADIC=5,TD=4
+  binom6    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~8.44e-04 | coef: ACC=11,TD=1 | content: TD=1 | euclid: ACC=3,SPLIT_SPORADIC=2,TD=4
+  binom64   n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~9.00e-03 | coef: ACC=76,SUPPORT=100 | euclid: ACC=74,ACC_sparse=100,SPLIT_SPORADIC=1,TD=5
+  binom8    n=10000 pred_split/sketch=1.66e-04 null_coef/sketch~1.13e-03 | coef: ACC=6,TD=1 | content: TD=1 | euclid: ACC=10,SPLIT_SPORADIC=1,TD=5
+  cyclo     n=5800 | coef: ACC=48,SUPPORT=1 | euclid: ACC=31,ACC_sparse=1
+  rand      n=2000 | coef: ACC=1 | euclid: ACC=2
+
+### bits=32 instances=100 mean p=55164 null/coef=3.48e-05
+  binom1    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~3.48e-05 | coef: TD=2 | content: TD=2 | euclid: TD=2
+  binom12   n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~4.18e-04 | coef: ACC=2 | euclid: ACC=3
+  binom128  n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~4.46e-03 | coef: ACC=38,SUPPORT=200 | euclid: ACC=34,ACC_sparse=200
+  binom16   n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~5.57e-04 | coef: ACC=7 | euclid: ACC=3
+  binom2    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~6.97e-05 | coef: ACC=1 | euclid: SPLIT_SPORADIC=1
+  binom200  n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~6.97e-03 | coef: ACC=60,SUPPORT=200,TD=1 | content: TD=1 | euclid: ACC=70,ACC_sparse=200,SPLIT_SPORADIC=1,TD=2
+  binom3    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~1.04e-04 | coef: ACC=1,TD=2 | euclid: ACC=3,TD=2
+  binom32   n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~1.11e-03 | coef: ACC=15,SUPPORT=100 | euclid: ACC=11
+  binom4    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~1.39e-04 | coef: TD=1 | content: TD=1 | euclid: TD=1
+  binom6    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~2.09e-04 | euclid: ACC=1
+  binom64   n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~2.23e-03 | coef: ACC=24,SUPPORT=200 | euclid: ACC=17,ACC_sparse=101
+  binom8    n=10000 pred_split/sketch=3.13e-05 null_coef/sketch~2.79e-04 | coef: ACC=5,TD=1 | content: TD=1 | euclid: ACC=2,TD=1
+  cyclo     n=5800 | coef: ACC=11 | euclid: ACC=4
+  rand      n=2000 | coef: ACC=2 | euclid: ACC=1
+
+### bits=36 instances=30 mean p=218253 null/coef=8.88e-06
+  binom1    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~8.88e-06 | 
+  binom12   n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~1.07e-04 | 
+  binom128  n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~1.14e-03 | coef: ACC=2 | euclid: ACC=5
+  binom16   n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~1.42e-04 | coef: ACC=1
+  binom2    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~1.78e-05 | 
+  binom200  n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~1.78e-03 | coef: ACC=8 | euclid: ACC=2
+  binom3    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~2.66e-05 | 
+  binom32   n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~2.84e-04 | coef: ACC=1 | euclid: ACC=1
+  binom4    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~3.55e-05 | 
+  binom6    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~5.33e-05 | 
+  binom64   n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~5.68e-04 | coef: ACC=2
+  binom8    n=3000 pred_split/sketch=9.64e-06 null_coef/sketch~7.11e-05 | euclid: ACC=1
+  cyclo     n=1740 | 
+  rand      n=600 | 
+
+### bits=40 instances=30 mean p=892300 null/coef=2.18e-06
+  binom1    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~2.18e-06 | 
+  binom12   n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~2.61e-05 | 
+  binom128  n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~2.79e-04 | coef: ACC=1,SUPPORT=100 | euclid: ACC_sparse=100
+  binom16   n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~3.49e-05 | euclid: ACC=1
+  binom2    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~4.36e-06 | 
+  binom200  n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~4.36e-04 | coef: ACC=1,SUPPORT=100
+  binom3    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~6.54e-06 | 
+  binom32   n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~6.97e-05 | 
+  binom4    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~8.71e-06 | 
+  binom6    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~1.31e-05 | 
+  binom64   n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~1.39e-04 | 
+  binom8    n=3000 pred_split/sketch=1.30e-06 null_coef/sketch~1.74e-05 | 
+  cyclo     n=1740 | euclid: ACC=1
+  rand      n=600 | 

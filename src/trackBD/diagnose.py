@@ -208,7 +208,7 @@ def scalar_roots_census(p: int, m: int) -> Dict[str, int]:
         lhs = pow(1 + c, m, p)
         rhs = (1 + pow(c, m, p)) % p
         if lhs == rhs:
-            if c in (0, p - 1):
+            if c in (0, p - 1) or (c * c + c + 1) % p == 0:  # universal points incl. omega
                 F_triv += 1
             elif pow(c, m - 1, p) == 1 and pow(1 + c, m - 1, p) == 1:
                 F_frob += 1

@@ -1,0 +1,563 @@
+**[proved] The synthesis needs three substantive corrections.** The useful invariant is **CRT disagreement**, rather than a difference between marginal root densities. S1 describes an operational family only after qualifying circuit size, branching, lifts, and preprocessing. S3’s proposed restriction to characters of order related to \(\gcd(q,p-1)\) is false.
+
+**[conjectured] The strongest continuation is a repaired weighted-sum collision mechanism, H2 below.** It has an explicit shared-list construction and a measurable remaining batching problem. None of the four cards currently establishes an asymptotic improvement over known factoring algorithms.
+
+**[experimentally supported]** I saved [exact diagnostic code](/home/knielsen/code/factoring-connection/codex/round2_experiments.py) and [raw results](/home/knielsen/code/factoring-connection/codex/round2_results.json). These include exact character-sum checks, quotient distributions, carry-frontier tests, collision layouts, and a reproducible continued-fraction comparison.
+
+---
+
+**1. S1–S2: the model and the correct reduction**
+
+**[proved] S1’s CRT criterion is correct for squarefree semiprimes and scalar GCD tests.** For \(N=pq\),
+\[
+1<\gcd(c,N)<N
+\iff
+[c\bmod p=0]\mathbin{\oplus}[c\bmod q=0].
+\]
+For an algebra represented in a public basis, this criterion applies to each tested coordinate. Testing whether an entire algebra element vanishes means testing all its coordinates simultaneously. A determinant being zero instead means that multiplication by the element is singular.
+
+**[refuted for this model] S1’s assertion that all the listed constructions are already polynomial-size SLPs is too strong.**
+
+| Construction | Status and correction |
+|---|---|
+| Polynomial-size quotient sketches and multiplication matrices | **proved:** polynomial-dimensional algebra computations expand into polynomial-size coordinate SLPs. |
+| Unit-pivot elimination | **proved:** fits an **adaptive** ring-plus-GCD program; it is not literally a single division-free SLP. |
+| Repeated binary sections | **UNVERIFIED:** polynomial circuit size is precisely the missing construction lemma. |
+| Product trees and block factorial methods | **proved:** fit ring-plus-GCD computations of their actual size, which is generally exponential in \(\log N\). |
+| Shift grammars and compressed discriminants | **UNVERIFIED:** short descriptions do not establish short evaluable SLPs. |
+| The simplified divided derivative \(H_N\) | **proved:** its explicit formula has a short SLP over \(R_N\). |
+| Arbitrary computations modulo \(N^t\), followed by division by \(N\) | **refuted for this model:** these are not automatically computations in an \(R_N\)-algebra. A unital \(R_N\)-algebra has \(N\cdot1=0\); \(\mathbb Z/N^2\mathbb Z\) does not. |
+
+**[proved] The preprocessing restriction is essential.** If the constructor may perform arbitrary polynomial-time bit computations on explicit \(N\), then any polynomial-time factoring algorithm can run inside that constructor and emit its factor as a constant.
+
+There is an even stronger compilation observation. Boolean computations on supplied bits compile into ring computations using
+\[
+\operatorname{AND}(x,y)=xy,\qquad
+\operatorname{NOT}(x)=1-x,\qquad
+\operatorname{XOR}(x,y)=x+y-2xy.
+\]
+Consequently, the broad “uniform polynomial-size SLP constructed from \(N\)” formulation can represent every polynomial-time bit algorithm.
+
+**[proved] Therefore “outside GR+gcd” needs an operational meaning:** operations on opaque residue handles are restricted to ring operations and specified tests; reading their canonical representatives, extracting bits, rounding, or changing moduli through integer representatives adds capabilities. The cards below escape that operational interface. They do not establish circuit nonrepresentability in the unrestricted formulation.
+
+**[refuted for this model] S2’s marginal-skew requirement is unnecessary.** If local zero events are independent and have probabilities \(a,b\), the splitting probability is
+\[
+\boxed{D=a(1-b)+b(1-a)=a+b-2ab.}
+\]
+Thus
+\[
+D\ge |a-b|,
+\]
+but \(D\) can be constant while \(|a-b|\) is exponentially small.
+
+**[proved] An algebraic example makes the distinction exact.** Suppose \(p,q\equiv3\pmod4\), and supply
+\[
+E=\frac{\operatorname{lcm}(p-1,q-1)}2,\qquad C(X)=X^E-1.
+\]
+Then
+\[
+a=\frac{p-1}{2p},\qquad b=\frac{q-1}{2q},
+\]
+so
+\[
+|a-b|=\frac{|p-q|}{2pq},
+\qquad
+D=\frac12-\frac1{2N}.
+\]
+Supplying this exponent is not a factor-free construction. The example refutes the claimed necessity of marginal skew **for an observable**.
+
+**[proved] Shared randomness also matters.** With public random parameters \(\sigma\) and independent uniform CRT inputs conditional on \(\sigma\),
+\[
+D=\mathbb E_\sigma[
+a_\sigma+b_\sigma-2a_\sigma b_\sigma].
+\]
+Unconditional marginals alone do not determine \(D\). For example, a shared random bit returned as the computed element gives both marginal zero probabilities \(1/2\), but no splitting.
+
+**[proved] The clean nonadaptive equivalence is the following.**
+
+Fix an input family and allow uniformly constructible polynomial-size coordinate SLPs, polynomially many tested outputs, and efficiently sampled randomness. Then
+\[
+\begin{split}
+&\text{nonadaptive randomized polynomial-time ring-plus-GCD splitting}\\
+&\quad\Longleftrightarrow\\
+&\text{a uniformly sampled polynomial-size tested observable with}\\
+&\qquad\Pr(Z_p\oplus Z_q)\ge1/\operatorname{poly}(n).
+\end{split}
+\]
+
+**Proof.** If at most \(T(n)\) outputs are tested and splitting succeeds with probability \(\varepsilon(n)\), the union bound gives
+\[
+\sum_{j=1}^{T}\Pr(Z_{p,j}\oplus Z_{q,j})\ge\varepsilon.
+\]
+Choosing a uniformly random tested output succeeds with probability at least \(\varepsilon/T\). Conversely, evaluate a separator, take its GCD, and repeat polynomially many times. Polynomial-dimensional algebra operations expand into polynomially many scalar operations. \(\square\)
+
+**[proved] Root-density skew is a sufficient condition for this theorem, under the stated sampling conditions.** It is not the correct necessary condition.
+
+**[UNVERIFIED] The same nontrivial SLP characterization has not been established here for unrestricted adaptive programs.** Before finding a factor, GCD outcomes \(1\) and \(N\), and equality outcomes, can still change subsequent arithmetic. Freezing one transcript can lose exponentially much probability; a small arithmetic SLP need not implement the branching tests.
+
+**[proved] In the unrestricted bit-preprocessing model, an equivalence with skew becomes tautological.** Compile a randomized factoring algorithm into a Boolean/ring circuit which returns the smaller factor on verified success and \(1\) otherwise. For \(p<q\), its zero probabilities are \(\varepsilon\) and \(0\). This supplies skew, but supplies no useful algebraic characterization of factoring.
+
+**[UNVERIFIED] S2’s list of all possible positive sources is not an established classification.** In particular, random quotient algebras can create different local decomposition types. Aggarwal–Maurer exploit exactly such a phenomenon. The available results do not reduce every useful quotient computation to scalar group-order coincidences.
+
+---
+
+**2. S3: exact root counts and exposure probabilities**
+
+**[proved]** Let
+\[
+R_{p,k}(q)=
+\#\{x\in\mathbb F_{p^k}:(x+1)^q-x^q=1\}.
+\]
+For \(N=pq\),
+\[
+F_N\bmod p=F_q(X)^p.
+\]
+Hence \(F_N\) and \(F_q\) have identical root sets over every extension of \(\mathbb F_p\), although their multiplicities differ.
+
+Assume first that \(q\) is odd. Put \(Q=p^k\).
+
+**[proved] The proposed substitution is correct, with its exclusions recorded.** For \(x\ne0\),
+\[
+t=\frac{x+1}{x}
+\]
+gives
+\[
+F_q(x)=0
+\iff
+t^q-(t-1)^q=1.
+\]
+The map excludes \(t=1\); \(x=0\) must be added separately.
+
+**[proved] An exact additive-character expression is**
+\[
+\boxed{
+R_{p,k}(q)=
+\frac1Q\sum_{u\in\mathbb F_Q}\psi(-u)
+\sum_{x\in\mathbb F_Q}
+\psi\!\left(u((x+1)^q-x^q)\right),
+}
+\]
+where \(\psi\) is any nontrivial additive character.
+
+**[proved] An exact Jacobi-sum expression is**
+\[
+\boxed{
+R_{p,k}(q)=
+2+\frac1{(Q-1)^2}
+\sum_{\chi,\lambda}
+J(\chi^q,\lambda^q)\,
+J(\bar\chi,\bar\lambda).
+}
+\tag{1}
+\]
+The sum runs over **all** multiplicative characters of \(\mathbb F_Q^\times\), including the trivial character. Every character is extended by zero at zero, and
+\[
+J(\chi,\lambda)=
+\sum_{a+b=1}\chi(a)\lambda(b).
+\]
+
+**Proof.** Set \(a=x+1,b=-x\). Since \(q\) is odd, the root equations become
+\[
+a+b=1,\qquad a^q+b^q=1.
+\]
+The cases \(ab=0\) contribute two roots. For the remaining cases introduce nonzero \(c,d\) with \(c+d=1\), and use
+\[
+\mathbf1_{c=a^q}
+=\frac1{Q-1}\sum_\chi \chi^q(a)\bar\chi(c).
+\]
+Applying the analogous identity to \(d=b^q\) and summing gives (1). \(\square\)
+
+**[refuted for this model] The characters cannot generally be restricted to orders dividing \(\gcd(q,Q-1)\).** Even when that GCD is \(1\), the permutation \(\chi\mapsto\chi^q\) in (1) carries substantial information.
+
+For example, over \(\mathbb F_{17}\),
+\[
+R_{17,1}(19)=2,\qquad R_{17,1}(41)=5,
+\]
+although both exponent GCDs with \(16\) equal \(1\). The second root set is
+\[
+\{0,1,8,15,16\}.
+\]
+Indeed, for the smaller factor \(p<q\), \(\gcd(q,p-1)=1\) always.
+
+**[proved] The complete power map matters.** Exponents act modulo \(Q-1\) on nonzero elements, with zero handled separately. In particular,
+\[
+q\equiv p^j\pmod{Q-1}
+\quad\Longrightarrow\quad
+R_{p,k}(q)=Q,
+\]
+because the power map is then Frobenius.
+
+**[refuted for this model] Thus S3’s “another order-coincidence source, not a new one” conclusion does not follow.** Equation (1) is a correlation between two additive constraints and a power map; it is not the usual unrestricted Fermat-curve count. Nor does it classify binary sections, which change the polynomial.
+
+**[proved] Edge cases:** if \(q=2\ne p\), then \(F_2(X)=2X\) has one root over every extension. If \(q=p\), \(F_q\) is the zero polynomial in characteristic \(p\).
+
+**[proved] These formulas are counting identities, not efficient counting algorithms.** Their direct character sums have exponentially many terms in \(\log Q\).
+
+**[proved] Uniform scalar exposure has the exact probability**
+\[
+\boxed{
+P_{\rm scalar}
+=\frac{R_{p,1}(q)}p+
+ \frac{R_{q,1}(p)}q-
+ \frac{2R_{p,1}(q)R_{q,1}(p)}{pq}.
+}
+\tag{2}
+\]
+For example, \(N=35\) gives \(R_{5,1}(7)=2\), \(R_{7,1}(5)=4\), and \(P_{\rm scalar}=18/35\).
+
+**[proved] Random monic quotients require irreducible-factor data, not just scalar root counts.** Write
+\[
+f_p=F_q^p=\text{unit}\cdot\prod_P P^{m_P},
+\qquad d_P=\deg P.
+\]
+For uniform monic \(h\) of degree \(r\) over \(\mathbb F_p\),
+\[
+\boxed{
+A_p(r):=\Pr(h\mid f_p)
+=p^{-r}[z^r]\prod_{P\mid f_p}
+(1+z^{d_P}+\cdots+z^{m_Pd_P}).
+}
+\tag{3}
+\]
+Thus a GCD of \(N\) with **all remainder coordinates together** splits with probability
+\[
+A_p+A_q-2A_pA_q.
+\]
+
+**[proved] A resultant tests a different event.** Put
+\[
+\boxed{
+U_p(r):=\Pr(\gcd(h,f_p)=1)
+=p^{-r}[z^r]\frac{\prod_{P\mid f_p}(1-z^{d_P})}{1-pz}.
+}
+\tag{4}
+\]
+Then \(\gcd(N,\operatorname{Res}(h,F_N))\) splits with probability
+\[
+B_p+B_q-2B_pB_q,\qquad B_\ell=1-U_\ell.
+\]
+
+**[proved] The entire rank distribution has a generating function.** Define
+\[
+H_p(z,u)=\frac1{1-pz}
+\prod_{P\mid f_p}
+\left[
+(1-z^{d_P})
+\sum_{v\ge0}z^{vd_P}u^{d_P\min(v,m_P)}
+\right].
+\]
+For multiplication by \(f_p\) in \(\mathbb F_p[X]/h\),
+\[
+\pi_{p,j}=p^{-r}[z^ru^{r-j}]H_p(z,u).
+\]
+Consequently,
+\[
+\boxed{P_{\rm rank\ gap}=1-\sum_{j=0}^r\pi_{p,j}\pi_{q,j}.}
+\tag{5}
+\]
+Equal-rank nonunit entries remain additional opportunities; (5) is not their probability.
+
+**[proved] Extension root counts recover distinct factor degrees.** If \(I_d\) counts the distinct degree-\(d\) irreducible factors of \(F_q\) over \(\mathbb F_p\), then
+\[
+R_{p,k}(q)=\sum_{d\mid k}dI_d,
+\qquad
+I_d=\frac1d\sum_{e\mid d}\mu(d/e)R_{p,e}(q).
+\]
+Equations (3) and the full rank distribution additionally require multiplicities.
+
+**[proved] If a random algebra element is evaluated, rather than the quotient generator, there is another exact formula.** Conditional on
+\[
+h=\prod_iP_i^{m_i},\qquad d_i=\deg P_i,
+\]
+a uniform algebra element has independent local components. If \(\alpha\) is a root of \(F_q\) in \(\mathbb F_{p^{d_i}}\) of multiplicity \(t_\alpha\), its local contribution to the probability \(F_N(a)=0\) is
+\[
+\sum_{\alpha}
+p^{-d_i\lceil m_i/(pt_\alpha)\rceil}.
+\]
+Multiply these contributions across \(i\). When \(r<p\), this simplifies to
+\[
+\Pr(F_N(a)=0\mid h)
+=\prod_i\frac{R_{p,d_i}(q)}{p^{d_i}}.
+\]
+The conditional probability that \(F_N(a)\) is a nonunit is
+\[
+1-\prod_i\left(1-\frac{R_{p,d_i}(q)}{p^{d_i}}\right).
+\]
+Averaging over \(h\), and applying CRT disagreement, gives the corresponding exposure probabilities.
+
+**[proved] Weighted quotients \(X^r-c\) have their own distribution.** Set
+\[
+d_p(c)=\deg\gcd(X^r-c,F_q^p).
+\]
+Uniform \(c\bmod N\) gives independent local weights, so the rank-gap probability is
+\[
+1-\sum_d\Pr(d_p(c)=d)\Pr(d_q(c)=d).
+\]
+Extension root counts alone do not determine this weighted distribution.
+
+---
+
+**3. Prior art: what the checked theorems actually establish**
+
+**[proved] Aggarwal–Maurer, EUROCRYPT 2009, Theorem 1:** the factoring assumption implies the generic RSA assumption for the paper’s RSA-key distributions. This is a reduction, not an unconditional factoring lower bound. Their **Lemma 6** converts an \(L\)-step RSA-root SLP satisfying its success hypothesis into factoring with probability at least
+\[
+\frac{\mu}{8(L+\log e)}
+\]
+and arithmetic cost \(O(L^3+\log^3 e)\). Lemmas 7–8 address branching and randomness. The random-monic-quotient construction is directly relevant to Tracks A/B. [Conference paper](https://iacr.org/archive/eurocrypt2009/54790037/54790037.pdf).
+
+**[proved] Jager–Schwenk, January 25, 2012 full version, Theorems 2 and 3:** a generic Jacobi-membership algorithm with advantage \(\delta\), using \(m\) ring operations, yields factoring probability at least
+\[
+\frac{\delta}{2(m^2+4m+3)}.
+\]
+The reduction runs it once, adds at most \(2m\) ring operations and \((m+2)^2\) GCDs, and samples two uniform units. Theorem 3 gives the corresponding quadratic-residuosity reduction for distinct odd-prime semiprimes. These are the full-version numbers, not interchangeable conference numbering. Their central warning is especially relevant: Jacobi symbols are easy using canonical integer representatives. [Full version](https://eprint.iacr.org/2009/621.pdf), [journal record](https://doi.org/10.1007/s00145-012-9120-y).
+
+**[proved] Damgård–Koprowski, EUROCRYPT 2002, Theorem 1:** this is an unconditional **generic-group** strong-root bound. For an order distribution \(D\) on \((B,B+C]\), let \(\alpha(D)\) be the maximum point probability of the largest prime divisor, and \(\beta(D,M)\) its probability of being at most \(M\). With \(m\) queries, \(2m\le M\), and \(\log e\le v\), success is at most
+\[
+\begin{aligned}
+&(m^3+m^2+mv+2v+m)\alpha(D)\\
+&+(m^2+m+2)\beta(D,M)
++\frac{m^2+m+3}{M}+\frac{m^2}{B}.
+\end{aligned}
+\]
+**Corollary 1** gives negligible success for their hard distribution families. Ring addition is unavailable in this model. [Primary paper](https://www.iacr.org/archive/eurocrypt2002/23320252/DKea2002.pdf).
+
+**[proved] Boneh–Venkatesan, EUROCRYPT 1998, Theorems 3.1 and 3.4:** their straight-line and algebraic factoring reductions to low-exponent RSA can be converted into ordinary factoring algorithms of polynomially related running time when the number of radical steps is \(O(\log T)\), where \(T\) is the reduction’s time. This limits certain reductions; it does not prove factoring hard. [Author-hosted paper](https://crypto.stanford.edu/~dabo/pubs/papers/no_rsa_red.pdf).
+
+**[proved] Maurer–Wolf, EUROCRYPT 1998, Theorem 10:** for cyclic-group order \(p^ts\), \(\gcd(p,s)=1\), extracting \(p^r\)-th roots with \(t>r\ge1\) remains generically hard even with a DH oracle. Writing \(d=\lceil t/r\rceil-1\), their proof bounds \(T\)-step success by
+\[
+\frac{((T+2)(T+1)+2)d}{2p}.
+\]
+Again, this is a group result, not a ring-plus-GCD factoring bound. [Primary paper](https://crypto.ethz.ch/publications/files/MauWol98e.pdf).
+
+**[UNVERIFIED] Lipton’s exact numbered theorem and complete quantifiers remain unverified.** The accessible 1994 primary preview states that sufficiently short SLPs for polynomials with many distinct rational roots would undermine cryptographic factoring hardness. It starts from constant \(1\), introduces nonuniform Boolean circuits, and explicitly treats arbitrary integer constants as a conjectured extension. It should not be cited as an unrestricted uniform polynomial-time factoring theorem. [Primary preview](https://page-one.springer.com/pdf/preview/10.1007/3-540-58691-1_45).
+
+**[proved] Cheng, Theorem 1, is conditional:** under the paper’s short-interval smoothness conjecture, a nonzero multiple of \(m!\) has a subexponential-length SLP which can be constructed probabilistically in subexponential time. It is neither an unconditional polynomial-time factorizer nor a theorem furnishing many integer roots. [Author-hosted paper](https://qcheng2023.github.io/paper/factorial.pdf).
+
+**[UNVERIFIED] Brown’s printed concrete lower bound needs caution.** The revised *Lower Bounds for Straight Line Factoring*, §5.1 equation (5), concerns fixed modulus-independent integer SLPs. Its concrete §5.2 formula has probability/exposition issues, and the conclusion acknowledges reviewer-identified faults. It is a weak lower-bound lead, not a superpolynomial generic factoring theorem. [Primary record](https://eprint.iacr.org/2010/047).
+
+**[proved] A clean restricted lower bound can nevertheless be established independently.** Let a fixed constant-only division-free SLP output \(I\), and let \(p,q\) be sampled from \(M\) primes in \((2^s,2^{s+1})\). If its GCD splits with probability \(\mu\), at least \(\mu M/2\) candidate primes divide \(I\), by the union bound. Thus
+\[
+\log_2|I|\ge \frac{\mu Ms}{2}.
+\]
+An \(L\)-operation constant-only SLP satisfies
+\[
+\log_2|I|\le2^{L-1},
+\]
+giving
+\[
+\boxed{L\ge1+\log_2(\mu Ms/2)=s+O_\mu(1).}
+\]
+This is linear in factor bit length and excludes modulus-dependent programs.
+
+**[proved] There is a precise, restricted permanent barrier.** Suppose one proved superpolynomial lower bounds against **all nonuniform, modulus-independent, constant-only SLP splitters** with constant success on balanced prime-size distributions. Short factorial SLPs would contradict that bound: choose a factorial cutoff near the median candidate prime. Its GCD splits whenever exactly one factor lies below the cutoff, with probability approaching \(1/2\).
+
+Such a lower bound would therefore imply factorial \(\tau\)-hardness. Bürgisser’s **Main Theorem 1.2** then implies superpolynomial **constant-free, division-free permanent** complexity. This is **Theorem 1.1 in the 2006 ECCC version**. The paper expressly distinguishes that conclusion from ordinary \(VP\ne VNP\). [ECCC primary version](https://eccc.weizmann.ac.il/report/2006/113/download), [journal version](https://doi.org/10.1007/s00037-009-0260-x).
+
+**[proved] That barrier does not automatically apply to a uniform-only lower bound:** short factorial circuits need not have an efficient constructor. Nor does it imply the full \(\tau\)-conjecture.
+
+**[UNVERIFIED] No published theorem establishing the requested general “uniform GR+gcd factoring iff marginal-skew SLPs” characterization was located.** None of the checked RSA, Jacobi, or group-root theorems establishes a superpolynomial factoring lower bound for the model in the question.
+
+---
+
+**4. Four operationally non-generic candidate cards**
+
+**[proved] Scope convention:** the following cards use integer order, digits, lattice enumeration, or continued fractions. Their extraction stages can still contain ring operations and GCDs. “Outside” refers to the additional operational access defined in §1.
+
+**E2 — Coppersmith-aware lattice decoding of CRT sum masks**
+
+- **ID and mechanism — [conjectured]:** Encode the mask choices as a constrained lattice problem and enumerate only enough information to produce short factor intervals.
+- **Target family — [proved interface]:** \(p<q\le2p\), initially with \(q\ge(1+\delta)p\) for fixed \(\delta>0\).
+- **Representation — [proved]:** For auxiliary primes \(\ell_i\nmid N\), construct
+  \[
+  S_i=\{s:s^2-4N\text{ is square mod }\ell_i\}.
+  \]
+  With \(M=\prod\ell_i\) and CRT idempotents \(e_i\), use one-hot variables:
+  \[
+  \sum_{i,a\in S_i}e_i a\,y_{i,a}-Mz=s,\quad
+  y_{i,a}\in\{0,1\},\quad \sum_a y_{i,a}=1.
+  \]
+- **Extraction operation — [conjectured]:** Apply lattice reduction followed by exact bounded enumeration of the affine lattice intersected with these binary constraints. Stop at certified sum intervals rather than insisting on exact sums.
+- **Why it exposes a factor — [proved]:** The planted sum survives. Convert an interval through
+  \[
+  p(s)=\frac{s-\sqrt{s^2-4N}}2,\qquad
+  p'(s)=-\frac p{q-p}.
+  \]
+  On an interval uniformly separated from \(2\sqrt N\), width \(c_\delta N^{1/4-\varepsilon}\) supplies a sufficiently short factor interval.
+- **Known decoder — [proved]:** Coppersmith **Theorem 4** consumes the high-order \(\tfrac14\log_2N\) bits of a factor. Splitting a short factor interval across binary-prefix boundaries supplies that format. [Primary theorem](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf).
+- **Smallest missing lemma — [conjectured]:** This specific constrained enumeration visits polynomially many nodes and returns polynomially many covering intervals of the required width.
+- **Correctness — [proved conditional reduction]:** Certified coverage plus the interval-width guarantee suffices. LLL alone guarantees neither.
+- **Cost — [proved accounting]:** Polynomial-size mask/lattice construction; enumeration cost remains unresolved. Explicit CRT expansion costs \(\prod_i|S_i|\); direct sum scanning costs \(\Theta(\sqrt N)\).
+- **Randomness and success — [UNVERIFIED]:** Random auxiliary primes or enumeration order have no established polynomial success bound.
+- **Closest prior method — [proved]:** Hittmeir’s hyperbolic sieve and multiple-choice subset-sum formulation are the immediate predecessor. The proposed change is stopping at a decoder-compatible interval and measuring the actual lattice-search frontier. [Primary paper, §5](https://arxiv.org/pdf/2205.10074).
+- **Smallest experiment — [experimentally supported precursor]:** Compare survivor counts against visited nodes. The saved exact interval-search precursor already separates these quantities.
+- **Refutation criterion — [proved]:** A polynomial number of survivors accompanied by exponentially many search nodes defeats this enumerator.
+- **Repair — [conjectured]:** Seek a theorem about the constrained lattice’s enumeration frontier. A smaller lattice description alone does not remove the search.
+
+**E3 — Bidirectional multiplication carries feeding the low-bit decoder**
+
+- **ID and mechanism — [conjectured]:** Combine exact low-bit multiplication carries with high-bit interval propagation, stopping once enough factor bits are known.
+- **Target family — [proved interface]:** Distinct odd balanced semiprimes.
+- **Representation — [proved]:** Binary factor digits and integer carries satisfy
+  \[
+  c_j+\sum_{i=0}^jp_iq_{j-i}=N_j+2c_{j+1}.
+  \]
+  For each odd prefix \(p_0\bmod2^k\),
+  \[
+  q_0\equiv Np_0^{-1}\pmod{2^k}.
+  \]
+- **Extraction operation — [conjectured]:** Branch on factor digits, propagate carry equations and integer factor boxes from both ends, and merge states only when their future feasible completions are equivalent.
+- **Why it exposes a factor — [proved]:** Output a polynomial-size list containing \(p\bmod2^k\), with \(k\ge\lceil\frac14\log_2N\rceil+O(1)\).
+- **Known decoder — [proved]:** Coppersmith **Theorem 5** consumes those low-order bits. Its proof uses the primitive integer polynomial
+  \[
+  \frac{(2^kx+P_0)(2^ky+Q_0)-N}{2^k},
+  \quad Q_0\equiv NP_0^{-1}\pmod{2^k}.
+  \]
+  [Primary theorem](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf).
+- **Smallest missing lemma — [conjectured]:** A specified bidirectional propagation/merging rule has polynomial total frontier size while retaining the true prefix.
+- **Correctness — [proved conditional reduction]:** Sound pruning and the decoder give verified factors.
+- **Cost — [proved]:** Bare low-bit propagation has exactly \(2^{k-1}\) states. At the decoder threshold this is \(\Theta(N^{1/4})\) candidates; completing the multiplication search can return to \(\sqrt N\) work.
+- **Randomness and success — [UNVERIFIED]:** Random branch priorities do not establish adequate coverage with a polynomial budget.
+- **Closest prior method — [proved]:** Partial-key reconstruction and multiplication-constraint search; the proposed distinction is an explicit decoder stopping threshold and a bounded-frontier target.
+- **Smallest experiment — [experimentally supported]:** Count retained states at each \(k\), then add fixed carry lookahead depths. The implemented integer-box lookahead retained every branch through the tested depths.
+- **Refutation criterion — [refuted for this model]:** Low-bit carries alone cannot prune: every odd \(p_0\) has a compatible \(q_0\).
+- **Repair — [conjectured]:** Genuine high-bit/cross-term information must remove branches before \(k\approx n/4\). The tested min/max product-box repair did not.
+
+**H2 — Integer-sieved weighted sums with shared collision lists**
+
+- **ID and mechanism — [conjectured]:** Restrict weighted factor sums using auxiliary discriminant masks, then share collision-search work across the resulting arithmetic progressions.
+- **Target family — [proved interface]:** Balanced semiprimes, with a public menu of positive coprime \(a,b\).
+- **Representation — [proved]:** Put
+  \[
+  S=ap+bq,\quad D=\lceil2\sqrt{abN}\rceil,\quad j=S-D.
+  \]
+  Integer bounds give a search interval, while
+  \[
+  S^2-4abN=(ap-bq)^2
+  \]
+  gives auxiliary-prime masks.
+- **Extraction operation — [proved identity]:** For a unit \(\alpha\),
+  \[
+  \alpha^j\equiv\alpha^{a+bN-D}\pmod p,\qquad
+  \alpha^j\equiv\alpha^{aN+b-D}\pmod q.
+  \]
+  Search these hidden-component collisions.
+- **Why it exposes a factor — [proved]:** A component-only collision gives a GCD. A recovered exact sum is checked through its integer discriminant and divisibility conditions.
+- **Known lemmas — [proved]:** This is the Lehman/Harvey weighted-sum architecture, with known fast collision extraction subject to order and full-\(N\)-match handling. [Harvey, Lemma 3.1 and Proposition 4.1](https://arxiv.org/html/2010.05450v1).
+- **Concrete repair — [proved list construction]:** Suppose the wheel is explicitly \(R\) classes \(t\bmod M\), each covering \(j=t+Mh\), \(0\le h<H\). Set \(\beta=\alpha^M\), \(E=a+bN-D\), and write \(h=i+Bv\). Then use shared lists
+  \[
+  \beta^i,\qquad \alpha^{E-t}\beta^{-Bv}.
+  \]
+  They contain
+  \[
+  O(B+R\lceil H/B\rceil)=O(R+\sqrt{RH})
+  \]
+  elements after optimization.
+- **Smallest missing lemma — [conjectured]:** Bound wheel construction, class materialization, order handling, and aggregate lists over all \((a,b)\) strongly enough to improve HH. Removing an exponential \(R\) requires actual batching or a guaranteed small covering subset.
+- **Correctness — [proved conditional reduction]:** The wheel retains the planted offset. Every recovered offset is checked against its actual interval; collision extraction requires the stated order/equality handling.
+- **Cost — [proved]:** If \(R/M=\rho\) and \(H\approx W/M\), the local list bound is
+  \[
+  O(R+\sqrt{W\rho}),
+  \]
+  plus construction and extraction. Arbitrary sparse sets do not automatically admit this bound.
+- **Randomness and success — [UNVERIFIED]:** Small random bases need a complete order-handling branch; sampling a base alone supplies no guarantee.
+- **Closest prior method — [proved]:** Harvey–Hittmeir already combine integer interval information, sieving, lattice choices, and collision batching. Their **Theorem 1.1** gives
+  \[
+  O\!\left(\frac{N^{1/5}\log^{16/5}N}
+  {(\log\log N)^{3/5}}\right).
+  \]
+  No improvement over that bound is established here. [Primary paper](https://arxiv.org/html/2105.11105v1).
+- **Smallest experiment — [experimentally supported]:** The saved code verifies the shared-list coverage exactly and records explicit CRT construction and list sizes. Fast cross-collision extraction is not implemented.
+- **Refutation criterion — [proved]:** Savings in eligible offsets fail to help if class construction or materialization consumes them. Independent collision searches per class can also lose sharing.
+- **Repair — [proved locally; conjectured globally]:** Shared babies repair the arbitrary-sparsity objection for common-step progressions. Sharing across the entire weighted-sum menu remains unresolved.
+
+**F2 — Continued-fraction relation generation with an explicit pilot rule**
+
+- **ID and mechanism — [conjectured]:** Allocate a fixed convergent budget among multipliers using observed smooth-relation yield and parity rank.
+- **Target family — [proved interface]:** Odd nonsquare composites; balanced semiprimes are the main test family.
+- **Representation — [proved]:** Compute continued fractions of \(\sqrt{kN}\) using integer floors and complete quotients. Each convergent \(u/v\) gives
+  \[
+  Q=u^2-kNv^2,\qquad u^2\equiv Q\pmod N.
+  \]
+- **Extraction operation — [conjectured source]:** Generate short pilots for public multipliers, score distinct smooth rows and parity rank, then continue selected streams. Trial-divide \(Q\) over a public factor base.
+- **Why it exposes a factor — [proved]:** A parity dependency, including the sign coordinate, produces \(X^2\equiv Y^2\pmod N\); test \(\gcd(X\pm Y,N)\).
+- **Known lemmas — [proved]:** This is CFRAC’s congruence-of-squares decoder. Multiplier selection is established prior art; the tested pilot allocation is only a source-selection hypothesis. [Primary implementation study](https://math.dartmouth.edu/~carlp/PDF/implementation.pdf).
+- **Smallest missing lemma — [conjectured]:** Polynomially many generated convergents yield enough independent smooth relations and a dependency with nontrivial CRT signs.
+- **Correctness — [proved]:** Every reported factor is verified. The missing claim concerns yield, not decoder correctness.
+- **Cost — [proved]:** Polynomial in the number of generated convergents, their bit lengths, and the factor-base size. The required generation budget is unresolved.
+- **Randomness and success — [UNVERIFIED]:** The pilot rule has no proved average-case success advantage.
+- **Closest prior method — [proved]:** CFRAC and multiplier scoring. No novelty claim is made for the decoder or the use of continued fractions.
+- **Smallest experiment — [experimentally supported]:** Freeze the pilot rule and compare equal total convergent-generation budgets, counting pilot recomputation.
+- **Refutation criterion — [experimentally supported for the tested configuration]:** A small smooth factor base and polynomial-looking sample budget can cease producing any relations as input size grows.
+- **Repair and collapse — [conjectured / proved accounting]:** Enlarging the base and sample pool returns to ordinary subexponential relation collection. Integer scanning and generic collision fallbacks return to \(\sqrt N\) and \(N^{1/4}\)-type costs; they supply no polynomial guarantee.
+
+---
+
+**5. Exact experiments, adversarial review, and ranking**
+
+**[experimentally supported] Character and quotient diagnostics passed.**
+
+- Equation (1) passed **65 exact checks**, including \(\mathbb F_8,\mathbb F_9,\mathbb F_{25}\). Character values were represented in cyclotomic integer rings; no floating-point comparison was used.
+- Complete monic degree-one and degree-two quotient distributions were enumerated for \(N=35,77,143\).
+- The \(\mathbb F_{17}\) same-GCD counterexample was confirmed exactly.
+
+**[experimentally supported] Sparse survivors did not imply cheap search.** Ten auxiliary-prime masks through \(31\) gave:
+
+| \(N\) | Sum-interval width | Surviving sums | Nodes visited by separate-mask interval search |
+|---:|---:|---:|---:|
+| \(19\,493\) | 17 | 1 | 13 |
+| \(1\,494\,329\) | 149 | 1 | 151 |
+| \(190\,143\,007\) | 1,673 | 3 | 1,233 |
+
+**[proved] This search has a structural obstruction:** any interval containing at least \(\ell\) consecutive integers passes every nonempty single mask modulo \(\ell\). With maximum auxiliary prime \(L\), separate-mask pruning cannot reject intervals of length at least \(L\). Global lattice or CRT reasoning must do work that this local pruning cannot.
+
+**[experimentally supported] The carry repair failed in these diagnostics.** Integer factor-box propagation retained all \(2^{k-1}\) low-bit states through \(k=4,6,8\), respectively, on the three inputs above.
+
+**[experimentally supported] The H2 repair shows why construction must be charged.** For \(N=190\,143\,007\), the unweighted offset interval has width \(1,673\):
+
+| Wheel modulus | Explicit classes | Shared-list entries plus class setup | Cumulative CRT states constructed |
+|---:|---:|---:|---:|
+| 15 | 4 | 50 | 6 |
+| 105 | 12 | 50 | 18 |
+| 1,155 | 60 | 122 | 78 |
+| 15,015 | 360 | 408 | 438 |
+
+Adding masks can decrease eligible offsets while increasing total work.
+
+**[experimentally supported] The F2 comparison used four independently generated semiprimes per factor size**, seed \(104729\), factor base \(31\), and **288 generated convergents per method per instance**, including pilot recomputation.
+
+| Factor bits | Fixed rule: factors found | Pilot rule: factors found | Fixed / pilot distinct smooth rows |
+|---:|---:|---:|---:|
+| 8 | 4/4 | 4/4 | 392 / 338 |
+| 12 | 4/4 | 4/4 | 146 / 201 |
+| 16 | 0/4 | 1/4 | 23 / 33 |
+| 24 | 0/4 | 0/4 | 0 / 0 |
+| 32 | 0/4 | 0/4 | 0 / 0 |
+
+**[UNVERIFIED] These small samples establish no scaling advantage.** They specifically fail to support adequate relation yield for the fixed configuration. The raw file records factors separately as diagnostic truth, timing, traced memory, parity rank, dependencies, and generated-work counts.
+
+**[proved] Independent mathematical and complexity review identified four principal failure points.** Those corrections are incorporated above:
+
+| Card | Adversarial finding |
+|---|---|
+| E2 | LLL does not enforce one-hot choices; a unique survivor need not be cheaply enumerable. |
+| E3 | Low-bit multiplication constraints admit every odd prefix; high-bit lookahead must supply the pruning. |
+| H2 | Arbitrary sparsity does not imply square-root search. The common-step repair works, but retains the explicit \(R\) term. |
+| F2 | Smooth rows can repeat, dependencies can be trivial, and successful decoding says nothing about source yield. |
+
+**[conjectured research ranking]**
+
+| Rank | Card | Reason |
+|---:|---|---|
+| 1 | **H2** | A repaired, explicit local batching construction; the next missing bound is concrete. |
+| 2 | **E3** | Exact decoder interface and an exact exponential baseline against which repairs can be judged. |
+| 3 | **E2** | A plausible use of non-generic structure, but both search work and useful output size remain unresolved. |
+| 4 | **F2** | Executable and auditable, with the weakest novelty case and unfavorable observed yield. |
+
+**[conjectured] The next decisive experiment is H2 with complete cost accounting:** implement the shared wheel lists and fast hidden-component collision extraction, then total wheel construction, exponentiation, order handling, list entries, and extraction over the **same frozen \((a,b)\) menu** with and without masks. The mathematical target is a bound on that aggregate work; a bound on survivor density alone will not suffice.
+
+**[experimentally supported] Reproduction:**
+```bash
+python3 -B round2_experiments.py > round2_results.json
+```
+
+**[proved] The strongest completed outcome is the corrected mathematical scaffolding:** exact all-character root counts, exact quotient exposure formulas, a disagreement-based SLP reduction, and a restricted permanent barrier with its uniformity qualifications. **[UNVERIFIED] A polynomial-time information source remains missing from every candidate.**
