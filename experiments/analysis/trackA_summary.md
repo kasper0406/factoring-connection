@@ -2,7 +2,7 @@
 
 ## Theory checks (trackA_theory.jsonl)
 
-- A1 exhaustive (F_2, F_3, L=20): 40/40 cases satisfy min linear complexity >= predicted bound; tight in 38 cases.
+- A1 exhaustive (F_2, F_3, L=20): 38/38 cases satisfy min linear complexity >= predicted bound; tight in 38 cases.
 - A2 Berlekamp-Massey order = M: 45/45.
 
 | bits | seed | p | q-p | first M with a pure class | min(p-1,q-p) |
@@ -88,6 +88,13 @@ Unique reachable nodes of the section circuit after k levels (hash-consed, const
 | 32 | 1 | diag_q | naive | [99, 274, 810, 2597, 9081, 32743, 120731, 451485, 1703480, 6450746] | 3.72 |
 | 32 | 1 | diag_pp | naive | [99, 274, 767, 2597, 9079, 32747, 120725, 451477, 1703470, 6450652] | 3.72 |
 | 32 | 1 | op_zero | naive | [99, 230, 769, 2598, 9079, 32738, 120707, 451450, 1703362, 6450545] | 3.72 |
+| 32 | 1 | op_random | naive | [99, 230, 766, 2597, 9078, 32736, 120704, 451505, 1703475, 6450716] | 3.72 |
+| 32 | 1 | op_exact | naive | [99, 230, 769, 2598, 9079, 32738, 120707, 451450, 1703362, 6450545] | 3.72 |
+| 32 | 1 | diag_q | karatsuba | [99, 349, 1063, 3400, 11042, 34804, 107134, 323181, 961149, 2828221] | 3.03 |
+| 32 | 1 | diag_pp | karatsuba | [99, 349, 1015, 3400, 11019, 34789, 107166, 323669, 961664, 2828575] | 3.03 |
+| 32 | 1 | op_zero | karatsuba | [99, 300, 1017, 3416, 11111, 35111, 108178, 326751, 972560, 2863155] | 3.04 |
+| 32 | 1 | op_random | karatsuba | [99, 300, 1009, 3390, 11009, 34789, 107210, 323285, 961600, 2829713] | 3.03 |
+| 32 | 1 | op_exact | karatsuba | [99, 300, 1017, 3416, 11111, 35111, 108178, 326751, 972560, 2863155] | 3.04 |
 
 ## Descent / selectors (trackA_descent.jsonl)
 

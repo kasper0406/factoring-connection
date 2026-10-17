@@ -193,6 +193,13 @@ def euclid_readout(f: Sequence[int], S: Sequence[int], N: int,
     while True:
         da, db = len(a) - 1, len(b) - 1
         if db == 0:
+            # a nonzero constant remainder: a unit means gcd 1 over every F_p | N;
+            # a nonunit means the remainder sequence ended earlier modulo some p.
+            m.inc("gcd")
+            g = gcd(b[0], N)
+            if g != 1:
+                return {"factor": g if 1 < g < N else None, "deg_gcd": None, "res": None,
+                        "steps": steps, "where": "const"}
             res = res * pow(b[0], da, N) % N
             return {"factor": None, "deg_gcd": 0, "res": res, "steps": steps}
         lc = b[-1]

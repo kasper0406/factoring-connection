@@ -4044,3 +4044,118 @@ PY" in /home/knielsen/code/factoring-connection/codex
 13 11 4 10 13
 
 web search: 
+web search: https://math.dartmouth.edu/~carlp/PDF/implementation.pdf
+exec
+/bin/bash -lc "python3 -B - <<'PY'
+for q in [3,41]:
+ print(q,[x for x in range(17) if (pow(x+1,q,17)-pow(x,q,17)-1)%17==0])
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+3 [0, 16]
+41 [0, 1, 8, 15, 16]
+
+web search: 
+web search: https://crypto.ethz.ch/publications/files/MauWol98e.pdf
+codex
+The exact diagnostics confirm the Jacobi-sum formula on 65 prime and extension-field cases. They also expose two search bottlenecks: a CRT-mask interval can have one surviving sum while a simple search still visits many nodes, and integer-box pruning left every low-bit carry branch intact through the tested depths.
+
+The continued-fraction pilot rule was mixed on small inputs. At 24- and 32-bit factor sizes, both it and the equal-budget control produced zero smooth relations with factor base 31. Those measurements support keeping the polynomial relation-source claim unresolved.
+
+web search: 
+web search: "Generic Lower Bounds for Root Extraction" "alpha" "beta" "Theorem 1" ...
+web search: 
+web search: site:iacr.org/archive/eurocrypt2002/23320252 "define" "α(D)" ...
+web search: 
+web search: Damgard Koprowski alpha D maximal point probability largest prime factor distribution ...
+web search: 
+web search: Jager Schwenk Jacobi symbol generic ring 2009 2012 Theorem 2 ...
+web search: 
+web search: "2009/621" "Theorem 2" "m2" ...
+exec
+/bin/bash -lc 'command -v pdftotext' in /home/knielsen/code/factoring-connection/codex
+ exited 1 in 0ms:
+web search: 
+web search: https://eprint.iacr.org/2009/621
+exec
+/bin/bash -lc 'git status --short && wc -l round2_experiments.py round2_results.json' in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+ M r2_generic.log
+ M ../experiments/analysis/trackA_summary.md
+ M ../experiments/raw/trackA_circuits.jsonl
+ M ../experiments/raw/trackA_circuits.log
+ M ../experiments/raw/trackA_theory.jsonl
+ M ../experiments/raw/trackBD_sketch_bal.jsonl
+ M ../experiments/raw/trackBD_tiny.jsonl
+ M ../experiments/raw/trackBD_tiny.log
+ M ../src/trackA/__pycache__/theory_checks.cpython-313.pyc
+ M ../src/trackBD/__pycache__/sketch.cpython-313.pyc
+ M ../src/trackBD/sketch.py
+ M ../tests/__pycache__/test_trackBD.cpython-313-pytest-9.1.1.pyc
+ M ../tests/test_trackBD.py
+?? ../experiments/configs/trackA_masks.json
+?? ../experiments/configs/trackA_theory.json
+?? ../experiments/configs/trackBD_expect.json
+?? ../experiments/raw/trackA_theory.log
+?? ../experiments/raw/trackBD_expect.jsonl
+?? ../src/trackBD/__pycache__/analyze.cpython-313.pyc
+?? ../src/trackBD/__pycache__/exp_expect.cpython-313.pyc
+?? ../src/trackBD/analyze.py
+?? ../src/trackBD/exp_expect.py
+?? ../tests/__pycache__/test_trackA_sections.cpython-313-pytest-9.1.1.pyc
+?? ../tests/test_trackA_sections.py
+  297 round2_experiments.py
+ 2357 round2_results.json
+ 2654 total
+
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/bin/bash -lc "python3 -B - <<'PY'
+p='round2_experiments.py'; s=open(p).read()
+insert='''\\ndef shared_wheel_layout(N,ps,cap=16384):
+    D=isqrt(4*N)
+    if D*D<4*N: D+=1
+    W=isqrt(9*N//2)-D+1
+    states=[0]; M=1; rows=[]; construction=0; used=[]
+    for ell,S in masks(N,ps):
+        offsets=sorted((x-D)%ell for x in S)
+        if len(states)*len(offsets)>cap: break
+        oldM=M; inv=pow(oldM,-1,ell)
+        states=[t+oldM*((a-t)*inv%ell) for t in states for a in offsets]
+        M*=ell; construction+=len(states); used.append((ell,S))
+        lengths=[(W-1-t)//M+1 for t in states if t<W]
+        H=max(lengths,default=0); total=sum(lengths)
+        baby=min(H,isqrt(total)+1) if H else 0
+        giant=sum((h+baby-1)//baby for h in lengths) if baby else 0
+        # Exact set-coverage check; diagnostic scans are not charged as a fast algorithm.
+        represented={t+M*h for t in states if t<W for h in range((W-1-t)//M+1)}
+        expected={j for j in range(W) if all((D+j)%l in A for l,A in used)}
+        assert represented==expected
+        rows.append({'M':M,'R_explicit':len(states),'R_nonempty':len(lengths),'offsets':total,'baby_entries':baby,'giant_entries':giant,'cumulative_CRT_states_created':construction,'layout_entries_plus_explicit_class_setup':baby+giant+len(states)})
+    return {'N':N,'W':W,'status':'exact list layout and coverage only; fast cross-collision extraction not implemented','stages':rows}
+
+'''
+s=s.replace('\\ndef main():',insert+'\\ndef main():')
+s=s.replace(\"'cf_control':[]}\",\"'cf_control':[],'shared_wheel_layout':[]}\")
+s=s.replace(\"out['weighted_collisions'].append(weighted_collision(N,ps))\", \"out['weighted_collisions'].append(weighted_collision(N,ps))\\n        out['shared_wheel_layout'].append(shared_wheel_layout(N,ps))\")
+s=s.replace(\"'q3_roots':Field(17,[0,1]).roots(3)\",\"'q19_roots':Field(17,[0,1]).roots(19)\")
+open(p,'w').write(s)
+PY
+python3 -B round2_experiments.py > round2_results.json" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 520ms:
+exec
+/bin/bash -lc "python3 -B - <<'PY'
+import json
+r=json.load(open('round2_results.json'))
+for x in r['shared_wheel_layout']:
+ print(x['N'],x['W'],[(y['M'],y['R_explicit'],y['layout_entries_plus_explicit_class_setup'],y['cumulative_CRT_states_created']) for y in x['stages']])
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+19493 17 [(3, 1, 6, 1), (15, 2, 5, 3), (105, 6, 8, 9), (1155, 36, 38, 45), (15015, 216, 218, 261), (255255, 1728, 1730, 1989), (4849845, 15552, 15554, 17541)]
+1494329 149 [(3, 1, 16, 1), (15, 3, 15, 4), (105, 12, 26, 16), (1155, 72, 83, 88), (15015, 432, 440, 520), (255255, 3456, 3460, 3976)]
+190143007 1673 [(3, 2, 70, 2), (15, 4, 50, 6), (105, 12, 50, 18), (1155, 60, 122, 78), (15015, 360, 408, 438), (255255, 3240, 3265, 3678)]
+

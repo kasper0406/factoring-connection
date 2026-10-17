@@ -64,6 +64,7 @@ def test_resultant_corollary():
         S = sketch(N, f)
         eu = euclid_readout(f, S, N)
         if eu["res"] is None:
+            assert 1 < eu["factor"] < N
             continue
         for a, b in ((p, q), (q, p)):
             fl, Fb = _Fm_mod(a, f, b)
@@ -155,7 +156,7 @@ def test_euclid_and_elim_find_rank_split():
     S = sketch(N, f)
     eu = euclid_readout(f, S, N)
     el = elim_profile(mult_matrix(N, f, S), N)
-    assert eu["factor"] in (p, q) or el["factor"] in (p, q)
+    assert eu["factor"] in (p, q)
     assert el["factor"] in (p, q)
 
 

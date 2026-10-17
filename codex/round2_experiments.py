@@ -268,6 +268,29 @@ def generated_controls(seed=104729):
     return {'seed':seed,'generation':'independent uniform odd candidates of stated bit length, rejection by exact trial-division primality; distinct factors','B':31,'budget_per_method':288,'instances':result}
 
 
+def shared_wheel_layout(N,ps,cap=16384):
+    D=isqrt(4*N)
+    if D*D<4*N: D+=1
+    W=isqrt(9*N//2)-D+1
+    states=[0]; M=1; rows=[]; construction=0; used=[]
+    for ell,S in masks(N,ps):
+        offsets=sorted((x-D)%ell for x in S)
+        if len(states)*len(offsets)>cap: break
+        oldM=M; inv=pow(oldM,-1,ell)
+        states=[t+oldM*((a-t)*inv%ell) for t in states for a in offsets]
+        M*=ell; construction+=len(states); used.append((ell,S))
+        lengths=[(W-1-t)//M+1 for t in states if t<W]
+        H=max(lengths,default=0); total=sum(lengths)
+        baby=min(H,isqrt(total)+1) if H else 0
+        giant=sum((h+baby-1)//baby for h in lengths) if baby else 0
+        # Exact set-coverage check; diagnostic scans are not charged as a fast algorithm.
+        represented={t+M*h for t in states if t<W for h in range((W-1-t)//M+1)}
+        expected={j for j in range(W) if all((D+j)%l in A for l,A in used)}
+        assert represented==expected
+        rows.append({'M':M,'R_explicit':len(states),'R_nonempty':len(lengths),'offsets':total,'baby_entries':baby,'giant_entries':giant,'cumulative_CRT_states_created':construction,'layout_entries_plus_explicit_class_setup':baby+giant+len(states)})
+    return {'N':N,'W':W,'status':'exact list layout and coverage only; fast cross-collision extraction not implemented','stages':rows}
+
+
 def main():
     fields=[Field(p,[0,1]) for p in [3,5,7,11,17,31]]+[Field(3,[1,0,1]),Field(5,[3,0,1]),Field(2,[1,1,0,1])]
     count=0; jc=[]
@@ -280,7 +303,7 @@ def main():
         for r in [1,2]: qs.append(quotient_distribution(p,q,r)); qs.append(quotient_distribution(q,p,r))
     diagnostic=[(101,193),(1009,1481),(10007,19001)]
     ps=[3,5,7,11,13,17,19,23,29,31]
-    out={'status':'exact diagnostics, no asymptotic claims','jacobi_exact_checks':count,'jacobi_counts':jc,'quotient_distributions':qs,'mask_tree':[],'carry_frontiers':[],'weighted_collisions':[],'cf_control':[]}
+    out={'status':'exact diagnostics, no asymptotic claims','jacobi_exact_checks':count,'jacobi_counts':jc,'quotient_distributions':qs,'mask_tree':[],'carry_frontiers':[],'weighted_collisions':[],'cf_control':[],'shared_wheel_layout':[]}
     for p,q in diagnostic:
         N=p*q; row=interval_mask_tree(N,ps)
         assert row['interval'][0]<=p+q<=row['interval'][1]
@@ -288,10 +311,11 @@ def main():
         out['mask_tree'].append(row)
         out['carry_frontiers'].append({'N':N,'rows':carry_frontier(N,min(10,N.bit_length()//4+1))})
         out['weighted_collisions'].append(weighted_collision(N,ps))
+        out['shared_wheel_layout'].append(shared_wheel_layout(N,ps))
         out['cf_control'].append(cf_rows(N,8,32,31))
     # Exact scalar counterexample to gcd(q,Q-1)-only prediction.
     out['cf_holdout']=generated_controls()
-    out['same_gcd_counterexample']={'field':17,'q3_roots':Field(17,[0,1]).roots(3),'q41_roots':Field(17,[0,1]).roots(41),'both_gcd':1}
+    out['same_gcd_counterexample']={'field':17,'q19_roots':Field(17,[0,1]).roots(19),'q41_roots':Field(17,[0,1]).roots(41),'both_gcd':1}
     print(json.dumps(out,indent=2))
 
 if __name__=='__main__': main()
