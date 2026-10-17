@@ -171,6 +171,11 @@ def decode_affine(N: int, hint: AffineHint, d: Optional[int] = None, m: Optional
     """
     mt = metrics if metrics is not None else NullMetrics()
     M, r = hint.M, hint.r
+    mt.inc("gcd")
+    gM = gcd(M, N)                      # rule 3: a nonunit modulus is itself output
+    if 1 < gM < N:
+        mt.set("status", "nonunit_M")
+        return gM
     lo, hi = hint.x_range()
     if hi < lo:
         mt.set("status", "empty_range")
