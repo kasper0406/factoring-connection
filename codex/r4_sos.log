@@ -1,0 +1,1934 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection/codex
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14bed-e520-7582-8409-1eba965d2f7e
+--------
+user
+Research question (use web search; primary sources; label claims proved / conjectured / UNVERIFIED).
+
+Setting: N = pq is an RSA-like semiprime with N ≡ 1 (mod 4). Our Track E agent proved that the first bit of s = p+q (mod 2^k) not determined by N is equivalent to deciding whether p ≡ q ≡ 1 (mod 4) or p ≡ q ≡ 3 (mod 4). Equivalently: is −1 a square mod N? Equivalently: is N a sum of two squares? Coppersmith then needs about n/4 such bits of φ(N) mod 2^k, together with root ambiguity of 2 per v₂(q−p), to factor N.
+
+1. **Prior art.** What is known about the complexity of (a) deciding whether N is a sum of two squares when the factorization is unknown, and (b) deciding quadratic residuosity of the specific element −1 (or of any fixed small integer such as 2 or −2) mod N? Is (a) known to be equivalent to factoring, or to general QR, or known to be easier? Look for Rabin/Shallit, Bach–Shallit, Adleman–McCurley's list of open problems in number theoretic complexity, Schoof-style results on computing square roots of −1 or representations as sums of two squares (e.g. Schoof 1985 computes a square root of a fixed x mod p in poly time for a prime p, Cornacchia), "sum of two squares" decision results, and generic-ring results (Jager–Schwenk). Also: is "find a square root of −1 mod N" (when it exists) equivalent to factoring? I believe it is, via the unit-group argument, and that would make the search version as hard as factoring. Check that.
+2. **Higher bits.** Is there an analogous characterization of the second, third, … informative bits of s mod 2^k (e.g. p ≡ q mod 8 and 2 being a square, quartic residue symbols, the 2-part of the class group of Q(√−N), Rédei symbols, genus theory)? Note: genus characters of discriminant −4N are computable from N alone and carry no information; which 2-adic invariants of p, q are NOT genus-determined? Derive the exact statement for the bits of s mod 8 and mod 16 in terms of residue symbols, and say which are believed hard.
+3. **Mechanism hunt (Track F, independent).** Propose up to 3 concrete operations that would compute the second-informative-bit-type quantities from N using class-group or quadratic-form arithmetic. One possibility: the 4-rank / 8-rank of Cl(−4N) via Rédei matrices; Rédei matrices are known computable when the factorization is known. Identify exactly where the factorization is needed, and whether any part is computable from N alone (e.g. via reduced forms, the principal genus, ambiguous forms, which famously relate to factoring through Shanks' SQUFOF / Schnorr–Lenstra). Give candidate cards (brief §4 template) with cost and failure points. Be explicit about the known fact that ambiguous forms give factors, i.e. that finding an ambiguous form IS factoring.
+
+Output Markdown, concise and precise.
+
+codex
+I’ll check the decision-versus-search distinction in the primary literature, derive the low-bit identities, and identify where the class-group operations require factors.
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g '*Track*' -g '*.md'" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection/codex
+STATUS.md
+r2_generic.md
+r1_priorart.md
+PHASE1_NOTES.md
+r4_sos.md
+r1_tal_bgs.md
+r1_mechanisms.md
+r3_critic.md
+
+web search: 
+web search: Rabin Shallit randomized algorithms number theory sums two squares factoring decision ...
+exec
+/bin/bash -lc 'cat STATUS.md r4_sos.md r1_priorart.md r1_mechanisms.md' in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+# Phase 1 discovery — complete, 17 October 2026
+
+Six mechanisms derived and separately reviewed by a mathematical critic and complexity auditor. Exact seeds checked through1000;1791 small operational robustness probes;1728 quotient scaling probes; exact quadratic rank distributions; derivative, torus, discriminant, CRT-mask and random-quotient PIT checks. Raw results and commands are preserved in phase1_experiments.py, phase1_results.json, phase1_summary.json and PHASE1_NOTES.md.
+
+No polynomial-time factorizer or asymptotic speedup is claimed. Best conditional reduction: pathwise circuit section closure suffices, because finite-ring randomized formal PIT is known. Weighted rank schemes need varying degree after cyclotomic-mask correction; degree-two uniform success is refuted. Divided-derivative and torus proposals have precise restricted-family guarantees and explicit obstructions.
+Research question (use web search; primary sources; label claims proved / conjectured / UNVERIFIED).
+
+Setting: N = pq is an RSA-like semiprime with N ≡ 1 (mod 4). Our Track E agent proved that the first bit of s = p+q (mod 2^k) not determined by N is equivalent to deciding whether p ≡ q ≡ 1 (mod 4) or p ≡ q ≡ 3 (mod 4). Equivalently: is −1 a square mod N? Equivalently: is N a sum of two squares? Coppersmith then needs about n/4 such bits of φ(N) mod 2^k, together with root ambiguity of 2 per v₂(q−p), to factor N.
+
+1. **Prior art.** What is known about the complexity of (a) deciding whether N is a sum of two squares when the factorization is unknown, and (b) deciding quadratic residuosity of the specific element −1 (or of any fixed small integer such as 2 or −2) mod N? Is (a) known to be equivalent to factoring, or to general QR, or known to be easier? Look for Rabin/Shallit, Bach–Shallit, Adleman–McCurley's list of open problems in number theoretic complexity, Schoof-style results on computing square roots of −1 or representations as sums of two squares (e.g. Schoof 1985 computes a square root of a fixed x mod p in poly time for a prime p, Cornacchia), "sum of two squares" decision results, and generic-ring results (Jager–Schwenk). Also: is "find a square root of −1 mod N" (when it exists) equivalent to factoring? I believe it is, via the unit-group argument, and that would make the search version as hard as factoring. Check that.
+2. **Higher bits.** Is there an analogous characterization of the second, third, … informative bits of s mod 2^k (e.g. p ≡ q mod 8 and 2 being a square, quartic residue symbols, the 2-part of the class group of Q(√−N), Rédei symbols, genus theory)? Note: genus characters of discriminant −4N are computable from N alone and carry no information; which 2-adic invariants of p, q are NOT genus-determined? Derive the exact statement for the bits of s mod 8 and mod 16 in terms of residue symbols, and say which are believed hard.
+3. **Mechanism hunt (Track F, independent).** Propose up to 3 concrete operations that would compute the second-informative-bit-type quantities from N using class-group or quadratic-form arithmetic. One possibility: the 4-rank / 8-rank of Cl(−4N) via Rédei matrices; Rédei matrices are known computable when the factorization is known. Identify exactly where the factorization is needed, and whether any part is computable from N alone (e.g. via reduced forms, the principal genus, ambiguous forms, which famously relate to factoring through Shanks' SQUFOF / Schnorr–Lenstra). Give candidate cards (brief §4 template) with cost and failure points. Be explicit about the known fact that ambiguous forms give factors, i.e. that finding an ambiguous form IS factoring.
+
+Output Markdown, concise and precise.
+You are doing a primary-source prior-art map for a research project on classical integer factorization (brief below). Use web search. For EACH of the following, open the primary source (arXiv/ECCC/author page), record: exact title, authors, version/date consulted, URL, the exact problem solved, input representation, the main theorem statement (quote or near-quote, with theorem number), hypotheses (known prime? field? characteristic? sparsity bounds?), complexity variables, and the precise primitive it provides that our project could consume or that is relevant. Mark anything you could not verify as UNVERIFIED.
+
+Required items: [AKS] Lemma 2.1 + Sec 2; [BGS] 2007 (the factorization application: exact cost in terms of the interval length and what is computed modulo N); [Harvey] arXiv 2010.05450; [HH] arXiv 2105.11105; [Sparse] van der Hoeven–Lecerf ffsparse; [Tal] ECCC TR26-211 (2026) — read in detail if accessible: which identities need a known prime or known group structure; [Coppersmith] 1997 (exact theorem for factoring with high bits known: fraction of bits needed, lattice dimension, cost); [Regev] 2308.06572, [Pilatte] 2404.16450, [EG] 2311.05545 (what classical postprocessing consumes: number of samples, noise, precision); [Gao] arXiv 2512.19076; [Cleve] quant-ph/9911124.
+
+ALSO search for and map these (closest prior formulations of the brief's seed ideas — this matters for novelty):
+1. Lipton 1994, "Straight-line complexity and integer factorization" (ANTS I) — exact statement relating short SLPs for n! (or related sequences) to factoring.
+2. Shub–Smale tau conjecture; Bürgisser's work connecting factorials/tau to factoring and to VP vs VNP; "Cheng: on the tau conjecture / factorial" etc.
+3. Hardness of computing a coefficient / testing whether a coefficient of a straight-line program (or of a power of a sparse polynomial) is zero; "order of vanishing" of an SLP at 0; "degree of SLP" problems (Allender–Bürgisser–Kjeldgaard-Pedersen–Miltersen; Kayal–Saha; Koiran; Perrucci). Especially anything about over Z/NZ with composite N.
+4. Known observations that the smallest index k with binom(N,k) != 0 mod N equals the least prime factor, or that binom(N,k) mod N / factorials mod N reveal factors (folklore; Strassen; "Wilson's theorem factoring"; "computing (N-1)! mod N is as hard as factoring").
+5. Polynomial identity testing over Z/NZ with composite N / AKS-style tests attempting factor extraction ("constructive AKS", Agrawal–Biswas identity testing over Z_n, Bernstein's AKS notes).
+6. Recent (2023–2026) classical factoring preprints with new mechanisms that are serious (e.g., Hittmeir, Harvey, lattice-based "factoring via second vector", any 2025-2026 ECCC/arXiv items claiming subexponential/deterministic improvements).
+7. Polynomial-time factoring of restricted families (e.g., N = p^r q with large r (Boneh–Durfee–Howgrave-Graham), p-1 smooth, implicit factoring, factoring with hints) — what partial-information formats suffice.
+
+Output: Markdown file content, one entry per item with the fields above, then a compact table "primitive provided / assumption / complexity variable / relevance to our support-index or prefix-predicate problem". Be precise; do not pad.
+
+=== BRIEF (for context) ===
+# Research agent brief: find a simple classical connection for integer factorization
+
+**Prepared:** 17 October 2026  
+**Mode:** Active mathematical research, with exact computational experiments  
+**Primary target:** A classical polynomial-time factorization algorithm, or a concrete new mechanism that materially advances toward one
+
+## 1. Mission
+
+Investigate whether a simple connection between explicit integer arithmetic and compressed algebraic representations can produce an efficient classical factorization algorithm.
+
+The working hypothesis is that the eventual mechanism may be conceptually simple and may not resemble sieving or classical simulation of a quantum algorithm. Treat this as a productive hypothesis, not an established fact. Do not dismiss a direction because factoring has been studied for a long time. Equally, do not mistake a short identity, a short program describing an enormous object, or successful toy examples for an efficient algorithm.
+
+**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+
+Begin with the polynomial lead below, but do not become attached to it. You may replace it with a better representation if you explain what new operation becomes possible.
+
+The central question is:
+
+> Which factor-revealing feature has a compact exact representation, and what operation would let us extract that feature without expanding the representation?
+
+### Problem and computational model
+
+Input is an integer `N > 1`, in binary. Write `n = N.bit_length()` and `R_N = Z/NZ`.
+
+The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+
+The first algorithmic goal is to return any `d` with `1 < d < N` and `N % d == 0`. Recursive splitting and primality testing turn a sufficiently uniform splitting algorithm into full factorization; account for those costs when making a final claim.
+
+Use ordinary classical bit complexity. Deterministic polynomial time or randomized expected/bounded-error polynomial time would satisfy the main objective; state which one a proposal targets. Count preprocessing, repetitions, memory, bit precision, coefficient lengths, and representation conversion. A polynomial bound in `N`, `p`, a polynomial degree near `sqrt(N)`, or a group order is not a polynomial bound in `n`.
+
+A restricted-family improvement, a new constructive lemma, a useful reduction with a smaller missing primitive, or a carefully delimited obstruction is worthwhile intermediate progress. Label it accurately and use it to choose the next experiment.
+
+## 2. Mathematical starting point
+
+The elementary claims in this section are supplied with proofs. They are research scaffolding, **not claims of novelty**. Check them independently and search for prior formulations before attributing originality.
+
+### 2.1 The polynomial and its first surviving coefficient
+
+Define
+
+\[
+F_N(X)=(1+X)^N-1-X^N\in R_N[X].
+\]
+
+The prime/composite polynomial identity is the starting point of the AKS primality test; see [AKS], Lemma 2.1 and Section 2. AKS uses suitable low-degree quotient rings to obtain a primality test. It does not supply the factor-extraction operation sought here.
+
+Let `N` be composite and let `p` be its smallest prime divisor. For `1 <= k < p`,
+
+\[
+\binom Nk=\frac{N(N-1)\cdots(N-k+1)}{k!}\equiv0\pmod N,
+\]
+
+because `k!` is invertible modulo `N`.
+
+At `k = p`, use the exact integer identity
+
+\[
+\binom Np=\frac Np\binom{N-1}{p-1}.
+\]
+
+All denominators in the product for the second binomial coefficient are units modulo `N`, so
+
+\[
+\binom{N-1}{p-1}
+=\prod_{j=1}^{p-1}\frac{N-j}{j}
+\equiv(-1)^{p-1}\pmod N.
+\]
+
+For odd `p`, the sign is positive. For `p = 2`, `-N/2` and `N/2` are the same residue modulo `N`. Therefore the least nonnegative residue is exactly
+
+\[
+\boxed{[X^p]F_N=N/p\pmod N.}
+\]
+
+Consequently,
+
+\[
+\boxed{\min\{k:[X^k]F_N\ne0\}=p.}
+\]
+
+This holds for every composite `N`, including prime powers, not just squarefree semiprimes. Since `p < N`, the removed endpoint `X^N` causes no issue. For prime `N`, `F_N` is the zero polynomial instead.
+
+Examples:
+
+| N | First surviving degree p | Coefficient residue N/p |
+|---|---:|---:|
+| 9 | 3 | 3 |
+| 15 | 3 | 5 |
+| 35 | 5 | 7 |
+| 45 | 3 | 15 |
+| 49 | 7 | 7 |
+| 143 | 11 | 13 |
+
+The expression for `F_N` has an arithmetic circuit with `O(n)` gates using repeated squaring. This is a statement about circuit description size, not expanded polynomial size or the cost of coefficient extraction.
+
+### 2.2 A weaker extraction task already suffices: any surviving index
+
+Write `a_k = binom(N,k) mod N` for an interior coefficient. The integer identity
+
+\[
+k\binom Nk=N\binom{N-1}{k-1}
+\]
+
+gives
+
+\[
+k a_k=0\quad\text{in }R_N.
+\]
+
+Thus, for `0 < k < N`,
+
+\[
+a_k\ne0\Longrightarrow1<\gcd(k,N)<N.
+\]
+
+**We do not need the first coefficient, or even its value. Finding any index of a nonzero coefficient gives a factor immediately.**
+
+Target the weaker problem whenever it permits a simpler construction:
+
+> Given the compact circuit for `F_N`, find one exponent in its nonzero support without enumerating the support.
+
+### 2.3 Why individual coefficient queries do not provide the missing information
+
+Suppose an algorithm asks for `a_k` at an explicitly chosen interior index `k`.
+
+If `gcd(k,N) = 1`, its answer is already known to be zero. Otherwise, computing that GCD has already found a nontrivial factor.
+
+Therefore an individual-coefficient oracle can be simulated up to factor discovery: compute the GCD first; either return zero or terminate with a factor. This does not prove factoring hard. It shows that **merely making coefficient evaluation fast is insufficient for this polynomial**. The useful operation must act on many indices at once, reveal a support index, or exploit different arithmetic information.
+
+This is a particularly important filter for proposals based on random coefficient sampling, a binomial-coefficient library, or a fast high-order derivative at one guessed index.
+
+### 2.4 Prefix testing and its factorial connection
+
+For `K >= 1`, define
+
+\[
+Z(N,K):=[F_N(X)\equiv0\pmod{N,X^K}].
+\]
+
+For composite `N`,
+
+\[
+Z(N,K)\Longleftrightarrow K\le p
+\Longleftrightarrow\gcd\bigl(N,(K-1)!\bigr)=1.
+\]
+
+For finding `p`, it suffices to use `2 <= K <= floor(sqrt(N))+1`. A uniform polynomial-time prefix predicate would recover `p` by `O(n)` binary-search queries. A randomized predicate must have sufficiently amplified error for the adaptive search.
+
+This is an exact connection to bounded divisibility and modular factorials. It is not, by itself, a speedup. Investigate whether the polynomial representation makes the unit/nonunit predicate cheaper than evaluating the factorial, and whether factorial or recurrence techniques suggest a better compression. Read [BGS] and the related classical constructions [Harvey], [HH].
+
+Do not require full factorial evaluation unnecessarily: the predicate asks only whether it is a unit modulo `N`. Conversely, do not treat an efficient unit predicate as already available.
+
+### 2.5 Ordinary differentiation loses the signal
+
+\[
+F_N'(X)=N(1+X)^{N-1}-NX^{N-1}=0\quad\text{in }R_N[X].
+\]
+
+Every positive-order ordinary derivative is therefore zero. A characteristic-zero method based on the logarithmic derivative or derivative ratios cannot simply be transferred to this ring.
+
+Hasse derivatives retain coefficient information:
+
+\[
+D^{[k]}F_N(0)=[X^k]F_N.
+\]
+
+But evaluating them at individually selected orders has the limitation in Section 2.3. A potentially useful derivative construction must aggregate orders, preserve additional lifted information, or access a different invariant.
+
+### 2.6 Scalar evaluations and sparse recovery have specific traps
+
+A nonzero polynomial over `R_N` can define the zero function on all scalar residues. For example, `F_561(a) = 0 mod 561` for every scalar `a`: modulo each of `3, 11, 17`, exponentiation to `561` acts as the identity. Yet `F_561` is not the zero polynomial, by Section 2.1.
+
+Therefore scalar random evaluation in `R_N` is not automatically a sound polynomial identity test. Distinguish formal polynomial identity from equality as functions on a finite ring.
+
+Nor is the expanded support polynomially small in general. For `N = p*q`, `p < q`, reduction modulo `q` gives
+
+\[
+F_N(X)\equiv(1+X^q)^p-1-X^{pq}\pmod q.
+\]
+
+For every `1 <= j < p`, `binom(p,j)` is nonzero modulo `q`, because its prime divisors are at most `p`. Thus `F_N` has at least `p-1` nonzero coefficients. On balanced semiprimes this is exponentially many in `n`.
+
+The relevant opportunity is structured or partial support recovery, not an unsupported assumption of ordinary sparsity.
+
+## 3. Priority research tracks
+
+These are starting directions, not a compulsory architecture. First investigate A and B, connect them to C and D, and keep one genuinely independent alternative alive. The proposed modifications below are hypotheses, not results established by the cited papers.
+
+### Track A — Binary coefficient sections and compressed witness extraction
+
+For any polynomial `P`, define
+
+\[
+E(P)(Y)=\sum_j[X^{2j}]P\,Y^j,
+\qquad
+O(P)(Y)=\sum_j[X^{2j+1}]P\,Y^j.
+\]
+
+Then
+
+\[
+P(X)=E(P)(X^2)+X\,O(P)(X^2).
+\]
+
+If `P` is nonzero, at least one section is nonzero. Repeatedly selecting a nonzero section reconstructs the bits of a support index in `O(log degree(P))` levels.
+
+There are elementary gate rules. Writing `f=f_e(X^2)+Xf_o(X^2)` and similarly for `g`,
+
+\[
+E(fg)=f_e g_e+Yf_o g_o,
+\qquad
+O(fg)=f_e g_o+f_o g_e.
+\]
+
+Addition is componentwise. A single section transformation has constant-factor circuit overhead with appropriate sharing. Repeating it `O(n)` times need not: a constant-factor increase at every level can still become exponential.
+
+**Precise conditional target:** Construct a representation for all sections reached along one search path that remains polynomial in `n`, together with a polynomial-time formal zero test for those representations over `R_N`. This would turn the support-index reduction into a factorizer.
+
+Tasks:
+
+1. Derive and implement section transformations on arithmetic circuits, preserving shared subexpressions. Measure growth in unique nodes, not printed expression length alone.
+2. Exploit the special repeated-power structure of `(1+X)^N`. Investigate matrix recurrences, rational generating functions, and reusable formulas for sections; do not default to a generic circuit expansion.
+3. Determine what information a zero test actually needs. Test whether a weaker certificate or a small family of quotient evaluations can select a nonzero child without reconstructing either child.
+4. Study coefficientwise products with interval or bit-pattern masks. The mask may have a short description, but prove or measure the cost of applying it.
+5. Look for a class closed under both sectioning and zero testing. It need only contain the required descendants, not arbitrary arithmetic circuits.
+
+Record separately the cost of constructing a section, representing it, evaluating it, and testing its formal identity. Making only one of these cheap is partial progress, not the full algorithm.
+
+**First experiment:** Follow both diagnostic paths chosen with known support information and operational paths chosen without factors. Diagnostic paths measure representation growth only; they are not factoring results.
+
+### Track B — Quotient sketches that retain useful exponent information
+
+Compute compact projections such as
+
+\[
+F_N(X)\bmod(X^r-1),\qquad
+F_N(X)\bmod(X^r-c),
+\]
+
+with polynomially bounded `r` and cheaply chosen `c`. Repeated squaring evaluates each projection without expanding degree `N`.
+
+Modulo `X^r-1`, a coefficient at position `j` is the sum of original coefficients at `j, j+r, j+2r, ...`. A unit-valued sum can mix contributions divisible by different hidden prime factors. A nonzero projected coefficient is therefore not automatically a factor-revealing coefficient of the original polynomial.
+
+Modulo `X^r-c`, folded terms acquire weights `c^t` according to the quotient of their exponent by `r`. Investigate whether several weights or several quotient rings expose a useful exponent, a nonunit, or enough partial information for another method.
+
+Concrete questions:
+
+- Can paired sketches isolate one hidden characteristic's contribution without knowing that characteristic?
+- Can small-degree resultants, subresultants, annihilators, ranks, or failed inversions reveal a nontrivial GCD?
+- Can a small family of weighted projections identify one support exponent modulo enough small moduli without enumerating exponentially many matching choices?
+- Can the relation `F_N' = 0` constrain the information discarded by reduction? Differentiation before and after reduction need not commute: retain the quotient terms in the derivation.
+- Can a sketch answer a prefix or binary-section question rather than reconstruct the full polynomial?
+
+Read [AKS] for the distinction between proving compositeness and extracting a witness, and [Sparse] for interpolation mechanisms and their assumptions. Characteristic, number of terms, roots of unity, discrete-log steps, and field-versus-ring behavior must all be audited before transfer.
+
+Do not use generic sketch collisions to claim an impossibility theorem for this family: the decoder receives `N` and can exploit its explicit arithmetic. A negative result must identify the restricted sketch/decoder model it actually addresses.
+
+**First experiment:** Exhaustively inspect several small families of weighted projections, their coefficient GCDs, and basic invariants on tiny semiprimes. Derive the reason for any successful pattern before scaling it.
+
+### Track C — Factorial unit tests and compressed recurrence evaluation
+
+The prefix predicate is precisely a factorial-unit predicate. This links the polynomial lead to algorithms for products of consecutive terms and linear recurrences with polynomial coefficients [BGS].
+
+Investigate whether unit/nonunit information admits a simpler recurrence than the factorial value itself. Candidate tools include product trees, block products, multipoint evaluation, cancellation-aware recurrences, and transformations that isolate an interval containing a divisor.
+
+Every proposed recurrence should state whether its dimension, polynomial degree, or number of blocks grows with `K` rather than `log K`. If a recurrence uses division modulo `N`, compute the GCD of each denominator before inversion: a nonunit can be useful output, not merely an implementation failure.
+
+A particularly relevant new lead is Yann Tal's September 2026 preprint [Tal]. Its abstract describes modular-factorial improvements through Jacobi sums, reconstruction, and recursive reductions. **Its setting supplies a known prime modulus, or specified prime-power settings, and appropriate divisor conditions.** It is not a general unknown-factor-modulus algorithm. Inspect the full construction and ask which identities survive without knowing the prime or its group structure.
+
+A useful adaptation must avoid assuming a factorization of `N`, its totient, auxiliary quantities of comparable unknown difficulty, or a known prime underlying `R_N`. Character sums are useful here only if the proposed way to construct or evaluate them is explicit and affordable.
+
+**First experiment:** Implement a transparent block-product baseline, then one recurrence or invariant that attempts to answer only the unit predicate. Compare actual arithmetic counts and largest representation sizes.
+
+### Track D — Hidden characteristic, lifted information, and annihilators
+
+For `N = p*q`, the polynomial has different Frobenius structure in its two hidden components:
+
+\[
+F_N\bmod p=(1+X^p)^q-1-X^{pq},
+\]
+
+\[
+F_N\bmod q=(1+X^q)^p-1-X^{pq}.
+\]
+
+The goal is not to perform these reductions using known factors. It is to find an operation over `R_N` that separates the two structures without knowing them.
+
+Investigate Hasse derivatives, divided-power constructions, formal-series sections, finite differences, recurrence singularities, and annihilating ideals. Consider modest lifts such as modulus `N^t` where `t` is polynomially bounded, but derive what survives the lift and how it is extracted. Ordinary differentiation becomes zero after reduction modulo `N`; differentiation before reduction or in a lift retains other data, whose usefulness must be demonstrated rather than assumed.
+
+A promising failure mode of a field algorithm is encountering a nonunit pivot. Instrument such algorithms to return `gcd(pivot,N)`. However, selecting a pivot guaranteed to become a useful nonunit is part of the research problem.
+
+Avoid circular use of Lucas/Kummer digits in base `p`, a `p`-Frobenius map, or Cartier operators parameterized by an unknown factor. They can guide identities in the proof, but an operational algorithm must construct its own parameters from `N`.
+
+**First experiment:** Build small lifted or sectioned representations and classify the denominators, pivots, and annihilators that arise. Separate structural factor discovery from accidental divisibility by a small tested integer.
+
+### Track E — Transfer partial information into lattices or hidden relations
+
+A sketch does not have to reveal a complete factor. Determine whether it yields a rigorously specified interval, congruence, or correlated set of bits that existing small-root methods can use. Coppersmith's work [Coppersmith] is the relevant reference, but extract the precise theorem and parameter requirements before applying it.
+
+For hidden-relation approaches, use [Regev], [Pilatte], and [EG] to identify the information that classical postprocessing consumes. A short-relation existence theorem is not a procedure for finding those relations; a decoder is not a sampler.
+
+One exact interface is multiplicative characters. With generators `a_i`, define
+
+\[
+\mathcal L=\{z\in\mathbb Z^d:\prod_i a_i^{z_i}=1\pmod N\}.
+\]
+
+If a computable character satisfies `chi(a_i)=exp(2*pi*i*w_i)`, then
+
+\[
+\langle w,z\rangle\in\mathbb Z\quad\text{for every }z\in\mathcal L.
+\]
+
+The question is whether explicit arithmetic supplies useful character phases or partial phase constraints efficiently. For squared generators `a_i=b_i^2`, ambient characters taking values only in `{+1,-1}` become trivial. A proposed source of phases must avoid that degeneracy and avoid constructing the unknown group decomposition first.
+
+Also inspect [Gao] for the neighboring classical idea of deliberately avoiding uninformative shortest vectors. Transfer a concrete objective or construction, not merely the instruction to use lattice reduction.
+
+Treat [Cleve] as a model-specific warning about generic oracle order finding, not as a lower bound for explicit integer arithmetic.
+
+**First experiment:** Specify an exact partial-information format and demonstrate its downstream usefulness with a diagnostic oracle. Then separately attempt to produce it from `N` alone. Never combine those two stages into an unsupported end-to-end speed claim.
+
+### Track F — One independent connection
+
+Reserve some effort for a route not suggested by the polynomial lead. Examples include a different low-description-length generating function, a nonunit-producing algebraic identity, or an arithmetic invariant of a low-dimensional object.
+
+The proposal must specify an executable operation and why it sees the hidden factors. Merely restating `pq=N` as optimization, SAT, a spectral problem, or a dynamical system is not enough. Show where the representation gives a cheaper operation or a smaller search problem.
+
+## 4. Research procedure
+
+### Phase 1: establish the mathematical and literature baseline
+
+Reproduce the elementary lemmas and tests in this brief. Read the core sources needed for the two most promising tracks; do not read every listed paper before doing mathematics.
+
+Create a compact map of the nearest prior art. For each relevant result record its exact problem, input representation, theorem assumptions, complexity variables, and the primitive it provides. Use primary sources. Verify title, authors, date, and theorem statement; earlier conversational summaries are leads, not evidence.
+
+Keep discovery work separate from verification. In the first generation pass, propose at least six mechanisms, including one outside the supplied tracks. Then select two or three with the clearest operation and smallest missing lemma.
+
+### Phase 2: write a candidate card before substantial coding
+
+Use this template for each serious candidate:
+
+```text
+ID and one-sentence mechanism:
+Target problem / supported input family:
+Representation and how it is built from N:
+Exact operation that extracts information:
+Why that information exposes a factor:
+Known lemmas being used:
+New lemma required:
+Correctness argument or conjecture:
+Cost in n, including construction and extraction:
+Randomness and success probability:
+Closest prior method and the actual difference:
+Smallest informative experiment:
+Counterexample or scaling behavior that would refute this version:
+Possible repair if that happens:
+```
+
+Reject or repair proposals that name the missing operation without implementing or bounding it. Do not abandon a promising representation merely because the first naive implementation expands it.
+
+### Phase 3: alternate construction and criticism
+
+For each selected mechanism:
+
+1. Derive the strongest statement you can justify.
+2. Implement the smallest exact experiment that distinguishes it from the obvious baseline.
+3. Search for boundary cases and counterexamples.
+4. Audit representation growth and total work.
+5. Produce a revised mechanism or a narrow obstruction identifying what a revision must change.
+
+Use a separate mathematical critic and complexity auditor if real subagents are available. Give the critic the candidate and code, not a persuasive narrative about expected success. Without subagents, perform separately documented review passes. Do not claim independent review unless it actually occurred.
+
+The critic must state which assumption fails and give an example, derivation, or missing bound. “Factoring is believed hard” is not a technical critique.
+
+Do not stop after a survey or after one failed proposal. Complete at least one repair cycle on the best candidate, unless a complete proof and independently checked implementation are already obtained.
+
+### Phase 4: keep the result reproducible
+
+Preserve proofs, candidate versions, failed constructions, seeds, raw measurements, and exact commands. A negative result about one representation is useful when its scope is explicit and it points to a different operation to try.
+
+Allocate most effort to mathematical construction and discriminating experiments, not ever-expanding bibliographies or GPU optimization. Use exact integer/ring arithmetic initially. Floating-point exploration is allowed only with a later precision analysis.
+
+## 5. Experimental design and leakage controls
+
+### Input families
+
+Begin with exhaustive small composites for algebraic correctness. Then use reproducibly generated balanced semiprimes at increasing bit lengths, for example `16, 24, 32, 48, 64`, extending only as resources permit. Successful factoring of small inputs is a correctness check, not evidence of polynomial scaling.
+
+Include independent-prime balanced semiprimes, prime powers, composites with several distinct factors, highly unbalanced semiprimes, Carmichael numbers, and prime inputs. Near-equal primes, special algebraic forms, and deliberately smooth `p-1` or `q-1` belong in separately labeled diagnostic families.
+
+### Separate algorithm inputs from diagnostic truth
+
+The candidate receives only `N`, public configuration, and a random seed. A separate test harness may retain factors to compute labels and understand failures.
+
+Never leak factors through filenames, seeds deterministically encoding factors, candidate-specific parameter choices, precomputed group orders, smoothness-selected instances, library factorization calls, or a simulator initialized with the factors.
+
+Use actual random generation of the intended family and record the sampling procedure. Freeze candidate choices before the holdout evaluation. Special test families are useful but must not silently replace the intended distribution.
+
+### Record meaningful costs
+
+For each run record at least:
+
+- Correctness, result, seed, wall time, timeout, and peak memory.
+- Ring operations and GCD calls, with operand bit lengths.
+- Largest polynomial degree actually materialized and number of stored coefficients.
+- Circuit nodes, recurrence dimension, matrix size, section depth, and rank where relevant.
+- Number of sketches, candidate combinations, restarts, and rejected trials.
+- Numerical precision and error bounds for any approximate component.
+
+Separate preprocessing, information acquisition, decoding, and verification. Count all work, including unsuccessful attempts. Distinguish parallel depth from total classical work.
+
+Compare against transparent trial division and Pollard-rho implementations on small tests, a relevant product/block baseline for Track C, and the nearest prior construction for the actual proposed operation. Use controlled same-language arithmetic comparisons where possible. Do not claim superiority to GNFS from a small-input benchmark or an improvement over trial division.
+
+Empirical fits are diagnostics, not complexity proofs. Show raw counters versus both `n` and the actual structural parameters. In particular, a method polynomial in a hidden factor can look innocuous on tiny bit lengths.
+
+## 6. Mandatory complexity and correctness audit
+
+For every proposed breakthrough, answer the following before calling it an algorithmic improvement.
+
+**Representation.** Is the object genuinely stored in polynomial space, or merely described by a short program that later expands? Are all required operations efficient on that representation?
+
+**Coefficient access.** Does the method require sequential coefficients up to `p`, a dense truncation at `K`, or exponentially many terms after sectioning? Section 2.3 rules out individual coefficient evaluation as the missing advantage here.
+
+**Field assumptions.** Does a theorem require a known prime, an algebraically closed field, a characteristic bound, or invertible denominators? Prove the needed ring version or report factor-revealing nonunits.
+
+**Hidden inputs.** Is any step using `p`, `q`, `phi(N)`, `lambda(N)`, an unknown order, a hidden lattice basis, or informative samples supplied by an oracle? State exactly how it is obtained.
+
+**Numerical cost.** An error tolerance `2^(-poly(n))` uses polynomially many bits. An error tolerance `2^(-p)` needs order-`p` bits. A tiny error written with a short exponent is not automatically cheap to achieve. Conversely, do not call every exponentially small error an exponential-precision requirement.
+
+**State-space cost.** A short diffusion rule, tensor description, or matrix-power expression is not enough. Bound the represented state, ranks, contractions, and the cost of the final observable.
+
+**Degree and root bounds.** Check polynomial identity-test assumptions when formal degree is exponential. Over a finite ring, nonzero polynomials can vanish at every scalar point. Auxiliary prime moduli also change coefficient divisibility: reducing modulo an unrelated prime does not preserve vanishing modulo `N` for free.
+
+**Randomness.** Bound the success probability and cost per attempt, including constructing the distribution and rejecting bad outputs. Distinguish worst-case, average-case, and restricted-family claims.
+
+**Certificates.** A candidate factor is cheaply verifiable. That does not bound search time or certify an average-case/polynomial-time theorem. A decoder's correctness with ideal samples does not validate the source of those samples.
+
+**Novelty.** Compare with the closest specific method. A new notation, a different implementation of a known identity, or a known reduction rediscovered here is not an asymptotic breakthrough. It can still be useful scaffolding for the next modification.
+
+Use these checks to improve proposals, not to replace proposal generation.
+
+## 7. Workspace and required deliverables
+
+Suggested layout:
+
+```text
+factoring-connection/
+  README.md
+  STATUS.md
+  references.md
+  notes/
+    seed_lemmas.md
+    prior_art_map.md
+    candidate_001.md
+    candidate_002.md
+    review_and_repairs.md
+  src/
+    seed_checks.py
+    ring_polynomials.py
+    circuit_sections.py
+    quotient_sketches.py
+    candidates/
+  tests/
+  experiments/
+    configs/
+    raw/
+    analysis/
+  REPORT.md
+  NEXT_STEPS.md
+```
+
+Use Python with exact arithmetic for the first prototypes; use existing computer-algebra packages where appropriate, but inspect any operation that may internally factor a modulus. Optimize only after identifying an informative mechanism. Do not buy cloud resources, publish results, or contact authors without authorization.
+
+A candidate interface should accept `N` and public configuration only, return a factor or explicit failure, and emit an auditable metrics record. Reference factorization functions belong in the harness, never inside the purported new factorizer.
+
+The final report must contain:
+
+1. **Best surviving mechanism:** its precise new operation and the strongest supported claim.
+2. **Mathematics:** proved lemmas, conjectures, counterexamples, and any remaining proof obligation, clearly separated.
+3. **Experiments:** reproducible commands, raw results, input distributions, failures, and scaling diagnostics.
+4. **Comparison:** closest prior art and exactly what changed.
+5. **Continuation:** the next most decisive mathematical question or experiment, with a concrete proposed attack.
+
+Use status labels such as `proved`, `experimentally supported`, `conjectured`, `refuted for this model`, and `not yet tested`. A useful report may contain a novel mechanism plus a sharply identified unresolved lemma. Do not inflate that into a completed factorizer, and do not stop at “no breakthrough found” when the work supports a more specific next step.
+
+## 8. Primary-source reading list
+
+These are selected starting points, not a claim of an exhaustive literature search. Bibliographic/abstract pages were checked when preparing this brief; the AKS seed identity was also checked in the paper. Except for the elementary derivations above, do not assume that every cited theorem or implementation has been independently verified here. Open the relevant full papers, record the version consulted, and verify exact conditions before relying on them.
+
+**[AKS]** Manindra Agrawal, Neeraj Kayal, Nitin Saxena. *PRIMES is in P*. Annals of Mathematics 160 (2004), 781–793. [Paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf). Focus on Lemma 2.1 and the quotient-ring reduction in Section 2; distinguish primality detection from factor extraction.
+
+**[BGS]** Alin Bostan, Pierrick Gaudry, Éric Schost. *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM Journal on Computing 36(6) (2007), 1777–1806. [Author-hosted paper](https://mathexp.eu/bostan/publications/BoGaSc07.pdf). This directly connects distant recurrence terms, product computations, and classical factorization. Audit the dependence on the recurrence index.
+
+**[Harvey]** David Harvey. *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450 (2020). [Record](https://arxiv.org/abs/2010.05450). A rigorous `N^(1/5+o(1))` classical factoring construction; a useful structured-search baseline, not polynomial in input bit length.
+
+**[HH]** David Harvey, Markus Hittmeir. *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105 (2021). [Record](https://arxiv.org/abs/2105.11105). Study the arithmetic structure and the actual batching operation, not just its asymptotic headline.
+
+**[Sparse]** Joris van der Hoeven, Grégoire Lecerf. *Sparse polynomial interpolation: Faster strategies over finite fields*. Author-hosted final version dated 2 May 2024. [Text](https://www.texmacs.org/joris/ffsparse/ffsparse.html). Relevant to projections, support reconstruction, and circuit access. Its field, sparsity, characteristic, and root-of-unity assumptions require explicit checking for our setting.
+
+**[Tal]** Yann Tal. *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211, September 2026 preprint. [Record and paper access](https://eccc.weizmann.ac.il/report/2026/211/). A recent lead involving known prime/prime-power moduli, Jacobi sums, and recursive factorial computations. Treat the claims as preprint results to inspect, and preserve the known-modulus/divisor conditions. No general unknown-factor-modulus speedup is asserted by this brief.
+
+**[Coppersmith]** Don Coppersmith. *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. Journal of Cryptology 10 (1997), 233–260. [Publisher record](https://link.springer.com/article/10.1007/s001459900030). Use to specify exactly what partial factor information would suffice, rather than casually assuming that arbitrary correlated bits are usable.
+
+**[Regev]** Oded Regev. *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572 (2023; consult current version). [Record](https://arxiv.org/abs/2308.06572). A source for the hidden-relation formulation and the separation between quantum information acquisition and classical postprocessing.
+
+**[Pilatte]** Cédric Pilatte. *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450; Forum of Mathematics, Pi 14 (2026), e5. [Record](https://arxiv.org/abs/2404.16450). Structural existence/correctness results for suitable modified constructions; do not equate existence of short relations with constructive classical access to them.
+
+**[EG]** Martin Ekerå, Joel Gärtner. *Extending Regev's factoring algorithm to compute discrete logarithms*. arXiv:2311.05545 (2023; consult current version). [Record](https://arxiv.org/abs/2311.05545). Relevant to what approximate lattice information suffices for classical recovery. Extract the exact noise, distribution, and precision requirements.
+
+**[Gao]** Yiming Gao, Yansong Feng, Honggang Hu, Yanbin Pan. *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076 (December 2025 preprint). [Record](https://arxiv.org/abs/2512.19076). A concrete neighboring classical lead emphasizing useful rather than merely shortest vectors. Reproduce and inspect the construction before generalizing it.
+
+**[Cleve]** Richard Cleve. *The query complexity of order-finding*. arXiv:quant-ph/9911124 (1999). [Record](https://arxiv.org/abs/quant-ph/9911124). Read the oracle model carefully. Its lower-bound conclusions do not automatically apply to algorithms exploiting the explicit representation of modular integers.
+
+For additional searches, combine terms such as “arithmetic circuit coefficient sections,” “order of vanishing straight-line programs,” “polynomial identity testing composite characteristic,” “Hadamard product compressed polynomials,” “factorial unit test composite modulus,” “holonomic recurrence distant terms,” and “constructive AKS factor extraction.” Treat these as search directions, not as claims that a particular theorem already exists.
+
+## 9. Small exact smoke test
+
+Save this as `src/seed_checks.py`. It is reference/testing code using trial division and explicit coefficients. It is deliberately not a fast factoring algorithm and must not appear as the hidden implementation of a candidate.
+
+```python
+"""Exact tests for the elementary seed lemmas; small instances only."""
+from math import comb, gcd, isqrt
+
+
+def least_divisor_reference(value: int) -> int:
+    if value < 2:
+        raise ValueError("value must be at least 2")
+    for divisor in range(2, isqrt(value) + 1):
+        if value % divisor == 0:
+            return divisor
+    return value
+
+
+def check_seed_lemmas(limit: int = 200) -> int:
+    if not 4 <= limit <= 2000:
+        raise ValueError("use a small test limit between 4 and 2000")
+    composites = 0
+    for modulus in range(2, limit + 1):
+        first = least_divisor_reference(modulus)
+        # Only interior coefficients: the endpoints of F_N are removed.
+        coeffs = [comb(modulus, k) % modulus
+                  for k in range(1, modulus)]
+        if first == modulus:
+            assert not any(coeffs), (modulus, "prime identity")
+            continue
+
+        composites += 1
+        assert not any(coeffs[:first - 1])
+        assert coeffs[first - 1] == modulus // first
+        for k, coefficient in enumerate(coeffs, start=1):
+            assert k * coefficient % modulus == 0
+            if coefficient:
+                assert 1 < gcd(k, modulus) < modulus
+
+        # product = (K-1)! mod modulus at each iteration.
+        product = 1
+        for cutoff in range(1, isqrt(modulus) + 2):
+            prefix_zero = not any(coeffs[:cutoff - 1])
+            assert prefix_zero == (cutoff <= first)
+            assert prefix_zero == (gcd(product, modulus) == 1)
+            product = product * cutoff % modulus
+
+    for point in range(561):
+        assert (pow(1 + point, 561, 561)
+                - 1 - pow(point, 561, 561)) % 561 == 0
+    return composites
+
+
+if __name__ == "__main__":
+    count = check_seed_lemmas()
+    print(f"Seed checks passed for {count} small composites.")
+```
+
+During preparation, the first-index/value and coefficient-annihilator identities were also checked directly for all 831 composites up to 1,000, and the scalar-zero property of `F_561` was checked at all 561 residues. These checks supplement the proofs; they are not evidence of a fast extraction procedure.
+
+## 10. Start here
+
+Read Sections 1–2, run the smoke tests, and create `STATUS.md`. Then investigate binary sectioning and weighted quotient sketches in parallel or as separate passes. Produce explicit candidate cards, implement the most discriminating small experiment for each, and perform a repair cycle after criticism.
+
+The aim is to find the connection, not merely describe why existing approaches are expensive. Keep asking what information a representation exposes cheaply that was not cheaply accessible before, and make that operation concrete.
+You are a research mathematician (computational number theory + algebraic complexity). Below is a research brief. Your job in THIS round is Phase-1 "discovery": propose at least SIX concrete candidate mechanisms (at least one outside tracks A–E), each written as a full candidate card using the template in Section 4 of the brief. Do actual mathematics: for each mechanism, derive the strongest statement you can, compute what happens on a tiny example by hand if useful, and identify precisely the smallest missing lemma. Then perform a separate adversarial pass on your own cards: for each, state which assumption is most likely to fail and why (with a derivation or example, not "factoring is hard"). Finally rank them by (clarity of operation) x (smallness of missing lemma) and recommend the top 2–3 for exact computational experiments, specifying the single most discriminating small experiment for each (inputs, what is measured, what outcome would refute).
+
+Important technical facts to respect (verify them yourself):
+- Over F_p, (1+X)^N with N=pq is (1+X^p)^q; by Lucas the support of F_N mod p is {p*j : j digit-dominated by q in base p}. Anything that only "re-reads" this via base-p digits is circular unless p is constructed from N.
+- Multisection by residue mod M is a roots-of-unity filter / reduction modulo X^M - Y; scalar evaluation of a section at Y=c is coefficient r of (1+X)^N mod (X^M - c), cost ~M log N. Watch for "dimension conservation" (M times extension degree) in any recursive scheme.
+- Known prior art you should position against (check exact statements via web search where you can): Lipton 1994 (straight-line complexity of n! and factoring), Shub–Smale tau-conjecture, Strassen / Pollard deterministic factorization via factorial products, BGS 2007, Harvey 2020, Harvey–Hittmeir 2021, AKS, coefficient/zero-test hardness for straight-line programs, Hittmeir's work, Coppersmith.
+Do not write a literature survey; prior art should appear only inside the "closest prior method and actual difference" field.
+
+Output: Markdown. Sections: (1) mechanisms as cards, (2) adversarial self-review, (3) ranking + experiment specs, (4) any lemma you can actually PROVE that is new-looking scaffolding (with proof), clearly labeled with status (proved / conjectured / refuted for model).
+
+=== BRIEF ===
+# Research agent brief: find a simple classical connection for integer factorization
+
+**Prepared:** 17 October 2026  
+**Mode:** Active mathematical research, with exact computational experiments  
+**Primary target:** A classical polynomial-time factorization algorithm, or a concrete new mechanism that materially advances toward one
+
+## 1. Mission
+
+Investigate whether a simple connection between explicit integer arithmetic and compressed algebraic representations can produce an efficient classical factorization algorithm.
+
+The working hypothesis is that the eventual mechanism may be conceptually simple and may not resemble sieving or classical simulation of a quantum algorithm. Treat this as a productive hypothesis, not an established fact. Do not dismiss a direction because factoring has been studied for a long time. Equally, do not mistake a short identity, a short program describing an enormous object, or successful toy examples for an efficient algorithm.
+
+**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+
+Begin with the polynomial lead below, but do not become attached to it. You may replace it with a better representation if you explain what new operation becomes possible.
+
+The central question is:
+
+> Which factor-revealing feature has a compact exact representation, and what operation would let us extract that feature without expanding the representation?
+
+### Problem and computational model
+
+Input is an integer `N > 1`, in binary. Write `n = N.bit_length()` and `R_N = Z/NZ`.
+
+The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+
+The first algorithmic goal is to return any `d` with `1 < d < N` and `N % d == 0`. Recursive splitting and primality testing turn a sufficiently uniform splitting algorithm into full factorization; account for those costs when making a final claim.
+
+Use ordinary classical bit complexity. Deterministic polynomial time or randomized expected/bounded-error polynomial time would satisfy the main objective; state which one a proposal targets. Count preprocessing, repetitions, memory, bit precision, coefficient lengths, and representation conversion. A polynomial bound in `N`, `p`, a polynomial degree near `sqrt(N)`, or a group order is not a polynomial bound in `n`.
+
+A restricted-family improvement, a new constructive lemma, a useful reduction with a smaller missing primitive, or a carefully delimited obstruction is worthwhile intermediate progress. Label it accurately and use it to choose the next experiment.
+
+## 2. Mathematical starting point
+
+The elementary claims in this section are supplied with proofs. They are research scaffolding, **not claims of novelty**. Check them independently and search for prior formulations before attributing originality.
+
+### 2.1 The polynomial and its first surviving coefficient
+
+Define
+
+\[
+F_N(X)=(1+X)^N-1-X^N\in R_N[X].
+\]
+
+The prime/composite polynomial identity is the starting point of the AKS primality test; see [AKS], Lemma 2.1 and Section 2. AKS uses suitable low-degree quotient rings to obtain a primality test. It does not supply the factor-extraction operation sought here.
+
+Let `N` be composite and let `p` be its smallest prime divisor. For `1 <= k < p`,
+
+\[
+\binom Nk=\frac{N(N-1)\cdots(N-k+1)}{k!}\equiv0\pmod N,
+\]
+
+because `k!` is invertible modulo `N`.
+
+At `k = p`, use the exact integer identity
+
+\[
+\binom Np=\frac Np\binom{N-1}{p-1}.
+\]
+
+All denominators in the product for the second binomial coefficient are units modulo `N`, so
+
+\[
+\binom{N-1}{p-1}
+=\prod_{j=1}^{p-1}\frac{N-j}{j}
+\equiv(-1)^{p-1}\pmod N.
+\]
+
+For odd `p`, the sign is positive. For `p = 2`, `-N/2` and `N/2` are the same residue modulo `N`. Therefore the least nonnegative residue is exactly
+
+\[
+\boxed{[X^p]F_N=N/p\pmod N.}
+\]
+
+Consequently,
+
+\[
+\boxed{\min\{k:[X^k]F_N\ne0\}=p.}
+\]
+
+This holds for every composite `N`, including prime powers, not just squarefree semiprimes. Since `p < N`, the removed endpoint `X^N` causes no issue. For prime `N`, `F_N` is the zero polynomial instead.
+
+Examples:
+
+| N | First surviving degree p | Coefficient residue N/p |
+|---|---:|---:|
+| 9 | 3 | 3 |
+| 15 | 3 | 5 |
+| 35 | 5 | 7 |
+| 45 | 3 | 15 |
+| 49 | 7 | 7 |
+| 143 | 11 | 13 |
+
+The expression for `F_N` has an arithmetic circuit with `O(n)` gates using repeated squaring. This is a statement about circuit description size, not expanded polynomial size or the cost of coefficient extraction.
+
+### 2.2 A weaker extraction task already suffices: any surviving index
+
+Write `a_k = binom(N,k) mod N` for an interior coefficient. The integer identity
+
+\[
+k\binom Nk=N\binom{N-1}{k-1}
+\]
+
+gives
+
+\[
+k a_k=0\quad\text{in }R_N.
+\]
+
+Thus, for `0 < k < N`,
+
+\[
+a_k\ne0\Longrightarrow1<\gcd(k,N)<N.
+\]
+
+**We do not need the first coefficient, or even its value. Finding any index of a nonzero coefficient gives a factor immediately.**
+
+Target the weaker problem whenever it permits a simpler construction:
+
+> Given the compact circuit for `F_N`, find one exponent in its nonzero support without enumerating the support.
+
+### 2.3 Why individual coefficient queries do not provide the missing information
+
+Suppose an algorithm asks for `a_k` at an explicitly chosen interior index `k`.
+
+If `gcd(k,N) = 1`, its answer is already known to be zero. Otherwise, computing that GCD has already found a nontrivial factor.
+
+Therefore an individual-coefficient oracle can be simulated up to factor discovery: compute the GCD first; either return zero or terminate with a factor. This does not prove factoring hard. It shows that **merely making coefficient evaluation fast is insufficient for this polynomial**. The useful operation must act on many indices at once, reveal a support index, or exploit different arithmetic information.
+
+This is a particularly important filter for proposals based on random coefficient sampling, a binomial-coefficient library, or a fast high-order derivative at one guessed index.
+
+### 2.4 Prefix testing and its factorial connection
+
+For `K >= 1`, define
+
+\[
+Z(N,K):=[F_N(X)\equiv0\pmod{N,X^K}].
+\]
+
+For composite `N`,
+
+\[
+Z(N,K)\Longleftrightarrow K\le p
+\Longleftrightarrow\gcd\bigl(N,(K-1)!\bigr)=1.
+\]
+
+For finding `p`, it suffices to use `2 <= K <= floor(sqrt(N))+1`. A uniform polynomial-time prefix predicate would recover `p` by `O(n)` binary-search queries. A randomized predicate must have sufficiently amplified error for the adaptive search.
+
+This is an exact connection to bounded divisibility and modular factorials. It is not, by itself, a speedup. Investigate whether the polynomial representation makes the unit/nonunit predicate cheaper than evaluating the factorial, and whether factorial or recurrence techniques suggest a better compression. Read [BGS] and the related classical constructions [Harvey], [HH].
+
+Do not require full factorial evaluation unnecessarily: the predicate asks only whether it is a unit modulo `N`. Conversely, do not treat an efficient unit predicate as already available.
+
+### 2.5 Ordinary differentiation loses the signal
+
+\[
+F_N'(X)=N(1+X)^{N-1}-NX^{N-1}=0\quad\text{in }R_N[X].
+\]
+
+Every positive-order ordinary derivative is therefore zero. A characteristic-zero method based on the logarithmic derivative or derivative ratios cannot simply be transferred to this ring.
+
+Hasse derivatives retain coefficient information:
+
+\[
+D^{[k]}F_N(0)=[X^k]F_N.
+\]
+
+But evaluating them at individually selected orders has the limitation in Section 2.3. A potentially useful derivative construction must aggregate orders, preserve additional lifted information, or access a different invariant.
+
+### 2.6 Scalar evaluations and sparse recovery have specific traps
+
+A nonzero polynomial over `R_N` can define the zero function on all scalar residues. For example, `F_561(a) = 0 mod 561` for every scalar `a`: modulo each of `3, 11, 17`, exponentiation to `561` acts as the identity. Yet `F_561` is not the zero polynomial, by Section 2.1.
+
+Therefore scalar random evaluation in `R_N` is not automatically a sound polynomial identity test. Distinguish formal polynomial identity from equality as functions on a finite ring.
+
+Nor is the expanded support polynomially small in general. For `N = p*q`, `p < q`, reduction modulo `q` gives
+
+\[
+F_N(X)\equiv(1+X^q)^p-1-X^{pq}\pmod q.
+\]
+
+For every `1 <= j < p`, `binom(p,j)` is nonzero modulo `q`, because its prime divisors are at most `p`. Thus `F_N` has at least `p-1` nonzero coefficients. On balanced semiprimes this is exponentially many in `n`.
+
+The relevant opportunity is structured or partial support recovery, not an unsupported assumption of ordinary sparsity.
+
+## 3. Priority research tracks
+
+These are starting directions, not a compulsory architecture. First investigate A and B, connect them to C and D, and keep one genuinely independent alternative alive. The proposed modifications below are hypotheses, not results established by the cited papers.
+
+### Track A — Binary coefficient sections and compressed witness extraction
+
+For any polynomial `P`, define
+
+\[
+E(P)(Y)=\sum_j[X^{2j}]P\,Y^j,
+\qquad
+O(P)(Y)=\sum_j[X^{2j+1}]P\,Y^j.
+\]
+
+Then
+
+\[
+P(X)=E(P)(X^2)+X\,O(P)(X^2).
+\]
+
+If `P` is nonzero, at least one section is nonzero. Repeatedly selecting a nonzero section reconstructs the bits of a support index in `O(log degree(P))` levels.
+
+There are elementary gate rules. Writing `f=f_e(X^2)+Xf_o(X^2)` and similarly for `g`,
+
+\[
+E(fg)=f_e g_e+Yf_o g_o,
+\qquad
+O(fg)=f_e g_o+f_o g_e.
+\]
+
+Addition is componentwise. A single section transformation has constant-factor circuit overhead with appropriate sharing. Repeating it `O(n)` times need not: a constant-factor increase at every level can still become exponential.
+
+**Precise conditional target:** Construct a representation for all sections reached along one search path that remains polynomial in `n`, together with a polynomial-time formal zero test for those representations over `R_N`. This would turn the support-index reduction into a factorizer.
+
+Tasks:
+
+1. Derive and implement section transformations on arithmetic circuits, preserving shared subexpressions. Measure growth in unique nodes, not printed expression length alone.
+2. Exploit the special repeated-power structure of `(1+X)^N`. Investigate matrix recurrences, rational generating functions, and reusable formulas for sections; do not default to a generic circuit expansion.
+3. Determine what information a zero test actually needs. Test whether a weaker certificate or a small family of quotient evaluations can select a nonzero child without reconstructing either child.
+4. Study coefficientwise products with interval or bit-pattern masks. The mask may have a short description, but prove or measure the cost of applying it.
+5. Look for a class closed under both sectioning and zero testing. It need only contain the required descendants, not arbitrary arithmetic circuits.
+
+Record separately the cost of constructing a section, representing it, evaluating it, and testing its formal identity. Making only one of these cheap is partial progress, not the full algorithm.
+
+**First experiment:** Follow both diagnostic paths chosen with known support information and operational paths chosen without factors. Diagnostic paths measure representation growth only; they are not factoring results.
+
+### Track B — Quotient sketches that retain useful exponent information
+
+Compute compact projections such as
+
+\[
+F_N(X)\bmod(X^r-1),\qquad
+F_N(X)\bmod(X^r-c),
+\]
+
+with polynomially bounded `r` and cheaply chosen `c`. Repeated squaring evaluates each projection without expanding degree `N`.
+
+Modulo `X^r-1`, a coefficient at position `j` is the sum of original coefficients at `j, j+r, j+2r, ...`. A unit-valued sum can mix contributions divisible by different hidden prime factors. A nonzero projected coefficient is therefore not automatically a factor-revealing coefficient of the original polynomial.
+
+Modulo `X^r-c`, folded terms acquire weights `c^t` according to the quotient of their exponent by `r`. Investigate whether several weights or several quotient rings expose a useful exponent, a nonunit, or enough partial information for another method.
+
+Concrete questions:
+
+- Can paired sketches isolate one hidden characteristic's contribution without knowing that characteristic?
+- Can small-degree resultants, subresultants, annihilators, ranks, or failed inversions reveal a nontrivial GCD?
+- Can a small family of weighted projections identify one support exponent modulo enough small moduli without enumerating exponentially many matching choices?
+- Can the relation `F_N' = 0` constrain the information discarded by reduction? Differentiation before and after reduction need not commute: retain the quotient terms in the derivation.
+- Can a sketch answer a prefix or binary-section question rather than reconstruct the full polynomial?
+
+Read [AKS] for the distinction between proving compositeness and extracting a witness, and [Sparse] for interpolation mechanisms and their assumptions. Characteristic, number of terms, roots of unity, discrete-log steps, and field-versus-ring behavior must all be audited before transfer.
+
+Do not use generic sketch collisions to claim an impossibility theorem for this family: the decoder receives `N` and can exploit its explicit arithmetic. A negative result must identify the restricted sketch/decoder model it actually addresses.
+
+**First experiment:** Exhaustively inspect several small families of weighted projections, their coefficient GCDs, and basic invariants on tiny semiprimes. Derive the reason for any successful pattern before scaling it.
+
+### Track C — Factorial unit tests and compressed recurrence evaluation
+
+The prefix predicate is precisely a factorial-unit predicate. This links the polynomial lead to algorithms for products of consecutive terms and linear recurrences with polynomial coefficients [BGS].
+
+Investigate whether unit/nonunit information admits a simpler recurrence than the factorial value itself. Candidate tools include product trees, block products, multipoint evaluation, cancellation-aware recurrences, and transformations that isolate an interval containing a divisor.
+
+Every proposed recurrence should state whether its dimension, polynomial degree, or number of blocks grows with `K` rather than `log K`. If a recurrence uses division modulo `N`, compute the GCD of each denominator before inversion: a nonunit can be useful output, not merely an implementation failure.
+
+A particularly relevant new lead is Yann Tal's September 2026 preprint [Tal]. Its abstract describes modular-factorial improvements through Jacobi sums, reconstruction, and recursive reductions. **Its setting supplies a known prime modulus, or specified prime-power settings, and appropriate divisor conditions.** It is not a general unknown-factor-modulus algorithm. Inspect the full construction and ask which identities survive without knowing the prime or its group structure.
+
+A useful adaptation must avoid assuming a factorization of `N`, its totient, auxiliary quantities of comparable unknown difficulty, or a known prime underlying `R_N`. Character sums are useful here only if the proposed way to construct or evaluate them is explicit and affordable.
+
+**First experiment:** Implement a transparent block-product baseline, then one recurrence or invariant that attempts to answer only the unit predicate. Compare actual arithmetic counts and largest representation sizes.
+
+### Track D — Hidden characteristic, lifted information, and annihilators
+
+For `N = p*q`, the polynomial has different Frobenius structure in its two hidden components:
+
+\[
+F_N\bmod p=(1+X^p)^q-1-X^{pq},
+\]
+
+\[
+F_N\bmod q=(1+X^q)^p-1-X^{pq}.
+\]
+
+The goal is not to perform these reductions using known factors. It is to find an operation over `R_N` that separates the two structures without knowing them.
+
+Investigate Hasse derivatives, divided-power constructions, formal-series sections, finite differences, recurrence singularities, and annihilating ideals. Consider modest lifts such as modulus `N^t` where `t` is polynomially bounded, but derive what survives the lift and how it is extracted. Ordinary differentiation becomes zero after reduction modulo `N`; differentiation before reduction or in a lift retains other data, whose usefulness must be demonstrated rather than assumed.
+
+A promising failure mode of a field algorithm is encountering a nonunit pivot. Instrument such algorithms to return `gcd(pivot,N)`. However, selecting a pivot guaranteed to become a useful nonunit is part of the research problem.
+
+Avoid circular use of Lucas/Kummer digits in base `p`, a `p`-Frobenius map, or Cartier operators parameterized by an unknown factor. They can guide identities in the proof, but an operational algorithm must construct its own parameters from `N`.
+
+**First experiment:** Build small lifted or sectioned representations and classify the denominators, pivots, and annihilators that arise. Separate structural factor discovery from accidental divisibility by a small tested integer.
+
+### Track E — Transfer partial information into lattices or hidden relations
+
+A sketch does not have to reveal a complete factor. Determine whether it yields a rigorously specified interval, congruence, or correlated set of bits that existing small-root methods can use. Coppersmith's work [Coppersmith] is the relevant reference, but extract the precise theorem and parameter requirements before applying it.
+
+For hidden-relation approaches, use [Regev], [Pilatte], and [EG] to identify the information that classical postprocessing consumes. A short-relation existence theorem is not a procedure for finding those relations; a decoder is not a sampler.
+
+One exact interface is multiplicative characters. With generators `a_i`, define
+
+\[
+\mathcal L=\{z\in\mathbb Z^d:\prod_i a_i^{z_i}=1\pmod N\}.
+\]
+
+If a computable character satisfies `chi(a_i)=exp(2*pi*i*w_i)`, then
+
+\[
+\langle w,z\rangle\in\mathbb Z\quad\text{for every }z\in\mathcal L.
+\]
+
+The question is whether explicit arithmetic supplies useful character phases or partial phase constraints efficiently. For squared generators `a_i=b_i^2`, ambient characters taking values only in `{+1,-1}` become trivial. A proposed source of phases must avoid that degeneracy and avoid constructing the unknown group decomposition first.
+
+Also inspect [Gao] for the neighboring classical idea of deliberately avoiding uninformative shortest vectors. Transfer a concrete objective or construction, not merely the instruction to use lattice reduction.
+
+Treat [Cleve] as a model-specific warning about generic oracle order finding, not as a lower bound for explicit integer arithmetic.
+
+**First experiment:** Specify an exact partial-information format and demonstrate its downstream usefulness with a diagnostic oracle. Then separately attempt to produce it from `N` alone. Never combine those two stages into an unsupported end-to-end speed claim.
+
+### Track F — One independent connection
+
+Reserve some effort for a route not suggested by the polynomial lead. Examples include a different low-description-length generating function, a nonunit-producing algebraic identity, or an arithmetic invariant of a low-dimensional object.
+
+The proposal must specify an executable operation and why it sees the hidden factors. Merely restating `pq=N` as optimization, SAT, a spectral problem, or a dynamical system is not enough. Show where the representation gives a cheaper operation or a smaller search problem.
+
+## 4. Research procedure
+
+### Phase 1: establish the mathematical and literature baseline
+
+Reproduce the elementary lemmas and tests in this brief. Read the core sources needed for the two most promising tracks; do not read every listed paper before doing mathematics.
+
+Create a compact map of the nearest prior art. For each relevant result record its exact problem, input representation, theorem assumptions, complexity variables, and the primitive it provides. Use primary sources. Verify title, authors, date, and theorem statement; earlier conversational summaries are leads, not evidence.
+
+Keep discovery work separate from verification. In the first generation pass, propose at least six mechanisms, including one outside the supplied tracks. Then select two or three with the clearest operation and smallest missing lemma.
+
+### Phase 2: write a candidate card before substantial coding
+
+Use this template for each serious candidate:
+
+```text
+ID and one-sentence mechanism:
+Target problem / supported input family:
+Representation and how it is built from N:
+Exact operation that extracts information:
+Why that information exposes a factor:
+Known lemmas being used:
+New lemma required:
+Correctness argument or conjecture:
+Cost in n, including construction and extraction:
+Randomness and success probability:
+Closest prior method and the actual difference:
+Smallest informative experiment:
+Counterexample or scaling behavior that would refute this version:
+Possible repair if that happens:
+```
+
+Reject or repair proposals that name the missing operation without implementing or bounding it. Do not abandon a promising representation merely because the first naive implementation expands it.
+
+### Phase 3: alternate construction and criticism
+
+For each selected mechanism:
+
+1. Derive the strongest statement you can justify.
+2. Implement the smallest exact experiment that distinguishes it from the obvious baseline.
+3. Search for boundary cases and counterexamples.
+4. Audit representation growth and total work.
+5. Produce a revised mechanism or a narrow obstruction identifying what a revision must change.
+
+Use a separate mathematical critic and complexity auditor if real subagents are available. Give the critic the candidate and code, not a persuasive narrative about expected success. Without subagents, perform separately documented review passes. Do not claim independent review unless it actually occurred.
+
+The critic must state which assumption fails and give an example, derivation, or missing bound. “Factoring is believed hard” is not a technical critique.
+
+Do not stop after a survey or after one failed proposal. Complete at least one repair cycle on the best candidate, unless a complete proof and independently checked implementation are already obtained.
+
+### Phase 4: keep the result reproducible
+
+Preserve proofs, candidate versions, failed constructions, seeds, raw measurements, and exact commands. A negative result about one representation is useful when its scope is explicit and it points to a different operation to try.
+
+Allocate most effort to mathematical construction and discriminating experiments, not ever-expanding bibliographies or GPU optimization. Use exact integer/ring arithmetic initially. Floating-point exploration is allowed only with a later precision analysis.
+
+## 5. Experimental design and leakage controls
+
+### Input families
+
+Begin with exhaustive small composites for algebraic correctness. Then use reproducibly generated balanced semiprimes at increasing bit lengths, for example `16, 24, 32, 48, 64`, extending only as resources permit. Successful factoring of small inputs is a correctness check, not evidence of polynomial scaling.
+
+Include independent-prime balanced semiprimes, prime powers, composites with several distinct factors, highly unbalanced semiprimes, Carmichael numbers, and prime inputs. Near-equal primes, special algebraic forms, and deliberately smooth `p-1` or `q-1` belong in separately labeled diagnostic families.
+
+### Separate algorithm inputs from diagnostic truth
+
+The candidate receives only `N`, public configuration, and a random seed. A separate test harness may retain factors to compute labels and understand failures.
+
+Never leak factors through filenames, seeds deterministically encoding factors, candidate-specific parameter choices, precomputed group orders, smoothness-selected instances, library factorization calls, or a simulator initialized with the factors.
+
+Use actual random generation of the intended family and record the sampling procedure. Freeze candidate choices before the holdout evaluation. Special test families are useful but must not silently replace the intended distribution.
+
+### Record meaningful costs
+
+For each run record at least:
+
+- Correctness, result, seed, wall time, timeout, and peak memory.
+- Ring operations and GCD calls, with operand bit lengths.
+- Largest polynomial degree actually materialized and number of stored coefficients.
+- Circuit nodes, recurrence dimension, matrix size, section depth, and rank where relevant.
+- Number of sketches, candidate combinations, restarts, and rejected trials.
+- Numerical precision and error bounds for any approximate component.
+
+Separate preprocessing, information acquisition, decoding, and verification. Count all work, including unsuccessful attempts. Distinguish parallel depth from total classical work.
+
+Compare against transparent trial division and Pollard-rho implementations on small tests, a relevant product/block baseline for Track C, and the nearest prior construction for the actual proposed operation. Use controlled same-language arithmetic comparisons where possible. Do not claim superiority to GNFS from a small-input benchmark or an improvement over trial division.
+
+Empirical fits are diagnostics, not complexity proofs. Show raw counters versus both `n` and the actual structural parameters. In particular, a method polynomial in a hidden factor can look innocuous on tiny bit lengths.
+
+## 6. Mandatory complexity and correctness audit
+
+For every proposed breakthrough, answer the following before calling it an algorithmic improvement.
+
+**Representation.** Is the object genuinely stored in polynomial space, or merely described by a short program that later expands? Are all required operations efficient on that representation?
+
+**Coefficient access.** Does the method require sequential coefficients up to `p`, a dense truncation at `K`, or exponentially many terms after sectioning? Section 2.3 rules out individual coefficient evaluation as the missing advantage here.
+
+**Field assumptions.** Does a theorem require a known prime, an algebraically closed field, a characteristic bound, or invertible denominators? Prove the needed ring version or report factor-revealing nonunits.
+
+**Hidden inputs.** Is any step using `p`, `q`, `phi(N)`, `lambda(N)`, an unknown order, a hidden lattice basis, or informative samples supplied by an oracle? State exactly how it is obtained.
+
+**Numerical cost.** An error tolerance `2^(-poly(n))` uses polynomially many bits. An error tolerance `2^(-p)` needs order-`p` bits. A tiny error written with a short exponent is not automatically cheap to achieve. Conversely, do not call every exponentially small error an exponential-precision requirement.
+
+**State-space cost.** A short diffusion rule, tensor description, or matrix-power expression is not enough. Bound the represented state, ranks, contractions, and the cost of the final observable.
+
+**Degree and root bounds.** Check polynomial identity-test assumptions when formal degree is exponential. Over a finite ring, nonzero polynomials can vanish at every scalar point. Auxiliary prime moduli also change coefficient divisibility: reducing modulo an unrelated prime does not preserve vanishing modulo `N` for free.
+
+**Randomness.** Bound the success probability and cost per attempt, including constructing the distribution and rejecting bad outputs. Distinguish worst-case, average-case, and restricted-family claims.
+
+**Certificates.** A candidate factor is cheaply verifiable. That does not bound search time or certify an average-case/polynomial-time theorem. A decoder's correctness with ideal samples does not validate the source of those samples.
+
+**Novelty.** Compare with the closest specific method. A new notation, a different implementation of a known identity, or a known reduction rediscovered here is not an asymptotic breakthrough. It can still be useful scaffolding for the next modification.
+
+Use these checks to improve proposals, not to replace proposal generation.
+
+## 7. Workspace and required deliverables
+
+Suggested layout:
+
+```text
+factoring-connection/
+  README.md
+  STATUS.md
+  references.md
+  notes/
+    seed_lemmas.md
+    prior_art_map.md
+    candidate_001.md
+    candidate_002.md
+    review_and_repairs.md
+  src/
+    seed_checks.py
+    ring_polynomials.py
+    circuit_sections.py
+    quotient_sketches.py
+    candidates/
+  tests/
+  experiments/
+    configs/
+    raw/
+    analysis/
+  REPORT.md
+  NEXT_STEPS.md
+```
+
+Use Python with exact arithmetic for the first prototypes; use existing computer-algebra packages where appropriate, but inspect any operation that may internally factor a modulus. Optimize only after identifying an informative mechanism. Do not buy cloud resources, publish results, or contact authors without authorization.
+
+A candidate interface should accept `N` and public configuration only, return a factor or explicit failure, and emit an auditable metrics record. Reference factorization functions belong in the harness, never inside the purported new factorizer.
+
+The final report must contain:
+
+1. **Best surviving mechanism:** its precise new operation and the strongest supported claim.
+2. **Mathematics:** proved lemmas, conjectures, counterexamples, and any remaining proof obligation, clearly separated.
+3. **Experiments:** reproducible commands, raw results, input distributions, failures, and scaling diagnostics.
+4. **Comparison:** closest prior art and exactly what changed.
+5. **Continuation:** the next most decisive mathematical question or experiment, with a concrete proposed attack.
+
+Use status labels such as `proved`, `experimentally supported`, `conjectured`, `refuted for this model`, and `not yet tested`. A useful report may contain a novel mechanism plus a sharply identified unresolved lemma. Do not inflate that into a completed factorizer, and do not stop at “no breakthrough found” when the work supports a more specific next step.
+
+## 8. Primary-source reading list
+
+These are selected starting points, not a claim of an exhaustive literature search. Bibliographic/abstract pages were checked when preparing this brief; the AKS seed identity was also checked in the paper. Except for the elementary derivations above, do not assume that every cited theorem or implementation has been independently verified here. Open the relevant full papers, record the version consulted, and verify exact conditions before relying on them.
+
+**[AKS]** Manindra Agrawal, Neeraj Kayal, Nitin Saxena. *PRIMES is in P*. Annals of Mathematics 160 (2004), 781–793. [Paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/primality_journal.pdf). Focus on Lemma 2.1 and the quotient-ring reduction in Section 2; distinguish primality detection from factor extraction.
+
+**[BGS]** Alin Bostan, Pierrick Gaudry, Éric Schost. *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM Journal on Computing 36(6) (2007), 1777–1806. [Author-hosted paper](https://mathexp.eu/bostan/publications/BoGaSc07.pdf). This directly connects distant recurrence terms, product computations, and classical factorization. Audit the dependence on the recurrence index.
+
+**[Harvey]** David Harvey. *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450 (2020). [Record](https://arxiv.org/abs/2010.05450). A rigorous `N^(1/5+o(1))` classical factoring construction; a useful structured-search baseline, not polynomial in input bit length.
+
+**[HH]** David Harvey, Markus Hittmeir. *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105 (2021). [Record](https://arxiv.org/abs/2105.11105). Study the arithmetic structure and the actual batching operation, not just its asymptotic headline.
+
+**[Sparse]** Joris van der Hoeven, Grégoire Lecerf. *Sparse polynomial interpolation: Faster strategies over finite fields*. Author-hosted final version dated 2 May 2024. [Text](https://www.texmacs.org/joris/ffsparse/ffsparse.html). Relevant to projections, support reconstruction, and circuit access. Its field, sparsity, characteristic, and root-of-unity assumptions require explicit checking for our setting.
+
+**[Tal]** Yann Tal. *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211, September 2026 preprint. [Record and paper access](https://eccc.weizmann.ac.il/report/2026/211/). A recent lead involving known prime/prime-power moduli, Jacobi sums, and recursive factorial computations. Treat the claims as preprint results to inspect, and preserve the known-modulus/divisor conditions. No general unknown-factor-modulus speedup is asserted by this brief.
+
+**[Coppersmith]** Don Coppersmith. *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. Journal of Cryptology 10 (1997), 233–260. [Publisher record](https://link.springer.com/article/10.1007/s001459900030). Use to specify exactly what partial factor information would suffice, rather than casually assuming that arbitrary correlated bits are usable.
+
+**[Regev]** Oded Regev. *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572 (2023; consult current version). [Record](https://arxiv.org/abs/2308.06572). A source for the hidden-relation formulation and the separation between quantum information acquisition and classical postprocessing.
+
+**[Pilatte]** Cédric Pilatte. *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450; Forum of Mathematics, Pi 14 (2026), e5. [Record](https://arxiv.org/abs/2404.16450). Structural existence/correctness results for suitable modified constructions; do not equate existence of short relations with constructive classical access to them.
+
+**[EG]** Martin Ekerå, Joel Gärtner. *Extending Regev's factoring algorithm to compute discrete logarithms*. arXiv:2311.05545 (2023; consult current version). [Record](https://arxiv.org/abs/2311.05545). Relevant to what approximate lattice information suffices for classical recovery. Extract the exact noise, distribution, and precision requirements.
+
+**[Gao]** Yiming Gao, Yansong Feng, Honggang Hu, Yanbin Pan. *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076 (December 2025 preprint). [Record](https://arxiv.org/abs/2512.19076). A concrete neighboring classical lead emphasizing useful rather than merely shortest vectors. Reproduce and inspect the construction before generalizing it.
+
+**[Cleve]** Richard Cleve. *The query complexity of order-finding*. arXiv:quant-ph/9911124 (1999). [Record](https://arxiv.org/abs/quant-ph/9911124). Read the oracle model carefully. Its lower-bound conclusions do not automatically apply to algorithms exploiting the explicit representation of modular integers.
+
+For additional searches, combine terms such as “arithmetic circuit coefficient sections,” “order of vanishing straight-line programs,” “polynomial identity testing composite characteristic,” “Hadamard product compressed polynomials,” “factorial unit test composite modulus,” “holonomic recurrence distant terms,” and “constructive AKS factor extraction.” Treat these as search directions, not as claims that a particular theorem already exists.
+
+## 9. Small exact smoke test
+
+Save this as `src/seed_checks.py`. It is reference/testing code using trial division and explicit coefficients. It is deliberately not a fast factoring algorithm and must not appear as the hidden implementation of a candidate.
+
+```python
+"""Exact tests for the elementary seed lemmas; small instances only."""
+from math import comb, gcd, isqrt
+
+
+def least_divisor_reference(value: int) -> int:
+    if value < 2:
+        raise ValueError("value must be at least 2")
+    for divisor in range(2, isqrt(value) + 1):
+        if value % divisor == 0:
+            return divisor
+    return value
+
+
+def check_seed_lemmas(limit: int = 200) -> int:
+    if not 4 <= limit <= 2000:
+        raise ValueError("use a small test limit between 4 and 2000")
+    composites = 0
+    for modulus in range(2, limit + 1):
+        first = least_divisor_reference(modulus)
+        # Only interior coefficients: the endpoints of F_N are removed.
+        coeffs = [comb(modulus, k) % modulus
+                  for k in range(1, modulus)]
+        if first == modulus:
+            assert not any(coeffs), (modulus, "prime identity")
+            continue
+
+        composites += 1
+        assert not any(coeffs[:first - 1])
+        assert coeffs[first - 1] == modulus // first
+        for k, coefficient in enumerate(coeffs, start=1):
+            assert k * coefficient % modulus == 0
+            if coefficient:
+                assert 1 < gcd(k, modulus) < modulus
+
+        # product = (K-1)! mod modulus at each iteration.
+        product = 1
+        for cutoff in range(1, isqrt(modulus) + 2):
+            prefix_zero = not any(coeffs[:cutoff - 1])
+            assert prefix_zero == (cutoff <= first)
+            assert prefix_zero == (gcd(product, modulus) == 1)
+            product = product * cutoff % modulus
+
+    for point in range(561):
+        assert (pow(1 + point, 561, 561)
+                - 1 - pow(point, 561, 561)) % 561 == 0
+    return composites
+
+
+if __name__ == "__main__":
+    count = check_seed_lemmas()
+    print(f"Seed checks passed for {count} small composites.")
+```
+
+During preparation, the first-index/value and coefficient-annihilator identities were also checked directly for all 831 composites up to 1,000, and the scalar-zero property of `F_561` was checked at all 561 residues. These checks supplement the proofs; they are not evidence of a fast extraction procedure.
+
+## 10. Start here
+
+Read Sections 1–2, run the smoke tests, and create `STATUS.md`. Then investigate binary sectioning and weighted quotient sketches in parallel or as separate passes. Produce explicit candidate cards, implement the most discriminating small experiment for each, and perform a repair cycle after criticism.
+
+The aim is to find the connection, not merely describe why existing approaches are expensive. Keep asking what information a representation exposes cheaply that was not cheaply accessible before, and make that operation concrete.
+
+web search: 
+web search: "square root of -1" "factoring" Schoof ...
+exec
+/bin/bash -lc "rg -n '"'^## 4|''^###|candidate|template'"' PHASE1_NOTES.md r1_mechanisms.md r4_sos.md r2_generic.md" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+r2_generic.md:1:Context: a research project on classical polynomial-time integer factorization (brief summarized below). Round 1 (by you, in a separate session) produced the attached candidate cards. Our working synthesis is below. Your job: check it hard, then go beyond it.
+r2_generic.md:12:4. The main creative task: propose at least FOUR concrete mechanisms that step OUTSIDE GR+gcd, i.e. that use operations which are not ring operations on residues: integer size/order (comparisons, floor, rounding, carries, bit extraction of canonical representatives), lattice reduction, continued fractions, Coppersmith-type small-root decoding, collision search on integer intervals (Harvey/HH-style), or mixing representatives of residues across different moduli (e.g. reduce a residue mod N as an integer mod an auxiliary prime). For each: a full candidate card (template in the brief §4), the precise way it uses non-generic structure, the smallest missing lemma, and the smallest exact experiment. Include at least one Track E card that specifies an exact partial-information format, cites the exact decoder theorem that consumes it (Coppersmith Theorem number, parameters), and proposes a non-oracle source for it. Be explicit about where each one would collapse back to sqrt/N^{1/4}/N^{1/5} cost.
+r2_generic.md:18:## 1. Mechanisms as candidate cards
+r2_generic.md:28:No candidate below uses hidden-characteristic digits operationally.
+r2_generic.md:30:Write \(\widehat F_N=(1+X)^N-1-X^N\in\mathbb Z[X]\) for the integer lift. Let \(\mathsf M(n)\) denote integer multiplication cost, and \(\mathsf P(r)\) polynomial multiplication cost in ring operations. All candidate computations reduce coefficients modulo \(N\).
+r2_generic.md:32:### A1 — Random-quotient identity tests guide binary support extraction
+r2_generic.md:107:### B1 — Detect different hidden-field ranks in weighted quotient algebras
+r2_generic.md:167:The candidate computes neither \(p\) nor \(F_q\).
+r2_generic.md:207:### C1 — Test collisions of consecutive roots through a compressed discriminant
+r2_generic.md:308:### D1 — Divide the lifted derivative before reducing modulo \(N\)
+r2_generic.md:387:### E1 — Count short-interval intersections of CRT discriminant masks
+r2_generic.md:442:Mask soundness and density are proved. Efficient decoding and adequate false-candidate elimination are conjectural.
+r2_generic.md:479:### F1 — Correlate quadratic norm-one group orders using \(N-\operatorname{Jacobi}(D,N)\)
+r2_generic.md:632:- **Operation:** The diagnostic harness enumerates weights locally to calculate every \(\pi_{p,j},\pi_{q,j}\). The candidate itself receives only \(N,r,c\).
+r2_generic.md:671:## 4. Proved scaffolding and precisely delimited obstructions
+r2_generic.md:673:### 4.1 Random monic quotients supply formal PIT without factoring
+r2_generic.md:702:### 4.2 A binary section observable requires exponentially many linear states
+r2_generic.md:733:### 4.3 Rank extraction has a perfect coefficient-pairing formulation
+r2_generic.md:760:### 4.4 Public cyclotomic roots explain the first sketch successes
+r2_generic.md:793:### 4.5 Removing the derivative’s public root can remove all scalar signal
+r2_generic.md:824:### 4.6 The CRT mask density is exact, but applies only to an average interval
+r2_generic.md:851:### 4.7 The quadratic-torus probability reduces exactly to shifted-order correlation
+r2_generic.md:884:**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+r2_generic.md:892:### Problem and computational model
+r2_generic.md:896:The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+r2_generic.md:908:### 2.1 The polynomial and its first surviving coefficient
+r2_generic.md:967:### 2.2 A weaker extraction task already suffices: any surviving index
+r2_generic.md:993:### 2.3 Why individual coefficient queries do not provide the missing information
+r2_generic.md:1003:### 2.4 Prefix testing and its factorial connection
+r2_generic.md:1024:### 2.5 Ordinary differentiation loses the signal
+r2_generic.md:1040:### 2.6 Scalar evaluations and sparse recovery have specific traps
+r2_generic.md:1060:### Track A — Binary coefficient sections and compressed witness extraction
+r2_generic.md:1102:### Track B — Quotient sketches that retain useful exponent information
+r2_generic.md:1131:### Track C — Factorial unit tests and compressed recurrence evaluation
+r2_generic.md:1145:### Track D — Hidden characteristic, lifted information, and annihilators
+r2_generic.md:1167:### Track E — Transfer partial information into lattices or hidden relations
+r2_generic.md:1193:### Track F — One independent connection
+r2_generic.md:1199:## 4. Research procedure
+r2_generic.md:1201:### Phase 1: establish the mathematical and literature baseline
+r2_generic.md:1209:### Phase 2: write a candidate card before substantial coding
+r2_generic.md:1211:Use this template for each serious candidate:
+r2_generic.md:1232:### Phase 3: alternate construction and criticism
+r2_generic.md:1242:Use a separate mathematical critic and complexity auditor if real subagents are available. Give the critic the candidate and code, not a persuasive narrative about expected success. Without subagents, perform separately documented review passes. Do not claim independent review unless it actually occurred.
+r2_generic.md:1246:Do not stop after a survey or after one failed proposal. Complete at least one repair cycle on the best candidate, unless a complete proof and independently checked implementation are already obtained.
+r2_generic.md:1248:### Phase 4: keep the result reproducible
+r2_generic.md:1250:Preserve proofs, candidate versions, failed constructions, seeds, raw measurements, and exact commands. A negative result about one representation is useful when its scope is explicit and it points to a different operation to try.
+r2_generic.md:1256:### Input families
+r2_generic.md:1262:### Separate algorithm inputs from diagnostic truth
+r2_generic.md:1264:The candidate receives only `N`, public configuration, and a random seed. A separate test harness may retain factors to compute labels and understand failures.
+r2_generic.md:1266:Never leak factors through filenames, seeds deterministically encoding factors, candidate-specific parameter choices, precomputed group orders, smoothness-selected instances, library factorization calls, or a simulator initialized with the factors.
+r2_generic.md:1268:Use actual random generation of the intended family and record the sampling procedure. Freeze candidate choices before the holdout evaluation. Special test families are useful but must not silently replace the intended distribution.
+r2_generic.md:1270:### Record meaningful costs
+r2_generic.md:1278:- Number of sketches, candidate combinations, restarts, and rejected trials.
+r2_generic.md:1307:**Certificates.** A candidate factor is cheaply verifiable. That does not bound search time or certify an average-case/polynomial-time theorem. A decoder's correctness with ideal samples does not validate the source of those samples.
+r2_generic.md:1325:    candidate_001.md
+r2_generic.md:1326:    candidate_002.md
+r2_generic.md:1333:    candidates/
+r2_generic.md:1345:A candidate interface should accept `N` and public configuration only, return a factor or explicit failure, and emit an auditable metrics record. Reference factorization functions belong in the harness, never inside the purported new factorizer.
+r2_generic.md:1389:Save this as `src/seed_checks.py`. It is reference/testing code using trial division and explicit coefficients. It is deliberately not a fast factoring algorithm and must not appear as the hidden implementation of a candidate.
+r2_generic.md:1449:Read Sections 1–2, run the smoke tests, and create `STATUS.md`. Then investigate binary sectioning and weighted quotient sketches in parallel or as separate passes. Produce explicit candidate cards, implement the most discriminating small experiment for each, and perform a repair cycle after criticism.
+r1_mechanisms.md:1:You are a research mathematician (computational number theory + algebraic complexity). Below is a research brief. Your job in THIS round is Phase-1 "discovery": propose at least SIX concrete candidate mechanisms (at least one outside tracks A–E), each written as a full candidate card using the template in Section 4 of the brief. Do actual mathematics: for each mechanism, derive the strongest statement you can, compute what happens on a tiny example by hand if useful, and identify precisely the smallest missing lemma. Then perform a separate adversarial pass on your own cards: for each, state which assumption is most likely to fail and why (with a derivation or example, not "factoring is hard"). Finally rank them by (clarity of operation) x (smallness of missing lemma) and recommend the top 2–3 for exact computational experiments, specifying the single most discriminating small experiment for each (inputs, what is measured, what outcome would refute).
+r1_mechanisms.md:24:**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+r1_mechanisms.md:32:### Problem and computational model
+r1_mechanisms.md:36:The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+r1_mechanisms.md:48:### 2.1 The polynomial and its first surviving coefficient
+r1_mechanisms.md:107:### 2.2 A weaker extraction task already suffices: any surviving index
+r1_mechanisms.md:133:### 2.3 Why individual coefficient queries do not provide the missing information
+r1_mechanisms.md:143:### 2.4 Prefix testing and its factorial connection
+r1_mechanisms.md:164:### 2.5 Ordinary differentiation loses the signal
+r1_mechanisms.md:180:### 2.6 Scalar evaluations and sparse recovery have specific traps
+r1_mechanisms.md:200:### Track A — Binary coefficient sections and compressed witness extraction
+r1_mechanisms.md:242:### Track B — Quotient sketches that retain useful exponent information
+r1_mechanisms.md:271:### Track C — Factorial unit tests and compressed recurrence evaluation
+r1_mechanisms.md:285:### Track D — Hidden characteristic, lifted information, and annihilators
+r1_mechanisms.md:307:### Track E — Transfer partial information into lattices or hidden relations
+r1_mechanisms.md:333:### Track F — One independent connection
+r1_mechanisms.md:339:## 4. Research procedure
+r1_mechanisms.md:341:### Phase 1: establish the mathematical and literature baseline
+r1_mechanisms.md:349:### Phase 2: write a candidate card before substantial coding
+r1_mechanisms.md:351:Use this template for each serious candidate:
+r1_mechanisms.md:372:### Phase 3: alternate construction and criticism
+r1_mechanisms.md:382:Use a separate mathematical critic and complexity auditor if real subagents are available. Give the critic the candidate and code, not a persuasive narrative about expected success. Without subagents, perform separately documented review passes. Do not claim independent review unless it actually occurred.
+r1_mechanisms.md:386:Do not stop after a survey or after one failed proposal. Complete at least one repair cycle on the best candidate, unless a complete proof and independently checked implementation are already obtained.
+r1_mechanisms.md:388:### Phase 4: keep the result reproducible
+r1_mechanisms.md:390:Preserve proofs, candidate versions, failed constructions, seeds, raw measurements, and exact commands. A negative result about one representation is useful when its scope is explicit and it points to a different operation to try.
+r1_mechanisms.md:396:### Input families
+r1_mechanisms.md:402:### Separate algorithm inputs from diagnostic truth
+r1_mechanisms.md:404:The candidate receives only `N`, public configuration, and a random seed. A separate test harness may retain factors to compute labels and understand failures.
+r1_mechanisms.md:406:Never leak factors through filenames, seeds deterministically encoding factors, candidate-specific parameter choices, precomputed group orders, smoothness-selected instances, library factorization calls, or a simulator initialized with the factors.
+r1_mechanisms.md:408:Use actual random generation of the intended family and record the sampling procedure. Freeze candidate choices before the holdout evaluation. Special test families are useful but must not silently replace the intended distribution.
+r1_mechanisms.md:410:### Record meaningful costs
+r1_mechanisms.md:418:- Number of sketches, candidate combinations, restarts, and rejected trials.
+r1_mechanisms.md:447:**Certificates.** A candidate factor is cheaply verifiable. That does not bound search time or certify an average-case/polynomial-time theorem. A decoder's correctness with ideal samples does not validate the source of those samples.
+r1_mechanisms.md:465:    candidate_001.md
+r1_mechanisms.md:466:    candidate_002.md
+r1_mechanisms.md:473:    candidates/
+r1_mechanisms.md:485:A candidate interface should accept `N` and public configuration only, return a factor or explicit failure, and emit an auditable metrics record. Reference factorization functions belong in the harness, never inside the purported new factorizer.
+r1_mechanisms.md:529:Save this as `src/seed_checks.py`. It is reference/testing code using trial division and explicit coefficients. It is deliberately not a fast factoring algorithm and must not appear as the hidden implementation of a candidate.
+r1_mechanisms.md:589:Read Sections 1–2, run the smoke tests, and create `STATUS.md`. Then investigate binary sectioning and weighted quotient sketches in parallel or as separate passes. Produce explicit candidate cards, implement the most discriminating small experiment for each, and perform a repair cycle after criticism.
+r4_sos.md:7:3. **Mechanism hunt (Track F, independent).** Propose up to 3 concrete operations that would compute the second-informative-bit-type quantities from N using class-group or quadratic-form arithmetic. One possibility: the 4-rank / 8-rank of Cl(−4N) via Rédei matrices; Rédei matrices are known computable when the factorization is known. Identify exactly where the factorization is needed, and whether any part is computable from N alone (e.g. via reduced forms, the principal genus, ambiguous forms, which famously relate to factoring through Shanks' SQUFOF / Schnorr–Lenstra). Give candidate cards (brief §4 template) with cost and failure points. Be explicit about the known fact that ambiguous forms give factors, i.e. that finding an ambiguous form IS factoring.
+PHASE1_NOTES.md:49:Counters instrument explicit quotient multiplication, GCD calls, and modular inversions; built-in modular exponentiation and GCD/inverse internal bit work are NOT expanded into ring operations. All raw records include N and diagnostic truth. No timing comparison or factoring speedup is claimed. The scalar/root/discriminant/CRT diagnostics deliberately enumerate small sets. The full seed harness explicitly materializes coefficients through degree1000; the candidate quotient degree is at most8, and the PIT demonstration uses degree at most12.
+
+web search: 
+web search: "Jager" "Schwenk" "generic" ring factoring residuosity ...
+codex
+The usual reduction from modular square-root extraction to factoring uses a square chosen at random. It does not immediately apply to the fixed input −1: a supplied root has order 4 and squares to the global element −1. I’ll check the fixed-input literature before claiming an equivalence.
+web search: 
+web search: factoring "given a square root of" "-1" modulus ...
+web search: 
+web search: https://reneschoof.github.io/papers.html
+exec
+/bin/bash -lc "sed -n '349,371p' r1_mechanisms.md" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+### Phase 2: write a candidate card before substantial coding
+
+Use this template for each serious candidate:
+
+```text
+ID and one-sentence mechanism:
+Target problem / supported input family:
+Representation and how it is built from N:
+Exact operation that extracts information:
+Why that information exposes a factor:
+Known lemmas being used:
+New lemma required:
+Correctness argument or conjecture:
+Cost in n, including construction and extraction:
+Randomness and success probability:
+Closest prior method and the actual difference:
+Smallest informative experiment:
+Counterexample or scaling behavior that would refute this version:
+Possible repair if that happens:
+```
+
+Reject or repair proposals that name the missing operation without implementing or bounding it. Do not abandon a promising representation merely because the first naive implementation expands it.
+
+
+web search: 
+web search: "sum of two squares" "complexity" Adleman McCurley 1994 ...
+web search: 
+web search: "Adleman" "McCurley" "1994" "pdf" "problems" ...
+web search: 
+web search: 'ambiguous'
+web search: 
+web search: 
+web search: 
+web search: "Jager Schwenk" "2009" quadratic residuosity pdf ...
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://www.mathnet.ru/eng/pdm707
+exec
+/bin/bash -lc "python - <<'PY'
+import urllib.request, subprocess
+u='https://reneschoof.github.io/ctpts.pdf'
+b=urllib.request.urlopen(u).read()
+r=subprocess.run(['pdftotext','-','-'],input=b,stdout=subprocess.PIPE,check=True)
+t=r.stdout.decode()
+print(t[:5500]); print(t[-17000:])
+PY" in /home/knielsen/code/factoring-connection/codex
+ exited 127 in 0ms:
+/bin/bash: line 1: python: command not found
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request, subprocess
+u='https://reneschoof.github.io/ctpts.pdf'
+b=urllib.request.urlopen(u).read()
+r=subprocess.run(['pdftotext','-','-'],input=b,stdout=subprocess.PIPE,check=True)
+t=r.stdout.decode()
+print(t[:4500]); print(t[-18000:])
+PY" in /home/knielsen/code/factoring-connection/codex
+ exited 1 in 0ms:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/urllib/request.py", line 1344, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/lib/python3.12/http/client.py", line 1365, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.12/http/client.py", line 1411, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.12/http/client.py", line 1360, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.12/http/client.py", line 1120, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.12/http/client.py", line 1064, in send
+    self.connect()
+  File "/usr/lib/python3.12/http/client.py", line 1499, in connect
+    super().connect()
+  File "/usr/lib/python3.12/http/client.py", line 1030, in connect
+    self.sock = self._create_connection(
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 828, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 963, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -3] Temporary failure in name resolution
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1347, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno -3] Temporary failure in name resolution>
+
+web search: 
+web search: "Adleman" "McCurley" "squares" "Problem" ...
+exec
+/bin/bash -lc 'command -v gs pdftotext ps2ascii tesseract' in /home/knielsen/code/factoring-connection/codex
+ exited 1 in 0ms:
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request, subprocess, gzip
+for name,u in [('AM','https://www.mccurley.org/papers/open.ps.gz'),('Schoof','https://reneschoof.github.io/ctpts.pdf')]:
+ b=urllib.request.urlopen(u,timeout=30).read()
+ if name=='AM':
+  b=gzip.decompress(b)
+  cmd=['gs','-q','-dBATCH','-dNOPAUSE','-sDEVICE=txtwrite','-sOutputFile=-','-']
+ else: cmd=['pdftotext','-','-']
+ r=subprocess.run(cmd,input=b,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ t=r.stdout.decode(errors='replace')
+ print(name, r.returncode, r.stderr.decode()[:200])
+ lines=t.splitlines()
+ for i,line in enumerate(lines):
+  if any(x in line.lower() for x in ['two squares','sum of squares','residuosity','fixed','square root','problem 1']):
+   print('\\n'.join(lines[max(0,i-4):i+13]))
+PY" in /home/knielsen/code/factoring-connection/codex
+ exited 1 in 859ms:
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/usr/lib/python3.12/subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'gs'
+
+codex
+Two premises need qualification. The standard unit-group argument does not show that one arbitrary root of −1 factors N; two roots unequal up to sign do. Also, a complete genus-character basis for discriminant −4N uses its prime-discriminant factors, so it is not automatically available from N alone. I’m separating the public characters from those hidden coordinates.
+exec
+/bin/bash -lc "python3 - <<'PY'
+import importlib.util
+for m in ['pypdf','PyPDF2','fitz','PIL','sympy']:
+ print(m, bool(importlib.util.find_spec(m)))
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+pypdf True
+PyPDF2 False
+fitz False
+PIL False
+sympy False
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request,gzip,re
+b=gzip.decompress(urllib.request.urlopen('https://www.mccurley.org/papers/open.ps.gz',timeout=30).read()).decode('latin1')
+print(b[:2500])
+# Read text strings from PostScript, joining TeX fragments to locate relevant passages.
+t=' '.join(re.findall(r'\\(((?:\\\\.|["'^'"\\\\)])*)\\)',b))
+t=re.sub(r'\\\\[0-7]{1,3}|\\\\[a-z]',' ',t)
+for m in re.finditer(r'squares|residuosity|square roots|two square',t,re.I):
+ print('\\n',t[max(0,m.start()-1300):m.end()+2600])
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 863ms:
+%!PS-Adobe-2.0
+%%Creator: dvips 5.47 Copyright 1986-91 Radical Eye Software
+%%Title: open.dvi
+%%Pages: 32 1
+%%BoundingBox: 0 0 612 792
+%%EndComments
+%%BeginProcSet: tex.pro
+/TeXDict 200 dict def TeXDict begin /N /def load def /B{bind def}N /S /exch
+load def /X{S N}B /TR /translate load N /isls false N /vsize 10 N /@rigin{
+isls{[0 1 -1 0 0 0]concat}if 72 Resolution div 72 VResolution div neg scale
+Resolution VResolution vsize neg mul TR matrix currentmatrix dup dup 4 get
+round 4 exch put dup dup 5 get round 5 exch put setmatrix}N /@letter{/vsize 10
+N}B /@landscape{/isls true N /vsize -1 N}B /@a4{/vsize 10.6929133858 N}B /@a3{
+/vsize 15.5531 N}B /@ledger{/vsize 16 N}B /@legal{/vsize 13 N}B /@manualfeed{
+statusdict /manualfeed true put}B /@copies{/#copies X}B /FMat[1 0 0 -1 0 0]N
+/FBB[0 0 0 0]N /nn 0 N /IE 0 N /ctr 0 N /df-tail{/nn 8 dict N nn begin
+/FontType 3 N /FontMatrix fntrx N /FontBBox FBB N string /base X array
+/BitMaps X /BuildChar{CharBuilder}N /Encoding IE N end dup{/foo setfont}2
+array copy cvx N load 0 nn put /ctr 0 N[}B /df{/sf 1 N /fntrx FMat N df-tail}
+B /dfs{div /sf X /fntrx[sf 0 0 sf neg 0 0]N df-tail}B /E{pop nn dup definefont
+setfont}B /ch-width{ch-data dup length 5 sub get}B /ch-height{ch-data dup
+length 4 sub get}B /ch-xoff{128 ch-data dup length 3 sub get sub}B /ch-yoff{
+ch-data dup length 2 sub get 127 sub}B /ch-dx{ch-data dup length 1 sub get}B
+/ch-image{ch-data dup type /stringtype ne{ctr get /ctr ctr 1 add N}if}B /id 0
+N /rw 0 N /rc 0 N /gp 0 N /cp 0 N /G 0 N /sf 0 N /CharBuilder{save 3 1 roll S
+dup /base get 2 index get S /BitMaps get S get /ch-data X pop /ctr 0 N ch-dx 0
+ch-xoff ch-yoff ch-height sub ch-xoff ch-width add ch-yoff setcachedevice
+ch-width ch-height true[1 0 0 -1 -.1 ch-xoff sub ch-yoff .1 add]{ch-image}
+imagemask restore}B /D{/cc X dup type /stringtype ne{]}if nn /base get cc ctr
+put nn /BitMaps get S ctr S sf 1 ne{dup dup length 1 sub dup 2 index S get sf
+div put}if put /ctr ctr 1 add N}B /I{cc 1 add D}B /bop{userdict /bop-hook
+known{bop-hook}if /SI save N @rigin 0 0 moveto}N /eop{clear SI restore
+showpage userdict /eop-hook known{eop-hook}if}N /@start{userdict /start-hook
+known{start-hook}if /VResolution X /Resolution X 1000 div /DVImag X /IE 256
+array N 0 1 255{IE S 1 string dup 0 3 index put cvn put}for}N /p /show load N
+/RMat[1 0 0 -1 0 0]N /BDot 260 string N /rulex 0 N /ruley 0 N /v{/ruley X
+/rulex X V}B /V statusdict begin /product where{pop product dup length 7 ge{0
+7 getinterval(Display)eq}{pop false}ifelse}
+
+web search: 
+web search: Schoof 1985 fixed integer x square root O log p 9 x ...
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request,gzip,re,io
+from pypdf import PdfReader
+b=gzip.decompress(urllib.request.urlopen('https://www.mccurley.org/papers/open.ps.gz',timeout=30).read()).decode('latin1')
+b=b[b.index('%%Page:'):]
+# dvips positioning operator b inserts a space in ordinary prose; join fragments first
+s=re.findall(r'\\(((?:\\\\.|["'^'"\\\\)])*)\\)|(-?\\d*\\s*[a-zA-Z]+)',b)
+t=''
+for string,op in s:
+ if string: t+=string
+ elif op.strip().endswith(('b','y')): t+=' '
+t=re.sub(r'\\\\[0-7]{1,3}|\\\\[a-z]','',t)
+for m in re.finditer(r'squar|residuo|two.?sq',t,re.I):
+ print(t[max(0,m.start()-650):m.end()+1700])
+print('Schoof')
+r=PdfReader(io.BytesIO(urllib.request.urlopen('https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf',timeout=30).read()))
+for p in r.pages[-4:]: print(p.extract_text())
+PY" in /home/knielsen/code/factoring-connection/codex
+web search: 
+ succeeded in 1909ms:
+Evenforthetwomostcentralproblemsintheeld,primalitytestingand factoring,therehasbeenimpressiveprogress:theprimesarenowknownto bedecidableinrandompolynomialtimeandthe`numbereldsieve'hasgiven usthemostpowerfulfactoringalgorithmsyet.Toemphasizetheprogressthat hasbeenmade,thestatementofeachproblemsisfollowedbytheoriginal1986 remarksandthentheremarkswhichnowseemappropriate. Theauthorswouldappreciateyourcomments,particularlywithregardto furtherprogressontheseproblems. Denitions,notation,andconventions. In thispaper: { R denotesthesetofrealnumbers, { Z denotesthesetofintegers, { N denotesthesetofpositiveintegers, { Primes denotesthesetofprimesinN, { Squarefrees denotesthesetofsquarefreenumbersinN, { Q denotesthesetofrationals. { ERH referstotheextendedRiemannhypothesis. Fora; b2Z, { we writeajbifthereexistsk2Zwithb=ka, { we writeaj 6 b iftheredoesnotexistk2Zwithb=ka, { gcd\(a; b\) denotesthegreatestcommondivisorofaandb, { \( ab \) denotes theJacobisymbolifbisoddandgcd\(a; b\)=1, { ha; bi denotestheorderedpair. Forn2N, { Z=nZ denotestheringofintegersmodulon, { \(Z=nZ\)  denotes thecorrespondingmultiplicativegroup, { \(n\) denotesthenumberofelementsin\(Z=nZ\)  , { L\(n\) representsanyfunctionoftheform exp\(\(1 +o\(1\)\)\(lognloglogn\) 1=2 \) : {For n2N,;  2R,;  >0,L n [; ] represents anyfunctionoftheform exp\(\(+o\(1\)\)\(\(logn\)  \(loglogn\) 1 \)\) : If Risaring,thenwewriteR[x]fortheringofpolynomialswithcoecients inR.Thesetofnitestringscomposedofthelettersaandbisdenotedfa; bg  . For n,a,b2Nwithgcd\(n; 4a 3 +27b 2 \)=1,let S n;a;b =fhx; yijx;y 2Z=nZ&y 2 x 3 +ax+b \(mod n\)g[f0g : When p2Primes,S p;a;b iswellknowntobeendowedwithagroupstructure. We denotethisgroupbyE p;a;b anduse#E p;a;b forthenumberofelementsof thisgroup.Moregenerally,ifSisaset,wewrite#SforthecardinalityofS.In statingopenproblemswehavedecidedtocontinuetheadhocnotation from [AM86].Forexample,welabeltherstcomputationalproblemasC1,the corresponding openproblemasO1\(orO1aandO1biftherearetwo\),and theoriginal1986remarksconcerningC1andO1welabelasRem1 86 .Any new remarkswelabelasRem1 94 .AnyadditionalreferencesaregiveninRef1. Computational problemsC2andC6arestatedintermsofaparameterSwhich isanarbitrarysubsetofN.ComputationalproblemC30isstatedintermsofa parameterc2N. While itseemsinappropriatetospendagreatdealoftimegivingrigor- ousdenitionsofthecomplexity-theoretic
+blemsintheeld,primalitytestingand factoring,therehasbeenimpressiveprogress:theprimesarenowknownto bedecidableinrandompolynomialtimeandthe`numbereldsieve'hasgiven usthemostpowerfulfactoringalgorithmsyet.Toemphasizetheprogressthat hasbeenmade,thestatementofeachproblemsisfollowedbytheoriginal1986 remarksandthentheremarkswhichnowseemappropriate. Theauthorswouldappreciateyourcomments,particularlywithregardto furtherprogressontheseproblems. Denitions,notation,andconventions. In thispaper: { R denotesthesetofrealnumbers, { Z denotesthesetofintegers, { N denotesthesetofpositiveintegers, { Primes denotesthesetofprimesinN, { Squarefrees denotesthesetofsquarefreenumbersinN, { Q denotesthesetofrationals. { ERH referstotheextendedRiemannhypothesis. Fora; b2Z, { we writeajbifthereexistsk2Zwithb=ka, { we writeaj 6 b iftheredoesnotexistk2Zwithb=ka, { gcd\(a; b\) denotesthegreatestcommondivisorofaandb, { \( ab \) denotes theJacobisymbolifbisoddandgcd\(a; b\)=1, { ha; bi denotestheorderedpair. Forn2N, { Z=nZ denotestheringofintegersmodulon, { \(Z=nZ\)  denotes thecorrespondingmultiplicativegroup, { \(n\) denotesthenumberofelementsin\(Z=nZ\)  , { L\(n\) representsanyfunctionoftheform exp\(\(1 +o\(1\)\)\(lognloglogn\) 1=2 \) : {For n2N,;  2R,;  >0,L n [; ] represents anyfunctionoftheform exp\(\(+o\(1\)\)\(\(logn\)  \(loglogn\) 1 \)\) : If Risaring,thenwewriteR[x]fortheringofpolynomialswithcoecients inR.Thesetofnitestringscomposedofthelettersaandbisdenotedfa; bg  . For n,a,b2Nwithgcd\(n; 4a 3 +27b 2 \)=1,let S n;a;b =fhx; yijx;y 2Z=nZ&y 2 x 3 +ax+b \(mod n\)g[f0g : When p2Primes,S p;a;b iswellknowntobeendowedwithagroupstructure. We denotethisgroupbyE p;a;b anduse#E p;a;b forthenumberofelementsof thisgroup.Moregenerally,ifSisaset,wewrite#SforthecardinalityofS.In statingopenproblemswehavedecidedtocontinuetheadhocnotation from [AM86].Forexample,welabeltherstcomputationalproblemasC1,the corresponding openproblemasO1\(orO1aandO1biftherearetwo\),and theoriginal1986remarksconcerningC1andO1welabelasRem1 86 .Any new remarkswelabelasRem1 94 .AnyadditionalreferencesaregiveninRef1. Computational problemsC2andC6arestatedintermsofaparameterSwhich isanarbitrarysubsetofN.ComputationalproblemC30isstatedintermsofa parameterc2N. While itseemsinappropriatetospendagreatdealoftimegivingrigor- ousdenitionsofthecomplexity-theoreticnotionsusedinthispaper,itse
+4],[Wil84].6 F actoring asetofpositivedensity LetSN. C6 Input n 2N. Output p 1 ; p 2 ;...;p k 2 Primesande 1 ; e 2 ;...;e k 2Nsuchthat n= k Y i=1 p e i i ifn>1andn2S : O6 Does thereexistasetSsuchthat lim inf x!1 #fnjnx&n2Sgx >0 andC6\(S\)isinP? Rem6 86 Assumingthenecessaryhypothesesfortherunningtimeanalysisfor Lenstra'sellipticcurvefactoringmethod\(see[Len87]\),itisprobably possibletoprovethatasetSsatisfying lim inf x!1 #fnjnx&n2Sgx loglog 2 xlogxlogloglogx > 0 \(1\) can befactoredinrandompolynomialtime.Thissetwillstillhave densityzero,however.Arelatedquestioniswhetherfactoringaset ofpositivedensityisrandompolynomialtimeequivalenttoC5.The setSquarefreeshasdensity6= 2 howeveritisnotevenclearthatC5  R C6\(Squarefrees\). Rem6 94 Let Adenoteadeterministicalgorithmforfactoringintegers,and deneF \(x;t;A\)tobethenumberofintegersnwith1nxsuch that Awillfactorninatmosttbitoperations.O6canthenbe stated asaskingwhetherthereexistsanalgorithmAandaconstant c>0suchthat lim inf x!1 F\(x;log c x;A\)x > 0 : This problemremainsopen,butHafnerandMcCurley[HM89a]and laterSorenson[Sor90]provedseveralresultsaboutthebehaviourof Ffor variousfactoringalgorithms\(includingageneralizationtocover probabilisticalgorithms\).Theestimate\(1\)hasstillnotbeenproved, andthebestresultknown[HM89a]inthisdirectionis F \(x;log c x;A\)>> c x\(loglogx\) 65 logx ; using aprobabilisticalgorithm.Inthisformulation,onemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgenera
+ 2N. Output p 1 ; p 2 ;...;p k 2 Primesande 1 ; e 2 ;...;e k 2Nsuchthat n= k Y i=1 p e i i ifn>1andn2S : O6 Does thereexistasetSsuchthat lim inf x!1 #fnjnx&n2Sgx >0 andC6\(S\)isinP? Rem6 86 Assumingthenecessaryhypothesesfortherunningtimeanalysisfor Lenstra'sellipticcurvefactoringmethod\(see[Len87]\),itisprobably possibletoprovethatasetSsatisfying lim inf x!1 #fnjnx&n2Sgx loglog 2 xlogxlogloglogx > 0 \(1\) can befactoredinrandompolynomialtime.Thissetwillstillhave densityzero,however.Arelatedquestioniswhetherfactoringaset ofpositivedensityisrandompolynomialtimeequivalenttoC5.The setSquarefreeshasdensity6= 2 howeveritisnotevenclearthatC5  R C6\(Squarefrees\). Rem6 94 Let Adenoteadeterministicalgorithmforfactoringintegers,and deneF \(x;t;A\)tobethenumberofintegersnwith1nxsuch that Awillfactorninatmosttbitoperations.O6canthenbe stated asaskingwhetherthereexistsanalgorithmAandaconstant c>0suchthat lim inf x!1 F\(x;log c x;A\)x > 0 : This problemremainsopen,butHafnerandMcCurley[HM89a]and laterSorenson[Sor90]provedseveralresultsaboutthebehaviourof Ffor variousfactoringalgorithms\(includingageneralizationtocover probabilisticalgorithms\).Theestimate\(1\)hasstillnotbeenproved, andthebestresultknown[HM89a]inthisdirectionis F \(x;log c x;A\)>> c x\(loglogx\) 65 logx ; using aprobabilisticalgorithm.Inthisformulation,onemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgeneralizationisreducible totheproblemofcomputingthefunctiondmentione
+orninatmosttbitoperations.O6canthenbe stated asaskingwhetherthereexistsanalgorithmAandaconstant c>0suchthat lim inf x!1 F\(x;log c x;A\)x > 0 : This problemremainsopen,butHafnerandMcCurley[HM89a]and laterSorenson[Sor90]provedseveralresultsaboutthebehaviourof Ffor variousfactoringalgorithms\(includingageneralizationtocover probabilisticalgorithms\).Theestimate\(1\)hasstillnotbeenproved, andthebestresultknown[HM89a]inthisdirectionis F \(x;log c x;A\)>> c x\(loglogx\) 65 logx ; using aprobabilisticalgorithm.Inthisformulation,onemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgeneralizationisreducible totheproblemofcomputingthefunctiondmentionedinRem9 86 . Rem8 94 Weareunawareofanyprogressonthisproblem. 9 Number ofdistinctprimefactors C9 Input n 2N: Output !\(n\) =#fpjp2Primes &pjng. O9 Is C9inP? Rem9 86 ClearlyC1 P C9,sincewecaneasilychecktoseeifnisaperfect power.AninterestingvariantofC9istooutput\(n\)=e 1 +. ..+e k ; where n= Q k i=1 p e i i istheprimefactorizationofn.Anothervariant istooutputd\(n\)=#fkjk2N&kjng,andstillanothervariantis to outputthemultisetfe 1 ; ...;e k g. ShallitandShamir [SS85] haveproved thatthelasttwovariantsarepolynomialtimeequivalentto eachother.AsaconsequencewehavethatC9ispolynomialtime reducibletotheproblemofcomputingthefunctiond\(n\)mentioned above. Rem9 94 Weareunawareofanyprogressonthisproblem.Itisremarkable thatonecandecideif!\(n\)=1inrandompolynomialtime[AH92], buttherearenootherpartialresults
+thereexistsanalgorithmAandaconstant c>0suchthat lim inf x!1 F\(x;log c x;A\)x > 0 : This problemremainsopen,butHafnerandMcCurley[HM89a]and laterSorenson[Sor90]provedseveralresultsaboutthebehaviourof Ffor variousfactoringalgorithms\(includingageneralizationtocover probabilisticalgorithms\).Theestimate\(1\)hasstillnotbeenproved, andthebestresultknown[HM89a]inthisdirectionis F \(x;log c x;A\)>> c x\(loglogx\) 65 logx ; using aprobabilisticalgorithm.Inthisformulation,onemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgeneralizationisreducible totheproblemofcomputingthefunctiondmentionedinRem9 86 . Rem8 94 Weareunawareofanyprogressonthisproblem. 9 Number ofdistinctprimefactors C9 Input n 2N: Output !\(n\) =#fpjp2Primes &pjng. O9 Is C9inP? Rem9 86 ClearlyC1 P C9,sincewecaneasilychecktoseeifnisaperfect power.AninterestingvariantofC9istooutput\(n\)=e 1 +. ..+e k ; where n= Q k i=1 p e i i istheprimefactorizationofn.Anothervariant istooutputd\(n\)=#fkjk2N&kjng,andstillanothervariantis to outputthemultisetfe 1 ; ...;e k g. ShallitandShamir [SS85] haveproved thatthelasttwovariantsarepolynomialtimeequivalentto eachother.AsaconsequencewehavethatC9ispolynomialtime reducibletotheproblemofcomputingthefunctiond\(n\)mentioned above. Rem9 94 Weareunawareofanyprogressonthisproblem.Itisremarkable thatonecandecideif!\(n\)=1inrandompolynomialtime[AH92], buttherearenootherpartialresultsknownonthisproblem. 10 Roots moduloacomposite C10 Input e; a
+aprobabilisticalgorithm.Inthisformulation,onemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgeneralizationisreducible totheproblemofcomputingthefunctiondmentionedinRem9 86 . Rem8 94 Weareunawareofanyprogressonthisproblem. 9 Number ofdistinctprimefactors C9 Input n 2N: Output !\(n\) =#fpjp2Primes &pjng. O9 Is C9inP? Rem9 86 ClearlyC1 P C9,sincewecaneasilychecktoseeifnisaperfect power.AninterestingvariantofC9istooutput\(n\)=e 1 +. ..+e k ; where n= Q k i=1 p e i i istheprimefactorizationofn.Anothervariant istooutputd\(n\)=#fkjk2N&kjng,andstillanothervariantis to outputthemultisetfe 1 ; ...;e k g. ShallitandShamir [SS85] haveproved thatthelasttwovariantsarepolynomialtimeequivalentto eachother.AsaconsequencewehavethatC9ispolynomialtime reducibletotheproblemofcomputingthefunctiond\(n\)mentioned above. Rem9 94 Weareunawareofanyprogressonthisproblem.Itisremarkable thatonecandecideif!\(n\)=1inrandompolynomialtime[AH92], buttherearenootherpartialresultsknownonthisproblem. 10 Roots moduloacomposite C10 Input e; a;n2N. Output x 2Nsuchthatx e a \(mod n\),ifgcd\(e; \(n\)\) =1and gcd\(a; n\)=1. O10 Is C5 R C10? Rem10 86 Whentherestrictionthatgcd\(e; \(n\)\) =1isdropped,itisknown thatC5 R C10[Rab79].Aresolutionofthisproblemwouldhave importantconsequences inpublic-keycryptography [RSA78]. Itis known thatC10 P C23. Rem10 94 Weareunawareofanyprogressonthisproblem. 11 Quadratic residuositymoduloacomposite C11 Input a; n2N. Output 1 if ther
+nemayalso askfortheslowestgrowingfunctiont\(x\)suchthatthereexistsan algorithm Awith lim inf x!1 F\(x;t\(x\);A\)x > 0 :7 Squarefree part C7 Input n 2N. Output r; s2Nwithn=r 2 sands2Squarefrees. O7a Is C7inP? O7b Is C5 R C7? Rem7 86 SeeRem13 86 .ClearlyC7 P C5.Theanalogousquestionforf2 Q[x] or\(Z=pZ\)[x]issolvableinpolynomialtimebyperformingcal- culationsoftheformgcd\(f; f 0 \), wheref 0 isthe\(formal\)derivative off.\(see[Knu81,page421]\). Rem7 94 Landau[Lan88]provedthatC7 P C23.Accordingto[Len92],Chis- tov[Chi89]hasshownthatC7ispolynomialtimeequivalenttode- terminingtheringofintegersinanumbereld. 8 Squarefreeness C8 Input n 2N. Output 1 ifn2Squarefrees, 0otherwise. O8 Is C8inP? Rem8 86 Ageneralizationofthisis,givennandk2N,todetermineifnis divisiblebythekthpowerofaprime.Anothergeneralizationisto output=\(n\),where \(n\)= 8 < : 1 if n=1; 0 if thereexistsap2Primes withp 2 jn; \(1\) k ifnisaproductofkdistinctprimes. ShallitandShamirhaveshownthatthisgeneralizationisreducible totheproblemofcomputingthefunctiondmentionedinRem9 86 . Rem8 94 Weareunawareofanyprogressonthisproblem. 9 Number ofdistinctprimefactors C9 Input n 2N: Output !\(n\) =#fpjp2Primes &pjng. O9 Is C9inP? Rem9 86 ClearlyC1 P C9,sincewecaneasilychecktoseeifnisaperfect power.AninterestingvariantofC9istooutput\(n\)=e 1 +. ..+e k ; where n= Q k i=1 p e i i istheprimefactorizationofn.Anothervariant istooutputd\(n\)=#fkjk2N&kjng,andstillanothervariantis to outputthemultisetfe 1 ; ...;e k g. ShallitandShamir [SS85] haveproved thatthelasttwovariantsarepolynomialtimeequivalentto eachother.AsaconsequencewehavethatC9ispolynomialtime reducibletotheproblemofcomputingthefunctiond\(n\)mentioned above. Rem9 94 Weareunawareofanyprogressonthisproblem.Itisremarkable thatonecandecideif!\(n\)=1inrandompolynomialtime[AH92], buttherearenootherpartialresultsknownonthisproblem. 10 Roots moduloacomposite C10 Input e; a;n2N. Output x 2Nsuchthatx e a \(mod n\),ifgcd\(e; \(n\)\) =1and gcd\(a; n\)=1. O10 Is C5 R C10? Rem10 86 Whentherestrictionthatgcd\(e; \(n\)\) =1isdropped,itisknown thatC5 R C10[Rab79].Aresolutionofthisproblemwouldhave importantconsequences inpublic-keycryptography [RSA78]. Itis known thatC10 P C23. Rem10 94 Weareunawareofanyprogressonthisproblem. 11 Quadratic residuositymoduloacomposite C11 Input a; n2N. Output 1 if thereexistsanx2Nsuchthatx 2 a \(mod n\)and gcd\
+omialtime reducibletotheproblemofcomputingthefunctiond\(n\)mentioned above. Rem9 94 Weareunawareofanyprogressonthisproblem.Itisremarkable thatonecandecideif!\(n\)=1inrandompolynomialtime[AH92], buttherearenootherpartialresultsknownonthisproblem. 10 Roots moduloacomposite C10 Input e; a;n2N. Output x 2Nsuchthatx e a \(mod n\),ifgcd\(e; \(n\)\) =1and gcd\(a; n\)=1. O10 Is C5 R C10? Rem10 86 Whentherestrictionthatgcd\(e; \(n\)\) =1isdropped,itisknown thatC5 R C10[Rab79].Aresolutionofthisproblemwouldhave importantconsequences inpublic-keycryptography [RSA78]. Itis known thatC10 P C23. Rem10 94 Weareunawareofanyprogressonthisproblem. 11 Quadratic residuositymoduloacomposite C11 Input a; n2N. Output 1 if thereexistsanx2Nsuchthatx 2 a \(mod n\)and gcd\(a; n\)=1, 0 otherwise. O11a Is C11inP? O11b Is C5 R C11? Rem11 86 ItiseasytoshowthatC11 P C5.Thereisanobviousgeneraliza- tionwheretheexponent2isreplacedbyanotherexponentkthatis eitherxedfortheproblemorsuppliedasaninput.Thepresumed dicultyofC11hasbeenusedasabasisforcryptographicsystems [GM82],[GM84],[Yao82],[BBS86].C11isrelatedtoC9sincethe proportion ofresiduesmodulonthatarequadraticresiduesis2 !\(n\) , where !\(n\)isthenumberofdistinctprimedivisorsofn.Therefore givenanalgorithmforC11,onecanobtainacondenceintervalfor !\(n\)bycheckingrandomvalues. Rem11 94 Weareunawareofanyprogressonthisproblem. Ref11 [AM82].12 Quadratic non-residuemoduloaprime C12 Input p 2N: Output b 2Nsuchthattheredoesnotexistc2Nwithc 2 b \(mod p\),ifp2Primes. O12 Is C12inP? Rem12 86 C12 iseasilyseentobeinR,sincepolynomialtimealgorithms forthecorrespondingproblemofdistinguishingquadraticresidues from nonresiduescanbebasedontheJacobisymbolandthelawof quadraticreciprocity,orelseonEuler'scriterion: p2Primes andpj 6 a \)a p12 \( ap \) \(mod p\) : Curiously, GausswasawareofEuler'scriterion,butwasappar- entlyunimpressedbyitseciency[Gau86,art.106]: Although itisofalmostnopracticaluse,itisworthy ofmentionbecauseofitssimplicityandgenerality. .. But as soonasthenumbersweareexaminingareevenmoder- atelylargethiscriterionispracticallyuselessbecauseofthe amountofcalculationinvolved. Under theextendedRiemannhypothesis,C12isinP [Mil76].It isalsoknownthattheleastquadraticnonresidueisalmostalways small [Erd61],soC12canbesolvedindeterministicpolynomialtime for almostallinputs. Rem12 94 On theproblemofcalculatingkthpowernon-re
+ature C13 Input  2f1;1g  . Output The leastp2Primessuchthatforalliwith1i jj; \( p ip \) =  i ,wherejj,thelengthof,isthenumberof symbolsin,p i isthei th prime,and i isthei th symbol of. O13 Is C13inP?Rem13 86 If nhastheformm 2 qwithqanoddprimeandmodd,thenforany awithgcd\(a; n\)=1wehave\( an \) = \( aq \).ItfollowsthatifC13isin P,thenncouldbepartiallyfactoredsince,assumingtheextended Riemannhypothesis,qcanbedeterminedbyasignatureoflength O\(log 2 n\)[Mil76],[Ank52].Thenotionofquadraticsignaturecanbe generalized;see[AM82]. Rem13 94 The conceptofquadraticsignaturehasfoundapplicationinthe number eldsieve[Adl91]. Ref13 [Ank52], [Bac85],[Bac90]. 14 Square rootsmoduloaprime C14 Input a; p2N. Output x 2Nwithx 2 a \(mod p\)ifp2Primesandsuchanx exists. O14 Is C14inP? Rem14 86 Among theresearcherswhohavepresentedalgorithmsforC14 are [Gau86, art.319-322],[Ton91],[Leh69],[Sha72],[Ber67], [Rab80b], [AMM77].ItisnowknownthatC14isinR.Itisalso known thatC14 P C12andthatontheextendedRiemannhypoth- esis,C14isinP.ThereisanaturalgeneralizationofC14wherethe exponent2isreplacedbyaxedk.Anothergeneralizationhaskas partoftheinput.ForthisversionthereisarandomtimeO\(\(klogp\) c \) algorithm basedonknownalgorithmsforC15.Onecanalsousea discretelogarithmalgorithm\(seeRem21 86 \)tosolvethisvariant, resulting inarandomtimeO\(L\(p\)\)algorithm,whichforlargekwill befaster. Rem14 94 ItisanoversightthatwedidnotmentiontheworkofSchoof[Sch85] on thisprobleminourearliermanuscript.Schoofprovedthatfor xeda,thereexistsadeterministicalgorithmwithrunningtime polynomial inlog p. Ref14 Many additionalreferences aregivenin [LN83, page182].Seealso Ref16 and[Hua85],[Evd89],[BS91]. 15 Polynomial rootsmoduloaprime C15 Input p 2N,f2\(Z=pZ\)[x]. Output a 2Zwithf\(a\)0 \(mod p\)ifp2Primes andsuchana exists. O15 Is C15inP?Rem15 86 See Rem14 86 .C15isin R[Ber70], [CZ81],[Rab80b].Iftheex- tendedRiemannhypothesisisassumedandf hasabelianGalois group overtherationals,thentheproblemisinP[Hua85]. Rem15 94 Iff is xedtheproblemappearstoremaindicult;however,for certainfprogresshasbeenmade.Whenfislineartheproblemis trivial.Whenf is aquadraticthereexistsadeterministicpolyno- mialtimealgorithmduetoSchoof[Sch85].Whenfis acyclotomic polynomial,there existsadeterministicpolynomialtimealgorithm duetoPila[Pil90]. Ref15 [Sho90b], [BS91].SeealsoRef16. 16 F actoring polynomialsmoduloaprime C1
+ ifnisoddand gcd\(km; n\) =1. O25 Is C25inP? Rem25 86 C25 isinR [AEM87]. IftheextendedRiemannhypothesisand Heath-Brown'sconjectureontheleastprimeinanarithmeticpro- gressionaretrue,thenC25isinP[Sha84].C25arosefromcryptog- raphy [OSS84],[PS87].Infact,C25isonlyoneexampleofawide rangeofquestionsconcerningsolutionsoff  0 \(mod n\),wheref isamultivariatepolynomialwithcoecientsinZ=nZ.Suchques- tions canvarygreatlyintheircomplexityastheformofthequestion changes.Wemayaskquestionsaboutdeterminingifasolutionexists, nding asolution,ndingtheleastsolution,orndingthenumber ofsolutions.Wemayvarytheformofthepolynomialortheprop- ertiesofn\(e.g.prime,composite,squarefree\).Asanexampleofthe variationincomplexity,evenforthepolynomialf\(x\)=x 2  a we havethefollowingsituation: 1. The problemofdecidingfrominputsa; p2Nwhetherx 2  a0 \(modp\)hasasolutionwhenpisprimeisinP\(seeRem12 86 .\) 2. The problemofndingfrominputsa;p2Nasolutionofx 2 a0 \(modp\)whenpisprimeisinR\(seeRem14 86 \). 3. The problemofndingfrominputsa;n2Nasolutionofx 2 a 0 \(mod n\)israndomequivalenttotheproblemoffactoringn \(seeRem10 86 \). 4. The problemofndingfrominputsa; n 2Ntheleastpositive integersolutionofx 2 a0 \(mod n\)isN P-hard [MA78]. Wethereforeviewtheproblemofclassifyingallproblemsconcern- ingsolutionsoff  0 \(mod n\)accordingtotheircomplexityasan importantmetaproblem. Rem25 94 We areunawareofanyprogressonthisproblem.Therehasbeen marginalprogressonthe\etaproblem". Weregardthisareaasa veryfruitfuloneforfutureinvestigations. Ref25 [vzGKS93]. Somecryptographicproblemsrelatedtothemetaprob- lemarementionedin[McC90b].Thatpaperalsocontainspointers tootherunsolvednumber-theoreticproblemsrelatingtocryptology. 26 Key distribution C26 Input g; p;a;b2N. Output c 2N,wherecg xy \(modp\),ifp2Primes,gisaprimi- tiverootmodulop,ag x \(modp\),andbg y \(modp\). O26 Is C21 R C26?Rem26 86 The motivationforthisproblemcomesfromcryptography[DH76]. ItisobviousthatC26 P C21.Thereisageneralizationwherepis replacedbyacompositen,andweaskonlyforanoutputcwhena andbarepowersofg.Forthisgeneralizationistheproblemequiva- lenttoC5orC22\(see[Bac84],[McC88]\)? Rem26 94 BertdenBoer[dB90]provedthatwhenallprimefactorsof\(p  1\) aresmall,thekeydistributionproblemisashardascomputing discretelogarithms. Ref26 [Odl85], [ElG85]. 27 Construction ofanellipticcurvegroupofagiven order C27 Input p; n2N. Output a
+pecialcaseofthisproblem. Lenstra[Len92]outlinesanapproachtoobtainingaprob- abilisticsubexponentialalgorithminthegeneralcase. Lenstra's paper [Len92] isanimportantsourceforinformation concerning algorithmsandopenproblemsconcerningalgebraicnum- berelds. Ref32 [Gol85], [Sha72],[Sch82],[Lag80b],[Buc90]. 33 Solvability ofbinaryquadraticdiophantineequations C33 Input a; b;c;d;e;f 2Z. Output 1 if thereexistsx; y 2Zwithax 2 + bxy+cy 2 +dx+ ey +f = 0andtheredoesnotexistag2Zwith b 2  4ac=g 2 , 0 otherwise. O33a Is C33N P-hard? O33b Is C33N P-hard withrespecttoR? Rem33 86 It isknownthatC33isrecognizedinN P [Lag79].Withoutthe constraint thatb 2 4acisnotasquare,theproblemisknowntobe N P-hard [MA78].CertainvariantsofC33areknowntobeN P-hard with respecttoR[AM77]. Rem33 94 Weareunawareofanyprogressonthisproblem. 34 Solvability ofanti-Pellianequation C34 Input d 2N. Output 1 ifthereexistx; y 2Zwithx 2 dy 2 =1, 0otherwise. O34 Is C34inP? Rem34 86 Thereexistchoicesofdforwhichthesmallestsolutionofx 2 dy 2 = 1cannotbewrittendowninpolynomialspace[Lag79].Itisknown that C34isinN P [Lag80a].Ifthefactorizationofdisprovided aspartoftheinput,thentheproblemisrecognizedinR,andif inadditionweassumetheextendedRiemannhypothesis,thenthe problem isinP[Lag80a]. Rem34 94 Weareunawareofanyprogressonthisproblem. 35 Greatest commondivisorsinparallel C35 Input a; b2N. Output gcd\(a; b\). O35 Is C35inN C?Rem35 86 The bestknownresultsforcomputinggreatestcommon divisorsin parallelarecontainedin[BK83],[CG]and[KMR87].Onemayask a similarquestionforthemodularexponentiationproblem:given a; b;n2N,computea b \(modn\).ForadenitionofN C see[Coo85] or[Coo81]. Rem35 94 Polylogdepth,subexponentialsizecircuitsforbothintegerGCD andmodularexponentiationhavebeenobtainedbyAdlemanand Kompella [AK88]. Ref35 [KMR84]. 36 Integer multiplicationinlineartime C36 Input a; b2N. Output ab. O36 Does thereexistanalgorithmtosolveC36thatusesonlyO\(log\(ab\)\) bit operations? Rem36 86 ThebestknownalgorithmisduetoSch onhage andStrassenand usesO\(log \(ab\)loglog\(ab\)logloglog\(ab\)\) bitoperations[SS71]. Rem36 94 Weareunawareofanyprogressonthisproblem. Ref36 [Knu81, pages278-301] Acknowledgments Duringthecourseofwritingthispaperwehavebenetedfromconversations withseveralpeople,andwewouldlikeespeciallytothankNealKoblitz,Je Lagarias,GaryMiller,JonathanDeMarrais,Ming-DehHuang,andAndrew Granvi
+n Cook. Towards acomplexitytheoryofsynchronousparallelcom- putation.Enseignment Math.,27:99{124,1981. [Coo85] Stephen Cook.A taxonomyofproblemswithfastparallelalgorithms.In- formation andControl,64:2{22,1985. [Cop84] Don Coppersmith. Fast evaluationofdiscretelogarithmsineldsofcharac- teristictwo.IEEETransactionsonInformationTheory,30:587{594,1984. [Cop90] Don Coppersmith. Modications tothenumbereldsieve. Technical Re- portRC16264,IBMTJWatsonResearchCenter,YorktownHeights,NewYork, 1990. [COS86] Don Coppersmith,AndrewOdlyzko,andRichardSchroeppel. Discrete log- arithmsinGF\(p\).Algorithmica, 1:1{15,1986. [Cou93] Jean-Marc Couveignes. Computing asquarerootforthenumbereldsieve. InA.K.LenstraandH. W.Lenstra,Jr.,editors,Thedevelopmentofthe numbereldsieve,number1554inLectureNotesinMathematics,pages 95{102.Springer-Verlag,1993. [Cra36] H. Cram er. On theorderofmagnitudeofthedierencebetweenconsecutive prime numbers.Acta Arithmetica,2:23{46,1936. [CZ81] David CantorandHansZassenhaus. A newalgorithmforfactoringpoly- nomialsoverniteelds.Mathematics ofComputation,36:587{592,1981. [dB90] Bert denBoer. Die-Hellmanisasstrongasdiscretelogforcertainprimes. InAdvancesinCryptology:ProceedingsofCrypto'88,volume403ofLec- tureNotesinComputerScience,pages530{539,NewYork,1990.Springer- Verlag. [DH76] W. DieandM.E.Hellman. New directionsincryptography. IEEE Trans- actionsonInformationTheory,22:644{654,1976. [Dix81] John D.Dixon. Asymptoticallyfastfactorizationofintegers. Mathematics of Computation,36:255{260,1981. [EH71] P. D. T. A.ElliotandH. Halberstam. The leastprimeinanarithmetic progression.In StudiesinPureMathematics,pages69{61.AcademicPress, London,1971. [ElG85] Taher ElGamal. A publickeycryptosystemandasignatureschemebased ondiscretelogarithms. IEEE TransactionsonInformationTheory,31:469{ 472,1985. [Erd61] P. Erd os. Remarksonnumbertheory,I.Mat.Lapok,12:10{17,1961. [Evd89] S. A.Evdokimov. Factoring asolvablepolynomialoveraniteeldand generalizedRiemannhypothesis. Zapiski Nauchn.Semin.Leningr.Otdel. Matem.Inst.Acad.Sci.USSR,176:104{117,1989.InRussian. [Evdar] S. A.Evdokimov. Factorization ofpolynomialsoverniteelds. In Pro- ceedings ofthe1994AlgorithmicNumberTheorySymposium,LectureNotes inComputerScience,Berlin,toappear.Springer-Verlag. [Fru85] M. A. Frumkin. Complexity questionsinnumbertheory. J. Soviet Math., 29:1502{1517,1985. Trans
+the solvabilityorunsolvabilityoftheequation x 2   dy 2 =1. Transactions of theAmericanMathematicalSociety,260:485{508,1980. [Lag80b] Jerey C.Lagarias. Worst-case complexityboundsforalgorithmsinthe theory ofintegralquadraticforms.Journal ofAlgorithms,1:142{186,1980. [Lag85] Jerey C.Lagarias. The computationalcomplexityofsimultaneousdio- phantineapproximationproblems. SIAM JournalofComputing,14:196{ 209,1985. [Lan85] Susan Landau. PolynomialtimealgorithmsforGaloisgroups.In J.Fitch, editor,ProceedingsofEUROSAM'84,volume174ofLectureNotesinCom- puterScience,pages225{236,NewYork,1985.Springer-Verlag. [Lan88] Susan Landau. Some remarksoncomputingthesquarepartsofintegers. InformationandComputation,78:246{253,1988. [Leh69] D. H. Lehmer. Computer technologyappliedtothetheoryofnumbers. In StudiesinNumberTheory,pages117{151.MathematicalAssociationof America,1969. DistributedbyPrenticeHall,EnglewoodClis,NJ. [Len81] H. W.Lenstra,Jr. Primality testingalgorithms\(afterAdleman,Rumely, andWilliams\). In S eminaire Bourbaki1980/81,Expos e 576,number901 inLectureNotesinMathematics,pages243{257.Springer-Verlag,Berlin, 1981. [Len83] H. W.Lenstra,Jr.Integerprogrammingwithaxednumberofvariables. MathematicsofOperationsResearch,8:538{548,1983. [Len87] H. W.Lenstra,Jr.Factoringintegerswithellipticcurves.Annals ofMath- ematics,126:649{673,1987. [Len90] H. W. Lenstra,Jr. Algorithms forniteelds. In NumberTheoryand Cryptography,volume 154ofLondonMathematicalSocietyLectureNote Series, pages76{85.CambridgeUniversityPress,Cambridge,1990. [Len92] H. W.Lenstra,Jr.Algorithmsinalgebraicnumbertheory.Bulletin ofthe AmericanMathematicalSociety,26:211{244,1992. [LL93] Arjen K. LenstraandH. W. Lenstra,Jr.,editors. The developmentof thenumbereldsieve. Number 1554inLectureNotesinMathematics. Springer-Verlag,1993. [LLL82] Arjen K.Lenstra,H.W.Lenstra,Jr.,andL aszlo Lov asz. Factoring poly- nomialswithrationalcoecients. Mathematische Annalen,261:515{534, 1982. [LLS90] Jerey C.Lagarias,H.W.Lenstra,Jr.,andClaus-PeterSchnorr.Korkine- Zolotarevbasesandsuccessiveminimaofalatticeanditsreciprocallattice. Combinatorica,10:333{348,1990.[LM85] Susan LandauandGaryL.Miller. Solvabilitybyradicalsisinpolynomial time.JournalofComputerandSystemScience,30:179{208,1985. [LN83] Rudolf LidlandHaraldNiederreiter. Finite Fields.Addison-Wesley,Read- ing,MA,1983. [Lov86] L aszlo Lov a
+lsoverniteelds.Journal ofAlgorithms, 9:391{400,1988. [R on89] L. R onyai. Galois groupsandfactoringpolynomialsoverniteelds. In Proceedings ofthe30thAnnualSymposiumonFoundationsofComputer Science, pages99{104.IEEEComputerSociety,1989.[RSA78] Ronald Rivest,AdiShamir,andLeonardM.Adleman. A methodforob- tainingdigitalsignaturesandpublickeycryptosystems. Communications of theACM,21:120{126,1978. [Sch82] Rene Schoof.Quadraticeldsandfactorisation. In H.W.Lenstra,Jr.and R.Tijdeman, editors,ComputationalMethodsinNumberTheory,PartI, number154inMath.CentreTract.Math.Centre,Amsterdam,1982. [Sch85] R. Schoof. Elliptic curvesoverniteeldsandthecomputationofsquare rootsmodulop.Mathematics ofComputation,44:483{494,1985. [Sch91] Claus-Peter Schnorr. Ecient signaturegenerationbysmartcards. Journal ofCryptology,4:161{174,1991. [Sch93] Oliver Schirokauer. Discrete logarithmsandlocalunits. Philisophical Transactions oftheRoyalSocietyofLondon\(A\),345:409{423,1993. [Sey87] Martin Seysen. A probabilisticfactorizationalgorithmwithquadraticforms ofnegativediscriminant. Mathematics ofComputation,48:757{780,1987. [Sha71] Daniel Shanks. Class number,atheoryoffactorization,andgenera. In Analytic NumberTheory,volume20ofProceedingsofSymposiainPure Mathematics, pages415{440.AmericanMathematicalSociety,1971. [Sha72] Daniel Shanks. Five number-theoreticalgorithms. In Proceedingsofthe Second ManitobaConferenceonNumericalMathematics,pages51{70,1972. [Sha84] Jerey O.Shallit. An expositionofPollard'salgorithmforquadraticcon- gruences. Technical Report84-006,UniversityofChicago,Departmentof ComputerScience,December1984. [Sho90a] Victor Shoup. New algorithmsforndingirreduciblepolynomialsovernite elds. Mathematics ofComputation,54:435{447,1990. Extended abstract inProceedingsofthe29thAnnualIEEESymposiumonFoundationsof Computer Science\(1988\),pp.283{290. [Sho90b] Victor Shoup. On thedeterministiccomplexityoffactoringpolynomials over niteelds. Information ProcessingLetters,33:261{267,1990. [Sho90c] Victor Shoup. Searching forprimitiverootsinniteelds. In Proceedings ofthe22thAnnualSymposiumonTheoryofComputing,pages546{554, 1990. [Shoar] Peter W. Shor. Polynomial timealgorithmsfordiscretelogarithmsand factoring onaquantumcomputer. In Proceedingsofthe1994Algorithmic NumberTheorySymposium.Springer-Verlag, toappear. [Sil86] Joseph H. Silverman. The Arithmeticof
+Schoof
+ELLIPTIC CURVES OVER FINITE FIELDS 491
+of x (modp) is given by X<p+X)/4 and this number can be evaluated mod p in
+0(log3p • log|jc|) elementary operations. We also assume that x is the discriminant
+of a complex quadratic order; for, if it is not, either Ax or -Ax is, and we compute
+either {Ax or both {Äx and f-Ax. All these numbers are in F^ since p = 1
+(mod 4).
+Briefly, the algorithm runs as follows: we write down a Weierstrass equation of an
+elliptic curve £ over Fq, a suitable extension of Fp, which has complex multiplication
+by &, i.e., its ring of F^-endomorphisms contains &. Next we compute the Frobenius
+endomorphism <j> in 0 by means of the algorithm given in Section 2. We have that
+a + b{x , „ , .      ,„..<f> =-        (a,b eZ;a= b(mod2))
+and Aq = a2 - b2x. So, (a/b)2 = x (mod p). We shall see later that the fact that
+(f) = 1 implies that b * 0 (mod p); for definitions and facts concerning elliptic
+curves, their endomorphism rings etc., see for instance [12].
+Letj(z) denote the modular function
+(21) j(z) = e-2™ + 144 + 196884e2™ + ...,       (Im z > 0)
+or, more precisely,
+j(z) = \23G2(zf/{G2(zf-G3(zf),
+where
+G2(z) = 1 + 240 £ o3(k)e2,nkz    (Im z > 0),
+k = \
+G3(z) = 1 - 504 £ os(k)e2"ikz    (Im z > 0),
+k = \
+om(k)=    E   d'
+0<d\k
+Define the integers c(k) by
+j(z) = e-2<"* +  £ c(k)e2,,,kz.
+k = 0
+We have that
+-i    e4"«'"
+lim c(«)~ 7=—¡7j = i;
+«-oo \/2 ■ n '
+this is due to Petersson [7]; the result is effective and we deduce: there exists an
+effectively computable constant Cx, such that
+for all « g Z>1. From this estimate one easily deduces that for z g Z with |Re z\ < \
+and \z\ > 1 (i.e., z is in the standard fundamental domain for the action of SL2(Z)
+on the upper half-plane), we have
+2(22) |y(z)-e"Im'|<C
+for some universal, effectively computable constant C2.
+
+492 RENE SCHOOF
+Next, we will explain how to compute a Weierstrass equation of an elliptic curve
+over F that has complex multiplication by 0. Here 0 denotes the unique complex
+quadratic order of discriminant x. If x = -3 • square or -4 • square we may as well
+assume that x = -3 resp. x = -A. It is easy to test whether x is of this form and {x
+is easily determined from \^3 resp. \^4 .
+If x = -3 we take as a Weierstrass equation for £: Y2 = A"3 - 1; if x = -4 we
+take F2 = A-3 — X. If jc is not -3 or -4 times a square, we compute all invertible
+ideal classes of the ring &; since these classes are, in a way which is well-known, in
+one-to-one correspondence with the set of triples
+{(a, b, c) g Z3: a > 0; gcd(a, b, c) = 1; \b\ < a < c;
+b2 — Aac = x; b > 0 whenever \b\ = a or a = c),
+we compute these triples instead. For a triple (a, b, c) in the above set it holds that
+|6| < a < y(|jc|/3) and one can compute all these triples in time 0(\x\x + t).
+Let h(x) denote the cardinality of the set of triples. For every triple (a, b, c) we
+approximate j((b + i^\x~\)/2a) using the Fourier expansion (21), such that the
+absolute error is smaller than exp(-C3|x|1 + F) for some constant C3 depending on e
+only. We need [C4|x|1 + f] terms of the expansion to accomplish this. The numbers
+j((b + iyj\x\)/2a) are conjugate algebraic integers; they are precisely the/-invariants
+of elliptic curves over C with complex multiplication by 6. These numbers are the
+zeros of an irreducible polynomial £ g Z[X] of degree h(x). We have that h(x) =
+0(|x|1/2 + E) for every e > 0.
+We approximate the coefficients of this polynomial by evaluating symmetric
+functions of the approximations of its roots. We leave it to the reader to verify that
+for every e > 0, one can determine constants C3 and Q, independent of x, such that
+the coefficients of £ can be deduced unambiguously from these approximations. All
+computations can be done using 0(|x|25 + f) elementary operations, for every e > 0.
+Proposition (4.1). Let & be the unique complex quadratic order having discriminant
+x, which is not -3 or -A times a square. Let £g Z[X] denote the irreducible
+polynomial having the j-invariants of the elliptic curves with complex multiplication by &
+as its roots. Let p be a prime which splits in 0, i.e., for which (f) = 1. Then, it holds
+that v(Ç) = v(Ç — 1728) = 0 for every zero of F and every valuation v of Q that
+extends the p-adic valuation ofQ.
+Proof. Let v extend the p-adic valuation of Q; let^ be a prime ideal of some finite
+extension £ of Q that corresponds to v. Let £(f ) = 0 and let £ denote an elliptic
+curve defined over Q(0 that has its /-invariant equal to f. The curve £ has
+potentially good reduction at^, i.e., it has good reduction over some finite extension
+of Q(D- Since we may replace £ by any finite extension and^ by any prime over it
+in that extension, we enlarge L such that £ is defined over £ and has good reduction
+atyè. Let F denote the residue class field of^.
+We have
+(0 ■-» End, E   and    End L E t-* End F ( £ mod ft )
+by a result of Deuring [3, Section 4], If X, g^ or I - 1728 g^ we have that
+Z[f3] ^ EndF (£mod/)    resp.    Z[f4] ^ EndF (£mod^)
+
+ELLIPTIC CURVES OVER FINITE FIELDS 493
+by the same argument. This implies, by the assumption that x ¥= - 3 or -4 times a
+square, that EndF(£mod^) cannot be a quadratic order; so EndF(£mod/) is
+noncommutative and £ mod ft is a super-singular curve. This is impossible since ft
+splits in Frac(fi>). This proves the proposition.
+For the facts concerning reduction of elliptic curves used in the proof, see [9].
+We continue the description of our algorithm. After computing the polynomial £,
+we write down an elliptic curve defined over F which has its /-invariant equal to a
+zero of £. This curve has complex multiplication by 0 and is elliptic by Proposition
+(4.1):
+F2+ FA-=AT3
+£ - 1728 £ - 1728 '
+Here f denotes a zero of £ in F ; the/-invariant of this curve is f.
+We let F = F (f ); the field F does not depend on the choice of f, since £ is in
+F [ A"] a product of irreducible factors that all have the same degree. It is not difficult
+to deduce an equation
+Y2 = X3 + AX + B
+with A, B g F (f ) for the curve £ from the equation given above.
+Now, there is only one problem to solve before we can apply the algorithm of
+Section 2 to compute the Frobenius endomorphism of £ and the square root of
+x mod p. The problem is that we do not necessarily have an irreducible polynomial
+G, a zero of which generates F over F . We only have £, a polynomial which may be
+reducible.
+We compute in F^ by computing with expressions
+d-\
+x= Z «*f*    (d= deg F;ak GFp);
+k = Q
+it is obvious how to compute sums and products of these numbers and these
+computations are as hard as the analogous computations in Fp,i. Essentially, the only
+problem is how to test whether
+d-\
+x= L «JA = o?
+A = 0
+We will perform this test by testing whether
+/rf-i \
+G = gcd    T,akTk,F(T)   =1;
+U=o /
+if this gcd = 1, we have that x ¥= 0, independent of our choice of f; if this
+gcd = £(£), we always have that x = 0; if the gcd is a proper divisor G of £, we
+may replace £ by G and we may take x = 0 or we do it the other way around: we
+replace £ by F/G and we take x ± 0. We will always do the former. Computing in
+F (£) in this way, is not harder than computing in Fp^iF. Since initially deg £ = h(x)
+and since h(x) = 0(|jc|1/2+f), we find that computing x mod p takes 0(log9(pA(-v)))
+= 0((|x|1/2+£log q)9) elementary operations for any e > 0.
+Finally, we give one further application.
+
+494 RENE SCHOOF
+Proposition (4.2). There exists a deterministic polynomial time algorithm to
+compute fx mod p if p £ 1 (mod 16). This algorithm has a running time independent
+ofxforx < p.
+Proof. In view of the algorithm presented by Shanks in [11], it suffices to show
+how to compute a generator of the 2-part of Z/pZx in time polynomial in log p. If
+p * 1 (mod 16), either f2 = -1> fa = v'-T or f8 = \~ïI2(î + V^T) is a generator.
+Since we can compute these numbers in time polynomial in log p by means of our
+deterministic algorithm, the proposition is proved.
+Universiteit van Amsterdam
+Mathematisch Instituut
+Roetersstraat 15
+1018 WB Amsterdam
+The Netherlands
+1. I. Borosh, C. Moreno & H. Porta, "Elliptic curves over finite fields. I," Proc. 1972 Number
+Theory Conference (University of Colorado), Boulder, 1972, pp. 147-155.
+2. I. Borosh, C. Moreno & H. Porta, "Elliptic curves over finite fields, II," Math. Comp., v. 29,
+1975, pp. 951-964.
+3. M. Deuring, "Die Typen der Multiplikatorenringe elliptischer Funktionenkörper," Abh. Math.
+Sem. Hamburg, v. 14, 1941, pp. 197-272.
+4. D. Knuth, The Art of Computer Programming, vol. II (Seminumerical Algorithms), Addison-Wes-
+ley, Reading, Mass., 1981.
+5. S. Lang. Elliptic Curves; Diophantine Analysis, Springer-Verlag, Berlin and New York, 1978.
+6. S. Lang and H. Trotter, Frobenius Distributions in GL2-E.xtensions, Lecture Notes in Math., vol.
+504, Springer-Verlag, Berlin and New York, 1976.
+7. H. Petersson, "Über die Entwicklungskoeffizienten der automorphen Formen," Acta Math., v. 58,
+1932. pp. 169-215.
+8. J. B. Rosser & L. Schoenfeld, "Approximate formulas for some functions of prime numbers,"
+Illinois J. Math., v. 6, 1962, pp. 64-94.
+9. J.-P. Serre & J. Täte, "Good reduction of abelian varieties," Ann. of Math., v. 88, 1968, pp.
+492-517.
+10. D. Shanks, Class Number. A Theory of Factorization and Genera, Proc. Sympos. Pure Math., vol. 20,
+Amer. Math. Soc, Providence, R. I., 1970, pp. 415-440.
+11. D. Shanks, "Five number-theoretic algorithms," Congressus Numerantium No. VII; Proc. 2nd
+Manitoba Conf. on Numerical Math. (University of Manitoba), 1972, pp. 51-70.
+12. J. Täte, "The arithmetic of elliptic curves," Invent. Math., v. 23, 1974, pp. 179-206.
+
+
+web search: https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf
+exec
+/bin/bash -lc "python3 - <<'PY'
+from itertools import product
+for m in [8,16,32,64]:
+ d={}
+ for p,q in product(range(1,m,2),repeat=2):
+  if p*q%4"'!=1:continue
+  e=1 if p%4==1 else -1
+  d.setdefault((p*q%m,e),set()).add((p+q)%m)
+ print(m,'"'sizes',sorted(set(map(len,d.values()))))
+ if m==32:print(d)
+for p,q in product(range(1,64,2),repeat=2):
+ if p*q%4"'!=1:continue
+ e=1 if p%4==1 else -1
+ bp=1 if p%8 in (1,7) else -1
+ bq=1 if q%8 in (1,7) else -1
+ assert (p+q-e*(p*q+1))%16==0
+ assert (p+q-e*(p*q+1)+16*e*((1-bp)//2)*((1-bq)//2))%32==0
+print('"'all identities checked on odd residues mod64')
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+8 sizes [1]
+16 sizes [1]
+32 sizes [1, 2]
+{(1, 1): {2, 18}, (5, 1): {6}, (9, 1): {10, 26}, (13, 1): {14}, (17, 1): {18, 2}, (21, 1): {22}, (25, 1): {26, 10}, (29, 1): {30}, (9, -1): {6, 22}, (21, -1): {10}, (1, -1): {14, 30}, (13, -1): {18}, (25, -1): {22, 6}, (5, -1): {26}, (17, -1): {30, 14}, (29, -1): {2}}
+64 sizes [2]
+all identities checked on odd residues mod64
+
+web search: 
+web search: "fixed" "quadratic residuosity" "-1" ...
+codex
+The low-bit calculation gives a stronger identity: once ε = (−1/p) = (−1/q) is known, s ≡ ε(N+1) mod 16. There is no additional informative bit modulo 16. The next possible one is modulo 32; when N ≡ 1 mod 8, it is exactly the decision whether 2 is a square modulo N. I also have an exact class-group formulation: test whether the public ramified class above 2 is a square.
+web search: 
+web search: "4-rank" "-8pq" "5" "mod 8" ...
+exec
+/bin/bash -lc "python3 - <<'PY'
+from math import isqrt,gcd
+
+def forms(D):
+ for a in range(1,isqrt(-D//3)+1):
+  for b in range(-a,a+1):
+   if (b*b-D)%(4*a):continue
+   c=(b*b-D)//(4*a)
+   if a>c or gcd(gcd(a,b),c)>1:continue
+   if (abs(b)==a or a==c) and b<0:continue
+   yield (a,b,c)
+def prime(p):return p>1 and all(p%d for d in range(2,isqrt(p)+1))
+def leg(a,p):return 1 if pow(a%p,(p-1)//2,p)==1 else -1
+# r4 is the dimension of C[2] intersect C"'^2. Evaluate genus characters on the four ambiguous classes.
+for p in [x for x in range(3,90) if prime(x)]:
+ for q in [x for x in range(p+1,120) if prime(x)]:
+  N=p*q
+  if N%8!=1:continue
+  e=leg(-1,p); b=leg(2,p); D=(-8 if e==1 else -4)*N
+  fs=list(forms(D)); amb=[f for f in fs if f[1]==0 or f[1]==f[0] or f[0]==f[2]]
+  squares=[]
+  for a,B,c in amb:
+   vals=[a*x*x+B*x*y+c*y*y for x in range(0,10) for y in range(0,10)]
+   v=next(v for v in vals if v>0 and gcd(v,2*N)==1)
+   # odd prime-discriminant characters reduce to (v/p), (v/q); these two form a basis
+   if leg(v,p)==leg(v,q)==1:squares.append((a,B,c))
+  r4=(len(squares)).bit_length()-1
+  assert (r4>0)==(b==1),(p,q,D,r4,b,amb,squares)
+print('"'rank criterion verified for all tested prime pairs p<90, q<120 with N=1 mod8')
+for D in [-260,-520,-4*697,-8*697]:
+ print(D,'h=',len(list(forms(D))))
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+rank criterion verified for all tested prime pairs p<90, q<120 with N=1 mod8
+-260 h= 8
+-520 h= 4
+-2788 h= 8
+-5576 h= 48
+
+web search: 
+web search: site:cs.uwaterloo.ca/~shallit "Algorithmic Number Theory" "squares" ...
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request,io,gzip,re
+from pypdf import PdfReader
+# extract only requested computational problems, retaining original fragments
+b=gzip.decompress(urllib.request.urlopen('https://www.mccurley.org/papers/open.ps.gz',timeout=20).read()).decode('latin1')
+t=''.join(re.findall(r'\\(((?:\\\\.|["'^'"\\\\)])*)\\)',b[b.index('%%Page:'):]))
+for a,z in [('11Quadratic','12Quadratic'),('33Solvability','35Greatest')]:
+ start=t.find(a)
+ print(t[start:t.find(z,start)][:6000])
+u='https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpa.3160390713'
+try:
+ b=urllib.request.urlopen(u,timeout=20).read()
+ r=PdfReader(io.BytesIO(b));print('RS first pages', '\\n'.join(p.extract_text() for p in r.pages[:3]))
+except Exception as ex:print('RS full text unavailable',str(ex)[:100])
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 951ms:
+11QuadraticresiduositymoduloacompositeC11Inputa;n2N.Output1ifthereexistsanx2Nsuchthatx2\021a\(modn\)andgcd\(a;n\)=1,0otherwise.O11aIsC11inP?O11bIsC5\024RC11?Rem1186ItiseasytoshowthatC11\024PC5.Thereisanobviousgeneraliza-tionwheretheexponent2isreplacedbyanotherexponentkthatiseither\014xedfortheproblemorsuppliedasaninput.Thepresumeddi\016cultyofC11hasbeenusedasabasisforcryptographicsystems[GM82],[GM84],[Yao82],[BBS86].C11isrelatedtoC9sincetheproportionofresiduesmodulonthatarequadraticresiduesis2\000!\(n\),where!\(n\)isthenumberofdistinctprimedivisorsofn.ThereforegivenanalgorithmforC11,onecanobtainacon\014denceintervalfor!\(n\)bycheckingrandomvalues.Rem1194Weareunawareofanyprogressonthisproblem.Ref11[AM82].
+33SolvabilityofbinaryquadraticdiophantineequationsC33Inputa;b;c;d;e;f2Z.Output1ifthereexistsx;y2Zwithax2+bxy+cy2+dx+ey+f=0andtheredoesnotexistag2Zwithb2\0004ac=g2,0otherwise.O33aIsC33NP-hard?O33bIsC33NP-hardwithrespecttoR?Rem3386ItisknownthatC33isrecognizedinNP[Lag79].Withouttheconstraintthatb2\0004acisnotasquare,theproblemisknowntobeNP-hard[MA78].CertainvariantsofC33areknowntobeNP-hardwithrespecttoR[AM77].Rem3394Weareunawareofanyprogressonthisproblem.34Solvabilityofanti-PellianequationC34Inputd2N.Output1ifthereexistx;y2Zwithx2\000dy2=\0001,0otherwise.O34IsC34inP?Rem3486Thereexistchoicesofdforwhichthesmallestsolutionofx2\000dy2=\0001cannotbewrittendowninpolynomialspace[Lag79].ItisknownthatC34isinNP[Lag80a].Ifthefactorizationofdisprovidedaspartoftheinput,thentheproblemisrecognizedinR,andifinadditionweassumetheextendedRiemannhypothesis,thentheproblemisinP[Lag80a].Rem3494Weareunawareofanyprogressonthisproblem.
+RS full text unavailable HTTP Error 403: Forbidden
+
+web search: 
+web search: https://cs.uwaterloo.ca/~shallit/antdesc.html
+exec
+/bin/bash -lc "python3 - <<'PY'
+from math import isqrt,gcd
+pr=[a for a in range(3,200) if all(a%d for d in range(2,isqrt(a)+1))]
+count=0
+for p in pr:
+ for q in pr:
+  if p>=q or p*q%8"'!=1:continue
+  count+=1
+  e=1 if p%4==1 else -1
+  b=1 if p%8 in(1,7) else -1
+  ell=1 if pow(p,(q-1)//2,q)==1 else -1
+  # Deduce r4 by enumerating ambiguous forms and applying genus characters
+  for mul in (4,8):
+   D=-mul*p*q
+   n2=0
+   for a in range(1,isqrt(-D//3)+1):
+    for B in {0,a}:
+     if (B*B-D)%(4*a):continue
+     c=(B*B-D)//(4*a)
+     if a>c or gcd(gcd(a,B),c)>1:continue
+     vals=(a*x*x+B*x*y+c*y*y for x in range(0,8) for y in range(0,8))
+     v=next(v for v in vals if v>0 and gcd(v,2*p*q)==1)
+     if pow(v%p,(p-1)//2,p)==pow(v%q,(q-1)//2,q)==1:n2+=1
+   # also a=c ambiguous forms
+   for a in range(1,isqrt(-D//3)+1):
+    for B in range(1,a):
+     if B*B-4*a*a!=D or gcd(a,B)>1:continue
+     vals=(a*x*x+B*x*y+a*y*y for x in range(0,8) for y in range(0,8))
+     v=next(v for v in vals if v>0 and gcd(v,2*p*q)==1)
+     if pow(v%p,(p-1)//2,p)==pow(v%q,(q-1)//2,q)==1:n2+=1
+   r=n2.bit_length()-1
+   expected=(2 if ell==1 else 1) if e==1 and b==1 else (1 if (e==1 and mul==4) or (e==-1 and (mul==8 or b==1)) else 0)
+   assert r==expected,(p,q,mul,r,expected)
+print(count,'"'prime pairs checked; both rank formulas hold')
+PY" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 73ms:
+238 prime pairs checked; both rank formulas hold
+
+web search: 
+web search: "square root of -1" "factorization" "complexity" ...
+web search: 
+web search: 
+codex
+The rank route now has an exact criterion. For N ≡ 1 mod 8, once ε is known, positivity of the 4-rank of Cl(−8N) if ε = +1, or Cl(−4N) if ε = −1, decides whether 2 is a square modulo N. This follows from genus characters; I also checked the formulas on 238 small prime pairs. The remaining problem is computing that rank efficiently without factoring N.
+web search: 
+web search: Pollack Trevino "Finding the Four Squares" pdf ...
+web search: 
+web search: https://mathoverflow.net/questions/131833/elements-of-low-multiplicative-order-and-computing-square-roots-modulo-composite
+web search: 
+web search: Stevenhagen "Redei reciprocity" pdf ...
+web search: 
+web search: https://arxiv.org/pdf/1806.06250
