@@ -77,14 +77,14 @@ def _cost_task(args):
             gw = decode_low_bits(N, k, rw, d=d, metrics=mw)
             dw = time.perf_counter() - t1
             recs.append(dict(n=n, seed=seed, k=k, delta=delta, mode="empirical_min_d", d=d,
-                             m=mt.fields["m"], decode_s=round(dt, 5), lll_s=round(mt.fields["time_lll"], 5),
+                             m=mt.fields.get("m"), decode_s=round(dt, 5), lll_s=round(mt.fields.get("time_lll", 0.0), 5),
                              max_operand_bits=mt.maxima.get("max_operand_bits"),
-                             rigorous=mt.fields["rigorous_condition"],
+                             rigorous=mt.fields.get("rigorous_condition"), status=mt.fields.get("status"),
                              wrong_decode_s=round(dw, 5), wrong_found=_isfactor(gw, N)))
             break
     # rigorous parameters (smallest d meeting the exact HG+LLL inequality), if <= 80
     L, U = balanced_promise(N)
-    hint = AffineHint(1 << k, inst.labels["p"] % (1 << k), L, U)
+    hint = AffineHint(1 << k, oracles.oracle_low_bits(inst, k)["r"], L, U)   # oracle stage
     lo, hi = hint.x_range(); xm = (lo + hi) // 2; Y = max(hi - xm, xm - lo)
     pr = choose_params(N, L, Y, dmax=80)
     if pr is not None:
@@ -267,8 +267,9 @@ def _hs_task(args):
     o = oracles.oracle_random_bits(inst, delta, t, rng)
     mt = Metrics(); t0 = time.perf_counter()
     try:
-        g = decode_random_bits(N, t, o["known_p"], o["known_q"], depth=t, d=d, metrics=mt)
-        status = "ok" if _isfactor(g, N) else "fail"
+        g = decode_random_bits(N, t, o["known_p"], o["known_q"], depth=t, d=d, metrics=mt,
+                               max_width=1 << 20, max_decodes=1 << 12)
+        status = "ok" if _isfactor(g, N) else ("decode_cap" if (mt.fields.get("width_final") or 0) > (1 << 12) else "fail")
     except RuntimeError:
         g, status = None, "width_exceeded"
     return dict(n=n, seed=seed, delta=delta, d=d, depth=t,

@@ -26,15 +26,15 @@ No novelty claims. Status labels per AGENT_RULES.
 - **Representation:** dense element of `R_N[X]/(X^{2M}-c)` (flint).
 - **Extraction / why a factor:** the path reaches a support index, then gcd (L2).
 - **Known lemmas:** C1, C2, C4 (§4).
-- **New lemma required:** none for correctness. For cost it would need a rank `< 2M`, which is **impossible in the algebra-observable model (Theorem A1, proved)**.
+- **New lemma required:** none for correctness. ~~For cost it would need a rank `< 2M`, which is impossible in the algebra-observable model (Theorem A1, proved).~~ **Corrected 2026-10-17 after r3 audit:** A1 (corrected form) only gives rank `≥ min(2M, i+1)` for an isolating certificate with support index `i`, i.e. `≥ p+1` in the balanced family (Cor. 3′). A cheaper isolating certificate of rank about `p+1` at high levels is not excluded, but it is still `Ω(p)` under dense storage.
 - **Correctness:** experimentally 25/25 paths alive at every level. The first scalar always certified (C4 explains why).
-- **Cost:** rank `2^{k+1}` at level `k`. The cost per level doubles exactly (ratio 2.00), total `Θ(N log N)`, so exponential and worse than trial division.
+- **Cost:** rank `2^{k+1}` at level `k` *for this selector*. The cost per level doubles exactly (ratio 2.00), total `Θ(N log N)`, so exponential and worse than trial division. (The doubling is a property of this selector, not a theorem.)
 - **Closest prior:** the direct coefficient sketch / AKS quotients.
 - **Refuting behaviour:** cost doubling, observed. **Status: correct but exponential (experimentally supported + proved lower bound in model).**
 
 ### A-3. Fixed-budget (non-isolating) selector, rank D independent of level
 - **Mechanism:** use rank-`D` evaluations for every level.
-- **Result:** for `2M > D` the two child classes coincide modulo any rank-`D` observable's resolution (A1). The measured success equals a coin flip (budget_1024 dies 1–4 levels after `max(log2 D, log2 p)`). **Status: refuted (proved by A1 + experiment).**
+- **Result:** ~~for `2M > D` the two child classes coincide modulo any rank-`D` observable's resolution (A1). The measured success equals a coin flip.~~ **Corrected 2026-10-17 after r3 audit:** A1 shows only that a rank-`D` observable cannot *isolate* the child classes (nonzero index `≥ 2M`, or `≥ p+1` in the balanced family). Failure to isolate is not indistinguishability. Over `F_101`, `f ↦ f(2)` (rank 1) separates `1` from `X` without isolating either class. A1 gives no coin-flip bound. The implemented `budget_1024` selector flips a literal coin once `2M > D` (`BudgetSelector` calls `rng.getrandbits(1)`), so its measured coin-flip rate (dies 1–4 levels after `max(log2 D, log2 p)`) is by construction. **Status: refuted for the implemented selector (experiment). The general claim "every rank-`D` selection rule is a coin flip" is not proved.**
 
 ### A-4. Parity / descent through `X^{2M} - s^2 = (X^M - s)(X^M + s)`
 - **Mechanism:** a child vanishes iff the parent is odd/even in `Y`. Test this from the parent at `±s` (two rank-`M` algebras) or in the tower `R_N[s]/(s^2-c)[X]/(X^M - s)`.
@@ -49,7 +49,7 @@ No novelty claims. Status labels per AGENT_RULES.
 
 ### A-6. Masks via Hadamard product (prefix / interval / bit-pattern / class)
 - **Mechanism:** extract `P ⊙ m` for a short-description mask `m` by a quotient evaluation.
-- **Result:** Corollary E1 (proved). Rank `≥` (zero-run length + 1): class `≥ M`, bit `j` `≥ 2^j+1`, interval `≥ a+1`. Over fields, prefix/interval need rank `≥` last used index + 1. The bounds are tight (exhaustive F_2/F_3) and attained by `X^M - c` and truncation. The prefix mask is informative only at `K ≈ p` (36/36), so it costs `≈ p`. **Status: refuted for this model.**
+- **Result:** Corollary E1 (proved). Rank `≥` (zero-run length + 1): class `≥ M`, bit `j` `≥ 2^j+1`, interval `≥ a+1`. Over fields, prefix/interval need rank `≥` last used index + 1, provided a trailing zero block of length `≥` rank is observed (corrected 2026-10-17 after r3 audit; F_5 counterexample `u_t = 1 − 2^t`). The bounds are tight (exhaustive F_2/F_3) and attained by `X^M - c` and truncation. The prefix mask is informative only at `K ≈ p` (36/36), so it costs `≈ p`. **Status: refuted for this model.**
 
 ### A-7. Early stop + gcd scan of the progression `r + tM`
 - **Mechanism:** descend `k` levels, then scan `gcd(r + tM, N)` for `t ≤ N/M`.

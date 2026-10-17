@@ -1,0 +1,28 @@
+hsbits done 60.0
+flips done 3.8
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/knielsen/.local/share/uv/python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    ~~~~^^^^^^^^^^^^^^^
+  File "/home/knielsen/code/factoring-connection/src/trackE/exp_formats.py", line 80, in _cost_task
+    m=mt.fields["m"], decode_s=round(dt, 5), lll_s=round(mt.fields["time_lll"], 5),
+      ~~~~~~~~~^^^^^
+KeyError: 'm'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/knielsen/code/factoring-connection/src/trackE/exp_formats.py", line 340, in <module>
+    EXPS[name](pool)
+    ~~~~~~~~~~^^^^^^
+  File "/home/knielsen/code/factoring-connection/src/trackE/exp_formats.py", line 105, in exp_cost
+    for recs in pool.imap_unordered(_cost_task, jobs):
+                ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/knielsen/.local/share/uv/python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/multiprocessing/pool.py", line 873, in next
+    raise value
+KeyError: 'm'

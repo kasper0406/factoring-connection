@@ -145,7 +145,7 @@ def simple_tables(lines):
             wf = sum(r["wrong_found"] for r in e) if e else None
             gd = [r["d"] for r in g if r.get("d")]
             gs = [r["decode_s"] for r in g if r.get("d")]
-            gb = [r.get("max_operand_bits") for r in g if r.get("d")]
+            gb = [r.get("max_operand_bits") for r in g if r.get("d") and r.get("max_operand_bits")]
             lines.append(f"| {n} | {n // 4 + dl} | {dl} | {ed} | {es:.4g} | {ws:.4g} | {wf} | "
                          f"{st.median(gd) if gd else '>80'} | {(f'{st.median(gs):.4g}') if gs else '-'} | {max(gb) if gb else '-'} |")
         lines.append("")
