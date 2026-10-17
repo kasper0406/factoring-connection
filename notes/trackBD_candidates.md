@@ -3,6 +3,8 @@
 Template: BRIEF §4. Proofs and data: `notes/trackBD_analysis.md` (section numbers below refer to it).
 No novelty is claimed for anything here.
 
+> **r3 audit, 2026-10-17 (agent `repair`):** "refuted for model M" below means "refuted for the readouts analysed, at the measured Θ(1/p) rate". Model M as written has no proved lower bound, because it contains Pollard p−1 via constants or exponential-degree readouts. See `notes/trackBD_analysis.md` §5 and `notes/repair_adjudication.md`.
+
 ---
 
 ## BD-1 — Single quotient sketch, coefficient / content gcd
@@ -19,7 +21,7 @@ No novelty is claimed for anything here.
 - **Closest prior method:** AKS identity test (detects compositeness, no factor); Fermat-test gcds.
 - **Smallest experiment:** done (§6.1, 6.2, 6.7).
 - **Refutation:** observed coefficient-hit rates equal the null r(1/p+1/q) at 24–40 bits; structural hits only via public roots (W), rare FROB, sporadic orbits.
-- **Status:** refuted for model M (§5).
+- **Status:** refuted for model M (§5) in the sense of the readouts analysed; model M has no proved lower bound (r3 audit).
 - **Repair:** use the resultant / Euclid readout (BD-2), which sees single components.
 
 ## BD-2 — Resultant / Euclid / inversion failure of the sketch
@@ -38,14 +40,14 @@ No novelty is claimed for anything here.
 - **Representation:** r×r matrices over R_N.
 - **Why:** rank_p = r − deg gcd(f, F_q^p) (Cor B2.3).
 - **New lemma required:** a distribution over public (r, c) with P(rank gap) ≥ 1/poly(n).
-- **Correctness / data:** exact rank distributions over all weights (§6.5): P_gap = XOR of (#weights x^r, x ∈ A_l)/l, **independent of r ∈ [2,16]**, zero for 65–86 % of balanced instances, ≈ 2.3–2.6/p on average. Codex's r = 2 zeros extend to all r ≤ 16 for the same N.
+- **Correctness / data:** exact rank distributions over all weights (§6.5): P_gap = XOR of (#weights x^r, x ∈ A_l)/l, r-independent on the measured instances (r ∈ [2,16]), zero for 65–86 % of balanced instances, ≈ 2.3–2.6/p on average. Codex's r = 2 zeros extend to all r ≤ 16 for the same N. **Corrected 2026-10-17 after r3 audit:** r-independence is not a theorem. For N = 209, P_gap = 0 at r = 2 and 1/9 at r = 6 (extension-field roots).
 - **Cost:** O(r³) per probe; expected Θ(p) probes.
 - **Closest prior:** codex card B1 (degree-two rank gaps); AKS.
-- **Status:** refuted for model M; "vary the degree" repair refuted for the binomial family (B6).
+- **Status:** refuted for the readouts analysed (measured Θ(1/p)). "Vary the degree" did not help on the measured instances, but it is **not refuted in general** (N = 209 counterexample; corrected 2026-10-17 after r3 audit). Model M itself has no proved lower bound (§5 scope).
 
 ## BD-4 — Berlekamp-type matrices Q_N (g ↦ g(X^N) mod f) and Q_N − I
 - **Mechanism:** rank / kernel of the composition operator by X^N.
-- **Why:** rank Q_N mod p = #{distinct α^q} over roots α; split needs ord(α_i/α_j) = q (q | p^D − 1); Q_N − I kernel jumps need α^{pq−1} = 1 (Fermat) or point coincidences.
+- **Why:** rank Q_N mod p = #{distinct α^q} over roots α; split needs ord(α_i/α_j) = q (q | p^D − 1). ~~Q_N − I kernel jumps need α^{pq−1} = 1 (Fermat) or point coincidences.~~ **Corrected 2026-10-17 after r3 audit:** Q_N − I kernel jumps only need a polynomial relation g(α^N) = g(α) on all roots. N = 247, f = X³ + 5: mod 13, α^N = −α for all roots (no fixed point, six distinct points), X² ∈ ker(Q_N − I), and there is a rank split with 19.
 - **Correctness:** rank formula proved (Vandermonde at the points α^N); public-order roots (Φ_m, X^r − c with c of small order) give the same integer matrix on both sides — never split.
 - **Data:** 0 splits at ≥ 28 bits in 19 800 matrices each (§6.4).
 - **Status:** refuted for model M.
@@ -80,7 +82,7 @@ No novelty is claimed for anything here.
 - **Why / status:** same vanishing-pattern criterion as BD-2/BD-3, plus accidental ℓ-degeneracy ≈ r/p. Refuted for model M.
 
 ## Most promising (but negative-leaning) lead from this track
-None of BD-1…BD-8 survives. The precise obstruction: in model M, success ⇔ a coincidence in the power map
-x ↦ x^{q mod (p^d−1)} at public algebraic points (proved); empirically such coincidences occur with
+None of BD-1…BD-8 survives. The precise obstruction: for the readouts analysed (content, resultant, Euclid, M1/M2 ranks), success ⇔ a coincidence in the power map
+x ↦ x^{q mod (p^d−1)} at public algebraic points (proved). (Scope corrected 2026-10-17 after r3 audit: this is not a statement about all of model M, which as written contains Pollard p−1, e.g. the constant [63] for N = 77.) empirically such coincidences occur with
 probability ≈ 1/p^d per condition (conjectured), except Frobenius coincidences, which are Pollard-type order conditions. A revision must change the
 operation (the exponent or the group), not the readout.

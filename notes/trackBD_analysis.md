@@ -1,5 +1,7 @@
 # Track B + D: quotient sketches, lifts, annihilators — analysis
 
+> **r3 audit applied 2026-10-17 (agent `repair`).** Corrections are marked "Corrected 2026-10-17 after r3 audit". The adjudication is in `notes/repair_adjudication.md`. Reproductions: `src/repair/audit_trackBD.py`.
+
 Agent `sketchBD`, 2026-10-17. Code: `src/trackBD/*`, `src/quotient_sketches.py`; tests: `tests/test_trackBD.py`
 (23 tests, all pass). Raw data: `experiments/raw/trackBD_*.jsonl`; configs: `experiments/configs/trackBD_*.json`;
 aggregated tables: `experiments/analysis/trackBD_tables.txt` (produced by `src/trackBD/analyze.py`).
@@ -17,19 +19,19 @@ BM step and Stirling-window details, D1 hypotheses) are incorporated below.
 |---|---|---|
 | B1 | **Exact single-sketch criterion.** For any monic f in Z[X], any N = p^k m with p not dividing m: S := F_N mod (f, N) satisfies S ≡ F_m(X)^{p^k} (mod p, f). Hence S(α)=0 at a root α of f mod p iff (1+α)^m = 1+α^m. | proved |
 | B2 | Readout corollaries: content gcd, resultant, multiplication rank, generic Hankel rank and the *degree of* gcd(f, S) reduce to the *vanishing pattern* {α : (1+α)^m = 1+α^m} on the roots of f mod each prime. Res(f,S) ≡ Res(f,F_q) (mod p). (Euclid can also fail on non-generic remainder sequences: one-way implication only.) | proved |
-| B3 | For squarefree N, column-gcd elimination over Z/N returns a factor iff the pivot profiles mod the primes differ (up to a ≤ 2^-64 'stuck' branch). Euclid over Z/N returns a factor iff the remainder-degree sequences differ; in particular whenever deg gcd(f,S) differs (needs the constant-remainder check). | proved; 0 violations in 99 000 matrices |
+| B3 | For squarefree N, column-gcd elimination over Z/N returns a factor iff the pivot profiles mod the primes differ (up to a 'stuck' branch of probability ≤ (1 − φ(N)/N)^64. That is ≤ 2^-64 only when φ(N)/N ≥ 1/2, e.g. odd semiprimes, and **not** for every squarefree N: N = 105 gives ≥ 1.0·10^-17. Corrected 2026-10-17 after r3 audit). **Profile split ≠ rank split in general:** [3 5] over R_15 has rank 1 mod 3 and mod 5, but pivots {1} vs {0}, so elimination returns 3. Rank split ⇔ profile split holds for multiplication-by-S in the power basis (Krylov), checked on 3 000 random cases. Euclid over Z/N returns a factor iff the remainder-degree sequences differ; in particular whenever deg gcd(f,S) differs (needs the constant-remainder check). | proved; 0 violations in 99 000 matrices |
 | B4 | The user's hypothesis, made precise: the vanishing condition depends on q only through q mod L_α, L_α = lcm(ord α, ord(1+α)) dividing p^d − 1. "Frobenius coincidence" q ∈ ⟨p⟩ (mod L_α) is **sufficient but not necessary**. | proved |
-| B5 | The non-Frobenius ("sporadic") roots form orbits of the anharmonic group {x, 1/x, −1−x, …} of order 6; every sporadic count observed (2 960 prime-side censuses in §6.2 and 22 178 (p, e) pairs in §6.3) is ≡ 0 (mod 6). | proved (for p > 3; §2 B5) and observed without exception |
+| B5 | The non-Frobenius ("sporadic") roots **outside U** form orbits of the anharmonic group {x, 1/x, −1−x, …} of order 6 (on F_p ∪ {∞}). Every sporadic count observed (2 960 prime-side censuses in §6.2 and 22 178 (p, e) pairs in §6.3) is ≡ 0 (mod 6). **Corrected 2026-10-17 after r3 audit:** with B4's literal definition (exclude only 0, −1 and FROB) the count is *not* ≡ 0 mod 6. For p = 7, q = 11 the roots 2, 4 (the cube roots of unity) are non-FROB and give count 2. This fails in 1 039 of 5 260 (p, e) pairs with p < 400. SPORADIC must exclude U = {0, −1, ω, ω²}. The six-orbit structure is classical (Cauchy–Mirimanoff; Boyd–Martin–Thom 2015, Lemma 5.2). | proved (p > 3, U excluded); the census is new data, the symmetry is not |
 | B6 | On balanced random semiprimes the Frobenius part is a heavy-tailed, Pollard/Bach–Shallit-type term (mean ≈ 2–6 roots, median 0, P(>0) ≈ 0.2–19 %); the sporadic part has mean ≈ 1.0 and P(>0) ≈ 15 %. Single-sketch structural success per random weight is exactly (#non-public F_p-roots of F_q)/p (+ the q-side term); its observed average is Θ(1/p), the same order as the random-gcd null. | exact formula proved; Θ(1/p) and the means are experimental (16–40 bits) |
-| B7 | Rank-gap probability of multiplication-by-sketch on F_l[X]/(X^r − c), uniform admissible c: exactly predicted by the F_l-roots of F_m; **independent of r** (r = 2..16); zero for 65–86 % of balanced instances. Codex's r = 2 zeros (101·113, 107·193, 1009·1481) are the special case "no non-universal F_l-roots on either side", and persist for every r ≤ 16. | exact enumeration; F_p-part proved, extension-field part heuristic (observed ≤ 2 weights per (size, r)) |
+| B7 | Rank-gap probability of multiplication-by-sketch on F_l[X]/(X^r − c), uniform admissible c: exactly predicted by the F_l-roots of F_m *on the measured instances*; r-independent on those instances (r = 2..16); zero for 65–86 % of balanced instances. **Corrected 2026-10-17 after r3 audit: r-independence is NOT a theorem.** For N = 209 = 11·19, c = −1: gcd(X^6+1, F_19) = X^4 − X^2 + 1 mod 11, gcd(X^6+1, F_11) = 1 mod 19, and P_gap = 0 at r = 2 but 1/9 at r = 6, due to extension-field roots (own enumeration and `exp_rankdist.side` agree). Codex's r = 2 zeros (101·113, 107·193, 1009·1481) are the special case "no non-universal F_l-roots on either side", and persist for every r ≤ 16. | exact enumeration; F_p-part proved, extension-field part heuristic (observed ≤ 2 weights per (size, r)) |
 | B8 | Lucas-support gaps (coefficient ≡ 0 mod p because no support exponent folds there) occur when q − p ≲ r/2 (balanced, q < 2p; threshold approximate): a weak special case of Fermat's method. | mechanism proved, threshold heuristic; all 24 observed instances at ≥ 24 bits have q − p ≤ 162 |
 | D1 | The divided quantities we construct from the N²-lift (F_N'/N, Hasse D^[k]F_N/N for k below the least prime, ∂_c of the sketch for r, c units) are unit multiples of G_k = (1+X)^{N−k} − X^{N−k} or are determined by S itself. G_k vanishing at α is a pure multiplicative-order condition (Fermat test of β = 1+1/α). | proved |
 | D2 | Codex claim (c): the scalar G_1 split probability (d−1)(p+q−2(d−1))/(pq), public root −1/2, nothing left when d = 2. | verified exactly (census: #roots = g−1 on all 1 120+360 instances; measured vs predicted hits agree) |
-| D3 | BM over Z/N on c ↦ F_N(c): for e_p := q mod (p−1) ≥ 3 the linear complexity mod p is exactly e_p, mod q it is p. For the balanced generator (q < 4p/3) e_p = q − p + 1, so this is a Fermat-gap method with cost Θ(q − p). Window predicate: Δ^K F_N(0) = (K+1)!·S(N,K+1) (K ≥ 1) is ≡ 0 mod p for all K ≥ e_p, and is a proper nonunit for e_p ≤ K ≤ p−1 up to accidental q-side zeros. | LC and window proved; BM step: first structural nonunit at step ≤ 2e_p is experimental (58 at 2e_p, 1 at 2e_p − 1; 31/90 runs hit an accidental nonunit first); LC_p = e_p in 90/90 |
+| D3 | BM over Z/N on c ↦ F_N(c): for e_p := q mod (p−1) ≥ 3 the linear complexity mod p is exactly e_p, mod q it is p (for e_p = 1 the p-side complexity is 0). For the balanced generator (q < 4p/3) e_p = q − p + 1, so this is a Fermat-gap method with cost Θ(q − p). Window predicate: Δ^K F_N(0) = (K+1)!·S(N,K+1) (K ≥ 1) is ≡ 0 mod p for all K ≥ e_p, and is a proper nonunit for e_p ≤ K ≤ p−1 up to accidental q-side zeros. | LC and window proved; **new (repair, proved): a nonunit discrepancy occurs at index ≤ p + e_p − 1, and any nonunit at index ≥ 2e_p reveals p** (60/60 runs). "≈ 2e_p" remains experimental (58 at 2e_p, 1 at 2e_p − 1; 31/90 runs hit an accidental nonunit first); LC_p = e_p in 90/90. **Corrected 2026-10-17 after r3 audit:** the Δ^K zero predicate is *not* the prefix predicate. It is non-monotone (N = 391: gcds 391, 17, 391 at K = 12, 13, 14) |
 | — | Codex claim (a) (cyclotomic factors of F_N are exactly X+1 for odd N and Φ_3 with multiplicity 2 / 1 for N ≡ 1 / 5 mod 6) | verified for all 3 ≤ N ≤ 160, Φ_m with m ≤ 40 |
 | — | Codex claim (d) (rank gap ⇒ nonunit pivot; F_{pq} mod p = F_q^p) | agrees with B1/B3 (we prove the sharper "iff" for column-gcd elimination with N squarefree) |
 
-**Bottom line (refuted for model M, §5).** In the model "compute sketches F_N mod (f, N) for public f of degree
+**Bottom line (refuted for model M, §5; scope corrected 2026-10-17 after r3 audit: Model M as written has NO proved lower bound. Arbitrary public R_N-polynomial readouts include Pollard p−1, e.g. N = 77 and the constant 1×1 matrix [2^6 − 1] = [63] returns 7. "Refuted" refers to the specific readouts B1–B3 analysed, as measured.)** In the model "compute sketches F_N mod (f, N) for public f of degree
 r = poly(n), then any R_N-linear-algebra readout that sees only the vanishing pattern", the structural
 success probability per sketch on balanced random semiprimes is (number of non-public roots of F_q in the
 roots of f mod p)/p + (same with p, q swapped), which is Θ(1/p) on average and exactly 0 on a majority of
@@ -80,8 +82,15 @@ the processed columns are pivot columns for every p simultaneously. At column j 
 mod each p, the coordinates of column j outside the span of earlier pivot columns; they all vanish mod p
 iff j is a non-pivot column mod p. So g ∉ {1, N} exactly when j is a pivot column for some primes and not
 others; and if no such j exists the profiles coincide. ∎ (Squarefreeness is needed: N = 175, M = diag(35, 1)
-has equal profiles mod 5 and 7 but returns 35. The random-combination branch fails with probability ≤ 2^-64
-and then returns no factor.)
+has equal profiles mod 5 and 7 but returns 35. ~~The random-combination branch fails with probability ≤ 2^-64
+and then returns no factor.~~ **Corrected 2026-10-17 after r3 audit:** the proof is conditional on finding unit
+pivots. A uniform random combination of a column whose entries generate the unit ideal is uniform on R_N, so it is a unit
+with probability exactly φ(N)/N (Monte Carlo 0.3837 vs 0.3836 at N = 15015). The 64 trials therefore fail with probability
+≥ (1 − φ(N)/N)^64, which exceeds 2^-64 whenever φ(N)/N < 1/2. Examples: N = 105 (≥ 1.0·10^-17), N = 15015 (≥ 3.6·10^-14). The 2^-64 bound
+holds for odd semiprimes, where φ(N)/N ≥ 8/15. In the stuck case the routine returns no factor.)
+**Rank split vs profile split (r3 audit).** "Factor ⇔ pivot-profile split" (this proposition) is not "factor ⇔ rank split".
+[3 5] over R_15 has rank 1 mod both primes, pivots {1} mod 3 and {0} mod 5, and elimination returns 3. The two coincide for
+Krylov-type matrices such as multiplication-by-S in the power basis (M1 below).
 Euclid over Z/N (`sketch.euclid_readout`) is weaker: it returns a factor iff the *remainder-degree sequences*
 mod the primes differ (a nonunit leading coefficient is a degree drop mod some primes only). A difference in
 deg gcd(f, S) forces this (provided the *final constant remainder* is gcd-checked: our first version lacked that
@@ -106,17 +115,24 @@ all SPORADIC (§6.2–6.3). Note that "F_N ≡ 0 iff (1+X^p)^q ≡ 1+X^{pq} in R
 tautology (that is F_N mod p); the content is the reduction to F_q(α) and to q mod L_α.
 
 ### Proposition B5 — anharmonic symmetry (proved)
-For odd e, Z_e = {x ∈ F̄_p : (1+x)^e = 1 + x^e} is stable under x ↦ 1/x and x ↦ −1−x, hence under the
-order-6 anharmonic group. *Proof.* If x ≠ 0 and (1+x)^e = 1+x^e, divide by x^e: (1+1/x)^e = 1 + (1/x)^e.
+For odd e, Z_e = {x ∈ F̄_p : (1+x)^e = 1 + x^e} is stable under x ↦ 1/x (for x ≠ 0; on the punctured or projective
+domain, r3 audit) and x ↦ −1−x, hence under the order-6 anharmonic group. *Proof.* If x ≠ 0 and (1+x)^e = 1+x^e, divide by x^e: (1+1/x)^e = 1 + (1/x)^e.
 And (1 + (−1−x))^e − 1 − (−1−x)^e = (−x)^e − 1 + (1+x)^e = −x^e − 1 + (1+x)^e = 0. ∎
-*Corollary (proved, p > 3, e = q mod (p−1)):* the SPOR count on F_p is ≡ 0 (mod 6). *Proof.* The FROB
+*Corollary (proved, p > 3, e = q mod (p−1)):* the SPOR count on F_p is ≡ 0 (mod 6), **with SPOR defined as Z_e ∩ F_p minus U minus FROB**.
+(Corrected 2026-10-17 after r3 audit: B4 literally defines SPORADIC as E_α \ ⟨p⟩ for α ∉ {0, −1}, which keeps the cyclotomic orbit
+{ω, ω²}. For p = 7, q = 11, e = 5 the non-FROB roots are exactly 2, 4 = ω, ω², giving count 2. The proof below already treats {ω, ω²}
+as universal. The census excluded U, so the recorded data stand.) *Proof.* The FROB
 condition x^{e−1} = 1 = (1+x)^{e−1} is orbit-invariant (e−1 is even: (1/x)^{e−1} = 1, (1+1/x)^{e−1} =
 ((1+x)/x)^{e−1} = 1, (−1−x)^{e−1} = (1+x)^{e−1}, (1+(−1−x))^{e−1} = (−x)^{e−1} = x^{e−1}), so SPOR is a union of
 orbits. An orbit has fewer than 6 points iff it contains a fixed point of a non-identity element: the
 involutions fix {1, −1}, {−1/2, ∞}, {0, −2}, the 3-cycles fix the roots of X²+X+1. The resulting small
 orbits are {0, −1, ∞} and {ω, ω²} (universal) and {1, −2, −1/2}, which lies in Z_e iff 2^{e−1} = 1 and is then
 FROB. Hence every SPOR orbit has exactly 6 points. ∎ Observed for every prime in every census (§6.2, §6.3).
-(These are the root symmetries of the Cauchy–Mirimanoff polynomials; we believe this is classical — not verified here.)
+(These are the root symmetries of the Cauchy–Mirimanoff polynomials. **Verified 2026-10-17 (r3 audit lead, primary source read):**
+D. W. Boyd, G. Martin, M. Thom, *Squarefree values of trinomial discriminants*, LMS J. Comput. Math. 18 (2015) 148–169, §5. Lemma 5.2
+gives the same six-element action on Z/pZ ∪ {∞} with exceptional orbits {0, −1, ∞} (trivial), {1, −2, −1/2} (Wieferich) and
+{ζ, ζ^{−1}} (cyclotomic). §5 traces the S_3 action to Helou's Cauchy–Mirimanoff polynomials and to Cauchy (1839). Their polynomial
+is f_p(x) = ((x+1)^p − x^p − 1)/p, not our cross-prime F_e mod p, but the group action is identical. The symmetry is classical. Our census is new data only.)
 The count #Z_e ∩ F_p is the entry δ(1,1) of the differential spectrum of the power permutation x ↦ x^e of F_p
 (e = q mod (p−1) is a unit since q > p is prime) — a connection to the cryptographic literature on
 differential uniformity of power maps (not verified against a primary source in this session).
@@ -129,9 +145,12 @@ A_p := (Z_q ∩ F_p) \ U, which has size ≤ |A_p| *independent of r*; roots in 
 c = α^r ∈ F_p only for α with α^{r(p−1)} = 1, and were observed for ≤ 2 weights per instance (B7 table).
 Hence P(exactly one side deficient) = a_p + a_q − 2a_p a_q with a_l = |{x^r : x ∈ A_l} ∩ adm|/#adm + (ext); the
 profile-split probability is this plus P(both deficient with different gcd degrees) (a lower bound; the two
-coincided in all our data). The F_p-part satisfies a_l ≤ |A_l|/#adm **independently of r** (proved); the extension
-part is unbounded by our argument (heuristically O(r/p) weights; observed ≤ 2 per (size, r)). So "vary the degree"
-(codex's repair) cannot raise the F_p-part, and did not raise P_gap in any measured case (B7) — heuristic for the rest.
+coincided in all our data). The F_p-part satisfies a_l ≤ |A_l|/#adm (the bound is r-independent: proved). The **image**
+{x^r : x ∈ A_l}, the admissible set and the extension part all depend on r (heuristically O(r/p) weights; observed ≤ 2 per (size, r) on our instances).
+So "vary the degree" (codex's repair) cannot raise the F_p-part beyond |A_l|/#adm, and it did not raise P_gap on the measured instances (B7).
+**Corrected 2026-10-17 after r3 audit:** degree independence of the success probability is **false as a general statement**.
+For N = 209 = 11·19 and c = −1, the extension roots X^4 − X^2 + 1 | gcd(X^6 + 1, F_19) mod 11 give P_gap = 1/9 at r = 6 versus 0 at r = 2
+(`src/repair/audit_trackBD.py: n209`).
 
 ## 3. Track B question 3: weighted/paired sketches as linear algebra over R_N
 
@@ -149,8 +168,11 @@ derived their criteria.
   α_i of f mod p, Q_N becomes the Vandermonde at the points α_i^N = (α_i^q)^p, so rank Q_N mod p =
   #{distinct α_i^q} (proved for f squarefree mod p: a Vandermonde with r columns at s distinct points has rank s).
   A collision α_i^q = α_j^q needs ord(α_i/α_j) = q, i.e. q | p^D − 1 for D ≤ deg of the splitting field —
-  an order coincidence of heuristic probability O(D/q) over random p. **M3b = Q_N − I**: a kernel jump needs α^N = α (ord α | pq − 1,
-  a Fermat condition) or a coincidence among the 2r points {α_i, α_i^N}. Measured: 0 splits at ≥ 28 bits.
+  an order coincidence of heuristic probability O(D/q) over random p. **M3b = Q_N − I**: ~~a kernel jump needs α^N = α (ord α | pq − 1,
+  a Fermat condition) or a coincidence among the 2r points {α_i, α_i^N}.~~ **Corrected 2026-10-17 after r3 audit: that necessity
+  is false.** A kernel jump needs a polynomial relation g(α_i^N) = g(α_i) for all roots, not a point coincidence. Example: N = 247 = 13·19,
+  f = X³ + 5. Mod 13 the roots 2, 5, 6 have N-th powers 11, 8, 7 (six distinct points, no fixed point), yet Q_N = diag(1, −1, 1), so X² is an
+  extra kernel vector of Q_N − I (α^N = −α for every root). Mod 19, Q_N = diag(1, 5, 6): rank split, factor found. Measured: 0 splits at ≥ 28 bits.
   For X^r − c with c a unit and gcd(r, N) = 1, X^{iN} ≡ c^{⌊iN/r⌋} X^{iN mod r}: Q_N is a monomial matrix with unit
   entries, full rank on both sides; for Φ_m with gcd(m, N) = 1 it is the Galois automorphism ζ ↦ ζ^N (unimodular).
   Q_N never splits for these families (Q_N − I can: diagonal entries c^k − 1 with public k — a Pollard-type test).
@@ -223,15 +245,25 @@ c ≢ 0, −1; at c = 0, −1 both sides are 0 since q, e are odd). For e ≥ 3 
 coefficient e ≢ 0; for e = 1 (i.e. p−1 | q−1, e.g. p = 3 or Carmichael-type pairs) it is identically 0 and any
 F_N(c) with c ≢ 0, −1 (mod q) reveals p. Mod q the polynomial is F_p, of degree p − 1 < q. Hence for e ≥ 3 the
 sequence s_c = F_N(c), c = 0, 1, 2, … has linear complexity exactly e mod p and p mod q, and BM over Z/N
-(`linalg.bm_mod_N`, gcd on every nonzero discrepancy) must meet a nonunit by step ≈ 2e.
+(`linalg.bm_mod_N`, gcd on every nonzero discrepancy) ~~must meet a nonunit by step ≈ 2e~~. **Corrected 2026-10-17 after r3 audit**
+(the two infinite-sequence complexities do not imply the step). **Proposition (repair, proved).** For e ≥ 3, BM over Z/N on s_c meets a
+nonunit discrepancy at some index t ≤ p + e − 1, and every nonunit at index t ≥ 2e is ≡ 0 mod p and ≢ 0 mod q, so it reveals p.
+*Proof.* Before any nonunit, every discrepancy is a unit or 0 mod N, so the runs mod p and mod q make identical decisions. They are genuine BM
+runs over F_p and F_q with equal lengths L_t. The p-side has LC e, so after 2e terms its LFSR is final and all later p-discrepancies vanish. From index 2e on,
+the q-side LFSR has length e and generates the prefix. Let t be its first failure, where the q-discrepancy is ≠ 0 and the p-discrepancy is 0, so the nonunit reveals p.
+By Massey's lemma, any LFSR generating s_0..s_t has length ≥ t + 1 − e. The minimal q-side LFSR (length p) generates everything, so t ≤ p + e − 1.
+Such t exists because LC_q = p > e. ∎ Checked: 60/60 balanced 16/20-bit runs, max step/(p+e−1) = 0.47 (`audit_trackBD.bm_step_bound`).
+"≈ 2e" holds when the q-side has no accidental zero discrepancy near 2e. That is heuristic (≈ 1/q per step) and experimental.
 *(experimental)* The first structural nonunit occurred at step 2e (58 runs) or 2e − 1 (1 run; s_0 = 0 lets the
 profile converge early); 31/90 runs met an accidental nonunit first.
 *Window (proved, K ≥ 1).* Δ^K F_N(0) = Σ_{i≤K} (−1)^{K−i} C(K,i)[(1+i)^N − i^N] = (K+1)!·S(N, K+1)
 (Stirling numbers of the second kind; from Δ^K x^N|_{x=1} = K!S(N,K) + (K+1)!S(N,K+1)). Since Δ^K kills
 polynomials of degree < K: Δ^K F_N(0) ≡ 0 (mod p) for all K ≥ e, ≢ 0 for K = e − 1 (e ≥ 3); mod q it equals
 Δ^K F_p(0) = (K+1)!·S(p, K+1), which vanishes for K ≥ p and for K ≤ p − 1 only accidentally. So
-gcd(Δ^K F_N(0), N) = p for e ≤ K ≤ p − 1 (up to accidental q-side zeros) and = N for K ≥ p. The predicate
-"Δ^K F_N(0) ≡ 0 mod N" is the brief's prefix predicate Z(N, ·) in disguise; the nonunit window is [q − p + 1, p − 1]
+gcd(Δ^K F_N(0), N) = p for e ≤ K ≤ p − 1 (up to q-side zeros S(p, K+1) ≡ 0 mod q, whose number we do not bound; calling them
+"accidental" is a label, not a bound) and = N for K ≥ p. ~~The predicate "Δ^K F_N(0) ≡ 0 mod N" is the brief's prefix predicate Z(N, ·) in disguise;~~
+**Corrected 2026-10-17 after r3 audit: WRONG.** The Δ^K zero predicate is non-monotone. For N = 391 = 17·23 (e = 7) the gcds at K = 12, 13, 14 are
+391, 17, 391, whereas Z(N, ·) is monotone. It is a sibling of the prefix predicate, not the same predicate; the nonunit window is [q − p + 1, p − 1]
 for this generator (length ≈ 0.9p on average here: e_p/p ≤ 0.33, mean ≈ 0.11 over 1 120 instances).
 This is also a sketch: Δ^K F_N(0)/K! is the top coefficient of F_N mod ∏_{i=0}^{K}(X − i) — a *dense* modulus of
 degree K + 1 > e. Evaluating Δ^K F_N(0) for one K ≈ √N faster than Θ(K) is an open primitive (we know no
@@ -247,6 +279,10 @@ computes S_i = F_N mod (f_i, N), and outputs gcds of N with: coefficients, resul
 leading coefficients, pivots of any Gaussian elimination of matrices whose entries are fixed R_N-polynomials
 in the S_i coefficients (multiplication, Hankel, Krylov, Berlekamp-type), and BM discrepancies of sequences of
 such entries.
+**Scope (corrected 2026-10-17 after r3 audit).** As written, Model M has **no proved factoring lower bound**. "Fixed R_N-polynomials" includes
+constants and polynomials of exponential degree computed by repeated squaring, so Pollard p−1 lives inside M. Example: N = 77 and the allowed constant
+matrix [2^6 − 1] = [63] gives elimination factor 7. A meaningful lower-bound model must restrict readout degree and constants, e.g. a fixed degree and
+coefficients independent of N, and even then nothing is proved. Everything below is about the specific readouts named.
 **What is proved in M.** (0) Every M-readout mod p is a function of f mod p and the values F_q(α)^p at the
 roots α of the f_i (B1); the q-dependence is through q mod (p^d − 1) only. Readouts are *not* restricted to the
 vanishing pattern: e.g. N = 1009·1481, f = X − 60722 has F_N(c) ≡ 2 (mod 1009) and the 1×1 matrix [S − 2]
@@ -263,7 +299,7 @@ Frobenius coincidences, satisfied with probability O(#conditions/|F_{p^d}|) is *
 every experiment here, not proved).
 **Measured rate (experimental):** per random weight, (|A_p| + |A_q|)/p-ish with E|A_p| ≈ 1 (sporadic) + heavy-tailed FROB term;
 per-sketch split rate ≈ 2.3–2.6/p (B7) — i.e. the accidental-gcd null 1/p + 1/q up to a constant ≈ 1.2–1.3.
-**Excluded by M:** exponents other than N (Pollard/Williams/ECM-type smooth exponents E — these change the
+**Excluded by M (intended, not enforced by the written definition; see Scope above):** exponents other than N (Pollard/Williams/ECM-type smooth exponents E — these change the
 coincidence condition from q mod L_α to "L_α | E"); quotient degrees ≥ e_p or ≈ p (D3 needs them);
 non-polynomial-size coefficient growth; algebraic groups other than unit groups of R_N[X]/(f) (elliptic curves,
 tori with N-dependent twists); interaction with lattice methods (Track E) using partial information; any

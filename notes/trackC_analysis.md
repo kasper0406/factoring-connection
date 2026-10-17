@@ -1,5 +1,7 @@
 # Track C analysis: the factorial unit predicate
 
+> **r3 audit applied 2026-10-17 (agent `repair`).** Corrections are marked "Corrected 2026-10-17 after r3 audit". The adjudication table is in `notes/repair_adjudication.md`. Reproductions: `src/repair/audit_trackC.py`.
+
 Owner: factC. Date 2026-10-17. Companion notes: `notes/trackC_tal_audit.md` and `notes/trackC_candidates.md`.
 
 **Predicates.**
@@ -85,11 +87,11 @@ Full cards are in `notes/trackC_candidates.md`. Summary of operations and experi
 - `refuted for this model`.
 
 **M2. Power sums.** `S_e(A,B) = Σ_{A≤j<B} j^e mod N` by Faulhaber, with Bernoulli numbers mod N via gcd-checked `1/(n+1)`. Cost `O(e²)` ring operations plus `O(e)` powers. Results:
-- Proved (degree): for fixed `L`, `S_e(A, A+L) mod p` is a polynomial in `A` of degree `≤ e`. It has at most `e` zeros over all `p` residues, while a test needs zeros exactly on `Z_L` (`L` points). So `e ≥ L` is necessary. Also `e < p−1` is needed for the formula to be a degree-`e` polynomial at all. For `e ≡ 0 mod (p−1)`, `S = L − #multiples`, which is never `0 mod p` for `L < p−1`.
-- Proved (cost circularity): Faulhaber of degree `e` needs `1/k` for all `k ≤ e+1`. With `e ≥ L`, these inversions are exactly a unit test of `(e+1)!`. A failure exposes a prime `≤ e+1` (trial-division-type), and the work is at least `e ≥ L`.
+- Proved (degree): for fixed `L`, `S_e(A, A+L) mod p` is a polynomial in `A` of degree `≤ e`. It has at most `e` zeros over all `p` residues, while a test needs zeros exactly on `Z_L` (`L` points). So `e ≥ L` is necessary (for `L < p`). ~~Also `e < p−1` is needed for the formula to be a degree-`e` polynomial at all.~~ **Corrected 2026-10-17 after r3 audit:** direct binomial expansion `Σ_i (A+i)^e = Σ_k C(e,k) A^k Σ_i i^{e−k}` is always a polynomial of degree `≤ e`, for every `e` (checked at `p = 7, e = 10`). The denominator obstruction below concerns the implemented Faulhaber/Bernoulli evaluator, not every evaluator. For `e ≡ 0 mod (p−1)`, `S = L − #multiples`, which is never `0 mod p` for `L < p−1`.
+- Proved (cost circularity, *for the Faulhaber evaluator*): Faulhaber of degree `e` needs `1/k` for all `k ≤ e+1`. With `e ≥ L`, these inversions are exactly a unit test of `(e+1)!`. A failure exposes a prime `≤ e+1` (trial-division-type), and the work is at least `e ≥ L`.
 - E2 is an exact count over all `A mod p` for 8 primes `p ∈ [500, 4000]`, `L ∈ {5, 50, p/4}`, and `e ∈ {1,2,3,5,8,13, p−2, p−1, p}`. The number of zeros never exceeds `e`. The zero rate is `≤ e/p` both inside and outside `Z_L`.
 - One explained bias: odd `e` show a higher rate inside `Z_L`. That is because `Σ_{|t|≤h}(c+t)^e` with odd `e` is divisible by the center `c` (tested). The "signal" is literally `gcd(center, N)`: a single-index query, the BRIEF §2.3 trap. I classify these as STRUCTURAL-TRIVIAL.
-- `refuted for this model`.
+- `refuted for this model`. (M1 scope, r3 audit: the independence argument is for independent uniform shifts. It does not cover correlated shifts or arbitrary combinations.)
 
 **M2′. Fermat-type sums `Σ j^{N−1}`.** Mod `p`, `N−1 ≡ q−1 (mod p−1)`, so this is the case `e = q−1 mod (p−1)` of M2: a generic exponent. Direct evaluation costs `L` powerings. No signal (E2 rows `e = p−2, p` behave like generic `e`). `refuted for this model`.
 
@@ -97,7 +99,7 @@ Full cards are in `notes/trackC_candidates.md`. Summary of operations and experi
 - E3 checked agreement with `U(K)` exhaustively for composite `N < 600` plus four Carmichael numbers: 0 mismatches.
 - Cost: `⌈log2 N⌉ + popcount` products of length-`K` truncated series. At 64 bits: 93 products, `fn_model = 2.07·10^8` at `K = 2^16`, versus BGS `1.8·10^4`, 11 000× more. The slope is 1 in `K`, against 1/2 for BGS.
 - Dutta–Jindal–Pandey–Sinhababu (CCC'21) Thm 30, read by factC in the LIPIcs PDF: polylog constant-free circuits for `trunc(1/(1+x)^{d+1}, m)`, `m ∈ {d−1, d}`, imply `τ(n!) = O(log^{c+1} n)`. Their Thm 32: small truncations of all `(1+k²x)^{i/k}` give nonuniform polynomial-time factoring.
-- So a short-circuit *truncation* is at least as hard as a short factorial program. `refuted as a speedup` (it is linear); `proved equivalent`.
+- ~~So a short-circuit *truncation* is at least as hard as a short factorial program.~~ **Corrected 2026-10-17 after r3 audit:** the Dutta et al. theorems concern specified characteristic-zero truncation families. They do not establish a hardness reduction for this modular `F_N` truncation, which would need another reduction (`not yet tested`). What is `proved` here is only the equivalence of the predicate `Z(N, K)` with `U(K)`. `refuted as a speedup` (the evaluator is linear in `K`).
 
 **M4. Jacobi-symbol prefix product.** `C_N(K) = ∏_{j<K}(j/N)` (codex idea 2). It is zero iff `U(K)` fails (tested, odd `N < 400`).
 - It discards all information except three values. But the only known evaluator is `K` Jacobi symbols, or BGS followed by one Jacobi symbol.
@@ -105,9 +107,9 @@ Full cards are in `notes/trackC_candidates.md`. Summary of operations and experi
 - The characters mod N computable without factoring are the Jacobi symbol and its powers. The relevant one, `(·/N)²`, is the principal character itself, so character theory gives nothing beyond the original count.
 - `not yet tested` for a fast evaluator; no candidate operation is known.
 
-**M5. Compressed discriminant** (codex card C1). `disc(∏_{j<K}(T−j)) = ±∏_{k<K} k!²` is a unit iff `U(K)`. The recursion `D_{2m} = D_m² Res(P_m(T), P_m(T−m))²` needs the cross-resultant `∏_{j<m} P_m(j+m)`. That is `m` evaluations of a degree-`m` polynomial, `Õ(m)`. The total is `Õ(K)`, worse than BGS's `Õ(√K)` for the same predicate. `refuted as a speedup`. The missing primitive is a sub-linear resultant of shifted Pochhammers, which is the same problem again.
+**M5. Compressed discriminant** (codex card C1). `disc(∏_{j<K}(T−j)) = ±∏_{k<K} k!²` is a unit iff `U(K)`. The recursion `D_{2m} = D_m² Res(P_m(T), P_m(T−m))²` needs the cross-resultant `∏_{j<m} P_m(j+m)`. That is `m` evaluations of a degree-`m` polynomial, `Õ(m)`. The total is `Õ(K)`, worse than BGS's `Õ(√K)` for the same predicate. `refuted as a speedup` *for this evaluator*. `Õ(K)` describes the proposed evaluator; it is not a lower bound against all evaluators (r3 audit). The cross-resultant may differ by a sign, which is irrelevant after squaring. The missing primitive is a sub-linear resultant of shifted Pochhammers, which is the same problem again.
 
-**M6. Short-circuit group-law identities.** `x^K − 1`, Dickson/Lucas, division polynomials. See §3, O4: containing a long prefix forces `(p−1) | K` (resp. the group order). These reduce to Pollard `p−1` / `p+1` / ECM with their smoothness requirements. `proved` (lemma below) and known prior art.
+**M6. Short-circuit group-law identities.** `x^K − 1`, Dickson/Lucas, division polynomials. See §3, O4: for `x^K − 1`, containing a long prefix forces `(p−1) | K` (`proved`, lemma below; known prior art: Pollard `p−1`). **Corrected 2026-10-17 after r3 audit:** the "(resp. the group order)" analogues for Dickson/Lucas and division polynomials are **not proved**. An integer prefix has no specified group-compatible embedding into a torus or a curve. Moreover, annihilating a point needs its **order**, not `#E(F_p)`, to divide `K` (e.g. on `y^2 = x^3+2x+3` over `F_101`, `#E = 96`, and the point `(3,6)` has order 12, so `12·P = O` while `96 ∤ 12`). Status of those analogues: `conjectured` / `not yet tested`.
 
 ---
 
@@ -130,7 +132,8 @@ Everything below holds even if all coefficients, matrices and exponents may depe
 - In (b), the run `A = p−L+1..p` has `L` zeros. If `R ≤ L`, the same argument gives `u_A = 0` for all `A ≥ t`, including `A = p+1`. But `[p+1, p+L]` contains no multiple of `p`. Contradiction. ∎
 
 *Corollaries.*
-- Any invariant of the form `K ↦ (1+X)^K mod (N, f(X))` with `deg f = r`, `K ↦ M^K`, or a polynomial readout of degree `D` of such a state (order `≤ C(R+D, D)`) needs dimension `r ≥ p+1` to carry `U(K)`. All such invariants have `O(R^ω log K)` jump-ahead, which is exactly why they cannot carry it.
+- Any invariant of the form `K ↦ (1+X)^K mod (N, f(X))` with `deg f = r`, or `K ↦ M^K` with a linear readout, needs dimension `r ≥ p+1` to carry `U(K)`. All such invariants have `O(R^ω log K)` jump-ahead, which is exactly why they cannot carry it.
+- **Corrected 2026-10-17 after r3 audit (polynomial readouts).** For a polynomial readout of degree `D` of a dimension-`R` state, O1 bounds the **lifted dimension** `C(R+D, D)`, not `R`. Its hypothesis also needs zeros on `p < K ≤ p + C(R+D, D)`. The earlier claim "needs `R ≥ p+1`" is **wrong**. Counterexample, reproduced for `p ∈ {7, 11, 13, 31, 101, 257}`: `α` primitive in `F_{p^2}`, state `z_K = α^K` (`R = 2`), degree-4 readout `Norm(z − α^{p+1})·Norm(z − α^{p+2})`. It is nonzero for `1 ≤ K ≤ p` and zero at `K = p+1, p+2`. Interval version: state `(A, 1)` (`R = 2`) with readout `∏_{i<L}(A+i)` carries `I(A, A+L)` exactly (`p = 101, L = 7`). `audit_trackC.o1_poly_readout`.
 - AKS-style quotient sketches indexed by the exponent are in this class.
 - E4: an exhaustive check over all order-`R` sequences for `p = 5, 7` (`R ≤ 3`) and `p = 11` (`R ≤ 2`) finds 0 sequences with either pattern. The tightness example `p = 11, L = 3, R = 4` passes.
 
@@ -142,19 +145,20 @@ Everything below holds even if all coefficients, matrices and exponents may depe
 - If `g ≥ 3`, then for `k ∈ {1, 2}` the sum of `y^k` over each coset is 0. So `Σ_T y = Σ_T y² = 0`.
 - For `T = {a, …, a+L−1}`, the first equation gives `a = −(L−1)/2`. Substituting, the second becomes `L(L−1)(L+1)/12 ≡ 0`. This is impossible for `p > 3` and `2 ≤ L ≤ p−2`.
 - Hence `g ≤ 2`. Then fibres have size `≤ 2`, so `Q` needs at least `⌈(L−1)/2⌉` roots. ∎
+- **Strengthened 2026-10-17 after r3 audit (proved):** every fibre has at most two points, including the singleton fibre `{0}`. So the `L` points of `T` lie in at least `⌈L/2⌉` fibres, and **`deg Q ≥ ⌈L/2⌉`**. Exhaustive check, all primes `5 ≤ p < 100`, all `e, u, L`: 1 693 434 exact one-layer configurations, 0 violations, and the bound `⌈L/2⌉` is attained for all 986 `(p, L)` with an exact fold (`audit_trackC.o2_strengthening`).
 
 So power maps buy at most the classical `∏(x² − i²)` factor of 2. E5 (exhaustive, all primes `p < 140`, all `4 ≤ L ≤ p−2`, all `g | p−1`, all `u`; 1962 pairs) finds 0 violations. The minimum ratio is 1.007, so the bound is essentially attained by `g = 2` with a centered interval.
 
 **O2′ (k layers, fibre bound).** `proved`, elementary. If `φ` is any composition of translations and power maps `y ↦ y^{e_i}`, its fibres have size `≤ ∏ g_i` with `g_i = gcd(e_i, p−1)`. So `#roots(Q) ≥ L / ∏ g_i`.
 
-A large compression therefore needs exponents sharing a large factor with `p−1`. With exponents independent of `p` (such as `lcm(1..B)`), `g_i` is the `B`-smooth part of `p−1`: this is Pollard `p−1` structure.
+~~A large compression therefore needs exponents sharing a large factor with `p−1`.~~ **Corrected 2026-10-17 after r3 audit:** O2′ does **not** exclude large compression from many layers with bounded gcds. With `g_i ≤ G` the bound is `#roots(Q) ≥ L/G^k`, which becomes trivial at `k = ⌈log_G L⌉ = O(log L)` layers (e.g. `G = 2, L = 1000, k = 10`: bound `< 1`). With exponents independent of `p` such as `lcm(1..B)`, `g_i = gcd(lcm(1..B), p−1) = ∏_{ℓ ≤ B} ℓ^{min(v_ℓ(p−1), ⌊log_ℓ B⌋)}`, the truncated prime-power-smooth part. This is **not** always the `B`-smooth part: for `p = 257, B = 10` they are 8 and 256, and they differ for 536 of the 2 261 primes below 20 000. It is still Pollard `p−1` structure.
 
 E8 (exhaustive two-layer search, `p ≤ 31`) shows the one-layer factor 2 is not a theorem for two layers:
 - With `gcd(e_i, p−1) ≤ 2`, two layers reach about `0.6–0.8 × ⌈(L−1)/2⌉` roots, for example `p = 31, L = 29: 11` versus 14.
 - Allowing `e ≡ 0` or `(p−1)/2 mod (p−1)` (Fermat indicator, Legendre symbol) gives `O(1)` roots by small-`p` coincidences of character runs. For large `p`, runs of quadratic residues are `≪ p^{1/4+ε}` (Burgess, UNVERIFIED citation), so these cannot persist to `L ≈ √p`.
-- Status of a general k-layer bound beyond O2′: `conjectured` (`#roots(Q) ≥ c^{−k} L` for exponents with bounded gcd).
+- ~~Status of a general k-layer bound beyond O2′: `conjectured` (`#roots(Q) ≥ c^{−k} L` for exponents with bounded gcd).~~ **Corrected 2026-10-17 after r3 audit:** in that form it is already `proved` by O2′ with `c = G` (`g_i ≤ G` ⇒ `#roots ≥ G^{−k} L`). The open question is a better constant, e.g. whether two gcd-2 layers can beat `3L/8`. The C-2R cycle (`notes/repair_C2R_results.md`) answers it for the tested family. Only the character exponent `E ≡ (p+1)/2` achieves it, and that exponent encodes `p−1`.
 
-**O3 (bounded formal degree).** `proved`, trivial. If the test value is `P(A)` with `deg P < p`, then `deg P ≥ L`, because `P` needs `L` roots mod `p`. Any escape needs formal degree `≥ p`. The only cheap sources of such degree are power maps (O2, O2′), matrix or algebra powers (O1), and group laws (O4).
+**O3 (bounded formal degree).** `proved`, trivial. If the test value is `P(A)` with `deg P < p`, then `deg P ≥ L`, because `P` needs `L` roots mod `p`. ~~Any escape needs formal degree `≥ p`.~~ **Corrected 2026-10-17 after r3 audit: WRONG.** O3 only forces degree `≥ L`, and degree is not circuit size. A hypothetical short circuit for the Pochhammer polynomial `∏_{i<L}(x+i)` has degree exactly `L < p` and the exact zero set `Z_L` (checked at `p = 101, L = 10`). Large formal degree is therefore *not* a necessary feature of an escape. The cheap sources of degree `≥ p` listed (power maps, algebra powers, group laws) remain the known ones.
 
 **O4 (group-law identities contain long prefixes only via the group exponent).** `proved`.
 
@@ -165,7 +169,8 @@ E8 (exhaustive two-layer search, `p ≤ 31`) shows the one-layer factor 2 is not
 *Consequences.*
 - If `{1..L−1} ⊂ μ_K(F_p)` with `L − 1 ≥ √p + 1`, then `μ_K = F_p^*`, i.e. `(p−1) | K`. A short-circuit polynomial `x^K − 1` divisible by `∏_{i<L}(x−i)` mod `p` is exactly the Pollard `p−1` condition.
 - E6 checks all primes `p < 20000`: the maximal `L` with `[1, L]` inside a proper subgroup is `≤ 0.69(√p + 1)`.
-- The analogous statements for Dickson/Lucas (`p+1`) and elliptic division polynomials (`#E`) are `conjectured` by the same pattern. Not proved here.
+- The analogous statements for Dickson/Lucas (`p+1`) and elliptic division polynomials are `conjectured` by the same pattern, not proved here (r3 audit: treating them as proved is wrong). For curves, the correct quantity is the **order of the point**, not `#E` (example in M6). There is also no specified group-compatible embedding of an integer prefix into a curve.
+- **Novelty calibration (r3 audit, verified 2026-10-17 against the primary source).** The `√p + 1` lemma is much weaker than known results. Martin–Parvardi, *Subproducts of small residue classes*, Canad. Math. Bull. 65(1) (2022) 1–8, Corollary 3: `y(p) ≪_ε p^{1/(4√e)+ε}`, where `y(p)` is the least `y` such that subset products of `{1,…,y}` cover `(Z/pZ)^*`. They also cite Burthe: the integers up to `O_ε(p^{1/(4√e)+ε})` generate the group. Either result shows that no proper subgroup contains `[1, L−1]` once `L ≫ p^{0.152}`. So O4's consequence holds at a much shorter prefix, and O4 is **not a new asymptotic obstruction**. Numerically, the least `y` with `⟨1..y⟩ = F_p^*` is at most 29 for all `p < 20 000`, against `√p ≈ 141` (`audit_trackC.generation_bound`).
 
 **Connection to the literature.**
 - Shub–Smale 1995 (statement via Bürgisser 2009, ECCC TR06-113, read by factC): the τ-conjecture implies `P_C ≠ NP_C`. Their proof needs only that no nonzero multiples `m_n n!` have polylog `τ`.
@@ -176,14 +181,14 @@ E8 (exhaustive two-layer search, `p ≤ 31`) shows the one-layer factor 2 is not
 
 Our obstructions are unconditional, but only in restricted models. The general SLP model is equivalent to these open problems. Proving `τ`-type lower bounds there would imply new algebraic-complexity separations (Bürgisser Thm 1.1: hardness of `n!` ⇒ `τ(Per_n)` superpolynomial). So an unconditional obstruction for general SLPs is out of reach.
 
-**What an escape must have.** All of the following, simultaneously:
-1. formal degree `≥ p` (O3);
+**What an escape must have.** All of the following, simultaneously. (Item 1 withdrawn 2026-10-17 after r3 audit: O3 gives only degree `≥ L`. Item 4 is proved only for `x^K − 1`.)
+1. ~~formal degree `≥ p` (O3)~~ formal degree `≥ L` if the test is a single polynomial of degree `< p` (O3);
 2. a state that is not a fixed-dimension power `M^K` (O1);
-3. not a pure power-map composition with bounded `gcd(e_i, p−1)` (O2/O2′);
+3. not a one-layer power map, and, if a composition of `k` power maps, not one with `∏ g_i ≪ L` (O2/O2′; `k = O(log L)` layers with bounded gcd are *not* excluded by O2′);
 4. a zero set mod `p` that is additively ordered (an interval), not a union of cosets of a subgroup of some algebraic group (O4);
 5. uniformity over all hidden `p ≤ √N`, since `p`-dependent exponents or characters are unavailable.
 
-The known operations with polylog jump-ahead (matrix powers, power maps, group laws: Lucas, elliptic) all produce subgroup-structured zero sets. Interval-structured zero sets are known only from explicit products (`√`-cost via BGS) or from `p`-specific Gauss/Jacobi sums (Tal).
+The known operations with polylog jump-ahead (matrix powers, power maps, group laws: Lucas, elliptic) all produce subgroup-structured zero sets (`proved` only for `x^K − 1` and linear readouts; heuristic for the others). Interval-structured zero sets are known only from explicit products (`√`-cost via BGS) or from `p`-specific Gauss/Jacobi sums (Tal).
 
 The single most precise open question: **is there a family of polylog-size division-free SLPs over `Z[x]`, uniform in `L`, whose value at `x` is `0 mod p` iff `x mod p ∈ Z_L`, for every prime `p` in a dyadic range above `L`?** This is the mod-`p` form of Shub–Smale's Theorem 2.
 

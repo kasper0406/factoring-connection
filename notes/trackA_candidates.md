@@ -38,7 +38,7 @@ No novelty claims. Status labels per AGENT_RULES.
 
 ### A-4. Parity / descent through `X^{2M} - s^2 = (X^M - s)(X^M + s)`
 - **Mechanism:** a child vanishes iff the parent is odd/even in `Y`. Test this from the parent at `±s` (two rank-`M` algebras) or in the tower `R_N[s]/(s^2-c)[X]/(X^M - s)`.
-- **Result:** proved identities (`descent_split`, NonUnit-checked). The rank is `M + M = 2M` (A1 Cor. 2, tight). Obtaining `P(-c)` from `P(c)` needs a primitive `2M`-th root of unity (rank `M` extension). **Status: refuted for this model (no saving).**
+- **Result:** proved identities (`descent_split`, NonUnit-checked). The rank is `M + M = 2M`. A1 Cor. 2 (corrected 2026-10-17) gives only `≥ min(2M, i+1)` (`≥ p+1` in the balanced family), so this construction is not proved optimal. Obtaining `P(-c)` from `P(c)` needs a primitive `2M`-th root of unity (rank `M` extension). **Status: refuted for this model (no saving).**
 
 ### A-5. Section-value gcd ("pure classes")
 - **Mechanism:** `gcd(S_{r,M}(c), N)` is a proper factor when class `r` is hit by only one prime's Lucas support.
