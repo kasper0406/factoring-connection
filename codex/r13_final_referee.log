@@ -1,0 +1,3818 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14f6e-ecb7-7e31-b6e7-31b92bd14686
+--------
+user
+You are a fresh, independent referee. You have not seen this work before. Read /home/knielsen/code/factoring-connection/notes/dcltheorem_results.md in full, and the code in src/dcltheorem/ (read-only; put any scratch under /tmp/claude-r13/).
+
+The paper-level claim is Theorem D′: a deterministic algorithm, given only N, that runs in N^{1/6+5ε/6}(log N)^{O(1)} bit operations on every n-bit input, never outputs a wrong answer, and factors all but an O(N^{−ε}) fraction of S_n = {pq : p < q ≤ 2p primes}.
+
+Tasks:
+1. Check the complete proof as a journal referee would. Pay special attention to:
+   (a) the order-gap closure: the exact collision mod p; the four-band pigeonhole for a band coprime to q−1; the criterion ord_q(2) | (A−B)(p−1) − ℓ²δ; and the counting argument that this is rare, including the count of q with small ord_q(2) and the CRT count. Is its exceptional rate really O(N^{−ε}) with the stated parameters?
+   (b) the large-sieve exceptional set, including the normalization;
+   (c) the bit-complexity of every step, including product/remainder trees, root extraction for ℓ ≡ 3 (mod 4), collision detection and gcd extraction;
+   (d) "never outputs a wrong answer";
+   (e) any hidden dependence on p or q.
+   Give a verdict per step (CORRECT / GAP / WRONG) with a concrete counterexample or missing bound. Independently test the key lemmas numerically with your own exact code, at small n, without importing the repo's lemma code.
+2. Prior art: try hard to obtain McKee–Pinch, "Old and new deterministic factoring algorithms", ANTS-II 1996, §5 (Royal Holloway repository, Springer, Google Scholar copies, or citing papers that quote it). Does it contain anything like this? Also search for "almost all" or average-case deterministic factoring results below N^{1/5}.
+3. Overall verdict: ACCEPT / ACCEPT WITH FIXES / REJECT, with an itemized list.
+Output Markdown.
+
+codex
+I’ll read the full note and implementation, then independently check the delicate lemmas and research the prior art. I’ll keep the repository read-only and put scratch work under `/tmp/claude-r13/`.
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g 'notes/dcltheorem_results.md' -g 'src/dcltheorem/**'" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection
+src/dcltheorem/harness.py
+src/dcltheorem/experiments.py
+src/dcltheorem/hh_baseline.py
+src/dcltheorem/stage3.py
+src/dcltheorem/__pycache__/__init__.cpython-313.pyc
+src/dcltheorem/__pycache__/harness.cpython-313.pyc
+src/dcltheorem/__pycache__/algorithm.cpython-313.pyc
+src/dcltheorem/__pycache__/analyze.cpython-313.pyc
+src/dcltheorem/__pycache__/experiments.cpython-313.pyc
+src/dcltheorem/__pycache__/hh_baseline.cpython-313.pyc
+src/dcltheorem/__pycache__/stage3.cpython-313.pyc
+src/dcltheorem/__pycache__/params.cpython-313.pyc
+src/dcltheorem/__init__.py
+src/dcltheorem/analyze.py
+src/dcltheorem/algorithm.py
+src/dcltheorem/params.py
+notes/dcltheorem_results.md
+
+exec
+/bin/bash -lc 'cat notes/dcltheorem_results.md' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+
+Agent `dcltheorem`, 2026-10-18. Pre-registration: `notes/dcltheorem_prereg.md` (commit
+`3550e24`, before any pre-registered run). Code: `src/dcltheorem/`. Tests:
+`tests/test_dcltheorem.py`. Raw data: `experiments/raw/dcltheorem_*.jsonl`. Summary:
+`experiments/analysis/dcltheorem_summary.json`. Inputs: notes/multimod_results.md (Thm D) and
+the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
+
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; GPT-6.1-sol referee and independent Opus critic: ACCEPT WITH FIXES,
+  fixes applied).** For each ε ∈ (0, 1/60] there is a deterministic algorithm with these
+  properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs a wrong answer;
+  - it factors all but an O(N^{−ε}) fraction of S_n = {pq : p < q ≤ 2p primes, n bits},
+    counted by pairs.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 896 runs, with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve). We found no prior formulation of the combination, nor any unconditional
+  sub-1/5 almost-all result. McKee–Pinch 1996 §5 is unread.
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; independent Opus critic review in §7).** Fix ε ∈ (0, 1/60]. There
+are n₀(ε) and absolute constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of
+§2 has the following properties.
+- (i) **Correctness.** On every input it outputs a nontrivial divisor of N or FAIL.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+*Proof.*
+- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+- Multiply by γ^{−(g_lo + j*m)}. ∎
+
+**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+
+*Proof.*
+- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+  and 2^{q−1} ≡ 1 (mod q). ∎
+
+**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+gcd(f(G), N) = p.
+
+*Proof.*
+- f(G) = ∏_i (G − γ^i).
+- The factor i = i* vanishes mod p (Lemma 3).
+- Mod q, no factor vanishes, by definition, and Z/q is a field.
+- So p | f(G) and q ∤ f(G). ∎
+
+**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+Y⁴ > √2P, at least one of the four blocks is clean for q.
+
+*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+
+Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+for ε < 1/4 and n large.
+
+**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+
+*Proof.*
+- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+
+**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+
+  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+
+*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+
+**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+
+  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+
+*Proof.*
+- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+  ε < 1/7 and n large.
+- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+  N₀ + Q² for an interval of N₀ integers) with Q = 2^{k+1}Y gives
+  |U| ≤ (N₀ + Q²)/J, J = Σ_{d≤Q} μ²(d)∏_{ℓ|d} ω(ℓ)/(ℓ − ω(ℓ)).
+- Only the prime terms are needed, and they follow directly. For each ℓ ∈ 𝒫_k,
+  Parseval and Cauchy–Schwarz give Σ_{a=1}^{ℓ−1}|S(a/ℓ)|² ≥ ω/(ℓ−ω)·|U|². The fractions
+  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+- Keeping only d = 1 and d = ℓ ∈ 𝒫_k: J ≥ |V| Σ_{ℓ∈𝒫_k} 1/ℓ.
+- By the PNT in the progression 3 mod 4 (effective for the fixed modulus 4),
+  Σ_{ℓ∈𝒫_k} 1/ℓ ≥ (1/2 − o(1))·ln 2/ln(2^{k+1}Y) ≥ c′/n.
+- |V| ≥ H²/2 for large H, since the coprime pairs number (6/π² + o(1))H². ∎
+
+**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+F_k(q) be the set of integers p ∈ [P/2, P] such that some (v, ℓ) ∈ V × 𝒫_k has ℓ | Bp − Aq
+and d | (A−B)(p−1) − ℓ²δ for some |δ| < m̄_k. Then
+
+  |F_k(q)| ≤ Σ_{v,ℓ,|δ|<m̄_k} (P·H/(2·2^kY·T) + 1)
+           ≤ 2|V||𝒫_k| m̄_k·(PH/(2^{k+1}YT) + 1).
+
+*Proof.*
+- Fix (v, ℓ, δ) and let g′ = gcd(A − B, d) ≤ H (A ≠ B, |A − B| < H).
+- The congruence (A−B)(p−1) ≡ ℓ²δ (mod d) is either unsolvable, or holds exactly on one
+  class of p mod d/g′.
+- ℓ ∤ d, because clean means ℓ ∤ q − 1. With p ≡ AqB^{−1} (mod ℓ), CRT gives one class mod
+  ℓd/g′ ≥ ℓd/H.
+- An interval of length P/2 contains ≤ P H/(2ℓd) + 1 such integers. ∎
+
+## 4. Proof of Theorem D′
+
+**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+
+**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+targets and m ≤ m̄_k).**
+
+| step | operations | bit cost |
+|---|---|---|
+| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+| babies γ^i | m mults | O(m M(n)) |
+| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+
+With m = m̄_k (or any m that minimises the list count) the list is
+m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+
+  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+
+because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+
+**Arithmetic model (referee dclt_1, item 4).**
+- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+  tree, the Kronecker-substituted polynomial products and the gcds.
+- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+  wider than 2n + ⌈log₂(D+1)⌉.
+- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+  No inverse of a nonunit is ever needed.
+- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+  `powN` charges binary square-and-multiply counts.
+
+**(iii) Exceptional set.**
+- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+  (Lemma 6). If
+  - (a) d = ord_q(2) > T,
+  - (b) p ∉ U_{k(q)}(q), and
+  - (c) p ∉ F_{k(q)}(q),
+
+  then DCL-det succeeds.
+- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+  at the latest. It may output q, or output earlier from another block; both are fine.
+- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+
+The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+
+- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+  fixed interval, integers counted, no short-interval prime counts.
+- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+
+    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+
+  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+
+**Corollary D″.**
+- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+
+**Where the constants come from.**
+- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+
+## 5. Answers to the audit (notes/codex_r12_dcl_audit.md) and to the work items
+
+| audit item | resolution here | status |
+|---|---|---|
+| (1) normalisation of Thm D's exceptional set (short I_q, prime counts in I_q) | Lemma 9 + §4(iii) E_b: one fixed interval [P/2, P], all integer survivors counted, summed over prime q, divided by \|S_n\| ≍ P²/n² | proved |
+| (2) deterministic roots | band primes ℓ ≡ 3 (mod 4), root a^{(ℓ+1)/4}; sieve loses a constant (PNT mod 4) | proved |
+| (3) bit complexity: balanced integer product tree; uncharged Bluestein powers | balanced tree (GMP products) in `all_but_one`; full cost table §4(ii). The HH baseline's Bluestein chirp powers are now charged (`stage3.harvey_find_collisions`) | proved (table); implemented |
+| (4) **base order of γ = β^L** (the substantive gap; 1333 example) | **Closed without any order lemma for β^L.** No order is needed mod p (Lemma 3 is an identity). Mod q, the four disjoint bands guarantee a clean band (Lemma 6), so ord_q(γ) = ord_q(2) (Lemma 7). Two-sided true giants are counted directly (Lemma 10), and small ord_q(2) is rare by an elementary count (Lemma 8). Extra failures are O(2^{−εn}), not o(1). The 1333 example (L built from 3, 5, 7 \| p−1, q−1) cannot occur in a clean band, and an L-power image of size 2 mod **p** is harmless here. | proved (+ GPT-6.1-sol referee dclt_1: "closes the previous order/extraction gap") |
+| (5) quantifier mismatch | §1: D′ concerns the true factor counted over S_n. It does not give full-candidate coverage for almost every N | stated |
+| (6) prior art | §10 | no prior formulation found by us; McKee–Pinch §5 unread |
+| (7) experiments used greedy Hmax=12, not Thm D's design | §8 runs the theorem's algorithm (4 bands, ℓ ≡ 3 mod 4, base 2, fixed V(H), n-only Y) with an n-only H-schedule (λ₀ ≈ 3, i.e. H ≍ √n). The bridge: D′'s algorithm is defined for any n-only (H, Y), and the schedule H ≍ √n lies *below* Corollary D″'s range (a > 0, H = n^{1+a}). There the proved bound n²/H² is vacuous, so the experiment tests the algorithm, the lemmas and the cost, not the proved rate. The heuristic rate e^{−λ} is what the data reflect. | disclosed |
+
+Work items not covered above:
+- **Small-factor removal (item 3).** Unnecessary. On S_n both factors exceed P/2 > 16Y ≥ every
+  band prime, and the target is only S_n. Off the population the algorithm may FAIL (allowed),
+  and band primes dividing N are output.
+- **One-sided collisions (item 2, last bullet).** These are Lemmas 4, 5, 7 and 10. The weight
+  (1,1) is excluded because it is always two-sided.
+- **Restricting to M ∤ p−1 (item 2).** Not needed. Cleanliness is needed only for q − 1, and is
+  handled by trying 4 bands rather than by an exceptional set. Order mod p is irrelevant.
+- **Harvey–Hittmeir 2026 / Oznovich–Volk (item 2, first bullet).** Not used. The audit notes they
+  produce an arbitrary large-order element, not one in the L-power image. The clean-band argument
+  makes the L-power harmless mod q and irrelevant mod p.
+
+## 6. Where the result stops (precise remaining gaps)
+
+1. **Worst case (every N in S_n) is NOT proved.** Three independent obstacles remain:
+   - (a) **coverage** of every p, which is multimod's DCH (conjectured; the large sieve gives
+     only "almost all");
+   - (b) **q with small ord_q(2)** (≤ N^{1/4−ε}). The proof simply discards them (E_a). A
+     worst-case version would need a base with large order mod the specific prime q *on a
+     clean band*. Harvey–Hittmeir 2026 gives a large-order element mod N, but large order
+     mod N does not give large order mod q;
+   - (c) pairs where **every** covering true giant is FULL (E_c). These are rare on average,
+     but not excluded for a fixed N.
+2. **The exceptional rate is limited by the large sieve.** The proved fraction is n²/H², so
+   N^{−ε} costs H = N^{ε/2}, i.e. N^{5ε/6} in the cost. The Poisson heuristic, which the
+   multimod and §8 data support, predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} at
+   polylog cost, but it is **conjectured**.
+3. **Ratios q/p > 2** are not covered (multimod §3.9).
+4. **Finite sizes.** At 40–80 bits HH is 2.3–4.9× cheaper in E (§8). The measured slope is
+   smaller (0.203 vs 0.226), and an extrapolated crossover lies near 130 bits. That is **not a
+   claim**: the slope difference partly reflects the H-schedule.
+5. **Below 1/6.** multimod Thm A (enlarged sumset model) is unchanged. Nothing here goes
+   below 1/6.
+
+## 7. Review
+
+- **GPT-6.1-sol referee dclt_1** (`codex/dclt_1.out`, read-only, own exact scripts).
+  - Verdict: "the clean-band argument closes the previous order/extraction gap … Lemmas 1–10
+    mathematically sound". It reproduced the checks independently: 131/131 clean non-FULL
+    covering targets gave gcd = p, and 62/62 certified pairs succeeded.
+  - Required fixes, all applied:
+    - (1) "m ≤ m̄_k suffices" was false for cost. m = m̄_k or the endpoint-competitive rule is now
+      mandatory (§2.2 step 3).
+    - (2) Missing T′ in the giant-generation cost, plus the m-grid and small inversions, are now
+      charged (§4 table).
+    - (3) T(T+1) in E_a.
+    - (4) Fast-arithmetic assumptions stated; E declared a proxy (§4).
+    - (5) Float-free parameters, a GMP exponent product tree, and a finite-size guard. These are
+      post-run hygiene; recorded runs are reproduced exactly (§9).
+    - (6) McKee–Pinch §5 priority left unresolved.
+  - It also gave an exact example where the enlarged δ-range |δ| < m would be wrong for the
+    *equivalence*. The note uses the enlargement only as a counting superset.
+- **Independent Opus critic** (read-only; own implementation from the §2 spec; adversarial
+  inputs p², primes, 3·x, 2^35+1, 2^36−1; 380 pairs including 180 with ord_q(2) ≤ 3000 to force
+  FULL events).
+  - Found: 0 lemma violations; 812 clean covering targets with 108 FULL, closed form = direct
+    check every time; certified ⇒ success in 301/301.
+  - It confirmed pre-registration compliance: freeze commit 13:45:02, runs from 13:45:07;
+    post-run edits are provably inert.
+  - **VERDICT: ACCEPT WITH FIXES.** All fixes were write-up level and are applied:
+    - §0/§7/§8.3 filled; R-e decided by its frozen predictions;
+    - HH exclusions 16 → 17;
+    - E_block0 slopes added;
+    - R-d range stated;
+    - T′ bound written as Σ W_τ/m;
+    - theorem_design H/Y conventions aligned;
+    - n^5 → (2n)^{14/3} in E_c.
+
+## 8. Experiments (pre-registered; notes/dcltheorem_prereg.md, commit 3550e24)
+
+The population is uniform pairs from S_n (`harness.sample_pair`). The algorithm sees N only.
+Classes are assigned post hoc by the harness.
+
+### 8.1 lemma (n = 28–40, 60 pairs each, design C1, all 4 blocks recorded)
+
+- 240/240 correct and factored.
+- **0 violations** of Lemmas 1–4 on every covering target.
+- **0 violations** of the Lemma 5/7 equivalence (gcd = p ⇔ not FULL, exact δ-range) on 3002
+  clean covering targets.
+- 240/240 certified, and certified ⇒ success held in all 240.
+
+### 8.2 oper (C1, C3: 32 pairs per n; C2: 8 pairs per n ≤ 64; all 4 blocks always run)
+
+| n | C1 H/Y | C1 success (block 0 alone) | med E_first C1 | med E_full C1 | med E_first C3 | HH med E | C1/HH | list C1 block 0 | list HH | first-hit class C1 (P/Q/ACC) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 40 | 9/81 | 32/32 (32) | 1.03e5 | 1.07e6 | 1.27e5 | 2.12e4 | 4.87 | 679 | 252 | 16/10/6 |
+| 48 | 9/206 | 32/32 (30) | 3.26e5 | 2.91e6 | 3.35e5 | 7.57e4 | 4.31 | 1650 | 742 | 14/15/3 |
+| 56 | 10/503 | 32/32 (31) | 1.01e6 | 9.01e6 | 1.05e6 | 2.96e5 | 3.40 | 4266 | 2223 | 19/8/5 |
+| 64 | 11/1461 | 32/32 (31) | 4.08e6 | 3.75e7 | 2.85e6 | 9.43e5 | 4.33 | 13223 | 6570 | 17/14/1 |
+| 72 | 11/3097 | 32/32 (31) | 1.06e7 | 8.84e7 | 9.63e6 | 3.43e6 | 3.10 | 30610 | 19414 | 18/10/4 |
+| 80 | 11/7804 | 32/32 (31) | 2.76e7 | 2.36e8 | 2.54e7 | 1.18e7 | 2.35 | 71004 | 58133 | 16/16/0 |
+
+- C2 (heuristic full coverage, H = 19–27): 32/32 succeed. Median E_first is
+  4.4e5 / 1.7e6 / 5.8e6 / 2.1e7 at n = 40 / 48 / 56 / 64.
+- HH: 96/96 succeed. 17 runs are excluded from E as pre-registered (collision-only rule): 16
+  exact-match early exits and 1 gcd_baby_order exit. *(Corrected from "16" after the Opus
+  critic; the slope is 0.226 either way.)*
+
+**Slopes of log₂(median) over n = 48–80:**
+
+| quantity | C1 | C3 | C2 (48–64) | HH |
+|---|---|---|---|---|
+| E_first | **0.203** | 0.196 | 0.227 | **0.226** (E, collision runs) |
+| E_block0 | 0.203 | 0.196 | 0.227 | — |
+| E_full (4 blocks) | 0.200 | 0.202 | 0.237 | — |
+| list elements (block 0 / HH list) | 0.171 | 0.163 | 0.189 | 0.196 |
+
+**Decisions (pre-registered rules):**
+- **R-a holds.** 0 incorrect outputs out of 656 DCL runs. 0 lemma violations. Every certified
+  instance factored.
+- **R-b: "DCL-det has a smaller measured exponent".** slope_C1 − slope_HH = −0.023 ≤ −0.01.
+  The predicted ranges held: C1 0.203 ∈ [0.16, 0.21] and HH 0.226 ∈ [0.18, 0.23].
+- **R-c holds.** C1/HH > 1 at every size (4.9 → 2.35). A naive extrapolation of the slope gap
+  puts the crossover near 130 bits; this is not a claim.
+- **R-d holds.** C2's slope is over 48–64 only (C2 was run only to 64 bits): 0.227. It is
+  ≥ HH − 0.005 both against HH over 48–80 (0.226) and over 48–64 (0.227). So there is no
+  advantage at heuristically full coverage.
+- **R-e holds.** All three frozen predictions held (§8.3).
+
+**Classes and null.**
+- In 768 C1 blocks, 83 first hits were ACCIDENTAL, against Σ min(1, null) = 164.
+  - The null is the expected number of coincidences, #giants·m·(1/ord_p γ + 1/ord_q γ).
+  - Hits are therefore below the null bound, consistent with random gcd coincidences in a
+    γ whose order mod p is reduced. Such hits are allowed: any gcd ∈ (1, N) is a factor.
+- C3 has 137 accidental first hits against a null of 221; C2 has 24 against 107.
+- STRUCTURAL_Q (q found through the swapped-role lock) is common. The theorem uses only
+  STRUCTURAL_P.
+
+**Interpretation.**
+- The measured E slopes exceed the list slopes by ≈ 0.03 for both algorithms. That is the
+  polylog (log d per poly coefficient, n-bit handles) drifting across 48–80 bits.
+- C1's list slope (0.171) matches multimod's R1 model slope (0.171), now with the theorem's
+  design, end to end.
+- C1's E_full/E_first ≈ 8.5. The 4-band worst-case guarantee costs a constant ≈ 8–10 at these
+  sizes: higher bands have more primes, hence more targets.
+
+### 8.3 exc (C1 certificate components, 1000 pairs per n; no stage 3)
+
+| n | certified | block 0 clean (pred. 1 − Σ_{P₀}1/(ℓ−1)) | block 0 uncovered (e^{−λ₀}) | block 0 certified | all 4 blocks uncovered | FULL / covering targets | median bits ord_q(2) / q |
+|---|---|---|---|---|---|---|---|
+| 48 | 1.000 | 0.939 (0.944) | 0.040 (0.049) | 0.900 | 0 | 5 / 11130 | 24 / 25 |
+| 64 | 1.000 | 0.956 (0.954) | 0.021 (0.024) | 0.935 | 0 | 0 / 13321 | 32 / 33 |
+| 80 | 1.000 | 0.976 (0.963) | 0.033 (0.046) | 0.943 | 0 | 0 / 11273 | 40 / 41 |
+| 96 | 1.000 | 0.969 (0.969) | 0.028 (0.029) | 0.942 | 0 | 0 / ≈1.1·10⁴ | 48 / 49 |
+
+**R-e (frozen predictions): all three hold.**
+- Certified ≥ 0.99 at every n: observed 1.000.
+- Block-0 clean within ±0.02 of 1 − Σ1/(ℓ−1): the largest deviation is +0.013 at 80 bits.
+- FULL ≤ 1% of covering targets: observed ≤ 0.045%.
+
+Uncovered fractions sit at or below the Poisson value e^{−λ₀}, as in multimod. ord_q(2) is
+typically ≈ q/2, far above T. With four blocks, no sampled pair was uncovered in all blocks.
+At these sizes the three exceptional sets E_a, E_b and E_c of §4(iii) are empirically
+negligible (heuristic e^{−λ} regime; the proved rate needs H = n^{1+a}).
+
+## 9. Reproduction
+
+```
+.venv/bin/python -m pytest -q tests/test_dcltheorem.py
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments config
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments lemma
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments hh
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments oper
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments exc
+PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments summarize
+```
+
+**Post-run code changes** (referee dclt_1 hygiene). These are:
+- an integer-only m-grid, `(119*m)//100+1` in place of `int(m*1.19)+1`;
+- an integer cube root in `theorem_design`;
+- GMP products in the exponent tree;
+- a finite-size guard ℓ | AB.
+
+None changes any recorded run. Re-running 12 recorded C1/C3 instances (n = 40, 56; seeds
+100–102) reproduced E_full and the first-success block exactly.
+
+## 10. Prior art (GPT-6.1-sol r12 + dclt_1 + own WebSearch; curated)
+
+- **Ingredients (all prior art).**
+  - Weighted Fermat / Lehman searches: Lawrence 1895, Lehman 1974.
+  - Modulus-squared lock: McKee 1999 (heuristic N^{1/4}); HH 2022 Prop. 3.3.
+  - Shared one-sided collision search with multipoint evaluation: Harvey 2021,
+    Alg. 4.1–4.2.
+  - Arithmetic large sieve: Montgomery 1968; Montgomery–Vaughan 1973.
+  - Elementary counting of primes with small ord_q(2): divisors of 2^k − 1.
+- **Exponent below 1/5 for almost all bounded-ratio prime pairs (unconditional, deterministic):
+  no prior result found** by GPT-6.1-sol (two independent sweeps) or by our searches.
+  - The known bounds are 1/5 (Harvey 2021; HH 2022; Gao et al. 2512.19076 for balanced N,
+    log factors only).
+  - The conditional route is 1/6 under Umans–Wang's conjecture; He–Sahai 2026 refute its
+    rank-1 form.
+  - Almost-all unrestricted semiprimes are easy by trial division (Crişan–Erban counting), but
+    that does not apply to S_n.
+- **The clean-band trick** (disjoint prime bands so that one is coprime to q − 1, plus large
+  ord_q(2) for almost all q, plus a direct count of two-sided true giants) was not found in
+  the factoring papers checked.
+- **Unresolved:** McKee–Pinch 1996 (ANTS II) §5, a generalisation of Lehmer's Fermat
+  speed-up. Neither GPT-6.1-sol nor we could obtain the chapter. The Royal Holloway
+  repository record we reached is McKee's separate Euler-method paper.
+- **Claim limited to:** "no prior formulation found by us" of the combination: prime band near
+  N^{1/6}H^{−1/3}, all small primitive weights with N-determined roots, the prime-pair
+  large-sieve exceptional set, cofactor-powered handles sharing one baby list, and the
+  clean-band one-sidedness argument.
+
+## 11. Candidate card
+
+- **Mechanism.** DCL with one-sided extraction certified on a clean band (§2).
+  **Representation.** (Z/N)^*, base 2.
+- **Factor feature.** g = (Bp + Aq − c)/ℓ² in a whole-range window; the true giant equals
+  γ^{i*} mod p exactly.
+- **Outcome.**
+  - Proved: Theorem D′ and Corollary D″.
+  - Experimentally supported: correctness, every lemma, measured E slope 0.203 vs HH 0.226 at
+    48–80 bits, with HH 2.3–4.9× cheaper in absolute terms.
+  - Refuted for this model: none.
+  - Conjectured: e^{−λ} exceptional rate (Poisson), DCH (worst case).
+- **Scoped obstruction.**
+  - The large-sieve exceptional rate costs N^{5ε/6} for N^{−ε}.
+  - Worst case needs DCH plus large order mod the specific prime q on a clean band.
+  - Below 1/6 is blocked in the sumset model (multimod Thm A).
+- **Most promising open question.** Improve the exceptional-rate/cost trade-off beyond the
+  large sieve's n²/H².
+  - For a fixed q, the p-interval has length P ≈ Y³, so any sieve of level ≤ P sees only
+    products of ≤ 3 band primes. One-variable upper-bound sieves (Selberg, large sieve)
+    therefore cannot beat ≈ 1/λ. That is the reason for the loss.
+  - Averaging over q gives a two-variable sieve over the box (classes Bp ≡ Aq mod ℓ, density
+    |V|/ℓ) with level up to P². That allows products of up to ~6 band primes and plausibly a
+    polynomial gain O((n/H²)^{c}) with c > 1 (**conjectured, not yet tested**).
+  - A Poisson-type e^{−cλ} bound would give N^{1/6}·polylog cost with N^{−ε} exceptions
+    (**conjectured**).
+
+exec
+/bin/bash -lc 'ls -la; rg --files /home/knielsen -g AGENTS.md 2>/dev/null | head -60; wc -l src/dcltheorem/*.py tests/test_dcltheorem.py' in /home/knielsen/code/factoring-connection
+ succeeded in 169ms:
+total 208
+drwxrwxr-x 13 knielsen knielsen  4096 Oct 18 14:34 .
+drwxrwxr-x 28 knielsen knielsen  4096 Oct 17 20:35 ..
+dr-xr-xr-x  2 knielsen knielsen    40 Oct 18 14:34 .agents
+dr-xr-xr-x  2 knielsen knielsen    40 Oct 18 14:34 .aws
+dr-xr-xr-x  2 knielsen knielsen    40 Oct 18 14:34 .codex
+drwxrwxr-x  8 knielsen knielsen  4096 Oct 18 14:33 .git
+-rw-rw-r--  1 knielsen knielsen    26 Oct 17 22:20 .gitignore
+drwxrwxr-x  3 knielsen knielsen  4096 Oct 17 20:43 .pytest_cache
+drwxrwxr-x  5 knielsen knielsen  4096 Oct 17 20:36 .venv
+-rw-------  1 knielsen knielsen 38746 Oct 17 20:35 BRIEF.md
+-rw-rw-r--  1 knielsen knielsen  9417 Oct 17 22:50 NEXT_STEPS.md
+-rw-rw-r--  1 knielsen knielsen  3335 Oct 17 22:34 README.md
+-rw-rw-r--  1 knielsen knielsen 65043 Oct 18 10:01 REPORT.md
+-rw-rw-r--  1 knielsen knielsen 20941 Oct 18 14:33 STATUS.md
+drwxrwxr-x  3 knielsen knielsen  4096 Oct 18 14:33 codex
+drwxrwxr-x  5 knielsen knielsen  4096 Oct 17 20:35 experiments
+drwxrwxr-x  3 knielsen knielsen  4096 Oct 18 13:47 notes
+-rw-rw-r--  1 knielsen knielsen 12929 Oct 17 22:55 references.md
+drwxrwxr-x 19 knielsen knielsen  4096 Oct 18 13:35 src
+drwxrwxr-x  3 knielsen knielsen  4096 Oct 18 13:43 tests
+/home/knielsen/code/cmp-backend-6bf2ea6/AGENTS.md
+/home/knielsen/code/cranemoonpress-platform/AGENTS.md
+/home/knielsen/ts-exit-pm/repo/AGENTS.md
+/home/knielsen/code/ml/triton/AGENTS.md
+/home/knielsen/code/ml/era-of-experience/AGENTS.md
+/home/knielsen/code/ml/parallel-ss-dep/AGENTS.md
+/home/knielsen/code/dev/xla/xla/AGENTS.md
+/home/knielsen/code/ml/flash-linear-attention/AGENTS.md
+/home/knielsen/code/cranemoonpress-book-catalogue/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-wt-draft-guard/AGENTS.md
+/home/knielsen/code/upstream/xla/xla/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-wt-mtp-rollback/AGENTS.md
+/home/knielsen/code/upstream/xla/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-src/AGENTS.md
+/home/knielsen/code/cmp-deps/order/node_modules/fastify/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-book-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-background-production-live/AGENTS.md
+/home/knielsen/code/cmp-wt/catalogue-proposal/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-platform/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-pipeline/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-designer-live/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-wc-plugin/AGENTS.md
+/home/knielsen/code/cmp-wt/e2e-flakes/AGENTS.md
+/home/knielsen/code/cmp-wt/async-config/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-designer/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-email-provider/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-watchdog/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-wc-plugin/AGENTS.md
+/home/knielsen/code/cmp-deps/render/node_modules/fastify/AGENTS.md
+/home/knielsen/code/cmp-wt/bootstrap-conditions/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-designer/AGENTS.md
+/home/knielsen/code/cmp-wt/book-pipeline/AGENTS.md
+/home/knielsen/code/cmp-wt/async-gaps/AGENTS.md
+/home/knielsen/code/cmp-wt/alert-names/AGENTS.md
+/home/knielsen/code/cmp-wt/backend-shipment/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-platform-kb/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-book-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-backend-main/AGENTS.md
+/home/knielsen/code/cmp-wt/async-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/async-enable/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-platform/AGENTS.md
+/home/knielsen/code/cmp-wt/fix-kb-tools-followups/AGENTS.md
+/home/knielsen/code/cmp-wt/designer-samples/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-workflow-gotchas/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-async-production-design/AGENTS.md
+/home/knielsen/code/cmp-wt/cover-fix-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-async/AGENTS.md
+    1 src/dcltheorem/__init__.py
+  314 src/dcltheorem/algorithm.py
+  127 src/dcltheorem/analyze.py
+  198 src/dcltheorem/experiments.py
+  165 src/dcltheorem/harness.py
+   46 src/dcltheorem/hh_baseline.py
+  184 src/dcltheorem/params.py
+  158 src/dcltheorem/stage3.py
+   96 tests/test_dcltheorem.py
+ 1289 total
+
+exec
+/bin/bash -lc 'cat src/dcltheorem/params.py src/dcltheorem/algorithm.py' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+"""Public parameter schedules for the deterministic DCL algorithm (DCL-det).
+
+MODEL / PUBLIC code: everything here is a function of the bit length n (and
+of the public knobs eps / lam_target).  Nothing depends on N's factors, and
+-- important for the sieve proof (notes/dcltheorem_results.md, Lemma 9) --
+nothing depends on N itself: the prime bands and the weight set are fixed by n.
+
+Design D = (n, H, Y, K blocks):
+  V      = {(A, B) : 1 <= A, B <= H, gcd(A, B) = 1, A != B}
+  P_k    = {l prime : l == 3 (mod 4), 2^k Y < l <= 2^(k+1) Y},  k = 0..K-1
+  mbar_k = an n-only upper bound for every whole-range window width in block k
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from math import ceil, gcd, isqrt, log
+from typing import Dict, List, Optional, Tuple
+
+
+def primes_upto(n: int) -> List[int]:
+    if n < 2:
+        return []
+    s = bytearray([1]) * (n + 1)
+    s[0] = s[1] = 0
+    for i in range(2, isqrt(n) + 1):
+        if s[i]:
+            s[i * i::i] = bytearray(len(s[i * i::i]))
+    return [i for i in range(n + 1) if s[i]]
+
+
+def weight_set(H: int) -> List[Tuple[int, int]]:
+    """V(H): positive coprime pairs, A != B (the symmetric pair (1,1) is two-sided
+    by construction -- see Lemma 4 -- and is excluded)."""
+    return [(A, B) for A in range(1, H + 1) for B in range(1, H + 1)
+            if A != B and gcd(A, B) == 1]
+
+
+def iroot2_floor(x: int) -> int:
+    return isqrt(x)
+
+
+def icbrt(x: int) -> int:
+    """floor(x^(1/3)) exactly."""
+    lo, hi = 0, 1 << (x.bit_length() // 3 + 2)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if mid ** 3 <= x:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+
+def pow2_frac(n: int, num: int, den: int) -> int:
+    """floor(2^(n*num/den)) exactly (integer root of a power of two)."""
+    e_num = n * num
+    # 2^(e_num/den) = (2^e_num)^(1/den)
+    x = 1 << e_num
+    lo, hi = 1, 1 << (e_num // den + 2)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if mid ** den <= x:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+
+@dataclass
+class Design:
+    n: int
+    H: int
+    Y: int
+    K: int = 4
+    mod4: bool = True                      # primes l == 3 (mod 4) only
+    label: str = ""
+    V: List[Tuple[int, int]] = field(default_factory=list)
+    bands: List[List[int]] = field(default_factory=list)
+    mbar: List[int] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.V = weight_set(self.H)
+        top = (1 << self.K) * self.Y
+        ps = primes_upto(top)
+        self.bands = []
+        for k in range(self.K):
+            lo, hi = (1 << k) * self.Y, (1 << (k + 1)) * self.Y
+            band = [l for l in ps if lo < l <= hi and l > 2 and (not self.mod4 or l % 4 == 3)]
+            self.bands.append(band)
+        self.mbar = [span_bound(self.n, self.H) // (b[0] ** 2) + 2 if b else 0
+                     for b in self.bands]
+
+    def lam(self, k: int = 0) -> float:
+        """Expected sieve multiplicity of block k: |V| * sum_{l in P_k} 1/l (display)."""
+        return len(self.V) * sum(1.0 / l for l in self.bands[k])
+
+    def summary(self) -> Dict:
+        return {"n": self.n, "H": self.H, "Y": self.Y, "K": self.K, "mod4": self.mod4,
+                "label": self.label, "nV": len(self.V),
+                "band_sizes": [len(b) for b in self.bands],
+                "band_ranges": [[b[0], b[-1]] if b else None for b in self.bands],
+                "lam": [round(self.lam(k), 4) for k in range(self.K)],
+                "mbar": self.mbar}
+
+
+def span_bound(n: int, H: int) -> int:
+    """n-only upper bound for max_v (Hi_v - Lo_v) over N < 2^n:
+    Hi_v <= (B + sqrt2 A) sqrt N + 2H + 2 and Lo_v >= 0, so
+    span <= (1 + sqrt 2) H 2^(n/2) + 2H + 3  <=  (5/2) H 2^(n/2) + 2H + 3."""
+    return (5 * H * (pow2_frac(n, 1, 2) + 1)) // 2 + 2 * H + 3
+
+
+# ---------------------------------------------------------------------------
+# Theorem schedule (notes/dcltheorem_results.md, section 2)
+# ---------------------------------------------------------------------------
+def theorem_design(n: int, eps_num: int, eps_den: int) -> Design:
+    """H = n * floor(2^(eps n/2)), Y = ceil(floor(2^(n/6)) / floor(H^(1/3))), K = 4,
+    l == 3 (mod 4).  (The note writes ceil(n 2^(eps n/2)) and ceil(2^(n/6) H^(-1/3));
+    these differ by constant factors, which the proof allows.)"""
+    H = n * pow2_frac(n * eps_num, 1, 2 * eps_den)       # ~ n 2^(eps n / 2)
+    h3 = icbrt(H)
+    Y = max(3, -(-pow2_frac(n, 1, 6) // max(1, h3)))
+    # (integer-only; H uses floor(2^(eps n/2)) and Y uses floor(H^(1/3)):
+    #  constant-factor conventions, allowed by the proof)
+    return Design(n=n, H=H, Y=Y, K=4, mod4=True, label=f"theorem eps={eps_num}/{eps_den}")
+
+
+# ---------------------------------------------------------------------------
+# Finite-size schedule (pre-registered; notes/dcltheorem_prereg.md)
+# ---------------------------------------------------------------------------
+def _expected_cost(n: int, H: int, Y: int, V, band: List[int]) -> int:
+    """n-only estimate of the block-0 list cost m + sum ceil(W/m) with one
+    expected target per (v, l) (each (v, l) has 1 root on average), windows
+    W_v(l) = span_v/l^2 + 1 with span_v computed at N_ref = 3 * 2^(n-2)."""
+    Nref = 3 << (n - 2)
+    P = isqrt(Nref)
+    widths = []
+    for (A, B) in V:
+        hi = max(B * P + A * Nref // P, B * isqrt(Nref // 2) + A * Nref // isqrt(Nref // 2)) + 1
+        lo = isqrt(4 * A * B * Nref)
+        sp = hi - lo
+        for l in band:
+            widths.append(sp // (l * l) + 2)
+    if not widths:
+        return 1 << 62
+    best = None
+    m = 4
+    while m <= 4 * max(widths):
+        c = m + sum(-(-w // m) for w in widths)
+        if best is None or c < best:
+            best = c
+        m = int(m * 1.19) + 1
+    return best
+
+
+def schedule_design(n: int, lam_target: float, K: int = 4, mod4: bool = True,
+                    label: str = "") -> Design:
+    """Smallest H whose block-0 multiplicity |V| sum 1/l reaches lam_target, with
+    Y minimising the n-only expected block-0 cost on a 2^(1/4) grid."""
+    H = 2
+    while True:
+        V = weight_set(H)
+        y0 = pow2_frac(n, 1, 6) / max(1.0, H ** (1.0 / 3))
+        best = None
+        for j in range(-12, 13):
+            Y = max(H + 1, int(y0 * 2 ** (j / 4)))
+            ps = [l for l in primes_upto(2 * Y) if l > Y and (not mod4 or l % 4 == 3)]
+            if not ps:
+                continue
+            c = _expected_cost(n, H, Y, V, ps)
+            if best is None or c < best[0]:
+                best = (c, Y, ps)
+        c, Y, ps = best
+        lam = len(V) * sum(1.0 / l for l in ps)
+        if lam >= lam_target:
+            return Design(n=n, H=H, Y=Y, K=K, mod4=mod4,
+                          label=label or f"schedule lam>={lam_target:.3f}")
+        H += 1
+
+
+def lam_full(n: int) -> float:
+    """Full-coverage multiplicity target ln(#prime candidates) + 2 = ln(P / ln P) + 2."""
+    P = 2.0 ** (n / 2)
+    return log(P / log(P)) + 2.0
+"""OPERATIONAL: DCL-det, the deterministic divisor-cover Lehman algorithm.
+
+Receives only N and a public Design (a function of the bit length n; see
+params.py).  Never uses p, q, phi(N), group orders or any factoring /
+primality routine.  Base beta = 2 (fixed, no randomness).  Every inversion
+mod N is gcd-checked, every nontrivial gcd is returned.
+
+Algorithm (notes/dcltheorem_results.md, section 2), for each block k = 0..K-1:
+  1. L = prod_{l in P_k} l^2;  u_l = 2^{L/l^2} for all l by a balanced
+     all-but-one exponent tree;  gamma = 2^L.
+  2. For each l in P_k and (A, B) in V: a = A N B^{-1} mod l; if a is a
+     nonzero square mod l (Euler), r = a^{(l+1)/4} (l == 3 mod 4) and the
+     roots are {r, l - r}.  For each root: s = N r^{-1} mod l^2,
+     c = (B r + A s) mod l^2, whole-range window [g_lo, g_hi] from the exact
+     integer bounds Lo_v <= B p + A N/p <= Hi_v on the balanced range, and
+     giants  G_{tau,j} = u_l^{B + A N - c} gamma^{-(g_lo + j m)},
+     0 <= j < ceil(W/m).
+  3. Babies gamma^i, 0 <= i < m;  f(X) = prod (X - gamma^i);  f(G) for every
+     giant by a remainder tree;  d = gcd(f(G), N);  output d if 1 < d < N.
+Output None (FAIL) if no block produced a factor.
+
+Cost counters (Metrics): mulN (multiplications mod N, square-and-multiply
+counted exactly), mul_small (mults mod l or l^2), bigmul_bits (sum of operand
+bit lengths of integer products in the exponent product tree), poly_cost /
+poly_ops (stage 3; see stage3.py), gcdN, invN, isqrt_ops.
+"""
+from __future__ import annotations
+
+from math import gcd, isqrt
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import flint
+import gmpy2
+
+from src.common.metrics import Metrics
+from .params import Design
+from .stage3 import eval_baby_poly_at_giants
+
+
+class Found(Exception):
+    def __init__(self, d: int, how: str):
+        self.d, self.how = d, how
+
+
+def _gcd_check(x: int, N: int, met, how: str) -> int:
+    met.inc("gcdN")
+    g = gcd(x % N, N)
+    if 1 < g < N:
+        raise Found(g, how)
+    return g
+
+
+def powN(x: int, e: int, N: int, met) -> int:
+    """x^e mod N, e >= 0; charges bits(e)-1 squarings + popcount(e)-1 mults."""
+    if e <= 0:
+        return 1 % N if e == 0 else None  # negative exponents are not used
+    met.inc("mulN", e.bit_length() + bin(e).count("1") - 2)
+    return pow(x, e, N)
+
+
+def pow_small(x: int, e: int, M: int, met) -> int:
+    met.inc("mul_small", max(0, e.bit_length() + bin(e).count("1") - 2))
+    return pow(x, e, M)
+
+
+# ---------------------------------------------------------------------------
+# balanced all-but-one exponent tree
+# ---------------------------------------------------------------------------
+def int_product_tree(xs: Sequence[int], met) -> List[List[int]]:
+    # gmpy2/GMP multiplication (FFT for large operands), so the tree costs
+    # O(M(log L) log #leaves) bit operations; CPython ints would be Karatsuba.
+    levels = [[gmpy2.mpz(x) for x in xs]]
+    while len(levels[-1]) > 1:
+        cur, nxt = levels[-1], []
+        for i in range(0, len(cur) - 1, 2):
+            met.inc("bigmul_bits", cur[i].bit_length() + cur[i + 1].bit_length())
+            nxt.append(cur[i] * cur[i + 1])
+        if len(cur) % 2:
+            nxt.append(cur[-1])
+        levels.append(nxt)
+    return levels
+
+
+def all_but_one(base: int, exps: Sequence[int], N: int, met) -> Tuple[List[int], int]:
+    """([base^{E/e_j} for j], E) with E = prod exps, via the balanced product
+    tree: a node holding base^{E/prod(node)} passes base^{E/prod(node)*prod(sib)}
+    to each child.  Per level the exponent bit lengths sum to <= log2 E + #nodes."""
+    levels = int_product_tree(exps, met)
+    E = int(levels[-1][0])
+    vals = [base % N]
+    for lev in range(len(levels) - 2, -1, -1):
+        cur = levels[lev]
+        parent_count = len(levels[lev + 1])
+        new = [None] * len(cur)
+        for pi in range(parent_count):
+            li, ri = 2 * pi, 2 * pi + 1
+            if ri < len(cur):
+                new[li] = powN(vals[pi], int(cur[ri]), N, met)
+                new[ri] = powN(vals[pi], int(cur[li]), N, met)
+            else:
+                new[li] = vals[pi]          # odd node carried up unchanged
+        vals = new
+    return vals, E
+
+
+# ---------------------------------------------------------------------------
+# windows (exact integers)
+# ---------------------------------------------------------------------------
+def balanced_range(N: int) -> Tuple[int, int]:
+    """Integers p with p^2 < N <= 2 p^2 lie in [a0, b0]."""
+    a0 = isqrt(N // 2)
+    while 2 * a0 * a0 < N:
+        a0 += 1
+    b0 = isqrt(N)
+    return a0, b0
+
+
+def f_bounds(N: int, A: int, B: int, a0: int, b0: int, met) -> Tuple[int, int]:
+    """Lo <= B x + A N / x <= Hi for all real x in [a0, b0]:  Lo = floor(2 sqrt(ABN))
+    (AM-GM), Hi = max over the endpoints of ceil(F) (convexity)."""
+    met.inc("isqrt_ops")
+    lo = isqrt(4 * A * B * N)
+    hi = max(B * x + -(-(A * N) // x) for x in (a0, b0))
+    return lo, hi
+
+
+# ---------------------------------------------------------------------------
+# one block
+# ---------------------------------------------------------------------------
+_NONRES: Dict[int, int] = {}
+
+
+def sqrt_prime(a: int, l: int, met) -> int:
+    """A square root of the nonzero square a mod the public prime l.
+    l == 3 (mod 4): a^{(l+1)/4}.  Otherwise Tonelli--Shanks with the least
+    quadratic nonresidue z (found by Euler's criterion; the search is charged
+    once per l -- its total over a band is O(#band) on average by Erdos 1961 /
+    Pollack 2012; only the secondary design mod4=False uses this branch)."""
+    if l % 4 == 3:
+        return pow_small(a, (l + 1) // 4, l, met)
+    if l not in _NONRES:
+        z = 2
+        while pow_small(z, (l - 1) // 2, l, met) != l - 1:
+            z += 1
+        _NONRES[l] = z
+        met.inc("nonres_search", z - 1)
+    z = _NONRES[l]
+    Q, S = l - 1, 0
+    while Q % 2 == 0:
+        Q //= 2
+        S += 1
+    c, x, t, R = pow_small(z, Q, l, met), pow_small(a, (Q + 1) // 2, l, met), pow_small(a, Q, l, met), S
+    while t != 1:
+        i, tt = 0, t
+        while tt != 1:
+            tt = tt * tt % l
+            i += 1
+            met.inc("mul_small")
+        b = pow_small(c, 1 << (R - i - 1), l, met)
+        x, c, t, R = x * b % l, b * b % l, t * b * b % l, i
+        met.inc("mul_small", 4)
+    return x
+
+
+def build_targets(N: int, design: Design, k: int, met) -> List[Dict]:
+    band = design.bands[k]
+    _NONRES.clear()                       # nonresidue searches are charged per run
+    a0, b0 = balanced_range(N)
+    bounds = {v: f_bounds(N, v[0], v[1], a0, b0, met) for v in design.V}
+    out = []
+    for l in band:
+        if N % l == 0:
+            raise Found(l, "band_prime")
+        l2 = l * l
+        Nl = N % l
+        for (A, B) in design.V:
+            met.inc("vl_pairs")
+            if (A * B) % l == 0:          # finite-size guard (never triggers when Y > H)
+                continue
+            a = A * Nl * pow(B, -1, l) % l
+            met.inc("mul_small", 3)
+            if pow_small(a, (l - 1) // 2, l, met) != 1:
+                continue
+            r = sqrt_prime(a, l, met)
+            lo, hi = bounds[(A, B)]
+            for root in sorted({r, l - r}):
+                s = N * pow(root, -1, l2) % l2
+                c = (B * root + A * s) % l2
+                met.inc("mul_small", 4)
+                g_lo = -((-(lo - c)) // l2)
+                g_hi = (hi - c) // l2
+                out.append({"A": A, "B": B, "l": l, "r": root, "c": c,
+                            "g_lo": g_lo, "W": max(1, g_hi - g_lo + 1)})
+    return out
+
+
+def choose_m(targets: List[Dict], mbar: int) -> int:
+    """Public choice of the baby length: minimise m + sum ceil(W/m) over a
+    geometric grid in [1, max W] (never above max W; max W <= mbar)."""
+    if not targets:
+        return 1
+    Wmax = max(t["W"] for t in targets)
+    best, m = None, 1
+    while True:
+        mm = min(m, Wmax)
+        c = mm + sum(-(-t["W"] // mm) for t in targets)
+        if best is None or c < best[0]:
+            best = (c, mm)
+        if mm == Wmax:
+            break
+        m = (119 * m) // 100 + 1            # integer-only grid (no float overflow)
+    return best[1]
+
+
+def run_block(N: int, design: Design, k: int, met, record: bool = False,
+              m_override: Optional[int] = None) -> Dict:
+    band = design.bands[k]
+    if not band:
+        return {"factor": None, "status": "empty_band"}
+    met.start(f"block{k}")
+    targets = build_targets(N, design, k, met)
+    m = m_override or choose_m(targets, design.mbar[k])
+    sq = [l * l for l in band]
+    u_list, L = all_but_one(2, sq, N, met)
+    u = dict(zip(band, u_list))
+    gamma = powN(u_list[0], sq[0], N, met)              # 2^L
+    _gcd_check(gamma, N, met, "gamma")
+    met.inc("invN")
+    ginv = pow(gamma, -1, N)
+    gm_inv = powN(ginv, m, N, met)
+    Nmod = N
+    giants, meta = [], []
+    # per-l precomputation w_l = u_l^N (charged once per band prime used), then
+    # G = u^{B + A N - c} gamma^{-g_lo} = w^A * u^{B - c + l^2} * gamma^{-(g_lo + 1)}
+    # (u^{l^2} = gamma), all exponents nonnegative and O(log(H l^2)) bits.
+    w = {}
+    for t in targets:
+        if t["l"] not in w:
+            w[t["l"]] = powN(u[t["l"]], N, N, met)
+    for ti, t in enumerate(targets):
+        A, B, l, c, g_lo, W = t["A"], t["B"], t["l"], t["c"], t["g_lo"], t["W"]
+        G = (powN(w[l], A, N, met) * powN(u[l], B - c + l * l, N, met) % N
+             * powN(ginv, g_lo + 1, N, met) % N)
+        met.inc("mulN", 2)
+        for j in range(-(-W // m)):
+            giants.append(G)
+            meta.append((ti, j))
+            G = G * gm_inv % N
+            met.inc("mulN")
+    met.inc("giants", len(giants))
+    met.inc("babies", m)
+    met.inc("targets", len(targets))
+    vals = eval_baby_poly_at_giants(N, gamma, m, giants, met)
+    res = {"factor": None, "status": "none", "m": m, "n_targets": len(targets),
+           "n_giants": len(giants), "L_bits": L.bit_length()}
+    gs = []
+    for h, v in enumerate(vals):
+        met.inc("gcdN")
+        g = gcd(v, N)
+        if record:
+            gs.append(g)
+        if 1 < g < N and res["factor"] is None:
+            ti, j = meta[h]
+            res.update({"factor": g, "status": "collision", "hit": {"target": ti, "j": j}})
+            if not record:
+                break
+    if record:
+        res["targets"] = targets
+        res["giant_meta"] = meta
+        res["giant_gcds"] = gs
+        res["gamma"] = gamma
+        res["u"] = u
+    met.stop(f"block{k}")
+    return res
+
+
+def dcl_det(N: int, design: Design, met: Optional[Metrics] = None, early_exit: bool = True,
+            record: bool = False, blocks: Optional[Sequence[int]] = None) -> Dict:
+    """Deterministic DCL.  Returns {"factor": d or None, "block": k, "blocks": [...]}.
+    With early_exit, stops after the first block that yields a factor; the
+    per-block metrics are recorded either way (prefix b{k}_)."""
+    met = met or Metrics()
+    out = {"factor": None, "status": "fail", "block": None, "blocks": []}
+    try:
+        _gcd_check(2, N, met, "even")
+        if N % 2 == 0:
+            return {"factor": 2, "status": "even", "block": None, "blocks": []}
+    except Found as e:
+        return {"factor": e.d, "status": "gcd_" + e.how, "block": None, "blocks": []}
+    for k in (blocks if blocks is not None else range(design.K)):
+        bm = Metrics()
+        try:
+            r = run_block(N, design, k, bm, record=record)
+        except Found as e:
+            r = {"factor": e.d, "status": "gcd_" + e.how}
+        r["k"] = k
+        r["met"] = bm.to_record()
+        met.merge(bm)
+        out["blocks"].append(r)
+        if r["factor"] and out["factor"] is None:
+            out.update({"factor": r["factor"], "status": r["status"], "block": k})
+            if early_exit:
+                break
+    return out
+
+
+def metric_E(counts: Dict[str, int], n: int) -> int:
+    """Pre-registered bit-operation proxy in n-bit-modular-multiplication units:
+    E = mulN + mul_small + poly_cost + ceil(log2 n) * gcdN + ceil(bigmul_bits / n)
+        + ceil(log2 n) * invN."""
+    lg = max(1, (n - 1).bit_length())
+    return (counts.get("mulN", 0) + counts.get("mul_small", 0) + counts.get("poly_cost", 0)
+            + lg * (counts.get("gcdN", 0) + counts.get("invN", 0))
+            + -(-counts.get("bigmul_bits", 0) // n))
+
+exec
+/bin/bash -lc 'cat src/dcltheorem/stage3.py src/dcltheorem/hh_baseline.py' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+"""Instrumented polynomial collision detection over Z/N (any N; fmpz_mod_poly).
+
+OPERATIONAL helpers: see only N and ring elements.  Only multiplication and
+division by MONIC polynomials are used, so everything is valid over the ring
+Z/N with N composite.  No gcd/xgcd/factor of polynomials over Z/N is called.
+
+Cost charging (notes/dcltheorem_prereg.md, metric E):
+  poly_cost += (d + 1) * ceil(log2(d + 2))   for every product / remainder whose
+               result (product) or dividend (remainder) has degree d
+  (FFT-model M(d) in Z/N-multiplication equivalents).  Scalar multiplications
+  mod N are charged in mulN; gcds with N in gcdN.
+"""
+from __future__ import annotations
+
+from math import gcd
+from typing import List, Optional, Tuple
+
+import flint
+
+
+def _pc(d: int) -> int:
+    d = max(0, d)
+    return (d + 1) * max(1, (d + 1).bit_length())
+
+
+def poly_mul(a, b, met):
+    met.inc("poly_ops")
+    met.inc("poly_cost", _pc(a.degree() + b.degree()))
+    return a * b
+
+
+def poly_rem(a, b, met):
+    met.inc("poly_ops")
+    met.inc("poly_cost", _pc(a.degree()))
+    if a.degree() < b.degree():
+        return a
+    return a % b
+
+
+def tree_levels(ctx, pts: List[int], met):
+    """Product tree of the linear polynomials X - x (bottom level first)."""
+    levels = [[ctx([(-x), 1]) for x in pts]]
+    while len(levels[-1]) > 1:
+        cur, nxt = levels[-1], []
+        for i in range(0, len(cur) - 1, 2):
+            nxt.append(poly_mul(cur[i], cur[i + 1], met))
+        if len(cur) % 2:
+            nxt.append(cur[-1])
+        levels.append(nxt)
+    return levels
+
+
+def product_poly(ctx, pts: List[int], met):
+    return tree_levels(ctx, pts, met)[-1][0]
+
+
+def multipoint(ctx, f, pts: List[int], met) -> List[int]:
+    """f(x) for all x in pts by a remainder tree (monic divisors only)."""
+    if not pts:
+        return []
+    levels = tree_levels(ctx, pts, met)
+    rems = [poly_rem(f, levels[-1][0], met)]
+    for lev in range(len(levels) - 2, -1, -1):
+        cur, new = levels[lev], []
+        for i, node in enumerate(cur):
+            new.append(poly_rem(rems[i // 2], node, met))
+        rems = new
+    out = []
+    for r in rems:
+        c = r.coeffs()
+        out.append(int(c[0]) if c else 0)
+    return out
+
+
+def eval_baby_poly_at_giants(N: int, gamma: int, m: int, giants: List[int], met) -> List[int]:
+    """f(G) for f(X) = prod_{0<=i<m} (X - gamma^i), for every giant G.
+    Baby powers gamma^i are charged (m-1 multiplications)."""
+    ctx = flint.fmpz_mod_poly_ctx(N)
+    babies, x = [], 1
+    for i in range(m):
+        babies.append(x)
+        x = x * gamma % N
+        met.inc("mulN")
+    f = product_poly(ctx, babies, met)
+    return multipoint(ctx, f, giants, met)
+
+
+# ---------------------------------------------------------------------------
+# Harvey 2021 Alg. 4.1 (product tree over giants, Bluestein over the
+# geometric babies alpha^i), fully charged -- used for the HH baseline.
+# ---------------------------------------------------------------------------
+class _FactorFound(Exception):
+    def __init__(self, d: int, how: str):
+        self.d, self.how = d, how
+
+
+def harvey_find_collisions(N: int, alpha: int, kappa: int, vals: List[int], met) -> Optional[int]:
+    """Same interface/semantics as src.cycloharvey.operational.find_collisions,
+    but over fmpz_mod_poly (any N) and with every scalar multiplication charged:
+    the chirp powers alpha^{C(i,2)} are generated by the recurrences
+    alpha^{C(i+1,2)} = alpha^{C(i,2)} * alpha^i (two multiplications per index)."""
+    if not vals:
+        return None
+    ctx = flint.fmpz_mod_poly_ctx(N)
+    f = product_poly(ctx, vals, met)
+    n = f.degree()
+    fc = [int(c) for c in f.coeffs()] + [0] * (n + 1 - len(f.coeffs()))
+    met.inc("gcdN")
+    if gcd(alpha, N) != 1:
+        g = gcd(alpha, N)
+        if 1 < g < N:
+            met.set("hit", None)
+            return g
+        return None
+    ainv = pow(alpha, -1, N)
+    met.inc("invN")
+
+    def chirp(base: int, count: int) -> List[int]:
+        # base^{C(k,2)} for k = 0..count-1:  C(k+1,2) = C(k,2) + k
+        out, cur, bk = [], 1, 1        # cur = base^{C(k,2)}, bk = base^k
+        for k in range(count):
+            out.append(cur)
+            cur = cur * bk % N
+            bk = bk * base % N
+            met.inc("mulN", 2)
+        return out
+
+    h = chirp(alpha, max(kappa, n + 2))           # alpha^{C(i,2)}, i >= 0
+    fpj = []
+    # alpha^{C(j+1,2)} = h[j+1]
+    for j in range(n + 1):
+        fpj.append(h[j + 1] * fc[j] % N)
+    met.inc("mulN", n + 1)
+    # g_k = alpha^{-C(k,2)} for k in [-n, kappa): C(-k,2) = C(k+1,2)
+    gpos = chirp(ainv, max(kappa, n + 2))         # ainv^{C(k,2)}, k >= 0
+    gk = [gpos[k + 1] for k in range(n, 0, -1)] + [gpos[k] for k in range(kappa)]
+    F = ctx(fpj)
+    G = ctx(gk)
+    P = poly_mul(F, G, met)
+    pc = [int(c) for c in P.coeffs()]
+    ai = 1
+    for i in range(kappa):
+        idx = i + n
+        s = pc[idx] if idx < len(pc) else 0
+        e = h[i] * s % N
+        met.inc("mulN")
+        met.inc("gcdN")
+        g = gcd(e, N)
+        if g > 1:
+            for hh, v in enumerate(vals):
+                met.inc("gcdN")
+                g2 = gcd((v - ai) % N, N)
+                if 1 < g2 < N:
+                    met.set("hit", [i, hh])
+                    return g2
+        ai = ai * alpha % N
+        met.inc("mulN")
+    return None
+"""Baseline: Harvey--Hittmeir 2022 Alg. 4.3 (signsplit's operational V0, imported
+unchanged), with its stage 3 (Harvey Alg. 4.1) replaced at call time by
+stage3.harvey_find_collisions -- the same algorithm over fmpz_mod_poly (works
+for N >= 2^64) with every scalar multiplication charged.  OPERATIONAL (sees N,
+public M, m0, seed only).  Parameter choice: min over M in the primorials of
+signsplit.accounting.best_shared (list count), as in signsplit.
+
+Counter mapping to metric E: signsplit's Ring charges rn_mul (square-and-multiply
+exact) and gcd/inv; stage 3 charges mulN/gcdN/invN/poly_cost.
+"""
+from __future__ import annotations
+
+from typing import Dict
+
+import src.signsplit.hh as sshh
+from src.signsplit.accounting import best_shared
+
+from .stage3 import harvey_find_collisions
+
+PRIMORIALS = (1, 2, 6, 30, 210, 2310, 30030)
+
+
+def hh_params(N: int) -> Dict:
+    best = None
+    for M in PRIMORIALS:
+        b = best_shared(N, M, "V0")
+        if best is None or b["work"] < best["work"]:
+            best = b
+    return best
+
+
+def hh_run(N: int, params: Dict, seed: int = 0) -> Dict:
+    orig = sshh.find_collisions
+    sshh.find_collisions = harvey_find_collisions
+    try:
+        r = sshh.hh_search(N, params["M"], params["m0"], "V0", seed=seed)
+    finally:
+        sshh.find_collisions = orig
+    return r
+
+
+def hh_E(counts: Dict[str, int], n: int) -> int:
+    lg = max(1, (n - 1).bit_length())
+    return (counts.get("rn_mul", 0) + counts.get("mulN", 0) + counts.get("poly_cost", 0)
+            + lg * (counts.get("gcd", 0) + counts.get("gcdN", 0) + counts.get("inv", 0)
+                    + counts.get("invN", 0)))
+
+exec
+/bin/bash -lc 'cat src/dcltheorem/__init__.py src/dcltheorem/harness.py src/dcltheorem/experiments.py src/dcltheorem/analyze.py tests/test_dcltheorem.py' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+"""dcltheorem: deterministic end-to-end divisor-cover Lehman (DCL-det)."""
+"""HARNESS / DIAGNOSTIC code for dcltheorem: uses p, q and group orders.
+Never imported by algorithm.py / params.py / stage3.py.
+
+* sample_pair(n, seed): uniform sample from S_n = {(p, q) primes: p < q <= 2p,
+  2^(n-1) <= pq < 2^n}  (rejection from a box, so uniform over pairs).
+* predict(N, p, q, design): the theorem's success certificate per block --
+  clean block (no band prime divides q-1), covering targets (l | Bp - Aq),
+  and for each covering target whether its true giant is FULL mod q, both by
+  the closed form of Lemma 7 (d | (A-B)(p-1) - l^2 delta, d = ord_q 2) and
+  directly.
+* classify(...): STRUCTURAL_P / STRUCTURAL_Q / ACCIDENTAL for an operational hit.
+"""
+from __future__ import annotations
+
+import random
+from math import gcd, isqrt
+from typing import Dict, List, Optional, Tuple
+
+import gmpy2
+from sympy import n_order
+
+from .params import Design
+
+
+def is_prime(x: int) -> bool:
+    return bool(gmpy2.is_prime(x, 50))
+
+
+def sample_pair(n: int, seed: int) -> Tuple[int, int, int]:
+    rng = random.Random(f"dcltheorem-pair|n={n}|{seed}")
+    plo = isqrt(1 << (n - 2))
+    phi = isqrt((1 << n) - 1) + 1
+    qlo = isqrt(1 << (n - 1))
+    qhi = isqrt(1 << (n + 1)) + 1
+    while True:
+        p = rng.randint(plo, phi)
+        q = rng.randint(qlo, qhi)
+        if not (p < q <= 2 * p):
+            continue
+        N = p * q
+        if not ((1 << (n - 1)) <= N < (1 << n)):
+            continue
+        if is_prime(p) and is_prime(q):
+            return N, p, q
+
+
+def ord2(x: int) -> int:
+    return int(n_order(2, x))
+
+
+def clean_blocks(q: int, design: Design) -> List[bool]:
+    return [all((q - 1) % l for l in band) for band in design.bands]
+
+
+def covering(p: int, q: int, design: Design, k: int) -> List[Tuple[int, int, int]]:
+    """(A, B, l) with l | Bp - Aq in block k (the theorem's coverage)."""
+    out = []
+    for l in design.bands[k]:
+        for (A, B) in design.V:
+            if (B * p - A * q) % l == 0:
+                out.append((A, B, l))
+    return out
+
+
+def full_closed_form(p: int, q: int, A: int, B: int, l: int, m: int, d: int,
+                     istar: int = None) -> bool:
+    """Lemma 7: the true giant is FULL iff d | (A-B)(p-1) - l^2 delta for some
+    delta = i' - i* with 0 <= i' < m.  With istar=None the SUPERSET |delta| < m
+    is used (the event bounded in the proof of Lemma 10)."""
+    X = (A - B) * (p - 1)
+    l2 = l * l
+    lo, hi = (-(m - 1), m - 1) if istar is None else (-istar, m - 1 - istar)
+    g = gcd(l2, d)
+    if X % g:
+        return False
+    dd = d // g
+    delta0 = (X // g) * pow(l2 // g, -1, dd) % dd if dd > 1 else 0
+    # is there delta == delta0 (mod dd) in [lo, hi]?
+    first = lo + ((delta0 - lo) % dd)
+    return first <= hi
+
+
+def predict(N: int, p: int, q: int, design: Design, ms: List[int]) -> Dict:
+    """Theorem certificate per block (needs the m actually used per block)."""
+    d = ord2(q)
+    cl = clean_blocks(q, design)
+    blocks = []
+    for k in range(design.K):
+        cov = covering(p, q, design, k)
+        fulls = [full_closed_form(p, q, A, B, l, ms[k], d) for (A, B, l) in cov] if ms[k] else []
+        blocks.append({"clean": cl[k], "n_cover": len(cov),
+                       "n_full": sum(fulls), "cert": cl[k] and any(not f for f in fulls)})
+    return {"ord_q2": d, "blocks": blocks, "certified": any(b["cert"] for b in blocks)}
+
+
+def classify_hit(N: int, p: int, q: int, block_res: Dict) -> str:
+    """For the giant that produced the factor in a recorded block."""
+    hit = block_res.get("hit")
+    if not hit:
+        return "GCD_" + block_res.get("status", "?")
+    t = block_res["targets"][hit["target"]]
+    A, B, l, c, g_lo, W = t["A"], t["B"], t["l"], t["c"], t["g_lo"], t["W"]
+    m = block_res["m"]
+    j = hit["j"]
+    lo, hi = g_lo + j * m, g_lo + j * m + m - 1
+    f = block_res["factor"]
+    if (B * p + A * q - c) % (l * l) == 0 and lo <= (B * p + A * q - c) // (l * l) <= hi and f == p:
+        return "STRUCTURAL_P"
+    if (B * q + A * p - c) % (l * l) == 0 and lo <= (B * q + A * p - c) // (l * l) <= hi and f == q:
+        return "STRUCTURAL_Q"
+    return "ACCIDENTAL"
+
+
+def lemma_checks(N: int, p: int, q: int, design: Design, block_res: Dict) -> Dict:
+    """Verify Lemmas 1-7 on every covering target of a recorded block:
+    L1 integrality of g, L3 window, L2 G == gamma^{i*} (mod p), L4 closed form mod q,
+    L5/L7 one-sided gcd == p  <=>  not FULL (closed form), when the block is clean."""
+    k = block_res["k"]
+    m = block_res["m"]
+    gamma, u = block_res["gamma"], block_res["u"]
+    d = ord2(q)
+    clean = all((q - 1) % l for l in design.bands[k])
+    bad = {"L1": 0, "L3": 0, "L2": 0, "L4": 0, "L57": 0}
+    n_cov = 0
+    n_full = 0
+    meta = block_res["giant_meta"]
+    gidx = {}
+    for h, (ti, j) in enumerate(meta):
+        gidx[(ti, j)] = h
+    for ti, t in enumerate(block_res["targets"]):
+        A, B, l, r, c, g_lo, W = t["A"], t["B"], t["l"], t["r"], t["c"], t["g_lo"], t["W"]
+        if p % l != r:
+            continue
+        n_cov += 1
+        num = B * p + A * q - c
+        if num % (l * l):
+            bad["L1"] += 1
+            continue
+        g = num // (l * l)
+        if not (g_lo <= g < g_lo + W):
+            bad["L3"] += 1
+            continue
+        istar_full = g - g_lo
+        j = istar_full // m
+        istar = istar_full % m
+        h = gidx[(ti, j)]
+        # recompute the giant
+        L_over = None
+        G = pow(u[l], B + A * N - c, N) * pow(pow(gamma, -1, N), g_lo + j * m, N) % N
+        if G % p != pow(gamma, istar, p):
+            bad["L2"] += 1
+        rhs = pow(gamma, istar, q) * pow(u[l], (A - B) * (p - 1), q) % q
+        if G % q != rhs:
+            bad["L4"] += 1
+        full_cf = full_closed_form(p, q, A, B, l, m, d, istar)
+        n_full += full_closed_form(p, q, A, B, l, m, d)
+        gg = block_res["giant_gcds"][h]
+        if clean:
+            if (gg == p) != (not full_cf):
+                bad["L57"] += 1
+        else:
+            # without cleanliness only "not full => gcd p" direction is claimed
+            # via the general condition; record direct fullness instead
+            pass
+    return {"k": k, "clean": clean, "n_cover": n_cov, "n_full": n_full, "bad": bad}
+"""Pre-registered experiments for dcltheorem (notes/dcltheorem_prereg.md).
+
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments config
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments lemma
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments oper
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments hh
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments exc
+  PYTHONPATH=. .venv/bin/python -m src.dcltheorem.experiments summarize
+
+HARNESS code: the operational algorithm (algorithm.dcl_det, hh_baseline.hh_run)
+receives only N; p, q are used afterwards for classification / certificates.
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+import time
+from math import gcd, log2
+from multiprocessing import Pool
+from typing import Dict, List
+
+from src.common.metrics import Metrics, append_jsonl, read_jsonl
+
+from .algorithm import build_targets, choose_m, dcl_det, metric_E
+from .harness import classify_hit, lemma_checks, ord2, predict, sample_pair
+from .params import Design, lam_full, schedule_design
+
+RAW = "experiments/raw"
+CFG = "experiments/configs/dcltheorem_experiments.json"
+ANA = "experiments/analysis/dcltheorem_summary.json"
+
+CONFIG = {
+    "lemma": {"n": [28, 32, 36, 40], "seeds": list(range(0, 60)), "design": "C1"},
+    "oper": {"n": [40, 48, 56, 64, 72, 80], "seeds": list(range(100, 132)),
+             "designs": ["C1", "C3"], "C2_n": [40, 48, 56, 64], "C2_seeds": list(range(100, 108))},
+    "hh": {"n": [40, 48, 56, 64, 72, 80], "seeds": list(range(100, 116))},
+    "exc": {"n": [48, 64, 80, 96], "seeds": list(range(5000, 6000)), "design": "C1"},
+    "designs": {
+        "C1": "schedule_design(n, 3.0, K=4, mod4=True)",
+        "C2": "schedule_design(n, lam_full(n), K=4, mod4=True)",
+        "C3": "schedule_design(n, 3.0, K=4, mod4=False)",
+    },
+    "metric_E": "mulN + mul_small + poly_cost + ceil(log2 n)*(gcdN+invN) + ceil(bigmul_bits/n)",
+    "fit_range": [48, 80],
+}
+
+_DCACHE: Dict = {}
+
+
+def get_design(name: str, n: int) -> Design:
+    key = (name, n)
+    if key not in _DCACHE:
+        if name == "C1":
+            _DCACHE[key] = schedule_design(n, 3.0, K=4, mod4=True, label="C1")
+        elif name == "C2":
+            _DCACHE[key] = schedule_design(n, lam_full(n), K=4, mod4=True, label="C2")
+        elif name == "C3":
+            _DCACHE[key] = schedule_design(n, 3.0, K=4, mod4=False, label="C3")
+        else:
+            raise ValueError(name)
+    return _DCACHE[key]
+
+
+def _accidental_null(N: int, p: int, q: int, blk: Dict) -> float:
+    """Expected number of random giant/baby coincidences mod p or mod q over
+    the block: n_giants * m * (1/ord_p(gamma) + 1/ord_q(gamma))."""
+    from sympy import n_order
+    g = blk["gamma"]
+    tot = 0.0
+    for r in (p, q):
+        gr = g % r
+        o = 1 if gr == 1 else int(n_order(gr, r))
+        tot += blk["n_giants"] * blk["m"] / o
+    return tot
+
+
+def _strip(blk: Dict) -> Dict:
+    return {k: v for k, v in blk.items()
+            if k not in ("targets", "giant_meta", "giant_gcds", "gamma", "u")}
+
+
+def run_one(args) -> Dict:
+    mode, dname, n, seed = args
+    N, p, q = sample_pair(n, seed)
+    D = get_design(dname, n)
+    met = Metrics()
+    t0 = time.perf_counter()
+    r = dcl_det(N, D, met, early_exit=False, record=True)
+    wall = time.perf_counter() - t0
+    ok = r["factor"] is None or (1 < r["factor"] < N and N % r["factor"] == 0)
+    blocks = []
+    Es = []
+    for b in r["blocks"]:
+        E = metric_E(b["met"]["counts"], n)
+        Es.append(E)
+        rec = _strip(b)
+        rec["E"] = E
+        if "targets" in b:
+            rec["lemma"] = lemma_checks(N, p, q, D, b)
+            rec["class"] = classify_hit(N, p, q, b) if b.get("factor") else None
+            rec["acc_null"] = _accidental_null(N, p, q, b)
+        else:
+            rec["class"] = "GCD_" + b.get("status", "") if b.get("factor") else None
+        blocks.append(rec)
+    ms = [b.get("m", 0) for b in r["blocks"]]
+    pr = predict(N, p, q, D, ms)
+    first = next((i for i, b in enumerate(r["blocks"]) if b.get("factor")), None)
+    out = {"mode": mode, "design": dname, "n": n, "seed": seed, "N": N,
+           "design_summary": D.summary(), "success": r["factor"] is not None,
+           "correct": ok, "first_block": first,
+           "E_first": sum(Es[:first + 1]) if first is not None else None,
+           "E_full": sum(Es), "E_block0": Es[0],
+           "list_block0": blocks[0].get("m", 0) + blocks[0].get("n_giants", 0),
+           "list_full": sum(b.get("m", 0) + b.get("n_giants", 0) for b in blocks),
+           "certified": pr["certified"], "cert_blocks": pr["blocks"], "ord_q2": pr["ord_q2"],
+           "q_bits": q.bit_length(), "blocks": blocks, "wall_s": round(wall, 4)}
+    return out
+
+
+def run_hh(args) -> Dict:
+    from .hh_baseline import hh_E, hh_params, hh_run
+    n, seed = args
+    N, p, q = sample_pair(n, seed)
+    t0 = time.perf_counter()
+    prm = hh_params(N)
+    r = hh_run(N, prm, seed=seed)
+    wall = time.perf_counter() - t0
+    c = r["met"]["counts"]
+    f = r.get("factor")
+    return {"mode": "hh", "n": n, "seed": seed, "N": N, "params": prm,
+            "success": bool(f) and 1 < f < N and N % f == 0, "status": r["status"],
+            "E": hh_E(c, n), "list": prm["work"], "counts": c, "wall_s": round(wall, 4)}
+
+
+def run_exc(args) -> Dict:
+    """Certificate components only (no stage 3): clean blocks, coverage,
+    FULL counts, per block; m from the public choose_m."""
+    n, seed = args
+    N, p, q = sample_pair(n, seed)
+    D = get_design("C1", n)
+    ms = []
+    for k in range(D.K):
+        t = build_targets(N, D, k, Metrics())
+        ms.append(choose_m(t, D.mbar[k]))
+    pr = predict(N, p, q, D, ms)
+    return {"mode": "exc", "n": n, "seed": seed, "certified": pr["certified"],
+            "blocks": pr["blocks"], "ord_q2_bits": pr["ord_q2"].bit_length(),
+            "q_bits": q.bit_length()}
+
+
+def _pool_run(fn, jobs, path, procs=24):
+    if os.path.exists(path):
+        os.remove(path)
+    with Pool(procs) as pool:
+        for rec in pool.imap_unordered(fn, jobs):
+            append_jsonl(path, rec)
+
+
+def main(mode: str):
+    os.makedirs(RAW, exist_ok=True)
+    if mode == "config":
+        os.makedirs(os.path.dirname(CFG), exist_ok=True)
+        cfg = dict(CONFIG)
+        cfg["design_summaries"] = {f"{d}@{n}": get_design(d, n).summary()
+                                   for d in ("C1", "C3") for n in CONFIG["oper"]["n"]}
+        cfg["design_summaries"].update({f"C2@{n}": get_design("C2", n).summary()
+                                        for n in CONFIG["oper"]["C2_n"]})
+        with open(CFG, "w") as fh:
+            json.dump(cfg, fh, indent=1)
+        print(json.dumps(cfg["design_summaries"], indent=0)[:3000])
+    elif mode == "lemma":
+        c = CONFIG["lemma"]
+        jobs = [("lemma", c["design"], n, s) for n in c["n"] for s in c["seeds"]]
+        _pool_run(run_one, jobs, f"{RAW}/dcltheorem_lemma.jsonl")
+    elif mode == "oper":
+        c = CONFIG["oper"]
+        jobs = [("oper", d, n, s) for d in c["designs"] for n in c["n"] for s in c["seeds"]]
+        jobs += [("oper", "C2", n, s) for n in c["C2_n"] for s in c["C2_seeds"]]
+        jobs.sort(key=lambda j: -j[2])            # big first
+        _pool_run(run_one, jobs, f"{RAW}/dcltheorem_oper.jsonl")
+    elif mode == "hh":
+        c = CONFIG["hh"]
+        jobs = [(n, s) for n in c["n"] for s in c["seeds"]]
+        _pool_run(run_hh, jobs, f"{RAW}/dcltheorem_hh.jsonl")
+    elif mode == "exc":
+        c = CONFIG["exc"]
+        jobs = [(n, s) for n in c["n"] for s in c["seeds"]]
+        _pool_run(run_exc, jobs, f"{RAW}/dcltheorem_exc.jsonl")
+    elif mode == "summarize":
+        from .analyze import summarize
+        summarize()
+    else:
+        raise SystemExit(f"unknown mode {mode}")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])
+"""Summaries for dcltheorem experiments (floating point only for fits)."""
+from __future__ import annotations
+
+import json
+import os
+from collections import defaultdict
+from statistics import median
+
+import numpy as np
+
+from src.common.metrics import read_jsonl
+
+RAW = "experiments/raw"
+ANA = "experiments/analysis/dcltheorem_summary.json"
+
+
+def _slope(xs, ys):
+    xs, ys = np.array(xs, float), np.log2(np.array(ys, float))
+    return float(np.polyfit(xs, ys, 1)[0]) if len(xs) >= 2 else None
+
+
+def summarize():
+    out = {}
+    fr = (48, 80)
+    p = f"{RAW}/dcltheorem_lemma.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        bad = defaultdict(int)
+        for r in R:
+            for b in r["blocks"]:
+                for k, v in (b.get("lemma") or {}).get("bad", {}).items():
+                    bad[k] += v
+        out["lemma"] = {"runs": len(R), "incorrect": sum(not r["correct"] for r in R),
+                        "lemma_bad": dict(bad),
+                        "certified": sum(r["certified"] for r in R),
+                        "certified_not_success": sum(r["certified"] and not r["success"] for r in R),
+                        "success": sum(r["success"] for r in R),
+                        "covering_targets_clean": sum(b["lemma"]["n_cover"] for r in R for b in r["blocks"] if b.get("lemma") and b["lemma"]["clean"])}
+    p = f"{RAW}/dcltheorem_oper.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[(r["design"], r["n"])].append(r)
+        tab = {}
+        for (d, n), rs in sorted(by.items()):
+            bad = defaultdict(int)
+            cls = defaultdict(int)
+            for r in rs:
+                for b in r["blocks"]:
+                    for k, v in (b.get("lemma") or {}).get("bad", {}).items():
+                        bad[k] += v
+                fb = r["first_block"]
+                if fb is not None:
+                    cls[r["blocks"][fb]["class"]] += 1
+            ok = [r for r in rs if r["success"]]
+            tab[f"{d}@{n}"] = {
+                "runs": len(rs), "success": len(ok), "incorrect": sum(not r["correct"] for r in rs),
+                "certified": sum(r["certified"] for r in rs),
+                "certified_not_success": sum(r["certified"] and not r["success"] for r in rs),
+                "block0_success": sum(bool(r["blocks"][0].get("factor")) for r in rs),
+                "first_block_hist": {str(k): sum(r["first_block"] == k for r in rs) for k in range(4)},
+                "lemma_bad": dict(bad), "first_class": dict(cls),
+                "acc_null_block0_median": median(r["blocks"][0].get("acc_null", 0) for r in rs),
+                "med_E_first": median(r["E_first"] for r in ok) if ok else None,
+                "med_E_block0": median(r["E_block0"] for r in rs),
+                "med_E_full": median(r["E_full"] for r in rs),
+                "med_list_block0": median(r["list_block0"] for r in rs),
+                "med_list_full": median(r["list_full"] for r in rs),
+                "med_wall": median(r["wall_s"] for r in rs),
+                "H": rs[0]["design_summary"]["H"], "Y": rs[0]["design_summary"]["Y"],
+                "lam": rs[0]["design_summary"]["lam"]}
+        out["oper"] = tab
+    p = f"{RAW}/dcltheorem_hh.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[r["n"]].append(r)
+        out["hh"] = {str(n): {"runs": len(rs), "success": sum(r["success"] for r in rs),
+                              "status": {s: sum(r["status"] == s for r in rs) for s in {r["status"] for r in rs}},
+                              "med_E_collision": median([r["E"] for r in rs if r["status"] == "collision"] or [0]),
+                              "med_E_all": median(r["E"] for r in rs),
+                              "list": median(r["list"] for r in rs),
+                              "med_wall": median(r["wall_s"] for r in rs)}
+                     for n, rs in sorted(by.items())}
+    # slopes
+    sl = {}
+    if "oper" in out:
+        for d in ("C1", "C2", "C3"):
+            for key in ("med_E_first", "med_E_block0", "med_E_full", "med_list_block0", "med_list_full"):
+                pts = [(int(k.split("@")[1]), v[key]) for k, v in out["oper"].items()
+                       if k.startswith(d + "@") and v[key] and fr[0] <= int(k.split("@")[1]) <= fr[1]]
+                if len(pts) >= 2:
+                    sl[f"{d}:{key}"] = _slope(*zip(*pts))
+    if "hh" in out:
+        for key in ("med_E_collision", "med_E_all", "list"):
+            pts = [(int(n), v[key]) for n, v in out["hh"].items() if v[key] and fr[0] <= int(n) <= fr[1]]
+            sl[f"HH:{key}"] = _slope(*zip(*pts))
+    out["slopes_48_80"] = sl
+    if "oper" in out and "hh" in out:
+        out["ratio_C1_first_over_HH"] = {
+            n: out["oper"][f"C1@{n}"]["med_E_first"] / out["hh"][n]["med_E_collision"]
+            for n in out["hh"] if f"C1@{n}" in out["oper"] and out["hh"][n]["med_E_collision"]}
+    p = f"{RAW}/dcltheorem_exc.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[r["n"]].append(r)
+        ex = {}
+        for n, rs in sorted(by.items()):
+            ncov = sum(b["n_cover"] for r in rs for b in r["blocks"])
+            nfull = sum(b["n_full"] for r in rs for b in r["blocks"])
+            ex[str(n)] = {"pairs": len(rs), "certified": sum(r["certified"] for r in rs) / len(rs),
+                          "block0_clean": sum(r["blocks"][0]["clean"] for r in rs) / len(rs),
+                          "block0_cert": sum(r["blocks"][0]["cert"] for r in rs) / len(rs),
+                          "block0_uncovered": sum(r["blocks"][0]["n_cover"] == 0 for r in rs) / len(rs),
+                          "all_blocks_uncovered": sum(all(b["n_cover"] == 0 for b in r["blocks"]) for r in rs) / len(rs),
+                          "full_over_cover": nfull / max(1, ncov),
+                          "ord_q2_bits_median": median(r["ord_q2_bits"] for r in rs),
+                          "q_bits_median": median(r["q_bits"] for r in rs)}
+        out["exc"] = ex
+    os.makedirs(os.path.dirname(ANA), exist_ok=True)
+    with open(ANA, "w") as fh:
+        json.dump(out, fh, indent=1)
+    print(json.dumps(out, indent=1))
+"""Tests for src/dcltheorem (DCL-det: deterministic divisor-cover Lehman)."""
+from math import gcd, isqrt
+
+import pytest
+
+from src.common.metrics import Metrics
+from src.dcltheorem.algorithm import (all_but_one, balanced_range, dcl_det, f_bounds,
+                                      metric_E, sqrt_prime)
+from src.dcltheorem.harness import (full_closed_form, lemma_checks, ord2, predict,
+                                    sample_pair)
+from src.dcltheorem.params import Design, schedule_design, theorem_design, weight_set
+
+
+def test_weight_set_excludes_symmetric_and_noncoprime():
+    V = weight_set(6)
+    assert (1, 1) not in V and (2, 4) not in V and (2, 3) in V and (3, 2) in V
+    assert all(A != B and gcd(A, B) == 1 for A, B in V)
+
+
+def test_all_but_one_matches_direct():
+    N = 1000003 * 999983
+    exps = [l * l for l in (7, 11, 19, 23, 31)]
+    vals, E = all_but_one(2, exps, N, Metrics())
+    for e, v in zip(exps, vals):
+        assert v == pow(2, E // e, N)
+
+
+@pytest.mark.parametrize("l", [43, 47, 59, 61, 73, 97, 101, 113])
+def test_sqrt_prime(l):
+    for a in range(1, l):
+        if pow(a, (l - 1) // 2, l) == 1:
+            r = sqrt_prime(a, l, Metrics())
+            assert r * r % l == a
+
+
+def test_f_bounds_cover_balanced_range():
+    N, p, q = sample_pair(30, 1)
+    a0, b0 = balanced_range(N)
+    assert a0 <= p <= b0
+    for A, B in [(1, 2), (5, 3), (7, 1)]:
+        lo, hi = f_bounds(N, A, B, a0, b0, Metrics())
+        for x in (a0, b0, (a0 + b0) // 2, isqrt(A * N // B)):
+            if a0 <= x <= b0:
+                assert lo * x <= B * x * x + A * N <= hi * x
+
+
+def test_sample_pair_population():
+    for s in range(20):
+        N, p, q = sample_pair(36, s)
+        assert p < q <= 2 * p and (1 << 35) <= N < (1 << 36)
+
+
+def test_theorem_design_shapes():
+    D = theorem_design(120, 1, 60)
+    assert D.K == 4 and all(l % 4 == 3 for b in D.bands for l in b)
+    assert D.Y > D.H ** 2                                    # distinct sieve classes
+
+
+@pytest.mark.parametrize("n", [32, 36])
+def test_lemmas_and_certificate(n):
+    """Lemmas 1-4, the Lemma 5/7 equivalence on clean blocks, and
+    certified => success, on random pairs (harness check)."""
+    D = schedule_design(n, 3.0)
+    for seed in range(8):
+        N, p, q = sample_pair(n, 7000 + seed)
+        r = dcl_det(N, D, Metrics(), early_exit=False, record=True)
+        assert r["factor"] is None or (1 < r["factor"] < N and N % r["factor"] == 0)
+        for b in r["blocks"]:
+            if "targets" in b:
+                lc = lemma_checks(N, p, q, D, b)
+                assert all(v == 0 for v in lc["bad"].values()), lc
+        pr = predict(N, p, q, D, [b.get("m", 0) for b in r["blocks"]])
+        if pr["certified"]:
+            assert r["factor"] in (p, q)
+
+
+def test_full_closed_form_exact_vs_superset():
+    # superset (istar=None) is implied by the exact window
+    p, q = 36697, 71249
+    d = ord2(q)
+    for (A, B, l, m) in [(5, 9, 151, 18), (7, 2, 167, 18)]:
+        for istar in range(m):
+            if full_closed_form(p, q, A, B, l, m, d, istar):
+                assert full_closed_form(p, q, A, B, l, m, d)
+
+
+def test_metric_E_counts_everything():
+    c = {"mulN": 10, "mul_small": 3, "poly_cost": 100, "gcdN": 2, "invN": 1, "bigmul_bits": 129}
+    assert metric_E(c, 64) == 10 + 3 + 100 + 6 * 3 + 3
+
+
+def test_hh_baseline_runs():
+    from src.dcltheorem.hh_baseline import hh_params, hh_run
+    N, p, q = sample_pair(40, 3)
+    r = hh_run(N, hh_params(N))
+    assert r["factor"] in (p, q)
+
+web search: 
+web search: McKee Pinch "Old and new deterministic factoring algorithms" pdf ...
+web search: 
+web search: McKee Pinch "Old and new deterministic factoring algorithms" pdf ...
+codex
+The collision identities and clean-band argument check out algebraically so far. I’m now checking the exceptional-set exponents and the implementation’s behavior on arbitrary inputs. I also found the correct Royal Holloway record for McKee–Pinch, but it has no full text attached.
+web search: 
+web search: "McKee" "Pinch" "section 5" factoring ...
+exec
+/bin/bash -lc 'cat src/dcltheorem/analyze.py; ls /home/knielsen/AGENTS.md /home/AGENTS.md /AGENTS.md 2>/dev/null; git status --short; mkdir -p /tmp/claude-r13' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+"""Summaries for dcltheorem experiments (floating point only for fits)."""
+from __future__ import annotations
+
+import json
+import os
+from collections import defaultdict
+from statistics import median
+
+import numpy as np
+
+from src.common.metrics import read_jsonl
+
+RAW = "experiments/raw"
+ANA = "experiments/analysis/dcltheorem_summary.json"
+
+
+def _slope(xs, ys):
+    xs, ys = np.array(xs, float), np.log2(np.array(ys, float))
+    return float(np.polyfit(xs, ys, 1)[0]) if len(xs) >= 2 else None
+
+
+def summarize():
+    out = {}
+    fr = (48, 80)
+    p = f"{RAW}/dcltheorem_lemma.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        bad = defaultdict(int)
+        for r in R:
+            for b in r["blocks"]:
+                for k, v in (b.get("lemma") or {}).get("bad", {}).items():
+                    bad[k] += v
+        out["lemma"] = {"runs": len(R), "incorrect": sum(not r["correct"] for r in R),
+                        "lemma_bad": dict(bad),
+                        "certified": sum(r["certified"] for r in R),
+                        "certified_not_success": sum(r["certified"] and not r["success"] for r in R),
+                        "success": sum(r["success"] for r in R),
+                        "covering_targets_clean": sum(b["lemma"]["n_cover"] for r in R for b in r["blocks"] if b.get("lemma") and b["lemma"]["clean"])}
+    p = f"{RAW}/dcltheorem_oper.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[(r["design"], r["n"])].append(r)
+        tab = {}
+        for (d, n), rs in sorted(by.items()):
+            bad = defaultdict(int)
+            cls = defaultdict(int)
+            for r in rs:
+                for b in r["blocks"]:
+                    for k, v in (b.get("lemma") or {}).get("bad", {}).items():
+                        bad[k] += v
+                fb = r["first_block"]
+                if fb is not None:
+                    cls[r["blocks"][fb]["class"]] += 1
+            ok = [r for r in rs if r["success"]]
+            tab[f"{d}@{n}"] = {
+                "runs": len(rs), "success": len(ok), "incorrect": sum(not r["correct"] for r in rs),
+                "certified": sum(r["certified"] for r in rs),
+                "certified_not_success": sum(r["certified"] and not r["success"] for r in rs),
+                "block0_success": sum(bool(r["blocks"][0].get("factor")) for r in rs),
+                "first_block_hist": {str(k): sum(r["first_block"] == k for r in rs) for k in range(4)},
+                "lemma_bad": dict(bad), "first_class": dict(cls),
+                "acc_null_block0_median": median(r["blocks"][0].get("acc_null", 0) for r in rs),
+                "med_E_first": median(r["E_first"] for r in ok) if ok else None,
+                "med_E_block0": median(r["E_block0"] for r in rs),
+                "med_E_full": median(r["E_full"] for r in rs),
+                "med_list_block0": median(r["list_block0"] for r in rs),
+                "med_list_full": median(r["list_full"] for r in rs),
+                "med_wall": median(r["wall_s"] for r in rs),
+                "H": rs[0]["design_summary"]["H"], "Y": rs[0]["design_summary"]["Y"],
+                "lam": rs[0]["design_summary"]["lam"]}
+        out["oper"] = tab
+    p = f"{RAW}/dcltheorem_hh.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[r["n"]].append(r)
+        out["hh"] = {str(n): {"runs": len(rs), "success": sum(r["success"] for r in rs),
+                              "status": {s: sum(r["status"] == s for r in rs) for s in {r["status"] for r in rs}},
+                              "med_E_collision": median([r["E"] for r in rs if r["status"] == "collision"] or [0]),
+                              "med_E_all": median(r["E"] for r in rs),
+                              "list": median(r["list"] for r in rs),
+                              "med_wall": median(r["wall_s"] for r in rs)}
+                     for n, rs in sorted(by.items())}
+    # slopes
+    sl = {}
+    if "oper" in out:
+        for d in ("C1", "C2", "C3"):
+            for key in ("med_E_first", "med_E_block0", "med_E_full", "med_list_block0", "med_list_full"):
+                pts = [(int(k.split("@")[1]), v[key]) for k, v in out["oper"].items()
+                       if k.startswith(d + "@") and v[key] and fr[0] <= int(k.split("@")[1]) <= fr[1]]
+                if len(pts) >= 2:
+                    sl[f"{d}:{key}"] = _slope(*zip(*pts))
+    if "hh" in out:
+        for key in ("med_E_collision", "med_E_all", "list"):
+            pts = [(int(n), v[key]) for n, v in out["hh"].items() if v[key] and fr[0] <= int(n) <= fr[1]]
+            sl[f"HH:{key}"] = _slope(*zip(*pts))
+    out["slopes_48_80"] = sl
+    if "oper" in out and "hh" in out:
+        out["ratio_C1_first_over_HH"] = {
+            n: out["oper"][f"C1@{n}"]["med_E_first"] / out["hh"][n]["med_E_collision"]
+            for n in out["hh"] if f"C1@{n}" in out["oper"] and out["hh"][n]["med_E_collision"]}
+    p = f"{RAW}/dcltheorem_exc.jsonl"
+    if os.path.exists(p):
+        R = read_jsonl(p)
+        by = defaultdict(list)
+        for r in R:
+            by[r["n"]].append(r)
+        ex = {}
+        for n, rs in sorted(by.items()):
+            ncov = sum(b["n_cover"] for r in rs for b in r["blocks"])
+            nfull = sum(b["n_full"] for r in rs for b in r["blocks"])
+            ex[str(n)] = {"pairs": len(rs), "certified": sum(r["certified"] for r in rs) / len(rs),
+                          "block0_clean": sum(r["blocks"][0]["clean"] for r in rs) / len(rs),
+                          "block0_cert": sum(r["blocks"][0]["cert"] for r in rs) / len(rs),
+                          "block0_uncovered": sum(r["blocks"][0]["n_cover"] == 0 for r in rs) / len(rs),
+                          "all_blocks_uncovered": sum(all(b["n_cover"] == 0 for b in r["blocks"]) for r in rs) / len(rs),
+                          "full_over_cover": nfull / max(1, ncov),
+                          "ord_q2_bits_median": median(r["ord_q2_bits"] for r in rs),
+                          "q_bits_median": median(r["q_bits"] for r in rs)}
+        out["exc"] = ex
+    os.makedirs(os.path.dirname(ANA), exist_ok=True)
+    with open(ANA, "w") as fh:
+        json.dump(out, fh, indent=1)
+    print(json.dumps(out, indent=1))
+?? codex/dclt_1.log
+?? codex/divcover_1.log
+?? codex/divcover_2.log
+?? codex/r13_final_referee.log
+?? codex/r13_final_referee.md
+
+web search: 
+web search: "McKee" "Pinch" "Lehmer" factoring ...
+web search: 
+web search: McKee Pinch factoring algorithms 1996 pdf Lehmer section ...
+exec
+/bin/bash -lc "python - <<'PY'
+import requests
+u='https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/'
+r=requests.get(u,timeout=20)
+print(r.status_code,len(r.content))
+open('/tmp/claude-r13/rhul.html','w').write(r.text)
+PY" in /home/knielsen/code/factoring-connection
+ exited 127 in 0ms:
+/bin/bash: line 1: python: command not found
+
+web search: 
+web search: "Old and new deterministic factoring algorithms" -site:researchgate.net -site:scribd.com -site:reddit.com -site:mdpi.com -site:royalholloway.ac.uk -site:link.springer.com -site:dblp.org ...
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request
+u='https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/'
+try:
+ r=urllib.request.urlopen(u,timeout=20); b=r.read(); print(r.status,len(b)); open('/tmp/claude-r13/rhul.html','wb').write(b)
+except Exception as e: print(type(e).__name__,str(e))
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+URLError <urlopen error [Errno -3] Temporary failure in name resolution>
+
+web search: 
+web search: https://link.springer.com/content/pdf/10.1007/3-540-61581-4_57.pdf
+exec
+/bin/bash -lc "sed -n '1,130p' tests/test_dcltheorem.py; nl -ba src/dcltheorem/algorithm.py | sed -n '165,300p'" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+"""Tests for src/dcltheorem (DCL-det: deterministic divisor-cover Lehman)."""
+from math import gcd, isqrt
+
+import pytest
+
+from src.common.metrics import Metrics
+from src.dcltheorem.algorithm import (all_but_one, balanced_range, dcl_det, f_bounds,
+                                      metric_E, sqrt_prime)
+from src.dcltheorem.harness import (full_closed_form, lemma_checks, ord2, predict,
+                                    sample_pair)
+from src.dcltheorem.params import Design, schedule_design, theorem_design, weight_set
+
+
+def test_weight_set_excludes_symmetric_and_noncoprime():
+    V = weight_set(6)
+    assert (1, 1) not in V and (2, 4) not in V and (2, 3) in V and (3, 2) in V
+    assert all(A != B and gcd(A, B) == 1 for A, B in V)
+
+
+def test_all_but_one_matches_direct():
+    N = 1000003 * 999983
+    exps = [l * l for l in (7, 11, 19, 23, 31)]
+    vals, E = all_but_one(2, exps, N, Metrics())
+    for e, v in zip(exps, vals):
+        assert v == pow(2, E // e, N)
+
+
+@pytest.mark.parametrize("l", [43, 47, 59, 61, 73, 97, 101, 113])
+def test_sqrt_prime(l):
+    for a in range(1, l):
+        if pow(a, (l - 1) // 2, l) == 1:
+            r = sqrt_prime(a, l, Metrics())
+            assert r * r % l == a
+
+
+def test_f_bounds_cover_balanced_range():
+    N, p, q = sample_pair(30, 1)
+    a0, b0 = balanced_range(N)
+    assert a0 <= p <= b0
+    for A, B in [(1, 2), (5, 3), (7, 1)]:
+        lo, hi = f_bounds(N, A, B, a0, b0, Metrics())
+        for x in (a0, b0, (a0 + b0) // 2, isqrt(A * N // B)):
+            if a0 <= x <= b0:
+                assert lo * x <= B * x * x + A * N <= hi * x
+
+
+def test_sample_pair_population():
+    for s in range(20):
+        N, p, q = sample_pair(36, s)
+        assert p < q <= 2 * p and (1 << 35) <= N < (1 << 36)
+
+
+def test_theorem_design_shapes():
+    D = theorem_design(120, 1, 60)
+    assert D.K == 4 and all(l % 4 == 3 for b in D.bands for l in b)
+    assert D.Y > D.H ** 2                                    # distinct sieve classes
+
+
+@pytest.mark.parametrize("n", [32, 36])
+def test_lemmas_and_certificate(n):
+    """Lemmas 1-4, the Lemma 5/7 equivalence on clean blocks, and
+    certified => success, on random pairs (harness check)."""
+    D = schedule_design(n, 3.0)
+    for seed in range(8):
+        N, p, q = sample_pair(n, 7000 + seed)
+        r = dcl_det(N, D, Metrics(), early_exit=False, record=True)
+        assert r["factor"] is None or (1 < r["factor"] < N and N % r["factor"] == 0)
+        for b in r["blocks"]:
+            if "targets" in b:
+                lc = lemma_checks(N, p, q, D, b)
+                assert all(v == 0 for v in lc["bad"].values()), lc
+        pr = predict(N, p, q, D, [b.get("m", 0) for b in r["blocks"]])
+        if pr["certified"]:
+            assert r["factor"] in (p, q)
+
+
+def test_full_closed_form_exact_vs_superset():
+    # superset (istar=None) is implied by the exact window
+    p, q = 36697, 71249
+    d = ord2(q)
+    for (A, B, l, m) in [(5, 9, 151, 18), (7, 2, 167, 18)]:
+        for istar in range(m):
+            if full_closed_form(p, q, A, B, l, m, d, istar):
+                assert full_closed_form(p, q, A, B, l, m, d)
+
+
+def test_metric_E_counts_everything():
+    c = {"mulN": 10, "mul_small": 3, "poly_cost": 100, "gcdN": 2, "invN": 1, "bigmul_bits": 129}
+    assert metric_E(c, 64) == 10 + 3 + 100 + 6 * 3 + 3
+
+
+def test_hh_baseline_runs():
+    from src.dcltheorem.hh_baseline import hh_params, hh_run
+    N, p, q = sample_pair(40, 3)
+    r = hh_run(N, hh_params(N))
+    assert r["factor"] in (p, q)
+   165	def build_targets(N: int, design: Design, k: int, met) -> List[Dict]:
+   166	    band = design.bands[k]
+   167	    _NONRES.clear()                       # nonresidue searches are charged per run
+   168	    a0, b0 = balanced_range(N)
+   169	    bounds = {v: f_bounds(N, v[0], v[1], a0, b0, met) for v in design.V}
+   170	    out = []
+   171	    for l in band:
+   172	        if N % l == 0:
+   173	            raise Found(l, "band_prime")
+   174	        l2 = l * l
+   175	        Nl = N % l
+   176	        for (A, B) in design.V:
+   177	            met.inc("vl_pairs")
+   178	            if (A * B) % l == 0:          # finite-size guard (never triggers when Y > H)
+   179	                continue
+   180	            a = A * Nl * pow(B, -1, l) % l
+   181	            met.inc("mul_small", 3)
+   182	            if pow_small(a, (l - 1) // 2, l, met) != 1:
+   183	                continue
+   184	            r = sqrt_prime(a, l, met)
+   185	            lo, hi = bounds[(A, B)]
+   186	            for root in sorted({r, l - r}):
+   187	                s = N * pow(root, -1, l2) % l2
+   188	                c = (B * root + A * s) % l2
+   189	                met.inc("mul_small", 4)
+   190	                g_lo = -((-(lo - c)) // l2)
+   191	                g_hi = (hi - c) // l2
+   192	                out.append({"A": A, "B": B, "l": l, "r": root, "c": c,
+   193	                            "g_lo": g_lo, "W": max(1, g_hi - g_lo + 1)})
+   194	    return out
+   195	
+   196	
+   197	def choose_m(targets: List[Dict], mbar: int) -> int:
+   198	    """Public choice of the baby length: minimise m + sum ceil(W/m) over a
+   199	    geometric grid in [1, max W] (never above max W; max W <= mbar)."""
+   200	    if not targets:
+   201	        return 1
+   202	    Wmax = max(t["W"] for t in targets)
+   203	    best, m = None, 1
+   204	    while True:
+   205	        mm = min(m, Wmax)
+   206	        c = mm + sum(-(-t["W"] // mm) for t in targets)
+   207	        if best is None or c < best[0]:
+   208	            best = (c, mm)
+   209	        if mm == Wmax:
+   210	            break
+   211	        m = (119 * m) // 100 + 1            # integer-only grid (no float overflow)
+   212	    return best[1]
+   213	
+   214	
+   215	def run_block(N: int, design: Design, k: int, met, record: bool = False,
+   216	              m_override: Optional[int] = None) -> Dict:
+   217	    band = design.bands[k]
+   218	    if not band:
+   219	        return {"factor": None, "status": "empty_band"}
+   220	    met.start(f"block{k}")
+   221	    targets = build_targets(N, design, k, met)
+   222	    m = m_override or choose_m(targets, design.mbar[k])
+   223	    sq = [l * l for l in band]
+   224	    u_list, L = all_but_one(2, sq, N, met)
+   225	    u = dict(zip(band, u_list))
+   226	    gamma = powN(u_list[0], sq[0], N, met)              # 2^L
+   227	    _gcd_check(gamma, N, met, "gamma")
+   228	    met.inc("invN")
+   229	    ginv = pow(gamma, -1, N)
+   230	    gm_inv = powN(ginv, m, N, met)
+   231	    Nmod = N
+   232	    giants, meta = [], []
+   233	    # per-l precomputation w_l = u_l^N (charged once per band prime used), then
+   234	    # G = u^{B + A N - c} gamma^{-g_lo} = w^A * u^{B - c + l^2} * gamma^{-(g_lo + 1)}
+   235	    # (u^{l^2} = gamma), all exponents nonnegative and O(log(H l^2)) bits.
+   236	    w = {}
+   237	    for t in targets:
+   238	        if t["l"] not in w:
+   239	            w[t["l"]] = powN(u[t["l"]], N, N, met)
+   240	    for ti, t in enumerate(targets):
+   241	        A, B, l, c, g_lo, W = t["A"], t["B"], t["l"], t["c"], t["g_lo"], t["W"]
+   242	        G = (powN(w[l], A, N, met) * powN(u[l], B - c + l * l, N, met) % N
+   243	             * powN(ginv, g_lo + 1, N, met) % N)
+   244	        met.inc("mulN", 2)
+   245	        for j in range(-(-W // m)):
+   246	            giants.append(G)
+   247	            meta.append((ti, j))
+   248	            G = G * gm_inv % N
+   249	            met.inc("mulN")
+   250	    met.inc("giants", len(giants))
+   251	    met.inc("babies", m)
+   252	    met.inc("targets", len(targets))
+   253	    vals = eval_baby_poly_at_giants(N, gamma, m, giants, met)
+   254	    res = {"factor": None, "status": "none", "m": m, "n_targets": len(targets),
+   255	           "n_giants": len(giants), "L_bits": L.bit_length()}
+   256	    gs = []
+   257	    for h, v in enumerate(vals):
+   258	        met.inc("gcdN")
+   259	        g = gcd(v, N)
+   260	        if record:
+   261	            gs.append(g)
+   262	        if 1 < g < N and res["factor"] is None:
+   263	            ti, j = meta[h]
+   264	            res.update({"factor": g, "status": "collision", "hit": {"target": ti, "j": j}})
+   265	            if not record:
+   266	                break
+   267	    if record:
+   268	        res["targets"] = targets
+   269	        res["giant_meta"] = meta
+   270	        res["giant_gcds"] = gs
+   271	        res["gamma"] = gamma
+   272	        res["u"] = u
+   273	    met.stop(f"block{k}")
+   274	    return res
+   275	
+   276	
+   277	def dcl_det(N: int, design: Design, met: Optional[Metrics] = None, early_exit: bool = True,
+   278	            record: bool = False, blocks: Optional[Sequence[int]] = None) -> Dict:
+   279	    """Deterministic DCL.  Returns {"factor": d or None, "block": k, "blocks": [...]}.
+   280	    With early_exit, stops after the first block that yields a factor; the
+   281	    per-block metrics are recorded either way (prefix b{k}_)."""
+   282	    met = met or Metrics()
+   283	    out = {"factor": None, "status": "fail", "block": None, "blocks": []}
+   284	    try:
+   285	        _gcd_check(2, N, met, "even")
+   286	        if N % 2 == 0:
+   287	            return {"factor": 2, "status": "even", "block": None, "blocks": []}
+   288	    except Found as e:
+   289	        return {"factor": e.d, "status": "gcd_" + e.how, "block": None, "blocks": []}
+   290	    for k in (blocks if blocks is not None else range(design.K)):
+   291	        bm = Metrics()
+   292	        try:
+   293	            r = run_block(N, design, k, bm, record=record)
+   294	        except Found as e:
+   295	            r = {"factor": e.d, "status": "gcd_" + e.how}
+   296	        r["k"] = k
+   297	        r["met"] = bm.to_record()
+   298	        met.merge(bm)
+   299	        out["blocks"].append(r)
+   300	        if r["factor"] and out["factor"] is None:
+
+apply patch
+patch: completed
+/tmp/claude-r13/independent_checks.py
+diff --git a//tmp/claude-r13/independent_checks.py b//tmp/claude-r13/independent_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..6389e69399230d15fa973e95ab6fab6feb31d735
+--- /dev/null
++++ b//tmp/claude-r13/independent_checks.py
+@@ -0,0 +1,196 @@
++"""Independent exact referee checks. No imports from the repository."""
++from math import gcd, isqrt, prod, log2
++from fractions import Fraction
++from collections import Counter
++import json
++
++def primes(B):
++    a = bytearray([1]) * (B+1)
++    a[:2] = bytes(2)
++    for d in range(2, isqrt(B)+1):
++        if a[d]:
++            for x in range(d*d, B+1, d): a[x] = 0
++    return [d for d in range(2, B+1) if a[d]]
++
++def order(a, q):
++    v = a % q
++    d = 1
++    while v != 1:
++        v = v*a % q
++        d += 1
++    return d
++
++def ceildiv(a, b): return -((-a)//b)
++
++def pmul(a, b, N):
++    c = [0]*(len(a)+len(b)-1)
++    for i,x in enumerate(a):
++        for j,y in enumerate(b): c[i+j] = (c[i+j]+x*y) % N
++    return c
++
++def prem(a, b, N):
++    a = a[:]
++    assert b[-1] == 1
++    for i in range(len(a)-len(b), -1, -1):
++        v = a[i+len(b)-1]
++        for j,y in enumerate(b): a[i+j] = (a[i+j]-v*y) % N
++    return a[:len(b)-1]
++
++def ptree(xs, N):
++    lv = [[[(-x)%N, 1] for x in xs]]
++    while len(lv[-1])>1:
++        cur = lv[-1]
++        lv.append([pmul(cur[j],cur[j+1],N) if j+1<len(cur) else cur[j]
++                   for j in range(0,len(cur),2)])
++    return lv
++
++def mpe(f, xs, N):
++    lv = ptree(xs,N)
++    rr = [prem(f,lv[-1][0],N)]
++    for nodes in reversed(lv[:-1]):
++        rr = [prem(rr[j//2], node,N) for j,node in enumerate(nodes)]
++    return [r[0] if r else 0 for r in rr]
++
++def exptree(base, es, N):
++    lv = [es]
++    while len(lv[-1])>1:
++        cur=lv[-1]
++        lv.append([prod(cur[j:j+2]) for j in range(0,len(cur),2)])
++    vv=[base%N]
++    for cur in reversed(lv[:-1]):
++        vv=[pow(vv[j//2],cur[j^1],N) if (j^1)<len(cur) else vv[j//2]
++            for j in range(len(cur))]
++    return vv, lv[-1][0]
++
++C=Counter()
++examples={}
++allpr=primes(16384)
++for T in range(1,15):
++    for Q0 in (2,5,17,100,1000):
++        bad=[q for q in allpr if Q0<q<(1<<T) and order(2,q)<=T]
++        assert len(bad)<=T*(T+1)/(2*log2(Q0))
++        assert prod(bad)<(1<<(T*(T+1)//2)) or not bad
++        C['small_order_bounds']+=1
++
++# Small versions of the asymptotic design. All use Y>H^2 and 16Y<p.
++for n,H,Y in ((18,2,11),(20,3,17),(22,3,23),(24,4,37)):
++    P=1<<(n//2)
++    V=[(A,B) for A in range(1,H+1) for B in range(1,H+1)
++       if A!=B and gcd(A,B)==1]
++    bands=[[l for l in allpr if (1<<k)*Y<l<=(2<<k)*Y and l%4==3] for k in range(4)]
++    assert Y>H*H and Y**4>isqrt(2*P*P)+1
++    ps=[p for p in allpr if P//2<p<P]
++    qs=[q for q in allpr if q*q>P*P//2 and q*q<2*P*P]
++    pairs=[(p,q) for q in qs for p in ps
++           if p<q<=2*p and (1<<(n-1))<=p*q<(1<<n) and p>16*Y]
++    # Deterministic evenly spaced sample, augmented by low-order q.
++    take=set(pairs[::max(1,len(pairs)//100)][:100])
++    low=sorted(qs,key=lambda q:order(2,q))[:12]
++    for q in low:
++        partners=[p for p,qq in pairs if qq==q]
++        for p in partners[::max(1,len(partners)//8)][:8]: take.add((p,q))
++    for p,q in sorted(take):
++        N=p*q
++        a=isqrt(N//2)
++        if 2*a*a<N: a+=1
++        b=isqrt(N)
++        d=order(2,q)
++        clean=[all((q-1)%l for l in band) for band in bands]
++        assert any(clean)
++        C['clean_band_pairs']+=1
++        certified=False
++        succeeds=False
++        for k,band in enumerate(bands):
++            us,L=exptree(2,[l*l for l in band],N)
++            assert all(u==pow(2,L//(l*l),N) for l,u in zip(band,us))
++            gamma=pow(2,L,N)
++            sp=(5*H*(P+1))//2+2*H+3
++            mb=sp//((1<<k)*Y)**2+2
++            for l,u in zip(band,us):
++                C['exponent_handles']+=1
++                if clean[k]: assert gcd(L,q-1)==1 and order(gamma%q,q)==d
++                for A,B in V:
++                    if (B*p-A*q)%l: continue
++                    r=p%l
++                    aa=A*N*pow(B,-1,l)%l
++                    assert pow(aa,(l-1)//2,l)==1
++                    root=pow(aa,(l+1)//4,l)
++                    assert root*root%l==aa and r in (root,l-root)
++                    c=(B*r+A*(N*pow(r,-1,l*l)%(l*l)))%(l*l)
++                    assert (B*p+A*q-c)%(l*l)==0
++                    g=(B*p+A*q-c)//(l*l)
++                    lo=isqrt(4*A*B*N)
++                    hi=max(B*x+ceildiv(A*N,x) for x in (a,b))
++                    gl=ceildiv(lo-c,l*l)
++                    gh=(hi-c)//(l*l)
++                    assert gl>=0 and gl<=g<=gh and gh-gl+1<=mb
++                    # Multiple baby lengths exercise j>0 and the asymmetric delta range.
++                    for m in sorted({1,min(3,mb),mb}):
++                        j,i=divmod(g-gl,m)
++                        G=pow(u,B+A*N-c,N)*pow(gamma,-(gl+j*m),N)%N
++                        assert G%p==pow(gamma,i,p)
++                        assert G%q==pow(gamma,i,q)*pow(u,(A-B)*(p-1),q)%q
++                        babies=[pow(gamma,z,N) for z in range(m)]
++                        full=any(G%q==z%q for z in babies)
++                        fval=prod((G-z)%N for z in babies)%N
++                        gg=gcd(fval,N)
++                        assert gg==(N if full else p)
++                        C['covering_target_m_checks']+=1
++                        if clean[k]:
++                            cf=any(((A-B)*(p-1)-l*l*delta)%d==0
++                                   for delta in range(-i,m-i))
++                            assert cf==full
++                            C['clean_FULL_checks']+=1
++                            C['clean_FULL' if full else 'clean_nonFULL']+=1
++                            if not full:
++                                certified=True
++                                if order(gamma%p,p)<m: examples.setdefault('small_p_order_success',[p,q,A,B,l,m,order(gamma%p,p)])
++                        else:
++                            cf=any(((A-B)*(p-1)-l*l*delta)%d==0
++                                   for delta in range(-i,m-i))
++                            if cf!=full: examples.setdefault('dirty_band_criterion_fails',[p,q,A,B,l,m,i,d])
++                        if 1<gg<N: succeeds=True
++                        if full: examples.setdefault('FULL_target',[p,q,A,B,l,m,i,d,clean[k]])
++                        if not full: examples.setdefault('nonFULL_target',[p,q,A,B,l,m,i,d,clean[k]])
++                    C['covering_targets']+=1
++            # Independently exercise monic polynomial product/remainder trees.
++            if k==0:
++                m=min(mb,23)
++                babies=[pow(gamma,i,N) for i in range(m)]
++                xs=[(z*z+17)%N for z in range(13)]+babies[:5]
++                f=ptree(babies,N)[-1][0]
++                vals=mpe(f,xs,N)
++                assert vals==[prod((x-b)%N for b in babies)%N for x in xs]
++                C['composite_multipoint_cases']+=1
++        assert not certified or succeeds
++        C['certified_pairs']+=certified
++        C['sampled_pairs']+=1
++    # L9: exact residue distinctness and finite-interval sieve bound.
++    for q in qs[::max(1,len(qs)//12)][:12]:
++        for k,band in enumerate(bands):
++            for l in band:
++                rs={A*q*pow(B,-1,l)%l for A,B in V}
++                assert len(rs)==len(V)
++            U=[p for p in range(P//2,P+1)
++               if all((B*p-A*q)%l for A,B in V for l in band)]
++            J=sum((Fraction(len(V),l-len(V)) for l in band),Fraction(0))
++            assert len(U)*J<=P//2+1+((2<<k)*Y)**2
++            C['large_sieve_bounds']+=1
++    # L10: count solutions before union bound; exact CRT modulus.
++    for q in low[:4]:
++        d=order(2,q)
++        for k,band in enumerate(bands):
++            if any((q-1)%l==0 for l in band): continue
++            mb=((5*H*(P+1))//2+2*H+3)//((1<<k)*Y)**2+2
++            for A,B in V:
++                gp=gcd(A-B,d)
++                for l in band:
++                    for delta in range(-min(mb-1,5),min(mb-1,5)+1):
++                        rs=[p for p in range(P//2,P+1)
++                            if (B*p-A*q)%l==0 and ((A-B)*(p-1)-l*l*delta)%d==0]
++                        if rs: assert all((p-rs[0])%(l*d//gp)==0 for p in rs)
++                        assert len(rs)<=Fraction(P*gp,2*l*d)+1
++                        C['CRT_bounds']+=1
++out={'counts':dict(C),'examples':examples}
++print(json.dumps(out,indent=2))
++open('/tmp/claude-r13/independent_results.json','w').write(json.dumps(out,indent=2)+'\n')
+
+exec
+/bin/bash -lc 'python3 /tmp/claude-r13/independent_checks.py > /tmp/claude-r13/checks.stdout 2> /tmp/claude-r13/checks.stderr' in /home/knielsen/code/factoring-connection
+ succeeded in 4406ms:
+codex
+The exceptional-set calculation checks out: after division by \(|S_n|\asymp P^2/n^2\), coverage contributes \(O(n^2/H^2)\), and the FULL-collision terms have enough slack for the claimed \(O(N^{-\varepsilon})\) rate. I found a finite-input correctness issue in the code: a band prime dividing \(N\) can be returned even when it equals \(N\). I’m testing concrete examples and checking its scope.
+web search: 
+web search: "Old and new deterministic factoring algorithms" "5" ...
+exec
+/bin/bash -lc 'cat /tmp/claude-r13/checks.stderr; cat /tmp/claude-r13/checks.stdout' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+{
+  "counts": {
+    "small_order_bounds": 70,
+    "clean_band_pairs": 760,
+    "exponent_handles": 24677,
+    "composite_multipoint_cases": 760,
+    "covering_target_m_checks": 3649,
+    "clean_FULL_checks": 3335,
+    "clean_nonFULL": 3147,
+    "covering_targets": 1423,
+    "certified_pairs": 594,
+    "sampled_pairs": 760,
+    "clean_FULL": 188,
+    "large_sieve_bounds": 192,
+    "CRT_bounds": 18354
+  },
+  "examples": {
+    "nonFULL_target": [
+      263,
+      503,
+      1,
+      2,
+      23,
+      1,
+      0,
+      251,
+      true
+    ],
+    "small_p_order_success": [
+      283,
+      541,
+      2,
+      1,
+      47,
+      3,
+      2
+    ],
+    "FULL_target": [
+      293,
+      457,
+      2,
+      1,
+      23,
+      7,
+      0,
+      76,
+      true
+    ],
+    "dirty_band_criterion_fails": [
+      293,
+      499,
+      2,
+      1,
+      47,
+      1,
+      0,
+      166
+    ]
+  }
+}
+
+web search: 
+web search: "factoring" "McKee–Pinch" "5" ...
+exec
+/bin/bash -lc "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B - <<'PY'
+from src.dcltheorem.algorithm import dcl_det
+from src.dcltheorem.params import theorem_design
+for N in (2,3,5,7,11,13,19,23,31,43,47,59,61,127):
+ D=theorem_design(N.bit_length(),1,60)
+ try:
+  r=dcl_det(N,D); print(N,D.H,D.Y,r['factor'],r['status'])
+ except Exception as e: print(N,type(e).__name__,str(e))
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+2 2 3 2 even
+3 2 3 None fail
+5 3 3 None fail
+7 3 3 7 gcd_band_prime
+11 4 3 11 gcd_band_prime
+13 4 3 None fail
+19 5 3 19 gcd_band_prime
+23 5 3 23 gcd_band_prime
+31 5 3 31 gcd_band_prime
+43 6 3 43 gcd_band_prime
+47 6 3 47 gcd_band_prime
+59 6 3 None fail
+61 6 3 None fail
+127 7 3 None fail
+
+web search: 
+web search: Harvey Hittmeir 2022 deterministic integer factorisation 3.3 pdf ...
+web search: 
+web search: https://cr.yp.to/bib/entries.html#1996/mckee-deterministic
+web search: 
+web search: https://cr-yp-to.viacache.net/bib/entries.html
+web search: 
+web search: '[46]'
+web search: 
+web search: 
+web search: 
+web search: https://cr.yp.to/bib/1996/mckee-deterministic.html
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+urls={
+ 'mckee-scan':'https://cr.yp.to/bib/1996/mckee-deterministic.html',
+ 'springer-chapter':'https://link.springer.com/content/pdf/10.1007/3-540-61581-4_57.pdf',
+ 'rhul-record':'https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/'
+}
+def fetch(it):
+ name,url=it
+ try:
+  r=urllib.request.urlopen(url,timeout=20); b=r.read(); open('/tmp/claude-r13/'+name,'wb').write(b); return name,r.status,len(b),r.headers.get('Content-Type')
+ except Exception as e: return name,type(e).__name__,str(e)
+with ThreadPoolExecutor(max_workers=3) as ex:
+ for result in ex.map(fetch,urls.items()): print(result)
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 2182ms:
+('mckee-scan', 200, 630, 'text/html')
+('springer-chapter', 200, 245478, 'text/html; charset=utf-8')
+('rhul-record', 'HTTPError', 'HTTP Error 403: Forbidden')
+
+web search: 
+web search: "deterministic factoring" "almost all" -site:reddit.com -site:igent.ai -site:researchgate.net -site:scribd.com -polynomials ...
+exec
+/bin/bash -lc 'cat /tmp/claude-r13/mckee-scan; head -c 300 /tmp/claude-r13/springer-chapter; command -v pdftotext; command -v tesseract' in /home/knielsen/code/factoring-connection
+ exited 1 in 0ms:
+<html>
+<body>
+<a href="mckee-deterministic/01.jpg"><img src="mckee-deterministic/01x.jpg" width="1170" height="848" alt="01.jpg"></a>
+<a href="mckee-deterministic/02.jpg"><img src="mckee-deterministic/02x.jpg" width="1170" height="848" alt="02.jpg"></a>
+<a href="mckee-deterministic/03.jpg"><img src="mckee-deterministic/03x.jpg" width="1170" height="848" alt="03.jpg"></a>
+<a href="mckee-deterministic/04.jpg"><img src="mckee-deterministic/04x.jpg" width="1170" height="848" alt="04.jpg"></a>
+<a href="mckee-deterministic/05.jpg"><img src="mckee-deterministic/05x.jpg" width="1170" height="848" alt="05.jpg"></a>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="applicable-device" content="pc,mobile">
+    <meta name="access" content=
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+def fetch(i):
+ u=f'https://cr.yp.to/bib/1996/mckee-deterministic/{i:02}.jpg'
+ try:
+  r=urllib.request.urlopen(u,timeout=20); b=r.read(); open(f'/tmp/claude-r13/mckee-{i:02}.jpg','wb').write(b); return i,len(b),r.headers.get('Content-Type')
+ except Exception as e: return i,str(e)
+with ThreadPoolExecutor(max_workers=5) as ex:
+ for result in ex.map(fetch,range(1,6)): print(result)
+PY" in /home/knielsen/code/factoring-connection
+web search: 
+web search: https://cr.yp.to/bib/1996/mckee-deterministic/04.jpg
+ succeeded in 2807ms:
+(1, 506812, 'image/jpeg')
+(2, 482251, 'image/jpeg')
+(3, 540999, 'image/jpeg')
+(4, 461181, 'image/jpeg')
+(5, 436244, 'image/jpeg')
+
+codex
+The independent exact checks finished with no lemma violations: 3,649 covering-target checks, including 188 clean FULL cases, plus 18,354 CRT counts and 192 finite-interval large-sieve checks.
+
+I also found a public scan of McKee–Pinch through Daniel Bernstein’s bibliography. I’m retrieving the pages to read §5 directly.
+web search: 
+web search: deterministic integer factoring "average" subexponential ...
+exec
+/bin/bash -lc 'PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B -m pytest -q -p no:cacheprovider tests/test_dcltheorem.py' in /home/knielsen/code/factoring-connection
+ succeeded in 633ms:
+..................                                                       [100%]
+18 passed in 0.65s
+
+web search: 
+web search: "factoring" "almost all" "N^{1/6" ...
+web search: 
+web search: deterministic integer factorisation 2026 "1/5" ...
+exec
+/bin/bash -lc 'git diff --stat; ls -lh /tmp/claude-r13' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+total 2.6M
+-rw-rw-r-- 1 knielsen knielsen    0 Oct 18 14:36 checks.stderr
+-rw-rw-r-- 1 knielsen knielsen  893 Oct 18 14:36 checks.stdout
+-rw-rw-r-- 1 knielsen knielsen 7.9K Oct 18 14:36 independent_checks.py
+-rw-rw-r-- 1 knielsen knielsen  893 Oct 18 14:36 independent_results.json
+-rw-rw-r-- 1 knielsen knielsen 495K Oct 18 14:38 mckee-01.jpg
+-rw-rw-r-- 1 knielsen knielsen 471K Oct 18 14:38 mckee-02.jpg
+-rw-rw-r-- 1 knielsen knielsen 529K Oct 18 14:38 mckee-03.jpg
+-rw-rw-r-- 1 knielsen knielsen 451K Oct 18 14:38 mckee-04.jpg
+-rw-rw-r-- 1 knielsen knielsen 427K Oct 18 14:38 mckee-05.jpg
+-rw-rw-r-- 1 knielsen knielsen  630 Oct 18 14:37 mckee-scan
+-rw-rw-r-- 1 knielsen knielsen 240K Oct 18 14:37 springer-chapter
+
+web search: 
+web search: https://arxiv.org/pdf/1308.2891
+codex
+I’ve read McKee–Pinch §5 directly. It is a close precursor: it uses weighted congruences \(\lambda p\equiv\pm\mu q\pmod{k}\), a modulus-squared speedup, and a heuristic search over primes near \(N^{1/4}\). It does not state the claimed \(N^{1/6}\) almost-all theorem. The paper should explain this relationship explicitly.
+
+The repository’s 18 tests also pass. The finite-input bug is confirmed: with its theorem schedule, `dcl_det(7, ...)` returns 7 as a purported nontrivial divisor.
+apply patch
+patch: completed
+/tmp/claude-r13/operational_checks.py
+diff --git a//tmp/claude-r13/independent_checks.py b//tmp/claude-r13/independent_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..6389e69399230d15fa973e95ab6fab6feb31d735
+--- /dev/null
++++ b//tmp/claude-r13/independent_checks.py
+@@ -0,0 +1,196 @@
++"""Independent exact referee checks. No imports from the repository."""
++from math import gcd, isqrt, prod, log2
++from fractions import Fraction
++from collections import Counter
++import json
++
++def primes(B):
++    a = bytearray([1]) * (B+1)
++    a[:2] = bytes(2)
++    for d in range(2, isqrt(B)+1):
++        if a[d]:
++            for x in range(d*d, B+1, d): a[x] = 0
++    return [d for d in range(2, B+1) if a[d]]
++
++def order(a, q):
++    v = a % q
++    d = 1
++    while v != 1:
++        v = v*a % q
++        d += 1
++    return d
++
++def ceildiv(a, b): return -((-a)//b)
++
++def pmul(a, b, N):
++    c = [0]*(len(a)+len(b)-1)
++    for i,x in enumerate(a):
++        for j,y in enumerate(b): c[i+j] = (c[i+j]+x*y) % N
++    return c
++
++def prem(a, b, N):
++    a = a[:]
++    assert b[-1] == 1
++    for i in range(len(a)-len(b), -1, -1):
++        v = a[i+len(b)-1]
++        for j,y in enumerate(b): a[i+j] = (a[i+j]-v*y) % N
++    return a[:len(b)-1]
++
++def ptree(xs, N):
++    lv = [[[(-x)%N, 1] for x in xs]]
++    while len(lv[-1])>1:
++        cur = lv[-1]
++        lv.append([pmul(cur[j],cur[j+1],N) if j+1<len(cur) else cur[j]
++                   for j in range(0,len(cur),2)])
++    return lv
++
++def mpe(f, xs, N):
++    lv = ptree(xs,N)
++    rr = [prem(f,lv[-1][0],N)]
++    for nodes in reversed(lv[:-1]):
++        rr = [prem(rr[j//2], node,N) for j,node in enumerate(nodes)]
++    return [r[0] if r else 0 for r in rr]
++
++def exptree(base, es, N):
++    lv = [es]
++    while len(lv[-1])>1:
++        cur=lv[-1]
++        lv.append([prod(cur[j:j+2]) for j in range(0,len(cur),2)])
++    vv=[base%N]
++    for cur in reversed(lv[:-1]):
++        vv=[pow(vv[j//2],cur[j^1],N) if (j^1)<len(cur) else vv[j//2]
++            for j in range(len(cur))]
++    return vv, lv[-1][0]
++
++C=Counter()
++examples={}
++allpr=primes(16384)
++for T in range(1,15):
++    for Q0 in (2,5,17,100,1000):
++        bad=[q for q in allpr if Q0<q<(1<<T) and order(2,q)<=T]
++        assert len(bad)<=T*(T+1)/(2*log2(Q0))
++        assert prod(bad)<(1<<(T*(T+1)//2)) or not bad
++        C['small_order_bounds']+=1
++
++# Small versions of the asymptotic design. All use Y>H^2 and 16Y<p.
++for n,H,Y in ((18,2,11),(20,3,17),(22,3,23),(24,4,37)):
++    P=1<<(n//2)
++    V=[(A,B) for A in range(1,H+1) for B in range(1,H+1)
++       if A!=B and gcd(A,B)==1]
++    bands=[[l for l in allpr if (1<<k)*Y<l<=(2<<k)*Y and l%4==3] for k in range(4)]
++    assert Y>H*H and Y**4>isqrt(2*P*P)+1
++    ps=[p for p in allpr if P//2<p<P]
++    qs=[q for q in allpr if q*q>P*P//2 and q*q<2*P*P]
++    pairs=[(p,q) for q in qs for p in ps
++           if p<q<=2*p and (1<<(n-1))<=p*q<(1<<n) and p>16*Y]
++    # Deterministic evenly spaced sample, augmented by low-order q.
++    take=set(pairs[::max(1,len(pairs)//100)][:100])
++    low=sorted(qs,key=lambda q:order(2,q))[:12]
++    for q in low:
++        partners=[p for p,qq in pairs if qq==q]
++        for p in partners[::max(1,len(partners)//8)][:8]: take.add((p,q))
++    for p,q in sorted(take):
++        N=p*q
++        a=isqrt(N//2)
++        if 2*a*a<N: a+=1
++        b=isqrt(N)
++        d=order(2,q)
++        clean=[all((q-1)%l for l in band) for band in bands]
++        assert any(clean)
++        C['clean_band_pairs']+=1
++        certified=False
++        succeeds=False
++        for k,band in enumerate(bands):
++            us,L=exptree(2,[l*l for l in band],N)
++            assert all(u==pow(2,L//(l*l),N) for l,u in zip(band,us))
++            gamma=pow(2,L,N)
++            sp=(5*H*(P+1))//2+2*H+3
++            mb=sp//((1<<k)*Y)**2+2
++            for l,u in zip(band,us):
++                C['exponent_handles']+=1
++                if clean[k]: assert gcd(L,q-1)==1 and order(gamma%q,q)==d
++                for A,B in V:
++                    if (B*p-A*q)%l: continue
++                    r=p%l
++                    aa=A*N*pow(B,-1,l)%l
++                    assert pow(aa,(l-1)//2,l)==1
++                    root=pow(aa,(l+1)//4,l)
++                    assert root*root%l==aa and r in (root,l-root)
++                    c=(B*r+A*(N*pow(r,-1,l*l)%(l*l)))%(l*l)
++                    assert (B*p+A*q-c)%(l*l)==0
++                    g=(B*p+A*q-c)//(l*l)
++                    lo=isqrt(4*A*B*N)
++                    hi=max(B*x+ceildiv(A*N,x) for x in (a,b))
++                    gl=ceildiv(lo-c,l*l)
++                    gh=(hi-c)//(l*l)
++                    assert gl>=0 and gl<=g<=gh and gh-gl+1<=mb
++                    # Multiple baby lengths exercise j>0 and the asymmetric delta range.
++                    for m in sorted({1,min(3,mb),mb}):
++                        j,i=divmod(g-gl,m)
++                        G=pow(u,B+A*N-c,N)*pow(gamma,-(gl+j*m),N)%N
++                        assert G%p==pow(gamma,i,p)
++                        assert G%q==pow(gamma,i,q)*pow(u,(A-B)*(p-1),q)%q
++                        babies=[pow(gamma,z,N) for z in range(m)]
++                        full=any(G%q==z%q for z in babies)
++                        fval=prod((G-z)%N for z in babies)%N
++                        gg=gcd(fval,N)
++                        assert gg==(N if full else p)
++                        C['covering_target_m_checks']+=1
++                        if clean[k]:
++                            cf=any(((A-B)*(p-1)-l*l*delta)%d==0
++                                   for delta in range(-i,m-i))
++                            assert cf==full
++                            C['clean_FULL_checks']+=1
++                            C['clean_FULL' if full else 'clean_nonFULL']+=1
++                            if not full:
++                                certified=True
++                                if order(gamma%p,p)<m: examples.setdefault('small_p_order_success',[p,q,A,B,l,m,order(gamma%p,p)])
++                        else:
++                            cf=any(((A-B)*(p-1)-l*l*delta)%d==0
++                                   for delta in range(-i,m-i))
++                            if cf!=full: examples.setdefault('dirty_band_criterion_fails',[p,q,A,B,l,m,i,d])
++                        if 1<gg<N: succeeds=True
++                        if full: examples.setdefault('FULL_target',[p,q,A,B,l,m,i,d,clean[k]])
++                        if not full: examples.setdefault('nonFULL_target',[p,q,A,B,l,m,i,d,clean[k]])
++                    C['covering_targets']+=1
++            # Independently exercise monic polynomial product/remainder trees.
++            if k==0:
++                m=min(mb,23)
++                babies=[pow(gamma,i,N) for i in range(m)]
++                xs=[(z*z+17)%N for z in range(13)]+babies[:5]
++                f=ptree(babies,N)[-1][0]
++                vals=mpe(f,xs,N)
++                assert vals==[prod((x-b)%N for b in babies)%N for x in xs]
++                C['composite_multipoint_cases']+=1
++        assert not certified or succeeds
++        C['certified_pairs']+=certified
++        C['sampled_pairs']+=1
++    # L9: exact residue distinctness and finite-interval sieve bound.
++    for q in qs[::max(1,len(qs)//12)][:12]:
++        for k,band in enumerate(bands):
++            for l in band:
++                rs={A*q*pow(B,-1,l)%l for A,B in V}
++                assert len(rs)==len(V)
++            U=[p for p in range(P//2,P+1)
++               if all((B*p-A*q)%l for A,B in V for l in band)]
++            J=sum((Fraction(len(V),l-len(V)) for l in band),Fraction(0))
++            assert len(U)*J<=P//2+1+((2<<k)*Y)**2
++            C['large_sieve_bounds']+=1
++    # L10: count solutions before union bound; exact CRT modulus.
++    for q in low[:4]:
++        d=order(2,q)
++        for k,band in enumerate(bands):
++            if any((q-1)%l==0 for l in band): continue
++            mb=((5*H*(P+1))//2+2*H+3)//((1<<k)*Y)**2+2
++            for A,B in V:
++                gp=gcd(A-B,d)
++                for l in band:
++                    for delta in range(-min(mb-1,5),min(mb-1,5)+1):
++                        rs=[p for p in range(P//2,P+1)
++                            if (B*p-A*q)%l==0 and ((A-B)*(p-1)-l*l*delta)%d==0]
++                        if rs: assert all((p-rs[0])%(l*d//gp)==0 for p in rs)
++                        assert len(rs)<=Fraction(P*gp,2*l*d)+1
++                        C['CRT_bounds']+=1
++out={'counts':dict(C),'examples':examples}
++print(json.dumps(out,indent=2))
++open('/tmp/claude-r13/independent_results.json','w').write(json.dumps(out,indent=2)+'\n')
+diff --git a//tmp/claude-r13/operational_checks.py b//tmp/claude-r13/operational_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..35190306990950fd61e3682848ab78b36ceeac71
+--- /dev/null
++++ b//tmp/claude-r13/operational_checks.py
+@@ -0,0 +1,100 @@
++"""Independent N-only implementation, plus a separate comparison to repo code.
++The implementation below uses only stdlib exact arithmetic and no repo helpers.
++"""
++from math import gcd, isqrt, prod
++from collections import Counter
++import json
++
++def psieve(n):
++    return [p for p in range(2,n+1) if all(p%d for d in range(2,isqrt(p)+1))]
++
++def cdiv(a,b): return -((-a)//b)
++
++def own(N,H,Y):
++    if N<3: return None
++    if N%2==0: return 2
++    V=[(A,B) for A in range(1,H+1) for B in range(1,H+1)
++       if A!=B and gcd(A,B)==1]
++    ps=psieve(16*Y)
++    a=isqrt(N//2)
++    if 2*a*a<N: a+=1
++    b=isqrt(N)
++    for k in range(4):
++        band=[l for l in ps if (1<<k)*Y<l<=(2<<k)*Y and l%4==3]
++        if not band: continue
++        ts=[]
++        for l in band:
++            if N%l==0:
++                if l<N: return l
++                return None
++            for A,B in V:
++                if A*B%l==0: continue
++                aa=A*N*pow(B,-1,l)%l
++                if pow(aa,(l-1)//2,l)!=1: continue
++                r0=pow(aa,(l+1)//4,l)
++                lo=isqrt(4*A*B*N)
++                hi=max(B*x+cdiv(A*N,x) for x in (a,b))
++                for r in sorted({r0,l-r0}):
++                    c=(B*r+A*N*pow(r,-1,l*l))%(l*l)
++                    gl=cdiv(lo-c,l*l)
++                    gh=(hi-c)//(l*l)
++                    ts.append((A,B,l,c,gl,max(1,gh-gl+1)))
++        if not ts: continue
++        # The same publicly specified endpoint-competitive choice; no factors used.
++        wm=max(t[-1] for t in ts)
++        candidates=[]
++        mm=1
++        while True:
++            m=min(mm,wm)
++            candidates.append((m+sum(cdiv(t[-1],m) for t in ts),m))
++            if m==wm: break
++            mm=(119*mm)//100+1
++        m=min(candidates,key=lambda x:x[0])[1]
++        L=prod(l*l for l in band)
++        gamma=pow(2,L,N)
++        us={l:pow(2,L//(l*l),N) for l in band}
++        babies=[pow(gamma,i,N) for i in range(m)]
++        for A,B,l,c,gl,W in ts:
++            for j in range(cdiv(W,m)):
++                G=pow(us[l],B+A*N-c,N)*pow(gamma,-(gl+j*m),N)%N
++                fv=prod((G-z)%N for z in babies)%N
++                d=gcd(fv,N)
++                if 1<d<N: return d
++    return None
++
++if __name__=='__main__':
++    # Repo imported only to compare outputs after independent implementation.
++    from src.dcltheorem.algorithm import dcl_det
++    from src.dcltheorem.params import Design, theorem_design
++    ps=psieve(1500)
++    pairs=[(p,q) for p in ps for q in ps
++           if p<q<=2*p and (1<<19)<=p*q<(1<<20)]
++    pairs=pairs[::max(1,len(pairs)//250)][:250]
++    D=Design(n=20,H=3,Y=17)
++    C=Counter()
++    for p,q in pairs:
++        N=p*q
++        a=own(N,3,17)
++        b=dcl_det(N,D)['factor']
++        assert (a is None)==(b is None),(N,a,b)
++        assert a is None or (1<a<N and N%a==0)
++        assert b is None or (1<b<N and N%b==0)
++        C['pair_comparisons']+=1
++        C['pair_successes']+=a is not None
++    adversarial=[1<<19,(1<<19)+1,(1<<20)-1,3*174763,5*104859,727**2,1009**2,524287,1000003]
++    for N in adversarial:
++        a=own(N,3,17)
++        b=dcl_det(N,D)['factor']
++        assert (a is None)==(b is None),(N,a,b)
++        assert b is None or (1<b<N and N%b==0)
++        C['adversarial_comparisons']+=1
++    wrong=[]
++    crashes=[]
++    for N in range(2,257):
++        try:
++            f=dcl_det(N,theorem_design(N.bit_length(),1,60))['factor']
++            if f is not None and not(1<f<N and N%f==0): wrong.append([N,f])
++        except Exception as e: crashes.append([N,type(e).__name__,str(e)])
++    out={'counts':dict(C),'small_input_wrong_outputs':wrong,'small_input_crashes':crashes}
++    print(json.dumps(out,indent=2))
++    open('/tmp/claude-r13/operational_results.json','w').write(json.dumps(out,indent=2)+'\n')
+
+exec
+/bin/bash -lc 'PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/knielsen/code/factoring-connection .venv/bin/python -B /tmp/claude-r13/operational_checks.py > /tmp/claude-r13/operational.stdout 2> /tmp/claude-r13/operational.stderr' in /home/knielsen/code/factoring-connection
+ succeeded in 27ms:
+exec
+/bin/bash -lc 'cat /tmp/claude-r13/operational.stdout; cat /tmp/claude-r13/operational.stderr; tail -60 /tmp/claude-r13/operational_checks.py' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+{
+  "counts": {
+    "pair_comparisons": 250,
+    "pair_successes": 246,
+    "adversarial_comparisons": 9
+  },
+  "small_input_wrong_outputs": [
+    [
+      2,
+      2
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      11,
+      11
+    ],
+    [
+      19,
+      19
+    ],
+    [
+      23,
+      23
+    ],
+    [
+      31,
+      31
+    ],
+    [
+      43,
+      43
+    ],
+    [
+      47,
+      47
+    ]
+  ],
+  "small_input_crashes": []
+}
+                    ts.append((A,B,l,c,gl,max(1,gh-gl+1)))
+        if not ts: continue
+        # The same publicly specified endpoint-competitive choice; no factors used.
+        wm=max(t[-1] for t in ts)
+        candidates=[]
+        mm=1
+        while True:
+            m=min(mm,wm)
+            candidates.append((m+sum(cdiv(t[-1],m) for t in ts),m))
+            if m==wm: break
+            mm=(119*mm)//100+1
+        m=min(candidates,key=lambda x:x[0])[1]
+        L=prod(l*l for l in band)
+        gamma=pow(2,L,N)
+        us={l:pow(2,L//(l*l),N) for l in band}
+        babies=[pow(gamma,i,N) for i in range(m)]
+        for A,B,l,c,gl,W in ts:
+            for j in range(cdiv(W,m)):
+                G=pow(us[l],B+A*N-c,N)*pow(gamma,-(gl+j*m),N)%N
+                fv=prod((G-z)%N for z in babies)%N
+                d=gcd(fv,N)
+                if 1<d<N: return d
+    return None
+
+if __name__=='__main__':
+    # Repo imported only to compare outputs after independent implementation.
+    from src.dcltheorem.algorithm import dcl_det
+    from src.dcltheorem.params import Design, theorem_design
+    ps=psieve(1500)
+    pairs=[(p,q) for p in ps for q in ps
+           if p<q<=2*p and (1<<19)<=p*q<(1<<20)]
+    pairs=pairs[::max(1,len(pairs)//250)][:250]
+    D=Design(n=20,H=3,Y=17)
+    C=Counter()
+    for p,q in pairs:
+        N=p*q
+        a=own(N,3,17)
+        b=dcl_det(N,D)['factor']
+        assert (a is None)==(b is None),(N,a,b)
+        assert a is None or (1<a<N and N%a==0)
+        assert b is None or (1<b<N and N%b==0)
+        C['pair_comparisons']+=1
+        C['pair_successes']+=a is not None
+    adversarial=[1<<19,(1<<19)+1,(1<<20)-1,3*174763,5*104859,727**2,1009**2,524287,1000003]
+    for N in adversarial:
+        a=own(N,3,17)
+        b=dcl_det(N,D)['factor']
+        assert (a is None)==(b is None),(N,a,b)
+        assert b is None or (1<b<N and N%b==0)
+        C['adversarial_comparisons']+=1
+    wrong=[]
+    crashes=[]
+    for N in range(2,257):
+        try:
+            f=dcl_det(N,theorem_design(N.bit_length(),1,60))['factor']
+            if f is not None and not(1<f<N and N%f==0): wrong.append([N,f])
+        except Exception as e: crashes.append([N,type(e).__name__,str(e)])
+    out={'counts':dict(C),'small_input_wrong_outputs':wrong,'small_input_crashes':crashes}
+    print(json.dumps(out,indent=2))
+    open('/tmp/claude-r13/operational_results.json','w').write(json.dumps(out,indent=2)+'\n')
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+from math import gcd,isqrt,prod
+for p,q,A,B,l,m,k in [(283,541,2,1,47,3,2),(293,457,2,1,23,7,1),(293,499,2,1,47,1,2)]:
+ N=p*q;Y=11;band=[t for t in range((1<<k)*Y+1,(2<<k)*Y+1) if t%4==3 and all(t%d for d in range(2,isqrt(t)+1))];L=prod(t*t for t in band);u=pow(2,L//(l*l),N);gamma=pow(2,L,N)
+ r=p%l;c=(B*r+A*N*pow(r,-1,l*l))%(l*l);lo=isqrt(4*A*B*N);gl=-((c-lo)//(l*l));g=(B*p+A*q-c)//(l*l);j,i=divmod(g-gl,m);G=pow(u,B+A*N-c,N)*pow(gamma,-(gl+j*m),N)%N
+ f=prod((G-pow(gamma,z,N))%N for z in range(m))%N
+ print(dict(p=p,q=q,k=k,band=band,A=A,B=B,l=l,m=m,c=c,g=g,glo=gl,j=j,i=i,gamma=gamma,G=G,gcd=gcd(f,N),q_minus_one_clean=all((q-1)%t for t in band)))
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+{'p': 283, 'q': 541, 'k': 2, 'band': [47, 59, 67, 71, 79, 83], 'A': 2, 'B': 1, 'l': 47, 'm': 3, 'c': 1365, 'g': 0, 'glo': 0, 'j': 0, 'i': 0, 'gamma': 24054, 'G': 115465, 'gcd': 283, 'q_minus_one_clean': True}
+{'p': 293, 'q': 457, 'k': 1, 'band': [23, 31, 43], 'A': 2, 'B': 1, 'l': 23, 'm': 7, 'c': 149, 'g': 2, 'glo': 2, 'j': 0, 'i': 0, 'gamma': 70615, 'G': 97277, 'gcd': 133901, 'q_minus_one_clean': True}
+{'p': 293, 'q': 499, 'k': 2, 'band': [47, 59, 67, 71, 79, 83], 'A': 2, 'B': 1, 'l': 47, 'm': 1, 'c': 1291, 'g': 0, 'glo': 0, 'j': 0, 'i': 0, 'gamma': 100797, 'G': 1, 'gcd': 146207, 'q_minus_one_clean': False}
+
+web search: 
+web search: "Montgomery" "Vaughan" "large sieve" 1973 pdf ...
+web search: 
+web search: 
+exec
+/bin/bash -lc "python3 - <<'PY'
+from math import gcd
+N=293*409;B=7;X=Y=50;alpha=343+6;beta=343+3
+cs=[alpha*beta-N,B*beta,B*alpha,B*B]
+g=0
+for c in cs:g=gcd(g,c)
+W=max(abs(cs[0]),abs(cs[1])*X,abs(cs[2])*Y,abs(cs[3])*X*Y)
+print({'N':N,'B':B,'coefficients':cs,'content':g,'W':W,'primitive_W':W//g,'XY':X*Y,'condition_primitive_XY_cubed_lt_W_squared':(X*Y)**3<(W//g)**2})
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+{'N': 119837, 'B': 7, 'coefficients': [917, 2422, 2443, 49], 'content': 7, 'W': 122500, 'primitive_W': 17500, 'XY': 2500, 'condition_primitive_XY_cubed_lt_W_squared': False}
+
+codex
+The audit is complete. I found no remaining gap in the asymptotic order argument, sieve normalization, or bit-complexity bound. My verdict is **ACCEPT WITH FIXES**: add guards for the finite-input wrong outputs and revise the prior-art discussion around McKee–Pinch §5. My independent N-only implementation also agreed with the repository on success or failure for 250 balanced semiprimes and nine adversarial inputs.
+codex
+**Overall verdict: ACCEPT WITH FIXES.**
+
+I read the complete results note and all Python files in `src/dcltheorem/`. I find the **asymptotic proof of Theorem D′ sound**, including the order-gap closure and the claimed exceptional rate. However, the implementation’s unrestricted “never outputs a wrong answer” claim has concrete finite-input counterexamples. I also obtained and read McKee–Pinch §5: it is a substantially closer precursor than the current discussion explains.
+
+The repository was left unchanged. Independent scripts, results, and downloaded scans are under [`/tmp/claude-r13/`](/tmp/claude-r13/).
+
+**1. Verdicts on the proof**
+
+| Step | Verdict | Reason |
+|---|---|---|
+| Population size \(|S_n|\gg P^2/n^2\) | **CORRECT** | The proposed rectangle lies inside the population, and PNT supplies \(\gg P/n\) primes on each axis. |
+| Parameter separations | **CORRECT** | For fixed \(0<\varepsilon\le1/60\), eventually \(Y>H^2\), \(16Y<p\), and \(Y^4>\sqrt2P\). |
+| Deterministic roots | **CORRECT** | For nonzero quadratic residues modulo \(\ell\equiv3\bmod4\), \(a^{(\ell+1)/4}\) is a root. All required inverses exist under the stated asymptotic conditions. |
+| Lemma 1: modulus-squared lock | **CORRECT** | The first-order term vanishes because \(Br^2\equiv AN\bmod\ell\). |
+| Coverage criterion | **CORRECT** | Cancelling \(p\bmod\ell\) gives \(\ell\mid Bp-Aq\). |
+| Lemma 2: window and indexing | **CORRECT** | AM–GM and convexity give the bounds; division by \(m\) locates the true giant and baby. |
+| Lemma 3: exact collision modulo \(p\) | **CORRECT** | The exponent difference is exactly \((p-1)(Aq-B)\). No order lower bound is needed. |
+| Lemma 4: discrepancy modulo \(q\) | **CORRECT** | Reducing exponents modulo \(q-1\) gives precisely \((A-B)(p-1)\). |
+| Lemma 5: one-sided extraction | **CORRECT** | A true collision makes \(p\mid f(G)\); absence of every baby collision modulo \(q\) gives \(q\nmid f(G)\). |
+| Lemma 6: four-band argument | **CORRECT** | Four contaminated, disjoint bands would supply four distinct prime divisors of \(q-1\), whose product exceeds \(q-1\). |
+| Lemma 7: clean-band FULL criterion | **CORRECT** | Cleanliness makes \(L/\ell^2\) invertible modulo \(\operatorname{ord}_q(2)\). The exact asymmetric \(\delta\)-range is essential. |
+| Lemma 8: small-order primes | **CORRECT** | Count distinct prime divisors of \(\prod_{j\le\lfloor T\rfloor}(2^j-1)\). |
+| Lemma 9: coverage sieve | **CORRECT** | Primitive weights give distinct excluded classes; the additive large sieve supplies the stated bound. |
+| Lemma 10: CRT count | **CORRECT** | Each solvable pair of congruences gives one class modulo \(\ell d/\gcd(A-B,d)\). The \(+1\) is retained. |
+| Exceptional-set normalization and exponents | **CORRECT** | All three contributions satisfy the required rate, as detailed below. |
+| Corollary D″ | **CORRECT** | The polynomial choice of \(H\) gives the stated logarithmic exceptional fraction. |
+| Implementation: unrestricted “never wrong” | **WRONG** | It returns \(N\) itself on inputs including \(N=2,7,11\). |
+| §11 assertion that one-variable sieves “cannot beat” \(1/\lambda\) | **GAP** | The observation about accessible products of band primes does not establish an impossibility theorem for the entire stated class of methods. This is outside the proof of D′. |
+
+**2. The order-gap closure**
+
+Write \(e=L/\ell^2\), so \(u=2^e\) and \(\gamma=u^{\ell^2}\). For a covering target,
+\[
+\ell^2g=Bp+Aq-c.
+\]
+Consequently,
+\[
+B+AN-c-\ell^2g=(p-1)(Aq-B).
+\]
+This establishes the true collision modulo \(p\) directly. In particular, repeated babies or very small order of \(\gamma\bmod p\) do not invalidate it.
+
+Modulo \(q\), the corresponding exponent difference is
+\[
+B+Ap-c-(Bp+A-c)=(A-B)(p-1).
+\]
+Thus collision with baby \(i'\), writing \(\delta=i'-i^*\), is equivalent to
+\[
+d\mid e\big((A-B)(p-1)-\ell^2\delta\big),
+\qquad d=\operatorname{ord}_q(2).
+\]
+On a clean band, \(\gcd(e,d)=1\), giving exactly
+\[
+d\mid (A-B)(p-1)-\ell^2\delta.
+\]
+
+The exact range is
+\[
+-i^*\le\delta\le m-1-i^*.
+\]
+The enlarged range \(|\delta|<\bar m_k\) is valid as a **counting superset**. The note uses it correctly.
+
+For Lemma 10, fix \(A,B,\ell,\delta\), and put \(h=\gcd(A-B,d)\). If solvable, the order congruence specifies one residue modulo \(d/h\). Cleanliness gives \(\gcd(\ell,d/h)=1\), so combining it with coverage gives one residue modulo
+\[
+\frac{\ell d}{h}.
+\]
+There are therefore at most
+\[
+\frac{Ph}{2\ell d}+1
+\le \frac{PH}{2\ell T}+1
+\]
+integers in the interval. This does not require a distribution theorem for primes in arithmetic progressions.
+
+The union bound is deliberately generous: it discards any \(p\) having even one FULL covering target, although failure requires all relevant targets to be unhelpful. That generosity costs efficiency in the estimate but introduces no logical problem.
+
+**3. Exceptional rate and large-sieve normalization**
+
+The normalization is correct. It counts integer \(p\)-survivors in one fixed interval, sums over \(O(P/n)\) prime values of \(q\), and only then divides by
+\[
+|S_n|\gg P^2/n^2.
+\]
+
+For completeness, let \(s=|V|\) and
+\[
+S(\alpha)=\sum_{p\in U}e(p\alpha).
+\]
+Avoiding \(s\) classes modulo \(\ell\), Parseval and Cauchy–Schwarz give
+\[
+\sum_{a=1}^{\ell-1}|S(a/\ell)|^2
+\ge \frac{s}{\ell-s}|U|^2.
+\]
+The fractions used across the band are \(Q^{-2}\)-separated. Applying the additive large sieve yields
+\[
+|U|\le
+\frac{P/2+1+Q^2}
+{\sum_{\ell\in\mathcal P_k}s/(\ell-s)}.
+\]
+The denominator is \(\gg H^2/n\). This prime-only argument already proves the bound needed here; the full arithmetic-sieve denominator is unnecessary. The applicable additive inequality is the classical Montgomery–Vaughan bound. [Primary paper](https://doi.org/10.1112/S0025579300004708).
+
+The three exceptional fractions are bounded by
+\[
+\begin{aligned}
+E_a &: O\!\left(n\,2^{-2\varepsilon n}\right),\\
+E_b &: O\!\left(n^2/H^2\right),\\
+E_c &: O\!\left(
+n\left[
+\frac{H^{14/3}P^{1/3}}{T}}
++\frac{H^{10/3}}{P^{1/3}}
+\right]\right).
+\end{aligned}
+\]
+Here the extra closing brace in the first displayed fraction should be read as
+\(H^{14/3}P^{1/3}/T\).
+
+Substituting \(H\asymp n2^{\varepsilon n/2}\), \(P=2^{n/2}\), and \(T\asymp2^{(1/4-\varepsilon)n}\), the exponential parts of \(E_c\) are
+\[
+2^{(-1/12+10\varepsilon/3)n},
+\qquad
+2^{(-1/6+5\varepsilon/3)n}.
+\]
+At \(\varepsilon=1/60\), these are respectively
+\[
+2^{-n/36},\qquad 2^{-5n/36}.
+\]
+The first still has exponential slack \(2^{-n/90}\) relative to the desired \(2^{-n/60}\), enough to absorb the polynomial factors.
+
+Therefore **the total exceptional fraction really is \(O(2^{-\varepsilon n})\)**. The dependence of the threshold \(n_0\) on \(\varepsilon\) is permitted by the theorem.
+
+For D″, the corresponding bounds are \(O(n^{-1-2a})\), \(O(n^{-2a})\), and an exponentially decreasing term times a polynomial. Its conclusion follows.
+
+**4. Bit complexity**
+
+I find no missing exponential cost.
+
+| Operation | Verdict | Audit |
+|---|---|---|
+| Parameters, sieve, primitive weights, bounds | **CORRECT** | \(O(Y+H^2)\) objects with polynomial-in-\(n\) work per object. Exact integer roots suffice. |
+| Integer product tree | **CORRECT** | Total leaf bit length is \(O(Y)\); balanced multiplication costs \(\widetilde O(Y)\). |
+| Cofactor exponent tree | **CORRECT** | At each level, sibling-exponent bit lengths total \(O(Y+\#\text{nodes})\); all levels cost \(O(Y\log Y)\) modular multiplications. |
+| Root extraction and small inverses | **CORRECT** | Deterministic polynomial-in-\(n\) work per weight/prime/root combination. No nonresidue search is needed for the theorem design. |
+| Giant generation | **CORRECT** | Initial powers cost polynomial-in-\(n\) work per target; advancing giants costs \(O(T')\) modular multiplications. |
+| Baby-length selection | **CORRECT** | The endpoint is included, so the selected cost is at most \(W_{\max}+T_k\le\bar m_k+T_k\). Merely requiring \(m\le\bar m_k\) would not suffice. |
+| Polynomial products | **CORRECT** | Kronecker substitution gives quasi-linear bit cost in coefficient count times coefficient bit length. |
+| Multipoint evaluation | **CORRECT** | Monic remainder trees work over \(\mathbb Z/N\mathbb Z\), including repeated evaluation points. No inverse of a nonunit is required. |
+| Gcd extraction | **CORRECT** | There are \(T'\) gcds of \(n\)-bit integers. No potentially quadratic backtracking is necessary for the success certificate. |
+
+In particular, polynomial collision detection costs
+\[
+\widetilde O((m+T')n),
+\]
+including the initial remainder when the baby polynomial is larger than the giant-point product.
+
+Thus the total is
+\[
+n^{O(1)}\left(\frac{HP}{Y^2}+H^2Y\right)
+=n^{O(1)}H^{5/3}P^{1/3}
+=n^{O(1)}2^{(1/6+5\varepsilon/6)n}.
+\]
+
+The arithmetic proxy \(E\) and its observed slope do not prove this bound. The separate fast-arithmetic construction does.
+
+**5. Correctness and factor dependence**
+
+The gcd-output path checks \(1<d<N\), so it is safe on arbitrary composite inputs, prime powers, and primes. A result equal to \(N\) is discarded there, as required.
+
+Two other return paths lack that protection:
+
+- [`algorithm.py:287`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:287) returns 2 on \(N=2\).
+- [`algorithm.py:173`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:173) returns a band prime dividing \(N\), without checking \(\ell<N\).
+
+Using `theorem_design(N.bit_length(), 1, 60)`, my exhaustive check over \(2\le N\le256\) found these improper outputs:
+\[
+(N,d)=(2,2),(7,7),(11,11),(19,19),(23,23),(31,31),(43,43),(47,47).
+\]
+
+These are finite-input defects. They **do not refute the formal theorem restricted to \(n\ge n_0(\varepsilon)\)**, where every band prime is smaller than \(N\). They do refute the implementation’s unrestricted wording.
+
+The repair is straightforward: handle \(N<4\), and require every returned candidate to satisfy \(1<d<N\) and \(d\mid N\).
+
+I found **no hidden dependence on \(p\) or \(q\)** in the operational algorithm:
+
+- Bands, weights, and \(\bar m_k\) depend only on public parameters.
+- Targets, windows, and the competitive \(m\) use \(N\) only.
+- \(k(q)\), \(d\), and \(T\) occur solely in the analysis.
+- The CRT argument uses the public upper bound \(\bar m_k\), so the input-dependent choice of \(m\) does not compromise the counting.
+- Factor-dependent diagnostics remain outside the operational import path.
+
+**6. Independent numerical checks**
+
+My lemma checks use exact standard-library arithmetic and import **no repository code**. They cover \(n=18,20,22,24\), with small public designs satisfying the relevant scale separations.
+
+| Check | Cases | Violations |
+|---|---:|---:|
+| Four-band cleanliness | 760 pairs | 0 |
+| Cofactor exponent handles versus direct powering | 24,677 | 0 |
+| Covering-target identities, windows, collisions, extraction | 3,649 | 0 |
+| Exact FULL criterion on clean bands | 3,335 | 0 |
+| Clean FULL cases actually encountered | 188 | 0 |
+| CRT interval counts | 18,354 | 0 |
+| Finite-interval large-sieve bounds | 192 | 0 |
+| Composite-ring product/remainder-tree evaluations | 760 | 0 |
+| Small-order-prime bounds | 70 parameter combinations | 0 |
+
+A useful example is
+\[
+p=283,\quad q=541,\quad(A,B)=(2,1),\quad\ell=47,\quad m=3.
+\]
+Using the band \(\{47,59,67,71,79,83\}\), \(\gamma\bmod p\) has order **2**, yet extraction returns \(283\). This directly exercises the claimed absence of a large-order requirement modulo \(p\).
+
+I also encountered a clean FULL example with
+\[
+(p,q,A,B,\ell,m)=(293,457,2,1,23,7),
+\]
+where the product gcd is \(N\), exactly as predicted. Dirty-band examples show that cancelling the cofactor exponent without cleanliness would indeed be invalid.
+
+A separate independently written **N-only** implementation agreed with the repository on success or failure for 250 balanced 20-bit semiprimes and nine adversarial inputs. Both succeeded on 246 of those 250 semiprimes. The repository’s existing test suite passed: **18 tests**.
+
+These finite checks exercise the identities and implementation; they do not establish the asymptotic exceptional rate.
+
+Reproducible artifacts: [lemma script](/tmp/claude-r13/independent_checks.py), [lemma results](/tmp/claude-r13/independent_results.json), [N-only implementation and comparison](/tmp/claude-r13/operational_checks.py), [operational results](/tmp/claude-r13/operational_results.json).
+
+**7. Prior art**
+
+**McKee–Pinch §5 obtained and read.** Royal Holloway supplied metadata; Springer was subscription content; Google Scholar retrieval failed. Bernstein’s bibliography provided the complete public scan. Relevant pages are [221](/tmp/claude-r13/mckee-03.jpg) and [222–223](/tmp/claude-r13/mckee-04.jpg). [Original scan index](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+**Yes, §5 contains something closely related.** It develops residue-class factoring from \(p\equiv\pm q\bmod k\), extends this to \(\lambda p\equiv\pm\mu q\bmod k\), and obtains a modulus-squared search reduction. It gives a deterministic \(N^{1/3+\eta}\) construction and a heuristic balanced-semiprime method using primes near \(N^{1/4}\), small multipliers, and divisibility probabilities. Section 2 also discusses polynomial evaluation for finding collisions modulo an unknown factor. [McKee–Pinch, pp. 218–223](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+I found no statement there of the prime-pair large-sieve exceptional bound, shared cofactor-powered baby list, clean-band argument, or unconditional \(N^{1/6}\) almost-all theorem. My assessment is that D′ survives this comparison, but its exposition should identify §5 as a direct precursor.
+
+For broader searches:
+
+- Harvey’s rigorous general factoring result has exponent \(1/5\); Harvey–Hittmeir improve logarithmic factors. [Harvey](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+- Gao–Feng–Hu–Pan retain exponent \(1/5\) for balanced semiprimes while improving logarithmic factors. [Primary paper](https://arxiv.org/abs/2512.19076).
+- Umans–Wang obtain a route to exponent \(1/6\) conditional on a divisor-cover conjecture. This is not an unconditional almost-all result. [Primary paper](https://arxiv.org/abs/2511.10851).
+- Almost-all deterministic polynomial-time results located through totient or elliptic-curve methods require additional oracles. They do not meet “given only \(N\).” [Totient-oracle results](https://journals.sagepub.com/doi/pdf/10.3233/FI-2020-1891), [elliptic-curve oracle results](https://arxiv.org/abs/1912.00345).
+- Carella’s preprint explicitly claims deterministic exponent \(1/6\), so it should not be overlooked in a priority search. Its displayed proof loses a necessary primitive-polynomial normalization: the correctly expanded polynomial has every coefficient divisible by \(B\). Dividing by that content reduces its scaled height from approximately \(N\) to \(N^{5/6}\), and the cited small-root condition no longer supports \(X=Y=N^{1/3}\). I therefore do not regard that proof as establishing the claimed bound. [Preprint, §5](https://arxiv.org/pdf/1308.2891).
+
+I found **no established, unconditional, oracle-free deterministic result below \(N^{1/5}\) factoring almost all of this bounded-ratio prime-pair population**. This is a search conclusion, not a proof of priority.
+
+**8. Required fixes**
+
+1. **Repair finite-input output validation.** The concrete improper-divisor outputs above must be eliminated before retaining an unrestricted “never wrong” implementation claim.
+2. **Rewrite the McKee–Pinch comparison.** Cite §5 directly and explain which analytical and algorithmic additions produce D′.
+3. **Qualify the §11 sieve-barrier assertion.** Its universal impossibility wording is unsupported by the supplied argument.
+4. **Keep the formal scope explicit:** sufficiently large inputs, bounded-ratio distinct-prime semiprimes, and pair-counted exceptions.
+
+**The central asymptotic theorem passes this audit. The implementation and priority discussion require the fixes above.**
+tokens used
+235,468
+**Overall verdict: ACCEPT WITH FIXES.**
+
+I read the complete results note and all Python files in `src/dcltheorem/`. I find the **asymptotic proof of Theorem D′ sound**, including the order-gap closure and the claimed exceptional rate. However, the implementation’s unrestricted “never outputs a wrong answer” claim has concrete finite-input counterexamples. I also obtained and read McKee–Pinch §5: it is a substantially closer precursor than the current discussion explains.
+
+The repository was left unchanged. Independent scripts, results, and downloaded scans are under [`/tmp/claude-r13/`](/tmp/claude-r13/).
+
+**1. Verdicts on the proof**
+
+| Step | Verdict | Reason |
+|---|---|---|
+| Population size \(|S_n|\gg P^2/n^2\) | **CORRECT** | The proposed rectangle lies inside the population, and PNT supplies \(\gg P/n\) primes on each axis. |
+| Parameter separations | **CORRECT** | For fixed \(0<\varepsilon\le1/60\), eventually \(Y>H^2\), \(16Y<p\), and \(Y^4>\sqrt2P\). |
+| Deterministic roots | **CORRECT** | For nonzero quadratic residues modulo \(\ell\equiv3\bmod4\), \(a^{(\ell+1)/4}\) is a root. All required inverses exist under the stated asymptotic conditions. |
+| Lemma 1: modulus-squared lock | **CORRECT** | The first-order term vanishes because \(Br^2\equiv AN\bmod\ell\). |
+| Coverage criterion | **CORRECT** | Cancelling \(p\bmod\ell\) gives \(\ell\mid Bp-Aq\). |
+| Lemma 2: window and indexing | **CORRECT** | AM–GM and convexity give the bounds; division by \(m\) locates the true giant and baby. |
+| Lemma 3: exact collision modulo \(p\) | **CORRECT** | The exponent difference is exactly \((p-1)(Aq-B)\). No order lower bound is needed. |
+| Lemma 4: discrepancy modulo \(q\) | **CORRECT** | Reducing exponents modulo \(q-1\) gives precisely \((A-B)(p-1)\). |
+| Lemma 5: one-sided extraction | **CORRECT** | A true collision makes \(p\mid f(G)\); absence of every baby collision modulo \(q\) gives \(q\nmid f(G)\). |
+| Lemma 6: four-band argument | **CORRECT** | Four contaminated, disjoint bands would supply four distinct prime divisors of \(q-1\), whose product exceeds \(q-1\). |
+| Lemma 7: clean-band FULL criterion | **CORRECT** | Cleanliness makes \(L/\ell^2\) invertible modulo \(\operatorname{ord}_q(2)\). The exact asymmetric \(\delta\)-range is essential. |
+| Lemma 8: small-order primes | **CORRECT** | Count distinct prime divisors of \(\prod_{j\le\lfloor T\rfloor}(2^j-1)\). |
+| Lemma 9: coverage sieve | **CORRECT** | Primitive weights give distinct excluded classes; the additive large sieve supplies the stated bound. |
+| Lemma 10: CRT count | **CORRECT** | Each solvable pair of congruences gives one class modulo \(\ell d/\gcd(A-B,d)\). The \(+1\) is retained. |
+| Exceptional-set normalization and exponents | **CORRECT** | All three contributions satisfy the required rate, as detailed below. |
+| Corollary D″ | **CORRECT** | The polynomial choice of \(H\) gives the stated logarithmic exceptional fraction. |
+| Implementation: unrestricted “never wrong” | **WRONG** | It returns \(N\) itself on inputs including \(N=2,7,11\). |
+| §11 assertion that one-variable sieves “cannot beat” \(1/\lambda\) | **GAP** | The observation about accessible products of band primes does not establish an impossibility theorem for the entire stated class of methods. This is outside the proof of D′. |
+
+**2. The order-gap closure**
+
+Write \(e=L/\ell^2\), so \(u=2^e\) and \(\gamma=u^{\ell^2}\). For a covering target,
+\[
+\ell^2g=Bp+Aq-c.
+\]
+Consequently,
+\[
+B+AN-c-\ell^2g=(p-1)(Aq-B).
+\]
+This establishes the true collision modulo \(p\) directly. In particular, repeated babies or very small order of \(\gamma\bmod p\) do not invalidate it.
+
+Modulo \(q\), the corresponding exponent difference is
+\[
+B+Ap-c-(Bp+A-c)=(A-B)(p-1).
+\]
+Thus collision with baby \(i'\), writing \(\delta=i'-i^*\), is equivalent to
+\[
+d\mid e\big((A-B)(p-1)-\ell^2\delta\big),
+\qquad d=\operatorname{ord}_q(2).
+\]
+On a clean band, \(\gcd(e,d)=1\), giving exactly
+\[
+d\mid (A-B)(p-1)-\ell^2\delta.
+\]
+
+The exact range is
+\[
+-i^*\le\delta\le m-1-i^*.
+\]
+The enlarged range \(|\delta|<\bar m_k\) is valid as a **counting superset**. The note uses it correctly.
+
+For Lemma 10, fix \(A,B,\ell,\delta\), and put \(h=\gcd(A-B,d)\). If solvable, the order congruence specifies one residue modulo \(d/h\). Cleanliness gives \(\gcd(\ell,d/h)=1\), so combining it with coverage gives one residue modulo
+\[
+\frac{\ell d}{h}.
+\]
+There are therefore at most
+\[
+\frac{Ph}{2\ell d}+1
+\le \frac{PH}{2\ell T}+1
+\]
+integers in the interval. This does not require a distribution theorem for primes in arithmetic progressions.
+
+The union bound is deliberately generous: it discards any \(p\) having even one FULL covering target, although failure requires all relevant targets to be unhelpful. That generosity costs efficiency in the estimate but introduces no logical problem.
+
+**3. Exceptional rate and large-sieve normalization**
+
+The normalization is correct. It counts integer \(p\)-survivors in one fixed interval, sums over \(O(P/n)\) prime values of \(q\), and only then divides by
+\[
+|S_n|\gg P^2/n^2.
+\]
+
+For completeness, let \(s=|V|\) and
+\[
+S(\alpha)=\sum_{p\in U}e(p\alpha).
+\]
+Avoiding \(s\) classes modulo \(\ell\), Parseval and Cauchy–Schwarz give
+\[
+\sum_{a=1}^{\ell-1}|S(a/\ell)|^2
+\ge \frac{s}{\ell-s}|U|^2.
+\]
+The fractions used across the band are \(Q^{-2}\)-separated. Applying the additive large sieve yields
+\[
+|U|\le
+\frac{P/2+1+Q^2}
+{\sum_{\ell\in\mathcal P_k}s/(\ell-s)}.
+\]
+The denominator is \(\gg H^2/n\). This prime-only argument already proves the bound needed here; the full arithmetic-sieve denominator is unnecessary. The applicable additive inequality is the classical Montgomery–Vaughan bound. [Primary paper](https://doi.org/10.1112/S0025579300004708).
+
+The three exceptional fractions are bounded by
+\[
+\begin{aligned}
+E_a &: O\!\left(n\,2^{-2\varepsilon n}\right),\\
+E_b &: O\!\left(n^2/H^2\right),\\
+E_c &: O\!\left(
+n\left[
+\frac{H^{14/3}P^{1/3}}{T}}
++\frac{H^{10/3}}{P^{1/3}}
+\right]\right).
+\end{aligned}
+\]
+Here the extra closing brace in the first displayed fraction should be read as
+\(H^{14/3}P^{1/3}/T\).
+
+Substituting \(H\asymp n2^{\varepsilon n/2}\), \(P=2^{n/2}\), and \(T\asymp2^{(1/4-\varepsilon)n}\), the exponential parts of \(E_c\) are
+\[
+2^{(-1/12+10\varepsilon/3)n},
+\qquad
+2^{(-1/6+5\varepsilon/3)n}.
+\]
+At \(\varepsilon=1/60\), these are respectively
+\[
+2^{-n/36},\qquad 2^{-5n/36}.
+\]
+The first still has exponential slack \(2^{-n/90}\) relative to the desired \(2^{-n/60}\), enough to absorb the polynomial factors.
+
+Therefore **the total exceptional fraction really is \(O(2^{-\varepsilon n})\)**. The dependence of the threshold \(n_0\) on \(\varepsilon\) is permitted by the theorem.
+
+For D″, the corresponding bounds are \(O(n^{-1-2a})\), \(O(n^{-2a})\), and an exponentially decreasing term times a polynomial. Its conclusion follows.
+
+**4. Bit complexity**
+
+I find no missing exponential cost.
+
+| Operation | Verdict | Audit |
+|---|---|---|
+| Parameters, sieve, primitive weights, bounds | **CORRECT** | \(O(Y+H^2)\) objects with polynomial-in-\(n\) work per object. Exact integer roots suffice. |
+| Integer product tree | **CORRECT** | Total leaf bit length is \(O(Y)\); balanced multiplication costs \(\widetilde O(Y)\). |
+| Cofactor exponent tree | **CORRECT** | At each level, sibling-exponent bit lengths total \(O(Y+\#\text{nodes})\); all levels cost \(O(Y\log Y)\) modular multiplications. |
+| Root extraction and small inverses | **CORRECT** | Deterministic polynomial-in-\(n\) work per weight/prime/root combination. No nonresidue search is needed for the theorem design. |
+| Giant generation | **CORRECT** | Initial powers cost polynomial-in-\(n\) work per target; advancing giants costs \(O(T')\) modular multiplications. |
+| Baby-length selection | **CORRECT** | The endpoint is included, so the selected cost is at most \(W_{\max}+T_k\le\bar m_k+T_k\). Merely requiring \(m\le\bar m_k\) would not suffice. |
+| Polynomial products | **CORRECT** | Kronecker substitution gives quasi-linear bit cost in coefficient count times coefficient bit length. |
+| Multipoint evaluation | **CORRECT** | Monic remainder trees work over \(\mathbb Z/N\mathbb Z\), including repeated evaluation points. No inverse of a nonunit is required. |
+| Gcd extraction | **CORRECT** | There are \(T'\) gcds of \(n\)-bit integers. No potentially quadratic backtracking is necessary for the success certificate. |
+
+In particular, polynomial collision detection costs
+\[
+\widetilde O((m+T')n),
+\]
+including the initial remainder when the baby polynomial is larger than the giant-point product.
+
+Thus the total is
+\[
+n^{O(1)}\left(\frac{HP}{Y^2}+H^2Y\right)
+=n^{O(1)}H^{5/3}P^{1/3}
+=n^{O(1)}2^{(1/6+5\varepsilon/6)n}.
+\]
+
+The arithmetic proxy \(E\) and its observed slope do not prove this bound. The separate fast-arithmetic construction does.
+
+**5. Correctness and factor dependence**
+
+The gcd-output path checks \(1<d<N\), so it is safe on arbitrary composite inputs, prime powers, and primes. A result equal to \(N\) is discarded there, as required.
+
+Two other return paths lack that protection:
+
+- [`algorithm.py:287`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:287) returns 2 on \(N=2\).
+- [`algorithm.py:173`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:173) returns a band prime dividing \(N\), without checking \(\ell<N\).
+
+Using `theorem_design(N.bit_length(), 1, 60)`, my exhaustive check over \(2\le N\le256\) found these improper outputs:
+\[
+(N,d)=(2,2),(7,7),(11,11),(19,19),(23,23),(31,31),(43,43),(47,47).
+\]
+
+These are finite-input defects. They **do not refute the formal theorem restricted to \(n\ge n_0(\varepsilon)\)**, where every band prime is smaller than \(N\). They do refute the implementation’s unrestricted wording.
+
+The repair is straightforward: handle \(N<4\), and require every returned candidate to satisfy \(1<d<N\) and \(d\mid N\).
+
+I found **no hidden dependence on \(p\) or \(q\)** in the operational algorithm:
+
+- Bands, weights, and \(\bar m_k\) depend only on public parameters.
+- Targets, windows, and the competitive \(m\) use \(N\) only.
+- \(k(q)\), \(d\), and \(T\) occur solely in the analysis.
+- The CRT argument uses the public upper bound \(\bar m_k\), so the input-dependent choice of \(m\) does not compromise the counting.
+- Factor-dependent diagnostics remain outside the operational import path.
+
+**6. Independent numerical checks**
+
+My lemma checks use exact standard-library arithmetic and import **no repository code**. They cover \(n=18,20,22,24\), with small public designs satisfying the relevant scale separations.
+
+| Check | Cases | Violations |
+|---|---:|---:|
+| Four-band cleanliness | 760 pairs | 0 |
+| Cofactor exponent handles versus direct powering | 24,677 | 0 |
+| Covering-target identities, windows, collisions, extraction | 3,649 | 0 |
+| Exact FULL criterion on clean bands | 3,335 | 0 |
+| Clean FULL cases actually encountered | 188 | 0 |
+| CRT interval counts | 18,354 | 0 |
+| Finite-interval large-sieve bounds | 192 | 0 |
+| Composite-ring product/remainder-tree evaluations | 760 | 0 |
+| Small-order-prime bounds | 70 parameter combinations | 0 |
+
+A useful example is
+\[
+p=283,\quad q=541,\quad(A,B)=(2,1),\quad\ell=47,\quad m=3.
+\]
+Using the band \(\{47,59,67,71,79,83\}\), \(\gamma\bmod p\) has order **2**, yet extraction returns \(283\). This directly exercises the claimed absence of a large-order requirement modulo \(p\).
+
+I also encountered a clean FULL example with
+\[
+(p,q,A,B,\ell,m)=(293,457,2,1,23,7),
+\]
+where the product gcd is \(N\), exactly as predicted. Dirty-band examples show that cancelling the cofactor exponent without cleanliness would indeed be invalid.
+
+A separate independently written **N-only** implementation agreed with the repository on success or failure for 250 balanced 20-bit semiprimes and nine adversarial inputs. Both succeeded on 246 of those 250 semiprimes. The repository’s existing test suite passed: **18 tests**.
+
+These finite checks exercise the identities and implementation; they do not establish the asymptotic exceptional rate.
+
+Reproducible artifacts: [lemma script](/tmp/claude-r13/independent_checks.py), [lemma results](/tmp/claude-r13/independent_results.json), [N-only implementation and comparison](/tmp/claude-r13/operational_checks.py), [operational results](/tmp/claude-r13/operational_results.json).
+
+**7. Prior art**
+
+**McKee–Pinch §5 obtained and read.** Royal Holloway supplied metadata; Springer was subscription content; Google Scholar retrieval failed. Bernstein’s bibliography provided the complete public scan. Relevant pages are [221](/tmp/claude-r13/mckee-03.jpg) and [222–223](/tmp/claude-r13/mckee-04.jpg). [Original scan index](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+**Yes, §5 contains something closely related.** It develops residue-class factoring from \(p\equiv\pm q\bmod k\), extends this to \(\lambda p\equiv\pm\mu q\bmod k\), and obtains a modulus-squared search reduction. It gives a deterministic \(N^{1/3+\eta}\) construction and a heuristic balanced-semiprime method using primes near \(N^{1/4}\), small multipliers, and divisibility probabilities. Section 2 also discusses polynomial evaluation for finding collisions modulo an unknown factor. [McKee–Pinch, pp. 218–223](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+I found no statement there of the prime-pair large-sieve exceptional bound, shared cofactor-powered baby list, clean-band argument, or unconditional \(N^{1/6}\) almost-all theorem. My assessment is that D′ survives this comparison, but its exposition should identify §5 as a direct precursor.
+
+For broader searches:
+
+- Harvey’s rigorous general factoring result has exponent \(1/5\); Harvey–Hittmeir improve logarithmic factors. [Harvey](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+- Gao–Feng–Hu–Pan retain exponent \(1/5\) for balanced semiprimes while improving logarithmic factors. [Primary paper](https://arxiv.org/abs/2512.19076).
+- Umans–Wang obtain a route to exponent \(1/6\) conditional on a divisor-cover conjecture. This is not an unconditional almost-all result. [Primary paper](https://arxiv.org/abs/2511.10851).
+- Almost-all deterministic polynomial-time results located through totient or elliptic-curve methods require additional oracles. They do not meet “given only \(N\).” [Totient-oracle results](https://journals.sagepub.com/doi/pdf/10.3233/FI-2020-1891), [elliptic-curve oracle results](https://arxiv.org/abs/1912.00345).
+- Carella’s preprint explicitly claims deterministic exponent \(1/6\), so it should not be overlooked in a priority search. Its displayed proof loses a necessary primitive-polynomial normalization: the correctly expanded polynomial has every coefficient divisible by \(B\). Dividing by that content reduces its scaled height from approximately \(N\) to \(N^{5/6}\), and the cited small-root condition no longer supports \(X=Y=N^{1/3}\). I therefore do not regard that proof as establishing the claimed bound. [Preprint, §5](https://arxiv.org/pdf/1308.2891).
+
+I found **no established, unconditional, oracle-free deterministic result below \(N^{1/5}\) factoring almost all of this bounded-ratio prime-pair population**. This is a search conclusion, not a proof of priority.
+
+**8. Required fixes**
+
+1. **Repair finite-input output validation.** The concrete improper-divisor outputs above must be eliminated before retaining an unrestricted “never wrong” implementation claim.
+2. **Rewrite the McKee–Pinch comparison.** Cite §5 directly and explain which analytical and algorithmic additions produce D′.
+3. **Qualify the §11 sieve-barrier assertion.** Its universal impossibility wording is unsupported by the supplied argument.
+4. **Keep the formal scope explicit:** sufficiently large inputs, bounded-ratio distinct-prime semiprimes, and pair-counted exceptions.
+
+**The central asymptotic theorem passes this audit. The implementation and priority discussion require the fixes above.**

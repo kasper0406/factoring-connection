@@ -1,0 +1,248 @@
+> Source: GPT-6.1-sol round 13 — fresh independent referee of Theorem D′ (codex/r13_final_referee.md → .out), 2026-10-18. Verdict: ACCEPT WITH FIXES. Scratch + McKee–Pinch scans: /tmp/claude-r13 (ephemeral); original scan index https://cr.yp.to/bib/1996/mckee-deterministic.html
+
+**Overall verdict: ACCEPT WITH FIXES.**
+
+I read the complete results note and all Python files in `src/dcltheorem/`. I find the **asymptotic proof of Theorem D′ sound**, including the order-gap closure and the claimed exceptional rate. However, the implementation’s unrestricted “never outputs a wrong answer” claim has concrete finite-input counterexamples. I also obtained and read McKee–Pinch §5: it is a substantially closer precursor than the current discussion explains.
+
+The repository was left unchanged. Independent scripts, results, and downloaded scans are under [`/tmp/claude-r13/`](/tmp/claude-r13/).
+
+**1. Verdicts on the proof**
+
+| Step | Verdict | Reason |
+|---|---|---|
+| Population size \(|S_n|\gg P^2/n^2\) | **CORRECT** | The proposed rectangle lies inside the population, and PNT supplies \(\gg P/n\) primes on each axis. |
+| Parameter separations | **CORRECT** | For fixed \(0<\varepsilon\le1/60\), eventually \(Y>H^2\), \(16Y<p\), and \(Y^4>\sqrt2P\). |
+| Deterministic roots | **CORRECT** | For nonzero quadratic residues modulo \(\ell\equiv3\bmod4\), \(a^{(\ell+1)/4}\) is a root. All required inverses exist under the stated asymptotic conditions. |
+| Lemma 1: modulus-squared lock | **CORRECT** | The first-order term vanishes because \(Br^2\equiv AN\bmod\ell\). |
+| Coverage criterion | **CORRECT** | Cancelling \(p\bmod\ell\) gives \(\ell\mid Bp-Aq\). |
+| Lemma 2: window and indexing | **CORRECT** | AM–GM and convexity give the bounds; division by \(m\) locates the true giant and baby. |
+| Lemma 3: exact collision modulo \(p\) | **CORRECT** | The exponent difference is exactly \((p-1)(Aq-B)\). No order lower bound is needed. |
+| Lemma 4: discrepancy modulo \(q\) | **CORRECT** | Reducing exponents modulo \(q-1\) gives precisely \((A-B)(p-1)\). |
+| Lemma 5: one-sided extraction | **CORRECT** | A true collision makes \(p\mid f(G)\); absence of every baby collision modulo \(q\) gives \(q\nmid f(G)\). |
+| Lemma 6: four-band argument | **CORRECT** | Four contaminated, disjoint bands would supply four distinct prime divisors of \(q-1\), whose product exceeds \(q-1\). |
+| Lemma 7: clean-band FULL criterion | **CORRECT** | Cleanliness makes \(L/\ell^2\) invertible modulo \(\operatorname{ord}_q(2)\). The exact asymmetric \(\delta\)-range is essential. |
+| Lemma 8: small-order primes | **CORRECT** | Count distinct prime divisors of \(\prod_{j\le\lfloor T\rfloor}(2^j-1)\). |
+| Lemma 9: coverage sieve | **CORRECT** | Primitive weights give distinct excluded classes; the additive large sieve supplies the stated bound. |
+| Lemma 10: CRT count | **CORRECT** | Each solvable pair of congruences gives one class modulo \(\ell d/\gcd(A-B,d)\). The \(+1\) is retained. |
+| Exceptional-set normalization and exponents | **CORRECT** | All three contributions satisfy the required rate, as detailed below. |
+| Corollary D″ | **CORRECT** | The polynomial choice of \(H\) gives the stated logarithmic exceptional fraction. |
+| Implementation: unrestricted “never wrong” | **WRONG** | It returns \(N\) itself on inputs including \(N=2,7,11\). |
+| §11 assertion that one-variable sieves “cannot beat” \(1/\lambda\) | **GAP** | The observation about accessible products of band primes does not establish an impossibility theorem for the entire stated class of methods. This is outside the proof of D′. |
+
+**2. The order-gap closure**
+
+Write \(e=L/\ell^2\), so \(u=2^e\) and \(\gamma=u^{\ell^2}\). For a covering target,
+\[
+\ell^2g=Bp+Aq-c.
+\]
+Consequently,
+\[
+B+AN-c-\ell^2g=(p-1)(Aq-B).
+\]
+This establishes the true collision modulo \(p\) directly. In particular, repeated babies or very small order of \(\gamma\bmod p\) do not invalidate it.
+
+Modulo \(q\), the corresponding exponent difference is
+\[
+B+Ap-c-(Bp+A-c)=(A-B)(p-1).
+\]
+Thus collision with baby \(i'\), writing \(\delta=i'-i^*\), is equivalent to
+\[
+d\mid e\big((A-B)(p-1)-\ell^2\delta\big),
+\qquad d=\operatorname{ord}_q(2).
+\]
+On a clean band, \(\gcd(e,d)=1\), giving exactly
+\[
+d\mid (A-B)(p-1)-\ell^2\delta.
+\]
+
+The exact range is
+\[
+-i^*\le\delta\le m-1-i^*.
+\]
+The enlarged range \(|\delta|<\bar m_k\) is valid as a **counting superset**. The note uses it correctly.
+
+For Lemma 10, fix \(A,B,\ell,\delta\), and put \(h=\gcd(A-B,d)\). If solvable, the order congruence specifies one residue modulo \(d/h\). Cleanliness gives \(\gcd(\ell,d/h)=1\), so combining it with coverage gives one residue modulo
+\[
+\frac{\ell d}{h}.
+\]
+There are therefore at most
+\[
+\frac{Ph}{2\ell d}+1
+\le \frac{PH}{2\ell T}+1
+\]
+integers in the interval. This does not require a distribution theorem for primes in arithmetic progressions.
+
+The union bound is deliberately generous: it discards any \(p\) having even one FULL covering target, although failure requires all relevant targets to be unhelpful. That generosity costs efficiency in the estimate but introduces no logical problem.
+
+**3. Exceptional rate and large-sieve normalization**
+
+The normalization is correct. It counts integer \(p\)-survivors in one fixed interval, sums over \(O(P/n)\) prime values of \(q\), and only then divides by
+\[
+|S_n|\gg P^2/n^2.
+\]
+
+For completeness, let \(s=|V|\) and
+\[
+S(\alpha)=\sum_{p\in U}e(p\alpha).
+\]
+Avoiding \(s\) classes modulo \(\ell\), Parseval and Cauchy–Schwarz give
+\[
+\sum_{a=1}^{\ell-1}|S(a/\ell)|^2
+\ge \frac{s}{\ell-s}|U|^2.
+\]
+The fractions used across the band are \(Q^{-2}\)-separated. Applying the additive large sieve yields
+\[
+|U|\le
+\frac{P/2+1+Q^2}
+{\sum_{\ell\in\mathcal P_k}s/(\ell-s)}.
+\]
+The denominator is \(\gg H^2/n\). This prime-only argument already proves the bound needed here; the full arithmetic-sieve denominator is unnecessary. The applicable additive inequality is the classical Montgomery–Vaughan bound. [Primary paper](https://doi.org/10.1112/S0025579300004708).
+
+The three exceptional fractions are bounded by
+\[
+\begin{aligned}
+E_a &: O\!\left(n\,2^{-2\varepsilon n}\right),\\
+E_b &: O\!\left(n^2/H^2\right),\\
+E_c &: O\!\left(
+n\left[
+\frac{H^{14/3}P^{1/3}}{T}}
++\frac{H^{10/3}}{P^{1/3}}
+\right]\right).
+\end{aligned}
+\]
+Here the extra closing brace in the first displayed fraction should be read as
+\(H^{14/3}P^{1/3}/T\).
+
+Substituting \(H\asymp n2^{\varepsilon n/2}\), \(P=2^{n/2}\), and \(T\asymp2^{(1/4-\varepsilon)n}\), the exponential parts of \(E_c\) are
+\[
+2^{(-1/12+10\varepsilon/3)n},
+\qquad
+2^{(-1/6+5\varepsilon/3)n}.
+\]
+At \(\varepsilon=1/60\), these are respectively
+\[
+2^{-n/36},\qquad 2^{-5n/36}.
+\]
+The first still has exponential slack \(2^{-n/90}\) relative to the desired \(2^{-n/60}\), enough to absorb the polynomial factors.
+
+Therefore **the total exceptional fraction really is \(O(2^{-\varepsilon n})\)**. The dependence of the threshold \(n_0\) on \(\varepsilon\) is permitted by the theorem.
+
+For D″, the corresponding bounds are \(O(n^{-1-2a})\), \(O(n^{-2a})\), and an exponentially decreasing term times a polynomial. Its conclusion follows.
+
+**4. Bit complexity**
+
+I find no missing exponential cost.
+
+| Operation | Verdict | Audit |
+|---|---|---|
+| Parameters, sieve, primitive weights, bounds | **CORRECT** | \(O(Y+H^2)\) objects with polynomial-in-\(n\) work per object. Exact integer roots suffice. |
+| Integer product tree | **CORRECT** | Total leaf bit length is \(O(Y)\); balanced multiplication costs \(\widetilde O(Y)\). |
+| Cofactor exponent tree | **CORRECT** | At each level, sibling-exponent bit lengths total \(O(Y+\#\text{nodes})\); all levels cost \(O(Y\log Y)\) modular multiplications. |
+| Root extraction and small inverses | **CORRECT** | Deterministic polynomial-in-\(n\) work per weight/prime/root combination. No nonresidue search is needed for the theorem design. |
+| Giant generation | **CORRECT** | Initial powers cost polynomial-in-\(n\) work per target; advancing giants costs \(O(T')\) modular multiplications. |
+| Baby-length selection | **CORRECT** | The endpoint is included, so the selected cost is at most \(W_{\max}+T_k\le\bar m_k+T_k\). Merely requiring \(m\le\bar m_k\) would not suffice. |
+| Polynomial products | **CORRECT** | Kronecker substitution gives quasi-linear bit cost in coefficient count times coefficient bit length. |
+| Multipoint evaluation | **CORRECT** | Monic remainder trees work over \(\mathbb Z/N\mathbb Z\), including repeated evaluation points. No inverse of a nonunit is required. |
+| Gcd extraction | **CORRECT** | There are \(T'\) gcds of \(n\)-bit integers. No potentially quadratic backtracking is necessary for the success certificate. |
+
+In particular, polynomial collision detection costs
+\[
+\widetilde O((m+T')n),
+\]
+including the initial remainder when the baby polynomial is larger than the giant-point product.
+
+Thus the total is
+\[
+n^{O(1)}\left(\frac{HP}{Y^2}+H^2Y\right)
+=n^{O(1)}H^{5/3}P^{1/3}
+=n^{O(1)}2^{(1/6+5\varepsilon/6)n}.
+\]
+
+The arithmetic proxy \(E\) and its observed slope do not prove this bound. The separate fast-arithmetic construction does.
+
+**5. Correctness and factor dependence**
+
+The gcd-output path checks \(1<d<N\), so it is safe on arbitrary composite inputs, prime powers, and primes. A result equal to \(N\) is discarded there, as required.
+
+Two other return paths lack that protection:
+
+- [`algorithm.py:287`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:287) returns 2 on \(N=2\).
+- [`algorithm.py:173`](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:173) returns a band prime dividing \(N\), without checking \(\ell<N\).
+
+Using `theorem_design(N.bit_length(), 1, 60)`, my exhaustive check over \(2\le N\le256\) found these improper outputs:
+\[
+(N,d)=(2,2),(7,7),(11,11),(19,19),(23,23),(31,31),(43,43),(47,47).
+\]
+
+These are finite-input defects. They **do not refute the formal theorem restricted to \(n\ge n_0(\varepsilon)\)**, where every band prime is smaller than \(N\). They do refute the implementation’s unrestricted wording.
+
+The repair is straightforward: handle \(N<4\), and require every returned candidate to satisfy \(1<d<N\) and \(d\mid N\).
+
+I found **no hidden dependence on \(p\) or \(q\)** in the operational algorithm:
+
+- Bands, weights, and \(\bar m_k\) depend only on public parameters.
+- Targets, windows, and the competitive \(m\) use \(N\) only.
+- \(k(q)\), \(d\), and \(T\) occur solely in the analysis.
+- The CRT argument uses the public upper bound \(\bar m_k\), so the input-dependent choice of \(m\) does not compromise the counting.
+- Factor-dependent diagnostics remain outside the operational import path.
+
+**6. Independent numerical checks**
+
+My lemma checks use exact standard-library arithmetic and import **no repository code**. They cover \(n=18,20,22,24\), with small public designs satisfying the relevant scale separations.
+
+| Check | Cases | Violations |
+|---|---:|---:|
+| Four-band cleanliness | 760 pairs | 0 |
+| Cofactor exponent handles versus direct powering | 24,677 | 0 |
+| Covering-target identities, windows, collisions, extraction | 3,649 | 0 |
+| Exact FULL criterion on clean bands | 3,335 | 0 |
+| Clean FULL cases actually encountered | 188 | 0 |
+| CRT interval counts | 18,354 | 0 |
+| Finite-interval large-sieve bounds | 192 | 0 |
+| Composite-ring product/remainder-tree evaluations | 760 | 0 |
+| Small-order-prime bounds | 70 parameter combinations | 0 |
+
+A useful example is
+\[
+p=283,\quad q=541,\quad(A,B)=(2,1),\quad\ell=47,\quad m=3.
+\]
+Using the band \(\{47,59,67,71,79,83\}\), \(\gamma\bmod p\) has order **2**, yet extraction returns \(283\). This directly exercises the claimed absence of a large-order requirement modulo \(p\).
+
+I also encountered a clean FULL example with
+\[
+(p,q,A,B,\ell,m)=(293,457,2,1,23,7),
+\]
+where the product gcd is \(N\), exactly as predicted. Dirty-band examples show that cancelling the cofactor exponent without cleanliness would indeed be invalid.
+
+A separate independently written **N-only** implementation agreed with the repository on success or failure for 250 balanced 20-bit semiprimes and nine adversarial inputs. Both succeeded on 246 of those 250 semiprimes. The repository’s existing test suite passed: **18 tests**.
+
+These finite checks exercise the identities and implementation; they do not establish the asymptotic exceptional rate.
+
+Reproducible artifacts: [lemma script](/tmp/claude-r13/independent_checks.py), [lemma results](/tmp/claude-r13/independent_results.json), [N-only implementation and comparison](/tmp/claude-r13/operational_checks.py), [operational results](/tmp/claude-r13/operational_results.json).
+
+**7. Prior art**
+
+**McKee–Pinch §5 obtained and read.** Royal Holloway supplied metadata; Springer was subscription content; Google Scholar retrieval failed. Bernstein’s bibliography provided the complete public scan. Relevant pages are [221](/tmp/claude-r13/mckee-03.jpg) and [222–223](/tmp/claude-r13/mckee-04.jpg). [Original scan index](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+**Yes, §5 contains something closely related.** It develops residue-class factoring from \(p\equiv\pm q\bmod k\), extends this to \(\lambda p\equiv\pm\mu q\bmod k\), and obtains a modulus-squared search reduction. It gives a deterministic \(N^{1/3+\eta}\) construction and a heuristic balanced-semiprime method using primes near \(N^{1/4}\), small multipliers, and divisibility probabilities. Section 2 also discusses polynomial evaluation for finding collisions modulo an unknown factor. [McKee–Pinch, pp. 218–223](https://cr.yp.to/bib/1996/mckee-deterministic.html).
+
+I found no statement there of the prime-pair large-sieve exceptional bound, shared cofactor-powered baby list, clean-band argument, or unconditional \(N^{1/6}\) almost-all theorem. My assessment is that D′ survives this comparison, but its exposition should identify §5 as a direct precursor.
+
+For broader searches:
+
+- Harvey’s rigorous general factoring result has exponent \(1/5\); Harvey–Hittmeir improve logarithmic factors. [Harvey](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+- Gao–Feng–Hu–Pan retain exponent \(1/5\) for balanced semiprimes while improving logarithmic factors. [Primary paper](https://arxiv.org/abs/2512.19076).
+- Umans–Wang obtain a route to exponent \(1/6\) conditional on a divisor-cover conjecture. This is not an unconditional almost-all result. [Primary paper](https://arxiv.org/abs/2511.10851).
+- Almost-all deterministic polynomial-time results located through totient or elliptic-curve methods require additional oracles. They do not meet “given only \(N\).” [Totient-oracle results](https://journals.sagepub.com/doi/pdf/10.3233/FI-2020-1891), [elliptic-curve oracle results](https://arxiv.org/abs/1912.00345).
+- Carella’s preprint explicitly claims deterministic exponent \(1/6\), so it should not be overlooked in a priority search. Its displayed proof loses a necessary primitive-polynomial normalization: the correctly expanded polynomial has every coefficient divisible by \(B\). Dividing by that content reduces its scaled height from approximately \(N\) to \(N^{5/6}\), and the cited small-root condition no longer supports \(X=Y=N^{1/3}\). I therefore do not regard that proof as establishing the claimed bound. [Preprint, §5](https://arxiv.org/pdf/1308.2891).
+
+I found **no established, unconditional, oracle-free deterministic result below \(N^{1/5}\) factoring almost all of this bounded-ratio prime-pair population**. This is a search conclusion, not a proof of priority.
+
+**8. Required fixes**
+
+1. **Repair finite-input output validation.** The concrete improper-divisor outputs above must be eliminated before retaining an unrestricted “never wrong” implementation claim.
+2. **Rewrite the McKee–Pinch comparison.** Cite §5 directly and explain which analytical and algorithmic additions produce D′.
+3. **Qualify the §11 sieve-barrier assertion.** Its universal impossibility wording is unsupported by the supplied argument.
+4. **Keep the formal scope explicit:** sufficiently large inputs, bounded-ratio distinct-prime semiprimes, and pair-counted exceptions.
+
+**The central asymptotic theorem passes this audit. The implementation and priority discussion require the fixes above.**
