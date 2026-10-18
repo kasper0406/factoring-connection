@@ -1,0 +1,14 @@
+{
+ "_purpose": "Pre-registered test: do MR / SS / Lucas transcripts on D_n (balanced_semiprime, N = 1 mod 4) carry information about eps = (-1/p) beyond N mod 8? Frozen before any battery run (agent primality, 2026-10-18).",
+ "bits": [32, 48, 64],
+ "instances_per_bits": 40000,
+ "seed0": 500000,
+ "bases_per_N": 4,
+ "features": ["mr_pattern_none", "mr_cert_sqrtm1", "ss_b_minus1", "ss_euler_class_pm1", "fermat_y_bit0", "fermat_y_bit1", "mr_b0_bit0", "jac_y_minus1", "jac_y_plus1", "jac_b0_plus1", "jac_euler_plus_jac", "lucas_pattern_none", "lucas_U_bit0", "jac_lucasV"],
+ "controls": {"CONTROL_cf_pc2_T256": "natural one-sided positive control: odd i <= 256 with Q_i a square in the CF of sqrt N (certifies eps=+1); must fire at 32 bits", "CONTROL_planted_rho0.06": "planted: copy of [eps=+1] flipped with prob 0.47 (corr 0.06); must be detected at all sizes"},
+ "statistic": "per instance feature = count over the 4 bases (controls 0/1). Within each N mod 8 stratum (1, 5): Welch z for mean(eps=+1) - mean(eps=-1); strata combined with inverse-variance weights. Features with zero variance in both groups are DEGENERATE (cannot fire).",
+ "threshold": "Bonferroni over 14 features x 3 sizes = 42 two-sided tests at family alpha 0.05: |z| >= 3.32. Controls are evaluated separately.",
+ "power": "about 20000 usable instances per size; MDE correlation at 80% power = (3.32 + 0.84)/sqrt(20000) = 0.029 (per-instance feature vs eps).",
+ "predictions": "All 14 features null (|z| < 3.32). One-sided certificate features mr_cert_sqrtm1 / ss_b_minus1 have exact per-base rates < 1e-6 at 32 bits, so they are predicted to be identically 0 (DEGENERATE). Analytic bound: total-variation distance between the eps=+1 and eps=-1 laws of every +-1-pattern feature is <= E[2g/(p-1) + 2g/(q-1)] (notes/primality_analysis.md Thm 8). Features built from residue bits / Jacobi symbols of residues: conjectured null (no mechanism).",
+ "interpretation": "A null result excludes correlations >= 0.029 for this menu at these sizes only; it does not show eps is unpredictable."
+}
