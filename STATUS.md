@@ -68,3 +68,10 @@ Agents commit LOCALLY only; the orchestrator pushes.
 | `below16` | escaping the 1/6 floor (Thm A model assumptions) | src/below16/*, notes/below16_*, tests/test_below16*, experiments/*/below16* |
 | `leanform` | Lean 4 formalization of Thm D′ key lemmas | lean/*, notes/leanform_* |
 - 2026-10-18: **leanform** Lean 4 + Mathlib formalization of Thm D′ lemmas in lean/ (Lemmas 1–8, 10, capstone; Lemma 9/E_b from an explicit large-sieve hypothesis); 0 sorry, 0 axioms; notes/leanform_results.md
+- 2026-10-18: **orchestrator (restart)**. The phase-5 machine was lost. Restarted on /Volumes/git/factoring-connection; see the addendum in notes/AGENT_PHASE5_COMMON.md. Relaunched sieve2d, unbalanced, dchworst and below16, plus the codex `_1` blind prompts. Lean build verified on the new machine: 9055 jobs, 0 errors. paper/main.tex now compiles with tectonic (20 pp). Codex r16 strategy consult (codex/r16_strategy.out) found:
+  - coverage exceptional fraction O(n/H²) via prime presieving;
+  - the paper's DCH is false on squares N = t²;
+  - "D′ optimal in its model" overclaims, since Thm A is a full-candidate bound;
+  - the unbalanced localized scheme's envelope with Pollard–Strassen peaks at 1/5 (θ = 1/5);
+  - corollary: D′ + HH fallback has average cost N^{2/11+o(1)} on S_n.
+  New agents: `avgtime` (src/avgtime/*, notes/avgtime_*) and `nfsfruit` (src/nfsfruit/*, notes/nfsfruit_*).

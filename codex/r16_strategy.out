@@ -1,0 +1,385 @@
+**Verdict — SPECULATIVE assessment:** this project has a credible, potentially publishable result in **uniform deterministic factoring on almost all bounded-ratio semiprimes**. That is a meaningful frontier, although it remains far above randomized subexponential factoring. I find D′’s main argument convincing on this review; I would prioritize publishing it and improving its exceptional-set estimate. The main cautions are concrete: Theorem A does **not** establish optimality for D′’s average-case problem; the proposed ratio extension encounters a \(1/5\) bottleneck; and the paper’s stronger DCH is **false as written on square inputs**. I also obtain an elementary improvement of the coverage bound from \(O(n^2/H^2)\) to \(O(n/H^2)\). None of these findings invalidates D′.
+
+## 1. The frontier and the most valuable targets
+
+### Correcting the benchmarks
+
+**KNOWN.** Your rigorous randomized benchmark is correct: Lenstra–Pomerance, *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**, proves expected
+\[
+L_N[1/2,1+o(1)]
+\]
+for complete factorization. Its class-group method uses multipliers to remove the earlier GRH assumption. [Original paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+**KNOWN.** The general deterministic record remains
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right),
+\]
+from Harvey–Hittmeir, **Math. Comp. 91 (2022), 1367–1379**. Harvey’s preceding exponent-\(1/5\) paper appeared in **Math. Comp. 90 (2021), 2937–2950**. [Harvey](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+
+**HEURISTIC.** The constant \((64/9)^{1/3}\approx1.923\) describes ordinary GNFS. The theoretical asymptotic comparison should also acknowledge Coppersmith’s multiple-polynomial variant:
+\[
+L_N[1/3,c_C],\qquad
+c_C=\frac{(92+26\sqrt{13})^{1/3}}3\approx1.90188.
+\]
+This is a heuristic factoring bound. [Coppersmith, *Modifications to the Number Field Sieve*, J. Cryptology 6 (1993), 169–180](https://research.ibm.com/publications/modifications-to-the-number-field-sieve).
+
+**KNOWN, with an essential qualification.** Lee–Venkatesan rigorously obtain NFS-generated **square congruences** at the usual \(L[1/3]\) scale. Their conversion to nontrivial factors remains conditional: Theorem 2.3 treats Blum semiprimes under their character conjecture. Thus this does not supersede Lenstra–Pomerance as an unconditional factoring theorem. [Lee–Venkatesan, J. Number Theory 187 (2018), 92–159, Theorems 2.1–2.3 and §7](https://arxiv.org/pdf/1805.08873).
+
+### Ranking targets by probability × significance
+
+The rankings below are judgments, not numerical probability estimates.
+
+| Rank | Concrete target | Established starting point | Why it is stuck; specific attack |
+|---|---|---|---|
+| **1** | Publish D′ with a precise novelty claim | **PROVED in the repository:** \(N^{1/6}\operatorname{polylog}N\), logarithmically small exceptional fraction, bounded ratio | The remaining work is human verification and positioning. Separate the shared-list construction, coverage theorem and extraction argument; credit McKee–Pinch explicitly. |
+| **2** | Improve polynomial exceptional tails | D′; also the \(O(n/H^2)\) refinement below | **SPECULATIVE target:** a fourth-moment estimate giving roughly \(\lambda^{-2}\), with prime normalization and lattice errors controlled. This directly improves the exponent-versus-exception trade-off. |
+| **3** | Extend uniformly to \(q/p=N^{o(1)}\), then establish an honest ratio-dependent theorem | D′ for bounded ratio; HH for arbitrary inputs | **SPECULATIVE but plausible.** Use anisotropic weights while both weight coordinates remain available. For polynomial ratios, prove the localized-weight scheme and expose its \(R^{1/6}\) cost explicitly. |
+| **4** | Prove NFS fruitfulness for an averaged family of Blum semiprimes | Lee–Venkatesan’s rigorous congruence generation; conditional factoring theorem above | **SPECULATIVE, high significance.** Average the factor-detecting character’s independence over \(N\) and randomized defining polynomials. This is a narrower target than a uniform NFS theorem. |
+| **5** | Any unconditional deterministic worst-case exponent \(<1/5\) | Harvey–Hittmeir | **SPECULATIVE, low probability.** Seek a quantitative many-modulus short-vector theorem strong enough to beat the threshold in §2. Coverage and extraction must both be solved. |
+| **6** | Rigorous randomized \(L[1/2,c]\), \(c<1\) | Lenstra–Pomerance’s \(c=1\) | **SPECULATIVE, very difficult.** A useful attack must improve relation-size/entropy economics while retaining useful dependencies. Ordinary finite-large-prime variations do not automatically change the leading \(L\)-constant. |
+| **7** | Rigorous \(L[1/3]\) factoring for a nontrivial special-form family | General rigorous \(L[1/2,1]\); heuristic SNFS \(L[1/3,(32/9)^{1/3}]\) | **SPECULATIVE.** Construct enough polynomial randomization to prove relation supply while preserving small special-form norms, then prove fruitfulness. Fixed low-degree smooth-value theorems do not directly supply the growing-degree regime. [Original NFS development](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf). |
+| **8** | Deterministic subexponential factoring under GRH alone | No such general theorem located; unconditional \(N^{1/5+o(1)}\) remains available | **SPECULATIVE, very low probability for this project.** GRH supplies small generators and character witnesses, not a short deterministic sequence of useful smooth relations. Attack an explicit relation-hitting lemma; do not assume GRH supplies it. |
+
+For the last point, the older GRH class-group analysis was still randomized. Harvey’s introduction also distinguishes Shanks’s conditional exponential bound from subexponential randomized methods. [Lenstra–Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf), [Harvey, §1](https://arxiv.org/html/2010.05450).
+
+**SPECULATIVE recommendation:** keep the main project concentrated on ranks 1–3. If you want a second research program aimed at a subexponential frontier, investigate rank 4. It has a specific missing statement in existing literature.
+
+## 2. Ranking the four open threads
+
+| Rank | Thread | Most promising approach | Most likely failure |
+|---|---|---|---|
+| **1** | **sieve2d** | A fourth-moment lattice estimate, after retaining prime presieving | Short-vector contributions or prime-normalization losses overwhelm the desired tail |
+| **2** | **unbalanced** | Anisotropic weights, then localized ratio windows | The \(R^{1/6}\) cost persists and meets Pollard–Strassen at \(1/5\) |
+| **3** | **dchworst** | Quantitative simultaneous short-vector coverage over many moduli | Available error bounds do not force even one covering event |
+| **4** | **below16** | A provable preference for the true factor in an input-dependent target selection | The selector costs the saving it was supposed to produce |
+
+### sieve2d: exponential tails are not a standard-sieve consequence
+
+Put
+\[
+s=|V|\asymp H^2,\qquad
+\lambda=s\sum_{\ell\in\mathcal P}\frac1\ell
+\asymp\frac{H^2}{n}.
+\]
+
+**PROVED — a modest improvement is already available.** Keeping small-prime factors in the arithmetic large-sieve denominator gives
+\[
+\boxed{\text{coverage exceptional fraction}\ll \lambda^{-1}\asymp n/H^2.}
+\]
+The proof is in §3. It removes the extra logarithm arising from counting integer \(p\)-survivors before normalizing by prime pairs.
+
+**KNOWN.** Sieve dimension and integrated intensity are different quantities. Here the dimension associated with the band’s local exclusions is of order \(s\), up to the restriction to half the primes. The accumulated intensity is only \(\lambda\asymp s/\log Y\). A fundamental-lemma estimate whose constants depend on fixed dimension cannot be used uniformly as \(s\) grows. [Tao’s sieve notes, Lemma 17](https://terrytao.wordpress.com/2015/01/21/254a-notes-4-some-sieve-theory/), [Diamond–Halberstam on large sieve dimension](https://www.sciencedirect.com/science/article/pii/S0022314X97921661).
+
+**PROVED calculation.** With \(H=N^{o(1)}\), \(Y=P^{1/3+o(1)}\). Even granting distribution to level \(D=P^2\),
+\[
+\frac{\log D}{\log Y}=6+o(1).
+\]
+That is bounded. It does not support the increasing-order inclusion–exclusion needed to recover an exponentially small probability when \(\lambda\to\infty\).
+
+The honest consequences are:
+
+- **PROVED:** a bounded number of moments does not by itself imply \(e^{-c\lambda}\).
+- **SPECULATIVE:** fourth-moment control could give a \(\lambda^{-2}\) bound.
+- **SPECULATIVE:** sixth-moment control might improve this further, but the critical product sizes and weighted errors need separate analysis.
+- **HEURISTIC:** \(e^{-c\lambda}\) remains plausible for the actual arithmetic distribution.
+
+**SPECULATIVE warning about the proposed level:** two variables do not automatically give level \(P^2\). For specified slopes and primes, the intersection is a lattice of determinant \(\prod\ell\), but determinant alone does not control its point-counting error. If all conditions use one slope \((A,B)\), the lattice contains that short direction regardless of its determinant. Prime pairs exclude the exact proportionality line, but that exclusion must enter the proof.
+
+The first serious lemma should therefore be a smoothed fourth-moment estimate for the covering count \(M\), of the shape
+\[
+\mathbb E(M-\lambda)^4
+\ll \lambda^2+\lambda+\text{controlled error}.
+\]
+It must handle repeated slopes, repeated primes, exceptional short vectors, and restriction to prime pairs.
+
+**PROVED conditional payoff.** If the resulting prime-pair exceptional fraction were
+\[
+\ll \operatorname{polylog}(N)H^{-4}+N^{-c},
+\]
+then choosing \(H=N^{\varepsilon/4}\operatorname{polylog}N\) would change the coverage-driven cost to
+\[
+N^{1/6+5\varepsilon/12}\operatorname{polylog}N,
+\]
+subject to checking the other exceptional terms.
+
+**Assessment:** Rosser/beta-sieve and the fundamental lemma do not establish the desired exponential tail here. Janson also needs a justified dependency structure; approximate low-order CRT independence is insufficient. My strongest certified bound from this review is \(O(1/\lambda)\). I would target \(\lambda^{-2}\) next and keep the exponential tail labelled **HEURISTIC**.
+
+### unbalanced: the ratio gap is real for the proposed scheme
+
+Write \(R=q/p=N^\theta\).
+
+**PROVED calculation.** The curvature statement
+\[
+\#\{\text{candidates covered by one giant}\}
+\ll \sqrt{mp/R}+1
+\]
+is consistent with
+\[
+F''(x)=2AN/x^3\asymp AR/p
+\]
+on the smaller-factor band, together with the modulus-squared lock.
+
+For full structural covering, summing this bound with the model’s list budget gives
+\[
+p\ll \sqrt{p/R}\,X^{3/2}+X,
+\qquad\text{hence}\qquad
+X\gg(pR)^{1/3}=q^{1/3}.
+\]
+**This is a full-cover barrier, not an average-case factoring lower bound.**
+
+**PROVED cost audit.** The proposed localized design has \(A=1\), \(B\asymp R\), and ratio-window width \(\Delta\). Near the stationary point,
+\[
+\operatorname{span}(Bp+q)\asymp p\Delta^2/R.
+\]
+There are \(O(RY)\) targets, so
+\[
+T(Y)\asymp RY+\frac{p\Delta^2}{RY^2}.
+\]
+Optimization gives
+\[
+Y\asymp N^{1/6}\Delta^{2/3}R^{-5/6},
+\qquad
+T\asymp N^{1/6}\Delta^{2/3}R^{1/6}.
+\]
+Thus \(\Delta\asymp H^2\) gives exactly the claimed
+\[
+\boxed{H^{4/3}N^{1/6}R^{1/6}.}
+\]
+
+For subpolynomial parameters, combine this with Pollard–Strassen:
+\[
+a(\theta)=
+\min\left\{\frac{1+\theta}{6},\frac{1-\theta}{4}\right\}.
+\]
+
+| \(\theta\) | DCL cost exponent | Pollard–Strassen exponent | Better exponent |
+|---:|---:|---:|---:|
+| \(0\) | \(1/6\) | \(1/4\) | \(1/6\) |
+| \(1/6\) | \(7/36\) | \(5/24\) | \(7/36\) |
+| \(1/5\) | \(1/5\) | \(1/5\) | \(1/5\) |
+| \(1/3\) | \(2/9\) | \(1/6\) | \(1/6\) |
+
+**PROVED optimization:**
+\[
+\boxed{\max_{0\le\theta\le1/3}a(\theta)=1/5.}
+\]
+Both costs exceed \(1/6\) throughout \(0<\theta<1/3\). The bottleneck is
+\[
+p\asymp N^{2/5},\qquad q\asymp N^{3/5}.
+\]
+
+**SPECULATIVE assessment:** the \(N^{o(1)}\)-ratio extension is plausible. A uniform all-ratio \(N^{1/6+o(1)}\) result needs another mechanism. The localized scheme’s success proof must also redo extraction: \(|A-B|\) is now of order \(R\), so the old \(H\)-bound in the FULL count cannot simply be copied. Averaging \(\gcd(B-1,\operatorname{ord}_q(2))\) over \(B\) is the natural repair.
+
+There is also a population trap.
+
+**KNOWN counting consequence.** Under ordinary counting of all semiprimes up to \(X\),
+\[
+\#\{pq\le X\}\asymp X\log\log X/\log X,
+\]
+whereas those with \(p>X^{1/3}\) number only \(O(X/\log X)\). Consequently Pollard–Strassen already handles a \(1-o(1)\) fraction of all semiprimes within exponent \(1/6\). [Semiprime counting reference](https://arxiv.org/abs/2006.16491).
+
+The meaningful new statement is **uniform success in ratio bands**, or a specified distribution concentrated on large factors.
+
+### dchworst: repair the conjecture, then quantify the missing theorem
+
+**PROVED — the paper’s algorithmic DCH is false as written.**
+
+At [paper/main.tex:1119](/Volumes/git/factoring-connection/paper/main.tex:1119), it includes every sufficiently large \(N\) coprime to \(6\), every integer candidate \(p\), and requires \(A\ne B\).
+
+Take
+\[
+N=t^2,\qquad p=t
+\]
+with \(t>3\) prime. Then
+\[
+Bp^2-AN=(B-A)t^2.
+\]
+Asymptotically every band prime satisfies \(H<\ell<t\). Since \(0<|B-A|<H\), none divides that expression.
+
+This counterexample does not affect D′. It also does not refute the notes’ variant allowing \(A=B\). Excluding squares repairs this immediate defect; it leaves the substantive conjecture open.
+
+**PROVED conditional barrier calculation.** Suppose \(J\asymp Y\) band moduli guarantee a useful signed vector of height
+\[
+H\le Y^{1/2}J^{-c}.
+\]
+Using the present list cost, the resulting exponent is
+\[
+\alpha(c)=\frac{1-c}{7/2-c}.
+\]
+Therefore:
+\[
+\alpha(0)=2/7,\quad
+\alpha(1/4)=3/13,\quad
+\alpha(3/8)=1/5,\quad
+\alpha(1/2)=1/6.
+\]
+A guarantee of this type must achieve **\(c>3/8\)** to beat \(1/5\).
+
+**PROVED diagnostic calculation.** A positivity argument with main term \(JH^2/Y\) and error of size \(J^{1/2}\) only forces
+\[
+H\gg Y^{1/2}J^{-1/4}.
+\]
+Such an argument falls short of the required threshold.
+
+**SPECULATIVE assessment of alternatives:**
+
+- Composite and smooth moduli have no identified exponent gain after charging roots, classes and construction.
+- \(N\)-dependent moduli are useful only if their selection is computable without already locating the factor.
+- Ford’s divisor-in-interval theorems are distributional; they do not force a band divisor for every value of these forms. [Ford, Annals 168 (2008), 367–433](https://annals.math.princeton.edu/wp-content/uploads/annals-v168-n2-p01.pdf).
+- Pigeonhole arguments supply short vectors, but the needed improvement across many moduli is the unproved part.
+
+Coverage also leaves extraction unresolved. **KNOWN:** Harvey–Hittmeir 2026 find a large-order element modulo \(N\), or a factor, in essentially square-root time in the order threshold. That does not certify large order modulo a specified hidden factor \(q\). [Theorem 1.1](https://arxiv.org/html/2601.11131v2).
+
+The sharp defensible barrier is therefore quantitative and model-specific. There is no known general factoring lower bound preventing exponent \(<1/5\).
+
+### below16: the true-factor loophole is the strongest surviving one
+
+**PROVED scope correction:** Theorem A concerns covering every integer candidate for a fixed \(N\). D′ only needs the true factor for most inputs. Calling D′ “optimal in its model” is stronger than the theorem establishes.
+
+**SPECULATIVE ranking of escapes:**
+
+1. **True-factor preference:** strongest logical opening.
+2. **Relation methods:** a real escape, but successful versions are already subexponential algorithms.
+3. **Mixed known-relation bases:** technically open; no convincing speedup mechanism yet.
+4. **Average higher-order flatness:** requires a new theorem about the true-factor distribution.
+5. **Generic class-group collisions:** unlikely to help by themselves.
+
+For mixed bases, first try to close the apparent loophole: with fixed rank and sufficiently small relation coefficients, Smith normal form may reduce the search to free coordinates plus manageable torsion. A claimed gain must survive the transformed window sizes.
+
+For class groups, the basic generic collision cost remains about the square root of the class number, typically around \(N^{1/4}\) at discriminant size \(N\). Ambiguous classes contributed by known multipliers need not reveal the unknown factor.
+
+**PROVED conditional exponent calculation.** Suppose a cheap public selector reduces the necessary target span from \(N^{1/2}\) to \(N^{1/2-\eta}\), preserving enough coverage of true factors and requiring no extra polynomial number of targets. Then
+\[
+T(Y)\asymp Y+\frac{N^{1/2-\eta}}{Y^2}
+\]
+would give
+\[
+\boxed{T=N^{1/6-\eta/3+o(1)}.}
+\]
+For example, \(\eta=1/20\) gives \(N^{3/20+o(1)}\).
+
+**SPECULATIVE:** no such selector has been constructed. Ordinary prime-density thinning saves logarithms, and subdividing all candidate intervals pays back the apparent gain. This formula is a specification for a missing mechanism, not an algorithm.
+
+## 3. Three mechanisms or deductions absent from the catalog
+
+These are additions to this project’s catalog, not claims of new ideas in the wider literature.
+
+### 1. Retain prime presieving in the existing large sieve
+
+**PROVED.** This gives an immediate logarithmic improvement.
+
+Fix \(q\) and a band. Let \(U\) consist of **prime** \(p\in[P/2,P]\) uncovered by that band. Choose
+\[
+Q=\lfloor P^{1/2}\rfloor,\qquad
+Z=\left\lfloor Q/(32Y)\right\rfloor.
+\]
+In D′’s regime, \(1<Z<Y\) and \(\log Z\asymp n\).
+
+Besides the \(s\) avoided classes modulo each band prime \(\ell\), \(U\) avoids \(0\) modulo every prime \(r\le Z\). In the arithmetic large-sieve denominator retain \(d=\ell a\), with squarefree \(a\le Z\):
+\[
+J\ge
+\left(\sum_{\ell\in\mathcal P}\frac{s}{\ell-s}\right)
+\left(\sum_{a\le Z}\frac{\mu^2(a)}{\varphi(a)}\right)
+\gg \lambda\log Z.
+\]
+Thus
+\[
+|U|\ll\frac{P}{n\lambda}.
+\]
+Summing over \(O(P/n)\) prime \(q\), then normalizing by \(\asymp P^2/n^2\), gives \(O(1/\lambda)\). This uses the standard arithmetic large sieve. [Montgomery–Vaughan, Mathematika 20 (1973), 119–134](https://doi.org/10.1112/S0025579300004708).
+
+**Payoff:** for coverage error \((\log N)^{-A}\), \(H\asymp n^{(A+1)/2}\) suffices. It saves a factor \(n^{5/6}\) in the \(H^{5/3}\) portion of the cost compared with the existing choice.
+
+**First action:** incorporate this as a proof refinement and independently check all endpoint constants. It needs no computational experiment.
+
+### 2. Turn D′ into a complete algorithm with an average-time theorem
+
+**PROVED consequence.** Run D′, then Harvey–Hittmeir on FAIL. The algorithm always completes factorization; over the balanced population,
+\[
+\mathbb E T
+\ll
+N^{1/6+5\varepsilon/6+o(1)}
++
+N^{1/5-\varepsilon+o(1)}.
+\]
+
+Using the stated \(\varepsilon=1/60\) gives
+\[
+\mathbb E T\le N^{11/60+o(1)}.
+\]
+
+**PROVED from the displayed exceptional estimates:** the proof’s strict limiting inequality is
+\[
+-\frac1{12}+\frac{10\varepsilon}{3}<-\varepsilon,
+\quad\text{or}\quad \varepsilon<1/52.
+\]
+Thus the same estimates permit \(\varepsilon=1/55\). Balancing the two costs then gives
+\[
+\boxed{\mathbb E T\le N^{2/11+o(1)}.}
+\]
+
+This is an inexpensive corollary worth checking and stating. It is a deterministic algorithm averaged over inputs; it is not a randomized subexponential improvement.
+
+**First lemma:** audit the extension from \(1/60\) to \(1/55\) against every parameter separation, then state the complete-algorithm result.
+
+### 3. Attack the fruitful-character obstruction in randomized NFS
+
+**SPECULATIVE mechanism.** For Blum semiprimes, treat the factor-detecting sign as an additional linear functional on the relation space. Seek a proof that, after averaging over an explicit input/polynomial family, it lies outside the span of the imposed parity and character constraints with probability bounded away from zero.
+
+This attacks the obstruction isolated by Lee–Venkatesan, rather than restarting relation-generation analysis.
+
+**Conditional payoff:** a fruitfulness probability \(L_N[1/3,-o(1)]\) would preserve the leading \(L[1/3]\) constant for that family.
+
+**First experiment:** for small diagnostic Blum semiprimes, construct randomized defining polynomials and relation matrices. Using known factors only in the diagnostic, test whether adding the fruitful-sign row increases rank. Record failures by polynomial family and local arithmetic.
+
+**First lemma:** prove positive probability of that rank increase in a restricted averaged family. This would be a substantial result even without uniformity in every \(N\).
+
+The elementary sieve refinement, square counterexample and ratio optimization are recorded in [strategy_lemmas.md](/Volumes/git/factoring-connection/codex/scratch/r16_strategy/strategy_lemmas.md). The research repository was left unchanged.
+
+## 4. D′: novelty, significance and publication
+
+### What the renewed search supports
+
+**SPECULATIVE novelty judgment:** I found no established theorem matching the combination
+\[
+\text{uniform deterministic }N^{1/6}\operatorname{polylog}N
+\]
+with vanishing exceptional fraction among bounded-ratio prime pairs. I would describe D′ as **apparently new**, subject to specialist review. A literature search cannot prove priority.
+
+The closest comparisons are:
+
+- **KNOWN — McKee–Pinch 1996 §5:** the event \(\ell\mid Bp-Aq\), small multipliers and the modulus-squared acceleration are direct precursors. I read the scans. Their balanced prime-band proposal is heuristic and exponent \(1/4+\varepsilon\). D′’s shared baby list, rigorous coverage estimate and extraction argument are the substantive additions. [Bibliographic record](https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/), [§5 scan](/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-04.jpg).
+- **KNOWN — Hittmeir/Harvey/HH:** these establish deterministic improvements culminating in the general exponent \(1/5\), rather than D′’s prime-pair average statement. [Hittmeir’s Lehman trade-off](https://arxiv.org/abs/2006.16729), [Harvey](https://arxiv.org/abs/2010.05450).
+- **KNOWN — Gao–Feng–Hu–Pan 2512.19076:** Theorem 1.1 claims the balanced worst-case bound \(O(N^{1/5}\log^{13/5}N/(\log\log N)^{3/5})\). It improves logarithms, not the exponent. [Paper](https://arxiv.org/abs/2512.19076).
+- **KNOWN — recent adjacent work:** Harvey–Hittmeir’s 2026 order-selection result and Stănică–Mulder–Hittmeir’s October 2026 hyperbolic-sieve revision address relevant ingredients, without stating D′’s almost-all exponent-\(1/6\) theorem. [Order selection](https://arxiv.org/abs/2601.11131), [Hyperbolic sieves](https://arxiv.org/abs/2606.13018).
+- **KNOWN — Umans–Wang/He–Sahai:** the former gives a conditional route to exponent \(1/6\); the latter refutes the specified arithmetic-progression divisor-cover version. Neither establishes D′’s result. [Umans–Wang](https://arxiv.org/abs/2511.10851), [He–Sahai](https://arxiv.org/abs/2608.06681).
+
+### Carella needs an explicit mathematical comparison
+
+**KNOWN claim; PROVED defect in the displayed argument.** Carella 1308.2891 explicitly claims deterministic exponent \(1/6+\varepsilon\). In its §5 polynomial, the correctly expanded linear coefficients include factors of \(B\), and the constant coefficient is divisible by \(B\). The polynomial therefore has content at least \(B\).
+
+After removing that content, the claimed scaled height \(N\) falls to approximately \(N^{5/6}\). Its proposed \(X=Y=N^{1/3}\) then fails the cited condition:
+\[
+XY=N^{2/3}> (N^{5/6})^{2/3}=N^{5/9}.
+\]
+I independently find the same normalization defect identified by the repository referee. This displayed proof does not establish its claimed bound. [Carella, §5, equations (17)–(21)](https://arxiv.org/html/1308.2891v3).
+
+Cite the claim and explain the defect calmly. Avoid asserting an unqualified first appearance of exponent \(1/6\).
+
+### What a referee would demand
+
+**SPECULATIVE editorial assessment:** Math. Comp. is a credible target; ANTS is also a natural fit. The result is meaningful enough to submit if the theorem survives human checking. An exponential algorithm can be publishable because it improves a rigorous deterministic guarantee on a precisely defined hard population.
+
+I would expect these demands:
+
+1. **Exact quantifiers.** Uniform algorithm, all-input cost, explicit success population, pair counting and all dependencies in \(n_0(\varepsilon)\).
+2. **A standalone extraction proof.** Explain why small order modulo \(p\) is harmless, where clean-band invertibility is used, and why the enlarged \(\delta\)-range is only a counting superset.
+3. **Complete bit complexity.** Exponent trees, root computation, monic remainder trees over a composite ring, giant counts and gcd extraction.
+4. **Precise prior-art attribution.** McKee–Pinch owns the central divisibility event; HH supplies the lock. Explain exactly what shared-list batching makes possible.
+5. **Correct model claims.** Remove average-case optimality language based on Theorem A. Repair the square-input DCH counterexample.
+6. **Separate experiments from asymptotics.** The finite schedule with \(H\asymp\sqrt n\) tests behavior where the original proved exceptional bound is vacuous. Measured slopes do not prove an exponent or a practical crossover.
+7. **Human responsibility for the proof.** Lean checks of component lemmas are useful, but a large-sieve hypothesis left explicit is not an end-to-end formalization.
+
+**SPECULATIVE positioning:** lead with “almost-all deterministic factoring of bounded-ratio semiprimes.” Present the polynomial exceptional-set trade-off as a second theorem. Keep DCH and below-\(1/6\) ideas clearly separate from the established result.
