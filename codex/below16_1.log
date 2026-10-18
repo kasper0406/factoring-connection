@@ -1,0 +1,2752 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/below16_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a14fdc-cc78-7c33-b8d9-96b460cded8f
+--------
+user
+You are an expert in computational and analytic number theory, asked for a BLIND, adversarial research attempt. Repo (read-only for you): /Volumes/git/factoring-connection. Scratch scripts go in your current working directory (codex/scratch/below16_1/). You may read notes/multimod_results.md (Sections 1-3), notes/dcltheorem_results.md (Sections 0-4), notes/cycloharvey_results.md (Section 3.4), but form your own view.
+
+## Setting
+
+N = pq, primes p < q <= 2p, n = log2 N, P = sqrt(N). Deterministic factoring by one-sided exponent collisions in (Z/N)^* (Lehman / Harvey 2021 / Harvey-Hittmeir 2022 line). A *target* is an integer-valued Laurent polynomial g(p) (q = N/p) of bounded degree, e.g. the HH class lock: for a modulus M with gcd(M, ABN) = 1 and a root r of B r^2 == A N (mod M), every p == r (mod M) has B p + A q == c (mod M^2) with c computable from N, so g = (Bp + Aq - c)/M^2 is an integer in a window [U, U+W). Since B + AN - (Bp + Aq) = (p-1)(Aq - B), beta^{B+AN-c} == beta^{M^2 g} (mod p), so a shared baby list gamma^i (gamma = beta^{prod M^2}) and giants per target detect g by a gcd/product tree. Cost model: X >= #targets and sum_tau W_tau <= X^2 (shared list of length m: m + sum ceil(W/m)).
+
+**Theorem A (multimod, proved, model M+):** any family of bounded-degree targets with ANY moduli/classes (one per target), interval windows, one base, sumset BSGS cost, that covers EVERY integer candidate p in [sqrt(N/2), sqrt N] for a fixed N, has X >= c N^{1/6}. Per-target coverage: a degree-1 two-term target with height H (H := max(|A|,|B|) over denominator M^2) covers <= C (P W / H)^{1/2} + C candidates (M cancels); degree e >= 2 targets cover <= C P^{1-e/K} W^{1/K} + C, so they alone need N^{1/5} (Thm A'). Cauchy-Schwarz then gives P <= C P^{1/2} X^{3/2}.
+
+**Theorem D' (dcltheorem, proved):** DCL (all primes ell near N^{1/6}H^{-1/3}, small fixed weights (A,B) <= H, N-determined roots, whole-range windows W ~ H sqrt(N)/ell^2) factors all but O(N^{-eps}) of balanced semiprimes deterministically in N^{1/6+5eps/6} polylog. So 1/6 is attained on average; Thm A is a FULL-CANDIDATE covering bound for fixed N, not an average-case bound.
+
+## Task: try to go below N^{1/6} (even almost-all, even heuristically - label it), or prove that you cannot in a stated extended model
+
+For each escape: (i) say exactly which assumption of Thm A it breaks; (ii) either design a mechanism with a computed exponent < 1/6, or prove an extended lower bound (precise model), or isolate the exact open sub-question.
+
+1. **Several bases with known relations** (bases 2, 3, 6; or beta and beta^k; or gamma_l = beta^{L/l^2}). Can a known multiplicative relation let one baby list serve a 2-dimensional window, or let giants be shared across targets? (Hint to check, not trust: for bases in Q^*, Smith normal form / a Z-basis of the generated group may reduce everything to independent coordinates whose windows are images of boxes, i.e. sums of APs, not intervals.)
+2. **Average-case higher-order flatness.** Degree >= 2 targets need N^{1/5} in the worst case. On average over the true pair, could curvature be smaller / windows flatter?
+3. **Class-group collisions** (forms of discriminant -4N or -4kN, or ideal classes) combined with (Z/N)^*: is there any second group where the TRUE factor gives a small-exponent collision?
+4. **Relation methods** (smooth relations + linear algebra; Schnorr-Lenstra, Lenstra-Pomerance, Dixon, index calculus mod N) producing extra known exponents or shrinking windows. Note: the target algorithm must be DETERMINISTIC and UNIFORM; success may be "almost all N in the population". What exactly fails in derandomizing these on average over N (deterministic sequences such as x_j = ceil(sqrt(jN)), w mod N for fixed smooth w, fixed elliptic curves)? Which steps are provable on average over N and which are not (smoothness of the residues: first/second moments; linear-algebra rank / sign of the square root; smoothness of #E(F_p) for fixed curves)? Is any deterministic average-case subexponential (or even < N^{1/6}) factoring result known in the literature? Please search.
+5. **Only the true factor needs covering.** N-dependent ("adaptive") target sets, verification by gcd allowing false positives, list-decoding many partial collisions. In particular: is there an average-case analogue of Thm A for designs whose choice of each target depends on N only through N mod M_tau (and n, or coarse archimedean information)? Can you prove: success fraction on the population <= C polylog * (X^{3/2} P^{-1/2} + X^2/P)? What information about N would a design need to beat that, and is it as hard as factoring? A useful specification: a cheap public selector that shrinks the needed span from N^{1/2} to N^{1/2-eta} while keeping the true factor would give N^{1/6-eta/3}.
+
+Also: (a) any genuinely different mechanism you can think of that is not a sumset collision search; (b) prior art on average-case deterministic factoring of balanced semiprimes.
+
+Output Markdown: one-paragraph verdict first, then a section per escape with labels PROVED / HEURISTIC / SPECULATIVE / KNOWN (with citations), and exact statements of any theorem you claim with proof.
+
+codex
+I’ll check the permitted notes, build precise models for the proposed escapes, and search the literature on deterministic average-case factoring. I’ll distinguish proved bounds from heuristics and open questions.
+exec
+/bin/zsh -lc "pwd; rg --files -g 'AGENTS.md' -g '*.md' /Volumes/git/factoring-connection/notes /Volumes/git/factoring-connection/codex/scratch/below16_1 /Volumes/git 2>/dev/null | head -100" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/below16_1
+/Volumes/git/factoring-connection/notes/codex_r6_eps_reduction.md
+/Volumes/git/factoring-connection/notes/codex_r1_priorart.md
+/Volumes/git/factoring-connection/notes/codex_r11_qrh_factoring.md
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/leanform_results.md
+/Volumes/git/factoring-connection/notes/trackBD_analysis.md
+/Volumes/git/factoring-connection/notes/codex_r13_final_referee.md
+/Volumes/git/factoring-connection/notes/tower_results.md
+/Volumes/git/factoring-connection/notes/repair_C2R_results.md
+/Volumes/git/factoring-connection/notes/eps_results.md
+/Volumes/git/factoring-connection/notes/codex_r10_frontier.md
+/Volumes/git/factoring-connection/notes/multimod_results.md
+/Volumes/git/factoring-connection/notes/codex_r15_lean_faithfulness.md
+/Volumes/git/factoring-connection/notes/dcltheorem_prereg.md
+/Volumes/git/factoring-connection/notes/trackA_analysis.md
+/Volumes/git/factoring-connection/notes/trackC_tal_audit.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_paradigms_4_6.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_pm1_frobenius_bsgs.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_graycode_harvey_benchmark.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_chirp_quadratic_exponents.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_crt_sign_splitting.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_schoof_semigroups_and_cross_difference.md
+/Volumes/git/factoring-connection/notes/trackC_candidates.md
+/Volumes/git/factoring-connection/notes/multimod_prereg.md
+/Volumes/git/factoring-connection/notes/AGENT_PHASE5_COMMON.md
+/Volumes/git/factoring-connection/notes/primality_explainer.md
+/Volumes/git/factoring-connection/notes/codex_r2_generic_ring.md
+/Volumes/git/factoring-connection/notes/review_and_repairs.md
+/Volumes/git/factoring-connection/notes/codex_r9_tower_audit.md
+/Volumes/git/factoring-connection/notes/signsplit_results.md
+/Volumes/git/factoring-connection/notes/sieve2d_prereg.md
+/Volumes/git/factoring-connection/notes/cycloharvey_prereg.md
+/Volumes/git/factoring-connection/notes/prior_art_map.md
+/Volumes/git/factoring-connection/notes/codex_r7_cyclo_harvey.md
+/Volumes/git/factoring-connection/notes/paper_review_opus_critic.md
+/Volumes/git/factoring-connection/notes/paper_review_gpt_r14.md
+/Volumes/git/factoring-connection/notes/trackC_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_prereg.md
+/Volumes/git/factoring-connection/notes/trackA_candidates.md
+/Volumes/git/factoring-connection/notes/cycloharvey_results.md
+/Volumes/git/factoring-connection/notes/codex_r1_mechanisms.md
+/Volumes/git/factoring-connection/notes/dchworst_prereg.md
+/Volumes/git/factoring-connection/notes/trackE_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r3_critic.md
+/Volumes/git/factoring-connection/notes/repair_C2R_prereg.md
+/Volumes/git/factoring-connection/notes/signsplit_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r12_dcl_audit.md
+/Volumes/git/factoring-connection/notes/seed_lemmas.md
+/Volumes/git/factoring-connection/notes/codex_r8_copp_bridge.md
+/Volumes/git/factoring-connection/notes/AGENT_RULES.md
+/Volumes/git/factoring-connection/notes/repair_adjudication.md
+/Volumes/git/factoring-connection/notes/unbalanced_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r6_primality_lit.md
+/Volumes/git/factoring-connection/notes/trackE_analysis.md
+/Volumes/git/factoring-connection/notes/trackBD_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r1_tal_bgs.md
+/Volumes/git/factoring-connection/notes/pm1bsgs_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_results.md
+/Volumes/git/factoring-connection/notes/codex_r4_sos_classgroup.md
+/Volumes/git/factoring-connection/notes/eps_prereg.md
+/Volumes/git/factoring-connection/notes/primality_analysis.md
+/Volumes/git/factoring-connection/notes/unbalanced_results.md
+/Volumes/git/phasetransition-modular-training/decisions.md
+/Volumes/git/phasetransition-modular-training/phase_locality_decisions.md
+/Volumes/git/phasetransition-modular-training/README.md
+/Volumes/git/phasetransition-modular-training/circuit_transfer_writeup.md
+/Volumes/git/phasetransition-modular-training/phase_locality_research_plan.md
+/Volumes/git/piano-emulator/DISTRIBUTION.md
+/Volumes/git/piano-emulator/ATTRIBUTION.md
+/Volumes/git/impala-test/docs/TUNING_STAGE2.md
+/Volumes/git/impala-test/docs/BACKEND.md
+/Volumes/git/impala-test/docs/DESIGN.md
+/Volumes/git/impala-test/docs/RESULTS.md
+/Volumes/git/impala-test/docs/INTERIM_G1.md
+/Volumes/git/impala-test/docs/PLAN.md
+/Volumes/git/impala-test/docs/TUNING.md
+/Volumes/git/linear-time-research/src/sssp/README.md
+/Volumes/git/llm-structures/themes/Superposition and Feature Geometry.md
+/Volumes/git/llm-structures/themes/What Sub-Circuits Look Like.md
+/Volumes/git/llm-structures/themes/RoPE QK Circuits.md
+/Volumes/git/llm-structures/themes/Optimizer Artifacts in Weight Statistics.md
+/Volumes/git/llm-structures/themes/Weight-Space Structure.md
+/Volumes/git/llm-structures/themes/Circuit Discovery.md
+/Volumes/git/llm-structures/themes/Circuit-Informed Training Prior Art.md
+/Volumes/git/llm-structures/themes/Efficient Training Methods.md
+/Volumes/git/llm-structures/themes/Structure-Aware Optimization.md
+/Volumes/git/llm-structures/themes/Circuit Formation During Training.md
+/Volumes/git/llm-structures/themes/Qwen Landscape and Tooling.md
+/Volumes/git/impala-test/FINDINGS.md
+/Volumes/git/linear-time-research/reports/findings.md
+/Volumes/git/llm-structures/concepts/Transcoder.md
+/Volumes/git/llm-structures/concepts/Sparse Autoencoder.md
+/Volumes/git/llm-structures/concepts/Gauge Invariance in Weight Space.md
+/Volumes/git/llm-structures/concepts/Super Weights.md
+/Volumes/git/llm-structures/concepts/Superposition.md
+/Volumes/git/llm-structures/concepts/Attention Sink.md
+/Volumes/git/llm-structures/concepts/Muon.md
+/Volumes/git/llm-structures/concepts/Maximal Update Parametrization.md
+
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+for p in [Path('/AGENTS.md'),Path('/Volumes/AGENTS.md'),Path('/Volumes/git/AGENTS.md'),Path('/Volumes/git/factoring-connection/AGENTS.md'),Path('/Volumes/git/factoring-connection/codex/AGENTS.md'),Path('/Volumes/git/factoring-connection/codex/scratch/AGENTS.md'),Path.cwd()/'AGENTS.md']:
+ if p.exists():
+  print(str(p)); print(p.read_text())
+for name in ['multimod_results.md','dcltheorem_results.md','cycloharvey_results.md']:
+ p=Path('/Volumes/git/factoring-connection/notes')/name
+ print('\\nHEADINGS',name)
+ for s in p.read_text().splitlines():
+  if s.startswith('#'):print(s)
+PY" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+
+HEADINGS multimod_results.md
+# multimod: several moduli and multi-base searches beyond cycloharvey's N^{1/5} bound
+## 0. Verdict (plain language)
+## 1. Models
+## 2. The scheme: divisor-cover Lehman (DCL)
+### 2.1 Class lock (proved; HH Prop. 3.3)
+### 2.2 Coverage is a sieve
+### 2.3 One baby list for all moduli (proved)
+### 2.4 Cost and design
+### 2.5 Heuristic coverage (Poisson; conjectured)
+## 3. Theory
+### 3.1 Per-target coverage (proved; from cycloharvey Lemmas C, K′)
+### 3.2 Theorem A (proved): 𝔐⁺ costs ≥ c·N^{1/6}
+### 3.3 Theorem B (proved): the bound as a function of the number of moduli
+### 3.4 Theorem C (proved): CRT composes guess-neutrality multiplicatively
+### 3.5 Theorem D (proved, in the search model): average-case N^{1/6+ε}
+### 3.6 Conjecture DCH (divisor-cover hypothesis) and the worst case
+### 3.7 Theorem E: multi-base searches
+### 3.8 Costs outside the search (not solved here)
+### 3.9 Unbalanced range (limitation; heuristic)
+## 4. The three orchestrator inputs
+## 5. Prior art (GPT-6.1-sol check, 2026-10-18; curated)
+## 6. Experiments (pre-registered; results)
+### 6.1 E-M: model counts (exact; N = 2^n + 2^{n/2} + 1)
+### 6.2 E-C: exhaustive coverage of all integer candidates (n = 32–48; 4 random + special N per size)
+### 6.3 E-S: sampled success of the true p (harness)
+### 6.4 E-O: operational runs (16 balanced semiprimes per size, full lists)
+### 6.5 E-CRT
+### 6.6 Decision (pre-registered rule)
+## 7. Candidate card
+## 8. Reproduction
+
+HEADINGS dcltheorem_results.md
+# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+## 0. Verdict (plain language)
+## 1. Population, target and statement
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+### 2.1 Parameters
+### 2.2 Steps
+## 3. Lemmas
+## 4. Proof of Theorem D′
+## 5. Answers to the audit (notes/codex_r12_dcl_audit.md) and to the work items
+## 6. Where the result stops (precise remaining gaps)
+## 7. Review
+## 8. Experiments (pre-registered; notes/dcltheorem_prereg.md, commit 3550e24)
+### 8.1 lemma (n = 28–40, 60 pairs each, design C1, all 4 blocks recorded)
+### 8.2 oper (C1, C3: 32 pairs per n; C2: 8 pairs per n ≤ 64; all 4 blocks always run)
+### 8.3 exc (C1 certificate components, 1000 pairs per n; no stage 3)
+## 9. Reproduction
+## 10. Prior art (GPT-6.1-sol r12 + dclt_1 + own WebSearch; curated)
+## 11. Candidate card
+
+HEADINGS cycloharvey_results.md
+# cycloharvey: can cyclotomic Frobenius handles beat Harvey's N^{1/5}?
+## 0. Verdict
+## 1. Calibration gate (passed)
+### 1a. The user's T = MK heuristic against the real proofs
+## 2. The abstract cost model (step 1 components)
+## 3. Theory
+### 3.1 D1: cyclotomic handles are dominated by (Z/N)^* handles (proved)
+### 3.2 Lemmas for the lower bound
+### 3.3 Scaling heuristic, δ yardstick, and guess-neutrality (heuristic)
+### 3.4 Theorem LB: lower bound in the identity model (proved within the model's scope; independently reviewed)
+### 3.5 Separability (user's cross-difference law) — enforced by the model (proved)
+### 3.6 Elkies-prime analogue (qualitative; not part of the frozen search)
+### 3.7 Relation to the Coppersmith exponent bridge (user note; codex r8)
+## 4. Pre-registered search results
+## 5. Step 4 experiments (exact, 32–56 bits; calibration only)
+## 6. Candidate card (BRIEF §4 template, abbreviated)
+## 7. Reproduction
+
+web search: deterministic factoring almost all integers subexponential average case factoring semiprimes ...
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+specs=[('multimod_results.md','## 1.','## 4.'),('dcltheorem_results.md','## 0.','## 5.'),('cycloharvey_results.md','### 3.4','### 3.5')]
+for name,start,end in specs:
+ t=(Path('/Volumes/git/factoring-connection/notes')/name).read_text(); a=t.index(start); b=t.index(end,a)
+ print('\\nFILE:',name); print(t[a:b])
+PY" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+
+FILE: multimod_results.md
+## 1. Models
+
+- **𝔐₁ (cycloharvey §§2, 3.4).**
+  - Targets are Laurent polynomials g ∈ Λ_I with I ⊆ [−d,d]∖{0}, or g ∈ L_{r,M} for
+    classes modulo **one** modulus M.
+  - Windows are integer intervals.
+  - Coverage must be proved by the identity for every integer candidate p in
+    [√(N/c), √N]: if p were a divisor, g(p) would be an integer in the window.
+  - Cost is X ≥ #targets with Σ W_τ ≤ X² (shared or per-run baby lists).
+- **𝔐⁺ (enlarged).** The same, except every target τ carries its own modulus M_τ ≥ 1,
+  with gcd(M_τ, N) = 1 (Lemma K′ needs it), and its own class r_τ. Both are chosen freely:
+  nested, coprime, any number. The cost hypotheses are unchanged:
+  #targets ≤ X and Σ W_τ ≤ X².
+  - These hold for per-modulus baby lists, a shared list, or any mix, because
+    Σ W_τ ≤ Σ m_{j(τ)}⌈W_τ/m_{j(τ)}⌉ ≤ X·max m ≤ X².
+  - The model is therefore *generous*: it does not charge the distinct-base problem that
+    codex r10 warns about. DCL solves that problem anyway (§2.3).
+- **𝔐^k (multi-base).** There are k bases α_i; a target is a handle ∏α_i^{F_i(p,q)} with a box
+  window ∏[U_i, U_i + W_i). Baby set B ⊂ Z^k, giant sets G_τ, and coverage needs F(p) ∈
+  B + G_τ, i.e. B + G_τ ⊇ box_τ, the whole box and not only the curve {F(p)}.
+  Cost ≥ |B| + Σ|G_τ|.
+
+## 2. The scheme: divisor-cover Lehman (DCL)
+
+### 2.1 Class lock (proved; HH Prop. 3.3)
+
+Let M be a prime with M ∤ 2ABN, and let r be a root of Br² ≡ AN (mod M). Write s = N·r^{−1}
+(mod M²; the inverse is taken mod M², as codex points out). Then for every integer
+p ≡ r (mod M) with q = N/p ∈ Z:
+
+  Bp + Aq ≡ c := Br + As (mod M²).
+
+*Proof.* Write p = r + Mx. Then q ≡ s − sMx·r^{−1} (mod M²), so
+Bp + Aq ≡ Br + As + Mx(B − AN r^{−2}) = Br + As + Mx·(Br² − AN)/r² ≡ Br + As (mod M²). ∎
+
+So g = (Bp + Aq − c)/M² ∈ Z. Over the balanced range, F = Bp + AN/p lies in [F_lo, F_hi]:
+F is convex, with its minimum 2√(ABN) when A/B ∈ [1/2, 1] and an endpoint value otherwise.
+The whole-range window is therefore g ∈ [⌈(F_lo−c)/M²⌉, ⌊(F_hi−c)/M²⌋]. Its width is
+W ≤ (F_hi − F_lo)/M² + 1 = O(H√N/M² + 1), with H = max(A,B).
+
+The exact check is `dcl.verify_windows`: rational arithmetic, convexity, both class
+endpoints and the class members around the stationary point. It is run on every
+experimental design and records 0 violations.
+
+### 2.2 Coverage is a sieve
+
+With whole-range windows, target (v, M, r) covers exactly the integers p ≡ r (mod M) in the
+range. Since Bp² − AN = p(Bp − Aq), the condition p ≡ r for some root r is the same as
+M | Bp² − AN, which for an actual divisor is M | Bp − Aq. So:
+
+  **p is covered ⇔ some chosen (v, M) has M | Bp² − AN** (equivalently M | Bp − Aq).
+
+The algorithm never guesses. Its target set is determined by N, and failure happens
+only when no chosen (v, M) divides.
+
+### 2.3 One baby list for all moduli (proved)
+
+Let L = ∏_{M used} M² and γ = β^L. Since p ≡ 1 and q ≡ N (mod p − 1),
+
+  (β^{L/M²})^{B + AN − c} ≡ β^{(L/M²)(Bp + Aq − c)} = β^{L g} = γ^{g} (mod p).
+
+Codex verified the identity B + AN − (Bp + Aq) = (p − 1)(Aq − B).
+
+- **Shared list.** Every target is a giant step (β^{L/M²})^{B+AN−c}·γ^{−g_lo−jm} against
+  the single baby list γ^i.
+- **Answer to the r10 warning.** The baby lists of different moduli coincide as group
+  elements because the handle, not the base, is raised to L/M².
+- **Cost of the powers.** All β^{L/M²} come from a product tree in the exponent
+  (`operational.all_but_one_powers`) in O(log L·log #moduli) = Õ(Y) multiplications.
+  Every handle then costs O(log N).
+
+### 2.4 Cost and design
+
+- **Cost.** m + Σ_τ ⌈W_τ/m⌉, cycloharvey's counting.
+- **λ.** Each (v, M) has ρ_v(M) ∈ {0, 2} targets, and covers a fraction ρ/M of the
+  candidates. Write λ = Σ ρ_v(M)/M for the expected cover multiplicity.
+- **Efficiency.** With m given, a pair (v, M) with M ≳ (H√N/m)^{1/2} needs one giant step
+  per target, and its efficiency ρ/M decreases in M.
+- **The greedy design** (`dcl.design`) takes (v, M) pairs in decreasing order of
+  ρ/(M⌈W/m⌉) until λ reaches its target. `best_design` then optimises m.
+- **Heuristic size.** With M ≈ Y, cost ≈ m + λY·(1 + o(1)) and m ≈ √N/Y², so
+
+  cost ≈ 3·(λ/2)^{2/3}·N^{1/6}·(polylog from weight heights).
+
+### 2.5 Heuristic coverage (Poisson; conjectured)
+
+Treat the events "M | Bp − Aq" as independent across (v, M), with probabilities
+ρ_v(M)/M. Then a fraction ≈ e^{−λ} of the candidates is uncovered.
+- **R1.** λ = 3, success ≈ 95%.
+- **Full coverage.** Needs e^{−λ}·#candidates < 1, so λ ≈ ln √N.
+
+The exhaustive check (§6, E-C) finds coverage somewhat *better* than Poisson.
+- R1 leaves 1.3–4.3% uncovered, against Poisson's ≈5%.
+- The smallest λ giving full coverage, λ*, grows like ln √N, as the Poisson tail predicts.
+  It is 5.5–8 at n = 32–36 and 11–15.5 at n = 44–48, against ln √N + 2 = 13.1–18.6.
+
+## 3. Theory
+
+Notation: P = √N, and t = p/P ∈ J = [c^{−1/2}, 1]. #candidates ≍ P.
+
+### 3.1 Per-target coverage (proved; from cycloharvey Lemmas C, K′)
+
+Let τ be a target with modulus M (M = 1 when nothing is guessed), support I, |I| = K,
+e = max|k| ≤ d, window width W.
+
+- **(i) Degree e = 1, K = 2.** Lemma K′ (with K = 2) lets us write g = (Aq + Bp − c)/(C_d M²)
+  with integers A, B over the **fixed** denominator C_d M². Define H := max(|A|,|B|) =
+  C_d M²‖b‖_∞/P ≥ 1. This normalisation is also the one Thm B's count uses (critic,
+  finding 4).
+  Lemma C gives μ_τ ≤ C(W/‖b‖)^{1/2}, so
+
+    #covered integers ≤ Pμ_τ/M + C_I ≤ C·(PW/H)^{1/2} + C.        (1)
+
+  **The M-dependence cancels exactly.** That cancellation is the per-target form of
+  guess-neutrality.
+- **(ii) e = 1, K = 1** (support {1} or {−1}). Here ‖b‖ ≥ P/(C M), so the coverage is
+  ≤ C·W + C ≤ C(PW)^{1/2} + C when W ≤ P. If some W > P, then X ≥ √W > N^{1/4} already.
+- **(iii) e ≥ 2.** Lemma K′ gives ‖b‖ ≥ P^{e}/(C_d M^{K}), so
+
+    #covered ≤ C·M·P^{−e/K}W^{1/K}·P/M + C = C·P^{1−e/K}W^{1/K} + C.   (2)
+
+  Again M cancels.
+
+Targets with the same (M, class, vector) are merged and Lemma C is applied to the union of
+their windows. Lemma C only needs the measure, so the merged width is ≤ Σ W. "Distinct
+targets ≤ X" therefore refers to distinct triples.
+- The +C rounding term is paid once per *original* window, i.e. a preimage made of ≤ C_I
+  intervals.
+- The total is still ≤ CX, because every window costs at least one giant step.
+
+### 3.2 Theorem A (proved): 𝔐⁺ costs ≥ c·N^{1/6}
+
+**Statement.** Fix d and c > 1. Any 𝔐⁺ covering family of degree ≤ d has X ≥ c_{d,c}·N^{1/6}.
+
+*Proof.*
+- Coverage must reach c′P.
+- By (1) and (ii), the e = 1 targets cover at most
+  C P^{1/2} Σ_τ W_τ^{1/2} + CX ≤ C P^{1/2} X^{1/2}(Σ W)^{1/2} + CX ≤ C P^{1/2} X^{3/2} + CX
+  (Cauchy–Schwarz).
+- By (2) and Hölder over at most X targets of each of the finitely many (e, K) classes,
+  the e ≥ 2 targets cover at most C Σ_{(e,K)} P^{1−e/K} X^{1+1/K} + CX.
+- Put X = δP^{2/5} with δ ≤ 1. The (e,K) term is then
+  ≤ C δ^{1+1/K} P^{1 − (5e − 2K − 2)/(5K)} ≤ C δ P, because 5e ≥ 2K + 2 when K ≤ 2e and e ≥ 2.
+- So for X ≤ δP^{2/5} with δ small, the e ≥ 2 part covers ≤ c′P/2. The e = 1 part must then
+  give C P^{1/2}X^{3/2} ≥ c′P/2 − CX, i.e. X ≥ c P^{1/3} = c N^{1/6}.
+- If instead X > δP^{2/5}, then X ≥ δ N^{1/5} ≥ N^{1/6} for large N. ∎
+
+**Theorem A′ (proved).** If the e = 1 targets of an 𝔐⁺ family cover fewer than c′P/2
+candidates, then X ≥ c N^{1/5}, with any moduli. This is the second branch of the proof.
+
+**Tightness.** Equality in (1) with H = O(1) and W ≈ P/M² means a target covers its *whole*
+class across the range, P/M ≈ (PW)^{1/2} candidates. That is exactly what DCL's targets do
+(M ≈ N^{1/6}, W ≈ N^{1/6}). So A is tight up to the polylog/overlap factor, if coverage can
+be completed (Thm D, DCH).
+
+### 3.3 Theorem B (proved): the bound as a function of the number of moduli
+
+**Statement.** Suppose the e = 1 targets use J distinct moduli, all ≤ P (targets with M > P
+cover ≤ 1 + C candidates each and are absorbed in the +CX term). Then
+
+  X ≥ c·N^{1/5}·(J·N^{o(1)})^{−1/5}.
+
+*Proof.*
+- **Counting.** By cycloharvey §3.4 (e = 1 branch), for each modulus M and each (A,B), with
+  H measured over the fixed denominator C_d M² as in §3.1(i), the number of classes on
+  which (Aq + Bp − c)/(C_d M²) is integer-valued is ≤ O(1)^{ω(M)}·gcd(A,B,M).
+  - The critic brute-forced composite M ≤ 105 with denominators M² and 2M². The count is
+    always ≤ 4^{ω(M)}·gcd(A,B,M).
+  - Measured over the *reduced* denominator the count fails: M = 25, D = 125. So the number of
+  (class, vector) pairs with H ≤ h is ≤ M^{o(1)} h². Over J moduli it is ≤ J' h², with
+  J' = J·N^{o(1)}.
+- **Sum of 1/H.** For the ≤ X distinct triples, Σ_τ 1/H_τ ≤ C(J'X)^{1/2}: the extremal case
+  takes the X smallest heights, so h_max ≍ (X/J')^{1/2} and Σ ≍ J' h_max.
+- **Coverage.** Cauchy–Schwarz on (1) bounds the e = 1 coverage by
+  C P^{1/2}(Σ W)^{1/2}(Σ 1/H)^{1/2} + CX ≤ C P^{1/2} X (J'X)^{1/4} + CX.
+- **K = 1 targets.** Each covers ≤ CW + C (§3.1(ii)), so ≤ CX² + CX = o(P) in total when
+  X ≤ δP^{2/5}.
+- **Conclusion.** Theorem A's (e,K) computation handles the e ≥ 2 part. What remains is
+  X^{5/4} ≥ c P^{1/2}J'^{−1/4}. ∎
+
+**Corollary.**
+- J = 1 recovers cycloharvey's LB.
+- Exponent 1/5 − ε needs J ≥ N^{5ε−o(1)} moduli.
+- J ≤ X gives Theorem A again, up to N^{o(1)}.
+
+### 3.4 Theorem C (proved): CRT composes guess-neutrality multiplicatively
+
+**Statement.** Let M = M₁M₂ with gcd(M₁, M₂) = 1, let r be a class mod M, and let
+r_i = r mod M_i. Then
+
+  L_{r,M} = L_{r₁,M₁} + L_{r₂,M₂}  and  [L_{r,M} : Λ_I] = [L_{r₁,M₁} : Λ_I]·[L_{r₂,M₂} : Λ_I].
+
+*Proof.*
+- **Decomposition.** Elements of L_{r,M} lie in M^{−∞}Λ_I = Λ_I ⊗ Z[1/M]. Partial fractions
+  give M^{−∞}Λ/Λ = M₁^{−∞}Λ/Λ ⊕ M₂^{−∞}Λ/Λ, so g = g₁ + g₂ uniquely mod Λ.
+- **Each part is integer-valued.** Suppose g(p) − c ∈ Z for all p ≡ r (mod M). The
+  fractional part of g₁(p) lies in M₁^{−∞}Z/Z and depends only on p mod M₁^{a} for a large
+  (with q = N p^{−1} mod M₁^{a}). By CRT, every class mod M₁^{a} lying over r₁ contains
+  integers ≡ r₂ (mod M₂).
+- On such integers, g₂(p) has M₂-power denominator. The fractional part of g(p) − c is 0, so
+  the M₁-part g₁(p) − c₁ ≡ 0. Hence g₁ ∈ L_{r₁,M₁}, and likewise g₂ ∈ L_{r₂,M₂}.
+- **Converse.** If g₁ ∈ L_{r₁,M₁} and g₂ ∈ L_{r₂,M₂}, then g₁ + g₂ is integer-valued up to a
+  constant on the class r. So the sum is direct modulo Λ, and the indices multiply. ∎
+
+Experimental check: `experiments crt` compares a direct HNF computation of
+[L_{r,M₁M₂} : Λ] with the product of the two indices for I ∈ {(−1,1), (−2,−1,1)} and
+(M₁,M₂) ∈ {(5,7), (3,7), (5,11)} (§6, E-CRT).
+
+**Consequence (heuristic: it rests on cycloharvey's volume heuristic and the HNF-measured
+κ = K(K+1)/2; the rigorous single-modulus statement is cycloharvey's LB, neutral up to
+M^{−o(1)}).** Neutrality is
+the identity "index M^{K(K+1)/2} against φ(M) runs". Both sides are multiplicative over
+coprime parts, so within that heuristic a scheme covering **all** φ(M) classes of a composite M with a
+shared baby list is exactly neutral, whatever its CRT structure.
+- This includes CRT sign-splitting (signsplit's result) and the user's Gray-code bucketing:
+  odd-m_i bucketing costs more than it saves, and only the 2-adic r₀ ↦ r₀ + 4 identity gives
+  a constant.
+- *CRT does not break neutrality; it composes multiplicatively and stays neutral.*
+
+**What does break it.** DCL does not cover all classes of any modulus. For a fixed small v
+only the ρ_v(M) ∈ {0, 2} classes with a root are used; that is a 2/M fraction, but each is
+reached by a vector of height O(1) instead of the typical √M.
+- These "lucky" classes from N^{1/6+o(1)} coprime moduli are independent by CRT. They union
+  to almost everything (Thm D, proved), and conjecturally to everything (DCH).
+- In Thm B's terms, many moduli supply J·h² cheap (class, vector) pairs, where one modulus
+  supplies only h².
+
+### 3.5 Theorem D (proved, in the search model): average-case N^{1/6+ε}
+
+**Statement.** Fix ε ∈ (0, 1/10). For n-bit balanced semiprimes N = pq (primes p < q ≤ 2p),
+take the following design. **H₀, Y and m depend on n only**, so the sifted classes for a
+fixed q do not move with p (critic, finding 7).
+- V = {(A,B) : gcd(A,B) = 1, A, B ≤ H₀} with H₀ = ⌈2^{nε/2}·n⌉;
+- 𝒫 = the primes in (Y, 2Y] with Y = ⌈2^{n/6}H₀^{−1/3}⌉;
+- every root r of Br² ≡ AN (mod ℓ), for each v ∈ V and ℓ ∈ 𝒫;
+- m = ⌈C H₀ 2^{n/2}/Y²⌉.
+
+Its model cost is O(H₀^{5/3}N^{1/6}) = N^{1/6+5ε/6+o(1)}. The fraction of balanced semiprimes
+whose p is covered by no target is O(N^{−ε}).
+
+*Proof.*
+- **Cost.** At most 2|V||𝒫| targets with ⌈W/m⌉ = 1, by §2.1 with W ≤ C H₀√N/Y² + 1. So the
+  cost is m + 2|V||𝒫| ≤ C H₀√N/Y² + 4H₀² Y/log Y = O(H₀^{5/3} N^{1/6}).
+- **Reduction to a sieve.** Fix a prime q. The admissible p form an interval I_q of length
+  ≍ √N (p ∈ [q/2, q] with pq of n bits). By §2.2, p is covered iff ∃(v, ℓ) with
+  ℓ | Bp − Aq. For ℓ ∈ 𝒫 we have ℓ ∤ q (ℓ < q), so this is p ≡ Aq·B^{−1} (mod ℓ).
+- **Distinct classes.** For ℓ > 2H₀² the slopes A/B are distinct mod ℓ, since
+  |AB' − A'B| < H₀² < ℓ. So the uncovered p avoid ω(ℓ) = |V| residue classes modulo every
+  ℓ ∈ 𝒫.
+- **Large sieve.** The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973)
+  gives
+
+    #{p ∈ I_q uncovered} ≤ (|I_q| + Q²)/J,  J ≥ Σ_{ℓ∈𝒫} |V|/(ℓ − |V|) ≥ |V|·Σ_{ℓ∈𝒫}1/ℓ ≫ H₀²/log N,
+
+  with Q = 2Y. Here Q² = O(N^{1/3}) = o(|I_q|).
+- **Normalising.** The primes in I_q number ≍ √N/log N, so the uncovered fraction for this
+  q is O(log N·log N/H₀²) = O(N^{−ε}). For the few boundary q with short I_q, summing the
+  large-sieve bound over q makes the Σ_q Q² terms O(N^{1/3}·√N) = o(#pairs). Summing over q
+  gives the claim. ∎
+
+The critic checked the cost and sieve steps:
+- ⌈W/m⌉ = 1, since ℓ > Y gives span/ℓ² < m;
+- ℓ ∤ 2ABNq;
+- the classes are distinct;
+- "p ≡ Aq/B (mod ℓ)" is exactly "the root p mod ℓ of Br² ≡ AN is in the design for N = pq".
+
+**Remark (polylog version).** H₀ = log² N in the same proof gives cost N^{1/6}·polylog with
+failure fraction O(1/log² N).
+
+Remarks.
+- Only the search is covered. Success also needs γ = β^L to have order mod p (or mod N) larger
+  than the exponent range compared, about m + W, or one-sided detection otherwise (§3.8).
+- For a *fixed* N, the same sieve in p (classes = roots of Br² ≡ AN) bounds the uncovered
+  candidates by ≈ #cand/J_N. But J_N involves Σ_v (ABN/ℓ), and lower-bounding it needs
+  quadratic-character cancellation over the short range ℓ ≈ N^{1/6}. That is UNVERIFIED in
+  general; it would follow on average over ℓ from Heath-Brown's quadratic large sieve.
+  Either way it gives "almost all candidates", not "all".
+
+### 3.6 Conjecture DCH (divisor-cover hypothesis) and the worst case
+
+**DCH(κ).** For all large N coprime to 6 and every integer p ∈ [√(N/2), √N], some coprime
+A, B ≤ (log N)^κ and some prime ℓ ∈ (N^{1/6}, N^{1/6}(log N)^κ] satisfy ℓ | Bp² − AN.
+
+- Under DCH, DCL is a deterministic covering in 𝔐⁺ with cost N^{1/6+o(1)}. With Thm A, the
+  𝔐⁺ exponent is then **exactly 1/6**.
+- **Status: conjectured.**
+  - Experimentally supported at 32–48 bits: zero uncovered candidates among all 1.6·10⁴–4.9·10⁶ (corrected 2026-10-18 to match §6.2)
+    integer candidates per instance at λ = ln√N + 2 (§6).
+  - The large sieve proves only the "almost all" version.
+- **Relation to Umans–Wang (codex check).** UW's Strong Prefactored Divisor Conjecture asks
+  for structured S, T whose differences hit multiples of every d ≤ n. DCH asks that each
+  *candidate* p make one of the forms Bp² − AN divisible by a prime from a window. Neither
+  implication was found, and both are "every element of a long range is hit by a
+  structured divisor family" statements.
+  - He–Sahai's obstruction concerns UW's single-AP version of a different covering
+    statement (every d ≤ n dividing a difference). DCH is a sieve statement: each (v, ℓ)
+    removes ρ ≤ 2 N-dependent quadratic residue classes mod a prime ℓ from a window
+    around N^{1/6}. We know no transfer of their argument to it, but we have not proved
+    that none exists.
+
+### 3.7 Theorem E: multi-base searches
+
+**Setting.** In 𝔐^k, let Λ_known ⊂ Z^k be the relations ∏α_i^{x_i} ≡ 1 provable mod N for
+all p, i.e. the identity-model relations. Coverage must hold in G = Z^k/Λ_known, because two
+collisions mod p differing by an unknown relation are not identity-provable.
+
+**Statement.**
+- (a) **Proved.** The sumset bound |B|·|G_τ| ≥ |image of box_τ in G| holds in any abelian
+  group. So Σ_τ |image| ≤ X² with a shared B, and #targets ≤ X.
+- (b) **Proved, trivially.** If all bases are known powers of one β (G ≅ Z), as with DCL's γ
+  and β^{L/M²}, the search is a 1-D search with target Σ e_i F_i ∈ L, and 𝔐⁺ applies.
+- (c) **Proved for independent bases (Λ_known = 0).**
+  - Each α_i^{F_i(p,q)} must be identity-valid on its own, so each non-constant F_i lies in
+    Λ ∪ L_{r,M}, and Lemma K′ applies to it.
+  - Every coordinate must lie in its window, so μ_τ ≤ min_i μ(F_i, W_i) ≤ μ(F_{i*}, vol_τ),
+    using W_i ≤ ∏_j W_j = vol_τ.
+  - With Σ vol_τ ≤ X² (box ⊆ B + G_τ, injective in Z^k), the coverage bounds (1)–(2) and
+    Thms A–B hold verbatim. The same holds when Λ_known splits the bases into groups, each
+    group a set of known powers of one generator: apply (b) inside each group and (c)
+    across the groups.
+- (d) **Not covered (GAP, critic finding 2).** General Λ_known ≠ 0 with free rank k′ ≥ 2 and
+  non-split relations.
+  - A single F_i need then only be valid modulo Λ_known, so Lemma K′ need not apply
+    coordinatewise.
+  - Projected windows are sums of APs rather than intervals, so Lemma C's per-interval
+    constant is not controlled.
+  - We know no mechanism that would exploit this, but the reduction is **not proved**
+    there.
+
+**Cross-difference.** A test is multipoint-evaluable with one product tree iff it is
+separable in G: E(τ, j; i) = f_τ(j) − h(i). Baby sets mixing σ-powers or bases with
+p-dependent coefficients are non-separable, as cycloharvey §3.5 showed. Splitting them
+into separable pieces gives back case (c).
+- **Verdict.** For independent or grouped bases, k-dimensional exponents do not help
+  beyond what several moduli already give: **refuted for this model**. General
+  known-relation lattices are open (d).
+
+### 3.8 Costs outside the search (not solved here)
+
+- **Order of γ = β^L.** ord_p(γ) = ord_p(β)/gcd(ord_p(β), L). It becomes small when p − 1 is
+  divisible by two or more of the moduli, which happens with probability
+  ≈ (Σ_{ℓ∈𝒫}1/ℓ)²/2 ≍ (log u/log Y)².
+  - Then the baby list repeats mod p. That reveals p by gcd (class PM1) unless it is
+    simultaneously small mod q.
+  - **The deterministic order lemma for L-th powers is open (UNVERIFIED).**
+    Oznovich–Volk give order ≥ D in D^{1/2+o(1)}, but for β, not β^L.
+- **Small factors.** Removing factors ≤ N^{1/3} by Pollard–Strassen costs N^{1/6+o(1)}
+  (r10). That is at the same exponent, so it is no obstruction to 1/6 but blocks going
+  lower.
+
+### 3.9 Unbalanced range (limitation; heuristic)
+
+For q/p ≈ R ≫ 1, the weights need B/A ≈ R, and F's span grows to ≈ √(RN).
+- With per-band baby lists the band costs ≈ (RN)^{1/6}. With the shared list it costs
+  R^{1/4}N^{1/6}.
+- Summing over dyadic R up to N^{1/3} gives N^{2/9} or N^{1/4}. That is worse than Harvey,
+  whose Lehman pairs ab ≤ r cover all ratios at once.
+- So DCL as specified is a balanced-range method. A uniform-ratio version is
+  **not yet tested**.
+
+
+
+FILE: dcltheorem_results.md
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+*Proof.*
+- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+- Multiply by γ^{−(g_lo + j*m)}. ∎
+
+**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+
+*Proof.*
+- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+  and 2^{q−1} ≡ 1 (mod q). ∎
+
+**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+gcd(f(G), N) = p.
+
+*Proof.*
+- f(G) = ∏_i (G − γ^i).
+- The factor i = i* vanishes mod p (Lemma 3).
+- Mod q, no factor vanishes, by definition, and Z/q is a field.
+- So p | f(G) and q ∤ f(G). ∎
+
+**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+Y⁴ > √2P, at least one of the four blocks is clean for q.
+
+*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+
+Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+for ε < 1/4 and n large.
+
+**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+
+*Proof.*
+- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+
+**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+
+  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+
+*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+
+**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+
+  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+
+*Proof.*
+- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+  ε < 1/7 and n large.
+- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+  N₀ + Q² for an interval of N₀ integers) with Q = 2^{k+1}Y gives
+  |U| ≤ (N₀ + Q²)/J, J = Σ_{d≤Q} μ²(d)∏_{ℓ|d} ω(ℓ)/(ℓ − ω(ℓ)).
+- Only the prime terms are needed, and they follow directly. For each ℓ ∈ 𝒫_k,
+  Parseval and Cauchy–Schwarz give Σ_{a=1}^{ℓ−1}|S(a/ℓ)|² ≥ ω/(ℓ−ω)·|U|². The fractions
+  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+- Keeping only d = 1 and d = ℓ ∈ 𝒫_k: J ≥ |V| Σ_{ℓ∈𝒫_k} 1/ℓ.
+- By the PNT in the progression 3 mod 4 (effective for the fixed modulus 4),
+  Σ_{ℓ∈𝒫_k} 1/ℓ ≥ (1/2 − o(1))·ln 2/ln(2^{k+1}Y) ≥ c′/n.
+- |V| ≥ H²/2 for large H, since the coprime pairs number (6/π² + o(1))H². ∎
+
+**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+F_k(q) be the set of integers p ∈ [P/2, P] such that some (v, ℓ) ∈ V × 𝒫_k has ℓ | Bp − Aq
+and d | (A−B)(p−1) − ℓ²δ for some |δ| < m̄_k. Then
+
+  |F_k(q)| ≤ Σ_{v,ℓ,|δ|<m̄_k} (P·H/(2·2^kY·T) + 1)
+           ≤ 2|V||𝒫_k| m̄_k·(PH/(2^{k+1}YT) + 1).
+
+*Proof.*
+- Fix (v, ℓ, δ) and let g′ = gcd(A − B, d) ≤ H (A ≠ B, |A − B| < H).
+- The congruence (A−B)(p−1) ≡ ℓ²δ (mod d) is either unsolvable, or holds exactly on one
+  class of p mod d/g′.
+- ℓ ∤ d, because clean means ℓ ∤ q − 1. With p ≡ AqB^{−1} (mod ℓ), CRT gives one class mod
+  ℓd/g′ ≥ ℓd/H.
+- An interval of length P/2 contains ≤ P H/(2ℓd) + 1 such integers. ∎
+
+## 4. Proof of Theorem D′
+
+**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+
+**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+targets and m ≤ m̄_k).**
+
+| step | operations | bit cost |
+|---|---|---|
+| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+| babies γ^i | m mults | O(m M(n)) |
+| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+
+With m = m̄_k (or any m that minimises the list count) the list is
+m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+
+  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+
+because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+
+**Arithmetic model (referee dclt_1, item 4).**
+- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+  tree, the Kronecker-substituted polynomial products and the gcds.
+- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+  wider than 2n + ⌈log₂(D+1)⌉.
+- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+  No inverse of a nonunit is ever needed.
+- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+  `powN` charges binary square-and-multiply counts.
+
+**(iii) Exceptional set.**
+- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+  (Lemma 6). If
+  - (a) d = ord_q(2) > T,
+  - (b) p ∉ U_{k(q)}(q), and
+  - (c) p ∉ F_{k(q)}(q),
+
+  then DCL-det succeeds.
+- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+  at the latest. It may output q, or output earlier from another block; both are fine.
+- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+
+The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+
+- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+  fixed interval, integers counted, no short-interval prime counts.
+- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+
+    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+
+  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+
+**Corollary D″.**
+- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+
+**Where the constants come from.**
+- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+
+
+
+FILE: cycloharvey_results.md
+### 3.4 Theorem LB: lower bound in the identity model (proved within the model's scope; independently reviewed)
+
+**Statement.** Fix d ≥ 1 and c > 1. Consider any covering family for the balanced
+range [√(N/c), √N]:
+- targets are Laurent polynomials of support ⊆ [−d,d]∖{0}, from Λ or from L_{r,M}
+  for guessed classes modulo **one** modulus M (any subset of classes);
+- windows are arbitrary integer intervals;
+- total cost is X, either per-run (Σ_runs (m + Σ_τ⌈W_τ/m⌉)) or with one baby list
+  shared across runs. The proof uses only "#distinct target vectors ≤ X and
+  Σ W_τ ≤ X²", which holds in both.
+
+Then X ≥ c_{d,c}·N^{1/5}·M^{−o(1)}.
+
+**Proof.** Write P = √N. Group targets with the same (class, vector) and use Lemma C
+for the union of their windows. The number of distinct vectors is ≤ X and
+Σ W_τ ≤ X·max m ≤ X². Covering needs Σ_τ (P μ_τ/M + C_I) ≥ c′P, since the preimage of a window is a union
+of ≤ C_I intervals; if X < c′P/2 this means
+Σ_τ μ_τ ≥ c″ M. Here μ_τ ≤ C(W_τ/‖b_τ‖)^{1/K_τ}. Let e = max|k| over the support of
+b_τ, so K_τ ≤ 2e.
+
+- **e ≥ 2.** By Lemma K′, ‖b‖ ≥ P^{e}/(C_d M^{K}), so μ_τ ≤ C M P^{−e/K} W_τ^{1/K}.
+  Hölder over ≤ X vectors with Σ W ≤ X² gives Σ μ ≤ C M P^{−e/K} X^{(K+1)/K}. M
+  cancels, and e/(K+1) ≥ e/(2e+1) ≥ 2/5. So this class needs X ≥ c·P^{2/5}, or it
+  covers only a small fraction.
+- **e = 1** (K ≤ 2, vectors (Aq+Bp)/(C M²), ‖b‖ ≍ P·max(|A|,|B|)/M²).
+  - For fixed (A,B), the number of classes r (mod M) for which it is integer-valued is
+    ≤ O(1)^{ω(M)}·gcd(A,B,M), because each class must satisfy B r² ≡ A N modulo a
+    divisor of M. The reviewer brute-forced this for M ≤ 12; it held. So #{(class, vector): ‖b‖ ≤ V} ≤ M^{o(1)}(VM²/P)².
+  - Hence the X smallest have Σ 1/‖b‖ ≤ M^{o(1)} X^{1/2} M²/P.
+  - Cauchy–Schwarz: Σ μ ≤ C(ΣW)^{1/2}(Σ 1/‖b‖)^{1/2} ≤ C M^{1+o(1)} P^{−1/2} X^{5/4}.
+  - Requiring this ≥ c″M gives X ≥ c P^{2/5} M^{−o(1)}.
+- **Combining.** Summing the finitely many (e, K) classes: if X ≤ δ P^{2/5}M^{−o(1)},
+  each class covers ≤ C δ^{const}·M, which is too little for small δ. Hence
+  X ≥ c N^{1/5} M^{−o(1)}. ∎
+
+**Scope (rule 5).** This is a lower bound *in the model*:
+- identity-proved coverage of all p in the range;
+- bounded-degree polynomial exponents;
+- a single guess modulus;
+- sumset-type BSGS with one handle per target and one base.
+
+With several moduli M_j the e = 1 count gains a factor #moduli, and the bound
+degrades to about N^{1/6}. That case is **not covered**.
+
+It does not cover proofs that use arithmetic of the specific N, non-polynomial
+exponent maps, or other collision mechanisms. It is not a factoring lower bound.
+
+The e = 1 case with M = 1 is the statement that Harvey's 1/5 is optimal for Lehman's
+family under full sharing, consistent with Harvey's remark that N^{1/6} would need a
+"fully square-root speedup" for r ≍ N^{1/3}.
+
+**Review.** An independent read-only Opus 5.5 reviewer checked D1, W, C, K′, LB and
+the heuristic.
+- Verdicts: CORRECT for W, C and K′; D1 CORRECT within the model, with the two scope
+  caveats now added; LB CORRECT for a single modulus.
+- Required fixes, all applied above: restrict LB to one modulus; reconcile the
+  shared and per-run wording; withdraw the (φ/M)^{3/5}-optimality claim; add the
+  constant C_I per window; add the N^{|k|} unit in K′.
+- Status: **proved, single reviewer**.
+
+
+
+web search: "factoring" "deterministic" "almost all" -site:reddit.com -oracle -witnesses -polynomial ...
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+name='dcltheorem_results.md';t=(Path('/Volumes/git/factoring-connection/notes')/name).read_text();print(t[t.index('## 0.'):t.index('## 5.')])
+name='cycloharvey_results.md';t=(Path('/Volumes/git/factoring-connection/notes')/name).read_text();print(t[t.index('### 3.4'):t.index('### 3.5')])
+PY" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+*Proof.*
+- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+- Multiply by γ^{−(g_lo + j*m)}. ∎
+
+**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+
+*Proof.*
+- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+  and 2^{q−1} ≡ 1 (mod q). ∎
+
+**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+gcd(f(G), N) = p.
+
+*Proof.*
+- f(G) = ∏_i (G − γ^i).
+- The factor i = i* vanishes mod p (Lemma 3).
+- Mod q, no factor vanishes, by definition, and Z/q is a field.
+- So p | f(G) and q ∤ f(G). ∎
+
+**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+Y⁴ > √2P, at least one of the four blocks is clean for q.
+
+*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+
+Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+for ε < 1/4 and n large.
+
+**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+
+*Proof.*
+- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+
+**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+
+  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+
+*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+
+**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+
+  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+
+*Proof.*
+- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+  ε < 1/7 and n large.
+- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+  N₀ + Q² for an interval of N₀ integers) with Q = 2^{k+1}Y gives
+  |U| ≤ (N₀ + Q²)/J, J = Σ_{d≤Q} μ²(d)∏_{ℓ|d} ω(ℓ)/(ℓ − ω(ℓ)).
+- Only the prime terms are needed, and they follow directly. For each ℓ ∈ 𝒫_k,
+  Parseval and Cauchy–Schwarz give Σ_{a=1}^{ℓ−1}|S(a/ℓ)|² ≥ ω/(ℓ−ω)·|U|². The fractions
+  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+- Keeping only d = 1 and d = ℓ ∈ 𝒫_k: J ≥ |V| Σ_{ℓ∈𝒫_k} 1/ℓ.
+- By the PNT in the progression 3 mod 4 (effective for the fixed modulus 4),
+  Σ_{ℓ∈𝒫_k} 1/ℓ ≥ (1/2 − o(1))·ln 2/ln(2^{k+1}Y) ≥ c′/n.
+- |V| ≥ H²/2 for large H, since the coprime pairs number (6/π² + o(1))H². ∎
+
+**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+F_k(q) be the set of integers p ∈ [P/2, P] such that some (v, ℓ) ∈ V × 𝒫_k has ℓ | Bp − Aq
+and d | (A−B)(p−1) − ℓ²δ for some |δ| < m̄_k. Then
+
+  |F_k(q)| ≤ Σ_{v,ℓ,|δ|<m̄_k} (P·H/(2·2^kY·T) + 1)
+           ≤ 2|V||𝒫_k| m̄_k·(PH/(2^{k+1}YT) + 1).
+
+*Proof.*
+- Fix (v, ℓ, δ) and let g′ = gcd(A − B, d) ≤ H (A ≠ B, |A − B| < H).
+- The congruence (A−B)(p−1) ≡ ℓ²δ (mod d) is either unsolvable, or holds exactly on one
+  class of p mod d/g′.
+- ℓ ∤ d, because clean means ℓ ∤ q − 1. With p ≡ AqB^{−1} (mod ℓ), CRT gives one class mod
+  ℓd/g′ ≥ ℓd/H.
+- An interval of length P/2 contains ≤ P H/(2ℓd) + 1 such integers. ∎
+
+## 4. Proof of Theorem D′
+
+**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+
+**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+targets and m ≤ m̄_k).**
+
+| step | operations | bit cost |
+|---|---|---|
+| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+| babies γ^i | m mults | O(m M(n)) |
+| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+
+With m = m̄_k (or any m that minimises the list count) the list is
+m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+
+  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+
+because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+
+**Arithmetic model (referee dclt_1, item 4).**
+- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+  tree, the Kronecker-substituted polynomial products and the gcds.
+- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+  wider than 2n + ⌈log₂(D+1)⌉.
+- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+  No inverse of a nonunit is ever needed.
+- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+  `powN` charges binary square-and-multiply counts.
+
+**(iii) Exceptional set.**
+- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+  (Lemma 6). If
+  - (a) d = ord_q(2) > T,
+  - (b) p ∉ U_{k(q)}(q), and
+  - (c) p ∉ F_{k(q)}(q),
+
+  then DCL-det succeeds.
+- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+  at the latest. It may output q, or output earlier from another block; both are fine.
+- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+
+The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+
+- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+  fixed interval, integers counted, no short-interval prime counts.
+- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+
+    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+
+  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+
+**Corollary D″.**
+- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+
+**Where the constants come from.**
+- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+
+
+### 3.4 Theorem LB: lower bound in the identity model (proved within the model's scope; independently reviewed)
+
+**Statement.** Fix d ≥ 1 and c > 1. Consider any covering family for the balanced
+range [√(N/c), √N]:
+- targets are Laurent polynomials of support ⊆ [−d,d]∖{0}, from Λ or from L_{r,M}
+  for guessed classes modulo **one** modulus M (any subset of classes);
+- windows are arbitrary integer intervals;
+- total cost is X, either per-run (Σ_runs (m + Σ_τ⌈W_τ/m⌉)) or with one baby list
+  shared across runs. The proof uses only "#distinct target vectors ≤ X and
+  Σ W_τ ≤ X²", which holds in both.
+
+Then X ≥ c_{d,c}·N^{1/5}·M^{−o(1)}.
+
+**Proof.** Write P = √N. Group targets with the same (class, vector) and use Lemma C
+for the union of their windows. The number of distinct vectors is ≤ X and
+Σ W_τ ≤ X·max m ≤ X². Covering needs Σ_τ (P μ_τ/M + C_I) ≥ c′P, since the preimage of a window is a union
+of ≤ C_I intervals; if X < c′P/2 this means
+Σ_τ μ_τ ≥ c″ M. Here μ_τ ≤ C(W_τ/‖b_τ‖)^{1/K_τ}. Let e = max|k| over the support of
+b_τ, so K_τ ≤ 2e.
+
+- **e ≥ 2.** By Lemma K′, ‖b‖ ≥ P^{e}/(C_d M^{K}), so μ_τ ≤ C M P^{−e/K} W_τ^{1/K}.
+  Hölder over ≤ X vectors with Σ W ≤ X² gives Σ μ ≤ C M P^{−e/K} X^{(K+1)/K}. M
+  cancels, and e/(K+1) ≥ e/(2e+1) ≥ 2/5. So this class needs X ≥ c·P^{2/5}, or it
+  covers only a small fraction.
+- **e = 1** (K ≤ 2, vectors (Aq+Bp)/(C M²), ‖b‖ ≍ P·max(|A|,|B|)/M²).
+  - For fixed (A,B), the number of classes r (mod M) for which it is integer-valued is
+    ≤ O(1)^{ω(M)}·gcd(A,B,M), because each class must satisfy B r² ≡ A N modulo a
+    divisor of M. The reviewer brute-forced this for M ≤ 12; it held. So #{(class, vector): ‖b‖ ≤ V} ≤ M^{o(1)}(VM²/P)².
+  - Hence the X smallest have Σ 1/‖b‖ ≤ M^{o(1)} X^{1/2} M²/P.
+  - Cauchy–Schwarz: Σ μ ≤ C(ΣW)^{1/2}(Σ 1/‖b‖)^{1/2} ≤ C M^{1+o(1)} P^{−1/2} X^{5/4}.
+  - Requiring this ≥ c″M gives X ≥ c P^{2/5} M^{−o(1)}.
+- **Combining.** Summing the finitely many (e, K) classes: if X ≤ δ P^{2/5}M^{−o(1)},
+  each class covers ≤ C δ^{const}·M, which is too little for small δ. Hence
+  X ≥ c N^{1/5} M^{−o(1)}. ∎
+
+**Scope (rule 5).** This is a lower bound *in the model*:
+- identity-proved coverage of all p in the range;
+- bounded-degree polynomial exponents;
+- a single guess modulus;
+- sumset-type BSGS with one handle per target and one base.
+
+With several moduli M_j the e = 1 count gains a factor #moduli, and the bound
+degrades to about N^{1/6}. That case is **not covered**.
+
+It does not cover proofs that use arithmetic of the specific N, non-polynomial
+exponent maps, or other collision mechanisms. It is not a factoring lower bound.
+
+The e = 1 case with M = 1 is the statement that Harvey's 1/5 is optimal for Lehman's
+family under full sharing, consistent with Harvey's remark that N^{1/6} would need a
+"fully square-root speedup" for r ≍ N^{1/3}.
+
+**Review.** An independent read-only Opus 5.5 reviewer checked D1, W, C, K′, LB and
+the heuristic.
+- Verdicts: CORRECT for W, C and K′; D1 CORRECT within the model, with the two scope
+  caveats now added; LB CORRECT for a single modulus.
+- Required fixes, all applied above: restrict LB to one modulus; reconcile the
+  shared and per-run wording; withdraw the (φ/M)^{3/5}-optimality claim; add the
+  constant C_I per window; add the N^{|k|} unit in K′.
+- Status: **proved, single reviewer**.
+
+
+
+web search: "factoring" "almost all" "deterministic" -polynomials -oracle -site:sciencedirect.com -site:scribd.com -site:reddit.com -site:researchgate.net ...
+codex
+Two points need care: known relations turn boxes into sums of arithmetic progressions, so Smith normal form alone does not reduce the search to interval targets. And a randomized subexponential factoring theorem does not give a uniform deterministic average-case algorithm simply by fixing its random choices. I’m checking both gaps directly.
+web search: 
+web search: "factoring" "almost all" "deterministic" "integers" -polynomials -oracle -witnesses -site:reddit.com -site:scribd.com -site:scispace.com ...
+web search: 
+web search: McKee Pinch 1996 "factoring" algorithm ...
+web search: 
+web search: deterministic integer factoring 2026 fastest average semiprimes algorithm ...
+web search: 
+web search: https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf
+web search: 
+web search: Harvey Hittmeir 2022 "A log-log speedup" factorisation ...
+web search: 
+web search: Pomerance "Smooth numbers and the quadratic sieve" pdf ...
+codex
+I have a route to the requested average-case bound for a precise model: moduli at most the factor scale, a fixed public schedule, and archimedean windows described by bounded-degree algebraic formulas. Counting prime pairs through residue lattices appears to give the bound without assuming equidistribution of primes in progressions. The model needs those restrictions stated explicitly; residue dependence alone is too broad.
+web search: 
+web search: "shifted primes" "smooth" "positive proportion" ...
+web search: 
+web search: "A deterministic version of Pollard" Żrałek theorem smooth complexity ...
+web search: 
+web search: https://arxiv.org/html/2212.11724v3
+web search: 
+web search: "A rigorous time bound for factoring integers" "dartmouth" ...
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from fractions import Fraction
+for e in range(2,7):
+ vals=[(Fraction(e,2*(k+1)),k) for k in range(1,2*e+1)]
+ print('degree',e,'best N exponent',min(vals))
+PY" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+degree 2 best N exponent (Fraction(1, 5), 4)
+degree 3 best N exponent (Fraction(3, 14), 6)
+degree 4 best N exponent (Fraction(2, 9), 8)
+degree 5 best N exponent (Fraction(5, 22), 10)
+degree 6 best N exponent (Fraction(3, 13), 12)
+
+web search: "A deterministic version of Pollard’s" "ams.org" ...
+codex
+The relation-method escape is concrete at the heuristic level: a deterministic quadratic-sieve schedule with trial division and dense linear algebra gives a conservative \(L_N[1/2,\sqrt2+o(1)]\) calculation. Its missing ingredients are enough smooth values on almost all inputs and a dependency that gives a nontrivial square root. Full matrix rank is not needed to obtain dependencies.
+web search: 
+web search: https://www.ams.org/jams/1992-05-03/S0894-0347-1992-1137100-0/
+web search: 
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+t=Path('/Volumes/git/factoring-connection/notes/cycloharvey_results.md').read_text();print(t[t.index('### 3.4'):t.index('### 3.5')])
+PY" in /Volumes/git/factoring-connection/codex/scratch/below16_1
+ succeeded in 0ms:
+### 3.4 Theorem LB: lower bound in the identity model (proved within the model's scope; independently reviewed)
+
+**Statement.** Fix d ≥ 1 and c > 1. Consider any covering family for the balanced
+range [√(N/c), √N]:
+- targets are Laurent polynomials of support ⊆ [−d,d]∖{0}, from Λ or from L_{r,M}
+  for guessed classes modulo **one** modulus M (any subset of classes);
+- windows are arbitrary integer intervals;
+- total cost is X, either per-run (Σ_runs (m + Σ_τ⌈W_τ/m⌉)) or with one baby list
+  shared across runs. The proof uses only "#distinct target vectors ≤ X and
+  Σ W_τ ≤ X²", which holds in both.
+
+Then X ≥ c_{d,c}·N^{1/5}·M^{−o(1)}.
+
+**Proof.** Write P = √N. Group targets with the same (class, vector) and use Lemma C
+for the union of their windows. The number of distinct vectors is ≤ X and
+Σ W_τ ≤ X·max m ≤ X². Covering needs Σ_τ (P μ_τ/M + C_I) ≥ c′P, since the preimage of a window is a union
+of ≤ C_I intervals; if X < c′P/2 this means
+Σ_τ μ_τ ≥ c″ M. Here μ_τ ≤ C(W_τ/‖b_τ‖)^{1/K_τ}. Let e = max|k| over the support of
+b_τ, so K_τ ≤ 2e.
+
+- **e ≥ 2.** By Lemma K′, ‖b‖ ≥ P^{e}/(C_d M^{K}), so μ_τ ≤ C M P^{−e/K} W_τ^{1/K}.
+  Hölder over ≤ X vectors with Σ W ≤ X² gives Σ μ ≤ C M P^{−e/K} X^{(K+1)/K}. M
+  cancels, and e/(K+1) ≥ e/(2e+1) ≥ 2/5. So this class needs X ≥ c·P^{2/5}, or it
+  covers only a small fraction.
+- **e = 1** (K ≤ 2, vectors (Aq+Bp)/(C M²), ‖b‖ ≍ P·max(|A|,|B|)/M²).
+  - For fixed (A,B), the number of classes r (mod M) for which it is integer-valued is
+    ≤ O(1)^{ω(M)}·gcd(A,B,M), because each class must satisfy B r² ≡ A N modulo a
+    divisor of M. The reviewer brute-forced this for M ≤ 12; it held. So #{(class, vector): ‖b‖ ≤ V} ≤ M^{o(1)}(VM²/P)².
+  - Hence the X smallest have Σ 1/‖b‖ ≤ M^{o(1)} X^{1/2} M²/P.
+  - Cauchy–Schwarz: Σ μ ≤ C(ΣW)^{1/2}(Σ 1/‖b‖)^{1/2} ≤ C M^{1+o(1)} P^{−1/2} X^{5/4}.
+  - Requiring this ≥ c″M gives X ≥ c P^{2/5} M^{−o(1)}.
+- **Combining.** Summing the finitely many (e, K) classes: if X ≤ δ P^{2/5}M^{−o(1)},
+  each class covers ≤ C δ^{const}·M, which is too little for small δ. Hence
+  X ≥ c N^{1/5} M^{−o(1)}. ∎
+
+**Scope (rule 5).** This is a lower bound *in the model*:
+- identity-proved coverage of all p in the range;
+- bounded-degree polynomial exponents;
+- a single guess modulus;
+- sumset-type BSGS with one handle per target and one base.
+
+With several moduli M_j the e = 1 count gains a factor #moduli, and the bound
+degrades to about N^{1/6}. That case is **not covered**.
+
+It does not cover proofs that use arithmetic of the specific N, non-polynomial
+exponent maps, or other collision mechanisms. It is not a factoring lower bound.
+
+The e = 1 case with M = 1 is the statement that Harvey's 1/5 is optimal for Lehman's
+family under full sharing, consistent with Harvey's remark that N^{1/6} would need a
+"fully square-root speedup" for r ≍ N^{1/3}.
+
+**Review.** An independent read-only Opus 5.5 reviewer checked D1, W, C, K′, LB and
+the heuristic.
+- Verdicts: CORRECT for W, C and K′; D1 CORRECT within the model, with the two scope
+  caveats now added; LB CORRECT for a single modulus.
+- Required fixes, all applied above: restrict LB to one modulus; reconcile the
+  shared and per-run wording; withdraw the (φ/M)^{3/5}-optimality claim; add the
+  constant C_I per window; add the N^{|k|} unit in K′.
+- Status: **proved, single reviewer**.
+
+
+
+web search: 
+web search: 
+web search: 
+web search: Coppersmith 1997 Small solutions polynomial equations low exponent RSA vulnerabilities factoring high bits p N 1/4 pdf ...
+codex
+The two extensions now have complete proofs within their stated models. Arbitrary rational relations among explicitly short bases preserve the \(1/6\) barrier for whole-box searches; the residue-local model gives the proposed average-case bound, with explicit restrictions on moduli, windows, and budgets. I found no verified uniform deterministic subexponential or sub-\(1/6\) almost-all theorem in the primary literature searched. I’ll state that search limitation alongside the heuristic quadratic-sieve escape.
+codex
+**Verdict.** There is a credible heuristic escape below \(N^{1/6}\): a completely deterministic relation-collection algorithm has predicted subexponential complexity, and I give an explicit conservative \(L_N[1/2,\sqrt2+o(1)]\) calculation below. I found no proved, uniform deterministic subexponential—or sub-\(N^{1/6}\)—algorithm for almost all balanced semiprimes in the primary literature searched. On the obstruction side, I can prove two extensions: arbitrary rational multiplicative relations among explicitly short bases preserve the \(1/6\) barrier for whole-box searches; and a precise model of residue-local, algebraically described target designs satisfies your proposed average-case bound. Neither result covers arbitrary succinct powers, unrestricted giant sharing, accidental order collisions, or arbitrary adaptive selectors. Those are substantive remaining gaps.
+
+Throughout, I take Theorems A and D′ in the question as premises. For population counts, write \(P=2^{n/2}\), so \(N\asymp P^2\). Define
+\[
+L_N[\alpha,c]
+=\exp\!\bigl(c(\log N)^\alpha(\log\log N)^{1-\alpha}\bigr).
+\]
+
+## 1. Several bases with known relations
+
+**Assumptions being escaped:** one base; scalar interval windows; potentially the charge of at least one giant per target.
+
+### PROVED: short rational bases admit an extension of Theorem A
+
+Smith normal form gives an algebraic reduction, but does **not** preserve interval geometry. For example, the image of \(\{0,1\}^2\) under
+\[
+(u,v)\longmapsto u+Kv
+\]
+is \(\{0,1,K,K+1\}\), whose cardinality is four while its interval hull has length \(K+2\).
+
+Nevertheless, short *explicit rational bases* give a useful quantitative reduction.
+
+**Theorem 1.** Fix the Laurent degree bound \(d\). Consider positive rational bases \(a_1,\dots,a_k\), each with numerator and denominator of at most \(b\) bits. Allow all exact multiplicative relations in \(\mathbb Q^\times\). Suppose:
+
+1. A target carries an integer box
+   \[
+   Q_\tau^0=\prod_{j=1}^k[U_{\tau j},U_{\tau j}+W_{\tau j})\cap\mathbb Z^k,
+   \]
+   with image \(Q_\tau\) in the group generated by the bases.
+2. The search covers the **whole image** \(Q_\tau\) by \(B+G_\tau\).
+3. There are at most \(X\) targets and
+   \[
+   |B|+\sum_\tau |G_\tau|\le X.
+   \]
+4. Formal validity means that applying any integer-valued character of the rational multiplicative group produces an admissible scalar target of Theorem A. Each useful target has at least one nonconstant such projection.
+
+If the targets cover every integer candidate, then
+\[
+X\ge \frac{c_d N^{1/6}}{\sqrt{1+kb}}.
+\]
+In particular, fixed \(k\) and \(b=(\log N)^{O(1)}\) preserve the exponent \(1/6\).
+
+**Proof.** Embed the generated group into its prime-valuation coordinates. If \(v_j\) is the valuation vector of \(a_j\), every coordinate of \(v_j\) has absolute value at most \(b\).
+
+Put \(V_\tau=|Q_\tau|\). Whenever \(v_j\ne0\), varying the \(j\)-th coordinate alone gives \(W_{\tau j}\) distinct points, so \(W_{\tau j}\le V_\tau\). Choose a valuation coordinate on which the target is nonconstant. Its projected box lies in an integer interval of width at most
+\[
+1+\sum_j |(v_j)_i|(W_{\tau j}-1)
+\le 1+kbV_\tau.
+\]
+Zero columns contribute nothing.
+
+Also,
+\[
+V_\tau\le |B|\,|G_\tau|,
+\qquad
+\sum_\tau V_\tau\le X^2.
+\]
+The projected scalar targets therefore have total interval width at most
+\[
+X+kbX^2\le(1+kb)X^2.
+\]
+They cover every original covered candidate. Apply Theorem A with cost parameter
+\(\sqrt{1+kb}\,X\). ∎
+
+This handles \(2,3,6\) directly: use valuation vectors
+\[
+(1,0),\quad(0,1),\quad(1,1).
+\]
+No independent-coordinate assumption or interval-preserving Smith basis is needed.
+
+### PROVED: the standard cofactor-power construction remains scalar
+
+For
+\[
+\gamma_\ell=\beta^{L/\ell^2},
+\]
+raising the handle appropriately makes the baby base \(\beta^L\), and the searched exponent is the scalar integer
+\[
+g=(Bp+Aq-c)/\ell^2.
+\]
+Its prescribed window is already an interval. This construction does not escape Theorem A.
+
+### SPECULATIVE: succinct powers and sparse projected windows remain open
+
+Theorem 1 does **not** handle \(\beta^k\) merely because \(k\) has a short binary encoding. The unreduced rational number \(\beta^k\) can have enormous bit length. Nor does it handle arbitrary relations known only modulo \(N\).
+
+For such representations, the exact missing geometric question is:
+
+> Can a bounded-degree vector Laurent target intersect a sparse projected box on substantially more candidate classes than its image cardinality would permit under an analogue of the scalar sublevel bound?
+
+Reducing the quotient to rank one does not answer this: the resulting set can still be a sparse sum of arithmetic progressions.
+
+Likewise, if a giant serves \(R\) independently useful target labels, the hypothesis \(\#\text{targets}\le X\) has been broken. Polylogarithmic \(R\) only changes polylogarithms. Polynomially large useful sharing is an actual escape requiring analysis.
+
+The unresolved construction would need to exhibit simultaneously:
+
+- many distinct useful identities per stored giant;
+- inexpensive construction of their exponents;
+- coverage of typical true factors;
+- a one-sided collision allowing extraction.
+
+I found no such construction or computed sub-\(1/6\) exponent from known relations alone.
+
+## 2. Average-case higher-order flatness
+
+**Assumption being escaped:** covering every integer candidate. Averaging itself does not invalidate the per-target sublevel estimate.
+
+### PROVED: higher-order flatness does not help in the local algebraic model of Section 5
+
+Here is the stronger consequence of the counting argument proved there.
+
+**Corollary 2.** Under the model of Theorem 3 below, suppose all targets have degree \(e\ge2\), support size \(K\le2e\), and satisfy the uniform real-fiber estimate underlying Theorem A:
+\[
+\operatorname{length}\{x:g_u(x)\text{ lies in its window}\}
+\le C_d M P^{1-e/K}w^{1/K}.
+\]
+Then the covered fraction of balanced prime pairs is at most
+\[
+C_d(\log P)^2
+\left(
+\sum_{e,K}P^{-e/K}X^{1+1/K}+\frac XP
+\right).
+\]
+Consequently, positive constant success requires
+\[
+X\ge N^{1/5}(\log N)^{-O_d(1)}.
+\]
+
+**Proof.** The area and residue-lattice argument in Theorem 3 gives, for one target,
+\[
+C_d\left(P^{2-e/K}w^{1/K}+P\right)
+\]
+covered integer pairs. Divide by the population size \(\gg P^2/(\log P)^2\). For each support type, Hölder and the width budget give
+\[
+\sum_\tau w_\tau^{1/K}
+\le X^{1-1/K}(X^2)^{1/K}
+=X^{1+1/K}.
+\]
+Finally,
+\[
+\frac{e}{K+1}\ge\frac{e}{2e+1}\ge\frac25.
+\]
+Thus every support type needs \(X\ge P^{2/5}\), up to logarithms. ∎
+
+The uniform real-fiber hypothesis is explicit; I am not silently extending an estimate proved only at integer \(N\) to arbitrary real fibers.
+
+### HEURISTIC / SPECULATIVE: what could still work?
+
+A fixed target can be exceptionally flat near the true factor. But typical success requires the true pair to concentrate near those exceptional loci.
+
+For example, exploiting \(|p-q|\le\delta P\) only addresses a thin diagonal region. Counting integer pairs already bounds its prime-pair fraction by
+\[
+O\!\left((\delta+P^{-1})(\log P)^2\right).
+\]
+A polynomially shrinking neighborhood cannot contain almost all balanced pairs.
+
+The remaining possibility is an \(N\)-dependent rule that places unusually flat neighborhoods around the true factor. Outside the model of Section 5, this is a **selector problem**: identify the right flat neighborhood cheaply. I have no argument that such a selector is impossible, or equivalent to factoring.
+
+## 3. Class-group collisions
+
+**Assumptions being escaped:** working in \((\mathbb Z/N)^\times\), and having publicly constructible handles whose true-factor exponents lie in short windows.
+
+### PROVED: the factor gives a small-order class—but its description reveals the factor
+
+Let \(N=pq\) with distinct odd primes, and let
+\[
+\mathcal O=\mathbb Z[\sqrt{-N}],
+\qquad \operatorname{disc}(\mathcal O)=-4N.
+\]
+The invertible ramified ideal
+\[
+I_p=(p,\sqrt{-N})
+\]
+has norm \(p\) and satisfies
+\[
+I_p^2=(p).
+\]
+Thus its class has order two.
+
+**Proof.** The square is generated by \(p^2,p\sqrt{-N},-N\). All belong to \((p)\), while integer combinations of \(p^2\) and \(N=pq\) generate \(p\), proving equality. If \(I_p\) were principal, there would be an element of norm \(p\), hence integers \(a,b\) with
+\[
+a^2+Nb^2=p,
+\]
+which is impossible. ∎
+
+The corresponding reduced primitive form is
+\[
+(p,0,q).
+\]
+Therefore the true factor does give a tiny-order object, but constructing this particular object already exposes \(p\).
+
+This differs from the unit-group identity: there is no analogous public CRT projection of \(\mathrm{Cl}(-4N)\) to a factor-dependent class group supplying a known-base exponent \(p-1\).
+
+### KNOWN: class-group relations genuinely escape the collision model
+
+Lenstra–Pomerance prove a **randomized** algorithm factoring every integer in expected time
+\[
+L_N[1/2,1+o(1)]
+\]
+using class-group relations and multipliers. Their paper also distinguishes this method from random-class-group methods based on smooth class numbers; the latter do not inherit the same analysis. [Lenstra–Pomerance, 1992](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+
+For discriminants \(-4kN\), known factors of \(k\) can supply additional known ambiguous classes. A class separating the unknown factors of \(N\) remains the useful missing object.
+
+### SPECULATIVE: the exact hybrid question
+
+A second group used only to filter existing unit-group targets cannot increase their coverage: the accepted set is a subset of the original coverage set.
+
+A useful hybrid must instead provide a new publicly computable relation, such as
+\[
+C_N^{\,h(p,q)}=D_N,
+\]
+with:
+
+1. \(h(p,q)\) in a substantially cheaper searchable set;
+2. \(C_N,D_N\) computable without the factors;
+3. recovery of a factor from the collision.
+
+I found no such class-group identity with a sub-\(1/6\) exponent. This is an open mechanism question, not a class-group lower bound.
+
+## 4. Relation methods and deterministic derandomization
+
+**Assumptions being escaped:** bounded-degree one-sided exponent targets and sumset BSGS. Relation collection combines many identities by linear algebra and produces a square congruence.
+
+### HEURISTIC: an explicit uniform deterministic subexponential escape
+
+A deterministic quadratic-sieve schedule already supplies the right kind of candidate. The heuristic status of its complexity is explicit in Pomerance’s treatment. [Pomerance, *Smooth numbers and the quadratic sieve*](https://math.dartmouth.edu/~carlp/PDF/qs08.pdf)
+
+Here is a conservative version that avoids randomized sparse linear algebra and randomized smoothness tests.
+
+Fix \(\varepsilon>0\), and set
+\[
+b=\frac1{2\sqrt2},\qquad
+B=L_N[1/2,b],\qquad
+T=L_N\!\left[1/2,\frac3{2\sqrt2}+\varepsilon\right].
+\]
+
+Run the following deterministic algorithm:
+
+1. Enumerate
+   \[
+   x_i=\lceil\sqrt N\rceil+i,\qquad r_i=x_i^2-N,
+   \quad 0\le i<T.
+   \]
+2. Trial-divide each \(r_i\) by all primes at most \(B\).
+3. Retain the first \(R=2\pi(B)+1\) completely smooth values. Check gcds with \(N\) along the way.
+4. Compute a basis of the parity-matrix kernel by dense Gaussian elimination over \(\mathbb F_2\).
+5. Test every basis dependency for a nontrivial square congruence.
+
+This is uniform, deterministic, and has a prescribed stopping time.
+
+**Conditional proposition.** Suppose that, on a \(1-o(1)\) fraction of the balanced-semiprime population:
+
+- **H1:** the first \(T\) values contain at least \(R\) smooth values;
+- **H2:** the dependency space of the first \(R\) retained rows contains a dependency producing a nontrivial square congruence.
+
+Then the algorithm factors almost all inputs in
+\[
+L_N[1/2,\sqrt2+\varepsilon+o(1)]
+=N^{o(1)}
+\]
+bit operations.
+
+**Proof.** Trial division costs
+\[
+TB(\log N)^{O(1)}
+=L_N[1/2,\sqrt2+\varepsilon+o(1)].
+\]
+Dense elimination costs at most
+\[
+B^3(\log N)^{O(1)}
+=L_N[1/2,3/(2\sqrt2)+o(1)],
+\]
+which is smaller.
+
+It remains to justify testing a kernel basis. For a dependency \(c\), define
+\[
+z(c)=
+\frac{\prod_i x_i^{c_i}}
+{\prod_{\ell\le B}\ell^{(\sum_i c_i v_\ell(r_i))/2}}
+\pmod N.
+\]
+After direct gcd hits are removed, denominators are units and \(z(c)^2=1\). Moreover, \(z\) is a homomorphism from the binary dependency space to the square roots of unity: the correction from an overlapping row is \(x_i^2/r_i=1\pmod N\).
+
+For odd semiprimes, splitting occurs precisely when the image in
+\[
+\{z:z^2=1\pmod N\}/\{\pm1\}
+\]
+is nontrivial. If this homomorphism is nontrivial, some basis vector has nontrivial image. H1 and H2 therefore imply success. ∎
+
+**Heuristic calculation for H1.** Since \(T=N^{o(1)}\),
+\[
+r_i\le N^{1/2+o(1)}.
+\]
+The random-integer smoothness heuristic predicts
+\[
+\Pr(r_i\text{ is }B\text{-smooth})
+=L_N[1/2,-1/(4b)+o(1)].
+\]
+Thus the predicted number retained is
+\[
+L_N[1/2,b+\varepsilon+o(1)]\gg R.
+\]
+A suitable concentration heuristic and a nontrivial-square-root heuristic give H1–H2.
+
+This supplies a computed exponent below \(1/6\): the exponent of \(N\) tends to zero. The unproved part is success on the specified population.
+
+### PROVED distinction: full rank is unnecessary; splitting is necessary
+
+With more rows than columns, a dependency exists regardless of rank. Low rank supplies **more** dependencies.
+
+The unresolved issue for a fixed deterministic schedule is whether the map above has nontrivial image. “The matrix behaves randomly” is stronger than needed and can obscure this exact obstruction.
+
+Likewise, a large expected number of smooth values does not prove almost-all success. For example, sufficient concentration conditions would be
+\[
+\mathbb E S_N=\mu\gg R,\qquad
+\mathbb E(S_N-\mu)^2=o(\mu^2),
+\]
+where \(S_N\) counts retained candidates over the balanced-semiprime population.
+
+### What is proved, and what remains missing?
+
+| Step | Status relevant here |
+|---|---|
+| Smooth-number density for ordinary integers | **KNOWN**, with rigorous asymptotics in broad ranges. |
+| Local divisibility conditions for polynomial values | **KNOWN** in many regimes; these do not automatically imply complete smoothness. |
+| Smoothness testing and dense linear algebra | **PROVED** deterministic, with the costs above. |
+| Required smooth-value concentration for this short deterministic sequence over balanced semiprimes | **Open in this argument**; I found no result supplying H1. |
+| Nontrivial square-root character for the retained deterministic relations | **Open in this argument**; smoothness alone does not supply H2. |
+| Analogous moments for \(x_j=\lceil\sqrt{jN}\rceil\) | Again require a theorem about that actual sequence and population. Small residue size alone is insufficient. |
+
+The distinction between smooth ordinary integers and smooth values in prescribed sequences is a central analytic difficulty. [Granville, *Smooth numbers: computational number theory and beyond*](https://library.slmath.org/books/Book44/files/09andrew.pdf)
+
+There is a sharp elementary warning against blindly fixing Dixon’s samples. If one takes \(x_j=j\) with \(j<T<\sqrt N\), then
+\[
+x_j^2\bmod N=j^2.
+\]
+Every retained value is an ordinary integer square, and every resulting dependency gives \(z=1\). Smooth relations can be plentiful and completely useless.
+
+Enumerating fixed smooth integers \(w\bmod N\) must similarly establish useful relation diversity and a nontrivial square-root character. It cannot borrow those properties from uniform sampling.
+
+### KNOWN / SPECULATIVE: fixed elliptic curves
+
+For a fixed curve \(E/\mathbb Q\), deterministic ECM needs favorable orders
+\[
+\#E(\mathbb F_p)=p+1-a_p.
+\]
+Chebotarev information about divisibility by particular small integers does not establish complete smoothness at a subexponential threshold.
+
+There are substantial conditional results: Barbulescu–Jouve prove smooth-order asymptotics for CM curves under Elliott–Halberstam-type hypotheses, with specified ranges. These are not a joint hitting theorem for the first subexponentially many deterministically enumerated curves. [Barbulescu–Jouve](https://arxiv.org/abs/2212.11724)
+
+A deterministic ECM schedule would need to establish:
+
+- enough smooth orders among its particular curves for almost all relevant \(p\);
+- control of correlations across curves;
+- point-order and one-sided extraction conditions.
+
+These requirements concern varying curves and varying primes jointly.
+
+### Why fixing random coins does not prove uniform derandomization
+
+From a randomized algorithm succeeding on every input with probability \(1-\delta\), averaging gives, for each input length, **some** random tape succeeding on a \(1-\delta\) fraction of the population.
+
+That proves a nonuniform statement. It does not provide an efficiently computable sequence of tapes. Exhaustive search for good tapes can cost more than factoring.
+
+Nor can one replace the tape by an arbitrary deterministic function of \(N\): a row-wise bound on a failure matrix gives no bound along such a chosen diagonal.
+
+### KNOWN: literature position
+
+The primary sources checked support the following distinctions:
+
+- Harvey–Hittmeir give rigorous deterministic worst-case exponent \(1/5\), with logarithmic improvements. [Harvey–Hittmeir, 2022](https://arxiv.org/abs/2105.11105)
+- Lenstra–Pomerance give rigorous **randomized** subexponential factoring, not uniform deterministic average-case factoring. [1992 paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+- Deterministic \(p-1\) results exist for appropriate smoothness hypotheses on the input. Those hypotheses are not almost-all balanced-semiprime theorems. [Źrałek, 2010](https://doi.org/10.1090/S0025-5718-09-02262-5)
+- Strong shifted-prime smoothness results still need their quantitative density stated correctly. For example, Lichtman obtains a lower bound of the shape \(x/(\log x)^C\) for smooth shifted primes at exponent \(0.2844\); this is not an almost-all statement. [Lichtman](https://arxiv.org/abs/2211.09641)
+- McKee–Pinch is relevant deterministic factoring prior art; I did not identify a proved almost-all sub-\(1/6\) theorem there. [1996 publication](https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/)
+- Average-case deterministic results **with totient or elliptic-order oracles** do not remove the cost of obtaining those oracle values. [Pomykała–Radziejewski](https://nutmic2019.imj-prg.fr/confpapers/FactoringWitnesses.pdf)
+
+I did not locate a proved uniform deterministic subexponential or sub-\(1/6\) almost-all result for your population. This reports the literature search, not a nonexistence theorem. Also, a density-one theorem over all integers could exclude every balanced semiprime: the population here has size only \(\asymp P^2/(\log P)^2\).
+
+## 5. Only the true factor needs covering
+
+**Assumptions being escaped:** full-candidate coverage, potentially fixed target schedules and certified interval collisions.
+
+### PROVED: residue dependence alone is insufficient
+
+Without a modulus restriction or a computational restriction on selection, “depends only on \(N\bmod M\)” can reveal all of \(N\).
+
+For odd \(n\)-bit inputs, take the fixed modulus \(M=2^{n+1}>N\). Then \(N\bmod M=N\). An uncharged selector can factor \(N\), choose
+\[
+A=p,\qquad B=q,\qquad r=p,
+\]
+and use the class-lock target
+\[
+g=(qp+pq-2N)/M^2=0
+\]
+with width one. The root condition holds exactly:
+\[
+Br^2=qp^2=AN.
+\]
+One target covers the true factor on every input.
+
+This does not give a cheap algorithm. It disproves a lower bound based solely on the stated information restriction.
+
+### PROVED: the requested average bound in a precise local model
+
+The additional geometric restriction below is useful because it allows \(N\)-dependent algebraic windows while excluding arbitrary computational information hidden in their endpoints.
+
+**Theorem 3 — residue-local algebraic-window bound.** Fix constants controlling the balanced range and a semialgebraic complexity bound \(D\). Consider an \(n\)-dependent schedule with \(T\le X\) slots. Slot \(\tau\) has:
+
+1. A modulus \(1\le M_\tau\le P\), fixed before seeing \(N\).
+2. For every unit residue \(s\bmod M_\tau\), one unit class \(r_\tau(s)\).
+3. A real region \(R_{\tau,s}\) in the balanced \((p,q)\)-box, described by at most \(D\) polynomial equalities/inequalities of degree at most \(D\).
+4. A width cap \(w_\tau\ge1\), independent of \(s\), with
+   \[
+   \sum_\tau w_\tau\le X^2.
+   \]
+5. For every real product value \(u\asymp P^2\), the fiber bound
+   \[
+   \operatorname{length}
+   \{x:(x,u/x)\in R_{\tau,s}\}
+   \le C_D M_\tau\bigl(\sqrt{Pw_\tau}+w_\tau\bigr). \tag{*}
+   \]
+
+A declared hit requires
+\[
+s=pq\bmod M_\tau,\qquad
+p\equiv r_\tau(s)\pmod {M_\tau},\qquad
+(p,q)\in R_{\tau,s}.
+\]
+
+Then the fraction of balanced prime pairs hit by the schedule is at most
+\[
+C_D(\log P)^2
+\left(
+X^{3/2}P^{-1/2}+\frac{X^2}{P}
+\right).
+\]
+
+The same conclusion allows polylogarithmically many coarse archimedean cases, with an additional polylogarithmic factor.
+
+**Proof.** Fix one slot, abbreviating \(M=M_\tau,w=w_\tau\).
+
+For each unit \(s\), the congruences force
+\[
+p\equiv r(s)\pmod M,\qquad
+q\equiv s\,r(s)^{-1}\pmod M.
+\]
+Thus the relevant points lie in one translate of \(M\mathbb Z^2\).
+
+The change of coordinates \((p,q)\mapsto(u=pq,p)\) has area element
+\[
+dp\,dq=\frac{du\,dp}{p}.
+\]
+Because \(p\asymp P\), the fiber estimate (*) gives
+\[
+\operatorname{area}(R_s)
+\le C_D M\bigl(P^{3/2}\sqrt w+Pw\bigr). \tag{1}
+\]
+
+For a bounded-complexity semialgebraic region in a box of side \(O(P)\),
+\[
+\#\bigl(R_s\cap((a,b)+M\mathbb Z^2)\bigr)
+\le
+\frac{\operatorname{area}(R_s)}{M^2}
++C_D(P/M+1). \tag{2}
+\]
+To see (2), partition the boundary into \(O_D(1)\) coordinate-monotone algebraic arcs and isolated points. These meet \(O_D(P/M+1)\) lattice cells; fully interior cells contribute their area divided by \(M^2\).
+
+There are at most \(M\) residues \(s\). Summing (1)–(2), and using \(M\le P\), bounds the slot’s covered integer pairs by
+\[
+C_D\bigl(P^{3/2}\sqrt w+Pw+P\bigr).
+\]
+The prime-pair population has size \(\gg P^2/(\log P)^2\), by the prime number theorem in fixed proportional intervals. Consequently, the covered fraction is at most
+\[
+C_D(\log P)^2
+\left(
+P^{-1/2}\sum_\tau\sqrt{w_\tau}
++P^{-1}\sum_\tau w_\tau+\frac TP
+\right).
+\]
+Finally,
+\[
+\sum_\tau\sqrt{w_\tau}\le\sqrt{T\sum_\tau w_\tau}\le X^{3/2},
+\]
+and \(T/P\le X^2/P\). ∎
+
+This proof uses **integer-pair upper bounds**. It requires no equidistribution theorem for primes in the relevant progressions.
+
+### How this relates to Laurent targets
+
+For the two-term HH targets, the archimedean estimate behind Theorem A gives
+\[
+\text{fiber length}\le C M\sqrt{Pw/H}
+\le C M\sqrt{Pw}.
+\]
+One-term targets contribute the \(CMw\) alternative.
+
+For higher-degree targets with a uniform real-fiber quantization bound,
+\[
+CM P^{1-e/K}w^{1/K},
+\]
+the same argument gives Corollary 2.
+
+Thus Theorem 3 applies when residue-local coefficient choices and window endpoints produce bounded-complexity algebraic regions—for example, endpoints obtained from fixed rational or algebraic formulas in \(N\), with harmless rounding enlargements.
+
+Its limitations are explicit:
+
+- fixed slots and moduli;
+- moduli at most \(P\);
+- uniform width caps;
+- controlled algebraic complexity;
+- success through a declared target.
+
+I have **not** proved the same bound from only a per-input width budget, arbitrary adaptive choices of moduli, or unrestricted endpoint computations.
+
+For
+\[
+X=N^{1/6-\delta},
+\]
+the theorem gives a success fraction at most
+\[
+(\log N)^{O(1)}
+\left(N^{-3\delta/2}+N^{-1/6-2\delta}\right)=o(1).
+\]
+Within this model, beating \(1/6\) loses even constant-fraction success.
+
+### SPECULATIVE: gcd verification and list decoding
+
+Gcd verification is cheap, but it does not by itself enlarge the certified coverage set.
+
+Accidental collisions can enlarge actual success. For example, a relation caused by unexpectedly small \(\operatorname{ord}_p(\beta)\) need not correspond to any declared Laurent window. Theorem 3 does not bound such successes. Extending it would require average control of those order relations.
+
+Similarly, many partial collisions might identify factor bits through a decoding procedure. The missing mechanism is a decoder that both:
+
+- extracts sufficiently concentrated information about \(p\);
+- costs less than the saving obtained from that information.
+
+A list of many scattered possibilities is not automatically equivalent to one short interval.
+
+### PROVED calculation: the value of a short-span selector
+
+Suppose a uniform public procedure, costing \(S(N)\), returns an interval of length
+\[
+R=N^{1/2-\eta}
+\]
+containing the true factor on almost all inputs.
+
+For bounded weights, the variation of \(Bp+AN/p\) on this interval is \(O(HR)\). The DCL search-cost calculation becomes
+\[
+\widetilde O\!\left(\frac{HR}{Y^2}+H^2Y\right).
+\]
+Choosing \(Y\asymp(R/H)^{1/3}\) gives
+\[
+\widetilde O(H^{5/3}R^{1/3})
+=N^{1/6-\eta/3}(\log N)^{O(1)}
+\]
+for polylogarithmic \(H\). The selector cost \(S(N)\) must be added. This establishes the claimed search saving; coverage and one-sided extraction must also be maintained.
+
+There is no known equivalence between computing such a selector for an arbitrary fixed \(0<\eta<1/4\) and polynomial-time factoring. Factoring supplies a selector immediately; the converse at that weak precision is unproved.
+
+## 6. Other mechanisms and the most useful remaining questions
+
+### KNOWN: lattice recovery from partial factor information
+
+Coppersmith’s method is a genuinely different mechanism. Sufficiently accurate approximation to \(p\)—safely, an interval of length \(N^{1/4-\epsilon}\)—permits deterministic polynomial-time recovery for fixed \(\epsilon>0\). It uses lattice reduction, not a sumset collision search. [Coppersmith, 1997](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf)
+
+Thus a sufficiently strong public selector would already yield polynomial-time factoring. A weaker selector could still improve the collision exponent without any known polynomial-time equivalence.
+
+### HEURISTIC: smooth-order annihilation
+
+ECM replaces a short unknown exponent by a smooth annihilating exponent. Under a suitable joint smoothness heuristic for a deterministic curve schedule, it also predicts subexponential time. Its unresolved ingredient is the joint hitting statement described in Section 4, rather than Laurent flatness.
+
+### SPECULATIVE: precise questions worth pursuing
+
+The remaining questions I would prioritize are:
+
+1. **Smooth-relation concentration over balanced semiprimes:** establish H1 for an explicit short deterministic schedule, together with a nontrivial dependency character. This would bypass the collision barrier entirely.
+2. **Succinct-power projected boxes:** prove a coverage bound using image cardinality without replacing a sparse sum of arithmetic progressions by its potentially enormous interval hull.
+3. **Useful giant multiplicity:** construct or bound polynomially many distinct certified identities per stored giant, charging exponent construction.
+4. **Remove restrictions from Theorem 3:** replace uniform width caps by the actual per-input budget, and handle adaptive moduli or more general computable endpoints.
+5. **Weak public factor localization:** obtain any fixed \(\eta>0\) of contiguous-span saving in less time than the resulting \(N^{1/6-\eta/3}\) search. No factoring-equivalence claim is presently justified for that weak selector.
+tokens used
+187,522
+**Verdict.** There is a credible heuristic escape below \(N^{1/6}\): a completely deterministic relation-collection algorithm has predicted subexponential complexity, and I give an explicit conservative \(L_N[1/2,\sqrt2+o(1)]\) calculation below. I found no proved, uniform deterministic subexponential—or sub-\(N^{1/6}\)—algorithm for almost all balanced semiprimes in the primary literature searched. On the obstruction side, I can prove two extensions: arbitrary rational multiplicative relations among explicitly short bases preserve the \(1/6\) barrier for whole-box searches; and a precise model of residue-local, algebraically described target designs satisfies your proposed average-case bound. Neither result covers arbitrary succinct powers, unrestricted giant sharing, accidental order collisions, or arbitrary adaptive selectors. Those are substantive remaining gaps.
+
+Throughout, I take Theorems A and D′ in the question as premises. For population counts, write \(P=2^{n/2}\), so \(N\asymp P^2\). Define
+\[
+L_N[\alpha,c]
+=\exp\!\bigl(c(\log N)^\alpha(\log\log N)^{1-\alpha}\bigr).
+\]
+
+## 1. Several bases with known relations
+
+**Assumptions being escaped:** one base; scalar interval windows; potentially the charge of at least one giant per target.
+
+### PROVED: short rational bases admit an extension of Theorem A
+
+Smith normal form gives an algebraic reduction, but does **not** preserve interval geometry. For example, the image of \(\{0,1\}^2\) under
+\[
+(u,v)\longmapsto u+Kv
+\]
+is \(\{0,1,K,K+1\}\), whose cardinality is four while its interval hull has length \(K+2\).
+
+Nevertheless, short *explicit rational bases* give a useful quantitative reduction.
+
+**Theorem 1.** Fix the Laurent degree bound \(d\). Consider positive rational bases \(a_1,\dots,a_k\), each with numerator and denominator of at most \(b\) bits. Allow all exact multiplicative relations in \(\mathbb Q^\times\). Suppose:
+
+1. A target carries an integer box
+   \[
+   Q_\tau^0=\prod_{j=1}^k[U_{\tau j},U_{\tau j}+W_{\tau j})\cap\mathbb Z^k,
+   \]
+   with image \(Q_\tau\) in the group generated by the bases.
+2. The search covers the **whole image** \(Q_\tau\) by \(B+G_\tau\).
+3. There are at most \(X\) targets and
+   \[
+   |B|+\sum_\tau |G_\tau|\le X.
+   \]
+4. Formal validity means that applying any integer-valued character of the rational multiplicative group produces an admissible scalar target of Theorem A. Each useful target has at least one nonconstant such projection.
+
+If the targets cover every integer candidate, then
+\[
+X\ge \frac{c_d N^{1/6}}{\sqrt{1+kb}}.
+\]
+In particular, fixed \(k\) and \(b=(\log N)^{O(1)}\) preserve the exponent \(1/6\).
+
+**Proof.** Embed the generated group into its prime-valuation coordinates. If \(v_j\) is the valuation vector of \(a_j\), every coordinate of \(v_j\) has absolute value at most \(b\).
+
+Put \(V_\tau=|Q_\tau|\). Whenever \(v_j\ne0\), varying the \(j\)-th coordinate alone gives \(W_{\tau j}\) distinct points, so \(W_{\tau j}\le V_\tau\). Choose a valuation coordinate on which the target is nonconstant. Its projected box lies in an integer interval of width at most
+\[
+1+\sum_j |(v_j)_i|(W_{\tau j}-1)
+\le 1+kbV_\tau.
+\]
+Zero columns contribute nothing.
+
+Also,
+\[
+V_\tau\le |B|\,|G_\tau|,
+\qquad
+\sum_\tau V_\tau\le X^2.
+\]
+The projected scalar targets therefore have total interval width at most
+\[
+X+kbX^2\le(1+kb)X^2.
+\]
+They cover every original covered candidate. Apply Theorem A with cost parameter
+\(\sqrt{1+kb}\,X\). ∎
+
+This handles \(2,3,6\) directly: use valuation vectors
+\[
+(1,0),\quad(0,1),\quad(1,1).
+\]
+No independent-coordinate assumption or interval-preserving Smith basis is needed.
+
+### PROVED: the standard cofactor-power construction remains scalar
+
+For
+\[
+\gamma_\ell=\beta^{L/\ell^2},
+\]
+raising the handle appropriately makes the baby base \(\beta^L\), and the searched exponent is the scalar integer
+\[
+g=(Bp+Aq-c)/\ell^2.
+\]
+Its prescribed window is already an interval. This construction does not escape Theorem A.
+
+### SPECULATIVE: succinct powers and sparse projected windows remain open
+
+Theorem 1 does **not** handle \(\beta^k\) merely because \(k\) has a short binary encoding. The unreduced rational number \(\beta^k\) can have enormous bit length. Nor does it handle arbitrary relations known only modulo \(N\).
+
+For such representations, the exact missing geometric question is:
+
+> Can a bounded-degree vector Laurent target intersect a sparse projected box on substantially more candidate classes than its image cardinality would permit under an analogue of the scalar sublevel bound?
+
+Reducing the quotient to rank one does not answer this: the resulting set can still be a sparse sum of arithmetic progressions.
+
+Likewise, if a giant serves \(R\) independently useful target labels, the hypothesis \(\#\text{targets}\le X\) has been broken. Polylogarithmic \(R\) only changes polylogarithms. Polynomially large useful sharing is an actual escape requiring analysis.
+
+The unresolved construction would need to exhibit simultaneously:
+
+- many distinct useful identities per stored giant;
+- inexpensive construction of their exponents;
+- coverage of typical true factors;
+- a one-sided collision allowing extraction.
+
+I found no such construction or computed sub-\(1/6\) exponent from known relations alone.
+
+## 2. Average-case higher-order flatness
+
+**Assumption being escaped:** covering every integer candidate. Averaging itself does not invalidate the per-target sublevel estimate.
+
+### PROVED: higher-order flatness does not help in the local algebraic model of Section 5
+
+Here is the stronger consequence of the counting argument proved there.
+
+**Corollary 2.** Under the model of Theorem 3 below, suppose all targets have degree \(e\ge2\), support size \(K\le2e\), and satisfy the uniform real-fiber estimate underlying Theorem A:
+\[
+\operatorname{length}\{x:g_u(x)\text{ lies in its window}\}
+\le C_d M P^{1-e/K}w^{1/K}.
+\]
+Then the covered fraction of balanced prime pairs is at most
+\[
+C_d(\log P)^2
+\left(
+\sum_{e,K}P^{-e/K}X^{1+1/K}+\frac XP
+\right).
+\]
+Consequently, positive constant success requires
+\[
+X\ge N^{1/5}(\log N)^{-O_d(1)}.
+\]
+
+**Proof.** The area and residue-lattice argument in Theorem 3 gives, for one target,
+\[
+C_d\left(P^{2-e/K}w^{1/K}+P\right)
+\]
+covered integer pairs. Divide by the population size \(\gg P^2/(\log P)^2\). For each support type, Hölder and the width budget give
+\[
+\sum_\tau w_\tau^{1/K}
+\le X^{1-1/K}(X^2)^{1/K}
+=X^{1+1/K}.
+\]
+Finally,
+\[
+\frac{e}{K+1}\ge\frac{e}{2e+1}\ge\frac25.
+\]
+Thus every support type needs \(X\ge P^{2/5}\), up to logarithms. ∎
+
+The uniform real-fiber hypothesis is explicit; I am not silently extending an estimate proved only at integer \(N\) to arbitrary real fibers.
+
+### HEURISTIC / SPECULATIVE: what could still work?
+
+A fixed target can be exceptionally flat near the true factor. But typical success requires the true pair to concentrate near those exceptional loci.
+
+For example, exploiting \(|p-q|\le\delta P\) only addresses a thin diagonal region. Counting integer pairs already bounds its prime-pair fraction by
+\[
+O\!\left((\delta+P^{-1})(\log P)^2\right).
+\]
+A polynomially shrinking neighborhood cannot contain almost all balanced pairs.
+
+The remaining possibility is an \(N\)-dependent rule that places unusually flat neighborhoods around the true factor. Outside the model of Section 5, this is a **selector problem**: identify the right flat neighborhood cheaply. I have no argument that such a selector is impossible, or equivalent to factoring.
+
+## 3. Class-group collisions
+
+**Assumptions being escaped:** working in \((\mathbb Z/N)^\times\), and having publicly constructible handles whose true-factor exponents lie in short windows.
+
+### PROVED: the factor gives a small-order class—but its description reveals the factor
+
+Let \(N=pq\) with distinct odd primes, and let
+\[
+\mathcal O=\mathbb Z[\sqrt{-N}],
+\qquad \operatorname{disc}(\mathcal O)=-4N.
+\]
+The invertible ramified ideal
+\[
+I_p=(p,\sqrt{-N})
+\]
+has norm \(p\) and satisfies
+\[
+I_p^2=(p).
+\]
+Thus its class has order two.
+
+**Proof.** The square is generated by \(p^2,p\sqrt{-N},-N\). All belong to \((p)\), while integer combinations of \(p^2\) and \(N=pq\) generate \(p\), proving equality. If \(I_p\) were principal, there would be an element of norm \(p\), hence integers \(a,b\) with
+\[
+a^2+Nb^2=p,
+\]
+which is impossible. ∎
+
+The corresponding reduced primitive form is
+\[
+(p,0,q).
+\]
+Therefore the true factor does give a tiny-order object, but constructing this particular object already exposes \(p\).
+
+This differs from the unit-group identity: there is no analogous public CRT projection of \(\mathrm{Cl}(-4N)\) to a factor-dependent class group supplying a known-base exponent \(p-1\).
+
+### KNOWN: class-group relations genuinely escape the collision model
+
+Lenstra–Pomerance prove a **randomized** algorithm factoring every integer in expected time
+\[
+L_N[1/2,1+o(1)]
+\]
+using class-group relations and multipliers. Their paper also distinguishes this method from random-class-group methods based on smooth class numbers; the latter do not inherit the same analysis. [Lenstra–Pomerance, 1992](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+
+For discriminants \(-4kN\), known factors of \(k\) can supply additional known ambiguous classes. A class separating the unknown factors of \(N\) remains the useful missing object.
+
+### SPECULATIVE: the exact hybrid question
+
+A second group used only to filter existing unit-group targets cannot increase their coverage: the accepted set is a subset of the original coverage set.
+
+A useful hybrid must instead provide a new publicly computable relation, such as
+\[
+C_N^{\,h(p,q)}=D_N,
+\]
+with:
+
+1. \(h(p,q)\) in a substantially cheaper searchable set;
+2. \(C_N,D_N\) computable without the factors;
+3. recovery of a factor from the collision.
+
+I found no such class-group identity with a sub-\(1/6\) exponent. This is an open mechanism question, not a class-group lower bound.
+
+## 4. Relation methods and deterministic derandomization
+
+**Assumptions being escaped:** bounded-degree one-sided exponent targets and sumset BSGS. Relation collection combines many identities by linear algebra and produces a square congruence.
+
+### HEURISTIC: an explicit uniform deterministic subexponential escape
+
+A deterministic quadratic-sieve schedule already supplies the right kind of candidate. The heuristic status of its complexity is explicit in Pomerance’s treatment. [Pomerance, *Smooth numbers and the quadratic sieve*](https://math.dartmouth.edu/~carlp/PDF/qs08.pdf)
+
+Here is a conservative version that avoids randomized sparse linear algebra and randomized smoothness tests.
+
+Fix \(\varepsilon>0\), and set
+\[
+b=\frac1{2\sqrt2},\qquad
+B=L_N[1/2,b],\qquad
+T=L_N\!\left[1/2,\frac3{2\sqrt2}+\varepsilon\right].
+\]
+
+Run the following deterministic algorithm:
+
+1. Enumerate
+   \[
+   x_i=\lceil\sqrt N\rceil+i,\qquad r_i=x_i^2-N,
+   \quad 0\le i<T.
+   \]
+2. Trial-divide each \(r_i\) by all primes at most \(B\).
+3. Retain the first \(R=2\pi(B)+1\) completely smooth values. Check gcds with \(N\) along the way.
+4. Compute a basis of the parity-matrix kernel by dense Gaussian elimination over \(\mathbb F_2\).
+5. Test every basis dependency for a nontrivial square congruence.
+
+This is uniform, deterministic, and has a prescribed stopping time.
+
+**Conditional proposition.** Suppose that, on a \(1-o(1)\) fraction of the balanced-semiprime population:
+
+- **H1:** the first \(T\) values contain at least \(R\) smooth values;
+- **H2:** the dependency space of the first \(R\) retained rows contains a dependency producing a nontrivial square congruence.
+
+Then the algorithm factors almost all inputs in
+\[
+L_N[1/2,\sqrt2+\varepsilon+o(1)]
+=N^{o(1)}
+\]
+bit operations.
+
+**Proof.** Trial division costs
+\[
+TB(\log N)^{O(1)}
+=L_N[1/2,\sqrt2+\varepsilon+o(1)].
+\]
+Dense elimination costs at most
+\[
+B^3(\log N)^{O(1)}
+=L_N[1/2,3/(2\sqrt2)+o(1)],
+\]
+which is smaller.
+
+It remains to justify testing a kernel basis. For a dependency \(c\), define
+\[
+z(c)=
+\frac{\prod_i x_i^{c_i}}
+{\prod_{\ell\le B}\ell^{(\sum_i c_i v_\ell(r_i))/2}}
+\pmod N.
+\]
+After direct gcd hits are removed, denominators are units and \(z(c)^2=1\). Moreover, \(z\) is a homomorphism from the binary dependency space to the square roots of unity: the correction from an overlapping row is \(x_i^2/r_i=1\pmod N\).
+
+For odd semiprimes, splitting occurs precisely when the image in
+\[
+\{z:z^2=1\pmod N\}/\{\pm1\}
+\]
+is nontrivial. If this homomorphism is nontrivial, some basis vector has nontrivial image. H1 and H2 therefore imply success. ∎
+
+**Heuristic calculation for H1.** Since \(T=N^{o(1)}\),
+\[
+r_i\le N^{1/2+o(1)}.
+\]
+The random-integer smoothness heuristic predicts
+\[
+\Pr(r_i\text{ is }B\text{-smooth})
+=L_N[1/2,-1/(4b)+o(1)].
+\]
+Thus the predicted number retained is
+\[
+L_N[1/2,b+\varepsilon+o(1)]\gg R.
+\]
+A suitable concentration heuristic and a nontrivial-square-root heuristic give H1–H2.
+
+This supplies a computed exponent below \(1/6\): the exponent of \(N\) tends to zero. The unproved part is success on the specified population.
+
+### PROVED distinction: full rank is unnecessary; splitting is necessary
+
+With more rows than columns, a dependency exists regardless of rank. Low rank supplies **more** dependencies.
+
+The unresolved issue for a fixed deterministic schedule is whether the map above has nontrivial image. “The matrix behaves randomly” is stronger than needed and can obscure this exact obstruction.
+
+Likewise, a large expected number of smooth values does not prove almost-all success. For example, sufficient concentration conditions would be
+\[
+\mathbb E S_N=\mu\gg R,\qquad
+\mathbb E(S_N-\mu)^2=o(\mu^2),
+\]
+where \(S_N\) counts retained candidates over the balanced-semiprime population.
+
+### What is proved, and what remains missing?
+
+| Step | Status relevant here |
+|---|---|
+| Smooth-number density for ordinary integers | **KNOWN**, with rigorous asymptotics in broad ranges. |
+| Local divisibility conditions for polynomial values | **KNOWN** in many regimes; these do not automatically imply complete smoothness. |
+| Smoothness testing and dense linear algebra | **PROVED** deterministic, with the costs above. |
+| Required smooth-value concentration for this short deterministic sequence over balanced semiprimes | **Open in this argument**; I found no result supplying H1. |
+| Nontrivial square-root character for the retained deterministic relations | **Open in this argument**; smoothness alone does not supply H2. |
+| Analogous moments for \(x_j=\lceil\sqrt{jN}\rceil\) | Again require a theorem about that actual sequence and population. Small residue size alone is insufficient. |
+
+The distinction between smooth ordinary integers and smooth values in prescribed sequences is a central analytic difficulty. [Granville, *Smooth numbers: computational number theory and beyond*](https://library.slmath.org/books/Book44/files/09andrew.pdf)
+
+There is a sharp elementary warning against blindly fixing Dixon’s samples. If one takes \(x_j=j\) with \(j<T<\sqrt N\), then
+\[
+x_j^2\bmod N=j^2.
+\]
+Every retained value is an ordinary integer square, and every resulting dependency gives \(z=1\). Smooth relations can be plentiful and completely useless.
+
+Enumerating fixed smooth integers \(w\bmod N\) must similarly establish useful relation diversity and a nontrivial square-root character. It cannot borrow those properties from uniform sampling.
+
+### KNOWN / SPECULATIVE: fixed elliptic curves
+
+For a fixed curve \(E/\mathbb Q\), deterministic ECM needs favorable orders
+\[
+\#E(\mathbb F_p)=p+1-a_p.
+\]
+Chebotarev information about divisibility by particular small integers does not establish complete smoothness at a subexponential threshold.
+
+There are substantial conditional results: Barbulescu–Jouve prove smooth-order asymptotics for CM curves under Elliott–Halberstam-type hypotheses, with specified ranges. These are not a joint hitting theorem for the first subexponentially many deterministically enumerated curves. [Barbulescu–Jouve](https://arxiv.org/abs/2212.11724)
+
+A deterministic ECM schedule would need to establish:
+
+- enough smooth orders among its particular curves for almost all relevant \(p\);
+- control of correlations across curves;
+- point-order and one-sided extraction conditions.
+
+These requirements concern varying curves and varying primes jointly.
+
+### Why fixing random coins does not prove uniform derandomization
+
+From a randomized algorithm succeeding on every input with probability \(1-\delta\), averaging gives, for each input length, **some** random tape succeeding on a \(1-\delta\) fraction of the population.
+
+That proves a nonuniform statement. It does not provide an efficiently computable sequence of tapes. Exhaustive search for good tapes can cost more than factoring.
+
+Nor can one replace the tape by an arbitrary deterministic function of \(N\): a row-wise bound on a failure matrix gives no bound along such a chosen diagonal.
+
+### KNOWN: literature position
+
+The primary sources checked support the following distinctions:
+
+- Harvey–Hittmeir give rigorous deterministic worst-case exponent \(1/5\), with logarithmic improvements. [Harvey–Hittmeir, 2022](https://arxiv.org/abs/2105.11105)
+- Lenstra–Pomerance give rigorous **randomized** subexponential factoring, not uniform deterministic average-case factoring. [1992 paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+- Deterministic \(p-1\) results exist for appropriate smoothness hypotheses on the input. Those hypotheses are not almost-all balanced-semiprime theorems. [Źrałek, 2010](https://doi.org/10.1090/S0025-5718-09-02262-5)
+- Strong shifted-prime smoothness results still need their quantitative density stated correctly. For example, Lichtman obtains a lower bound of the shape \(x/(\log x)^C\) for smooth shifted primes at exponent \(0.2844\); this is not an almost-all statement. [Lichtman](https://arxiv.org/abs/2211.09641)
+- McKee–Pinch is relevant deterministic factoring prior art; I did not identify a proved almost-all sub-\(1/6\) theorem there. [1996 publication](https://pure.royalholloway.ac.uk/en/publications/old-and-new-deterministic-factoring-algorithms/)
+- Average-case deterministic results **with totient or elliptic-order oracles** do not remove the cost of obtaining those oracle values. [Pomykała–Radziejewski](https://nutmic2019.imj-prg.fr/confpapers/FactoringWitnesses.pdf)
+
+I did not locate a proved uniform deterministic subexponential or sub-\(1/6\) almost-all result for your population. This reports the literature search, not a nonexistence theorem. Also, a density-one theorem over all integers could exclude every balanced semiprime: the population here has size only \(\asymp P^2/(\log P)^2\).
+
+## 5. Only the true factor needs covering
+
+**Assumptions being escaped:** full-candidate coverage, potentially fixed target schedules and certified interval collisions.
+
+### PROVED: residue dependence alone is insufficient
+
+Without a modulus restriction or a computational restriction on selection, “depends only on \(N\bmod M\)” can reveal all of \(N\).
+
+For odd \(n\)-bit inputs, take the fixed modulus \(M=2^{n+1}>N\). Then \(N\bmod M=N\). An uncharged selector can factor \(N\), choose
+\[
+A=p,\qquad B=q,\qquad r=p,
+\]
+and use the class-lock target
+\[
+g=(qp+pq-2N)/M^2=0
+\]
+with width one. The root condition holds exactly:
+\[
+Br^2=qp^2=AN.
+\]
+One target covers the true factor on every input.
+
+This does not give a cheap algorithm. It disproves a lower bound based solely on the stated information restriction.
+
+### PROVED: the requested average bound in a precise local model
+
+The additional geometric restriction below is useful because it allows \(N\)-dependent algebraic windows while excluding arbitrary computational information hidden in their endpoints.
+
+**Theorem 3 — residue-local algebraic-window bound.** Fix constants controlling the balanced range and a semialgebraic complexity bound \(D\). Consider an \(n\)-dependent schedule with \(T\le X\) slots. Slot \(\tau\) has:
+
+1. A modulus \(1\le M_\tau\le P\), fixed before seeing \(N\).
+2. For every unit residue \(s\bmod M_\tau\), one unit class \(r_\tau(s)\).
+3. A real region \(R_{\tau,s}\) in the balanced \((p,q)\)-box, described by at most \(D\) polynomial equalities/inequalities of degree at most \(D\).
+4. A width cap \(w_\tau\ge1\), independent of \(s\), with
+   \[
+   \sum_\tau w_\tau\le X^2.
+   \]
+5. For every real product value \(u\asymp P^2\), the fiber bound
+   \[
+   \operatorname{length}
+   \{x:(x,u/x)\in R_{\tau,s}\}
+   \le C_D M_\tau\bigl(\sqrt{Pw_\tau}+w_\tau\bigr). \tag{*}
+   \]
+
+A declared hit requires
+\[
+s=pq\bmod M_\tau,\qquad
+p\equiv r_\tau(s)\pmod {M_\tau},\qquad
+(p,q)\in R_{\tau,s}.
+\]
+
+Then the fraction of balanced prime pairs hit by the schedule is at most
+\[
+C_D(\log P)^2
+\left(
+X^{3/2}P^{-1/2}+\frac{X^2}{P}
+\right).
+\]
+
+The same conclusion allows polylogarithmically many coarse archimedean cases, with an additional polylogarithmic factor.
+
+**Proof.** Fix one slot, abbreviating \(M=M_\tau,w=w_\tau\).
+
+For each unit \(s\), the congruences force
+\[
+p\equiv r(s)\pmod M,\qquad
+q\equiv s\,r(s)^{-1}\pmod M.
+\]
+Thus the relevant points lie in one translate of \(M\mathbb Z^2\).
+
+The change of coordinates \((p,q)\mapsto(u=pq,p)\) has area element
+\[
+dp\,dq=\frac{du\,dp}{p}.
+\]
+Because \(p\asymp P\), the fiber estimate (*) gives
+\[
+\operatorname{area}(R_s)
+\le C_D M\bigl(P^{3/2}\sqrt w+Pw\bigr). \tag{1}
+\]
+
+For a bounded-complexity semialgebraic region in a box of side \(O(P)\),
+\[
+\#\bigl(R_s\cap((a,b)+M\mathbb Z^2)\bigr)
+\le
+\frac{\operatorname{area}(R_s)}{M^2}
++C_D(P/M+1). \tag{2}
+\]
+To see (2), partition the boundary into \(O_D(1)\) coordinate-monotone algebraic arcs and isolated points. These meet \(O_D(P/M+1)\) lattice cells; fully interior cells contribute their area divided by \(M^2\).
+
+There are at most \(M\) residues \(s\). Summing (1)–(2), and using \(M\le P\), bounds the slot’s covered integer pairs by
+\[
+C_D\bigl(P^{3/2}\sqrt w+Pw+P\bigr).
+\]
+The prime-pair population has size \(\gg P^2/(\log P)^2\), by the prime number theorem in fixed proportional intervals. Consequently, the covered fraction is at most
+\[
+C_D(\log P)^2
+\left(
+P^{-1/2}\sum_\tau\sqrt{w_\tau}
++P^{-1}\sum_\tau w_\tau+\frac TP
+\right).
+\]
+Finally,
+\[
+\sum_\tau\sqrt{w_\tau}\le\sqrt{T\sum_\tau w_\tau}\le X^{3/2},
+\]
+and \(T/P\le X^2/P\). ∎
+
+This proof uses **integer-pair upper bounds**. It requires no equidistribution theorem for primes in the relevant progressions.
+
+### How this relates to Laurent targets
+
+For the two-term HH targets, the archimedean estimate behind Theorem A gives
+\[
+\text{fiber length}\le C M\sqrt{Pw/H}
+\le C M\sqrt{Pw}.
+\]
+One-term targets contribute the \(CMw\) alternative.
+
+For higher-degree targets with a uniform real-fiber quantization bound,
+\[
+CM P^{1-e/K}w^{1/K},
+\]
+the same argument gives Corollary 2.
+
+Thus Theorem 3 applies when residue-local coefficient choices and window endpoints produce bounded-complexity algebraic regions—for example, endpoints obtained from fixed rational or algebraic formulas in \(N\), with harmless rounding enlargements.
+
+Its limitations are explicit:
+
+- fixed slots and moduli;
+- moduli at most \(P\);
+- uniform width caps;
+- controlled algebraic complexity;
+- success through a declared target.
+
+I have **not** proved the same bound from only a per-input width budget, arbitrary adaptive choices of moduli, or unrestricted endpoint computations.
+
+For
+\[
+X=N^{1/6-\delta},
+\]
+the theorem gives a success fraction at most
+\[
+(\log N)^{O(1)}
+\left(N^{-3\delta/2}+N^{-1/6-2\delta}\right)=o(1).
+\]
+Within this model, beating \(1/6\) loses even constant-fraction success.
+
+### SPECULATIVE: gcd verification and list decoding
+
+Gcd verification is cheap, but it does not by itself enlarge the certified coverage set.
+
+Accidental collisions can enlarge actual success. For example, a relation caused by unexpectedly small \(\operatorname{ord}_p(\beta)\) need not correspond to any declared Laurent window. Theorem 3 does not bound such successes. Extending it would require average control of those order relations.
+
+Similarly, many partial collisions might identify factor bits through a decoding procedure. The missing mechanism is a decoder that both:
+
+- extracts sufficiently concentrated information about \(p\);
+- costs less than the saving obtained from that information.
+
+A list of many scattered possibilities is not automatically equivalent to one short interval.
+
+### PROVED calculation: the value of a short-span selector
+
+Suppose a uniform public procedure, costing \(S(N)\), returns an interval of length
+\[
+R=N^{1/2-\eta}
+\]
+containing the true factor on almost all inputs.
+
+For bounded weights, the variation of \(Bp+AN/p\) on this interval is \(O(HR)\). The DCL search-cost calculation becomes
+\[
+\widetilde O\!\left(\frac{HR}{Y^2}+H^2Y\right).
+\]
+Choosing \(Y\asymp(R/H)^{1/3}\) gives
+\[
+\widetilde O(H^{5/3}R^{1/3})
+=N^{1/6-\eta/3}(\log N)^{O(1)}
+\]
+for polylogarithmic \(H\). The selector cost \(S(N)\) must be added. This establishes the claimed search saving; coverage and one-sided extraction must also be maintained.
+
+There is no known equivalence between computing such a selector for an arbitrary fixed \(0<\eta<1/4\) and polynomial-time factoring. Factoring supplies a selector immediately; the converse at that weak precision is unproved.
+
+## 6. Other mechanisms and the most useful remaining questions
+
+### KNOWN: lattice recovery from partial factor information
+
+Coppersmith’s method is a genuinely different mechanism. Sufficiently accurate approximation to \(p\)—safely, an interval of length \(N^{1/4-\epsilon}\)—permits deterministic polynomial-time recovery for fixed \(\epsilon>0\). It uses lattice reduction, not a sumset collision search. [Coppersmith, 1997](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf)
+
+Thus a sufficiently strong public selector would already yield polynomial-time factoring. A weaker selector could still improve the collision exponent without any known polynomial-time equivalence.
+
+### HEURISTIC: smooth-order annihilation
+
+ECM replaces a short unknown exponent by a smooth annihilating exponent. Under a suitable joint smoothness heuristic for a deterministic curve schedule, it also predicts subexponential time. Its unresolved ingredient is the joint hitting statement described in Section 4, rather than Laurent flatness.
+
+### SPECULATIVE: precise questions worth pursuing
+
+The remaining questions I would prioritize are:
+
+1. **Smooth-relation concentration over balanced semiprimes:** establish H1 for an explicit short deterministic schedule, together with a nontrivial dependency character. This would bypass the collision barrier entirely.
+2. **Succinct-power projected boxes:** prove a coverage bound using image cardinality without replacing a sparse sum of arithmetic progressions by its potentially enormous interval hull.
+3. **Useful giant multiplicity:** construct or bound polynomially many distinct certified identities per stored giant, charging exponent construction.
+4. **Remove restrictions from Theorem 3:** replace uniform width caps by the actual per-input budget, and handle adaptive moduli or more general computable endpoints.
+5. **Weak public factor localization:** obtain any fixed \(\eta>0\) of contiguous-span saving in less time than the resulting \(N^{1/6-\eta/3}\) search. No factoring-equivalence claim is presently justified for that weak selector.

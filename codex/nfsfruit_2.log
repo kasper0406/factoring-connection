@@ -1,0 +1,1739 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a14ff5-0252-7831-8ab1-806564b326a6
+--------
+user
+# nfsfruit round 2: ADVERSARIAL review of claimed results on NFS fruitfulness
+
+You are a hostile referee (analytic/algebraic number theory, factoring algorithms). For EACH numbered claim below decide: CORRECT / CORRECT WITH FIXES (give the fixes) / WRONG (give a counterexample or the broken step) / KNOWN (give the citation: is it folklore or published?). Check every quantifier, every sign / root-of-unity issue, well-definedness, and every cost claim. Then give an overall verdict and say which single claim is most likely to be wrong. You may run small exact computations in the current directory (python3 available) to test claims. Do not be polite; be precise.
+
+Notation: n odd composite, coprime to everything relevant; K = Q(α), f monic irreducible of odd degree d, f(m) ≡ 0 (mod n), φ: Z[α] → Z/n, α ↦ m. Relations i: coprime pairs (a_i,b_i) with z_i = a_i − b_i m and a_i − b_i α both smooth. K0 = {S ⊆ relations: ∏_S z_i ∈ Q^{×2}, ∏_S (a_i − b_iα) ∈ K^{×2}} (an F₂-space). For S ∈ K0 let u = f'(m)√∏z_i ∈ Z and v = f'(α)√∏(a_i−b_iα) ∈ Z[α]; then u² ≡ φ(v)² (mod n). Fruitful ⟺ u ≢ ±φ(v).
+
+**Claim 1 (Lemma H).** Φ(S) := [u/φ(v)] ∈ μ₂(Z/n)/{±1} ≅ F₂^{ω(n)−1} is a well-defined group homomorphism K0 → F₂^{ω−1}, for every odd n (no Blum condition). Hence uniform S ∈ K0 is fruitful with probability exactly 1 − 2^{−rank Φ}, and Lee–Venkatesan's Thm 2.3 (conditional on their Conj. 7.1) extends to every semiprime under the hypothesis Φ ≢ 0. (Their Remark 7.3 says for non-Blum n "it is unclear how (even notionally) one might show that the linear algebraic step may produce non-trivial congruences".)
+
+**Claim 2 (Bockstein formula).** Let n = pq. For each of p, q choose a Dirichlet character χ_p of F_p^× of order 2^{v₂(p−1)} (so χ_p(−1) = −1), likewise χ_q; let c = max(v₂(p−1), v₂(q−1)), ζ a primitive 2^c-th root of unity. Define ψ on Z coprime to n by ψ(z) = χ_p(z)χ_q(z) and on K^× coprime to 𝔭𝔮 (𝔭 = (p, α−m), 𝔮 = (q, α−m)) by ψ(x) = χ_p(x mod 𝔭)χ_q(x mod 𝔮). Fix a Z-basis g_1..g_R of the S-unit group U_S of K modulo ±1 (S = factor-base prime ideals ∪ infinite places), write a_i − b_iα = ±∏ g_j^{c_ij}, z_i = ±∏ ℓ^{e_iℓ}, ψ(ℓ) = ζ^{τ_ℓ}, ψ(g_j) = ζ^{σ_j} with integer lifts τ, σ. Then t_i := Σ_ℓ τ_ℓ e_iℓ − Σ_j σ_j c_ij ≡ 0 (mod 2^c) for every relation, and for every S ∈ K0:
+  Φ(S) = Σ_{i∈S} β_i (mod 2),  β_i := t_i / 2^c mod 2.
+So Φ is the restriction to K0 of an explicit per-pair function β(a,b) (a "Bockstein" lift of the character ψ, which vanishes mod 2^c on every relation). β is well-defined modulo F₂-linear functions of the exact square-class vector x_i = (e_iℓ mod 2, c_ij mod 2, signs).
+  Special cases (claimed; for Blum n, c = 1, ψ = Jacobi symbol J_n, everything computable from n alone):
+  (2a) QS, relations x_i² − n = z_i: Φ(S) = Σ_{i∈S} ( [J_n(x_i) = −1] + [(2/n) = −1]·v₂(z_i)/2 ), because every odd factor-base prime ℓ | z_i has (n/ℓ) = 1 hence J_n(ℓ) = 1.
+  (2b) Degree-1 NFS with forms L1 = c1x+c0y, L2 = d1x+d0y, common root m mod n, so d1 L1 ≡ c1 L2 (mod n), K0 requires |S| even: Φ(S) = Σ_{i∈S} ⌊t_i/2⌋ mod 2, t_i = Ω_T(L1(a_i,b_i)L2(a_i,b_i)) (with multiplicity), T = {ℓ ≤ B : J_n(ℓ) = −1}.
+  Corollary (degeneracy): in (2b), if every relation has ⌊t_i/2⌋ even (e.g. all prime factors have J_n(ℓ) = +1), every congruence is trivial.
+  (We verified (2a),(2b) exactly on every kernel basis vector of hundreds of toy instances.)
+
+**Claim 3 (reduction to a static lemma).** In LV's algorithm, for fixed (m,f) the pairs (a,b) are sampled i.i.d. uniformly from the box and kept iff smooth, so the kept relations are i.i.d. uniform from the finite set X = X_{n,m,f}. Let C be the dimension of the exact square-class space (so K0 = {S : Σ_S x_i = 0}). Let δ = min_{w∈F₂^C} Pr_{(a,b)∼X}[β(a,b) ≠ ⟨w, x(a,b)⟩]. Then Φ ≡ 0 on K0 iff β ∈ span of the coordinate functions on the found relations, so
+  Pr(Φ|K0 ≡ 0 | m,f) ≤ Σ_w (1−δ_w)^M ≤ 2^C (1−δ)^M.
+Hence M ≥ (C ln 2 + ln(1/ε))/δ relations give fruitfulness failure ≤ ε, and the LV constant (64/9)^{1/3} is preserved provided **Lemma M** holds: with probability ≥ L_n[1/3, −o(1)] over LV's (m,f), δ(n,m,f) ≥ L_n[1/3,−o(1)]. A sufficient condition for Lemma M: a measure-preserving involution ι on a subset of X of relative mass ≥ δ' that preserves x and flips β (then δ_w ≥ δ'/2 for all w). Dixon's ε-multiplication is exactly such an involution on all of X; for QS/NFS none is known.
+
+**Claim 4 (hidden-root multiplier; degree 1).** Pick r uniform in (Z/n)^×, λ = r² mod n. Gauss-reduce the lattice Λ_λ = {(c,d) ∈ Z²: c ≡ λd (mod n)} (det n) to e1 = (c1,d1), e2 = (c0',d0'); put (c0,d0) = e2 + t e1 (t small random). Set L1 = c1x + c0y, L2 = d1x + d0y (coefficients O(√n), Res = ±n). Then L1(a,b) ≡ λ L2(a,b) (mod n) for all (a,b). For S with ∏_S L1 = U², ∏_S L2 = W² (no parity condition on |S|), X = U, Y = r^{|S|}W satisfy X² ≡ Y². Everything except Y depends on λ only; conditional on λ (and all other coins) r is uniform on r·μ₂(Z/n). Hence for every output S of odd weight, Pr(fruitful | everything but r) = 1 − 2^{1−ω(n)} exactly (1/2 for semiprimes), with no conjecture. (Relation generation itself — smoothness of two random linear forms of size √n·box — is NOT claimed rigorous; existence of an odd-weight dependency is a parity-only condition.) This gives fruitfulness at the L[1/2] scale only.
+
+**Claim 5 (barrier for hidden multipliers).** In any two-form sieve whose congruence is L1 ≡ λ·L2' (mod n) with λ the ratio of the forms' leading data, a uniformly distributed hidden root r (λ = r²) forces λ to take ≥ φ(n)/2^ω values, so the leading coefficients satisfy max(|c1|,|d1|) ≥ (φ(n)/2^{ω+2})^{1/2}; hence rational-side values ≥ n^{1/2−o(1)} and smoothness cost L[1/2] rather than L[1/3]. To keep NFS-sized coefficients (n^{o(1)}·L(2/3)) one would need a quasi-uniform sampler of r over the μ₂-invariant set {r : r² ≡ c/d, |c|,|d| ≤ L_n[2/3]} — no such sampler is known (a Vallée-type sampler reaches residues ~n^{2/3}).
+
+## Also answer
+(A) Is Claim 3's union bound over w legitimate given that x must be the EXACT square-class vector while the algorithm only uses parity + random characters (kernel ⊇ K0)? Does the LV pairing step (repeating to cancel the exceptional subspace) interfere?
+(B) Is Lemma M plausibly provable with existing technology for degree-1 or QS (where β is explicit)? Sketch the most promising route, or explain the obstruction precisely.
+(C) Any prior work stating Claims 1–5 (Buhler–Lenstra–Pomerance 1993 §8? Pomerance? Lenstra–Pomerance 1992 §? Schroeppel linear sieve analyses? Morrison–Brillhart ambiguous forms?). Cite exactly.
+
+codex
+I’ll check the algebra first, then the LV hypotheses and cited literature. I’ll use exact examples to test the formulas and keep the character and runtime claims separate.
+web search: 
+exec
+/bin/zsh -lc pwd in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+
+exec
+/bin/zsh -lc "rg --files -g 'AGENTS.md' -g '*.md' -g '*.pdf' -g '*.tex' -g '*.py' -g '"'!node_modules'"' -g '"'!.git'"' ." in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ exited 1 in 0ms:
+web search: Lee Venkatesan number field sieve Conjecture 7.1 Remark 7.3 non Blum fruitfulness Theorem 2.3 ...
+web search: 
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md; do if [ -f "$p" ]; then cat "$p"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+exec
+/bin/zsh -lc 'ls -la' in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+total 0
+drwxr-xr-x   2 knielsen  staff   64 Oct 18 19:00 .
+drwxr-xr-x  15 knielsen  staff  480 Oct 18 19:00 ..
+
+web search: https://arxiv.org/html/1805.08873v3
+web search: 
+web search: 'Conjecture 7.1'
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import importlib.util, shutil
+for p in ('sympy','requests','pypdf'):
+ print(p, bool(importlib.util.find_spec(p)))
+print('pdftotext',shutil.which('pdftotext'))
+PY" in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+sympy False
+requests False
+pypdf False
+pdftotext None
+
+web search: 
+web search: "Buhler" "Lenstra" "8.2" "squares" ...
+codex
+The homomorphism in Claim 1 works under the unit assumptions. The proposed runtime extension needs more: nonzero on the full relation space does not show that the sampled relations detect it. I’m checking Claim 2 next, especially where its special cases use the Blum assumption.
+web search: 
+web search: https://math.dartmouth.edu/~carlp/
+web search: 
+web search: 
+web search: 
+web search: 'Factoring integers with'
+web search: 
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import urllib.request
+url='https://arxiv.org/pdf/1805.08873'
+try:
+ data=urllib.request.urlopen(url,timeout=15).read()
+ open('/private/tmp/nfsfruit-lv.pdf','wb').write(data)
+ print('downloaded LV',len(data))
+except Exception as e: print(type(e).__name__,str(e))
+PY" in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 5ms:
+URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+web search: 
+web search: Schroeppel linear sieve factoring analysis fruitfulness ...
+web search: 
+web search: "Factoring integers with the number field sieve" "8.1" ...
+web search: 
+web search: https://link.springer.com/content/pdf/10.1007/BFb0091539.pdf
+web search: 
+web search: "Buhler" "Lenstra" "Pomerance" "8.1" "characters" ...
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import gcd,isqrt
+
+def jac(a,n):
+ a%=n; j=1
+ while a:
+  while a%2==0:
+   a//=2
+   if n%8 in (3,5):j=-j
+  a,n=n,a
+  if a%4==n%4==3:j=-j
+  a%=n
+ return j if n==1 else 0
+for n in (21,33,65,77):
+ for x in range(isqrt(n)+1, n):
+  z=x*x-n;y=isqrt(z)
+  if gcd(x*z,n)>1 or y*y"'!=z:continue
+  h=x*pow(y,-1,n)%n
+  fruit=int(h not in (1,n-1))
+  v=0;zz=z
+  while zz%2==0:v+=1;zz//=2
+  pred=(int(jac(x,n)==-1)+(int(jac(2,n)==-1)*v)//2)%2
+  if fruit!=pred:print('"'QS outside Blum counterexample',n,x,z,y,fruit,pred);break
+n=77
+print('degree-one odd square relation: n=77, forms L1=x+77y,L2=x, m=0, pair=(4,1), values=',4+77,4)
+print('degree-one t=0 degeneracy odd hidden-root test: n=77, L1=x+77y,L2=x, pair=(4,1), U=9,W=2, fruitful=',9%77 not in (2,75))
+PY" in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+QS outside Blum counterexample 65 9 16 4 1 0
+degree-one odd square relation: n=77, forms L1=x+77y,L2=x, m=0, pair=(4,1), values= 81 4
+degree-one t=0 degeneracy odd hidden-root test: n=77, L1=x+77y,L2=x, pair=(4,1), U=9,W=2, fruitful= True
+
+codex
+Two concrete problems have appeared. Gauss reduction does not always produce two \(O(\sqrt n)\) basis vectors: \(\lambda=1\) gives one short vector and one of length \(\asymp n\). Also, ordinary degree-one square dependencies can have odd weight; Claim 2b needs an explicitly imposed even-weight condition. The general Bockstein calculation still appears sound.
+web search: 
+web search: site:cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf "8." "characters" ...
+web search: 
+web search: "1993_Book_TheDevelopmentOfTheNumberField.pdf" "8.3" ...
+web search: 
+web search: Seysen "A probabilistic factorization algorithm" "1987" ams.org ...
+web search: 
+web search: "A rigorous time bound for factoring integers" "10.2" ...
+web search: 
+web search: https://www.ams.org/mcom/1987-48-178/S0025-5718-1987-0878705-X/
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import gcd, isqrt
+
+def jac(a,n):
+ a%=n;j=1
+ while a:
+  while not a%2:
+   a//=2
+   if n%8 in (3,5):j=-j
+  a,n=n,a
+  if a%4==n%4==3:j=-j
+  a%=n
+ return j if n==1 else 0
+
+def factors(x):
+ x=abs(x);f={};p=2
+ while p*p<=x:
+  while x%p==0:f[p]=f.get(p,0)+1;x//=p
+  p+=1
+ if x>1:f[x]=f.get(x,0)+1
+ return f
+for n in (21,33,77,209):
+ count=0
+ for x in range(1,200):
+  z=x*x-n
+  if not z or gcd(x*z,n)"'!=1:continue
+  for y in range(x+1,200):
+   w=y*y-n
+   if not w or gcd(y*w,n)!=1 or z*w<=0:continue
+   s=isqrt(z*w)
+   if s*s!=z*w:continue
+   h=(x*y)*pow(s,-1,n)%n
+   fr=int(h not in (1,n-1));pred=0
+   for u,v in ((x,z),(y,w)):
+    pred+=int(jac(u,n)==-1)
+    if jac(2,n)==-1:pred+=factors(v).get(2,0)//2
+   assert fr==pred%2,(n,x,y,z,w,fr,pred)
+   count+=1
+ print('"'Blum QS paired dependencies checked',n,count)
+print('2b outside Blum, even weight:')
+n=65;pairs=[(17,1),(1025,1)]
+U=W=1;pred=0
+for a,b in pairs:
+ u=a+64*b;v=a-b;ui=isqrt(u);vi=isqrt(v)
+ assert ui*ui==u and vi*vi==v
+ t=sum(e for p,e in factors(u*v).items() if jac(p,n)==-1)
+ U*=ui;W*=vi;pred+=t//2
+ print((a,b),u,v,t)
+print('roots',U%65,W%65,'fruitful',U%65 not in (W%65,-W%65),'pred',pred%2)
+PY" in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+Blum QS paired dependencies checked 21 6
+Blum QS paired dependencies checked 33 6
+Blum QS paired dependencies checked 77 11
+Blum QS paired dependencies checked 209 27
+2b outside Blum, even weight:
+(17, 1) 81 16 4
+(1025, 1) 1089 1024 4
+roots 37 63 fruitful True pred 0
+
+web search: 
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import isqrt,gcd
+n=77;m=1;alpha=78
+U=V=1
+for a,b in ((82,1),(403,3)):
+ z=a-b*m;A=a-b*alpha
+ u=isqrt(z);v=isqrt(A)
+ assert u*u==z and v*v==A and gcd(a,b)==1
+ h=u*pow(v,-1,n)%n
+ print('NFS f=X-78, m=1: relation',(a,b),'values',(z,A),'roots',(u,v),'root ratio',h,'fruitful',h not in (1,n-1))
+ U*=u;V*=v
+print('even pair roots',U%77,V%77,'ratio',U*pow(V,-1,n)%n)
+PY" in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+NFS f=X-78, m=1: relation (82, 1) values (81, 4) roots (9, 2) root ratio 43 fruitful True
+NFS f=X-78, m=1: relation (403, 3) values (400, 169) roots (20, 13) root ratio 43 fruitful True
+even pair roots 26 26 ratio 1
+
+web search: 
+web search: "A rigorous time bound for factoring integers" "10.1" "probability" ...
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/nfsfruit_2/referee_checks.py
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+exec
+/bin/zsh -lc 'python3 referee_checks.py' in /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2
+ succeeded in 0ms:
+Bockstein n=21, c=1: 198 exact kernel vectors passed
+Bockstein n=35, c=2: 206 exact kernel vectors passed
+Bockstein n=65, c=2: 202 exact kernel vectors passed
+Bockstein n=85, c=4: 195 exact kernel vectors passed
+Bockstein n=91, c=2: 207 exact kernel vectors passed
+Extra parity row counterexample: singleton ratios 43, pair ratio 1
+Non-Blum QS counterexample: n=65, x=9, z=16
+Gauss-reduced lambda=1 basis: (1, 1) (501, -500)
+
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+codex
+The sampling union bound is valid with fixed, exact square-class coordinates. Two later steps need repair: it bounds the chance of a wholly trivial kernel, not the failure probability of one sampled dependency; and LV’s extra parity row can remove fruitful directions. I found a two-relation example where both singletons are fruitful and their even-weight combination is trivial.
+web search: 
+web search: "Factoring integers with the number field sieve" "8.3." "8.4." ...
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+web search: 
+web search: "A probabilistic factorization" "8.6" "773" ...
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+web search: 
+web search: 'Proposition 8.6'
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+codex
+**Verdict: Claims 1–4 contain sound results but need fixes. Claim 5 is wrong as a general barrier.** The main unresolved issue is quantitative detection of fruitfulness among the relations the algorithm actually uses.
+
+Throughout, “coprime to everything relevant” must explicitly include
+\[
+\gcd\!\left(n,f'(m)\prod_i z_i\right)=1.
+\]
+Otherwise the quotient defining \(\Phi\) need not exist. In semiprime statements, require **distinct** primes \(p,q\).
+
+**1. CORRECT WITH FIXES.**
+
+The homomorphism is correct. Its proof needs no Blum condition—and no odd-degree assumption.
+
+Write \(A_i=a_i-b_i\alpha\). If \(I=S\cap T\), square roots satisfy
+\[
+\sqrt{\prod_{S\triangle T}z_i}
+ =\pm\frac{\sqrt{\prod_Sz_i}\sqrt{\prod_Tz_i}}{\prod_Iz_i},
+\]
+and the corresponding identity holds in \(K\) for the \(A_i\). Reduction makes the overlap denominators agree. Consequently,
+\[
+\Phi(S\triangle T)=\Phi(S)\Phi(T)
+\]
+after quotienting by the global sign.
+
+There are exactly two square roots of a nonzero square in \(K\), irrespective of other roots of unity in \(K\). Thus their choice introduces only the sign already being quotiented out.
+
+The integrality assertion is also valid: the algebraic square root is integral, and
+\[
+f'(\alpha)\mathcal O_K\subseteq\mathbb Z[\alpha].
+\]
+For odd \(n\), CRT and the prime-power calculation give
+\[
+\mu_2(\mathbb Z/n)\cong\{\pm1\}^{\omega(n)}.
+\]
+The displayed identification with \(\mathbb F_2^{\omega(n)-1}\) is generally **noncanonical**.
+
+For uniform sampling from the **whole** \(K_0\), including zero,
+\[
+\Pr(\text{fruitful})=1-2^{-\operatorname{rank}\Phi}.
+\]
+Sampling a basis vector, or an arbitrary nonzero kernel vector, does not have this distribution.
+
+The final sentence about LV is too compressed. Nonvanishing on the full relation space does not establish nonvanishing on the sampled relations or on a further restricted kernel. You need the nonvanishing hypothesis on the space actually sampled, together with its sampling and cost guarantees. LV’s published §7 supplies the Blum character formulation; its Conjecture 7.1 cannot simply be imported unchanged into the non-Blum setting. [Lee–Venkatesan, §7, Theorem 2.3 and Remark 7.3](https://arxiv.org/pdf/1805.08873)
+
+A concrete warning about additional restrictions appears under A below.
+
+**2. CORRECT WITH FIXES. The general character formula survives.**
+
+For distinct \(p,q\), your maximal \(2\)-power characters do satisfy
+\[
+\chi_p(-1)=\chi_q(-1)=-1,\qquad \psi(-1)=1.
+\]
+This last identity is essential: it makes the omitted signs harmless.
+
+Because the two evaluations of each relation agree modulo \(n\),
+\[
+\psi(z_i)=\psi(A_i),
+\]
+so \(2^c\mid t_i\).
+
+For \(S\in K_0\), all total exponents in both complete multiplicative bases are even, and the total torsion signs permit square roots. Therefore, with reductions interpreted in the appropriate localization,
+\[
+\frac{\psi(\sqrt{\prod_Sz_i})}
+     {\psi(\sqrt{\prod_SA_i})}
+ =\zeta^{\frac12\sum_{i\in S}t_i}
+ =(-1)^{\sum_{i\in S}\beta_i}.
+\]
+The factors \(f'\) cancel. If the root ratio has local signs \((\varepsilon_p,\varepsilon_q)\), then
+\[
+\psi(\varepsilon_p,\varepsilon_q)=\varepsilon_p\varepsilon_q.
+\]
+That is precisely the nontrivial character of
+\(\mu_2(\mathbb Z/pq)/\{\pm1\}\). Hence your formula follows.
+
+Odd degree matters here because it ensures \(\mu(K)=\{\pm1\}\), so the stated quotient of the \(S\)-unit group is free. Use the **full** \(S\)-unit lattice, not merely principal-ideal valuation coordinates.
+
+Changing lifts by
+\[
+\tau_\ell\mapsto\tau_\ell+2^c k_\ell,\qquad
+\sigma_j\mapsto\sigma_j+2^c h_j
+\]
+changes \(\beta_i\) by
+\[
+\sum_\ell k_\ell e_{i\ell}-\sum_jh_jc_{ij}\pmod2.
+\]
+Thus the claimed ambiguity is exactly harmless on \(K_0\). More generally, any two linear extensions of the same \(\Phi\) differ by a linear function of the exact square classes.
+
+Two qualifications:
+
+- “Explicit” does **not** establish efficient computability. Computing a complete \(S\)-unit basis and relation coordinates requires a separate cost analysis.
+- Outside the Blum case, the character construction uses information about the unknown factors. It is an analytic description, not an immediately available factoring subroutine.
+
+For the special cases:
+
+**2a is correct for Blum semiprimes.** Quadratic reciprocity gives
+\[
+J_n(\ell)=(n/\ell)=1
+\]
+for every odd prime dividing \(x_i^2-n\), under the coprimality assumptions.
+
+Your expression has a minor well-definedness defect: \(v_2(z_i)/2\) can be nonintegral when its coefficient is zero. A cleaner formula is
+\[
+\beta_{\rm QS}(x)
+=[J_n(x)=-1]+[n\equiv5\pmod8]\,[x\text{ odd}]
+\pmod2.
+\]
+When \(n\equiv5\pmod8\) and \(x\) is odd, \(v_2(x^2-n)=2\).
+
+**It is false outside that scope.** For
+\[
+n=65,\qquad x=9,\qquad z=16,
+\]
+the congruence \(9^2\equiv4^2\pmod{65}\) is fruitful, while
+\[
+J_{65}(9)=J_{65}(2)=1.
+\]
+The proposed Jacobi expression gives zero.
+
+**2b is correct for Blum semiprimes on an explicitly imposed even-weight kernel.**
+
+Let \(k=|S|\), \(\lambda=c_1d_1^{-1}\pmod n\), and
+\[
+\eta=[J_n(\lambda)=-1].
+\]
+Then every relation satisfies \(t_i\equiv\eta\pmod2\). For even \(k\), the correct congruent roots are
+\[
+X=d_1^{k/2}U,\qquad Y=c_1^{k/2}W,
+\]
+where \(\prod_SL_1=U^2\) and \(\prod_SL_2=W^2\). Their Jacobi ratio is
+\[
+J_n(X/Y)
+=(-1)^{(\sum_St_i+\eta k)/2}
+=(-1)^{\sum_S\lfloor t_i/2\rfloor}.
+\]
+This also establishes the stated degeneracy corollary **within those hypotheses**.
+
+But “\(K_0\) requires even weight” is not a consequence of ordinary square conditions. For example,
+\[
+n=77,\quad L_1=x-78y,\quad L_2=x-y,\quad m=1,
+\]
+and \((a,b)=(82,1)\) give \(L_1=4,L_2=81\). This is an odd-weight square dependency.
+
+**3. CORRECT WITH FIXES. The union bound is valid; several consequences need repair.**
+
+Fix coordinates on the square-class space generated by **all of \(X\)** before sampling. Do not substitute the random rank of the discovered sample for \(C\).
+
+For the first \(M\) accepted independent samples, let \(A\) have columns \(x_i\), and let \(b=(\beta_i)\). Then
+\[
+\Phi|_{\ker A}=0
+\iff b\in\operatorname{rowspan}(A).
+\]
+Thus
+\[
+\Pr(\Phi|_{\ker A}=0)
+\le\sum_w(1-\delta_w)^M
+\le 2^C(1-\delta)^M
+\le e^{C\log2-\delta M}.
+\]
+That is elementary linear algebra plus a union bound. The algorithm need not know the exact coordinates for this **analysis** to be legitimate.
+
+Rejection sampling gives uniform accepted samples when proposals are uniform and acceptance is the fixed smoothness predicate. If duplicates are discarded, the accepted distinct relations are sampled without replacement; the same upper bound remains valid.
+
+However, the bound concerns **degeneracy of the entire discovered kernel**, not failure of one output. For a semiprime, one uniform kernel sample has success probability at least
+\[
+\frac{1-\varepsilon}{2}.
+\]
+With \(t\) independent uniform kernel samples, the failure bound becomes
+\[
+\varepsilon+2^{-t}.
+\]
+
+The involution criterion is correct: each preserved-feature pair forces one disagreement with every linear predictor, giving \(\delta_w\ge\delta'/2\). Dixon supplies this when the relation retains the sampled root \(x\), not merely the residue \(x^2\bmod n\).
+
+The cost conclusion needs an actual implementation argument. Lemma M alone does not justify inheriting LV’s early-abort sampling schedule: favorable fruitfulness parameters could have low relation density.
+
+There is a repair that avoids needing a joint density lemma. At the optimum, put
+\[
+b_0=(8/9)^{1/3}.
+\]
+Enumerate the whole candidate box for each chosen parameter pair, retain a uniform reservoir of
+\[
+M=L_n[1/3,b_0+o(1)]
+\]
+accepted relations, and retain all accepted relations if there are fewer than \(M\). Under Lemma M, \(C/\delta\) has this size. Full enumeration and sparse algebra both cost
+\[
+L_n[1/3,2b_0+o(1)]
+=L_n[1/3,(64/9)^{1/3}+o(1)].
+\]
+Repeating over a favorable parameter set of probability \(L_n[1/3,-o(1)]\) preserves that constant.
+
+This requires the correct normalization, uniform kernel sampling, and controlled square testing. LV uses generally nonmonic polynomials, leading-coefficient factors, and an additional constant parity column; those details must enter your formulation. [Lee–Venkatesan, algorithm in §3.3, §§4–6](https://arxiv.org/pdf/1805.08873)
+
+**4. CORRECT WITH FIXES. The probability calculation is exact; the lattice size assertion is false.**
+
+Conditional on \(\lambda\), the root is uniform on its fiber
+\[
+r_0\mu_2(\mathbb Z/n).
+\]
+For odd \(k\), replacing \(r\) by \(rh\) replaces \(Y\) by \(Yh\). Exactly two of the \(2^{\omega(n)}\) possibilities make \(X/Y=\pm1\). Hence
+\[
+\Pr(\text{fruitful}\mid \lambda,\text{root-independent coins},\,k\text{ odd})
+=1-2^{1-\omega(n)}.
+\]
+This remains true for nonsquarefree odd \(n\). For \(p^2\), it is zero; “\(1/2\) for semiprimes” requires distinct primes.
+
+Condition on choices made independently of the hidden branch—not on the eventual value of \(Y\) or on a selection procedure that inspected that branch.
+
+The false step is
+\[
+\det\Lambda_\lambda=n
+\quad\Longrightarrow\quad
+\text{both reduced basis vectors are }O(\sqrt n).
+\]
+Take \(\lambda=1\). A Gauss-reduced basis is
+\[
+(1,1),\qquad
+\left(\frac{n+1}{2},\frac{1-n}{2}\right).
+\]
+The second vector has length \(\asymp n\). Adding a bounded multiple of the first does not fix it.
+
+Replace the deterministic bound by a proved probabilistic bound, or reject poorly shaped lattices using a rule depending only on \(\lambda\). Such rejection preserves the conditional hidden-root argument.
+
+Finally, an odd-weight dependency exists exactly when the all-ones functional does not vanish on the square-condition kernel. This is a linear-algebra criterion, not a guarantee that sufficient smooth relations provide such a dependency. Your \(L[1/2]\) conclusion therefore remains conditional on the relation-generation and odd-dependency assumptions.
+
+**5. WRONG as a general barrier; a restricted counting statement is correct.**
+
+Let
+\[
+Q=|\bigl((\mathbb Z/n)^\times\bigr)^2|
+=\frac{\varphi(n)}{2^{\omega(n)}}.
+\]
+There are at most \(4H^2\) integer pairs with nonzero \(|c|,|d|\le H\). Therefore a family representing every square residue by \(c/d\) must have
+\[
+H\ge\frac12\sqrt Q.
+\]
+
+This bounds the **maximum height over the family**, not every sampled pair. For uniform \(r\), the useful statement is
+\[
+\Pr\!\left(\lambda\text{ has a representation }c/d
+\text{ with }0<|c|,|d|\le H\right)
+\le \frac{4H^2}{Q}.
+\]
+Consequently, for every fixed \(\epsilon>0\),
+\[
+\Pr(H(\lambda)\le n^{1/2-\epsilon})
+\le n^{-2\epsilon+o(1)}.
+\]
+
+The subsequent conclusions do not follow:
+
+- Large coefficients do not impose pointwise lower bounds on form values; cancellation and restricted sampling matter.
+- Integer size alone proves no lower bound on smoothness-search cost.
+- The counting applies to globally uniform roots. Fruitfulness only needs suitable uniformity **within each root fiber**. The distribution across fibers can be highly nonuniform.
+- Quasi-uniform sampling over your entire restricted set is sufficient, but stronger than necessary.
+
+Thus the defensible statement is a barrier to **globally uniform root sampling with uniformly small ratio representatives**, not a theorem excluding hidden-multiplier approaches at \(L[1/3]\).
+
+The Vallée comparison is accurate, with a crucial scale distinction: her bound is \(O(n^{2/3})\), vastly larger than \(L_n[2/3,O(1)]\). [Vallée, *Provably fast integer factoring with quasi-uniform small quadratic residues*, STOC 1989, pp. 98–106](https://doi.org/10.1145/73007.73016)
+
+**A. Exact coordinates and the pairing step.**
+
+Yes, the union bound over exact coordinates is legitimate even when the algorithm uses only projections of those coordinates. But the claimed containment
+\[
+K_{\rm alg}\supseteq K_0
+\]
+must include **every** algorithmic constraint.
+
+An extra weight-parity constraint can invalidate it. Here is an exact counterexample:
+\[
+n=77,\quad f=X-78,\quad m=1,
+\]
+with relations
+
+| \((a,b)\) | \(a-bm\) | \(a-b\alpha\) | Square roots |
+|---|---:|---:|---|
+| \((82,1)\) | \(81\) | \(4\) | \((9,2)\) |
+| \((403,3)\) | \(400\) | \(169\) | \((20,13)\) |
+
+Both square-class vectors are zero. Both singleton root ratios equal \(43\bmod77\), so both are fruitful. Their even-weight combination has roots
+\[
+180\equiv26,\qquad26\pmod{77},
+\]
+and is trivial.
+
+Thus \(\Phi\ne0\) on \(K_0\), while it vanishes on the imposed even-weight kernel. Include the constant feature \(1\) in \(x\) if that restriction remains. This changes the distance problem and can change positive \(\delta\) to zero.
+
+Pairing introduces no inherent obstruction when performed correctly. Let \(W\) be a common computational kernel and let
+\[
+E:W\longrightarrow H,\qquad \ker E=K_0
+\]
+record the remaining square-class obstruction. Independent uniform samples in a common fiber \(E=h\) have a sum uniform on \(K_0\). Hence a nonzero \(\Phi\) survives with probability \(1/2\).
+
+Alternatively, uniform sampling from \(W\), followed by exact-square rejection, produces uniform samples from \(K_0\), with acceptance probability \(1/|\operatorname{im}E|\). That gives a clean implementation when the residual obstruction group is small.
+
+An arbitrary collision, deterministic kernel output, or pairing across differently restricted spaces does not inherit this conclusion automatically. LV’s exceptional-class pairing appears in its proof of Theorem 2.6. [Lee–Venkatesan, §6](https://arxiv.org/pdf/1805.08873)
+
+**B. Lemma M is not presently a routine application of existing technology.**
+
+For QS or degree one, first specify the parameter distribution replacing LV’s growing-degree polynomial distribution. Otherwise that version of Lemma M is undefined.
+
+For a specified distribution, the exact analytic target is
+\[
+\delta=\frac{1-\max_w
+\mathbb E_X(-1)^{\beta+\langle w,x\rangle}}2.
+\]
+You must exclude near-perfect correlation **uniformly over all assignments of prime-sign twists**. Showing that \(\beta\) itself is balanced is insufficient.
+
+In degree one, the Blum formula converts these into correlations of multiplicative functions on two simultaneously smooth linear-form values. Their prime values involve
+\[
+i^{[\ell\in T]}(-1)^{w_\ell},
+\]
+so the problem retains fourth-root information together with arbitrary square-class twists.
+
+In QS, the analogous problem couples \(J_n(x)\), the prime-exponent parities of \(x^2-n\), and smoothness of that polynomial value.
+
+The most promising route is averaging over coefficients or polynomial parameters and estimating these **twisted smooth correlations**. The obstruction is specific: available untwisted smoothness estimates do not control all those twists after simultaneous smoothness conditioning. Ordinary character-sum bounds also do not supply the required uniform estimates in the very short sieve ranges.
+
+A second route would prove expansion of a graph of smooth relations, forcing any almost-perfect predictor to extend to a forbidden global character. Establishing that expansion is itself the missing arithmetic theorem.
+
+I would treat Lemma M as a substantial conjecture. The explicit formula identifies the obstruction; it does not presently remove it.
+
+**C. Prior work: what can actually be attributed.**
+
+- **The subgroup argument has a clear published precedent.** Seysen, *A probabilistic factorization algorithm with quadratic forms of negative discriminant*, **Math. Comp. 48 (1987), 757–780**, p. **777**, immediately before **Proposition 8.6**, explicitly identifies dependencies yielding trivial factorizations as a proper subgroup. **Theorem 8.7** states uniform sparse-kernel sampling. This is the class-group analogue of Claim 1’s mechanism, not your exact general-NFS statement. [Paper, p. 777](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf)
+
+- **BLP §8 concerns square detection.** Buhler–Lenstra–Pomerance, *Factoring integers with the number field sieve*, **LNM 1554 (1993), 50–94**, §8, **“Quadratic Characters”**; **Lemma 8.2, p. 68**, is the random spanning/union-bound lemma. It does not establish your quantitative fruitfulness-distance lemma. [BLP](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf)
+
+- **Lenstra–Pomerance’s exact relevant locations are §2 and §10.** *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**: §2 gives the ambiguous-form/factorization correspondence; **Algorithm 10.1, Step 6**, constructs the ambiguous form; **Theorem 10.3, p. 507**, gives the factoring probability and runtime. These are rigorous class-group results, not Claims 2–5. [Lenstra–Pomerance](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+- **Schroeppel’s linear sieve is documented, not a fruitfulness theorem of the proposed kind.** Pomerance, *The quadratic sieve factoring algorithm*, **EUROCRYPT ’84, LNCS 209 (1985), 169–182**, pp. **173–174**, discusses Schroeppel’s unpublished analysis and the linear sieve, including its linear-algebra cost problem. [Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper52.pdf)
+
+- **The sampler precedent is Vallée.** The full treatment is *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56 (1991), 823–849**, especially **Theorems 5–6**; the STOC paper linked above states the \(n^{2/3}\) sampling result.
+
+- **Morrison–Brillhart is not an adequate exact citation for these claims.** Their *A method of factoring and the factorization of \(F_7\)*, **Math. Comp. 29 (1975), 183–205**, is the continued-fraction factoring paper. For the precise subgroup and ambiguous-form assertions, cite Seysen or Lenstra–Pomerance.
+
+I found no exact published statement of your general Bockstein formula, hidden-root two-form construction, or proposed universal barrier. That is a search result, not a novelty certification.
+
+The reproducible [exact checks]( /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2/referee_checks.py) passed **1,008 kernel-vector tests** of the general character formula, including unequal local \(2\)-parts, and verify the counterexamples above.
+
+**The single claim most likely to be wrong is Claim 5:** its counting lemma is sound, but its advertised algorithmic barrier exceeds what that lemma proves.
+diff --git a/codex/scratch/nfsfruit_2/referee_checks.py b/codex/scratch/nfsfruit_2/referee_checks.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..043bfa514749b4f136fb218d5a2ff315f7c13908
+--- /dev/null
++++ b/codex/scratch/nfsfruit_2/referee_checks.py
+@@ -0,0 +1,125 @@
++"""Small exact checks for the nfsfruit referee report; standard library only."""
++from math import gcd, isqrt
++
++
++def factor(a):
++    a = abs(a)
++    out = {}
++    p = 2
++    while p * p <= a:
++        while a % p == 0:
++            out[p] = out.get(p, 0) + 1
++            a //= p
++        p += 1
++    if a > 1:
++        out[a] = out.get(a, 0) + 1
++    return out
++
++
++def jacobi(a, n):
++    a %= n
++    out = 1
++    while a:
++        while a % 2 == 0:
++            a //= 2
++            if n % 8 in (3, 5):
++                out = -out
++        a, n = n, a
++        if a % 4 == n % 4 == 3:
++            out = -out
++        a %= n
++    return out if n == 1 else 0
++
++
++def two_part(a):
++    return (a & -a).bit_length() - 1
++
++
++def character_exponents(p, c):
++    g = next(g for g in range(2, p)
++             if all(pow(g, (p - 1) // l, p) != 1 for l in factor(p - 1)))
++    return {pow(g, j, p): j * 2 ** (c - two_part(p - 1)) % 2**c
++            for j in range(p - 1)}
++
++
++def bockstein_check(p, q):
++    n, m = p * q, 1
++    alpha = m + n
++    c = max(two_part(p - 1), two_part(q - 1))
++    cp, cq = character_exponents(p, c), character_exponents(q, c)
++    coordinates, pivots, relations = {}, {}, []
++    checked = 0
++    for b in range(-4, 5):
++        for a in range(-20, 51):
++            z, A = a - b * m, a - b * alpha
++            if gcd(a, b) != 1 or not z or not A or gcd(z * A, n) != 1:
++                continue
++            vector, t = 0, 0
++            for side, value in enumerate((z, A)):
++                entries = list(factor(value).items()) + [(-1, int(value < 0))]
++                for l, e in entries:
++                    key = side, l
++                    if key not in coordinates:
++                        coordinates[key] = len(coordinates)
++                    vector ^= (e % 2) << coordinates[key]
++                    tau = (cp[l % p] + cq[l % q]) % 2**c
++                    t += (1 if side == 0 else -1) * tau * e
++            assert t % 2**c == 0
++            beta = t // 2**c % 2
++            relation_id = len(relations)
++            relations.append((z, A, beta))
++            mask = 1 << relation_id
++            while vector:
++                k = vector.bit_length() - 1
++                if k not in pivots:
++                    pivots[k] = vector, mask
++                    break
++                v, s = pivots[k]
++                vector ^= v
++                mask ^= s
++            if vector:
++                continue
++            Z = AA = 1
++            prediction = 0
++            for j, (zz, aa, bb) in enumerate(relations):
++                if mask >> j & 1:
++                    Z *= zz
++                    AA *= aa
++                    prediction ^= bb
++            assert Z > 0 and AA > 0
++            U, V = isqrt(Z), isqrt(AA)
++            assert U * U == Z and V * V == AA
++            ratio = U * pow(V, -1, n) % n
++            assert prediction == int(ratio not in (1, n - 1))
++            checked += 1
++    print(f"Bockstein n={n}, c={c}: {checked} exact kernel vectors passed")
++
++
++if __name__ == "__main__":
++    for p, q in ((3, 7), (5, 7), (5, 13), (5, 17), (7, 13)):
++        bockstein_check(p, q)
++
++    # An extra even-weight row can kill every fruitful exact dependency.
++    U = V = 1
++    for a, b in ((82, 1), (403, 3)):
++        z, A = a - b, a - 78 * b
++        u, v = isqrt(z), isqrt(A)
++        assert u * u == z and v * v == A and gcd(a, b) == 1
++        assert u * pow(v, -1, 77) % 77 == 43
++        U *= u
++        V *= v
++    assert U % 77 == V % 77 == 26
++    print("Extra parity row counterexample: singleton ratios 43, pair ratio 1")
++
++    # The QS Jacobi formula is false outside the Blum hypothesis.
++    assert 9**2 - 65 == 4**2
++    assert jacobi(9, 65) == 1 and jacobi(2, 65) == 1
++    assert 9 * pow(4, -1, 65) % 65 not in (1, 64)
++    print("Non-Blum QS counterexample: n=65, x=9, z=16")
++
++    # All short vectors for lambda=1 lie on c=d unless they are of size >= n/2.
++    n = 1001
++    e1, e2 = (1, 1), ((n + 1) // 2, (1 - n) // 2)
++    assert e1[0] * e2[1] - e1[1] * e2[0] == -n
++    assert sum(x * y for x, y in zip(e1, e2)) == 1
++    print("Gauss-reduced lambda=1 basis:", e1, e2)
+
+tokens used
+229,443
+**Verdict: Claims 1–4 contain sound results but need fixes. Claim 5 is wrong as a general barrier.** The main unresolved issue is quantitative detection of fruitfulness among the relations the algorithm actually uses.
+
+Throughout, “coprime to everything relevant” must explicitly include
+\[
+\gcd\!\left(n,f'(m)\prod_i z_i\right)=1.
+\]
+Otherwise the quotient defining \(\Phi\) need not exist. In semiprime statements, require **distinct** primes \(p,q\).
+
+**1. CORRECT WITH FIXES.**
+
+The homomorphism is correct. Its proof needs no Blum condition—and no odd-degree assumption.
+
+Write \(A_i=a_i-b_i\alpha\). If \(I=S\cap T\), square roots satisfy
+\[
+\sqrt{\prod_{S\triangle T}z_i}
+ =\pm\frac{\sqrt{\prod_Sz_i}\sqrt{\prod_Tz_i}}{\prod_Iz_i},
+\]
+and the corresponding identity holds in \(K\) for the \(A_i\). Reduction makes the overlap denominators agree. Consequently,
+\[
+\Phi(S\triangle T)=\Phi(S)\Phi(T)
+\]
+after quotienting by the global sign.
+
+There are exactly two square roots of a nonzero square in \(K\), irrespective of other roots of unity in \(K\). Thus their choice introduces only the sign already being quotiented out.
+
+The integrality assertion is also valid: the algebraic square root is integral, and
+\[
+f'(\alpha)\mathcal O_K\subseteq\mathbb Z[\alpha].
+\]
+For odd \(n\), CRT and the prime-power calculation give
+\[
+\mu_2(\mathbb Z/n)\cong\{\pm1\}^{\omega(n)}.
+\]
+The displayed identification with \(\mathbb F_2^{\omega(n)-1}\) is generally **noncanonical**.
+
+For uniform sampling from the **whole** \(K_0\), including zero,
+\[
+\Pr(\text{fruitful})=1-2^{-\operatorname{rank}\Phi}.
+\]
+Sampling a basis vector, or an arbitrary nonzero kernel vector, does not have this distribution.
+
+The final sentence about LV is too compressed. Nonvanishing on the full relation space does not establish nonvanishing on the sampled relations or on a further restricted kernel. You need the nonvanishing hypothesis on the space actually sampled, together with its sampling and cost guarantees. LV’s published §7 supplies the Blum character formulation; its Conjecture 7.1 cannot simply be imported unchanged into the non-Blum setting. [Lee–Venkatesan, §7, Theorem 2.3 and Remark 7.3](https://arxiv.org/pdf/1805.08873)
+
+A concrete warning about additional restrictions appears under A below.
+
+**2. CORRECT WITH FIXES. The general character formula survives.**
+
+For distinct \(p,q\), your maximal \(2\)-power characters do satisfy
+\[
+\chi_p(-1)=\chi_q(-1)=-1,\qquad \psi(-1)=1.
+\]
+This last identity is essential: it makes the omitted signs harmless.
+
+Because the two evaluations of each relation agree modulo \(n\),
+\[
+\psi(z_i)=\psi(A_i),
+\]
+so \(2^c\mid t_i\).
+
+For \(S\in K_0\), all total exponents in both complete multiplicative bases are even, and the total torsion signs permit square roots. Therefore, with reductions interpreted in the appropriate localization,
+\[
+\frac{\psi(\sqrt{\prod_Sz_i})}
+     {\psi(\sqrt{\prod_SA_i})}
+ =\zeta^{\frac12\sum_{i\in S}t_i}
+ =(-1)^{\sum_{i\in S}\beta_i}.
+\]
+The factors \(f'\) cancel. If the root ratio has local signs \((\varepsilon_p,\varepsilon_q)\), then
+\[
+\psi(\varepsilon_p,\varepsilon_q)=\varepsilon_p\varepsilon_q.
+\]
+That is precisely the nontrivial character of
+\(\mu_2(\mathbb Z/pq)/\{\pm1\}\). Hence your formula follows.
+
+Odd degree matters here because it ensures \(\mu(K)=\{\pm1\}\), so the stated quotient of the \(S\)-unit group is free. Use the **full** \(S\)-unit lattice, not merely principal-ideal valuation coordinates.
+
+Changing lifts by
+\[
+\tau_\ell\mapsto\tau_\ell+2^c k_\ell,\qquad
+\sigma_j\mapsto\sigma_j+2^c h_j
+\]
+changes \(\beta_i\) by
+\[
+\sum_\ell k_\ell e_{i\ell}-\sum_jh_jc_{ij}\pmod2.
+\]
+Thus the claimed ambiguity is exactly harmless on \(K_0\). More generally, any two linear extensions of the same \(\Phi\) differ by a linear function of the exact square classes.
+
+Two qualifications:
+
+- “Explicit” does **not** establish efficient computability. Computing a complete \(S\)-unit basis and relation coordinates requires a separate cost analysis.
+- Outside the Blum case, the character construction uses information about the unknown factors. It is an analytic description, not an immediately available factoring subroutine.
+
+For the special cases:
+
+**2a is correct for Blum semiprimes.** Quadratic reciprocity gives
+\[
+J_n(\ell)=(n/\ell)=1
+\]
+for every odd prime dividing \(x_i^2-n\), under the coprimality assumptions.
+
+Your expression has a minor well-definedness defect: \(v_2(z_i)/2\) can be nonintegral when its coefficient is zero. A cleaner formula is
+\[
+\beta_{\rm QS}(x)
+=[J_n(x)=-1]+[n\equiv5\pmod8]\,[x\text{ odd}]
+\pmod2.
+\]
+When \(n\equiv5\pmod8\) and \(x\) is odd, \(v_2(x^2-n)=2\).
+
+**It is false outside that scope.** For
+\[
+n=65,\qquad x=9,\qquad z=16,
+\]
+the congruence \(9^2\equiv4^2\pmod{65}\) is fruitful, while
+\[
+J_{65}(9)=J_{65}(2)=1.
+\]
+The proposed Jacobi expression gives zero.
+
+**2b is correct for Blum semiprimes on an explicitly imposed even-weight kernel.**
+
+Let \(k=|S|\), \(\lambda=c_1d_1^{-1}\pmod n\), and
+\[
+\eta=[J_n(\lambda)=-1].
+\]
+Then every relation satisfies \(t_i\equiv\eta\pmod2\). For even \(k\), the correct congruent roots are
+\[
+X=d_1^{k/2}U,\qquad Y=c_1^{k/2}W,
+\]
+where \(\prod_SL_1=U^2\) and \(\prod_SL_2=W^2\). Their Jacobi ratio is
+\[
+J_n(X/Y)
+=(-1)^{(\sum_St_i+\eta k)/2}
+=(-1)^{\sum_S\lfloor t_i/2\rfloor}.
+\]
+This also establishes the stated degeneracy corollary **within those hypotheses**.
+
+But “\(K_0\) requires even weight” is not a consequence of ordinary square conditions. For example,
+\[
+n=77,\quad L_1=x-78y,\quad L_2=x-y,\quad m=1,
+\]
+and \((a,b)=(82,1)\) give \(L_1=4,L_2=81\). This is an odd-weight square dependency.
+
+**3. CORRECT WITH FIXES. The union bound is valid; several consequences need repair.**
+
+Fix coordinates on the square-class space generated by **all of \(X\)** before sampling. Do not substitute the random rank of the discovered sample for \(C\).
+
+For the first \(M\) accepted independent samples, let \(A\) have columns \(x_i\), and let \(b=(\beta_i)\). Then
+\[
+\Phi|_{\ker A}=0
+\iff b\in\operatorname{rowspan}(A).
+\]
+Thus
+\[
+\Pr(\Phi|_{\ker A}=0)
+\le\sum_w(1-\delta_w)^M
+\le 2^C(1-\delta)^M
+\le e^{C\log2-\delta M}.
+\]
+That is elementary linear algebra plus a union bound. The algorithm need not know the exact coordinates for this **analysis** to be legitimate.
+
+Rejection sampling gives uniform accepted samples when proposals are uniform and acceptance is the fixed smoothness predicate. If duplicates are discarded, the accepted distinct relations are sampled without replacement; the same upper bound remains valid.
+
+However, the bound concerns **degeneracy of the entire discovered kernel**, not failure of one output. For a semiprime, one uniform kernel sample has success probability at least
+\[
+\frac{1-\varepsilon}{2}.
+\]
+With \(t\) independent uniform kernel samples, the failure bound becomes
+\[
+\varepsilon+2^{-t}.
+\]
+
+The involution criterion is correct: each preserved-feature pair forces one disagreement with every linear predictor, giving \(\delta_w\ge\delta'/2\). Dixon supplies this when the relation retains the sampled root \(x\), not merely the residue \(x^2\bmod n\).
+
+The cost conclusion needs an actual implementation argument. Lemma M alone does not justify inheriting LV’s early-abort sampling schedule: favorable fruitfulness parameters could have low relation density.
+
+There is a repair that avoids needing a joint density lemma. At the optimum, put
+\[
+b_0=(8/9)^{1/3}.
+\]
+Enumerate the whole candidate box for each chosen parameter pair, retain a uniform reservoir of
+\[
+M=L_n[1/3,b_0+o(1)]
+\]
+accepted relations, and retain all accepted relations if there are fewer than \(M\). Under Lemma M, \(C/\delta\) has this size. Full enumeration and sparse algebra both cost
+\[
+L_n[1/3,2b_0+o(1)]
+=L_n[1/3,(64/9)^{1/3}+o(1)].
+\]
+Repeating over a favorable parameter set of probability \(L_n[1/3,-o(1)]\) preserves that constant.
+
+This requires the correct normalization, uniform kernel sampling, and controlled square testing. LV uses generally nonmonic polynomials, leading-coefficient factors, and an additional constant parity column; those details must enter your formulation. [Lee–Venkatesan, algorithm in §3.3, §§4–6](https://arxiv.org/pdf/1805.08873)
+
+**4. CORRECT WITH FIXES. The probability calculation is exact; the lattice size assertion is false.**
+
+Conditional on \(\lambda\), the root is uniform on its fiber
+\[
+r_0\mu_2(\mathbb Z/n).
+\]
+For odd \(k\), replacing \(r\) by \(rh\) replaces \(Y\) by \(Yh\). Exactly two of the \(2^{\omega(n)}\) possibilities make \(X/Y=\pm1\). Hence
+\[
+\Pr(\text{fruitful}\mid \lambda,\text{root-independent coins},\,k\text{ odd})
+=1-2^{1-\omega(n)}.
+\]
+This remains true for nonsquarefree odd \(n\). For \(p^2\), it is zero; “\(1/2\) for semiprimes” requires distinct primes.
+
+Condition on choices made independently of the hidden branch—not on the eventual value of \(Y\) or on a selection procedure that inspected that branch.
+
+The false step is
+\[
+\det\Lambda_\lambda=n
+\quad\Longrightarrow\quad
+\text{both reduced basis vectors are }O(\sqrt n).
+\]
+Take \(\lambda=1\). A Gauss-reduced basis is
+\[
+(1,1),\qquad
+\left(\frac{n+1}{2},\frac{1-n}{2}\right).
+\]
+The second vector has length \(\asymp n\). Adding a bounded multiple of the first does not fix it.
+
+Replace the deterministic bound by a proved probabilistic bound, or reject poorly shaped lattices using a rule depending only on \(\lambda\). Such rejection preserves the conditional hidden-root argument.
+
+Finally, an odd-weight dependency exists exactly when the all-ones functional does not vanish on the square-condition kernel. This is a linear-algebra criterion, not a guarantee that sufficient smooth relations provide such a dependency. Your \(L[1/2]\) conclusion therefore remains conditional on the relation-generation and odd-dependency assumptions.
+
+**5. WRONG as a general barrier; a restricted counting statement is correct.**
+
+Let
+\[
+Q=|\bigl((\mathbb Z/n)^\times\bigr)^2|
+=\frac{\varphi(n)}{2^{\omega(n)}}.
+\]
+There are at most \(4H^2\) integer pairs with nonzero \(|c|,|d|\le H\). Therefore a family representing every square residue by \(c/d\) must have
+\[
+H\ge\frac12\sqrt Q.
+\]
+
+This bounds the **maximum height over the family**, not every sampled pair. For uniform \(r\), the useful statement is
+\[
+\Pr\!\left(\lambda\text{ has a representation }c/d
+\text{ with }0<|c|,|d|\le H\right)
+\le \frac{4H^2}{Q}.
+\]
+Consequently, for every fixed \(\epsilon>0\),
+\[
+\Pr(H(\lambda)\le n^{1/2-\epsilon})
+\le n^{-2\epsilon+o(1)}.
+\]
+
+The subsequent conclusions do not follow:
+
+- Large coefficients do not impose pointwise lower bounds on form values; cancellation and restricted sampling matter.
+- Integer size alone proves no lower bound on smoothness-search cost.
+- The counting applies to globally uniform roots. Fruitfulness only needs suitable uniformity **within each root fiber**. The distribution across fibers can be highly nonuniform.
+- Quasi-uniform sampling over your entire restricted set is sufficient, but stronger than necessary.
+
+Thus the defensible statement is a barrier to **globally uniform root sampling with uniformly small ratio representatives**, not a theorem excluding hidden-multiplier approaches at \(L[1/3]\).
+
+The Vallée comparison is accurate, with a crucial scale distinction: her bound is \(O(n^{2/3})\), vastly larger than \(L_n[2/3,O(1)]\). [Vallée, *Provably fast integer factoring with quasi-uniform small quadratic residues*, STOC 1989, pp. 98–106](https://doi.org/10.1145/73007.73016)
+
+**A. Exact coordinates and the pairing step.**
+
+Yes, the union bound over exact coordinates is legitimate even when the algorithm uses only projections of those coordinates. But the claimed containment
+\[
+K_{\rm alg}\supseteq K_0
+\]
+must include **every** algorithmic constraint.
+
+An extra weight-parity constraint can invalidate it. Here is an exact counterexample:
+\[
+n=77,\quad f=X-78,\quad m=1,
+\]
+with relations
+
+| \((a,b)\) | \(a-bm\) | \(a-b\alpha\) | Square roots |
+|---|---:|---:|---|
+| \((82,1)\) | \(81\) | \(4\) | \((9,2)\) |
+| \((403,3)\) | \(400\) | \(169\) | \((20,13)\) |
+
+Both square-class vectors are zero. Both singleton root ratios equal \(43\bmod77\), so both are fruitful. Their even-weight combination has roots
+\[
+180\equiv26,\qquad26\pmod{77},
+\]
+and is trivial.
+
+Thus \(\Phi\ne0\) on \(K_0\), while it vanishes on the imposed even-weight kernel. Include the constant feature \(1\) in \(x\) if that restriction remains. This changes the distance problem and can change positive \(\delta\) to zero.
+
+Pairing introduces no inherent obstruction when performed correctly. Let \(W\) be a common computational kernel and let
+\[
+E:W\longrightarrow H,\qquad \ker E=K_0
+\]
+record the remaining square-class obstruction. Independent uniform samples in a common fiber \(E=h\) have a sum uniform on \(K_0\). Hence a nonzero \(\Phi\) survives with probability \(1/2\).
+
+Alternatively, uniform sampling from \(W\), followed by exact-square rejection, produces uniform samples from \(K_0\), with acceptance probability \(1/|\operatorname{im}E|\). That gives a clean implementation when the residual obstruction group is small.
+
+An arbitrary collision, deterministic kernel output, or pairing across differently restricted spaces does not inherit this conclusion automatically. LV’s exceptional-class pairing appears in its proof of Theorem 2.6. [Lee–Venkatesan, §6](https://arxiv.org/pdf/1805.08873)
+
+**B. Lemma M is not presently a routine application of existing technology.**
+
+For QS or degree one, first specify the parameter distribution replacing LV’s growing-degree polynomial distribution. Otherwise that version of Lemma M is undefined.
+
+For a specified distribution, the exact analytic target is
+\[
+\delta=\frac{1-\max_w
+\mathbb E_X(-1)^{\beta+\langle w,x\rangle}}2.
+\]
+You must exclude near-perfect correlation **uniformly over all assignments of prime-sign twists**. Showing that \(\beta\) itself is balanced is insufficient.
+
+In degree one, the Blum formula converts these into correlations of multiplicative functions on two simultaneously smooth linear-form values. Their prime values involve
+\[
+i^{[\ell\in T]}(-1)^{w_\ell},
+\]
+so the problem retains fourth-root information together with arbitrary square-class twists.
+
+In QS, the analogous problem couples \(J_n(x)\), the prime-exponent parities of \(x^2-n\), and smoothness of that polynomial value.
+
+The most promising route is averaging over coefficients or polynomial parameters and estimating these **twisted smooth correlations**. The obstruction is specific: available untwisted smoothness estimates do not control all those twists after simultaneous smoothness conditioning. Ordinary character-sum bounds also do not supply the required uniform estimates in the very short sieve ranges.
+
+A second route would prove expansion of a graph of smooth relations, forcing any almost-perfect predictor to extend to a forbidden global character. Establishing that expansion is itself the missing arithmetic theorem.
+
+I would treat Lemma M as a substantial conjecture. The explicit formula identifies the obstruction; it does not presently remove it.
+
+**C. Prior work: what can actually be attributed.**
+
+- **The subgroup argument has a clear published precedent.** Seysen, *A probabilistic factorization algorithm with quadratic forms of negative discriminant*, **Math. Comp. 48 (1987), 757–780**, p. **777**, immediately before **Proposition 8.6**, explicitly identifies dependencies yielding trivial factorizations as a proper subgroup. **Theorem 8.7** states uniform sparse-kernel sampling. This is the class-group analogue of Claim 1’s mechanism, not your exact general-NFS statement. [Paper, p. 777](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf)
+
+- **BLP §8 concerns square detection.** Buhler–Lenstra–Pomerance, *Factoring integers with the number field sieve*, **LNM 1554 (1993), 50–94**, §8, **“Quadratic Characters”**; **Lemma 8.2, p. 68**, is the random spanning/union-bound lemma. It does not establish your quantitative fruitfulness-distance lemma. [BLP](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf)
+
+- **Lenstra–Pomerance’s exact relevant locations are §2 and §10.** *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**: §2 gives the ambiguous-form/factorization correspondence; **Algorithm 10.1, Step 6**, constructs the ambiguous form; **Theorem 10.3, p. 507**, gives the factoring probability and runtime. These are rigorous class-group results, not Claims 2–5. [Lenstra–Pomerance](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+- **Schroeppel’s linear sieve is documented, not a fruitfulness theorem of the proposed kind.** Pomerance, *The quadratic sieve factoring algorithm*, **EUROCRYPT ’84, LNCS 209 (1985), 169–182**, pp. **173–174**, discusses Schroeppel’s unpublished analysis and the linear sieve, including its linear-algebra cost problem. [Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper52.pdf)
+
+- **The sampler precedent is Vallée.** The full treatment is *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56 (1991), 823–849**, especially **Theorems 5–6**; the STOC paper linked above states the \(n^{2/3}\) sampling result.
+
+- **Morrison–Brillhart is not an adequate exact citation for these claims.** Their *A method of factoring and the factorization of \(F_7\)*, **Math. Comp. 29 (1975), 183–205**, is the continued-fraction factoring paper. For the precise subgroup and ambiguous-form assertions, cite Seysen or Lenstra–Pomerance.
+
+I found no exact published statement of your general Bockstein formula, hidden-root two-form construction, or proposed universal barrier. That is a search result, not a novelty certification.
+
+The reproducible [exact checks]( /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2/referee_checks.py) passed **1,008 kernel-vector tests** of the general character formula, including unequal local \(2\)-parts, and verify the counterexamples above.
+
+**The single claim most likely to be wrong is Claim 5:** its counting lemma is sound, but its advertised algorithmic barrier exceeds what that lemma proves.
