@@ -87,9 +87,14 @@ what `N mod 2^k` fixes.
 * **Modulo 128** (`N ≡ 1 mod 8`; needs `uv mod 8`). **Not determined** by `(N mod 128, ε, QR_2)`: 32 of 64 keys are ambiguous.
   **Not determined** after adding `r4` and `r8` of both `Cl(−4N)` and `Cl(−8N)`: 73 of 248 keys are ambiguous, covering 1 199 of
   3 418 pairs (`src/repair/verify_r5.py`; exhaustive, `p < q < 1000`). So the class-group description of the tower does not
-  continue through these 2-power ranks (**refuted for these invariants**). The missing quantity is the individual value at `p` of
-  an order-8 Dirichlet character mod 32; only its product over `p` and `q` is public. Other public discriminants: **not yet
-  tested** (NEXT_STEPS item 2).
+  continue through these 2-power ranks (**refuted for these invariants**). ~~The missing quantity is the individual value at `p` of
+  an order-8 Dirichlet character mod 32~~ *Corrected 2026-10-18 (`tower128`, `notes/tower_results.md`):* for `N ≡ 1 (mod 8)` the
+  missing quantity is `ψ(p)` for the even quartic character `ψ = ω²` mod 16 (i.e. `p mod 16`); the order-8 value is needed only
+  when `N ≡ 5 (mod 8)`. The bit is undetermined given `(N mod 128, ε, QR_2)` iff `p ≡ q (mod 16)`. Extended test (exhaustive,
+  `11 ≤ p < q < 4000`): `(r4, r8)` of `Cl(−4N)` and `Cl(−8N)` together **determine** the bit in the cell `p ≡ q ≡ 7 (mod 8)`
+  (Thm T3, via Rédei linearity), and 4th-power membership of the public class decides 3/8 of the cell `p ≡ q ≡ 1 (mod 8)`,
+  `(p/q) = 1` (T4). In the `QR_2`-false cells every tested invariant of 6 distinct discriminants is at its null (conjecture C5).
+  None of this is an algorithm: `r8` is not known to be computable without the class group, whose computation already factors `N`.
 * **Class-group form of `QR_2`** (`N ≡ 1 mod 8`): `QR_2 ⇔ r4 Cl(−8N) > 0` if `ε = +1`, and `QR_2 ⇔ r4 Cl(−4N) > 0` if `ε = −1`.
   The proof (GPT-6.1-sol r4 §3) evaluates genus maps on ambiguous classes via Rédei matrices `M_{−4N}`, `M_{−8N}`. **That proof
   was not re-derived by an agent**; its consequences were verified (below).
@@ -285,7 +290,7 @@ established here (`trackC_analysis.md` §3).
 | Track E X | No mechanism of Tracks A–D yields a non-floor coset bit at sub-`N^{1/4}` cost | conjectured / model-conditional | rests on known-algorithm costs | `trackE_analysis.md` §0, §6 |
 | r4 hardness | Fixed-character decisions (`ε`, `QR_2`, `ψ(p)`) are hard on suitable semiprime distributions | conjectured by GPT-6.1-sol | — | `codex_r4_sos_classgroup.md` §1–2 |
 | Tower via 2-power ranks | `s mod 128` is determined by `(N mod 128, ε, QR_2)` and `r4`, `r8` of `Cl(−4N)`, `Cl(−8N)` | refuted for these invariants (73/248 keys ambiguous, `p < q < 1000`) | `experiments/raw/verify_r5.json` | `src/repair/verify_r5.py` |
-| Tower via other public class groups | `s mod 128` determined by 2-power ranks of `Cl(−4kN)`, small `k` | not yet tested | — | NEXT_STEPS item 2 |
+| Tower via other public class groups | `s mod 128` determined by 2-power ranks of `Cl(−4kN)`, small `k` | partly: determined in cell p≡q≡7 (8) by (r4,r8) of Cl(−4N),Cl(−8N) (T3, proved); 3/8 of cell p≡q≡1 (8),(p/q)=1 (T4); QR_2-false cells at null (C5, conjectured) | `notes/tower_results.md` | `src/tower/` (2026-10-18) |
 | Coarse predicates | Track C obstructions for predicates correct only when `\|K − p\| > N^{1/4−ε}` | not yet tested | — | `trackE_analysis.md` §6 |
 | C-HHloc | Harvey–Hittmeir restricted to a certified interval near `√N`, cost `Õ(W^{3/5}N^{−1/10})` (GPT-6.1-sol "proved adaptation") | not yet tested; reported by GPT-6.1-sol, not independently reproduced; not polynomial in any case | — | `trackC_candidates.md` C-HHloc |
 
