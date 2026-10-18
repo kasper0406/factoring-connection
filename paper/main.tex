@@ -51,22 +51,24 @@ other than a proper divisor of $N$ or \texttt{FAIL}, and factors all but an
 $O(N^{-\varepsilon})$ fraction of the semiprimes $N=pq$ with primes $p<q\le 2p$
 (for any fixed $\varepsilon\in(0,1/60]$ and $n\ge n_0(\varepsilon)$). Taking polylogarithmic
 weight heights instead gives cost $N^{1/6}(\log N)^{O(1)}$ with an exceptional fraction
-$O((\log N)^{-A})$ for any fixed $A$. The best proved deterministic exponent for arbitrary
-inputs remains $1/5$ (Harvey; Harvey--Hittmeir). The algorithm is a Lehman-type weighted
-collision search. It takes the McKee--Pinch divisibility event $\ell\mid Bp-Aq$ over all
-primes $\ell$ in four dyadic bands near $N^{1/6}$ and all small coprime weights $(A,B)$,
-together with the Harvey--Hittmeir modulus-squared lock. One baby-step list is shared by
-every band prime through cofactor-powered handles. Three ingredients carry the proof. The
+$O((\log N)^{-A})$ for any fixed $A$ (the polylogarithmic exponent depends on $A$). The
+best proved deterministic exponent for arbitrary inputs remains $1/5$ (Harvey;
+Harvey--Hittmeir). The algorithm is a Lehman-type weighted collision search. It takes the
+McKee--Pinch divisibility event $\ell\mid Bp-Aq$ over all primes $\ell\equiv3\pmod4$ in four
+dyadic bands near $N^{1/6}$ and all small coprime weights $(A,B)$, together with the
+Harvey--Hittmeir modulus-squared lock. Within each band, one baby-step list is shared by all
+band primes through cofactor-powered handles. Three ingredients carry the proof. The
 collision modulo $p$ is an exact identity, so no lower bound on any multiplicative order is
 needed. Four disjoint bands guarantee one band coprime to $q-1$, and on that band a
 two-sided (useless) collision forces a rare congruence modulo $\ord_q(2)$. The arithmetic
-large sieve bounds the uncovered pairs. We also record a matching lower bound of order
-$N^{1/6}$ for covering families in a one-base sumset collision-search model, and
-pre-registered experiments. At 40--80 bits the measured cost grows more slowly than that
-of a calibrated Harvey--Hittmeir implementation (slope $0.203$ against $0.226$ in $\log_2$
-cost per bit), but Harvey--Hittmeir is still $2.3$--$4.9$ times cheaper at those sizes. The
-result says nothing about the worst case. Every ingredient is prior art; we found no prior
-formulation of this combination.
+large sieve bounds the uncovered pairs. For context we record a lower bound of order
+$N^{1/6}$ in a one-base sumset collision-search model; it applies only to families that cover
+\emph{every} integer candidate for a fixed $N$, and so does not bound average-case algorithms
+such as ours. We also report pre-registered experiments. Over 48--80 bits the measured cost
+grows more slowly than that of a calibrated Harvey--Hittmeir implementation (slope $0.203$
+against $0.226$ in $\log_2$ cost per bit), but at 40--80 bits Harvey--Hittmeir is still
+$2.3$--$4.9$ times cheaper. The result says nothing about the worst case. Every ingredient is
+prior art; we found no prior formulation of this combination.
 \end{abstract}
 
 \maketitle
@@ -98,6 +100,8 @@ logarithmic factors again for balanced semiprimes, at the same exponent $1/5$. B
 the known routes are conditional: Umans and Wang \cite{umanswang2025} showed that a
 number-theoretic divisor-cover conjecture would give exponent $1/6$, and He and Sahai
 \cite{hesahai2026} refuted that conjecture's one-dimensional arithmetic-progression form.
+Carella \cite{carella} claims a deterministic $O(N^{1/6+\varepsilon})$ algorithm; we have not
+verified that claim (Section~\ref{sec:prior}).
 
 This paper is about the \emph{average} case over the hardest natural population, semiprimes
 with two factors of comparable size. For unrestricted semiprimes the average case is easy:
@@ -121,14 +125,14 @@ Fix $\varepsilon\in(0,1/60]$. There are $n_0(\varepsilon)$ and absolute constant
 such that for every $n\ge n_0$ the deterministic algorithm $\DCL_{n,\varepsilon}$ of
 Section~\ref{sec:alg} has the following properties.
 \begin{enumerate}[label=(\roman*)]
-\item \emph{Correctness.} On every input $N$ it outputs either a proper divisor $d$ of $N$
-  ($1<d<N$, $d\mid N$) or \texttt{FAIL}.
+\item \emph{Correctness.} On every input $N$ it outputs either a proper divisor of $N$
+  (an integer strictly between $1$ and $N$ that divides $N$) or \texttt{FAIL}.
 \item \emph{Cost.} On every $n$-bit input it uses $O\bigl(n^{c}\,2^{(1/6+5\varepsilon/6)n}\bigr)
   = N^{1/6+5\varepsilon/6}(\log N)^{O(1)}$ bit operations.
 \item \emph{Success.} It outputs \texttt{FAIL} on at most $C\,2^{-\varepsilon n}|\Sn|$ pairs
   $(p,q)\in\Sn$.
 \end{enumerate}
-Equivalently, for every $\delta\in(0,1/72]$ there is a deterministic algorithm of cost
+In particular, for every $\delta\in(0,1/72]$ there is a deterministic algorithm of cost
 $N^{1/6+\delta+o(1)}$ whose exceptional fraction on $\Sn$ is $O(N^{-6\delta/5})$.
 \end{theorem}
 
@@ -160,27 +164,29 @@ one of the two square roots of $AN/B$ modulo $\ell$, and these roots are computa
 $N$. On that residue class the weighted sum $Bp+Aq$ is determined modulo $\ell^2$ (the
 Harvey--Hittmeir lock), so $g=(Bp+Aq-c)/\ell^2$ is an integer in a window of length about
 $H\sqrt N/\ell^2$. Exponentiating, $2^{(L/\ell^2)(B+AN-c)}$ equals $\gamma^{g}$ modulo $p$,
-with $\gamma=2^{L}$ and $L=\prod\ell^2$ over the band. Every target, for every band prime,
-is therefore one giant step against a single baby list $\gamma^0,\dots,\gamma^{m-1}$, and a
+with $\gamma=2^{L}$ and $L=\prod\ell^2$ over the band. Every target, for every prime of the
+band, is therefore one giant step against the band's single baby list
+$\gamma^0,\dots,\gamma^{m-1}$, and a
 product-tree/remainder-tree evaluation detects collisions modulo the unknown $p$. Primes
 near $N^{1/6}$ balance the baby list ($\approx H\sqrt N/\ell^2$) against the number of
 targets ($\approx H^2\ell$). Coverage is a sieve problem in $p$ for fixed $q$, and the large
-sieve shows that almost every $p$ is caught. The collision modulo $p$ is exact, so no order
+sieve shows that the true $p$ is caught for almost every pair. The collision modulo $p$ is exact, so no order
 lemma is needed there. It only remains to show that the true giant does not \emph{also}
 collide modulo $q$. Using four disjoint bands, one of them is coprime to $q-1$. On that band
 a two-sided collision forces $\ord_q(2)$ to divide a specific small expression, which a CRT
 count shows to be rare.
 
 \subsection{A lower bound in the collision-search model}
-The exponent $1/6$ is not an accident of parameter choice. In a model that covers Lehman,
-Hittmeir, Harvey, Harvey--Hittmeir and the present algorithm (one base, polynomial exponent
-maps of bounded degree, residue-class locks modulo any number of moduli, sumset
-baby-step/giant-step collision detection), every family that covers all integer candidates
-in the balanced range costs at least $cN^{1/6}$ (Theorem~\ref{thm:A}). With $N^{o(1)}$
-distinct moduli, or with targets of degree at least $2$, the bound is $N^{1/5-o(1)}$
-(Theorems~\ref{thm:Aprime} and~\ref{thm:B}). This is a lower bound \emph{in a model}, not
-for factoring. It explains why many moduli are necessary below $1/5$ and why $1/6$ is the
-floor of this approach.
+For context, Section~\ref{sec:lower} records a lower bound in a model whose targets include
+those of Lehman, Hittmeir, Harvey, Harvey--Hittmeir and the present algorithm (one base,
+polynomial exponent maps of bounded degree, unit residue-class locks modulo any number of
+moduli, sumset baby-step/giant-step collision detection). In that model every family that
+covers \emph{all} integer candidates in the balanced range, for a fixed $N$, costs at least
+$cN^{1/6}$ (Theorem~\ref{thm:A}). With $N^{o(1)}$ distinct moduli, or with targets of degree
+at least $2$, the bound is $N^{1/5-o(1)}$ (Theorems~\ref{thm:Aprime} and~\ref{thm:B}). This is
+a floor for full-candidate covering in this model only. It is not a lower bound for
+factoring, and it does not bound average-case algorithms, which (like ours) need only reach
+the true factor for most inputs.
 
 \subsection{What is new}
 Each ingredient is known (Section~\ref{sec:prior}). The divisibility event
@@ -192,14 +198,15 @@ modulus-squared lock is in McKee \cite{mckee1999} and Harvey--Hittmeir
 \cite{montgomery1968,mv1973}. What this paper adds is the following combination:
 \begin{enumerate}[label=(\roman*)]
 \item a band of primes at $N^{1/6}H^{-1/3}$ instead of $N^{1/4}$,
-\item made possible by one baby list shared across all band primes via cofactor-powered
-  handles, so that each target costs one giant step;
+\item made possible by one baby list per band, shared across all primes of the band via
+  cofactor-powered handles, so that each target costs one giant step;
 \item a proof (rather than a probability heuristic) that the event occurs for all but
   $O(N^{-\varepsilon})$ of the pairs: the prime-pair large sieve with growing weight height;
 \item one-sided extraction with no order hypothesis: the clean-band argument, the
   elementary bound on primes with small $\ord_q(2)$, and a CRT count of two-sided true
   collisions;
-\item a full bit-complexity accounting, and the matching model lower bound.
+\item a full bit-complexity accounting; for context, a model lower bound for full-candidate
+  covering (which does not apply to average-case algorithms).
 \end{enumerate}
 We found no prior formulation of this combination.
 
@@ -214,21 +221,22 @@ lists limitations and open problems.
 \section{Prior art}\label{sec:prior}
 %======================================================================
 
-We separate what we read ourselves from what we know only through an AI literature sweep.
-Items marked \emph{[sweep]} were checked against the source by the GPT-6.1-sol literature
-sweeps described in the Acknowledgements, not re-read by us. Items marked UNVERIFIED have
-bibliographic details we have not checked against the source.
+We separate what we read ourselves from what we know only through AI literature sweeps.
+We read McKee--Pinch \S5 ourselves, from the scans. The other descriptions below come from
+the GPT-6.1-sol sweeps described in the Acknowledgements, which checked the statements
+against the sources; they are marked \emph{[sweep]} and were not re-read by us. Where even
+the sweep did not check a source, we say UNVERIFIED.
 
 \paragraph{Lehman and weighted Fermat searches.}
 Lehman \cite{lehman1974} searches for $4kN=x^2-y^2$ over small multipliers $k$ and proves a
-deterministic $N^{1/3+o(1)}$ bound. Weighted Fermat searches go back to Lawrence
-\cite{lawrence1895}. The weighted sums $Bp+Aq$ of the present paper are Lehman's
-mechanism; we claim nothing new about them.
+deterministic $N^{1/3+o(1)}$ bound [sweep]. Weighted Fermat searches go back to Lawrence
+\cite{lawrence1895} (UNVERIFIED: cited through the sweep, not checked). The weighted sums
+$Bp+Aq$ of the present paper are Lehman's mechanism; we claim nothing new about them.
 
 \paragraph{McKee 1999.}
 McKee \cite{mckee1999} speeds up Fermat's method using a prime $m$ dividing the square-root
 variable, which restricts it modulo $m^2$; the resulting $N^{1/4+\eta}$ method is labelled
-heuristic by the author. Its \S9 points back to McKee--Pinch \S5 [sweep].
+heuristic by the author, and its \S9 points back to McKee--Pinch \S5 [sweep].
 
 \paragraph{McKee--Pinch 1996, \S5: a direct precursor.}
 We read \S5 (pp.~221--223) of \cite{mckeepinch1996} from the public scan indexed at
@@ -249,30 +257,37 @@ We read \S5 (pp.~221--223) of \cite{mckeepinch1996} from the public scan indexed
   and the expected time $O(n^{1/4+\epsilon})$ rests on the heuristic that $q-p$ has a prime
   factor in the band with probability $\gg1/\log n$.
 \end{itemize}
-So the core event of the present paper (a band prime divides a small-weight combination
-$Bp-Aq$, with $N$-determined residues and a modulus-squared reduction) is theirs. Their
-per-$k$ cost is $O(n^\epsilon)$ because $q/k^2=O(1)$. We instead trade a larger window for
-fewer, smaller primes through a shared baby list, and we prove the coverage statement. The
-contributions (i)--(v) of the introduction are what we add.
+(Here $n$ is their notation for the number to be factored.) So the core event of the present
+paper (a band prime divides a small-weight combination $Bp-Aq$, with $N$-determined residues
+and a modulus-squared reduction) is theirs. Their per-$k$ cost is $O(n^\epsilon)$ because
+$q/k^2=O(1)$. We instead trade a larger window for fewer, smaller primes through one baby
+list per band, and we prove the coverage statement. The contributions (i)--(v) of the
+introduction are what we add.
 
 \paragraph{Hittmeir 2018 and 2021.}
 Hittmeir \cite{hittmeir2018} combines baby-step/giant-step with sieving of $p+q$ modulo many
 small primes and proves $N^{1/4}\exp(-\Omega(\log N/\log\log N))$ up to polylogarithmic
-factors. Hittmeir \cite{hittmeir2021} adapts Strassen-type polynomial collision detection to
-Lehman's weighted sums and proves $N^{2/9+o(1)}$. Modular-hyperbola sieving over many
-small primes is therefore old; what differs here is that each prime is used
-\emph{selectively} (only the two classes reached by a short weight vector) rather than to
-cover all classes.
+factors [sweep]. Hittmeir \cite{hittmeir2021} gives a time--space trade-off for Lehman's
+method, adapting Strassen-type polynomial collision detection to Lehman's weighted sums, and
+proves $N^{2/9+o(1)}$ [sweep]. Modular-hyperbola sieving over many small primes is therefore
+old; what differs here is that each prime is used \emph{selectively} (only the at most two
+classes reached by a short weight vector) rather than to cover all classes.
+
+\paragraph{St\u{a}nic\u{a}--Mulder--Hittmeir 2026.}
+\cite{smh2026} studies unions of weighted modular-hyperbola sieve sets, their CRT behaviour,
+and elliptic-trace obstructions [sweep]. This is closely related local arithmetic. As far as
+the sweep found, it does not contain a global coverage theorem over prime pairs (our
+Lemma~\ref{lem:sieve} summed over $q$) or a shared cofactor-powered search.
 
 \paragraph{Harvey 2021; Harvey--Hittmeir 2022.}
 Harvey \cite{harvey2021} proves deterministic complexity $O(N^{1/5}\log^{16/5}N)$ with a
 single shared baby-step/giant-step search over Lehman's multiplier family, using
 congruences $\alpha^{aq+bp}\equiv\alpha^{aN+b}\pmod p$ and multipoint evaluation over
-$\Z/N\Z$ (Alg.~4.1--4.2). Harvey--Hittmeir \cite{hh2022} save a factor
+$\Z/N\Z$ (Alg.~4.1--4.2) [sweep]. Harvey--Hittmeir \cite{hh2022} save a factor
 $(\log\log N)^{3/5}$; their Proposition~3.3 contains the congruence $aq-bp\equiv0\pmod m$
 and the modulus-squared lock that we use as Lemma~\ref{lem:lock}, with a single modulus
-and lattice-chosen weights. Harvey also remarks that exponent $1/6$ would need a ``fully
-square-root speedup'' of Lehman's search with $r\asymp N^{1/3}$ [sweep].
+and lattice-chosen weights [sweep]. Harvey also remarks that exponent $1/6$ would need a
+``fully square-root speedup'' of Lehman's search with $r\asymp N^{1/3}$ [sweep].
 
 \paragraph{Gao--Feng--Hu--Pan 2025.}
 For balanced semiprimes, \cite{gao2025} claims deterministic
@@ -298,16 +313,16 @@ the prescribed image $2^{L}$, and large order modulo $N$ does not imply large or
 a specific prime $q$. Our clean-band argument avoids the issue.
 
 \paragraph{Carella, arXiv:1308.2891.}
-Carella \cite{carella} explicitly claims a deterministic factoring algorithm with
-$O(N^{1/6+\varepsilon})$ arithmetic operations for balanced $N=pq$. We have not re-derived
-its argument. \emph{The following assessment is that of the GPT-6.1-sol referee of our
-round 13, not ours:} the displayed proof loses a necessary primitive-polynomial
-normalisation; every coefficient of the correctly expanded polynomial is divisible by $B$,
-removing that content lowers the scaled height from about $N$ to $N^{5/6}$, and the cited
-small-root condition then no longer supports $X=Y=N^{1/3}$. On that assessment the referee
-did not regard the proof as establishing the bound. We list \cite{carella} as a claimed but
-(per that assessment) unproved prior statement of the same exponent, with a different
-(lattice) mechanism and a worst-case rather than average-case claim.
+According to its abstract, Carella \cite{carella} presents a deterministic algorithm for
+factoring a balanced integer $N=pq$ in $O(N^{1/6+\varepsilon})$ arithmetic operations, and
+states equivalently that $N$ is factored in polynomial time given the least $(\log N)/6$ bits
+of a factor; the abstract states no average-case restriction. We have not verified this
+claim, and we take no position on it. The GPT-6.1-sol referee of our round 13 raised a
+specific objection to the small-root argument in its \S5 (a lost primitive-polynomial
+normalisation, after which the cited small-root condition would no longer support the
+stated bounds). We have not checked that objection ourselves, so we do not adopt it. The
+claim should be regarded as an unverified prior statement of the same exponent, by a
+different (small-root) method.
 
 \paragraph{The large sieve.}
 We use the arithmetic large sieve in Montgomery's form \cite{montgomery1968} with the
@@ -317,9 +332,9 @@ derive them from the additive inequality in Lemma~\ref{lem:sieve}.
 \paragraph{Summary of the literature search.}
 Two independent GPT-6.1-sol sweeps and our own searches found no established,
 unconditional, oracle-free deterministic result below exponent $1/5$ that factors almost
-all bounded-ratio prime pairs. Almost-all results that rely on totient or elliptic-curve
-oracles exist but do not take only $N$ as input [sweep]. This is the outcome of a search,
-not a proof of priority.
+all bounded-ratio prime pairs (Carella's claim above is unverified). Almost-all results that
+rely on totient or elliptic-curve oracles exist but do not take only $N$ as input [sweep].
+This is the outcome of a search, not a proof of priority.
 
 %======================================================================
 \section{The algorithm}\label{sec:alg}
@@ -361,7 +376,8 @@ Input: $N$ with $n$ bits.
 Then, for each block $k=0,1,2,3$:
 \begin{enumerate}[label=\arabic*.,resume]
 \item \emph{Exponent tree.} Build the balanced integer product tree of $\{\ell^2:\ell\in\Pk\}$.
-  Push $2$ down the tree: a node holding $2^{L_k/\Pi(\text{node})}$ passes
+  Write $\Pi(\text{node})$ for the product of the $\ell^2$ at the leaves below a node. Push $2$
+  down the tree: a node holding $2^{L_k/\Pi(\text{node})}$ passes
   $2^{L_k/\Pi(\text{node})\cdot\Pi(\text{sibling})}$ to each child. This yields
   $u_\ell=2^{L_k/\ell^2}\bmod N$ for all $\ell\in\Pk$. Put $\gamma=u_{\ell_0}^{\ell_0^2}=2^{L_k}\bmod N$
   for any $\ell_0\in\Pk$. If some $\ell\in\Pk$ divides $N$ and $1<\ell<N$, output $\ell$.
@@ -377,7 +393,8 @@ Then, for each block $k=0,1,2,3$:
   $\tau=(v,\ell,r)$ is a \emph{target}. Let $T_k\le2|V||\Pk|$ be the number of targets.
 \item \emph{Baby length.} Choose $m$ either as $m=\mbar$, or by the
   \emph{endpoint-competitive} rule: minimise $m+\sum_\tau\lceil W_\tau/m\rceil$ over an integer
-  geometric grid whose last point is $W_{\max}=\max_\tau W_\tau\le\mbar$. Under either rule
+  geometric grid whose last point is $W_{\max}=\max_\tau W_\tau\le\mbar$ (if $T_k=0$ the block
+  is skipped). Under either rule
   $m\le\mbar$ and $m+T'\le\mbar+T_k$, where $T'=\sum_\tau\lceil W_\tau/m\rceil$.
 \item \emph{Giants.} Precompute $w_\ell=u_\ell^N$. For each target and $0\le j<\lceil W_\tau/m\rceil$:
   \[
@@ -387,8 +404,8 @@ Then, for each block $k=0,1,2,3$:
   using $u_\ell^{\ell^2}=\gamma$; $\gamma$ is invertible because $N$ is odd.
 \item \emph{Collision detection.} Build $f(x)=\prod_{0\le i<m}(x-\gamma^i)\in(\Z/N\Z)[x]$ by a
   product tree. Evaluate $f$ at all giants by a remainder tree; only monic divisors occur,
-  so this is valid over $\Z/N\Z$. For each giant compute $d=\gcd(f(G),N)$; if $1<d<N$ output
-  $d$.
+  so this is valid over $\Z/N\Z$. For each giant compute $\gcd(f(G),N)$; if it lies strictly
+  between $1$ and $N$, output it.
 \end{enumerate}
 If no block outputs a divisor, output \texttt{FAIL}.
 
@@ -401,13 +418,13 @@ collides modulo $q$ too, so it can never give a one-sided collision.
 $m=1$ on adversarial inputs would make $T'$ far too large. That is why one of the two rules
 in step~5 is mandatory.
 (e) An implementation (Python, gmpy2 and python-flint) is in
-\texttt{src/dcltheorem/algorithm.py}. Every candidate output passes a check $1<d<N$,
-$d\mid N$; an exhaustive regression test covers all $2\le N\le10^4$ for two parameter
+\texttt{src/dcltheorem/algorithm.py}. Every candidate output $x$ passes a check $1<x<N$,
+$x\mid N$; an exhaustive regression test covers all $2\le N\le10^4$ for two parameter
 designs.
 \end{remark}
 
 %======================================================================
-\section{Proof of Theorem~\ref{thm:main}}\label{sec:proofs}
+\section{Proof of \texorpdfstring{Theorem~\ref{thm:main}}{Theorem 1.1}}\label{sec:proofs}
 %======================================================================
 
 Throughout this section fix $(p,q)\in\Sn$, $N=pq$, a block $k$, and write $L=L_k$,
@@ -533,8 +550,10 @@ $j/\log_2Q_0$ prime factors exceeding $Q_0$. Sum over $j\le T$.
 Fix $q$ and $k$. Let $U_k(q)$ be the set of integers $p\in[P/2,P]$ such that
 $\ell\nmid Bp-Aq$ for all $(v,\ell)\in V\times\Pk$. For $n\ge n_0$,
 \[
-  |U_k(q)|\le\frac{P/2+1+4^{k+1}Y^2}{J_k},\qquad J_k\ge|V|\sum_{\ell\in\Pk}\frac1\ell\ge\frac{c_1H^2}{n}.
+  |U_k(q)|\le\frac{P/2+1+4^{k+1}Y^2}{J_k},\qquad
+  J_k:=\sum_{\ell\in\Pk}\frac{|V|}{\ell-|V|}\ \ge\ |V|\sum_{\ell\in\Pk}\frac1\ell\ \ge\ \frac{c_1H^2}{n},
 \]
+with an absolute constant $c_1>0$.
 \end{lemma}
 \begin{proof}
 For $\ell\in\Pk$ we have $\ell\nmid q$, so $\ell\mid Bp-Aq$ iff $p\equiv AqB^{-1}\pmod\ell$. These
@@ -542,7 +561,7 @@ $|V|$ classes are distinct: $AqB^{-1}\equiv A'qB'^{-1}$ would give $\ell\mid AB'
 $0<|AB'-A'B|<H^2<Y<\ell$. So $U=U_k(q)$ avoids $\omega:=|V|<\ell$ residue classes modulo
 every $\ell\in\Pk$.
 
-Let $S(\alpha)=\sum_{u\in U}e(u\alpha)$ and $Z(h)=\#\{u\in U:u\equiv h\pmod\ell\}$. Then
+Write $e(x)=\exp(2\pi ix)$. Let $S(\alpha)=\sum_{u\in U}e(u\alpha)$ and $Z(h)=\#\{u\in U:u\equiv h\pmod\ell\}$. Then
 $\sum_{a=0}^{\ell-1}|S(a/\ell)|^2=\ell\sum_hZ(h)^2\ge\ell|U|^2/(\ell-\omega)$ by Cauchy--Schwarz,
 since $Z$ is supported on $\ell-\omega$ classes. Removing $a=0$,
 \[
@@ -552,11 +571,11 @@ The points $a/\ell$ with $\ell\in\Pk$, $1\le a<\ell$, are $Q^{-2}$-separated mod
 $Q=2^{k+1}Y$, and $U$ lies in an interval of at most $N_0=P/2+1$ integers. The additive
 large sieve inequality \cite{mv1973} gives
 $\sum_{\ell,a}|S(a/\ell)|^2\le(N_0+Q^2)|U|$. Combining,
-$|U|\sum_{\ell\in\Pk}\omega/(\ell-\omega)\le N_0+Q^2$, and $\omega/(\ell-\omega)\ge|V|/\ell$.
+$|U|\,J_k\le N_0+Q^2$, since $\omega=|V|$. Finally $\omega/(\ell-\omega)\ge|V|/\ell$.
 
 By the prime number theorem in the progression $3\bmod4$ (effective, the modulus being
-fixed), $\sum_{\ell\in\Pk}1/\ell\ge c'/n$, and $|V|\ge H^2/2$ since coprime pairs have density
-$6/\pi^2$.
+fixed), $\sum_{\ell\in\Pk}1/\ell\ge c'/n$ for an absolute $c'>0$, and $|V|\ge H^2/2$ since
+coprime pairs have density $6/\pi^2$. So $J_k\ge c'H^2/(2n)$, i.e.\ $c_1=c'/2$.
 \end{proof}
 
 \begin{lemma}[FULL is rare]\label{lem:crt}
@@ -615,10 +634,11 @@ $Y^2\ge P^{2/3}H^{-2/3}$,
   \le Cn\Bigl(\frac{H^{14/3}P^{1/3}}{T}+\frac{H^{10/3}}{P^{1/3}}\Bigr).
 \]
 With $H\le2n2^{\varepsilon n/2}$, $P=2^{n/2}$ and $T\asymp2^{(1/4-\varepsilon)n}$, the two terms are
-at most $n^{O(1)}2^{(-1/12+10\varepsilon/3)n}$ and $n^{O(1)}2^{(-1/6+5\varepsilon/3)n}$. For
-$\varepsilon\le1/60$ the first exponent is at most $-n/36$, which beats $2^{-\varepsilon n}=2^{-n/60}$ by
-$2^{-n/90}$, enough to absorb the polynomial factors. (The requirement is
-$-1/12+13\varepsilon/3<0$, i.e.\ $\varepsilon<1/52$.)
+at most $n^{O(1)}2^{(-1/12+10\varepsilon/3)n}$ and $n^{O(1)}2^{(-1/6+5\varepsilon/3)n}$. For every
+$\varepsilon\le1/60$ we have $-1/12+10\varepsilon/3\le-\varepsilon-1/90$ (equivalently $13\varepsilon/3\le13/180$), so
+the first term is at most $n^{O(1)}2^{-n/90}\cdot2^{-\varepsilon n}=o(2^{-\varepsilon n})$; the second is
+smaller still. (Any fixed $\varepsilon<1/52$ would do here, since that is what
+$-1/12+13\varepsilon/3<0$ requires.)
 
 \paragraph{Conclusion.} The total exceptional fraction is $O(2^{-\varepsilon n})=O(N^{-\varepsilon})$,
 which proves part (iii). Part (i) holds because only gcds in $(1,N)$ and band primes
@@ -670,7 +690,7 @@ total is
 \]
 because $Y\asymp P^{1/3}H^{-1/3}$. This proves part (ii). \qed
 
-\subsection{Proof of Corollary~\ref{cor:polylog}}
+\subsection{Proof of \texorpdfstring{Corollary~\ref{cor:polylog}}{Corollary 1.2}}
 Take $H=\lceil n^{1+a}\rceil$, $Y$ as before, and in the analysis $T=\lfloor2^{n/4}n^{-1-a}\rfloor$. The
 scale separations \eqref{eq:scales} hold for large $n$. The three exceptional terms become
 $O(n^{-1-2a})$ ($E_a$), $O(n^{-2a})$ ($E_b$) and
@@ -678,136 +698,261 @@ $n^{O(1)}\cdot2^{-n/12}\cdot n^{O(1+a)}=o(n^{-2a})$ ($E_c$). The cost is
 $n^{O(1)}H^{5/3}2^{n/6}=N^{1/6}(\log N)^{O(1+a)}$. \qed
 
 %======================================================================
-\section{The \texorpdfstring{$1/6$}{1/6} floor in the collision-search model}\label{sec:lower}
+\section{Context: a \texorpdfstring{$1/6$}{1/6} floor for full-candidate covering}\label{sec:lower}
 %======================================================================
 
-This section is context. Its results were proved in the course of the project
-(\texttt{notes/cycloharvey\_results.md} \S3, \texttt{notes/multimod\_results.md} \S3) and
-checked by one independent AI critic and by the GPT-6.1-sol round-12 referee, who judged
-Theorems~\ref{thm:A}, \ref{thm:Aprime} and~\ref{thm:C} correct in the stipulated model and
-Theorem~\ref{thm:B} correct given a short counting argument, which we include. We give the
-statements and the main steps.
+This section is context, not part of the proof of Theorem~\ref{thm:main}. It explains why
+many moduli are needed to go below $1/5$ in Lehman-type searches, and why $1/6$ is the floor
+for one specific notion of covering. \textbf{Quantifier warning.} Every result here concerns
+families that cover \emph{every integer candidate} in the balanced range for a \emph{fixed}
+$N$. None of them bounds an algorithm that, like ours, only needs to reach the true factor for
+most inputs, and none is a lower bound for factoring.
+
+The results were obtained in the project notes (\texttt{notes/cycloharvey\_results.md} \S3,
+\texttt{notes/multimod\_results.md} \S3) and checked by one independent AI critic and by the
+GPT-6.1-sol round-12 referee, who judged Theorems~\ref{thm:A}, \ref{thm:Aprime}
+and~\ref{thm:C} correct in the stipulated model and Theorem~\ref{thm:B} correct given a
+short counting argument. Below, Lemma~\ref{lem:K}, Theorem~\ref{thm:C} and the odd-prime case
+of Lemma~\ref{lem:classcount} are proved in full; Lemma~\ref{lem:C} and the prime-$2$ case of
+Lemma~\ref{lem:classcount} are given as sketches with references to the notes.
 
 \subsection{The model}
-Write $P=\sqrt N$ and $t=p/P\in J=[c^{-1/2},1]$ for a fixed $c>1$. A \emph{target} $\tau$
-consists of
+Fix a degree bound $d_0\ge1$ and $\theta>1$. Write $R=\sqrt N$; the \emph{candidates} are the
+integers $p\in[R/\sqrt\theta,R]$, and we put $t=p/R\in J=[\theta^{-1/2},1]$. A \emph{target} $\tau$
+consists of:
 \begin{itemize}
-\item a non-constant exponent map $g_\tau(x)=\sum_{k\in I,\,k>0}\alpha_kx^{k}+\sum_{k\in I,\,k<0}\alpha_k(N/x)^{|k|}$,
-  i.e.\ a polynomial in $p$ and $q=N/p$ without constant term, with support
-  $I\subseteq[-d,d]\setminus\{0\}$, $|I|=K$, and coefficients whose denominators involve only
-  primes dividing $M_\tau$;
-\item a modulus $M_\tau\ge1$ with $\gcd(M_\tau,N)=1$, a residue class $r_\tau$ and a constant
-  $c_\tau$, such that $g_\tau(x)-c_\tau$ is integral on the whole class: for each prime
-  $\ell\mid M_\tau$ it is $\ell$-adically integral for every $x\in\Z_\ell$ with
-  $x\equiv r_\tau\pmod{\ell^{v_\ell(M_\tau)}}$ ($N$ is an $\ell$-adic unit). The condition is
-  imposed on the whole residue class, as an identity; requiring it only at the actual
-  divisors of $N$ would make the model vacuous;
-\item an integer window $[U_\tau,U_\tau+W_\tau)$.
+\item a modulus $M_\tau\ge1$ with $\gcd(M_\tau,N)=1$ and a \emph{unit} residue class
+  $r_\tau\in(\Z/M_\tau\Z)^\times$;
+\item a support $I_\tau\subseteq[-d_0,d_0]\setminus\{0\}$ with $K_\tau=|I_\tau|$, nonzero
+  coefficients $\alpha_{\tau,i}\in\Z[1/M_\tau]$ ($i\in I_\tau$) and a constant
+  $c_\tau\in\Z[1/M_\tau]$, defining the exponent map
+  \[
+    h_\tau(x)=\sum_{i\in I_\tau,\,i>0}\alpha_{\tau,i}x^{i}+\sum_{i\in I_\tau,\,i<0}\alpha_{\tau,i}(N/x)^{|i|}-c_\tau ,
+  \]
+  i.e.\ a polynomial in $p$ and $q=N/p$, shifted by a constant;
+\item an integer window $[U_\tau,U_\tau+W_\tau)$ with $W_\tau$ a positive integer.
 \end{itemize}
-A family \emph{covers} if every integer $p\in[\sqrt{N/c},\sqrt N]$ satisfies
-$p\equiv r_\tau\pmod{M_\tau}$ and $g_\tau(p)\in[U_\tau,U_\tau+W_\tau)$ for some $\tau$. Its
-\emph{cost} is any $X$ with
-\[
-  \#\{\text{distinct }(M_\tau,r_\tau,g_\tau)\}\le X\quad\text{and}\quad\sum_\tau W_\tau\le X^2.
-\]
-These hypotheses hold for one shared baby list, per-modulus lists, or any mix, since
+The \emph{integrality condition} is: for each prime $\ell\mid M_\tau$, $h_\tau(x)\in\Z_\ell$ for every
+$x\in\Z_\ell$ with $x\equiv r_\tau\pmod{\ell^{v_\ell(M_\tau)}}$. Such $x$ are $\ell$-adic units (this is
+where the unit-class hypothesis is used) and $N$ is an $\ell$-adic unit, so $h_\tau(x)$ is
+defined. The condition is imposed on the whole residue class, as an identity; requiring it
+only at the actual divisors of $N$ would make the model vacuous. It guarantees that if a
+candidate $p\equiv r_\tau\pmod{M_\tau}$ divides $N$, then $h_\tau(p)\in\Z$.
+
+The target $\tau$ \emph{covers} the candidate $p$ if $p\equiv r_\tau\pmod{M_\tau}$ and the real
+number $h_\tau(p)$ (with $q$ read as $N/p$) lies in $[U_\tau,U_\tau+W_\tau)$. A family
+\emph{covers} if every candidate is covered by some target. Its \emph{cost} is any $X$ with
+\begin{enumerate}[label=(C\arabic*)]
+\item at most $X$ distinct triples $(M_\tau,r_\tau,(\alpha_{\tau,i})_i)$;
+\item at most $X$ targets, i.e.\ nonempty original windows;
+\item $\sum_\tau W_\tau\le X^2$.
+\end{enumerate}
+These hold for a sumset baby-step/giant-step search with baby list length $m\le X$ and at
+most $X$ giants, whether the list is shared, per modulus or mixed: every window costs
+$\lceil W_\tau/m\rceil\ge1$ giants, so (C2) holds, and
 $\sum_\tau W_\tau\le\sum_\tau m\lceil W_\tau/m\rceil\le X\max m\le X^2$. Call this model $\mathfrak M^+$.
 With a single modulus it is the identity model in which Lehman, Hittmeir, Harvey and
-Harvey--Hittmeir argue; $\DCL$ fits in it with $M_\tau=\ell$, $g_\tau=(Bp+Aq-c)/\ell^2$ and
-$W_\tau\approx HP/\ell^2$.
+Harvey--Hittmeir argue. The targets of $\DCL$ fit it with $M_\tau=\ell$, $r_\tau$ a root of
+$Br^2\equiv AN$ (a unit, since $\ell\nmid AN$), $h_\tau=(Bp+Aq-c)/\ell^2$ and $W_\tau\approx HR/\ell^2$;
+integrality is Lemma~\ref{lem:lock}.
 
 \subsection{Per-target coverage}
-With $p=Pt$ and $q=N/p=P/t$, write $g_\tau=G(t)=\sum_{k\in I}b_kt^k$ with
-$b_k=\alpha_kP^{|k|}$.
+With $p=Rt$ and $q=N/p=R/t$ we have $h_\tau(Rt)=G_\tau(t)-c_\tau$ with
+$G_\tau(t)=\sum_{i\in I}b_it^i$ and $b_i=\alpha_{\tau,i}R^{|i|}$.
 
-\begin{lemma}[Coverage of one target]\label{lem:C}
-For any measurable $E\subset\R$,
+\begin{lemma}[Coverage of one map; sketch]\label{lem:C}
+For any support $I$ with $0\notin I$, $|I|=K$, and any measurable $E\subset\R$,
 $|\{t\in J:G(t)\in E\}|\le C_I(|E|/\|b\|_\infty)^{1/K}$.
 \end{lemma}
-\noindent\emph{Sketch.} The generalised Wronskian $\det[(i)_k]_{k\le K,\,i\in I}$ is non-zero
-for $0\notin I$, so on $J$ some derivative $|G^{(k)}|$, $k\le K$, is $\ge c_I\|b\|_\infty$ on each
-of $O_I(1)$ pieces; apply the van der Corput sublevel-set estimate on each piece.
+\noindent\emph{Sketch} (full proof: \texttt{notes/cycloharvey\_results.md} \S3.2, Lemmas W
+and C). The generalised Wronskian $\det[(i)_k]_{k\le K,\,i\in I}=\prod_{i\in I}i\prod_{i<i'}(i'-i)$ is
+non-zero, so on $J$ the vector $(G',\dots,G^{(K)})$ is an invertible matrix times $b$, and
+$J$ splits into $O_I(1)$ pieces on each of which some $|G^{(k)}|$, $k\le K$, is
+$\ge c_I\|b\|_\infty$ and $G,G'$ are monotone. On each piece apply the van der Corput sublevel-set
+estimate, after moving $E$ to an interval at the flat end; when $|E|>\|b\|_\infty$ the bound is
+trivial.
 
 \begin{lemma}[Denominators]\label{lem:K}
-If $g_\tau$ is integer-valued up to a constant on a class modulo $M$, then
-$C_dM^K\alpha\in\Z^K$, with $C_d$ depending only on $d$.
+If $h_\tau$ satisfies the integrality condition, then $C_{d_0}M_\tau^{K_\tau}\alpha_{\tau,i}\in\Z$ for all
+$i$, where $C_{d_0}$ depends only on $d_0$ and has only prime factors at most $2d_0$.
 \end{lemma}
+\begin{proof}
+Coefficients are $\ell$-integral for $\ell\nmid M=M_\tau$ by definition. Fix $\ell^a\Vert M$, write
+$r=r_\tau$, $K=K_\tau$, and let $v^*=\min_iv_\ell(\alpha_i)$. Since $r$ is an $\ell$-adic unit,
+$f(y)=h_\tau(r+\ell^ay)$ is given on $\Z_\ell$ by a convergent series
+$f(y)=T_0'+\sum_{n\ge1}T_n\ell^{an}y^n$ with
+$T_n=\sum_i\alpha_iN^{\max(0,-i)}\binom{i}{n}r^{i-n}$ (generalised binomial coefficients for
+$i<0$). Each $T_n$ is a $\Z_\ell$-combination of the $\alpha_i$, so $v_\ell(T_n)\ge v^*$. Moreover
+$(T_1,\dots,T_K)=W(r)\alpha$ where, after removing unit factors, $\det W(r)$ is the Wronskian above
+divided by $\prod_{n\le K}n!$; let $c_W=v_\ell(\det W)$, which is bounded in terms of $d_0$ and is
+$0$ for $\ell>2d_0$. Hence $\min_{j\le K}v_\ell(T_j)\le v^*+c_W$; let $j_0\le K$ attain the minimum.
 
-From these two lemmas: for degree $e=1$ and $K=2$, writing $g=(Aq+Bp-c)/(C_dM^2)$ with
-$H=\max(|A|,|B|)$, the number of integers covered by one target is at most
-\begin{equation}\label{eq:pertarget}
-  C(PW/H)^{1/2}+C,
-\end{equation}
-and the modulus $M$ cancels exactly (the per-target form of ``guess-neutrality''). For
-$e\ge2$ the bound is $CP^{1-e/K}W^{1/K}+C$, again independent of $M$. Equality in
-\eqref{eq:pertarget} with $H=O(1)$ and $W\approx P/M^2$ means that a target covers its whole
-residue class: exactly what the targets of $\DCL$ do.
+The $j_0$-th finite difference $\Delta^{j_0}f(0)=\sum_{n\ge j_0}T_n\ell^{an}j_0!\,S(n,j_0)$ (Stirling
+numbers of the second kind) lies in $\Z_\ell$ because $f$ is $\Z_\ell$-valued. If $a>c_W$, the term
+$n=j_0$ has valuation $v_\ell(T_{j_0})+aj_0+v_\ell(j_0!)\le v^*+c_W+aj_0+v_\ell(j_0!)$, while every term
+with $n>j_0$ has valuation at least $v^*+a(j_0+1)+v_\ell(j_0!)$, which is larger. So
+$v_\ell(T_{j_0})+aj_0+v_\ell(j_0!)\ge0$, and
+$v^*\ge v_\ell(T_{j_0})-c_W\ge-aK-v_\ell(K!)-c_W$. If $a\le c_W$, apply the same argument to a subclass
+modulo $\ell^{c_W+1}$ (integrality on the class implies it on subclasses); the loss is bounded
+in terms of $d_0$. Since $v_\ell(K!)=0$ and $c_W=0$ for $\ell>2d_0$, the claim follows.
+\end{proof}
+
+\begin{proposition}[Per-target bounds]\label{prop:pertarget}
+Let $\nu=\max_{i\in I_\tau}|i|$ be the degree of $\tau$. Merge all targets with the same triple
+$(M,r,\alpha)$ and let $W$ be the total width of their windows and $w$ their number. The number
+of candidates covered by the merged targets is at most:
+\begin{enumerate}[label=(\roman*)]
+\item if $\nu=1$, $K=2$: $C(RW/\eta)^{1/2}+Cw$, where we write
+  $\alpha_1=B/(C_{d_0}M^2)$, $\alpha_{-1}=A/(C_{d_0}M^2)$ with integers $A,B$ (Lemma~\ref{lem:K}) and
+  $\eta=\max(|A|,|B|)\ge1$;
+\item if $\nu=1$, $K=1$: $CW+Cw$;
+\item if $\nu\ge2$: $CR^{1-\nu/K}W^{1/K}+Cw$.
+\end{enumerate}
+In all cases the modulus $M$ cancels.
+\end{proposition}
+\begin{proof}
+The candidates covered lie in $\{p\equiv r\pmod M\}$ and in the preimage of the union $E$ of the
+(shifted) windows, which has measure at most $W$. The preimage of each window is a union of
+at most $C_I$ intervals in $t$, so the number of integers $p\equiv r\pmod M$ with $p/R$ in the
+preimage is at most $R\mu/M+C_Iw$, where $\mu$ is the measure of the preimage in $t$. By
+Lemma~\ref{lem:C}, $\mu\le C(W/\|b\|_\infty)^{1/K}$. (i) $\|b\|_\infty=R\eta/(C_{d_0}M^2)$, so
+$R\mu/M\le C(RW/\eta)^{1/2}$. (ii) $\alpha$ is a nonzero element of $(C_{d_0}M)^{-1}\Z$, so
+$\|b\|_\infty\ge R/(C_{d_0}M)$ and $R\mu/M\le CW$. (iii) Some $|i|=\nu$ has $\alpha_i\ne0$, so
+$\|b\|_\infty\ge R^\nu/(C_{d_0}M^{K})$ and $R\mu/M\le CR^{1-\nu/K}W^{1/K}$.
+\end{proof}
+
+Equality in (i) with $\eta=O(1)$ and $W\approx R/M^2$ means that a target covers its whole
+residue class across the range, $R/M\approx(RW)^{1/2}$ candidates. That is what the targets of
+$\DCL$ do.
 
 \subsection{Statements}
+Constants below depend on $d_0$ and $\theta$ only. In each proof, (C2) bounds the total rounding
+term $C\sum w$ by $CX$.
 
 \begin{theorem}[Theorem A; proved in the model]\label{thm:A}
-For fixed $d$ and $c>1$, every covering family in $\mathfrak M^+$ of degree at most $d$ has cost
-$X\ge c_{d,c}N^{1/6}$.
+Every covering family in $\mathfrak M^+$ for $N$ has cost $X\ge c_{d_0,\theta}N^{1/6}$.
 \end{theorem}
 \begin{proof}
-The $e=1$ targets cover at most
-$CP^{1/2}\sum_\tau W_\tau^{1/2}+CX\le CP^{1/2}X^{1/2}(\sum W_\tau)^{1/2}+CX\le CP^{1/2}X^{3/2}+CX$
-integers, by \eqref{eq:pertarget} and Cauchy--Schwarz. By H\"older over the finitely many
-classes $(e,K)$, the $e\ge2$ targets cover at most $C\sum_{(e,K)}P^{1-e/K}X^{1+1/K}+CX$. If
-$X=\delta P^{2/5}$ with $\delta$ small, each $(e,K)$ term is at most $C\delta P$, because $5e\ge2K+2$
-when $K\le2e$ and $e\ge2$. So the $e=1$ part must cover a positive proportion of the $\asymp P$
-candidates, which forces $X\ge cP^{1/3}=cN^{1/6}$. Otherwise $X>\delta P^{2/5}\ge N^{1/6}$.
+There are $\asymp R$ candidates. Suppose $X\le\delta R^{2/5}$ with $\delta$ small. By
+Proposition~\ref{prop:pertarget}(iii) and H\"older over at most $X$ merged triples
+($\sum W^{1/K}\le X^{1-1/K}(\sum W)^{1/K}\le X^{1+1/K}$), the targets of degree $\nu\ge2$ cover at
+most $C\sum_{(\nu,K)}R^{1-\nu/K}X^{1+1/K}+CX$ candidates; since $K\le2\nu$ and $\nu\ge2$ give
+$5\nu\ge2K+2$, each term is at most $C\delta^{1+1/K}R$. By (ii), the degree-one single-term
+targets cover at most $CX^2+CX\le C\delta^2R^{4/5}+CX=o(R)$. So for small $\delta$ the degree-one
+two-term targets must cover a positive proportion of the candidates. By (i) and
+Cauchy--Schwarz they cover at most
+$CR^{1/2}\sum W^{1/2}+CX\le CR^{1/2}X^{1/2}(\sum W)^{1/2}+CX\le CR^{1/2}X^{3/2}+CX$ (using
+$\eta\ge1$), which forces $X\ge cR^{1/3}=cN^{1/6}$. Otherwise $X>\delta R^{2/5}=\delta N^{1/5}\ge N^{1/6}$
+for large $N$.
 \end{proof}
 
 \begin{theorem}[Theorem A$'$; proved in the model]\label{thm:Aprime}
 If the degree-one targets of a covering family cover fewer than half of the candidates,
-then $X\ge cN^{1/5}$, whatever the moduli. In particular, targets of degree $\ge2$ never
-beat $N^{1/5}$.
+then $X\ge cN^{1/5}$, whatever the moduli. In particular, families whose targets all have
+degree $\ge2$ never beat $N^{1/5}$.
 \end{theorem}
+\begin{proof}
+Then the targets of degree $\ge2$ cover a positive proportion, and the first step of the
+previous proof shows that this needs $X\ge cR^{2/5}$.
+\end{proof}
 
-\begin{theorem}[Theorem B; proved in the model]\label{thm:B}
-If the degree-one targets use $J$ distinct moduli, all at most $P$, then
-$X\ge cN^{1/5}(JN^{o(1)})^{-1/5}$. Exponent $1/5-\eta$ therefore needs $J\ge N^{5\eta-o(1)}$
-moduli.
+\begin{lemma}[Class count]\label{lem:classcount}
+Let $M\ge1$ with $\gcd(M,N)=1$ and let $A,B$ be nonzero integers. Let $\rho$ be the number of
+unit classes $r\bmod M$ for which $(Bp+Aq)/M^2$ satisfies the integrality condition (for some
+constant). Then $\rho\le4^{\omega(M)}\gcd(A,B,M)$. For $\nu=1$, $K=2$ the proof of
+Lemma~\ref{lem:K} gives $c_W=0$ and $v_\ell(K!)=0$ at every odd $\ell$, so writing the
+denominator as $M^2$ loses nothing there, and the proof below is complete for odd $M$. At
+$\ell=2$ Lemma~\ref{lem:K} allows an extra bounded power of $2$ in the denominator; with it the
+local count changes by a bounded factor. That last step is a sketch, checked by brute force
+for composite $M\le105$ with denominators $M^2$ and $2M^2$ in the project notes.
+\end{lemma}
+\begin{proof}
+By CRT, $\rho$ is the product of the local counts at the prime powers $\ell^a\Vert M$. Fix one,
+and absorb the $\ell$-adic unit $(M/\ell^a)^{-2}$ into $A$ and $B$ (this does not change
+valuations or the count). For a unit $r$ and $x=r+\ell^ay$,
+\[
+  \frac{Bx+AN/x}{\ell^{2a}}=\frac{Br+AN/r}{\ell^{2a}}+y\,\frac{B-ANr^{-2}}{\ell^{a}}
+  +\sum_{n\ge2}(-1)^nANr^{-1-n}\ell^{a(n-2)}y^n .
+\]
+The last sum is $\Z_\ell$-valued on $\Z_\ell$. So the expression is integral up to a constant on the
+class iff $\ell^a\mid Br^2-AN$. Let $t=\min(v_\ell(A),v_\ell(B))$. If $t\ge a$, every unit class
+qualifies, and there are at most $\ell^a=\gcd(A,B,\ell^a)$ of them. If $t<a$ and
+$v_\ell(A)\ne v_\ell(B)$, then $v_\ell(Br^2-AN)=t<a$ (as $r,N$ are units), so no class qualifies. If
+$v_\ell(A)=v_\ell(B)=t<a$, the condition is $r^2\equiv u\pmod{\ell^{a-t}}$ for a unit $u$, which has
+at most $2$ solutions modulo $\ell^{a-t}$ for odd $\ell$ (at most $4$ for $\ell=2$), hence at most
+$2\ell^t$ (resp.\ $4\cdot2^t$) classes modulo $\ell^a$, and $\ell^t=\gcd(A,B,\ell^a)$. Multiply over
+$\ell\mid M$.
+\end{proof}
+
+\begin{theorem}[Theorem B; proved in the model, with Lemma~\ref{lem:classcount}]\label{thm:B}
+If the degree-one two-term targets of a covering family use $J$ distinct moduli, then
+$X\ge cN^{1/5}(JN^{o(1)})^{-1/5}$. So exponent $1/5-\eta_0$ needs $J\ge N^{5\eta_0-o(1)}$ moduli.
 \end{theorem}
-\begin{proof}[Main step]
-For a modulus $M$ and weights $(A,B)$, the classes on which $(Aq+Bp-c)/(C_dM^2)$ is
-integer-valued satisfy $Br^2\equiv AN$ modulo a divisor of $M$, so they number at most
-$O(1)^{\omega(M)}\gcd(A,B,M)$. Using $\gcd(A,B,M)=\sum_{e\mid\gcd(A,B,M)}\varphi(e)$, the number of
-(class, weight) pairs with height at most $h$ is $\ll h^2\sum_{e\mid M}\varphi(e)/e^2\le h^2\tau(M)=
-h^2M^{o(1)}$. Over $J$ moduli this is at most $J'h^2$ with $J'=JN^{o(1)}$, so the $X$ smallest
-heights satisfy $\sum_\tau1/H_\tau\le C(J'X)^{1/2}$. Cauchy--Schwarz on \eqref{eq:pertarget} bounds
-the degree-one coverage by $CP^{1/2}X(J'X)^{1/4}+CX$; requiring this to be $\gg P$ gives the
-claim. Single-term targets and $e\ge2$ are handled as in Theorem~\ref{thm:A}.
+\begin{proof}
+Targets with $M>R$ cover at most one candidate per window, at most $X$ in total, so assume
+$M\le R$. For one modulus $M$, by Lemma~\ref{lem:classcount} the number of pairs
+(unit class, $(A,B)$) with height $\eta\le h$ is at most
+\[
+  4^{\omega(M)}\!\!\sum_{\substack{0<|A|,|B|\le h}}\!\!\gcd(A,B,M)
+  =4^{\omega(M)}\sum_{e\mid M}\varphi(e)\,\#\{0<|A|,|B|\le h:\ e\mid A,\ e\mid B\}
+  \le4^{\omega(M)}\cdot4h^2\sum_{e\mid M}\frac{\varphi(e)}{e^2},
+\]
+using $\gcd(A,B,M)=\sum_{e\mid\gcd(A,B,M)}\varphi(e)$. The last sum is at most $\tau(M)$, so the count is
+at most $4^{\omega(M)}\tau(M)\cdot4h^2=h^2M^{o(1)}=h^2N^{o(1)}$. Over $J$ moduli it is at most $J'h^2$
+with $J'=JN^{o(1)}$. Hence for the at most $X$ distinct triples, $\sum_\tau1/\eta_\tau$ is largest
+when the heights are the smallest available, which gives $\sum_\tau1/\eta_\tau\le C(J'X)^{1/2}$. By
+Proposition~\ref{prop:pertarget}(i) and Cauchy--Schwarz these targets cover at most
+$CR^{1/2}(\sum W)^{1/2}(\sum1/\eta)^{1/2}+CX\le CR^{1/2}X(J'X)^{1/4}+CX$ candidates. The other
+targets are handled as in Theorem~\ref{thm:A} (if $X\le\delta R^{2/5}$ they cover $o(R)$ or a small
+proportion). So $X^{5/4}\ge cR^{1/2}J'^{-1/4}$, i.e.\ $X\ge cR^{2/5}J'^{-1/5}$.
 \end{proof}
 
 \begin{theorem}[Theorem C: CRT is multiplicative; proved]\label{thm:C}
-Let $M=M_1M_2$ with $\gcd(M_1,M_2)=1$, let $L_{r,M}$ be the lattice of support-$I$ Laurent
-polynomials that are integer-valued up to a constant on the class $r\bmod M$, and $\Lambda_I$
-the integer-coefficient lattice. Then $L_{r,M}=L_{r_1,M_1}+L_{r_2,M_2}$ and
-$[L_{r,M}:\Lambda_I]=[L_{r_1,M_1}:\Lambda_I]\,[L_{r_2,M_2}:\Lambda_I]$.
+Fix a support $I$. For $M\ge1$ with $\gcd(M,N)=1$ and a unit class $r\bmod M$, let $L_{r,M}$ be the
+set of coefficient vectors $\alpha\in\Z[1/M]^I$ for which some constant makes the exponent map
+satisfy the integrality condition on the class $r$, and let $\Lambda_I=\Z^I$. Let $M=M_1M_2$ with
+$\gcd(M_1,M_2)=1$ and $r_j=r\bmod M_j$. Then $\Lambda_I\subseteq L_{r_j,M_j}$,
+$L_{r,M}=L_{r_1,M_1}+L_{r_2,M_2}$, $L_{r_1,M_1}\cap L_{r_2,M_2}=\Lambda_I$, and hence
+$[L_{r,M}:\Lambda_I]=[L_{r_1,M_1}:\Lambda_I]\,[L_{r_2,M_2}:\Lambda_I]$ (all indices are finite by
+Lemma~\ref{lem:K}).
 \end{theorem}
+\begin{proof}
+Integer coefficient vectors satisfy the condition with constant $0$, because $x$ and $N$ are
+$\ell$-adic units on unit classes; so $\Lambda_I\subseteq L_{r,M}$ for every $(r,M)$. The integrality
+condition is a conjunction of conditions at the primes $\ell\mid M$, and at $\ell\mid M_1$ it depends on
+$r$ only through $r\bmod\ell^{v_\ell(M)}=r_1\bmod\ell^{v_\ell(M_1)}$. By partial fractions,
+$\Z[1/M]^I/\Z^I=\Z[1/M_1]^I/\Z^I\oplus\Z[1/M_2]^I/\Z^I$, so every $\alpha\in\Z[1/M]^I$ is
+$\alpha_1+\alpha_2$ with $\alpha_j\in\Z[1/M_j]^I$, unique modulo $\Z^I$; similarly for the constant. At a
+prime $\ell\mid M_1$, the vector $\alpha_2$ is $\ell$-integral and its map is $\ell$-integral on unit
+classes, so the condition for $\alpha$ at $\ell$ is equivalent to that for $\alpha_1$; symmetrically at
+$\ell\mid M_2$. Hence $\alpha\in L_{r,M}$ iff $\alpha_1\in L_{r_1,M_1}$ and $\alpha_2\in L_{r_2,M_2}$, which gives the sum
+decomposition. A vector in both $L_{r_1,M_1}$ and $L_{r_2,M_2}$ has denominators dividing a power
+of $M_1$ and a power of $M_2$, hence lies in $\Z^I$. So
+$L_{r,M}/\Lambda_I\cong L_{r_1,M_1}/\Lambda_I\oplus L_{r_2,M_2}/\Lambda_I$.
+\end{proof}
 
 \begin{remark}[Interpretation]
-Theorem~\ref{thm:C} says that a scheme covering \emph{all} classes of a composite modulus
-gains nothing from its CRT structure (heuristically, via a volume argument; the rigorous
-single-modulus statement is the $J=1$ case of Theorem~\ref{thm:B}). What escapes the
-$N^{1/5}$ bound is \emph{selective} covering: each $p$ needs only one modulus whose class is
-reached by a short weight vector. $\DCL$ uses only the $\le2$ classes per $(v,\ell)$ that
-have a root, a $2/\ell$ fraction, but each is reached by a vector of height $O(H)$ instead of
-the typical $\sqrt\ell$. Across $N^{1/6+o(1)}$ coprime moduli these classes cover almost
-everything (Theorem~\ref{thm:main}), and conjecturally everything
-(Conjecture~\ref{conj:DCH}).
+Theorem~\ref{thm:C} says that a scheme covering \emph{all} classes of a composite modulus gains
+nothing from its CRT structure (heuristically, via a volume argument; the rigorous
+single-modulus statement is the $J=1$ case of Theorem~\ref{thm:B}). What escapes the $N^{1/5}$
+bound is \emph{selective} covering: each $p$ needs only one modulus whose class is reached by
+a short weight vector. $\DCL$ uses only the at most two classes per $(v,\ell)$ that have a
+root, a $2/\ell$ fraction, but each is reached by a vector of height at most $H$ instead of the
+typical $\sqrt\ell$. Across $N^{1/6+o(1)}$ coprime moduli these classes contain the true factor
+for almost every pair in $\Sn$ (Theorem~\ref{thm:main}). Whether they cover almost every
+candidate for a fixed $N$ is not proved, and covering every candidate is the content of
+Conjecture~\ref{conj:DCH}.
 \end{remark}
 
 \begin{remark}[Quantifiers]
 Theorems~\ref{thm:A}--\ref{thm:B} bound families that cover \emph{every} integer candidate for
 a fixed $N$. Theorem~\ref{thm:main} bounds the failure at the \emph{true} factor, averaged over
-$\Sn$. So Theorem~\ref{thm:main} does not show that the model exponent is $1/6$ for almost
-every $N$; it shows that the configuration that is extremal for Theorem~\ref{thm:A} is
-attained at the true factor for almost every pair. Going below $1/6$ needs a non-sumset
-collision mechanism (and, for full factoring, small-factor removal faster than
-Pollard--Strassen, which costs $N^{1/6+o(1)}$ for factors up to $N^{1/3}$).
+$\Sn$. So Theorem~\ref{thm:main} does not show that the model exponent is $1/6$ for almost every
+$N$. Conversely, Theorem~\ref{thm:A} does not show that an average-case algorithm needs cost
+$N^{1/6}$, even within the same sumset framework: an algorithm that only has to reach the true
+factor of most inputs is not required to cover every candidate. Whether such algorithms can
+go below $1/6$ is open (Section~\ref{sec:open}). Similarly, removing factors up to $N^{1/3}$ by
+Pollard--Strassen costs $N^{1/6+o(1)}$; that is the cost of a known method, not a lower bound.
 \end{remark}
 
 %======================================================================
@@ -825,9 +970,10 @@ uniformly from $\Sn$ and assigns outcome classes after the fact.
 \item \textbf{C1 (primary)} is the algorithm of Section~\ref{sec:alg} (four bands, $\ell\equiv3\bmod4$,
   base $2$, $n$-only parameters) with a finite-size height schedule: $H$ is the smallest
   value with block-0 multiplicity $\lambda_0=|V|\sum_{\ell\in\mathcal P_0}1/\ell\ge3$, which corresponds
-  to $H\asymp\sqrt n$. This lies \emph{below} the range of Corollary~\ref{cor:polylog}, where the
-  proved bound $n^2/H^2$ is vacuous. The experiments therefore test correctness, the lemmas
-  and the cost exponent, not the proved exceptional rate.
+  to $H\asymp\sqrt n$. This lies below the range of Corollary~\ref{cor:polylog}; at $H\asymp\sqrt n$
+  the proved bound $n^2/H^2$ on the exceptional fraction exceeds $1$ and is vacuous. The
+  experiments therefore test correctness, the lemmas and the cost exponent, not the proved
+  exceptional rate.
 \item \textbf{C2}: C1 with $\lambda_0\ge\ln(P/\ln P)+2$ (heuristic full coverage), $n\le64$.
 \item \textbf{C3}: C1 with all odd band primes, Tonelli--Shanks roots and a charged
   least-nonresidue search.
@@ -839,24 +985,36 @@ uniformly from $\Sn$ and assigns outcome classes after the fact.
   $\sum(D+1)\lceil\log_2(D+2)\rceil$ (FFT model). $E$ is a proxy; it is not the proof of
   Theorem~\ref{thm:main}(ii). $E_{\mathrm{first}}$ counts the blocks up to the first that yields
   a factor, $E_{\mathrm{full}}$ all four blocks.
+\item \textbf{Empirical certificate.} The harness records, for each pair, whether \emph{some}
+  block that is clean for $q$ contains \emph{some} target covering $p$ with
+  $d\nmid(A-B)(p-1)-\ell^2\delta$ for all $|\delta|<m$, where $d=\ord_q(2)$ and $m$ is the baby length
+  actually used.
+  This is sufficient for success: such a target's true giant is not FULL by
+  Lemma~\ref{lem:full} (the exact $\delta$-range lies inside $|\delta|<m$), so its gcd is $p$ by
+  Lemma~\ref{lem:extract}. It is \emph{not} the certificate of Proposition~\ref{prop:cert}, which
+  uses the least clean block, the larger range $|\delta|<\mbar$, and requires $\ord_q(2)>T$.
+  Below, ``certified'' always means the empirical certificate. (The GPT-6.1-sol round-14
+  referee reports that restricting the recorded predicate to the least clean block gives
+  $95.8\%$, $97.8\%$, $96.7\%$ and $97.3\%$ in the four certificate datasets; we have not
+  re-computed these.)
 \end{itemize}
 
 \subsection{Lemma checks (28--40 bits)}
 For $n\in\{28,32,36,40\}$, 60 pairs each (design C1, all four blocks recorded): 240/240
 correct and factored; 0 violations of Lemmas~\ref{lem:lock}--\ref{lem:modq} on every
 covering target; 0 violations of the equivalence ``gcd $=p$ iff not FULL'' (with the exact
-$\delta$-range) on 3002 clean covering targets; certified (Proposition~\ref{prop:cert})
-$\Rightarrow$ success in 240/240.
+$\delta$-range) on 3002 clean covering targets; empirically certified $\Rightarrow$ success in
+240/240.
 
 \subsection{Cost (40--80 bits)}
 C1 and C3: 32 pairs per size; C2: 8 pairs per size up to 64 bits; HH: 96 runs, 17 excluded
 from slopes as pre-registered (16 exact-match early exits, 1 baby-order exit).
 
 \begin{center}
-\small
+\footnotesize
 \begin{tabular}{rrrrrrr}
 \toprule
-$n$ & C1 $H/Y$ & C1 success & med.\ $E_{\mathrm{first}}$ (C1) & med.\ $E_{\mathrm{full}}$ (C1) & med.\ $E$ (HH) & C1/HH\\
+$n$ & $H/Y$ & succ. & C1 $E_{\mathrm{first}}$ & C1 $E_{\mathrm{full}}$ & HH $E$ & C1/HH\\
 \midrule
 40 & 9/81 & 32/32 & $1.03\cdot10^5$ & $1.07\cdot10^6$ & $2.12\cdot10^4$ & 4.87\\
 48 & 9/206 & 32/32 & $3.26\cdot10^5$ & $2.91\cdot10^6$ & $7.57\cdot10^4$ & 4.31\\
@@ -869,6 +1027,9 @@ $n$ & C1 $H/Y$ & C1 success & med.\ $E_{\mathrm{first}}$ (C1) & med.\ $E_{\mathr
 \end{center}
 
 Least-squares slopes of $\log_2(\text{median})$ against $n$ over 48--80 bits:
+
+Columns: design C1 height and band scale, C1 success, medians of $E$, and the ratio of
+median $E_{\mathrm{first}}$ (C1) to median $E$ (HH).
 
 \begin{center}
 \small
@@ -885,8 +1046,9 @@ list elements (block 0 / HH list) & 0.171 & 0.163 & 0.189 & 0.196\\
 
 \paragraph{Pre-registered decisions.}
 \begin{itemize}
-\item \emph{R-a (correctness)} holds: 0 incorrect outputs in 656 runs, 0 lemma violations,
-  every certified instance factored.
+\item \emph{R-a (correctness)} holds: 0 incorrect outputs in 656 DCL runs (the 416 runs of this
+  subsection, C1, C3 and C2, plus the 240 lemma-check runs), 0 lemma violations, and every
+  empirically certified instance factored.
 \item \emph{R-b (exponent)}: $\text{slope}_{C1}-\text{slope}_{HH}=-0.023\le-0.01$, so ``DCL-det has
   a smaller measured exponent'' at these sizes. Both slopes fell inside their predicted
   ranges ($[0.16,0.21]$ and $[0.18,0.23]$).
@@ -896,7 +1058,7 @@ list elements (block 0 / HH list) & 0.171 & 0.163 & 0.189 & 0.196\\
   $E$ slopes exceed the list-element slopes by about $0.03$ for both algorithms
   (polylogarithmic drift).
 \item \emph{R-d}: with heuristically full coverage (C2) there is no advantage: slope $0.227$,
-  equal to HH.
+  within $0.005$ of HH's (the pre-registered threshold).
 \item \emph{R-e}: all three frozen predictions on the certificate components held (below).
 \end{itemize}
 The four-band worst-case guarantee costs a constant: $E_{\mathrm{full}}/E_{\mathrm{first}}\approx8.5$ at these
@@ -908,14 +1070,26 @@ For 1000 pairs per size (C1, no collision stage):
 
 \begin{center}
 \small
-\begin{tabular}{rrrrrrr}
+\begin{tabular}{rrrr}
 \toprule
-$n$ & certified & block 0 clean (pred.) & block 0 uncovered ($e^{-\lambda_0}$) & all 4 uncovered & FULL / covering & med.\ bits $\ord_q(2)$ / $q$\\
+$n$ & emp.\ certified & block 0 clean (predicted) & block 0 uncovered ($e^{-\lambda_0}$)\\
 \midrule
-48 & 1.000 & 0.939 (0.944) & 0.040 (0.049) & 0 & 5 / 11130 & 24 / 25\\
-64 & 1.000 & 0.956 (0.954) & 0.021 (0.024) & 0 & 0 / 13321 & 32 / 33\\
-80 & 1.000 & 0.976 (0.963) & 0.033 (0.046) & 0 & 0 / 11273 & 40 / 41\\
-96 & 1.000 & 0.969 (0.969) & 0.028 (0.029) & 0 & 0 / $\approx1.1\cdot10^4$ & 48 / 49\\
+48 & 1.000 & 0.939 (0.944) & 0.040 (0.049)\\
+64 & 1.000 & 0.956 (0.954) & 0.021 (0.024)\\
+80 & 1.000 & 0.976 (0.963) & 0.033 (0.046)\\
+96 & 1.000 & 0.969 (0.969) & 0.028 (0.029)\\
+\bottomrule
+\end{tabular}
+
+\medskip
+\begin{tabular}{rrrr}
+\toprule
+$n$ & all 4 blocks uncovered & FULL / covering targets & median bits of $\ord_q(2)$ / of $q$\\
+\midrule
+48 & 0 & 5 / 11130 & 24 / 25\\
+64 & 0 & 0 / 13321 & 32 / 33\\
+80 & 0 & 0 / 11273 & 40 / 41\\
+96 & 0 & 0 / $\approx1.1\cdot10^4$ & 48 / 49\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -939,14 +1113,22 @@ to HH. Its verdict (SUPPORTED) required a disclosed post-hoc fix of a result cla
 \paragraph{Worst case.} Theorem~\ref{thm:main} is not a worst-case result. Three independent
 obstacles remain.
 \begin{enumerate}[label=(\alph*)]
-\item \emph{Coverage of every candidate.} This would follow from the following conjecture.
-\begin{conjecture}[Divisor-cover hypothesis DCH$(\kappa)$]\label{conj:DCH}
-For all large $N$ coprime to $6$ and every integer $p\in[\sqrt{N/2},\sqrt N]$ there are coprime
-$A,B\le(\log N)^\kappa$ and a prime $\ell\in(N^{1/6},N^{1/6}(\log N)^\kappa]$ with $\ell\mid Bp^2-AN$.
+\item \emph{Coverage of every candidate by the algorithm's targets.} With polylogarithmic
+parameters this is the following conjecture, stated to match the target family of
+Section~\ref{sec:alg}.
+\begin{conjecture}[Divisor-cover hypothesis, algorithmic form]\label{conj:DCH}
+There is $\kappa>0$ such that, with $H=\lceil(\log N)^\kappa\rceil$, $V$ and the bands $\Pk$ as in
+Section~\ref{sec:alg}, for all large $N$ coprime to $6$ and every integer
+$p\in[\sqrt{N/2},\sqrt N]$ there are $(A,B)\in V$ (so $1\le A,B\le H$, $\gcd(A,B)=1$, $A\ne B$), a
+block $k\in\{0,1,2,3\}$ and a prime $\ell\in\Pk$ with $\ell\mid Bp^2-AN$.
 \end{conjecture}
-It is \emph{experimentally supported} only at 32--48 bits (zero uncovered candidates among
-$1.6\cdot10^4$--$4.9\cdot10^6$ per instance, 25 instances, at $\lambda\approx\ln\sqrt N+2$). The large sieve
-gives only ``almost all''.
+The project notes state a weaker-looking variant, DCH$(\kappa)$, which allows $A=B$, all
+primes, and the band $(N^{1/6},N^{1/6}(\log N)^\kappa]$; that variant would support a modified
+algorithm with those bands and weights, not $\DCL$ as specified. Only the notes' variant was
+tested: it is \emph{experimentally supported} at 32--48 bits for greedy designs (zero
+uncovered candidates among $1.6\cdot10^4$--$4.9\cdot10^6$ per instance, 25 instances, at
+$\lambda\approx\ln\sqrt N+2$). The large sieve gives only ``almost all''. Even full coverage
+gives only coverage; extraction needs (b) and (c) as well.
 \item \emph{Primes $q$ with small $\ord_q(2)$} (at most $N^{1/4-\varepsilon}$). The proof discards them.
 A worst-case version needs a base of large order modulo the specific $q$, on a clean band;
 large order modulo $N$ \cite{hh2026} does not give that.
@@ -954,11 +1136,12 @@ large order modulo $N$ \cite{hh2026} does not give that.
 excluded for a fixed $N$.
 \end{enumerate}
 
-\paragraph{Unbalanced ratios.} Only $q/p\le2$ is covered. For $q/p\approx R$ the weights need
-$B/A\approx R$ and the window grows to $\approx\sqrt{RN}$; with a shared list a band costs about
-$R^{1/4}N^{1/6}$, and summing dyadic ratios up to $N^{1/3}$ gives worse than Harvey's $1/5$
-(heuristic; \texttt{notes/multimod\_results.md} \S3.9). A ratio-uniform version is open.
-Extending to $q/p\le N^{o(1)}$ seems plausible but is not done here.
+\paragraph{Unbalanced ratios.} Only $q/p\le2$ is covered. For $q/p\approx\varrho$ the weights
+need $B/A\approx\varrho$ and the window grows to about $\sqrt{\varrho N}$; with a shared list a band
+costs about $\varrho^{1/4}N^{1/6}$, and summing dyadic ratios up to $N^{1/3}$ gives worse than
+Harvey's $1/5$ (heuristic; \texttt{notes/multimod\_results.md} \S3.9). A ratio-uniform version
+is open. That the method extends to $q/p\le N^{o(1)}$ is a heuristic expectation, not done
+here.
 
 \paragraph{Exceptional rate.} The binding step is the large sieve's $n^2/H^2$. The Poisson
 heuristic predicts $e^{-cH^2/n}$, which would give $N^{-\varepsilon}$ exceptions at polylogarithmic
@@ -969,11 +1152,14 @@ give only polynomial savings in $1/\lambda$. We have not proved any barrier: ave
 gives a two-variable problem over the box with level up to $P^2$, where bilinear or
 dispersion methods might do better.
 
-\paragraph{Below $1/6$.} Theorem~\ref{thm:A} rules this out for one-base sumset
-collision search with polynomial exponent maps, whatever the moduli. Escaping needs a
-different collision mechanism (multi-base searches with non-split known relations are not
-covered by the reduction in the project notes), together with small-factor removal below
-$N^{1/6}$.
+\paragraph{Below $1/6$.} For \emph{full-candidate covering} in the one-base sumset model with
+polynomial exponent maps, Theorem~\ref{thm:A} rules out cost below $N^{1/6}$, whatever the
+moduli. Within that model, escaping would need a different collision mechanism
+(multi-base searches with non-split known relations are not covered by the reduction in the
+project notes). For average-case algorithms, which only need to reach the true factor of
+most inputs, we know no such lower bound: whether one can go below $1/6$ on almost all of
+$\Sn$ is open. A full factoring algorithm on all inputs would also need small-factor removal
+cheaper than Pollard--Strassen's $N^{1/6+o(1)}$ for factors up to $N^{1/3}$.
 
 \paragraph{Practice.} At 40--80 bits the algorithm is $2.3$--$4.9$ times more expensive than
 Harvey--Hittmeir in our cost proxy. The asymptotic advantage, if real at larger sizes, is
@@ -996,23 +1182,32 @@ on every claim, pre-registration before experiments). This paper was drafted by 
 subagent from the project notes.
 
 GPT-6.1-sol (OpenAI, run through the Codex CLI with web search) was used for literature
-sweeps, blind attempts and adversarial review. Three reviews bear directly on this paper.
+sweeps, blind attempts and adversarial review. The following reviews bear directly on this
+paper.
 \begin{itemize}
 \item The round-12 GPT-6.1-sol audit of the predecessor result (an average-case coverage
   theorem in the search model) found a substantive gap (multiplicative orders of the shared
-  base $2^L$, with an explicit failure example), a flawed exceptional-set normalisation, and
+  base $\beta^L$, with the explicit failure example $\beta=3$, $N=1333=31\cdot43$,
+  $L=(3\cdot5\cdot7)^2$, where $\beta^L\equiv-1$), a flawed exceptional-set normalisation, and
   missing cost terms. Theorem~\ref{thm:main} was built to close these, and its normalisation
   follows the audit's repair.
 \item A GPT-6.1-sol referee report on Theorem~\ref{thm:main} and an independent read-only
   Claude Opus critic, who re-implemented the algorithm from its specification and ran
   adversarial inputs, both returned ``accept with fixes''. The fixes (mandatory baby-length
   rule, missing cost terms, $T(T+1)$ in place of $T^2$, constants, wording) were applied.
-\item A fresh round-13 GPT-6.1-sol referee re-checked every step (``correct'' on each),
-  independently re-ran the lemma checks without the repository code, found finite-input
-  output defects in the implementation (it returned $N$ itself for some prime $N$; fixed and
-  regression-tested), located McKee--Pinch \S5 and Carella's preprint, and asked for the
-  comparison in Section~\ref{sec:prior}. Its assessment of \cite{carella} is quoted there as
-  its own.
+\item A fresh round-13 GPT-6.1-sol referee marked every proof step ``correct'' and
+  independently re-ran the lemma checks without the repository code. It marked the
+  implementation's unrestricted ``never wrong'' claim WRONG (the code returned $N$ itself for
+  some prime $N$; fixed and regression-tested) and a heuristic sieve-barrier remark in the
+  notes a GAP (now labelled heuristic, Section~\ref{sec:open}). It also located McKee--Pinch
+  \S5 and Carella's preprint and asked for the comparison in Section~\ref{sec:prior}; we
+  mention its objection to \cite{carella} there without adopting it.
+\item This draft itself was reviewed by an independent read-only Claude Opus critic
+  (``accept with fixes'') and by a round-14 GPT-6.1-sol journal-style referee (``needs fixes
+  first''). Their points were addressed in this revision. Among them: the quantifier scope of
+  the lower bound, the unit-class and window-count hypotheses of the model, the proofs of
+  Lemma~\ref{lem:K} and Theorem~\ref{thm:C}, the empirical certificate, the algorithmic form
+  of Conjecture~\ref{conj:DCH}, and the bibliography.
 \end{itemize}
 No human has yet checked the proofs line by line. A Lean~4 formalisation of some lemmas was
 started at the time of writing; nothing here relies on it.

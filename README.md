@@ -36,8 +36,10 @@ Harvey–Hittmeir 2022).
   Harvey–Hittmeir is still 2.3–4.9× cheaper at those sizes.
 - **Built on prior art.** Every ingredient is known, and McKee–Pinch 1996 §5 is a direct
   precursor. We found no prior formulation of this combination.
-- **Floor of the method.** In a one-base sumset collision-search model, 1/6 is a proved lower
-  bound (Theorem A), so this approach cannot go below N^{1/6}.
+- **A floor for full covering only.** In a one-base sumset collision-search model, any family
+  that covers *every* candidate factor of a fixed N costs at least N^{1/6} (Theorem A, proved in
+  the model). This is not a lower bound for factoring, and it does not apply to average-case
+  algorithms such as Theorem D′. Whether one can go below 1/6 on almost all inputs is open.
 
 Details:
 - Paper draft: [`paper/main.tex`](paper/main.tex). It is a draft, not for distribution.

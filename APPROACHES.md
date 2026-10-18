@@ -190,10 +190,15 @@ Max ratio 0.69 for p < 20 000. `notes/trackC_analysis.md`.
   (orig `1d92a48`), results `c1b282a`.
 
 **W-16. Theorem A, the N^{1/6} floor with any number of moduli (multimod).**
-- Statement: in the enlarged one-base sumset model 𝔐⁺ (any moduli, any classes), every covering
-  family costs ≥ c·N^{1/6}. Tight: DCL's targets meet it with equality.
+- Statement: in the enlarged one-base sumset model 𝔐⁺ (any moduli, unit classes), every family
+  that covers **every integer candidate for a fixed N** costs ≥ c·N^{1/6}. DCL's targets meet
+  the per-target bound with equality.
+- Scope: a floor for full-candidate covering in this model only. It does **not** bound
+  average-case algorithms such as Theorem D′, which only need to reach the true factor for most
+  inputs, and it is not a factoring lower bound.
 - Verdict: **proved** in the model (Opus critic; r12: correct in the stipulated model).
-- Pointers: `notes/multimod_results.md` §3.2; `paper/main.tex` §5; results `55fb688`.
+- Pointers: `notes/multimod_results.md` §3.2; `paper/main.tex` §5 (model with unit classes and
+  a window-count charge; full proofs of the denominator lemma and Theorem C); results `55fb688`.
 
 **W-17. Theorems A′ and B: below 1/5 needs N^{Ω(1)} moduli (multimod).**
 - A′: degree ≥ 2 targets never beat N^{1/5}. B: with J moduli, X ≥ c N^{1/5}(J N^{o(1)})^{−1/5}.
@@ -418,8 +423,8 @@ naive). Stage-3 leaves are unchanged, so this is a constant. **Experimentally su
   elementary small-order count plus a CRT count; coverage by the large sieve.
 - Reviews: GPT-6.1-sol dclt_1, an independent Opus critic, and the fresh r13 referee, all
   ACCEPT WITH FIXES (applied). Not yet checked by a human.
-- Numbers (pre-registered): 0 wrong outputs and 0 lemma violations (240 lemma runs + 656
-  operational runs; 3 002 clean covering targets); E slope 0.203 vs operational HH 0.226 over
+- Numbers (pre-registered): 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma
+  runs + 416 operational runs; 3 002 clean covering targets); E slope 0.203 vs operational HH 0.226 over
   48–80 bits, **but HH is 2.3–4.9× cheaper at 40–80 bits**; full-coverage design slope 0.227 (no
   advantage); FULL ≤ 0.045% of covering targets.
 - Scope: not worst case; q/p ≤ 2 only; prior art McKee–Pinch 1996 §5 is a direct precursor;
@@ -456,10 +461,12 @@ block-primorial subset sums, log H = Θ(n/log n)); exhaustive search over 198 ce
 ranks 1–3) follows the random model; next step: bound the target-prime radical of proper rank-2
 GAPs. **Open.**
 
-**O-7. Worst case for D′ (DCH).** Needs (a) the divisor-cover hypothesis DCH (every candidate p
-has ℓ | Bp² − AN for small A, B and ℓ near N^{1/6}; **conjectured**, 0 uncovered in 25 exhaustive
-instances at 32–48 bits), (b) large order mod the specific q on a clean band, (c) excluding
-all-FULL pairs. Phase 5 agent `dchworst`.
+**O-7. Worst case for D′ (DCH).** Needs (a) a divisor-cover hypothesis: every candidate p has
+ℓ | Bp² − AN for small weights and ℓ near N^{1/6} (**conjectured**). The paper states it in a form
+matching DCL-det's targets (A ≠ B, ℓ ≡ 3 mod 4, the four bands); the notes' DCH(κ) is a variant
+(A = B allowed, all primes) that only supports a modified algorithm, and only that variant was
+tested (0 uncovered in 25 exhaustive instances at 32–48 bits). Also needed: (b) large order
+mod the specific q on a clean band, and (c) excluding all-FULL pairs. Phase 5 agent `dchworst`.
 
 **O-8. Sharper exceptional rate.** The large sieve gives n²/H²; the Poisson heuristic e^{−cH²/n}
 would give N^{−ε} at polylog cost (**conjectured**). A two-variable (bilinear) sieve over q is
@@ -468,8 +475,10 @@ the candidate route. Phase 5 agent `sieve2d`.
 **O-9. Unbalanced ratios q/p > 2.** DCL as specified costs worse than Harvey summed over all
 ratios (heuristic). Phase 5 agent `unbalanced`.
 
-**O-10. Below 1/6.** Blocked in the one-base sumset model by W-16; needs a non-sumset collision
-mechanism and faster small-factor removal. Phase 5 agent `below16`.
+**O-10. Below 1/6.** For full-candidate covering in the one-base sumset model, W-16 rules it
+out; escaping that model needs a non-sumset collision mechanism. For average-case algorithms
+(true factor of most inputs) no such lower bound is known, so going below 1/6 on almost all of
+S_n is open. Phase 5 agent `below16`.
 
 **O-11. Lean 4 formalisation of D′'s key lemmas.** In progress (Phase 5 agent `leanform`,
 `lean/`).
