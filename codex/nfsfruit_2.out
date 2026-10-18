@@ -1,0 +1,339 @@
+**Verdict: Claims 1–4 contain sound results but need fixes. Claim 5 is wrong as a general barrier.** The main unresolved issue is quantitative detection of fruitfulness among the relations the algorithm actually uses.
+
+Throughout, “coprime to everything relevant” must explicitly include
+\[
+\gcd\!\left(n,f'(m)\prod_i z_i\right)=1.
+\]
+Otherwise the quotient defining \(\Phi\) need not exist. In semiprime statements, require **distinct** primes \(p,q\).
+
+**1. CORRECT WITH FIXES.**
+
+The homomorphism is correct. Its proof needs no Blum condition—and no odd-degree assumption.
+
+Write \(A_i=a_i-b_i\alpha\). If \(I=S\cap T\), square roots satisfy
+\[
+\sqrt{\prod_{S\triangle T}z_i}
+ =\pm\frac{\sqrt{\prod_Sz_i}\sqrt{\prod_Tz_i}}{\prod_Iz_i},
+\]
+and the corresponding identity holds in \(K\) for the \(A_i\). Reduction makes the overlap denominators agree. Consequently,
+\[
+\Phi(S\triangle T)=\Phi(S)\Phi(T)
+\]
+after quotienting by the global sign.
+
+There are exactly two square roots of a nonzero square in \(K\), irrespective of other roots of unity in \(K\). Thus their choice introduces only the sign already being quotiented out.
+
+The integrality assertion is also valid: the algebraic square root is integral, and
+\[
+f'(\alpha)\mathcal O_K\subseteq\mathbb Z[\alpha].
+\]
+For odd \(n\), CRT and the prime-power calculation give
+\[
+\mu_2(\mathbb Z/n)\cong\{\pm1\}^{\omega(n)}.
+\]
+The displayed identification with \(\mathbb F_2^{\omega(n)-1}\) is generally **noncanonical**.
+
+For uniform sampling from the **whole** \(K_0\), including zero,
+\[
+\Pr(\text{fruitful})=1-2^{-\operatorname{rank}\Phi}.
+\]
+Sampling a basis vector, or an arbitrary nonzero kernel vector, does not have this distribution.
+
+The final sentence about LV is too compressed. Nonvanishing on the full relation space does not establish nonvanishing on the sampled relations or on a further restricted kernel. You need the nonvanishing hypothesis on the space actually sampled, together with its sampling and cost guarantees. LV’s published §7 supplies the Blum character formulation; its Conjecture 7.1 cannot simply be imported unchanged into the non-Blum setting. [Lee–Venkatesan, §7, Theorem 2.3 and Remark 7.3](https://arxiv.org/pdf/1805.08873)
+
+A concrete warning about additional restrictions appears under A below.
+
+**2. CORRECT WITH FIXES. The general character formula survives.**
+
+For distinct \(p,q\), your maximal \(2\)-power characters do satisfy
+\[
+\chi_p(-1)=\chi_q(-1)=-1,\qquad \psi(-1)=1.
+\]
+This last identity is essential: it makes the omitted signs harmless.
+
+Because the two evaluations of each relation agree modulo \(n\),
+\[
+\psi(z_i)=\psi(A_i),
+\]
+so \(2^c\mid t_i\).
+
+For \(S\in K_0\), all total exponents in both complete multiplicative bases are even, and the total torsion signs permit square roots. Therefore, with reductions interpreted in the appropriate localization,
+\[
+\frac{\psi(\sqrt{\prod_Sz_i})}
+     {\psi(\sqrt{\prod_SA_i})}
+ =\zeta^{\frac12\sum_{i\in S}t_i}
+ =(-1)^{\sum_{i\in S}\beta_i}.
+\]
+The factors \(f'\) cancel. If the root ratio has local signs \((\varepsilon_p,\varepsilon_q)\), then
+\[
+\psi(\varepsilon_p,\varepsilon_q)=\varepsilon_p\varepsilon_q.
+\]
+That is precisely the nontrivial character of
+\(\mu_2(\mathbb Z/pq)/\{\pm1\}\). Hence your formula follows.
+
+Odd degree matters here because it ensures \(\mu(K)=\{\pm1\}\), so the stated quotient of the \(S\)-unit group is free. Use the **full** \(S\)-unit lattice, not merely principal-ideal valuation coordinates.
+
+Changing lifts by
+\[
+\tau_\ell\mapsto\tau_\ell+2^c k_\ell,\qquad
+\sigma_j\mapsto\sigma_j+2^c h_j
+\]
+changes \(\beta_i\) by
+\[
+\sum_\ell k_\ell e_{i\ell}-\sum_jh_jc_{ij}\pmod2.
+\]
+Thus the claimed ambiguity is exactly harmless on \(K_0\). More generally, any two linear extensions of the same \(\Phi\) differ by a linear function of the exact square classes.
+
+Two qualifications:
+
+- “Explicit” does **not** establish efficient computability. Computing a complete \(S\)-unit basis and relation coordinates requires a separate cost analysis.
+- Outside the Blum case, the character construction uses information about the unknown factors. It is an analytic description, not an immediately available factoring subroutine.
+
+For the special cases:
+
+**2a is correct for Blum semiprimes.** Quadratic reciprocity gives
+\[
+J_n(\ell)=(n/\ell)=1
+\]
+for every odd prime dividing \(x_i^2-n\), under the coprimality assumptions.
+
+Your expression has a minor well-definedness defect: \(v_2(z_i)/2\) can be nonintegral when its coefficient is zero. A cleaner formula is
+\[
+\beta_{\rm QS}(x)
+=[J_n(x)=-1]+[n\equiv5\pmod8]\,[x\text{ odd}]
+\pmod2.
+\]
+When \(n\equiv5\pmod8\) and \(x\) is odd, \(v_2(x^2-n)=2\).
+
+**It is false outside that scope.** For
+\[
+n=65,\qquad x=9,\qquad z=16,
+\]
+the congruence \(9^2\equiv4^2\pmod{65}\) is fruitful, while
+\[
+J_{65}(9)=J_{65}(2)=1.
+\]
+The proposed Jacobi expression gives zero.
+
+**2b is correct for Blum semiprimes on an explicitly imposed even-weight kernel.**
+
+Let \(k=|S|\), \(\lambda=c_1d_1^{-1}\pmod n\), and
+\[
+\eta=[J_n(\lambda)=-1].
+\]
+Then every relation satisfies \(t_i\equiv\eta\pmod2\). For even \(k\), the correct congruent roots are
+\[
+X=d_1^{k/2}U,\qquad Y=c_1^{k/2}W,
+\]
+where \(\prod_SL_1=U^2\) and \(\prod_SL_2=W^2\). Their Jacobi ratio is
+\[
+J_n(X/Y)
+=(-1)^{(\sum_St_i+\eta k)/2}
+=(-1)^{\sum_S\lfloor t_i/2\rfloor}.
+\]
+This also establishes the stated degeneracy corollary **within those hypotheses**.
+
+But “\(K_0\) requires even weight” is not a consequence of ordinary square conditions. For example,
+\[
+n=77,\quad L_1=x-78y,\quad L_2=x-y,\quad m=1,
+\]
+and \((a,b)=(82,1)\) give \(L_1=4,L_2=81\). This is an odd-weight square dependency.
+
+**3. CORRECT WITH FIXES. The union bound is valid; several consequences need repair.**
+
+Fix coordinates on the square-class space generated by **all of \(X\)** before sampling. Do not substitute the random rank of the discovered sample for \(C\).
+
+For the first \(M\) accepted independent samples, let \(A\) have columns \(x_i\), and let \(b=(\beta_i)\). Then
+\[
+\Phi|_{\ker A}=0
+\iff b\in\operatorname{rowspan}(A).
+\]
+Thus
+\[
+\Pr(\Phi|_{\ker A}=0)
+\le\sum_w(1-\delta_w)^M
+\le 2^C(1-\delta)^M
+\le e^{C\log2-\delta M}.
+\]
+That is elementary linear algebra plus a union bound. The algorithm need not know the exact coordinates for this **analysis** to be legitimate.
+
+Rejection sampling gives uniform accepted samples when proposals are uniform and acceptance is the fixed smoothness predicate. If duplicates are discarded, the accepted distinct relations are sampled without replacement; the same upper bound remains valid.
+
+However, the bound concerns **degeneracy of the entire discovered kernel**, not failure of one output. For a semiprime, one uniform kernel sample has success probability at least
+\[
+\frac{1-\varepsilon}{2}.
+\]
+With \(t\) independent uniform kernel samples, the failure bound becomes
+\[
+\varepsilon+2^{-t}.
+\]
+
+The involution criterion is correct: each preserved-feature pair forces one disagreement with every linear predictor, giving \(\delta_w\ge\delta'/2\). Dixon supplies this when the relation retains the sampled root \(x\), not merely the residue \(x^2\bmod n\).
+
+The cost conclusion needs an actual implementation argument. Lemma M alone does not justify inheriting LV’s early-abort sampling schedule: favorable fruitfulness parameters could have low relation density.
+
+There is a repair that avoids needing a joint density lemma. At the optimum, put
+\[
+b_0=(8/9)^{1/3}.
+\]
+Enumerate the whole candidate box for each chosen parameter pair, retain a uniform reservoir of
+\[
+M=L_n[1/3,b_0+o(1)]
+\]
+accepted relations, and retain all accepted relations if there are fewer than \(M\). Under Lemma M, \(C/\delta\) has this size. Full enumeration and sparse algebra both cost
+\[
+L_n[1/3,2b_0+o(1)]
+=L_n[1/3,(64/9)^{1/3}+o(1)].
+\]
+Repeating over a favorable parameter set of probability \(L_n[1/3,-o(1)]\) preserves that constant.
+
+This requires the correct normalization, uniform kernel sampling, and controlled square testing. LV uses generally nonmonic polynomials, leading-coefficient factors, and an additional constant parity column; those details must enter your formulation. [Lee–Venkatesan, algorithm in §3.3, §§4–6](https://arxiv.org/pdf/1805.08873)
+
+**4. CORRECT WITH FIXES. The probability calculation is exact; the lattice size assertion is false.**
+
+Conditional on \(\lambda\), the root is uniform on its fiber
+\[
+r_0\mu_2(\mathbb Z/n).
+\]
+For odd \(k\), replacing \(r\) by \(rh\) replaces \(Y\) by \(Yh\). Exactly two of the \(2^{\omega(n)}\) possibilities make \(X/Y=\pm1\). Hence
+\[
+\Pr(\text{fruitful}\mid \lambda,\text{root-independent coins},\,k\text{ odd})
+=1-2^{1-\omega(n)}.
+\]
+This remains true for nonsquarefree odd \(n\). For \(p^2\), it is zero; “\(1/2\) for semiprimes” requires distinct primes.
+
+Condition on choices made independently of the hidden branch—not on the eventual value of \(Y\) or on a selection procedure that inspected that branch.
+
+The false step is
+\[
+\det\Lambda_\lambda=n
+\quad\Longrightarrow\quad
+\text{both reduced basis vectors are }O(\sqrt n).
+\]
+Take \(\lambda=1\). A Gauss-reduced basis is
+\[
+(1,1),\qquad
+\left(\frac{n+1}{2},\frac{1-n}{2}\right).
+\]
+The second vector has length \(\asymp n\). Adding a bounded multiple of the first does not fix it.
+
+Replace the deterministic bound by a proved probabilistic bound, or reject poorly shaped lattices using a rule depending only on \(\lambda\). Such rejection preserves the conditional hidden-root argument.
+
+Finally, an odd-weight dependency exists exactly when the all-ones functional does not vanish on the square-condition kernel. This is a linear-algebra criterion, not a guarantee that sufficient smooth relations provide such a dependency. Your \(L[1/2]\) conclusion therefore remains conditional on the relation-generation and odd-dependency assumptions.
+
+**5. WRONG as a general barrier; a restricted counting statement is correct.**
+
+Let
+\[
+Q=|\bigl((\mathbb Z/n)^\times\bigr)^2|
+=\frac{\varphi(n)}{2^{\omega(n)}}.
+\]
+There are at most \(4H^2\) integer pairs with nonzero \(|c|,|d|\le H\). Therefore a family representing every square residue by \(c/d\) must have
+\[
+H\ge\frac12\sqrt Q.
+\]
+
+This bounds the **maximum height over the family**, not every sampled pair. For uniform \(r\), the useful statement is
+\[
+\Pr\!\left(\lambda\text{ has a representation }c/d
+\text{ with }0<|c|,|d|\le H\right)
+\le \frac{4H^2}{Q}.
+\]
+Consequently, for every fixed \(\epsilon>0\),
+\[
+\Pr(H(\lambda)\le n^{1/2-\epsilon})
+\le n^{-2\epsilon+o(1)}.
+\]
+
+The subsequent conclusions do not follow:
+
+- Large coefficients do not impose pointwise lower bounds on form values; cancellation and restricted sampling matter.
+- Integer size alone proves no lower bound on smoothness-search cost.
+- The counting applies to globally uniform roots. Fruitfulness only needs suitable uniformity **within each root fiber**. The distribution across fibers can be highly nonuniform.
+- Quasi-uniform sampling over your entire restricted set is sufficient, but stronger than necessary.
+
+Thus the defensible statement is a barrier to **globally uniform root sampling with uniformly small ratio representatives**, not a theorem excluding hidden-multiplier approaches at \(L[1/3]\).
+
+The Vallée comparison is accurate, with a crucial scale distinction: her bound is \(O(n^{2/3})\), vastly larger than \(L_n[2/3,O(1)]\). [Vallée, *Provably fast integer factoring with quasi-uniform small quadratic residues*, STOC 1989, pp. 98–106](https://doi.org/10.1145/73007.73016)
+
+**A. Exact coordinates and the pairing step.**
+
+Yes, the union bound over exact coordinates is legitimate even when the algorithm uses only projections of those coordinates. But the claimed containment
+\[
+K_{\rm alg}\supseteq K_0
+\]
+must include **every** algorithmic constraint.
+
+An extra weight-parity constraint can invalidate it. Here is an exact counterexample:
+\[
+n=77,\quad f=X-78,\quad m=1,
+\]
+with relations
+
+| \((a,b)\) | \(a-bm\) | \(a-b\alpha\) | Square roots |
+|---|---:|---:|---|
+| \((82,1)\) | \(81\) | \(4\) | \((9,2)\) |
+| \((403,3)\) | \(400\) | \(169\) | \((20,13)\) |
+
+Both square-class vectors are zero. Both singleton root ratios equal \(43\bmod77\), so both are fruitful. Their even-weight combination has roots
+\[
+180\equiv26,\qquad26\pmod{77},
+\]
+and is trivial.
+
+Thus \(\Phi\ne0\) on \(K_0\), while it vanishes on the imposed even-weight kernel. Include the constant feature \(1\) in \(x\) if that restriction remains. This changes the distance problem and can change positive \(\delta\) to zero.
+
+Pairing introduces no inherent obstruction when performed correctly. Let \(W\) be a common computational kernel and let
+\[
+E:W\longrightarrow H,\qquad \ker E=K_0
+\]
+record the remaining square-class obstruction. Independent uniform samples in a common fiber \(E=h\) have a sum uniform on \(K_0\). Hence a nonzero \(\Phi\) survives with probability \(1/2\).
+
+Alternatively, uniform sampling from \(W\), followed by exact-square rejection, produces uniform samples from \(K_0\), with acceptance probability \(1/|\operatorname{im}E|\). That gives a clean implementation when the residual obstruction group is small.
+
+An arbitrary collision, deterministic kernel output, or pairing across differently restricted spaces does not inherit this conclusion automatically. LV’s exceptional-class pairing appears in its proof of Theorem 2.6. [Lee–Venkatesan, §6](https://arxiv.org/pdf/1805.08873)
+
+**B. Lemma M is not presently a routine application of existing technology.**
+
+For QS or degree one, first specify the parameter distribution replacing LV’s growing-degree polynomial distribution. Otherwise that version of Lemma M is undefined.
+
+For a specified distribution, the exact analytic target is
+\[
+\delta=\frac{1-\max_w
+\mathbb E_X(-1)^{\beta+\langle w,x\rangle}}2.
+\]
+You must exclude near-perfect correlation **uniformly over all assignments of prime-sign twists**. Showing that \(\beta\) itself is balanced is insufficient.
+
+In degree one, the Blum formula converts these into correlations of multiplicative functions on two simultaneously smooth linear-form values. Their prime values involve
+\[
+i^{[\ell\in T]}(-1)^{w_\ell},
+\]
+so the problem retains fourth-root information together with arbitrary square-class twists.
+
+In QS, the analogous problem couples \(J_n(x)\), the prime-exponent parities of \(x^2-n\), and smoothness of that polynomial value.
+
+The most promising route is averaging over coefficients or polynomial parameters and estimating these **twisted smooth correlations**. The obstruction is specific: available untwisted smoothness estimates do not control all those twists after simultaneous smoothness conditioning. Ordinary character-sum bounds also do not supply the required uniform estimates in the very short sieve ranges.
+
+A second route would prove expansion of a graph of smooth relations, forcing any almost-perfect predictor to extend to a forbidden global character. Establishing that expansion is itself the missing arithmetic theorem.
+
+I would treat Lemma M as a substantial conjecture. The explicit formula identifies the obstruction; it does not presently remove it.
+
+**C. Prior work: what can actually be attributed.**
+
+- **The subgroup argument has a clear published precedent.** Seysen, *A probabilistic factorization algorithm with quadratic forms of negative discriminant*, **Math. Comp. 48 (1987), 757–780**, p. **777**, immediately before **Proposition 8.6**, explicitly identifies dependencies yielding trivial factorizations as a proper subgroup. **Theorem 8.7** states uniform sparse-kernel sampling. This is the class-group analogue of Claim 1’s mechanism, not your exact general-NFS statement. [Paper, p. 777](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf)
+
+- **BLP §8 concerns square detection.** Buhler–Lenstra–Pomerance, *Factoring integers with the number field sieve*, **LNM 1554 (1993), 50–94**, §8, **“Quadratic Characters”**; **Lemma 8.2, p. 68**, is the random spanning/union-bound lemma. It does not establish your quantitative fruitfulness-distance lemma. [BLP](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf)
+
+- **Lenstra–Pomerance’s exact relevant locations are §2 and §10.** *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**: §2 gives the ambiguous-form/factorization correspondence; **Algorithm 10.1, Step 6**, constructs the ambiguous form; **Theorem 10.3, p. 507**, gives the factoring probability and runtime. These are rigorous class-group results, not Claims 2–5. [Lenstra–Pomerance](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+- **Schroeppel’s linear sieve is documented, not a fruitfulness theorem of the proposed kind.** Pomerance, *The quadratic sieve factoring algorithm*, **EUROCRYPT ’84, LNCS 209 (1985), 169–182**, pp. **173–174**, discusses Schroeppel’s unpublished analysis and the linear sieve, including its linear-algebra cost problem. [Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper52.pdf)
+
+- **The sampler precedent is Vallée.** The full treatment is *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56 (1991), 823–849**, especially **Theorems 5–6**; the STOC paper linked above states the \(n^{2/3}\) sampling result.
+
+- **Morrison–Brillhart is not an adequate exact citation for these claims.** Their *A method of factoring and the factorization of \(F_7\)*, **Math. Comp. 29 (1975), 183–205**, is the continued-fraction factoring paper. For the precise subgroup and ambiguous-form assertions, cite Seysen or Lenstra–Pomerance.
+
+I found no exact published statement of your general Bockstein formula, hidden-root two-form construction, or proposed universal barrier. That is a search result, not a novelty certification.
+
+The reproducible [exact checks]( /Volumes/git/factoring-connection/codex/scratch/nfsfruit_2/referee_checks.py) passed **1,008 kernel-vector tests** of the general character formula, including unequal local \(2\)-parts, and verify the counterexamples above.
+
+**The single claim most likely to be wrong is Claim 5:** its counting lemma is sound, but its advertised algorithmic barrier exceeds what that lemma proves.
