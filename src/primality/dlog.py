@@ -232,3 +232,16 @@ def split_with_order_multiple(N: int, a: int, M: int, metrics=_NULL) -> Optional
                 return d
         b = b * b % N
     return None
+
+
+def sos_from_sqrt_minus1(N: int, x: int) -> Optional[Tuple[int, int]]:
+    """Hermite-Serret / Brillhart: given x with x^2 = -1 (mod N), run Euclid on (N, x) and return the
+    first two remainders below sqrt(N); for N = pq with both p, q = 1 mod 4 this gives N = u^2 + v^2
+    whenever x corresponds to a primitive representation (checked, else None)."""
+    a, b = N, x % N
+    r = isqrt(N)
+    while b > r:
+        a, b = b, a % b
+    c = a % b if b else 0
+    u, v = b, isqrt(N - b * b)
+    return (u, v) if u * u + v * v == N else None

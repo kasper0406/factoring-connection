@@ -1,0 +1,1266 @@
+{
+ "config": {
+  "bound": 20000,
+  "three_bound": 20000,
+  "carm_max": 200000,
+  "lucas_bound": 12000,
+  "frob_bound": 700,
+  "torus_bound": 3000,
+  "workers": 32,
+  "out": "experiments/raw/primality_verify.json"
+ },
+ "power_semiprime": {
+  "count": 3819,
+  "fail": [],
+  "examples": [
+   {
+    "primes": [
+     3,
+     5
+    ],
+    "N": 15,
+    "ok": true,
+    "ok_closed": true,
+    "tally": {
+     "prefix": 6,
+     "sqrt": 2,
+     "pm": 6,
+     "liar": 2,
+     "fermat": 4,
+     "fermat_chain": 6,
+     "ss": 6,
+     "sqrt_minus1": 0,
+     "units": 8,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "6",
+     "sqrt": "2",
+     "pm": "6",
+     "liar": "2",
+     "fermat": "4",
+     "fermat_chain": "6",
+     "ss": "6",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   },
+   {
+    "primes": [
+     3,
+     7
+    ],
+    "N": 21,
+    "ok": true,
+    "ok_closed": true,
+    "tally": {
+     "prefix": 10,
+     "sqrt": 2,
+     "pm": 10,
+     "liar": 2,
+     "fermat": 8,
+     "fermat_chain": 10,
+     "ss": 8,
+     "sqrt_minus1": 0,
+     "units": 12,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "10",
+     "sqrt": "2",
+     "pm": "10",
+     "liar": "2",
+     "fermat": "8",
+     "fermat_chain": "10",
+     "ss": "8",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   },
+   {
+    "primes": [
+     3,
+     11
+    ],
+    "N": 33,
+    "ok": true,
+    "ok_closed": true,
+    "tally": {
+     "prefix": 18,
+     "sqrt": 2,
+     "pm": 18,
+     "liar": 2,
+     "fermat": 16,
+     "fermat_chain": 18,
+     "ss": 16,
+     "sqrt_minus1": 0,
+     "units": 20,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "18",
+     "sqrt": "2",
+     "pm": "18",
+     "liar": "2",
+     "fermat": "16",
+     "fermat_chain": "18",
+     "ss": "16",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   }
+  ]
+ },
+ "power_three_prime": {
+  "count": 1796,
+  "fail": [],
+  "examples": [
+   {
+    "primes": [
+     3,
+     5,
+     7
+    ],
+    "N": 105,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 46,
+     "sqrt": 14,
+     "pm": 46,
+     "liar": 2,
+     "fermat": 32,
+     "fermat_chain": 46,
+     "ss": 32,
+     "sqrt_minus1": 0,
+     "units": 48,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "46",
+     "sqrt": "14",
+     "pm": "46",
+     "liar": "2",
+     "fermat": "32",
+     "fermat_chain": "46",
+     "ss": "32",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   },
+   {
+    "primes": [
+     3,
+     5,
+     11
+    ],
+    "N": 165,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 78,
+     "sqrt": 14,
+     "pm": 78,
+     "liar": 2,
+     "fermat": 64,
+     "fermat_chain": 78,
+     "ss": 72,
+     "sqrt_minus1": 0,
+     "units": 80,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "78",
+     "sqrt": "14",
+     "pm": "78",
+     "liar": "2",
+     "fermat": "64",
+     "fermat_chain": "78",
+     "ss": "72",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   },
+   {
+    "primes": [
+     3,
+     5,
+     13
+    ],
+    "N": 195,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 94,
+     "sqrt": 6,
+     "pm": 94,
+     "liar": 2,
+     "fermat": 88,
+     "fermat_chain": 94,
+     "ss": 94,
+     "sqrt_minus1": 0,
+     "units": 96,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "94",
+     "sqrt": "6",
+     "pm": "94",
+     "liar": "2",
+     "fermat": "88",
+     "fermat_chain": "94",
+     "ss": "94",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1,
+     "L1": 1
+    }
+   }
+  ]
+ },
+ "power_carmichael": {
+  "count": 22,
+  "fail": [],
+  "examples": [
+   {
+    "primes": [
+     3,
+     11,
+     17
+    ],
+    "N": 561,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 310,
+     "sqrt": 310,
+     "pm": 310,
+     "liar": 10,
+     "fermat": 0,
+     "fermat_chain": 318,
+     "ss": 160,
+     "sqrt_minus1": 0,
+     "units": 320,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "310",
+     "sqrt": "310",
+     "pm": "310",
+     "liar": "10",
+     "fermat": "0",
+     "fermat_chain": "318",
+     "ss": "160",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 5,
+     "L1": 5
+    }
+   },
+   {
+    "primes": [
+     5,
+     13,
+     17
+    ],
+    "N": 1105,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 738,
+     "sqrt": 738,
+     "pm": 738,
+     "liar": 30,
+     "fermat": 0,
+     "fermat_chain": 758,
+     "ss": 384,
+     "sqrt_minus1": 24,
+     "units": 768,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "738",
+     "sqrt": "738",
+     "pm": "738",
+     "liar": "30",
+     "fermat": "0",
+     "fermat_chain": "758",
+     "ss": "384",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 3,
+     "L2": 24,
+     "L1": 3
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     19
+    ],
+    "N": 1729,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 1134,
+     "sqrt": 1134,
+     "pm": 1134,
+     "liar": 162,
+     "fermat": 0,
+     "fermat_chain": 1260,
+     "ss": 0,
+     "sqrt_minus1": 0,
+     "units": 1296,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "1134",
+     "sqrt": "1134",
+     "pm": "1134",
+     "liar": "162",
+     "fermat": "0",
+     "fermat_chain": "1260",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 81,
+     "L1": 81
+    }
+   },
+   {
+    "primes": [
+     5,
+     17,
+     29
+    ],
+    "N": 2465,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 1722,
+     "sqrt": 1722,
+     "pm": 1722,
+     "liar": 70,
+     "fermat": 0,
+     "fermat_chain": 1782,
+     "ss": 0,
+     "sqrt_minus1": 56,
+     "units": 1792,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "1722",
+     "sqrt": "1722",
+     "pm": "1722",
+     "liar": "70",
+     "fermat": "0",
+     "fermat_chain": "1782",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 7,
+     "L2": 56,
+     "L1": 7
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     31
+    ],
+    "N": 2821,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 1890,
+     "sqrt": 1890,
+     "pm": 1890,
+     "liar": 270,
+     "fermat": 0,
+     "fermat_chain": 2062,
+     "ss": 1080,
+     "sqrt_minus1": 0,
+     "units": 2160,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "1890",
+     "sqrt": "1890",
+     "pm": "1890",
+     "liar": "270",
+     "fermat": "0",
+     "fermat_chain": "2062",
+     "ss": "1080",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 135,
+     "L1": 135
+    }
+   },
+   {
+    "primes": [
+     7,
+     23,
+     41
+    ],
+    "N": 6601,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 4950,
+     "sqrt": 4950,
+     "pm": 4950,
+     "liar": 330,
+     "fermat": 0,
+     "fermat_chain": 5278,
+     "ss": 2640,
+     "sqrt_minus1": 0,
+     "units": 5280,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "4950",
+     "sqrt": "4950",
+     "pm": "4950",
+     "liar": "330",
+     "fermat": "0",
+     "fermat_chain": "5278",
+     "ss": "2640",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 165,
+     "L1": 165
+    }
+   },
+   {
+    "primes": [
+     7,
+     19,
+     67
+    ],
+    "N": 8911,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 5346,
+     "sqrt": 5346,
+     "pm": 5346,
+     "liar": 1782,
+     "fermat": 0,
+     "fermat_chain": 6606,
+     "ss": 5346,
+     "sqrt_minus1": 0,
+     "units": 7128,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "5346",
+     "sqrt": "5346",
+     "pm": "5346",
+     "liar": "1782",
+     "fermat": "0",
+     "fermat_chain": "6606",
+     "ss": "5346",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 891,
+     "L1": 891
+    }
+   },
+   {
+    "primes": [
+     5,
+     29,
+     73
+    ],
+    "N": 10585,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 7434,
+     "sqrt": 7434,
+     "pm": 7434,
+     "liar": 630,
+     "fermat": 0,
+     "fermat_chain": 8054,
+     "ss": 4032,
+     "sqrt_minus1": 504,
+     "units": 8064,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "7434",
+     "sqrt": "7434",
+     "pm": "7434",
+     "liar": "630",
+     "fermat": "0",
+     "fermat_chain": "8054",
+     "ss": "4032",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 63,
+     "L2": 504,
+     "L1": 63
+    }
+   },
+   {
+    "primes": [
+     7,
+     31,
+     73
+    ],
+    "N": 15841,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 12150,
+     "sqrt": 12150,
+     "pm": 12150,
+     "liar": 810,
+     "fermat": 0,
+     "fermat_chain": 12816,
+     "ss": 0,
+     "sqrt_minus1": 0,
+     "units": 12960,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "12150",
+     "sqrt": "12150",
+     "pm": "12150",
+     "liar": "810",
+     "fermat": "0",
+     "fermat_chain": "12816",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 405,
+     "L1": 405
+    }
+   },
+   {
+    "primes": [
+     13,
+     37,
+     61
+    ],
+    "N": 29341,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 21870,
+     "sqrt": 21870,
+     "pm": 21870,
+     "liar": 4050,
+     "fermat": 0,
+     "fermat_chain": 24102,
+     "ss": 19440,
+     "sqrt_minus1": 3240,
+     "units": 25920,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "21870",
+     "sqrt": "21870",
+     "pm": "21870",
+     "liar": "4050",
+     "fermat": "0",
+     "fermat_chain": "24102",
+     "ss": "19440",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 405,
+     "L2": 3240,
+     "L1": 405
+    }
+   },
+   {
+    "primes": [
+     7,
+     11,
+     13,
+     41
+    ],
+    "N": 41041,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 28350,
+     "sqrt": 28350,
+     "pm": 28350,
+     "liar": 450,
+     "fermat": 0,
+     "fermat_chain": 28798,
+     "ss": 0,
+     "sqrt_minus1": 0,
+     "units": 28800,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "28350",
+     "sqrt": "28350",
+     "pm": "28350",
+     "liar": "450",
+     "fermat": "0",
+     "fermat_chain": "28798",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 225,
+     "L1": 225
+    }
+   },
+   {
+    "primes": [
+     13,
+     37,
+     97
+    ],
+    "N": 46657,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 40662,
+     "sqrt": 40662,
+     "pm": 40662,
+     "liar": 810,
+     "fermat": 0,
+     "fermat_chain": 41142,
+     "ss": 0,
+     "sqrt_minus1": 648,
+     "units": 41472,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "40662",
+     "sqrt": "40662",
+     "pm": "40662",
+     "liar": "810",
+     "fermat": "0",
+     "fermat_chain": "41142",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 81,
+     "L2": 648,
+     "L1": 81
+    }
+   },
+   {
+    "primes": [
+     7,
+     73,
+     103
+    ],
+    "N": 52633,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 41310,
+     "sqrt": 41310,
+     "pm": 41310,
+     "liar": 2754,
+     "fermat": 0,
+     "fermat_chain": 44028,
+     "ss": 22032,
+     "sqrt_minus1": 0,
+     "units": 44064,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "41310",
+     "sqrt": "41310",
+     "pm": "41310",
+     "liar": "2754",
+     "fermat": "0",
+     "fermat_chain": "44028",
+     "ss": "22032",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1377,
+     "L1": 1377
+    }
+   },
+   {
+    "primes": [
+     3,
+     5,
+     47,
+     89
+    ],
+    "N": 62745,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 31878,
+     "sqrt": 31878,
+     "pm": 31878,
+     "liar": 506,
+     "fermat": 0,
+     "fermat_chain": 32382,
+     "ss": 16192,
+     "sqrt_minus1": 0,
+     "units": 32384,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "31878",
+     "sqrt": "31878",
+     "pm": "31878",
+     "liar": "506",
+     "fermat": "0",
+     "fermat_chain": "32382",
+     "ss": "16192",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 253,
+     "L1": 253
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     19,
+     37
+    ],
+    "N": 63973,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 45198,
+     "sqrt": 45198,
+     "pm": 45198,
+     "liar": 1458,
+     "fermat": 0,
+     "fermat_chain": 46382,
+     "ss": 34992,
+     "sqrt_minus1": 0,
+     "units": 46656,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "45198",
+     "sqrt": "45198",
+     "pm": "45198",
+     "liar": "1458",
+     "fermat": "0",
+     "fermat_chain": "46382",
+     "ss": "34992",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 729,
+     "L1": 729
+    }
+   },
+   {
+    "primes": [
+     11,
+     13,
+     17,
+     31
+    ],
+    "N": 75361,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 57150,
+     "sqrt": 57150,
+     "pm": 57150,
+     "liar": 450,
+     "fermat": 0,
+     "fermat_chain": 57598,
+     "ss": 0,
+     "sqrt_minus1": 0,
+     "units": 57600,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "57150",
+     "sqrt": "57150",
+     "pm": "57150",
+     "liar": "450",
+     "fermat": "0",
+     "fermat_chain": "57598",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 225,
+     "L1": 225
+    }
+   },
+   {
+    "primes": [
+     7,
+     11,
+     13,
+     101
+    ],
+    "N": 101101,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 69750,
+     "sqrt": 69750,
+     "pm": 69750,
+     "liar": 2250,
+     "fermat": 0,
+     "fermat_chain": 71998,
+     "ss": 54000,
+     "sqrt_minus1": 0,
+     "units": 72000,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "69750",
+     "sqrt": "69750",
+     "pm": "69750",
+     "liar": "2250",
+     "fermat": "0",
+     "fermat_chain": "71998",
+     "ss": "54000",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 1125,
+     "L1": 1125
+    }
+   },
+   {
+    "primes": [
+     13,
+     37,
+     241
+    ],
+    "N": 115921,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 99630,
+     "sqrt": 99630,
+     "pm": 99630,
+     "liar": 4050,
+     "fermat": 0,
+     "fermat_chain": 101646,
+     "ss": 51840,
+     "sqrt_minus1": 3240,
+     "units": 103680,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "99630",
+     "sqrt": "99630",
+     "pm": "99630",
+     "liar": "4050",
+     "fermat": "0",
+     "fermat_chain": "101646",
+     "ss": "51840",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 405,
+     "L2": 3240,
+     "L1": 405
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     19,
+     73
+    ],
+    "N": 126217,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 91854,
+     "sqrt": 91854,
+     "pm": 91854,
+     "liar": 1458,
+     "fermat": 0,
+     "fermat_chain": 93278,
+     "ss": 46656,
+     "sqrt_minus1": 0,
+     "units": 93312,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "91854",
+     "sqrt": "91854",
+     "pm": "91854",
+     "liar": "1458",
+     "fermat": "0",
+     "fermat_chain": "93278",
+     "ss": "46656",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 729,
+     "L1": 729
+    }
+   },
+   {
+    "primes": [
+     17,
+     41,
+     233
+    ],
+    "N": 162401,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 137750,
+     "sqrt": 137750,
+     "pm": 137750,
+     "liar": 10730,
+     "fermat": 0,
+     "fermat_chain": 139190,
+     "ss": 0,
+     "sqrt_minus1": 10440,
+     "units": 148480,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "137750",
+     "sqrt": "137750",
+     "pm": "137750",
+     "liar": "10730",
+     "fermat": "0",
+     "fermat_chain": "139190",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 145,
+     "L3": 9280,
+     "L2": 1160,
+     "L1": 145
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     31,
+     61
+    ],
+    "N": 172081,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 125550,
+     "sqrt": 125550,
+     "pm": 125550,
+     "liar": 4050,
+     "fermat": 0,
+     "fermat_chain": 129566,
+     "ss": 0,
+     "sqrt_minus1": 0,
+     "units": 129600,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "125550",
+     "sqrt": "125550",
+     "pm": "125550",
+     "liar": "4050",
+     "fermat": "0",
+     "fermat_chain": "129566",
+     "ss": "0",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 2025,
+     "L1": 2025
+    }
+   },
+   {
+    "primes": [
+     7,
+     13,
+     19,
+     109
+    ],
+    "N": 188461,
+    "ok": true,
+    "ok_closed": null,
+    "tally": {
+     "prefix": 135594,
+     "sqrt": 135594,
+     "pm": 135594,
+     "liar": 4374,
+     "fermat": 0,
+     "fermat_chain": 139934,
+     "ss": 104976,
+     "sqrt_minus1": 0,
+     "units": 139968,
+     "minus1_final": 0
+    },
+    "pred": {
+     "prefix": "135594",
+     "sqrt": "135594",
+     "pm": "135594",
+     "liar": "4374",
+     "fermat": "0",
+     "fermat_chain": "139934",
+     "ss": "104976",
+     "minus1_final": "0"
+    },
+    "levels": {
+     "S0": 2187,
+     "L1": 2187
+    }
+   }
+  ]
+ },
+ "lucas": {
+  "count": 1623,
+  "fail": [],
+  "examples": [
+   {
+    "primes": [
+     3,
+     11
+    ],
+    "N": 33,
+    "D": 5,
+    "legendre": [
+     -1,
+     1
+    ],
+    "ok": true,
+    "ok_closed_uniform": true,
+    "tally": {
+     "prefix": 10,
+     "pm": 26,
+     "liar": 1,
+     "valid": 27,
+     "lucas": 10
+    },
+    "pred": {
+     "prefix": "10",
+     "pm": "26",
+     "liar": "1",
+     "lucas": "10"
+    }
+   },
+   {
+    "primes": [
+     3,
+     19
+    ],
+    "N": 57,
+    "D": 5,
+    "legendre": [
+     -1,
+     1
+    ],
+    "ok": true,
+    "ok_closed_uniform": true,
+    "tally": {
+     "prefix": 18,
+     "pm": 50,
+     "liar": 1,
+     "valid": 51,
+     "lucas": 18
+    },
+    "pred": {
+     "prefix": "18",
+     "pm": "50",
+     "liar": "1",
+     "lucas": "18"
+    }
+   },
+   {
+    "primes": [
+     3,
+     23
+    ],
+    "N": 69,
+    "D": -7,
+    "legendre": [
+     -1,
+     1
+    ],
+    "ok": true,
+    "ok_closed_uniform": true,
+    "tally": {
+     "prefix": 22,
+     "pm": 62,
+     "liar": 1,
+     "valid": 63,
+     "lucas": 22
+    },
+    "pred": {
+     "prefix": "22",
+     "pm": "62",
+     "liar": "1",
+     "lucas": "22"
+    }
+   }
+  ]
+ },
+ "frobenius": {
+  "count": 76,
+  "fail": [],
+  "examples": [
+   {
+    "primes": [
+     3,
+     11
+    ],
+    "N": 33,
+    "Delta": 5,
+    "ok": true,
+    "tally": {
+     "structural": 208,
+     "accidental": 504,
+     "units": 800
+    },
+    "pred": "208"
+   },
+   {
+    "primes": [
+     3,
+     19
+    ],
+    "N": 57,
+    "Delta": 5,
+    "ok": true,
+    "tally": {
+     "structural": 656,
+     "accidental": 1752,
+     "units": 2592
+    },
+    "pred": "656"
+   },
+   {
+    "primes": [
+     3,
+     23
+    ],
+    "N": 69,
+    "Delta": -7,
+    "ok": true,
+    "tally": {
+     "structural": 976,
+     "accidental": 2640,
+     "units": 3872
+    },
+    "pred": "976"
+   }
+  ],
+  "accidental_total": 4531752,
+  "structural_total": 2930944,
+  "units_total": 12835008
+ },
+ "torus": {
+  "count": 4696,
+  "by_pattern": {
+   "[1, 1]": 1174,
+   "[-1, -1]": 1174,
+   "[1, -1]": 1174,
+   "[-1, 1]": 1174
+  },
+  "fail": []
+ },
+ "aks": {
+  "count": 300,
+  "fail_twist": [],
+  "fail_period": [],
+  "identity_mod_p_true": 2,
+  "examples": [
+   {
+    "p": 233,
+    "q": 109,
+    "r": 7,
+    "a": 4,
+    "ok_twist": true,
+    "ord_Xa": 12649336,
+    "L": 12649336,
+    "ok_period": true,
+    "identity_mod_p": false
+   },
+   {
+    "p": 13,
+    "q": 239,
+    "r": 23,
+    "a": 5,
+    "ok_twist": true,
+    "ord_Xa": null,
+    "L": null,
+    "ok_period": null,
+    "identity_mod_p": false
+   },
+   {
+    "p": 191,
+    "q": 13,
+    "r": 5,
+    "a": 1,
+    "ok_twist": true,
+    "ord_Xa": 190,
+    "L": 190,
+    "ok_period": true,
+    "identity_mod_p": false
+   },
+   {
+    "p": 359,
+    "q": 7,
+    "r": 59,
+    "a": 4,
+    "ok_twist": true,
+    "ord_Xa": null,
+    "L": null,
+    "ok_period": null,
+    "identity_mod_p": false
+   },
+   {
+    "p": 131,
+    "q": 211,
+    "r": 13,
+    "a": 6,
+    "ok_twist": true,
+    "ord_Xa": 130,
+    "L": 130,
+    "ok_period": true,
+    "identity_mod_p": false
+   }
+  ]
+ },
+ "wall_s": 30.852715253829956
+}
