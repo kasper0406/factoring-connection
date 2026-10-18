@@ -33,8 +33,11 @@ search, not a proof of priority.
 **Honest scope:**
 - **Average case, not worst case.** The worst case is still N^{1/5}. Getting below it needs a
   covering theorem that is not proved.
-- **Bounded ratio only.** Only q/p ≤ 2 is covered. Unbalanced ratios are work in progress; the
-  envelope of the proposed scheme peaks at N^{1/5} at q/p ≈ N^{1/5}.
+- **Ratios.** The average-case theorem covers q/p ≤ 2. The almost-all statement extends to
+  q/p ≤ N^{o(1)} (Theorem U, proved). For q/p = N^θ the best exponent we have is
+  min((1+θ)/6, (1−θ)/4) (Theorem U_θ plus Pollard–Strassen). It peaks at 1/5 when q/p ≈ N^{1/5},
+  and in a full-coverage model that peak is unavoidable (Proposition O′, a model theorem; see
+  [`notes/unbalanced_results.md`](notes/unbalanced_results.md)).
 - **Not faster in practice.** At 40–80 bits Harvey–Hittmeir is 2.3–4.9× cheaper in our cost
   proxy.
 - **Built on prior art.** The key ingredients come from McKee–Pinch 1996 §5 (the divisibility

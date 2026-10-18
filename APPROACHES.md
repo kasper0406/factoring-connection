@@ -70,7 +70,7 @@ All of these are AI-reviewed only. A paper draft is in [`paper/`](paper/).
 | 5 | Worst case from coverage (dchworst) | P-15, W-23, R-24 | `notes/dchworst_*.md` |
 | 5 | Below 1/6 (below16) | W-21, R-25 | `notes/below16_*.md` |
 | 5 | Randomized NFS fruitfulness (nfsfruit) | W-24 | `notes/nfsfruit_*.md` |
-| 5 | Unbalanced ratios (unbalanced; still running) | O-9 | `notes/unbalanced_*.md` |
+| 5 | Unbalanced ratios (unbalanced) | P-16, W-25, O-9 | `notes/unbalanced_*.md` |
 | 5 | Paper, Lean | O-11 | `paper/`, `lean/` |
 
 ---
@@ -284,6 +284,15 @@ Max ratio 0.69 for p < 20 000. `notes/trackC_analysis.md`.
   Lemma M ⇐ an involution.
 - Obstruction: β is mod-4 information, which needs Jacobi sums far below the Burgess range.
 - `notes/nfsfruit_results.md`.
+
+**W-25. Proposition O′: the curvature full-coverage barrier (unbalanced).**
+- **Statement (proved in model 𝔏).** 𝔏 allows one-dimensional Lehman-linear searches with
+  arbitrary baby sets, any moduli and (α, β) ≠ (0, 0). Covering a fraction f of the candidates
+  of ratio band R costs ≥ c·min(√(fp), f^{2/3}q^{1/3}), hence ≥ N^{1/5} at R = N^{1/5}.
+- **Scope.** This is **full coverage, not average-case.**
+- **Prior art.** Ward–Maestro Prop. 3.7 has the same curvature argument for unlocked forms; its
+  (1−β)/3 branch equals our q^{1/3} branch.
+- `notes/unbalanced_results.md` §5.
 
 ## 2. Refuted ideas
 
@@ -556,6 +565,19 @@ naive). Stage-3 leaves are unchanged, so this is a constant. **Experimentally su
 - `notes/dchworst_results.md`; `src/dchworst/wcalg.py` (a correctness prototype, not a cost
   witness); `03bc017`.
 
+**P-16. D′ for unbalanced ratios: Theorems U and U_θ (unbalanced).**
+- **Theorem U (proved; both reviews ACCEPT).** With ratio-band rectangles A ≤ H/√R,
+  B ≤ H√R, D′'s cost N^{1/6+5ε/6} and N^{−ε} exceptions extend to every ratio band
+  q/p ≤ N^{ε}.
+- **Theorem U_θ (proved; ACCEPT WITH FIXES, applied).** Weights (1, B ≤ H²) and per-band scale
+  Y_j ≍ (NR)^{1/6}H^{−2/3} give exponent (1+θ)/6 + 2ε/3 for θ ≤ 1/5 − 3ε, with N^{−ε}
+  exceptions per band.
+- **Envelope.** Combined with Pollard–Strassen, the envelope is
+  min((1+θ)/6, (1−θ)/4). It exceeds 1/6 on (0, 1/3) and peaks at 1/5 at θ = 1/5, so the
+  ratio gap is real.
+- Pre-registered runs: all six frozen rules hold.
+- `notes/unbalanced_results.md`; `src/unbalanced/`; `831b627`.
+
 ---
 
 ## 4. Open
@@ -594,9 +616,9 @@ GAPs. **Open.**
 e^{−cH²/n} is **conjectured**, and it needs information beyond five-prime statistics (W-22). For
 the average-case theorem it would only change polylogs.
 
-**O-9. Unbalanced ratios q/p > 2.** The envelope of the proposed localized scheme with
-Pollard–Strassen is min((1+θ)/6, (1−θ)/4) at q/p = N^θ, with peak 1/5 at θ = 1/5 (cost analysis,
-r16). The agent `unbalanced` is **still running**; the paper has a marked placeholder.
+**O-9. Almost-all below 1/5 at p ≈ N^{2/5} (ratio q/p ≈ N^{1/5}).** **Open.** P-16 reaches
+1/5 there. Proposition O′ (W-25) shows that a full-coverage Lehman-linear search cannot do
+better, so a solution needs true-factor-favouring covering or a mechanism outside 𝔏.
 
 **O-10. Below 1/6 on almost all / on average.**
 - W-21 rules it out for local degree-1 collision designs on the true-factor task.

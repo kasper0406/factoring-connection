@@ -2,7 +2,7 @@
 % Sources of truth: notes/avgtime_results.md (Theorem AV), notes/dcltheorem_results.md (Theorem D'),
 % notes/sieve2d_results.md (fourth moment), notes/dchworst_results.md (Theorem R, W, N),
 % notes/below16_results.md (T1, T2), notes/multimod_results.md (Appendix A).
-% The unbalanced section is a PLACEHOLDER pending notes/unbalanced_results.md.
+% notes/unbalanced_results.md (Theorems U, U_theta, Prop O').
 \documentclass[11pt]{amsart}
 
 \usepackage[utf8]{inputenc}
@@ -92,8 +92,7 @@ algorithm, and our cost proxy at 40--80 bits favours Harvey--Hittmeir.
 written with substantial AI assistance (see the Acknowledgements). Its proofs have been
 checked by AI referees and have not yet been checked by a human referee. Status labels are
 used throughout: \emph{proved}, \emph{experimentally supported}, \emph{conjectured} and
-UNVERIFIED. Section~\ref{sec:unbalanced} is a placeholder awaiting a result still in
-progress.}}
+UNVERIFIED.}}
 \end{center}
 
 \tableofcontents
@@ -245,8 +244,9 @@ Each item below is easy to over-read, so we state them plainly.
   \emph{expected-time} statement for a complete algorithm. By Markov's inequality it implies
   tail bounds on the cost; Theorem~\ref{thm:D} supplies sharper explicit tails in its parameter
   range.
-\item Only ratios $q/p\le2$ are treated. The ratio-band extension is discussed in
-  Section~\ref{sec:unbalanced}.
+\item Theorems~\ref{thm:AV} and~\ref{thm:D} treat only ratios $q/p\le2$.
+  Section~\ref{sec:unbalanced} extends the almost-all statement to $q/p\le N^{o(1)}$, and shows
+  a ratio gap with peak $N^{1/5}$ at $q/p\approx N^{1/5}$.
 \item ``Never wrong'' means that every output is validated.
 \item Theorem~\ref{thm:T1} is a theorem inside a stated cost model. It is not a lower bound for
   factoring. Pollard's $p-1$ method, which lies outside the model, already reaches a positive
@@ -336,7 +336,7 @@ free-giant level. We derived it independently and later.
 \item Section~\ref{sec:worst} treats the worst case (Theorem~\ref{thm:R},
   Corollary~\ref{cor:conditional}).
 \item Section~\ref{sec:lower} proves Theorem~\ref{thm:T1}.
-\item Section~\ref{sec:unbalanced} is a placeholder on unbalanced ratios.
+\item Section~\ref{sec:unbalanced} treats unbalanced ratios.
 \item Section~\ref{sec:experiments} reports pre-registered experiments, and
   Section~\ref{sec:open} lists open problems.
 \item Appendix~\ref{app:full} contains the full-candidate covering bounds.
@@ -1554,29 +1554,192 @@ The model leaves out several things.
 \end{remark}
 
 %======================================================================
-\section{Unbalanced ratios [PLACEHOLDER]}\label{sec:unbalanced}
+\section{Unbalanced ratios}\label{sec:unbalanced}
 %======================================================================
 
-\begin{center}
-\fbox{\parbox{0.92\textwidth}{\small\textbf{Placeholder.} The project's analysis of unbalanced
-ratios (\texttt{notes/unbalanced\_results.md}) is still in progress and not yet reviewed. This
-subsection records only the known cost envelope of the \emph{proposed} scheme. It will be
-replaced when the final result is available.}}
-\end{center}
+This section summarises \texttt{notes/unbalanced\_results.md}. There the proofs are written out
+in full, and they were reviewed by an independent Opus critic and two GPT-6.1-sol reports (one
+blind, one adversarial; both accept Theorems~\ref{thm:U} and~\ref{thm:Utheta}). Here we only
+sketch them.
 
-\subsection{Unbalanced ratios}
-Write $q/p=N^\theta$, $0\le\theta\le1/3$. The proposed localised-weight scheme uses weights
-$(1,B)$ with $B$ up to $H^2$ and per-band prime scales $Y\asymp(N^{1+\theta})^{1/6}H^{-2/3}$.
-A cost analysis of that scheme, combined with Pollard--Strassen for the smaller factor
-$p\approx N^{(1-\theta)/2}$, gives the cost exponent
+\subsection{Ratio bands}
+For $j\ge0$ let
 \[
-  e(\theta)=\min\Bigl(\frac{1+\theta}6,\ \frac{1-\theta}4\Bigr)\quad(+O(\varepsilon)\text{ on
-  the first branch}).
+  \mathcal S_{n,j}=\{(p,q)\ \text{primes}:\ 2^jp<q\le2^{j+1}p,\ 2^{n-1}\le pq<2^n\},
 \]
-This exceeds $1/6$ for $0<\theta<1/3$ and reaches its maximum $1/5$ at $\theta=1/5$, i.e.\ at
-$p\approx N^{2/5}$. This is a \emph{cost analysis of the proposed scheme}, not a proved theorem
-of this paper. Ratios $q/p\le N^{o(1)}$ are expected to keep exponent $1/6$. A uniform-in-ratio
-statement below $1/5$ is not claimed.
+and write $R=2^j$. Then $p\asymp\sqrt{N/R}$ and $q\asymp\sqrt{NR}$. The prime number theorem
+gives $|\mathcal S_{n,j}|\ge c_02^n/n^2$ uniformly for $j\le n/3$. Exceptions are counted by pairs
+in each band. A bound $O(2^{-\varepsilon n})|\mathcal S_{n,j}|$ in every band $j\le\theta n$
+therefore gives an $O(N^{-\varepsilon})$ fraction of the union $\mathcal S_n^\theta$, the pairs
+with $q/p\lesssim N^\theta$.
+
+\begin{theorem}[ratios up to $N^{\varepsilon}$; proved]\label{thm:U}
+Fix $\varepsilon\in(0,1/60]$, and let $H=\lceil n2^{\varepsilon n/2}\rceil$ and $Y$, $\Pk$ be as
+in Section~\ref{sec:alg}. For $2^j\le H^2/16$ replace $V$ by the rectangle
+\[
+  V_j=\{(A,B):1\le A\le H2^{-j/2},\ 1\le B\le H2^{j/2},\ \gcd(A,B)=1,\ A\ne B\},
+\]
+with windows computed over the $p$-range of band $j$, and keep one baby list per block for all
+bands. For $n\ge n_0(\varepsilon)$ the resulting algorithm has three properties:
+\begin{itemize}
+\item it outputs only proper divisors or \texttt{FAIL};
+\item it costs $N^{1/6+5\varepsilon/6}(\log N)^{O(1)}$ on every input;
+\item it fails on $O(2^{-\varepsilon n})|\mathcal S_{n,j}|$ pairs of every band with
+  $2^j\le H^2/16$, hence on an $O(N^{-\varepsilon})$ fraction of the pairs with
+  $q/p\le N^{\varepsilon}$.
+\end{itemize}
+\end{theorem}
+\begin{proof}[Sketch]
+\begin{itemize}
+\item \emph{Window span.} On band $j$, $Bx+AN/x\le H2^{j/2}\sqrt{N/R}+H2^{-j/2}\sqrt{2RN}\le
+  (1+\sqrt2)H\sqrt N$. So the window bound $\spanbar$, the baby length $\mbar$ and the band
+  primes are those of $\DCL_{n,H}$. Only the number of targets grows, by the number of bands,
+  $O(n)$.
+\item \emph{Weights.} $|AB'-A'B|\le H^2<\ell$ and $|V_j|\gg H^2$, so the lock and the coverage
+  criterion hold verbatim. So do the extraction lemmas, the clean band ($q\le H2^{n/2}<Y^4$) and
+  the large sieve, applied to the $p$-interval of length $\asymp q/R$.
+\item \emph{FULL count.} Lemma~\ref{lem:crt} holds with $\gcd(A-B,d)\le H^2$ in place of $H$.
+  This costs one factor $H$, and the first $E_c$ exponent becomes $-1/12+23\varepsilon/6$, which
+  is still below $-\varepsilon$ for $\varepsilon\le1/60$.
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[polynomial ratios; proved]\label{thm:Utheta}
+Fix $\varepsilon\in(0,1/60]$ and $\theta\in(0,1/5-3\varepsilon]$, and put $h=H^2$. For each band
+with $H^2/16<2^j\le2^{\theta n}$, use the following data:
+\begin{itemize}
+\item the weights $(1,B)$ with $2\le B\le h$;
+\item the band scale $Y_j=\lceil(2^{(n+j)/2}/h)^{1/3}\rceil$;
+\item four blocks of primes $\ell\equiv3\pmod4$ in $(2^kY_j,2^{k+1}Y_j]$, each with its own $L$,
+  $\gamma$ and baby list.
+\end{itemize}
+Run this after the algorithm of Theorem~\ref{thm:U}. For $n\ge n_0(\varepsilon,\theta)$ the
+combined algorithm outputs only proper divisors or \texttt{FAIL}, and costs
+\[
+  N^{1/6+\max(5\varepsilon/6,\ \theta/6+2\varepsilon/3)}(\log N)^{O(1)}
+\]
+on every input. It fails on $O(2^{-\varepsilon n})|\mathcal S_{n,j}|$ pairs of every band
+$j\le\theta n$.
+\end{theorem}
+\begin{proof}[Sketch]
+\begin{itemize}
+\item \emph{Cost.} The window span on band $j$ is at most $18Q_j$ with $Q_j=2^{(n+j+1)/2}$. So a
+  block's list costs $O(Q_j/Y_j^2+hY_j)=O(h^{2/3}Q_j^{1/3})$, and the geometric sum over bands gives
+  $h^{2/3}2^{(1+\theta)n/6}n^{O(1)}$.
+\item \emph{$E_a$ and $E_b$.} With $T_j\asymp Q_j^{1/2}N^{-\varepsilon}$, the set $E_a$ is
+  $O(n2^{-2\varepsilon n})$. The large sieve with the $h-1$ distinct classes $qB^{-1}$ gives $E_b=O(n^2/h)$,
+  using $Y_j^2\le\sqrt{N/R}$, which holds for $\theta\le1/5$.
+\item \emph{$E_c$.} Here $\gcd(B-1,d)\le h$, and the FULL count gives
+  \[
+  O\bigl(n(h^{8/3}Q_j^{-1/6}2^{\varepsilon n}+h^{4/3}R^{5/6}N^{-1/6}+h^{2/3}N^{(2\theta-1)/3})\bigr).
+  \]
+  The second term is $O(2^{-\varepsilon n})$ exactly when $R\le2^{(1/5-14\varepsilon/5)n-O(\log
+  n)}$. This is where $\theta<1/5$ enters.
+\end{itemize}
+A fine-band variant, with weights $(1,B)$ for $B\approx R$, has the same exponent; its FULL count
+fixes $(p,B,\ell,\delta)$ and counts $q$ instead.
+\end{proof}
+
+\subsection{The envelope}
+Pollard--Strassen finds every prime factor up to $z$ deterministically in
+$z^{1/2}(\log N)^{O(1)}$ \cite{pollard1974,strassen1976,bgs2007}. At ratio $q/p=N^\theta$ we have
+$p\le N^{(1-\theta)/2}$, so it costs $N^{(1-\theta)/4}$ in the worst case. Combining it with
+Theorem~\ref{thm:Utheta}, every band of ratio $N^\theta$ is factored, except for $O(N^{-\varepsilon})$
+of its pairs, at cost $N^{e(\theta)+O(\varepsilon)}$, where
+\[
+  e(\theta)=\min\Bigl(\frac{1+\theta}6,\ \frac{1-\theta}4\Bigr),\qquad0\le\theta\le1/3.
+\]
+The first branch is valid for $\theta\le1/5-3\varepsilon$, and the second for all $\theta$. The
+envelope $e(\theta)$ exceeds $1/6$ for every $0<\theta<1/3$. It peaks at $e(1/5)=1/5$, at
+$p\approx N^{2/5}$ and $q\approx N^{3/5}$. A whole range of ratios $q/p\le N^{\theta_0}$ with
+$\theta_0\ge1/5$ therefore costs $N^{1/5+O(\varepsilon)}$, which is no better than Harvey's
+worst-case bound.
+
+\subsection{A full-coverage barrier}
+The peak at $\theta=1/5$ is not an artefact of our designs, at least for full coverage in the
+following model.
+
+\paragraph{Model $\mathfrak L$ (one-dimensional Lehman-linear collision searches).}
+Fix $N$ and a ratio band $R_0$. The candidates are the integers $p\in[x_1,x_2]$ with
+$R_0\le N/p^2\le2R_0$. A search consists of:
+\begin{itemize}
+\item baby lists $\{\gamma_i^e:e\in S_i\}$, where $S_i\subset\Z$ is an \emph{arbitrary} set of
+  size $m_i$;
+\item giants $G$, each compared against one list $i(G)$ and carrying a target
+  $(\alpha,\beta,c_0,M,r,g_0)$ with integers $\alpha,\beta,c_0,g_0$ and $M\ge1$, where
+  \[
+  (\alpha,\beta)\ne(0,0).
+  \]
+  A target with $\alpha=\beta=0$ does not depend on $p$; its collision is two-sided and can never
+  be extracted.
+\end{itemize}
+The giant covers a candidate $p\equiv r\pmod M$ if
+$\lfloor(\alpha p+\beta N/p+c_0)/M^2\rfloor\in g_0+S_{i(G)}$. For other candidates this is a
+relaxation, which only enlarges coverage. Rational normalisations by $D\mid\beta M^2$ are allowed.
+The cost is $X=\sum_im_i+\#\{\text{giants}\}$. Nothing is assumed about the group, the base, the
+moduli (prime, composite or CRT products) or the side that is extracted.
+
+\begin{proposition}[Proposition O$'$; proved in $\mathfrak L$; full coverage]\label{prop:Oprime}
+\begin{enumerate}[label=(\alph*)]
+\item If $\beta\ne0$, a giant whose list has size $m$ covers at most $2m+8\sqrt{mx_2/R_0}$
+  candidates.
+\item If $\beta=0$, it covers at most $m$.
+\item Hence a search in $\mathfrak L$ that covers a fraction $f$ of the candidates has
+  \[
+  X\ge\min\bigl(\sqrt{fx_2}/4,\ (f/64)^{2/3}(x_2R_0)^{1/3}\bigr)\asymp\min\bigl(\sqrt{fp},\
+  f^{2/3}q^{1/3}\bigr).
+  \]
+  At $R_0=N^{1/5}$ this is $\gg f^{2/3}N^{1/5}$, with any number of moduli.
+\end{enumerate}
+\end{proposition}
+\begin{proof}[Sketch]
+\begin{itemize}
+\item \emph{(a).} Write $p=r+Mx$. Then $g(x)$ has $g''=2\beta N/p^3$; the factor $M^2$ cancels.
+  So $g$ is convex with curvature $\kappa\ge2|\beta|N/x_2^3$. On each side of the minimum,
+  $g'\ge\sqrt{\kappa(g-\min g)}$. Hence the preimage of the $i$-th window value has length
+  $O(1/\sqrt{\kappa i})$. Summing over the $m$ values gives $2m+O(\sqrt{m/\kappa})$.
+\item \emph{(b).} The map is linear with a nonzero integer slope on the refined class.
+\item \emph{(c).} The total coverage is at most $2X^2+8\sqrt{x_2/R_0}\,X^{3/2}$.
+\end{itemize}
+\end{proof}
+
+\begin{remark}[scope of Proposition~\ref{prop:Oprime}]
+\begin{itemize}
+\item \emph{Full coverage only.} This is a \emph{full-coverage} statement: it bounds how many
+  candidates one search covers for a fixed $N$. It is not an average-case bound. An almost-all
+  algorithm only needs the true factor, and it could beat the bound only if its covered sets
+  favoured the true factor beyond their density.
+\item \emph{Sharpness.} Explicit searches attain the bound inside $\mathfrak L$, with relaxed,
+  non-lock coverage. Real algorithms reach the envelope $e(\theta)$ only in the almost-all sense:
+  Theorem~\ref{thm:Utheta} on one branch and Pollard--Strassen on the other.
+\item \emph{Outside the model.} Targets nonlinear in $(p,q)$, multi-dimensional searches, lattice
+  methods and polynomial evaluation are not covered.
+\item \emph{Prior art.} Ward--Maestro \cite[Prop.~3.7]{wardmaestro2026} treat unbalanced
+  factors $p\approx N^{\beta}$ in their oblivious covering model, which has no per-target
+  locks. With materialised giants they obtain $T\gg N^{\max(1/5,(1-\beta)/3)}$. Since
+  $\beta\approx(1-\theta)/2$, their branch $(1-\beta)/3$ is our $q^{1/3}$ branch $(1+\theta)/6$,
+  and it binds for $\theta\ge1/5$. Model~$\mathfrak L$ allows arbitrary lock moduli and
+  arbitrary baby sets. That is why its bound falls to $(1+\theta)/6$ below $\theta=1/5$, where
+  Theorem~\ref{thm:Utheta} attains it for almost all pairs. The curvature argument is the same
+  as theirs.
+\end{itemize}
+\end{remark}
+
+\subsection{Which populations the results serve}
+\begin{itemize}
+\item \emph{Bounded and $N^{o(1)}$ ratios.} For $\Sn$ and for every band with
+  $q/p\le N^{o(1)}$, the exponent is $1/6+o(1)$ with power-saving exceptions
+  (Theorems~\ref{thm:D} and~\ref{thm:U}).
+\item \emph{Both primes at least $N^{1/3}$, counted by pairs.} Then $\theta$ has a continuous law
+  on $[0,1/3]$, with $\Pr[\theta\le t]=\log_2((1+t)/(1-t))$ asymptotically. At cost
+  $N^{1/6+\eta}$ our methods handle only a fraction of about $30\eta$ of these pairs. Exponent
+  $1/5-\eta'$ fails only on a fraction of about $30\eta'$, but no exponent below $1/5$ holds for
+  $1-o(1)$ of them. We do not claim that no method can.
+\item \emph{All semiprimes up to $X$.} Almost all have a factor below $X^\delta$, so the
+  question is trivial with $o(1)$ exceptions. With power-saving exceptions nothing below $1/5$
+  follows from our methods, since a fraction $\asymp\eta/\log\log X$ of these semiprimes has
+  $\theta$ within $\eta$ of $1/5$.
+\end{itemize}
 
 %======================================================================
 \section{Experiments}\label{sec:experiments}
@@ -1679,7 +1842,10 @@ $n$ & $H/Y$ & succ. & C1 $E_{\mathrm{first}}$ & HH $E$ & C1/HH\\
   collision designs. Remark~\ref{rem:T1scope} lists the escapes that remain open: a global
   selector, keys finer than $M^2$, label multiplicity, and relation methods. Smooth-order
   methods already beat $1/6$ on a positive proportion, but not almost everywhere.
-\item \textbf{Ratios.} See Section~\ref{sec:unbalanced}.
+\item \textbf{Ratios.} Is there a deterministic algorithm that factors almost all pairs with
+  $p\approx N^{2/5}$, $q\approx N^{3/5}$, that is $q/p\approx N^{1/5}$, in time $N^{1/5-\delta}$?
+  Proposition~\ref{prop:Oprime} shows that this needs either a non-uniform covering that favours
+  the true factor, or a mechanism outside one-dimensional Lehman-linear searches.
 \item \textbf{Practice.} At 40--80 bits the search is $2.3$--$4.9$ times slower than
   Harvey--Hittmeir in our proxy. The heuristic subexponential methods (ECM, the quadratic and
   number field sieves) are far faster still. This work concerns rigorous deterministic bounds
