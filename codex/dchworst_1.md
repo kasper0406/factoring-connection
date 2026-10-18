@@ -1,4 +1,4 @@
-You are a research mathematician (analytic number theory, geometry of numbers, sieve theory, computational number theory). This is a BLIND attempt: work the problem yourself first, then check literature. Read-only access to /home/knielsen/code/factoring-connection; put scratch scripts under /tmp/claude-dchworst1/. Background (optional): notes/dcltheorem_results.md (Theorem D', a deterministic N^{1/6+eps} factoring algorithm for all but N^{-eps} of balanced semiprimes) and notes/multimod_results.md §3 (Theorems A, B and the conjecture DCH in §3.6).
+You are a research mathematician (analytic number theory, geometry of numbers, sieve theory, computational number theory). This is a BLIND attempt: work the problem yourself first, then check literature. Read-only access to /Volumes/git/factoring-connection; put scratch scripts under the current working directory (your scratch dir). Background (optional): notes/dcltheorem_results.md (Theorem D', a deterministic N^{1/6+eps} factoring algorithm for all but N^{-eps} of balanced semiprimes) and notes/multimod_results.md §3 (Theorems A, B and the conjecture DCH in §3.6).
 
 ## Setting
 

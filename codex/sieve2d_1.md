@@ -1,6 +1,6 @@
 # Blind attempt: two-variable sieve for prime pairs avoiding Farey classes in a prime band
 
-You are a research mathematician (analytic number theory, sieve methods). Work read-only; you may read files under /home/knielsen/code/factoring-connection (in particular notes/dcltheorem_results.md, Lemma 9 and section 4(iii)) for context, and use web search for literature. Do NOT look at notes/sieve2d_* (blind attempt).
+You are a research mathematician (analytic number theory, sieve methods). Work read-only; you may read files under /Volumes/git/factoring-connection (in particular notes/dcltheorem_results.md, Lemma 9 and section 4(iii)) for context, and use web search for literature. Do NOT look at notes/sieve2d_* (blind attempt).
 
 ## Problem
 
