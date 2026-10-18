@@ -5,14 +5,26 @@ the statements: `notes/dcltheorem_results.md` §2–4, which remains authoritati
 
 ## 0. Verdict (plain language)
 
-**Lean has checked the algebraic and elementary number-theoretic core of Theorem D′.**
-Lemmas 1, 2, 3, 4, 5, 6, 7, 8 and 10, plus the coverage criterion, are fully proved in Lean 4
-with Mathlib. So is a capstone theorem that chains Lemmas 3, 4, 5 and 7, with a wrapper that
-also derives its inputs from Lemmas 1 and 2.
-- **No `sorry`. No `axiom` declaration.** `#print axioms` on all 32 main results shows only
+**Lean has checked parts of Theorem D′:** the algebraic core, the components of the window
+lemma, a small-order bound with a floored log, and the core counting step of the CRT/union
+argument.
+- **Fully proved in Lean 4 + Mathlib, as stated in the note:** Lemmas 1, 3, 4, 5, 6 and 7, the
+  coverage criterion, and the components of Lemma 2.
+- **Also fully proved:** a capstone theorem that chains Lemmas 3, 4, 5 and 7, with a wrapper
+  that also derives its inputs from Lemmas 1 and 2.
+- **Partially formalized (the core counting step only, not the paper-level conclusion):**
+  - Lemma 8: the `T²` bound, plus a corollary of the note's bound with an integer threshold
+    (`log₂ Q₀` floored);
+  - Lemma 9: proved from the prime-term large-sieve hypothesis;
+  - Lemma 10: the residue-class count, the CRT step and the union bound. The final real-valued
+    bound is not formalized.
+- **No `sorry`. No `axiom` declaration.** `#print axioms` on all 34 main results shows only
   Lean's standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
-- **The large sieve is not proved.** It enters as an explicit hypothesis `ArithmeticLargeSieve`
-  (a `Prop` passed as an argument). Lemma 9 and the exceptional-set bound `E_b` are proved *from*
+- **The large sieve is not proved.** It enters as an explicit hypothesis,
+  `ArithmeticLargeSievePrimeTerms` (a `Prop` passed as an argument). This is the prime-term
+  weakening of Montgomery–Vaughan (MNT I, Thm 19.13): only the `d = 1` and prime-`d` terms of
+  `J` are kept. For a single dyadic band nothing is lost, since a product of two band primes
+  exceeds `Q`. Lemma 9 and the exceptional-set bound `E_b` are proved *from*
   it.
 - **Not formalized:**
   - the analytic inputs (PNT in the progression 3 mod 4, `|S_n| ≍ P²/n²`);
@@ -60,17 +72,17 @@ Notation as in the note: `u = x^M`, `γ = x^(M ℓ²)` with `M = L/ℓ²` and ba
 | (f) Lemma 7, core | `coprime_dvd_mul_iff`, `coprime_dvd_mul_iff_int` (Bands) | proved | `gcd(e,d) = 1 ⇒ (d ∣ ex ⇔ d ∣ x)` |
 | (f) Lemma 7, FULL criterion | `lemma7_core`, `lemma7_full_iff` (Bands) | proved | any group, `gcd(M, ord x) = 1`: giant FULL ⇔ `∃ δ ∈ [−i*, m−1−i*]`, `ord x ∣ D − ℓ²δ` |
 | (f) cleanliness ⇒ coprimality | `clean_coprime`, `coprime_of_clean`, `lemma7_coprime_zmod` (Bands) | proved | no band prime divides `q−1` ⇒ `gcd(∏ℓ², q−1) = 1` ⇒ `gcd(M, ord_q x) = 1` |
-| (g) Lemma 8, requested form | `lemma8` (SmallOrder) | proved | `#{odd primes q : ord_q(2) ≤ T} ≤ T²` |
-| (g) Lemma 8, note's form | `lemma8_sharp` (SmallOrder) | proved (floor-log variant) | primes `> 2^b` (`b ≥ 1`) with `ord_q(2) ≤ T`: `2b·#s ≤ T(T+1)`. With `b = ⌊log₂ Q₀⌋` this is the note's `T(T+1)/(2 log₂ Q₀)` with `log₂` floored |
-| (h) Lemma 10, class count | `card_le_of_pairwise_modEq` (CRTCount) | proved | a pairwise-congruent-mod-`M` subset of `[a, a+len)` has `≤ len/M + 1` elements |
-| (h) Lemma 10, one triple (CRT) | `lemma10_pairwise_modEq`, `lemma10_single` (CRTCount) | proved | `ℓ` prime, `ℓ ∤ B`, `ℓ ∤ d`, `d > 0`: solutions of `ℓ ∣ Bp − Aq`, `d ∣ (A−B)(p−1) − ℓ²δ` in `[a, a+len)` number `≤ len/(ℓ·d/gcd(d, A−B)) + 1` |
-| (h) Lemma 10, modulus size | `lemma10Modulus_ge` (CRTCount) | proved | `ℓd ≤ (ℓ·d/g′)·|A−B|` for `A ≠ B` (the note's `ℓd/g′ ≥ ℓd/H`) |
-| (h) Lemma 10, union bound | `lemma10_union` (CRTCount) | proved | `|F| ≤ Σ_{(v,ℓ,δ)} (len/M_t + 1)` |
+| (g) Lemma 8, requested form | `lemma8` (SmallOrder) | proved (partial Lemma 8: the task's `T²` form) | `#{odd primes q : ord_q(2) ≤ T} ≤ T²` |
+| (g) Lemma 8, note's form | `lemma8_sharp` (SmallOrder) | proved (integer-threshold corollary; weaker than the note) | primes `> 2^b` (`b ≥ 1`) with `ord_q(2) ≤ T`: `2b·#s ≤ T(T+1)`. With `b = ⌊log₂ Q₀⌋` this is the note's `T(T+1)/(2 log₂ Q₀)` with `log₂` floored |
+| (h) Lemma 10, class count | `card_le_of_pairwise_modEq` (CRTCount) | proved (core counting step of Lemma 10) | a pairwise-congruent-mod-`M` subset of `[a, a+len)` has `≤ len/M + 1` elements |
+| (h) Lemma 10, one triple (CRT) | `lemma10_pairwise_modEq`, `lemma10_single` (CRTCount) | proved (core counting step of Lemma 10) | `ℓ` prime, `ℓ ∤ B`, `ℓ ∤ d`, `d > 0`: solutions of `ℓ ∣ Bp − Aq`, `d ∣ (A−B)(p−1) − ℓ²δ` in `[a, a+len)` number `≤ len/(ℓ·d/gcd(d, A−B)) + 1` |
+| (h) Lemma 10, modulus size | `lemma10Modulus_ge` (CRTCount) | proved (core counting step of Lemma 10) | `ℓd ≤ (ℓ·d/g′)·|A−B|` for `A ≠ B` (the note's `ℓd/g′ ≥ ℓd/H`) |
+| (h) Lemma 10, union bound | `lemma10_union` (CRTCount) | proved (core counting step of Lemma 10) | `|F| ≤ Σ_{(v,ℓ,δ)} (len/M_t + 1)` |
 | Lemma 10, final real bound | — | not formalized | substituting `|V| ≤ H²`, `|𝒫_k| ≤ 2^kY`, `m̄_k`, `d > T` into the sum |
 | Lemma 9, distinct classes | `same_class_dvd`, `weights_eq_of_same_class` (Coverage); `excludedResidue_spec`, `card_weights_le` (LargeSieve) | proved | primitive weights in `[1,H]²`, `H² < ℓ`, `ℓ ∤ q`: equal classes ⇒ equal weights; `|V| ≤ H²` |
-| **Arithmetic large sieve** | `ArithmeticLargeSieve` (LargeSieve) | **HYPOTHESIS (assumed, not proved)** | prime-term form: `|U|·(1 + Σ_{ℓ∈𝒫} ω/(ℓ−ω)) ≤ N₀ + Q²` (Montgomery 1968; Montgomery–Vaughan 1973) |
-| Lemma 9 | `lemma9_of_largeSieve` (LargeSieve) | proved **from the hypothesis** | `|U(q)| · |V| · Σ_{ℓ∈𝒫} 1/ℓ ≤ N₀ + Q²` |
-| `E_b` exceptional set | `exceptional_Eb_of_largeSieve` (LargeSieve) | proved **from the hypothesis** | `(Σ_{q∈𝒬} |U(q)|) · J ≤ |𝒬|·(N₀ + Q²)` whenever `J ≤ |V| Σ_{ℓ∈𝒫(q)} 1/ℓ` |
+| **Arithmetic large sieve** | `ArithmeticLargeSievePrimeTerms` (LargeSieve) | **HYPOTHESIS (assumed, not proved)** | prime-term form: `|U|·(1 + Σ_{ℓ∈𝒫} ω/(ℓ−ω)) ≤ N₀ + Q²` (Montgomery 1968; Montgomery–Vaughan 1973) |
+| Lemma 9 | `lemma9_of_largeSieve` (LargeSieve) | proved **from the hypothesis** (partial: no PNT step) | `|U(q)| · |V| · Σ_{ℓ∈𝒫} 1/ℓ ≤ N₀ + Q²` |
+| `E_b` exceptional set | `exceptional_Eb_of_largeSieve`, `exceptional_Eb_div_of_largeSieve`, `J_pos` (LargeSieve) | proved **from the hypothesis** | `(Σ_{q∈𝒬} |U(q)|) · J ≤ |𝒬|·(N₀ + Q²)` whenever `J ≤ |V| Σ_{ℓ∈𝒫(q)} 1/ℓ`; divided form for `0 < J`; `J > 0` for nonempty `V`, `𝒫` |
 | `Σ 1/ℓ ≥ c/n`, `|S_n| ≥ c₀P²/n²` | — | not formalized | needs PNT (in progressions); outside this scope |
 | Capstone (Lemmas 3+4+7+5) | `single_target_extraction` (SingleTarget) | proved | `p ≠ q` primes, the giant's residues mod `p` and mod `q` as computed, `ℓ²g = Bp + Aq − c`, `g − g_lo = j*m + i*` with `0 ≤ i* < m`, clean band, and the FULL condition failing for all `δ ∈ [−i*, m−1−i*]` ⇒ `gcd(f(G), N) = p` |
 | Capstone from the class lock (Lemmas 1+2+3+4+7+5) | `single_target_from_lock` (SingleTarget) | proved | Lemma 1 hypotheses and `Lo ≤ Bp+Aq ≤ Hi` give `g`, `g_lo`, `g_hi`, `j*`, `i*`; then `0 ≤ j* ≤ (g_hi−g_lo)/m` (the true giant is among those computed) and `gcd(f(G), N) = p` |
@@ -114,13 +126,28 @@ absent from every `#print axioms`.)
 
 ## 4. Review
 
+**GPT-6.1-sol faithfulness review** (`notes/codex_r15_lean_faithfulness.md`, run on f77e05d,
+before the fixes below).
+- **Findings:**
+  - the core lemmas are FAITHFUL;
+  - Lemmas 8–10 and the large-sieve deduction are partial (weaker) but sound;
+  - the capstone is substantive and satisfiable. A second concrete instance, p = 11 and q = 13,
+    gives gcd 11.
+- **Fixes applied:**
+  - renamed the hypothesis to `ArithmeticLargeSievePrimeTerms` and documented it as the
+    prime-term weakening;
+  - corrected the `lemma8_sharp` docstring: it is an integer-threshold corollary;
+  - narrowed the claims here and in `lean/README.md`;
+  - added `J_pos` and `exceptional_Eb_div_of_largeSieve`.
+
+
 An independent read-only Opus critic audited the statements for faithfulness, vacuity, truth of
 the large-sieve hypothesis, and casts. **Verdict: ACCEPT WITH FIXES, no blockers.**
 
 Key confirmations:
 - **The capstone is satisfiable, not vacuous.** The critic built a concrete instance,
   p = 3, q = 7, and `single_target_extraction` gives gcd 3.
-- **`ArithmeticLargeSieve` is a true statement.** It follows from Montgomery–Vaughan together
+- **`ArithmeticLargeSievePrimeTerms` is a true statement.** It follows from Montgomery–Vaughan together
   with Montgomery's prime lemma. Dropping the composite-`d` terms only weakens it.
 - **The coercions are sound.** The divisibility and exponent arithmetic is done over ℤ, so ℕ
   subtraction causes no wrap-around.

@@ -65,9 +65,11 @@ theorem gauss_sum_Icc (T : ℕ) : (∑ k ∈ Icc 1 T, k) * 2 = T * (T + 1) := by
   | succ n ih =>
     rw [Finset.sum_Icc_succ_top (by omega), add_mul, ih]; ring
 
-/-- **Lemma 8 (sharp form, as in the note).** Let `s` be a set of primes, each `> 2^b`
+/-- **Lemma 8, integer-threshold corollary** (not exactly the note's statement). Let `s` be a set of primes, each `> 2^b`
 (`b ≥ 1`, so `b = ⌊log₂ Q₀⌋` for primes `> Q₀`), each with `ord_q(2) ≤ T`. Then
-`b · #s ≤ T(T+1)/2`, i.e. `#s ≤ T(T+1)/(2b)`. -/
+`b · #s ≤ T(T+1)/2`, i.e. `#s ≤ T(T+1)/(2b)`. The note's bound `T(T+1)/(2 log₂ Q₀)` for
+primes `> Q₀` follows only with `log₂ Q₀` replaced by the integer `b = ⌊log₂ Q₀⌋` (weaker by at
+most a factor 2). -/
 theorem lemma8_sharp (s : Finset ℕ) (T b : ℕ) (hb : 1 ≤ b)
     (hs : ∀ q ∈ s, q.Prime ∧ 2 ^ b < q ∧ orderOf (2 : ZMod q) ≤ T) :
     b * s.card * 2 ≤ T * (T + 1) := by
@@ -98,7 +100,7 @@ theorem lemma8_sharp (s : Finset ℕ) (T b : ℕ) (hb : 1 ≤ b)
   calc b * s.card * 2 ≤ (∑ k ∈ Icc 1 T, k) * 2 := Nat.mul_le_mul_right 2 h3
     _ = T * (T + 1) := h4
 
-/-- **Lemma 8 (form requested): the number of odd primes `q` with `ord_q(2) ≤ T` is at most
+/-- **Lemma 8 (form requested in the task): the number of odd primes `q` with `ord_q(2) ≤ T` is at most
 `T²`.** -/
 theorem lemma8 (s : Finset ℕ) (T : ℕ)
     (hs : ∀ q ∈ s, q.Prime ∧ q ≠ 2 ∧ orderOf (2 : ZMod q) ≤ T) :

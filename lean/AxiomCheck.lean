@@ -32,5 +32,7 @@ open FactoringLean
 #print axioms weights_eq_of_same_class
 #print axioms lemma9_of_largeSieve
 #print axioms exceptional_Eb_of_largeSieve
+#print axioms exceptional_Eb_div_of_largeSieve
+#print axioms J_pos
 #print axioms single_target_extraction
 #print axioms single_target_from_lock

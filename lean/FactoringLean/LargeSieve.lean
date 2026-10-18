@@ -2,7 +2,7 @@
   Theorem D′, notes/dcltheorem_results.md §3–4.
   Lemma 9 (coverage via the arithmetic large sieve) and the exceptional-set bound E_b,
   DEDUCED FROM the large-sieve inequality, which is NOT proved here: it enters only as the
-  explicit hypothesis `ArithmeticLargeSieve` (a `Prop`, passed as an argument; no `axiom`).
+  explicit hypothesis `ArithmeticLargeSievePrimeTerms` (a `Prop`, passed as an argument; no `axiom`).
 -/
 import Mathlib
 import FactoringLean.Coverage
@@ -19,8 +19,16 @@ let `U` be a finite set of integers in `(M₀, M₀ + N₀]`, `Ps` a finite set 
 for each `ℓ ∈ Ps` let `Ω ℓ ⊆ [0, ℓ)` be a set of `ω(ℓ) < ℓ` residues that `U` avoids modulo `ℓ`.
 Then `|U| · (1 + Σ_{ℓ ∈ Ps} ω(ℓ)/(ℓ − ω(ℓ))) ≤ N₀ + Q²`.
 
-Theorems below that use it take `(hLS : ArithmeticLargeSieve)` as an argument. -/
-def ArithmeticLargeSieve : Prop :=
+This is the **prime-term weakening** of the arithmetic large sieve (Montgomery–Vaughan 1973;
+cf. Iwaniec–Kowalski Thm 7.14 / Montgomery–Vaughan *Multiplicative Number Theory I* Thm 19.13,
+with Montgomery's lemma for the local factors): of `J = Σ_{d ≤ Q} μ²(d) ∏_{ℓ ∣ d} ω/(ℓ−ω)` only the
+`d = 1` and prime `d = ℓ ∈ 𝒫` terms are kept. All dropped terms are `≥ 0`, so this is implied
+by the full theorem. For a single dyadic band (Lemma 9: sieving primes `ℓ ∈ (2^kY, 2^{k+1}Y]`,
+`Q = 2^{k+1}Y`), any product of two band primes exceeds `(2^kY)² > Q`, so there are no
+composite `d ≤ Q` built from band primes and nothing is lost.
+
+Theorems below that use it take `(hLS : ArithmeticLargeSievePrimeTerms)` as an argument. -/
+def ArithmeticLargeSievePrimeTerms : Prop :=
   ∀ (M₀ : ℤ) (N₀ Q : ℕ) (U : Finset ℤ) (Ps : Finset ℕ) (Ω : ℕ → Finset ℤ),
     (∀ u ∈ U, M₀ < u ∧ u ≤ M₀ + N₀) →
     (∀ ℓ ∈ Ps, ℓ.Prime ∧ ℓ ≤ Q) →
@@ -61,7 +69,7 @@ theorem card_weights_le (V : Finset (ℕ × ℕ)) (H : ℕ)
 primes in `(H², Q]` not dividing `q`, and `U` integers in `(M₀, M₀ + N₀]` that no target covers:
 `ℓ ∤ B p − A q` for all `(A, B) ∈ V`, `ℓ ∈ Ps`. Assuming the large sieve,
 `|U| · |V| · Σ_{ℓ ∈ Ps} 1/ℓ ≤ N₀ + Q²`. -/
-theorem lemma9_of_largeSieve (hLS : ArithmeticLargeSieve) (M₀ : ℤ) (N₀ Q H : ℕ) (q : ℤ)
+theorem lemma9_of_largeSieve (hLS : ArithmeticLargeSievePrimeTerms) (M₀ : ℤ) (N₀ Q H : ℕ) (q : ℤ)
     (V : Finset (ℕ × ℕ)) (Ps : Finset ℕ)
     (hV : ∀ v ∈ V, 0 < v.1 ∧ v.1 ≤ H ∧ 0 < v.2 ∧ v.2 ≤ H ∧ Nat.Coprime v.1 v.2)
     (hP : ∀ ℓ ∈ Ps, ℓ.Prime ∧ ℓ ≤ Q ∧ H ^ 2 < ℓ ∧ ¬ (ℓ : ℤ) ∣ q)
@@ -148,7 +156,7 @@ primes `q` (each with its own band `Ps q`, e.g. the least clean band `k(q)`):
 `(Σ_{q ∈ Qs} |U(q)|) · J ≤ |Qs| · (N₀ + Q²)`, where `J ≤ |V| Σ_{ℓ ∈ Ps q} 1/ℓ` for all `q`.
 The note then uses `J ≥ c₁ H²/n` (PNT mod 4) and `|S_n| ≥ c₀ P²/n²`; those analytic inputs are
 NOT formalized. -/
-theorem exceptional_Eb_of_largeSieve (hLS : ArithmeticLargeSieve) (M₀ : ℤ) (N₀ Q H : ℕ)
+theorem exceptional_Eb_of_largeSieve (hLS : ArithmeticLargeSievePrimeTerms) (M₀ : ℤ) (N₀ Q H : ℕ)
     (V : Finset (ℕ × ℕ)) (Qs : Finset ℤ) (Ps : ℤ → Finset ℕ) (J : ℝ)
     (hV : ∀ v ∈ V, 0 < v.1 ∧ v.1 ≤ H ∧ 0 < v.2 ∧ v.2 ≤ H ∧ Nat.Coprime v.1 v.2)
     (hP : ∀ q ∈ Qs, ∀ ℓ ∈ Ps q, ℓ.Prime ∧ ℓ ≤ Q ∧ H ^ 2 < ℓ ∧ ¬ (ℓ : ℤ) ∣ q)
@@ -167,5 +175,21 @@ theorem exceptional_Eb_of_largeSieve (hLS : ArithmeticLargeSieve) (M₀ : ℤ) (
   calc ∑ q ∈ Qs, ((uncovered M₀ N₀ V (Ps q) q).card : ℝ) * J
       ≤ ∑ _q ∈ Qs, (N₀ + (Q : ℝ) ^ 2) := sum_le_sum this
     _ = Qs.card * (N₀ + (Q : ℝ) ^ 2) := by rw [sum_const, nsmul_eq_mul]
+
+/-- `E_b` in divided form: if `0 < J`, then `Σ_{q ∈ 𝒬} |U(q)| ≤ |𝒬| (N₀ + Q²) / J`. -/
+theorem exceptional_Eb_div_of_largeSieve (hLS : ArithmeticLargeSievePrimeTerms) (M₀ : ℤ)
+    (N₀ Q H : ℕ) (V : Finset (ℕ × ℕ)) (Qs : Finset ℤ) (Ps : ℤ → Finset ℕ) (J : ℝ) (hJpos : 0 < J)
+    (hV : ∀ v ∈ V, 0 < v.1 ∧ v.1 ≤ H ∧ 0 < v.2 ∧ v.2 ≤ H ∧ Nat.Coprime v.1 v.2)
+    (hP : ∀ q ∈ Qs, ∀ ℓ ∈ Ps q, ℓ.Prime ∧ ℓ ≤ Q ∧ H ^ 2 < ℓ ∧ ¬ (ℓ : ℤ) ∣ q)
+    (hJ : ∀ q ∈ Qs, J ≤ (V.card : ℝ) * ∑ ℓ ∈ Ps q, (1 : ℝ) / ℓ) :
+    ∑ q ∈ Qs, ((uncovered M₀ N₀ V (Ps q) q).card : ℝ) ≤ Qs.card * (N₀ + (Q : ℝ) ^ 2) / J := by
+  rw [le_div_iff₀ hJpos]
+  exact exceptional_Eb_of_largeSieve hLS M₀ N₀ Q H V Qs Ps J hV hP hJ
+
+/-- Positivity of `J = |V| Σ_{ℓ ∈ 𝒫} 1/ℓ` when `V` and `𝒫` are nonempty and `𝒫` has no `0`. -/
+theorem J_pos (V : Finset (ℕ × ℕ)) (Ps : Finset ℕ) (hV : V.Nonempty) (hP : Ps.Nonempty)
+    (hP0 : ∀ ℓ ∈ Ps, 0 < ℓ) : 0 < (V.card : ℝ) * ∑ ℓ ∈ Ps, (1 : ℝ) / ℓ := by
+  apply mul_pos (by exact_mod_cast hV.card_pos)
+  apply Finset.sum_pos (fun ℓ hℓ => by have := hP0 ℓ hℓ; positivity) hP
 
 end FactoringLean

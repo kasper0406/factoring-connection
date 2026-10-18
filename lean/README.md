@@ -1,14 +1,17 @@
 # FactoringLean: Lean 4 formalization of the Theorem D′ lemmas
 
-This Lake project machine-checks the algebraic and elementary number-theoretic lemmas of
-Theorem D′ (`../notes/dcltheorem_results.md`, §3–4). The status table (lemma, Lean name,
+This Lake project machine-checks parts of Theorem D′: the algebraic core (Lemmas 1, 3–7 and
+the coverage criterion), the components of the window lemma (Lemma 2), a small-order bound with a
+floored log (Lemma 8, partial), and the core counting step of the CRT/union argument (Lemma 10,
+partial). Lemma 9 is proved only from a large-sieve hypothesis. See Theorem D′ (`../notes/dcltheorem_results.md`, §3–4). The status table (lemma, Lean name,
 proved / hypothesis / not formalized) is in `../notes/leanform_results.md`.
 
 - Toolchain: `leanprover/lean4:v4.35.0` (`lean-toolchain`).
 - Dependency: Mathlib, tag `v4.35.0` (`lakefile.toml`; pinned commit in `lake-manifest.json`).
-- No `sorry` and no `axiom` declarations. The arithmetic large sieve is **not** proved here.
-  It is the `Prop` `FactoringLean.ArithmeticLargeSieve`, and the two theorems that use it take
-  it as an explicit hypothesis `(hLS : ArithmeticLargeSieve)`.
+- No `sorry` and no `axiom` declarations. The arithmetic large sieve is **not** proved here; its prime-term weakening
+  (Montgomery–Vaughan, MNT I Thm 19.13, keeping only `d = 1` and prime `d`) is assumed.
+  It is the `Prop` `FactoringLean.ArithmeticLargeSievePrimeTerms`, and the two theorems that use it take
+  it as an explicit hypothesis `(hLS : ArithmeticLargeSievePrimeTerms)`.
 
 ## Build
 
@@ -16,7 +19,7 @@ proved / hypothesis / not formalized) is in `../notes/leanform_results.md`.
 cd lean
 lake exe cache get      # download prebuilt Mathlib .olean files (do not compile Mathlib)
 lake build              # builds FactoringLean (expected: "Build completed successfully")
-lake env lean AxiomCheck.lean   # prints the axioms of the 32 main results
+lake env lean AxiomCheck.lean   # prints the axioms of the 34 main results
 ```
 
 `elan` lives in `~/.elan/bin`; put it on `PATH` first. `AxiomCheck.lean` should list only
