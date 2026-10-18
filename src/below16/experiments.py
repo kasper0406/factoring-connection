@@ -286,6 +286,16 @@ def run_e4():
 
 # --------------------------------------------------------------------------
 
+def binom_two_sided(k: int, m: int, j: int) -> float:
+    """Exact two-sided binomial p-value for k successes in m trials, prob 2^-j
+    (sum of the probabilities of all outcomes no more likely than k)."""
+    from fractions import Fraction
+    pr = Fraction(1, 2 ** j)
+    probs = [math.comb(m, i) * pr ** i * (1 - pr) ** (m - i) for i in range(m + 1)]
+    pk = probs[k]
+    return float(sum(x for x in probs if x <= pk * (1 + Fraction(1, 10 ** 9))))
+
+
 def summarize():
     res = {}
     e1 = [json.loads(l) for l in open(RAW / "below16_e1.jsonl")]
@@ -324,7 +334,8 @@ def summarize():
             for j in (1, 2, 3, 4, 5, 6, 8, 10):
                 xs = [x[1] for r in v for x in r["prefix_all_trivial"] if x[0] == j]
                 if xs:
-                    pref[j] = {"m": len(xs), "all_trivial": sum(xs), "expected": len(xs) * 2.0 ** (-j)}
+                    pref[j] = {"m": len(xs), "all_trivial": sum(xs), "expected": len(xs) * 2.0 ** (-j),
+                               "p_two_sided": binom_two_sided(sum(xs), len(xs), j)}
             sm = [r["rels"] for r in v if r["rels"] is not None]
             e4s[f"{n}|{'blum' if bl else 'general'}"] = {
                 "inst": len(v), "success": sum(r["ok"] for r in v) / len(v),
