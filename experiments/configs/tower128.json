@@ -1,0 +1,23 @@
+{
+  "agent": "tower128",
+  "date": "2026-10-18",
+  "question": "NEXT_STEPS item 2: is s mod 128 a function of (N mod 128, eps, QR_2) plus 2-power class-group invariants of public discriminants?",
+  "scope": "all pairs of primes 11 <= p < q < bound with N = pq = 1 (mod 8); exhaustive, no sampling",
+  "bounds": [2000, 4000],
+  "discriminants": ["-4N", "-8N", "-12N", "-20N", "-24N", "-28N", "-3N", "-7N"],
+  "skipped_discriminants": {"-N, -2N, -5N, -6N": "not 0,1 mod 4 for N = 1 mod 8"},
+  "forms": "primitive positive definite, reduced; -12N and -28N are non-fundamental (conductor 2)",
+  "invariants_per_D": ["2-Sylow abelian type (all r_{2^j})", "2-depth of the ambiguous form above each public prime l | D/N, when primitive"],
+  "public_key": "(N mod 128, eps, QR_2)",
+  "hidden_bit": "h = bit 2 of (uv mod 8), p = eps + 4u, q = eps + 4v; s mod 128 <=> h given the public key",
+  "mi_null": "within-cell permutation of the invariant, 200 permutations, seed 'tower128-perm'",
+  "commands": [
+    ".venv/bin/python -m src.tower.formula --bound 2000 --out experiments/raw/tower128_formula.json",
+    ".venv/bin/python -m src.tower.run_tower --bound 2000 --workers 20 --out experiments/raw/tower128_invariants.jsonl",
+    ".venv/bin/python -m src.tower.run_tower --bound 4000 --workers 20 --out experiments/raw/tower128_invariants_b4000.jsonl",
+    "gzip -9 experiments/raw/tower128_invariants.jsonl experiments/raw/tower128_invariants_b4000.jsonl",
+    ".venv/bin/python -m src.tower.analyze --inp experiments/raw/tower128_invariants.jsonl.gz --out experiments/analysis/tower128_tables.json",
+    ".venv/bin/python -m src.tower.analyze --inp experiments/raw/tower128_invariants_b4000.jsonl.gz --out experiments/analysis/tower128_tables_b4000.json",
+    ".venv/bin/python -m src.tower.symbols --bound 2000 --single_bound 20000 --out experiments/raw/tower128_symbols.json"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+ "T1_iii_ambiguous_keys": 0,
+ "T1_iii_keys": 128,
+ "T1_v_N5mod8_by_omega": {
+  "ambiguous_keys": 0,
+  "keys": 256
+ },
+ "T1_v_N5mod8_by_psi": {
+  "ambiguous_keys": 128,
+  "keys": 128
+ },
+ "T2": {
+  "6": {
+   "ambiguous_keys": 0,
+   "keys": 32
+  },
+  "7": {
+   "ambiguous_keys": 0,
+   "keys": 128
+  },
+  "8": {
+   "ambiguous_keys": 0,
+   "keys": 512
+  },
+  "9": {
+   "ambiguous_keys": 0,
+   "keys": 2048
+  },
+  "10": {
+   "ambiguous_keys": 0,
+   "keys": 7673
+  },
+  "11": {
+   "ambiguous_keys": 0,
+   "keys": 17547
+  }
+ },
+ "bound": 2000,
+ "cells_N16_twoSq_samePsi": {
+  "N%16=1,QR2=0,psi_p==psi_q=False": 3040,
+  "N%16=1,QR2=1,psi_p==psi_q=True": 2605,
+  "N%16=9,QR2=0,psi_p==psi_q=True": 2967,
+  "N%16=9,QR2=1,psi_p==psi_q=False": 2676
+ },
+ "checks": [
+  "index_bookkeeping",
+  "T1_i",
+  "T1_ii",
+  "s128_from_formula",
+  "2p_eq_2q",
+  "T1_iv_rule",
+  "psi_equal_iff_p_eq_q_mod16"
+ ],
+ "counts": {
+  "N_1_mod_8": 11288,
+  "N_5_mod_8": 11378,
+  "p_eq_q_mod4": 22666
+ },
+ "failures": {},
+ "pub_ambiguous_keys": 32,
+ "pub_keys": 64,
+ "seconds": 0.06
+}
