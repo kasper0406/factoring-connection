@@ -1,0 +1,1076 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14ece-f323-7160-932c-26420ac27dcc
+--------
+user
+Research map (use web search; primary sources; label proved / conjectured / UNVERIFIED). Context: /home/knielsen/code/factoring-connection, notes/cycloharvey_results.md §3.4 (read-only). The project proved, in a restricted model (bounded-degree polynomial exponents, a single guess modulus, sumset BSGS with one base), that Harvey-type collision searches cost ≥ N^{1/5−o(1)}. With several moduli the bound degrades to about N^{1/6}, and that case is uncovered. The notes mention "Harvey's remark that N^{1/6} would need …".
+
+1. Find and quote Harvey's remark about N^{1/6} (arXiv 2010.05450, or HH 2105.11105): exactly what would be needed?
+2. Umans–Wang arXiv 2511.10851: state precisely the conditional N^{1/6} route (Strong Prefactored (α,β)-Divisor Conjecture), what structure it needs (structured sets S, T, divisor covering), and whether it is a "several moduli" construction in our sense. Is the conjecture plausible, refuted, or partially proved? Are there follow-ups (2026)?
+3. The deterministic subexponential question: what exactly is the obstruction to derandomizing Dixon / Schnorr–Lenstra / Lenstra–Pomerance (rigorous randomized L[1/2])? Which missing lemma would give deterministic subexponential factoring, e.g. smooth values of a fixed polynomial in short ranges, or deterministic generation of smooth relations? Cite the literature stating these barriers. Is there any known conditional (e.g. GRH) deterministic subexponential factoring?
+4. Based on 1–3, propose the two most promising concrete research directions for a several-moduli or multi-base deterministic collision search that might reach N^{1/6} or below. Each must have a precise missing lemma and a falsifiable small experiment. Be adversarial about novelty and feasibility.
+Output concise Markdown.
+
+codex
+I’ll read §3.4, then check the primary papers and follow-up literature. I’ll distinguish proved results, conjectures, and claims I can’t verify.
+web search: 
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g 'cycloharvey_results.md' -g '*harvey*' -g '*prefactor*'" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection
+experiments/configs/cycloharvey_search.json
+experiments/configs/cycloharvey_calibration.json
+experiments/configs/cycloharvey_experiments.json
+tests/test_cycloharvey.py
+experiments/raw/cycloharvey_e2_cyclo.jsonl
+experiments/raw/cycloharvey_e1_harvey.jsonl
+experiments/raw/cycloharvey_e3_onesided.jsonl
+experiments/raw/cycloharvey_constructive.jsonl
+experiments/raw/cycloharvey_guessed.jsonl
+experiments/raw/cycloharvey_calibration.jsonl
+notes/cycloharvey_results.md
+experiments/analysis/cycloharvey_search.json
+experiments/analysis/cycloharvey_kappa.json
+experiments/analysis/cycloharvey_calibration.json
+notes/cycloharvey_prereg.md
+experiments/analysis/cycloharvey_experiments.json
+notes/codex_r7_cyclo_harvey.md
+codex/r7_cyclo_harvey.md
+codex/r7_cyclo_harvey.log
+codex/r7_cyclo_harvey.out
+
+web search: arxiv 2010.05450 Harvey N 1/6 remark ...
+web search: 
+exec
+/bin/bash -lc "find .. -name AGENTS.md -print; sed -n '1,260p' notes/cycloharvey_results.md" in /home/knielsen/code/factoring-connection
+web search: https://arxiv.org/html/2010.05450
+ succeeded in 11562ms:
+../cranemoonpress-platform/AGENTS.md
+../cmp-backend-9609/production-service/node_modules/fastify/AGENTS.md
+../cmp-backend-9609/render-service/node_modules/fastify/AGENTS.md
+../cmp-deps/render/node_modules/fastify/AGENTS.md
+../cmp-deps/order/node_modules/fastify/AGENTS.md
+../ml/pytorch/third_party/flash-attention/AGENTS.md
+../ml/pytorch/AGENTS.md
+../ml/pytorch-release/third_party/flash-attention/AGENTS.md
+../ml/pytorch-release/AGENTS.md
+../ml/flash-linear-attention/AGENTS.md
+../ml/parallel-ss-dep/.claude/worktrees/wf_fab82bc6-9f1-4/AGENTS.md
+../ml/parallel-ss-dep/.claude/worktrees/wf_fab82bc6-9f1-5/AGENTS.md
+../ml/parallel-ss-dep/.claude/worktrees/wf_fab82bc6-9f1-2/AGENTS.md
+../ml/parallel-ss-dep/.claude/worktrees/wf_fab82bc6-9f1-3/AGENTS.md
+../ml/parallel-ss-dep/.claude/worktrees/wf_fab82bc6-9f1-1/AGENTS.md
+../ml/parallel-ss-dep/AGENTS.md
+../ml/era-of-experience/.claude/worktrees/agent-a992100f49389a3f6/AGENTS.md
+../ml/era-of-experience/.claude/worktrees/agent-a56af14841e978dfd/AGENTS.md
+../ml/era-of-experience/.claude/worktrees/agent-a171e71758430bc6e/AGENTS.md
+../ml/era-of-experience/.claude/worktrees/agent-a20cb4b257a933fb2/AGENTS.md
+../ml/era-of-experience/.claude/worktrees/agent-a4546757adfd7a5ae/AGENTS.md
+../ml/era-of-experience/AGENTS.md
+../ml/triton/AGENTS.md
+../ml/qwen3-fp4-blackwell/vllm-src/AGENTS.md
+../ml/qwen3-fp4-blackwell/vllm-wt-mtp-rollback/AGENTS.md
+../ml/qwen3-fp4-blackwell/vllm-wt-draft-guard/AGENTS.md
+../dev/xla/xla/AGENTS.md
+../cmp-wt/plugin-async/AGENTS.md
+../cmp-wt/cover-fix-catalogue/AGENTS.md
+../cmp-wt/designer-samples/AGENTS.md
+../cmp-wt/kb-async-production-design/AGENTS.md
+../cmp-wt/kb-workflow-gotchas/AGENTS.md
+../cmp-wt/fix-kb-tools-followups/AGENTS.md
+../cmp-wt/retro-platform/AGENTS.md
+../cmp-wt/async-enable/AGENTS.md
+../cmp-wt/async-backend/AGENTS.md
+../cmp-wt/retro-backend-main/AGENTS.md
+../cmp-wt/retro-book-catalogue/AGENTS.md
+../cmp-wt/retro-platform-kb/AGENTS.md
+../cmp-wt/backend-shipment/AGENTS.md
+../cmp-wt/alert-names/AGENTS.md
+../cmp-wt/async-gaps/AGENTS.md
+../cmp-wt/book-pipeline/AGENTS.md
+../cmp-wt/kb-book-designer/AGENTS.md
+../cmp-wt/bootstrap-conditions/AGENTS.md
+../cmp-wt/agents-wc-plugin/AGENTS.md
+../cmp-wt/plugin-watchdog/AGENTS.md
+../cmp-wt/agents-email-provider/AGENTS.md
+../cmp-wt/plugin-designer/AGENTS.md
+../cmp-wt/async-config/AGENTS.md
+../cmp-wt/e2e-flakes/AGENTS.md
+../cmp-wt/retro-wc-plugin/AGENTS.md
+../cmp-wt/kb-book-designer-live/AGENTS.md
+../cmp-wt/kb-book-pipeline/AGENTS.md
+../cmp-wt/agents-backend/AGENTS.md
+../cmp-wt/agents-platform/AGENTS.md
+../cmp-wt/retro-backend/AGENTS.md
+../cmp-wt/catalogue-proposal/AGENTS.md
+../cmp-wt/kb-background-production-live/AGENTS.md
+../cmp-wt/agents-book-catalogue/AGENTS.md
+../upstream/xla/AGENTS.md
+../upstream/xla/xla/AGENTS.md
+../cmp-backend-f989/production-service/node_modules/fastify/AGENTS.md
+../cmp-backend-f989/render-service/node_modules/fastify/AGENTS.md
+../cranemoonpress-book-catalogue/AGENTS.md
+../cranemoonpress-email-provider/node_modules/fastify/AGENTS.md
+../cmp-backend-6bf2ea6/production-service/node_modules/fastify/AGENTS.md
+../cmp-backend-6bf2ea6/AGENTS.md
+../cmp-backend-6bf2ea6/render-service/node_modules/fastify/AGENTS.md
+# cycloharvey: can cyclotomic Frobenius handles beat Harvey's N^{1/5}?
+
+Agent `cycloharvey`, 2026-10-18. Pre-registration: `notes/cycloharvey_prereg.md`
+(commit `1d92a48`, made before the search). Code: `src/cycloharvey/`. Tests:
+`tests/test_cycloharvey.py`.
+
+## 0. Verdict
+
+**No.** This is refuted for the model and family we froze, and in that model it is
+proved.
+
+1. **The cyclotomic handles add no new search targets** (proved, §3.1). Every
+   exponent F(p,q) that σ_r makes reachable is already reachable in plain (Z/N)^*,
+   where a^{F(p,q)} ≡ a^{F(1,N)} (mod p) for every integer polynomial F. Any division
+   trick that comes from the guessed residue r ≡ p (mod m) is also available in
+   (Z/N)^* by guessing the same residue. The premise that "higher-degree Taylor
+   cancellation is not possible in F_p^*" is therefore false. It was always available;
+   the calibrated algorithms just do not use it. The ring adds only cost:
+   D = φ(m)-dimensional arithmetic, and φ(m) residue guesses where (Z/N)^* is free to
+   skip them.
+2. **Higher-degree Taylor cancellation does not help** in the
+   Lehman/Hittmeir/Harvey model with any bounded degree.
+   - **Proved lower bound** (§3.4). Every covering family of bounded degree, with no
+     guess or with residue guesses modulo a single modulus M, costs ≥ N^{1/5−o(1)}.
+     An independent Opus reviewer found it correct after the scope fixes, which are
+     applied here.
+   - **Scaling heuristic** (§3.3). It reproduces the known exponents and gives exponent
+     S/(K(K+3)) for a family with K free coefficients on exponents of total size S.
+     Over all 63 degree-≤3 supports this is minimised uniquely by Lehman's {q, p},
+     at 1/5. The next best is 3/14 for {q², q, p, p²}.
+   - **Why the user's hoped-for δ = 5/2 is not reachable.** Cancelling the
+     second-order term needs coefficients on p² or q². Those are quantised at scale
+     N rather than √N, which inflates the window. The effective δ falls below 3/2;
+     for example K=4 gives 4/3.
+   - **Guessing residues is exactly exponent-neutral** (heuristic, with a baby list
+     shared across classes). The integer-valued lattice gains index M^{K(K+1)/2},
+     which cancels the φ(M) ≈ M guesses. The heuristic reproduces Harvey–Hittmeir's
+     (log log N)^{3/5} gain. The proved bound only limits the gain to M^{o(1)}.
+3. **Experiments agree.**
+   - The exact constructive search over all degree-≤3 exponents (LLL plus exact
+     verification) finds nothing better than Lehman's family. See §4.
+   - An operational Harvey baseline matches the model's list counts exactly: 112/112
+     instances, 32–56 bits.
+   - The cyclotomic version factors too, but at ≈ φ(m)·D times the work.
+
+## 1. Calibration gate (passed)
+
+Model (§2) cost = list elements. All window widths are exact integers
+(`src/cycloharvey/calibration.py`). Exponents come from two sources:
+- exact rational LP (`exponent_lp`): **proved** inside the model;
+- least-squares fits of log2(cost) on log2 N for exact model counts at
+  N = 2^n + 2^{n/2} + 1, with parameters optimised on a 2^{1/4} grid.
+
+| algorithm | model mechanism | LP exponent | fitted slope (upper half) | sizes n |
+|---|---|---|---|---|
+| BSGS on p+q (Pollard 1978; Hittmeir 2018 without sieving) | 1 target, W ≈ (c^{−1/2}+c^{1/2}−2)√N | **1/4** | 0.2500 | 40–160 |
+| Lehman 1974 | targets k ≤ r, windows √N/(4r√k), square test (m = 1) | **1/3** | 0.3334 | 30–66 |
+| Hittmeir 2021 | per-(a,b) BSGS for ab ≤ ξ; one giant step each for ξ < ab ≤ η | **2/9** (ξ = N^{1/9}, η = N^{2/9}) | 0.2342 | 40–96 |
+| Harvey 2021 | all ab ≤ r, ⌈W_ab/m⌉ giant steps, shared baby list m | **1/5** (r = m = N^{1/5}) | 0.2099 | 40–120 |
+| Harvey–Hittmeir 2022 | φ(M)·#σ₀-buckets single giant steps, baby list 2λ+1, λ = ⌈4√N/(M m₀)^{3/2}⌉ | **1/5** (T = M m₀ = N^{1/5}) | 0.1997 | 40–128 |
+
+- All fits lie within 0.012 of the LP exponent, which passes the pre-registered gate of
+  ±0.03. The residual excess for Hittmeir and Harvey is the log-factor drift: Harvey
+  carries lg r from Σ_{ab≤r} 1, and Hittmeir is tiered.
+- The HH slope sits slightly below Harvey's. The φ(M)/M ~ 1/log log N gain is
+  visible as a downward drift.
+- Sources were read from the arXiv PDFs: Harvey 2010.05450 §§3–4, Hittmeir
+  2006.16729 §5, Harvey–Hittmeir 2105.11105 §§3–4. Lehman is read via Harvey's
+  Lemma 3.3 and Remark 3.4. We did not read the 1974 paper itself, so the
+  constant-level details of the Lehman row are **UNVERIFIED** against the original.
+- Raw data: `experiments/raw/cycloharvey_calibration.jsonl`. Summary:
+  `experiments/analysis/cycloharvey_calibration.json`.
+
+### 1a. The user's T = MK heuristic against the real proofs
+
+The user's derivation is in `notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md`:
+B ~ (MK)^{1/2}, R ~ M^{1/2}K^{−3/2}N^{1/2}, S = R/M², and T = MK = N^{1/5}.
+
+**Where it agrees.** It is exactly HH's Prop. 3.3 bookkeeping, with K = m₀ and
+M = m (checked line by line):
+- The lattice of (a,b) with b ≡ (N/σ²) a (mod m) has index m. Gauss reduction gives
+  |aN/σ₀| ≤ 2N^{1/2}(m m₀)^{1/2}, which is the coefficient inflation B ~ (MK)^{1/2}.
+- The second-order term t₀²·δ·aN/σ₀ with t₀ < 1/m₀ is ≤ 2N^{1/2}m^{1/2}m₀^{−3/2}.
+  This is R, with constant 2.
+- The baby list is λ = 4N^{1/2}/(m m₀)^{3/2} = R/M² (step 9, units of m²).
+- The cost is φ(m)·m₀·lg N + λ, i.e. T + S. The balance gives T = N^{1/5}.
+
+**Where the heuristic and the proofs differ** (all checked):
+1. **First order is balanced, not cancelled.** HH do not kill the first-order term.
+   The 2-D Minkowski box makes |−aN/σ₀ + bσ₀|·t₀ the same size as the second-order
+   term, also 2N^{1/2}m^{1/2}m₀^{−3/2}, so the bound in (3.3) is 4N^{1/2}m^{1/2}m₀^{−3/2}.
+   The exponents match the heuristic; the mechanism is a two-term balance.
+2. **Geometric buckets.** The "K Taylor centres of width √N/K" are geometric buckets
+   σ₀ → ⌈(1+1/m₀)σ₀⌉ in HH, so there are O(m₀ lg N) of them, not K. For balanced p
+   only O(m₀) are needed.
+3. **T is not MK.** T = φ(M)·m₀ (one branch per unit class), not M·m₀. The ratio
+   φ(M)/M ≍ 1/log log N is the entire HH improvement.
+   - The volume heuristic with κ = K(K+1)/2 and a shared baby list gives exactly a
+     (φ(M)/M)^{3/5} gain, which is HH's (log log N)^{3/5} (§3.3). This is
+     heuristic.
+   - The proved lower bound (§3.4) is weaker. It allows a gain of up to M^{o(1)},
+     which includes O(1)^{ω(M)}τ(M) factors that can be much larger than
+     (log log N)^{3/5} for primorial M. Optimality of HH's log-log exponent is
+     therefore **not** proved here (the reviewer caught this overclaim in an earlier
+     draft).
+4. **Harvey 2021 uses no residue classes.** Its branches are all pairs ab ≤ r with
+   windows √N/(4r√(ab)) (Lemma 3.3, Lehman/Dirichlet). Per-branch steps vary with ab;
+   the exponent is the same.
+5. **The heuristic omits two costs that are binding exactly at 1/5.**
+   - Deterministic large-order element (Prop. 2.7, √D with D ≥ N^{2/5}): N^{1/5}.
+     Harvey says "good enough … but only just".
+   - Removal of small factors p ≤ √(N/r) by Strassen in Harvey: (N/r)^{1/4} = N^{1/5}.
+   Any sub-1/5 search would also need these improved. Hittmeir's Remark 6.4 suggests
+   D = N^{1/3+o(1)} suffices, giving N^{1/6}. A randomised base removes the first cost.
+6. **Polylog factors.** lg^{16/5} N from the product tree/Bluestein and the per-branch
+   lattice reduction. These do not affect exponents.
+
+**Generalised yardstick.** Suppose per-branch steps are S ~ N^{a}/T^{δ}. Then T =
+N^{a/(1+δ)}. Here a = 1/2 is not fixed: a support with K coefficients and exponent
+mass S_I has a = S_I/(2K) and δ = (K+1)/2 (§3.3). Folding the inflation of a into
+δ gives δ_eff = K(K+3)/(2S_I) − 1, and the exponent is 1/(2(1+δ_eff)).
+
+## 2. The abstract cost model (step 1 components)
+
+- **(a) Window.** A target is a function g(p) = F(p, N/p) with a window
+  {U, …, U+W−1}. With t = p/√N, g = Σ_k b_k t^k with b_k ∈ (√N)^{|k|}Z (**proved**:
+  p^i q^j = N^{min(i,j)} p^{i−j}). Coverage is required for every integer p in the
+  balanced range [√(N/c), √N]. This is the "identity model": the correctness proof
+  uses only the polynomial identity, as Lehman, Hittmeir, Harvey and HH all do.
+- **(b) Strides / residue locks.** Guessing p ≡ r (mod M) (φ(M) runs) admits the
+  integer-valued lattice L_{r,M} ∋ (F−c)/M^e. HH Prop. 3.3 is the K=2 case, the
+  index-M sublattice fixed mod M². The index of L_{r,M} over Λ_I is M^κ, computed
+  exactly by HNF (`lattice.class_lattice_index`).
+- **(c) Batching.** cost = m + Σ_τ ⌈W_τ/m⌉, with one shared baby list. This is Harvey's
+  "single BSGS over the whole space". It is optimal among sumset strategies, since
+  any baby set B and giant set G_τ covering W_τ candidates need |B|·|G_τ| ≥ W_τ.
+  Hittmeir's two-tier scheme and Lehman's square test are restrictions of it.
+- **(d) Cyclotomic overhead.** φ(m) guesses, plus every ring operation on
+  D = φ(m) coefficients (≥ D base operations; schoolbook D², FFT D log D). The handle
+  T_{r,F} costs O(deg F · log N) ring multiplications. Constructing elements whose
+  order divides Φ_d(p) costs a further product of σ-conjugates.
+- **(e) One-sidedness.** No cost in the model (**proved**). A two-sided collision
+  (≡ mod N) is caught by sort-and-match (Harvey Step 3, HH Step 12) and gives the
+  integer u = g(p), from which p follows by solving g(p) = u. A one-sided collision is
+  caught by Alg. 4.1. Experiment E3 (§5) confirms codex's observation, and also finds
+  that p² ≡ q² (mod m) suffices for F = p²+q² to be two-sided. Neither changes the
+  cost.
+
+## 3. Theory
+
+### 3.1 D1: cyclotomic handles are dominated by (Z/N)^* handles (proved)
+
+**Claim.** Let r ≡ p (mod m), α ∈ R^*, and T = ∏ σ_r^{i−j}(α)^{c_ij N^j}. Suppose
+the identity α^{u(p)} ≡ T (mod p) holds for every α and every p ≡ r. Then u(p) ≡
+F(p,q) (mod p^f−1), where f = ord_m(p) and R/p ≅ ∏ F_{p^f}. Any identity-model target
+built this way is therefore a function u ∈ F + (p^f−1)·Z[p,q], or (F−c)/M^e if α
+is an M^e-th power. Every such u lies in Z[p, N/p], or in the integer-valued lattice
+L_{r,M}.
+
+**Matching target in (Z/N)^*.** For the same u, take a = b^{M^e}. Then
+a^{u} = b^{F(p,q)−c} ≡ b^{F(1,N)−c} (mod p), because p ≡ 1 and q ≡ N (mod p−1). This
+handle is computable from N and the guess, and the baby list is a^i. Windows, branch
+set and correctness proof are identical. Therefore:
+
+  e_cyc(family) ≥ e_{F_p^*}(same family) + log_N D,
+
+and (Z/N)^* may also drop the guesses when they are not used.
+
+Two caveats from the independent review:
+- **Base order.** "Same windows" needs ord_p(b^{M^e}) to exceed the baby-list length.
+  In (Z/N)^* that order can be as small as (p−1)/gcd(M^e, p−1), whereas F_{p^f} has
+  more room. The lower bound below does not use the matched handle; it only uses the
+  inclusion of the target sets (cyclotomic targets ⊆ Λ ∪ L_{r,M}). So the cost
+  comparison is stated for parameter ranges where the (Z/N)^* order is not binding.
+  This holds for M^e ≪ p/W, which covers all calibrated algorithms.
+- **Multi-base searches.** Handles that combine several σ_s with s ∉ ⟨r⟩ as
+  *independent* search directions are multi-base vector-exponent searches. They lie
+  outside the 1-D cost model, as do multi-base searches in (Z/N)^*. See §3.5 for
+  their separable part.
+
+**The (Z/N)^* handle collapse is a feature, not a loss.** Z[p,q]/(pq−N, p−1) ≅ Z:
+one handle a^{c} serves every F with F(1,N) = c simultaneously.
+
+**Genuinely independent cyclotomic handles.** In the subgroup of order dividing
+Φ_d(p) (d | f), the exponent ring is Z[p,q]/(pq−N, Φ_d(p)) ≅ Z[x]/Φ_d(x), because
+q = N x^{−1} and x^{−1} is a polynomial mod Φ_d. It has rank φ(d). For example, for
+d = 4: p² ≡ −1, p³ ≡ −p, q ≡ −Np, q² ≡ −N². So only σ^0, …, σ^{φ(d)−1}, weighted by
+powers of N, are independent handles. This sharper structure means fewer targets
+share a handle, not more.
+
+Cost of making elements of order dividing Φ_d(p): β^{(p^d−1)/Φ_d(p)} =
+β^{∏_{e|d,e<d}Φ_e(p)}, a σ-product of degree < d (for d=4, codex's σ²(β)/β). It is
+useful only when the residue degree f is a multiple of d, and that is not guaranteed by
+the guess. All of this is pure overhead in the model, because of D1.
+
+E2 checks the identity T_{r,F} ≡ α^{F(p,q)} (mod p) for 1440 cases, including
+negative coefficients via the norm inverse α^{−1} = ∏_{s≠1}σ_s(α)/Nm(α): 0 failures.
+
+### 3.2 Lemmas for the lower bound
+
+**Lemma W (Wronskian, proved; exhaustively checked for all 63 supports).**
+det[(i)_k]_{k=1..K, i∈I} = ∏_{i∈I} i · ∏_{i<i'}(i'−i) ≠ 0 for 0 ∉ I.
+
+*Proof.* (i)_k is a monic degree-k polynomial in i with zero constant term. Row
+reduction gives det[i^k]_{k=1..K}, which is ∏i times a Vandermonde.
+
+Consequence: for t in a compact subinterval of (0, ∞),
+(G'(t), …, G^{(K)}(t)) = M(t)·b with M(t) invertible, so Σ_{k≤K}|G^{(k)}(t)| ≥ c_I‖b‖_∞.
+
+**Lemma C (coverage, proved).** Let G = Σ_{k∈I} b_k t^k, |I| = K, and t ∈ J =
+[c^{−1/2}, 1]. For any measurable E ⊂ ℝ,
+
+  |{t ∈ J : G(t) ∈ E}| ≤ C_I·(|E|/‖b‖_∞)^{1/K}.
+
+*Proof.*
+- Split J into O_I(1) intervals on which G is monotone with G' monotone (the zeros of
+  the Laurent polynomials G' and G'' are bounded in number).
+- On each piece the preimage density 1/|G'| is monotone in the value. So for fixed
+  |E| the preimage measure is maximised by an interval E* at the flat end.
+- Further split into O_I(1) pieces on which some |G^{(k)}| ≥ c_I‖b‖/K (Lemma W).
+  Apply the van der Corput sublevel lemma |{|G − y| ≤ ε}| ≤ C_k(ε/λ_k)^{1/k}.
+- For |E| ≤ ‖b‖, (|E|/‖b‖)^{1/k} ≤ (|E|/‖b‖)^{1/K}. If |E| > ‖b‖ the bound is
+  trivial with C_I ≥ |J|.
+
+Each window {U..U+W−1} is a real set of measure W. Integers p ≡ r (mod M) in a
+p-interval of length √N·μ number ≤ √N μ/M + 1.
+
+**Lemma K′ (denominators of the guessed lattice, proved).** If v = Σ α_k p^k (with
+α_k for k<0 the coefficient of q^{|k|}) lies in L_{r,M}, then C_d·M^K·α ∈ Z^K, where C_d
+depends only on d = max|k|.
+
+*Proof, at a prime ℓ^a ‖ M.* The function f(x) = v(r + ℓ^a x) = Σ_n T_n ℓ^{an} x^n is
+ℓ-integral-valued on Z_ℓ, where T_n = Σ_k α_k N^{max(0,−k)} binom(k,n) r^{k−n}
+(N^{|k|} is an ℓ-unit). So v(T_n) ≥ v* := min v(α_k). Since (T_1..T_K) = W(r)α with v(det W) = c_W (= 0 if ℓ > 2d), some j ≤ K
+has v(T_j) ≤ v* + c_W.
+
+Take j₀ minimising v(T_j) for j ≤ K and use Δ^{j₀}f(0) = j₀! Σ_{n≥j₀} S(n,j₀)T_nℓ^{an}
+∈ Z_ℓ. For a > c_W the n = j₀ term dominates, so v(T_{j₀}) ≥ −a j₀ − v(j₀!). Hence
+v* ≥ −aK − v(K!) − c_W. If a ≤ c_W, pass to the subclass mod ℓ^{c_W+1}; the extra is
+bounded. ∎
+
+The HNF table (`experiments/analysis/cycloharvey_kappa.json`) shows the denominator
+exponent is exactly K(K+1)/2 per prime ℓ > 2d. It is larger by a bounded amount for
+ℓ ∈ {2, 3}, and for ℓ = 5 when d = 3.
+
+### 3.3 Scaling heuristic, δ yardstick, and guess-neutrality (heuristic)
+
+The heuristic matches BSGS (1/4), Lehman (1/3), Harvey/HH (1/5) and HH's
+(log log)^{3/5}. Hittmeir's 2/9 comes from his two-tier restriction of the cost model
+(§1), not from this formula.
+
+**Volume heuristic.** A target covers a t-interval of length ℓ around t₀ iff its
+Taylor coefficients satisfy |c_j(t₀)| ≲ Wℓ^{−j} for j = 1..K. Such a lattice vector
+exists for typical t₀ iff the box volume W^K ℓ^{−K(K+1)/2} ≳ covol = (√N)^{S}, with
+S = Σ_{k∈I}|k|. This gives
+
+  ℓ = (W^K N^{−S/2})^{2/(K(K+1))},  #targets = 1/ℓ,  cost ≍ 1/ℓ + √(W/ℓ),
+
+and so
+
+
+web search: 
+exec
+/bin/bash -lc "rg --files -g 'AGENTS.md' . /home/knielsen/code 2>/dev/null; sed -n '1,260p' notes/cycloharvey_results.md" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+/home/knielsen/code/cranemoonpress-book-catalogue/AGENTS.md
+/home/knielsen/code/cmp-backend-6bf2ea6/AGENTS.md
+/home/knielsen/code/cmp-wt/alert-names/AGENTS.md
+/home/knielsen/code/cranemoonpress-platform/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-book-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/backend-shipment/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-platform-kb/AGENTS.md
+/home/knielsen/code/cmp-deps/order/node_modules/fastify/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-background-production-live/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-book-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/catalogue-proposal/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-backend-main/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/async-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-platform/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-backend/AGENTS.md
+/home/knielsen/code/cmp-wt/async-enable/AGENTS.md
+/home/knielsen/code/ml/era-of-experience/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-platform/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-pipeline/AGENTS.md
+/home/knielsen/code/dev/xla/xla/AGENTS.md
+/home/knielsen/code/cmp-wt/fix-kb-tools-followups/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-designer-live/AGENTS.md
+/home/knielsen/code/cmp-wt/retro-wc-plugin/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-workflow-gotchas/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-async-production-design/AGENTS.md
+/home/knielsen/code/ml/parallel-ss-dep/AGENTS.md
+/home/knielsen/code/cmp-wt/e2e-flakes/AGENTS.md
+/home/knielsen/code/cmp-wt/designer-samples/AGENTS.md
+/home/knielsen/code/cmp-wt/cover-fix-catalogue/AGENTS.md
+/home/knielsen/code/cmp-wt/async-config/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-designer/AGENTS.md
+/home/knielsen/code/ml/flash-linear-attention/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-async/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-wt-draft-guard/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-email-provider/AGENTS.md
+/home/knielsen/code/cmp-wt/plugin-watchdog/AGENTS.md
+/home/knielsen/code/cmp-wt/agents-wc-plugin/AGENTS.md
+/home/knielsen/code/cmp-wt/book-pipeline/AGENTS.md
+/home/knielsen/code/upstream/xla/xla/AGENTS.md
+/home/knielsen/code/cmp-wt/bootstrap-conditions/AGENTS.md
+/home/knielsen/code/cmp-wt/kb-book-designer/AGENTS.md
+/home/knielsen/code/cmp-wt/async-gaps/AGENTS.md
+/home/knielsen/code/upstream/xla/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-wt-mtp-rollback/AGENTS.md
+/home/knielsen/code/cmp-deps/render/node_modules/fastify/AGENTS.md
+/home/knielsen/code/ml/qwen3-fp4-blackwell/vllm-src/AGENTS.md
+/home/knielsen/code/ml/triton/AGENTS.md
+# cycloharvey: can cyclotomic Frobenius handles beat Harvey's N^{1/5}?
+
+Agent `cycloharvey`, 2026-10-18. Pre-registration: `notes/cycloharvey_prereg.md`
+(commit `1d92a48`, made before the search). Code: `src/cycloharvey/`. Tests:
+`tests/test_cycloharvey.py`.
+
+## 0. Verdict
+
+**No.** This is refuted for the model and family we froze, and in that model it is
+proved.
+
+1. **The cyclotomic handles add no new search targets** (proved, §3.1). Every
+   exponent F(p,q) that σ_r makes reachable is already reachable in plain (Z/N)^*,
+   where a^{F(p,q)} ≡ a^{F(1,N)} (mod p) for every integer polynomial F. Any division
+   trick that comes from the guessed residue r ≡ p (mod m) is also available in
+   (Z/N)^* by guessing the same residue. The premise that "higher-degree Taylor
+   cancellation is not possible in F_p^*" is therefore false. It was always available;
+   the calibrated algorithms just do not use it. The ring adds only cost:
+   D = φ(m)-dimensional arithmetic, and φ(m) residue guesses where (Z/N)^* is free to
+   skip them.
+2. **Higher-degree Taylor cancellation does not help** in the
+   Lehman/Hittmeir/Harvey model with any bounded degree.
+   - **Proved lower bound** (§3.4). Every covering family of bounded degree, with no
+     guess or with residue guesses modulo a single modulus M, costs ≥ N^{1/5−o(1)}.
+     An independent Opus reviewer found it correct after the scope fixes, which are
+     applied here.
+   - **Scaling heuristic** (§3.3). It reproduces the known exponents and gives exponent
+     S/(K(K+3)) for a family with K free coefficients on exponents of total size S.
+     Over all 63 degree-≤3 supports this is minimised uniquely by Lehman's {q, p},
+     at 1/5. The next best is 3/14 for {q², q, p, p²}.
+   - **Why the user's hoped-for δ = 5/2 is not reachable.** Cancelling the
+     second-order term needs coefficients on p² or q². Those are quantised at scale
+     N rather than √N, which inflates the window. The effective δ falls below 3/2;
+     for example K=4 gives 4/3.
+   - **Guessing residues is exactly exponent-neutral** (heuristic, with a baby list
+     shared across classes). The integer-valued lattice gains index M^{K(K+1)/2},
+     which cancels the φ(M) ≈ M guesses. The heuristic reproduces Harvey–Hittmeir's
+     (log log N)^{3/5} gain. The proved bound only limits the gain to M^{o(1)}.
+3. **Experiments agree.**
+   - The exact constructive search over all degree-≤3 exponents (LLL plus exact
+     verification) finds nothing better than Lehman's family. See §4.
+   - An operational Harvey baseline matches the model's list counts exactly: 112/112
+     instances, 32–56 bits.
+   - The cyclotomic version factors too, but at ≈ φ(m)·D times the work.
+
+## 1. Calibration gate (passed)
+
+Model (§2) cost = list elements. All window widths are exact integers
+(`src/cycloharvey/calibration.py`). Exponents come from two sources:
+- exact rational LP (`exponent_lp`): **proved** inside the model;
+- least-squares fits of log2(cost) on log2 N for exact model counts at
+  N = 2^n + 2^{n/2} + 1, with parameters optimised on a 2^{1/4} grid.
+
+| algorithm | model mechanism | LP exponent | fitted slope (upper half) | sizes n |
+|---|---|---|---|---|
+| BSGS on p+q (Pollard 1978; Hittmeir 2018 without sieving) | 1 target, W ≈ (c^{−1/2}+c^{1/2}−2)√N | **1/4** | 0.2500 | 40–160 |
+| Lehman 1974 | targets k ≤ r, windows √N/(4r√k), square test (m = 1) | **1/3** | 0.3334 | 30–66 |
+| Hittmeir 2021 | per-(a,b) BSGS for ab ≤ ξ; one giant step each for ξ < ab ≤ η | **2/9** (ξ = N^{1/9}, η = N^{2/9}) | 0.2342 | 40–96 |
+| Harvey 2021 | all ab ≤ r, ⌈W_ab/m⌉ giant steps, shared baby list m | **1/5** (r = m = N^{1/5}) | 0.2099 | 40–120 |
+| Harvey–Hittmeir 2022 | φ(M)·#σ₀-buckets single giant steps, baby list 2λ+1, λ = ⌈4√N/(M m₀)^{3/2}⌉ | **1/5** (T = M m₀ = N^{1/5}) | 0.1997 | 40–128 |
+
+- All fits lie within 0.012 of the LP exponent, which passes the pre-registered gate of
+  ±0.03. The residual excess for Hittmeir and Harvey is the log-factor drift: Harvey
+  carries lg r from Σ_{ab≤r} 1, and Hittmeir is tiered.
+- The HH slope sits slightly below Harvey's. The φ(M)/M ~ 1/log log N gain is
+  visible as a downward drift.
+- Sources were read from the arXiv PDFs: Harvey 2010.05450 §§3–4, Hittmeir
+  2006.16729 §5, Harvey–Hittmeir 2105.11105 §§3–4. Lehman is read via Harvey's
+  Lemma 3.3 and Remark 3.4. We did not read the 1974 paper itself, so the
+  constant-level details of the Lehman row are **UNVERIFIED** against the original.
+- Raw data: `experiments/raw/cycloharvey_calibration.jsonl`. Summary:
+  `experiments/analysis/cycloharvey_calibration.json`.
+
+### 1a. The user's T = MK heuristic against the real proofs
+
+The user's derivation is in `notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md`:
+B ~ (MK)^{1/2}, R ~ M^{1/2}K^{−3/2}N^{1/2}, S = R/M², and T = MK = N^{1/5}.
+
+**Where it agrees.** It is exactly HH's Prop. 3.3 bookkeeping, with K = m₀ and
+M = m (checked line by line):
+- The lattice of (a,b) with b ≡ (N/σ²) a (mod m) has index m. Gauss reduction gives
+  |aN/σ₀| ≤ 2N^{1/2}(m m₀)^{1/2}, which is the coefficient inflation B ~ (MK)^{1/2}.
+- The second-order term t₀²·δ·aN/σ₀ with t₀ < 1/m₀ is ≤ 2N^{1/2}m^{1/2}m₀^{−3/2}.
+  This is R, with constant 2.
+- The baby list is λ = 4N^{1/2}/(m m₀)^{3/2} = R/M² (step 9, units of m²).
+- The cost is φ(m)·m₀·lg N + λ, i.e. T + S. The balance gives T = N^{1/5}.
+
+**Where the heuristic and the proofs differ** (all checked):
+1. **First order is balanced, not cancelled.** HH do not kill the first-order term.
+   The 2-D Minkowski box makes |−aN/σ₀ + bσ₀|·t₀ the same size as the second-order
+   term, also 2N^{1/2}m^{1/2}m₀^{−3/2}, so the bound in (3.3) is 4N^{1/2}m^{1/2}m₀^{−3/2}.
+   The exponents match the heuristic; the mechanism is a two-term balance.
+2. **Geometric buckets.** The "K Taylor centres of width √N/K" are geometric buckets
+   σ₀ → ⌈(1+1/m₀)σ₀⌉ in HH, so there are O(m₀ lg N) of them, not K. For balanced p
+   only O(m₀) are needed.
+3. **T is not MK.** T = φ(M)·m₀ (one branch per unit class), not M·m₀. The ratio
+   φ(M)/M ≍ 1/log log N is the entire HH improvement.
+   - The volume heuristic with κ = K(K+1)/2 and a shared baby list gives exactly a
+     (φ(M)/M)^{3/5} gain, which is HH's (log log N)^{3/5} (§3.3). This is
+     heuristic.
+   - The proved lower bound (§3.4) is weaker. It allows a gain of up to M^{o(1)},
+     which includes O(1)^{ω(M)}τ(M) factors that can be much larger than
+     (log log N)^{3/5} for primorial M. Optimality of HH's log-log exponent is
+     therefore **not** proved here (the reviewer caught this overclaim in an earlier
+     draft).
+4. **Harvey 2021 uses no residue classes.** Its branches are all pairs ab ≤ r with
+   windows √N/(4r√(ab)) (Lemma 3.3, Lehman/Dirichlet). Per-branch steps vary with ab;
+   the exponent is the same.
+5. **The heuristic omits two costs that are binding exactly at 1/5.**
+   - Deterministic large-order element (Prop. 2.7, √D with D ≥ N^{2/5}): N^{1/5}.
+     Harvey says "good enough … but only just".
+   - Removal of small factors p ≤ √(N/r) by Strassen in Harvey: (N/r)^{1/4} = N^{1/5}.
+   Any sub-1/5 search would also need these improved. Hittmeir's Remark 6.4 suggests
+   D = N^{1/3+o(1)} suffices, giving N^{1/6}. A randomised base removes the first cost.
+6. **Polylog factors.** lg^{16/5} N from the product tree/Bluestein and the per-branch
+   lattice reduction. These do not affect exponents.
+
+**Generalised yardstick.** Suppose per-branch steps are S ~ N^{a}/T^{δ}. Then T =
+N^{a/(1+δ)}. Here a = 1/2 is not fixed: a support with K coefficients and exponent
+mass S_I has a = S_I/(2K) and δ = (K+1)/2 (§3.3). Folding the inflation of a into
+δ gives δ_eff = K(K+3)/(2S_I) − 1, and the exponent is 1/(2(1+δ_eff)).
+
+## 2. The abstract cost model (step 1 components)
+
+- **(a) Window.** A target is a function g(p) = F(p, N/p) with a window
+  {U, …, U+W−1}. With t = p/√N, g = Σ_k b_k t^k with b_k ∈ (√N)^{|k|}Z (**proved**:
+  p^i q^j = N^{min(i,j)} p^{i−j}). Coverage is required for every integer p in the
+  balanced range [√(N/c), √N]. This is the "identity model": the correctness proof
+  uses only the polynomial identity, as Lehman, Hittmeir, Harvey and HH all do.
+- **(b) Strides / residue locks.** Guessing p ≡ r (mod M) (φ(M) runs) admits the
+  integer-valued lattice L_{r,M} ∋ (F−c)/M^e. HH Prop. 3.3 is the K=2 case, the
+  index-M sublattice fixed mod M². The index of L_{r,M} over Λ_I is M^κ, computed
+  exactly by HNF (`lattice.class_lattice_index`).
+- **(c) Batching.** cost = m + Σ_τ ⌈W_τ/m⌉, with one shared baby list. This is Harvey's
+  "single BSGS over the whole space". It is optimal among sumset strategies, since
+  any baby set B and giant set G_τ covering W_τ candidates need |B|·|G_τ| ≥ W_τ.
+  Hittmeir's two-tier scheme and Lehman's square test are restrictions of it.
+- **(d) Cyclotomic overhead.** φ(m) guesses, plus every ring operation on
+  D = φ(m) coefficients (≥ D base operations; schoolbook D², FFT D log D). The handle
+  T_{r,F} costs O(deg F · log N) ring multiplications. Constructing elements whose
+  order divides Φ_d(p) costs a further product of σ-conjugates.
+- **(e) One-sidedness.** No cost in the model (**proved**). A two-sided collision
+  (≡ mod N) is caught by sort-and-match (Harvey Step 3, HH Step 12) and gives the
+  integer u = g(p), from which p follows by solving g(p) = u. A one-sided collision is
+  caught by Alg. 4.1. Experiment E3 (§5) confirms codex's observation, and also finds
+  that p² ≡ q² (mod m) suffices for F = p²+q² to be two-sided. Neither changes the
+  cost.
+
+## 3. Theory
+
+### 3.1 D1: cyclotomic handles are dominated by (Z/N)^* handles (proved)
+
+**Claim.** Let r ≡ p (mod m), α ∈ R^*, and T = ∏ σ_r^{i−j}(α)^{c_ij N^j}. Suppose
+the identity α^{u(p)} ≡ T (mod p) holds for every α and every p ≡ r. Then u(p) ≡
+F(p,q) (mod p^f−1), where f = ord_m(p) and R/p ≅ ∏ F_{p^f}. Any identity-model target
+built this way is therefore a function u ∈ F + (p^f−1)·Z[p,q], or (F−c)/M^e if α
+is an M^e-th power. Every such u lies in Z[p, N/p], or in the integer-valued lattice
+L_{r,M}.
+
+**Matching target in (Z/N)^*.** For the same u, take a = b^{M^e}. Then
+a^{u} = b^{F(p,q)−c} ≡ b^{F(1,N)−c} (mod p), because p ≡ 1 and q ≡ N (mod p−1). This
+handle is computable from N and the guess, and the baby list is a^i. Windows, branch
+set and correctness proof are identical. Therefore:
+
+  e_cyc(family) ≥ e_{F_p^*}(same family) + log_N D,
+
+and (Z/N)^* may also drop the guesses when they are not used.
+
+Two caveats from the independent review:
+- **Base order.** "Same windows" needs ord_p(b^{M^e}) to exceed the baby-list length.
+  In (Z/N)^* that order can be as small as (p−1)/gcd(M^e, p−1), whereas F_{p^f} has
+  more room. The lower bound below does not use the matched handle; it only uses the
+  inclusion of the target sets (cyclotomic targets ⊆ Λ ∪ L_{r,M}). So the cost
+  comparison is stated for parameter ranges where the (Z/N)^* order is not binding.
+  This holds for M^e ≪ p/W, which covers all calibrated algorithms.
+- **Multi-base searches.** Handles that combine several σ_s with s ∉ ⟨r⟩ as
+  *independent* search directions are multi-base vector-exponent searches. They lie
+  outside the 1-D cost model, as do multi-base searches in (Z/N)^*. See §3.5 for
+  their separable part.
+
+**The (Z/N)^* handle collapse is a feature, not a loss.** Z[p,q]/(pq−N, p−1) ≅ Z:
+one handle a^{c} serves every F with F(1,N) = c simultaneously.
+
+**Genuinely independent cyclotomic handles.** In the subgroup of order dividing
+Φ_d(p) (d | f), the exponent ring is Z[p,q]/(pq−N, Φ_d(p)) ≅ Z[x]/Φ_d(x), because
+q = N x^{−1} and x^{−1} is a polynomial mod Φ_d. It has rank φ(d). For example, for
+d = 4: p² ≡ −1, p³ ≡ −p, q ≡ −Np, q² ≡ −N². So only σ^0, …, σ^{φ(d)−1}, weighted by
+powers of N, are independent handles. This sharper structure means fewer targets
+share a handle, not more.
+
+Cost of making elements of order dividing Φ_d(p): β^{(p^d−1)/Φ_d(p)} =
+β^{∏_{e|d,e<d}Φ_e(p)}, a σ-product of degree < d (for d=4, codex's σ²(β)/β). It is
+useful only when the residue degree f is a multiple of d, and that is not guaranteed by
+the guess. All of this is pure overhead in the model, because of D1.
+
+E2 checks the identity T_{r,F} ≡ α^{F(p,q)} (mod p) for 1440 cases, including
+negative coefficients via the norm inverse α^{−1} = ∏_{s≠1}σ_s(α)/Nm(α): 0 failures.
+
+### 3.2 Lemmas for the lower bound
+
+**Lemma W (Wronskian, proved; exhaustively checked for all 63 supports).**
+det[(i)_k]_{k=1..K, i∈I} = ∏_{i∈I} i · ∏_{i<i'}(i'−i) ≠ 0 for 0 ∉ I.
+
+*Proof.* (i)_k is a monic degree-k polynomial in i with zero constant term. Row
+reduction gives det[i^k]_{k=1..K}, which is ∏i times a Vandermonde.
+
+Consequence: for t in a compact subinterval of (0, ∞),
+(G'(t), …, G^{(K)}(t)) = M(t)·b with M(t) invertible, so Σ_{k≤K}|G^{(k)}(t)| ≥ c_I‖b‖_∞.
+
+**Lemma C (coverage, proved).** Let G = Σ_{k∈I} b_k t^k, |I| = K, and t ∈ J =
+[c^{−1/2}, 1]. For any measurable E ⊂ ℝ,
+
+  |{t ∈ J : G(t) ∈ E}| ≤ C_I·(|E|/‖b‖_∞)^{1/K}.
+
+*Proof.*
+- Split J into O_I(1) intervals on which G is monotone with G' monotone (the zeros of
+  the Laurent polynomials G' and G'' are bounded in number).
+- On each piece the preimage density 1/|G'| is monotone in the value. So for fixed
+  |E| the preimage measure is maximised by an interval E* at the flat end.
+- Further split into O_I(1) pieces on which some |G^{(k)}| ≥ c_I‖b‖/K (Lemma W).
+  Apply the van der Corput sublevel lemma |{|G − y| ≤ ε}| ≤ C_k(ε/λ_k)^{1/k}.
+- For |E| ≤ ‖b‖, (|E|/‖b‖)^{1/k} ≤ (|E|/‖b‖)^{1/K}. If |E| > ‖b‖ the bound is
+  trivial with C_I ≥ |J|.
+
+Each window {U..U+W−1} is a real set of measure W. Integers p ≡ r (mod M) in a
+p-interval of length √N·μ number ≤ √N μ/M + 1.
+
+**Lemma K′ (denominators of the guessed lattice, proved).** If v = Σ α_k p^k (with
+α_k for k<0 the coefficient of q^{|k|}) lies in L_{r,M}, then C_d·M^K·α ∈ Z^K, where C_d
+depends only on d = max|k|.
+
+*Proof, at a prime ℓ^a ‖ M.* The function f(x) = v(r + ℓ^a x) = Σ_n T_n ℓ^{an} x^n is
+ℓ-integral-valued on Z_ℓ, where T_n = Σ_k α_k N^{max(0,−k)} binom(k,n) r^{k−n}
+(N^{|k|} is an ℓ-unit). So v(T_n) ≥ v* := min v(α_k). Since (T_1..T_K) = W(r)α with v(det W) = c_W (= 0 if ℓ > 2d), some j ≤ K
+has v(T_j) ≤ v* + c_W.
+
+Take j₀ minimising v(T_j) for j ≤ K and use Δ^{j₀}f(0) = j₀! Σ_{n≥j₀} S(n,j₀)T_nℓ^{an}
+∈ Z_ℓ. For a > c_W the n = j₀ term dominates, so v(T_{j₀}) ≥ −a j₀ − v(j₀!). Hence
+v* ≥ −aK − v(K!) − c_W. If a ≤ c_W, pass to the subclass mod ℓ^{c_W+1}; the extra is
+bounded. ∎
+
+The HNF table (`experiments/analysis/cycloharvey_kappa.json`) shows the denominator
+exponent is exactly K(K+1)/2 per prime ℓ > 2d. It is larger by a bounded amount for
+ℓ ∈ {2, 3}, and for ℓ = 5 when d = 3.
+
+### 3.3 Scaling heuristic, δ yardstick, and guess-neutrality (heuristic)
+
+The heuristic matches BSGS (1/4), Lehman (1/3), Harvey/HH (1/5) and HH's
+(log log)^{3/5}. Hittmeir's 2/9 comes from his two-tier restriction of the cost model
+(§1), not from this formula.
+
+**Volume heuristic.** A target covers a t-interval of length ℓ around t₀ iff its
+Taylor coefficients satisfy |c_j(t₀)| ≲ Wℓ^{−j} for j = 1..K. Such a lattice vector
+exists for typical t₀ iff the box volume W^K ℓ^{−K(K+1)/2} ≳ covol = (√N)^{S}, with
+S = Σ_{k∈I}|k|. This gives
+
+  ℓ = (W^K N^{−S/2})^{2/(K(K+1))},  #targets = 1/ℓ,  cost ≍ 1/ℓ + √(W/ℓ),
+
+and so
+
+
+web search: https://arxiv.org/pdf/2511.10851
+web search: 
+web search: '1/6'
+exec
+/bin/bash -lc "sed -n '290,415p' notes/cycloharvey_results.md; for p in /AGENTS.md /home/AGENTS.md /home/knielsen/AGENTS.md /home/knielsen/code/AGENTS.md; do if test -f \""'$p"; then cat "$p"; fi; done' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+- coefficient inflation is already in e(I) through a = S/(2K);
+- one-sidedness costs 0 (§2(e)).
+
+So δ_eff,cyc ≤ δ_eff(I) ≤ 3/2 for every family. Equality requires I ⊇ {−1,1} used as
+Lehman vectors, with bounded m.
+
+**Every support other than {−1,1} is strictly worse** (test
+`test_min_heuristic_exponent_is_lehman_support`).
+
+**The user's δ = 5/2.** This is the raw δ of K = 4: three Taylor orders cancelled
+and the fourth as remainder. It would need a = 1/2, i.e. S = K. But four distinct
+nonzero exponents force S ≥ 1+1+2+2 = 6, so a = 3/4. The p² and q² coefficients are
+quantised at scale N, not √N, and that blow-up exactly undoes the gain: δ_eff = 4/3 <
+3/2. This is the general form of codex's s³−12Ks failure.
+
+**Guess-neutrality.** With M = N^μ and lattice index M^κ, the heuristic gives
+
+  e(I, μ) = S/(K(K+3)) + μ·(1 − 2(K+κ)/(K(K+3))).
+
+With κ = K(K+1)/2 (HNF-measured, §3.2), the μ-coefficient is exactly 0 for every K.
+Guesses are exponent-neutral.
+
+- This requires the baby list to be **shared across the φ(M) classes**, as in HH,
+  where the baby steps β^{m²i} do not depend on σ.
+- With a separate baby list per run, the μ-coefficient is 2/(K+3) > 0, and guessing
+  hurts.
+- κ = K(K+1)/2 is measured by HNF, not proved. Lemma K′ proves only that the
+  per-coordinate denominators are ≤ C_d M^K. The lower bound in §3.4 needs only
+  Lemma K′. Keeping φ(M) separate from M gives a gain factor
+(φ(M)/M)^{power}, which for K=2 is (φ(M)/M)^{3/5}. The cyclotomic version adds +μ
+(D ≈ m).
+
+### 3.4 Theorem LB: lower bound in the identity model (proved within the model's scope; independently reviewed)
+
+**Statement.** Fix d ≥ 1 and c > 1. Consider any covering family for the balanced
+range [√(N/c), √N]:
+- targets are Laurent polynomials of support ⊆ [−d,d]∖{0}, from Λ or from L_{r,M}
+  for guessed classes modulo **one** modulus M (any subset of classes);
+- windows are arbitrary integer intervals;
+- total cost is X, either per-run (Σ_runs (m + Σ_τ⌈W_τ/m⌉)) or with one baby list
+  shared across runs. The proof uses only "#distinct target vectors ≤ X and
+  Σ W_τ ≤ X²", which holds in both.
+
+Then X ≥ c_{d,c}·N^{1/5}·M^{−o(1)}.
+
+**Proof.** Write P = √N. Group targets with the same (class, vector) and use Lemma C
+for the union of their windows. The number of distinct vectors is ≤ X and
+Σ W_τ ≤ X·max m ≤ X². Covering needs Σ_τ (P μ_τ/M + C_I) ≥ c′P, since the preimage of a window is a union
+of ≤ C_I intervals; if X < c′P/2 this means
+Σ_τ μ_τ ≥ c″ M. Here μ_τ ≤ C(W_τ/‖b_τ‖)^{1/K_τ}. Let e = max|k| over the support of
+b_τ, so K_τ ≤ 2e.
+
+- **e ≥ 2.** By Lemma K′, ‖b‖ ≥ P^{e}/(C_d M^{K}), so μ_τ ≤ C M P^{−e/K} W_τ^{1/K}.
+  Hölder over ≤ X vectors with Σ W ≤ X² gives Σ μ ≤ C M P^{−e/K} X^{(K+1)/K}. M
+  cancels, and e/(K+1) ≥ e/(2e+1) ≥ 2/5. So this class needs X ≥ c·P^{2/5}, or it
+  covers only a small fraction.
+- **e = 1** (K ≤ 2, vectors (Aq+Bp)/(C M²), ‖b‖ ≍ P·max(|A|,|B|)/M²).
+  - For fixed (A,B), the number of classes r (mod M) for which it is integer-valued is
+    ≤ O(1)^{ω(M)}·gcd(A,B,M), because each class must satisfy B r² ≡ A N modulo a
+    divisor of M. The reviewer brute-forced this for M ≤ 12; it held. So #{(class, vector): ‖b‖ ≤ V} ≤ M^{o(1)}(VM²/P)².
+  - Hence the X smallest have Σ 1/‖b‖ ≤ M^{o(1)} X^{1/2} M²/P.
+  - Cauchy–Schwarz: Σ μ ≤ C(ΣW)^{1/2}(Σ 1/‖b‖)^{1/2} ≤ C M^{1+o(1)} P^{−1/2} X^{5/4}.
+  - Requiring this ≥ c″M gives X ≥ c P^{2/5} M^{−o(1)}.
+- **Combining.** Summing the finitely many (e, K) classes: if X ≤ δ P^{2/5}M^{−o(1)},
+  each class covers ≤ C δ^{const}·M, which is too little for small δ. Hence
+  X ≥ c N^{1/5} M^{−o(1)}. ∎
+
+**Scope (rule 5).** This is a lower bound *in the model*:
+- identity-proved coverage of all p in the range;
+- bounded-degree polynomial exponents;
+- a single guess modulus;
+- sumset-type BSGS with one handle per target and one base.
+
+With several moduli M_j the e = 1 count gains a factor #moduli, and the bound
+degrades to about N^{1/6}. That case is **not covered**.
+
+It does not cover proofs that use arithmetic of the specific N, non-polynomial
+exponent maps, or other collision mechanisms. It is not a factoring lower bound.
+
+The e = 1 case with M = 1 is the statement that Harvey's 1/5 is optimal for Lehman's
+family under full sharing, consistent with Harvey's remark that N^{1/6} would need a
+"fully square-root speedup" for r ≍ N^{1/3}.
+
+**Review.** An independent read-only Opus 5.5 reviewer checked D1, W, C, K′, LB and
+the heuristic.
+- Verdicts: CORRECT for W, C and K′; D1 CORRECT within the model, with the two scope
+  caveats now added; LB CORRECT for a single modulus.
+- Required fixes, all applied above: restrict LB to one modulus; reconcile the
+  shared and per-run wording; withdraw the (φ/M)^{3/5}-optimality claim; add the
+  constant C_I per window; add the N^{|k|} unit in K′.
+- Status: **proved, single reviewer**.
+
+### 3.5 Separability (user's cross-difference law) — enforced by the model (proved)
+
+Every test in the model has the separable form E(τ, j; i) = [g_τ(p) − jm] − i.
+- The shared baby list is α^i with the single exponent h(i) = i.
+- Each giant step is T_τ·α^{−jm}.
+- This is exactly the user's condition E(j,u) = f(j) − h(u).
+
+**Can Frobenius handles enter separably?**
+- **Giant (handle) side: yes, in full.** σ^k(α) appears only inside T_τ, which is the
+  whole point of the handle. It changes nothing beyond the target set, and by D1
+  that set is already available in (Z/N)^*.
+- **Baby side: only by relabelling.**
+  - Using σ^k(α)^i = α^{p^k i} as baby steps makes the collision i·p^k ≡ g_τ(p)
+    (mod ord). That is i ≡ p^{f−k}g_τ(p) (mod p^f − 1), a separable search for the
+    target p^{f−k}g_τ, still in Λ (or L_{r,M}) but of higher degree, hence worse
+    (§3.3).
+  - Mixing several σ^k(α) powers in one baby list (i₀ + i₁p + …) makes h(i) depend on
+    the unknown p. This is non-separable (cross-difference ≠ 0) and is not
+    multipoint-testable with one product tree. Splitting it into separable pieces
+    gives a multi-base search outside the 1-D model, priced additively.
+- **Decoupling.** The user's decoupling argument (a_i ≡ a₀ (mod M), with M-inflation
+  cancelling the M² gain) is the K = 2 instance of guess-neutrality: index M^{3} from
+  M² plus first order, against M runs.
+
+### 3.6 Elkies-prime analogue (qualitative; not part of the frozen search)
+
+At an Elkies prime ℓ for E mod p, guessing the eigenvalue λ makes the substitution
+y(X) ↦ y(x([λ]X)) computable modulo the kernel polynomial h_ℓ. It agrees with the
+p-power Frobenius on A = (Z/N)[X]/h_ℓ (mod p), and is a ring endomorphism of
+dimension D = (ℓ−1)/2.
+- **For exponent targets F(p,q) it changes nothing.** The argument of D1 applies
+  verbatim. A/p ≅ ∏F_{p^f}, so the identity-model targets are again Z[p,N/p] (or
+  L_{r,ℓ}), all realisable in (Z/N)^*. The costs are about ℓ guesses (λ, and whether
+  ℓ is Elkies for p) and D-dimensional arithmetic, i.e. dominated, as for σ_r.
+
+codex
+Harvey’s remark is specifically about obtaining a square-root speedup over Lehman’s original \(r\asymp N^{1/3}\) search. I also found a 2026 preprint refuting the arithmetic-progression special case of Umans–Wang at \((1/3,1/3)\); it explicitly leaves their higher-rank conjecture open.
+web search: 
+web search: deterministic subexponential factoring derandomization Dixon smooth numbers GRH Lenstra Pomerance ...
+web search: 
+web search: site.math.dartmouth.edu/~carlp "Smooth numbers and the quadratic sieve" ...
+web search: 
+web search: 
+web search: 
+exec
+/bin/bash -lc 'mkdir -p /tmp/factoring-research && curl -L --fail --max-time 30 https://arxiv.org/pdf/2511.10851 -o /tmp/factoring-research/uw.pdf && pdftotext -layout /tmp/factoring-research/uw.pdf /tmp/factoring-research/uw.txt' in /home/knielsen/code/factoring-connection
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: arxiv.org
+
+web search: "deterministic subexponential" "factoring" "hypothesis" ...
+web search: 
+web search: "Umans" "Wang" "divisor" 2026 conjecture -site:researchgate.net -site:mathdb.com ...
+web search: 
+web search: 
+web search: 
+web search: "deterministic" "subexponential" factoring "GRH" integer -polynomial -polynomials -site:scribd.com -site:researchgate.net -site:scispace.com ...
+codex
+The subexponential question needs two distinctions: Dixon and Lenstra–Pomerance have rigorous randomized bounds, while the original Schnorr–Lenstra class-number smoothness method is conditional. Smooth-value density also does not by itself derandomize relation collection: a deterministic search needs a time bound and a guarantee that its relations yield a nontrivial factor. I’m making those requirements explicit in the proposed lemmas.
+web search: 
+web search: 
+web search: 
+web search: site:math.dartmouth.edu/~carlp/PDF/ "A RIGOROUS TIME BOUND" ...
+web search: 
+web search: https://math.dartmouth.edu/~carlp/
+web search: 
+web search: 
+web search: 
+web search: site:cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf "random class groups" "cannot" ...
+codex
+I have two concrete directions to propose: selective residue guesses across several moduli, and higher-rank additive divisor covers. Their main feasibility risks are different: the first must pay for separate bases and baby lists; the second must construct the cover uniformly and factor the differences reached during recovery. The older large-order-base bottleneck has also improved: a 2025 theorem reaches \(D\ge N^{1/6}\) in \(D^{1/2+o(1)}\) time.
+web search: 
+web search: site:cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf "§8" "relations" ...
+codex
+As of **18 October 2026**. I read [§3.4](/home/knielsen/code/factoring-connection/notes/cycloharvey_results.md:323) without changing it. Its several-moduli gap remains a research opportunity, not evidence of an achievable \(N^{1/6}\) algorithm.
+
+**1. Harvey’s remark — CONJECTURED**
+
+In Remark 3.4, Harvey asks:
+
+> “whether it is possible to obtain a fully square-root speedup for Lehman’s original choice \(r\asymp N^{1/3}\)”
+
+The following sentence says this would presumably give complexity \(N^{1/6+o(1)}\). [Harvey, Remark 3.4](https://arxiv.org/html/2010.05450#S3)
+
+The requirement is a square-root speedup over the **whole original Lehman search**. Merely shortening its windows is insufficient: Harvey’s implementation still pays an additive \(r\) for the branches. Setting \(r=N^{1/3}\) therefore does not produce \(N^{1/6}\). Compressing or jointly processing those branches is the missing algorithmic ingredient.
+
+**2. Umans–Wang — conditional route, with a 2026 obstruction**
+
+**CONJECTURED.** Their Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture requires, for infinitely many \(n\), positive integer sets \(S,T\) satisfying:
+
+- \(|S|,|T|\le n^\beta\), with elements at most \(\exp(n^\alpha)\);
+- every \(d\le n\) divides some **nonzero** difference \(s-t\);
+- \(S,T\) are sums of \(n^{o(1)}\) arithmetic progressions;
+- each difference’s complete factorization is deterministically obtainable in \(\widetilde O(n^\alpha)\) time.
+
+Their stated Theorem 5.5 gives
+\[
+\widetilde O\!\left(N^{\max(\alpha,\beta)/2+o(1)}\right),
+\]
+hence \(N^{1/6+o(1)}\) at \(\alpha=\beta=1/3\). Product trees and multipoint evaluation compress the difference products; prefactorization enables recovery at the leaves. The necessary constraint \(\alpha+2\beta\ge1\) makes \(1/3\) optimal within this framework. Trivial regimes are proved; the critical point is not. [Umans–Wang, §§3,5](https://arxiv.org/html/2511.10851)
+
+**UNVERIFIED uniformity caveat—my reading:** existence at infinitely many sizes alone supplies neither an efficient uniform constructor nor suitably dense usable sizes. Those requirements should be explicit before treating this as an implementable all-input bound.
+
+**Classification:** this is an additive collision/divisor-cover framework. It does **not** construct several guesses \(p\bmod M_j\) in your model. Higher-rank progressions also do not automatically provide independent multiplicative bases.
+
+**PROVED in a 2026 preprint:** He–Sahai refute the **single arithmetic-progression sufficient version**. For height \(H\) with \(\log H=o(\sqrt n)\), its length must satisfy
+\[
+L\ge\left(\sqrt{8/27}-o(1)\right)\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+Thus that version fails when \(\alpha<1/2,\ \beta<3/8\), including \((1/3,1/3)\). Their argument explicitly leaves higher-rank difference sets open. [He–Sahai, Theorem 1.1 and Remark 4.2](https://arxiv.org/html/2608.06681)
+
+**Assessment:** the full prefactored conjecture remains **CONJECTURED/open**, with negative evidence against its simplest proposed realization. I found no further affirmative 2026 resolution; completeness of that negative search is **UNVERIFIED**.
+
+**3. Deterministic subexponential factoring: what is actually missing?**
+
+Write \(L_N[1/2,c]=\exp((c+o(1))\sqrt{\log N\log\log N})\).
+
+| Method | Established status | Missing deterministic ingredient |
+|---|---|---|
+| Dixon | **PROVED:** randomized \(L_N[1/2,O(1)]\). | A short, efficiently constructed deterministic candidate sequence guaranteed to produce useful smooth square relations. A density theorem over the entire residue space does not guarantee its first short deterministic segment succeeds. |
+| Original Schnorr–Lenstra random class groups | **CONJECTURED:** its analysis assumes smooth-class-number frequency. | Suitable discriminants with smooth class numbers, plus effective access to useful ambiguous classes. This is not an unconditional randomized benchmark. |
+| Lenstra–Pomerance | **PROVED:** randomized expected \(L_N[1/2,1]\). | Deterministic replacement for random class-group sampling and relation collection, guaranteeing enough useful relations. Small generators alone do not provide that guarantee. |
+
+Sources: [Dixon, §§2–3](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), [Schnorr–Lenstra, abstract](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf), [Lenstra–Pomerance, §§1,5,8,10–11](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf). LP §11 also identifies a serious flaw in the earlier random-class-group heuristic.
+
+A **precise sufficient missing lemma**, rather than an established conjecture with this exact wording, is:
+
+> There exist fixed \(b,h>0\) such that, uniformly for every odd nonsquare composite \(N\), the \(B\)-smooth values
+> \[
+> Q_N(k)=(\lceil\sqrt N\rceil+k)^2-N,\qquad
+> 0\le k<H,
+> \]
+> with \(B=L_N[1/2,b]\), \(H=L_N[1/2,h]\), yield a parity-relation kernel containing a congruence of squares that gives a proper factor.
+
+This would give deterministic subexponential factoring: sieve the interval, compute a kernel basis, and test its dependencies. **A smooth-value count alone needs an additional useful-dependency guarantee.** Here “fixed polynomial” means fixed for each input; the theorem must be uniform in its \(N\)-dependent coefficients.
+
+Pomerance identifies the required smoothness estimates for \(x^2-N\) as essentially unresolved in the relevant ranges, and explicitly describes quadratic sieve as deterministic with conjectured complexity. [Pomerance, pp. 75,79](https://www.math.dartmouth.edu/~carlp/PDF/qs08.pdf)
+
+**GRH:** I found no general deterministic subexponential integer-factoring bound from GRH alone. The earlier GRH class-group bound was still probabilistic; Shanks’s deterministic GRH bound is \(N^{1/5+o(1)}\). A uniform smooth-relations hypothesis would suffice, but it is additional to GRH. [Lenstra–Pomerance, introduction](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf), [Harvey, introduction](https://arxiv.org/html/2010.05450#S1)
+
+**4. Two concrete directions—UNVERIFIED proposals**
+
+**A. Selective residue classes across several moduli: target \(N^{1/6}\).**
+
+Search for complementary HH-style cells across different \(M_j\), retaining only useful residue classes instead of paying for every class of every modulus.
+
+**Missing lemma:** uniformly construct covering cells with targets
+\[
+F_\tau(p)=\frac{A_\tau N/p+B_\tau p-c_\tau}{M_{j(\tau)}^2}
+\]
+integer-valued on their guessed classes, windows of width \(W_\tau\), and baby lengths \(m_j\), such that
+\[
+\sum_jm_j+\sum_\tau\left\lceil W_\tau/m_{j(\tau)}\right\rceil
+\le N^{1/6+o(1)}.
+\]
+Construction, handles, and order safeguards must fit the same budget.
+
+**Falsifiable small experiment:** at 16–28 bits, enumerate bounded coefficients and moduli \(M\le64\); solve the resulting exact weighted covering problem over the **entire candidate-\(p\) grid**. Charge separate baby lists unless their actual group elements coincide. Freeze the parameter family and cost threshold first; one uncovered grid point or excess cost rejects that finite construction.
+
+**Adversarial assessment:** your weakened lower bound might reflect loose counting. Different \(M_j\) generally induce different bases \(\beta^{M_j^2}\); ignoring their baby-list cost can manufacture a false improvement. Novelty would be a constructive complementary-cover lemma, not using several moduli by itself.
+
+**B. Deterministic factor-base relation collisions: the credible route below \(N^{1/6}\).**
+
+Broaden “multi-base” to multiplicative relations among small-prime bases:
+\[
+x_i^2\equiv\prod_{\ell\le B}\ell^{e_{i,\ell}}\pmod N.
+\]
+A parity dependency combines these into a square collision. This changes the collision mechanism beyond your BSGS model.
+
+**Missing lemma:** the uniform useful-relations statement above—or an explicit \(L_N[1/2,O(1)]\)-time deterministic generator with the same guarantee.
+
+**Falsifiable small experiment:** freeze \(b,h\) and a candidate schedule; test all eligible composites up to a manageable bound, then adversarial balanced semiprimes at larger sizes. Record smooth counts, kernel dimensions, and whether any kernel-basis dependency factors \(N\). A failing input falsifies the finite claimed schedule; success does not establish its asymptotic extension.
+
+**Adversarial assessment:** this is the longstanding quadratic-sieve/derandomization program, not a new algorithm. Novelty requires a restricted family for which one can actually prove the missing lemma. UW’s divisor covering does not supply a smooth-relation hitting theorem.
+
+One useful update for direction A is already **PROVED**: Oznovich–Volk find an element of order at least \(D\), or a factor, in \(D^{1/2+o(1)}\) time for \(D\ge N^{1/6}\). Thus the older base-generation bottleneck has improved. Removing factors through \(N^{1/3}\) still costs \(N^{1/6+o(1)}\) by Strassen, so a sub-\(1/6\) collision routine would need further preprocessing improvements. [Oznovich–Volk, Theorem 1.1](https://arxiv.org/html/2506.07668#S1.SS1)
+tokens used
+166,370
+As of **18 October 2026**. I read [§3.4](/home/knielsen/code/factoring-connection/notes/cycloharvey_results.md:323) without changing it. Its several-moduli gap remains a research opportunity, not evidence of an achievable \(N^{1/6}\) algorithm.
+
+**1. Harvey’s remark — CONJECTURED**
+
+In Remark 3.4, Harvey asks:
+
+> “whether it is possible to obtain a fully square-root speedup for Lehman’s original choice \(r\asymp N^{1/3}\)”
+
+The following sentence says this would presumably give complexity \(N^{1/6+o(1)}\). [Harvey, Remark 3.4](https://arxiv.org/html/2010.05450#S3)
+
+The requirement is a square-root speedup over the **whole original Lehman search**. Merely shortening its windows is insufficient: Harvey’s implementation still pays an additive \(r\) for the branches. Setting \(r=N^{1/3}\) therefore does not produce \(N^{1/6}\). Compressing or jointly processing those branches is the missing algorithmic ingredient.
+
+**2. Umans–Wang — conditional route, with a 2026 obstruction**
+
+**CONJECTURED.** Their Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture requires, for infinitely many \(n\), positive integer sets \(S,T\) satisfying:
+
+- \(|S|,|T|\le n^\beta\), with elements at most \(\exp(n^\alpha)\);
+- every \(d\le n\) divides some **nonzero** difference \(s-t\);
+- \(S,T\) are sums of \(n^{o(1)}\) arithmetic progressions;
+- each difference’s complete factorization is deterministically obtainable in \(\widetilde O(n^\alpha)\) time.
+
+Their stated Theorem 5.5 gives
+\[
+\widetilde O\!\left(N^{\max(\alpha,\beta)/2+o(1)}\right),
+\]
+hence \(N^{1/6+o(1)}\) at \(\alpha=\beta=1/3\). Product trees and multipoint evaluation compress the difference products; prefactorization enables recovery at the leaves. The necessary constraint \(\alpha+2\beta\ge1\) makes \(1/3\) optimal within this framework. Trivial regimes are proved; the critical point is not. [Umans–Wang, §§3,5](https://arxiv.org/html/2511.10851)
+
+**UNVERIFIED uniformity caveat—my reading:** existence at infinitely many sizes alone supplies neither an efficient uniform constructor nor suitably dense usable sizes. Those requirements should be explicit before treating this as an implementable all-input bound.
+
+**Classification:** this is an additive collision/divisor-cover framework. It does **not** construct several guesses \(p\bmod M_j\) in your model. Higher-rank progressions also do not automatically provide independent multiplicative bases.
+
+**PROVED in a 2026 preprint:** He–Sahai refute the **single arithmetic-progression sufficient version**. For height \(H\) with \(\log H=o(\sqrt n)\), its length must satisfy
+\[
+L\ge\left(\sqrt{8/27}-o(1)\right)\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+Thus that version fails when \(\alpha<1/2,\ \beta<3/8\), including \((1/3,1/3)\). Their argument explicitly leaves higher-rank difference sets open. [He–Sahai, Theorem 1.1 and Remark 4.2](https://arxiv.org/html/2608.06681)
+
+**Assessment:** the full prefactored conjecture remains **CONJECTURED/open**, with negative evidence against its simplest proposed realization. I found no further affirmative 2026 resolution; completeness of that negative search is **UNVERIFIED**.
+
+**3. Deterministic subexponential factoring: what is actually missing?**
+
+Write \(L_N[1/2,c]=\exp((c+o(1))\sqrt{\log N\log\log N})\).
+
+| Method | Established status | Missing deterministic ingredient |
+|---|---|---|
+| Dixon | **PROVED:** randomized \(L_N[1/2,O(1)]\). | A short, efficiently constructed deterministic candidate sequence guaranteed to produce useful smooth square relations. A density theorem over the entire residue space does not guarantee its first short deterministic segment succeeds. |
+| Original Schnorr–Lenstra random class groups | **CONJECTURED:** its analysis assumes smooth-class-number frequency. | Suitable discriminants with smooth class numbers, plus effective access to useful ambiguous classes. This is not an unconditional randomized benchmark. |
+| Lenstra–Pomerance | **PROVED:** randomized expected \(L_N[1/2,1]\). | Deterministic replacement for random class-group sampling and relation collection, guaranteeing enough useful relations. Small generators alone do not provide that guarantee. |
+
+Sources: [Dixon, §§2–3](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), [Schnorr–Lenstra, abstract](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf), [Lenstra–Pomerance, §§1,5,8,10–11](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf). LP §11 also identifies a serious flaw in the earlier random-class-group heuristic.
+
+A **precise sufficient missing lemma**, rather than an established conjecture with this exact wording, is:
+
+> There exist fixed \(b,h>0\) such that, uniformly for every odd nonsquare composite \(N\), the \(B\)-smooth values
+> \[
+> Q_N(k)=(\lceil\sqrt N\rceil+k)^2-N,\qquad
+> 0\le k<H,
+> \]
+> with \(B=L_N[1/2,b]\), \(H=L_N[1/2,h]\), yield a parity-relation kernel containing a congruence of squares that gives a proper factor.
+
+This would give deterministic subexponential factoring: sieve the interval, compute a kernel basis, and test its dependencies. **A smooth-value count alone needs an additional useful-dependency guarantee.** Here “fixed polynomial” means fixed for each input; the theorem must be uniform in its \(N\)-dependent coefficients.
+
+Pomerance identifies the required smoothness estimates for \(x^2-N\) as essentially unresolved in the relevant ranges, and explicitly describes quadratic sieve as deterministic with conjectured complexity. [Pomerance, pp. 75,79](https://www.math.dartmouth.edu/~carlp/PDF/qs08.pdf)
+
+**GRH:** I found no general deterministic subexponential integer-factoring bound from GRH alone. The earlier GRH class-group bound was still probabilistic; Shanks’s deterministic GRH bound is \(N^{1/5+o(1)}\). A uniform smooth-relations hypothesis would suffice, but it is additional to GRH. [Lenstra–Pomerance, introduction](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf), [Harvey, introduction](https://arxiv.org/html/2010.05450#S1)
+
+**4. Two concrete directions—UNVERIFIED proposals**
+
+**A. Selective residue classes across several moduli: target \(N^{1/6}\).**
+
+Search for complementary HH-style cells across different \(M_j\), retaining only useful residue classes instead of paying for every class of every modulus.
+
+**Missing lemma:** uniformly construct covering cells with targets
+\[
+F_\tau(p)=\frac{A_\tau N/p+B_\tau p-c_\tau}{M_{j(\tau)}^2}
+\]
+integer-valued on their guessed classes, windows of width \(W_\tau\), and baby lengths \(m_j\), such that
+\[
+\sum_jm_j+\sum_\tau\left\lceil W_\tau/m_{j(\tau)}\right\rceil
+\le N^{1/6+o(1)}.
+\]
+Construction, handles, and order safeguards must fit the same budget.
+
+**Falsifiable small experiment:** at 16–28 bits, enumerate bounded coefficients and moduli \(M\le64\); solve the resulting exact weighted covering problem over the **entire candidate-\(p\) grid**. Charge separate baby lists unless their actual group elements coincide. Freeze the parameter family and cost threshold first; one uncovered grid point or excess cost rejects that finite construction.
+
+**Adversarial assessment:** your weakened lower bound might reflect loose counting. Different \(M_j\) generally induce different bases \(\beta^{M_j^2}\); ignoring their baby-list cost can manufacture a false improvement. Novelty would be a constructive complementary-cover lemma, not using several moduli by itself.
+
+**B. Deterministic factor-base relation collisions: the credible route below \(N^{1/6}\).**
+
+Broaden “multi-base” to multiplicative relations among small-prime bases:
+\[
+x_i^2\equiv\prod_{\ell\le B}\ell^{e_{i,\ell}}\pmod N.
+\]
+A parity dependency combines these into a square collision. This changes the collision mechanism beyond your BSGS model.
+
+**Missing lemma:** the uniform useful-relations statement above—or an explicit \(L_N[1/2,O(1)]\)-time deterministic generator with the same guarantee.
+
+**Falsifiable small experiment:** freeze \(b,h\) and a candidate schedule; test all eligible composites up to a manageable bound, then adversarial balanced semiprimes at larger sizes. Record smooth counts, kernel dimensions, and whether any kernel-basis dependency factors \(N\). A failing input falsifies the finite claimed schedule; success does not establish its asymptotic extension.
+
+**Adversarial assessment:** this is the longstanding quadratic-sieve/derandomization program, not a new algorithm. Novelty requires a restricted family for which one can actually prove the missing lemma. UW’s divisor covering does not supply a smooth-relation hitting theorem.
+
+One useful update for direction A is already **PROVED**: Oznovich–Volk find an element of order at least \(D\), or a factor, in \(D^{1/2+o(1)}\) time for \(D\ge N^{1/6}\). Thus the older base-generation bottleneck has improved. Removing factors through \(N^{1/3}\) still costs \(N^{1/6+o(1)}\) by Strassen, so a sub-\(1/6\) collision routine would need further preprocessing improvements. [Oznovich–Volk, Theorem 1.1](https://arxiv.org/html/2506.07668#S1.SS1)

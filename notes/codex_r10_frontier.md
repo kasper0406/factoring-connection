@@ -1,0 +1,104 @@
+> Source: GPT-6.1-sol r10_frontier (codex/r10_frontier.md → .out), 2026-10-18. Curated copy. Scripts in /tmp/claude-r9 (ephemeral).
+
+As of **18 October 2026**. I read [§3.4](/home/knielsen/code/factoring-connection/notes/cycloharvey_results.md:323) without changing it. Its several-moduli gap remains a research opportunity, not evidence of an achievable \(N^{1/6}\) algorithm.
+
+**1. Harvey’s remark — CONJECTURED**
+
+In Remark 3.4, Harvey asks:
+
+> “whether it is possible to obtain a fully square-root speedup for Lehman’s original choice \(r\asymp N^{1/3}\)”
+
+The following sentence says this would presumably give complexity \(N^{1/6+o(1)}\). [Harvey, Remark 3.4](https://arxiv.org/html/2010.05450#S3)
+
+The requirement is a square-root speedup over the **whole original Lehman search**. Merely shortening its windows is insufficient: Harvey’s implementation still pays an additive \(r\) for the branches. Setting \(r=N^{1/3}\) therefore does not produce \(N^{1/6}\). Compressing or jointly processing those branches is the missing algorithmic ingredient.
+
+**2. Umans–Wang — conditional route, with a 2026 obstruction**
+
+**CONJECTURED.** Their Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture requires, for infinitely many \(n\), positive integer sets \(S,T\) satisfying:
+
+- \(|S|,|T|\le n^\beta\), with elements at most \(\exp(n^\alpha)\);
+- every \(d\le n\) divides some **nonzero** difference \(s-t\);
+- \(S,T\) are sums of \(n^{o(1)}\) arithmetic progressions;
+- each difference’s complete factorization is deterministically obtainable in \(\widetilde O(n^\alpha)\) time.
+
+Their stated Theorem 5.5 gives
+\[
+\widetilde O\!\left(N^{\max(\alpha,\beta)/2+o(1)}\right),
+\]
+hence \(N^{1/6+o(1)}\) at \(\alpha=\beta=1/3\). Product trees and multipoint evaluation compress the difference products; prefactorization enables recovery at the leaves. The necessary constraint \(\alpha+2\beta\ge1\) makes \(1/3\) optimal within this framework. Trivial regimes are proved; the critical point is not. [Umans–Wang, §§3,5](https://arxiv.org/html/2511.10851)
+
+**UNVERIFIED uniformity caveat—my reading:** existence at infinitely many sizes alone supplies neither an efficient uniform constructor nor suitably dense usable sizes. Those requirements should be explicit before treating this as an implementable all-input bound.
+
+**Classification:** this is an additive collision/divisor-cover framework. It does **not** construct several guesses \(p\bmod M_j\) in your model. Higher-rank progressions also do not automatically provide independent multiplicative bases.
+
+**PROVED in a 2026 preprint:** He–Sahai refute the **single arithmetic-progression sufficient version**. For height \(H\) with \(\log H=o(\sqrt n)\), its length must satisfy
+\[
+L\ge\left(\sqrt{8/27}-o(1)\right)\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+Thus that version fails when \(\alpha<1/2,\ \beta<3/8\), including \((1/3,1/3)\). Their argument explicitly leaves higher-rank difference sets open. [He–Sahai, Theorem 1.1 and Remark 4.2](https://arxiv.org/html/2608.06681)
+
+**Assessment:** the full prefactored conjecture remains **CONJECTURED/open**, with negative evidence against its simplest proposed realization. I found no further affirmative 2026 resolution; completeness of that negative search is **UNVERIFIED**.
+
+**3. Deterministic subexponential factoring: what is actually missing?**
+
+Write \(L_N[1/2,c]=\exp((c+o(1))\sqrt{\log N\log\log N})\).
+
+| Method | Established status | Missing deterministic ingredient |
+|---|---|---|
+| Dixon | **PROVED:** randomized \(L_N[1/2,O(1)]\). | A short, efficiently constructed deterministic candidate sequence guaranteed to produce useful smooth square relations. A density theorem over the entire residue space does not guarantee its first short deterministic segment succeeds. |
+| Original Schnorr–Lenstra random class groups | **CONJECTURED:** its analysis assumes smooth-class-number frequency. | Suitable discriminants with smooth class numbers, plus effective access to useful ambiguous classes. This is not an unconditional randomized benchmark. |
+| Lenstra–Pomerance | **PROVED:** randomized expected \(L_N[1/2,1]\). | Deterministic replacement for random class-group sampling and relation collection, guaranteeing enough useful relations. Small generators alone do not provide that guarantee. |
+
+Sources: [Dixon, §§2–3](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), [Schnorr–Lenstra, abstract](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf), [Lenstra–Pomerance, §§1,5,8,10–11](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf). LP §11 also identifies a serious flaw in the earlier random-class-group heuristic.
+
+A **precise sufficient missing lemma**, rather than an established conjecture with this exact wording, is:
+
+> There exist fixed \(b,h>0\) such that, uniformly for every odd nonsquare composite \(N\), the \(B\)-smooth values
+> \[
+> Q_N(k)=(\lceil\sqrt N\rceil+k)^2-N,\qquad
+> 0\le k<H,
+> \]
+> with \(B=L_N[1/2,b]\), \(H=L_N[1/2,h]\), yield a parity-relation kernel containing a congruence of squares that gives a proper factor.
+
+This would give deterministic subexponential factoring: sieve the interval, compute a kernel basis, and test its dependencies. **A smooth-value count alone needs an additional useful-dependency guarantee.** Here “fixed polynomial” means fixed for each input; the theorem must be uniform in its \(N\)-dependent coefficients.
+
+Pomerance identifies the required smoothness estimates for \(x^2-N\) as essentially unresolved in the relevant ranges, and explicitly describes quadratic sieve as deterministic with conjectured complexity. [Pomerance, pp. 75,79](https://www.math.dartmouth.edu/~carlp/PDF/qs08.pdf)
+
+**GRH:** I found no general deterministic subexponential integer-factoring bound from GRH alone. The earlier GRH class-group bound was still probabilistic; Shanks’s deterministic GRH bound is \(N^{1/5+o(1)}\). A uniform smooth-relations hypothesis would suffice, but it is additional to GRH. [Lenstra–Pomerance, introduction](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf), [Harvey, introduction](https://arxiv.org/html/2010.05450#S1)
+
+**4. Two concrete directions—UNVERIFIED proposals**
+
+**A. Selective residue classes across several moduli: target \(N^{1/6}\).**
+
+Search for complementary HH-style cells across different \(M_j\), retaining only useful residue classes instead of paying for every class of every modulus.
+
+**Missing lemma:** uniformly construct covering cells with targets
+\[
+F_\tau(p)=\frac{A_\tau N/p+B_\tau p-c_\tau}{M_{j(\tau)}^2}
+\]
+integer-valued on their guessed classes, windows of width \(W_\tau\), and baby lengths \(m_j\), such that
+\[
+\sum_jm_j+\sum_\tau\left\lceil W_\tau/m_{j(\tau)}\right\rceil
+\le N^{1/6+o(1)}.
+\]
+Construction, handles, and order safeguards must fit the same budget.
+
+**Falsifiable small experiment:** at 16–28 bits, enumerate bounded coefficients and moduli \(M\le64\); solve the resulting exact weighted covering problem over the **entire candidate-\(p\) grid**. Charge separate baby lists unless their actual group elements coincide. Freeze the parameter family and cost threshold first; one uncovered grid point or excess cost rejects that finite construction.
+
+**Adversarial assessment:** your weakened lower bound might reflect loose counting. Different \(M_j\) generally induce different bases \(\beta^{M_j^2}\); ignoring their baby-list cost can manufacture a false improvement. Novelty would be a constructive complementary-cover lemma, not using several moduli by itself.
+
+**B. Deterministic factor-base relation collisions: the credible route below \(N^{1/6}\).**
+
+Broaden “multi-base” to multiplicative relations among small-prime bases:
+\[
+x_i^2\equiv\prod_{\ell\le B}\ell^{e_{i,\ell}}\pmod N.
+\]
+A parity dependency combines these into a square collision. This changes the collision mechanism beyond your BSGS model.
+
+**Missing lemma:** the uniform useful-relations statement above—or an explicit \(L_N[1/2,O(1)]\)-time deterministic generator with the same guarantee.
+
+**Falsifiable small experiment:** freeze \(b,h\) and a candidate schedule; test all eligible composites up to a manageable bound, then adversarial balanced semiprimes at larger sizes. Record smooth counts, kernel dimensions, and whether any kernel-basis dependency factors \(N\). A failing input falsifies the finite claimed schedule; success does not establish its asymptotic extension.
+
+**Adversarial assessment:** this is the longstanding quadratic-sieve/derandomization program, not a new algorithm. Novelty requires a restricted family for which one can actually prove the missing lemma. UW’s divisor covering does not supply a smooth-relation hitting theorem.
+
+One useful update for direction A is already **PROVED**: Oznovich–Volk find an element of order at least \(D\), or a factor, in \(D^{1/2+o(1)}\) time for \(D\ge N^{1/6}\). Thus the older base-generation bottleneck has improved. Removing factors through \(N^{1/3}\) still costs \(N^{1/6+o(1)}\) by Strassen, so a sub-\(1/6\) collision routine would need further preprocessing improvements. [Oznovich–Volk, Theorem 1.1](https://arxiv.org/html/2506.07668#S1.SS1)

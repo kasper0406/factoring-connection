@@ -1,3 +1,9 @@
+> **Audit 2026-10-18 (GPT-6.1-sol r9, `notes/codex_r9_tower_audit.md`), independent exact re-computation:**
+> - **Correct:** T1, T2 (needs N ≡ 1 mod 8, k ≥ 6), T3 (Rédei linearity step admissible), T4, and the 2-part isomorphisms.
+> - **T4′:** the XOR identity is correct, but "carries nothing about h" is not established.
+> - **P5:** the proof's identification of [a,b,p*] with ordinary Frobenius is WRONG; counterexample [5,5,−11]. The statement is repaired via a corrected Chebotarev argument in the audit.
+> - **Prior art:** 8-rank criteria for −4pq / −8pq exist (Rédei–Reichardt, Stevenhagen 1989, Milović 2018, Wu–Yue 2007), so "New: T1–T4" is narrowed to the specific T3 XOR corollary and its application to p+q mod 128, with priority unestablished.
+
 # tower128: what determines s = p + q mod 128 when N ≡ 1 (mod 8)
 
 Agent `tower128`, 2026-10-18. NEXT_STEPS item 2. All code here is **diagnostic**: it knows `p` and `q` (rule 2).
