@@ -1,0 +1,747 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14f00-d372-7e53-b26d-dc8670d002b6
+--------
+user
+Research question (use web search; primary sources; label proved / conditional / conjectured / UNVERIFIED; be rigorous and adversarial).
+
+Hypothesis [QRH]: OpenAI preprint "The Quasi-Riemann Hypothesis" (Oct 5 2026, github.com/openai/math, preprints/The-Quasi-Riemann-Hypothesis-October-5-2026). It claims that every Dirichlet L-function, including ζ, and every finite-order Hecke L-function over Q(√−3), has no zeros for Re s > 11/12. Hence there are no Landau–Siegel zeros. A companion paper claims Re s > 7/8. The paper lists consequences: least quadratic nonresidue ≪ (log p)^{O(1)}; deterministic Tonelli–Shanks; a deterministic Miller test; the effective bound h(D) ≫ √|D|/log log|D|. Treat [QRH] as an unverified hypothesis. Do NOT assume full GRH.
+
+Question: what does [QRH] imply for integer factorization and the deterministic algorithms around it? Be quantitative: a zero-free half-plane Re s > 1−δ, with δ = 1/12 (or 1/8), gives polylog bounds with exponents depending on δ, not GRH's (log)^2. Work out each item, with explicit exponents where possible.
+
+1. List the GRH/ERH-conditional results in computational number theory that bear on factoring. For each, decide whether [QRH] suffices, and with what loss. Cover at least:
+   - Miller 1976 (computing φ or λ ⇔ factoring, deterministically, under ERH);
+   - Bach's bounds (least nonresidue, generators of (Z/n)*, prime ideals generating class groups);
+   - Shanks' SPAR / class-group factoring at N^{1/5} under GRH;
+   - Schoof's class-group computations;
+   - Hafner–McCurley's subexponential class group computation (GRH);
+   - Buchmann's algorithms;
+   - Lenstra–Pomerance (unconditional, randomized; does [QRH] help derandomize?);
+   - Seysen;
+   - Vallée;
+   - deterministic factoring of special forms (e.g. Adleman–Huang / Lenstra results conditional on GRH);
+   - Harvey/HH deterministic factoring (which step uses large-order elements; does [QRH] simplify it or change the exponent?);
+   - Oznovich–Volk / HH 2026 order-finding;
+   - deterministic primality certificates.
+2. Key question: does [QRH] give any NEW unconditional deterministic factoring bound, either an exponent below 1/5 or deterministic subexponential (e.g. derandomizing Hafner–McCurley or Lenstra–Pomerance class-group relation collection)? Identify precisely what randomness those algorithms use: random group elements, random forms, smoothness of random elements. Then decide whether polylog generator bounds plus a zero-free half-plane suffice to replace it by a deterministic enumeration with provable smoothness yields. Smooth-number counts in short intervals or for norms from quadratic fields need what L-function input? Note that [QRH] covers Dirichlet L-functions and Hecke over Q(√−3), not Hecke L-functions over Q(√−N).
+3. The deterministic quadratic-sieve missing lemma: B-smooth values among (⌈√N⌉+k)² − N for k < H, with B, H = L_N[1/2]. Does any zero-free-region input (Dirichlet, or Hecke over Q(√N)) imply the needed smooth-value count plus a useful dependency? What else is missing?
+4. Output a ranked list of concrete theorems one could try to PROVE conditional on [QRH], each improving a known unconditional factoring-related bound. For each, give the precise statement, the proof strategy, and where [QRH] enters. Flag anything that would need Hecke L-functions beyond Q(√−3).
+Output concise Markdown.
+
+codex
+I’ll check the cited claims against primary sources, separate Dirichlet consequences from those needing other Hecke L-functions, and distinguish generator bounds from the smoothness estimates needed for factoring.
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g '*.md' -g '*.tex' -g '*.pdf' | head -60" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection
+README.md
+BRIEF.md
+references.md
+STATUS.md
+NEXT_STEPS.md
+codex/r8_copp_bridge.md
+codex/r6_eps_reduction.md
+codex/r11_qrh_factoring.md
+codex/r2_generic.md
+codex/r1_priorart.md
+codex/r7_cyclo_harvey.md
+codex/PHASE1_NOTES.md
+codex/r4_sos.md
+codex/r9_tower_audit.md
+codex/r1_tal_bgs.md
+codex/STATUS.md
+codex/r5_report_review.md
+codex/r6_primality_lit.md
+codex/r10_frontier.md
+codex/r3_critic.md
+codex/r1_mechanisms.md
+notes/repair_C2R_results.md
+notes/codex_r8_copp_bridge.md
+notes/tower_results.md
+notes/repair_C2R_prereg.md
+notes/codex_r6_primality_lit.md
+notes/codex_r6_eps_reduction.md
+notes/trackE_candidates.md
+notes/trackC_candidates.md
+notes/eps_prereg.md
+notes/trackA_analysis.md
+notes/trackC_tal_audit.md
+notes/codex_r1_mechanisms.md
+notes/codex_r10_frontier.md
+notes/codex_r4_sos_classgroup.md
+notes/trackE_analysis.md
+notes/signsplit_prereg.md
+notes/codex_r3_critic.md
+notes/AGENT_RULES.md
+notes/codex_r2_generic_ring.md
+notes/review_and_repairs.md
+notes/codex_r7_cyclo_harvey.md
+notes/primality_analysis.md
+notes/cycloharvey_results.md
+notes/trackA_candidates.md
+notes/cycloharvey_prereg.md
+notes/codex_r1_priorart.md
+notes/prior_art_map.md
+notes/codex_r1_tal_bgs.md
+notes/trackBD_analysis.md
+notes/trackBD_candidates.md
+notes/eps_results.md
+REPORT.md
+notes/trackC_analysis.md
+notes/primality_explainer.md
+notes/seed_lemmas.md
+notes/signsplit_results.md
+notes/codex_r9_tower_audit.md
+notes/user_ideas/2026-10-18_schoof_semigroups_and_cross_difference.md
+notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md
+
+web search: 
+web search: site:github.com/openai/math "The Quasi-Riemann Hypothesis" ...
+exec
+/bin/bash -lc "cat codex/r11_qrh_factoring.md && sed -n '1,200p' references.md && sed -n '1,100p' BRIEF.md" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+Research question (use web search; primary sources; label proved / conditional / conjectured / UNVERIFIED; be rigorous and adversarial).
+
+Hypothesis [QRH]: OpenAI preprint "The Quasi-Riemann Hypothesis" (Oct 5 2026, github.com/openai/math, preprints/The-Quasi-Riemann-Hypothesis-October-5-2026). It claims that every Dirichlet L-function, including ζ, and every finite-order Hecke L-function over Q(√−3), has no zeros for Re s > 11/12. Hence there are no Landau–Siegel zeros. A companion paper claims Re s > 7/8. The paper lists consequences: least quadratic nonresidue ≪ (log p)^{O(1)}; deterministic Tonelli–Shanks; a deterministic Miller test; the effective bound h(D) ≫ √|D|/log log|D|. Treat [QRH] as an unverified hypothesis. Do NOT assume full GRH.
+
+Question: what does [QRH] imply for integer factorization and the deterministic algorithms around it? Be quantitative: a zero-free half-plane Re s > 1−δ, with δ = 1/12 (or 1/8), gives polylog bounds with exponents depending on δ, not GRH's (log)^2. Work out each item, with explicit exponents where possible.
+
+1. List the GRH/ERH-conditional results in computational number theory that bear on factoring. For each, decide whether [QRH] suffices, and with what loss. Cover at least:
+   - Miller 1976 (computing φ or λ ⇔ factoring, deterministically, under ERH);
+   - Bach's bounds (least nonresidue, generators of (Z/n)*, prime ideals generating class groups);
+   - Shanks' SPAR / class-group factoring at N^{1/5} under GRH;
+   - Schoof's class-group computations;
+   - Hafner–McCurley's subexponential class group computation (GRH);
+   - Buchmann's algorithms;
+   - Lenstra–Pomerance (unconditional, randomized; does [QRH] help derandomize?);
+   - Seysen;
+   - Vallée;
+   - deterministic factoring of special forms (e.g. Adleman–Huang / Lenstra results conditional on GRH);
+   - Harvey/HH deterministic factoring (which step uses large-order elements; does [QRH] simplify it or change the exponent?);
+   - Oznovich–Volk / HH 2026 order-finding;
+   - deterministic primality certificates.
+2. Key question: does [QRH] give any NEW unconditional deterministic factoring bound, either an exponent below 1/5 or deterministic subexponential (e.g. derandomizing Hafner–McCurley or Lenstra–Pomerance class-group relation collection)? Identify precisely what randomness those algorithms use: random group elements, random forms, smoothness of random elements. Then decide whether polylog generator bounds plus a zero-free half-plane suffice to replace it by a deterministic enumeration with provable smoothness yields. Smooth-number counts in short intervals or for norms from quadratic fields need what L-function input? Note that [QRH] covers Dirichlet L-functions and Hecke over Q(√−3), not Hecke L-functions over Q(√−N).
+3. The deterministic quadratic-sieve missing lemma: B-smooth values among (⌈√N⌉+k)² − N for k < H, with B, H = L_N[1/2]. Does any zero-free-region input (Dirichlet, or Hecke over Q(√N)) imply the needed smooth-value count plus a useful dependency? What else is missing?
+4. Output a ranked list of concrete theorems one could try to PROVE conditional on [QRH], each improving a known unconditional factoring-related bound. For each, give the precise statement, the proof strategy, and where [QRH] enters. Flag anything that would need Hecke L-functions beyond Q(√−3).
+Output concise Markdown.
+# References
+
+Primary sources consulted in this project, with the version consulted. Provenance codes:
+**[A: agent]** the named agent read the primary text; **[G]** checked by GPT-6.1-sol only (prior-art map or codex rounds),
+not re-read by an agent; **[G, partial]** GPT-6.1-sol reports partial access; **[cited]** cited but not checked by anyone.
+Section pointers name the note that records what was checked.
+
+## Brief reading list (BRIEF §8)
+
+- **[AKS]** M. Agrawal, N. Kayal, N. Saxena, *PRIMES is in P*. Annals of Mathematics 160 (2004) 781–793. Journal PDF. Lemma 2.1, §2. [G] `prior_art_map.md` §1.
+- **[BGS]** A. Bostan, P. Gaudry, É. Schost, *Linear Recurrences with Polynomial Coefficients and Application to Integer Factorization and Cartier–Manin Operator*. SIAM J. Comput. 36(6) (2007) 1777–1806. Author-hosted final PDF. Lemmas 3, 4, 12, 13; Theorems 5, 8, 11, 15. [A: factC] `trackC_tal_audit.md`; [G] `prior_art_map.md` §2.
+- **[Harvey]** D. Harvey, *An exponent one-fifth algorithm for deterministic integer factorisation*. arXiv:2010.05450v1 (12 Oct 2020). Thm 1.1, Prop. 2.5, Lemma 2.4. [G] `prior_art_map.md` §3, `codex_r1_tal_bgs.md`.
+- **[HH]** D. Harvey, M. Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*. arXiv:2105.11105v1 (24 May 2021). Thm 1.1. [G] `prior_art_map.md` §4.
+- **[Sparse]** J. van der Hoeven, G. Lecerf, *Sparse polynomial interpolation: Faster strategies over finite fields*. Final version, 2 May 2024 (texmacs.org). Prop. 2, Alg. 4, §3.2. [G] `prior_art_map.md` §5.
+- **[Tal]** Y. Tal, *Computing Modular Factorials Below the Square-Root Barrier*. ECCC TR26-211, posted 25–26 Sep 2026, 69-page PDF. §§1–5, 6.1–6.2, 8, App. A, H. [A: factC] `trackC_tal_audit.md`; [G] `codex_r1_tal_bgs.md`.
+- **[Coppersmith]** D. Coppersmith, *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*. J. Cryptology 10 (1997) 233–260. Journal PDF, §§10–11, Thms 2, 4, 5. [G] `prior_art_map.md` §7. Thresholds re-derived via [May10] by trackE.
+- **[Regev]** O. Regev, *An Efficient Quantum Factoring Algorithm*. arXiv:2308.06572v3 (7 Jan 2024). Thm 1.1, Lemma 4.4. [G] `prior_art_map.md` §8.
+- **[Pilatte]** C. Pilatte, *Unconditional correctness of recent quantum algorithms for factoring and computing discrete logarithms*. arXiv:2404.16450v3 (24 Aug 2026); Forum Math. Pi 14 (2026) e5. Thms 1.1, 3.18. [G] `prior_art_map.md` §9.
+- **[EG]** M. Ekerå, J. Gärtner, *Extending Regev's factoring algorithm to compute discrete logarithms*. arXiv:2311.05545v2 (30 Jan 2024). Lemma 2. [G] `prior_art_map.md` §10.
+- **[Gao]** Y. Gao, Y. Feng, H. Hu, Y. Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*. arXiv:2512.19076v1 (22 Dec 2025). Thm 1.1, Lemma 4.4. [G] `prior_art_map.md` §11 (statements only; proof not reproduced).
+- **[Cleve]** R. Cleve, *The query complexity of order-finding*. arXiv:quant-ph/9911124v1 (30 Nov 1999). Thms 1–2. [G] `prior_art_map.md` §12.
+
+## Lattice decoding and partial information
+
+- **[May10]** A. May, *Using LLL-Reduction for Solving RSA and Factorization Problems: A Survey*. In *The LLL Algorithm* (2010) 315–348. Author's 34-page preprint (archived `crypto.rub.de` copy), §§2–5, Thms 1–3, §5.1. [A: trackE] `trackE_analysis.md` header.
+- N. Howgrave-Graham (lemma as stated in [May10] Thm 2). [A: trackE, via May10].
+- N. Heninger, H. Shacham, *Reconstructing RSA private keys from random key bits*. CRYPTO 2009. [cited] exact theorem not re-checked, `trackE_analysis.md` §4.6.
+- M. Herrmann, A. May, *Solving linear equations modulo divisors*. Asiacrypt 2008. [cited] bound derived, not re-verified, `trackE_analysis.md` §3.1.
+- O. Goldreich, D. Ron, M. Sudan, *Chinese remaindering with errors* (2000); D. Boneh, *Finding smooth integers in short intervals using CRT decoding*, STOC 2000. [cited] not tested, `trackE_analysis.md` §3.3.
+- D. Boneh, G. Durfee, N. Howgrave-Graham, *Factoring N = p^r q for Large r*. CRYPTO '99, LNCS 1666, 326–337. Author upload. Thm 2, Lemma 1. [G] `prior_art_map.md` §35.
+- A. May, M. Ritzenhofen, *Implicit Factoring: On Polynomial Time Factoring Given Only an Implicit Hint*. PKC 2009. Thms 5, 7. [G] `prior_art_map.md` §37.
+- F. Sica, *Factoring with Hints*. arXiv:0912.1585v6 (rev. 8 Aug 2017; PDF dated 26 Oct 2018). Thm 1. [G] `prior_art_map.md` §38.
+
+## Straight-line programs, factorials and many-root polynomials
+
+- R. J. Lipton, *Straight-line complexity and integer factorization*. ANTS I, LNCS 877 (1994) 71–79. Two-page publisher preview only; full theorem UNVERIFIED. [G, partial] `prior_art_map.md` §13.
+- R. J. Lipton, *Factoring and Factorials*, blog post, 23 Feb 2009. Thm 1. [G] `prior_art_map.md` §14.
+- M. Shub, S. Smale, *On the intractability of Hilbert's Nullstellensatz and an algebraic version of "NP ≠ P?"*. Duke Math. J. 81 (1995) 47–54; manuscript dated 21 Jun 1994. Main Theorem, Thm 2. [G] `prior_art_map.md` §15; statement via Bürgisser [A: factC].
+- P. Bürgisser, *On Defining Integers And Proving Arithmetic Circuit Lower Bounds*. Computational Complexity 18 (2009) 81–103; ECCC TR06-113 (2006). Thm 1.1 (ECCC) / Main Thm 1.2 (journal). [A: factC, ECCC version] `trackC_analysis.md` §3; [G] `prior_art_map.md` §16.
+- Q. Cheng, *On the Ultimate Complexity of Factorials*. TCS 326 (2004) 419–429. Author manuscript. Thm 1 (conditional). [G] `prior_art_map.md` §17.
+- Q. Cheng, *Straight Line Programs and Torsion Points on Elliptic Curves*. Computational Complexity 12 (2003) 150–161. Author manuscript. [G] `prior_art_map.md` §18.
+- P. Dutta, G. Jindal, A. Pandey, A. Sinhababu, *Arithmetic Circuit Complexity of Division and Truncation*. CCC 2021, LIPIcs 200, Art. 25. Thms 6/26, 30, 32. [A: factC] `trackC_analysis.md` §2 M3; [G] `prior_art_map.md` §24.
+- E. Allender, P. Bürgisser, J. Kjeldgaard-Pedersen, P. B. Miltersen, *On the Complexity of Numerical Analysis*. SIAM J. Comput. 38(5) (2009) 1987–2006. Author manuscript. Props 2.3, 2.4. [G] `prior_art_map.md` §19.
+- P. Koiran, S. Perifel, *The Complexity of two Problems on Arithmetic Circuits*. TCS 389 (2007) 172–181; manuscript 24 Aug 2007. Numbered positive-characteristic theorem UNVERIFIED. [G, partial] `prior_art_map.md` §20.
+- H. Fournier, G. Malod, S. Mengel, *Monomials in arithmetic circuits: Complete problems in the counting hierarchy*. STACS 2012; manuscript 11 Apr 2012. Thms 3.1–3.3. [G] `prior_art_map.md` §21.
+- N. Kayal, C. Saha, *On the Sum of Square Roots of Polynomials and Related Problems*. ECCC TR10-189 (2010). Thms 1.5/4.5, 2.1. [G] `prior_art_map.md` §22.
+- D. Perrucci, J. Sabia, *Real roots of univariate polynomials and straight line programs*. J. Discrete Algorithms 5 (2007) 471–478. Thm 7. [G] `prior_art_map.md` §23.
+- C. Umans, S. Wang, *A number-theoretic conjecture implying faster algorithms for polynomial factorization and integer factorization*. arXiv:2511.10851v1 (13 Nov 2025). Thms 5.2, 5.5. [G] `prior_art_map.md` §32.
+
+## Identity testing, quotient rings, generic models
+
+- M. Agrawal, S. Biswas, *Primality and Identity Testing via Chinese Remaindering*. JACM 50(4) (2003) 429–443; manuscript 21 Feb 2003. Thm 4.8, Lemma 4.7. [G] `prior_art_map.md` §28.
+- V. Arvind, P. Mukhopadhyay, S. Srinivasan, arXiv:0801.0514v1, §6 (Algorithm 2, Lemmas 6.3–6.5, Thm 6.6). [G] `codex_r1_mechanisms.md` A1; `codex/PHASE1_NOTES.md`.
+- D. J. Bernstein, *An exposition of the Agrawal–Kayal–Saxena primality-proving theorem*, 10 Aug 2002. Not fetched; UNVERIFIED. [G, partial] `prior_art_map.md` §29.
+- D. Aggarwal, U. Maurer, *Breaking RSA Generically is Equivalent to Factoring*. EUROCRYPT 2009. Thm 1, Lemmas 6–8. [G] `codex_r2_generic_ring.md` §3.
+- T. Jager, J. Schwenk, *On the Analysis of Cryptographic Assumptions in the Generic Ring Model*. IACR eprint 2009/621, full version 25 Jan 2012; J. Cryptology (2013). Thms 2–3. [G] `codex_r2_generic_ring.md` §3, `codex_r4_sos_classgroup.md` §1.
+- I. Damgård, M. Koprowski, *Generic Lower Bounds for Root Extraction and Signature Schemes in General Groups*. EUROCRYPT 2002. Thm 1, Cor. 1. [G] `codex_r2_generic_ring.md` §3.
+- D. Boneh, R. Venkatesan, *Breaking RSA may not be equivalent to factoring*. EUROCRYPT 1998. Thms 3.1, 3.4. [G] `codex_r2_generic_ring.md` §3.
+- U. Maurer, S. Wolf, *Lower bounds on generic algorithms in groups*. EUROCRYPT 1998. Thm 10. [G] `codex_r2_generic_ring.md` §3.
+- D. R. L. Brown, *Lower Bounds for Straight Line Factoring*. IACR eprint 2010/047 (revised). §5. [G, with caveats] `codex_r2_generic_ring.md` §3.
+
+## Number theory: orders, characters, sieves, class groups
+
+- J. M. Pollard, *Theorems on factorization and primality testing*. Proc. Cambridge Philos. Soc. 76 (1974) 521–528. Publisher extract only. [G, partial] `prior_art_map.md` §36.
+- H. W. Lenstra Jr., *Factoring integers with elliptic curves*. Annals of Math. 126 (1987) (description of Pollard `p−1`). [G] `codex_r3_critic.md` §2.
+- H. C. Williams `p+1` method, as implemented in GMP-ECM `pp1.c`. [G] `codex_r1_mechanisms.md` F1.
+- C. Pomerance, sieve account and CFRAC implementation study (math.dartmouth.edu/~carlp). [G] `codex_r3_critic.md` §2, `codex_r2_generic_ring.md` §4.
+- D. W. Boyd, G. Martin, M. Thom, *Squarefree values of trinomial discriminants*. LMS J. Comput. Math. 18 (2015) 148–169, §5, Lemma 5.2. [A: repair] `trackBD_analysis.md` §2 B5.
+- G. Martin, A. Parvardi, *Subproducts of small residue classes*. Canad. Math. Bull. 65(1) (2022) 1–8, Cor. 3 (cites Burthe). [A: repair] `trackC_analysis.md` §3 O4.
+- J. L. Massey, *Shift-register synthesis and BCH decoding* (1969). [G] `codex_r3_critic.md` §3.
+- Z. Kelley, arXiv:1602.00208, Thms 1.1, 2.3 (lacunary root bounds); Canetti–Friedlander–Konyagin–Larsen–Lieman–Shparlinski (root bounds). [G] `codex_r3_critic.md` §3.
+- D. A. Burgess, character-sum bounds. [cited] UNVERIFIED citation, `trackC_analysis.md` §3 E8.
+- M. Hittmeir, hyperbolic sieve, arXiv:2205.10074, §5. [G] `codex_r2_generic_ring.md` E2.
+- M. Hittmeir, *Smooth Subsum Search*. arXiv:2301.10529v2 (11 Jul 2023). [G] `prior_art_map.md` §33.
+- P. Stănică, E. Mulder, M. Hittmeir, *Multi-target hyperbolic sieves and elliptic trace obstructions*. arXiv:2606.13018v2 (5 Oct 2026). Thm 3.12, Cor. 3.16. [G] `prior_art_map.md` §34.
+- Z. Oznovich, B. L. Volk, *On Deterministically Finding an Element of High Order Modulo a Composite*. arXiv:2506.07668v3 (11 Oct 2025). Thm 1.1. [G] `prior_art_map.md` §30.
+- D. Harvey, M. Hittmeir, *Deterministic methods for finding elements of large multiplicative order*. arXiv:2601.11131v2 (5 Jun 2026). Thm 1.1. [G] `prior_art_map.md` §31.
+- OEIS A020639, *Least prime factor of n* (S. Sykora contribution, 29 Jul 2017). [G] `prior_art_map.md` §26.
+- L. M. Adleman, K. S. McCurley, *Open problems in number theoretic complexity, II* (1994), C11/O11a–b. [G] `codex_r4_sos_classgroup.md` §1.
+- R. Schoof, *Elliptic Curves over Finite Fields and the Computation of Square Roots mod p*. Math. Comp. (1985), §4. [G] `codex_r4_sos_classgroup.md` §1.
+- M. O. Rabin, J. O. Shallit, *Randomized algorithms in number theory*. CPAM (1986). Theorem numbering UNVERIFIED. [G, partial] `codex_r4_sos_classgroup.md` §1.
+- E. Bach, J. Shallit, *Algorithmic Number Theory*, vol. I (1996), §§5.7–5.9, 7.1–7.2. [G, contents only] `codex_r4_sos_classgroup.md` §1.
+- A. Rybalov, *On generic complexity of the problem of representation of natural numbers by sum of two squares* (2020). [G] `codex_r4_sos_classgroup.md` §1.
+- P. Stevenhagen, arXiv:1806.06250 (Rédei matrices; Thms 2.1, 3.1, eq. (16)); corrected Rédei reciprocity, Math. Proc. Cambridge Philos. Soc. (doi 10.1017/S0305004121000335). [G] `codex_r4_sos_classgroup.md` §3.
+- P. Milović, 4-ranks of `Cl(−4pq)` (UCL Discovery `dpq8rank.pdf`), Prop. 1. [G] `codex_r4_sos_classgroup.md` §3; consequence verified numerically by `src/repair/verify_r4.py`.
+- C. P. Schnorr, H. W. Lenstra Jr., class-group factoring (1984); H. W. Lenstra Jr., C. Pomerance, JAMS 5(3) (1992). [G] `codex_r4_sos_classgroup.md` §4.
+- Negative Pell equation `x² − Ny² = −1` (odd continued-fraction period of `√N` ⇒ solvable ⇒ all odd prime factors ≡ 1 mod 4); discussion cited by the GPT-6.1-sol r5 review: math.toronto.edu/~eknight/Pell.pdf. [G] `codex/r5_report_review.out` item 9; used as the positive control in NEXT_STEPS item 1.
+- R. Schoof, *Quadratic fields and factorization* (reneschoof.github.io `mcpaper.pdf`), pp. 265–266; J. E. Gower, S. S. Wagstaff Jr., *Square form factorization*, §4.5. [G] `codex_r4_sos_classgroup.md` §4.
+
+The full GPT-6.1-sol prior-art map, with the exact hypotheses and complexity variables of each entry, is
+`notes/prior_art_map.md`. "VERIFIED" there means GPT-6.1-sol checked the statement against the source, not that the proof
+was verified.
+# Research agent brief: find a simple classical connection for integer factorization
+
+**Prepared:** 17 October 2026  
+**Mode:** Active mathematical research, with exact computational experiments  
+**Primary target:** A classical polynomial-time factorization algorithm, or a concrete new mechanism that materially advances toward one
+
+## 1. Mission
+
+Investigate whether a simple connection between explicit integer arithmetic and compressed algebraic representations can produce an efficient classical factorization algorithm.
+
+The working hypothesis is that the eventual mechanism may be conceptually simple and may not resemble sieving or classical simulation of a quantum algorithm. Treat this as a productive hypothesis, not an established fact. Do not dismiss a direction because factoring has been studied for a long time. Equally, do not mistake a short identity, a short program describing an enormous object, or successful toy examples for an efficient algorithm.
+
+**Do actual research.** Read relevant primary sources, formulate candidate mechanisms, derive consequences, implement the most testable constructions, find counterexamples, and revise. A literature survey or a statement that the problem is unresolved is not the requested deliverable.
+
+Begin with the polynomial lead below, but do not become attached to it. You may replace it with a better representation if you explain what new operation becomes possible.
+
+The central question is:
+
+> Which factor-revealing feature has a compact exact representation, and what operation would let us extract that feature without expanding the representation?
+
+### Problem and computational model
+
+Input is an integer `N > 1`, in binary. Write `n = N.bit_length()` and `R_N = Z/NZ`.
+
+The initial hard family is `N = p*q`, with independently generated, distinct primes of similar bit lengths. The factors are not given to the candidate algorithm. Also test prime powers, unbalanced factors, and composites with more than two prime factors.
+
+The first algorithmic goal is to return any `d` with `1 < d < N` and `N % d == 0`. Recursive splitting and primality testing turn a sufficiently uniform splitting algorithm into full factorization; account for those costs when making a final claim.
+
+Use ordinary classical bit complexity. Deterministic polynomial time or randomized expected/bounded-error polynomial time would satisfy the main objective; state which one a proposal targets. Count preprocessing, repetitions, memory, bit precision, coefficient lengths, and representation conversion. A polynomial bound in `N`, `p`, a polynomial degree near `sqrt(N)`, or a group order is not a polynomial bound in `n`.
+
+A restricted-family improvement, a new constructive lemma, a useful reduction with a smaller missing primitive, or a carefully delimited obstruction is worthwhile intermediate progress. Label it accurately and use it to choose the next experiment.
+
+## 2. Mathematical starting point
+
+The elementary claims in this section are supplied with proofs. They are research scaffolding, **not claims of novelty**. Check them independently and search for prior formulations before attributing originality.
+
+### 2.1 The polynomial and its first surviving coefficient
+
+Define
+
+\[
+F_N(X)=(1+X)^N-1-X^N\in R_N[X].
+\]
+
+The prime/composite polynomial identity is the starting point of the AKS primality test; see [AKS], Lemma 2.1 and Section 2. AKS uses suitable low-degree quotient rings to obtain a primality test. It does not supply the factor-extraction operation sought here.
+
+Let `N` be composite and let `p` be its smallest prime divisor. For `1 <= k < p`,
+
+\[
+\binom Nk=\frac{N(N-1)\cdots(N-k+1)}{k!}\equiv0\pmod N,
+\]
+
+because `k!` is invertible modulo `N`.
+
+At `k = p`, use the exact integer identity
+
+\[
+\binom Np=\frac Np\binom{N-1}{p-1}.
+\]
+
+All denominators in the product for the second binomial coefficient are units modulo `N`, so
+
+\[
+\binom{N-1}{p-1}
+=\prod_{j=1}^{p-1}\frac{N-j}{j}
+\equiv(-1)^{p-1}\pmod N.
+\]
+
+For odd `p`, the sign is positive. For `p = 2`, `-N/2` and `N/2` are the same residue modulo `N`. Therefore the least nonnegative residue is exactly
+
+\[
+\boxed{[X^p]F_N=N/p\pmod N.}
+\]
+
+Consequently,
+
+\[
+\boxed{\min\{k:[X^k]F_N\ne0\}=p.}
+\]
+
+This holds for every composite `N`, including prime powers, not just squarefree semiprimes. Since `p < N`, the removed endpoint `X^N` causes no issue. For prime `N`, `F_N` is the zero polynomial instead.
+
+Examples:
+
+| N | First surviving degree p | Coefficient residue N/p |
+|---|---:|---:|
+| 9 | 3 | 3 |
+| 15 | 3 | 5 |
+| 35 | 5 | 7 |
+| 45 | 3 | 15 |
+| 49 | 7 | 7 |
+| 143 | 11 | 13 |
+
+The expression for `F_N` has an arithmetic circuit with `O(n)` gates using repeated squaring. This is a statement about circuit description size, not expanded polynomial size or the cost of coefficient extraction.
+
+### 2.2 A weaker extraction task already suffices: any surviving index
+
+Write `a_k = binom(N,k) mod N` for an interior coefficient. The integer identity
+
+\[
+
+web search: 
+web search: Shanks SPAR N 1/5 factoring Schoof 1982 class groups ...
+web search: 
+web search: site:cs.wisc.edu Bach explicit bounds primality testing related problems 1990 pdf ...
+web search: 
+web search: Eric Bach 1990 explicit bounds primality testing related problems 355 380 12 log squared ...
+codex
+The key distinction is emerging: a fixed zero-free half-plane gives small generators for residue groups, but it does not supply smooth class-group relations. I’m also checking Shanks’ \(N^{1/5}\) argument: its accuracy requirement for \(L(1,\chi)\) may cause a power-of-\(N\) loss under [QRH], beyond larger logarithmic factors.
+web search: 
+web search: "Explicit bounds for primality" "ams.org" Bach ...
+web search: 
+web search: https://www.ams.org/journals/mcom/1990-55-191/S0025-5718-1990-1023756-8/S0025-5718-1990-1023756-8.pdf
+web search: 
+web search: "Bach" "1023756" pdf ...
+web search: 
+web search: "Adleman Huang" "factoring" "special forms" ...
+web search: 
+web search: https://community.ams.org/journals/mcom/1990-55-191/S0025-5718-1990-1023756-8/S0025-5718-1990-1023756-8.pdf
+exec
+/bin/bash -lc "python - <<'PY'
+import urllib.request, subprocess
+u='https://reneschoof.github.io/mcpaper.pdf'
+try:
+ data=urllib.request.urlopen(u,timeout=30).read()
+ s=subprocess.run(['pdftotext','-','-'],input=data,stdout=subprocess.PIPE,check=True).stdout.decode()
+ print(s[19000:26000])
+except Exception as e:
+ print(type(e).__name__,str(e))
+PY" in /home/knielsen/code/factoring-connection
+ exited 127 in 0ms:
+/bin/bash: line 1: python: command not found
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+import urllib.request, subprocess
+u='https://reneschoof.github.io/mcpaper.pdf'
+try:
+ data=urllib.request.urlopen(u,timeout=30).read()
+ s=subprocess.run(['pdftotext','-','-'],input=data,stdout=subprocess.PIPE,check=True).stdout.decode()
+ print(s[19000:26000])
+except Exception as e:
+ print(type(e).__name__,str(e))
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+URLError <urlopen error [Errno -3] Temporary failure in name resolution>
+
+web search: 
+web search: "Adleman" "Huang" "factoring" "Riemann hypothesis" ...
+web search: 
+web search: https://gkorpal.github.io/files/Schoof1982.pdf
+web search: 
+web search: 'Step 3. Apply'
+web search: 
+web search: "A rigorous subexponential algorithm" McCurley filetype:pdf ...
+web search: 
+web search: 
+web search: 
+web search: https://math.dartmouth.edu/~carlp/PDF/paper86.pdf
+web search: 
+web search: https://www.ams.org/mcom/1987-48-178/
+codex
+There is a useful exception to the Hecke limitation: genus characters factor into Dirichlet characters. That may let [QRH] supply the small forms needed for Shanks-style extraction of 2-torsion, even though it does not give small generators for the entire class group. The accuracy-versus-search calculation gives exponents \(6/25\) or \(4/17\), both worse than today’s unconditional \(1/5\).
+web search: 
+web search: https://vallee.users.greyc.fr/Publications/
+web search: 
+web search: 
+web search: 
+web search: "A probabilistic factorization algorithm" "GRH" Seysen ...
+web search: 
+web search: https://www.ams.org/journals/mcom/1987-48-178/S0025-5718-1987-0878705-X/S0025-5718-1987-0878705-X.pdf
+web search: 
+web search: "A rigorous subexponential algorithm for computation of class groups" "GRH" random ...
+web search: 
+web search: 'Riemann'
+web search: 
+web search: "Seysen" "GRH" "Dirichlet" ...
+web search: 
+web search: 'GRH'
+web search: 
+web search: Soundararajan smooth numbers short intervals Riemann hypothesis 2010 arxiv ...
+web search: 
+web search: https://arxiv.org/html/1009.1591
+web search: 
+web search: "Bach" "Explicit bounds for primality testing" "pdf" "355" ...
+codex
+I found an important naming correction in Lenstra–Pomerance: SPAR refers to the random class-group method, and they disprove its proposed smooth-class-number heuristic on a substantial family. It is separate from Shanks’ deterministic GRH-conditional \(N^{1/5}\) method. I’ll also state the quadratic-sieve gap in two parts: enough smooth values, and a dependency that actually splits \(N\).
+web search: 
+web search: https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984b/art.pdf
+web search: 
+web search: https://annals.math.princeton.edu/2004/160-2/p12
+web search: 
+web search: "Miller" "1976" "Carmichael" "factoring" deterministic ...
+codex
+**[QRH] gives strong deterministic auxiliary algorithms, but no established improvement over unconditional \(N^{1/5+o(1)}\) factoring, and no known deterministic subexponential factoring algorithm.** Because [QRH] remains **UNVERIFIED**, its consequences remain **CONDITIONAL**. “No known implication” below is not a proof of logical nonimplication.
+
+I use **PROVED** for unconditional published results, **CONDITIONAL** with the assumption identified, and **CONJECTURED** for missing estimates. The preprint’s claimed zero-free region is taken solely as your hypothesis. [Preprint](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/build/paper2.tex)
+
+Write
+\[
+L_X[\alpha,c]=\exp((c+o(1))(\log X)^\alpha(\log\log X)^{1-\alpha}),
+\qquad A=1/\delta=12\ \text{or}\ 8.
+\]
+
+**The quantitative replacement for Ankeny–Bach is \((\log q)^A\).**
+
+**CONDITIONAL on [QRH]:** for every proper subgroup \(H<(\mathbb Z/q\mathbb Z)^\times\), there is a prime
+\[
+\ell\nmid q,\qquad \ell\bmod q\notin H,\qquad
+\ell\le C_\delta(\log(2q))^{1/\delta}.
+\tag{1}
+\]
+Consequently, those small prime residues generate the entire unit group.
+
+Here is why the exponent can be \(1/\delta\), rather than the cruder \(2/\delta\). A smoothed explicit formula gives
+\[
+\sum_{m\le x}\Lambda(m)\chi(m)(1-m/x)
+=\mathbf1_{\chi=1}\frac{x}{2}
++O_\delta\!\left(x^{1-\delta}\log(qx)\right),
+\]
+with imprimitive Euler factors handled separately. If \(\chi\ne1\) annihilates \(H\), and every small prime unit lies in \(H\), its sum agrees with the principal sum. Their main-term difference forces \(x^\delta\ll_\delta\log q\). The smoothing makes the zero sum absolutely convergent and saves a conductor logarithm. This is the adaptation of the explicit-formula method underlying the GRH bounds; the displayed exponents are a derivation here, not a theorem quoted from the new preprint. [Lamzouri–Li–Soundararajan](https://www.math.ksu.edu/~xiannan/papers/QuaResL1ver2Sound.pdf)
+
+Two limitations matter:
+
+- A small **generating set** does not supply the orders of its elements or a small primitive root.
+- A prescribed coset of index \(r\) generally requires \(x\gg_\delta(r\log q)^A\) by this argument. Arbitrary residue classes do not receive polylogarithmic bounds.
+
+**Audit of the requested results**
+
+| Result | Established status | What [QRH] supplies |
+|---|---|---|
+| **Miller 1976: factoring \(\leftrightarrow\phi,\lambda\)** | **CONDITIONAL on ERH:** deterministic polynomial-time equivalence. Factoring computes both functions unconditionally. | **Yes.** Replace the small-base bound by (1). More generally, a supplied positive multiple \(M\) of \(\lambda(N)\), of polynomial bit length, permits deterministic polynomial-time factoring by gcds along repeated-squaring chains. This does **not** compute \(M\). For semiprimes, factoring from \(\phi(N)\) is already elementary and unconditional. [Miller, §4](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf) |
+| **Least quadratic nonresidue; Tonelli–Shanks** | **CONDITIONAL on GRH:** logarithmic-square nonresidue bounds. | **Yes:** least nonresidue \(O_\delta((\log p)^A)\). Exhaustive Euler-criterion tests followed by Tonelli–Shanks give a conservative \(\widetilde O((\log p)^{A+2})\) bit bound: exponents **14 or 10**. |
+| **Bach: generators of \((\mathbb Z/N)^\times\)** | **CONDITIONAL on ERH:** generators of size \(O(\log^2N)\). | **Yes:** size \(O_\delta(\log^A N)\). Enumerating and testing these candidates is deterministic polynomial time; computing the group structure remains a separate problem. [Bach](https://doi.org/10.1090/S0025-5718-1990-1023756-8) |
+| **Bach: prime ideals generating class groups** | **CONDITIONAL on GRH:** norms \(\le12\log^2|\Delta_K|\), with refinements. | **Not for arbitrary \(K\).** The character-separation argument needs class-group Hecke \(L\)-functions over that \(K\). [QRH] covers the corresponding ray/ring-class applications over \(\mathbb Q(\sqrt{-3})\), with logarithmic exponent \(A\). It does not cover general \(\mathbb Q(\sqrt{-N})\). [Grenié–Molteni](https://arxiv.org/abs/1607.02430) |
+| **Shanks’ deterministic class-group/infrastructure factoring** | **CONDITIONAL on GRH:** \(N^{1/5+o(1)}\). | **Not with merely a logarithmic loss:** the analytic approximation loses a power, as calculated below. A factoring-only adaptation can use genus characters rather than all class characters. [Schoof, §§3,6](https://reneschoof.github.io/mcpaper.pdf) |
+| **Schoof’s general class-group computations** | His analysis distinguishes class-number/abstract-structure computations from producing explicit independent generators; these do not all have the same bound. | **No blanket transfer.** Full class-group generation requires characters beyond the genus quotient, hence Hecke input outside [QRH] for varying quadratic fields. |
+| **Hafner–McCurley** | **CONDITIONAL on GRH:** randomized class-group computation in expected \(L_{|D|}[1/2,\sqrt2]\). | **The published theorem cannot simply be invoked under [QRH].** Full-class generation and distribution involve variable-field Hecke characters. Enlarging a polylogarithmic generator cutoff alone would be absorbed by the subexponential factor base, but does not derandomize relation collection. [Original paper](https://doi.org/10.1090/S0894-0347-1989-1002631-0) |
+| **Buchmann and generalizations** | Classical general-field subexponential analyses also use smoothness/relation heuristics; “GRH alone” is an overstatement for those versions. A 2026 paper supplies rigorous **randomized** algorithms under broader ERH. | **Not supplied by [QRH].** General fields, units, and Arakelov sampling require substantially broader analytic input. [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/pdf/2512.01588) |
+| **Seysen; A. K. Lenstra’s improvement** | **CONDITIONAL on ERH/GRH:** randomized factoring bounds \(L_N[1/2,\sqrt{5/4}]\), subsequently \(L_N[1/2,1]\). | [QRH] supplies the split-prime estimates used in the smooth-form count. Full-class generation in the published proof uses additional Hecke input. A factoring-only subgroup/genus reanalysis is possible research territory; retaining each published constant under exactly [QRH] is **UNVERIFIED here**. No deterministic relation bound follows. [Seysen, §§3–8](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf) |
+| **Lenstra–Pomerance** | **PROVED unconditionally:** randomized expected \(L_N[1/2,1]\) factoring. | Its conclusion already holds without [QRH]. [QRH] can simplify some character estimates and auxiliary searches; it does not eliminate random sampling or prove deterministic smoothness yields. [Paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf) |
+| **Vallée** | **PROVED unconditionally:** randomized factoring with bound \(L_N[1/2,\sqrt{4/3}]\), using near-uniform generation of small modular squares. | Her deterministic local-neighbor procedure is **not** a deterministic subexponential factoring theorem. [QRH] supplies no proved replacement for the successful randomized samples. [Paper](https://doi.org/10.1090/S0025-5718-1991-1068808-2) |
+| **Special forms; Adleman–Huang / Lenstra** | **UNVERIFIED attribution as posed.** Adleman–Huang’s identified result concerns randomized polynomial-time **primality**, not deterministic integer factoring. Lenstra’s divisors-in-residue-classes theorem is unconditional. | Transfer is theorem-specific: a small Dirichlet nonresidue step transfers with exponent \(A\); general Chebotarev does not automatically transfer. Smooth-\(p-1\) factoring already has unconditional deterministic results, so this is not automatically a new application. [Adleman–Huang](https://link.springer.com/book/10.1007/BFb0090185), [Lenstra](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984b/art.pdf), [Żrałek](https://arxiv.org/html/0707.4102) |
+| **Harvey / Harvey–Hittmeir factoring** | **PROVED unconditionally:** \(O(N^{1/5}\log^{16/5}N/(\log\log N)^{3/5})\). | The large-order subroutine precedes the collision search; Harvey’s Algorithm 4.3 invokes it with \(D=\lceil N^{2/5}\rceil\). [QRH] offers a simpler generator-based termination argument, but neither removes order computation nor changes the collision-search exponent. [Harvey, Algorithm 4.3](https://arxiv.org/html/2010.05450), [HH](https://arxiv.org/html/2105.11105) |
+| **Oznovich–Volk; HH 2026 large-order finding** | **PROVED unconditionally:** OV gives \(D^{1/2+o(1)}\) for \(D\ge N^{1/6}\); HH 2026 removes that restriction, giving \(O(D^{1/2}\log D\,\log N/\sqrt{\log\log D})\), for \(1\le D<N-1\). | No new order-threshold improvement from [QRH]. These algorithms find **either** a large-order element **or** a factor; they are not polynomial-time general exact-order algorithms. [OV](https://arxiv.org/html/2506.07668v3), [HH 2026](https://arxiv.org/html/2601.11131v2) |
+| **Primality and certificates** | **PROVED:** deterministic polynomial-time primality; polynomial-size Pratt certificates with unconditional verification. | [QRH] makes Miller testing with bases through \(C_\delta\log^A N\) correct, conservatively in \(\widetilde O(\log^{A+2}N)\). That transcript relies on [QRH]. Small Lucas witnesses become easy once the required predecessor factorizations are supplied; [QRH] does not supply those factorizations or a polynomial-time deterministic ECPP construction. [AKS](https://annals.math.princeton.edu/2004/160-2/p12), [Pratt](https://epubs.siam.org/doi/10.1137/0204018) |
+
+**Shanks’ loss is quantitative, and SPAR is a different algorithm.**
+
+In the standard truncated-Euler-product/BSGS argument, using primes through \(X\) costs \(X^{1+o(1)}\). Under a fixed zero-free strip, the resulting class-number uncertainty is
+\[
+|h-\widehat h|\le |D|^{1/2+o(1)}X^{-\delta}.
+\]
+Searching that interval by BSGS costs
+\[
+|D|^{1/4+o(1)}X^{-\delta/2}.
+\]
+Balancing gives
+\[
+X=|D|^{1/(4+2\delta)+o(1)},\qquad
+T=|D|^{1/(4+2\delta)+o(1)}
+=
+\begin{cases}
+|D|^{6/25+o(1)},&\delta=1/12,\\
+|D|^{4/17+o(1)},&\delta=1/8.
+\end{cases}
+\]
+At \(\delta=1/2\), this recovers \(1/5\).
+
+**CONDITIONAL derivation:** for factoring, small prime forms need only generate the projection onto the 2-primary part. Quadratic genus-character \(L\)-functions factor into Dirichlet \(L\)-functions; (1) therefore supplies that generation. This avoids assuming all quadratic-field Hecke \(L\)-functions, but the resulting exponents are worse than unconditional HH.
+
+**PROVED correction:** Lenstra–Pomerance identify **SPAR** with the random-class-group method based on finding smooth **class numbers**. They disprove its proposed smooth-class-number heuristic on a substantial family. This is distinct from both deterministic Shanks factoring and class-group **relation** algorithms. [Lenstra–Pomerance, §§1,11](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+
+**Why generators do not derandomize relations**
+
+The randomness is not just “choose a generator”:
+
+- **Seysen/Hafner–McCurley:** random exponent vectors in products of prime forms; reduction produces a form \((a,b,c)\); success requires **\(a\) to be smooth**. Further sampling must produce a sufficiently rich relation lattice.
+- **Lenstra–Pomerance:** random multiplier selection, sampled prime forms, nearly uniform random forms from products of generators, randomized smoothness recognition using ECM, and relation/dependency sampling. The multiplier choice itself is a small finite choice; eliminating it does not eliminate the important randomness.
+- **Vallée:** random near-uniform samples among elements having small modular squares, followed by smoothness selection.
+
+A sampler succeeding with probability \(L_N[1/2,-c]\) does not imply success among its first \(L_N[1/2,c]\) lexicographic seeds. Its seed space may be vastly larger. Small generators give access to a group; they do not give a short deterministic list meeting every required smooth subset.
+
+The analytic requirements must also be separated:
+
+| Counting problem | Relevant input |
+|---|---|
+| Smooth integers globally | Unconditional smooth-number theory. |
+| Smooth integers restricted to primes splitting in a quadratic field | Dirichlet character estimates plus combinatorial smooth-number arguments; [QRH] is useful here. |
+| Smooth ideals in a specified class; quantitative class-group mixing | Class/ray-class Hecke characters of the **actual field**, generally outside [QRH]. |
+| Smooth norms in thin prescribed families | Additional distribution estimates; prime-ideal counts alone are insufficient. |
+
+Even broader Hecke zero-free regions would not, by themselves, constitute a deterministic hitting-set theorem.
+
+**The quadratic-sieve missing lemma**
+
+Put \(m=\lceil\sqrt N\rceil\), \(F(k)=(m+k)^2-N\),
+\[
+B=L_N[1/2,b],\qquad H=L_N[1/2,h].
+\]
+For \(k\asymp H\), \(F(k)=N^{1/2+o(1)}\). The **CONJECTURED** random-integer smoothness model predicts
+\[
+\#\{k<H:P^+(F(k))\le B\}
+=L_N[1/2,h-1/(4b)].
+\]
+A factor base has \(L_N[1/2,b]\) entries, suggesting
+\[
+h>b+\frac1{4b};
+\]
+the limiting minimum is \(h=1\), at \(b=1/2\). This is a heuristic calculation, not a consequence of [QRH].
+
+Two separate assertions are missing:
+
+1. **Enough smooth values**, uniformly in \(N\), in this particular polynomial sequence.
+2. **A useful square dependency.** More relations than columns guarantee an exponent-parity dependency, but it may yield only \(X\equiv\pm Y\pmod N\).
+
+For invertible relations, the second requirement can be stated precisely: the induced map
+\[
+\ker(E)\longrightarrow
+\mu_2((\mathbb Z/N\mathbb Z)^\times)/\{\pm1\}
+\]
+must have nonzero image. If it does, testing a kernel basis suffices; exponentially enumerating dependencies is unnecessary. Deterministic dense linear algebra already costs \(L_N[1/2,O(1)]\), so linear-algebra randomness need not obstruct a subexponential theorem.
+
+**UNVERIFIED / not established:** neither [QRH] nor ordinary GRH is known to imply these two assertions for this QS sequence. Hecke information over \(\mathbb Q(\sqrt N)\) counts ideals or norm families; \(F(k)\) restricts the norm to the slice \(k+m+\sqrt N\). Controlling that slice and the resulting square-root signs requires more. Even RH-based short-interval smooth-number theorems concern different sets and do not supply this lemma. [Soundararajan](https://arxiv.org/html/1009.1591), [Younis](https://arxiv.org/html/2409.05761)
+
+**Ranked conditional targets worth formalizing**
+
+These improve unconditional bounds for auxiliary problems. They are mostly familiar GRH consequences under a weaker assumption; originality is not claimed.
+
+1. **Deterministic factoring from exponent advice.**  
+   **Statement:** given \(N\) and a positive \(M\) with \(\lambda(N)\mid M\), factor \(N\) deterministically in \((\log N+\log M)^{O_\delta(1)}\). For \(\log M=O(\log N)\), a conservative recursive bound is \(\widetilde O((\log N)^{A+3})\).  
+   **Proof:** perfect-power handling, repeated squaring and gcd extraction, with (1) guaranteeing a successful small base.  
+   **[QRH] input:** Dirichlet only. This strengthens the general unconditional randomized advice reduction to a deterministic one.
+
+2. **Polylogarithmic nonresidue and modular-root construction.**  
+   **Statement:** for odd prime \(p\), find a quadratic nonresidue and extract any existing square root in \(\widetilde O((\log p)^{14})\), or exponent \(10\) under the stronger region.  
+   **Proof:** enumerate through (1), then Tonelli–Shanks. The same subgroup argument finds Lucas witnesses given the factorization of \(p-1\).  
+   **[QRH] input:** Dirichlet only. This improves general unconditional deterministic witness searches, not the complexity class of primality.
+
+3. **Small genus generators; factoring from class-number advice.**  
+   **Statement:** prime forms of norm \(O_\delta(\log^A|D|)\) generate \(\mathrm{Cl}(D)/\mathrm{Cl}(D)^2\). In particular, for squarefree composite \(N\equiv3\bmod4\), a supplied positive multiple of \(h(-N)\) permits deterministic polynomial-time splitting.  
+   **Proof:** separate genus characters using their Dirichlet factorizations; exponentiate forms into their 2-primary components and extract an ambiguous form.  
+   **[QRH] input:** Dirichlet only. The statement concerns the genus quotient, not the whole class group.
+
+4. **Small generators for Eisenstein ring-class groups.**  
+   **Statement:** for \(\mathcal O_f=\mathbb Z+f\mathcal O_{\mathbb Q(\sqrt{-3})}\), its class group is generated by prime ideals coprime to \(f\) of norm \(O_\delta((\log(3f^2))^A)\); the generating list is constructible in polynomial time in \(\log f\).  
+   **Proof:** annihilating-character contradiction using the smoothed Hecke explicit formula.  
+   **[QRH] input:** precisely its stated finite-order Hecke coverage. Extending this statement to arbitrary quadratic orders requires **Hecke input beyond \(\mathbb Q(\sqrt{-3})\)**.
+
+5. **Effective class-number lower bounds.**  
+   **Statement:** for negative fundamental \(D\),
+   \[
+   h(D)\gg_\delta \frac{\sqrt{|D|}}{\log\log(3|D|)}
+   \]
+   with an effective constant.  
+   **Proof:** approximate \(\log L(1,\chi_D)\) by an Euler product through a fixed power of \(\log|D|\), bound it below, and apply the class-number formula.  
+   **[QRH] input:** quadratic Dirichlet functions only. This improves the effective analytic bound; it does not compute the class number or factor \(D\).
+tokens used
+285,890
+**[QRH] gives strong deterministic auxiliary algorithms, but no established improvement over unconditional \(N^{1/5+o(1)}\) factoring, and no known deterministic subexponential factoring algorithm.** Because [QRH] remains **UNVERIFIED**, its consequences remain **CONDITIONAL**. “No known implication” below is not a proof of logical nonimplication.
+
+I use **PROVED** for unconditional published results, **CONDITIONAL** with the assumption identified, and **CONJECTURED** for missing estimates. The preprint’s claimed zero-free region is taken solely as your hypothesis. [Preprint](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/build/paper2.tex)
+
+Write
+\[
+L_X[\alpha,c]=\exp((c+o(1))(\log X)^\alpha(\log\log X)^{1-\alpha}),
+\qquad A=1/\delta=12\ \text{or}\ 8.
+\]
+
+**The quantitative replacement for Ankeny–Bach is \((\log q)^A\).**
+
+**CONDITIONAL on [QRH]:** for every proper subgroup \(H<(\mathbb Z/q\mathbb Z)^\times\), there is a prime
+\[
+\ell\nmid q,\qquad \ell\bmod q\notin H,\qquad
+\ell\le C_\delta(\log(2q))^{1/\delta}.
+\tag{1}
+\]
+Consequently, those small prime residues generate the entire unit group.
+
+Here is why the exponent can be \(1/\delta\), rather than the cruder \(2/\delta\). A smoothed explicit formula gives
+\[
+\sum_{m\le x}\Lambda(m)\chi(m)(1-m/x)
+=\mathbf1_{\chi=1}\frac{x}{2}
++O_\delta\!\left(x^{1-\delta}\log(qx)\right),
+\]
+with imprimitive Euler factors handled separately. If \(\chi\ne1\) annihilates \(H\), and every small prime unit lies in \(H\), its sum agrees with the principal sum. Their main-term difference forces \(x^\delta\ll_\delta\log q\). The smoothing makes the zero sum absolutely convergent and saves a conductor logarithm. This is the adaptation of the explicit-formula method underlying the GRH bounds; the displayed exponents are a derivation here, not a theorem quoted from the new preprint. [Lamzouri–Li–Soundararajan](https://www.math.ksu.edu/~xiannan/papers/QuaResL1ver2Sound.pdf)
+
+Two limitations matter:
+
+- A small **generating set** does not supply the orders of its elements or a small primitive root.
+- A prescribed coset of index \(r\) generally requires \(x\gg_\delta(r\log q)^A\) by this argument. Arbitrary residue classes do not receive polylogarithmic bounds.
+
+**Audit of the requested results**
+
+| Result | Established status | What [QRH] supplies |
+|---|---|---|
+| **Miller 1976: factoring \(\leftrightarrow\phi,\lambda\)** | **CONDITIONAL on ERH:** deterministic polynomial-time equivalence. Factoring computes both functions unconditionally. | **Yes.** Replace the small-base bound by (1). More generally, a supplied positive multiple \(M\) of \(\lambda(N)\), of polynomial bit length, permits deterministic polynomial-time factoring by gcds along repeated-squaring chains. This does **not** compute \(M\). For semiprimes, factoring from \(\phi(N)\) is already elementary and unconditional. [Miller, §4](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf) |
+| **Least quadratic nonresidue; Tonelli–Shanks** | **CONDITIONAL on GRH:** logarithmic-square nonresidue bounds. | **Yes:** least nonresidue \(O_\delta((\log p)^A)\). Exhaustive Euler-criterion tests followed by Tonelli–Shanks give a conservative \(\widetilde O((\log p)^{A+2})\) bit bound: exponents **14 or 10**. |
+| **Bach: generators of \((\mathbb Z/N)^\times\)** | **CONDITIONAL on ERH:** generators of size \(O(\log^2N)\). | **Yes:** size \(O_\delta(\log^A N)\). Enumerating and testing these candidates is deterministic polynomial time; computing the group structure remains a separate problem. [Bach](https://doi.org/10.1090/S0025-5718-1990-1023756-8) |
+| **Bach: prime ideals generating class groups** | **CONDITIONAL on GRH:** norms \(\le12\log^2|\Delta_K|\), with refinements. | **Not for arbitrary \(K\).** The character-separation argument needs class-group Hecke \(L\)-functions over that \(K\). [QRH] covers the corresponding ray/ring-class applications over \(\mathbb Q(\sqrt{-3})\), with logarithmic exponent \(A\). It does not cover general \(\mathbb Q(\sqrt{-N})\). [Grenié–Molteni](https://arxiv.org/abs/1607.02430) |
+| **Shanks’ deterministic class-group/infrastructure factoring** | **CONDITIONAL on GRH:** \(N^{1/5+o(1)}\). | **Not with merely a logarithmic loss:** the analytic approximation loses a power, as calculated below. A factoring-only adaptation can use genus characters rather than all class characters. [Schoof, §§3,6](https://reneschoof.github.io/mcpaper.pdf) |
+| **Schoof’s general class-group computations** | His analysis distinguishes class-number/abstract-structure computations from producing explicit independent generators; these do not all have the same bound. | **No blanket transfer.** Full class-group generation requires characters beyond the genus quotient, hence Hecke input outside [QRH] for varying quadratic fields. |
+| **Hafner–McCurley** | **CONDITIONAL on GRH:** randomized class-group computation in expected \(L_{|D|}[1/2,\sqrt2]\). | **The published theorem cannot simply be invoked under [QRH].** Full-class generation and distribution involve variable-field Hecke characters. Enlarging a polylogarithmic generator cutoff alone would be absorbed by the subexponential factor base, but does not derandomize relation collection. [Original paper](https://doi.org/10.1090/S0894-0347-1989-1002631-0) |
+| **Buchmann and generalizations** | Classical general-field subexponential analyses also use smoothness/relation heuristics; “GRH alone” is an overstatement for those versions. A 2026 paper supplies rigorous **randomized** algorithms under broader ERH. | **Not supplied by [QRH].** General fields, units, and Arakelov sampling require substantially broader analytic input. [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/pdf/2512.01588) |
+| **Seysen; A. K. Lenstra’s improvement** | **CONDITIONAL on ERH/GRH:** randomized factoring bounds \(L_N[1/2,\sqrt{5/4}]\), subsequently \(L_N[1/2,1]\). | [QRH] supplies the split-prime estimates used in the smooth-form count. Full-class generation in the published proof uses additional Hecke input. A factoring-only subgroup/genus reanalysis is possible research territory; retaining each published constant under exactly [QRH] is **UNVERIFIED here**. No deterministic relation bound follows. [Seysen, §§3–8](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf) |
+| **Lenstra–Pomerance** | **PROVED unconditionally:** randomized expected \(L_N[1/2,1]\) factoring. | Its conclusion already holds without [QRH]. [QRH] can simplify some character estimates and auxiliary searches; it does not eliminate random sampling or prove deterministic smoothness yields. [Paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf) |
+| **Vallée** | **PROVED unconditionally:** randomized factoring with bound \(L_N[1/2,\sqrt{4/3}]\), using near-uniform generation of small modular squares. | Her deterministic local-neighbor procedure is **not** a deterministic subexponential factoring theorem. [QRH] supplies no proved replacement for the successful randomized samples. [Paper](https://doi.org/10.1090/S0025-5718-1991-1068808-2) |
+| **Special forms; Adleman–Huang / Lenstra** | **UNVERIFIED attribution as posed.** Adleman–Huang’s identified result concerns randomized polynomial-time **primality**, not deterministic integer factoring. Lenstra’s divisors-in-residue-classes theorem is unconditional. | Transfer is theorem-specific: a small Dirichlet nonresidue step transfers with exponent \(A\); general Chebotarev does not automatically transfer. Smooth-\(p-1\) factoring already has unconditional deterministic results, so this is not automatically a new application. [Adleman–Huang](https://link.springer.com/book/10.1007/BFb0090185), [Lenstra](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984b/art.pdf), [Żrałek](https://arxiv.org/html/0707.4102) |
+| **Harvey / Harvey–Hittmeir factoring** | **PROVED unconditionally:** \(O(N^{1/5}\log^{16/5}N/(\log\log N)^{3/5})\). | The large-order subroutine precedes the collision search; Harvey’s Algorithm 4.3 invokes it with \(D=\lceil N^{2/5}\rceil\). [QRH] offers a simpler generator-based termination argument, but neither removes order computation nor changes the collision-search exponent. [Harvey, Algorithm 4.3](https://arxiv.org/html/2010.05450), [HH](https://arxiv.org/html/2105.11105) |
+| **Oznovich–Volk; HH 2026 large-order finding** | **PROVED unconditionally:** OV gives \(D^{1/2+o(1)}\) for \(D\ge N^{1/6}\); HH 2026 removes that restriction, giving \(O(D^{1/2}\log D\,\log N/\sqrt{\log\log D})\), for \(1\le D<N-1\). | No new order-threshold improvement from [QRH]. These algorithms find **either** a large-order element **or** a factor; they are not polynomial-time general exact-order algorithms. [OV](https://arxiv.org/html/2506.07668v3), [HH 2026](https://arxiv.org/html/2601.11131v2) |
+| **Primality and certificates** | **PROVED:** deterministic polynomial-time primality; polynomial-size Pratt certificates with unconditional verification. | [QRH] makes Miller testing with bases through \(C_\delta\log^A N\) correct, conservatively in \(\widetilde O(\log^{A+2}N)\). That transcript relies on [QRH]. Small Lucas witnesses become easy once the required predecessor factorizations are supplied; [QRH] does not supply those factorizations or a polynomial-time deterministic ECPP construction. [AKS](https://annals.math.princeton.edu/2004/160-2/p12), [Pratt](https://epubs.siam.org/doi/10.1137/0204018) |
+
+**Shanks’ loss is quantitative, and SPAR is a different algorithm.**
+
+In the standard truncated-Euler-product/BSGS argument, using primes through \(X\) costs \(X^{1+o(1)}\). Under a fixed zero-free strip, the resulting class-number uncertainty is
+\[
+|h-\widehat h|\le |D|^{1/2+o(1)}X^{-\delta}.
+\]
+Searching that interval by BSGS costs
+\[
+|D|^{1/4+o(1)}X^{-\delta/2}.
+\]
+Balancing gives
+\[
+X=|D|^{1/(4+2\delta)+o(1)},\qquad
+T=|D|^{1/(4+2\delta)+o(1)}
+=
+\begin{cases}
+|D|^{6/25+o(1)},&\delta=1/12,\\
+|D|^{4/17+o(1)},&\delta=1/8.
+\end{cases}
+\]
+At \(\delta=1/2\), this recovers \(1/5\).
+
+**CONDITIONAL derivation:** for factoring, small prime forms need only generate the projection onto the 2-primary part. Quadratic genus-character \(L\)-functions factor into Dirichlet \(L\)-functions; (1) therefore supplies that generation. This avoids assuming all quadratic-field Hecke \(L\)-functions, but the resulting exponents are worse than unconditional HH.
+
+**PROVED correction:** Lenstra–Pomerance identify **SPAR** with the random-class-group method based on finding smooth **class numbers**. They disprove its proposed smooth-class-number heuristic on a substantial family. This is distinct from both deterministic Shanks factoring and class-group **relation** algorithms. [Lenstra–Pomerance, §§1,11](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf)
+
+**Why generators do not derandomize relations**
+
+The randomness is not just “choose a generator”:
+
+- **Seysen/Hafner–McCurley:** random exponent vectors in products of prime forms; reduction produces a form \((a,b,c)\); success requires **\(a\) to be smooth**. Further sampling must produce a sufficiently rich relation lattice.
+- **Lenstra–Pomerance:** random multiplier selection, sampled prime forms, nearly uniform random forms from products of generators, randomized smoothness recognition using ECM, and relation/dependency sampling. The multiplier choice itself is a small finite choice; eliminating it does not eliminate the important randomness.
+- **Vallée:** random near-uniform samples among elements having small modular squares, followed by smoothness selection.
+
+A sampler succeeding with probability \(L_N[1/2,-c]\) does not imply success among its first \(L_N[1/2,c]\) lexicographic seeds. Its seed space may be vastly larger. Small generators give access to a group; they do not give a short deterministic list meeting every required smooth subset.
+
+The analytic requirements must also be separated:
+
+| Counting problem | Relevant input |
+|---|---|
+| Smooth integers globally | Unconditional smooth-number theory. |
+| Smooth integers restricted to primes splitting in a quadratic field | Dirichlet character estimates plus combinatorial smooth-number arguments; [QRH] is useful here. |
+| Smooth ideals in a specified class; quantitative class-group mixing | Class/ray-class Hecke characters of the **actual field**, generally outside [QRH]. |
+| Smooth norms in thin prescribed families | Additional distribution estimates; prime-ideal counts alone are insufficient. |
+
+Even broader Hecke zero-free regions would not, by themselves, constitute a deterministic hitting-set theorem.
+
+**The quadratic-sieve missing lemma**
+
+Put \(m=\lceil\sqrt N\rceil\), \(F(k)=(m+k)^2-N\),
+\[
+B=L_N[1/2,b],\qquad H=L_N[1/2,h].
+\]
+For \(k\asymp H\), \(F(k)=N^{1/2+o(1)}\). The **CONJECTURED** random-integer smoothness model predicts
+\[
+\#\{k<H:P^+(F(k))\le B\}
+=L_N[1/2,h-1/(4b)].
+\]
+A factor base has \(L_N[1/2,b]\) entries, suggesting
+\[
+h>b+\frac1{4b};
+\]
+the limiting minimum is \(h=1\), at \(b=1/2\). This is a heuristic calculation, not a consequence of [QRH].
+
+Two separate assertions are missing:
+
+1. **Enough smooth values**, uniformly in \(N\), in this particular polynomial sequence.
+2. **A useful square dependency.** More relations than columns guarantee an exponent-parity dependency, but it may yield only \(X\equiv\pm Y\pmod N\).
+
+For invertible relations, the second requirement can be stated precisely: the induced map
+\[
+\ker(E)\longrightarrow
+\mu_2((\mathbb Z/N\mathbb Z)^\times)/\{\pm1\}
+\]
+must have nonzero image. If it does, testing a kernel basis suffices; exponentially enumerating dependencies is unnecessary. Deterministic dense linear algebra already costs \(L_N[1/2,O(1)]\), so linear-algebra randomness need not obstruct a subexponential theorem.
+
+**UNVERIFIED / not established:** neither [QRH] nor ordinary GRH is known to imply these two assertions for this QS sequence. Hecke information over \(\mathbb Q(\sqrt N)\) counts ideals or norm families; \(F(k)\) restricts the norm to the slice \(k+m+\sqrt N\). Controlling that slice and the resulting square-root signs requires more. Even RH-based short-interval smooth-number theorems concern different sets and do not supply this lemma. [Soundararajan](https://arxiv.org/html/1009.1591), [Younis](https://arxiv.org/html/2409.05761)
+
+**Ranked conditional targets worth formalizing**
+
+These improve unconditional bounds for auxiliary problems. They are mostly familiar GRH consequences under a weaker assumption; originality is not claimed.
+
+1. **Deterministic factoring from exponent advice.**  
+   **Statement:** given \(N\) and a positive \(M\) with \(\lambda(N)\mid M\), factor \(N\) deterministically in \((\log N+\log M)^{O_\delta(1)}\). For \(\log M=O(\log N)\), a conservative recursive bound is \(\widetilde O((\log N)^{A+3})\).  
+   **Proof:** perfect-power handling, repeated squaring and gcd extraction, with (1) guaranteeing a successful small base.  
+   **[QRH] input:** Dirichlet only. This strengthens the general unconditional randomized advice reduction to a deterministic one.
+
+2. **Polylogarithmic nonresidue and modular-root construction.**  
+   **Statement:** for odd prime \(p\), find a quadratic nonresidue and extract any existing square root in \(\widetilde O((\log p)^{14})\), or exponent \(10\) under the stronger region.  
+   **Proof:** enumerate through (1), then Tonelli–Shanks. The same subgroup argument finds Lucas witnesses given the factorization of \(p-1\).  
+   **[QRH] input:** Dirichlet only. This improves general unconditional deterministic witness searches, not the complexity class of primality.
+
+3. **Small genus generators; factoring from class-number advice.**  
+   **Statement:** prime forms of norm \(O_\delta(\log^A|D|)\) generate \(\mathrm{Cl}(D)/\mathrm{Cl}(D)^2\). In particular, for squarefree composite \(N\equiv3\bmod4\), a supplied positive multiple of \(h(-N)\) permits deterministic polynomial-time splitting.  
+   **Proof:** separate genus characters using their Dirichlet factorizations; exponentiate forms into their 2-primary components and extract an ambiguous form.  
+   **[QRH] input:** Dirichlet only. The statement concerns the genus quotient, not the whole class group.
+
+4. **Small generators for Eisenstein ring-class groups.**  
+   **Statement:** for \(\mathcal O_f=\mathbb Z+f\mathcal O_{\mathbb Q(\sqrt{-3})}\), its class group is generated by prime ideals coprime to \(f\) of norm \(O_\delta((\log(3f^2))^A)\); the generating list is constructible in polynomial time in \(\log f\).  
+   **Proof:** annihilating-character contradiction using the smoothed Hecke explicit formula.  
+   **[QRH] input:** precisely its stated finite-order Hecke coverage. Extending this statement to arbitrary quadratic orders requires **Hecke input beyond \(\mathbb Q(\sqrt{-3})\)**.
+
+5. **Effective class-number lower bounds.**  
+   **Statement:** for negative fundamental \(D\),
+   \[
+   h(D)\gg_\delta \frac{\sqrt{|D|}}{\log\log(3|D|)}
+   \]
+   with an effective constant.  
+   **Proof:** approximate \(\log L(1,\chi_D)\) by an Euler product through a fixed power of \(\log|D|\), bound it below, and apply the class-number formula.  
+   **[QRH] input:** quadratic Dirichlet functions only. This improves the effective analytic bound; it does not compute the class number or factor \(D\).
