@@ -1,5 +1,5 @@
 """Experiment G1 (pre-registered in notes/genus2rh_prereg.md): exact check of
-Proposition A (separation) and Lemma 4 (reduction) on toy N = pq.
+Proposition A (separation) and Lemma 3 (reduction) on toy N = pq.
 
 HARNESS code: it knows p, q. The operational routine `one_curve` sees only N, v, w, rng.
 Run:  .venv/bin/python -m src.genus2rh.experiment_g1

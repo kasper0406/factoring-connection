@@ -7,7 +7,7 @@ coefficient c is a unit. If 1 < gcd(c, N) < N it raises ``NonUnit(d)`` with d a 
 divisor of N (rule 3: every nonunit is output). When N is prime nothing is ever raised,
 so the same code is the field arithmetic over F_N.
 
-Reduction lemma (see notes/genus2rh_results.md, Lemma 4): if a computation finishes
+Reduction lemma (see notes/genus2rh_results.md, Lemma 3): if a computation finishes
 without NonUnit, then its reduction mod any prime r | N equals the same computation
 over F_r, and all polynomials have the same degree mod N and mod r.
 """

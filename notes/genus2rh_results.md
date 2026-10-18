@@ -19,6 +19,9 @@ polylog factor is (log N)^{5+o(1)}. The proof combines:
 - Canfield–Erdős–Pomerance 1983;
 - a genus-2 transcription of Lenstra's 1987 ECM separation argument (Props A, B below).
 
+A Younis-free variant with constant 3/√2 ≈ 2.12 follows from Soundararajan's 2010 RH inequality,
+Shiu's bound and Hölder (§7.1). A sketch improves that variant to constant 2.
+
 Every loss in the accounting is L_p[1/2, o(1)] or (log N)^{O(1)}. No step costs a power of p
 (§5, audit table).
 
@@ -35,34 +38,70 @@ not found by us).**
   L_p[1/2, 2+o(1)](log n)^2".
 - (b) Younis 2024 is, under RH, a hypothesis of exactly the kind LPP needed. We need only its
   lower-bound half, at θ = 3/4.
+- (b′) **The analytic input is older than Younis (referee finding, checked by us; §7.1).**
+  Soundararajan's 2010 RH argument (arXiv:1009.1591) has a printed intermediate inequality.
+  Combined with Shiu's divisor-moment bound (1980) and Hölder, it already gives an L[1/2]-scale
+  density lower bound in intervals of length x^{3/4}.
+  - With Soundararajan's own Dirichlet-polynomial support this yields an RH-conditional HECM
+    bound L_p[1/2, 3/√2 + o(1)], where 3/√2 ≈ 2.121.
+  - With a modified support (sketch by the codex referee, not fully re-derived by us) it gives
+    2 + o(1).
+  - So the RH-conditional corollary was available, in principle, from 2010 ingredients. Nobody
+    we found wrote it down. Soundararajan himself only remarks that his result is "still not
+    strong enough to be applicable to the analysis of Lenstra's algorithm", which concerns ECM
+    and θ = 1/2.
 - (c) LPP's algorithmic analysis ("part III") was never written. Pomerance (IMA Abel
   Conference talk, Jan 2011, slide 8) calls it '"to appear" (actually, "to be written")'. He
   says the method "stands (or will stand when completed)". §3 below supplies that accounting.
   It is a routine adaptation of Lenstra 1987 §2, with one genus-2 twist: LPP II Thm 1.1 is
   applied at the second prime q for the separation condition.
-- (d) We found no paper that states Theorem R, or any RH-conditional rigorous L_p[1/2, c]
-  factoring bound. Our searches covered citations of Younis, LPP, Pomerance 1987, Lenstra 1987,
-  Lenstra–Pomerance 1992, Hafner–McCurley and Granville's survey (§7). By rule 5 we claim only
-  "no prior formulation found by us".
-- Assessment: this is a straightforward corollary. It might make a short note or a remark,
-  but it is not a research result. The L_N corollary is the only part that "beats L_N[1/2,1]",
-  and it does so only for inputs with a factor below N^{1/4}, under RH.
+- (d) **Closest prior statement found:** Hildebrand–Tenenbaum, JTNB 5 (1993), §5, p. 451.
+  - They report that Pomerance's 1987 "almost all" method, combined with Hafner's unpublished
+    1993 RH almost-all-intervals theorem, gives an RH-conditional rigorous ECM bound
+    "O(exp(√(c log N log₂ N))) for some constant c".
+  - That is an L[1/2]-type rigorous bound under RH. It applies only to primes outside an
+    exceptional set (Pomerance's S(v) framework), has an unspecified c, and rests on an
+    unpublished preprint.
+  - Theorem R differs in four ways: it holds for every N; the constant 2 is explicit; it is in
+    terms of p; and it rests on available sources.
+- (e) We found no paper that states Theorem R, or any every-N RH-conditional rigorous
+  L_p[1/2, c] factoring bound. The searches (§7) covered:
+  - citations of Younis: 2 on Semantic Scholar, neither about factoring;
+  - citations of LPP: 45 for I and 22 for II on OpenAlex, none a completion;
+  - Pomerance 1987, Lenstra 1987, Lenstra–Pomerance 1992;
+  - Hildebrand–Tenenbaum 1993 and Granville 2008.
 
-**V4 (side result, proved modulo the OCR caveat in §6.3).** Prop A + Prop B with LPP I Thm 1.3
-(unconditional) in place of Younis gives an unconditional expected time L_p[2/3, O(1)](log N)^{O(1)}.
-This is LPP I's Thm 1.1, whose proof depended on the unwritten part III. §3 thus completes it.
+  By rule 5 we claim only "no prior formulation found by us".
+- **Assessment.** This is a straightforward corollary, and its ingredients have existed since
+  2010 (constant 3/√2) and in clean form since 2024 (constant 2). It merits at most a short note
+  or remark.
+  - The genuinely unpublished piece is the algorithmic accounting (LPP III), which is routine.
+  - The L_N corollary is the only part that "beats L_N[1/2,1]". It does so only for inputs with
+    a factor below N^{1/4}, and only under RH.
 
-**V5 (optimisation; proved for this analysis model).**
+**V4 (side result; sketch, bookkeeping as in §4 but not written out).** Use Prop A and Prop B
+with LPP I Thm 1.3 (unconditional; §6.3) in place of Younis. This gives an unconditional expected
+time of L_p[2/3, 2^{2/3}c₁ + o(1)] (log N)^{5+o(1)}, with c₁ = 1,980,000^{1/3}.
+- That is a weaker form of LPP I's Thm 1.1, which claims (log n)², and whose algorithmic half
+  depended on the unwritten part III.
+- Our polylog is worse because the separation step at q costs λ(q) (§5).
+
+**V5 (optimisation inside the analysis model: cost = s + g/(2s); not a lower bound for all
+methods).**
 - s = 1 is optimal (cost s + 1/s).
-- Genus g ≥ 3 is worse: the cost is √(2g) even if LPP-type fibre bounds existed, and they do
-  not exist.
+- Genus g ≥ 3 is worse: the cost is √(2g) even if LPP-type fibre bounds existed, and such
+  bounds are not known.
 - Genus 1 would give √2. It needs θ = 1/2, which Younis-type RH methods cannot reach.
 - Split Jacobians, stage-2 continuations and large-prime variants change only L^{o(1)} factors.
-- So 2 is the floor of this route (§6).
+- So, within this cost model, 2 is the best this route gives (§6).
 
-**V6 (unconditional / almost-all; not available).** No unconditional theorem known to us
-gives L[1/2]-smooth density in the LPP interval, even for almost all p. Matomäki–Radziwiłł
-needs fixed u. Younis Thm 1.1 and Jain need y ≥ exp((log x)^{2/3+ε}). See §7.
+**V6 (unconditional / almost-all; not available).** No unconditional theorem known to us gives
+L[1/2]-smooth density in the LPP interval, even for almost all p.
+- Matomäki–Radziwiłł need fixed u.
+- Matomäki 2016 (IJNT), Younis Thm 1.1 and Jain (Quart. J. Math. 2026, arXiv:2502.10530) all
+  need y ≥ exp(C(log x)^{2/3}(log log x)^{4/3}) or more.
+- Hildebrand–Tenenbaum Thm 5.6 needs y ≥ exp((log X)^{5/6+ε}).
+- Under RH, Hafner's unpublished almost-all result reaches y ≥ L(X). See §7.
 
 ## 1. Notation
 
@@ -103,9 +142,13 @@ math.dartmouth.edu/~carlp/PDF/paper129.pdf, checked against people.maths.ox.ac.u
 - Here u = log x / log y, and α = α(x, y) is the saddle point.
 - By Hildebrand–Tenenbaum 1986 (Lemma 2; Younis (1.5)), α = 1 − (log(u log(u+1)) + O(1))/log y
   for log x < y ≤ x. In our range this gives α → 1.
-- §7.1 of Younis (the RH proof) derives the version without α, (7.2):
-  (Ψ(x+h,y) − Ψ(x,y))/h = Ψ(x,y)/x · (1 + O(log(u+1)/log y)). It holds for
-  exp((log log x)^{5/3+1/100}) ≤ y ≤ x^{1/2−ε}. We use either form.
+- **Primary input: Thm 1.3 itself, with α → 1.**
+- Within the RH proof, §7.1 also derives an α-free form, (7.2):
+  (Ψ(x+h,y) − Ψ(x,y))/h = Ψ(x,y)/x · (1 + O(log(u+1)/log y)).
+  - It is valid for (log x)^K ≤ y ≤ x^{1/2−ε} and θ ≥ 1/2 + 10ε.
+  - The additional condition y ≥ exp((log log x)^{5/3+1/100}) enters only through Hildebrand's
+    long-interval (h = x) step.
+  - Our parameters satisfy all of these conditions.
 - Quantifiers: θ is fixed, and the implied constants depend on θ only. We take θ = 3/4.
 
 **CEP** (Canfield–Erdős–Pomerance, J. Number Theory 17 (1983), Cor. to Thm 3.1): uniformly for
@@ -148,8 +191,9 @@ Input: odd N with no prime factor ≤ 8100; parameters v (a guess for p) and w (
 - Each output is gcd(c, N) with c ≢ 0 mod N and gcd(c, N) ≠ 1, so it is a proper divisor.
 - Steps 2 and 4 output only when 1 < g < N.
 
-**Lemma 3 (reduction lemma for Cantor over Z/N; proved).** Suppose a run of steps 3–5, or any
-prefix of step 5, ends without a NonUnit. Then for every prime r | N:
+**Lemma 3 (reduction lemma for Cantor over Z/N; proved).** Suppose a run passes steps 2 and 4
+with gcd = 1 and enters step 5. Suppose also that step 5, or a prefix of it, ends without a
+NonUnit. Then for every prime r | N:
 - (i) the reduction mod r of every intermediate value equals the corresponding value of the
   same program run over F_r;
 - (ii) every intermediate polynomial has the same degree over Z/N and over F_r.
@@ -298,16 +342,33 @@ running time is
    ε(v_{j*}) ≥ ε(2p) ≥ 2δ(p) for large p.
 5. **Each stage j ≥ j* succeeds with probability ≥ 1 − 1/e.**
    - (1 + ε(v))√(log v loglog v) is increasing in v, so h_j is nondecreasing in j.
-   - λ(q) ≤ (log N)^{2+o(1)} and v_{j*} ≥ p, so h_j π* ≥ h_{j*} π*
-     ≥ L_p[1/2, ε(2p) − δ(p)] (log N)^{1−o(1)}/C ≥ 1 for large N.
-   - The h_j curves use independent randomness, so a stage fails with probability
-     ≤ (1 − π*)^{h_j} ≤ e^{−1}.
-6. **Cost per stage.** cost_j ≤ h_j · O(w_j log v_j (log N)²)
-   = L_{v_j}[1/2, 2 + ε(v_j) + o(1)] (log N)^5.
-7. **Growth of the cost.** cost_{j+1}/cost_j ≤ exp(3(√(log 2v loglog 2v) − √(log v loglog v)))
-   ≤ exp(O(√(loglog v/log v))) ≤ e^{1/2} for large v.
-8. **Summing.** E[time] ≤ Σ_{j<j*} cost_j + Σ_{m≥0} e^{−m} cost_{j*+m}
-   ≤ (j* + Σ_m e^{−m/2}) cost_{j*} = O(log p) · L_{2p}[1/2, 2 + ε(p) + o(1)] (log N)^5.
+   - λ(q) ≤ (log N)²(log log N)² and v_{j*} ≥ p, so h_j π* ≥ h_{j*} π*
+     ≥ L_p[1/2, ε(2p) − δ(p)] · (log N)/((log log N)² C).
+   - L_p[1/2, ε(2p) − δ(p)] ≥ exp(½√(log p)) → ∞, so this is ≥ 1 for p ≥ p_0, where p_0 is an
+     absolute constant (it depends on Younis's implied constants).
+   - The h_j curves use independent randomness, so for p ≥ p_0 a stage j ≥ j* fails with
+     probability ≤ (1 − π*)^{h_j} ≤ e^{−1}.
+   - **Bounded p** (8100 < p < p_0, a finite set). Take the first j_1 with
+     w_{j_1} ≥ (√p + 1)^4. Then every J(F_p) is w-smooth, so S_w(p) ≥ p^{3/2} − 1 by
+     LPP II. Prop B gives π_j ≥ c(p)/λ(q) for j ≥ j_1. Since h_j ≥ (log N)³,
+     h_j π_j ≥ c(p) log N/(log log N)², and this is ≥ 1 once N ≥ N_0(p).
+     - For such N the tail argument of steps 6–8, started at j_1, gives
+       E[time] ≤ C(p)(log N)^5.
+     - The finitely many pairs (p, N) with N < N_0(p) have some finite expected time each,
+       because the stage failure probabilities tend to 0.
+     - Lemma 5 and RH are not needed for bounded p.
+6. **Cost per stage: an explicit envelope.** There is an absolute constant c₀ such that the
+   time of stage j is at most the deterministic quantity
+   C_j := c₀ · h_j · w_j · log v_j · (log N)²
+        = c₀ (log N)^5 · exp((2 + ε(v_j))√(log v_j log log v_j) + O(1)).
+   (The worst case is all h_j curves run to completion. Step 0 costs (log N)^{O(1)} once.)
+7. **Growth of the envelope.** With v = v_j,
+   log(C_{j+1}/C_j) ≤ 3(√(log 2v loglog 2v) − √(log v loglog v)) + O(1/log v_j)
+   = O(√(loglog v/log v)) → 0.
+   So C_{j+1}/C_j ≤ e^{1/2} for j ≥ j₀, an absolute threshold. The envelope is also
+   nondecreasing in j.
+8. **Summing.** E[time] ≤ Σ_{j<j*} C_j + Σ_{m≥0} e^{−m} C_{j*+m}
+   ≤ (j* + Σ_m e^{−m/2}) C_{j*} = O(log p) · L_{2p}[1/2, 2 + ε(p)] (log N)^5.
    This is the claim, since L_{2p}[1/2, c] = L_p[1/2, c + o(1)]. ∎
 
 **Corollary R1 (L_N form; proved).**
@@ -326,6 +387,7 @@ running time is
 - There are ≤ log₂ N splits. Every composite divisor m of N with ≥ 2 distinct prime factors
   has least prime factor ≤ P_2(N), the second-largest distinct prime factor of N.
 - Total expected time: L_{P_2(N)}[1/2, 2 + o(1)] (log N)^{O(1)}.
+- Prime powers N = r^e, where P_2 is undefined, are completed in polynomial time.
 
 ## 5. Audit table: every loss
 
@@ -343,9 +405,20 @@ running time is
 | unknown p: doubling v_j = 2^j, v_{j*} < 2p | O(log p) stages; L_{2p} vs L_p | L_p[1/2, o(1)] | §4 |
 | extraction | any NonUnit is a proper divisor; Prop A forces one | none | Lemmas 2–3 |
 
-No step costs a power of p. The only polylog-in-N term that is not L_p[1/2, o(1)] is
-λ(q) ≤ (log N)^{2+o(1)}, together with the arithmetic cost. Both sit in the explicit
-(log N)^{O(1)} factor, exactly as in LPP I Thm 1.1 and in Lenstra 1987.
+No step costs a power of p.
+
+The only polylog-in-N term that is not L_p[1/2, o(1)] is λ(q) ≤ (log N)^{2+o(1)}, together
+with the arithmetic cost. Both sit in the explicit (log N)^{O(1)} factor.
+
+This polylog is **worse than the sources'**:
+- Lenstra's (2.7) uses (1.16)(b), #V ≥ c q³, so it has no log loss at q.
+- LPP I Thm 1.1 claims (log n)².
+- Our λ(q) loss is the price of deriving (v) from LPP II's fibre lower bound.
+- Taking h_j = ⌈L_{v_j}[1/2, 1 + ε] (log N)²(log log N)³⌉ already suffices, which gives
+  (log N)^{4+o(1)}.
+- Equidistribution of Frobenius of the genus-2 family in GSp₄(F_ℓ), with error ℓ^{O(1)} q^{−1/2}
+  and valid since ℓ ≤ w = q^{o(1)}, would remove λ(q) entirely. We have not checked a citable
+  uniform version, so this is not used.
 
 Interval fit check (step 2 of the brief). LPP needs smooth numbers in I_p, which has length
 p^{3/2} = x^{3/4+o(1)} around x ≈ p². Younis covers h ≥ x^θ for every fixed θ > 1/2, down to
@@ -381,20 +454,35 @@ y ≥ (log x)^{K(θ)}. Our w = L_p[1/2, 1] = exp((1/√2 + o(1))√(log x log lo
   = L^{o(1)}, so the constant does not change.
 - **Order of D instead of #J.** This might be smaller, but no rigorous lower-bound handle
   exists. It is an L^{o(1)} effect heuristically.
-- Conclusion: 2 is the floor of this route (proved for the analysis model: cost s + g/(2s)
-  with g ≥ 2 forced by θ > 1/2). Heuristically 2 is also the true running time of HECM, since
-  Younis gives an asymptotic, not only a lower bound.
+- **Conclusion.** Within the cost model s + g/(2s), with g ≥ 2 forced by θ > 1/2, the best
+  constant is 2. This is an optimisation inside an assumed model, not a lower bound for all
+  methods.
+  - The codex referee also checked these alternatives and found no RH-only constant below 2:
+    - E/F_{p²} (order p² + O(p), so θ = 1/2);
+    - Weil restriction (the same order);
+    - non-Jacobian abelian surfaces (order ≈ p²);
+    - forced-torsion families. These would need new constructions and new distribution
+      theorems.
+  - Heuristically the HECM running time is also L_p[1/2, 2]. Making that rigorous would need
+    upper bounds on fibres, or near-uniformity of #J_f over the Weil interval, in addition to
+    Younis's asymptotic. LPP explicitly lack such bounds.
 
-### 6.3 Unconditional variant (V4)
-LPP I Thm 1.3 (OCR of the Leiden scan; exponents partly garbled):
-- c₁ = (1,980,000)^{1/3} (exponent as read);
-- for x ≥ x₃, z = L_x[2/3, c₁] and x^{3/4} ≤ y ≤ x, there are at least
-  y · exp(−(log x)^{1/3}(log log x)^{−1/3}) z-smooth integers in [x, x + y].
+### 6.3 Unconditional variant (V4; sketch)
+**LPP I Thm 1.3.** Read from the page image rendered by the codex referee
+(codex/scratch/genus2rh_1/lpp1_theorem13.png; our earlier OCR transcription was wrong):
+- c₁ = (1,980,000)^{1/3};
+- for x ≥ x₃, z = L_x[2/3, c₁] and x^{3/5} ≤ y ≤ x (the exponent 3/5 as read by codex; the
+  image is consistent with it), the number of z-smooth integers in [x, x + y] is at least
+  y · exp(−(log x)^{1/3}(log log x)^{8/3}).
 
-Exponent caveat: any lower bound y · exp(−o((log x)^{2/3})) suffices.
-- Substituting this for Lemma 5 in Prop B and §4, with w = z at x = p², gives expected time
-  L_p[2/3, 2^{2/3} c₁ + o(1)] (log N)^{O(1)}.
-- This is LPP I Thm 1.1, whose algorithmic half (part III) was never published.
+The density loss exp(−(log x)^{1/3+o(1)}) is of lower order than z = L[2/3]. Substituting this
+bound for Lemma 5 in Prop B and §4, with w = z at x ≈ p², gives:
+- expected time L_p[2/3, 2^{2/3} c₁ + o(1)] (log N)^{5+o(1)};
+- with the same stage bookkeeping (doubling, envelope, bounded p), which we have not written
+  out separately.
+
+Relation to LPP: this is a weakened form of LPP I Thm 1.1, which claims (log n)². The
+algorithmic half of LPP I Thm 1.1 (part III) was never published.
 - Younis's unconditional Thm 1.1 (θ > 17/30, y ≥ exp(C(log x)^{2/3}(log log x)^{4/3})) gives
   exp(O((log p)^{2/3}(log log p)^{4/3})). That is slightly weaker in the log log power.
 
@@ -415,8 +503,8 @@ Read directly:
   - Props (2.6)–(2.8) give the separation argument we transcribe. We read them via OCR of the
     wstein.org scan.
   - Conjecture (2.10) gives the conditional L_p[1/2, √2].
-  - Lenstra notes that under GRH Prop (2.7) improves by a log log p factor. That is an
-    L^{o(1)} effect.
+  - Lenstra notes that under GRH the 1/log p in Prop (2.7) improves to 1/log log p, a gain
+    of log p/log log p. That is an L^{o(1)} effect.
 - **Younis 2024**: Thms 1.1–1.3. The paper names no application to factoring.
 - **Soundararajan 2010** (arXiv:1009.1591; RH): existence in [x, x + C(ε)√x] for y = x^ε,
   and the lower bound z x^{−ε} above. It says explicitly that this is "still not strong enough
@@ -428,12 +516,60 @@ Read directly:
   - Harman 1991 and LPP 1993: lower bounds for y ≥ exp((log x)^{2/3+o(1)}).
   - Xuan 1999 (RH): existence in [x, x + √x (log x)^{1+o(1)}] for y = x^ε.
   - Hafner 1993 (RH, unpublished, an "almost all intervals" result per Soundararajan).
-  - None gives, before 2024, an RH density lower bound at y = L[1/2] for intervals x^θ with
-    θ < 1. This is why the corollary was not available earlier: Younis's RH theorem appears to
-    be the first such input.
+  - None of these *states*, before 2024, an RH density lower bound at y = L[1/2] for intervals
+    x^θ with θ < 1. Section 7.1 shows that such a bound nevertheless follows from
+    Soundararajan 2010.
+- **Hildebrand–Tenenbaum, "Integers without large prime factors", JTNB 5 (1993) 411–484, §5,
+  pp. 450–451** (literature agent; text checked by us).
+  - Hafner (1993, unpublished) shows under RH that the almost-all lower bound of their
+    Theorem 5.6 holds for L(X) ≤ y ≤ x and √L(X) ≤ z ≤ X, with L = exp(√(log x log₂ x)).
+  - Their Theorem 5.6 reads Ψ(x+z, y) − Ψ(x, y) ≫ zρ(u) for all x ≤ X outside a set of small
+    measure.
+  - They add that Pomerance's 1987 almost-all method then gives "on the Riemann Hypothesis the
+    bound O(exp(√(c log N log₂ N))) for some constant c" for ECM.
+  - This is the closest prior statement: an RH-conditional, rigorous, L[1/2]-type ECM bound for
+    almost all prime factors, with an unspecified c and an unpublished analytic input.
+
+### 7.1 An older route to the analytic input (codex referee; checked by us at the level of
+the printed inequalities)
+**Soundararajan's inequality.** Soundararajan (arXiv:1009.1591, p. 4) proves under RH, for any
+δ with x e^{2δ} = x + z, the inequality
+
+  I ≥ x δ² M(1)² − A √x δ² log x (√x y^{−1/4} + 1/δ) M(1),
+
+where:
+- M(s) = Σ_{√x y^{−1/3} ≤ m ≤ √x y^{−1/4}, P^+(m) ≤ y} m^{−s};
+- I ≤ δ log y · Σ_{x<n≤x+z, P^+(n)≤y} τ₃(n), by his display (1) without the crude bound
+  τ₃ ≤ x^ε;
+- M(1) ≥ ρ(u/2) log y/24.
+
+**Our parameter choice.** Take z = H ≍ x^{3/4} (so 1/δ ≍ x^{1/4}) and y = L_x[1/2, c]. Then
+ρ(u/2) = exp(−(1/(4c) + o(1))√(log x log log x)).
+- The error term is relatively small if y^{1/4} ρ(u/2)/log x → ∞, that is, if c > 1.
+- Then Σ_{smooth n ∈ (x, x+H]} τ₃(n) ≫ H ρ(u/2)² log y.
+
+**Converting to a count.** By Hölder and Shiu's theorem,
+Σ_{x<n≤x+H} τ₃(n)^k ≪_k H (log x)^{3^k−1}. This gives
+Ψ(x+H, y) − Ψ(x, y) ≫_k H ρ(u/2)^{2k/(k−1)} (log x)^{−O_k(1)}.
+
+**Factoring constant.** Put x ≈ p² and s = c√2 > √2. The density is
+L_p[1/2, −(k/(k−1))/s + o(1)], so the cost is s + (k/(k−1))/s.
+- The constraint s > √2 binds.
+- Letting k → ∞ and s ↓ √2 (dovetailing over k), the constant is √2 + 1/√2 = 3/√2 ≈ 2.121.
+
+**Modified support (codex sketch, not re-derived by us).** The codex referee shrinks the support
+to √x y^{−a} ≤ m ≤ √x y^{−b} with b < a < 1/2. The condition then becomes bc² > 1/4, which allows
+any c > 1/√2, that is s > 1. That gives 2 + o(1).
+
+**Consequences.**
+- A Younis-free version of Theorem R holds with constant 3/√2, relying on Soundararajan's
+  printed inequality, an arXiv note (2010).
+- With the modified support it gives 2, but that step rests on a referee sketch.
+- Either way, the analytic input for an RH-conditional L_p[1/2, O(1)] HECM theorem existed by
+  2010. Younis 2024 is the cleanest citable form.
 
 Searched and found nothing (see the literature-agent summary appended in §9):
-- an RH- or GRH-conditional rigorous L_p[1/2, c] factoring bound;
+- an every-N RH- or GRH-conditional rigorous L_p[1/2, c] factoring bound;
 - any citation of Younis applied to ECM, HECM or factoring;
 - any published LPP part III.
 
@@ -474,11 +610,60 @@ Commands:
 - For all 200, the Z/N result reduced mod p and mod q equals the separate F_p and F_q
   computations: **P2, 0 mismatches**.
 
-These checks confirm the implementation of Lemmas 2–3 and the Prop A implication. They say
-nothing about the analytic inputs, which are asymptotic or need p > 8100.
+**Assessment.**
+- G1b exercises Lemma 3, and the results are consistent with it.
+- G1 is *consistent with* Prop A but does not test it, because P1 is vacuous: every run
+  returned a divisor.
+- Neither check says anything about the analytic inputs, which are asymptotic or need p > 8100.
+- The codex referee independently checked 75 COVERED cases with non-squarefree N and found no
+  violation. That run is in its scratch area and is not part of this repo.
+
+**Disclosed deviation from the pre-registration.** The prereg defines e(r) through
+(√v + 1)^4, while the code uses (⌊√v⌋ + 2)^4. The code's bound is larger, hence more
+conservative. Prop A's proof uses the code's version.
 
 ## 9. Review log
-(filled in after the GPT-6.1-sol referee pass `codex/genus2rh_1` and the Opus critic)
+
+**GPT-6.1-sol referee** (codex/genus2rh_1.out, xhigh). It found no fatal error.
+
+| # | Finding | Severity | Resolution |
+|---|---|---|---|
+| 1 | LPP quantifiers and Lemma 4 / Prop B | OK | — |
+| 2 | Younis Thm 1.3 at θ = 3/4 | OK | The §7.1 proof looked sound, and Hildebrand enters only at h = x. |
+| 3 | Lemma 3 wording should require entering step 5 | MINOR | Fixed. |
+| 4 | Explicit cost envelope; bounded p | MINOR | Fixed in §4, steps 5–8. |
+| 5 | R1/R2 | OK | Prime-power note added. |
+| 6 | "Floor" holds only inside the model | — | Reworded. |
+| 7 | Novelty: the Soundararajan + Shiu + Hölder route | MAJOR | Adopted in §0 (b′) and §7.1, after checking the printed inequality. We confirmed constant 3/√2 from the printed support. The 2 + o(1) modified-support version is recorded as a referee sketch. |
+| 8 | LPP I Thm 1.3 transcription wrong | MINOR | Corrected from the page image. |
+
+**Opus critic** (independent, read-only). No fatal error.
+
+| # | Finding | Severity | Resolution |
+|---|---|---|---|
+| 2 | Younis (7.2) range | MINOR | Fixed. |
+| 6 | Bounded p | MINOR | Fixed. |
+| 7 | Polylog is worse than Lenstra/LPP | MINOR | Fixed in §5. |
+| 8 | V4 overclaim: polylog, OCR, missing bookkeeping | MAJOR | V4 relabelled as a sketch with (log N)^5. "Completes LPP I" dropped. Transcription corrected. |
+| 9 | Floor/heuristic wording | MINOR | Fixed. |
+| 10 | GRH gain in Lenstra | MINOR | Fixed. |
+| 11 | e(r) deviation; P1 vacuous; Lemma numbering in docstrings | MINOR | Disclosed, reworded and fixed. |
+
+The critic re-tallied all experiment numbers from the raw JSONL. They match.
+
+**Literature agent.**
+- Younis has 2 citations (Semantic Scholar), neither about factoring. arXiv has v1 only, with
+  no journal reference.
+- LPP III has no record anywhere. OpenAlex lists 45 citations of LPP I and 22 of LPP II.
+- Pomerance 1987: Thm 2.1 (ECM over non-exceptional primes S(v), time exp(2(log v)^{6/7})).
+  No RH.
+- Hildebrand–Tenenbaum 1993 §5 is the closest prior statement (§7).
+- van Bommel–Costa–Li–Poonen–Smith (Math. Ann. 2025, arXiv:2106.13651) show that every integer
+  near q^n is the order of some ppav. That is existence only, not a Jacobian count, so there is
+  still no genus-g LPP II analogue.
+- Dryło–Pomykała (Colloq. Math. 2025) is an oracle reduction and irrelevant.
+- The agent did not obtain full texts of: Crandall–Pomerance §7.4, Bernstein's survey, McKee,
+  the body of Hafner–McCurley 1989, and the Friedlander–Granville 1993 full text.
 
 ## Candidate card
 
@@ -489,7 +674,8 @@ nothing about the analytic inputs, which are asymptotic or need p > 8100.
   Mumford form.
 - **Extraction:** a nonunit leading coefficient in Cantor's algorithm, which occurs when
   [k]D vanishes mod p but not mod q.
-- **Known lemmas:** LPP II Thm 1.1; Younis Thm 1.3 (RH); CEP; Weil; Cantor.
+- **Known lemmas:** LPP II Thm 1.1; Younis Thm 1.3 (RH), or Soundararajan 2010 + Shiu for the
+  constant 3/√2; CEP; Weil; Cantor.
 - **New lemma:** none analytic. The algorithmic accounting (Props A, B; Lemmas 3, 4) was
   unpublished (LPP III).
 - **Cost:** L_p[1/2, 2 + o(1)] (log N)^{5+o(1)} (RH).
