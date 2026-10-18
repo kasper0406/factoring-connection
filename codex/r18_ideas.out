@@ -1,0 +1,335 @@
+| Rank | Technique combination | Frontier and target | Status of proposed gain | Chance of a checked result in a few agent-days |
+|---|---|---|---|---|
+| **1** | Gaussian norm boxes + polynomial product/remainder trees + narrow-sector prime theorems | Deterministic \(N^{0.15475+o(1)}\) on an explicit infinite balanced family; \(N^{0.1238+o(1)}\) at \(p\asymp N^{2/5}\) in that family | **PROVED deduction below**, subject to independent checking and prior-art review | **80%** |
+| **2** | Smooth parts of \(N^2-1\) + enumeration of CRT roots + Coppersmith | Deterministic \(N^{0.15+o(1)}\) or better for suitable common divisors of \(p^2-1,q^2-1\); an unconditional infinite family with exponent \(2/13+\varepsilon\) | **PROVED deduction below**, with explicit structural promises | **70%** |
+| **3** | Genus-two order distribution + Younis’s short-interval theorem | Under RH, target \(L_p[1/2,2+o(1)]\), hence \(L_N[1/2,2/\sqrt5+o(1)]\) when \(p\asymp N^{1/5}\) | **SPECULATIVE corollary**: analytic input available under RH; full LPP accounting needs auditing | **55% conditional; <2% unconditional** |
+| **4** | Two-stage \(p-1\) + a second-largest-prime sieve minorant + Fouvry separation | Positive proportion of near-balanced semiprimes at \(N^{0.150+\varepsilon}\) | **SPECULATIVE** positive-density semismooth-shift lemma | **20%** |
+| **5** | Explicit ECM family + second-moment separation + the repository’s fourth-moment fallback | Deterministic almost-all and complete average cost \(N^{23/152+o(1)}\approx N^{0.151316}\) | **PROVED conditional calculation**; curve-family moment bound **SPECULATIVE** | **5%** for the factoring improvement |
+| **6** | CM order norms + Gaussian prime sieve + elliptic divisibility sequences | A fixed deterministic curve factoring a positive proportion at \(N^{0.150+\varepsilon}\) | **SPECULATIVE** unconditional shifted-norm smoothness lemma | **5%** |
+
+Here “PROVED deduction” means the argument supplied here, not an independently refereed theorem. The probabilities concern a useful checked statement; they do not estimate publication priority.
+
+The specified files confirm the baseline: AV’s complete average exponent \(1/6\), D′’s improved exception trade-off, R’s coverage reduction and \(c>3/8\) threshold, the scoped T1/T2 lower bounds, and the \(1/5\) unbalanced peak. None of the proposals below establishes an unrestricted deterministic worst-case improvement.
+
+Two literature distinctions matter. **KNOWN:** rigorous “ECM works for almost all primes” results exist at weaker smoothness scales; this was already used by [Hafner–McCurley, §3](https://www.mccurley.org/papers/running.pdf). I did **not** locate an unconditional almost-all-prime theorem giving the optimal advertised \(L_p[1/2,\sqrt2]\) complexity. [Matomäki–Radziwiłł](https://annals.math.princeton.edu/2016/183-3/p06) supplies fixed-\(u\) smoothness, while [Jain’s recent result](https://arxiv.org/abs/2502.10530) still assumes \(y\ge \exp((\log X)^{2/3+\varepsilon})\). Neither supplies that optimal ECM theorem. Also, Baker–Harman’s \(0.2961\) and Lichtman’s \(0.2844\) thresholds must not be promoted to positive-proportion statements: their available lower bounds have logarithmic density losses. [Baker–Harman, Theorem 1](https://matwbn.icm.edu.pl/ksiazki/aa/aa83/aa8342.pdf), [Lichtman](https://arxiv.org/abs/2211.09641).
+
+## 1. Gaussian norm boxes, fast products, and narrow-sector primes
+
+**Mechanism.** Work in
+\[
+R_N=(\mathbb Z/N\mathbb Z)[i].
+\]
+Search simultaneously for a factor represented by \(a^2+b^2\), with \(0\le a\le A\), \(1\le b\le B\). Package consecutive values of \(a\) into one polynomial, evaluate it at Gaussian giant points, and take norms followed by gcds. This searches an entire rectangle through one-dimensional polynomial arithmetic.
+
+For an integer \(m\), put
+\[
+F(X)=\prod_{j=0}^{m-1}(X+j).
+\]
+Evaluate \(F\) at
+\[
+z=mv+ib,\qquad
+0\le v<\lceil(A+1)/m\rceil,\quad 1\le b\le B.
+\]
+Then
+\[
+\operatorname{Norm}(F(mv+ib))
+ =\prod_{j=0}^{m-1}\bigl((mv+j)^2+b^2\bigr)\pmod N.
+\]
+
+**PROVED — feasibility calculation.** Product construction and monic remainder-tree evaluation cost
+\[
+\widetilde O\!\left(m+\frac{AB}{m}\right)
+\]
+operations in the fixed-rank ring \(R_N\). For \(B\le A\), choose \(m\asymp\sqrt{AB}\). Monic division needs no inverses of differences between evaluation points, so composite \(N\) presents no field-assumption problem. The underlying fast-product technology is classical; compare [Bostan–Gaudry–Schost](https://specfun.inria.fr/bostan/publications/BoGaSc07.pdf).
+
+Suppose
+\[
+p\asymp N^\beta,\qquad p=a^2+b^2,\qquad b\le p^\eta.
+\]
+Taking \(A\asymp N^{\beta/2}\), \(B\asymp N^{\beta\eta}\) gives
+\[
+\boxed{T=N^{\beta(1/4+\eta/2)+o(1)}.}
+\]
+Thus:
+
+- Balanced, \(\beta=1/2\): \(T=N^{1/8+\eta/4+o(1)}\), below \(1/6\) whenever \(\eta<1/6\).
+- At \(\beta=2/5\): \(T=N^{1/10+\eta/5+o(1)}\).
+
+**KNOWN — the family is nonvacuous.** Harman–Lewis’s Theorem 2 gives Gaussian primes in sectors of angular width \(X^{-0.381}\). The sector adjacent to the real axis supplies infinitely many rational primes with
+\[
+p=a^2+b^2,\qquad b\le p^{0.119}.
+\]
+Consequently the displayed costs become \(N^{0.15475+o(1)}\) and \(N^{0.1238+o(1)}\), respectively. [Harman–Lewis, original paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4541183C02D39FD651979931A1B3B302/S0025579300014388a.pdf/gaussian-primes-in-narrow-sectors.pdf).
+
+**Exact remaining lemma.** No new analytic lemma is needed for this family. What needs independent checking is the algorithmic proposition, including recovery from a batched gcd equal to \(N\). That recovery is straightforward: descend the baby product tree. Every leaf norm is positive and \(O(p)<N\), so a leaf divisible by \(N\) cannot obstruct extraction.
+
+**First concrete step.** Write the complete bit-complexity proof and implement the fast remainder tree. I checked the algebra and extraction using a slow exact diagnostic: **49 promised inputs, zero failures, plus successful recovery in a deliberately constructed gcd-\(N\) case**. The check is in [norm_box_check.py](/Volumes/git/factoring-connection/codex/scratch/r18_ideas/norm_box_check.py).
+
+**Adversarial assessment.** This is a sparse special family, not an almost-all result. Covering all prime angles by many narrow sectors pays back the gain. T1/T2 do not apply: the algorithm tests norm divisibility through polynomial evaluation, and its guarantee concerns a different input population.
+
+The same algebraic packaging extends to fixed-degree incomplete norm forms: a rectangular coefficient box of volume \(V\) gives roughly \(\widetilde O(\sqrt V)\) work. Maynard’s prime-producing incomplete norm forms therefore offer additional unconditional families—for example, three coordinates in degree four give balanced exponent \(3/16\). [Maynard](https://arxiv.org/abs/1507.05080).
+
+**Probability and significance.** **80%** for a fully checked special-family proposition; novelty remains unestablished. This is the cleanest immediate mathematical deliverable.
+
+## 2. Recover smooth common parts of \(p^2-1,q^2-1\), then use Coppersmith
+
+**Mechanism.** Promise that an unknown \(B\)-smooth integer \(g\) satisfies
+\[
+g\mid \gcd(p^2-1,q^2-1).
+\]
+Then \(g\mid N^2-1\). Compute the complete \(B\)-smooth part \(H\) of the public integer \(N^2-1\), enumerate rooted divisors
+\[
+d\mid H,\qquad r^2\equiv1\pmod d,
+\]
+and apply the standard known-residue factor decoder to \(p\equiv r\pmod d\).
+
+**The new twist.** The catalog already contains known-residue decoding, and Ward–Maestro treats large \(\gcd(p-1,q-1)\). Here the information is **acquired from a public smooth part**, and the signs may vary independently between prime-power components. There need not be one large common divisor entirely in \(p-1,q-1\), or entirely in \(p-1,q+1\).
+
+**PROVED — enumeration remains cheap.** Since \(H<N^2\),
+\[
+\sum_{d\mid H}\#\{r\bmod d:r^2=1\}
+ \le 2\tau(H)^2=N^{o(1)}.
+\]
+The factor \(2\) covers the exceptional 2-adic root count. Thus the CRT branching costs subpolynomial time, even when \(g\) is a power of \(N\).
+
+Let \(p=N^{\beta+o(1)}\), \(g\ge N^\gamma\), \(B=N^\eta\). Given the correct residue modulo \(g\), split the possible quotient into intervals of length \(N^{\beta^2-\varepsilon}\), and use the unknown-divisor version of Coppersmith on each interval. This gives
+\[
+\boxed{
+T=N^{\max\{\eta,\,[\beta(1-\beta)-\gamma]_+\}+\varepsilon+o(1)}.
+}
+\]
+The root bound is the classical \(N^{\beta^2}\) bound; see [Cohn–Heninger’s discussion and generalization](https://arxiv.org/pdf/1008.1284).
+
+Examples:
+
+- Balanced, \(\gamma=0.10\), \(\eta\le0.05\): exponent \(0.15+\varepsilon\).
+- \(p\asymp N^{2/5}\), \(\gamma=0.08\), \(\eta\le0.05\): exponent \(0.16+\varepsilon\).
+
+**PROVED — an unconditional infinite family.** Take growing primorials \(g\), and let \(p,q\) be the least primes congruent to \(1,-1\pmod g\). Using the conservative admissible Linnik exponent \(5.2\),
+\[
+p,q\ll g^{5.2},\qquad g\ge N^{5/52-o(1)}.
+\]
+All prime factors of \(g\) are below a polylogarithmic bound in \(N\). Scanning factor-size bands therefore gives
+\[
+T\le N^{1/4-5/52+\varepsilon+o(1)}
+   =\boxed{N^{2/13+\varepsilon+o(1)}}.
+\]
+This uses [Xylouris’s least-prime bound](https://arxiv.org/abs/0906.2749), not an unproved assertion about primes in very short progressions.
+
+**Exact missing lemma and first step.** The promised-family reduction follows from the displayed argument and known Coppersmith theory. First formalize it with explicit size bands, prime powers, and a stopping budget; then test mixed CRT sign patterns and smooth parts containing many irrelevant divisors.
+
+**Adversarial assessment.** No density claim follows for ordinary semiprimes. The promise supplies substantial arithmetic structure. T1/T2 are escaped through globally recovered residue information and lattice decoding. The primary uncertainty is prior art, rather than the reduction.
+
+**Probability and significance.** **70%** for a checked theorem or useful generalization. A modest special-family result, with unusually low analytic risk.
+
+## 3. Genus-two factoring with a sharper smoothness input
+
+**Mechanism.** Retain Lenstra–Pila–Pomerance’s rigorous genus-two machinery. Jacobian orders range around \(p^2\) through an interval of length \(\asymp p^{3/2}\). Replace the original smooth-number input by a modern short-interval density theorem, then re-optimize the smoothness cutoff. This avoids NFS fruitfulness entirely.
+
+**KNOWN.** LPP supplies substantial populations of genus-two curves with each of almost all orders in an appropriate central interval. [LPP, *A hyperelliptic smoothness test, II*, Theorems 1.1–1.2](https://math.dartmouth.edu/~carlp/PDF/paper129.pdf).
+
+**KNOWN under RH.** Younis’s Theorem 1.3 supplies the expected smooth-number density for intervals of length at least \(x^\theta\), \(\theta>1/2\), with smoothness cutoff as small as a suitable power of \(\log x\). Setting \(x\asymp p^2\) and interval length \(\asymp x^{3/4}\) fits comfortably. The stated analytic assumption is RH for \(\zeta(s)\). [Younis](https://arxiv.org/pdf/2409.05761).
+
+**PROVED conditional cost calculation.** Put
+\[
+B=L_p[1/2,s].
+\]
+For numbers of size \(p^2\), the expected smoothness probability is
+\[
+L_p[1/2,-1/s+o(1)].
+\]
+If LPP’s curve sampling and extraction preserve this probability up to \(L_p[1/2,o(1)]\), the factoring cost is
+\[
+L_p[1/2,s+1/s+o(1)],
+\]
+minimized at \(s=1\). The target is therefore
+\[
+\boxed{L_p[1/2,2+o(1)]}.
+\]
+For \(p=N^{\beta+o(1)}\), this becomes \(L_N[1/2,2\sqrt\beta+o(1)]\); at \(\beta=1/5\), the constant is \(2/\sqrt5\approx0.8944\).
+
+**Exact missing lemma.** For the RH-conditional result, the missing work is an **algorithmic accounting lemma**: verify that the full LPP sampler, Jacobian arithmetic, and proper-divisor extraction introduce no additional leading \(L[1/2]\) constant. I have not completed that audit, so I am not labeling the factoring corollary proved.
+
+For an unconditional almost-all-family result, a sufficient new analytic statement is
+\[
+\#\left\{
+m\in[p^2-\tfrac12p^{3/2},p^2+\tfrac12p^{3/2}]
+:P^+(m)\le L_p[1/2,1]
+\right\}
+\ge p^{3/2}L_p[1/2,-1-o(1)]
+\]
+for almost all primes \(p\). This asks for substantially longer intervals than ECM’s Hasse interval.
+
+**First concrete step.** Audit the LPP reduction with this density substituted explicitly. Stop if the conversion incurs a polynomial-in-\(p\) loss. In parallel with that mathematical audit—not parallel agent work—check whether the sharp RH corollary already appears in the literature.
+
+**Adversarial assessment.** This supplies no unconditional \(c<1\) theorem today. It also does not improve the generic Lenstra–Pomerance constant for balanced inputs. Its value is a sharper rigorous, conditional bound depending on the smallest factor.
+
+**Probability and significance.** **55%** for a useful RH-conditional corollary; **below 2%** for removing RH within a few days. The conditional result is worth a short focused audit.
+
+## 4. Two-stage \(p-1\) with a certified semismooth shifted-prime minorant
+
+**Mechanism.** Use stage one with cutoff \(B_1\), followed by a fast BSGS continuation to \(B_2=B_1^2\). Seek positive density of primes whose predecessor has one exceptional prime factor below \(B_2\), with the remaining cofactor \(B_1\)-smooth. Pair these primes with Fouvry-type rough-order partners to guarantee one-sided extraction.
+
+**The new twist relative to R-19.** The continuation algorithm is known. The proposed improvement is a **positive-density theorem for a restricted cofactor population**. It does not claim that BSGS efficiently covers every possible residual cofactor—the optimization refuted in `pm1bsgs`.
+
+**SPECULATIVE exact lemma.** For \(\theta=0.30\), prove
+\[
+\#\{p\le x:p-1=sr,\ P^+(s)\le x^\theta,\ 
+r=1\text{ or a prime }\le x^{2\theta}\}
+\gg \frac{x}{\log x}.
+\tag{SS}
+\]
+Require the representation to leave only one occurrence of the exceptional prime outside the smooth part. Repeated large prime factors contribute a negligible exceptional set.
+
+**PROVED conditional calculation.** Stage-one plus continuation costs
+\[
+\widetilde O(B_1+\sqrt{B_2})=\widetilde O(B_1).
+\]
+Thus (SS), with the usual balance slack, would give \(N^{0.150+\varepsilon}\) on a positive proportion of Ward–Maestro’s near-balanced population. Fouvry’s large-prime-factor partners provide separation because their large order prime exceeds \(B_2\); the small-order exceptions are negligible. The existing \(0.151632\ldots\) argument and its qualifications are recorded in [Ward–Maestro, Proposition 35.3 and remarks](https://igent.ai/research/floors-not-bounds/factoring_report.pdf).
+
+**A concrete analytic attack.** Choose
+\[
+\theta<\theta_0<1/2,\qquad \theta_0\le2\theta.
+\]
+Every \(x^{\theta_0}\)-smooth predecessor is \((x^\theta,x^{2\theta})\)-semismooth unless it contains at least two prime factors exceeding \(x^\theta\). Consequently
+\[
+S_{\theta,2\theta}(x)
+\ge S_{\theta_0,\theta_0}(x)-E_{\theta,\theta_0}(x).
+\]
+Brun–Titchmarsh gives an explicit upper bound of the shape
+\[
+\frac{E_{\theta,\theta_0}(x)}{\pi(x)}
+\ll_{\theta_0}\log^2(\theta_0/\theta)+o(1).
+\]
+Extract an explicit positive-proportion lower bound from Friedlander’s proof and optimize this subtraction **with certified numerical integrals**. This is a much narrower first task than a new full distribution theorem.
+
+**Exact missing lemma and first step.** The missing lemma is positivity of that minorant—or an improved Buchstab/Harman minorant proving (SS). First recover the explicit Friedlander constants and scan a preregistered parameter region near \(1/(2\sqrt e)\). Kill this particular attack if every certified lower bound is nonpositive.
+
+**Adversarial assessment.** A Dickman or semismooth probability calculation is not a proof for shifted primes. Baker–Harman or Lichtman’s logarithmically sparse counts do not establish (SS). Even success here improves positive-proportion factoring, not AV’s complete average exponent.
+
+**Probability and significance.** **20%** for some strict improvement over \(0.151632\ldots\); lower for reaching exactly \(0.150\). This has a small numerical ambition and a sharply bounded first calculation.
+
+## 5. Explicit ECM families, second moments, and an overlap-safe fallback
+
+**Mechanism.** Fix a uniform explicit sequence of marked curves, such as a Suyama family. Run its first \(J\) members with smoothness cutoff \(B\). Prove a second-moment bound for the number of curves that separate the two prime factors. On failure, use R with the fourth-moment coverage bound in a tailored ladder.
+
+**The new twist.** The catalog already asks for a deterministic ECM hitting theorem. The narrower proposal needs only **a variance bound for separating curves**, and combines it with an estimate for fallback cost on an arbitrary exceptional subset. No independence between ECM failures and DCL failures is assumed.
+
+For balanced \(N=pq\), let
+\[
+Z_N=\#\{j\le J:[M_B]P_j
+\text{ vanishes at exactly one of }p,q\},
+\]
+where \(M_B\) contains sufficiently high powers of every prime up to \(B\).
+
+**SPECULATIVE exact lemma.** For this fixed explicit family, prove, over \(\mathcal S_n\),
+\[
+\mathbb E Z_N\ge cJ,\qquad
+\operatorname{Var}(Z_N)\le JN^{o(1)}.
+\tag{EC2}
+\]
+Then Chebyshev gives a failure fraction
+\[
+\delta\le J^{-1}N^{o(1)}.
+\]
+
+**PROVED conditional exponent.** Take
+\[
+B=N^{1/8},\qquad J=N^{1/38}.
+\]
+The prefilter costs \(N^{23/152+o(1)}\).
+
+The repository’s fourth-moment bound and R imply that a fallback restricted to **any** subset \(A\) of density \(\delta\) can be arranged to cost
+\[
+\mathbb E[1_A T_{\rm fallback}]
+\ll
+N^{1/6+o(1)}\delta^{7/12}
++N^{2/15+o(1)}.
+\tag{*}
+\]
+Indeed, begin at \(H_0\asymp\delta^{-1/4}\), then double \(H\). Each reach set is bounded by
+\(\min(\delta,H^{-4})\), while a run costs \(N^{1/6}H^{5/3}\). The resulting geometric sum starts at
+\[
+N^{1/6}\delta H_0^{5/3}
+=N^{1/6}\delta^{7/12}.
+\]
+A top rung \(H=N^{1/60}\), followed by HH, gives the second term.
+
+With \(\delta=N^{-1/38+o(1)}\),
+\[
+\frac16-\frac7{12\cdot38}=\frac{23}{152}.
+\]
+Therefore (EC2) would yield
+\[
+\boxed{\text{complete deterministic average cost }
+N^{23/152+o(1)}}
+\]
+and a fixed-cost almost-all statement at the same exponent.
+
+**Exact missing lemma.** (EC2) is open. Vertical curve-counting results and smooth numbers in Hasse intervals do not automatically control a short explicit rational family. Candidate tools are averaged trace formulas, Birch-type moments, and large-sieve estimates for the family’s division fields. Smoothness must remain in the weights; replacing it by a few local divisibility tests would leave the central problem unsolved.
+
+**First concrete step.** Freeze 64 curves and sample 128 primes at each of 12, 14, and 16 bits. Compute exact marked-point exposure labels, then all eligible prime-pair values of \(Z_N\) for prefixes \(J=8,16,32,64\). Track \(\mathbb EZ_N/J\), \(\operatorname{Var}(Z_N)/J\), and identical exposure signatures. Persistent variance proportional to \(J^2\) kills the proposed second-moment route for that family.
+
+**Adversarial assessment.** This escapes T1/T2 through smooth-order annihilation rather than a certified degree-one target. It does not evade the analytic difficulty by renaming it: (EC2) is substantial. The repository’s moment barrier concerns another statistic and does not prove or refute (EC2). A fixed number of curves cannot supply the required power-saving failure rate.
+
+**Probability and significance.** **5%** for an unconditional factoring improvement within a few days; appreciably higher for a useful restricted covariance theorem. Success would materially improve the main deterministic average frontier.
+
+## 6. CM shifted norms, a Gaussian sieve, and point-order separation
+
+**Mechanism.** Fix a positive-rank CM curve and a public nontorsion point—for example
+\[
+E:y^2=x^3-2x,\qquad P=(2,2).
+\]
+For ordinary split primes, its group order is a shifted Gaussian norm. Prove a positive-density smoothness lower bound for these norms using prime-ideal sieves. Separately prove that the same fixed point survives the smooth exponent at a positive density of partner primes.
+
+**KNOWN.** CM theory expresses the ordinary orders as
+\[
+\#E(\mathbb F_p)=\operatorname{Norm}(\pi-u),
+\]
+with \(u\) determined by a fixed ray class; inert primes have order \(p+1\). Barbulescu–Jouve proves relevant fixed-\(u\) smooth-order asymptotics **under number-field Elliott–Halberstam**. That assumption is essential in their result. [Barbulescu–Jouve, Theorem 1.2 and Lemma 3.1](https://arxiv.org/html/2212.11724v2).
+
+**The new twist.** Seek only an unconditional **positive lower bound in one useful smoothness region**, rather than the complete asymptotic. Use the two-dimensional Gaussian prime geometry and a Harman/Buchstab minorant. Treat separation for the fixed point explicitly.
+
+**SPECULATIVE exact missing statements.**
+
+1. In the required ray classes,
+   \[
+   \#\{\pi:\operatorname{Norm}\pi\le x,\ 
+   P^+(\operatorname{Norm}(\pi-u))\le x^{0.30}\}
+   \gg x/\log x.
+   \tag{CM1}
+   \]
+2. A positive proportion of partner primes \(q\) have a prime
+   \[
+   \ell>x^{0.30}
+   \quad\text{dividing }\operatorname{ord}_{E(\mathbb F_q)}(P).
+   \tag{CM2}
+   \]
+
+**PROVED conditional calculation.** These two statements give a deterministic fixed-curve cost \(N^{0.150+\varepsilon}\) on a positive proportion of near-balanced inputs.
+
+There is a concrete route to (CM2). For inert \(q\), use a suitably localized Fouvry theorem for a large prime factor \(\ell>q^\alpha\) of \(q+1\), with \(\alpha>2/3\). If \(\ell\) is absent from the point order, then
+\[
+\operatorname{ord}_q(P)\le q^{1-\alpha}.
+\]
+The height bound for denominators of \(x([m]P)\) gives only
+\[
+O(T^3/\log x)
+\]
+primes near \(x\) with order at most \(T\). At \(T=x^{1-\alpha}\), this is \(o(\pi(x))\). The precise shifted-prime theorem in the inert progression must be checked before claiming this deduction.
+
+**First concrete step.** Establish (CM2) from an explicitly cited progression theorem. Then formulate a signed sieve minorant for (CM1), using Hecke Bombieri–Vinogradov and Gaussian Type I/II estimates; compute its certified integral before attempting stronger distribution statements.
+
+**Adversarial assessment.** CM does not make smoothness automatic. Finitely many twists give finitely many orders, so twist enumeration alone cannot prove almost-all success. Replacing (CM1) by EH merely recovers an existing conditional framework. The proposed contribution must be the unconditional lower bound.
+
+**Probability and significance.** **5%** for the full positive-proportion improvement; perhaps **25%** for the separation lemma or a useful restricted norm-sieve result. This is a longer analytic project than ranks 1–4.
+
+## Rejected combinations
+
+- **More local locks, bounded-degree cancellation, CRT signs, or full-class multipliers:** these return to T1/T2, Proposition O′, or the catalog’s charged-label bounds. No new escape was identified.
+- **A constant-success smooth-order prefilter followed by AV:** a constant fraction still pays AV’s \(N^{1/6}\) cost. Rank 5 specifically requires a growing family and a power-saving failure bound.
+- **Baker–Harman/Lichtman plugged directly into “positive proportion”:** the quantifier is wrong; Ward–Maestro already records the sparse-set consequences.
+- **Generic class-group relation generation plus ordinary large-prime variants:** ambiguous forms solve extraction, but the usual economics remain \(b+1/(4b)\ge1\). A leading-constant improvement needs a genuine change in relation supply or norm size.
+- **Uniform hidden square multipliers appended to NFS:** this returns to the documented Dixon-size obstruction. I have not repackaged it as an independent proposal.
+
+I would spend the next few days on **1 and 2**, audit **3** as a bounded conditional deduction, and give **4** one certified-minorant attempt. **5** is the strongest general deterministic target here, but its new analytic hypothesis deserves the low probability assigned above.
