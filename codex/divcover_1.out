@@ -1,0 +1,176 @@
+**PROVED:** The prime-only reformulation is valid for UW’s integer-factoring reduction, subject to the same computational hypotheses. I found no construction below \(2/5\). The mass constraint needs correction, and a conditional He–Sahai extension is available.
+
+References to **UW** and **HS** below mean the supplied text extractions. **UNVERIFIED** includes literature results whose statements I checked but whose proofs I do not reproduce.
+
+**1. What the factoring reduction actually needs**
+
+**PROVED.** In [UW, lines 597–623](/tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/uw.txt:597), Theorem 5.2 assumes the stronger condition:
+
+> 1. every integer≤ndivides ∏ki=1Ai, and
+
+But its proof invokes that condition only through line 614:
+
+> p≤nthat dividesN, it occurs as a factor of somed i, by Property 1.
+
+Line 620 explicitly says:
+
+> Once we have this set of primes, we trial divide each withNfor at mostO(⌈logN⌉)
+
+Thus replace Property 1 by
+\[
+\forall p\le n\text{ prime},\qquad p\mid\prod_i A_i,\qquad A_i\ne0.
+\]
+The initial gcd contains every such prime dividing \(N\); recursive splitting locates it in a leaf; the supplied factorization of that leaf identifies it. Trial division recovers its entire multiplicity. The remaining cofactor is prime or \(1\), since two factors exceeding \(n=\lfloor\sqrt N\rfloor\) would have product exceeding \(N\). Composites and prime powers are unnecessary **as cover obligations**.
+
+Zero entries cannot be fed unchanged into this proof: \(0\) has no prime factorization. Disjoint \(S,T\) suffice; allowing overlaps requires an efficient procedure for omitting zero factors from interval products.
+
+**PROVED.** The semiprime argument does not directly obstruct this weakened hypothesis. [HS, line 160](/tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/hs.txt:158) explicitly uses:
+
+> so then-divisor property supplies a progression term divisible bypq.
+
+Prime coverage supplies no such common witness. This establishes nonapplicability, not independence from every possible consequence of HS. Also, rank-one \(S,T\) can have a rank-two difference GAP; HS concerns the covering progression itself.
+
+**PROVED.** Primes up to \(B=n^{2\gamma}\) can be removed deterministically in \(\widetilde O(n^\gamma)\). Put \(m=\lceil\sqrt B\rceil\); form
+\[
+F(X)=\prod_{j=1}^{m}(X+j)
+\]
+modulo the current input and evaluate at \(0,m,2m,\ldots,(m-1)m\). Product trees, multipoint evaluation and gcd splitting detect small divisors using \(\widetilde O(m)\) ring operations. Repeating removal and recovering multiplicities adds polylogarithmic factors. This is the bounded-factor Pollard–Strassen mechanism; see [Harvey–Hittmeir, introduction](https://antsmath.org/ANTSXV/papers/ANTS-XV_harvey-hittmeir.pdf).
+
+For final exponent \(\delta=\max(\alpha,\beta)\), one may therefore cover only \((n^{2\delta},n]\); your cutoff \(n^{2\beta}\) is valid, sometimes stronger than necessary.
+
+**UNVERIFIED caveat.** Bare existence for infinitely many \(n\) does not itself provide uniformly constructible covers at sufficiently dense scales for an all-input running-time bound. The prime-only modification does not repair that issue.
+
+**2. Construction attempts**
+
+**PROVED: corrected mass constraint.** Let \(D\) be the distinct nonzero absolute differences, and
+\[
+R(a)=\sum_{\substack{n^{2\beta}<p\le n\\p\mid a}}\log p.
+\]
+For fixed \(\beta<1/2\), coverage and the prime number theorem give
+\[
+\sum_{a\in D}R(a)\ge(1-o(1))n,\qquad
+R(a)\le n^\alpha,\qquad |D|\le n^{2\beta}.
+\]
+Consequently \(\alpha+2\beta\ge1\), and at least \((1-o(1))n^{1-\alpha}\) witnesses are necessary.
+
+The statement “each carries \(\gtrsim n^\alpha/\log n\) primes” does **not** follow. That is an upper capacity, attained in order of magnitude near saturation. More generally, a threshold argument shows that \(\gg n^{1-\alpha}\) differences have
+\[
+R(a)\gg n^{1-2\beta}.
+\]
+Indeed, differences below a sufficiently small multiple of that threshold contribute at most \(n/2\); the others must contribute \(\gg n\), each at most \(n^\alpha\).
+
+**PROVED baseline.** For square \(n=m^2\), take
+\[
+S=\{1+im:1\le i\le m\},\qquad T=\{1+j:0\le j<m\}.
+\]
+Then \(S-T=[1,n]\). Height is polynomial, and Pollard–Strassen factors each difference in \(\widetilde O(n^{1/4})\). Thus \((\alpha,\beta)=(1/4,1/2)\) satisfies all four conditions, including full divisor coverage.
+
+**UNVERIFIED outcome below \(2/5\).** None of the following attempts produces a qualifying pair. Here \(C,G,H,F\) denote coverage, GAP rank/cardinality, height, and fast complete factorization.
+
+| Family | Established calculation and precise failure of the attempt |
+|---|---|
+| Polynomial values using generators \(1,t,\ldots,t^d\) | **PROVED:** a coefficient box with more than \(p\) vectors has a collision modulo \(p\); subtracting vectors gives a polynomial vanishing modulo \(p\). With unique integer representations, its value is nonzero. Uniform pigeonhole coverage through \(n\) requires \(n^{1+o(1)}\) coefficient vectors, hence balanced \(\beta=1/2\). **UNVERIFIED:** special \(t\) allowing \(\beta<1/2\), and \(F\) for every resulting difference. |
+| Cyclotomic subfamilies | **PROVED:** \(n^{o(1)}\) selected values, each of logarithmic height at most \(n^\alpha\), carry total prime-logarithmic mass at most \(n^{\alpha+o(1)}\); they cannot cover the target primes when \(\alpha<1\). Allowing all coefficient combinations avoids this counting failure but restores the preceding unresolved problem. Polynomial factorization of \(t^d-1\) does not supply prime factorizations of its cyclotomic values. |
+| Consecutive products and binomial coefficients | **PROVED:** choose \(k=\lfloor n^\alpha/\log n\rfloor\). The values \(\binom{jk}{k}\), \(j\le\lceil n/k\rceil\), cover every prime \(k<p\le n\): its numerator block contains \(p\), while \(k!\) does not. Their heights satisfy the required bound and their number is \(n^{1-\alpha+o(1)}\). Using this list as \(S\), with singleton \(T\), requires \(\beta\ge1-\alpha+o(1)\). **UNVERIFIED:** additive compression into smaller GAPs and \(F\), including all extra cross-differences. |
+| CRT/lattice design | **PROVED:** assigning each target prime to a coefficient-box point imposes one linear congruence on the \(r+1\) GAP coefficients. The resulting lattice has determinant \(U=\prod p=\exp((1+o(1))n)\), because the offset coefficient is \(1\) in every congruence. Minkowski guarantees a nonzero vector at coefficient scale \(O(U^{1/(r+1)})\). This guarantee reaches height \(\exp(n^\alpha)\) only with polynomially large rank. **UNVERIFIED:** exceptional much shorter vectors, nonzero witnesses, and \(F\). Minkowski gives no lower bound excluding them. |
+| Smooth-number identities, including Balog–Wooley | **UNVERIFIED completion:** simultaneous smoothness neither allocates all target primes nor factors every cross-difference. Their quantitative results, discussed below, do not supply the requested parameters. Even proving \(n\)-smoothness alone does not give the required deterministic factorization time. Missing: \(C,F\), and the needed quantitative \(G,H\) combination. |
+| Number-field norms | **PROVED limitation:** for a quadratic norm \(a^2-Db^2\), an inert prime \(p\nmid D\) dividing the norm forces \(a\equiv b\equiv0\pmod p\). Hence boxes \(1\le a,b<p\) miss such primes completely. **UNVERIFIED:** a norm family overcoming this coverage restriction while yielding additive GAP structure and \(F\). Norm multiplicativity supplies no additive compression by itself. |
+
+**PROVED: combining pieces has a measurable cost.** For \(k\) APs \(b_j+ic_j\), each of length \(\ell=n^{2b}\), put
+\[
+D=\prod_jc_j,\qquad B_j=b_jD/c_j.
+\]
+The GAP
+\[
+B_1+iD+\sum_{j=2}^k\varepsilon_j(B_j-B_1),
+\quad \varepsilon_j\in\{0,1\},
+\]
+contains each scaled original AP: use all zero selectors or one nonzero selector. Its size is at most \(\ell2^{k-1}\), and logarithmic height is \(O(kn^a)\) if the original heights are \(\exp(n^a)\).
+
+Splitting the long coordinate and selectors between \(S,T\) gives balanced size exponent
+\[
+\beta=b+\frac{c\log2}{2}+o(1)\quad\text{when }k=c\log n.
+\]
+For \(k=o(\log n)\), the exponent loss disappears.
+
+**UNVERIFIED:** prefactorability survives neither this selector construction nor UW Lemma 6.1 automatically. Mixed selector terms introduce additional sums whose factorizations are uncontrolled.
+
+**3. A heuristic barrier—and what it does not establish**
+
+**HEURISTIC.** Let a GAP have \(L=n^{2\beta}\) points and generic coefficients. For \(p\in[n/2,n]\), model
+\[
+\Pr(p\mid\text{some nonzero point})\approx L/p.
+\]
+Assuming independence across primes gives
+\[
+\Pr(\text{all these primes covered})
+\approx \exp\!\left(-\left(\frac{1-2\beta}{2}+o(1)\right)n\right).
+\]
+Meanwhile rank-\(r\) GAP descriptions at height \(\exp(n^\alpha)\) number at most
+\[
+\exp\!\bigl(O((r+1)n^\alpha+r\log n)\bigr).
+\]
+For \(r=n^{o(1)}\), \(\alpha<1\), this entropy is \(o(n)\). The model predicts no generic solutions for any \(\beta<1/2\).
+
+**UNVERIFIED:** independence is precisely the unsupported step. Bounded integer coefficients create global correlations across primes; specially designed identities could defeat the model. This is not a nonexistence proof.
+
+**PROVED:** the mass argument forces large **band-smooth divisors**, not band-smooth numbers themselves: it controls \(R(a)\), leaving other prime factors unrestricted. Furthermore, ordinary smooth-number abundance in GAPs can be trivial: \(2^K[1,L]\) is entirely \(n\)-smooth when \(L<n\), at enormous height, yet misses every target prime exceeding \(L\). A meaningful barrier must include prime allocation and exclude such concentration.
+
+**PROVED global benchmark.** If \(x=\exp(y^a)\), \(0<a<1\), then
+\[
+\Psi(x,y)=x^{1-a+o(1)}.
+\]
+For the lower bound, count products of \(k=\lfloor\log x/\log y\rfloor\) distinct primes at most \(y\): \(\log\binom{\pi(y)}k=(1-a+o(1))\log x\). For the upper bound, Rankin’s inequality with \(s=1-a+\varepsilon\) gives
+\[
+\Psi(x,y)\le x^s\prod_{p\le y}(1-p^{-s})^{-1},
+\]
+whose Euler-product logarithm is \(O(y^{a-\varepsilon})=o(\log x)\). Let \(\varepsilon\downarrow0\). This says nothing about additive concentration.
+
+**UNVERIFIED here: precise literature statements.**
+
+- **Balog–Wooley**, *J. Austral. Math. Soc.* **64** (1998), 266–276, Theorem 1: for fixed \(u>1\), infinitely many strings of length \(\lfloor\log_4 X/\log(3u)\rfloor\) are \(X^{1/u}\)-smooth. The remark after its proof gives length \(\lfloor\log_4 X/\log_5 X\rfloor\) with smoothness bound \(\exp(3\log X/\log_4 X)\). This handles slowly growing \(u\), far from \(y=(\log X)^{1/a}\). [Author’s text, Theorem 1 and §3](https://www.math.purdue.edu/~twooley/publ/1998%20consec.pdf).
+- **Pascadi**, *Compositio Math.* **161** (2025), 1923–1974, Theorem 1.1: averaged equidistribution up to moduli \(x^{66/107-\varepsilon}\), for \((\log x)^C\le y\le x^{1/C}\). Applicability at fixed \(a\) requires \(1/a\ge C\); the theorem concerns average distribution, not a prescribed short GAP. [Precise statement](https://arxiv.org/html/2304.11696v3#Thmtheorem1.1).
+- **Jain**, arXiv:2502.10530, obtains almost-all short-interval existence under \(y\ge\exp((\log X)^{2/3+\varepsilon})\), much larger than the polylogarithmic smoothness scale here. [Paper](https://arxiv.org/abs/2502.10530).
+
+**UNVERIFIED:** I found no theorem providing the required allocation of target primes among polynomially many low-rank GAP points at this scale.
+
+**4. A conditional rank-two extension**
+
+**PROVED.** Let
+\[
+A=\{b+ic+je:0\le i<m,\ 0\le j<k\}\subset[1,H]
+\]
+be proper, with positive coefficients, \(m\ge k\ge2\), \(L=mk\), full \(n\)-divisor coverage, and \(\log H=o(\sqrt n)\). Suppose:
+
+1. No nonzero element of \(A-A\) is divisible by two distinct primes in \([2\sqrt n/3,\sqrt n]\).
+2. \(k=o(n^{1/4}/\sqrt{\log n})\).
+
+Then
+\[
+L\ge\left(\sqrt{8/27}-o(1)\right)
+\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+
+*Proof.* Retain band primes not dividing \(c\). Since \(c\le H\), only \(o(\sqrt n/\log n)\) are discarded. Their number is therefore
+\[
+v=(2/3+o(1))\sqrt n/\log n.
+\]
+At each box point form the block of retained primes dividing its value. Full divisor coverage covers every prime pair. Hypothesis 1 and properness give pairwise block intersection at most one. Every block is proper, since the product of all retained primes has logarithm \((1/3+o(1))\sqrt n>\log H\).
+
+For each prime, each of the \(k\) rows contains at most \(1+m/p\) solutions, so its block degree is at most
+\[
+\Delta\le k+\frac{3L}{2\sqrt n}.
+\]
+Finally \(v\le\Delta(\Delta-1)+1\): a point outside a block shows that block has at most \(\Delta\) points; the blocks through one point then cover at most \(\Delta(\Delta-1)\) others. Thus
+\[
+k+\frac{3L}{2\sqrt n}\ge(1-o(1))\sqrt v,
+\]
+and hypothesis 2 yields the stated constant. ∎
+
+**PROVED limitation.** Balanced rank-two boxes do not satisfy hypothesis 2. Nor does height imply hypothesis 1: the proper box with \(b=pq,c=1,e=pq-1,m=k=2\) contains two distinct multiples of \(pq\), despite height \(2pq\). A general extension must quantitatively control repeated intersections and concentrated modular fibers.
+
+**5. Best guess**
+
+**CONJECTURED:** the uniformly constructible, prime-only strong prefactored conjecture is false below \(2/5\), but my confidence is low.
+
+**HEURISTIC next step:** study the weighted target-prime radical of proper rank-two GAPs at \(\alpha=\beta=0.39\), initially dropping prefactorability. Bounding that radical by \(o(n)\) would give a genuine prime-cover obstruction. It targets the necessary prime allocation directly; smooth-number abundance alone does not.

@@ -1,0 +1,145 @@
+**C1 — VERDICT: CORRECT.**
+
+UW’s integer-factoring proof only needs every prime \(p\le n\) dividing \(N\) to occur in some \(A_i\). Factoring the selected \(A_i\)’s then identifies these primes; trial division recovers their multiplicities. The remaining cofactor is \(1\) or a single prime \(>n\). Neither prime-power coverage nor composite-divisor coverage is needed. This weakening applies to the integer-factoring conclusion, not automatically to polynomial factoring. [UW, §5](https://arxiv.org/html/2511.10851v1).
+
+**C2 — VERDICT: GAP. Steps (iii) and (iv) are wrong as stated.**
+
+The obstruction is the possible prime factor **above \(n\)**, which (3′) does not constrain.
+
+- **(i) Correct.** Pollard–Strassen finds and removes factors up to \(B=n^{2\gamma}\) in \(\widetilde O(\sqrt B)=\widetilde O(n^\gamma)\), with multiplicities removed afterward.
+- **(ii) Correct**, using the remaining input as modulus.
+- **(iii) Incorrect recursion bound.** For each controlled prime, its occupied nodes are indeed bounded by its support size times the tree depth. But a prime \(q>n\) may divide arbitrarily many \(A_i\).
+
+  For example, take \(N=77\), \(n=8\), \(\gamma=1/4\), and
+  \[
+  (A_i)=(2,3,5,77,\underbrace{11,\ldots,11}_{K\text{ copies}}).
+  \]
+  The controlled primes \(3,5,7\) have distinct singleton supports, so \(M=1\). Nevertheless, the prescribed recursion visits \(\Theta(K)\) leaves carrying \(11\), contradicting the claimed \(O(\omega(N_0)M\log k)\) count. Stopping at prime moduli repairs this particular cost problem.
+
+  If the full recursion is performed, its leaf values really are
+  \(g_i=\gcd(A_i,N_0)\): successive gcds preserve this identity.
+- **(iv) Incorrect prime-power conclusion, even with prime stops.** Use instead
+  \[
+  N=77,\qquad (A_i)=(2,3,5,77).
+  \]
+  Again (1′) and (3′) hold with \(M=1\). The only nontrivial leaf gcd is \(77\), whose coprime base is \(\{77\}\). Here \(Z_7=Z_{11}\), which (3′) permits because \(11>n\). Thus the base element need not be a prime power.
+
+  **Unequal supports are sufficient separation when imposed on every distinct prime dividing the gcd inputs.** If two primes divide the same coprime-base element, they necessarily occur in exactly the same inputs. No antichain or stronger “incomparability” condition is required. [Bernstein](https://doi.org/10.1016/j.jalgor.2004.04.009).
+- **(v) Correct only after all primes \(\le n\) dividing \(N\) have actually been recovered.** The \(77\) example shows the missing step.
+
+A sufficient repair is to require bounded, distinct supports for **all** prime divisors of \(N_0\), including any above \(n\). Then the recursion and coprime-base argument work. The complexity also retains a factor \(1+\log k\); absorbing it requires \(\log k=n^{o(1)}\).
+
+The orthogonal-partitions observation is correct **if these are actual divisibility partitions**: each prime occurs exactly once in each cover. Assigned witnesses alone do not rule out additional incidences. Concatenation then gives \(M=2\) and distinct supports for the controlled primes, but leaves the \(q>n\) issue unresolved.
+
+These examples refute the stated proof steps; they do not establish a complexity-theoretic counterexample to every possible algorithm under the hypotheses.
+
+**C3 — VERDICT: CORRECT for the incidence inequality and the stated worst-case substitution, with qualifications.**
+
+Your proof gives
+\[
+|B_e|\le\mu\Delta,\qquad
+v-1\le\Delta(\mu\Delta-1),
+\]
+exactly as claimed. Distinct common prime divisors divide \(e-e'\), so the asserted intersection bound also holds.
+
+For an AP, \(p,q\nmid c\) and \(L<\min_{p\ne q}pq\) imply \(\mu\le1\). Together with pair coverage and proper blocks, this recovers [HS Lemma 2.1](https://arxiv.org/html/2608.06681v1). **Prime coverage alone does not supply pair coverage.**
+
+For a GAP, write \(L=\prod_kL_k\) for the box volume. The precise degree statement is
+\[
+\deg(p)\le\frac{L}{L_{\max}}
+             \left\lceil\frac{L_{\max}}p\right\rceil,
+\]
+hence uniformly
+\[
+\Delta\le U:=
+\frac{L}{L_{\max}}
+\left\lceil\frac{L_{\max}}{a\sqrt n}\right\rceil.
+\]
+The height bound gives
+\[
+\mu\le \frac{\log(2H)}{\log(a\sqrt n)}
+      =n^{\alpha+o(1)}.
+\]
+
+With \(v=n^{1/2-o(1)}\), even the favorable long-side regime \(U\asymp L/\sqrt n\) yields only
+\[
+L\ge n^{3/4-\alpha/2-o(1)}.
+\]
+For \(\alpha<1/2\), this is weaker than the full prime-cover mass bound
+\(L\ge n^{1-\alpha-o(1)}\). Shorter longest sides make the degree envelope worse.
+
+For balanced fixed-rank boxes, even granting \(\mu=1\), the substitution gives only
+\[
+L\ge n^{\,r/(4(r-1))-o(1)},
+\]
+whose exponent is at most \(1/2\) for \(r\ge2\).
+
+However, **“\(\mu>1\)” alone is insufficient**: any constant \(\mu\) preserves the HS exponent when the degree bound is AP-like. The losses are potentially polynomially growing intersections and unfavorable box geometry. Rank \(\ge2\) does not universally prevent stronger bounds for specially controlled GAPs.
+
+**C4 — VERDICT: GAP as an absolute state-of-the-art assertion; the construction calculation is correct.**
+
+Searches through **18 October 2026**, including the requested terminology and citation searches, located no construction meeting your fixed \(\alpha<1,\beta<1/2\) prime-only GAP requirements. The direct follow-up located was HS, whose result explicitly concerns one-dimensional APs and full integer coverage. It does not settle the prime-only GAP problem. [HS](https://arxiv.org/abs/2608.06681).
+
+Thus “**I found no such construction in the literature**” is supported. An exhaustive “none is known” or “best simple construction” assertion deserves that qualification.
+
+The block-primorial construction works. Partition the primes into
+\(r=\Theta(\log n)\) groups with balanced logarithmic weights, and let \(M_i\) be their products. Then
+\[
+\max_i\log M_i=O(n/r+\log n)=O(n/\log n).
+\]
+A positive Boolean GAP containing every \(M_i\) is
+\[
+E=M_{\min}+\sum_{i\ne i_{\min}}
+          \{0,M_i-M_{\min}\}.
+\]
+Split its generators between \(S\) and \(-T\), choosing \(r\) to meet the two cardinality budgets. This gives rank \(O(\log n)\), nonzero difference witnesses, and
+\(\log H=\Theta(n/\log n)\), hence \(\alpha=1-o(1)\).
+
+UW’s arbitrary-set product construction achieves \(\alpha=1-\beta+o(1)\), but **does not supply the required GAP structure**. Their §6 also supplies AP-combination and CRT characterizations, not the requested improved construction. [UW, §§3, 6](https://arxiv.org/html/2511.10851v1).
+
+**C5 — VERDICT: GAP as an asymptotic assertion; the random-density calculation is correct.**
+
+Assume \(b\ge1\) and \(L=n^{2\beta+o(1)}\), with fixed \(0\le\beta<1/2\). CRT gives the exact periodic density
+\[
+\delta=\prod_{L<p\le n}\frac Lp.
+\]
+Consequently,
+\[
+\log\delta^{-1}
+=\vartheta(n)-\vartheta(L)
+ -(\pi(n)-\pi(L))\log L
+=(1-2\beta+o(1))n.
+\]
+Predicting the **least** positive solution by \(\delta^{-1}\) is a heuristic about the placement of CRT solutions, not a consequence of their density. If instead \(L=n^\beta\), the coefficient is \(1-\beta\).
+
+For the least \(x\)-pseudosquare \(Q(x)\), classical rigorous lower bounds include:
+
+- **Unconditionally:** for every \(\varepsilon>0\),
+  \[
+  Q(x)\gg_\varepsilon x^{4\sqrt e-\varepsilon}.
+  \]
+  This follows from Burgess’s least-nonresidue bound applied to the quadratic character of the squarefree part of \(Q(x)\). Schinzel’s resulting bound is recorded in [Sorenson, §3](https://www.researchgate.net/publication/41539531_The_Pseudosquares_Prime_Sieve).
+- **Under ERH, hence GRH:** the classical explicit bound for prime \(p\) is
+  \[
+  Q(p)>\exp\!\sqrt{p/2}.
+  \]
+  See [Lukes–Patterson–Williams](https://cr.yp.to/bib/1996/lukes.pdf). The exponential-square-root scale is also recorded by [Pomerance–Shparlinski](https://math.dartmouth.edu/~carlp/PDF/pseudonew2.pdf).
+
+These are lower bounds. Schinzel’s commonly cited exponential estimates for constructing pseudosquares are **upper bounds**.
+
+For your interval problem, a **superpolynomial lower bound already follows elementarily**:
+\[
+\exp(\vartheta(n))
+\le\prod_{j=0}^{L-1}(b+j)
+\le(b+L-1)^L,
+\]
+so
+\[
+b+L-1\ge
+\exp\!\left((1+o(1))\,n/L\right).
+\]
+For fixed \(\beta<1/2\), this is superpolynomial.
+
+The substantive challenge is improving this toward \(\log b\asymp n\). Pseudosquare character arguments exploit multiplicative subgroups; your permitted residues are additive intervals. Jacobsthal problems instead ask that every interval position be covered by some prime. These are useful analogies, not reductions. Likewise, [Granville–Ramaré](https://dms.umontreal.ca/~andrew/PDF/ramare.pdf) provide relevant exponential-sum techniques, but no direct bound here follows from their binomial-coefficient results.
+
+Large-sieve or exponential-sum methods are plausible research tools; no located theorem supplies the desired stronger obstruction. The reported \(n\le100\) fit is finite experimental evidence, not an asymptotic justification; its exactness cannot be audited without the underlying data and search certificates.
