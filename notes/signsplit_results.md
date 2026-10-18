@@ -279,9 +279,9 @@ Status: proved (counting), experimentally supported. We claim no improvement ove
 - Moduli M ∈ {6, 30, 210, 2310}.
 - Every variant is operational (it sees N only), with gcd-based mod-p collision detection.
 - E1 is matched parameters, E2 is each variant's own optimum, E3 is best over the menu.
-- Raw data: `experiments/raw/signsplit_runs.jsonl`, 3000 records.
+- Raw data: `experiments/raw/signsplit_runs.jsonl`, 3200 records (3000 distinct configurations: at M = 6 the two V3 anti-sets coincide, so those runs appear twice).
 - A second, bit-identical run with hit diagnostics added is in
-  `experiments/raw/signsplit_runs_rerun.jsonl`. Work, status and success are identical on all 3000
+  `experiments/raw/signsplit_runs_rerun.jsonl`. Work, status and success are identical on all 3000 distinct
   records.
 
 **E3: best over menu, median ratio to the best V0** (decision statistic R(n)):
@@ -322,7 +322,7 @@ Status: proved (counting), experimentally supported. We claim no improvement ove
     n ≥ 40 in E2).
   - At matched parameters (E1), V2 is 383–2020× worse at 64 bits.
 - **P4 (partly failed; reported, not resolved post hoc).**
-  - Coverage holds in 3000/3000 records.
+  - Coverage holds in all 3200 records.
   - Success is 100% in every variant: 1600 V3, 400 each V0 and V1, 673 V2 operational.
   - **The pre-registered STRUCTURAL share ≥ 90% at n ≥ 48 failed.** Under the frozen definition
     ("hit on the true branch (σ, σ_0) at the true index") most hits are not STRUCTURAL.
