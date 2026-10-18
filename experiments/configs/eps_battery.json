@@ -1,0 +1,13 @@
+{"experiment": "eps_battery", "prereg": "notes/eps_prereg.md", "owner": "epsbattery",
+ "distribution": "balanced_semiprime(n, seed) conditioned on N = 1 mod 4 (first `count` seeds base+j in order)",
+ "sizes": [32, 48, 64], "count": 100000,
+ "seed_base": {"bench": 9100000000000, "main": 9200000000000, "fresh": 9300000000000,
+               "supp": "9400000000000 + n*10^9", "test": 9500000000000},
+ "menu_size": 94, "bonferroni_S": 100, "z_threshold": 6.0, "z_replicate": 4.0, "floor_strata": "N mod 2^8",
+ "cf": {"T": [64, 1024], "factor_base": "-1 and primes <= 256"}, "mr_ss_bases": "2..65",
+ "supplementary_curve": {"sizes": [24, 32, 40, 48, 56, 64, 80, 96], "count": 20000, "T_max": 16384},
+ "commands": [
+  ".venv/bin/python -m src.eps.harness --n 32 48 64 --range main --workers 30",
+  ".venv/bin/python -m src.eps.harness --n 24 32 40 48 56 64 80 96 --range supp --curve --count 20000 --workers 30",
+  ".venv/bin/python -m src.eps.analysis experiments/raw/eps_main_n32.jsonl.gz experiments/raw/eps_main_n48.jsonl.gz experiments/raw/eps_main_n64.jsonl.gz --out experiments/analysis/eps_battery_summary.json",
+  ".venv/bin/python -m src.eps.analysis --curve experiments/raw/eps_pccurve_n*.jsonl.gz --out experiments/analysis/eps_pccurve_summary.json"]}
