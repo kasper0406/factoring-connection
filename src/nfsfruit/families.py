@@ -456,3 +456,70 @@ def nfs3(N, seed, B, A, Bb, Hmul, nchar, family, excess=None, Hshift=0):
     sysm.info["tried"] = _sieve_box(sysm, A, Bb, cap)
     sysm.finalize()
     return sysm
+
+
+# ---------------------------------------------------------------- square-multiplier linear sieve
+class SquareMultiplierLinear(Linear):
+    """Degree-1 sieve whose multiplier lambda = c1/d1 (mod N) is r^2 for a uniformly random
+    unit r.  Everything except the final Y depends on lambda only (hidden-root property).
+    No |S|-parity column: odd-weight dependencies are allowed and use Y = r^{|S|} W."""
+
+    def __init__(self, N, params, L1, L2, B, r):
+        super().__init__(N, "lin_sq", params, L1, L2, B)
+        self._r = r
+        self.ncols = self.par            # drop the parity column (index 2P+2)
+
+    def try_pair(self, a, b):
+        ok = super().try_pair(a, b)
+        if ok:
+            self.rows[-1] &= ~(1 << self.par)
+        return ok
+
+    def congruence(self, S, r_override=None):
+        N = self.N
+        E1: Dict[int, int] = {}
+        E2: Dict[int, int] = {}
+        k = 0
+        i = 0
+        while S:
+            if S & 1:
+                k += 1
+                for p, e in self.f1[i].items():
+                    E1[p] = E1.get(p, 0) + e
+                for p, e in self.f2[i].items():
+                    E2[p] = E2.get(p, 0) + e
+            S >>= 1
+            i += 1
+        U = 1
+        for p, e in E1.items():
+            U = U * pow(p, e // 2, N) % N
+        W = 1
+        for p, e in E2.items():
+            W = W * pow(p, e // 2, N) % N
+        r = self._r if r_override is None else r_override
+        return U, pow(r, k, N) * W % N
+
+
+def lin_sq(N, seed, B, A, Bb, excess=None):
+    rng = _rng("lin_sq", N, seed)
+    while True:
+        r = rng.randrange(2, N - 1)
+        g = gcd(r, N)
+        if g != 1:
+            raise FactorFound(g)              # ACCIDENTAL
+        lam = r * r % N
+        e1, e2 = _gauss_reduce((lam, 1), (N, 0))   # lattice {(c,d): c = lam d (mod N)}
+        t = rng.randrange(-2, 3)
+        c1, d1 = e1
+        c0, d0 = e2[0] + t * e1[0], e2[1] + t * e1[1]
+        if c1 % N and d1 % N and c1 * d0 - c0 * d1 != 0:
+            break
+    for c in (c1, d1):
+        g = gcd(c, N)
+        if 1 < g < N:
+            raise FactorFound(g)
+    L1, L2 = (c1, c0), (d1, d0)
+    sysm = SquareMultiplierLinear(N, dict(B=B, A=A, Bb=Bb), L1, L2, B, r)
+    cap = None if excess is None else (lambda s_: s_.ncols + excess)
+    sysm.info = dict(L1=L1, L2=L2, t=t, tried=_sieve_box(sysm, A, Bb, cap))
+    return sysm

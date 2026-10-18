@@ -88,3 +88,14 @@ def test_no_factor_leakage_in_operational_modules():
         assert "factorint" not in src and ".factor(" not in src.replace("fb.factor(", "").replace(
             "nmod_poly(self.f, l).factor(", "").replace("nmod_poly(self.f, q).factor(", "").replace(
             "fmpz_poly(f).factor(", "")
+
+
+def test_prop_j_and_hidden_root_small():
+    from src.nfsfruit.harness2 import run_e2, run_e3, mu2
+    assert sorted(mu2([7, 11])) == [1, 34, 43, 76]
+    r = run_e2("qs", 40, 321, dict(B=400, M=20000))
+    assert r["status"] == "ok" and r["disagree"] == 0 and r["sub_c0"][1] == 0
+    r = run_e2("lin_base", 40, 321, dict(B=1500, A=600, Bb=200, excess=60))
+    assert r["status"] == "ok" and r["disagree"] == 0
+    r = run_e3("mixed", 40, 321, dict(B=1500, A=600, Bb=200, excess=40))
+    assert r["status"] == "ok" and r["hidden_bad"] == 0 and r["odd_basis"] > 0

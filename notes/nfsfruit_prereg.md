@@ -81,3 +81,47 @@ the full K0 basis; this uses Lemma H, which the linearity checks validate.
 
 Analysis: src/nfsfruit/analyze_e1.py over experiments/raw/nfsfruit_e1.jsonl, with the exact
 command recorded in the results note.
+
+---
+
+## Addendum A (2026-10-18, committed after E1 ran and BEFORE any E1b/E2/E3 run)
+
+E1 result, disclosed here because it motivates E1b: P3 was underpowered. Subsets of size
+rank A ± 8 mostly have dim K0(sub) > 4, and nfs3_base produced 0 subsets with k ≤ 4. E1b replaces
+that design for the subset question; E1's P0–P2 and P4 stand as run.
+
+Pilot for the addendum: seed 9001 only (as before), used for smoke tests of the new code.
+
+### E1b: prefix nullity (src/nfsfruit/harness2.py: run_e1b)
+The instances and configs are the same as E1 (7 families × 4 classes × {40, 44} × seeds 0..19). For each
+instance, take 5 random relation orders. The k-th kernel vector produced by incremental elimination
+completes the prefix dependency space of dimension k. Record whether rank Φ on that space is < ω − 1,
+for k = 1..12.
+- Prediction (H_rand): P(deficient at k) = 2^{−k} for semiprimes, and 1 − (1−2^{−k})(1−2^{1−k}) for tri.
+- Test: per family and k ∈ {1,…,6}, compare the pooled count with expectation. Use a cluster-robust z (the
+  instance is the cluster; the variance is estimated from per-instance means). *Bias* is declared at |z| > 4.
+- Controls: trivial is deficient at every k; dixon matches H_rand (this is proved, conditional on residues).
+
+### E2: Jacobi-row identities (Prop. J, proved in the results note; checked here)
+Blum n only, bits {40, 44}, seeds 0..39. The families are qs (E1 config) and lin_base / lin_rand (E1 config but
+excess 700, so that the half-size subsets below have kernels). The row c is computed operationally from
+Jacobi symbols mod n:
+- for QS, c_i = [J(x_i) = −1] ⊕ [(2/n) = −1]·v₂(z_i)/2;
+- for degree-1 NFS, c_i = ⌊t_i/2⌋ mod 2 with t_i = Ω_T(L1 L2) and T = {ℓ : J_n(ℓ) = −1}.
+
+Predictions (proved, so any failure is a bug or an error in the proof):
+- c(S) = Φ(S) on every K0 basis vector;
+- rank Φ = 0 on the dependency space of the relations with c_i = 0 (the degeneracy corollary).
+
+### E3: square-multiplier linear sieve (Theorem L1; family lin_sq in families.py)
+The multiplier is λ = r² with r uniform; the forms are Gauss-reduced columns of {(c,d) : c ≡ λd (mod n)}.
+There is no |S|-parity column, and Y = r^{|S|}W. Classes are blum, mixed, both1 and tri; bits {40, 44}; seeds 0..39;
+config B=1500, A=600, Bb=200, excess 60 (40b) / B=2000, A=800, Bb=250 (44b).
+
+Predictions:
+- (proved) hidden_bad = 0: for every basis S and every e ∈ μ₂(Z/n), replacing r by er leaves Φ(S) fixed if |S| is
+  even, and runs over every class of μ₂/±1 exactly twice if |S| is odd.
+- (proved, in expectation) a uniform odd-weight dependency is fruitful with probability 1/2 (semiprimes) and 3/4
+  (tri). Binomial |z| ≤ 4.
+- (descriptive; predicted ≥ 95%) odd-weight dependencies exist.
+- (heuristic) a uniform even-weight dependency is fruitful with probability 1/2 or 3/4.
