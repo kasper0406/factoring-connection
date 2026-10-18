@@ -163,9 +163,12 @@ def es(procs: int = 24):
 
 
 def _classify(N, res, p, d_targets, m):
-    """STRUCTURAL iff the colliding target's equation holds for the true p:
-    p == r (mod M) and g_lo + i + k m == (B p + A q - c)/M^2.  PM1: factor from
-    a gcd on gamma's order (baby_order / gamma_order).  Else ACCIDENTAL."""
+    """STRUCTURAL iff the colliding target's equation holds for the factor x
+    actually found (x = p or q; the q-side is the same mechanism with the roles
+    of the factors swapped): x == r (mod M) and
+    g_lo + i + k m == (B x + A (N/x) - c)/M^2.  PM1: factor from a gcd on
+    gamma's order (baby_order / gamma_order).  Else ACCIDENTAL.
+    (Corrected after the first E-O run, which checked only x = p; see notes.)"""
     if res["factor"] not in (p, N // p):
         return None
     st = res["status"]
@@ -177,11 +180,12 @@ def _classify(N, res, p, d_targets, m):
     if hit is None:
         return "STRUCTURAL" if st == "exact_match" else "ACCIDENTAL"
     t = d_targets[hit["target"]]
-    q = N // p
+    x = res["factor"]
+    y = N // x
     A, B, M, r, c, g_lo = t["A"], t["B"], t["M"], t["r"], t["c"], t["g_lo"]
-    if p % M != r or (B * p + A * q - c) % (M * M):
+    if x % M != r or (B * x + A * y - c) % (M * M):
         return "ACCIDENTAL"
-    g = (B * p + A * q - c) // (M * M)
+    g = (B * x + A * y - c) // (M * M)
     return "STRUCTURAL" if g == g_lo + hit["baby"] + hit["k"] * m else "ACCIDENTAL"
 
 
@@ -322,4 +326,42 @@ def summarize():
 if __name__ == "__main__":
     _write_cfg()
     {"model": em, "coverage": ec, "mc": es, "oper": eo, "crt": crt,
-     "summarize": summarize}[sys.argv[1]]()
+     "summarize": summarize}.get(sys.argv[1], lambda: None)()
+
+
+# ---------------------------------------------------------------------------
+# POST-HOC diagnostic (added after the E-O run; not pre-registered).  HARNESS:
+# uses p, q and sympy's n_order on the PRIME p (never on N).
+def diag():
+    import random as _r
+    from sympy import n_order
+    out = _fresh("multimod_oper_diag.jsonl")
+    rows = read_jsonl(os.path.join(RAW, "multimod_oper.jsonl"))
+    H = CONFIG["Hmax"]
+    for rec in rows:
+        n, s = rec["bits"], rec["seed"]
+        inst = balanced_semiprime(n, s)
+        N, p = inst.N, inst.labels["p"]
+        q = N // p
+        o = {"bits": n, "seed": s}
+        for reg in ("R1", "R2"):
+            d = best_design(N, lam_of(reg, N), H)
+            L = 1
+            for M in sorted({t["M"] for t in d["targets"]}):
+                L *= M * M
+            beta = _r.Random(f"multimod-dcl|{N}|{s}").randrange(2, N - 1)
+            op = n_order(pow(beta, L, p), p) if pow(beta, L, p) != 1 else 1
+            oq = n_order(pow(beta, L, q), q) if pow(beta, L, q) != 1 else 1
+            pairs = d["m"] * d["giants"]
+            o[reg] = {"class": rec[reg]["class"], "covered": rec[reg]["true_p_covered"],
+                      "ord_p_gamma": op, "ord_q_gamma": oq,
+                      "log2_gcd_L_pm1": round(math.log2(gcd(L, p - 1)), 2),
+                      "null_accidental": pairs / op + pairs / oq,
+                      "m": d["m"]}
+        append_jsonl(out, o)
+        print(n, s, {k: (o[k]["class"], o[k]["ord_p_gamma"], round(o[k]["null_accidental"], 3))
+                     for k in ("R1", "R2")}, flush=True)
+
+
+if __name__ == "__main__" and sys.argv[1] == "diag":
+    diag()
