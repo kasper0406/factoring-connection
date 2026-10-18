@@ -121,7 +121,7 @@ def run_wide(args) -> Dict:
     pr = predict(N, p, q, D, ms, d)
     first = next((i for i, b in enumerate(r["blocks"]) if b.get("factor")), None)
     return {"mode": mode, "design": dname, "n": n, "j": j, "seed": seed, "N": N,
-            "ratio_bits": round((q / p).bit_length() - 1 + 0.0, 1),
+            "ratio_bits": (q // p).bit_length() - 1,  # display only; post-freeze crash fix (was float.bit_length)
             "design_summary": D.summary(), "success": r["factor"] is not None, "correct": ok,
             "first_block": first, "E_first": sum(Es[:first + 1]) if first is not None else None,
             "E_full": sum(Es), "E_block0": Es[0] if Es else None,
@@ -182,6 +182,7 @@ def run_exc(args) -> Dict:
 
 
 def _pool(fn, jobs, path, procs=30):
+    procs = int(os.environ.get("UNB_PROCS", procs))  # execution-only knob (wall time); added post-freeze, disclosed
     if os.path.exists(path):
         os.remove(path)
     with Pool(procs, maxtasksperchild=4) as pool:
