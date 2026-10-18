@@ -1,0 +1,323 @@
+**Verdict: major revision.** T1’s central counting argument survives scrutiny, including arbitrary finite windows, negative weights, both sides, and \(K=M^2\); its \(A=0\) proof needs a small repair. T2 also works with explicit box assumptions. I found no counterexample to (2.2) under its stated hypotheses. However, the draft contains an incorrect DCL constant-factor claim, incorrect polynomial QS arithmetic, missing qualifications in the multi-base reduction, and unsupported exclusions of order-based and lattice methods. The defensible conclusion is an \(N^{1/6}/\operatorname{polylog}N\) floor for **certified coverage in the specified local models**. The broader “no escape; relation methods are the only live escape” verdict is unsupported.
+
+1. **MINOR — Lemma 1 and T1 Steps 1–4, 6–7 are CORRECT.**  
+   Reference: [§2.1, lines 83–135](/Volumes/git/factoring-connection/notes/below16_results.md:83).
+
+   - **Lemma 1:** Correct for either sign of \(A\). Each exponent value confines \(y\) to an interval of length \(D/|A|\), and an AP of step \(K\) contributes at most \(\lfloor D/(|A|K)\rfloor+1\) points. Arbitrary window placement and gaps cause no problem.
+   - **Step 1:** Correct after restricting the initial integer \(x\)-sum to \((x,K)=1\). True primes satisfy this because \(p,q>K\). For each such \(x\) and unit \(\kappa\), the partner class is uniquely \(\kappa x^{-1}\pmod K\). Afterwards one may enlarge the \(x\)-count to all integers.
+   - The class-count constants are valid:
+     \[
+     \#x\le |R|\left(\frac{L_x}{M}+1\right).
+     \]
+     For side \(p\), \(L_x\le P/2\), giving \(c_s=1\). For side \(q\),
+     \[
+     L_x\le P/\sqrt2,\qquad
+     1/\sqrt2+1/2<5/4.
+     \]
+   - **Step 2:** Correct. Taking a uniform upper bound for the partner-range length gives
+     \[
+     \varphi(\kappa)\le
+     \frac{\sqrt{2P\,|S(\kappa)|(D/|A|+K)}}{K}.
+     \]
+     Strictly, the original \(\varphi\) depends on \(x\) through \(\ell_y\); rename it \(\varphi_x\), or introduce the uniform bound immediately.
+   - **Step 3:** Correct. Every residue has probability at least \(1/(2K)\) under the stated size conditions, hence
+     \[
+     \sum_\kappa f(\kappa)\le 2K\,\mathbb E_N f.
+     \]
+     This cancels the key-count factor. There is no overlooked loss of \(K\).
+   - **Step 4:** Correct:
+     \[
+     c_1=\frac52\sqrt{2(C_1+C_2)}
+     \]
+     works uniformly for \(A\ne0\).
+   - **Step 6:** Correct when each class is charged as a target.
+   - **Step 7:** Correct under exactly the two written average budgets:
+     \[
+     \mathbb E\sum_\tau\sqrt{|S_\tau|}
+     \le\sqrt{\mathbb E T\;\mathbb E V}\le X^{3/2}.
+     \]
+     No independence assumption is needed.
+
+   Thus the \(N^{1/6}n^{-4/3}\) consequence is correct. Primality enters through population normalization, not through equidistribution in progressions.
+
+2. **MINOR — Step 5’s displayed \(x\)-bound is WRONG, but the \(A=0\) theorem has a clean repair.**
+
+   The bound using \(P/M\) without \(c_s\) fails on side \(q\). A concrete example is
+   \[
+   n=20,\quad P=1024,\quad M=K=348,\quad A=0,\quad B=1,\quad D=M^2,
+   \]
+   with \(R(65)=\{47\}\), \(S(65)=\{0\}\). The three prime pairs
+   \[
+   (727,743),\quad(727,1091),\quad(727,1439)
+   \]
+   belong to \(S_{20}\), have product \(65\bmod348\), and satisfy the window condition. There are three admissible \(x=q\), whereas \(P/M=2.9425\ldots\).
+
+   Insert \(c_s\) in the whole-class bound. That establishes the separately displayed \(4c_s\) estimate, but does not directly establish the same advertised \(c_1\).
+
+   **Better fix:** swap the factors. For unit keys define
+   \[
+   R'(\kappa)=
+   \{\kappa r^{-1}\pmod M:r\in R(\kappa),\ (r,M)=1\}.
+   \]
+   Replace the generator by the opposite side with \(A'=B,\ B'=0\), unchanged \(D,K,S\). Coverage is identical and \(|R'|\le |R|\). The already-proved \(A'\ne0\) argument then supplies the original common \(c_1\). T1 itself survives.
+
+3. **GAP — L1 is a legitimate restricted model; “general for degree-1 targets” needs narrower wording.**  
+   Reference: [lines 69–81](/Volumes/git/factoring-connection/notes/below16_results.md:69).
+
+   Accepting Lemma K′, admissible degree-1 coefficients admit a **canonical representation** over \(C_dM^2\). This supports using \(D=C_dM^2\), hence a uniform \(D\ll M^2\).
+
+   It does not mean validity bounds every denominator someone writes down: multiplying numerator and denominator by a large integer gives arbitrarily large representations of the same target. Replace “implied by validity” with “available after canonical normalization.”
+
+   HH weights depending on the class and \(N\bmod M\) are covered by splitting into fixed-weight generators, and, when necessary, splitting further by class/window rule. This preserves the number of active charged targets.
+
+   What is **not** covered is arbitrary adaptation using many small residue queries. Their combined CRT information can determine \(N\); after combining them, activation need not depend on a single key \(K\ll M^2\). Likewise, T1 does not allow globally chosen weights merely because their resulting lock is local.
+
+   Also distinguish the written average budgets from an ordinary expected running-time bound. From \(\mathbb EC_N\le X\), one does **not** obtain \(\mathbb E C_N^2\le X^2\). The theorem proves the stated moment-budget result, not automatically every interpretation of “average cost.”
+
+4. **MINOR — Lemma 2 and T2 are CORRECT with complete dyadic boxes and the inherited unit/size conditions.**  
+   Reference: [§2.2](/Volumes/git/factoring-connection/notes/below16_results.md:146).
+
+   The partner bound \(3\Delta/(PK)\), box population \(\Delta/(2K)\), and resulting coefficient \(3\cdot2^n/P\) are consistent.
+
+   The archimedean slack is correctly
+   \[
+   2A\Delta/P.
+   \]
+   Also,
+   \[
+   F_{N_0}''(x)=2AN_0/x^3\ge A/P,
+   \]
+   and strong convexity gives two preimage intervals of total length at most
+   \[
+   2\sqrt{2IP/A}.
+   \]
+   The lattice rounding term \(+2\) per class is correct. The displayed final constants are conservative.
+
+   **Fix the statement:** explicitly take the smallest dyadic \(\Delta\ge PK\), so \(\Delta<2PK\), and retain \(K\le P/2\). Then \(\Delta\le2^{n-1}\) and the boxes partition the input interval exactly. With arbitrary oversized \(\Delta\), the assertion that every box contains \(\Delta/(2K)\) inputs is false.
+
+   The “about \(n/2\) bits” count is correct for this particular key construction.
+
+5. **GAP — T3 and Corollary F need their full hypotheses and lattice boundary term.**  
+   Reference: [§2.3](/Volumes/git/factoring-connection/notes/below16_results.md:184).
+
+   Restore explicitly from the cited Theorem 3:
+
+   - a fixed schedule of at most \(X\) slots;
+   - fixed moduli;
+   - bounded semialgebraic complexity, uniformly in \(n\);
+   - residue-independent width caps \(w_\tau\ge1\), with \(\sum w_\tau\le X^2\);
+   - the uniform real-fibre hypothesis.
+
+   These are stronger than per-input or average active-target budgets. “Algebraic formulas in \(N\)” alone is insufficient.
+
+   Writing \(k\) for support size, the direct higher-degree conclusion is
+   \[
+   \Pr[\mathrm{covered}]
+   \le C_dn^2\left(
+      \sum_{e,k}P^{-e/k}X^{1+1/k}+\frac XP
+   \right).
+   \]
+   The \(X/P\) term is present in the cited blind Corollary 2 and comes from lattice boundary points.
+
+   **Why it matters:** take \(M=1\), the degree-2 support-\(1\) target \(g(p)=p^2\), and window \(\{p_0^2\}\), where \(p_0\asymp P\) is prime. Its real fibre has length \(O(P^{-1})\), yet it covers \(\gg P/\log P\) prime pairs. The support-\(1\) main term alone would predict only \(O(1)\) pairs.
+
+   Qualification: if the draft’s sum includes **every allowed support type**, the boundary term can be absorbed into the \(e=2,k=4\) term for \(X\ge1\). Thus the coarse displayed bound can survive that interpretation. State the convention rather than silently dropping the term.
+
+   The exponent conclusion is correct:
+   \[
+   \frac{e}{k+1}\ge\frac{e}{2e+1}\ge\frac25
+   \quad\Longrightarrow\quad
+   X\ge N^{1/5}/\operatorname{polylog}N.
+   \]
+
+   For the T2 alternative, define the higher-degree slack quantitatively and require that enlarging the anchored window by that slack costs only a constant factor. “At least as wide as its slack” currently omits that definition and the needed uniform coefficient bound.
+
+6. **WRONG — DCL’s window replacement does not cost at most a factor two.**  
+   Reference: [§2.4](/Volumes/git/factoring-connection/notes/below16_results.md:224).
+
+   Take \(A=1,B=2\). Ignoring rounding, DCL’s input-specific range is
+   \[
+   [2\sqrt{2N},\,3\sqrt N],
+   \]
+   of span \((3-2\sqrt2)\sqrt N\). Over all \(n\)-bit inputs its union has span \(P\). Near the upper endpoint the ratio approaches
+   \[
+   \frac1{3-2\sqrt2}=3+2\sqrt2\approx5.83,
+   \]
+   already exceeding two.
+
+   **Fix:** claim an absolute constant-factor enlargement and prove it, or bound the enlarged widths directly by \(O(HP/\ell^2+1)\). The resulting \(K=\ell\) T1 design does dominate DCL’s intended certified coverage at the same asymptotic exponent.
+
+   Also, for fixed \(\varepsilon>0\), \(N^{1/6+5\varepsilon/6}\) is not within a polylogarithmic factor of \(N^{1/6}\). Cite **Corollary D″**, with polylogarithmic \(H\), for the polylogarithmic optimality assertion.
+
+7. **GAP — Prop. MB’s valuation argument is CORRECT for exact rational identities; its universal-relations wording is WRONG.**  
+   Reference: [§3.1](/Volumes/git/factoring-connection/notes/below16_results.md:238).
+
+   For fixed positive rationals and a fixed integer exponent vector, exact multiplicative relations are precisely the kernel of the valuation matrix. A false fixed rational equality survives modulo only finitely many primes.
+
+   This does not characterize every provable modular relation. For example,
+   \[
+   2^{p-1}\equiv1\pmod p
+   \]
+   has a prime-dependent exponent, and the public rational bases \(2\) and \(N+2\) are equal modulo \(N\) despite having no corresponding exact rational equality.
+
+   **Fix:** say “exact rational multiplicative relations among fixed bases,” and explicitly exclude additional input-dependent modular relations from this reduction.
+
+   The projection argument then works, provided:
+
+   - every useful target has a nonconstant valuation projection;
+   - that projection is an admissible T1 target with the required normalization and locality;
+   - the projected window includes the offset \(L_j(c)\);
+   - \(Q\) denotes the searched set, or its whole image is covered.
+
+   Nonconstancy is necessary: bases \((2,4)\) and forms \((2p,-p)\) give the constant product \(1\), with every valuation projection constant.
+
+   **Succinct powers:** under those hypotheses, T1 really does handle arbitrarily large \(k\) in \((\beta,\beta^k)\). The cardinality bound, unlike a hull bound, is uniform in \(k\). This is a valid improvement over the earlier blind argument.
+
+8. **GAP — Giant multiplicity is scoped too narrowly; the generic-operation justification does not establish the label budget.**  
+   References: [lines 51–55](/Volumes/git/factoring-connection/notes/below16_results.md:51), [§3.3](/Volumes/git/factoring-connection/notes/below16_results.md:276).
+
+   An operation creates a group element; it need not create only one useful certified interpretation. Consequently, \(\#\text{labels}\le X\) is a model hypothesis until useful interpretations per stored handle have been bounded.
+
+   This affects one-base designs too. MB-b is not merely a caveat about multi-base searches.
+
+   The HH discussion also needs more than comparing formal coefficients. Equality of actual integer exponents on one input need not imply equality as polynomials in \(N\); offsets and shifts depend on that input. A size-separation argument might establish the assertion in DCL’s parameter range, but supply it. The \(1/\ell^2\) heuristic for equal-modulus sharing does not establish a general multiplicity bound.
+
+   **Fix:** describe T1 as a theorem under charged-label and searched-value budgets. Keep the conversion from stored group operations to those budgets as a separate unresolved issue.
+
+9. **MINOR — The Blum Jacobi criterion is CORRECT; clarify signs, units, and the homomorphism.**  
+   Reference: [§6.1](/Volumes/git/factoring-connection/notes/below16_results.md:344).
+
+   After removing direct gcd hits, put \(z=X_SY_S^{-1}\pmod N\). Then \(z^2=1\), and for Blum \(N\),
+   \[
+   \gcd(X_S-Y_S,N)\text{ proper}
+   \iff \left(\frac{X_SY_S}{N}\right)=-1.
+   \]
+   Thus the stated \(\psi_N\) is a computable character, and H2 is equivalent to its nontriviality. Testing a kernel basis suffices.
+
+   Correct the overlap numerator to \((s+x_i)^2\), not \(x_i^2\). If \(Y_S\) includes the \(-1\) coordinate, the root-valued map itself is a homomorphism. If \(Y_S\) uses positive primes only, as the pilot does, negative relations can introduce a sign correction: use the quotient by \(\{\pm1\}\). The Jacobi character remains a homomorphism because \((-1/N)=1\).
+
+   The failure probability \(2^{-\dim\ker}\) is an additional random-character heuristic. Basis signs are not intrinsically independent coins. Also, the Jacobi criterion is specific to Blum inputs; proving it useful almost everywhere on Blum inputs does not establish almost-all success on all \(S_n\).
+
+10. **WRONG — Section 6.3 mixes the dense and quadratic elimination thresholds.**
+
+    For \(y=N^c\) and \(x=N^{c+o(1)}\),
+    \[
+    |Q(x)|=N^{1/2+c+o(1)},\qquad
+    u=\frac1{2c}+1+o(1).
+    \]
+    The omitted \(+1\) matters to the smoothness constant, although \(u\) remains fixed.
+
+    Trial division costs \(N^{2c+o(1)}\); ordinary dense elimination costs \(N^{3c+o(1)}\). Therefore:
+
+    - with the proved dense route, require \(c<1/18\);
+    - \(c<1/12\) works only with a justified \(N^{2c+o(1)}\) linear-algebra algorithm.
+
+    “Structured Gaussian elimination” does not supply that deterministic quadratic bound. Sparse Wiedemann/Lanczos methods introduce further algorithmic and randomness issues.
+
+    **Fix:** use \(c<1/18\) throughout §§6.3 and 8 unless a suitable deterministic quadratic algorithm is supplied. H1 and H2 would still yield a conditional escape below \(1/6\).
+
+11. **GAP — The conditional QS theorem does not presently apply to the cited pilot’s filtered scan.**
+
+    The pilot filters candidates before exact division, counting each prime only once. It can therefore discard smooth prime powers. A concrete Blum example is
+    \[
+    N=968467\cdot1034003=1001397783401.
+    \]
+    With \(s=\lceil\sqrt N\rceil\), \(x=536\) gives \(Q(x)=2^{30}\). At \(y=512\), the pilot’s sieve filter discards this value although exact trial division accepts it.
+
+    Thus “the interval contains enough smooth values” does not imply that the implementation retains enough relations.
+
+    **Fix:** prove the proposition for exhaustive exact testing, modify the sieve to guarantee retention, or formulate H1 for the actual retained relations. This is a missing implication, not evidence that the asymptotic schedule necessarily fails.
+
+12. **GAP — The class-number variance calculation is a heuristic for one search architecture, not an average-case lower bound.**  
+    Reference: [§5, item 3](/Volumes/git/factoring-connection/notes/below16_results.md:314).
+
+    The optimization
+    \[
+    \min_x\left(x+N^{1/4}x^{-1/4}\right)=N^{1/5}
+    \]
+    is correct, ignoring logarithms.
+
+    The claimed inference to a lower bound is not established:
+
+    - variance does not imply constant-probability anti-concentration;
+    - pairwise character orthogonality does not imply independence from the entire growing vector of previously computed symbols;
+    - averaging over discriminants does not automatically transfer to discriminants \(-4pq\) from \(S_n\);
+    - other class-number estimators and nongeneric group algorithms are unaddressed.
+
+    What is needed is a **conditional anti-concentration bound for the estimation error given the information computed by the algorithm**, on the specified semiprime population.
+
+    Schoof supplies GRH-based algorithms with exponent \(1/5\), not this lower bound. [Schoof, *Quadratic fields and factorization*](https://www.mat.uniroma2.it/~schoof/mcpaper.pdf)
+
+    The ideal-class calculation \(I_p^2=(p)\), with \(I_p\) nonprincipal, is correct. It does not prove the broader heading “No small true-factor exponent.” Replace that heading by a statement about the missing identity in the constructions examined.
+
+13. **GAP — The accidental-collision estimate needs the missing independence assumption explicitly.**  
+    Reference: [§7, item 3](/Volumes/git/factoring-connection/notes/below16_results.md:400).
+
+    The condition
+    \[
+    \operatorname{ord}_p(\beta)\mid d_{\rm test}
+    \]
+    is correct. The probability bound \(1/\operatorname{ord}_p(\beta)\) requires tested differences to behave uniformly modulo that order. Neither the design nor locality establishes this.
+
+    For comparison, even for uniformly random \(\beta\),
+    \[
+    \Pr[\beta^d=1\pmod p]
+    =\frac{\gcd(d,p-1)}{p-1},
+    \]
+    which can equal one. Structured annihilators exploit precisely this distinction.
+
+    **Fix:** retain this as an explicit heuristic for the tested DCL differences, and remove “Not an exponent source” as a general conclusion.
+
+    The Miller-chain statement is correct for a known nonzero order multiple when the component orders have different 2-adic valuations. Its observed rarity in DCL does not bound other designs.
+
+14. **WRONG — “Per-target lattice solving is information-equivalent to known \(p\bmod M\)” ignores the window.**  
+    Reference: [§7, item 5](/Volumes/git/factoring-connection/notes/below16_results.md:414).
+
+    The lock alone may add nothing beyond the residue. A narrow window adds information.
+
+    For example, with \(M=1\), the singleton target
+    \[
+    2p+q=s
+    \]
+    can be checked by solving
+    \[
+    2p^2-sp+N=0.
+    \]
+    Knowing \(p\bmod1\) supplies none of that information.
+
+    The exponent \(M\approx N^{1/4}\) is the standard **sufficient** threshold for recovery from a known residue in the balanced case. It is not an impossibility theorem below that threshold, nor does it establish an \(N^{1/4}\) lower bound for all window-assisted lattice searches. Likewise, sufficiently short intervals permit recovery by Coppersmith; state constants or an exponent margin at the boundary. [Coppersmith, 1997](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf)
+
+    **Fix:** analyze the residue and archimedean restrictions together, then cost the number of selected targets.
+
+15. **WRONG — “Only relation methods remain live” and “everything local” overstate the results.**  
+    References: §§0, 7–8.
+
+    The draft itself leaves global selectors, algebraic bases, giant multiplicity, and new group identities open. Smooth-order methods, including explicit deterministic ECM schedules, are another distinct route; their missing input is a suitable smooth-order hitting and separation theorem. ECM’s mechanism is classical and differs from QS dependency collection. [Lenstra, 1987](https://annals.math.princeton.edu/1987/126-3/p09)
+
+    T1–T3 also do not jointly cover every combination of arbitrary windows, fine size information, adaptive moduli, and combined residue queries.
+
+    Delete “average \(\le\) supremum” as an explanation of true-factor coverage: small candidate coverage for every input can coexist with perfect true-factor coverage if a selector always chooses the correct small set. The local counting hypotheses are what prevent that.
+
+    **Fix:** replace “only live escape” by “one concrete conditional escape examined here,” and scope every floor to certified hits satisfying the actual model hypotheses.
+
+16. **MINOR — O-5’s “set of measure” formulation is vacuous without geometric restrictions.**
+
+    A finite set of all integer candidates has Lebesgue measure zero and contains the true prime. Small measure alone provides no localization.
+
+    **Fix:** require one interval of the stated length, or a controlled number of intervals with efficiently supplied endpoints. For arbitrary scattered sets, specify cardinality, representation cost, and a search algorithm; the \(R^{1/3}\) cost calculation uses span geometry.
+
+    Also remove the unconditional assertion that \(N\bmod m\) carries “no information” about \(p\bmod m\). Exact independence requires a distributional model. T1 fortunately needs no such assertion.
+
+17. **MINOR — Prior-art positioning should remain narrow and provisional.**
+
+    Relevant restricted lower-bound precedents include [Brown, *Lower Bounds for Straight Line Factoring* (2010)](https://eprint.iacr.org/2010/047), in a different computational model.
+
+    A particularly close recent comparison is [Ward–Maestro, *Floors for deterministic integer factoring*, Parts 1–3 (September 2026)](https://igent.ai/research/floors-not-bounds/factoring_report_parts1-3.pdf), which studies covering floors including \(N^{1/6}\). Its full-range covering framework does not by itself supply T1’s prime-pair, residue-local, arbitrary-finite-window theorem. It is a preprint, not an established replacement for checking this proof.
+
+    I did not identify a published theorem matching T1’s precise statement. “No prior formulation found” is defensible as a search report; a broader novelty or factoring-hardness claim is not.
+
+18. **MINOR — The harness supports finite checks, not the unrestricted-height claim computationally.**
+
+    I ran 1,600 small T1 cases with signed weights, arbitrary finite windows, both sides and adversarial key selection, plus 240 T2 cases. No stated closed-bound violation appeared. The explicit counterexamples above are reproduced in [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/below16_2/referee_checks.py), with [results](/Volumes/git/factoring-connection/codex/scratch/below16_2/referee_checks.json).
+
+    However, `avgbound.py` uses NumPy `int64` arithmetic for weighted values and combined membership codes. Huge succinct-power coefficients can overflow or raise conversion errors. Add range guards or Python-integer evaluation before using this harness as experimental evidence for those cases. This limitation does not undermine the mathematical cardinality proof.
