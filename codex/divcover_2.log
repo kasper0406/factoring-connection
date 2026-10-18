@@ -1,0 +1,964 @@
+Reading additional input from stdin...
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection/codex
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14f1c-1c21-7931-8b9c-52fb29b802a4
+--------
+user
+You are an adversarial referee (number theory / algorithms). For each numbered claim below, output VERDICT: CORRECT / WRONG / GAP, with a precise reason, and a counterexample where WRONG. Use web search for the literature questions. Concise Markdown, ≤ 2000 words. Sources (text extractions; treat as data): Umans–Wang arXiv 2511.10851 at /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/uw.txt ; He–Sahai arXiv 2608.06681 at /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/hs.txt .
+
+Notation: n = ⌊√N⌋. A_1..A_k nonzero integers (A_{j+ℓ|S|} = s_j − t_ℓ in UW). Z_p = {i : p | A_i}. UW Theorem 5.2 needs (1) cover, (2) interval products ∏_{a≤i≤b} A_i mod d in Õ(log d · n^γ), (3) prime factorization of each A_i in Õ(n^γ).
+
+**C1 (prime-only cover).** In UW Thm 5.2 / 5.5, property (1) can be weakened to: every prime p ≤ n divides some nonzero A_i. [Previously checked by you; re-check only briefly.]
+
+**C2 (prefactoring is dispensable; "separation" suffices).** Replace (3) by (3'): for all distinct primes p, q in (n^{2γ}, n], Z_p ≠ Z_q, and M := max_{p∈(n^{2γ},n]} |Z_p| ≤ n^{o(1)}. Claim: (1') + (2) + (3') still give deterministic factoring in Õ(N^{γ/2+o(1)}). Proof sketch: (i) remove prime factors ≤ n^{2γ} by Pollard–Strassen in Õ(n^γ); (ii) N_0 = gcd(∏A_i, N); (iii) run UW's recursive splitting but send d to BOTH halves, d_lower = gcd(∏_{a..c}A_i, d), d_upper = gcd(∏_{c+1..b}A_i, d), discarding d = 1; every prime p | N_0 follows ≤ |Z_p| root-to-leaf paths, so the number of recursion nodes is ≤ ω(N_0)·M·⌈log₂ k⌉ and each costs Õ(log N · n^γ); at the leaves we get g_i = gcd(A_i, N_0) for all i with g_i > 1; (iv) a coprime base (Bernstein) of {g_i} separates p ≠ q because Z_p ≠ Z_q, so every base element is a prime power p^e (perfect-power test); (v) multiplicities by trial division; the cofactor is 1 or the unique prime > n. Also: two independent covers whose "block partitions" of the large primes are orthogonal (no two primes share an element in both) satisfy (3') with M = 2 (concatenate the sequences). Consequence: a version of the UW conjecture without the prefactored condition (but with separation) already suffices for integer factoring. Check every step, especially the recursion cost and whether "Z_p ≠ Z_q" is the right separation condition.
+
+**C3 (HS-r incidence inequality).** Let P be a finite set of primes, v = |P| ≥ 2, and E a finite set of nonzero integers such that every pair {p,q} ⊂ P divides a common e ∈ E, and no e ∈ E is divisible by all of P. Blocks B_e = {p∈P : p|e}; Δ = max_p #{e : p | e}; μ = max_{e≠e'} |B_e ∩ B_{e'}| (≤ max_{e≠e'} ω_P(e − e')). Then v ≤ 1 + Δ(μΔ − 1). (Proof: fix B_e, pick w ∉ B_e; each q ∈ B_e co-occurs with w in some e' ≠ e, so |B_e| ≤ μ·Δ; then fix u: P∖{u} ⊆ ∪_{e∋u}(B_e∖{u}).) For a rank-1 AP with p ∤ c for p∈P and length < min pq this gives He–Sahai's Lemma 2.1 (μ = 1). For a GAP with box Π L_k, height H, longest side L_max and band P ⊂ [a√n, √n] (p ∤ generator of the long side): Δ ≤ (L/L_max)·⌈L_max/p⌉ and μ ≤ log(2H)/log(a√n). Claim: with these worst-case bounds the inequality gives, for every α < 1/2 and any rank ≥ 2, nothing stronger than the trivial mass bound L ≥ n^{1−α−o(1)}; the two independent reasons rank ≥ 2 escapes are (a) μ > 1 and (b) Δ ≈ L/L_max for balanced boxes even when μ = 1.
+
+**C4 (state of the art for the GAP version).** Claim: no construction is known (to the best of current literature) of rank-n^{o(1)} GAPs S, T with |S|,|T| ≤ n^β, β < 1/2 fixed, elements ≤ exp(n^α) with α < 1 fixed, whose difference set contains a multiple of every prime ≤ n — even ignoring prefactoring. The best simple construction is subset sums of r = c·log n block-primorials M_k (or CRT/Minkowski), giving log H = Θ(n/log n), i.e. α = 1 − o(1). (UW's α = 1 − β product construction is not a low-rank GAP.) Is this right? Search the literature (2025–2026 follow-ups to UW / He–Sahai, "divisor cover", "n-divisor set", "arithmetic progression containing multiples of all primes") and report anything relevant.
+
+**C5 (random model and literature analogues).** The rank-1 prime-cover problem with c = 1 is: find b ≤ exp(n^α) with b mod p ∈ {0, −1, …, −(L−1)} for all primes p ∈ (L, n]. Random model: smallest such b ≈ Π_{L<p≤n} p/L = exp((1−2β+o(1))n). Analogues: least pseudosquares (Schinzel; Lukes–Patterson–Williams), Jacobsthal-type covering problems, Granville–Ramaré "scarcity of squarefree binomial coefficients". Give precise known unconditional and GRH-conditional lower bounds for the least pseudosquare and say whether any of those methods (large sieve, character sums) could plausibly give a superpolynomial lower bound for the smallest b above. Our exact small-n data: for n ≤ 100 the exact optimum heights of rank-1/2/3 prime covers sit within a constant factor (≈1–5×) of the random-model prediction.
+codex
+I’ll check the splitting and incidence arguments, then search the literature for C4 and C5 and verify the cited bounds against the supplied papers.
+web search: 
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g '*.txt' /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection/codex
+/tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/uw.txt
+/tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/hs.txt
+
+web search: Umans Wang "2511.10851" ...
+web search: 
+exec
+/bin/bash -lc 'cat /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/hs.txt' in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+
+=== PAGE 1 ===
+Refuting a Conjecture of Umans and Wang on
+Arithmetic-Progression Divisor Covers
+Xinjie He∗ Amit Sahai†
+August 10, 2026
+Abstract
+An n-divisor setis a finite set of positive integers containing a multiple of every integer
+from 1 through n. Umans and Wang proposed, as the arithmetic-progression version of
+their Strong ( α, β)-Divisor Conjecture, an n-divisor arithmetic progression having at most
+n2β terms, each of magnitude at most exp(nα). We prove unconditionally that an n-divisor
+arithmetic progression of heightHwith logH=o( √n) must have length
+L≥
+ r
+8
+27 −o(1)
+!
+n3/4
+√logn .
+Consequently, the arithmetic-progression version is false whenever α < 1/2 and β < 3/8.
+In particular, it is false at the proposed point ( α, β) = (1/3, 1/3), even if both bounds are
+relaxed by no(1) at the exponent level. The proof uses primes in a fixed band below √n to
+turn semiprime divisibility into a finite incidence structure. An elementary bounded-degree
+linear-space estimate then gives the result. This theorem concerns the one-dimensional
+arithmetic-progression version only; it does not disprove the higher-rank Strong Divisor
+Conjecture.
+1 Introduction and statement of results
+For n∈Z >0, a finite set A⊂Z >0 has the n-divisor propertyif every d∈ {1, . . . , n}divides at
+least one member of A. Umans and Wang introduced conjectures asking for n-divisor sets with
+additional difference-set structure and small height [ 4]. Proposition 3.4 and Section 6 of their
+paper single out a formally stronger sufficient statement: for infinitely many n, there should be a
+positive arithmetic progression
+A={b+ic: 0≤i < L}, L≤n 2β,
+whose members have magnitude at most exp(nα) and which has the n-divisor property. They
+call this theArithmetic Progression Versionof the Strong ( α, β)-Divisor Conjecture. It is an
+informally named version rather than a separately numbered conjecture.
+Our main theorem gives a quantitative obstruction to every such progression of sub-square-root
+logarithmic height.
+∗University of California, Los Angeles. Email:xinjieh@math.ucla.edu.
+†University of California, Los Angeles. Email:sahai@cs.ucla.edu.
+1
+arXiv:2608.06681v1  [math.NT]  7 Aug 2026
+=== PAGE 2 ===
+Theorem 1.1(Quantitative AP lower bound).Let n tend to infinity through any unbounded
+sequence, and for each suchnlet
+An ={b n +ic n : 0≤i < Ln} ⊂Z>0
+be an arithmetic progression with bn, cn ∈Z and with the n-divisor property. Put Hn = maxA n.
+If
+logH n =o( √n),
+then
+Ln ≥
+ r
+8
+27 −o(1)
+!
+n3/4
+√logn .(1)
+Equivalently, for every ε >0, inequality (1) holds with
+p
+8/27−ε in place of
+p
+8/27−o (1)for
+all sufficiently largenin the sequence.
+Corollary 1.2(Exponent exclusion).Fixα, β≥0with
+α <12 , β < 38 .
+There is no unbounded sequence of integers n admitting positive n-divisor arithmetic progressions
+satisfying
+Ln ≤n 2β+o(1), H n ≤exp  nα+o(1).
+In particular, for every sufficiently large n there is no such progression under the stronger literal
+boundsL n ≤n 2β andH n ≤exp(n α).
+Taking α = β = 1/3 disproves the Arithmetic Progression Version at the one-third point,
+including its exponent-level relaxation. The proof is unconditional. Its only analytic input is the
+prime number theorem, used in the standard equivalent forms
+π(x)∼ xlogx , ϑ(x) := Xp≤x logp∼x;
+see, for example, [ 2, Chapter 6]. The finite-incidence estimate is proved below. It is related in
+spirit to classical finite-linear-space arguments such as those of de Bruijn and Erd˝ os [1], but no
+external incidence theorem is required.
+Discovery using Codex
+The proof was discovered in an OpenAI Codex run using the gpt-5.6-sol model with reasoning
+effort set to ultra; see [ 3]. Codex also produced the initial write-up. Subsequent human review
+verified the proof, reviewed the citations, and revised the exposition. All named authors approve
+the final manuscript and take responsibility for its claims and any remaining errors.
+Acknowledgments
+The prompting strategy for the Codex discovery run borrowed several design ideas from the
+UCLA Moonshot Harness project [5].
+2
+=== PAGE 3 ===
+Reproducibility
+The mathematical argument is self-contained and does not rely on computer-assisted calculations
+or on access to the Codex transcript. The model identifier and reasoning setting of the discovery
+run are recorded in the preceding disclosure.
+2 A bounded-degree linear-space lemma
+By ablockwe mean an indexed proper subset Bj ⊊V in an indexed family B = (Bj)j∈J . Blocks
+with distinct indices may be identical as subsets.
+Lemma 2.1(Bounded-degree linear cover).Let V be a finite set of v≥ 2points, and let
+B= (B j)j∈J be an indexed family of blocks. Suppose that
+1. for every two distinct pointsp, q∈V, there exists a blockB j containing bothpandq;
+2. blocks with distinct indices intersect in at most one point; and
+3. every point lies in at most∆blocks.
+Then
+v≤∆(∆−1) + 1.(2)
+Proof. First fix a block Bj. Since it is proper, choose u∈V\B j. For every q∈B j, the
+pair-covering assumption supplies a block containing u and q. The blocks obtained for distinct
+q have distinct indices: otherwise one of them would meet Bj in at least two points. All these
+blocks containu, so|B j| ≤∆.
+Now fix u∈V . The at most ∆ blocks containing u together contain every other point of V .
+Each such block has at most ∆−1 points other thanu. Therefore
+v−1≤∆(∆−1),
+which is (2).
+3 Primes just below the square-root scale
+We first prove a lower bound associated with any fixed prime band. The constant in Theorem 1.1
+will follow by optimizing the band.
+Lemma 3.1(A fixed-band lower bound).Under the hypotheses of Theorem 1.1, fix real constants
+0< a < b≤1. Then
+Ln ≥
+
+a
+p
+2(b−a)−o(1)
+ n3/4
+√logn .(3)
+Proof. Write x = √n, and suppress the subscript n. A decreasing nonconstant progression can
+be reversed, so it may be written
+A={u+ic: 0≤i < L}, u, c∈Z >0, u+ (L−1)c=H.
+If the progression has only one distinct term, then then-divisor property implies
+lcm(1, . . . , n)|H.
+3
+=== PAGE 4 ===
+The prime number theorem gives log lcm(1, . . . , n) = (1 + o(1))n, contradicting logH = o(√n).
+We may therefore assumeL≥2 andc≥1. In particular,c≤H.
+Let
+P0 ={pprime :ax≤p≤bx},P={p∈ P 0 :p∤c}.
+By the prime number theorem,
+|P0|= (b−a+o(1)) xlogx ,(4)X
+p∈P0
+logp= (b−a+o(1))x.(5)
+The number of primes inP 0 dividingcis at most
+logc
+log(ax) ≤ logHlog(ax) =o  xlogx  ,
+and
+X
+p∈P0
+p|c
+logp= log
+
+ Y
+p∈P0
+p|c
+p
+
+ ≤logc≤logH=o(x).
+Consequently, ifv=|P|, then
+v= (b−a+o(1)) xlogx , Xp∈P logp= (b−a+o(1))x.(6)
+If L > a2n, then (3) is immediate. We henceforth assume L≤a 2n. For every progression
+indexi, define
+Bi :={p∈ P:p|u+ic}.
+We check the hypotheses of Lemma 2.1.
+First, every pair of distinct primesp, q∈ Plies in some block: indeed,
+pq≤b 2n≤n,
+so then-divisor property supplies a progression term divisible bypq.
+Second, two differently indexed blocks meet in at most one point. If distinct p, qbelonged to
+bothB i andB j, withi̸=j, then
+pq|(i−j)c.
+Sincep, q∤c, this impliespq|i−j. But
+0<|i−j|< L≤a 2n≤pq,
+a contradiction.
+Third, every block is proper. If some Bi were all of P, the product of the distinct primes in P
+would divideu+ic. By (6), this would imply
+log(u+ic)≥
+X
+p∈P
+logp= (b−a+o(1))x,
+4
+=== PAGE 5 ===
+contrary to log(u+ic)≤logH=o(x).
+Finally, let ∆ be the actual maximum point degree. Forp∈ P, the congruence
+u+ic≡0 (modp)
+selects one residue class of indices modulop, becausep∤c. Therefore
+∆≤1 + Lax .(7)
+Putt=L/(ax). Lemma 2.1 and (7) give
+v≤∆(∆−1) + 1≤t 2 +t+ 1.
+Sincev→ ∞, this forces
+t≥
+√4v−3−1
+2 = (1−o(1)) √v.
+Using (6) and logx= 12 logn, we obtain
+L≥(a−o(1))x
+s
+(b−a)x
+logx
+=
+
+a
+p
+2(b−a)−o(1)
+ n3/4
+√logn ,
+which proves (3).
+Proof of Theorem 1.1.Takeb= 1 anda= 2/3 in Lemma 3.1. The coefficient in (3) is
+a
+p
+2(b−a) =
+r
+8
+27 .
+The use of the endpoint b = 1 is legitimate: for distinct primes p, q≤ √n, one still has pq≤n ,
+exactly the range covered by then-divisor property. The lemma now gives (1) directly.
+4 Consequences and scope
+Proof of Corollary 1.2. Suppose, to the contrary, that qualifying progressions exist along an
+unbounded sequence ofn. Sinceα <1/2,
+logH n ≤n α+o(1) =o( √n),
+so Theorem 1.1 applies. On the other hand,β <3/8 gives
+n2β+o(1) =o
+ 
+n3/4
+√logn
+!
+,
+contradicting the theorem’s lower bound forL n.
+5
+=== PAGE 6 ===
+At the one-third point this gives the promised unconditional conclusion: there is no unbounded
+sequence of positiven-divisor arithmetic progressions with
+Ln ≤n 2/3+o(1), H n ≤exp  n1/3+o(1).
+Natural floor or ceiling choices in the number of terms are absorbed by the o(1). Indexing the
+progression from 0 or from 1 merely changes its initial term.
+Remark4.1 (Positivity and zero).The n-divisor property in Definition 3.1 of Umans and Wang
+is explicitly defined for sets of positive integers. Thus zero is not an admissible progression term
+or divisor witness here. Allowing zero as a witness would make the condition vacuous, since every
+positive integer divides zero. A constant progression reduces to the singleton case treated in the
+proof.
+Remark4.2 (What has and has not been disproved).Proposition 3.4 of Umans and Wang [ 4] shows
+that the Arithmetic Progression Version implies the Strong ( α, β)-Divisor Conjecture; no converse
+is asserted. The result above consequently doesnotdisprove the full Strong (1 /3, 1/3)-Divisor
+Conjecture. A difference of two higher-rank generalized arithmetic progressions need not be a
+one-dimensional progression. The decisive step above uses
+(u+ic)−(u+jc) = (i−j)c.
+For a rank-two progression, the corresponding difference contains two independent coefficients,
+and the at-most-one-intersection argument does not follow.
+Remark4.3 (Endpoints).Theorem 1.1 does not cover the case logH = O(√n), and Corollary 1.2
+makes no claim when β = 3 /8. Indeed, the lower bound L≫n 3/4/√logn does not exclude
+L≤n 3/4. The constant p8/27 is the outcome of the fixed-band argument and is not claimed to
+be optimal.
+References
+[1] N. G. de Bruijn and P. Erd˝ os, On a combinatorial problem,Proceedings of the Section of Sciences of
+the Koninklijke Nederlandse Akademie van Wetenschappen te Amsterdam51(1948), no. 10, 1277–1279;
+also published inIndagationes Mathematicae10(1948), 421–423.
+[2] H. L. Montgomery and R. C. Vaughan,Multiplicative Number Theory I: Classical Theory, Cambridge
+Studies in Advanced Mathematics, vol. 97, Cambridge University Press, Cambridge, 2007.
+[3] OpenAI, GPT-5.6: Frontier intelligence that scales with your ambition, July 9, 2026, https:
+//openai.com/index/gpt-5-6/(accessed August 1, 2026).
+[4] C. Umans and S. Wang, A number-theoretic conjecture implying faster algorithms for polynomial
+factorization and integer factorization, arXiv:2511.10851v1 (2025).
+[5] J. Zhang, X. He, H. Chae, E. Jiang, E. Ji, A. Taylor, Y. Kou, R. Raghavan, V. Sahai, K. Hess, Y. Lu,
+I. Hair, K.-W. Chang †, R. Meka †, V. Peng †, A. Sahai †, T. Tao †, and W. Wang †,UCLA Moonshot
+Harness, 2026. †Principal investigators, listed at the end in alphabetical order by last name.
+6
+exec
+/bin/bash -lc 'for p in /AGENTS.md /home/AGENTS.md /home/knielsen/AGENTS.md /home/knielsen/code/AGENTS.md /home/knielsen/code/factoring-connection/AGENTS.md /home/knielsen/code/factoring-connection/codex/AGENTS.md; do if test -f "$p"; then cat "$p"; fi; done' in /home/knielsen/code/factoring-connection/codex
+exec
+/bin/bash -lc "rg -n 'Theorem 5|5\\.2|5\\.5|Conjecture|GAP|Lemma 2.1|prime|coprime' /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/uw.txt" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+ succeeded in 0ms:
+204:This is close to tight, since the product of primes less thann– which has magnitudeexp(n)
+209:Conjecture3.2.((α,β)-Divisor Conjecture) For infinitely manynthere exist subsetsS,T⊆
+223:Conjecture 3.3.(Strong(α,β)-Divisor Conjecture) For infinitely manynthere exist sub-
+236:then the Strong(α,β)-Divisor Conjecture is true, as captured by the following proposition:
+239:of magnitude at mostexp(nα). Then the Strong(α,β)-Divisor Conjecture is true.
+247:above proposition the Strong(α,β)-Divisor Conjecture is true for allα >0andβ= 1/2.
+251:In this section we show that the Strong(α,β)-Divisor Conjecture yields polynomialsgi(X)
+253:Conjecture for anyα<1−βis a challenge (and on the cusp of what is trivially true). We
+259:For the remainder of this section, we assume that the Strong(α,β)-Divisor Conjecture
+269:Proposition 4.1.Suppose that the Strong(α,β)-Divisor Conjecture holds, and that poly-
+280:of Theorem 2.1, assuming the Strong(α,β)-Divisor Conjecture. Our first lemma shows how
+282:Lemma 4.2.Suppose that the Strong(α,β)-Divisor Conjecture holds, and fixh(X)∈Fq[X]
+307:Lemma 4.3.Suppose that the Strong(α,β)-Divisor Conjecture holds, and let the polyno-
+358:Theorem4.4.Suppose that the Strong(α,β)-Divisor Conjecture holds, and that polynomials
+365:Thus the Strong(α,β)-Divisor Conjecture implies that Property 2 of Theorem 2.1 holds
+374:product of small primes. For example,Pmight be the product of the first≈n α primes,
+382:d-smooth part of|s−t|; i.e., the product of all prime factors of|s−t|that are at mostd.
+384:factor ofwthat divides|s−t|also dividesP. LetRbe the multiset ofP’s prime factors.
+417:prime factors, in their multiplicity. Letw(X)be a monic, squarefree polynomial of degree
+423:factor, or the multiset of prime factorsRshrinks. The complete recursive algorithm is as
+426:Input: polynomialw(X)of degreed, a multiset of prime factorsR
+449:a∈F q; if|R|= 1, then it consists of a single primepandw(X)is the product of irreducible
+480:Lemma 4.7.Fix an integerPof magnitudeexp(n α)and letRbe the multiset ofP’s prime
+523:Proof.LetRbe the multiset ofP’s prime factors, in their multiplicity, and letpbe as defined
+527:constant factor, or the multiset of prime factorsRshrinks by apfactor.
+552:Thus the Strong(α,β)-Divisor Conjecture implies that Property 3 of Theorem 2.1 holds
+553:withγ=α. We note also that by takingPto be the product of primes less thann α the
+559:Theorem 4.9(main).Suppose that the Strong(α,β)-Divisor Conjecture holds. Then there
+570:ideas [Har21]. If a version of our strong(α,β)-Divisor Conjecture is true forα,β= 1/3,
+577:to expect an efficient deterministic function which lists the prime factors of a givens−t
+582:Conjecture 5.1.(Strong Prefactored(α,β)-Divisor Conjecture) For infinitely manyn,
+583:there exists subsetsS,T⊆Z + that satisfy the requirements of Conjecture 3.3. Moreover, for
+584:every integers−twiths∈S,t∈T, its prime factorization can be output in deterministic
+586:As we will see, if the Strong Prefactored(α,β)-Divisor Conjecture holds forα,β <2/5
+595:of Theorem 2.1, except for the added assumption that for everyAi, its prime factors are
+597:Theorem 5.2.Letn=⌊N 1/2⌋. Suppose we havek=k(n)integersA 1,A 2,...,A k, and
+605:3. given an integeri, there exists a functionfthat returns the prime factors ofAi in time
+607:Then there is a deterministic algorithm to compute the prime factorization ofNin time
+611:ToproduceN’sprimefactorization, weuserecursivesplittingtoeventuallyobtainatmost
+613:Note that this is not yet the final factorization ofN; however it is true that for every prime
+617:We now obtain the list of primes that divideN0. To do this, for eachiwe obtain prime
+618:factors ofA i by Property 3, and check for each primep, whetherp|d i. This step takes
+620:Once we have this set of primes, we trial divide each withNfor at mostO(⌈logN⌉)
+622:this multiset of primes with the (at most 1) prime factor ofNwhich is greater thanngives
+660:5.2 Computing
+663:In this section, we show that the the Strong(α,β)-Divisor Conjecture yieldsintervalproducts∏b
+664:i=aAi that can be computed fast, which satisfies Property 2 of Theorem 5.2. To utilize
+665:the structure of the setsSandTin the the Strong(α,β)-Divisor Conjecture, we use the
+673:Lemma 5.3.Suppose that the Strong(α,β)-Divisor Conjecture holds, and fix a positive
+677:Lemma 5.4.Suppose that the Strong(α,β)-Divisor Conjecture holds. Fix a positive integer
+685:Altogether, if we assume the Strong Prefactored(α,β)-Divisor Conjecture, combining
+686:Lemma 5.3, Lemma 5.4 with Theorem 5.2, forγ= max(α,β) +o(1), we obtain an uncondi-
+690:Theorem 5.5(main – integer factoring).Suppose that the Strong Prefactored(α,β)-Divisor
+691:Conjecture holds. Then there is a deterministic algorithm that computes the prime factor-
+694:The formally strongest version of the Strong(α,β)-Divisor Conjecture is that there are
+698:(α,β)-Divisor Conjecture. Thus, if one is to disprove a version of the conjecture, the easiest
+704:every primep < ndividesicfor somei≤n 2β, and this requirescto be the product of all
+705:primes betweenn 2β andn, which is a number of magnitudeexp(n−o(1))whenβ <1/2.
+713:of integers seem difficult. Two challenging sets of integers are (1) the primes in[n], and (2)
+733:potential route to proving the Strong(α,β)-Divisor Conjecture.
+734:As mentioned, the subset of primes in[n]is a particularly challenging case. Here we have
+736:Lemma 6.2.LetUbe the product of primes in[n]. Given a factorizationU=U 1U2···U ℓ,
+738:is an arithmetic progressionA={b+ic: 1≤i≤ℓ}containing multiples of each prime in
+748:see thatci+b≡0 (modU i)and thus each prime factor ofUi divides thei-th term in the
+750:In the other direction, we start with the assumption that each prime in[n]divides some
+762:dividesU i, by our choice of the factorization to be consistent. Since every primep∈[n]
+772:Version of the Strong(α,β)-Divisor Conjecture.
+802:Conjecture is false, and the same could be true for any or all of the other variants. Even
+820:subset of integers. Alternatively, can one give a reduction to the “prime case” discussed in
+821:Lemma 6.2? It would be interesting to establish that the prime case is the “hardest” case
+
+web search: https://arxiv.org/abs/2511.10851
+web search: 
+web search: 
+exec
+/bin/bash -lc "sed -n '185,250p;575,662p;690,770p' /tmp/claude-1000/-home-knielsen-code/4e032e48-3e06-5e52-8717-e3a7fde2f526/scratchpad/divcover_dl/uw.txt" in /home/knielsen/code/factoring-connection/codex
+ succeeded in 0ms:
+a given degree, although there may be multiple reported factors with irreducibles of that
+degree. We can simply group these to produce the final distinct-degree factorization.
+3 A number-theoretic conjecture
+In this section we introduce a family of number-theoretic conjectures, and in the following
+two sections, we show how, if true, they can be used to produce algorithms for polynomial
+factorization and integer factorization with exponents that beat the current best-known. We
+begin with a definition:
+Definition 3.1.(n-divisor property) A setAof positive integers satisfies then-divisor
+property if for alli∈{1,...,n}, there existsa∈Asuch thati|a.
+We will be interested in minimizing both themagnitudeof the integers inAand the
+cardinalityofA. Of course the set{1,2,...,n}trivially satisfies then-divisor property; a
+slightly more interesting fact is that the set{⌊n/2⌋,...,n}of cardinality⌈n/2⌉satisfies the
+n-divisor property. More generally, without any further constraints, it is easy to satisfy the
+1For ease of exposition, we have not made explicit the function ofd,n,qwritten as~O(dnγ)·poly logq.
+To make the induction formally correct we should fix one explicit function that is simultaneously an upper
+bound for each occurrence of the expression in this proof, and ensure that that function is convex ind.
+5
+=== PAGE 7 ===
+divisor property with sets of cardinalitymconsisting of integers of magnitude at mostnn/m.
+This is close to tight, since the product of primes less thann– which has magnitudeexp(n)
+– must divide the product of the integers inA, implying that some element ofAmust have
+magnitudeexp(n) 1/m.
+Our main family of conjectures demands that the setAhave a difference-set structure.
+We further parameterize the magnitude and cardinality byα,βas follows:
+Conjecture3.2.((α,β)-Divisor Conjecture) For infinitely manynthere exist subsetsS,T⊆
+Z+ such that the set of pairwise differences
+A={s−t|s∈S,t∈T}
+satisfies then-divisor property, and
+1. all elements ofS,Thave magnitude at mostexp(n α)
+2.|S|,|T|≤n β
+Expressing the argument above in terms ofα,βyields the constraintα≥1−2β; we do
+not know ifα= 1−2βis achievable. In fact, we do not even know ifα<1−βis achievable
+(whereasα= 1−β+o(1)is easy by partitioning[n]inton β sets of sizen 1−β each, and
+takingSto be the products of the integers in each of these parts, andT={0}).
+Achievingα <1−βis an important challenge that forces one to make use of both sets
+S,T(unlike the construction above which “uses” only one), and we might hope that such a
+construction would produce structured setsS,T. To be useful algorithmically in our intended
+settings, we needSandTto have the structure of generalized arithmetic progressions:
+Conjecture 3.3.(Strong(α,β)-Divisor Conjecture) For infinitely manynthere exist sub-
+setsS,T⊆Z + such that the set of pairwise differences
+A={s−t|s∈S,t∈T}
+satisfies then-divisor property, with
+1. all elements ofS,Thave magnitude at mostexp(n α)
+2.|S|,|T|≤n β
+3. There existc,c′≤n o(1) such that
+S={S 1 +...+S c},T={T 1 +...+T c′}.
+where theSi,Tj are arithmetic progressions.
+6
+=== PAGE 8 ===
+An interesting fact is that if there are setsAsatisfying then-divisor property with
+|A|=n 2β and with integers of magnitudeexp(nα)andAitself is an arithmetic progression,
+then the Strong(α,β)-Divisor Conjecture is true, as captured by the following proposition:
+Proposition 3.4.Suppose that for infinitely manyn, there exists a setAsatisfying the
+n-divisor property withAbeing an arithmetic progression,|A|≤n 2β, and having elements
+of magnitude at mostexp(nα). Then the Strong(α,β)-Divisor Conjecture is true.
+Proof.SinceAis an arithmetic progression, there existb≥0andc>0such that
+A={b+ic: 0≤i≤n 2β}.
+We defineS={b+i⌈n β⌉c: 0≤i≤n β}andT={ic: 0≤i≤n β}. Since any nonnegative
+iless thann 2β can be written asi=i 1⌈nβ⌉−i 0 with0≤i 1,i 0≤n β, we find that every
+elementb+ic∈Acan be written ass−twiths=b+i 1nβc∈Sandt=i 0c∈T. The
+proposition follows.
+Indeed the setA={1,2,...,n}trivially satisfies then-divisor property, and via the
+above proposition the Strong(α,β)-Divisor Conjecture is true for allα >0andβ= 1/2.
+As we will see in the next section, this already implies an exponent3/2algorithm in our
+framework.
+4 Using the conjecture to factor polynomials inFq[X]
+in such a way that the different divisors in then-Divisor property would be allocated to
+the variouss−tdifferences in a prescribed or “known” fashion. In this case it is plausible
+to expect an efficient deterministic function which lists the prime factors of a givens−t
+difference, in time ~O(nα). For ease of exposition, we give a name to the version of the
+conjecture which presumes the existence of such a function, as follows:
+15
+=== PAGE 17 ===
+Conjecture 5.1.(Strong Prefactored(α,β)-Divisor Conjecture) For infinitely manyn,
+there exists subsetsS,T⊆Z + that satisfy the requirements of Conjecture 3.3. Moreover, for
+every integers−twiths∈S,t∈T, its prime factorization can be output in deterministic
+time ~O(nα).
+As we will see, if the Strong Prefactored(α,β)-Divisor Conjecture holds forα,β <2/5
+then there exists a determinstic algorithm to factor integers that beats the current-best
+exponent of1/5; if the conjecture holds forα,β= 1/3(which is best possible), then the
+exponent is1/6.
+5.1 The framework
+For the remainder of this section, we will use the fact that common operations on integersn,
+such as addition, multiplication, division with remainder, and computing GCD run in time
+~O(logn). As a standard reference, see [vzGG13].
+We now describe a general framework for integer factorization. This is the analogue
+of Theorem 2.1, except for the added assumption that for everyAi, its prime factors are
+efficient to produce.
+Theorem 5.2.Letn=⌊N 1/2⌋. Suppose we havek=k(n)integersA 1,A 2,...,A k, and
+γ≥0for which the following hold:
+1. every integer≤ndivides ∏ki=1Ai, and
+2. givend≤Nand integersa≤b, we can compute theinterval product
+b∏
+i=a
+Ai modd
+in time ~O(logd·n γ), and
+3. given an integeri, there exists a functionfthat returns the prime factors ofAi in time
+~O(nγ).
+Then there is a deterministic algorithm to compute the prime factorization ofNin time
+~O(Nγ/2 log(k(n))).
+Proof.Initially, we setN 0 = gcd(∏ki=1Ai,N). This can be computed within the claimed
+time bound by Property 2 and a GCD.
+ToproduceN’sprimefactorization, weuserecursivesplittingtoeventuallyobtainatmost
+k′ =O(⌈logN 0⌉)pairs of integers(A i,di), whereAi∈{A 1,...,A k},d i|Ai, and∏k′i=1di =N 0.
+Note that this is not yet the final factorization ofN; however it is true that for every prime
+p≤nthat dividesN, it occurs as a factor of somed i, by Property 1.
+16
+=== PAGE 18 ===
+We now obtain the list of primes that divideN0. To do this, for eachiwe obtain prime
+factors ofA i by Property 3, and check for each primep, whetherp|d i. This step takes
+~O(nα)by the fact thatAi has magnitudeexp(nα), and there are at mostO(⌈logN0⌉)pairs.
+Once we have this set of primes, we trial divide each withNfor at mostO(⌈logN⌉)
+rounds to determine its multiplicity inN. This step cost at most~O(⌈logN⌉ 2). Combining
+this multiset of primes with the (at most 1) prime factor ofNwhich is greater thanngives
+the full factorization ofN.
+Now, all that remains is to prove we can obtain the required set{(Ai,di)}using recursive
+splitting. The argument then proceeds similarly to that of Theorem 2.1. During each
+recursive call, we keep track of the interval(a,b)while maintaining the invariant that its
+inputddivides ∏bi=aAi. Initially, the interval is(1,k)and the initial inputd=N 0 satisfies
+the invariant by definition.
+The base case of the recursive algorithm is whena=b. In this case, we just return
+the pair(Aa,gcd(Aa,d)). Otherwise, letc=⌊(a+b)/2⌋be the midpoint. We compute the
+integer
+dlower = gcd
+( c∏
+i=a
+Ai,d
+)
+.
+Just like the proof of Theorem 2.1, ifd lower = 1thenddivides ∏bi=c+1Ai and we
+recursively splitdwith the interval set to(c+ 1,b). Ifd lower =dthen we recursively splitd
+with the interval set to(a,c). Otherwisedloweris a non-trivial factor ofd, and we recursively
+splitd lower with the interval set to(a,c)andd upper =d/d lower with the interval set to
+(c+ 1,b).
+We now analyze the running time. LetT(d,r)be the running time of this procedure
+when the input integer isd≤N 0, and the interval has lengthr=b−a+ 1. We claim that
+for alld,
+T(d,r)≤log(2r)· ~O(logd·n γ).
+The proof is by induction onr. The claim is true whenr= 1. The recursive step (computing
+the productd lower, and one GCD) costs ~O(logd·n γ)by Property 2, plus the time to
+recursively splitdwith an interval of lengthr/2(in the first two cases), or the time to
+recursively splitdlower andd upper each with an interval of lengthr/2(in the third case).
+By induction, this additional cost is
+log(2·r/2)· ~O(logd·n γ)
+in the first two cases, and
+log(2·r/2)· ~O(log(dlower)nγ) + log(2·r/2)· ~O(log(dupper)nγ)
+17
+=== PAGE 19 ===
+in the third case. Sincedlower·dupper =d, in all cases the overall time is upperbounded by
+~O(logd·n γ) + (log 2r−1) ~O(logd·n γ)≤log(2r)· ~O(logd·n γ)
+which satisfies the inductive hypothesis.
+5.2 Computing
+∏b
+i=aAi moddfast
+Theorem 5.5(main – integer factoring).Suppose that the Strong Prefactored(α,β)-Divisor
+Conjecture holds. Then there is a deterministic algorithm that computes the prime factor-
+ization of an integerNin time ~O(N max(α,β)/2+o(1)).
+6 The arithmetic progression version of the conjecture
+The formally strongest version of the Strong(α,β)-Divisor Conjecture is that there are
+arithmetic progressionsAof cardinalityn 2β, whose elements have magnitudeexp(nα), that
+satisfy then-divisor property. We call this the “Arithmetic Progression Version” of the
+conjecture. Proposition 3.4 shows that the Arithmetic Progression Version implies the Strong
+(α,β)-Divisor Conjecture. Thus, if one is to disprove a version of the conjecture, the easiest
+version to attack is the arithmetic progression one. Here we make some observations that
+may be useful in studying this version.
+First, recall that such an arithmetic progressionA={b+ic: 1≤i≤n 2β}satisfying the
+n-Divisor Property yields an improved exponent for polynomial factorization ifα,β <1/2.
+One observation is thatb̸= 0is necessary for non-triviality. For ifb= 0then we have that
+every primep < ndividesicfor somei≤n 2β, and this requirescto be the product of all
+primes betweenn 2β andn, which is a number of magnitudeexp(n−o(1))whenβ <1/2.
+It is also necessary that(b+c)≥exp(n 1−2β)as we have argued in Section 3. Although it
+seems unlikely, we cannot rule out the possibility that the Arithmetic Progression Version
+may hold withb≤exp(O(n 1−2β))andc= 1!
+Certainsubsetsof integers in[n]are easy to handle: for example, by choosingcto be the
+least common multiple of all positive integers of magnitude at mostnα, andb= 0, it is easy
+to see that the arithmetic progressionA={b+ic: 1≤i≤n 2β}contains multiples of each
+integer that can be writtenxywherex≤n 2β andy≤n α. On the other hand, some subsets
+of integers seem difficult. Two challenging sets of integers are (1) the primes in[n], and (2)
+compositesxywherex,yare in the range[n 1/2−ϵ,n 1/2]for a constantϵ>0.
+A useful fact is that different arithmetic progressions containing multiples of different
+subsets of integers can be combined into a single generalized arithmetic progression:
+Lemma 6.1.LetA 1 ={b 1 +ic 1 : 1≤i≤ℓ 1}andA 2 ={b 2 +ic 2 : 1≤i≤ℓ 2}be two
+arithmetic progressions. Then the generalized arithmetic progression
+A={c 1b2 +i(c 1c2) +j(c 2b1−c 1b2) : 1≤i≤max(ℓ 1,ℓ 2),0≤j≤1}
+contains multiples ofxifA 1 orA 2 does.
+Proof.Supposexdividesb 1 +ic 1 for somei. Then the(i,1)term inA, which equals
+c2b1 +i(c 1c2) =c 2(b1 +ic 1)is also divisible byx. Similarly, ifxdividesb 2 +ic 2 for somei,
+then the(i,0)term inA, which equalsc 1b2 +i(c 1c2) =c 1(b2 +ic 2)is divisible byx.
+19
+=== PAGE 21 ===
+One can combine a constant number of arithmetic progressions, of lengthn2β and with
+coefficient magnitudeexp(nα), in this fashion, and the magnitude of the coefficients increases
+fromexp(n α)to onlyexp(O(n α)), and the size of the arithmetic progression increases from
+n2β to onlyO(n 2β). It is not hard to extend Proposition 3.4 to generalized arithmetic
+progressions of this form; i.e., ones where the generalized arithmetic progression is the sum
+of one “long” arithmetic progression and a constant number of others of constant length.
+Thus solving the problem separately for constantly many subsets of the integers in[n]is a
+potential route to proving the Strong(α,β)-Divisor Conjecture.
+As mentioned, the subset of primes in[n]is a particularly challenging case. Here we have
+a interesting characterization:
+Lemma 6.2.LetUbe the product of primes in[n]. Given a factorizationU=U 1U2···U ℓ,
+defineT i to be the multiplicative inverse ofU/Ui (modU i), and defineVi = (U/Ui)Ti. There
+is an arithmetic progressionA={b+ic: 1≤i≤ℓ}containing multiples of each prime in
+[n], iff there is a factorizationU=U 1U2···U ℓ and integersb,cfor which
+c·
+( ℓ∑
+i=1
+iVi
+)
++b≡0 (modU).(3)
+Proof.One direction is easy: ifU=U 1U2···U ℓ is a factorization for which there exist
+integersb,csuch that Equation (3) holds, then by considering the equation moduloUi we
+see thatci+b≡0 (modU i)and thus each prime factor ofUi divides thei-th term in the
+arithmetic progressionA.
+In the other direction, we start with the assumption that each prime in[n]divides some
+term in the arithmetic progressionA={b+ic: 1≤i≤ℓ}. LetU=U 1U2···U ℓ be a
+consistent factorization in the sense thatp|U i impliespdivides thei-th term inA. We
+claim that everyp∈[n]divides
+c·
+( ℓ∑
+i=1
+iVi
+)
++b(4)
+and hence it equals0moduloUby the Chinese Remainder Theorem. As above, we see that
+moduloU i, expression (4) is equivalent toci+b, and hence it is divisible by everypthat
+dividesU i, by our choice of the factorization to be consistent. Since every primep∈[n]
+divides someU i, this argument gives us that every suchpdivides expression (4). Thus it
+equals 0 moduloUas claimed.
+Note that the parenthesized quantity in Equation (3) is, in general, of magnitude com-
+parable toU, which isexp(n), while we wish forb,c≤exp(n α). Thus we are asking for
+a “small” affine transformation of a “large” quantity to equal a multiple ofU. The design
+freedom is in the choice of the factorization ofU, which determines the “large” quantity.
+20
+=== PAGE 22 ===
+
+web search: "pseudosquare" "lower bound" unconditional Burgess ...
+web search: "divisor cover" "Umans" Wang GAP ...
+codex
+C2 has a repairable gap: the recursion count does not control a prime factor above \(n\), which may divide many \(A_i\). Stopping a branch when its modulus is prime appears to restore the bound. The coprime-base separation condition itself looks sufficient.
+web search: 
+web search: 
+web search: 
+web search: https://cr.yp.to/bib/1996/lukes.pdf
+web search: "pseudosquares" "unconditional" "lower" ...
+web search: "2511.10851" -site:alphaxiv.org -site:dblp.org -site:arxiv.org ...
+web search: 
+web search: 
+web search: 
+web search: 
+web search: Bernstein factoring into coprimes time essentially linear 2004 coprime bases
+web search: 
+web search: "Umans" "Wang" "divisor" -"generalized divisor" -site:reddit.com -site:scribd.com -site:ru.djvu.online
+web search: "The Pseudosquares Prime Sieve" Sorenson pdf
+web search: 
+web search: "The Pseudosquares Prime Sieve" Sorenson pdf
+codex
+There is a second C2 gap that primality stops do not fix: a prime \(q>n\) may have exactly the same support as a covered prime \(p\le n\). The stated separation condition permits this, so a coprime-base element can remain the composite \(pq\). I’ll distinguish these failed proof steps from the factoring implication, which they leave unproved.
+web search: 
+web search: 
+web search: 
+web search: https://digitalcommons.butler.edu/facsch_papers/95/
+web search: "Some results on pseudosquares" "sqrt" ERH ...
+web search: https://arxiv.org/html/2511.10851v1
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://arxiv.org/html/2608.06681v1
+web search: "Umans" "Wang" divisor cover generalized arithmetic progression 2026 -site:scirate.com -site:podcasts.apple.com -site:researchgate.net
+web search: https://www.ams.org/mcom/1996-65-213/S0025-5718-96-00678-3/S0025-5718-96-00678-3.pdf
+web search: 
+web search: 
+web search: 
+web search: https://doi.org/10.1090/S0025-5718-96-00678-3
+web search: https://citeseerx.ist.psu.edu/document?doi=34c4084eb05d02a9e5777949f2176ab6ffaff1bd&repid=rep1&type=pdf
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://www.ams.org/journals/mcom/1996-65-213/S0025-5718-96-00678-3/S0025-5718-96-00678-3.pdf
+web search: https://www.researchgate.net/publication/41539531_The_Pseudosquares_Prime_Sieve
+web search: 
+web search: 
+web search: 
+web search: 
+web search: "least quadratic non-residue" "GRH" "log q" Lamzouri Li Soundararajan ...
+web search: "Jacobsthal" "covering" prime gaps Iwaniec bound
+web search: 'Schinzel'
+codex
+**C1 — VERDICT: CORRECT.**
+
+UW’s integer-factoring proof only needs every prime \(p\le n\) dividing \(N\) to occur in some \(A_i\). Factoring the selected \(A_i\)’s then identifies these primes; trial division recovers their multiplicities. The remaining cofactor is \(1\) or a single prime \(>n\). Neither prime-power coverage nor composite-divisor coverage is needed. This weakening applies to the integer-factoring conclusion, not automatically to polynomial factoring. [UW, §5](https://arxiv.org/html/2511.10851v1).
+
+**C2 — VERDICT: GAP. Steps (iii) and (iv) are wrong as stated.**
+
+The obstruction is the possible prime factor **above \(n\)**, which (3′) does not constrain.
+
+- **(i) Correct.** Pollard–Strassen finds and removes factors up to \(B=n^{2\gamma}\) in \(\widetilde O(\sqrt B)=\widetilde O(n^\gamma)\), with multiplicities removed afterward.
+- **(ii) Correct**, using the remaining input as modulus.
+- **(iii) Incorrect recursion bound.** For each controlled prime, its occupied nodes are indeed bounded by its support size times the tree depth. But a prime \(q>n\) may divide arbitrarily many \(A_i\).
+
+  For example, take \(N=77\), \(n=8\), \(\gamma=1/4\), and
+  \[
+  (A_i)=(2,3,5,77,\underbrace{11,\ldots,11}_{K\text{ copies}}).
+  \]
+  The controlled primes \(3,5,7\) have distinct singleton supports, so \(M=1\). Nevertheless, the prescribed recursion visits \(\Theta(K)\) leaves carrying \(11\), contradicting the claimed \(O(\omega(N_0)M\log k)\) count. Stopping at prime moduli repairs this particular cost problem.
+
+  If the full recursion is performed, its leaf values really are
+  \(g_i=\gcd(A_i,N_0)\): successive gcds preserve this identity.
+- **(iv) Incorrect prime-power conclusion, even with prime stops.** Use instead
+  \[
+  N=77,\qquad (A_i)=(2,3,5,77).
+  \]
+  Again (1′) and (3′) hold with \(M=1\). The only nontrivial leaf gcd is \(77\), whose coprime base is \(\{77\}\). Here \(Z_7=Z_{11}\), which (3′) permits because \(11>n\). Thus the base element need not be a prime power.
+
+  **Unequal supports are sufficient separation when imposed on every distinct prime dividing the gcd inputs.** If two primes divide the same coprime-base element, they necessarily occur in exactly the same inputs. No antichain or stronger “incomparability” condition is required. [Bernstein](https://doi.org/10.1016/j.jalgor.2004.04.009).
+- **(v) Correct only after all primes \(\le n\) dividing \(N\) have actually been recovered.** The \(77\) example shows the missing step.
+
+A sufficient repair is to require bounded, distinct supports for **all** prime divisors of \(N_0\), including any above \(n\). Then the recursion and coprime-base argument work. The complexity also retains a factor \(1+\log k\); absorbing it requires \(\log k=n^{o(1)}\).
+
+The orthogonal-partitions observation is correct **if these are actual divisibility partitions**: each prime occurs exactly once in each cover. Assigned witnesses alone do not rule out additional incidences. Concatenation then gives \(M=2\) and distinct supports for the controlled primes, but leaves the \(q>n\) issue unresolved.
+
+These examples refute the stated proof steps; they do not establish a complexity-theoretic counterexample to every possible algorithm under the hypotheses.
+
+**C3 — VERDICT: CORRECT for the incidence inequality and the stated worst-case substitution, with qualifications.**
+
+Your proof gives
+\[
+|B_e|\le\mu\Delta,\qquad
+v-1\le\Delta(\mu\Delta-1),
+\]
+exactly as claimed. Distinct common prime divisors divide \(e-e'\), so the asserted intersection bound also holds.
+
+For an AP, \(p,q\nmid c\) and \(L<\min_{p\ne q}pq\) imply \(\mu\le1\). Together with pair coverage and proper blocks, this recovers [HS Lemma 2.1](https://arxiv.org/html/2608.06681v1). **Prime coverage alone does not supply pair coverage.**
+
+For a GAP, write \(L=\prod_kL_k\) for the box volume. The precise degree statement is
+\[
+\deg(p)\le\frac{L}{L_{\max}}
+             \left\lceil\frac{L_{\max}}p\right\rceil,
+\]
+hence uniformly
+\[
+\Delta\le U:=
+\frac{L}{L_{\max}}
+\left\lceil\frac{L_{\max}}{a\sqrt n}\right\rceil.
+\]
+The height bound gives
+\[
+\mu\le \frac{\log(2H)}{\log(a\sqrt n)}
+      =n^{\alpha+o(1)}.
+\]
+
+With \(v=n^{1/2-o(1)}\), even the favorable long-side regime \(U\asymp L/\sqrt n\) yields only
+\[
+L\ge n^{3/4-\alpha/2-o(1)}.
+\]
+For \(\alpha<1/2\), this is weaker than the full prime-cover mass bound
+\(L\ge n^{1-\alpha-o(1)}\). Shorter longest sides make the degree envelope worse.
+
+For balanced fixed-rank boxes, even granting \(\mu=1\), the substitution gives only
+\[
+L\ge n^{\,r/(4(r-1))-o(1)},
+\]
+whose exponent is at most \(1/2\) for \(r\ge2\).
+
+However, **“\(\mu>1\)” alone is insufficient**: any constant \(\mu\) preserves the HS exponent when the degree bound is AP-like. The losses are potentially polynomially growing intersections and unfavorable box geometry. Rank \(\ge2\) does not universally prevent stronger bounds for specially controlled GAPs.
+
+**C4 — VERDICT: GAP as an absolute state-of-the-art assertion; the construction calculation is correct.**
+
+Searches through **18 October 2026**, including the requested terminology and citation searches, located no construction meeting your fixed \(\alpha<1,\beta<1/2\) prime-only GAP requirements. The direct follow-up located was HS, whose result explicitly concerns one-dimensional APs and full integer coverage. It does not settle the prime-only GAP problem. [HS](https://arxiv.org/abs/2608.06681).
+
+Thus “**I found no such construction in the literature**” is supported. An exhaustive “none is known” or “best simple construction” assertion deserves that qualification.
+
+The block-primorial construction works. Partition the primes into
+\(r=\Theta(\log n)\) groups with balanced logarithmic weights, and let \(M_i\) be their products. Then
+\[
+\max_i\log M_i=O(n/r+\log n)=O(n/\log n).
+\]
+A positive Boolean GAP containing every \(M_i\) is
+\[
+E=M_{\min}+\sum_{i\ne i_{\min}}
+          \{0,M_i-M_{\min}\}.
+\]
+Split its generators between \(S\) and \(-T\), choosing \(r\) to meet the two cardinality budgets. This gives rank \(O(\log n)\), nonzero difference witnesses, and
+\(\log H=\Theta(n/\log n)\), hence \(\alpha=1-o(1)\).
+
+UW’s arbitrary-set product construction achieves \(\alpha=1-\beta+o(1)\), but **does not supply the required GAP structure**. Their §6 also supplies AP-combination and CRT characterizations, not the requested improved construction. [UW, §§3, 6](https://arxiv.org/html/2511.10851v1).
+
+**C5 — VERDICT: GAP as an asymptotic assertion; the random-density calculation is correct.**
+
+Assume \(b\ge1\) and \(L=n^{2\beta+o(1)}\), with fixed \(0\le\beta<1/2\). CRT gives the exact periodic density
+\[
+\delta=\prod_{L<p\le n}\frac Lp.
+\]
+Consequently,
+\[
+\log\delta^{-1}
+=\vartheta(n)-\vartheta(L)
+ -(\pi(n)-\pi(L))\log L
+=(1-2\beta+o(1))n.
+\]
+Predicting the **least** positive solution by \(\delta^{-1}\) is a heuristic about the placement of CRT solutions, not a consequence of their density. If instead \(L=n^\beta\), the coefficient is \(1-\beta\).
+
+For the least \(x\)-pseudosquare \(Q(x)\), classical rigorous lower bounds include:
+
+- **Unconditionally:** for every \(\varepsilon>0\),
+  \[
+  Q(x)\gg_\varepsilon x^{4\sqrt e-\varepsilon}.
+  \]
+  This follows from Burgess’s least-nonresidue bound applied to the quadratic character of the squarefree part of \(Q(x)\). Schinzel’s resulting bound is recorded in [Sorenson, §3](https://www.researchgate.net/publication/41539531_The_Pseudosquares_Prime_Sieve).
+- **Under ERH, hence GRH:** the classical explicit bound for prime \(p\) is
+  \[
+  Q(p)>\exp\!\sqrt{p/2}.
+  \]
+  See [Lukes–Patterson–Williams](https://cr.yp.to/bib/1996/lukes.pdf). The exponential-square-root scale is also recorded by [Pomerance–Shparlinski](https://math.dartmouth.edu/~carlp/PDF/pseudonew2.pdf).
+
+These are lower bounds. Schinzel’s commonly cited exponential estimates for constructing pseudosquares are **upper bounds**.
+
+For your interval problem, a **superpolynomial lower bound already follows elementarily**:
+\[
+\exp(\vartheta(n))
+\le\prod_{j=0}^{L-1}(b+j)
+\le(b+L-1)^L,
+\]
+so
+\[
+b+L-1\ge
+\exp\!\left((1+o(1))\,n/L\right).
+\]
+For fixed \(\beta<1/2\), this is superpolynomial.
+
+The substantive challenge is improving this toward \(\log b\asymp n\). Pseudosquare character arguments exploit multiplicative subgroups; your permitted residues are additive intervals. Jacobsthal problems instead ask that every interval position be covered by some prime. These are useful analogies, not reductions. Likewise, [Granville–Ramaré](https://dms.umontreal.ca/~andrew/PDF/ramare.pdf) provide relevant exponential-sum techniques, but no direct bound here follows from their binomial-coefficient results.
+
+Large-sieve or exponential-sum methods are plausible research tools; no located theorem supplies the desired stronger obstruction. The reported \(n\le100\) fit is finite experimental evidence, not an asymptotic justification; its exactness cannot be audited without the underlying data and search certificates.
+tokens used
+143,582
+**C1 — VERDICT: CORRECT.**
+
+UW’s integer-factoring proof only needs every prime \(p\le n\) dividing \(N\) to occur in some \(A_i\). Factoring the selected \(A_i\)’s then identifies these primes; trial division recovers their multiplicities. The remaining cofactor is \(1\) or a single prime \(>n\). Neither prime-power coverage nor composite-divisor coverage is needed. This weakening applies to the integer-factoring conclusion, not automatically to polynomial factoring. [UW, §5](https://arxiv.org/html/2511.10851v1).
+
+**C2 — VERDICT: GAP. Steps (iii) and (iv) are wrong as stated.**
+
+The obstruction is the possible prime factor **above \(n\)**, which (3′) does not constrain.
+
+- **(i) Correct.** Pollard–Strassen finds and removes factors up to \(B=n^{2\gamma}\) in \(\widetilde O(\sqrt B)=\widetilde O(n^\gamma)\), with multiplicities removed afterward.
+- **(ii) Correct**, using the remaining input as modulus.
+- **(iii) Incorrect recursion bound.** For each controlled prime, its occupied nodes are indeed bounded by its support size times the tree depth. But a prime \(q>n\) may divide arbitrarily many \(A_i\).
+
+  For example, take \(N=77\), \(n=8\), \(\gamma=1/4\), and
+  \[
+  (A_i)=(2,3,5,77,\underbrace{11,\ldots,11}_{K\text{ copies}}).
+  \]
+  The controlled primes \(3,5,7\) have distinct singleton supports, so \(M=1\). Nevertheless, the prescribed recursion visits \(\Theta(K)\) leaves carrying \(11\), contradicting the claimed \(O(\omega(N_0)M\log k)\) count. Stopping at prime moduli repairs this particular cost problem.
+
+  If the full recursion is performed, its leaf values really are
+  \(g_i=\gcd(A_i,N_0)\): successive gcds preserve this identity.
+- **(iv) Incorrect prime-power conclusion, even with prime stops.** Use instead
+  \[
+  N=77,\qquad (A_i)=(2,3,5,77).
+  \]
+  Again (1′) and (3′) hold with \(M=1\). The only nontrivial leaf gcd is \(77\), whose coprime base is \(\{77\}\). Here \(Z_7=Z_{11}\), which (3′) permits because \(11>n\). Thus the base element need not be a prime power.
+
+  **Unequal supports are sufficient separation when imposed on every distinct prime dividing the gcd inputs.** If two primes divide the same coprime-base element, they necessarily occur in exactly the same inputs. No antichain or stronger “incomparability” condition is required. [Bernstein](https://doi.org/10.1016/j.jalgor.2004.04.009).
+- **(v) Correct only after all primes \(\le n\) dividing \(N\) have actually been recovered.** The \(77\) example shows the missing step.
+
+A sufficient repair is to require bounded, distinct supports for **all** prime divisors of \(N_0\), including any above \(n\). Then the recursion and coprime-base argument work. The complexity also retains a factor \(1+\log k\); absorbing it requires \(\log k=n^{o(1)}\).
+
+The orthogonal-partitions observation is correct **if these are actual divisibility partitions**: each prime occurs exactly once in each cover. Assigned witnesses alone do not rule out additional incidences. Concatenation then gives \(M=2\) and distinct supports for the controlled primes, but leaves the \(q>n\) issue unresolved.
+
+These examples refute the stated proof steps; they do not establish a complexity-theoretic counterexample to every possible algorithm under the hypotheses.
+
+**C3 — VERDICT: CORRECT for the incidence inequality and the stated worst-case substitution, with qualifications.**
+
+Your proof gives
+\[
+|B_e|\le\mu\Delta,\qquad
+v-1\le\Delta(\mu\Delta-1),
+\]
+exactly as claimed. Distinct common prime divisors divide \(e-e'\), so the asserted intersection bound also holds.
+
+For an AP, \(p,q\nmid c\) and \(L<\min_{p\ne q}pq\) imply \(\mu\le1\). Together with pair coverage and proper blocks, this recovers [HS Lemma 2.1](https://arxiv.org/html/2608.06681v1). **Prime coverage alone does not supply pair coverage.**
+
+For a GAP, write \(L=\prod_kL_k\) for the box volume. The precise degree statement is
+\[
+\deg(p)\le\frac{L}{L_{\max}}
+             \left\lceil\frac{L_{\max}}p\right\rceil,
+\]
+hence uniformly
+\[
+\Delta\le U:=
+\frac{L}{L_{\max}}
+\left\lceil\frac{L_{\max}}{a\sqrt n}\right\rceil.
+\]
+The height bound gives
+\[
+\mu\le \frac{\log(2H)}{\log(a\sqrt n)}
+      =n^{\alpha+o(1)}.
+\]
+
+With \(v=n^{1/2-o(1)}\), even the favorable long-side regime \(U\asymp L/\sqrt n\) yields only
+\[
+L\ge n^{3/4-\alpha/2-o(1)}.
+\]
+For \(\alpha<1/2\), this is weaker than the full prime-cover mass bound
+\(L\ge n^{1-\alpha-o(1)}\). Shorter longest sides make the degree envelope worse.
+
+For balanced fixed-rank boxes, even granting \(\mu=1\), the substitution gives only
+\[
+L\ge n^{\,r/(4(r-1))-o(1)},
+\]
+whose exponent is at most \(1/2\) for \(r\ge2\).
+
+However, **“\(\mu>1\)” alone is insufficient**: any constant \(\mu\) preserves the HS exponent when the degree bound is AP-like. The losses are potentially polynomially growing intersections and unfavorable box geometry. Rank \(\ge2\) does not universally prevent stronger bounds for specially controlled GAPs.
+
+**C4 — VERDICT: GAP as an absolute state-of-the-art assertion; the construction calculation is correct.**
+
+Searches through **18 October 2026**, including the requested terminology and citation searches, located no construction meeting your fixed \(\alpha<1,\beta<1/2\) prime-only GAP requirements. The direct follow-up located was HS, whose result explicitly concerns one-dimensional APs and full integer coverage. It does not settle the prime-only GAP problem. [HS](https://arxiv.org/abs/2608.06681).
+
+Thus “**I found no such construction in the literature**” is supported. An exhaustive “none is known” or “best simple construction” assertion deserves that qualification.
+
+The block-primorial construction works. Partition the primes into
+\(r=\Theta(\log n)\) groups with balanced logarithmic weights, and let \(M_i\) be their products. Then
+\[
+\max_i\log M_i=O(n/r+\log n)=O(n/\log n).
+\]
+A positive Boolean GAP containing every \(M_i\) is
+\[
+E=M_{\min}+\sum_{i\ne i_{\min}}
+          \{0,M_i-M_{\min}\}.
+\]
+Split its generators between \(S\) and \(-T\), choosing \(r\) to meet the two cardinality budgets. This gives rank \(O(\log n)\), nonzero difference witnesses, and
+\(\log H=\Theta(n/\log n)\), hence \(\alpha=1-o(1)\).
+
+UW’s arbitrary-set product construction achieves \(\alpha=1-\beta+o(1)\), but **does not supply the required GAP structure**. Their §6 also supplies AP-combination and CRT characterizations, not the requested improved construction. [UW, §§3, 6](https://arxiv.org/html/2511.10851v1).
+
+**C5 — VERDICT: GAP as an asymptotic assertion; the random-density calculation is correct.**
+
+Assume \(b\ge1\) and \(L=n^{2\beta+o(1)}\), with fixed \(0\le\beta<1/2\). CRT gives the exact periodic density
+\[
+\delta=\prod_{L<p\le n}\frac Lp.
+\]
+Consequently,
+\[
+\log\delta^{-1}
+=\vartheta(n)-\vartheta(L)
+ -(\pi(n)-\pi(L))\log L
+=(1-2\beta+o(1))n.
+\]
+Predicting the **least** positive solution by \(\delta^{-1}\) is a heuristic about the placement of CRT solutions, not a consequence of their density. If instead \(L=n^\beta\), the coefficient is \(1-\beta\).
+
+For the least \(x\)-pseudosquare \(Q(x)\), classical rigorous lower bounds include:
+
+- **Unconditionally:** for every \(\varepsilon>0\),
+  \[
+  Q(x)\gg_\varepsilon x^{4\sqrt e-\varepsilon}.
+  \]
+  This follows from Burgess’s least-nonresidue bound applied to the quadratic character of the squarefree part of \(Q(x)\). Schinzel’s resulting bound is recorded in [Sorenson, §3](https://www.researchgate.net/publication/41539531_The_Pseudosquares_Prime_Sieve).
+- **Under ERH, hence GRH:** the classical explicit bound for prime \(p\) is
+  \[
+  Q(p)>\exp\!\sqrt{p/2}.
+  \]
+  See [Lukes–Patterson–Williams](https://cr.yp.to/bib/1996/lukes.pdf). The exponential-square-root scale is also recorded by [Pomerance–Shparlinski](https://math.dartmouth.edu/~carlp/PDF/pseudonew2.pdf).
+
+These are lower bounds. Schinzel’s commonly cited exponential estimates for constructing pseudosquares are **upper bounds**.
+
+For your interval problem, a **superpolynomial lower bound already follows elementarily**:
+\[
+\exp(\vartheta(n))
+\le\prod_{j=0}^{L-1}(b+j)
+\le(b+L-1)^L,
+\]
+so
+\[
+b+L-1\ge
+\exp\!\left((1+o(1))\,n/L\right).
+\]
+For fixed \(\beta<1/2\), this is superpolynomial.
+
+The substantive challenge is improving this toward \(\log b\asymp n\). Pseudosquare character arguments exploit multiplicative subgroups; your permitted residues are additive intervals. Jacobsthal problems instead ask that every interval position be covered by some prime. These are useful analogies, not reductions. Likewise, [Granville–Ramaré](https://dms.umontreal.ca/~andrew/PDF/ramare.pdf) provide relevant exponential-sum techniques, but no direct bound here follows from their binomial-coefficient results.
+
+Large-sieve or exponential-sum methods are plausible research tools; no located theorem supplies the desired stronger obstruction. The reported \(n\le100\) fit is finite experimental evidence, not an asymptotic justification; its exactness cannot be audited without the underlying data and search certificates.
