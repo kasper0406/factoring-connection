@@ -1,0 +1,535 @@
+**Verdict.**
+
+- **KNOWN:** Lee–Venkatesan prove an unconditional \(L[1/3]\) bound for producing square congruences. Their factoring theorem remains conditional on fruitfulness. Their result includes the reduction to actual squares, not merely relation collection. [Lee–Venkatesan, Theorems 2.1 and 2.3](https://arxiv.org/pdf/1805.08873).
+- **KNOWN — search finding:** In the 2018–2026 literature searched, I found neither a resolution of that fruitfulness conjecture nor an unconditional general-purpose factoring bound \(L_n[1/2,c+o(1)]\) with \(c<1\). This is a bibliographic finding, not a proof of nonexistence.
+- **PROVED below:** The proposed map on true square-dependencies **is a homomorphism**, with the necessary well-definedness assumptions. For every odd semiprime, including non-Blum semiprimes, fruitfulness is detected by one linear functional. For integers with more prime factors, the natural detector is vector-valued.
+- **PROVED below:** Ordinary square multipliers cannot inject the missing randomness. A direct Dixon-to-NFS hybrid using an \(L[1/3]\) factor base needs \(L[2/3]\) uniform Dixon samples just to obtain one smooth relation.
+- **PROVED below:** A thin, natural family of balanced semiprimes admits deterministic \(L[1/3]\) factoring by Fermat’s method. This satisfies the restricted-family option literally, but gives no NFS fruitfulness theorem. I cannot prove the proposed averaged NFS transversality statement.
+
+Throughout,
+\[
+L_n[\alpha,c]=\exp\!\left(c(\log n)^\alpha(\log\log n)^{1-\alpha}\right),
+\qquad
+\Lambda_n=(\log n)^{1/3}(\log\log n)^{2/3}.
+\]
+Labels apply to the assertions in their accompanying paragraphs or table entries. “KNOWN, conditional on GRH/ERH” means a proved implication under that explicitly stated hypothesis.
+
+**1. Literature audit**
+
+**1.1. Results from 2018–2026 directly relevant to the gap**
+
+| Citation | Status and precise relevant statement |
+|---|---|
+| Jonathan D. Lee and Ramarathnam Venkatesan, “Rigorous analysis of a randomised number field sieve,” *J. Number Theory* **187** (2018), 92–159, DOI 10.1016/j.jnt.2017.10.019. | **KNOWN, unconditional:** Theorem 2.1 produces \(x^2\equiv y^2\pmod n\) in expected \(L_n[1/3,(64/9)^{1/3}+o(1)]\) time. **KNOWN, conditional:** Theorem 2.3 obtains a nontrivial congruence for distinct Blum semiprimes under Conjecture 7.1. [Paper](https://arxiv.org/pdf/1805.08873). |
+| Paul Balister, Béla Bollobás and Robert Morris, “The sharp threshold for making squares,” *Ann. of Math.* **188** (2018), 49–143, DOI 10.4007/annals.2018.188.1.2. | **KNOWN, unconditional:** For independent uniform integers in \(\{1,\ldots,x\}\), the first square-product subsequence appears at \((e^{-\gamma}+o(1))J(x)\), in probability and expectation, with \(J\) defined below. This concerns square products, not the modular root signs needed for factoring. [Paper](https://annals.math.princeton.edu/2018/188-1/p02). |
+| Barry van Leeuwen, “Number Field Sieve with Provable Complexity,” MSc by Research thesis, University of Bristol, 2020; arXiv:2007.02689. | **KNOWN:** An exposition and development of the Lee–Venkatesan randomized variant. **KNOWN — search finding:** I found no new fruitfulness theorem in it. The title should not be read as announcing unconditional \(L[1/3]\) factoring. [Thesis record](https://research-information.bris.ac.uk/en/studentTheses/number-field-sieve-with-provable-complexity/), [text](https://arxiv.org/pdf/2007.02689). |
+| Aude Le Gluher, Pierre-Jean Spaenlehauer and Emmanuel Thomé, “Refined Analysis of the Asymptotic Complexity of the Number Field Sieve,” *Mathematical Cryptology* **1**(1) (2021), 71–88; arXiv:2007.02730. | **HEURISTIC algorithmic model; KNOWN mathematical optimization within that model:** Refines the asymptotic parameter choices and lower-order terms in NFS’s heuristic cost. It does not remove the smoothness or fruitfulness assumptions. [Paper](https://arxiv.org/abs/2007.02730), [authors’ publication record](https://members.loria.fr/PJSpaenlehauer/research_en.html). |
+| Andrzej Dąbrowski, Jacek Pomykała and Igor E. Shparlinski, “On oracle factoring of integers,” *J. Complexity* **76** (2023), 101741, DOI 10.1016/j.jco.2023.101741. | **KNOWN, in an oracle model:** Deterministic polynomial-time splitting of almost all integers using knowledge of point counts on specified elliptic curves modulo the input. It cites Lee–Venkatesan as progress toward rigorous NFS; it does not supply an ordinary \(L[1/3]\) factoring algorithm. [Paper](https://www.sciencedirect.com/science/article/abs/pii/S0885064X23000109). |
+| Daniel J. Bernstein and Tung Chou, “CryptAttackTester: high-assurance attack analysis,” *CRYPTO 2024*, LNCS **14925**, 141–182, DOI 10.1007/978-3-031-68391-6_5. | **KNOWN:** Appendix B.3 explicitly distinguishes the unproved effectiveness of the linear and quadratic sieves from rigorous random-squares/class-group algorithms, and identifies Conjecture 7.1 as the remaining condition in the randomized-NFS factoring claim. This is an audit of claims, not a fruitfulness proof. [Authors’ text](https://cat.cr.yp.to/cryptattacktester-20240612.pdf). |
+
+**KNOWN — search finding:** Among the relevant citing works located, I found no 2018–2026 proof of square-root randomness or general fruitfulness for QS, Schroeppel’s linear sieve, or NFS.
+
+**1.2. Genuine rigorous advances for discrete logarithms**
+
+**KNOWN, unconditional:** Robert Granger, Thorsten Kleinjung and Jens Zumbrägel, “On the discrete logarithm problem in finite fields of fixed characteristic,” *Trans. Amer. Math. Soc.* **370** (2018), 3129–3145, DOI 10.1090/tran/7027, prove that for every fixed prime \(p\), infinitely many explicit extension fields \(\mathbb F_{p^r}\) admit expected running time
+\[
+\exp\!\left((1/\log 2+o(1))(\log r)^2\right).
+\]
+Their general model theorem assumes a suitable low-degree representation; existence for every extension was still conjectural in that work. [Paper, Theorems 1–2](https://arxiv.org/pdf/1507.01495).
+
+**KNOWN, unconditional:** Thorsten Kleinjung and Benjamin Wesolowski, “Discrete logarithms in quasi-polynomial time in finite fields of fixed characteristic,” *J. Amer. Math. Soc.* **35** (2022), 581–624, DOI 10.1090/jams/985, prove for every prime \(p\) and positive integer \(r\) an expected-time bound
+\[
+(pr)^{\,2\log_2 r+O(1)}
+\]
+for DLP in \(\mathbb F_{p^r}^{\,*}\). In particular, every fixed-characteristic family has a quasipolynomial algorithm. [Published statement](https://doi.org/10.1090/jams/985), [full text](https://ir.cwi.nl/pub/29165/29165.pdf).
+
+**PROVED:** For fixed \(p\), this quasipolynomial bound is smaller than \(L_{p^r}[1/3,c]\) for every fixed \(c>0\), since its logarithm is \(O((\log r)^2)\), whereas the latter logarithm grows as a positive constant times \(r^{1/3}(\log r)^{2/3}\).
+
+**KNOWN — search finding:** These are real rigorous advances in an adjacent sieve/index-calculus setting. I found no corresponding theorem making ordinary prime-field NFS-DLP rigorously \(L[1/3]\), and no reduction transferring their small-characteristic mechanism to integer factoring.
+
+**1.3. A significant 2025–2026 class-group result**
+
+**KNOWN, conditional on ERH:** Koen de Boer, Alice Pellet-Mary and Benjamin Wesolowski, “Rigorous methods for computational number theory,” arXiv:2512.01588, submitted December 2025, revised February 2026, prove subexponential algorithms for class groups and units of arbitrary number fields. Their Theorem 1.3 assumes an LLL-reduced integral basis as input. Its expected time is polynomial in the input length and in
+\[
+L_{|\Delta_K|}(1/2),\qquad
+L_{d^d}(2/3),\qquad
+\min\{\rho_K,L_{|\Delta_K|}(2/3+o(1))\},
+\]
+where \(d=[K:\mathbb Q]\), \(L_x(\alpha)=\exp(O((\log x)^\alpha(\log\log x)^{1-\alpha}))\), and \(\rho_K=\operatorname{Res}_{s=1}\zeta_K(s)\). Fixed degree gives an \(L_{|\Delta_K|}(1/2)\) bound. [Version history](https://arxiv.org/abs/2512.01588), [Theorem 1.3](https://koendeboer.com/publication/rigorousmethods/RigorousMethods.pdf).
+
+**KNOWN:** Their sampling theorem randomizes Arakelov/ray classes and obtains smooth or near-prime ideals with probabilities tied to their density. **SPECULATIVE:** This is relevant machinery for future sieve analyses, but its theorem does not establish the root-comparison transversality needed here. Nor does its stated complexity give an \(L_n[1/3]\) replacement for the missing step.
+
+**1.4. The rigorous factoring lineage and its constants**
+
+| Citation | Exact relevant status |
+|---|---|
+| John D. Dixon, “Asymptotically fast factorization of integers,” *Math. Comp.* **36**(153) (1981), 255–260. | **KNOWN, unconditional:** Randomized factoring in expected \(\exp(O(\sqrt{\log n\log\log n}))\) time. The root-fiber symmetry underlying fruitfulness is proved in §2 below. [Paper](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf). |
+| Carl Pomerance, “Fast, rigorous factorization and discrete logarithm algorithms,” in *Discrete Algorithms and Complexity*, Academic Press, 1987, 119–143. | **KNOWN, unconditional:** A refined random-squares factoring algorithm has expected bound \(L_n[1/2,\sqrt2+o(1)]\). The paper also gives rigorous DLP algorithms for prime fields and characteristic two, with preprocessing \(L_q[1/2,\sqrt2+o(1)]\) and subsequent individual logarithms \(L_q[1/2,1/\sqrt2+o(1)]\). Fast smoothness recognition and sparse linear algebra are central ingredients. [Author’s copy](https://math.dartmouth.edu/~carlp/disclog.pdf). |
+| Brigitte Vallée, “Provably fast integer factoring with quasi-uniform small quadratic residues,” *STOC 1989*, 98–106; “Generation of elements with small modular squares and provably fast integer factoring algorithms,” *Math. Comp.* **56**(194) (1991), 823–849. | **KNOWN, unconditional:** Quasi-uniform sampling of roots whose modular squares have size \(O(n^{2/3})\), yielding expected factoring bound \(L_n[1/2,\sqrt{4/3}+o(1)]\). This is a rigorous theorem, without GRH. [STOC paper](https://doi.org/10.1145/73007.73016), [journal DOI](https://doi.org/10.1090/S0025-5718-1991-1068808-2). |
+| Martin Seysen, “A probabilistic factorization algorithm with quadratic forms of negative discriminant,” *Math. Comp.* **48**(178) (1987), 757–780. | **KNOWN, conditional on ERH/GRH:** A class-group relations algorithm with bound \(L_n[1/2,\sqrt{5/4}+o(1)]\). [Original paper](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf). |
+| Arjen K. Lenstra, “Fast and rigorous factorization under the generalized Riemann hypothesis,” *Indagationes Mathematicae (Proceedings)* **91**(4) (1988), 443–454. | **KNOWN, conditional on GRH:** Improves the class-group relations method to \(L_n[1/2,1+o(1)]\), with splitting success probability at least \(1/2-o(1)\) per analyzed attempt. [Paper](https://www.sciencedirect.com/science/article/pii/S1385725888800222). |
+| Hendrik W. Lenstra Jr. and Carl Pomerance, “A rigorous time bound for factoring integers,” *J. Amer. Math. Soc.* **5**(3) (1992), 483–516, DOI 10.1090/S0894-0347-1992-1137100-0. | **KNOWN, unconditional:** Complete prime factorization of every positive integer in expected \(L_n[1/2,1+o(1)]\) time. Multipliers and analytic estimates remove GRH from the relations-based class-group method. [Author’s copy](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1992c/art.pdf). |
+
+**HEURISTIC, with a known defect in its original general analysis:** C.-P. Schnorr and H. W. Lenstra Jr., “A Monte Carlo factoring algorithm with linear storage,” *Math. Comp.* **43** (1984), 289–311, is the random-class-groups method. It is distinct from Seysen’s relations method. Its proposed general \(L[1/2,1]\) analysis relies on class-number smoothness assumptions. Lenstra–Pomerance exhibit a fairly dense sequence on which the underlying assumption fails; their 1992 theorem is not a validation of that original analysis. [Original paper](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf), [Lenstra–Pomerance](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1992c/art.pdf).
+
+**KNOWN — search finding:** I found no unconditional general-purpose constant below \(1\). Rigorous improvements in a different regime include David Harvey, “An exponent one-fifth algorithm for deterministic integer factorisation,” *Math. Comp.* **90** (2021), 2937–2950, proving \(n^{1/5+o(1)}\) deterministic complexity. That improves polynomial-in-\(n\) deterministic bounds; it is asymptotically slower than the randomized Lenstra–Pomerance bound. [Paper](https://arxiv.org/abs/2010.05450).
+
+**1.5. Random square products do not settle fruitfulness**
+
+**KNOWN, unconditional:** Ernie Croot, Andrew Granville, Robin Pemantle and Prasad Tetali, “On sharp transitions in making squares,” *Ann. of Math.* **175** (2012), 1507–1550, DOI 10.4007/annals.2012.175.3.10, study independent uniform \(a_i\in[1,x]\). Define
+\[
+J(x)=\min_{2\le y\le x}\frac{x\pi(y)}{\Psi(x,y)}
+\]
+and let \(T(x)\) be the first index admitting a nonempty square-product subsequence. They prove, with probability tending to one,
+\[
+\left(\frac{\pi}{4}e^{-\gamma}-o(1)\right)J(x)
+\le T(x)\le
+\left(e^{-\gamma}+o(1)\right)J(x).
+\]
+[Paper](https://annals.math.princeton.edu/2012/175-3/p10).
+
+**KNOWN, unconditional:** Balister–Bollobás–Morris sharpen this to
+\[
+T(x)/J(x)\longrightarrow e^{-\gamma}
+\quad\text{in probability},\qquad
+\mathbb ET(x)=(e^{-\gamma}+o(1))J(x).
+\]
+Their probability space supplies no associated modular square roots whose relative signs could reveal a factor. [Theorems 1.1 and Corollary 1.2](https://arxiv.org/pdf/1608.03857).
+
+**1.6. Special integer families and survey guidance**
+
+**HEURISTIC:** The usual special NFS estimate for suitable Cunningham-type inputs is
+\[
+L_n[1/3,(32/9)^{1/3}+o(1)].
+\]
+The special form improves polynomial selection and norm sizes; it does not itself prove smooth-value counts or fruitful root comparisons. The original account explicitly presents a heuristic analysis: A. K. Lenstra, H. W. Lenstra Jr., M. S. Manasse and J. M. Pollard, “The number field sieve,” in *The Development of the Number Field Sieve*, LNM **1554**, Springer, 1993, 11–42. [Text](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf).
+
+**KNOWN — search finding:** I found no unconditional \(L[1/3]\) theorem for factoring the usual difficult SNFS families solely from their special polynomial representation. Literal restricted families do admit much faster rigorous algorithms; §3 gives one with both prime factors large.
+
+**KNOWN:** The following surveys explicitly separate proved components from heuristic factoring conclusions:
+
+- Carl Pomerance, “On the role of smooth numbers in number theoretic algorithms,” *Proceedings of the ICM, Zürich 1994*, Birkhäuser, 1995, 411–422. It distinguishes rigorous random-squares/class-group methods from heuristic sieve analyses. [Text](https://math.dartmouth.edu/~carlp/PDF/paper104.pdf).
+- Carl Pomerance, “A tale of two sieves,” *Notices Amer. Math. Soc.* **43** (1996), 1473–1485. Its discussion explicitly separates smoothness assumptions from the further assumption that assembled congruences are useful. [Text](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf).
+- Carl Pomerance, “Smooth numbers and the quadratic sieve,” in *Algorithmic Number Theory*, MSRI Publications **44**, Cambridge University Press, 2008, 69–81. It identifies the practical QS complexity as heuristic and the Lenstra–Pomerance bound as rigorous. [Text](https://math.dartmouth.edu/~carlp/PDF/qs08.pdf).
+
+**2. The obstruction: an exact algebraic formulation**
+
+**2.1. Why Dixon’s fruitfulness is provable**
+
+**PROVED — root-fiber symmetry.** Let \(n\) be odd and have \(r\ge2\) distinct prime factors. Put
+\[
+U=(\mathbb Z/n\mathbb Z)^*,\qquad E=\mu_2(\mathbb Z/n\mathbb Z).
+\]
+By the Chinese remainder theorem, \(|E|=2^r\). Indeed, modulo an odd prime power, \((z-1)(z+1)\equiv0\) forces \(z\equiv1\) or \(-1\), since the two factors have coprime odd parts.
+
+Sample independent uniform \(X_i\in U\), and let \(Z_i\) be the standard positive representative of \(X_i^2\bmod n\). Conditional on \(Z_i=z_i\), the variable \(X_i\) is uniform on a fiber of the squaring map. That fiber is a torsor for \(E\):
+\[
+X_i\mapsto eX_i,\qquad e\in E.
+\]
+
+Suppose smoothness acceptance and dependency selection depend only on the \(Z_i\), their factorizations, and independent auxiliary randomness. Condition on all those data. For any selected nonempty dependency \(S\),
+\[
+\prod_{i\in S}Z_i=V^2
+\]
+with \(V\) now fixed. Holding every selected \(X_i\) except one fixed, the product
+\[
+W=V^{-1}\prod_{i\in S}X_i
+\]
+is uniform on \(E\). Therefore
+\[
+\Pr(W\notin\{1,-1\}\mid\text{conditioned data})
+=1-\frac{2}{2^r}.
+\]
+For a semiprime this is exactly \(1/2\).
+
+The symmetry is thus **invariance of the entire conditioned randomness space under multiplication of one sampled root by any element of \(E\)**. It is not an assertion that a linear-algebra output “looks random.”
+
+**PROVED — stronger conditional statement.** For a semiprime, fix the accepted residues and let their dependency space have dimension \(k\). Conditional on those residues, Dixon’s factor-detecting functional is uniform on the \(2^k\)-element dual space. Consequently,
+\[
+\Pr(\text{every dependency is unfruitful}\mid Z_1,\ldots,Z_t)=2^{-k}.
+\]
+
+To see this, choose reference roots of the residues. Each sampled root differs from its reference by an independent uniform element of \(E\). Modulo global sign, these give independent uniform bits on the relation coordinates. Restriction from the ambient coordinate space to the dependency space is surjective on dual spaces. The reference roots contribute only a fixed additive functional.
+
+**2.2. Why the same argument does not establish QS, linear-sieve or NFS fruitfulness**
+
+**PROVED — failure of the QS symmetry argument.** QS samples \(x\) in a short interval near \(\sqrt n\) and factors
+\[
+Q(x)=x^2-n.
+\]
+Replacing \(x\bmod n\) by a CRT sibling preserves its modular square, but generally does not preserve the sampling interval. Moreover, the exact integer \(Q(x)\), on which acceptance and parity data depend, changes. Thus the transformation does not preserve the conditioned probability space used in Dixon’s proof.
+
+**KNOWN:** Schroeppel’s linear sieve likewise obtains auxiliary values through structured sieving rather than uniform sampling of complete modular-root fibers. Its claimed factoring complexity remains unproved. [Bernstein–Chou, Appendix B.3](https://cat.cr.yp.to/cryptattacktester-20240612.pdf).
+
+**PROVED — limitation of that inference for NFS.** Uniformity of \(m\), polynomial coefficients, or pairs \((a,b)\) does not by itself imply uniformity of modular-root branches after conditioning on simultaneous smoothness and dependency constraints. To invoke Dixon’s proof one would need a measure-preserving action on those conditioned data that changes the root-comparison class. The stated parameter randomizations do not supply such an action merely by being uniform.
+
+**SPECULATIVE:** A different symmetry might exist in an enlarged NFS construction. The failure above is a failure of the proposed proof mechanism, not an impossibility theorem for all modifications.
+
+**2.3. The proposed homomorphism is valid**
+
+**PROVED — theorem, with well-definedness made explicit.** Let \(K\) be a number field. Let \(\phi\) be an evaluation homomorphism from a suitable subring/localization of \(K\) to \(\mathbb Z/n\mathbb Z\). Suppose the relations are pairs
+\[
+(r_i,\beta_i),\qquad r_i\in\mathbb Q^*,\quad\beta_i\in K^*,
+\qquad r_i\equiv\phi(\beta_i)\pmod n,
+\]
+with all required evaluations units.
+
+Let
+\[
+D=\left\{s\in\mathbb F_2^t:
+\prod_i r_i^{s_i}\in\mathbb Q^{*2},\
+\prod_i\beta_i^{s_i}\in K^{*2}\right\}.
+\]
+Assume the square roots for these dependencies are evaluable under \(\phi\). Choose
+\[
+u(s)^2=\prod_i r_i^{s_i},\qquad
+v(s)^2=\prod_i\beta_i^{s_i}.
+\]
+Then
+\[
+H(s)=\left[u(s)\phi(v(s))^{-1}\right]
+\in\mu_2(\mathbb Z/n\mathbb Z)/\{\pm1\}
+\]
+is a well-defined homomorphism.
+
+*Proof.* The set \(D\) is a vector space: it is the kernel of the map into
+\[
+\mathbb Q^*/\mathbb Q^{*2}\ \oplus\ K^*/K^{*2}.
+\]
+The evaluated ratio has square \(1\). Either characteristic-zero square root has only two choices, differing by a global sign, so its class in the quotient is independent of those choices.
+
+For subsets \(S,T\), put
+\[
+r_I=\prod_{i\in S\cap T}r_i,\qquad
+\beta_I=\prod_{i\in S\cap T}\beta_i.
+\]
+Square roots for the symmetric difference are
+\[
+\frac{u(S)u(T)}{r_I},\qquad
+\frac{v(S)v(T)}{\beta_I},
+\]
+up to signs. Hence
+\[
+H(S\triangle T)
+=
+H(S)H(T)\left[\frac{\phi(\beta_I)}{r_I}\right]
+=H(S)H(T).
+\]
+The final equality is exactly the relation congruence. ∎
+
+**PROVED — scope qualification.** Coprimality alone does not define \(\phi\) on an arbitrary number-field square root. One must ensure the root lies in an evaluable ring. For example, working in the maximal order localized away from denominators coprime to \(n\) resolves the issue when the order index is invertible modulo \(n\). Without such a condition, the displayed map may be undefined; that is a well-definedness defect, not a counterexample to the homomorphism.
+
+**2.4. Fruitfulness is linear for non-Blum semiprimes too**
+
+**PROVED.** For odd
+\[
+n=\prod_{j=1}^r p_j^{e_j},
+\]
+CRT gives
+\[
+\mu_2(\mathbb Z/n\mathbb Z)/\{\pm1\}\cong\mathbb F_2^{r-1}.
+\]
+For unit square congruences, a proper factor is obtained precisely when \(H(s)\ne0\).
+
+For a semiprime \(pq\), write the evaluated root ratio as signs
+\[
+w_p,w_q\in\{\pm1\}.
+\]
+Then
+\[
+F(s)=\frac{1-w_pw_q}{2}\in\mathbb F_2
+\]
+is linear, and fruitfulness is exactly \(F(s)=1\). No congruence assumptions on \(p,q\bmod4\) occur.
+
+For more prime factors, failure is the linear subspace \(\ker H\); success is its complement. If \(\operatorname{rank}H>1\), success generally cannot be expressed by one affine linear equation.
+
+The homomorphism theorem also holds for even \(n\) when defined, although the equivalence between nonzero quotient class and all possible useful gcd outcomes needs adjustment. Factoring out \(2\) removes that peripheral case.
+
+**PROVED — exact success law.** If
+\[
+\rho=\operatorname{rank}(H:D\to\mathbb F_2^{r-1})
+\]
+and \(s\) is uniform on \(D\), then
+\[
+\Pr(\text{fruitful})=1-2^{-\rho}.
+\]
+Every fiber of a homomorphism of finite vector spaces has equal size. Thus, for a fixed semiprime relation table, uniform dependency sampling gives either zero fruitfulness or exactly \(1/2\).
+
+**2.5. What the Blum condition buys**
+
+**PROVED.** When \(p,q\equiv3\pmod4\),
+\[
+\chi_n(w)=\chi_p(w_p)\chi_q(w_q)=w_pw_q.
+\]
+Thus the Jacobi character provides an ambient multiplicative description of \(F\).
+
+That description can fail outside the Blum case without destroying linearity on dependencies. For example, modulo \(65=5\cdot13\),
+\[
+14^2\equiv1,\qquad14\not\equiv\pm1,
+\]
+but \(14\equiv12^2\pmod{65}\). Every order-two character of \((\mathbb Z/65\mathbb Z)^*\) therefore takes value \(1\) on \(14\). Nevertheless its class in \(\mu_2/\{\pm1\}\) is nonzero.
+
+Consequently, “there is no suitable ambient quadratic character” does **not** imply “there is no linear factor-detecting functional on true dependencies.”
+
+**2.6. The row-space criterion**
+
+**PROVED.** Suppose \(A\) is an exact constraint matrix with \(D=\ker A\). For a semiprime, extend \(F:D\to\mathbb F_2\) to a row \(f\in\mathbb F_2^t\). Then
+\[
+F\ne0
+\iff f\notin\operatorname{rowspan}(A)
+\iff
+\operatorname{rank}\begin{pmatrix}A\\f\end{pmatrix}
+=\operatorname{rank}A+1.
+\]
+Indeed,
+\[
+(\ker A)^\perp=\operatorname{rowspan}(A).
+\]
+Different extensions differ by an element of this row space, so the criterion is independent of the extension.
+
+This identifies the missing assertion exactly: **the actual arithmetic functional must be nonzero on the actual square-dependency space**. A large nullity alone proves nothing about this.
+
+**3. What can be proved, and the precise missing lemma**
+
+**3.1. Two proposed randomness injections fail**
+
+**PROVED — common square multipliers preserve the obstruction.** Replace a relation by
+\[
+r_i'=r_i c_i^2,\qquad
+\beta_i'=\beta_i\gamma_i^2,
+\qquad c_i\equiv\phi(\gamma_i)\pmod n.
+\]
+The true dependency space is unchanged, and the additional factors in the two square roots cancel under evaluation. Therefore \(H'=H\).
+
+If instead one manufactures
+\[
+c_i^2\equiv\phi(\gamma_i)^2\pmod n
+\]
+with \(c_i\not\equiv\pm\phi(\gamma_i)\), that multiplier pair already gives a fruitful congruence. Such a construction has solved the factoring step rather than supplied it for free.
+
+**KNOWN:** Standard smooth-number estimates give, for fixed \(\beta>0\) and
+\[
+B=L_n[1/3,\beta],
+\]
+the asymptotic
+\[
+\frac{\Psi(n,B)}n
+=
+\exp\!\left(
+-\left(\frac{2}{3\beta}+o(1)\right)
+(\log n)^{2/3}(\log\log n)^{1/3}
+\right).
+\]
+See E. R. Canfield, Paul Erdős and Carl Pomerance, “On a problem of Oppenheim concerning ‘Factorisatio Numerorum’,” *J. Number Theory* **17** (1983), 1–28. [Paper](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf).
+
+**PROVED — a direct Dixon hybrid exceeds the target scale.** Let \(n=pq\) be balanced. A uniform unit \(X\bmod n\) has at most four preimages for each possible square residue. Thus
+\[
+\Pr(X^2\bmod n\text{ is }B\text{-smooth})
+\le \frac{4\Psi(n,B)}{\varphi(n)}.
+\]
+Since \(\varphi(n)\sim n\), independent uniform Dixon sampling requires at least
+\[
+L_n\!\left[2/3,\frac{2}{3\beta}+o(1)\right]
+\]
+expected trials to obtain one accepted relation.
+
+This rules out the particular strategy “append a uniform Dixon relation smooth over the NFS factor base” at \(L[1/3]\) cost. It does not rule out a new sampler, analogous in spirit to Vallée’s, with much smaller residues.
+
+**3.2. A rigorous restricted-family \(L[1/3]\) theorem**
+
+**PROVED — deterministic promise theorem.** Fix \(c>0\). Consider distinct odd semiprimes \(n=pq\), \(p<q\), satisfying
+\[
+q-p\le n^{1/4}L_n[1/3,c/2].
+\tag{1}
+\]
+Fermat’s algorithm factors every such input in
+\[
+L_n[1/3,c+o(1)]
+\]
+bit operations.
+
+*Proof.* Set
+\[
+a_*=\frac{p+q}{2},\qquad b_*=\frac{q-p}{2}.
+\]
+Then \(a_*^2-n=b_*^2\). Starting at \(\lceil\sqrt n\rceil\), test successive \(a\) until \(a^2-n\) is square. The number of tests is at most \(a_*-\sqrt n+2\), and
+\[
+a_*-\sqrt n
+=\frac{(q-p)^2}{4(a_*+\sqrt n)}
+\le\frac{(q-p)^2}{8\sqrt n}
+\le\frac18 L_n[1/3,c].
+\]
+Each test costs a polynomial in \(\log n\), absorbed by the \(o(1)\). The discovered factors are \(a-b\) and \(a+b\). ∎
+
+**PROVED — this family contains many balanced semiprimes.** Partition \([X,2X]\) into \(M=O(\sqrt X)\) intervals of length at most \(\sqrt X\), and let \(r_j\) count their primes. The prime number theorem gives
+\[
+P=\sum_jr_j\asymp X/\log X.
+\]
+Cauchy–Schwarz yields
+\[
+\sum_j\binom{r_j}{2}
+\ge\frac{P^2}{2M}-\frac P2
+\gg \frac{X^{3/2}}{(\log X)^2}.
+\]
+Each pair produces a distinct balanced semiprime \(n\asymp X^2\) with \(q-p\le\sqrt X\le n^{1/4}\), hence satisfying (1). The prime number theorem used here is **KNOWN**; one primary proof is D. J. Newman, “Simple analytic proof of the prime number theorem,” *Amer. Math. Monthly* **87** (1980), 693–696. [Paper](https://www.math.stonybrook.edu/~moira/mat331-spr10/papers/1980%20NewmanSimple%20Analytic%20Proof%20of%20the.pdf).
+
+**PROVED — limitation:** This is a thin close-factor family, and its proof never uses NFS. It is a restricted factoring theorem, not a proof of any averaged version of Conjecture 7.1.
+
+**3.3. A strictly weaker arithmetic target**
+
+For fixed \(n\), let \(\Gamma_{m,R}\) be the full set of admissible smooth relations in the prescribed randomized-NFS box. Let \(D_{m,R}\) be its true square-dependency space and \(H_{m,R}\) the map proved above.
+
+**SPECULATIVE — averaged transversality lemma.** There exists \(\eta(n)\to0\) such that, for every sufficiently large balanced Blum semiprime,
+\[
+\Pr_{m,R}\!\left(H_{m,R}(D_{m,R})\ne0\right)
+\ge \exp(-\eta(n)\Lambda_n).
+\tag{AT}
+\]
+The probability uses the algorithm’s actual parameter distribution, with admissibility and exceptional cases specified.
+
+This permits almost all parameter choices to fail. It is therefore much weaker in quantifiers than nontriviality for every admissible parameter choice.
+
+**PROVED — cost-respecting reduction.** Suppose an implementable trial:
+
+1. costs expected \(T_n=L_n[1/3,C+o(1)]\);
+2. produces a space \(V\) of true dependencies, or a certified equivalent sampling procedure;
+3. has \(\Pr(H(V)\ne0)\ge\varepsilon_n\);
+4. samples a uniform dependency and extracts its roots within the same budget.
+
+For a semiprime, one trial succeeds with probability at least \(\varepsilon_n/2\). Independent restart therefore has expected cost at most
+\[
+2T_n/\varepsilon_n.
+\]
+If \(\varepsilon_n\ge e^{-o(\Lambda_n)}\), the leading constant remains \(C\).
+
+*Proof.* Conditional on \(H(V)\ne0\), exactly half of \(V\) is fruitful. For independent repeated trials, the renewal identity gives expected total cost equal to expected trial cost divided by trial success probability. Correlation between a trial’s cost and success does not invalidate that identity. ∎
+
+**SPECULATIVE — additional sampling requirement:** If (AT) is formulated on the *full* relation box while an implementation retains only a subset, one must also show that the retained space preserves a fruitful direction with probability \(e^{-o(\Lambda_n)}\). Full-box existence alone does not justify arbitrary relation truncation.
+
+**KNOWN — outcome of this investigation:** I cannot prove (AT), its version for most balanced semiprimes, or an \(L[1/3]\)-cost hidden-randomness construction.
+
+**PROVED — averaging caution.** A lower bound on
+\[
+\mathbb E_n\Pr_{m,R}(H_{m,R}\ne0)
+\]
+does not imply a bound for most inputs, or a bound on average restart time. Success could be concentrated on a small set of inputs; restart cost depends on the reciprocal of each input’s success probability. A “most \(n\)” theorem needs an appropriate pointwise lower bound outside a set of vanishing relative density.
+
+**3.4. Which tools come closest**
+
+**KNOWN:** Adam J. Harper, “Bombieri–Vinogradov and Barban–Davenport–Halberstam type theorems for smooth numbers,” arXiv:1208.5992 (2012), proves averaged progression estimates in the range \((\log x)^K\le y\le x\), together with individual character-sum estimates. These combine large-sieve and zero-density methods. [Paper](https://arxiv.org/abs/1208.5992).
+
+**KNOWN:** Alexandru Pascadi, “Smooth numbers in arithmetic progressions to large moduli,” *Compositio Math.* **161** (2025), 1923–1974, DOI 10.1112/S0010437X2500747X, obtains exponent \(66/107-o(1)\). His “On the exponents of distribution of primes and smooth numbers,” arXiv:2505.00653 (2025), obtains \(5/8-o(1)\), with the stated weighting restrictions for the prime application. [Published paper](https://doi.org/10.1112/S0010437X2500747X), [later preprint](https://arxiv.org/abs/2505.00653).
+
+**PROVED — why these statements do not imply (AT).** Progression estimates control where smooth integers lie. They do not determine the root-comparison functional on the kernel of simultaneous rational and algebraic square constraints. Even complete knowledge of a constraint matrix \(A\) is compatible with both \(F=0\) and \(F\ne0\) on \(\ker A\). An additional theorem connecting the root data to that matrix is necessary.
+
+**SPECULATIVE — large-sieve route:** Averaging over input primes might control suitable root-comparison correlations. The obstacle is formulating them with weights that retain simultaneous smoothness, square-dependency constraints, and their dependence on \(n,m,R\). Ordinary quadratic character sums of individual relation values do not supply those correlations.
+
+**KNOWN:** Antal Balog, Valentin Blomer, Cécile Dartyge and Gérald Tenenbaum, “Friable values of binary forms,” *Comment. Math. Helv.* **87** (2012), 639–667, prove positive-proportion results for fixed forms with smoothness bounds \(y=x^{g-2+\epsilon}\), and \(y=x^{1/\sqrt e+\epsilon}\) for cubic forms. [Paper](https://tenenb.perso.math.cnrs.fr/PPP/friableforms.pdf).
+
+**PROVED — limitation of that result here.** Those fixed-form smoothness statements contain no assertion about the factor-detecting functional. They therefore cannot alone prove fruitfulness, even in a parameter range where they provide enough smooth values.
+
+**SPECULATIVE — Chebotarev route:** Chebotarev is well suited to distinguishing nonsquare algebraic classes through quadratic extensions. On a true dependency, however, the algebraic product is already square. Detecting nonsquares and proving that two resulting square roots disagree modulo different factors are separate tasks. A useful application would require a new cover or reciprocity description that encodes that comparison, with effective uniformity in the growing parameters.
+
+**SPECULATIVE — ERH class-group route:** The de Boer–Pellet-Mary–Wesolowski sampling machinery may help construct better distributed algebraic relations. What remains missing is a simultaneous rational-side/root-comparison theorem and a cost bound on the \(L_n[1/3]\) scale. Their present theorem supplies neither assertion automatically.
+
+**4. The most diagnostic small exact experiment**
+
+**SPECULATIVE — design recommendation:** Measure the complete factor-detecting map on small dependency spaces. A list of successful gcds is substantially less diagnostic.
+
+**4.1. Inputs and sampling panels**
+
+**SPECULATIVE:** Start at 40 bits, then repeat at 48, 56 and 60 bits. Generate balanced distinct semiprimes in three strata:
+\[
+(p\bmod4,q\bmod4)=(3,3),(1,3),(1,1).
+\]
+Record \(\nu_2(p-1)\) and \(\nu_2(q-1)\) as well.
+
+Use two separate panels:
+
+- many independent polynomials for each fixed \(n\);
+- many independent \(n\) with a fixed polynomial-generation rule.
+
+Keep \(p,q\) hidden from relation collection and use them only after each relation table is frozen. Prescribe the relation order and stopping rules in advance.
+
+**4.2. QS control**
+
+**SPECULATIVE:** Collect fully factored relations
+\[
+Q_i=x_i^2-n=(-1)^{e_{i,-1}}\prod_{\ell\le B}\ell^{e_{i,\ell}}.
+\]
+Use the exact sign-and-parity matrix \(A\), and compute a basis \(s_1,\ldots,s_k\) of \(D=\ker A\).
+
+For each basis vector compute
+\[
+U_j=\prod_i x_i^{(s_j)_i}\pmod n,
+\qquad
+V_j=\prod_{\ell}\ell^{\frac12\sum_i(s_j)_i e_{i,\ell}}\pmod n,
+\]
+with the sign condition checked exactly. Evaluate \(W_j=U_j/V_j\) modulo \(p,q\), and record whether the two signs agree.
+
+**PROVED:** These \(k\) labels determine the whole functional \(F\). All labels zero means every dependency is unfruitful. Any nonzero label means exactly half of the full dependency space is fruitful.
+
+**SPECULATIVE:** Record prefixes at nullities \(k=1,2,\ldots,12\). Small \(k\) is useful: it makes tables with zero functional observable under the random-functional model. Large-nullity tables almost always appearing fruitful would provide little discrimination between models.
+
+**4.3. Degree-three NFS**
+
+**SPECULATIVE:** Use an irreducible cubic with \(f(m)\equiv0\pmod n\), and primitive pairs in a finite box. Include:
+
+- a base-expansion polynomial;
+- independent coefficient perturbations \(f=\widehat f+(X-m)R\);
+- exact rational and algebraic factorizations;
+- all sign, denominator, leading-coefficient and bad-prime corrections.
+
+Retain enough information to recover dependencies in the original relation coordinates.
+
+**SPECULATIVE — essential exactness requirement:** Compute the **true** algebraic square kernel using certified class-group/unit computations, or an equivalent exact square-class computation. Even ideal valuations alone are insufficient. Check every resulting basis square root by squaring it in the number field.
+
+Then evaluate the root-comparison functional on a basis of the simultaneous rational/algebraic square kernel.
+
+**4.4. How to test the character rows**
+
+**PROVED:** Every correctly defined auxiliary quadratic-character row vanishes on true algebraic squares. Thus, if \(D\) is the true dependency space and \(A_t\) consists of parity rows plus \(t\) sampled characters,
+\[
+D\subseteq\ker A_t.
+\]
+Adding legitimate character rows cannot remove a true fruitful dependency.
+
+**SPECULATIVE:** For each table report
+\[
+k=\dim D,\qquad
+j_t=\dim\ker A_t-\dim D,\qquad
+\rho=\operatorname{rank}(H|D).
+\]
+This separates failure to recognize actual squares from failure of fruitfulness.
+
+**PROVED:** If \(H|D\ne0\) for a semiprime and one samples uniformly from \(\ker A_t\), accepting only true dependencies, then
+\[
+\Pr(\text{true and fruitful})=2^{-(j_t+1)}.
+\]
+There are \(2^{\dim D-1}\) fruitful vectors among \(2^{\dim\ker A_t}\) candidates.
+
+**SPECULATIVE:** To display the row-independence test explicitly, construct an exact matrix \(A_{\rm exact}\) with kernel \(D\), extend the basis labels to a row \(f\), and check
+\[
+\operatorname{rank}[A_{\rm exact};f]-\operatorname{rank}A_{\rm exact}.
+\]
+For a semiprime this is precisely \(\rho\in\{0,1\}\). An arbitrary extension outside \(D\) must not be tested against an inexact kernel: that could manufacture a meaningless rank increase.
+
+**4.5. Controls and interpretation**
+
+**PROVED predictions:**
+
+- Dixon’s control has conditional zero-functional probability \(2^{-k}\).
+- Once \(\rho=1\), uniform sampling from \(D\) gives fruitfulness exactly \(1/2\).
+- Uniform sampling from \(D\setminus\{0\}\) instead gives
+  \[
+  \frac{2^{k-1}}{2^k-1}.
+  \]
+- Every tested pair must satisfy
+  \[
+  H(s+t)=H(s)+H(t).
+  \]
+- Common square multipliers leave \(H\) unchanged.
+
+**HEURISTIC prediction for QS/NFS:** A uniform-functional model predicts zero-functional probability \(2^{-k}\). Testing that prediction across polynomial choices and input residue classes directly probes the missing randomness assumption.
+
+**SPECULATIVE — most informative output:** A table of zero-functional frequencies versus \(k\), stratified by input class and polynomial randomization, together with \(j_t\), would distinguish three phenomena: inadequate square detection, biased dependency selection, and genuine vanishing of the factor-detecting map. Only the third is the fruitfulness obstruction isolated here.
