@@ -15,10 +15,17 @@ status label, the key numbers, and pointers to notes, code and commits.
   `codex/`; curated copies are in `notes/codex_*.md`.
 - Paths are relative to the repository root.
 
-**Headline.** No polynomial-time or subexponential factorizer was found. The one positive
-result of substance is **Theorem D′**: a deterministic algorithm that factors all but an
-O(N^{−ε}) fraction of balanced semiprimes (p < q ≤ 2p) in N^{1/6+5ε/6}·polylog bit operations.
-It is average-case only. A paper draft is in [`paper/`](paper/).
+**Headline.** No polynomial-time or subexponential factorizer was found. The main positive
+results concern balanced semiprimes (p < q ≤ 2p):
+- **Theorem AV** (P-13): a complete deterministic algorithm. Its worst case is
+  Harvey–Hittmeir's N^{1/5}, and its **average cost** over uniform balanced semiprimes is
+  **N^{1/6}·polylog**.
+- Its engine, **Theorem D′** (P-12), sharpened by the fourth moment (P-14): N^{−ε} exceptions at
+  cost N^{1/6+5ε/12}.
+- **Theorem R** (P-15): the worst case reduces to coverage alone.
+- **T1/T2** (W-21): a true-factor N^{1/6} floor for local collision designs.
+
+All of these are AI-reviewed only. A paper draft is in [`paper/`](paper/).
 
 ---
 
@@ -29,7 +36,7 @@ It is average-case only. A paper draft is in [`paper/`](paper/).
 - [2. Refuted ideas](#2-refuted-ideas)
 - [3. Positive results](#3-positive-results)
 - [4. Open](#4-open)
-- [5. Reviews and literature rounds (codex r1–r13)](#5-reviews-and-literature-rounds-codex-r1r13)
+- [5. Reviews and literature rounds (codex r1–r17)](#5-reviews-and-literature-rounds-codex-r1r17)
 - [6. User ideas](#6-user-ideas)
 - [7. Lessons](#7-lessons)
 
@@ -58,7 +65,13 @@ It is average-case only. A paper draft is in [`paper/`](paper/).
 | 4 | Umans–Wang divisor covers (divcover) | W-19, P-11, O-6 | `notes/divcover_*.md` |
 | 4 | Quasi-Riemann Hypothesis consequences (codex r11) | W-20 | `notes/codex_r11_qrh_factoring.md` |
 | 4 | Theorem D′ (dcltheorem) | P-12 | `notes/dcltheorem_*.md` |
-| 5 | Paper, sharper sieve, unbalanced ratios, worst case, below 1/6, Lean | O-7…O-11 | `STATUS.md` Phase 5 table |
+| 5 | Fourth-moment coverage (sieve2d) | P-14, W-22 | `notes/sieve2d_*.md` |
+| 5 | Average-time complete algorithm (avgtime) | P-13 | `notes/avgtime_results.md` |
+| 5 | Worst case from coverage (dchworst) | P-15, W-23, R-24 | `notes/dchworst_*.md` |
+| 5 | Below 1/6 (below16) | W-21, R-25 | `notes/below16_*.md` |
+| 5 | Randomized NFS fruitfulness (nfsfruit) | W-24 | `notes/nfsfruit_*.md` |
+| 5 | Unbalanced ratios (unbalanced; still running) | O-9 | `notes/unbalanced_*.md` |
+| 5 | Paper, Lean | O-11 | `paper/`, `lean/` |
 
 ---
 
@@ -197,8 +210,13 @@ Max ratio 0.69 for p < 20 000. `notes/trackC_analysis.md`.
   average-case algorithms such as Theorem D′, which only need to reach the true factor for most
   inputs, and it is not a factoring lower bound.
 - Verdict: **proved** in the model (Opus critic; r12: correct in the stipulated model).
-- Pointers: `notes/multimod_results.md` §3.2; `paper/main.tex` §5 (model with unit classes and
-  a window-count charge; full proofs of the denominator lemma and Theorem C); results `55fb688`.
+- Pointers: `notes/multimod_results.md` §3.2; `paper/main.tex` Appendix A; results `55fb688`.
+- **Prior art (found 2026-10-18 by the paperwriter2 search; read):** the same N^{1/6}
+  full-range covering floor, and its proof idea, are in Ward–Maestro, *Floors for deterministic
+  integer factoring* (iGent AI report, 2 Sept 2026), Lemma 3.2 and Thm 3.6, for unlocked Lehman
+  forms. That work also has the N^{1/5} materialised-giant floor (Thm 3.4) and bounded-degree
+  forms (Thm 9.4). Our version adds arbitrary lock moduli but is **not new in exponent or
+  method**.
 
 **W-17. Theorems A′ and B: below 1/5 needs N^{Ω(1)} moduli (multimod).**
 - A′: degree ≥ 2 targets never beat N^{1/5}. B: with J moduli, X ≥ c N^{1/5}(J N^{o(1)})^{−1/5}.
@@ -227,6 +245,45 @@ Max ratio 0.69 for p < 20 000. `notes/trackC_analysis.md`.
 - Pointers: `notes/codex_r11_qrh_factoring.md`; `69bb2d3`.
 
 ---
+
+**W-21. True-factor floor for local designs, T1/T2 (below16).**
+- Statement: in 𝔐⁺ with labels charged, take residue-local degree-1 designs (keys N mod
+  K ≤ C₂M², arbitrary finite windows) or size-local designs (≈ n/2 bits of N, intervals). They
+  reach the true factor of ≤ C n² X^{3/2} N^{−1/4} of S_n. Constant success needs
+  X ≥ N^{1/6}/polylog.
+- D′ is dominated by such a design, so D″ is within polylog of the floor. This replaces the
+  overclaim "D′ is optimal in its model".
+- Verdict: **proved** in the model (Opus critic + codex below16_2, fixes applied).
+- Ward–Maestro Remark 3.5 has the same exponent, but for real-measure oblivious cells, not for
+  true-factor counting.
+- Outside the model: p − 1 factors a positive proportion at N^{0.152} (Ward–Maestro
+  Prop. 35.3, via Friedlander 1989), but no almost-all statement.
+- `notes/below16_results.md` §2.
+
+**W-22. Moment barrier for coverage tails (sieve2d).**
+- Using Peled–Yadin–Yehudayoff 2011, ≤ J-prime statistics are consistent with uncovered mass
+  ≥ c_J λ^{−⌊J/2⌋}, so a J ≤ 5 analysis cannot beat λ^{−2}. **Proved** for that scope.
+- At j = 6 the error analysis fails, but the data show 6th moments within 4% of the model. So
+  this is a technique barrier, not a property of the true distribution.
+- e^{−cλ} needs genuinely new input. `notes/sieve2d_results.md` §4.
+
+**W-23. Worst-case coverage barriers (dchworst).**
+- Theorem W: coverage with H ≤ √Y·J^{−c} gives the worst-case exponent
+  min(1/5, (1−c)/(7/2−c)), which is < 1/5 iff c > 3/8.
+- No design provably covers every pair with c > 0. Barriers:
+  - positivity with error ≳ √J gives c ≤ 1/4 (heuristic);
+  - single-modulus pigeonhole gives c = 0 (proved, for that strategy);
+  - coprime-pair proofs imply a sparse-interval covering statement U(x, Y^{1/8}).
+- Theorem N (**proved**): a positive proportion of pairs is uncovered for H ≤ 0.2√n, so
+  DCH_pair(κ) needs κ ≥ 1/2.
+- `notes/dchworst_results.md` §§2, 4, 5.
+
+**W-24. Rigorous L[1/3] factoring via NFS fruitfulness (nfsfruit).**
+- No proof. Lemma H (**proved**): fruitfulness is a homomorphism K0 → μ₂/±1, for all n.
+- A Bockstein formula and a reduction hierarchy are **proved**: batch Conjecture F ⇐ static
+  Lemma M ⇐ an involution.
+- Obstruction: β is mod-4 information, which needs Jacobi sums far below the Burgess range.
+- `notes/nfsfruit_results.md`.
 
 ## 2. Refuted ideas
 
@@ -343,6 +400,26 @@ as an exponent improvement. `notes/user_ideas/2026-10-18_chirp_quadratic_exponen
 
 ---
 
+**R-24. The paper's candidate-wise DCH (dchworst).**
+- The earlier "every integer candidate, all N coprime to 6, A ≠ B" form is **false on squares**:
+  for N = t², p = t, the value (B − A)t² has no band divisor.
+- Replaced by the pair form DCH_pair. `notes/dchworst_results.md` §6.
+
+**R-25. Escapes from the 1/6 floor (below16).** All are **refuted for the stated local
+models**:
+- multi-base searches with exact rational relations (Prop. MB);
+- average-case flatness (degree ≥ 2 conditional on a real-fibre hypothesis);
+- local adaptive selectors;
+- class-group filters.
+
+Two routes remain:
+- The relation-method escape (deterministic QS) is a genuine but **conjectural** escape. It
+  needs H1, smooth-value concentration, and H2, a Jacobi character nontrivial on the kernel.
+  E4 (3000 instances) found signs that look fair.
+- A global selector, keys finer than M², and label multiplicity are **open**.
+
+`notes/below16_results.md`.
+
 ## 3. Positive results
 
 **P-1. Seed lemmas L1–L7.** [X^p]F_N = N/p; k·a_k = 0; prefix ⇔ K ≤ p ⇔ (K−1)! a unit;
@@ -434,6 +511,51 @@ naive). Stage-3 leaves are unchanged, so this is a constant. **Experimentally su
   `src/dcltheorem/`; `tests/test_dcltheorem.py`; theorem `bc1de32`, r13 fixes `539fdcf`;
   paper draft `paper/main.tex`.
 
+**P-13. Theorem AV: complete deterministic factoring with average cost N^{1/6}·polylog
+(avgtime).**
+- Algorithm LAD:
+  - a BSGS small-order detector (least k with gcd(2^k − 1, N) > 1, up to N^{3/10}, cost
+    N^{3/20});
+  - a ladder of D′ runs, H_{i+1} = ⌈H_i^{6/5}⌉, over O(log n) rungs;
+  - a Harvey–Hittmeir fallback;
+  - an AKS finish.
+- Verdict: **proved**. It always outputs the full factorisation, its worst case is HH's
+  N^{1/5}, and its average over uniform S_n is N^{1/6}(log N)^{c+1}log log N. It works because
+  D′'s tail n/H² decays faster than its cost H^{5/3}.
+- By-products:
+  - the ε audit (D′ valid for ε < 1/52 as written, < 1/40 with the dyadic Lemma D);
+  - D′ + one HH fallback gives 2/11, which is optimal for a single fallback;
+  - the no-detector ladder gives 17/100.
+- Reviews: codex avgtime_1 and an Opus critic, ACCEPT WITH FIXES. Prior art: not found by us.
+  Ward–Maestro Prop. 35.3 is positive-proportion only and explicitly not average-case.
+- `notes/avgtime_results.md`; `src/avgtime/`; `tests/test_avgtime.py`; `fc8e1ad`.
+
+**P-14. Two-variable fourth-moment coverage bound (sieve2d).**
+- |E_b|/|S_n| ≪ n⁴/H⁴, against D′'s n²/H². So the unchanged D′ has N^{−ε} exceptions at cost
+  N^{1/6+5ε/12} (ε ≤ 1/40); in the polylog regime, exceptions (log N)^{−max(4a,1+2a)}.
+  **Proved**.
+- Also the O(n/H²) prime presieve (Prop. 4; r16).
+- Pre-registered experiments: P1–P4 and P6 hold, with Poisson agreement pooled at 1.00001. P5
+  failed through an integer heavy-tail atom.
+- Reviews: Opus critic and codex sieve2d_2, ACCEPT WITH FIXES.
+- `notes/sieve2d_results.md`; `src/sieve2d/`; `f357ad1`.
+
+**P-15. Theorem R: the worst case of D′ reduces to coverage (dchworst).**
+- DCL-wc combines three things:
+  - base selection by a one-sided order dichotomy, adapting Harvey–Hittmeir 2026;
+  - a γ-order pre-step with an equal-order split;
+  - exploration of two-sided collisions with exact identification of Bp + Aq (Harvey 2021
+    Alg. 4.2).
+- It factors every balanced N whose pair is covered by any block, in N^{1/6+o(1)} plus the list
+  cost. **Proved**; Opus critic and codex dchworst_2, ACCEPT WITH FIXES.
+- Consequences:
+  - DCH_pair ⇒ worst case N^{1/6+o(1)};
+  - c > 3/8 ⇒ < 1/5 (Theorem W);
+  - Minkowski recovers Harvey's 1/5 (not new).
+- e6: 0 failures on covered pairs (exhaustive S_26, S_28, and 36 adversarial cells).
+- `notes/dchworst_results.md`; `src/dchworst/wcalg.py` (a correctness prototype, not a cost
+  witness); `03bc017`.
+
 ---
 
 ## 4. Open
@@ -461,27 +583,30 @@ block-primorial subset sums, log H = Θ(n/log n)); exhaustive search over 198 ce
 ranks 1–3) follows the random model; next step: bound the target-prime radical of proper rank-2
 GAPs. **Open.**
 
-**O-7. Worst case for D′ (DCH).** Needs (a) a divisor-cover hypothesis: every candidate p has
-ℓ | Bp² − AN for small weights and ℓ near N^{1/6} (**conjectured**). The paper states it in a form
-matching DCL-det's targets (A ≠ B, ℓ ≡ 3 mod 4, the four bands); the notes' DCH(κ) is a variant
-(A = B allowed, all primes) that only supports a modified algorithm, and only that variant was
-tested (0 uncovered in 25 exhaustive instances at 32–48 bits). Also needed: (b) large order
-mod the specific q on a clean band, and (c) excluding all-FULL pairs. Phase 5 agent `dchworst`.
+**O-7. Worst case for D′: coverage alone (DCH_pair).**
+- After Theorem R (P-15), obstacles (b) and (c) are gone. What remains is to prove
+  DCH_pair(κ) (worst case 1/6) or any covering theorem with c > 3/8 (worst case < 1/5). Both
+  are **open**, with barriers in W-23.
+- Exhaustive worst cases over S_32 and S_36 follow the Poisson extreme (experimentally
+  supported).
 
-**O-8. Sharper exceptional rate.** The large sieve gives n²/H²; the Poisson heuristic e^{−cH²/n}
-would give N^{−ε} at polylog cost (**conjectured**). A two-variable (bilinear) sieve over q is
-the candidate route. Phase 5 agent `sieve2d`.
+**O-8. Sharper exceptional rate.** Now n/H² (presieve) and n⁴/H⁴ (fourth moment, P-14).
+e^{−cH²/n} is **conjectured**, and it needs information beyond five-prime statistics (W-22). For
+the average-case theorem it would only change polylogs.
 
-**O-9. Unbalanced ratios q/p > 2.** DCL as specified costs worse than Harvey summed over all
-ratios (heuristic). Phase 5 agent `unbalanced`.
+**O-9. Unbalanced ratios q/p > 2.** The envelope of the proposed localized scheme with
+Pollard–Strassen is min((1+θ)/6, (1−θ)/4) at q/p = N^θ, with peak 1/5 at θ = 1/5 (cost analysis,
+r16). The agent `unbalanced` is **still running**; the paper has a marked placeholder.
 
-**O-10. Below 1/6.** For full-candidate covering in the one-base sumset model, W-16 rules it
-out; escaping that model needs a non-sumset collision mechanism. For average-case algorithms
-(true factor of most inputs) no such lower bound is known, so going below 1/6 on almost all of
-S_n is open. Phase 5 agent `below16`.
+**O-10. Below 1/6 on almost all / on average.**
+- W-21 rules it out for local degree-1 collision designs on the true-factor task.
+- Open escapes: a global selector (O-5 of below16), keys finer than M², label multiplicity per
+  giant, and relation methods (H1, H2).
+- Smooth-order methods beat 1/6 only on a positive proportion.
 
-**O-11. Lean 4 formalisation of D′'s key lemmas.** In progress (Phase 5 agent `leanform`,
-`lean/`).
+**O-11. Lean 4 formalisation of D′'s key lemmas.** Done for Lemmas 1–8, 10 and the
+capstone, with Lemma 9 (the large sieve) as an explicit hypothesis; 0 sorry
+(`notes/leanform_results.md`). The new results (AV, fourth moment, R, T1) are not formalised.
 
 **O-12. Smaller items.** C-HHloc (HH restricted to a certified interval; untested); a one-sided
 collision family inside a primality-style identity (untested); Elkies Z[p, q, t_p] targets
@@ -490,7 +615,7 @@ collision family inside a primality-style identity (untested); Elkies Z[p, q, t_
 
 ---
 
-## 5. Reviews and literature rounds (codex r1–r13)
+## 5. Reviews and literature rounds (codex r1–r17)
 
 | Round | Question | Main verdict | Pointers |
 |---|---|---|---|
@@ -512,6 +637,9 @@ collision family inside a primality-style identity (untested); Elkies Z[p, q, t_
 | dclt_1 | Referee of D′ | Clean band closes the order gap; fixes (baby-length rule, T(T+1), cost terms) | `codex/dclt_1.out` |
 | r13 final referee | Fresh referee of D′ and prior art | ACCEPT WITH FIXES; every proof step correct; finite-input output bug (returned N for prime N) fixed; McKee–Pinch §5 read; Carella 1308.2891 proof judged incomplete (referee's view) | `notes/codex_r13_final_referee.md` |
 | divcover_1/2 | Blind attempt and review of prime-only covers | Prime-only reformulation proved; R2 repaired; no construction | `codex/divcover_1.out`, `codex/divcover_2.out` |
+| r16 strategy | Positioning of D′ and open threads | O(n/H²) presieve; DCH false on squares; "D′ optimal" overclaims; D′+HH = 2/11; unbalanced envelope peaks at 1/5; Carella content defect | `codex/r16_strategy.out` |
+| phase 5 rounds | sieve2d_1/2, avgtime_1/2, dchworst_1/2, below16_1/2, nfsfruit_1/2 | All main theorems ACCEPT WITH FIXES (applied); below16_2 "major revision" (applied), and flagged Ward–Maestro 2026 | `codex/*_{1,2}.out` |
+| r17 paper review | Adversarial referee of the restructured paper | see `notes/paper_review_r17.md` | `codex/paper_r17_review.out` |
 
 Independent read-only Opus critics also reviewed sketchBD (15 findings), trackE (7 fixes),
 cycloharvey (LB scope fixes), multimod, divcover and dcltheorem. The review history up to Phase 1
@@ -556,7 +684,8 @@ and became cycloharvey (R-20).
    and Harvey–Hittmeir is still 2.3–4.9× cheaper there.
 6. **Prior art is closer than it looks.** Ingredients we first thought new were in HH 2022
    Prop. 3.3, McKee–Pinch 1996, Gao et al. 2025 and Hittmeir 2018. Claims are therefore limited
-   to "no prior formulation found by us".
+   to "no prior formulation found by us". Ward–Maestro (Sept 2026) pre-dates our full-candidate
+   N^{1/6} floor (W-16), which we had found independently but later.
 7. **Check the quantifiers.** "Almost all N", "the true factor of almost all pairs" and "every
    candidate for every N" are different statements, and confusing them was the most common
    review finding in the later phases.

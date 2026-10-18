@@ -8,43 +8,50 @@ The project started from one question: does a compact algebraic representation o
 F_N(X) = (1+X)^N − 1 − X^N, or a related object, give a cheap operation that reveals a factor
 of N? ([`BRIEF.md`](BRIEF.md)) That line closed negatively. The work then moved to the
 deterministic collision-search methods of Lehman, Hittmeir, Harvey and Harvey–Hittmeir, and
-produced one positive result.
+produced the positive results below.
 
 **No polynomial-time or subexponential factoring algorithm was found.**
 
-## Headline result (average case only)
+## Headline results (balanced semiprimes; average case)
 
-**Theorem D′ (proved; reviewed by AI referees, not yet by a human).** Fix ε ∈ (0, 1/60]. For
-all large n there is a deterministic algorithm with the following properties:
-- it sees only an n-bit integer N;
-- it uses N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on every input;
-- it outputs only a proper divisor of N or FAIL;
-- it factors all but an O(N^{−ε}) fraction of the semiprimes N = pq with primes p < q ≤ 2p.
+All results below concern S_n, the n-bit semiprimes N = pq with primes p < q ≤ 2p. Each is
+**proved**, and each was reviewed by GPT-6.1-sol and an independent Claude Opus critic, with
+"accept with fixes" and the fixes applied. **None has yet been checked by a human.**
 
-With polylogarithmic parameters the cost is N^{1/6}·polylog, with an O((log N)^{−A})
-exceptional fraction (Corollary D″).
+| Result | Statement | Status |
+|---|---|---|
+| **Theorem AV** | A complete deterministic algorithm (it always outputs the full factorisation). Its worst case is Harvey–Hittmeir's N^{1/5}; its **average cost over uniform S_n is N^{1/6}·(log N)^{O(1)}** | proved ([`notes/avgtime_results.md`](notes/avgtime_results.md)) |
+| **Theorem D′ + fourth moment** | One run of the search sees only N, is never wrong, costs N^{1/6+5ε/12}·polylog on every input, and fails on O(N^{−ε}) of S_n (ε ≤ 1/40). With polylog parameters: N^{1/6}·polylog with (log N)^{−A} exceptions | proved ([`notes/dcltheorem_results.md`](notes/dcltheorem_results.md), [`notes/sieve2d_results.md`](notes/sieve2d_results.md)) |
+| **Theorem R** | The worst case reduces to coverage alone. A modified search factors every N ∈ S_n whose pair is caught by some band. So the pair-covering hypothesis DCH_pair ⇒ worst case N^{1/6+o(1)}, and any covering theorem with exponent c > 3/8 ⇒ worst case < 1/5 | proved; the hypotheses are **open** ([`notes/dchworst_results.md`](notes/dchworst_results.md)) |
+| **T1/T2** | In a sumset collision-search cost model, residue-local degree-1 designs reach the true factor of a constant fraction of S_n only at cost ≥ N^{1/6}/polylog. The search attains this up to polylog | proved in the model ([`notes/below16_results.md`](notes/below16_results.md)) |
 
 For comparison, the best proved deterministic exponent for *every* input is 1/5 (Harvey 2021;
-Harvey–Hittmeir 2022).
+Harvey–Hittmeir 2022). We are not aware of an earlier proved average-case or almost-all
+deterministic exponent below 1/5 for balanced semiprimes. This is the outcome of a literature
+search, not a proof of priority.
 
 **Honest scope:**
-- **Average case only.** The worst case is open; it needs an unproved divisor-cover hypothesis
-  (DCH) among other things.
-- **Bounded ratio only.** Only q/p ≤ 2 is covered.
-- **Not faster in practice.** At 40–80 bits the measured cost grows more slowly than that of
-  a calibrated Harvey–Hittmeir implementation (slope 0.203 against 0.226), but
-  Harvey–Hittmeir is still 2.3–4.9× cheaper at those sizes.
-- **Built on prior art.** Every ingredient is known, and McKee–Pinch 1996 §5 is a direct
-  precursor. We found no prior formulation of this combination.
-- **A floor for full covering only.** In a one-base sumset collision-search model, any family
-  that covers *every* candidate factor of a fixed N costs at least N^{1/6} (Theorem A, proved in
-  the model). This is not a lower bound for factoring, and it does not apply to average-case
-  algorithms such as Theorem D′. Whether one can go below 1/6 on almost all inputs is open.
+- **Average case, not worst case.** The worst case is still N^{1/5}. Getting below it needs a
+  covering theorem that is not proved.
+- **Bounded ratio only.** Only q/p ≤ 2 is covered. Unbalanced ratios are work in progress; the
+  envelope of the proposed scheme peaks at N^{1/5} at q/p ≈ N^{1/5}.
+- **Not faster in practice.** At 40–80 bits Harvey–Hittmeir is 2.3–4.9× cheaper in our cost
+  proxy.
+- **Built on prior art.** The key ingredients come from McKee–Pinch 1996 §5 (the divisibility
+  event), Harvey–Hittmeir 2022 Prop. 3.3 (the lock), Harvey 2021 Alg. 4.1–4.2 (shared collision
+  search, exact matches), Harvey–Hittmeir 2026 (order tools) and the large sieve.
+- **Lower bounds are model theorems, not factoring lower bounds.** The full-candidate N^{1/6}
+  covering floor (our Theorem A) is **pre-empted** by Ward–Maestro (iGent AI report,
+  2 Sept 2026, Thm 3.6), whose model has no class locks. Pollard p − 1 already factors a positive
+  proportion below N^{1/6} (Ward–Maestro Prop. 35.3); this lies outside our model.
+- **Carella's claimed N^{1/6}** (arXiv:1308.2891) is not established: the §5 polynomial has
+  content divisible by B, and after removing it the small-root condition fails.
 
 Details:
-- Paper draft: [`paper/main.tex`](paper/main.tex). It is a draft, not for distribution.
-- Authoritative note: [`notes/dcltheorem_results.md`](notes/dcltheorem_results.md).
-- Model lower bounds: [`notes/multimod_results.md`](notes/multimod_results.md).
+- Paper draft: [`paper/main.tex`](paper/main.tex) (compiled with tectonic). It is a DRAFT, not
+  for distribution. Review adjudication: [`notes/paper_review_r17.md`](notes/paper_review_r17.md).
+- Also done: NFS fruitfulness, with no rigorous L[1/3] ([`notes/nfsfruit_results.md`](notes/nfsfruit_results.md)),
+  and a Lean 4 formalisation of D′'s lemmas ([`notes/leanform_results.md`](notes/leanform_results.md)).
 
 ## Everything else that was tried
 
@@ -68,7 +75,7 @@ itself. Later phases are logged in [`STATUS.md`](STATUS.md).
 
 | Path | Contents |
 |---|---|
-| `paper/` | LaTeX draft of Theorem D′ and Corollary D″ (`main.tex`, `refs.bib`) |
+| `paper/` | LaTeX draft: Theorem AV, D′ with the fourth-moment bound, Theorem R, T1 (`main.tex`, `refs.bib`) |
 | `APPROACHES.md` | Catalogue of everything tried, with verdicts and pointers |
 | `BRIEF.md` | The original research brief (mission, tracks A–F, audit rules) |
 | `REPORT.md`, `NEXT_STEPS.md` | Phase 1 final report and its follow-up list |
@@ -85,7 +92,7 @@ itself. Later phases are logged in [`STATUS.md`](STATUS.md).
 | `codex/` | Raw GPT-6.1-sol prompts (`*.md`), outputs (`*.out`) and logs |
 | `experiments/configs/`, `experiments/raw/`, `experiments/analysis/` | Configurations, raw JSONL results, aggregated tables and summaries |
 | `references/` | Scans of McKee–Pinch 1996 (§5 is the direct precursor of Theorem D′) |
-| `lean/` | Lean 4 formalisation of some Theorem D′ lemmas (in progress) |
+| `lean/` | Lean 4 formalisation of Theorem D′ lemmas (large sieve as an explicit hypothesis) |
 | `COMMIT_SHA_MAP.md` | Old → new commit SHAs after the history rewrite (see below) |
 
 **Leakage rule.** Operational code, meaning anything a candidate algorithm runs, receives only
@@ -94,12 +101,12 @@ oracle, and operational code never imports it.
 
 ## Running the tests
 
-The environment is a local virtualenv: Python 3.13 with sympy, gmpy2, python-flint, numpy,
-fpylll and pytest.
+The environment is a local virtualenv: Python 3.12 or later with sympy, gmpy2, python-flint,
+numpy and pytest. fpylll is optional; the current machine runs without it, and the suite passes.
 
 ```bash
-python3.13 -m venv .venv
-.venv/bin/pip install sympy gmpy2 python-flint numpy fpylll pytest
+python3.12 -m venv .venv
+.venv/bin/pip install sympy gmpy2 python-flint numpy pytest   # fpylll optional
 .venv/bin/python -m pytest -q                         # full suite (about a minute)
 .venv/bin/python -m pytest -q tests/test_dcltheorem.py
 .venv/bin/python src/seed_checks.py                   # BRIEF §9 smoke test

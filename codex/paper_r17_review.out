@@ -1,0 +1,215 @@
+**Verdict: MAJOR REVISION.** I found no fatal error in the average-case theorem or Theorem 1.2. The remaining problems concern the specification and proof of the worst-case extraction cost, the precise interpretation of the lower bound, the moment-barrier claim, and incomplete appendix proofs.
+
+The source changed during this review. All line references below refer to this [frozen source snapshot](/Volumes/git/factoring-connection/codex/scratch/paper_r17_review/paper-review-snapshot.tex), 1,752 lines, SHA-256 beginning `b750df1c104e`. I credit the corrections already present there, including the revised Corollary 1.4(b). I also inspected the 27-page PDF and compared the arguments with the six named project notes.
+
+Current numbering differs from the question: the large-sieve result is **Lemma 4.11**, and the coverage exceptional-set result is **Theorem 5.4**.
+
+“CORRECT” means that the stated argument survives this audit under its stated model; “GAP” identifies missing hypotheses, specification, or proof.
+
+| No. | Result and exact location | Assessment | Required correction or principal check |
+|---:|---|---|---|
+| 1 | Theorem 1.1, L155; proof L1070 | **CORRECT** | Repair the free \(N\) in the averaged formula; see 36. The reach-set and exponent calculations pass. |
+| 2 | Theorem 1.2, L179; proof L983 | **CORRECT** | Both exception exponents pass, including the endpoint \(\varepsilon=1/40\); see 38. |
+| 3 | Theorem 1.3, L198 | **GAP**, cost formulation | Define “cost of the shared collision search” to include rejected weight–prime tests and all preprocessing. See 42. |
+| 4 | Corollary 1.4, L206; proof L1271 | **CORRECT** in the revised snapshot | The added \(c\in(3/8,1/2]\) and prescribed scale \(Y=N^{1/(7-2c)+o(1)}\) repair the earlier statement. |
+| 5 | Theorem 1.5, L218 | **CORRECT** as the coverage theorem formalised in §8 | “Reaches the true factor” must mean the prescribed coverage event, not arbitrary successful gcd extraction. See 44. |
+| 6 | Lemma 4.1, L580 | **CORRECT** | The first-order term vanishes modulo \(\ell^2\). |
+| 7 | Lemma 4.2, L590 | **CORRECT** | Uses \(\ell\nmid pABN\), supplied by the section’s scale assumptions. |
+| 8 | Lemma 4.3, L599 | **CORRECT** | Both endpoints and the final partial giant block are included. |
+| 9 | Lemma 4.4, L612 | **CORRECT** | The identity gives the collision modulo \(p\), independently of orders. |
+| 10 | Lemma 4.5, L621 | **CORRECT** | The residual exponent modulo \(q-1\) is \((A-B)(p-1)\). |
+| 11 | Lemma 4.7, L633 | **CORRECT** | A non-FULL true giant gives gcd exactly \(p\). |
+| 12 | Lemma 4.8, L641 | **CORRECT** | Four distinct band divisors would give \(q-1>Y^4>q\). |
+| 13 | Lemma 4.9, L649 | **CORRECT** | Cancellation of \(L/\ell^2\) follows from cleanliness, not merely from \(\ell\nmid d\). |
+| 14 | Lemma 4.10, L661 | **CORRECT** | The product-of-\(2^j-1\) count is sufficient. |
+| 15 | Lemma 4.11, L670 | **CORRECT** in the section’s \(q\)-range | Restate \(q>16Y\) explicitly in the lemma to make distinctness of forbidden classes self-contained. See 40. |
+| 16 | Lemma 4.12, L698 | **CORRECT** | \(\gcd(A-B,d)\le H\), followed by CRT, gives the displayed bound. |
+| 17 | Proposition 4.13, L720 | **CORRECT** | All three normalisations and both \(E_c\) powers pass. |
+| 18 | Theorem 5.1, L825 | **CORRECT** | The repeated-direction term \(D_4\) and nonunit correction \(F_j\) are essential and correctly retained. |
+| 19 | Lemma 5.2, L860 | **CORRECT** | The reduced-basis width argument gives the stated constant. |
+| 20 | Lemma 5.3, L873 | **CORRECT** | The direction exclusions, \(r\)-ranges and deleted central line are accounted for. |
+| 21 | Theorem 5.4, L963 | **CORRECT** | The omitted error-term absorptions should be displayed; see 41. |
+| 22 | Lemma 6.1, L1023 | **CORRECT** | The first hit contains the smaller order; unequal orders yield a proper gcd. Specify FAIL when no proper gcd is found. |
+| 23 | Lemma 6.2, L1038 | **CORRECT** | Summing the squared per-order prime count gives \(O(T^3/n^2)\) pairs. |
+| 24 | Theorem 7.1, L1174 | **CORRECT** for (i)–(ii); **GAP** in the general cost specification (iii) | Supply the missing block-scale conventions and full batching argument; see 42. |
+| 25 | Lemma 7.2, L1190 | **CORRECT** | The all-recorded subgroup contains the distinct smooth integers below \(p\). |
+| 26 | Lemma 7.3, L1210 | **CORRECT** | The snapshot now correctly charges trial factorisation of \(o<m\). Specify the simultaneous powering implementation. |
+| 27 | Lemma 7.4, L1228 | **CORRECT** | It bounds node evaluations, not ring operations. The latter requires batching. |
+| 28 | Proposition 7.7, L1300 | **GAP** in the supplied proof of the precise constant | Expand the endpoint estimate and the uniform prime-count comparison; see 43. |
+| 29 | Lemma 8.1, L1378 | **CORRECT** | Add \(\gcd(x,K)=1\) explicitly; otherwise \(x^{-1}\) is undefined. |
+| 30 | Theorem 8.2, L1389 | **CORRECT** for a fixed family of local generators | Clarify the \(A=0\) transformation and the budget population; see 44. |
+| 31 | Proposition 8.3, L1431 | **GAP** in the constant-factor comparison as proved | The displayed comparison uses \(\bar m_k+T_k\), whereas the endpoint rule may pay less. See 44. |
+| 32 | Lemma A.1, L1667 | **GAP** | \(J\) is undefined; specify a fixed compact interval away from zero and prove the measurable-set version. |
+| 33 | Lemma A.2, L1675 | **GAP** | Complete the finite-difference domination and small-prime subclass argument. |
+| 34 | Proposition A.3, L1689 | **GAP**, dependent on A.1–A.2 | Supply the scaling, interval-component count and rounding argument explicitly. |
+| 35 | Theorem A.4, L1704 | **GAP** | The modulus-count refinement is deferred to notes; the treatment of large moduli and the height sum must appear in the paper. |
+
+36. **Quantifiers and notation need one systematic repair.** At L165, \(N\) is free outside a sum over varying \(pq\). Write the bound as
+\[
+O\!\left(2^{n/6}n^{c+1}\log n\right).
+\]
+Likewise use \(2^{-\varepsilon n}\) for shell-wide exceptional fractions and \(2^{-n/4}\) in Theorem 8.2. These are harmless constant-factor repairs. Write \(E_b(H;T)\): its definition at L716 depends on \(T\), although its bound does not. Specify that generator families and their maps are fixed across the shell; only their permitted keys vary with the input.
+
+37. **The parameter range and scale separations pass.** At L488–506,
+\[
+H^{7/3}\le 2^{7n/150},\qquad
+Y^4\ge 2^{16n/25}.
+\]
+These imply all four separations in (3.2), uniformly for sufficiently large absolute \(n_0\). The ladder maximum also satisfies the range eventually:
+\[
+n^2\,2^{\lceil n/60\rceil}\le 2^{n/50}.
+\]
+State explicitly that this is an eventual, very large-\(n\) guard. The toy experiments do not operate inside this asymptotic guard.
+
+38. **Theorem 1.2’s exponent arithmetic is correct.** Ignoring polynomial factors, the proof at L986–993 gives:
+
+| Contribution | Exponent in \(2^n\) |
+|---|---:|
+| \(E_a\) | \(-\varepsilon\), with an additional \(1/n\) |
+| Fourth-moment main term | \(-\varepsilon\) |
+| Fourth-moment remainder | \(-1/6+\varepsilon/12\) |
+| First \(E_c\) term | \(-1/12+5\varepsilon/3\) |
+| Second \(E_c\) term | \(-1/6+5\varepsilon/6\) |
+| Cost | \(1/6+5\varepsilon/12\) |
+
+At \(\varepsilon=1/40\), the first \(E_c\) term has precisely the stated extra exponential margin \(1/60\) relative to \(2^{-\varepsilon n}\). Thus polynomial factors are safely absorbed. In part (b), taking the minimum of \(n^{-1-2a}\) and \(n^{-4a}\) correctly produces the maximum in the stated exception exponent.
+
+39. **The ladder proof passes without nested coverage sets or independence.** L1080–1085 correctly establish
+\[
+R_i\subseteq C(T)\cup E_c(H_{i-1},T)\cup E_b(H_{i-1};T).
+\]
+Only failure of the preceding rung is used; changing prime bands does not invalidate this inclusion. At L1094–1097,
+\[
+E_{c,1}: -1/18,\qquad E_{c,2}: -1/9,\qquad
+|C(T)|/|\mathcal S_n|: -1/10.
+\]
+Multiplication by the global worst-case cap gives \(1/5-1/18=13/90<1/6\). The largest rung costs exponent \(7/36<1/5\). The fallback contribution on \(E_b(H_{\max})\) also has exponent exactly \(1/6\). I found no missing probabilistic assumption here.
+
+40. **The composite-moduli large sieve is legitimate.** L681–688 retain actual squarefree moduli \(d=\ell a\le Q\), not unjustified independent sieve events. Since every prime factor of \(a\) is below \(Y\), these retained moduli are squarefree and uniquely represented. The harmonic lower bound follows from
+\[
+\sum_{a\le Z}\frac{\mu^2(a)}{\varphi(a)}
+=\sum_{\operatorname{rad}(m)\le Z}\frac1m
+\ge\sum_{m\le Z}\frac1m.
+\]
+Thus \(J\gg H^2\), \(|U_k(q)|\ll P/H^2\), and normalisation gives \(O(n/H^2)\), not \(O(n^2/H^2)\). Add this identity and an exact theorem reference for the arithmetic large sieve. The Montgomery and Montgomery–Vaughan bibliographic attribution is sound. [Montgomery’s publication record](https://websites.umich.edu/~hlm/rpubs.html).
+
+41. **The fourth-moment normalisation is correct but insufficiently exposed.** At L973–980, show the bound for the *whole* weighted error sum before normalising by prime pairs. At the DCL scale, with \(v=|V|\asymp H^2\) and \(s\asymp1/n\), it is enough to display
+\[
+\frac{\lambda^{-4}\sum_j\kappa_j\mathrm{Err}_j}{X_\square^2}
+\ll H^{-6}
++\frac{n^4H^{-2/3}}{P^{1/3}}
++\frac{n^3H^{1/3}}{P^{1/3}}.
+\]
+The other terms are absorbed using \(Y^3H\asymp P\), \(H^2\ll Y\), and \(\lambda\ge1\). Multiplication by \(O(n^2)\) then gives the stated result. When \(\lambda<1\), explain that the claimed prime-pair bound is trivial. The paper must not leave readers wondering whether the \(n^2\) population loss was already included in the preceding bullets.
+
+42. **DCL-wc’s cost theorem needs a complete operational specification.** At L1123 onward, arbitrary blocks are permitted, but \(Y\), the relevant \(\bar m_k\), and empty-window handling are not defined for those blocks. Define a scale per block, or replace scale-dependent terms by sums of prime bit lengths.
+
+The exploration bound at L1254 is achievable: at each depth the node degrees sum to at most \(m\), and there are at most \(2T'\) assigned evaluation points. Multipoint evaluation separately for each node therefore costs \(\widetilde O(m+T')\) per depth. Write this argument explicitly; \(O(\log m)\) node evaluations per giant alone does not prove it.
+
+Also specify an all-but-one exponent tree for the powers \(b^{E/\varrho^e}\), and explain how the valuations recover \(D\). The two enumeration overheads occur at most once because their branches terminate with a factor. With the prescribed \(T,B_0\),
+\[
+B_0\sqrt T=N^{1/6}n^{O(1)},\quad
+\sqrt N/T=N^{1/6},\quad
+\sqrt N/\Psi(\sqrt{N/2}-1,B_0)\ll N^{1/8}n^{O(1)}.
+\]
+No new exponent obstruction appears, but the paper currently asks the reader to reconstruct too much.
+
+43. **Proposition 7.7’s endpoint argument must be restored from the notes.** L1310’s “counted trivially” omits the estimate needed for the precise constant. Put \(M_0=|V||\mathcal L|\). The endpoint contribution is bounded by
+\[
+O\!\left(\frac{\lambda P^2}{n^4}
++\frac{M_0P}{n^2}\right)
+=o(\lambda|\mathcal S_n|)+o(|\mathcal S_n|).
+\]
+For the remaining intervals, state the uniform prime-number estimate used to compare \(|\mathcal S_n|\) with \(\sum_p |I_p|/\log P\); a bare qualitative PNT statement does not justify uniformity down to \(P/n^2\). The resulting constants do support the advertised \(0.2\sqrt n\) and \(0.14\sqrt n\) consequences.
+
+44. **The true-factor model needs three explicit boundaries.**
+
+- Theorem 8.2 bounds the event in (8.1). It does **not** bound successful accidental collisions outside that event. Make this explicit in Theorem 1.5, Proposition 8.3 and L1589–1592.
+- Two expected budgets are required. An expected running-time bound alone does not imply \(\mathbb E\sum|S_\tau|\le X^2\). The revised abstract correctly distinguishes the all-integer budget population from \(\mathcal S_n\).
+- In Proposition 8.3, L1442 calls \(\sum_k(\bar m_k+T_k)\) “the list cost”, although the endpoint rule may use a smaller list cost. Either restrict this comparison to \(m=\bar m_k\), sufficient for the claimed exponent attainment, or prove a constant-factor comparison between enlarged and original window widths.
+
+At L1416, define
+\[
+R'(\kappa)=\{\kappa r^{-1}\bmod M:r\in R(\kappa)\cap(\mathbb Z/M)^\times\}.
+\]
+Discarding nonunit labels loses no true pairs. At L1369–1374, qualify the canonical-normalisation claim: translating a global offset into the window must preserve locality; this is not automatic.
+
+45. **Appendix A is not ready to carry “proved” labels.** Concrete repairs:
+
+- **A.1:** define \(J=[\theta^{-1/2},1]\), \(b\ne0\), and the dependence of \(C\) on \(I,\theta\). The assertion is false uniformly over unrestricted \(J\): \(G(t)=1/t\), \(J=(0,L]\), \(E=[1/L,2/L]\) gives preimage length \(L/2\) against a proposed \(O(1/L)\) bound.
+- **A.2:** exhibit the derivative matrix and its determinant valuation. Prove the valuation bound on higher Taylor coefficients and explain precisely how passing to a subclass yields one fixed \(C_{d_0}\).
+- **A.3:** show the substitution \(x=Rt\), coefficient lower bounds, and why each original window contributes only \(O_{d_0}(1)\) interval components.
+- **A.4:** dispose of \(M>R\) before invoking \(M^{o(1)}=N^{o(1)}\). Prove the class–weight count and
+  \[
+  \sum_\tau\eta_\tau^{-1}\ll(JN^{o(1)}X)^{1/2}.
+  \]
+  Include the Hölder calculation using \(K\le2\nu\) and \(5\nu\ge2K+2\).
+
+Unpublished project-note paths are not substitutes for these proofs. Since Appendix A is contextual and unnecessary for the main algorithms, deletion is a reasonable alternative.
+
+46. **Remark 5.5’s PYY attribution is a GAP; one accompanying assertion is WRONG.** L1001–1006 attributes prescribed unequal marginals directly to PYY, whose result concerns identical marginals. Restore the notes’ hypotheses
+\[
+0<\pi_\ell\le\tfrac12,\qquad
+\max\pi_\ell\le2\min\pi_\ell,\qquad \lambda\ge\lambda_J.
+\]
+Then give the common-marginal construction, independent thinning, and the odd-\(J\) reduction. These establish the intended limited-information barrier. They do not establish an unrestricted arithmetic impossibility theorem. [PYY paper](https://arxiv.org/pdf/0801.0059).
+
+The blanket assertion at L1013 that \(t(H,H+1)\) is uncovered is false when a band prime divides \(t\). Add \(\gcd(t,\prod_{\ell\in\mathcal P}\ell)=1\).
+
+47. **Several prose claims still need tightening.**
+
+- L238–239 should not categorically deny additional high-probability consequences: Theorem 1.1 implies population tails by Markov’s inequality. Say that Theorem 1.2 supplies sharper explicit tails in its parameter range.
+- L133–135’s “average case is easy” does not follow from “almost all have a small factor”; a sparse expensive tail can dominate a complete algorithm’s average.
+- Replace “hardest natural population” by “balanced population”; no hardness theorem is supplied.
+- The abstract’s practical comparison should say “our cost proxy at 40–80 bits favours Harvey–Hittmeir”.
+- The novelty item about extraction without order hypotheses should distinguish the unconditional identity modulo \(p\), the clean-band exceptional-set argument, and the separate worst-case extraction algorithm.
+
+The revised abstract’s change from “a run fails” to “its coverage step misses” is correct and should be retained.
+
+48. **McKee–Pinch attribution: verified.** The local scans of pp. 221–223 confirm all five listed points: Lehmer’s special congruence, the \(\pm\) extension and modulus-squared information, small multipliers, the deterministic \(n^{1/3+\epsilon}\) construction, and the heuristic balanced \(n^{1/4+\epsilon}\) proposal. The paper correctly treats the last as heuristic. The DOI, year, LNCS volume and page range are correct. [Publisher record](https://link.springer.com/chapter/10.1007/3-540-61581-4_57).
+
+49. **Harvey 2021 and Harvey–Hittmeir 2022: verified, with one attribution refinement.** Algorithms 4.1/4.2 and Proposition 3.3 support the cited mechanisms. However, Harvey explicitly describes Algorithm 4.1 as almost identical to Hittmeir’s Algorithm 3.2. Credit Hittmeir for the underlying collision routine and Harvey for the powers specialisation and simultaneous Lehman search. Exact-match handling is correctly located in Algorithm 4.2. [Harvey](https://arxiv.org/html/2010.05450), [Harvey–Hittmeir](https://arxiv.org/html/2105.11105).
+
+50. **Harvey–Hittmeir 2026 and AKS: verified.** Lemmas 2.1, 2.3, 2.4 and §3.1 support order finding, equal-order testing, the smooth-number estimate and subgroup enumeration. The paper correctly recognises that large order modulo \(N\) does not imply large order modulo a particular prime. The one-sided adaptation is separately proved here. AKS legitimately supplies the polynomial-in-\(n\) finish; no primality-testing exponent is missing. [Harvey–Hittmeir 2026](https://arxiv.org/html/2601.11131v2), [AKS](https://annals.math.princeton.edu/2004/160-2/p12).
+
+51. **Ward–Maestro: the principal comparisons are faithful.** Definition 2.1 requires real-candidate covering. Lemma 3.2 and Theorems 3.4/3.6 support the covering-sum argument and materialised/free-giant floors. Theorem 9.4 concerns bounded-degree forms in its stated model. Proposition 14.2 requires \(M\le N^{1/7}\), now correctly restored at L407. Proposition 35.3 uses a nearly balanced family, not the paper’s exact \(\mathcal S_n\). I found no stated local true-factor theorem or almost-all/average algorithm there pre-empting the present main results. [Ward–Maestro report](https://igent.ai/research/floors-not-bounds/factoring_report.pdf).
+
+52. **Friedlander and the \(p-1\) comparison need precise attribution and population wording.** The threshold \(1/(2\sqrt e)\) supports the quoted limiting factoring exponent \(1/(4\sqrt e)\). However, the one-sided factoring deduction also uses the rough shifted-prime ingredient attributed to Fouvry in Ward–Maestro’s proof. Cite that ingredient or attribute the complete deduction to Proposition 35.3. Preserve “nearly balanced family” everywhere; do not silently transfer it to each fixed-ratio bit shell.
+
+I verified the deduction in Ward–Maestro and the historical threshold in later primary research, but did not obtain the original 1989 chapter for direct inspection. Lichtman’s stronger smoothness result gives a polylogarithmically thinned prime population, not the positive proportion needed for the quoted conclusion. [Lichtman, Theorem 1.1](https://arxiv.org/html/2211.09641).
+
+53. **The Carella criticism is mathematically justified.** The source’s expanded polynomial contains the missing linear factors \(B\), while its subsequent coefficient list omits them. Correct expansion makes every coefficient divisible by \(B\). After primitive normalisation the relevant height is of order \(N^{5/6}\), and
+\[
+XY=N^{2/3}>N^{5/9}=W^{2/3}.
+\]
+Thus the displayed proof does not establish the claim. The draft appropriately limits its conclusion to that defect. Remove the contradictory bibliography note “unverified by us” after describing a direct examination. [Carella v3, §5](https://arxiv.org/pdf/1308.2891v3).
+
+54. **Umans–Wang, He–Sahai and Gao et al.: the stated comparisons and metadata check out.** Retain “Strong **Prefactored**” for the integer-factoring consequence. He–Sahai refute the one-dimensional arithmetic-progression version, not the general higher-rank conjecture. Gao et al. state the balanced-semiprime \(N^{1/5}\log^{13/5}N/(\log\log N)^{3/5}\) bound. These do not pre-empt Theorems 1.1 or 1.2. [Umans–Wang](https://arxiv.org/html/2511.10851), [He–Sahai](https://arxiv.org/html/2608.06681), [Gao et al.](https://arxiv.org/html/2512.19076).
+
+55. **Bibliography and further-prior-art search.** I found no verified pre-emption of Theorems 1.1–1.3 or the specific T1 counting theorem. Add a comparison with Brown’s restricted-model factoring lower bounds; their existence makes broad novelty language about factoring-model lower bounds inappropriate. [Brown’s record](https://eprint.iacr.org/2010/047).
+
+The checked arXiv identifiers, authors and titles match. PYY’s issue number **38(4)** is correct; add DOI `10.1002/rsa.20329`. Add AKS’s DOI `10.4007/annals.2004.160.781`. Standardise Strassen’s bibliographic year to the journal’s `1976/77` convention. Remove review-provenance prose, “not re-verified”, and AI-review annotations from published bibliography entries. [PYY publisher record](https://onlinelibrary.wiley.com/doi/10.1002/rsa.20329).
+
+56. **Structure for submission.** Centre the paper on the algorithm, one-run analysis, sieve coverage and average theorem. Move literature-search process, superseded D′ optimisations, extensive experimental classifications and review history to supplementary material. Shorten the abstract substantially. Either complete Appendix A or remove it. Keep the model theorem clearly separate from an operational factoring lower bound.
+
+Section 9 satisfies the requested limitation: L1472–1489 prominently label it a placeholder and explicitly describe a cost analysis, not a proved theorem. I make no assessment of its proposed unbalanced analysis.
+
+57. **Notation and LaTeX.** \(X\) changes from \(2^n\) to a design-cost budget, while \(J\) denotes both a sieve denominator and a prime count. Rename these. Define \(\widetilde O\), “word operation”, all block scales, and the enlarged-window extrema. The complexity table uses \(M\) for both integer multiplication and a polynomial-operation shorthand; state its bit bounds directly.
+
+The inspected log contained an overfull box in the prior-art discussion, several badly underfull complexity-table cells and font substitutions. The rendered table is cramped. Use aligned equations and shorter table entries. Rebuild the exact submission source and check references and layout again.
+
+58. **Experiments and reproducibility.** The blanket statement “All experiments were pre-registered” at L1496 conflicts with the explicitly exploratory sixth-moment analyses. Replace it with “Confirmatory experiments were pre-registered; exploratory analyses are labelled.” Supply a permanent repository URL and archival revision, not only local paths and abbreviated commits.
+
+All **62 tests** across the five files named in the paper passed during this review. These support small-case correctness. They do not validate the asymptotic bounds, and the DCL-wc prototype remains explicitly unbatched. The theoretical AKS/Harvey–Hittmeir algorithm is also correctly distinguished from the implementation’s BPSW/Lehman stand-ins.
+
+The five fixes I would require, in priority order, are:
+
+59. **Complete Theorem 7.1(iii):** define general-block parameters and give explicit batching, simultaneous powering and enumeration accounting.
+
+60. **Make T1’s scope exact everywhere:** prescribed coverage, fixed local generators, two budget moments, and no inference about arbitrary accidental gcd successes; repair Proposition 8.3’s cost comparison.
+
+61. **Remove or fully prove Appendix A:** especially the missing interval hypothesis, denominator argument and modulus-count refinement.
+
+62. **Repair the PYY remark and unsupported prose:** restore marginal hypotheses and thinning, fix the dilate assertion, and distinguish density, expectation and population tails.
+
+63. **Prepare one stable submission version:** retain the already-corrected corollary and abstract wording, finish source attribution, remove review-process material, and archive reproducible code and data.
