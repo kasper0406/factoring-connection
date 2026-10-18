@@ -94,3 +94,20 @@ def test_hh_baseline_runs():
     N, p, q = sample_pair(40, 3)
     r = hh_run(N, hh_params(N))
     assert r["factor"] in (p, q)
+
+
+def test_exhaustive_outputs_proper_small_N():
+    """Regression (GPT-6.1-sol r13): for every 2 <= N <= 10^4 (primes, prime
+    powers, even numbers, everything), any output d satisfies 1 < d < N, d | N.
+    Two designs per bit length: the C1 schedule and a tiny theorem-shaped one."""
+    designs = {}
+    for n in range(2, 15):
+        designs[n] = [schedule_design(n, 3.0), Design(n=n, H=3, Y=5, K=4)]
+    for N in range(2, 10 ** 4 + 1):
+        for D in designs[N.bit_length()]:
+            r = dcl_det(N, D, Metrics(), early_exit=False)
+            d = r["factor"]
+            assert d is None or (1 < d < N and N % d == 0), (N, d, r["status"])
+            for b in r["blocks"]:
+                f = b.get("factor")
+                assert f is None or (1 < f < N and N % f == 0), (N, f, b.get("status"))

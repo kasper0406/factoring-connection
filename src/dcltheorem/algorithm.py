@@ -50,6 +50,11 @@ def _gcd_check(x: int, N: int, met, how: str) -> int:
     return g
 
 
+def _proper(d: int, N: int) -> bool:
+    """Output validation: every returned candidate satisfies 1 < d < N and d | N."""
+    return isinstance(d, int) and 1 < d < N and N % d == 0
+
+
 def powN(x: int, e: int, N: int, met) -> int:
     """x^e mod N, e >= 0; charges bits(e)-1 squarings + popcount(e)-1 mults."""
     if e <= 0:
@@ -170,7 +175,9 @@ def build_targets(N: int, design: Design, k: int, met) -> List[Dict]:
     out = []
     for l in band:
         if N % l == 0:
-            raise Found(l, "band_prime")
+            if 1 < l < N:
+                raise Found(l, "band_prime")
+            continue                       # N == l is prime: nothing to output
         l2 = l * l
         Nl = N % l
         for (A, B) in design.V:
@@ -281,18 +288,21 @@ def dcl_det(N: int, design: Design, met: Optional[Metrics] = None, early_exit: b
     per-block metrics are recorded either way (prefix b{k}_)."""
     met = met or Metrics()
     out = {"factor": None, "status": "fail", "block": None, "blocks": []}
-    try:
-        _gcd_check(2, N, met, "even")
-        if N % 2 == 0:
-            return {"factor": 2, "status": "even", "block": None, "blocks": []}
-    except Found as e:
-        return {"factor": e.d, "status": "gcd_" + e.how, "block": None, "blocks": []}
+    if N < 4:                              # 1, 2, 3 have no nontrivial divisor
+        return {"factor": None, "status": "fail_small", "block": None, "blocks": []}
+    met.inc("gcdN")                        # gcd(2, N) check (charged as before)
+    if N % 2 == 0:                         # N >= 4 even: 2 is a proper divisor
+        return {"factor": 2, "status": "even", "block": None, "blocks": []}
     for k in (blocks if blocks is not None else range(design.K)):
         bm = Metrics()
         try:
             r = run_block(N, design, k, bm, record=record)
         except Found as e:
             r = {"factor": e.d, "status": "gcd_" + e.how}
+        if r.get("factor") is not None and not _proper(r["factor"], N):
+            r["improper"] = r["factor"]        # defensive: never output a non-divisor
+            r["factor"] = None
+            r["status"] = "rejected_improper"
         r["k"] = k
         r["met"] = bm.to_record()
         met.merge(bm)

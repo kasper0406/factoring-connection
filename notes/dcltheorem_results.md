@@ -12,14 +12,17 @@ the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
 semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
 needs no order lemma for β^L at all.
 
-- **Theorem D′ (proved; GPT-6.1-sol referee and independent Opus critic: ACCEPT WITH FIXES,
-  fixes applied).** For each ε ∈ (0, 1/60] there is a deterministic algorithm with these
-  properties:
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
   - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
     input;
-  - it never outputs a wrong answer;
-  - it factors all but an O(N^{−ε}) fraction of S_n = {pq : p < q ≤ 2p primes, n bits},
-    counted by pairs.
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
 - **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
   for any fixed A.
 - **How the order gap closes.**
@@ -45,8 +48,14 @@ needs no order lemma for β^L at all.
   - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
     none at heuristically full coverage (C2 slope 0.227).
 - **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
-  large sieve). We found no prior formulation of the combination, nor any unconditional
-  sub-1/5 almost-all result. McKee–Pinch 1996 §5 is unread.
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
 
 ## 1. Population, target and statement
 
@@ -65,10 +74,15 @@ X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for
 - Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
 - It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
 
-**Theorem D′ (proved; independent Opus critic review in §7).** Fix ε ∈ (0, 1/60]. There
-are n₀(ε) and absolute constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of
-§2 has the following properties.
-- (i) **Correctness.** On every input it outputs a nontrivial divisor of N or FAIL.
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
 - (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
   N^{1/6+5ε/6}(log N)^{O(1)}.
 - (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
@@ -363,7 +377,7 @@ The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for
 | (3) bit complexity: balanced integer product tree; uncharged Bluestein powers | balanced tree (GMP products) in `all_but_one`; full cost table §4(ii). The HH baseline's Bluestein chirp powers are now charged (`stage3.harvey_find_collisions`) | proved (table); implemented |
 | (4) **base order of γ = β^L** (the substantive gap; 1333 example) | **Closed without any order lemma for β^L.** No order is needed mod p (Lemma 3 is an identity). Mod q, the four disjoint bands guarantee a clean band (Lemma 6), so ord_q(γ) = ord_q(2) (Lemma 7). Two-sided true giants are counted directly (Lemma 10), and small ord_q(2) is rare by an elementary count (Lemma 8). Extra failures are O(2^{−εn}), not o(1). The 1333 example (L built from 3, 5, 7 \| p−1, q−1) cannot occur in a clean band, and an L-power image of size 2 mod **p** is harmless here. | proved (+ GPT-6.1-sol referee dclt_1: "closes the previous order/extraction gap") |
 | (5) quantifier mismatch | §1: D′ concerns the true factor counted over S_n. It does not give full-candidate coverage for almost every N | stated |
-| (6) prior art | §10 | no prior formulation found by us; McKee–Pinch §5 unread |
+| (6) prior art | §10 | McKee–Pinch §5 read (r13 scans): direct precursor (heuristic N^{1/4}); the combination is claimed only as "no prior formulation found by us"; Carella 1308.2891 claim noted with the r13 assessment |
 | (7) experiments used greedy Hmax=12, not Thm D's design | §8 runs the theorem's algorithm (4 bands, ℓ ≡ 3 mod 4, base 2, fixed V(H), n-only Y) with an n-only H-schedule (λ₀ ≈ 3, i.e. H ≍ √n). The bridge: D′'s algorithm is defined for any n-only (H, Y), and the schedule H ≍ √n lies *below* Corollary D″'s range (a > 0, H = n^{1+a}). There the proved bound n²/H² is vacuous, so the experiment tests the algorithm, the lemmas and the cost, not the proved rate. The heuristic rate e^{−λ} is what the data reflect. | disclosed |
 
 Work items not covered above:
@@ -415,7 +429,7 @@ Work items not covered above:
     - (4) Fast-arithmetic assumptions stated; E declared a proxy (§4).
     - (5) Float-free parameters, a GMP exponent product tree, and a finite-size guard. These are
       post-run hygiene; recorded runs are reproduced exactly (§9).
-    - (6) McKee–Pinch §5 priority left unresolved.
+    - (6) McKee–Pinch §5 priority left unresolved (since resolved by r13, see below).
   - It also gave an exact example where the enlarged δ-range |δ| < m would be wrong for the
     *equivalence*. The note uses the enlargement only as a counting superset.
 - **Independent Opus critic** (read-only; own implementation from the §2 spec; adversarial
@@ -433,6 +447,20 @@ Work items not covered above:
     - T′ bound written as Σ W_τ/m;
     - theorem_design H/Y conventions aligned;
     - n^5 → (2n)^{14/3} in E_c.
+- **Fresh GPT-6.1-sol r13 referee** (notes/codex_r13_final_referee.md).
+  - Verdict: ACCEPT WITH FIXES. Every proof step was CORRECT. The O(N^{−ε}) rate and the bit
+    complexity were confirmed, with no hidden dependence on p or q.
+  - Required fixes, all applied 2026-10-18:
+    - (1) **Output validation.** The pre-fix code output 2 for N = 2, and the band prime ℓ
+      for N = ℓ ∈ {7, 11, 19, 23, 31, 43, 47} (exhaustive 2 ≤ N ≤ 256). Now N < 4 returns
+      FAIL; a band prime is output only if 1 < ℓ < N; every candidate passes `_proper`.
+      There is a new exhaustive test over 2 ≤ N ≤ 10⁴ with two designs. The S_n runs are
+      unaffected: 4 recorded C1 instances re-run with identical E_full and outcome.
+    - (2) McKee–Pinch §5 comparison rewritten from the scans (§10).
+    - (3) The §11 sieve-barrier sentence is now labelled a heuristic.
+    - (4) Scope made explicit in §0/§1: n ≥ n₀(ε), bounded-ratio distinct-prime semiprimes,
+      pair-counted exceptions.
+    - (5) Carella 1308.2891 added, with the referee's assessment labelled as such.
 
 ## 8. Experiments (pre-registered; notes/dcltheorem_prereg.md, commit 3550e24)
 
@@ -562,13 +590,47 @@ None changes any recorded run. Re-running 12 recorded C1/C3 instances (n = 40, 5
 - **The clean-band trick** (disjoint prime bands so that one is coprime to q − 1, plus large
   ord_q(2) for almost all q, plus a direct count of two-sided true giants) was not found in
   the factoring papers checked.
-- **Unresolved:** McKee–Pinch 1996 (ANTS II) §5, a generalisation of Lehmer's Fermat
-  speed-up. Neither GPT-6.1-sol nor we could obtain the chapter. The Royal Holloway
-  repository record we reached is McKee's separate Euler-method paper.
-- **Claim limited to:** "no prior formulation found by us" of the combination: prime band near
-  N^{1/6}H^{−1/3}, all small primitive weights with N-determined roots, the prime-pair
-  large-sieve exceptional set, cofactor-powered handles sharing one baby list, and the
-  clean-band one-sidedness argument.
+- **McKee–Pinch 1996 (ANTS II, LNCS 1122) §5, pp. 221–223: a direct precursor.** The r13
+  referee obtained it, and we read the scans ourselves: references/mckee_pinch_1996/
+  mckee-03.jpg and mckee-04.jpg; source https://cr.yp.to/bib/1996/mckee-deterministic.html.
+  - **Lehmer's speed-up.** If p ≡ q ≡ 1 (mod k), Fermat runs in O(q/k²).
+  - **The authors' extension.** For p ≡ ±q (mod k), Fermat runs in O(q/k^{2−ε}), via
+    n = u² − v² with u or v determined mod k² from square roots mod k. That is the
+    modulus-squared lock.
+  - **Multipliers.** If λp ≡ ±μq (mod k), the same method splits λμn in
+    O(max(λp, μq)/k²·n^ε).
+  - **A deterministic O(n^{1/3+ε}) algorithm.** Take k = 2⌊n^{1/3}⌋ + 1, and a pigeonhole
+    lemma that guarantees λμ ≤ k with λp ≡ ±μq (mod k).
+  - **A heuristic balanced method, "not however an algorithm".** Take primes k ∈ (n^{1/4},
+    2n^{1/4}) and small λ, μ, and assume λp − μq ≡ 0 (mod k) for some of them. Each (λμ, k)
+    costs O(n^ε). The expected running time O(n^{1/4+ε}) rests on the heuristic that q − p
+    has a prime factor in the band with probability ≫ 1/log n.
+  - **So the core event** (a band prime divides a small-weight combination Bp − Aq, with
+    N-determined residues and a modulus-squared reduction) **is theirs.**
+  - **What D′ adds:**
+    - (i) the band at N^{1/6}H^{−1/3} instead of N^{1/4}. This is made possible by
+    - (ii) one baby list shared by all band primes via the cofactor-powered handles
+      u_ℓ^{B+AN−c}, so each target costs one giant step against a window of size ≈ N^{1/6};
+    - (iii) a proof that the event happens for all but O(N^{−ε}) of the pairs: the
+      prime-pair large sieve with growing weight height H, replacing their probability
+      heuristic;
+    - (iv) one-sided extraction with no order hypothesis: the clean band, ord_q(2), and the
+      Lemma 10 count;
+    - (v) a full bit-complexity accounting.
+  - Their per-k cost is O(n^ε) because q/k² = O(1). Ours trades a larger window for fewer,
+    smaller primes through the shared baby list.
+- **Carella, arXiv 1308.2891.** It explicitly claims a deterministic exponent-1/6 factoring
+  algorithm.
+  - *The r13 referee's assessment, not independently re-derived by us:* the displayed proof
+    loses a necessary primitive-polynomial normalisation. Every coefficient of the correctly
+    expanded polynomial is divisible by B. Removing that content lowers the scaled height
+    from ≈ N to N^{5/6}, and the cited small-root condition then no longer supports
+    X = Y = N^{1/3}.
+  - The referee does not regard that proof as establishing the bound. We list it as a claimed
+    but (per that assessment) unproved prior statement of the same exponent.
+- **Claim limited to:** "no prior formulation found by us" of the *combination*: (i)–(v) above,
+  on top of McKee–Pinch §5's divisibility event and HH 2022 Prop. 3.3's lock. Novelty
+  judgments are left to the orchestrator.
 
 ## 11. Candidate card
 
@@ -588,9 +650,12 @@ None changes any recorded run. Re-running 12 recorded C1/C3 instances (n = 40, 5
   - Below 1/6 is blocked in the sumset model (multimod Thm A).
 - **Most promising open question.** Improve the exceptional-rate/cost trade-off beyond the
   large sieve's n²/H².
-  - For a fixed q, the p-interval has length P ≈ Y³, so any sieve of level ≤ P sees only
-    products of ≤ 3 band primes. One-variable upper-bound sieves (Selberg, large sieve)
-    therefore cannot beat ≈ 1/λ. That is the reason for the loss.
+  - **Heuristic (not a theorem; qualified after r13).** For a fixed q, the p-interval has
+    length P ≈ Y³, so a sieve whose level is limited to ≈ P only sees moduli built from
+    ≤ 3 band primes. We *expect* that standard one-variable upper-bound sieves restricted to
+    such levels (Selberg, the large sieve) give only polynomial-in-1/λ savings, and this
+    explains the loss in our proof. We have **not** proved any barrier: other sieve weights,
+    bilinear or dispersion methods, or the averaging over q below might do better.
   - Averaging over q gives a two-variable sieve over the box (classes Bp ≡ Aq mod ℓ, density
     |V|/ℓ) with level up to P². That allows products of up to ~6 band primes and plausibly a
     polynomial gain O((n/H²)^{c}) with c > 1 (**conjectured, not yet tested**).
