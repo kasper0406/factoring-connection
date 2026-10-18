@@ -1,0 +1,355 @@
+> Source: GPT-6.1-sol round 12 (codex/r12_dcl_audit.md → .out), 2026-10-18. Referee audit of multimod Thm D / DCL. Scratch: /tmp/claude-r12 (ephemeral). Curated copy.
+
+**Verdict: Theorem D contains a sound, repairable coverage argument. It does not yet establish a deterministic factoring algorithm.** The common-base exponent batching is valid and fits the claimed exponent; it is not the missing bottleneck. The substantive missing result concerns extracting factors when the prescribed power \(\gamma=\beta^L\) has small order.
+
+I found no matching unconditional result for **almost all balanced semiprimes** in the primary literature checked. That supports investigating novelty, but does not certify it—particularly because I could not obtain the full McKee–Pinch chapter.
+
+I read all 624 lines of [the note](/home/knielsen/code/factoring-connection/notes/multimod_results.md) and all Python source files in `src/multimod/`, plus the relevant imported collision routines and lower-bound lemmas. Repository files were left unchanged. Scratch code and results are under `/tmp/claude-r12/`.
+
+**Theorem D: detailed findings.**
+
+Here, **CORRECT** means valid within the explicitly restricted model; **GAP** means an additional argument or hypothesis is required; **WRONG** means the stated inference is false.
+
+| Location | Verdict | Finding |
+|---|---|---|
+| Lines 92–99: modulus-squared lock | **CORRECT** | Requires \(M\nmid ABN\), \(r\) a unit, and \(Br^2\equiv AN\pmod M\). The inverse must be modulo \(M^2\), as written. |
+| Lines 101–104: whole-range window | **CORRECT** | Convexity gives the stated extrema and \(W=O(H\sqrt N/M^2+1)\). Integer endpoint rounding changes only the constant. |
+| Lines 112–116: coverage equivalence | **CORRECT, structurally** | For an actual divisor \(p\), \(M\mid Bp^2-AN\iff M\mid Bp-Aq\). This characterizes the designed \(p\)-side coverage, not every operational success. |
+| Lines 118–119: failure occurs only when no pair divides | **GAP** | Correct for formal coverage. Actual factor extraction can fail through insufficient order; actual success can also occur through the \(q\)-side or incidental collisions. |
+| Lines 123–127: shared-base identity | **CORRECT** | The identity follows directly from \(B+AN-(Bp+Aq)=(p-1)(Aq-B)\). |
+| Lines 129–132: shared baby list | **CORRECT** | Cofactor-powering the handles genuinely puts all targets against \(\gamma^i\). |
+| Lines 133–135: exponent batching | **CORRECT for modular multiplication count** | A balanced exponent tree gives \(O(\log L\log J)\) modular multiplications for \(J\) distinct moduli. The implementation charges these modular powers. |
+| Lines 295–297: population and fixed parameters | **CORRECT** | Fixing parameters by bit length prevents the forbidden classes from changing as \(p\) varies with \(q\) fixed. |
+| Line 298: weight set | **GAP in notation** | State \(1\le A,B\le H_0\); the displayed inequalities alone do not impose positivity. The code uses positive weights. |
+| Lines 299–301: design | **CORRECT asymptotically** | The stated \(\varepsilon<1/10\) ensures the required scale separations eventually hold. |
+| Lines 303–308: list cost | **CORRECT** | Both baby length and target count are \(O(H_0^{5/3}N^{1/6})\). |
+| Lines 309–310: \(I_q\) has length \(\asymp\sqrt N\) | **WRONG uniformly** | At the boundaries imposed by the bit-length condition, \(I_q\) can be short or empty. |
+| Lines 310–311: linear sieve classes | **CORRECT** | For fixed \(q\), the forbidden classes are \(p\equiv AqB^{-1}\pmod\ell\). |
+| Lines 312–313: distinct classes | **CORRECT** | Reduced positive fractions are distinct modulo \(\ell\) when \(\ell>H_0^2\). The stronger stated condition suffices. |
+| Lines 314–319: arithmetic large sieve | **CORRECT** | This is the ordinary arithmetic sieve form of the additive large sieve. It needs neither independence nor a quadratic-character estimate. |
+| Line 320: \(Q^2=o(|I_q|)\) | **WRONG uniformly** | Again false for short boundary intervals. It is unnecessary. |
+| Lines 321–322: primes in every \(I_q\) number \(\asymp\sqrt N/\log N\) | **WRONG uniformly** | There is no such lower bound for every admissible interval. |
+| Lines 322–324: boundary normalization | **GAP, easily repairable** | Showing an error is \(o(1)\) does not establish the claimed \(O(N^{-\varepsilon})\) rate. A global count repairs the argument. |
+| Line 332: polylogarithmic version | **CORRECT after the same repair** | \(H_0=(\log N)^2\) gives failure \(O((\log N)^{-2})\) and search cost \(N^{1/6}\operatorname{polylog}N\). |
+| Lines 336–337: order assumption | **GAP for factoring** | This is a substantive algorithmic hypothesis, not a consequence of the coverage proof. |
+| Lines 338–341: fixed-\(N\) character-sieve remark | **GAP** | No sufficiently precise quadratic-large-sieve statement is supplied to justify the claimed consequence. It is unnecessary for the prime-pair average theorem. |
+
+The following supplies the missing normalization and makes the coverage statement precise.
+
+Put
+\[
+X=2^n,\qquad P=X^{1/2},\qquad H=H_0,\qquad
+Y=\left\lceil X^{1/6}H^{-1/3}\right\rceil.
+\]
+Define
+\[
+\mathcal S_n=\{pq:X/2\le pq<X,\ p<q\le2p,\ p,q\text{ prime}\}.
+\]
+
+The statement that is supported is
+\[
+\frac{\#\{pq\in\mathcal S_n:p\text{ is structurally uncovered}\}}
+{|\mathcal S_n|}
+\ll_\varepsilon X^{-\varepsilon}.
+\]
+
+This is uniform counting over semiprimes in that set. Unique factorization identifies it with counting unordered prime pairs. It is not an assertion for every \(q\), every fixed \(N\), or an arbitrary prime-generation distribution.
+
+Every admissible smaller factor lies in the **single fixed interval**
+\[
+P/2\le p\le P.
+\]
+Every admissible \(q\) is of order \(P\), and there are \(O(P/\log P)\) possible prime \(q\)'s. Thus there is no need to normalize separately inside the potentially short \(I_q\).
+
+For each fixed \(q\), let
+\[
+\Omega_\ell(q)=
+\{AqB^{-1}\pmod\ell:(A,B)\in V\}.
+\]
+For sufficiently large \(n\), \(\ell>2H^2\), \(\ell\nmid q\), and
+\[
+|\Omega_\ell(q)|=|V|\asymp H^2.
+\]
+
+The arithmetic large-sieve bound is
+\[
+Z_q\le \frac{O(P)+Q^2}{G(Q)},\qquad Q=2Y,
+\]
+where
+\[
+G(Q)=\sum_{d\le Q}\mu^2(d)
+ \prod_{\ell\mid d}\frac{\omega(\ell)}{\ell-\omega(\ell)}.
+\]
+Only the band primes are active. Its prime terms already give
+\[
+G(Q)\ge\sum_{Y<\ell\le2Y}
+\frac{|V|}{\ell-|V|}
+\gg\frac{H^2}{\log Y}.
+\]
+This is the standard arithmetic consequence of the additive large sieve. [Montgomery–Vaughan, *The large sieve*](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf).
+
+Consequently,
+\[
+Z_q\ll \frac{(P+Y^2)\log P}{H^2}.
+\]
+This counts **all integer survivors**, so also bounds prime survivors. Summing over prime \(q\),
+\[
+E_n\ll\frac{P^2+PY^2}{H^2}.
+\]
+Ordinary prime number theory in fixed proportional intervals gives
+\[
+|\mathcal S_n|\asymp\frac{P^2}{(\log P)^2}.
+\]
+Therefore
+\[
+\frac{E_n}{|\mathcal S_n|}
+\ll \frac{(\log P)^2}{H^2}
+\left(1+\frac{Y^2}{P}\right)
+\ll_\varepsilon X^{-\varepsilon},
+\]
+because \(H\asymp X^{\varepsilon/2}n\).
+
+**This repairs the exceptional-set proof without any short-interval prime theorem.**
+
+The sieve has **one integer variable**, \(p\), after fixing \(q\). It is not a two-variable large sieve. Nor should “one-dimensional” here be confused with a classical fixed sieve dimension \(\kappa=1\): the number of excluded classes is \(\asymp H^2\), growing with \(n\). The displayed arithmetic large-sieve inequality permits that.
+
+The distinctness hypothesis also deserves an explicit check:
+\[
+\frac{Y}{H^2}
+\asymp X^{(1-7\varepsilon)/6}n^{-7/3}\longrightarrow\infty.
+\]
+The allowed \(\varepsilon<1/10\) is safely within the necessary \(\varepsilon<1/7\).
+
+**The coverage criterion and extraction must remain separate.**
+
+For a genuine factorization \(N=pq\),
+\[
+Bp^2-AN=p(Bp-Aq).
+\]
+Since \(M\nmid N\), cancellation of \(p\) modulo \(M\) is legitimate. Hence
+\[
+p\bmod M\text{ is a selected root}
+\iff M\mid Bp-Aq.
+\]
+The whole-range window then contains the integral value
+\[
+g=\frac{Bp+Aq-c}{M^2}.
+\]
+
+This is an exact arithmetic criterion for structural coverage. It does not say that the code factors \(N\) **if and only if** the criterion holds. The note’s own operational results include successes through the other factor and through order-related collisions.
+
+**The cost accounting is substantially sound, with implementation qualifications.**
+
+Write \(T\) for the number of targets and \(J\) for the number of distinct moduli. Then
+\[
+T\ll H^2Y/\log Y,\qquad
+m\ll HP/Y^2,
+\]
+and each window fits into one baby block. Both contributions fit
+\[
+O(H^{5/3}X^{1/6})
+=X^{1/6+5\varepsilon/6+o(1)}.
+\]
+
+For the actual group computation:
+
+| Component | Required cost |
+|---|---:|
+| Enumerating weights and testing weight–prime pairs | \(\widetilde O(H^2Y)\) |
+| Enumerating the band primes | \(\widetilde O(Y)\) |
+| All \(\beta^{L/\ell^2}\) | \(O(\log L\log J)\) modular multiplications |
+| Computing \(\gamma\) from one cofactor power | \(O(\log Y)\) modular multiplications |
+| Target handle and window shift | \(O(\log X)\) modular multiplications per target |
+| Baby and giant lists | \(O(m+T)\) elements |
+| Batched collision detection and extraction | \(\widetilde O(m+T)\) ring/bit-arithmetic scale, with the usual logarithmic factors |
+
+Here
+\[
+\log L=2\sum_{\ell\text{ used}}\log\ell=O(Y).
+\]
+Thus common-base preparation is \(\widetilde O(Y)\), not \(\widetilde O(JY)\).
+
+The [all-but-one routine](/home/knielsen/code/factoring-connection/src/multimod/operational.py:38) is mathematically correct. At each recursion level, the total bit lengths of the powering exponents are \(O(\log L)\); there are \(O(\log J)\) levels. Its powers go through `_pow`, so **the modular exponent batching is charged**. Target handle and shift powers are charged at [line 91](/home/knielsen/code/factoring-connection/src/multimod/operational.py:91).
+
+Three qualifications remain:
+
+- **GAP for the literal Python bit complexity.** The routine constructs sibling exponent products using sequential growing-integer multiplications. A theoretical bit-complexity implementation should construct and reuse a balanced integer product tree. The modular-operation metric does not charge those integer products.
+- **GAP for deterministic root construction as currently justified.** Tonelli–Shanks searches for a quadratic nonresidue without a supplied complexity bound. An easy theorem-level repair is to use only \(\ell\equiv3\pmod4\): roots then have a direct powering formula, and the prime-band sieve lower bound loses only a constant.
+- **The reported multiplication totals are not total runtime costs.** In particular, the imported Bluestein routine records powers without charging their square-and-multiply counts in `rn_mul_pow`; polynomial arithmetic has separate metrics. List-count slopes therefore should not be presented as measured total-arithmetic exponents.
+
+Also, the experiments implement the greedy `Hmax=12` design, **not the growing-\(H_0\) design of Theorem D**. They test the mechanism, not the stated asymptotic exceptional-set estimate.
+
+**The order issue is substantive.**
+
+For every prime divisor \(p\),
+\[
+\operatorname{ord}_p(\beta^L)
+=\frac{\operatorname{ord}_p(\beta)}
+{\gcd(\operatorname{ord}_p(\beta),L)}.
+\]
+A large order of \(\beta\) does not imply adequate order after powering.
+
+An explicit balanced example is
+\[
+N=31\cdot43=1333,\qquad
+L=(3\cdot5\cdot7)^2=11025,\qquad \beta=3.
+\]
+Exact computation gives
+\[
+\beta^L\equiv-1\pmod{1333}.
+\]
+Moreover, the entire \(L\)-power image modulo each prime has size two:
+\[
+\frac{30}{\gcd(30,L)}
+=\frac{42}{\gcd(42,L)}=2.
+\]
+There is no \(L\)-th power of order greater than two on either component. For \(\gamma=-1\), the baby-order gcd checks yield either \(1\) or \(N\), and repetition gives `small_order`.
+
+This example concerns the common-power construction generally; it is not asserted to be a counterexample to the asymptotic theorem’s exact band design.
+
+A sufficient operational condition is baby-list injectivity modulo the relevant factor. With the existing gcd checks, certified \(\operatorname{ord}_N(\gamma)\ge m\) suffices to obtain either a factor or injectivity on both components. There is no need to demand order exceeding the absolute target exponents.
+
+The available deterministic large-order theorem is stronger than the note’s citation: Harvey–Hittmeir 2026 removes the lower threshold on the requested order. But it constructs an arbitrary large-order element, not necessarily one in the prescribed \(L\)-power image. It does **not** directly close this gap. [Harvey–Hittmeir 2026, Theorem 1.1](https://arxiv.org/html/2601.11131v2).
+
+The probabilistic discussion in §3.8 is not a replacement. An inverse-logarithmic heuristic frequency for simultaneous order collapse would be much larger than the theorem’s \(N^{-\varepsilon}\) exceptional fraction.
+
+**“Balanced” is consistent in the theorem, but narrower in the experiments.**
+
+For the smaller factor,
+\[
+p\in[\sqrt{N/2},\sqrt N]
+\iff p\le q\le2p.
+\]
+Thus the principal mathematical definitions agree. They mean a bounded factor ratio, not merely equal bit lengths or \(p,q=N^{1/2+o(1)}\).
+
+For the even bit lengths used in the experiments, the generator forces the top two bits of both factors, so its sample lies in the narrower range \(q/p<4/3\). The sampled percentages are not uniform measurements over all of \(\mathcal S_n\).
+
+There is also an indexing convention: \(2^n+2^{n/2}+1\) has \(n+1\) bits. This does not alter an asymptotic exponent, but those rows should not literally be called \(n\)-bit inputs.
+
+**Independent exact reproduction.**
+
+My [scratch program](/tmp/claude-r12/check_exact.py) uses integer arithmetic for coverage and congruences. It imports the repository only to obtain its greedy target lists for the first comparison; it independently reconstructs their roots by exhaustive residue testing. Its separate prime-pair experiment constructs its own weight sets and prime bands without importing DCL coverage code.
+
+Results are in [exact_results.json](/tmp/claude-r12/exact_results.json).
+
+For \(N=2^n+2^{n/2}+1\):
+
+| Scale \(n\) | Actual \(\lambda\), R1 | Integer candidates | Uncovered | Fraction | \(e^{-\lambda}\) |
+|---:|---:|---:|---:|---:|---:|
+| 24 | 3.049750 | 1,200 | 6 | 0.500% | 4.737% |
+| 28 | 3.019316 | 4,799 | 18 | 0.375% | 4.883% |
+| 32 | 3.022656 | 19,195 | 377 | 1.964% | 4.867% |
+
+The corresponding larger-\(\lambda\) designs left **zero** uncovered candidates at all three sizes.
+
+For an entirely separate fixed design, take \(H=3\) and
+\[
+\mathcal P=\{29,31,37,41,43\}.
+\]
+There are seven primitive positive weight pairs. Exhausting all \(n\)-bit balanced prime pairs gives:
+
+| Bits | Prime pairs | Uncovered pairs | Fraction |
+|---:|---:|---:|---:|
+| 18 | 1,134 | 376 | 33.157% |
+| 22 | 12,589 | 4,017 | 31.909% |
+| 26 | 146,536 | 46,591 | 31.795% |
+
+Every tested linear/quadratic coverage equivalence and every applicable modulus-squared lock passed.
+
+These checks reproduce the coverage mechanism and small-size statistics. They neither prove Poisson behavior nor test the asymptotic growing-\(H_0\) claim. The existing test file also passed: **9 tests**.
+
+**Theorems A, A′, B, C and E.**
+
+| Claim | Verdict | Referee assessment |
+|---|---|---|
+| §3.1(i), degree one with two terms | **CORRECT** | With fixed denominator \(C_dM^2\), \(\|b\|_\infty\asymp PH/M^2\); progression spacing cancels \(M\). |
+| §3.1(ii), one-term targets | **CORRECT** | Coverage is \(O(W+1)\). The handling of \(W>P\) is sufficient. |
+| §3.1(iii), higher degree | **CORRECT**, conditional on Lemma K′ | The highest-degree nonzero coefficient gives \(\|b\|\gg P^e/M^K\), producing the displayed bound. |
+| Window merging and rounding | **CORRECT** | Charging the additive rounding term per original window avoids charging only once for an arbitrarily disconnected union. |
+| Theorem A | **CORRECT in the stipulated model** | Cauchy–Schwarz gives the degree-one contribution \(O(P^{1/2}X^{3/2}+X)\). Higher degrees cannot supply positive-proportion coverage below \(P^{2/5}\). |
+| Theorem A′ | **CORRECT** | It follows from the higher-degree branch, with the stated positive-proportion coverage threshold. |
+| Theorem B | **CORRECT, with a short counting proof needed** | The asserted class count yields the claimed height count and \(X^{5/4}\) inequality. Small brute-force checks are not its proof. |
+| Theorem C | **CORRECT under the intended lattice definition** | Primary denominator components split over coprime moduli; CRT transfers the local integer-valued condition. |
+| C’s “exact neutrality” consequence | **GAP if treated as a theorem** | Multiplicativity is proved; the volume heuristic and asserted lattice-index formula are additional ingredients. |
+| Theorem E(a) | **CORRECT** | \(|B+G_\tau|\le |B||G_\tau|\) in every abelian group. |
+| Theorem E(b) | **CORRECT for the stated rank-one reduction** | Known powers reduce to the scalar exponent \(\sum e_iF_i\). |
+| Theorem E(c) | **CORRECT within the whole-box model** | With positive integer side lengths, \(W_i\le\operatorname{vol}\), and a nonconstant coordinate supplies the scalar bound. |
+| Theorem E(d) | **GAP, correctly acknowledged** | General relation lattices are not reduced by the proof. |
+| Lines 395–398, product-tree “iff” | **GAP** | No general necessity theorem for the asserted separability characterization is proved. It should be restricted to the specified difference-kernel implementation. |
+
+For B, the missing height-count calculation is elementary. Given the asserted root-count bound, the number of pairs of height at most \(h\) is bounded by
+\[
+O_d(1)^{\omega(M)}
+\sum_{1\le |A|,|B|\le h}\gcd(A,B,M).
+\]
+Using
+\[
+\gcd(A,B,M)=
+\sum_{d\mid\gcd(A,B,M)}\varphi(d),
+\]
+the sum is
+\[
+\ll h^2\sum_{d\mid M}\frac{\varphi(d)}{d^2}
+\le h^2\tau(M)=h^2M^{o(1)}.
+\]
+The class-count bound itself follows from the necessary congruence
+\(Br^2\equiv AN\pmod M\), splitting prime-power factors and handling common valuations of \(A,B\).
+
+For A–C, the statement must retain the underlying conventions: fixed degree; nonconstant targets; unit residue classes; \(\gcd(M,N)=1\); and denominators supported on primes dividing \(M\). A condition defined merely by checking actual divisors of \(N\) would be too weak and could become vacuous.
+
+There is also a **quantifier mismatch in the summary**. A and B lower-bound families covering every hypothetical integer candidate for a fixed \(N\). D bounds failure at the **true factor**, averaged over \(N\). Therefore D does not prove that the full-covering model’s exponent is \(1/6\) for almost every \(N\). The sentence asserting that conclusion should be removed or reformulated.
+
+**Prior art and novelty.**
+
+Two different questions need different answers.
+
+First, **“almost all semiprimes,” without a balance restriction, is already an easy population**. For fixed \(\delta>0\), elementary prime counting gives
+\[
+\#\{pq\le X:p\le q,\ p>X^\delta\}\ll_\delta X/\log X,
+\]
+whereas all semiprimes number asymptotically \(X\log\log X/\log X\). Thus trial division up to \(N^\delta\) factors a density-one proportion of unrestricted semiprimes in \(N^{\delta+o(1)}\) time. This is an elementary deduction from the counting asymptotics, not a new factoring mechanism. It has only an inverse-\(\log\log X\) relative exceptional estimate and says nothing comparable about balanced semiprimes. [Crişan–Erban, *On the counting function of semiprimes*](https://arxiv.org/html/2006.16491v2).
+
+Likewise, finding a nontrivial divisor of almost every unrestricted composite integer is much easier than completely factoring almost every integer. Oracle reductions, randomized subexponential algorithms, and heuristic deterministic algorithms must also be separated from the requested unconditional deterministic statement.
+
+For **uniform bounded-ratio prime pairs**, I found no prior unconditional deterministic \(N^{1/6+o(1)}\) result, or another established exponent below \(1/5\), in the sources checked.
+
+| Source | Relevant result and relationship to DCL |
+|---|---|
+| **Lawrence 1895; Lehman 1974** | Weighted Fermat searches are old. Lehman proves a full deterministic \(N^{1/3+o(1)}\) bound. The weighted-sum mechanism cannot be claimed as new. [Lehman, *Factoring large integers*](https://www.ams.org/journals/mcom/1974-28-126/S0025-5718-1974-0340163-2/) |
+| **McKee 1999** | Direct ancestor: a divisor of the square-root variable produces a modulus-squared restriction. The paper explicitly labels its \(N^{1/4+\eta}\) speedup heuristic. Its §9 points back to McKee–Pinch §5 for an earlier related speedup. [McKee, primary paper](https://citeseerx.ist.psu.edu/document?doi=010e639e5176f16cee1b8aff586141f4d5c8eb10&repid=rep1&type=pdf) |
+| **McKee–Pinch 1996** | The publisher abstract describes deterministic Pollard/discrete-log and accelerated Fermat methods. I could not obtain the complete chapter, so exclusion of a closer formulation remains **unverified**. [Publisher record](https://link.springer.com/chapter/10.1007/3-540-61581-4_57) |
+| **Hittmeir 2018** | Modular-hyperbola sieving and BSGS improve the \(1/4\) bound by a subexponential factor, retaining exponent \(1/4\). [Primary text](https://arxiv.org/html/1608.08766v4) |
+| **Hittmeir 2021** | Rigorous deterministic exponent \(2/9\), using a time-space tradeoff for Lehman searches. [Primary text](https://arxiv.org/html/2006.16729v1) |
+| **Hittmeir 2023, subset sum** | Develops the hyperbolic sieve into a multiple-choice subset-sum reduction and improves special-purpose close-factor searches. No matching balanced almost-all exponent is established. [Primary text](https://arxiv.org/html/2205.10074) |
+| **Hittmeir 2023, Smooth Subsum Search** | A practical heuristic relation-generation method, not a rigorous deterministic average-case bound of the requested kind. [Primary text](https://arxiv.org/html/2301.10529v2) |
+| **Costa–Harvey** | Optimizes deterministic factorial/product methods at exponent \(1/4\); no matching average-case \(1/6\) result. [Primary paper](https://arxiv.org/abs/1201.2116) |
+| **Harvey 2021** | Supplies the shared collision search over multiplier families and rigorous exponent \(1/5\). [Primary text](https://arxiv.org/html/2010.05450v1) |
+| **Harvey–Hittmeir 2022** | Proposition 3.3 explicitly contains \(aq-bp\equiv0\pmod m\) and the modulus-squared lock. These arithmetic ingredients are established prior art. The improvement remains at exponent \(1/5\). [Primary text](https://arxiv.org/html/2105.11105v1) |
+| **Umans–Wang 2025** | A structured prefactored-divisor conjecture would imply deterministic exponent \(1/6\). It is conditional and uses a different covering object. [Primary text](https://arxiv.org/html/2511.10851v1) |
+| **He–Sahai 2026** | Refutes the specified one-dimensional arithmetic-progression divisor conjecture at the proposed \(1/3,1/3\) parameters. It does not directly refute DCH or the higher-rank conjecture. [Primary paper](https://arxiv.org/abs/2608.06681) |
+| **Stănică–Mulder–Hittmeir 2026** | Studies unions of weighted modular-hyperbola sieve sets and elliptic-trace obstructions. Closely related local arithmetic, but not the DCL global prime-pair coverage theorem or shared cofactor-powered search. [Primary text](https://arxiv.org/html/2606.13018v2) |
+
+The “almost all” deterministic papers found involving totient or elliptic-curve information require substantial oracles. They do not establish the unassisted factoring claim here. For example, [*On oracle factoring of integers*](https://www.sciencedirect.com/science/article/abs/pii/S0885064X23000109) explicitly assumes elliptic-curve information.
+
+The defensible candidate for novelty is the **combination** of:
+
+- a prime band near \(N^{1/6}H^{-1/3}\);
+- all small primitive weights and their \(N\)-determined roots;
+- a prime-pair exceptional-set argument using the arithmetic large sieve;
+- cofactor-powered handles sharing one baby list.
+
+I did not locate that combination. Its individual congruences, weighted sums, collision detection, and exponent-tree technique are not individually new. “No formulation located” is presently justified; “proved new” is not.
+
+**What is needed to make the claims theorems, ranked by difficulty.**
+
+| Difficulty | Required result | Proposed route |
+|---|---|---|
+| **Hardest for a worst-case claim** | Full coverage such as DCH | Prove that every relevant quadratic-value family has a divisor in the required prime band, or replace the band/weights by a provably covering construction. The present large sieve gives no route from few exceptions to zero exceptions. **Not needed for balanced almost-all coverage.** |
+| **Hardest remaining step for deterministic balanced factoring** | Factor-or-adequate-order procedure compatible with the \(L\)-power handles | Exploit the known factorization of \(L\) to split order collapse into factor-producing cases, or redesign the common-base construction so less order is destroyed. An average alternative must bound additional failures by \(O(N^{-\varepsilon})\), not merely \(o(1)\). |
+| **Substantial, only for broader input classes** | Uniform treatment of unbalanced ratios | Combine ratio bands with a shared search whose aggregate height/window costs remain \(N^{1/6+o(1)}\), or develop a Lehman-style simultaneous ratio argument. Removing factors \(\le N^{1/3}\) does not settle the remaining unbalanced semiprimes. |
+| **Routine theorem repair** | Precise population and exceptional-set normalization | Use \(\mathcal S_n\) and the fixed-interval proof above. No short-interval prime theorem is required. |
+| **Routine algorithmic repair** | Deterministic target construction | Restrict to band primes \(3\bmod4\), or provide an amortized deterministic root-construction bound. |
+| **Routine complexity repair** | Complete bit-cost implementation/proof | Reuse a balanced integer product tree, charge root construction and all target powers, then invoke the established fast polynomial collision machinery. |
+| **Necessary exposition and priority work** | Correct model quantifiers and sharpen novelty attribution | Separate true-factor average coverage from full candidate covering; incorporate McKee–Pinch §5 and state exactly which combined theorem is claimed new. |
+
+For **Theorem D as a coverage theorem**, the hard number-theoretic work is already present; the normalization can be repaired as above. For a **deterministic factoring theorem on almost all balanced semiprimes**, the prescribed-power order/extraction problem remains substantial. Closing it with the stated cost and exceptional rate would yield a potentially new result. DCH and an unbalanced-range extension are additional requirements only for the stronger worst-case or general-input claims.
