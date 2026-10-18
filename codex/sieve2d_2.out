@@ -1,0 +1,38 @@
+1. **CORRECT — Theorem 1.** F1–F5, Lemma L’s constant, both bounds on \(r_v\), and the chord count check out. The A–F summations miss no configurations; their overcounting only enlarges the bound. Choosing any fixed shortest vector resolves ties, and “counted at its own shortest vector” is sound. The exceptional set \(\mathcal D\) and falling-factorial expansion are correct.
+
+   All five supplied tests passed. Additional checks found no violations in 20,868 configurations and 72 boxes, including weights containing \((1,1)\).
+
+2. **CORRECT — Corollary 1 and Theorem 2.** The error absorption and scale substitution work. In particular, the potentially troublesome \(HY^2/(|V|X)\) term is absorbed by the displayed errors, splitting at \(|V|=H\). The height restriction supplies both geometric hypotheses for sufficiently large \(n\). Dividing the integer count by \(|S_n|\asymp P^2/n^2\) correctly incurs the \(n^2\) loss.
+
+3. **GAP — confined to Corollary 3′; Theorem 3 is correct.** With polynomial factors suppressed, the relevant exponential rates are
+   \[
+   E_a=O(2^{-2\varepsilon'n}/n),\quad
+   E_b^{\rm remainder}: -\tfrac16+\tfrac{\varepsilon'}6,\quad
+   E_c: -\tfrac1{12}+\tfrac{10\varepsilon'}3,\;
+        -\tfrac16+\tfrac{5\varepsilon'}3.
+   \]
+   These meet the target at \(\varepsilon'\le1/80\); the first \(E_c\) term requires the strict threshold \(\varepsilon'<1/64\). All scale separations hold.
+
+   **Fix Corollary 3′:** D″ supplies only \(E_a=O(n^{-1-2a})\), which is not \(o(n^{-4a})\) for \(a\ge1/2\). Instead take
+   \[
+   T=\lfloor2^{n/4}n^{-1-2a}\rfloor.
+   \]
+   Then \(E_a=O(n^{-1-4a})\), while \(E_c\) remains exponentially small. The algorithm stays unchanged.
+
+4. **CORRECT — Propositions 4 and 5.** The presieve moduli are distinct and admissible; the large-sieve denominator gains \((1+\lambda_k)\log Z\).
+
+   PYY Corollary 1.2(1) supplies the fixed-even-degree bound, and equation (1.1) supplies the odd-degree reduction. Explicitly,
+   \[
+   n'p(1-p)-1=\mu(1-\pi_*)-1\ge\lambda/2-1\longrightarrow\infty.
+   \]
+   The odd-degree prefactor \(p\ge1/2\), complementation, independent thinning, and independent labels all preserve the required conclusions. [PYY, results and appendix](https://arxiv.org/html/0801.0059)
+
+5. **GAP — the barrier conclusions need narrower scope.** Make these corrections:
+
+   - Replace “the box supplies only ≤5-prime statistics” and “exactly where level-type methods stop” with **“the displayed absolute-discrepancy estimates do not establish a sixth-moment improvement.”** Large upper bounds on errors prove no impossibility of cancellation.
+   - Supply the fifth-order extension before claiming it: configurations with four repeated labels contribute additional normalized \(O(|V|^{-3})\) errors. The displayed estimates consequently do not establish uniform \(N^{-c}\) accuracy in the polylog regime.
+   - Justify the growing-dimension fundamental-lemma assertions with a uniform theorem, or mark them heuristic. The claim \(J=\Omega(\lambda)\) also needs PYY’s growing-degree bound, beyond fixed-\(J\) Proposition 5.
+   - Qualify the Poisson Christoffel formula by \(\max\pi_\ell\to0\); generally the square-majorant value is \(\bigl[\sum_{i\le m}e_i(\pi_\ell/(1-\pi_\ell))\bigr]^{-1}\).
+   - §4.4 correctly obstructs a uniform bound over all integers. Weaken “primality must matter” to **“a restriction excluding these dilates is necessary”**: coprimality already excludes that family.
+
+**Overall verdict: ACCEPT WITH FIXES.** The fourth-moment theorem and exponential factoring improvement survive.

@@ -1,0 +1,537 @@
+**Proved:** a fourth-moment argument improves the coverage bound to
+\[
+\frac{\#\{(p,q)\in S_n:\text{uncovered}\}}{|S_n|}
+\ll \frac{n^4}{H^4}
+\]
+in the parameter ranges relevant here. Consequently, \(N^{-\varepsilon}\) coverage exceptions require only \(H\asymp nN^{\varepsilon/4}\), giving cost
+\[
+\boxed{N^{1/6+5\varepsilon/12}\operatorname{polylog}N.}
+\]
+
+There is also an elementary prime-presieve improvement of the original bound to \(O(1/\lambda)\).
+
+I do **not** obtain \(\lambda^{-3}\) or exponential decay. The distinction between a sixth-order volume threshold and a sixth-moment estimate accurate enough for \(\lambda^{-3}\) is essential.
+
+I worked read-only and did not consult `notes/sieve2d_*`.
+
+---
+
+**Theorem (proved).** Write
+\[
+K=|V|,\qquad
+s=\sum_{\ell\in\mathcal P}\frac1\ell,\qquad
+\lambda=Ks,\qquad T=\log(2Y).
+\]
+There are absolute constants \(C,C_*\) such that, for sufficiently large \(n\), the following hold.
+
+For \(Y>H^2\),
+\[
+\boxed{\quad
+\frac{\#\{(p,q)\in S_n:\text{uncovered}\}}{|S_n|}
+\le \min\left(1,\frac{C}{1+\lambda}\right).
+\quad}                                                     \tag{1}
+\]
+
+If additionally \(Y\ge C_*H^2\), then
+\[
+\boxed{\quad
+\frac{\#\{(p,q)\in S_n:\text{uncovered}\}}{|S_n|}
+\le
+\min\left\{
+1,\frac{C}{1+\lambda},
+Cn^2\left[
+\frac1{(1+\lambda)^2}
++\frac{T^4Y^2}{P}
++\frac{T^3}{Y}
+\right]\right\}.
+\quad}                                                     \tag{2}
+\]
+
+The corresponding integer count in \([1,2P]^2\) satisfies
+\[
+\boxed{\quad
+\#\{\text{uncovered integer pairs in }[1,2P]^2\}
+\le CP^2\left[
+\frac1{(1+\lambda)^2}
++\frac{T^4Y^2}{P}
++\frac{T^3}{Y}
+\right].
+\quad}                                                     \tag{3}
+\]
+
+All constants here are independent of \(H,n\). In particular, the two error terms in (2) are
+\[
+\frac{T^4Y^2}{P}=T^4P^{-1/3}H^{-2/3},
+\qquad
+\frac{T^3}{Y}=T^3P^{-1/3}H^{1/3}.                            \tag{4}
+\]
+
+Since \(K\asymp H^2\), \(T\asymp n\), and \(s\asymp 1/n\), for every fixed \(\delta>0\), uniformly when
+\[
+2\le H\le P^{1/13-\delta},
+\]
+we obtain
+\[
+\boxed{\quad
+\frac{\#\{\text{uncovered prime pairs}\}}{|S_n|}
+\ll_\delta
+\min\left\{1,\frac n{H^2},\frac{n^4}{H^4}\right\}.
+\quad}                                                     \tag{5}
+\]
+The exponent \(1/13\) is a sufficient range coming from the displayed errors, not a claimed optimal endpoint.
+
+The PNT in the fixed progression \(3\bmod4\) gives
+\[
+s=\frac{\log2}{2\log Y}+O((\log Y)^{-2}),
+\]
+so the conversion between \(\lambda\) and \(H^2/n\) contains no unspecified dependence on \(H\).
+
+**Proof of the two-variable bound.** All claims through the end of this proof are proved.
+
+Let
+\[
+\mathscr L=\bigcup_{v=(A,B)\in V}\mathbb R(A,B).
+\]
+Every integer point on one of these lines is covered. We may therefore remove \(\mathscr L\) before taking moments. This removal is what prevents the repeated-direction degeneracy from destroying the argument.
+
+Put
+\[
+M=\lfloor2P\rfloor,\qquad
+\mathscr B=(0,M]^2,\qquad
+\mathscr R=(\mathscr B\cap\mathbb Z^2)\setminus\mathscr L.
+\]
+Write \(L=|\mathcal P|\). We will use
+\[
+L\le 2Ys,\qquad K\asymp H^2,\qquad
+\sum_{v\in V}\frac1{\|v\|}\ll H,\qquad P=Y^3H.               \tag{6}
+\]
+
+For ordered distinct primes \(\ell_1,\ldots,\ell_j\in\mathcal P\), and choices \(v_i=(A_i,B_i)\in V\), define
+\[
+\Lambda=\{(a,b)\in\mathbb Z^2:
+ B_i a-A_i b\equiv0\pmod{\ell_i}\text{ for every }i\}.
+\]
+By CRT,
+\[
+\det\Lambda=d:=\ell_1\cdots\ell_j.                            \tag{7}
+\]
+
+Here and below \(j\le6\); constants depending on \(j\) can consequently be taken absolute.
+
+We first prove the averaged remainder estimate
+\[
+\boxed{\quad
+\sum_{\substack{\ell_1,\ldots,\ell_j\ {\rm distinct}\\v_1,\ldots,v_j\in V}}
+\left|
+\#(\Lambda\cap\mathscr R)-\frac{M^2}{d}
+\right|
+\ll_j
+PK^jY^{j/2}+P^2\lambda^jK^{-3}.
+\quad}                                                     \tag{8}
+\]
+
+This estimate handles the short vectors explicitly.
+
+For a planar lattice with shortest-vector length \(\rho\), the elementary lattice estimate is
+\[
+\#(\Lambda\cap\mathscr B)
+=\frac{M^2}{d}+O(P/\rho+1).                                  \tag{9}
+\]
+For completeness, choose a reduced basis with first vector of length \(\rho\). Parallel lattice rows have spacing \(d/\rho\). Counting points on each row introduces \(O(1)\) per row; summing the chord lengths across rows introduces \(O(P/\rho)\). Minkowski’s bound \(\rho\ll\sqrt d\) bounds the row-count error by the same expression. This proves (9).
+
+Choose one shortest vector for each lattice.
+
+Suppose first that this vector \(u=(a,b)\) lies outside \(\mathscr L\). Then every
+\[
+Ba-Ab,\qquad (A,B)\in V,
+\]
+is a nonzero integer. For \(\|u\|\le R\), its absolute value is at most \(2HR\). Since
+\[
+R\ll_jY^{j/2},\qquad H\ll\sqrt Y,
+\]
+each such integer has \(O_j(1)\) prime divisors in \((Y,2Y]\). Thus \(u\) satisfies at most \(O_j(K)\) possible event conditions \((v,\ell)\).
+
+It follows that the number of ordered configurations whose chosen shortest vector has length at most \(R\), outside \(\mathscr L\), is
+\[
+\ll_j K^jR^2.
+\]
+A dyadic summation, using \(\rho\ll_jY^{j/2}\), gives
+\[
+\sum_{\text{these configurations}}\rho^{-1}
+\ll_j K^jY^{j/2}.                                          \tag{10}
+\]
+Equation (9) therefore contributes
+\[
+O_j(PK^jY^{j/2}).                                           \tag{11}
+\]
+The \(+1\) is absorbed because \(j\le6\) and \(Y^{j/2}\le Y^3=P/H\), up to a constant depending on \(j\).
+
+We must also account for deleting points on other Farey lines. Fix \(v\in V\), and let \(r\) be the number of assigned directions different from \(v\). Distinct Farey directions remain distinct modulo every band prime. Consequently
+\[
+\Lambda\cap\mathbb Rv=\mathbb Z(tv),
+\qquad
+t=\prod_{i:v_i\ne v}\ell_i.                                 \tag{12}
+\]
+If \(tv\) is independent of the chosen shortest vector, the determinant inequality gives
+\[
+\|tv\|\gg\sqrt d\gg Y^{j/2}.
+\]
+Since \(t\le(2Y)^r\) and \(\|v\|\le\sqrt2H\), the separation \(Y\ge C_*H^2\) implies
+\[
+r\ge\lceil j/2\rceil.
+\]
+Summing the points removed from all such lines gives at most
+\[
+\begin{aligned}
+&\ll_j
+PHL^j\sum_{r\ge\lceil j/2\rceil}(K/Y)^r\\
+&\ll_j PK^jY^{j/2}.                                        \tag{13}
+\end{aligned}
+\]
+For the last inequality, use \(L\ll Y\), \(K\asymp H^2\), and \(H\ll\sqrt Y\). This argument applies whether or not the shortest vector itself is on a Farey line.
+
+It remains to treat lattices whose chosen shortest vector is \(tv\), with \(v\in V\). Formula (12) still holds. Moreover, for any \(x\in\Lambda\),
+\[
+d/t\mid \det(v,x).                                          \tag{14}
+\]
+For \(x\in\mathscr B\), \(|\det(v,x)|\ll HP\). If \(j-r\ge4\), then
+\[
+d/t\ge Y^{j-r}\ge Y^4\gg HP.
+\]
+Thus every point of \(\Lambda\cap\mathscr B\) lies on \(\mathbb Rv\), and
+\[
+\Lambda\cap\mathscr R=\varnothing.
+\]
+The total contribution of the predicted main terms from these configurations, divided by \(P^2\lambda^j\), is
+\[
+\ll_j
+\sum_{r\le j-4}
+\frac{K^{r+1}L^j}{Y^j\lambda^j}
+\ll_j
+\sum_{r\le j-4}K^{r+1-j}
+\ll_j K^{-3}.                                               \tag{15}
+\]
+
+In the remaining cases, \(j-r\le3\). The lattice-counting error together with deletion of the shortest-vector line is \(O_j(P/(t\|v\|))\). Its sum is bounded by
+\[
+PHL^j
+\sum_{r\ge\max(0,j-3)}(K/Y)^r.
+\]
+After division by \(P^2\lambda^j\), this is
+\[
+\ll_j
+\frac HP(Y/K)^{\min(j,3)}
+\le \frac HP(Y/K)^3
+=K^{-3}.                                                    \tag{16}
+\]
+Equations (11), (13), (15), and (16) prove (8).
+
+Also,
+\[
+|\#\mathscr R-M^2|\ll PH\le P^2K^{-3}.                       \tag{17}
+\]
+
+Now define, for \(x=(a,b)\in\mathscr R\),
+\[
+z_\ell(x)=\sum_{(A,B)\in V}1_{\ell\mid Ba-Ab},
+\qquad
+W(x)=\sum_{\ell\in\mathcal P}1_{z_\ell(x)>0}.
+\]
+Uncovered means exactly \(W=0\).
+
+Off \(\mathscr L\), every linear form is nonzero and has absolute value \(O(HP)<Y^4\). Hence
+\[
+X(x):=\sum_\ell z_\ell(x)\le4K.                              \tag{18}
+\]
+
+The only obstruction to \(z_\ell\) being a Bernoulli variable is
+\[
+\ell\mid a,\qquad \ell\mid b:
+\]
+otherwise distinct Farey directions cannot both occur modulo \(\ell\). Let \(\mathscr D\) be the set of points with this obstruction for some band prime. Then
+\[
+\#\mathscr D
+\le M^2\sum_{\ell\in\mathcal P}\ell^{-2}
+\le M^2s/Y.                                                 \tag{19}
+\]
+
+Let \(Z=\sum_\ell Z_\ell\), where the \(Z_\ell\) are independent Bernoulli variables with
+\[
+\Pr(Z_\ell=1)=K/\ell.
+\]
+Thus \(\mathbb EZ=\lambda\).
+
+For falling factorials \((w)_j\), expansion over distinct primes, followed by (8), gives
+\[
+\left|
+\sum_{x\in\mathscr R}(W(x))_j-M^2\mathbb E(Z)_j
+\right|
+\ll_j
+PK^jY^{j/2}
++P^2\lambda^jK^{-3}
++(4K)^j\#\mathscr D.                                        \tag{20}
+\]
+Indeed, outside \(\mathscr D\) the factorial expansions agree exactly. On \(\mathscr D\), their difference is bounded by \(X^j\le(4K)^j\).
+
+For \(\lambda\ge1\), express \((W-\lambda)^4\) in the falling-factorial basis. The coefficient of \((W)_j\) is \(O(\lambda^{4-j})\). Also,
+\[
+\mathbb E(Z-\lambda)^4\le\lambda+3\lambda^2.
+\]
+Using (17)–(20), and dividing by \(P^2\lambda^4\), gives
+\[
+\frac1{P^2\lambda^4}
+\sum_{x\in\mathscr R}(W(x)-\lambda)^4
+\ll
+\lambda^{-2}
++\frac{Y^2}{Ps^4}
++K^{-3}
++\frac1{Ys^3}.                                              \tag{21}
+\]
+Here the two principal remainder calculations are
+\[
+\frac1P\sum_{j=1}^4
+\left(\frac{\sqrt Y}{s}\right)^j
+\ll \frac{Y^2}{Ps^4},
+\qquad
+\frac{\#\mathscr D}{P^2}
+\sum_{j=1}^4(K/\lambda)^j
+\ll\frac1{Ys^3}.
+\]
+Since \(s\le1\), \(K^{-3}\le\lambda^{-2}\). At every uncovered point, \((W-\lambda)^4=\lambda^4\). Therefore
+\[
+\#\{\text{uncovered integer pairs}\}
+\ll P^2\left[
+\lambda^{-2}+\frac{Y^2}{Ps^4}+\frac1{Ys^3}
+\right].                                                    \tag{22}
+\]
+The case \(\lambda<1\) is covered by the trivial bound. Substituting \(s\asymp T^{-1}\) proves (3).
+
+Finally, \(S_n\subset[1,2P]^2\), while
+\[
+|S_n|\gg P^2/n^2.
+\]
+For example, a fixed rectangle
+\[
+p\in[3P/4,4P/5],\qquad q\in[P,11P/10]
+\]
+lies inside the required region, and the PNT supplies the lower bound. Dividing (3) by this proves the two-variable part of (2).
+
+**Proof of the prime-presieve bound (1).** Fix a prime \(q\) in its allowed range. Apply the arithmetic large sieve to uncovered **prime** \(p\), taking
+\[
+Q=\lfloor\sqrt P\rfloor,\qquad
+R=\left\lfloor\frac{Q}{2Y}\right\rfloor.
+\]
+Besides the \(K\) forbidden classes at each band prime, include the forbidden class \(0\bmod r\) for every prime \(r\le R\). The primes \(p>P/2\) avoid all those classes.
+
+The arithmetic-sieve denominator is
+\[
+J=\sum_{d\le Q}\mu^2(d)
+\prod_{r\mid d}\frac{\omega(r)}{r-\omega(r)}.
+\]
+Keep the terms \(d=m\) and \(d=\ell m\), where \(m\le R\). Since \(R<Y\), these families do not overlap. Using
+\[
+\sum_{m\le R}\frac{\mu^2(m)}{\varphi(m)}\gg\log R,
+\]
+we get
+\[
+J\gg (1+\lambda)\log R\asymp(1+\lambda)\log P.
+\]
+Thus the number of admissible \(p\) for each \(q\) is
+\[
+\ll \frac{P}{(1+\lambda)\log P}.
+\]
+There are \(O(P/\log P)\) prime \(q\), proving (1).
+
+This is an application of the standard arithmetic large sieve; it improves the baseline normalization without any prime-pair distribution theorem. The underlying large-sieve reference is Montgomery–Vaughan, *The large sieve*, cited below.
+
+---
+
+**What the level barrier actually says.**
+
+There are three different notions here; conflating them would overstate the result.
+
+1. **Uniform equidistribution of every assigned lattice is false already at order four.**  
+   If all four directions equal \(v\), then \(d\asymp Y^4\), and
+   \[
+   d\gg HP.
+   \]
+   Every point in the box is on the exact line \(\mathbb Rv\). After that covered line is removed, the count is zero rather than \(P^2/d\). This is precisely the contribution handled in (15).
+
+2. **Averaged lattice estimates give four useful moments, and also a fifth.**  
+   The normalized error in (8) is
+   \[
+   \frac{Y^{j/2}}{Ps^j}+K^{-3}.                              \tag{23}
+   \]
+   At order five, its geometric part is
+   \[
+   \frac{Y^{5/2}}{Ps^5}
+   =\frac1{H\sqrt Y\,s^5},
+   \]
+   which is exponentially small for polylogarithmic \(H\). Five moments still yield the same power \(\lambda^{-2}\).
+
+3. **Six primes are below the volume threshold, but the available sixth-moment error is inadequate.**  
+   Indeed,
+   \[
+   Y^6=P^2/H^2,
+   \]
+   so a typical assigned lattice has expected occupancy about \(H^2\). Nevertheless, the argument above gives only
+   \[
+   \frac{\#\{\text{uncovered integers}\}}{P^2}
+   \ll
+   \lambda^{-3}
+   +\frac1{Hs^6}
+   +\frac1{Ys^5}.                                           \tag{24}
+   \]
+   The term \(1/(Hs^6)\asymp n^6/H\) overwhelms \(\lambda^{-3}\asymp n^3/H^6\).
+
+To prove \(\lambda^{-3}\) by this route, the signed sixth-moment remainder would need to be \(O(P^2\lambda^3)\). The positive remainder bound currently available contains
+\[
+PK^6Y^3=\frac{P^2K^6}{H},
+\]
+which is larger than \(P^2\lambda^3\) by about
+\[
+K^3T^3/H\asymp H^5T^3.
+\]
+That is the precise failure.
+
+Seven band primes have
+\[
+d\ge Y^7>P^2,
+\]
+because \(Y>H^2\). This is the natural volume threshold. It is **not** a theorem that signed averages over many such lattices cannot be evaluated.
+
+**Proved conclusion:** this argument supports the power \(\lambda^{-2}\); its sixth-moment extension does not support \(\lambda^{-3}\).
+
+**Not established:** that every possible arithmetic method must stop at \(\lambda^{-2}\).
+
+**Why smoothing does not automatically fix this.** For a smooth weight,
+\[
+\sum_{x\in\Lambda}w(x/P)
+=\frac{P^2}{d}
+\sum_{\xi\in\Lambda^*}\widehat w(P\xi).
+\]
+Rapid Fourier decay helps when all nonzero dual vectors are sufficiently long. The repeated-direction lattices have very short dual vectors, so determinant size alone does not make the nonzero frequencies negligible. An averaged treatment of exceptional shapes is still required. Smoothing may improve errors, but it does not supply the missing sixth-moment accuracy by itself.
+
+Ordinary BV also does not directly resolve this: under \(Y>H^2\), \(Y^2>P^{4/7}\), already beyond its usual \(P^{1/2}\) modulus range for one prime variable. BDH or bilinear estimates would need a new estimate for this particular family and the required summed remainder. Janson’s inequality cannot be invoked merely from small low-order correlations.
+
+---
+
+**A fake distribution makes the information barrier sharp.**
+
+**Proved, using an established limited-independence theorem:** exact information through five band primes cannot, by itself, force \(o(\lambda^{-2})\).
+
+Let
+\[
+a_\ell=K/\ell,\qquad \rho=\max_\ell a_\ell,\qquad \mu=L\rho.
+\]
+Then \(\lambda\le\mu\le2\lambda\).
+
+The results of Peled–Yadin–Yehudayoff imply that, for \(\lambda\to\infty\), there exist five-wise independent Bernoulli variables \(C_\ell\), each of mean \(\rho\), such that
+\[
+\Pr(C_\ell=0\text{ for every }\ell)\gg\mu^{-2}.
+\]
+Their even-order theorem and odd-order reduction give this statement. [Peled–Yadin–Yehudayoff, Theorem 1.1, Corollary 1.3 and equation (1.1)](https://arxiv.org/pdf/0801.0059).
+
+Independently thin \(C_\ell\) with probability \(a_\ell/\rho\). The resulting \(E_\ell\) are five-wise independent with the exact unequal marginals \(a_\ell\), and
+\[
+\Pr(E_\ell=0\ \forall\ell)\gg\lambda^{-2}.
+\]
+On each success, independently choose one of the \(K\) Farey labels uniformly. This also matches the labelled local-event probabilities through five distinct primes.
+
+The same construction can use \(K/(\ell-1)\), the natural prime-pair marginal, and can be extended to uniform local residue pairs conditional on success or failure.
+
+Thus even **exact** five-prime local distributions admit an uncovered mass of order \(\lambda^{-2}\). More generally, fixed \(k\)-wise information permits mass of order
+\[
+\lambda^{-\lfloor k/2\rfloor}.
+\]
+
+This proves sharpness for methods using only the corresponding local-distribution information. It does not construct actual prime pairs with that frequency, nor preserve every additional arithmetic constraint.
+
+In the Poisson model, the optimized degree-\(2m\) square majorant gives
+\[
+\left(\sum_{r=0}^m\frac{\lambda^r}{r!}\right)^{-1}
+\sim \frac{m!}{\lambda^m}
+\]
+for fixed \(m\). Obtaining \(\exp(-c\lambda)\) this way requires moment order comparable to \(\lambda\), hence moduli on the scale \(Y^{c'\lambda}\), far beyond the box-volume scale.
+
+**Heuristic:** exponential decay for the actual prime pairs.
+
+**Not proved here, and not supplied by any applicable result found in the literature search:** exponential decay, or decay faster than every fixed power. The fake distribution rules out deriving it from fixed-level information; it does not rule out a method exploiting additional arithmetic structure.
+
+---
+
+**Does primality matter?**
+
+**For the proved fourth-moment bound:** the numerator is bounded entirely by counting integers. Restriction to prime pairs costs at most \(n^2\) on normalization. That loss is explicit; I have not proved its removal from the fourth-moment estimate. The separate prime presieve proves (1).
+
+**For exponential claims:** integers and primes can differ qualitatively.
+
+For integer \(H\), take the primitive direction
+\[
+u=(H,H+1).
+\]
+For every \((A,B)\in V\),
+\[
+0<|BH-A(H+1)|\le H^2<Y.
+\]
+Therefore every pair
+\[
+(a,b)=t(H,H+1)
+\]
+with \(t\) coprime to all band primes is uncovered.
+
+There is an interval of \(t\), of length \(\asymp P/H\), for which these pairs satisfy the balanced product restrictions. Since \(s\ll1/\log Y\) and \(P/H=Y^3\), a positive proportion of that interval avoids the band primes. Hence there are
+\[
+\gg P/H
+\]
+uncovered balanced integer pairs. Their integer exceptional fraction is at least \(\gg1/(PH)\).
+
+These pairs are composite dilates and do not belong to \(S_n\). Consequently, a uniform integer analogue of \(\exp(-c\lambda)\) is false once \(\lambda\) grows sufficiently faster than \(\log P\). The polynomial bounds proved above are unaffected.
+
+---
+
+**Factoring trade-off (proved).**
+
+Take
+\[
+H=\left\lceil n\,2^{\varepsilon n/4}\right\rceil.
+\]
+For every fixed \(0<\varepsilon<2/13\), the coverage theorem gives
+\[
+\frac{\#\{\text{uncovered prime pairs}\}}{|S_n|}
+=O(2^{-\varepsilon n}).
+\]
+The two explicit geometric errors are smaller than this. The cost becomes
+\[
+N^{1/6}H^{5/3}\operatorname{polylog}N
+=
+\boxed{N^{1/6+5\varepsilon/12}\operatorname{polylog}N.}
+\]
+
+Thus the extra exponent changes from \(5\varepsilon/6\) to \(5\varepsilon/12\).
+
+For the full algorithm in the permitted note, its already established range \(\varepsilon\le1/60\) remains valid: this choice of \(H\) is smaller than the old one, and the other displayed exceptional-set estimates remain valid. Applying the coverage bound to its four fixed bands changes only constants.
+
+For \(H=n^{1+a}\), the combined proved bound is
+\[
+O\!\left(\min\{n^{-1-2a},n^{-4a}\}\right),
+\]
+with exponentially small geometric errors.
+
+A hypothetical \(\lambda^{-3}\) bound would give extra cost exponent \(5\varepsilon/18\). That improvement is **conditional**, not proved.
+
+---
+
+**Literature and attribution.**
+
+The averaged shortest-vector argument is established methodology. I found no reference stating the precise growing-\(H\), Farey-band theorem above; that is not a novelty claim.
+
+- **Stephan Daniel**, “On the divisor-sum problem for binary forms,” *Journal für die reine und angewandte Mathematik* **507** (1999), 107–129, especially Lemma 3.3. This is a predecessor for averaged lattice remainders in binary-form divisibility problems. [DOI](https://doi.org/10.1515/crll.1999.507.107).
+
+- **Alec Shute**, “Polynomials represented by norm forms via the beta sieve,” *Journal of the Institute of Mathematics of Jussieu* **24** (2025), no. 4, 1463–1519, §3, especially Lemmas 3.3–3.4 and equations (3.7)–(3.8). This explicitly contains planar lattice counting followed by averaging over shortest vectors, with zero-form cases separated, and credits Daniel. Its fixed-degree estimates cannot simply be substituted with degree \(K\to\infty\). [Paper](https://arxiv.org/pdf/2209.08949), [publication](https://doi.org/10.1017/S1474748025000076).
+
+- **H. L. Montgomery and R. C. Vaughan**, “The large sieve,” *Mathematika* **20** (1973), 119–134. This supplies the large-sieve machinery underlying the baseline and prime-presieve bound. [DOI](https://doi.org/10.1112/S0025579300004708).
+
+- **Ron Peled, Ariel Yadin and Amir Yehudayoff**, “The maximal probability that \(k\)-wise independent bits are all 1,” *Random Structures & Algorithms* **38** (2011), no. 4, 502–525. This supplies the sharp fixed-order fake-distribution obstruction. [Paper](https://arxiv.org/abs/0801.0059), [DOI](https://doi.org/10.1002/rsa.20329).
+
+- **Zarathustra Brady**, *Poisson imitators and sieve theory*, author’s note, §§1–2, especially Theorem 2. This explains the moment-problem/sieve-weight duality relevant to the level barrier. [Author PDF](https://www.notzeb.com/poisson-imitators.pdf).
