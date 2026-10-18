@@ -27,3 +27,12 @@
   - (3) O3 does not force degree ≥ p. O4 is proved only for x^K − 1, and is weaker than Martin–Parvardi 2022. The O1 polynomial-readout corollary bounds the lifted dimension.
   - Repair cycle C-2R: pre-registered (a8920b7) before the runs. The independent search reproduces 0/32, 14/32 and 0/32. On the 16 largest instances no non-character exponent improves on the one-layer degree, so the mechanism is rejected under the pre-registered rule; the frozen extension X1 also failed (0/16). Compression with exponent E=(p+1)/2 is explained (y^E = χ(y)y), and that exponent encodes (p−1) | 2E−2, i.e. the factor. Conjecture C2R-X (open): an exact fold with linearly many pairs forces (p−1) | k(E−1). New proved Track D bound: BM over Z/N hits a nonunit by index p+e−1.
 - 2026-10-17: **Final deliverables.** REPORT.md (revised after the GPT-6.1-sol r5 review; all 14 items addressed), NEXT_STEPS.md, README.md, references.md, notes/review_and_repairs.md. The r4 claims were verified exhaustively for p<q<1000 (src/repair/verify_r4.py), and the r5 claims too (verify_r5.py). s mod 64 is fixed by (N mod 64, ε, QR_2). s mod 128 is NOT fixed by those plus the r4/r8 of Cl(−4N) and Cl(−8N). Tests: 168 passed. The decisive open question, restated in the standard model, is whether ε (the sum-of-two-squares bit) can be predicted on D_n; see REPORT §5.
+
+## Phase 2 (2026-10-18): the ε question + primality-test leakage (user request)
+| Area | Owner | Files |
+|---|---|---|
+| NEXT_STEPS item 1: pre-registered ε/QR_2 correlation battery | agent `epsbattery` | `src/eps/*`, `tests/test_eps*.py`, `notes/eps_*.md`, `experiments/*/eps*` |
+| NEXT_STEPS item 2: s mod 128 tower | agent `tower128` | `src/tower/*`, `tests/test_tower*.py`, `notes/tower_*.md`, `experiments/*/tower*` |
+| Primality-test leakage study | agent `primality` | `src/primality/*`, `tests/test_primality*.py`, `notes/primality_*.md`, `experiments/*/primality*` |
+| NEXT_STEPS item 3 (reduction map), primality prior art | codex GPT-6.1-sol | `codex/r6_*` |
+Harness note: subagents cannot write report-like files (REPORT*.md, *_draft.md); notes/*_analysis.md and similar are fine. If a write is refused, return the text in the hand-back.
