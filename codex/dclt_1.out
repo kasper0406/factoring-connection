@@ -1,0 +1,339 @@
+**Verdict:** The clean-band argument closes the previous order/extraction gap. I find Lemmas 1–10 mathematically sound under the stated sufficiently-large-\(n\) conditions, and the claimed exceptional fraction and exponent follow. The document is not correct verbatim: the claim that merely \(m\le\bar m_k\) suffices for the cost proof is false, some cost/count bookkeeping needs correction, and the supplied Python implementation does not establish the advertised asymptotic bit complexity. These defects have inexpensive repairs that preserve the theorem’s population, success rate, and \(\varepsilon\)-range. I found no matching unconditional prior theorem, but cannot certify novelty: McKee–Pinch §5 remained inaccessible.
+
+I read §§1–4 of [the note](/home/knielsen/code/factoring-connection/notes/dcltheorem_results.md:13), the previous audit, and all three requested source files. Repository files were left unchanged. Independent scripts and results are under [/tmp/claude-dclt1/](/tmp/claude-dclt1/).
+
+Here **CORRECT** includes conditions already guaranteed by \(n\ge n_0(\varepsilon)\); **GAP** identifies an omitted justification; **WRONG** identifies a false assertion or implementation mismatch. All proof lines covered by a table row receive its verdict unless explicitly qualified.
+
+**Population, quantifiers, and algorithm**
+
+| Note lines | Verdict | Finding |
+|---|---|---|
+| 15–23: population and denominator | **CORRECT** | Unique factorization identifies these ordered-by-size prime pairs with their semiprimes. The factor ranges hold. The proposed rectangle has products between \(1.02X'^2\) and \(1.125X'^2\), and \(1<q/p<2\). PNT therefore supplies \(\lvert S_n\rvert\gg P^2/n^2\). |
+| 25–39: theorem’s quantifiers and \(\delta\)-translation | **CORRECT for the intended fast-arithmetic algorithm** | \(\delta=5\varepsilon/6\) gives \(\delta\le1/72\) and exceptional exponent \(6\delta/5\). Polynomial factors become \(N^{o(1)}\). The implementation qualification is discussed below. |
+| 41–51: corollary and scope | **CORRECT** | This concerns the actual prime pair under uniform counting on \(S_n\). It proves neither coverage of every integer candidate for almost every \(N\), nor success for every fixed \(q\). |
+| 57–66: public parameters | **CORRECT mathematically** | Enlarge \(n_0(\varepsilon)\) so bands are nonempty, \(16Y<p,q\), \(Y/H^2\to\infty\), and \(Y^4>\sqrt2P\). These follow uniformly over the allowed \(\varepsilon\)-range. |
+| 70–76: balanced interval and bounds | **CORRECT** | The interval contains the true \(p\); AM–GM gives Lo; convexity gives Hi. Integer square roots and rational ceilings compute these bounds exactly. The span estimate is deliberately loose. |
+| 80–85: exponent tree | **CORRECT** | The all-but-one recursion has the stated invariant, including an unmatched child. For sufficiently large \(n\), a band prime dividing \(N\) is a proper divisor. |
+| 86–93: roots, class constants, windows | **CORRECT** | \(B,r\) are invertible modulo the relevant prime powers. Euler’s test excludes zero and nonsquares; the \(3\bmod4\) formula supplies both roots. Also \(g_{\rm lo}\ge0\): \(c<\ell^2\) and Lo\(\ge0\), so \((\mathrm{Lo}-c)/\ell^2>-1\). |
+| 94–95: choice of \(m\) | **WRONG assertion; easy repair** | “The proof needs only \(m\le\bar m_k\)” is false for the cost proof. It needs the stated minimization rule, or simply \(m=\bar m_k\). The implementation’s grid includes \(W_{\max}\), which supplies the necessary comparison. |
+| 97–102: precomputed giants | **CORRECT** | The formula has the correct offset. \(B-c+\ell^2\ge B+1>0\), and \(g_{\rm lo}+1>0\). Powers of \(\gamma^{-1}\) implement the negative exponents legitimately. |
+| 104–109: polynomial evaluation and extraction | **CORRECT** | Monic polynomial division is valid over \(\mathbb Z/N\mathbb Z\). Repeated points and repeated baby values cause no algebraic problem. Every returned gcd is checked to be proper. |
+| 112–115: remarks | **CORRECT** | The algorithm computes no orders. Excluding \(A=B\) is essential for this particular one-sided-success argument. The clean block is selected only in the analysis; the algorithm tries all four. |
+
+The dependence on \(N\) in the windows and in \(m\) does **not** invalidate the counting argument. The bands and weights are fixed before \(N\) is supplied, and Lemma 10 uses the public upper bound \(\bar m_k\).
+
+**Lemmas 1–10**
+
+| Lemma and lines | Verdict | Detailed check |
+|---|---|---|
+| **1**, 121–129 | **CORRECT** | Line 125 supplies all necessary units. In line 126, the inverse expansion is valid modulo \(\ell^2\). Substitution gives line 127, and the root congruence annihilates its coefficient modulo \(\ell\). No division by a nonunit occurs. |
+| Coverage criterion, 131–132 | **CORRECT** | Cancelling \(p\) is legitimate because \(\ell<p\). This is the exact bridge from the \(N\)-dependent quadratic root calculation to the fixed-\(q\) linear residue classes. |
+| **2**, 134–137 | **CORRECT** | The integer \(g\) lies in the window. Euclidean division gives \(0\le i^*<m\), and \(j^*<\lceil W_\tau/m\rceil\). Thus the true giant is actually generated. |
+| **3**, 139–145 | **CORRECT** | The exponent difference is an integer multiple of \(p-1\) *before* multiplication by \(L/\ell^2\). There is no illicit division modulo \(p-1\), and no order hypothesis. |
+| **4**, 147–153 | **CORRECT** | Both reductions modulo \(q-1\) are valid. Multiplication by the integer \(L/\ell^2\) preserves the congruence. The sign is \(A-B\), as written. Negative values pose no problem because \(u\) is a unit. |
+| **5**, 155–163 | **CORRECT** | One factor vanishes modulo \(p\), and every factor is nonzero modulo \(q\). Since \(N=pq\) with distinct primes, the gcd is **exactly \(p\)**, regardless of multiplicities modulo \(p\). |
+| **6**, 165–172 | **CORRECT** | Four dirty bands would supply four distinct prime divisors of \(q-1\), each exceeding \(Y\), contradicting \(Y^4>q\). Ceiling factors in the asymptotic comparison require harmless constant slack. |
+| **7**, 174–180 | **CORRECT** | \(\gcd(d,L/\ell^2)=1\) is exactly enough to cancel the cofactor in the order divisibility condition. The stated \(\delta\)-range is necessary for the **iff**. Cleanliness guarantees the required coprimality. |
+| **8**, 182–187 | **CORRECT** | Count distinct prime divisors of each \(2^k-1\), then take a union bound. For real \(T\), use \(K=\lfloor T\rfloor\); \(K(K+1)\le T(T+1)\). No distribution theorem for orders is needed. |
+| **9**, 189–207 | **CORRECT**, with a citation correction | Distinct primitive weight pairs have distinct rational ratios. Their nonzero determinant has absolute value \(<H^2<\ell\), so exactly \(\lvert V\rvert\) classes are excluded. The arithmetic large-sieve denominator and its prime-term lower bound are valid. The historical attribution of the sharper “\(-1\)” constant is inaccurate; the weaker constant actually needed here is already sufficient. |
+| **10**, 209–222 | **CORRECT** | Put \(g'=\gcd(\lvert A-B\rvert,d)\le H-1\). The second congruence is unsolvable unless \(g'\mid\ell^2\delta\); otherwise it gives one class modulo \(d/g'\). Cleanliness gives \(\ell\nmid d\), so CRT supplies modulus \(\ell d/g'\), and the interval count follows. |
+
+For Lemmas 3 and 4, the following exact identities make the exponent manipulations especially transparent. Write \(E=B+AN-c\). Then
+\[
+E-\ell^2g=(p-1)(Aq-B),
+\]
+and
+\[
+E-\ell^2g-(A-B)(p-1)=A(p-1)(q-1).
+\]
+These prove the two component formulas directly.
+
+The precomputed form also agrees **exactly in the unit group modulo \(N\)**:
+\[
+(u^N)^A u^{B-c+\ell^2}\gamma^{-(g_{\rm lo}+1+jm)}
+=u^{B+AN-c}\gamma^{-(g_{\rm lo}+jm)}.
+\]
+The extra \(u^{\ell^2}\) cancels the extra \(\gamma^{-1}\).
+
+For Lemma 7, the distinction between the exact range and its symmetric enlargement matters. I found this exact example:
+\[
+\begin{gathered}
+p=32783,\quad q=65537,\quad d=32,\\
+(A,B,\ell)=(2,1,227),\quad m=3,\quad i^*=0.
+\end{gathered}
+\]
+The band is clean. The enlarged range \(|\delta|<3\) contains a solution \(\delta=-2\), but the exact range is \([0,2]\), containing none. The true giant is **not FULL**. Thus replacing the exact range by \(|\delta|<m\) would invalidate the equivalence. The note correctly uses the enlargement only as a counting superset.
+
+There are two separate coprimality issues:
+
+- Lemma 7 only needs \(\gcd(d,L/\ell^2)=1\).
+- Lemma 10’s stated CRT argument additionally uses \(\ell\nmid d\).
+
+The clean-band hypothesis supplies both.
+
+For Lemma 9, one can avoid any uncertainty about the full sieve denominator by proving precisely the weaker bound needed. If \(Z\) integers survive and \(\omega\) classes are excluded modulo \(\ell\), Parseval and Cauchy–Schwarz give
+\[
+\sum_{a=1}^{\ell-1}|S(a/\ell)|^2
+\ge \frac{\omega}{\ell-\omega}Z^2.
+\]
+The relevant fractions are \(Q^{-2}\)-separated. The additive large sieve therefore yields
+\[
+Z\le
+\frac{N_0+Q^2}
+{\sum_{\ell\in\mathcal P_k}\omega/(\ell-\omega)}
+\le
+\frac{P/2+1+Q^2}
+{|V|\sum_{\ell\in\mathcal P_k}1/\ell}.
+\]
+This is the displayed coverage bound required later. Montgomery–Vaughan’s original paper supplies the \(N_0+Q^2\) constant; the sharper \(N_0-1+Q^2\) is unnecessary here. [Montgomery–Vaughan, *The large sieve*](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf).
+
+**Proof of Theorem D′ and exceptional-set arithmetic**
+
+| Lines | Verdict | Finding |
+|---|---|---|
+| 226: correctness | **CORRECT** | For sufficiently large \(n\), the even-input and band-prime exits also return proper divisors. |
+| 250–256: sufficient success conditions | **CORRECT** | A clean block exists for every admissible \(q\). |
+| 257: obtain a covering target | **CORRECT** | This follows from the definition of \(U_k(q)\) and the coverage criterion. |
+| 258: exclude FULL | **CORRECT** | \(m\le\bar m_k\) places every possible exact \(\delta\) inside the public counting superset. Here that inequality really is sufficient. |
+| 259–262: extraction and union bound | **CORRECT** | Lemma 5 gives gcd \(p\). Earlier extraction of either factor is also success. |
+| 264: number of possible \(q\)’s | **CORRECT** | PNT gives the loose bound \(3P/n\) on this fixed proportional interval. |
+| 266–267: \(E_a\) | **GAP in the displayed intermediate arithmetic** | Lemma 8 gives \(T(T+1)/(n-1)\), not \(T^2/(n-1)\). Restore the omitted \(+T\). The final asymptotic estimate remains valid. |
+| 268–270: \(E_b\) | **CORRECT** | The fixed interval counts integer survivors. The normalization by \(P^2/n^2\) is correct. |
+| 271–277: \(E_c\) | **CORRECT** | The powers of \(H,P,Y,T\), including the CRT endpoint contribution, are correct. |
+| 278–279: conclusion | **CORRECT** | There is strict exponential slack throughout the stated \(\varepsilon\)-range. |
+| 281–285: polylog corollary | **CORRECT** | The same argument gives the stated density-one conclusion. |
+| 287–290: parameter restrictions | **CORRECT** | The binding strict inequality is \(\varepsilon<1/52\); \(1/60\) is safely inside it. |
+
+Explicitly, the three normalized bounds are
+\[
+\frac{|E_a|}{|S_n|}
+\ll n\,2^{-2\varepsilon n},
+\qquad
+\frac{|E_b|}{|S_n|}
+\ll \frac{n^2}{H^2}
+\ll 2^{-\varepsilon n}.
+\]
+
+For \(E_a\), a fully safe starting expression is
+\[
+|E_a|
+\le
+\frac{T(T+1)}{n-1}(P/2+1).
+\]
+It gives the same normalized estimate.
+
+For \(E_c\), write \(x=2^kY\). Lemma 10 gives, using the stated crude bounds,
+\[
+|F_k(q)|
+\le
+2H^2x\frac{3HP}{x^2}
+\left(\frac{PH}{2xT}+1\right)
+=
+\frac{3H^4P^2}{x^2T}+\frac{6H^3P}{x}.
+\]
+Thus the note’s slightly larger constants are safe, and
+\[
+\frac{|E_c|}{|S_n|}
+\ll
+n\left(
+\frac{H^{14/3}P^{1/3}}T+
+\frac{H^{10/3}}{P^{1/3}}
+\right).
+\]
+Substitution gives
+\[
+\ll
+n^{17/3}2^{(-1/12+10\varepsilon/3)n}
++
+n^{13/3}2^{(-1/6+5\varepsilon/3)n}.
+\]
+
+To absorb these into \(O(2^{-\varepsilon n})\), the conditions are
+\[
+-\frac1{12}+\frac{13\varepsilon}{3}<0
+\quad\Longleftrightarrow\quad
+\varepsilon<\frac1{52},
+\]
+and
+\[
+-\frac16+\frac{8\varepsilon}{3}<0
+\quad\Longleftrightarrow\quad
+\varepsilon<\frac1{16}.
+\]
+At \(\varepsilon=1/60\), the first term has margin \(1/90\) beyond the requested exceptional exponent. Polynomial factors are therefore harmless.
+
+The constants can be absolute while \(n_0\) depends on \(\varepsilon\): for example, \(n2^{-\varepsilon n}\le1\) eventually for each fixed positive \(\varepsilon\).
+
+For Corollary D″:
+\[
+E_a/|S_n|\ll n^{-1-2a},\qquad
+E_b/|S_n|\ll n^{-2a},
+\]
+while \(E_c/|S_n|\) is exponentially small times a fixed polynomial. The claimed corollary follows.
+
+There is no hidden quantifier reversal here. For fixed \(q\), \(k(q)\) is fixed. Although \(m\) changes with \(N=pq\), \(F_k(q)\) was deliberately defined using \(\bar m_k\), independent of \(p\).
+
+**Bit complexity: what is valid and what needs repair**
+
+| Component | Assessment |
+|---|---|
+| Prime generation, weights, integer bounds | **CORRECT up to polynomial factors in \(n\).** Include gcds used to enumerate primitive weights and the bit cost of indexed sieve operations. |
+| Integer product tree | **CORRECT with fast integer multiplication.** Total leaf bit length is \(O(Y)\), giving \(O(M(Y)\log Y)\). This backend requirement matters for the supplied code. |
+| Exponent tree | **CORRECT.** Per-level exponent bit lengths total \(O(Y)\); there are \(O(\log Y)\) levels. No individual \(\Theta(Y)\)-bit exponent is recomputed independently for every leaf. |
+| Roots and windows | **CORRECT bound**, but explicitly charge inversions of \(B\bmod\ell\) and \(r\bmod\ell^2\), reductions of \(N\), and integer divisions. They fit \(H^2Y\,n^{O(1)}\). |
+| Giant generation | **Printed row is incomplete.** The modular-multiplication count includes \(T'\); its bit-cost column should be \(O((n(T_k+Y)+T')M(n))\). |
+| Choice of \(m\) | **Uncharged in the table.** The geometric grid has \(O(n)\) entries and each scans the targets. This fits \(T_kn^{O(1)}\). |
+| Baby polynomial and multipoint evaluation | **CORRECT bit bound with a suitable fast implementation.** Monic division requires no field assumption. |
+| Gcds | **CORRECT.** There are \(T'\) gcds on \(n\)-bit residues. |
+| Metric \(E\) | **A proxy, not a complete bit-operation count.** Its counter formula cannot certify the theorem’s complexity. |
+
+The Kronecker argument works over composite modulus. Represent coefficients in \([0,N)\), and use slots wider than
+\[
+2n+\lceil\log_2(D+1)\rceil.
+\]
+Unreduced convolution coefficients then fit without overlapping slots. Integer multiplication followed by coefficient reductions gives the required quasi-linear bit bound. Fast monic remainder computation follows through reversal and power-series inversion with constant coefficient \(1\). It never needs inverses of differences between evaluation points.
+
+The bound
+\[
+T'\le T_k+\bar{\mathrm{span}}/m
+\]
+is defensible, though its justification is omitted. Indeed,
+\[
+\left\lceil W/m\right\rceil
+\le1+(W-1)/m
+\le1+\bar{\mathrm{span}}/(m\ell^2).
+\]
+Also
+\[
+\sum_\tau\ell^{-2}
+\le 2H^2|\mathcal P_k|/(2^kY)^2=o(1),
+\]
+because \(Y/H^2\to\infty\).
+
+The decisive cost comparison is simpler:
+\[
+m=\bar m_k\implies T'=T_k.
+\]
+For the implementation’s minimization rule, its grid includes \(W_{\max}\), so
+\[
+m+T'
+\le W_{\max}+T_k
+\le\bar m_k+T_k.
+\]
+This establishes
+\[
+\text{cost}\le n^{O(1)}
+\left(\frac{HP}{Y^2}+H^2Y\right)
+=
+n^{O(1)}H^{5/3}P^{1/3}.
+\]
+
+By contrast, merely allowing any \(m\le\bar m_k\) genuinely does not suffice. Take odd prime-square inputs \(N=r^2\), permitted by the **every-input cost** quantifier, and \(m=1\). Weights \(A=a^2,B=b^2\), with coprime \(a,b\le\sqrt H\), automatically produce quadratic-residue targets. Their aggregate windows yield
+\[
+T'\gg \frac{H^2P}{Y\log Y},
+\]
+which exceeds the advertised exponent. All giants are constructed before collision gcds are inspected. Fixing the choice of \(m\) is therefore necessary, not cosmetic.
+
+**The supplied Python code**
+
+The operational algebra agrees with the proof. Its asymptotic implementation claim needs these qualifications:
+
+1. **The long integer product tree uses Python `int` multiplication.**  
+   [algorithm.py:68](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:68) multiplies integers whose top-level bit lengths are \(\Theta(Y)\). CPython uses Karatsuba multiplication for large integers, rather than the quasi-linear \(M(Y)\) assumed in the table. The available generic bound introduces \(Y^{\log_2 3}\) work, which cannot be absorbed into \(n^{O(1)}Y\). Use a fast big-integer backend for these products. [CPython 3.13.5 source](https://raw.githubusercontent.com/python/cpython/v3.13.5/Objects/longobject.c).
+
+2. **Fixed-precision floats break a literal all-large-\(n\) implementation.**  
+   [params.py:104](/home/knielsen/code/factoring-connection/src/dcltheorem/params.py:104) converts \(H\) to floating point for its cube root. [algorithm.py:192](/home/knielsen/code/factoring-connection/src/dcltheorem/algorithm.py:192) uses `int(m * 1.19)`. Both have reproducible overflow failures for sufficiently large integers.
+
+3. **The parameter formulas differ from the stated exact formulas.**  
+   At \(n=121,\varepsilon=1/60\), the note specifies \(H=244\); the code produces \(242\). Constant-factor rounding is sufficient for the theorem, but the text should state that convention consistently.
+
+4. **Small-size theorem schedules can crash.**  
+   At 28, 32, and 36 bits, the literal schedule in my run attempted inversion of a weight divisible by a band prime. These are **not counterexamples** to a theorem restricted to \(n\ge n_0(\varepsilon)\). They do show that the implementation lacks a finite-size guard.
+
+5. **Counters omit work and model other work.**  
+   The sieve, weight enumeration, several inversions/divisions, and grid search are not fully reflected in \(E\). `powN` charges a reference binary-powering count while calling Python’s built-in powering implementation. The omitted costs are absorbable in the abstract theorem, apart from the long-integer multiplication issue above.
+
+The cheapest rigorous implementation is integer-only parameter selection, \(m=\bar m_k\), and a fast backend for the exponent product tree. Alternatively, retain the grid with the update `(119*m)//100 + 1`.
+
+**Independent exact computations**
+
+I used independently sampled prime pairs and direct integer formulas, without importing the repository’s prediction or lemma-checking harness.
+
+The main run used 20 pairs at each of 28, 32, 36, and 40 bits, with \(H=3\) and an integer-balanced \(Y\) satisfying the relevant scale separations. This tests the algebra, not the asymptotic exceptional fraction.
+
+| Check | Count | Result |
+|---|---:|---|
+| Balanced prime pairs | 80 | All in \(S_n\) |
+| Blocks | 320 | A clean block existed for every pair |
+| All-but-one handles against direct powering | 4,240 | All matched |
+| Covering targets: class lock, window, Lemmas 3–4, precomputed giant identity | 136 | All passed |
+| Covering targets with \(A-B<0\) | 76 | All passed |
+| Lemma 7 with coprime cofactor | 133 | All equivalences passed |
+| Clean covering targets | 131 | All checked |
+| Clean, covering, non-FULL targets | 131 | **Every independent gcd and operational gcd equalled \(p\)** |
+| Entire giant-gcd arrays checked by direct products | 2,731 | All matched |
+| Pairs with a sufficient clean/non-FULL certificate | 62 | Algorithm succeeded on all 62 |
+
+A representative witness was
+\[
+N=266627939=14779\cdot18041,
+\]
+with block \(0\), \((A,B,\ell)=(1,3,19)\), \(m=27\), \(i^*=16\), and \(\operatorname{ord}_{18041}(2)=451\). The true giant’s gcd was \(14779\).
+
+Additional adversarial checks:
+
+- \(q=65537\), \(p=40177\), \(d=32\): three clean covering targets were FULL; all three true-giant gcds were \(N\).
+- 840 exact Lemma-10 CRT cases, including 630 with \(g'>1\): all matched brute-force enumeration.
+- The exact-versus-enlarged \(\delta\)-range counterexample above was verified directly.
+- Both floating-point overflow failures were reproduced.
+- The existing repository suite passed: **18 tests**.
+
+Reproducibility: [main script](/tmp/claude-dclt1/check_exact.py), [main results](/tmp/claude-dclt1/exact_results.json), [edge checks](/tmp/claude-dclt1/check_edges.py), [edge results](/tmp/claude-dclt1/edge_results.json), [delta example](/tmp/claude-dclt1/delta_example.json).
+
+**Prior art**
+
+**I found no verified unconditional deterministic theorem matching \(N^{1/6+o(1)}\), or another exponent below \(1/5\), on a density-one subset of this balanced prime-pair population.** That is a search finding, not a proof of priority.
+
+| Work | What was verified; relevance |
+|---|---|
+| **McKee–Pinch 1996** | Publisher abstract describes deterministic Pollard/discrete-log and accelerated Fermat algorithms. **Full §5 was not obtained**, despite searches and publisher/preview attempts. Priority against this chapter remains unresolved. [Publisher record](https://link.springer.com/chapter/10.1007/3-540-61581-4_57). |
+| **McKee 1999** | The primary abstract explicitly presents the \(N^{1/4+\eta}\) speedup as heuristic and uses modulus-squared restrictions. No matching theorem was verified. Full-text retrieval failed in this session. [Primary-paper indexed copy](https://citeseerx.ist.psu.edu/document?doi=010e639e5176f16cee1b8aff586141f4d5c8eb10&repid=rep1&type=pdf). |
+| **Hittmeir 2018** | Rigorous deterministic \(N^{1/4+o(1)}\), with a superpolynomial saving, using modular-hyperbola sieving and BSGS. No matching balanced almost-all theorem identified. [Paper](https://arxiv.org/html/1608.08766v4). |
+| **Hittmeir 2021** | Rigorous deterministic exponent \(2/9\) through a Lehman time-space tradeoff. [Paper](https://arxiv.org/html/2006.16729v1). |
+| **Hittmeir 2023** | The subset-sum paper develops hyperbolic sieving and special-purpose searches; Smooth Subsum Search is explicitly heuristic. Neither supplies the requested theorem. [Subset sum](https://arxiv.org/html/2205.10074), [Smooth Subsum Search](https://arxiv.org/html/2301.10529v2). |
+| **Harvey 2021** | Rigorous deterministic exponent \(1/5\), shared collision searches, and the weighted Fermat congruence. These are direct ancestors of the present algorithm. [Paper](https://arxiv.org/html/2010.05450v1). |
+| **Harvey–Hittmeir 2022** | Improves logarithmic factors at exponent \(1/5\). Proposition 3.3 explicitly contains the weighted modulus-squared lock. That arithmetic ingredient is established prior art. [Paper, Proposition 3.3](https://arxiv.org/html/2105.11105v1#S3). |
+| **Oznovich–Volk 2025** | Constructs a large-order element or factors \(N\), for requested order \(D\ge N^{1/6}\), in \(D^{1/2+o(1)}\). The \(1/6\) here is an **order threshold**, not a factoring exponent. [Paper](https://arxiv.org/html/2506.07668v3). |
+| **Harvey–Hittmeir 2026** | Removes the lower restriction on requested order \(D\). It constructs an arbitrary element, not a prescribed \(L\)-th power. It does not itself supply the present almost-all theorem. [Theorem 1.1](https://arxiv.org/html/2601.11131v2). |
+| **Umans–Wang 2025** | A strong prefactored divisor conjecture would imply deterministic exponent \(1/6\). This is conditional and uses a different covering object. [§5](https://arxiv.org/html/2511.10851v1#S5). |
+| **He–Sahai 2026** | Refutes the specified one-dimensional arithmetic-progression divisor-cover proposal, including the proposed one-third parameters. It does not refute the higher-rank conjecture or the present average prime-pair argument. [Paper](https://arxiv.org/html/2608.06681). |
+| **Stănică–Mulder–Hittmeir 2026** | Studies unions of weighted hyperbolic sieve images and elliptic-trace obstructions. Its local-image results do not provide the global coverage/extraction theorem here. [Paper](https://arxiv.org/html/2606.13018v2). |
+
+Broader searches for deterministic average-case factoring and almost-all semiprimes did not identify a matching theorem. Results about almost all **integers**, oracle-assisted factoring, smooth shifted prime factors, or randomized algorithms have different hypotheses.
+
+For example, the deterministic Pollard \(p-1\) literature supplies factoring under smoothness assumptions on a prime factor’s predecessor; that is not a density-one balanced-semiprime guarantee at the requested exponent. [*A deterministic version of Pollard’s \(p-1\) algorithm*, Corollary 4.6](https://arxiv.org/html/0707.4102).
+
+The proposed trick combines elementary, familiar components:
+
+- coprime exponentiation preserves multiplicative order;
+- a number has only boundedly many prime divisors above a fixed power of its size;
+- primes with unusually small fixed-base order can be counted through products of \(2^j-1\).
+
+I found no occurrence of this **specific combination**—disjoint bands guaranteeing a clean cofactor exponent, followed by the asymmetric true-giant congruence count—in the checked factoring papers. Claim novelty for that combination only provisionally.
+
+**Precise disposition and cheapest repairs**
+
+The mathematical result needs **no weaker population, larger exceptional set, or smaller \(\varepsilon\)-range**. The former prescribed-power order gap is resolved: on a clean block,
+\[
+\operatorname{ord}_q(\gamma)=\operatorname{ord}_q(2),
+\]
+and the proof controls additional \(q\)-collisions directly. No order bound modulo \(p\) is required.
+
+Before accepting the document verbatim, I would require:
+
+1. Make \(m=\bar m_k\), or the endpoint-competitive minimization rule, mandatory; delete “the proof needs only \(m\le\bar m_k\).”
+2. Add the missing \(T'\) giant-generation cost and charge grid search and small-modulus inversions.
+3. Restore \(T(T+1)\) in the intermediate \(E_a\) bound.
+4. State fast-arithmetic requirements explicitly and separate the theorem from metric \(E\).
+5. Replace floating-point parameter/grid calculations and Python’s long product-tree multiplication for an implementation claiming the asymptotic bound.
+6. Leave priority against McKee–Pinch §5 explicitly unresolved until the chapter is inspected.

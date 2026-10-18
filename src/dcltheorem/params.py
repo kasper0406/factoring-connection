@@ -39,6 +39,18 @@ def iroot2_floor(x: int) -> int:
     return isqrt(x)
 
 
+def icbrt(x: int) -> int:
+    """floor(x^(1/3)) exactly."""
+    lo, hi = 0, 1 << (x.bit_length() // 3 + 2)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if mid ** 3 <= x:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+
 def pow2_frac(n: int, num: int, den: int) -> int:
     """floor(2^(n*num/den)) exactly (integer root of a power of two)."""
     e_num = n * num
@@ -102,11 +114,14 @@ def span_bound(n: int, H: int) -> int:
 # Theorem schedule (notes/dcltheorem_results.md, section 2)
 # ---------------------------------------------------------------------------
 def theorem_design(n: int, eps_num: int, eps_den: int) -> Design:
-    """H = ceil(n 2^(eps n/2)), Y = ceil(2^(n/6) H^(-1/3)), K = 4, l == 3 (mod 4)."""
+    """H = n * floor(2^(eps n/2)), Y = ceil(floor(2^(n/6)) / floor(H^(1/3))), K = 4,
+    l == 3 (mod 4).  (The note writes ceil(n 2^(eps n/2)) and ceil(2^(n/6) H^(-1/3));
+    these differ by constant factors, which the proof allows.)"""
     H = n * pow2_frac(n * eps_num, 1, 2 * eps_den)       # ~ n 2^(eps n / 2)
-    Y = max(3, -(-pow2_frac(n, 1, 6) // max(1, round(H ** (1.0 / 3)))))
-    # (the cube root of H only enters through Y; any constant-factor choice of
-    #  Y is allowed by the proof, so rounding here is harmless)
+    h3 = icbrt(H)
+    Y = max(3, -(-pow2_frac(n, 1, 6) // max(1, h3)))
+    # (integer-only; H uses floor(2^(eps n/2)) and Y uses floor(H^(1/3)):
+    #  constant-factor conventions, allowed by the proof)
     return Design(n=n, H=H, Y=Y, K=4, mod4=True, label=f"theorem eps={eps_num}/{eps_den}")
 
 

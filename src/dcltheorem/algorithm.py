@@ -30,6 +30,7 @@ from math import gcd, isqrt
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import flint
+import gmpy2
 
 from src.common.metrics import Metrics
 from .params import Design
@@ -66,7 +67,9 @@ def pow_small(x: int, e: int, M: int, met) -> int:
 # balanced all-but-one exponent tree
 # ---------------------------------------------------------------------------
 def int_product_tree(xs: Sequence[int], met) -> List[List[int]]:
-    levels = [list(xs)]
+    # gmpy2/GMP multiplication (FFT for large operands), so the tree costs
+    # O(M(log L) log #leaves) bit operations; CPython ints would be Karatsuba.
+    levels = [[gmpy2.mpz(x) for x in xs]]
     while len(levels[-1]) > 1:
         cur, nxt = levels[-1], []
         for i in range(0, len(cur) - 1, 2):
@@ -83,7 +86,7 @@ def all_but_one(base: int, exps: Sequence[int], N: int, met) -> Tuple[List[int],
     tree: a node holding base^{E/prod(node)} passes base^{E/prod(node)*prod(sib)}
     to each child.  Per level the exponent bit lengths sum to <= log2 E + #nodes."""
     levels = int_product_tree(exps, met)
-    E = levels[-1][0]
+    E = int(levels[-1][0])
     vals = [base % N]
     for lev in range(len(levels) - 2, -1, -1):
         cur = levels[lev]
@@ -92,8 +95,8 @@ def all_but_one(base: int, exps: Sequence[int], N: int, met) -> Tuple[List[int],
         for pi in range(parent_count):
             li, ri = 2 * pi, 2 * pi + 1
             if ri < len(cur):
-                new[li] = powN(vals[pi], cur[ri], N, met)
-                new[ri] = powN(vals[pi], cur[li], N, met)
+                new[li] = powN(vals[pi], int(cur[ri]), N, met)
+                new[ri] = powN(vals[pi], int(cur[li]), N, met)
             else:
                 new[li] = vals[pi]          # odd node carried up unchanged
         vals = new
@@ -172,6 +175,8 @@ def build_targets(N: int, design: Design, k: int, met) -> List[Dict]:
         Nl = N % l
         for (A, B) in design.V:
             met.inc("vl_pairs")
+            if (A * B) % l == 0:          # finite-size guard (never triggers when Y > H)
+                continue
             a = A * Nl * pow(B, -1, l) % l
             met.inc("mul_small", 3)
             if pow_small(a, (l - 1) // 2, l, met) != 1:
@@ -203,7 +208,7 @@ def choose_m(targets: List[Dict], mbar: int) -> int:
             best = (c, mm)
         if mm == Wmax:
             break
-        m = int(m * 1.19) + 1
+        m = (119 * m) // 100 + 1            # integer-only grid (no float overflow)
     return best[1]
 
 
