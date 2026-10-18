@@ -1,0 +1,3135 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a14fe7-9480-7070-945d-862cf7542f49
+--------
+user
+You are an adversarial referee (analytic number theory + computational complexity). The repository at /Volumes/git/factoring-connection is read-only for you; write scratch files only under your current directory.
+
+Read in full:
+- notes/avgtime_results.md (the paper under review: Theorem AV, Proposition U, Lemmas R, S, C, the epsilon audit §4, the re-optimisation §5, conditional tails §6);
+- notes/dcltheorem_results.md §1–§4 (Theorem D′, authoritative; the proof whose uniformity in H is claimed in Proposition U);
+- src/avgtime/exponents.py, src/avgtime/detector.py, src/avgtime/ladder.py, tests/test_avgtime.py.
+
+Claims to attack (try hard to break each; give exact counterexamples or exact arithmetic where possible):
+1. §4: D′ as written is valid exactly for ε ∈ (0,1/52); binding constraint E_c1. Are there constraints in D′'s proof missed in the table (any hidden ε-dependence, any step needing ε ≤ 1/60)? Is 1/55 admissible and does D′ + HH give E[T] ≤ N^{2/11}polylog?
+2. Proposition U: D′'s proof holds uniformly in H ∈ [H₀, 2^{n/50}] with absolute constants and any T ≤ P/2. Check every n₀(ε) use. Check that E_c's bound is valid for general T (Lemma 10 requires ord_q(2) > T).
+3. Lemma R (coverage O(n/H²) via prime presieving in the arithmetic large sieve): check the large-sieve hypotheses (squarefree moduli ≤ Q, ω(r) < r, interval length, Q² ≤ O(P)), the claim Σ_{a≤Z} μ²(a)/φ(a) ≥ log Z, the distinctness, and the normalisation over prime q.
+4. Lemma S (BSGS small-order detector) and Lemma C (coincidence count T³/P²): correctness and cost.
+5. Theorem AV (iii): the ladder expectation argument. Is the reach-set inclusion R_i ⊆ C(T) ∪ E_c(H_{i−1},T) ∪ E_b(H_{i−1}) right? Are the per-rung contributions really O(n^{c+1}) with H_{i+1} = ⌈H_i^{6/5}⌉? Is the HH contribution and the C ∪ E_c contribution correctly o(N^{1/6})? Any circularity or hidden dependence on p, q? Any issue with "average over uniform pairs" vs uniform N? Is (iv) (RSA-type distribution) right?
+6. §5.1: is 2/11 truly optimal for a single D′ run + HH within the proved bounds? §5.2: verify the no-detector ladder infimum 19/110 (closed form C(e) and the reachability criterion) and the LP values; is the LP model (src/avgtime/exponents.py `_stage`) a faithful encoding of the proved bounds (in particular E_c1 = 3h + μ − t and E_c2 = 2h + y + μ − 1/2 with true baby length m, and cost max(μ, 2h+y, 3h+1/2−y−μ))?
+7. §6 conditional table: verify 1/6 + 1/(30+36j), and the claim that with the ladder+detector any tail λ^{−j}, j > 5/6, gives exponent 1/6.
+8. Is the overall claim "deterministic complete factoring with average cost N^{1/6}polylog over S_n" correctly scoped and labelled? Anything overclaimed? Prior art you know of that already states such an average-case result (search the web)?
+
+You may run exact computations (Python with fractions; the repo .venv at /Volumes/git/factoring-connection/.venv/bin/python has sympy, gmpy2, python-flint).
+
+Output format: a verdict line (ACCEPT / ACCEPT WITH FIXES / REJECT), then numbered findings, each labelled CORRECT / ERROR (must fix) / GAP (needs argument) / NIT, with exact locations and proposed fixes. Under 2000 words.
+
+codex
+I’ll read the paper, D′’s proof, and the code, then check the inequalities and ladder argument with exact arithmetic. I’ll also search for prior statements of the average-case result. Scratch work will stay in the current directory.
+exec
+/bin/zsh -lc "pwd && rg --files -g AGENTS.md -g 'avgtime_results.md' -g 'dcltheorem_results.md' -g 'exponents.py' -g 'detector.py' -g 'ladder.py' -g 'test_avgtime.py' /Volumes/git/factoring-connection /Volumes/git 2>/dev/null" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 250ms:
+/Volumes/git/factoring-connection/codex/scratch/avgtime_1
+/Volumes/git/factoring-connection/src/avgtime/ladder.py
+/Volumes/git/factoring-connection/src/avgtime/exponents.py
+/Volumes/git/factoring-connection/src/avgtime/detector.py
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/avgtime_results.md
+/Volumes/git/factoring-connection/tests/test_avgtime.py
+/Volumes/git/eigen-3128/AGENTS.md
+/Volumes/git/eigen-3340/AGENTS.md
+/Volumes/git/ane-dma-split/anemll-src/AGENTS.md
+/Volumes/git/gemma-coreml-chat/AGENTS.md
+/Volumes/git/lora-backprop/AGENTS.md
+/Volumes/git/duplexio/AGENTS.md
+/Volumes/git/factoring-connection/src/avgtime/ladder.py
+/Volumes/git/factoring-connection/src/avgtime/exponents.py
+/Volumes/git/factoring-connection/src/avgtime/detector.py
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/avgtime_results.md
+/Volumes/git/factoring-connection/tests/test_avgtime.py
+/Volumes/git/ts-exit/upstream/tailscale-rs/AGENTS.md
+/Volumes/git/eigen-3129/AGENTS.md
+/Volumes/git/duplexio/app/AGENTS.md
+/Volumes/git/ane-dma-split/gemma-ane/AGENTS.md
+/Volumes/git/ane-dma-split/uv-cache/archive-v0/O4rR7M3anEy5c-fVepZOK/torch/ao/quantization/fx/_model_report/detector.py
+/Volumes/git/xla/xla/AGENTS.md
+/Volumes/git/sphere-opt/venv-pr/lib/python3.12/site-packages/torch/ao/quantization/fx/_model_report/detector.py
+/Volumes/git/sphere-opt/uv-cache/archive-v0/qKG4jIF2KaeCa_C-Y7N-T/torch/ao/quantization/fx/_model_report/detector.py
+
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/avgtime_1/AGENTS.md; do if [ -f "$p" ]; then cat "$p"; fi; done
+wc -l /Volumes/git/factoring-connection/notes/avgtime_results.md /Volumes/git/factoring-connection/notes/dcltheorem_results.md /Volumes/git/factoring-connection/src/avgtime/{exponents,detector,ladder}.py /Volumes/git/factoring-connection/tests/test_avgtime.py' in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+     470 /Volumes/git/factoring-connection/notes/avgtime_results.md
+     663 /Volumes/git/factoring-connection/notes/dcltheorem_results.md
+     317 /Volumes/git/factoring-connection/src/avgtime/exponents.py
+      61 /Volumes/git/factoring-connection/src/avgtime/detector.py
+     109 /Volumes/git/factoring-connection/src/avgtime/ladder.py
+     134 /Volumes/git/factoring-connection/tests/test_avgtime.py
+    1754 total
+
+exec
+/bin/zsh -lc 'nl -ba /Volumes/git/factoring-connection/notes/avgtime_results.md' in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+     1	# avgtime: complete deterministic factoring with average cost N^{1/6}·polylog on S_n
+     2	
+     3	Agent `avgtime`, 2026-10-18. Inputs: notes/dcltheorem_results.md (Theorem D′, authoritative),
+     4	codex/r16_strategy.out §3 item 2 and codex/r16_strategy_lemmas.md. Code: `src/avgtime/`
+     5	(`exponents.py` exact-fraction audit and LPs; `detector.py`, `ladder.py` operational).
+     6	Tests: `tests/test_avgtime.py` (19 tests). No experiments were run, so there is no
+     7	pre-registration; every number below is exact rational arithmetic or a proof.
+     8	
+     9	## 0. Verdict (plain language)
+    10	
+    11	**GPT-6.1-sol's 2/11 is correct for the design it analyses, but that design is not optimal.
+    12	Re-running D′ with a growing weight height (a "ladder"), plus a cheap detector for primes q
+    13	with small ord_q(2), gives a complete deterministic algorithm whose average cost over S_n
+    14	is N^{1/6}·(log N)^{O(1)}. That is the cost of a single D′ run, so the average-case exponent
+    15	is 1/6, the floor of the mechanism.** The worst case is still Harvey–Hittmeir's N^{1/5}.
+    16	
+    17	- **Theorem AV (proved; it uses D′ with H as a free parameter, plus two elementary lemmas).**
+    18	  There is a deterministic algorithm LAD with three properties.
+    19	  - It outputs the complete prime factorisation of every N ≥ 2.
+    20	  - Its worst-case cost is HH(N) + O(N^{7/36}·polylog), where
+    21	    HH(N) = O(N^{1/5}log^{16/5}N/(log log N)^{3/5}) [Harvey–Hittmeir 2022].
+    22	  - Its average cost over uniform pairs of S_n = {pq : p < q ≤ 2p} is
+    23	    O(N^{1/6}(log N)^{c+1}·log log N). Here c is the polylog exponent of D′'s cost
+    24	    bound. Using D′'s own n²/H² coverage bound instead of the n/H² refinement, the
+    25	    factor is (log N)^{c+2}.
+    26	- **Why the ladder works.** One D′ run with weight height H costs ≈ N^{1/6}H^{5/3}. It
+    27	  fails on at most ≈ n/H² of S_n. The failure fraction decays faster in H (exponent 2)
+    28	  than the cost grows (exponent 5/3). So rerunning on FAIL with H ← H^{6/5} adds only
+    29	  O(N^{1/6}·polylog) per rung, over O(log log N) rungs. One HH run at the top costs
+    30	  N^{1/5}·N^{−1/30} = N^{1/6}.
+    31	- **Why the detector is needed.** D′ discards the pairs with ord_q(2) ≤ T (E_a) and must
+    32	  balance them against the two-sided set E_c. That caps the failure exponent of one D′ run.
+    33	  - Without the detector the ladder stalls at **N^{19/110+o(1)}** ≈ N^{0.1727} (proved; an
+    34	    elementary LP).
+    35	  - A baby-step giant-step search for the smallest k with gcd(2^k − 1, N) > 1, run up to
+    36	    T = N^{3/10}, costs N^{3/20}. It factors every pair with min ord ≤ T except
+    37	    ord_p 2 = ord_q 2, and those coincidences number O(T³/P²) = O(N^{−1/10})·|S_n|.
+    38	- **Task item 1: the audit of ε.**
+    39	  - D′ as written (T = 2^{(1/4−ε)n}) is valid for **every ε ∈ (0, 1/52)**. The binding
+    40	    constraint is E_c1: −1/12 + 13ε/3 < 0. The other constraints are Y > H² (ε < 1/7),
+    41	    Y⁴ > √2P (ε < 1/4) and E_c2 (ε < 1/16). E_a never binds.
+    42	  - So ε = 1/55 is admissible, and D′ + HH gives E[T] ≤ N^{2/11}polylog. **GPT-6.1-sol's
+    43	    claim is confirmed.**
+    44	  - Choosing T freely extends D′ to ε < 1/46. With the detector it extends to ε < 1/22,
+    45	    which covers the whole useful range: D′ beats HH only for ε < 1/25.
+    46	- **Task item 2: re-optimisation.**
+    47	  - For "one D′ run, then HH", **2/11 is the exact optimum** under the proved bounds, even
+    48	    with H, Y, T and the baby length m all free and the detector included. The cost is
+    49	    ≥ 1/6 + 5h/3 for any Y and m; the coverage term is N^{−2h}.
+    50	  - Laddering is the change that matters:
+    51	
+    52	    | design | exponent |
+    53	    |---|---|
+    54	    | single HH fallback | 2/11 = 0.1818 |
+    55	    | ladder, no detector | 19/110 = 0.1727 |
+    56	    | ladder + detector | **1/6** (polylog) |
+    57	
+    58	- **Task item 3: conditional tails.**
+    59	  - For the single-fallback design, a coverage tail λ^{−j} gives 1/6 + 1/(30 + 36j):
+    60	    3/17 for j = 2 and 4/23 for j = 3. A tail e^{−cλ} gives 1/6.
+    61	  - For the ladder + detector the exponent is already 1/6 with the **proved** j = 1. Any
+    62	    tail better than λ^{−5/6} suffices. A stronger tail (sieve2d) improves only the
+    63	    polylog factor of the average.
+    64	  - Its value lies elsewhere: the fixed-cost almost-all statement (D′'s trade-off N^{1/6+δ}
+    65	    vs N^{−f(δ)} exceptions) and the worst case.
+    66	- **Task item 4: prior art.** A deterministic complete algorithm with proved average cost
+    67	  below N^{1/5} on balanced semiprimes was **not found by us** (own WebSearch plus
+    68	  GPT-6.1-sol avgtime_2, 20 items, §8). The ingredients are standard:
+    69	  - restarting with growing parameters;
+    70	  - BSGS order search;
+    71	  - D′ itself.
+    72	- **Not claimed.**
+    73	  - No worst-case improvement.
+    74	  - No result for ratios q/p > 2.
+    75	  - No lower bound: we do not show that 1/6 is optimal for average-case factoring.
+    76	  - No novelty claim.
+    77	
+    78	## 1. Setting and the free-H form of D′
+    79	
+    80	Notation as in notes/dcltheorem_results.md: n bits, P = 2^{n/2}, S_n = {(p,q) : p < q ≤ 2p
+    81	primes, 2^{n−1} ≤ pq < 2^n}, |S_n| ≥ c₀P²/n². Exponents are in units of n = log₂N, so "x"
+    82	means N^x up to (log N)^{O(1)}.
+    83	
+    84	DCL_{n,H} denotes D′'s algorithm (§2 of dcltheorem_results) with weight height H as a free
+    85	n-only integer and Y = ⌈2^{n/6}H^{−1/3}⌉, four bands, ℓ ≡ 3 (mod 4), base 2, m = m̄_k (or the
+    86	endpoint-competitive rule). For a threshold T (analysis only) define, as in D′ §4(iii):
+    87	
+    88	- E_a(T) = {(p,q) ∈ S_n : ord_q(2) ≤ T};
+    89	- E_b(H) = {ord_q(2) > T, p ∈ U_{k(q)}(q)} (coverage failure; independent of T as a set
+    90	  bound);
+    91	- E_c(H,T) = {ord_q(2) > T, p ∈ F_{k(q)}(q)} (two-sided true giants).
+    92	
+    93	**Proposition U (proved: D′'s proof with every "n ≥ n₀(ε)" step re-checked uniformly in H).**
+    94	There are absolute constants n₀, H₀, C, c such that for n ≥ n₀, H₀ ≤ H ≤ 2^{n/50} and
+    95	1 ≤ T ≤ P/2:
+    96	
+    97	- (i) DCL_{n,H} outputs a proper divisor of N or FAIL on every input.
+    98	- (ii) It costs ≤ C n^c H^{5/3} 2^{n/6} bit operations on every n-bit input.
+    99	- (iii) Every FAIL pair (p,q) ∈ S_n with ord_q(2) > T lies in E_b(H) ∪ E_c(H,T), and
+   100	  - |E_b(H)| ≤ C (n²/H²)|S_n| (D′, Lemma 9), and ≤ C (n/H²)|S_n| by Lemma R below;
+   101	  - |E_c(H,T)| ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3})|S_n| (D′, Lemma 10).
+   102	
+   103	*Proof (uniformity check).* D′'s proof uses largeness of n only in the following places.
+   104	Each holds uniformly for H₀ ≤ H ≤ 2^{n/50} and n ≥ n₀:
+   105	
+   106	| use in D′ | requirement | holds because |
+   107	|---|---|---|
+   108	| \|V\| ≥ H²/2 | H ≥ H₀ | coprime pairs (6/π² + o(1))H² |
+   109	| Lemma 6 (a clean band exists) | Y⁴ > √2P | Y⁴ ≥ 2^{2n/3}H^{−4/3} ≥ 2^{(2/3−4/150)n} > 2^{n/2+1} |
+   110	| Lemma 9 (classes distinct) | Y > H² | H^{7/3} ≤ 2^{7n/150} < 2^{n/6}/2 |
+   111	| Lemma 9 (PNT mod 4) | Σ_{ℓ∈𝒫_k}1/ℓ ≥ c′/n | Y ≥ 2^{n/6−n/150} → ∞ |
+   112	| Lemma 9 (sieve level) | Q² = 4^{k+1}Y² ≤ 256Y² = O(P) | y ≤ 1/6 |
+   113	| Lemma 1 (ℓ ∤ p) | 16Y < P/2 | y < 1/2 |
+   114	| Lemma 10 / m̄ bound | m̄_k ≤ 3HP/(4^kY²) | HP/Y² ≥ H^{5/3}2^{n/6} ≫ 2 |
+   115	| cost table | H²n, Y, nT_k ≤ n^{O(1)}H^{5/3}2^{n/6} | H^{1/3} ≤ 2^{n/6} |
+   116	| counts | #q ≤ 3P/n, \|S_n\| ≥ c₀P²/n² | PNT |
+   117	
+   118	Lemmas 1–5, 7, 8 and 10 have no size hypotheses beyond these. In D′ the constant ε enters
+   119	only through H = n2^{εn/2} and T = 2^{(1/4−ε)n}. Both are now free, and the bounds of D′
+   120	§4(iii) are stated before substituting them. ∎
+   121	
+   122	**Lemma R (coverage O(n/H²); codex r16 §3.1; verified here).** Under the hypotheses of
+   123	Proposition U, |E_b(H)| ≤ C(n/H²)|S_n|.
+   124	
+   125	*Proof.*
+   126	- Fix q and the clean band k = k(q). Let U be the set of **primes** p ∈ (P/2, P) covered
+   127	  by no target of band k. Put Q = ⌊P^{1/2}⌋ and Z = ⌊Q/(32Y)⌋. Then Z ≥ 2^{n/12}/64 → ∞,
+   128	  and Z < Y because Y² > 2^{n/4}/32.
+   129	- U avoids the s = |V| distinct classes AqB^{−1} mod each ℓ ∈ 𝒫_k (D′ Lemma 9; s < ℓ). It
+   130	  also avoids the class 0 mod every prime r ≤ Z, since p > P/2 > Z.
+   131	- Apply the arithmetic large sieve (Montgomery–Vaughan 1973), with N₀ = P/2 + 1 and moduli
+   132	  ≤ Q: |U| ≤ (N₀ + Q²)/J ≤ (1.5P + 1)/J.
+   133	- Keep only the terms d = ℓa of J, with ℓ ∈ 𝒫_k and a ≤ Z squarefree. These are squarefree
+   134	  because every prime of a is ≤ Z < Y < ℓ, and d ≤ 16Y·Q/(32Y) ≤ Q. Hence
+   135	  J ≥ (Σ_ℓ s/(ℓ−s))·Σ_{a≤Z}μ²(a)/φ(a) ≥ λ·ln Z, with λ = sΣ_ℓ 1/ℓ ≥ (H²/2)(c′/n).
+   136	  Here Σ_{a≤Z}μ²(a)/φ(a) ≥ Σ_{m≤Z}1/m.
+   137	- Since ln Z ≥ c″n, J ≥ c‴H² and |U| ≤ C P/H².
+   138	- Sum over the ≤ 3P/n primes q and divide by |S_n| ≥ c₀P²/n². This gives
+   139	  |E_b|/|S_n| ≤ C n/H². ∎
+   140	
+   141	The refinement only changes the polylog in Theorem AV, never an exponent.
+   142	
+   143	**Lemma S (small-order detector; `src/avgtime/detector.py`; elementary, standard BSGS).**
+   144	Let N = pq be odd, T ≥ 1, m = ⌈√T⌉, J = ⌈T/m⌉, and d_r = ord_r(2).
+   145	- **The algorithm.** Form f(X) = ∏_{0≤i<m}(X − 2^i) over Z/N. For 1 ≤ j ≤ J compute
+   146	  G_j = gcd(f(2^{jm}), N) by a product tree and a remainder tree. At the first j with
+   147	  G_j > 1, compute gcd(2^k − 1, N) for every k ∈ ((j−1)m, jm].
+   148	- **What it finds.** If min(d_p, d_q) ≤ T and d_p ≠ d_q, it outputs the prime with the
+   149	  smaller order.
+   150	- **Cost.** O(√T) ring operations plus trees, which is Õ(√T·n) bit operations. The output
+   151	  is validated.
+   152	
+   153	*Proof.*
+   154	- G_j > 1 iff some r ∈ {p, q} has d_r | jm − i for some 0 ≤ i < m. Since 2 is a unit,
+   155	  2^{jm} − 2^i = 2^i(2^{jm−i} − 1). So G_j > 1 iff the block ((j−1)m, jm] contains a
+   156	  positive multiple of d_p or d_q.
+   157	- The least such multiple is d_min = min(d_p, d_q). So the first hit is the block
+   158	  j₀ = ⌈d_min/m⌉ ≤ J.
+   159	- At k = d_min, gcd(2^k − 1, N) is divisible by the prime of order d_min. It is not
+   160	  divisible by the other prime, whose order d_max > d_min does not divide d_min. ∎
+   161	
+   162	The test `test_detector_exhaustive_small_semiprimes` checks the exact success
+   163	characterisation, using the scanned range J·m ≥ T, on all pq with 3 ≤ p < q < 260 and
+   164	T ∈ {1, 7, 30, 100}. There were 0 mismatches.
+   165	
+   166	**Lemma C (coincidences).** For T ≥ 1 let C(T) = {(p,q) ∈ S_n : ord_p 2 = ord_q 2 ≤ T}.
+   167	Then |C(T)| ≤ C (T³/P²)|S_n|.
+   168	
+   169	*Proof.* For each k ≤ T, 2^k − 1 has fewer than k/log₂(P/2) prime factors > P/2 (D′
+   170	Lemma 8). So the number of pairs with both orders equal to k is ≤ (2k/(n−2))². Summing over
+   171	k ≤ T gives ≤ 4T³/(n−2)² (for T ≥ 1). Dividing by |S_n| ≥ c₀P²/n² gives the claim. ∎
+   172	
+   173	## 2. The algorithm LAD_n (operational reference: `src/avgtime/ladder.py`)
+   174	
+   175	All parameters are n-only.
+   176	
+   177	- T = 2^{⌊3n/10⌋}.
+   178	- H_1 = ⌈√n⌉, H_{i+1} = min(⌈H_i^{6/5}⌉, H_max), with H_max = n²·2^{⌈n/60⌉}. The ladder
+   179	  stops at H_k = H_max. Then k = O(log n), and H_{i+1}^{5/3} ≤ 2^{5/3}H_i² for every i
+   180	  (`exponents.ladder_schedule`, tested for n = 256 … 4096).
+   181	
+   182	Input N:
+   183	0. If N < 4 or N is even, finish trivially. Run the detector (Lemma S) with T.
+   184	1. For i = 1, …, k, run DCL_{n,H_i}.
+   185	2. If neither step 0 nor step 1 produced a divisor, run Harvey–Hittmeir 2022, which outputs
+   186	   the complete factorisation of N.
+   187	
+   188	**Finish.** As soon as a step outputs a proper divisor d, test d and N/d for primality with
+   189	AKS (deterministic, polylog). If both are prime, output {d, N/d}. Otherwise run HH on N.
+   190	- On S_n the finish never calls HH, because d ∈ {p, q}.
+   191	- In the reference implementation the fallback is Lehman's deterministic N^{1/3} method and
+   192	  primality is gmpy2's BPSW-type test. These are stand-ins for correctness tests at
+   193	  32–40 bits only.
+   194	- The implementation's toy ladders (H ∈ {2, 3, 4}) are below n₀. They test the plumbing,
+   195	  not the theorem.
+   196	
+   197	## 3. Theorem AV and proof
+   198	
+   199	**Theorem AV.** Let c be as in Proposition U(ii). There are absolute n₀ and C such that:
+   200	
+   201	- (i) **Completeness.** For every N ≥ 2, LAD_n (n = bit length of N) outputs the complete
+   202	  prime factorisation of N. It is deterministic and sees only N.
+   203	- (ii) **Worst case.** On every n-bit input the cost is
+   204	  ≤ HH(N) + C n^{c+4}2^{7n/36} + C n^{O(1)}2^{3n/20}. That is
+   205	  O(N^{1/5}log^{16/5}N/(log log N)^{3/5}), Harvey–Hittmeir's bound.
+   206	- (iii) **Average over S_n.** For n ≥ n₀,
+   207	
+   208	    (1/|S_n|)·Σ_{(p,q)∈S_n} cost(pq) ≤ C·n^{c+1}·log n·2^{n/6} = N^{1/6}(log N)^{c+1}(log log N)·O(1).
+   209	
+   210	  With D′'s original n²/H² coverage bound instead of Lemma R, the factor is n^{c+2}log n.
+   211	- (iv) **Other distributions.** The same bound, times K, holds for any distribution on S_n
+   212	  with point masses ≤ K/|S_n|. This includes the RSA-type distribution: two independent
+   213	  uniform n/2-bit primes, conditioned to be distinct, which lie in S_n ∪ S_{n−1} with
+   214	  bounded density ratio.
+   215	
+   216	*Proof.*
+   217	- (i) Every step outputs only validated proper divisors. On S_n a proper divisor is p or q.
+   218	  Otherwise HH factors N completely.
+   219	- (ii) Each stage costs ≤ C n^c H_i^{5/3}2^{n/6} ≤ C n^c (2n²2^{n/60})^{5/3}2^{n/6}, with
+   220	  H_i ≤ H_max ≤ 2n²·2^{n/60}. There are k = O(log n) stages, so their total is
+   221	  ≤ C n^{c+10/3}log n·2^{7n/36} ≤ C n^{c+4}2^{7n/36}, and 7/36 < 1/5. The detector costs Õ(2^{3n/20}), AKS is
+   222	  polylog, and HH runs at most once.
+   223	- (iii) **Reach sets.** Write R_i for the pairs of S_n that reach stage i, and R_HH for
+   224	  those reaching HH.
+   225	  - A pair passes the detector only if min(d_p, d_q) > T or d_p = d_q ≤ T (Lemma S). So it
+   226	    has d_q > T, or it lies in C(T).
+   227	  - A pair with d_q > T that fails stage i − 1 lies in E_b(H_{i−1}) ∪ E_c(H_{i−1}, T)
+   228	    (Proposition U(iii)).
+   229	  - Hence, for i ≥ 2, R_i ⊆ C(T) ∪ E_c(H_{i−1},T) ∪ E_b(H_{i−1}), and
+   230	    R_HH ⊆ C(T) ∪ E_c(H_k,T) ∪ E_b(H_k).
+   231	  - Let W ≤ C n^{16/5}2^{n/5} be the worst-case total cost from (ii). Bound the average by
+   232	    the five terms below.
+   233	  - (a) **Detector and stage 1** (paid by everyone): Õ(2^{3n/20}) + C n^c H_1^{5/3}2^{n/6}
+   234	    = O(n^{c+5/6}2^{n/6}).
+   235	  - (b) **Stage i ≥ 2, on E_b(H_{i−1})**:
+   236	    C n^c H_i^{5/3}2^{n/6}·min(1, C n/H_{i−1}²) ≤ C n^c·2^{5/3}H_{i−1}²·min(1, Cn/H_{i−1}²)·2^{n/6}
+   237	    ≤ C′ n^{c+1}2^{n/6}. Summed over k = O(log n) stages: O(n^{c+1}log n·2^{n/6}).
+   238	  - (c) **HH on E_b(H_k)**: C n^{16/5}2^{n/5}·Cn/H_max² ≤ C n^{16/5+1−4}2^{n/5−n/30}
+   239	    = O(n^{1/5}2^{n/6}).
+   240	  - (d) **Pairs in C(T) ∪ E_c(H_i,T)** for some i: these pay at most W.
+   241	    - By Lemma C, |C(T)|/|S_n| ≤ C 2^{(9/10−1)n} = C 2^{−n/10}.
+   242	    - By Proposition U(iii), for H ≤ H_max: H^{14/3}P^{1/3}/T ≤ n^{28/3}2^{(14/180 + 1/6 − 3/10)n+O(1)}
+   243	      = n^{O(1)}2^{−n/18}, and H^{10/3}/P^{1/3} ≤ n^{O(1)}2^{−n/9}.
+   244	    - A union over the k = O(log n) stages gives a fraction ≤ n^{O(1)}2^{−n/18}.
+   245	    - Contribution: ≤ W·n^{O(1)}2^{−n/18} = n^{O(1)}2^{(1/5−1/18)n} = n^{O(1)}2^{13n/90}
+   246	      = o(2^{n/6}).
+   247	  - (e) **Finish** (primality tests): polylog.
+   248	  - The total is O(n^{c+1}log n·2^{n/6}), provided c ≥ 0. With n²/H², step (b) gives
+   249	    n^{c+2}. ∎
+   250	- (iv) is immediate from (iii), since the cost is a nonnegative function of N.
+   251	
+   252	**Remarks.**
+   253	- The ladder ratio 6/5 is not special. Any H_{i+1} ≤ (H_i²/n^{o(1)})^{3/5}·O(1) works. What
+   254	  matters is that the proved tail exponent 2 (in H) exceeds the cost exponent 5/3.
+   255	- If the coverage tail were only H^{−2j} with 2j ≤ 5/3, the ladder would not reach 1/6
+   256	  (see §6).
+   257	- The log n factor (number of rungs) can be removed with a slightly faster schedule. That
+   258	  is not pursued here.
+   259	
+   260	## 4. Task item 1: audit of every ε-constraint in D′ (exact; `exponents.dprime_requirements`)
+   261	
+   262	D′ as written uses h = ε/2, y = 1/6 − ε/6, t = 1/4 − ε and m = m̄ (μ = 1/6 + 5ε/6). The
+   263	target is an exceptional fraction O(N^{−ε}). E_b equals N^{−ε} exactly by the choice of H.
+   264	Each remaining requirement is strict, since polylog factors must be absorbed.
+   265	
+   266	| constraint (D′ location) | exponent condition | admissible ε |
+   267	|---|---|---|
+   268	| Y > H² (Lemma 9, distinct classes) | 2h − y < 0 ⇔ −1/6 + 7ε/6 < 0 | ε < 1/7 |
+   269	| Y⁴ > √2P (Lemma 6, clean band) | 1/2 − 4y < 0 ⇔ −1/6 + 2ε/3 < 0 | ε < 1/4 |
+   270	| sieve level 256Y² ≤ P, band < P/2 (Lemmas 9, 1) | y < 1/4 | all ε |
+   271	| E_a: n·T(T+1)/P (Lemma 8) | 2t − 1/2 + ε = −ε < 0 | all ε > 0 |
+   272	| E_c1: n·H^{14/3}P^{1/3}/T (Lemma 10, main term) | −1/12 + 10ε/3 + ε < 0 | **ε < 1/52 (binding)** |
+   273	| E_c2: n·H^{10/3}/P^{1/3} (Lemma 10, "+1" term) | −1/6 + 5ε/3 + ε < 0 | ε < 1/16 |
+   274	| (usefulness, not validity) cost < HH | 1/6 + 5ε/6 < 1/5 | ε < 1/25 |
+   275	
+   276	- **Conclusion.** Theorem D′ holds verbatim for every fixed ε ∈ (0, 1/52), with n₀(ε) → ∞
+   277	  as ε → 1/52. The stated ε ≤ 1/60 is conservative. D′'s own "where the constants come
+   278	  from" paragraph already says so.
+   279	- **At ε = 1/55.** The exponents are cost 2/11, E_a = −2/55, E_b = −1/55, E_c1 = −1/44 and
+   280	  E_c2 = −3/22. All of them are < −1/55 except E_b, which equals −1/55 by construction.
+   281	- **So for D′ + HH** the average satisfies
+   282	  E[T] ≤ C n^c 2^{(2/11)n} + HH(N)·C2^{−n/55} = N^{2/11}(log N)^{O(1)}.
+   283	  **GPT-6.1-sol's claim is confirmed.** It needs ε < 1/52; the margin at 1/55 is
+   284	  −1/44 vs −1/55.
+   285	- **With T re-chosen.** E_a + ε < 0 needs t < 1/4 − ε/2. E_c1 + ε < 0 needs
+   286	  t > 1/6 + 10ε/3. Both hold iff **ε < 1/46**.
+   287	- **With the detector** (E_a replaced by C(T), whose exponent is 3t − 1). Now
+   288	  1/6 + 10ε/3 < t < (1 − ε)/3 iff **ε < 1/22**. E_c2 (1/16) and Y > H² (1/7) do not bind,
+   289	  and the detector costs t/2 < 1/6. So the detector-augmented D′ holds on all of
+   290	  (0, 1/25), the useful range.
+   291	
+   292	## 5. Task item 2: re-optimising all free parameters
+   293	
+   294	### 5.1 One D′ run, then HH: 2/11 is optimal (proved, within the proved bounds)
+   295	
+   296	The free parameters are h, y, μ (baby length m = N^μ ≤ m̄) and t.
+   297	- **Cost.** The proved bound m + T_k(1 + m̄/m) is ≥ max(T_k, 2√(T_k m̄)). It is tight up to
+   298	  constants, because W_τ ≍ m̄ for most v. In exponents,
+   299	  cost ≥ max(2h + y, (3h + 1/2 − y)/2), which is minimised at y = 1/6 − h/3, giving
+   300	  1/6 + 5h/3, for every y and μ.
+   301	- **Coverage.** The coverage term N^{−2h} does not depend on y, μ or t: J ≍ H²/n for any
+   302	  band scale.
+   303	- **Hence** E[T] exponent ≥ min_h max(1/6 + 5h/3, 1/5 − 2h) = 2/11, attained at h = 1/110.
+   304	  This is ε = 1/55, where E_a and E_c are slack.
+   305	- **LP check.** The exact LP (`exponents.single_fallback`, simplex over Fractions) returns
+   306	  exactly 2/11, with or without the detector. Choosing T, Y or m differently cannot help,
+   307	  and neither can a cheaper E_a fallback, because E_a never binds here.
+   308	
+   309	### 5.2 Ladders (proved; exact LP values)
+   310	
+   311	A k-rung ladder needs:
+   312	- cost_i ≤ z + e_{i−1}, because rung i is reached by ≤ N^{−e_{i−1}} of S_n;
+   313	- HH: 1/5 − e_k ≤ z.
+   314	
+   315	Rung i has failure exponent e_i ≤ min(2h_i, E_c terms, E_a or C(T) term).
+   316	
+   317	| k rungs | no detector | with detector (shared t) |
+   318	|---|---|---|
+   319	| 1 | 2/11 = 0.181818 | 2/11 |
+   320	| 2 | 35/198 = 0.176768 | 16/91 = 0.175824 |
+   321	| 3 | 0.174491 | 0.172876 |
+   322	| 4 | 0.173535 | 0.171146 |
+   323	| 6 | 0.172850 | 0.169247 |
+   324	| 8 | 0.172744 | 0.168269 |
+   325	| 12 | 0.172728 | 0.167354 |
+   326	| ∞ | **19/110 = 0.172727** | **1/6** |
+   327	
+   328	- **No-detector limit, closed form.** For a rung with failure exponent e, put h = e/2 and
+   329	  optimise t and μ. The minimum cost is
+   330	  - C(e) = 1/6 + 5e/6 for e ≤ 1/46, the balanced design;
+   331	  - C(e) = 1/8 + 11e/4 for 1/46 ≤ e ≤ 1/12. Here E_a and E_c1 force μ ≤ 1/4 − 3e, with
+   332	    t = (1/2 + 3h + μ)/3.
+   333	- **The ladder can reach e iff C(e) − e < z.** The final condition then requires
+   334	  1/5 − z ≤ 4(z − 1/8)/7, i.e. **z ≥ 19/110**. At the limit e = 3/110, h = 3/220,
+   335	  μ = 37/220, y = 19/110 and t = 13/55: the last rungs cost N^{1/5}, as much as HH. The
+   336	  value 19/110 is an infimum and is not attained.
+   337	- **With the detector** the per-rung cap is e ≤ 2h up to h = 1/50 (with t = 3/10: E_c1 needs 1/6 + 20h/3 ≤ 3/10, and C(T) gives −1/10). Hence C(e) − e =
+   338	  1/6 − e/6 < z for every z > 1/6, and the LP values tend to 1/6 geometrically (ratio
+   339	  ≈ 5/6 per rung).
+   340	- **Polylog form.** The finite-k LP is an exponent statement. Theorem AV takes
+   341	  k = O(log n) rungs and obtains N^{1/6}·polylog directly.
+   342	
+   343	### 5.3 Small-order primes (E_a): cheaper fallbacks
+   344	
+   345	| fallback | cost | covers | use |
+   346	|---|---|---|---|
+   347	| HH on E_a (D′ as written) | N^{1/5}·n T²/P | — | never binding for one run |
+   348	| gcd(2^k − 1, N), k ≤ T sequentially | T | min ord ≤ T, ord_p ≠ ord_q | T = N^{1/6} only |
+   349	| **BSGS (Lemma S)** | √T | same | T up to N^{1/3−} for cost ≤ N^{1/6} |
+   350	
+   351	The coincidence set C(T) of the detector has size T³/P². So T = N^{3/10} gives
+   352	N^{−1/10}, which is below the N^{−1/30} needed at the top rung. The E_c1 term then has
+   353	exponent 1/6 + 14h/3 − 3/10 ≤ −1/18 for h ≤ 1/60 + o(1). The detector is what lets the
+   354	ladder pass e = 1/46.
+   355	
+   356	## 6. Task item 3: conditional coverage tails
+   357	
+   358	Let λ = H²/n. "Tail" means |E_b| ≤ polylog·λ^{−j}|S_n|. The proved value is j = 1 (D′:
+   359	j = 1 with n² in place of n).
+   360	
+   361	| tail | single HH fallback | ladder, no detector | ladder + detector |
+   362	|---|---|---|---|
+   363	| λ^{−1} (proved) | 2/11 | 19/110 | **1/6, polylog n^{c+1}log n** |
+   364	| λ^{−2} | 3/17 = 0.17647 | → 1/6 (LP: 0.166688 at k = 8) | 1/6, polylog |
+   365	| λ^{−3} | 4/23 = 0.17391 | → 1/6 (LP: 0.1666675 at k = 8) | 1/6, polylog |
+   366	| λ^{−j} | 1/6 + 1/(30 + 36j) | → 1/6 for j ≥ 2 (LP) | 1/6 for any j > 5/6 |
+   367	| e^{−cλ} | 1/6, polylog (H ≍ n) | 1/6 | 1/6, polylog |
+   368	
+   369	- **Single fallback, λ^{−j}.** Balance 1/6 + 5h/3 = 1/5 − 2jh. The E_a/E_c cap
+   370	  1/18 − 28h/9 ≥ 2jh holds at h = 1/(50 + 60j) for every j ≥ 1, so it never binds.
+   371	  Formula proved; LP agreement tested for j = 1, 2, 3.
+   372	- **Ladder without detector, j ≥ 2.** The values are exact LP values at finite k. The
+   373	  limit 1/6 is indicated by them and by the same C(e) − e argument, since the cap now
+   374	  sits at a larger e than needed. The general-j closed form is not written out.
+   375	  - Label: proved for the finite-k values (exact LP); limit *experimentally supported* by
+   376	    the LP sequence.
+   377	- **Ladder + detector, any j > 5/6.** The rung contribution H_{i+1}^{5/3}λ_i^{−j} stays
+   378	  polylog for geometrically growing H.
+   379	- **Upshot for sieve2d.** For the average-cost theorem, a better tail buys only polylog
+   380	  factors. What it buys substantively:
+   381	  - D′'s fixed-cost trade-off (cost N^{1/6+δ} with exceptions N^{−2jδ·3/5});
+   382	  - the single-run statement;
+   383	  - the worst-case program.
+   384	
+   385	## 7. What is and is not proved
+   386	
+   387	- **Proved.** Proposition U, Lemmas R, S and C, Theorem AV (i)–(iv), the ε audit of §4,
+   388	  the single-fallback optimum 2/11 within the proved bounds, and the no-detector ladder
+   389	  infimum 19/110 within the proved bounds.
+   390	- **Exact computation.** All LP values (`src/avgtime/exponents.py`, a two-phase simplex in
+   391	  Fractions; tests in `tests/test_avgtime.py`).
+   392	- **Not proved.** Any worst-case improvement; ratios q/p > 2; any lower bound on average
+   393	  deterministic factoring; tails better than λ^{−1}.
+   394	- **Dependencies.** Theorem AV inherits D′'s correctness (three referee passes, Lean
+   395	  formalisation of Lemmas 1–8 and 10 by `leanform`). It adds only the free-H uniformity
+   396	  check, the elementary Lemmas S and C, and the r16 refinement R (polylog only).
+   397	
+   398	## 8. Task item 4: prior art (own WebSearch + GPT-6.1-sol `codex/avgtime_2.out`)
+   399	
+   400	- **The question.** A deterministic, always-complete algorithm with proved **average** cost
+   401	  N^c, c < 1/5, over balanced semiprimes, or an almost-all statement below 1/5.
+   402	- **What was searched.** Own WebSearch: three queries on average-case and almost-all
+   403	  deterministic factoring and the HH statement. GPT-6.1-sol checked 20 items.
+   404	- **Not found.** No such theorem was found in:
+   405	  - McKee–Pinch 1996: §5 is heuristic N^{1/4+ε};
+   406	  - McKee 1999: heuristic;
+   407	  - Lehman 1974;
+   408	  - Hittmeir 2018, 2021, 2023;
+   409	  - Harvey 2021; Harvey–Hittmeir 2022; Harvey–Hittmeir 2026 (arXiv 2601.11131);
+   410	  - Gao–Feng–Hu–Pan (arXiv 2512.19076): balanced worst case N^{1/5}, log factor only;
+   411	  - Stănică–Mulder–Hittmeir (arXiv 2606.13018);
+   412	  - Gower–Wagstaff 2008 (SQUFOF): average analysis heuristic, N^{1/4};
+   413	  - Pollard rho: heuristic;
+   414	  - class-group methods;
+   415	  - fixed-curve ECM.
+   416	- **Different scope.**
+   417	  - Knuth–Trabb Pardo 1976 and Hafner–McCurley 1989 give genuine input-distribution
+   418	    analyses, but for trial-division-type algorithms on all integers.
+   419	  - Źrałek 2010 gives deterministic p − 1 under smoothness or totient hypotheses.
+   420	  - Crişan–Erban 2021: almost all *unrestricted* semiprimes have a small factor.
+   421	- **Positive proportion only.** GPT-6.1-sol cites a posted report, Ward–Maestro (Sept 2026,
+   422	  "Floors for deterministic integer factoring", Part 5, Prop. 35.3). It proves base-2 p−1
+   423	  success on a positive proportion of pairs at exponents near 1/(4√e) ≈ 0.1516, and
+   424	  explicitly does not give an average for an always-completing algorithm. *We have not read
+   425	  it ourselves (UNVERIFIED).* A positive proportion does not give an average below 1/5,
+   426	  since the failure fraction is constant.
+   427	- **Carella 1308.2891.** Claims worst-case 1/6. The proof defect (polynomial content
+   428	  divisible by B) was found independently by r13, r16 and avgtime_2.
+   429	- **p − 1 obstruction (our item 6).** Confirmed for smoothness-based analyses: at B = N^{1/6}
+   430	  the success probability is a constant, so any fallback costs a constant fraction of
+   431	  N^{1/5}. GPT-6.1-sol notes that no universal impossibility theorem exists for every
+   432	  stage-2 design. Compare pm1bsgs: E = N^{1/4−o(1)}.
+   433	- **Verdict.** Not found by us. The ingredients are standard:
+   434	  - D′;
+   435	  - restarting with growing parameters ("doubling");
+   436	  - BSGS order search.
+   437	
+   438	  The combination's content is the observation that D′'s proved tail (H^{−2}) beats its
+   439	  cost growth (H^{5/3}). Novelty judgments are left to the orchestrator.
+   440	
+   441	## 9. Review
+   442	
+   443	(Filled in after the GPT-6.1-sol adversarial review `codex/avgtime_1` and the independent
+   444	Opus critic; see §9 at the end of this file.)
+   445	
+   446	## 10. Reproduction
+   447	
+   448	```
+   449	.venv/bin/python -m pytest -q tests/test_avgtime.py          # 19 tests, ~7 s
+   450	.venv/bin/python -c "from src.avgtime.exponents import *; print(dprime_admissible()); \
+   451	  print([ladder(k,1,False)[0] for k in (1,2,3)]); print(single_fallback(2))"
+   452	```
+   453	
+   454	## 11. Candidate card
+   455	
+   456	- **Mechanism.** A ladder of D′ runs, DCL_{n,H_i} with H_{i+1} = H_i^{6/5}, behind a
+   457	  BSGS small-order detector, with an HH fallback at the top.
+   458	- **Outcome.**
+   459	  - Proved: average cost N^{1/6}polylog on S_n; worst case = HH; complete.
+   460	  - Refuted for this model: none.
+   461	  - Superseded: the 2/11 single-fallback corollary (correct but not optimal).
+   462	- **Scoped obstruction.**
+   463	  - Without small-order handling, one D′ run's failure exponent is capped at 1/46 by the
+   464	    E_a/E_c1 trade-off (t between 1/6 + 14h/3 and 1/4). The ladder then stalls at 19/110.
+   465	  - A better coverage tail cannot lower the average exponent below 1/6 within D′, since
+   466	    every run costs ≥ N^{1/6}.
+   467	- **Open question.** Prove a matching lower bound in some model: is N^{1/6} the right
+   468	  average-case exponent for deterministic factoring of balanced semiprimes? Or does some
+   469	  input-adaptive method get below 1/6 on average? (Cf. below16; multimod Thm A covers only
+   470	  full-candidate covering.)
+
+web search: 
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/dcltheorem_results.md | sed -n '1,430p'" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+     1	# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+     2	
+     3	Agent `dcltheorem`, 2026-10-18. Pre-registration: `notes/dcltheorem_prereg.md` (commit
+     4	`3550e24`, before any pre-registered run). Code: `src/dcltheorem/`. Tests:
+     5	`tests/test_dcltheorem.py`. Raw data: `experiments/raw/dcltheorem_*.jsonl`. Summary:
+     6	`experiments/analysis/dcltheorem_summary.json`. Inputs: notes/multimod_results.md (Thm D) and
+     7	the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
+     8	
+     9	## 0. Verdict (plain language)
+    10	
+    11	**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+    12	semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+    13	needs no order lemma for β^L at all.
+    14	
+    15	- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+    16	  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+    17	  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+    18	  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    19	    input;
+    20	  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    21	    is validated before output; this was added after r13 found improper outputs for tiny
+    22	    prime N;
+    23	  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    24	    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    25	    pairs**.
+    26	- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+    27	  for any fixed A.
+    28	- **How the order gap closes.**
+    29	  - Mod p the true collision is an exact identity, so no order is needed.
+    30	  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    31	    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    32	    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+    33	  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    34	    count over p.
+    35	- **What is not proved.**
+    36	  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    37	    exclusion of all-FULL pairs.
+    38	  - Ratios q/p > 2 are not covered.
+    39	  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    40	    N^{5ε/6}.
+    41	  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    42	    every N.
+    43	- **Experiment (pre-registered, theorem's own design, end to end).**
+    44	  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    45	    3002 clean covering targets checked.
+    46	  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    47	    0.226**.
+    48	  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    49	    none at heuristically full coverage (C2 slope 0.227).
+    50	- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+    51	  large sieve).
+    52	  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    53	    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    54	    k ~ N^{1/4} (§10).
+    55	  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    56	    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+    57	  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    58	    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+    59	
+    60	## 1. Population, target and statement
+    61	
+    62	Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+    63	
+    64	**Population.**
+    65	
+    66	  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+    67	
+    68	It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+    69	q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+    70	X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+    71	
+    72	**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+    73	- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+    74	- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+    75	- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+    76	
+    77	**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+    78	constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+    79	properties.
+    80	- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+    81	  FAIL. Every candidate is validated before output (`algorithm._proper`).
+    82	  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    83	    1 < ℓ < N.
+    84	  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+    85	  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+    86	- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+    87	  N^{1/6+5ε/6}(log N)^{O(1)}.
+    88	- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+    89	
+    90	Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+    91	O(N^{−6δ/5}).
+    92	
+    93	**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+    94	algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+    95	N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+    96	
+    97	**Quantifier (audit item 5).**
+    98	- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+    99	  pairs.
+   100	- It does **not** say that for almost every N all integer candidates p are covered, so it
+   101	  does not show that the full-candidate covering model has exponent 1/6 for almost
+   102	  every N.
+   103	- It does not cover the worst case (§6), nor ratios q/p > 2.
+   104	
+   105	## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+   106	
+   107	### 2.1 Parameters
+   108	
+   109	All parameters are functions of n and ε only; nothing depends on N.
+   110	
+   111	- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+   112	- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+   113	- Y = ⌈2^{n/6}H^{−1/3}⌉.
+   114	- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+   115	  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+   116	- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+   117	  bound for every window width in block k (§2.2).
+   118	- The base is β = 2.
+   119	
+   120	### 2.2 Steps
+   121	
+   122	Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+   123	has p ∈ [a₀, b₀].
+   124	
+   125	For v = (A,B) ∈ V put:
+   126	- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+   127	- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+   128	- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+   129	
+   130	For each block k = 0, 1, 2, 3:
+   131	
+   132	1. **Exponent tree.**
+   133	   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   134	   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+   135	     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   136	   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   137	   - If ℓ | N for some ℓ, output ℓ.
+   138	2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   139	   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   140	   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   141	   - For each root r:
+   142	     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+   143	     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+   144	     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   145	   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+   146	3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   147	   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   148	   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   149	   - The success proof needs only m ≤ m̄_k.
+   150	   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+   151	     with T′ = Σ_τ⌈W_τ/m⌉.
+   152	   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+   153	     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+   154	     T′ ≫ H²P/(Y log Y).
+   155	4. **Giants.**
+   156	   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   157	   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+   158	
+   159	       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+   160	
+   161	     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+   162	5. **Collision detection.**
+   163	   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   164	   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+   165	     is valid over Z/N.
+   166	   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+   167	
+   168	Output FAIL if no block yields a divisor.
+   169	
+   170	**Remarks.**
+   171	- (a) No order is computed, assumed or certified. No randomness is used.
+   172	- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+   173	  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+   174	- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+   175	
+   176	## 3. Lemmas
+   177	
+   178	Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+   179	
+   180	**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+   181	suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+   182	
+   183	*Proof.*
+   184	- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+   185	- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+   186	- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+   187	- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+   188	  therefore ≡ 0 (mod ℓ²). ∎
+   189	
+   190	**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+   191	ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+   192	
+   193	**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+   194	j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+   195	
+   196	*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+   197	
+   198	**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+   199	order is needed.
+   200	
+   201	*Proof.*
+   202	- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+   203	- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+   204	- Multiply by γ^{−(g_lo + j*m)}. ∎
+   205	
+   206	**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+   207	
+   208	*Proof.*
+   209	- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+   210	- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+   211	- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+   212	  and 2^{q−1} ≡ 1 (mod q). ∎
+   213	
+   214	**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+   215	G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+   216	gcd(f(G), N) = p.
+   217	
+   218	*Proof.*
+   219	- f(G) = ∏_i (G − γ^i).
+   220	- The factor i = i* vanishes mod p (Lemma 3).
+   221	- Mod q, no factor vanishes, by definition, and Z/q is a field.
+   222	- So p | f(G) and q ∤ f(G). ∎
+   223	
+   224	**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+   225	Y⁴ > √2P, at least one of the four blocks is clean for q.
+   226	
+   227	*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+   228	q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+   229	
+   230	Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+   231	for ε < 1/4 and n large.
+   232	
+   233	**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+   234	iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+   235	
+   236	*Proof.*
+   237	- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+   238	- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+   239	- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+   240	
+   241	**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+   242	
+   243	  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+   244	
+   245	*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+   246	k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+   247	
+   248	**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+   249	k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+   250	ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+   251	
+   252	  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+   253	
+   254	*Proof.*
+   255	- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+   256	- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+   257	  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+   258	  ε < 1/7 and n large.
+   259	- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+   260	- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+   261	  N₀ + Q² for an interval of N₀ integers) with Q = 2^{k+1}Y gives
+   262	  |U| ≤ (N₀ + Q²)/J, J = Σ_{d≤Q} μ²(d)∏_{ℓ|d} ω(ℓ)/(ℓ − ω(ℓ)).
+   263	- Only the prime terms are needed, and they follow directly. For each ℓ ∈ 𝒫_k,
+   264	  Parseval and Cauchy–Schwarz give Σ_{a=1}^{ℓ−1}|S(a/ℓ)|² ≥ ω/(ℓ−ω)·|U|². The fractions
+   265	  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+   266	- Keeping only d = 1 and d = ℓ ∈ 𝒫_k: J ≥ |V| Σ_{ℓ∈𝒫_k} 1/ℓ.
+   267	- By the PNT in the progression 3 mod 4 (effective for the fixed modulus 4),
+   268	  Σ_{ℓ∈𝒫_k} 1/ℓ ≥ (1/2 − o(1))·ln 2/ln(2^{k+1}Y) ≥ c′/n.
+   269	- |V| ≥ H²/2 for large H, since the coprime pairs number (6/π² + o(1))H². ∎
+   270	
+   271	**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+   272	F_k(q) be the set of integers p ∈ [P/2, P] such that some (v, ℓ) ∈ V × 𝒫_k has ℓ | Bp − Aq
+   273	and d | (A−B)(p−1) − ℓ²δ for some |δ| < m̄_k. Then
+   274	
+   275	  |F_k(q)| ≤ Σ_{v,ℓ,|δ|<m̄_k} (P·H/(2·2^kY·T) + 1)
+   276	           ≤ 2|V||𝒫_k| m̄_k·(PH/(2^{k+1}YT) + 1).
+   277	
+   278	*Proof.*
+   279	- Fix (v, ℓ, δ) and let g′ = gcd(A − B, d) ≤ H (A ≠ B, |A − B| < H).
+   280	- The congruence (A−B)(p−1) ≡ ℓ²δ (mod d) is either unsolvable, or holds exactly on one
+   281	  class of p mod d/g′.
+   282	- ℓ ∤ d, because clean means ℓ ∤ q − 1. With p ≡ AqB^{−1} (mod ℓ), CRT gives one class mod
+   283	  ℓd/g′ ≥ ℓd/H.
+   284	- An interval of length P/2 contains ≤ P H/(2ℓd) + 1 such integers. ∎
+   285	
+   286	## 4. Proof of Theorem D′
+   287	
+   288	**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+   289	
+   290	**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+   291	targets and m ≤ m̄_k).**
+   292	
+   293	| step | operations | bit cost |
+   294	|---|---|---|
+   295	| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+   296	| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+   297	| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+   298	| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+   299	| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+   300	| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+   301	| babies γ^i | m mults | O(m M(n)) |
+   302	| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+   303	| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+   304	
+   305	With m = m̄_k (or any m that minimises the list count) the list is
+   306	m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+   307	
+   308	  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+   309	
+   310	because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+   311	
+   312	**Arithmetic model (referee dclt_1, item 4).**
+   313	- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+   314	  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+   315	  tree, the Kronecker-substituted polynomial products and the gcds.
+   316	- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+   317	  wider than 2n + ⌈log₂(D+1)⌉.
+   318	- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+   319	  No inverse of a nonunit is ever needed.
+   320	- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+   321	  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+   322	  `powN` charges binary square-and-multiply counts.
+   323	
+   324	**(iii) Exceptional set.**
+   325	- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+   326	  (Lemma 6). If
+   327	  - (a) d = ord_q(2) > T,
+   328	  - (b) p ∉ U_{k(q)}(q), and
+   329	  - (c) p ∉ F_{k(q)}(q),
+   330	
+   331	  then DCL-det succeeds.
+   332	- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+   333	- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+   334	- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+   335	  at the latest. It may output q, or output earlier from another block; both are fine.
+   336	- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+   337	  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+   338	
+   339	The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+   340	
+   341	- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+   342	  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+   343	  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+   344	  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+   345	- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+   346	  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+   347	  fixed interval, integers counted, no short-interval prime counts.
+   348	- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+   349	  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+   350	
+   351	    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+   352	
+   353	  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+   354	  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+   355	- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+   356	  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+   357	
+   358	**Corollary D″.**
+   359	- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+   360	- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+   361	- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+   362	- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+   363	
+   364	**Where the constants come from.**
+   365	- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+   366	  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+   367	- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+   368	- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+   369	  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+   370	
+   371	## 5. Answers to the audit (notes/codex_r12_dcl_audit.md) and to the work items
+   372	
+   373	| audit item | resolution here | status |
+   374	|---|---|---|
+   375	| (1) normalisation of Thm D's exceptional set (short I_q, prime counts in I_q) | Lemma 9 + §4(iii) E_b: one fixed interval [P/2, P], all integer survivors counted, summed over prime q, divided by \|S_n\| ≍ P²/n² | proved |
+   376	| (2) deterministic roots | band primes ℓ ≡ 3 (mod 4), root a^{(ℓ+1)/4}; sieve loses a constant (PNT mod 4) | proved |
+   377	| (3) bit complexity: balanced integer product tree; uncharged Bluestein powers | balanced tree (GMP products) in `all_but_one`; full cost table §4(ii). The HH baseline's Bluestein chirp powers are now charged (`stage3.harvey_find_collisions`) | proved (table); implemented |
+   378	| (4) **base order of γ = β^L** (the substantive gap; 1333 example) | **Closed without any order lemma for β^L.** No order is needed mod p (Lemma 3 is an identity). Mod q, the four disjoint bands guarantee a clean band (Lemma 6), so ord_q(γ) = ord_q(2) (Lemma 7). Two-sided true giants are counted directly (Lemma 10), and small ord_q(2) is rare by an elementary count (Lemma 8). Extra failures are O(2^{−εn}), not o(1). The 1333 example (L built from 3, 5, 7 \| p−1, q−1) cannot occur in a clean band, and an L-power image of size 2 mod **p** is harmless here. | proved (+ GPT-6.1-sol referee dclt_1: "closes the previous order/extraction gap") |
+   379	| (5) quantifier mismatch | §1: D′ concerns the true factor counted over S_n. It does not give full-candidate coverage for almost every N | stated |
+   380	| (6) prior art | §10 | McKee–Pinch §5 read (r13 scans): direct precursor (heuristic N^{1/4}); the combination is claimed only as "no prior formulation found by us"; Carella 1308.2891 claim noted with the r13 assessment |
+   381	| (7) experiments used greedy Hmax=12, not Thm D's design | §8 runs the theorem's algorithm (4 bands, ℓ ≡ 3 mod 4, base 2, fixed V(H), n-only Y) with an n-only H-schedule (λ₀ ≈ 3, i.e. H ≍ √n). The bridge: D′'s algorithm is defined for any n-only (H, Y), and the schedule H ≍ √n lies *below* Corollary D″'s range (a > 0, H = n^{1+a}). There the proved bound n²/H² is vacuous, so the experiment tests the algorithm, the lemmas and the cost, not the proved rate. The heuristic rate e^{−λ} is what the data reflect. | disclosed |
+   382	
+   383	Work items not covered above:
+   384	- **Small-factor removal (item 3).** Unnecessary. On S_n both factors exceed P/2 > 16Y ≥ every
+   385	  band prime, and the target is only S_n. Off the population the algorithm may FAIL (allowed),
+   386	  and band primes dividing N are output.
+   387	- **One-sided collisions (item 2, last bullet).** These are Lemmas 4, 5, 7 and 10. The weight
+   388	  (1,1) is excluded because it is always two-sided.
+   389	- **Restricting to M ∤ p−1 (item 2).** Not needed. Cleanliness is needed only for q − 1, and is
+   390	  handled by trying 4 bands rather than by an exceptional set. Order mod p is irrelevant.
+   391	- **Harvey–Hittmeir 2026 / Oznovich–Volk (item 2, first bullet).** Not used. The audit notes they
+   392	  produce an arbitrary large-order element, not one in the L-power image. The clean-band argument
+   393	  makes the L-power harmless mod q and irrelevant mod p.
+   394	
+   395	## 6. Where the result stops (precise remaining gaps)
+   396	
+   397	1. **Worst case (every N in S_n) is NOT proved.** Three independent obstacles remain:
+   398	   - (a) **coverage** of every p, which is multimod's DCH (conjectured; the large sieve gives
+   399	     only "almost all");
+   400	   - (b) **q with small ord_q(2)** (≤ N^{1/4−ε}). The proof simply discards them (E_a). A
+   401	     worst-case version would need a base with large order mod the specific prime q *on a
+   402	     clean band*. Harvey–Hittmeir 2026 gives a large-order element mod N, but large order
+   403	     mod N does not give large order mod q;
+   404	   - (c) pairs where **every** covering true giant is FULL (E_c). These are rare on average,
+   405	     but not excluded for a fixed N.
+   406	2. **The exceptional rate is limited by the large sieve.** The proved fraction is n²/H², so
+   407	   N^{−ε} costs H = N^{ε/2}, i.e. N^{5ε/6} in the cost. The Poisson heuristic, which the
+   408	   multimod and §8 data support, predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} at
+   409	   polylog cost, but it is **conjectured**.
+   410	3. **Ratios q/p > 2** are not covered (multimod §3.9).
+   411	4. **Finite sizes.** At 40–80 bits HH is 2.3–4.9× cheaper in E (§8). The measured slope is
+   412	   smaller (0.203 vs 0.226), and an extrapolated crossover lies near 130 bits. That is **not a
+   413	   claim**: the slope difference partly reflects the H-schedule.
+   414	5. **Below 1/6.** multimod Thm A (enlarged sumset model) is unchanged. Nothing here goes
+   415	   below 1/6.
+   416	
+   417	## 7. Review
+   418	
+   419	- **GPT-6.1-sol referee dclt_1** (`codex/dclt_1.out`, read-only, own exact scripts).
+   420	  - Verdict: "the clean-band argument closes the previous order/extraction gap … Lemmas 1–10
+   421	    mathematically sound". It reproduced the checks independently: 131/131 clean non-FULL
+   422	    covering targets gave gcd = p, and 62/62 certified pairs succeeded.
+   423	  - Required fixes, all applied:
+   424	    - (1) "m ≤ m̄_k suffices" was false for cost. m = m̄_k or the endpoint-competitive rule is now
+   425	      mandatory (§2.2 step 3).
+   426	    - (2) Missing T′ in the giant-generation cost, plus the m-grid and small inversions, are now
+   427	      charged (§4 table).
+   428	    - (3) T(T+1) in E_a.
+   429	    - (4) Fast-arithmetic assumptions stated; E declared a proxy (§4).
+   430	    - (5) Float-free parameters, a GMP exponent product tree, and a finite-size guard. These are
+
+exec
+/bin/zsh -lc 'nl -ba /Volumes/git/factoring-connection/src/avgtime/exponents.py
+nl -ba /Volumes/git/factoring-connection/src/avgtime/detector.py
+nl -ba /Volumes/git/factoring-connection/src/avgtime/ladder.py
+nl -ba /Volumes/git/factoring-connection/tests/test_avgtime.py' in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+     1	"""Exact (Fraction) exponent bookkeeping for notes/avgtime_results.md.
+     2	
+     3	All exponents are in units of n = log2 N, so "x" means 2^{x n} = N^x, up to
+     4	(log N)^{O(1)} factors.  P = N^{1/2}.  Free parameters of one DCL-det stage:
+     5	
+     6	  h   H = N^h            weight height
+     7	  y   Y = N^y            band scale
+     8	  mu  m = N^mu           baby-list length (m <= mbar is all the success proof needs)
+     9	  t   T = N^t            order threshold (analysis only for DCL; detector length if used)
+    10	
+    11	Bounds proved in notes/dcltheorem_results.md (Theorem D', section 4), with Lemma 10
+    12	evaluated at the true baby length m (the delta-range of Lemma 7 is (-m, m)):
+    13	
+    14	  cost   = max(mu, 2h + y, 3h + 1/2 - y - mu)        [m + T_k (1 + mbar/m)]
+    15	  E_a    = 2t - 1/2                                  [n T^2 / P]
+    16	  E_b    = -2 j h                                    [(n/H^2)^j; proved j = 1]
+    17	  E_c1   = 3h + mu - t                               [n H^3 m / T]
+    18	  E_c2   = 2h + y + mu - 1/2                         [n H^2 Y m / P]
+    19	  C(T)   = 3t - 1   (detector failure: ord_p 2 = ord_q 2 <= T)  [T^3 / P^2]
+    20	  detector cost = t/2
+    21	
+    22	Side constraints: Y > H^2 (y > 2h, Lemma 9), Y^4 > sqrt2 P (y > 1/8, Lemma 6),
+    23	large-sieve level 256 Y^2 <= P (y < 1/4), 0 <= t < 1/2.
+    24	
+    25	Nothing here is an experiment: it is exact linear algebra on these exponents.
+    26	"""
+    27	from __future__ import annotations
+    28	
+    29	from fractions import Fraction as F
+    30	from itertools import combinations
+    31	from typing import Dict, List, Optional, Sequence, Tuple
+    32	
+    33	ONE_FIFTH = F(1, 5)      # Harvey--Hittmeir fallback exponent
+    34	ONE_SIXTH = F(1, 6)
+    35	
+    36	
+    37	# ---------------------------------------------------------------------------
+    38	# 1. Audit of Theorem D' as written: H = n 2^{eps n/2}, Y = 2^{n/6} H^{-1/3},
+    39	#    T = 2^{(1/4 - eps) n}, m = mbar.  Each requirement is a + b*eps < 0.
+    40	# ---------------------------------------------------------------------------
+    41	def dprime_exponents(eps: F) -> Dict[str, F]:
+    42	    h = eps / 2
+    43	    y = ONE_SIXTH - h / 3
+    44	    t = F(1, 4) - eps
+    45	    mu = h + F(1, 2) - 2 * y          # mbar = H P / Y^2
+    46	    return {"h": h, "y": y, "t": t, "mu": mu,
+    47	            "cost": max(mu, 2 * h + y, 3 * h + F(1, 2) - y - mu),
+    48	            "E_a": 2 * t - F(1, 2), "E_b": -2 * h,
+    49	            "E_c1": 3 * h + mu - t, "E_c2": 2 * h + y + mu - F(1, 2)}
+    50	
+    51	
+    52	def dprime_requirements() -> Dict[str, Tuple[F, F]]:
+    53	    """name -> (a, b): requirement a + b*eps < 0 (strict: polylog factors).
+    54	
+    55	    Separations: Y > H^2 (Lemma 9 distinct classes), Y^4 > sqrt2 P (Lemma 6).
+    56	    Exceptional terms must be o(N^{-eps}) * polylog^{-1}: E_x + eps < 0.
+    57	    E_b is N^{-eps} exactly by the choice H = n 2^{eps n/2} (no requirement).
+    58	    'useful' = D' cheaper than HH (not needed for validity)."""
+    59	    def lin(f):
+    60	        a = f(F(0))
+    61	        b = f(F(1)) - a
+    62	        return a, b
+    63	    req = {
+    64	        "Y>H^2 (Lemma 9)": lin(lambda e: 2 * dprime_exponents(e)["h"] - dprime_exponents(e)["y"]),
+    65	        "Y^4>sqrt2 P (Lemma 6)": lin(lambda e: F(1, 2) - 4 * dprime_exponents(e)["y"]),
+    66	        "E_a < N^-eps": lin(lambda e: dprime_exponents(e)["E_a"] + e),
+    67	        "E_c1 < N^-eps": lin(lambda e: dprime_exponents(e)["E_c1"] + e),
+    68	        "E_c2 < N^-eps": lin(lambda e: dprime_exponents(e)["E_c2"] + e),
+    69	        "useful: cost < 1/5": lin(lambda e: dprime_exponents(e)["cost"] - ONE_FIFTH),
+    70	    }
+    71	    return req
+    72	
+    73	
+    74	def sup_eps(a: F, b: F) -> Optional[F]:
+    75	    """sup of eps > 0 with a + b eps < 0 (None = no upper limit; requires a < 0 or b < 0)."""
+    76	    if b <= 0:
+    77	        return None if a < 0 or b < 0 else F(0)
+    78	    return -a / b
+    79	
+    80	
+    81	def dprime_admissible() -> Tuple[F, str]:
+    82	    """Binding validity constraint of D' as written (excluding 'useful')."""
+    83	    best, name = None, None
+    84	    for k, (a, b) in dprime_requirements().items():
+    85	        if k.startswith("useful"):
+    86	            continue
+    87	        s = sup_eps(a, b)
+    88	        if s is not None and (best is None or s < best):
+    89	            best, name = s, k
+    90	    return best, name
+    91	
+    92	
+    93	# ---------------------------------------------------------------------------
+    94	# 2. A small exact LP solver (two-phase tableau simplex, Bland's rule).
+    95	#    maximise c.x  s.t.  A x <= b,  x >= 0.   Fractions throughout.
+    96	# ---------------------------------------------------------------------------
+    97	def lp_max(c: Sequence[F], A: Sequence[Sequence[F]], b: Sequence[F]
+    98	           ) -> Tuple[Optional[F], Optional[List[F]]]:
+    99	    m, nv = len(A), len(c)
+   100	    # columns: x (nv) | slack/surplus (m) | artificial (m)
+   101	    rows, basis, art = [], [], []
+   102	    for i in range(m):
+   103	        Ai, bi = [F(v) for v in A[i]], F(b[i])
+   104	        s = [F(0)] * m
+   105	        a = [F(0)] * m
+   106	        if bi >= 0:
+   107	            s[i] = F(1)
+   108	            rows.append(Ai + s + a + [bi])
+   109	            basis.append(nv + i)
+   110	        else:
+   111	            s[i] = F(-1)
+   112	            a[i] = F(1)
+   113	            rows.append([-v for v in Ai] + s + a + [-bi])
+   114	            basis.append(nv + m + i)
+   115	            art.append(nv + m + i)
+   116	    ncol = nv + 2 * m
+   117	
+   118	    def pivot(r, col):
+   119	        pv = rows[r][col]
+   120	        rows[r] = [v / pv for v in rows[r]]
+   121	        for i in range(m):
+   122	            if i != r and rows[i][col] != 0:
+   123	                f = rows[i][col]
+   124	                rows[i] = [vi - f * vr for vi, vr in zip(rows[i], rows[r])]
+   125	        basis[r] = col
+   126	
+   127	    def simplex(obj, allowed):
+   128	        # obj: maximise obj.x over columns; reduced costs computed each step
+   129	        while True:
+   130	            cb = [obj[basis[i]] for i in range(m)]
+   131	            enter = None
+   132	            for j in allowed:
+   133	                if j in basis:
+   134	                    continue
+   135	                red = obj[j] - sum(cb[i] * rows[i][j] for i in range(m))
+   136	                if red > 0:
+   137	                    enter = j
+   138	                    break
+   139	            if enter is None:
+   140	                return "opt"
+   141	            best, r = None, None
+   142	            for i in range(m):
+   143	                if rows[i][enter] > 0:
+   144	                    ratio = rows[i][-1] / rows[i][enter]
+   145	                    if best is None or ratio < best or (ratio == best and basis[i] < basis[r]):
+   146	                        best, r = ratio, i
+   147	            if r is None:
+   148	                return "unbounded"
+   149	            pivot(r, enter)
+   150	
+   151	    allcols = list(range(ncol))
+   152	    if art:
+   153	        obj1 = [F(0)] * ncol
+   154	        for j in art:
+   155	            obj1[j] = F(-1)
+   156	        simplex(obj1, allcols)
+   157	        if sum(rows[i][-1] for i in range(m) if basis[i] in art) != 0:
+   158	            return None, None                       # infeasible
+   159	        # drive remaining artificials out of the basis
+   160	        for i in range(m):
+   161	            if basis[i] in art:
+   162	                for j in range(nv + m):
+   163	                    if rows[i][j] != 0:
+   164	                        pivot(i, j)
+   165	                        break
+   166	    obj2 = [F(v) for v in c] + [F(0)] * (2 * m)
+   167	    st = simplex(obj2, list(range(nv + m)))
+   168	    if st == "unbounded":
+   169	        return None, None
+   170	    x = [F(0)] * nv
+   171	    for i in range(m):
+   172	        if basis[i] < nv:
+   173	            x[basis[i]] = rows[i][-1]
+   174	    return sum(F(ci) * xi for ci, xi in zip(c, x)), x
+   175	
+   176	
+   177	class LP:
+   178	    """Tiny builder: named nonnegative variables, constraints sum coef*var <= rhs."""
+   179	
+   180	    def __init__(self):
+   181	        self.names: List[str] = []
+   182	        self.cons: List[Tuple[Dict[str, F], F]] = []
+   183	
+   184	    def var(self, name: str) -> str:
+   185	        self.names.append(name)
+   186	        return name
+   187	
+   188	    def le(self, coefs: Dict[str, F], rhs) -> None:
+   189	        self.cons.append(({k: F(v) for k, v in coefs.items()}, F(rhs)))
+   190	
+   191	    def minimise(self, name: str) -> Tuple[F, Dict[str, F]]:
+   192	        idx = {v: i for i, v in enumerate(self.names)}
+   193	        c = [F(0)] * len(self.names)
+   194	        c[idx[name]] = F(-1)
+   195	        A, b = [], []
+   196	        for coefs, rhs in self.cons:
+   197	            row = [F(0)] * len(self.names)
+   198	            for k, v in coefs.items():
+   199	                row[idx[k]] += v
+   200	            A.append(row)
+   201	            b.append(rhs)
+   202	        val, x = lp_max(c, A, b)
+   203	        if val is None:
+   204	            raise ValueError("LP infeasible or unbounded")
+   205	        return -val, dict(zip(self.names, x))
+   206	
+   207	
+   208	# ---------------------------------------------------------------------------
+   209	# 3. One DCL stage as LP constraints: cost <= C, failure fraction <= N^{-e}.
+   210	# ---------------------------------------------------------------------------
+   211	def _stage(lp: LP, s: str, C: Dict[str, F], e: str, j: F, detector: bool,
+   212	           t_shared: Optional[str] = None) -> None:
+   213	    """Add stage s with variables h,y,mu,(t) ; constraints cost <= C (a linear form
+   214	    given as dict, e.g. {'z':1,'e0':1}) and e <= each failure exponent."""
+   215	    h, y, mu = lp.var(f"h{s}"), lp.var(f"y{s}"), lp.var(f"mu{s}")
+   216	    t = t_shared or lp.var(f"t{s}")
+   217	    neg = {k: -v for k, v in C.items()}
+   218	    lp.le({mu: 1, **neg}, 0)
+   219	    lp.le({h: 2, y: 1, **neg}, 0)
+   220	    lp.le({h: 3, y: -1, mu: -1, **neg}, F(-1, 2))
+   221	    # side constraints
+   222	    lp.le({y: -1}, F(-1, 8))                 # Y^4 > sqrt2 P   (infimum)
+   223	    lp.le({h: 2, y: -1}, 0)                  # Y > H^2         (infimum)
+   224	    lp.le({y: 1}, F(1, 4))                   # large-sieve level
+   225	    lp.le({t: 1}, F(1, 2))
+   226	    # failure exponent e <= each term's saving
+   227	    lp.le({e: 1, h: -2 * j}, 0)                          # E_b
+   228	    lp.le({e: 1, t: -1, h: 3, mu: 1}, 0)                 # E_c1
+   229	    lp.le({e: 1, h: 2, y: 1, mu: 1}, F(1, 2))            # E_c2
+   230	    if detector:
+   231	        lp.le({e: 1, t: 3}, 1)                           # C(T) coincidences
+   232	    else:
+   233	        lp.le({e: 1, t: 2}, F(1, 2))                     # E_a
+   234	
+   235	
+   236	def single_fallback(j=1, detector: bool = False) -> Tuple[F, Dict[str, F]]:
+   237	    """min over all stage parameters of max(cost, 1/5 - e) [D' then HH]."""
+   238	    j = F(j)
+   239	    lp = LP()
+   240	    z, e = lp.var("z"), lp.var("e")
+   241	    _stage(lp, "", {z: F(1)}, e, j, detector, t_shared=None)
+   242	    lp.le({e: -1, z: -1}, -ONE_FIFTH)                    # 1/5 - e <= z
+   243	    if detector:
+   244	        lp.le({"t": F(1, 2), z: -1}, 0)                  # detector cost t/2 <= z
+   245	    return lp.minimise(z)
+   246	
+   247	
+   248	def ladder(k: int, j=1, detector: bool = False) -> Tuple[F, Dict[str, F]]:
+   249	    """k DCL stages then HH.  E[T] exponent z with stage i cost <= z + e_{i-1}
+   250	    (it is reached on at most N^{-e_{i-1}} of S_n), HH: 1/5 - e_k <= z.
+   251	    With the detector, one T is shared (it is run once, cost t/2 <= z)."""
+   252	    j = F(j)
+   253	    lp = LP()
+   254	    z = lp.var("z")
+   255	    tsh = lp.var("t") if detector else None
+   256	    prev = None
+   257	    for i in range(1, k + 1):
+   258	        e = lp.var(f"e{i}")
+   259	        C = {z: F(1)} if prev is None else {z: F(1), prev: F(1)}
+   260	        _stage(lp, str(i), C, e, j, detector, t_shared=tsh)
+   261	        prev = e
+   262	    lp.le({prev: -1, z: -1}, -ONE_FIFTH)
+   263	    if detector:
+   264	        lp.le({tsh: F(1, 2), z: -1}, 0)
+   265	    return lp.minimise(z)
+   266	
+   267	
+   268	# ---------------------------------------------------------------------------
+   269	# 4. Closed forms (checked against the LPs in tests/test_avgtime.py)
+   270	# ---------------------------------------------------------------------------
+   271	def single_fallback_closed(j=1) -> F:
+   272	    """1/6 + 1/(30 + 36 j): balance 1/6 + 5h/3 = 1/5 - 2 j h."""
+   273	    return ONE_SIXTH + F(1, 30 + 36 * F(j))
+   274	
+   275	
+   276	LADDER_NO_DETECTOR = F(19, 110)    # inf over k of ladder(k, detector=False)
+   277	
+   278	
+   279	# ---------------------------------------------------------------------------
+   280	# 5. The ladder schedule of Theorem AV (integers, n-only)
+   281	# ---------------------------------------------------------------------------
+   282	def icbrt_like_root(x: int, num: int, den: int) -> int:
+   283	    """ceil(x^(num/den)) exactly for integers x >= 1."""
+   284	    target = x ** num
+   285	    lo, hi = 1, 1
+   286	    while hi ** den < target:
+   287	        hi *= 2
+   288	    while lo < hi:
+   289	        mid = (lo + hi) // 2
+   290	        if mid ** den >= target:
+   291	            hi = mid
+   292	        else:
+   293	            lo = mid + 1
+   294	    return lo
+   295	
+   296	
+   297	def ladder_schedule(n: int) -> List[int]:
+   298	    """H_1 = ceil(sqrt n), H_{i+1} = ceil(H_i^{6/5}), stop at H_max = n^2 * 2^{ceil(n/60)}
+   299	    (last step truncated).  All stages satisfy H_{i+1}^5 <= 2^5 H_i^6 (i.e.
+   300	    H_{i+1}^{5/3} <= 2^{5/3} H_i^2), which is all the expectation bound uses."""
+   301	    Hmax = (n * n) << (-(-n // 60))
+   302	    from math import isqrt
+   303	    Hs = [isqrt(n - 1) + 1]
+   304	    while Hs[-1] < Hmax:
+   305	        Hs.append(min(Hmax, icbrt_like_root(Hs[-1], 6, 5)))
+   306	    return Hs
+   307	
+   308	
+   309	def ladder_bound_terms(n: int, c: int = 0) -> List[F]:
+   310	    """Per-stage expectation terms / (n^c 2^{n/6}) of the proof's bound (constants 1):
+   311	    stage 1: H_1^{5/3};  stage i >= 2: H_i^{5/3} * min(1, n / H_{i-1}^2).
+   312	    Returned as exact Fractions of the 5th powers (term^3 to avoid roots)."""
+   313	    Hs = ladder_schedule(n)
+   314	    out = [F(Hs[0] ** 5)]                       # (H^{5/3})^3
+   315	    for a, b in zip(Hs, Hs[1:]):
+   316	        out.append(F(b ** 5) * min(F(1), F(n, a * a)) ** 3)
+   317	    return out
+     1	"""OPERATIONAL: small-order detector (notes/avgtime_results.md, Lemma S).
+     2	
+     3	Sees only N and the public bound T.  Finds a proper divisor of N whenever the
+     4	smallest order d_min = min_{r | N prime} ord_r(2) satisfies d_min <= T and the
+     5	primes r with ord_r(2) = d_min do not exhaust N (for N = pq: ord_p 2 != ord_q 2).
+     6	
+     7	Baby-step giant-step on the exponent:
+     8	  m = ceil(sqrt T), babies 2^i (0 <= i < m), f(X) = prod (X - 2^i),
+     9	  giants 2^{jm} (1 <= j <= ceil(T/m));  G_j = gcd(f(2^{jm}), N).
+    10	  j* = first j with G_j > 1;  then gcd(2^k - 1, N) for k in ((j*-1)m, j*m].
+    11	Block j has G_j > 1 iff ((j-1)m, jm] contains a positive multiple of some
+    12	ord_r(2), so j* = ceil(d_min/m) and k = d_min is scanned; gcd(2^{d_min}-1, N)
+    13	is the product of the r with ord_r(2) | d_min, i.e. with ord_r(2) = d_min.
+    14	Cost: O(sqrt T) ring operations plus the product/remainder trees.
+    15	Not new: elementary BSGS order search (cf. Pollard 1974, Pollard--Strassen).
+    16	"""
+    17	from __future__ import annotations
+    18	
+    19	from math import gcd, isqrt
+    20	from typing import Optional
+    21	
+    22	from src.common.metrics import Metrics
+    23	from src.dcltheorem.stage3 import eval_baby_poly_at_giants
+    24	
+    25	
+    26	def _proper(d: int, N: int) -> bool:
+    27	    return 1 < d < N and N % d == 0
+    28	
+    29	
+    30	def small_order_detector(N: int, T: int, met: Optional[Metrics] = None) -> Optional[int]:
+    31	    met = met or Metrics()
+    32	    if N < 4 or T < 1:
+    33	        return None
+    34	    if N % 2 == 0:
+    35	        return 2
+    36	    m = isqrt(T - 1) + 1 if T > 1 else 1          # ceil(sqrt T)
+    37	    J = -(-T // m)                                  # ceil(T/m); J*m >= T
+    38	    g = pow(2, m, N)
+    39	    giants, x = [], 1
+    40	    for _ in range(J):
+    41	        x = x * g % N
+    42	        met.inc("mulN")
+    43	        giants.append(x)
+    44	    vals = eval_baby_poly_at_giants(N, 2, m, giants, met)
+    45	    for j, v in enumerate(vals, start=1):
+    46	        met.inc("gcdN")
+    47	        G = gcd(v, N)
+    48	        if G == 1:
+    49	            continue
+    50	        # first block with a hit: scan k in ((j-1)m, jm]
+    51	        k0 = (j - 1) * m + 1
+    52	        y = pow(2, k0, N)
+    53	        for k in range(k0, j * m + 1):
+    54	            met.inc("gcdN")
+    55	            d = gcd(y - 1, N)
+    56	            if _proper(d, N):
+    57	                return d
+    58	            y = y * 2 % N
+    59	            met.inc("mulN")
+    60	        return None          # every prime of N has order d_min: detector fails
+    61	    return None
+     1	"""OPERATIONAL: the complete ladder algorithm LAD_n (notes/avgtime_results.md, section 2).
+     2	
+     3	Sees only N and n-only public parameters.  Stages:
+     4	  0. small-order detector with T = 2^{floor(3n/10)}            (detector.py)
+     5	  1..k. DCL-det_{n,H_i} for the n-only ladder H_1 < H_2 < ... (src/dcltheorem)
+     6	  k+1. complete deterministic fallback (Harvey--Hittmeir 2022 in the theorem).
+     7	Whenever a proper divisor d is found, the output is the complete factorisation:
+     8	{d, N/d} if both are prime, else the fallback's factorisation of N.
+     9	
+    10	In the theorem the fallback is HH 2022 and primality is AKS (deterministic,
+    11	polynomial).  In this reference implementation (small sizes, correctness
+    12	tests only) the fallback is Lehman's deterministic N^{1/3} method and
+    13	primality uses gmpy2.is_prime (BPSW-type; disclosed per AGENT_RULES rule 2:
+    14	used only to certify the final output, never inside a search).
+    15	"""
+    16	from __future__ import annotations
+    17	
+    18	from math import gcd, isqrt
+    19	from typing import Callable, Dict, List, Optional, Sequence
+    20	
+    21	import gmpy2
+    22	
+    23	from src.common.metrics import Metrics
+    24	from src.dcltheorem.algorithm import dcl_det
+    25	from src.dcltheorem.params import Design, icbrt, pow2_frac
+    26	
+    27	from .detector import small_order_detector
+    28	
+    29	
+    30	def is_prime(x: int) -> bool:
+    31	    return x >= 2 and bool(gmpy2.is_prime(x, 50))
+    32	
+    33	
+    34	def _iroot(x: int, k: int) -> int:
+    35	    lo, hi = 0, 1 << (x.bit_length() // k + 1)
+    36	    while lo < hi:
+    37	        mid = (lo + hi + 1) // 2
+    38	        if mid ** k <= x:
+    39	            lo = mid
+    40	        else:
+    41	            hi = mid - 1
+    42	    return lo
+    43	
+    44	
+    45	def lehman_split(N: int) -> Optional[int]:
+    46	    """Lehman 1974: a proper divisor of N, or None iff N is 1 or prime. Deterministic."""
+    47	    if N < 4:
+    48	        return None
+    49	    c = _iroot(N, 3)
+    50	    for a in range(2, c + 2):
+    51	        if a < N and N % a == 0:
+    52	            return a
+    53	    for k in range(1, c + 2):
+    54	        four_kN = 4 * k * N
+    55	        r = isqrt(four_kN)
+    56	        xmax = _iroot(N // (4096 * k ** 3), 6) if N >= 4096 * k ** 3 else 0
+    57	        for a in range(r, r + xmax + 2):
+    58	            b2 = a * a - four_kN
+    59	            if b2 < 0:
+    60	                continue
+    61	            b = isqrt(b2)
+    62	            if b * b == b2:
+    63	                d = gcd(a + b, N)
+    64	                if 1 < d < N:
+    65	                    return d
+    66	    return None
+    67	
+    68	
+    69	def complete_factorisation(N: int, split: Callable[[int], Optional[int]] = lehman_split) -> List[int]:
+    70	    if N < 2:
+    71	        return []
+    72	    if is_prime(N):
+    73	        return [N]
+    74	    d = split(N)
+    75	    if d is None:            # cannot happen for composite N with a correct split
+    76	        raise RuntimeError("fallback failed on composite N")
+    77	    return sorted(complete_factorisation(d, split) + complete_factorisation(N // d, split))
+    78	
+    79	
+    80	def stage_design(n: int, H: int) -> Design:
+    81	    """DCL-det_{n,H}: Y = ceil(2^{n/6} / floor(H^{1/3})) (D' convention), K = 4, l = 3 mod 4.
+    82	    (At toy sizes Y > H^2 is enforced by max; the theorem has it for n >= n_0.)"""
+    83	    Y = -(-pow2_frac(n, 1, 6) // max(1, icbrt(H)))
+    84	    return Design(n=n, H=H, Y=max(3, H * H + 1, Y), K=4, mod4=True, label=f"ladder H={H}")
+    85	
+    86	
+    87	def ladder_factor(N: int, n: int, Hs: Sequence[int], T: Optional[int] = None,
+    88	                  split: Callable[[int], Optional[int]] = lehman_split,
+    89	                  met: Optional[Metrics] = None) -> Dict:
+    90	    """Run LAD on N.  Returns {'factors': sorted prime list, 'stage': name}."""
+    91	    met = met or Metrics()
+    92	    if N < 2:
+    93	        return {"factors": [], "stage": "trivial"}
+    94	    T = (1 << (3 * n // 10)) if T is None else T
+    95	
+    96	    def finish(d: int, stage: str) -> Dict:
+    97	        e = N // d
+    98	        if is_prime(d) and is_prime(e):
+    99	            return {"factors": sorted([d, e]), "stage": stage}
+   100	        return {"factors": complete_factorisation(N, split), "stage": stage + "+fallback"}
+   101	
+   102	    d = small_order_detector(N, T, met)
+   103	    if d is not None:
+   104	        return finish(d, "detector")
+   105	    for i, H in enumerate(Hs, start=1):
+   106	        r = dcl_det(N, stage_design(n, H), met)
+   107	        if r["factor"] is not None:
+   108	            return finish(r["factor"], f"dcl{i}")
+   109	    return {"factors": complete_factorisation(N, split), "stage": "fallback"}
+     1	"""Tests for src/avgtime (notes/avgtime_results.md)."""
+     2	from fractions import Fraction as F
+     3	from math import isqrt
+     4	
+     5	import pytest
+     6	import sympy
+     7	
+     8	from src.avgtime.detector import small_order_detector
+     9	from src.avgtime.exponents import (LADDER_NO_DETECTOR, ONE_SIXTH, dprime_admissible,
+    10	                                   dprime_exponents, dprime_requirements, ladder,
+    11	                                   ladder_bound_terms, ladder_schedule, single_fallback,
+    12	                                   single_fallback_closed, sup_eps)
+    13	from src.avgtime.ladder import complete_factorisation, ladder_factor, lehman_split
+    14	from src.dcltheorem.harness import sample_pair
+    15	
+    16	
+    17	# ---------------------------------------------------------------- exponents
+    18	def test_dprime_requirement_sups():
+    19	    sups = {k: sup_eps(a, b) for k, (a, b) in dprime_requirements().items()}
+    20	    assert sups["Y>H^2 (Lemma 9)"] == F(1, 7)
+    21	    assert sups["Y^4>sqrt2 P (Lemma 6)"] == F(1, 4)
+    22	    assert sups["E_a < N^-eps"] is None            # -eps < 0 for every eps > 0
+    23	    assert sups["E_c1 < N^-eps"] == F(1, 52)
+    24	    assert sups["E_c2 < N^-eps"] == F(1, 16)
+    25	    assert sups["useful: cost < 1/5"] == F(1, 25)
+    26	    assert dprime_admissible() == (F(1, 52), "E_c1 < N^-eps")
+    27	
+    28	
+    29	def test_eps_1_55():
+    30	    e = dprime_exponents(F(1, 55))
+    31	    assert e["cost"] == F(2, 11)
+    32	    assert e["E_c1"] == F(-1, 44) and e["E_c1"] < -F(1, 55)
+    33	    assert e["E_c2"] < -F(1, 55) and e["E_a"] == -F(2, 55) and e["E_b"] == -F(1, 55)
+    34	    # balance with HH: 1/5 - eps = 2/11
+    35	    assert F(1, 5) - F(1, 55) == F(2, 11)
+    36	
+    37	
+    38	@pytest.mark.parametrize("j", [1, 2, 3])
+    39	def test_single_fallback_lp_matches_closed_form(j):
+    40	    for det in (False, True):
+    41	        v, _ = single_fallback(j, det)
+    42	        assert v == single_fallback_closed(j)
+    43	    assert single_fallback_closed(1) == F(2, 11)
+    44	    assert single_fallback_closed(2) == F(3, 17)
+    45	
+    46	
+    47	def test_ladder_without_detector_tends_to_19_110():
+    48	    vals = [ladder(k, 1, False)[0] for k in range(1, 7)]
+    49	    assert vals[0] == F(2, 11) and vals[1] == F(35, 198)
+    50	    assert all(a > b for a, b in zip(vals, vals[1:]))
+    51	    assert all(v > LADDER_NO_DETECTOR for v in vals)
+    52	    assert vals[-1] - LADDER_NO_DETECTOR < F(1, 3000)
+    53	
+    54	
+    55	def test_ladder_with_detector_goes_below_19_110():
+    56	    vals = [ladder(k, 1, True)[0] for k in range(1, 7)]
+    57	    assert all(a > b for a, b in zip(vals, vals[1:]))
+    58	    assert all(v > ONE_SIXTH for v in vals)
+    59	    assert vals[-1] < LADDER_NO_DETECTOR
+    60	
+    61	
+    62	@pytest.mark.parametrize("n", [256, 512, 1024, 2048, 4096])
+    63	def test_ladder_schedule(n):
+    64	    Hs = ladder_schedule(n)
+    65	    assert Hs[0] ** 2 >= n > (Hs[0] - 1) ** 2 and Hs[-1] == (n * n) << (-(-n // 60))
+    66	    assert all(a < b for a, b in zip(Hs, Hs[1:]))
+    67	    assert all(b ** 5 <= 32 * a ** 6 for a, b in zip(Hs, Hs[1:]))   # H_{i+1}^{5/3} <= 2^{5/3} H_i^2
+    68	    assert len(Hs) <= 6 * n.bit_length()                              # O(log n) stages
+    69	    terms = ladder_bound_terms(n)
+    70	    # every stage >= 2 contributes <= 2^5 n^3 to (term)^3, i.e. <= 2^{5/3} n per stage
+    71	    assert all(t <= 32 * n ** 3 for t in terms[1:])
+    72	
+    73	
+    74	# ---------------------------------------------------------------- detector
+    75	def _ord2(r):
+    76	    return int(sympy.n_order(2, r))
+    77	
+    78	
+    79	def test_detector_exhaustive_small_semiprimes():
+    80	    ps = list(sympy.primerange(3, 260))
+    81	    for T in (1, 7, 30, 100):
+    82	        m = isqrt(T - 1) + 1 if T > 1 else 1
+    83	        Teff = -(-T // m) * m          # the detector scans exponents 1..Teff (Teff >= T)
+    84	        for i, p in enumerate(ps):
+    85	            for q in ps[i + 1:]:
+    86	                N = p * q
+    87	                d = small_order_detector(N, T)
+    88	                dp, dq = _ord2(p), _ord2(q)
+    89	                pred = min(dp, dq) <= Teff and dp != dq
+    90	                assert (d is not None) == pred, (p, q, T)
+    91	                if d is not None:
+    92	                    assert d in (p, q)
+    93	                    assert _ord2(d) == min(dp, dq)
+    94	
+    95	
+    96	def test_detector_constructed_small_order():
+    97	    # 8191 = 2^13 - 1, 131071 = 2^17 - 1 (both orders <= 20)
+    98	    assert small_order_detector(8191 * 131071, 20) == 8191
+    99	    assert small_order_detector(8191 * 1000003, 20) == 8191
+   100	    assert small_order_detector(8191, 100) is None          # prime
+   101	    assert small_order_detector(23 * 89, 100) is None       # ord_23 2 = ord_89 2 = 11
+   102	
+   103	
+   104	# ---------------------------------------------------------------- ladder (operational)
+   105	def test_lehman_split_exhaustive():
+   106	    for N in range(2, 3000):
+   107	        d = lehman_split(N)
+   108	        if sympy.isprime(N) or N < 4:
+   109	            assert d is None
+   110	        else:
+   111	            assert d is not None and 1 < d < N and N % d == 0
+   112	
+   113	
+   114	def _fac(N):
+   115	    return sorted(p for p, e in sympy.factorint(N).items() for _ in range(e))
+   116	
+   117	
+   118	@pytest.mark.parametrize("n", [32, 36, 40])
+   119	def test_ladder_factors_sample_pairs(n):
+   120	    for s in range(6):
+   121	        N, p, q = sample_pair(n, s)
+   122	        r = ladder_factor(N, n, [2, 3, 4])
+   123	        assert r["factors"] == sorted([p, q])
+   124	
+   125	
+   126	def test_ladder_complete_on_adversarial_inputs():
+   127	    cases = [2, 3, 4, 9, 15, 7919, 7919 ** 2, 3 * 5 * 7 * 11 * 13, 2 ** 20, 8191 * 131071,
+   128	             (2 ** 31 - 1), 65537 * 65539 if sympy.isprime(65539) else 65537 * 65543,
+   129	             101 * 103 * 107, 999983 * 2]
+   130	    for N in cases:
+   131	        r = ladder_factor(N, N.bit_length(), [2, 3])
+   132	        assert r["factors"] == _fac(N), N
+   133	    for N in range(2, 400):
+   134	        assert ladder_factor(N, max(4, N.bit_length()), [2])["factors"] == _fac(N)
+
+web search: deterministic integer factoring average case balanced semiprimes N 1/6 average ...
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/dcltheorem_results.md | sed -n '286,379p'
+nl -ba /Volumes/git/factoring-connection/src/avgtime/exponents.py | sed -n '1,200p'" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+   286	## 4. Proof of Theorem D′
+   287	
+   288	**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+   289	
+   290	**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+   291	targets and m ≤ m̄_k).**
+   292	
+   293	| step | operations | bit cost |
+   294	|---|---|---|
+   295	| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+   296	| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+   297	| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+   298	| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+   299	| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+   300	| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+   301	| babies γ^i | m mults | O(m M(n)) |
+   302	| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+   303	| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+   304	
+   305	With m = m̄_k (or any m that minimises the list count) the list is
+   306	m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+   307	
+   308	  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+   309	
+   310	because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+   311	
+   312	**Arithmetic model (referee dclt_1, item 4).**
+   313	- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+   314	  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+   315	  tree, the Kronecker-substituted polynomial products and the gcds.
+   316	- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+   317	  wider than 2n + ⌈log₂(D+1)⌉.
+   318	- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+   319	  No inverse of a nonunit is ever needed.
+   320	- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+   321	  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+   322	  `powN` charges binary square-and-multiply counts.
+   323	
+   324	**(iii) Exceptional set.**
+   325	- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+   326	  (Lemma 6). If
+   327	  - (a) d = ord_q(2) > T,
+   328	  - (b) p ∉ U_{k(q)}(q), and
+   329	  - (c) p ∉ F_{k(q)}(q),
+   330	
+   331	  then DCL-det succeeds.
+   332	- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+   333	- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+   334	- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+   335	  at the latest. It may output q, or output earlier from another block; both are fine.
+   336	- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+   337	  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+   338	
+   339	The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+   340	
+   341	- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+   342	  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+   343	  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+   344	  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+   345	- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+   346	  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+   347	  fixed interval, integers counted, no short-interval prime counts.
+   348	- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+   349	  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+   350	
+   351	    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+   352	
+   353	  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+   354	  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+   355	- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+   356	  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+   357	
+   358	**Corollary D″.**
+   359	- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+   360	- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+   361	- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+   362	- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+   363	
+   364	**Where the constants come from.**
+   365	- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+   366	  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+   367	- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+   368	- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+   369	  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+   370	
+   371	## 5. Answers to the audit (notes/codex_r12_dcl_audit.md) and to the work items
+   372	
+   373	| audit item | resolution here | status |
+   374	|---|---|---|
+   375	| (1) normalisation of Thm D's exceptional set (short I_q, prime counts in I_q) | Lemma 9 + §4(iii) E_b: one fixed interval [P/2, P], all integer survivors counted, summed over prime q, divided by \|S_n\| ≍ P²/n² | proved |
+   376	| (2) deterministic roots | band primes ℓ ≡ 3 (mod 4), root a^{(ℓ+1)/4}; sieve loses a constant (PNT mod 4) | proved |
+   377	| (3) bit complexity: balanced integer product tree; uncharged Bluestein powers | balanced tree (GMP products) in `all_but_one`; full cost table §4(ii). The HH baseline's Bluestein chirp powers are now charged (`stage3.harvey_find_collisions`) | proved (table); implemented |
+   378	| (4) **base order of γ = β^L** (the substantive gap; 1333 example) | **Closed without any order lemma for β^L.** No order is needed mod p (Lemma 3 is an identity). Mod q, the four disjoint bands guarantee a clean band (Lemma 6), so ord_q(γ) = ord_q(2) (Lemma 7). Two-sided true giants are counted directly (Lemma 10), and small ord_q(2) is rare by an elementary count (Lemma 8). Extra failures are O(2^{−εn}), not o(1). The 1333 example (L built from 3, 5, 7 \| p−1, q−1) cannot occur in a clean band, and an L-power image of size 2 mod **p** is harmless here. | proved (+ GPT-6.1-sol referee dclt_1: "closes the previous order/extraction gap") |
+   379	| (5) quantifier mismatch | §1: D′ concerns the true factor counted over S_n. It does not give full-candidate coverage for almost every N | stated |
+     1	"""Exact (Fraction) exponent bookkeeping for notes/avgtime_results.md.
+     2	
+     3	All exponents are in units of n = log2 N, so "x" means 2^{x n} = N^x, up to
+     4	(log N)^{O(1)} factors.  P = N^{1/2}.  Free parameters of one DCL-det stage:
+     5	
+     6	  h   H = N^h            weight height
+     7	  y   Y = N^y            band scale
+     8	  mu  m = N^mu           baby-list length (m <= mbar is all the success proof needs)
+     9	  t   T = N^t            order threshold (analysis only for DCL; detector length if used)
+    10	
+    11	Bounds proved in notes/dcltheorem_results.md (Theorem D', section 4), with Lemma 10
+    12	evaluated at the true baby length m (the delta-range of Lemma 7 is (-m, m)):
+    13	
+    14	  cost   = max(mu, 2h + y, 3h + 1/2 - y - mu)        [m + T_k (1 + mbar/m)]
+    15	  E_a    = 2t - 1/2                                  [n T^2 / P]
+    16	  E_b    = -2 j h                                    [(n/H^2)^j; proved j = 1]
+    17	  E_c1   = 3h + mu - t                               [n H^3 m / T]
+    18	  E_c2   = 2h + y + mu - 1/2                         [n H^2 Y m / P]
+    19	  C(T)   = 3t - 1   (detector failure: ord_p 2 = ord_q 2 <= T)  [T^3 / P^2]
+    20	  detector cost = t/2
+    21	
+    22	Side constraints: Y > H^2 (y > 2h, Lemma 9), Y^4 > sqrt2 P (y > 1/8, Lemma 6),
+    23	large-sieve level 256 Y^2 <= P (y < 1/4), 0 <= t < 1/2.
+    24	
+    25	Nothing here is an experiment: it is exact linear algebra on these exponents.
+    26	"""
+    27	from __future__ import annotations
+    28	
+    29	from fractions import Fraction as F
+    30	from itertools import combinations
+    31	from typing import Dict, List, Optional, Sequence, Tuple
+    32	
+    33	ONE_FIFTH = F(1, 5)      # Harvey--Hittmeir fallback exponent
+    34	ONE_SIXTH = F(1, 6)
+    35	
+    36	
+    37	# ---------------------------------------------------------------------------
+    38	# 1. Audit of Theorem D' as written: H = n 2^{eps n/2}, Y = 2^{n/6} H^{-1/3},
+    39	#    T = 2^{(1/4 - eps) n}, m = mbar.  Each requirement is a + b*eps < 0.
+    40	# ---------------------------------------------------------------------------
+    41	def dprime_exponents(eps: F) -> Dict[str, F]:
+    42	    h = eps / 2
+    43	    y = ONE_SIXTH - h / 3
+    44	    t = F(1, 4) - eps
+    45	    mu = h + F(1, 2) - 2 * y          # mbar = H P / Y^2
+    46	    return {"h": h, "y": y, "t": t, "mu": mu,
+    47	            "cost": max(mu, 2 * h + y, 3 * h + F(1, 2) - y - mu),
+    48	            "E_a": 2 * t - F(1, 2), "E_b": -2 * h,
+    49	            "E_c1": 3 * h + mu - t, "E_c2": 2 * h + y + mu - F(1, 2)}
+    50	
+    51	
+    52	def dprime_requirements() -> Dict[str, Tuple[F, F]]:
+    53	    """name -> (a, b): requirement a + b*eps < 0 (strict: polylog factors).
+    54	
+    55	    Separations: Y > H^2 (Lemma 9 distinct classes), Y^4 > sqrt2 P (Lemma 6).
+    56	    Exceptional terms must be o(N^{-eps}) * polylog^{-1}: E_x + eps < 0.
+    57	    E_b is N^{-eps} exactly by the choice H = n 2^{eps n/2} (no requirement).
+    58	    'useful' = D' cheaper than HH (not needed for validity)."""
+    59	    def lin(f):
+    60	        a = f(F(0))
+    61	        b = f(F(1)) - a
+    62	        return a, b
+    63	    req = {
+    64	        "Y>H^2 (Lemma 9)": lin(lambda e: 2 * dprime_exponents(e)["h"] - dprime_exponents(e)["y"]),
+    65	        "Y^4>sqrt2 P (Lemma 6)": lin(lambda e: F(1, 2) - 4 * dprime_exponents(e)["y"]),
+    66	        "E_a < N^-eps": lin(lambda e: dprime_exponents(e)["E_a"] + e),
+    67	        "E_c1 < N^-eps": lin(lambda e: dprime_exponents(e)["E_c1"] + e),
+    68	        "E_c2 < N^-eps": lin(lambda e: dprime_exponents(e)["E_c2"] + e),
+    69	        "useful: cost < 1/5": lin(lambda e: dprime_exponents(e)["cost"] - ONE_FIFTH),
+    70	    }
+    71	    return req
+    72	
+    73	
+    74	def sup_eps(a: F, b: F) -> Optional[F]:
+    75	    """sup of eps > 0 with a + b eps < 0 (None = no upper limit; requires a < 0 or b < 0)."""
+    76	    if b <= 0:
+    77	        return None if a < 0 or b < 0 else F(0)
+    78	    return -a / b
+    79	
+    80	
+    81	def dprime_admissible() -> Tuple[F, str]:
+    82	    """Binding validity constraint of D' as written (excluding 'useful')."""
+    83	    best, name = None, None
+    84	    for k, (a, b) in dprime_requirements().items():
+    85	        if k.startswith("useful"):
+    86	            continue
+    87	        s = sup_eps(a, b)
+    88	        if s is not None and (best is None or s < best):
+    89	            best, name = s, k
+    90	    return best, name
+    91	
+    92	
+    93	# ---------------------------------------------------------------------------
+    94	# 2. A small exact LP solver (two-phase tableau simplex, Bland's rule).
+    95	#    maximise c.x  s.t.  A x <= b,  x >= 0.   Fractions throughout.
+    96	# ---------------------------------------------------------------------------
+    97	def lp_max(c: Sequence[F], A: Sequence[Sequence[F]], b: Sequence[F]
+    98	           ) -> Tuple[Optional[F], Optional[List[F]]]:
+    99	    m, nv = len(A), len(c)
+   100	    # columns: x (nv) | slack/surplus (m) | artificial (m)
+   101	    rows, basis, art = [], [], []
+   102	    for i in range(m):
+   103	        Ai, bi = [F(v) for v in A[i]], F(b[i])
+   104	        s = [F(0)] * m
+   105	        a = [F(0)] * m
+   106	        if bi >= 0:
+   107	            s[i] = F(1)
+   108	            rows.append(Ai + s + a + [bi])
+   109	            basis.append(nv + i)
+   110	        else:
+   111	            s[i] = F(-1)
+   112	            a[i] = F(1)
+   113	            rows.append([-v for v in Ai] + s + a + [-bi])
+   114	            basis.append(nv + m + i)
+   115	            art.append(nv + m + i)
+   116	    ncol = nv + 2 * m
+   117	
+   118	    def pivot(r, col):
+   119	        pv = rows[r][col]
+   120	        rows[r] = [v / pv for v in rows[r]]
+   121	        for i in range(m):
+   122	            if i != r and rows[i][col] != 0:
+   123	                f = rows[i][col]
+   124	                rows[i] = [vi - f * vr for vi, vr in zip(rows[i], rows[r])]
+   125	        basis[r] = col
+   126	
+   127	    def simplex(obj, allowed):
+   128	        # obj: maximise obj.x over columns; reduced costs computed each step
+   129	        while True:
+   130	            cb = [obj[basis[i]] for i in range(m)]
+   131	            enter = None
+   132	            for j in allowed:
+   133	                if j in basis:
+   134	                    continue
+   135	                red = obj[j] - sum(cb[i] * rows[i][j] for i in range(m))
+   136	                if red > 0:
+   137	                    enter = j
+   138	                    break
+   139	            if enter is None:
+   140	                return "opt"
+   141	            best, r = None, None
+   142	            for i in range(m):
+   143	                if rows[i][enter] > 0:
+   144	                    ratio = rows[i][-1] / rows[i][enter]
+   145	                    if best is None or ratio < best or (ratio == best and basis[i] < basis[r]):
+   146	                        best, r = ratio, i
+   147	            if r is None:
+   148	                return "unbounded"
+   149	            pivot(r, enter)
+   150	
+   151	    allcols = list(range(ncol))
+   152	    if art:
+   153	        obj1 = [F(0)] * ncol
+   154	        for j in art:
+   155	            obj1[j] = F(-1)
+   156	        simplex(obj1, allcols)
+   157	        if sum(rows[i][-1] for i in range(m) if basis[i] in art) != 0:
+   158	            return None, None                       # infeasible
+   159	        # drive remaining artificials out of the basis
+   160	        for i in range(m):
+   161	            if basis[i] in art:
+   162	                for j in range(nv + m):
+   163	                    if rows[i][j] != 0:
+   164	                        pivot(i, j)
+   165	                        break
+   166	    obj2 = [F(v) for v in c] + [F(0)] * (2 * m)
+   167	    st = simplex(obj2, list(range(nv + m)))
+   168	    if st == "unbounded":
+   169	        return None, None
+   170	    x = [F(0)] * nv
+   171	    for i in range(m):
+   172	        if basis[i] < nv:
+   173	            x[basis[i]] = rows[i][-1]
+   174	    return sum(F(ci) * xi for ci, xi in zip(c, x)), x
+   175	
+   176	
+   177	class LP:
+   178	    """Tiny builder: named nonnegative variables, constraints sum coef*var <= rhs."""
+   179	
+   180	    def __init__(self):
+   181	        self.names: List[str] = []
+   182	        self.cons: List[Tuple[Dict[str, F], F]] = []
+   183	
+   184	    def var(self, name: str) -> str:
+   185	        self.names.append(name)
+   186	        return name
+   187	
+   188	    def le(self, coefs: Dict[str, F], rhs) -> None:
+   189	        self.cons.append(({k: F(v) for k, v in coefs.items()}, F(rhs)))
+   190	
+   191	    def minimise(self, name: str) -> Tuple[F, Dict[str, F]]:
+   192	        idx = {v: i for i, v in enumerate(self.names)}
+   193	        c = [F(0)] * len(self.names)
+   194	        c[idx[name]] = F(-1)
+   195	        A, b = [], []
+   196	        for coefs, rhs in self.cons:
+   197	            row = [F(0)] * len(self.names)
+   198	            for k, v in coefs.items():
+   199	                row[idx[k]] += v
+   200	            A.append(row)
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/src/avgtime/exponents.py | sed -n '200,340p'
+nl -ba /Volumes/git/factoring-connection/src/avgtime/detector.py
+nl -ba /Volumes/git/factoring-connection/src/avgtime/ladder.py
+nl -ba /Volumes/git/factoring-connection/tests/test_avgtime.py" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+   200	            A.append(row)
+   201	            b.append(rhs)
+   202	        val, x = lp_max(c, A, b)
+   203	        if val is None:
+   204	            raise ValueError("LP infeasible or unbounded")
+   205	        return -val, dict(zip(self.names, x))
+   206	
+   207	
+   208	# ---------------------------------------------------------------------------
+   209	# 3. One DCL stage as LP constraints: cost <= C, failure fraction <= N^{-e}.
+   210	# ---------------------------------------------------------------------------
+   211	def _stage(lp: LP, s: str, C: Dict[str, F], e: str, j: F, detector: bool,
+   212	           t_shared: Optional[str] = None) -> None:
+   213	    """Add stage s with variables h,y,mu,(t) ; constraints cost <= C (a linear form
+   214	    given as dict, e.g. {'z':1,'e0':1}) and e <= each failure exponent."""
+   215	    h, y, mu = lp.var(f"h{s}"), lp.var(f"y{s}"), lp.var(f"mu{s}")
+   216	    t = t_shared or lp.var(f"t{s}")
+   217	    neg = {k: -v for k, v in C.items()}
+   218	    lp.le({mu: 1, **neg}, 0)
+   219	    lp.le({h: 2, y: 1, **neg}, 0)
+   220	    lp.le({h: 3, y: -1, mu: -1, **neg}, F(-1, 2))
+   221	    # side constraints
+   222	    lp.le({y: -1}, F(-1, 8))                 # Y^4 > sqrt2 P   (infimum)
+   223	    lp.le({h: 2, y: -1}, 0)                  # Y > H^2         (infimum)
+   224	    lp.le({y: 1}, F(1, 4))                   # large-sieve level
+   225	    lp.le({t: 1}, F(1, 2))
+   226	    # failure exponent e <= each term's saving
+   227	    lp.le({e: 1, h: -2 * j}, 0)                          # E_b
+   228	    lp.le({e: 1, t: -1, h: 3, mu: 1}, 0)                 # E_c1
+   229	    lp.le({e: 1, h: 2, y: 1, mu: 1}, F(1, 2))            # E_c2
+   230	    if detector:
+   231	        lp.le({e: 1, t: 3}, 1)                           # C(T) coincidences
+   232	    else:
+   233	        lp.le({e: 1, t: 2}, F(1, 2))                     # E_a
+   234	
+   235	
+   236	def single_fallback(j=1, detector: bool = False) -> Tuple[F, Dict[str, F]]:
+   237	    """min over all stage parameters of max(cost, 1/5 - e) [D' then HH]."""
+   238	    j = F(j)
+   239	    lp = LP()
+   240	    z, e = lp.var("z"), lp.var("e")
+   241	    _stage(lp, "", {z: F(1)}, e, j, detector, t_shared=None)
+   242	    lp.le({e: -1, z: -1}, -ONE_FIFTH)                    # 1/5 - e <= z
+   243	    if detector:
+   244	        lp.le({"t": F(1, 2), z: -1}, 0)                  # detector cost t/2 <= z
+   245	    return lp.minimise(z)
+   246	
+   247	
+   248	def ladder(k: int, j=1, detector: bool = False) -> Tuple[F, Dict[str, F]]:
+   249	    """k DCL stages then HH.  E[T] exponent z with stage i cost <= z + e_{i-1}
+   250	    (it is reached on at most N^{-e_{i-1}} of S_n), HH: 1/5 - e_k <= z.
+   251	    With the detector, one T is shared (it is run once, cost t/2 <= z)."""
+   252	    j = F(j)
+   253	    lp = LP()
+   254	    z = lp.var("z")
+   255	    tsh = lp.var("t") if detector else None
+   256	    prev = None
+   257	    for i in range(1, k + 1):
+   258	        e = lp.var(f"e{i}")
+   259	        C = {z: F(1)} if prev is None else {z: F(1), prev: F(1)}
+   260	        _stage(lp, str(i), C, e, j, detector, t_shared=tsh)
+   261	        prev = e
+   262	    lp.le({prev: -1, z: -1}, -ONE_FIFTH)
+   263	    if detector:
+   264	        lp.le({tsh: F(1, 2), z: -1}, 0)
+   265	    return lp.minimise(z)
+   266	
+   267	
+   268	# ---------------------------------------------------------------------------
+   269	# 4. Closed forms (checked against the LPs in tests/test_avgtime.py)
+   270	# ---------------------------------------------------------------------------
+   271	def single_fallback_closed(j=1) -> F:
+   272	    """1/6 + 1/(30 + 36 j): balance 1/6 + 5h/3 = 1/5 - 2 j h."""
+   273	    return ONE_SIXTH + F(1, 30 + 36 * F(j))
+   274	
+   275	
+   276	LADDER_NO_DETECTOR = F(19, 110)    # inf over k of ladder(k, detector=False)
+   277	
+   278	
+   279	# ---------------------------------------------------------------------------
+   280	# 5. The ladder schedule of Theorem AV (integers, n-only)
+   281	# ---------------------------------------------------------------------------
+   282	def icbrt_like_root(x: int, num: int, den: int) -> int:
+   283	    """ceil(x^(num/den)) exactly for integers x >= 1."""
+   284	    target = x ** num
+   285	    lo, hi = 1, 1
+   286	    while hi ** den < target:
+   287	        hi *= 2
+   288	    while lo < hi:
+   289	        mid = (lo + hi) // 2
+   290	        if mid ** den >= target:
+   291	            hi = mid
+   292	        else:
+   293	            lo = mid + 1
+   294	    return lo
+   295	
+   296	
+   297	def ladder_schedule(n: int) -> List[int]:
+   298	    """H_1 = ceil(sqrt n), H_{i+1} = ceil(H_i^{6/5}), stop at H_max = n^2 * 2^{ceil(n/60)}
+   299	    (last step truncated).  All stages satisfy H_{i+1}^5 <= 2^5 H_i^6 (i.e.
+   300	    H_{i+1}^{5/3} <= 2^{5/3} H_i^2), which is all the expectation bound uses."""
+   301	    Hmax = (n * n) << (-(-n // 60))
+   302	    from math import isqrt
+   303	    Hs = [isqrt(n - 1) + 1]
+   304	    while Hs[-1] < Hmax:
+   305	        Hs.append(min(Hmax, icbrt_like_root(Hs[-1], 6, 5)))
+   306	    return Hs
+   307	
+   308	
+   309	def ladder_bound_terms(n: int, c: int = 0) -> List[F]:
+   310	    """Per-stage expectation terms / (n^c 2^{n/6}) of the proof's bound (constants 1):
+   311	    stage 1: H_1^{5/3};  stage i >= 2: H_i^{5/3} * min(1, n / H_{i-1}^2).
+   312	    Returned as exact Fractions of the 5th powers (term^3 to avoid roots)."""
+   313	    Hs = ladder_schedule(n)
+   314	    out = [F(Hs[0] ** 5)]                       # (H^{5/3})^3
+   315	    for a, b in zip(Hs, Hs[1:]):
+   316	        out.append(F(b ** 5) * min(F(1), F(n, a * a)) ** 3)
+   317	    return out
+     1	"""OPERATIONAL: small-order detector (notes/avgtime_results.md, Lemma S).
+     2	
+     3	Sees only N and the public bound T.  Finds a proper divisor of N whenever the
+     4	smallest order d_min = min_{r | N prime} ord_r(2) satisfies d_min <= T and the
+     5	primes r with ord_r(2) = d_min do not exhaust N (for N = pq: ord_p 2 != ord_q 2).
+     6	
+     7	Baby-step giant-step on the exponent:
+     8	  m = ceil(sqrt T), babies 2^i (0 <= i < m), f(X) = prod (X - 2^i),
+     9	  giants 2^{jm} (1 <= j <= ceil(T/m));  G_j = gcd(f(2^{jm}), N).
+    10	  j* = first j with G_j > 1;  then gcd(2^k - 1, N) for k in ((j*-1)m, j*m].
+    11	Block j has G_j > 1 iff ((j-1)m, jm] contains a positive multiple of some
+    12	ord_r(2), so j* = ceil(d_min/m) and k = d_min is scanned; gcd(2^{d_min}-1, N)
+    13	is the product of the r with ord_r(2) | d_min, i.e. with ord_r(2) = d_min.
+    14	Cost: O(sqrt T) ring operations plus the product/remainder trees.
+    15	Not new: elementary BSGS order search (cf. Pollard 1974, Pollard--Strassen).
+    16	"""
+    17	from __future__ import annotations
+    18	
+    19	from math import gcd, isqrt
+    20	from typing import Optional
+    21	
+    22	from src.common.metrics import Metrics
+    23	from src.dcltheorem.stage3 import eval_baby_poly_at_giants
+    24	
+    25	
+    26	def _proper(d: int, N: int) -> bool:
+    27	    return 1 < d < N and N % d == 0
+    28	
+    29	
+    30	def small_order_detector(N: int, T: int, met: Optional[Metrics] = None) -> Optional[int]:
+    31	    met = met or Metrics()
+    32	    if N < 4 or T < 1:
+    33	        return None
+    34	    if N % 2 == 0:
+    35	        return 2
+    36	    m = isqrt(T - 1) + 1 if T > 1 else 1          # ceil(sqrt T)
+    37	    J = -(-T // m)                                  # ceil(T/m); J*m >= T
+    38	    g = pow(2, m, N)
+    39	    giants, x = [], 1
+    40	    for _ in range(J):
+    41	        x = x * g % N
+    42	        met.inc("mulN")
+    43	        giants.append(x)
+    44	    vals = eval_baby_poly_at_giants(N, 2, m, giants, met)
+    45	    for j, v in enumerate(vals, start=1):
+    46	        met.inc("gcdN")
+    47	        G = gcd(v, N)
+    48	        if G == 1:
+    49	            continue
+    50	        # first block with a hit: scan k in ((j-1)m, jm]
+    51	        k0 = (j - 1) * m + 1
+    52	        y = pow(2, k0, N)
+    53	        for k in range(k0, j * m + 1):
+    54	            met.inc("gcdN")
+    55	            d = gcd(y - 1, N)
+    56	            if _proper(d, N):
+    57	                return d
+    58	            y = y * 2 % N
+    59	            met.inc("mulN")
+    60	        return None          # every prime of N has order d_min: detector fails
+    61	    return None
+     1	"""OPERATIONAL: the complete ladder algorithm LAD_n (notes/avgtime_results.md, section 2).
+     2	
+     3	Sees only N and n-only public parameters.  Stages:
+     4	  0. small-order detector with T = 2^{floor(3n/10)}            (detector.py)
+     5	  1..k. DCL-det_{n,H_i} for the n-only ladder H_1 < H_2 < ... (src/dcltheorem)
+     6	  k+1. complete deterministic fallback (Harvey--Hittmeir 2022 in the theorem).
+     7	Whenever a proper divisor d is found, the output is the complete factorisation:
+     8	{d, N/d} if both are prime, else the fallback's factorisation of N.
+     9	
+    10	In the theorem the fallback is HH 2022 and primality is AKS (deterministic,
+    11	polynomial).  In this reference implementation (small sizes, correctness
+    12	tests only) the fallback is Lehman's deterministic N^{1/3} method and
+    13	primality uses gmpy2.is_prime (BPSW-type; disclosed per AGENT_RULES rule 2:
+    14	used only to certify the final output, never inside a search).
+    15	"""
+    16	from __future__ import annotations
+    17	
+    18	from math import gcd, isqrt
+    19	from typing import Callable, Dict, List, Optional, Sequence
+    20	
+    21	import gmpy2
+    22	
+    23	from src.common.metrics import Metrics
+    24	from src.dcltheorem.algorithm import dcl_det
+    25	from src.dcltheorem.params import Design, icbrt, pow2_frac
+    26	
+    27	from .detector import small_order_detector
+    28	
+    29	
+    30	def is_prime(x: int) -> bool:
+    31	    return x >= 2 and bool(gmpy2.is_prime(x, 50))
+    32	
+    33	
+    34	def _iroot(x: int, k: int) -> int:
+    35	    lo, hi = 0, 1 << (x.bit_length() // k + 1)
+    36	    while lo < hi:
+    37	        mid = (lo + hi + 1) // 2
+    38	        if mid ** k <= x:
+    39	            lo = mid
+    40	        else:
+    41	            hi = mid - 1
+    42	    return lo
+    43	
+    44	
+    45	def lehman_split(N: int) -> Optional[int]:
+    46	    """Lehman 1974: a proper divisor of N, or None iff N is 1 or prime. Deterministic."""
+    47	    if N < 4:
+    48	        return None
+    49	    c = _iroot(N, 3)
+    50	    for a in range(2, c + 2):
+    51	        if a < N and N % a == 0:
+    52	            return a
+    53	    for k in range(1, c + 2):
+    54	        four_kN = 4 * k * N
+    55	        r = isqrt(four_kN)
+    56	        xmax = _iroot(N // (4096 * k ** 3), 6) if N >= 4096 * k ** 3 else 0
+    57	        for a in range(r, r + xmax + 2):
+    58	            b2 = a * a - four_kN
+    59	            if b2 < 0:
+    60	                continue
+    61	            b = isqrt(b2)
+    62	            if b * b == b2:
+    63	                d = gcd(a + b, N)
+    64	                if 1 < d < N:
+    65	                    return d
+    66	    return None
+    67	
+    68	
+    69	def complete_factorisation(N: int, split: Callable[[int], Optional[int]] = lehman_split) -> List[int]:
+    70	    if N < 2:
+    71	        return []
+    72	    if is_prime(N):
+    73	        return [N]
+    74	    d = split(N)
+    75	    if d is None:            # cannot happen for composite N with a correct split
+    76	        raise RuntimeError("fallback failed on composite N")
+    77	    return sorted(complete_factorisation(d, split) + complete_factorisation(N // d, split))
+    78	
+    79	
+    80	def stage_design(n: int, H: int) -> Design:
+    81	    """DCL-det_{n,H}: Y = ceil(2^{n/6} / floor(H^{1/3})) (D' convention), K = 4, l = 3 mod 4.
+    82	    (At toy sizes Y > H^2 is enforced by max; the theorem has it for n >= n_0.)"""
+    83	    Y = -(-pow2_frac(n, 1, 6) // max(1, icbrt(H)))
+    84	    return Design(n=n, H=H, Y=max(3, H * H + 1, Y), K=4, mod4=True, label=f"ladder H={H}")
+    85	
+    86	
+    87	def ladder_factor(N: int, n: int, Hs: Sequence[int], T: Optional[int] = None,
+    88	                  split: Callable[[int], Optional[int]] = lehman_split,
+    89	                  met: Optional[Metrics] = None) -> Dict:
+    90	    """Run LAD on N.  Returns {'factors': sorted prime list, 'stage': name}."""
+    91	    met = met or Metrics()
+    92	    if N < 2:
+    93	        return {"factors": [], "stage": "trivial"}
+    94	    T = (1 << (3 * n // 10)) if T is None else T
+    95	
+    96	    def finish(d: int, stage: str) -> Dict:
+    97	        e = N // d
+    98	        if is_prime(d) and is_prime(e):
+    99	            return {"factors": sorted([d, e]), "stage": stage}
+   100	        return {"factors": complete_factorisation(N, split), "stage": stage + "+fallback"}
+   101	
+   102	    d = small_order_detector(N, T, met)
+   103	    if d is not None:
+   104	        return finish(d, "detector")
+   105	    for i, H in enumerate(Hs, start=1):
+   106	        r = dcl_det(N, stage_design(n, H), met)
+   107	        if r["factor"] is not None:
+   108	            return finish(r["factor"], f"dcl{i}")
+   109	    return {"factors": complete_factorisation(N, split), "stage": "fallback"}
+     1	"""Tests for src/avgtime (notes/avgtime_results.md)."""
+     2	from fractions import Fraction as F
+     3	from math import isqrt
+     4	
+     5	import pytest
+     6	import sympy
+     7	
+     8	from src.avgtime.detector import small_order_detector
+     9	from src.avgtime.exponents import (LADDER_NO_DETECTOR, ONE_SIXTH, dprime_admissible,
+    10	                                   dprime_exponents, dprime_requirements, ladder,
+    11	                                   ladder_bound_terms, ladder_schedule, single_fallback,
+    12	                                   single_fallback_closed, sup_eps)
+    13	from src.avgtime.ladder import complete_factorisation, ladder_factor, lehman_split
+    14	from src.dcltheorem.harness import sample_pair
+    15	
+    16	
+    17	# ---------------------------------------------------------------- exponents
+    18	def test_dprime_requirement_sups():
+    19	    sups = {k: sup_eps(a, b) for k, (a, b) in dprime_requirements().items()}
+    20	    assert sups["Y>H^2 (Lemma 9)"] == F(1, 7)
+    21	    assert sups["Y^4>sqrt2 P (Lemma 6)"] == F(1, 4)
+    22	    assert sups["E_a < N^-eps"] is None            # -eps < 0 for every eps > 0
+    23	    assert sups["E_c1 < N^-eps"] == F(1, 52)
+    24	    assert sups["E_c2 < N^-eps"] == F(1, 16)
+    25	    assert sups["useful: cost < 1/5"] == F(1, 25)
+    26	    assert dprime_admissible() == (F(1, 52), "E_c1 < N^-eps")
+    27	
+    28	
+    29	def test_eps_1_55():
+    30	    e = dprime_exponents(F(1, 55))
+    31	    assert e["cost"] == F(2, 11)
+    32	    assert e["E_c1"] == F(-1, 44) and e["E_c1"] < -F(1, 55)
+    33	    assert e["E_c2"] < -F(1, 55) and e["E_a"] == -F(2, 55) and e["E_b"] == -F(1, 55)
+    34	    # balance with HH: 1/5 - eps = 2/11
+    35	    assert F(1, 5) - F(1, 55) == F(2, 11)
+    36	
+    37	
+    38	@pytest.mark.parametrize("j", [1, 2, 3])
+    39	def test_single_fallback_lp_matches_closed_form(j):
+    40	    for det in (False, True):
+    41	        v, _ = single_fallback(j, det)
+    42	        assert v == single_fallback_closed(j)
+    43	    assert single_fallback_closed(1) == F(2, 11)
+    44	    assert single_fallback_closed(2) == F(3, 17)
+    45	
+    46	
+    47	def test_ladder_without_detector_tends_to_19_110():
+    48	    vals = [ladder(k, 1, False)[0] for k in range(1, 7)]
+    49	    assert vals[0] == F(2, 11) and vals[1] == F(35, 198)
+    50	    assert all(a > b for a, b in zip(vals, vals[1:]))
+    51	    assert all(v > LADDER_NO_DETECTOR for v in vals)
+    52	    assert vals[-1] - LADDER_NO_DETECTOR < F(1, 3000)
+    53	
+    54	
+    55	def test_ladder_with_detector_goes_below_19_110():
+    56	    vals = [ladder(k, 1, True)[0] for k in range(1, 7)]
+    57	    assert all(a > b for a, b in zip(vals, vals[1:]))
+    58	    assert all(v > ONE_SIXTH for v in vals)
+    59	    assert vals[-1] < LADDER_NO_DETECTOR
+    60	
+    61	
+    62	@pytest.mark.parametrize("n", [256, 512, 1024, 2048, 4096])
+    63	def test_ladder_schedule(n):
+    64	    Hs = ladder_schedule(n)
+    65	    assert Hs[0] ** 2 >= n > (Hs[0] - 1) ** 2 and Hs[-1] == (n * n) << (-(-n // 60))
+    66	    assert all(a < b for a, b in zip(Hs, Hs[1:]))
+    67	    assert all(b ** 5 <= 32 * a ** 6 for a, b in zip(Hs, Hs[1:]))   # H_{i+1}^{5/3} <= 2^{5/3} H_i^2
+    68	    assert len(Hs) <= 6 * n.bit_length()                              # O(log n) stages
+    69	    terms = ladder_bound_terms(n)
+    70	    # every stage >= 2 contributes <= 2^5 n^3 to (term)^3, i.e. <= 2^{5/3} n per stage
+    71	    assert all(t <= 32 * n ** 3 for t in terms[1:])
+    72	
+    73	
+    74	# ---------------------------------------------------------------- detector
+    75	def _ord2(r):
+    76	    return int(sympy.n_order(2, r))
+    77	
+    78	
+    79	def test_detector_exhaustive_small_semiprimes():
+    80	    ps = list(sympy.primerange(3, 260))
+    81	    for T in (1, 7, 30, 100):
+    82	        m = isqrt(T - 1) + 1 if T > 1 else 1
+    83	        Teff = -(-T // m) * m          # the detector scans exponents 1..Teff (Teff >= T)
+    84	        for i, p in enumerate(ps):
+    85	            for q in ps[i + 1:]:
+    86	                N = p * q
+    87	                d = small_order_detector(N, T)
+    88	                dp, dq = _ord2(p), _ord2(q)
+    89	                pred = min(dp, dq) <= Teff and dp != dq
+    90	                assert (d is not None) == pred, (p, q, T)
+    91	                if d is not None:
+    92	                    assert d in (p, q)
+    93	                    assert _ord2(d) == min(dp, dq)
+    94	
+    95	
+    96	def test_detector_constructed_small_order():
+    97	    # 8191 = 2^13 - 1, 131071 = 2^17 - 1 (both orders <= 20)
+    98	    assert small_order_detector(8191 * 131071, 20) == 8191
+    99	    assert small_order_detector(8191 * 1000003, 20) == 8191
+   100	    assert small_order_detector(8191, 100) is None          # prime
+   101	    assert small_order_detector(23 * 89, 100) is None       # ord_23 2 = ord_89 2 = 11
+   102	
+   103	
+   104	# ---------------------------------------------------------------- ladder (operational)
+   105	def test_lehman_split_exhaustive():
+   106	    for N in range(2, 3000):
+   107	        d = lehman_split(N)
+   108	        if sympy.isprime(N) or N < 4:
+   109	            assert d is None
+   110	        else:
+   111	            assert d is not None and 1 < d < N and N % d == 0
+   112	
+   113	
+   114	def _fac(N):
+   115	    return sorted(p for p, e in sympy.factorint(N).items() for _ in range(e))
+   116	
+   117	
+   118	@pytest.mark.parametrize("n", [32, 36, 40])
+   119	def test_ladder_factors_sample_pairs(n):
+   120	    for s in range(6):
+   121	        N, p, q = sample_pair(n, s)
+   122	        r = ladder_factor(N, n, [2, 3, 4])
+   123	        assert r["factors"] == sorted([p, q])
+   124	
+   125	
+   126	def test_ladder_complete_on_adversarial_inputs():
+   127	    cases = [2, 3, 4, 9, 15, 7919, 7919 ** 2, 3 * 5 * 7 * 11 * 13, 2 ** 20, 8191 * 131071,
+   128	             (2 ** 31 - 1), 65537 * 65539 if sympy.isprime(65539) else 65537 * 65543,
+   129	             101 * 103 * 107, 999983 * 2]
+   130	    for N in cases:
+   131	        r = ladder_factor(N, N.bit_length(), [2, 3])
+   132	        assert r["factors"] == _fac(N), N
+   133	    for N in range(2, 400):
+   134	        assert ladder_factor(N, max(4, N.bit_length()), [2])["factors"] == _fac(N)
+
+codex
+The ladder’s reach-set inclusion appears sound, and I found no hidden ε ≤ 1/60 requirement in D′’s proof. I’m now checking the endpoint claims, the LP’s parameter constraints, and whether the conditional-tail argument can reach the required final height.
+web search: 
+web search: "deterministic" "factoring" "average" "semiprimes" ...
+exec
+/bin/zsh -lc "rg --files /Volumes/git/factoring-connection/src/dcltheorem /Volumes/git/factoring-connection | rg '(AGENT_RULES|pytest.ini|pyproject.toml|setup.cfg|dcltheorem/(algorithm|stage3|params)\\.py)"'$'"'
+nl -ba /Volumes/git/factoring-connection/src/dcltheorem/algorithm.py | sed -n '1,245p'
+nl -ba /Volumes/git/factoring-connection/src/dcltheorem/stage3.py | sed -n '1,190p'" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/src/dcltheorem/stage3.py
+/Volumes/git/factoring-connection/src/dcltheorem/params.py
+/Volumes/git/factoring-connection/src/dcltheorem/algorithm.py
+/Volumes/git/factoring-connection/src/dcltheorem/stage3.py
+/Volumes/git/factoring-connection/src/dcltheorem/params.py
+/Volumes/git/factoring-connection/src/dcltheorem/algorithm.py
+     1	"""OPERATIONAL: DCL-det, the deterministic divisor-cover Lehman algorithm.
+     2	
+     3	Receives only N and a public Design (a function of the bit length n; see
+     4	params.py).  Never uses p, q, phi(N), group orders or any factoring /
+     5	primality routine.  Base beta = 2 (fixed, no randomness).  Every inversion
+     6	mod N is gcd-checked, every nontrivial gcd is returned.
+     7	
+     8	Algorithm (notes/dcltheorem_results.md, section 2), for each block k = 0..K-1:
+     9	  1. L = prod_{l in P_k} l^2;  u_l = 2^{L/l^2} for all l by a balanced
+    10	     all-but-one exponent tree;  gamma = 2^L.
+    11	  2. For each l in P_k and (A, B) in V: a = A N B^{-1} mod l; if a is a
+    12	     nonzero square mod l (Euler), r = a^{(l+1)/4} (l == 3 mod 4) and the
+    13	     roots are {r, l - r}.  For each root: s = N r^{-1} mod l^2,
+    14	     c = (B r + A s) mod l^2, whole-range window [g_lo, g_hi] from the exact
+    15	     integer bounds Lo_v <= B p + A N/p <= Hi_v on the balanced range, and
+    16	     giants  G_{tau,j} = u_l^{B + A N - c} gamma^{-(g_lo + j m)},
+    17	     0 <= j < ceil(W/m).
+    18	  3. Babies gamma^i, 0 <= i < m;  f(X) = prod (X - gamma^i);  f(G) for every
+    19	     giant by a remainder tree;  d = gcd(f(G), N);  output d if 1 < d < N.
+    20	Output None (FAIL) if no block produced a factor.
+    21	
+    22	Cost counters (Metrics): mulN (multiplications mod N, square-and-multiply
+    23	counted exactly), mul_small (mults mod l or l^2), bigmul_bits (sum of operand
+    24	bit lengths of integer products in the exponent product tree), poly_cost /
+    25	poly_ops (stage 3; see stage3.py), gcdN, invN, isqrt_ops.
+    26	"""
+    27	from __future__ import annotations
+    28	
+    29	from math import gcd, isqrt
+    30	from typing import Dict, List, Optional, Sequence, Tuple
+    31	
+    32	import flint
+    33	import gmpy2
+    34	
+    35	from src.common.metrics import Metrics
+    36	from .params import Design
+    37	from .stage3 import eval_baby_poly_at_giants
+    38	
+    39	
+    40	class Found(Exception):
+    41	    def __init__(self, d: int, how: str):
+    42	        self.d, self.how = d, how
+    43	
+    44	
+    45	def _gcd_check(x: int, N: int, met, how: str) -> int:
+    46	    met.inc("gcdN")
+    47	    g = gcd(x % N, N)
+    48	    if 1 < g < N:
+    49	        raise Found(g, how)
+    50	    return g
+    51	
+    52	
+    53	def _proper(d: int, N: int) -> bool:
+    54	    """Output validation: every returned candidate satisfies 1 < d < N and d | N."""
+    55	    return isinstance(d, int) and 1 < d < N and N % d == 0
+    56	
+    57	
+    58	def powN(x: int, e: int, N: int, met) -> int:
+    59	    """x^e mod N, e >= 0; charges bits(e)-1 squarings + popcount(e)-1 mults."""
+    60	    if e <= 0:
+    61	        return 1 % N if e == 0 else None  # negative exponents are not used
+    62	    met.inc("mulN", e.bit_length() + bin(e).count("1") - 2)
+    63	    return pow(x, e, N)
+    64	
+    65	
+    66	def pow_small(x: int, e: int, M: int, met) -> int:
+    67	    met.inc("mul_small", max(0, e.bit_length() + bin(e).count("1") - 2))
+    68	    return pow(x, e, M)
+    69	
+    70	
+    71	# ---------------------------------------------------------------------------
+    72	# balanced all-but-one exponent tree
+    73	# ---------------------------------------------------------------------------
+    74	def int_product_tree(xs: Sequence[int], met) -> List[List[int]]:
+    75	    # gmpy2/GMP multiplication (FFT for large operands), so the tree costs
+    76	    # O(M(log L) log #leaves) bit operations; CPython ints would be Karatsuba.
+    77	    levels = [[gmpy2.mpz(x) for x in xs]]
+    78	    while len(levels[-1]) > 1:
+    79	        cur, nxt = levels[-1], []
+    80	        for i in range(0, len(cur) - 1, 2):
+    81	            met.inc("bigmul_bits", cur[i].bit_length() + cur[i + 1].bit_length())
+    82	            nxt.append(cur[i] * cur[i + 1])
+    83	        if len(cur) % 2:
+    84	            nxt.append(cur[-1])
+    85	        levels.append(nxt)
+    86	    return levels
+    87	
+    88	
+    89	def all_but_one(base: int, exps: Sequence[int], N: int, met) -> Tuple[List[int], int]:
+    90	    """([base^{E/e_j} for j], E) with E = prod exps, via the balanced product
+    91	    tree: a node holding base^{E/prod(node)} passes base^{E/prod(node)*prod(sib)}
+    92	    to each child.  Per level the exponent bit lengths sum to <= log2 E + #nodes."""
+    93	    levels = int_product_tree(exps, met)
+    94	    E = int(levels[-1][0])
+    95	    vals = [base % N]
+    96	    for lev in range(len(levels) - 2, -1, -1):
+    97	        cur = levels[lev]
+    98	        parent_count = len(levels[lev + 1])
+    99	        new = [None] * len(cur)
+   100	        for pi in range(parent_count):
+   101	            li, ri = 2 * pi, 2 * pi + 1
+   102	            if ri < len(cur):
+   103	                new[li] = powN(vals[pi], int(cur[ri]), N, met)
+   104	                new[ri] = powN(vals[pi], int(cur[li]), N, met)
+   105	            else:
+   106	                new[li] = vals[pi]          # odd node carried up unchanged
+   107	        vals = new
+   108	    return vals, E
+   109	
+   110	
+   111	# ---------------------------------------------------------------------------
+   112	# windows (exact integers)
+   113	# ---------------------------------------------------------------------------
+   114	def balanced_range(N: int) -> Tuple[int, int]:
+   115	    """Integers p with p^2 < N <= 2 p^2 lie in [a0, b0]."""
+   116	    a0 = isqrt(N // 2)
+   117	    while 2 * a0 * a0 < N:
+   118	        a0 += 1
+   119	    b0 = isqrt(N)
+   120	    return a0, b0
+   121	
+   122	
+   123	def f_bounds(N: int, A: int, B: int, a0: int, b0: int, met) -> Tuple[int, int]:
+   124	    """Lo <= B x + A N / x <= Hi for all real x in [a0, b0]:  Lo = floor(2 sqrt(ABN))
+   125	    (AM-GM), Hi = max over the endpoints of ceil(F) (convexity)."""
+   126	    met.inc("isqrt_ops")
+   127	    lo = isqrt(4 * A * B * N)
+   128	    hi = max(B * x + -(-(A * N) // x) for x in (a0, b0))
+   129	    return lo, hi
+   130	
+   131	
+   132	# ---------------------------------------------------------------------------
+   133	# one block
+   134	# ---------------------------------------------------------------------------
+   135	_NONRES: Dict[int, int] = {}
+   136	
+   137	
+   138	def sqrt_prime(a: int, l: int, met) -> int:
+   139	    """A square root of the nonzero square a mod the public prime l.
+   140	    l == 3 (mod 4): a^{(l+1)/4}.  Otherwise Tonelli--Shanks with the least
+   141	    quadratic nonresidue z (found by Euler's criterion; the search is charged
+   142	    once per l -- its total over a band is O(#band) on average by Erdos 1961 /
+   143	    Pollack 2012; only the secondary design mod4=False uses this branch)."""
+   144	    if l % 4 == 3:
+   145	        return pow_small(a, (l + 1) // 4, l, met)
+   146	    if l not in _NONRES:
+   147	        z = 2
+   148	        while pow_small(z, (l - 1) // 2, l, met) != l - 1:
+   149	            z += 1
+   150	        _NONRES[l] = z
+   151	        met.inc("nonres_search", z - 1)
+   152	    z = _NONRES[l]
+   153	    Q, S = l - 1, 0
+   154	    while Q % 2 == 0:
+   155	        Q //= 2
+   156	        S += 1
+   157	    c, x, t, R = pow_small(z, Q, l, met), pow_small(a, (Q + 1) // 2, l, met), pow_small(a, Q, l, met), S
+   158	    while t != 1:
+   159	        i, tt = 0, t
+   160	        while tt != 1:
+   161	            tt = tt * tt % l
+   162	            i += 1
+   163	            met.inc("mul_small")
+   164	        b = pow_small(c, 1 << (R - i - 1), l, met)
+   165	        x, c, t, R = x * b % l, b * b % l, t * b * b % l, i
+   166	        met.inc("mul_small", 4)
+   167	    return x
+   168	
+   169	
+   170	def build_targets(N: int, design: Design, k: int, met) -> List[Dict]:
+   171	    band = design.bands[k]
+   172	    _NONRES.clear()                       # nonresidue searches are charged per run
+   173	    a0, b0 = balanced_range(N)
+   174	    bounds = {v: f_bounds(N, v[0], v[1], a0, b0, met) for v in design.V}
+   175	    out = []
+   176	    for l in band:
+   177	        if N % l == 0:
+   178	            if 1 < l < N:
+   179	                raise Found(l, "band_prime")
+   180	            continue                       # N == l is prime: nothing to output
+   181	        l2 = l * l
+   182	        Nl = N % l
+   183	        for (A, B) in design.V:
+   184	            met.inc("vl_pairs")
+   185	            if (A * B) % l == 0:          # finite-size guard (never triggers when Y > H)
+   186	                continue
+   187	            a = A * Nl * pow(B, -1, l) % l
+   188	            met.inc("mul_small", 3)
+   189	            if pow_small(a, (l - 1) // 2, l, met) != 1:
+   190	                continue
+   191	            r = sqrt_prime(a, l, met)
+   192	            lo, hi = bounds[(A, B)]
+   193	            for root in sorted({r, l - r}):
+   194	                s = N * pow(root, -1, l2) % l2
+   195	                c = (B * root + A * s) % l2
+   196	                met.inc("mul_small", 4)
+   197	                g_lo = -((-(lo - c)) // l2)
+   198	                g_hi = (hi - c) // l2
+   199	                out.append({"A": A, "B": B, "l": l, "r": root, "c": c,
+   200	                            "g_lo": g_lo, "W": max(1, g_hi - g_lo + 1)})
+   201	    return out
+   202	
+   203	
+   204	def choose_m(targets: List[Dict], mbar: int) -> int:
+   205	    """Public choice of the baby length: minimise m + sum ceil(W/m) over a
+   206	    geometric grid in [1, max W] (never above max W; max W <= mbar)."""
+   207	    if not targets:
+   208	        return 1
+   209	    Wmax = max(t["W"] for t in targets)
+   210	    best, m = None, 1
+   211	    while True:
+   212	        mm = min(m, Wmax)
+   213	        c = mm + sum(-(-t["W"] // mm) for t in targets)
+   214	        if best is None or c < best[0]:
+   215	            best = (c, mm)
+   216	        if mm == Wmax:
+   217	            break
+   218	        m = (119 * m) // 100 + 1            # integer-only grid (no float overflow)
+   219	    return best[1]
+   220	
+   221	
+   222	def run_block(N: int, design: Design, k: int, met, record: bool = False,
+   223	              m_override: Optional[int] = None) -> Dict:
+   224	    band = design.bands[k]
+   225	    if not band:
+   226	        return {"factor": None, "status": "empty_band"}
+   227	    met.start(f"block{k}")
+   228	    targets = build_targets(N, design, k, met)
+   229	    m = m_override or choose_m(targets, design.mbar[k])
+   230	    sq = [l * l for l in band]
+   231	    u_list, L = all_but_one(2, sq, N, met)
+   232	    u = dict(zip(band, u_list))
+   233	    gamma = powN(u_list[0], sq[0], N, met)              # 2^L
+   234	    _gcd_check(gamma, N, met, "gamma")
+   235	    met.inc("invN")
+   236	    ginv = pow(gamma, -1, N)
+   237	    gm_inv = powN(ginv, m, N, met)
+   238	    Nmod = N
+   239	    giants, meta = [], []
+   240	    # per-l precomputation w_l = u_l^N (charged once per band prime used), then
+   241	    # G = u^{B + A N - c} gamma^{-g_lo} = w^A * u^{B - c + l^2} * gamma^{-(g_lo + 1)}
+   242	    # (u^{l^2} = gamma), all exponents nonnegative and O(log(H l^2)) bits.
+   243	    w = {}
+   244	    for t in targets:
+   245	        if t["l"] not in w:
+     1	"""Instrumented polynomial collision detection over Z/N (any N; fmpz_mod_poly).
+     2	
+     3	OPERATIONAL helpers: see only N and ring elements.  Only multiplication and
+     4	division by MONIC polynomials are used, so everything is valid over the ring
+     5	Z/N with N composite.  No gcd/xgcd/factor of polynomials over Z/N is called.
+     6	
+     7	Cost charging (notes/dcltheorem_prereg.md, metric E):
+     8	  poly_cost += (d + 1) * ceil(log2(d + 2))   for every product / remainder whose
+     9	               result (product) or dividend (remainder) has degree d
+    10	  (FFT-model M(d) in Z/N-multiplication equivalents).  Scalar multiplications
+    11	  mod N are charged in mulN; gcds with N in gcdN.
+    12	"""
+    13	from __future__ import annotations
+    14	
+    15	from math import gcd
+    16	from typing import List, Optional, Tuple
+    17	
+    18	import flint
+    19	
+    20	
+    21	def _pc(d: int) -> int:
+    22	    d = max(0, d)
+    23	    return (d + 1) * max(1, (d + 1).bit_length())
+    24	
+    25	
+    26	def poly_mul(a, b, met):
+    27	    met.inc("poly_ops")
+    28	    met.inc("poly_cost", _pc(a.degree() + b.degree()))
+    29	    return a * b
+    30	
+    31	
+    32	def poly_rem(a, b, met):
+    33	    met.inc("poly_ops")
+    34	    met.inc("poly_cost", _pc(a.degree()))
+    35	    if a.degree() < b.degree():
+    36	        return a
+    37	    return a % b
+    38	
+    39	
+    40	def tree_levels(ctx, pts: List[int], met):
+    41	    """Product tree of the linear polynomials X - x (bottom level first)."""
+    42	    levels = [[ctx([(-x), 1]) for x in pts]]
+    43	    while len(levels[-1]) > 1:
+    44	        cur, nxt = levels[-1], []
+    45	        for i in range(0, len(cur) - 1, 2):
+    46	            nxt.append(poly_mul(cur[i], cur[i + 1], met))
+    47	        if len(cur) % 2:
+    48	            nxt.append(cur[-1])
+    49	        levels.append(nxt)
+    50	    return levels
+    51	
+    52	
+    53	def product_poly(ctx, pts: List[int], met):
+    54	    return tree_levels(ctx, pts, met)[-1][0]
+    55	
+    56	
+    57	def multipoint(ctx, f, pts: List[int], met) -> List[int]:
+    58	    """f(x) for all x in pts by a remainder tree (monic divisors only)."""
+    59	    if not pts:
+    60	        return []
+    61	    levels = tree_levels(ctx, pts, met)
+    62	    rems = [poly_rem(f, levels[-1][0], met)]
+    63	    for lev in range(len(levels) - 2, -1, -1):
+    64	        cur, new = levels[lev], []
+    65	        for i, node in enumerate(cur):
+    66	            new.append(poly_rem(rems[i // 2], node, met))
+    67	        rems = new
+    68	    out = []
+    69	    for r in rems:
+    70	        c = r.coeffs()
+    71	        out.append(int(c[0]) if c else 0)
+    72	    return out
+    73	
+    74	
+    75	def eval_baby_poly_at_giants(N: int, gamma: int, m: int, giants: List[int], met) -> List[int]:
+    76	    """f(G) for f(X) = prod_{0<=i<m} (X - gamma^i), for every giant G.
+    77	    Baby powers gamma^i are charged (m-1 multiplications)."""
+    78	    ctx = flint.fmpz_mod_poly_ctx(N)
+    79	    babies, x = [], 1
+    80	    for i in range(m):
+    81	        babies.append(x)
+    82	        x = x * gamma % N
+    83	        met.inc("mulN")
+    84	    f = product_poly(ctx, babies, met)
+    85	    return multipoint(ctx, f, giants, met)
+    86	
+    87	
+    88	# ---------------------------------------------------------------------------
+    89	# Harvey 2021 Alg. 4.1 (product tree over giants, Bluestein over the
+    90	# geometric babies alpha^i), fully charged -- used for the HH baseline.
+    91	# ---------------------------------------------------------------------------
+    92	class _FactorFound(Exception):
+    93	    def __init__(self, d: int, how: str):
+    94	        self.d, self.how = d, how
+    95	
+    96	
+    97	def harvey_find_collisions(N: int, alpha: int, kappa: int, vals: List[int], met) -> Optional[int]:
+    98	    """Same interface/semantics as src.cycloharvey.operational.find_collisions,
+    99	    but over fmpz_mod_poly (any N) and with every scalar multiplication charged:
+   100	    the chirp powers alpha^{C(i,2)} are generated by the recurrences
+   101	    alpha^{C(i+1,2)} = alpha^{C(i,2)} * alpha^i (two multiplications per index)."""
+   102	    if not vals:
+   103	        return None
+   104	    ctx = flint.fmpz_mod_poly_ctx(N)
+   105	    f = product_poly(ctx, vals, met)
+   106	    n = f.degree()
+   107	    fc = [int(c) for c in f.coeffs()] + [0] * (n + 1 - len(f.coeffs()))
+   108	    met.inc("gcdN")
+   109	    if gcd(alpha, N) != 1:
+   110	        g = gcd(alpha, N)
+   111	        if 1 < g < N:
+   112	            met.set("hit", None)
+   113	            return g
+   114	        return None
+   115	    ainv = pow(alpha, -1, N)
+   116	    met.inc("invN")
+   117	
+   118	    def chirp(base: int, count: int) -> List[int]:
+   119	        # base^{C(k,2)} for k = 0..count-1:  C(k+1,2) = C(k,2) + k
+   120	        out, cur, bk = [], 1, 1        # cur = base^{C(k,2)}, bk = base^k
+   121	        for k in range(count):
+   122	            out.append(cur)
+   123	            cur = cur * bk % N
+   124	            bk = bk * base % N
+   125	            met.inc("mulN", 2)
+   126	        return out
+   127	
+   128	    h = chirp(alpha, max(kappa, n + 2))           # alpha^{C(i,2)}, i >= 0
+   129	    fpj = []
+   130	    # alpha^{C(j+1,2)} = h[j+1]
+   131	    for j in range(n + 1):
+   132	        fpj.append(h[j + 1] * fc[j] % N)
+   133	    met.inc("mulN", n + 1)
+   134	    # g_k = alpha^{-C(k,2)} for k in [-n, kappa): C(-k,2) = C(k+1,2)
+   135	    gpos = chirp(ainv, max(kappa, n + 2))         # ainv^{C(k,2)}, k >= 0
+   136	    gk = [gpos[k + 1] for k in range(n, 0, -1)] + [gpos[k] for k in range(kappa)]
+   137	    F = ctx(fpj)
+   138	    G = ctx(gk)
+   139	    P = poly_mul(F, G, met)
+   140	    pc = [int(c) for c in P.coeffs()]
+   141	    ai = 1
+   142	    for i in range(kappa):
+   143	        idx = i + n
+   144	        s = pc[idx] if idx < len(pc) else 0
+   145	        e = h[i] * s % N
+   146	        met.inc("mulN")
+   147	        met.inc("gcdN")
+   148	        g = gcd(e, N)
+   149	        if g > 1:
+   150	            for hh, v in enumerate(vals):
+   151	                met.inc("gcdN")
+   152	                g2 = gcd((v - ai) % N, N)
+   153	                if 1 < g2 < N:
+   154	                    met.set("hit", [i, hh])
+   155	                    return g2
+   156	        ai = ai * alpha % N
+   157	        met.inc("mulN")
+   158	    return None
+
+exec
+/bin/zsh -lc 'PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python -m pytest -q -p no:cacheprovider /Volumes/git/factoring-connection/tests/test_avgtime.py' in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+web search: 
+web search: "deterministic factorization" "average case" ...
+ succeeded in 2605ms:
+...................                                                      [100%]
+19 passed in 2.50s
+
+web search: 
+web search: "factorization" "average" "deterministic" Pomerance ...
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+from src.avgtime.exponents import LP, _stage
+for e0 in [F(1,46), F(3,110),F(1,14),F(1,13),F(1,12)]:
+    lp=LP(); z=lp.var('z'); e=lp.var('e')
+    _stage(lp,'',{z:F(1)},e,F(1),False)
+    lp.le({e:-1},-e0)
+    try:
+        v,x=lp.minimise(z)
+        print('e',e0,'actual',v,'claimed',F(1,8)+F(11,4)*e0,'params',x,'mu-mbar',x['mu']-x['h']-F(1,2)+2*x['y'])
+    except ValueError as ex: print('e',e0,ex)
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+e 1/46 actual 17/92 claimed 17/92 params {'z': Fraction(17, 92), 'e': Fraction(1, 46), 'h': Fraction(1, 92), 'y': Fraction(15, 92), 'mu': Fraction(17, 92), 't': Fraction(11, 46)} mu-mbar 0
+e 3/110 actual 1/5 claimed 1/5 params {'z': Fraction(1, 5), 'e': Fraction(3, 110), 'h': Fraction(3, 220), 'y': Fraction(19, 110), 'mu': Fraction(37, 220), 't': Fraction(13, 55)} mu-mbar 0
+e 1/14 actual 9/28 claimed 9/28 params {'z': Fraction(9, 28), 'e': Fraction(1, 14), 'h': Fraction(1, 28), 'y': Fraction(1, 4), 'mu': Fraction(1, 28), 't': Fraction(3, 14)} mu-mbar 0
+e 1/13 actual 9/26 claimed 35/104 params {'z': Fraction(9, 26), 'e': Fraction(1, 13), 'h': Fraction(1, 26), 'y': Fraction(1, 4), 'mu': Fraction(1, 52), 't': Fraction(11, 52)} mu-mbar -1/52
+e 1/12 actual 3/8 claimed 17/48 params {'z': Fraction(3, 8), 'e': Fraction(1, 12), 'h': Fraction(1, 24), 'y': Fraction(1, 4), 'mu': Fraction(0, 1), 't': Fraction(5, 24)} mu-mbar -1/24
+
+web search: 
+web search: '1.6'
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+from src.avgtime.exponents import ladder,single_fallback,dprime_exponents,LP,_stage
+print('Dprime at 1/55:',dprime_exponents(F(1,55)))
+for det in [False,True]:
+    for k in [1,2,3,4,6,8,12]:
+        z,x=ladder(k,1,det)
+        excess=max(x[f'mu{i}']-x[f'h{i}']-F(1,2)+2*x[f'y{i}'] for i in range(1,k+1))
+        print('ladder',det,k,z,float(z),'mu>mbar?',excess>0)
+for j in [F(9,10),F(1),F(2),F(3),F(10),F(100)]:
+    z,x=single_fallback(j,False)
+    print('single j',j,z,float(z))
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 11348ms:
+Dprime at 1/55: {'h': Fraction(1, 110), 'y': Fraction(9, 55), 't': Fraction(51, 220), 'mu': Fraction(2, 11), 'cost': Fraction(2, 11), 'E_a': Fraction(-2, 55), 'E_b': Fraction(-1, 55), 'E_c1': Fraction(-1, 44), 'E_c2': Fraction(-3, 22)}
+ladder False 1 2/11 0.18181818181818182 mu>mbar? False
+ladder False 2 35/198 0.17676767676767677 mu>mbar? False
+ladder False 3 223/1278 0.17449139280125195 mu>mbar? False
+ladder False 4 1937/11162 0.1735352087439527 mu>mbar? False
+ladder False 6 203417/1176842 0.17284988129247597 mu>mbar? False
+ladder False 8 24118097/139617722 0.1727438082681223 mu>mbar? False
+ladder False 12 352027229057/2038048957082 0.17272756271812972 mu>mbar? False
+ladder True 1 2/11 0.18181818181818182 mu>mbar? False
+ladder True 2 16/91 0.17582417582417584 mu>mbar? False
+ladder True 3 116/671 0.17287630402384502 mu>mbar? False
+ladder True 4 796/4651 0.17114599010965384 mu>mbar? False
+ladder True 6 34156/201811 0.16924746421156428 mu>mbar? False
+ladder True 8 1367116/8124571 0.16826931538908332 mu>mbar? False
+ladder True 12 1981469836/11839990891 0.1673540000361137 mu>mbar? False
+single j 9/10 19/104 0.18269230769230768
+single j 1 2/11 0.18181818181818182
+single j 2 3/17 0.17647058823529413
+single j 3 4/23 0.17391304347826086
+single j 10 11/65 0.16923076923076924
+single j 100 101/605 0.1669421487603306
+
+web search: 
+web search: "deterministic" "average" "factoring" "balanced" ...
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+from src.avgtime.exponents import ladder,LP,_stage
+for j in [F(2),F(3)]:
+    for k in [1,2,4,8]:
+        z,x=ladder(k,j,False)
+        print('j,k,z',j,k,z,float(z))
+# Compare relaxed LPs to intended mu <= mbar LPs, and validate primal witnesses.
+for det in [False, True]:
+  for j in [F(1),F(2),F(3)]:
+    for k in [1,2,3,6,8,12]:
+      lp=LP();z=lp.var('z');ts=lp.var('t') if det else None;prev=None
+      for i in range(1,k+1):
+        e=lp.var(f'e{i}'); C={z:F(1)} if prev is None else {z:F(1),prev:F(1)}
+        _stage(lp,str(i),C,e,j,det,ts)
+        lp.le({f'mu{i}':1,f'h{i}':-1,f'y{i}':2},F(1,2))
+        prev=e
+      lp.le({prev:-1,z:-1},-F(1,5))
+      if det:lp.le({ts:F(1,2),z:-1},0)
+      zv,x=lp.minimise(z)
+      assert zv==ladder(k,j,det)[0], (j,det,k)
+      assert all(sum(coef*x[name] for name,coef in c.items())<=rhs for c,rhs in lp.cons)
+print('All augmented LP objectives and primal feasibility checked.')
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+web search: 
+web search: '35.3'
+codex
+I found a concrete error in §5.2: the claimed second branch of C(e) fails above e = 1/14 because it needs y > 1/4. It needs a third branch; the 19/110 infimum is unaffected. The 19 tests pass, and the reported ladder LP values reproduce.
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+from src.avgtime.exponents import LP,_stage
+# Uniformly test piecewise cost envelope over an exact rational mesh.
+for i in range(1,31):
+    e0=F(i,360)
+    lp=LP(); z=lp.var('z'); e=lp.var('e')
+    _stage(lp,'',{z:F(1)},e,F(1),False)
+    lp.le({e:-1},-e0)
+    actual,_=lp.minimise(z)
+    claim=max(F(1,6)+F(5,6)*e0,F(1,8)+F(11,4)*e0,F(9,2)*e0)
+    assert actual==claim,(e0,actual,claim)
+print('Corrected C(e) verified at 30 exact mesh points in (0,1/12].')
+# General j, no-detector high-saving envelope and ladder barriers.
+for j in [F(1),F(2),F(3)]:
+    need=F(1,30)
+    C0=max(F(1,6)+5*need/(6*j),F(1,8)+F(3,2)*need+5*need/(4*j),F(9,2)*need)
+    print('j',j,'C(1/30)',C0,'C(1/30)-1/30',C0-need)
+# Check conditional detector top-height constraints at j=5/6.
+j=F(5,6);h=F(1,60)/j;t=F(3,10)
+print('Conditional endpoint h, Ec1, Ec2, C, cost:',h,F(1,6)+F(14,3)*h-t,F(10,3)*h-F(1,6),3*t-1,F(1,6)+F(5,3)*h)
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+Corrected C(e) verified at 30 exact mesh points in (0,1/12].
+j 1 C(1/30) 13/60 C(1/30)-1/30 11/60
+j 2 C(1/30) 47/240 C(1/30)-1/30 13/80
+j 3 C(1/30) 17/90 C(1/30)-1/30 7/45
+Conditional endpoint h, Ec1, Ec2, C, cost: 1/50 -1/25 -1/10 -1/10 1/5
+
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Volumes/git/factoring-connection /Volumes/git/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+from src.avgtime.exponents import LP,_stage
+for j in [F(2),F(3)]:
+ for e0 in [F(1,100),F(1,30),F(1,15)]:
+    lp=LP();z=lp.var('z');e=lp.var('e')
+    _stage(lp,'',{z:F(1)},e,j,False)
+    lp.le({e:-1},-e0)
+    v,x=lp.minimise(z)
+    C=max(F(1,6)+5*e0/(6*j), F(1,8)+3*e0/4+2*e0/j, 3*e0/2+3*e0/j)
+    print('general envelope',j,e0,v,C,v==C)
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 0ms:
+general envelope 2 1/100 41/240 41/240 True
+general envelope 2 1/30 11/60 11/60 True
+general envelope 2 1/15 29/120 29/120 True
+general envelope 3 1/100 61/360 61/360 True
+general envelope 3 1/30 19/108 19/108 True
+general envelope 3 1/15 79/360 79/360 True
+
+web search: 
+web search: 
+exec
+/bin/zsh -lc 'git -C /Volumes/git/factoring-connection status --short --untracked-files=no
+ls -la' in /Volumes/git/factoring-connection/codex/scratch/avgtime_1
+ succeeded in 21ms:
+total 0
+drwxr-xr-x   2 knielsen  staff   64 Oct 18 18:45 .
+drwxr-xr-x  13 knielsen  staff  416 Oct 18 18:45 ..
+
+ exited 130 in 204748ms:
+j,k,z 2 1 3/17 0.17647058823529413
+j,k,z 2 2 39/229 0.1703056768558952
+j,k,z 2 4 4139/24734 0.16734050295140293
+j,k,z 2 8 82019579/492054974 0.16668783638797238
+j,k,z 3 1 4/23 0.17391304347826086
+j,k,z 3 2 74/439 0.16856492027334852
+j,k,z 3 4 24206/145111 0.1668102349236102
+j,k,z 3 8 2543055806/15258256711 0.16666752002977228
+Traceback (most recent call last):
+  File "<stdin>", line 19, in <module>
+  File "/Volumes/git/factoring-connection/src/avgtime/exponents.py", line 202, in minimise
+    val, x = lp_max(c, A, b)
+             ^^^^^^^^^^^^^^^
+  File "/Volumes/git/factoring-connection/src/avgtime/exponents.py", line 156, in lp_max
+    simplex(obj1, allcols)
+  File "/Volumes/git/factoring-connection/src/avgtime/exponents.py", line 149, in simplex
+    pivot(r, enter)
+  File "/Volumes/git/factoring-connection/src/avgtime/exponents.py", line 124, in pivot
+    rows[i] = [vi - f * vr for vi, vr in zip(rows[i], rows[r])]
+               ~~~^~~~~~~~
+  File "/Users/knielsen/.local/share/uv/python/cpython-3.12.7-macos-aarch64-none/lib/python3.12/fractions.py", line 613, in forward
+    def forward(a, b):
+
+KeyboardInterrupt
+
+codex
+The core average-cost argument survives these checks. The conditional claim for j > 5/6 needs a different ladder schedule and final height; the existing schedule does not prove it for j < 1. I also checked the cited Ward–Maestro proposition: it gives positive-proportion success and explicitly excludes an average-time claim for a complete algorithm.
+codex
+ACCEPT WITH FIXES
+
+1. **ERROR (must fix) — [§5.2, lines 328–336](/Volumes/git/factoring-connection/notes/avgtime_results.md:328): C(e) has a missing branch.** Under the stated LP constraints, the correct envelope is
+   \[
+   C(e)=
+   \begin{cases}
+   1/6+5e/6,&0\le e\le1/46,\\
+   1/8+11e/4,&1/46\le e\le1/14,\\
+   9e/2,&1/14\le e\le1/12.
+   \end{cases}
+   \]
+   The claimed second branch requires \(y=1/8+7e/4\), exceeding \(1/4\) when \(e>1/14\). Exact counterexample: at \(e=1/12\), the LP returns \(3/8\), whereas the paper claims \(17/48\).
+
+   The **19/110 infimum survives**, since its limiting saving \(e=3/110\) lies in the valid second branch; the listed limiting parameters are correct. Qualify the finite-ladder reachability criterion by \(z>1/6\): at \(z=1/6\), its displayed inequality can hold although no first positive-saving rung is feasible. Also restrict §11’s “1/46 cap” to the balanced, full-baby-length design.
+
+2. **CORRECT — [§4, lines 260–290](/Volumes/git/factoring-connection/notes/avgtime_results.md:260): ε audit and 2/11 corollary.** I found no hidden step requiring \(\varepsilon\le1/60\). The binding displayed requirement is
+   \[
+   -1/12+13\varepsilon/3<0.
+   \]
+   At \(\varepsilon=1/55\),
+   \[
+   (\text{cost},E_a,E_b,E_{c1},E_{c2})
+   =(2/11,-2/55,-1/55,-1/44,-3/22),
+   \]
+   and \(1/5-1/55=2/11\). Thus D′ followed by HH gives the claimed average upper bound.
+
+   Say “the range certified by these estimates,” rather than “valid exactly.” At \(1/52\), the displayed \(E_{c1}\) estimate retains a factor \(n^{17/3}\); failure of that estimate to prove the target does not establish that the theorem itself is false outside the interval. The reselected-\(T\) thresholds \(1/46\) and \(1/22\) also check.
+
+3. **CORRECT — [Proposition U, lines 93–120](/Volumes/git/factoring-connection/notes/avgtime_results.md:93): uniformity and general T.** The scale separations, fixed-modulus PNT estimates, coprime-pair count, baby-length bound, and cost estimates admit absolute constants throughout \(H_0\le H\le2^{n/50}\).
+
+   Crucially, [D′ Lemma 10](/Volumes/git/factoring-connection/notes/dcltheorem_results.md:271) works for general \(T\): with \(d=\operatorname{ord}_q(2)>T\), CRT gives modulus \(\ell d/\gcd(A-B,d)\), hence
+   \[
+   \#p\le PH/(2\ell d)+1\le PH/(2\ell T)+1.
+   \]
+   No additional relation between \(T,H,m\) is required. Include in the eventual global \(n_0\) the conditions \(H_1\ge H_0\) and \(H_{\max}\le2^{n/50}\); the latter does not hold at all the schedule-test sizes.
+
+4. **CORRECT — [Lemma R, lines 122–139](/Volumes/git/factoring-connection/notes/avgtime_results.md:122): the presieving refinement is valid.** The moduli \(\ell a\) are squarefree, at most \(Q\), and counted distinctly: \(\ell>Z\), whereas every prime divisor of \(a\) is at most \(Z\). The forbidden-class counts satisfy \(\omega(r)<r\). The interval contains at most \(P/2+1\) integers and \(Q^2\le P\). This is a valid application of the arithmetic large sieve. [Montgomery–Vaughan](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+   The disputed harmonic inequality has the elementary proof
+   \[
+   \sum_{a\le Z}\frac{\mu^2(a)}{\phi(a)}
+   =\sum_{\operatorname{rad}(m)\le Z}\frac1m
+   \ge\sum_{m\le Z}\frac1m\ge\log Z.
+   \]
+   Add this identity. Summing \(O(P/H^2)\) over \(O(P/n)\) prime \(q\), then dividing by \(\gg P^2/n^2\), correctly gives \(O(n/H^2)\).
+
+5. **CORRECT — [Lemmas S and C, lines 143–171](/Volumes/git/factoring-connection/notes/avgtime_results.md:143): detector and coincidence count.** The first positive block hit contains \(d_{\min}\). Scanning it in increasing order produces a proper divisor at \(d_{\min}\) whenever the two orders differ. Polynomial evaluation uses only monic remainders, so composite moduli cause no inversion problem. The cost is \(\widetilde O(\sqrt T\,n)\).
+
+   For coincidences, at most \(O(k/n)\) relevant primes divide \(2^k-1\). Summing their squared counts gives \(O(T^3/n^2)\) pairs, hence \(O(T^3/P^2)\) after normalization. The implementation scans through \(m\lceil T/m\rceil\), potentially beyond \(T\); the tests correctly account for this rounding.
+
+6. **CORRECT — [Theorem AV(iii), lines 223–249](/Volumes/git/factoring-connection/notes/avgtime_results.md:223): the principal expectation argument survives.** The reach-set inclusion is correct:
+   \[
+   R_i\subseteq C(T)\cup E_c(H_{i-1},T)\cup E_b(H_{i-1}).
+   \]
+   It needs no independence between failures at different rungs.
+
+   Ceiling and truncation preserve \(H_i^{5/3}\le2^{5/3}H_{i-1}^2\), giving \(O(n^{c+1}2^{n/6})\) per coverage contribution. The HH coverage contribution is \(O(n^{1/5}2^{n/6})\). At the top, the two \(E_c\) terms have exponents \(-1/18\) and \(-1/9\); coincidences have exponent \(-1/10\). Multiplication by the total worst-case cost gives at most \(n^{O(1)}2^{13n/90}=o(2^{n/6})\). The clean band and orders are analysis devices; the algorithm does not require \(p,q\).
+
+7. **CORRECT — [Theorem AV(iv), lines 211–214](/Volumes/git/factoring-connection/notes/avgtime_results.md:211): distributional transfer.** Unordered distinct prime pairs correspond bijectively to their products, so uniform pairs and uniform semiprimes **within this population** coincide.
+
+   For even \(n\), independent uniform \(n/2\)-bit primes, conditioned distinct, induce uniform unordered pairs on their support, lying in \(S_n\cup S_{n-1}\). PNT counts give the required bounded mass ratio. Explicitly apply (iii) separately to those two shells. This says nothing about uniform sampling from all \(n\)-bit integers or arbitrary RSA key-generation restrictions.
+
+8. **NIT — [§5.1](/Volumes/git/factoring-connection/notes/avgtime_results.md:294) and [exponents.py `_stage`](/Volumes/git/factoring-connection/src/avgtime/exponents.py:211): optimization scope and omitted constraint.** The cost expression and true-baby-length exception exponents
+   \[
+   \max(\mu,2h+y,3h+1/2-y-\mu),\quad
+   E_{c1}=3h+\mu-t,\quad E_{c2}=2h+y+\mu-1/2
+   \]
+   are correct. The single-run optimum is \(2/11\) **for this upper-bound model**.
+
+   Add the omitted constraint \(\mu\le h+1/2-2y\). It does not change the optimum: clamping a larger \(\mu\) to that bound improves both exception estimates, and makes the third cost term equal \(2h+y\). Avoid treating minimization of an upper-bound expression as a lower bound on actual average runtime.
+
+   All 19 tests passed. I reproduced the listed ladder LP values, including \(223/1278\) without a detector and \(116/671\) with one at three rungs.
+
+9. **GAP (needs argument) — [§6, lines 377–378](/Volumes/git/factoring-connection/notes/avgtime_results.md:377): j > 5/6 requires a modified schedule.** The existing \(6/5\) schedule and final height do not establish this claim for \(j<1\). For example, at \(j=9/10\), the unchanged final coverage estimate yields an HH contribution with exponent \(17/100\).
+
+   A concrete repair is
+   \[
+   1<\rho<6j/5,\qquad
+   H_{i+1}=\lceil H_i^\rho\rceil,\qquad
+   H_{\max}=n^A2^{n/(60j)},
+   \]
+   with sufficiently large fixed \(A\). Then \(5\rho/3-2j<0\), while \(1/(60j)<1/50\). Keeping \(T=2^{\lfloor3n/10\rfloor}\), the \(E_c\) estimates remain sufficiently small. This supplies the missing argument.
+
+   The single-fallback formula \(1/6+1/(30+36j)\), for \(j\ge1\), and the displayed \(j=2,3\) LP numbers check.
+
+10. **GAP (needs argument) — [§2 and AV(i)](/Volumes/git/factoring-connection/notes/avgtime_results.md:173): explicitly handle the finite prefix.** Add “if \(n<n_0\), run HH directly.” Proposition U only defines the justified parameter regime eventually; the all-input completeness statement should not rely on asymptotic scale separations at tiny inputs.
+
+    The implementation’s probable-prime test and Lehman fallback are clearly disclosed stand-ins. They do not implement the theorem’s deterministic certification or HH complexity guarantee.
+
+11. **CORRECT — [§8](/Volumes/git/factoring-connection/notes/avgtime_results.md:398): retain the cautious prior-art wording.** I found no verified earlier theorem with this same uniform, bounded-ratio average-cost scope. [HH](https://arxiv.org/abs/2105.11105) proves complete deterministic worst-case \(N^{1/5}\) factoring. I checked [Ward–Maestro, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf): it proves positive-proportion success and explicitly excludes an average-time conclusion for an always-completing algorithm. [Carella](https://arxiv.org/abs/1308.2891) claims \(N^{1/6+\varepsilon}\), which should remain separately qualified. “Not found” is supportable; a priority assertion would require more evidence.
+tokens used
+151,010
+ACCEPT WITH FIXES
+
+1. **ERROR (must fix) — [§5.2, lines 328–336](/Volumes/git/factoring-connection/notes/avgtime_results.md:328): C(e) has a missing branch.** Under the stated LP constraints, the correct envelope is
+   \[
+   C(e)=
+   \begin{cases}
+   1/6+5e/6,&0\le e\le1/46,\\
+   1/8+11e/4,&1/46\le e\le1/14,\\
+   9e/2,&1/14\le e\le1/12.
+   \end{cases}
+   \]
+   The claimed second branch requires \(y=1/8+7e/4\), exceeding \(1/4\) when \(e>1/14\). Exact counterexample: at \(e=1/12\), the LP returns \(3/8\), whereas the paper claims \(17/48\).
+
+   The **19/110 infimum survives**, since its limiting saving \(e=3/110\) lies in the valid second branch; the listed limiting parameters are correct. Qualify the finite-ladder reachability criterion by \(z>1/6\): at \(z=1/6\), its displayed inequality can hold although no first positive-saving rung is feasible. Also restrict §11’s “1/46 cap” to the balanced, full-baby-length design.
+
+2. **CORRECT — [§4, lines 260–290](/Volumes/git/factoring-connection/notes/avgtime_results.md:260): ε audit and 2/11 corollary.** I found no hidden step requiring \(\varepsilon\le1/60\). The binding displayed requirement is
+   \[
+   -1/12+13\varepsilon/3<0.
+   \]
+   At \(\varepsilon=1/55\),
+   \[
+   (\text{cost},E_a,E_b,E_{c1},E_{c2})
+   =(2/11,-2/55,-1/55,-1/44,-3/22),
+   \]
+   and \(1/5-1/55=2/11\). Thus D′ followed by HH gives the claimed average upper bound.
+
+   Say “the range certified by these estimates,” rather than “valid exactly.” At \(1/52\), the displayed \(E_{c1}\) estimate retains a factor \(n^{17/3}\); failure of that estimate to prove the target does not establish that the theorem itself is false outside the interval. The reselected-\(T\) thresholds \(1/46\) and \(1/22\) also check.
+
+3. **CORRECT — [Proposition U, lines 93–120](/Volumes/git/factoring-connection/notes/avgtime_results.md:93): uniformity and general T.** The scale separations, fixed-modulus PNT estimates, coprime-pair count, baby-length bound, and cost estimates admit absolute constants throughout \(H_0\le H\le2^{n/50}\).
+
+   Crucially, [D′ Lemma 10](/Volumes/git/factoring-connection/notes/dcltheorem_results.md:271) works for general \(T\): with \(d=\operatorname{ord}_q(2)>T\), CRT gives modulus \(\ell d/\gcd(A-B,d)\), hence
+   \[
+   \#p\le PH/(2\ell d)+1\le PH/(2\ell T)+1.
+   \]
+   No additional relation between \(T,H,m\) is required. Include in the eventual global \(n_0\) the conditions \(H_1\ge H_0\) and \(H_{\max}\le2^{n/50}\); the latter does not hold at all the schedule-test sizes.
+
+4. **CORRECT — [Lemma R, lines 122–139](/Volumes/git/factoring-connection/notes/avgtime_results.md:122): the presieving refinement is valid.** The moduli \(\ell a\) are squarefree, at most \(Q\), and counted distinctly: \(\ell>Z\), whereas every prime divisor of \(a\) is at most \(Z\). The forbidden-class counts satisfy \(\omega(r)<r\). The interval contains at most \(P/2+1\) integers and \(Q^2\le P\). This is a valid application of the arithmetic large sieve. [Montgomery–Vaughan](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+   The disputed harmonic inequality has the elementary proof
+   \[
+   \sum_{a\le Z}\frac{\mu^2(a)}{\phi(a)}
+   =\sum_{\operatorname{rad}(m)\le Z}\frac1m
+   \ge\sum_{m\le Z}\frac1m\ge\log Z.
+   \]
+   Add this identity. Summing \(O(P/H^2)\) over \(O(P/n)\) prime \(q\), then dividing by \(\gg P^2/n^2\), correctly gives \(O(n/H^2)\).
+
+5. **CORRECT — [Lemmas S and C, lines 143–171](/Volumes/git/factoring-connection/notes/avgtime_results.md:143): detector and coincidence count.** The first positive block hit contains \(d_{\min}\). Scanning it in increasing order produces a proper divisor at \(d_{\min}\) whenever the two orders differ. Polynomial evaluation uses only monic remainders, so composite moduli cause no inversion problem. The cost is \(\widetilde O(\sqrt T\,n)\).
+
+   For coincidences, at most \(O(k/n)\) relevant primes divide \(2^k-1\). Summing their squared counts gives \(O(T^3/n^2)\) pairs, hence \(O(T^3/P^2)\) after normalization. The implementation scans through \(m\lceil T/m\rceil\), potentially beyond \(T\); the tests correctly account for this rounding.
+
+6. **CORRECT — [Theorem AV(iii), lines 223–249](/Volumes/git/factoring-connection/notes/avgtime_results.md:223): the principal expectation argument survives.** The reach-set inclusion is correct:
+   \[
+   R_i\subseteq C(T)\cup E_c(H_{i-1},T)\cup E_b(H_{i-1}).
+   \]
+   It needs no independence between failures at different rungs.
+
+   Ceiling and truncation preserve \(H_i^{5/3}\le2^{5/3}H_{i-1}^2\), giving \(O(n^{c+1}2^{n/6})\) per coverage contribution. The HH coverage contribution is \(O(n^{1/5}2^{n/6})\). At the top, the two \(E_c\) terms have exponents \(-1/18\) and \(-1/9\); coincidences have exponent \(-1/10\). Multiplication by the total worst-case cost gives at most \(n^{O(1)}2^{13n/90}=o(2^{n/6})\). The clean band and orders are analysis devices; the algorithm does not require \(p,q\).
+
+7. **CORRECT — [Theorem AV(iv), lines 211–214](/Volumes/git/factoring-connection/notes/avgtime_results.md:211): distributional transfer.** Unordered distinct prime pairs correspond bijectively to their products, so uniform pairs and uniform semiprimes **within this population** coincide.
+
+   For even \(n\), independent uniform \(n/2\)-bit primes, conditioned distinct, induce uniform unordered pairs on their support, lying in \(S_n\cup S_{n-1}\). PNT counts give the required bounded mass ratio. Explicitly apply (iii) separately to those two shells. This says nothing about uniform sampling from all \(n\)-bit integers or arbitrary RSA key-generation restrictions.
+
+8. **NIT — [§5.1](/Volumes/git/factoring-connection/notes/avgtime_results.md:294) and [exponents.py `_stage`](/Volumes/git/factoring-connection/src/avgtime/exponents.py:211): optimization scope and omitted constraint.** The cost expression and true-baby-length exception exponents
+   \[
+   \max(\mu,2h+y,3h+1/2-y-\mu),\quad
+   E_{c1}=3h+\mu-t,\quad E_{c2}=2h+y+\mu-1/2
+   \]
+   are correct. The single-run optimum is \(2/11\) **for this upper-bound model**.
+
+   Add the omitted constraint \(\mu\le h+1/2-2y\). It does not change the optimum: clamping a larger \(\mu\) to that bound improves both exception estimates, and makes the third cost term equal \(2h+y\). Avoid treating minimization of an upper-bound expression as a lower bound on actual average runtime.
+
+   All 19 tests passed. I reproduced the listed ladder LP values, including \(223/1278\) without a detector and \(116/671\) with one at three rungs.
+
+9. **GAP (needs argument) — [§6, lines 377–378](/Volumes/git/factoring-connection/notes/avgtime_results.md:377): j > 5/6 requires a modified schedule.** The existing \(6/5\) schedule and final height do not establish this claim for \(j<1\). For example, at \(j=9/10\), the unchanged final coverage estimate yields an HH contribution with exponent \(17/100\).
+
+   A concrete repair is
+   \[
+   1<\rho<6j/5,\qquad
+   H_{i+1}=\lceil H_i^\rho\rceil,\qquad
+   H_{\max}=n^A2^{n/(60j)},
+   \]
+   with sufficiently large fixed \(A\). Then \(5\rho/3-2j<0\), while \(1/(60j)<1/50\). Keeping \(T=2^{\lfloor3n/10\rfloor}\), the \(E_c\) estimates remain sufficiently small. This supplies the missing argument.
+
+   The single-fallback formula \(1/6+1/(30+36j)\), for \(j\ge1\), and the displayed \(j=2,3\) LP numbers check.
+
+10. **GAP (needs argument) — [§2 and AV(i)](/Volumes/git/factoring-connection/notes/avgtime_results.md:173): explicitly handle the finite prefix.** Add “if \(n<n_0\), run HH directly.” Proposition U only defines the justified parameter regime eventually; the all-input completeness statement should not rely on asymptotic scale separations at tiny inputs.
+
+    The implementation’s probable-prime test and Lehman fallback are clearly disclosed stand-ins. They do not implement the theorem’s deterministic certification or HH complexity guarantee.
+
+11. **CORRECT — [§8](/Volumes/git/factoring-connection/notes/avgtime_results.md:398): retain the cautious prior-art wording.** I found no verified earlier theorem with this same uniform, bounded-ratio average-cost scope. [HH](https://arxiv.org/abs/2105.11105) proves complete deterministic worst-case \(N^{1/5}\) factoring. I checked [Ward–Maestro, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf): it proves positive-proportion success and explicitly excludes an average-time conclusion for an always-completing algorithm. [Carella](https://arxiv.org/abs/1308.2891) claims \(N^{1/6+\varepsilon}\), which should remain separately qualified. “Not found” is supportable; a priority assertion would require more evidence.

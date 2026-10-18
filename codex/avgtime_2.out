@@ -1,0 +1,47 @@
+**No qualifying unconditional, proved result was found by us**, as of 18 October 2026. I read the repo’s D′ statement and checked the named papers, related literature, and web discussions. Here **NOT FOUND** means no requested theorem located; **KNOWN** identifies a rigorous nearby result with different scope; **UNCERTAIN** identifies a claim whose proof or stronger interpretation is unsupported.
+
+1. **NOT FOUND — McKee–Pinch (1996), [“Old and new deterministic factoring algorithms,” ANTS II, LNCS 1122, 217–224](https://doi.org/10.1007/3-540-61581-4_57).** I read the complete eight-page paper from the repo scans. §5, especially p. 223, explicitly presents its balanced/RSA \(N^{1/4+\varepsilon}\) variant as heuristic. The guaranteed algorithms have larger exponents; there is no proved input-average theorem.
+
+2. **NOT FOUND — McKee (1999), [“Speeding Fermat’s factoring method,” Math. Comp. 68, 1729–1737](https://doi.org/10.1090/S0025-5718-99-01133-3).** The advertised \(N^{1/4+\varepsilon}\) bound is explicitly heuristic. I located no subsequent proof of an average-case version, particularly none below \(1/5\).
+
+3. **NOT FOUND — Lehman (1974), [“Factoring large integers,” Math. Comp. 28, 637–646](https://doi.org/10.1090/S0025-5718-1974-0340163-2).** The proved bound is \(N^{1/3+o(1)}\); no qualifying balanced-semiprime average or almost-all theorem was located. Ordinary Fermat’s closeness advantage concerns unusually small \(q-p\), not balancedness alone.
+
+4. **NOT FOUND — Hittmeir (2018), [“A babystep-giantstep method for faster deterministic integer factorization,” Math. Comp. 87, 2915–2935](https://arxiv.org/abs/1608.08766).** Its rigorous improvement remains \(N^{1/4+o(1)}\). No below-\(1/5\) input-average or early-exit theorem was found.
+
+5. **NOT FOUND — Hittmeir (2021), [“A time-space tradeoff for Lehman’s deterministic integer factorization method,” Math. Comp. 90, 1999–2010](https://arxiv.org/abs/2006.16729).** Theorem 1.1 proves deterministic \(N^{2/9+o(1)}\) complete factorisation; no qualifying average-case refinement was found.
+
+6. **NOT FOUND — Hittmeir (2023), [“Integer factorization as subset-sum problem,” J. Number Theory 249, 93–118](https://arxiv.org/abs/2205.10074).** Proposition 4.4 rigorously improves Fermat/Lawrence searches by a subexponential factor in their search-window size. The faster second procedure is heuristic; neither establishes the requested balanced-input exponent.
+
+7. **NOT FOUND — Harvey (2021), [“An exponent one-fifth algorithm for deterministic integer factorisation,” Math. Comp. 90, 2937–2950](https://arxiv.org/abs/2010.05450).** Theorem 1.1 proves \(O(N^{1/5}\log^{16/5}N)\). Algorithms contain successful-return branches, but no proved distributional analysis giving a smaller exponent was found.
+
+8. **NOT FOUND — Harvey–Hittmeir (2022), [“A log-log speedup for exponent one-fifth deterministic integer factorisation,” Math. Comp. 91, 1367–1379](https://arxiv.org/abs/2105.11105).** The improvement is a factor \((\log\log N)^{3/5}\), retaining exponent \(1/5\); no qualifying mean or almost-all statement was found.
+
+9. **NOT FOUND — Harvey–Hittmeir (2026), [“Deterministic methods for finding elements of large multiplicative order,” arXiv:2601.11131](https://arxiv.org/abs/2601.11131).** Theorem 1.1 removes the lower restriction on target order \(D\). It returns a large-order element **or** a divisor; it supplies no below-\(1/5\) average bound for completing factorisation.
+
+10. **NOT FOUND — Gao–Feng–Hu–Pan (2025), [“On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector,” arXiv:2512.19076; ePrint 2025/1004](https://arxiv.org/abs/2512.19076).** Their balanced-semiprime theorem improves the logarithmic exponent from \(16/5\) to \(13/5\), retaining \(N^{1/5}\). No qualifying average or early-exit theorem was found.
+
+11. **NOT FOUND — Stănică–Mulder–Hittmeir (2026), [“Multi-target hyperbolic sieves and elliptic trace obstructions,” arXiv:2606.13018](https://arxiv.org/abs/2606.13018).** Proposition 6.13 and §7 prove local residue averages and moments. These are averages over finite-field parameters, not runtime averages over balanced prime pairs; no complete-factoring exponent follows there.
+
+12. **UNCERTAIN — Carella, [“Deterministic Integer Factorization Algorithms,” arXiv:1308.2891, v3 (2022)](https://arxiv.org/abs/1308.2891).** Theorem 1.1 explicitly **claims** deterministic \(N^{1/6+\varepsilon}\) worst-case complete factoring. However, equations (17)–(21) omit factors \(B\) from the linear coefficients when asserting primitivity. The actual polynomial has content divisible by \(B\); primitive normalisation invalidates the displayed height argument. I would not count this as an established proof.
+
+13. **KNOWN, different scope — Knuth–Trabb Pardo (1976), [“Analysis of a simple factorization algorithm,” Theor. Comput. Sci. 3, 321–348](https://doi.org/10.1016/0304-3975(76)90050-5); Hafner–McCurley (1989), [“On the distribution of running times of certain integer factoring algorithms,” J. Algorithms 10, 531–556](https://www.mccurley.org/papers/running.pdf).** These provide genuine input-distribution analyses involving prime-factor sizes. They do not establish the requested balanced-semiprime bound; balanced inputs remove trial division’s small-factor advantage.
+
+14. **NOT FOUND — Gower–Wagstaff (2008), [“Square form factorization,” Math. Comp. 77, 551–588](https://homes.cerias.purdue.edu/~ssw/squfof.pdf).** Despite its average-complexity theorem terminology, §4.2 explicitly makes heuristic assumptions and excludes inputs without a proper square form in the principal cycle. The familiar scale is \(N^{1/4}\), not a proved sub-\(1/5\) average.
+
+15. **NOT FOUND — Pollard (1975), [“A Monte Carlo method for factorization,” BIT 15, 331–334](https://pages.cs.wisc.edu/~cs812-1/pollardrho.pdf).** §2 explicitly assumes random-mapping behaviour for a fixed polynomial. No qualifying rigorous input-average result was located; even the standard heuristic balanced-input exponent is \(1/4\).
+
+16. **NOT FOUND — Class-group methods.** Shanks, *“Class number, a theory of factorization, and genera,”* Proc. Symp. Pure Math. **20** (1971), 415–440, gives conditional exponent \(1/5\), as discussed by [Harvey](https://arxiv.org/html/2010.05450). Schnorr–Lenstra’s [*“A Monte Carlo factoring algorithm with linear storage,”* Math. Comp. **43** (1984), 289–311](https://doi.org/10.1090/S0025-5718-1984-0744939-5), uses probabilistic choices and class-number smoothness assumptions; neither supplies the requested theorem.
+
+17. **NOT FOUND — Fixed-curve deterministic ECM.** Lenstra’s [“Factoring integers with elliptic curves,” Ann. of Math. 126 (1987), 649–673](https://annals.math.princeton.edu/1987/126-3/p09), analyses random curves. I found no proved explicit fixed-curve family with the requested balanced-input average or almost-all guarantee.
+
+18. **KNOWN, restricted success — Źrałek (2010), [“A deterministic version of Pollard’s \(p-1\) algorithm,” Math. Comp. 79, 513–533](https://doi.org/10.1090/S0025-5718-09-02262-5).** It rigorously derandomises factoring under smoothness hypotheses. Its almost-all results involving supplied totient information do not give an unconditional balanced-semiprime factoring average.
+
+19. **KNOWN, positive proportion only — Ward–Maestro (2 September 2026), [“Floors for deterministic integer factoring…,” Part 5, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf).** This posted report proves base-2 \(p-1\) success on a positive proportion of pairs with \(x^{1-\varepsilon}<p,q\le x\), at exponents approaching \(1/(4\sqrt e)=0.151632\ldots\). It explicitly distinguishes this from an average bound for an always-completing algorithm.
+
+20. **KNOWN, different population — Crişan–Erban (2021), [“On the counting function of semiprimes,” Integers 21, A122](https://arxiv.org/abs/2006.16491).** Their counting asymptotics imply—an elementary consequence, not their factoring theorem—that almost all unrestricted semiprimes have a factor below \(N^\delta\), for every fixed \(\delta>0\). This says nothing comparable about balanced semiprimes.
+
+For **\(p-1\)**, your obstruction is correct for the usual smoothness-based argument, but warrants qualification. At \(B=N^c\), balanced factors give smoothness parameter \(u\sim1/(2c)\); at \(c=1/6\), the Dickman prediction is a constant success probability, not almost-all success. The exact shifted-prime Dickman law remains conditional; see [Bharadwaj–Rodgers, arXiv:2402.11884](https://arxiv.org/abs/2402.11884). Stage 2 changes both cost and the success condition, and fixed-base behaviour depends on multiplicative orders. I found **no proved sub-\(1/5\) complete-input average**, but also no universal impossibility theorem covering every deterministic stage-2 design.
+
+An almost-all theorem alone does not establish the same mean: a fast pass costing \(T\), exceptional fraction \(f\), and fallback bound \(W\) yields \(O(T+fW)\).
+
+**Verdict:** deterministic complete factoring with proved average cost \(N^{1/6+o(1)}\), or \(N^{1/6}\operatorname{polylog}N\), over the specified balanced-semiprime distributions was **not found by us**. Nor did we find an established qualifying almost-all theorem. Carella states a stronger claim with the proof problem identified above; positive-proportion \(p-1\) results and local sieve averages do not meet the requested guarantee. This search does not establish novelty or nonexistence.

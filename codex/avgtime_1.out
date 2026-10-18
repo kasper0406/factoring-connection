@@ -1,0 +1,90 @@
+ACCEPT WITH FIXES
+
+1. **ERROR (must fix) — [§5.2, lines 328–336](/Volumes/git/factoring-connection/notes/avgtime_results.md:328): C(e) has a missing branch.** Under the stated LP constraints, the correct envelope is
+   \[
+   C(e)=
+   \begin{cases}
+   1/6+5e/6,&0\le e\le1/46,\\
+   1/8+11e/4,&1/46\le e\le1/14,\\
+   9e/2,&1/14\le e\le1/12.
+   \end{cases}
+   \]
+   The claimed second branch requires \(y=1/8+7e/4\), exceeding \(1/4\) when \(e>1/14\). Exact counterexample: at \(e=1/12\), the LP returns \(3/8\), whereas the paper claims \(17/48\).
+
+   The **19/110 infimum survives**, since its limiting saving \(e=3/110\) lies in the valid second branch; the listed limiting parameters are correct. Qualify the finite-ladder reachability criterion by \(z>1/6\): at \(z=1/6\), its displayed inequality can hold although no first positive-saving rung is feasible. Also restrict §11’s “1/46 cap” to the balanced, full-baby-length design.
+
+2. **CORRECT — [§4, lines 260–290](/Volumes/git/factoring-connection/notes/avgtime_results.md:260): ε audit and 2/11 corollary.** I found no hidden step requiring \(\varepsilon\le1/60\). The binding displayed requirement is
+   \[
+   -1/12+13\varepsilon/3<0.
+   \]
+   At \(\varepsilon=1/55\),
+   \[
+   (\text{cost},E_a,E_b,E_{c1},E_{c2})
+   =(2/11,-2/55,-1/55,-1/44,-3/22),
+   \]
+   and \(1/5-1/55=2/11\). Thus D′ followed by HH gives the claimed average upper bound.
+
+   Say “the range certified by these estimates,” rather than “valid exactly.” At \(1/52\), the displayed \(E_{c1}\) estimate retains a factor \(n^{17/3}\); failure of that estimate to prove the target does not establish that the theorem itself is false outside the interval. The reselected-\(T\) thresholds \(1/46\) and \(1/22\) also check.
+
+3. **CORRECT — [Proposition U, lines 93–120](/Volumes/git/factoring-connection/notes/avgtime_results.md:93): uniformity and general T.** The scale separations, fixed-modulus PNT estimates, coprime-pair count, baby-length bound, and cost estimates admit absolute constants throughout \(H_0\le H\le2^{n/50}\).
+
+   Crucially, [D′ Lemma 10](/Volumes/git/factoring-connection/notes/dcltheorem_results.md:271) works for general \(T\): with \(d=\operatorname{ord}_q(2)>T\), CRT gives modulus \(\ell d/\gcd(A-B,d)\), hence
+   \[
+   \#p\le PH/(2\ell d)+1\le PH/(2\ell T)+1.
+   \]
+   No additional relation between \(T,H,m\) is required. Include in the eventual global \(n_0\) the conditions \(H_1\ge H_0\) and \(H_{\max}\le2^{n/50}\); the latter does not hold at all the schedule-test sizes.
+
+4. **CORRECT — [Lemma R, lines 122–139](/Volumes/git/factoring-connection/notes/avgtime_results.md:122): the presieving refinement is valid.** The moduli \(\ell a\) are squarefree, at most \(Q\), and counted distinctly: \(\ell>Z\), whereas every prime divisor of \(a\) is at most \(Z\). The forbidden-class counts satisfy \(\omega(r)<r\). The interval contains at most \(P/2+1\) integers and \(Q^2\le P\). This is a valid application of the arithmetic large sieve. [Montgomery–Vaughan](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+   The disputed harmonic inequality has the elementary proof
+   \[
+   \sum_{a\le Z}\frac{\mu^2(a)}{\phi(a)}
+   =\sum_{\operatorname{rad}(m)\le Z}\frac1m
+   \ge\sum_{m\le Z}\frac1m\ge\log Z.
+   \]
+   Add this identity. Summing \(O(P/H^2)\) over \(O(P/n)\) prime \(q\), then dividing by \(\gg P^2/n^2\), correctly gives \(O(n/H^2)\).
+
+5. **CORRECT — [Lemmas S and C, lines 143–171](/Volumes/git/factoring-connection/notes/avgtime_results.md:143): detector and coincidence count.** The first positive block hit contains \(d_{\min}\). Scanning it in increasing order produces a proper divisor at \(d_{\min}\) whenever the two orders differ. Polynomial evaluation uses only monic remainders, so composite moduli cause no inversion problem. The cost is \(\widetilde O(\sqrt T\,n)\).
+
+   For coincidences, at most \(O(k/n)\) relevant primes divide \(2^k-1\). Summing their squared counts gives \(O(T^3/n^2)\) pairs, hence \(O(T^3/P^2)\) after normalization. The implementation scans through \(m\lceil T/m\rceil\), potentially beyond \(T\); the tests correctly account for this rounding.
+
+6. **CORRECT — [Theorem AV(iii), lines 223–249](/Volumes/git/factoring-connection/notes/avgtime_results.md:223): the principal expectation argument survives.** The reach-set inclusion is correct:
+   \[
+   R_i\subseteq C(T)\cup E_c(H_{i-1},T)\cup E_b(H_{i-1}).
+   \]
+   It needs no independence between failures at different rungs.
+
+   Ceiling and truncation preserve \(H_i^{5/3}\le2^{5/3}H_{i-1}^2\), giving \(O(n^{c+1}2^{n/6})\) per coverage contribution. The HH coverage contribution is \(O(n^{1/5}2^{n/6})\). At the top, the two \(E_c\) terms have exponents \(-1/18\) and \(-1/9\); coincidences have exponent \(-1/10\). Multiplication by the total worst-case cost gives at most \(n^{O(1)}2^{13n/90}=o(2^{n/6})\). The clean band and orders are analysis devices; the algorithm does not require \(p,q\).
+
+7. **CORRECT — [Theorem AV(iv), lines 211–214](/Volumes/git/factoring-connection/notes/avgtime_results.md:211): distributional transfer.** Unordered distinct prime pairs correspond bijectively to their products, so uniform pairs and uniform semiprimes **within this population** coincide.
+
+   For even \(n\), independent uniform \(n/2\)-bit primes, conditioned distinct, induce uniform unordered pairs on their support, lying in \(S_n\cup S_{n-1}\). PNT counts give the required bounded mass ratio. Explicitly apply (iii) separately to those two shells. This says nothing about uniform sampling from all \(n\)-bit integers or arbitrary RSA key-generation restrictions.
+
+8. **NIT — [§5.1](/Volumes/git/factoring-connection/notes/avgtime_results.md:294) and [exponents.py `_stage`](/Volumes/git/factoring-connection/src/avgtime/exponents.py:211): optimization scope and omitted constraint.** The cost expression and true-baby-length exception exponents
+   \[
+   \max(\mu,2h+y,3h+1/2-y-\mu),\quad
+   E_{c1}=3h+\mu-t,\quad E_{c2}=2h+y+\mu-1/2
+   \]
+   are correct. The single-run optimum is \(2/11\) **for this upper-bound model**.
+
+   Add the omitted constraint \(\mu\le h+1/2-2y\). It does not change the optimum: clamping a larger \(\mu\) to that bound improves both exception estimates, and makes the third cost term equal \(2h+y\). Avoid treating minimization of an upper-bound expression as a lower bound on actual average runtime.
+
+   All 19 tests passed. I reproduced the listed ladder LP values, including \(223/1278\) without a detector and \(116/671\) with one at three rungs.
+
+9. **GAP (needs argument) — [§6, lines 377–378](/Volumes/git/factoring-connection/notes/avgtime_results.md:377): j > 5/6 requires a modified schedule.** The existing \(6/5\) schedule and final height do not establish this claim for \(j<1\). For example, at \(j=9/10\), the unchanged final coverage estimate yields an HH contribution with exponent \(17/100\).
+
+   A concrete repair is
+   \[
+   1<\rho<6j/5,\qquad
+   H_{i+1}=\lceil H_i^\rho\rceil,\qquad
+   H_{\max}=n^A2^{n/(60j)},
+   \]
+   with sufficiently large fixed \(A\). Then \(5\rho/3-2j<0\), while \(1/(60j)<1/50\). Keeping \(T=2^{\lfloor3n/10\rfloor}\), the \(E_c\) estimates remain sufficiently small. This supplies the missing argument.
+
+   The single-fallback formula \(1/6+1/(30+36j)\), for \(j\ge1\), and the displayed \(j=2,3\) LP numbers check.
+
+10. **GAP (needs argument) — [§2 and AV(i)](/Volumes/git/factoring-connection/notes/avgtime_results.md:173): explicitly handle the finite prefix.** Add “if \(n<n_0\), run HH directly.” Proposition U only defines the justified parameter regime eventually; the all-input completeness statement should not rely on asymptotic scale separations at tiny inputs.
+
+    The implementation’s probable-prime test and Lehman fallback are clearly disclosed stand-ins. They do not implement the theorem’s deterministic certification or HH complexity guarantee.
+
+11. **CORRECT — [§8](/Volumes/git/factoring-connection/notes/avgtime_results.md:398): retain the cautious prior-art wording.** I found no verified earlier theorem with this same uniform, bounded-ratio average-cost scope. [HH](https://arxiv.org/abs/2105.11105) proves complete deterministic worst-case \(N^{1/5}\) factoring. I checked [Ward–Maestro, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf): it proves positive-proportion success and explicitly excludes an average-time conclusion for an always-completing algorithm. [Carella](https://arxiv.org/abs/1308.2891) claims \(N^{1/6+\varepsilon}\), which should remain separately qualified. “Not found” is supportable; a priority assertion would require more evidence.

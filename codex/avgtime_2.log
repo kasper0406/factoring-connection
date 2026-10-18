@@ -1,0 +1,617 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14fda-c05a-7593-90c6-7d667f102e78
+--------
+user
+You are a careful research mathematician and literature expert in computational number theory. Use web search. Repo context (read-only): /Volumes/git/factoring-connection, especially notes/dcltheorem_results.md (Theorem D′).
+
+QUESTION (prior art only). Has anyone published or posted (journal, conference, arXiv, thesis, ePrint, blog, MathOverflow) a result of this form:
+
+  "a DETERMINISTIC algorithm that always outputs the complete factorisation of N, whose cost AVERAGED over balanced semiprimes N = pq (p < q ≤ 2p, or p ~ q, or the RSA-type distribution of uniformly random n/2-bit primes) is N^{c} with c < 1/5"
+
+i.e. an average-case (over inputs, not over coins) deterministic bound below the Harvey / Harvey–Hittmeir worst-case exponent 1/5 (Math. Comp. 90 (2021), 91 (2022))? Also accept: "for all but a small fraction of balanced semiprimes, deterministic time N^{c}, c < 1/5" (Theorem D′'s form), and average-case statements for Lehman / Fermat / McKee / McKee–Pinch / Hittmeir / SQUFOF / Pollard rho with fixed polynomial / Pollard p−1 / class-group (Shanks, Schnorr–Lenstra) / deterministic ECM with fixed curves, if they are PROVED (not heuristic).
+
+Specifically check:
+1. McKee–Pinch 1996 "Old and new deterministic factoring algorithms" (ANTS II): any average-case PROVED statement?
+2. McKee 1999 "Speeding Fermat's factoring method" (Math. Comp.): heuristic N^{1/4} — any proved average version?
+3. Hittmeir (2018, 2021, 2023), Harvey (2021), Harvey–Hittmeir (2022, 2026 order-selection arXiv 2601.11131), Gao–Feng–Hu–Pan arXiv 2512.19076, Stănică–Mulder–Hittmeir arXiv 2606.13018: any remark on average-case or early-exit cost?
+4. Carella arXiv 1308.2891 (claims deterministic 1/6 worst case).
+5. Any "average-case analysis of deterministic factoring" (e.g. Knuth–Trabb Pardo style analyses of trial division, Lehman average, "Fermat's method is fast on average"?).
+6. Pollard p−1 with fixed base and deterministic stage 2: proved average over primes p (smoothness of p−1) — what exponent does it give on balanced semiprimes? (We believe it cannot beat 1/5 on average because the failure probability is a positive constant, not a power saving; confirm or refute.)
+7. Anything on "deterministic factoring for almost all integers / almost all semiprimes" in sub-N^{1/5} time.
+
+Output: a curated list with exact citations and URLs; for each, one line on whether it states a PROVED average-case or almost-all deterministic exponent < 1/5. Label each item KNOWN / NOT FOUND / UNCERTAIN. End with a one-paragraph verdict: is "deterministic complete factoring with average cost N^{1/6+o(1)} (even N^{1/6} polylog) over balanced semiprimes" stated anywhere you could find? Do not claim novelty; say "not found by us" at most. Keep it under 1500 words.
+
+codex
+I’ll read Theorem D′, then check the named papers and search more broadly. I’ll distinguish proved input averages from heuristic runtimes and averages over random choices.
+
+exec
+/bin/zsh -lc "pwd; rg --files -g AGENTS.md -g dcltheorem_results.md -g '*DCL*' -g '*dcl*' /Volumes/git/factoring-connection" in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/avgtime_2
+/Volumes/git/factoring-connection/src/multimod/dcl.py
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/dcltheorem_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r12_dcl_audit.md
+/Volumes/git/factoring-connection/tests/test_dcltheorem.py
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.log
+/Volumes/git/factoring-connection/codex/dclt_1.log
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.md
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.out
+/Volumes/git/factoring-connection/codex/dclt_1.md
+/Volumes/git/factoring-connection/codex/dclt_1.out
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_hh.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_oper.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_exc.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_lemma.jsonl
+/Volumes/git/factoring-connection/experiments/configs/dcltheorem_experiments.json
+/Volumes/git/factoring-connection/experiments/analysis/dcltheorem_summary.json
+
+web search: 
+web search: "McKee" "Pinch" "Old and new deterministic factoring algorithms" ...
+web search: 
+exec
+/bin/zsh -lc 'for f in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/avgtime_2/AGENTS.md; do if [ -f "$f" ]; then cat "$f"; fi; done; sed -n '"'1,260p' /Volumes/git/factoring-connection/notes/dcltheorem_results.md" in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 0ms:
+# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+
+Agent `dcltheorem`, 2026-10-18. Pre-registration: `notes/dcltheorem_prereg.md` (commit
+`3550e24`, before any pre-registered run). Code: `src/dcltheorem/`. Tests:
+`tests/test_dcltheorem.py`. Raw data: `experiments/raw/dcltheorem_*.jsonl`. Summary:
+`experiments/analysis/dcltheorem_summary.json`. Inputs: notes/multimod_results.md (Thm D) and
+the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
+
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+*Proof.*
+- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+- Multiply by γ^{−(g_lo + j*m)}. ∎
+
+**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+
+*Proof.*
+- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+  and 2^{q−1} ≡ 1 (mod q). ∎
+
+**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+gcd(f(G), N) = p.
+
+*Proof.*
+- f(G) = ∏_i (G − γ^i).
+- The factor i = i* vanishes mod p (Lemma 3).
+- Mod q, no factor vanishes, by definition, and Z/q is a field.
+- So p | f(G) and q ∤ f(G). ∎
+
+**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+Y⁴ > √2P, at least one of the four blocks is clean for q.
+
+*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+
+Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+for ε < 1/4 and n large.
+
+**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+
+*Proof.*
+- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+
+**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+
+  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+
+*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+
+**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+
+  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+
+*Proof.*
+- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+  ε < 1/7 and n large.
+- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+
+web search: "factoring" "Hittmeir" "2023" ...
+web search: 
+web search: "Hittmeir" "2018" factoring algorithm 2021 2023 ...
+web search: 
+exec
+/bin/zsh -lc "rg -n 'McKee|prior|average|Carella|1996|http|260' /Volumes/git/factoring-connection/notes/dcltheorem_results.md; command -v pdftotext; command -v python3; ls -la" in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 0ms:
+33:  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+41:  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+50:- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+52:  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+57:  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+380:| (6) prior art | §10 | McKee–Pinch §5 read (r13 scans): direct precursor (heuristic N^{1/4}); the combination is claimed only as "no prior formulation found by us"; Carella 1308.2891 claim noted with the r13 assessment |
+404:   - (c) pairs where **every** covering true giant is FULL (E_c). These are rare on average,
+432:    - (6) McKee–Pinch §5 priority left unresolved (since resolved by r13, see below).
+459:    - (2) McKee–Pinch §5 comparison rewritten from the scans (§10).
+463:    - (5) Carella 1308.2891 added, with the referee's assessment labelled as such.
+575:- **Ingredients (all prior art).**
+577:  - Modulus-squared lock: McKee 1999 (heuristic N^{1/4}); HH 2022 Prop. 3.3.
+583:  no prior result found** by GPT-6.1-sol (two independent sweeps) or by our searches.
+593:- **McKee–Pinch 1996 (ANTS II, LNCS 1122) §5, pp. 221–223: a direct precursor.** The r13
+594:  referee obtained it, and we read the scans ourselves: references/mckee_pinch_1996/
+595:  mckee-03.jpg and mckee-04.jpg; source https://cr.yp.to/bib/1996/mckee-deterministic.html.
+622:- **Carella, arXiv 1308.2891.** It explicitly claims a deterministic exponent-1/6 factoring
+630:    but (per that assessment) unproved prior statement of the same exponent.
+631:- **Claim limited to:** "no prior formulation found by us" of the *combination*: (i)–(v) above,
+632:  on top of McKee–Pinch §5's divisibility event and HH 2022 Prop. 3.3's lock. Novelty
+/opt/homebrew/bin/python3
+total 0
+drwxr-xr-x  2 knielsen  staff   64 Oct 18 18:31 .
+drwxr-xr-x  8 knielsen  staff  256 Oct 18 18:31 ..
+
+web search: "Old and new deterministic factoring algorithms" filetype:pdf -site:ftp.math.utah.edu -site:ftp5.gwdg.de ...
+codex
+The repo note makes a distinction that matters here: D′ permits FAIL on an exceptional set; an algorithm that always completes needs a fallback whose cost enters the average. I’ve located the recent preprints and am checking their theorem statements, alongside McKee–Pinch’s §5 and the smoothness literature.
+
+web search: 
+web search: https://cr.yp.to/bib/1996/mckee-deterministic.html
+exec
+/bin/zsh -lc "sed -n '575,635p' /Volumes/git/factoring-connection/notes/dcltheorem_results.md; rg --files /Volumes/git/factoring-connection/references/mckee_pinch_1996" in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 0ms:
+- **Ingredients (all prior art).**
+  - Weighted Fermat / Lehman searches: Lawrence 1895, Lehman 1974.
+  - Modulus-squared lock: McKee 1999 (heuristic N^{1/4}); HH 2022 Prop. 3.3.
+  - Shared one-sided collision search with multipoint evaluation: Harvey 2021,
+    Alg. 4.1–4.2.
+  - Arithmetic large sieve: Montgomery 1968; Montgomery–Vaughan 1973.
+  - Elementary counting of primes with small ord_q(2): divisors of 2^k − 1.
+- **Exponent below 1/5 for almost all bounded-ratio prime pairs (unconditional, deterministic):
+  no prior result found** by GPT-6.1-sol (two independent sweeps) or by our searches.
+  - The known bounds are 1/5 (Harvey 2021; HH 2022; Gao et al. 2512.19076 for balanced N,
+    log factors only).
+  - The conditional route is 1/6 under Umans–Wang's conjecture; He–Sahai 2026 refute its
+    rank-1 form.
+  - Almost-all unrestricted semiprimes are easy by trial division (Crişan–Erban counting), but
+    that does not apply to S_n.
+- **The clean-band trick** (disjoint prime bands so that one is coprime to q − 1, plus large
+  ord_q(2) for almost all q, plus a direct count of two-sided true giants) was not found in
+  the factoring papers checked.
+- **McKee–Pinch 1996 (ANTS II, LNCS 1122) §5, pp. 221–223: a direct precursor.** The r13
+  referee obtained it, and we read the scans ourselves: references/mckee_pinch_1996/
+  mckee-03.jpg and mckee-04.jpg; source https://cr.yp.to/bib/1996/mckee-deterministic.html.
+  - **Lehmer's speed-up.** If p ≡ q ≡ 1 (mod k), Fermat runs in O(q/k²).
+  - **The authors' extension.** For p ≡ ±q (mod k), Fermat runs in O(q/k^{2−ε}), via
+    n = u² − v² with u or v determined mod k² from square roots mod k. That is the
+    modulus-squared lock.
+  - **Multipliers.** If λp ≡ ±μq (mod k), the same method splits λμn in
+    O(max(λp, μq)/k²·n^ε).
+  - **A deterministic O(n^{1/3+ε}) algorithm.** Take k = 2⌊n^{1/3}⌋ + 1, and a pigeonhole
+    lemma that guarantees λμ ≤ k with λp ≡ ±μq (mod k).
+  - **A heuristic balanced method, "not however an algorithm".** Take primes k ∈ (n^{1/4},
+    2n^{1/4}) and small λ, μ, and assume λp − μq ≡ 0 (mod k) for some of them. Each (λμ, k)
+    costs O(n^ε). The expected running time O(n^{1/4+ε}) rests on the heuristic that q − p
+    has a prime factor in the band with probability ≫ 1/log n.
+  - **So the core event** (a band prime divides a small-weight combination Bp − Aq, with
+    N-determined residues and a modulus-squared reduction) **is theirs.**
+  - **What D′ adds:**
+    - (i) the band at N^{1/6}H^{−1/3} instead of N^{1/4}. This is made possible by
+    - (ii) one baby list shared by all band primes via the cofactor-powered handles
+      u_ℓ^{B+AN−c}, so each target costs one giant step against a window of size ≈ N^{1/6};
+    - (iii) a proof that the event happens for all but O(N^{−ε}) of the pairs: the
+      prime-pair large sieve with growing weight height H, replacing their probability
+      heuristic;
+    - (iv) one-sided extraction with no order hypothesis: the clean band, ord_q(2), and the
+      Lemma 10 count;
+    - (v) a full bit-complexity accounting.
+  - Their per-k cost is O(n^ε) because q/k² = O(1). Ours trades a larger window for fewer,
+    smaller primes through the shared baby list.
+- **Carella, arXiv 1308.2891.** It explicitly claims a deterministic exponent-1/6 factoring
+  algorithm.
+  - *The r13 referee's assessment, not independently re-derived by us:* the displayed proof
+    loses a necessary primitive-polynomial normalisation. Every coefficient of the correctly
+    expanded polynomial is divisible by B. Removing that content lowers the scaled height
+    from ≈ N to N^{5/6}, and the cited small-root condition then no longer supports
+    X = Y = N^{1/3}.
+  - The referee does not regard that proof as establishing the bound. We list it as a claimed
+    but (per that assessment) unproved prior statement of the same exponent.
+- **Claim limited to:** "no prior formulation found by us" of the *combination*: (i)–(v) above,
+  on top of McKee–Pinch §5's divisibility event and HH 2022 Prop. 3.3's lock. Novelty
+  judgments are left to the orchestrator.
+
+## 11. Candidate card
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-04.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-05.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-02.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-03.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-01.jpg
+
+web search: 
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import urllib.request
+u='https://arxiv.org/html/2601.11131v1'
+try:
+ s=urllib.request.urlopen(u,timeout=20).read()
+ print(len(s))
+except Exception as e: print(type(e).__name__, str(e))
+try:
+ import bs4
+ print('bs4 available')
+except ImportError: pass
+try:
+ import pymupdf
+ print('pymupdf available')
+except ImportError: pass
+PY" in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 66ms:
+URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+web search: 
+web search: "factoring" "average-case" "deterministic" semiprimes ...
+web search: 
+web search: "A deterministic version of Pollard"  ...
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: "On the Distribution of Running Times" factoring algorithms McCurley ...
+web search: 
+web search: "Hittmeir" "2018" "2915" ...
+web search: 
+web search: "A deterministic version of Pollard" arxiv ...
+web search: 
+web search: "A time-space tradeoff" "Hittmeir" arxiv ...
+codex
+McKee–Pinch §5 explicitly labels its RSA variant heuristic; its expected bound is \(N^{1/4+\varepsilon}\). Gao–Feng–Hu–Pan retain exponent \(1/5\) for balanced semiprimes, improving logarithmic factors. Stănică–Mulder–Hittmeir do prove local sieve averages, so I’m checking whether those extend to a factoring-time statement.
+
+web search: 
+web search: "Lehman" "factoring" "average-case" ...
+web search: 
+web search: "deterministic" "factoring" "on average" -polynomials -quantum -shor -polynomial ...
+web search: 
+web search: "deterministic" "factoring" "average" site:mathoverflow.net ...
+web search: 
+web search: https://igent.ai/insights/floors-not-bounds
+web search: 
+web search: "Pollard’s p−1" "positive proportion" "1/(4" ...
+web search: 
+web search: https://arxiv.org/abs/2402.11884
+web search: 
+web search: "A deterministic version of Pollard" "arxiv.org/abs/" ...
+web search: 
+web search: 'proportion'
+web search: 
+web search: "Friedlander" "Shifted primes without large prime factors" "proportion" ...
+web search: 
+web search: "Shifted primes without large prime factors" Friedlander pdf ...
+web search: 
+web search: "STAN-CS-76-538" ...
+web search: 
+web search: https://apps.dtic.mil/sti/tr/pdf/ADA024416.pdf
+web search: 
+web search: "Pollard" "Monte Carlo" "1975" "factorization" 331 334 ...
+web search: 
+web search: https://cr.yp.to/bib/1996/mckee-deterministic.html
+codex
+I found a relevant September 2026 report by Ward and Maestro: it proves fixed-base \(p-1\) success on a positive proportion of nearly balanced semiprimes, at exponents approaching \(0.151632\). That is short of almost-all success or a complete-algorithm average. The constant-failure explanation needs a qualification: the full Dickman law for shifted primes is conjectural unconditionally, and stage 2 requires separate analysis.
+
+exec
+/bin/zsh -lc 'rg --files /Volumes/git/factoring-connection/references | head -60' in /Volumes/git/factoring-connection/codex/scratch/avgtime_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-04.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-05.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-02.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-03.jpg
+/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-01.jpg
+
+web search: 
+web search: "Old and New Deterministic Factoring Algorithms" "average" ...
+web search: 
+web search: "Theorems on factorization and primality testing" Pollard pdf ...
+web search: 
+web search: "Speeding Fermat" "prove" ...
+web search: 
+web search: https://www.ams.org/journals/mcom/1999-68-228/S0025-5718-99-01133-3/S0025-5718-99-01133-3.pdf?download=1
+codex
+**No qualifying unconditional, proved result was found by us**, as of 18 October 2026. I read the repo’s D′ statement and checked the named papers, related literature, and web discussions. Here **NOT FOUND** means no requested theorem located; **KNOWN** identifies a rigorous nearby result with different scope; **UNCERTAIN** identifies a claim whose proof or stronger interpretation is unsupported.
+
+1. **NOT FOUND — McKee–Pinch (1996), [“Old and new deterministic factoring algorithms,” ANTS II, LNCS 1122, 217–224](https://doi.org/10.1007/3-540-61581-4_57).** I read the complete eight-page paper from the repo scans. §5, especially p. 223, explicitly presents its balanced/RSA \(N^{1/4+\varepsilon}\) variant as heuristic. The guaranteed algorithms have larger exponents; there is no proved input-average theorem.
+
+2. **NOT FOUND — McKee (1999), [“Speeding Fermat’s factoring method,” Math. Comp. 68, 1729–1737](https://doi.org/10.1090/S0025-5718-99-01133-3).** The advertised \(N^{1/4+\varepsilon}\) bound is explicitly heuristic. I located no subsequent proof of an average-case version, particularly none below \(1/5\).
+
+3. **NOT FOUND — Lehman (1974), [“Factoring large integers,” Math. Comp. 28, 637–646](https://doi.org/10.1090/S0025-5718-1974-0340163-2).** The proved bound is \(N^{1/3+o(1)}\); no qualifying balanced-semiprime average or almost-all theorem was located. Ordinary Fermat’s closeness advantage concerns unusually small \(q-p\), not balancedness alone.
+
+4. **NOT FOUND — Hittmeir (2018), [“A babystep-giantstep method for faster deterministic integer factorization,” Math. Comp. 87, 2915–2935](https://arxiv.org/abs/1608.08766).** Its rigorous improvement remains \(N^{1/4+o(1)}\). No below-\(1/5\) input-average or early-exit theorem was found.
+
+5. **NOT FOUND — Hittmeir (2021), [“A time-space tradeoff for Lehman’s deterministic integer factorization method,” Math. Comp. 90, 1999–2010](https://arxiv.org/abs/2006.16729).** Theorem 1.1 proves deterministic \(N^{2/9+o(1)}\) complete factorisation; no qualifying average-case refinement was found.
+
+6. **NOT FOUND — Hittmeir (2023), [“Integer factorization as subset-sum problem,” J. Number Theory 249, 93–118](https://arxiv.org/abs/2205.10074).** Proposition 4.4 rigorously improves Fermat/Lawrence searches by a subexponential factor in their search-window size. The faster second procedure is heuristic; neither establishes the requested balanced-input exponent.
+
+7. **NOT FOUND — Harvey (2021), [“An exponent one-fifth algorithm for deterministic integer factorisation,” Math. Comp. 90, 2937–2950](https://arxiv.org/abs/2010.05450).** Theorem 1.1 proves \(O(N^{1/5}\log^{16/5}N)\). Algorithms contain successful-return branches, but no proved distributional analysis giving a smaller exponent was found.
+
+8. **NOT FOUND — Harvey–Hittmeir (2022), [“A log-log speedup for exponent one-fifth deterministic integer factorisation,” Math. Comp. 91, 1367–1379](https://arxiv.org/abs/2105.11105).** The improvement is a factor \((\log\log N)^{3/5}\), retaining exponent \(1/5\); no qualifying mean or almost-all statement was found.
+
+9. **NOT FOUND — Harvey–Hittmeir (2026), [“Deterministic methods for finding elements of large multiplicative order,” arXiv:2601.11131](https://arxiv.org/abs/2601.11131).** Theorem 1.1 removes the lower restriction on target order \(D\). It returns a large-order element **or** a divisor; it supplies no below-\(1/5\) average bound for completing factorisation.
+
+10. **NOT FOUND — Gao–Feng–Hu–Pan (2025), [“On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector,” arXiv:2512.19076; ePrint 2025/1004](https://arxiv.org/abs/2512.19076).** Their balanced-semiprime theorem improves the logarithmic exponent from \(16/5\) to \(13/5\), retaining \(N^{1/5}\). No qualifying average or early-exit theorem was found.
+
+11. **NOT FOUND — Stănică–Mulder–Hittmeir (2026), [“Multi-target hyperbolic sieves and elliptic trace obstructions,” arXiv:2606.13018](https://arxiv.org/abs/2606.13018).** Proposition 6.13 and §7 prove local residue averages and moments. These are averages over finite-field parameters, not runtime averages over balanced prime pairs; no complete-factoring exponent follows there.
+
+12. **UNCERTAIN — Carella, [“Deterministic Integer Factorization Algorithms,” arXiv:1308.2891, v3 (2022)](https://arxiv.org/abs/1308.2891).** Theorem 1.1 explicitly **claims** deterministic \(N^{1/6+\varepsilon}\) worst-case complete factoring. However, equations (17)–(21) omit factors \(B\) from the linear coefficients when asserting primitivity. The actual polynomial has content divisible by \(B\); primitive normalisation invalidates the displayed height argument. I would not count this as an established proof.
+
+13. **KNOWN, different scope — Knuth–Trabb Pardo (1976), [“Analysis of a simple factorization algorithm,” Theor. Comput. Sci. 3, 321–348](https://doi.org/10.1016/0304-3975(76)90050-5); Hafner–McCurley (1989), [“On the distribution of running times of certain integer factoring algorithms,” J. Algorithms 10, 531–556](https://www.mccurley.org/papers/running.pdf).** These provide genuine input-distribution analyses involving prime-factor sizes. They do not establish the requested balanced-semiprime bound; balanced inputs remove trial division’s small-factor advantage.
+
+14. **NOT FOUND — Gower–Wagstaff (2008), [“Square form factorization,” Math. Comp. 77, 551–588](https://homes.cerias.purdue.edu/~ssw/squfof.pdf).** Despite its average-complexity theorem terminology, §4.2 explicitly makes heuristic assumptions and excludes inputs without a proper square form in the principal cycle. The familiar scale is \(N^{1/4}\), not a proved sub-\(1/5\) average.
+
+15. **NOT FOUND — Pollard (1975), [“A Monte Carlo method for factorization,” BIT 15, 331–334](https://pages.cs.wisc.edu/~cs812-1/pollardrho.pdf).** §2 explicitly assumes random-mapping behaviour for a fixed polynomial. No qualifying rigorous input-average result was located; even the standard heuristic balanced-input exponent is \(1/4\).
+
+16. **NOT FOUND — Class-group methods.** Shanks, *“Class number, a theory of factorization, and genera,”* Proc. Symp. Pure Math. **20** (1971), 415–440, gives conditional exponent \(1/5\), as discussed by [Harvey](https://arxiv.org/html/2010.05450). Schnorr–Lenstra’s [*“A Monte Carlo factoring algorithm with linear storage,”* Math. Comp. **43** (1984), 289–311](https://doi.org/10.1090/S0025-5718-1984-0744939-5), uses probabilistic choices and class-number smoothness assumptions; neither supplies the requested theorem.
+
+17. **NOT FOUND — Fixed-curve deterministic ECM.** Lenstra’s [“Factoring integers with elliptic curves,” Ann. of Math. 126 (1987), 649–673](https://annals.math.princeton.edu/1987/126-3/p09), analyses random curves. I found no proved explicit fixed-curve family with the requested balanced-input average or almost-all guarantee.
+
+18. **KNOWN, restricted success — Źrałek (2010), [“A deterministic version of Pollard’s \(p-1\) algorithm,” Math. Comp. 79, 513–533](https://doi.org/10.1090/S0025-5718-09-02262-5).** It rigorously derandomises factoring under smoothness hypotheses. Its almost-all results involving supplied totient information do not give an unconditional balanced-semiprime factoring average.
+
+19. **KNOWN, positive proportion only — Ward–Maestro (2 September 2026), [“Floors for deterministic integer factoring…,” Part 5, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf).** This posted report proves base-2 \(p-1\) success on a positive proportion of pairs with \(x^{1-\varepsilon}<p,q\le x\), at exponents approaching \(1/(4\sqrt e)=0.151632\ldots\). It explicitly distinguishes this from an average bound for an always-completing algorithm.
+
+20. **KNOWN, different population — Crişan–Erban (2021), [“On the counting function of semiprimes,” Integers 21, A122](https://arxiv.org/abs/2006.16491).** Their counting asymptotics imply—an elementary consequence, not their factoring theorem—that almost all unrestricted semiprimes have a factor below \(N^\delta\), for every fixed \(\delta>0\). This says nothing comparable about balanced semiprimes.
+
+For **\(p-1\)**, your obstruction is correct for the usual smoothness-based argument, but warrants qualification. At \(B=N^c\), balanced factors give smoothness parameter \(u\sim1/(2c)\); at \(c=1/6\), the Dickman prediction is a constant success probability, not almost-all success. The exact shifted-prime Dickman law remains conditional; see [Bharadwaj–Rodgers, arXiv:2402.11884](https://arxiv.org/abs/2402.11884). Stage 2 changes both cost and the success condition, and fixed-base behaviour depends on multiplicative orders. I found **no proved sub-\(1/5\) complete-input average**, but also no universal impossibility theorem covering every deterministic stage-2 design.
+
+An almost-all theorem alone does not establish the same mean: a fast pass costing \(T\), exceptional fraction \(f\), and fallback bound \(W\) yields \(O(T+fW)\).
+
+**Verdict:** deterministic complete factoring with proved average cost \(N^{1/6+o(1)}\), or \(N^{1/6}\operatorname{polylog}N\), over the specified balanced-semiprime distributions was **not found by us**. Nor did we find an established qualifying almost-all theorem. Carella states a stronger claim with the proof problem identified above; positive-proportion \(p-1\) results and local sieve averages do not meet the requested guarantee. This search does not establish novelty or nonexistence.
+tokens used
+281,561
+**No qualifying unconditional, proved result was found by us**, as of 18 October 2026. I read the repo’s D′ statement and checked the named papers, related literature, and web discussions. Here **NOT FOUND** means no requested theorem located; **KNOWN** identifies a rigorous nearby result with different scope; **UNCERTAIN** identifies a claim whose proof or stronger interpretation is unsupported.
+
+1. **NOT FOUND — McKee–Pinch (1996), [“Old and new deterministic factoring algorithms,” ANTS II, LNCS 1122, 217–224](https://doi.org/10.1007/3-540-61581-4_57).** I read the complete eight-page paper from the repo scans. §5, especially p. 223, explicitly presents its balanced/RSA \(N^{1/4+\varepsilon}\) variant as heuristic. The guaranteed algorithms have larger exponents; there is no proved input-average theorem.
+
+2. **NOT FOUND — McKee (1999), [“Speeding Fermat’s factoring method,” Math. Comp. 68, 1729–1737](https://doi.org/10.1090/S0025-5718-99-01133-3).** The advertised \(N^{1/4+\varepsilon}\) bound is explicitly heuristic. I located no subsequent proof of an average-case version, particularly none below \(1/5\).
+
+3. **NOT FOUND — Lehman (1974), [“Factoring large integers,” Math. Comp. 28, 637–646](https://doi.org/10.1090/S0025-5718-1974-0340163-2).** The proved bound is \(N^{1/3+o(1)}\); no qualifying balanced-semiprime average or almost-all theorem was located. Ordinary Fermat’s closeness advantage concerns unusually small \(q-p\), not balancedness alone.
+
+4. **NOT FOUND — Hittmeir (2018), [“A babystep-giantstep method for faster deterministic integer factorization,” Math. Comp. 87, 2915–2935](https://arxiv.org/abs/1608.08766).** Its rigorous improvement remains \(N^{1/4+o(1)}\). No below-\(1/5\) input-average or early-exit theorem was found.
+
+5. **NOT FOUND — Hittmeir (2021), [“A time-space tradeoff for Lehman’s deterministic integer factorization method,” Math. Comp. 90, 1999–2010](https://arxiv.org/abs/2006.16729).** Theorem 1.1 proves deterministic \(N^{2/9+o(1)}\) complete factorisation; no qualifying average-case refinement was found.
+
+6. **NOT FOUND — Hittmeir (2023), [“Integer factorization as subset-sum problem,” J. Number Theory 249, 93–118](https://arxiv.org/abs/2205.10074).** Proposition 4.4 rigorously improves Fermat/Lawrence searches by a subexponential factor in their search-window size. The faster second procedure is heuristic; neither establishes the requested balanced-input exponent.
+
+7. **NOT FOUND — Harvey (2021), [“An exponent one-fifth algorithm for deterministic integer factorisation,” Math. Comp. 90, 2937–2950](https://arxiv.org/abs/2010.05450).** Theorem 1.1 proves \(O(N^{1/5}\log^{16/5}N)\). Algorithms contain successful-return branches, but no proved distributional analysis giving a smaller exponent was found.
+
+8. **NOT FOUND — Harvey–Hittmeir (2022), [“A log-log speedup for exponent one-fifth deterministic integer factorisation,” Math. Comp. 91, 1367–1379](https://arxiv.org/abs/2105.11105).** The improvement is a factor \((\log\log N)^{3/5}\), retaining exponent \(1/5\); no qualifying mean or almost-all statement was found.
+
+9. **NOT FOUND — Harvey–Hittmeir (2026), [“Deterministic methods for finding elements of large multiplicative order,” arXiv:2601.11131](https://arxiv.org/abs/2601.11131).** Theorem 1.1 removes the lower restriction on target order \(D\). It returns a large-order element **or** a divisor; it supplies no below-\(1/5\) average bound for completing factorisation.
+
+10. **NOT FOUND — Gao–Feng–Hu–Pan (2025), [“On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector,” arXiv:2512.19076; ePrint 2025/1004](https://arxiv.org/abs/2512.19076).** Their balanced-semiprime theorem improves the logarithmic exponent from \(16/5\) to \(13/5\), retaining \(N^{1/5}\). No qualifying average or early-exit theorem was found.
+
+11. **NOT FOUND — Stănică–Mulder–Hittmeir (2026), [“Multi-target hyperbolic sieves and elliptic trace obstructions,” arXiv:2606.13018](https://arxiv.org/abs/2606.13018).** Proposition 6.13 and §7 prove local residue averages and moments. These are averages over finite-field parameters, not runtime averages over balanced prime pairs; no complete-factoring exponent follows there.
+
+12. **UNCERTAIN — Carella, [“Deterministic Integer Factorization Algorithms,” arXiv:1308.2891, v3 (2022)](https://arxiv.org/abs/1308.2891).** Theorem 1.1 explicitly **claims** deterministic \(N^{1/6+\varepsilon}\) worst-case complete factoring. However, equations (17)–(21) omit factors \(B\) from the linear coefficients when asserting primitivity. The actual polynomial has content divisible by \(B\); primitive normalisation invalidates the displayed height argument. I would not count this as an established proof.
+
+13. **KNOWN, different scope — Knuth–Trabb Pardo (1976), [“Analysis of a simple factorization algorithm,” Theor. Comput. Sci. 3, 321–348](https://doi.org/10.1016/0304-3975(76)90050-5); Hafner–McCurley (1989), [“On the distribution of running times of certain integer factoring algorithms,” J. Algorithms 10, 531–556](https://www.mccurley.org/papers/running.pdf).** These provide genuine input-distribution analyses involving prime-factor sizes. They do not establish the requested balanced-semiprime bound; balanced inputs remove trial division’s small-factor advantage.
+
+14. **NOT FOUND — Gower–Wagstaff (2008), [“Square form factorization,” Math. Comp. 77, 551–588](https://homes.cerias.purdue.edu/~ssw/squfof.pdf).** Despite its average-complexity theorem terminology, §4.2 explicitly makes heuristic assumptions and excludes inputs without a proper square form in the principal cycle. The familiar scale is \(N^{1/4}\), not a proved sub-\(1/5\) average.
+
+15. **NOT FOUND — Pollard (1975), [“A Monte Carlo method for factorization,” BIT 15, 331–334](https://pages.cs.wisc.edu/~cs812-1/pollardrho.pdf).** §2 explicitly assumes random-mapping behaviour for a fixed polynomial. No qualifying rigorous input-average result was located; even the standard heuristic balanced-input exponent is \(1/4\).
+
+16. **NOT FOUND — Class-group methods.** Shanks, *“Class number, a theory of factorization, and genera,”* Proc. Symp. Pure Math. **20** (1971), 415–440, gives conditional exponent \(1/5\), as discussed by [Harvey](https://arxiv.org/html/2010.05450). Schnorr–Lenstra’s [*“A Monte Carlo factoring algorithm with linear storage,”* Math. Comp. **43** (1984), 289–311](https://doi.org/10.1090/S0025-5718-1984-0744939-5), uses probabilistic choices and class-number smoothness assumptions; neither supplies the requested theorem.
+
+17. **NOT FOUND — Fixed-curve deterministic ECM.** Lenstra’s [“Factoring integers with elliptic curves,” Ann. of Math. 126 (1987), 649–673](https://annals.math.princeton.edu/1987/126-3/p09), analyses random curves. I found no proved explicit fixed-curve family with the requested balanced-input average or almost-all guarantee.
+
+18. **KNOWN, restricted success — Źrałek (2010), [“A deterministic version of Pollard’s \(p-1\) algorithm,” Math. Comp. 79, 513–533](https://doi.org/10.1090/S0025-5718-09-02262-5).** It rigorously derandomises factoring under smoothness hypotheses. Its almost-all results involving supplied totient information do not give an unconditional balanced-semiprime factoring average.
+
+19. **KNOWN, positive proportion only — Ward–Maestro (2 September 2026), [“Floors for deterministic integer factoring…,” Part 5, Proposition 35.3](https://igent.ai/research/floors-not-bounds/factoring_report_part5_ecm_labels.pdf).** This posted report proves base-2 \(p-1\) success on a positive proportion of pairs with \(x^{1-\varepsilon}<p,q\le x\), at exponents approaching \(1/(4\sqrt e)=0.151632\ldots\). It explicitly distinguishes this from an average bound for an always-completing algorithm.
+
+20. **KNOWN, different population — Crişan–Erban (2021), [“On the counting function of semiprimes,” Integers 21, A122](https://arxiv.org/abs/2006.16491).** Their counting asymptotics imply—an elementary consequence, not their factoring theorem—that almost all unrestricted semiprimes have a factor below \(N^\delta\), for every fixed \(\delta>0\). This says nothing comparable about balanced semiprimes.
+
+For **\(p-1\)**, your obstruction is correct for the usual smoothness-based argument, but warrants qualification. At \(B=N^c\), balanced factors give smoothness parameter \(u\sim1/(2c)\); at \(c=1/6\), the Dickman prediction is a constant success probability, not almost-all success. The exact shifted-prime Dickman law remains conditional; see [Bharadwaj–Rodgers, arXiv:2402.11884](https://arxiv.org/abs/2402.11884). Stage 2 changes both cost and the success condition, and fixed-base behaviour depends on multiplicative orders. I found **no proved sub-\(1/5\) complete-input average**, but also no universal impossibility theorem covering every deterministic stage-2 design.
+
+An almost-all theorem alone does not establish the same mean: a fast pass costing \(T\), exceptional fraction \(f\), and fallback bound \(W\) yields \(O(T+fW)\).
+
+**Verdict:** deterministic complete factoring with proved average cost \(N^{1/6+o(1)}\), or \(N^{1/6}\operatorname{polylog}N\), over the specified balanced-semiprime distributions was **not found by us**. Nor did we find an established qualifying almost-all theorem. Carella states a stronger claim with the proof problem identified above; positive-proportion \(p-1\) results and local sieve averages do not meet the requested guarantee. This search does not establish novelty or nonexistence.
