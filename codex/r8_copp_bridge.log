@@ -1,0 +1,598 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /home/knielsen/code/factoring-connection
+model: gpt-6.1-sol
+provider: openai
+approval: on-request
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14eb9-c478-7f93-a66b-2feb2da135f8
+--------
+user
+Verify and contextualize (use web search for prior art; label proved / conjectured / refuted / UNVERIFIED; be adversarial). Read /home/knielsen/code/factoring-connection/notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md and notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md (read-only).
+1. Prove or refute claim 1, the integrality of k = H(x0)/p^m and a^{H(1−p0)} ≡ a^k (mod p), for the exact lattice basis stated. Also state precisely which basis variants keep it true (x-shifts beyond degree m, etc.).
+2. Recompute claim 2 independently: the Minkowski/LLL bound on |k| = |H(x0)|/p^m for the lattice L_{m,d}, with X = N^β, p ≈ N^{1/2} and d = 2m (and optimize over d). Is the slope (β − 1/4)m + (1−2β)/4 right? Is m = 1 really optimal for β > 1/4 under the best d? Give the exact determinant computation. Check numerically with small exact LLL (fpylll is installed in /home/knielsen/code/factoring-connection/.venv) if feasible. Write any scripts only under /tmp/claude-r8/.
+3. Assess claim 3 critically. In particular, Harvey's N^{1/5} also uses polynomial evaluation (Pollard–Strassen-type) for collision detection; so is "exponent vs base ring" really the source of the 1/5-vs-1/4 gap? Compare with Harvey 2020 §§3–4 and Hittmeir 2021.
+4. Prior art: has the "Coppersmith lattice polynomial gives an exponent identity with a small hidden quotient" bridge appeared? Check Harvey 2020 (lattice choice of weights), Harvey–Hittmeir "A deterministic algorithm for finding r-power divisors" (arXiv 2202.12401), Hittmeir 2021, Oznovich–Volk 2025, Harvey–Hittmeir 2026 (2601.11131), and any "Coppersmith + baby-step giant-step" papers.
+5. Implication: within this bridge, can any lattice family with m ≥ 2 give a per-branch window shrinking faster than order 2 (δ > 3/2 in the T = N^{1/(2(1+δ))} accounting)? Answer yes/no with a derivation.
+Output concise Markdown.
+
+codex
+I’ll check the algebra and determinant bounds independently, then compare the bridge with the cited papers. I’ll keep the notes unchanged and put any scripts under `/tmp/claude-r8/`.
+
+exec
+/bin/bash -lc "pwd && rg --files -g 'AGENTS.md' -g '*2026-10-18*coppersmith*' -g '*2026-10-18*mod_M2*' -g '*Harvey*' -g '*Hittmeir*' -g '*Oznovich*'" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+/home/knielsen/code/factoring-connection
+notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md
+notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md
+
+exec
+/bin/bash -lc 'cat notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+# User-supplied results from a parallel session (2026-10-18): Coppersmith lattice ↔ Harvey/Hittmeir exponents
+
+1. **The bridge.** For H in Coppersmith's shift lattice L_{m,d} spanned by g_{i,j}(x) = x^i (x+p0)^j N^{m−j}, with x0 = p − p0:
+   - k = H(x0)/p^m = Σ c_ij x0^i q^{m−j} is an integer.
+   - Mod p−1 we have H(1−p0) ≡ k, hence a^{H(1−p0)} ≡ a^k (mod p).
+   - At m = 1 with H(x) = (x+p0)² − S0(x+p0) + N: k = p+q−S0 and H(1−p0) − k = (p−1)(q−1). This is exactly the Fermat/Lehman search a^{N+1} = a^{p+q}.
+   - Orchestrator checked the integrality, the mod-(p−1) reduction and the m = 1 example by hand.
+2. **Phase transition (claimed):** the Minkowski bound gives log|k|/log N = (β − 1/4)·m + (1−2β)/4 at d = 2m, with X = N^β. For β > 1/4 a higher multiplicity m inflates |k|, so m = 1 (order-2 cancellation) is optimal. NOT yet independently verified.
+3. **Exponent vs base ring (claimed):** p² − S0 p + N = k·p. Mod p the factor p is a zero divisor and k is annihilated, so Strassen-type base-ring evaluation is stuck at N^{1/4}. Mod p∓1 the factor p is a unit, which exposes the compressed k ~ X²/√N and gives N^{1/5}. A heuristic explanation.
+# User-supplied derivation (2026-10-18): why M (mod-M² lock) and K (Taylor centers) collapse to T = MK = N^{1/5}
+
+- Weighted sums a·p + b·q are fixed mod M² exactly for (a,b) in the index-M sublattice Λ_{r,s} = {a r − b s ≡ 0 (mod M)} ⇔ a r² ≡ b N (mod M).
+- Restricting the weights to Λ inflates the coefficient size to B ~ (MK)^{1/2}. With K Taylor centers of width ε = N^{1/2}/K, the second-order remainder is R ~ Bε²/N^{1/2} = M^{1/2} K^{−3/2} N^{1/2}. Steps per branch: S = R/M² = N^{1/2}/(MK)^{3/2}.
+- Total: L_baby + MK + MK·S/L_baby. Balancing gives T^{5/2} = N^{1/2}, i.e. T = MK = N^{1/5} (Harvey's exponent).
+- "Crack" attempt: decouple r from (a,b). The user's own conclusion is that it fails: each window needs M pairs. Restricting to the sublattice gives an M^{1/2} net gain, the same as K^{1/2}.
+
+Orchestrator generalization: if a scheme gives per-branch steps S ~ N^{1/2}/T^{δ}, the balance gives T = N^{1/(2(1+δ))}. Here δ = 3/2 → 1/5. Cancelling the second-order term with no coefficient blow-up (δ = 5/2) would give N^{1/7}. This is exactly the test for cyclotomic Frobenius handles; codex r7 found that the naive cubic widens the window instead.
+
+web search: 
+exec
+/bin/bash -lc 'for p in /AGENTS.md /home/AGENTS.md /home/knielsen/AGENTS.md /home/knielsen/code/AGENTS.md /home/knielsen/code/factoring-connection/AGENTS.md; do if [ -f "$p" ]; then cat "$p"; fi; done' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+web search: Harvey 2020 deterministic integer factorisation N 1/5 lattice weights ...
+web search: 
+web search: Oznovich Volk 2025 deterministic factorization Coppersmith ...
+exec
+/bin/bash -lc 'rg --files notes | head -60' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+notes/trackE_analysis.md
+notes/trackC_candidates.md
+notes/eps_prereg.md
+notes/trackA_analysis.md
+notes/trackC_tal_audit.md
+notes/codex_r1_mechanisms.md
+notes/codex_r4_sos_classgroup.md
+notes/tower_results.md
+notes/repair_C2R_prereg.md
+notes/codex_r6_primality_lit.md
+notes/codex_r6_eps_reduction.md
+notes/trackE_candidates.md
+notes/prior_art_map.md
+notes/codex_r1_tal_bgs.md
+notes/repair_C2R_results.md
+notes/cycloharvey_prereg.md
+notes/codex_r1_priorart.md
+notes/cycloharvey_results.md
+notes/trackA_candidates.md
+notes/primality_analysis.md
+notes/codex_r7_cyclo_harvey.md
+notes/review_and_repairs.md
+notes/AGENT_RULES.md
+notes/codex_r2_generic_ring.md
+notes/codex_r3_critic.md
+notes/repair_adjudication.md
+notes/pm1bsgs_analysis.md
+notes/trackBD_analysis.md
+notes/trackBD_candidates.md
+notes/eps_results.md
+notes/primality_explainer.md
+notes/seed_lemmas.md
+notes/trackC_analysis.md
+notes/user_ideas/2026-10-18_schoof_semigroups_and_cross_difference.md
+notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md
+notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md
+notes/user_ideas/2026-10-18_pm1_frobenius_bsgs.md
+
+web search: 
+web search: 
+codex
+The exponent identity holds for the usual integral shifts. Two qualifications matter: the notes omit the basis index ranges, and the quadratic example needs rank 3, whereas \(m=1,d=2m\) gives rank 2. I also found a December 2025 paper that explicitly combines a rank-3 Coppersmith lattice with exponent collisions; I’m checking how closely it matches this bridge.
+
+web search: 
+web search: 'lattice'
+exec
+/bin/bash -lc "mkdir -p /tmp/claude-r8
+/home/knielsen/code/factoring-connection/.venv/bin/python -c 'import fpylll, sympy; print(fpylll.__version__, sympy.__version__)'" in /home/knielsen/code/factoring-connection
+ succeeded in 148ms:
+0.6.4 1.14.0
+
+web search: 
+web search: 
+exec
+/bin/bash -lc 'curl -L --fail --max-time 30 -o /tmp/claude-r8/harvey2020.html https://arxiv.org/html/2010.05450' in /home/knielsen/code/factoring-connection
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: arxiv.org
+
+web search: 
+web search: https://arxiv.org/html/2105.11105
+codex
+The claimed slope at \(d=2m\) checks out. Optimizing \(d\) changes the bound, though \(m=1\) still minimizes that determinant-based exponent for \(\beta>1/4\). There is also an algorithmic gap: the guaranteed short vector can give the tautology \(H=(x+p_0)^m,\ k=1\). And an upper bound from a determinant cannot establish impossibility for every lattice family.
+
+web search: 
+web search: 'lattice'
+exec
+/bin/bash -lc 'git status --short' in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+?? codex/r8_copp_bridge.log
+?? codex/r8_copp_bridge.md
+?? experiments/analysis/cycloharvey_search.json
+?? experiments/raw/cycloharvey_constructive.jsonl
+?? experiments/raw/cycloharvey_guessed.jsonl
+?? notes/cycloharvey_results.md
+
+apply patch
+patch: completed
+/tmp/claude-r8/check_bridge.py
+diff --git a//tmp/claude-r8/check_bridge.py b//tmp/claude-r8/check_bridge.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..8e4fd6e52976d0f6b8df4afd76ee792a9b5820e0
+--- /dev/null
++++ b//tmp/claude-r8/check_bridge.py
+@@ -0,0 +1,87 @@
++from fractions import Fraction as Q
++from math import comb, isqrt, log
++import json
++from pathlib import Path
++from fpylll import IntegerMatrix, LLL
++from sympy import Matrix, nextprime
++
++OUT = Path('/tmp/claude-r8')
++
++def coeff_f(j, p0, scale=1, shift=0, d=None):
++    v = [0] * d
++    for t in range(j + 1):
++        v[t + shift] = scale * comb(j, t) * p0 ** (j-t)
++    return v
++
++def gs_check(rows):
++    stars, lengths = [], []
++    for i, row in enumerate(rows):
++        v = list(map(Q, row))
++        mus = []
++        for j, star in enumerate(stars):
++            mu = sum(Q(a)*b for a,b in zip(row, star)) / lengths[j]
++            mus.append(mu)
++            assert abs(mu) <= Q(1,2)
++            v = [a-mu*b for a,b in zip(v,star)]
++        length = sum(a*a for a in v)
++        if i:
++            assert length >= (Q(3,4)-mus[-1]**2)*lengths[-1]
++        stars.append(v)
++        lengths.append(length)
++
++def evaluate(h, x):
++    return sum(c*x**i for i,c in enumerate(h))
++
++results = []
++for seed in (10**6, 10**9):
++    p, q = int(nextprime(seed)), int(nextprime(13*seed//10))
++    N = p*q
++    for beta in (Q(1,5), Q(3,10), Q(2,5)):
++        # Exact floor N**beta, with rational beta.
++        from sympy import integer_nthroot
++        X = int(integer_nthroot(N**beta.numerator, beta.denominator)[0])
++        p0 = p-X//3
++        x0 = p-p0
++        for m in range(1,5):
++            for d in sorted(set((m+1, 2*m, 2*m+1))):
++                raw = [coeff_f(j,p0,N**(m-j),d=d) for j in range(m)]
++                raw += [coeff_f(m,p0,shift=i,d=d) for i in range(d-m)]
++                weighted = [[c*X**t for t,c in enumerate(v)] for v in raw]
++                determinant = N**(m*(m+1)//2)*X**(d*(d-1)//2)
++                assert abs(int(Matrix(weighted).det())) == determinant
++                B = IntegerMatrix.from_matrix(weighted)
++                U = IntegerMatrix.identity(d)
++                LLL.reduction(B,U,delta=0.75,eta=0.501,method='proved')
++                reduced = [[int(B[i,j]) for j in range(d)] for i in range(d)]
++                transform = Matrix([[int(U[i,j]) for j in range(d)] for i in range(d)])
++                assert abs(int(transform.det())) == 1
++                assert transform*Matrix(weighted) == Matrix(reduced)
++                gs_check(reduced)
++                normsquared = sum(v*v for v in reduced[0])
++                assert normsquared**(2*d) <= 2**(d*(d-1))*determinant**4
++                ks, trivial = [], []
++                for row in reduced:
++                    assert all(c % X**t == 0 for t,c in enumerate(row))
++                    h = [c//X**t for t,c in enumerate(row)]
++                    hx = evaluate(h,x0)
++                    assert hx % p**m == 0
++                    k = hx//p**m
++                    exponent = evaluate(h,1-p0)
++                    assert (exponent-k)%(p-1) == 0
++                    assert pow(2,exponent,p) == pow(2,k,p)
++                    ks.append(k)
++                    # Candidate equation identically zero means no factor information.
++                    trivial.append(h == coeff_f(m,p0,scale=k,d=d))
++                results.append(dict(N=N,p=p,q=q,beta=str(beta),X=X,m=m,d=d,
++                    quotient_first=ks[0], first_trivial=trivial[0],
++                    first_norm_logN=log(normsquared)/(2*log(N)),
++                    quotient_bound_exponent=float(beta*(d-1)/2+Q(m*(m+1),2*d)-Q(m,2)),
++                    quotients=ks, trivial=trivial))
++
++(OUT/'results.json').write_text(json.dumps(results,indent=2)+'\n')
++print('Cases:',len(results),' All determinants, unimodular transforms, rational LLL conditions, quotient integrality, and exponent identities passed.')
++print('First-vector tautologies:',sum(r['first_trivial'] for r in results))
++for r in results:
++    if r['p']<10**7 and r['beta']=='3/10':
++        print('m=%d d=%d E=%.6f first_k=%d trivial=%s all_k=%s' %
++              (r['m'],r['d'],r['quotient_bound_exponent'],r['quotient_first'],r['first_trivial'],r['quotients']))
+
+exec
+/bin/bash -lc '/home/knielsen/code/factoring-connection/.venv/bin/python /tmp/claude-r8/check_bridge.py' in /home/knielsen/code/factoring-connection
+ succeeded in 207ms:
+Cases: 66  All determinants, unimodular transforms, rational LLL conditions, quotient integrality, and exponent identities passed.
+First-vector tautologies: 56
+m=1 d=2 E=0.150000 first_k=1 trivial=True all_k=[1, -1844]
+m=1 d=3 E=0.133333 first_k=1 trivial=True all_k=[1, -26, -107]
+m=2 d=3 E=0.300000 first_k=1 trivial=True all_k=[1, -1820, 3445183]
+m=2 d=4 E=0.200000 first_k=1 trivial=True all_k=[1, -26, -106, -4937]
+m=2 d=5 E=0.200000 first_k=1 trivial=True all_k=[1, -26, -106, -74, -243]
+m=3 d=4 E=0.450000 first_k=1 trivial=True all_k=[1, -1796, 3401508, -6435596390]
+m=3 d=6 E=0.250000 first_k=1 trivial=True all_k=[1, -25, -105, -74, -268, -13193]
+m=3 d=7 E=0.257143 first_k=1 trivial=True all_k=[1, -25, -105, -74, -268, -430, -520]
+m=4 d=5 E=0.600000 first_k=1 trivial=True all_k=[1, -1771, 3358408, -6353969181, 12028065393242]
+m=4 d=8 E=0.300000 first_k=1 trivial=True all_k=[1, -24, -104, -74, -268, -430, -520, -35846]
+m=4 d=9 E=0.311111 first_k=1 trivial=True all_k=[1, -24, -104, -74, -268, -430, -520, 1283, -390]
+
+web search: 
+web search: "Coppersmith" "hidden quotient" factoring exponent ...
+web search: 
+web search: https://arxiv.org/pdf/2512.19076
+codex
+The exact LLL checks passed in 66 small cases, including determinant and rational checks of the reduced bases. The first vector gave the tautology in 56 cases. The closest prior art explicitly uses a second vector to avoid this problem. For the stated lattice family, the determinant bound gives no route past \(N^{1/5}\); extending that to all possible lattice families would require a separate impossibility proof.
+
+web search: 
+web search: 
+exec
+/bin/bash -lc "/home/knielsen/code/factoring-connection/.venv/bin/python - <<'PY'
+from fractions import Fraction as F
+for beta in [F(1,4),F(3,10),F(1,3),F(2,5)]:
+    rows=[]
+    for m in range(1,8):
+        value,d=min((beta*(d-1)/2+F(m*(m+1),2*d)-F(m,2),d) for d in range(m+1,70))
+        rows.append((m,d,str(value)))
+    print('beta',beta,rows)
+PY" in /home/knielsen/code/factoring-connection
+ succeeded in 0ms:
+beta 1/4 [(1, 3, '1/12'), (2, 5, '1/10'), (3, 7, '3/28'), (4, 9, '1/9'), (5, 11, '5/44'), (6, 13, '3/26'), (7, 15, '7/60')]
+beta 3/10 [(1, 3, '2/15'), (2, 4, '1/5'), (3, 6, '1/4'), (4, 8, '3/10'), (5, 10, '7/20'), (6, 12, '2/5'), (7, 14, '9/20')]
+beta 1/3 [(1, 2, '1/6'), (2, 4, '1/4'), (3, 6, '1/3'), (4, 8, '5/12'), (5, 9, '1/2'), (6, 11, '19/33'), (7, 13, '17/26')]
+beta 2/5 [(1, 2, '1/5'), (2, 4, '7/20'), (3, 5, '1/2'), (4, 7, '22/35'), (5, 9, '23/30'), (6, 10, '9/10'), (7, 12, '31/30')]
+
+codex
+**The bridge is valid, the \(d=2m\) exponent is correct, and close prior art exists. The claimed universal obstruction to higher-order lattices is UNVERIFIED.** The main missing condition is that the short polynomial must give useful factor information.
+
+**1. Claim 1 — PROVED, with explicit basis conditions.**  
+Write \(N=pq\), with \(p\) prime, \(f(x)=x+p_0\), \(x_0=p-p_0\), and \(t=1-p_0\). For integral combinations of
+\[
+g_{i,j}=x^if(x)^jN^{m-j},\qquad i\ge0,\quad 0\le j\le m,
+\]
+one has
+\[
+k=\frac{H(x_0)}{p^m}
+ =\sum_{i,j}c_{i,j}x_0^iq^{m-j}\in\mathbb Z.
+\]
+Moreover,
+\[
+H(t)\equiv H(x_0)=p^mk\equiv k\pmod{p-1}.
+\]
+Thus \(a^{H(t)}\equiv a^k\pmod p\) for \(p\nmid a\), including negative exponents.
+
+The second argument actually applies to **every integral polynomial satisfying \(p^m\mid H(x_0)\)**.
+
+The precise preservation rule is therefore divisibility of every added generator at \(x_0\):
+
+- Arbitrary nonnegative \(x\)-shifts preserve it, including degrees beyond \(m\).
+- Unweighted \(x^if^j\) with \(j\ge m\) preserve it; their quotients are \(x_0^ip^{j-m}\).
+- More generally, \(x^if^jN^\ell\), with nonnegative indices and \(j+\ell\ge m\), preserve it.
+- The literal expression \(N^{m-j}f^j\) for \(j>m\) is generally nonintegral.
+- Reducing coefficients modulo \(N\) can break the property when \(m\ge2\); reducing modulo \(N^m\) preserves it.
+
+For the quadratic example,
+\[
+H=f^2-S_0f+N,\quad k=p+q-S_0,\quad
+H(t)-k=(p-1)(q-1).
+\]
+This is correct. It belongs to the usual **rank-3** \(m=1\) lattice, not the rank-2 lattice obtained from \(d=2m\).
+
+**2. Claim 2 — PROVED as an upper bound; its algorithmic interpretation needs correction.**  
+The note omits index ranges, so it does not uniquely specify a finite lattice. For the standard rank-\(d\) completion, \(d\ge m+1\), take
+\[
+N^m,N^{m-1}f,\ldots,Nf^{m-1},
+f^m,xf^m,\ldots,x^{d-m-1}f^m.
+\]
+Equivalently, the tail may be \(f^m,f^{m+1},\ldots,f^{d-1}\). Including all the original shifts of degree \(<d\) gives the same lattice.
+
+Embedding \(H\) as the coefficient vector of \(H(Xx)\), the basis is triangular, with diagonal
+\[
+N^m,N^{m-1}X,\ldots,NX^{m-1},X^m,\ldots,X^{d-1}.
+\]
+Consequently the **exact determinant** is
+\[
+D=N^{m(m+1)/2}X^{d(d-1)/2}.
+\]
+
+For \(|x_0|\le X\), Cauchy–Schwarz gives
+\[
+|k|\le\frac{\sqrt d\,\|H(Xx)\|_2}{p^m}.
+\]
+Minkowski guarantees a nonzero \(H\) with \(|k|\le dD^{1/d}/p^m\); classical \(3/4\)-LLL guarantees
+\[
+|k|\le
+\sqrt d\,2^{(d-1)/4}\frac{D^{1/d}}{p^m}.
+\]
+For fixed \(m,d\), \(X=N^\beta\), and \(p=\Theta(N^{1/2})\), the resulting exponent is
+\[
+E_{m,d}(\beta)=
+\frac{m(m+1)}{2d}+\frac{\beta(d-1)}2-\frac m2.
+\]
+This is an **upper-bound exponent**, not an equality for the actual quotient. The same determinant and LLL estimate appear in Harvey–Hittmeir’s Proposition 2.3, specialized to \(r=1\). [HH 2022](https://arxiv.org/html/2202.12401)
+
+At \(d=2m\),
+\[
+\boxed{E_{m,2m}=(\beta-\tfrac14)m+\frac{1-2\beta}{4}.}
+\]
+So the stated slope is right.
+
+Optimizing over integer \(d\), the minimizing dimension satisfies
+\[
+d(d-1)\le\frac{m(m+1)}{\beta}\le d(d+1),
+\]
+subject to \(d\ge m+1\); the continuous optimum is \(\sqrt{m(m+1)/\beta}\).
+
+**Yes: \(m=1\) minimizes this bound for every \(\beta>1/4\).** Indeed,
+\[
+E_{m,d}(1/4)=
+\frac18+\frac{(d-2m-1)^2-1}{8d}.
+\]
+For \(m\ge2\), hence \(d\ge3\), this is strictly greater than \(1/12=E_{1,3}(1/4)\), and its slope in \(\beta\) is at least \(1\). For \(m=1\),
+\[
+\min_dE_{1,d}=
+\begin{cases}
+\beta-\frac16,&1/4<\beta\le1/3 \quad(d=3),\\
+\beta/2,&\beta\ge1/3 \quad(d=2).
+\end{cases}
+\]
+
+**Critical limitation:** \(H=f^m\) gives \(k=1\), but the candidate equation \(H-kf^m=0\) is identically zero. Thus optimizing the first-vector bound does **not** optimize a factoring algorithm. Actual quotients also need not grow with multiplicity: replacing \(H\) by \(f^{m-1}H\) preserves its quotient.
+
+Numerically, **66 cases passed** exact determinant, unimodularity, rational LLL-condition, integrality, and exponent-identity checks. The first vector was a tautology in **56/66** cases. [Script](/tmp/claude-r8/check_bridge.py), [results](/tmp/claude-r8/results.json).
+
+**3. Claim 3 — REFUTED as an explanation of the complexity gap.**  
+Passing to exponents exposes the quotient, but does not itself explain \(1/5\) versus \(1/4\).
+
+Harvey §3 supplies short windows for weighted sums \(aq+bp\). Section 4 detects exponent collisions using a product polynomial over \(\mathbb Z/N\mathbb Z\), evaluation at powers of \(\alpha\), and gcds. Remark 3.4 identifies the improvement over Hittmeir as sharing a single BSGS search across the whole candidate space. Thus polynomial evaluation remains central to the \(N^{1/5}\) algorithm. [Harvey 2020, §§3–4](https://arxiv.org/html/2010.05450)
+
+Hittmeir likewise explicitly adapts Strassen’s polynomial collision machinery to weighted exponent searches. [Hittmeir 2021, §§3–4](https://arxiv.org/html/2006.16729)
+
+Also, the unweighted example does **not** generally give \(k=O(X^2/\sqrt N)\). With \(S_0\approx p_0+N/p_0\),
+\[
+k=(1-N/p_0^2)x_0+O(X^2/\sqrt N)+O(1).
+\]
+Quadratic cancellation requires stationary centering or suitable weights.
+
+The informative-vector calculation explains the familiar window better. For \(L_{1,3}\), when \(N^{1/4}\ll X\ll\sqrt N\), the known trivial direction has \(\lambda_1\asymp\sqrt N\). Successive minima then give
+\[
+\lambda_2\ll(D/\lambda_1)^{1/2}
+ \asymp N^{1/4}X^{3/2},
+\qquad
+|k|\ll N^{-1/4}X^{3/2}.
+\]
+Putting \(X=\sqrt N/T\) yields \(|k|\ll\sqrt N/T^{3/2}\). **Selecting an informative vector matters as much as the exponent identity.**
+
+**4. Prior art — novelty of the broad bridge is REFUTED.**
+
+| Work | Assessment |
+|---|---|
+| [Harvey 2020](https://arxiv.org/html/2010.05450) | Weighted exponent identities and global collision search. Explicit lattice selection of weights belongs to the subsequent joint paper, not this paper. |
+| [Hittmeir 2021](https://arxiv.org/html/2006.16729) | Weighted Fermat identities, centered hidden exponents, BSGS, and polynomial collision detection. No general multiplicity-\(m\) bridge located. |
+| [Harvey–Hittmeir 2021 preprint](https://arxiv.org/html/2105.11105) | Proposition 3.3 explicitly combines a rank-2 weight lattice, Taylor control, and a modulo-\(M^2\) lock. This is direct prior art for the second note. |
+| [Harvey–Hittmeir, 2202.12401](https://arxiv.org/html/2202.12401) | Supplies the polynomial lattice and determinant above, but uses the smallness condition to force quotient zero. The authors report unsuccessful attempts to incorporate their faster exponent-search ideas. |
+| [Oznovich–Volk 2025](https://arxiv.org/html/2506.07668v3) | Combines order finding with residue-class Coppersmith searches. No small-hidden-quotient exponent search located. |
+| [Harvey–Hittmeir 2026](https://arxiv.org/html/2601.11131v1) | Removes the target-order restriction in high-order-element construction. No new instance of this polynomial bridge located. |
+
+**Decisive close match:** Gao–Feng–Hu–Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector* (2025). Section 1.1 and §4 explicitly construct a Coppersmith polynomial \(g\), write \(g(x_0)=ip\), bound the hidden quotient \(i\), and convert it into an exponent collision modulo \(p\). They select a second LLL vector to avoid trivial collisions. Section 6 also explicitly uses
+\[
+g(x_0)=ip^r,\qquad
+\alpha^i\equiv\alpha^{g(1-M_j)}\pmod p.
+\]
+**PROVED:** this mechanism appears in prior literature. **UNVERIFIED here:** the paper’s full algorithmic correctness and claimed logarithmic improvements. [Paper, §§1.1, 4, 6](https://arxiv.org/html/2512.19076v1)
+
+**5. Implication — NO for improvement certified by this \(L_{m,d}\) determinant bound; arbitrary-family impossibility is UNVERIFIED.**  
+Set \(T=N^\tau\), \(X=\sqrt N/T\), so \(\beta=1/2-\tau\). In the stated accounting, beating \(1/5\) requires \(\tau<1/5\), and the quotient-window bound must be at most \(N^\tau\).
+
+But
+\[
+\min_{\substack{m\ge2\\d\ge m+1}}E_{m,d}(3/10)=\frac15,
+\]
+attained at \((m,d)=(2,4),(2,5)\). One exact verification is
+\[
+20d\bigl(E_{m,d}(3/10)-1/5\bigr)
+=3d^2-(10m+7)d+10m(m+1).
+\]
+For \(m=2\), this is \(3(d-4)(d-5)\ge0\) for integer \(d\); for \(m\ge3\), its discriminant is negative.
+
+If \(\tau<1/5\), then \(\beta>3/10\), so every such exponent exceeds \(1/5>\tau\). Hence this determinant guarantee cannot certify a faster algorithm. For example,
+\[
+m=2,d=4:\quad |k|\ll N^{1/2}/T^{3/2},
+\]
+whereas \(d=5\) gives \(N^{3/5}/T^2\): the larger power of \(T\) carries an extra power of \(N\).
+
+**A universal “no lattice family can achieve \(\delta>3/2\)” does not follow.** These are upper bounds, not lower bounds on informative vectors. Moreover, multiplying any \(m=1\) construction by \(f^{m-1}\) embeds the identical quotient and exponent identity at every \(m\ge2\). Multiplicity alone cannot establish a no-go theorem.
+tokens used
+121,494
+**The bridge is valid, the \(d=2m\) exponent is correct, and close prior art exists. The claimed universal obstruction to higher-order lattices is UNVERIFIED.** The main missing condition is that the short polynomial must give useful factor information.
+
+**1. Claim 1 — PROVED, with explicit basis conditions.**  
+Write \(N=pq\), with \(p\) prime, \(f(x)=x+p_0\), \(x_0=p-p_0\), and \(t=1-p_0\). For integral combinations of
+\[
+g_{i,j}=x^if(x)^jN^{m-j},\qquad i\ge0,\quad 0\le j\le m,
+\]
+one has
+\[
+k=\frac{H(x_0)}{p^m}
+ =\sum_{i,j}c_{i,j}x_0^iq^{m-j}\in\mathbb Z.
+\]
+Moreover,
+\[
+H(t)\equiv H(x_0)=p^mk\equiv k\pmod{p-1}.
+\]
+Thus \(a^{H(t)}\equiv a^k\pmod p\) for \(p\nmid a\), including negative exponents.
+
+The second argument actually applies to **every integral polynomial satisfying \(p^m\mid H(x_0)\)**.
+
+The precise preservation rule is therefore divisibility of every added generator at \(x_0\):
+
+- Arbitrary nonnegative \(x\)-shifts preserve it, including degrees beyond \(m\).
+- Unweighted \(x^if^j\) with \(j\ge m\) preserve it; their quotients are \(x_0^ip^{j-m}\).
+- More generally, \(x^if^jN^\ell\), with nonnegative indices and \(j+\ell\ge m\), preserve it.
+- The literal expression \(N^{m-j}f^j\) for \(j>m\) is generally nonintegral.
+- Reducing coefficients modulo \(N\) can break the property when \(m\ge2\); reducing modulo \(N^m\) preserves it.
+
+For the quadratic example,
+\[
+H=f^2-S_0f+N,\quad k=p+q-S_0,\quad
+H(t)-k=(p-1)(q-1).
+\]
+This is correct. It belongs to the usual **rank-3** \(m=1\) lattice, not the rank-2 lattice obtained from \(d=2m\).
+
+**2. Claim 2 — PROVED as an upper bound; its algorithmic interpretation needs correction.**  
+The note omits index ranges, so it does not uniquely specify a finite lattice. For the standard rank-\(d\) completion, \(d\ge m+1\), take
+\[
+N^m,N^{m-1}f,\ldots,Nf^{m-1},
+f^m,xf^m,\ldots,x^{d-m-1}f^m.
+\]
+Equivalently, the tail may be \(f^m,f^{m+1},\ldots,f^{d-1}\). Including all the original shifts of degree \(<d\) gives the same lattice.
+
+Embedding \(H\) as the coefficient vector of \(H(Xx)\), the basis is triangular, with diagonal
+\[
+N^m,N^{m-1}X,\ldots,NX^{m-1},X^m,\ldots,X^{d-1}.
+\]
+Consequently the **exact determinant** is
+\[
+D=N^{m(m+1)/2}X^{d(d-1)/2}.
+\]
+
+For \(|x_0|\le X\), Cauchy–Schwarz gives
+\[
+|k|\le\frac{\sqrt d\,\|H(Xx)\|_2}{p^m}.
+\]
+Minkowski guarantees a nonzero \(H\) with \(|k|\le dD^{1/d}/p^m\); classical \(3/4\)-LLL guarantees
+\[
+|k|\le
+\sqrt d\,2^{(d-1)/4}\frac{D^{1/d}}{p^m}.
+\]
+For fixed \(m,d\), \(X=N^\beta\), and \(p=\Theta(N^{1/2})\), the resulting exponent is
+\[
+E_{m,d}(\beta)=
+\frac{m(m+1)}{2d}+\frac{\beta(d-1)}2-\frac m2.
+\]
+This is an **upper-bound exponent**, not an equality for the actual quotient. The same determinant and LLL estimate appear in Harvey–Hittmeir’s Proposition 2.3, specialized to \(r=1\). [HH 2022](https://arxiv.org/html/2202.12401)
+
+At \(d=2m\),
+\[
+\boxed{E_{m,2m}=(\beta-\tfrac14)m+\frac{1-2\beta}{4}.}
+\]
+So the stated slope is right.
+
+Optimizing over integer \(d\), the minimizing dimension satisfies
+\[
+d(d-1)\le\frac{m(m+1)}{\beta}\le d(d+1),
+\]
+subject to \(d\ge m+1\); the continuous optimum is \(\sqrt{m(m+1)/\beta}\).
+
+**Yes: \(m=1\) minimizes this bound for every \(\beta>1/4\).** Indeed,
+\[
+E_{m,d}(1/4)=
+\frac18+\frac{(d-2m-1)^2-1}{8d}.
+\]
+For \(m\ge2\), hence \(d\ge3\), this is strictly greater than \(1/12=E_{1,3}(1/4)\), and its slope in \(\beta\) is at least \(1\). For \(m=1\),
+\[
+\min_dE_{1,d}=
+\begin{cases}
+\beta-\frac16,&1/4<\beta\le1/3 \quad(d=3),\\
+\beta/2,&\beta\ge1/3 \quad(d=2).
+\end{cases}
+\]
+
+**Critical limitation:** \(H=f^m\) gives \(k=1\), but the candidate equation \(H-kf^m=0\) is identically zero. Thus optimizing the first-vector bound does **not** optimize a factoring algorithm. Actual quotients also need not grow with multiplicity: replacing \(H\) by \(f^{m-1}H\) preserves its quotient.
+
+Numerically, **66 cases passed** exact determinant, unimodularity, rational LLL-condition, integrality, and exponent-identity checks. The first vector was a tautology in **56/66** cases. [Script](/tmp/claude-r8/check_bridge.py), [results](/tmp/claude-r8/results.json).
+
+**3. Claim 3 — REFUTED as an explanation of the complexity gap.**  
+Passing to exponents exposes the quotient, but does not itself explain \(1/5\) versus \(1/4\).
+
+Harvey §3 supplies short windows for weighted sums \(aq+bp\). Section 4 detects exponent collisions using a product polynomial over \(\mathbb Z/N\mathbb Z\), evaluation at powers of \(\alpha\), and gcds. Remark 3.4 identifies the improvement over Hittmeir as sharing a single BSGS search across the whole candidate space. Thus polynomial evaluation remains central to the \(N^{1/5}\) algorithm. [Harvey 2020, §§3–4](https://arxiv.org/html/2010.05450)
+
+Hittmeir likewise explicitly adapts Strassen’s polynomial collision machinery to weighted exponent searches. [Hittmeir 2021, §§3–4](https://arxiv.org/html/2006.16729)
+
+Also, the unweighted example does **not** generally give \(k=O(X^2/\sqrt N)\). With \(S_0\approx p_0+N/p_0\),
+\[
+k=(1-N/p_0^2)x_0+O(X^2/\sqrt N)+O(1).
+\]
+Quadratic cancellation requires stationary centering or suitable weights.
+
+The informative-vector calculation explains the familiar window better. For \(L_{1,3}\), when \(N^{1/4}\ll X\ll\sqrt N\), the known trivial direction has \(\lambda_1\asymp\sqrt N\). Successive minima then give
+\[
+\lambda_2\ll(D/\lambda_1)^{1/2}
+ \asymp N^{1/4}X^{3/2},
+\qquad
+|k|\ll N^{-1/4}X^{3/2}.
+\]
+Putting \(X=\sqrt N/T\) yields \(|k|\ll\sqrt N/T^{3/2}\). **Selecting an informative vector matters as much as the exponent identity.**
+
+**4. Prior art — novelty of the broad bridge is REFUTED.**
+
+| Work | Assessment |
+|---|---|
+| [Harvey 2020](https://arxiv.org/html/2010.05450) | Weighted exponent identities and global collision search. Explicit lattice selection of weights belongs to the subsequent joint paper, not this paper. |
+| [Hittmeir 2021](https://arxiv.org/html/2006.16729) | Weighted Fermat identities, centered hidden exponents, BSGS, and polynomial collision detection. No general multiplicity-\(m\) bridge located. |
+| [Harvey–Hittmeir 2021 preprint](https://arxiv.org/html/2105.11105) | Proposition 3.3 explicitly combines a rank-2 weight lattice, Taylor control, and a modulo-\(M^2\) lock. This is direct prior art for the second note. |
+| [Harvey–Hittmeir, 2202.12401](https://arxiv.org/html/2202.12401) | Supplies the polynomial lattice and determinant above, but uses the smallness condition to force quotient zero. The authors report unsuccessful attempts to incorporate their faster exponent-search ideas. |
+| [Oznovich–Volk 2025](https://arxiv.org/html/2506.07668v3) | Combines order finding with residue-class Coppersmith searches. No small-hidden-quotient exponent search located. |
+| [Harvey–Hittmeir 2026](https://arxiv.org/html/2601.11131v1) | Removes the target-order restriction in high-order-element construction. No new instance of this polynomial bridge located. |
+
+**Decisive close match:** Gao–Feng–Hu–Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector* (2025). Section 1.1 and §4 explicitly construct a Coppersmith polynomial \(g\), write \(g(x_0)=ip\), bound the hidden quotient \(i\), and convert it into an exponent collision modulo \(p\). They select a second LLL vector to avoid trivial collisions. Section 6 also explicitly uses
+\[
+g(x_0)=ip^r,\qquad
+\alpha^i\equiv\alpha^{g(1-M_j)}\pmod p.
+\]
+**PROVED:** this mechanism appears in prior literature. **UNVERIFIED here:** the paper’s full algorithmic correctness and claimed logarithmic improvements. [Paper, §§1.1, 4, 6](https://arxiv.org/html/2512.19076v1)
+
+**5. Implication — NO for improvement certified by this \(L_{m,d}\) determinant bound; arbitrary-family impossibility is UNVERIFIED.**  
+Set \(T=N^\tau\), \(X=\sqrt N/T\), so \(\beta=1/2-\tau\). In the stated accounting, beating \(1/5\) requires \(\tau<1/5\), and the quotient-window bound must be at most \(N^\tau\).
+
+But
+\[
+\min_{\substack{m\ge2\\d\ge m+1}}E_{m,d}(3/10)=\frac15,
+\]
+attained at \((m,d)=(2,4),(2,5)\). One exact verification is
+\[
+20d\bigl(E_{m,d}(3/10)-1/5\bigr)
+=3d^2-(10m+7)d+10m(m+1).
+\]
+For \(m=2\), this is \(3(d-4)(d-5)\ge0\) for integer \(d\); for \(m\ge3\), its discriminant is negative.
+
+If \(\tau<1/5\), then \(\beta>3/10\), so every such exponent exceeds \(1/5>\tau\). Hence this determinant guarantee cannot certify a faster algorithm. For example,
+\[
+m=2,d=4:\quad |k|\ll N^{1/2}/T^{3/2},
+\]
+whereas \(d=5\) gives \(N^{3/5}/T^2\): the larger power of \(T\) carries an extra power of \(N\).
+
+**A universal “no lattice family can achieve \(\delta>3/2\)” does not follow.** These are upper bounds, not lower bounds on informative vectors. Moreover, multiplying any \(m=1\) construction by \(f^{m-1}\) embeds the identical quotient and exponent identity at every \(m\ge2\). Multiplicity alone cannot establish a no-go theorem.
