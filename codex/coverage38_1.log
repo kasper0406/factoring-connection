@@ -1,0 +1,1865 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a150af-68cb-78f2-b472-f97f2b11476e
+--------
+user
+You are a research mathematician (analytic number theory: exponential sums, Kloosterman sums, sieve methods, geometry of numbers; and computational number theory). This is a BLIND attempt: work the problems yourself first, then check the literature with web search. You have read-only access to /Volumes/git/factoring-connection; write scratch scripts in your current working directory. Background (optional): notes/dchworst_results.md (Theorems W, R and barriers B1-B4), notes/dcltheorem_results.md (Theorem D').
+
+## Setting
+
+N = pq, primes p < q <= 2p, P = sqrt(N). A weight is a primitive integer vector v = (A,B), 1 <= |A|, B <= H. Write delta_v = Bp - Aq. A modulus set L is J moduli near Y (primes in (Y,2Y], or other). The pair (p,q) is COVERED iff some weight v and some M in L satisfy M | delta_v. Theorem R (proved): a deterministic algorithm factors every balanced N whose pair is covered, at cost N^{1/6+o(1)} + (list cost); list cost X = T + sqrt(sum of windows) where T = #targets = J*H^2 and each target (v,M) has window ~ H*P/M^2 (class lock mod M^2, HH 2022 Prop 3.3). A Lehman-style variant uses only |delta_v| <= Delta and window Delta^2/(H P M^2) (stationary point of x -> Bx + AN/x).
+
+Write lambda = expected number of covering events for a random pair = sum_{v,M} 1/M ~ J H^2 / Y.
+
+Our computation (please CHECK it): if every pair is covered whenever lambda >= Lambda(J), the worst-case cost is N^{1/5} * (Lambda^4 / J)^{1/5} up to N^{o(1)}, both for full windows and for Lehman windows with any Delta. So a worst-case exponent below 1/5 needs a coverage theorem with Lambda < J^{1/4 - delta}, i.e. for J ~ Y: every pair has a weight of height <= Y^{1/8-delta} with a band-prime divisor of Bp - Aq (P ~ Y^{25/8}). Minkowski (one modulus, H = sqrt(Y)) gives Lambda = J, i.e. exactly 1/5 (Harvey's exponent).
+
+Known barriers (do NOT redo): counting with error ~ sqrt(J) gives only Lambda >= J^{1/2}; single-modulus pigeonhole gives Lambda = J; any proof also valid for all coprime (p,q) implies, via (p,q) = (x,x+1), the sparse covering statement "some bx - a, |a|,|b| <= H, has a prime factor in (Y,2Y]".
+
+## Questions (answer each; label every claim PROVED / CONJECTURED / UNVERIFIED / REFUTED; show computations)
+
+1. **Design.** Verify or refute the universal formula cost = N^{1/5} (Lambda^4/J)^{1/5}. Is there ANY design in this framework (wide prime ranges (Y, Y^{1+kappa}], multiscale bands with per-scale weights, composite or smooth moduli, prime powers, both factors, signed weights and (1,1), Lehman/stationary-point windows of span ~ m^2, rectangles instead of squares of weights) for which the required worst-case coverage threshold is weaker than Lambda < J^{1/4}? In particular, is there a design where Lambda ~ J^{1/2} (square-root cancellation level) already gives an exponent below 1/5? Is there a design whose coverage statement is a genuine statement about an interval around a PUBLIC (N-computable) point, so that unconditional short-interval theorems (Jutila, Friedlander-Lagarias, Harman's "Prime-detecting sieves", Baker-Harman, Ford's divisors-in-intervals) would apply?
+
+2. **Reciprocity / Kloosterman.** For a fixed pair, the number of (B, l) with B <= H and l | Bp - Aq for some |A| <= H equals #{(B,l): ||B p lbar / q|| <~ H/Y}, lbar = l^{-1} mod q. By Erdos-Turan this is governed by K(h) = sum_{l in band} e(h p lbar / q). (a) What is the best known bound for sum_{l prime, Y<l<=2Y} e(a lbar/q) with q prime and Y = q^{0.32}? (Karatsuba, Bourgain-Garaev 2014, Korolev, Irving, Fouvry-Shparlinski, Kerr-Shkredov-Shparlinski-Zaharescu, Baker.) Same for integer variable n in (Y,2Y] (incomplete Kloosterman sums; Hooley's R*). (b) Show precisely whether ANY pointwise bound sup_h |K(h)| <= kappa can certify coverage at Lambda < sqrt(J) (we believe not: random points placed in the complement of the target set have |K(h)| ~ sqrt(J log)). (c) What bilinear estimate (cancellation over h AND l) would give Lambda < J^{1/4}? Is it implied by any standard conjecture? (d) Does a lower-bound sieve (Harman's sieve: positivity from Type I/II information) change the error budget, or can one simply use all integer moduli in (Y,2Y] (no sieve needed) since the class lock works for squarefree moduli coprime to N?
+
+3. **Dichotomy.** Lehman/Fermat with weight v finds p in time ~ sqrt(delta_v^2/(height(v) P)) (stationary point). So pairs with an unusually good rational approximation q/p ~ A/B are cheap. Can you prove a dichotomy of the form "uncovered at height H for all band primes => some public or cheaply exploitable structure" (well-approximable q/p, structure of p-1, q-1, ord, etc.)? Note that (x, x+1) and every linear family (p,q) = (ax+b, cx+d) have a constant delta at a fixed weight, hence are Lehman-easy; does that defeat barrier B3? What residual coverage statement is then needed for Dirichlet-tight pairs, and does it still imply a sparse interval-type statement for some other specialisation?
+
+4. **Conditional.** Identify the weakest STANDARD named hypothesis (GRH, Elliott-Halberstam, Hooley's R*, Montgomery-type, Cramer-type gap conjectures for integers with a prime factor in a band, Erdos-Odlyzko-Sarkozy products of primes in residue classes, equidistribution of t mod l) that implies worst-case coverage with Lambda < J^{1/4}, hence deterministic worst-case factoring below N^{1/5}, or even N^{1/6+o(1)}. Check carefully whether R* suffices (we believe it gives only Lambda >= J^{1/2}). Is a conditional deterministic N^{1/6+o(1)} (or < 1/5) factoring theorem under a standard hypothesis already in the literature? (Known: Schoof 1982 N^{1/5+eps} under GRH; Umans-Wang 1/6 under SPDC.)
+
+5. Anything else: a log-factor gain, a provable gain for a special subclass of N, or the sharpest precise barrier you can formulate.
+
+Output Markdown: a one-paragraph verdict first, then one section per question. Be concrete; include exact computations you ran and precise references.
+
+codex
+I’ll work through the cost optimization and coverage criteria first, then check the relevant literature. I’ll also separate general obstructions from ones that depend on a particular discrepancy estimate.
+exec
+/bin/zsh -lc "pwd; rg --files -g 'AGENTS.md' -g 'dchworst_results.md' -g 'dcltheorem_results.md' -g '*coverage*' -g '*SPDC*' /Volumes/git/factoring-connection" in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/coverage38_1
+/Volumes/git/factoring-connection/src/dchworst/coverage.py
+/Volumes/git/factoring-connection/src/sieve2d/coverage.py
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/dchworst_results.md
+/Volumes/git/factoring-connection/codex/coverage38_1.log
+/Volumes/git/factoring-connection/codex/coverage38_1.md
+/Volumes/git/factoring-connection/experiments/raw/multimod_coverage.jsonl
+
+exec
+/bin/zsh -lc 'for d in / /Volumes /Volumes/git /Volumes/git/factoring-connection /Volumes/git/factoring-connection/codex /Volumes/git/factoring-connection/codex/scratch /Volumes/git/factoring-connection/codex/scratch/coverage38_1; do if [ -f "$d/AGENTS.md" ]; then cat "$d/AGENTS.md"; fi; done; ls -la' in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+total 0
+drwxr-xr-x   2 knielsen  staff   64 Oct 18 22:23 .
+drwxr-xr-x  18 knielsen  staff  576 Oct 18 22:23 ..
+
+exec
+/bin/zsh -lc "cat > blind_calculations.py <<'PY'
+from fractions import Fraction as F
+print('J=Y, Lambda=J"'^theta; Y=N''^(1/(6+theta)), cost=N''^((1+theta)/(6+theta))'"')
+for theta in (F(0), F(1,8), F(1,4), F(1,2), F(1)):
+    print(f'theta={theta}: Y exponent={1/(6+theta)}, cost exponent={(1+theta)/(6+theta)}')
+print('At theta=1/4: P=Y"'^'"', (6+F(1,4))/2, '; H=Y"'^'"', F(1,8))
+print('Full windows: T=J*H"'^2; S=P*J*H''^3/Y''^2; Lambda=J*H''^2/Y'"')
+print('Lehman: T=J*H"'^2; S=J*H*Delta''^2/(P*Y''^2); Lambda_D=J*H*Delta/(P*Y)'"')
+print('Both optimize to C"'^5=P''^2*Lambda''^4/J=N*Lambda''^4/J'"')
+print('R*: kappa=J"'^(1/2); even an ideal error kappa needs Lambda>J''^(1/2)'"')
+print('If q=Y"'^(25/8), sqrt(q)/Y = Y''^'"', F(25,16)-1)
+print('Power savings kappa=J"'^(1-eta) and error kappa need eta>3/4 for Lambda<J''^(1/4)'"')
+PY
+python3 blind_calculations.py
+cat > blind_derivation.txt <<'TXT'
+Independent derivation before literature search, 2026-10-18.
+For full square weights T=J H"'^2 and S=sum windows=P J H''^3/Y''^2.
+Lambda=J H''^2/Y implies T=Lambda Y and sqrt(S)=P''^(1/2)Lambda''^(3/4)J''^(-1/4)Y''^(-1/4).
+Balance yields Y=N''^(1/5)(Lambda J)''^(-1/5), C=N''^(1/5)(Lambda''^4/J)''^(1/5).
+Lehman small-difference expected count is Lambda_D=J H Delta/(P Y), not J H''^2/Y.
+T remains J H''^2 because the successful weights are unknown. Then sqrt(S)=Lambda_D sqrt(P/(J H)), giving same fifth-power relation.
+Arbitrary moduli/weight heights: lambda=sum_i w_i/M_i, S>=P sum_i w_i''^(3/2)/M_i''^2, T=sum_i w_i.
+Cauchy twice: lambda''^4 <= (S/P)''^2 J T. Therefore C''^5>=P''^2 lambda''^4/J.
+For Lehman, lambda_i=H_i Delta_i/(P M_i), S=P sum_i lambda_i''^2/H_i and T=sum_i H_i''^2 give the same inequality.
+The formula is an optimum for this cost model, not a coverage theorem or automatic feasible universal optimum; add N''^(1/6), constraints and possible non-generic structure.
+Reciprocity exact condition: Bp-Aq=k l implies k/q= Bp*lbar/q modulo 1, and |k/q-Bp/(lq)|<=H/l.
+Thus the moving center Bp/(lq) must be included. Replacing it by zero gives constant-factor necessary/sufficient variants, not an exact equality.
+Pointwise Fourier limitation: take a forbidden target set S of relative size mu=lambda/J. A random J-point multiset in its complement has nonzero Fourier coefficients O(lambda+sqrt(J log q)) simultaneously modulo q. This only excludes proofs using the bound alone; it is not a counterexample within inverse-prime sets.
+A sufficient joint estimate is actual weighted Fourier discrepancy O(lambda''^(1/2) q''^epsilon), uniform in p,q,H; it would give coverage for lambda=q''^epsilon (or polylog with correspondingly sharp logs).
+Fixed linear families have constant delta and are easy, so the all-coprime sparse-linear-form obstruction is not a logical obstruction to a coverage-or-easy dichotomy. Residual all-coprime analogues include q=floor(alpha p) for badly approximable irrational alpha.
+TXT' in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+J=Y, Lambda=J^theta; Y=N^(1/(6+theta)), cost=N^((1+theta)/(6+theta))
+theta=0: Y exponent=1/6, cost exponent=1/6
+theta=1/8: Y exponent=8/49, cost exponent=9/49
+theta=1/4: Y exponent=4/25, cost exponent=1/5
+theta=1/2: Y exponent=2/13, cost exponent=3/13
+theta=1: Y exponent=1/7, cost exponent=2/7
+At theta=1/4: P=Y^ 25/8 ; H=Y^ 1/8
+Full windows: T=J*H^2; S=P*J*H^3/Y^2; Lambda=J*H^2/Y
+Lehman: T=J*H^2; S=J*H*Delta^2/(P*Y^2); Lambda_D=J*H*Delta/(P*Y)
+Both optimize to C^5=P^2*Lambda^4/J=N*Lambda^4/J
+R*: kappa=J^(1/2); even an ideal error kappa needs Lambda>J^(1/2)
+If q=Y^(25/8), sqrt(q)/Y = Y^ 9/16
+Power savings kappa=J^(1-eta) and error kappa need eta>3/4 for Lambda<J^(1/4)
+
+exec
+/bin/zsh -lc "sed -n '1,220p' /Volumes/git/factoring-connection/notes/dchworst_results.md; sed -n '1,200p' /Volumes/git/factoring-connection/notes/dcltheorem_results.md" in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+# dchworst: the worst case of the D′ scheme
+
+Agent `dchworst`, 2026-10-18 (restarted on the new machine).
+- Pre-registration: `notes/dchworst_prereg.md` (commit bde6c64; addendum A in commit 08176bb,
+  before the e6 runs).
+- Code: `src/dchworst/{coverage,theory,experiments,wcalg,experiments_wc}.py`.
+- Tests: `tests/test_dchworst.py`, `tests/test_dchworst_wc.py`.
+- Raw data: `experiments/raw/dchworst_e{1..6}*.jsonl`.
+- Blind GPT-6.1-sol: `codex/dchworst_1.out`. Review round: `codex/dchworst_2.out`. Opus critic: §8.
+
+## 0. Verdict (plain language)
+
+**The worst case of D′ now rests on coverage alone. Coverage itself is still out of reach.**
+
+- **Obstacles (b) and (c) of D′ §6 are removed (Theorem R, proved).**
+  - (b) was small ord_q(2); (c) was all-FULL pairs.
+  - DCL-wc is a modified D′. It is deterministic, costs N^{1/6+o(1)} plus the design's list
+    cost, and factors **every** balanced N = pq whose pair is covered by at least one block.
+  - It needs no clean band, no order hypothesis modulo the hidden q, and no FULL exclusion.
+  - Three standard ingredients do the work:
+    - a base-selection dichotomy, an elementary one-sided adaptation of Harvey–Hittmeir 2026
+      (Lemmas 2.1, 2.3, 2.4, §3.1);
+    - a γ-order pre-step on the baby list;
+    - the exploration of every two-sided collision down the baby product tree. An exact
+      collision there reveals Bp + Aq, hence p. Exact-match handling is itself prior art:
+      Harvey 2021, Alg. 4.2, steps 1 and 3–4.
+  - Both reviews accept Theorem R with fixes (§8); the fixes are applied. The theorem is
+    about the fast variant. `src/dchworst/wcalg.py` is a correctness prototype whose cost
+    does not meet (iii); see §3.
+  - The orchestrator asked whether small ord_q(2) ≤ T is exploitable. It is: BSGS costs
+    Õ(T^{1/2}) per base and factors N unless ord_p(b) = ord_q(b). That equal-order case is
+    handled by other bases and the smooth-subgroup argument (§3, Lemma O).
+- **Consequences.**
+  - **Theorem W, unconditional cost criterion.** If coverage of every pair can be proved
+    with H ≤ √Y·J^{−c}, the deterministic worst-case exponent is
+    min(1/5, (1−c)/(7/2−c)). This is below 1/5 iff c > 3/8.
+  - Minkowski gives c = 0, so this framework reproduces Harvey's 1/5 worst case (not new).
+  - The pair form of DCH (a polylogarithmic H suffices for every pair) now implies a
+    deterministic worst-case N^{1/6+o(1)} for balanced semiprimes.
+  - Theorem D′'s exceptional set shrinks to the pairs uncovered by every block. That set has
+    fraction O(n²/H²); E_a and E_c disappear.
+- **The worst-case coverage gain is not proved (direction B: no).** I found no design that
+  provably covers every pair with c > 0, nor even a logarithmic gain. §5 gives precise
+  barriers:
+  - positivity arguments whose error budget is ≳ √J reach only c = 1/4, and c > 3/8 is needed
+    (a heuristic barrier on methods);
+  - single-modulus pigeonhole gives only c = 0;
+  - for any proof that also works for coprime non-prime pairs, coverage implies a covering
+    statement U(x, H) for a structured set of ≍ H² = Y^{1/4} integers. We know no method
+    for sets this sparse.
+- **Negative direction (A): proved only in the range H ≤ c√log N.**
+  - Brun–Titchmarsh plus a union bound shows that a positive proportion of pairs is
+    uncovered (Theorem N).
+  - Forcing one fixed ratio at many band primes is impossible by size (proved). Whether CRT
+    forcing can construct uncovered pairs beyond the union-bound regime is UNVERIFIED. An
+    earlier "at most 6 primes" density argument was refuted by GPT-6.1-sol (§4).
+  - For √log N ≪ H ≪ log N, uncovered pairs are only predicted by the Poisson model, which
+    the data support. A proof needs a lower-bound sieve at density λ → ∞ over one dyadic
+    band, which bounded-level Bonferroni cannot give.
+- **Experiments (pre-registered e1–e5, plus e6 for Theorem R).**
+  - The exhaustive worst case over all of S_32 and S_36 (6.2M and 78M pairs) follows the
+    random (Poisson) extreme: the fitted ĉ matches in all 8 cases (P4).
+    - Frozen P1 failed through a mis-stated prediction (the excluded (1,1) weight).
+    - Frozen P2 failed in 4 of 125 cells. That is the number the model itself predicts
+      (4.47); one cell is a lone outlier with no structure found.
+    - Frozen P3 failed almost only on the side of *better-than-random* coverage (120 of 121
+      out-of-range cells).
+  - The sampled tails at n = 60–84 (e2), the structured families (e3, ≤ 6% deviations), the
+    exhaustive D′-design coverage (e4) and the all-blocks search at n = 64 (e5) all pass.
+  - e6, Theorem R: **0** failures on covered pairs, exhaustively over S_26 and S_28 and on 36
+    adversarial cells. D′ failed on 42 + 105 covered pairs of S_26, S_28 and on 6 adversarial
+    covered pairs; DCL-wc factored every one. Details are in §7.
+- **DCH repair (orchestrator item 1, verified).**
+  - The paper's algorithmic DCH (all N coprime to 6, every integer candidate, A ≠ B) is false
+    on squares: for N = t², p = t, Bp² − AN = (B − A)t² has no band divisor.
+  - The repaired form is in §6.
+
+## 1. Setting and notation
+
+- N = pq with p < q ≤ 2p primes, n bits. S_n is the population of such pairs, as in D′, and
+  P = 2^{n/2}.
+- A **weight** is a primitive (A, B) with 1 ≤ |A|, B ≤ H.
+  - *Positive* weights form D′'s V (A ≥ 1, A ≠ B).
+  - *Signed* weights also allow A < 0, and we allow the diagonal (1,1).
+  - The height is max(|A|, B).
+- A **block** is a set 𝒫 of primes ℓ ≡ 3 (mod 4) with H < ℓ < √(N/2). Theorem R needs
+  only H < ℓ. The large-sieve statements need ℓ > H² for positive weights and ℓ > 2H² for
+  signed weights, so that the classes are distinct.
+- The pair (p,q) is **covered** by (𝒫, V) iff ℓ | Bp − Aq for some (A,B) ∈ V and ℓ ∈ 𝒫.
+- For ℓ ∤ pq put t_ℓ = p q^{−1} mod ℓ. Then ℓ | Bp − Aq ⇔ A B^{−1} ≡ t_ℓ. So coverage
+  depends only on (t_ℓ)_ℓ.
+- μ_ℓ(t) is the least height of a weight with A B^{−1} ≡ t (mod ℓ), the first minimum of
+  the lattice Λ_ℓ = Z(p,q) + ℓZ² over the weight set.
+- h_L(p,q) = min_{ℓ∈L} μ_ℓ(t_ℓ).
+
+## 2. Theorem W (cost criterion) — proved
+
+Let J ≤ (1/2 + o(1))Y/ln Y prime moduli ℓ ≡ 3 (mod 4) in (Y, 2Y], so that
+j := log_Y J ≤ 1 − o(1) and 0 ≤ c ≤ 1/2, cover every pair with weights of height H = √Y·J^{−c}. The DCL
+list cost is X = HP/Y² + JH², up to N^{o(1)}. Theorem R below supplies the extraction
+unconditionally. With J = Y^j, j ∈ [0, 1], balancing the two terms gives the exponent of N
+
+  E(j, c) = (1 + j(1−2c)) / (5 + 2j(1−c)).
+
+∂E/∂j has the sign of (1−2c)·5 − 2(1−c) = 3 − 8c. So the optimum is
+
+  min(1/5, (1−c)/(7/2−c)),
+
+which is below 1/5 iff c > 3/8. Values: c = 1/4 and c = 3/8 give 1/5; c = 2/5 gives 6/31;
+c = 1/2 gives 1/6. (`theory.worst_case_exponent` and the brute-force check in
+`test_cost_exponent_formula`; GPT-6.1-sol dchworst_1 recomputed this independently.)
+
+*Remarks.*
+- X is the list cost at m = W. With m optimised the cost is ≈ √(T′W) + T′. Its minimum over
+  y = log_P Y matches E(j, c) whenever E < 1/5 (critic), so the formula is the achievable
+  exponent of this design family.
+- The floor 1/5 is the j = 0 case, i.e. Minkowski (Corollary R1).
+
+For J ≍ Y/log Y, the target c > 3/8 means: for every pair, some primitive (A, B) with
+|A|, B ≤ Y^{1/8−δ} has Bp − Aq divisible by a prime in (Y, 2Y], where P ≍ Y^{25/8}.
+
+## 3. Theorem R (worst-case extraction from coverage) — proved
+
+**Algorithm DCL-wc** (`src/dchworst/wcalg.py`; operational: it sees only N and the public
+parameters H, V, blocks 𝒫_1..𝒫_K, T and B0).
+
+0. If N < 4, output FAIL. If N is even, output 2. If N = s² is a perfect square, output s.
+1. **Base selection (Lemma O).** For b = 2, 3, …, B0:
+   - check gcd(b, N);
+   - compute r_b, the least r ∈ [1, T_scan] with gcd(b^r − 1, N) > 1, where
+     s = ⌊√T⌋ + 1 and T_scan = s⌈T/s⌉ = T + O(√T). Use baby-step giant-step by polynomial
+     evaluation: f(X) = ∏_{i=1}^{s}(X − b^{−i}), evaluated at X_j = b^{js}. Then scan the first block j whose value has
+     gcd > 1.
+   - If that gcd is proper, output it. If no r ≤ T_scan exists, **select b** and go to step 2.
+     Otherwise (gcd = N) record r_b.
+
+   If every b ≤ B0 was recorded, put Λ = lcm_b r_b and test gcd(1 + jΛ, N) for
+   1 ≤ j ≤ (⌊√N⌋ − 1)/Λ.
+2. For each block k, with L = ∏_{ℓ∈𝒫_k} ℓ², u_ℓ = b^{L/ℓ²} and γ = b^L:
+   - **Targets.** Build the D′ targets τ = (A, B, ℓ, r, c, g_lo, W), with roots of
+     Br² ≡ AN (mod ℓ) and the class lock mod ℓ². This is D′ §2.2 step 2 verbatim. For A < 0
+     the window bounds are Lo = B a₀ + ⌊AN/a₀⌋ and Hi = B b₀ + ⌈AN/b₀⌉, since
+     x ↦ Bx + AN/x is increasing.
+   - Choose the baby length m as in D′.
+   - **γ pre-step (Lemma G).** Over the babies γ^i (0 ≤ i < m), find the least r ∈ [1, m)
+     with gcd(γ^r − 1, N) > 1, using a product tree of the γ^r − 1 and a binary descent.
+     - If that gcd is proper, output it.
+     - If it equals N, put o = r and run the **equal-order split**. E = L·o is a multiple of
+       ord_N(b) whose factorisation is known: the band primes, and o by trial division. For
+       each prime power r^e ∥ E, compute y_r = b^{E/r^e} (all at once by the all-but-one
+       exponent tree), then gcd(y_r^{r^j} − 1, N) for j = 0..e, and output any proper gcd.
+       Otherwise D = ∏ r^{v_r}, with v_r the least j where y_r^{r^j} ≡ 1 (mod N); test
+       gcd(1 + jD, N) for 1 ≤ j ≤ (⌊√N⌋ − 1)/D.
+   - **Giants.** G_{τ,j} = u_ℓ^{B+AN−c}·γ^{−(g_lo + jm)} for 0 ≤ j < ⌈W_τ/m⌉. Compute
+     f(G) = ∏_i(G − γ^i) at all giants by a remainder tree.
+     - Output any proper gcd(f(G), N).
+     - Collect the **N-giants**, those with gcd = N.
+   - **Exploration (Lemma X).** For each N-giant, descend the subproduct tree of f. At a
+     node whose value has gcd = N, evaluate both children: output any proper gcd, and
+     descend into the children whose gcd is N.
+   - **Exact leaf.** When leaf i (the factor X − γ^i) is reached with G ≡ γ^i (mod N), put
+     S = c + ℓ²(g_lo + jm + i) and test whether S² − 4ABN = D₀² is a perfect square. If it
+     is, output a proper gcd((S ± D₀)/2, N).
+3. Output FAIL.
+
+All outputs are validated (1 < d < N, d | N).
+
+**Theorem R.** Let N = pq ∈ S_n, and let the parameters satisfy H < ℓ < √(N/2) for every
+band prime. Then:
+- (i) DCL-wc outputs a proper divisor of N or FAIL;
+- (ii) if (p,q) is covered by (𝒫_k, V) for at least one k, DCL-wc outputs a proper
+  divisor;
+- (iii) its cost is
+
+  Õ( Σ_k (m_k + T′_k + |V||𝒫_k| + |𝒫_k| log Y) + B0·T^{1/2} + √N/T + √N/Ψ(√(N/2) − 1, B0) )
+
+  ring operations mod N plus Õ(|V||𝒫_k|) word operations for target construction. Here
+  T′_k = Σ_τ⌈W_τ/m_k⌉ is the giant count.
+  - The |V||𝒫_k| term charges the rejected (weight, prime) combinations. It is needed for an
+    arbitrary V (GPT-6.1-sol: an adversarial V with 9 592 tested weights and 2 targets).
+  - For D′'s V and for sign-symmetric signed families it is ≤ H²|𝒫_k|, already part of the
+    list cost. With ℓ ≡ 3 (mod 4), exactly one of ±AN B^{−1} is a square, so accepted
+    targets pay for the tests.
+
+  With T = ⌈N^{1/3}⌉ and B0 = ⌈n⁴⌉ the last three terms are N^{1/6}·n^{O(1)}, so the cost
+  is N^{1/6+o(1)} + Õ(Σ_k(m_k + T′_k + Y)).
+
+*Proof.*
+
+**Lemma O (one-sided order dichotomy).**
+- Statement. For b with gcd(b, N) = 1, write o_p = ord_p(b) and o_q = ord_q(b). If
+  min(o_p, o_q) ≤ T_scan, the scan returns r_b = min(o_p, o_q), possibly r_b ∈ (T, T_scan].
+  The gcd at r_b is proper iff o_p ≠ o_q. If no r ≤ T_scan is found, then
+  o_p, o_q > T_scan ≥ T.
+- Proof of the dichotomy.
+  - b^r ≡ 1 (mod p) iff o_p | r, so the least r with gcd(b^r − 1, N) > 1 is
+    min(o_p, o_q).
+  - Say r = o_q ≤ o_p. If o_p ≠ o_q then o_p > r, so p ∤ b^r − 1 and the gcd is q.
+  - If o_p = o_q, the gcd is N.
+  - The BSGS scan visits r = js + i in increasing order inside the first block j with a
+    nontrivial value, because b^{js+i} − 1 = b^{i}(b^{js} − b^{−i}).
+- Proof of the all-recorded case. Suppose every b ≤ B0 is recorded, so
+  ord_p(b) = ord_q(b) = r_b for all b ≤ B0.
+  - G_p = ⟨2, …, B0⟩ ≤ F_p^× is cyclic of order lcm_b ord_p(b) = Λ. Likewise mod q.
+  - G_p contains every B0-smooth integer in [1, p−1], and these are distinct mod p. So
+    Λ ≥ Ψ(p−1, B0), and Λ | p − 1.
+  - Hence p = 1 + jΛ with j ≤ (⌊√N⌋ − 1)/Λ (p < √N), and the enumeration finds p.
+  - The elementary bound Ψ(x, (log x)^A) ≥ x^{1−1/A}/(log x)^{A−1} follows from counting
+    products of k = ⌊log x/(A log log x)⌋ primes ≤ y = (log x)^A: there are
+    ≥ (π(y)/k)^k ≥ (log x)^{(A−1)k} of them. With A = 4 and B0 = ⌈n⁴⌉ ≥ (ln p)⁴, this gives
+    √N/Λ ≤ P^{1/4}n³.
+- The method is the one Harvey–Hittmeir use for large order mod N (arXiv 2601.11131 v2,
+  Lemmas 2.1, 2.3 and §3.1, smooth-number subgroup). The one-sided reading "first r
+  ⇒ factor unless the two orders are equal" is the only change. ∎
+
+**Lemma G (γ pre-step).** By the same argument applied to γ over r < m:
+- either a proper divisor is output;
+- or ord_p(γ) = ord_q(γ) = o < m;
+- or **both ord_p(γ) ≥ m and ord_q(γ) ≥ m**.
+
+# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+
+Agent `dcltheorem`, 2026-10-18. Pre-registration: `notes/dcltheorem_prereg.md` (commit
+`3550e24`, before any pre-registered run). Code: `src/dcltheorem/`. Tests:
+`tests/test_dcltheorem.py`. Raw data: `experiments/raw/dcltheorem_*.jsonl`. Summary:
+`experiments/analysis/dcltheorem_summary.json`. Inputs: notes/multimod_results.md (Thm D) and
+the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
+
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+
+codex
+The calculation gives the same fifth-power tradeoff for full and Lehman windows, provided Lehman’s expected count includes the restriction \(|Bp-Aq|\leq\Delta\). I also get the same lower bound for varying modulus sizes and weight heights. The reciprocity formula needs a moving center; replacing it by zero preserves constant-factor versions but is not an exact equivalence.
+web search: 
+web search: Kloosterman sums primes reciprocal short intervals Baker Y q 1/3 2015 ...
+web search: 
+web search: "Umans" "Wang" "SPDC" ...
+web search: 
+web search: Umans Wang number theoretic conjecture faster integer factorization SPDC ...
+web search: 
+web search: https://arxiv.org/html/2511.10851
+web search: 
+web search: "Korolev" "2016" "log N" "Kloosterman" ...
+web search: 
+web search: "Korolev" "Karatsuba" "2016" "log" ...
+web search: 
+web search: "sm8648" pdf ...
+web search: 
+web search: 
+codex
+The prime-variable literature I’ve checked requires lengths above \(q^{1/2+\varepsilon}\), well above \(Y=q^{0.32}\). For integer variables, Bourgain–Garaev does give cancellation at this length, but only a logarithmic saving. I’m checking Korolev’s refinements and the exact statement of Hooley’s \(R^*\) before drawing the conditional conclusions.
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import urllib.request
+from pathlib import Path
+items={
+'korolev2016.pdf':'https://www.mathnet.ru/links/cd7b11093b10e6a5be5baf4e2c2416ac/sm8648_eng.pdf',
+'baker2012.pdf':'https://www.impan.pl/shop/en/publication/transaction/download/product/82065',
+'umans_wang2025.pdf':'https://users.cms.caltech.edu/~umans/papers/UW2025.pdf',
+'korolev2018.pdf':'https://www.mathnet.ru/links/773bfb3c6aee5a44d5ed4585c7bb1cf4/im8633_eng.pdf',
+}
+for name,url in items.items():
+    try:
+        data=urllib.request.urlopen(url,timeout=20).read()
+        Path(name).write_bytes(data)
+        print(name,len(data),data[:8])
+    except Exception as e:
+        print(name,type(e).__name__,str(e))
+PY" in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+korolev2016.pdf URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+baker2012.pdf URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+umans_wang2025.pdf URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+korolev2018.pdf URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+web search: 
+web search: 'Theorem 5'
+web search: 
+web search: site:mathnet.ru/links/ "sm8648_eng.pdf" "Theorem 1" ...
+web search: 
+web search: Harvey Hittmeir 2026 integer factorisation deterministic 1/5 logarithm improvement ...
+web search: 
+web search: René Schoof 1982 quadratic fields factorization GRH thesis computing class groups factorization ...
+web search: 
+web search: "Short Kloosterman sums" "prime" "Korolev" "2016" "log" ...
+web search: 
+web search: https://www.mathnet.ru/php/getFT.phtml?jrnid=sm&paperid=8648&what=fullteng
+web search: 
+web search: '0.25'
+web search: 
+web search: "Korolev" "On short Kloosterman sums modulo a prime" pdf ...
+web search: 
+web search: Jutila short intervals large prime factors integers Friedlander Lagarias factoring ...
+codex
+The literature supports a distinction between square-root cancellation in each exponential sum and square-root fluctuations in the covering count. The former does not reach the required threshold through the usual discrepancy argument. I also verified that fixed linear families are Lehman-easy, so they do not obstruct a coverage-or-easy dichotomy; badly approximable ratios remain outside that escape.
+web search: 
+web search: "deterministic" "factoring" "Elliott-Halberstam" ...
+exec
+/bin/zsh -lc "python3 - <<'PY'
+try:
+    import numpy
+    print('numpy',numpy.__version__)
+except ImportError:
+    print('numpy unavailable')
+PY" in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+numpy unavailable
+
+exec
+/bin/zsh -lc "cat > check_reciprocity_fourier.py <<'PY'
+from fractions import Fraction
+from math import gcd, log, sqrt, pi
+import cmath
+import random
+
+# Check the moving-center identity exactly (rational arithmetic).
+p, q, H = 101, 139, 3
+primes = [m for m in range(17,35) if all(m%d for d in range(2,int(sqrt(m))+1))]
+checked=0
+for ell in primes:
+    for B in range(1,H+1):
+        residue = (B*p*pow(ell,-1,q)) % q
+        shifted = Fraction(residue,q)-Fraction(B*p,ell*q)
+        circular = min(abs(shifted-z) for z in range(-2,3))
+        left = any((B*p-A*q)%ell==0 for A in range(-H,H+1) if A)
+        right = circular <= Fraction(H,ell)
+        assert left == right, (ell,B,left,right)
+        checked += 1
+print('exact moving-center reciprocity checks:',checked)
+
+# A Fourier-small configuration that completely avoids a fixed Farey target.
+q, Y, H, J = 10007, 400, 2, 400
+forbidden=[]
+allowed=[]
+for x in range(q):
+    hit=any(min((B*x)%q, q-(B*x)%q)*Y <= H*q for B in range(1,H+1))
+    (forbidden if hit else allowed).append(x)
+rng=random.Random(38)
+points=rng.sample(allowed,J)
+maximum=0.0
+argmax=0
+for h in range(1,q):
+    value=abs(sum(cmath.exp(2j*pi*((h*x)%q)/q) for x in points))
+    if value>maximum:
+        maximum,argmax=value,h
+print('q,Y,H,J =',q,Y,H,J)
+print('target residues =',len(forbidden))
+print('target density =',len(forbidden)/q)
+print('expected hits under uniformity =',J*len(forbidden)/q)
+print('actual hits =',sum(x in set(forbidden) for x in points))
+print('max nonzero Fourier coefficient =',maximum,'at h =',argmax)
+print('sqrt(J log q) =',sqrt(J*log(q)))
+
+# Check the general heterogeneous-design inequality on random positive inputs.
+rng=random.Random(20261018)
+minratio=float('inf')
+for _ in range(1000):
+    j=rng.randrange(1,30)
+    w=[rng.uniform(1,100) for i in range(j)]
+    m=[rng.uniform(100,10000) for i in range(j)]
+    T=sum(w)
+    S0=sum(a**1.5/b**2 for a,b in zip(w,m))
+    lam=sum(a/b for a,b in zip(w,m))
+    ratio=S0**2*j*T/lam**4
+    assert ratio >= 1-1e-12
+    minratio=min(minratio,ratio)
+print('heterogeneous inequality checks: 1000; minimum RHS/LHS =',minratio)
+PY
+python3 check_reciprocity_fourier.py" in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 307ms:
+exact moving-center reciprocity checks: 15
+q,Y,H,J = 10007 400 2 400
+target residues = 151
+target density = 0.015089437393824323
+expected hits under uniformity = 6.035774957529729
+actual hits = 0
+max nonzero Fourier coefficient = 57.09669986495931 at h = 2198
+sqrt(J log q) = 60.699390860503556
+heterogeneous inequality checks: 1000; minimum RHS/LHS = 0.9999999999999993
+
+web search: 
+web search: Harman Prime-detecting sieves 2007 Type I Type II sieve theorem publisher ...
+web search: 
+web search: 'Теорема 1'
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: "mzm11048" "ln" ...
+web search: 
+web search: "short Kloosterman" "log log" "log p" "2016" Korolev ...
+web search: 
+web search: "On the distribution of modular inverses from short intervals" ...
+web search: 
+web search: https://arxiv.org/html/2304.07953
+web search: 
+web search: 'Лемма 2'
+web search: 
+web search: 'Strong Prefactored'
+web search: 
+web search: 'infinitely'
+web search: 
+web search: 'construct'
+web search: 
+web search: https://arxiv.org/abs/2511.10851
+web search: 
+web search: 'Proposition 3.3'
+exec
+/bin/zsh -lc 'ls -lh; python3 blind_calculations.py' in /Volumes/git/factoring-connection/codex/scratch/coverage38_1
+ succeeded in 0ms:
+total 24
+-rw-r--r--  1 knielsen  staff   723B Oct 18 22:26 blind_calculations.py
+-rw-r--r--  1 knielsen  staff   1.9K Oct 18 22:26 blind_derivation.txt
+-rw-r--r--  1 knielsen  staff   2.0K Oct 18 22:32 check_reciprocity_fourier.py
+J=Y, Lambda=J^theta; Y=N^(1/(6+theta)), cost=N^((1+theta)/(6+theta))
+theta=0: Y exponent=1/6, cost exponent=1/6
+theta=1/8: Y exponent=8/49, cost exponent=9/49
+theta=1/4: Y exponent=4/25, cost exponent=1/5
+theta=1/2: Y exponent=2/13, cost exponent=3/13
+theta=1: Y exponent=1/7, cost exponent=2/7
+At theta=1/4: P=Y^ 25/8 ; H=Y^ 1/8
+Full windows: T=J*H^2; S=P*J*H^3/Y^2; Lambda=J*H^2/Y
+Lehman: T=J*H^2; S=J*H*Delta^2/(P*Y^2); Lambda_D=J*H*Delta/(P*Y)
+Both optimize to C^5=P^2*Lambda^4/J=N*Lambda^4/J
+R*: kappa=J^(1/2); even an ideal error kappa needs Lambda>J^(1/2)
+If q=Y^(25/8), sqrt(q)/Y = Y^ 9/16
+Power savings kappa=J^(1-eta) and error kappa need eta>3/4 for Lambda<J^(1/4)
+
+codex
+The integer-variable check turned up an applicable Korolev bound of \(Y\log\log q/\log q\). A later paper flags a gap in a different Korolev refinement, so I’ll distinguish those references. I also found a quantifier issue worth flagging in Umans–Wang: the stated SPDC concerns infinitely many sizes, whereas an all-input uniform time bound needs suitable constructions at controlled sizes.
+web search: 
+web search: 'Hooley, Applications'
+web search: 
+web search: https://arxiv.org/html/math/0607473
+web search: 
+web search: Lenstra Pomerance 1992 rigorous randomized subexponential integer factoring expected time class groups ...
+codex
+**PROVED:** your fifth-power tradeoff is correct for the stated target-list model, including stationary-point windows **when \(\Lambda\) means the expected number of events satisfying the additional \(\Delta\)-restriction**. A general inequality extends it to unequal moduli, unequal heights, rectangles, and per-target window sizes. Thus square-root-level coverage, \(\Lambda\asymp J^{1/2}\), does not yield a sub-\(1/5\) exponent in this model. **UNVERIFIED:** I found neither the requested coverage-or-structure dichotomy nor an implication from the listed standard analytic hypotheses giving \(\Lambda<J^{1/4-\delta}\). **PROVED:** pointwise square-root Fourier bounds alone cannot establish the required conclusion as a general discrepancy principle; the useful conjectural input is cancellation in the *weighted covering count*. I derived the calculations before searching the literature, and take Theorem R as supplied.
+
+## 1. Design and cost optimization
+
+**PROVED — full windows.** Write \(S=\sum W_\tau\), suppressing constants and subpower factors. Then
+\[
+T=JH^2,\qquad
+S\asymp \frac{PJH^3}{Y^2},\qquad
+\lambda\asymp\frac{JH^2}{Y}.
+\]
+Putting \(\lambda=\Lambda\),
+\[
+H^2=\frac{\Lambda Y}{J},
+\]
+and hence
+\[
+T=\Lambda Y,\qquad
+\sqrt S=P^{1/2}\Lambda^{3/4}J^{-1/4}Y^{-1/4}.
+\]
+Optimizing over \(Y\) gives
+\[
+Y\asymp P^{2/5}(\Lambda J)^{-1/5},
+\]
+and therefore
+\[
+\boxed{X\asymp N^{1/5}\left(\frac{\Lambda^4}{J}\right)^{1/5}.}
+\]
+The complete supplied algorithm costs \(N^{1/6+o(1)}+X\,N^{o(1)}\), subject to feasibility of the parameters.
+
+**PROVED — stationary-point windows, with the corrected mean.** For positive comparable \(A,B\), the condition \(|Bp-Aq|\leq\Delta\) occupies a proportion
+\[
+\rho\asymp\frac{\Delta}{HP}
+\]
+of the balanced ratio range. Consequently,
+\[
+\lambda_\Delta\asymp\frac{JH\Delta}{PY},
+\]
+whereas
+\[
+T\asymp JH^2,\qquad
+S\asymp\frac{JH\Delta^2}{PY^2}.
+\]
+The successful weights are unknown, so the target count remains \(JH^2\).
+
+Substituting
+\[
+\Delta=\frac{\Lambda PY}{JH}
+\]
+gives
+\[
+\sqrt S=\Lambda\sqrt{\frac P{JH}}.
+\]
+Optimizing \(JH^2+\Lambda\sqrt{P/(JH)}\) yields
+\[
+H\asymp\Lambda^{2/5}P^{1/5}J^{-3/5},
+\qquad
+X\asymp P^{2/5}\Lambda^{4/5}J^{-1/5}.
+\]
+This is the same formula.
+
+**REFUTED — the literal “any \(\Delta\)” interpretation using the original \(\lambda=JH^2/Y\).** Shortening the windows also reduces the relevant expected count. Moreover, arbitrary prescribed \(\Delta\) can make the optimization infeasible: for example, \(\Delta<Y\) permits no nonzero difference divisible by a band modulus.
+
+**PROVED — a general design inequality.** The following is stronger than the equal-band calculation.
+
+For each modulus \(M_i\), let \(V_i\) contain \(w_i\) distinct primitive weights. Put \(h(v)=\max(|A|,B)\), and let \(\rho_{iv}\in[0,1]\) denote the proportion retained by its window. Full windows have \(\rho_{iv}=1\); stationary windows have \(\rho_{iv}\asymp\Delta_{iv}/(h(v)P)\). Within the stated density/window model,
+\[
+\lambda\asymp\sum_{i,v}\frac{\rho_{iv}}{M_i},
+\qquad
+S\gtrsim P\sum_{i,v}\frac{h(v)\rho_{iv}^{\,2}}{M_i^2}.
+\]
+Cauchy–Schwarz gives
+\[
+\lambda^2\lesssim\frac SP\sum_{i,v}\frac1{h(v)}.
+\]
+Since there are \(O(r^2)\) integer weights of height at most \(r\), every \(w\)-element weight set satisfies
+\[
+\sum_{v\in V}\frac1{h(v)}\ll\sqrt w.
+\]
+Thus, with \(T=\sum_iw_i\),
+\[
+\lambda^2\lesssim\frac SP\sum_i\sqrt{w_i}
+\leq\frac SP\sqrt{JT}.
+\]
+Therefore
+\[
+\boxed{\lambda^4\lesssim\frac{JTS^2}{P^2}},
+\qquad
+\boxed{(T+\sqrt S)^5\gtrsim\frac{N\lambda^4}{J}}.
+\]
+
+**PROVED — consequence for the proposed variants.** This inequality covers the following parameter changes, provided their individual targets and windows are charged as stipulated:
+
+| Variant | Consequence |
+|---|---|
+| Wide prime ranges; multiscale bands with separate weights | Unequal \(M_i\) and \(V_i\) are already allowed. |
+| Composite, smooth, or prime-power moduli | The same exponent inequality holds; local-density and root-multiplicity factors require accounting. |
+| Rectangles or other weight shapes | The bound on \(\sum 1/h(v)\) applies to every shape. |
+| Signed weights; inclusion of \((1,1)\) | Changes constants and accessible subclasses, without changing this tradeoff. |
+| Both factors | Swapping \(p,q\) swaps the weights; the square family already contains the corresponding choices. |
+| Stationary windows parametrized by span \(m^2\) | Reparametrizes \(\rho\); the inequality persists. |
+
+For a wide prime range \((Y,Z]\), \(Z=Y^{1+\kappa}\), the appropriate mean is
+\[
+\lambda\asymp H^2\sum_{Y<\ell\leq Z}\frac1\ell
+\asymp H^2\log(1+\kappa),
+\]
+rather than \(JH^2/Y\). The general inequality avoids this normalization problem.
+
+**PROVED — square-root-level coverage is insufficient for these designs.** If \(\Lambda=J^{1/2}\), then
+\[
+X\gtrsim N^{1/5}J^{1/5}.
+\]
+For the dense-band choice \(J=Y^{1+o(1)}\), writing \(\Lambda=J^\theta\) gives
+\[
+Y=N^{1/(6+\theta)+o(1)},\qquad
+X=N^{(1+\theta)/(6+\theta)+o(1)}.
+\]
+
+| \(\theta\) | Optimized exponent |
+|---:|---:|
+| \(0\) | \(1/6\) |
+| \(1/8\) | \(9/49\) |
+| \(1/4\) | \(1/5\) |
+| \(1/2\) | \(3/13\) |
+
+At the boundary,
+\[
+H=Y^{1/8+o(1)},\qquad P=Y^{25/8+o(1)}.
+\]
+The \(3/13\) entry describes that particular design; an unconditional \(1/5\) fallback remains available.
+
+**PROVED — qualification concerning Minkowski.** With one modulus, \(J=1\), \(H\asymp\sqrt Y\) gives \(1/5\). Keeping \(J\) redundant Minkowski-covered moduli produces \(\Lambda\asymp J\) and a larger list. Recovering \(1/5\) means retaining one modulus.
+
+**UNVERIFIED — a broader impossibility theorem.** The inequality does not exclude an algorithm that compresses the charged targets, constructs special weights from public residue guesses, or exploits an additional relation between several locks. Such a change needs a new cost analysis; it is not represented by the stipulated \(T\) and \(S\).
+
+**PROVED — public intervals exist, but the prime-factor assertion has the wrong quantifier.** For positive weights,
+\[
+S_v=Bp+Aq,\qquad
+S_v-2\sqrt{ABN}
+=\frac{\delta_v^2}{S_v+2\sqrt{ABN}}.
+\]
+Hence a \(\Delta\)-restriction places \(S_v\) in the public interval
+\[
+\left[2\sqrt{ABN},\,
+2\sqrt{ABN}+O\!\left(\frac{\Delta^2}{h(v)P}\right)\right].
+\]
+A theorem asserting that *some integer* in this interval has a band prime factor does not impose anything on the particular hidden value \(S_v\), or on its discriminant
+\[
+S_v^2-4ABN=\delta_v^2.
+\]
+Harvey–Hittmeir’s Proposition 3.3 likewise uses public centers and an arbitrary modulus, while supplying a lattice construction rather than the proposed short-interval prime-factor reduction. [Harvey–Hittmeir, Proposition 3.3](https://arxiv.org/html/2105.11105#S3)
+
+**UNVERIFIED — applicability of the named interval results.** I found no reduction making Jutila, Friedlander–Lagarias, Baker–Harman, Harman’s sieve, or Ford applicable to the required fixed-pair covering assertion. Friedlander–Lagarias study smooth integers in genuine intervals; Ford counts integers possessing interval divisors. Neither supplies uniform positivity on this sparse collection of hidden linear-form values. [Friedlander–Lagarias, JNT 25 (1987), 249–273](https://websites.umich.edu/~lagarias/doc/short.pdf), [Ford, Annals 168 (2008), 367–433](https://arxiv.org/abs/math/0401223)
+
+## 2. Reciprocity, Kloosterman sums, and positivity
+
+**REFUTED as an exact identity — the proposed zero-centered reciprocity formula.** If
+\[
+Bp-Aq=k\ell,
+\]
+then
+\[
+k\equiv Bp\bar\ell\pmod q,
+\qquad
+\left|\frac{k}{q}-\frac{Bp}{q\ell}\right|\leq\frac H\ell.
+\]
+Thus the exact circular condition, for \(H<\ell/2\), is
+\[
+\boxed{
+\left\|\frac{Bp\bar\ell}{q}-\frac{Bp}{q\ell}\right\|
+\leq\frac H\ell.
+}
+\]
+The center depends on \(B,\ell\).
+
+**PROVED — the simpler condition remains useful with constants.** For example,
+\[
+B\leq H/4,\qquad
+\left\|\frac{Bp\bar\ell}{q}\right\|\leq\frac{H}{4Y},
+\qquad Y<\ell\leq2Y
+\]
+imply \(|A|\leq H\). Indeed, choose the corresponding \(k\) with
+\[
+|k|/q\leq H/(4Y).
+\]
+Then
+\[
+|A|=\left|\frac{Bp-k\ell}{q}\right|
+\leq H/4+H/2.
+\]
+Thus a fixed zero-centered target gives a sufficient covering test with mean \(\asymp JH^2/Y\).
+
+**2(a). PROVED — applicable literature bounds.**
+
+For the prime-variable sum
+\[
+K_{\mathbb P}(a;q,Y)
+=\sum_{Y<\ell\leq2Y\atop\ell\ {\rm prime}}e_q(a\bar\ell),
+\]
+Bourgain’s theorem, as stated and made explicit by Baker, gives power saving for \(Y\geq q^{1/2+\varepsilon}\). Baker’s Theorem 1 gives, in its specified range,
+\[
+K_{\mathbb P}\ll_\delta Y^{1-\delta^4/2000}.
+\]
+The Garaev/Fouvry–Shparlinski estimate recorded there is
+\[
+K_{\mathbb P}\ll_\varepsilon
+\left(Y^{15/16}+q^{1/4}Y^{2/3}\right)q^\varepsilon.
+\]
+At \(Y=q^{0.32}\), its second term is \(q^{139/300}\), exceeding the trivial bound. [Baker, *Kloosterman sums with prime variable*, Acta Arith. 156 (2012), Theorem 1 and introduction](https://www.impan.pl/shop/en/publication/transaction/download/product/82065)
+
+**UNVERIFIED — an absolute “best known as of today” assertion.** I found no nontrivial bound uniform in \(a\) and prime \(q\) at \(Y=q^{0.32}\). The usable bound from the references checked is therefore
+\[
+|K_{\mathbb P}|\leq J\asymp Y/\log Y.
+\]
+In particular, the integer-variable Bourgain–Garaev theorem cannot be transferred to primes.
+
+**PROVED — the cited averaging and modular-root results do not supply this missing estimate.** Irving’s Theorems 1.1 and 1.3 average over the modulus; their stated ranges begin at \(Y\geq Q^{2/3}\) and \(Y\geq Q^{1/2}\), respectively. Kerr–Shkredov–Shparlinski–Zaharescu concern modular roots and Salié-type sums, with their prime-root discrepancy result nontrivial for \(P\geq q^{13/22}\); this is a different phase. [Irving, *Average Bounds for Kloosterman Sums Over Primes*](https://arxiv.org/html/1301.6372), [Kerr–Shkredov–Shparlinski–Zaharescu, §2](https://arxiv.org/html/2103.09405#S2)
+
+For integer variables, Bourgain–Garaev’s Theorem 16 gives
+\[
+\max_{a\ne0\bmod q}
+\left|\sum_{n\leq Y}e_q(a\bar n)\right|
+\ll
+Y\frac{(\log\log q)^3\log q}{(\log Y)^{3/2}}.
+\]
+At \(Y=q^{0.32}\), this is
+\[
+\ll Y\frac{(\log\log q)^3}{\sqrt{\log q}}.
+\]
+Subtracting initial sums gives the dyadic version. [Bourgain–Garaev, Izv. Math. 78 (2014), Theorem 16](https://arxiv.org/html/1211.4184)
+
+**PROVED — stronger applicable published refinement.** Korolev’s *On short Kloosterman sums modulo a prime*, Corollary 1, states
+\[
+\sum_{n\leq x}e_q(a\bar n)
+\ll_\delta x\frac{\log\log q}{\log q}
+\quad
+(q^{1/4+\delta}\leq x\leq q^{1/2-\delta}).
+\]
+It applies to \(Y=q^{0.32}\), and gives
+\[
+\boxed{
+K_{\mathbb Z}(a;q,Y)
+\ll Y\frac{\log\log q}{\log q}.
+}
+\]
+This is the strongest explicit applicable integer-variable bound I verified. [Korolev, Math. Notes 100 (2016), 820–827, Corollary 1; Russian original](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=eng&paperid=11048&what=fullt)
+
+**PROVED — a bibliographic caution.** Garaev–Shparlinski explicitly flag a gap in Lemma 2 of Korolev’s *different* 2016 Sbornik paper, affecting its claimed refinement of the very-short-length threshold. That should be distinguished from the Math. Notes corollary above. [Garaev–Shparlinski, Mathematika 69 (2023), introduction](https://arxiv.org/html/2304.07953)
+
+**2(b). PROVED — the precise black-box Fourier obstruction.** Let \(S\subset\mathbb F_q\) be a target set of density \(\mu\), with expected hits \(\lambda=J\mu\). Choose \(J\) distinct points randomly from its complement. For every \(h\ne0\),
+\[
+|\mathbb E K(h)|\leq\frac{J\mu}{1-\mu}
+=\frac{\lambda}{1-\mu}.
+\]
+Concentration and a union bound give a configuration with no hits and
+\[
+\boxed{
+\max_{h\ne0}|K(h)|
+\ll\lambda+\sqrt{J\log q}.
+}
+\]
+Consequently, a scalar estimate of the standard form
+\[
+|K(h)|\ll_\varepsilon J^{1/2}q^\varepsilon
+\]
+does not certify hitting when \(\lambda<J^{1/4-\delta}\). It is compatible with avoiding the target altogether.
+
+Also, for \(J\) distinct points,
+\[
+\sum_{h=1}^{q-1}|K(h)|^2=J(q-J),
+\]
+so
+\[
+\max_{h\ne0}|K(h)|
+\geq\sqrt{\frac{J(q-J)}{q-1}}.
+\]
+A uniformly smaller-than-square-root bound is unavailable when \(J\ll q\).
+
+**UNVERIFIED — the literal strongest interpretation of “ANY pointwise bound.”** The random construction allows a logarithmic loss and uses arbitrary point configurations. It does not settle every sharp constant at the exact square-root scale, and it is not a counterexample consisting of inverse primes. Nor does it prove a logical nonimplication from an arithmetic conjecture that contains additional information.
+
+**PROVED — the direct Erdős–Turán budget can be worse than \(\sqrt J\).** Applied separately for each \(B\), an interval-uniform bound \(\kappa\) gives schematically
+\[
+C=\lambda+O\!\left(H\kappa\log q+\frac{JH}{D}\right).
+\]
+Thus the often-used hypothetical error \(O(\sqrt J)\) for the *whole covering count* is already optimistic; it does not follow from \(|K(h)|\ll\sqrt J\).
+
+At the boundary scales,
+\[
+Y=q^{8/25},\qquad H=q^{1/25},\qquad
+\lambda=q^{2/25+o(1)}.
+\]
+Here
+\[
+\sqrt J=q^{4/25+o(1)},\qquad
+H\sqrt J=q^{5/25+o(1)},
+\]
+both larger than the main term.
+
+**2(c). PROVED — an explicit sufficient joint estimate.** Use the sufficient zero-centered test above. Set
+\[
+B_0=\lfloor H/4\rfloor,\qquad
+I=\{x\in\mathbb F_q:|x|_q\leq qH/(4Y)\},
+\]
+and
+\[
+c_h=\frac1q\sum_{x\in I}e_q(-hx).
+\]
+Its counting function is exactly
+\[
+C=\frac{|I|}{q}B_0J+E,
+\]
+where
+\[
+\boxed{
+E=\sum_{h\ne0}c_h
+\sum_{B\leq B_0}\sum_{\ell\in L}
+e_q(hBp\bar\ell).
+}
+\]
+Equivalently, combine \(hB\) into one frequency with divisor-type coefficients: this is a weighted bilinear correlation between frequencies and inverse moduli.
+
+**CONJECTURED — a sufficient fluctuation bound.** A uniform estimate
+\[
+|E|\ll \sqrt{\lambda}\,(\log q)^C
+\]
+would imply positivity for
+\[
+\lambda\gg(\log q)^{2C+1}.
+\]
+Together with R and dense bands, this gives \(N^{1/6+o(1)}\). The weaker estimate \(E=o(\lambda)\) at \(H=Y^{1/8-\delta}\) already gives a sub-\(1/5\) exponent.
+
+The conjecture must concern these prescribed coefficients and prime/integer indicator weights. An arbitrary-coefficient square-root bilinear assertion would be false, since coefficients could cancel the phase.
+
+**UNVERIFIED — standard-hypothesis implication.** I found no established deduction of this joint estimate from GRH, EH, ordinary Montgomery-type AP conjectures, or \(R^*\).
+
+**2(d). PROVED — a lower-bound sieve can use stronger information, but needs that information.** Harman’s sieve can replace a full asymptotic by positivity and can exploit Type I/II cancellation before absolute values are taken. Therefore it is too strong to dismiss it solely from an individual-sum error budget. However, the same pointwise estimates do not acquire extra cancellation merely by inserting sieve weights. [Harman, *Prime-Detecting Sieves*, LMS Monographs 33 (2007)](https://pure.royalholloway.ac.uk/en/publications/prime-detecting-sieves/)
+
+**PROVED — primality of the locking modulus is unnecessary algebraically.** Let \((M,N)=1\), \(p=r+Mt\), and
+\[
+Br^2\equiv AN\pmod M.
+\]
+Then
+\[
+N(r+Mt)^{-1}\equiv Nr^{-1}-MtNr^{-2}\pmod{M^2},
+\]
+so
+\[
+Bp+Aq\equiv Br+ANr^{-1}\pmod{M^2}.
+\]
+This works for arbitrary \(M\), including prime powers.
+
+For a primitive covering weight, \(A,B\) are automatically units modulo \(M\): a prime dividing \(M\) and one coefficient would divide the other.
+
+**PROVED — implementation qualifications.** Factoring \(M\), enumerating modular roots, and constructing the lists must still be charged. For squarefree \(M\), root multiplicity is at most \(2^{\omega(M)}=M^{o(1)}\). One convenient deterministic family consists of squarefree products of primes \(3\bmod4\), permitting explicit roots and still providing \(Y^{1-o(1)}\) moduli.
+
+**UNVERIFIED — the resulting integer-modulus coverage theorem.** Using integer moduli removes prime detection, but leaves
+\[
+\exists v,\quad \delta_v\text{ has a divisor in }(Y,2Y].
+\]
+These divisor events are correlated. Ford’s results illustrate why their expected number and their hitting probability need separate treatment. [Ford, *Integers with a divisor in \((y,2y]\)*](https://arxiv.org/html/math/0607473)
+
+## 3. A coverage-or-easy dichotomy
+
+**PROVED — notation correction.** Your \(\delta_v=Bp-Aq\) corresponds to approximation
+\[
+p/q\approx A/B,
+\]
+or equivalently \(q/p\approx B/A\).
+
+For \(A,B>0\),
+\[
+(Bp+Aq)^2-\delta_v^2=4ABN,
+\]
+and therefore
+\[
+Bp+Aq-2\sqrt{ABN}
+\asymp\frac{\delta_v^2}{h(v)P}
+\]
+when \(A,B\asymp h(v)\). This verifies the stated stationary-point search length.
+
+**PROVED — fixed linear families are easy.** If
+\[
+p=ax+b,\qquad q=cx+d,\qquad g=(a,c),
+\]
+take
+\[
+A=a/g,\qquad B=c/g.
+\]
+Then
+\[
+\delta_v=\frac{cb-ad}{g},
+\]
+a constant. The public interval for \(Bp+Aq\) has length \(O(1/P)\). For sufficiently large \(N\), its unique integer candidate can be checked directly through
+\[
+S^2-4ABN=\delta_v^2.
+\]
+For fixed coefficients, this is a polylogarithmic calculation.
+
+**PROVED — implication for B3.** The specialization \((x,x+1)\), and more generally fixed linear families, does not obstruct a theorem saying “covered **or cheaply factorable**.” It still obstructs a pure coverage assertion applicable to all coprime pairs. These are different quantifiers.
+
+**PROVED — a concrete inexpensive exceptional class.** Scan positive comparable weights of height at most \(G\), each with \(|\delta_v|\leq D\). The supplied stationary-window model gives
+\[
+T\asymp G^2,\qquad
+\sum_vW_v\asymp\frac{GD^2}{P},
+\]
+because \(\sum_{h(v)\leq G}1/h(v)\asymp G\). Thus its list cost is
+\[
+X\asymp G^2+D\sqrt{G/P}.
+\]
+At budget \(C\), choose
+\[
+G\asymp C^{1/2},\qquad
+D\asymp P^{1/2}C^{3/4}.
+\]
+It factors every pair possessing such an approximation, with the supplied \(N^{1/6+o(1)}\) overhead.
+
+**PROVED — Dirichlet-tight pairs remain at exactly the critical scale.** Dirichlet’s general scale is \(D\asymp P/G\). Substituting gives
+\[
+X\asymp G^2+\sqrt{P/G}.
+\]
+Balancing yields
+\[
+G=P^{1/5},\qquad X=P^{2/5}=N^{1/5}.
+\]
+For \(C<N^{1/5-\varepsilon}\), the affordable \(D\) is a power smaller than \(P/G\).
+
+**UNVERIFIED — the residual theorem actually needed.** A sufficient statement is:
+
+> Every balanced prime pair lacking an approximation exploitable within budget \(C\) is covered by the chosen modulus/weight lists.
+
+I cannot prove this, or replace failure of coverage by useful information about \(p-1,q-1\), or multiplicative orders. No argument found links these failures strongly enough to those structures.
+
+**PROVED — a residual sparse specialization survives for all-coprime extensions.** Let \(\alpha\in(1,2)\) be badly approximable and take
+\[
+p=x,\qquad q=\lfloor\alpha x\rfloor.
+\]
+Then
+\[
+Bp-Aq=(B-A\alpha)x+A\{\alpha x\},
+\]
+so, for positive weights of height \(h\),
+\[
+|Bp-Aq|\geq c_\alpha x/h-O(h).
+\]
+For \(G^2=o(x)\), these pairs are Dirichlet-tight throughout the scanned range. There are coprime examples, for instance by taking sufficiently large prime \(x\).
+
+An all-coprime version of the residual theorem would therefore imply band-divisor coverage among
+\[
+\{Bx-A\lfloor\alpha x\rfloor:1\leq |A|,B\leq H\}.
+\]
+This remains a sparse family of \(O(H^2)\) values.
+
+**UNVERIFIED — prime specialization.** Requiring both \(x\) and \(\lfloor\alpha x\rfloor\) to be prime introduces another difficult problem. The all-coprime deduction must not be advertised as an obstruction applying automatically to prime pairs alone.
+
+## 4. Conditional hypotheses and existing factoring results
+
+**UNVERIFIED — a weakest standard analytic hypothesis.** I found no verified implication from any hypothesis in your list to the required worst-case coverage. Moreover, these hypotheses are not linearly ordered, so “weakest” requires a specified implication relation.
+
+| Hypothesis | What the checked argument supplies |
+|---|---|
+| GRH | Prime/AP and character information; no established sparse inverse-prime covering consequence at these scales. |
+| Elliott–Halberstam | Distribution averaged over moduli and a running prime variable; it does not directly control one fixed hidden pair. |
+| Ordinary Montgomery AP conjecture | Stronger AP errors, with the same missing reduction to the inverse-modulus covering count. |
+| Hooley \(R^*\) | Square-root bounds for incomplete integer reciprocal sums; the scalar-discrepancy route remains insufficient. |
+| Cramér-type ordinary gap conjectures | Positivity in contiguous intervals; no implication for the sparse linear-form set was found. |
+| Erdős–Odlyzko–Sárközy | Products of two primes bounded by the modulus represent reduced residues; its ranges do not give the required unbalanced restricted box. |
+| “Equidistribution of \(t_\ell\)” | Sufficient only after specifying the target sets, uniformity, and an error smaller than their expected count. |
+
+**PROVED — the exact \(R^*\) statement and its limitation here.** In the usual formulation,
+\[
+\sum_{u<n\leq u+L\atop(n,r)=1}e_r(a\bar n)
+\ll_\varepsilon (a,r)^{1/2}L^{1/2}r^\varepsilon,
+\qquad 1<L<r.
+\]
+Iwaniec records this as Hypothesis \(R^*\) on p. 110. It concerns integer summation, not primes. [Iwaniec, *On the Brun–Titchmarsh theorem*, JMSJ 34 (1982), 95–123](https://www.jstage.jst.go.jp/article/jmath1948/34/1/34_1_95/_pdf/-char/en)
+
+For integer moduli near \(Y\), it supplies \(\kappa\ll Y^{1/2}q^\varepsilon\). Even granting an aggregate error \(O(\kappa)\), positivity would require \(\lambda\gg\sqrt J\), up to subpower factors. Direct separate-\(B\) Erdős–Turán loses more.
+
+**UNVERIFIED — formal nonimplication.** This establishes failure of that use of \(R^*\), not a theorem that no more elaborate consequence of the full conjecture could work. Your negative conclusion is supported; “\(R^*\) gives precisely the sharp threshold \(\sqrt J\)” is stronger than what has been established.
+
+**PROVED — EOS has a substantial parameter mismatch.** The standard conjecture allows both prime factors up to the modulus. Your reciprocity box instead has
+\[
+\ell\asymp q^{0.32},\qquad
+|k|\ll Hq/Y\asymp q^{0.72}
+\]
+at the boundary, together with the small-weight constraint. The standard EOS assertion does not state positivity in this box. [Erdős–Odlyzko–Sárközy, *On the residues of products of prime numbers*, Period. Math. Hungar. 18 (1987), 229–239](https://combinatorica.hu/~p_erdos/1987-22.pdf)
+
+**PROVED — Schoof’s conditional \(1/5\) result.** Schoof gives two deterministic factoring algorithms under GRH, based on imaginary and real quadratic orders, with complexity \(O(N^{1/5+\varepsilon})\). This is explicit in §6 and Algorithms 6.4–6.5. [Schoof, *Quadratic fields and factorization*, MC Tracts 154/155 (1982), 235–286](https://reneschoof.github.io/mcpaper.pdf)
+
+**PROVED — what Umans–Wang state.** Their Theorem 5.5 states conditional complexity
+\[
+\widetilde O\!\left(N^{\max(\alpha,\beta)/2+o(1)}\right)
+\]
+under the Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture. Thus \(\alpha=\beta=1/3\) gives \(1/6\), and \(\max(\alpha,\beta)<2/5\) gives below \(1/5\). This is a different divisor-covering conjecture. [Umans–Wang, arXiv:2511.10851, §5](https://arxiv.org/html/2511.10851#S5)
+
+**UNVERIFIED — a literal uniform all-input reading of their displayed conjecture.** Conjectures 3.3 and 5.1 quantify over infinitely many \(n\) and existential structured sets. The reduction needs usable descriptions at sizes comparable to \(\sqrt N\). Uncontrolled successful sizes do not justify that padding, and existence does not charge finding the descriptions. I would add efficient construction at all sufficiently large sizes, or suitably controlled sizes, before citing a uniform all-input consequence.
+
+**CONJECTURED — sufficient analytic replacement.** The explicit joint fluctuation estimate in §2(c), or merely uniform positivity on the residual class in §3, would supply the desired factoring result. I cannot identify either with an established standard named analytic hypothesis.
+
+**PROVED — if complexity hypotheses are allowed, there is a separate answer.** Under \(\mathrm P=\mathrm{BPP}\), padding derandomizes rigorous randomized subexponential factoring into deterministic \(N^{o(1)}\) time: pad to length \(\exp(O(\sqrt{\log N\log\log N}))\), decide prefixes of the canonical factorization in BPP, then use \(\mathrm P=\mathrm{BPP}\). This gives no coverage theorem. The requisite rigorous randomized algorithm is Lenstra–Pomerance’s. [Lenstra–Pomerance, JAMS 5 (1992), 483–516](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+## 5. Further gains, barriers, and computations
+
+**PROVED — explicit special subclasses.** For a specified positive weight of height \(h\), the stationary search has list cost
+\[
+O\!\left(1+\frac{|\delta_v|}{\sqrt h\,N^{1/4}}\right).
+\]
+Under the supplied search primitive and overhead, this gives:
+
+- \(N^{1/6+o(1)}\) when \(|\delta_v|\leq\sqrt h\,N^{5/12+o(1)}\);
+- below \(N^{1/5}\) when \(|\delta_v|\leq\sqrt h\,N^{9/20-\varepsilon}\).
+
+For \(v=(1,1)\), these are explicit close-factor subclasses. A polylogarithmic collection of specified weights preserves the exponents.
+
+**PROVED — known unconditional logarithmic improvement.** Harvey–Hittmeir prove
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right)
+\]
+bit operations. This is already a rigorous log-log improvement at exponent \(1/5\). [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2105.11105)
+
+**PROVED — what a coverage logarithm would buy in the ideal list model.** If
+\[
+\Lambda=\frac{J^{1/4}}{(\log N)^a},
+\]
+then
+\[
+X\asymp\frac{N^{1/5}}{(\log N)^{4a/5}}.
+\]
+**UNVERIFIED:** I have no proof of that coverage improvement. Also, the \(N^{o(1)}\) notation hides logarithmic overheads, so an actual bit-complexity improvement needs those tracked explicitly.
+
+**PROVED — the sharp barrier established here has two separate parts.**
+\[
+\boxed{X^5\gtrsim N\lambda^4/J}
+\]
+is a cost-model inequality for the enumerated targets. The Fourier construction establishes a separate obstruction to certifying hits using scalar square-root bounds with logarithmic/subpower losses. Neither rules out a structural dichotomy, a joint counting estimate, or a new target-construction algorithm.
+
+**PROVED — computations actually run.** The reproducible scripts are [blind_calculations.py](/Volumes/git/factoring-connection/codex/scratch/coverage38_1/blind_calculations.py) and [check_reciprocity_fourier.py](/Volumes/git/factoring-connection/codex/scratch/coverage38_1/check_reciprocity_fourier.py).
+
+The exact rational-exponent calculation produced
+```text
+theta=0:   Y exponent=1/6,  cost exponent=1/6
+theta=1/8: Y exponent=8/49, cost exponent=9/49
+theta=1/4: Y exponent=4/25, cost exponent=1/5
+theta=1/2: Y exponent=2/13, cost exponent=3/13
+```
+
+The second script checked the moving-center reciprocity identity with rational arithmetic for 15 cases using \(p=101,q=139,H=3\) and band primes \(17<\ell\leq34\).
+
+It also constructed a Fourier-small set avoiding a fixed Farey target. With
+\[
+q=10007,\quad Y=400,\quad H=2,\quad J=400,
+\]
+and random seed \(38\), it returned
+```text
+target residues:                   151
+expected hits under uniformity:    6.0357749575
+actual hits:                       0
+max nonzero Fourier coefficient:  57.0966998650
+sqrt(J log q):                    60.6993908605
+```
+This illustrates the proved black-box obstruction; it is not an inverse-prime counterexample. Finally, 1,000 random heterogeneous designs satisfied the derived design inequality, with minimum numerical RHS/LHS \(0.9999999999999993\), the rounding value of \(1\).
+tokens used
+354,270
+**PROVED:** your fifth-power tradeoff is correct for the stated target-list model, including stationary-point windows **when \(\Lambda\) means the expected number of events satisfying the additional \(\Delta\)-restriction**. A general inequality extends it to unequal moduli, unequal heights, rectangles, and per-target window sizes. Thus square-root-level coverage, \(\Lambda\asymp J^{1/2}\), does not yield a sub-\(1/5\) exponent in this model. **UNVERIFIED:** I found neither the requested coverage-or-structure dichotomy nor an implication from the listed standard analytic hypotheses giving \(\Lambda<J^{1/4-\delta}\). **PROVED:** pointwise square-root Fourier bounds alone cannot establish the required conclusion as a general discrepancy principle; the useful conjectural input is cancellation in the *weighted covering count*. I derived the calculations before searching the literature, and take Theorem R as supplied.
+
+## 1. Design and cost optimization
+
+**PROVED — full windows.** Write \(S=\sum W_\tau\), suppressing constants and subpower factors. Then
+\[
+T=JH^2,\qquad
+S\asymp \frac{PJH^3}{Y^2},\qquad
+\lambda\asymp\frac{JH^2}{Y}.
+\]
+Putting \(\lambda=\Lambda\),
+\[
+H^2=\frac{\Lambda Y}{J},
+\]
+and hence
+\[
+T=\Lambda Y,\qquad
+\sqrt S=P^{1/2}\Lambda^{3/4}J^{-1/4}Y^{-1/4}.
+\]
+Optimizing over \(Y\) gives
+\[
+Y\asymp P^{2/5}(\Lambda J)^{-1/5},
+\]
+and therefore
+\[
+\boxed{X\asymp N^{1/5}\left(\frac{\Lambda^4}{J}\right)^{1/5}.}
+\]
+The complete supplied algorithm costs \(N^{1/6+o(1)}+X\,N^{o(1)}\), subject to feasibility of the parameters.
+
+**PROVED — stationary-point windows, with the corrected mean.** For positive comparable \(A,B\), the condition \(|Bp-Aq|\leq\Delta\) occupies a proportion
+\[
+\rho\asymp\frac{\Delta}{HP}
+\]
+of the balanced ratio range. Consequently,
+\[
+\lambda_\Delta\asymp\frac{JH\Delta}{PY},
+\]
+whereas
+\[
+T\asymp JH^2,\qquad
+S\asymp\frac{JH\Delta^2}{PY^2}.
+\]
+The successful weights are unknown, so the target count remains \(JH^2\).
+
+Substituting
+\[
+\Delta=\frac{\Lambda PY}{JH}
+\]
+gives
+\[
+\sqrt S=\Lambda\sqrt{\frac P{JH}}.
+\]
+Optimizing \(JH^2+\Lambda\sqrt{P/(JH)}\) yields
+\[
+H\asymp\Lambda^{2/5}P^{1/5}J^{-3/5},
+\qquad
+X\asymp P^{2/5}\Lambda^{4/5}J^{-1/5}.
+\]
+This is the same formula.
+
+**REFUTED — the literal “any \(\Delta\)” interpretation using the original \(\lambda=JH^2/Y\).** Shortening the windows also reduces the relevant expected count. Moreover, arbitrary prescribed \(\Delta\) can make the optimization infeasible: for example, \(\Delta<Y\) permits no nonzero difference divisible by a band modulus.
+
+**PROVED — a general design inequality.** The following is stronger than the equal-band calculation.
+
+For each modulus \(M_i\), let \(V_i\) contain \(w_i\) distinct primitive weights. Put \(h(v)=\max(|A|,B)\), and let \(\rho_{iv}\in[0,1]\) denote the proportion retained by its window. Full windows have \(\rho_{iv}=1\); stationary windows have \(\rho_{iv}\asymp\Delta_{iv}/(h(v)P)\). Within the stated density/window model,
+\[
+\lambda\asymp\sum_{i,v}\frac{\rho_{iv}}{M_i},
+\qquad
+S\gtrsim P\sum_{i,v}\frac{h(v)\rho_{iv}^{\,2}}{M_i^2}.
+\]
+Cauchy–Schwarz gives
+\[
+\lambda^2\lesssim\frac SP\sum_{i,v}\frac1{h(v)}.
+\]
+Since there are \(O(r^2)\) integer weights of height at most \(r\), every \(w\)-element weight set satisfies
+\[
+\sum_{v\in V}\frac1{h(v)}\ll\sqrt w.
+\]
+Thus, with \(T=\sum_iw_i\),
+\[
+\lambda^2\lesssim\frac SP\sum_i\sqrt{w_i}
+\leq\frac SP\sqrt{JT}.
+\]
+Therefore
+\[
+\boxed{\lambda^4\lesssim\frac{JTS^2}{P^2}},
+\qquad
+\boxed{(T+\sqrt S)^5\gtrsim\frac{N\lambda^4}{J}}.
+\]
+
+**PROVED — consequence for the proposed variants.** This inequality covers the following parameter changes, provided their individual targets and windows are charged as stipulated:
+
+| Variant | Consequence |
+|---|---|
+| Wide prime ranges; multiscale bands with separate weights | Unequal \(M_i\) and \(V_i\) are already allowed. |
+| Composite, smooth, or prime-power moduli | The same exponent inequality holds; local-density and root-multiplicity factors require accounting. |
+| Rectangles or other weight shapes | The bound on \(\sum 1/h(v)\) applies to every shape. |
+| Signed weights; inclusion of \((1,1)\) | Changes constants and accessible subclasses, without changing this tradeoff. |
+| Both factors | Swapping \(p,q\) swaps the weights; the square family already contains the corresponding choices. |
+| Stationary windows parametrized by span \(m^2\) | Reparametrizes \(\rho\); the inequality persists. |
+
+For a wide prime range \((Y,Z]\), \(Z=Y^{1+\kappa}\), the appropriate mean is
+\[
+\lambda\asymp H^2\sum_{Y<\ell\leq Z}\frac1\ell
+\asymp H^2\log(1+\kappa),
+\]
+rather than \(JH^2/Y\). The general inequality avoids this normalization problem.
+
+**PROVED — square-root-level coverage is insufficient for these designs.** If \(\Lambda=J^{1/2}\), then
+\[
+X\gtrsim N^{1/5}J^{1/5}.
+\]
+For the dense-band choice \(J=Y^{1+o(1)}\), writing \(\Lambda=J^\theta\) gives
+\[
+Y=N^{1/(6+\theta)+o(1)},\qquad
+X=N^{(1+\theta)/(6+\theta)+o(1)}.
+\]
+
+| \(\theta\) | Optimized exponent |
+|---:|---:|
+| \(0\) | \(1/6\) |
+| \(1/8\) | \(9/49\) |
+| \(1/4\) | \(1/5\) |
+| \(1/2\) | \(3/13\) |
+
+At the boundary,
+\[
+H=Y^{1/8+o(1)},\qquad P=Y^{25/8+o(1)}.
+\]
+The \(3/13\) entry describes that particular design; an unconditional \(1/5\) fallback remains available.
+
+**PROVED — qualification concerning Minkowski.** With one modulus, \(J=1\), \(H\asymp\sqrt Y\) gives \(1/5\). Keeping \(J\) redundant Minkowski-covered moduli produces \(\Lambda\asymp J\) and a larger list. Recovering \(1/5\) means retaining one modulus.
+
+**UNVERIFIED — a broader impossibility theorem.** The inequality does not exclude an algorithm that compresses the charged targets, constructs special weights from public residue guesses, or exploits an additional relation between several locks. Such a change needs a new cost analysis; it is not represented by the stipulated \(T\) and \(S\).
+
+**PROVED — public intervals exist, but the prime-factor assertion has the wrong quantifier.** For positive weights,
+\[
+S_v=Bp+Aq,\qquad
+S_v-2\sqrt{ABN}
+=\frac{\delta_v^2}{S_v+2\sqrt{ABN}}.
+\]
+Hence a \(\Delta\)-restriction places \(S_v\) in the public interval
+\[
+\left[2\sqrt{ABN},\,
+2\sqrt{ABN}+O\!\left(\frac{\Delta^2}{h(v)P}\right)\right].
+\]
+A theorem asserting that *some integer* in this interval has a band prime factor does not impose anything on the particular hidden value \(S_v\), or on its discriminant
+\[
+S_v^2-4ABN=\delta_v^2.
+\]
+Harvey–Hittmeir’s Proposition 3.3 likewise uses public centers and an arbitrary modulus, while supplying a lattice construction rather than the proposed short-interval prime-factor reduction. [Harvey–Hittmeir, Proposition 3.3](https://arxiv.org/html/2105.11105#S3)
+
+**UNVERIFIED — applicability of the named interval results.** I found no reduction making Jutila, Friedlander–Lagarias, Baker–Harman, Harman’s sieve, or Ford applicable to the required fixed-pair covering assertion. Friedlander–Lagarias study smooth integers in genuine intervals; Ford counts integers possessing interval divisors. Neither supplies uniform positivity on this sparse collection of hidden linear-form values. [Friedlander–Lagarias, JNT 25 (1987), 249–273](https://websites.umich.edu/~lagarias/doc/short.pdf), [Ford, Annals 168 (2008), 367–433](https://arxiv.org/abs/math/0401223)
+
+## 2. Reciprocity, Kloosterman sums, and positivity
+
+**REFUTED as an exact identity — the proposed zero-centered reciprocity formula.** If
+\[
+Bp-Aq=k\ell,
+\]
+then
+\[
+k\equiv Bp\bar\ell\pmod q,
+\qquad
+\left|\frac{k}{q}-\frac{Bp}{q\ell}\right|\leq\frac H\ell.
+\]
+Thus the exact circular condition, for \(H<\ell/2\), is
+\[
+\boxed{
+\left\|\frac{Bp\bar\ell}{q}-\frac{Bp}{q\ell}\right\|
+\leq\frac H\ell.
+}
+\]
+The center depends on \(B,\ell\).
+
+**PROVED — the simpler condition remains useful with constants.** For example,
+\[
+B\leq H/4,\qquad
+\left\|\frac{Bp\bar\ell}{q}\right\|\leq\frac{H}{4Y},
+\qquad Y<\ell\leq2Y
+\]
+imply \(|A|\leq H\). Indeed, choose the corresponding \(k\) with
+\[
+|k|/q\leq H/(4Y).
+\]
+Then
+\[
+|A|=\left|\frac{Bp-k\ell}{q}\right|
+\leq H/4+H/2.
+\]
+Thus a fixed zero-centered target gives a sufficient covering test with mean \(\asymp JH^2/Y\).
+
+**2(a). PROVED — applicable literature bounds.**
+
+For the prime-variable sum
+\[
+K_{\mathbb P}(a;q,Y)
+=\sum_{Y<\ell\leq2Y\atop\ell\ {\rm prime}}e_q(a\bar\ell),
+\]
+Bourgain’s theorem, as stated and made explicit by Baker, gives power saving for \(Y\geq q^{1/2+\varepsilon}\). Baker’s Theorem 1 gives, in its specified range,
+\[
+K_{\mathbb P}\ll_\delta Y^{1-\delta^4/2000}.
+\]
+The Garaev/Fouvry–Shparlinski estimate recorded there is
+\[
+K_{\mathbb P}\ll_\varepsilon
+\left(Y^{15/16}+q^{1/4}Y^{2/3}\right)q^\varepsilon.
+\]
+At \(Y=q^{0.32}\), its second term is \(q^{139/300}\), exceeding the trivial bound. [Baker, *Kloosterman sums with prime variable*, Acta Arith. 156 (2012), Theorem 1 and introduction](https://www.impan.pl/shop/en/publication/transaction/download/product/82065)
+
+**UNVERIFIED — an absolute “best known as of today” assertion.** I found no nontrivial bound uniform in \(a\) and prime \(q\) at \(Y=q^{0.32}\). The usable bound from the references checked is therefore
+\[
+|K_{\mathbb P}|\leq J\asymp Y/\log Y.
+\]
+In particular, the integer-variable Bourgain–Garaev theorem cannot be transferred to primes.
+
+**PROVED — the cited averaging and modular-root results do not supply this missing estimate.** Irving’s Theorems 1.1 and 1.3 average over the modulus; their stated ranges begin at \(Y\geq Q^{2/3}\) and \(Y\geq Q^{1/2}\), respectively. Kerr–Shkredov–Shparlinski–Zaharescu concern modular roots and Salié-type sums, with their prime-root discrepancy result nontrivial for \(P\geq q^{13/22}\); this is a different phase. [Irving, *Average Bounds for Kloosterman Sums Over Primes*](https://arxiv.org/html/1301.6372), [Kerr–Shkredov–Shparlinski–Zaharescu, §2](https://arxiv.org/html/2103.09405#S2)
+
+For integer variables, Bourgain–Garaev’s Theorem 16 gives
+\[
+\max_{a\ne0\bmod q}
+\left|\sum_{n\leq Y}e_q(a\bar n)\right|
+\ll
+Y\frac{(\log\log q)^3\log q}{(\log Y)^{3/2}}.
+\]
+At \(Y=q^{0.32}\), this is
+\[
+\ll Y\frac{(\log\log q)^3}{\sqrt{\log q}}.
+\]
+Subtracting initial sums gives the dyadic version. [Bourgain–Garaev, Izv. Math. 78 (2014), Theorem 16](https://arxiv.org/html/1211.4184)
+
+**PROVED — stronger applicable published refinement.** Korolev’s *On short Kloosterman sums modulo a prime*, Corollary 1, states
+\[
+\sum_{n\leq x}e_q(a\bar n)
+\ll_\delta x\frac{\log\log q}{\log q}
+\quad
+(q^{1/4+\delta}\leq x\leq q^{1/2-\delta}).
+\]
+It applies to \(Y=q^{0.32}\), and gives
+\[
+\boxed{
+K_{\mathbb Z}(a;q,Y)
+\ll Y\frac{\log\log q}{\log q}.
+}
+\]
+This is the strongest explicit applicable integer-variable bound I verified. [Korolev, Math. Notes 100 (2016), 820–827, Corollary 1; Russian original](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=eng&paperid=11048&what=fullt)
+
+**PROVED — a bibliographic caution.** Garaev–Shparlinski explicitly flag a gap in Lemma 2 of Korolev’s *different* 2016 Sbornik paper, affecting its claimed refinement of the very-short-length threshold. That should be distinguished from the Math. Notes corollary above. [Garaev–Shparlinski, Mathematika 69 (2023), introduction](https://arxiv.org/html/2304.07953)
+
+**2(b). PROVED — the precise black-box Fourier obstruction.** Let \(S\subset\mathbb F_q\) be a target set of density \(\mu\), with expected hits \(\lambda=J\mu\). Choose \(J\) distinct points randomly from its complement. For every \(h\ne0\),
+\[
+|\mathbb E K(h)|\leq\frac{J\mu}{1-\mu}
+=\frac{\lambda}{1-\mu}.
+\]
+Concentration and a union bound give a configuration with no hits and
+\[
+\boxed{
+\max_{h\ne0}|K(h)|
+\ll\lambda+\sqrt{J\log q}.
+}
+\]
+Consequently, a scalar estimate of the standard form
+\[
+|K(h)|\ll_\varepsilon J^{1/2}q^\varepsilon
+\]
+does not certify hitting when \(\lambda<J^{1/4-\delta}\). It is compatible with avoiding the target altogether.
+
+Also, for \(J\) distinct points,
+\[
+\sum_{h=1}^{q-1}|K(h)|^2=J(q-J),
+\]
+so
+\[
+\max_{h\ne0}|K(h)|
+\geq\sqrt{\frac{J(q-J)}{q-1}}.
+\]
+A uniformly smaller-than-square-root bound is unavailable when \(J\ll q\).
+
+**UNVERIFIED — the literal strongest interpretation of “ANY pointwise bound.”** The random construction allows a logarithmic loss and uses arbitrary point configurations. It does not settle every sharp constant at the exact square-root scale, and it is not a counterexample consisting of inverse primes. Nor does it prove a logical nonimplication from an arithmetic conjecture that contains additional information.
+
+**PROVED — the direct Erdős–Turán budget can be worse than \(\sqrt J\).** Applied separately for each \(B\), an interval-uniform bound \(\kappa\) gives schematically
+\[
+C=\lambda+O\!\left(H\kappa\log q+\frac{JH}{D}\right).
+\]
+Thus the often-used hypothetical error \(O(\sqrt J)\) for the *whole covering count* is already optimistic; it does not follow from \(|K(h)|\ll\sqrt J\).
+
+At the boundary scales,
+\[
+Y=q^{8/25},\qquad H=q^{1/25},\qquad
+\lambda=q^{2/25+o(1)}.
+\]
+Here
+\[
+\sqrt J=q^{4/25+o(1)},\qquad
+H\sqrt J=q^{5/25+o(1)},
+\]
+both larger than the main term.
+
+**2(c). PROVED — an explicit sufficient joint estimate.** Use the sufficient zero-centered test above. Set
+\[
+B_0=\lfloor H/4\rfloor,\qquad
+I=\{x\in\mathbb F_q:|x|_q\leq qH/(4Y)\},
+\]
+and
+\[
+c_h=\frac1q\sum_{x\in I}e_q(-hx).
+\]
+Its counting function is exactly
+\[
+C=\frac{|I|}{q}B_0J+E,
+\]
+where
+\[
+\boxed{
+E=\sum_{h\ne0}c_h
+\sum_{B\leq B_0}\sum_{\ell\in L}
+e_q(hBp\bar\ell).
+}
+\]
+Equivalently, combine \(hB\) into one frequency with divisor-type coefficients: this is a weighted bilinear correlation between frequencies and inverse moduli.
+
+**CONJECTURED — a sufficient fluctuation bound.** A uniform estimate
+\[
+|E|\ll \sqrt{\lambda}\,(\log q)^C
+\]
+would imply positivity for
+\[
+\lambda\gg(\log q)^{2C+1}.
+\]
+Together with R and dense bands, this gives \(N^{1/6+o(1)}\). The weaker estimate \(E=o(\lambda)\) at \(H=Y^{1/8-\delta}\) already gives a sub-\(1/5\) exponent.
+
+The conjecture must concern these prescribed coefficients and prime/integer indicator weights. An arbitrary-coefficient square-root bilinear assertion would be false, since coefficients could cancel the phase.
+
+**UNVERIFIED — standard-hypothesis implication.** I found no established deduction of this joint estimate from GRH, EH, ordinary Montgomery-type AP conjectures, or \(R^*\).
+
+**2(d). PROVED — a lower-bound sieve can use stronger information, but needs that information.** Harman’s sieve can replace a full asymptotic by positivity and can exploit Type I/II cancellation before absolute values are taken. Therefore it is too strong to dismiss it solely from an individual-sum error budget. However, the same pointwise estimates do not acquire extra cancellation merely by inserting sieve weights. [Harman, *Prime-Detecting Sieves*, LMS Monographs 33 (2007)](https://pure.royalholloway.ac.uk/en/publications/prime-detecting-sieves/)
+
+**PROVED — primality of the locking modulus is unnecessary algebraically.** Let \((M,N)=1\), \(p=r+Mt\), and
+\[
+Br^2\equiv AN\pmod M.
+\]
+Then
+\[
+N(r+Mt)^{-1}\equiv Nr^{-1}-MtNr^{-2}\pmod{M^2},
+\]
+so
+\[
+Bp+Aq\equiv Br+ANr^{-1}\pmod{M^2}.
+\]
+This works for arbitrary \(M\), including prime powers.
+
+For a primitive covering weight, \(A,B\) are automatically units modulo \(M\): a prime dividing \(M\) and one coefficient would divide the other.
+
+**PROVED — implementation qualifications.** Factoring \(M\), enumerating modular roots, and constructing the lists must still be charged. For squarefree \(M\), root multiplicity is at most \(2^{\omega(M)}=M^{o(1)}\). One convenient deterministic family consists of squarefree products of primes \(3\bmod4\), permitting explicit roots and still providing \(Y^{1-o(1)}\) moduli.
+
+**UNVERIFIED — the resulting integer-modulus coverage theorem.** Using integer moduli removes prime detection, but leaves
+\[
+\exists v,\quad \delta_v\text{ has a divisor in }(Y,2Y].
+\]
+These divisor events are correlated. Ford’s results illustrate why their expected number and their hitting probability need separate treatment. [Ford, *Integers with a divisor in \((y,2y]\)*](https://arxiv.org/html/math/0607473)
+
+## 3. A coverage-or-easy dichotomy
+
+**PROVED — notation correction.** Your \(\delta_v=Bp-Aq\) corresponds to approximation
+\[
+p/q\approx A/B,
+\]
+or equivalently \(q/p\approx B/A\).
+
+For \(A,B>0\),
+\[
+(Bp+Aq)^2-\delta_v^2=4ABN,
+\]
+and therefore
+\[
+Bp+Aq-2\sqrt{ABN}
+\asymp\frac{\delta_v^2}{h(v)P}
+\]
+when \(A,B\asymp h(v)\). This verifies the stated stationary-point search length.
+
+**PROVED — fixed linear families are easy.** If
+\[
+p=ax+b,\qquad q=cx+d,\qquad g=(a,c),
+\]
+take
+\[
+A=a/g,\qquad B=c/g.
+\]
+Then
+\[
+\delta_v=\frac{cb-ad}{g},
+\]
+a constant. The public interval for \(Bp+Aq\) has length \(O(1/P)\). For sufficiently large \(N\), its unique integer candidate can be checked directly through
+\[
+S^2-4ABN=\delta_v^2.
+\]
+For fixed coefficients, this is a polylogarithmic calculation.
+
+**PROVED — implication for B3.** The specialization \((x,x+1)\), and more generally fixed linear families, does not obstruct a theorem saying “covered **or cheaply factorable**.” It still obstructs a pure coverage assertion applicable to all coprime pairs. These are different quantifiers.
+
+**PROVED — a concrete inexpensive exceptional class.** Scan positive comparable weights of height at most \(G\), each with \(|\delta_v|\leq D\). The supplied stationary-window model gives
+\[
+T\asymp G^2,\qquad
+\sum_vW_v\asymp\frac{GD^2}{P},
+\]
+because \(\sum_{h(v)\leq G}1/h(v)\asymp G\). Thus its list cost is
+\[
+X\asymp G^2+D\sqrt{G/P}.
+\]
+At budget \(C\), choose
+\[
+G\asymp C^{1/2},\qquad
+D\asymp P^{1/2}C^{3/4}.
+\]
+It factors every pair possessing such an approximation, with the supplied \(N^{1/6+o(1)}\) overhead.
+
+**PROVED — Dirichlet-tight pairs remain at exactly the critical scale.** Dirichlet’s general scale is \(D\asymp P/G\). Substituting gives
+\[
+X\asymp G^2+\sqrt{P/G}.
+\]
+Balancing yields
+\[
+G=P^{1/5},\qquad X=P^{2/5}=N^{1/5}.
+\]
+For \(C<N^{1/5-\varepsilon}\), the affordable \(D\) is a power smaller than \(P/G\).
+
+**UNVERIFIED — the residual theorem actually needed.** A sufficient statement is:
+
+> Every balanced prime pair lacking an approximation exploitable within budget \(C\) is covered by the chosen modulus/weight lists.
+
+I cannot prove this, or replace failure of coverage by useful information about \(p-1,q-1\), or multiplicative orders. No argument found links these failures strongly enough to those structures.
+
+**PROVED — a residual sparse specialization survives for all-coprime extensions.** Let \(\alpha\in(1,2)\) be badly approximable and take
+\[
+p=x,\qquad q=\lfloor\alpha x\rfloor.
+\]
+Then
+\[
+Bp-Aq=(B-A\alpha)x+A\{\alpha x\},
+\]
+so, for positive weights of height \(h\),
+\[
+|Bp-Aq|\geq c_\alpha x/h-O(h).
+\]
+For \(G^2=o(x)\), these pairs are Dirichlet-tight throughout the scanned range. There are coprime examples, for instance by taking sufficiently large prime \(x\).
+
+An all-coprime version of the residual theorem would therefore imply band-divisor coverage among
+\[
+\{Bx-A\lfloor\alpha x\rfloor:1\leq |A|,B\leq H\}.
+\]
+This remains a sparse family of \(O(H^2)\) values.
+
+**UNVERIFIED — prime specialization.** Requiring both \(x\) and \(\lfloor\alpha x\rfloor\) to be prime introduces another difficult problem. The all-coprime deduction must not be advertised as an obstruction applying automatically to prime pairs alone.
+
+## 4. Conditional hypotheses and existing factoring results
+
+**UNVERIFIED — a weakest standard analytic hypothesis.** I found no verified implication from any hypothesis in your list to the required worst-case coverage. Moreover, these hypotheses are not linearly ordered, so “weakest” requires a specified implication relation.
+
+| Hypothesis | What the checked argument supplies |
+|---|---|
+| GRH | Prime/AP and character information; no established sparse inverse-prime covering consequence at these scales. |
+| Elliott–Halberstam | Distribution averaged over moduli and a running prime variable; it does not directly control one fixed hidden pair. |
+| Ordinary Montgomery AP conjecture | Stronger AP errors, with the same missing reduction to the inverse-modulus covering count. |
+| Hooley \(R^*\) | Square-root bounds for incomplete integer reciprocal sums; the scalar-discrepancy route remains insufficient. |
+| Cramér-type ordinary gap conjectures | Positivity in contiguous intervals; no implication for the sparse linear-form set was found. |
+| Erdős–Odlyzko–Sárközy | Products of two primes bounded by the modulus represent reduced residues; its ranges do not give the required unbalanced restricted box. |
+| “Equidistribution of \(t_\ell\)” | Sufficient only after specifying the target sets, uniformity, and an error smaller than their expected count. |
+
+**PROVED — the exact \(R^*\) statement and its limitation here.** In the usual formulation,
+\[
+\sum_{u<n\leq u+L\atop(n,r)=1}e_r(a\bar n)
+\ll_\varepsilon (a,r)^{1/2}L^{1/2}r^\varepsilon,
+\qquad 1<L<r.
+\]
+Iwaniec records this as Hypothesis \(R^*\) on p. 110. It concerns integer summation, not primes. [Iwaniec, *On the Brun–Titchmarsh theorem*, JMSJ 34 (1982), 95–123](https://www.jstage.jst.go.jp/article/jmath1948/34/1/34_1_95/_pdf/-char/en)
+
+For integer moduli near \(Y\), it supplies \(\kappa\ll Y^{1/2}q^\varepsilon\). Even granting an aggregate error \(O(\kappa)\), positivity would require \(\lambda\gg\sqrt J\), up to subpower factors. Direct separate-\(B\) Erdős–Turán loses more.
+
+**UNVERIFIED — formal nonimplication.** This establishes failure of that use of \(R^*\), not a theorem that no more elaborate consequence of the full conjecture could work. Your negative conclusion is supported; “\(R^*\) gives precisely the sharp threshold \(\sqrt J\)” is stronger than what has been established.
+
+**PROVED — EOS has a substantial parameter mismatch.** The standard conjecture allows both prime factors up to the modulus. Your reciprocity box instead has
+\[
+\ell\asymp q^{0.32},\qquad
+|k|\ll Hq/Y\asymp q^{0.72}
+\]
+at the boundary, together with the small-weight constraint. The standard EOS assertion does not state positivity in this box. [Erdős–Odlyzko–Sárközy, *On the residues of products of prime numbers*, Period. Math. Hungar. 18 (1987), 229–239](https://combinatorica.hu/~p_erdos/1987-22.pdf)
+
+**PROVED — Schoof’s conditional \(1/5\) result.** Schoof gives two deterministic factoring algorithms under GRH, based on imaginary and real quadratic orders, with complexity \(O(N^{1/5+\varepsilon})\). This is explicit in §6 and Algorithms 6.4–6.5. [Schoof, *Quadratic fields and factorization*, MC Tracts 154/155 (1982), 235–286](https://reneschoof.github.io/mcpaper.pdf)
+
+**PROVED — what Umans–Wang state.** Their Theorem 5.5 states conditional complexity
+\[
+\widetilde O\!\left(N^{\max(\alpha,\beta)/2+o(1)}\right)
+\]
+under the Strong Prefactored \((\alpha,\beta)\)-Divisor Conjecture. Thus \(\alpha=\beta=1/3\) gives \(1/6\), and \(\max(\alpha,\beta)<2/5\) gives below \(1/5\). This is a different divisor-covering conjecture. [Umans–Wang, arXiv:2511.10851, §5](https://arxiv.org/html/2511.10851#S5)
+
+**UNVERIFIED — a literal uniform all-input reading of their displayed conjecture.** Conjectures 3.3 and 5.1 quantify over infinitely many \(n\) and existential structured sets. The reduction needs usable descriptions at sizes comparable to \(\sqrt N\). Uncontrolled successful sizes do not justify that padding, and existence does not charge finding the descriptions. I would add efficient construction at all sufficiently large sizes, or suitably controlled sizes, before citing a uniform all-input consequence.
+
+**CONJECTURED — sufficient analytic replacement.** The explicit joint fluctuation estimate in §2(c), or merely uniform positivity on the residual class in §3, would supply the desired factoring result. I cannot identify either with an established standard named analytic hypothesis.
+
+**PROVED — if complexity hypotheses are allowed, there is a separate answer.** Under \(\mathrm P=\mathrm{BPP}\), padding derandomizes rigorous randomized subexponential factoring into deterministic \(N^{o(1)}\) time: pad to length \(\exp(O(\sqrt{\log N\log\log N}))\), decide prefixes of the canonical factorization in BPP, then use \(\mathrm P=\mathrm{BPP}\). This gives no coverage theorem. The requisite rigorous randomized algorithm is Lenstra–Pomerance’s. [Lenstra–Pomerance, JAMS 5 (1992), 483–516](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+## 5. Further gains, barriers, and computations
+
+**PROVED — explicit special subclasses.** For a specified positive weight of height \(h\), the stationary search has list cost
+\[
+O\!\left(1+\frac{|\delta_v|}{\sqrt h\,N^{1/4}}\right).
+\]
+Under the supplied search primitive and overhead, this gives:
+
+- \(N^{1/6+o(1)}\) when \(|\delta_v|\leq\sqrt h\,N^{5/12+o(1)}\);
+- below \(N^{1/5}\) when \(|\delta_v|\leq\sqrt h\,N^{9/20-\varepsilon}\).
+
+For \(v=(1,1)\), these are explicit close-factor subclasses. A polylogarithmic collection of specified weights preserves the exponents.
+
+**PROVED — known unconditional logarithmic improvement.** Harvey–Hittmeir prove
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right)
+\]
+bit operations. This is already a rigorous log-log improvement at exponent \(1/5\). [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2105.11105)
+
+**PROVED — what a coverage logarithm would buy in the ideal list model.** If
+\[
+\Lambda=\frac{J^{1/4}}{(\log N)^a},
+\]
+then
+\[
+X\asymp\frac{N^{1/5}}{(\log N)^{4a/5}}.
+\]
+**UNVERIFIED:** I have no proof of that coverage improvement. Also, the \(N^{o(1)}\) notation hides logarithmic overheads, so an actual bit-complexity improvement needs those tracked explicitly.
+
+**PROVED — the sharp barrier established here has two separate parts.**
+\[
+\boxed{X^5\gtrsim N\lambda^4/J}
+\]
+is a cost-model inequality for the enumerated targets. The Fourier construction establishes a separate obstruction to certifying hits using scalar square-root bounds with logarithmic/subpower losses. Neither rules out a structural dichotomy, a joint counting estimate, or a new target-construction algorithm.
+
+**PROVED — computations actually run.** The reproducible scripts are [blind_calculations.py](/Volumes/git/factoring-connection/codex/scratch/coverage38_1/blind_calculations.py) and [check_reciprocity_fourier.py](/Volumes/git/factoring-connection/codex/scratch/coverage38_1/check_reciprocity_fourier.py).
+
+The exact rational-exponent calculation produced
+```text
+theta=0:   Y exponent=1/6,  cost exponent=1/6
+theta=1/8: Y exponent=8/49, cost exponent=9/49
+theta=1/4: Y exponent=4/25, cost exponent=1/5
+theta=1/2: Y exponent=2/13, cost exponent=3/13
+```
+
+The second script checked the moving-center reciprocity identity with rational arithmetic for 15 cases using \(p=101,q=139,H=3\) and band primes \(17<\ell\leq34\).
+
+It also constructed a Fourier-small set avoiding a fixed Farey target. With
+\[
+q=10007,\quad Y=400,\quad H=2,\quad J=400,
+\]
+and random seed \(38\), it returned
+```text
+target residues:                   151
+expected hits under uniformity:    6.0357749575
+actual hits:                       0
+max nonzero Fourier coefficient:  57.0966998650
+sqrt(J log q):                    60.6993908605
+```
+This illustrates the proved black-box obstruction; it is not an inverse-prime counterexample. Finally, 1,000 random heterogeneous designs satisfied the derived design inequality, with minimum numerical RHS/LHS \(0.9999999999999993\), the rounding value of \(1\).

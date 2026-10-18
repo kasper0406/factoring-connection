@@ -93,8 +93,9 @@ def test_lehman_score_implies_success():
 
 
 def test_dirichlet_bound_all_pairs_small():
-    """max L(p,q) over all of S_24 is O(P^{2/5}) (Dirichlet), and Lehman at that budget
-    factors every pair (a correctness check of the dichotomy's easy side)."""
+    """Correctness of the easy side on S_24: Lehman with the uniform budget X0 = max L
+    factors every sampled pair.  (NOTE: the uniform-window score L is NOT O(P^{2/5}) in
+    general -- see test_uniform_score_not_dirichlet; the corrected score is L*.)"""
     from src.dchworst.coverage import all_pairs
     Pn, Qn = all_pairs(24)
     sc = lm.lehman_score_vec(Pn, Qn, 64)
@@ -163,3 +164,62 @@ def test_fourier_identity_and_prop_L():
         mx = np.abs(np.fft.fft(ind))[1:].max()
         good += mx <= 2 * lam + orc.hoeffding_level(J, q - 1)
     assert good >= 5
+
+
+def test_class_lock_composite_moduli():
+    """D' Lemma 1 for squarefree composite M (prime factors 3 mod 4): if M | Bp - Aq and
+    gcd(M, ABN) = 1, then p mod M is a root of B r^2 = A N and
+    Bp + Aq = B r + A N r^{-1} (mod M^2)."""
+    rnd = random.Random(7)
+    pr = [l for l in sympy.primerange(20, 200) if l % 4 == 3]
+    checked = 0
+    for (p, q) in _pairs(44, 30, 11):
+        N = p * q
+        for _ in range(10):
+            M = 1
+            for l in rnd.sample(pr, rnd.randint(2, 3)):
+                M *= l
+            if gcd(M, N) != 1:
+                continue
+            t = p * pow(q, -1, M) % M
+            for B in range(1, 60):
+                A = t * B % M
+                if A > M // 2:
+                    A -= M
+                if A == 0 or gcd(A * B, M) != 1:
+                    continue
+                assert (B * p - A * q) % M == 0
+                r = p % M
+                assert (B * r * r - A * N) % M == 0
+                c = (B * r + A * N * pow(r, -1, M * M)) % (M * M)
+                assert (B * p + A * q - c) % (M * M) == 0
+                checked += 1
+    assert checked > 1000
+
+
+def test_uniform_score_not_dirichlet_but_Lstar_is():
+    """Opus-critic counterexample: q/p ~ 1 + 1/a with a ~ P^{0.24} makes the uniform score
+    L / P^{0.4} grow with n, while L* = min max(B^2, |delta| sqrt(B/P)) <= 2 P^{2/5}."""
+    from src.coverage38.explore import lstar_vec
+    ratios = []
+    for n in (60, 80, 100):
+        P = 2 ** (n // 2)
+        a = int(round(P ** 0.24))
+        p = int(sympy.nextprime(P * 3 // 4))
+        q = int(sympy.nextprime(p + p // a))
+        Ls = lstar_vec(np.array([p], dtype=np.int64), np.array([q], dtype=np.int64),
+                       2 * int(P ** 0.2) + 4)[0]
+        assert Ls <= 2.0 * (p * q) ** 0.2 * 1.0001
+        # uniform score, exact big-int evaluation
+        best = None
+        N = p * q
+        for B in range(1, 2 * int(P ** 0.2) + 5):
+            a0 = B * p // q
+            for A in (a0, a0 + 1):
+                if A < 1:
+                    continue
+                d = B * p - A * q
+                val = max(B * B, d * d / (4 * (A * B * N) ** 0.5))
+                best = val if best is None else min(best, val)
+        ratios.append(best / (N ** 0.2))
+    assert ratios[0] < ratios[1] < ratios[2]

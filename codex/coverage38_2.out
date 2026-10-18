@@ -1,0 +1,218 @@
+**REJECT.** Theorem U’s conditional inequality and Proposition L’s concentration lemma are sound. The claimed universal arithmetic barrier does not follow: WIN is not established in the advertised generality, Proposition L does not exclude arithmetic proofs, and Proposition P is false.
+
+I ran the supplied tests: **12 passed**. I independently recomputed the experiment verdicts without writing to the repository. Reproducible checks and counterexamples are in [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/coverage38_2/referee_checks.py). The [review snapshot](/Volumes/git/factoring-connection/codex/scratch/coverage38_2/audit_snapshot/manifest.json) records the files reviewed; e3 continued accumulating data during this review.
+
+1. **[major] Theorem U: CORRECT WITH FIXES. Its unrestricted arithmetic interpretation is WRONG.**
+
+   **The inequality is correct.** With \(C=c_1P/(2\sqrt3)\), the proof establishes
+   \[
+   \sum_g\bar w_g\ge \frac{C\lambda^2}{\sqrt{TJ}},
+   \qquad
+   X^2\ge\sum_g\bar w_g,\quad T\le X.
+   \]
+   Consequently
+   \[
+   X\ge C^{2/5}\lambda^{4/5}J^{-1/5}.
+   \]
+   Substituting \(J\le X\) gives \(X\ge C^{1/3}\lambda^{2/3}\). Cauchy–Schwarz, the height count, and Hölder’s exponents are all valid. The height constant is conservative.
+
+   **Charging groups requires an explicit additional convention.** Below16’s \(\mathfrak M^+\) charges issued target labels. A group with no roots issues no targets. Thus \(X\ge\#\text{groups}\) does not follow merely by grouping targets.
+
+   The revised setting explicitly charges every attempted group, including rejected root tests. That makes the proof legitimate for an algorithm that enumerates those groups. Theorem R’s construction-cost term supports that accounting for its implementation. It does not establish a lower bound for every possible algorithm, batching strategy, or early-exit computation. State this restriction explicitly.
+
+   **WIN is the substantive missing arithmetic theorem.**
+
+   - The continuous full-window range bound is correct. For \(A>0\), its smallest normalized range is
+     \[
+     (1-2^{-1/4})^2hP=0.02531395\ldots\,hP.
+     \]
+     For \(A<0\), monotonicity gives a stronger bound. Thus \(0.02hP\) is safe.
+   - This range estimate alone does **not** fix \(c_1\): root activation probabilities, prime-pair probabilities, root multiplicities, and integer rounding must also be controlled.
+   - In the uniform-unit model, the full congruence probability is \(1/(M-1)\) for prime \(M\), and \(1/\varphi(M)\) for composite \(M\). These are not automatically uniform estimates for the actual population \(S_n\), particularly over arbitrary growing moduli.
+   - The stationary-point formulas require \(A,B>0\), comparable coefficients, a stationary point in the relevant range, and an appropriate \(\Delta\)-range. They do not apply to signed weights with \(A<0\). Tiny windows also require integer and lattice corrections.
+   - A per-root WIN does not automatically imply the displayed group WIN. With \(R\) roots, Cauchy–Schwarz can lose a factor \(R\). Either prove WIN directly for the group or retain the multiplicity loss.
+
+   There is also a direct obstruction to the arbitrary-placement claim. Keep the group \((A,B,M)=(1,1,3)\) fixed, but choose singleton windows using the actual value \(p+q\), computed from \(N\). The average window mass is \(O(1)\), while the coverage probability tends to a positive constant. WIN would require window mass \(\gg P\). Window construction may be expensive; this refutes the claimed universal window inequality, not a factoring lower bound. Restricting weights and moduli to an \(N\)-independent list does not eliminate this example.
+
+   **Exact fix:** retain U as an abstract theorem assuming group WIN. Establish arithmetic WIN separately for precisely specified window rules and parameter ranges. Mark unrestricted \(N\)-dependent placements as outside the proved result.
+
+   | Claim | Verdict and exact qualification |
+   |---|---|
+   | U1 | **CORRECT WITH FIXES.** The necessary inequality follows under the model assumptions. Delete “the weakest coverage statement” and “no design family is weaker”: equal \((J,\lambda)\) does not imply comparable coverage difficulty. |
+   | U2 | **CORRECT WITH FIXES.** For a design whose actual \(\lambda\ge cJ^\theta\), \(\theta\ge1/4\), U gives the stated \(N^{1/5}\) floor. Merely knowing a sufficient coverage theorem at \(\lambda=J^\theta\) does not rule out a stronger theorem or another design. The achievable exponent is capped at \(1/5\), as the code correctly does. |
+   | U3 | **CORRECT** under WIN and the charged worst-case budget. Coverage of fraction \(\sigma\) implies \(\lambda\ge\sigma\), hence \(X\gg N^{1/6}\sigma^{2/3}\). This is not independently an average-running-time theorem: \(\mathbb E\sqrt W\) cannot be replaced by \(\sqrt{\mathbb EW}\). |
+   | U4 | **CORRECT WITH FIXES.** The displayed logarithmic factor is the model scale and is attainable in the feasible continuous band optimization. A lower bound alone does not “buy” an algorithm; coverage, construction costs, and polylogarithmic overhead still need proving. |
+
+   **“A single band is extremal”: WRONG as a universal uniqueness claim.** For the idealized full-window model, one band attains the optimal order. Hölder equality identifies equal allocations, not an exact arithmetic optimizer. Moreover, for stationary windows, replacing \((M,\Delta)\) by \((tM,t\Delta)\) leaves both modeled probability and window mass unchanged. Different modulus scales can therefore have identical modeled cost. Replace the claim by: “A single band attains the lower-bound order in the stated feasible model.”
+
+2. **[major] Composite-modulus extension: CORRECT WITH FIXES. “Harman’s sieve is not needed”: overstated.**
+
+   The class lock is valid for arbitrary \(M\) under the stated invertibility conditions. Lemmas O, G, and X likewise do not require prime class moduli.
+
+   The extension needs:
+
+   - known factorizations of the moduli, or their construction cost charged;
+   - all CRT roots enumerated and charged;
+   - the relevant size and coprimality hypotheses retained;
+   - rejected groups charged separately;
+   - revised target-count and root-construction terms in the complexity bound.
+
+   The prime sign-pair argument fails for composites. For example,
+   \[
+   N=23\cdot43=989,\qquad M=21,
+   \]
+   satisfies the relevant size conditions at height one, but neither \(N\equiv2\pmod{21}\) nor \(-N\) is a square modulo \(21\). Thus neither signed height-one group has roots. “Exactly one of the two signs is accepted” cannot be reused.
+
+   Also, \(2^{\omega(M)}\) is not an absolute constant or necessarily a polylogarithmic factor. This matters especially for the claimed logarithmic improvements.
+
+   **Exact fix:** state that *prime moduli are unnecessary for extraction*. This does not establish that a prime-detecting sieve is unnecessary for a successful coverage proof. Admissibility of suitably factored composites neither supplies their required distribution nor proves their coverage. Ford’s clustering theorem is a relevant comparison, not a theorem that every composite design is worse.
+
+3. **[major] Proposition L: CORRECT. Complements and “Consequence”: partly WRONG.**
+
+   **The proposition’s constants check out.**
+
+   - Mean shift: at most \(2\lambda\).
+   - Complex Hoeffding:
+     \[
+     \Pr(|F-\mathbb EF|\ge s)\le4e^{-s^2/(4J)}.
+     \]
+   - At the stated \(s\), the union-bound failure probability is at most \(1/2\).
+   - Each pair collides with probability at most \(2/q\), so total collision probability is at most \(J(J-1)/q\le1/4\).
+
+   Therefore the claimed probability \(1/4\) is valid. Complement **(a), Parseval, is also CORRECT**.
+
+   **Complement (b): CORRECT WITH FIXES.** The Fourier identity and triangle-inequality criterion are valid, preferably written
+   \[
+   \lambda>\frac1q\sum_{h\ne0}|\widehat S(h)|\,\kappa_h.
+   \]
+   However, \(\|\widehat S\|_1/q\asymp\log H'\) is false as stated. Already \(H'=1\) gives an interval indicator whose Fourier \(L^1\) norm depends on its width, and grows logarithmically with that width in the appropriate regime. Retain the actual Fourier norm or prove a parameter-dependent estimate.
+
+   **Complement (c) and the “Consequence”: WRONG at their stated scope.**
+
+   Proposition L concerns arbitrary distinct configurations. Arithmetic configurations obey
+   \[
+   x_j=p\ell_j^{-1}\pmod q,
+   \]
+   and occupy a very restricted family. L does not construct a zero-hit configuration in that family.
+
+   For example, the bounded linear statistic
+   \[
+   F(x)=\sum_j e_q(\ell_jx_j)
+   \]
+   equals \(Je_q(p)\) on every arithmetic configuration. Generic complement samples need not satisfy this structural identity. Compatibility with generic fluctuation bounds therefore does not establish compatibility with the arithmetic premises of a proof.
+
+   L also supplies simultaneous bounds at \(O(\sqrt{J\log Q})\), not an obstruction to every sharper constant, frequency-dependent bound, weighted combination, or use of phases.
+
+   **Exact replacement for the Consequence:**
+
+   > Generic simultaneous deviation bounds at the level supplied by Proposition L cannot, by themselves, certify coverage among unrestricted configurations. A Fourier argument that discards phases and uses a common square-root bound does not establish positivity in the target regime.
+
+   That useful statement does not exclude every proof using exponential or character sums.
+
+   **Bernstein remark: CORRECT WITH FIXES as a resolution calculation, WRONG as an impossibility theorem.** For indicator statistics of measure \(\nu\), the relevant scale includes
+   \[
+   \sqrt{J\nu\log(8Q)}+\log(8Q).
+   \]
+   Resolving a shift \(\lambda\) by this calculation suggests \(\nu\lesssim\lambda^2/[J\log(8Q)]\), together with a condition on the linear term. At \(\lambda=J^{1/4}\), this still allows sets polynomially larger than the targets:
+   \[
+   \mu=J^{-3/4},\qquad \nu\lesssim J^{-1/2}/\log(8Q).
+   \]
+   Thus “sets almost as small as the targets” and “coarser equidistribution is impossible” do not follow.
+
+4. **[minor, with a major conditional-use issue] Literature table: CORRECT WITH FIXES.**
+
+   The main comparison at \(Y=q^{8/25}\) survives my search: I found no applicable uniform prime-variable estimate there. The precise corrections are:
+
+   | Citation | Verified statement / correction |
+   |---|---|
+   | Bourgain 2005; Baker 2012 | Bourgain’s \(q^{1/2+\varepsilon}\) threshold is correctly described. Baker’s explicit Theorem 1 has \(0<\delta\le1/24\) and, for prime \(q\), \(q^{1/2+\delta}\le Y\le q^{3/4+\delta}\). State the upper endpoint; other cited estimates cover longer ranges. [Baker, primary paper](https://www.impan.pl/shop/en/publication/transaction/download/product/82065). |
+   | Garaev; Fouvry–Shparlinski | The bound \((Y^{15/16}+q^{1/4}Y^{2/3})q^\varepsilon\) and its \(Y>q^{3/4+\varepsilon}\) nontriviality threshold are correct. Fouvry–Shparlinski extend to general moduli and \(q^{3/4}\le Y\le q^{4/3}\). Their paper is *On a ternary quadratic form over primes*, Acta Arith. 150 (2011), 285–314. [Baker’s statement and references](https://www.impan.pl/shop/en/publication/transaction/download/product/82065). |
+   | Korolev 2019 | Correct threshold. Theorem 1 has \(0<\varepsilon\le1/53\), \(q^{1/2+\varepsilon}\le X\le q^{3/4}\), and \(T_q(X)\ll Xq^{-\varepsilon^2(1-7\varepsilon)}\); Corollary 1 treats unweighted primes. English pages: Math. Notes 106 (2019), 89–97. [Primary paper](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=eng&paperid=12339&what=fullt). |
+   | Bourgain–Garaev 2014, Thm 16 | Formula correct. Identify the paper as *Sumsets of reciprocals in prime fields and multilinear Kloosterman sums*, Izv. Math. 78 (2014), 656–707, rather than their other 2014 paper. At fixed power length it gives a logarithmic saving. [Primary preprint](https://arxiv.org/pdf/1211.4184). |
+   | Korolev 2016, Cor. 1 | Correct: \(X\log\log q/\log q\) throughout the stated \(q^{1/4+\delta}\) to \(q^{1/2-\delta}\) range, with \(0<\delta\le1/8\). Subtracting initial sums gives the dyadic version. [Primary paper](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=eng&paperid=11048&what=fullt). |
+   | Irving | Distinguish Theorem 1.1: maximum over \(a\), nontrivial from \(Q^{2/3+\delta}\); and Theorem 1.3: fixed \(a\), with a size-dependent prefactor, nontrivial from \(Q^{1/2+\delta}\). Neither supplies the required fixed-modulus estimate. [Primary paper](https://arxiv.org/pdf/1301.6372). |
+
+   The warning about the **different** Korolev Sbornik lemma is accurately attributed. The Math. Notes proof uses its own reciprocal-energy argument and cites the Sbornik paper for a standard rough-number bound, rather than invoking the flagged Lemma 2. [Garaev–Shparlinski’s warning](https://arxiv.org/pdf/2304.07953).
+
+   The Garaev/Ford remark is correctly reported: Shparlinski explicitly records the obstruction with exponent \(0.086071\ldots-\varepsilon\). The classical \(XY\gg q^{3/2}\log^2q\) condition is a **sufficient uniform-box range**, not a necessary product-size barrier or a universal statement about all boxes. [Shparlinski, §§3.1–3.2](https://arxiv.org/pdf/1103.2879).
+
+   **Major correction:** Hooley’s \(R^*\) concerns integer-variable incomplete sums. It does not directly supply the same square-root estimate after restricting the variable to primes. A transfer argument is required. Even granting such a prime-variable estimate, its failure in the displayed triangle-inequality calculation does not prove that the hypothesis cannot help through another argument.
+
+5. **[major] Proposition D: CORRECT WITH FIXES. Proposition P: WRONG. Conditional conclusions: overstated.**
+
+   **D(a):** The discriminant identity, sufficient condition, and scan count are correct for admissible weights. Retain \(\gcd(AB,N)=1\), or handle coefficient gcds first. The shared BSGS bound requires the extraction/order machinery; `lehman_factor` itself implements the square-test scan.
+
+   **D(b):** Dirichlet gives the stated \(P^{2/5}\) score bound. Calling this “Lehman alone is \(1/5\)” is misleading: \(1/5\) uses the BSGS acceleration. The displayed direct scan does not have that exponent.
+
+   **D(c):** Correct for fixed, public coefficients \(a,b,c,d\). The constant-weight discriminant argument gives polynomial time in \(\log N\). Qualify “every linear family” accordingly; coefficients growing with the input are not covered by that conclusion.
+
+   **D(d):** The badly-approximable inequality is correct. Restrict to coprime members when invoking an all-coprime theorem; \((x,\lfloor\alpha x\rfloor)\) is not coprime for every \(x\). The qualification concerning prime pairs is correct.
+
+   **D(e):** U remains applicable if the residual design still satisfies the original accounting and WIN, with \(\lambda\) defined over the original population. Conditioning on Lehman-hard pairs does not automatically preserve WIN. Proposition L supplies no arithmetic obstruction for that residual population.
+
+   **P has two independent counterexamples.**
+
+   - **Windows were omitted.** Take \(N=11\cdot17=187\), \(M=3\), \(A=B=1\). The true root is \(r=2\), its lock is \(c=1\pmod9\), and the true value is \(g=3\). A window \(\{4\}\) misses it despite the congruence.
+   - **Full-candidate coverage is not necessary.** Take \(N=7\cdot13=91\), \(M=3\), \(A=B=1\), with full windows. The true pair is covered because \(3\mid7-13\). The public interval contains \(7,8,9\), but \(9^2\not\equiv91\pmod3\).
+
+   **Exact fix:** congruence plus the appropriate root/window membership characterizes coverage. Full-candidate covering is one sufficient public certificate. Delete the assertion that every public certificate must imply it, and the resulting universal assertions excluding sieve or interval approaches.
+
+   **The conditional table should report failures of the attempted deductions, not proved nonimplications.**
+
+   - EH/BV concern averaged distribution in specified modulus ranges. Explain the parameter mismatch; “a level beyond \(H^2\) is meaningless” is not a valid general principle.
+   - EOS concerns unrestricted products of two primes up to the modulus, not the required asymmetric box. That is a direct parameter mismatch. [Original EOS paper](https://combinatorica.hu/~p_erdos/1987-22.pdf).
+   - Schoof’s conditional \(N^{1/5+\varepsilon}\) statement is correct; its GRH assumptions involve the relevant number-field \(L\)-functions. [Schoof, §6](https://reneschoof.github.io/mcpaper.pdf).
+   - Umans–Wang’s advertised exponent is correctly quoted, but the “infinitely many sizes” quantifier issue must remain explicit. Their written conjecture alone does not supply good sizes sufficiently densely for the claimed all-input bound. [Conjecture 5.1 and Theorem 5.5](https://arxiv.org/pdf/2511.10851).
+   - \(P=BPP\), padding, and rigorous randomized subexponential factoring give deterministic \(L_N[1/2,O(1)]\); the leading constant is not preserved automatically. This does not imply DCH_pair.
+
+   I found **no standard named hypothesis with a verified implication to the required coverage or DCH_pair**. This is a literature finding, not a nonimplication theorem.
+
+   **Additional counterexample to literal \(K(0)\).** Let
+   \[
+   q=1{,}000{,}003,\quad Y=83,\quad J=15,\quad H'=1,\quad k_0=33{,}333.
+   \]
+   Then \(J|S|/q=1.000001999994\ge1\), but for the balanced prime \(p=500{,}069\), none of the 15 band points lies in \(S\). Thus the stated mean-one version fails. A growing threshold such as \(C\log q\) would avoid this particular defect and remain \(J^{o(1)}\), but would be a new hypothesis. Also, an absolute error \(O(\sqrt\lambda\,\mathrm{polylog}\,q)\) is sufficient, not equivalent, to positivity.
+
+6. **[major] Frozen experiments: e2/e2s CORRECT; complete e3 verdict not yet justified at the audited time.**
+
+   The experiment modules and tests matched commit `757af72` byte for byte.
+
+   Reanalysis confirms:
+
+   - **e2:** 14 cells; D1–D4 pass; \(h^*_{\rm all}=h^*_{\rm hard}\) throughout.
+   - **e2s:** four cells; S1 and S2 pass.
+   - The floating-point Lehman classification has an exact recheck near thresholds. I found no relevant integer-overflow problem.
+
+   Equality of maxima establishes that **at least one worst pair remains hard** in each cell; it does not establish that every maximizing pair is hard.
+
+   **`analyze.py` can falsely certify incomplete experiments.** Calling its e3 analyzer on no rows returns O1–O4 as `True`. It never checks the required grid, duplicates, 1000 real samples, or 100 surrogates. It also does not check the surrogate zero-hit clause, though generation enforces it by construction.
+
+   At **20:58:48 UTC**, raw e3 contained **five of six** registered cells; the saved summary contained only **one**. The five available cells passed the numerical criteria. The missing cell was \((q,H)=(15925153,16)\). The report still contained `E3_TABLE` and `REVIEWS` placeholders.
+
+   Further qualifications:
+
+   - `prevprime(random_integer)` is gap-weighted sampling of primes, not uniform prime sampling. Disclose it or use rejection sampling in a separately documented rerun.
+   - \(M_{\rm all}\) is exactly constant across \(p\) for fixed \(q\), because multiplication by \(p\) permutes frequencies. Its inability to distinguish covered from uncovered pairs is algebraic.
+   - Passing these finite tests supports the registered numerical comparisons, not the universal impossibility theorem.
+
+   **Exact fix:** validate the complete registered grid and sample counts before emitting any overall pass; represent missing cells as incomplete; regenerate the summary after completion.
+
+7. **[minor] Novelty/prior art: CORRECT WITH FIXES.**
+
+   U has close prior art in Ward–Maestro’s September 2026 technical report. Lemma 3.1 gives stationary-window coverage, Lemma 3.2 combines Cauchy–Schwarz with the reciprocal-height count, and Theorems 3.4/3.6 give the \(1/5\) and \(1/6\) floors. This is substantially the same proof architecture. Tracking separate moduli through Hölder and the specific \((\lambda,J)\) formulation may be an additional contribution; I did not locate that exact formula. [Ward–Maestro, §§3, 13](https://igent.ai/research/floors-not-bounds/factoring_report.pdf).
+
+   Proposition L is an elementary conditioning, Hoeffding, union-bound, and birthday-bound argument. Its formulation may be useful, but it should not be presented as a new arithmetic oracle lower bound. Small-bias constructions are relevant context, rather than an exact prior statement of L. [Hoeffding](https://www.tandfonline.com/doi/abs/10.1080/01621459.1963.10500830), [Naor–Naor](https://www.wisdom.weizmann.ac.il/~naor/PAPERS/bias.pdf).
+
+   Brown’s straight-line factoring bounds and Shoup’s generic-group bounds concern different models. Neither justifies the proposed unrestricted factoring lower bound. [Brown](https://eprint.iacr.org/2010/047.pdf), [Shoup](https://www.shoup.net/papers/dlbounds1.pdf).
+
+**Required fixes**
+
+- Retain U as conditional on explicitly charged groups and group WIN; prove arithmetic applicability separately.
+- Remove the universal single-band optimality and comparative coverage-difficulty claims.
+- Add composite factorization, root multiplicity, and rejected-group costs.
+- Replace L’s “Consequence” with the restricted concentration/triangle-inequality statement.
+- Correct the Fourier-norm and Bernstein assertions.
+- Replace Proposition P’s necessity claim with a sufficient full-candidate certificate.
+- Correct citation ranges, \(R^*\)’s scope, and the conditional quantifiers.
+- Repair \(K(0)\), distinguish positivity from Poisson-precision estimates, and validate complete experiment grids before declaring passes.
+- Credit the close covering-model prior art and rewrite the abstract/verdict around the narrower proved results.
