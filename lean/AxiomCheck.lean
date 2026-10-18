@@ -33,3 +33,4 @@ open FactoringLean
 #print axioms lemma9_of_largeSieve
 #print axioms exceptional_Eb_of_largeSieve
 #print axioms single_target_extraction
+#print axioms single_target_from_lock

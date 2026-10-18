@@ -1,13 +1,15 @@
 /-
   Theorem D′, notes/dcltheorem_results.md §3.
-  Lemma 2 (window: AM–GM lower end, convexity upper end, indexing) and the
-  single-target extraction theorem, which chains Lemmas 1, 3, 4, 5 and 7:
+  Lemma 2 (window: AM–GM lower end, convexity upper end, window, indexing) and the
+  single-target extraction theorem, which chains Lemmas 3, 4, 5 and 7:
   a covering target of a clean band whose true giant is not FULL makes the
-  algorithm's gcd equal to p.
+  algorithm's gcd equal to p. The wrapper `single_target_from_lock` additionally
+  derives its integrality/indexing hypotheses from Lemma 1 and Lemma 2.
 -/
 import Mathlib
 import FactoringLean.Exponents
 import FactoringLean.Bands
+import FactoringLean.Coverage
 
 namespace FactoringLean
 
@@ -123,5 +125,51 @@ theorem single_target_extraction (p q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Pr
     exact hnotfull δ hδ0 hδm hδ
   -- Lemma 5
   exact lemma5_one_sided p q hp.out hq.out hpq G γ m istar.toNat (by omega) hcol hnf
+
+/-- **Single-target extraction from the class lock (Lemmas 1, 2, 3, 4, 5, 7 chained).**
+Hypotheses of Lemma 1 (the target `(v, ℓ, r)` covers `p`) and of Lemma 2
+(`Lo ≤ B p + A q ≤ Hi`) determine `g = (Bp + Aq − c)/ℓ²`, `g_lo = ⌈(Lo − c)/ℓ²⌉`,
+`g_hi = ⌊(Hi − c)/ℓ²⌋`, `j* = ⌊(g − g_lo)/m⌋` and `i* = (g − g_lo) mod m`. Then the true giant
+is among those computed (`0 ≤ j* ≤ (g_hi − g_lo)/m`), and if the band is clean and the FULL
+condition fails, `gcd(f(G), N) = p`. -/
+theorem single_target_from_lock (p q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime]
+    (hpq : p ≠ q) (xp : (ZMod p)ˣ) (xq : (ZMod q)ˣ)
+    (M A B r s c ℓ Lo Hi : ℤ) (m : ℕ) (hm : 0 < m)
+    (hℓ : Prime ℓ) (hr : ¬ ℓ ∣ r)
+    (hroot : ℓ ∣ B * r ^ 2 - A * (p * q)) (hs : ℓ ^ 2 ∣ r * s - p * q)
+    (hc : ℓ ^ 2 ∣ c - (B * r + A * s)) (hpr : ℓ ∣ (p : ℤ) - r)
+    (hLo : Lo ≤ B * p + A * q) (hHi : B * p + A * q ≤ Hi)
+    (g glo ghi jstar istar : ℤ)
+    (hgdef : g = (B * p + A * q - c) / ℓ ^ 2) (hglo : glo = -((c - Lo) / ℓ ^ 2))
+    (hghi : ghi = (Hi - c) / ℓ ^ 2)
+    (hj : jstar = (g - glo) / m) (hi : istar = (g - glo) % m)
+    (G γ : ℤ)
+    (hγp : (γ : ZMod p) = ((xp ^ (M * ℓ ^ 2) : (ZMod p)ˣ) : ZMod p))
+    (hγq : (γ : ZMod q) = ((xq ^ (M * ℓ ^ 2) : (ZMod q)ˣ) : ZMod q))
+    (hGp : (G : ZMod p) = (((xp ^ M) ^ (B + A * (p * q) - c) *
+        (xp ^ (M * ℓ ^ 2)) ^ (-(glo + jstar * m)) : (ZMod p)ˣ) : ZMod p))
+    (hGq : (G : ZMod q) = (((xq ^ M) ^ (B + A * (p * q) - c) *
+        (xq ^ (M * ℓ ^ 2)) ^ (-(glo + jstar * m)) : (ZMod q)ˣ) : ZMod q))
+    (hclean : IsCoprime M (orderOf xq : ℤ))
+    (hnotfull : ∀ δ : ℤ, -istar ≤ δ → δ ≤ m - 1 - istar →
+        ¬ (orderOf xq : ℤ) ∣ (A - B) * (p - 1) - ℓ ^ 2 * δ) :
+    (0 ≤ jstar ∧ jstar ≤ (ghi - glo) / m) ∧
+      Int.gcd (∏ i ∈ range m, (G - γ ^ i)) ((p * q : ℕ) : ℤ) = p := by
+  -- Lemma 1
+  have hlock := lemma1_class_lock ℓ A B p q r s c hℓ hr hroot hs hc hpr
+  have hg : ℓ ^ 2 * g = B * p + A * q - c := by rw [hgdef]; exact Int.mul_ediv_cancel' hlock
+  have hK : 0 < ℓ ^ 2 := by
+    have : ℓ ≠ 0 := hℓ.ne_zero
+    positivity
+  -- Lemma 2
+  have hw := lemma2_window (ℓ ^ 2) g c Lo Hi hK (by linarith) (by linarith)
+  have hmz : (0 : ℤ) < m := by exact_mod_cast hm
+  obtain ⟨⟨hi0, him, hidx⟩, hrange⟩ := lemma2_index g glo ghi m hmz
+  rw [← hglo, ← hghi] at hw
+  refine ⟨by rw [hj]; exact hrange hw.1 hw.2, ?_⟩
+  subst hj hi
+  exact single_target_extraction p q hpq xp xq M A B c ℓ g glo ((g - glo) / m) ((g - glo) % m) m
+    hg (by linarith [Int.ediv_mul_add_emod (g - glo) (m : ℤ)]) hi0 him G γ hγp hγq hGp hGq
+    hclean hnotfull
 
 end FactoringLean

@@ -7,8 +7,9 @@ the statements: `notes/dcltheorem_results.md` §2–4, which remains authoritati
 
 **Lean has checked the algebraic and elementary number-theoretic core of Theorem D′.**
 Lemmas 1, 2, 3, 4, 5, 6, 7, 8 and 10, plus the coverage criterion, are fully proved in Lean 4
-with Mathlib. So is a capstone theorem that chains Lemmas 3, 4, 5 and 7.
-- **No `sorry`. No `axiom` declaration.** `#print axioms` on all 31 main results shows only
+with Mathlib. So is a capstone theorem that chains Lemmas 3, 4, 5 and 7, with a wrapper that
+also derives its inputs from Lemmas 1 and 2.
+- **No `sorry`. No `axiom` declaration.** `#print axioms` on all 32 main results shows only
   Lean's standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
 - **The large sieve is not proved.** It enters as an explicit hypothesis `ArithmeticLargeSieve`
   (a `Prop` passed as an argument). Lemma 9 and the exceptional-set bound `E_b` are proved *from*
@@ -72,6 +73,12 @@ Notation as in the note: `u = x^M`, `γ = x^(M ℓ²)` with `M = L/ℓ²` and ba
 | `E_b` exceptional set | `exceptional_Eb_of_largeSieve` (LargeSieve) | proved **from the hypothesis** | `(Σ_{q∈𝒬} |U(q)|) · J ≤ |𝒬|·(N₀ + Q²)` whenever `J ≤ |V| Σ_{ℓ∈𝒫(q)} 1/ℓ` |
 | `Σ 1/ℓ ≥ c/n`, `|S_n| ≥ c₀P²/n²` | — | not formalized | needs PNT (in progressions); outside this scope |
 | Capstone (Lemmas 3+4+7+5) | `single_target_extraction` (SingleTarget) | proved | `p ≠ q` primes, the giant's residues mod `p` and mod `q` as computed, `ℓ²g = Bp + Aq − c`, `g − g_lo = j*m + i*` with `0 ≤ i* < m`, clean band, and the FULL condition failing for all `δ ∈ [−i*, m−1−i*]` ⇒ `gcd(f(G), N) = p` |
+| Capstone from the class lock (Lemmas 1+2+3+4+7+5) | `single_target_from_lock` (SingleTarget) | proved | Lemma 1 hypotheses and `Lo ≤ Bp+Aq ≤ Hi` give `g`, `g_lo`, `g_hi`, `j*`, `i*`; then `0 ≤ j* ≤ (g_hi−g_lo)/m` (the true giant is among those computed) and `gcd(f(G), N) = p` |
+| bridge: `orderOf (2 : ZMod q)` vs `orderOf xq` | — | not formalized | Lemma 8 uses the order in `ZMod q`; Lemma 7 and the capstone use the unit `xq`. They agree via `orderOf_units` (one line) |
+| bridge: `ℓ ∤ d` from cleanness | — | not formalized | needed by `lemma10_single`; follows from `d ∣ q − 1` and `ℓ ∤ q − 1` |
+| bridge: deterministic roots | — | not formalized | for `ℓ ≡ 3 (mod 4)`, `a^((ℓ+1)/4)` and `ℓ − a^((ℓ+1)/4)` are the two roots of `Br² ≡ AN` |
+| bridge: `(p,q) ∈ S_n ⇒ p ∈ [a₀, b₀]` | — | not formalized | needed for the window hypotheses `Lo ≤ Bp+Aq ≤ Hi` (elementary) |
+| bridge: `Hi − Lo ≤ span̄`, `W_τ ≤ m̄_k` | — | not formalized | used only for cost (and for `|δ| < m̄_k` in E_c) |
 | §4(iii) final assembly; §4(ii) cost | — | not formalized | asymptotic sums and the bit-complexity table |
 
 **List of `sorry`s: none.** (`grep -rn sorry lean/FactoringLean` is empty, and `sorryAx` is
@@ -107,6 +114,20 @@ absent from every `#print axioms`.)
 
 ## 4. Review
 
-An independent read-only Opus critic of the statements (faithfulness, vacuity, truth of the
-large-sieve hypothesis) was launched. Its verdict had not arrived when this was committed:
-**review pending**.
+An independent read-only Opus critic audited the statements for faithfulness, vacuity, truth of
+the large-sieve hypothesis, and casts. **Verdict: ACCEPT WITH FIXES, no blockers.**
+
+Key confirmations:
+- **The capstone is satisfiable, not vacuous.** The critic built a concrete instance,
+  p = 3, q = 7, and `single_target_extraction` gives gcd 3.
+- **`ArithmeticLargeSieve` is a true statement.** It follows from Montgomery–Vaughan together
+  with Montgomery's prime lemma. Dropping the composite-`d` terms only weakens it.
+- **The coercions are sound.** The divisibility and exponent arithmetic is done over ℤ, so ℕ
+  subtraction causes no wrap-around.
+
+Fixes applied:
+- (1) The SingleTarget header now says the file chains Lemmas 3, 4, 5 and 7. I added the wrapper
+  `single_target_from_lock`, which derives the hypotheses from Lemma 1 and Lemma 2 and shows the
+  true giant is among those computed.
+- (7) The missing assembly bridges are now in the "not formalized" rows of §2.
+

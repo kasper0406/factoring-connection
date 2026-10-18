@@ -16,7 +16,7 @@ proved / hypothesis / not formalized) is in `../notes/leanform_results.md`.
 cd lean
 lake exe cache get      # download prebuilt Mathlib .olean files (do not compile Mathlib)
 lake build              # builds FactoringLean (expected: "Build completed successfully")
-lake env lean AxiomCheck.lean   # prints the axioms of the 31 main results
+lake env lean AxiomCheck.lean   # prints the axioms of the 32 main results
 ```
 
 `elan` lives in `~/.elan/bin`; put it on `PATH` first. `AxiomCheck.lean` should list only
@@ -33,5 +33,5 @@ The `.lake/` build directory is git-ignored (`lean/.gitignore`).
 | `FactoringLean/SmallOrder.lean` | (g) Lemma 8: few primes with small `ord_q(2)` |
 | `FactoringLean/CRTCount.lean` | (h) Lemma 10: residue-class count, CRT, union bound |
 | `FactoringLean/LargeSieve.lean` | large-sieve **hypothesis**; Lemma 9 and the `E_b` bound deduced from it |
-| `FactoringLean/SingleTarget.lean` | Lemma 2 (window); single-target extraction chaining Lemmas 3, 4, 5, 7 |
+| `FactoringLean/SingleTarget.lean` | Lemma 2 (window); single-target extraction chaining Lemmas 3, 4, 5, 7; wrapper from Lemmas 1, 2 |
 | `AxiomCheck.lean` | `#print axioms` for the main results |
