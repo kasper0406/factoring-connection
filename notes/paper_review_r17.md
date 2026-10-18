@@ -162,3 +162,26 @@ except as recorded above: Corollary 1.4(b), the scope of T1, and Appendix A.
 - Theorems 1.1–1.3 and 1.5 are proved, with AI review only.
 - Appendix A is credited context.
 - §9 is a placeholder pending `notes/unbalanced_results.md`.
+
+## Addendum: §9 "Unbalanced ratios" (2026-10-18)
+
+The placeholder was replaced by a section built from `notes/unbalanced_results.md` (commits
+c80a17e, 831b627). Two read-only Opus critics checked it independently; both said **ACCEPT
+WITH FIXES** and found no mathematical error. All of their findings were applied:
+- **Review attribution.** The blind GPT report supplied U_θ and gave no verdict. U is ACCEPT;
+  U_θ is ACCEPT WITH FIXES.
+- **Theorem U.** U builds on the large-sieve D′, not on the fourth moment. T is now stated, and
+  so is ε < 1/58.
+- **Ward–Maestro comparison.** The reason for the difference is now residue-class giants, not
+  baby sets. Their model has no β = 0 (√p) branch, so the models are not nested. Their β was
+  renamed b.
+- **Model 𝔏.** The lock sentence and the definition of the refined class (β = 0) were
+  restored. "WLOG β > 0" was added to the proof of O′(a).
+- **Outside the model.** Accidental collisions and implicitly processed window families are
+  now listed. The "Ratios." open problem is scoped to 𝔏.
+- **Scope remark (b).** It now names the gap as a gap of our methods plus the 𝔏 barrier.
+- **Wording.** In the U_θ sketch, "when" replaces "exactly when", and E_a is called a
+  fraction. The fine-band constant 2^{O(1/ε)} is added. The population statements now say
+  "fixed ε" and "our methods".
+
+The paper is 31 pp. and tectonic-clean.
