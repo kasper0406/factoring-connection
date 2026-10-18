@@ -41,7 +41,7 @@ needs no order lemma for β^L at all.
   - The statement is about the true factor averaged over S_n, not full-candidate coverage for
     every N.
 - **Experiment (pre-registered, theorem's own design, end to end).**
-  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 896 runs, with
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
     3002 clean covering targets checked.
   - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
     0.226**.

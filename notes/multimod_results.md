@@ -349,7 +349,7 @@ A, B ≤ (log N)^κ and some prime ℓ ∈ (N^{1/6}, N^{1/6}(log N)^κ] satisfy 
 - Under DCH, DCL is a deterministic covering in 𝔐⁺ with cost N^{1/6+o(1)}. With Thm A, the
   𝔐⁺ exponent is then **exactly 1/6**.
 - **Status: conjectured.**
-  - Experimentally supported at 32–48 bits: zero uncovered candidates among all ≈10⁵–5·10⁶
+  - Experimentally supported at 32–48 bits: zero uncovered candidates among all 1.6·10⁴–4.9·10⁶ (corrected 2026-10-18 to match §6.2)
     integer candidates per instance at λ = ln√N + 2 (§6).
   - The large sieve proves only the "almost all" version.
 - **Relation to Umans–Wang (codex check).** UW's Strong Prefactored Divisor Conjecture asks
