@@ -67,3 +67,4 @@ Agents commit LOCALLY only; the orchestrator pushes.
 | `dchworst` | worst-case coverage (DCH) / provable full-coverage designs, McKee–Pinch pigeonhole hybrids | src/dchworst/*, notes/dchworst_*, tests/test_dchworst*, experiments/*/dchworst* |
 | `below16` | escaping the 1/6 floor (Thm A model assumptions) | src/below16/*, notes/below16_*, tests/test_below16*, experiments/*/below16* |
 | `leanform` | Lean 4 formalization of Thm D′ key lemmas | lean/*, notes/leanform_* |
+- 2026-10-18: **leanform** Lean 4 + Mathlib formalization of Thm D′ lemmas in lean/ (Lemmas 1–8, 10, capstone; Lemma 9/E_b from an explicit large-sieve hypothesis); 0 sorry, 0 axioms; notes/leanform_results.md
