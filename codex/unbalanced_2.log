@@ -1,0 +1,3015 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a14fde-c5aa-7cc0-85ac-2a1523339455
+--------
+user
+You are an adversarial referee (computational number theory / factoring). Work read-only; you may write scratch scripts in your cwd.
+
+Read /Volumes/git/factoring-connection/notes/unbalanced_results.md sections 1-6 (ignore section 7 experiments, may be incomplete). It builds on Theorem D' in notes/dcltheorem_results.md (authoritative; read §2-§4 for the algorithm and Lemmas 1-10). Your own earlier blind answer is codex/unbalanced_1.out (the coarse (1,B<=H^2) construction and the Harvey-Hittmeir 2026 extraction remark come from it).
+
+Check, line by line, and report CORRECT / GAP / WRONG with exact fixes:
+1. Theorem U (regime I, rectangles A<=H/sqrt R, B<=H sqrt R, R<=H^2/16): span bound, class distinctness, |V_j|>=cH^2, Lemma 6 (Y^4>q), large sieve per band (normalisation: sum over q, divide by |S_{n,j}|), FULL count with g'<=H^2, the epsilon range (claims eps<=1/60 still OK; verify the arithmetic -1/12+23eps/6 <= -eps-1/360).
+2. Theorem U_theta (coarse construction, weights (1,B), 2<=B<=h=H^2, Y_j=((2^{(n+j)/2})/h)^{1/3}, four blocks): span (F decreasing on band), Lemma 1 hypotheses, Lemma 6, E_a with T~Q^{1/2}N^{-eps}, E_b including the Y^2<=P_j condition, E_c both terms (is the second term really h^{4/3}R^{5/6}N^{-1/6}, and does theta<=1/5-3eps suffice?), cost.
+3. Variant U_theta' (fine-band W2): Lemma 9' (sub-interval partition, omega(l)>=Delta-2), Lemma 10' (roles swapped: fix p,B,l,delta and count q via divisors e>T of X=(B-1)(p-1)+l^2 delta; X>0 claim; tau(X) factor; CRT with l not dividing e by cleanliness). Is the swapped count valid as written? Is K=O(1/eps) blocks needed and sufficient?
+4. Proposition O' (curvature obstruction with ARBITRARY baby exponent sets): check (a) the derivative-height inequality g'(x)>=sqrt(kappa(g(x)-m0)) on the right part using only g''>=kappa on the band, the per-value preimage bounds, the sum bound 2m+8 sqrt(m x2^3/(|beta|N)); (b) beta=0 case with class refinement; (c) the final min(sqrt(fp), f^{2/3}q^{1/3}). Is the model definition (floor relaxation) coherent and is the claim "the profile e(theta) is optimal in the model" justified? Any counterexample family in the model that beats it?
+5. Section 4 measures (density 1/(1-theta^2) of theta for pairs with both primes >= N^{1/3}; ~30 eta fractions) and Section 3.4 (HH 2026 extraction: is the argument complete, in particular the claim ord_p,ord_q>=m from the gcd scan, and the exact-equality test).
+6. Anything that would let the R^{1/6} penalty be beaten near theta=1/5 that the note misses (be concrete).
+Output: numbered findings with severity, then a verdict ACCEPT / ACCEPT WITH FIXES / REJECT for each of Theorem U, U_theta, U_theta', Prop O'.
+
+codex
+I’ll read the two notes and the earlier answer, then check the proof and exponent arithmetic. I’ll keep all scratch work in the current directory.
+exec
+/bin/zsh -lc "pwd; rg --files -g 'AGENTS.md' -g '*.md' -g '*.out' /Volumes/git/factoring-connection/notes /Volumes/git/factoring-connection/codex | head -100" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+/Volumes/git/factoring-connection/notes/codex_r6_eps_reduction.md
+/Volumes/git/factoring-connection/notes/codex_r1_priorart.md
+/Volumes/git/factoring-connection/notes/codex_r11_qrh_factoring.md
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/leanform_results.md
+/Volumes/git/factoring-connection/notes/trackBD_analysis.md
+/Volumes/git/factoring-connection/notes/codex_r13_final_referee.md
+/Volumes/git/factoring-connection/notes/tower_results.md
+/Volumes/git/factoring-connection/notes/repair_C2R_results.md
+/Volumes/git/factoring-connection/notes/eps_results.md
+/Volumes/git/factoring-connection/notes/codex_r10_frontier.md
+/Volumes/git/factoring-connection/notes/multimod_results.md
+/Volumes/git/factoring-connection/notes/codex_r15_lean_faithfulness.md
+/Volumes/git/factoring-connection/notes/dcltheorem_prereg.md
+/Volumes/git/factoring-connection/notes/trackA_analysis.md
+/Volumes/git/factoring-connection/notes/trackC_tal_audit.md
+/Volumes/git/factoring-connection/codex/unbalanced_1.out
+/Volumes/git/factoring-connection/codex/r2_generic.md
+/Volumes/git/factoring-connection/codex/r16_strategy_lemmas.md
+/Volumes/git/factoring-connection/codex/r2_generic.out
+/Volumes/git/factoring-connection/codex/ping.out
+/Volumes/git/factoring-connection/codex/r3_critic.md
+/Volumes/git/factoring-connection/codex/r6_primality_lit.md
+/Volumes/git/factoring-connection/codex/r13_final_referee.md
+/Volumes/git/factoring-connection/codex/r3_critic.out
+/Volumes/git/factoring-connection/codex/r16_strategy.md
+/Volumes/git/factoring-connection/codex/r4_sos.md
+/Volumes/git/factoring-connection/codex/r11_qrh_factoring.md
+/Volumes/git/factoring-connection/codex/divcover_2.out
+/Volumes/git/factoring-connection/codex/sieve2d_1.out
+/Volumes/git/factoring-connection/codex/unbalanced_1.md
+/Volumes/git/factoring-connection/codex/sieve2d_1.md
+/Volumes/git/factoring-connection/codex/r7_cyclo_harvey.out
+/Volumes/git/factoring-connection/codex/dchworst_1.md
+/Volumes/git/factoring-connection/codex/divcover_2.md
+/Volumes/git/factoring-connection/codex/r9_tower_audit.out
+/Volumes/git/factoring-connection/codex/divcover_1.out
+/Volumes/git/factoring-connection/codex/r1_priorart.md
+/Volumes/git/factoring-connection/codex/r11_qrh_factoring.out
+/Volumes/git/factoring-connection/codex/r4_sos.out
+/Volumes/git/factoring-connection/codex/r1_mechanisms.out
+/Volumes/git/factoring-connection/codex/r10_frontier.out
+/Volumes/git/factoring-connection/codex/r16_strategy.out
+/Volumes/git/factoring-connection/codex/r9_tower_audit.md
+/Volumes/git/factoring-connection/codex/PHASE1_NOTES.md
+/Volumes/git/factoring-connection/codex/r14_paper_review.md
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.md
+/Volumes/git/factoring-connection/codex/nfsfruit_1.md
+/Volumes/git/factoring-connection/codex/r5_report_review.out
+/Volumes/git/factoring-connection/codex/avgtime_2.md
+/Volumes/git/factoring-connection/codex/r5_report_review.md
+/Volumes/git/factoring-connection/codex/dchworst_1.out
+/Volumes/git/factoring-connection/codex/r8_copp_bridge.md
+/Volumes/git/factoring-connection/codex/unbalanced_2.md
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.out
+/Volumes/git/factoring-connection/codex/divcover_1.md
+/Volumes/git/factoring-connection/codex/below16_1.md
+/Volumes/git/factoring-connection/codex/r1_mechanisms.md
+/Volumes/git/factoring-connection/codex/r1_priorart.out
+/Volumes/git/factoring-connection/codex/STATUS.md
+/Volumes/git/factoring-connection/codex/r6_primality_lit.out
+/Volumes/git/factoring-connection/codex/r1_tal_bgs.out
+/Volumes/git/factoring-connection/codex/r7_cyclo_harvey.md
+/Volumes/git/factoring-connection/codex/r1_tal_bgs.md
+/Volumes/git/factoring-connection/codex/r15_lean_faithfulness.md
+/Volumes/git/factoring-connection/codex/r14_paper_review.out
+/Volumes/git/factoring-connection/codex/r10_frontier.md
+/Volumes/git/factoring-connection/codex/r6_eps_reduction.md
+/Volumes/git/factoring-connection/codex/r15_lean_faithfulness.out
+/Volumes/git/factoring-connection/codex/r6_eps_reduction.out
+/Volumes/git/factoring-connection/codex/dclt_1.md
+/Volumes/git/factoring-connection/codex/r13_final_referee.out
+/Volumes/git/factoring-connection/codex/dclt_1.out
+/Volumes/git/factoring-connection/codex/r8_copp_bridge.out
+/Volumes/git/factoring-connection/notes/trackE_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r3_critic.md
+/Volumes/git/factoring-connection/notes/repair_C2R_prereg.md
+/Volumes/git/factoring-connection/notes/signsplit_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r12_dcl_audit.md
+/Volumes/git/factoring-connection/notes/seed_lemmas.md
+/Volumes/git/factoring-connection/notes/codex_r8_copp_bridge.md
+/Volumes/git/factoring-connection/notes/AGENT_RULES.md
+/Volumes/git/factoring-connection/notes/repair_adjudication.md
+/Volumes/git/factoring-connection/notes/unbalanced_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r6_primality_lit.md
+/Volumes/git/factoring-connection/notes/trackE_analysis.md
+/Volumes/git/factoring-connection/notes/trackBD_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r1_tal_bgs.md
+/Volumes/git/factoring-connection/notes/pm1bsgs_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_results.md
+/Volumes/git/factoring-connection/notes/codex_r4_sos_classgroup.md
+/Volumes/git/factoring-connection/notes/eps_prereg.md
+/Volumes/git/factoring-connection/notes/primality_analysis.md
+/Volumes/git/factoring-connection/notes/unbalanced_results.md
+/Volumes/git/factoring-connection/notes/prior_art_map.md
+/Volumes/git/factoring-connection/notes/codex_r7_cyclo_harvey.md
+/Volumes/git/factoring-connection/notes/paper_review_opus_critic.md
+/Volumes/git/factoring-connection/notes/paper_review_gpt_r14.md
+/Volumes/git/factoring-connection/notes/trackC_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_prereg.md
+
+exec
+/bin/zsh -lc 'for f in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/unbalanced_2/AGENTS.md; do if [ -f "$f" ]; then printf '"'\\n%s\\n' \""'$f"; cat "$f"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+exec
+/bin/zsh -lc 'nl -ba /Volumes/git/factoring-connection/codex/unbalanced_1.out' in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     1	Your small-ratio extension works. Your large-ratio exponent also works as an upper bound, but the shrinking prime scale is unnecessary, and the finite-\(H\) crossover needs correction. The curvature calculation gives a valid obstruction for an explicitly defined covering model; it does not give a general factoring lower bound.
+     2	
+     3	I obtain no \(N^{1/6+o(1)}\) algorithm covering every band \(R\le N^\theta\) for fixed \(\theta>0\). There is, however, a useful extraction improvement: standard collision recovery, combined with the 2026 Harvey–Hittmeir order theorem and seven prime blocks, removes the order exception entirely.
+     4	
+     5	Everything below is read-only. Write
+     6	\[
+     7	t=q/p,\qquad R\le t\le2R,\qquad
+     8	P=\sqrt{N/R},\qquad Q=\sqrt{NR}=RP.
+     9	\]
+    10	Thus \(p\in[P/\sqrt2,P]\). Put \(h=H^2\). Tildes suppress powers of \(\log N\); span identities are stated without that suppression. For pair-counting arguments, take the parameters from the bit-length scale \(X=2^n\), replacing \(N\) by \(X\) in their definitions.
+    11	
+    12	**1. The rectangle works, and its actual span is substantially smaller than your proposed bound.**
+    13	
+    14	Take
+    15	\[
+    16	V_R=\left\{(A,B):
+    17	1\le A\le\left\lfloor H/\sqrt R\right\rfloor,\quad
+    18	1\le B\le\left\lfloor H\sqrt R\right\rfloor,\quad
+    19	(A,B)=1\right\}.
+    20	\]
+    21	For \(R\le H^2\),
+    22	\[
+    23	|V_R|=\Theta(H^2)
+    24	\]
+    25	uniformly, including the endpoint where the numerator range has length one.
+    26	
+    27	For \(F(x)=Bx+AN/x\), its exact minimum on \(I=[P/\sqrt2,P]\) is attained at
+    28	\[
+    29	x_*=\operatorname{clamp}\!\left(\sqrt{AN/B},I\right),
+    30	\]
+    31	and its maximum is attained at an endpoint. Therefore the exact real span is
+    32	\[
+    33	S_{A,B}
+    34	=\max\{F(P/\sqrt2),F(P)\}-F(x_*).
+    35	\]
+    36	
+    37	In fact,
+    38	\[
+    39	\boxed{S_{A,B}\le(\sqrt2-1)H\sqrt N.}
+    40	\]
+    41	To prove it, let \(x<y\) belong to \(I\). Then
+    42	\[
+    43	F(x)-F(y)
+    44	\le AN(1/x-1/y)
+    45	\le(\sqrt2-1)AQ
+    46	\le(\sqrt2-1)H\sqrt N,
+    47	\]
+    48	whereas
+    49	\[
+    50	F(y)-F(x)
+    51	\le B(y-x)
+    52	\le(1-1/\sqrt2)BP
+    53	\le(1-1/\sqrt2)H\sqrt N.
+    54	\]
+    55	Taking the maximum over \(x,y\) proves the bound.
+    56	
+    57	Thus your \((1+\sqrt2)H\sqrt N\) bound is certainly true. It also follows immediately from
+    58	\[
+    59	F(x)\le BP+\sqrt2\,AQ\le(1+\sqrt2)H\sqrt N.
+    60	\]
+    61	The stronger bound uses the actual interval minimum. Using the notes’ global AM–GM lower endpoint instead gives a larger, still valid window. Integer rounding adds at most two.
+    62	
+    63	The residue classes remain distinct under the same modulus condition as in D′. Indeed,
+    64	\[
+    65	|AB'-A'B|<H^2,
+    66	\]
+    67	despite the larger upper bound for \(B\). Primitive distinct pairs therefore give distinct classes \(Aq/B\bmod\ell\) whenever \(\ell>h\).
+    68	
+    69	Here is the general accounting used throughout. Suppose there are \(K\) weight/window specifications, each with span at most \(S\), and primes \(\ell\asymp Y\). Then
+    70	\[
+    71	T\le2K|\mathcal P|=O(KY/\log Y),
+    72	\qquad
+    73	W_\tau\le S/\ell^2+2.
+    74	\]
+    75	With baby length \(m\), the number of giants is exactly
+    76	\[
+    77	G=\sum_\tau\left\lceil W_\tau/m\right\rceil.
+    78	\]
+    79	The resulting bit-cost bound is
+    80	\[
+    81	\widetilde O\left(KY+m+\frac{KS}{mY}\right).
+    82	\]
+    83	The convenient endpoint choice
+    84	\[
+    85	m=\lceil S/Y^2\rceil+2
+    86	\]
+    87	gives
+    88	\[
+    89	\widetilde O(KY+S/Y^2).
+    90	\]
+    91	Balancing yields
+    92	\[
+    93	Y\asymp(S/K)^{1/3},\qquad
+    94	m\asymp K^{2/3}S^{1/3}.
+    95	\]
+    96	
+    97	For the rectangle, \(K\asymp h\) and \(S\asymp H\sqrt N\), hence
+    98	\[
+    99	\boxed{
+   100	Y\asymp N^{1/6}H^{-1/3},\qquad
+   101	m\asymp H^{5/3}N^{1/6},\qquad
+   102	C_R=\widetilde O(H^{5/3}N^{1/6}).
+   103	}
+   104	\]
+   105	There is no power of \(R\).
+   106	
+   107	For \(J\) dyadic ratio bands, the same primes, cofactor handles and baby list can be shared within each prime block. At the original \(Y\), only the targets acquire a factor \(J\). Reoptimizing jointly gives
+   108	\[
+   109	Y\asymp N^{1/6}H^{-1/3}J^{-1/3},
+   110	\qquad
+   111	C=\widetilde O(J^{2/3}H^{5/3}N^{1/6}).
+   112	\]
+   113	Either version has the same exponent when \(J=O(\log N)\).
+   114	
+   115	Consequently, with D′’s \(H\asymp(\log N)N^{\varepsilon/2}\), ratios through \(N^\varepsilon\) cost nothing further in the exponent.
+   116	
+   117	**2. Your large-ratio cost is correct, but there is a simpler construction with a growing prime scale.**
+   118	
+   119	First, your fine-band calculation checks out. Partition \([R,2R]\) into intervals of width \(h\), and in each use \(A=1\) and \(h\) nearby consecutive values of \(B\). For \(t,B\) in the same interval,
+   120	\[
+   121	F(p)-2\sqrt{BN}
+   122	=\sqrt N\,\frac{(t-B)^2}
+   123	{\sqrt t\,(\sqrt t+\sqrt B)^2}
+   124	\le\frac{\sqrt N\,h^2}{4R^{3/2}}.
+   125	\]
+   126	There are \(\asymp R/h\) intervals and \(h\) weights per interval, so
+   127	\[
+   128	K\asymp R,\qquad
+   129	S\ll\sqrt N\,h^2R^{-3/2}.
+   130	\]
+   131	Therefore
+   132	\[
+   133	\boxed{
+   134	Y_{\rm fine}\asymp
+   135	H^{4/3}N^{1/6}R^{-5/6},\qquad
+   136	m\asymp RY_{\rm fine},\qquad
+   137	C_R=\widetilde O(H^{4/3}N^{1/6}R^{1/6}).
+   138	}
+   139	\]
+   140	
+   141	But neither fine bands nor weights near \(R\) are necessary. For every \(R\ge h\), simply take
+   142	\[
+   143	\boxed{V_R=\{(1,B):1\le B\le h\}.}
+   144	\]
+   145	There are \(h\) primitive weights and \(h\) distinct classes at every \(\ell>h\).
+   146	
+   147	Since \(B\le R\), \(F(x)=Bx+N/x\) is decreasing throughout \(I\). Its exact span is
+   148	\[
+   149	S_B
+   150	=(\sqrt2-1)Q-(1-1/\sqrt2)BP
+   151	\le(\sqrt2-1)Q.
+   152	\]
+   153	Thus \(K=h\), \(S\asymp Q\), and
+   154	\[
+   155	\boxed{
+   156	Y_{\rm coarse}\asymp(Q/h)^{1/3}
+   157	=N^{1/6}R^{1/6}H^{-2/3},
+   158	}
+   159	\]
+   160	\[
+   161	\boxed{
+   162	m\asymp h^{2/3}Q^{1/3}
+   163	=H^{4/3}N^{1/6}R^{1/6},
+   164	\qquad
+   165	C_R=\widetilde O(H^{4/3}N^{1/6}R^{1/6}).
+   166	}
+   167	\]
+   168	This attains your cost with \(h\) weight specifications instead of \(R\), and with primes whose size increases with \(R\). The arithmetic-progression construction across \([R,2R]\) also works, but consecutive small \(B\)’s already suffice.
+   169	
+   170	The three constructions compare as follows:
+   171	
+   172	| Construction | Specifications \(K\) | Span bound \(S\), up to constants | Optimized \(Y\) |
+   173	|---|---:|---:|---:|
+   174	| Rectangle, \(R\le h\) | \(H^2\) | \(H\sqrt N\) | \(N^{1/6}H^{-1/3}\) |
+   175	| Fine bands, \(R>h\) | \(R\) | \(\sqrt N H^4R^{-3/2}\) | \(N^{1/6}H^{4/3}R^{-5/6}\) |
+   176	| Consecutive \(B\)’s, \(R>h\) | \(H^2\) | \(\sqrt{NR}\) | \(N^{1/6}R^{1/6}H^{-2/3}\) |
+   177	
+   178	Your proposed cutoff and crossover are different quantities. In the fine-band parametrization,
+   179	\[
+   180	Y_{\rm fine}=H^2
+   181	\quad\Longleftrightarrow\quad
+   182	\boxed{R=N^{1/5}H^{-4/5}.}
+   183	\]
+   184	Pollard–Strassen costs \(\widetilde O(\sqrt P)=\widetilde O((N/R)^{1/4})\), by the standard small-factor bound. [Harvey, Proposition 2.5](https://arxiv.org/html/2010.05450)
+   185	
+   186	Equating this with the DCL cost gives
+   187	\[
+   188	H^{4/3}N^{1/6}R^{1/6}=(N/R)^{1/4}
+   189	\quad\Longleftrightarrow\quad
+   190	\boxed{R_*=N^{1/5}H^{-16/5}.}
+   191	\]
+   192	At that crossover,
+   193	\[
+   194	C_*=\widetilde O(N^{1/5}H^{4/5}),
+   195	\qquad
+   196	Y_{\rm fine}=H^4.
+   197	\]
+   198	Thus Pollard–Strassen becomes competitive before the fine construction reaches \(Y=H^2\). Both thresholds are \(N^{1/5+o(1)}\) when \(H=N^{o(1)}\).
+   199	
+   200	There is also an extraction issue to address before calling these arithmetic budgets almost-all factoring theorems. Merely substituting larger weights into D′’s original FULL-count estimate is insufficient. Here is a rigorous replacement.
+   201	
+   202	Harvey–Hittmeir’s June 2026 theorem deterministically finds \(\alpha\) with
+   203	\[
+   204	\operatorname{ord}_N(\alpha)>D
+   205	\]
+   206	or a proper divisor, for every \(1\le D<N-1\), in \(\widetilde O(\sqrt D)\) time. [Theorem 1.1](https://arxiv.org/html/2601.11131)
+   207	
+   208	Apply it with \(D\ge m\). Use seven disjoint prime blocks, all primes exceeding \(Y\), with \(Y^7>N\). At least one block is coprime to
+   209	\[
+   210	(p-1)(q-1)<N:
+   211	\]
+   212	otherwise seven distinct primes exceeding \(Y\) would divide that product. For its exponent \(L\),
+   213	\[
+   214	\gcd(L,\operatorname{ord}_N(\alpha))=1,
+   215	\]
+   216	so \(\gamma=\alpha^L\) retains order \(>m\).
+   217	
+   218	Now use the following collision recovery.
+   219	
+   220	1. During baby construction, compute
+   221	   \[
+   222	   \gcd(\gamma^i-1,N),\qquad 1\le i<m.
+   223	   \]
+   224	   A proper gcd factors \(N\). If none occurs and the block has order \(>m\) modulo \(N\), both prime orders are at least \(m\).
+   225	
+   226	2. Find exact giant–baby equalities modulo \(N\). An equality at index \(i\) proposes
+   227	   \[
+   228	   T=c+\ell^2(g_{\rm lo}+jm+i).
+   229	   \]
+   230	   Test \(T\) by solving
+   231	   \[
+   232	   Bz^2-Tz+AN=0
+   233	   \]
+   234	   and validating any divisor. For the true giant, uniqueness modulo \(p\) forces the matching index to be the true index.
+   235	
+   236	3. Remove exact equalities and perform batched gcd collision detection. If a product gcd is \(N\), scan that giant against the \(m\) babies. Every nonunit difference now gives a proper factor, since exact equalities were removed. This scan happens at most once before success, so it adds only \(O(m)\) work.
+   237	
+   238	This is the standard exact-equality/recovery principle behind Harvey’s collision machinery, applied to the shared cofactor handles. [Harvey, Algorithms 4.1–4.2](https://arxiv.org/html/2010.05450)
+   239	
+   240	**The resulting order argument is deterministic on every semiprime; no small-order exceptional set and no one-sidedness estimate remain.** The almost-all ingredient is coverage.
+   241	
+   242	For the consecutive-\(B\) construction, the large sieve gives
+   243	\[
+   244	\boxed{
+   245	\text{exceptional fraction}
+   246	\ll
+   247	\frac{(\log N)^2}{h}
+   248	\left(1+\frac{Y^2}{P}\right).
+   249	}
+   250	\]
+   251	Indeed, for fixed \(q\), uncovered integers \(p\) number
+   252	\[
+   253	\ll(P+Y^2)\frac{\log Y}{h}.
+   254	\]
+   255	Sum over prime \(q\)’s and divide by the \(\asymp N/(\log P\log Q)\) prime pairs in the band.
+   256	
+   257	Here
+   258	\[
+   259	\frac{Y_{\rm coarse}^2}{P}
+   260	=N^{-1/6}R^{5/6}H^{-4/3},
+   261	\]
+   262	which equals \(H^{-4}\) at \(R=R_*\). Thus the coverage estimate remains strong throughout the useful DCL range. D′’s parameters also satisfy \(Y>h\) and \(Y^7>N\) there.
+   263	
+   264	For \(H=N^{o(1)}\), the resulting per-band envelope is
+   265	\[
+   266	\boxed{
+   267	\min\left\{
+   268	N^{1/6}R^{1/6},\,
+   269	N^{1/4}R^{-1/4}
+   270	\right\}N^{o(1)}.
+   271	}
+   272	\]
+   273	At \(R=N^\rho\), its exponent is
+   274	\[
+   275	\begin{cases}
+   276	(1+\rho)/6,&0\le\rho\le1/5,\\
+   277	(1-\rho)/4,&1/5\le\rho\le1/3.
+   278	\end{cases}
+   279	\]
+   280	The maximum is \(1/5\), at \(\rho=1/5\). This improves extraction and simplifies the construction; it does not remove the ratio penalty.
+   281	
+   282	**3. The curvature lemma is correct under explicit assumptions; its proposed universal interpretation is not.**
+   283	
+   284	Let
+   285	\[
+   286	G(x)=\frac{B(r+Mx)+AN/(r+Mx)-c}{M^2}.
+   287	\]
+   288	For positive integer \(A\),
+   289	\[
+   290	G''(x)=\frac{2AN}{(r+Mx)^3}
+   291	\ge\frac{2R}{P}
+   292	\]
+   293	throughout the smaller-factor interval.
+   294	
+   295	If \(G''\ge\kappa>0\), the preimage of a vertical interval of width \(m\) has at most two monotone components. Each has length at most \(\sqrt{2m/\kappa}\): integrate the second-derivative bound from the endpoint nearest the minimum. Therefore
+   296	\[
+   297	\boxed{
+   298	\#\{x\in\mathbb Z:G(x)\in[a,a+m]\}
+   299	\le2\sqrt{mP/R}+2.
+   300	}
+   301	\]
+   302	Your chain-rule cancellation of \(M^2\) is correct. This counts candidates in the residue class \(p=r+Mx\).
+   303	
+   304	If \(G_{\rm count}\) separately charged windows must cover \(\asymp P\) candidates, then
+   305	\[
+   306	G_{\rm count}\left(2\sqrt{mP/R}+2\right)\gtrsim P.
+   307	\]
+   308	In the stated range, optimizing \(m+G_{\rm count}\) gives
+   309	\[
+   310	\boxed{
+   311	m+G_{\rm count}\gtrsim(PR)^{1/3}
+   312	=Q^{1/3}=N^{1/6}R^{1/6}.
+   313	}
+   314	\]
+   315	So the calculation is sound **for full-candidate coverage by individually charged consecutive exponent windows**.
+   316	
+   317	The qualifications are substantial:
+   318	
+   319	- **Coverage quantifier.** D′ covers the true factor for almost all pairs. It does not cover \(P\) candidates for each fixed input \(N\). Your lower-bound deduction inserts that stronger requirement.
+   320	- **Cost model.** Counting windows is not automatically a lower bound on computation. A future algorithm might process a structured family implicitly.
+   321	- **Intended versus accidental collisions.** The argument counts real-window coverage. It does not count useful collisions arising through reduction modulo a group order.
+   322	- **Allowed targets.** The inequality assumes a nonzero positive integer coefficient of \(N/p\). Zero coefficients, rational normalization, nonlinear handles and other representations require separate arguments.
+   323	
+   324	For example, \(A=0,B=M\) gives \(T=Mp\), locked modulo \(M^2\) by \(p\bmod M\), and the normalized function is linear. This degenerates to an ordinary progression search; it supplies no faster algorithm, but disproves an unrestricted claim about “any linear-in-\(N\) target.”
+   325	
+   326	The \(q\)-side does **not** escape the lemma within the positive-weight model. Its target is
+   327	\[
+   328	T'=Bq+Ap.
+   329	\]
+   330	Express it again in the smaller factor:
+   331	\[
+   332	T'(p)=Ap+BN/p.
+   333	\]
+   334	A residue class for \(q\bmod M\) corresponds bijectively to one for \(p\bmod M\), and
+   335	\[
+   336	\frac{d^2}{dx^2}\frac{T'(r+Mx)-c'}{M^2}
+   337	=\frac{2BN}{p^3}\ge\frac{2R}{P}.
+   338	\]
+   339	The coefficient roles swap, so the same bound applies.
+   340	
+   341	My assessment of the suggested escape routes is:
+   342	
+   343	| Modification | Concrete assessment |
+   344	|---|---|
+   345	| Composite locks | \(M^2\) still cancels from the second derivative. Multiple root classes must be counted. No improvement follows merely from making \(M\) composite. |
+   346	| Both-side extraction | Removes extraction failures, as above; it does not shrink these windows. |
+   347	| Rational weights | Clearing denominators restores integer coefficients and exponent scaling. Taking fractional group powers needs an additional justified operation. |
+   348	| Multipliers \(kN\) | Balancing by \(k\asymp R\) naturally incurs \((kN)^{1/6}\asymp N^{1/6}R^{1/6}\). This reproduces the penalty. |
+   349	| HH local lattices | With \(S=Mm_0\), their usual accounting is \(S+\sqrt N/S^{3/2}\). The nonzero-\(A\) regime has \(A=O(\sqrt{S/R})\); optimizing recovers \(N^{1/5}\), without a ratio improvement below the crossover. |
+   350	| McKee–Pinch pigeonhole | Guarantees suitable weighted congruences, but its proved accounting does not yield the desired \(1/6\) exponent. |
+   351	| Nonlinear \(E(N)\), higher-degree lattices, other groups | Outside this curvature proof. I found no rigorous construction attaining the requested uniform bound. They remain loopholes in an impossibility claim. |
+   352	
+   353	The HH lattice window and coefficient bounds follow directly from their Proposition 3.3. [Harvey–Hittmeir 2022](https://arxiv.org/html/2105.11105)
+   354	
+   355	Thus: the lemma explains the \(R^{1/6}\) penalty in this model. It does not establish that every deterministic or almost-all factoring algorithm must pay it.
+   356	
+   357	**4. I found no published result supplying the missing uniform ratio theorem.**
+   358	
+   359	The relevant literature distinguishes rigorous bounds from heuristic speedups:
+   360	
+   361	| Work | Relevant result |
+   362	|---|---|
+   363	| [Lehman 1974](https://doi.org/10.1090/S0025-5718-1974-0340163-2) | Rational approximations to the factor ratio give a deterministic \(N^{1/3}\) algorithm; no intermediate-ratio sub-\(1/5\) theorem follows. |
+   364	| [McKee 1996, Euler method](https://doi.org/10.1112/blms/28.4.351) | Proved \(N^{1/3+\eta}\) algorithm. |
+   365	| [McKee 1999, speeding Fermat](https://citeseerx.ist.psu.edu/document?doi=010e639e5176f16cee1b8aff586141f4d5c8eb10&repid=rep1&type=pdf) | The \(N^{1/4+\eta}\) speedup is heuristic. |
+   366	| [McKee–Pinch 1996, §5](https://link.springer.com/chapter/10.1007/3-540-61581-4_57) | The weighted congruence gives cost \(\widetilde O(\max(\lambda p,\mu q)/k^2)\) per lock. Their pigeonhole construction proves \(N^{1/3+\eta}\); the balanced \(1/4\) variant is heuristic. I checked the repository’s scanned pages. |
+   367	| [Hittmeir 2020](https://arxiv.org/abs/2006.16729) | Proved deterministic \(N^{2/9+o(1)}\). |
+   368	| [Harvey 2021](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir 2022](https://arxiv.org/abs/2105.11105) | General deterministic exponent \(1/5\); the latter improves logarithmic factors. |
+   369	| [Gao–Feng–Hu–Pan, 2512.19076](https://arxiv.org/html/2512.19076v1) | Their stated factoring theorem assumes \(p,q=\Theta(\sqrt N)\) and improves the logarithmic factor to \(\log^{13/5}N/(\log\log N)^{3/5}\). It supplies no polynomial-ratio extension. |
+   370	| [Harvey–Hittmeir 2026](https://arxiv.org/html/2601.11131) | Removes the lower restriction on the target order \(D\), enabling the extraction combination above. It supplies no ratio-dependent factoring exponent improvement by itself. |
+   371	
+   372	Carella’s claimed \(1/6\) result has a concrete proof defect. In Theorem 5.1, write the correctly expanded polynomial as
+   373	\[
+   374	f(x,y)=(P_0+Dx)(Q_0+Dy)-N,
+   375	\qquad D\asymp N^{1/6}.
+   376	\]
+   377	Because \(P_0Q_0\equiv N\pmod D\), **every coefficient is divisible by \(D\)**. The displayed coefficient list omits the factors \(D\) on the linear terms and then asserts primitivity. After removing the content, at \(X=Y=N^{1/3}\),
+   378	\[
+   379	W\ll N/D=N^{5/6}.
+   380	\]
+   381	The cited bivariate condition would require
+   382	\[
+   383	XY<W^{2/3}\ll N^{5/9},
+   384	\]
+   385	whereas \(XY=N^{2/3}\). Hence that proof establishes neither the balanced claim nor its asserted unbalanced extension. [Carella, equations (17)–(21)](https://arxiv.org/html/1308.2891)
+   386	
+   387	For \(R=N^\rho\), the concrete verdict is therefore:
+   388	
+   389	- For \(0<\rho<1/5\), the derivation above gives an almost-all exponent \((1+\rho)/6<1/5\). I found no prior theorem covering every such prescribed semiprime band with the requested uniform \(1/6\) exponent.
+   390	- For \(1/5<\rho\le1/3\), Pollard–Strassen already gives the rigorous worst-case exponent \((1-\rho)/4<1/5\).
+   391	- At \(R=N^{1/5+o(1)}\), both meet at \(N^{1/5+o(1)}\). None of the checked results removes this peak.
+exec
+/bin/zsh -lc "rg -n '"'^#{1,6} |Theorem U|Lemma [0-9]|Proposition O'"' /Volumes/git/factoring-connection/notes/unbalanced_results.md /Volumes/git/factoring-connection/notes/dcltheorem_results.md" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:1:# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:9:## 0. Verdict (plain language)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:60:## 1. Population, target and statement
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:105:## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:107:### 2.1 Parameters
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:120:### 2.2 Steps
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:173:  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:174:- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:176:## 3. Lemmas
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:180:**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:193:**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:198:**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:206:**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:214:**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:220:- The factor i = i* vanishes mod p (Lemma 3).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:224:**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:233:**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:237:- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:241:**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:248:**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:271:**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:286:## 4. Proof of Theorem D′
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:326:  (Lemma 6). If
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:332:- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:333:- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:334:- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:341:- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:345:- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:348:- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:371:## 5. Answers to the audit (notes/codex_r12_dcl_audit.md) and to the work items
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:375:| (1) normalisation of Thm D's exceptional set (short I_q, prime counts in I_q) | Lemma 9 + §4(iii) E_b: one fixed interval [P/2, P], all integer survivors counted, summed over prime q, divided by \|S_n\| ≍ P²/n² | proved |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:378:| (4) **base order of γ = β^L** (the substantive gap; 1333 example) | **Closed without any order lemma for β^L.** No order is needed mod p (Lemma 3 is an identity). Mod q, the four disjoint bands guarantee a clean band (Lemma 6), so ord_q(γ) = ord_q(2) (Lemma 7). Two-sided true giants are counted directly (Lemma 10), and small ord_q(2) is rare by an elementary count (Lemma 8). Extra failures are O(2^{−εn}), not o(1). The 1333 example (L built from 3, 5, 7 \| p−1, q−1) cannot occur in a clean band, and an L-power image of size 2 mod **p** is harmless here. | proved (+ GPT-6.1-sol referee dclt_1: "closes the previous order/extraction gap") |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:395:## 6. Where the result stops (precise remaining gaps)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:417:## 7. Review
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:465:## 8. Experiments (pre-registered; notes/dcltheorem_prereg.md, commit 3550e24)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:470:### 8.1 lemma (n = 28–40, 60 pairs each, design C1, all 4 blocks recorded)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:474:- **0 violations** of the Lemma 5/7 equivalence (gcd = p ⇔ not FULL, exact δ-range) on 3002
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:478:### 8.2 oper (C1, C3: 32 pairs per n; C2: 8 pairs per n ≤ 64; all 4 blocks always run)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:533:### 8.3 exc (C1 certificate components, 1000 pairs per n; no stage 3)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:552:## 9. Reproduction
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:573:## 10. Prior art (GPT-6.1-sol r12 + dclt_1 + own WebSearch; curated)
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:618:      Lemma 10 count;
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:635:## 11. Candidate card
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:1:# unbalanced: Theorem D′ beyond q ≤ 2p — ratio bands, the ratio gap, and a curvature barrier
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:12:## 0. Verdict (plain language)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:20:- **Theorem U (proved; regime I).** D′ with ratio-band weight rectangles
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:26:- **Theorem U_θ (proved; regime II).** For H²/16 < R ≤ N^{θ}, θ ≤ 1/5 − 3ε, use weights
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:36:- **Proposition O′ (proved in its model; the strongest negative result here).** Take any
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:43:  - The bound is tight on both branches: Theorem U_θ (q^{1/3}) and Pollard–Strassen (√p).
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:59:  McKee–Pinch pigeonhole. Each is either inside Proposition O′'s model, or costs more (§6).
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:66:## 1. Populations and notation
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:79:## 2. Theorem U (regime I: R ≤ H²/16)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:81:### 2.1 Algorithm DCL-wide-I_{n,ε} (= `algorithm.dclw` with `params.theorem_design_U`)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:106:### 2.2 Lemmas (changes to D′'s proof only)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:121:- **Lemma 1 (lock), Lemmas 2–5, Lemma 7 (FULL ⇔ d | (A−B)(p−1) − ℓ²δ) hold verbatim.**
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:125:- **Lemma 6 (clean block)** needs Y⁴ > q. Here q ≤ √(2^{n}·2^{J+1}) ≤ H·2^{n/2}, and
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:127:- **Lemma 9 (coverage, large sieve) holds uniformly in j.**
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:133:- **Lemma 10 (FULL count)** holds with g′ = gcd(A−B, d) ≤ H² (instead of ≤ H):
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:136:### 2.3 Theorem U
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:138:**Theorem U (proved).** Fix ε ∈ (0, 1/60]. For n ≥ n₀(ε), DCL-wide-I_{n,ε} has these
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:155:  - **E_a (ord_q(2) ≤ T).** By Lemma 8, ≤ T(T+1)/(n−1) bad q, each with ≤ |I_q| + 1 ≤
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:171:state Theorem U for ε ∈ (0, 1/60], where 29ε/6 ≤ 29/360 < 1/12. Then the first term is
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:179:## 3. Theorem U_θ (regime II: H²/16 < R ≤ N^{θ}, θ ≤ 1/5 − 3ε)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:181:### 3.1 The coarse construction (theorem design; GPT-6.1-sol `unbalanced_1.out` §2)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:209:- Lemma 6: Y_j⁴ > √2 q. Here Y_j⁴ ≥ (Q_j/(2h))^{4/3} > 2Q_j because Q_j^{1/3} > 4h^{4/3}.
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:211:**Theorem U_θ (proved).** Fix ε ∈ (0, 1/60] and θ ∈ (0, 1/5 − 3ε]. For n ≥ n₀(ε, θ), the
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:220:*Proof.* Regime-I bands are Theorem U. Fix a regime-II band j; write R = 2^j, Y = Y_j,
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:231:  - Lemma 8 gives ≤ T(T+1)/(n−1) primes q > 2^{n/2−1} with ord_q(2) ≤ T, each with
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:242:- **(iii) E_c (FULL; D′ Lemma 10 with g′ = gcd(B−1, d) ≤ h).**
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:263:### 3.2 Variant U_θ′: the pre-registered fine-band design W2 (proved; what oper2 runs)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:274:- **Coverage (Lemma 9′).**
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:282:- **FULL (Lemma 10′, roles swapped).** Here |A − B| = B − 1 ≍ R, so D′'s per-q count would
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:294:- **Clean block.** Y_j can be as small as ≈ 2Δ = N^{ε+o(1)}. Lemma 6 then needs
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:299:- **Variant U_θ′ (proved).** For θ ≤ 1/5 − 3ε, the statement of Theorem U_θ holds with W2 in
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:303:### 3.3 Exponent profile with Pollard–Strassen
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:324:- for θ₀ ≤ 1/5 − 3ε, (1+θ₀)/6 + O(ε) (Theorem U_θ);
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:331:### 3.4 Remark: deterministic extraction via Harvey–Hittmeir 2026 (proved given their Thm 1.1; not used in the theorems)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:361:## 4. Which populations make the result meaningful
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:388:     every scheme in Proposition O′'s model** (full-cover sense), and not achieved by ours.
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:390:## 5. The curvature obstruction (Proposition O′)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:392:### 5.1 Model 𝔏 (one-dimensional Lehman-linear collision searches)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:418:### 5.2 Statement and proof
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:420:**Proposition O′ (proved).**
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:468:  - Theorem U_θ covers a constant fraction of the candidates at q^{1/3}N^{O(ε)} (λ ≍ H²/n
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:477:### 5.3 Scope (what Proposition O′ does NOT say)
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:484:    Lemma 9 is a density statement. But no general theorem excludes correlated designs.
+/Volumes/git/factoring-connection/notes/unbalanced_results.md:502:## 6. Attempts to beat the R^{1/6} penalty (candidate cards, condensed)
+
+exec
+/bin/zsh -lc 'wc -l /Volumes/git/factoring-connection/notes/unbalanced_results.md /Volumes/git/factoring-connection/notes/dcltheorem_results.md /Volumes/git/factoring-connection/codex/unbalanced_1.out' in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     525 /Volumes/git/factoring-connection/notes/unbalanced_results.md
+     663 /Volumes/git/factoring-connection/notes/dcltheorem_results.md
+     390 /Volumes/git/factoring-connection/codex/unbalanced_1.out
+    1578 total
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/unbalanced_results.md | sed -n '263,524p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+   263	### 3.2 Variant U_θ′: the pre-registered fine-band design W2 (proved; what oper2 runs)
+   264	
+   265	The pre-registered design is `params.regime2_insts`.
+   266	- Weights (1, B) with B ∈ [2^j, 2^{j+1}), each with ratio window (B − Δ, B + Δ].
+   267	- **Span (U4).** For N/x² ∈ (B−Δ, B+Δ] and B ≥ 2Δ:
+   268	  F(x) − 2√(BN) = (Bx − N/x)²/(Bx + N/x + 2√(BN)) ≤ Δ²x²/(4√(BN)) ≤ Δ²√N/(2B^{3/2}).
+   269	  This is `regime2_span_bound`; tested in `test_regime2_span_bound_holds`.
+   270	- **Cost.** One baby list per band and block, shared by all R values of B. Targets ≍ RY,
+   271	  list ≍ Δ²√N R^{−3/2}Y^{−2}. With Y ≍ Δ^{2/3}N^{1/6}R^{−5/6} the per-band cost is
+   272	  Δ^{2/3}(NR)^{1/6}: the same exponent as §3.1 with Δ in place of h.
+   273	- **Feasibility.** Y > 2Δ needs R ≤ N^{1/5}(8Δ)^{−2/5}.
+   274	- **Coverage (Lemma 9′).**
+   275	  - Partition I_q into I_{q,b} = {p : b < q/p ≤ b+1}, b ∈ [2^j, 2^{j+1}).
+   276	  - On I_{q,b} every B ∈ [b+1−Δ, b+Δ] ∩ [2^j, 2^{j+1}) is admissible. There are ≥ Δ − 1 of
+   277	    them, and at most one is ≡ 0 (mod ℓ) because 2Δ < ℓ. So ω(ℓ) ≥ Δ − 2 distinct classes
+   278	    qB^{−1}.
+   279	  - Hence |U ∩ I_{q,b}| ≤ (|I_{q,b}| + 1 + Q²)·Cn/Δ. Summing over b costs an extra R·Q²,
+   280	    which is ≪ |I_q| because R^{3/2}Y² ≪ √N.
+   281	  - Exceptional fraction: C n²/Δ.
+   282	- **FULL (Lemma 10′, roles swapped).** Here |A − B| = B − 1 ≍ R, so D′'s per-q count would
+   283	  lose a factor R. Instead fix (p, B, ℓ, δ) and count q.
+   284	  - In a clean block, FULL means d = ord_q(2) divides X := (B−1)(p−1) + ℓ²δ.
+   285	  - For R ≥ 4Δ and n ≥ n₀, 0 < X < 3q, because ℓ²m̄ ≤ 4·span̄ + 8·4^KY² < (R/2)p.
+   286	  - So q ≡ 1 (mod e) for some divisor e > T of X, with ℓ ∤ e (clean), q ≡ Bp (mod ℓ), and
+   287	    q ∈ (p(B−Δ), p(B+Δ)]. That gives ≤ τ(X)(2Δp/(Tℓ) + 1) values of q.
+   288	  - Summing over δ, ℓ, B and p, and dividing by |S_{n,j}|, the fraction is
+   289	    ≤ Cn²τ*(m̄Δ/T + m̄RY/√(NR)), with τ* = max_{X<N} τ(X) = N^{O(1/log log N)}.
+   290	  - At Y ≍ Δ^{2/3}N^{1/6}R^{−5/6} and Δ ≍ H², this is
+   291	    ≤ N^{−1/12+11ε/3+o(1)} + N^{−1/6+4ε/3+o(1)}.
+   292	  - No averaging of gcd(B−1, d) is needed. (r16 suggested that averaging; swapping the roles
+   293	    avoids it.)
+   294	- **Clean block.** Y_j can be as small as ≈ 2Δ = N^{ε+o(1)}. Lemma 6 then needs
+   295	  K = ⌈log q/log Y_j⌉ + 1 = O(1/ε) dyadic blocks, which costs a constant factor 2^{O(1/ε)}.
+   296	  - The frozen W2 uses K = 4. At the oper2 sizes Y_j⁴ < q for some (n, j); for example
+   297	    n = 96, j = 13 has Y = 373, so Y⁴ ≈ 2^{34} against q ≈ 2^{55}.
+   298	  - A clean block is then not guaranteed. `certified` checks cleanliness directly.
+   299	- **Variant U_θ′ (proved).** For θ ≤ 1/5 − 3ε, the statement of Theorem U_θ holds with W2 in
+   300	  place of §3.1, with Δ = ⌊h/(64·2^{K})⌋, K = ⌈3/(5ε)⌉ + 2 and a constant C_ε = 2^{O(1/ε)}.
+   301	  The coarse design is simpler and has no such constant, so it is the main theorem.
+   302	
+   303	### 3.3 Exponent profile with Pollard–Strassen
+   304	
+   305	**Pollard–Strassen (prior art).**
+   306	- Deterministic. It finds every prime factor ≤ z of N in O(z^{1/2}(log N)^{O(1)}) bit
+   307	  operations (Pollard 1974; Strassen 1976; Bostan–Gaudry–Schost 2007; Harvey 2021,
+   308	  Prop. 2.5).
+   309	- A pair of ratio ≥ N^{θ} has p ≤ N^{(1−θ)/2}. So PS costs N^{(1−θ)/4} in the **worst
+   310	  case**, with no exceptions.
+   311	
+   312	**Corollary P (proved).** For each θ ∈ [0, 1] there is a deterministic algorithm that
+   313	factors all but O(N^{−ε}) of the pairs with ratio in (N^{θ}/2, 2N^{θ}] at cost
+   314	N^{e(θ)+O(ε)}, where
+   315	
+   316	  e(θ) = min((1+θ)/6, (1−θ)/4).
+   317	
+   318	The DCL branch is valid only for θ ≤ 1/5 − 3ε; PS is valid for any θ.
+   319	- e(θ) > 1/6 on (0, 1/3).
+   320	- max e = 1/5, at θ = 1/5.
+   321	- e(θ) ≤ 1/5 − |θ − 1/5|/6 elsewhere.
+   322	
+   323	**A whole range of ratios** (all q/p ≤ N^{θ₀}) costs the maximum over θ ≤ θ₀:
+   324	- for θ₀ ≤ 1/5 − 3ε, (1+θ₀)/6 + O(ε) (Theorem U_θ);
+   325	- for θ₀ ≥ 1/5, 1/5 + O(ε). That is no better than Harvey 2021 / Harvey–Hittmeir 2022,
+   326	  which give N^{1/5} in the worst case for all N.
+   327	
+   328	**The ratio gap is real for every scheme we have.** For 0 < θ < 1/3 the cost exceeds
+   329	N^{1/6} by N^{min(θ/6, (1/3−θ)/4)}.
+   330	
+   331	### 3.4 Remark: deterministic extraction via Harvey–Hittmeir 2026 (proved given their Thm 1.1; not used in the theorems)
+   332	
+   333	**The cited theorem.** Harvey–Hittmeir, arXiv 2601.11131 v2 (5 Jun 2026), Thm 1.1, checked
+   334	against the arXiv text: "input integers N ⩾ 3 and D ⩾ 1 with D < N−1 … outputs either
+   335	some α ∈ ℤ_N^* with ord_N(α) > D or a nontrivial divisor of N", in
+   336	O(D^{1/2}log D (log log D)^{−1/2} log N).
+   337	
+   338	**The construction (GPT-6.1-sol `unbalanced_1.out` §2).**
+   339	- Take D = m and 7 disjoint prime blocks with Y⁷ > N.
+   340	- (p−1)(q−1) < N has ≤ 6 prime factors > Y. So some block's L is coprime to
+   341	  ord_N(α) | λ(N), and then ord_N(γ) = ord_N(α^L) > m.
+   342	- Test gcd(γ^i − 1, N) for i < m. A proper gcd factors N. Suppose ord_N(γ) > m and no gcd is
+   343	  proper. Then ord_p(γ), ord_q(γ) ≥ m: otherwise gcd(γ^{ord_p(γ)} − 1, N) is p or N, and
+   344	  N would force ord_N(γ) ≤ ord_p(γ) < m.
+   345	- Find exact giant–baby equalities mod N by sorting, and test each directly: solve
+   346	  Bz² − Tz + AN = 0 for the proposed T = c + ℓ²(g_lo + jm + i).
+   347	  - For the true giant the index is unique mod p (ord_p(γ) ≥ m), so the test succeeds.
+   348	  - A failed test proves the giant is not the true one.
+   349	- Otherwise, f(G) ≡ 0 (mod N) with no exact equality means there is an i with p | G − γ^i
+   350	  and q ∤ G − γ^i. Scanning that one giant (O(m)) then gives a proper factor.
+   351	
+   352	**Consequence (proved, given Thm 1.1).**
+   353	- On the clean block, every covering true giant yields a factor.
+   354	- E_a and E_c disappear. The exceptional set of Theorems D′, U and U_θ reduces to E_b
+   355	  (coverage) alone.
+   356	- The extra cost is O(√m·polylog) for α, three more blocks, and O((m+G)log) for the sort.
+   357	- The θ restriction then comes only from E_b (θ ≤ 1/5) and from cost.
+   358	
+   359	We did not implement this, and it is not part of the frozen experiments.
+   360	
+   361	## 4. Which populations make the result meaningful
+   362	
+   363	Profile: e(θ) = min((1+θ)/6, (1−θ)/4), with θ = log(q/p)/log N. The functions
+   364	`obstruction.e_profile`, `frac_theta_below` and `frac_covered_at` compute it.
+   365	
+   366	1. **Bounded ratio (S_n, D′) and any fixed band up to N^{o(1)}.** Exponent 1/6 + o(1) with
+   367	   N^{−ε}-type exceptions per band (Theorems D′ and U). This is the meaningful
+   368	   almost-all-1/6 statement.
+   369	2. **Uniform over semiprimes with both primes ≥ N^{1/3}**, counted by pairs (equivalently by
+   370	   N ≤ X). By Mertens, the density of p ≈ N^{a} is ∝ da/(a(1−a)). With a = (1−θ)/2, θ has
+   371	   density ∝ 1/(1−θ²) on [0, 1/3], so Pr[θ ≤ t] = log₂((1+t)/(1−t)) (proved asymptotically;
+   372	   `frac_theta_below`).
+   373	   - At cost N^{1/6+η}, only θ ≤ 6η (DCL) and θ ≥ 1/3 − 4η (PS) are handled. That is a
+   374	     fraction ≈ 21η/ln 2 ≈ 30η: 0.151 at η = 0.005 and 0.301 at η = 0.01. **So there is no
+   375	     almost-all N^{1/6+o(1)} statement for this population.**
+   376	   - Exponent 1/5 − η′ fails only on θ ∈ (1/5 − 6η′, 1/5 + 4η′), a fraction ≈ 30η′. So every
+   377	     exponent below 1/5 holds for a positive proportion < 1, and none for 1 − o(1).
+   378	   - The median θ is (√2−1)/(√2+1) = 0.172, where e = 0.195.
+   379	3. **Log-uniform ratio on [1, N^{1/3}]** (θ uniform). Same conclusion, with constants
+   380	   10η·3 = 30η.
+   381	4. **All semiprimes counted by N ≤ X.**
+   382	   - Almost all have p < X^{δ} for every fixed δ: the fraction with p > X^{δ} is
+   383	     ≈ log(1/(2δ))/log log X. So PS gives exponent δ/2 with o(1) exceptions, and the
+   384	     question is trivial.
+   385	   - With **power-saving** exceptions (N^{−ε}) nothing below 1/5 follows. The pairs with
+   386	     θ ∈ [1/5 ± η] are a ≍ η/log log X ≫ X^{−ε} fraction.
+   387	   - Counted this way, "all but N^{−ε} of all semiprimes at N^{1/6+O(ε)}" is **false for
+   388	     every scheme in Proposition O′'s model** (full-cover sense), and not achieved by ours.
+   389	
+   390	## 5. The curvature obstruction (Proposition O′)
+   391	
+   392	### 5.1 Model 𝔏 (one-dimensional Lehman-linear collision searches)
+   393	
+   394	Fix N and a ratio band R₀. The **candidates** are the integers p ∈ [x₁, x₂] with
+   395	R₀ ≤ N/p² ≤ 2R₀, so x₂ = ⌊√(N/R₀)⌋ and x₂ − x₁ ≥ x₂/4. A search consists of:
+   396	- baby lists Λ_1, …, Λ_s, where Λ_i = {γ_i^e : e ∈ S_i} for an **arbitrary** set S_i ⊂ Z
+   397	  with |S_i| = m_i;
+   398	- giants G, each compared against one list i(G), and each carrying a target
+   399	  τ = (α, β, c₀, M, r, g₀) with integers α, β, c₀, g₀ and modulus M ≥ 1.
+   400	
+   401	The target's real-valued index on its class is
+   402	
+   403	  g_τ(p) = (αp + βN/p + c₀)/M²,   p ≡ r (mod M).
+   404	
+   405	G **covers** a candidate p in its class iff ⌊g_τ(p)⌋ ∈ g₀ + S_{i(G)}.
+   406	- For the true factor g_τ is an integer (a lock), so this is exactly "G collides at p if p
+   407	  is the factor". For other candidates it is a relaxation, which only enlarges coverage.
+   408	- For β = 0, refine the class to the sub-class on which g_τ is integral. A true factor
+   409	  outside that sub-class cannot collide, so nothing is lost.
+   410	
+   411	The **cost** is X = Σ_i m_i + #giants.
+   412	
+   413	Nothing is assumed about how giants are computed, the group or base, the modulus (prime,
+   414	composite, CRT products), the residue class, or which factor is extracted.
+   415	- A q-side target αq + βp + c₀ is, in the p-parametrisation, βp + αN/p + c₀: the same form.
+   416	- Multipliers kN and rational weights clear to integer (α, β).
+   417	
+   418	### 5.2 Statement and proof
+   419	
+   420	**Proposition O′ (proved).**
+   421	- (a) If β ≠ 0, a giant with |S| = m covers at most 2m + 8√(m x₂³/(|β|N)) ≤ 2m + 8√(m x₂/R₀)
+   422	  candidates.
+   423	- (b) If β = 0, it covers at most m.
+   424	- (c) Hence if a search in 𝔏 covers at least a fraction f of the candidates, then
+   425	
+   426	    X ≥ min( √(f x₂)/4, (f/64)^{2/3}(x₂R₀)^{1/3} ) ≍ min(√(fp), f^{2/3}q^{1/3}),
+   427	
+   428	  where x₂ ≍ p and x₂R₀ ≍ q, both up to a factor √2.
+   429	
+   430	*Proof of (a).*
+   431	- Put p = r + Mx. Then g(x) := g_τ(r+Mx) satisfies g''(x) = 2βN/p³, a chain-rule
+   432	  cancellation of M². WLOG β > 0 (otherwise negate g; the half-open floor intervals flip,
+   433	  and nothing changes). So g'' ≥ κ := 2βN/x₂³ > 0 on the band.
+   434	- Let x₀ minimise g on the band (possibly an endpoint) and m₀ = g(x₀). Consider the right
+   435	  part x ≥ x₀; the left part is symmetric.
+   436	  - There g′(x) ≥ κ(x − x₀) ≥ 0.
+   437	  - Since g′ is increasing, g(x) − m₀ ≤ (x − x₀)g′(x) ≤ g′(x)²/κ, so
+   438	    **g′(x) ≥ √(κ(g(x) − m₀))**.
+   439	- For an integer v put u = v − m₀ and P_v = {x ≥ x₀ : v ≤ g(x) < v + 1}, an interval.
+   440	  - It is empty if u ≤ −1.
+   441	  - Its length is ≤ √(2(u+1)/κ), from g − m₀ ≥ κ(x−x₀)²/2.
+   442	  - For u > 0 its length is also ≤ 1/√(κu), because g′ ≥ √(κu) on P_v.
+   443	  - It contains ≤ length + 1 integers.
+   444	- The m values v ∈ g₀ + S give distinct u with integer spacing. At most one lies in (−1, 0]
+   445	  (length ≤ √(2/κ)), at most one in (0, 1) (length < 2/√κ), and the i-th value ≥ 1 is ≥ i.
+   446	- So the right part covers ≤ m + (√2 + 2 + Σ_{i≤m} i^{−1/2})/√κ ≤ m + 5.5√(m/κ) integers.
+   447	- Doubling for the two parts, with √(m/κ) = √(m x₂³/(2βN)):
+   448	  2m + 11/√2·√(m x₂³/(βN)) ≤ 2m + 8√(m x₂³/(βN)). Finally x₂³/N ≤ x₂/R₀. ∎(a)
+   449	
+   450	*Proof of (b).*
+   451	- On the refined class, g(x) = g(0) + kx with k = αM′/M² a nonzero integer, where M′ is the
+   452	  refined modulus. So each value has at most one preimage. ∎(b)
+   453	
+   454	*Proof of (c).*
+   455	- Let G_i be the number of giants on list i. The coverage is
+   456	  ≤ Σ_i G_i(2m_i + 8√(m_i x₂/R₀)) ≤ 2X² + 8√(x₂/R₀)X^{3/2}, since m_i, Σ G_i ≤ X.
+   457	- It must be ≥ f x₂/4. If both X² < f x₂/16 and X^{3/2} < f√(x₂R₀)/64, the total is
+   458	  < f x₂/4, a contradiction. ∎
+   459	
+   460	**Corollary O″ (proved, in 𝔏).**
+   461	- At ratio R₀ = N^{θ}, full or constant-fraction coverage costs
+   462	  ≥ c·N^{min((1−θ)/4, (1+θ)/6)}.
+   463	- That is ≥ c N^{1/5} at θ = 1/5, with any number of moduli. Compare:
+   464	  - cycloharvey's LB is N^{1/5} with a single modulus;
+   465	  - multimod Thm A is N^{1/6} for balanced pairs with many moduli. Prop O′ is its
+   466	    ratio-dependent form, and it now allows **arbitrary baby sets**.
+   467	- So the profile e(θ) of §3.3 is **optimal in 𝔏 up to N^{O(ε)}**, on both branches.
+   468	  - Theorem U_θ covers a constant fraction of the candidates at q^{1/3}N^{O(ε)} (λ ≍ H²/n
+   469	    multiplicity).
+   470	  - The √p branch is matched by PS. PS is not itself in 𝔏, but it is a β = 0-type cost.
+   471	
+   472	Tests: `test_prop_o_bound_random` (interval windows, best g₀), `test_prop_o_prime_arbitrary_sets`
+   473	(best m-set for one giant = the m most popular floor values). The bounds hold on 700
+   474	random targets, with the worst ratios 0.50 (interval) and > 0.1 (sets). For an interval at
+   475	the band edge, a single side is in range, so the factor-2 slack is expected.
+   476	
+   477	### 5.3 Scope (what Proposition O′ does NOT say)
+   478	
+   479	- **Full cover, not average case.** It bounds how many candidates a search can cover for
+   480	  one N. An almost-all algorithm needs only the *true* factor covered for most N.
+   481	  - It could beat the bound only if its covered sets C(N) contained the true factor with
+   482	    probability well above |C(N)|/#candidates.
+   483	  - All lock-class designs have the density property: their classes are N-determined, and
+   484	    Lemma 9 is a density statement. But no general theorem excludes correlated designs.
+   485	  - Average-case lower bounds: **not proved** (GPT-6.1-sol r16 and unbalanced_1 make the
+   486	    same point).
+   487	- **Accidental collisions** (mod a reduced group order) are not counted. Heuristically they
+   488	  occur at rate ≈ X²/ord_p(γ) ≤ X²/p^{1−o(1)}, which matters only when X ≳ √p, the other
+   489	  branch.
+   490	- **Outside the model:**
+   491	  - targets non-linear in (p, q): exponent polynomials of degree ≥ 2 in N, e.g. N² ≡ q²
+   492	    (mod p−1), whose curvature in p is larger (multimod Thm A′ handles the balanced
+   493	    degree ≥ 2 case);
+   494	  - multi-dimensional collision searches;
+   495	  - lattice / Coppersmith decoding;
+   496	  - polynomial-evaluation methods (PS);
+   497	  - class groups;
+   498	  - subexponential methods (heuristic or rigorous-randomised).
+   499	- **Cost model.** X counts babies plus giants, i.e. window comparisons. A computation that
+   500	  processed a structured family of windows implicitly is not excluded.
+   501	
+   502	## 6. Attempts to beat the R^{1/6} penalty (candidate cards, condensed)
+   503	
+   504	All are evaluated at intermediate R = N^{θ}, 0 < θ < 1/3.
+   505	
+   506	| # | Modification | Outcome | Label |
+   507	|---|---|---|---|
+   508	| 1 | Anisotropic weights (A, B) with B/A ≈ R and A = a > 1 (rational weights, multipliers kN) | span ÷ a but instances × a. Cost Δ^{2/3}q^{1/3}a^{1/3}, minimised at a = 1. In Prop O′, β = A ≥ 1 | refuted for this model |
+   509	| 2 | Composite / CRT locks ℓ₁ℓ₂ \| Bp − Aq | M cancels in g″ (Prop O′(a) is M-free). Each giant covers the same number of candidates of a smaller class | refuted for this model |
+   510	| 3 | q-side extraction (exponent 1 + RN ≡ q + Rp mod q−1) | Same target value Rp + q, same window. In q-units the per-giant coverage is ×R and so is the candidate count | refuted for this model |
+   511	| 4 | Finer ratio sub-bands, one list each | Per sub-band Δ^{4/3}(p/R)^{1/3}, × R/Δ sub-bands ⇒ Δ^{1/3}(Rq)^{1/3}, worse | refuted (computed) |
+   512	| 5 | Coarse small weights (1, B ≤ H²), full band window (GPT-6.1-sol) | Same exponent H^{4/3}q^{1/3}, simpler. Now the main construction | proved (§3.1), no gain |
+   513	| 6 | Composite moduli for multiplicity (Σ_M 1/M ≍ 1 per dyadic range vs 1/n for primes) | Coverage per target is still ≈ 1/M. Re-optimising gives λ^{2/3}q^{1/3} independent of the modulus density | refuted (computed; consistent with Prop O′) |
+   514	| 7 | Lucas (p+1), cyclotomic Φ_k(p) handles | p+1: N ≡ −q, target −(Bp + Aq), same family. Cyclotomic: cycloharvey D1 (no new targets) | refuted for this model |
+   515	| 8 | Exponents of degree ≥ 2 in N (targets with q², …) | g″ ≍ q²/p² ≫ R/p, larger curvature. No construction beats linear | not proved in general (outside 𝔏) |
+   516	| 9 | Coppersmith / lattice windows | Need p mod M with M ≳ p^{1/2}. Locks give p mod ℓ only, and for R ≥ ℓ every class is hit (no information). Guessing costs ≥ √p | no gain found (heuristic accounting) |
+   517	| 10 | Pollard–Strassen on lock classes | Must cover a union of classes of density ≍ 1 ⇒ √p | no gain (computed) |
+   518	| 11 | McKee–Pinch pigeonhole (λp ≡ ±μq mod k, λμ ≤ k) | Guaranteed lock at k ≈ N^{1/3} ⇒ deterministic N^{1/3}. Worse | no gain |
+   519	| 12 | HH 2022 local lattices | Accounting S + √N/S^{3/2} with A = O(√(S/R)) recovers N^{1/5} at best (GPT-6.1-sol) | no gain |
+   520	| 13 | Structured (non-interval) baby sets exploiting the common curvature g″ = 2N/p³ of all A = 1 targets | Prop O′ allows arbitrary sets and gives the same bound | refuted for this model (new in O′) |
+   521	
+   522	**Conclusion.** Every attempt either lies in 𝔏, where Prop O′ makes q^{1/3} optimal, or
+   523	costs more. Beating the penalty needs a mechanism outside 𝔏: non-linear targets with
+   524	cancelling curvature, multi-dimensional collisions, lattices, or an average-case selection
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/dcltheorem_results.md | sed -n '60,370p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+    60	## 1. Population, target and statement
+    61	
+    62	Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+    63	
+    64	**Population.**
+    65	
+    66	  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+    67	
+    68	It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+    69	q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+    70	X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+    71	
+    72	**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+    73	- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+    74	- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+    75	- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+    76	
+    77	**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+    78	constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+    79	properties.
+    80	- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+    81	  FAIL. Every candidate is validated before output (`algorithm._proper`).
+    82	  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    83	    1 < ℓ < N.
+    84	  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+    85	  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+    86	- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+    87	  N^{1/6+5ε/6}(log N)^{O(1)}.
+    88	- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+    89	
+    90	Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+    91	O(N^{−6δ/5}).
+    92	
+    93	**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+    94	algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+    95	N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+    96	
+    97	**Quantifier (audit item 5).**
+    98	- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+    99	  pairs.
+   100	- It does **not** say that for almost every N all integer candidates p are covered, so it
+   101	  does not show that the full-candidate covering model has exponent 1/6 for almost
+   102	  every N.
+   103	- It does not cover the worst case (§6), nor ratios q/p > 2.
+   104	
+   105	## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+   106	
+   107	### 2.1 Parameters
+   108	
+   109	All parameters are functions of n and ε only; nothing depends on N.
+   110	
+   111	- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+   112	- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+   113	- Y = ⌈2^{n/6}H^{−1/3}⌉.
+   114	- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+   115	  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+   116	- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+   117	  bound for every window width in block k (§2.2).
+   118	- The base is β = 2.
+   119	
+   120	### 2.2 Steps
+   121	
+   122	Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+   123	has p ∈ [a₀, b₀].
+   124	
+   125	For v = (A,B) ∈ V put:
+   126	- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+   127	- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+   128	- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+   129	
+   130	For each block k = 0, 1, 2, 3:
+   131	
+   132	1. **Exponent tree.**
+   133	   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   134	   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+   135	     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   136	   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   137	   - If ℓ | N for some ℓ, output ℓ.
+   138	2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   139	   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   140	   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   141	   - For each root r:
+   142	     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+   143	     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+   144	     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   145	   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+   146	3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   147	   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   148	   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   149	   - The success proof needs only m ≤ m̄_k.
+   150	   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+   151	     with T′ = Σ_τ⌈W_τ/m⌉.
+   152	   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+   153	     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+   154	     T′ ≫ H²P/(Y log Y).
+   155	4. **Giants.**
+   156	   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   157	   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+   158	
+   159	       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+   160	
+   161	     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+   162	5. **Collision detection.**
+   163	   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   164	   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+   165	     is valid over Z/N.
+   166	   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+   167	
+   168	Output FAIL if no block yields a divisor.
+   169	
+   170	**Remarks.**
+   171	- (a) No order is computed, assumed or certified. No randomness is used.
+   172	- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+   173	  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+   174	- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+   175	
+   176	## 3. Lemmas
+   177	
+   178	Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+   179	
+   180	**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+   181	suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+   182	
+   183	*Proof.*
+   184	- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+   185	- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+   186	- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+   187	- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+   188	  therefore ≡ 0 (mod ℓ²). ∎
+   189	
+   190	**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+   191	ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+   192	
+   193	**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+   194	j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+   195	
+   196	*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+   197	
+   198	**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+   199	order is needed.
+   200	
+   201	*Proof.*
+   202	- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+   203	- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+   204	- Multiply by γ^{−(g_lo + j*m)}. ∎
+   205	
+   206	**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+   207	
+   208	*Proof.*
+   209	- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+   210	- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+   211	- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+   212	  and 2^{q−1} ≡ 1 (mod q). ∎
+   213	
+   214	**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+   215	G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+   216	gcd(f(G), N) = p.
+   217	
+   218	*Proof.*
+   219	- f(G) = ∏_i (G − γ^i).
+   220	- The factor i = i* vanishes mod p (Lemma 3).
+   221	- Mod q, no factor vanishes, by definition, and Z/q is a field.
+   222	- So p | f(G) and q ∤ f(G). ∎
+   223	
+   224	**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+   225	Y⁴ > √2P, at least one of the four blocks is clean for q.
+   226	
+   227	*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+   228	q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+   229	
+   230	Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+   231	for ε < 1/4 and n large.
+   232	
+   233	**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+   234	iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+   235	
+   236	*Proof.*
+   237	- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+   238	- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+   239	- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+   240	
+   241	**Lemma 8 (small orders are rare; elementary).** For Q₀ ≥ 2 and T ≥ 1,
+   242	
+   243	  #{q > Q₀ prime : ord_q(2) ≤ T} ≤ T(T+1)/(2 log₂ Q₀).
+   244	
+   245	*Proof.* Such a q divides 2^k − 1 for some k ≤ T. Since 2^k − 1 < 2^k, it has fewer than
+   246	k/log₂Q₀ prime factors > Q₀. Sum over k ≤ T. ∎
+   247	
+   248	**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+   249	k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+   250	ℓ ∤ Bp − Aq for all (v, ℓ) ∈ V × 𝒫_k. For n ≥ n₀,
+   251	
+   252	  |U_k(q)| ≤ (P/2 + 1 + 4^{k+1}Y²)/J_k,  J_k ≥ |V|·Σ_{ℓ∈𝒫_k} 1/ℓ ≥ c₁H²/n.
+   253	
+   254	*Proof.*
+   255	- For ℓ ∈ 𝒫_k, ℓ ∤ q, so ℓ | Bp − Aq ⇔ p ≡ AqB^{−1} (mod ℓ).
+   256	- These |V| classes are distinct: AqB^{−1} ≡ A′qB′^{−1} implies ℓ | AB′ − A′B, and
+   257	  0 < |AB′ − A′B| < H² < Y < ℓ. This uses Y > H², i.e. 2^{n/6} > n^{7/3}2^{7εn/6}, true for
+   258	  ε < 1/7 and n large.
+   259	- So U_k(q) avoids ω(ℓ) = |V| < ℓ classes mod every ℓ ∈ 𝒫_k.
+   260	- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+   261	  N₀ + Q² for an interval of N₀ integers) with Q = 2^{k+1}Y gives
+   262	  |U| ≤ (N₀ + Q²)/J, J = Σ_{d≤Q} μ²(d)∏_{ℓ|d} ω(ℓ)/(ℓ − ω(ℓ)).
+   263	- Only the prime terms are needed, and they follow directly. For each ℓ ∈ 𝒫_k,
+   264	  Parseval and Cauchy–Schwarz give Σ_{a=1}^{ℓ−1}|S(a/ℓ)|² ≥ ω/(ℓ−ω)·|U|². The fractions
+   265	  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+   266	- Keeping only d = 1 and d = ℓ ∈ 𝒫_k: J ≥ |V| Σ_{ℓ∈𝒫_k} 1/ℓ.
+   267	- By the PNT in the progression 3 mod 4 (effective for the fixed modulus 4),
+   268	  Σ_{ℓ∈𝒫_k} 1/ℓ ≥ (1/2 − o(1))·ln 2/ln(2^{k+1}Y) ≥ c′/n.
+   269	- |V| ≥ H²/2 for large H, since the coprime pairs number (6/π² + o(1))H². ∎
+   270	
+   271	**Lemma 10 (FULL is rare).** Fix q with d = ord_q(2) > T and a block k clean for q. Let
+   272	F_k(q) be the set of integers p ∈ [P/2, P] such that some (v, ℓ) ∈ V × 𝒫_k has ℓ | Bp − Aq
+   273	and d | (A−B)(p−1) − ℓ²δ for some |δ| < m̄_k. Then
+   274	
+   275	  |F_k(q)| ≤ Σ_{v,ℓ,|δ|<m̄_k} (P·H/(2·2^kY·T) + 1)
+   276	           ≤ 2|V||𝒫_k| m̄_k·(PH/(2^{k+1}YT) + 1).
+   277	
+   278	*Proof.*
+   279	- Fix (v, ℓ, δ) and let g′ = gcd(A − B, d) ≤ H (A ≠ B, |A − B| < H).
+   280	- The congruence (A−B)(p−1) ≡ ℓ²δ (mod d) is either unsolvable, or holds exactly on one
+   281	  class of p mod d/g′.
+   282	- ℓ ∤ d, because clean means ℓ ∤ q − 1. With p ≡ AqB^{−1} (mod ℓ), CRT gives one class mod
+   283	  ℓd/g′ ≥ ℓd/H.
+   284	- An interval of length P/2 contains ≤ P H/(2ℓd) + 1 such integers. ∎
+   285	
+   286	## 4. Proof of Theorem D′
+   287	
+   288	**(i) Correctness.** Only gcds with N in (1, N), or band primes dividing N, are output.
+   289	
+   290	**(ii) Cost (bit operations; M(b) = O(b log b) multiplication; per block, with T_k
+   291	targets and m ≤ m̄_k).**
+   292	
+   293	| step | operations | bit cost |
+   294	|---|---|---|
+   295	| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+   296	| integer product tree of ℓ² (Σ bits = log₂L_k ≤ 3·2^kY) | balanced tree | O(M(Y)·log Y) |
+   297	| exponent tree (per level Σ exponent bits ≤ log₂L_k + #nodes; ⌈log₂|𝒫_k|⌉ levels) + γ, γ^{−1} | O(Y log Y) mults mod N + 1 inversion | O(Y log Y·M(n)) |
+   298	| roots (Euler test, powering mod ℓ), s, c, windows | O(\|V\|\|𝒫_k\| log Y) mults mod ℓ, ℓ² | Õ(H²Y) |
+   299	| w_ℓ = u_ℓ^N; giants (exponents of O(n) bits) | O(n\|𝒫_k\| + nT_k + T′) mults mod N | O((n(T_k + Y) + T′)·M(n)) |
+   300	| choice of m (endpoint-competitive grid: O(n) grid points × T_k targets); inversions B^{−1} mod ℓ and r^{−1} mod ℓ²; reductions N mod ℓ, ℓ² | O(nT_k) word/small-integer ops | Õ(T_k n^{O(1)}) |
+   301	| babies γ^i | m mults | O(m M(n)) |
+   302	| f by product tree; remainder tree at the T′ = Σ_τ⌈W_τ/m⌉ ≤ T_k + Σ_τ W_τ/m giants | O((M(m) + M(T′)) log(m+T′)) ring ops; Kronecker substitution makes a degree-D product O(M(D·(2n + log D))) bits | Õ((m + T′)n) |
+   303	| gcds | T′ gcds of n-bit numbers | O(T′ M(n) log n) |
+   304	
+   305	With m = m̄_k (or any m that minimises the list count) the list is
+   306	m + T′ ≤ m̄_k + T_k + 1 ≤ 2.5HP/Y² + 4 + 2H²·2^{k+1}Y. Over the four blocks:
+   307	
+   308	  total = O(n^{O(1)}·(HP/Y² + H²Y)) = O(n^{O(1)} H^{5/3} P^{1/3}),
+   309	
+   310	because Y ≍ P^{1/3}H^{−1/3}. With H = n·2^{εn/2} this is O(n^{O(1)}·2^{(1/6+5ε/6)n}).
+   311	
+   312	**Arithmetic model (referee dclt_1, item 4).**
+   313	- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+   314	  Hoeven; Schönhage–Strassen gives an extra log log). This applies to the exponent product
+   315	  tree, the Kronecker-substituted polynomial products and the gcds.
+   316	- Kronecker substitution over composite N: coefficients lie in [0, N), and the slots are
+   317	  wider than 2n + ⌈log₂(D+1)⌉.
+   318	- Monic remainders: reversal plus Newton inversion of a power series with constant term 1.
+   319	  No inverse of a nonunit is ever needed.
+   320	- The experimental metric E (§8) is a *proxy*. It is not the proof of (ii). The Python
+   321	  implementation uses GMP integer products (gmpy2) and flint polynomial arithmetic. Its
+   322	  `powN` charges binary square-and-multiply counts.
+   323	
+   324	**(iii) Exceptional set.**
+   325	- Let T = ⌊2^{(1/4−ε)n}⌋. For (p,q) ∈ S_n, let k(q) be the least block clean for q
+   326	  (Lemma 6). If
+   327	  - (a) d = ord_q(2) > T,
+   328	  - (b) p ∉ U_{k(q)}(q), and
+   329	  - (c) p ∉ F_{k(q)}(q),
+   330	
+   331	  then DCL-det succeeds.
+   332	- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+   333	- By (c) and Lemma 7, its true giant is not FULL: the exact δ-range lies inside |δ| < m̄_k.
+   334	- By Lemma 5 that giant's gcd is p. The algorithm outputs a nontrivial divisor at block k(q)
+   335	  at the latest. It may output q, or output earlier from another block; both are fine.
+   336	- So the FAIL pairs lie in E_a ∪ E_b ∪ E_c, with E_a = {ord_q(2) ≤ T},
+   337	  E_b = {d > T, p ∈ U_{k(q)}(q)} and E_c = {d > T, p ∈ F_{k(q)}(q)}.
+   338	
+   339	The counts sum over prime q ∈ (P/√2, √2P), of which there are ≤ 3P/n for n large:
+   340	
+   341	- **|E_a|.** By Lemma 8 with Q₀ = 2^{(n−1)/2}, each bad q has ≤ P/2 + 1 partners, so
+   342	  |E_a| ≤ (T(T+1)/(n−1))·(P/2+1) ≤ 2^{(1−2ε)n}/n·(1 + o(1)). Then
+   343	  |E_a|/|S_n| ≤ (n/c₀)·2^{−2εn}(1 + o(1)).
+   344	  - *Correction (dclt_1):* T(T+1) replaces T². The estimate is unchanged.
+   345	- **|E_b|.** By Lemma 9, Σ_q |U_{k(q)}(q)| ≤ (3P/n)·(P/2 + 1 + 256Y²)·n/(c₁H²) ≤ C P²/H².
+   346	  So |E_b|/|S_n| ≤ C n²/H² ≤ C 2^{−εn}. This is the audit's repaired normalisation: one
+   347	  fixed interval, integers counted, no short-interval prime counts.
+   348	- **|E_c|.** By Lemma 10 with |V| ≤ H², |𝒫_k| ≤ 2^kY and m̄_k ≤ 3HP/(4^kY²):
+   349	  |F_k(q)| ≤ 6H⁴P²/(Y²T) + 6H³P/Y. So
+   350	
+   351	    |E_c|/|S_n| ≤ (3P/n)(6H⁴P²/(Y²T) + 6H³P/Y)·n²/(c₀P²) ≤ C n (H^{14/3}P^{1/3}/T + H^{10/3}/P^{1/3}),
+   352	
+   353	  using Y² ≥ P^{2/3}H^{−2/3}. Here H^{14/3}P^{1/3}/T ≤ (2n)^{14/3}2^{(−1/12 + 7ε/3 + ε)n} and
+   354	  H^{10/3}/P^{1/3} ≤ n^{4}2^{(5ε/3 − 1/6)n}.
+   355	- **Conclusion.** For ε ≤ 1/60, −1/12 + 10ε/3 ≤ −1/36 < −ε − (small). So |E_c|/|S_n| =
+   356	  O(2^{−εn}) for n ≥ n₀(ε), and the total is O(2^{−εn}) = O(N^{−ε}). ∎
+   357	
+   358	**Corollary D″.**
+   359	- Take H = ⌈n^{1+a}⌉ and T = ⌊2^{n/4} n^{−1−a}⌋.
+   360	- (a) gives O(n^{−2a−1}) and (b) gives O(n^{−2a}).
+   361	- (c) gives n^{O(1)}·2^{−n/12}·n^{1+a}·n^{O(1)} = o(n^{−2a}).
+   362	- The cost is n^{O(1)}H^{5/3}2^{n/6}. ∎
+   363	
+   364	**Where the constants come from.**
+   365	- ε ≤ 1/60 is used only in (c) (the requirement is −1/12 + 13ε/3 < 0, i.e. ε < 1/52) and in
+   366	  the scale separations Y > H² (ε < 1/7) and Y⁴ > √2P (ε < 1/4).
+   367	- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+   368	- The Poisson heuristic predicts e^{−λ} with λ ≍ H²/n. That would give N^{−ε} already at
+   369	  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+   370	
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/unbalanced_results.md | sed -n '1,262p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     1	# unbalanced: Theorem D′ beyond q ≤ 2p — ratio bands, the ratio gap, and a curvature barrier
+     2	
+     3	Agent `unbalanced`, 2026-10-18 (restarted after the first machine was lost). Pre-registration:
+     4	`notes/unbalanced_prereg.md` (commit `b3beb0d`, before any pre-registered run). Code:
+     5	`src/unbalanced/` (operational `params.py`, `algorithm.py`; harness `harness.py`,
+     6	`experiments.py`, `analyze.py`; diagnostic `obstruction.py`). Tests:
+     7	`tests/test_unbalanced.py`, `tests/test_unbalanced_obstruction.py`. Raw data:
+     8	`experiments/raw/unbalanced_*.jsonl`. Summary: `experiments/analysis/unbalanced_summary.json`.
+     9	Inputs: notes/dcltheorem_results.md (Theorem D′, authoritative), notes/multimod_results.md
+    10	§3.1–3.2 and §3.9, GPT-6.1-sol `codex/unbalanced_1.out` (blind) and `codex/r16_strategy.out` §2.
+    11	
+    12	## 0. Verdict (plain language)
+    13	
+    14	**D′ extends cleanly to every ratio q/p ≤ N^{o(1)}, but not to all semiprimes. There is a
+    15	real ratio gap. For ratios N^{θ} with 0 < θ < 1/3, our best cost is above N^{1/6}. The
+    16	worst case is θ = 1/5 (p ≈ N^{2/5}), where we only reach N^{1/5}, the known Harvey /
+    17	Harvey–Hittmeir exponent. We prove that no scheme in a precise and fairly broad model can do
+    18	better at full coverage.**
+    19	
+    20	- **Theorem U (proved; regime I).** D′ with ratio-band weight rectangles
+    21	  A ≤ H/√R, B ≤ H√R (R = 2^j ≤ H²/16) has the same exponent. It costs N^{1/6+5ε/6}·polylog
+    22	  and fails on O(N^{−ε}) of the pairs with q/p ≤ N^{ε}. Every window span stays
+    23	  ≤ (1+√2)H√N, so the primes, γ, the four blocks and the baby list are D′'s. Only the target
+    24	  count grows, by the number of bands, O(n). The large-sieve, clean-band and FULL-count
+    25	  lemmas carry over with H replaced by H² in one gcd bound.
+    26	- **Theorem U_θ (proved; regime II).** For H²/16 < R ≤ N^{θ}, θ ≤ 1/5 − 3ε, use weights
+    27	  (1, B) with 2 ≤ B ≤ H² (a construction suggested by GPT-6.1-sol, simpler than our
+    28	  pre-registered one) and a per-band prime scale Y_j ≍ (NR_j)^{1/6}H^{−2/3}. A band costs
+    29	  H^{4/3}(NR)^{1/6}, so the exponent is (1+θ)/6 + 2ε/3. Our pre-registered fine-band
+    30	  design W2 (weights (1, B) with B ≈ R) has the same exponent (Variant U_θ′, proved).
+    31	- **Profile (proved, with Pollard–Strassen as prior art).** At ratio N^{θ} the best exponent
+    32	  we have is e(θ) = min((1+θ)/6, (1−θ)/4) (+O(ε) on the DCL side). So:
+    33	  - it exceeds 1/6 for every 0 < θ < 1/3;
+    34	  - it is below 1/5 for every θ ≠ 1/5;
+    35	  - its maximum is 1/5, at θ = 1/5.
+    36	- **Proposition O′ (proved in its model; the strongest negative result here).** Take any
+    37	  one-dimensional collision search: any number of baby lists with *arbitrary* exponent sets,
+    38	  giants with Lehman-linear targets αp + βq + c₀, any lock moduli (prime, composite, CRT),
+    39	  either side extracted, multipliers, rational weights. Covering a fraction f of the integer
+    40	  candidates of ratio band R costs ≥ c·min(√(fp), f^{2/3}q^{1/3}).
+    41	  - At R = N^{1/5} this is ≥ c f^{2/3}N^{1/5}. **In this model the 1/5 peak cannot be
+    42	    removed.**
+    43	  - The bound is tight on both branches: Theorem U_θ (q^{1/3}) and Pollard–Strassen (√p).
+    44	  - Its scope is FULL coverage of the candidates, not average-case success. An almost-all
+    45	    scheme could beat it only if its covered sets favoured the true factor beyond their
+    46	    density. Non-linear targets, lattice methods and multi-dimensional searches are also
+    47	    outside it (§5.3).
+    48	- **Populations.**
+    49	  - For the bounded-ratio population S_n, and per ratio band up to N^{o(1)}: N^{1/6+o(1)}.
+    50	  - Uniform over semiprimes with both primes ≥ N^{1/3}: the exponent θ has a continuous law
+    51	    on [0, 1/3]. Cost N^{1/6+η} handles only ≈ 30η of them, and there is **no**
+    52	    almost-all exponent below 1/5. Exponent 1/5 − η′ still handles all but ≈ 30η′.
+    53	  - Counted by N ≤ X over all semiprimes, almost all have p < X^{1/3}. Pollard–Strassen
+    54	    already gives N^{1/6} for 1 − o(1) of them, so that measure is trivial. But it gives no
+    55	    power-saving exceptional set, since a ≍ 1/log log N fraction has θ near 1/5.
+    56	- **Beating R^{1/6}: no escape found.** We tried composite locks, q-side extraction,
+    57	  multipliers kN, rational or anisotropic weights, finer sub-band lists, composite moduli for
+    58	  multiplicity, Lucas/cyclotomic handles, Coppersmith windows, PS on lock classes, and the
+    59	  McKee–Pinch pigeonhole. Each is either inside Proposition O′'s model, or costs more (§6).
+    60	- **Experiments (pre-registered, run exactly as frozen).** §7. ⟨filled after runs⟩
+    61	- **Extraction remark (GPT-6.1-sol, labelled conditional).** Harvey–Hittmeir 2026 gives a
+    62	  base of order > m mod N deterministically. With seven blocks and exact-equality recovery,
+    63	  that would remove D′'s order and FULL exceptional sets entirely, leaving only coverage
+    64	  (§3.4).
+    65	
+    66	## 1. Populations and notation
+    67	
+    68	- n is the bit length, N ∈ [2^{n−1}, 2^n).
+    69	- **Ratio band j:** S_{n,j} = {(p, q) primes : 2^j p < q ≤ 2^{j+1}p, 2^{n−1} ≤ pq < 2^n}.
+    70	  Write R = R_j = 2^j. Then p ≍ P_j := √(N/R) and q ≍ Q_j := √(NR) (within factors √2).
+    71	- S_n^{θ} = ∪_{j ≤ θn} S_{n,j} is the set of pairs with q/p ≤ N^{θ} roughly.
+    72	  - j = 0 is D′'s population S_n, up to the boundary q = 2p.
+    73	- **Counts (PNT, uniform for j ≤ n/3):** |S_{n,j}| ≥ c₀ 2^n/n². Choose p ∈ [x, 1.1x],
+    74	  q ∈ [y, 1.1y] with xy = 0.6·2^n and y/x = 1.5·2^j. Both x, y ≥ 2^{n/3}, so each
+    75	  progression has ≫ x/n, y/n primes.
+    76	- Exceptions are **counted by pairs**, per band. Because |E_j| ≤ C2^{−εn}|S_{n,j}| for
+    77	  every band, the union over bands is also an O(2^{−εn}) fraction of S_n^{θ}.
+    78	
+    79	## 2. Theorem U (regime I: R ≤ H²/16)
+    80	
+    81	### 2.1 Algorithm DCL-wide-I_{n,ε} (= `algorithm.dclw` with `params.theorem_design_U`)
+    82	
+    83	All parameters are D′'s (dcltheorem §2.1):
+    84	- H = ⌈n2^{εn/2}⌉;
+    85	- Y = ⌈2^{n/6}H^{−1/3}⌉;
+    86	- four blocks 𝒫_k = {ℓ ≡ 3 (4) prime, 2^kY < ℓ ≤ 2^{k+1}Y};
+    87	- base 2, L_k = ∏ℓ².
+    88	
+    89	**Change.** Let J be the largest j with 2^j ≤ H²/16. For each j ≤ J let
+    90	
+    91	  V_j = {(A, B) : 1 ≤ A ≤ a_j := ⌊H2^{−j/2}⌋, 1 ≤ B ≤ b_j := ⌊H2^{j/2}⌋, gcd(A,B) = 1, A ≠ B}.
+    92	
+    93	- The instance (A, B, j) carries the ratio interval (2^j, 2^{j+1}].
+    94	- Its window is computed over the integer p-range x ∈ [x_lo, x_hi] = {x : 2^j < N/x² ≤ 2^{j+1}}
+    95	  (`ratio_range`, exact integers).
+    96	- Lo = ⌊2√(ABN)⌋ and Hi = max_{x∈{x_lo,x_hi}} ⌈Bx + AN/x⌉. The rest of each block is D′
+    97	  verbatim, with one shared baby list per block for all instances of all bands:
+    98	  - targets for every ℓ and every instance;
+    99	  - roots by a^{(ℓ+1)/4};
+   100	  - c, g_lo, W;
+   101	  - giants u_ℓ^{B+AN−c}γ^{−(g_lo+jm)};
+   102	  - m = m̄_k, or the endpoint-competitive grid;
+   103	  - product/remainder trees, gcd, validated outputs.
+   104	- With J = 0 the target list is exactly D′'s (test `test_band0_reproduces_dprime_targets`).
+   105	
+   106	### 2.2 Lemmas (changes to D′'s proof only)
+   107	
+   108	Fix (p, q) ∈ S_{n,j}, j ≤ J. Write R = 2^j.
+   109	
+   110	- **U1 (span).** For x in band j's p-range,
+   111	  F(x) = Bx + AN/x ≤ b_j√(N/R) + a_j√(2RN) ≤ (1+√2)H√N, and Lo ≥ 0.
+   112	  So Hi − Lo ≤ (1+√2)H√N + 2 ≤ span̄. This is D′'s span̄ (5/2)H(2^{n/2}+1) + 2H + 3.
+   113	  Hence m̄_k is unchanged. (GPT-6.1-sol: with the exact interval minimum the real span is
+   114	  ≤ (√2−1)H√N; we use the cruder bound, as the code does.)
+   115	- **U2 (weights).**
+   116	  - a_j b_j ≤ H²;
+   117	  - |AB′ − A′B| ≤ a_j b_j ≤ H² < Y < ℓ;
+   118	  - |V_j| ≥ c₂H². For a_j ≥ 4: a_j ≥ H/(2√R) and b_j ≥ H√R/2. Coprime pairs in [1,a]×[1,b]
+   119	    number ≥ b·Σ_{A≤a}φ(A)/A − O(a log a) ≥ c·ab, and A = B removes ≤ a.
+   120	  - |A − B| ≤ b_j ≤ H√R ≤ H².
+   121	- **Lemma 1 (lock), Lemmas 2–5, Lemma 7 (FULL ⇔ d | (A−B)(p−1) − ℓ²δ) hold verbatim.**
+   122	  - They only use ℓ ∤ ABN, ℓ < p and the window containing F(p).
+   123	  - ℓ ≤ 16Y ≪ √(N/R) ≤ p, and ℓ > Y > H² ≥ A, B.
+   124	  - The window contains F(p) because N/p² = q/p ∈ (2^j, 2^{j+1}].
+   125	- **Lemma 6 (clean block)** needs Y⁴ > q. Here q ≤ √(2^{n}·2^{J+1}) ≤ H·2^{n/2}, and
+   126	  Y⁴ ≥ 2^{2n/3}H^{−4/3} > H2^{n/2} for ε < 1/14 and n ≥ n₀.
+   127	- **Lemma 9 (coverage, large sieve) holds uniformly in j.**
+   128	  - Fix a prime q and let I_q = {p ∈ Z : q/2^{j+1} ≤ p < q/2^j}, of length ≤ q/(2R) + 1.
+   129	  - By U2, the |V_j| classes AqB^{−1} mod ℓ are distinct. So the uncovered
+   130	    U_k(q) ⊂ I_q avoids |V_j| classes mod every ℓ ∈ 𝒫_k.
+   131	  - Montgomery–Vaughan (prime terms only, exactly as in D′) gives
+   132	    |U_k(q)| ≤ (|I_q| + 1 + 4^{k+1}Y²)·n/(c₁H²).
+   133	- **Lemma 10 (FULL count)** holds with g′ = gcd(A−B, d) ≤ H² (instead of ≤ H):
+   134	  |F_k(q)| ≤ 2|V_j||𝒫_k| m̄_k (|I_q|H²/(2^kY·T) + 1).
+   135	
+   136	### 2.3 Theorem U
+   137	
+   138	**Theorem U (proved).** Fix ε ∈ (0, 1/60]. For n ≥ n₀(ε), DCL-wide-I_{n,ε} has these
+   139	properties.
+   140	- It outputs a proper divisor or FAIL on every input.
+   141	- It costs O(n^{c}·2^{(1/6+5ε/6)n}) bit operations on every n-bit input.
+   142	- It fails on at most C·2^{−εn}|S_{n,j}| pairs of each band j ≤ J, where 2^J ≥ H²/32 ≥ 2^{εn}.
+   143	
+   144	In particular it fails on O(N^{−ε}) of the pairs with q/p ≤ N^{ε}.
+   145	
+   146	*Proof.*
+   147	- **(i) Correctness.** Identical to D′.
+   148	- **(ii) Cost.** Per block, the targets number ≤ 2Σ_j|V_j||𝒫_k| ≤ 2(J+1)H²·2^kY with
+   149	  J + 1 ≤ 2log₂H + 1 = O(n). The list length is m̄_k + T′ with T′ ≤ T + Σ W/m. Every other
+   150	  row of D′'s cost table scales by at most J + 1. So the cost is O(n^{O(1)}(HP/Y² + nH²Y)),
+   151	  i.e. O(n^{O(1)}H^{5/3}2^{n/6}).
+   152	- **(iii) Exceptions, per band j**, with T = ⌊2^{(1/4−ε)n}⌋. The failing pairs lie in
+   153	  E_a ∪ E_b ∪ E_c, as in D′. For each, sum over the primes q of the band, at most
+   154	  C√(NR)/n of them, and divide by |S_{n,j}| ≥ c₀2^n/n².
+   155	  - **E_a (ord_q(2) ≤ T).** By Lemma 8, ≤ T(T+1)/(n−1) bad q, each with ≤ |I_q| + 1 ≤
+   156	    C√(N/R) partners. Fraction ≤ C n T²/√(NR) ≤ C n 2^{−2εn}.
+   157	  - **E_b (uncovered in the clean block).** Σ_q |U| ≤ (C√(NR)/n)(C√(N/R) + 256Y²)·n/(c₁H²)
+   158	    ≤ C 2^n/H², because Y² ≤ √(N/R) when R ≤ H². Fraction ≤ C n²/H² ≤ C 2^{−εn}.
+   159	  - **E_c (FULL).** Using |𝒫_k| ≤ 2^kY, m̄_k ≤ 3H√N/(4^kY²) and |I_q| ≤ C√(N/R):
+   160	    Σ_q|F_k| ≤ (C√(NR)/n)·2H²·2^kY·m̄_k·(C√(N/R)H²/(2^kYT) + 1). Dividing by |S_{n,j}|:
+   161	
+   162	      ≤ C n (H⁵√N/(Y²T) + H⁴/Y) ≤ n^{O(1)}(2^{(−1/12 + 23ε/6)n} + 2^{(−1/6+3ε)n}),
+   163	
+   164	    using √R ≤ H, Y² ≥ 2^{n/3}H^{−2/3}, T ≥ 2^{(1/4−ε)n−1} and H ≤ 2n2^{εn/2}. Compared
+   165	    with D′, the extra factor is one H, coming from g′ ≤ H². For ε ≤ 1/60,
+   166	    −1/12 + 23ε/6 ≤ −ε − 1/360, so this is O(2^{−εn}) for n ≥ n₀(ε) (see the constant
+   167	    note).
+   168	- **Union.** The total is O(2^{−εn}) per band. ∎
+   169	
+   170	*Constant note.* D′'s own proof needs ε < 1/52 at this step, and ours needs ε < 1/58. We
+   171	state Theorem U for ε ∈ (0, 1/60], where 29ε/6 ≤ 29/360 < 1/12. Then the first term is
+   172	n^{O(1)}2^{−(1/12−29ε/6)n}·2^{−εn}, and 1/12 − 29/360 = 1/360 > 0 absorbs the
+   173	polynomial factor for n ≥ n₀(ε). So no change of range is needed.
+   174	
+   175	**Corollary U″ (polylog).** With H = ⌈n^{1+a}⌉, as in D″, the algorithm covers ratios up to
+   176	n^{2+2a}/32. It costs N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) per band. The
+   177	proof is the same.
+   178	
+   179	## 3. Theorem U_θ (regime II: H²/16 < R ≤ N^{θ}, θ ≤ 1/5 − 3ε)
+   180	
+   181	### 3.1 The coarse construction (theorem design; GPT-6.1-sol `unbalanced_1.out` §2)
+   182	
+   183	Put h = H² (D′'s H). For each regime-II band j (J < j ≤ J_θ := ⌊θn⌋):
+   184	- **Weights.** V′ = {(1, B) : 2 ≤ B ≤ h}, with the band's ratio interval (2^j, 2^{j+1}].
+   185	  - So |V′| = h − 1 ≥ h/2.
+   186	  - The classes qB^{−1} mod ℓ are distinct for ℓ > h.
+   187	  - |A − B| = B − 1 < h.
+   188	- **Prime scale.** Y_j = ⌈(2^{(n+j)/2}/h)^{1/3}⌉. This is D′'s balance Y ≍ (span/|V|)^{1/3}.
+   189	  Blocks 𝒫_{j,k} = {ℓ ≡ 3 (4) : 2^kY_j < ℓ ≤ 2^{k+1}Y_j}, k = 0..3, each with its own
+   190	  L, γ and baby list.
+   191	- **Everything else is D′:** roots, c, windows over the band's p-range, giants, trees, gcds,
+   192	  validation.
+   193	- Not run as a frozen experiment. It is `params.WideDesign` with
+   194	  `insts = [Inst(1, B, 2^j, 1, 2^{j+1}, 1, j) for B in 2..h]`.
+   195	
+   196	**U3 (span; proved).** Since B ≤ h < R, the minimiser √(N/B) of F(x) = Bx + N/x lies
+   197	right of the band's p-range [x₁, x₂] ⊂ [√(N/2^{j+1}), √(N/2^j)]. So F is decreasing there,
+   198	and
+   199	
+   200	  F(x₁) − F(x₂) ≤ N/x₁ − N/x₂ ≤ (√2 − 1)√(N2^j) + O(1).
+   201	
+   202	- The code's window [⌊2√(BN)⌋, F(x₁)] is wider. By AM–GM its width is
+   203	  F(x₁) − 2√(BN) ≤ F(x₁) ≤ √(2N2^{j+1}) + B√(N/2^{j}) ≤ 3Q_j for n ≥ n₀.
+   204	- We charge span̄_j := 3Q_j + O(1) with Q_j := 2^{(n+j+1)/2}, and m̄_{j,k} = ⌊span̄_j/(4^kY_j²)⌋ + 2.
+   205	
+   206	**Lemmas 1–7 hold verbatim** (same checks as §2.2):
+   207	- ℓ > Y_j > h ≥ B. Indeed Y_j ≥ (2^{n/2}/h)^{1/3} > h for ε < 1/8.
+   208	- ℓ ≤ 16Y_j < x₁. Indeed Y_j ≤ (2^{(n+θn)/2})^{1/3} ≪ 2^{(n−θn)/2}/4 for θ < 1/2.
+   209	- Lemma 6: Y_j⁴ > √2 q. Here Y_j⁴ ≥ (Q_j/(2h))^{4/3} > 2Q_j because Q_j^{1/3} > 4h^{4/3}.
+   210	
+   211	**Theorem U_θ (proved).** Fix ε ∈ (0, 1/60] and θ ∈ (0, 1/5 − 3ε]. For n ≥ n₀(ε, θ), the
+   212	algorithm DCL-wide_{n,ε,θ} has these properties. It runs regime I (§2) and then the coarse
+   213	construction for bands J < j ≤ ⌊θn⌋, on every input.
+   214	- (i) It outputs only proper divisors or FAIL.
+   215	- (ii) It costs n^{O(1)}·(H^{5/3}2^{n/6} + H^{4/3}2^{(1+θ)n/6}), i.e.
+   216	  N^{1/6 + max(5ε/6, θ/6 + 2ε/3)}·(log N)^{O(1)} bit operations, on every n-bit input.
+   217	- (iii) It fails on O(2^{−εn})·|S_{n,j}| pairs of each band j ≤ θn, hence on O(N^{−ε}) of
+   218	  S_n^{θ}.
+   219	
+   220	*Proof.* Regime-I bands are Theorem U. Fix a regime-II band j; write R = 2^j, Y = Y_j,
+   221	P_j = √(N/R), Q_j ≍ √(NR).
+   222	
+   223	- **(ii) Cost per block.**
+   224	  - Targets ≤ 2h·2^{k}Y.
+   225	  - The list is m̄_{j,k} + T′ ≤ 3·span̄_j/(4^kY²) + 2 + 2h2^{k+1}Y. This is
+   226	    ≤ C(Q_j/Y² + hY) = C h^{2/3}Q_j^{1/3}.
+   227	  - The exponent tree costs O(Y log Y) mults mod N. The remaining rows of D′'s table are
+   228	    Õ(targets + list).
+   229	  - Summing the geometric series over j ≤ θn gives C h^{2/3}(2^{n(1+θ)/2})^{1/3}n^{O(1)}.
+   230	- **(iii) E_a.** T := ⌊2^{(n+j)/4}2^{−εn}⌋, i.e. ≍ Q_j^{1/2}N^{−ε}.
+   231	  - Lemma 8 gives ≤ T(T+1)/(n−1) primes q > 2^{n/2−1} with ord_q(2) ≤ T, each with
+   232	    ≤ |I_q| + 1 ≤ 2P_j partners.
+   233	  - So |E_a| ≤ 2P_jT(T+1)/(n−1). Dividing by c₀2^n/n² gives ≤ C n T²/Q_j ≤ C n 2^{−2εn}.
+   234	- **(iii) E_b (large sieve).** For a prime q of the band let I_q = [q/2^{j+1}, q/2^j) ∩ Z,
+   235	  with |I_q| ≤ P_j + 1.
+   236	  - In the clean block k(q), the uncovered p ∈ I_q avoid h − 1 distinct classes mod every
+   237	    ℓ ∈ 𝒫_{j,k}.
+   238	  - So |U| ≤ (|I_q| + 1 + 4^{k+1}Y²)/((h−1)Σ1/ℓ) ≤ C(P_j + Y²)n/h.
+   239	  - Now Y² ≤ P_j ⇔ (NR)^{1/3}h^{−2/3} ≤ (N/R)^{1/2} ⇔ R^{5/6} ≤ N^{1/6}h^{2/3}, which holds
+   240	    for θ ≤ 1/5.
+   241	  - Summing over ≤ CQ_j/n primes q and dividing by c₀2^n/n²: fraction ≤ C n²/h = C2^{−εn}.
+   242	- **(iii) E_c (FULL; D′ Lemma 10 with g′ = gcd(B−1, d) ≤ h).**
+   243	  - Σ_q |F_k(q)| ≤ (CQ_j/n)·2h·2^kY·m̄_{j,k}·(CP_j h/(2^kY T) + 1).
+   244	  - Divide by c₀2^n/n², using Q_jP_j ≍ N, m̄_{j,k} ≤ C Q_j/(4^kY²) and Y³ ≍ Q_j/h:
+   245	
+   246	      fraction ≤ C n (h² m̄/T + hR/Y + hQ_jY/N)
+   247	               ≤ C n (h^{8/3}Q_j^{−1/6}2^{εn} + h^{4/3}R^{5/6}N^{−1/6} + N^{−1/6}).
+   248	
+   249	  - **First term.** With Q_j ≥ 2^{(n−1)/2} and h ≤ n²2^{εn}, it is
+   250	    ≤ n^{O(1)}2^{(−1/12 + 11ε/3)n}. That is O(2^{−εn}) for ε < 1/56.
+   251	  - **Second term.** It is ≤ n^{O(1)}2^{4εn/3}R^{5/6}2^{−n/6}, which is O(2^{−εn}) when
+   252	    R ≤ 2^{(1/5 − 14ε/5)n − O(log n)}. That holds for θ ≤ 1/5 − 3ε and n ≥ n₀(ε, θ).
+   253	    **This is where θ < 1/5 enters the success proof.** For larger R the two-sided "+1" CRT
+   254	    term, multiplied by the number of (B, ℓ, δ), is too large.
+   255	- **Union** over bands as in §1. ∎
+   256	
+   257	**What fails at θ ≥ 1/5.**
+   258	- Y_j² > P_j, so the large sieve's Q² term dominates the interval (E_b fails).
+   259	- E_c's second term exceeds 1.
+   260	- The cost (1+θ)/6 is already above PS's (1−θ)/4.
+   261	- These are three independent signals at the same place.
+   262	
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/unbalanced_results.md | sed -n '263,391p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+   263	### 3.2 Variant U_θ′: the pre-registered fine-band design W2 (proved; what oper2 runs)
+   264	
+   265	The pre-registered design is `params.regime2_insts`.
+   266	- Weights (1, B) with B ∈ [2^j, 2^{j+1}), each with ratio window (B − Δ, B + Δ].
+   267	- **Span (U4).** For N/x² ∈ (B−Δ, B+Δ] and B ≥ 2Δ:
+   268	  F(x) − 2√(BN) = (Bx − N/x)²/(Bx + N/x + 2√(BN)) ≤ Δ²x²/(4√(BN)) ≤ Δ²√N/(2B^{3/2}).
+   269	  This is `regime2_span_bound`; tested in `test_regime2_span_bound_holds`.
+   270	- **Cost.** One baby list per band and block, shared by all R values of B. Targets ≍ RY,
+   271	  list ≍ Δ²√N R^{−3/2}Y^{−2}. With Y ≍ Δ^{2/3}N^{1/6}R^{−5/6} the per-band cost is
+   272	  Δ^{2/3}(NR)^{1/6}: the same exponent as §3.1 with Δ in place of h.
+   273	- **Feasibility.** Y > 2Δ needs R ≤ N^{1/5}(8Δ)^{−2/5}.
+   274	- **Coverage (Lemma 9′).**
+   275	  - Partition I_q into I_{q,b} = {p : b < q/p ≤ b+1}, b ∈ [2^j, 2^{j+1}).
+   276	  - On I_{q,b} every B ∈ [b+1−Δ, b+Δ] ∩ [2^j, 2^{j+1}) is admissible. There are ≥ Δ − 1 of
+   277	    them, and at most one is ≡ 0 (mod ℓ) because 2Δ < ℓ. So ω(ℓ) ≥ Δ − 2 distinct classes
+   278	    qB^{−1}.
+   279	  - Hence |U ∩ I_{q,b}| ≤ (|I_{q,b}| + 1 + Q²)·Cn/Δ. Summing over b costs an extra R·Q²,
+   280	    which is ≪ |I_q| because R^{3/2}Y² ≪ √N.
+   281	  - Exceptional fraction: C n²/Δ.
+   282	- **FULL (Lemma 10′, roles swapped).** Here |A − B| = B − 1 ≍ R, so D′'s per-q count would
+   283	  lose a factor R. Instead fix (p, B, ℓ, δ) and count q.
+   284	  - In a clean block, FULL means d = ord_q(2) divides X := (B−1)(p−1) + ℓ²δ.
+   285	  - For R ≥ 4Δ and n ≥ n₀, 0 < X < 3q, because ℓ²m̄ ≤ 4·span̄ + 8·4^KY² < (R/2)p.
+   286	  - So q ≡ 1 (mod e) for some divisor e > T of X, with ℓ ∤ e (clean), q ≡ Bp (mod ℓ), and
+   287	    q ∈ (p(B−Δ), p(B+Δ)]. That gives ≤ τ(X)(2Δp/(Tℓ) + 1) values of q.
+   288	  - Summing over δ, ℓ, B and p, and dividing by |S_{n,j}|, the fraction is
+   289	    ≤ Cn²τ*(m̄Δ/T + m̄RY/√(NR)), with τ* = max_{X<N} τ(X) = N^{O(1/log log N)}.
+   290	  - At Y ≍ Δ^{2/3}N^{1/6}R^{−5/6} and Δ ≍ H², this is
+   291	    ≤ N^{−1/12+11ε/3+o(1)} + N^{−1/6+4ε/3+o(1)}.
+   292	  - No averaging of gcd(B−1, d) is needed. (r16 suggested that averaging; swapping the roles
+   293	    avoids it.)
+   294	- **Clean block.** Y_j can be as small as ≈ 2Δ = N^{ε+o(1)}. Lemma 6 then needs
+   295	  K = ⌈log q/log Y_j⌉ + 1 = O(1/ε) dyadic blocks, which costs a constant factor 2^{O(1/ε)}.
+   296	  - The frozen W2 uses K = 4. At the oper2 sizes Y_j⁴ < q for some (n, j); for example
+   297	    n = 96, j = 13 has Y = 373, so Y⁴ ≈ 2^{34} against q ≈ 2^{55}.
+   298	  - A clean block is then not guaranteed. `certified` checks cleanliness directly.
+   299	- **Variant U_θ′ (proved).** For θ ≤ 1/5 − 3ε, the statement of Theorem U_θ holds with W2 in
+   300	  place of §3.1, with Δ = ⌊h/(64·2^{K})⌋, K = ⌈3/(5ε)⌉ + 2 and a constant C_ε = 2^{O(1/ε)}.
+   301	  The coarse design is simpler and has no such constant, so it is the main theorem.
+   302	
+   303	### 3.3 Exponent profile with Pollard–Strassen
+   304	
+   305	**Pollard–Strassen (prior art).**
+   306	- Deterministic. It finds every prime factor ≤ z of N in O(z^{1/2}(log N)^{O(1)}) bit
+   307	  operations (Pollard 1974; Strassen 1976; Bostan–Gaudry–Schost 2007; Harvey 2021,
+   308	  Prop. 2.5).
+   309	- A pair of ratio ≥ N^{θ} has p ≤ N^{(1−θ)/2}. So PS costs N^{(1−θ)/4} in the **worst
+   310	  case**, with no exceptions.
+   311	
+   312	**Corollary P (proved).** For each θ ∈ [0, 1] there is a deterministic algorithm that
+   313	factors all but O(N^{−ε}) of the pairs with ratio in (N^{θ}/2, 2N^{θ}] at cost
+   314	N^{e(θ)+O(ε)}, where
+   315	
+   316	  e(θ) = min((1+θ)/6, (1−θ)/4).
+   317	
+   318	The DCL branch is valid only for θ ≤ 1/5 − 3ε; PS is valid for any θ.
+   319	- e(θ) > 1/6 on (0, 1/3).
+   320	- max e = 1/5, at θ = 1/5.
+   321	- e(θ) ≤ 1/5 − |θ − 1/5|/6 elsewhere.
+   322	
+   323	**A whole range of ratios** (all q/p ≤ N^{θ₀}) costs the maximum over θ ≤ θ₀:
+   324	- for θ₀ ≤ 1/5 − 3ε, (1+θ₀)/6 + O(ε) (Theorem U_θ);
+   325	- for θ₀ ≥ 1/5, 1/5 + O(ε). That is no better than Harvey 2021 / Harvey–Hittmeir 2022,
+   326	  which give N^{1/5} in the worst case for all N.
+   327	
+   328	**The ratio gap is real for every scheme we have.** For 0 < θ < 1/3 the cost exceeds
+   329	N^{1/6} by N^{min(θ/6, (1/3−θ)/4)}.
+   330	
+   331	### 3.4 Remark: deterministic extraction via Harvey–Hittmeir 2026 (proved given their Thm 1.1; not used in the theorems)
+   332	
+   333	**The cited theorem.** Harvey–Hittmeir, arXiv 2601.11131 v2 (5 Jun 2026), Thm 1.1, checked
+   334	against the arXiv text: "input integers N ⩾ 3 and D ⩾ 1 with D < N−1 … outputs either
+   335	some α ∈ ℤ_N^* with ord_N(α) > D or a nontrivial divisor of N", in
+   336	O(D^{1/2}log D (log log D)^{−1/2} log N).
+   337	
+   338	**The construction (GPT-6.1-sol `unbalanced_1.out` §2).**
+   339	- Take D = m and 7 disjoint prime blocks with Y⁷ > N.
+   340	- (p−1)(q−1) < N has ≤ 6 prime factors > Y. So some block's L is coprime to
+   341	  ord_N(α) | λ(N), and then ord_N(γ) = ord_N(α^L) > m.
+   342	- Test gcd(γ^i − 1, N) for i < m. A proper gcd factors N. Suppose ord_N(γ) > m and no gcd is
+   343	  proper. Then ord_p(γ), ord_q(γ) ≥ m: otherwise gcd(γ^{ord_p(γ)} − 1, N) is p or N, and
+   344	  N would force ord_N(γ) ≤ ord_p(γ) < m.
+   345	- Find exact giant–baby equalities mod N by sorting, and test each directly: solve
+   346	  Bz² − Tz + AN = 0 for the proposed T = c + ℓ²(g_lo + jm + i).
+   347	  - For the true giant the index is unique mod p (ord_p(γ) ≥ m), so the test succeeds.
+   348	  - A failed test proves the giant is not the true one.
+   349	- Otherwise, f(G) ≡ 0 (mod N) with no exact equality means there is an i with p | G − γ^i
+   350	  and q ∤ G − γ^i. Scanning that one giant (O(m)) then gives a proper factor.
+   351	
+   352	**Consequence (proved, given Thm 1.1).**
+   353	- On the clean block, every covering true giant yields a factor.
+   354	- E_a and E_c disappear. The exceptional set of Theorems D′, U and U_θ reduces to E_b
+   355	  (coverage) alone.
+   356	- The extra cost is O(√m·polylog) for α, three more blocks, and O((m+G)log) for the sort.
+   357	- The θ restriction then comes only from E_b (θ ≤ 1/5) and from cost.
+   358	
+   359	We did not implement this, and it is not part of the frozen experiments.
+   360	
+   361	## 4. Which populations make the result meaningful
+   362	
+   363	Profile: e(θ) = min((1+θ)/6, (1−θ)/4), with θ = log(q/p)/log N. The functions
+   364	`obstruction.e_profile`, `frac_theta_below` and `frac_covered_at` compute it.
+   365	
+   366	1. **Bounded ratio (S_n, D′) and any fixed band up to N^{o(1)}.** Exponent 1/6 + o(1) with
+   367	   N^{−ε}-type exceptions per band (Theorems D′ and U). This is the meaningful
+   368	   almost-all-1/6 statement.
+   369	2. **Uniform over semiprimes with both primes ≥ N^{1/3}**, counted by pairs (equivalently by
+   370	   N ≤ X). By Mertens, the density of p ≈ N^{a} is ∝ da/(a(1−a)). With a = (1−θ)/2, θ has
+   371	   density ∝ 1/(1−θ²) on [0, 1/3], so Pr[θ ≤ t] = log₂((1+t)/(1−t)) (proved asymptotically;
+   372	   `frac_theta_below`).
+   373	   - At cost N^{1/6+η}, only θ ≤ 6η (DCL) and θ ≥ 1/3 − 4η (PS) are handled. That is a
+   374	     fraction ≈ 21η/ln 2 ≈ 30η: 0.151 at η = 0.005 and 0.301 at η = 0.01. **So there is no
+   375	     almost-all N^{1/6+o(1)} statement for this population.**
+   376	   - Exponent 1/5 − η′ fails only on θ ∈ (1/5 − 6η′, 1/5 + 4η′), a fraction ≈ 30η′. So every
+   377	     exponent below 1/5 holds for a positive proportion < 1, and none for 1 − o(1).
+   378	   - The median θ is (√2−1)/(√2+1) = 0.172, where e = 0.195.
+   379	3. **Log-uniform ratio on [1, N^{1/3}]** (θ uniform). Same conclusion, with constants
+   380	   10η·3 = 30η.
+   381	4. **All semiprimes counted by N ≤ X.**
+   382	   - Almost all have p < X^{δ} for every fixed δ: the fraction with p > X^{δ} is
+   383	     ≈ log(1/(2δ))/log log X. So PS gives exponent δ/2 with o(1) exceptions, and the
+   384	     question is trivial.
+   385	   - With **power-saving** exceptions (N^{−ε}) nothing below 1/5 follows. The pairs with
+   386	     θ ∈ [1/5 ± η] are a ≍ η/log log X ≫ X^{−ε} fraction.
+   387	   - Counted this way, "all but N^{−ε} of all semiprimes at N^{1/6+O(ε)}" is **false for
+   388	     every scheme in Proposition O′'s model** (full-cover sense), and not achieved by ours.
+   389	
+   390	## 5. The curvature obstruction (Proposition O′)
+   391	
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/notes/unbalanced_results.md | sed -n '390,525p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+   390	## 5. The curvature obstruction (Proposition O′)
+   391	
+   392	### 5.1 Model 𝔏 (one-dimensional Lehman-linear collision searches)
+   393	
+   394	Fix N and a ratio band R₀. The **candidates** are the integers p ∈ [x₁, x₂] with
+   395	R₀ ≤ N/p² ≤ 2R₀, so x₂ = ⌊√(N/R₀)⌋ and x₂ − x₁ ≥ x₂/4. A search consists of:
+   396	- baby lists Λ_1, …, Λ_s, where Λ_i = {γ_i^e : e ∈ S_i} for an **arbitrary** set S_i ⊂ Z
+   397	  with |S_i| = m_i;
+   398	- giants G, each compared against one list i(G), and each carrying a target
+   399	  τ = (α, β, c₀, M, r, g₀) with integers α, β, c₀, g₀ and modulus M ≥ 1.
+   400	
+   401	The target's real-valued index on its class is
+   402	
+   403	  g_τ(p) = (αp + βN/p + c₀)/M²,   p ≡ r (mod M).
+   404	
+   405	G **covers** a candidate p in its class iff ⌊g_τ(p)⌋ ∈ g₀ + S_{i(G)}.
+   406	- For the true factor g_τ is an integer (a lock), so this is exactly "G collides at p if p
+   407	  is the factor". For other candidates it is a relaxation, which only enlarges coverage.
+   408	- For β = 0, refine the class to the sub-class on which g_τ is integral. A true factor
+   409	  outside that sub-class cannot collide, so nothing is lost.
+   410	
+   411	The **cost** is X = Σ_i m_i + #giants.
+   412	
+   413	Nothing is assumed about how giants are computed, the group or base, the modulus (prime,
+   414	composite, CRT products), the residue class, or which factor is extracted.
+   415	- A q-side target αq + βp + c₀ is, in the p-parametrisation, βp + αN/p + c₀: the same form.
+   416	- Multipliers kN and rational weights clear to integer (α, β).
+   417	
+   418	### 5.2 Statement and proof
+   419	
+   420	**Proposition O′ (proved).**
+   421	- (a) If β ≠ 0, a giant with |S| = m covers at most 2m + 8√(m x₂³/(|β|N)) ≤ 2m + 8√(m x₂/R₀)
+   422	  candidates.
+   423	- (b) If β = 0, it covers at most m.
+   424	- (c) Hence if a search in 𝔏 covers at least a fraction f of the candidates, then
+   425	
+   426	    X ≥ min( √(f x₂)/4, (f/64)^{2/3}(x₂R₀)^{1/3} ) ≍ min(√(fp), f^{2/3}q^{1/3}),
+   427	
+   428	  where x₂ ≍ p and x₂R₀ ≍ q, both up to a factor √2.
+   429	
+   430	*Proof of (a).*
+   431	- Put p = r + Mx. Then g(x) := g_τ(r+Mx) satisfies g''(x) = 2βN/p³, a chain-rule
+   432	  cancellation of M². WLOG β > 0 (otherwise negate g; the half-open floor intervals flip,
+   433	  and nothing changes). So g'' ≥ κ := 2βN/x₂³ > 0 on the band.
+   434	- Let x₀ minimise g on the band (possibly an endpoint) and m₀ = g(x₀). Consider the right
+   435	  part x ≥ x₀; the left part is symmetric.
+   436	  - There g′(x) ≥ κ(x − x₀) ≥ 0.
+   437	  - Since g′ is increasing, g(x) − m₀ ≤ (x − x₀)g′(x) ≤ g′(x)²/κ, so
+   438	    **g′(x) ≥ √(κ(g(x) − m₀))**.
+   439	- For an integer v put u = v − m₀ and P_v = {x ≥ x₀ : v ≤ g(x) < v + 1}, an interval.
+   440	  - It is empty if u ≤ −1.
+   441	  - Its length is ≤ √(2(u+1)/κ), from g − m₀ ≥ κ(x−x₀)²/2.
+   442	  - For u > 0 its length is also ≤ 1/√(κu), because g′ ≥ √(κu) on P_v.
+   443	  - It contains ≤ length + 1 integers.
+   444	- The m values v ∈ g₀ + S give distinct u with integer spacing. At most one lies in (−1, 0]
+   445	  (length ≤ √(2/κ)), at most one in (0, 1) (length < 2/√κ), and the i-th value ≥ 1 is ≥ i.
+   446	- So the right part covers ≤ m + (√2 + 2 + Σ_{i≤m} i^{−1/2})/√κ ≤ m + 5.5√(m/κ) integers.
+   447	- Doubling for the two parts, with √(m/κ) = √(m x₂³/(2βN)):
+   448	  2m + 11/√2·√(m x₂³/(βN)) ≤ 2m + 8√(m x₂³/(βN)). Finally x₂³/N ≤ x₂/R₀. ∎(a)
+   449	
+   450	*Proof of (b).*
+   451	- On the refined class, g(x) = g(0) + kx with k = αM′/M² a nonzero integer, where M′ is the
+   452	  refined modulus. So each value has at most one preimage. ∎(b)
+   453	
+   454	*Proof of (c).*
+   455	- Let G_i be the number of giants on list i. The coverage is
+   456	  ≤ Σ_i G_i(2m_i + 8√(m_i x₂/R₀)) ≤ 2X² + 8√(x₂/R₀)X^{3/2}, since m_i, Σ G_i ≤ X.
+   457	- It must be ≥ f x₂/4. If both X² < f x₂/16 and X^{3/2} < f√(x₂R₀)/64, the total is
+   458	  < f x₂/4, a contradiction. ∎
+   459	
+   460	**Corollary O″ (proved, in 𝔏).**
+   461	- At ratio R₀ = N^{θ}, full or constant-fraction coverage costs
+   462	  ≥ c·N^{min((1−θ)/4, (1+θ)/6)}.
+   463	- That is ≥ c N^{1/5} at θ = 1/5, with any number of moduli. Compare:
+   464	  - cycloharvey's LB is N^{1/5} with a single modulus;
+   465	  - multimod Thm A is N^{1/6} for balanced pairs with many moduli. Prop O′ is its
+   466	    ratio-dependent form, and it now allows **arbitrary baby sets**.
+   467	- So the profile e(θ) of §3.3 is **optimal in 𝔏 up to N^{O(ε)}**, on both branches.
+   468	  - Theorem U_θ covers a constant fraction of the candidates at q^{1/3}N^{O(ε)} (λ ≍ H²/n
+   469	    multiplicity).
+   470	  - The √p branch is matched by PS. PS is not itself in 𝔏, but it is a β = 0-type cost.
+   471	
+   472	Tests: `test_prop_o_bound_random` (interval windows, best g₀), `test_prop_o_prime_arbitrary_sets`
+   473	(best m-set for one giant = the m most popular floor values). The bounds hold on 700
+   474	random targets, with the worst ratios 0.50 (interval) and > 0.1 (sets). For an interval at
+   475	the band edge, a single side is in range, so the factor-2 slack is expected.
+   476	
+   477	### 5.3 Scope (what Proposition O′ does NOT say)
+   478	
+   479	- **Full cover, not average case.** It bounds how many candidates a search can cover for
+   480	  one N. An almost-all algorithm needs only the *true* factor covered for most N.
+   481	  - It could beat the bound only if its covered sets C(N) contained the true factor with
+   482	    probability well above |C(N)|/#candidates.
+   483	  - All lock-class designs have the density property: their classes are N-determined, and
+   484	    Lemma 9 is a density statement. But no general theorem excludes correlated designs.
+   485	  - Average-case lower bounds: **not proved** (GPT-6.1-sol r16 and unbalanced_1 make the
+   486	    same point).
+   487	- **Accidental collisions** (mod a reduced group order) are not counted. Heuristically they
+   488	  occur at rate ≈ X²/ord_p(γ) ≤ X²/p^{1−o(1)}, which matters only when X ≳ √p, the other
+   489	  branch.
+   490	- **Outside the model:**
+   491	  - targets non-linear in (p, q): exponent polynomials of degree ≥ 2 in N, e.g. N² ≡ q²
+   492	    (mod p−1), whose curvature in p is larger (multimod Thm A′ handles the balanced
+   493	    degree ≥ 2 case);
+   494	  - multi-dimensional collision searches;
+   495	  - lattice / Coppersmith decoding;
+   496	  - polynomial-evaluation methods (PS);
+   497	  - class groups;
+   498	  - subexponential methods (heuristic or rigorous-randomised).
+   499	- **Cost model.** X counts babies plus giants, i.e. window comparisons. A computation that
+   500	  processed a structured family of windows implicitly is not excluded.
+   501	
+   502	## 6. Attempts to beat the R^{1/6} penalty (candidate cards, condensed)
+   503	
+   504	All are evaluated at intermediate R = N^{θ}, 0 < θ < 1/3.
+   505	
+   506	| # | Modification | Outcome | Label |
+   507	|---|---|---|---|
+   508	| 1 | Anisotropic weights (A, B) with B/A ≈ R and A = a > 1 (rational weights, multipliers kN) | span ÷ a but instances × a. Cost Δ^{2/3}q^{1/3}a^{1/3}, minimised at a = 1. In Prop O′, β = A ≥ 1 | refuted for this model |
+   509	| 2 | Composite / CRT locks ℓ₁ℓ₂ \| Bp − Aq | M cancels in g″ (Prop O′(a) is M-free). Each giant covers the same number of candidates of a smaller class | refuted for this model |
+   510	| 3 | q-side extraction (exponent 1 + RN ≡ q + Rp mod q−1) | Same target value Rp + q, same window. In q-units the per-giant coverage is ×R and so is the candidate count | refuted for this model |
+   511	| 4 | Finer ratio sub-bands, one list each | Per sub-band Δ^{4/3}(p/R)^{1/3}, × R/Δ sub-bands ⇒ Δ^{1/3}(Rq)^{1/3}, worse | refuted (computed) |
+   512	| 5 | Coarse small weights (1, B ≤ H²), full band window (GPT-6.1-sol) | Same exponent H^{4/3}q^{1/3}, simpler. Now the main construction | proved (§3.1), no gain |
+   513	| 6 | Composite moduli for multiplicity (Σ_M 1/M ≍ 1 per dyadic range vs 1/n for primes) | Coverage per target is still ≈ 1/M. Re-optimising gives λ^{2/3}q^{1/3} independent of the modulus density | refuted (computed; consistent with Prop O′) |
+   514	| 7 | Lucas (p+1), cyclotomic Φ_k(p) handles | p+1: N ≡ −q, target −(Bp + Aq), same family. Cyclotomic: cycloharvey D1 (no new targets) | refuted for this model |
+   515	| 8 | Exponents of degree ≥ 2 in N (targets with q², …) | g″ ≍ q²/p² ≫ R/p, larger curvature. No construction beats linear | not proved in general (outside 𝔏) |
+   516	| 9 | Coppersmith / lattice windows | Need p mod M with M ≳ p^{1/2}. Locks give p mod ℓ only, and for R ≥ ℓ every class is hit (no information). Guessing costs ≥ √p | no gain found (heuristic accounting) |
+   517	| 10 | Pollard–Strassen on lock classes | Must cover a union of classes of density ≍ 1 ⇒ √p | no gain (computed) |
+   518	| 11 | McKee–Pinch pigeonhole (λp ≡ ±μq mod k, λμ ≤ k) | Guaranteed lock at k ≈ N^{1/3} ⇒ deterministic N^{1/3}. Worse | no gain |
+   519	| 12 | HH 2022 local lattices | Accounting S + √N/S^{3/2} with A = O(√(S/R)) recovers N^{1/5} at best (GPT-6.1-sol) | no gain |
+   520	| 13 | Structured (non-interval) baby sets exploiting the common curvature g″ = 2N/p³ of all A = 1 targets | Prop O′ allows arbitrary sets and gives the same bound | refuted for this model (new in O′) |
+   521	
+   522	**Conclusion.** Every attempt either lies in 𝔏, where Prop O′ makes q^{1/3} optimal, or
+   523	costs more. Beating the penalty needs a mechanism outside 𝔏: non-linear targets with
+   524	cancelling curvature, multi-dimensional collisions, lattices, or an average-case selection
+   525	that favours the true factor. We found none.
+
+codex
+The regime-I exponent check passes, including the \(1/360\) margin at \(\varepsilon=1/60\). I found a regime-II mismatch: the coarse proof assumes \(R\ge h\), but the algorithm starts just above \(h/16\). I’m checking a repair and the fine-band counting argument next.
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/src/unbalanced/params.py | sed -n '1,340p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     1	"""PUBLIC parameter designs for DCL-wide (ratio-band DCL).
+     2	
+     3	Everything here is a function of the bit length n and public knobs only.
+     4	Nothing depends on N or its factors.
+     5	
+     6	An *instance* is a weight (A, B) together with a ratio interval
+     7	(rho_lo, rho_hi] (rationals, given as integer pairs).  For a given N the
+     8	algorithm computes the window of g = (B p + A q - c)/l^2 over the integer
+     9	p-range {p : rho_lo < N/p^2 <= rho_hi}, i.e. over the p's whose cofactor
+    10	ratio q/p lies in that interval.  Theorem U (notes/unbalanced_results.md):
+    11	
+    12	  Regime I  (ratio band j, R_j = 2^j <= H^2/C0):
+    13	      instances (A, B, 2^j, 2^{j+1}) for coprime A != B with
+    14	      A <= a_j = floor(H 2^{-j/2}),  B <= b_j = floor(H 2^{j/2});
+    15	      every window span is <= (1+sqrt2) H sqrt N + O(1) -- the SAME bound as D',
+    16	      so one prime band set, one gamma and one shared baby list serve all bands.
+    17	  Regime II (ratio band j with 2^j > H^2/C0; Theorem U_theta):
+    18	      instances (1, B, B - Delta, B + Delta) for B in [R_j, 2 R_j),
+    19	      with a band-specific Y_j ~ Delta^{2/3} N^{1/6} R_j^{-5/6}.
+    20	"""
+    21	from __future__ import annotations
+    22	
+    23	from dataclasses import dataclass, field
+    24	from fractions import Fraction
+    25	from math import gcd, isqrt
+    26	from typing import Dict, List, Optional, Tuple
+    27	
+    28	from src.dcltheorem.params import (pow2_frac, primes_upto, schedule_design, icbrt,
+    29	                                   span_bound)
+    30	
+    31	
+    32	@dataclass(frozen=True)
+    33	class Inst:
+    34	    A: int
+    35	    B: int
+    36	    rlo_num: int      # rho_lo = rlo_num / rlo_den   (exclusive)
+    37	    rlo_den: int
+    38	    rhi_num: int      # rho_hi = rhi_num / rhi_den   (inclusive)
+    39	    rhi_den: int
+    40	    band: int         # ratio band label j (bookkeeping only)
+    41	
+    42	
+    43	@dataclass
+    44	class WideDesign:
+    45	    n: int
+    46	    Y: int
+    47	    K: int
+    48	    mod4: bool
+    49	    insts: List[Inst]
+    50	    label: str = ""
+    51	    H: int = 0
+    52	    Delta: int = 0
+    53	    bands: List[List[int]] = field(default_factory=list)
+    54	
+    55	    def __post_init__(self):
+    56	        top = (1 << self.K) * self.Y
+    57	        ps = primes_upto(top)
+    58	        self.bands = []
+    59	        for k in range(self.K):
+    60	            lo, hi = (1 << k) * self.Y, (1 << (k + 1)) * self.Y
+    61	            self.bands.append([l for l in ps if lo < l <= hi and l > 2
+    62	                               and (not self.mod4 or l % 4 == 3)])
+    63	
+    64	    def summary(self) -> Dict:
+    65	        jb = {}
+    66	        for t in self.insts:
+    67	            jb[t.band] = jb.get(t.band, 0) + 1
+    68	        return {"n": self.n, "H": self.H, "Delta": self.Delta, "Y": self.Y, "K": self.K,
+    69	                "mod4": self.mod4, "label": self.label, "n_insts": len(self.insts),
+    70	                "insts_per_band": jb,
+    71	                "band_sizes": [len(b) for b in self.bands],
+    72	                "band_ranges": [[b[0], b[-1]] if b else None for b in self.bands]}
+    73	
+    74	
+    75	# ---------------------------------------------------------------------------
+    76	# Regime I
+    77	# ---------------------------------------------------------------------------
+    78	def regime1_weights(H: int, j: int) -> List[Tuple[int, int]]:
+    79	    """V_j: coprime A != B, A <= floor(H 2^{-j/2}), B <= floor(H 2^{j/2})."""
+    80	    a = isqrt((H * H) >> j) if j >= 0 else H
+    81	    b = isqrt((H * H) << j)
+    82	    return [(A, B) for A in range(1, a + 1) for B in range(1, b + 1)
+    83	            if A != B and gcd(A, B) == 1]
+    84	
+    85	
+    86	def regime1_insts(H: int, js: List[int]) -> List[Inst]:
+    87	    out = []
+    88	    for j in js:
+    89	        for (A, B) in regime1_weights(H, j):
+    90	            out.append(Inst(A, B, 1 << j, 1, 1 << (j + 1), 1, j))
+    91	    return out
+    92	
+    93	
+    94	def regime1_Jmax(H: int, C0: int = 1) -> int:
+    95	    """Largest j with 2^j <= H^2 / C0 (a_j >= 1 when C0 = 1)."""
+    96	    j = 0
+    97	    while (1 << (j + 1)) * C0 <= H * H:
+    98	        j += 1
+    99	    return j
+   100	
+   101	
+   102	def theorem_design_U(n: int, eps_num: int, eps_den: int, C0: int = 16) -> WideDesign:
+   103	    """Theorem U schedule: H, Y, K = 4 as in D' (dcltheorem.params.theorem_design),
+   104	    ratio bands j = 0..J with 2^J <= H^2/C0."""
+   105	    H = n * pow2_frac(n * eps_num, 1, 2 * eps_den)
+   106	    Y = max(3, -(-pow2_frac(n, 1, 6) // max(1, icbrt(H))))
+   107	    J = regime1_Jmax(H, C0)
+   108	    return WideDesign(n=n, Y=Y, K=4, mod4=True, insts=regime1_insts(H, list(range(J + 1))),
+   109	                      label=f"thmU eps={eps_num}/{eps_den}", H=H)
+   110	
+   111	
+   112	def wide_from_C1(n: int, js: List[int], lam: float = 3.0, K: int = 4) -> WideDesign:
+   113	    """Finite-size regime-I design: H and Y from the pre-registered D' schedule C1
+   114	    (dcltheorem.params.schedule_design(n, lam)), plus ratio bands js."""
+   115	    D = schedule_design(n, lam, K=K, mod4=True)
+   116	    return WideDesign(n=n, Y=D.Y, K=K, mod4=True, insts=regime1_insts(D.H, js),
+   117	                      label=f"W1 C1-H js={js[0]}..{js[-1]}", H=D.H)
+   118	
+   119	
+   120	# ---------------------------------------------------------------------------
+   121	# Regime II
+   122	# ---------------------------------------------------------------------------
+   123	def regime2_insts(j: int, Delta: int) -> List[Inst]:
+   124	    """Weights (1, B) for B in [2^j, 2^{j+1}) (each B belongs to exactly one dyadic
+   125	    band), each with ratio window (B - Delta, B + Delta].  A pair with ratio R in
+   126	    band j has >= Delta + 1 such B with |B - R| <= Delta (2 Delta + 1 away from the
+   127	    band edges)."""
+   128	    R = 1 << j
+   129	    return [Inst(1, B, max(1, B - Delta), 1, B + Delta, 1, j) for B in range(R, 2 * R)]
+   130	
+   131	
+   132	def regime2_Y(n: int, j: int, Delta: int) -> int:
+   133	    """Y_j = Delta^{2/3} 2^{n/6} 2^{-5j/6} (balances span/Y^2 against R_j Y)."""
+   134	    # (Delta^2 * 2^{n/2} / 2^{5j/2})^{1/3}, integer-only
+   135	    x = Delta * Delta * pow2_frac(n, 1, 2)
+   136	    y = pow2_frac(5 * j, 1, 2) if j else 1
+   137	    return max(3, icbrt(x // max(1, y)))
+   138	
+   139	
+   140	def regime2_design(n: int, j: int, Delta: int, K: int = 4, Y: Optional[int] = None,
+   141	                   label: str = "") -> WideDesign:
+   142	    Yj = Y or regime2_Y(n, j, Delta)
+   143	    return WideDesign(n=n, Y=Yj, K=K, mod4=True, insts=regime2_insts(j, Delta),
+   144	                      label=label or f"W2 j={j} Delta={Delta}", Delta=Delta)
+   145	
+   146	
+   147	def regime2_span_bound(n: int, j: int, Delta: int) -> int:
+   148	    """sqrt(N) Delta^2 / (2 R_j^{3/2}) + 2 for N < 2^n, R_j = 2^j >= 2 Delta (display)."""
+   149	    return (pow2_frac(n, 1, 2) + 1) * Delta * Delta // max(1, 2 * pow2_frac(3 * j, 1, 2)) + 2
+   150	
+   151	
+   152	# ---------------------------------------------------------------------------
+   153	# Finite-size regime-II schedule (pre-registered; notes/unbalanced_prereg.md)
+   154	# ---------------------------------------------------------------------------
+   155	def _band_primes(Y: int) -> List[int]:
+   156	    return [l for l in primes_upto(2 * Y) if l > Y and l % 4 == 3]
+   157	
+   158	
+   159	def _expected_cost_r2(n: int, j: int, Delta: int, ps: List[int]) -> int:
+   160	    """n-only estimate of the block-0 list cost m + sum ceil(W/m), one expected
+   161	    target per (instance, l), windows from N_ref = 3 * 2^(n-2)."""
+   162	    Nref = 3 << (n - 2)
+   163	    widths = []
+   164	    for t in regime2_insts(j, Delta):
+   165	        x_lo, x_hi = _rr(Nref, t)
+   166	        if x_lo > x_hi:
+   167	            continue
+   168	        lo = isqrt(4 * t.B * Nref)
+   169	        hi = max(t.B * x + -(-Nref // x) for x in (x_lo, x_hi))
+   170	        for l in ps:
+   171	            widths.append((hi - lo) // (l * l) + 2)
+   172	    if not widths:
+   173	        return 1 << 62
+   174	    best, m = None, 4
+   175	    while m <= 4 * max(widths):
+   176	        c = m + sum(-(-w // m) for w in widths)
+   177	        best = c if best is None or c < best else best
+   178	        m = (119 * m) // 100 + 1
+   179	    return best
+   180	
+   181	
+   182	def _rr(N: int, t: Inst) -> Tuple[int, int]:
+   183	    a, b = t.rhi_num, t.rhi_den
+   184	    x_lo = isqrt((N * b) // a)
+   185	    while a * x_lo * x_lo < N * b:
+   186	        x_lo += 1
+   187	    a2, b2 = t.rlo_num, t.rlo_den
+   188	    x_hi = isqrt((N * b2) // a2) + 1
+   189	    while a2 * x_hi * x_hi >= N * b2:
+   190	        x_hi -= 1
+   191	    return x_lo, x_hi
+   192	
+   193	
+   194	def schedule_regime2(n: int, j: int, lam_target: float = 3.0, K: int = 4) -> WideDesign:
+   195	    """For each Y on a 2^(1/4) grid around regime2_Y: Delta = least integer with
+   196	    lam0 = (2 Delta + 1) * sum_{l in P_0} 1/l >= lam_target (the per-pair
+   197	    multiplicity of block 0: #{B : |B - R| <= Delta} ~ 2 Delta + 1); keep the
+   198	    (Y, Delta) minimising the n-only expected block-0 cost; require Y > 2 Delta + 1
+   199	    (distinct classes, Lemma 9).  Display floats are used only to centre the grid."""
+   200	    best = None
+   201	    y0 = None
+   202	    for jj in range(-10, 11):
+   203	        Delta0 = 20
+   204	        if y0 is None:
+   205	            y0 = regime2_Y(n, j, Delta0)
+   206	        Y = max(7, int(y0 * 2 ** (jj / 4)))
+   207	        ps = _band_primes(Y)
+   208	        if not ps:
+   209	            continue
+   210	        s = sum(1.0 / l for l in ps)
+   211	        Delta = 1
+   212	        while (2 * Delta + 1) * s < lam_target:
+   213	            Delta += 1
+   214	        if Y <= 2 * Delta + 1 or (1 << j) < 2 * Delta:
+   215	            continue
+   216	        c = _expected_cost_r2(n, j, Delta, ps)
+   217	        if best is None or c < best[0]:
+   218	            best = (c, Y, Delta)
+   219	    if best is None:
+   220	        raise ValueError(f"regime II infeasible at n={n}, j={j}")
+   221	    _, Y, Delta = best
+   222	    return regime2_design(n, j, Delta, K=K, Y=Y, label=f"W2 j={j}")
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/src/unbalanced/algorithm.py | sed -n '1,320p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     1	"""OPERATIONAL: DCL-wide, deterministic ratio-band DCL (Theorem U / U_theta).
+     2	
+     3	Receives only N and a public WideDesign (params.py).  Never uses p, q, phi(N),
+     4	group orders, factoring or primality routines.  Base 2.  Identical to
+     5	dcltheorem.algorithm.dcl_det (Theorem D') except that each weight instance
+     6	carries its own ratio interval (rho_lo, rho_hi]: its window is computed over the
+     7	integer p-range {p : rho_lo < N/p^2 <= rho_hi} instead of the balanced range.
+     8	With the single instance family (A,B,1,2), (A,B) in V(H), the target list is
+     9	identical to D''s (tests/test_unbalanced.py checks this).
+    10	
+    11	Per block k: exponent tree u_l = 2^{L/l^2}, gamma = 2^L; for each band prime l
+    12	and instance (A,B,rho): roots r of B r^2 == A N (mod l), c = (B r + A N r^{-1})
+    13	mod l^2, window [g_lo, g_hi] from Lo = floor(2 sqrt(ABN)) and
+    14	Hi = max_{x in {x_lo, x_hi}} ceil(B x + A N/x); one shared baby list
+    15	gamma^i (0 <= i < m) for ALL instances of the block; giants
+    16	u_l^{B + A N - c} gamma^{-(g_lo + j m)}; d = gcd(f(G), N).
+    17	"""
+    18	from __future__ import annotations
+    19	
+    20	from math import gcd, isqrt
+    21	from typing import Dict, List, Optional, Sequence, Tuple
+    22	
+    23	from src.common.metrics import Metrics
+    24	from src.dcltheorem.algorithm import (Found, _gcd_check, _proper, all_but_one, choose_m,
+    25	                                      metric_E, powN, pow_small, sqrt_prime, _NONRES)
+    26	from src.dcltheorem.stage3 import eval_baby_poly_at_giants
+    27	
+    28	from .params import Inst, WideDesign
+    29	
+    30	
+    31	def ratio_range(N: int, t: Inst) -> Tuple[int, int]:
+    32	    """Integers p with rho_lo < N/p^2 <= rho_hi lie in [x_lo, x_hi] (x_lo > x_hi: empty).
+    33	    rho_hi = a/b:  N/p^2 <= a/b  <=>  a p^2 >= N b  ->  x_lo = ceil(sqrt(N b / a)).
+    34	    rho_lo = a'/b': N/p^2 > a'/b' <=> a' p^2 < N b'  ->  x_hi = max x with a' x^2 < N b'."""
+    35	    a, b = t.rhi_num, t.rhi_den
+    36	    x_lo = isqrt((N * b) // a)
+    37	    while a * x_lo * x_lo < N * b:
+    38	        x_lo += 1
+    39	    while x_lo > 1 and a * (x_lo - 1) ** 2 >= N * b:
+    40	        x_lo -= 1
+    41	    a2, b2 = t.rlo_num, t.rlo_den
+    42	    x_hi = isqrt((N * b2) // a2) + 1
+    43	    while a2 * x_hi * x_hi >= N * b2:
+    44	        x_hi -= 1
+    45	    return max(1, x_lo), x_hi
+    46	
+    47	
+    48	def window_bounds(N: int, t: Inst, met) -> Optional[Tuple[int, int]]:
+    49	    x_lo, x_hi = ratio_range(N, t)
+    50	    if x_lo > x_hi:
+    51	        return None
+    52	    met.inc("isqrt_ops", 3)
+    53	    lo = isqrt(4 * t.A * t.B * N)
+    54	    hi = max(t.B * x + -(-(t.A * N) // x) for x in (x_lo, x_hi))
+    55	    return lo, hi
+    56	
+    57	
+    58	def build_targets(N: int, design: WideDesign, k: int, met) -> List[Dict]:
+    59	    band = design.bands[k]
+    60	    _NONRES.clear()
+    61	    bounds = {}
+    62	    for t in design.insts:
+    63	        wb = window_bounds(N, t, met)
+    64	        if wb is not None:
+    65	            bounds[t] = wb
+    66	    out = []
+    67	    for l in band:
+    68	        if N % l == 0:
+    69	            if 1 < l < N:
+    70	                raise Found(l, "band_prime")
+    71	            continue
+    72	        l2 = l * l
+    73	        Nl = N % l
+    74	        for t, (lo, hi) in bounds.items():
+    75	            A, B = t.A, t.B
+    76	            met.inc("vl_pairs")
+    77	            if (A * B) % l == 0:          # no root (and no coverage: l | Bp - Aq => l | pq)
+    78	                continue
+    79	            a = A * Nl * pow(B, -1, l) % l
+    80	            met.inc("mul_small", 3)
+    81	            if pow_small(a, (l - 1) // 2, l, met) != 1:
+    82	                continue
+    83	            r = sqrt_prime(a, l, met)
+    84	            for root in sorted({r, l - r}):
+    85	                s = N * pow(root, -1, l2) % l2
+    86	                c = (B * root + A * s) % l2
+    87	                met.inc("mul_small", 4)
+    88	                g_lo = -((-(lo - c)) // l2)
+    89	                g_hi = (hi - c) // l2
+    90	                if g_hi < g_lo:
+    91	                    continue
+    92	                out.append({"A": A, "B": B, "j": t.band, "rho": (t.rlo_num, t.rlo_den, t.rhi_num, t.rhi_den),
+    93	                            "l": l, "r": root, "c": c, "g_lo": g_lo, "W": g_hi - g_lo + 1})
+    94	    return out
+    95	
+    96	
+    97	def run_block(N: int, design: WideDesign, k: int, met, record: bool = False,
+    98	              m_override: Optional[int] = None) -> Dict:
+    99	    band = design.bands[k]
+   100	    if not band:
+   101	        return {"factor": None, "status": "empty_band"}
+   102	    targets = build_targets(N, design, k, met)
+   103	    if not targets:
+   104	        return {"factor": None, "status": "no_targets", "m": 0, "n_targets": 0, "n_giants": 0}
+   105	    m = m_override or choose_m(targets, 0)
+   106	    sq = [l * l for l in band]
+   107	    u_list, L = all_but_one(2, sq, N, met)
+   108	    u = dict(zip(band, u_list))
+   109	    gamma = powN(u_list[0], sq[0], N, met)
+   110	    _gcd_check(gamma, N, met, "gamma")
+   111	    met.inc("invN")
+   112	    ginv = pow(gamma, -1, N)
+   113	    gm_inv = powN(ginv, m, N, met)
+   114	    giants, meta = [], []
+   115	    w = {}
+   116	    for t in targets:
+   117	        if t["l"] not in w:
+   118	            w[t["l"]] = powN(u[t["l"]], N, N, met)
+   119	    for ti, t in enumerate(targets):
+   120	        A, B, l, c, g_lo, W = t["A"], t["B"], t["l"], t["c"], t["g_lo"], t["W"]
+   121	        # G = u^{B + A N - c} gamma^{-g_lo} = w^A u^{B - c + l^2} gamma^{-(g_lo+1)}
+   122	        e1 = B - c + l * l
+   123	        G = powN(w[l], A, N, met) * powN(u[l], e1, N, met) % N
+   124	        if g_lo + 1 >= 0:
+   125	            G = G * powN(ginv, g_lo + 1, N, met) % N
+   126	        else:
+   127	            G = G * powN(gamma, -(g_lo + 1), N, met) % N
+   128	        met.inc("mulN", 2)
+   129	        for jj in range(-(-W // m)):
+   130	            giants.append(G)
+   131	            meta.append((ti, jj))
+   132	            G = G * gm_inv % N
+   133	            met.inc("mulN")
+   134	    met.inc("giants", len(giants))
+   135	    met.inc("babies", m)
+   136	    met.inc("targets", len(targets))
+   137	    vals = eval_baby_poly_at_giants(N, gamma, m, giants, met)
+   138	    res = {"factor": None, "status": "none", "m": m, "n_targets": len(targets),
+   139	           "n_giants": len(giants), "L_bits": L.bit_length()}
+   140	    gs = []
+   141	    for h, v in enumerate(vals):
+   142	        met.inc("gcdN")
+   143	        g = gcd(v, N)
+   144	        if record:
+   145	            gs.append(g)
+   146	        if 1 < g < N and res["factor"] is None:
+   147	            ti, jj = meta[h]
+   148	            res.update({"factor": g, "status": "collision", "hit": {"target": ti, "j": jj}})
+   149	            if not record:
+   150	                break
+   151	    if record:
+   152	        res.update({"targets": targets, "giant_meta": meta, "giant_gcds": gs,
+   153	                    "gamma": gamma, "u": u})
+   154	    return res
+   155	
+   156	
+   157	def dclw(N: int, design: WideDesign, met: Optional[Metrics] = None, early_exit: bool = True,
+   158	         record: bool = False, blocks: Optional[Sequence[int]] = None) -> Dict:
+   159	    """DCL-wide.  Returns {"factor": d or None, "block": k, "blocks": [...]};
+   160	    every output passes the proper-divisor check."""
+   161	    met = met or Metrics()
+   162	    out = {"factor": None, "status": "fail", "block": None, "blocks": []}
+   163	    if N < 4:
+   164	        return {"factor": None, "status": "fail_small", "block": None, "blocks": []}
+   165	    met.inc("gcdN")
+   166	    if N % 2 == 0:
+   167	        return {"factor": 2, "status": "even", "block": None, "blocks": []}
+   168	    for k in (blocks if blocks is not None else range(design.K)):
+   169	        bm = Metrics()
+   170	        try:
+   171	            r = run_block(N, design, k, bm, record=record)
+   172	        except Found as e:
+   173	            r = {"factor": e.d, "status": "gcd_" + e.how}
+   174	        if r.get("factor") is not None and not _proper(r["factor"], N):
+   175	            r["improper"] = r["factor"]
+   176	            r["factor"] = None
+   177	            r["status"] = "rejected_improper"
+   178	        r["k"] = k
+   179	        r["met"] = bm.to_record()
+   180	        met.merge(bm)
+   181	        out["blocks"].append(r)
+   182	        if r["factor"] and out["factor"] is None:
+   183	            out.update({"factor": r["factor"], "status": r["status"], "block": k})
+   184	            if early_exit:
+   185	                break
+   186	    return out
+   187	
+   188	
+   189	__all__ = ["dclw", "build_targets", "run_block", "ratio_range", "window_bounds", "metric_E"]
+
+exec
+/bin/zsh -lc "nl -ba /Volumes/git/factoring-connection/src/unbalanced/obstruction.py | sed -n '1,330p'" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+     1	"""DIAGNOSTIC: the curvature obstruction (Proposition O, notes/unbalanced_results.md §5)
+     2	and the exponent profile of §4.  Exact integer arithmetic for the coverage counts;
+     3	floats only for the display profile.
+     4	
+     5	Model.  A *Lehman-linear target* tau = (alpha, beta, c0, M, r, g0, W) assigns to an
+     6	integer candidate p == r (mod M) the real value
+     7	    g(p) = (alpha p + beta N / p + c0) / M^2
+     8	and a giant with a baby list of W consecutive exponents *structurally covers* p iff
+     9	g0 <= g(p) < g0 + W.  Proposition O: for beta != 0 the covered candidates in
+    10	[x1, x2] number at most 2 sqrt(W x2^3 / (|beta| N)) + 2.
+    11	
+    12	covered_count() is the brute-force count (exact rationals: g(p) >= g0 <=>
+    13	alpha p^2 + beta N + c0 p >= g0 M^2 p for p > 0).
+    14	"""
+    15	from __future__ import annotations
+    16	
+    17	from math import isqrt, log
+    18	from typing import Iterable, Tuple
+    19	
+    20	
+    21	def covered_count(N: int, alpha: int, beta: int, c0: int, M: int, r: int, g0: int, W: int,
+    22	                  x1: int, x2: int) -> int:
+    23	    """#{p in [x1, x2], p == r (mod M), p > 0 : g0 <= g(p) < g0 + W}, exactly."""
+    24	    M2 = M * M
+    25	    cnt = 0
+    26	    p = x1 + ((r - x1) % M)
+    27	    while p <= x2:
+    28	        if p > 0:
+    29	            v = alpha * p * p + beta * N + c0 * p          # = p * M^2 * g(p)
+    30	            if g0 * M2 * p <= v < (g0 + W) * M2 * p:
+    31	                cnt += 1
+    32	        p += M
+    33	    return cnt
+    34	
+    35	
+    36	def prop_o_bound_sq(N: int, beta: int, W: int, x2: int) -> Tuple[int, int]:
+    37	    """Return (S, 2) with bound = 2*sqrt(S) + 2, S = W x2^3 / (|beta| N) rounded UP
+    38	    (so the integer test  cnt <= 2*isqrt_ceil(S) + 2  is implied by the real bound)."""
+    39	    num = W * x2 ** 3
+    40	    den = abs(beta) * N
+    41	    S = -(-num // den)
+    42	    return S, 2
+    43	
+    44	
+    45	def prop_o_bound_int(N: int, beta: int, W: int, x2: int) -> int:
+    46	    S, _ = prop_o_bound_sq(N, beta, W, x2)
+    47	    s = isqrt(S)
+    48	    if s * s < S:
+    49	        s += 1
+    50	    return 2 * s + 2
+    51	
+    52	
+    53	def best_window_coverage(N: int, alpha: int, beta: int, c0: int, M: int, r: int, W: int,
+    54	                         x1: int, x2: int) -> int:
+    55	    """max over g0 of covered_count (scan g0 over the integer range of g on the class)."""
+    56	    M2 = M * M
+    57	    vals = []
+    58	    p = x1 + ((r - x1) % M)
+    59	    while p <= x2:
+    60	        if p > 0:
+    61	            # floor(g(p))
+    62	            vals.append((alpha * p * p + beta * N + c0 * p) // (M2 * p))
+    63	        p += M
+    64	    if not vals:
+    65	        return 0
+    66	    vals.sort()
+    67	    best, j = 0, 0
+    68	    for i in range(len(vals)):            # sliding window on sorted floor values
+    69	        while vals[i] - vals[j] >= W:
+    70	            j += 1
+    71	        best = max(best, i - j + 1)
+    72	    return best
+    73	
+    74	
+    75	# ---------------------------------------------------------------------------
+    76	# exponent profile (display; floats allowed)
+    77	# ---------------------------------------------------------------------------
+    78	def e_dcl(theta: float) -> float:
+    79	    """Regime I/II exponent at ratio N^theta (Theorems U, U_theta): (1+theta)/6."""
+    80	    return (1.0 + theta) / 6.0
+    81	
+    82	
+    83	def e_ps(theta: float) -> float:
+    84	    """Pollard-Strassen exponent at ratio N^theta: p = N^{(1-theta)/2}, cost p^{1/2}."""
+    85	    return (1.0 - theta) / 4.0
+    86	
+    87	
+    88	def e_profile(theta: float) -> float:
+    89	    return min(e_dcl(theta), e_ps(theta))
+    90	
+    91	
+    92	def frac_theta_below(t: float) -> float:
+    93	    """Fraction of prime pairs pq <= X with N^{1/3} <= p <= sqrt N whose ratio exponent
+    94	    theta = log(q/p)/log N is <= t, asymptotically (Mertens: density of p ~ N^a is
+    95	    proportional to 1/(a(1-a)) da, a = (1-theta)/2):  log2((1+t)/(1-t)) on [0, 1/3]."""
+    96	    return log((1 + t) / (1 - t)) / log(2.0)
+    97	
+    98	
+    99	def frac_covered_at(eta: float) -> float:
+   100	    """Fraction of that population factored at exponent <= 1/6 + eta by the profile."""
+   101	    t1 = min(1 / 3, 6 * eta)
+   102	    t2 = max(0.0, 1 / 3 - 4 * eta)
+   103	    if t1 >= t2:
+   104	        return 1.0
+   105	    return frac_theta_below(t1) + 1.0 - frac_theta_below(t2)
+   106	
+   107	
+   108	__all__ = ["covered_count", "prop_o_bound_int", "best_window_coverage", "best_set_coverage", "prop_o_set_bound_int", "e_profile",
+   109	           "frac_theta_below", "frac_covered_at"]
+   110	
+   111	
+   112	# ---------------------------------------------------------------------------
+   113	# Proposition O' (arbitrary baby exponent sets)
+   114	# ---------------------------------------------------------------------------
+   115	def best_set_coverage(N: int, alpha: int, beta: int, c0: int, M: int, r: int, m: int,
+   116	                      x1: int, x2: int) -> int:
+   117	    """Max over ALL m-element sets S of integers of #{x : floor(g(x)) in S}: the optimum
+   118	    for a single giant is the m most popular floor values."""
+   119	    M2 = M * M
+   120	    cnt = {}
+   121	    p = x1 + ((r - x1) % M)
+   122	    while p <= x2:
+   123	        if p > 0:
+   124	            v = (alpha * p * p + beta * N + c0 * p) // (M2 * p)
+   125	            cnt[v] = cnt.get(v, 0) + 1
+   126	        p += M
+   127	    return sum(sorted(cnt.values(), reverse=True)[:m])
+   128	
+   129	
+   130	def prop_o_set_bound_int(N: int, beta: int, m: int, x2: int) -> int:
+   131	    """2m + 8 sqrt(m x2^3 / (|beta| N)), rounded up (Proposition O', per giant)."""
+   132	    S = -(-(64 * m * x2 ** 3) // (abs(beta) * N))
+   133	    s = isqrt(S)
+   134	    if s * s < S:
+   135	        s += 1
+   136	    return 2 * m + s
+
+exec
+/bin/zsh -lc "rg -n 'HH|2601.11131|Harvey|Hittmeir|prime_arbitrary|prop_o|alpha ==|beta ==' /Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py /Volumes/git/factoring-connection/notes/unbalanced_prereg.md /Volumes/git/factoring-connection/src/unbalanced" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:8:                                        frac_covered_at, frac_theta_below, prop_o_bound_int)
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:12:def test_prop_o_bound_random():
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:33:        b = prop_o_bound_int(N, beta, W, x2)
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:46:    assert best_window_coverage(N, 4, 1, 0, 13, 5, 50, x1, x2) <= prop_o_bound_int(N, 1, 50, x2)
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:75:def test_prop_o_prime_arbitrary_sets():
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:76:    from src.unbalanced.obstruction import best_set_coverage, prop_o_set_bound_int
+/Volumes/git/factoring-connection/tests/test_unbalanced_obstruction.py:93:        b = prop_o_set_bound_int(N, beta, m, x2)
+/Volumes/git/factoring-connection/src/unbalanced/obstruction.py:36:def prop_o_bound_sq(N: int, beta: int, W: int, x2: int) -> Tuple[int, int]:
+/Volumes/git/factoring-connection/src/unbalanced/obstruction.py:45:def prop_o_bound_int(N: int, beta: int, W: int, x2: int) -> int:
+/Volumes/git/factoring-connection/src/unbalanced/obstruction.py:46:    S, _ = prop_o_bound_sq(N, beta, W, x2)
+/Volumes/git/factoring-connection/src/unbalanced/obstruction.py:108:__all__ = ["covered_count", "prop_o_bound_int", "best_window_coverage", "best_set_coverage", "prop_o_set_bound_int", "e_profile",
+/Volumes/git/factoring-connection/src/unbalanced/obstruction.py:130:def prop_o_set_bound_int(N: int, beta: int, m: int, x2: int) -> int:
+
+web search: 
+web search: https://arxiv.org/html/2601.11131v2
+web search: 
+web search: 'Algorithm 4.1'
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import isqrt, log, sqrt
+from fractions import Fraction
+for n in [120, 240, 480, 960]:
+    H=n*(1 << (n//120))
+    h=H*H
+    J=(h//16).bit_length()-1
+    R=1 << (J+1)
+    N=(1 << n)-1
+    xlo=isqrt(N//(2*R))
+    while 2*R*xlo*xlo<N:
+        xlo+=1
+    xhi=isqrt(N//R)
+    while R*xhi*xhi>=N:
+        xhi-=1
+    lo=isqrt(4*h*N)
+    hi=max(h*x+(N+x-1)//x for x in [xlo,xhi])
+    Qj=sqrt(2)*2.0**((n+J+1)/2) if n<960 else None
+    width_ratio=(hi-lo)/(isqrt(N*R))
+    print('coarse', n, 'h/R', Fraction(h,R), 'span/sqrt(NR)', round(width_ratio,8), 'claimed_limit', round(3*sqrt(2),8))
+F=lambda t: log((1+t)/(1-t))/log(2)
+for eta in [.005,.01]:
+    print('profile_fraction',eta, F(6*eta)+1-F(1/3-4*eta))
+print('small_eta_coefficient',21/log(2))
+print('near_peak_coefficient',125/(6*log(2)))
+for eps in [Fraction(1,60)]:
+    a=-Fraction(1,12)+Fraction(23,6)*eps
+    print('U margin',a, 'target',-eps-Fraction(1,360))
+    print('coarse first after adding eps',-Fraction(1,12)+Fraction(14,3)*eps)
+    print('coarse second after adding eps theta=.2-3eps',Fraction(7,3)*eps+Fraction(5,6)*(Fraction(1,5)-3*eps)-Fraction(1,6))
+PY" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+coarse 120 h/R 225/16 span/sqrt(NR) 7.5625 claimed_limit 4.24264069
+coarse 240 h/R 225/16 span/sqrt(NR) 7.5625 claimed_limit 4.24264069
+coarse 480 h/R 225/16 span/sqrt(NR) 7.5625 claimed_limit 4.24264069
+coarse 960 h/R 225/16 span/sqrt(NR) 7.5625 claimed_limit 4.24264069
+profile_fraction 0.005 0.15103639272293312
+profile_fraction 0.01 0.30133921526163343
+small_eta_coefficient 30.296595858668233
+near_peak_coefficient 30.05614668518674
+U margin -7/360 target -7/360
+coarse first after adding eps -1/180
+coarse second after adding eps theta=.2-3eps -1/360
+
+codex
+The swapped FULL count works: fixing \(p,B,\ell,\delta\) makes \(X\) independent of \(q\), and the stated parameter choices keep \(X>0\). Proposition O′ has a counterexample as written: it permits \(\alpha=\beta=0\), so a constant target covers every candidate at cost 2. Excluding that case repairs the lower-bound proof, but the claimed matching upper bound still needs a separate coverage argument.
+codex
+The population density and the quoted 0.151 and 0.301 fractions check out. They describe where the proved cost bounds apply; they do not establish an impossibility result for almost-all factoring. I also verified the cited 2026 order theorem. The extraction argument works once bad blocks are explicitly skipped when their baby values repeat, and matched giants are removed before collision recovery.
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import isqrt
+from fractions import Fraction
+for k in [5,10,15]:
+    N=10**k
+    R=max(1,int(N**.2))
+    x2=isqrt(N//R)
+    x1=isqrt(N//(2*R))
+    while 2*R*x1*x1<N:
+        x1+=1
+    covered=x2-x1+1
+    print('constant-target counterexample:', 'N=',N,'R=',R,'candidates=',covered,'cost=',2,'covered_fraction=',1)
+eps=Fraction(1,60)
+theta=Fraction(1,5)-3*eps
+y_exp=Fraction(1,6)+2*eps/3-5*theta/6
+q_exp=(1+theta)/2
+K=(3*eps.denominator+5*eps.numerator-1)//(5*eps.numerator)+2
+print('W2 at eps=1/60:', 'Y exponent >=',y_exp,'q exponent <=',q_exp,'K=',K,'K*Y exponent=',K*y_exp)
+PY" in /Volumes/git/factoring-connection/codex/scratch/unbalanced_2
+ succeeded in 0ms:
+constant-target counterexample: N= 100000 R= 10 candidates= 30 cost= 2 covered_fraction= 1
+constant-target counterexample: N= 10000000000 R= 100 candidates= 2929 cost= 2 covered_fraction= 1
+constant-target counterexample: N= 1000000000000000 R= 1000 candidates= 292894 cost= 2 covered_fraction= 1
+W2 at eps=1/60: Y exponent >= 19/360 q exponent <= 23/40 K= 38 K*Y exponent= 361/180
+
+codex
+The upper-bound constructions largely survive. The coarse construction needs a span repair. Proposition O′ is false in the stated model, although its nonconstant-target lower bound is repairable.
+
+Source files were unchanged; §7 was excluded. Below, write \(X_0=2^n\), \(P=(X_0/R)^{1/2}\), \(Q=(X_0R)^{1/2}\), and \(h=H^2\).
+
+1. **CORRECT — Theorem U’s substantive proof and epsilon range.**  
+   [§2.2–2.3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:106)
+
+   The span bound follows directly from
+   \[
+   Bx+AN/x\le (1+\sqrt2)H\sqrt N.
+   \]
+   The shared D′ span therefore suffices.
+
+   Primitive distinct weights have nonzero determinant of absolute value at most \(a_jb_j\le H^2<\ell\), so their classes are distinct. Since \(a_j\ge4\), \(a_jb_j\gg H^2\), and \(b_j\ge H\), the stated coprime-pair estimate gives \(|V_j|\gg H^2\) uniformly. Excluding \(A=B\) is harmless.
+
+   The scale separations hold: \(Y>H^2\), all block primes are smaller than \(p\), and
+   \[
+   \frac{Y^4}{H X_0^{1/2}}
+   \gg n^{-7/3}X_0^{(1-7\varepsilon)/6}\longrightarrow\infty.
+   \]
+   Thus four blocks suffice.
+
+   The large sieve is normalized correctly: count uncovered **integers**, sum over \(O(Q/n)\) prime \(q\)’s, and divide by \(|S_{n,j}|\gg X_0/n^2\). This gives \(O(n^2/H^2)\).
+
+   The FULL count with \(g'\le H^2\) gives
+   \[
+   \frac{|E_c|}{|S_{n,j}|}
+   \ll n\left(\frac{H^5X_0^{1/2}}{Y^2T}+\frac{H^4}{Y}\right).
+   \]
+   Its first exponent is exactly \(-1/12+23\varepsilon/6\). Moreover,
+   \[
+   -\frac1{12}+\frac{23\varepsilon}{6}
+   +\varepsilon+\frac1{360}
+   =\frac{29}{6}\left(\varepsilon-\frac1{60}\right)\le0.
+   \]
+   The claimed \(1/360\) margin is correct, including equality at \(\varepsilon=1/60\). Polynomial factors are absorbed.
+
+   **Minor literal repairs:** line 123 reverses the comparison between \(p\) and \(\sqrt{N/R}\); use \(p\ge\sqrt{N/(2R)}\). Bounds involving the shared \(\bar m_k\) should consistently use \(X_0^{1/2}\), or an unspecified absolute constant times \(\sqrt N\).
+
+2. **WRONG — High severity: the coarse construction assumes the wrong regime boundary.**  
+   [U3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:196)
+
+   Regime II starts at \(R>h/16\), whereas “\(B\le h<R\)” requires \(R>h\). Consequently, \(F\) need not decrease, and the charged \(3Q_j\) span can be insufficient.
+
+   This persists asymptotically. Take \(\varepsilon=1/60\), \(n=120\cdot2^t\), the first regime-II band, \(B=h\), and \(N=X_0-1\). Then
+   \[
+   h/R=225/16,
+   \]
+   and the upper endpoint alone gives
+   \[
+   \mathrm{Hi}-\mathrm{Lo}
+   \ge \left(\frac{121}{16}+o(1)\right)\sqrt{NR},
+   \]
+   exceeding \(3Q_j=(3\sqrt2+o(1))\sqrt{NR}\).
+
+   **Exact repair preserving the weights:** discard the monotonicity argument and use
+   \[
+   F(x)\le(\sqrt2+h/R)\sqrt{NR}
+   <(16+\sqrt2)\sqrt{NR}.
+   \]
+   Set
+   \[
+   \overline{\mathrm{span}}_j=20\sqrt{X_0R}+2
+   \]
+   and define \(\bar m_{j,k}\) accordingly. Every subsequent exponent remains unchanged.
+
+   Alternatively, retain only \(2\le B\le\min(h,R)\); this preserves \(\gg h\) weights and makes the decreasing-function argument valid.
+
+3. **CORRECT — The coarse construction’s remaining lemmas, exception arithmetic, and cost, after that repair.**  
+   [§3.1 proof](/Volumes/git/factoring-connection/notes/unbalanced_results.md:206)
+
+   Lemma 1’s conditions hold: \(\ell>h\ge B\), \(\ell<p\), and the window contains \(F(p)\). Also \(Y^4\gg Q\), since \(Q/h^4\to\infty\) throughout the stated epsilon range. Four blocks suffice.
+
+   With \(T\asymp Q^{1/2}X_0^{-\varepsilon}\),
+   \[
+   |E_a|/|S_{n,j}|\ll nX_0^{-2\varepsilon}.
+   \]
+   Coverage gives
+   \[
+   |E_b|/|S_{n,j}|
+   \ll \frac{n^2}{h}\left(1+\frac{Y^2}{P}\right),
+   \qquad
+   \frac{Y^2}{P}\asymp
+   X_0^{-1/6}R^{5/6}h^{-2/3}.
+   \]
+   Hence \(Y^2\le P\) throughout \(\theta\le1/5\).
+
+   The FULL fraction is bounded by
+   \[
+   Cn\left(
+   h^{8/3}Q^{-1/6}X_0^\varepsilon
+   +h^{4/3}R^{5/6}X_0^{-1/6}
+   +h^{2/3}X_0^{-1/3}R^{2/3}
+   \right).
+   \]
+   **Yes: the second term really is \(h^{4/3}R^{5/6}X_0^{-1/6}\).**
+
+   The first term has exponent at most \(-1/12+11\varepsilon/3\). At \(\varepsilon=1/60\), its margin beyond \(X_0^{-\varepsilon}\) is \(1/180\). At \(\theta=1/5-3\varepsilon\), the second term has exponent \(-7\varepsilon/6\), leaving margin \(\varepsilon/6\). The third term is smaller than the stated \(X_0^{-1/6}\) bound.
+
+   The cost remains
+   \[
+   n^{O(1)}h^{2/3}Q^{1/3}.
+   \]
+
+   **WRONG wording in “What fails”:** \(Y^2>P\) does not begin at \(\theta=1/5\). Its threshold is
+   \[
+   R\asymp X_0^{1/5}h^{4/5}.
+   \]
+   In particular, at \(R=X_0^{1/5}\), \(Y^2/P\asymp h^{-2/3}\ll1\).
+
+4. **CORRECT — Fine-band span, coverage partition, and cost.**  
+   [§3.2](/Volumes/git/factoring-connection/notes/unbalanced_results.md:263)
+
+   U4’s identity and bound are valid. On each \(I_{q,b}\), the common admissible \(B\)-interval has length at most \(2\Delta<\ell\), contains at least \(\Delta-1\) weights, and loses at most one multiple of \(\ell\). Thus \(\omega(\ell)\ge\Delta-2\), with distinct inverse classes.
+
+   Summing the sieve bounds costs
+   \[
+   \frac{Cn}{\Delta}(P+RY^2).
+   \]
+   The needed comparison is
+   \[
+   \frac{RY^2}{P}
+   \asymp\Delta^{4/3}X_0^{-1/6}R^{-1/6}=o(1).
+   \]
+   This holds uniformly for the stated regime and parameters. The exceptional fraction is \(O(n^2/\Delta)\).
+
+   The balance and cost are also correct:
+   \[
+   Y\asymp\Delta^{2/3}X_0^{1/6}R^{-5/6},
+   \qquad
+   C_{\mathrm{band}}\ll n^{O(1)}\Delta^{2/3}(X_0R)^{1/6}.
+   \]
+
+5. **CORRECT — The swapped FULL count is valid with the stated theorem parameters.**  
+   [Lemma 10′](/Volumes/git/factoring-connection/notes/unbalanced_results.md:282)
+
+   Crucially, fixing \(p,B,\ell,\delta\) makes
+   \[
+   Z=(B-1)(p-1)+\ell^2\delta
+   \]
+   independent of \(q\). Here \(Z\) denotes the note’s \(X\).
+
+   The chosen \(\Delta\) gives \(R/\Delta\ge4\cdot2^K\). With a public, bit-length-based \(\bar m_{j,k}\),
+   \[
+   \ell^2\bar m_{j,k}
+   \le4\overline{\mathrm{span}}_j+8\,4^KY^2
+   <Rp/2
+   \]
+   for sufficiently large \(n\). The first contribution is small because \(\Delta/R\) is small; the second tends to zero relative to \(Rp\). Therefore \(0<Z<3q<N\). The zero-divisor-count catastrophe \(Z=0\) is excluded.
+
+   FULL implies \(e=\operatorname{ord}_q(2)>T\) divides \(Z\). Cleanliness gives \(\ell\nmid e\), so CRT with
+   \[
+   q\equiv1\pmod e,\qquad q\equiv Bp\pmod\ell
+   \]
+   gives at most \(2\Delta p/(T\ell)+1\) possibilities for each divisor \(e\). Multiplication by \(\tau(Z)\) is legitimate.
+
+   Summation gives exactly the stated form
+   \[
+   Cn^2\tau_*
+   \left(\frac{\bar m\Delta}{T}+\frac{\bar mRY}{Q}\right).
+   \]
+   More precisely, its two contributions are
+   \[
+   X_0^{o(1)}
+   \left(
+   \Delta^{5/3}X_0^{-1/12+\varepsilon}R^{-1/12}
+   +\Delta^{4/3}X_0^{-1/6}R^{-1/6}
+   \right).
+   \]
+   The displayed exponents in the note are valid upper bounds; its first is loose. The divisor-function factor is absorbed by the fixed epsilon margins.
+
+   **Clarification to add:** explicitly carry over \(T\asymp Q^{1/2}X_0^{-\varepsilon}\) and specify that \(\bar m\) is public. Using an actual \(q\)-dependent window length while fixing \(\delta\) would invalidate this counting argument.
+
+6. **CORRECT — \(O(1/\varepsilon)\) blocks suffice; four generally do not.**  
+   [Clean-block discussion](/Volumes/git/factoring-connection/notes/unbalanced_results.md:294)
+
+   The required condition is \(Y^K>q_{\max}\). At the largest permitted ratio,
+   \[
+   Y=X_0^{19\varepsilon/6+o(1)},\qquad q_{\max}\ll X_0^{3/5}.
+   \]
+   Thus the stated
+   \[
+   K=\left\lceil\frac3{5\varepsilon}\right\rceil+2
+   \]
+   is more than sufficient. The resulting \(2^{O(1/\varepsilon)}\) constant is correctly acknowledged.
+
+   An order \(1/\varepsilon\) block count is needed by this product argument near the upper endpoint as \(\varepsilon\to0\). It is unnecessary in smaller-ratio subranges. Four blocks suffice asymptotically only when
+   \[
+   \theta<(1+16\varepsilon)/23.
+   \]
+
+7. **CORRECT — Proposition O′(a), including arbitrary exponent sets.**  
+   [Proof of (a)](/Volumes/git/factoring-connection/notes/unbalanced_results.md:430)
+
+   On the right of the band minimum, \(g'(x_0)\ge0\), including when the minimum is the left endpoint. Therefore
+   \[
+   g'\ge\kappa(x-x_0),\qquad
+   g-m_0\le(x-x_0)g'\le g'^2/\kappa.
+   \]
+   The derivative-height inequality uses only \(g''\ge\kappa\) on the band.
+
+   The per-value preimage bounds and summation over integer-spaced values are valid. The constant \(8\) is safe. Negating a concave target reverses interval endpoint conventions, which does not change the final bound.
+
+8. **WRONG — Fatal model counterexample to Proposition O′(b) and (c).**  
+   [Model definition](/Volumes/git/factoring-connection/notes/unbalanced_results.md:394)
+
+   Nothing excludes \(\alpha=\beta=0\). Choose
+   \[
+   M=1,\quad r=0,\quad c_0=g_0=0,\quad S=\{0\},
+   \]
+   with one giant. Then \(g(p)=0\) for every candidate, integrality refinement removes nothing, and **full coverage costs \(2\)**.
+
+   Taking \(R=N^{1/5}\) yields a counterexample family to the claimed \(N^{1/5}\) lower bound.
+
+   **Exact repair:** require \((\alpha,\beta)\ne(0,0)\). Then, for \(\beta=0\), the refined class is empty or one arithmetic progression with modulus \(M'\), and
+   \[
+   g(r'+M'x)=c+kx,\qquad
+   k=\alpha M'/M^2\in\mathbb Z\setminus\{0\}.
+   \]
+   Part (b) follows. The aggregation in (c) then correctly gives the stated minimum.
+
+   The floor relaxation is coherent as a combinatorial definition after making the \(\beta=0\) integrality restriction explicit. “Exactly collides” should become “has an intended index collision”: collisions modulo a group order are deliberately excluded. General targets also need an explicit lock-admissibility condition if the model is presented as describing executable searches.
+
+9. **GAP — High severity: “optimal in the model” is not established by the cited upper bounds.**  
+   [Corollary O″](/Volumes/git/factoring-connection/notes/unbalanced_results.md:460)
+
+   The repaired proposition proves a lower bound for constant-fraction candidate coverage **for each fixed \(N\)**. Theorem Uθ proves coverage of the true factor for most varying semiprimes. Its sieve argument fixes \(q\), not \(N\). The multiplicity \(\lambda\asymp H^2/n\) does not bridge these quantifiers.
+
+   Pollard–Strassen is also outside the stated model. The combinatorial \(\sqrt p\) branch can instead be matched explicitly using \(M=1,\alpha=1,\beta=0\), one interval baby set, and translated intervals covering the candidate range.
+
+   **Exact repair:** delete the claimed DCL constant-fraction coverage assertion and replace “optimal in \(\mathfrak L\)” with “the lower-bound exponents coincide with the available factoring upper-bound exponents, under different coverage guarantees,” unless a matching fixed-\(N\) construction is supplied.
+
+10. **CORRECT population arithmetic; WRONG impossibility inference and one counting constant.**  
+    [§4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:361)
+
+    The normalized density and CDF are
+    \[
+    \rho(\theta)=\frac{2}{\log2}\frac1{1-\theta^2},
+    \qquad
+    F(t)=\log_2\frac{1+t}{1-t}.
+    \]
+    The small-\(\eta\) covered fraction is
+    \[
+    F(6\eta)+1-F(1/3-4\eta)
+    =\frac{21}{\log2}\eta+O(\eta^2).
+    \]
+    The quoted \(0.151\) and \(0.301\) values check out. Near the peak, the missing fraction is
+    \[
+    \frac{125}{6\log2}\eta'+O(\eta'^2)\approx30.056\,\eta'.
+    \]
+
+    These quantify where the **proved cost guarantees** apply. They do not establish that no almost-all algorithm achieves a smaller exponent. Replace the unqualified impossibility statements accordingly.
+
+    For all semiprimes up to \(X\), the correct fixed-\(\delta\) asymptotic is
+    \[
+    \Pr(p>X^\delta)\sim
+    \frac{\log((1-\delta)/\delta)}{\log\log X},
+    \qquad 0<\delta<1/2,
+    \]
+    rather than \(\log(1/(2\delta))/\log\log X\).
+
+    Also distinguish fixed-\(\varepsilon\) power-saving exceptions from taking \(\varepsilon\to0\) to obtain exponent \(1/6+o(1)\); the latter does not retain a fixed power saving from these estimates.
+
+11. **CORRECT extraction principle; GAP in the operational specification.**  
+    [§3.4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:331)
+
+    The cited 2026 theorem has the stated hypotheses and complexity. [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2601.11131v2#Thmtheorem1.1)
+
+    The prime-order inference is correct. If \(s=\operatorname{ord}_p(\gamma)<m\), the scan at \(i=s\) produces a proper gcd or \(N\); the latter implies \(\operatorname{ord}_N(\gamma)\mid s\), contradicting the certified order bound. The same applies to \(q\).
+
+    The exact-equality test is also correct. The true giant’s matching baby index is unique modulo \(p\), so it reconstructs \(T=Bp+Aq\); the quadratic has root \(p\).
+
+    **Complete the algorithm as follows:**
+
+    - Use \(D\ge\max_k m_k\) for a shared base.
+    - Scan \(1\le i<m\). Return a proper gcd; skip a block if a gcd equals \(N\). This prevents repeated babies from creating quadratically many sorting matches on bad blocks.
+    - Test and remove every giant having an exact baby equality.
+    - On a remaining product gcd \(N\), scan that giant’s \(m\) differences and return a proper factor.
+    - Bound uncovered pairs by the union over the seven possible selected blocks, because cleanliness now depends on both primes.
+
+    The clean block cannot be skipped, and the extra work remains within the claimed budget. Exact-match removal and subsequent collision recovery follow the established pattern in [Harvey, Algorithms 4.1–4.2](https://arxiv.org/html/2010.05450#S4).
+
+12. **No verified uniform power improvement near \(\theta=1/5\) follows, but the exclusions need narrower wording.**  
+    [§6](/Volumes/git/factoring-connection/notes/unbalanced_results.md:502)
+
+    After excluding constant targets, the repaired curvature argument genuinely prevents a power improvement for constant-fraction structural coverage in this model.
+
+    There are concrete qualifications:
+
+    - HH extraction removes the FULL restriction and allows the coarse coverage analysis through \(R\asymp X_0^{1/5}h^{4/5}\). It does not improve the cost peak.
+    - The finite-\(H\) cost crossover is
+      \[
+      R_*=X_0^{1/5}h^{-8/5}=X_0^{1/5}H^{-16/5}.
+      \]
+    - Factor-dependent structure can beat the profile on special inputs. For example, if \(p-1\) is \(B\)-smooth, an exponent containing all relevant prime powers gives a Pollard \(p-1\) test in \(\widetilde O(B)\) work whenever the other prime does not also annihilate the base. This beats the peak when \(B<N^{1/5}\), but supplies no required almost-all density theorem.
+
+    Thus the note has no general exclusion of correlated average-case designs. The constant-target counterexample beats its formal model as written; it does not supply a factoring algorithm.
+
+| Result | Verdict |
+|---|---|
+| **Theorem U** | **ACCEPT**, with minor notation corrections |
+| **Theorem Uθ** | **ACCEPT WITH FIXES** — repair the regime-overlap span |
+| **Theorem Uθ′** | **ACCEPT** for the stated \(K\)-block variant |
+| **Proposition O′** | **REJECT as written** — constant-target counterexample; optimality claim also needs repair |
+tokens used
+132,169
+The upper-bound constructions largely survive. The coarse construction needs a span repair. Proposition O′ is false in the stated model, although its nonconstant-target lower bound is repairable.
+
+Source files were unchanged; §7 was excluded. Below, write \(X_0=2^n\), \(P=(X_0/R)^{1/2}\), \(Q=(X_0R)^{1/2}\), and \(h=H^2\).
+
+1. **CORRECT — Theorem U’s substantive proof and epsilon range.**  
+   [§2.2–2.3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:106)
+
+   The span bound follows directly from
+   \[
+   Bx+AN/x\le (1+\sqrt2)H\sqrt N.
+   \]
+   The shared D′ span therefore suffices.
+
+   Primitive distinct weights have nonzero determinant of absolute value at most \(a_jb_j\le H^2<\ell\), so their classes are distinct. Since \(a_j\ge4\), \(a_jb_j\gg H^2\), and \(b_j\ge H\), the stated coprime-pair estimate gives \(|V_j|\gg H^2\) uniformly. Excluding \(A=B\) is harmless.
+
+   The scale separations hold: \(Y>H^2\), all block primes are smaller than \(p\), and
+   \[
+   \frac{Y^4}{H X_0^{1/2}}
+   \gg n^{-7/3}X_0^{(1-7\varepsilon)/6}\longrightarrow\infty.
+   \]
+   Thus four blocks suffice.
+
+   The large sieve is normalized correctly: count uncovered **integers**, sum over \(O(Q/n)\) prime \(q\)’s, and divide by \(|S_{n,j}|\gg X_0/n^2\). This gives \(O(n^2/H^2)\).
+
+   The FULL count with \(g'\le H^2\) gives
+   \[
+   \frac{|E_c|}{|S_{n,j}|}
+   \ll n\left(\frac{H^5X_0^{1/2}}{Y^2T}+\frac{H^4}{Y}\right).
+   \]
+   Its first exponent is exactly \(-1/12+23\varepsilon/6\). Moreover,
+   \[
+   -\frac1{12}+\frac{23\varepsilon}{6}
+   +\varepsilon+\frac1{360}
+   =\frac{29}{6}\left(\varepsilon-\frac1{60}\right)\le0.
+   \]
+   The claimed \(1/360\) margin is correct, including equality at \(\varepsilon=1/60\). Polynomial factors are absorbed.
+
+   **Minor literal repairs:** line 123 reverses the comparison between \(p\) and \(\sqrt{N/R}\); use \(p\ge\sqrt{N/(2R)}\). Bounds involving the shared \(\bar m_k\) should consistently use \(X_0^{1/2}\), or an unspecified absolute constant times \(\sqrt N\).
+
+2. **WRONG — High severity: the coarse construction assumes the wrong regime boundary.**  
+   [U3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:196)
+
+   Regime II starts at \(R>h/16\), whereas “\(B\le h<R\)” requires \(R>h\). Consequently, \(F\) need not decrease, and the charged \(3Q_j\) span can be insufficient.
+
+   This persists asymptotically. Take \(\varepsilon=1/60\), \(n=120\cdot2^t\), the first regime-II band, \(B=h\), and \(N=X_0-1\). Then
+   \[
+   h/R=225/16,
+   \]
+   and the upper endpoint alone gives
+   \[
+   \mathrm{Hi}-\mathrm{Lo}
+   \ge \left(\frac{121}{16}+o(1)\right)\sqrt{NR},
+   \]
+   exceeding \(3Q_j=(3\sqrt2+o(1))\sqrt{NR}\).
+
+   **Exact repair preserving the weights:** discard the monotonicity argument and use
+   \[
+   F(x)\le(\sqrt2+h/R)\sqrt{NR}
+   <(16+\sqrt2)\sqrt{NR}.
+   \]
+   Set
+   \[
+   \overline{\mathrm{span}}_j=20\sqrt{X_0R}+2
+   \]
+   and define \(\bar m_{j,k}\) accordingly. Every subsequent exponent remains unchanged.
+
+   Alternatively, retain only \(2\le B\le\min(h,R)\); this preserves \(\gg h\) weights and makes the decreasing-function argument valid.
+
+3. **CORRECT — The coarse construction’s remaining lemmas, exception arithmetic, and cost, after that repair.**  
+   [§3.1 proof](/Volumes/git/factoring-connection/notes/unbalanced_results.md:206)
+
+   Lemma 1’s conditions hold: \(\ell>h\ge B\), \(\ell<p\), and the window contains \(F(p)\). Also \(Y^4\gg Q\), since \(Q/h^4\to\infty\) throughout the stated epsilon range. Four blocks suffice.
+
+   With \(T\asymp Q^{1/2}X_0^{-\varepsilon}\),
+   \[
+   |E_a|/|S_{n,j}|\ll nX_0^{-2\varepsilon}.
+   \]
+   Coverage gives
+   \[
+   |E_b|/|S_{n,j}|
+   \ll \frac{n^2}{h}\left(1+\frac{Y^2}{P}\right),
+   \qquad
+   \frac{Y^2}{P}\asymp
+   X_0^{-1/6}R^{5/6}h^{-2/3}.
+   \]
+   Hence \(Y^2\le P\) throughout \(\theta\le1/5\).
+
+   The FULL fraction is bounded by
+   \[
+   Cn\left(
+   h^{8/3}Q^{-1/6}X_0^\varepsilon
+   +h^{4/3}R^{5/6}X_0^{-1/6}
+   +h^{2/3}X_0^{-1/3}R^{2/3}
+   \right).
+   \]
+   **Yes: the second term really is \(h^{4/3}R^{5/6}X_0^{-1/6}\).**
+
+   The first term has exponent at most \(-1/12+11\varepsilon/3\). At \(\varepsilon=1/60\), its margin beyond \(X_0^{-\varepsilon}\) is \(1/180\). At \(\theta=1/5-3\varepsilon\), the second term has exponent \(-7\varepsilon/6\), leaving margin \(\varepsilon/6\). The third term is smaller than the stated \(X_0^{-1/6}\) bound.
+
+   The cost remains
+   \[
+   n^{O(1)}h^{2/3}Q^{1/3}.
+   \]
+
+   **WRONG wording in “What fails”:** \(Y^2>P\) does not begin at \(\theta=1/5\). Its threshold is
+   \[
+   R\asymp X_0^{1/5}h^{4/5}.
+   \]
+   In particular, at \(R=X_0^{1/5}\), \(Y^2/P\asymp h^{-2/3}\ll1\).
+
+4. **CORRECT — Fine-band span, coverage partition, and cost.**  
+   [§3.2](/Volumes/git/factoring-connection/notes/unbalanced_results.md:263)
+
+   U4’s identity and bound are valid. On each \(I_{q,b}\), the common admissible \(B\)-interval has length at most \(2\Delta<\ell\), contains at least \(\Delta-1\) weights, and loses at most one multiple of \(\ell\). Thus \(\omega(\ell)\ge\Delta-2\), with distinct inverse classes.
+
+   Summing the sieve bounds costs
+   \[
+   \frac{Cn}{\Delta}(P+RY^2).
+   \]
+   The needed comparison is
+   \[
+   \frac{RY^2}{P}
+   \asymp\Delta^{4/3}X_0^{-1/6}R^{-1/6}=o(1).
+   \]
+   This holds uniformly for the stated regime and parameters. The exceptional fraction is \(O(n^2/\Delta)\).
+
+   The balance and cost are also correct:
+   \[
+   Y\asymp\Delta^{2/3}X_0^{1/6}R^{-5/6},
+   \qquad
+   C_{\mathrm{band}}\ll n^{O(1)}\Delta^{2/3}(X_0R)^{1/6}.
+   \]
+
+5. **CORRECT — The swapped FULL count is valid with the stated theorem parameters.**  
+   [Lemma 10′](/Volumes/git/factoring-connection/notes/unbalanced_results.md:282)
+
+   Crucially, fixing \(p,B,\ell,\delta\) makes
+   \[
+   Z=(B-1)(p-1)+\ell^2\delta
+   \]
+   independent of \(q\). Here \(Z\) denotes the note’s \(X\).
+
+   The chosen \(\Delta\) gives \(R/\Delta\ge4\cdot2^K\). With a public, bit-length-based \(\bar m_{j,k}\),
+   \[
+   \ell^2\bar m_{j,k}
+   \le4\overline{\mathrm{span}}_j+8\,4^KY^2
+   <Rp/2
+   \]
+   for sufficiently large \(n\). The first contribution is small because \(\Delta/R\) is small; the second tends to zero relative to \(Rp\). Therefore \(0<Z<3q<N\). The zero-divisor-count catastrophe \(Z=0\) is excluded.
+
+   FULL implies \(e=\operatorname{ord}_q(2)>T\) divides \(Z\). Cleanliness gives \(\ell\nmid e\), so CRT with
+   \[
+   q\equiv1\pmod e,\qquad q\equiv Bp\pmod\ell
+   \]
+   gives at most \(2\Delta p/(T\ell)+1\) possibilities for each divisor \(e\). Multiplication by \(\tau(Z)\) is legitimate.
+
+   Summation gives exactly the stated form
+   \[
+   Cn^2\tau_*
+   \left(\frac{\bar m\Delta}{T}+\frac{\bar mRY}{Q}\right).
+   \]
+   More precisely, its two contributions are
+   \[
+   X_0^{o(1)}
+   \left(
+   \Delta^{5/3}X_0^{-1/12+\varepsilon}R^{-1/12}
+   +\Delta^{4/3}X_0^{-1/6}R^{-1/6}
+   \right).
+   \]
+   The displayed exponents in the note are valid upper bounds; its first is loose. The divisor-function factor is absorbed by the fixed epsilon margins.
+
+   **Clarification to add:** explicitly carry over \(T\asymp Q^{1/2}X_0^{-\varepsilon}\) and specify that \(\bar m\) is public. Using an actual \(q\)-dependent window length while fixing \(\delta\) would invalidate this counting argument.
+
+6. **CORRECT — \(O(1/\varepsilon)\) blocks suffice; four generally do not.**  
+   [Clean-block discussion](/Volumes/git/factoring-connection/notes/unbalanced_results.md:294)
+
+   The required condition is \(Y^K>q_{\max}\). At the largest permitted ratio,
+   \[
+   Y=X_0^{19\varepsilon/6+o(1)},\qquad q_{\max}\ll X_0^{3/5}.
+   \]
+   Thus the stated
+   \[
+   K=\left\lceil\frac3{5\varepsilon}\right\rceil+2
+   \]
+   is more than sufficient. The resulting \(2^{O(1/\varepsilon)}\) constant is correctly acknowledged.
+
+   An order \(1/\varepsilon\) block count is needed by this product argument near the upper endpoint as \(\varepsilon\to0\). It is unnecessary in smaller-ratio subranges. Four blocks suffice asymptotically only when
+   \[
+   \theta<(1+16\varepsilon)/23.
+   \]
+
+7. **CORRECT — Proposition O′(a), including arbitrary exponent sets.**  
+   [Proof of (a)](/Volumes/git/factoring-connection/notes/unbalanced_results.md:430)
+
+   On the right of the band minimum, \(g'(x_0)\ge0\), including when the minimum is the left endpoint. Therefore
+   \[
+   g'\ge\kappa(x-x_0),\qquad
+   g-m_0\le(x-x_0)g'\le g'^2/\kappa.
+   \]
+   The derivative-height inequality uses only \(g''\ge\kappa\) on the band.
+
+   The per-value preimage bounds and summation over integer-spaced values are valid. The constant \(8\) is safe. Negating a concave target reverses interval endpoint conventions, which does not change the final bound.
+
+8. **WRONG — Fatal model counterexample to Proposition O′(b) and (c).**  
+   [Model definition](/Volumes/git/factoring-connection/notes/unbalanced_results.md:394)
+
+   Nothing excludes \(\alpha=\beta=0\). Choose
+   \[
+   M=1,\quad r=0,\quad c_0=g_0=0,\quad S=\{0\},
+   \]
+   with one giant. Then \(g(p)=0\) for every candidate, integrality refinement removes nothing, and **full coverage costs \(2\)**.
+
+   Taking \(R=N^{1/5}\) yields a counterexample family to the claimed \(N^{1/5}\) lower bound.
+
+   **Exact repair:** require \((\alpha,\beta)\ne(0,0)\). Then, for \(\beta=0\), the refined class is empty or one arithmetic progression with modulus \(M'\), and
+   \[
+   g(r'+M'x)=c+kx,\qquad
+   k=\alpha M'/M^2\in\mathbb Z\setminus\{0\}.
+   \]
+   Part (b) follows. The aggregation in (c) then correctly gives the stated minimum.
+
+   The floor relaxation is coherent as a combinatorial definition after making the \(\beta=0\) integrality restriction explicit. “Exactly collides” should become “has an intended index collision”: collisions modulo a group order are deliberately excluded. General targets also need an explicit lock-admissibility condition if the model is presented as describing executable searches.
+
+9. **GAP — High severity: “optimal in the model” is not established by the cited upper bounds.**  
+   [Corollary O″](/Volumes/git/factoring-connection/notes/unbalanced_results.md:460)
+
+   The repaired proposition proves a lower bound for constant-fraction candidate coverage **for each fixed \(N\)**. Theorem Uθ proves coverage of the true factor for most varying semiprimes. Its sieve argument fixes \(q\), not \(N\). The multiplicity \(\lambda\asymp H^2/n\) does not bridge these quantifiers.
+
+   Pollard–Strassen is also outside the stated model. The combinatorial \(\sqrt p\) branch can instead be matched explicitly using \(M=1,\alpha=1,\beta=0\), one interval baby set, and translated intervals covering the candidate range.
+
+   **Exact repair:** delete the claimed DCL constant-fraction coverage assertion and replace “optimal in \(\mathfrak L\)” with “the lower-bound exponents coincide with the available factoring upper-bound exponents, under different coverage guarantees,” unless a matching fixed-\(N\) construction is supplied.
+
+10. **CORRECT population arithmetic; WRONG impossibility inference and one counting constant.**  
+    [§4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:361)
+
+    The normalized density and CDF are
+    \[
+    \rho(\theta)=\frac{2}{\log2}\frac1{1-\theta^2},
+    \qquad
+    F(t)=\log_2\frac{1+t}{1-t}.
+    \]
+    The small-\(\eta\) covered fraction is
+    \[
+    F(6\eta)+1-F(1/3-4\eta)
+    =\frac{21}{\log2}\eta+O(\eta^2).
+    \]
+    The quoted \(0.151\) and \(0.301\) values check out. Near the peak, the missing fraction is
+    \[
+    \frac{125}{6\log2}\eta'+O(\eta'^2)\approx30.056\,\eta'.
+    \]
+
+    These quantify where the **proved cost guarantees** apply. They do not establish that no almost-all algorithm achieves a smaller exponent. Replace the unqualified impossibility statements accordingly.
+
+    For all semiprimes up to \(X\), the correct fixed-\(\delta\) asymptotic is
+    \[
+    \Pr(p>X^\delta)\sim
+    \frac{\log((1-\delta)/\delta)}{\log\log X},
+    \qquad 0<\delta<1/2,
+    \]
+    rather than \(\log(1/(2\delta))/\log\log X\).
+
+    Also distinguish fixed-\(\varepsilon\) power-saving exceptions from taking \(\varepsilon\to0\) to obtain exponent \(1/6+o(1)\); the latter does not retain a fixed power saving from these estimates.
+
+11. **CORRECT extraction principle; GAP in the operational specification.**  
+    [§3.4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:331)
+
+    The cited 2026 theorem has the stated hypotheses and complexity. [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2601.11131v2#Thmtheorem1.1)
+
+    The prime-order inference is correct. If \(s=\operatorname{ord}_p(\gamma)<m\), the scan at \(i=s\) produces a proper gcd or \(N\); the latter implies \(\operatorname{ord}_N(\gamma)\mid s\), contradicting the certified order bound. The same applies to \(q\).
+
+    The exact-equality test is also correct. The true giant’s matching baby index is unique modulo \(p\), so it reconstructs \(T=Bp+Aq\); the quadratic has root \(p\).
+
+    **Complete the algorithm as follows:**
+
+    - Use \(D\ge\max_k m_k\) for a shared base.
+    - Scan \(1\le i<m\). Return a proper gcd; skip a block if a gcd equals \(N\). This prevents repeated babies from creating quadratically many sorting matches on bad blocks.
+    - Test and remove every giant having an exact baby equality.
+    - On a remaining product gcd \(N\), scan that giant’s \(m\) differences and return a proper factor.
+    - Bound uncovered pairs by the union over the seven possible selected blocks, because cleanliness now depends on both primes.
+
+    The clean block cannot be skipped, and the extra work remains within the claimed budget. Exact-match removal and subsequent collision recovery follow the established pattern in [Harvey, Algorithms 4.1–4.2](https://arxiv.org/html/2010.05450#S4).
+
+12. **No verified uniform power improvement near \(\theta=1/5\) follows, but the exclusions need narrower wording.**  
+    [§6](/Volumes/git/factoring-connection/notes/unbalanced_results.md:502)
+
+    After excluding constant targets, the repaired curvature argument genuinely prevents a power improvement for constant-fraction structural coverage in this model.
+
+    There are concrete qualifications:
+
+    - HH extraction removes the FULL restriction and allows the coarse coverage analysis through \(R\asymp X_0^{1/5}h^{4/5}\). It does not improve the cost peak.
+    - The finite-\(H\) cost crossover is
+      \[
+      R_*=X_0^{1/5}h^{-8/5}=X_0^{1/5}H^{-16/5}.
+      \]
+    - Factor-dependent structure can beat the profile on special inputs. For example, if \(p-1\) is \(B\)-smooth, an exponent containing all relevant prime powers gives a Pollard \(p-1\) test in \(\widetilde O(B)\) work whenever the other prime does not also annihilate the base. This beats the peak when \(B<N^{1/5}\), but supplies no required almost-all density theorem.
+
+    Thus the note has no general exclusion of correlated average-case designs. The constant-target counterexample beats its formal model as written; it does not supply a factoring algorithm.
+
+| Result | Verdict |
+|---|---|
+| **Theorem U** | **ACCEPT**, with minor notation corrections |
+| **Theorem Uθ** | **ACCEPT WITH FIXES** — repair the regime-overlap span |
+| **Theorem Uθ′** | **ACCEPT** for the stated \(K\)-block variant |
+| **Proposition O′** | **REJECT as written** — constant-target counterexample; optimality claim also needs repair |

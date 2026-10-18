@@ -1,0 +1,304 @@
+The upper-bound constructions largely survive. The coarse construction needs a span repair. Proposition O′ is false in the stated model, although its nonconstant-target lower bound is repairable.
+
+Source files were unchanged; §7 was excluded. Below, write \(X_0=2^n\), \(P=(X_0/R)^{1/2}\), \(Q=(X_0R)^{1/2}\), and \(h=H^2\).
+
+1. **CORRECT — Theorem U’s substantive proof and epsilon range.**  
+   [§2.2–2.3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:106)
+
+   The span bound follows directly from
+   \[
+   Bx+AN/x\le (1+\sqrt2)H\sqrt N.
+   \]
+   The shared D′ span therefore suffices.
+
+   Primitive distinct weights have nonzero determinant of absolute value at most \(a_jb_j\le H^2<\ell\), so their classes are distinct. Since \(a_j\ge4\), \(a_jb_j\gg H^2\), and \(b_j\ge H\), the stated coprime-pair estimate gives \(|V_j|\gg H^2\) uniformly. Excluding \(A=B\) is harmless.
+
+   The scale separations hold: \(Y>H^2\), all block primes are smaller than \(p\), and
+   \[
+   \frac{Y^4}{H X_0^{1/2}}
+   \gg n^{-7/3}X_0^{(1-7\varepsilon)/6}\longrightarrow\infty.
+   \]
+   Thus four blocks suffice.
+
+   The large sieve is normalized correctly: count uncovered **integers**, sum over \(O(Q/n)\) prime \(q\)’s, and divide by \(|S_{n,j}|\gg X_0/n^2\). This gives \(O(n^2/H^2)\).
+
+   The FULL count with \(g'\le H^2\) gives
+   \[
+   \frac{|E_c|}{|S_{n,j}|}
+   \ll n\left(\frac{H^5X_0^{1/2}}{Y^2T}+\frac{H^4}{Y}\right).
+   \]
+   Its first exponent is exactly \(-1/12+23\varepsilon/6\). Moreover,
+   \[
+   -\frac1{12}+\frac{23\varepsilon}{6}
+   +\varepsilon+\frac1{360}
+   =\frac{29}{6}\left(\varepsilon-\frac1{60}\right)\le0.
+   \]
+   The claimed \(1/360\) margin is correct, including equality at \(\varepsilon=1/60\). Polynomial factors are absorbed.
+
+   **Minor literal repairs:** line 123 reverses the comparison between \(p\) and \(\sqrt{N/R}\); use \(p\ge\sqrt{N/(2R)}\). Bounds involving the shared \(\bar m_k\) should consistently use \(X_0^{1/2}\), or an unspecified absolute constant times \(\sqrt N\).
+
+2. **WRONG — High severity: the coarse construction assumes the wrong regime boundary.**  
+   [U3](/Volumes/git/factoring-connection/notes/unbalanced_results.md:196)
+
+   Regime II starts at \(R>h/16\), whereas “\(B\le h<R\)” requires \(R>h\). Consequently, \(F\) need not decrease, and the charged \(3Q_j\) span can be insufficient.
+
+   This persists asymptotically. Take \(\varepsilon=1/60\), \(n=120\cdot2^t\), the first regime-II band, \(B=h\), and \(N=X_0-1\). Then
+   \[
+   h/R=225/16,
+   \]
+   and the upper endpoint alone gives
+   \[
+   \mathrm{Hi}-\mathrm{Lo}
+   \ge \left(\frac{121}{16}+o(1)\right)\sqrt{NR},
+   \]
+   exceeding \(3Q_j=(3\sqrt2+o(1))\sqrt{NR}\).
+
+   **Exact repair preserving the weights:** discard the monotonicity argument and use
+   \[
+   F(x)\le(\sqrt2+h/R)\sqrt{NR}
+   <(16+\sqrt2)\sqrt{NR}.
+   \]
+   Set
+   \[
+   \overline{\mathrm{span}}_j=20\sqrt{X_0R}+2
+   \]
+   and define \(\bar m_{j,k}\) accordingly. Every subsequent exponent remains unchanged.
+
+   Alternatively, retain only \(2\le B\le\min(h,R)\); this preserves \(\gg h\) weights and makes the decreasing-function argument valid.
+
+3. **CORRECT — The coarse construction’s remaining lemmas, exception arithmetic, and cost, after that repair.**  
+   [§3.1 proof](/Volumes/git/factoring-connection/notes/unbalanced_results.md:206)
+
+   Lemma 1’s conditions hold: \(\ell>h\ge B\), \(\ell<p\), and the window contains \(F(p)\). Also \(Y^4\gg Q\), since \(Q/h^4\to\infty\) throughout the stated epsilon range. Four blocks suffice.
+
+   With \(T\asymp Q^{1/2}X_0^{-\varepsilon}\),
+   \[
+   |E_a|/|S_{n,j}|\ll nX_0^{-2\varepsilon}.
+   \]
+   Coverage gives
+   \[
+   |E_b|/|S_{n,j}|
+   \ll \frac{n^2}{h}\left(1+\frac{Y^2}{P}\right),
+   \qquad
+   \frac{Y^2}{P}\asymp
+   X_0^{-1/6}R^{5/6}h^{-2/3}.
+   \]
+   Hence \(Y^2\le P\) throughout \(\theta\le1/5\).
+
+   The FULL fraction is bounded by
+   \[
+   Cn\left(
+   h^{8/3}Q^{-1/6}X_0^\varepsilon
+   +h^{4/3}R^{5/6}X_0^{-1/6}
+   +h^{2/3}X_0^{-1/3}R^{2/3}
+   \right).
+   \]
+   **Yes: the second term really is \(h^{4/3}R^{5/6}X_0^{-1/6}\).**
+
+   The first term has exponent at most \(-1/12+11\varepsilon/3\). At \(\varepsilon=1/60\), its margin beyond \(X_0^{-\varepsilon}\) is \(1/180\). At \(\theta=1/5-3\varepsilon\), the second term has exponent \(-7\varepsilon/6\), leaving margin \(\varepsilon/6\). The third term is smaller than the stated \(X_0^{-1/6}\) bound.
+
+   The cost remains
+   \[
+   n^{O(1)}h^{2/3}Q^{1/3}.
+   \]
+
+   **WRONG wording in “What fails”:** \(Y^2>P\) does not begin at \(\theta=1/5\). Its threshold is
+   \[
+   R\asymp X_0^{1/5}h^{4/5}.
+   \]
+   In particular, at \(R=X_0^{1/5}\), \(Y^2/P\asymp h^{-2/3}\ll1\).
+
+4. **CORRECT — Fine-band span, coverage partition, and cost.**  
+   [§3.2](/Volumes/git/factoring-connection/notes/unbalanced_results.md:263)
+
+   U4’s identity and bound are valid. On each \(I_{q,b}\), the common admissible \(B\)-interval has length at most \(2\Delta<\ell\), contains at least \(\Delta-1\) weights, and loses at most one multiple of \(\ell\). Thus \(\omega(\ell)\ge\Delta-2\), with distinct inverse classes.
+
+   Summing the sieve bounds costs
+   \[
+   \frac{Cn}{\Delta}(P+RY^2).
+   \]
+   The needed comparison is
+   \[
+   \frac{RY^2}{P}
+   \asymp\Delta^{4/3}X_0^{-1/6}R^{-1/6}=o(1).
+   \]
+   This holds uniformly for the stated regime and parameters. The exceptional fraction is \(O(n^2/\Delta)\).
+
+   The balance and cost are also correct:
+   \[
+   Y\asymp\Delta^{2/3}X_0^{1/6}R^{-5/6},
+   \qquad
+   C_{\mathrm{band}}\ll n^{O(1)}\Delta^{2/3}(X_0R)^{1/6}.
+   \]
+
+5. **CORRECT — The swapped FULL count is valid with the stated theorem parameters.**  
+   [Lemma 10′](/Volumes/git/factoring-connection/notes/unbalanced_results.md:282)
+
+   Crucially, fixing \(p,B,\ell,\delta\) makes
+   \[
+   Z=(B-1)(p-1)+\ell^2\delta
+   \]
+   independent of \(q\). Here \(Z\) denotes the note’s \(X\).
+
+   The chosen \(\Delta\) gives \(R/\Delta\ge4\cdot2^K\). With a public, bit-length-based \(\bar m_{j,k}\),
+   \[
+   \ell^2\bar m_{j,k}
+   \le4\overline{\mathrm{span}}_j+8\,4^KY^2
+   <Rp/2
+   \]
+   for sufficiently large \(n\). The first contribution is small because \(\Delta/R\) is small; the second tends to zero relative to \(Rp\). Therefore \(0<Z<3q<N\). The zero-divisor-count catastrophe \(Z=0\) is excluded.
+
+   FULL implies \(e=\operatorname{ord}_q(2)>T\) divides \(Z\). Cleanliness gives \(\ell\nmid e\), so CRT with
+   \[
+   q\equiv1\pmod e,\qquad q\equiv Bp\pmod\ell
+   \]
+   gives at most \(2\Delta p/(T\ell)+1\) possibilities for each divisor \(e\). Multiplication by \(\tau(Z)\) is legitimate.
+
+   Summation gives exactly the stated form
+   \[
+   Cn^2\tau_*
+   \left(\frac{\bar m\Delta}{T}+\frac{\bar mRY}{Q}\right).
+   \]
+   More precisely, its two contributions are
+   \[
+   X_0^{o(1)}
+   \left(
+   \Delta^{5/3}X_0^{-1/12+\varepsilon}R^{-1/12}
+   +\Delta^{4/3}X_0^{-1/6}R^{-1/6}
+   \right).
+   \]
+   The displayed exponents in the note are valid upper bounds; its first is loose. The divisor-function factor is absorbed by the fixed epsilon margins.
+
+   **Clarification to add:** explicitly carry over \(T\asymp Q^{1/2}X_0^{-\varepsilon}\) and specify that \(\bar m\) is public. Using an actual \(q\)-dependent window length while fixing \(\delta\) would invalidate this counting argument.
+
+6. **CORRECT — \(O(1/\varepsilon)\) blocks suffice; four generally do not.**  
+   [Clean-block discussion](/Volumes/git/factoring-connection/notes/unbalanced_results.md:294)
+
+   The required condition is \(Y^K>q_{\max}\). At the largest permitted ratio,
+   \[
+   Y=X_0^{19\varepsilon/6+o(1)},\qquad q_{\max}\ll X_0^{3/5}.
+   \]
+   Thus the stated
+   \[
+   K=\left\lceil\frac3{5\varepsilon}\right\rceil+2
+   \]
+   is more than sufficient. The resulting \(2^{O(1/\varepsilon)}\) constant is correctly acknowledged.
+
+   An order \(1/\varepsilon\) block count is needed by this product argument near the upper endpoint as \(\varepsilon\to0\). It is unnecessary in smaller-ratio subranges. Four blocks suffice asymptotically only when
+   \[
+   \theta<(1+16\varepsilon)/23.
+   \]
+
+7. **CORRECT — Proposition O′(a), including arbitrary exponent sets.**  
+   [Proof of (a)](/Volumes/git/factoring-connection/notes/unbalanced_results.md:430)
+
+   On the right of the band minimum, \(g'(x_0)\ge0\), including when the minimum is the left endpoint. Therefore
+   \[
+   g'\ge\kappa(x-x_0),\qquad
+   g-m_0\le(x-x_0)g'\le g'^2/\kappa.
+   \]
+   The derivative-height inequality uses only \(g''\ge\kappa\) on the band.
+
+   The per-value preimage bounds and summation over integer-spaced values are valid. The constant \(8\) is safe. Negating a concave target reverses interval endpoint conventions, which does not change the final bound.
+
+8. **WRONG — Fatal model counterexample to Proposition O′(b) and (c).**  
+   [Model definition](/Volumes/git/factoring-connection/notes/unbalanced_results.md:394)
+
+   Nothing excludes \(\alpha=\beta=0\). Choose
+   \[
+   M=1,\quad r=0,\quad c_0=g_0=0,\quad S=\{0\},
+   \]
+   with one giant. Then \(g(p)=0\) for every candidate, integrality refinement removes nothing, and **full coverage costs \(2\)**.
+
+   Taking \(R=N^{1/5}\) yields a counterexample family to the claimed \(N^{1/5}\) lower bound.
+
+   **Exact repair:** require \((\alpha,\beta)\ne(0,0)\). Then, for \(\beta=0\), the refined class is empty or one arithmetic progression with modulus \(M'\), and
+   \[
+   g(r'+M'x)=c+kx,\qquad
+   k=\alpha M'/M^2\in\mathbb Z\setminus\{0\}.
+   \]
+   Part (b) follows. The aggregation in (c) then correctly gives the stated minimum.
+
+   The floor relaxation is coherent as a combinatorial definition after making the \(\beta=0\) integrality restriction explicit. “Exactly collides” should become “has an intended index collision”: collisions modulo a group order are deliberately excluded. General targets also need an explicit lock-admissibility condition if the model is presented as describing executable searches.
+
+9. **GAP — High severity: “optimal in the model” is not established by the cited upper bounds.**  
+   [Corollary O″](/Volumes/git/factoring-connection/notes/unbalanced_results.md:460)
+
+   The repaired proposition proves a lower bound for constant-fraction candidate coverage **for each fixed \(N\)**. Theorem Uθ proves coverage of the true factor for most varying semiprimes. Its sieve argument fixes \(q\), not \(N\). The multiplicity \(\lambda\asymp H^2/n\) does not bridge these quantifiers.
+
+   Pollard–Strassen is also outside the stated model. The combinatorial \(\sqrt p\) branch can instead be matched explicitly using \(M=1,\alpha=1,\beta=0\), one interval baby set, and translated intervals covering the candidate range.
+
+   **Exact repair:** delete the claimed DCL constant-fraction coverage assertion and replace “optimal in \(\mathfrak L\)” with “the lower-bound exponents coincide with the available factoring upper-bound exponents, under different coverage guarantees,” unless a matching fixed-\(N\) construction is supplied.
+
+10. **CORRECT population arithmetic; WRONG impossibility inference and one counting constant.**  
+    [§4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:361)
+
+    The normalized density and CDF are
+    \[
+    \rho(\theta)=\frac{2}{\log2}\frac1{1-\theta^2},
+    \qquad
+    F(t)=\log_2\frac{1+t}{1-t}.
+    \]
+    The small-\(\eta\) covered fraction is
+    \[
+    F(6\eta)+1-F(1/3-4\eta)
+    =\frac{21}{\log2}\eta+O(\eta^2).
+    \]
+    The quoted \(0.151\) and \(0.301\) values check out. Near the peak, the missing fraction is
+    \[
+    \frac{125}{6\log2}\eta'+O(\eta'^2)\approx30.056\,\eta'.
+    \]
+
+    These quantify where the **proved cost guarantees** apply. They do not establish that no almost-all algorithm achieves a smaller exponent. Replace the unqualified impossibility statements accordingly.
+
+    For all semiprimes up to \(X\), the correct fixed-\(\delta\) asymptotic is
+    \[
+    \Pr(p>X^\delta)\sim
+    \frac{\log((1-\delta)/\delta)}{\log\log X},
+    \qquad 0<\delta<1/2,
+    \]
+    rather than \(\log(1/(2\delta))/\log\log X\).
+
+    Also distinguish fixed-\(\varepsilon\) power-saving exceptions from taking \(\varepsilon\to0\) to obtain exponent \(1/6+o(1)\); the latter does not retain a fixed power saving from these estimates.
+
+11. **CORRECT extraction principle; GAP in the operational specification.**  
+    [§3.4](/Volumes/git/factoring-connection/notes/unbalanced_results.md:331)
+
+    The cited 2026 theorem has the stated hypotheses and complexity. [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2601.11131v2#Thmtheorem1.1)
+
+    The prime-order inference is correct. If \(s=\operatorname{ord}_p(\gamma)<m\), the scan at \(i=s\) produces a proper gcd or \(N\); the latter implies \(\operatorname{ord}_N(\gamma)\mid s\), contradicting the certified order bound. The same applies to \(q\).
+
+    The exact-equality test is also correct. The true giant’s matching baby index is unique modulo \(p\), so it reconstructs \(T=Bp+Aq\); the quadratic has root \(p\).
+
+    **Complete the algorithm as follows:**
+
+    - Use \(D\ge\max_k m_k\) for a shared base.
+    - Scan \(1\le i<m\). Return a proper gcd; skip a block if a gcd equals \(N\). This prevents repeated babies from creating quadratically many sorting matches on bad blocks.
+    - Test and remove every giant having an exact baby equality.
+    - On a remaining product gcd \(N\), scan that giant’s \(m\) differences and return a proper factor.
+    - Bound uncovered pairs by the union over the seven possible selected blocks, because cleanliness now depends on both primes.
+
+    The clean block cannot be skipped, and the extra work remains within the claimed budget. Exact-match removal and subsequent collision recovery follow the established pattern in [Harvey, Algorithms 4.1–4.2](https://arxiv.org/html/2010.05450#S4).
+
+12. **No verified uniform power improvement near \(\theta=1/5\) follows, but the exclusions need narrower wording.**  
+    [§6](/Volumes/git/factoring-connection/notes/unbalanced_results.md:502)
+
+    After excluding constant targets, the repaired curvature argument genuinely prevents a power improvement for constant-fraction structural coverage in this model.
+
+    There are concrete qualifications:
+
+    - HH extraction removes the FULL restriction and allows the coarse coverage analysis through \(R\asymp X_0^{1/5}h^{4/5}\). It does not improve the cost peak.
+    - The finite-\(H\) cost crossover is
+      \[
+      R_*=X_0^{1/5}h^{-8/5}=X_0^{1/5}H^{-16/5}.
+      \]
+    - Factor-dependent structure can beat the profile on special inputs. For example, if \(p-1\) is \(B\)-smooth, an exponent containing all relevant prime powers gives a Pollard \(p-1\) test in \(\widetilde O(B)\) work whenever the other prime does not also annihilate the base. This beats the peak when \(B<N^{1/5}\), but supplies no required almost-all density theorem.
+
+    Thus the note has no general exclusion of correlated average-case designs. The constant-target counterexample beats its formal model as written; it does not supply a factoring algorithm.
+
+| Result | Verdict |
+|---|---|
+| **Theorem U** | **ACCEPT**, with minor notation corrections |
+| **Theorem Uθ** | **ACCEPT WITH FIXES** — repair the regime-overlap span |
+| **Theorem Uθ′** | **ACCEPT** for the stated \(K\)-block variant |
+| **Proposition O′** | **REJECT as written** — constant-target counterexample; optimality claim also needs repair |

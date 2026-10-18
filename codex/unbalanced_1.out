@@ -1,0 +1,391 @@
+Your small-ratio extension works. Your large-ratio exponent also works as an upper bound, but the shrinking prime scale is unnecessary, and the finite-\(H\) crossover needs correction. The curvature calculation gives a valid obstruction for an explicitly defined covering model; it does not give a general factoring lower bound.
+
+I obtain no \(N^{1/6+o(1)}\) algorithm covering every band \(R\le N^\theta\) for fixed \(\theta>0\). There is, however, a useful extraction improvement: standard collision recovery, combined with the 2026 Harvey–Hittmeir order theorem and seven prime blocks, removes the order exception entirely.
+
+Everything below is read-only. Write
+\[
+t=q/p,\qquad R\le t\le2R,\qquad
+P=\sqrt{N/R},\qquad Q=\sqrt{NR}=RP.
+\]
+Thus \(p\in[P/\sqrt2,P]\). Put \(h=H^2\). Tildes suppress powers of \(\log N\); span identities are stated without that suppression. For pair-counting arguments, take the parameters from the bit-length scale \(X=2^n\), replacing \(N\) by \(X\) in their definitions.
+
+**1. The rectangle works, and its actual span is substantially smaller than your proposed bound.**
+
+Take
+\[
+V_R=\left\{(A,B):
+1\le A\le\left\lfloor H/\sqrt R\right\rfloor,\quad
+1\le B\le\left\lfloor H\sqrt R\right\rfloor,\quad
+(A,B)=1\right\}.
+\]
+For \(R\le H^2\),
+\[
+|V_R|=\Theta(H^2)
+\]
+uniformly, including the endpoint where the numerator range has length one.
+
+For \(F(x)=Bx+AN/x\), its exact minimum on \(I=[P/\sqrt2,P]\) is attained at
+\[
+x_*=\operatorname{clamp}\!\left(\sqrt{AN/B},I\right),
+\]
+and its maximum is attained at an endpoint. Therefore the exact real span is
+\[
+S_{A,B}
+=\max\{F(P/\sqrt2),F(P)\}-F(x_*).
+\]
+
+In fact,
+\[
+\boxed{S_{A,B}\le(\sqrt2-1)H\sqrt N.}
+\]
+To prove it, let \(x<y\) belong to \(I\). Then
+\[
+F(x)-F(y)
+\le AN(1/x-1/y)
+\le(\sqrt2-1)AQ
+\le(\sqrt2-1)H\sqrt N,
+\]
+whereas
+\[
+F(y)-F(x)
+\le B(y-x)
+\le(1-1/\sqrt2)BP
+\le(1-1/\sqrt2)H\sqrt N.
+\]
+Taking the maximum over \(x,y\) proves the bound.
+
+Thus your \((1+\sqrt2)H\sqrt N\) bound is certainly true. It also follows immediately from
+\[
+F(x)\le BP+\sqrt2\,AQ\le(1+\sqrt2)H\sqrt N.
+\]
+The stronger bound uses the actual interval minimum. Using the notes’ global AM–GM lower endpoint instead gives a larger, still valid window. Integer rounding adds at most two.
+
+The residue classes remain distinct under the same modulus condition as in D′. Indeed,
+\[
+|AB'-A'B|<H^2,
+\]
+despite the larger upper bound for \(B\). Primitive distinct pairs therefore give distinct classes \(Aq/B\bmod\ell\) whenever \(\ell>h\).
+
+Here is the general accounting used throughout. Suppose there are \(K\) weight/window specifications, each with span at most \(S\), and primes \(\ell\asymp Y\). Then
+\[
+T\le2K|\mathcal P|=O(KY/\log Y),
+\qquad
+W_\tau\le S/\ell^2+2.
+\]
+With baby length \(m\), the number of giants is exactly
+\[
+G=\sum_\tau\left\lceil W_\tau/m\right\rceil.
+\]
+The resulting bit-cost bound is
+\[
+\widetilde O\left(KY+m+\frac{KS}{mY}\right).
+\]
+The convenient endpoint choice
+\[
+m=\lceil S/Y^2\rceil+2
+\]
+gives
+\[
+\widetilde O(KY+S/Y^2).
+\]
+Balancing yields
+\[
+Y\asymp(S/K)^{1/3},\qquad
+m\asymp K^{2/3}S^{1/3}.
+\]
+
+For the rectangle, \(K\asymp h\) and \(S\asymp H\sqrt N\), hence
+\[
+\boxed{
+Y\asymp N^{1/6}H^{-1/3},\qquad
+m\asymp H^{5/3}N^{1/6},\qquad
+C_R=\widetilde O(H^{5/3}N^{1/6}).
+}
+\]
+There is no power of \(R\).
+
+For \(J\) dyadic ratio bands, the same primes, cofactor handles and baby list can be shared within each prime block. At the original \(Y\), only the targets acquire a factor \(J\). Reoptimizing jointly gives
+\[
+Y\asymp N^{1/6}H^{-1/3}J^{-1/3},
+\qquad
+C=\widetilde O(J^{2/3}H^{5/3}N^{1/6}).
+\]
+Either version has the same exponent when \(J=O(\log N)\).
+
+Consequently, with D′’s \(H\asymp(\log N)N^{\varepsilon/2}\), ratios through \(N^\varepsilon\) cost nothing further in the exponent.
+
+**2. Your large-ratio cost is correct, but there is a simpler construction with a growing prime scale.**
+
+First, your fine-band calculation checks out. Partition \([R,2R]\) into intervals of width \(h\), and in each use \(A=1\) and \(h\) nearby consecutive values of \(B\). For \(t,B\) in the same interval,
+\[
+F(p)-2\sqrt{BN}
+=\sqrt N\,\frac{(t-B)^2}
+{\sqrt t\,(\sqrt t+\sqrt B)^2}
+\le\frac{\sqrt N\,h^2}{4R^{3/2}}.
+\]
+There are \(\asymp R/h\) intervals and \(h\) weights per interval, so
+\[
+K\asymp R,\qquad
+S\ll\sqrt N\,h^2R^{-3/2}.
+\]
+Therefore
+\[
+\boxed{
+Y_{\rm fine}\asymp
+H^{4/3}N^{1/6}R^{-5/6},\qquad
+m\asymp RY_{\rm fine},\qquad
+C_R=\widetilde O(H^{4/3}N^{1/6}R^{1/6}).
+}
+\]
+
+But neither fine bands nor weights near \(R\) are necessary. For every \(R\ge h\), simply take
+\[
+\boxed{V_R=\{(1,B):1\le B\le h\}.}
+\]
+There are \(h\) primitive weights and \(h\) distinct classes at every \(\ell>h\).
+
+Since \(B\le R\), \(F(x)=Bx+N/x\) is decreasing throughout \(I\). Its exact span is
+\[
+S_B
+=(\sqrt2-1)Q-(1-1/\sqrt2)BP
+\le(\sqrt2-1)Q.
+\]
+Thus \(K=h\), \(S\asymp Q\), and
+\[
+\boxed{
+Y_{\rm coarse}\asymp(Q/h)^{1/3}
+=N^{1/6}R^{1/6}H^{-2/3},
+}
+\]
+\[
+\boxed{
+m\asymp h^{2/3}Q^{1/3}
+=H^{4/3}N^{1/6}R^{1/6},
+\qquad
+C_R=\widetilde O(H^{4/3}N^{1/6}R^{1/6}).
+}
+\]
+This attains your cost with \(h\) weight specifications instead of \(R\), and with primes whose size increases with \(R\). The arithmetic-progression construction across \([R,2R]\) also works, but consecutive small \(B\)’s already suffice.
+
+The three constructions compare as follows:
+
+| Construction | Specifications \(K\) | Span bound \(S\), up to constants | Optimized \(Y\) |
+|---|---:|---:|---:|
+| Rectangle, \(R\le h\) | \(H^2\) | \(H\sqrt N\) | \(N^{1/6}H^{-1/3}\) |
+| Fine bands, \(R>h\) | \(R\) | \(\sqrt N H^4R^{-3/2}\) | \(N^{1/6}H^{4/3}R^{-5/6}\) |
+| Consecutive \(B\)’s, \(R>h\) | \(H^2\) | \(\sqrt{NR}\) | \(N^{1/6}R^{1/6}H^{-2/3}\) |
+
+Your proposed cutoff and crossover are different quantities. In the fine-band parametrization,
+\[
+Y_{\rm fine}=H^2
+\quad\Longleftrightarrow\quad
+\boxed{R=N^{1/5}H^{-4/5}.}
+\]
+Pollard–Strassen costs \(\widetilde O(\sqrt P)=\widetilde O((N/R)^{1/4})\), by the standard small-factor bound. [Harvey, Proposition 2.5](https://arxiv.org/html/2010.05450)
+
+Equating this with the DCL cost gives
+\[
+H^{4/3}N^{1/6}R^{1/6}=(N/R)^{1/4}
+\quad\Longleftrightarrow\quad
+\boxed{R_*=N^{1/5}H^{-16/5}.}
+\]
+At that crossover,
+\[
+C_*=\widetilde O(N^{1/5}H^{4/5}),
+\qquad
+Y_{\rm fine}=H^4.
+\]
+Thus Pollard–Strassen becomes competitive before the fine construction reaches \(Y=H^2\). Both thresholds are \(N^{1/5+o(1)}\) when \(H=N^{o(1)}\).
+
+There is also an extraction issue to address before calling these arithmetic budgets almost-all factoring theorems. Merely substituting larger weights into D′’s original FULL-count estimate is insufficient. Here is a rigorous replacement.
+
+Harvey–Hittmeir’s June 2026 theorem deterministically finds \(\alpha\) with
+\[
+\operatorname{ord}_N(\alpha)>D
+\]
+or a proper divisor, for every \(1\le D<N-1\), in \(\widetilde O(\sqrt D)\) time. [Theorem 1.1](https://arxiv.org/html/2601.11131)
+
+Apply it with \(D\ge m\). Use seven disjoint prime blocks, all primes exceeding \(Y\), with \(Y^7>N\). At least one block is coprime to
+\[
+(p-1)(q-1)<N:
+\]
+otherwise seven distinct primes exceeding \(Y\) would divide that product. For its exponent \(L\),
+\[
+\gcd(L,\operatorname{ord}_N(\alpha))=1,
+\]
+so \(\gamma=\alpha^L\) retains order \(>m\).
+
+Now use the following collision recovery.
+
+1. During baby construction, compute
+   \[
+   \gcd(\gamma^i-1,N),\qquad 1\le i<m.
+   \]
+   A proper gcd factors \(N\). If none occurs and the block has order \(>m\) modulo \(N\), both prime orders are at least \(m\).
+
+2. Find exact giant–baby equalities modulo \(N\). An equality at index \(i\) proposes
+   \[
+   T=c+\ell^2(g_{\rm lo}+jm+i).
+   \]
+   Test \(T\) by solving
+   \[
+   Bz^2-Tz+AN=0
+   \]
+   and validating any divisor. For the true giant, uniqueness modulo \(p\) forces the matching index to be the true index.
+
+3. Remove exact equalities and perform batched gcd collision detection. If a product gcd is \(N\), scan that giant against the \(m\) babies. Every nonunit difference now gives a proper factor, since exact equalities were removed. This scan happens at most once before success, so it adds only \(O(m)\) work.
+
+This is the standard exact-equality/recovery principle behind Harvey’s collision machinery, applied to the shared cofactor handles. [Harvey, Algorithms 4.1–4.2](https://arxiv.org/html/2010.05450)
+
+**The resulting order argument is deterministic on every semiprime; no small-order exceptional set and no one-sidedness estimate remain.** The almost-all ingredient is coverage.
+
+For the consecutive-\(B\) construction, the large sieve gives
+\[
+\boxed{
+\text{exceptional fraction}
+\ll
+\frac{(\log N)^2}{h}
+\left(1+\frac{Y^2}{P}\right).
+}
+\]
+Indeed, for fixed \(q\), uncovered integers \(p\) number
+\[
+\ll(P+Y^2)\frac{\log Y}{h}.
+\]
+Sum over prime \(q\)’s and divide by the \(\asymp N/(\log P\log Q)\) prime pairs in the band.
+
+Here
+\[
+\frac{Y_{\rm coarse}^2}{P}
+=N^{-1/6}R^{5/6}H^{-4/3},
+\]
+which equals \(H^{-4}\) at \(R=R_*\). Thus the coverage estimate remains strong throughout the useful DCL range. D′’s parameters also satisfy \(Y>h\) and \(Y^7>N\) there.
+
+For \(H=N^{o(1)}\), the resulting per-band envelope is
+\[
+\boxed{
+\min\left\{
+N^{1/6}R^{1/6},\,
+N^{1/4}R^{-1/4}
+\right\}N^{o(1)}.
+}
+\]
+At \(R=N^\rho\), its exponent is
+\[
+\begin{cases}
+(1+\rho)/6,&0\le\rho\le1/5,\\
+(1-\rho)/4,&1/5\le\rho\le1/3.
+\end{cases}
+\]
+The maximum is \(1/5\), at \(\rho=1/5\). This improves extraction and simplifies the construction; it does not remove the ratio penalty.
+
+**3. The curvature lemma is correct under explicit assumptions; its proposed universal interpretation is not.**
+
+Let
+\[
+G(x)=\frac{B(r+Mx)+AN/(r+Mx)-c}{M^2}.
+\]
+For positive integer \(A\),
+\[
+G''(x)=\frac{2AN}{(r+Mx)^3}
+\ge\frac{2R}{P}
+\]
+throughout the smaller-factor interval.
+
+If \(G''\ge\kappa>0\), the preimage of a vertical interval of width \(m\) has at most two monotone components. Each has length at most \(\sqrt{2m/\kappa}\): integrate the second-derivative bound from the endpoint nearest the minimum. Therefore
+\[
+\boxed{
+\#\{x\in\mathbb Z:G(x)\in[a,a+m]\}
+\le2\sqrt{mP/R}+2.
+}
+\]
+Your chain-rule cancellation of \(M^2\) is correct. This counts candidates in the residue class \(p=r+Mx\).
+
+If \(G_{\rm count}\) separately charged windows must cover \(\asymp P\) candidates, then
+\[
+G_{\rm count}\left(2\sqrt{mP/R}+2\right)\gtrsim P.
+\]
+In the stated range, optimizing \(m+G_{\rm count}\) gives
+\[
+\boxed{
+m+G_{\rm count}\gtrsim(PR)^{1/3}
+=Q^{1/3}=N^{1/6}R^{1/6}.
+}
+\]
+So the calculation is sound **for full-candidate coverage by individually charged consecutive exponent windows**.
+
+The qualifications are substantial:
+
+- **Coverage quantifier.** D′ covers the true factor for almost all pairs. It does not cover \(P\) candidates for each fixed input \(N\). Your lower-bound deduction inserts that stronger requirement.
+- **Cost model.** Counting windows is not automatically a lower bound on computation. A future algorithm might process a structured family implicitly.
+- **Intended versus accidental collisions.** The argument counts real-window coverage. It does not count useful collisions arising through reduction modulo a group order.
+- **Allowed targets.** The inequality assumes a nonzero positive integer coefficient of \(N/p\). Zero coefficients, rational normalization, nonlinear handles and other representations require separate arguments.
+
+For example, \(A=0,B=M\) gives \(T=Mp\), locked modulo \(M^2\) by \(p\bmod M\), and the normalized function is linear. This degenerates to an ordinary progression search; it supplies no faster algorithm, but disproves an unrestricted claim about “any linear-in-\(N\) target.”
+
+The \(q\)-side does **not** escape the lemma within the positive-weight model. Its target is
+\[
+T'=Bq+Ap.
+\]
+Express it again in the smaller factor:
+\[
+T'(p)=Ap+BN/p.
+\]
+A residue class for \(q\bmod M\) corresponds bijectively to one for \(p\bmod M\), and
+\[
+\frac{d^2}{dx^2}\frac{T'(r+Mx)-c'}{M^2}
+=\frac{2BN}{p^3}\ge\frac{2R}{P}.
+\]
+The coefficient roles swap, so the same bound applies.
+
+My assessment of the suggested escape routes is:
+
+| Modification | Concrete assessment |
+|---|---|
+| Composite locks | \(M^2\) still cancels from the second derivative. Multiple root classes must be counted. No improvement follows merely from making \(M\) composite. |
+| Both-side extraction | Removes extraction failures, as above; it does not shrink these windows. |
+| Rational weights | Clearing denominators restores integer coefficients and exponent scaling. Taking fractional group powers needs an additional justified operation. |
+| Multipliers \(kN\) | Balancing by \(k\asymp R\) naturally incurs \((kN)^{1/6}\asymp N^{1/6}R^{1/6}\). This reproduces the penalty. |
+| HH local lattices | With \(S=Mm_0\), their usual accounting is \(S+\sqrt N/S^{3/2}\). The nonzero-\(A\) regime has \(A=O(\sqrt{S/R})\); optimizing recovers \(N^{1/5}\), without a ratio improvement below the crossover. |
+| McKee–Pinch pigeonhole | Guarantees suitable weighted congruences, but its proved accounting does not yield the desired \(1/6\) exponent. |
+| Nonlinear \(E(N)\), higher-degree lattices, other groups | Outside this curvature proof. I found no rigorous construction attaining the requested uniform bound. They remain loopholes in an impossibility claim. |
+
+The HH lattice window and coefficient bounds follow directly from their Proposition 3.3. [Harvey–Hittmeir 2022](https://arxiv.org/html/2105.11105)
+
+Thus: the lemma explains the \(R^{1/6}\) penalty in this model. It does not establish that every deterministic or almost-all factoring algorithm must pay it.
+
+**4. I found no published result supplying the missing uniform ratio theorem.**
+
+The relevant literature distinguishes rigorous bounds from heuristic speedups:
+
+| Work | Relevant result |
+|---|---|
+| [Lehman 1974](https://doi.org/10.1090/S0025-5718-1974-0340163-2) | Rational approximations to the factor ratio give a deterministic \(N^{1/3}\) algorithm; no intermediate-ratio sub-\(1/5\) theorem follows. |
+| [McKee 1996, Euler method](https://doi.org/10.1112/blms/28.4.351) | Proved \(N^{1/3+\eta}\) algorithm. |
+| [McKee 1999, speeding Fermat](https://citeseerx.ist.psu.edu/document?doi=010e639e5176f16cee1b8aff586141f4d5c8eb10&repid=rep1&type=pdf) | The \(N^{1/4+\eta}\) speedup is heuristic. |
+| [McKee–Pinch 1996, §5](https://link.springer.com/chapter/10.1007/3-540-61581-4_57) | The weighted congruence gives cost \(\widetilde O(\max(\lambda p,\mu q)/k^2)\) per lock. Their pigeonhole construction proves \(N^{1/3+\eta}\); the balanced \(1/4\) variant is heuristic. I checked the repository’s scanned pages. |
+| [Hittmeir 2020](https://arxiv.org/abs/2006.16729) | Proved deterministic \(N^{2/9+o(1)}\). |
+| [Harvey 2021](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir 2022](https://arxiv.org/abs/2105.11105) | General deterministic exponent \(1/5\); the latter improves logarithmic factors. |
+| [Gao–Feng–Hu–Pan, 2512.19076](https://arxiv.org/html/2512.19076v1) | Their stated factoring theorem assumes \(p,q=\Theta(\sqrt N)\) and improves the logarithmic factor to \(\log^{13/5}N/(\log\log N)^{3/5}\). It supplies no polynomial-ratio extension. |
+| [Harvey–Hittmeir 2026](https://arxiv.org/html/2601.11131) | Removes the lower restriction on the target order \(D\), enabling the extraction combination above. It supplies no ratio-dependent factoring exponent improvement by itself. |
+
+Carella’s claimed \(1/6\) result has a concrete proof defect. In Theorem 5.1, write the correctly expanded polynomial as
+\[
+f(x,y)=(P_0+Dx)(Q_0+Dy)-N,
+\qquad D\asymp N^{1/6}.
+\]
+Because \(P_0Q_0\equiv N\pmod D\), **every coefficient is divisible by \(D\)**. The displayed coefficient list omits the factors \(D\) on the linear terms and then asserts primitivity. After removing the content, at \(X=Y=N^{1/3}\),
+\[
+W\ll N/D=N^{5/6}.
+\]
+The cited bivariate condition would require
+\[
+XY<W^{2/3}\ll N^{5/9},
+\]
+whereas \(XY=N^{2/3}\). Hence that proof establishes neither the balanced claim nor its asserted unbalanced extension. [Carella, equations (17)–(21)](https://arxiv.org/html/1308.2891)
+
+For \(R=N^\rho\), the concrete verdict is therefore:
+
+- For \(0<\rho<1/5\), the derivation above gives an almost-all exponent \((1+\rho)/6<1/5\). I found no prior theorem covering every such prescribed semiprime band with the requested uniform \(1/6\) exponent.
+- For \(1/5<\rho\le1/3\), Pollard–Strassen already gives the rigorous worst-case exponent \((1-\rho)/4<1/5\).
+- At \(R=N^{1/5+o(1)}\), both meet at \(N^{1/5+o(1)}\). None of the checked results removes this peak.

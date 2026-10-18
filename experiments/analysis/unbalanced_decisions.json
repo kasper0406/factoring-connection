@@ -1,0 +1,198 @@
+{
+ "R-a": {
+  "runs": 572,
+  "incorrect": 0,
+  "incorrect_C1": 0,
+  "lemma_bad": {
+   "L1": 0,
+   "L2": 0,
+   "L3": 0,
+   "L4": 0,
+   "L57": 0
+  },
+  "certified_not_success": 0,
+  "holds": true
+ },
+ "R-b": {
+  "W1_success": {
+   "48,0": 24,
+   "48,2": 24,
+   "48,4": 24,
+   "48,6": 24,
+   "64,0": 24,
+   "64,2": 24,
+   "64,4": 24,
+   "64,6": 24,
+   "80,0": 24,
+   "80,2": 24,
+   "80,4": 24,
+   "80,6": 24
+  },
+  "exc": {
+   "64,0": {
+    "certified": 1.0,
+    "uncovered0": 0.016666666666666666,
+    "bound": 0.06347296062586114,
+    "ok": true
+   },
+   "64,3": {
+    "certified": 1.0,
+    "uncovered0": 0.06333333333333334,
+    "bound": 0.08662670471065419,
+    "ok": true
+   },
+   "64,6": {
+    "certified": 1.0,
+    "uncovered0": 0.01,
+    "bound": 0.05867292068925282,
+    "ok": true
+   },
+   "80,0": {
+    "certified": 0.9966666666666667,
+    "uncovered0": 0.05,
+    "bound": 0.08659198668212562,
+    "ok": true
+   },
+   "80,3": {
+    "certified": 1.0,
+    "uncovered0": 0.09333333333333334,
+    "bound": 0.12164184931099253,
+    "ok": true
+   },
+   "80,6": {
+    "certified": 1.0,
+    "uncovered0": 0.02,
+    "bound": 0.0786465468041998,
+    "ok": true
+   }
+  },
+  "holds": true
+ },
+ "R-c": {
+  "ratio_W1_over_C1_j0": {
+   "48": 7.785290522904796,
+   "64": 6.857538773128012,
+   "80": 6.609276898712211
+  },
+  "each_ok": {
+   "48": true,
+   "64": true,
+   "80": true
+  },
+  "drift_80_over_48": 0.8489441568387613,
+  "holds": true
+ },
+ "R-d": {
+  "per_n": {
+   "48": {
+    "C1_cov_j0": 5.791666666666667,
+    "C1_cov_J1": 0.25,
+    "ratio": 0.043165467625899276,
+    "primary_ok": true,
+    "C1_succ_J1": 22,
+    "W1_succ_J1": 24,
+    "secondary_ok": true
+   },
+   "64": {
+    "C1_cov_j0": 6.166666666666667,
+    "C1_cov_J1": 0.3333333333333333,
+    "ratio": 0.05405405405405405,
+    "primary_ok": true,
+    "C1_succ_J1": 23,
+    "W1_succ_J1": 24,
+    "secondary_ok": true
+   },
+   "80": {
+    "C1_cov_j0": 4.75,
+    "C1_cov_J1": 0.25,
+    "ratio": 0.05263157894736842,
+    "primary_ok": true,
+    "C1_succ_J1": 21,
+    "W1_succ_J1": 24,
+    "secondary_ok": true
+   }
+  },
+  "holds_primary": true,
+  "holds_secondary": true
+ },
+ "R-e": {
+  "slopes_E_block0": {
+   "64": 0.15670079514785915,
+   "80": 0.15768605573758862,
+   "96": 0.1515313772776617
+  },
+  "success": {
+   "64,7": 16,
+   "64,9": 16,
+   "80,7": 16,
+   "80,9": 16,
+   "80,11": 16,
+   "96,7": 16,
+   "96,9": 16,
+   "96,11": 16,
+   "96,13": 16
+  },
+  "slope_ok": true,
+  "success_ok": true,
+  "refuted_R16": false
+ },
+ "R-f": {
+  "calibration": {
+   "64,7": {
+    "median_list": 6138.5,
+    "expected": 6178,
+    "ratio": 0.9936063450955002,
+    "ok": true
+   },
+   "64,9": {
+    "median_list": 7503.5,
+    "expected": 7484,
+    "ratio": 1.002605558524853,
+    "ok": true
+   },
+   "80,7": {
+    "median_list": 40746.5,
+    "expected": 39722,
+    "ratio": 1.025791752681134,
+    "ok": true
+   },
+   "80,9": {
+    "median_list": 47565.0,
+    "expected": 47318,
+    "ratio": 1.0052200008453442,
+    "ok": true
+   },
+   "80,11": {
+    "median_list": 58934.0,
+    "expected": 58370,
+    "ratio": 1.009662497858489,
+    "ok": true
+   },
+   "96,7": {
+    "median_list": 258355.0,
+    "expected": 259855,
+    "ratio": 0.9942275499797965,
+    "ok": true
+   },
+   "96,9": {
+    "median_list": 298094.0,
+    "expected": 300052,
+    "ratio": 0.9934744644261662,
+    "ok": true
+   },
+   "96,11": {
+    "median_list": 373630.5,
+    "expected": 373730,
+    "ratio": 0.999733765017526,
+    "ok": true
+   },
+   "96,13": {
+    "median_list": 453457.5,
+    "expected": 466253,
+    "ratio": 0.9725567449431961,
+    "ok": true
+   }
+  },
+  "holds": true
+ }
+}

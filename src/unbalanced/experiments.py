@@ -181,11 +181,34 @@ def run_exc(args) -> Dict:
             "q_bits": q.bit_length()}
 
 
+def _job_key(fn, job):
+    if fn is run_exc:
+        return ("exc", job[0], job[1], job[2])
+    if fn is run_c1:
+        return ("C1", job[2], job[3], job[4])
+    return (job[1], job[2], job[3], job[4])
+
+
+def _rec_key(fn, r):
+    if fn is run_exc:
+        return ("exc", r["n"], r["j"], r["seed"])
+    return (r["design"], r["n"], r["j"], r["seed"])
+
+
 def _pool(fn, jobs, path, procs=30):
-    procs = int(os.environ.get("UNB_PROCS", procs))  # execution-only knob (wall time); added post-freeze, disclosed
-    if os.path.exists(path):
+    # Execution-only knobs, added post-freeze and disclosed (notes §9): UNB_PROCS (pool size),
+    # UNB_MAXTASKS (worker recycling; the frozen value 4 forced every worker to recompute the
+    # n-only designs, ~200 s each), UNB_RESUME=1 (keep existing records and run only the
+    # missing (design, n, j, seed) jobs; runs are deterministic per job, so this is identical).
+    procs = int(os.environ.get("UNB_PROCS", procs))
+    maxt = int(os.environ.get("UNB_MAXTASKS", 4)) or None
+    if os.environ.get("UNB_RESUME") == "1" and os.path.exists(path):
+        from src.common.metrics import read_jsonl
+        done = {_rec_key(fn, r) for r in read_jsonl(path)}
+        jobs = [jb for jb in jobs if _job_key(fn, jb) not in done]
+    elif os.path.exists(path):
         os.remove(path)
-    with Pool(procs, maxtasksperchild=4) as pool:
+    with Pool(procs, maxtasksperchild=maxt) as pool:
         for rec in pool.imap_unordered(fn, jobs):
             append_jsonl(path, rec)
 
@@ -274,8 +297,12 @@ def main(mode: str):
             jobs += [(n, j, s) for j in js for s in c["seeds"]]
         _pool(run_exc, jobs, f"{RAW}/unbalanced_exc.jsonl")
     elif mode == "summarize":
-        from .analyze import summarize
+        from .analyze import summarize, decisions
         summarize()
+        decisions()
+    elif mode == "decisions":
+        from .analyze import decisions
+        decisions()
     else:
         raise SystemExit(f"unknown mode {mode}")
 
