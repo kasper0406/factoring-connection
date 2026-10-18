@@ -1,0 +1,76 @@
+> Source: GPT-6.1-sol r14 journal-style review of paper/main.tex, 2026-10-18.
+
+Theorem 1.1 and Corollary 1.2 accurately reproduce D′ and D″: the parameter ranges, running-time exponents, pair-counted exceptions, and balance restriction agree with the notes. I found no new substantive gap in their factoring argument. The main problems are in the lower-bound section and its interpretation. Files were left unchanged.
+
+1. **The lower-bound model drops the unit-class hypothesis.**  
+   **Location:** [main.tex:699](/home/knielsen/code/factoring-connection/paper/main.tex:699), Theorem C at line 784.  
+   The round-12 audit explicitly requires \(\gcd(r_\tau,M_\tau)=1\). Without it, negative Laurent powers need not be defined or integral on the stated \(\ell\)-adic class. The integer-coefficient lattice need not even be contained in \(L_{r,M}\), making the displayed index undefined.  
+   **Fix:** Require \(r_\tau\in(\mathbb Z/M_\tau\mathbb Z)^\times\), and retain this hypothesis in the denominator lemma and CRT theorem.
+
+2. **The model loses the charge for original windows.**  
+   **Location:** [main.tex:709](/home/knielsen/code/factoring-connection/paper/main.tex:709), proofs at lines 753–780.  
+   Bounding the number of *distinct triples* by \(X\) does not bound the number of original windows by \(X\). The proofs nevertheless charge their rounding errors as \(CX\). The notes explicitly retain one rounding charge per original window, justified because every nonempty window costs a giant step. Arbitrarily many disconnected windows for one triple cannot receive just one such charge.  
+   **Fix:** Restore the operational condition that the number of nonempty original windows is at most \(X\), require positive integer widths, and explain merging and rounding as in `multimod_results.md` §3.1.
+
+3. **Essential lower-bound proofs are missing or incomplete.**  
+   **Location:** [main.tex:731](/home/knielsen/code/factoring-connection/paper/main.tex:731), lines 774–788.  
+   The denominator lemma has no proof; Theorem C has none either. Theorem B supplies the height summation requested by round 12, but still does not establish its prerequisite root-count bound: saying that a congruence holds “modulo a divisor of \(M\)” does not establish the claimed number of classes modulo \(M\). The factor \(O(1)^{\omega(M)}\) also disappears prematurely from the displayed counting calculation.  
+   **Fix:** Include the local denominator proof, the prime-power class count with common valuations handled explicitly, and the primary-denominator decomposition proving C. Retain \(O(1)^{\omega(M)}\) until absorbing it into \(M^{o(1)}\). Include the separate one-term-target argument used by the notes.
+
+4. **The paper overextends the \(1/6\) lower bound to average-case factoring.**  
+   **Location:** [main.tex:808](/home/knielsen/code/factoring-connection/paper/main.tex:808), lines 972–976.  
+   “Going below \(1/6\) needs a non-sumset collision mechanism” does not follow from a theorem about covering every integer candidate for each fixed \(N\). An algorithm succeeding at the true factor for almost every input need not provide that coverage. The preceding quantifier remark correctly acknowledges this distinction, then makes the stronger claim anyway. The existing cost of Pollard–Strassen likewise supplies no universal preprocessing lower bound.  
+   **Fix:** Restrict these conclusions to the stipulated full-candidate covering model. Discuss faster average-case factoring separately.
+
+5. **“Certified” in the experiments is not Proposition 4.13’s certificate.**  
+   **Location:** [main.tex:847](/home/knielsen/code/factoring-connection/paper/main.tex:847), table at line 913; compare [harness.py:83](/home/knielsen/code/factoring-connection/src/dcltheorem/harness.py:83).  
+   The recorded predicate asks whether **some** clean block contains **some** covering target passing a test using the actual \(m\). Proposition 4.13 instead uses the least clean block, excludes every event counted by \(F_k(q)\) using \(\bar m_k\), and requires \(d>T\). These are different sufficient conditions. Restricting even the recorded predicate to the least clean block gives 95.8%, 97.8%, 96.7%, and 97.3% in the four certificate datasets, rather than 100%.  
+   **Fix:** Define the empirical certificate explicitly and prove its sufficiency directly from the extraction lemma. Reserve “Proposition 4.13 certificate” for its actual stronger conditions. This changes the interpretation, not the recorded success rates.
+
+6. **DCH does not guarantee coverage by the specified algorithm’s target family.**  
+   **Location:** [main.tex:942](/home/knielsen/code/factoring-connection/paper/main.tex:942), also lines 798–800.  
+   DCH permits \(A=B\), arbitrary prime congruence classes, and a different prime interval. Section 3 excludes \(A=B\), uses only primes \(3\bmod4\), and has four particular dyadic bands. Thus the conjecture does not directly establish coverage by those targets. Positivity of its weights should also be explicit.  
+   **Fix:** Write \(1\le A,B\), and either strengthen DCH to match the actual target family or identify the modified covering scheme it would support. Keep its covering consequence distinct from factor extraction.
+
+7. **The claimed inclusion of DCL in the model contradicts the model’s definition.**  
+   **Location:** [main.tex:695](/home/knielsen/code/factoring-connection/paper/main.tex:695), lines 707 and 716.  
+   Exponent maps are defined without constant terms, but the proposed DCL map is \((Bp+Aq-c)/\ell^2\). The definition also tests integrality of \(g_\tau-c_\tau\) while applying the window to \(g_\tau\).  
+   **Fix:** Define the integral exponent as \(h_\tau=g_\tau-c_\tau\), apply the integer window to \(h_\tau\), and use its nonconstant coefficient vector in the estimates. Alternatively allow constant terms consistently.
+
+8. **The Carella assessment needs a mathematical explanation the authors endorse.**  
+   **Location:** [main.tex:300](/home/knielsen/code/factoring-connection/paper/main.tex:300).  
+   Disclosure of the AI assessment is appropriate, but an unpublished AI referee’s judgment is insufficient support for dismissing a competing claimed exponent. Carella’s source provides enough detail to make the objection checkable: §5, equation (17), contains the polynomial expansion, followed by the coefficient list and small-root argument. [Carella, arXiv:1308.2891v3](https://arxiv.org/html/1308.2891v3).  
+   **Fix:** Give the corrected coefficients, the division by their common content, and the resulting failed small-root inequality, with exact theorem/equation references. Otherwise describe the claim as unverified without adopting the negative assessment.
+
+9. **A relevant prior-art reference already identified by the audit is omitted.**  
+   **Location:** [main.tex:258](/home/knielsen/code/factoring-connection/paper/main.tex:258), `refs.bib`.  
+   Round 12 identifies Pantelimon Stănică, Erik Mulder, and Markus Hittmeir, *Multi-target hyperbolic sieves and elliptic trace obstructions*, arXiv:2606.13018v2 (2026). It studies unions of sieve sets for weighted factor sums and their CRT behavior, making it relevant to this comparison. Its authors, title, year, and identifier are confirmed by the [primary record](https://arxiv.org/abs/2606.13018).  
+   **Fix:** Add a brief comparison explaining the difference between those local union estimates and this paper’s global prime-pair coverage argument. The expanded McKee–Pinch comparison is otherwise fair and agrees with the supplied scans.
+
+10. **One bibliography entry names the wrong author.**  
+    **Location:** [refs.bib:193](/home/knielsen/code/factoring-connection/paper/refs.bib:193).  
+    *On the counting function of semiprimes*, arXiv:2006.16491v2 (2020), is by **Dragos Crisan and Radek Erban**, not Radu Erban. The title, year, and arXiv identifier match. [Primary record](https://arxiv.org/abs/2006.16491).  
+    **Fix:** Replace `Radu Erban` with `Radek Erban`.
+
+11. **Publication details can now be completed, and the Harvey year should be consistent.**  
+    **Location:** [refs.bib:81](/home/knielsen/code/factoring-connection/paper/refs.bib:81), entries `harvey2021` and `hh2022`.
+
+    | Entry | Verified journal publication |
+    |---|---|
+    | Costa–Harvey | *Mathematics of Computation* **83** (2014), 339–345; DOI `10.1090/S0025-5718-2013-02707-X`. [Publisher](https://www.ams.org/mcom/2014-83-285/) |
+    | Harvey | *Mathematics of Computation* **90** (2021), 2937–2950; DOI `10.1090/mcom/3658`. [Author’s publication list](https://web.maths.unsw.edu.au/~davidharvey/index.php?page=research) |
+    | Harvey–Hittmeir | *Mathematics of Computation* **91** (2022), 1367–1379; DOI `10.1090/mcom/3708`. [Author’s publication list](https://web.maths.unsw.edu.au/~davidharvey/index.php?page=research) |
+
+    **Fix:** Prefer these published entries, retaining arXiv identifiers as supplementary information. Alternatively consistently call Harvey’s cited preprint “2020.” Remove obsolete “not re-verified” notes after verification. The newer arXiv entries checked against their records did not reveal another author/title/identifier mismatch.
+
+12. **Several smaller mathematical and presentation corrections remain.**  
+    **Location:** [main.tex:58](/home/knielsen/code/factoring-connection/paper/main.tex:58), lines 536, 545, and 619.  
+    The algorithm shares one baby list **per band**, not a single list across all four bands. \(J_k\) is bounded but never explicitly defined. The additive character \(e(x)\) is undefined. Finally, \(2^{-\varepsilon n}=2^{-n/60}\) holds only at the endpoint.  
+    **Fix:** Say “one baby list per band”; define \(J_k=\sum_{\ell\in\mathcal P_k}\omega/(\ell-\omega)\) and \(e(x)=\exp(2\pi ix)\); replace the endpoint equality by \(1/36-\varepsilon\ge1/90\).
+
+13. **LaTeX needs a compiled layout check, especially the certificate table.**  
+    **Location:** [main.tex:911](/home/knielsen/code/factoring-connection/paper/main.tex:911).  
+    Seven natural-width `r` columns with long headings are likely to exceed the text width. Static checks found balanced environments and braces, no duplicate labels, and no unresolved citation or reference keys. No TeX compiler is installed here, so compilation and overflow remain unverified.  
+    **Fix:** Split the certificate table or use wrapping headings and constrained-width columns; run LaTeX–BibTeX–LaTeX twice and inspect warnings and table placement.
+
+**Verdict: needs fixes first.**
