@@ -101,3 +101,46 @@ exact class counts ν_ℓ(H). h_pred = least H with |pop|·Pr[h > H] < 1.
 Any claimed worst-case theorem goes to an independent read-only Opus critic. GPT-6.1-sol
 (codex/dchworst_1) makes a blind attempt in parallel; its output is read after this file is
 frozen.
+
+## Addendum A (2026-10-18, restart; frozen before any e6 run)
+
+The e1–e5 runs above were started on the new machine exactly as frozen (code unchanged since
+commit bde6c64). This addendum adds one experiment, e6, for a new theorem (Theorem R,
+notes/dchworst_results.md §3): **DCL-wc** (`src/dchworst/wcalg.py`) outputs a proper divisor
+for every balanced semiprime N = pq whose pair is covered by at least one block. It needs no
+clean band, no order hypothesis mod q, and no FULL exclusion.
+
+**Runs before this addendum (disclosed).**
+- Unit tests `tests/test_dchworst_wc.py`, including an exhaustive check at n = 20 (both
+  designs, both modes): 0 failures on covered pairs.
+- Smoke runs at n = 32–48: 40 random pairs per n; 300 covered random pairs per n at
+  n = 32, 36, 40 against D′; and pairs with q | 2^k − 1 at n = 36, 40, 44. There were 0
+  failures on covered pairs, and D′ also failed on none of them.
+- A constructed equal-order family at n ≈ 28–40 was used to exercise the equal-order split.
+
+**e6a (exhaustive).**
+- Population: every pair of S_n for n = 26 and 28.
+- Design: H = 3, Y = max(3, 2^{⌊n/6⌋}/2), and 4 blocks of primes ≡ 3 (mod 4) in
+  (2^kY, 2^{k+1}Y].
+- Weight designs: "pos" (D′'s V) and "sgn" (signed weights plus (1,1)).
+- Modes: "full" (Lemma O with T = 2^{⌈n/3⌉}, B0 = 30) and "force2" (base 2, no Lemma O).
+- D′ is run on (pos, full) for comparison.
+
+**e6b (adversarial).**
+- Sizes: n = 40, 48, 56.
+- Families:
+  - small2_q: q | 2^k − 1 for some k ≤ 240;
+  - small2_both: p, q both such primes;
+  - eqord: p − 1 = j·ℓ₀·o and q − 1 = k·ℓ₀·o with ord_p(2) = ord_q(2) = ℓ₀o, where ℓ₀ is a
+    band prime and o ≤ 60.
+- Same designs and modes as e6a.
+
+**Predictions.**
+- F1 (proved, Theorem R): in every cell, covered_fail = 0.
+- F2: improper outputs = 0 in every cell.
+- F3 (proved, Lemma X): max_frontier_over_Ngiants ≤ 1 in every cell.
+- F4 (expectation, not proved): in e6b eqord under force2, equal_order_runs > 0 at every n.
+
+**Decision rule.** Any covered_fail > 0 or improper > 0 means Theorem R or its
+implementation is wrong. I will then report the counterexample and withdraw or repair the
+theorem before reporting it.
