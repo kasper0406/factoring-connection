@@ -169,3 +169,44 @@ def class_lattice_index(I: Sequence[int], N: int, r: int, M: int, emax: int = No
     if t == 1:
         kappa = k
     return {"index": index, "kappa": kappa, "basis_scaled": rows, "scale": Mtop}
+
+
+def _factor_small(M: int) -> Dict[int, int]:
+    """Trial-division factorisation of the PUBLIC guess modulus M (not N)."""
+    out, f = {}, 2
+    while f * f <= M:
+        while M % f == 0:
+            out[f] = out.get(f, 0) + 1
+            M //= f
+        f += 1
+    if M > 1:
+        out[M] = out.get(M, 0) + 1
+    return out
+
+
+def class_lattice(I: Sequence[int], N: int, r: int, M: int, extra: int = 2) -> Dict:
+    """Integer-valued lattice L_{r,M} for composite M via its primary parts:
+    L = sum_l L_{r mod l^a, l^a} (the l-primary components of L/Z^K are
+    independent).  Each primary part uses denominators up to (l^a)^(K+extra).
+    Returns rows (monomial coordinates) and common scale."""
+    K = len(I)
+    parts = []
+    for l, a in _factor_small(M).items():
+        q = l ** a
+        res = class_lattice_index(I, N, r % q, q, emax=K + extra)
+        parts.append(res)
+    if not parts:
+        return {"rows": [[1 if i == j else 0 for j in range(K)] for i in range(K)],
+                "scale": 1, "index": 1}
+    scale = 1
+    for pr in parts:
+        scale *= pr["scale"]
+    gens = []
+    for pr in parts:
+        f = scale // pr["scale"]
+        for row in pr["basis_scaled"]:
+            gens.append([int(v) * f for v in row])
+    H = flint.fmpz_mat(gens).hnf()
+    rows = [[int(v) for v in rr] for rr in H.tolist() if any(int(v) for v in rr)]
+    det = abs(int(flint.fmpz_mat(rows).det()))
+    return {"rows": rows, "scale": scale, "index": scale ** K // det}

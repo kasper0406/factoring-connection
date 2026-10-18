@@ -29,7 +29,7 @@ CONFIG = {
               "lehman": list(range(30, 67, 4)),
               "hittmeir": list(range(40, 97, 8)),
               "harvey": list(range(40, 121, 8)),
-              "hh": list(range(40, 161, 8))},
+              "hh": list(range(40, 129, 8))},
     "caps": "r, eta <= 2^22 (sizes chosen so the optimum is below the cap)",
     "N_of_n": "N = 2^n + 2^(n//2) + 1 (size parameter only)",
     "fit": "least squares of log2(cost) on log2(N) over the upper half of sizes",
@@ -38,6 +38,28 @@ CONFIG = {
 
 def N_of(n: int) -> int:
     return (1 << n) + (1 << (n // 2)) + 1
+
+
+def summarize():
+    """Recompute the summary from the raw JSONL (used when the run is cut)."""
+    from src.common.metrics import read_jsonl
+    recs = read_jsonl(RAW)
+    summary = {}
+    for alg in CONFIG["sizes"]:
+        rs = sorted((r for r in recs if r["alg"] == alg and r["n"] in CONFIG["sizes"][alg]),
+                    key=lambda r: r["n"])
+        xs = np.array([r["n"] for r in rs], float)
+        ys = np.array([np.log2(r["cost"]) for r in rs], float)
+        h = len(xs) // 2
+        lp, arg = exponent_lp(alg)
+        summary[alg] = {"lp_exponent": str(lp), "lp_args": {k: str(v) for k, v in arg.items()},
+                        "sizes": [int(x) for x in xs],
+                        "fit_slope_all": float(np.polyfit(xs, ys, 1)[0]),
+                        "fit_slope_upper_half": float(np.polyfit(xs[h:], ys[h:], 1)[0]),
+                        "last_local_slope": float((ys[-1] - ys[-2]) / (xs[-1] - xs[-2]))}
+    with open(ANA, "w") as f:
+        json.dump(summary, f, indent=1)
+    print(json.dumps(summary, indent=1))
 
 
 def main():
@@ -75,4 +97,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "summarize":
+        summarize()
+    else:
+        main()
