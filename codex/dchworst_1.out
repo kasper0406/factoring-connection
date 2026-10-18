@@ -1,0 +1,304 @@
+**UNVERIFIED:** I did not obtain a useful worst-case selective coverage gain, even logarithmic, or settle the negative assertion for \(1/2<\kappa<1\). **PROVED:** Ordinary intervals admit substantially stronger results than the trivial interval length \(Y\), but these do not transfer to the residual GAP. **REFUTED:** The primitive \(\sqrt M\) guarantee does not extend to arbitrary composite moduli. **CONJECTURED:** The proposed negative assertion remains consistent with the exact local densities. My independent analysis preceded the literature search; the full [research report](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/research_report.md) records the details.
+
+## 1. Worst-case coverage: positive direction
+
+**UNVERIFIED — the useful parameter range.** I have no proof, and found no verified reference proving, either
+
+\[
+H\ll \sqrt Y\,J^{-c}\quad(c>0)
+\]
+
+or \(H\ll\sqrt Y/(\log Y)^a\), uniformly for the prime pairs at the polynomial heights relevant here. In particular, I cannot establish \(H=Y^{1/8-\delta}\).
+
+**PROVED — a literal positive answer outside that range.** Take \(Y=2P\) and all integers \(M\in(Y,2Y]\) coprime to \(N\). Since
+
+\[
+2P<p+q\le \frac{3}{\sqrt2}P,
+\]
+
+the primitive weight \((-1,1)\) is covered by \(M=p+q\). Thus \(H=1\), \(J\asymp Y\), giving \(c=1/2\). Its cost is \(\asymp P\), so it provides no factoring improvement. A restriction on the relationship between \(P\) and \(Y\) is essential to the question.
+
+**PROVED — what continued fractions provide.** For consecutive convergents \(r_i/s_i\) to \(q/p\), put
+
+\[
+D_i=r_ip-s_iq.
+\]
+
+The vectors \((s_i,r_i),(s_{i-1},r_{i-1})\) form a unimodular basis. Hence every residual becomes
+
+\[
+Bp-Aq=aD_i+bD_{i-1}.
+\]
+
+However, the weight square becomes a **parallelogram** in \((a,b)\), and primitivity becomes \(\gcd(a,b)=1\). Replacing that parallelogram by a convenient coefficient box can violate the original height bound. A small residual supplies no prescribed-band divisor; multiplying it also multiplies its weight and generally destroys primitivity.
+
+**PROVED — the basic large sieve remains insufficient pointwise.** In the distinct-residue range \(2H^2<Y\), its bound for fixed \(q\) is, up to constants,
+
+\[
+\#\{p\text{ in a length-}O(P)\text{ interval}: \text{uncovered}\}
+\ll \frac{(P+Y^2)Y}{JH^2}.
+\]
+
+For \(J\asymp Y/\log Y\) and \(P\gg Y^2\), this becomes \(O(P\log Y/H^2)\), far above one. Applying duality to this same inequality does not remove that limitation. This calculation does not exclude more sophisticated uses of large-sieve ideas.
+
+**PROVED — the direct three-dimensional shortcut is nonlinear.** Allowing the modulus to vary gives
+
+\[
+Bp-Aq=Mt.
+\]
+
+With both \(M\) and \(t\) variable, this is bilinear, rather than a fixed lattice equation to which ordinary three-dimensional Minkowski directly applies.
+
+**REFUTED — primitive \(\sqrt M\) coverage for composite \(M\).** Let
+
+\[
+M=4k,\qquad r=2k-1,\qquad A\equiv rB\pmod M.
+\]
+
+Here \(r\) is a unit, and \((-2,2)\) is a lattice vector. But a primitive solution must have \(B\) odd; otherwise \(A,B\) are both even. Consequently,
+
+\[
+A+B\equiv2k\pmod{4k},
+\qquad |A|+B\ge2k,
+\qquad \max(|A|,B)\ge M/4.
+\]
+
+For \(M=12,r=5\), the primitive minimum is **5**, although the lattice contains the nonprimitive vector of norm \(2\). This occurs for the balanced prime pair \((p,q)=(7,11)\). For \(M=100,r=49\), exact enumeration gives primitive minimum **27**, realized by \((p,q)=(349,401)\).
+
+**UNVERIFIED — composite divisors as a remedy.** Allowing every composite modulus in the band could still help. The preceding counterexample only invalidates a proposed Minkowski justification. I did not prove the required composite-band coverage theorem.
+
+## 2. Literature: intervals, GAPs, and rational reductions
+
+**PROVED — unrestricted maximal gaps have an exact elementary answer.** For any nonempty finite modulus set, the global maximum gap between consecutive members of the union of their multiples is exactly its smallest modulus \(m_0\). Multiples of \(m_0\) give the upper bound. If \(Q\) is the least common multiple of the moduli, none of
+
+\[
+Q+1,\ldots,Q+m_0-1
+\]
+
+is divisible by any of them. Thus any power improvement must concern **restricted heights**, such as \(x\asymp Y^3\).
+
+**PROVED — ordinary intervals, composite divisors.** A conservative verified consequence of exponent-pair estimates is:
+
+> For \(Y\asymp x^{1/3}\), every sufficiently large interval  
+> \([x,x+x^{27/97+\varepsilon}]\) contains an integer with a divisor in \((Y,2Y]\).
+
+Indeed, for \(\psi(t)=\{t\}-1/2\),
+
+\[
+\sum_{Y<m\le2Y}\psi(x/m)
+\ll x^{k/(1+k)}Y^{(l-k)/(1+k)}.
+\]
+
+Using \((k,l)=(13/84+\varepsilon,55/84+\varepsilon)\) gives exponent \(27/97\). Subtracting the two sawtooth sums yields
+
+\[
+\sum_{Y<m\le2Y}
+\left(\left\lfloor\frac{x+h}{m}\right\rfloor-
+      \left\lfloor\frac{x}{m}\right\rfloor\right)
+=h\log2+O_\varepsilon(x^{27/97+\varepsilon}+h/Y).
+\]
+
+This is a corollary, not a novelty or optimality claim. See Weingartner, *Somewhat smooth numbers in short intervals*, equation (1) and the argument around equation (4), [arXiv:2105.13568](https://arxiv.org/abs/2105.13568); the underlying estimate is Graham–Kolesnik, *Van der Corput’s Method of Exponential Sums* (1991), Lemma 4.3.
+
+**PROVED — ordinary intervals, prime divisors.** There is also some absolute \(\eta>0\) for which interval length \(x^{1/3-\eta}\) suffices. Friedlander–Lagarias, Lemma 2.2, bounds the weighted prime sawtooth sum. At \(Y\asymp x^{1/3}\), subtracting endpoint sums gives
+
+\[
+\sum_{Y<\ell\le2Y}\log\ell
+\left(\left\lfloor\frac{x+h}{\ell}\right\rfloor-
+      \left\lfloor\frac{x}{\ell}\right\rfloor\right)
+=h(\log2+o(1))+O(x^{1/3-\eta_0})
+\]
+
+for some \(\eta_0>0\). Take \(\eta<\eta_0\). Reference: Friedlander–Lagarias, *On the distribution in short intervals of integers having no large prime factor*, **J. Number Theory 25 (1987), 249–273**, [author’s manuscript](https://websites.umich.edu/~lagarias/doc/short.pdf). Their input is Jutila, *On numbers with a large prime factor II*, **J. Indian Math. Soc. 38 (1974), 125–130**, Theorem 2.
+
+**UNVERIFIED — much shorter intervals.** I found no verified resolution for every fixed positive \(\theta\), or for polylogarithmic lengths. Melfi explicitly posed the divisor version with \(h=\log^2x\), \(Y=x^{1/3}\), in [January 2023](https://mathoverflow.net/questions/437849/divisor-of-given-order-in-short-intervals). That documents the question’s formulation; it does not certify its subsequent status.
+
+**PROVED — relevant Farey and lattice results have different quantifiers.**
+
+| Reference | What it establishes |
+|---|---|
+| Cojocaru–Shparlinski, [arXiv:0705.3861](https://arxiv.org/abs/0705.3861) | Uniform distribution of Farey fractions modulo a prime for order \(T\ge\ell^{1/2+\varepsilon}\). |
+| Shparlinski, *Exponential Sums with Farey Fractions*, **Bull. Polish Acad. Sci. Math. 57 (2009), 101–107**, [DOI](https://doi.org/10.4064/ba57-2-2) | Modular distribution and exponential sums over the Farey family. |
+| Strömbergsson–Venkatesh, *Small solutions to linear congruences and Hecke equidistribution*, **Acta Arith. 118 (2005), 41–78**, [DOI](https://doi.org/10.4064/aa118-1-4) | Limiting distributions for random congruence systems. |
+
+**UNVERIFIED — the needed transfer.** None of these checked results supplies the fixed-rational, varying-prime worst-case theorem at \(H=Y^{1/8-\delta}\). The interval statements do not apply to the residual parallelogram merely from its rank or cardinality.
+
+**UNVERIFIED — implication to a named open problem.** I have not established that your exact prime-pair coverage assertion implies Legendre’s conjecture, twin primes, or another named classical conjecture. A general polylogarithmic interval-hitting theorem would settle Melfi’s formulation; I have not proved that the special residual-GAP assertion implies that stronger statement.
+
+## 3. Negative direction: polylogarithmic weights
+
+**PROVED — the small-\(H\) range.** Brun–Titchmarsh and a union bound give covered fraction
+
+\[
+O\!\left(\frac{H^2}{\log N}\right)
+\]
+
+among balanced prime pairs, with harmless constant enlargement for a moving band. Therefore almost all pairs are uncovered when \(H=o(\sqrt{\log N})\); a positive proportion remain for \(H\le c\sqrt{\log N}\) with sufficiently small absolute \(c\). This proves infinitude for \(\kappa<1/2\).
+
+**CONJECTURED — the remaining assertion.** I cannot prove or disprove the claim throughout \(1/2<\kappa<1\). I found no verified lower-bound sieve or second-moment result settling this exact problem.
+
+**PROVED — the local exponential density is exact.** Write \(u=\log N\), using natural logarithms. The number of signed primitive weights is
+
+\[
+W(H)=4\sum_{b\le H}\varphi(b)-2
+=\frac{12}{\pi^2}H^2+O(H\log H).
+\]
+
+When \(2H^2<\ell\), their ratios \(A/B\) are distinct modulo \(\ell\): a collision makes \(\ell\) divide a nonzero determinant of absolute value at most \(2H^2\). Thus, among unit pairs modulo \(\ell\), the excluded proportion is exactly \(W(H)/(\ell-1)\).
+
+Over a complete CRT period, the surviving proportion is therefore
+
+\[
+\Delta=\prod_{\ell\in L}
+\left(1-\frac{W(H)}{\ell-1}\right).
+\]
+
+For the specified band,
+
+\[
+\sum_{\substack{Y<\ell\le16Y\\\ell\equiv3\ (4)}}\frac1{\ell-1}
+\sim\frac{\log16}{2\log Y}
+\sim\frac{3\log16}{u}.
+\]
+
+For \(H=u^\kappa\), \(0<\kappa<1\), expansion gives
+
+\[
+\boxed{\log\Delta
+=-\frac{36\log16}{\pi^2}\frac{H^2}{u}+o(1)}
+\]
+
+with
+
+\[
+\frac{36\log16}{\pi^2}=10.113190959266335\ldots.
+\]
+
+The quadratic expansion error is \(O(H^4/(Y\log Y))=o(1)\); the remaining errors are also \(o(1)\).
+
+**CONJECTURED — transferring that density to prime pairs.** Such a transfer would predict
+
+\[
+\log(\text{number uncovered})
+=u-(10.11319\ldots+o(1))u^{2\kappa-1}+O(\log u),
+\]
+
+which tends to infinity for every \(\kappa<1\). The transfer to the polynomial-height prime-pair box is precisely the missing step.
+
+**PROVED — CRT can produce uncovered balanced prime pairs for a fixed band.** Suppose \(W(H)<\ell-1\) throughout the band. Choose an allowed unit ratio \(r_\ell\), and impose
+
+\[
+p\equiv r_\ell,\qquad q\equiv1\pmod\ell.
+\]
+
+CRT combines these conditions. With the resulting modulus \(Q\) fixed, the prime number theorem in arithmetic progressions supplies \(p,q\) in disjoint comparable intervals at sufficiently large heights.
+
+**PROVED — this does not give the required scale.** Here
+
+\[
+\log Q=(15/2+o(1))Y,
+\qquad P\asymp Y^3H.
+\]
+
+Fixed-modulus prime distribution supplies no uniform conclusion at that height. Moreover, forcing the same locally allowed ratio \(H+1\) at every band prime gives
+
+\[
+Q\mid p-(H+1)q.
+\]
+
+For balanced pairs at the required height, this is a nonzero integer of size \(O(HP)\ll Q\), an impossibility. This rules out that particular simple CRT construction.
+
+**UNVERIFIED — a universal CRT obstruction.** Arbitrary allowed ratios might have small representatives. Finding them returns to the original problem; counting congruences versus variables does not prove their nonexistence.
+
+**PROVED — limitation of the elementary moment route.** The mean hit count is \(\lambda\asymp H^2/\log N\), tending to infinity for \(\kappa>1/2\). First and second moments of that count do not force positive probability of zero hits. Bonferroni approximation to \(e^{-\lambda}\) requires growing truncation order, while products of \(r\) band primes have size approximately \(Y^r\). Any fixed polynomial distribution level in \(P\) permits only bounded \(r\). This explains a failure of the straightforward route, not an impossibility theorem for sieve theory.
+
+**PROVED — exact finite computations.** I exhaustively checked all **53,917** prime partners
+
+\[
+750004\le p<q=1500007
+\]
+
+against all **118** primes \(3\bmod4\) in \((100,1600]\).
+
+| \(H\) | Primitive signed weights | Uncovered prime partners |
+|---:|---:|---:|
+| 1 | 2 | 32,962 |
+| 2 | 6 | 12,446 |
+| 3 | 14 | 1,706 |
+| 4 | 22 | 241 |
+| 5 | 38 | 3 |
+| 6 | 46 | 0 |
+| 7 | 70 | 0 |
+| 8 | 86 | 0 |
+
+One uncovered pair at \(H=5\) is
+
+\[
+(p,q)=(839731,1500007),\qquad N=1259602378117.
+\]
+
+Displayed first survivors were independently rechecked against every weight and modulus. These finite counts do not establish the growing-polylogarithm assertion. Reproduction files: [script](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.py), [complete output](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.json).
+
+## 4. Other designs and precise barriers
+
+**UNVERIFIED — below \(1/5\).** I obtained no unconditional deterministic exponent below \(1/5\) for every balanced input using adaptive, smooth, composite, or \(N\)-dependent moduli. I also obtained no impossibility theorem covering those approaches.
+
+**PROVED — verified algorithmic results.** Harvey establishes \(N^{1/5+o(1)}\). Harvey–Hittmeir obtain
+
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right).
+\]
+
+Gao–Feng–Hu–Pan’s rank-three lattice method improves the numerator to \(\log^{13/5}N\) for balanced inputs, retaining exponent \(1/5\). References: [Harvey, arXiv:2010.05450](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir, arXiv:2105.11105](https://arxiv.org/abs/2105.11105), [Gao et al., arXiv:2512.19076](https://arxiv.org/abs/2512.19076).
+
+**PROVED conditional implication; CONJECTURED hypothesis — Umans–Wang.** Their Theorem 5.5 gives deterministic factoring exponent
+
+\[
+\frac{\max(\alpha,\beta)}2
+\]
+
+under the **Strong Prefactored Divisor Conjecture**. The point \(\alpha=\beta=1/3\) gives \(1/6\). The structured construction and prefactoring requirements are substantive hypotheses. [Umans–Wang, arXiv:2511.10851](https://arxiv.org/abs/2511.10851).
+
+**PROVED — a specific AP obstruction.** He–Sahai prove that a positive \(n\)-divisor arithmetic progression of height \(Z\), with \(\log Z=o(\sqrt n)\), has length at least
+
+\[
+\left(\sqrt{\frac8{27}}-o(1)\right)
+\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+
+This refutes the AP formulation for \(\alpha<1/2,\beta<3/8\), including the one-third point. It does **not** refute higher-rank covers, DCH, or every parameter choice that would beat \(1/5\). [He–Sahai, arXiv:2608.06681](https://arxiv.org/abs/2608.06681).
+
+**PROVED — elementary changes leave the missing divisibility unresolved.** For positive \(A,B\),
+
+\[
+(Bp+Aq)^2-4ABN=(Bp-Aq)^2.
+\]
+
+Small residuals improve Fermat windows, but do not force a band divisor. Adding a constant to \(Bp+Aq\) leaves its derivative \(B-AN/p^2\) unchanged, so it supplies no new stationary congruence for the \(M^2\) lock. Adaptive retries with a worst-case fallback retain its exponent unless every residual exception is controlled.
+
+**PROVED — your cost threshold is correct.** For \(0\le c\le1/2\), write \(J=Y^j\), \(H=Y^{1/2-cj}\), \(0\le j\le1\), ignoring logarithms. Balancing costs gives
+
+\[
+E(j,c)=\frac{1+j(1-2c)}{5+2j(1-c)}.
+\]
+
+Its derivative in \(j\) has the sign of \(3-8c\). Hence optimization yields
+
+\[
+\min\left(\frac15,\frac{1-c}{7/2-c}\right).
+\]
+
+Exact rational checks give:
+
+| \(c\) | Optimized exponent |
+|---:|---:|
+| \(1/4\) | \(1/5\) |
+| \(3/8\) | \(1/5\) |
+| \(2/5\) | \(6/31\) |
+| \(1/2\) | \(1/6\) |
+
+**PROVED, with model scope.** Your Theorems A and B give an \(N^{1/6}\) floor and require \(J\ge N^{5\varepsilon-o(1)}\) for cost \(N^{1/5-\varepsilon}\) in their stronger full-integer-candidate covering model. They do not lower-bound arbitrary factoring algorithms or automatically apply when only the actual prime pair must be covered.
+
+**UNVERIFIED — the strongest defensible barrier statement.** I cannot justify a claim that the desired coverage theorem implies a named classical conjecture. The concrete missing input is a uniform band-divisor theorem for the primitive forms \(Bp-Aq\), at \(H=Y^{1/8-\delta}\) and \(P\asymp Y^{3+1/8-\delta}\), for every balanced prime pair. The checked interval, Farey-distribution, random-lattice, and sieve results do not provide it. Under the search premise in the question, that theorem would improve the balanced factoring-search exponent.

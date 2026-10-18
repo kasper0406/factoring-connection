@@ -1,0 +1,2350 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a14fc6-8afb-72d0-be8d-45b8182241ce
+--------
+user
+You are a research mathematician (analytic number theory, geometry of numbers, sieve theory, computational number theory). This is a BLIND attempt: work the problem yourself first, then check literature. Read-only access to /Volumes/git/factoring-connection; put scratch scripts under the current working directory (your scratch dir). Background (optional): notes/dcltheorem_results.md (Theorem D', a deterministic N^{1/6+eps} factoring algorithm for all but N^{-eps} of balanced semiprimes) and notes/multimod_results.md §3 (Theorems A, B and the conjecture DCH in §3.6).
+
+## Setting
+
+N = pq, primes p < q <= 2p, P = sqrt(N). A "weight" is a primitive integer vector (A,B) with 1 <= |A|, B <= H (allow both signs of A). A "band" is a set L of J primes in (Y, 2Y] (all coprime to N). The pair (p,q) is COVERED by (L,H) iff some weight and some l in L satisfy l | Bp - Aq. (Equivalently: for some l in L, the lattice Lambda_l(p,q) = {(A,B) in Z^2 : l | Bp - Aq}, of determinant l, contains a primitive nonzero vector of sup-norm <= H.) If (p,q) is covered, the DCL search (shared baby-step list, HH 2022 Prop 3.3 class lock mod l^2) finds p in its window; the cost of a design is, up to N^{o(1)},
+
+   X(Y,J,H) = H*P/Y^2 + J*H^2       (window width + number of targets).
+
+Facts already known:
+* Minkowski / McKee-Pinch 1996 §5 pigeonhole lemma: for every single modulus l, Lambda_l contains a nonzero vector with sup-norm <= sqrt(l). Using J = 1, H = sqrt(Y) gives X = N^{1/5} (Harvey/Harvey-Hittmeir exponent).
+* Large sieve: with J ~ Y/log Y and H = N^{eps}, all but an N^{-eps} fraction of pairs are covered (Theorem D'); then X = N^{1/6+O(eps)}.
+* Poisson heuristic: Pr[uncovered] ~ exp(-lambda), lambda ~ |weights| * sum_{l in L} 1/l ~ H^2 J / Y. So heuristically H ~ C log N suffices to cover EVERY pair, giving worst case N^{1/6+o(1)}.
+* Our computation: if one can PROVE that every balanced pair is covered with H <= sqrt(Y) * J^{-c}, the worst-case cost is N^{min(1/5, (1-c)/(7/2-c)) + o(1)}; this is below 1/5 iff c > 3/8. With J ~ Y this means: prove that for every pair, some primitive (A,B) with |A|,B <= Y^{1/8 - delta} has Bp - Aq divisible by a prime in (Y,2Y], where Y^{3+1/8} ~ P.
+
+## Questions (answer each; label every claim PROVED / CONJECTURED / UNVERIFIED / REFUTED)
+
+1. Worst-case coverage, positive direction. Can you PROVE any selective guarantee with c > 0 (i.e. beating Minkowski by a power of J, for EVERY pair p,q of height P), for some family L of J moduli (primes, or composite moduli, or structured/smooth moduli, or moduli depending on N)? If a pure c > 0 is out of reach, is there any weaker provable gain (e.g. log factors)? Does allowing composite moduli M in (Y, 2Y] (condition: some Bp - Aq has a divisor in (Y,2Y]) make a proof possible? Try hard: Dirichlet/continued fractions of q/p (the values Bp - Aq form a rank-2 GAP {a D_k + b D_{k-1}} built from consecutive convergent residuals), 3-dimensional Minkowski, exponent sums (fractional parts of x/M, Kloosterman), the large sieve in dual form, etc.
+2. Literature: is it known (or known to be open) that every short interval [x, x+y] with y = x^theta (small theta) contains an integer having a prime factor (or a divisor) in a given dyadic band (Y, 2Y] with Y ~ x^{1/3}? Equivalently bounds for the maximal gap between consecutive multiples of primes from a band. Same question for rank-2 GAPs. Any results on "for every rational t of height P, some prime l in (Y,2Y] has t mod l in the Farey set {A/B : |A|,B <= H}" (reductions of a fixed rational modulo varying primes, worst case)? Give precise references (arXiv/journal), and say whether the needed statement would imply a known open problem.
+3. Negative direction. Prove or disprove: for every polylog weight bound H = (log N)^kappa with kappa < 1 (and fixed band design L = all primes ==3 mod 4 in (Y,16Y], Y ~ N^{1/6} H^{-1/3}), there are infinitely many balanced semiprimes N whose pair is uncovered. (A union bound + Brun-Titchmarsh proves this for H <= c sqrt(log N); the question is the range sqrt(log N) << H << log N, where the Poisson count |S_n| exp(-c H^2/n) still tends to infinity.) Is any lower-bound sieve / second-moment / explicit construction available? Can CRT forcing ever produce an uncovered pair (count constraints vs degrees of freedom)?
+4. Any other design (different "right form", N-dependent moduli, adaptivity, combination with Lehman/Dirichlet small residuals, combination with the Umans-Wang prime-cover framework) that gives a PROVABLE worst-case exponent below 1/5 for all balanced N? If you believe none is available with current techniques, give the sharpest precise barrier statement you can (e.g. "a proof would imply X, an open problem").
+
+Output Markdown: a one-paragraph verdict first, then one section per question. Be concrete; include any exact computations you ran.
+
+codex
+I’ll work through the coverage problem independently first, then check the literature. I’ll keep proofs, heuristics, and unresolved steps separate, and put any scratch scripts in this directory.
+exec
+/bin/zsh -lc pwd in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/dchworst_1
+
+exec
+/bin/zsh -lc "rg --files -g 'AGENTS.md' -g 'SKILL.md' -g '*dcl*' -g '*multimod*' -g '*umans*' /Volumes/git/factoring-connection" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/src/multimod/dcl.py
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/multimod_results.md
+/Volumes/git/factoring-connection/notes/dcltheorem_prereg.md
+/Volumes/git/factoring-connection/notes/multimod_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r12_dcl_audit.md
+/Volumes/git/factoring-connection/tests/test_multimod.py
+/Volumes/git/factoring-connection/tests/test_dcltheorem.py
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.log
+/Volumes/git/factoring-connection/codex/dclt_1.log
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.md
+/Volumes/git/factoring-connection/codex/r12_dcl_audit.out
+/Volumes/git/factoring-connection/codex/dclt_1.md
+/Volumes/git/factoring-connection/codex/dclt_1.out
+/Volumes/git/factoring-connection/experiments/raw/multimod_coverage.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_hh.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_mc.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_oper.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_exc.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_crt.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_oper.jsonl
+/Volumes/git/factoring-connection/experiments/raw/dcltheorem_lemma.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_oper_v1_origclassifier.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_model.jsonl
+/Volumes/git/factoring-connection/experiments/raw/multimod_oper_diag.jsonl
+/Volumes/git/factoring-connection/experiments/configs/multimod_experiments.json
+/Volumes/git/factoring-connection/experiments/configs/dcltheorem_experiments.json
+/Volumes/git/factoring-connection/experiments/analysis/multimod_summary.json
+/Volumes/git/factoring-connection/experiments/analysis/dcltheorem_summary.json
+
+exec
+/bin/zsh -lc 'for f in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/dchworst_1/AGENTS.md; do if test -f "$f"; then printf '"'\\n%s\\n' \""'$f"; cat "$f"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+exec
+/bin/zsh -lc 'ls -la' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+total 0
+drwxr-xr-x  2 knielsen  staff   64 Oct 18 18:09 .
+drwxr-xr-x  5 knielsen  staff  160 Oct 18 18:09 ..
+
+codex
+The blind analysis has exposed a caveat for composite moduli: a short lattice vector from Minkowski can be nonprimitive, and dividing it may destroy the congruence. I’m also checking which short-interval statements follow from coverage; that distinction matters for any claimed open-problem barrier.
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import gcd,isqrt
+for m in (8,12,16,20,24,28,32,40,100):
+ r=m//2-1
+ best=None
+ for h in range(1,m+1):
+  found=[(a,b) for b in range(1,h+1) for a in range(-h,h+1) if a and gcd(a,b)==1 and (a-r*b)%m==0]
+  if found:
+   best=(h,found[:3]);break
+ print(m,r,isqrt(m),best)
+PY" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+8 3 2 (3, [(3, 1), (1, 3)])
+12 5 3 (5, [(5, 1), (1, 5)])
+16 7 4 (5, [(5, 3), (3, 5)])
+20 9 4 (7, [(7, 3), (3, 7)])
+24 11 4 (7, [(7, 5), (5, 7)])
+28 13 5 (9, [(9, 5), (5, 9)])
+32 15 5 (9, [(9, 7), (7, 9)])
+40 19 6 (11, [(11, 9), (9, 11)])
+100 49 10 (27, [(27, 23), (23, 27)])
+
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import importlib.util
+for s in ['sympy','numpy','scipy']:
+ print(s, bool(importlib.util.find_spec(s)))
+PY" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+sympy False
+numpy False
+scipy False
+
+exec
+/bin/zsh -lc "cat > blind_notes.md <<'EOF'
+# Independent analysis before literature search (18 October 2026)
+
+## Exact statements derived
+
+1. For prime ell > H"'^2*2, primitive signed weights give distinct forbidden residues A/B mod ell: equality implies ell | AD-BC with |AD-BC| <= 2H''^2; the primitive representatives with positive denominator coincide. Their number is W(H)=4 sum_{b<=H} phi(b)-2 ~ (12/pi''^2) H''^2. Thus conditional on p,q nonzero mod ell the excluded fraction is W(H)/(ell-1), not W(H)/ell exactly.
+
+2. The direct CRT construction works for any fixed finite band once W(H)<ell-1 for every ell. Choose an allowed ratio at each ell, and prime p,q in the resulting residue classes modulo Q=product ell. PNT in arithmetic progressions, with Q held fixed, supplies balanced pairs at arbitrarily large height. It does NOT establish the desired relation P~Y''^3 H: Q=exp(Theta(Y)) for a full dyadic band (also for primes 3 mod 4 in (Y,16Y]).
+
+3. Composite modulus caution. For m=4k, ratio r=2k-1 is a unit. If A=rB mod m is primitive, B is odd (otherwise A is even), so A+B=2k mod 4k. Consequently max(|A|,B)>=k. There is a nonprimitive vector (-2,2) of norm 2. For m=12, r=5, no primitive vector has norm <=3; the primitive minimum is 5. Thus an unqualified primitive sqrt(m) Minkowski guarantee for composites is false.
+
+4. Literal positive guarantees outside the useful parameter range exist. All integers in (2P,4P] cover every balanced pair with H=1, since p+q lies in that band and is coprime to N. J~Y, so this is a c=1/2 statement with huge cost. Also the exact-zero vector (A,B)=(p,q) covers every modulus when H>=q. These do not address Y~P''^{1/3} or a factoring exponent improvement.
+
+5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+
+6. Write H=Y''^{1/2} J''^{-c}, J=Y''^j, 0<=j<=1. Equating P*Y''^{-3/2-cj} and Y''^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y''^2 =P Y''^{-3/2-cj}; target=JH''^2=Y''^{1+j(1-2c)}; exponent=N''^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y''^{1/2-c}, target=Y''^{2-2c}; balance P=Y''^{7/2-c}; X=N''^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
+
+7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+
+## Unresolved before search
+
+No selective improvement in the useful range proved yet. Composite divisors in ordinary intervals may be accessible to reciprocal exponential sums: standard exponent pair (1/6,2/3) in sum exp(hx/m), m~x''^{1/3}, together with a truncated sawtooth expansion gives error x''^{2/7} (logs), hence existence of a divisor in that band in intervals of length x''^{2/7+epsilon}. This needs careful checking and literature confirmation. Such a theorem alone does not handle residual GAPs.
+
+The negative polylog statement needs a lower bound for prime pairs avoiding roughly H''^2 rational residue classes at every band prime of size P''^{1/3}. Direct CRT with all constraints has exponential modulus. Standard fixed-depth sieve information is not a proof when H''^2/log P diverges. No rigorous implication to twin primes or another named open problem has been derived.
+EOF' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+codex
+I’ve finished the independent pass and saved it in `blind_notes.md`. I have not found a useful coverage gain at \(P\asymp Y^{3+1/8}\). There are elementary power gains outside that regime, but their search cost is too large. I’m now checking the literature, including a possible composite-divisor theorem for ordinary intervals.
+web search: 
+web search: Umans Wang deterministic integer factoring prime cover 2025 2026 ...
+web search: 
+web search: "divisors" "short intervals" "1/3" ...
+exec
+/bin/zsh -lc "sed -n '1,240p' /Volumes/git/factoring-connection/notes/dcltheorem_results.md" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+# dcltheorem: a deterministic N^{1/6+ε} algorithm for almost all balanced semiprimes
+
+Agent `dcltheorem`, 2026-10-18. Pre-registration: `notes/dcltheorem_prereg.md` (commit
+`3550e24`, before any pre-registered run). Code: `src/dcltheorem/`. Tests:
+`tests/test_dcltheorem.py`. Raw data: `experiments/raw/dcltheorem_*.jsonl`. Summary:
+`experiments/analysis/dcltheorem_summary.json`. Inputs: notes/multimod_results.md (Thm D) and
+the GPT-6.1-sol audit notes/codex_r12_dcl_audit.md.
+
+## 0. Verdict (plain language)
+
+**Thm D can be completed into a real deterministic factoring algorithm for almost all balanced
+semiprimes, in the ordinary bit-complexity model.** The previous "base order" gap closes, and it
+needs no order lemma for β^L at all.
+
+- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+  GPT-6.1-sol dclt_1, an Opus critic, and the fresh GPT-6.1-sol r13 referee).** For each
+  ε ∈ (0, 1/60] and all n ≥ n₀(ε) there is a deterministic algorithm with these properties:
+  - it sees only N and costs N^{1/6+5ε/6}·(log N)^{O(1)} bit operations on **every** n-bit
+    input;
+  - it never outputs anything but a proper divisor (1 < d < N, d | N) or FAIL. Every candidate
+    is validated before output; this was added after r13 found improper outputs for tiny
+    prime N;
+  - it factors all but an O(N^{−ε}) fraction of the **bounded-ratio, distinct-prime**
+    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+    pairs**.
+- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+  for any fixed A.
+- **How the order gap closes.**
+  - Mod p the true collision is an exact identity, so no order is needed.
+  - Mod q one needs only that the true giant does *not* collide. Running four disjoint prime
+    bands guarantees a band coprime to q − 1. On that band the collision condition becomes
+    ord_q(2) | (A−B)(p−1) − ℓ²δ.
+  - That condition is rare on average: an elementary count of q with small ord_q(2), plus a CRT
+    count over p.
+- **What is not proved.**
+  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+    exclusion of all-FULL pairs.
+  - Ratios q/p > 2 are not covered.
+  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+    N^{5ε/6}.
+  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+    every N.
+- **Experiment (pre-registered, theorem's own design, end to end).**
+  - The algorithm and all lemmas held: 0 wrong outputs and 0 lemma violations in 656 DCL runs (240 lemma + 416 operational; corrected 2026-10-18 from "896", which double-counted the lemma runs), with
+    3002 clean covering targets checked.
+  - Measured arithmetic-cost slope over 48–80 bits: **0.203 against calibrated operational HH's
+    0.226**.
+  - **But HH is still 2.3–4.9× cheaper at 40–80 bits.** No practical gain at these sizes, and
+    none at heuristically full coverage (C2 slope 0.227).
+- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+  large sieve).
+  - **McKee–Pinch 1996 §5 is a direct precursor.** Its divisibility event is λp ≡ ±μq (mod k)
+    with small multipliers, and it gives a *heuristic* N^{1/4+ε} balanced method over primes
+    k ~ N^{1/4} (§10).
+  - D′ adds: the band near N^{1/6}; one shared cofactor-powered baby list; the prime-pair
+    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+  - We found no prior *proved* sub-1/5 almost-all result. Carella (arXiv 1308.2891) *claims*
+    deterministic 1/6; the r13 referee judges its proof incomplete (§10).
+
+## 1. Population, target and statement
+
+Throughout, n is the bit length, X = 2^n and P = 2^{n/2}.
+
+**Population.**
+
+  S_n = {(p, q) : p < q ≤ 2p primes, 2^{n−1} ≤ pq < 2^n}.
+
+It is counted by pairs, equivalently by semiprimes N = pq. Then p ∈ (P/2, P) and
+q ∈ (P/√2, √2 P). Counting with the PNT in [0.85X′, 0.9X′] × [1.2X′, 1.25X′],
+X′ = 2^{(n−1)/2}, gives |S_n| ≥ c₀ P²/n² with an absolute c₀ > 0 for n ≥ n₀.
+
+**Target.** A deterministic algorithm 𝒜_{n,ε} with the following properties.
+- It receives N (n bits) and outputs either a nontrivial divisor of N or FAIL.
+- Its worst-case cost on every n-bit input is N^{1/6+O(ε)} bit operations.
+- It outputs FAIL on at most O(N^{−ε})·|S_n| pairs of S_n.
+
+**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+constants C, c such that for n ≥ n₀ the algorithm DCL-det_{n,ε} of §2 has the following
+properties.
+- (i) **Correctness.** On every input it outputs a proper divisor d (1 < d < N, d | N) or
+  FAIL. Every candidate is validated before output (`algorithm._proper`).
+  - Inputs N < 4 return FAIL; even N ≥ 4 return 2; a band prime ℓ is returned only if
+    1 < ℓ < N.
+  - (Correction, r13: the pre-fix code returned 2 for N = 2 and ℓ for N = ℓ prime.)
+  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+- (ii) **Cost.** On every n-bit input it uses O(n^c·2^{(1/6+5ε/6)n}) bit operations, i.e.
+  N^{1/6+5ε/6}(log N)^{O(1)}.
+- (iii) **Success.** It outputs FAIL on at most C·2^{−εn}·|S_n| pairs (p,q) ∈ S_n.
+
+Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+O(N^{−6δ/5}).
+
+**Corollary D″ (proved, same proof; polylog regime).** For every fixed a > 0, the same
+algorithm with H = ⌈n^{1+a}⌉ (and T = 2^{n/4}n^{−1−a} in the analysis) has cost
+N^{1/6}(log N)^{O(1+a)} and fails on O((log N)^{−2a}) of S_n.
+
+**Quantifier (audit item 5).**
+- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+  pairs.
+- It does **not** say that for almost every N all integer candidates p are covered, so it
+  does not show that the full-candidate covering model has exponent 1/6 for almost
+  every N.
+- It does not cover the worst case (§6), nor ratios q/p > 2.
+
+## 2. The algorithm DCL-det_{n,ε} (operational; `src/dcltheorem/algorithm.py`)
+
+### 2.1 Parameters
+
+All parameters are functions of n and ε only; nothing depends on N.
+
+- H = ⌈n·2^{εn/2}⌉. The code (`params.theorem_design`) uses n·⌊2^{εn/2}⌋ and ⌊H^{1/3}⌋ in Y. These are constant-factor conventions, which the proof allows.
+- V = {(A,B) ∈ [1,H]² : gcd(A,B) = 1, A ≠ B}. Then H²/2 ≤ |V| ≤ H² for large H.
+- Y = ⌈2^{n/6}H^{−1/3}⌉.
+- For k = 0, 1, 2, 3: 𝒫_k = {ℓ prime : ℓ ≡ 3 (mod 4), 2^kY < ℓ ≤ 2^{k+1}Y} and
+  L_k = ∏_{ℓ∈𝒫_k} ℓ².
+- m̄_k = ⌊span̄/(2^kY)²⌋ + 2, with span̄ = ⌊(5/2)·H·(2^{n/2}+1)⌋ + 2H + 3. This is an upper
+  bound for every window width in block k (§2.2).
+- The base is β = 2.
+
+### 2.2 Steps
+
+Input N (n bits). If N is even, output 2. Set a₀ = ⌈√(N/2)⌉ and b₀ = ⌊√N⌋. Every (p,q) ∈ S_n
+has p ∈ [a₀, b₀].
+
+For v = (A,B) ∈ V put:
+- Lo_v = ⌊2√(ABN)⌋. By AM–GM, Lo_v ≤ F_v(x) := Bx + AN/x for all x > 0.
+- Hi_v = max_{x∈{a₀,b₀}} ⌈F_v(x)⌉. By convexity, F_v ≤ Hi_v on [a₀, b₀].
+- Then Hi_v − Lo_v ≤ (B + √2A)√N + 2H + 2 ≤ span̄.
+
+For each block k = 0, 1, 2, 3:
+
+1. **Exponent tree.**
+   - Build the balanced integer product tree of {ℓ² : ℓ ∈ 𝒫_k}.
+   - Push 2 down the tree: a node holding 2^{L/∏node} hands 2^{L/∏node·∏sibling} to each
+     child. This yields u_ℓ = 2^{L_k/ℓ²} mod N for all ℓ.
+   - Set γ = u_{ℓ₀}^{ℓ₀²} = 2^{L_k} mod N.
+   - If ℓ | N for some ℓ, output ℓ.
+2. **Targets.** For ℓ ∈ 𝒫_k and v ∈ V:
+   - a := A N B^{−1} mod ℓ. If a^{(ℓ−1)/2} ≢ 1 (mod ℓ), skip.
+   - Otherwise r₀ = a^{(ℓ+1)/4} mod ℓ, and the roots of Br² ≡ AN (mod ℓ) are {r₀, ℓ−r₀}.
+   - For each root r:
+     - s = N r^{−1} mod ℓ² and c = (Br + As) mod ℓ²;
+     - g_lo = ⌈(Lo_v − c)/ℓ²⌉ ≥ 0 and g_hi = ⌊(Hi_v − c)/ℓ²⌋;
+     - W_τ = g_hi − g_lo + 1 ≤ span̄/ℓ² + 1 ≤ m̄_k.
+   - The target is τ = (v, ℓ, r). Write T_k for the number of targets: T_k ≤ 2|V||𝒫_k|.
+3. **Baby length.** Either m = m̄_k (the theorem's default), or the implementation's
+   *endpoint-competitive* rule: minimise m + Σ_τ⌈W_τ/m⌉ over an integer geometric grid
+   that ends at W_max = max_τ W_τ ≤ m̄_k.
+   - The success proof needs only m ≤ m̄_k.
+   - The **cost** proof needs one of these two rules. Under either, m + T′ ≤ m̄_k + T_k,
+     with T′ = Σ_τ⌈W_τ/m⌉.
+   - *Correction (GPT-6.1-sol dclt_1).* An earlier draft said "the proof needs only
+     m ≤ m̄_k". For cost that is false: m = 1 on prime-square inputs gives
+     T′ ≫ H²P/(Y log Y).
+4. **Giants.**
+   - Precompute w_ℓ = u_ℓ^N for each ℓ.
+   - For each target and 0 ≤ j < ⌈W_τ/m⌉:
+
+       G_{τ,j} = w_ℓ^A · u_ℓ^{B−c+ℓ²} · γ^{−(g_lo+1)} · γ^{−jm}  ≡  u_ℓ^{B+AN−c}·γ^{−(g_lo+jm)}  (mod N).
+
+     The congruence holds because u_ℓ^{ℓ²} = γ. γ^{−1} exists because gcd(2,N) = 1.
+5. **Collision detection.**
+   - f(X) = ∏_{0≤i<m}(X − γ^i) ∈ (Z/N)[X], built by a product tree.
+   - f(G_{τ,j}) for all giants, by a remainder tree. Only monic divisors are used, so this
+     is valid over Z/N.
+   - For each giant, d = gcd(f(G), N). If 1 < d < N, output d.
+
+Output FAIL if no block yields a divisor.
+
+**Remarks.**
+- (a) No order is computed, assumed or certified. No randomness is used.
+- (b) The symmetric weight (1,1) is excluded. For A = B the true giant always collides mod
+  q as well (Lemma 4 with A − B = 0), so it can never be one-sided.
+- (c) The four bands are needed only for Lemma 6, which guarantees a "clean" band.
+
+## 3. Lemmas
+
+Fix (p,q) ∈ S_n, N = pq, a block k, and write L = L_k, u = u_ℓ and d := ord_q(2).
+
+**Lemma 1 (class lock; HH 2022 Prop. 3.3).** Let ℓ ∈ 𝒫_k, (A,B) ∈ V and r a root, and
+suppose p ≡ r (mod ℓ). Then g := (Bp + Aq − c)/ℓ² ∈ Z.
+
+*Proof.*
+- ℓ > Y > H ≥ A, B, and ℓ < p, so ℓ ∤ ABN. Write p = r + ℓx.
+- Mod ℓ²: p^{−1} ≡ r^{−1}(1 − ℓxr^{−1}), so q = Np^{−1} ≡ s − ℓx·s r^{−1}.
+- Hence Bp + Aq ≡ c + ℓx(B − A s r^{−1}).
+- s r^{−1} ≡ N r^{−2} (mod ℓ) and Br² ≡ AN, so B − ANr^{−2} ≡ 0 (mod ℓ). The last term is
+  therefore ≡ 0 (mod ℓ²). ∎
+
+**Coverage criterion.** p mod ℓ is one of the computed roots ⇔ Bp² ≡ AN (mod ℓ) ⇔
+ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+
+**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+j* = ⌊i_full/m⌋ and i* = i_full − j*m ∈ [0, m).
+
+*Proof.* p ∈ [a₀, b₀], so Lo_v ≤ F_v(p) = Bp + Aq ≤ Hi_v. ∎
+
+**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+order is needed.
+
+*Proof.*
+- B + AN − (Bp + Aq) = (p − 1)(Aq − B), and 2^{p−1} ≡ 1 (mod p).
+- So u^{B+AN−c} ≡ 2^{(L/ℓ²)(Bp+Aq−c)} = 2^{Lg} = γ^g (mod p).
+- Multiply by γ^{−(g_lo + j*m)}. ∎
+
+**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+
+*Proof.*
+- Mod q − 1: N ≡ p, so B + AN − c ≡ B + Ap − c.
+- Also ℓ²g = Bp + Aq − c ≡ Bp + A − c.
+- The difference is (A − B)(p − 1). Multiplying by L/ℓ² preserves the congruence mod q − 1,
+  and 2^{q−1} ≡ 1 (mod q). ∎
+
+**Lemma 5 (one-sided extraction).** Call the true giant G = G_{τ,j*} *FULL* if
+G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+gcd(f(G), N) = p.
+
+*Proof.*
+- f(G) = ∏_i (G − γ^i).
+- The factor i = i* vanishes mod p (Lemma 3).
+- Mod q, no factor vanishes, by definition, and Z/q is a field.
+- So p | f(G) and q ∤ f(G). ∎
+
+**Lemma 6 (clean band).** Call block k *clean for q* if no ℓ ∈ 𝒫_k divides q − 1. If
+Y⁴ > √2P, at least one of the four blocks is clean for q.
+
+*Proof.* Every band prime exceeds Y. Four distinct band primes dividing q − 1 would give
+q − 1 > Y⁴ > √2P > q. So at most 3 blocks contain a prime factor of q − 1. ∎
+
+Asymptotically: Y⁴ ≥ 2^{2n/3}H^{−4/3}, and 2^{n/6} > √2 H^{4/3} = √2 n^{4/3}2^{2εn/3}
+for ε < 1/4 and n large.
+
+**Lemma 7 (FULL in a clean block).** If block k is clean for q, then the true giant is FULL
+iff d | (A−B)(p−1) − ℓ²δ for some δ ∈ [−i*, m−1−i*] ⊂ (−m, m).
+
+*Proof.*
+- By Lemma 4, FULL ⇔ u^{(A−B)(p−1)} ≡ γ^{δ} (mod q) with δ = i′ − i*.
+- Equivalently 2^{(L/ℓ²)[(A−B)(p−1) − ℓ²δ]} ≡ 1 (mod q).
+- Since d | q − 1 and gcd(L, q − 1) = 1, gcd(d, L/ℓ²) = 1. ∎
+
+
+exec
+/bin/zsh -lc "sed -n '1,310p' /Volumes/git/factoring-connection/notes/multimod_results.md" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+# multimod: several moduli and multi-base searches beyond cycloharvey's N^{1/5} bound
+
+Agent `multimod`, 2026-10-18. Pre-registration: `notes/multimod_prereg.md` (commit `81dd28e`,
+before any pre-registered run). Code: `src/multimod/`. Tests: `tests/test_multimod.py`.
+Raw data: `experiments/raw/multimod_*.jsonl`. Summary: `experiments/analysis/multimod_summary.json`.
+
+## 0. Verdict (plain language)
+
+**The gap is open, not closed. With several moduli, the model allows going below N^{1/5}.**
+Unconditionally the worst-case exponent of the enlarged model lies in [1/6, 1/5]. It is
+1/6 for almost all inputs (proved), and 1/6 in the worst case under a divisor-cover
+conjecture.
+
+- **Lower bound (proved).** With any number of moduli, one base and sumset baby/giant
+  steps, every covering search costs ≥ c·N^{1/6} (Thm A). There is no M^{o(1)} loss. Two
+  refinements:
+  - Targets of degree ≥ 2 never beat N^{1/5}, however many moduli are used (Thm A′).
+  - With J distinct moduli the bound is N^{1/5}·(J·N^{o(1)})^{−1/5}. Going below 1/5
+    therefore needs N^{Ω(1)} moduli (Thm B).
+- **Scheme (DCL, "divisor-cover Lehman").**
+  - It uses Lehman/Harvey–Hittmeir targets (Bp + Aq − c)/M² with small fixed weights
+    v = (A,B).
+  - The moduli M range over all primes near N^{1/6}. No class is guessed: targets exist
+    exactly for the roots of Br² ≡ AN (mod M).
+  - The true p is hit iff some small v has Bp − Aq divisible by one of the primes.
+  - One shared baby list serves every modulus via γ = β^{∏M²}.
+- **Upper bounds for DCL (search model only).**
+  - **Proved (Thm D):** cost N^{1/6+O(ε)} for all but an O(N^{−ε}) fraction of balanced
+    semiprimes, via the arithmetic large sieve.
+  - **Conjectured:** for *every* N (DCH, §3.6). Under DCH the enlarged-model exponent is
+    exactly 1/6.
+- **Guess-neutrality.** CRT does not break it.
+  - **Proved (Thm C):** class-lattice indices multiply over coprime moduli, as φ does.
+  - **Heuristic (cycloharvey's volume heuristic):** schemes covering all classes of their
+    moduli therefore stay neutral. The rigorous single-composite-modulus statement is
+    cycloharvey's LB, neutral up to M^{−o(1)}.
+  - What escapes is *selective* covering. Each p needs only one modulus whose class
+    holds a short weight vector. Across many coprime moduli these "lucky" classes cover
+    almost everything (Thm D) and, conjecturally, everything (DCH).
+- **Multi-base.**
+  - **Proved for independent bases (Thm E):** they reduce coordinatewise to the 1-D bounds.
+  - **Proved, trivially:** bases that are known powers of one generator are a 1-D search.
+  - Mixed known-relation lattices: **not covered**.
+- **Experiments (pre-registered; §6).**
+  - Model counts: DCL at 95% success (R1) has slope 0.171 over 56–96 bits, against HH's
+    0.196. It is cheaper than HH from 56 bits on: 0.45× at 96 bits.
+  - Sampled success: 94–95% at 56–96 bits, against the predicted ≈95%.
+  - The full-coverage regime (R2) has 0 uncovered candidates exhaustively at 32–48 bits
+    and 100% sampled success at 56–96 bits. Its finite-size slope is 0.196, no better
+    than HH's, because λ ∝ log N.
+  - Operational runs: 64/64 factored in each regime, and the implementation list equals
+    the model count in every list-building run.
+  - **Caveat on the verdict.** The pre-registered verdict is **SUPPORTED** only after a
+    classifier bug was fixed (disclosed in §6.4). With the original classifier, rule (d)
+    failed at 56 and 64 bits.
+- **Scope (important).**
+  - Everything is in the *collision-search model* on the balanced range
+    p ∈ [√(N/2), √N].
+  - Unbalanced ratios N^{o(1)} < q/p < N^{1/3} are **not** handled at N^{1/6} by DCL
+    (§3.9).
+  - Two costs outside the search are unsolved: a base γ = β^L of adequate order (§3.8),
+    and small-factor removal (Strassen, N^{1/6}).
+  - **This is not a new deterministic factoring bound.** A deterministic worst-case
+    N^{1/6} would need DCH, an order lemma for β^L, and the unbalanced range.
+
+## 1. Models
+
+- **𝔐₁ (cycloharvey §§2, 3.4).**
+  - Targets are Laurent polynomials g ∈ Λ_I with I ⊆ [−d,d]∖{0}, or g ∈ L_{r,M} for
+    classes modulo **one** modulus M.
+  - Windows are integer intervals.
+  - Coverage must be proved by the identity for every integer candidate p in
+    [√(N/c), √N]: if p were a divisor, g(p) would be an integer in the window.
+  - Cost is X ≥ #targets with Σ W_τ ≤ X² (shared or per-run baby lists).
+- **𝔐⁺ (enlarged).** The same, except every target τ carries its own modulus M_τ ≥ 1,
+  with gcd(M_τ, N) = 1 (Lemma K′ needs it), and its own class r_τ. Both are chosen freely:
+  nested, coprime, any number. The cost hypotheses are unchanged:
+  #targets ≤ X and Σ W_τ ≤ X².
+  - These hold for per-modulus baby lists, a shared list, or any mix, because
+    Σ W_τ ≤ Σ m_{j(τ)}⌈W_τ/m_{j(τ)}⌉ ≤ X·max m ≤ X².
+  - The model is therefore *generous*: it does not charge the distinct-base problem that
+    codex r10 warns about. DCL solves that problem anyway (§2.3).
+- **𝔐^k (multi-base).** There are k bases α_i; a target is a handle ∏α_i^{F_i(p,q)} with a box
+  window ∏[U_i, U_i + W_i). Baby set B ⊂ Z^k, giant sets G_τ, and coverage needs F(p) ∈
+  B + G_τ, i.e. B + G_τ ⊇ box_τ, the whole box and not only the curve {F(p)}.
+  Cost ≥ |B| + Σ|G_τ|.
+
+## 2. The scheme: divisor-cover Lehman (DCL)
+
+### 2.1 Class lock (proved; HH Prop. 3.3)
+
+Let M be a prime with M ∤ 2ABN, and let r be a root of Br² ≡ AN (mod M). Write s = N·r^{−1}
+(mod M²; the inverse is taken mod M², as codex points out). Then for every integer
+p ≡ r (mod M) with q = N/p ∈ Z:
+
+  Bp + Aq ≡ c := Br + As (mod M²).
+
+*Proof.* Write p = r + Mx. Then q ≡ s − sMx·r^{−1} (mod M²), so
+Bp + Aq ≡ Br + As + Mx(B − AN r^{−2}) = Br + As + Mx·(Br² − AN)/r² ≡ Br + As (mod M²). ∎
+
+So g = (Bp + Aq − c)/M² ∈ Z. Over the balanced range, F = Bp + AN/p lies in [F_lo, F_hi]:
+F is convex, with its minimum 2√(ABN) when A/B ∈ [1/2, 1] and an endpoint value otherwise.
+The whole-range window is therefore g ∈ [⌈(F_lo−c)/M²⌉, ⌊(F_hi−c)/M²⌋]. Its width is
+W ≤ (F_hi − F_lo)/M² + 1 = O(H√N/M² + 1), with H = max(A,B).
+
+The exact check is `dcl.verify_windows`: rational arithmetic, convexity, both class
+endpoints and the class members around the stationary point. It is run on every
+experimental design and records 0 violations.
+
+### 2.2 Coverage is a sieve
+
+With whole-range windows, target (v, M, r) covers exactly the integers p ≡ r (mod M) in the
+range. Since Bp² − AN = p(Bp − Aq), the condition p ≡ r for some root r is the same as
+M | Bp² − AN, which for an actual divisor is M | Bp − Aq. So:
+
+  **p is covered ⇔ some chosen (v, M) has M | Bp² − AN** (equivalently M | Bp − Aq).
+
+The algorithm never guesses. Its target set is determined by N, and failure happens
+only when no chosen (v, M) divides.
+
+### 2.3 One baby list for all moduli (proved)
+
+Let L = ∏_{M used} M² and γ = β^L. Since p ≡ 1 and q ≡ N (mod p − 1),
+
+  (β^{L/M²})^{B + AN − c} ≡ β^{(L/M²)(Bp + Aq − c)} = β^{L g} = γ^{g} (mod p).
+
+Codex verified the identity B + AN − (Bp + Aq) = (p − 1)(Aq − B).
+
+- **Shared list.** Every target is a giant step (β^{L/M²})^{B+AN−c}·γ^{−g_lo−jm} against
+  the single baby list γ^i.
+- **Answer to the r10 warning.** The baby lists of different moduli coincide as group
+  elements because the handle, not the base, is raised to L/M².
+- **Cost of the powers.** All β^{L/M²} come from a product tree in the exponent
+  (`operational.all_but_one_powers`) in O(log L·log #moduli) = Õ(Y) multiplications.
+  Every handle then costs O(log N).
+
+### 2.4 Cost and design
+
+- **Cost.** m + Σ_τ ⌈W_τ/m⌉, cycloharvey's counting.
+- **λ.** Each (v, M) has ρ_v(M) ∈ {0, 2} targets, and covers a fraction ρ/M of the
+  candidates. Write λ = Σ ρ_v(M)/M for the expected cover multiplicity.
+- **Efficiency.** With m given, a pair (v, M) with M ≳ (H√N/m)^{1/2} needs one giant step
+  per target, and its efficiency ρ/M decreases in M.
+- **The greedy design** (`dcl.design`) takes (v, M) pairs in decreasing order of
+  ρ/(M⌈W/m⌉) until λ reaches its target. `best_design` then optimises m.
+- **Heuristic size.** With M ≈ Y, cost ≈ m + λY·(1 + o(1)) and m ≈ √N/Y², so
+
+  cost ≈ 3·(λ/2)^{2/3}·N^{1/6}·(polylog from weight heights).
+
+### 2.5 Heuristic coverage (Poisson; conjectured)
+
+Treat the events "M | Bp − Aq" as independent across (v, M), with probabilities
+ρ_v(M)/M. Then a fraction ≈ e^{−λ} of the candidates is uncovered.
+- **R1.** λ = 3, success ≈ 95%.
+- **Full coverage.** Needs e^{−λ}·#candidates < 1, so λ ≈ ln √N.
+
+The exhaustive check (§6, E-C) finds coverage somewhat *better* than Poisson.
+- R1 leaves 1.3–4.3% uncovered, against Poisson's ≈5%.
+- The smallest λ giving full coverage, λ*, grows like ln √N, as the Poisson tail predicts.
+  It is 5.5–8 at n = 32–36 and 11–15.5 at n = 44–48, against ln √N + 2 = 13.1–18.6.
+
+## 3. Theory
+
+Notation: P = √N, and t = p/P ∈ J = [c^{−1/2}, 1]. #candidates ≍ P.
+
+### 3.1 Per-target coverage (proved; from cycloharvey Lemmas C, K′)
+
+Let τ be a target with modulus M (M = 1 when nothing is guessed), support I, |I| = K,
+e = max|k| ≤ d, window width W.
+
+- **(i) Degree e = 1, K = 2.** Lemma K′ (with K = 2) lets us write g = (Aq + Bp − c)/(C_d M²)
+  with integers A, B over the **fixed** denominator C_d M². Define H := max(|A|,|B|) =
+  C_d M²‖b‖_∞/P ≥ 1. This normalisation is also the one Thm B's count uses (critic,
+  finding 4).
+  Lemma C gives μ_τ ≤ C(W/‖b‖)^{1/2}, so
+
+    #covered integers ≤ Pμ_τ/M + C_I ≤ C·(PW/H)^{1/2} + C.        (1)
+
+  **The M-dependence cancels exactly.** That cancellation is the per-target form of
+  guess-neutrality.
+- **(ii) e = 1, K = 1** (support {1} or {−1}). Here ‖b‖ ≥ P/(C M), so the coverage is
+  ≤ C·W + C ≤ C(PW)^{1/2} + C when W ≤ P. If some W > P, then X ≥ √W > N^{1/4} already.
+- **(iii) e ≥ 2.** Lemma K′ gives ‖b‖ ≥ P^{e}/(C_d M^{K}), so
+
+    #covered ≤ C·M·P^{−e/K}W^{1/K}·P/M + C = C·P^{1−e/K}W^{1/K} + C.   (2)
+
+  Again M cancels.
+
+Targets with the same (M, class, vector) are merged and Lemma C is applied to the union of
+their windows. Lemma C only needs the measure, so the merged width is ≤ Σ W. "Distinct
+targets ≤ X" therefore refers to distinct triples.
+- The +C rounding term is paid once per *original* window, i.e. a preimage made of ≤ C_I
+  intervals.
+- The total is still ≤ CX, because every window costs at least one giant step.
+
+### 3.2 Theorem A (proved): 𝔐⁺ costs ≥ c·N^{1/6}
+
+**Statement.** Fix d and c > 1. Any 𝔐⁺ covering family of degree ≤ d has X ≥ c_{d,c}·N^{1/6}.
+
+*Proof.*
+- Coverage must reach c′P.
+- By (1) and (ii), the e = 1 targets cover at most
+  C P^{1/2} Σ_τ W_τ^{1/2} + CX ≤ C P^{1/2} X^{1/2}(Σ W)^{1/2} + CX ≤ C P^{1/2} X^{3/2} + CX
+  (Cauchy–Schwarz).
+- By (2) and Hölder over at most X targets of each of the finitely many (e, K) classes,
+  the e ≥ 2 targets cover at most C Σ_{(e,K)} P^{1−e/K} X^{1+1/K} + CX.
+- Put X = δP^{2/5} with δ ≤ 1. The (e,K) term is then
+  ≤ C δ^{1+1/K} P^{1 − (5e − 2K − 2)/(5K)} ≤ C δ P, because 5e ≥ 2K + 2 when K ≤ 2e and e ≥ 2.
+- So for X ≤ δP^{2/5} with δ small, the e ≥ 2 part covers ≤ c′P/2. The e = 1 part must then
+  give C P^{1/2}X^{3/2} ≥ c′P/2 − CX, i.e. X ≥ c P^{1/3} = c N^{1/6}.
+- If instead X > δP^{2/5}, then X ≥ δ N^{1/5} ≥ N^{1/6} for large N. ∎
+
+**Theorem A′ (proved).** If the e = 1 targets of an 𝔐⁺ family cover fewer than c′P/2
+candidates, then X ≥ c N^{1/5}, with any moduli. This is the second branch of the proof.
+
+**Tightness.** Equality in (1) with H = O(1) and W ≈ P/M² means a target covers its *whole*
+class across the range, P/M ≈ (PW)^{1/2} candidates. That is exactly what DCL's targets do
+(M ≈ N^{1/6}, W ≈ N^{1/6}). So A is tight up to the polylog/overlap factor, if coverage can
+be completed (Thm D, DCH).
+
+### 3.3 Theorem B (proved): the bound as a function of the number of moduli
+
+**Statement.** Suppose the e = 1 targets use J distinct moduli, all ≤ P (targets with M > P
+cover ≤ 1 + C candidates each and are absorbed in the +CX term). Then
+
+  X ≥ c·N^{1/5}·(J·N^{o(1)})^{−1/5}.
+
+*Proof.*
+- **Counting.** By cycloharvey §3.4 (e = 1 branch), for each modulus M and each (A,B), with
+  H measured over the fixed denominator C_d M² as in §3.1(i), the number of classes on
+  which (Aq + Bp − c)/(C_d M²) is integer-valued is ≤ O(1)^{ω(M)}·gcd(A,B,M).
+  - The critic brute-forced composite M ≤ 105 with denominators M² and 2M². The count is
+    always ≤ 4^{ω(M)}·gcd(A,B,M).
+  - Measured over the *reduced* denominator the count fails: M = 25, D = 125. So the number of
+  (class, vector) pairs with H ≤ h is ≤ M^{o(1)} h². Over J moduli it is ≤ J' h², with
+  J' = J·N^{o(1)}.
+- **Sum of 1/H.** For the ≤ X distinct triples, Σ_τ 1/H_τ ≤ C(J'X)^{1/2}: the extremal case
+  takes the X smallest heights, so h_max ≍ (X/J')^{1/2} and Σ ≍ J' h_max.
+- **Coverage.** Cauchy–Schwarz on (1) bounds the e = 1 coverage by
+  C P^{1/2}(Σ W)^{1/2}(Σ 1/H)^{1/2} + CX ≤ C P^{1/2} X (J'X)^{1/4} + CX.
+- **K = 1 targets.** Each covers ≤ CW + C (§3.1(ii)), so ≤ CX² + CX = o(P) in total when
+  X ≤ δP^{2/5}.
+- **Conclusion.** Theorem A's (e,K) computation handles the e ≥ 2 part. What remains is
+  X^{5/4} ≥ c P^{1/2}J'^{−1/4}. ∎
+
+**Corollary.**
+- J = 1 recovers cycloharvey's LB.
+- Exponent 1/5 − ε needs J ≥ N^{5ε−o(1)} moduli.
+- J ≤ X gives Theorem A again, up to N^{o(1)}.
+
+### 3.4 Theorem C (proved): CRT composes guess-neutrality multiplicatively
+
+**Statement.** Let M = M₁M₂ with gcd(M₁, M₂) = 1, let r be a class mod M, and let
+r_i = r mod M_i. Then
+
+  L_{r,M} = L_{r₁,M₁} + L_{r₂,M₂}  and  [L_{r,M} : Λ_I] = [L_{r₁,M₁} : Λ_I]·[L_{r₂,M₂} : Λ_I].
+
+*Proof.*
+- **Decomposition.** Elements of L_{r,M} lie in M^{−∞}Λ_I = Λ_I ⊗ Z[1/M]. Partial fractions
+  give M^{−∞}Λ/Λ = M₁^{−∞}Λ/Λ ⊕ M₂^{−∞}Λ/Λ, so g = g₁ + g₂ uniquely mod Λ.
+- **Each part is integer-valued.** Suppose g(p) − c ∈ Z for all p ≡ r (mod M). The
+  fractional part of g₁(p) lies in M₁^{−∞}Z/Z and depends only on p mod M₁^{a} for a large
+  (with q = N p^{−1} mod M₁^{a}). By CRT, every class mod M₁^{a} lying over r₁ contains
+  integers ≡ r₂ (mod M₂).
+- On such integers, g₂(p) has M₂-power denominator. The fractional part of g(p) − c is 0, so
+  the M₁-part g₁(p) − c₁ ≡ 0. Hence g₁ ∈ L_{r₁,M₁}, and likewise g₂ ∈ L_{r₂,M₂}.
+- **Converse.** If g₁ ∈ L_{r₁,M₁} and g₂ ∈ L_{r₂,M₂}, then g₁ + g₂ is integer-valued up to a
+  constant on the class r. So the sum is direct modulo Λ, and the indices multiply. ∎
+
+Experimental check: `experiments crt` compares a direct HNF computation of
+[L_{r,M₁M₂} : Λ] with the product of the two indices for I ∈ {(−1,1), (−2,−1,1)} and
+(M₁,M₂) ∈ {(5,7), (3,7), (5,11)} (§6, E-CRT).
+
+**Consequence (heuristic: it rests on cycloharvey's volume heuristic and the HNF-measured
+κ = K(K+1)/2; the rigorous single-modulus statement is cycloharvey's LB, neutral up to
+M^{−o(1)}).** Neutrality is
+the identity "index M^{K(K+1)/2} against φ(M) runs". Both sides are multiplicative over
+coprime parts, so within that heuristic a scheme covering **all** φ(M) classes of a composite M with a
+shared baby list is exactly neutral, whatever its CRT structure.
+- This includes CRT sign-splitting (signsplit's result) and the user's Gray-code bucketing:
+  odd-m_i bucketing costs more than it saves, and only the 2-adic r₀ ↦ r₀ + 4 identity gives
+  a constant.
+- *CRT does not break neutrality; it composes multiplicatively and stays neutral.*
+
+**What does break it.** DCL does not cover all classes of any modulus. For a fixed small v
+only the ρ_v(M) ∈ {0, 2} classes with a root are used; that is a 2/M fraction, but each is
+reached by a vector of height O(1) instead of the typical √M.
+- These "lucky" classes from N^{1/6+o(1)} coprime moduli are independent by CRT. They union
+  to almost everything (Thm D, proved), and conjecturally to everything (DCH).
+- In Thm B's terms, many moduli supply J·h² cheap (class, vector) pairs, where one modulus
+  supplies only h².
+
+### 3.5 Theorem D (proved, in the search model): average-case N^{1/6+ε}
+
+**Statement.** Fix ε ∈ (0, 1/10). For n-bit balanced semiprimes N = pq (primes p < q ≤ 2p),
+take the following design. **H₀, Y and m depend on n only**, so the sifted classes for a
+fixed q do not move with p (critic, finding 7).
+- V = {(A,B) : gcd(A,B) = 1, A, B ≤ H₀} with H₀ = ⌈2^{nε/2}·n⌉;
+- 𝒫 = the primes in (Y, 2Y] with Y = ⌈2^{n/6}H₀^{−1/3}⌉;
+- every root r of Br² ≡ AN (mod ℓ), for each v ∈ V and ℓ ∈ 𝒫;
+- m = ⌈C H₀ 2^{n/2}/Y²⌉.
+
+Its model cost is O(H₀^{5/3}N^{1/6}) = N^{1/6+5ε/6+o(1)}. The fraction of balanced semiprimes
+whose p is covered by no target is O(N^{−ε}).
+
+*Proof.*
+- **Cost.** At most 2|V||𝒫| targets with ⌈W/m⌉ = 1, by §2.1 with W ≤ C H₀√N/Y² + 1. So the
+  cost is m + 2|V||𝒫| ≤ C H₀√N/Y² + 4H₀² Y/log Y = O(H₀^{5/3} N^{1/6}).
+- **Reduction to a sieve.** Fix a prime q. The admissible p form an interval I_q of length
+  ≍ √N (p ∈ [q/2, q] with pq of n bits). By §2.2, p is covered iff ∃(v, ℓ) with
+
+web search: 
+web search: https://arxiv.org/html/2511.10851v1
+exec
+/bin/zsh -lc "rg -n 'Theorem D|DCH|3.6|reference|Harvey|exception|lower|sieve|cover' /Volumes/git/factoring-connection/notes/dcltheorem_results.md /Volumes/git/factoring-connection/notes/multimod_results.md" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:15:- **Theorem D′ (proved; three independent reviews, all ACCEPT WITH FIXES, fixes applied:
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:24:    semiprimes S_n = {pq : p < q ≤ 2p primes, n bits}, with exceptions **counted by
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:26:- **Corollary D″.** N^{1/6}(log N)^{O(1)} cost with an O((log N)^{−A}) exceptional fraction,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:36:  - The worst case is open. It needs DCH coverage, large order mod the specific q, and the
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:38:  - Ratios q/p > 2 are not covered.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:39:  - A Poisson-quality exceptional rate is open. The large sieve's n²/H² is why N^{−ε} costs
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:41:  - The statement is about the true factor averaged over S_n, not full-candidate coverage for
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:45:    3002 clean covering targets checked.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:49:    none at heuristically full coverage (C2 slope 0.227).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:50:- **Novelty.** Every ingredient is prior art (Lehman, McKee, HH Prop. 3.3, Harvey Alg. 4.1, the
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:51:  large sieve).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:56:    large-sieve exceptional bound; the clean-band one-sidedness argument; rigour.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:77:**Theorem D′ (proved; reviews in §7).** Fix ε ∈ (0, 1/60]. There are n₀(ε) and absolute
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:85:  - An exhaustive regression test covers all 2 ≤ N ≤ 10⁴ under two designs.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:90:Equivalently: for every δ ∈ (0, 1/72], cost N^{1/6+δ+o(1)} with an exceptional fraction
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:98:- Theorem D′ is a statement about the true factor of an input drawn from S_n, counted over
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:100:- It does **not** say that for almost every N all integer candidates p are covered, so it
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:101:  does not show that the full-candidate covering model has exponent 1/6 for almost
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:103:- It does not cover the worst case (§6), nor ratios q/p > 2.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:191:ℓ | Bp − Aq (cancel p, since ℓ ∤ p). We say τ = (v, ℓ, p mod ℓ) *covers* p.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:193:**Lemma 2 (window).** If τ covers p, then g_lo ≤ g ≤ g_hi. Put i_full = g − g_lo,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:198:**Lemma 3 (mod p).** If τ covers p, then G_{τ,j*} ≡ γ^{i*} (mod p). No hypothesis on any
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:206:**Lemma 4 (mod q).** If τ covers p, then G_{τ,j*} ≡ γ^{i*}·u^{(A−B)(p−1)} (mod q).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:215:G ≡ γ^{i′} (mod q) for some i′ ∈ [0, m). If τ covers p and G is not FULL, then
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:248:**Lemma 9 (coverage: the arithmetic large sieve, in the audit's repaired form).** Fix q and
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:249:k. Let U_k(q) be the set of integers p ∈ [P/2, P] that no target of block k covers, i.e.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:260:- The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973, constant
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:265:  a/ℓ are Q^{−2}-separated, so the additive large sieve applies (referee dclt_1).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:286:## 4. Proof of Theorem D′
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:295:| prime sieve to 16Y, V, Lo_v/Hi_v (isqrt of O(n)-bit integers) | O(Y log log Y) + O(H²) isqrt | Õ(Y + H²n) |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:313:- The bound assumes quasi-linear integer multiplication M(b) = O(b log b) (Harvey–van der
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:332:- Indeed by (b) some target τ of block k(q) covers p (Lemma 1, coverage criterion).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:367:- The exceptional rate N^{−ε} comes from the large sieve (b), which is the binding term.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:369:  H ≍ n√ε, i.e. polylog cost. The large sieve is the lossy step.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:375:| (1) normalisation of Thm D's exceptional set (short I_q, prime counts in I_q) | Lemma 9 + §4(iii) E_b: one fixed interval [P/2, P], all integer survivors counted, summed over prime q, divided by \|S_n\| ≍ P²/n² | proved |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:376:| (2) deterministic roots | band primes ℓ ≡ 3 (mod 4), root a^{(ℓ+1)/4}; sieve loses a constant (PNT mod 4) | proved |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:379:| (5) quantifier mismatch | §1: D′ concerns the true factor counted over S_n. It does not give full-candidate coverage for almost every N | stated |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:383:Work items not covered above:
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:390:  handled by trying 4 bands rather than by an exceptional set. Order mod p is irrelevant.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:391:- **Harvey–Hittmeir 2026 / Oznovich–Volk (item 2, first bullet).** Not used. The audit notes they
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:398:   - (a) **coverage** of every p, which is multimod's DCH (conjectured; the large sieve gives
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:402:     clean band*. Harvey–Hittmeir 2026 gives a large-order element mod N, but large order
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:404:   - (c) pairs where **every** covering true giant is FULL (E_c). These are rare on average,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:406:2. **The exceptional rate is limited by the large sieve.** The proved fraction is n²/H², so
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:410:3. **Ratios q/p > 2** are not covered (multimod §3.9).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:422:    covering targets gave gcd = p, and 62/62 certified pairs succeeded.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:438:  - Found: 0 lemma violations; 812 clean covering targets with 108 FULL, closed form = direct
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:460:    - (3) The §11 sieve-barrier sentence is now labelled a heuristic.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:462:      pair-counted exceptions.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:473:- **0 violations** of Lemmas 1–4 on every covering target.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:475:  clean covering targets.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:486:| 72 | 11/3097 | 32/32 (31) | 1.06e7 | 8.84e7 | 9.63e6 | 3.43e6 | 3.10 | 30610 | 19414 | 18/10/4 |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:489:- C2 (heuristic full coverage, H = 19–27): 32/32 succeed. Median E_first is
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:513:  advantage at heuristically full coverage.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:535:| n | certified | block 0 clean (pred. 1 − Σ_{P₀}1/(ℓ−1)) | block 0 uncovered (e^{−λ₀}) | block 0 certified | all 4 blocks uncovered | FULL / covering targets | median bits ord_q(2) / q |
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:545:- FULL ≤ 1% of covering targets: observed ≤ 0.045%.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:547:Uncovered fractions sit at or below the Poisson value e^{−λ₀}, as in multimod. ord_q(2) is
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:548:typically ≈ q/2, far above T. With four blocks, no sampled pair was uncovered in all blocks.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:549:At these sizes the three exceptional sets E_a, E_b and E_c of §4(iii) are empirically
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:578:  - Shared one-sided collision search with multipoint evaluation: Harvey 2021,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:580:  - Arithmetic large sieve: Montgomery 1968; Montgomery–Vaughan 1973.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:584:  - The known bounds are 1/5 (Harvey 2021; HH 2022; Gao et al. 2512.19076 for balanced N,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:594:  referee obtained it, and we read the scans ourselves: references/mckee_pinch_1996/
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:615:      prime-pair large sieve with growing weight height H, replacing their probability
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:626:    expanded polynomial is divisible by B. Removing that content lowers the scaled height
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:642:  - Proved: Theorem D′ and Corollary D″.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:646:  - Conjectured: e^{−λ} exceptional rate (Poisson), DCH (worst case).
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:648:  - The large-sieve exceptional rate costs N^{5ε/6} for N^{−ε}.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:649:  - Worst case needs DCH plus large order mod the specific prime q on a clean band.
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:651:- **Most promising open question.** Improve the exceptional-rate/cost trade-off beyond the
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:652:  large sieve's n²/H².
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:654:    length P ≈ Y³, so a sieve whose level is limited to ≈ P only sees moduli built from
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:655:    ≤ 3 band primes. We *expect* that standard one-variable upper-bound sieves restricted to
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:656:    such levels (Selberg, the large sieve) give only polynomial-in-1/λ savings, and this
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:657:    explains the loss in our proof. We have **not** proved any barrier: other sieve weights,
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:659:  - Averaging over q gives a two-variable sieve over the box (classes Bp ≡ Aq mod ℓ, density
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md:662:  - A Poisson-type e^{−cλ} bound would give N^{1/6}·polylog cost with N^{−ε} exceptions
+/Volumes/git/factoring-connection/notes/multimod_results.md:11:1/6 for almost all inputs (proved), and 1/6 in the worst case under a divisor-cover
+/Volumes/git/factoring-connection/notes/multimod_results.md:15:  steps, every covering search costs ≥ c·N^{1/6} (Thm A). There is no M^{o(1)} loss. Two
+/Volumes/git/factoring-connection/notes/multimod_results.md:20:- **Scheme (DCL, "divisor-cover Lehman").**
+/Volumes/git/factoring-connection/notes/multimod_results.md:21:  - It uses Lehman/Harvey–Hittmeir targets (Bp + Aq − c)/M² with small fixed weights
+/Volumes/git/factoring-connection/notes/multimod_results.md:29:    semiprimes, via the arithmetic large sieve.
+/Volumes/git/factoring-connection/notes/multimod_results.md:30:  - **Conjectured:** for *every* N (DCH, §3.6). Under DCH the enlarged-model exponent is
+/Volumes/git/factoring-connection/notes/multimod_results.md:34:  - **Heuristic (cycloharvey's volume heuristic):** schemes covering all classes of their
+/Volumes/git/factoring-connection/notes/multimod_results.md:37:  - What escapes is *selective* covering. Each p needs only one modulus whose class
+/Volumes/git/factoring-connection/notes/multimod_results.md:38:    holds a short weight vector. Across many coprime moduli these "lucky" classes cover
+/Volumes/git/factoring-connection/notes/multimod_results.md:39:    almost everything (Thm D) and, conjecturally, everything (DCH).
+/Volumes/git/factoring-connection/notes/multimod_results.md:43:  - Mixed known-relation lattices: **not covered**.
+/Volumes/git/factoring-connection/notes/multimod_results.md:48:  - The full-coverage regime (R2) has 0 uncovered candidates exhaustively at 32–48 bits
+/Volumes/git/factoring-connection/notes/multimod_results.md:64:    N^{1/6} would need DCH, an order lemma for β^L, and the unbalanced range.
+/Volumes/git/factoring-connection/notes/multimod_results.md:84:  window ∏[U_i, U_i + W_i). Baby set B ⊂ Z^k, giant sets G_τ, and coverage needs F(p) ∈
+/Volumes/git/factoring-connection/notes/multimod_results.md:88:## 2. The scheme: divisor-cover Lehman (DCL)
+/Volumes/git/factoring-connection/notes/multimod_results.md:110:### 2.2 Coverage is a sieve
+/Volumes/git/factoring-connection/notes/multimod_results.md:112:With whole-range windows, target (v, M, r) covers exactly the integers p ≡ r (mod M) in the
+/Volumes/git/factoring-connection/notes/multimod_results.md:116:  **p is covered ⇔ some chosen (v, M) has M | Bp² − AN** (equivalently M | Bp − Aq).
+/Volumes/git/factoring-connection/notes/multimod_results.md:140:- **λ.** Each (v, M) has ρ_v(M) ∈ {0, 2} targets, and covers a fraction ρ/M of the
+/Volumes/git/factoring-connection/notes/multimod_results.md:141:  candidates. Write λ = Σ ρ_v(M)/M for the expected cover multiplicity.
+/Volumes/git/factoring-connection/notes/multimod_results.md:150:### 2.5 Heuristic coverage (Poisson; conjectured)
+/Volumes/git/factoring-connection/notes/multimod_results.md:153:ρ_v(M)/M. Then a fraction ≈ e^{−λ} of the candidates is uncovered.
+/Volumes/git/factoring-connection/notes/multimod_results.md:155:- **Full coverage.** Needs e^{−λ}·#candidates < 1, so λ ≈ ln √N.
+/Volumes/git/factoring-connection/notes/multimod_results.md:157:The exhaustive check (§6, E-C) finds coverage somewhat *better* than Poisson.
+/Volumes/git/factoring-connection/notes/multimod_results.md:158:- R1 leaves 1.3–4.3% uncovered, against Poisson's ≈5%.
+/Volumes/git/factoring-connection/notes/multimod_results.md:159:- The smallest λ giving full coverage, λ*, grows like ln √N, as the Poisson tail predicts.
+/Volumes/git/factoring-connection/notes/multimod_results.md:166:### 3.1 Per-target coverage (proved; from cycloharvey Lemmas C, K′)
+/Volumes/git/factoring-connection/notes/multimod_results.md:177:    #covered integers ≤ Pμ_τ/M + C_I ≤ C·(PW/H)^{1/2} + C.        (1)
+/Volumes/git/factoring-connection/notes/multimod_results.md:181:- **(ii) e = 1, K = 1** (support {1} or {−1}). Here ‖b‖ ≥ P/(C M), so the coverage is
+/Volumes/git/factoring-connection/notes/multimod_results.md:185:    #covered ≤ C·M·P^{−e/K}W^{1/K}·P/M + C = C·P^{1−e/K}W^{1/K} + C.   (2)
+/Volumes/git/factoring-connection/notes/multimod_results.md:198:**Statement.** Fix d and c > 1. Any 𝔐⁺ covering family of degree ≤ d has X ≥ c_{d,c}·N^{1/6}.
+/Volumes/git/factoring-connection/notes/multimod_results.md:202:- By (1) and (ii), the e = 1 targets cover at most
+/Volumes/git/factoring-connection/notes/multimod_results.md:206:  the e ≥ 2 targets cover at most C Σ_{(e,K)} P^{1−e/K} X^{1+1/K} + CX.
+/Volumes/git/factoring-connection/notes/multimod_results.md:209:- So for X ≤ δP^{2/5} with δ small, the e ≥ 2 part covers ≤ c′P/2. The e = 1 part must then
+/Volumes/git/factoring-connection/notes/multimod_results.md:213:**Theorem A′ (proved).** If the e = 1 targets of an 𝔐⁺ family cover fewer than c′P/2
+/Volumes/git/factoring-connection/notes/multimod_results.md:216:**Tightness.** Equality in (1) with H = O(1) and W ≈ P/M² means a target covers its *whole*
+/Volumes/git/factoring-connection/notes/multimod_results.md:218:(M ≈ N^{1/6}, W ≈ N^{1/6}). So A is tight up to the polylog/overlap factor, if coverage can
+/Volumes/git/factoring-connection/notes/multimod_results.md:219:be completed (Thm D, DCH).
+/Volumes/git/factoring-connection/notes/multimod_results.md:224:cover ≤ 1 + C candidates each and are absorbed in the +CX term). Then
+/Volumes/git/factoring-connection/notes/multimod_results.md:239:- **Coverage.** Cauchy–Schwarz on (1) bounds the e = 1 coverage by
+/Volumes/git/factoring-connection/notes/multimod_results.md:241:- **K = 1 targets.** Each covers ≤ CW + C (§3.1(ii)), so ≤ CX² + CX = o(P) in total when
+/Volumes/git/factoring-connection/notes/multimod_results.md:247:- J = 1 recovers cycloharvey's LB.
+/Volumes/git/factoring-connection/notes/multimod_results.md:278:coprime parts, so within that heuristic a scheme covering **all** φ(M) classes of a composite M with a
+/Volumes/git/factoring-connection/notes/multimod_results.md:285:**What does break it.** DCL does not cover all classes of any modulus. For a fixed small v
+/Volumes/git/factoring-connection/notes/multimod_results.md:289:  to almost everything (Thm D, proved), and conjecturally to everything (DCH).
+/Volumes/git/factoring-connection/notes/multimod_results.md:293:### 3.5 Theorem D (proved, in the search model): average-case N^{1/6+ε}
+/Volumes/git/factoring-connection/notes/multimod_results.md:304:whose p is covered by no target is O(N^{−ε}).
+/Volumes/git/factoring-connection/notes/multimod_results.md:309:- **Reduction to a sieve.** Fix a prime q. The admissible p form an interval I_q of length
+/Volumes/git/factoring-connection/notes/multimod_results.md:310:  ≍ √N (p ∈ [q/2, q] with pq of n bits). By §2.2, p is covered iff ∃(v, ℓ) with
+/Volumes/git/factoring-connection/notes/multimod_results.md:313:  |AB' − A'B| < H₀² < ℓ. So the uncovered p avoid ω(ℓ) = |V| residue classes modulo every
+/Volumes/git/factoring-connection/notes/multimod_results.md:315:- **Large sieve.** The arithmetic large sieve (Montgomery 1968; Montgomery–Vaughan 1973)
+/Volumes/git/factoring-connection/notes/multimod_results.md:318:    #{p ∈ I_q uncovered} ≤ (|I_q| + Q²)/J,  J ≥ Σ_{ℓ∈𝒫} |V|/(ℓ − |V|) ≥ |V|·Σ_{ℓ∈𝒫}1/ℓ ≫ H₀²/log N,
+/Volumes/git/factoring-connection/notes/multimod_results.md:321:- **Normalising.** The primes in I_q number ≍ √N/log N, so the uncovered fraction for this
+/Volumes/git/factoring-connection/notes/multimod_results.md:323:  large-sieve bound over q makes the Σ_q Q² terms O(N^{1/3}·√N) = o(#pairs). Summing over q
+/Volumes/git/factoring-connection/notes/multimod_results.md:326:The critic checked the cost and sieve steps:
+/Volumes/git/factoring-connection/notes/multimod_results.md:336:- Only the search is covered. Success also needs γ = β^L to have order mod p (or mod N) larger
+/Volumes/git/factoring-connection/notes/multimod_results.md:338:- For a *fixed* N, the same sieve in p (classes = roots of Br² ≡ AN) bounds the uncovered
+/Volumes/git/factoring-connection/notes/multimod_results.md:339:  candidates by ≈ #cand/J_N. But J_N involves Σ_v (ABN/ℓ), and lower-bounding it needs
+/Volumes/git/factoring-connection/notes/multimod_results.md:341:  general; it would follow on average over ℓ from Heath-Brown's quadratic large sieve.
+/Volumes/git/factoring-connection/notes/multimod_results.md:344:### 3.6 Conjecture DCH (divisor-cover hypothesis) and the worst case
+/Volumes/git/factoring-connection/notes/multimod_results.md:346:**DCH(κ).** For all large N coprime to 6 and every integer p ∈ [√(N/2), √N], some coprime
+/Volumes/git/factoring-connection/notes/multimod_results.md:349:- Under DCH, DCL is a deterministic covering in 𝔐⁺ with cost N^{1/6+o(1)}. With Thm A, the
+/Volumes/git/factoring-connection/notes/multimod_results.md:352:  - Experimentally supported at 32–48 bits: zero uncovered candidates among all 1.6·10⁴–4.9·10⁶ (corrected 2026-10-18 to match §6.2)
+/Volumes/git/factoring-connection/notes/multimod_results.md:354:  - The large sieve proves only the "almost all" version.
+/Volumes/git/factoring-connection/notes/multimod_results.md:356:  for structured S, T whose differences hit multiples of every d ≤ n. DCH asks that each
+/Volumes/git/factoring-connection/notes/multimod_results.md:360:  - He–Sahai's obstruction concerns UW's single-AP version of a different covering
+/Volumes/git/factoring-connection/notes/multimod_results.md:361:    statement (every d ≤ n dividing a difference). DCH is a sieve statement: each (v, ℓ)
+/Volumes/git/factoring-connection/notes/multimod_results.md:382:  - With Σ vol_τ ≤ X² (box ⊆ B + G_τ, injective in Z^k), the coverage bounds (1)–(2) and
+/Volumes/git/factoring-connection/notes/multimod_results.md:386:- (d) **Not covered (GAP, critic finding 2).** General Λ_known ≠ 0 with free rank k′ ≥ 2 and
+/Volumes/git/factoring-connection/notes/multimod_results.md:414:  lower.
+/Volumes/git/factoring-connection/notes/multimod_results.md:421:- Summing over dyadic R up to N^{1/3} gives N^{2/9} or N^{1/4}. That is worse than Harvey,
+/Volumes/git/factoring-connection/notes/multimod_results.md:422:  whose Lehman pairs ab ≤ r cover all ratios at once.
+/Volumes/git/factoring-connection/notes/multimod_results.md:432:  - Each DCL leaf covers a whole residue class across the range, P/M ≈ (PW)^{1/2}
+/Volumes/git/factoring-connection/notes/multimod_results.md:433:    candidates, the maximum allowed by (1). An HH leaf covers about P^{1/3}W^{2/3}·N^{−o(1)}.
+/Volumes/git/factoring-connection/notes/multimod_results.md:437:  - (2) UW / He–Sahai: §3.6.
+/Volumes/git/factoring-connection/notes/multimod_results.md:442:  - Could chirp leaves cover more exponents per leaf? No. The covered exponent set is
+/Volumes/git/factoring-connection/notes/multimod_results.md:457:  - Harvey 2021: a shared collision search over multiplier families, and Alg. 4.1.
+/Volumes/git/factoring-connection/notes/multimod_results.md:465:  collision-search line (Harvey/HH/UW).
+/Volumes/git/factoring-connection/notes/multimod_results.md:476:| n | DCL R1 (λ=3, ≈95%) | DCL R2 (λ=ln√N+2, full) | HH (calibrated) | Harvey (calibrated) | R1/HH |
+/Volumes/git/factoring-connection/notes/multimod_results.md:487:Slopes (least squares, n = 56–96): **R1 0.1707**, R2 0.1962, HH 0.1963, Harvey 0.2137.
+/Volumes/git/factoring-connection/notes/multimod_results.md:493:### 6.2 E-C: exhaustive coverage of all integer candidates (n = 32–48; 4 random + special N per size)
+/Volumes/git/factoring-connection/notes/multimod_results.md:495:- **R2.** **0 uncovered** in all 25 instances, out of 1.6·10⁴ to 4.9·10⁶ candidates each.
+/Volumes/git/factoring-connection/notes/multimod_results.md:497:- **R1.** Uncovered fraction 1.3–4.3%, below the Poisson prediction e^{−λ} in every
+/Volumes/git/factoring-connection/notes/multimod_results.md:499:- **λ\*** (smallest grid λ with full coverage), against ln√N + 2:
+/Volumes/git/factoring-connection/notes/multimod_results.md:510:  bit. Full coverage at λ* costs ≈3.5–4.5× the R1 cost at 48 bits.
+/Volumes/git/factoring-connection/notes/multimod_results.md:511:- Experimentally supported: DCH holds for these instances with λ ≈ ln√N, at polylog extra
+/Volumes/git/factoring-connection/notes/multimod_results.md:529:| n | R1 succ. | R1 classes (S/PM1/A) | R1 list = model | R2 succ. | R2 classes | R2 list = model | Harvey succ. | mean list cost R1 / R2 / Harvey | mean mults R1 / R2 / Harvey |
+/Volumes/git/factoring-connection/notes/multimod_results.md:539:- **Wall time at 64 bits:** R1 0.07 s, R2 0.25 s, Harvey 0.34 s.
+/Volumes/git/factoring-connection/notes/multimod_results.md:541:  powering per target. At 40 bits Harvey runs at r = 1 (plain BSGS), so its count is tiny.
+/Volumes/git/factoring-connection/notes/multimod_results.md:579:- **R2 (matched 100% success).** As predicted: full coverage everywhere tested, but the
+/Volumes/git/factoring-connection/notes/multimod_results.md:581:  100% success. R2 lists are 0.99× and 0.89× Harvey's at 56 and 64 bits, but 5.4× HH's model count
+/Volumes/git/factoring-connection/notes/multimod_results.md:597:  - Model lower bound N^{1/6} (proved).
+/Volumes/git/factoring-connection/notes/multimod_results.md:599:    DCH (conjectured).
+/Volumes/git/factoring-connection/notes/multimod_results.md:600:  - Experiments: slope 0.171 at 95% success; full coverage at λ ≈ ln√N exhaustively to 48
+/Volumes/git/factoring-connection/notes/multimod_results.md:607:  - A proof of DCH, or a structured choice of (v, M) with provable full coverage.
+/Volumes/git/factoring-connection/notes/multimod_results.md:618:PYTHONPATH=. .venv/bin/python -m src.multimod.experiments coverage
+
+web search: 
+web search: 
+web search: 
+web search: "deterministic" "factoring" "Harvey" "2026"
+web search: "Farey fractions" "modulo" "Shparlinski"
+web search: "integers" "divisor" "short intervals" "2/7"
+exec
+/bin/zsh -lc "sed -n '570,641p' /Volumes/git/factoring-connection/notes/dcltheorem_results.md" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+None changes any recorded run. Re-running 12 recorded C1/C3 instances (n = 40, 56; seeds
+100–102) reproduced E_full and the first-success block exactly.
+
+## 10. Prior art (GPT-6.1-sol r12 + dclt_1 + own WebSearch; curated)
+
+- **Ingredients (all prior art).**
+  - Weighted Fermat / Lehman searches: Lawrence 1895, Lehman 1974.
+  - Modulus-squared lock: McKee 1999 (heuristic N^{1/4}); HH 2022 Prop. 3.3.
+  - Shared one-sided collision search with multipoint evaluation: Harvey 2021,
+    Alg. 4.1–4.2.
+  - Arithmetic large sieve: Montgomery 1968; Montgomery–Vaughan 1973.
+  - Elementary counting of primes with small ord_q(2): divisors of 2^k − 1.
+- **Exponent below 1/5 for almost all bounded-ratio prime pairs (unconditional, deterministic):
+  no prior result found** by GPT-6.1-sol (two independent sweeps) or by our searches.
+  - The known bounds are 1/5 (Harvey 2021; HH 2022; Gao et al. 2512.19076 for balanced N,
+    log factors only).
+  - The conditional route is 1/6 under Umans–Wang's conjecture; He–Sahai 2026 refute its
+    rank-1 form.
+  - Almost-all unrestricted semiprimes are easy by trial division (Crişan–Erban counting), but
+    that does not apply to S_n.
+- **The clean-band trick** (disjoint prime bands so that one is coprime to q − 1, plus large
+  ord_q(2) for almost all q, plus a direct count of two-sided true giants) was not found in
+  the factoring papers checked.
+- **McKee–Pinch 1996 (ANTS II, LNCS 1122) §5, pp. 221–223: a direct precursor.** The r13
+  referee obtained it, and we read the scans ourselves: references/mckee_pinch_1996/
+  mckee-03.jpg and mckee-04.jpg; source https://cr.yp.to/bib/1996/mckee-deterministic.html.
+  - **Lehmer's speed-up.** If p ≡ q ≡ 1 (mod k), Fermat runs in O(q/k²).
+  - **The authors' extension.** For p ≡ ±q (mod k), Fermat runs in O(q/k^{2−ε}), via
+    n = u² − v² with u or v determined mod k² from square roots mod k. That is the
+    modulus-squared lock.
+  - **Multipliers.** If λp ≡ ±μq (mod k), the same method splits λμn in
+    O(max(λp, μq)/k²·n^ε).
+  - **A deterministic O(n^{1/3+ε}) algorithm.** Take k = 2⌊n^{1/3}⌋ + 1, and a pigeonhole
+    lemma that guarantees λμ ≤ k with λp ≡ ±μq (mod k).
+  - **A heuristic balanced method, "not however an algorithm".** Take primes k ∈ (n^{1/4},
+    2n^{1/4}) and small λ, μ, and assume λp − μq ≡ 0 (mod k) for some of them. Each (λμ, k)
+    costs O(n^ε). The expected running time O(n^{1/4+ε}) rests on the heuristic that q − p
+    has a prime factor in the band with probability ≫ 1/log n.
+  - **So the core event** (a band prime divides a small-weight combination Bp − Aq, with
+    N-determined residues and a modulus-squared reduction) **is theirs.**
+  - **What D′ adds:**
+    - (i) the band at N^{1/6}H^{−1/3} instead of N^{1/4}. This is made possible by
+    - (ii) one baby list shared by all band primes via the cofactor-powered handles
+      u_ℓ^{B+AN−c}, so each target costs one giant step against a window of size ≈ N^{1/6};
+    - (iii) a proof that the event happens for all but O(N^{−ε}) of the pairs: the
+      prime-pair large sieve with growing weight height H, replacing their probability
+      heuristic;
+    - (iv) one-sided extraction with no order hypothesis: the clean band, ord_q(2), and the
+      Lemma 10 count;
+    - (v) a full bit-complexity accounting.
+  - Their per-k cost is O(n^ε) because q/k² = O(1). Ours trades a larger window for fewer,
+    smaller primes through the shared baby list.
+- **Carella, arXiv 1308.2891.** It explicitly claims a deterministic exponent-1/6 factoring
+  algorithm.
+  - *The r13 referee's assessment, not independently re-derived by us:* the displayed proof
+    loses a necessary primitive-polynomial normalisation. Every coefficient of the correctly
+    expanded polynomial is divisible by B. Removing that content lowers the scaled height
+    from ≈ N to N^{5/6}, and the cited small-root condition then no longer supports
+    X = Y = N^{1/3}.
+  - The referee does not regard that proof as establishing the bound. We list it as a claimed
+    but (per that assessment) unproved prior statement of the same exponent.
+- **Claim limited to:** "no prior formulation found by us" of the *combination*: (i)–(v) above,
+  on top of McKee–Pinch §5's divisibility event and HH 2022 Prop. 3.3's lock. Novelty
+  judgments are left to the orchestrator.
+
+## 11. Candidate card
+
+- **Mechanism.** DCL with one-sided extraction certified on a clean band (§2).
+  **Representation.** (Z/N)^*, base 2.
+- **Factor feature.** g = (Bp + Aq − c)/ℓ² in a whole-range window; the true giant equals
+  γ^{i*} mod p exactly.
+- **Outcome.**
+
+web search: 
+web search: "Farey fractions" "modulo" "Shparlinski"
+web search: 
+web search: "prime factors" "short intervals" "dyadic"
+web search: 
+web search: "He" "Sahai" "divisor" conjecture 2026
+web search: 
+web search: short intervals integer divisor prescribed size exponent pairs Graham Kolesnik ...
+web search: 
+web search: https://arxiv.org/abs/0705.3861
+web search: 
+web search: "prime" "reciprocal" "exponential sums" "x/p" ...
+web search: 
+web search: "divisor of given order" intervals Melfi answer ...
+codex
+The literature search has found two relevant distinctions. The Umans–Wang route to exponent \(1/6\) is conditional, and a 2026 paper refutes its single-arithmetic-progression version while leaving the higher-rank version open. For ordinary intervals, reciprocal exponential sums give a provable composite-divisor result. I’m checking its bound and whether any part transfers to the residual GAP.
+web search: 
+web search: Tenenbaum "Sur un problème extrémal en arithmétique" ...
+web search: 
+web search: https://arxiv.org/html/2511.10851v1#S5
+web search: 
+web search: 'Theorem 5.2'
+web search: 
+web search: https://aif.centre-mersenne.org/item/AIF_1987__37_2_1_0/
+web search: 
+web search: Friedlander Lagarias "On the distribution in short intervals" pdf ...
+web search: 
+web search: site:erdosproblems.com "divisor" "short interval" ...
+web search: 
+web search: https://websites.umich.edu/~lagarias/doc/short.pdf
+web search: 
+web search: "Consecutive integers free of certain prime factors" arxiv ...
+web search: 
+web search: "small solutions" "linear congruences" "varying" ...
+web search: 
+web search: 'Lemma 2.2'
+web search: 
+web search: 
+web search: 
+web search: https://virtualmath1.stanford.edu/~akshay/research/andreas.pdf
+web search: 
+web search: 
+exec
+/bin/zsh -lc 'command -v pdftotext' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ exited 1 in 0ms:
+web search: 
+web search: 
+web search: 
+web search: "Small solutions to linear congruences and Hecke equidistribution"
+web search: 
+web search: "Multi-target hyperbolic sieves and elliptic trace obstructions" ...
+web search: 
+web search: "On numbers with a large prime factor II" Jutila 1974 ...
+exec
+/bin/zsh -lc "cat > exact_checks.py <<'PY'
+#"'!/usr/bin/env python3
+"""Exact finite checks; no third-party dependencies. Not asymptotic evidence."""
+from fractions import Fraction
+from math import gcd, isqrt, log, exp, pi
+import json
+
+
+def sieve(n):
+    a = bytearray(b'"'\\1') * (n + 1)
+    a[:2] = b'\\0\\0'
+    for p in range(2, isqrt(n) + 1):
+        if a[p]:
+            a[p*p:n+1:p] = b'\\0' * ((n-p*p)//p + 1)
+    return a
+
+
+def weights(h):
+    return [(a,b) for b in range(1,h+1) for a in range(-h,h+1)
+            if a and gcd(a,b)==1]
+
+
+def primitive_minimum(m, r):
+    for h in range(1,m+1):
+        sol=[(a,b) for a,b in weights(h) if (a-r*b)%m==0]
+        if sol:
+            return {'m':m,'r':r,'minimum':h,'examples':sol[:2]}
+
+
+out = {}
+out['composite_minima']=[primitive_minimum(m,m//2-1) for m in (8,12,16,20,24,28,32,40,100)]
+out['exponents']=[{'c':str(c),'j=1_exponent':str((1-c)/(Fraction(7,2)-c)),
+                   'best_with_j=0_or_1':str(min(Fraction(1,5),(1-c)/(Fraction(7,2)-c)))}
+                  for c in [Fraction(0),Fraction(1,4),Fraction(3,8),Fraction(2,5),Fraction(1,2)]]
+out['poisson_constant_natural_log']=36*log(16)/(pi*pi)
+
+sp=sieve(1_500_100)
+q=next(n for n in range(1_500_000,len(sp)) if sp[n])
+lo=(q+1)//2
+candidates=[p for p in range(lo,q) if sp[p]]
+Y=100
+band=[ell for ell in range(Y+1,16*Y+1) if sp[ell] and ell%4==3]
+uncovered=bytearray(b'\\1')*(q+1)
+seen=set()
+rows=[]
+for h in range(1,9):
+    ws=weights(h)
+    for ell in band:
+        residues={(a*q*pow(b,-1,ell))%ell for a,b in ws}
+        for r in residues:
+            if (ell,r) in seen:
+                continue
+            seen.add((ell,r))
+            uncovered[r:q+1:ell]=b'\\0'*((q-r)//ell+1)
+    surv=[p for p in candidates if uncovered[p]]
+    lam=sum(len({(a*pow(b,-1,ell))%ell for a,b in ws})/(ell-1) for ell in band)
+    # Exact counts of excluded local residues; log-density is floating-point only.
+    log_delta=sum(log(1-len({(a*pow(b,-1,ell))%ell for a,b in ws})/(ell-1))
+                  for ell in band)
+    rows.append({'H':h,'weights':len(ws),'surviving_prime_p':len(surv),
+                 'first_survivor':surv[0] if surv else None,
+                 'lambda':lam,'complete_period_density':exp(log_delta)})
+out['fixed_q_scan']={'q':q,'p_interval':[lo,q-1],'prime_candidates':len(candidates),
+                      'band':[Y,16*Y],'band_prime_count':len(band),'rows':rows}
+# Verify every claimed survivor directly, independently of the mask.
+for row in rows:
+    p=row['first_survivor']
+    if p is not None:
+        assert all((b*p-a*q)%ell for a,b in weights(row['H']) for ell in band)
+assert len(weights(10)) == 4*sum(sum(gcd(a,b)==1 for a in range(1,b+1)) for b in range(1,11))-2
+with open('exact_checks.json','w') as f:
+    json.dump(out,f,indent=2)
+print(json.dumps(out,indent=2))
+PY
+python3 exact_checks.py" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 177ms:
+{
+  "composite_minima": [
+    {
+      "m": 8,
+      "r": 3,
+      "minimum": 3,
+      "examples": [
+        [
+          3,
+          1
+        ],
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "m": 12,
+      "r": 5,
+      "minimum": 5,
+      "examples": [
+        [
+          5,
+          1
+        ],
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "m": 16,
+      "r": 7,
+      "minimum": 5,
+      "examples": [
+        [
+          5,
+          3
+        ],
+        [
+          3,
+          5
+        ]
+      ]
+    },
+    {
+      "m": 20,
+      "r": 9,
+      "minimum": 7,
+      "examples": [
+        [
+          7,
+          3
+        ],
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "m": 24,
+      "r": 11,
+      "minimum": 7,
+      "examples": [
+        [
+          7,
+          5
+        ],
+        [
+          5,
+          7
+        ]
+      ]
+    },
+    {
+      "m": 28,
+      "r": 13,
+      "minimum": 9,
+      "examples": [
+        [
+          9,
+          5
+        ],
+        [
+          5,
+          9
+        ]
+      ]
+    },
+    {
+      "m": 32,
+      "r": 15,
+      "minimum": 9,
+      "examples": [
+        [
+          9,
+          7
+        ],
+        [
+          7,
+          9
+        ]
+      ]
+    },
+    {
+      "m": 40,
+      "r": 19,
+      "minimum": 11,
+      "examples": [
+        [
+          11,
+          9
+        ],
+        [
+          9,
+          11
+        ]
+      ]
+    },
+    {
+      "m": 100,
+      "r": 49,
+      "minimum": 27,
+      "examples": [
+        [
+          27,
+          23
+        ],
+        [
+          23,
+          27
+        ]
+      ]
+    }
+  ],
+  "exponents": [
+    {
+      "c": "0",
+      "j=1_exponent": "2/7",
+      "best_with_j=0_or_1": "1/5"
+    },
+    {
+      "c": "1/4",
+      "j=1_exponent": "3/13",
+      "best_with_j=0_or_1": "1/5"
+    },
+    {
+      "c": "3/8",
+      "j=1_exponent": "1/5",
+      "best_with_j=0_or_1": "1/5"
+    },
+    {
+      "c": "2/5",
+      "j=1_exponent": "6/31",
+      "best_with_j=0_or_1": "6/31"
+    },
+    {
+      "c": "1/2",
+      "j=1_exponent": "1/6",
+      "best_with_j=0_or_1": "1/6"
+    }
+  ],
+  "poisson_constant_natural_log": 10.113190959266335,
+  "fixed_q_scan": {
+    "q": 1500007,
+    "p_interval": [
+      750004,
+      1500006
+    ],
+    "prime_candidates": 53917,
+    "band": [
+      100,
+      1600
+    ],
+    "band_prime_count": 118,
+    "rows": [
+      {
+        "H": 1,
+        "weights": 2,
+        "surviving_prime_p": 32962,
+        "first_survivor": 750037,
+        "lambda": 0.479314725473155,
+        "complete_period_density": 0.6180660999595842
+      },
+      {
+        "H": 2,
+        "weights": 6,
+        "surviving_prime_p": 12446,
+        "first_survivor": 750133,
+        "lambda": 1.4379441764194651,
+        "complete_period_density": 0.2334429318004256
+      },
+      {
+        "H": 3,
+        "weights": 14,
+        "surviving_prime_p": 1706,
+        "first_survivor": 751057,
+        "lambda": 3.355203078312085,
+        "complete_period_density": 0.03173974927961275
+      },
+      {
+        "H": 4,
+        "weights": 22,
+        "surviving_prime_p": 241,
+        "first_survivor": 761363,
+        "lambda": 5.272461980204705,
+        "complete_period_density": 0.004023962144266578
+      },
+      {
+        "H": 5,
+        "weights": 38,
+        "surviving_prime_p": 3,
+        "first_survivor": 839731,
+        "lambda": 9.106979783989946,
+        "complete_period_density": 5.059467650208816e-05
+      },
+      {
+        "H": 6,
+        "weights": 46,
+        "surviving_prime_p": 0,
+        "first_survivor": null,
+        "lambda": 11.024238685882565,
+        "complete_period_density": 4.898634114899256e-06
+      },
+      {
+        "H": 7,
+        "weights": 70,
+        "surviving_prime_p": 0,
+        "first_survivor": null,
+        "lambda": 16.776015391560424,
+        "complete_period_density": 1.9314489645364255e-09
+      },
+      {
+        "H": 8,
+        "weights": 86,
+        "surviving_prime_p": 0,
+        "first_survivor": null,
+        "lambda": 20.610533195345667,
+        "complete_period_density": 3.1803385546547716e-12
+      }
+    ]
+  }
+}
+
+web search: 
+web search: https://arxiv.org/abs/2010.05450
+web search: 
+web search: https://cr.yp.to/bib/1996/mckee-deterministic.html
+codex
+The exact scan is complete: with \(q=1{,}500{,}007\) and all 118 primes \(3\bmod4\) in \((100,1600]\), 241 balanced prime partners survive at \(H=4\), three at \(H=5\), and none at \(H=6\). This is only a finite check. For the asymptotic negative question, the CRT density is positive and explicit, but transferring it to pairs of height \(P\asymp Y^3H\) remains unproved.
+web search: 
+web search: 
+web search: 
+web search: https://www.cambridge.org/core/books/van-der-corputs-method-of-exponential-sums/625B03DBB8EE573940E19148E6B8A6D4
+exec
+/bin/zsh -lc "sed -n '1,120p' blind_notes.md" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+# Independent analysis before literature search (18 October 2026)
+
+## Exact statements derived
+
+1. For prime ell > H^2*2, primitive signed weights give distinct forbidden residues A/B mod ell: equality implies ell | AD-BC with |AD-BC| <= 2H^2; the primitive representatives with positive denominator coincide. Their number is W(H)=4 sum_{b<=H} phi(b)-2 ~ (12/pi^2) H^2. Thus conditional on p,q nonzero mod ell the excluded fraction is W(H)/(ell-1), not W(H)/ell exactly.
+
+2. The direct CRT construction works for any fixed finite band once W(H)<ell-1 for every ell. Choose an allowed ratio at each ell, and prime p,q in the resulting residue classes modulo Q=product ell. PNT in arithmetic progressions, with Q held fixed, supplies balanced pairs at arbitrarily large height. It does NOT establish the desired relation P~Y^3 H: Q=exp(Theta(Y)) for a full dyadic band (also for primes 3 mod 4 in (Y,16Y]).
+
+3. Composite modulus caution. For m=4k, ratio r=2k-1 is a unit. If A=rB mod m is primitive, B is odd (otherwise A is even), so A+B=2k mod 4k. Consequently max(|A|,B)>=k. There is a nonprimitive vector (-2,2) of norm 2. For m=12, r=5, no primitive vector has norm <=3; the primitive minimum is 5. Thus an unqualified primitive sqrt(m) Minkowski guarantee for composites is false.
+
+4. Literal positive guarantees outside the useful parameter range exist. All integers in (2P,4P] cover every balanced pair with H=1, since p+q lies in that band and is coprime to N. J~Y, so this is a c=1/2 statement with huge cost. Also the exact-zero vector (A,B)=(p,q) covers every modulus when H>=q. These do not address Y~P^{1/3} or a factoring exponent improvement.
+
+5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+
+6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
+
+7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+
+## Unresolved before search
+
+No selective improvement in the useful range proved yet. Composite divisors in ordinary intervals may be accessible to reciprocal exponential sums: standard exponent pair (1/6,2/3) in sum exp(hx/m), m~x^{1/3}, together with a truncated sawtooth expansion gives error x^{2/7} (logs), hence existence of a divisor in that band in intervals of length x^{2/7+epsilon}. This needs careful checking and literature confirmation. Such a theorem alone does not handle residual GAPs.
+
+The negative polylog statement needs a lower bound for prime pairs avoiding roughly H^2 rational residue classes at every band prime of size P^{1/3}. Direct CRT with all constraints has exponential modulus. Standard fixed-depth sieve information is not a proof when H^2/log P diverges. No rigorous implication to twin primes or another named open problem has been derived.
+
+web search: 
+web search: "Distribution of Farey fractions in residue classes" "2008" "1127" ...
+exec
+/bin/zsh -lc "python3 - <<'PY'
+print(839731*1500007)
+from fractions import Fraction
+for a in [Fraction(1,8), Fraction(1,10),Fraction(0)]:
+ print(str(a), str((1+2*a)/(2*(3+a))))
+PY" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+1259602378117
+1/8 1/5
+1/10 6/31
+0 1/6
+
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/dchworst_1/blind_notes.md
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+web search: 
+web search: "On the Distribution of r-Full and l-Free" Zhai Cao ...
+web search: 
+web search: https://doi.org/10.1017/CBO9780511661976
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+web search: 
+web search: https://arxiv.org/pdf/2105.13568
+web search: 
+web search: "Distribution of Farey Fractions in Residue Classes" "Proc."
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+exec
+/bin/zsh -lc 'ls -l blind_notes.md exact_checks.py exact_checks.json' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+-rw-r--r--  1 knielsen  staff  3412 Oct 18 18:24 blind_notes.md
+-rw-r--r--  1 knielsen  staff  4168 Oct 18 18:18 exact_checks.json
+-rw-r--r--  1 knielsen  staff  2756 Oct 18 18:18 exact_checks.py
+
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+codex
+I have two verified positive results for ordinary intervals: a composite divisor in the band with interval length \(x^{27/97+\varepsilon}\), and a band prime factor with length \(x^{1/3-\eta}\) for some absolute \(\eta>0\). Neither proves coverage of the thin residual GAP. I’ll make that limitation explicit, along with the precise scope of the sieve and factoring-model barriers.
+exec
+/bin/zsh -lc "cat > research_report.md <<'EOF'
+**UNVERIFIED:** This attempt does not establish a useful worst-case selective coverage gain, including a logarithmic gain, at the required polynomial relation between P and Y. **CONJECTURED:** The negative assertion for 1/2 < kappa < 1 remains plausible, but is not proved here. **PROVED:** Ordinary intervals admit positive results, including a band composite divisor at length x"'^(27/97+epsilon) when Y is comparable to x''^(1/3), and a band prime factor at length x''^(1/3-eta) for some absolute eta > 0. **REFUTED:** Extending the primitive-vector square-root guarantee to arbitrary composite moduli is invalid. These interval results do not establish the requested GAP coverage or a deterministic factoring exponent below 1/5. The independent pass was recorded in blind_notes.md before the literature search.
+
+## 1. Worst-case positive coverage
+
+**UNVERIFIED.** No proof was obtained, or verified in the literature checked, of H <= sqrt(Y) J''^(-c) with c > 0 in the useful range P approximately Y''^(3+alpha), H=Y''^alpha, alpha < 1/2. In particular no proof was obtained for alpha < 1/8, or for H=sqrt(Y)/(log Y)''^a with a>0. This is a limitation of this attempt, not an impossibility theorem.
+
+**PROVED: a literal positive answer outside the useful range.** Set Y=2P and take all integers M in (Y,2Y] coprime to N. Then p+q lies in (2P,3P/sqrt(2)] and is coprime to N. The primitive weight (-1,1) is covered by M=p+q. Thus H=1, J comparable to Y, and H is comparable to sqrt(Y) J''^(-1/2). The cost is comparable to P, so this does not improve factoring.
+
+**PROVED: continued fractions preserve the obstruction.** If r_i/s_i are consecutive convergents to q/p, set D_i=r_i p-s_i q. The vectors (s_i,r_i) and (s_(i-1),r_(i-1)) form a unimodular basis, so every weight has residual aD_i+bD_(i-1). The original weight square becomes a parallelogram in (a,b), and primitivity becomes gcd(a,b)=1. A small residual does not imply a divisor in a prescribed band. Multiplying a small residual by an integer also multiplies its weight and generally destroys primitivity. Enlarging the transformed parallelogram to a convenient box need not preserve the weight bound.
+
+**PROVED: the basic arithmetic-large-sieve estimate is insufficient pointwise.** In the distinct-residue range 2H''^2<Y, for fixed q it gives, up to absolute constants,
+
+    # {p in an interval of length O(P): uncovered}
+      <= (P+Y''^2) Y/(J H''^2).
+
+For J comparable to Y/log Y and P much larger than Y''^2, this is O(P log Y/H''^2). It is not below one anywhere near the desired H range. Duality does not change this same bound. This calculation does not exclude more elaborate use of large-sieve ideas.
+
+**PROVED: a direct varying-modulus Minkowski shortcut is not linear.** The condition is Bp-Aq=Mt. If both M and t vary, this is bilinear, not a fixed lattice equation in three independent variables. A different geometric argument would need additional input.
+
+**REFUTED: primitive sqrt(M) for composite M.** Let M=4k and r=2k-1. This r is a unit modulo M. The lattice A=rB mod M contains (-2,2). But any primitive solution has B odd: otherwise A is even as well. Therefore
+
+    A+B = 2k mod 4k,  so  |A|+B >= 2k,
+
+and max(|A|,B)>=M/4. For M=12, r=5, the primitive minimum is 5, despite the nonprimitive vector of norm 2. This occurs for the balanced prime pair p=7,q=11. Exact enumeration also gives primitive minimum 27 for M=100,r=49, realized by p=349,q=401. Dividing a short nonprimitive vector is not legitimate if the common factor shares a prime factor with M.
+
+**UNVERIFIED.** Allowing all composite divisors in the band may still help, but neither this attempt nor the checked references proves the required coverage theorem. The ordinary-interval result below is not such a theorem.
+
+## 2. Intervals, GAPs, and rational reductions: literature
+
+**PROVED: the unrestricted maximal-gap question has an exact elementary answer.** For any nonempty finite modulus set, the largest gap on the entire integer line between consecutive members of the union of their multiples equals the smallest modulus m0. The upper bound follows from the multiples of m0. For the lower bound, let Q be the least common multiple of all moduli: none of Q+1,...,Q+m0-1 is a multiple of any modulus. Thus the relevant question must restrict the height, such as x comparable to Y''^3. A smaller global maximal-gap bound for fixed Y is false.
+
+**PROVED: a conservative composite-divisor result.** For Y comparable to x''^(1/3), define
+
+    T(x,h;Y)=sum_(Y<m<=2Y) (floor((x+h)/m)-floor(x/m)).
+
+Writing psi(t)={t}-1/2, the standard exponent-pair bound is
+
+    sum_(Y<m<=2Y) psi(x/m)
+      << x''^(k/(1+k)) Y''^((l-k)/(1+k)).
+
+Consequently the pair (1/6,2/3) gives error x''^(2/7), while the verified Bourgain pair (13/84+epsilon,55/84+epsilon) gives x''^(27/97+epsilon). Thus
+
+    T(x,h;Y)=h log 2+O_epsilon(x''^(27/97+epsilon)+h/Y).
+
+After shrinking the epsilon in the error, every interval of length x''^(27/97+epsilon) contains an integer with a divisor in (Y,2Y]. This is a corollary of the standard bound, not a claim of novelty or an optimal exponent. An explicit primary source for the bound and the same divisor-counting argument is A. Weingartner, *Somewhat smooth numbers in short intervals*, arXiv:2105.13568, equation (1) and the proof around equation (4). The underlying reference is S. W. Graham and G. Kolesnik, *Van der Corput'"'s Method of Exponential Sums*, Cambridge, 1991, Lemma 4.3.
+
+**PROVED: a band-prime-factor result also beats x"'^(1/3) by a power.** Lemma 2.2 of J. B. Friedlander and J. C. Lagarias, *On the distribution in short intervals of integers having no large prime factor*, Journal of Number Theory 25 (1987), 249-273, bounds the weighted sawtooth sum over primes. At w comparable to x''^(1/3), it implies, for some absolute eta>0,
+
+    sum_(Y<ell<=2Y) log(ell) (floor((x+h)/ell)-floor(x/ell))
+       = h sum_(Y<ell<=2Y) log(ell)/ell + O(x''^(1/3-eta)).
+
+The main coefficient tends to log 2. Taking h=x''^(1/3-eta/2) proves existence. Their input is M. Jutila, *On numbers with a large prime factor II*, Journal of the Indian Mathematical Society 38 (1974), 125-130, Theorem 2. The eta here is not given a numerical value, and no claim of optimality is made.
+
+**UNVERIFIED: very short intervals.** No proof was found here for every fixed positive theta, or for polylogarithmic interval length. G. Melfi explicitly posed the divisor version with h=log''^2 x and Y=x''^(1/3) on MathOverflow, 4 January 2023. That is evidence of the formulation, not a certification that no subsequent resolution exists.
+
+**PROVED: relevant Farey and lattice results have different quantifiers.**
+
+* A. C. Cojocaru and I. E. Shparlinski, *Distribution of Farey Fractions in Residue Classes and Lang--Trotter Conjectures on Average*, arXiv:0705.3861, proves uniform distribution for Farey order T >= ell''^(1/2+epsilon), rather than the required much smaller order.
+* I. E. Shparlinski, *Exponential Sums with Farey Fractions*, Bulletin of the Polish Academy of Sciences, Mathematics 57 (2009), 101-107, DOI 10.4064/ba57-2-2, studies modular distributions of the Farey family.
+* A. Strombergsson and A. Venkatesh, *Small solutions to linear congruences and Hecke equidistribution*, Acta Arithmetica 118 (2005), 41-78, DOI 10.4064/aa118-1-4, gives limiting distributions for random congruence systems.
+
+**UNVERIFIED.** None of these checked results supplies the fixed-rational, varying-prime worst-case theorem at H=Y''^(1/8-delta). Neither the interval theorem nor the random-lattice theorem transfers to the residual parallelogram merely from its rank or cardinality. No rigorous reduction from the exact prime-pair coverage assertion to Legendre'"'s conjecture, twin primes, or a similarly named classical open problem was established. A general polylogarithmic interval-hitting statement would settle Melfi's formulation; the special residual-GAP assertion has not been shown to imply it.
+
+## 3. Negative direction and CRT
+
+**PROVED: the small-H range.** A union bound and Brun--Titchmarsh give covered fraction O(H"'^2/log N) among balanced prime pairs, with harmless constant enlargement for a moving band. Hence for H=o(sqrt(log N)), almost all pairs are uncovered; a positive proportion remain for H<=c sqrt(log N) with a sufficiently small absolute c. This proves the requested infinitude for kappa<1/2.
+
+**CONJECTURED: 1/2<kappa<1.** No proof or disproof was obtained, and no checked lower-bound-sieve or second-moment theorem settles this exact assertion.
+
+**PROVED: an exact local density.** Let u=log N, with natural logarithms. The number of signed primitive weights is
+
+    W(H)=4 sum_(b<=H) phi(b)-2=(12/pi''^2)H''^2+O(H log H).
+
+If 2H''^2<ell, their reductions A/B are distinct, since a collision makes ell divide a nonzero determinant of absolute value at most 2H''^2. Among unit pairs modulo ell, the excluded proportion is W(H)/(ell-1). Therefore over a complete CRT period the exact surviving proportion is
+
+    Delta=product_(ell in L) (1-W(H)/(ell-1)).
+
+For L={ell: Y<ell<=16Y, ell=3 mod 4}, the prime number theorem in progressions gives
+
+    sum_(ell in L) 1/(ell-1) ~ (log 16)/(2 log Y) ~ 3 log 16/u.
+
+For H=u''^kappa, 0<kappa<1, expansion of the product yields
+
+    log Delta = -(36 log 16/pi''^2) H''^2/u + o(1),
+    36 log 16/pi''^2 = 10.113190959266335... .
+
+The quadratic error is O(H''^4/(Y log Y))=o(1); the errors from W(H) and log Y are also o(1) in this kappa range. Thus this local exponential density is rigorous. Its transfer to the polynomial-height box of prime pairs is the unproved step.
+
+**CONJECTURED: the count predicted by that transfer.** Balanced semiprimes at logarithmic scale u number exp(u+O(log u)). The model would predict
+
+    log(expected number uncovered)
+       =u-(10.11319...+o(1))u''^(2kappa-1)+O(log u),
+
+which tends to infinity for every kappa<1. A divergent model expectation is not a lower bound for actual prime pairs.
+
+**PROVED: CRT can construct uncovered balanced prime pairs for a fixed band.** If W(H)<ell-1 for every band prime, select an allowed ratio r_ell. Choose p=r_ell and q=1 modulo each ell, then combine the conditions by CRT. For the resulting fixed Q, the prime number theorem in arithmetic progressions supplies p and q in disjoint comparable intervals at sufficiently large heights. These pairs are uncovered.
+
+**PROVED: why this does not establish the requested scale.** In this band,
+
+    log Q=(15/2+o(1))Y,
+
+whereas the required P is comparable to Y''^3 H. Fixed-modulus prime distribution does not give the required conclusion uniformly here. A particularly transparent failed construction is to force the common ratio H+1 at every band prime, which is locally allowed once Y>H''^2+2H. It forces Q | p-(H+1)q. For balanced pairs of the required height the latter is nonzero and of size O(HP), much smaller than Q, so this particular CRT construction cannot work.
+
+**UNVERIFIED.** It would be unjustified to conclude that every CRT construction is impossible. Arbitrary choices of allowed ratios and a search for small representatives return to the original problem. Counting variables versus congruences does not prove nonexistence.
+
+**PROVED: limitation of the elementary moment route.** The expected number of hits is lambda comparable to H''^2/log N, which tends to infinity for kappa>1/2. First and second moments of the hit count do not force positive mass at zero. Bonferroni approximations to exp(-lambda) require growing truncation order, while products of r band primes have size about Y''^r. With any fixed polynomial distribution level in P, only bounded r is available. This explains the failure of the straightforward route; it is not an impossibility theorem for all sieve methods.
+
+**PROVED: exact finite computations.** The script exact_checks.py sieves primes exactly and checks all 53,917 prime p in [750004,1500006] with q=1500007. The band contains all 118 primes 3 mod 4 in (100,1600]. The counts of uncovered partners are:
+
+| H | Primitive signed weights | Uncovered prime partners |
+|---:|---:|---:|
+| 1 | 2 | 32962 |
+| 2 | 6 | 12446 |
+| 3 | 14 | 1706 |
+| 4 | 22 | 241 |
+| 5 | 38 | 3 |
+| 6 | 46 | 0 |
+
+One uncovered pair at H=5 is (839731,1500007), with product 1259602378117. Every displayed first survivor was rechecked directly against every weight and every band prime, separately from the residue mask. These are finite statements and do not test the growing-polylogarithm infinitude claim. Full output is in exact_checks.json.
+
+## 4. Other designs and precise barriers
+
+**UNVERIFIED.** No unconditional deterministic exponent below 1/5 for every balanced input was established by any design in this attempt. There is no proof here that such a design cannot exist.
+
+**PROVED: verified factoring bounds still have exponent 1/5.** D. Harvey, *An exponent one-fifth algorithm for deterministic integer factorisation*, Mathematics of Computation 90 (2021), 2937-2950, arXiv:2010.05450, proves N''^(1/5+o(1)). D. Harvey and M. Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*, Mathematics of Computation 91 (2022), 1367-1379, arXiv:2105.11105, proves O(N''^(1/5) log''^(16/5) N/(log log N)''^(3/5)). Y. Gao, Y. Feng, H. Hu and Y. Pan, *On Factoring and Power Divisor Problems via Rank-3 Lattices and the Second Vector*, arXiv:2512.19076, reduces log''^(16/5) to log''^(13/5) for balanced inputs, retaining exponent 1/5.
+
+**PROVED conditional implication / CONJECTURED hypothesis.** C. Umans and S. Wang, *A number-theoretic conjecture implying faster algorithms for polynomial factorization and integer factorization*, arXiv:2511.10851, Theorem 5.5, gives exponent max(alpha,beta)/2 under its Strong Prefactored Divisor Conjecture. Alpha=beta=1/3 gives 1/6. The structured construction and prefactoring requirements are part of the hypothesis, not a consequence of a prime-cover heuristic.
+
+**PROVED: a specific Umans--Wang subcase is refuted.** X. He and A. Sahai, *Refuting a Conjecture of Umans and Wang on Arithmetic-Progression Divisor Covers*, arXiv:2608.06681, Theorem 1.1, proves for a positive n-divisor arithmetic progression of height Z, with log Z=o(sqrt n),
+
+    length >= (sqrt(8/27)-o(1)) n''^(3/4)/sqrt(log n).
+
+This refutes the AP formulation when alpha<1/2 and beta<3/8, including the one-third point. It does not refute higher-rank covers, DCH, or all parameter choices that would beat 1/5.
+
+**PROVED: elementary modifications do not supply the missing divisibility.** For positive A,B,
+
+    (Bp+Aq)''^2-4ABN=(Bp-Aq)''^2.
+
+Lehman or continued-fraction small residuals improve the associated Fermat window, but do not force a band divisor of that residual. Adding a constant C to Bp+Aq does not change its derivative B-AN/p''^2; it therefore does not create the stationary congruence Bp-Aq=0 mod M needed for the M''^2 lock. Adaptive retries with a worst-case fallback retain the fallback exponent unless there is a theorem controlling all residual exceptions.
+
+**PROVED: the exact cost barrier for the proposed uniform-height family.** Put J=Y''^j, H=Y''^(1/2-cj), 0<=j<=1, ignoring logarithms. Balancing the two costs yields
+
+    E(j,c)=(1+j(1-2c))/(5+2j(1-c)).
+
+The derivative in j has the sign of 3-8c. Optimizing recovers
+
+    min(1/5, (1-c)/(7/2-c)).
+
+Exact rational checks give c=1/4 -> best 1/5; c=3/8 -> 1/5; c=2/5 -> 6/31; c=1/2 -> 1/6. Equivalently H=Y''^alpha with full-band J gives exponent (1+2alpha)/(2(3+alpha)), below 1/5 exactly when alpha<1/8.
+
+**PROVED, with model scope.** Theorems A and B in the supplied notes give an N''^(1/6) floor and the necessity J>=N''^(5epsilon-o(1)) for cost N''^(1/5-epsilon) in their full-integer-candidate covering model. They are not lower bounds for arbitrary factoring algorithms, and their coverage quantifier is stronger than covering only the actual factor pair.
+
+**UNVERIFIED: the sharp missing theorem.** No reduction from the exact coverage assertion to a named classical open problem was established. The concrete unproved input is a uniform theorem that the product of the nonzero primitive forms Bp-Aq, with H=Y''^(1/8-delta), has a prime factor in the prescribed band when P is comparable to Y''^(3+1/8-delta), for every balanced prime pair. The checked interval, Farey-distribution, random-lattice, and sieve results do not establish that theorem. Under the search/extraction premise of the question it would improve the balanced factoring search exponent; a full implementation must also pay for modulus construction and justify collision extraction.
+EOF' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+p=Path('research_report.md')
+s=p.read_text()
+for a in ['2105.13568','0705.3861','2512.19076','2010.05450','2105.11105','2511.10851','2608.06681']:
+    s=s.replace('arXiv:'+a, '[arXiv:'+a+'](https://arxiv.org/abs/'+a+')')
+s=s.replace('Put J=Y"'^j, H=Y''^(1/2-cj), 0<=j<=1, ignoring logarithms.'"', 'For 0<=c<=1/2, put J=Y"'^j, H=Y''^(1/2-cj), 0<=j<=1, ignoring logarithms.'"')
+s=s.replace('Journal of Number Theory 25 (1987), 249-273, bounds', '[Journal of Number Theory 25 (1987), 249-273](https://websites.umich.edu/~lagarias/doc/short.pdf), bounds')
+s=s.replace('on MathOverflow, 4 January 2023.', '[on MathOverflow, 4 January 2023](https://mathoverflow.net/questions/437849/divisor-of-given-order-in-short-intervals).')
+s=s.replace('DOI 10.4064/ba57-2-2', '[DOI 10.4064/ba57-2-2](https://doi.org/10.4064/ba57-2-2)')
+s=s.replace('DOI 10.4064/aa118-1-4', '[DOI 10.4064/aa118-1-4](https://doi.org/10.4064/aa118-1-4)')
+p.write_text(s)
+PY" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+exec
+/bin/zsh -lc 'python3 -m py_compile exact_checks.py' in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from pathlib import Path
+s=Path('research_report.md').read_text()
+for start,end in [('**PROVED: a conservative composite-divisor result.','**PROVED: a band-prime-factor result'),('**PROVED: a band-prime-factor result','**UNVERIFIED: very short intervals.')]:
+ t=s[s.index(start):s.index(end)]
+ print(start,len(t.split()))
+print('report total words',len(s.split()))
+PY" in /Volumes/git/factoring-connection/codex/scratch/dchworst_1
+ succeeded in 0ms:
+**PROVED: a conservative composite-divisor result. 132
+**PROVED: a band-prime-factor result 118
+report total words 2413
+
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+codex
+The write-up is saved, with proofs, references, and reproducible computations. One useful sharp barrier is elementary: for any fixed finite band, the global maximum gap between multiples is exactly the smallest modulus. Any improvement must use the restriction on height. I have not established a reduction from the specific prime-pair coverage problem to a named classical conjecture.
+codex
+**UNVERIFIED:** I did not obtain a useful worst-case selective coverage gain, even logarithmic, or settle the negative assertion for \(1/2<\kappa<1\). **PROVED:** Ordinary intervals admit substantially stronger results than the trivial interval length \(Y\), but these do not transfer to the residual GAP. **REFUTED:** The primitive \(\sqrt M\) guarantee does not extend to arbitrary composite moduli. **CONJECTURED:** The proposed negative assertion remains consistent with the exact local densities. My independent analysis preceded the literature search; the full [research report](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/research_report.md) records the details.
+
+## 1. Worst-case coverage: positive direction
+
+**UNVERIFIED — the useful parameter range.** I have no proof, and found no verified reference proving, either
+
+\[
+H\ll \sqrt Y\,J^{-c}\quad(c>0)
+\]
+
+or \(H\ll\sqrt Y/(\log Y)^a\), uniformly for the prime pairs at the polynomial heights relevant here. In particular, I cannot establish \(H=Y^{1/8-\delta}\).
+
+**PROVED — a literal positive answer outside that range.** Take \(Y=2P\) and all integers \(M\in(Y,2Y]\) coprime to \(N\). Since
+
+\[
+2P<p+q\le \frac{3}{\sqrt2}P,
+\]
+
+the primitive weight \((-1,1)\) is covered by \(M=p+q\). Thus \(H=1\), \(J\asymp Y\), giving \(c=1/2\). Its cost is \(\asymp P\), so it provides no factoring improvement. A restriction on the relationship between \(P\) and \(Y\) is essential to the question.
+
+**PROVED — what continued fractions provide.** For consecutive convergents \(r_i/s_i\) to \(q/p\), put
+
+\[
+D_i=r_ip-s_iq.
+\]
+
+The vectors \((s_i,r_i),(s_{i-1},r_{i-1})\) form a unimodular basis. Hence every residual becomes
+
+\[
+Bp-Aq=aD_i+bD_{i-1}.
+\]
+
+However, the weight square becomes a **parallelogram** in \((a,b)\), and primitivity becomes \(\gcd(a,b)=1\). Replacing that parallelogram by a convenient coefficient box can violate the original height bound. A small residual supplies no prescribed-band divisor; multiplying it also multiplies its weight and generally destroys primitivity.
+
+**PROVED — the basic large sieve remains insufficient pointwise.** In the distinct-residue range \(2H^2<Y\), its bound for fixed \(q\) is, up to constants,
+
+\[
+\#\{p\text{ in a length-}O(P)\text{ interval}: \text{uncovered}\}
+\ll \frac{(P+Y^2)Y}{JH^2}.
+\]
+
+For \(J\asymp Y/\log Y\) and \(P\gg Y^2\), this becomes \(O(P\log Y/H^2)\), far above one. Applying duality to this same inequality does not remove that limitation. This calculation does not exclude more sophisticated uses of large-sieve ideas.
+
+**PROVED — the direct three-dimensional shortcut is nonlinear.** Allowing the modulus to vary gives
+
+\[
+Bp-Aq=Mt.
+\]
+
+With both \(M\) and \(t\) variable, this is bilinear, rather than a fixed lattice equation to which ordinary three-dimensional Minkowski directly applies.
+
+**REFUTED — primitive \(\sqrt M\) coverage for composite \(M\).** Let
+
+\[
+M=4k,\qquad r=2k-1,\qquad A\equiv rB\pmod M.
+\]
+
+Here \(r\) is a unit, and \((-2,2)\) is a lattice vector. But a primitive solution must have \(B\) odd; otherwise \(A,B\) are both even. Consequently,
+
+\[
+A+B\equiv2k\pmod{4k},
+\qquad |A|+B\ge2k,
+\qquad \max(|A|,B)\ge M/4.
+\]
+
+For \(M=12,r=5\), the primitive minimum is **5**, although the lattice contains the nonprimitive vector of norm \(2\). This occurs for the balanced prime pair \((p,q)=(7,11)\). For \(M=100,r=49\), exact enumeration gives primitive minimum **27**, realized by \((p,q)=(349,401)\).
+
+**UNVERIFIED — composite divisors as a remedy.** Allowing every composite modulus in the band could still help. The preceding counterexample only invalidates a proposed Minkowski justification. I did not prove the required composite-band coverage theorem.
+
+## 2. Literature: intervals, GAPs, and rational reductions
+
+**PROVED — unrestricted maximal gaps have an exact elementary answer.** For any nonempty finite modulus set, the global maximum gap between consecutive members of the union of their multiples is exactly its smallest modulus \(m_0\). Multiples of \(m_0\) give the upper bound. If \(Q\) is the least common multiple of the moduli, none of
+
+\[
+Q+1,\ldots,Q+m_0-1
+\]
+
+is divisible by any of them. Thus any power improvement must concern **restricted heights**, such as \(x\asymp Y^3\).
+
+**PROVED — ordinary intervals, composite divisors.** A conservative verified consequence of exponent-pair estimates is:
+
+> For \(Y\asymp x^{1/3}\), every sufficiently large interval  
+> \([x,x+x^{27/97+\varepsilon}]\) contains an integer with a divisor in \((Y,2Y]\).
+
+Indeed, for \(\psi(t)=\{t\}-1/2\),
+
+\[
+\sum_{Y<m\le2Y}\psi(x/m)
+\ll x^{k/(1+k)}Y^{(l-k)/(1+k)}.
+\]
+
+Using \((k,l)=(13/84+\varepsilon,55/84+\varepsilon)\) gives exponent \(27/97\). Subtracting the two sawtooth sums yields
+
+\[
+\sum_{Y<m\le2Y}
+\left(\left\lfloor\frac{x+h}{m}\right\rfloor-
+      \left\lfloor\frac{x}{m}\right\rfloor\right)
+=h\log2+O_\varepsilon(x^{27/97+\varepsilon}+h/Y).
+\]
+
+This is a corollary, not a novelty or optimality claim. See Weingartner, *Somewhat smooth numbers in short intervals*, equation (1) and the argument around equation (4), [arXiv:2105.13568](https://arxiv.org/abs/2105.13568); the underlying estimate is Graham–Kolesnik, *Van der Corput’s Method of Exponential Sums* (1991), Lemma 4.3.
+
+**PROVED — ordinary intervals, prime divisors.** There is also some absolute \(\eta>0\) for which interval length \(x^{1/3-\eta}\) suffices. Friedlander–Lagarias, Lemma 2.2, bounds the weighted prime sawtooth sum. At \(Y\asymp x^{1/3}\), subtracting endpoint sums gives
+
+\[
+\sum_{Y<\ell\le2Y}\log\ell
+\left(\left\lfloor\frac{x+h}{\ell}\right\rfloor-
+      \left\lfloor\frac{x}{\ell}\right\rfloor\right)
+=h(\log2+o(1))+O(x^{1/3-\eta_0})
+\]
+
+for some \(\eta_0>0\). Take \(\eta<\eta_0\). Reference: Friedlander–Lagarias, *On the distribution in short intervals of integers having no large prime factor*, **J. Number Theory 25 (1987), 249–273**, [author’s manuscript](https://websites.umich.edu/~lagarias/doc/short.pdf). Their input is Jutila, *On numbers with a large prime factor II*, **J. Indian Math. Soc. 38 (1974), 125–130**, Theorem 2.
+
+**UNVERIFIED — much shorter intervals.** I found no verified resolution for every fixed positive \(\theta\), or for polylogarithmic lengths. Melfi explicitly posed the divisor version with \(h=\log^2x\), \(Y=x^{1/3}\), in [January 2023](https://mathoverflow.net/questions/437849/divisor-of-given-order-in-short-intervals). That documents the question’s formulation; it does not certify its subsequent status.
+
+**PROVED — relevant Farey and lattice results have different quantifiers.**
+
+| Reference | What it establishes |
+|---|---|
+| Cojocaru–Shparlinski, [arXiv:0705.3861](https://arxiv.org/abs/0705.3861) | Uniform distribution of Farey fractions modulo a prime for order \(T\ge\ell^{1/2+\varepsilon}\). |
+| Shparlinski, *Exponential Sums with Farey Fractions*, **Bull. Polish Acad. Sci. Math. 57 (2009), 101–107**, [DOI](https://doi.org/10.4064/ba57-2-2) | Modular distribution and exponential sums over the Farey family. |
+| Strömbergsson–Venkatesh, *Small solutions to linear congruences and Hecke equidistribution*, **Acta Arith. 118 (2005), 41–78**, [DOI](https://doi.org/10.4064/aa118-1-4) | Limiting distributions for random congruence systems. |
+
+**UNVERIFIED — the needed transfer.** None of these checked results supplies the fixed-rational, varying-prime worst-case theorem at \(H=Y^{1/8-\delta}\). The interval statements do not apply to the residual parallelogram merely from its rank or cardinality.
+
+**UNVERIFIED — implication to a named open problem.** I have not established that your exact prime-pair coverage assertion implies Legendre’s conjecture, twin primes, or another named classical conjecture. A general polylogarithmic interval-hitting theorem would settle Melfi’s formulation; I have not proved that the special residual-GAP assertion implies that stronger statement.
+
+## 3. Negative direction: polylogarithmic weights
+
+**PROVED — the small-\(H\) range.** Brun–Titchmarsh and a union bound give covered fraction
+
+\[
+O\!\left(\frac{H^2}{\log N}\right)
+\]
+
+among balanced prime pairs, with harmless constant enlargement for a moving band. Therefore almost all pairs are uncovered when \(H=o(\sqrt{\log N})\); a positive proportion remain for \(H\le c\sqrt{\log N}\) with sufficiently small absolute \(c\). This proves infinitude for \(\kappa<1/2\).
+
+**CONJECTURED — the remaining assertion.** I cannot prove or disprove the claim throughout \(1/2<\kappa<1\). I found no verified lower-bound sieve or second-moment result settling this exact problem.
+
+**PROVED — the local exponential density is exact.** Write \(u=\log N\), using natural logarithms. The number of signed primitive weights is
+
+\[
+W(H)=4\sum_{b\le H}\varphi(b)-2
+=\frac{12}{\pi^2}H^2+O(H\log H).
+\]
+
+When \(2H^2<\ell\), their ratios \(A/B\) are distinct modulo \(\ell\): a collision makes \(\ell\) divide a nonzero determinant of absolute value at most \(2H^2\). Thus, among unit pairs modulo \(\ell\), the excluded proportion is exactly \(W(H)/(\ell-1)\).
+
+Over a complete CRT period, the surviving proportion is therefore
+
+\[
+\Delta=\prod_{\ell\in L}
+\left(1-\frac{W(H)}{\ell-1}\right).
+\]
+
+For the specified band,
+
+\[
+\sum_{\substack{Y<\ell\le16Y\\\ell\equiv3\ (4)}}\frac1{\ell-1}
+\sim\frac{\log16}{2\log Y}
+\sim\frac{3\log16}{u}.
+\]
+
+For \(H=u^\kappa\), \(0<\kappa<1\), expansion gives
+
+\[
+\boxed{\log\Delta
+=-\frac{36\log16}{\pi^2}\frac{H^2}{u}+o(1)}
+\]
+
+with
+
+\[
+\frac{36\log16}{\pi^2}=10.113190959266335\ldots.
+\]
+
+The quadratic expansion error is \(O(H^4/(Y\log Y))=o(1)\); the remaining errors are also \(o(1)\).
+
+**CONJECTURED — transferring that density to prime pairs.** Such a transfer would predict
+
+\[
+\log(\text{number uncovered})
+=u-(10.11319\ldots+o(1))u^{2\kappa-1}+O(\log u),
+\]
+
+which tends to infinity for every \(\kappa<1\). The transfer to the polynomial-height prime-pair box is precisely the missing step.
+
+**PROVED — CRT can produce uncovered balanced prime pairs for a fixed band.** Suppose \(W(H)<\ell-1\) throughout the band. Choose an allowed unit ratio \(r_\ell\), and impose
+
+\[
+p\equiv r_\ell,\qquad q\equiv1\pmod\ell.
+\]
+
+CRT combines these conditions. With the resulting modulus \(Q\) fixed, the prime number theorem in arithmetic progressions supplies \(p,q\) in disjoint comparable intervals at sufficiently large heights.
+
+**PROVED — this does not give the required scale.** Here
+
+\[
+\log Q=(15/2+o(1))Y,
+\qquad P\asymp Y^3H.
+\]
+
+Fixed-modulus prime distribution supplies no uniform conclusion at that height. Moreover, forcing the same locally allowed ratio \(H+1\) at every band prime gives
+
+\[
+Q\mid p-(H+1)q.
+\]
+
+For balanced pairs at the required height, this is a nonzero integer of size \(O(HP)\ll Q\), an impossibility. This rules out that particular simple CRT construction.
+
+**UNVERIFIED — a universal CRT obstruction.** Arbitrary allowed ratios might have small representatives. Finding them returns to the original problem; counting congruences versus variables does not prove their nonexistence.
+
+**PROVED — limitation of the elementary moment route.** The mean hit count is \(\lambda\asymp H^2/\log N\), tending to infinity for \(\kappa>1/2\). First and second moments of that count do not force positive probability of zero hits. Bonferroni approximation to \(e^{-\lambda}\) requires growing truncation order, while products of \(r\) band primes have size approximately \(Y^r\). Any fixed polynomial distribution level in \(P\) permits only bounded \(r\). This explains a failure of the straightforward route, not an impossibility theorem for sieve theory.
+
+**PROVED — exact finite computations.** I exhaustively checked all **53,917** prime partners
+
+\[
+750004\le p<q=1500007
+\]
+
+against all **118** primes \(3\bmod4\) in \((100,1600]\).
+
+| \(H\) | Primitive signed weights | Uncovered prime partners |
+|---:|---:|---:|
+| 1 | 2 | 32,962 |
+| 2 | 6 | 12,446 |
+| 3 | 14 | 1,706 |
+| 4 | 22 | 241 |
+| 5 | 38 | 3 |
+| 6 | 46 | 0 |
+| 7 | 70 | 0 |
+| 8 | 86 | 0 |
+
+One uncovered pair at \(H=5\) is
+
+\[
+(p,q)=(839731,1500007),\qquad N=1259602378117.
+\]
+
+Displayed first survivors were independently rechecked against every weight and modulus. These finite counts do not establish the growing-polylogarithm assertion. Reproduction files: [script](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.py), [complete output](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.json).
+
+## 4. Other designs and precise barriers
+
+**UNVERIFIED — below \(1/5\).** I obtained no unconditional deterministic exponent below \(1/5\) for every balanced input using adaptive, smooth, composite, or \(N\)-dependent moduli. I also obtained no impossibility theorem covering those approaches.
+
+**PROVED — verified algorithmic results.** Harvey establishes \(N^{1/5+o(1)}\). Harvey–Hittmeir obtain
+
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right).
+\]
+
+Gao–Feng–Hu–Pan’s rank-three lattice method improves the numerator to \(\log^{13/5}N\) for balanced inputs, retaining exponent \(1/5\). References: [Harvey, arXiv:2010.05450](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir, arXiv:2105.11105](https://arxiv.org/abs/2105.11105), [Gao et al., arXiv:2512.19076](https://arxiv.org/abs/2512.19076).
+
+**PROVED conditional implication; CONJECTURED hypothesis — Umans–Wang.** Their Theorem 5.5 gives deterministic factoring exponent
+
+\[
+\frac{\max(\alpha,\beta)}2
+\]
+
+under the **Strong Prefactored Divisor Conjecture**. The point \(\alpha=\beta=1/3\) gives \(1/6\). The structured construction and prefactoring requirements are substantive hypotheses. [Umans–Wang, arXiv:2511.10851](https://arxiv.org/abs/2511.10851).
+
+**PROVED — a specific AP obstruction.** He–Sahai prove that a positive \(n\)-divisor arithmetic progression of height \(Z\), with \(\log Z=o(\sqrt n)\), has length at least
+
+\[
+\left(\sqrt{\frac8{27}}-o(1)\right)
+\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+
+This refutes the AP formulation for \(\alpha<1/2,\beta<3/8\), including the one-third point. It does **not** refute higher-rank covers, DCH, or every parameter choice that would beat \(1/5\). [He–Sahai, arXiv:2608.06681](https://arxiv.org/abs/2608.06681).
+
+**PROVED — elementary changes leave the missing divisibility unresolved.** For positive \(A,B\),
+
+\[
+(Bp+Aq)^2-4ABN=(Bp-Aq)^2.
+\]
+
+Small residuals improve Fermat windows, but do not force a band divisor. Adding a constant to \(Bp+Aq\) leaves its derivative \(B-AN/p^2\) unchanged, so it supplies no new stationary congruence for the \(M^2\) lock. Adaptive retries with a worst-case fallback retain its exponent unless every residual exception is controlled.
+
+**PROVED — your cost threshold is correct.** For \(0\le c\le1/2\), write \(J=Y^j\), \(H=Y^{1/2-cj}\), \(0\le j\le1\), ignoring logarithms. Balancing costs gives
+
+\[
+E(j,c)=\frac{1+j(1-2c)}{5+2j(1-c)}.
+\]
+
+Its derivative in \(j\) has the sign of \(3-8c\). Hence optimization yields
+
+\[
+\min\left(\frac15,\frac{1-c}{7/2-c}\right).
+\]
+
+Exact rational checks give:
+
+| \(c\) | Optimized exponent |
+|---:|---:|
+| \(1/4\) | \(1/5\) |
+| \(3/8\) | \(1/5\) |
+| \(2/5\) | \(6/31\) |
+| \(1/2\) | \(1/6\) |
+
+**PROVED, with model scope.** Your Theorems A and B give an \(N^{1/6}\) floor and require \(J\ge N^{5\varepsilon-o(1)}\) for cost \(N^{1/5-\varepsilon}\) in their stronger full-integer-candidate covering model. They do not lower-bound arbitrary factoring algorithms or automatically apply when only the actual prime pair must be covered.
+
+**UNVERIFIED — the strongest defensible barrier statement.** I cannot justify a claim that the desired coverage theorem implies a named classical conjecture. The concrete missing input is a uniform band-divisor theorem for the primitive forms \(Bp-Aq\), at \(H=Y^{1/8-\delta}\) and \(P\asymp Y^{3+1/8-\delta}\), for every balanced prime pair. The checked interval, Farey-distribution, random-lattice, and sieve results do not provide it. Under the search premise in the question, that theorem would improve the balanced factoring-search exponent.
+diff --git a/codex/scratch/dchworst_1/blind_notes.md b/codex/scratch/dchworst_1/blind_notes.md
+index aacbe943299fff3d1c8299011bc5f0c379e744b2..dfd2f7fdda31c946de573e47e208d307ed655272
+--- a/codex/scratch/dchworst_1/blind_notes.md
++++ b/codex/scratch/dchworst_1/blind_notes.md
+@@ -12,7 +12,7 @@
+ 
+ 5. CRT is an obstruction for statements uniform in unrestricted height. It does not rule out the polynomial-height coverage problem.
+ 
+-6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives N exponent [1+j(1-2c)]/[5+2j(1-3c)]. Its derivative in j has sign 3-4c. Thus the optimum is j=0 unless c>3/4? CHECK ALGEBRA: window is H P/Y^2 =P Y^{-3/2-cj}; target=JH^2=Y^{1+j(1-2c)}; exponent=N^{ (1+j(1-2c))/(5+2j(1-3c)) }. derivative numerator 5(1-2c)-2(1-3c)=3-4c, threshold c=3/4. This differs from user formula! Need examine cost definition and optimization: for j=1 H=Y^{1/2-c}, target=Y^{2-2c}; balance P=Y^{7/2-c}; X=N^{(1-c)/(7/2-c)}. Compare 1/5: 5-5c<3.5-c iff c>3/8. In expression above denominator should be 5+2j(1-3c)? balance exponent (1+j-2cj)+(3/2+cj)=5/2+j(1-c). Thus denominator 5+2j(1-c). derivative=5(1-2c)-2(1-c)=3-8c; threshold3/8. Correct formula: E(j,c)=[1+j(1-2c)]/[5+2j(1-c)].
++6. Write H=Y^{1/2} J^{-c}, J=Y^j, 0<=j<=1. Equating P*Y^{-3/2-cj} and Y^{1+j(1-2c)} gives P=Y^{5/2+j(1-c)}, hence E(j,c)=[1+j(1-2c)]/[5+2j(1-c)] as an exponent of N. Its derivative in j has the sign of 3-8c. Thus the optimum is j=0 unless c>3/8; at j=1 it is (1-c)/(7/2-c). This confirms the user's formula. (An initial denominator error was caught and corrected during this blind pass.)
+ 
+ 7. A theorem for all short intervals does not directly apply to the thin rank-two set of residuals. In particular calling those formulations equivalent without a separate embedding argument is invalid. The band-prime-factor question is exactly a maximal-gap question for the union of multiples, but restricting to prime p,q is a further specialization.
+ 
+
+tokens used
+232,777
+**UNVERIFIED:** I did not obtain a useful worst-case selective coverage gain, even logarithmic, or settle the negative assertion for \(1/2<\kappa<1\). **PROVED:** Ordinary intervals admit substantially stronger results than the trivial interval length \(Y\), but these do not transfer to the residual GAP. **REFUTED:** The primitive \(\sqrt M\) guarantee does not extend to arbitrary composite moduli. **CONJECTURED:** The proposed negative assertion remains consistent with the exact local densities. My independent analysis preceded the literature search; the full [research report](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/research_report.md) records the details.
+
+## 1. Worst-case coverage: positive direction
+
+**UNVERIFIED — the useful parameter range.** I have no proof, and found no verified reference proving, either
+
+\[
+H\ll \sqrt Y\,J^{-c}\quad(c>0)
+\]
+
+or \(H\ll\sqrt Y/(\log Y)^a\), uniformly for the prime pairs at the polynomial heights relevant here. In particular, I cannot establish \(H=Y^{1/8-\delta}\).
+
+**PROVED — a literal positive answer outside that range.** Take \(Y=2P\) and all integers \(M\in(Y,2Y]\) coprime to \(N\). Since
+
+\[
+2P<p+q\le \frac{3}{\sqrt2}P,
+\]
+
+the primitive weight \((-1,1)\) is covered by \(M=p+q\). Thus \(H=1\), \(J\asymp Y\), giving \(c=1/2\). Its cost is \(\asymp P\), so it provides no factoring improvement. A restriction on the relationship between \(P\) and \(Y\) is essential to the question.
+
+**PROVED — what continued fractions provide.** For consecutive convergents \(r_i/s_i\) to \(q/p\), put
+
+\[
+D_i=r_ip-s_iq.
+\]
+
+The vectors \((s_i,r_i),(s_{i-1},r_{i-1})\) form a unimodular basis. Hence every residual becomes
+
+\[
+Bp-Aq=aD_i+bD_{i-1}.
+\]
+
+However, the weight square becomes a **parallelogram** in \((a,b)\), and primitivity becomes \(\gcd(a,b)=1\). Replacing that parallelogram by a convenient coefficient box can violate the original height bound. A small residual supplies no prescribed-band divisor; multiplying it also multiplies its weight and generally destroys primitivity.
+
+**PROVED — the basic large sieve remains insufficient pointwise.** In the distinct-residue range \(2H^2<Y\), its bound for fixed \(q\) is, up to constants,
+
+\[
+\#\{p\text{ in a length-}O(P)\text{ interval}: \text{uncovered}\}
+\ll \frac{(P+Y^2)Y}{JH^2}.
+\]
+
+For \(J\asymp Y/\log Y\) and \(P\gg Y^2\), this becomes \(O(P\log Y/H^2)\), far above one. Applying duality to this same inequality does not remove that limitation. This calculation does not exclude more sophisticated uses of large-sieve ideas.
+
+**PROVED — the direct three-dimensional shortcut is nonlinear.** Allowing the modulus to vary gives
+
+\[
+Bp-Aq=Mt.
+\]
+
+With both \(M\) and \(t\) variable, this is bilinear, rather than a fixed lattice equation to which ordinary three-dimensional Minkowski directly applies.
+
+**REFUTED — primitive \(\sqrt M\) coverage for composite \(M\).** Let
+
+\[
+M=4k,\qquad r=2k-1,\qquad A\equiv rB\pmod M.
+\]
+
+Here \(r\) is a unit, and \((-2,2)\) is a lattice vector. But a primitive solution must have \(B\) odd; otherwise \(A,B\) are both even. Consequently,
+
+\[
+A+B\equiv2k\pmod{4k},
+\qquad |A|+B\ge2k,
+\qquad \max(|A|,B)\ge M/4.
+\]
+
+For \(M=12,r=5\), the primitive minimum is **5**, although the lattice contains the nonprimitive vector of norm \(2\). This occurs for the balanced prime pair \((p,q)=(7,11)\). For \(M=100,r=49\), exact enumeration gives primitive minimum **27**, realized by \((p,q)=(349,401)\).
+
+**UNVERIFIED — composite divisors as a remedy.** Allowing every composite modulus in the band could still help. The preceding counterexample only invalidates a proposed Minkowski justification. I did not prove the required composite-band coverage theorem.
+
+## 2. Literature: intervals, GAPs, and rational reductions
+
+**PROVED — unrestricted maximal gaps have an exact elementary answer.** For any nonempty finite modulus set, the global maximum gap between consecutive members of the union of their multiples is exactly its smallest modulus \(m_0\). Multiples of \(m_0\) give the upper bound. If \(Q\) is the least common multiple of the moduli, none of
+
+\[
+Q+1,\ldots,Q+m_0-1
+\]
+
+is divisible by any of them. Thus any power improvement must concern **restricted heights**, such as \(x\asymp Y^3\).
+
+**PROVED — ordinary intervals, composite divisors.** A conservative verified consequence of exponent-pair estimates is:
+
+> For \(Y\asymp x^{1/3}\), every sufficiently large interval  
+> \([x,x+x^{27/97+\varepsilon}]\) contains an integer with a divisor in \((Y,2Y]\).
+
+Indeed, for \(\psi(t)=\{t\}-1/2\),
+
+\[
+\sum_{Y<m\le2Y}\psi(x/m)
+\ll x^{k/(1+k)}Y^{(l-k)/(1+k)}.
+\]
+
+Using \((k,l)=(13/84+\varepsilon,55/84+\varepsilon)\) gives exponent \(27/97\). Subtracting the two sawtooth sums yields
+
+\[
+\sum_{Y<m\le2Y}
+\left(\left\lfloor\frac{x+h}{m}\right\rfloor-
+      \left\lfloor\frac{x}{m}\right\rfloor\right)
+=h\log2+O_\varepsilon(x^{27/97+\varepsilon}+h/Y).
+\]
+
+This is a corollary, not a novelty or optimality claim. See Weingartner, *Somewhat smooth numbers in short intervals*, equation (1) and the argument around equation (4), [arXiv:2105.13568](https://arxiv.org/abs/2105.13568); the underlying estimate is Graham–Kolesnik, *Van der Corput’s Method of Exponential Sums* (1991), Lemma 4.3.
+
+**PROVED — ordinary intervals, prime divisors.** There is also some absolute \(\eta>0\) for which interval length \(x^{1/3-\eta}\) suffices. Friedlander–Lagarias, Lemma 2.2, bounds the weighted prime sawtooth sum. At \(Y\asymp x^{1/3}\), subtracting endpoint sums gives
+
+\[
+\sum_{Y<\ell\le2Y}\log\ell
+\left(\left\lfloor\frac{x+h}{\ell}\right\rfloor-
+      \left\lfloor\frac{x}{\ell}\right\rfloor\right)
+=h(\log2+o(1))+O(x^{1/3-\eta_0})
+\]
+
+for some \(\eta_0>0\). Take \(\eta<\eta_0\). Reference: Friedlander–Lagarias, *On the distribution in short intervals of integers having no large prime factor*, **J. Number Theory 25 (1987), 249–273**, [author’s manuscript](https://websites.umich.edu/~lagarias/doc/short.pdf). Their input is Jutila, *On numbers with a large prime factor II*, **J. Indian Math. Soc. 38 (1974), 125–130**, Theorem 2.
+
+**UNVERIFIED — much shorter intervals.** I found no verified resolution for every fixed positive \(\theta\), or for polylogarithmic lengths. Melfi explicitly posed the divisor version with \(h=\log^2x\), \(Y=x^{1/3}\), in [January 2023](https://mathoverflow.net/questions/437849/divisor-of-given-order-in-short-intervals). That documents the question’s formulation; it does not certify its subsequent status.
+
+**PROVED — relevant Farey and lattice results have different quantifiers.**
+
+| Reference | What it establishes |
+|---|---|
+| Cojocaru–Shparlinski, [arXiv:0705.3861](https://arxiv.org/abs/0705.3861) | Uniform distribution of Farey fractions modulo a prime for order \(T\ge\ell^{1/2+\varepsilon}\). |
+| Shparlinski, *Exponential Sums with Farey Fractions*, **Bull. Polish Acad. Sci. Math. 57 (2009), 101–107**, [DOI](https://doi.org/10.4064/ba57-2-2) | Modular distribution and exponential sums over the Farey family. |
+| Strömbergsson–Venkatesh, *Small solutions to linear congruences and Hecke equidistribution*, **Acta Arith. 118 (2005), 41–78**, [DOI](https://doi.org/10.4064/aa118-1-4) | Limiting distributions for random congruence systems. |
+
+**UNVERIFIED — the needed transfer.** None of these checked results supplies the fixed-rational, varying-prime worst-case theorem at \(H=Y^{1/8-\delta}\). The interval statements do not apply to the residual parallelogram merely from its rank or cardinality.
+
+**UNVERIFIED — implication to a named open problem.** I have not established that your exact prime-pair coverage assertion implies Legendre’s conjecture, twin primes, or another named classical conjecture. A general polylogarithmic interval-hitting theorem would settle Melfi’s formulation; I have not proved that the special residual-GAP assertion implies that stronger statement.
+
+## 3. Negative direction: polylogarithmic weights
+
+**PROVED — the small-\(H\) range.** Brun–Titchmarsh and a union bound give covered fraction
+
+\[
+O\!\left(\frac{H^2}{\log N}\right)
+\]
+
+among balanced prime pairs, with harmless constant enlargement for a moving band. Therefore almost all pairs are uncovered when \(H=o(\sqrt{\log N})\); a positive proportion remain for \(H\le c\sqrt{\log N}\) with sufficiently small absolute \(c\). This proves infinitude for \(\kappa<1/2\).
+
+**CONJECTURED — the remaining assertion.** I cannot prove or disprove the claim throughout \(1/2<\kappa<1\). I found no verified lower-bound sieve or second-moment result settling this exact problem.
+
+**PROVED — the local exponential density is exact.** Write \(u=\log N\), using natural logarithms. The number of signed primitive weights is
+
+\[
+W(H)=4\sum_{b\le H}\varphi(b)-2
+=\frac{12}{\pi^2}H^2+O(H\log H).
+\]
+
+When \(2H^2<\ell\), their ratios \(A/B\) are distinct modulo \(\ell\): a collision makes \(\ell\) divide a nonzero determinant of absolute value at most \(2H^2\). Thus, among unit pairs modulo \(\ell\), the excluded proportion is exactly \(W(H)/(\ell-1)\).
+
+Over a complete CRT period, the surviving proportion is therefore
+
+\[
+\Delta=\prod_{\ell\in L}
+\left(1-\frac{W(H)}{\ell-1}\right).
+\]
+
+For the specified band,
+
+\[
+\sum_{\substack{Y<\ell\le16Y\\\ell\equiv3\ (4)}}\frac1{\ell-1}
+\sim\frac{\log16}{2\log Y}
+\sim\frac{3\log16}{u}.
+\]
+
+For \(H=u^\kappa\), \(0<\kappa<1\), expansion gives
+
+\[
+\boxed{\log\Delta
+=-\frac{36\log16}{\pi^2}\frac{H^2}{u}+o(1)}
+\]
+
+with
+
+\[
+\frac{36\log16}{\pi^2}=10.113190959266335\ldots.
+\]
+
+The quadratic expansion error is \(O(H^4/(Y\log Y))=o(1)\); the remaining errors are also \(o(1)\).
+
+**CONJECTURED — transferring that density to prime pairs.** Such a transfer would predict
+
+\[
+\log(\text{number uncovered})
+=u-(10.11319\ldots+o(1))u^{2\kappa-1}+O(\log u),
+\]
+
+which tends to infinity for every \(\kappa<1\). The transfer to the polynomial-height prime-pair box is precisely the missing step.
+
+**PROVED — CRT can produce uncovered balanced prime pairs for a fixed band.** Suppose \(W(H)<\ell-1\) throughout the band. Choose an allowed unit ratio \(r_\ell\), and impose
+
+\[
+p\equiv r_\ell,\qquad q\equiv1\pmod\ell.
+\]
+
+CRT combines these conditions. With the resulting modulus \(Q\) fixed, the prime number theorem in arithmetic progressions supplies \(p,q\) in disjoint comparable intervals at sufficiently large heights.
+
+**PROVED — this does not give the required scale.** Here
+
+\[
+\log Q=(15/2+o(1))Y,
+\qquad P\asymp Y^3H.
+\]
+
+Fixed-modulus prime distribution supplies no uniform conclusion at that height. Moreover, forcing the same locally allowed ratio \(H+1\) at every band prime gives
+
+\[
+Q\mid p-(H+1)q.
+\]
+
+For balanced pairs at the required height, this is a nonzero integer of size \(O(HP)\ll Q\), an impossibility. This rules out that particular simple CRT construction.
+
+**UNVERIFIED — a universal CRT obstruction.** Arbitrary allowed ratios might have small representatives. Finding them returns to the original problem; counting congruences versus variables does not prove their nonexistence.
+
+**PROVED — limitation of the elementary moment route.** The mean hit count is \(\lambda\asymp H^2/\log N\), tending to infinity for \(\kappa>1/2\). First and second moments of that count do not force positive probability of zero hits. Bonferroni approximation to \(e^{-\lambda}\) requires growing truncation order, while products of \(r\) band primes have size approximately \(Y^r\). Any fixed polynomial distribution level in \(P\) permits only bounded \(r\). This explains a failure of the straightforward route, not an impossibility theorem for sieve theory.
+
+**PROVED — exact finite computations.** I exhaustively checked all **53,917** prime partners
+
+\[
+750004\le p<q=1500007
+\]
+
+against all **118** primes \(3\bmod4\) in \((100,1600]\).
+
+| \(H\) | Primitive signed weights | Uncovered prime partners |
+|---:|---:|---:|
+| 1 | 2 | 32,962 |
+| 2 | 6 | 12,446 |
+| 3 | 14 | 1,706 |
+| 4 | 22 | 241 |
+| 5 | 38 | 3 |
+| 6 | 46 | 0 |
+| 7 | 70 | 0 |
+| 8 | 86 | 0 |
+
+One uncovered pair at \(H=5\) is
+
+\[
+(p,q)=(839731,1500007),\qquad N=1259602378117.
+\]
+
+Displayed first survivors were independently rechecked against every weight and modulus. These finite counts do not establish the growing-polylogarithm assertion. Reproduction files: [script](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.py), [complete output](/Volumes/git/factoring-connection/codex/scratch/dchworst_1/exact_checks.json).
+
+## 4. Other designs and precise barriers
+
+**UNVERIFIED — below \(1/5\).** I obtained no unconditional deterministic exponent below \(1/5\) for every balanced input using adaptive, smooth, composite, or \(N\)-dependent moduli. I also obtained no impossibility theorem covering those approaches.
+
+**PROVED — verified algorithmic results.** Harvey establishes \(N^{1/5+o(1)}\). Harvey–Hittmeir obtain
+
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right).
+\]
+
+Gao–Feng–Hu–Pan’s rank-three lattice method improves the numerator to \(\log^{13/5}N\) for balanced inputs, retaining exponent \(1/5\). References: [Harvey, arXiv:2010.05450](https://arxiv.org/abs/2010.05450), [Harvey–Hittmeir, arXiv:2105.11105](https://arxiv.org/abs/2105.11105), [Gao et al., arXiv:2512.19076](https://arxiv.org/abs/2512.19076).
+
+**PROVED conditional implication; CONJECTURED hypothesis — Umans–Wang.** Their Theorem 5.5 gives deterministic factoring exponent
+
+\[
+\frac{\max(\alpha,\beta)}2
+\]
+
+under the **Strong Prefactored Divisor Conjecture**. The point \(\alpha=\beta=1/3\) gives \(1/6\). The structured construction and prefactoring requirements are substantive hypotheses. [Umans–Wang, arXiv:2511.10851](https://arxiv.org/abs/2511.10851).
+
+**PROVED — a specific AP obstruction.** He–Sahai prove that a positive \(n\)-divisor arithmetic progression of height \(Z\), with \(\log Z=o(\sqrt n)\), has length at least
+
+\[
+\left(\sqrt{\frac8{27}}-o(1)\right)
+\frac{n^{3/4}}{\sqrt{\log n}}.
+\]
+
+This refutes the AP formulation for \(\alpha<1/2,\beta<3/8\), including the one-third point. It does **not** refute higher-rank covers, DCH, or every parameter choice that would beat \(1/5\). [He–Sahai, arXiv:2608.06681](https://arxiv.org/abs/2608.06681).
+
+**PROVED — elementary changes leave the missing divisibility unresolved.** For positive \(A,B\),
+
+\[
+(Bp+Aq)^2-4ABN=(Bp-Aq)^2.
+\]
+
+Small residuals improve Fermat windows, but do not force a band divisor. Adding a constant to \(Bp+Aq\) leaves its derivative \(B-AN/p^2\) unchanged, so it supplies no new stationary congruence for the \(M^2\) lock. Adaptive retries with a worst-case fallback retain its exponent unless every residual exception is controlled.
+
+**PROVED — your cost threshold is correct.** For \(0\le c\le1/2\), write \(J=Y^j\), \(H=Y^{1/2-cj}\), \(0\le j\le1\), ignoring logarithms. Balancing costs gives
+
+\[
+E(j,c)=\frac{1+j(1-2c)}{5+2j(1-c)}.
+\]
+
+Its derivative in \(j\) has the sign of \(3-8c\). Hence optimization yields
+
+\[
+\min\left(\frac15,\frac{1-c}{7/2-c}\right).
+\]
+
+Exact rational checks give:
+
+| \(c\) | Optimized exponent |
+|---:|---:|
+| \(1/4\) | \(1/5\) |
+| \(3/8\) | \(1/5\) |
+| \(2/5\) | \(6/31\) |
+| \(1/2\) | \(1/6\) |
+
+**PROVED, with model scope.** Your Theorems A and B give an \(N^{1/6}\) floor and require \(J\ge N^{5\varepsilon-o(1)}\) for cost \(N^{1/5-\varepsilon}\) in their stronger full-integer-candidate covering model. They do not lower-bound arbitrary factoring algorithms or automatically apply when only the actual prime pair must be covered.
+
+**UNVERIFIED — the strongest defensible barrier statement.** I cannot justify a claim that the desired coverage theorem implies a named classical conjecture. The concrete missing input is a uniform band-divisor theorem for the primitive forms \(Bp-Aq\), at \(H=Y^{1/8-\delta}\) and \(P\asymp Y^{3+1/8-\delta}\), for every balanced prime pair. The checked interval, Farey-distribution, random-lattice, and sieve results do not provide it. Under the search premise in the question, that theorem would improve the balanced factoring-search exponent.

@@ -18,6 +18,11 @@ Differences from DCL-det (src/dcltheorem/algorithm.py):
       S = B p + A q = c + l^2 g is tested by solving x^2 - S x + A B N = 0;
   (4) signed weights (A < 0) and the diagonal weight (1, 1) are allowed.
 No clean band, no order assumption mod q, no FULL exclusion is needed.
+
+CORRECTNESS PROTOTYPE (reviews, notes section 8): u_l and b^{E/r^e} use the all-but-one
+exponent tree (src.dcltheorem.algorithm.all_but_one), but Lemma G scans r linearly and the
+exploration evaluates node polynomials one point at a time (O(m) per N-giant instead of the
+batched O~(m + #N-giants) per level of Theorem R (iii)).  Outputs are unaffected.
 """
 from __future__ import annotations
 
@@ -27,6 +32,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import flint
 
 from src.common.metrics import Metrics
+from src.dcltheorem.algorithm import all_but_one
 
 
 class Found(Exception):
@@ -104,8 +110,9 @@ def _children(lev, k: int, i: int):
 # Lemma O: least r <= T with gcd(b^r - 1, N) > 1 (BSGS by polynomial evaluation)
 # ---------------------------------------------------------------------------
 def first_r(b: int, T: int, N: int, met) -> Tuple[str, int]:
-    """Returns ('large', 0)  if gcd(b^r - 1, N) = 1 for all 1 <= r <= T,
-               ('equal', r) if the least such r has gcd(b^r - 1, N) = N.
+    """Scans 1 <= r <= T_scan = s*ceil(T/s), s = isqrt(T) + 1 (T <= T_scan = T + O(sqrt T)).
+    Returns ('large', 0)  if gcd(b^r - 1, N) = 1 for all 1 <= r <= T_scan,
+            ('equal', r) if the least such r (possibly in (T, T_scan]) has gcd = N.
     Raises Found on a proper divisor.  Cost O~(sqrt T) ring operations."""
     s = isqrt(T) + 1
     nj = -(-T // s)
@@ -157,7 +164,8 @@ def select_base(N: int, T: int, B0: int, met) -> Tuple[int, Dict]:
         _chk(1 + j * lam, N, met, "lambda_enum")
         met.inc("lambda_cands")
         j += 1
-    raise Found(-1, "all_bases_equal_FAIL")  # impossible for N in S_n when B0, T as in Thm R
+    # Unreachable for N = pq (Lemma O: Lambda | p - 1, so p = 1 + j*Lambda was tried).
+    raise Found(-1, "all_bases_equal_FAIL")
 
 
 # ---------------------------------------------------------------------------
@@ -284,8 +292,10 @@ def equal_order_split(N: int, b: int, band: Sequence[int], o: int, T: int, met) 
     for r, e in fac.items():
         E *= r ** e
     D = 1
-    for r, e in fac.items():
-        y = _pw(b, E // r ** e, N, met)
+    rs = list(fac)
+    ys, _ = all_but_one(b, [r ** fac[r] for r in rs], N, met)   # b^{E / r^e} for all r
+    for r, y in zip(rs, ys):
+        e = fac[r]
         v = None
         for j in range(e + 1):
             if j:
@@ -299,6 +309,7 @@ def equal_order_split(N: int, b: int, band: Sequence[int], o: int, T: int, met) 
     while 1 + j * D <= isqrt(N):
         _chk(1 + j * D, N, met, "D_enum")
         j += 1
+    # Unreachable for N = pq (Lemma G: D | p - 1, so p = 1 + j*D was tried).
     raise Found(-1, "equal_order_FAIL")
 
 
@@ -310,10 +321,8 @@ def run_block(N: int, b: int, band: Sequence[int], W, T: int, met, log: Dict) ->
     if not targets:
         return
     m = choose_m(targets)
-    L = 1
-    for l in band:
-        L *= l * l
-    u = {l: _pw(b, L // (l * l), N, met) for l in band}      # (tree in the theorem)
+    u_list, L = all_but_one(b, [l * l for l in band], N, met)  # u_l = b^{L/l^2}
+    u = dict(zip(band, u_list))
     gamma = _pw(u[band[0]], band[0] ** 2, N, met)
     _chk(gamma, N, met, "gamma")
     # babies and Lemma G: least r in [1, m) with gcd(gamma^r - 1, N) > 1

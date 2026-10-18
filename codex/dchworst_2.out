@@ -1,0 +1,192 @@
+**ACCEPT WITH FIXES for Theorem R.**
+
+**PROVED:** the mathematical extraction argument factors every covered balanced semiprime without clean-band, hidden-\(q\) order, or non-FULL hypotheses. I found **no covered input that failed**.
+
+**REFUTED:** the advertised complexity applies to the proposed fast variant, not to the current Python implementation. The unrestricted weight-list formulation also omits target-construction work. T2’s existence argument is false.
+
+1. **MAJOR — Complexity: the implementation does not realize the theorem’s bound. [REFUTED for the code; PROVED for the specified fast variant]**
+
+   Besides the acknowledged pointwise exploration, two other places use independent exponentiations:
+
+   - [Cofactor powers](/Volumes/git/factoring-connection/src/dchworst/wcalg.py:316) compute every \(b^{L/\ell^2}\) separately.
+   - [Equal-order splitting](/Volumes/git/factoring-connection/src/dchworst/wcalg.py:288) computes every \(b^{E/r^e}\) separately.
+   - [Exploration](/Volumes/git/factoring-connection/src/dchworst/wcalg.py:367) evaluates each assigned node separately at each giant.
+
+   For \(J\) band primes, the first operation can cost \(\Theta(J^2\log Y)\) modular multiplications, instead of \(\widetilde O(J\log Y)\). Exploration has the stated \(O(mC)\) bound for \(C\) N-giants, rather than \(\widetilde O(m+C)\).
+
+   The exponent trees and batched evaluations described in the proof repair these costs. The file should be labelled a correctness prototype until they are implemented.
+
+2. **MAJOR — Arbitrary \(V\): rejected targets must be charged. [REFUTED as an unrestricted cost statement]**
+
+   Building targets tests every \((A,B,\ell)\), including nonsquares that produce no targets. Thus \(T'_k\), which counts accepted giants, need not pay for construction.
+
+   A concrete covered example is
+   \[
+   N=1009\cdot2017=2035153,\quad \ell=251,\quad H=125.
+   \]
+   Choose one nonsquare-producing sign for each primitive positive weight, then append the covering weight \((5,9)\). The code tests **9,592 weights**, produces **two targets**, and chooses \(m=1,\ T'=2\).
+
+   This scales: arbitrary lists can contain \(\Theta(H^2)\) rejected weights and only a constant number of accepted targets. The general bound needs a term
+   \[
+   Q_k=|V|\,|\mathcal P_k|.
+   \]
+   For a complete sign-symmetric family, \(\ell\equiv3\bmod4\) makes exactly one of the two signs produce square roots, so accepted targets do pay for the attempted combinations. That justification should be explicit.
+
+3. **MINOR — Lemma O is correct, but its novelty and threshold need precise wording. [PROVED]**
+
+   The first exponent with a nonunit \(b^r-1\) is
+   \[
+   r=\min(\operatorname{ord}_p b,\operatorname{ord}_q b).
+   \]
+   Its gcd is proper exactly when the two orders differ. The subgroup argument
+   \[
+   \Lambda\mid p-1,\qquad \Lambda\ge\Psi(p-1,B_0)
+   \]
+   is also correct: every \(B_0\)-smooth integer below \(p\) belongs to the generated subgroup, with distinct residues.
+
+   This is an elementary adaptation of existing machinery, rather than a substantively new order theorem. The precise Harvey–Hittmeir references are **Lemma 2.1** for bounded order search, **Lemma 2.3** for equal orders modulo prime divisors, **Lemma 2.4** for smooth numbers, and **§3.1, equations (3.1)–(3.2)** for the subgroup/AP-enumeration argument. Their large-order-mod-\(N\) theorem alone does not certify large order modulo each hidden prime. [Harvey–Hittmeir 2026, v2](https://arxiv.org/html/2601.11131v2)
+
+   The code actually searches through
+   \[
+   T_{\rm scan}=s\lceil T/s\rceil,\qquad s=\lfloor\sqrt T\rfloor+1.
+   \]
+   For \(p=1013,q=1657,b=2,T=91\), `first_r` returns `("equal",92)`. This contradicts its docstring, but preserves correctness and cost: \(T_{\rm scan}=T+O(\sqrt T)\). Define this threshold explicitly instead of leaving \(T'\ge T\) unrestricted.
+
+   The smooth-number bound suffices: with \(B_0=n^4\), this enumeration costs at most \(N^{1/8}\operatorname{polylog}N\), below the \(N^{1/6}\) overhead.
+
+4. **CONFIRMATION — Lemma G and the valuation split survive adversarial checking. [PROVED]**
+
+   Finding the **least** \(r<m\) with nontrivial gcd gives exactly the stated trichotomy. In the equal case, \(E=Lo\) is a factored multiple of both original orders.
+
+   For \(r^e\parallel E\),
+   \[
+   \operatorname{ord}_p\!\left(b^{E/r^e}\right)
+      =r^{v_r(\operatorname{ord}_p b)}.
+   \]
+   Distinct valuations therefore produce a proper gcd at the smaller valuation. If every valuation agrees, the computed \(D\) is the common order.
+
+   Crucially, **\(D>T\) follows from base selection**, not from the \(\gamma\)-pre-step. The draft uses this correctly. Factoring \(o<m\) by trial division is absorbed by \(\widetilde O(m)\). AP enumeration is terminal on these semiprimes, so its \(\sqrt N/T\) charge is incurred at most once.
+
+5. **CONFIRMATION — Lemma X is correct, including its batched bound. [PROVED]**
+
+   Distinct babies modulo \(p\) imply at most one \(p\)-root for each giant. Consequently, at most one N-node per level can belong to that giant.
+
+   Along the true giant’s path, every node gcd is \(p\) or \(N\). Exploration either outputs \(p\), or reaches an exact leaf. Uniqueness then identifies that leaf with \(i^*\), giving
+   \[
+   S=c+\ell^2(g_{\rm lo}+j^*m+i^*)=Bp+Aq.
+   \]
+   Thus the discriminant is \((Bp-Aq)^2\), and the two recovered integers are \(Bp,Aq\).
+
+   This identity holds for the **true giant’s leaf**. Arbitrary exact leaves can give irrelevant candidates; validating them and continuing is correct.
+
+   The batching proof also works. At one level, the distinct evaluated node polynomials have total degree at most \(m\), while the total assigned point count is at most \(2C\). Separate monic multipoint evaluations therefore cost \(\widetilde O(m+C)\) per level.
+
+   The underlying handling of exact matches is established prior art: Harvey’s **Algorithm 4.2, steps 1, 3–4**, removes exact matches and tests the corresponding weighted sums before applying **Algorithm 4.1**. This also supplies an alternative extraction implementation. [Harvey 2021](https://arxiv.org/pdf/2010.05450)
+
+6. **CONFIRMATION — Signed and diagonal weights are valid. [PROVED]**
+
+   The class-lock calculation is linear in \(A\), so its sign causes no problem. For \(A<0\),
+   \[
+   F'(x)=B+\frac{|A|N}{x^2}>0,
+   \]
+   which proves the proposed endpoint bounds. Their span remains \(O(H\sqrt N)\). Negative \(g_{\rm lo}\), negative giant exponents, and negative \(S\) are handled correctly by unit inversion and the discriminant calculation.
+
+   For \((1,1)\), the true collision is two-sided, but exact identification recovers \(p+q\). Thus including the diagonal is justified.
+
+   The modulus-squared lock is already present in **Harvey–Hittmeir 2022, Proposition 3.3**. [Primary text](https://arxiv.org/pdf/2105.11105)
+
+   Two qualifications:
+
+   - Signed large-sieve classes need \(\ell>2H^2\) as a simple sufficient distinctness condition; the positive-weight condition \(\ell>H^2\) does not automatically cover mixed signs.
+   - §6’s signed-square obstruction needs \(\ell>2H\). Under merely \(H<\ell\), \((-3,4)\), \(H=4,\ell=7\) covers squares. D′’s asymptotic design supplies the stronger separation.
+
+7. **MODERATE — R1–R3 survive, with attribution and scope corrections. [PROVED, with R2 conditional]**
+
+   **R1:** the pigeonhole argument works. The grid has more than \(\ell\) points; the resulting vector has both coordinates nonzero, and division by its gcd preserves the congruence. The cost becomes
+   \[
+   \widetilde O(P/Y^{3/2}+Y),
+   \]
+   minimized at \(Y=P^{2/5}\), giving \(N^{1/5+o(1)}\).
+
+   Call this a recovery of **Harvey’s proved exponent**. McKee–Pinch §5 supplies a direct weighted-congruence precursor, but its RSA variant is heuristic \(N^{1/4+\epsilon}\); its displayed deterministic construction is \(N^{1/3+\epsilon}\). “McKee–Pinch/Harvey exponent” conflates these results. [McKee–Pinch scan, pp. 222–223](/Volumes/git/factoring-connection/references/mckee_pinch_1996/mckee-04.jpg)
+
+   **R2:** the stated DCH_pair assumption gives the claimed conditional complexity for the fast variant. Coverage remains an unproved hypothesis.
+
+   **R3:** failures are confined to uncovered pairs. The original \(O(n^2/H^2)\) bound transfers. I also checked the prime-presieve denominator argument in [sieve2d Proposition 4](/Volumes/git/factoring-connection/notes/sieve2d_results.md:283); it supports \(O(n/H^2)\). Removing the FULL analysis removes the \(1/60\) restriction; the remaining positive-weight separation allows fixed \(\epsilon<1/7\), asymptotically.
+
+8. **MODERATE — Theorem N is repairable, but the printed proof does not deliver its constant. [PROVED with a replacement cutoff]**
+
+   The cutoff \(|I_p|\ge P^{0.99}\) yields denominator \((0.99-\theta)\log P\), not \((1-\theta+o(1))\log P\).
+
+   Use \(|I_p|\ge P/(\log P)^C\), for fixed sufficiently large \(C\). Quantitative PNT handles these intervals, and Brun–Titchmarsh gives
+   \[
+   \log(|I_p|/\ell)\ge(1-\theta-o(1))\log P.
+   \]
+   Bound the short endpoint pieces separately, **uniformly for each weight–prime condition**, before taking the union bound. This preserves the multiplicative statement even when \(\lambda\) is small. The required interval inequality is standard. [Montgomery–Vaughan, Theorem 3.9 and historical notes](https://personal.science.psu.edu/rcv4/personal/Publications/MNTI/07.0_pp_76_107_Principles_and_first_examples_of_sieve_methods.pdf)
+
+   The \(0.2\sqrt n\) example works for positive weights. Signed weights double the intensity; that numerical constant does not transfer. The conclusion excluding \(\kappa<1/2\) survives.
+
+9. **MAJOR — T2’s necessary product bound is false. [REFUTED]**
+
+   Residue-space density below \(1/|S_n|\) does **not** imply that the corresponding finite set contains no pair.
+
+   For example, take the balanced pair
+   \[
+   (p,q)=(2617,5233),\qquad N=13694761,
+   \]
+   and prescribe its actual ratios at
+   \[
+   F=\{19,23,31,43,47,59,67\}.
+   \]
+   The seven ratios are \(16,13,3,17,2,48,58\), respectively. This pair satisfies every prescription, although
+   \[
+   \prod_{\ell\in F}(\ell-1)=87860868480>2^{24}=P^2>|S_{24}|.
+   \]
+
+   Hence both “existence requires the product bound” and “at most six primes” are false. The conclusion that CRT forcing cannot construct uncovered pairs beyond the union-bound regime is consequently **UNVERIFIED**.
+
+   The separate fixed-rational-ratio obstruction is valid: sufficiently many primes dividing one fixed nonzero \(Bp-Aq\) force their product to exceed its absolute value.
+
+10. **MAJOR — B1–B3 need weaker labels; the final “equivalence” is unsupported.**
+
+   **B1 — PROVED conditional calculation.** If the available absolute error budget is \(\gtrsim\sqrt J\), domination requires \(H\gtrsim Y^{1/2}J^{-1/4}\). No argument establishes that every Fourier/counting method must incur that error. “Must beat square-root cancellation” is too broad.
+
+   **B2 — PROVED for the stated single-modulus strategy.** The class-count obstruction and composite-modulus example are sound. They do not prove that every geometry-of-numbers argument is limited to \(c=0\).
+
+   **B3 — PROVED only with its extra coprime-pair premise.** Coverage for every balanced **prime pair** cannot be specialized to \((x,x+1)\). Moreover,
+   \[
+   \text{single-interval theorem}\Longrightarrow U
+   \]
+   does not establish a converse. Single-interval records therefore do not give a lower bound on the difficulty of proving \(U\).
+
+   Friedlander–Lagarias Lemma 2.2 supplies an applicable prime-sum estimate. Weingartner’s proof supplies an admissible all-divisor bound yielding \(27/97+\epsilon\) at the relevant parameter. Neither establishes the draft’s claimed necessity or its “best known” status. [Friedlander–Lagarias](https://websites.umich.edu/~lagarias/doc/short.pdf), [Weingartner, Theorem 1 and proof](https://arxiv.org/html/2105.13568v2)
+
+   **UNVERIFIED:** I found no unconditional theorem guaranteeing the requested coverage with fixed \(c>0\) for every balanced prime pair. Umans–Wang Theorem 5.5 remains conditional; He–Sahai refute its AP conjecture variant, not DCH_pair. [Umans–Wang](https://arxiv.org/html/2511.10851v1), [He–Sahai](https://arxiv.org/abs/2608.06681)
+
+   Replace “equivalent” by a sufficient criterion within the stated height/cost parameter family. Also state \(0\le c\le1/2\), or retain the \(H\ge1\) constraint and extraction-cost floor explicitly.
+
+11. **COMPUTATIONAL CHECK — No covered failure found. [PROVED for the runs performed]**
+
+   All six existing worst-case tests passed. Additional scratch tests completed:
+
+   | Runs | Coverage exercised |
+   |---:|---|
+   | 31,592 | Individual positive, negative, and diagonal covering weights |
+   | 1,409 | Full base-selection algorithm |
+   | 1,399 | Forced-base runs |
+   | 40 | Default \(T=\lceil N^{1/3}\rceil,\ B_0=n^4\), at 39–80 bits |
+
+   These included equal orders for bases \(2,3\); different original orders collapsing to equal \(\gamma\)-orders; band primes shared with \(p-1,q-1\); and exact negative-weight leaves.
+
+   Representative successful branches were \(104653=229\cdot457\) through \(D\)-enumeration, \(181429=397\cdot457\) through valuation splitting, and \(13694761\) through \(\Lambda\)-enumeration.
+
+   Reproducers and results: [adversarial script](/Volumes/git/factoring-connection/codex/scratch/dchworst_2/referee_adversarial.py), [results](/Volumes/git/factoring-connection/codex/scratch/dchworst_2/referee_adversarial.json), [default-parameter script](/Volumes/git/factoring-connection/codex/scratch/dchworst_2/referee_default_parameters.py), [target-cost example](/Volumes/git/factoring-connection/codex/scratch/dchworst_2/referee_cost_and_claims.py).
+
+Concrete fixes required before acceptance:
+
+- Distinguish the fast theoretical algorithm from the Python prototype; implement both exponent trees and batched exploration before assigning that complexity to the file.
+- Charge attempted weight–prime combinations, or restrict the complexity statement to families that provably pay for them through accepted targets.
+- Define \(T_{\rm scan}\), and correct `first_r`’s contract.
+- Repair Theorem N’s endpoint argument and separate its positive/signed numerical constants.
+- Delete T2’s existence/product inference. Relabel B1–B3 as restricted method observations and conditional implications.
+- Correct the prior-art attribution, parameter ranges, and signed-square qualification.
