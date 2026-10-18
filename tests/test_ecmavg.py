@@ -28,7 +28,7 @@ def test_fallback_R_closed_form_matches_search():
 def test_fallback_values():
     assert ex.fallback_R(F(1, 38)) == F(23, 152)
     assert ex.fallback_R(F(2, 25)) == F(3, 25)
-    assert ex.fallback_R(F(2, 13)) == F(3, 65)
+    assert ex.fallback_R(F(1, 10)) == F(1, 10)
     assert ex.fallback_AV(F(1, 38)) == F(23, 152)
     assert ex.fallback_AV(F(1, 10)) == F(2, 15)
     assert ex.fallback_AV_floor()[:2] == (F(2, 15), F(1, 60))

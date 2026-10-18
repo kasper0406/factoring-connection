@@ -23,7 +23,8 @@ from itertools import combinations
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 SIXTH, FIFTH = F(1, 6), F(1, 5)
-H_MAX_R = F(1, 15)      # sieve2d Theorem 2 range (H <= N^{1/15}/C0)
+H_MAX_R = F(1, 50)      # ladder cap: keeps the worst case at HH (1/6 + 5/3 * 1/50 = 1/5);
+                        # sieve2d Theorem 2 itself is valid up to H <= N^{1/15}/C0
 H_MAX_AV = F(1, 50)     # avgtime Proposition U range
 
 
@@ -64,18 +65,15 @@ def ladder_R(theta: F, h0: F, hmax: Optional[F] = None, hh_after: bool = True) -
 
 def fallback_R(theta: F) -> F:
     """Closed form of the best fallback exponent on a density-N^{-theta} subset A:
-         min( 1/5 - theta ,  max(1/6 - 7 theta/12, 1/5 - 2/13) )   for 0 <= theta <= 2/13,
-         1/5 - theta                                               for theta >= 2/13,
-    floored at 0.  The first option is HH alone on A; the second is the DCL-wc ladder started
-    at H0 = N^{theta/4} (so its first rung already has fail <= delta) up to H = N^{1/26}
-    (where the sieve2d bound bottoms out at N^{-2/13}), then HH.  (Proved given the cited
-    theorems; minimality is within this family of ladders: `fallback_R_search`.)"""
+         F(theta) = max(0, min(1/5 - theta, 1/6 - 7 theta/12)).
+    1/5 - theta is HH alone on A.  1/6 - 7 theta/12 is the DCL-wc ladder started at
+    H0 = N^{theta/4} (its first rung already has fail <= delta), doubling up to N^{1/50},
+    then HH; the HH remainder 1/5 - max(theta, 2/25) never exceeds the min.  The two branches
+    cross at theta = 2/25 (value 3/25), which is exactly where H0 reaches the cap N^{1/50}.
+    (Proved given the cited theorems; minimal within this family of ladders:
+    `fallback_R_search`.)"""
     theta = F(theta)
-    hh = FIFTH - theta
-    if theta <= F(2, 13):
-        lad = max(SIXTH - F(7, 12) * theta, FIFTH - F(2, 13))
-        return max(F(0), min(hh, lad))
-    return max(F(0), hh)
+    return max(F(0), min(FIFTH - theta, SIXTH - F(7, 12) * theta))
 
 
 def fallback_R_search(theta: F, grid: int = 78) -> F:
@@ -160,8 +158,7 @@ def optimise(b: F, kappa: F = F(1), stopping: bool = True, theta_max: F = FIFTH,
     fb = fallback_R if fallback == "R" else fallback_AV
     g = lambda th: total(b, th, kappa, stopping, fb)
     slope = 1 if not stopping else max(F(0), 1 - kappa)
-    lines = [(b, F(slope)), (FIFTH, -kappa), (SIXTH, -F(7, 12) * kappa),
-             (FIFTH - F(2, 13), F(0)), (F(0), F(0)),
+    lines = [(b, F(slope)), (FIFTH, -kappa), (SIXTH, -F(7, 12) * kappa), (F(0), F(0)),
              (F(2, 15), F(0)), (F(7, 45), -kappa)]
     return _argmin_piecewise(g, lines, F(0), F(theta_max))
 
@@ -179,18 +176,11 @@ def weak_kappa_curve(kappa: F, theta_max: F = FIFTH, b: F = F(0)) -> Tuple[F, F]
 
 
 def kappa_closed_form(kappa: F) -> F:
-    """b -> 0, theta unconstrained (<= 1/5), stopping, R fallback, 0 < kappa < 1:
-    balance (1-kappa) theta against the fallback F_R(kappa theta).
+    """b -> 0, theta <= 1/5, stopping, R fallback, 0 < kappa < 1: the increasing prefilter
+    cost (1-kappa) theta meets the decreasing fallback F(kappa theta) = min of two lines, so
+    the value is the smaller of the two crossings:
       ladder branch  (1-kappa) th = 1/6 - 7 kappa th/12  ->  2(1-kappa)/(12 - 5 kappa)
-      HH branch      (1-kappa) th = 1/5 - kappa th       ->  (1-kappa)/5
-    The fallback is the min of the two branches, so the value is
-    min(2(1-kappa)/(12-5kappa), (1-kappa)/5) floored by 3/65 when the ladder branch is used."""
+      HH branch      (1-kappa) th = 1/5 - kappa th       ->  (1-kappa)/5   (at th = 1/5)
+    The HH branch wins iff kappa > 2/5."""
     kappa = F(kappa)
-    lad = 2 * (1 - kappa) / (12 - 5 * kappa)
-    th_l = lad / (1 - kappa)
-    if kappa * th_l <= F(2, 13):
-        lad = max(lad, FIFTH - F(2, 13))
-    else:
-        lad = F(1)
-    hh = (1 - kappa) / 5
-    return min(lad, hh)
+    return min(2 * (1 - kappa) / (12 - 5 * kappa), (1 - kappa) / 5)

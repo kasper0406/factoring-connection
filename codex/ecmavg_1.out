@@ -1,0 +1,221 @@
+**1. PROVED — (*) holds, and DCL-wc gives a stronger bound**
+
+Write \(X=2^n\), suppressing \(X^{o(1)}\) factors. Let \(U(H)\) be the pairs uncovered by **every** block at height \(H\). Theorem R gives
+\[
+\mathrm{FAIL}_{\mathrm{wc}}(H)\subseteq U(H),\qquad
+T(H)\ll X^{1/6}H^{5/3}.
+\]
+
+**PROVED — source correction.** The checked-in [Theorem 2](/Volumes/git/factoring-connection/notes/sieve2d_results.md:255) actually gives
+\[
+\Pr(U(H))\ll n^4H^{-4}+n^6H^{1/3}X^{-1/6}.
+\]
+Thus the prompt’s pure \(H^{-4}\) bound is not established throughout \(H\le X^{1/15}/C_0\). At exponent level, the error is absorbable for \(H<X^{1/26}\). This includes all heights needed below.
+
+**PROVED.** Use a doubling DCL-wc ladder from a fixed admissible height to
+\[
+H_{\max}=X^{1/50},
+\]
+then HH. Its total worst-case budget is \(X^{1/5+o(1)}\). For any subset \(A\), \(\Pr(A)=\delta\), its reach sets satisfy
+\[
+R_1=A,\qquad
+R_i=A\cap\bigcap_{r<i}\mathrm{FAIL}_{\mathrm{wc}}(H_r)
+ \subseteq A\cap U(H_{i-1}).
+\]
+Consequently
+\[
+\Pr(R_i)\le \min\{\delta,X^{o(1)}H_{i-1}^{-4}\}.
+\]
+No nesting of coverage sets or independence is needed.
+
+Splitting the geometric sum at \(H_*\asymp\delta^{-1/4}\), with logarithmic adjustments, gives
+\[
+\boxed{\;
+\mathbb E[1_A T_{\mathrm{fallback}}]
+\ll X^{o(1)}
+\min\!\left\{\delta X^{1/5},\,X^{1/6}\delta^{7/12}\right\}.
+\;}
+\]
+If \(H_*>H_{\max}\), the worst-case budget supplies the first bound, which is then smaller than the second.
+
+**PROVED.** A tailored ladder may begin at \(H_*\) when \(H_*\le H_{\max}\); starting earlier also works, since those costs sum geometrically. Thus the algorithm need not know \(A\) or \(\delta\).
+
+**PROVED.** The raw HH remainder at \(H_{\max}\) is \(X^{3/25+o(1)}\), but retaining its reach factor \(\min(\delta,H_{\max}^{-4})\) absorbs it into the displayed bound. **There is no necessary additive second term.** The \(X^{2/15}\) term comes from stopping unnecessarily at \(H=X^{1/60}\).
+
+**REFUTED — transferring these reach sets to AV unchanged.** AV’s D′ ladder has additional coincidence and \(E_c\) sets:
+\[
+R_i\subseteq A\cap\bigl(C(T)\cup E_c(H_{i-1},T)\cup E_b(H_{i-1})\bigr).
+\]
+Coverage alone does not bound its failures. Use **Theorem R’s DCL-wc** here.
+
+**2. CONDITIONAL — optimisation under the stated probabilistic hypotheses**
+
+Put \(\alpha=7/12\), \(B=X^b\), \(J=X^\theta\), and suppose the implemented prefilter has failure probability
+\[
+F(J)\ll J^{-\kappa}X^{o(1)}.
+\]
+
+**CONDITIONAL — terminal hypothesis only.** Charging all \(J\) curves gives exponent
+\[
+e_{\mathrm{batch}}=\max\{b+\theta,\;1/6-\alpha\kappa\theta\}.
+\]
+The balancing choices are
+\[
+\theta_*=\frac{2-12b}{12+7\kappa},
+\qquad
+e_*=\frac{2+7\kappa b}{12+7\kappa}.
+\]
+For \(\kappa=1,b=1/8\), these are exactly
+\[
+\theta_*=\frac1{38},\qquad e_*=\frac{23}{152}.
+\]
+Thus \(23/152\) is the optimum of this **fixed-\(b\), batch upper-bound calculation**, not of the whole proposal. Allowing arbitrarily small fixed \(b>0\) gives infimum \(2/19\), provided the hypothesis reaches \(\theta=2/19\).
+
+**CONDITIONAL — prefix hypotheses permit early stopping.** Suppose the failure estimate holds uniformly for prefixes, or a doubling grid of prefixes, through \(J\). Generate curves on demand and stop at the first divisor. Then
+\[
+\mathbb E[\min(\tau,J)]
+\ll X^{o(1)}
+\begin{cases}
+J^{1-\kappa},&0<\kappa<1,\\
+1,&\kappa\ge1,
+\end{cases}
+\]
+where the logarithm at \(\kappa=1\) is suppressed. Hence
+\[
+\boxed{\;
+e_{\mathrm{stop}}(b,\theta)
+=\max\{b+(1-\kappa)_+\theta,\;1/6-\alpha\kappa\theta\}.
+\;}
+\]
+
+For EC2, \(\kappa=1\): \(b=1/8,\theta=1/14\) gives exponent **\(1/8\)**. If EC2 holds for every sufficiently small fixed \(b\), through \(\theta=2/7\), it gives \(X^\varepsilon\) average time for every fixed \(\varepsilon>0\). This does **not** establish one \(X^{o(1)}\) algorithm without uniformity as \(b\to0\).
+
+**CONDITIONAL — range matters.** If hypotheses stop at \(J\le X^\Theta\), minimise the displayed expressions over \(0\le\theta\le\Theta\). EC2 at one terminal \(J\) alone gives no improved expected stopping time.
+
+**CONDITIONAL — weaker moments.** With \(\mathbb EZ\gg J\), variance \(J^{2-\eta}X^{o(1)}\) gives \(\kappa=\eta\). For \(0<\kappa<1\), unrestricted prefix range and \(b\downarrow0\), the stopping calculation has infimum
+\[
+\frac{2(1-\kappa)}{12-5\kappa},
+\qquad \theta_*=\frac{2}{12-5\kappa}.
+\]
+
+**PROVED — stage-2 exponent accounting.** Fast continuation to \(B_2\asymp B^2\) costs
+\(\widetilde O(B+\sqrt{B_2})=B^{1+o(1)}\). It enlarges the accepted set to appropriate semismooth point orders. Under an already-assumed constant success density, it changes constants, not these exponents. A hypothesis for stage-1 smoothness does not automatically establish stage-2 correlations.
+
+**3. HEURISTIC — EC2 is substantially less plausible than the hitting property needed**
+
+**PROVED.** For any shared prime data \(\mathcal C\),
+\[
+\operatorname{Var}Z\ge
+\operatorname{Var}\bigl(\mathbb E[Z\mid\mathcal C]\bigr).
+\]
+If conditional success rates vary by \(\varepsilon_X\) across positive-mass classes, the resulting variance is of order \(J^2\varepsilon_X^2\). Variation of size \((\log X)^{-K}\) contradicts EC2 for every fixed polynomial \(J=X^\theta\).
+
+**HEURISTIC.** Such shared variation can arise from \(p\bmod\ell\), determinant constraints on Frobenius, torsion biases, the smooth-number population in the common Hasse interval, and finite-size dependence on \(p,B\). Pairwise averaging does not remove it. With \(B=N^b\), the identity
+\[
+\frac{\log p}{\log B}+\frac{\log q}{\log B}=\frac1b
+\]
+can cancel first-order size effects in a symmetric separation probability; it does not generally cancel every secondary term.
+
+**UNVERIFIED.** This is an obstruction to EC2’s plausibility, not a proof that the particular Suyama family violates it. One must establish an actual conditional-rate fluctuation. Neither small experiments nor “random curves” rhetoric settles that.
+
+**CONDITIONAL — sufficient replacement.** The route only needs
+\[
+\Pr_{S_n}(\text{no proper divisor from the first }J\text{ curves})
+\ll J^{-\kappa}X^{o(1)},
+\]
+uniformly over the prefixes needed for stopping. Alternatively, a lower-tail estimate around a positive, input-dependent success rate can suffice; global variance around one mean is unnecessary.
+
+A useful analytic target is a **single-prime hitting theorem**
+\[
+\Pr_{p\asymp P}\{\forall j\le J:\operatorname{ord}_p(P_j)\nmid M_B\}
+\ll J^{-\kappa}P^{o(1)},
+\]
+with the required shell and parameter uniformity.
+
+**PROVED — gcd staging has a qualification.** If both point orders divide the known, factored \(M_B\), differing prime-adic valuations of those orders can be exposed by all-but-one exponent tests and staged gcds, within \(B^{1+o(1)}\) work. Thus unequal smooth orders can be separated.
+
+**REFUTED — an unconditional reduction to hitting alone.** Equal point orders give identical scalar-annihilation profiles. A one-prime hitting theorem must therefore be supplemented by a small order-coincidence bound for a selected hitting curve, or another extraction theorem. Rational torsion points already demonstrate why hitting alone is insufficient.
+
+**4. PROVED / CONDITIONAL / UNVERIFIED — literature audit**
+
+Here \(m\) denotes a prescribed group order, avoiding confusion with the factoring input.
+
+**PROVED — Banks–Shparlinski.** Their *Sato–Tate, cyclicity, and divisibility statistics*, Theorem 12, treats arbitrary isomorphism-invariant subsets of coefficient pairs, for \(1\le A,B\le(p-1)/2\). Corollary 15 gives power-saving transfer from the full finite-field population when
+\[
+\min(A,B)>p^{1/4+\varepsilon},\qquad AB>p^{1+\varepsilon}.
+\]
+Their horizontal Theorems 16–18 use
+\[
+A,B>x^\varepsilon,\quad AB>x^{1+\varepsilon},\quad A,B\le x^{1-\varepsilon};
+\]
+Theorem 18 concerns divisibility, uniformly for \(m\le(\log x)^K\). These are not marked-point smoothness or short-family hitting theorems. [Original paper](https://arxiv.org/pdf/math/0609144).
+
+**PROVED — David–Smith upper bound.** Theorem 1 of *Elliptic curves with a given number of points* assumes
+\[
+A,B\ge\sqrt m\log m,\qquad AB\ge m^{3/2}(\log m)^2,
+\]
+and bounds the box average of \(M_E(m)\) by \(O(\log\log m/\log m)\). [Paper, including corrigendum](https://arxiv.org/pdf/1108.3539).
+
+**CONDITIONAL — David–Smith asymptotic.** Their Theorem 3, for odd \(m\), assumes short-interval BDH, Conjecture 2, at
+\[
+\eta=\frac12-\frac{(\gamma+2)\log\log m}{\log m},
+\]
+and
+\[
+A,B\ge\sqrt m(\log m)^{1+\gamma}\log\log m,\quad
+AB\ge m^{3/2}(\log m)^{2+\gamma}\log\log m.
+\]
+It gives the corrected \(K(m)m/(\varphi(m)\log m)\) main term. GRH alone does not supply this BDH hypothesis. [Theorem 3](https://arxiv.org/pdf/1108.3539).
+
+**PROVED / CONDITIONAL — Martin–Pollack–Smith.** Theorems 1.2–1.4 analyse means and distribution of the arithmetic factor \(K^*(m)\). Proposition 1.6 restates the curve-average asymptotic under BDH for some \(\eta<1/2\), with
+\[
+A,B>m^{1/2+\varepsilon},\qquad AB>m^{3/2+\varepsilon}.
+\]
+These results do not establish the proposed covariance. [Original paper](https://arxiv.org/pdf/1208.0919).
+
+**PROVED — David–Koukoulopoulos–Smith.** Theorem 1.3 gives vertical Sato–Tate, in the automorphism-weighted full population \(\mathcal C_p\), uniformly for
+\[
+\beta-\alpha\ge p^{-1/2+\varepsilon},
+\]
+with relative error \(O_{L,\varepsilon}((\log p)^{-L})\). This is a trace-interval theorem, not an arbitrary smoothness-weight theorem or a small coefficient-box theorem. Their general Euler-product machinery requires its own averaging hypotheses. [Original paper](https://arxiv.org/pdf/1510.05935).
+
+**PROVED — Hasse-interval input.** Matomäki–Radziwiłł (2016), Corollary 6, gives the expected density of \(x^{1/u}\)-smooth numbers in almost all intervals of length \(\psi(x)\to\infty\), for fixed \(u\). Corollary 1 gives at least \(\sqrt x/(\log x)^4\) such numbers in every interval of length \(C(u)\sqrt x\); \(C(u)\) need not fit a Hasse interval. [Original paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf).
+
+**PROVED — prime-centred deduction using the successor theorem.** *Multiplicative functions in short intervals II*, Corollary 1.1, gives power-saving exceptional sets for fixed accuracy, uniformly for bounded real multiplicative functions. Apply it to the smoothness indicator with \(h\asymp\sqrt X\): for every fixed \(u\), all but \(O_u(X^{1-c(u)})\) prime centres have a positive density of \(X^{1/u}\)-smooth integers in a central Hasse subinterval. Corollary 1.3 separately bounds empty smooth intervals by
+\[
+O_{\varepsilon,\theta}(Xh^{-1/2+\varepsilon}),\quad 2\le h\le X.
+\]
+An unquantified density-one statement for integer centres alone would not justify restriction to primes. [Original paper](https://arxiv.org/pdf/2007.04290).
+
+**PROVED — smaller smoothness thresholds remain restricted.** Jain, Theorem 1.1, assumes
+\[
+e^{C(\log X)^{2/3}(\log\log X)^{4/3}}\le y\le X^{1/C},
+\quad
+h\ge e^{(1+\varepsilon)((11/8)u\log u+4\log\log X)}.
+\]
+It proves almost-all-interval existence, not optimal ECM-scale smoothness or explicit-family hitting. [Original paper](https://arxiv.org/pdf/2502.10530).
+
+**PROVED / UNVERIFIED — historical ECM distinction.** Pomerance’s weaker almost-all-prime ECM analysis is documented in Hafner–McCurley §3; I could not verify the original Pomerance theorem numbering from the available scan. Lenstra’s optimal \(L_p[1/2,\sqrt2]\) bound is explicitly **Conjecture 2.10**; Proposition 2.8 supplies a rigorous reduction from suitable smooth-order supply. [Hafner–McCurley](https://www.mccurley.org/papers/running.pdf), [Lenstra](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf).
+
+**CONDITIONAL — fixed curves.** Barbulescu–Jouve Theorem 1.2(1), proved as Theorem 3.4, gives
+\[
+\psi_E(x,y)\sim\rho(u)x/\log x
+\]
+for fixed CM \(E/\mathbb Q\), bounded \(u=\log x/\log y\), under their quadratic-field EH Conjecture 1.1. The non-CM analogue, Theorem 6.2, assumes their stronger elliptic divisibility Hypothesis 1. Their GRH Theorem 6.1 only supplies restricted divisibility averages—among them \(d\le x^{1/5}/(\log x)^4\), supported on primes at most \(x^{1/10}/(\log x)^4\). These concern group orders, without uniform growing-family covariance or marked-point separation. [Original paper](https://arxiv.org/html/2212.11724v2).
+
+**UNVERIFIED — explicit-family conclusion.** I found no useful-\(b\) theorem giving \(J^{-\kappa}\) hitting for the specified explicit prefix \(J\ll p\), unconditionally or from GRH/quadratic-field EH alone. Fixed-level divisibility correlations are accessible to Chebotarev; retaining smoothness and uniformity in growing \(J\) is the missing step. The cited box thresholds demonstrably exclude the proposed family sizes. That establishes non-applicability of these theorems, not impossibility for all known methods.
+
+**5. REFUTED / UNVERIFIED — adversarial verdict on r18 §5**
+
+- **PROVED:** its Chebyshev implication and \(23/152\) arithmetic are correct conditional deductions.
+- **REFUTED:** any suggestion of design optimality; smaller fixed \(b\), prefix-wise stopping, and a longer R ladder improve its calculation.
+- **UNVERIFIED:** EC2’s \(b,J,n\) uniformity and prefix range are unspecified.
+- **HEURISTIC:** global EC2 ignores potentially fatal shared secondary biases; a hitting hypothesis is weaker and better targeted.
+- **PROVED:** its pure coverage accounting requires R, not AV unchanged.
+- **UNVERIFIED:** the source’s additive sieve error was omitted. It is harmless at the proposed heights, but cannot be dropped throughout the advertised range.
+- **PROVED:** \(H_0\asymp\delta^{-1/4}\) needs a cap/direct-HH branch; otherwise it can exceed the top rung.
+- **REFUTED:** the additive \(N^{2/15}\) term is an intrinsic floor.
+- **UNVERIFIED:** implementation details for singular specialisations, gcd-\(N\) recovery, validated divisors and complete fallback need specification.
+- **REFUTED:** finite experiments can decisively “kill” the asymptotic route. They diagnose finite-size behaviour.
+- **REFUTED:** “a fixed number of curves cannot” is stronger than justified; EC2 with fixed \(J\) merely fails to **prove** power-saving failure.
+- **UNVERIFIED:** novelty, frontier significance and the numerical “5%” assessment.
