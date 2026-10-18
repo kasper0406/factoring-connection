@@ -1,0 +1,19 @@
+# nfsfruit round 1 (blind): fruitfulness in a rigorous randomized NFS
+
+You are a research mathematician (analytic/algorithmic number theory). Work independently; be precise; label every claim KNOWN (with citation), PROVED (give the proof), HEURISTIC, or SPECULATIVE. Do not overclaim. Scratch files may go in the current directory only.
+
+## Background
+Lee–Venkatesan, "Rigorous analysis of a randomised number field sieve", J. Number Theory 187 (2018) 92–159, arXiv:1805.08873. They randomize the NFS: m uniform in an interval near L_n(2/3, δ^{-1}); f(x,y) = f̂_{n,m}(x,y) + (x − m y) R(x,y), where f̂ is the base-m expansion of n and R has i.i.d. uniform coefficients of size L_n(2/3, κ − δ^{-1}); d odd; pairs (a,b) uniform; quadratic characters from random prime ideals of norm exp(L(1/3, ε)) (to dodge Siegel zeros); stochastic deepening. Thm 2.1: for every n, expected L_n[1/3, (64/9)^{1/3}+o(1)] time to produce x² ≡ y² (mod n). Thm 2.3: for n = pq, p ≡ q ≡ 3 (mod 4), conditional on their Conjecture 7.1, a nontrivial congruence in the same time. Conjecture 7.1: the character χ_P(h) = χ_n(√h(m)) χ_n(φ_{m,α}(√h(α))), χ_n = χ_p χ_q, restricted to the smooth part P_S, is not a product of the χ_𝔭 and the (−1)^{ord_𝔭} characters. Rigorous factoring is otherwise at L[1/2, 1+o(1)] (Lenstra–Pomerance JAMS 1992).
+
+## Tasks
+1. **Literature (use web search).** Survey 2018–2026 work on: (a) rigorous / provable analyses of NFS-type or L[1/3] algorithms for factoring or discrete logs (papers citing Lee–Venkatesan; anything proving fruitfulness or square-root randomness for NFS/QS/linear sieve); (b) rigorous L[1/3] for any special family of integers; (c) rigorous L[1/2, c] factoring with c < 1, or rigorous improvements over Lenstra–Pomerance; status of Vallée's algorithm, Pomerance's 1987 rigorous random-squares variants, Schnorr–Lenstra / Seysen / Lenstra–Pomerance class-group methods; Croot–Granville–Pemantle–Tetali; Pomerance's surveys that discuss which parts are rigorous. For each item give the exact citation and the exact statement (rigorous vs heuristic vs GRH). Say explicitly if you could not find something.
+2. **The obstruction.** Explain precisely why Dixon's random-squares fruitfulness is provable (what symmetry of the randomness space is used) and why that argument fails for QS, the linear sieve and NFS. Is fruitfulness for arbitrary (not Blum) n expressible as a linear condition on the dependency space? Prove or refute: for every composite n coprime to the relations, the map S ↦ [u(S)/φ(v(S))] ∈ μ₂(Z/n)/{±1} on the space of true square-dependencies is a group homomorphism.
+3. **Weakest meaningful provable statement.** Propose and try hard to PROVE one statement strictly weaker than Conjecture 7.1 but still meaningful, for instance:
+   - fruitfulness with probability ≥ L[1/3, −o(1)] for most n in a natural family (averaging over the input);
+   - averaging over the randomized polynomial (R, m) for fixed n;
+   - a modified algorithm that injects provable hidden randomness at only L[1/3] cost (any way to embed Dixon's symmetry into NFS-size relations?);
+   - an unconditional rigorous L[1/3] factoring theorem for some restricted, nontrivial family.
+   If you cannot prove any, isolate the exact missing lemma(s) as precise mathematical statements, and explain which known tools (large sieve for characters, Chebotarev, Bombieri–Vinogradov-type smooth-number equidistribution, character sums over smooth numbers, etc.) come closest and why they fall short.
+4. **Toy experiment design.** Suggest the most diagnostic small exact experiment (QS / linear sieve / degree-3 NFS on 40–60 bit Blum and non-Blum semiprimes) for testing whether the factor-detecting functional is independent of the parity and character rows.
+
+Output a structured report with a verdict first. Length: as long as needed, but no padding.

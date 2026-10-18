@@ -1,0 +1,17 @@
+{
+  "experiment": "nfsfruit_e1",
+  "bits": [40, 44],
+  "classes": ["blum", "mixed", "both1", "tri"],
+  "seeds": [0, 20],
+  "subset_trials": 40,
+  "lin_checks": 4,
+  "families": {
+    "dixon":     {"40": {"B": 300, "excess": 40, "max_trials": 3000000}, "44": {"B": 400, "excess": 40, "max_trials": 3000000}},
+    "trivial":   {"40": {"B": 300, "excess": 40, "max_trials": 400000},  "44": {"B": 300, "excess": 40, "max_trials": 400000}},
+    "qs":        {"40": {"B": 400, "M": 20000}, "44": {"B": 400, "M": 20000}},
+    "lin_base":  {"40": {"B": 1500, "A": 600, "Bb": 200, "excess": 60}, "44": {"B": 2000, "A": 800, "Bb": 250, "excess": 60}},
+    "lin_rand":  {"40": {"B": 1500, "A": 600, "Bb": 200, "excess": 60}, "44": {"B": 2000, "A": 800, "Bb": 250, "excess": 60}},
+    "nfs3_base": {"40": {"B": 1500, "A": 1000, "Bb": 400, "nchar": 40, "excess": 60}, "44": {"B": 2500, "A": 2600, "Bb": 1300, "nchar": 40, "excess": 60}},
+    "nfs3_rand": {"40": {"B": 1500, "A": 1800, "Bb": 900, "Hmul": 1, "Hshift": 2, "nchar": 40, "excess": 60}, "44": {"B": 2500, "A": 3600, "Bb": 1800, "Hmul": 1, "Hshift": 2, "nchar": 40, "excess": 60}}
+  }
+}
