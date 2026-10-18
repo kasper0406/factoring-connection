@@ -35,7 +35,8 @@ CONFIG = {
     "v2_operational_cap": 300_000,
     "base_seed_retries": 3,
 }
-RAW = "experiments/raw/signsplit_runs.jsonl"
+RAW = "experiments/raw/signsplit_runs.jsonl"   # first (pre-registered) run
+RAW2 = "experiments/raw/signsplit_runs_rerun.jsonl"  # identical protocol + hit diagnostics
 SUMMARY = "experiments/analysis/signsplit_summary.json"
 
 
@@ -92,6 +93,66 @@ def classify(res: Dict, cov: Dict) -> str:
                 return "STRUCTURAL"
         return "ACCIDENTAL"
     return "ACCIDENTAL"   # gcd_base, gcd_baby_order, gcd_inverse, gcd_M
+
+
+def identity_class(res: Dict, N: int, p: int, M: int) -> str:
+    """Post-hoc diagnostic (added after the first run, see notes): STRUCTURAL_ID if
+    the hit giant/baby pair satisfies the integer identity a q + b p = M^2 i + j
+    (a genuine Lehman/HH window hit, on ANY branch); ACCIDENTAL_ID if it is only a
+    mod-p coincidence or a gcd side hit."""
+    if res.get("factor") is None:
+        return "NONE"
+    hit = res.get("hit") or {}
+    tgt, i = hit.get("target"), hit.get("baby")
+    if res["status"] in ("collision", "exact_match") and tgt and i is not None:
+        s, s0, a, b, j = tgt
+        q = N // p
+        return "STRUCTURAL_ID" if a * q + b * p == M * M * i + j else "ACCIDENTAL_ID"
+    return "ACCIDENTAL_ID"
+
+
+def identity_class_v2(res: Dict, N: int, p: int, M: int, m0: int, tR: int, g: int) -> str:
+    """Value-based (post-hoc): right lists of different groups overlap as integers
+    and HH windows of neighbouring buckets overlap, so the hit may involve any
+    group.  STRUCTURAL_ID iff for SOME group (gamma, sigma0) and some (eps_L, h)
+    the integer identity a q + b p = Delta0 + S_L + M^2 (base + W_R h) + (M^2 i + S_R)
+    holds for the hit right exponent M^2 i + S_R.  Otherwise the hit is a mod-p
+    coincidence (ACCIDENTAL_ID)."""
+    if res.get("factor") is None:
+        return "NONE"
+    rt = (res.get("hit") or {}).get("right")
+    if res["status"] not in ("collision", "exact_match") or not rt:
+        return "ACCIDENTAL_ID"
+    _, _, SR, i = rt
+    q = N // p
+    primes = factor_squarefree(M)
+    M2 = M * M
+    lmb = lam(N, M, m0, M)
+    from src.common.metrics import Metrics
+    from .hh import square_classes
+    met = Metrics()
+    for gm in square_classes(N, M):
+        rr = []
+        for m in primes:
+            roots = sqrt_mod_prime((N * pow(gm, -1, m)) % m, m)
+            rr.append(min(r for r in roots if r % m) if m > 2 else 1)
+        lat = weight_lattice(N, primes, crt(rr, primes), ())
+        for s0 in buckets(N, m0):
+            a, b = prop33(N, m0, s0, lat, met)
+            dec = sign_decomposition(a, b, rr, primes, N)
+            D = dec["Delta"]
+            tl = len(D) - tR
+            clo, chi = carry_range(dec)
+            K = 2 * lmb + 1 + chi - clo
+            WR = -(-K // g)
+            u = a * q + b * p
+            off = dec["Delta0"] + SR + M2 * (tau0_floor(a, b, N, s0, M2) - lmb - chi + i)
+            for k in range(1 << tl):
+                SL = sum((-d if (k >> ii) & 1 else d) for ii, d in enumerate(D[:tl]))
+                r = u - off - SL
+                if r % (M2 * WR) == 0 and 0 <= r // (M2 * WR) < g:
+                    return "STRUCTURAL_ID"
+    return "ACCIDENTAL_ID"
 
 
 def coverage_v2(N: int, p: int, M: int, m0: int, tR: int, g: int) -> Dict:
@@ -166,7 +227,8 @@ def run_instance(args) -> List[Dict]:
             out.append({"exp": exp, "variant": var, "bits": bits, "seed": seed, "N": N,
                         "M": M, "t": t, "m0": mm0, "anti": list(A), "base_seed": rs,
                         "status": res["status"], "success": res["factor"] in (p, N // p),
-                        "class": classify(res, cov), "covered": cov["covered"],
+                        "class": classify(res, cov), "class_id": identity_class(res, N, p, M),
+                        "hit": res.get("hit"), "covered": cov["covered"],
                         "giant": met.get("giant"), "baby": met.get("baby"),
                         "work": met.get("giant") + met.get("baby"),
                         "lambda": met.get("lambda"), "index": met.get("index"),
@@ -187,11 +249,16 @@ def run_instance(args) -> List[Dict]:
                 rec.update({"operational": True, "status": res["status"],
                             "success": res["factor"] in (p, N // p),
                             "class": classify_v2(res, cov, prm["g"]),
+                            "class_id": identity_class_v2(res, N, p, M, prm["m0"], prm["tR"], prm["g"]),
+                            "hit": res.get("hit"),
                             "counts": res["met"]["counts"], "wall_s": round(time.time() - t0, 3)})
             else:
                 rec.update({"operational": False})
             out.append(rec)
     return out
+
+
+RAW_OUT = RAW2
 
 
 def main(procs: int = 24):
@@ -200,7 +267,7 @@ def main(procs: int = 24):
     with Pool(procs) as pool:
         for recs in pool.imap_unordered(run_instance, jobs):
             for r in recs:
-                append_jsonl(RAW, r)
+                append_jsonl(RAW_OUT, r)
             print(recs[0]["bits"], recs[0]["seed"], "done", flush=True)
 
 

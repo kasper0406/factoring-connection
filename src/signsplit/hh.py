@@ -74,6 +74,54 @@ class Ring:
         return x * y % self.N
 
 
+class FixedBase:
+    """Fixed-base windowed exponentiation (post-hoc FAIR baseline, added after the
+    pre-registered run at the orchestrator's request).  Tables beta^{d 2^{wk}} and
+    beta^{-d 2^{wk}}; one exponentiation of a B-bit exponent costs
+    (#nonzero w-digits - 1) multiplications.  Precomputation is counted."""
+
+    def __init__(self, R: "Ring", maxbits: int, n_uses: int):
+        self.R = R
+        best = None
+        for w in range(2, 13):
+            K = -(-maxbits // w)
+            c = n_uses * K + 2 * K * (1 << w)
+            if best is None or c < best[0]:
+                best = (c, w)
+        self.w = w = best[1]
+        self.K = K = -(-maxbits // w)
+        self.tab = {}
+        for sgn, base in ((1, R.beta), (-1, R.beta_inv)):
+            g = base
+            rows = []
+            for k in range(K):
+                row = [1, g]
+                for d in range(2, 1 << w):
+                    row.append(R.mul(row[-1], g))
+                rows.append(row)
+                g = R.mul(row[-1], g)          # g^{2^w}
+            self.tab[sgn] = rows
+        R.met.set("fixedbase_w", w)
+
+    def pow(self, e: int) -> int:
+        if e == 0:
+            return 1
+        sgn = 1 if e > 0 else -1
+        e = abs(e)
+        rows = self.tab[sgn]
+        mask = (1 << self.w) - 1
+        acc, k = None, 0
+        while e:
+            d = e & mask
+            if d:
+                acc = rows[k][d] if acc is None else self.R.mul(acc, rows[k][d])
+            e >>= self.w
+            k += 1
+        assert k <= self.K
+        self.R.met.inc("rn_pow")
+        return acc
+
+
 # --------------------------------------------------------------------------
 # lattice of admissible weights and HH Prop. 3.3
 # --------------------------------------------------------------------------
@@ -228,9 +276,10 @@ def _start(N: int, seed: int, met: Metrics, tag: str) -> Ring:
 # V0 / V1 / V3: shared baby list
 # --------------------------------------------------------------------------
 def hh_search(N: int, M: int, m0: int, variant: str = "V0", anti: Sequence[int] = (),
-              seed: int = 0, count_only: bool = False, c_num: int = 2) -> Dict:
+              seed: int = 0, count_only: bool = False, c_num: int = 2,
+              expo: str = "naive") -> Dict:
     """variant in {"V0", "V1", "V3"}; anti = odd primes of M collapsed (V3 only)."""
-    met = Metrics(variant=variant, M=M, m0=m0, anti=list(anti))
+    met = Metrics(variant=variant, M=M, m0=m0, anti=list(anti), expo=expo)
     primes = factor_squarefree(M) if M > 1 else []
     anti = tuple(sorted(anti)) if variant == "V3" else ()
     assert all(m in primes and m % 2 for m in anti)
@@ -266,6 +315,12 @@ def hh_search(N: int, M: int, m0: int, variant: str = "V0", anti: Sequence[int] 
         R = _start(N, seed, met, variant)
         babies, alpha = _baby_list(R, M2, kappa, met)
         giants, meta = [], []
+        if expo == "fixed":
+            n_uses = len(cls) * len(S0) if variant == "V1" else n_giant
+            fb = FixedBase(R, 2 * N.bit_length() + 16, n_uses)
+            gpow = fb.pow
+        else:
+            gpow = R.bpow
         if variant in ("V0", "V3"):
             for s in reps:
                 lat = weight_lattice(N, primes, s, anti) if M > 1 else (1, 0, 1)
@@ -273,10 +328,26 @@ def hh_search(N: int, M: int, m0: int, variant: str = "V0", anti: Sequence[int] 
                     a, b = prop33(N, m0, s0, lat, met)
                     t = tau(a, b, s, N, M) if M > 1 else 0
                     j = M2 * (tau0_floor(a, b, N, s0, M2) - lmb) + t
-                    giants.append(R.bpow(a * N + b - j))
+                    giants.append(gpow(a * N + b - j))
                     meta.append((s, s0, a, b, j))
         else:  # V1: per square class, Gray-code walk over the sign vector
             bM2 = {k: R.bpow(k * M2) for k in (-2, -1, 1, 2)}
+            if expo == "fixed":
+                # global step tables: Delta_i = (M/m_i)^2 k_i, 0 <= k_i < m_i^2
+                # (user's "CRT fiber power tables"); one multiplication per entry
+                steptab = {}
+                for m in primes:
+                    if m == 2:
+                        continue
+                    unit = R.bpow(2 * (M // m) ** 2)
+                    uinv = R.bpow(-2 * (M // m) ** 2)
+                    up_l, dn_l, x, y = [1], [1], 1, 1
+                    for _ in range(1, m * m):
+                        x = R.mul(x, unit)
+                        y = R.mul(y, uinv)
+                        up_l.append(x)
+                        dn_l.append(y)
+                    steptab[m] = (up_l, dn_l)
             for gm, members in cls.items():
                 rr = []
                 for m in primes:
@@ -291,9 +362,16 @@ def hh_search(N: int, M: int, m0: int, variant: str = "V0", anti: Sequence[int] 
                     eps = [1] * t
                     c = carry(eps, dec)
                     S = dec["Delta0"] + sum(dec["Delta"])
-                    v = R.bpow(base_e - (S - M2 * c))
-                    up = [R.bpow(2 * d) for d in dec["Delta"]]       # beta^{+2 Delta_i}
-                    dn = [R.bpow(-2 * d) for d in dec["Delta"]]
+                    v = gpow(base_e - (S - M2 * c))
+                    if expo == "fixed":
+                        oddp = [m for m in primes if m != 2]
+                        ks = [d // (M // m) ** 2 for d, m in zip(dec["Delta"], oddp)]
+                        assert all(d == (M // m) ** 2 * k for d, m, k in zip(dec["Delta"], oddp, ks))
+                        up = [steptab[m][0][k] for m, k in zip(oddp, ks)]
+                        dn = [steptab[m][1][k] for m, k in zip(oddp, ks)]
+                    else:
+                        up = [R.bpow(2 * d) for d in dec["Delta"]]       # beta^{+2 Delta_i}
+                        dn = [R.bpow(-2 * d) for d in dec["Delta"]]
                     from .identity import sigma_of_eps
                     for k in range(1 << t):
                         if k:
@@ -358,6 +436,41 @@ def v2_counts(N: int, M: int, m0: int, tR: int, g: int, c_num: int = 2) -> Dict:
             right += (1 << tR) * WR
     return {"left": left, "right": right, "work": left + right, "groups": len(cls) * len(S0),
             "lambda": lmb, "lattice_red": met.get("lattice_red")}
+
+
+def v2_dedup_counts(N: int, M: int, m0: int, tR: int, g: int, c_num: int = 2) -> Dict:
+    """POST-HOC (added after the first run): V2 with the union of right lists
+    deduplicated as integers (right exponents M^2 i + S_R from different groups
+    coincide because S_R takes few residues mod M^2).  Returns left count and the
+    number of distinct right exponents."""
+    met = Metrics()
+    primes = factor_squarefree(M)
+    M2 = M * M
+    lmb = lam(N, M, m0, M)
+    S0 = buckets(N, m0, c_num)
+    cls = square_classes(N, M)
+    left = 0
+    right = set()
+    for gm in cls:
+        rr = []
+        for m in primes:
+            roots = sqrt_mod_prime((N * pow(gm, -1, m)) % m, m)
+            rr.append(min(r for r in roots if r % m) if m > 2 else 1)
+        lat = weight_lattice(N, primes, crt(rr, primes), ())
+        for s0 in S0:
+            a, b = prop33(N, m0, s0, lat, met)
+            dec = sign_decomposition(a, b, rr, primes, N)
+            D = dec["Delta"]
+            t = len(D)
+            tl = t - tR
+            clo, chi = carry_range(dec)
+            K = 2 * lmb + 1 + chi - clo
+            WR = -(-K // g)
+            left += (1 << tl) * g
+            for k in range(1 << tR):
+                SR = sum((-d if (k >> i) & 1 else d) for i, d in enumerate(D[tl:]))
+                right.update(range(SR, SR + M2 * WR, M2))
+    return {"left": left, "right_distinct": len(right), "work_dedup": left + len(right)}
 
 
 def v2_search(N: int, M: int, m0: int, tR: int, g: int = 1, seed: int = 0,

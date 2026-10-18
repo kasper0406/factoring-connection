@@ -21,7 +21,7 @@ def test_identity_exhaustive_small():
     assert rec["counts"]["NEG_varying"] == rec["counts"]["NEG_classes"] > 0
 
 
-@pytest.mark.parametrize("N", [7909787, 1000003 * 7, 2 ** 40 + 2 ** 20 + 3])
+@pytest.mark.parametrize("N", [7909787, 1000003 * 1000033, 4294967311 * 4294967357])
 def test_signed_subset_sum_large(N):
     M = 2 * 3 * 5 * 7 * 11 * 13
     if gcd(M, N) != 1:
@@ -102,3 +102,32 @@ def test_merits():
         assert row["anti_over_lock"] > 1.0          # sign collapse loses to the HH lock
         assert row["pm_offsets"] > row["lock_HH"]
         assert abs(row["anti_over_lock"] - row["anti_over_lock_formula"]) < 1e-12
+
+
+def test_v0_counts_match_cycloharvey_calibrated_hh():
+    from src.cycloharvey.calibration import cost_hh
+    for bits in (32, 64, 96):
+        N = balanced_semiprime(bits, 1000).N
+        for M in (6, 30, 210, 2310):
+            for m0 in (1, 3, 17, 250):
+                a = cost_hh(N, M, m0)
+                b = hh_search(N, M, m0, "V0", count_only=True)["met"]
+                assert (a["giant"], a["baby"]) == (b["giant"], b["baby"])
+
+
+def test_fixedbase_and_table_gray_agree_with_naive():
+    inst = balanced_semiprime(36, 104)
+    N, p = inst.N, inst.labels["p"]
+    for M in (30, 210):
+        m0 = acc.best_shared(N, M, "V0")["m0"]
+        for var in ("V0", "V1"):
+            rn = hh_search(N, M, m0, var, expo="naive")
+            rf = hh_search(N, M, m0, var, expo="fixed")
+            assert rn["status"] == rf["status"] and rn["factor"] == rf["factor"]
+            assert rf["met"]["counts"]["rn_mul"] < rn["met"]["counts"]["rn_mul"]
+
+
+def test_two_adic_shift_identity():
+    from src.signsplit.verify_two_adic import run
+    st = run(nmax=60, kmax=5, amax=5)
+    assert all(ok for (_, _, ok) in st)
