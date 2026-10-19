@@ -149,6 +149,7 @@ DESCEND_ONCE(A, N):
   R := r^2 mod N
   (u0, v0) := shortest nonzero vector of {(u, v) ∈ Z^2 : u ≡ R v (mod N)} (Gauss reduction)
   factor |u0| and |v0| completely with Lenstra–Pomerance (1992)          # the shape test, T_shape
+  certify every output prime by AKS                                       # Las Vegas (complexity critic C1)
   gcd checks u0, v0
   require: |u0|, |v0| each a product of at most k DISTINCT primes, all in J;  else return FAIL
   for each prime ℓ | u0 v0:  P_ℓ := SQ_SEARCH(A, ℓ)  (cached per (A, ℓ));  if FAIL: return FAIL
@@ -165,9 +166,9 @@ SQ_SEARCH(A, ℓ):           # deterministic function of (A, ℓ); [pcest] §1, 
 LV6(A, rows):              # [lv6] §2 Algorithm LV6, transferred by [ld] §6.1
   columns: sign; v_p mod 2 for p ≤ B; ONE parity column E_i = Σ_P e_iP mod 2;
            (r, s) for r ≤ B, r ∤ D := f_d·disc f, s a root of f mod r; t_χ quadratic characters at
-           uniform first-degree primes of norm in (x/2, x], log(x/2) ≥ max(20d (log Δ̄)^2, (log N)^2)
+           uniform first-degree primes of norm in (x/2, x], x := the least integer with log(x/2) ≥ max(20d (log Δ̄)^2, (log N)^2), so log x = O_d((log N)^2)
   two uniform left-kernel vectors s1, s2 (Wiedemann / Kaltofen–Saunders, verified; retry until independent)
-  for S in (s1, s2, s1+s2): Γ_S := g'(β)^2 ∏_P z_P^{|e_P(S)|};  η := SQ(Γ_S) (Hensel at one prime in (B, 2B]);
+  for S in (s1, s2, s1+s2): Γ_S := g'(β)^2 ∏_P z_P^{|e_P(S)|};  η := SQ(Γ_S) (Hensel at the least odd prime p ∈ (B, 2B] with p ∤ D);
                             if η found: break      (if none: resample characters and kernel vectors)
   Y := √q_S · t^{−E(S)/2} · ψ(η) · (ψ(γ⁻_S) ψ(g'(β)))^{−1} mod N
   return (S, Y)
@@ -206,7 +207,12 @@ primes, as Theorem K requires. Cost T_SQ := Õ(B + S² log N) = L^{θ/(2a)+o(1)}
 
 **Step 3 — first moment FM.** [pcest] §2.3 Theorem FM, with [pcest] §2.2 Lemma 8.5′, re-checked for
 (a‴_k; μ) in [ld] §2 (proof applied for each fixed w, uniformly in w, then averaged).
-- Conclusion consumed: **E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}.**
+- Conclusion consumed: **E_{ℓ∈J, A∼𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}**, averaged over ℓ as well as A. The
+  bad-modulus step does not give a lower bound for each individual ℓ, and none is needed (codex thmA_1 §5,
+  thmA_2 §8).
+- Tenenbaum's hypothesis is ω(t) ≤ y^{c/log(1+u)}, not y^c/log(1+u) as quoted in [pcest] §2.1. It is applied to
+  the B-smooth part |n| of t = ℓ|n|, with Ψ_t(x, B) = Ψ_{|n|}(x, B), since ℓ > B. This changes φ(t)/t by a
+  factor (1 − 1/ℓ). The range is ample (codex thmA_1 §2; Opus analytic critic F3).
 - Hypotheses in this design: x = X_F with exponent ξ = μ + h + dν; moduli t ∈ [MV/32, 2MV] with exponent
   q₀ = μ + ν; (i) q₀ > 2ν + η₀/2 ⟸ μ ≥ ν + η₀; (ii) q₀ < ξ/2 ⟺ h > μ − (d − 2)ν (level floor);
   (iii) Kern/LV-kernel: h > ν and H > dωV with ω = L^{C₁} (Kern floor); (iv) |F̂|/(tY_ω) ≪ ωN^{−η₀/2}
@@ -221,7 +227,11 @@ primes, as Theorem K requires. Cost T_SQ := Õ(B + S² log N) = L^{θ/(2a)+o(1)}
 **Step 4 — second moment LD*.** [ld] §5 Theorem LD*, using [pcest] §4.1 Lemma Kern (i), (iii) (with the
 effective wedge bound ‖v ∧ v′‖ ≥ |Δ|(bb′)^{d−2}), [ld] §3 Lemma W and Corollary W (Brun–Titchmarsh:
 Pr_w[w ≡ a mod t] ≤ (24/η₀)/φ(t) for t ≤ 2MV_max), [ld] §4 Theorem L2_fam, and [pcest] §3 Lemma DS.
-- Conclusion consumed: **E_{𝒜‴}[N(N − 1)] ≤ (log N)^{O(1)}S⁴ρ_r²ρ_F².**
+- Conclusion consumed: **E_{ℓ,𝒜‴}[N(N − 1)] ≤ (log N)^{O(1)}S⁴ρ_r²ρ_F²**, uniformly for every S = L^{σ+o(1)}
+  with σ in a fixed compact set.
+  - [ld] §5 states its hypothesis with S² = (log N)^{C₃}/(ρ_rρ_F), but Steps 0–7 use S only through
+    B^{C₀} ≥ 64S²L/(ϱϱ), 2S² < Y and S < √ℓ.
+  - [ld] Step 0 should read "≤", because of the filters.
 - Chain of LD* (re-derived scaling): Pr_c[both F_A(P), F_A(P′) smooth] ≤ C_d(H²V^{2d−4})^{−1}·Z (Kern) →
   Z ≤ ½(Q(P) + Q(P′)) (AM–GM; κ a unit mod Δ) → Q(P) ≤ 𝔔₀(t, |Δ|; r₀), a function of r₀ = c_Pw mod t only
   (window enlargement to [−X*, X*], bounded scale since tT ≍ X*) → E_w 𝔔₀ ≤ (C_W/φ(t))𝔔(t|Δ|) (Corollary W) →
@@ -236,8 +246,10 @@ Pr_w[w ≡ a mod t] ≤ (24/η₀)/φ(t) for t ≤ 2MV_max), [ld] §4 Theorem L2
 **Step 5 — Paley–Zygmund ⇒ D_k.** [hypD] §4 Prop PZ, in the filtered form of [pcest] Thm 4.3 (with LD* in
 place of LD + Theorem R + Prop 4.2, as [ld] §5 and §6 state):
   γ = Pr_{A,ℓ}[N_ℓ(A) ≥ 1] ≥ (E N)²/(E[N(N−1)] + E N).
-With Steps 3–4, γ ≥ 1/(log N)^{O(1)} if E N ≥ 1, and γ ≥ L^{−o(1)} whenever E N ≥ L^{−o(1)} (any S with
-S² = L^{o(1)}/(ρ_rρ_F)). Consumed: **D_k(γ): γ ≥ L^{−o(1)} uniformly in N.** Theorem R ([pcest] §3) is not on
+Put m := S²ρ_rρ_F. With Steps 3–4, E N ≥ m/P and E[N(N−1)] ≤ Pm² for a fixed polylogarithm P, so
+γ ≥ 1/(P³ + P/m). For the implicit choice m = (log N)^{C₃} this is ≥ 1/(log N)^{O(1)}. For the computable choice
+of §1, m = L^{o(1)}, and m is in fact smaller than every inverse power of log N because of de Bruijn's
+second-order term. So only **γ ≥ L^{−o(1)}** holds there, and it suffices (codex thmA_1 §§14–15). Consumed: **D_k(γ): γ ≥ L^{−o(1)} uniformly in N.** Theorem R ([pcest] §3) is not on
 the critical path.
 
 **Step 6 — rejections and factor exits.** [lv6] §4 (Lemma IR, N | f′(m)), [ld] §1 "Order of operations" and
@@ -245,8 +257,15 @@ the critical path.
 certificate).
 - The moments are proved under the raw product law 𝒜‴. Rejection event 𝓡 = {no Lemma-IR certificate} ∪
   {N | f′(m)} ∪ {e = w} has Pr(𝓡) ≤ exp(−log H/(13d log log H)) + O(1/H + 1/W) = L^{−ω(1)} = o(γ).
-- Hence E[g_A·1_{𝓡ᶜ}] ≥ γ − Pr(𝓡) ≥ γ/2: the law of accepted fields satisfies D_k with γ/2. Factor exits end
-  the algorithm and only help.
+- Hence E[g_A·1_{𝓡ᶜ}] ≥ γ − Pr(𝓡) ≥ γ/2 under the raw law.
+- **Factor exits (repair, codex thmA_2 §5).** This inequality does not by itself survive conditioning on fields
+  that neither reject nor produce a factor, and a special-q search may exit with a factor on an earlier
+  candidate. Absorbing repair: for one raw field trial, let δ := Pr[factor exit] and b := E q_A := Pr[row
+  delivered], and p := δ + b.
+  - The counting of Step 7, applied to "row or factor exit", gives p ≥ L^{−o(1)}.
+  - A retained row-field is reached with probability b/p, and its law is ∝ q_A. So its contribution to the
+    expected cost of C rows is ≤ (b/p)·C·C_trial/b = C·C_trial/p.
+  - Selection costs ≤ C_trial/p. Further factor exits only shorten the run. The exponent is unchanged.
 
 **Step 7 — bounded-k splits: from D_k to rows.** [hypD] §2 Theorems S, S′ and §3 Theorem K(i)–(iii), field
 selection of Corollary K.
@@ -261,8 +280,12 @@ selection of Corollary K.
   (1/q_A)(T_shape + Pr[shape]·2k·T_SQ) with E[1/q_A] ≤ L^{o(1)}, i.e. (T_shape + T_SQ)·L^{o(1)},
   where T_shape = L_{√N}[1/2, 1 + o(1)] = L_N[1/2, 1/√2 + o(1)] (Lenstra–Pomerance 1992, complete factorisation
   of |u₀|, |v₀| ≤ √(2N)).
-- The rows are i.i.d. given the field, and each hidden root r_i is uniform on (Z/N)^× given its row's
-  certificate data up to the fibre r_i·μ₂.
+- The rows are i.i.d. given the field. Accepted roots are not uniform on (Z/N)^× (acceptance filters R), but
+  conditional on all certificates each r_i is uniform on its fibre r_i·μ₂, independently. That is exactly what
+  DD uses ([lv6] §2's "uniform on (Z/N)^×" hypothesis should read this way; codex thmA_2 §13).
+- [hypD] K(ii) as displayed uses the fourth-power form of Theorem S; the 2k exponent above is the Theorem S′
+  form. In K(iii)'s shape-count, replace S_J by T_J := ∪_{j≤k}{products of j distinct J-primes}, with
+  |T_J| ≤ C_kπ_J^k (codex thmA_2 §4).
 
 **Step 8 — LV6: a congruence of squares from M_rows rows.** [lv6] §2 Prop LV6 with §3.1–3.6 (Lemma C: good
 primes; Lemma H: |H| ≤ 2^{dω(D)+d}h_K, log|H| = O_d(log N); Lemma E: ≤ 1 exceptional class per field (Stark
@@ -286,7 +309,7 @@ content e ∈ {1, w} after factor exits; discriminant, index and class-number bo
 **Step 10 — cost.** [lv6] §7 "Cost assembly", [ld] §6.
 - Rows: M_rows = (d + 1)π(B) + O(log N) = B·L^{o(1)}.
 - Per row: (T_shape + T_SQ)·L^{o(1)} with T_shape = L^{1/√2+o(1)} and T_SQ = Õ(B + S²) = L^{θ/(2a)+o(1)}.
-- Field selection L^{o(1)} attempts, each T_shape + polylog; LV6 L^{2a+o(1)}; preprocessing L^{a+o(1)}.
+- Field selection L^{o(1)} attempts, each T_shape + 2k·T_SQ + polylog (corrected after codex thmA_2 §17); LV6 L^{2a+o(1)}; preprocessing L^{a+o(1)}.
 - Total: L^{a + max(1/√2, θ/(2a)) + o(1)} + L^{2a + o(1)}. Minimised at a = θ/√2: both relation terms are
   L^{(1+θ)/√2}, and 2a = √2θ < (1 + θ)/√2 iff θ < 1. For a < θ/√2 the term a + θ/(2a) is larger (it decreases
   on (0, √(θ/2)] and θ/√2 < √(θ/2) for θ < 1); for a > θ/√2 the term a + 1/√2 is larger.
@@ -318,8 +341,10 @@ content e ∈ {1, w} after factor exits; discriminant, index and class-number bo
   use only (N, t) = 1 and N | F(g₀, g₁).
 - **U3 (N₀).** Every "for N ≥ N₀" in the sources depends only on (d, k, μ, η₀, the σ-range). The effective
   constants of Stark, Landau and Lagarias–Odlyzko make N₀ effective but huge ([lv6] §7).
-- **U4 (o(1) terms).** The L^{o(1)} factors are: (log N)^{O(k)}, 2^{O(ω)}, γ^{−O(k)}, C(2k, k), Wiedemann and
-  Hensel polylogs. All are L^{o(1)} uniformly in N because k is fixed and γ ≥ 1/(log N)^{O(1)}.
+- **U4 (o(1) terms).** The L^{o(1)} factors are (log N)^{O(k)}, 2^{O(ω)}, γ^{−O(k)}, C(2k, k), and the Wiedemann
+  and Hensel polylogs. All are L^{o(1)} uniformly in N, because k is fixed and γ ≥ L^{−o(1)} (Step 5).
+  - With the computable S, γ is not ≥ 1/(log N)^{O(1)} (corrected after codex thmA_1 §15).
+  - Pr(𝓡) = exp(−Ω(log N/log log N)) is still o(γ).
 - **U5 (S is computable).** Ψ is not computed by the algorithm. Any computable S with S = L^{θ/(4a)+o(1)} works:
   FM gives E N = L^{o(1)} (possibly < 1, by an L^{o(1)} factor), LD*'s bound is uniform over S = L^{σ+o(1)},
   and Prop PZ then gives γ ≥ L^{−o(1)} without E N ≥ 1. The cost T_SQ = S²L^{o(1)} is unchanged in exponent.
