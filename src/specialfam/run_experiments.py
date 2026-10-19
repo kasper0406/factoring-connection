@@ -235,11 +235,14 @@ def summarize():
             ns = sorted({r["n"] for r in rs})
             ps = [math.log2(max(1, med([r["ps_units"] for r in rs if r["n"] == n]))) for n in ns]
             ch = [math.log2(max(1, med([r["chunks"] for r in rs if r["n"] == n]))) for n in ns]
+            # P7 statistic (pre-registered; added to the summarizer after the freeze, analysis only)
+            mx = [math.log2(max(1, med([max(r["ps_units"], r["chunks"]) for r in rs if r["n"] == n]))) for n in ns]
             g = float(Fraction(gam))
             wm = (0.25 - g if g <= 1 / 12 else 1 / 8 + g / 2 if g <= 1 / 8 else 0.25 - g / 2 if g <= 1 / 6
                   else 0.5 - 2 * g if g <= 0.2 else g / 2 if g <= 0.25 else 0.25 - g / 2)
             S[f"e5_gamma{gam}"] = {"instances": len(rs), "ok": sum(r["ok"] for r in rs),
                                    "slope_ps_units": round(_fit(ns, ps), 4), "slope_chunks": round(_fit(ns, ch), 4),
+                                   "slope_max_ps_chunks": round(_fit(ns, mx), 4),
                                    "pred_ps": g / 2, "pred_chunks_asym": max(0.0, 0.25 - g),
                                    "ours_asym": max(g / 2, 0.25 - g), "WM_E": wm}
     p = ROOT / "experiments" / "analysis" / "specialfam_summary.json"
