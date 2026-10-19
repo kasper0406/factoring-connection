@@ -46,8 +46,8 @@ Labelled results:
    - Lemma DS: an upper bound for smooth numbers in a short interval and a progression to a small
      modulus, uniform in the residue.
 4. **Lemma Kern [proved].** If the R-height satisfies H ≥ V² (V = √ℓ·S, the box size), then the
-   coefficient law of the pair (F, F′) is dominated pointwise by C_d × (uniform measure on the
-   evaluation lattice) (§4.1).
+   coefficient law of the pair (F, F′) is dominated pointwise by C_d × (uniform measure on
+   Γ ∩ Φ(C_H)). Against the bounding box [−T, T]² the factor becomes C_d·S²/q (Prop 4.2) (§4.1).
    - This is the "2D kernel lemma" with codex's H ≫ V² condition.
    - Its cost: the h-floor rises from 1/(4k) to 1/(2k). That binds only for k < d(d+1)/4, so **the
      infimum constant is unchanged**.
@@ -58,9 +58,10 @@ Labelled results:
    lift classes F̂ + Gj mod G|Δ|.
    - It is equivalent in substance to hypD's RBDH′ and to codex's statement (6), but stated as
      exactly what the proof consumes.
-   - We show that the max-residue (L¹) Bombieri–Vinogradov technology cannot imply it (Prop B5).
-   - We also show that Harper's all-residue BDH and the arithmetic large sieve each lose a polynomial
-     factor (§4.3).
+   - The *conclusions* of the max-residue (L¹) Bombieri–Vinogradov theorems cannot imply it (Prop B5).
+     Naive uses of Harper's all-residue BDH and of the large sieve lose polynomial factors (§4.3).
+   - These are barriers to naive applications, not to the method. §4.3 gives a plausible route: an L²
+     version of LV's character-majorant argument, plus a large-values bound for structured residues.
 6. **Theorem A [conditional].** Assume Hypothesis LD and the LV §6 adaptation (square roots and
    characters at our heights, inherited from lemmaM Corollary DD). Then every N is factored in
    expected time L_N[1/2, (1 + θ(d, k))/√2 + o(1)].
@@ -92,7 +93,7 @@ the 1D one in practice.
 |---|---|---|---|
 | Lenstra–Pomerance 1992 | 1 | proved (prior art) | — |
 | Vallée 1991 (θ = 2/3) | √(4/3) ≈ 1.155 | proved (prior art) | — |
-| hypD (a′_k): rational side x − m, LP shape test | (1+θ)/√2, θ → 3/(d+1) (d = 9: 0.920) | conditional | PC_rat (binary, open), PC_alg (open), LV §6; FM now proved by the §2 method with Harper BV on the rational side (k ≥ 3(d+1)/4) |
+| hypD (a′_k): rational side x − m, LP shape test | (1+θ)/√2, θ → 3/(d+1) (d = 9: 0.920) | conditional | PC_rat (binary, open), PC_alg (open), LV §6; FM by the §2 method with Harper BV on the rational side (k ≥ 3(d+1)/4): outline only, not written out |
 | **(a″_k): 2D-randomized rational side, LP shape test** | **(1+θ)/√2**, θ(d,k) = 2s + (d−1)/(4k) + max(1/(2k), s − (d−2)/(4k)); infimum (1+3/(d+1))/√2: d = 7: 0.972; d = 9: 0.919; d = 11: 0.884; d = 19: 0.813 | **conditional on LD + LV §6** | **Hypothesis LD** (restricted lift-dispersion upper bound, §4.2); LV §6 adaptation; FM, PC_rat and the kernel transfer are proved |
 | (a″_k), recursive shape test | √((1+√2)θ) (d = 9: 0.851) | conditional on LD at every scale | as above, at all scales |
 | (a′_k)/(a″_k) at Horn 1 (k ≍ (log N)^{1/4}, HECM shape test) | √(6/(d+1)) infimum (d = 9: 0.775) | conditional | LD at precision exp(−o(Λ/k)) (B3); explicit-error LV §5. Theorem R's polylog loss would suffice there, but FM and LD would need explicit errors |
@@ -125,7 +126,9 @@ power. This replaces Lemma Ω for everything below; 2^ω = L^{o(1)} still holds.
 - F_A := F̂_g + G·R_c, with F̂_g from Lemma GB. For P = (a, b):
     F_A(P) = F̂_g(P) + G(P)·⟨c, v(P)⟩,  v(P) := (a^{d−1−i}b^i)_{0≤i<d}.
 - If gcd(g₁, N) > 1 or gcd(G(P), N) > 1, a factor of N has been found. Otherwise put
-  ψ: Z[x] → Z/N, x ↦ g₀g₁^{−1}.
+  ψ: Z[x] → Z/N, x ↦ g₀g₁^{−1}. It is well defined on Z[x]/(f): g₁^d f(g₀/g₁) = F(g₀, g₁) = N ≡ 0
+  (mod N).
+- F_A(P) = 0 is excluded from the counts.
 
 **Lemma GB (generalized base expansion) [proved].** Let g₁ ≥ 2 and gcd(g₀, g₁) = 1. Define
 T_d := N, and for i = d, d−1, …, 1:
@@ -165,8 +168,15 @@ This is hypD's descent relation, multiplied by the per-field unit g₁^{−1}.
   counts monic irreducibles with a prescribed value at an affine point m, here m = g₀g₁^{−1} mod r
   (r ∤ g₁). It is unchanged.
   [transfer of a published proof, checked at the level of its statements]
+  - a_d ≠ 0 in Lemma GB, because a_d ≡ N g₀^{−d} (mod g₁) and gcd(g₁, N) = 1.
 - A reducible f either gives F₁(g₀, g₁)F₂(g₀, g₁) = N with both factors ≠ ±1, which is a factorization,
   or is rare.
+- **Quantified (Opus proof critic).** LV's bound transplants as Pr(f reducible) ≤ H^{−1/3+o(1)}. Field
+  selection keeps a field with law ∝ q_A, which amplifies rare events by at most 1/μ. So
+  Pr(kept field reducible) ≤ H^{−1/3+o(1)}/μ = N^{−h/3+o(1)}. The degree-drop event
+  a_d + g₁c₀ = 0 has probability ≤ 1/(2H + 1). Reducible fields are rejected.
+  - Status: transfer of LV Lemma 5.1, checked at the level of statements. It is listed among the
+    assumptions of Theorem A.
 
 **Counted candidates and the capped search.**
 - Put 𝒫_ℓ := {(a, b) : b prime, V/2 < b ≤ V, |a| ≤ V, gcd(a, b) = 1}, and
@@ -275,6 +285,11 @@ Throughout, x = N^{ξ+o(1)} with ξ = s + h + d/(4k) fixed, y = B = L[1/2, a], a
 *Remarks.*
 - Unlike hypD §4.1′, no conductor range [Y, M₀] arises in regime (B), so neither Fact 8.9 nor Fact 8.10
   is needed for χ_ℓ ≠ χ₀.
+- Inherited from LV's proof: the Page-character step absorbs (log x)^{O(1)} into exp(−cu/log²u), which
+  needs u/log²u ≫ log log x. That holds in regime (B), where u ≍ (log N/log log N)^{1/2}, but not at
+  the edge of LV's stated range. We use Lemma 8.5′ only in regime (B).
+- In the setup, Fact 3.15 is used with α → 1. Ψ(2x, y) ≤ 2Ψ(x, y) can equally be taken from Fact 3.15,
+  up to a factor 1 + o(1).
 - ε_N → 0 uniformly in N, and ε_N·(log L)^{O(1)} → 0, since H(u)^{−c} = exp(−c(log N)^{1/2}/
   (log log N)^{5/2+o(1)}).
 
@@ -480,7 +495,8 @@ satisfying S² ≥ ρ_r^{−2}:
   - With the choice S² = L^ε/(ρ_rρ_F) of §5, and since ρ_F ≤ ρ_r, we get S^{−2} ≤ ρ_r², so this is
     absorbed. In general Theorem R needs S² ≥ ρ_r^{−2}.
 - **Per pair**, the count is ≤ (M²/ℓ)ρ_r²(log N)^{O(1)}. This bound is independent of q.
-- **Counting pairs.** For fixed P, the P′ with ℓ | Δ are the points of Λ_ℓ(P) ∩ 𝒫_ℓ, so there are
+- **Counting pairs.** For fixed P, the P′ with ℓ | Δ are the points of Λ_ℓ(g) ∩ 𝒫_ℓ for g = (a, b),
+  i.e. g₀/g₁ ≡ a/b. This lattice contains P ∈ 𝒫_ℓ, so it is regular. There are
   ≤ 22S² + 1 of them (Lemma 1.3). Hence
     R2(ℓ) ≤ #𝒫_ℓ·23S²·|𝒢|^{−1}(M²/ℓ)ρ_r²(log)^{O(1)} ≍ (V²/log V)(S²/ℓ)ρ_r²(log)^{O(1)}
           = S⁴ρ_r²(log)^{O(1)}.
@@ -525,7 +541,8 @@ because P is primitive.
 **Statement.**
 - (i) Γ := Φ(Z^d) has index |Δ| and equals {(X, X′) : X′ ≡ κ^{d−1}X (mod Δ)}.
 - (ii) ker Φ = Q_{PP′}·Z[x, y]_{d−3}, where Q_{PP′} = (bx − ay)(b′x − a′y). This kernel is saturated, and
-  its monomial basis has ‖·‖_∞ ≤ 2V².
+  its monomial basis has ‖·‖_∞ ≤ 2V² on 𝒫_ℓ, where |a|, |b| ≤ V. In general the bound is
+  ≤ 4V² for |P| ≤ √2V, and then H ≥ 2V² is required; only constants change.
 - (iii) If H ≥ V², then for every z ∈ Z²,
     Pr_{c∈C_H}[Φ(c) = z] ≤ C_d·|Δ|/(H²‖v ∧ v′‖) ≤ C′_d/(H²V^{2d−4}).
 
@@ -554,6 +571,9 @@ because P is primitive.
       is nonzero because the rational normal curve is nondegenerate. For example, at P = (1, 0) the
       adjacent divided minor W_{01} equals 1. The antidiagonal is the same up to sign.
     - W is continuous, so by compactness ‖v ∧ v′‖ ≥ c_d|Δ|(|P||P′|)^{d−2}. ∎
+    - **Effective version for candidates (Opus proof critic).** The minor (d−2, d−1) equals
+      (bb′)^{d−2}Δ. On 𝒫_ℓ we have b, b′ > V/2, so ‖v ∧ v′‖ ≥ |Δ|(V/2)^{2d−4} directly, without any
+      compactness argument. This is all that Prop 4.2 uses.
     - The exact identity det K·|Δ| = ‖v ∧ v′‖ and the bound with c_d > 0.05 (d ≤ 7) are checked exactly
       in `tests/test_pcest.py`.
 
@@ -630,7 +650,8 @@ Here V²/|Δ| = S²/q is comparable to (not equal to) the bounding-box factor 1/
 All items below are statements about what the cited tools give by themselves. They are not lower bounds
 on LD, and they do not exclude proofs that combine these tools with further arithmetic information.
 
-- **(B1′) Harper's BDH (all residues) loses the factor G.** For one modulus m = G|Δ|:
+- **(B1′) Naive use of Harper's BDH (all residues, arbitrary residue) loses the factor G.** For one
+  modulus m = G|Δ|:
   - LD needs the |Δ| lift classes, with main-term mass |Δ|(Ψ/m)² = Ψ²/(G·m).
   - Harper's Theorem 2 (Q ≤ Ψ) controls Σ_{m≤Q} Σ_{all reduced r}|E(m, r)|², a global sum whose
     per-modulus scale is Ψ²/m.
@@ -677,6 +698,21 @@ on LD, and they do not exclude proofs that combine these tools with further arit
     proved equivalence].
   - It does localize the difficulty: equidistribution of smooth numbers in an AP mod ℓn over the ℓ
     lifts mod ℓ²n, jointly with a mod-q coupling.
+- **A plausible route to LD (Opus proof critic; not carried out) [assessment].**
+  - B1′ and B5 treat the residue as arbitrary. But by Lemma 1.2 the moving residue is explicit:
+    r₀ ≡ N b^d g₁^{−d} (mod G).
+  - At a fixed modulus t, there are about t/log V pairs (P, g), and the fractions b/g₁ mod t come from a
+    box of area about t. So the coarse classes are spread over a coset of the d-th powers, of index
+    ≤ d^{ω(t)} = L^{o(1)} on average.
+  - LD would then follow from two pieces:
+    - (i) an all-residue L² restricted BDH for the moduli ℓ²nq, with LV-type relative saving ϱ(Q). This
+      is the L² analogue of LV's majorant argument, Σ φ^{−1} Σ |Ψ(χ)|², which LV say their method
+      "naturally provides", and Lemma 8.5′'s character factorization should carry over;
+    - (ii) a large-values bound for the structured residues r ≡ N(b₀/g₀)^d with small b₀, g₀, where
+      the representation count is ≈ K on a set of measure ≈ 1/K. This is where a real obstruction
+      remains.
+  - Heuristically LD is plausible. The obvious correlation, shared divisibility by p | q, costs
+    ∏_{p|q}(1 + p^{1−2α}) = L^{o(1)}. E1's PC_alg of 1.05–1.27 is consistent with it.
 - **Two algebraic sides (codex).** Independent fields do not decorrelate two evaluations in one field.
   The formal constant worsens to (1 + 4/(d+1))/√2, and an analogue of LD is still needed.
 
@@ -701,6 +737,9 @@ LV's Theorem 2.6 is written for heights L(1/3). The adaptation has not been writ
 hypD or us.
 
 **Theorem A [conditional on LD and LV6].**
+- A possibly cheaper alternative to A′, not checked: Bernstein's deterministic batch smoothness
+  algorithm, run over batches of ≥ B/polylog candidates gathered across R-trials and fields, might
+  remove HECM at no cost to the exponent (Opus proof critic).
 - **Statement.**
   - Fix odd d ≥ 3, k > (d+1)/4, η₀ > 0, and let θ := θ(d, k) = 2s + (d−1)/(4k) + max(1/(2k),
     s − (d−2)/(4k)) with θ < 1.
@@ -817,8 +856,10 @@ then `--analyze` (summary in `experiments/raw/pcest_e1_summary.json`).
 **Status.**
 - GPT-6.1-sol adversarial round (`codex/pcest_2.out`): done, all findings applied (§7.2).
 - Opus literature critic: done, all fixes applied (§7.3).
-- **Opus proof critic: still running when this note was committed.** Its findings are not yet
-  adjudicated, and no claim here should be considered to have passed it.
+- Opus proof critic: done, all fixes applied (§7.4). It reviewed the version before the pcest_2 repairs.
+  Its one major proof finding, the small-|G| gap in Theorem 4.3, coincides with codex's and was already
+  repaired.
+- GPT-6.1-sol pcest_3: adversarial pass on the *repaired* Theorem 4.3 and Theorem R (§7.5).
 
 ### 7.2 GPT-6.1-sol adversarial round (pcest_2): adjudication (all accepted)
 - **Verdicts.**
@@ -841,6 +882,27 @@ then `--analyze` (summary in `experiments/raw/pcest_e1_summary.json`).
   - The explicit HECM, reducibility, g₁-column and repeated-test assumptions.
 - **Literature (codex).** Lemma DS is prior art in substance (Harper, Compositio 2016, Smooth Numbers
   Result 3; Friedlander 1981). No earlier rigorous use of the 2D rational randomization was found.
+
+### 7.4 Opus proof critic: adjudication (all accepted)
+- **Verdicts.**
+  - CORRECT: Lemma GB, Lemmas 1.2 and 1.3, Lemma 8.5′ (both parts; "LV's proof bounds W piece by
+    piece"), Lemma Q, Lemma DS, Lemma Kern (i)–(iii) (300 random pairs checked independently), Prop 4.2,
+    Prop Z, and the Theorem A arithmetic.
+  - CORRECT WITH FIXES: Theorem FM, Theorem R, Theorem A′ rounding, and the parameter table.
+  - Theorem 4.3: a major but repairable gap at small |G|, which was already repaired.
+- **"Does LD + proved pieces give PC and Theorem A?"** Yes, after the repair. Two inputs were used
+  silently: irreducibility in the kept field (now quantified in §1) and HECM (listed; A′ removes it).
+  The critic found no L[1/2]-size loss.
+- **Fixes applied.**
+  - Irreducibility quantified, including the kept-field amplification by 1/μ and the degree drop.
+  - B1′ and B5 reworded as barriers to naive applications, and the critic's route to LD added (§4.3).
+  - Kern: the summary wording, the 4V² constant, and an effective wedge bound via the minor (bb′)^{d−2}Δ.
+  - FM Step 2(d): 2(|F̂|/t + 1), and F = 0 excluded.
+  - Theorem R: X = 2X_r, and the Λ_ℓ notation.
+  - ψ well defined, and a_d ≠ 0.
+  - The regime-(B) caveat for LV's Page step.
+  - The table relabel for (a′_k) FM (outline only).
+  - The Bernstein batch-smoothness remark.
 
 ### 7.3 Opus literature critic: adjudication (all accepted)
 - Unconditional and GRH-conditional c < 1: not found. Wording now reads "to our knowledge".
