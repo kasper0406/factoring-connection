@@ -24,7 +24,7 @@ In plain terms:
 - GPT-6.1-sol found the same route independently in its blind round.
 - The *algebraic* half (PC_alg) is still open. It needs smooth numbers in arithmetic progressions to
   very large moduli to be equidistributed among the lifts of a moving class, in an L² sense, under
-  rational-smoothness weights. No published theorem gives this, and we explain below why the known
+  rational-smoothness weights. We found no published theorem that gives this, and we explain below why the known
   tools fall short.
 
 Labelled results:
@@ -140,6 +140,10 @@ and finally a_0 := T_0. Then F̂(g₀, g₁) := Σ_i a_i g₀^i g₁^{d−i} = N
 (`src/pcest/geometry.py: gbe`; tested.)
 
 *Remarks.*
+- **Prior art.** The non-monic linear side g₁x − g₀ with a base-(g₀, g₁) expansion is Buhler–Lenstra–
+  Pomerance's base-(m₁, m₂) variant (LNM 1554 (1993) 50–94; Murphy, thesis, ANU 1999, §2.3.2). Lemma GB
+  is that construction with explicit bounds. The design is not new. What we did not find elsewhere is
+  its use to randomize the rational side in a rigorous pair-correlation argument (Theorem R).
 - **Kleinjung constraint.** Kleinjung (Math. Comp. 75, 2006) prescribes a small leading coefficient
   a_d, and therefore needs a_d g₀^d ≡ N (mod g₁). Here a_d is *determined* by (g₀, g₁), so (g₀, g₁)
   can be sampled freely subject only to coprimality. Codex makes the same point.
@@ -158,7 +162,8 @@ This is hypD's descent relation, multiplied by the per-field unit g₁^{−1}.
 - **Irreducibility.** LV Lemma 5.1 transfers. Its Turán-sieve count uses only the affine structure
   f ∈ f̂ + (x − m)·Z[x]_{d−1}, and the condition "g(m) ≡ n (mod r)" for the reductions g mod r. With
   g₁x − g₀ in place of x − m, the condition becomes ĝ(g₀, g₁) ≡ N (mod r) for r ∤ g₁N. Claim 5.2
-  counts polynomials with a prescribed value at a point of P¹(F_r), and is unchanged.
+  counts monic irreducibles with a prescribed value at an affine point m, here m = g₀g₁^{−1} mod r
+  (r ∤ g₁). It is unchanged.
   [transfer of a published proof, checked at the level of its statements]
 - A reducible f either gives F₁(g₀, g₁)F₂(g₀, g₁) = N with both factors ≠ ±1, which is a factorization,
   or is rare.
@@ -170,17 +175,29 @@ This is hypD's descent relation, multiplied by the per-field unit g₁^{−1}.
   tests G(P)/ℓ and F_A(P) for B-smoothness.
   - Primality of b uses a deterministic polynomial-time test (AKS).
   - Smoothness is tested by HECM, as in LV Cor. 3.19.
-- N_ℓ(A) := #{P ∈ 𝒫_ℓ ∩ Λ_ℓ(g) : G(P)/ℓ ∈ 𝒮_B, F_A(P) ∈ 𝒮_B}. Each such P is a certified descent
-  relation. ℓ² ∤ G(P) holds automatically, because ℓ > B.
+- N_ℓ(A) := #{P ∈ 𝒫_ℓ ∩ Λ_ℓ(g) : |G(P)| ≥ MV/32, G(P)/ℓ ∈ 𝒮_B, F_A(P) ∈ 𝒮_B}. Each such P is a
+  certified descent relation. ℓ² ∤ G(P) holds automatically, because ℓ > B.
+  - The **filter |G(P)| ≥ MV/32** was added after codex pcest_2 (§7.2). Without it, candidates with
+    |G| as small as ℓ have algebraic values smaller by a polynomial factor. Their smoothness density
+    can then exceed ρ_F by L^{Θ(1)}, which breaks Theorem 4.3's comparison. FM only ever uses
+    |G| ∈ [MV/32, 2MV], so the filter costs nothing there.
+  - A capped randomized smoothness test is repeated O(log N) times, so that a smooth value is
+    recognized with probability ≥ 1 − N^{−2}. This costs a polylogarithmic factor.
 - **Lemma 1.3 (regularity) [proved].** Suppose λ₁(Λ_ℓ(g)) < √ℓ/(2S), attained at w. Then
-  Λ_ℓ(g) ∩ 𝒫_ℓ = ∅. Otherwise #(Λ_ℓ(g) ∩ [−V, V]²) ≤ 4S² + O(S²).
+  Λ_ℓ(g) ∩ 𝒫_ℓ = ∅. Otherwise #(Λ_ℓ(g) ∩ [−V, V]²) ≤ C_abs·S² for an absolute constant C_abs (e.g. 100).
   *Proof.*
-  - The lattice is the union of the lines jw + Zw′, with consecutive lines at distance ℓ/|w| > 2V.
-  - So every point of [−V, V]², whose norm is ≤ √2V, lies on Zw. The only primitive points there are
-    ±w, and |w| < V/2 < b for every point of 𝒫_ℓ.
-  - In the regular case the count is area/ℓ + O(perimeter/λ₁ + 1) = 4V²/ℓ + O(V/λ₁ + 1). ∎
-- So the cap T_SQ := 22S²·L^{o(1)} is never binding on a lattice that contains a candidate. Irregular
-  lattices need no separate exclusion: they contribute nothing.
+  - w is primitive in Z²: its content e satisfies e ≤ |w| < ℓ, so gcd(e, ℓ) = 1 and w/e ∈ Λ_ℓ(g); by
+    minimality e = 1.
+  - So w is primitive in Λ_ℓ(g) (index ℓ), and the lattice is the union of the lines jw′ + Zw, j ∈ Z,
+    which are parallel to w at mutual distance ℓ/|w| > 2V.
+  - Every point of [−V, V]² has norm ≤ √2V < 2V, so it lies on the central line Zw. The only primitive
+    points there are ±w, and |w| < V/2 < b for every point of 𝒫_ℓ.
+  - In the regular case take a reduced basis (λ₁ ≤ λ₂, λ₁λ₂ ≤ (2/√3)ℓ). The translates of the
+    fundamental cell F at the lattice points of K = [−V, V]² are disjoint and lie in K + F. So the count
+    is ≤ (area(K) + perimeter(K)·diam F + π diam(F)²)/ℓ ≤ 4S² + O(V/λ₁) + O(λ₂/λ₁) ≤ C_abs S², using
+    λ₁ ≥ √ℓ/(2S), V/λ₁ ≤ 2S² and λ₂/λ₁ ≤ (2/√3)ℓ/λ₁² ≤ 8S²/√3. ∎
+- So the cap T_SQ := C_abs S²·(log N)^{O(1)} is never binding on a lattice that contains a candidate.
+  Irregular lattices need no separate exclusion: they contribute nothing.
 
 **Sizes [proved arithmetic].** For P ∈ 𝒫_ℓ and g ∈ 𝒢:
 - |G(P)| ≤ 2MV, so |G/ℓ| ≤ X_r := 2MV/ℓ = N^{s−1/(4k)}L^{O(1)};
@@ -310,21 +327,31 @@ t := |G(P)| = ℓ|n| and r := F̂_g(P) mod t.
   - Its density is ≤ (2H max_i l_i)^{−1} = (2HV′^{d−1})^{−1}, and its support lies in
     [M₀ − T′, M₀ + T′] with T′ ≤ dHV^{d−1}.
 - (c) **Truncation (LV 5.20; item 4).** Fix ω := L^{C₁}, where C₁ exceeds the exponent of 1/ρ_F.
-  - Put Y_ω := HV′^{d−1}/ω, and let ϑ′ be ϑ truncated to |z| ≥ Y_ω as in LV.
+  - Put Y_ω := (2H + 1)V′^{d−1}/ω. Let ϑ′ be LV's **flattening** of ϑ on the central part:
+    ϑ′(z) = ϑ(max(z, Y_ω)) for z ≥ 0 and ϑ(min(z, −Y_ω)) for z < 0. Nothing is deleted. Discrete
+    interval lengths are 2H + 1 rather than 2H; this changes only constants.
   - Then ‖ϑ − ϑ′‖₁ ≤ 2/ω.
   - ϑ′ is monotone away from 0, since Y_ω > |M₀| when H > dωV. So ϑ′ = Σ_{y≥Y_ω} (W_y Unif[0, y] +
     W_{−y} Unif[−y, 0)), with W ≥ 0 and |1 − ΣW| ≤ 2/ω.
 - (d) **One uniform piece.**
   - Let y ∈ [Y_ω, 2T′]. The values F̂ + G·m, m ∈ [0, y], form a progression ≡ r (mod t).
-  - Apart from at most |F̂|/t + 1 terms of absolute value ≤ |F̂|, they have one sign and absolute value
-    in (|F̂|, ty + |F̂|].
-  - Let 𝒳 := {X_Fω^{−2}(1 + 1/2)^i} ∩ [X_Fω^{−2}, 16dX_F]. This set has O(log ω) elements, does not
-    depend on t, and contains a point x₁ ∈ [ty/2, ty], since ty ∈ [tY_ω, 2tT′] ⊂ [X_Fω^{−2}, 16dX_F].
+  - **Sign correction (codex pcest_2).** If G and F̂ have opposite signs, the progression can cross 0;
+    its far endpoint then has absolute value ty − |F̂|, not ty. In every case, all terms except at most
+    2(|F̂|/t + 1) of them have one sign and absolute value in (|F̂|, ty − |F̂|]. This interval contains
+    (ty/4, ty/2], because |F̂| ≤ ty/4.
+  - Let X_F^max := C_d MH V_max^d with V_max := ⌊√(2Y)·S⌋, so it is common to all ℓ ∈ J. Let
+    𝒳 := {X_F^max ω^{−2}(1 + 1/2)^i} ∩ [X_F^max ω^{−2}, 16dX_F^max].
+    - 𝒳 has O(log ω) = O(Λ) elements.
+    - It is independent of t, P, ℓ and the residue.
+    - It contains a point x₁ ∈ (ty/4, ty/2]. Consecutive points differ by the factor 3/2 < 2, and
+      ty/4 ≥ tY_ω/4 ≥ X_F^max ω^{−2} for large N, since tY_ω ≥ X_F^max/(C_d 2^{2d}ω).
   - Call t **good** if, for all x ∈ 𝒳 and all reduced residues r′,
     |Ψ(x, B; t, r′) − Ψ_t(x, B)/φ(t)| ≤ Ψ_t(x, B)/(2φ(t)).
   - For good t, (T) and (Hi) give
-      #{smooth terms} ≥ Ψ(x₁; t, ±r) − |F̂|/t − 1 ≥ Ψ(x₁)/(4t) − |F̂|/t − 1 ≥ Ψ(ty)/(8t) − |F̂|/t − 1.
-  - Dividing by y + 1 and using ϱ(ty) ≥ ϱ(16dX_F)/2 ≥ ρ_F/(log)^{O(1)} (by (Hi) and (C8.16)) gives
+      #{smooth terms} ≥ Ψ(x₁; t, ±r) − Ψ(|F̂|; t, ±r) − 2(|F̂|/t + 1)
+                      ≥ Ψ(x₁)/(4t) − 3(|F̂|/t + 1) ≥ Ψ(ty)/(16t) − 3(|F̂|/t + 1).
+      (The progression contains every integer ≡ ±r (mod t) with absolute value in (|F̂|, x₁].)
+  - Dividing by y + 1 and using ϱ(ty) ≥ ϱ(16dX_F^max)/2 ≥ ρ_F/(log)^{O(1)} (by (Hi) and (C8.16)) gives
     Pr ≥ ρ_F/(log)^{O(1)} − O(ωV/H). The error term is polynomially small, since |F̂|/(tY_ω) ≪ ωV/H.
 - Combining (b)–(d): **if t is good, then Pr_c[F_A(P) ∈ 𝒮_B] ≥ ρ_F/(log)^{O(1)} − 8d²V/H − 4/ω ≥
   ρ_F/(log)^{O(1)}.**
@@ -411,9 +438,17 @@ elementary].**
    A/(ed). So there are ≤ A/(dq) + 1 ≤ 2A/(dq) choices of m, since A/(Dq) ≥ 1.
 5. Hence the count is ≤ (2A/q) Σ_{D/y<d≤D, P⁺(d)≤y} 1/d.
 6. By dyadic blocks and (Hi), the sum is ≤ 8 log₂(2y)·ϱ(D/y, y).
-7. Finally X/(D/y) ≤ y^{2C₀+2}, so (C8.16) gives ϱ(D/y, y) ≤ ϱ(X, y)(log X)^{O(C₀)}. ∎
-(Codex's blind round states the same bound, its (1), with a similar proof; we found it independently
-in the same session.)
+7. Finally X/(D/y) ≤ y^{2C₀+1}, so (C8.16) gives ϱ(D/y, y) ≤ ϱ(X, y)(log X)^{O(C₀)}. ∎
+*Attribution.*
+- The case q = 1 follows from Hildebrand's subadditivity Ψ(x + z, y) ≤ Ψ(x, y) + Ψ(z, y) (Quart. J.
+  Math. 36 (1985) 57–69) together with (C8.16).
+- Choosing a divisor in (D/y, D] is the standard flexible factorization of smooth numbers (Friedlander,
+  Acta Arith. 39 (1981); Vaughan's iterative method).
+- Codex pcest_2 points to Harper, Compositio 152 (2016), §2.1, "Smooth Numbers Result 3", as a stronger
+  published progression version, including non-coprime residues. We have not checked its exact ranges
+  against ours, so we use our own proof above.
+- Lemma DS is therefore a progression extension of known short-interval bounds, not a new result.
+- Codex's blind round states the same bound (its (1)).
 
 **Theorem R (rational pair correlation) [proved].** In design (a″_k), with B = L[1/2, a] and S = L^σ
 satisfying S² ≥ ρ_r^{−2}:
@@ -436,9 +471,12 @@ satisfying S² ≥ ρ_r^{−2}:
   - Hence #(Γ_q ∩ 𝒬 ∩ 𝒮_B²) = Σ_{r mod q} #{n ∈ I₁ : n ≡ r}·#{n′ ∈ I₂ : n′ ≡ λr}
     ≤ q·((w₀/q)ρ_r(log)^{O(1)})² = (w₀²/q)ρ_r²(log)^{O(1)}.
   - Summing over the ≤ CqS² squares gives ≤ CS²w₀²ρ_r²(log)^{O(1)} = C(M²/ℓ)ρ_r²(log)^{O(1)}.
-- **Near the axes.** A square that meets the band |n| < X_rS^{−2} lies in |n| < 2X_rS^{−2}, since
-  w₀ = X_r/(2S²). Each n-value has ≤ √2M/V + 1 preimages g (Step 1(i)). So all such squares together
-  contain at most 8MX_r/(VS²) = 16M²/(ℓS²) points; the same holds for n′.
+- **Near the axes.** For a square that meets the band |n| < X_rS^{−2}, count only its points that lie
+  in Π (the original points). They have |n| < 2X_rS^{−2}, since w₀ = X_r/(2S²). Each n-value has
+  ≤ √2M/V + 1 preimages g (Step 1(i)). So there are at most 8MX_r/(VS²) = 16M²/(ℓS²) such points; the
+  same holds for n′.
+  - For the filtered count of §1 (|G| ≥ MV/32, i.e. |n| ≥ X_r/64), this band is empty.
+  - Squares crossing the boundary of [−X_r, X_r]² are handled by applying Lemma DS with X = 2X_r.
   - With the choice S² = L^ε/(ρ_rρ_F) of §5, and since ρ_F ≤ ρ_r, we get S^{−2} ≤ ρ_r², so this is
     absorbed. In general Theorem R needs S² ≥ ρ_r^{−2}.
 - **Per pair**, the count is ≤ (M²/ℓ)ρ_r²(log N)^{O(1)}. This bound is independent of q.
@@ -509,8 +547,15 @@ because P is primitive.
   - So the fibre has ≤ C_dH^{d−2}|Δ|/‖v ∧ v′‖ points. Divide by (2H + 1)^d.
   - For the second inequality: every 2×2 minor of [v; v′] equals Δ·W_{ij}(P, P′), with W bihomogeneous
     of bidegree (d−2, d−2). For example W_{01} = (aa′)^{d−2}.
-  - W does not vanish on (S¹)²: at P′ = P the limit is the Veronese tangent, and W_{01}(P, P) = 1 after a
-    rotation. By compactness, ‖v ∧ v′‖ ≥ c_d|Δ|(|P||P′|)^{d−2}. ∎
+  - The vector W(P, P′) of all divided minors never vanishes on (S¹)² (repaired after codex pcest_2).
+    - Off the diagonal and antidiagonal, this is injectivity of the projective Veronese map: v(P) ∦ v(P′)
+      when P ∦ P′, and Δ ≠ 0.
+    - On the diagonal, W(P, P) is the wedge of v(P) with its tangent ∂_u v(P) divided by det(P, u). It
+      is nonzero because the rational normal curve is nondegenerate. For example, at P = (1, 0) the
+      adjacent divided minor W_{01} equals 1. The antidiagonal is the same up to sign.
+    - W is continuous, so by compactness ‖v ∧ v′‖ ≥ c_d|Δ|(|P||P′|)^{d−2}. ∎
+    - The exact identity det K·|Δ| = ‖v ∧ v′‖ and the bound with c_d > 0.05 (d ≤ 7) are checked exactly
+      in `tests/test_pcest.py`.
 
 *Cost [proved arithmetic].*
 - H ≥ V² = ℓS² means h > 1/(2k), which raises the h-floor from LV's 1/(4k) (FM) to 1/(2k).
@@ -542,8 +587,13 @@ evenly over the |Δ| lift classes, κ_alg would be ≍ 1.
 - By Lemma Kern(i), that count is Σ_j Ψ_I(G|Δ|, r_j)Ψ_{I′}(G′|Δ|, r′_j).
 - Insert the definition of κ_alg and T² = d²H²V^{2d−2}. ∎
 
-Here V²/|Δ| = S²/q. It is exactly the "bounding-box" factor 1/sin∠(P, P′). Averaged over pairs it costs
-only log S, since q is spread over [1, 2S²] with density ≤ C/S² (Theorem R's pair count).
+Here V²/|Δ| = S²/q is comparable to (not equal to) the bounding-box factor 1/sin∠(P, P′).
+- If κ_alg were ≤ L^{o(1)}, the factor would cost only O(log S) on average. For fixed P and q, the
+  equation det(P, P′) = ±ℓq has O(1) solutions P′ in the box (they lie on two lines parallel to P,
+  spaced by |P| ≥ V/2).
+- So Σ over pairs of (S²/q)·(Theorem R's uniform per-pair bound) loses only a harmonic sum
+  Σ_{q≤2S²} 1/q.
+- LD keeps the product (S²/q)·κ_alg; the two factors are not separated.
 
 **Hypothesis LD (lift dispersion under rational-smoothness weights) [open].** Uniformly in N:
   E_ℓ Σ_{P≠P′, ℓ|Δ} |𝒢|^{−1} Σ_{g∈𝒢∩L_ℓ(P)} Y_PY_{P′}·(S²/q)·κ_alg ≤ L^{o(1)}·E_ℓ Σ_{P≠P′, ℓ|Δ} |𝒢|^{−1} Σ_g Y_PY_{P′}.
@@ -551,52 +601,80 @@ only log S, since q is spread over [1, 2S²] with density ≤ C/S² (Theorem R's
   lift classes of moving residues to moduli G|Δ| = ℓ²nq.
 - The weights are the actual rational-smooth multiplicities. Theorem R shows that the right side is
   ≤ (log N)^{O(1)}S⁴ρ_r².
-- LD is hypD's RBDH′ in upper-bound form, and codex pcest_1's (6) with the kernel transfer carried out.
+- LD is implied by a suitably weighted form of hypD's RBDH′ (an o(1) relative variance), but it is
+  *weaker*: it is an upper bound within L^{o(1)}. It is codex pcest_1's (6) with the kernel transfer
+  carried out. We do not claim an equivalence.
 
-**Theorem 4.3 [proved implication].** Under the hypotheses of Theorem FM with h ≥ 1/(2k) + η₀, and with
-S² = L^ε/(ρ_rρ_F):
-- (i) FM + Theorem R + Prop 4.2 + LD ⟹ PC := E[N(N−1)]/(E N)² ≤ L^{o(1)+O(ε)};
-- (ii) hence, by Prop PZ, D_k(γ) holds with γ ≥ L^{−o(1)−O(ε)}.
+**Theorem 4.3 [proved implication; repaired after codex pcest_2].**
+- **Hypotheses.** Those of Theorem FM, with h ≥ 1/(2k) + η₀ and S² := (log N)^{C₃}/(ρ_rρ_F), where C₃ is
+  larger than the polylog exponent lost in Theorem FM. Let N_ℓ(A) be the **filtered** count of §1
+  (|G(P)| ≥ MV/32).
+- **Conclusions.**
+  - (i) FM + Theorem R + Prop 4.2 + LD ⟹ PC := E[N(N−1)]/(E N)² ≤ L^{o(1)}.
+  - (ii) Hence, by Prop PZ (E N ≥ 1), D_k(γ) holds with γ ≥ L^{−o(1)}.
 *Proof.*
-- E[N(N−1)] = E_ℓ Σ_{P≠P′, ℓ|Δ} |𝒢|^{−1} Σ_g Y_PY_{P′} Pr_c[·].
-- By Prop 4.2, LD and Theorem R, this is ≤ C_dρ_F²·L^{o(1)}·S⁴ρ_r². Here ϱ(T|G|) ≤ ρ_F(log)^{O(1)} by
-  (Hi) and (C8.16), since T|G| ≍ X_F up to factors y^{O(1)}.
-- By Theorem FM, (E N)² ≥ S⁴ρ_r²ρ_F²/(log)^{O(1)}. ∎
+- E[N(N−1)] ≤ E_ℓ Σ_{P≠P′, ℓ|Δ} |𝒢|^{−1} Σ_{g: |G|,|G′| ≥ MV/32} Y_PY_{P′} Pr_c[·].
+- By the filter, T|G| ∈ [TMV/32, 2TMV], so ϱ(T|G|) ≤ 64ϱ(TMV) ≤ ρ_F(log N)^{O(1)} by (Hi) and (C8.16).
+  - The unfiltered version of this step was wrong: for |G| ≈ ℓ, the ratio X_F/(T|G|) is a positive
+    power of N.
+- By positivity, LD (stated over all g) bounds the filtered sum.
+- So, by Prop 4.2, LD and Theorem R, E[N(N−1)] ≤ C_dρ_F²·L^{o(1)}·S⁴ρ_r²(log N)^{O(1)}.
+- By Theorem FM, which only counts |G| ∈ [MV/32, 2MV] and so applies to the filtered count,
+  (E N)² ≥ S⁴ρ_r²ρ_F²/(log)^{O(1)} and E N ≥ 1.
+- Theorem R's condition S² ≥ ρ_r^{−2} holds for large N, since ρ_F/ρ_r = L^{−c+o(1)} for some c > 0. ∎
+- (The first version took S² = L^ε/(ρ_rρ_F), giving L^{O(ε)} losses that are not L^{o(1)}. The
+  polylogarithmic choice of S² fixes this.)
 
 ### 4.3 Why LD is not available, and what each known tool gives
 
-All items below are proved statements about the tools, not lower bounds on LD.
+All items below are statements about what the cited tools give by themselves. They are not lower bounds
+on LD, and they do not exclude proofs that combine these tools with further arithmetic information.
 
 - **(B1′) Harper's BDH (all residues) loses the factor G.** For one modulus m = G|Δ|:
   - LD needs the |Δ| lift classes, with main-term mass |Δ|(Ψ/m)² = Ψ²/(G·m).
-  - Harper's Theorem 2 (Q ≤ Ψ) controls Σ_{all reduced r}|E(m, r)|², whose natural scale is Ψ²/m.
+  - Harper's Theorem 2 (Q ≤ Ψ) controls Σ_{m≤Q} Σ_{all reduced r}|E(m, r)|², a global sum whose
+    per-modulus scale is Ψ²/m.
+  - Harper's asymptotic BDH for general sequences (J. London Math. Soc. 112 (2025) e70293,
+    arXiv 2412.19644, Cor. 1) confirms that the all-residue variance is dominated by its diagonal QΨ.
+    It has no restricted-moduli or restricted-residue form either.
   - Positivity cannot recover the factor G = N^{s+1/(4k)+o(1)}, and e^{−cu/log²u} cannot compensate a
     polynomial factor (codex pcest_1, Q2). The modulus family is also sparse, with density
     ≈ ρ_r/(ℓ log Y), so restricted versions are needed anyway, as in barrier B1.
 - **(B2′) Divisor switching needs small moduli.** Lemma DS works because q ≤ y^{O(1)}.
-  - Applied to F with modulus G ≈ N^{s+1/(4k)}, it needs a divisor window D ≥ G.
-  - The density then degrades from ϱ(X_F) to ϱ(X_F/G), a loss of L^{Θ(1)}.
+  - Applied to F in a progression mod G ≈ N^{s+1/(4k)}, the complementary-factor count is only
+    nontrivial when the divisor cutoff is D ≲ X_F/G.
+  - The divisor sum is then evaluated at density ϱ(X_F/(Gy)) instead of ϱ(X_F), a loss of L^{Θ(1)}.
   - The q-part of the coupling (modulus q ≤ 2S²) is small. But it sits inside an AP to the large
     modulus G, so the same obstruction applies.
-- **(B3′) The arithmetic large sieve loses 1/(ρ_Fδ).** Let δ be the density of the modulus family. The
-  bound Σ_{m≤Q} m Σ_w |Ψ(m, w) − Ψ/m|² ≤ (x + Q²)Ψ controls the second moment of the max-class ratios
-  β(m) := max_w Ψ(m, w)φ(m)/Ψ_m only up to a factor 1 + O(1/(ρ_Fδ)), which is L^{Θ(1)}.
-- **Prop B5 (L¹ cannot give LD) [proved; elementary].**
-  - Every published max-residue estimate (Harper Thm 1, LV Lemma 8.5, Lemma 8.5′) is an L¹ bound over
-    moduli of β − 1, with saving ε_N = H(u)^{−c} + ….
+- **(B3′) The arithmetic large sieve loses 1/(ρ_Fδ) [assessment].** Use the large sieve in its standard
+  form, over primitive characters, or over primes p ≤ Q with Σ_p p Σ_w |Z(p, w) − Z/p|² ≤ (x + Q²)Z for
+  general moduli via induced-character multiplicities. It is insensitive to the sparseness of smooth
+  numbers.
+  - Its diagonal term x·Ψ exceeds the needed scale by the factor 1/(ρ_Fδ) = L^{Θ(1)}, where δ is the
+    density of the modulus family.
+  - The same phenomenon is why Fouvry–Tenenbaum's large-sieve BV works only for y ≥ exp(log^{2/3+ε}x)
+    (Harper's introduction).
+- **Prop B5 (an L¹ saving alone does not give L² control) [proved; elementary; scope narrowed after
+  codex pcest_2].**
+  - The max-residue estimates we know are L¹ bounds over moduli of β − 1, with saving
+    ε_N = H(u)^{−c} + …. These are Harper Thm 1, LV Lemma 8.5 and our Lemma 8.5′, and, with fixed
+    residues, de la Bretèche–Drappeau, Drappeau and Pascadi.
   - The proof of LD from β-information needs an L² bound: κ_alg ≤ β(G|Δ)·β(G′|Δ)-type products, and
     neither factor is controlled pointwise.
   - Example: let β = T with probability ε_N/T, and β = 1 otherwise, with T ≤ 1/ρ_F (the trivial range).
     The L¹ excess is ε_N, but the L² excess is ε_NT, which reaches ε_N/ρ_F = L^{Θ(1)}.
-  - So no inequality of the form "L¹ saving ⟹ L² control" holds at these densities. One needs a
-    *large-values* estimate: the moduli with an overloaded lift class must have weighted measure
-    ≪ L^{o(1)}T^{−2}, for T up to 1/ρ_F.
+  - So no inequality of the form "L¹ saving ⟹ L² control" holds at these densities in general.
+  - A proof of LD that goes through max-class ratios needs, in addition, a *large-values* estimate: the
+    moduli with an overloaded lift class must have weighted measure ≪ L^{o(1)}T^{−2}, for T up to
+    1/ρ_F.
+  - This does not show that every LD proof must take this form.
 - **Prop Z (the ℓ-part is one shared random variable) [proved; observation].**
   - For P ∈ Λ_ℓ(g), P ≡ (b/g₁)(g₀, g₁) (mod ℓ). Hence ⟨c, v(P)⟩ ≡ (b/g₁)^{d−1}R_c(g₀, g₁) (mod ℓ).
   - So the ℓ-adic lift of every candidate F_A(P) mod ℓ|G| is determined by one field constant
     ζ := R_c(g₀, g₁)g₁^{1−d} (mod ℓ), through ζb^{d−1}.
   - Conditioning PZ on ζ removes the ℓ-part of the coupling. But it then needs anti-concentration of
-    E[N | ζ] in ζ, which is the same lift-equidistribution statement, so this is circular.
+    E[N | ζ] in ζ. That is again a lift-equidistribution statement of LD's type [assessment; not a
+    proved equivalence].
   - It does localize the difficulty: equidistribution of smooth numbers in an AP mod ℓn over the ℓ
     lifts mod ℓ²n, jointly with a mod-q coupling.
 - **Two algebraic sides (codex).** Independent fields do not decorrelate two evaluations in one field.
@@ -631,6 +709,14 @@ hypD or us.
   - Then every N is factored in expected time L_N[1/2, (1+θ)/√2 + O(η₀) + o(1)].
 - **Consequences.** Infimum over k: (1 + 3/(d+1))/√2, i.e. 0.9723 (d = 7), 0.9192 (d = 9), 0.8839
   (d = 11) and 0.8132 (d = 19). The constant is < 1 iff d ≥ 7, with k ≥ 13 (d = 7) or k ≥ 12 (d = 9).
+- **Further explicit assumptions (codex pcest_2).**
+  - (HECM) LPP's running-time theorem for the hyperelliptic curve method, as used by LV Cor. 3.19. The
+    published proof trail is incomplete (LPP II defers details to an unpublished Part III); Theorem A′
+    removes this assumption.
+  - Reducible f are rejected. The irreducibility transfer omits the O(log N) primes dividing g₁N; the
+    exceptional probability is polynomially small.
+  - The g₁ column records the parity of the number of atomic special-q relations in an assembled row,
+    counted with multiplicity.
 - **Ingredients and their status.**
   - Proved: Lemma GB, Theorem FM, Theorem R, Lemma Kern, Prop 4.2, Theorem 4.3.
   - From hypD and lemmaM: Theorems DD, S′, K and Corollary K's algorithm.
@@ -648,12 +734,17 @@ hypD or us.
 
 **Theorem A′ (no HECM) [conditional on LD and LV6].**
 - Replace HECM by the deterministic Pollard–Strassen method, which finds all prime factors ≤ B of m in
-  B^{1/2+o(1)}(log m)^{O(1)} time.
+  B^{1/2+o(1)}(log m)^{O(1)} time (Pollard, Proc. Camb. Phil. Soc. 76 (1974); Strassen, Jber. DMV 78
+  (1976); Costa–Harvey, Math. Comp. 83 (2014)).
 - Each smoothness test then costs L^{a/2}, and
     c_PS = min_a max(2a, a + max(1/√2, θ/(2a) + a/2)).
-- θ → 3/(d+1) gives d = 7: 1.0607; d = 9: 0.9671 (a = 0.260); d = 11: 0.9144; d = 19: 0.8226.
+- For θ ≤ 1/2 the optimum is at a² − √2a + θ = 0, giving c_PS = 1/√2 + (√2 − √(2 − 4θ))/2.
+- θ → 3/(d+1) gives d = 7: 1.0607; d = 9: 0.9670 (a = 0.2599); d = 11: 0.9142; d = 19: 0.8226. These
+  were corrected after codex pcest_2; the first version printed 0.9671 and 0.9144 from a grid search.
 - So **the HECM caveat (LPP Part III unpublished) can be removed at a cost, and c < 1 survives for
-  d ≥ 9**. LV6 might itself use HECM; if so, the same replacement applies there at L^{o(1)}-many tests
+  d ≥ 9**.
+- A possibly cheaper route, not checked: Pomerance's (1987) rigorous ECM detection of *most* smooth
+  numbers. Whether a "most smooth values" guarantee suffices for FM and PZ (literature critic) is open. LV6 might itself use HECM; if so, the same replacement applies there at L^{o(1)}-many tests
   per row. We did not check LV §6 for this.
 
 **What exactly is missing for a theorem beating Lenstra–Pomerance [the sharpest form we can state].**
@@ -663,15 +754,25 @@ hypD or us.
 2. **LV6** (bookkeeping of a known method at new heights; not expected to need a new idea, but not
    written).
 
-Nothing else is missing. FM, the binary rational correlation, the kernel transfer, the split counting
-(Theorem S′), the complete-target-list reduction (Theorem K) and fruitfulness (DD) are all proved.
+Within this project's proved results, nothing else is missing. FM, the binary rational correlation,
+the kernel transfer, the split counting (Theorem S′), the complete-target-list reduction (Theorem K)
+and fruitfulness (DD) are proved here or in hypD/lemmaM.
 
-**Has anyone beaten c = 1 rigorously (1992–2026)?** Codex pcest_1 and the Opus literature critic (§7)
-both searched. Neither found a rigorous algorithm factoring every N in L[1/2, c] with c < 1. The
+Caveats:
+- these are internal, unrefereed results;
+- the HECM running-time theorem (Theorem A only; A′ avoids it);
+- the Lemma 5.1 irreducibility transfer, checked at the level of statements.
+
+**Has anyone beaten c = 1 rigorously (1992–2026)?** To our knowledge, no. Codex pcest_1 and pcest_2 and
+the Opus literature critic (§7) all searched. Neither found a rigorous algorithm factoring every N in L[1/2, c] with c < 1. The
 rigorous record remains Lenstra–Pomerance 1992 (JAMS 5, 483–516).
 - Related results are either heuristic (NFS; Stange 2022) or concern other problems:
-  Kleinjung–Wesolowski (fixed characteristic); de Boer–Pellet-Mary–Wesolowski (ERH, class groups).
-- Lee–Venkatesan's rigorous NFS produces congruences in L[1/3], but its factoring conclusion is
+  - Kleinjung–Wesolowski: discrete logarithms in finite fields of fixed characteristic (JAMS 35, 2022).
+  - de Boer–Pellet-Mary–Wesolowski (arXiv 2512.01588): ERH, class and unit groups.
+- Under GRH the best rigorous constant is also c = 1: Seysen and A. K. Lenstra's class-group method,
+  whose GRH dependence Lenstra–Pomerance removed. We know of no c < 1 under a standard hypothesis.
+- Lee–Venkatesan (J. Number Theory 187 (2018) 92–159) produce congruences in L[1/3], but their
+  factoring conclusion is
   conditional on their Conjecture 7.1.
 - This is a search result, not a certification.
 
@@ -713,7 +814,44 @@ then `--analyze` (summary in `experiments/raw/pcest_e1_summary.json`).
 
 ## 7. Reviews
 
-(Filled in after the GPT-6.1-sol adversarial round `codex/pcest_2` and the two Opus critics.)
+**Status.**
+- GPT-6.1-sol adversarial round (`codex/pcest_2.out`): done, all findings applied (§7.2).
+- Opus literature critic: done, all fixes applied (§7.3).
+- **Opus proof critic: still running when this note was committed.** Its findings are not yet
+  adjudicated, and no claim here should be considered to have passed it.
+
+### 7.2 GPT-6.1-sol adversarial round (pcest_2): adjudication (all accepted)
+- **Verdicts.**
+  - CORRECT: Lemma GB, Lemma 1.2, Lemma 8.5′ (the majorant W use is confirmed), Lemma Q, Lemma DS,
+    Prop 4.2, Lemma Kern (i)–(ii), the det K identity, and the minimal-k numbers.
+  - CORRECT WITH FIXES: Lemma 1.3, Theorem FM, Theorem R, Lemma Kern (iii), Prop B5, Theorems A and A′.
+- **Theorem 4.3: WRONG as first stated.** For |G| ≈ ℓ the bound ϱ(T|G|) ≤ ρ_F·polylog fails by a factor
+  L^{Θ(1)}. Repaired by the filter |G(P)| ≥ MV/32 on counted candidates; FM is unaffected. The L^{O(ε)}
+  loss is repaired by S² = (log N)^{C₃}/(ρ_rρ_F).
+- **Other fixes applied.**
+  - Primitivity of w (Lemma 1.3).
+  - LV's truncation is a flattening.
+  - The sign case in FM Step 2(d).
+  - An ℓ-independent grid with O(Λ) points.
+  - The compactness argument via the full divided-minor vector.
+  - The q-density argument (O(1) solutions of det(P, P′) = ±ℓq).
+  - LD is weaker than RBDH′, not equivalent to it.
+  - B2′, B3′, B5 and Z wording.
+  - A′ constants: 0.9670 and 0.9142, with a closed form.
+  - The explicit HECM, reducibility, g₁-column and repeated-test assumptions.
+- **Literature (codex).** Lemma DS is prior art in substance (Harper, Compositio 2016, Smooth Numbers
+  Result 3; Friedlander 1981). No earlier rigorous use of the 2D rational randomization was found.
+
+### 7.3 Opus literature critic: adjudication (all accepted)
+- Unconditional and GRH-conditional c < 1: not found. Wording now reads "to our knowledge".
+- BLP 1993 / Murphy §2.3.2 credited for the g₁x − g₀ design.
+- Hildebrand 1985 and divisor switching credited for Lemma DS.
+- Harper's JLMS 2025 BDH asymptotics added to B1′.
+- Claim 5.2 wording (affine point).
+- "Nothing else is missing" qualified.
+- B5's "every published" narrowed.
+- LV journal reference, Kleinjung–Wesolowski description and Pollard–Strassen references added.
+- The ECM "most smooth numbers" route noted as unchecked.
 
 ### 7.1 GPT-6.1-sol blind round (pcest_1): adjudication
 - **Independent agreement.** Codex independently proposed the balanced rational randomization, Lemma GB

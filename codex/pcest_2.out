@@ -1,0 +1,213 @@
+**Major revision.** The rational second moment and kernel estimate survive scrutiny. The claimed proof of Theorem 4.3 does not: it contains an uncontrolled \(L^{\Theta(1)}\) comparison. A simple restriction of the counted candidates repairs the reduction without strengthening LD. The assertion “nothing else is missing” also needs qualification.
+
+I read the requested notes and paper sections. Verdicts below concern the statements and their supplied proofs.
+
+1. **Lemma GB — CORRECT. Lemma 1.2 — CORRECT. Lemma 1.3 — CORRECT WITH FIXES.**
+
+   GB’s recursion is integral and telescopes correctly. The coefficient bound is uniform for fixed \(d\), for sufficiently large \(N\); the floor in \(M\) only changes its constant. Allowing the leading coefficient to vary removes the prescribed-leading-coefficient congruence restriction.
+
+   Lemma 1.2 follows exactly from homogeneity.
+
+   In Lemma 1.3, justify that the short lattice vector \(w\) is primitive in \(\mathbb Z^2\). Otherwise divide out its content: because \(|w|<\ell\), that content is coprime to \(\ell\), and the divided vector remains in the lattice. The line spacing exceeds \(2V>\sqrt2V\), so only the central line meets the box. The regular-case count is correct. Replace the unexplained numerical cap \(22\) by an explicitly established absolute constant; this has no asymptotic cost.
+
+   The stated rational and algebraic size exponents are **CORRECT**.
+
+2. **Lemma 8.5′ — CORRECT, in the stated fixed-\(k\) regime.**
+
+   The potentially delicate majorant issue checks out: LV define \(W\) in (8.2), then bound its separate conductor contributions. Thus their proof bounds \(W\), and positivity permits replacing a dyadic subwindow by the larger window \([Q'/\log x,Q']\). This gives an upper bound without a factor proportional to the subwindow’s length; none is needed here.
+
+   The range checks work:
+
+   - \(Q'=Q/\ell\ge x^\epsilon\) has fixed polynomial room.
+   - \(Q'\le\sqrt{\Psi(x,B)}\), because \(q<\xi/2\).
+   - \(\omega_0=\log x\to\infty\) and \(\omega_0=B^{O(1)}\).
+   - The selected \(\eta\le1/100<1/80\), with \(x^\eta\le Y<Q\le\sqrt x\).
+   - Both large-conductor terms are absorbed by polynomial slack.
+
+   These are the relevant ranges in [LV §8](https://arxiv.org/pdf/1805.08873).
+
+   Also, the counting assertion \(\#\mathcal T_Q\asymp Q\delta_{\mathcal T}\) is correct. Uniqueness of the large prime factor \(\ell>B\) prevents multiplicity.
+
+   The preliminary statement “\(\Psi,\delta_{\mathcal T}\ge x^{-o(1)}\)” should read \(\Psi/x,\delta_{\mathcal T}\ge x^{-o(1)}\); the intended estimates remain valid.
+
+3. **Theorem FM — CORRECT WITH FIXES.**
+
+   **Step 1 — CORRECT.** The central chord construction, exact fibre spacing and Möbius inversion give the claimed lower bound. Here
+   \[
+   M/V=N^{s-1/(4k)}L^{-O(1)}
+   \]
+   has a fixed positive power of \(N\). Consequently the \(2^{\omega(\ell n)}=N^{o(1)}\) error is harmless *as an additive error against this polynomial quantity*. It is not being legitimately identified with \(L^{o(1)}\).
+
+   **Step 2 — CORRECT WITH FIXES.**
+
+   The kernel construction extends to general signs by coordinate sign changes, and to \(|a|>b\) by reversing coordinates. These operations preserve the coefficient cube. Zero interval lengths do not arise for the candidates: \(a=0\) would contradict primitivity with prime \(b>1\).
+
+   However:
+
+   - Discrete interval lengths involve \(2H+1\), not exactly \(2H\). Enlarge the support constants accordingly.
+   - “Truncation” must mean LV’s **flattening of the central part**, not deleting it. Deletion would invalidate the monotone-mixture representation.
+   - The one-piece sign argument is incorrect as written. For example, \(\widehat F>0\), \(G<0\) gives an interval crossing zero, whose negative endpoint has magnitude \(ty-\widehat F\), not \(ty\).
+
+   Repair the last point by selecting a grid height in \([ty/4,ty/2]\) and deducting both endpoint discrepancies, bounded by
+   \[
+   O(|\widehat F|/t+1).
+   \]
+   Its probability cost is still polynomially small. The claimed lower bound survives.
+
+   Taking \(\omega=L^{C_1}\), with \(C_1\) strictly above the reciprocal-density exponent, is legitimate: \(H/(\omega V)\to\infty\) polynomially.
+
+   **Step 3 — CORRECT WITH FIXES.** The grid must be common to **all \(\ell\)**, as well as independent of residues and \(P\). Literally \(X_F=C_dMHV^d\) depends on \(\ell\), so the displayed grids do too. Use \(V_{\max}=\lfloor\sqrt{2Y}S\rfloor\) and one common grid; the dyadic variation costs a constant.
+
+   Its size is
+   \[
+   O(\log\omega)=O(\Lambda),
+   \]
+   which is polynomial in \(\log N\), not \(O(\log\log N)\). The saving still absorbs it.
+
+   **Step 4 — CORRECT after those repairs.** The fibre upper bound controls the induced bad-modulus mass. Prime \(b\) costs only a logarithm.
+
+   Tenenbaum’s condition holds uniformly since \(\omega(t)\le O(\log N)\ll B^c/\log(1+u)\). The short-interval applications use bounded \(z\), hence satisfy \(z\le B^{5/12}\). Claim 8.16 is used with \(u\to\infty\). No concealed \(L\)-scale loss remains.
+
+4. **Lemma Q — CORRECT. Lemma DS — CORRECT. Theorem R — CORRECT WITH FIXES.**
+
+   Q’s index is exactly \(|\Delta|/\ell\). Dividing the image by \(\ell\) in *both* coordinates accounts for the cancellation. The graph multiplier is a unit because \(b,b'\) are primes exceeding \(q\).
+
+   DS’s treatment of non-reduced residues is sound. Its choice
+   \[
+   D=\min(A/q,\;X/(e y^{C_0}))
+   \]
+   satisfies \(D\le\min(I/e)\), \(A/(Dq)\ge1\), and \(X/(D/y)\le y^{2C_0+2}\). Thus the divisor sum and density comparison give the stated polylogarithmic loss.
+
+   **DS is prior art.** A precise stronger reference is Harper, *Minor arcs, mean values, and restriction theory for exponential sums over smooth numbers*, Compositio 152 (2016), §2.1, **Smooth Numbers Result 3**, including non-coprime residues. Its proof uses Friedlander’s argument from *Integers without large prime factors II*, Acta Arith. 39 (1981), 53–57. See [Harper’s proof](https://wrap.warwick.ac.uk/107457/7/WRAP-minor-arcs-mean-values-restriction-theory-exponential-sums-over-smooth-numbers-Harper-2018.pdf).
+
+   For R:
+
+   - Both parallelogram sides have length \(O(MV/\ell)\); its minimum width is \(\gg Mq/V\). The claimed weaker width bound is valid.
+   - The square-cover count is
+     \[
+     O(\operatorname{area}/w_0^2+\operatorname{perimeter}/w_0+1)
+     =O(qS^2).
+     \]
+     The boundary term is absorbed because \(q\ge1\).
+   - The angle restriction follows from the side parallel to \((b,b')\).
+   - Near-axis fibre counting bounds the **original points inside \(\Pi\)**. It does not bound all extraneous lattice points introduced by the covering squares; clarify that distinction.
+   - Increase the outer coordinate bounds by a constant for squares crossing the bounding box.
+
+   The pair count through Lemma 1.3 is valid. The rational first moment is uniform in \(\ell\), so averaging presents no problem.
+
+   Finally, the chosen \(S\) meets R’s condition: asymptotically \(\rho_F/\rho_r=L^{-c+o(1)}\) for some \(c>0\), hence
+   \[
+   S^2=L^\varepsilon/(\rho_r\rho_F)\ge\rho_r^{-2}.
+   \]
+
+5. **Lemma Kern (i) — CORRECT; (ii) — CORRECT; (iii) — CORRECT WITH FIXES.**
+
+   For (i), a unimodular variable change sends \(P\) to \((1,0)\) and \(P'\) to \((c,\Delta)\), with \((c,\Delta)=1\). The gcd of the evaluation minors is then exactly \(|\Delta|\). This establishes the index and graph description.
+
+   The divisibility argument in (ii) gives the full integral kernel. Its indicated monomial basis has coefficient bound \(2V^2\).
+
+   **The determinant identity is CORRECT:**
+   \[
+   \det K=\frac{\|v\wedge v'\|}{|\Delta|}.
+   \]
+   The row lattice has saturation index \(|\Delta|\); its primitive saturation and primitive orthogonal complement have equal covolume.
+
+   The fibre packing argument is also correct. \(H\ge V^2\) ensures that translating by a kernel fundamental cell enlarges the cube only by a constant depending on \(d\).
+
+   The compactness proof needs repair: an arbitrary rotation does not literally make the displayed monomial \(W_{01}\) equal to \(1\). Instead prove that the **vector of all divided minors** never vanishes on \((S^1)^2\). Off the diagonal and antidiagonal this follows from injectivity of the projective Veronese map; on them an adjacent divided minor is nonzero. Compactness then gives the stated uniform \(c_d>0\).
+
+6. **Proposition 4.2 — CORRECT. Its following averaging assertion — CORRECT WITH FIXES.**
+
+   The lift-class decomposition and substitution of \(T^2\) give the proposition exactly.
+
+   \(V^2/|\Delta|\) is **comparable** to the inverse sine of the angle, not exactly equal to it.
+
+   The asserted normalized density \(O(S^{-2})\) for \(q\) does not follow from Theorem R, especially after prime-\(b\) and rational-smoothness weighting. The correct argument is: for fixed \(P,q\), the equation
+   \[
+   \det(P,P')=\pm\ell q
+   \]
+   has \(O(1)\) solutions in the candidate box. Summing R’s uniform per-pair bound with weight \(S^2/q\) gives a harmonic loss \(O(\log S)\), alongside the existing polylogarithms.
+
+   This establishes an acceptable aggregate bound. It does **not** justify separating that factor from \(\kappa_{\rm alg}\); LD correctly retains their product.
+
+7. **Theorem 4.3 — WRONG as a claimed proved implication for the stated full count.**
+
+   The invalid step is [lines 562–563]( /Volumes/git/factoring-connection/notes/pcest_results.md:562):
+   \[
+   \varrho(T|G|,B)\le\rho_F(\log N)^{O(1)}.
+   \]
+   Candidates permit \(|G|=\ell\). Then
+   \[
+   \frac{X_F}{T\ell}\asymp\frac{MV}{\ell}
+   =N^{s-1/(4k)}L^{O(1)},
+   \]
+   a polynomial factor. The density ratio can therefore be \(L^{\Theta(1)}\). Claim 8.16 cannot absorb it.
+
+   This is a missing bound, not a counterexample to PC.
+
+   **Repair:** count only candidates satisfying
+   \[
+   |G(P)|\ge MV/S^2.
+   \]
+   FM’s central intervals survive. Both algebraic densities are then comparable to \(\rho_F\) within polylogarithms. Positivity lets the original LD bound control this restricted pair sum. Thus LD proves PC for the **filtered count**, which suffices for descent.
+
+   There is a second bookkeeping error: for fixed \(\varepsilon>0\),
+   \(L^{-O(\varepsilon)-o(1)}\) is not \(L^{-o(1)}\), as required by \(D_k\). After filtering, the actual estimates yield PC \(=L^{o(1)}\), repairing this too.
+
+8. **Proposition B5 — CORRECT WITH FIXES. Proposition Z — CORRECT, with a qualified interpretation.**
+
+   B5’s random-variable example correctly disproves a general inference from an \(L^1\) saving to adequate \(L^2\) control. It does **not** prove that “max-residue technology cannot imply LD” when combined with additional arithmetic information, nor that every LD proof must control maximum-class large values.
+
+   Z’s shared-\(\zeta\) identity is correct. Conditioning on \(\zeta\) alone supplies no missing concentration estimate. Calling that estimate “the same statement” is an assessment, not an established equivalence.
+
+   The other barrier statements need care:
+
+   - Harper’s BDH bound is global over moduli and reduced residues; positivity does not furnish the required restricted-class normalization. His [Theorems 1–2](https://arxiv.org/pdf/1208.5992) supply no immediate LD estimate.
+   - In B2′, the divisor cutoff is \(D\lesssim X_F/G\), not a requirement \(D\ge G\). The resulting density loss is nevertheless real.
+   - B3′’s displayed all-residue large-sieve formula is not the standard large sieve: unreduced additive frequencies repeat across moduli. Primitive frequencies or induced-character multiplicities must be specified.
+
+   **LD remains unproved by the cited results; I found no counterexample.** Its claimed equivalence to RBDH′ is also unproved: an upper second-moment bound is weaker than a vanishing relative variance.
+
+9. **Theorem A — CORRECT WITH FIXES as a conditional reduction. Theorem A′ — CORRECT WITH FIXES.**
+
+   With the filtered count, PZ and hypD’s Theorem K still apply. They allow an arbitrary field-dependent set of successful targets; prime \(b\) imposes no additional requirement on them. The success-biased field-selection identity is valid. DD applies when all acceptance, dependency selection and square-root computations preserve hidden-root invariance.
+
+   Additional details must be made explicit:
+
+   - Reject reducible polynomials. The Turán-sieve transfer is repairable uniformly: omit primes dividing \(g_1N\), whose number is \(O(\log N)\). The resulting polynomially small exceptional probability is negligible relative to the moments.
+   - The extra column records the exponent of \(g_1\) modulo \(2\): after assembling a descent row, count its atomic special-\(q\) relations with multiplicity. Simply placing a \(1\) in every assembled row is insufficient.
+   - LV6 is a substantive unproved adaptation, including column count, residual square classes, extraction cost and transcript invariance.
+   - A capped randomized smoothness test needs a stated success guarantee; repetition costs only polylogarithms.
+   - HECM’s announced running-time theorem has an incomplete published proof trail: [LPP II](https://people.maths.ox.ac.uk/pila/HyperII.pdf) refers the remaining algorithmic details to a third paper. A’s assumptions should explicitly include that running-time guarantee.
+
+   The formal cost optimization is correct:
+   \[
+   \min_a\max\{2a,\ a+1/\sqrt2,\ a+\theta/(2a)\}
+   =\frac{1+\theta}{\sqrt2},\qquad a=\theta/\sqrt2.
+   \]
+   But \(S^2=L^\varepsilon/(\rho_r\rho_F)\) contributes an additional \(\varepsilon\) to the search exponent. Retain it, or choose a sufficiently large polylogarithmic multiplier instead. Fixed-\(\varepsilon\) losses in success probabilities also need charging before taking infima.
+
+   Pollard–Strassen gives A′’s stated optimization. The optimized limiting numbers are:
+
+   | \(d\) | A | A′ |
+   |---|---:|---:|
+   | 7 | 0.972272 | 1.060660 |
+   | 9 | 0.919239 | 0.967000 |
+   | 11 | 0.883883 | 0.914214 |
+   | 19 | 0.813173 | 0.822606 |
+
+   Thus A′’s printed \(0.9671\) and \(0.9144\) need correction.
+
+   **The minimal-\(k\) numbers are CORRECT:** \(13,12\) for \(d=7,9\), and \(11,11\) with the former height floor. They require sufficiently small positive margins. The floor crossover \(d(d+1)/4\), the \(d=9,k=20\) example, and the unchanged infimum are correct.
+
+10. **Uniformity and novelty.**
+
+   All repaired estimates permit constants depending on the fixed parameters, uniformly in \(N\). Preprocessing gives
+   \[
+   \omega(N)\le\log N/\log B,\qquad 2^{\omega(N)}=L^{o(1)}.
+   \]
+   Divisor bounds for polynomial-size integers cannot generally be called \(L^{o(1)}\); the only such error used in FM is absorbed by polynomial room. Divisor factors attached to \(q\le L^{O(1)}\) are harmless. The fixed-\(k\) argument does not establish growing-\(k\) FM.
+
+   I found no earlier rigorous factoring analysis using this precise two-dimensional rational randomization to prove PC_rat. That application is a plausible novelty claim; DS and the underlying algebraic and lattice mechanisms are established tools.
+
+   As of **19 October 2026**, I found no unconditional classical algorithm factoring every integer with \(c<1\). The established benchmark remains [Lenstra–Pomerance 1992](https://geodesic.mathdoc.fr/articles/10.1090/S0894-0347-1992-1137100-0/). LV prove faster square-congruence production, with their factoring conclusion conditional. This search supports the note’s record statement, not a certification of absence.
