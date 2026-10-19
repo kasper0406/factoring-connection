@@ -1,0 +1,147 @@
+The review leaves RK open. Most linear-algebra reductions survive, but **Prop Q’s Dixon “correction” is wrong**, **Theorem L is false under its formal setup**, and the experimental summary contains concrete reporting errors. I reran the analysis and all six existing tests; no repository files were changed.
+
+1. **Duality §2.1 — CORRECT.**
+
+   Both annihilator identities and \(\dim W=\operatorname{rank}R-\operatorname{rank}z\) follow from elementary linear algebra. In the proof, say that \((w,y)\) **annihilates** \(R\); “extends to a functional on \(R\)” is imprecise.
+
+2. **Prop G′ §2.2 — CORRECT WITH FIXES.**
+
+   The Selmer exact sequence and \(h=O_d(\log N)\) are correct for fixed degree and polynomial coefficient height. Restricting to the genuine-square kernel loses at most \(h\) rational dimensions; \(t>r+h\) then forces a dependency with nonzero sampler-coefficient projection.
+
+   Explicitly incorporate omitted bad-prime valuations, denominators, order/index issues, and nonmonic normalization before asserting membership in \(H_K\). Fruitfulness additionally requires dependency selection that does not inspect the hidden sampler roots. Efficient extraction preserving that projection remains an assumption; the dimension argument does not implement it.
+
+3. **Theorem U §2.3 — CORRECT abstractly; CORRECT WITH FIXES as an RK implication.**
+
+   The geometric waiting-time argument handles adaptive \(V_M\): the hypothesis quantifies over **every** eligible subspace, so conditioning on the past is legitimate.
+
+   The principal gap is \(G\). Defined as all functionals vanishing on the complete kept law, it already includes every unknown exact obstruction. A law supported on a half-dimensional subspace can satisfy the expansion condition modulo its \(G\), while retaining enormous deficiency. Thus expansion must be accompanied by a bound on
+   \[
+   \dim\operatorname{res}_U(\operatorname{proj}_{\rm rat}G).
+   \]
+   Prop C does not supply that bound.
+
+   Rare primes do not make the dimension-dependent hypothesis inherently impossible. They do rule out constant escape probabilities. For \(r=0\), a nonzero coordinate of frequency below \(1/T\) already violates it; identically absent coordinates enter \(G\). The claimed \(u/B\) frequency is a heuristic for the joint NFS law, not a uniform-in-\(N\) estimate.
+
+   **Fix:** separate finite-sample expansion from control of the complete-law obstruction space, on the field distribution actually produced by relation collection.
+
+4. **Fourier identities and moment barrier §2.4 — CORRECT WITH FIXES.**
+
+   Both identities and the support bound \(J^{-k}\) are correct. Consequently, certifying collision probability near \(2^{-s+r}\) through this route requires
+   \[
+   k\ge (s-r)\log 2/\log J.
+   \]
+
+   This is a barrier to that mixing/collision certificate, not a universal lower bound on moment order for proving span. A distribution uniform on a basis spans the whole space despite poor low-order mixing. Narrow the blanket “one needs moments” wording accordingly.
+
+5. **Prop C’s finite-prime classification §2.5 — CORRECT WITH FIXES.**
+
+   The good-prime classification is nontrivial and essentially correct, but repair these proof steps:
+
+   - **CRT:** justify that every admissible primitive local pair lifts to a globally coprime integer pair. CRT alone does not state this, although the additional elementary argument works.
+   - **Odd degree:** \(\chi_\ell(G(a,b))\) is not well-defined on \(\mathbf P^1\) when \(\deg G\) is odd. Either use the affine chart \(b=1\), or first exclude odd degree by nonsquare scaling.
+   - **Weil:** exclude zeros of **all arguments required to be units**, including unselected factors. Their number is bounded by \(d+1\), not necessarily \(\deg G\). The stated generous cutoff can absorb this.
+   - **Exceptional primes:** retain an \(O_d(1)\) local bound. The particular “\(d+2\)” needs correction at \(2\), where principal-unit quadratic characters contribute additional dimensions.
+   - Localize nonintegral \(\alpha\) away from the leading coefficient.
+
+   However, this classifies identities on **all primitive integer pairs**, not identities on the finite box or its smooth subset. Enormous-conductor realizations provide no distribution control there. Prop C therefore gives **no quantitative RK bound**. “Every other obstruction is an accident of smoothness” is unjustified: an identity could already hold throughout the admitted box.
+
+6. **Box/archimedean assertions and “root near \(m\)” correction — CORRECT WITH FIXES.**
+
+   A rational sign bit constantly \(1\) and real-sign bit constantly \(1\) give the stated identity. A real-sign bit constantly **zero** does not; the paragraph currently conflates these cases. Write the actual bit equations, including the cardinality column where present.
+
+   Define “near” explicitly. Under the stated base-\(m\) conventions, a root within \(m/4\) requires \(H\ge c_d m\), by comparing the positive base polynomial with the perturbation. This is not the literal threshold “\(H>m\),” nor a sufficient condition. The displacement \(N/f'(m)\approx m^2/H\) requires noncancellation and local derivative control. Twenty trials establish neither.
+
+   Absence of a root near \(m\) also does not exclude another real root producing a sign obstruction.
+
+7. **Lemma S §2.6 — CORRECT WITH FIXES.**
+
+   The switching and congestion count are correct. The smooth-number ratio gives the stated \(L\)-scale bound for fixed positive \(a,c\); specify that parameter range.
+
+   Replace “there is no \((a',b')\)” realizing multiplication by \(p\) with “there is no guaranteed bounded-congestion move preserving admissibility and joint smoothness.” Such pairs can exist accidentally.
+
+8. **Barriers §2.7 — CORRECT WITH FIXES.**
+
+   The spread construction and coverage counterexample are valid.
+
+   B-F rules out a **naive fixed-functional union-bound template**, assuming uniform fields or polynomially bounded inverse atom probabilities. It does not prove that averaging cannot establish RK, nor that every proof must be per field. Aggregate structural estimates and complementary fields can evade the template. Likewise, \(\Theta(D)\) fields is not universally necessary.
+
+   B-L’s support-size observation is correct: one NFS row cannot be quasi-uniform on an exponentially larger space. It does not exclude compact random-exponent constructions. The asserted twisted-sampler expansion needs a separate proof for its conditioned law; Lemma S alone does not establish it.
+
+9. **Theorem \(V_\kappa\) §2.8 — CORRECT WITH FIXES.**
+
+   For \(0\le\kappa\le1\), the displayed optimization is correct:
+   \[
+   c=\sqrt{2\max\{\eta,\theta/(2-\kappa)\}}.
+   \]
+   The Vallée threshold \(\kappa<2/3\), with the stated supply condition, follows.
+
+   Require supply, rank success, and certificate processing **jointly on the fields actually reached**. Separate positive-probability assertions about unrelated field subsets do not suffice. Keep this explicitly conditional.
+
+10. **Prop Q §3.1 — Dixon formula WRONG; Design V formula CORRECT WITH FIXES.**
+
+   For the displayed Dixon cost model,
+   \[
+   \min_{a>0}\max\{2a,\ a+s+\theta/(2a)\}
+   =\boxed{s+\sqrt{2\theta}}.
+   \]
+   The collection term has this minimum at \(a=\sqrt{\theta/2}\), where linear algebra is no larger. The note instead balances the terms after collection has already passed its minimum.
+
+   **Restore codex’s formula.** The threshold is
+   \[
+   s+\sqrt{2\theta}<1,
+   \]
+   not \(\theta+s<1/2\). The note’s expression is a looser upper bound, not the optimum.
+
+   Design V’s expression is correct when LV supply does not bind:
+   \[
+   c_V=\frac{s+\sqrt{s^2+4\theta}}2.
+   \]
+   Generally the displayed model gives \(\max\{\sqrt{2\eta},c_V\}\).
+
+   The pointwise fibre argument gives fruitfulness at least \(1/(2\kappa)\), under root-blind selection. Fibre symmetry alone gives no smoothness density.
+
+   The hidden-loss accounting is defensible with explicit hypotheses: trial division to \(e^{\sqrt{\log N}}\) makes \(2^\omega=L^{o(1)}\); the \(\Omega\)-truncation controls representation multiplicities; sufficiently large batches give negligible amortized smoothness-testing overhead. Retain the weighted smooth-number justification. Neither an unspecified \(N^{o(1)}\) loss nor an unrestricted divisor bound is adequate. [Bernstein’s batch algorithm](https://cr.yp.to/factorization/smoothparts-20040510.pdf) supports the batching step.
+
+11. **Rank-collapse lemma §3.2 — CORRECT WITH FIXES.**
+
+   The proof’s principal-minor argument does not establish rank one as written, and its numerical bound is insufficient.
+
+   Repair it using \(q(e_i\pm e_j)\), which gives \(|s_{ij}|\le h/2\). Then **all** \(2\times2\) minors have magnitude below \(N\) and vanish. Handle the all-zero direction separately. The integral primitive representation and distinct-point bound then follow.
+
+   Crucially, \(3h^2<N\) restricts this lemma to \(\theta<1/2\). It cannot establish collapse throughout \(\theta<2/3\).
+
+12. **Theorem L — WRONG as formally stated.**
+
+   A marginal density bound on centres does not justify averaging over offsets chosen from those centres.
+
+   Concrete counterexample: take \(N=1009\cdot1013\), \(h=100\), and let \(S\) be the unit small-square roots. Direct enumeration gives \(|S|=232\) and \(|S-S|=25{,}945\). Draw the centre uniformly. For every centre \(c=x-w\in S-S\), choose direction \(w\in S\), with \(T=1\); otherwise choose direction \(1\). Every cell satisfies the quadratic bound and \(3h^2<N\), and centres reveal no arithmetic bias. Nevertheless,
+   \[
+   \Pr[\text{productive cell}]
+   \ge25945/N>16884/N,
+   \]
+   exceeding the theorem’s upper bound on the expected number of outputs.
+
+   **Fix:** require offsets independent of the centre, or impose the density bound conditional on them. Then the elementary translate-counting bound works. Its reciprocal scale is \(N/h^{3/2}\), giving \(N^{1-3\theta/2-o(1)}\) attempts. Restrict to unit outputs; the stated root count is false for arbitrary residues of nonsquarefree \(N\).
+
+   This is a meaningful restricted model, not a general barrier to arithmetic cell selection.
+
+13. **Coppersmith determinant — CORRECT; claimed failure CORRECT WITH FIXES.**
+
+   The dimension, \(A,C\), and determinant are correct. Since \(A+C=m(m+1)^2\), the determinant-based sufficient condition approaches \(T^2h<N\).
+
+   Failure of this sufficient condition does not prove absence of short vectors or failure of the lattice algorithm. Nor does obtaining one vanishing polynomial prove multivariate root recovery. Replace “works only when” with “the standard determinant guarantee requires,” and qualify productivity as an averaging condition.
+
+The **E1 computation is mostly correct; its interpretation needs fixes**. In [harness.py](/Volumes/git/factoring-connection/src/rkrank/harness.py:43), \(c_k\) computes the registered coordinate-intersection codimension; \(n_{\rm peel}\) counts rational parity coordinates absent from the surviving ideal-parity core. P3 correctly excludes sign from the support filter while testing full signed-vector membership.
+
+However:
+
+- `excess_peel` subtracts \(\omega+n_{\rm peel}\) without checking independence of those forced functionals. Compute their actual combined rank.
+- P5 is **4/4 tested instances, with 16 untested**, not 20/20. `structured=top` means level 3.0, contrary to “highest level reached.”
+- \(c_3\ne0\) in **five** records: four at 1.0 and one at 1.25. Correct both summary assertions.
+- The 1141/1141 P3 observations reuse targets across nested prefixes; they are not independent trials.
+- Ten random dense tests cannot establish absence of adaptive dense near-obstructions. P4 observed no positive sign-obstruction cases.
+- Restrict the sparse-obstruction interpretation to levels where the required saturation was measured. These cubic, filtered, raw-matrix experiments provide no asymptotic LV or genuine-certificate theorem.
+
+For **general classical factoring on every input**, I found no verified published improvement below \(c=1\); [Lenstra–Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf) remains the benchmark. LV’s faster congruence-generation theorem still requires a fruitfulness conjecture to yield factoring. [LV](https://arxiv.org/html/1805.08873v1)
+
+I found no verified exponent improvement below Vallée’s \(2/3\) for the required sampler. There **is** a uniformity improvement: [Coron](https://cr.yp.to/bib/2002/coron-pdh.pdf) gives statistical closeness on wider intervals, and [Gentry §4.1](https://www.iacr.org/cryptodb/archive/2004/CRYPTO/1334/1334.pdf) gives exact uniformity at width \(8N^{2/3}\). Random-sign symmetrization handles half-domain conventions. Statistical closeness alone should not be cited as the stated pointwise fibre guarantee.
