@@ -7,8 +7,9 @@ Agent `hypD`, phase 7, 2026-10-19.
 - Raw data: `experiments/raw/hypD_e{1,1x,2,3a,3b}.jsonl`.
 - GPT-6.1-sol: the blind prompt `codex/hypD_1.md` could not run because the Codex login expired. The
   prompts are written for a later run.
-- Reviews: four independent read-only Opus critics, two on proofs and two on prior art. Every finding was
-  adjudicated and applied (§9). **GPT-6.1-sol review is pending** (`codex/hypD_2.md`).
+- Reviews: four independent read-only Opus critics (two on proofs, two on prior art) and the
+  GPT-6.1-sol adversarial round `codex/hypD_2.out`. All findings were adjudicated and applied (§9).
+  The GPT-6.1-sol blind round `hypD_1` is pending.
 
 ## Verdict
 
@@ -18,7 +19,8 @@ Lenstra–Pomerance's L[1/2, 1+o(1)] stands. The results are partial and are lis
 Review status:
 - Opus-reviewed, with all findings adjudicated and applied (§9): two proof critics and two prior-art
   critics.
-- **GPT-6.1-sol review is still pending** for everything (Codex login expired).
+- GPT-6.1-sol adversarial review done (`codex/hypD_2.out`): no fatal error, all fixes applied (§9.2).
+- The GPT-6.1-sol blind round (hypD_1) was still running at this commit.
 
 **Removing two of lemmaM's ingredients.**
 - **Theorem S / S′ [proved; a routine adaptation of the Dixon–Pomerance random-squares lemma].**
@@ -70,8 +72,8 @@ Review status:
 - **Prop P [hypothetical computation; relabelled after review].** The published two-linear-form bound
   (Pascadi Cor. 7.2, ρ^{5/8}) **does not apply** at these parameters: it needs coefficients ≤ x^δ in an
   n-range x = M/ℓ, and gcd(b, b′) = 1. If a coefficient-uniform ρ^{−3/8} loss held anyway, this design
-  would give only c ≈ 1.57 (LP shape test, FM constraint k ≥ 3(d+1)/4). c < 1 would need a loss
-  exponent ≈ 0.028. So the Paley–Zygmund route with anything like current pair-correlation technology
+  would give only c → 1/√2 + √(3/4) = 1.573 (LP shape test, FM constraint k ≥ 3(d+1)/4). c < 1 would
+  need a loss exponent < 17 − 12√2 = 0.0294. So the Paley–Zygmund route with anything like current pair-correlation technology
   does not beat LP.
 
 **Conditional routes below 1.**
@@ -83,7 +85,8 @@ Review status:
     (2022) Hypothesis 3.1 and of Hafner–McCurley relation-lattice generation;
   - LV relation supply at fixed odd d ≥ 9 and L[1/2] scale (sketch);
   - the LV §6 adaptation;
-  - Vallée's theorem, which we did not re-verify from the primary source.
+  - Vallée's theorem (pointwise quasi-uniformity checked in the primary paper by GPT-6.1-sol).
+  - RK is in the genuine-certificate deficiency form with a batch argument, after codex.
   - Design V does not suffer the shape-test problem (its smoothness tests are at B = L[1/2]).
   - **It is the best conditional route for d < 19.** The specific combination with Vallée's sampler
     was not found elsewhere.
@@ -115,8 +118,8 @@ Review status:
 | lemmaM (a′), HECM shape test, k ≍ (log N)^{1/4} | √(6/(d+1)) | conditional on Hyp. D | FM; PC to precision exp(−o((log N)^{1/4}(log log N)^{1/2})) (B3) |
 | **(a′_k), fixed k, LP shape test** | **(1+θ)/√2**, θ → 3/(d+1): d = 7: 0.973; d = 9: 0.920; d = 11: 0.884; d = 19: 0.814; d → ∞: 0.707 | **conditional on D_k ⟸ FM (sketch) + PC (open)** | FM (LV 8.5 transplant), PC_rat (binary smooth correlation), PC_alg (⟸ RBDH′ + 2D kernel lemma), LV §6 |
 | (a′_k), recursive shape test | √((1+√2)θ) (d = 9: 0.851) | conditional on D_k at all scales | as above |
-| (a′_k) with a hypothetical coefficient-uniform ρ^{−3/8} PC_rat bound | ≈ 1.57 | hypothetical | the published bound does not apply; c < 1 needs loss exponent ≈ 0.028 |
-| **Design V (LV rows + Vallée rows)** | **√(2/3) ≈ 0.816** (d ≥ 9) | **conditional on RK** | RK; LV supply at L[1/2] (sketch); LV §6; Vallée (unverified) |
+| (a′_k) with a hypothetical coefficient-uniform ρ^{−3/8} PC_rat bound | 1.573 (limit) | hypothetical | the published bound does not apply; c < 1 needs loss exponent < 0.0294 |
+| **Design V (LV rows + Vallée rows)** | **√(2/3) ≈ 0.816** (d ≥ 9) | **conditional on RK** | RK (genuine-certificate deficiency); LV supply at L[1/2] (sketch); LV §6 postprocessing keeping a Vallée projection |
 | Design V with uniform Dixon rows | 1 | conditional on RK | as above; no gain over LP |
 | QS-style descent (lemmaM (d)) | 1 | heuristic | FM/PC for a fixed quadratic polynomial; nothing to average over |
 | one-level growing degree (lemmaM (b)) | L[2/5] | heuristic / conditional | bounded k does not apply |
@@ -218,11 +221,16 @@ about 0.9·|S|²/φ(N).
 
 **Theorem K [proved, given the setup].**
 - (i) Pr_A[g_A ≥ γ/2] ≥ γ/2.
-- (ii) Fix a field A, and let S_A be the products of exactly k distinct primes of G_A. Then for
-  N ≥ N₀(k),
+- (ii) Fix a field A with |G_A| ≥ 4k², and let S_A be the products of exactly k distinct primes of
+  G_A. The hypothesis on |G_A| was missing; codex fix. Then for N ≥ N₀(k),
     Pr_R[R ≡ u/v with u, v ∈ S_A] ≥ c_k·(g_A/(4 log N))^{4k}·2^{−ω}/(1 + log N), with c_k > 0 depending
     only on k.
 - (iii) **[corrected after review]**
+  - Acceptance rule (codex fix). Accept R when the primitive split (u₀, v₀) has each side a product of
+    **at most** k distinct primes of G_A. "Exactly k" is not divisor-closed: cancelling gcd(u, v) can
+    remove primes.
+  - The count in (ii) still lower-bounds acceptance, because the primitive part of an S_A-pair is
+    accepted.
   - In a field with g_A ≥ γ/2 and |G_A| ≥ 4k², a descent attempt succeeds after an expected
     L^{o(1)}·γ^{−2k} R-trials.
   - Each trial must split u₀, v₀ ≈ √N into their prime factors, all of which are ≈ N^{1/(2k)}. This is
@@ -256,13 +264,13 @@ range). Then every N is factored in expected time L[1/2, (1+θ(d,k))/√2 + o(1)
 - The floor 1/(4k) on h comes from LV's kernel mechanism, which needs H ≫ ‖(a,b)‖ (critic fix). It
   matters only for k < (d²−1)/4.
 - *Algorithm.*
-  1. Field search by guess-and-double on a target per-attempt success rate τ = L^{−ε}, ε halving each
-     round.
-     - In each candidate field, run enough capped descent attempts to separate p ≥ τ from p < τ/4 by
-       Chernoff.
-     - Keep the field if it passes. During collection, restart if the empirical yield drops below τ/4.
-     - By (i), a field with per-attempt rate ≥ (γ/2)^{2k}L^{−o(1)} arrives after L^{o(1)} tries. (The
-       first version's "keep if half succeed" was ill-posed.)
+  1. Field selection (codex repair, replacing an ill-posed pilot and then a guess-and-double that
+     could waste a main-scale factor).
+     - Sample fresh fields, one capped descent attempt each, until an attempt succeeds. Keep that field.
+     - With q_A the per-attempt success probability and μ = E_A q_A, the kept field has law ∝ q_A, so
+       E[1/q_A | kept] = Pr(q_A > 0)/μ ≤ 1/μ.
+     - Thus C further successes cost C/μ attempts in expectation.
+     - By (i) and S′, μ ≥ (γ/2)^{2k+1}L^{−o(1)}.
   2. Collect C·L^{o(1)} pure-descent rows, where C is the column count (factor base plus LV §6
      characters).
   3. Linear algebra, then Theorem DD.
@@ -281,7 +289,8 @@ range). Then every N is factored in expected time L[1/2, (1+θ(d,k))/√2 + o(1)
   - The level-½ condition |a − bm| ≤ |F|^{1/2−η} is used by FM (§4). It needs h > s − (d−2)/(4k) + 2η.
   - Adding the rational and algebraic sizes gives θ(d,k) + O(η).
 - θ(d,k) ↓ 3s as k → ∞.
-  - Limits of c = (1+θ)/√2: d = 7: 0.973; d = 9: 0.920 (0.923 at k = 50); d = 11: 0.884; d = 19: 0.814;
+  - The displayed limits are infima over growing *fixed* k (codex); they are not attained at any
+    finite k. Limits of c = (1+θ)/√2: d = 7: 0.973; d = 9: 0.920 (0.923 at k = 50); d = 11: 0.884; d = 19: 0.814;
     d → ∞: 1/√2.
   - Recursive variant: 0.851 at d = 9.
   - All numbers were checked numerically by us and by both proof critics.
@@ -295,8 +304,13 @@ Pr[all in G_A] ≈ g_A^{k}.
   - LV-type goodness only gives L^{o(1)} losses in the exponent.
   - lemmaM's B1 = exp((log N)^{3/4}) sits on this horn.
 - **Horn 2: bounded k.** g_A = L^{−o(1)} suffices, but every shape test is a factorisation of
-  √N-size integers into N^{Θ(1)}-size primes. Rigorously that costs L_N[1/2, 1/√2], via
-  Lenstra–Pomerance.
+  √N-size integers into N^{Θ(1)}-size primes.
+  - The best *available* rigorous test is Lenstra–Pomerance, at L_N[1/2, 1/√2].
+  - This is an upper bound. No lower bound shows that every rigorous shape test must pay it (codex
+    wording fix).
+- **Growing k (codex).** Let T = √(log N log log N). Interpolating between the horns requires
+  k·log log N = o(T) and k·log(1/γ) = o(T). Writing γ = L^{−o(1)} does not by itself give the second
+  condition.
 - Either way something is paid. Horn 2 still allows c < 1 conditionally, (1+θ)/√2. But Design V
   (√(2/3)) is better unless d ≥ 19.
 
@@ -316,6 +330,11 @@ Pr[all in G_A] ≈ g_A^{k}.
 **Prop PZ [proved].** γ ≥ (E N)²/E[N²] = 1/(1/E N + PC), where PC := E[N(N−1)]/(E N)² and every E is
 over (A, ℓ). So if E N ≥ 1 (hypothesis FM) and PC ≤ L^{o(1)} (hypothesis PC), then D_k(γ) holds with
 γ ≥ L^{−o(1)}. ∎
+- Here N_ℓ(A) must count the candidates actually covered by the *capped* search that yield *valid
+  certificates*. Existence outside the cap does not suffice (codex).
+- Irregular lattices, and the finite-interval error from sampling m in an interval rather than uniformly
+  mod ℓ, must be built into the moment estimates themselves. An unconditional exclusion probability does
+  not replace that. FM's polynomial room M ≫ ℓ makes this repairable (codex).
 
 ### 4.1 FM, the first moment [sketch; inputs are proved theorems, but the transfer is not written out]
 FM says E N ≥ L^{−o(1)}·S²·ρ(u_rat)·ρ(u_F). Choose S² = T_SQ = L^{o(1)}/(ρ(u_rat)ρ(u_F)).
@@ -340,8 +359,13 @@ FM says E N ≥ L^{−o(1)}·S²·ρ(u_rat)·ρ(u_F). Choose S² = T_SQ = L^{o(1
      - The large-conductor term needs Q ≤ √Ψ(x, B)·δ_𝒯·L^{−ε}, where δ_𝒯 is the density of 𝒯. This holds
        with polynomial room, because t ≤ |F|^{1/2−η}.
    - LV's proof uses one y for both the moduli and the counted numbers; here both are B, plus the prime ℓ.
-3. **Status.** FM is a parameter transfer of LV §5 and §8; we expect no new idea to be needed. It is
-   labelled *sketch* until written out. One point to check: LV's proof of Lemma 5.21 compares bad
+3. **Status.** FM is a plausible transplant of LV §5 and §8. It is labelled *sketch*, and the earlier
+   "no new idea expected" is withdrawn on codex's points:
+   - the smooth variable has length Q/ℓ, so the weights involve densities at Q/(ℓr) and are not LV's
+     sums times Σ1/ℓ;
+   - the induced multiplicities of t need explicit bounds;
+   - Harper's large-conductor term is √Ψ(Q + x^{1/2−η}log²x)log^{7/2}x, not just Q√Ψ.
+   Fixed polynomial slack should absorb the last point. One point to check: LV's proof of Lemma 5.21 compares bad
    B-smooth moduli against Ψ(Q_max, B′) rather than Ψ(Q_max, B). This is harmless only when β = β′ (our
    design has a single B), and a referee should confirm it.
 4. **Review additions.**
@@ -377,6 +401,8 @@ follows.
   continuous Ball-slicing bound plus lattice-point corrections (lemmaM §3).
   - Regime condition: the support zonotope must be wide compared with the minima of Γ″. That holds
     here, since sin∠ ≥ 1/(2S²) and H is large.
+  - (iii) concerns this unconditioned, unclipped counting template only. It is not a lower bound on
+    every PC argument, and clipping the density bound at 1 changes the literal comparison (codex).
   - Bounds that do respect the Γ″-coset are exactly the RBDH′ problem below. So Prop G is a barrier to
     a *template*, not to PC_alg. We label it **elementary**: ℓ | Δ is the standard lattice-sieve
     determinant fact (Pollard 1993), and Δ | minors follows from x − y | x^n − y^n.
@@ -400,7 +426,16 @@ follows.
 - The first version summed over *all* residues mod q, normalised by Ψ_q²/φ(q). That is weaker by a
   factor of about φ(t) on the D-element subset that matters, a polynomial loss (critic fix).
 - RBDH′ requires the moving classes Nb^d mod t to be typical on average over the pair family.
-- **PC_alg ⟸ RBDH′ + a two-dimensional version of LV Lemma 5.13 [outline only].**
+- **PC_alg ⟸ RBDH′ + a two-dimensional version of LV Lemma 5.13 [programme, not a sufficient
+  condition yet; codex].**
+  - For primitive pairs, D = [Z² : Γ] = |Δ| exactly; this strengthens Prop G(i).
+  - The primitive kernel vector is large. For d = 3 it is (bb′, −(ab′ + a′b), aa′), of size V² for
+    points of size V. So joint smoothing needs H ≫ V², not H ≫ V. That would raise the h-floor and θ;
+    not costed here.
+  - RBDH′ also needs main terms for non-reduced classes, plus the actual pair multiplicities and value
+    windows.
+  - The rational and algebraic averaged bounds cannot simply be multiplied. The algebraic estimate must
+    hold under the rational-smoothness weights.
   - The 2D lemma needs small kernel vectors realizing every Γ-shift in a box; it is plausible for d ≥ 3.
   - Decompose the Γ″-coset into D cosets of tDZ × t′DZ.
   - The projection of each coset onto a coordinate is surjective mod D, because v is primitive.
@@ -444,10 +479,16 @@ g₀ mod g₁.
 - So it suffices that some Vallée vector lies in the row space of 𝒞, after appending zero algebraic and
   character coordinates.
 
-**Quasi-uniform samplers [proved; standard convolution argument].**
+**Quasi-uniform samplers [proved].**
 - Vallée's sampler is only *quasi*-uniform: each x in the target set has probability within a constant
-  ratio κ = c₂/c₁ of uniform. Given z = x² mod N, each fibre element εx then has probability
-  ≥ 1/(κ2^ω). With a single Vallée row this can fail to give fruitfulness when κ ≥ 2^{ω−1}.
+  ratio κ = c₂/c₁ of uniform. It does not assert exact x ↦ εx invariance.
+- Given z = x² mod N, each fibre element εx has probability ≥ 1/(κ2^ω). So for a valid dependency
+  containing that row, **Pr[fruitful] ≥ (2^ω − 2)/(κ2^ω) ≥ 1/(2κ)**. This is codex's pointwise bound;
+  it sums the lower bound over the good fibre elements.
+- The P2 critic's "can fail when κ ≥ 2^{ω−1}" came from bounding the bad elements from above and is
+  superseded. The sampler's root-dependent internal transcript must stay hidden from dependency
+  selection.
+- The convolution argument below is valid but unnecessary.
 - Fix: take t independent dependencies D₁, …, D_t, each containing exactly its own Vallée row, and
   *multiply their congruences*. Do not GF(2)-sum the vectors, since shared 𝒞-rows would cancel.
   - The congruence ratio of the sum is ±∏_i ε_iZ_i, with the ε_i independent given everything else.
@@ -455,11 +496,16 @@ g₀ mod g₁.
   - The t-fold convolution is within (1 − 1/κ)^t of uniform in total variation.
 - So t = O(κ(ω + 1)) = L^{o(1)} Vallée rows give fruitfulness 1 − 2^{1−ω} − o(1).
 
-**Hypothesis RK.** For LV fields at fixed odd d and B = L[1/2, a], with C·L^{o(1)} relations, a Vallée
-vector lies in the GF(2) row space with probability ≥ L^{−o(1)}.
-- What is really used is the deficiency bound
-  dim(Λ/2 restricted to the support) − dim(row space ∩ rational-only vectors) ≤ L^{o(1)}.
-- It is applied per relation set 𝒞, with reverse Markov and a restart if a Vallée batch fails.
+**Hypothesis RK (genuine-certificate deficiency form; reformulated after codex).**
+- Let U_V be the span of the actual Vallée target supports, and W_true the space of rational-only
+  vectors realised by *genuine* certificate squares. These are combinations of LV rows after LV §6's
+  extra combinations remove the residual square-class kernel; raw matrix membership is not enough.
+- RK: with probability ≥ L^{−o(1)} over the LV relation set, dim U_V − dim(W_true ∩ U_V) ≤ r = L^{o(1)}.
+- Batch argument: r + 1 Vallée vectors then force a dependency with nonzero Vallée projection.
+- The earlier form ("one Vallée vector is in the span with probability L^{−o(1)}") does not follow from
+  codimension L^{o(1)}: a uniform target gives only 2^{−r}. So the batch form is the right one.
+- RK is plausible on a well-covered support. Full factor-base saturation can fail through uncovered
+  coordinates.
 - **Credit.** RK is the GF(2) analogue of Stange's Hypothesis 3.1 (arXiv 2211.06821: random
   relations generate the relation lattice; she reduces factoring to relation lattices via order-finding
   and notes that NFS relations adapt). It is also the analogue of Hafner–McCurley/Buchmann
@@ -470,16 +516,23 @@ vector lies in the GF(2) row space with probability ≥ L^{−o(1)}.
   (LV §6). Indeed ∏(a − bm) ≡ φ(γ)².
 - RK asserts the reverse inclusion, up to rarely occurring primes.
 
-**Theorem V [conditional; a new combination of known components, cf. Stange 2022, Dixon, Vallée].** Assume RK, and LV relation supply at fixed odd d ≥ 9 and B = L[1/2, 1/√6].
-The supply needs only a first moment, by LV's stochastic deepening; it is the FM-type transfer of §4.1
-without special-q. Assume also the LV §6 adaptation. Then every N is factored in expected time
+**Theorem V [conditional; a new combination of known components, cf. Stange 2022, Dixon, Vallée].**
+Assume:
+- relation supply: LV supply at fixed odd d ≥ 9 and B = L[1/2, 1/√6]. It needs only a first moment,
+  by LV's stochastic deepening; it is the FM-type transfer of §4.1 without special-q;
+- RK in the genuine-certificate deficiency form;
+- the LV §6 square-class postprocessing, adapted to keep a nonzero Vallée projection. Then every N is factored in expected time
 L[1/2, √(2/3) + o(1)].
 - *Cost.* Linear algebra costs L[1/2, 2a]. LV relations cost L[1/2, a + θ/(2a)] with θ = 3/(d+1) ≤ 1/3.
   Vallée relations each cost L[1/2, (2/3)/(2a)], with L^{o(1)} of them. All three are ≤ L[1/2, 2/√6]
   at a = 1/√6.
 - Vallée's sampler: B. Vallée, "Generation of elements with small modular squares and provably fast
-  integer factoring algorithms", Math. Comp. 56 (1991) 823–849. We did **not** re-verify it from the
-  primary text. With uniform Dixon x the same argument gives only c = 1.
+  integer factoring algorithms", Math. Comp. 56 (1991) 823–849.
+  - GPT-6.1-sol checked the pointwise quasi-uniformity (Definition 1, Theorem 5) in the primary paper.
+    We did not read it ourselves.
+  - Vallée's small-factor preprocessing should use Pollard–Strassen, since trial division to
+    L[1/2, 1] would exceed the budget.
+  - With uniform Dixon x the same argument gives only c = 1.
 - Theorem V is unaffected by the HECM correction: its smoothness tests are at B = L[1/2], where
   L_B[2/3] = L_N[1/3].
 - *Proof.* Combine the observation with the cost count. ∎
@@ -606,7 +659,10 @@ The E1x summary was computed inline from `experiments/raw/hypD_e1x.jsonl`; the s
   γ ≥ ρ(u_rat)^{e}L^{−o(1)}, and each descent costs γ^{−2k} more (Theorem S′).
   - Optimize max(2a, a + λke·σ_r/(2a) + max(1/√2, θ/(2a))) over a, odd d and k ≥ (3/4)(d+1), with
     σ_r = s − 1/(4k) and λ = 2.
-  - **e = 3/8 (Pascadi's exponent) gives c ≈ 1.57.** With the LP shape test, c < 1 needs e ≲ 0.028.
+  - **e = 3/8 (Pascadi's exponent) gives c → 1/√2 + √(3/4) = 1.5731** (codex closed form, large-d
+    limit; finite d is worse). With the LP shape test, c < 1 needs **e < 17 − 12√2 = 0.029437**.
+  - With a free shape test the values are √(17/12) = 1.1902 and e < 3 − 2√2 = 0.17157. Our numerics
+    (1.573, ≈ 0.028; 1.192, ≈ 0.165) agree up to finite-d effects.
   - If the shape test were free, these would be 1.19 and ≈ 0.17. The first version reported these
     shape-free numbers as proved; that was wrong twice over.
   - Numbers were checked by us and by a proof critic.
@@ -670,9 +726,9 @@ The E1x summary was computed inline from `experiments/raw/hypD_e1x.jsonl`; the s
 
 ## 9. Reviews
 
-- **GPT-6.1-sol: PENDING.** The blind prompt `codex/hypD_1.md` and the adversarial prompt
-  `codex/hypD_2.md` are written. Neither could run (Codex login expired, 401). **Every result here
-  still awaits GPT-6.1-sol review.**
+- **GPT-6.1-sol adversarial review: DONE** (`codex/hypD_2.out`). No fatal error. Every proved claim was
+  judged CORRECT or CORRECT WITH FIXES, and all fixes are applied (§9.2).
+- The blind round `codex/hypD_1` was still running at this commit.
 - **Opus literature subagent:** supplied §8.
 
 ### 9.1 Opus critics: four independent read-only reports, adjudicated
@@ -734,6 +790,33 @@ except where noted.
   Design V dependency count and Theorem V's cost count, the PC_rat identity, and "D_k ⇒ complete
   descents in one field".
 - Wrong as first stated: K(iii), the Corollary K cost, and Prop P.
+
+### 9.2 GPT-6.1-sol adversarial round (hypD_2): findings and adjudication
+All findings were accepted.
+- **Verdicts.**
+  - CORRECT: Lemma Ω; Theorem S/S′; K(i); PZ, with N_ℓ counting capped, certified candidates.
+  - CORRECT WITH FIXES: K(ii) (|G_A| ≥ 4k²); K(iii) (accept "at most k" primes); Corollary K (limits
+    are infima over growing fixed k); Prop G (scope (iii) to the counting template; D = |Δ| exactly);
+    Prop P as a hypothetical (closed forms 1.5731 and 0.029437); the Design V observation (the
+    pointwise bound gives ≥ 1/(2κ); convolution unnecessary).
+  - CORRECT, conditionally: Theorem V's cost, given relation supply, RK and postprocessing.
+- **(a) Uniformity.** Growing-k conditions k log log N = o(T) and k log(1/γ) = o(T). Irregular lattices
+  and the finite-interval error belong inside the moments. The field-selection repair ("retain the first
+  field whose attempt succeeds", E[1/q | kept] ≤ 1/μ) is adopted. The LP shape cost is an upper bound
+  only.
+- **(b)** D_k ⇒ complete descents in one field: **confirmed**, and the complementary-types objection is
+  genuinely answered, provided G_A means certified, capped success.
+- **(c) FM.** Plausible transplant, not established. "No new idea expected" withdrawn.
+- **(d) PC.** The identity is confirmed. The 2D kernel needs H ≫ V². RBDH′ alone is not a completed
+  sufficient condition.
+- **(e) Design V.** Vallée's quasi-uniformity was checked in the primary paper. RK is reformulated as a
+  genuine-certificate deficiency with a batch argument. LV §6's residual kernel must preserve a nonzero
+  Vallée projection.
+- **Most promising route (codex).** Prove the genuine-certificate RK, dim U_V − dim(W_true ∩ U_V) ≤ L^{o(1)}
+  with probability L^{−o(1)}. That avoids both special-q FM and binary PC_rat. The proof target is
+  uniform rank growth against every surviving dual obstruction, or a classification showing that only
+  L^{o(1)} of them survive. Fixed-test first moments will not suffice. We agree this is the clearest
+  route to the conditional √(2/3).
 
 ## 10. Candidate cards
 ```text

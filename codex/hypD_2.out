@@ -1,0 +1,156 @@
+The bounded-\(k\) reduction largely survives. FM, PC and RK remain substantial unproved inputs; the notes do not establish a factoring algorithm below \(c=1\). I found additional formulation gaps and a small optimisation correction. Repository unchanged.
+
+I reviewed the current [hypD notes](/Volumes/git/factoring-connection/notes/hypD_results.md) against [lemmaM](/Volumes/git/factoring-connection/notes/lemmaM_results.md), including the revised claims that supersede the numbers in your prompt.
+
+| Claim labelled proved | Verdict | Reason |
+|---|---|---|
+| Lemma \(\Omega\) | **CORRECT** | Trial division to the stated \(y_0\) costs \(L^{o(1)}\); the resulting bound on \(\omega(N)\) makes \(2^\omega=L^{o(1)}\). |
+| Theorem S, including S′ | **CORRECT** | Character positivity and the gcd-multiplicity bound work. S′’s combinatorial energy estimate also works. The algorithmic assertion needs the stated \(2Y^2<N\), together with unit/gcd checks. |
+| Theorem K(i) | **CORRECT** | Elementary reverse Markov. |
+| Theorem K(ii) | **CORRECT WITH FIXES** | Add \(|G_A|\ge k\), or the stronger \(|G_A|\ge4k^2\) used later. As written, \(0<|G_A|<k\) gives a positive lower bound for an empty product set. Good fields eventually satisfy the stronger condition. |
+| Theorem K(iii) | **CORRECT WITH FIXES** | The LP shape-test upper bound is right. But “exactly \(k\) distinct primes” is not divisor-closed: cancelling \(\gcd(u,v)\) can remove primes. Accept products of **at most** \(k\) distinct primes on each side. This preserves the claimed asymptotic cost. |
+| Corollary K: \(\theta(d,k)\) and optimisation | **CORRECT WITH FIXES** | The size formula and \((1+\theta)/\sqrt2\) optimisation are correct, with strict parameter slack and an explicitly assumed LV postprocessing adaptation. The displayed numerical limits are infima over increasingly large **fixed** \(k\), not attained constants at finite \(k\). |
+| Prop PZ | **CORRECT** | Provided \(N_\ell(A)\) counts candidates actually covered by the capped search and yielding valid certificates. Existence somewhere outside the cap would not suffice. |
+| Prop G | **CORRECT WITH FIXES** | The lattice obstruction is real, but (iii) concerns the specified unconditioned counting template. It is not a lower bound on every possible PC argument. In fact, here \(D=|\Delta|\), strengthening (i). |
+| Prop P, §7.4 | **CORRECT WITH FIXES** as a hypothetical calculation | The published Pascadi application is inapplicable. The revised cost calculation is essentially right; its limiting LP threshold is \(0.029437\), rather than approximately \(0.028\). |
+| Design V observation | **CORRECT WITH FIXES** | The dependency dimension formula works. Quasi-uniformity does not imply exact fibre symmetry. However, its pointwise lower bound already gives constant fruitfulness; convolution is unnecessary. |
+| Theorem V’s cost | **CORRECT** conditionally | \(\sqrt{2/3}\) follows from the displayed three costs. The theorem still needs relation supply, a suitably formulated RK, and valid square-class postprocessing retaining a Vallée contribution. |
+
+**(a) Uniformity and hidden losses.** Write \(T=\sqrt{\log N\log\log N}\). For fixed \(d,k\), the factors
+\[
+2^\omega,\quad(\log N)^{O(k)},\quad c_k,\quad\gamma^{-4k}
+\]
+are indeed \(e^{o(T)}\), uniformly if the hypothesis on \(\gamma\) is uniform. For growing \(k\), the actual requirements include
+\[
+k\log\log N=o(T),\qquad k\log(1/\gamma)=o(T).
+\]
+Merely writing \(\gamma=L^{-o(1)}\) does not establish the second condition.
+
+The irregular-lattice estimate also needs its finite-interval error: \(m\) is sampled from an interval, not uniformly modulo \(\ell\). The FM regime supplies polynomial room \(M\gg\ell\), so this is repairable. Excluding irregular lattices must be incorporated into the moment estimates, rather than justified solely by an unconditional probability bound.
+
+The field-selection algorithm is insufficiently specified. Starting with \(\tau=L^{-1}\) and halving its exponent can spend a main-scale factor before finding the useful rate. A clean repair avoids estimating that rate: sample fresh fields until one capped attempt succeeds, then retain that field. If \(q_A\) is its success probability and \(\mu=E q_A\), the retained field has law proportional to \(q_A\), and
+\[
+E[1/q_A\mid\text{retained}]
+=\Pr(q_A>0)/\mu\le1/\mu.
+\]
+Thus \(C\) further successes have the required expected cost when \(\mu=L^{-o(1)}\).
+
+Finally, LP supplies an available **upper bound** for shape testing. No lower bound proves the notes’ stronger wording that every rigorous shape test must pay that cost.
+
+**(b) Does \(D_k\) imply complete descents? Yes, after the above repairs.**
+
+For at least a \(\gamma/2\) proportion of fields, \(g_A\ge\gamma/2\). In each such field, S′ gives
+\[
+q_A\ge \gamma^{2k}L^{-o(1)}.
+\]
+Every prime remaining after cancellation belongs to that field’s \(G_A\), so all searches succeed in the same field.
+
+This genuinely answers lemmaM_2’s complementary-field-types counterexample. The construction counts splits entirely within each field’s own good set. It never multiplies marginal probabilities for the original unrestricted split law.
+
+The implication requires \(G_A\) to mean **certified, capped descent success in an admissible field**. A first moment counting smooth norm values alone does not supply that certification. With the common column set and postprocessing assumptions made explicit, DD then applies: all acceptance and dependency choices depend on exposed squares and certificates, preserving hidden-root randomness.
+
+**(c) FM: plausible transplantation, not an established transfer.**
+
+[LV Lemma 8.5](https://arxiv.org/pdf/1805.08873) is stated for smooth moduli. Its maximum over reduced residue classes accommodates moving residues; its modulus restriction does not accommodate \(\ell s\) directly.
+
+The sketch identifies a useful fact: a conductor containing \(\ell>B\) is polynomially large for fixed \(k\), so it can enter the large-conductor range. But several steps remain:
+
+- The smooth variable has length \(Q/\ell\), not \(Q\). The restricted character weights involve smooth densities at \(Q/(\ell r)\). They are not literally LV’s sums multiplied by a common \(\sum_\ell1/\ell\).
+- The induced multiplicities of \(t=a-bm\), after primitivity, box restrictions and rational smoothness, need explicit bounds. Counting bad moduli without these weights is insufficient.
+- Coprimality, signs, changing value ranges and boundary errors need uniform treatment.
+
+The actual large-conductor input contains
+\[
+\sqrt{\Psi(x,B)}
+\bigl(Q+x^{1/2-\eta}\log^2x\bigr)\log^{7/2}x,
+\]
+not just the \(Q\sqrt\Psi\) term quoted in the sketch. Fixed polynomial slack can absorb it, but the comparison must be made against the restricted family’s main term. See [Harper, Proposition 2](https://arxiv.org/pdf/1208.5992).
+
+The published [de la Bretèche–Drappeau theorem](https://drappeau.perso.math.cnrs.fr/documents/friable-consec-jems-prefinal-fix1.pdf) cannot simply be cited: setting \(q_0=\ell\), \(y_2=B\) violates \(P^+(q_0)\le y_2\), and its \(e^{O(u_2)}(\log x)^{-A}\) error provides no relative saving here. Raising \(y_2\) to include \(\ell\) enlarges the modulus family and loses the sparse-family information.
+
+I would retain “sketch”, but withdraw “no new idea expected” until the weighted argument is written.
+
+**(d) PC: the identity is right; the proposed algebraic reduction needs more work.**
+
+With \(s=(a-bm)/\ell\),
+\[
+b's-bs'
+=\frac{b'(a-bm)-b(a'-b'm)}{\ell}
+=\frac{\Delta}{\ell}.
+\]
+The sign is correct. The rational problem is therefore a binary smooth-values problem along a line.
+
+The rational/algebraic decomposition is useful bookkeeping, but their averaged bounds cannot simply be multiplied. The algebraic estimate must hold under the weights and conditioning created by rational smoothness, with varying marginal probabilities accounted for.
+
+There is an additional obstacle to the proposed two-dimensional kernel argument. For primitive point pairs,
+\[
+[\mathbb Z^2:\Gamma]=|\Delta|.
+\]
+One proof sends the first primitive point to \((1,0)\) by an integral unimodular change of variables and takes the gcd of the transformed minors.
+
+Already for \(d=3\), the primitive coefficient-kernel vector is
+\[
+(bb',\;-(ab'+a'b),\;aa').
+\]
+For points of size \(V\), this generally has size \(V^2\). Thus the one-dimensional smoothing requirement \(H\gg V\) does **not** justify the proposed joint smoothing. A kernel-based proof needs further height or geometry control; \(H\gg V^2\) is the natural scale to investigate.
+
+RBDH′ also needs correct local main terms for nonreduced residue classes, or an explicit restriction to reduced classes, plus the actual pair multiplicities and value windows. Consequently, **“PC_alg follows from RBDH′ plus a proved 2D kernel lemma” is a plausible programme; the displayed RBDH′ statement alone is not a completed sufficient condition.**
+
+Prop G correctly exposes a missing arithmetic ingredient. Its \(\ell\)-loss describes the unclipped supremum-density estimate; clipping that estimate at \(1\) changes the literal loss comparison.
+
+For Pascadi, [Corollary 7.2](https://arxiv.org/html/2505.00653v2#S7) requires small coefficients and intercepts relative to the summation length, and coprime leading coefficients. Here that length is \(M/\ell\), while coefficients are about \(\sqrt\ell S\); the intercepts also need checking. The current notes correctly withdraw the application. This establishes inapplicability, not a general lower bound against every use of the theorem.
+
+For the hypothetical coefficient-uniform loss, put
+\[
+z=k/(d+1).
+\]
+In the large-\(d\) limiting optimisation, \(\theta\to1/(4z)\), \(z\ge3/4\), and the stated objective becomes
+\[
+\max\!\left\{2a,\;
+a+\frac{e(2z-\tfrac12)}{2a}
++\max\!\left(\frac1{\sqrt2},\frac1{8za}\right)\right\}.
+\]
+I obtain:
+
+| Model | Infimum at \(e=3/8\) | Limiting threshold for \(c<1\) |
+|---|---:|---:|
+| LP shape test | \(1/\sqrt2+\sqrt{3/4}=1.573132\) | \(e<17-12\sqrt2=0.0294373\) |
+| Free shape test | \(\sqrt{17/12}=1.190238\) | \(e<3-2\sqrt2=0.171573\) |
+
+Finite fixed degrees worsen these limits. The prompt’s \(1.30/1.17\) and \(0.086\) are superseded; \(0.028\) is conservative rather than the exact limiting threshold.
+
+**(e) Design V: the cost survives, and its probability argument can be simplified.**
+
+I verified the pointwise quasi-uniformity statement in [Vallée’s primary paper, Definition 1 and Theorem 5](https://www.researchgate.net/publication/253163661_Generation_of_elements_with_small_modular_squares_and_provably_fast_integer_factoring_algorithms). It gives absolute upper and lower sampling constants. It does not assert exact invariance under \(x\mapsto\varepsilon x\).
+
+Nevertheless, conditional on a unit square \(z\), every root has probability at least \(1/(\kappa2^\omega)\). For a valid dependency containing that row, this yields
+\[
+\Pr(\text{fruitful})\ge
+\frac{2^\omega-2}{\kappa2^\omega}
+\ge\frac1{2\kappa}.
+\]
+That is sufficient. Keep the sampler’s root-dependent internal transcript hidden from dependency selection. The convolution argument is valid under its independence conditions, but unnecessary.
+
+Two RK formulations must be distinguished:
+
+- Codimension \(r=L^{o(1)}\) does not imply that one target lies in the span with probability \(L^{-o(1)}\). Even a uniform target would give \(2^{-r}\).
+- The same codimension bound **does suffice for a batch argument**: \(r+1=L^{o(1)}\) Vallée vectors force a dependency with nonzero Vallée projection, provided the ambient space contains their support.
+
+Appending zero algebraic character coordinates is correct for the target certificate \((q,1)\). However, [LV §6](https://arxiv.org/pdf/1805.08873) leaves a small residual square-class kernel and uses additional combinations. Raw matrix membership is therefore not automatically a genuine certificate square. The adaptation must preserve a nonzero Vallée projection while removing that residual obstruction.
+
+With that repaired interpretation,
+\[
+c=\max\left\{2a,\ a+\frac{3/(d+1)}{2a},\ \frac1{3a}\right\}
+=\sqrt{2/3}
+\]
+at \(a=1/\sqrt6\), \(d\ge9\). If invoking Vallée’s counting theorem with its stated small-factor preprocessing, use Pollard–Strassen: trial division to \(L[1/2,1]\) would exceed this budget, whereas the square-root preprocessing cost does not.
+
+RK is plausible on a carefully specified, well-covered support. I see no counterexample to that version. Full factor-base saturation can fail through uncovered coordinates; support coverage alone also does not exclude additional arithmetic annihilators. The toy rank experiments establish neither uniform saturation nor the required target overlap.
+
+**The single most promising route** is a weakened, genuine-certificate version of RK:
+\[
+\dim U_V-\dim(W_{\mathrm{true}}\cap U_V)\le L^{o(1)}
+\]
+with probability \(L^{-o(1)}\), where \(U_V\) spans the actual Vallée target support.
+
+This suffices through the batch argument and avoids both special-\(q\) FM and binary PC_rat. The proof target should be uniform rank growth against every surviving dual obstruction, or a classification showing that only \(L^{o(1)}\) such obstructions remain. Fixed-test first moments will not suffice. It remains difficult, but it offers the clearest route to the conditional \(c=\sqrt{2/3}<1\).
