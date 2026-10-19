@@ -21,9 +21,10 @@ listed: HECM, or Theorem A′ without it; the irreducibility transfer; and the i
 results. Hypothesis LD *for pcest's design (a″_k) itself* remains open, but it is no longer needed.
 
 Status of the proof:
-- it passed an Opus proof critic (no fatal error; fixes applied);
+- it passed an Opus proof critic twice, on the draft and on the revised μ-version (no fatal error; fixes
+  applied);
 - it passed an Opus literature critic (no prior statement found; credits fixed);
-- it passed a GPT-6.1-sol adversarial round (CORRECT WITH FIXES; applied).
+- it passed two GPT-6.1-sol adversarial rounds, ldbound_2 and ldbound_3 (both CORRECT WITH FIXES; applied).
 - GPT-6.1-sol found the same design and proof independently in its blind round.
 - These are internal, unrefereed results.
 
@@ -128,8 +129,10 @@ Then θ = θ_μ := (μ − ν) + (μ + h + dν) = 2μ + h + (d−1)ν. For μ = 
 Then F_A := F̂_{g,w} + G_g·R_c, where F̂_{g,w} is pcest Lemma GB applied to the integer N·w. So
 F_A(g₀, g₁) = N·w.
 - **Gcd checks.**
-  - If gcd(ℓ, N), gcd(w, N), gcd(g₁, N) or gcd(G(P), N) is > 1, it is a proper factor, since all four
-    numbers are < N, and the algorithm halts.
+  - A gcd strictly between 1 and N gives a factor, and the algorithm halts. This applies to gcd(ℓ, N),
+    gcd(w, N), gcd(g₁, N) and gcd(G(P), N).
+  - A gcd equal to N leads to skipping (rejection). In Theorem A‴'s regime θ ≤ 1, all four numbers are < N
+    for large N, so this case does not occur there.
   - Since w is prime, gcd(w, N) > 1 means w | N.
   - ψ: x ↦ g₀g₁^{−1} (mod N) is well defined on Z[x]/(f), since g₁^d f(g₀/g₁) = Nw ≡ 0.
 - **Candidates and counting** are exactly as in (a″_k): the special-q lattices, the filter
@@ -188,7 +191,7 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
 
 - **Lemma 1.3, Lemma Q, Lemma DS, Theorem R, Lemma Kern.** These involve only the rational form, the
   candidate set and the linear map c ↦ (⟨c, v⟩, ⟨c, v′⟩). Their proofs use M only through
-  M/V ≥ N^{μ−ν} → ∞ polynomially. **Unchanged** [proved there].
+  M/V = N^{μ−ν+o(1)} → ∞ polynomially. **Unchanged** [proved there].
   - Lemma Kern needs H ≥ V², which the Kern floor gives.
   - Theorem R needs S² ≥ ρ_r^{−2}, which holds as in pcest.
 - **Prop 4.2.** It contains F̂ through its windows and lift classes. Its proof is uniform under arbitrary
@@ -216,14 +219,20 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
     coefficient is a_d + g₁c_{d−1}. For fixed (g, w, P), the constraint removes one class of the kernel
     parameter modulo each p | N with p ≠ b, so Möbius inversion keeps a fraction ≥ φ(N)/N − o(1) ≫ 1/log N
     of each kernel-fibre count. This is codex blind §4's argument: its scalar-kernel basis carries the
-    leading coefficient in the first parameter, with step g₁b.
+    leading coefficient in the first parameter, with step g₁b. The kernel-parameter intervals have
+    polynomial length H/V.
+  - Restricting g₁ to units mod N works the same way on the rational fibres, which have polynomial length
+    M/V. Both conditions hold for every admissible μ (codex ldbound_3).
   - Conclusion: E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}, with or without the restriction.
   - No step of FM uses F(g₀, g₁) = N exactly. It uses only Lemma 1.2_w, the coprimality (1.1) and the
     size bound (codex ldbound_2 concurs).
 - **Irreducibility.** The LV Lemma 5.1 transfer reads as in pcest §1, with the affine family
   f̂_{g,w} + (g₁x − g₀)Z[x]_{d−1} and the value condition ĝ(g₀, g₁) ≡ Nw (mod r) for r ∤ g₁Nw.
-  - It is still checked only at the level of statements, now for a constant coefficient of size
-    ≈ Nw/M^d ≤ H·N^{−η₀/2}.
+  - It is still checked only at the level of statements, now for a constant coefficient
+    |a₀| ≪_d M + Nw/M^d ≪_d MH·N^{−η₀/2}.
+    - This is ≫ H in general. For example, at d = 9, k = 30, μ = 8/75: a₀ ≍ N^{31/200} against H = N^{29/600}
+      (codex ldbound_3).
+    - The assumption must cover this actual scale.
   - Codex's blind round gives a self-contained finite-field (Turán-type) sieve proof for its version of
     the design: Pr(reducible or degree < d) ≤ H^{−1/4+o(1)} uniformly in the other parameters
     (`notes/ldbound_codex1_report.md` §4). We record it, not as a replacement for the assumption.
@@ -243,12 +252,13 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
   Pr_w[w ≡ a (mod t)] ≤ C_W/φ(t),  with C_W := 24/η₀.
 *Proof.*
 - If (a, t) > 1 the probability is 0.
-- Otherwise the count is ≤ π(2W; t, a) ≤ 4W/(φ(t) log(2W/t)). Divide by W/(2 log W).
-- log W ≤ log N, because θ ≤ 1 forces μ ≤ 1/2 and hence μ + ν + η₀/2 ≤ 1. In general
-  C_W = 24(μ + ν + η₀)/η₀ works. Also log(2W/t) ≥ (η₀/2) log N − O(Λ) ≥ (η₀/3) log N. ∎
-- The interval form of BT would give about 12/η₀ (literature critic).
-- Choosing W/(2MV_max) and H/W to be suitable fixed powers of L, instead of N^{η₀/2}, would make the slack
-  o(1) at a polylogarithmic cost in C_W (codex). This changes no exponent.
+- Otherwise, by the interval form of BT (y = W), the count is
+  π(2W; t, a) − π(W; t, a) < 2W/(φ(t) log(W/t)).
+- Divide by W/(2 log W). This gives Pr ≤ 4 log W/(φ(t) log(W/t)).
+- Since μ < 1, log W ≤ 2 log N. And log(W/t) ≥ (η₀/2) log N − O(Λ) ≥ (η₀/3) log N.
+- Hence Pr ≤ 24/(η₀φ(t)). ∎ (Proof repaired after codex ldbound_3; the first version needed μ ≤ 1/2.)
+- Choosing W/(2MV_max) and HM^{d+1}/(NW) to be suitable fixed powers of L, instead of N^{η₀/2}, would make the
+  slack o(1) at a polylogarithmic cost in C_W (codex). This changes no exponent.
 (Exact toy check: `bt_ratio`.)
 
 **Corollary W [proved].** Let (ℓ, P, g) satisfy the hypotheses of (1.1), and let Φ: Z/t → [0, ∞) be fixed
@@ -348,7 +358,8 @@ All are small. `params.margins` checks the exponents.)
     to 1/ϱ(ℓ², B) = L^{Θ(1)}, since Burgess-type bounds are far above B = ℓ^{o(1)} (cf. Soundararajan,
     CRM Proc. 46 (2008); Harper 2012).
 - **Codex's blind proof is different.** Its Theorem AR (`notes/ldbound_codex1_report.md` §3) proves the
-  same statement through multiplicative characters: induced-character multiplicities, Harper's Prop. 1
+  needed bound, in a harmonic q-average form (not uniformly in each q), through multiplicative characters.
+  It uses induced-character multiplicities, Harper's Prop. 1
   and zero-density results for the ℓ, ℓ² conductors, and exact gcd layers for non-reduced classes. Its
   worst exponent is the same, h + (d−5)ν > 0. The additive route above avoids the induced-character
   bookkeeping.
@@ -451,8 +462,8 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
   - fibre divisor switching.
   Its multiplier is z uniform in [1, N^h] with F = zF̂ + GR, rather than a prime w. Non-unit z then needs
   exact gcd layers, and FM needs a new scalar-kernel lower bound, because the offset is as large as the
-  window (`notes/ldbound_codex1_report.md` §§4–5). The prime w, kept polynomially below H/M^{d−1}, avoids
-  both.
+  window (`notes/ldbound_codex1_report.md` §§4–5). The prime w, kept polynomially within the window condition
+  w ≪ HM^{d+1}N^{−1−η₀/2}, avoids both.
 
 ## 6. Theorem A‴
 
@@ -469,7 +480,7 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
   - **HECM's running-time theorem**, as in pcest. Theorem A′ replaces HECM by Pollard–Strassen, at the
     constants of the table; this also needs LV6 without HECM.
   - **The LV Lemma 5.1 irreducibility transfer**, at the level of statements, now with constant
-    coefficient ≈ Nw/M^d.
+    coefficient |a₀| ≪ M + Nw/M^d ≪ MH·N^{−η₀/2}.
   - **The internal, unrefereed hypD/lemmaM results** used by pcest's Theorem A: Theorems K, S′ and DD.
 - **Conclusion.** Every N is factored in expected time L_N[1/2, (1 + θ)/√2 + o(1)].
 - Optimizing μ gives the table. The infimum is (1 + 3/(d+1))/√2: d = 9 gives 0.9192, d = 11 gives 0.8839,
@@ -482,6 +493,45 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 - T_SQ = S²L^{o(1)} = L^{θ/(2a)+o(1)}.
 - The cost is max(a + 1/√2, a + θ/(2a), 2a) = (1+θ)/√2 at a = θ/√2.
 - Sampling w costs (log N)^{O(1)} per field. ∎
+
+### 6.1 Combining with agent `lv6` (Prop LV6 for (a″_k), HECM removed): the transfer to (a‴_k; μ)
+
+Agent `lv6` (notes/lv6_results.md, read-only for us) proves Prop LV6 for design (a″_k). It removes HECM by
+batch smoothness per special-q box (its Prop BS), and replaces the LV 5.1 transfer by its Lemma IR. Its
+checklist marks LD as the only open item.
+
+We checked each place where lv6 uses F(g₀, g₁) = N or M = N^{1/(d+1)}.
+[Transfer checked by inspection of lv6's statements and proofs; reviewed in §8.6.]
+
+| lv6 item | use of the design | in (a‴_k; μ) |
+|---|---|---|
+| ψ: Z[β] → Z/N, β ↦ t g₀g₁^{−1} (§1) | g(tg₀/g₁) = t^{d−1}g₁^{−d}F(g₀, g₁) | = t^{d−1}g₁^{−d}·Nw ≡ 0 (mod N). Unchanged. |
+| ψ(z_P) = t·G(P)/g₁, Norm(z_P) = t^{d−1}F(a, b) | none | unchanged |
+| degree drop impossible: f_d ≡ a_d ≡ Ng₀^{−d} ≢ 0 (mod g₁) | value at (g₀, g₁) | a_d ≡ Nwg₀^{−d} ≢ 0 (mod g₁), since w > M ≥ g₁ is prime (Lemma GB_w) |
+| content(f) > 1 ⟹ proper factor (content \| N) | content \| F(g₀, g₁) | **Changed.** The content e divides Nw. If gcd(e, N) > 1 it gives a proper factor. Otherwise e ∈ {1, w}. **New rejection:** e = w. Then w \| a_d + g₁c_{d−1}, which for fixed (g, w, c₀, …, c_{d−2}) holds for at most ⌈(2H+1)/w⌉ values of c_{d−1}. So Pr ≤ (1 + (2H+1)/w)/(2H+1) ≤ 2/(2H+1) + 1/w = N^{−Ω(1)}. If e = w, every F(P) is divisible by the prime w > B, so the field yields no relation anyway. |
+| Lemma IR | for r ∈ 𝒫 (r ≤ ½ log H), v_r = Ng₁^{−d} ≠ 0 (mod r) | v_r = Nwg₁^{−d}. It is ≠ 0 because r < B < w and N has no prime factor ≤ B. The near-uniformity and the counting use c only. Unchanged. |
+| N \| f′(m) | f′(m) ≡ f̂′(m) + g₁R_c(m), c_{d−1} has coefficient 1, 2H + 1 < N | unchanged (θ ≤ 1 gives 2H + 1 < N) |
+| scope 0 < \|t\|, content, 2H+1 < N; ‖f‖ = N^{O(1)} | sizes | ‖f‖_∞ ≪ M + Nw/M^d + MH ≪ MH < N for θ ≤ 1. Discriminants and the index are N^{O(1)}. Unchanged. |
+| Lemma H (bad primes, units, Cl[2], index inside H), Lemmas C, E, X, SQ, Wiedemann | only d fixed and N^{O(1)} sizes | unchanged |
+| g₁-parity column | non-monic pair (f, g₁x − g₀) | unchanged; w enters no relation |
+| transcript invariance (T) | post-processing never sees hidden roots | w is drawn from fresh coins with the field. Unchanged. |
+| order of argument: moments under 𝒜, then rejections (γ → γ/2), then Theorem K | the law | identical to our §1. The new rejection (e = w) has probability N^{−Ω(1)} = o(γ). |
+| Prop BS (batch smoothness per box of ≤ C_abs S² candidates) | Lemma 1.3, sizes N^{O(1)} | unchanged |
+
+**Consequence [proved modulo the internal results listed].**
+- Combining Theorem LD* (here) with lv6's Prop LV6 and Prop BS, as transferred above, Theorem A‴ holds
+  **without the LV6 and HECM hypotheses**.
+- Every N is factored in expected time L_N[1/2, (1 + θ)/√2 + o(1)], with θ = min_μ θ_μ(d, k) (table). The
+  infimum is 0.9192 at d = 9.
+- What it still rests on:
+  - published theorems: Lenstra–Pomerance 1992 for the shape test, Harper 2012 / LV §8, Montgomery–Vaughan,
+    Hildebrand, Tenenbaum, Stark, Lagarias–Odlyzko, Wiedemann / Kaltofen–Saunders;
+  - this project's **internal, unrefereed** results: hypD Theorems S′ and K, lemmaM Theorem DD, pcest §1–§4,
+    lv6 §2–§6, and this note.
+- **Effectivity.** The constants (Stark, Landau, Lagarias–Odlyzko) make "N ≥ N₀" effective but enormous
+  (lv6).
+- This is a statement about this project's internal proofs. It is not a certified result. An external
+  referee check of the whole chain is the obvious next step.
 
 ## 7. Design (a″_k): what remains open
 
@@ -516,7 +566,7 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
     form, codex blind (3.13)).
   - The pcest §4.3 premise "representation count ≈ K on a set of measure ≈ 1/K" holds only without
     primitivity or the filter.
-- (c) Discarding the partner weight costs 1/ρ_r = L^{Θ(1)} in this argument. Keeping it requires Prop 7.1.
+- (c) Discarding the partner weight costs 1/ρ_r = L^{Θ(1)} in this argument. Prop 7.1 is a sufficient estimate that retains it.
   - Codex gives a model in which marginal all-residue control is exact but the partner-weighted energy is
     1/ρ_r times too large. So marginal estimates alone cannot imply Prop 7.1.
   - The model is not an arithmetic disproof of LD for (a″_k).
@@ -527,7 +577,7 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 - **Hypothesis.** A design randomizes the forced residue by F(g₀, g₁) = Nw, with w ∼ μ_w independent of
   the rational data, and wants E_w Φ(c_Pw) ≤ (λ/φ(t))ΣΦ for every Φ ≥ 0 on Z/t.
 - **Conclusions.**
-  - μ_w(w ≡ a (mod t)) ≤ λ/φ(t) (take Φ an indicator), so #supp ≥ φ(t)/λ and max|w| ≥ φ(t)/λ − 1 = t^{1−o(1)}
+  - μ_w(w ≡ a (mod t)) ≤ λ/φ(t) (take Φ an indicator), so #supp ≥ φ(t)/λ and max|w| ≥ ½(φ(t)/λ − 1) = t^{1−o(1)} (signed w)
     when λ = L^{o(1)}.
   - F(g₀, g₁) = Nw with g₀, g₁ ≤ M forces max|a_i| ≥ Nw/((d+1)M^d). By norm equivalence on binary forms over
     the candidate region, sup_P |F̂(P)| ≥ c_d(Nw/M^d)V^d.
@@ -558,13 +608,13 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 
 | Result | Opus proof critic | Opus literature critic | codex ldbound_2 (adversarial) | codex ldbound_1 (blind) | codex ldbound_3 (final) |
 |---|---|---|---|---|---|
-| Lemma GB_w, sizes, Lemma 1.2_w, (1.1) | CORRECT (F1 fixed) | — | CORRECT; (1.1) scope fixed | same device, independently | see §8.5 |
-| FM re-check | CORRECT | — | CORRECT WITH FIXES | own FM proof for its design | see §8.5 |
-| Lemma W, Cor. W | CORRECT (F1) | standard; citation OK | CORRECT; scope fixed | analogous (uniform z) | see §8.5 |
-| Theorem L2_fam | CORRECT WITH FIXES (F2, F4) | not in the literature; routine combination; credits added | CORRECT WITH FIXES (envelopes, citation) | independent proof (Theorem AR) | see §8.5 |
-| Theorem LD* | CORRECT (F1) | — | CORRECT WITH FIXES | independently proved | see §8.5 |
-| Theorem A‴ | correct conditional reduction | prior-art search: none | correct conditional reduction | same conclusion | see §8.5 |
-| μ-optimized design | — (introduced after) | — | proposed by codex | — | see §8.5 |
+| Lemma GB_w, sizes, Lemma 1.2_w, (1.1) | CORRECT (F1 fixed) | — | CORRECT; (1.1) scope fixed | same device, independently | CORRECT WITH FIXES (applied) |
+| FM re-check | CORRECT | — | CORRECT WITH FIXES | own FM proof for its design | CORRECT WITH FIXES (applied) |
+| Lemma W, Cor. W | CORRECT (F1) | standard; citation OK | CORRECT; scope fixed | analogous (uniform z) | CORRECT WITH FIXES (applied) |
+| Theorem L2_fam | CORRECT WITH FIXES (F2, F4) | not in the literature; routine combination; credits added | CORRECT WITH FIXES (envelopes, citation) | independent proof (Theorem AR) | CORRECT WITH FIXES (applied) |
+| Theorem LD* | CORRECT (F1) | — | CORRECT WITH FIXES | independently proved | CORRECT WITH FIXES (applied) |
+| Theorem A‴ | correct conditional reduction | prior-art search: none | correct conditional reduction | same conclusion | CORRECT WITH FIXES (applied) |
+| μ-optimized design | re-check: CORRECT WITH FIXES (rejection bookkeeping) | — | proposed by codex | — | CORRECT WITH FIXES |
 
 ### 8.1 Opus proof critic (all accepted)
 - **Bottom line.** No fatal error. All losses are polylogarithmic, or O(1) from C_W; there is no L^ε or
@@ -654,8 +704,28 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
   piece (i) via characters and Harper's Prop. 1 rather than the additive large sieve.
 - **Adopted.** Props 7.2(b) and 7.4, and the caveats on leading coefficient and content in LV6.
 
-### 8.5 GPT-6.1-sol ldbound_3 (re-check of this final version)
-*(see `codex/ldbound_3.out`; adjudication below)*
+### 8.5 GPT-6.1-sol ldbound_3 (re-check of the revised version; all accepted)
+- **Verdict.** CORRECT WITH FIXES.
+  - "LD* is proved for (a‴_k; μ); the factoring theorem follows conditional on LV6 for the new and
+    selected field laws, together with the explicitly listed caveats."
+  - The μ-generalization introduces no new analytic obstruction. Every pcest input transplants: FM's four
+    steps, Lemma 8.5′'s ranges, Theorem R's covering, Lemma 1.3, Kern, and L2_fam's four margins.
+  - The constants, the closed-form optimizer and the A′ values were recomputed independently.
+- **Closed form of the optimum.**
+  - For k < (d²+1)/4: μ_opt = (1−ν)/d and θ = 2/d + ((d²+d−2)/d)ν.
+  - For k ≥ (d²+1)/4: μ_opt = (1+(d−1)ν)/(d+1) and θ = 3/(d+1) + ((4d−2)/(d+1))ν.
+- **Fixes applied.**
+  - M/V = N^{μ−ν+o(1)}, not ≥.
+  - The constant coefficient is |a₀| ≪ MH·N^{−η₀/2}, not ≤ H·N^{−η₀/2}. The irreducibility caveat now covers
+    this scale.
+  - Fixed-base remnants: the window condition is w ≪ HM^{d+1}/N, and the slack remark uses HM^{d+1}/(NW).
+  - Lemma W's proof uses the interval form of BT and log W ≤ 2 log N. The constant 24/η₀ stands.
+  - The gcd = N branch.
+  - Irreducibility rejection is separated from the unit-leading-coefficient restriction; the latter goes
+    inside FM, together with g₁ units on fibres.
+  - Prop 7.2(c) no longer claims necessity.
+  - Prop 7.3 has the factor ½ for signed w.
+  - Theorem AR is credited as a harmonic q-average.
 
 ## 9. Candidate cards
 
