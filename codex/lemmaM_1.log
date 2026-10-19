@@ -1,0 +1,1852 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/lemmaM_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a150b2-c5e0-7922-b8d4-e800f881333a
+--------
+user
+# lemmaM round 1 (blind): fruitfulness, averaging over N, involutions, fruitfulness-free routes
+
+You are a research mathematician in analytic and algorithmic number theory. Work independently and be precise. Label every claim KNOWN (with exact citation), PROVED (give the proof), HEURISTIC, or SPECULATIVE. Do not overclaim. Scratch files go in the current directory only. Use web search for the literature parts.
+
+## Background (established in this project; you may rely on it)
+- Lee–Venkatesan (LV), "Rigorous analysis of a randomised number field sieve", J. Number Theory 187 (2018) 92–159, arXiv:1805.08873. They prove: for every n, expected time L_n[1/3,(64/9)^{1/3}+o(1)] to produce x² ≡ y² (mod n). Randomness: m uniform near L(2/3, 1/δ); f = f̂_{n,m} + (x − m y)R(x,y), R with i.i.d. uniform coefficients of size L(2/3, κ−1/δ); pairs (a,b) uniform in a box; HECM smoothness tests; quadratic characters at large random primes; stochastic deepening; uniform kernel sampling. Non-triviality x ≢ ±y is conditional (their Conj. 7.1, Blum n only).
+- Rigorous record otherwise: Lenstra–Pomerance JAMS 1992, L[1/2, 1+o(1)] (class groups). Pomerance 1987 / Dixon: L[1/2, √2]; Vallée: L[1/2, √(4/3)].
+- **Lemma H (proved).** For every odd composite n, fruitfulness Φ(S) = [u(S)/φ(v(S))] ∈ μ₂(Z/n)/{±1} is a group homomorphism on the space K0 of true square dependencies.
+- **Bockstein formula (proved).** Φ(S) = Σ_{i∈S} β_i on K0 for an explicit per-relation bit β, which is half of a 2-power-order character ψ = χ_pχ_q that vanishes mod 2^c on every relation. For Blum n and QS: β(x) = [J_n(x) = −1] (+ a 2-adic term). For Blum n, degree-1 NFS with forms L1, L2 (Res = ±n, |S| even imposed): β = ⌊Ω_T(L1L2)/2⌋ mod 2, T = {ℓ : (ℓ/n) = −1}.
+- **Prop R (proved).** With x the exact square-class vector of a relation (C coordinates, including the |S|-parity column), and δ_w = Pr[β ≠ ⟨w,x⟩] under the kept law, a batch of M i.i.d. kept relations has Pr(Φ ≡ 0 on the batch kernel) ≤ Σ_w (1−δ_w)^M ≤ 2^C(1−δ)^M, δ = min_w δ_w.
+- Hierarchy: Conjecture F (batch-level, Pr[Φ ≢ 0] ≥ L^{−o(1)} under LV's search law) ⇐ Lemma M (δ ≥ L[1/3,−o(1)] on an L^{−o(1)} set of (m,f)) ⇐ an x-preserving, β-flipping, measure-preserving involution on a non-negligible part of the smooth set (Dixon's x ↦ εx is the model case).
+- "Dixon in disguise": a degree-1 two-form sieve with hidden multiplier λ = r² (forms Gauss-reduced from the lattice c ≡ λd mod n) is provably fruitful but has coefficients ~√n, so cost L[1/2, √2]. A globally uniform hidden root has small ratio representatives c/d, |c|,|d| ≤ H, with probability ≤ 4H²·2^ω/φ(n). Appending a single uniform Dixon relation that is smooth over an L[1/3] factor base costs L[2/3].
+- QS obstacle: even the w = 0 case of Lemma M for QS asks that J_n be non-constant on the smooth-weighted interval [√n, √n + L[1/2]], far below the Burgess range.
+
+## Tasks
+1. **Literature (2018–2026; web search).** (a) Any rigorous fruitfulness result, or rigorous L[1/3] factoring, for all n, almost all n, or any non-trivial family. (b) Any rigorous L[1/2, c] factoring with c < 1, or anything improving Lenstra–Pomerance. (c) Rigorous or provable analyses of NFS discrete-log *descent* (individual logarithm / special-q), of any NFS variant at fixed degree in the L[1/2] regime, or of smooth values of random polynomials in sublattices. (d) Heath-Brown's quadratic large sieve (Acta Arith. 1995): exact statement, whether ε-free or log-loss versions exist, and in which ranges of (number of moduli Q, length X) the classical large sieve already gives (Q + X²)-type bounds with no loss. Give exact citations and statements; say explicitly what you could not find.
+2. **Average over N.** Try to prove that, for almost all n in a natural family (ideally balanced semiprimes, or Blum semiprimes, in [X, 2X]), some randomized QS / degree-1 / LV-style NFS is fruitful with probability ≥ L^{−o(1)}. Look for a parametrization in which the n-dependence of the smoothness weights decouples from the character: e.g. LV's (m, f) with n = f(m), so averaging over n is averaging over free (m, f); or n = x² − s in QS; or n = det of the 2×2 coefficient matrix in degree 1. Quantify exactly what the quadratic (or classical) large sieve gives at the relevant lengths, and identify precisely where the argument fails. In particular, address the union over 2^C linear tests w in Prop R: can any averaging argument beat it, given that the LV parameter space has only n^{O(1)} points while C = L[1/3]?
+3. **β-flipping involutions.** Search systematically for smoothness-preserving maps on relation sets that keep the square-class vector and flip β: Galois automorphisms of K; several polynomials sharing the root m (Coppersmith MNFS); twisting by units or S-units; two polynomial pairs sharing relations; GL2 actions on (a,b); conjugation in Q(√n) for QS. Prove that natural classes cannot work (a precise barrier), or exhibit one that does.
+4. **Fruitfulness-free routes.** (a) Can LV-style rigorous relation generation be transplanted into a class-group / ambiguous-form computation (discriminant −kn) at L[1/2, c < 1] or better? What limits Lenstra–Pomerance to c = 1, and can modern smoothness inputs (Harper's smooth numbers in APs, Matomäki–Radziwiłł, Bombieri–Vinogradov for smooth numbers) lower it? (b) Hidden-root injection: any way to obtain Dixon-type relations r² ≡ (factor-base product) with r uniform in its fibre, at NFS-sized cost, so that fruitfulness follows from Dixon's symmetry rather than from Conjecture F? State the cost and exactly which steps are rigorous.
+5. **Best provable statement.** Propose the strongest statement you can actually PROVE that is meaningful for this program (a theorem for a family, a conditional theorem whose hypothesis is strictly more tractable than Conjecture F, or a sharp barrier). Give a full proof. If something is conditional, state the hypothesis as a precise lemma and say why it is (or is not) within reach of known tools.
+
+Output a structured report with a verdict first. As long as needed, no padding.
+
+codex
+I’ll check the literature, then separate what can be proved from the averaging arguments and symmetry barriers. I’ll label claims throughout and make the strongest result I can prove explicit.
+web search: 
+exec
+/bin/zsh -lc "pwd; rg --files -g 'AGENTS.md' -g '*.md' -g '*.tex' -g '*.pdf' -g '*.bib' ." in /Volumes/git/factoring-connection/codex/scratch/lemmaM_1
+ exited 1 in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/lemmaM_1
+
+web search: rigorous number field sieve factoring nontrivial congruence squares Lee Venkatesan Conjecture 7.1 2024 2025 ...
+web search: 
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/lemmaM_1/AGENTS.md; do if test -f "$p"; then cat "$p"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/lemmaM_1
+ succeeded in 0ms:
+web search: "quadratic large sieve" "log" "epsilon" Heath Brown ...
+web search: 
+web search: Heath-Brown mean value estimate real character sums Acta Arith 72 1995 235 275 pdf ...
+codex
+The searches so far still distinguish rigorous NFS relation generation from proved factoring; I haven’t found a result closing the fruitfulness gap. I also found a 2025–2026 paper on an explicit quadratic large sieve bound and am checking its loss term against the scales here.
+web search: 
+web search: "number field sieve" "descent" "provable" ...
+web search: 
+web search: site.arxiv.org "individual" "logarithm" "sublattice" 2023 Pierrot ...
+web search: 
+web search: 
+web search: 
+web search: Harper smooth numbers arithmetic progressions large moduli 2012 theorem ...
+web search: 
+web search: https://math.dartmouth.edu/~carlp/
+web search: 
+web search: "random polynomials" "smooth" "Lee" Venkatesan ...
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import urllib.request
+u='https://arxiv.org/html/2505.09637v2'
+try:
+ data=urllib.request.urlopen(u,timeout=20).read()
+ open('liu_qls.html','wb').write(data)
+ print(len(data))
+except Exception as e:
+ print(type(e).__name__, str(e))
+PY" in /Volumes/git/factoring-connection/codex/scratch/lemmaM_1
+ succeeded in 0ms:
+URLError <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+web search: 
+web search: 'Theorem 1.2'
+codex
+A useful distinction has emerged: for a character sum with fixed weights at short integer arguments, reciprocity and the ordinary large sieve give a loss-free bound at the needed scale. The difficulty is making that apply to sieve relations, whose smoothness weights depend on \(n\), and controlling all linear tests in Proposition R. I’ll keep those two obstacles separate.
+web search: 
+web search: 
+web search: 
+web search: "A RIGOROUS TIME BOUND" "10." "smooth" ...
+web search: 
+web search: "Coppersmith" "Modifications to the number field sieve" 1993 ...
+web search: 
+web search: "fastest" "rigorous" "factorization" "2026" "Pomerance" ...
+web search: 
+web search: 
+web search: 
+web search: Harper "Bombieri–Vinogradov and Barban–Davenport–Halberstam" smooth numbers arxiv ...
+codex
+I can prove two barriers precisely: a fixed character estimate for each test can coexist with complete unfruitfulness for every input, and Galois automorphisms that commute with evaluation preserve fruitfulness. I also checked the newer smooth-number results: Pascadi’s 2025 preprint reaches exponent \(5/8\) in arithmetic progressions, with restrictions on the residue that matter for applying it here.
+web search: 
+web search: "provable" "number field sieve" "2024" "descent" ...
+web search: 
+web search: "2512.01588" ...
+web search: 
+web search: "Rigorous time bound for factoring with elliptic curves" ...
+web search: 
+web search: 'Rigorous time'
+web search: 
+web search: 
+web search: 
+web search: "Barbulescu" "Rigorous time bound" ...
+web search: 
+web search: "hal-03485435" pdf ...
+web search: 
+web search: https://inria.hal.science/hal-03485435/document
+web search: 
+web search: "quadratic large sieve" "remove" epsilon logarithm ...
+web search: 
+web search: "prime number theorem for arithmetic progressions" "Theorem" pdf lecture ...
+web search: 
+web search: Siegel 1935 Über die Classenzahl quadratischer Zahlkörper Acta Arith 1 83 86 ...
+web search: 
+web search: 'Theorem 17.7 (ERH)'
+web search: 
+web search: "Canfield" "Erdos" "Pomerance" "Theorem 1" "1983" smooth ...
+codex
+There is a stronger Galois barrier for LV: their fields have odd degree, so they have no nonidentity field automorphism of order two. I also have a positive averaging theorem for Jacobi signs on a fixed smooth set over balanced Blum semiprimes, together with an arithmetic example showing why that theorem alone cannot control the minimum over tests in Lemma M.
+web search: 
+web search: Matomaki Radziwill "Multiplicative functions in short intervals II" smooth sparse 2023 theorem ...
+web search: 
+web search: https://arxiv.org/html/2502.10530
+codex
+## Verdict
+
+**KNOWN — literature located through 18 October 2026.** I did not find an unconditional \(L[1/3]\) factoring theorem, a proof of LV fruitfulness for almost all balanced semiprimes, or an unconditional general factoring bound \(L[1/2,c]\) with \(c<1\). This is a search result, not a theorem of nonexistence. LV’s factoring conclusion remains explicitly conditional in the paper: Theorem 2.3 assumes Conjecture 7.1. [Lee–Venkatesan, §7 and Theorem 2.3](https://arxiv.org/pdf/1805.08873).
+
+**PROVED below.** There is a useful positive averaging theorem: Jacobi signs are balanced on a fixed set of smooth integers for almost all balanced Blum semiprimes, at the relevant subexponential lengths. Ordinary large sieve methods suffice, without an \(\varepsilon\)-loss. However, even these estimates for **every fixed linear test** can coexist with \(\delta=0\) for **every modulus**. Thus decoupling the smoothness weights is necessary for this approach but does not resolve the adaptive minimum over \(w\).
+
+**PROVED below.** Several proposed symmetries have precise barriers:
+
+- LV’s odd-degree fields admit no nonidentity field automorphism of order two.
+- QS conjugation preserves the actual relation.
+- A primitive degree-one pair of odd determinant has no nontrivial integral linear involution preserving the two forms individually up to signs, apart from simultaneous negation.
+- An explicit square-class-preserving transformation with a fruitful two-relation orbit already yields a factor directly.
+
+**KNOWN — relevant recent progress.** Two developments deserve attention: Pascadi’s \(5/8\) exponent of distribution for smooth numbers, and de Boer–Pellet-Mary–Wesolowski’s rigorous ideal-sampling and class-group algorithms under ERH. Neither currently supplies NFS fruitfulness or the required paired, short-generator special-\(q\) descent theorem. [Pascadi, Theorem 1.5](https://arxiv.org/html/2505.00653), [de Boer–Pellet-Mary–Wesolowski, Theorems 1.1 and 1.3](https://arxiv.org/pdf/2512.01588v2).
+
+I use the project’s Lemma H, Bockstein formula, and Proposition R as **KNOWN — supplied background**.
+
+---
+
+## 1. Literature
+
+### 1.1 Factoring and fruitfulness
+
+**KNOWN.** Lee and Venkatesan, *Rigorous analysis of a randomised number field sieve*, **J. Number Theory 187 (2018), 92–159**, prove their congruence-generation bounds. Their Theorem 2.3 obtains a nontrivial congruence for a fixed Blum semiprime only conditional on Conjecture 7.1. Section 7 also discusses the multiple-polynomial version; it does not eliminate that assumption. [Paper](https://arxiv.org/pdf/1805.08873).
+
+**KNOWN.** Lenstra and Pomerance, *A rigorous time bound for factoring integers*, **J. Amer. Math. Soc. 5 (1992), 483–516**, Theorem 10.5, give expected complete factorization time
+\[
+L_n[1/2,1+o(1)].
+\]
+Their remark following Theorem 10.3 says that Algorithm 10.1 itself has expected time \(L_n[1/2,1+o(1)]\), and changing its smoothness parameter does not improve that constant. This is a limitation of that algorithm, not a lower bound for factoring. [Author’s copy](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+**KNOWN — search outcome.** I found no 2018–2026 paper proving any of the following:
+
+1. unconditional LV/NFS fruitfulness for all inputs;
+2. such fruitfulness for almost all balanced semiprimes or Blum semiprimes;
+3. an unconditional general factoring bound \(L[1/2,c]\), \(c<1\);
+4. an unconditional fixed-degree NFS factoring analysis achieving such a constant.
+
+**KNOWN — verification limitation.** A CANARI bibliography lists Razvan Barbulescu’s *Rigorous time bound for factoring with elliptic curves*, HAL-03485435. I could verify the listing but could not access a theorem statement or manuscript through HAL’s access barrier. I therefore do **not** treat that title as evidence of an improved factoring bound. [Listing](https://canari.math.u-bordeaux.fr/publications/2026.html).
+
+**PROVED — qualification concerning “any family.”** Elementary special families do have better bounds. If \(n=uv\), with \(u,v\) odd and \(u\le v\), Fermat’s method takes at most
+\[
+1+\frac{(v-u)^2}{8\sqrt n}
+\]
+iterations, up to polynomial factors in \(\log n\).
+
+Indeed, the successful value is \(a=(u+v)/2\), and
+\[
+a-\sqrt n
+=\frac{(v-u)^2}{2(u+v+2\sqrt n)}
+\le \frac{(v-u)^2}{8\sqrt n}.
+\]
+Thus sufficiently close-factor families have \(L[1/3]\), or smaller, factoring time. These do not establish fruitfulness of a sieve or an almost-all theorem for balanced semiprimes.
+
+### 1.2 Descent, fixed degree, and polynomial smoothness
+
+**KNOWN.** Haetham Al Aswad and Cécile Pierrot, *Individual Discrete Logarithm with Sublattice Reduction*, arXiv:2309.13048, give rigorous lattice and norm bounds, but their conversion into smoothness-search complexity is conditional. In particular, Theorem 5.2 explicitly assumes that the output norm is uniformly distributed over the relevant integer interval. Under that assumption, a norm bound \(Q^e\) leads to the stated initial-splitting complexity \(L_Q[1/3,(3e)^{1/3}]\). It is not an unconditional special-\(q\) smoothness theorem. [§5.3, Theorem 5.2](https://arxiv.org/html/2309.13048).
+
+**KNOWN.** Barbulescu and Jouve, *ECM and the Elliott–Halberstam conjecture for quadratic fields*, **Acta Arith. 213 (2024), 289–342**, prove conditional smoothness results relevant to NFS initial splitting. Their Theorem 1.2 gives, for a CM elliptic curve and bounded \(u=\log x/\log y\), the asymptotic
+\[
+\psi_E(x,y)\sim \rho(u)\frac{x}{\log x}
+\]
+assuming the stated quadratic-field Elliott–Halberstam conjecture. The \(L[1/3]\) conclusion in Theorem 2.1(2) requires a further extension to a substantially larger growing-\(u,v\) range. This is neither unconditional NFS descent nor an unconditional \(L[1/3]\) splitting analysis. [Theorems 1.2, 1.3 and 2.1](https://arxiv.org/pdf/2212.11724).
+
+**KNOWN.** De Boer, Pellet-Mary and Wesolowski, *Rigorous methods for computational number theory*, arXiv:2512.01588v2, 19 February 2026, provide a genuine new rigorous tool under ERH:
+
+- Theorem 1.1 samples \(\beta\in\mathfrak a\) with
+  \[
+  (\beta)\mathfrak a^{-1}\in\mathcal S\mathcal S_B
+  \]
+  with probability at least \(\delta_{\mathcal S}[r^d]/3-\varepsilon\), subject to their explicit size condition on \(r\); here \(B\) is polylogarithmic in the discriminant and accuracy parameters.
+- Theorem 1.3 computes class groups and compact fundamental units in time polynomial in input length,
+  \[
+  L_{|\Delta_K|}[1/2,O(1)],\quad
+  L_{d^d}[2/3,O(1)],\quad
+  \min\!\left(\rho_K,L_{|\Delta_K|}[2/3+o(1),O(1)]\right).
+  \]
+
+They explicitly leave NFS applications uninvestigated. [Theorems 1.1, 1.3; introduction, “Further applications”](https://arxiv.org/pdf/2512.01588v2).
+
+**PROVED — scope distinction.** Ideal decomposition in a number field does not by itself provide NFS special-\(q\) descent. The latter additionally requires appropriately short generators in a prescribed relation shape, compatibility with the finite-field evaluation, and suitable smoothness of the other channel. A theorem about arbitrary ideal-lattice samples does not imply a theorem about the two-dimensional slice \(a-b\theta\).
+
+**KNOWN.** Relevant polynomial-smoothness results include:
+
+- Balog–Blomer–Dartyge–Tenenbaum, *Friable values of binary forms*, **Comment. Math. Helv. 87 (2012), 639–667**: for a fixed degree-\(g\) form, their general positive-proportion bound uses \(y=x^{g-2+\varepsilon}\); for cubic forms they obtain \(y=x^{1/\sqrt e+\varepsilon}\). These are fixed-form, power-smoothness results. [Paper](https://tenenb.perso.math.cnrs.fr/PPP/friableforms.pdf).
+- Bober–Fretwell–Martin–Wooley, *Smooth values of polynomials*, **J. Aust. Math. Soc. 108 (2020), 245–261**, Theorem 1.1: for a quadratic \(f\), there are auxiliary polynomials \(g\) of arbitrarily large odd degree \(k\) such that every factor of \(f(g(t))\) has degree at most \(ck/\sqrt{\log\log k}\). Consequently, for each \(\varepsilon>0\), infinitely many \(n\) satisfy \(P^+(f(n))\le n^\varepsilon\). This supplies no density in the required QS interval. [Theorem 1.1](https://www.math.purdue.edu/~twooley/publ/20171004smoothpoly.pdf).
+- Mine, *An upper bound for the number of smooth values of a polynomial and its applications*, arXiv:2410.09558: an upper-bound theorem, not the joint lower bound needed here. [Theorem 1.1](https://arxiv.org/html/2410.09558).
+
+**KNOWN — search outcome.** I did not find a theorem giving the needed uniform, joint smoothness lower bound for random NFS polynomials in adaptively chosen special-\(q\) sublattices, nor a published fixed-degree \(L[1/2]\) NFS factoring analysis that avoids a fruitfulness assumption.
+
+### 1.3 Modern smooth-number distribution
+
+**KNOWN.** Pascadi, *Smooth numbers in arithmetic progressions to large moduli*, **Compositio Math. 161 (2025), 1923–1974**, obtains exponent \(66/107\). His subsequent preprint *On the exponents of distribution of primes and smooth numbers*, arXiv:2505.00653, Theorem 1.5, gives the following stronger statement.
+
+For fixed \(a\ne0\), \(A,\varepsilon>0\), there is \(C=C(a,A,\varepsilon)\) such that, for
+\[
+(\log x)^C\le y\le x^{1/C},\qquad Q\le x^{5/8-\varepsilon},
+\]
+\[
+\sum_{\substack{q\le Q\\(q,a)=1}}
+\left|
+\Psi(x,y;a,q)-\frac{\Psi_q(x,y)}{\varphi(q)}
+\right|
+\ll_{\varepsilon,A,a}\frac{\Psi(x,y)}{(\log x)^A}.
+\]
+The fixed/small-residue restriction matters. [2025 published paper](https://doi.org/10.1112/S0010437X2500747X), [subsequent Theorem 1.5](https://arxiv.org/html/2505.00653).
+
+**PROVED — application limitation.** This statement cannot simply be substituted into LV with an arbitrary residue depending on \(n,m,a,b,f\): its constant and hypotheses concern a fixed residue, whereas LV needs control after conditioning the modulus to be smooth and allowing the relevant residue to vary. Such a substitution requires a separate argument.
+
+**KNOWN.** Jain, *Smooth Numbers in Short Intervals*, arXiv:2502.10530v1, Theorem 1.1, proves existence in almost all intervals of length
+\[
+h\ge
+\exp\!\left((1+\varepsilon)
+\left(\frac{11}{8}u\log u+4\log\log x\right)\right)
+\]
+when
+\[
+\exp\!\left(C(\log x)^{2/3}(\log\log x)^{4/3}\right)
+\le y\le x^{1/C}.
+\]
+This is outside the smaller smoothness ranges relevant to the proposed LP improvement and the present NFS application. [Theorem 1.1](https://arxiv.org/html/2502.10530).
+
+**KNOWN.** Matomäki–Radziwiłł, *Multiplicative functions in short intervals*, **Ann. Math. 183 (2016), 1015–1056**, Theorem 1, compares short and long averages of real multiplicative functions bounded by one; the result is uniform in the function. Their later *Multiplicative functions in short intervals II* develops results for sparse multiplicative sequences. [2016 paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf), [later paper](https://arxiv.org/html/2007.04290).
+
+**PROVED — application limitation.** Applying such a comparison to a smooth-supported character still requires a suitable long signed average and error smaller than the smooth-set density. Furthermore, a short interval in the integer variable is different from values along \(a^2-n\), or a paired norm form in a prescribed lattice. These logical requirements remain even when a relative short-interval estimate is available.
+
+### 1.4 Heath-Brown’s quadratic large sieve and loss-free alternatives
+
+**KNOWN.** Heath-Brown, *A mean value estimate for real character sums*, **Acta Arith. 72 (1995), 235–275**, Theorem 1, states
+\[
+\sum_{\substack{m\le Q\\m\ {\rm odd,\ squarefree}}}
+\left|
+\sum_{\substack{t\le H\\t\ {\rm odd,\ squarefree}}}
+a_t\left(\frac tm\right)
+\right|^2
+\ll_\varepsilon
+(QH)^\varepsilon(Q+H)
+\sum_t|a_t|^2.
+\tag{1}
+\]
+Both squarefree restrictions are material. Corollary 2, for all primitive real characters of conductor at most \(Q\), replaces the final norm for unrestricted \(t\) by
+\[
+\mathcal E_\square(a)
+=
+\sum_{\substack{r,s\le H\\rs\ {\rm square}}}|a_ra_s|.
+\tag{2}
+\]
+[Original statement, author’s copy](https://ora.ox.ac.uk/objects/uuid%3Ab188b365-d8d1-4267-8548-49f01e6cb6a7/files/m6af40476f1b860392271a2d8ecae593b).
+
+**KNOWN.** Zihao Liu, *Explicit quadratic large sieve inequality*, arXiv:2505.09637v2, Theorem 1, makes the constant explicit:
+\[
+\mathcal B(Q,H)
+\le
+\exp_4(C/\varepsilon)(QH)^\varepsilon(Q+H).
+\tag{3}
+\]
+Optimizing this supplies a loss
+\[
+\exp\!\left(O\!\left(\frac{\log(QH)}{\log_4(QH)}\right)\right).
+\tag{4}
+\]
+I found no general unconditional replacement by a fixed power of \(\log(QH)\) for arbitrary coefficients. Liu explicitly identifies an improvement of the \(\varepsilon\)-dependence as a further problem. [Theorem 1 and following discussion](https://arxiv.org/html/2505.09637v2).
+
+**PROVED — ordinary large sieve alternative.** With the squarefree restrictions of (1),
+\[
+\boxed{\quad
+\sum_m^*
+\left|\sum_t^*a_t(t/m)\right|^2
+\ll
+\min(Q^2+H,\;Q+H^2)\sum_t^*|a_t|^2 .
+\quad}
+\tag{5}
+\]
+The implied constant is absolute; there is no logarithmic or \(\varepsilon\)-loss.
+
+For \(Q^2+H\), include these primitive quadratic characters among all primitive characters of conductor at most \(Q\), and apply the classical multiplicative large sieve.
+
+For \(Q+H^2\), split both variables into residue classes modulo \(4\). Quadratic reciprocity changes \((t/m)\) to a fixed sign times \((m/t)\) on each block. By duality, apply the ordinary character large sieve with character conductors at most \(H\) and coefficient length \(Q\). Combining the four blocks costs an absolute constant. The ordinary inequality is also recorded as equation (3) in Heath-Brown’s paper.
+
+Consequently:
+
+| Range | Loss-free consequence |
+|---|---|
+| \(Q\ge H^2\) | \(O(Q)\sum|a_t|^2\) |
+| \(H\ge Q^2\) | \(O(H)\sum|a_t|^2\) |
+| General \(Q,H\) | \(O(\min(Q^2+H,Q+H^2))\sum|a_t|^2\) |
+
+**PROVED — interpretation.** Here \(Q\) bounds the moduli; it is not merely their number. Restricting to a sparse family of moduli preserves the upper bound but does not replace \(Q\) by the family’s cardinality.
+
+**PROVED — scale warning.** If \(Q\asymp N\) and \(H=N^{o(1)}\), a fixed loss \(N^\varepsilon\) is larger than every fixed \(L_N[1/3,c]\). Liu’s explicit loss (4) is also much larger than that scale. One cannot declare either loss harmless in this program. In this particular unbalanced range, (5) removes the problem entirely.
+
+---
+
+## 2. Averaging over \(N\)
+
+### 2.1 What a decoupled character calculation actually proves
+
+**PROVED — statement; full proof in §5.** Let \(\mathcal F_N\subset[N,2N]\) be a fixed balanced Blum-semiprime family with
+\[
+|\mathcal F_N|\asymp \frac{N}{(\log N)^2}.
+\]
+Let \(a_t\ge0\), supported on odd \(t\le H\), be independent of \(n\), and put
+\[
+A=\sum_ta_t,\qquad
+E=\sum_{\substack{r,s\\rs\ {\rm square}}}a_ra_s.
+\]
+Assume every prime factor of every \(n\in\mathcal F_N\) exceeds \(H\). Then
+\[
+\frac{\#\{n\in\mathcal F_N:
+|\sum_ta_t(t/n)|>\eta A\}}
+{|\mathcal F_N|}
+\ll
+\frac{(N+H^2)(\log N)^2E}{N\eta^2A^2}.
+\tag{6}
+\]
+
+For \(H=N^{o(1)}\), the relevant quantity is the effective square-class support
+\[
+A_{\rm eff}=\frac{A^2}{E},
+\]
+and the exceptional proportion is
+\[
+\ll \frac{(\log N)^2}{\eta^2A_{\rm eff}}.
+\tag{7}
+\]
+
+**PROVED.** This handles the loss from restricting to balanced semiprimes: their density costs approximately \((\log N)^2\), not a power of \(N\).
+
+**PROVED.** In particular, for fixed \(a,b>0\),
+\[
+H=L_N[2/3,a],\qquad B=L_N[1/3,b],
+\]
+Jacobi signs on the **fixed** set of odd \(B\)-smooth integers \(t\le H\) are asymptotically balanced for almost all \(n\in\mathcal F_N\). This is a genuine smooth-weighted averaging theorem. It is not a statement about the kept QS/NFS law.
+
+### 2.2 QS: the parametrization changes the character but not the needed fibres
+
+**PROVED.** Write
+\[
+n=a^2-s,\qquad
+a\in[\sqrt n,\sqrt n+H].
+\]
+For odd \(a\), Blum \(n\), and \((a,n)=1\), reciprocity gives
+\[
+\left(\frac an\right)
+=\left(\frac na\right)
+=\left(\frac{-s}{a}\right).
+\tag{8}
+\]
+The smoothness weight is now simply \(1_{P^+(s)\le B}\).
+
+This is a real algebraic decoupling, but the relation domain remains
+\[
+s=a^2-n,\qquad 0\le s\ll \sqrt N\,H.
+\tag{9}
+\]
+
+**PROVED — exact obstruction.** Summing over a rectangle in \((a,s)\) averages over many different \(n=a^2-s\). Fruitfulness for a fixed \(n\) requires information along the curve (9), with \(n\) held fixed.
+
+A second moment over \(n\) produces
+\[
+s'-s=a'^2-a^2
+\]
+and hence simultaneous smoothness weights
+\[
+1_{P^+(s)\le B}\,
+1_{P^+(s+a'^2-a^2)\le B}.
+\tag{10}
+\]
+The large sieve with a common one-variable coefficient sequence does not estimate (10).
+
+**PROVED — length accounting.** In the original character \((a/n)\), the arguments have size \(\asymp\sqrt N\), although the interval has length \(H\). Reciprocity gives characters of conductor \(\asymp\sqrt N\), not conductor \(H\). One may not replace the \(H\) in the dual-conductor term of (5) by the short interval’s length.
+
+Even with common squarefree weights on an interval near \(\sqrt N\), the loss-free bound is on the scale
+\[
+N+(\sqrt N)^2\asymp N.
+\]
+That could yield useful average cancellation if the weights were common. The actual weights
+\[
+W_n(a)=1_{P^+(a^2-n)\le B}
+\]
+depend on \(n\).
+
+**PROVED — weakness of a global first moment.** Global sign balance need not imply any within-input balance. For example, assign every relation for half the inputs label \(0\), and every relation for the other half label \(1\). The global labels are balanced. Because the relation vector includes the constant parity column, each input nevertheless has a perfect linear predictor.
+
+### 2.3 LV: \(n=f(m)\) is useful bookkeeping, not independent sampling
+
+**PROVED.** For fixed \(m\), the map
+\[
+(n,R)\longmapsto
+f=\widehat f_{n,m}+(x-my)R
+\tag{11}
+\]
+is injective on its prescribed domain. Evaluation recovers \(n=f(m,1)\), and then polynomial division recovers \(R\).
+
+Thus averaging over \(n\) can indeed be rewritten as averaging over a particular region of coefficient space.
+
+**PROVED — remaining dependence.** That region is not automatically a product box of independent coefficients. The condition
+\[
+f(m,1)\in\mathcal F_N
+\]
+also retains the semiprime restriction as a condition on polynomial evaluation.
+
+Moreover, the algebraic square-class coordinates, units, and Bockstein label vary with \(f\). This is more than a single Jacobi character multiplied by common smoothness weights.
+
+**KNOWN.** LV’s relation-supply proof treats the progression of \(f(a,b)\) modulo \(a-mb\), with the latter conditioned to be smooth. Their §8 explicitly identifies conditioning on this rare event as an essential difficulty. Their parameter condition
+\[
+\delta^{-1}<\frac{\kappa+\sigma\delta}{2}
+\]
+ensures the needed progression-distribution range. [Equations (4.1)–(4.2), Remark 4.2, and §8](https://arxiv.org/pdf/1805.08873).
+
+**PROVED — additional Bockstein issue.** Equidistribution of an ordinary quadratic character is not automatically equidistribution of its Bockstein half. In the supplied degree-one formula,
+\[
+\beta=\left\lfloor\frac{\Omega_T(L_1L_2)}2\right\rfloor\bmod2,
+\]
+the ordinary character records \(\Omega_T\) modulo \(2\); the label needs its next bit. An averaging proof must preserve that extra information.
+
+### 2.4 Degree one: determinant parametrization
+
+**PROVED.** Write
+\[
+L_1(a,b)=Aa+Bb,\qquad L_2(a,b)=Ca+Db,
+\qquad AD-BC=\pm n.
+\tag{12}
+\]
+Averaging coefficient matrices makes the determinant the input modulus, but imposing a fixed determinant couples the coefficients. For instance,
+\[
+D=\frac{\pm n+BC}{A}
+\]
+requires divisibility and correlates the two form values.
+
+Therefore determinant parametrization alone does not yield coefficients independent of the character modulus.
+
+**SPECULATIVE.** A dispersion argument over matrices might exploit this structure. It would need a theorem for joint smooth values with determinant and Bockstein weights. I found no such theorem.
+
+### 2.5 The union over \(2^C\): a genuine logical barrier
+
+**PROVED.** Suppose one proves, for each fixed \(w\),
+\[
+\Pr_\theta(\delta_{\theta,w}<\delta_0)\le \epsilon.
+\tag{13}
+\]
+The direct conclusion is only
+\[
+\Pr_\theta(\min_w\delta_{\theta,w}<\delta_0)
+\le 2^C\epsilon.
+\tag{14}
+\]
+Polynomial or subexponential savings in \(N\) are insufficient when
+\[
+C=L_N[1/3,c+o(1)],
+\qquad 2^C\gg N^A
+\]
+for every fixed \(A\).
+
+**PROVED — LV parameter count.** In the stated coefficient model,
+\[
+\log \#R
+=
+d\log L_N[2/3,\kappa-1/\delta]
+=
+(\delta\kappa-1+o(1))\log N.
+\]
+The \(m\)-choices contribute \(N^{o(1)}\). Hence the finite parameter space has polynomial cardinality in \(N\), as suggested in the question.
+
+**PROVED — what that count does not imply.** Polynomially many parameter points do not make simultaneous control impossible. An algebraic identity, a bound on the supremum, or a theorem restricting the possible bad predictors could control all \(w\) at once.
+
+But fixed-test exceptional-set estimates alone cannot do so. Distinct tests can have different small exceptional sets whose union covers the entire parameter space. Section 5 gives an arithmetic example with perfectly decoupled smoothness weights.
+
+**SPECULATIVE.** A successful averaging route therefore needs an additional structural ingredient: restricted complexity of bad predictors, an inverse theorem, or a direct estimate for the adaptive supremum. Merely sharpening the fixed-test large sieve estimate does not supply that ingredient.
+
+---
+
+## 3. \(\beta\)-flipping involutions
+
+### 3.1 Galois automorphisms
+
+**PROVED — odd-degree barrier.** Let \(K/\mathbb Q\) have odd degree. Then \(K\) has no nonidentity automorphism \(\sigma\) satisfying \(\sigma^2=1\).
+
+If such a \(\sigma\) existed, its fixed field \(F\) would satisfy \([K:F]=2\). Indeed, each \(z\in K\) satisfies
+\[
+T^2-(z+\sigma z)T+z\sigma z\in F[T],
+\]
+and the standard fixed-field argument gives degree two. This contradicts
+\[
+[K:\mathbb Q]=[K:F][F:\mathbb Q]
+\]
+being odd.
+
+LV explicitly chooses odd degree. Thus a fixed nonidentity field automorphism cannot itself provide the requested involution.
+
+**PROVED — relation-level version.** If \(b\ne0\), \(a-b\theta\) generates \(K\). If
+\[
+\sigma^2(a-b\theta)=a-b\theta,
+\]
+then \(\sigma^2\theta=\theta\), so \(\sigma^2=1\). Restricting such an automorphism to the linear-relation set does not evade the odd-degree barrier.
+
+**PROVED — scope.** This does not exclude a piecewise matching of elements in longer Galois orbits, or a correspondence between different fields.
+
+**PROVED — coordinate obstruction.** An automorphism generally permutes prime-ideal coordinates:
+\[
+x(\sigma r)=P_\sigma x(r).
+\]
+Equal ideal norms preserve smoothness, but do not establish equality of the **labelled exact** square-class vector.
+
+**PROVED — caution about equivariance.** If evaluation commutes with an automorphism, transforming an entire true dependency preserves its fruitfulness. That observation alone does **not** rule out a fruitful two-element orbit. A pointwise involution must be checked on the pair \(\{r,Tr\}\), not only on globally transformed dependencies.
+
+### 3.2 QS conjugation
+
+**PROVED.** In the norm presentation
+\[
+\alpha=a+b\sqrt n,\qquad
+N(\alpha)=a^2-nb^2,
+\]
+conjugation sends \(b\) to \(-b\). It preserves both the smooth integer \(a^2-nb^2\) and the modular root \(a\).
+
+Thus it preserves the actual QS congruence relation, not just smoothness. The two-element dependency formed from a relation and its conjugate has identical modular roots and is unfruitful.
+
+Simultaneous negation replaces the modular root by its global negative and likewise gives no nontrivial element of \(\mu_2/\{\pm1\}\).
+
+### 3.3 Units and \(S\)-units: explicit square twists
+
+**PROVED — general square-twist identity.** Consider relations with rational and algebraic entries \(q,\alpha\), satisfying
+\[
+q\equiv\varphi(\alpha)\pmod n.
+\]
+Suppose a transformation has explicitly known
+\[
+q'=s^2q,\qquad \alpha'=t^2\alpha,
+\]
+with \(s\in\mathbb Q^\times\), \(t\in K^\times\), and all evaluations defined and invertible modulo \(n\).
+
+For the two-relation dependency, compatible roots are
+\[
+sq,\qquad t\alpha.
+\]
+Its root ratio is
+\[
+\boxed{\quad \frac{s}{\varphi(t)}\in\mu_2(\mathbb Z/n).\quad}
+\tag{15}
+\]
+The congruence for the transformed relation proves that its square is \(1\).
+
+If (15) is not a global sign, then
+\[
+\gcd\!\left(s-\varphi(t),n\right)
+\]
+after clearing invertible denominators gives a proper factor.
+
+**PROVED — consequence.** A unit or \(S\)-unit twist preserving the **exact** square classes must have square quotients in the relevant fields. If their roots are explicitly available, a \(\beta\)-flipping pair already contains an immediately extractable factor.
+
+This is a reduction, not an impossibility theorem: discovering such twists could be a factoring algorithm.
+
+**PROVED.** A nonsquare unit can preserve ideal-valuation parities while changing the actual field square class. It therefore does not preserve the \(x\) required in this question. Omitting unit information would create a false symmetry.
+
+### 3.4 Integral linear actions on degree-one pairs
+
+**PROVED — rigidity theorem.** Let
+\[
+A=\begin{pmatrix}a&b\\c&d\end{pmatrix},
+\qquad \det A=n>1
+\]
+with \(n\) odd, and suppose both rows are primitive. If \(M\in GL_2(\mathbb Z)\) satisfies
+\[
+L_1(Mz)=\epsilon_1L_1(z),\qquad
+L_2(Mz)=\epsilon_2L_2(z),
+\qquad \epsilon_j\in\{\pm1\},
+\]
+then \(M=I\) or \(M=-I\).
+
+If the signs agree, this follows from \(AM=\pm A\). Otherwise, after a global sign,
+\[
+M=A^{-1}
+\begin{pmatrix}1&0\\0&-1\end{pmatrix}A
+=
+\frac1n
+\begin{pmatrix}
+ad+bc&2bd\\
+-2ac&-ad-bc
+\end{pmatrix}.
+\]
+Integrality and oddness imply
+\[
+n\mid ac,\ bd,\ ad+bc.
+\]
+Together with \(ad-bc=n\), they imply \(n\mid ad,bc\). But
+\[
+\gcd(ac,ad,bc,bd)
+=\gcd(a,b)\gcd(c,d)=1,
+\]
+a contradiction.
+
+**PROVED.** Exchanging the forms generally exchanges their coordinate blocks rather than preserving \(x\). In the supplied degree-one Bockstein formula, an exact exchange preserves \(\Omega_T(L_1L_2)\) and hence does not flip \(\beta\).
+
+**PROVED — scope.** This theorem does not exclude a nonlinear map defined only on selected smooth points, or a transformation preserving square classes without preserving the individual forms up to signs.
+
+### 3.5 Multiple polynomials and two polynomial pairs
+
+**KNOWN.** Coppersmith, *Modifications to the Number Field Sieve*, **J. Cryptology 6 (1993), 169–180**, reuses smoothness computations across number fields to improve the heuristic asymptotic constant. LV also analyzes a randomized multiple-polynomial variant. Neither result provides a \(\beta\)-flipping correspondence. [Coppersmith’s paper description](https://research.ibm.com/publications/modifications-to-the-number-field-sieve), [LV, §7](https://arxiv.org/pdf/1805.08873).
+
+**PROVED.** Having the same root modulo \(n\) does not identify the fields’ square-class groups or their square-root choices. The combined relation vector has separate algebraic coordinate blocks. A shared \((a,b)\) does not establish equal exact \(x\).
+
+**SPECULATIVE.** A productive construction would be a correspondence between two polynomial pairs supplying:
+
+1. common smooth relations;
+2. an explicit identification of the exact square-class data;
+3. a proven opposite Bockstein label;
+4. adequate mass under the search law.
+
+I found no example meeting all four conditions. The first condition alone is substantially weaker.
+
+---
+
+## 4. Fruitfulness-free routes
+
+### 4.1 Transplanting relation generation to class groups
+
+**KNOWN.** The Lenstra–Pomerance method already obtains its nontriviality from class-group and ambiguous-form structure rather than an NFS fruitfulness conjecture. Its small multipliers remove the analytic assumptions needed for the relation-supply argument. They are bounded multipliers, not a replacement of discriminant size \(n\) by a subexponential discriminant.
+
+**PROVED — optimization in the usual cost model.** Set
+\[
+B=L_n[1/2,b].
+\]
+For random integers of size \(n^{1/2+o(1)}\), the smoothness density is
+\[
+L_n[1/2,-1/(4b)+o(1)].
+\]
+If approximately \(B\) relations are required, smoothness testing has \(B^{o(1)}\) cost, and sparse linear algebra costs \(B^{2+o(1)}\), the resulting constant is
+\[
+c(b)=\max\left(b+\frac1{4b},\,2b\right).
+\tag{16}
+\]
+Since \(b+1/(4b)\ge1\), the minimum is \(1\), attained at \(b=1/2\).
+
+This calculation is conditional on that sampling model. It is not a lower bound for all class-group algorithms. It agrees with the specific LP limitation cited above.
+
+#### A geometric obstruction to reducing the norms
+
+**PROVED.** Let \(K\) be imaginary quadratic with fundamental discriminant \(\Delta=-D\). Every nonrational algebraic integer can be written
+\[
+\alpha=\frac{u+v\sqrt{-D}}2,\qquad v\ne0,
+\]
+with suitable integral parity conditions. Therefore
+\[
+|N_{K/\mathbb Q}(\alpha)|
+=\frac{u^2+Dv^2}{4}\ge\frac D4.
+\tag{17}
+\]
+Consequently, if \(N\mathfrak a\le D^{1/2+o(1)}\),
+\[
+N\big((\alpha)\mathfrak a^{-1}\big)
+\ge D^{1/2-o(1)}/4
+\]
+for a nonrational \(\alpha\in\mathfrak a\).
+
+Thus the small norms of an unrelated high-degree NFS field cannot simply be imported into the imaginary quadratic field of discriminant \(-kn\).
+
+#### A counting obstruction for nearly uniform class sampling
+
+**PROVED.** The number of integral ideals of norm at most \(Y\) in an imaginary quadratic field is at most
+\[
+\sum_{m\le Y}d(m)\le Y(1+\log Y).
+\tag{18}
+\]
+At each rational prime, the number of ideals of norm \(p^k\) is at most \(k+1\); multiplicativity gives the first inequality. The second follows from
+\[
+\sum_{m\le Y}d(m)
+=\sum_{r\le Y}\lfloor Y/r\rfloor.
+\]
+
+Hence, if a class sampler assigns probability at most \(A/h(\Delta)\) to each class,
+\[
+\Pr(\text{sampled class has an integral representative of norm }\le Y)
+\le \frac{A\,Y(1+\log Y)}{h(\Delta)}.
+\tag{19}
+\]
+
+**KNOWN.** Siegel’s theorem gives
+\[
+h(-D)=D^{1/2+o(1)}
+\]
+for fundamental imaginary quadratic discriminants; the lower estimate is ineffective. [Siegel, *Über die Classenzahl quadratischer Zahlkörper*, Acta Arith. 1 (1935), 83–86](https://www.impan.pl/pl/wydawnictwa/czasopisma-i-serie-wydawnicze/acta-arithmetica/all/1/1/93175/uber-die-classenzahl-quadratischer-zahlkorper).
+
+**PROVED.** Taking \(A=D^{o(1)}\) and \(Y=D^\alpha\), \(\alpha<1/2\), in (19) gives
+\[
+\Pr(\text{such a small representative exists})
+\le D^{\alpha-1/2+o(1)}.
+\tag{20}
+\]
+A method retaining nearly uniform class sampling cannot obtain a polynomial reduction in representative norm at only subexponential rejection cost.
+
+**PROVED — implications for modern smoothness inputs.** Better equidistribution can improve the justification and uniformity of relation sampling. It does not alter the optimization (16) while the sample size exponent remains \(1/2\) and the random-integer smoothness law remains the benchmark. Obtaining \(c<1\) requires a change in that model: smaller effective norms, an exponentially biased supply of smooth representatives, fewer required relations, or a different group computation.
+
+**SPECULATIVE.** The 2026 ideal-sampling theorem is worth investigating for rigorously replacing particular sampling heuristics. I do not see a derivation of \(c<1\) from its stated bounds, or a transfer yielding \(L[1/3]\) ambiguous-form computation.
+
+### 4.2 Hidden-root injection
+
+#### The symmetry works exactly
+
+**PROVED — fibre-uniformity theorem.** Let \(n\) be odd with \(k\ge2\) distinct prime factors. Suppose a relation generator produces
+\[
+r_i^2\equiv s_i\pmod n,\qquad (r_i,n)=1,
+\]
+and, conditional on all public relation data, the \(r_i\) are independent and uniform in their square-root fibres. Suppose a nonempty dependency \(S\) is selected using only those public data, and \(\prod_{i\in S}s_i=y^2\) as an integer.
+
+Then
+\[
+\Pr\!\left(\prod_{i\in S}r_i\not\equiv\pm y\pmod n\right)
+=1-2^{1-k}.
+\tag{21}
+\]
+
+Each fibre is a torsor for
+\[
+G=\mu_2(\mathbb Z/n),\qquad |G|=2^k.
+\]
+After fixing all roots except one selected root, varying that root multiplies the final quotient by a uniform element of \(G\). The quotient is therefore uniform in \(G\), and precisely two elements are global signs.
+
+For semiprimes, the probability is \(1/2\).
+
+**PROVED — essential conditioning.** Marginally uniform roots do not suffice if the keep rule or dependency selection exposes or depends on the hidden fibre element.
+
+#### Forward sampling has the wrong cost
+
+**PROVED.** For uniform \(r\in(\mathbb Z/n)^\times\), every residue has at most \(2^k\) square roots. Therefore
+\[
+\Pr(r^2\bmod n\text{ is }B\text{-smooth})
+\le \frac{2^k\Psi(n,B)}{\varphi(n)}.
+\tag{22}
+\]
+For balanced semiprimes and \(B=L_n[1/3,b]\), the standard smooth-number estimate gives
+\[
+\frac{\Psi(n,B)}n
+=
+L_n[2/3,-2/(3b)+o(1)].
+\]
+Thus this method needs at least
+\[
+L_n[2/3,2/(3b)+o(1)]
+\tag{23}
+\]
+trials in expectation. This lower bound already excludes NFS-sized cost.
+
+The smooth-number estimate used here is the classical logarithmic asymptotic associated with Canfield–Erdős–Pomerance, *On a problem of Oppenheim concerning “factorisatio numerorum”*, **J. Number Theory 17 (1983), 1–28**. [Author’s publication list, paper 39](https://math.dartmouth.edu/~carlp/).
+
+#### Resampling an existing fibre is already factoring
+
+**PROVED.** Given a known root \(r\), any procedure producing \(r'\) with
+\[
+r'^2\equiv r^2\pmod n,\qquad r'\not\equiv\pm r\pmod n
+\]
+immediately factors \(n\) by \(\gcd(r-r',n)\).
+
+Therefore “first obtain an NFS relation, then randomize its root within the fibre” cannot be justified by an elementary root-randomization operation.
+
+**PROVED — small-ratio rejection barrier.** Let \(r\) be uniform in the unit group and \(\lambda=r^2\). The probability that
+\[
+\lambda\equiv c/d\pmod n,\qquad
+0<|c|,|d|\le H,\quad (d,n)=1,
+\]
+is at most
+\[
+\frac{4H^2\,2^k}{\varphi(n)}.
+\tag{24}
+\]
+There are at most \(4H^2\) numerator-denominator pairs, and each represented \(\lambda\) has at most \(2^k\) preimages \(r\).
+
+For balanced semiprimes and \(H=n^{o(1)}\), this is \(n^{-1+o(1)}\). Repeating \(n^{o(1)}\) independent attempts still has negligible success probability.
+
+**SPECULATIVE — remaining possibility.** An efficient generator could choose its own smooth target and produce a fibre-uniform root without accepting a prescribed target. The preceding reductions do not rule that out. I found no construction achieving this at NFS cost. Establishing the required conditional uniformity is the unresolved step.
+
+---
+
+## 5. Best provable statement: useful averaging, with an exact limitation
+
+The strongest conclusion I can prove here is an averaging theorem together with a counterexample to the proposed inference from fixed-test averaging to Lemma M.
+
+### Theorem A — fixed smooth sets over balanced Blum semiprimes
+
+**PROVED.** Choose a balanced Blum-semiprime family \(\mathcal F_N\subset[N,2N]\) of cardinality \(\asymp N/(\log N)^2\). For example, take
+\[
+p\in[\sqrt N,1.1\sqrt N],\qquad
+q\in[1.2\sqrt N,1.3\sqrt N],
+\qquad p,q\equiv3\pmod4,
+\]
+and \(n=pq\).
+
+Let \(H<\sqrt N\), and let \(a_t\ge0\) be supported on odd \(t\le H\), independently of \(n\). Define
+\[
+A=\sum_ta_t,\qquad
+E=\sum_{rs\ {\rm square}}a_ra_s.
+\]
+Then (6) holds.
+
+For fixed \(a,b>0\), let
+\[
+H=L_N[2/3,a],\qquad B=L_N[1/3,b].
+\]
+For all but \(o(|\mathcal F_N|)\) inputs,
+\[
+\#\{t\le H:t\text{ odd and }B\text{-smooth},\ (t/n)=\pm1\}
+=
+\left(\frac12+o(1)\right)
+\#\{t\le H:t\text{ odd and }B\text{-smooth}\}.
+\tag{25}
+\]
+
+**Proof.** Write uniquely \(t=su^2\), with \(s\) odd and squarefree, and set
+\[
+b_s=\sum_{u:\,su^2\le H}a_{su^2}.
+\]
+All \(t\le H\) are coprime to every \(n\in\mathcal F_N\), so
+\[
+\sum_ta_t(t/n)=\sum_s b_s(s/n).
+\]
+Furthermore,
+\[
+\sum_s b_s^2=E.
+\]
+By the loss-free bound (5),
+\[
+\sum_{n\in\mathcal F_N}
+\left|\sum_ta_t(t/n)\right|^2
+\ll (N+H^2)E.
+\]
+Chebyshev’s inequality and \(|\mathcal F_N|\asymp N/(\log N)^2\) prove (6).
+
+The stated cardinality of \(\mathcal F_N\) follows by applying the prime number theorem in the fixed progression \(3\bmod4\) to the two disjoint prime intervals. The needed statement is
+\[
+\pi(x;4,3)\sim \frac{x}{2\log x}.
+\]
+[Prime number theorem for arithmetic progressions, Theorem 3.1](https://w3.impa.br/~goncalves/NotesDavenport.pdf).
+
+Now use \(a_t=1\) on the odd \(B\)-smooth integers up to \(H\). Each square-class fibre has at most \(\sqrt H\) elements, whence
+\[
+E=\sum_s b_s^2\le \sqrt H\sum_s b_s=\sqrt H\,A.
+\tag{26}
+\]
+The standard smooth-number asymptotic gives
+\[
+\log(A/H)
+=
+-\left(\frac{a}{3b}+o(1)\right)
+(\log N)^{1/3}(\log\log N)^{2/3}.
+\tag{27}
+\]
+For completeness, the coefficient follows from
+\[
+u=\frac{\log H}{\log B}
+=\frac ab\left(\frac{\log N}{\log\log N}\right)^{1/3},
+\qquad \log(A/H)=-(1+o(1))u\log u.
+\]
+Restricting to odd integers preserves this logarithmic asymptotic: every smooth integer is \(2^j\) times an odd smooth integer, so the total count is at most \(1+\log_2H\) times the odd count.
+
+Take \(\eta=1/\log N\) in (6). Since \(H^2=o(N)\), (26) bounds the exceptional proportion by
+\[
+\ll \frac{(\log N)^4\sqrt H}{A}=o(1)
+\]
+using (27). On the remaining inputs, the signed sum is \(o(A)\), proving (25). \(\square\)
+
+### Theorem B — even perfect decoupling does not control the adaptive test
+
+**PROVED.** There are arithmetic laws with:
+
+- smoothness weights independent of \(n\);
+- \(C=L_N[1/3,c+o(1)]\);
+- almost-all cancellation for every fixed test \(w\);
+
+but
+\[
+\min_w\Pr(\beta\ne\langle w,x\rangle)=0
+\]
+for every \(n\).
+
+**Proof.** Fix
+\[
+B=L_N[1/3,c],
+\]
+and sample \(t\) uniformly from the odd primes at most \(B\). Use coordinates indexed by those primes, together with the required constant parity coordinate:
+\[
+x(t)=(e_t,1).
+\]
+Define
+\[
+\beta_n(t)=\frac{1-(t/n)}2.
+\]
+For each \(n\), choose the prime coordinates of \(w_n\) to be
+\[
+(w_n)_\ell=\frac{1-(\ell/n)}2
+\]
+and its parity coordinate to be zero. Then
+\[
+\beta_n(t)=\langle w_n,x(t)\rangle
+\]
+identically. Thus \(\delta_n=0\) for every modulus.
+
+On the other hand, for any fixed \(w\),
+\[
+(-1)^{\beta_n(t)+\langle w,x(t)\rangle}
+=(t/n)(-1)^{\langle w,x(t)\rangle}.
+\]
+The signed coefficients on the right are independent of \(n\). Applying (5) and Chebyshev gives, for each fixed \(w\), an exceptional proportion
+\[
+\ll \frac{(\log N)^2}{\eta^2\pi(B)}
+=o(1)
+\]
+for any fixed \(\eta>0\).
+
+Hence every fixed predictor is approximately wrong half the time for almost all moduli, while every modulus has its own perfect predictor.
+
+The dimension is
+\[
+C=1+\pi(B)=L_N[1/3,c+o(1)].
+\]
+This proves the theorem. \(\square\)
+
+**PROVED — exact interpretation.** Theorem B is not a counterexample to fruitfulness of actual QS or NFS relations. It is a counterexample to deducing Lemma M from these fixed-test character estimates alone. It uses the same quadratic characters, the relevant dimension, and completely decoupled smoothness weights.
+
+### A precise sufficient hypothesis without a union over tests
+
+**PROVED.** For any kept law, put
+\[
+\mu_{x,b}=\Pr(x_i=x,\beta_i=b),\qquad
+\eta_*=\sum_x\min(\mu_{x,0},\mu_{x,1}).
+\tag{28}
+\]
+Then
+\[
+\delta\ge\eta_*.
+\tag{29}
+\]
+Indeed, at every \(x\), a deterministic predictor must disagree with at least the smaller of the two label masses.
+
+Proposition R consequently gives
+\[
+\Pr(\Phi\equiv0\text{ on the batch kernel})
+\le \exp(C\log2-M\eta_*).
+\tag{30}
+\]
+Thus
+\[
+M\eta_*\ge C\log2+\lambda
+\]
+makes the failure probability at most \(e^{-\lambda}\).
+
+**PROVED — precise conditional lemma for the program.** A sufficient hypothesis is:
+
+> Under the actual LV search distribution, a set of parameters of mass \(L_N[1/3,-o(1)]\) simultaneously supports the required relation supply and satisfies
+> \[
+> \sum_x\min\!\left(
+> \Pr(x_i=x,\beta_i=0\mid\text{kept}),
+> \Pr(x_i=x,\beta_i=1\mid\text{kept})
+> \right)
+> \ge L_N[1/3,-o(1)].
+> \]
+
+The relation-supply and label-mixing conditions must hold **jointly** under the search law. Separate first-moment statements do not establish their intersection.
+
+**PROVED — strength of this hypothesis.** This condition is stronger than Lemma M: it requires opposite labels inside identical \(x\)-fibres. A nonlinear deterministic function \(\beta=\beta(x)\) can have \(\delta>0\) but \(\eta_*=0\). Its advantage is that it removes all predictor quantification and is directly suited to an involution or coupling argument.
+
+**SPECULATIVE — research assessment.** I do not currently see known analytic tools proving this fibre-mixing hypothesis for LV, QS, or degree-one NFS at the required cost. The proved averaging theorem identifies a tractable component; Theorem B identifies the additional structure that component cannot supply. The odd-degree automorphism barrier and the quadratic class-group norm barriers narrow several natural routes, but do not rule out nonlinear correspondences, structured adaptive-predictor arguments, or a new fibre-uniform relation generator.
+tokens used
+338,030
+## Verdict
+
+**KNOWN — literature located through 18 October 2026.** I did not find an unconditional \(L[1/3]\) factoring theorem, a proof of LV fruitfulness for almost all balanced semiprimes, or an unconditional general factoring bound \(L[1/2,c]\) with \(c<1\). This is a search result, not a theorem of nonexistence. LV’s factoring conclusion remains explicitly conditional in the paper: Theorem 2.3 assumes Conjecture 7.1. [Lee–Venkatesan, §7 and Theorem 2.3](https://arxiv.org/pdf/1805.08873).
+
+**PROVED below.** There is a useful positive averaging theorem: Jacobi signs are balanced on a fixed set of smooth integers for almost all balanced Blum semiprimes, at the relevant subexponential lengths. Ordinary large sieve methods suffice, without an \(\varepsilon\)-loss. However, even these estimates for **every fixed linear test** can coexist with \(\delta=0\) for **every modulus**. Thus decoupling the smoothness weights is necessary for this approach but does not resolve the adaptive minimum over \(w\).
+
+**PROVED below.** Several proposed symmetries have precise barriers:
+
+- LV’s odd-degree fields admit no nonidentity field automorphism of order two.
+- QS conjugation preserves the actual relation.
+- A primitive degree-one pair of odd determinant has no nontrivial integral linear involution preserving the two forms individually up to signs, apart from simultaneous negation.
+- An explicit square-class-preserving transformation with a fruitful two-relation orbit already yields a factor directly.
+
+**KNOWN — relevant recent progress.** Two developments deserve attention: Pascadi’s \(5/8\) exponent of distribution for smooth numbers, and de Boer–Pellet-Mary–Wesolowski’s rigorous ideal-sampling and class-group algorithms under ERH. Neither currently supplies NFS fruitfulness or the required paired, short-generator special-\(q\) descent theorem. [Pascadi, Theorem 1.5](https://arxiv.org/html/2505.00653), [de Boer–Pellet-Mary–Wesolowski, Theorems 1.1 and 1.3](https://arxiv.org/pdf/2512.01588v2).
+
+I use the project’s Lemma H, Bockstein formula, and Proposition R as **KNOWN — supplied background**.
+
+---
+
+## 1. Literature
+
+### 1.1 Factoring and fruitfulness
+
+**KNOWN.** Lee and Venkatesan, *Rigorous analysis of a randomised number field sieve*, **J. Number Theory 187 (2018), 92–159**, prove their congruence-generation bounds. Their Theorem 2.3 obtains a nontrivial congruence for a fixed Blum semiprime only conditional on Conjecture 7.1. Section 7 also discusses the multiple-polynomial version; it does not eliminate that assumption. [Paper](https://arxiv.org/pdf/1805.08873).
+
+**KNOWN.** Lenstra and Pomerance, *A rigorous time bound for factoring integers*, **J. Amer. Math. Soc. 5 (1992), 483–516**, Theorem 10.5, give expected complete factorization time
+\[
+L_n[1/2,1+o(1)].
+\]
+Their remark following Theorem 10.3 says that Algorithm 10.1 itself has expected time \(L_n[1/2,1+o(1)]\), and changing its smoothness parameter does not improve that constant. This is a limitation of that algorithm, not a lower bound for factoring. [Author’s copy](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+**KNOWN — search outcome.** I found no 2018–2026 paper proving any of the following:
+
+1. unconditional LV/NFS fruitfulness for all inputs;
+2. such fruitfulness for almost all balanced semiprimes or Blum semiprimes;
+3. an unconditional general factoring bound \(L[1/2,c]\), \(c<1\);
+4. an unconditional fixed-degree NFS factoring analysis achieving such a constant.
+
+**KNOWN — verification limitation.** A CANARI bibliography lists Razvan Barbulescu’s *Rigorous time bound for factoring with elliptic curves*, HAL-03485435. I could verify the listing but could not access a theorem statement or manuscript through HAL’s access barrier. I therefore do **not** treat that title as evidence of an improved factoring bound. [Listing](https://canari.math.u-bordeaux.fr/publications/2026.html).
+
+**PROVED — qualification concerning “any family.”** Elementary special families do have better bounds. If \(n=uv\), with \(u,v\) odd and \(u\le v\), Fermat’s method takes at most
+\[
+1+\frac{(v-u)^2}{8\sqrt n}
+\]
+iterations, up to polynomial factors in \(\log n\).
+
+Indeed, the successful value is \(a=(u+v)/2\), and
+\[
+a-\sqrt n
+=\frac{(v-u)^2}{2(u+v+2\sqrt n)}
+\le \frac{(v-u)^2}{8\sqrt n}.
+\]
+Thus sufficiently close-factor families have \(L[1/3]\), or smaller, factoring time. These do not establish fruitfulness of a sieve or an almost-all theorem for balanced semiprimes.
+
+### 1.2 Descent, fixed degree, and polynomial smoothness
+
+**KNOWN.** Haetham Al Aswad and Cécile Pierrot, *Individual Discrete Logarithm with Sublattice Reduction*, arXiv:2309.13048, give rigorous lattice and norm bounds, but their conversion into smoothness-search complexity is conditional. In particular, Theorem 5.2 explicitly assumes that the output norm is uniformly distributed over the relevant integer interval. Under that assumption, a norm bound \(Q^e\) leads to the stated initial-splitting complexity \(L_Q[1/3,(3e)^{1/3}]\). It is not an unconditional special-\(q\) smoothness theorem. [§5.3, Theorem 5.2](https://arxiv.org/html/2309.13048).
+
+**KNOWN.** Barbulescu and Jouve, *ECM and the Elliott–Halberstam conjecture for quadratic fields*, **Acta Arith. 213 (2024), 289–342**, prove conditional smoothness results relevant to NFS initial splitting. Their Theorem 1.2 gives, for a CM elliptic curve and bounded \(u=\log x/\log y\), the asymptotic
+\[
+\psi_E(x,y)\sim \rho(u)\frac{x}{\log x}
+\]
+assuming the stated quadratic-field Elliott–Halberstam conjecture. The \(L[1/3]\) conclusion in Theorem 2.1(2) requires a further extension to a substantially larger growing-\(u,v\) range. This is neither unconditional NFS descent nor an unconditional \(L[1/3]\) splitting analysis. [Theorems 1.2, 1.3 and 2.1](https://arxiv.org/pdf/2212.11724).
+
+**KNOWN.** De Boer, Pellet-Mary and Wesolowski, *Rigorous methods for computational number theory*, arXiv:2512.01588v2, 19 February 2026, provide a genuine new rigorous tool under ERH:
+
+- Theorem 1.1 samples \(\beta\in\mathfrak a\) with
+  \[
+  (\beta)\mathfrak a^{-1}\in\mathcal S\mathcal S_B
+  \]
+  with probability at least \(\delta_{\mathcal S}[r^d]/3-\varepsilon\), subject to their explicit size condition on \(r\); here \(B\) is polylogarithmic in the discriminant and accuracy parameters.
+- Theorem 1.3 computes class groups and compact fundamental units in time polynomial in input length,
+  \[
+  L_{|\Delta_K|}[1/2,O(1)],\quad
+  L_{d^d}[2/3,O(1)],\quad
+  \min\!\left(\rho_K,L_{|\Delta_K|}[2/3+o(1),O(1)]\right).
+  \]
+
+They explicitly leave NFS applications uninvestigated. [Theorems 1.1, 1.3; introduction, “Further applications”](https://arxiv.org/pdf/2512.01588v2).
+
+**PROVED — scope distinction.** Ideal decomposition in a number field does not by itself provide NFS special-\(q\) descent. The latter additionally requires appropriately short generators in a prescribed relation shape, compatibility with the finite-field evaluation, and suitable smoothness of the other channel. A theorem about arbitrary ideal-lattice samples does not imply a theorem about the two-dimensional slice \(a-b\theta\).
+
+**KNOWN.** Relevant polynomial-smoothness results include:
+
+- Balog–Blomer–Dartyge–Tenenbaum, *Friable values of binary forms*, **Comment. Math. Helv. 87 (2012), 639–667**: for a fixed degree-\(g\) form, their general positive-proportion bound uses \(y=x^{g-2+\varepsilon}\); for cubic forms they obtain \(y=x^{1/\sqrt e+\varepsilon}\). These are fixed-form, power-smoothness results. [Paper](https://tenenb.perso.math.cnrs.fr/PPP/friableforms.pdf).
+- Bober–Fretwell–Martin–Wooley, *Smooth values of polynomials*, **J. Aust. Math. Soc. 108 (2020), 245–261**, Theorem 1.1: for a quadratic \(f\), there are auxiliary polynomials \(g\) of arbitrarily large odd degree \(k\) such that every factor of \(f(g(t))\) has degree at most \(ck/\sqrt{\log\log k}\). Consequently, for each \(\varepsilon>0\), infinitely many \(n\) satisfy \(P^+(f(n))\le n^\varepsilon\). This supplies no density in the required QS interval. [Theorem 1.1](https://www.math.purdue.edu/~twooley/publ/20171004smoothpoly.pdf).
+- Mine, *An upper bound for the number of smooth values of a polynomial and its applications*, arXiv:2410.09558: an upper-bound theorem, not the joint lower bound needed here. [Theorem 1.1](https://arxiv.org/html/2410.09558).
+
+**KNOWN — search outcome.** I did not find a theorem giving the needed uniform, joint smoothness lower bound for random NFS polynomials in adaptively chosen special-\(q\) sublattices, nor a published fixed-degree \(L[1/2]\) NFS factoring analysis that avoids a fruitfulness assumption.
+
+### 1.3 Modern smooth-number distribution
+
+**KNOWN.** Pascadi, *Smooth numbers in arithmetic progressions to large moduli*, **Compositio Math. 161 (2025), 1923–1974**, obtains exponent \(66/107\). His subsequent preprint *On the exponents of distribution of primes and smooth numbers*, arXiv:2505.00653, Theorem 1.5, gives the following stronger statement.
+
+For fixed \(a\ne0\), \(A,\varepsilon>0\), there is \(C=C(a,A,\varepsilon)\) such that, for
+\[
+(\log x)^C\le y\le x^{1/C},\qquad Q\le x^{5/8-\varepsilon},
+\]
+\[
+\sum_{\substack{q\le Q\\(q,a)=1}}
+\left|
+\Psi(x,y;a,q)-\frac{\Psi_q(x,y)}{\varphi(q)}
+\right|
+\ll_{\varepsilon,A,a}\frac{\Psi(x,y)}{(\log x)^A}.
+\]
+The fixed/small-residue restriction matters. [2025 published paper](https://doi.org/10.1112/S0010437X2500747X), [subsequent Theorem 1.5](https://arxiv.org/html/2505.00653).
+
+**PROVED — application limitation.** This statement cannot simply be substituted into LV with an arbitrary residue depending on \(n,m,a,b,f\): its constant and hypotheses concern a fixed residue, whereas LV needs control after conditioning the modulus to be smooth and allowing the relevant residue to vary. Such a substitution requires a separate argument.
+
+**KNOWN.** Jain, *Smooth Numbers in Short Intervals*, arXiv:2502.10530v1, Theorem 1.1, proves existence in almost all intervals of length
+\[
+h\ge
+\exp\!\left((1+\varepsilon)
+\left(\frac{11}{8}u\log u+4\log\log x\right)\right)
+\]
+when
+\[
+\exp\!\left(C(\log x)^{2/3}(\log\log x)^{4/3}\right)
+\le y\le x^{1/C}.
+\]
+This is outside the smaller smoothness ranges relevant to the proposed LP improvement and the present NFS application. [Theorem 1.1](https://arxiv.org/html/2502.10530).
+
+**KNOWN.** Matomäki–Radziwiłł, *Multiplicative functions in short intervals*, **Ann. Math. 183 (2016), 1015–1056**, Theorem 1, compares short and long averages of real multiplicative functions bounded by one; the result is uniform in the function. Their later *Multiplicative functions in short intervals II* develops results for sparse multiplicative sequences. [2016 paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf), [later paper](https://arxiv.org/html/2007.04290).
+
+**PROVED — application limitation.** Applying such a comparison to a smooth-supported character still requires a suitable long signed average and error smaller than the smooth-set density. Furthermore, a short interval in the integer variable is different from values along \(a^2-n\), or a paired norm form in a prescribed lattice. These logical requirements remain even when a relative short-interval estimate is available.
+
+### 1.4 Heath-Brown’s quadratic large sieve and loss-free alternatives
+
+**KNOWN.** Heath-Brown, *A mean value estimate for real character sums*, **Acta Arith. 72 (1995), 235–275**, Theorem 1, states
+\[
+\sum_{\substack{m\le Q\\m\ {\rm odd,\ squarefree}}}
+\left|
+\sum_{\substack{t\le H\\t\ {\rm odd,\ squarefree}}}
+a_t\left(\frac tm\right)
+\right|^2
+\ll_\varepsilon
+(QH)^\varepsilon(Q+H)
+\sum_t|a_t|^2.
+\tag{1}
+\]
+Both squarefree restrictions are material. Corollary 2, for all primitive real characters of conductor at most \(Q\), replaces the final norm for unrestricted \(t\) by
+\[
+\mathcal E_\square(a)
+=
+\sum_{\substack{r,s\le H\\rs\ {\rm square}}}|a_ra_s|.
+\tag{2}
+\]
+[Original statement, author’s copy](https://ora.ox.ac.uk/objects/uuid%3Ab188b365-d8d1-4267-8548-49f01e6cb6a7/files/m6af40476f1b860392271a2d8ecae593b).
+
+**KNOWN.** Zihao Liu, *Explicit quadratic large sieve inequality*, arXiv:2505.09637v2, Theorem 1, makes the constant explicit:
+\[
+\mathcal B(Q,H)
+\le
+\exp_4(C/\varepsilon)(QH)^\varepsilon(Q+H).
+\tag{3}
+\]
+Optimizing this supplies a loss
+\[
+\exp\!\left(O\!\left(\frac{\log(QH)}{\log_4(QH)}\right)\right).
+\tag{4}
+\]
+I found no general unconditional replacement by a fixed power of \(\log(QH)\) for arbitrary coefficients. Liu explicitly identifies an improvement of the \(\varepsilon\)-dependence as a further problem. [Theorem 1 and following discussion](https://arxiv.org/html/2505.09637v2).
+
+**PROVED — ordinary large sieve alternative.** With the squarefree restrictions of (1),
+\[
+\boxed{\quad
+\sum_m^*
+\left|\sum_t^*a_t(t/m)\right|^2
+\ll
+\min(Q^2+H,\;Q+H^2)\sum_t^*|a_t|^2 .
+\quad}
+\tag{5}
+\]
+The implied constant is absolute; there is no logarithmic or \(\varepsilon\)-loss.
+
+For \(Q^2+H\), include these primitive quadratic characters among all primitive characters of conductor at most \(Q\), and apply the classical multiplicative large sieve.
+
+For \(Q+H^2\), split both variables into residue classes modulo \(4\). Quadratic reciprocity changes \((t/m)\) to a fixed sign times \((m/t)\) on each block. By duality, apply the ordinary character large sieve with character conductors at most \(H\) and coefficient length \(Q\). Combining the four blocks costs an absolute constant. The ordinary inequality is also recorded as equation (3) in Heath-Brown’s paper.
+
+Consequently:
+
+| Range | Loss-free consequence |
+|---|---|
+| \(Q\ge H^2\) | \(O(Q)\sum|a_t|^2\) |
+| \(H\ge Q^2\) | \(O(H)\sum|a_t|^2\) |
+| General \(Q,H\) | \(O(\min(Q^2+H,Q+H^2))\sum|a_t|^2\) |
+
+**PROVED — interpretation.** Here \(Q\) bounds the moduli; it is not merely their number. Restricting to a sparse family of moduli preserves the upper bound but does not replace \(Q\) by the family’s cardinality.
+
+**PROVED — scale warning.** If \(Q\asymp N\) and \(H=N^{o(1)}\), a fixed loss \(N^\varepsilon\) is larger than every fixed \(L_N[1/3,c]\). Liu’s explicit loss (4) is also much larger than that scale. One cannot declare either loss harmless in this program. In this particular unbalanced range, (5) removes the problem entirely.
+
+---
+
+## 2. Averaging over \(N\)
+
+### 2.1 What a decoupled character calculation actually proves
+
+**PROVED — statement; full proof in §5.** Let \(\mathcal F_N\subset[N,2N]\) be a fixed balanced Blum-semiprime family with
+\[
+|\mathcal F_N|\asymp \frac{N}{(\log N)^2}.
+\]
+Let \(a_t\ge0\), supported on odd \(t\le H\), be independent of \(n\), and put
+\[
+A=\sum_ta_t,\qquad
+E=\sum_{\substack{r,s\\rs\ {\rm square}}}a_ra_s.
+\]
+Assume every prime factor of every \(n\in\mathcal F_N\) exceeds \(H\). Then
+\[
+\frac{\#\{n\in\mathcal F_N:
+|\sum_ta_t(t/n)|>\eta A\}}
+{|\mathcal F_N|}
+\ll
+\frac{(N+H^2)(\log N)^2E}{N\eta^2A^2}.
+\tag{6}
+\]
+
+For \(H=N^{o(1)}\), the relevant quantity is the effective square-class support
+\[
+A_{\rm eff}=\frac{A^2}{E},
+\]
+and the exceptional proportion is
+\[
+\ll \frac{(\log N)^2}{\eta^2A_{\rm eff}}.
+\tag{7}
+\]
+
+**PROVED.** This handles the loss from restricting to balanced semiprimes: their density costs approximately \((\log N)^2\), not a power of \(N\).
+
+**PROVED.** In particular, for fixed \(a,b>0\),
+\[
+H=L_N[2/3,a],\qquad B=L_N[1/3,b],
+\]
+Jacobi signs on the **fixed** set of odd \(B\)-smooth integers \(t\le H\) are asymptotically balanced for almost all \(n\in\mathcal F_N\). This is a genuine smooth-weighted averaging theorem. It is not a statement about the kept QS/NFS law.
+
+### 2.2 QS: the parametrization changes the character but not the needed fibres
+
+**PROVED.** Write
+\[
+n=a^2-s,\qquad
+a\in[\sqrt n,\sqrt n+H].
+\]
+For odd \(a\), Blum \(n\), and \((a,n)=1\), reciprocity gives
+\[
+\left(\frac an\right)
+=\left(\frac na\right)
+=\left(\frac{-s}{a}\right).
+\tag{8}
+\]
+The smoothness weight is now simply \(1_{P^+(s)\le B}\).
+
+This is a real algebraic decoupling, but the relation domain remains
+\[
+s=a^2-n,\qquad 0\le s\ll \sqrt N\,H.
+\tag{9}
+\]
+
+**PROVED — exact obstruction.** Summing over a rectangle in \((a,s)\) averages over many different \(n=a^2-s\). Fruitfulness for a fixed \(n\) requires information along the curve (9), with \(n\) held fixed.
+
+A second moment over \(n\) produces
+\[
+s'-s=a'^2-a^2
+\]
+and hence simultaneous smoothness weights
+\[
+1_{P^+(s)\le B}\,
+1_{P^+(s+a'^2-a^2)\le B}.
+\tag{10}
+\]
+The large sieve with a common one-variable coefficient sequence does not estimate (10).
+
+**PROVED — length accounting.** In the original character \((a/n)\), the arguments have size \(\asymp\sqrt N\), although the interval has length \(H\). Reciprocity gives characters of conductor \(\asymp\sqrt N\), not conductor \(H\). One may not replace the \(H\) in the dual-conductor term of (5) by the short interval’s length.
+
+Even with common squarefree weights on an interval near \(\sqrt N\), the loss-free bound is on the scale
+\[
+N+(\sqrt N)^2\asymp N.
+\]
+That could yield useful average cancellation if the weights were common. The actual weights
+\[
+W_n(a)=1_{P^+(a^2-n)\le B}
+\]
+depend on \(n\).
+
+**PROVED — weakness of a global first moment.** Global sign balance need not imply any within-input balance. For example, assign every relation for half the inputs label \(0\), and every relation for the other half label \(1\). The global labels are balanced. Because the relation vector includes the constant parity column, each input nevertheless has a perfect linear predictor.
+
+### 2.3 LV: \(n=f(m)\) is useful bookkeeping, not independent sampling
+
+**PROVED.** For fixed \(m\), the map
+\[
+(n,R)\longmapsto
+f=\widehat f_{n,m}+(x-my)R
+\tag{11}
+\]
+is injective on its prescribed domain. Evaluation recovers \(n=f(m,1)\), and then polynomial division recovers \(R\).
+
+Thus averaging over \(n\) can indeed be rewritten as averaging over a particular region of coefficient space.
+
+**PROVED — remaining dependence.** That region is not automatically a product box of independent coefficients. The condition
+\[
+f(m,1)\in\mathcal F_N
+\]
+also retains the semiprime restriction as a condition on polynomial evaluation.
+
+Moreover, the algebraic square-class coordinates, units, and Bockstein label vary with \(f\). This is more than a single Jacobi character multiplied by common smoothness weights.
+
+**KNOWN.** LV’s relation-supply proof treats the progression of \(f(a,b)\) modulo \(a-mb\), with the latter conditioned to be smooth. Their §8 explicitly identifies conditioning on this rare event as an essential difficulty. Their parameter condition
+\[
+\delta^{-1}<\frac{\kappa+\sigma\delta}{2}
+\]
+ensures the needed progression-distribution range. [Equations (4.1)–(4.2), Remark 4.2, and §8](https://arxiv.org/pdf/1805.08873).
+
+**PROVED — additional Bockstein issue.** Equidistribution of an ordinary quadratic character is not automatically equidistribution of its Bockstein half. In the supplied degree-one formula,
+\[
+\beta=\left\lfloor\frac{\Omega_T(L_1L_2)}2\right\rfloor\bmod2,
+\]
+the ordinary character records \(\Omega_T\) modulo \(2\); the label needs its next bit. An averaging proof must preserve that extra information.
+
+### 2.4 Degree one: determinant parametrization
+
+**PROVED.** Write
+\[
+L_1(a,b)=Aa+Bb,\qquad L_2(a,b)=Ca+Db,
+\qquad AD-BC=\pm n.
+\tag{12}
+\]
+Averaging coefficient matrices makes the determinant the input modulus, but imposing a fixed determinant couples the coefficients. For instance,
+\[
+D=\frac{\pm n+BC}{A}
+\]
+requires divisibility and correlates the two form values.
+
+Therefore determinant parametrization alone does not yield coefficients independent of the character modulus.
+
+**SPECULATIVE.** A dispersion argument over matrices might exploit this structure. It would need a theorem for joint smooth values with determinant and Bockstein weights. I found no such theorem.
+
+### 2.5 The union over \(2^C\): a genuine logical barrier
+
+**PROVED.** Suppose one proves, for each fixed \(w\),
+\[
+\Pr_\theta(\delta_{\theta,w}<\delta_0)\le \epsilon.
+\tag{13}
+\]
+The direct conclusion is only
+\[
+\Pr_\theta(\min_w\delta_{\theta,w}<\delta_0)
+\le 2^C\epsilon.
+\tag{14}
+\]
+Polynomial or subexponential savings in \(N\) are insufficient when
+\[
+C=L_N[1/3,c+o(1)],
+\qquad 2^C\gg N^A
+\]
+for every fixed \(A\).
+
+**PROVED — LV parameter count.** In the stated coefficient model,
+\[
+\log \#R
+=
+d\log L_N[2/3,\kappa-1/\delta]
+=
+(\delta\kappa-1+o(1))\log N.
+\]
+The \(m\)-choices contribute \(N^{o(1)}\). Hence the finite parameter space has polynomial cardinality in \(N\), as suggested in the question.
+
+**PROVED — what that count does not imply.** Polynomially many parameter points do not make simultaneous control impossible. An algebraic identity, a bound on the supremum, or a theorem restricting the possible bad predictors could control all \(w\) at once.
+
+But fixed-test exceptional-set estimates alone cannot do so. Distinct tests can have different small exceptional sets whose union covers the entire parameter space. Section 5 gives an arithmetic example with perfectly decoupled smoothness weights.
+
+**SPECULATIVE.** A successful averaging route therefore needs an additional structural ingredient: restricted complexity of bad predictors, an inverse theorem, or a direct estimate for the adaptive supremum. Merely sharpening the fixed-test large sieve estimate does not supply that ingredient.
+
+---
+
+## 3. \(\beta\)-flipping involutions
+
+### 3.1 Galois automorphisms
+
+**PROVED — odd-degree barrier.** Let \(K/\mathbb Q\) have odd degree. Then \(K\) has no nonidentity automorphism \(\sigma\) satisfying \(\sigma^2=1\).
+
+If such a \(\sigma\) existed, its fixed field \(F\) would satisfy \([K:F]=2\). Indeed, each \(z\in K\) satisfies
+\[
+T^2-(z+\sigma z)T+z\sigma z\in F[T],
+\]
+and the standard fixed-field argument gives degree two. This contradicts
+\[
+[K:\mathbb Q]=[K:F][F:\mathbb Q]
+\]
+being odd.
+
+LV explicitly chooses odd degree. Thus a fixed nonidentity field automorphism cannot itself provide the requested involution.
+
+**PROVED — relation-level version.** If \(b\ne0\), \(a-b\theta\) generates \(K\). If
+\[
+\sigma^2(a-b\theta)=a-b\theta,
+\]
+then \(\sigma^2\theta=\theta\), so \(\sigma^2=1\). Restricting such an automorphism to the linear-relation set does not evade the odd-degree barrier.
+
+**PROVED — scope.** This does not exclude a piecewise matching of elements in longer Galois orbits, or a correspondence between different fields.
+
+**PROVED — coordinate obstruction.** An automorphism generally permutes prime-ideal coordinates:
+\[
+x(\sigma r)=P_\sigma x(r).
+\]
+Equal ideal norms preserve smoothness, but do not establish equality of the **labelled exact** square-class vector.
+
+**PROVED — caution about equivariance.** If evaluation commutes with an automorphism, transforming an entire true dependency preserves its fruitfulness. That observation alone does **not** rule out a fruitful two-element orbit. A pointwise involution must be checked on the pair \(\{r,Tr\}\), not only on globally transformed dependencies.
+
+### 3.2 QS conjugation
+
+**PROVED.** In the norm presentation
+\[
+\alpha=a+b\sqrt n,\qquad
+N(\alpha)=a^2-nb^2,
+\]
+conjugation sends \(b\) to \(-b\). It preserves both the smooth integer \(a^2-nb^2\) and the modular root \(a\).
+
+Thus it preserves the actual QS congruence relation, not just smoothness. The two-element dependency formed from a relation and its conjugate has identical modular roots and is unfruitful.
+
+Simultaneous negation replaces the modular root by its global negative and likewise gives no nontrivial element of \(\mu_2/\{\pm1\}\).
+
+### 3.3 Units and \(S\)-units: explicit square twists
+
+**PROVED — general square-twist identity.** Consider relations with rational and algebraic entries \(q,\alpha\), satisfying
+\[
+q\equiv\varphi(\alpha)\pmod n.
+\]
+Suppose a transformation has explicitly known
+\[
+q'=s^2q,\qquad \alpha'=t^2\alpha,
+\]
+with \(s\in\mathbb Q^\times\), \(t\in K^\times\), and all evaluations defined and invertible modulo \(n\).
+
+For the two-relation dependency, compatible roots are
+\[
+sq,\qquad t\alpha.
+\]
+Its root ratio is
+\[
+\boxed{\quad \frac{s}{\varphi(t)}\in\mu_2(\mathbb Z/n).\quad}
+\tag{15}
+\]
+The congruence for the transformed relation proves that its square is \(1\).
+
+If (15) is not a global sign, then
+\[
+\gcd\!\left(s-\varphi(t),n\right)
+\]
+after clearing invertible denominators gives a proper factor.
+
+**PROVED — consequence.** A unit or \(S\)-unit twist preserving the **exact** square classes must have square quotients in the relevant fields. If their roots are explicitly available, a \(\beta\)-flipping pair already contains an immediately extractable factor.
+
+This is a reduction, not an impossibility theorem: discovering such twists could be a factoring algorithm.
+
+**PROVED.** A nonsquare unit can preserve ideal-valuation parities while changing the actual field square class. It therefore does not preserve the \(x\) required in this question. Omitting unit information would create a false symmetry.
+
+### 3.4 Integral linear actions on degree-one pairs
+
+**PROVED — rigidity theorem.** Let
+\[
+A=\begin{pmatrix}a&b\\c&d\end{pmatrix},
+\qquad \det A=n>1
+\]
+with \(n\) odd, and suppose both rows are primitive. If \(M\in GL_2(\mathbb Z)\) satisfies
+\[
+L_1(Mz)=\epsilon_1L_1(z),\qquad
+L_2(Mz)=\epsilon_2L_2(z),
+\qquad \epsilon_j\in\{\pm1\},
+\]
+then \(M=I\) or \(M=-I\).
+
+If the signs agree, this follows from \(AM=\pm A\). Otherwise, after a global sign,
+\[
+M=A^{-1}
+\begin{pmatrix}1&0\\0&-1\end{pmatrix}A
+=
+\frac1n
+\begin{pmatrix}
+ad+bc&2bd\\
+-2ac&-ad-bc
+\end{pmatrix}.
+\]
+Integrality and oddness imply
+\[
+n\mid ac,\ bd,\ ad+bc.
+\]
+Together with \(ad-bc=n\), they imply \(n\mid ad,bc\). But
+\[
+\gcd(ac,ad,bc,bd)
+=\gcd(a,b)\gcd(c,d)=1,
+\]
+a contradiction.
+
+**PROVED.** Exchanging the forms generally exchanges their coordinate blocks rather than preserving \(x\). In the supplied degree-one Bockstein formula, an exact exchange preserves \(\Omega_T(L_1L_2)\) and hence does not flip \(\beta\).
+
+**PROVED — scope.** This theorem does not exclude a nonlinear map defined only on selected smooth points, or a transformation preserving square classes without preserving the individual forms up to signs.
+
+### 3.5 Multiple polynomials and two polynomial pairs
+
+**KNOWN.** Coppersmith, *Modifications to the Number Field Sieve*, **J. Cryptology 6 (1993), 169–180**, reuses smoothness computations across number fields to improve the heuristic asymptotic constant. LV also analyzes a randomized multiple-polynomial variant. Neither result provides a \(\beta\)-flipping correspondence. [Coppersmith’s paper description](https://research.ibm.com/publications/modifications-to-the-number-field-sieve), [LV, §7](https://arxiv.org/pdf/1805.08873).
+
+**PROVED.** Having the same root modulo \(n\) does not identify the fields’ square-class groups or their square-root choices. The combined relation vector has separate algebraic coordinate blocks. A shared \((a,b)\) does not establish equal exact \(x\).
+
+**SPECULATIVE.** A productive construction would be a correspondence between two polynomial pairs supplying:
+
+1. common smooth relations;
+2. an explicit identification of the exact square-class data;
+3. a proven opposite Bockstein label;
+4. adequate mass under the search law.
+
+I found no example meeting all four conditions. The first condition alone is substantially weaker.
+
+---
+
+## 4. Fruitfulness-free routes
+
+### 4.1 Transplanting relation generation to class groups
+
+**KNOWN.** The Lenstra–Pomerance method already obtains its nontriviality from class-group and ambiguous-form structure rather than an NFS fruitfulness conjecture. Its small multipliers remove the analytic assumptions needed for the relation-supply argument. They are bounded multipliers, not a replacement of discriminant size \(n\) by a subexponential discriminant.
+
+**PROVED — optimization in the usual cost model.** Set
+\[
+B=L_n[1/2,b].
+\]
+For random integers of size \(n^{1/2+o(1)}\), the smoothness density is
+\[
+L_n[1/2,-1/(4b)+o(1)].
+\]
+If approximately \(B\) relations are required, smoothness testing has \(B^{o(1)}\) cost, and sparse linear algebra costs \(B^{2+o(1)}\), the resulting constant is
+\[
+c(b)=\max\left(b+\frac1{4b},\,2b\right).
+\tag{16}
+\]
+Since \(b+1/(4b)\ge1\), the minimum is \(1\), attained at \(b=1/2\).
+
+This calculation is conditional on that sampling model. It is not a lower bound for all class-group algorithms. It agrees with the specific LP limitation cited above.
+
+#### A geometric obstruction to reducing the norms
+
+**PROVED.** Let \(K\) be imaginary quadratic with fundamental discriminant \(\Delta=-D\). Every nonrational algebraic integer can be written
+\[
+\alpha=\frac{u+v\sqrt{-D}}2,\qquad v\ne0,
+\]
+with suitable integral parity conditions. Therefore
+\[
+|N_{K/\mathbb Q}(\alpha)|
+=\frac{u^2+Dv^2}{4}\ge\frac D4.
+\tag{17}
+\]
+Consequently, if \(N\mathfrak a\le D^{1/2+o(1)}\),
+\[
+N\big((\alpha)\mathfrak a^{-1}\big)
+\ge D^{1/2-o(1)}/4
+\]
+for a nonrational \(\alpha\in\mathfrak a\).
+
+Thus the small norms of an unrelated high-degree NFS field cannot simply be imported into the imaginary quadratic field of discriminant \(-kn\).
+
+#### A counting obstruction for nearly uniform class sampling
+
+**PROVED.** The number of integral ideals of norm at most \(Y\) in an imaginary quadratic field is at most
+\[
+\sum_{m\le Y}d(m)\le Y(1+\log Y).
+\tag{18}
+\]
+At each rational prime, the number of ideals of norm \(p^k\) is at most \(k+1\); multiplicativity gives the first inequality. The second follows from
+\[
+\sum_{m\le Y}d(m)
+=\sum_{r\le Y}\lfloor Y/r\rfloor.
+\]
+
+Hence, if a class sampler assigns probability at most \(A/h(\Delta)\) to each class,
+\[
+\Pr(\text{sampled class has an integral representative of norm }\le Y)
+\le \frac{A\,Y(1+\log Y)}{h(\Delta)}.
+\tag{19}
+\]
+
+**KNOWN.** Siegel’s theorem gives
+\[
+h(-D)=D^{1/2+o(1)}
+\]
+for fundamental imaginary quadratic discriminants; the lower estimate is ineffective. [Siegel, *Über die Classenzahl quadratischer Zahlkörper*, Acta Arith. 1 (1935), 83–86](https://www.impan.pl/pl/wydawnictwa/czasopisma-i-serie-wydawnicze/acta-arithmetica/all/1/1/93175/uber-die-classenzahl-quadratischer-zahlkorper).
+
+**PROVED.** Taking \(A=D^{o(1)}\) and \(Y=D^\alpha\), \(\alpha<1/2\), in (19) gives
+\[
+\Pr(\text{such a small representative exists})
+\le D^{\alpha-1/2+o(1)}.
+\tag{20}
+\]
+A method retaining nearly uniform class sampling cannot obtain a polynomial reduction in representative norm at only subexponential rejection cost.
+
+**PROVED — implications for modern smoothness inputs.** Better equidistribution can improve the justification and uniformity of relation sampling. It does not alter the optimization (16) while the sample size exponent remains \(1/2\) and the random-integer smoothness law remains the benchmark. Obtaining \(c<1\) requires a change in that model: smaller effective norms, an exponentially biased supply of smooth representatives, fewer required relations, or a different group computation.
+
+**SPECULATIVE.** The 2026 ideal-sampling theorem is worth investigating for rigorously replacing particular sampling heuristics. I do not see a derivation of \(c<1\) from its stated bounds, or a transfer yielding \(L[1/3]\) ambiguous-form computation.
+
+### 4.2 Hidden-root injection
+
+#### The symmetry works exactly
+
+**PROVED — fibre-uniformity theorem.** Let \(n\) be odd with \(k\ge2\) distinct prime factors. Suppose a relation generator produces
+\[
+r_i^2\equiv s_i\pmod n,\qquad (r_i,n)=1,
+\]
+and, conditional on all public relation data, the \(r_i\) are independent and uniform in their square-root fibres. Suppose a nonempty dependency \(S\) is selected using only those public data, and \(\prod_{i\in S}s_i=y^2\) as an integer.
+
+Then
+\[
+\Pr\!\left(\prod_{i\in S}r_i\not\equiv\pm y\pmod n\right)
+=1-2^{1-k}.
+\tag{21}
+\]
+
+Each fibre is a torsor for
+\[
+G=\mu_2(\mathbb Z/n),\qquad |G|=2^k.
+\]
+After fixing all roots except one selected root, varying that root multiplies the final quotient by a uniform element of \(G\). The quotient is therefore uniform in \(G\), and precisely two elements are global signs.
+
+For semiprimes, the probability is \(1/2\).
+
+**PROVED — essential conditioning.** Marginally uniform roots do not suffice if the keep rule or dependency selection exposes or depends on the hidden fibre element.
+
+#### Forward sampling has the wrong cost
+
+**PROVED.** For uniform \(r\in(\mathbb Z/n)^\times\), every residue has at most \(2^k\) square roots. Therefore
+\[
+\Pr(r^2\bmod n\text{ is }B\text{-smooth})
+\le \frac{2^k\Psi(n,B)}{\varphi(n)}.
+\tag{22}
+\]
+For balanced semiprimes and \(B=L_n[1/3,b]\), the standard smooth-number estimate gives
+\[
+\frac{\Psi(n,B)}n
+=
+L_n[2/3,-2/(3b)+o(1)].
+\]
+Thus this method needs at least
+\[
+L_n[2/3,2/(3b)+o(1)]
+\tag{23}
+\]
+trials in expectation. This lower bound already excludes NFS-sized cost.
+
+The smooth-number estimate used here is the classical logarithmic asymptotic associated with Canfield–Erdős–Pomerance, *On a problem of Oppenheim concerning “factorisatio numerorum”*, **J. Number Theory 17 (1983), 1–28**. [Author’s publication list, paper 39](https://math.dartmouth.edu/~carlp/).
+
+#### Resampling an existing fibre is already factoring
+
+**PROVED.** Given a known root \(r\), any procedure producing \(r'\) with
+\[
+r'^2\equiv r^2\pmod n,\qquad r'\not\equiv\pm r\pmod n
+\]
+immediately factors \(n\) by \(\gcd(r-r',n)\).
+
+Therefore “first obtain an NFS relation, then randomize its root within the fibre” cannot be justified by an elementary root-randomization operation.
+
+**PROVED — small-ratio rejection barrier.** Let \(r\) be uniform in the unit group and \(\lambda=r^2\). The probability that
+\[
+\lambda\equiv c/d\pmod n,\qquad
+0<|c|,|d|\le H,\quad (d,n)=1,
+\]
+is at most
+\[
+\frac{4H^2\,2^k}{\varphi(n)}.
+\tag{24}
+\]
+There are at most \(4H^2\) numerator-denominator pairs, and each represented \(\lambda\) has at most \(2^k\) preimages \(r\).
+
+For balanced semiprimes and \(H=n^{o(1)}\), this is \(n^{-1+o(1)}\). Repeating \(n^{o(1)}\) independent attempts still has negligible success probability.
+
+**SPECULATIVE — remaining possibility.** An efficient generator could choose its own smooth target and produce a fibre-uniform root without accepting a prescribed target. The preceding reductions do not rule that out. I found no construction achieving this at NFS cost. Establishing the required conditional uniformity is the unresolved step.
+
+---
+
+## 5. Best provable statement: useful averaging, with an exact limitation
+
+The strongest conclusion I can prove here is an averaging theorem together with a counterexample to the proposed inference from fixed-test averaging to Lemma M.
+
+### Theorem A — fixed smooth sets over balanced Blum semiprimes
+
+**PROVED.** Choose a balanced Blum-semiprime family \(\mathcal F_N\subset[N,2N]\) of cardinality \(\asymp N/(\log N)^2\). For example, take
+\[
+p\in[\sqrt N,1.1\sqrt N],\qquad
+q\in[1.2\sqrt N,1.3\sqrt N],
+\qquad p,q\equiv3\pmod4,
+\]
+and \(n=pq\).
+
+Let \(H<\sqrt N\), and let \(a_t\ge0\) be supported on odd \(t\le H\), independently of \(n\). Define
+\[
+A=\sum_ta_t,\qquad
+E=\sum_{rs\ {\rm square}}a_ra_s.
+\]
+Then (6) holds.
+
+For fixed \(a,b>0\), let
+\[
+H=L_N[2/3,a],\qquad B=L_N[1/3,b].
+\]
+For all but \(o(|\mathcal F_N|)\) inputs,
+\[
+\#\{t\le H:t\text{ odd and }B\text{-smooth},\ (t/n)=\pm1\}
+=
+\left(\frac12+o(1)\right)
+\#\{t\le H:t\text{ odd and }B\text{-smooth}\}.
+\tag{25}
+\]
+
+**Proof.** Write uniquely \(t=su^2\), with \(s\) odd and squarefree, and set
+\[
+b_s=\sum_{u:\,su^2\le H}a_{su^2}.
+\]
+All \(t\le H\) are coprime to every \(n\in\mathcal F_N\), so
+\[
+\sum_ta_t(t/n)=\sum_s b_s(s/n).
+\]
+Furthermore,
+\[
+\sum_s b_s^2=E.
+\]
+By the loss-free bound (5),
+\[
+\sum_{n\in\mathcal F_N}
+\left|\sum_ta_t(t/n)\right|^2
+\ll (N+H^2)E.
+\]
+Chebyshev’s inequality and \(|\mathcal F_N|\asymp N/(\log N)^2\) prove (6).
+
+The stated cardinality of \(\mathcal F_N\) follows by applying the prime number theorem in the fixed progression \(3\bmod4\) to the two disjoint prime intervals. The needed statement is
+\[
+\pi(x;4,3)\sim \frac{x}{2\log x}.
+\]
+[Prime number theorem for arithmetic progressions, Theorem 3.1](https://w3.impa.br/~goncalves/NotesDavenport.pdf).
+
+Now use \(a_t=1\) on the odd \(B\)-smooth integers up to \(H\). Each square-class fibre has at most \(\sqrt H\) elements, whence
+\[
+E=\sum_s b_s^2\le \sqrt H\sum_s b_s=\sqrt H\,A.
+\tag{26}
+\]
+The standard smooth-number asymptotic gives
+\[
+\log(A/H)
+=
+-\left(\frac{a}{3b}+o(1)\right)
+(\log N)^{1/3}(\log\log N)^{2/3}.
+\tag{27}
+\]
+For completeness, the coefficient follows from
+\[
+u=\frac{\log H}{\log B}
+=\frac ab\left(\frac{\log N}{\log\log N}\right)^{1/3},
+\qquad \log(A/H)=-(1+o(1))u\log u.
+\]
+Restricting to odd integers preserves this logarithmic asymptotic: every smooth integer is \(2^j\) times an odd smooth integer, so the total count is at most \(1+\log_2H\) times the odd count.
+
+Take \(\eta=1/\log N\) in (6). Since \(H^2=o(N)\), (26) bounds the exceptional proportion by
+\[
+\ll \frac{(\log N)^4\sqrt H}{A}=o(1)
+\]
+using (27). On the remaining inputs, the signed sum is \(o(A)\), proving (25). \(\square\)
+
+### Theorem B — even perfect decoupling does not control the adaptive test
+
+**PROVED.** There are arithmetic laws with:
+
+- smoothness weights independent of \(n\);
+- \(C=L_N[1/3,c+o(1)]\);
+- almost-all cancellation for every fixed test \(w\);
+
+but
+\[
+\min_w\Pr(\beta\ne\langle w,x\rangle)=0
+\]
+for every \(n\).
+
+**Proof.** Fix
+\[
+B=L_N[1/3,c],
+\]
+and sample \(t\) uniformly from the odd primes at most \(B\). Use coordinates indexed by those primes, together with the required constant parity coordinate:
+\[
+x(t)=(e_t,1).
+\]
+Define
+\[
+\beta_n(t)=\frac{1-(t/n)}2.
+\]
+For each \(n\), choose the prime coordinates of \(w_n\) to be
+\[
+(w_n)_\ell=\frac{1-(\ell/n)}2
+\]
+and its parity coordinate to be zero. Then
+\[
+\beta_n(t)=\langle w_n,x(t)\rangle
+\]
+identically. Thus \(\delta_n=0\) for every modulus.
+
+On the other hand, for any fixed \(w\),
+\[
+(-1)^{\beta_n(t)+\langle w,x(t)\rangle}
+=(t/n)(-1)^{\langle w,x(t)\rangle}.
+\]
+The signed coefficients on the right are independent of \(n\). Applying (5) and Chebyshev gives, for each fixed \(w\), an exceptional proportion
+\[
+\ll \frac{(\log N)^2}{\eta^2\pi(B)}
+=o(1)
+\]
+for any fixed \(\eta>0\).
+
+Hence every fixed predictor is approximately wrong half the time for almost all moduli, while every modulus has its own perfect predictor.
+
+The dimension is
+\[
+C=1+\pi(B)=L_N[1/3,c+o(1)].
+\]
+This proves the theorem. \(\square\)
+
+**PROVED — exact interpretation.** Theorem B is not a counterexample to fruitfulness of actual QS or NFS relations. It is a counterexample to deducing Lemma M from these fixed-test character estimates alone. It uses the same quadratic characters, the relevant dimension, and completely decoupled smoothness weights.
+
+### A precise sufficient hypothesis without a union over tests
+
+**PROVED.** For any kept law, put
+\[
+\mu_{x,b}=\Pr(x_i=x,\beta_i=b),\qquad
+\eta_*=\sum_x\min(\mu_{x,0},\mu_{x,1}).
+\tag{28}
+\]
+Then
+\[
+\delta\ge\eta_*.
+\tag{29}
+\]
+Indeed, at every \(x\), a deterministic predictor must disagree with at least the smaller of the two label masses.
+
+Proposition R consequently gives
+\[
+\Pr(\Phi\equiv0\text{ on the batch kernel})
+\le \exp(C\log2-M\eta_*).
+\tag{30}
+\]
+Thus
+\[
+M\eta_*\ge C\log2+\lambda
+\]
+makes the failure probability at most \(e^{-\lambda}\).
+
+**PROVED — precise conditional lemma for the program.** A sufficient hypothesis is:
+
+> Under the actual LV search distribution, a set of parameters of mass \(L_N[1/3,-o(1)]\) simultaneously supports the required relation supply and satisfies
+> \[
+> \sum_x\min\!\left(
+> \Pr(x_i=x,\beta_i=0\mid\text{kept}),
+> \Pr(x_i=x,\beta_i=1\mid\text{kept})
+> \right)
+> \ge L_N[1/3,-o(1)].
+> \]
+
+The relation-supply and label-mixing conditions must hold **jointly** under the search law. Separate first-moment statements do not establish their intersection.
+
+**PROVED — strength of this hypothesis.** This condition is stronger than Lemma M: it requires opposite labels inside identical \(x\)-fibres. A nonlinear deterministic function \(\beta=\beta(x)\) can have \(\delta>0\) but \(\eta_*=0\). Its advantage is that it removes all predictor quantification and is directly suited to an involution or coupling argument.
+
+**SPECULATIVE — research assessment.** I do not currently see known analytic tools proving this fibre-mixing hypothesis for LV, QS, or degree-one NFS at the required cost. The proved averaging theorem identifies a tractable component; Theorem B identifies the additional structure that component cannot supply. The odd-degree automorphism barrier and the quadratic class-group norm barriers narrow several natural routes, but do not rule out nonlinear correspondences, structured adaptive-predictor arguments, or a new fibre-uniform relation generator.

@@ -1,0 +1,987 @@
+OpenAI Codex v0.162.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a150c5-9533-74f3-88ee-d3885db9f42b
+--------
+user
+# lemmaM round 2 (adversarial review): Dixon descent replaces NFS fruitfulness
+
+You are a hostile but fair referee in analytic and algorithmic number theory. Find errors, gaps, overclaims and prior art.
+Label each verdict CORRECT / CORRECT WITH FIXES / WRONG / UNVERIFIABLE, and give fixes. Use web search for prior art.
+Scratch files go in the current directory only.
+
+## Context
+Lee–Venkatesan (LV, arXiv 1805.08873) rigorously produce NFS congruences of squares in L[1/3,(64/9)^{1/3}]. Non-triviality
+(fruitfulness) is conditional on their Conj. 7.1 (Blum n). Lenstra–Pomerance (JAMS 1992) rigorous L[1/2, 1+o(1)] is the
+record. Earlier rounds (codex/nfsfruit_1, nfsfruit_2, lemmaM_1) showed:
+- a uniform Dixon relation r² mod n that is smooth over an L[1/3] factor base costs L[2/3];
+- a uniform hidden root λ = r² has small ratio representatives c/d (|c|,|d| ≤ H) with probability ≤ 4H²2^ω/φ(n);
+- re-randomizing the root of a known relation is already factoring.
+
+## Claim 1 (Theorem DD, "Dixon descent")
+Setting: n odd with ω ≥ 2 distinct prime factors. Relations are pairs (X_i ∈ (Z/n)^×, c_i ∈ G), where G is an abelian group of
+"certificates" (e.g. Q^× × K^× for NFS) with a homomorphism ev: G → (Z/n)^× (defined on the relevant subgroup) and X_i² = ev(c_i).
+For S with ∏_S c_i = g² and g computable, put X_S = ∏_S X_i and Y = ev(g), so X_S² = Y².
+A *descent relation* is produced as follows. Draw r uniform in (Z/n)^× (if gcd(r,n) > 1, output the factor). Put R = r² mod n.
+Run a randomized procedure D(R; ξ) (fresh coins ξ, plus coins shared across the run, e.g. the polynomial (m,f), all
+independent of r) that either fails or returns (W, c) with W² · R = ev(c), i.e. (rW)² = ev(c). Set X = rW.
+**Claim:** if the dependency S and the square root g are computed from (n, all R_i, all coins, all W_i, c_i), and from any
+other relations, but not from the r_i beyond R_i, and S contains at least one descent relation, then
+Pr[1 < gcd(X_S − Y, n) < n] = 1 − 2^{1−ω} exactly (conditional on everything except the hidden fibre elements). No Blum
+condition, no Conj. 7.1, and nothing about the other relations is needed.
+*Proof idea:* conditional on R_i and everything else, r_i is uniform on its fibre r_i μ₂(Z/n); X_S/Y is multiplied by ε when
+r_{i0} ↦ ε r_{i0} for one i0 ∈ S ∩ D, so X_S/Y is uniform on μ₂(Z/n).
+
+## Claim 2 (descent costs, heuristic smoothness model; the implication from a hypothesis is the claim)
+Descent of R: (u,v) := Gauss-reduced shortest vector of {u ≡ R v (mod n)} (|u|,|v| ≤ √(2n)), accept iff u, v are B1-smooth.
+For each prime ℓ ∈ (B, B1] dividing uv, a special-q relation: (a,b) in the lattice Λ_ℓ = {a ≡ bm (mod ℓ)} (reduced basis
+~√ℓ), with (a − bm)/ℓ and F(a,b) both B-smooth. Then ℓ ≡ φ(a − bα)/c (mod n) with c = (a − bm)/ℓ, and r² ≡ u/v becomes a
+relation over the factor base (rational primes ≤ B, degree-1 prime ideals of norm ≤ B, LV's characters).
+Use C + O(1) descent relations only (C = number of columns ≈ L[·, a]). Then:
+(a) Fixed odd degree d, B = L[1/2, a], B1 = L[1/2, b1] with b1 → ∞ slowly (or B1 = exp((log n)^{3/4}), where HECM detects
+B1-smoothness rigorously in L[1/2]^{o(1)}). Special-q values have size n^{θ+o(1)}, θ = 2/(d+1) (the ℓ^{d/2} and box factors are
+negligible at this scale). Cost L[1/2, max(a + θ/(2a), 2a)] → **L[1/2, 2/√(d+1)]**, so c < 1 for every odd d ≥ 5
+(d = 5: 0.816; d = 7: 0.707).
+(b) Growing degree, one-level descent: B = L[2/5], B1 = L[3/5], d ≍ (log n/log log n)^{1/5}. The split costs L[2/5]. Special-q
+values have log-size ≍ (log n)^{4/5}, so B-smoothness costs L[2/5]. HECM tests B1-smoothness in L_{B1}[2/3] = L[2/5]. Total **L[2/5, c]**.
+Generally, one level of descent gives α ≥ 2/5: the split forces log B1 ≥ (log n)^{1−α}, and the special-q values force
+(1 + β1)/2 − α ≤ α, where β1 is the exponent of B1. L[1/3] needs multi-level descent.
+(c) QS analogue: special-q x² − n = ℓ c (x ≡ ±√n mod ℓ) gives a heuristic L[1/2,1] QS whose dependencies are provably
+fruitful, removing the "H2" (nontrivial-square-root) hypothesis from deterministic-QS analyses, at the price of randomness.
+
+## Claim 3 (what remains for a rigorous theorem: "Hypothesis D" and "Lemma SQ")
+Hypothesis D: for the LV-randomized NFS (random m, f = f̂ + (x − m)R), with probability ≥ L^{−o(1)} over (m,f), a uniform
+square R descends with probability ≥ L^{−o(1)} in time T_D. Then factoring of every n in time C·T_D·L^{o(1)} + (LV's linear
+algebra and square-root costs), rigorously. The core of Hyp. D is a *per-target* special-q statement (Lemma SQ):
+Pr_{(m,f), ℓ∼ν}[the special-q region of ℓ contains a doubly-smooth pair] ≥ η, with η^k ≥ L^{−o(1)} (k = number of large
+primes per split: k ≍ (log n)^{1/4} for B1 = exp((log n)^{3/4}) in regime (a); k ≍ (log n)^{2/5} in regime (b)). The ℓ arising in
+a split depend only on R, so they are independent of (m,f). We claim:
+- the first moment E_{m,f,ℓ}[density] is of LV type: LV Lemmas 5.9/5.20/5.21, averaged also over ℓ with weights ∝ 1/ℓ, which is
+  comparable to a uniform average over moduli a − bm in dyadic boxes;
+- the missing ingredient is anti-concentration (a second moment / pair-correlation upper bound for smoothness of F(a,b),
+  F(a',b') under random R and of the rational cofactors under random m), which LV explicitly avoid via stochastic deepening.
+  Stochastic deepening cannot replace it, because one field must serve many prescribed targets.
+- With two randomized algebraic sides f_j = f̂_j + (x − m)R_j and only completely split large primes descended (density
+  (1/d!)^k = L^{−o(1)} for fixed d), every value is randomized. The pair correlations then reduce to (i) a zonotope density bound
+  (joint density of (⟨c,v⟩,⟨c,v'⟩) ≤ C_d/(H²‖v∧v'‖) for the Veronese vectors v = v(a,b)) and (ii) Bombieri–Vinogradov-type
+  estimates for smooth numbers in progressions mod a − bm over thin sectors of (a,b).
+Assess: is Hyp. D genuinely more tractable than Conj. F (first-order smoothness rather than hidden-character equidistribution)?
+Is the reduction correct? Are (a) and (b) correct as heuristic costs, and as implications from Hyp. D?
+
+## Claim 4 (barriers)
+(B1) Degree-1 two-form sieve, Blum n: if every prime ℓ ≤ B has (ℓ/n) = +1, every congruence is trivial (Φ = Σ⌊Ω_T/2⌋ with T
+empty). So "Conj. F for degree-1 sieves for all Blum n" implies that the least prime ℓ with (ℓ/n) = −1 is ≤ B = L[1/2]. That is far
+beyond Burgess (n^{1/(4√e)+ε}) unconditionally. For almost all n it is harmless (Erdős–Linnik).
+(B2) Unit twist: in the CF/QS relation set of √n, k ↦ k + P (one period) is multiplication by the fundamental unit
+ε = a + b√n. It preserves Q_k and multiplies the root by a, a² = (−1)^P. Exact runs: a is a nontrivial √1 in 80/80 Blum
+semiprimes, 58/80 mixed (p ≡ 1, q ≡ 3 mod 4) and 31/80 with p ≡ q ≡ 1 (mod 4) (49 of the latter have norm −1), at 28–40 bits.
+log₂P has slope 0.511 in bits. So the canonical x-preserving, β-flipping involution exists but displaces relations by ~√n.
+By the square-twist identity, any *explicit* β-flipping pair factors n directly. So involutions can enter only
+non-constructively (as symmetries of the search law), which is what Claim 1 realises through the coins.
+
+## Tasks
+1. Referee Claims 1–4 line by line. In particular: hidden dependence of S or g on r_i; LV's character / square-root machinery
+   applied to special-q elements outside their box; whether the split's acceptance or the HECM test leaks fibre information;
+   the regime (a)/(b) arithmetic.
+2. Prior art (web): is "Dixon relations via descent of random squares in an NFS/QS factor base" known? Compare Stange,
+   *Factoring using multiplicative relations modulo n* (arXiv 2211.06821; index calculus mod n with random exponents g^x).
+   Also Pomerance's surveys, Schirokauer, Commeine–Semaev, Joux–Lercier, Barbulescu, "rigorous descent". Is a one-level-descent
+   L[2/5] heuristic noted anywhere?
+3. Is any of the heuristic claims (a) L[1/2, 2/√(d+1)] with proven fruitfulness, or (b) L[2/5], already implied by a
+   *rigorous* existing result plus Theorem DD? If Hyp. D can be proved in regime (a) with known tools (LV + Pascadi /
+   Harper-type BV + zonotope bounds), sketch how. If not, state precisely the missing lemma.
+Verdict first.
+
+codex
+I’ll check the hidden-root argument first, then audit the descent arithmetic and LV’s square-root requirements, and search the literature for prior art. I’ll keep scratch files in the current directory.
+exec
+/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '*.md' -g '*.tex' -g '*.pdf' -g '*.py' -g '"'!node_modules'"' -g '"'!venv'"' ." in /Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+ exited 1 in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+
+web search: 
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/lemmaM_2/AGENTS.md; do if [ -f "$p" ]; then printf '"'\\n%s\\n' \""'$p"; cat "$p"; fi; done; ls -la' in /Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+ succeeded in 0ms:
+total 0
+drwxr-xr-x   2 knielsen  staff   64 Oct 18 22:48 .
+drwxr-xr-x  22 knielsen  staff  704 Oct 18 22:48 ..
+
+web search: Lee Venkatesan 1805.08873 number field sieve randomized conjecture 7.1 ...
+web search: 
+web search: https://arxiv.org/html/1805.08873v2
+web search: 
+web search: 
+exec
+/bin/zsh -lc 'curl -L --fail -o lv.pdf https://arxiv.org/pdf/1805.08873 && pdftotext -layout lv.pdf lv.txt' in /Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: arxiv.org
+
+web search: Commeine Semaev algorithm discrete logarithm problem rigorous descent number field sieve ...
+web search: 'Lemma 5.9'
+codex
+The hidden-root argument works if the full exposed transcript is unchanged by replacing any selected \(r_i\) with another root of the same \(R_i\). The main gaps appear later: a per-prime average does not ensure that one field descends an entire split, and it does not establish the search cost needed for the claimed bounds.
+web search: 
+web search: 
+web search: 
+web search: "An Algorithm to Solve the Discrete Logarithm Problem" "Commeine" pdf ...
+web search: 
+web search: 
+web search: 
+web search: "Commeine" "Semaev" "174" "pdf" ...
+web search: 
+web search: 
+web search: "Harper" "Bombieri" "smooth numbers" arxiv ...
+web search: Pomerance "smooth" "descent" factoring random ...
+web search: 
+web search: site.dmgordon.org "Discrete Logarithms" "sieve" ...
+web search: 
+web search: https://arxiv.org/abs/2505.00653
+web search: 
+web search: 2026 integer factoring rigorous randomized subexponential Lenstra Pomerance best proven algorithm ...
+web search: 
+web search: https://www.dmgordon.org/papers/log.pdf
+web search: 
+web search: https://arxiv.org/html/2505.00653v2
+codex
+I found relevant prior art: Gordon’s 1992/1993 NFS discrete-log work already has a one-stage \(L[2/5]\) analysis. I also found an obstacle before the proposed second-moment step: in regime (a), \(a-bm\) is nearly as large as \(F(a,b)\), putting LV’s progression argument outside the range covered by the cited smooth-number estimates.
+web search: 
+web search: site.dmgordon.org/papers/log.pdf "2/5" "individual" ...
+web search: 
+web search: 'Theorem 1'
+web search: 
+web search: 
+web search: 
+web search: "Commeine" "Semaev" "algorithm" filetype:pdf -site:scribd.com -site:researchgate.net -site:paperzz.com ...
+web search: 
+web search: "Dixon" "Asymptotically fast factorization of integers" 1981 ...
+web search: 
+web search: https://perso.univ-rennes1.fr/reynald.lercier/file/JL03.pdf
+exec
+/bin/zsh -lc "python3 - <<'PY'
+from math import gcd,isqrt
+
+def prime(p):
+    return p>1 and all(p%d for d in range(2,isqrt(p)+1))
+
+def factors(v):
+    v=abs(v); out=[]
+    p=2
+    while p*p<=v:
+        e=0
+        while v%p==0: v//=p;e+=1
+        if e: out.append((p,e))
+        p+=1
+    if v>1: out.append((v,1))
+    return out
+for n in [77,209,437,589,713,1081]:
+    for r in range(1,n):
+        if gcd(r,n)"'!=1: continue
+        R=r*r%n
+        h=isqrt(2*n)+1
+        options=[(u*u+v*v,abs(u)+abs(v),u,v) for v in range(1,h+1) for u in [((R*v+n//2)%n)-n//2] if u and gcd(u,n)==gcd(v,n)==1]
+        _,_,u,v=min(options)
+        inert=[p for p,e in factors(u*v) if p>2 and e%2 and pow(n%p,(p-1)//2,p)==p-1]
+        if inert:
+            print('"'QS inert target from a shortest split:',{'n':n,'r':r,'R':R,'u':u,'v':v,'factorization_uv':factors(u*v),'inert_primes':inert})
+            break
+    else: continue
+    break
+for n in [45,105,385]:
+    fibres={}
+    for r in range(1,n):
+        if gcd(r,n)==1: fibres.setdefault(r*r%n,[]).append(r)
+    R,rs=next(iter(fibres.items()))
+    y=rs[0]
+    good=sum(1<gcd(r-y,n)<n for r in rs)
+    print('DD fibre count:',{'n':n,'R':R,'fibre_size':len(rs),'fruitful':good})
+print('QS counterexample to an overbroad B1:',{'n':33,'x':7,'Q':7**2-33,'Y':4,'factor':gcd(7-4,33)})
+PY" in /Volumes/git/factoring-connection/codex/scratch/lemmaM_2
+ succeeded in 0ms:
+QS inert target from a shortest split: {'n': 77, 'r': 4, 'R': 16, 'u': 3, 'v': 5, 'factorization_uv': [(3, 1), (5, 1)], 'inert_primes': [3, 5]}
+DD fibre count: {'n': 45, 'R': 1, 'fibre_size': 4, 'fruitful': 2}
+DD fibre count: {'n': 105, 'R': 1, 'fibre_size': 8, 'fruitful': 6}
+DD fibre count: {'n': 385, 'R': 1, 'fibre_size': 8, 'fruitful': 6}
+QS counterexample to an overbroad B1: {'n': 33, 'x': 7, 'Q': 16, 'Y': 4, 'factor': 3}
+
+web search: 
+web search: "rigorous" "descent" "number field sieve" -site:reddit.com -site:scribd.com ...
+web search: 
+web search: https://link.springer.com/chapter/10.1007/11745853_12
+codex
+The two numerical optimizations check out under the stated smoothness model. The QS construction needs an additional splitting condition: for \(n=77\), \(r=4\) gives the shortest split \(R=16\equiv3/5\), but neither \(x^2\equiv77\pmod3\) nor \(x^2\equiv77\pmod5\) has a solution. The exact fruitfulness lemma cannot supply these missing descent relations.
+web search: 
+web search: Lenstra Pila Pomerance hyperelliptic smoothness test expected time 2/3 theorem 1.1 ...
+web search: 
+web search: https://library.slmath.org/books/Book44/files/12oliver.pdf
+web search: 
+web search: "Improvements to the general number field sieve" "ams.org" ...
+codex
+**Verdict: the hidden-fibre argument is sound, but the proposed analytic reduction is not established.** The constants in (a) and the exponent in (b) check out under an explicit descent heuristic. Neither follows from the cited rigorous results. The main analytic gap occurs **before** the proposed second-moment argument: in regime (a), the progression modulus is outside the range of the cited smooth-number distribution theorems.
+
+There is also substantial prior art: **Gordon’s 1992/1993 NFS discrete-logarithm work already contains a one-stage \(L[2/5]\) analysis.**
+
+| Item | Verdict | Required correction |
+|---|---|---|
+| Claim 1, DD | **CORRECT WITH FIXES** | Require invariance of the entire exposed transcript under every hidden-fibre action. |
+| Claim 2(a), numerical optimization | **CORRECT WITH FIXES** | Specify polynomial height, sampling region, lattice regularity, and the descent heuristic. |
+| Claim 2(b), \(L[2/5]\) arithmetic | **CORRECT WITH FIXES** | Restore logarithmic factors; restrict the claimed barrier to this algorithmic architecture. |
+| Claim 2(c), QS construction | **WRONG as stated** | Some target primes admit no special-\(q\) relation. Add a splitting filter and account for its acceptance probability. |
+| Hypothesis D \(\Rightarrow\) factoring | **CORRECT WITH FIXES** | Include bounded search, valid certificates, compatible algebraic postprocessing, and enough relations. |
+| Stated Lemma SQ \(\Rightarrow\) Hypothesis D | **WRONG** | A marginal per-prime average does not control a complete target list in one field. |
+| “The first moment is already of LV type” | **WRONG as an application of the cited lemmas** | The moduli, conditioning, weights, and parameter ranges differ materially. |
+| Two algebraic sides reduce everything to the stated bounds | **WRONG as a completed reduction** | Discrete arithmetic correlations and shared-field target correlations remain. |
+| B1 | **CORRECT WITH FIXES** | Restrict it to the specified two-form construction; it is false for general QS congruences. |
+| B2, unit identities | **CORRECT WITH FIXES** | Distinguish signed norms, the Pell order, and an involution on reduced data. |
+| B2, experimental counts and slope | **UNVERIFIABLE** | Supply inputs, conventions, and code. The slope does not establish an asymptotic theorem. |
+
+**Claim 1: the exact probability is correct under a precise information restriction.**
+
+Write
+\[
+U=(\mathbb Z/n\mathbb Z)^\times,\qquad H=\ker(U\xrightarrow{x\mapsto x^2}U).
+\]
+For odd \(n\), including prime powers,
+\[
+|H|=2^{\omega(n)}.
+\]
+
+Let \(\mathcal T\) be the exposed transcript. The necessary hypothesis is:
+
+> Conditional on \(\mathcal T\), the relevant \(r_i\) remain independent and uniform on their prescribed squaring fibres, and \(S,g\), and all other factors entering \(X_S\), are \(\mathcal T\)-measurable.
+
+A sufficient implementation rule is that the transcript is unchanged under every replacement
+\[
+r_i\longmapsto \epsilon_i r_i,\qquad \epsilon_i\in H,
+\]
+with only the designated roots \(X_i=r_iW_i\) transforming.
+
+Choose \(i_0\in S\cap D\) from the transcript. Conditional on everything else,
+\[
+Z=X_S/Y\in H
+\]
+is multiplied by \(\epsilon\) when \(r_{i_0}\) is multiplied by \(\epsilon\). Thus \(Z\) is uniform on \(H\). Exactly two elements, \(1\) and \(-1\), give trivial gcds, so
+\[
+\Pr\!\left(1<\gcd(X_S-Y,n)<n\mid\mathcal T\right)
+=1-\frac2{2^\omega}.
+\]
+
+No Blum condition is needed. No distributional assumption on the certificate rows is needed.
+
+The following qualifications matter:
+
+- **“Any other relations” cannot permit hidden dependence.** For example, append the relation with root \(r^{-1}\) and certificate \(R^{-1}\) to the descent relation with root \(r\), certificate \(R\), and \(W=1\). Their product is identically \(1=1\). This is excluded only by the global information restriction.
+- Selecting \(S\), selecting a square root \(g\), or accepting a relation using \(X_i\), \((X_i/n)\), or previous gcd outcomes can destroy the assertion.
+- Repeated attempts using the same hidden roots need a joint analysis. After conditioning on an earlier trivial gcd, the original conditional-uniformity assertion need not remain true.
+- “All coins” must exclude the coins revealing the \(r_i\) themselves.
+- If sampling arbitrary residues, output a factor only when \(1<\gcd(r,n)<n\); resample when the gcd is \(n\).
+
+The proposed lattice split and HECM tests **do not leak fibre information** when their inputs and stopping rules depend only on \(R\) and independent coins. Factoring an integer computed from \(R\) is still a function of \(R\).
+
+This is a useful abstraction of the classical random-square argument, whose foundations are already present in [Dixon’s original algorithm](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf).
+
+**Claim 2: the congruence identities work, but the arithmetic implementation needs additional conditions.**
+
+For a rational target prime \(\ell\), the identity
+\[
+a-bm=\ell c,\qquad
+\ell\equiv \phi(a-b\alpha)c^{-1}\pmod n
+\]
+is correct whenever the displayed quantities are units modulo \(n\). Nonunits should produce a factor or cause rejection.
+
+However:
+
+1. A determinant-\(\ell\) lattice need not have a reduced basis with **both** vectors of size \(O(\sqrt\ell)\). For example, \(m\equiv0\pmod\ell\) gives basis \((\ell,0),(0,1)\). You need a regularity condition, a larger region, or an argument that sufficiently many targets have acceptable geometry.
+2. Require primitive \((a,b)\), and handle leading-coefficient, discriminant, index, and denominator exceptions. Smoothness of \(F(a,b)\) alone is not a complete statement about an ideal factorization in an arbitrary order.
+3. Specify the number of candidates searched. A smoothness probability is not yet an algorithm unless there are enough distinct candidates of the claimed size.
+4. Only odd target valuations need descent after known squares have been absorbed. This can improve implementation, but does not resolve the analytic gap.
+
+Special-\(q\) elements outside LV’s original box are **not inherently incompatible** with quadratic characters. Characters are multiplicative functions on an appropriate group, not functions defined only on a sieve box. Nevertheless, the field distribution, square-class obstruction bounds, support, bit lengths, and square-root costs must be checked for the new parameters.
+
+In particular, ordinary NFS ideal-parity columns do not by themselves guarantee an algebraic square. [LV, Section 6](https://arxiv.org/pdf/1805.08873) uses additional characters and an exceptional-class argument. Its construction includes extra combinations to obtain a genuine square. Consequently, literal “\(C+O(1)\) relations suffice” is not justified merely by citing LV. The harmless asymptotic repair is \(C\,L^{o(1)}\) relations and postprocessing, provided the argument extends to the new field distribution.
+
+**Claim 2(a): the advertised constant is the correct formal optimization.**
+
+Put
+\[
+s=\frac1{d+1}.
+\]
+To obtain your \(\theta=2/(d+1)\), explicitly require a degree-\(d\), generally nonmonic construction with
+\[
+m=n^{s+o(1)},\qquad \|f\|_\infty=n^{s+o(1)}.
+\]
+Such height bookkeeping is compatible with a base-\(m\) construction, but it is not simply the usual monic degree-\(d\) parameter choice.
+
+For fixed \(d\), with subpolynomial coordinates,
+\[
+\left|\frac{a-bm}{\ell}\right|\le n^{s+o(1)},
+\qquad |F(a,b)|\le n^{s+o(1)}.
+\]
+Under the assumed joint smoothness model, their combined smoothness cost is
+\[
+L_n\!\left[\frac12,\frac{2s}{2a}\right]
+=
+L_n\!\left[\frac12,\frac{\theta}{2a}\right].
+\]
+
+Collecting \(L[1/2,a]\) rows and using sparse linear algebra therefore gives
+\[
+L_n\!\left[\frac12,
+\max\left\{a+\frac{\theta}{2a},\,2a\right\}\right].
+\]
+The minimum occurs at
+\[
+a=\sqrt{\theta/2}=\frac1{\sqrt{d+1}},
+\]
+and equals
+\[
+\boxed{\frac2{\sqrt{d+1}}}.
+\]
+Your numerical values for \(d=5,7\) are correct.
+
+The initial split contributes formally \(L[1/2,1/(2b_1)]\), which disappears when \(b_1\to\infty\) sufficiently slowly. Your alternative
+\[
+B_1=\exp((\log n)^{3/4})
+\]
+also has the stated useful property:
+\[
+\log T_{\rm HECM}
+=O\!\left((\log n)^{1/2}(\log\log n)^{1/3}\right)
+=o\!\left(\sqrt{\log n\log\log n}\right).
+\]
+The underlying rigorous small-factor algorithm is the [Lenstra–Pila–Pomerance hyperelliptic method](https://math.dartmouth.edu/~carlp/PDF/paper129.pdf).
+
+Use a capped, one-sided smoothness procedure: accept only after complete verified factorization; treat a timeout as failure. Its false-negative probability and cost can be budgeted without exposing the hidden fibre.
+
+Thus **“heuristic running time with rigorously proved conditional fruitfulness” is defensible** after these repairs. “Rigorous factoring time” is not.
+
+**Claim 2(b): \(2/5\) is correct for this model, with the logarithmic factors restored.**
+
+Let \(L=\log n\), \(h=\log\log n\), and write
+\[
+\log B=aL^{2/5}h^{3/5},\quad
+\log B_1=bL^{3/5}h^{2/5},\quad
+d=\delta(L/h)^{1/5}.
+\]
+Then the relevant norm scale is
+\[
+L^{4/5}h^{1/5},
+\]
+not just \(L^{4/5}\).
+
+For a regular special-\(q\) lattice and a sufficiently large subexponential search region, the leading log sizes are approximately
+\[
+\log |c|\sim \delta^{-1}L^{4/5}h^{1/5},
+\]
+\[
+\log |F(a,b)|
+\lesssim
+\left(\delta^{-1}+\frac{\delta b}{2}\right)
+L^{4/5}h^{1/5}.
+\]
+Hence the joint smoothness cost has exponent \(2/5\). Both the initial splitting search and
+\[
+L_{B_1}[2/3,O(1)]
+\]
+also have exponent \(2/5\). Multiplication by the number of rows preserves that exponent. A finite \(L[2/5,c]\) bound is therefore consistent with your heuristic.
+
+Your barrier calculation is also correct **within this architecture**. If \(\log B_1\) has exponent \(\beta_1\), then
+\[
+1-\beta_1\le\alpha.
+\]
+Balancing coefficient height against \(\ell^{d/2}\) gives norm exponent
+\[
+\gamma\ge\frac{1+\beta_1}{2},
+\]
+and smoothness requires \(\gamma-\alpha\le\alpha\). Thus \(\alpha\ge2/5\).
+
+There is a second obstruction worth recording:
+\[
+\frac{2\beta_1}{3}\le\alpha
+\]
+is required by this HECM splitting implementation. Combined with \(1-\beta_1\le\alpha\), it independently gives \(2/5\). Therefore, **adding descent levels alone does not yield \(L[1/3]\) while retaining this initial HECM splitting pipeline unchanged**.
+
+**Claim 2(c): an explicit obstruction is missing.**
+
+A QS special-\(q\) relation requires
+\[
+x^2\equiv n\pmod\ell.
+\]
+This can fail for primes in the initial split.
+
+For a concrete example,
+\[
+n=77,\qquad r=4,\qquad R=16,
+\]
+and a shortest split is
+\[
+16\equiv3/5\pmod{77}.
+\]
+But \(77\equiv2\pmod3\) and \(77\equiv2\pmod5\); neither target prime admits the required square root.
+
+Repair the algorithm by rejecting splits containing an odd-valuation large prime inert in \(\mathbb Q(\sqrt n)\). Under a suitable splitting-and-smoothness heuristic, the extra rejection can be negligible on the \(L[1/2]\) scale.
+
+After that repair, the constant calculation works: taking \(x\) near \(\sqrt n\) in the prescribed progression gives
+\[
+(x^2-n)/\ell=n^{1/2+o(1)},
+\]
+so
+\[
+\max\left\{a+\frac1{4a},\,2a\right\}
+\]
+is minimized at \(a=1/2\), with value \(1\).
+
+This establishes a plausible **different randomized QS-based algorithm** with DD fruitfulness. It does not prove the nontriviality hypothesis for ordinary deterministic QS, and its required smoothness statement concerns different progressions.
+
+**Claim 3: Hypothesis D gives the intended reduction, but Lemma SQ does not establish Hypothesis D.**
+
+The robust reduction is:
+
+- Fix a field for each run.
+- Draw independent hidden \(r_i\).
+- Give each descent attempt a uniform time cap.
+- Collect sufficiently many successful, valid certificates over a controlled common column set.
+- Construct and verify a genuine certificate square using only exposed data.
+- Apply DD.
+
+If good fields have probability \(p=L^{-o(1)}\), and a good field has per-attempt success probability \(q=L^{-o(1)}\), collecting the rows costs
+\[
+C\,T_D\,L^{o(1)}.
+\]
+DD then supplies a success probability at least \(1/2\). With compatible postprocessing of cost \(A(C)\), a safe statement is
+\[
+\boxed{\mathbb E T_{\rm factor}
+\le (C T_D+A(C))L^{o(1)}}.
+\]
+Preprocess primes, even integers, and perfect powers in the usual way.
+
+Three implications in your proposed justification fail.
+
+First, a marginal bound does not multiply across a target list. Two types of fields may descend complementary types of primes, while every split contains both types. Each marginal success probability can be \(1/2\), yet no complete split descends.
+
+Second, independence of the **raw** split from \((m,f)\) does not imply independence after acceptance conditions involving that field. Nor does it make the primes within one split independent.
+
+Third, the target-prime law is not automatically proportional to \(1/\ell\). Even for ordinary integers conditioned to be smooth, saddle-point weights involve approximately \(\ell^{-\sigma}\), together with a product constraint. Your shortest-vector distribution introduces another conditioning. Polynomial discrepancies per prime can accumulate at the main \(L[2/5]\) scale.
+
+Your stated values of \(k\) are reasonable heuristic orders, with logarithmic factors suppressed. They are not deterministic bounds.
+
+**The proposed LV first-moment transfer has a parameter-range obstruction.**
+
+For your fixed-degree regime, put \(t=a-bm\). The randomized polynomial satisfies
+\[
+F(a,b)=\widehat F(a,b)+tP(a,b),
+\]
+and, for primitive pairs,
+\[
+F(a,b)\equiv nb^d\pmod t.
+\]
+Thus randomizing coefficients leaves the value in a prescribed progression modulo **\(t=\ell c\)**, not merely modulo the smooth cofactor \(c\).
+
+At your advertised sizes,
+\[
+|t|=n^{s+o(1)},\qquad X_F=n^{s+o(1)}.
+\]
+Consequently,
+\[
+|t|=X_F^{1-o(1)}.
+\]
+
+That is far beyond the direct applicability of [Harper’s smooth-number BV theorem](https://arxiv.org/abs/1208.5992). Even [Pascadi’s newer \(5/8\) distribution result](https://arxiv.org/abs/2505.00653) does not reach these moduli; its residue-uniformity conditions also require attention for the moving residue \(nb^d\).
+
+This is why I reject “only anti-concentration remains.” You first need a new **weighted first-moment estimate for these large-modulus, short-progression, special-\(q\)-conditioned samples**. Averaging over \(\ell\) does not automatically turn the induced moduli into LV’s averaging family.
+
+Increasing coefficient height or the search region may move the progression into a known distribution range, but it also changes the norm sizes and requires a fresh constant optimization.
+
+**Second moments are a possible tool, not a logically necessary ingredient.**
+
+Let \(q(A)\) be the probability that an entire capped descent succeeds in field \(A\). If one proves
+\[
+\mathbb E_A q(A)\ge\varepsilon,
+\]
+then, because \(0\le q\le1\),
+\[
+\Pr_A(q(A)\ge\varepsilon/2)\ge\varepsilon/2.
+\]
+For \(\varepsilon=L^{-o(1)}\), this already gives the good-field formulation of Hypothesis D.
+
+Therefore stochastic deepening is not categorically unavailable because several targets must share a field. What is unavailable from your present assumptions is the requisite **complete-descent average**. LV-style deepening of a marginal per-prime count cannot manufacture that average.
+
+For counts \(N_\ell\) of usable pairs, second moments could prove useful existence bounds. But even excellent per-prime second moments do not alone establish that a complete split works in one field. Also, a loss acceptable for one prime may become unacceptable after raising it to \(k\).
+
+**The two-algebraic-side proposal remains a research programme.**
+
+The continuous geometric estimate is plausible and standard in form: for a continuous uniform coefficient cube and independent \(v,v'\), a projection density is bounded by
+\[
+\frac{C_d}{H^2\|v\wedge v'\|}.
+\]
+
+It is not directly a probability bound for integer polynomial coefficients. The actual distribution is atomic and supported on a joint image lattice. Its index, congruence restrictions, boundary errors, and nearly parallel pairs matter.
+
+More fundamentally, a real density bound does not establish a joint smoothness bound. Both values retain arithmetic restrictions; independent coefficient vectors on two sides do not eliminate those restrictions.
+
+The complete-splitting assertion also needs qualifications:
+
+- Density \(1/d!\) presupposes the appropriate \(S_d\) Galois group.
+- Requiring splitting in both independent fields would normally produce \(1/(d!)^2\).
+- Multiplying splitting densities across a growing target list requires a uniform theorem.
+- Fixed-field Chebotarev asymptotics cannot simply be applied uniformly when the field discriminant grows and the primes are subpolynomial in \(n\).
+
+**Prior art substantially limits the novelty claim.**
+
+| Source | Relevant precedent and distinction |
+|---|---|
+| [Dixon, 1981](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), and [Pomerance, *A Tale of Two Sieves*](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf) | Random-square relation collection, square dependencies, and the root-of-unity explanation of fruitfulness are classical. DD packages that argument with a more general relation generator. |
+| [Stange, arXiv:2211.06821](https://arxiv.org/html/2211.06821v2) | Explicitly studies index calculus modulo composite \(n\), random \(g^x\), arbitrary factor bases, and an NFS acceleration. Her success analysis uses a relation-lattice generation hypothesis and rational/integer linear algebra. DD instead exploits the exactly understood squaring fibre and binary dependencies. Stange is close conceptual prior art, but not an unconditional theorem implying your bounds. |
+| [Gordon, *Discrete Logarithms in \(GF(p)\) using the Number Field Sieve*](https://www.dmgordon.org/papers/log.pdf) | Already analyzes \(B=L[2/5]\), initial target smoothing to \(L[3/5]\), and a one-stage special-\(q\) reduction requiring two \(B\)-smooth quantities. This is in his special-NFS discrete-logarithm setting, so it is not your general factoring theorem. Nevertheless, **the one-stage \(2/5\) phenomenon is old**. |
+| [Schirokauer’s NFS survey, Section 4](https://library.slmath.org/books/Book44/files/12oliver.pdf), [Commeine–Semaev, 2006](https://link.springer.com/chapter/10.1007/11745853_12), and [Barbulescu’s treatment](https://inria.hal.science/inria-00588713/document) | Smooth representations of targets, initial splitting, special-\(q\) descent, and its separation from precomputation are established NFS-DLP techniques. Joux–Lercier’s 2003 work is an important antecedent in this development. These complexity analyses do not provide your missing unconditional descent theorem. |
+
+I did not locate a source stating your exact fixed-degree constant \(2/\sqrt{d+1}\) for this factoring construction. That is not a certification of novelty. Any novelty claim should concern the precise combination, reduction, or constant—not random-target descent generally, or the exponent \(2/5\).
+
+There is now relevant rigorous descent work: [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/abs/2512.01588) prove ideal-sampling and class/unit-group results under ERH. Their sampling problem does not supply simultaneous smoothness of your rational cofactor and algebraic value in a thin two-dimensional region. Likewise, [rigorous small-characteristic finite-field descent](https://arxiv.org/abs/1507.01495) concerns a different setting and does not transfer to integer smoothness modulo unknown composite \(n\).
+
+**B1: the obstruction is correct for the stated two-form mechanism, with a short proof.**
+
+For \(n=pq\), \(p,q\equiv3\pmod4\), a square root \(z\) of \(1\) is nontrivial precisely when
+\[
+(z/n)=-1.
+\]
+If both resulting square roots are products of factor-base primes having Jacobi symbol \(+1\), their ratio has Jacobi symbol \(+1\), so it is trivial.
+
+Thus a universal fruitfulness assertion for that mechanism forces a small Jacobi nonresidue, apart from cases where the factor base already exposes a divisor. A uniform subexponential bound would indeed go substantially beyond the stated Burgess bound.
+
+Do not extend this to QS generally. For example,
+\[
+n=33,\qquad 7^2-33=16=2^4,\qquad (2/33)=+1,
+\]
+yet
+\[
+\gcd(7-4,33)=3.
+\]
+The QS root \(7\) need not belong to the smooth-generated subgroup.
+
+The almost-all qualification needs a specified averaging family. [Pollack’s work](https://pollack.uga.edu/variations.pdf) gives precise average results, including least inert primes in quadratic fields; an average over all discriminants is not automatically a theorem about every semiprime sampling family.
+
+The formula involving \(\Phi,\Omega_T,T\) is **UNVERIFIABLE from the definitions supplied here**.
+
+**B2: the identities are useful; the experimental asymptotic inference is unsupported.**
+
+For the Pell unit associated with one period,
+\[
+\epsilon=a+b\sqrt n,\qquad N(\epsilon)=(-1)^P,
+\]
+multiplication gives
+\[
+x_{k+P}\equiv a x_k\pmod n,\qquad a^2\equiv(-1)^P\pmod n.
+\]
+But signed norms change when \(P\) is odd. Also, for \(n\equiv1\pmod4\), distinguish the fundamental unit of the maximal order from that of \(\mathbb Z[\sqrt n]\), which is the order naturally used by this Pell construction.
+
+Your Blum-semiprime observation has an elementary explanation. Negative Pell is impossible when \(n\) has a prime divisor \(3\bmod4\). For \(n\equiv1\bmod4\), the minimal positive Pell solution has \(a\) odd and \(b\) even. If \(a\equiv1\pmod n\), factoring \((a-1)(a+1)=nb^2\) produces a smaller positive Pell solution; if \(a\equiv-1\pmod n\), it produces a negative Pell solution. Hence \(a\) is nontrivial for Blum semiprimes.
+
+The supplied counts and regression are **UNVERIFIABLE** without data and conventions. A fitted slope at 28–40 bits does not prove that period displacement is universally, or typically under an unspecified distribution, \(\sim\sqrt n\).
+
+An explicit pair related by a known nontrivial square twist does factor \(n\). But “therefore involutions can enter only nonconstructively” is too strong: an efficiently constructible such pair would itself be a factoring algorithm. DD uses a nonconstructive symmetry of the sampling law, which is valid.
+
+**The missing lemma should be stated for complete target lists.**
+
+Let \(A=(m,f)\), let \(Z\) have the **actual accepted shortest-split distribution**, and let \(\mathcal Q(Z)\) be its odd-valuation large-prime targets. For each target, prescribe a region searchable within the advertised budget, and let \(N_\ell(A)\) count its usable, certified relations.
+
+A sufficient missing statement is
+\[
+\Pr_{A,Z}\!\left[
+N_\ell(A)>0\ \text{for every }\ell\in\mathcal Q(Z)
+\right]\ge L^{-o(1)},
+\]
+together with the stated uniform search costs and compatibility with algebraic square formation. Equivalently, establish the corresponding good-field/positive-target-fraction formulation.
+
+That statement must retain the true split law, local obstructions, lattice geometry, moving residues, and shared-field correlations. It is substantially stronger than your displayed marginal Lemma SQ.
+
+**Neither (a) nor (b) is presently supplied by an identified rigorous theorem plus DD.** In particular, proving the repaired regime-(a) hypothesis unconditionally with the advertised constant below \(1\) would improve the [Lenstra–Pomerance rigorous bound](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf). DD removes the hidden-root obstacle exactly; the cited analytic tools do not yet establish the required descent probability.
+tokens used
+379,985
+**Verdict: the hidden-fibre argument is sound, but the proposed analytic reduction is not established.** The constants in (a) and the exponent in (b) check out under an explicit descent heuristic. Neither follows from the cited rigorous results. The main analytic gap occurs **before** the proposed second-moment argument: in regime (a), the progression modulus is outside the range of the cited smooth-number distribution theorems.
+
+There is also substantial prior art: **Gordon’s 1992/1993 NFS discrete-logarithm work already contains a one-stage \(L[2/5]\) analysis.**
+
+| Item | Verdict | Required correction |
+|---|---|---|
+| Claim 1, DD | **CORRECT WITH FIXES** | Require invariance of the entire exposed transcript under every hidden-fibre action. |
+| Claim 2(a), numerical optimization | **CORRECT WITH FIXES** | Specify polynomial height, sampling region, lattice regularity, and the descent heuristic. |
+| Claim 2(b), \(L[2/5]\) arithmetic | **CORRECT WITH FIXES** | Restore logarithmic factors; restrict the claimed barrier to this algorithmic architecture. |
+| Claim 2(c), QS construction | **WRONG as stated** | Some target primes admit no special-\(q\) relation. Add a splitting filter and account for its acceptance probability. |
+| Hypothesis D \(\Rightarrow\) factoring | **CORRECT WITH FIXES** | Include bounded search, valid certificates, compatible algebraic postprocessing, and enough relations. |
+| Stated Lemma SQ \(\Rightarrow\) Hypothesis D | **WRONG** | A marginal per-prime average does not control a complete target list in one field. |
+| “The first moment is already of LV type” | **WRONG as an application of the cited lemmas** | The moduli, conditioning, weights, and parameter ranges differ materially. |
+| Two algebraic sides reduce everything to the stated bounds | **WRONG as a completed reduction** | Discrete arithmetic correlations and shared-field target correlations remain. |
+| B1 | **CORRECT WITH FIXES** | Restrict it to the specified two-form construction; it is false for general QS congruences. |
+| B2, unit identities | **CORRECT WITH FIXES** | Distinguish signed norms, the Pell order, and an involution on reduced data. |
+| B2, experimental counts and slope | **UNVERIFIABLE** | Supply inputs, conventions, and code. The slope does not establish an asymptotic theorem. |
+
+**Claim 1: the exact probability is correct under a precise information restriction.**
+
+Write
+\[
+U=(\mathbb Z/n\mathbb Z)^\times,\qquad H=\ker(U\xrightarrow{x\mapsto x^2}U).
+\]
+For odd \(n\), including prime powers,
+\[
+|H|=2^{\omega(n)}.
+\]
+
+Let \(\mathcal T\) be the exposed transcript. The necessary hypothesis is:
+
+> Conditional on \(\mathcal T\), the relevant \(r_i\) remain independent and uniform on their prescribed squaring fibres, and \(S,g\), and all other factors entering \(X_S\), are \(\mathcal T\)-measurable.
+
+A sufficient implementation rule is that the transcript is unchanged under every replacement
+\[
+r_i\longmapsto \epsilon_i r_i,\qquad \epsilon_i\in H,
+\]
+with only the designated roots \(X_i=r_iW_i\) transforming.
+
+Choose \(i_0\in S\cap D\) from the transcript. Conditional on everything else,
+\[
+Z=X_S/Y\in H
+\]
+is multiplied by \(\epsilon\) when \(r_{i_0}\) is multiplied by \(\epsilon\). Thus \(Z\) is uniform on \(H\). Exactly two elements, \(1\) and \(-1\), give trivial gcds, so
+\[
+\Pr\!\left(1<\gcd(X_S-Y,n)<n\mid\mathcal T\right)
+=1-\frac2{2^\omega}.
+\]
+
+No Blum condition is needed. No distributional assumption on the certificate rows is needed.
+
+The following qualifications matter:
+
+- **“Any other relations” cannot permit hidden dependence.** For example, append the relation with root \(r^{-1}\) and certificate \(R^{-1}\) to the descent relation with root \(r\), certificate \(R\), and \(W=1\). Their product is identically \(1=1\). This is excluded only by the global information restriction.
+- Selecting \(S\), selecting a square root \(g\), or accepting a relation using \(X_i\), \((X_i/n)\), or previous gcd outcomes can destroy the assertion.
+- Repeated attempts using the same hidden roots need a joint analysis. After conditioning on an earlier trivial gcd, the original conditional-uniformity assertion need not remain true.
+- “All coins” must exclude the coins revealing the \(r_i\) themselves.
+- If sampling arbitrary residues, output a factor only when \(1<\gcd(r,n)<n\); resample when the gcd is \(n\).
+
+The proposed lattice split and HECM tests **do not leak fibre information** when their inputs and stopping rules depend only on \(R\) and independent coins. Factoring an integer computed from \(R\) is still a function of \(R\).
+
+This is a useful abstraction of the classical random-square argument, whose foundations are already present in [Dixon’s original algorithm](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf).
+
+**Claim 2: the congruence identities work, but the arithmetic implementation needs additional conditions.**
+
+For a rational target prime \(\ell\), the identity
+\[
+a-bm=\ell c,\qquad
+\ell\equiv \phi(a-b\alpha)c^{-1}\pmod n
+\]
+is correct whenever the displayed quantities are units modulo \(n\). Nonunits should produce a factor or cause rejection.
+
+However:
+
+1. A determinant-\(\ell\) lattice need not have a reduced basis with **both** vectors of size \(O(\sqrt\ell)\). For example, \(m\equiv0\pmod\ell\) gives basis \((\ell,0),(0,1)\). You need a regularity condition, a larger region, or an argument that sufficiently many targets have acceptable geometry.
+2. Require primitive \((a,b)\), and handle leading-coefficient, discriminant, index, and denominator exceptions. Smoothness of \(F(a,b)\) alone is not a complete statement about an ideal factorization in an arbitrary order.
+3. Specify the number of candidates searched. A smoothness probability is not yet an algorithm unless there are enough distinct candidates of the claimed size.
+4. Only odd target valuations need descent after known squares have been absorbed. This can improve implementation, but does not resolve the analytic gap.
+
+Special-\(q\) elements outside LV’s original box are **not inherently incompatible** with quadratic characters. Characters are multiplicative functions on an appropriate group, not functions defined only on a sieve box. Nevertheless, the field distribution, square-class obstruction bounds, support, bit lengths, and square-root costs must be checked for the new parameters.
+
+In particular, ordinary NFS ideal-parity columns do not by themselves guarantee an algebraic square. [LV, Section 6](https://arxiv.org/pdf/1805.08873) uses additional characters and an exceptional-class argument. Its construction includes extra combinations to obtain a genuine square. Consequently, literal “\(C+O(1)\) relations suffice” is not justified merely by citing LV. The harmless asymptotic repair is \(C\,L^{o(1)}\) relations and postprocessing, provided the argument extends to the new field distribution.
+
+**Claim 2(a): the advertised constant is the correct formal optimization.**
+
+Put
+\[
+s=\frac1{d+1}.
+\]
+To obtain your \(\theta=2/(d+1)\), explicitly require a degree-\(d\), generally nonmonic construction with
+\[
+m=n^{s+o(1)},\qquad \|f\|_\infty=n^{s+o(1)}.
+\]
+Such height bookkeeping is compatible with a base-\(m\) construction, but it is not simply the usual monic degree-\(d\) parameter choice.
+
+For fixed \(d\), with subpolynomial coordinates,
+\[
+\left|\frac{a-bm}{\ell}\right|\le n^{s+o(1)},
+\qquad |F(a,b)|\le n^{s+o(1)}.
+\]
+Under the assumed joint smoothness model, their combined smoothness cost is
+\[
+L_n\!\left[\frac12,\frac{2s}{2a}\right]
+=
+L_n\!\left[\frac12,\frac{\theta}{2a}\right].
+\]
+
+Collecting \(L[1/2,a]\) rows and using sparse linear algebra therefore gives
+\[
+L_n\!\left[\frac12,
+\max\left\{a+\frac{\theta}{2a},\,2a\right\}\right].
+\]
+The minimum occurs at
+\[
+a=\sqrt{\theta/2}=\frac1{\sqrt{d+1}},
+\]
+and equals
+\[
+\boxed{\frac2{\sqrt{d+1}}}.
+\]
+Your numerical values for \(d=5,7\) are correct.
+
+The initial split contributes formally \(L[1/2,1/(2b_1)]\), which disappears when \(b_1\to\infty\) sufficiently slowly. Your alternative
+\[
+B_1=\exp((\log n)^{3/4})
+\]
+also has the stated useful property:
+\[
+\log T_{\rm HECM}
+=O\!\left((\log n)^{1/2}(\log\log n)^{1/3}\right)
+=o\!\left(\sqrt{\log n\log\log n}\right).
+\]
+The underlying rigorous small-factor algorithm is the [Lenstra–Pila–Pomerance hyperelliptic method](https://math.dartmouth.edu/~carlp/PDF/paper129.pdf).
+
+Use a capped, one-sided smoothness procedure: accept only after complete verified factorization; treat a timeout as failure. Its false-negative probability and cost can be budgeted without exposing the hidden fibre.
+
+Thus **“heuristic running time with rigorously proved conditional fruitfulness” is defensible** after these repairs. “Rigorous factoring time” is not.
+
+**Claim 2(b): \(2/5\) is correct for this model, with the logarithmic factors restored.**
+
+Let \(L=\log n\), \(h=\log\log n\), and write
+\[
+\log B=aL^{2/5}h^{3/5},\quad
+\log B_1=bL^{3/5}h^{2/5},\quad
+d=\delta(L/h)^{1/5}.
+\]
+Then the relevant norm scale is
+\[
+L^{4/5}h^{1/5},
+\]
+not just \(L^{4/5}\).
+
+For a regular special-\(q\) lattice and a sufficiently large subexponential search region, the leading log sizes are approximately
+\[
+\log |c|\sim \delta^{-1}L^{4/5}h^{1/5},
+\]
+\[
+\log |F(a,b)|
+\lesssim
+\left(\delta^{-1}+\frac{\delta b}{2}\right)
+L^{4/5}h^{1/5}.
+\]
+Hence the joint smoothness cost has exponent \(2/5\). Both the initial splitting search and
+\[
+L_{B_1}[2/3,O(1)]
+\]
+also have exponent \(2/5\). Multiplication by the number of rows preserves that exponent. A finite \(L[2/5,c]\) bound is therefore consistent with your heuristic.
+
+Your barrier calculation is also correct **within this architecture**. If \(\log B_1\) has exponent \(\beta_1\), then
+\[
+1-\beta_1\le\alpha.
+\]
+Balancing coefficient height against \(\ell^{d/2}\) gives norm exponent
+\[
+\gamma\ge\frac{1+\beta_1}{2},
+\]
+and smoothness requires \(\gamma-\alpha\le\alpha\). Thus \(\alpha\ge2/5\).
+
+There is a second obstruction worth recording:
+\[
+\frac{2\beta_1}{3}\le\alpha
+\]
+is required by this HECM splitting implementation. Combined with \(1-\beta_1\le\alpha\), it independently gives \(2/5\). Therefore, **adding descent levels alone does not yield \(L[1/3]\) while retaining this initial HECM splitting pipeline unchanged**.
+
+**Claim 2(c): an explicit obstruction is missing.**
+
+A QS special-\(q\) relation requires
+\[
+x^2\equiv n\pmod\ell.
+\]
+This can fail for primes in the initial split.
+
+For a concrete example,
+\[
+n=77,\qquad r=4,\qquad R=16,
+\]
+and a shortest split is
+\[
+16\equiv3/5\pmod{77}.
+\]
+But \(77\equiv2\pmod3\) and \(77\equiv2\pmod5\); neither target prime admits the required square root.
+
+Repair the algorithm by rejecting splits containing an odd-valuation large prime inert in \(\mathbb Q(\sqrt n)\). Under a suitable splitting-and-smoothness heuristic, the extra rejection can be negligible on the \(L[1/2]\) scale.
+
+After that repair, the constant calculation works: taking \(x\) near \(\sqrt n\) in the prescribed progression gives
+\[
+(x^2-n)/\ell=n^{1/2+o(1)},
+\]
+so
+\[
+\max\left\{a+\frac1{4a},\,2a\right\}
+\]
+is minimized at \(a=1/2\), with value \(1\).
+
+This establishes a plausible **different randomized QS-based algorithm** with DD fruitfulness. It does not prove the nontriviality hypothesis for ordinary deterministic QS, and its required smoothness statement concerns different progressions.
+
+**Claim 3: Hypothesis D gives the intended reduction, but Lemma SQ does not establish Hypothesis D.**
+
+The robust reduction is:
+
+- Fix a field for each run.
+- Draw independent hidden \(r_i\).
+- Give each descent attempt a uniform time cap.
+- Collect sufficiently many successful, valid certificates over a controlled common column set.
+- Construct and verify a genuine certificate square using only exposed data.
+- Apply DD.
+
+If good fields have probability \(p=L^{-o(1)}\), and a good field has per-attempt success probability \(q=L^{-o(1)}\), collecting the rows costs
+\[
+C\,T_D\,L^{o(1)}.
+\]
+DD then supplies a success probability at least \(1/2\). With compatible postprocessing of cost \(A(C)\), a safe statement is
+\[
+\boxed{\mathbb E T_{\rm factor}
+\le (C T_D+A(C))L^{o(1)}}.
+\]
+Preprocess primes, even integers, and perfect powers in the usual way.
+
+Three implications in your proposed justification fail.
+
+First, a marginal bound does not multiply across a target list. Two types of fields may descend complementary types of primes, while every split contains both types. Each marginal success probability can be \(1/2\), yet no complete split descends.
+
+Second, independence of the **raw** split from \((m,f)\) does not imply independence after acceptance conditions involving that field. Nor does it make the primes within one split independent.
+
+Third, the target-prime law is not automatically proportional to \(1/\ell\). Even for ordinary integers conditioned to be smooth, saddle-point weights involve approximately \(\ell^{-\sigma}\), together with a product constraint. Your shortest-vector distribution introduces another conditioning. Polynomial discrepancies per prime can accumulate at the main \(L[2/5]\) scale.
+
+Your stated values of \(k\) are reasonable heuristic orders, with logarithmic factors suppressed. They are not deterministic bounds.
+
+**The proposed LV first-moment transfer has a parameter-range obstruction.**
+
+For your fixed-degree regime, put \(t=a-bm\). The randomized polynomial satisfies
+\[
+F(a,b)=\widehat F(a,b)+tP(a,b),
+\]
+and, for primitive pairs,
+\[
+F(a,b)\equiv nb^d\pmod t.
+\]
+Thus randomizing coefficients leaves the value in a prescribed progression modulo **\(t=\ell c\)**, not merely modulo the smooth cofactor \(c\).
+
+At your advertised sizes,
+\[
+|t|=n^{s+o(1)},\qquad X_F=n^{s+o(1)}.
+\]
+Consequently,
+\[
+|t|=X_F^{1-o(1)}.
+\]
+
+That is far beyond the direct applicability of [Harper’s smooth-number BV theorem](https://arxiv.org/abs/1208.5992). Even [Pascadi’s newer \(5/8\) distribution result](https://arxiv.org/abs/2505.00653) does not reach these moduli; its residue-uniformity conditions also require attention for the moving residue \(nb^d\).
+
+This is why I reject “only anti-concentration remains.” You first need a new **weighted first-moment estimate for these large-modulus, short-progression, special-\(q\)-conditioned samples**. Averaging over \(\ell\) does not automatically turn the induced moduli into LV’s averaging family.
+
+Increasing coefficient height or the search region may move the progression into a known distribution range, but it also changes the norm sizes and requires a fresh constant optimization.
+
+**Second moments are a possible tool, not a logically necessary ingredient.**
+
+Let \(q(A)\) be the probability that an entire capped descent succeeds in field \(A\). If one proves
+\[
+\mathbb E_A q(A)\ge\varepsilon,
+\]
+then, because \(0\le q\le1\),
+\[
+\Pr_A(q(A)\ge\varepsilon/2)\ge\varepsilon/2.
+\]
+For \(\varepsilon=L^{-o(1)}\), this already gives the good-field formulation of Hypothesis D.
+
+Therefore stochastic deepening is not categorically unavailable because several targets must share a field. What is unavailable from your present assumptions is the requisite **complete-descent average**. LV-style deepening of a marginal per-prime count cannot manufacture that average.
+
+For counts \(N_\ell\) of usable pairs, second moments could prove useful existence bounds. But even excellent per-prime second moments do not alone establish that a complete split works in one field. Also, a loss acceptable for one prime may become unacceptable after raising it to \(k\).
+
+**The two-algebraic-side proposal remains a research programme.**
+
+The continuous geometric estimate is plausible and standard in form: for a continuous uniform coefficient cube and independent \(v,v'\), a projection density is bounded by
+\[
+\frac{C_d}{H^2\|v\wedge v'\|}.
+\]
+
+It is not directly a probability bound for integer polynomial coefficients. The actual distribution is atomic and supported on a joint image lattice. Its index, congruence restrictions, boundary errors, and nearly parallel pairs matter.
+
+More fundamentally, a real density bound does not establish a joint smoothness bound. Both values retain arithmetic restrictions; independent coefficient vectors on two sides do not eliminate those restrictions.
+
+The complete-splitting assertion also needs qualifications:
+
+- Density \(1/d!\) presupposes the appropriate \(S_d\) Galois group.
+- Requiring splitting in both independent fields would normally produce \(1/(d!)^2\).
+- Multiplying splitting densities across a growing target list requires a uniform theorem.
+- Fixed-field Chebotarev asymptotics cannot simply be applied uniformly when the field discriminant grows and the primes are subpolynomial in \(n\).
+
+**Prior art substantially limits the novelty claim.**
+
+| Source | Relevant precedent and distinction |
+|---|---|
+| [Dixon, 1981](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), and [Pomerance, *A Tale of Two Sieves*](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf) | Random-square relation collection, square dependencies, and the root-of-unity explanation of fruitfulness are classical. DD packages that argument with a more general relation generator. |
+| [Stange, arXiv:2211.06821](https://arxiv.org/html/2211.06821v2) | Explicitly studies index calculus modulo composite \(n\), random \(g^x\), arbitrary factor bases, and an NFS acceleration. Her success analysis uses a relation-lattice generation hypothesis and rational/integer linear algebra. DD instead exploits the exactly understood squaring fibre and binary dependencies. Stange is close conceptual prior art, but not an unconditional theorem implying your bounds. |
+| [Gordon, *Discrete Logarithms in \(GF(p)\) using the Number Field Sieve*](https://www.dmgordon.org/papers/log.pdf) | Already analyzes \(B=L[2/5]\), initial target smoothing to \(L[3/5]\), and a one-stage special-\(q\) reduction requiring two \(B\)-smooth quantities. This is in his special-NFS discrete-logarithm setting, so it is not your general factoring theorem. Nevertheless, **the one-stage \(2/5\) phenomenon is old**. |
+| [Schirokauer’s NFS survey, Section 4](https://library.slmath.org/books/Book44/files/12oliver.pdf), [Commeine–Semaev, 2006](https://link.springer.com/chapter/10.1007/11745853_12), and [Barbulescu’s treatment](https://inria.hal.science/inria-00588713/document) | Smooth representations of targets, initial splitting, special-\(q\) descent, and its separation from precomputation are established NFS-DLP techniques. Joux–Lercier’s 2003 work is an important antecedent in this development. These complexity analyses do not provide your missing unconditional descent theorem. |
+
+I did not locate a source stating your exact fixed-degree constant \(2/\sqrt{d+1}\) for this factoring construction. That is not a certification of novelty. Any novelty claim should concern the precise combination, reduction, or constant—not random-target descent generally, or the exponent \(2/5\).
+
+There is now relevant rigorous descent work: [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/abs/2512.01588) prove ideal-sampling and class/unit-group results under ERH. Their sampling problem does not supply simultaneous smoothness of your rational cofactor and algebraic value in a thin two-dimensional region. Likewise, [rigorous small-characteristic finite-field descent](https://arxiv.org/abs/1507.01495) concerns a different setting and does not transfer to integer smoothness modulo unknown composite \(n\).
+
+**B1: the obstruction is correct for the stated two-form mechanism, with a short proof.**
+
+For \(n=pq\), \(p,q\equiv3\pmod4\), a square root \(z\) of \(1\) is nontrivial precisely when
+\[
+(z/n)=-1.
+\]
+If both resulting square roots are products of factor-base primes having Jacobi symbol \(+1\), their ratio has Jacobi symbol \(+1\), so it is trivial.
+
+Thus a universal fruitfulness assertion for that mechanism forces a small Jacobi nonresidue, apart from cases where the factor base already exposes a divisor. A uniform subexponential bound would indeed go substantially beyond the stated Burgess bound.
+
+Do not extend this to QS generally. For example,
+\[
+n=33,\qquad 7^2-33=16=2^4,\qquad (2/33)=+1,
+\]
+yet
+\[
+\gcd(7-4,33)=3.
+\]
+The QS root \(7\) need not belong to the smooth-generated subgroup.
+
+The almost-all qualification needs a specified averaging family. [Pollack’s work](https://pollack.uga.edu/variations.pdf) gives precise average results, including least inert primes in quadratic fields; an average over all discriminants is not automatically a theorem about every semiprime sampling family.
+
+The formula involving \(\Phi,\Omega_T,T\) is **UNVERIFIABLE from the definitions supplied here**.
+
+**B2: the identities are useful; the experimental asymptotic inference is unsupported.**
+
+For the Pell unit associated with one period,
+\[
+\epsilon=a+b\sqrt n,\qquad N(\epsilon)=(-1)^P,
+\]
+multiplication gives
+\[
+x_{k+P}\equiv a x_k\pmod n,\qquad a^2\equiv(-1)^P\pmod n.
+\]
+But signed norms change when \(P\) is odd. Also, for \(n\equiv1\pmod4\), distinguish the fundamental unit of the maximal order from that of \(\mathbb Z[\sqrt n]\), which is the order naturally used by this Pell construction.
+
+Your Blum-semiprime observation has an elementary explanation. Negative Pell is impossible when \(n\) has a prime divisor \(3\bmod4\). For \(n\equiv1\bmod4\), the minimal positive Pell solution has \(a\) odd and \(b\) even. If \(a\equiv1\pmod n\), factoring \((a-1)(a+1)=nb^2\) produces a smaller positive Pell solution; if \(a\equiv-1\pmod n\), it produces a negative Pell solution. Hence \(a\) is nontrivial for Blum semiprimes.
+
+The supplied counts and regression are **UNVERIFIABLE** without data and conventions. A fitted slope at 28–40 bits does not prove that period displacement is universally, or typically under an unspecified distribution, \(\sim\sqrt n\).
+
+An explicit pair related by a known nontrivial square twist does factor \(n\). But “therefore involutions can enter only nonconstructively” is too strong: an efficiently constructible such pair would itself be a factoring algorithm. DD uses a nonconstructive symmetry of the sampling law, which is valid.
+
+**The missing lemma should be stated for complete target lists.**
+
+Let \(A=(m,f)\), let \(Z\) have the **actual accepted shortest-split distribution**, and let \(\mathcal Q(Z)\) be its odd-valuation large-prime targets. For each target, prescribe a region searchable within the advertised budget, and let \(N_\ell(A)\) count its usable, certified relations.
+
+A sufficient missing statement is
+\[
+\Pr_{A,Z}\!\left[
+N_\ell(A)>0\ \text{for every }\ell\in\mathcal Q(Z)
+\right]\ge L^{-o(1)},
+\]
+together with the stated uniform search costs and compatibility with algebraic square formation. Equivalently, establish the corresponding good-field/positive-target-fraction formulation.
+
+That statement must retain the true split law, local obstructions, lattice geometry, moving residues, and shared-field correlations. It is substantially stronger than your displayed marginal Lemma SQ.
+
+**Neither (a) nor (b) is presently supplied by an identified rigorous theorem plus DD.** In particular, proving the repaired regime-(a) hypothesis unconditionally with the advertised constant below \(1\) would improve the [Lenstra–Pomerance rigorous bound](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf). DD removes the hidden-root obstacle exactly; the cited analytic tools do not yet establish the required descent probability.
