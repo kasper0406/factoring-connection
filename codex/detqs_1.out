@@ -1,0 +1,197 @@
+**1. All-integer moments**
+
+**PROVED.** Parameters must be common across the dyadic block. Write \(B=2^n\), \(I=[B/2,B)\cap\mathbb Z\), \(H=B/2\), and initially take \(y=T=B^c\). If \(T\) varies with \(N\), its deterministic variation also contributes to the raw variance.
+
+Put \(x=m+t\), \(v=x^2-N\). Define
+\[
+D_h=\{(x,v):x^2-v\in I,\quad
+2x-1\le v\le 2x(h+1)-(h+1)^2-1\}.
+\]
+The bounds follow by adjoining the consecutive intervals corresponding to \(1\le t\le h\). Thus, exactly,
+\[
+H\mathbb EZ=\sum_{(x,v)\in D_T}f(v).
+\]
+For \(k=t'-t>0\), put \(w=v+2kx+k^2\). Then
+\[
+H\mathbb EZ^2
+=H\mathbb EZ+
+2\sum_{k=1}^{T-1}\sum_{(x,v)\in D_{T-k}}
+f(v)f(v+2kx+k^2).
+\]
+Equivalently,
+\[
+w-v\equiv k^2\pmod{2k},\qquad
+x=\frac{w-v-k^2}{2k},
+\]
+with the remaining inequalities defining the region.
+
+**PROVED.** For fixed \(t,t'\), the \((m,r)\mapsto(v,w)\) determinant is \(2(t-t')\), and the image is thin. **After summing \(t\) at fixed \(k\asymp T\), it is fat:** both coordinates range on scale \(\sqrt B\,T\), with lattice index \(2k\). The context’s thin-region objection does not apply to this aggregate.
+
+**PROVED, fixed \(0<c<1/6\).** With \(u=1+1/(2c)\),
+\[
+\mathbb EZ=T\{\rho(u)+O_c(1/\log y)\},
+\]
+\[
+\mathbb EZ^2=(\mathbb EZ)^2+
+\Theta_c\!\left(\frac{T^2}{(\log y)^2}\right).
+\]
+The upper bound is explained in task 2. A single fixed odd prime already proves the lower bound. Indeed,
+\[
+\frac{\mathbb E[Z\mid N\equiv a\pmod\ell]-\mathbb EZ}{T}
+=
+-\frac{\rho'(u)\log\ell}{(\ell-1)\log y}
+\left(\frac a\ell\right)+o_\ell(1/\log y).
+\]
+The arithmetic correction comes from
+\[
+\frac{(a/\ell)}{\ell-1}
+\{\ell\Psi(z/\ell,y)-\Psi(z,y)\}.
+\]
+Consequently, total variance gives
+\[
+\operatorname{Var}Z\ge
+(1+o(1))
+\frac{T^2\rho'(u)^2(\log\ell)^2}
+{\ell(\ell-1)(\log y)^2}.
+\]
+Therefore **FALSE:** the proposed uncentered normalized variance is \(o(n^{-2})\). Its order is \(n^{-2}\).
+
+**PROVED local calculation; UNVERIFIED complete correction theorem.** The appropriate centering uses the real scale \(N/B\) and local functions
+\[
+A_\ell(N)=\log\ell\left(
+\mathbb E_{x\in\mathbb Z_\ell}v_\ell(x^2-N)-\frac1{\ell-1}\right).
+\]
+Condition on \(N\) modulo products of **prime powers**, with increasing precision, or subtract their conditional projections. A squarefree primorial alone leaves higher-valuation contributions at fixed primes.
+
+The sufficient missing estimate is
+\[
+\limsup_{n\to\infty}(\log y)^2
+\mathbb E\left|Z/T-M_W(N)\right|^2\le r(W),
+\qquad r(W)\longrightarrow0, \tag{*}
+\]
+where \(M_W\) includes these local projections and the real-scale correction. Fixing \(W\), applying Chebyshev, then letting \(W\) grow would give the required \(o(n^{-2})\) lower tail. I have **not verified (*)**.
+
+**UNVERIFIED in the subexponential regime.** Here the relative local perturbation is approximately
+\[
+\frac{-\rho'(u)}{\rho(u)\log y}
+\asymp\frac{\log u}{\log y},
+\]
+whose square is of order \((\log n)/n\). The fixed-\(u\) argument therefore does not extend automatically. Uniform higher-order corrections and closer-pair estimates are needed; crude close-pair deletion also loses \(1/\rho(u)\).
+
+---
+
+**2. Strongest H1 theorem established here**
+
+**PROVED.** For every fixed \(0<c<1/6\), common \(y=T=B^c\), and fixed \(K\),
+\[
+\#\{N\in I:Z_N<\pi(y)+K\}
+=O_c\!\left(\frac{B}{(\log B)^2}\right).
+\]
+This proves H1 for almost all **integers**, but its stated error transfers only to an \(O(1)\) exceptional fraction of \(S_n\).
+
+**PROVED inputs.** Let \(\Psi=\Psi(z,y)\), \(v=\log z/\log y\), and
+\[
+R_A=\frac{\exp\{-\delta v/\log^2(v+1)\}}{(\log z)^A}+y^{-\delta}.
+\]
+Harper’s **Theorem 1**, for \((\log z)^K\le y\le z\) and \(Q\le\sqrt\Psi\), gives
+\[
+\sum_{q\le Q}\max_{(a,q)=1}|E(z,y;q,a)|
+\ll_A \Psi R_A+\sqrt\Psi\,Q(\log z)^{7/2}.
+\]
+His **Theorem 2**, for \(Q\le\Psi\), gives
+\[
+\sum_{q\le Q}\sum_{(a,q)=1}|E(z,y;q,a)|^2
+\ll_A\Psi^2R_A+\Psi Q.
+\]
+The arbitrary-\(A\) versions can be ineffective. Here \(z\asymp\sqrt B\,T\), \(Q\asymp T\), leaving a polynomial margin below \(\sqrt\Psi\). There is **no** requirement \(\log z/\log q\to\infty\) in these averaged theorems. [Harper, arXiv:1208.5992, Theorems 1–2](https://arxiv.org/pdf/1208.5992).
+
+For global counts, use Hildebrand–Tenenbaum’s **Theorem 1.8**, the de Bruijn–Saias approximant (1.29), and its fixed-\(u\) expansion. Its error is smaller than every logarithmic power on the compact \(u\)-ranges used here. [Hildebrand–Tenenbaum, JTNB 5 (1993), 411–484](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+
+**PROVED derivation.** Approximate the fat regions by logarithmically many rectangles, discarding \(k\le T/(\log B)^A\). Nonreduced residues require
+\[
+g=(v,k)=(w,k),\qquad k=gh,\quad v=ga,\quad w=gb.
+\]
+Then \((a,h)=(b,h)=1\), while parity is retained separately. Apply Harper after dividing by \(g\), and expand
+\[
+\Psi_h(z/g,y)=\sum_{d\mid h}\mu(d)\Psi(z/(gd),y).
+\]
+The averaged remainders are controlled by convergent sums
+\[
+\sum_g\frac{(1+\log g)^j}{g^2},\qquad
+\sum_{d,e}\frac{(d,e)(1+\log(de))^j}{d^2e^2},
+\quad j\le2.
+\]
+Constant terms have mass one; arithmetic linear terms have zero marginal mean. Thus the linear terms cancel in
+\(\mathbb EZ^2-(\mathbb EZ)^2\), leaving \(O_c(T^2/\log^2y)\). Chebyshev and \(\pi(y)+K=o(T)\) prove the theorem.
+
+**PROVED assessment of alternatives.** Fouvry–Tenenbaum’s 1996 Théorème 1 and Granville’s 1993 averaged AP result also suffice at fixed \(u\). Drappeau’s fixed-residue level \(3/5-\varepsilon\) is unnecessary here. Hildebrand’s short-interval theorem is unnecessary after aggregation; Matomäki–Radziwiłł does not directly supply this quadratic sampling estimate or its required exceptional density. The \(\log z/\log q\to\infty\) restriction belongs to the **individual** Soundararajan–Harper AP theorem. [Drappeau, Théorème 1](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf), [Matomäki–Radziwiłł, Theorem 1](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf).
+
+Details, including the stronger expansion explicitly marked unverified, are in the [scratch note](/Volumes/git/factoring-connection/codex/scratch/detqs_1/fixed_u_moment_note.md).
+
+---
+
+**3. H2 and its obstructions**
+
+**PROVED: distinct dependencies of size two are fruitful**, for \(T=o(\sqrt N)\). Let \(x<z\), \(Q_xQ_z=Y^2\), and \(X=xz\). Then
+\[
+(X-N)^2-Y^2=N(z-x)^2>0,
+\]
+so \(X-Y>N\). Also
+\[
+X+Y\le2(m+T)^2-N<2N.
+\]
+Thus \(N<X-Y<X+Y<2N\). Their product is divisible by \(N=pq\), while neither is divisible by \(N\); hence \(\gcd(X-Y,N)\) is proper.
+
+**PROVED limitation.** Rank/nullity does not guarantee a dependency of size two. Arbitrary relation matrices can have kernel dimension growing without any weight-two vector. The preceding size proof does not extend to unrestricted dependencies.
+
+**PROVED, Blum case.** For invertible relations,
+\[
+\psi_N(S)=\left(\frac{X_SY_S}{N}\right)
+\]
+is a character on the kernel, and
+\[
+\text{H2}\iff\psi_N|_{\ker A_N}\not\equiv1.
+\]
+Indeed, the mixed CRT roots of \(1\) have Jacobi symbol \(-1\), while both trivial roots have symbol \(+1\). Reciprocity simplifies the factors in this character; it does not prove nontriviality.
+
+**UNVERIFIED exact missing statement.**
+\[
+\Pr_{N\in S_n}\!\left[
+\psi_N|_{\ker A_N}\equiv1
+\ \middle|\ \mathrm{H1}\right]=o(1),
+\]
+with the corresponding CRT-sign statement outside the Blum subfamily. Testing a kernel basis suffices once this is known.
+
+**PROVED methodological obstruction.** LemmaM Theorem B prevents deducing this from cancellation for every fixed test: the kernel, hence a possible annihilating predictor, depends on \(N\). Theorem A controls fixed weights; it does not remove that dependence.
+
+**UNVERIFIED routes.** Multipliers and MPQS enlarge the relation family but require a joint smoothness-and-fruitfulness theorem for the actual deterministic family. They do not supply independence automatically.
+
+**PROVED scope correction.** B1 concerns the specified known-root two-form mechanism, not general QS. The supplied example \(N=33\), \(7^2-33=16\), with \((2/33)=+1\), already disproves extending B1 to QS indiscriminately.
+
+---
+
+**4. Literature**
+
+**UNVERIFIED negative finding.** I found no published **uniform, unconditional deterministic** algorithm beating the stated frontier on balanced semiprimes. This is a search result, not a nonexistence theorem. The supplied Theorem AV already gives exponent \(1/6<1/5\).
+
+**PROVED distinctions and exact references:**
+
+- Pomerance, *Analysis and comparison of some integer factoring algorithms*, Math. Centre Tracts 154 (1982), 89–139; *The quadratic sieve factoring algorithm*, LNCS 209 (1985), 169–182. His later *Smooth numbers and the quadratic sieve*, MSRI Publications 44 (2008), 69–81, explicitly develops **conjectured** QS complexity. [Primary exposition](https://library.slmath.org/books/Book44/files/03carl.pdf).
+- Schnorr, *Refined analysis and improvements on some factoring algorithms*, **J. Algorithms 3 (1982), 101–127**; Schnorr–Lenstra, *A Monte Carlo factoring algorithm with linear storage*, **Math. Comp. 43 (1984), 289–311**. These do not establish the requested deterministic almost-all bound. [Schnorr–Lenstra paper](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf).
+- Vallée, *Provably fast integer factoring with quasi-uniform small quadratic residues*, **STOC 1989, 98–106**; expanded as *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56 (1991), 823–849**. The factoring complexity uses randomized sampling; the deterministic local-generation result is a different assertion. [STOC paper](https://doi.org/10.1145/73007.73016).
+- Lenstra–Pomerance, *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**: rigorous randomized expected \(L_N[1/2,1+o(1)]\), not uniform deterministic factoring. [Paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+- Harvey–Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*, **Math. Comp. 91 (2022), 1367–1379**: unconditional deterministic worst-case exponent \(1/5\). [Paper](https://arxiv.org/abs/2105.11105).
+- Lehman, *Factoring large integers*, **Math. Comp. 28 (1974), 637–646**: deterministic \(N^{1/3+o(1)}\). Hart, *A one line factoring algorithm*, **J. Aust. Math. Soc. 92 (2012), 61–69**: general \(N^{1/3}\) complexity is heuristic, with useful special families. [Lehman](https://doi.org/10.1090/S0025-5718-1974-0340163-2), [Hart](https://wrap.warwick.ac.uk/id/eprint/54707/).
+- Rabin, *Digitalized signatures and public-key functions as intractable as factorization*, **MIT/LCS/TR-212 (1979)**: a randomized root-to-factor reduction, not the requested factoring algorithm. [Report](https://dspace.mit.edu/entities/publication/15016449-ca26-4d45-82ea-7c200d82d777).
+
+**PROVED caveats.** Fixed-tape averaging gives nonuniform subexponential algorithms, without an efficient uniform tape construction. Also, finding merely one factor of almost all **integers** by small trial division is easy; that ensemble and output requirement differ substantially from complete factoring on \(S_n\).
+
+---
+
+**5. Verdict**
+
+**PROVED:** the supplied frontier remains \(N^{1/6+o(1)}\) average on \(S_n\), and \(N^{1/5+o(1)}\) worst case. The fixed-\(u\) H1 theorem above does not yet improve it.
+
+**CONDITIONAL:** H1 and H2 on almost all \(S_n\) give cost \(N^{\omega c+o(1)}\), beating \(1/6\) for \(c<1/(6\omega)\). At \(y=L[1/2,a]\), \(T=L[1/2,b]\), the corresponding proved cost accounting is \(L[1/2,\max(b,\omega a)]\); success remains conditional.
+
+**UNVERIFIED; most promising tractable next lemma:** the locally centered mean-square estimate (*) with \(r(W)\to0\). It would finish fixed-\(u\) H1 at the transfer precision. Adaptive kernel fruitfulness remains a separate, essential obstacle.

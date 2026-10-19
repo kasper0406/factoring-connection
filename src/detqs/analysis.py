@@ -18,14 +18,17 @@ MODEL_R = {}  # filled from prereg values at import of summarize
 
 
 def _binom_two_sided(k: int, M: int, p: float) -> float:
-    """Exact two-sided binomial p-value (sum of probs <= P(k))."""
-    from math import comb
-    pk = comb(M, k) * p ** k * (1 - p) ** (M - k)
+    """Exact two-sided binomial p-value (sum of probs <= P(k)); log-space pmf
+    (post-prereg fix: the float form overflowed at M = 4600; same test)."""
+    def lp(j: int) -> float:
+        return (math.lgamma(M + 1) - math.lgamma(j + 1) - math.lgamma(M - j + 1)
+                + j * math.log(p) + (M - j) * math.log1p(-p))
+    lk = lp(k)
     tot = 0.0
     for j in range(M + 1):
-        pj = comb(M, j) * p ** j * (1 - p) ** (M - j)
-        if pj <= pk * (1 + 1e-9):
-            tot += pj
+        lj = lp(j)
+        if lj <= lk + 1e-9:
+            tot += math.exp(lj)
     return min(1.0, tot)
 
 
