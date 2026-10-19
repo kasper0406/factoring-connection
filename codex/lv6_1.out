@@ -1,0 +1,214 @@
+**Verdict [proved below, using cited results].** LV6 can be proved at fixed odd degree. One possible exceptional square class can be retained and eliminated by testing three dependencies. Complete-search batching also removes HECM without changing Theorem A’s exponent. Thus the appropriate headline remains **A, conditional on LD**, with degree-9 infimum \(0.9192\ldots\).
+
+The report is also saved as [report.md](/Volumes/git/factoring-connection/codex/scratch/lv6_1/report.md).
+
+**Proposition LV6 [proved].** Write \(m=BL^{o(1)}\) for the number of rows. Assume the stated preprocessing, independent hidden-root draws, and an irreducible field polynomial \(f\) of fixed odd degree \(d\). Put
+\[
+t=f_d,\quad \beta=t\alpha,\quad
+Q(T)=t^{d-1}f(T/t),\quad A=\mathbb Z[\beta],
+\quad \delta=Q'(\beta).
+\]
+Suppose \(g_1,t,f'(g_0/g_1)\) are units modulo \(N\). Given certified pure descent rows, there is a Las Vegas algorithm producing a nonzero dependency and \(X^2\equiv Y^2\pmod N\) in expected \(m^{2+o(1)}\) bit operations, provided
+\[
+m\ge(d+1)\pi(B)+C\log N+4
+\]
+for a sufficiently large effective constant \(C\). The selected dependency and \(Y\) depend only on invariant data and independent coins. Consequently DD applies with fruitfulness exactly \(1-2^{1-\omega(N)}\).
+
+The explicit surplus condition matters: the asymptotic row-count scale alone does not guarantee a kernel.
+
+**Certificates and heights [proved].** For an atomic relation, write \(G(P)=\ell n_P\), with signed smooth \(n_P\), and set \(z_P=ta-b\beta\). Then
+\[
+\psi(z_P)=t\ell n_P/g_1,\qquad
+\operatorname{Norm}(z_P)=t^{d-1}F(a,b).
+\]
+Substituting into the split gives
+\[
+r_i^2=q_i\psi(\Gamma_i),\qquad
+\Gamma_i=\prod_Pz_P^{e_{iP}},\qquad
+q_i=\prod_P(g_1/(tn_P))^{e_{iP}},
+\]
+where the signed atomic multiplicities total at most \(2k\).
+
+In DD’s convention, take \(c_i=(q_i,\Gamma_i^{-1})\). Any additional invariant square multiplier is incorporated in \(W_i\).
+
+Record the rational sign, prime exponents up to \(B\), and
+\[
+E_i=\sum_Pe_{iP}\pmod2.
+\]
+The last column handles **both \(g_1\) and \(f_d=t\)**: their rational exponents are \(E_i,-E_i\). Modulo two this is the number of atomic relations, counted with multiplicity. Neither integer needs factoring.
+
+Here \(\|f\|_\infty=O_d(MH)=N^{O(1)}\) and \(V=N^{1/(4k)}L^{O(1)}\). Height enters through polynomial discriminant bounds, \(O(\log N)\) bits per atom, and \(O(m\log N)\) bits per product. No postprocessing step enumerates a box of side \(V\). LV Theorem 2.6 is therefore replaced by the following argument, rather than applied outside its growing-degree, \(L[1/3]\)-height hypotheses.
+
+**Bad primes and residual classes [proved].** Set \(D=\operatorname{disc}Q\), and let \(S\) comprise prime ideals above rational primes dividing \(2tD\). For \(p\le B\), \(p\nmid tD\), record valuations at every simple root of \(Q\bmod p\), including zero. Primitivity implies that \(z_P\) can vanish only at its corresponding degree-one prime; its valuation is \(v_p(F(a,b))\). If \(p\mid b\), its norm is a unit.
+
+All remaining algebraic kernel classes lie in
+\[
+H_S=\{x\in K^\times:v_{\mathfrak p}(x)\equiv0\pmod2
+\text{ for }\mathfrak p\notin S\}/K^{\times2}.
+\]
+This handles nonintegral \(\alpha\) through the monic order \(A\). In particular,
+\[
+[O_K:A]^2\mid D,\qquad
+D=t^{(d-1)(d-2)}\operatorname{disc}f,
+\]
+so \(\log|D|=O(\log N)\). Computing \(O_K\), its index, or the factorization of \(D\) is unnecessary.
+
+Valuations at \(S\), followed by the ideal-square map, give
+\[
+|H_S|\le2^{|S|+d}|\operatorname{Cl}(K)[2]|
+\le2^{|S|+d}h_K=N^{O(1)}.
+\]
+The everywhere-even kernel is an extension of class-group 2-torsion by units modulo squares. Dirichlet bounds the latter by \(2^d\); Minkowski bounds the class number, as also derived in [LV, Claim 6.5](https://arxiv.org/pdf/1805.08873). Neither obstruction is assumed trivial.
+
+For nonzero \(h\in H_S\), let \(L_h=K(\sqrt h)\). Removing local square factors shows that the relative discriminant exponent is at most one at odd primes, and at most \(2v_{\mathfrak p}(2)+1\) at dyadic primes. Hence
+\[
+|D_{L_h}|\le |D_K|^2\,2^{3d}|tD|^d=N^{O(1)}.
+\]
+This avoids needing small element representatives for unit classes.
+
+**Characters and exceptional zeros [proved using exact citations].** Apply [Lagarias–Odlyzko, Theorem 1.3, equations (1.6)–(1.7)](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf) to \(L_h/K\), with
+\[
+[L_h:\mathbb Q]=2d,\qquad
+x=2^{\lceil\log_2N\rceil^4}.
+\]
+Its condition \(\log x\ge10(2d)(\log|D_{L_h}|)^2\) holds. Its error, including the exceptional-zero term, is \(o(x/\log x)\) unless
+\[
+(1-\beta_0)^{-1}>(\log N)^2.
+\]
+
+There is **at most one** exceptional nonzero class. [Stark, Lemma 8, p. 145](https://gdz.sub.uni-goettingen.de/download/pdf/PPN356556735_0023/PPN356556735_0023.pdf) transfers such a zero to a quadratic subfield \(F\subset L_h\), since its threshold \(4(2d)!\log|D_{L_h}|\) is \(O_d(\log N)\). Odd degree implies \(L_h=KF\). A degree-\(2d\) field cannot contain two quadratic subfields, which would generate a degree-four subfield. Distinct classes therefore give distinct \(F\). Their discriminants are \(N^{O(1)}\), so Landau–Page uniqueness—[LV, Fact 6.24](https://arxiv.org/pdf/1805.08873)—permits at most one zero this close to one. No ineffective Siegel lower bound is used.
+
+Sample rational primes uniformly from \([x,2x]\), using rejection and deterministic primality certification. Factor \(Q\bmod p\), and choose uniformly one of \(d\) slots containing its linear factors, padded by trivial characters. A root \(s\) gives
+\[
+\chi_{p,s}(z_P)=\left(\frac{ta-bs}{p}\right).
+\]
+Degree-one prime ideals receive equal sampling mass; higher-degree primes contribute only \(O_d(\sqrt x)\). Chebotarev consequently gives detection probability at least \(1/(4d)\) for every nonexceptional nonzero class.
+
+These primes exceed all atomic norms and \(2tD\), so evaluations are nonzero. Their bit lengths are polynomial in \(\log N\); sampling, factoring and evaluation cost \((\log N)^{O_d(1)}\).
+
+On \(H_S\), use unramified quadratic Frobenius characters, normalizing even valuations by local squares. On these atomic products they equal the displayed residue symbols. With \(J=C\log N\),
+\[
+\Pr(\text{some nonexceptional nonzero class survives})
+\le |H_S|(1-1/(4d))^J\le N^{-2}.
+\]
+Thus the surviving square-class kernel has dimension at most one, uniformly over every admissible field. LV’s random-field Lemma 6.10 is unnecessary.
+
+**Linear algebra [cited/proved].** The matrix has \(O(m\log N)\) nonzero entries. Use [Kaltofen–Saunders 1991, Theorems 2–4 and §2](https://kaltofen.math.ncsu.edu/bibliography/91/KaSa91.pdf), the rigorous singular-system Wiedemann method, over an extension field of cardinality at least \(m^4\). Pad equations to make the matrix square. Their Toeplitz preconditioning preserves fast multiplication; work is \(O(m)\) matrix applications plus \(\widetilde O(m^2)\) field operations.
+
+Expand extension-field kernel vectors in a binary basis, retaining two independent binary vectors; verify and retry. Their rank and uniform-solution guarantees give constant expected retries and \(m^{2+o(1)}\) bit cost.
+
+For independent dependencies \(s_1,s_2\), one of
+\[
+s_1,\quad s_2,\quad s_1+s_2
+\]
+has trivial algebraic square class. Test these three directly.
+
+**Square roots and evaluation [proved].** For a tested product \(\Gamma\), choose \(D_0\), a product of norms of inverted atoms, clearing denominators. Then \(Z=D_0^2\Gamma\in A\). If \(\eta^2=Z\), then \(\eta\in O_K\) and \(\delta\eta\in A\): the trace-dual identity is \(A^*=\delta^{-1}A\), and \(O_K\subset A^*\).
+
+An explicit coefficient bound follows as follows. Put
+\[
+R_0=1+\|Q\|_\infty,\quad
+Z_0=1+\max_P(|ta|+|b|R_0),\quad n_0\le2km.
+\]
+Each conjugate of an atom is at most \(Z_0\), its inverse at most \(Z_0^{d-1}\), and \(|D_0|\le Z_0^{dn_0}\). With
+\(C_\delta=1+d^2\|Q\|_\infty R_0^{d-1}\), each coefficient of \(w=\delta\eta\) is bounded by
+\[
+C_*=d!R_0^{d^2}C_\delta Z_0^{2dn_0}.
+\]
+Indeed, invert the embedding Vandermonde matrix using cofactors; its determinant has absolute value \(\sqrt{|D|}\ge1\). Thus both \(U=\delta^2Z\) and the desired \(w\) have \(T=O(m\log N)\) bits.
+
+At a sampled prime, \(Q\) is squarefree and \(U\) is a unit. Enumerate its at most \(2^d\) roots in the finite algebra, then Newton–Hensel lift every branch using
+\[
+w\longmapsto(w+U/w)/2.
+\]
+Double precision until the modulus exceeds \(2C_*\), center coefficients, and verify \(w^2=U\) exactly. A global square supplies a branch; no verified branch means nonsquare. Fixed degree makes \(2^d\) constant. Balanced products and fast arithmetic cost \(\widetilde O_d(T)(\log N)^{O(1)}\).
+
+For a verified branch,
+\[
+\psi(\sqrt\Gamma)=
+\frac{w(tg_0/g_1)}{D_0Q'(tg_0/g_1)}\pmod N.
+\]
+The denominator is a unit: \(D_0\) uses \(t\) and smooth norms, while
+\(Q'(tg_0/g_1)=t^{d-2}f'(g_0/g_1)\).
+
+Halving the recorded rational exponents computes the rational square root, using inverses for negative exponents. This requires no root-extraction oracle modulo \(N\). Its product with the displayed algebraic image is \(Y\); set \(X=\prod r_iW_i\).
+
+All retries, dependencies, branch choices and verification use invariant certificates and independent coins. Select the first verified dependency before examining hidden roots or a final gcd. This proves (T). Following a trivial gcd, restart with fresh hidden roots.
+
+**Exceptional events [proved bounds].** Let \(\mu=\mathbb E q_A=L^{-o(1)}\). Keeping amplifies a field-event probability by at most \(1/\mu\).
+
+| Event | Bound and treatment |
+|---|---|
+| \(g_1\) nonunit | Proper factor immediately, since \(0<g_1<N\). |
+| Degree drop | Probability zero thereafter: \(t\equiv a_d\not\equiv0\pmod{g_1}\). |
+| Reducible \(f\) | \(O_d(H^{-1/3}\log H)\); after keeping, \(N^{-h/3+o(1)}\). Reject. |
+| Nonprimitive \(f\) | Content divides \(N\); proper content gives a factor. Whole-\(N\) content is covered below. |
+| \(t\) or \(f'(g_0/g_1)\) nonunit | Proper gcd is success. Whole-\(N\) rejection probability at most \(2/N+2/(2H+1)\), then divide by \(\mu\). |
+| Zero \(F(P)\) or \(G(P)\) | Excluded by candidate filters. |
+| Nonunit accepted \(G(P)\) | Its special prime divides \(N\), giving a proper factor. |
+| Zero discriminant | Impossible for irreducible \(f\) in characteristic zero. |
+| Index, bad primes, units, 2-torsion | No rarity assumption; included in \(H_S\). |
+| Exceptional zero | No rarity assumption; at most one class, handled above. |
+| Character miss | At most \(N^{-2}\) for every admissible field; retry if no square verifies. |
+| Solver/finite-field randomization | Verified outputs; constant expected retries; no incorrect outputs. |
+| Final trivial gcd | Exactly \(2^{1-\omega(N)}\); fresh-root restart. |
+
+For reducibility, fix \(g\), omit primes dividing \(g_1N\), and take \(p\asymp H^{1/3}\). The coefficient box modulo \(p\), respectively \(pq\), differs from uniform by \(O_d(p/H)\), respectively \(O_d(pq/H)\). The affine family contains all polynomials with a prescribed nonzero value. Counting norm fibres in \(\mathbb F_{p^d}^\times\), subtracting proper subfields, and summing over leading coefficients gives an irreducible fraction at least \(1/(2d)\). The variance bound is
+\(O(1/\pi(H^{1/3})+H^{-1/3})\).
+A reducible polynomial has no degree-\(d\) irreducible reduction.
+
+The whole-\(N\) bounds follow because \(t\) and \(f'(g_0/g_1)\) are affine in separate random coefficients, with unit coefficient \(g_1\) modulo \(N\).
+
+**Consequently [proved], FM, R, Kern and Theorem 4.3 need no alteration.** Rejected fields have polynomially small probability, negligible against their \(L^{O(1)}\) candidate bounds and after amplification. Only assembly bookkeeping and search implementation change.
+
+**HECM verdict.**
+
+**(i) [Cited/proved completion.]** [LPP I, Theorem 1.3, p. 399](https://math.dartmouth.edu/~carlp/hyperI.pdf), checked against the page image, states: for \(c_1=1980000^{1/3}\), effective \(x\ge x_3\), \(z=L_x[2/3,c_1]\), and \(x^{3/5}\le y\le x\), the number of \(z\)-smooth integers in \([x,x+y]\) is at least
+\[
+y\exp[-(\log x)^{1/3}(\log\log x)^{8/3}].
+\]
+Take \(x=p^2-p^{3/2}/2\), \(y=p^{3/2}\). The count is \(p^{3/2}L_p[2/3,-o(1)]\gg p\). [LPP II, Theorem 1.1](https://math.dartmouth.edu/~carlp/PDF/paper129.pdf) supplies, for \(p>8100\), the quintic fibre lower bound with at most \(p\) exceptional orders.
+
+Genus2rh Propositions A/B and Lemmas 1–4 then give
+\[
+\Pr(\text{factor per curve})\ge
+\frac{(S_w(p)-p)(1-4/\sqrt p)}
+{24000\cdot144000\,p^{3/2}\lambda(p)\lambda(q)},
+\]
+where \(S_w(p)\) counts smooth orders in the stated interval and
+\(\lambda(t)=(\log t)^2(\log\log t)^2\).
+The separation condition at \(q\) uses only lower fibre bounds.
+
+Choose \(w=L_{v^2}[2/3,c_1]\) for a guess \(v\ge p\). Double \(v\), allocating trials proportional to
+\[
+(\log n)^6\exp((\log(v^2))^{1/3}(\log\log(v^2))^{8/3}).
+\]
+Adequate stages fail with probability at most \(e^{-1}\); successive cost ratios tend to one. The geometric tail proves expected cost
+\(L_p[2/3,O(1)](\log n)^{O(1)}\).
+Bounded primes use fixed trial division. This completes §6.3’s bookkeeping with a weaker polylog factor than LPP advertised.
+
+Recursive splitting, primality certification and perfect-power detection therefore factor **every** \(B\)-smooth \(n\le N^{O(1)}\) in expected
+\[
+L_B[2/3,O(1)](\log N)^{O(1)}=L^{o(1)}.
+\]
+Truncation at twice a uniform expectation bound gives recognition probability at least \(1/2\), without false smooth declarations. No unpublished Part III is assumed.
+
+**(ii) [Proved alternative.]** [Bernstein, Algorithm 2.1 and Theorems 2.2–2.3](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Bernstein04.pdf) compute smooth parts in essentially linear total input length. Enumerate one complete capped special-\(q\) list, batch both integers for its \(O(S^2)\) candidates, and return the first success in the original order. Cost is
+\[
+(B+S^2)L^{o(1)}.
+\]
+Trial division factors the returned integers within the same bound.
+
+At A’s optimum,
+\[
+a=\theta/\sqrt2,\qquad S^2=L^{1/\sqrt2+o(1)}\ge B.
+\]
+Thus batching preserves the exponent. Adaptivity between searches or fields is irrelevant: each complete capped list is already a batch. Individual Pollard–Strassen/Costa–Harvey tests instead incur A′’s \(B^{1/2+o(1)}\) penalty.
+
+**(iii) [Cited/assessment.]** [LP 1992, Algorithm 7.2/Theorem 7.3](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf) recognize numbers supported on their good-prime set in \(L^{o(1)}\) time. Theorem 7.4, Corollary 7.5 and §6 establish enough recognizable values for their sampler, not recognition of every smooth input. Substitution here requires FM for recognizable values under the moving progression weights. R and LD upper bounds restrict by positivity; Kern is unchanged. The first-moment lower bound needs additional work.
+
+**(iv) [Cited.]** The LP 1992 shape test uses rigorous ECM, deriving its guarantees from Lenstra 1987 and Pomerance 1987. It has no HECM/Part-III dependency.
+
+**(v) [Assessment from proved reductions.]** Retain A’s degree-9 infimum \(0.9192\ldots\), conditional on LD and the repository’s other proved inputs. It is an infimum over fixed \(k\), not an attained finite-\(k\) constant. A′’s \(0.9670\ldots\) remains an individual-test fallback. LV6 itself needs neither HECM nor new smoothness tests.
+
+**UNVERIFIED.** LD remains open. Pomerance 1987 Theorem 2.1 was not independently verified from its scanned original; the relevant guarantees were checked in LP 1992 §§6–8. No uniform complexity assertion about Montgomery/Couveignes/Thomé implementations is needed: the explicit fixed-degree Hensel algorithm replaces them. No unpublished LPP III was located or used.
