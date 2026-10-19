@@ -113,7 +113,12 @@ R and A, so they apply verbatim to the field law below.
 - s = 1/(d+1), M = ⌊N^s⌋, B = L[1/2, a], ϱ(x, y) = Ψ(x, y)/x, and 𝒮_B = the B-smooth integers (sign
   ignored).
 - ℓ is uniform among the primes of J = (2^{j−1}, 2^j], with 2^{kj} ≍ √N, so ℓ = N^{1/(2k)+o(1)}.
-- S = L^σ with σ > 0 fixed (S² will be T_SQ up to L^{o(1)}), and V = ⌊√ℓ·S⌋.
+- S = S(N) = L^{σ+o(1)}, with σ in a fixed compact subinterval of (0, ∞), and V = ⌊√ℓ·S⌋.
+  - S is common to all ℓ ∈ J. Theorem 4.3 takes S² = (log N)^{C₃}/(ρ_rρ_F), with ρ_r, ρ_F evaluated at
+    the dyadic envelope V_max = √(2Y)·S; this gives σ = θ/(4a).
+  - All statements below are uniform in such sequences: every polynomial margin and auxiliary exponent
+    depends only on the compact σ-range (codex pcest_3).
+  - Equalities involving V are up to bounded factors (floors).
 - H = N^h.
 
 **Preprocessing [standard].** Trial division up to B, at cost B·(log N)^{O(1)} = L^{a+o(1)}. This is
@@ -296,12 +301,15 @@ Throughout, x = N^{ξ+o(1)} with ξ = s + h + d/(4k) fixed, y = B = L[1/2, a], a
 ### 2.3 Theorem FM [proved]
 
 **Statement.**
-- Fix odd d ≥ 3, k > (d+1)/4, a > 0, σ > 0 and η₀ > 0, and let h ≥ max(1/(4k), s − (d−2)/(4k)) + η₀.
+- Fix odd d ≥ 3, k > (d+1)/4, a > 0, a compact σ-range ⊂ (0, ∞) for S = L^{σ+o(1)}, and η₀ > 0. Let
+  h ≥ max(1/(4k), s − (d−2)/(4k)) + η₀.
 - Then for all large N (preprocessed), with an implied constant depending only on (d, k, a, σ, h, η₀):
     E_{ℓ∈J, A∼𝒜} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}.
 
 *Proof.* Write Pr_A for g uniform on 𝒢 and c uniform on C_H, independently. Then
-  E N = π_J^{−1} Σ_{ℓ∈J} Σ_{P∈𝒫_ℓ} Σ_{n∈𝒮_B} (|𝒢_P(n)|/|𝒢|)·E_{g∈𝒢_P(n)} Pr_c[F_A(P) ∈ 𝒮_B],
+  E N ≥ π_J^{−1} Σ_{ℓ∈J} Σ_{P∈𝒫_ℓ} Σ_{n∈I_P∩𝒮_B} (|𝒢_P(n)|/|𝒢|)·E_{g∈𝒢_P(n)} Pr_c[F_A(P) ∈ 𝒮_B],
+with I_P from Step 1(ii). This is an inequality: the filter |G| ≥ MV/32 holds on I_P, and the other
+n are dropped.
 where 𝒢_P(n) := {g ∈ 𝒢 : G_g(P) = ℓn}. Throughout, (log)^{O(1)} denotes (log N)^{O(1)}.
 
 **Step 1 (fibres and the induced law; hypD item 2).** Fix ℓ and P = (a, b) ∈ 𝒫_ℓ, and put V′ :=
@@ -426,6 +434,8 @@ counts are
 - Since b is a prime > V/2 > 2S² ≥ q, b is invertible mod q, and λ is a unit.
 
 *Proof.*
+0. Pairs with ℓ ∤ Δ contribute nothing. Since g is primitive, its reduction mod ℓ is nonzero, and two
+   vectors annihilated by the nonzero linear form x ↦ g₁x₁ − g₀x₂ mod ℓ have determinant ≡ 0 (mod ℓ).
 1. g ↦ (G_g(P), G_g(P′)) is the integer matrix [[a, −b], [a′, −b′]] acting on (g₁, g₀). Its determinant
    is −Δ ≠ 0, so the map is injective with image of index |Δ|.
 2. L_ℓ(P) has index ℓ in Z². ℓ | Δ forces ℓ | G_g(P′) whenever ℓ | G_g(P), so L_ℓ(P) = L_ℓ(P′), and its
@@ -465,7 +475,7 @@ elementary].**
 - Lemma DS is therefore a progression extension of known short-interval bounds, not a new result.
 - Codex's blind round states the same bound (its (1)).
 
-**Theorem R (rational pair correlation) [proved].** In design (a″_k), with B = L[1/2, a] and S = L^σ
+**Theorem R (rational pair correlation) [proved].** In design (a″_k), with B = L[1/2, a] and S = L^{σ+o(1)}
 satisfying S² ≥ ρ_r^{−2}:
   R2 ≤ (log N)^{O(1)}·R1²  and  R1 ≥ S²ρ_r/(log N)^{O(1)}.
 
@@ -478,11 +488,13 @@ satisfying S² ≥ ρ_r^{−2}:
 - **Shape of Π.** One side is (M/2ℓ)(b, b′), of length ≍ MV/ℓ and with direction in
   [atan(1/2), atan 2], because b, b′ ∈ (V/2, V]. So Π has width ≥ area/(2·long side) ≥ Mq/(8√2V) ≥
   w₀/12, where w₀ := M/V.
-- **Covering.** Cover Π by the grid squares of side w₀ that meet it. There are ≤ C·area(Π)/w₀² = C·qS²
-  of them.
+- **Covering.** Cover Π by the grid squares of side w₀ that meet it. Their number is
+  ≪ area(Π)/w₀² + perimeter(Π)/w₀ + 1 ≪ qS² + S² + 1 ≪ qS²; this absorbs boundary squares.
 - **A square away from the axes.** Let 𝒬 = I₁ × I₂ have |n|, |n′| ≥ X_r S^{−2} throughout.
-  - Lemma DS applies to each coordinate (sign symmetric; I_i ⊂ [X_rS^{−2}, X_r];
-    A = w₀ = X_r/(2S²) ≥ X_r y^{−C₀}; q ≤ 2S² ≤ y^{C₀}).
+  - Lemma DS applies to each coordinate with X = 2X_r. Negative intervals are reflected, with the
+    residue adjusted. I_i ⊂ [X_rS^{−2}, 2X_r], A = w₀ = X_r/(2S²), and q ≤ 2S². Choose a fixed
+    C₀ > max(1, θ/(2a²)), so that B^{C₀} ≥ 4S², since S² = L^{θ/(2a)+o(1)}. Non-reduced residues are
+    included.
   - Hence #(Γ_q ∩ 𝒬 ∩ 𝒮_B²) = Σ_{r mod q} #{n ∈ I₁ : n ≡ r}·#{n′ ∈ I₂ : n′ ≡ λr}
     ≤ q·((w₀/q)ρ_r(log)^{O(1)})² = (w₀²/q)ρ_r²(log)^{O(1)}.
   - Summing over the ≤ CqS² squares gives ≤ CS²w₀²ρ_r²(log)^{O(1)} = C(M²/ℓ)ρ_r²(log)^{O(1)}.
@@ -492,16 +504,20 @@ satisfying S² ≥ ρ_r^{−2}:
   same holds for n′.
   - For the filtered count of §1 (|G| ≥ MV/32, i.e. |n| ≥ X_r/64), this band is empty.
   - Squares crossing the boundary of [−X_r, X_r]² are handled by applying Lemma DS with X = 2X_r.
-  - With the choice S² = L^ε/(ρ_rρ_F) of §5, and since ρ_F ≤ ρ_r, we get S^{−2} ≤ ρ_r², so this is
-    absorbed. In general Theorem R needs S² ≥ ρ_r^{−2}.
+  - With the choice S² = (log N)^{C₃}/(ρ_rρ_F) of Theorem 4.3: ρ_F/ρ_r = L^{−[h+(d+1)/(4k)]/(2a)+o(1)},
+    so S^{−2} ≤ ρ_r² for large N, and this term is absorbed. In general Theorem R needs S² ≥ ρ_r^{−2}.
 - **Per pair**, the count is ≤ (M²/ℓ)ρ_r²(log N)^{O(1)}. This bound is independent of q.
 - **Counting pairs.** For fixed P, the P′ with ℓ | Δ are the points of Λ_ℓ(g) ∩ 𝒫_ℓ for g = (a, b),
   i.e. g₀/g₁ ≡ a/b. This lattice contains P ∈ 𝒫_ℓ, so it is regular. There are
-  ≤ 22S² + 1 of them (Lemma 1.3). Hence
-    R2(ℓ) ≤ #𝒫_ℓ·23S²·|𝒢|^{−1}(M²/ℓ)ρ_r²(log)^{O(1)} ≍ (V²/log V)(S²/ℓ)ρ_r²(log)^{O(1)}
+  ≤ C_abs S² of them (Lemma 1.3). Hence
+    R2(ℓ) ≤ #𝒫_ℓ·C_abs S²·|𝒢|^{−1}(M²/ℓ)ρ_r²(log)^{O(1)} ≍ (V²/log V)(S²/ℓ)ρ_r²(log)^{O(1)}
           = S⁴ρ_r²(log)^{O(1)}.
-- **Conclusion.** By the lower bound, R1(ℓ) ≥ S²ρ_r/(log)^{O(1)} for every ℓ ∈ J. Averaging over ℓ
-  proves the theorem. ∎
+- **Conclusion.** By the lower bound, R1(ℓ) ≥ S²ρ_r/(log)^{O(1)} for every ℓ ∈ J.
+  - Across the dyadic interval J, the density arguments X_r, X_F differ by bounded factors. So ρ_r and
+    ρ_F, and with them both bounds, are uniform in ℓ up to polylogarithms. Averaging over ℓ then proves
+    the theorem.
+  - For the filtered count this gives R2,filt(ℓ) ≤ R2(ℓ) ≪ S⁴ρ_r²(log)^{O(1)} and
+    R1,filt(ℓ) ≫ S²ρ_r/(log)^{O(1)} directly. Monotonicity of the ratio under filtering is not used. ∎
 
 *Remarks.*
 1. **Why it works in 2D and not in 1D.** In (a′_k), the rational pair (s, s′) of a pair moves on the
@@ -859,7 +875,16 @@ then `--analyze` (summary in `experiments/raw/pcest_e1_summary.json`).
 - Opus proof critic: done, all fixes applied (§7.4). It reviewed the version before the pcest_2 repairs.
   Its one major proof finding, the small-|G| gap in Theorem 4.3, coincides with codex's and was already
   repaired.
-- GPT-6.1-sol pcest_3: adversarial pass on the *repaired* Theorem 4.3 and Theorem R (§7.5).
+- GPT-6.1-sol pcest_3: adversarial pass on the *repaired* Theorem 4.3 and Theorem R. Verdict CORRECT
+  WITH FIXES, all applied (§7.5).
+
+**Which results passed both critics.** "Both" means the Opus proof critic and the GPT-6.1-sol
+adversarial rounds pcest_2/pcest_3.
+- Lemma GB, Lemma 1.2, Lemma 1.3, Lemma 8.5′, Theorem FM, Lemma Q, Lemma DS, Theorem R, Lemma Kern,
+  Prop 4.2 and Theorem 4.3 (as a proved implication: LD ⟹ PC ⟹ D_k) are **proved, and passed both
+  critics after the listed fixes**.
+- Theorem A is a correct conditional reduction on LD + LV6 (+ HECM; A′ without HECM).
+- Hypothesis LD is open.
 
 ### 7.2 GPT-6.1-sol adversarial round (pcest_2): adjudication (all accepted)
 - **Verdicts.**
@@ -903,6 +928,23 @@ then `--analyze` (summary in `experiments/raw/pcest_e1_summary.json`).
   - The regime-(B) caveat for LV's Page step.
   - The table relabel for (a′_k) FM (outline only).
   - The Bernstein batch-smoothness remark.
+
+### 7.5 GPT-6.1-sol pcest_3 (repaired Theorem 4.3 and Theorem R): adjudication (all accepted)
+- **Verdicts.**
+  - CORRECT: Lemma Q, Lemma DS (including non-reduced residues, D ≥ Xy^{−2C₀} and X/(D/y) ≤ y^{2C₀+1}),
+    and the rational first moment with its averaging.
+  - CORRECT WITH FIXES: Theorem R, the repaired Theorem 4.3, and the choice of S.
+  - "The filter repairs the previous substantive gap. I find no remaining L^{Θ(1)} loss."
+- **Fixes applied.**
+  - The explicit covering count.
+  - DS applied with X = 2X_r, reflections, and C₀ > max(1, θ/(2a²)).
+  - Constants 22/23 replaced by C_abs.
+  - The averaging sentence over the dyadic J.
+  - The filtered ratio proved directly.
+  - FM's opening identity written as a lower bound with the filter.
+  - S = L^{σ+o(1)}, uniform over a compact σ-range and common to all ℓ.
+  - Lemma Q step 0 (pairs with ℓ ∤ Δ).
+  - The stale L^ε choice in §3 removed.
 
 ### 7.3 Opus literature critic: adjudication (all accepted)
 - Unconditional and GRH-conditional c < 1: not found. Wording now reads "to our knowledge".

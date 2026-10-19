@@ -1,0 +1,152 @@
+**Overall verdict: CORRECT WITH FIXES.** The filter repairs the previous substantive gap. I find no remaining \(L^{\Theta(1)}\) loss in the conditional second-moment argument. Some parameter conventions and stale formulas still need correction.
+
+I read the full current notes, including §7.4 (version `929d735e`), and `codex/pcest_2.out`.
+
+1. **Lemma Q — CORRECT.**
+
+   The determinant calculation, restriction to the index-\(\ell\) domain, and division of **both** image coordinates by \(\ell\) give index
+   \[
+   \frac{\ell|\Delta|}{\ell^2}=q.
+   \]
+   The graph congruence follows from \(bn'-b'n=-g_1\Delta/\ell\).
+
+   Uniformly for fixed parameters, \(q\le2S^2<V/2<b,b'<\ell\) for sufficiently large \(N\). Thus both denominators are invertible modulo \(q\), and the graph multiplier is a unit. Distinct primitive points with positive second coordinate cannot have \(\Delta=0\).
+
+   Also state explicitly why other pairs contribute nothing: since \(g\) is primitive, its reduction modulo \(\ell\) is nonzero; two vectors annihilated by the corresponding linear form must have determinant divisible by \(\ell\).
+
+2. **Lemma DS — CORRECT, including non-reduced residues.**
+
+   With \(e=(r,q)\), either a prime \(>y\) divides \(e\), making the count zero, or division by \(e\) gives the reduced class modulo \(q/e\). This includes \(r\equiv0\pmod q\).
+
+   The proposed cutoff satisfies
+   \[
+   D\le\min(I/e),\qquad D\le A/q,\qquad
+   D\ge Xy^{-2C_0}.
+   \]
+   Consequently \(D\to\infty\), and the greedy divisor construction applies. For each selected divisor, the complementary-factor count is
+   \[
+   A/(dq)+1\le2A/(dq).
+   \]
+   No extra factor involving \(e\), \(\varphi(q)\), or a divisor function appears.
+
+   Crucially,
+   \[
+   \frac{X}{D/y}
+   =\max\!\left(\frac{Xyq}{A},\,e y^{C_0+1}\right)
+   \le y^{2C_0+1}.
+   \]
+   The final density comparison therefore loses only a fixed power of \(\log X\). The relevant scaling estimate is [LV Claim 8.16](https://arxiv.org/pdf/1805.08873). The dyadic divisor sum needs only the density upper comparison recorded under (Hi), rather than its short-interval asymptotic.
+
+3. **Theorem R — CORRECT WITH FIXES.**
+
+   **Geometry and covering.** The area of \(\Pi\) is exactly \(M^2q/(4\ell)\). Both side lengths are \(O(MV/\ell)\); the side parallel to \((b,b')\) has length comparable to \(MV/\ell\) and the stated angle range. Thus the minimum width is \(\gg Mq/V\), and the displayed weaker width bound is valid.
+
+   Supply the omitted covering calculation:
+   \[
+   \#\{\text{squares}\}
+   \ll \frac{\operatorname{area}\Pi}{w_0^2}
+      +\frac{\operatorname{perimeter}\Pi}{w_0}+1
+   \ll qS^2+S^2+1
+   \ll qS^2.
+   \]
+   This explicitly absorbs boundary squares.
+
+   **DS in each coordinate.** Reflect negative coordinate intervals and adjust their residues accordingly. Apply DS with \(X=2X_r\) throughout, so outer boundary squares cause no problem. Choose \(C_0\) with enough slack that
+   \[
+   B^{C_0}\ge4S^2.
+   \]
+   Then the interval-length, lower-endpoint and modulus conditions all hold. Summing over every residue, including non-reduced ones, gives
+   \[
+   \#(\Gamma_q\cap\mathcal Q\cap\mathcal S_B^2)
+   \ll \frac{w_0^2}{q}\rho_r^2(\log N)^{O(1)}.
+   \]
+   Multiplication by \(O(qS^2)\) cancels \(q\), yielding the claimed uniform per-pair bound.
+
+   **Near-axis band.** The repaired instruction to count only original points inside \(\Pi\) is essential and correct. There are \(O(X_r/S^2+1)\) possible values of the small coordinate, each with \(O(M/V+1)\) preimages. Since \(M/V\) grows polynomially,
+   \[
+   \#\{\text{band points}\}\ll \frac{M^2}{\ell S^2}.
+   \]
+   This is absorbed when \(S^{-2}\le\rho_r^2\). For the filtered count, \(|n|,|n'|\ge X_r/64\), so these bands contain no contributing points once \(S^2\) is large.
+
+   **Pair enumeration.** For fixed \(P\), the determinant congruence defines an index-\(\ell\) lattice containing \(P\). Lemma 1.3 therefore forces regularity and gives \(O(S^2)\) possible \(P'\). Its proof applies to this lattice without requiring its defining vector to belong to the sampled square. Replace the retained constants \(22,23\) by the established \(C_{\rm abs}\).
+
+4. **The rational first moment and averaging — CORRECT.**
+
+   FM Step 1 supplies an interval already satisfying the filter, with length \(\gg MV/\ell\), and coprime fibres of size
+   \[
+   \gg M/(V\log\log N).
+   \]
+   Counting smooth integers in this interval and summing over \(\asymp V^2/\log V\) candidates gives, for every \(\ell\),
+   \[
+   R_{1,\mathrm{filtered}}(\ell)
+   \gg \frac{S^2\rho_r}{(\log N)^{O(1)}}.
+   \]
+   Algebraic goodness and bad-modulus exclusions are unnecessary for this rational lower bound.
+
+   Here
+   \[
+   M/V=N^{s-1/(4k)}L^{-O(1)}
+   \]
+   has a fixed positive polynomial exponent. The Möbius error \(2^{\omega(\ell n)}=N^{o(1)}\) is absorbed **additively** against it; it does not become a multiplicative \(N^{o(1)}\) loss.
+
+   Together with the pair bound,
+   \[
+   R_{2,\mathrm{filtered}}(\ell)
+   \le R_{2,\mathrm{unfiltered}}(\ell)
+   \ll S^4\rho_r^2(\log N)^{O(1)}.
+   \]
+   This proves the filtered ratio directly; monotonicity of the ratio under filtering is neither true in general nor needed.
+
+   Averaging requires one explicit sentence: across the dyadic \(\ell\)-interval, the density arguments differ by bounded factors, so their densities are uniformly comparable within polylogarithms. Per-\(\ell\) second-moment inequalities alone would not justify averaging.
+
+5. **Repaired Theorem 4.3 — CORRECT WITH FIXES.**
+
+   For **both** points of each retained pair,
+   \[
+   T|G|,\ T|G'|\asymp MHV^d\asymp X_F.
+   \]
+   Thus both normalized densities are within polylogarithmic factors of \(\rho_F\). The previously uncontrolled polynomial change of argument has disappeared.
+
+   Proposition 4.2 remains applicable. After extracting the two density upper bounds, the remaining summand is nonnegative. Hence
+   \[
+   \sum_{\mathrm{filtered}}Y_PY_{P'}(S^2/q)\kappa_{\rm alg}
+   \le
+   \sum_{\mathrm{all}}Y_PY_{P'}(S^2/q)\kappa_{\rm alg}.
+   \]
+   LD as stated controls precisely this latter sum. There is no need to separate the angular factor from \(\kappa_{\rm alg}\).
+
+   Consequently,
+   \[
+   \mathbb E[N(N-1)]
+   \le L^{o(1)}S^4\rho_r^2\rho_F^2(\log N)^{O(1)}.
+   \]
+   FM’s surviving central intervals give the filtered denominator of the same scale, proving \(PC\le L^{o(1)}\).
+
+   One literal correction is required in [FM’s opening identity](/Volumes/git/factoring-connection/notes/pcest_results.md:304): insert the filter indicator, or replace the identity by a lower bound restricted to \(n\in I_P\). Its subsequent proof already uses that restriction.
+
+6. **The choice of \(S\), uniformity and cost — CORRECT WITH FIXES.**
+
+   The principal formal issue is that FM and R specify **exactly** \(S=L^\sigma\) with fixed \(\sigma\), whereas the repaired choice generally gives
+   \[
+   S=L^{\theta/(4a)+o(1)}.
+   \]
+   Extend their statements to this parameter sequence, uniformly for \(\log S/\log L\) in a fixed compact interval. Their proofs support that extension: every polynomial margin remains fixed, and every auxiliary exponent can be chosen uniformly.
+
+   Also define **one common \(S(N)\)** across \(J\). Currently \(\rho_r,\rho_F\) depend on \(\ell\) and on \(S\). Use common dyadic envelope arguments for the two densities, and specify the defining relation up to harmless rounding. Read LD at these actual parameters.
+
+   Writing \(\nu=1/(4k)\),
+   \[
+   \frac{\rho_F}{\rho_r}
+   =L^{-[h+(d+1)\nu]/(2a)+o(1)}.
+   \]
+   Therefore \(S^2\ge\rho_r^{-2}\) eventually. Also
+   \[
+   S^2=L^{\theta/(2a)+o(1)};
+   \]
+   any fixed \(C_0>\max(1,\theta/(2a^2))\) supplies DS’s required slack. The height margin ensures \(H\ge V^2\).
+
+   If FM loses \((\log N)^A\), choosing \(C_3>A\) gives \(\mathbb EN\ge1\) eventually. Paley–Zygmund then yields \(\gamma\ge L^{-o(1)}\).
+
+   The enumeration cap remains \(O(S^2)\) candidates. Including the stated smoothness-test cost gives \(T_{\rm SQ}=S^2L^{o(1)}\). Theorem K accepts the resulting field-dependent successful target set; fixed \(k\) preserves these \(L^{o(1)}\) overheads.
+
+   Finally, remove the stale \(L^\varepsilon\) choice in §3 and replace floor-sensitive equalities involving \(V\) by comparisons. These fixes introduce no additional arithmetic hypothesis or \(L^{\Theta(1)}\) loss.
