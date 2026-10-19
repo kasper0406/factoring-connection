@@ -137,9 +137,14 @@ F_A(g₀, g₁) = N·w.
   because the algorithm halts.
 - **Order of operations (codex ldbound_2).**
   - The moment bounds (FM, LD*) are proved under the raw product law 𝒜‴.
-  - Rejection of reducible f (and of non-unit leading coefficients, if LV6 requires that) is applied
-    afterwards. It costs ≤ max N_ℓ·Pr(rejected) in the first moment and only decreases N(N−1), by
-    positivity.
+  - Rejection of reducible f is applied afterwards. It costs ≤ max N_ℓ·Pr(reducible) ≤ C_abs S²·H^{−1/4+o(1)}
+    in the first moment, which is polynomially small against FM. It only decreases N(N−1), by positivity.
+  - **A non-unit leading coefficient mod N must NOT be handled this way (Opus proof critic, re-check).**
+    Its probability can be ≈ Σ_{p|N} 1/p ≈ L^{−a}, while max N_ℓ·L^{−a} ≫ E N.
+    - If LV6 requires the restriction, it goes inside FM instead: count only fields with unit leading
+      coefficient in the fibre lower bound, by Möbius on the first kernel parameter c₀. This costs a
+      factor (log N)^{−1} (codex blind report §4, "First moment"; §2 below).
+    - The second moment of the restricted count is ≤ that of the unrestricted count, by positivity.
   - Theorem K's field selection is applied after that, as in pcest.
   - Conditioning on acceptance *before* Step 4 of §5 would destroy the product law, and we never do it.
 - Sampling w uniformly among primes: draw uniform integers in (W, 2W] and test with AKS. The expected
@@ -203,11 +208,16 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
     - The grid 𝒳 uses X_F^max := X*. It is independent of t, P, ℓ, w and the residue.
   - *Step 3 (Lemma 8.5′).* The moduli t ∈ [MV/32, 2MV] have exponent q₀ = μ + ν, and x = X_F has exponent
     ξ = μ + h + dν.
-    - q₀ > 2ν + η₁ holds, since μ > ν.
+    - q₀ > 2ν + η₁ holds with η₁ := η₀/2, since μ ≥ ν + η₀.
     - q₀ < ξ/2 ⟺ h > μ − (d−2)ν, which is the level floor.
     - Goodness concerns all reduced residues, so it is uniform in w.
   - *Step 4.* Unchanged.
-  - Conclusion: E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}.
+  - *Optional unit-leading-coefficient restriction (needed only if LV6 asks for it).* The leading
+    coefficient is a_d + g₁c_{d−1}. For fixed (g, w, P), the constraint removes one class of the kernel
+    parameter modulo each p | N with p ≠ b, so Möbius inversion keeps a fraction ≥ φ(N)/N − o(1) ≫ 1/log N
+    of each kernel-fibre count. This is codex blind §4's argument: its scalar-kernel basis carries the
+    leading coefficient in the first parameter, with step g₁b.
+  - Conclusion: E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}, with or without the restriction.
   - No step of FM uses F(g₀, g₁) = N exactly. It uses only Lemma 1.2_w, the coprimality (1.1) and the
     size bound (codex ldbound_2 concurs).
 - **Irreducibility.** The LV Lemma 5.1 transfer reads as in pcest §1, with the affine family
@@ -234,7 +244,8 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
 *Proof.*
 - If (a, t) > 1 the probability is 0.
 - Otherwise the count is ≤ π(2W; t, a) ≤ 4W/(φ(t) log(2W/t)). Divide by W/(2 log W).
-- log W ≤ log N, and log(2W/t) ≥ (η₀/2) log N − O(Λ) ≥ (η₀/3) log N. ∎
+- log W ≤ log N, because θ ≤ 1 forces μ ≤ 1/2 and hence μ + ν + η₀/2 ≤ 1. In general
+  C_W = 24(μ + ν + η₀)/η₀ works. Also log(2W/t) ≥ (η₀/2) log N − O(Λ) ≥ (η₀/3) log N. ∎
 - The interval form of BT would give about 12/η₀ (literature critic).
 - Choosing W/(2MV_max) and H/W to be suitable fixed powers of L, instead of N^{η₀/2}, would make the slack
   o(1) at a polylogarithmic cost in C_W (codex). This changes no exponent.
@@ -382,7 +393,7 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 - **Step 2 (AM–GM).**
   - κ is a unit mod Δ, since P′ is primitive.
   - So Z ≤ ½(Q(P) + Q(P′)), with Q(P) := Σ_j A_j(P)², which depends on (P, g, w, |Δ|) only.
-  - This is not a pointwise comparison (Z may vanish while Q > 0), but both sides have the same
+  - The inequality is pointwise but one-sided (Z may vanish while Q > 0). Both sides have the same
     main-term scale.
 - **Step 3 (enlargement).**
   - z ↦ F = F̂(P) + G(P)z is injective, with F ≡ r₀ (mod t). Also z ≡ z′ (mod |Δ|) ⟺ F ≡ F′ (mod t|Δ|), for
@@ -568,6 +579,16 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 - **F7.** The A′ table line.
 - **Added caveats.** LV6 with a w-dependent a_d; the irreducibility transfer with a large a₀; the
   internal hypD/lemmaM results.
+
+**Re-check of the revised version (μ free): CORRECT WITH FIXES, all applied.**
+- No hidden dependence of any pcest input on μ = 1/(d+1) was found. Every margin depends on μ only
+  through μ − ν > 0.
+- The constants, the best-μ claims and the A′ values were recomputed independently.
+- Fixes:
+  - the rejection bookkeeping (a unit leading coefficient goes inside FM, not as an additive error);
+  - η₁ := η₀/2;
+  - log W ≤ log N needs μ ≤ 1/2, which follows from θ ≤ 1;
+  - "one-sided" wording in Step 2.
 
 ### 8.2 Opus literature critic (all accepted)
 - **L2_fam.** No published statement of it or of anything implying it was found.
