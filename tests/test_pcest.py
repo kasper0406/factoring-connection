@@ -152,3 +152,25 @@ def test_params():
     for d in (7, 9, 11, 19):
         k = int(pr.binding_floor_k(d, "pair")) + 1
         assert pr.theta(d, k, "pair") == pr.theta(d, k, "lv")
+
+
+@pytest.mark.parametrize("d", [3, 4, 5, 7])
+def test_kernel_det_identity_and_wedge_bound(d):
+    """Lemma Kern(iii): det K * |Delta| = |v ^ v'|, and |v ^ v'| >= c_d |Delta| (|P||P'|)^(d-2)."""
+    import math
+    import sympy
+    rng = random.Random(77 + d)
+    for _ in range(40):
+        while True:
+            P = (rng.randrange(-150, 150), rng.randrange(1, 150))
+            Pp = (rng.randrange(-150, 150), rng.randrange(1, 150))
+            D = P[0] * Pp[1] - Pp[0] * P[1]
+            if gcd(*P) == 1 and gcd(*Pp) == 1 and D != 0:
+                break
+        v, w = gm.veronese(P, d - 1), gm.veronese(Pp, d - 1)
+        wedge2 = sum((v[i] * w[j] - v[j] * w[i]) ** 2 for i in range(d) for j in range(i + 1, d))
+        K = sympy.Matrix(gm.kernel_basis_Q(P, Pp, d))
+        gram = (K * K.T).det()
+        assert gram * D * D == wedge2          # exact: det(K)^2 |Delta|^2 = |v ^ v'|^2
+        ratio = math.sqrt(wedge2) / (abs(D) * (math.hypot(*P) * math.hypot(*Pp)) ** (d - 2))
+        assert ratio > 0.05
