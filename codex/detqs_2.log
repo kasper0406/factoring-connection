@@ -1,0 +1,3348 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/detqs_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a1553a-1fca-73a0-8650-17dd931fecc3
+--------
+user
+# detqs_2 — adversarial referee of notes/detqs_results.md
+
+You are a hostile but fair referee (analytic number theory). Read ../../notes/detqs_results.md in full, plus
+../../codex/detqs_1.out and ../../codex/scratch/detqs_1/fixed_u_moment_note.md (your own blind round), and
+../../notes/detqs_prereg.md. Code is in ../../src/detqs/.
+
+Your job: find every error, gap or overclaim. For each claimed result give a verdict
+(CORRECT / CORRECT WITH FIXES / GAP / FALSE) with the exact fix.
+
+Priorities:
+1. **Proposition V / Theorem H1-S (§4).** This is the main claim: stratifying by N mod W (prime powers)
+   and by archimedean slot, plus "averaging the main-term covariance over k", gives
+   limsup (log B)² E(Z − M_σ)²/T² ≤ C r(W,J) with r → 0, hence H1 outside o(B/n²) integers.
+   Attack especially: (a) step 4 — is Harper Theorem 1/2 applicable as used (moduli q = 2kW distinct,
+   scales J/g, non-reduced classes, the cross terms with bounded multiplicity ν(W), the G-truncation)?
+   (b) step 5 — do the marginals of the coupled residue law μ really equal the product-term marginals
+   (including the per-t first moments, which are long-interval averages with t-dependent weights)?
+   (c) step 6 — are (LD-a)–(LD-c) true at the stated precision from Ψ(x,y)=xρ(u)(1+O(1/log y)) plus
+   inclusion–exclusion (note q′ can have many prime factors; Π(q′), σ(q′))? Is LD-c really "first order
+   times σ(q′)", or does the O(1/log y) error of each Ψ break it?
+   (d) step 7 — the claimed exact cancellation of the W-prime covariance after averaging k over residues
+   mod W; the asymptotic independence of λ_k (depending on primes ∤ W of k) from k mod W; the
+   truncation of D_W at valuation a; the archimedean slot giving J^{−2}.
+   (e) is anything missing — e.g. the 2-adic/parity conditions w − v ≡ k² (mod 2k), the interaction
+   between the W-part of k and the precision e_p = v_p(2kW), the dependence of boxes on k.
+   If V is false as stated, give the correct statement; if it has a gap, say whether the gap is routine.
+2. **Prop B** (L[1/2] barrier for residue-stratified Chebyshev): is the (log n)²/n² lower bound right?
+3. **Lemma P, Prop S, Prop SZ, Theorem DQ** (cost N^{ωc+o(1)}, deterministic LSP elimination), the
+   transfer, the "not average-time" remark.
+4. **Experiments §8**: are the frozen verdicts and post-hoc labels honest? Any overclaim?
+5. **Literature**: anything known that already proves H1 for almost all N for the QS polynomial, or a
+   deterministic almost-all factoring result below N^{1/5}?
+
+Output: numbered findings, each with verdict and fix; then a short overall verdict on what label each
+result deserves. ≤ 2500 words.
+
+codex
+I’ll read the results, preregistration, and blind-round material, then audit the proof and literature, focusing on Proposition V’s cancellation argument.
+exec
+/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '*.md' -g '*.py' -g '*.out' ../../notes ../../codex ../../src/detqs . | head -160" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/detqs_2
+rg: ../../notes: No such file or directory (os error 2)
+rg: ../../codex: No such file or directory (os error 2)
+rg: ../../src/detqs: No such file or directory (os error 2)
+
+exec
+/bin/zsh -lc 'ls -la; for d in .. ../.. ../../.. ../../../..; do ls -ld "$d"; test ! -f "$d/AGENTS.md" || cat "$d/AGENTS.md"; done; rg --files ../../.. -g '"'AGENTS.md' -g 'detqs_results.md' -g 'detqs_prereg.md' -g 'detqs_1.out' -g 'fixed_u_moment_note.md' -g '*harper*'" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+total 0
+drwxr-xr-x   2 knielsen  staff    64 Oct 19 19:33 .
+drwxr-xr-x  37 knielsen  staff  1184 Oct 19 19:33 ..
+drwxr-xr-x  37 knielsen  staff  1184 Oct 19 19:33 ..
+drwxr-xr-x  174 knielsen  staff  5568 Oct 19 19:33 ../..
+drwxr-xr-x  22 knielsen  staff  704 Oct 19 15:12 ../../..
+drwxrwxr-x@ 48 knielsen  staff  1536 Oct 18 20:30 ../../../..
+../../../notes/detqs_prereg.md
+../../../notes/detqs_results.md
+../../../codex/detqs_1.out
+
+exec
+/bin/zsh -lc 'wc -l ../../../notes/detqs_results.md ../../../notes/detqs_prereg.md ../../../codex/detqs_1.out ../../../codex/scratch/detqs_1/fixed_u_moment_note.md; cat ../../../notes/detqs_results.md' in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+     551 ../../../notes/detqs_results.md
+      91 ../../../notes/detqs_prereg.md
+     196 ../../../codex/detqs_1.out
+     162 ../../../codex/scratch/detqs_1/fixed_u_moment_note.md
+    1000 total
+# detqs: deterministic quadratic sieve on almost all N (polyimpl D1)
+
+Agent `detqs`, phase 8, 2026-10-19.
+- Pre-registration: `notes/detqs_prereg.md`, commit `8a6b789`, made before any experiment run.
+- Code: `src/detqs/` (operational: `sieve.py`, `linalg.py`, `qs.py`; model: `localmodel.py`;
+  harness: `harness.py`, `analysis.py`). Tests: `tests/test_detqs.py`.
+- Raw data: `experiments/raw/detqs_e{1,2,3}_n*.{jsonl,npz}`. Summary:
+  `experiments/analysis/detqs_summary.json`.
+- GPT-6.1-sol: blind round `codex/detqs_1.{md,out}` (scratch note
+  `codex/scratch/detqs_1/fixed_u_moment_note.md`); adversarial round `codex/detqs_2.{md,out}`.
+- Reviews: §10.
+- Labels: **PROVED**; **PROVED IN OUTLINE** (every step is given, and the routine verifications still
+  owed are listed); **CONDITIONAL**; **OPEN**; **experimentally supported**; **FALSE**. "Codex" means
+  `codex/detqs_1.out`.
+
+## 0. Verdict (plain language)
+
+**No. We did not prove that a deterministic QS factors almost all balanced semiprimes below N^{1/6},
+let alone subexponentially.** Of the two obligations, relation supply (H1) is now essentially in
+hand at the polynomial level. Fruitfulness (H2) is untouched by every averaging argument we have and
+remains the whole obstruction.
+
+**H1 (relation supply) at fixed u: proved in outline for almost all of S_n.**
+- **Theorem H1-S (§4; PROVED IN OUTLINE, conditional on two cited theorems).**
+  - Setting: fix c ∈ (0, 1/2) and K, and put y = T = ⌊2^{cn}⌋.
+  - Claim: all but o(2^n/n²) integers N ∈ [2^{n−1}, 2^n) have at least π(y) + K y-smooth values among
+    (⌈√N⌉ + t)² − N, 1 ≤ t ≤ T.
+  - By the transfer lemma this holds for all but o(|S_n|) balanced semiprimes.
+- **Inputs:**
+  - Harper's Bombieri–Vinogradov theorem for smooth numbers (arXiv 1208.5992, Thm 1);
+  - the uniform Dickman asymptotic Ψ(x, y) = xρ(u)(1 + O(1/log y)) on compact u-ranges.
+- **Four ideas carry the proof:**
+  1. *The region is not thin.* After summing over t at fixed gap k = t′ − t, the pair sum runs over a
+     *fat* 2-D region with lattice index 2k (Lemma C). It is a Barban–Davenport–Halberstam/BV-type sum
+     at level ≈ T, far below √Ψ. polyimpl §7's "thin coupled region" holds only for a fixed pair
+     (t, t′); it does not describe the aggregate. This settles the D1 kill criterion: **not
+     triggered.**
+  2. *The unstratified variance has exact order n^{−2} (Prop L).* So unstratified Chebyshev gives
+     exceptional sets of size Θ(2^n/n²), which miss the transfer by a constant. This is a genuine
+     local (Knuth–Schroeppel-type) effect, not a proof artefact.
+  3. *Stratify* by N mod W (W a product of prime powers) and by the position of N in its dyadic block
+     (resolution 1/J).
+  4. *Average the local covariance over k.* Within a stratum, the main-term covariance at the primes of
+     W cancels exactly. The primes outside W and the archimedean slot leave r(W, J)/log² y with
+     r → 0. An iterated limit then gives o(n^{−2}).
+- **Codex reached ideas 1–3 independently.** It stated the stratified estimate (its (*)) as
+  UNVERIFIED. Idea 4 is our proof of a sufficient form of (*).
+
+**H2 (fruitfulness): OPEN. We have only small results and a precise target.**
+- **Lemma P (PROVED, elementary).** Any dependency of size 2 is fruitful: if Q_tQ_{t′} = Y² with
+  t ≠ t′ and T = o(√N), then N < X − Y < X + Y < 2N. Sizes 1 and 2 are the only sizes where a size
+  argument can work (§6.2).
+- **Prop S (PROVED).** For c < 1/2, a pair dependency exists for at most a B^{c−1/2+o(1)} fraction of
+  N. So the size mechanism is dead for almost all N.
+- **Barrier.** lemmaM Theorem B blocks every fixed-test averaging argument, because the kernel depends
+  on N. Theorem A balances Jacobi signs on a *fixed* set, but the smooth set depends on N. The
+  coupling is exactly what nobody can control.
+- **Missing statement H2\*(c):** #{N ∈ S_n : H1 holds and ψ_N is trivial on ker A_N} = o(|S_n|).
+
+**Conditional consequence (Theorem DQ, §7).**
+- H1-S plus H2\*(c) give a uniform deterministic algorithm. It costs N^{ωc+o(1)} on every input and
+  factors all but o(|S_n|) of S_n.
+- With c < 1/(6ω) ≈ 0.0703 this is below the project's 1/6. With H2\*(c) for every c it is N^ε for
+  every ε > 0.
+- It is an *almost-all* statement, not an average-time one: the failure set is only o(|S_n|), far
+  above the N^{−1/30} needed to beat AV in mean.
+
+**Subexponential (y = L[1/2]).**
+- Fixed-u H1-S does not extend. Any residue stratification admissible for the BV step leaves a
+  residual variance ≫ (log n)²/n² against the n^{−2} needed (Prop B, PROVED IN OUTLINE).
+- So the residue-stratified second-moment method fails there by a factor (log n)². Either higher
+  moments (multi-point smooth correlations on a quadratic family) or a multiplicative local model
+  would be needed.
+
+**Experiments (pre-registered; frozen verdicts "mixed" for both H1 structure and H2).**
+- The local-factor theory is confirmed strongly:
+  - the model L(N) explains 97–99% of Var(Z_N) at 40–72 bits (corr 0.985–0.996);
+  - the pair-correlation ratios by k mod ℓ match the model (e.g. n = 72: 1.115/1.108, 1.059/1.058,
+    1.069/1.062 for ℓ = 2, 3, 5);
+  - no large-k anomaly.
+- The frozen failures are all small-size local extremes. One example is a 40-bit semiprime that is a
+  non-residue modulo every prime 3–19 and has Z = 0. H1 fails for 97, 24, 1 and 2 of 1000 semiprimes
+  at 40, 48, 56 and 64 bits, and for 0 at 72.
+- H2:
+  - the Jacobi rule held in 100% of cases;
+  - 203/203 size-≤2 dependencies were fruitful (Lemma P);
+  - post hoc, the per-vector trivial rate is 0.497–0.514 at 56–80 bits, but 0.566 at 40 bits (a
+    small-size excess, also seen by below16 E4).
+
+**Literature (§9).**
+- We found no deterministic almost-all (or average-case) factoring algorithm below N^{1/5} other than
+  the project's own D′/AV. This is a search result, not a novelty certificate.
+- We also found no rigorous almost-all H1 theorem for the QS polynomial.
+
+---
+
+## 1. Setting
+
+- B = 2^n, I = [B/2, B) ∩ Z, P = 2^{n/2}.
+- S_n = {pq : p < q ≤ 2p primes} ∩ I, with |S_n| ≍ B/n².
+- f = 1_{P⁺(·) ≤ y}.
+- m = ⌈√N⌉, Q_t = (m+t)² − N, and Z_N = Σ_{t≤T} f(Q_t).
+- Parameters: y = T = ⌊B^c⌋, common to the whole dyadic block (codex: if T varied with N, its
+  variation would enter the variance). u = log(√B·T)/log y → 1 + 1/(2c).
+- **Transfer lemma (PROVED, trivial).** If |{bad N ∈ I}| = ε_n|I|, then the bad fraction of S_n is
+  O(ε_n n²).
+
+## 2. Exact coordinates: the fat region
+
+**Lemma C (PROVED; codex has the same identities).**
+- Put x = m + t and v = x² − N.
+- The map (N, t) ↦ (x, v) is a bijection from I × [1, h] onto
+  D_h = {(x, v) : x² − v ∈ I, 2x − 1 ≤ v ≤ 2x(h+1) − (h+1)² − 1}.
+- For fixed t, v runs over [2xt − t², 2x(t+1) − (t+1)² − 1]. These intervals adjoin as t grows.
+- For a gap k ≥ 1, put w = Q_{t+k} = v + 2kx + k². Then
+
+  Σ_{N∈I} Z_N² = Σ_N Z_N + 2 Σ_{k<T} Σ_{(x,v)∈D_{T−k}} f(v) f(v + 2kx + k²).
+
+- In the (v, w)-plane the k-th sum runs over R_k ∩ Λ_k, where:
+  - Λ_k = {w − v ≡ k² (mod 2k)} has index 2k;
+  - x = (w − v − k²)/(2k);
+  - R_k is a region of dimensions ≍ √B T (along v) by ≍ √B k (along w − v), cut out by the inequalities
+    of D_{T−k} and x² − v ∈ I.
+
+**Consequences.**
+- *Fixed (t, t′) is thin; the sum over t is not.* For fixed (t, t′) the image of (m, r) is a sliver of
+  relative width ≍ k/t² (polyimpl §7). Summing over t at fixed k tiles these slivers into R_k.
+- For k ≍ T, R_k is fat in both directions. For K₀ < k ≪ T its aspect ratio is k/T ≥ (log B)^{−3}.
+  These intervals have relative length (log B)^{−O(1)}, and arbitrary log savings absorb them.
+- *Level.* The congruence moduli are q = 2kW ≤ 2TW = B^{c+o(1)}. The relevant smooth counts have size
+  Ψ ≍ √B T ρ. So q ≤ Ψ^{1/2}B^{−(1/4 − c/2)+o(1)}, a polynomial margin below Harper's level √Ψ for
+  every c < 1/2.
+- *Correction to polyimpl §7 / D1.* The kill criterion ("the thin-region correlation cannot be
+  bounded…") is **not triggered**. The pair sum is a BV/BDH-type sum, not a binary additive problem.
+  below16 §6.2 called the second moment "a binary additive problem (semiprime + smooth = square)". That
+  was a statement about averaging over *semiprimes*. Over all integers, plus the transfer, it becomes
+  linear-congruence sums at low level.
+
+**First moment (PROVED; codex §2).** E Z_N = T(ρ(u) + O_c(1/log B)).
+- Exchange x and v in Lemma C.
+- The x-multiplicity is a piecewise-smooth weight, up to O(1) per v; edge effects are O(T/√B).
+- Then apply partial summation of Ψ(x, y) = xρ(u)(1 + O(1/log y)).
+
+## 3. The unstratified variance has exact order n^{−2}
+
+**Prop L (PROVED IN OUTLINE; codex §1 and §4, re-derived here).**
+- *Local mean.* Fix an odd prime ℓ. Then
+
+  (E[Z | N ≡ a (ℓ)] − E Z)/T = −ρ′(u) log ℓ (a/ℓ) / ((ℓ − 1) log y) + o_ℓ(1/log y).
+
+  - The number of x mod ℓ with ℓ | x² − N is 1 + (N/ℓ).
+  - Smooth v ≡ 0 (ℓ) number Ψ(z/ℓ, y) ≈ ℓ^{−1}Ψ(z, y)(1 − ρ′(u) log ℓ/(ρ(u) log y)).
+- *Variance.* By the law of total variance,
+
+  liminf (log y)² Var(Z)/T² ≥ ρ′(u)²(log ℓ)²/(ℓ(ℓ − 1)) > 0.
+
+- **So "Var Z/(E Z)² = o(n^{−2})" is FALSE.**
+- *Upper bound.* Codex also proves Var Z = O_c(T²/log² y). Its route is the §2 identity, Harper's
+  Theorems 1–2 and first-order expansions; the linear local terms cancel. This gives:
+  - **Theorem H1-int (PROVED IN OUTLINE; codex):** #{N ∈ I : Z_N < π(y) + K} = O_c(B/(log B)²).
+  - That is H1 for almost all *integers*. But the exceptional set is too large for the transfer to S_n
+    by exactly a constant.
+- *Source of the n^{−2}.*
+  - (i) The Legendre symbols (N/ℓ) at small ℓ change how often ℓ divides Q_t. This is the effect
+    Knuth–Schroeppel multipliers exploit. For p-adic valuations ≥ 2 the relevant data is N mod ℓ^a,
+    not N mod ℓ (codex).
+  - (ii) The *archimedean* place: Q_t ≈ 2t√N, so log Q_t moves by up to (1/2) log 2 across the
+    dyadic block. That moves ρ(u) by a relative ≍ ξ(u)/log y, with ξ = −ρ′/ρ.
+  - Both have relative size ≍ 1/log y per place, so squares ≍ n^{−2}. Neither is a fluctuation of
+    smoothness itself.
+
+## 4. Theorem H1-S: stratification and averaging over k
+
+**Strata.**
+- Let W = ∏_{p ≤ z} p^{a} with z, a ≥ 1 fixed, and J ≥ 1 fixed.
+- A stratum σ = (s, j) is {N ∈ I : N ≡ s (mod W), N ∈ I_j}, where I_j = [B/2·(1 + j/J),
+  B/2·(1 + (j+1)/J)).
+- Put M_σ = E[Z | σ].
+
+**Proposition V (PROVED IN OUTLINE).** For fixed c ∈ (0, 1/2), W and J,
+
+  limsup_{n→∞} (log B)² · E_N[(Z_N − M_{σ(N)})²]/T² ≤ C_c · r(W, J),
+
+  r(W, J) := Σ_{p > z} (1 + log p)²/p² + Σ_{p ≤ z} (1 + a log p)² p^{−a} + J^{−2}.
+
+**Proposition M (PROVED IN OUTLINE).** For fixed W and J, max_σ |M_σ/T − ρ(u)| = O_{W,J}(1/log B).
+- Proof: first moments in progressions of the fixed modulus W, on fixed sub-intervals. Harper's
+  Theorem 1 at the single modulus W, or Fouvry–Tenenbaum, gives them. Every local factor at a fixed
+  place is 1 + O(1/log y).
+
+**Theorem H1-S (PROVED IN OUTLINE from V and M).** Fix c ∈ (0, 1/2), K ≥ 0 and ε > 0.
+1. Choose W, J with 32 C_c r(W, J) < ερ(u)². This is possible because r → 0 as z, a, J → ∞.
+2. For n ≥ n₀, Prop M gives M_σ ≥ ρT/2 for every σ. Also π(y) + K ≤ ρT/4, since T = y.
+3. A bad N therefore has |Z − M_σ| ≥ ρT/4.
+4. Chebyshev and V give #{bad}/|I| ≤ 16 E(Z − M_σ)²/(ρT)² ≤ ε/(log B)² for n ≥ n₁.
+5. Since ε is arbitrary, #{bad} = o(B/n²). The transfer lemma then gives almost all of S_n. ∎
+- The constants in Harper's arbitrary-A savings are ineffective. So n₀(ε) is ineffective. The
+  algorithm itself is uniform and explicit.
+
+**Proof of Proposition V (outline, eight steps).** Fix σ = (s, j). Write E_σ and Cov_σ for averages over
+N ∈ σ, and put f_t = f(Q_t(N)).
+1. **Expansion.** Var_σ(Z) = Σ_t Var_σ(f_t) + 2 Σ_{k=1}^{T−1} Σ_{t≤T−k} Cov_σ(f_t, f_{t+k}). The first
+   sum is ≤ T = o(T²/log² B).
+2. **Near-diagonal.** For k ≤ K₀ := T/(log B)³, use |Cov| ≤ 1. The total is ≤ K₀T = o(T²/log² B).
+3. **Coordinates and boxes.**
+   - For k > K₀, the coupled sum Σ_t E_σ[f_t f_{t+k}] is |I_σ|^{−1} Σ f(v) f(w) over (v, w) ∈ R_k ∩ Λ_k
+     with x² − v ∈ σ (Lemma C).
+   - The stratum adds the congruence x² − v ≡ s (mod W). Here x mod W is fixed by (w − v) mod 2kW.
+   - So the conditions are (v, w) ≡ (a, b) (mod q), q = 2kW, for (a, b) in a set 𝒜_k(s).
+   - Each a has at most ν(W) partners b, and each b at most ν(W) partners a. Here ν(W) bounds the
+     number of square roots mod W.
+   - Cover R_k by product boxes J × J′ of side √B k/(log B)^{A₁}. The boundary boxes carry a fraction
+     O((log B)^{−A₁}) of the lattice points; with f ≤ 1 and A₁ = 3 they cost o(T²/log² B) in total.
+   - The archimedean slot j is an interval condition on x² − v and is absorbed the same way.
+4. **BV replacement.**
+   - On a box, Σ_{(a,b)∈𝒜} A_J(a) A_{J′}(b), where A_J(a) = #{v ∈ J smooth, v ≡ a (q)}.
+   - Replace A by Ā_J(a) := Ψ_{q/g}(J/g, y)/φ(q/g), g = gcd(a, q), which is the mean over the classes
+     with the same g.
+   - For g ≤ G := (log B)^R, the errors E = A − Ā are reduced-class errors at modulus q/g and scale
+     J/g. The bounded multiplicities ν(W) give:
+     - |ΣĀE′| ≤ ν(W) max Ā Σ_b|E′_b|;
+     - |ΣEE′| ≤ ν(W)‖E‖‖E′‖.
+   - Summed over k (distinct k give distinct q ≤ 2TW), Harper's Theorem 1 at the scales J/g bounds
+     everything by ≪_A Ψ(J)Ψ(J′)(log B)^{−A+O(R)}. Theorem 2 is an alternative for the ‖E‖ terms.
+   - Classes with g > G: the v ∈ J with gcd(v, q) > G number ≪ Ψ(J) Σ_{g|q, g>G} g^{−α}, by a crude
+     Hildebrand–Tenenbaum bound. Averaged over k this is ≪_W G^{−α+o(1)}. It is negligible for
+     R > 3/α.
+   - The product term Σ_t E_σ f_t E_σ f_{t+k} gets the same replacement. Each E_σ f_t is a
+     long-interval average: for fixed t, v ranges over ≍ t√B values as N runs over σ. So Harper at the
+     single modulus W suffices, with error (log B)^{−A} uniformly in t ≥ K₀.
+5. **Main term = a local covariance.**
+   - Write δ_J(a) := q Ā_J(a)/Ψ(J), a function of g = gcd(a, q) only.
+   - On each box, (main coupled) − (main product) = (Ψ(J)Ψ(J′)|𝒜|/q²)·Cov_μ(δ_J(a), δ_{J′}(b)). Here
+     μ is the uniform law on 𝒜_k(s), and its two marginals equal the product-term marginals.
+   - The archimedean dependence of δ is constant up to 1 + O(1/(J log y)) on a slot. That is the J^{−2}
+     term.
+6. **Splitting δ.**
+   - Let q = q_W q′, with q_W the W-primes part and q′ coprime to W. Then q′ | 2k and g = g_W g′.
+   - Since w − v ≡ 0 (mod k), g′ = gcd(v, q′) = gcd(w, q′): v and w carry the same g′.
+   - Write δ = D_W(g_W)·κ(g_W, g′), where:
+     - D_W(g_W) = q_W Ψ_{q_W/g_W}(J/g_W)/(φ(q_W/g_W)Ψ(J)) is the W-only density;
+     - κ is the q′-correction.
+   - From Ψ(X/d, y) = (X/d)ρ(u − log d/log y)(1 + O(1/log y)), with inclusion–exclusion over the
+     divisors of q_W (boundedly many prime factors) and of q′, we get:
+     - (LD-a) |D_W − 1| ≤ C_W/log y;
+     - (LD-b) |κ(g_W, g′)/κ(g_W, 1) − 1| ≤ C Π(q′)(1 + log g′)/log y for g′ ≤ G, with
+       Π(q′) := ∏_{p|q′}(1 + C/p);
+     - (LD-c) |κ(g_W, 1)/κ(1, 1) − 1| ≤ C Π(q′) σ(q′)(1 + log g_W)/log y, with σ(q′) := Σ_{p|q′} 1/p.
+       The q′-dependence enters only through divisors d > 1 of q′, of weight 1/d.
+7. **Averaging over k.**
+   - Let g′ have its law under μ: it is independent of the W-data by CRT, with Pr(g′) ≈ 1/g′. Put
+     κ̄ = E_{g′}κ and Cov_μ(δ, δ′) = T₁ + T₂ + T₃:
+     - T₁ = Cov over the W-data of D_W κ̄ and D′_W κ̄′;
+     - T₂ = E[D_W D′_W (κ − κ̄)(κ′ − κ̄′)], with the same g′ in both factors;
+     - T₃ = interaction terms.
+   - **T₂ (large primes).** By (LD-b), |T₂| ≲ Σ_{g′|q′, g′>1} Π²(1 + log g′)²/(g′ log² y) plus the
+     square of the corresponding first moment. Averaged over k, Pr(g | k) = 1/g. Codex's convergent
+     sums Σ_g(1 + log g)²/g² and Σ_{d,e}(d,e)(1 + log de)²/(d²e²), restricted to g, d, e > 1 coprime
+     to W, give ≲ r(W)/log² y.
+   - **T₁ (W-primes).**
+     - κ̄ = λ_k(1 + μ_k(g_W)), with λ_k = 1 + O(σ(q′)) and |μ_k| ≲ Π σ(q′)(1 + log g_W)/log y by
+       (LD-c).
+     - The μ_k parts are products of two first-order quantities: ‖μ_k‖₂ · ‖D′_W − E D′_W‖₂ ≲
+       σ(q′)/log² y. Averaged over k, σ(q′) has mean ≲ Σ_{p>z} 1/p², which is part of r(W).
+     - The main part is λ_kλ′_k · Cov(D_W(v_W), D′_W(w_W)), with (v_W, w_W) = (x² − N, (x + k)² − N) at
+       the W-primes and x uniform. Truncate D_W at valuation a: the error is ≲ Σ_{p|W}
+       (1 + a log p)²p^{−a}/log² y, part of r. The truncated covariance then depends on k only through
+       k mod W.
+     - λ_k depends only on the primes ∤ W of k, so it is asymptotically independent of k mod W.
+     - **Averaging k over complete residue systems mod W makes (x, x + k) a uniform independent pair.**
+       The averaged covariance is then Cov_N(E_x D_W(x² − N), E_{x′}D′_W(x′² − N)) over N in the
+       stratum. This is the variance of local data finer than N mod W, again ≲ Σ_{p|W} p^{−a}(…)/log² y.
+     - The archimedean slot contributes ≲ J^{−2}/log² y in the same way.
+   - **T₃** collects the products of (κ − κ̄) with D_W-fluctuations. Each is a product of two
+     first-order quantities, one of which carries σ(q′) or g′ > 1. It is ≲ r(W)/log² y on average.
+8. **Summation.** Sum over the boxes of R_k and over k ∈ (K₀, T). The weights Ψ(J)Ψ(J′)|𝒜|/q² add up to
+   ≍ (ρT)²·|I_σ|, so Σ_k Σ_t Cov_σ ≤ (C r(W, J) + o(1))T²/log² y. ∎
+
+**Routine verifications still owed** (why this is "in outline"):
+- (a) the exact statements and ranges of Harper's Theorems 1–2 (critic-checked, §10);
+- (b) uniformity of (LD-a)–(LD-c) in the moving boxes, the parity and 2-adic conditions, and the
+  truncation at G, written line by line;
+- (c) the asymptotic independence of λ_k from k mod W, and of the boxes from k, with explicit error
+  terms;
+- (d) the archimedean slot computation.
+None of them needs a new idea. Each is a bookkeeping step of the kind that can hide an error, which is
+why we do not label the theorem PROVED.
+
+**Remarks.**
+- Codex's (*) asks more than V: second-order coefficients and an explicit centering. V uses exact
+  conditional means (stratification), so no second-order coefficient is ever evaluated. Only
+  first-order bounds (LD-a)–(LD-c) and the exact cancellation of step 7 are needed.
+- The Hildebrand short-interval theorem and Matomäki–Radziwiłł are not needed after aggregation (codex
+  agrees).
+- The algorithm is unchanged: deterministic, no multiplier, a single polynomial. Only the analysis is
+  stratified.
+
+## 5. The subexponential regime: a barrier for the method
+
+**Prop B (PROVED IN OUTLINE; a barrier for the method, not for H1).**
+- Take y = L[1/2, a], T = L[1/2, b], and any stratification by N mod W, with W ≤ B^{1/4−ε} so that
+  step 4's level condition holds.
+- *Variance from the unstratified primes.* By the law of total variance over N mod Wp, the primes
+  p ∤ W with p ≤ B^{ε} contribute
+
+  E Var(Z | N mod W)/(E Z)² ≥ c ξ(u)² Σ_{p∤W, p≤B^ε} (log p)²/(p² log² y),   ξ(u) ≍ log u.
+
+  - This uses the local mean formula of Prop L uniformly for p ≤ B^{ε}.
+  - Harper's Theorem 1 supplies that formula on average over p, which suffices for a sum.
+  - The characters (N/p) for distinct p are orthogonal over N.
+- *Size of that variance.*
+  - W ≤ B^{1/4} with W = ∏_{p≤z_W} p^{a} forces z_W ≤ n ln 2/(4a) ≍ n.
+  - Σ_{p>z}(log p)²/p² ≍ (log z)/z.
+  - With ξ ≍ log u ≍ (1/2) log n and log² y ≍ a² n log n, the bound is
+    ≍ (log n)²·(log n)/(n · n log n) = (log n)²/n².
+  - That is ≫ n^{−2} by a factor (log n)². The constant is UNVERIFIED.
+  - Chebyshev at this variance cannot give o(n^{−2}), even with the largest stratification the BV step
+    allows.
+- *Other obstacles at L[1/2]* (codex): close-pair deletion loses 1/ρ(u), and the first-order local
+  perturbation squared is ≍ (log n)/n.
+- *Routes not ruled out:*
+  - a 4th or 6th moment, which needs multi-point smooth correlations along v_i = v + k_i(2x + k_i), a
+    quadratic family no BV theorem covers;
+  - a multiplicative local model Z ≈ ρT∏_{p≤y}λ_p(N)(1 + η), whose lower tail is a large-sieve
+    estimate for character sums. This needs main terms at moduli ∏_{p≤y} p, which is beyond every
+    distribution theorem.
+- Both are **OPEN**.
+
+## 6. H2: fruitfulness
+
+### 6.1 Proved facts
+
+**Lemma P (PROVED; codex's proof).**
+- *Statement.* Let √N < x < x′ ≤ √N + T with T = o(√N), and (x² − N)(x′² − N) = Y². Put X = xx′. Then
+  N < X − Y < X + Y < 2N. Hence gcd(X − Y, N) is a proper divisor of N. In particular, no such pair
+  exists when N is prime.
+- *Proof.*
+  - (X − N)² − Y² = N(x′ − x)² > 0, so X − Y > N.
+  - X ≤ (√N + T + 1)² and Y ≤ (Q + Q′)/2 ≤ (√N + T + 1)² − N, so X + Y < 2N once
+    (√N + T + 1)² < 1.5N.
+  - N divides (X − Y)(X + Y) = N(N + Q + Q′) but divides neither factor. So the gcd is neither 1
+    (that would force N | X + Y) nor N. ∎
+- *Size 1.* Q_t = s² gives N = (m + t − s)(m + t + s) (Fermat). The factor m + t − s exceeds 1 because
+  m + t + s < N.
+- Tests: `test_lemma_P_*`. E2 observed 203/203 size-≤2 dependencies fruitful.
+- We found no reference for Lemma P as a QS statement. It is elementary and very likely folklore
+  (Lehman/Hart-type size arguments).
+
+**Prop S (PROVED).** For fixed c < 1/2,
+
+  #{(N, t, t′) : N ∈ I, t < t′ ≤ T, Q_tQ_{t′} = □} ≤ B^{1/2+c+o(1)}.
+
+- So a pair dependency exists for at most a B^{c−1/2+o(1)} = o(1) fraction of N.
+- *Proof.*
+  - In the coordinates of Lemma C, a triple is a pair (v, w) with v, w ≤ 3√B T and vw = □, plus a
+    factorisation w − v = k(2x + k).
+  - With V := 3√B T, the pairs with vw = □ number Σ_{s sqfree ≤ V} ⌊√(V/s)⌋² ≤ Σ_{s≤V} V/s ≪
+    √B T log B.
+  - Each such (v, w) has ≤ τ(w − v) = B^{o(1)} factorisations. ∎
+- *Data.* The observed counts fall with n: 138, 43, 16, 5, 1, 0 small dependencies at 40–80 bits.
+
+**Prop SZ (PROVED; why size arguments stop at |S| = 2).**
+- Write α_S = ∏_{i∈S}(x_i − ε_i√N) ∈ Z[√N], for any signs ε_i. Then α_S has norm Y² and α_S ≡ X_S
+  modulo the ideal (√N) = 𝔭𝔮.
+- Write α_S = A − C√N. Then A ≡ X_S (mod N) and A² − NC² = Y². Fruitfulness by size needs
+  0 < A − Y < N and A + Y < N, which forces A < N.
+- But |A| ≥ Y ≈ N^{|S|(1/2+c)/2}, which exceeds N once |S| ≥ 4. For |S| = 3 no sign pattern pairs all
+  factors, and A ≍ N^{1+c}.
+- So for |S| ≥ 3 no choice of conjugations gives a size certificate. Unit multiples εα_S change A but
+  also multiply X_S by the √1 ε mod (√N). That is the lemmaM unit twist, itself a factorisation.
+
+**Jacobi form (KNOWN; below16 §6.1).**
+- For Blum N, H2 ⇔ ψ_N(S) = (X_S Y_S/N) is a nontrivial character on ker A_N.
+- By reciprocity, for odd x_i: ψ_N(S) = ∏_{i∈S}(−Q_i/x_i)·(2/N)^{e_2(S)/2}.
+- Expanding (ℓ/x_i) = (x_i/ℓ)(±1), the quartic symbol of the chosen root s_ℓ cancels because e_ℓ(S)
+  is even. What remains is the parity of how many i ∈ S use the root −s_ℓ (mod ℓ), over the
+  factor-base primes ℓ ≡ 3 (mod 4), plus explicit mod-8 signs.
+- So H2 fails exactly when this computable "root-label" vector lies in the column space of A_N
+  (corrected by the 2-adic term). This is a reformulation, not progress. It shows that H2 is a
+  statement about the ideal-level refinement of the exponent matrix in Z[√N].
+
+### 6.2 Barriers and the missing statement
+
+- **Fixed-test averaging is blocked.** lemmaM Theorem B (codex, proved): fixed tests can cancel for
+  almost all n while an N-dependent predictor annihilates every n. Our kernel ker A_N depends on N
+  through the smoothness pattern. Theorem A (Jacobi balance on a *fixed* smooth set) therefore does not
+  apply. Writing Pr[H2 fails] = E_N[|ker_N|^{−1}Σ_{S∈ker_N}ψ_N(S)] makes the obstacle explicit: a fixed
+  S gives a fixed-test average, but the weight |ker_N|^{−1} and the support ker_N are N-dependent.
+- **Rank alone does not help.** Codex: a kernel of growing dimension need not contain a vector of
+  weight 2. Prop S shows that weight-2 vectors are absent for almost all N.
+- **B1 is not an obstruction here.** lemmaM B1 concerns even-|S| two-form sieves without a known root.
+  For QS it fails: N = 33, 7² − 33 = 16. The least-nonresidue phenomenon does appear, but only in H1's
+  local factors: the Z = 0 semiprime of §8 is a QNR modulo 3–19.
+- **Multipliers and MPQS** (deterministic choice of k or of polynomials) multiply the relation families.
+  They supply no independence for ψ: the same coupling problem recurs for each family.
+- **H2\*(c) (OPEN).** For fixed c ∈ (0, 1/2):
+
+  #{N ∈ S_n : Z_N ≥ |FB| + 2 and every kernel vector S has 1 < gcd(X_S − Y_S, N) fail} = o(|S_n|).
+
+  - For Blum N this is: ψ_N is trivial on ker A_N for o(|S_n|) of N.
+  - It suffices to test a basis.
+  - The fair-coin heuristic predicts a failure rate 2^{−dim ker} ≤ 2^{−(T ρ − π(y))}, which is
+    super-polynomially small.
+
+## 7. Conditional algorithm, cost, and comparison with AV
+
+**Theorem DQ (CONDITIONAL on H2\*(c); the cost is PROVED).** Algorithm A_c, given N:
+1. Set n = bit length and y = T = ⌊2^{cn}⌋.
+2. Check perfect squares and trial-divide by the primes ≤ y.
+3. Sieve Q_t exactly for t ≤ T. This costs T·(log log y)·n^{O(1)}.
+4. Compute a basis of ker A_N by deterministic elimination: O(y^ω) with LSP/LUP (Ibarra–Moran–Hui), or
+   O(y³) by Gauss.
+5. Test every basis vector by gcd.
+
+- *Cost:* N^{ωc+o(1)} on every input.
+- *Correctness:* A_c factors every N ∈ S_n outside (H1-S exceptions) ∪ (H2\*(c) exceptions), i.e. all
+  but o(|S_n|).
+- With c < 1/(6ω) ≈ 0.0703 (cubic elimination: c < 1/18), the exponent is < 1/6. If H2\*(c) holds
+  for every fixed c, then for every ε > 0 there is a deterministic algorithm factoring almost all of
+  S_n in time N^ε.
+- **Not** average time: mean cost with an HH fallback needs failure density ≤ N^{−1/30−δ}. H1-S gives
+  only o(n^{−2}), and AV's N^{1/6} mean is not improved.
+- **Comparison.** AV is unconditional, mean N^{1/6}polylog, worst case N^{1/5}. DQ is conditional on
+  H2\*, almost-all, at any fixed exponent. Theorem DR (IW hypothesis) gives conditional deterministic
+  L[1/2] for *every* N; DQ's hypothesis is unrelated, an equidistribution statement about one sieve.
+- Unconditionally, nothing below 1/6 follows. We do not improve on AV.
+
+## 8. Experiments (pre-registered; `notes/detqs_prereg.md`, commit 8a6b789)
+
+**Disclosed deviation.** The pooled E2 binomial p-value overflowed in float (M = 4600). After the data
+existed, the function was rewritten in log space; the test is unchanged. No other change.
+
+**E1 (variance and lower tail of Z_N).** y = 2^⌊n/5⌋, T = 2^{16..20}.
+
+| n | Z̄ | V = Var(Z/Z̄) | Poisson 1/Z̄ | V/V_L | corr(Z, L) | V_res/V | V_strat/V | min r (int / sp) | H1 fails (sp) |
+|---|---|---|---|---|---|---|---|---|---|
+| 40 | 116 | 0.713 | 0.0086 | 0.88 | 0.985 | 0.031 | 0.65 | 0.14 / 0.00 | 97/1000 |
+| 48 | 283 | 0.548 | 0.0035 | 0.95 | 0.990 | 0.019 | 0.69 | 0.34 / 0.47 | 24/1000 |
+| 56 | 867 | 0.267 | 0.0012 | 1.00 | 0.994 | 0.012 | 0.63 | 0.71 / 0.68 | 1/1000 |
+| 64 | 1463 | 0.203 | 0.0007 | 1.02 | 0.995 | 0.010 | 0.61 | 0.80 / 0.62 | 2/1000 |
+| 72 | 5248 | 0.127 | 0.0002 | 1.02 | 0.996 | 0.008 | 0.54 | 0.87 / 0.90 | 0/500 |
+
+- Frozen checks:
+  - P1a–P1d hold at every n;
+  - P1h holds at every n (mean r over semiprimes 0.985–0.998);
+  - **P1e fails at 40–64** (V_strat/V = 0.61–0.69 > 0.6);
+  - **P1f fails at 40 and 48**;
+  - **P1g fails at 40–64**.
+- **Frozen verdict: "mixed".**
+- Post hoc (labelled):
+  - The local model explains 97–99% of the variance. The residual is 2.6–5.5× Poisson.
+  - Every lower-tail failure is a local extreme. For the Z = 0 semiprime at 40 bits, brute force confirms
+    Z = 0: N is a QNR modulo every prime 3–19, and the factor base is {2, 23, 29, …}.
+  - Such N have density ≍ 2^{−π(z)} for fixed z. Asymptotically their effect on M_σ is 1 + O(1/log y)
+    (Prop M). At 40–64 bits, log y is 5.5–8.3 and the effect is a factor 3–10.
+  - Restricting the strata to (N mod 8, 3, 5) explains less than the full model (P1e). Most of the
+    local variance sits at primes 7 ≤ ℓ ≤ y. This is consistent with the T₂/r(W) structure of §4.
+
+**E3 (pair correlation ratio by k mod ℓ, k ∈ [T/8, T/2); measured / model).**
+
+| n | ℓ = 2 | ℓ = 3 | ℓ = 5 |
+|---|---|---|---|
+| 40 | 1.477 / 1.512 | 1.277 / 1.261 | 1.258 / 1.293 |
+| 48 | 1.350 / 1.396 | 1.215 / 1.206 | 1.231 / 1.229 |
+| 56 | 1.213 / 1.202 | 1.119 / 1.108 | 1.123 / 1.118 |
+| 64 | 1.177 / 1.168 | 1.100 / 1.090 | 1.100 / 1.097 |
+| 72 | 1.115 / 1.108 | 1.059 / 1.058 | 1.069 / 1.062 |
+
+- P3a and P3b hold at every (n, ℓ).
+- The pair structure is local and model-accurate, with no thin-region or large-k anomaly. The
+  excess decays as predicted by the local model's bias²/ℓ, which tends to 0 like 1/log² y.
+
+**E2 (H2 rank event on S_n).**
+- P2a held: the Blum Jacobi rule was right for 1098 runs with at least one tested vector, and for every
+  vector.
+- P2f held: 203/203 size-≤2 dependencies were fruitful.
+- **P2b failed** (23/30 per-(n, j) tests; pooled failed), **P2c failed** (107 > 2) and **P2d failed** (H1
+  fails in 104, 30 and 2 runs at 40, 48 and 56 bits).
+- **Frozen verdict: "mixed".**
+- Post hoc (labelled):
+  - Of the 107 runs with no fruitful vector, 105 had too few relations (H1 failures). They are
+    censored runs, not H2 failures.
+  - Per tested kernel vector, the trivial rate is:
+
+    | n | 40 | 48 | 56 | 64 | 72 | 80 |
+    |---|---|---|---|---|---|---|
+    | rate | 0.566 | 0.522 | 0.497 | 0.514 | 0.510 | 0.470 |
+    | z | +6.1 | +1.9 | −0.3 | +1.2 | +0.6 | −1.2 |
+
+  - The 40-bit excess of trivial vectors matches below16 E4's 40-bit excess. It is unexplained and
+    vanishes by 56 bits.
+  - The data are consistent with H2\* and with the fair-coin heuristic at 56–80 bits. They say nothing
+    about the asymptotic statement.
+
+**Reproduction.**
+- `PYTHONPATH=. .venv/bin/python -m src.detqs.harness e1`: about 5 min.
+- `… e2`: about 1.5 min.
+- `… summary`.
+- `.venv/bin/python -m pytest -q tests/test_detqs.py`.
+
+## 9. Literature (own search, codex §4, and the Opus literature critic, §10)
+
+- **Rigorous relation methods are randomized.**
+  - Dixon 1981;
+  - Pomerance's random squares (Croot–Granville–Pemantle–Tetali 2012 for running times);
+  - Schnorr–Lenstra 1984 (class groups, randomized);
+  - Vallée 1991 (Math. Comp. 56, 823–849; randomized sampling of small quadratic residues, rigorous
+    L[1/2, √(4/3)]);
+  - Lenstra–Pomerance 1992 (JAMS 5, 483–516; rigorous randomized L[1/2, 1 + o(1)]).
+- **QS analyses are heuristic.** Pomerance 1982 (Math. Centre Tracts 154) and 1985 (LNCS 209), and
+  "Smooth numbers and the quadratic sieve" (MSRI 44, 2008), which explicitly treats QS complexity as
+  conjectural.
+- **Deterministic rigorous factoring.** The best worst-case bound is N^{1/5} (Harvey–Hittmeir, Math. Comp.
+  91 (2022)). Lehman 1974 gives N^{1/3}; Hart 2012 is heuristic for general N.
+- **Smooth-number tools used.**
+  - Harper, "Bombieri–Vinogradov and Barban–Davenport–Halberstam type theorems for smooth numbers"
+    (arXiv 1208.5992, Theorems 1–2; see §10 for the critic's check);
+  - Hildebrand 1986 and Hildebrand–Tenenbaum 1993 (JTNB 5), Theorem 1.8 and (1.29);
+  - Fouvry–Tenenbaum 1996, Granville 1993 (alternatives at fixed u).
+- **Searches** ("deterministic quadratic sieve almost all", "factoring almost all integers
+  deterministic", Pomerance, Schnorr, Hittmeir) found no deterministic almost-all algorithm below
+  N^{1/5} and no almost-all H1 theorem for (⌈√N⌉ + t)² − N. These are searches, not novelty
+  certificates; we claim "no prior formulation found by us" at most.
+- Averaging over *all integers* N to factor "almost all integers" is trivially easy by trial division,
+  because a random integer has a small factor. The point here is S_n, where the n^{−2} transfer is what
+  bites.
+
+## 10. Reviews
+
+(Filled in after the critic and codex rounds; see below.)
+
+## 11. Candidate card (BRIEF §4)
+
+**Card DQ-1: deterministic single-polynomial QS on almost all S_n.**
+- *Mechanism.* Exact sieve of (⌈√N⌉ + t)² − N for t ≤ T = y = N^{c}, deterministic elimination, gcd
+  tests.
+- *Input family.* S_n, almost all.
+- *Proved.*
+  - H1 for all but o(|S_n|) (Theorem H1-S, in outline, conditional on Harper Thm 1 and the uniform
+    Dickman asymptotic);
+  - the size mechanism for H2 (Lemma P), available only for o(1) of N (Prop S, Prop SZ);
+  - cost N^{ωc+o(1)}.
+- *Open.* H2\*(c). The barrier is lemmaM Theorem B: N-dependent kernels.
+- *Experiments.* The local-factor structure is confirmed. The H2 fair-coin rate holds at 56–80 bits, with a
+  40-bit excess.
+- *Kill criterion of polyimpl D1.* Not triggered for H1 (the region is fat). For H2, D1's own
+  criterion does not apply. The obstruction is the N-dependent kernel, for which no averaging
+  technique is available.
+- *Most promising open question.* H2\*(c) for a single fixed c < 1/(6ω), even for a positive
+  proportion of S_n. A positive-proportion version would already give a deterministic
+  positive-proportion N^{1/6−δ} result, which the project does not have below 1/6.
+
+exec
+/bin/zsh -lc 'cat ../../../notes/detqs_prereg.md ../../../codex/detqs_1.out ../../../codex/scratch/detqs_1/fixed_u_moment_note.md' in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+# detqs pre-registration (frozen before any experiment run)
+
+Agent `detqs`, phase 8, 2026-10-19. Task: polyimpl D1, deterministic fixed-u QS on almost all N.
+
+Frozen code (this commit): `src/detqs/{sieve,linalg,qs,localmodel,harness,analysis,prereg_values}.py`,
+tests `tests/test_detqs.py` (15 pass). No sieve run on any experiment instance happened before this commit.
+The local model was evaluated beforehand on separately seeded N (`detqs|model|n`) only to size the
+predictions. That is model output, not data.
+
+## Algorithm under test (operational, deterministic)
+- m = ⌈√N⌉ and Q_t = (m+t)² − N for t = 1..T.
+- Factor base: primes ℓ ≤ y with x² ≡ N (mod ℓ) solvable.
+- Smoothness is exact: every prime power is divided out.
+- Relations are taken in increasing t and added to an incremental exact F₂ elimination.
+- Each new kernel vector S is tested with gcd(X_S − Y_S, N). The run stops at the first proper gcd, or
+  after DMAX = 30 kernel vectors.
+- Parameters: y(n) = 2^⌊n/5⌋ and T(n) = 2^{16,18,18,19,20,21} for n = 40, 48, 56, 64, 72, 80.
+- These are small-size parameters. The asymptotic regime y = N^c, c < 1/(6ω), is not reachable at
+  40–80 bits. The experiments test *structure*: where the variance of Z_N comes from, and the H2 rank
+  event. They do not test asymptotic exponents.
+
+## Instances (seeded, `src/detqs/harness.py`)
+- Integers: N uniform in [2^{n−1}, 2^n), seed `detqs|int|n|i`.
+- Semiprimes: uniform on S_n by rectangle rejection, with seeds `detqs|sp|n|i` (E1) and `detqs|e2|n|i` (E2).
+
+## E1: variance and lower tail of Z_N = #{t ≤ T : Q_t is y-smooth}
+- Samples: n ∈ {40, 48, 56, 64} with 2000 integers and 1000 semiprimes each; n = 72 with 1000 and 500.
+- Local model: L(N) = Σ_blocks w_b ∏_{ℓ≤y} λ_{ℓ,u_b}(N) / Σ w_b. Here λ is the exact Hensel distribution of
+  v_ℓ(x² − N), weighted by ρ(u − e log ℓ/log y)/ρ(u), against the uniform Z_ℓ law. See
+  `localmodel.py`.
+- Definitions:
+  - Z̄ = sample mean on integers.
+  - V = Var(Z/Z̄).
+  - V_L = Var(L/L̄).
+  - c = ΣZ/ΣL and r_N = Z_N/(c L(N)).
+  - V_res = Var(r).
+  - V_strat = pooled within-stratum variance of Z/Z̄, with strata (N mod 8, N mod 3, N mod 5).
+- Predictions, on integers at every n unless stated otherwise:
+  - **P1a** (local excess): V ≥ 10/Z̄.
+  - **P1b** (model calibration): 0.4 V_L ≤ V ≤ 2.5 V_L.
+  - **P1c**: corr(Z, L) ≥ 0.8.
+  - **P1d** (model explains the variance): V_res ≤ 0.25 V.
+  - **P1e** (model-free stratification): V_strat ≤ 0.6 V.
+  - **P1f** (no lower-tail outliers beyond the local model): min r_N ≥ 0.5, on integers and on semiprimes.
+  - **P1g** (H1 on S_n at the frozen T): every sampled semiprime has Z_N ≥ |FB| + 2.
+  - **P1h** (the normalisation transfers to S_n): the mean of r_N over semiprimes is within 1 ± 0.15.
+
+## E3: pair correlations by k (from the E1 integer samples)
+- Definition: C(k) = [Σ_N Σ_t f_t f_{t+k} / #N] / [Σ_t F_t F_{t+k} / #N²], where F_t = Σ_N f_t and
+  k ∈ [T/8, T/2).
+- ratio_ℓ = mean C(k : ℓ | k) / mean C(k : ℓ ∤ k), for ℓ = 2, 3, 5.
+- Model values, `prereg_values.py`, from the unconditional local pair factor at u(T/4):
+
+| n | ℓ = 2 | ℓ = 3 | ℓ = 5 |
+|---|---|---|---|
+| 40 | 1.5116 | 1.2609 | 1.2932 |
+| 48 | 1.3958 | 1.2056 | 1.2287 |
+| 56 | 1.2023 | 1.1082 | 1.1177 |
+| 64 | 1.1677 | 1.0901 | 1.0973 |
+| 72 | 1.1077 | 1.0583 | 1.0621 |
+
+- Predictions:
+  - **P3a**: ratio_ℓ > 1 for every ℓ and n.
+  - **P3b**: (ratio_ℓ − 1)/(model_ℓ − 1) ∈ [0.4, 2.0] for every ℓ and n.
+- Purpose: the theory (notes/detqs_results.md) says that after summing over t the pair sum is a fat-region,
+  BDH-type sum. Its only non-product structure is *local*: congruence classes of k. There is no
+  thin-region anomaly. Large k (≈ T/2) is included.
+
+## E2: H2 rank event on S_n
+- Samples: n ∈ {40, 48, 56, 64} with 1000 semiprimes each; 400 at n = 72; 200 at n = 80.
+- d* is the index of the first fruitful kernel vector in t-order. It is ∞ if none occurs within DMAX.
+- Predictions:
+  - **P2a**: for Blum N, the Jacobi rule ((X_S Y_S/N) = −1 ⇔ fruitful) holds for every tested vector.
+  - **P2b** (fair-coin rank heuristic): for j = 1..5, #{d* > j} is consistent with Binomial(M, 2^{−j}),
+    with exact two-sided p ≥ 0.001.
+    - Per n: at least 28 of the 30 (n, j) tests pass.
+    - Pooled over n: all 5 pass.
+  - **P2c**: #{d* > 15} ≤ 2 over all n. The expectation is ≈ 0.14.
+  - **P2d**: H1 holds for every run (Z ≥ |FB| + 2), with 0 ACCIDENTAL hits.
+  - **P2f** (Lemma P): every tested kernel vector of size ≤ 2 is fruitful.
+
+## Decision rules
+- **H1 structure supported:** P1a–P1h and P3a–P3b hold at every n, with at most 2 individual
+  (prediction, n) failures, each reported.
+- **H2 heuristic supported:** P2a, P2b, P2c and P2f hold.
+- Anything else is reported as "mixed", with the failing items.
+
+## Commands
+- `PYTHONPATH=. .venv/bin/python -m src.detqs.harness e1`
+- `PYTHONPATH=. .venv/bin/python -m src.detqs.harness e2`
+- `PYTHONPATH=. .venv/bin/python -m src.detqs.harness summary`
+**1. All-integer moments**
+
+**PROVED.** Parameters must be common across the dyadic block. Write \(B=2^n\), \(I=[B/2,B)\cap\mathbb Z\), \(H=B/2\), and initially take \(y=T=B^c\). If \(T\) varies with \(N\), its deterministic variation also contributes to the raw variance.
+
+Put \(x=m+t\), \(v=x^2-N\). Define
+\[
+D_h=\{(x,v):x^2-v\in I,\quad
+2x-1\le v\le 2x(h+1)-(h+1)^2-1\}.
+\]
+The bounds follow by adjoining the consecutive intervals corresponding to \(1\le t\le h\). Thus, exactly,
+\[
+H\mathbb EZ=\sum_{(x,v)\in D_T}f(v).
+\]
+For \(k=t'-t>0\), put \(w=v+2kx+k^2\). Then
+\[
+H\mathbb EZ^2
+=H\mathbb EZ+
+2\sum_{k=1}^{T-1}\sum_{(x,v)\in D_{T-k}}
+f(v)f(v+2kx+k^2).
+\]
+Equivalently,
+\[
+w-v\equiv k^2\pmod{2k},\qquad
+x=\frac{w-v-k^2}{2k},
+\]
+with the remaining inequalities defining the region.
+
+**PROVED.** For fixed \(t,t'\), the \((m,r)\mapsto(v,w)\) determinant is \(2(t-t')\), and the image is thin. **After summing \(t\) at fixed \(k\asymp T\), it is fat:** both coordinates range on scale \(\sqrt B\,T\), with lattice index \(2k\). The context’s thin-region objection does not apply to this aggregate.
+
+**PROVED, fixed \(0<c<1/6\).** With \(u=1+1/(2c)\),
+\[
+\mathbb EZ=T\{\rho(u)+O_c(1/\log y)\},
+\]
+\[
+\mathbb EZ^2=(\mathbb EZ)^2+
+\Theta_c\!\left(\frac{T^2}{(\log y)^2}\right).
+\]
+The upper bound is explained in task 2. A single fixed odd prime already proves the lower bound. Indeed,
+\[
+\frac{\mathbb E[Z\mid N\equiv a\pmod\ell]-\mathbb EZ}{T}
+=
+-\frac{\rho'(u)\log\ell}{(\ell-1)\log y}
+\left(\frac a\ell\right)+o_\ell(1/\log y).
+\]
+The arithmetic correction comes from
+\[
+\frac{(a/\ell)}{\ell-1}
+\{\ell\Psi(z/\ell,y)-\Psi(z,y)\}.
+\]
+Consequently, total variance gives
+\[
+\operatorname{Var}Z\ge
+(1+o(1))
+\frac{T^2\rho'(u)^2(\log\ell)^2}
+{\ell(\ell-1)(\log y)^2}.
+\]
+Therefore **FALSE:** the proposed uncentered normalized variance is \(o(n^{-2})\). Its order is \(n^{-2}\).
+
+**PROVED local calculation; UNVERIFIED complete correction theorem.** The appropriate centering uses the real scale \(N/B\) and local functions
+\[
+A_\ell(N)=\log\ell\left(
+\mathbb E_{x\in\mathbb Z_\ell}v_\ell(x^2-N)-\frac1{\ell-1}\right).
+\]
+Condition on \(N\) modulo products of **prime powers**, with increasing precision, or subtract their conditional projections. A squarefree primorial alone leaves higher-valuation contributions at fixed primes.
+
+The sufficient missing estimate is
+\[
+\limsup_{n\to\infty}(\log y)^2
+\mathbb E\left|Z/T-M_W(N)\right|^2\le r(W),
+\qquad r(W)\longrightarrow0, \tag{*}
+\]
+where \(M_W\) includes these local projections and the real-scale correction. Fixing \(W\), applying Chebyshev, then letting \(W\) grow would give the required \(o(n^{-2})\) lower tail. I have **not verified (*)**.
+
+**UNVERIFIED in the subexponential regime.** Here the relative local perturbation is approximately
+\[
+\frac{-\rho'(u)}{\rho(u)\log y}
+\asymp\frac{\log u}{\log y},
+\]
+whose square is of order \((\log n)/n\). The fixed-\(u\) argument therefore does not extend automatically. Uniform higher-order corrections and closer-pair estimates are needed; crude close-pair deletion also loses \(1/\rho(u)\).
+
+---
+
+**2. Strongest H1 theorem established here**
+
+**PROVED.** For every fixed \(0<c<1/6\), common \(y=T=B^c\), and fixed \(K\),
+\[
+\#\{N\in I:Z_N<\pi(y)+K\}
+=O_c\!\left(\frac{B}{(\log B)^2}\right).
+\]
+This proves H1 for almost all **integers**, but its stated error transfers only to an \(O(1)\) exceptional fraction of \(S_n\).
+
+**PROVED inputs.** Let \(\Psi=\Psi(z,y)\), \(v=\log z/\log y\), and
+\[
+R_A=\frac{\exp\{-\delta v/\log^2(v+1)\}}{(\log z)^A}+y^{-\delta}.
+\]
+Harper’s **Theorem 1**, for \((\log z)^K\le y\le z\) and \(Q\le\sqrt\Psi\), gives
+\[
+\sum_{q\le Q}\max_{(a,q)=1}|E(z,y;q,a)|
+\ll_A \Psi R_A+\sqrt\Psi\,Q(\log z)^{7/2}.
+\]
+His **Theorem 2**, for \(Q\le\Psi\), gives
+\[
+\sum_{q\le Q}\sum_{(a,q)=1}|E(z,y;q,a)|^2
+\ll_A\Psi^2R_A+\Psi Q.
+\]
+The arbitrary-\(A\) versions can be ineffective. Here \(z\asymp\sqrt B\,T\), \(Q\asymp T\), leaving a polynomial margin below \(\sqrt\Psi\). There is **no** requirement \(\log z/\log q\to\infty\) in these averaged theorems. [Harper, arXiv:1208.5992, Theorems 1–2](https://arxiv.org/pdf/1208.5992).
+
+For global counts, use Hildebrand–Tenenbaum’s **Theorem 1.8**, the de Bruijn–Saias approximant (1.29), and its fixed-\(u\) expansion. Its error is smaller than every logarithmic power on the compact \(u\)-ranges used here. [Hildebrand–Tenenbaum, JTNB 5 (1993), 411–484](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+
+**PROVED derivation.** Approximate the fat regions by logarithmically many rectangles, discarding \(k\le T/(\log B)^A\). Nonreduced residues require
+\[
+g=(v,k)=(w,k),\qquad k=gh,\quad v=ga,\quad w=gb.
+\]
+Then \((a,h)=(b,h)=1\), while parity is retained separately. Apply Harper after dividing by \(g\), and expand
+\[
+\Psi_h(z/g,y)=\sum_{d\mid h}\mu(d)\Psi(z/(gd),y).
+\]
+The averaged remainders are controlled by convergent sums
+\[
+\sum_g\frac{(1+\log g)^j}{g^2},\qquad
+\sum_{d,e}\frac{(d,e)(1+\log(de))^j}{d^2e^2},
+\quad j\le2.
+\]
+Constant terms have mass one; arithmetic linear terms have zero marginal mean. Thus the linear terms cancel in
+\(\mathbb EZ^2-(\mathbb EZ)^2\), leaving \(O_c(T^2/\log^2y)\). Chebyshev and \(\pi(y)+K=o(T)\) prove the theorem.
+
+**PROVED assessment of alternatives.** Fouvry–Tenenbaum’s 1996 Théorème 1 and Granville’s 1993 averaged AP result also suffice at fixed \(u\). Drappeau’s fixed-residue level \(3/5-\varepsilon\) is unnecessary here. Hildebrand’s short-interval theorem is unnecessary after aggregation; Matomäki–Radziwiłł does not directly supply this quadratic sampling estimate or its required exceptional density. The \(\log z/\log q\to\infty\) restriction belongs to the **individual** Soundararajan–Harper AP theorem. [Drappeau, Théorème 1](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf), [Matomäki–Radziwiłł, Theorem 1](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf).
+
+Details, including the stronger expansion explicitly marked unverified, are in the [scratch note](/Volumes/git/factoring-connection/codex/scratch/detqs_1/fixed_u_moment_note.md).
+
+---
+
+**3. H2 and its obstructions**
+
+**PROVED: distinct dependencies of size two are fruitful**, for \(T=o(\sqrt N)\). Let \(x<z\), \(Q_xQ_z=Y^2\), and \(X=xz\). Then
+\[
+(X-N)^2-Y^2=N(z-x)^2>0,
+\]
+so \(X-Y>N\). Also
+\[
+X+Y\le2(m+T)^2-N<2N.
+\]
+Thus \(N<X-Y<X+Y<2N\). Their product is divisible by \(N=pq\), while neither is divisible by \(N\); hence \(\gcd(X-Y,N)\) is proper.
+
+**PROVED limitation.** Rank/nullity does not guarantee a dependency of size two. Arbitrary relation matrices can have kernel dimension growing without any weight-two vector. The preceding size proof does not extend to unrestricted dependencies.
+
+**PROVED, Blum case.** For invertible relations,
+\[
+\psi_N(S)=\left(\frac{X_SY_S}{N}\right)
+\]
+is a character on the kernel, and
+\[
+\text{H2}\iff\psi_N|_{\ker A_N}\not\equiv1.
+\]
+Indeed, the mixed CRT roots of \(1\) have Jacobi symbol \(-1\), while both trivial roots have symbol \(+1\). Reciprocity simplifies the factors in this character; it does not prove nontriviality.
+
+**UNVERIFIED exact missing statement.**
+\[
+\Pr_{N\in S_n}\!\left[
+\psi_N|_{\ker A_N}\equiv1
+\ \middle|\ \mathrm{H1}\right]=o(1),
+\]
+with the corresponding CRT-sign statement outside the Blum subfamily. Testing a kernel basis suffices once this is known.
+
+**PROVED methodological obstruction.** LemmaM Theorem B prevents deducing this from cancellation for every fixed test: the kernel, hence a possible annihilating predictor, depends on \(N\). Theorem A controls fixed weights; it does not remove that dependence.
+
+**UNVERIFIED routes.** Multipliers and MPQS enlarge the relation family but require a joint smoothness-and-fruitfulness theorem for the actual deterministic family. They do not supply independence automatically.
+
+**PROVED scope correction.** B1 concerns the specified known-root two-form mechanism, not general QS. The supplied example \(N=33\), \(7^2-33=16\), with \((2/33)=+1\), already disproves extending B1 to QS indiscriminately.
+
+---
+
+**4. Literature**
+
+**UNVERIFIED negative finding.** I found no published **uniform, unconditional deterministic** algorithm beating the stated frontier on balanced semiprimes. This is a search result, not a nonexistence theorem. The supplied Theorem AV already gives exponent \(1/6<1/5\).
+
+**PROVED distinctions and exact references:**
+
+- Pomerance, *Analysis and comparison of some integer factoring algorithms*, Math. Centre Tracts 154 (1982), 89–139; *The quadratic sieve factoring algorithm*, LNCS 209 (1985), 169–182. His later *Smooth numbers and the quadratic sieve*, MSRI Publications 44 (2008), 69–81, explicitly develops **conjectured** QS complexity. [Primary exposition](https://library.slmath.org/books/Book44/files/03carl.pdf).
+- Schnorr, *Refined analysis and improvements on some factoring algorithms*, **J. Algorithms 3 (1982), 101–127**; Schnorr–Lenstra, *A Monte Carlo factoring algorithm with linear storage*, **Math. Comp. 43 (1984), 289–311**. These do not establish the requested deterministic almost-all bound. [Schnorr–Lenstra paper](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf).
+- Vallée, *Provably fast integer factoring with quasi-uniform small quadratic residues*, **STOC 1989, 98–106**; expanded as *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56 (1991), 823–849**. The factoring complexity uses randomized sampling; the deterministic local-generation result is a different assertion. [STOC paper](https://doi.org/10.1145/73007.73016).
+- Lenstra–Pomerance, *A rigorous time bound for factoring integers*, **JAMS 5 (1992), 483–516**: rigorous randomized expected \(L_N[1/2,1+o(1)]\), not uniform deterministic factoring. [Paper](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+- Harvey–Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*, **Math. Comp. 91 (2022), 1367–1379**: unconditional deterministic worst-case exponent \(1/5\). [Paper](https://arxiv.org/abs/2105.11105).
+- Lehman, *Factoring large integers*, **Math. Comp. 28 (1974), 637–646**: deterministic \(N^{1/3+o(1)}\). Hart, *A one line factoring algorithm*, **J. Aust. Math. Soc. 92 (2012), 61–69**: general \(N^{1/3}\) complexity is heuristic, with useful special families. [Lehman](https://doi.org/10.1090/S0025-5718-1974-0340163-2), [Hart](https://wrap.warwick.ac.uk/id/eprint/54707/).
+- Rabin, *Digitalized signatures and public-key functions as intractable as factorization*, **MIT/LCS/TR-212 (1979)**: a randomized root-to-factor reduction, not the requested factoring algorithm. [Report](https://dspace.mit.edu/entities/publication/15016449-ca26-4d45-82ea-7c200d82d777).
+
+**PROVED caveats.** Fixed-tape averaging gives nonuniform subexponential algorithms, without an efficient uniform tape construction. Also, finding merely one factor of almost all **integers** by small trial division is easy; that ensemble and output requirement differ substantially from complete factoring on \(S_n\).
+
+---
+
+**5. Verdict**
+
+**PROVED:** the supplied frontier remains \(N^{1/6+o(1)}\) average on \(S_n\), and \(N^{1/5+o(1)}\) worst case. The fixed-\(u\) H1 theorem above does not yet improve it.
+
+**CONDITIONAL:** H1 and H2 on almost all \(S_n\) give cost \(N^{\omega c+o(1)}\), beating \(1/6\) for \(c<1/(6\omega)\). At \(y=L[1/2,a]\), \(T=L[1/2,b]\), the corresponding proved cost accounting is \(L[1/2,\max(b,\omega a)]\); success remains conditional.
+
+**UNVERIFIED; most promising tractable next lemma:** the locally centered mean-square estimate (*) with \(r(W)\to0\). It would finish fixed-\(u\) H1 at the transfer precision. Adaptive kernel fruitfulness remains a separate, essential obstacle.# Fixed-u QS moment calculation (scratch research note)
+
+Status: the coordinate identities, local calculations and elementary H2 lemma below are PROVED. The proposed full mean-square expansion in the last section is UNVERIFIED: its outlined truncation argument is not a substitute for a complete uniform estimate for the arithmetic main terms. This distinction is intentional.
+
+## 1. Exact coordinates
+
+Let B=2^n, I=[B/2,B) intersected with the integers, H=B/2, and take common parameters y,T for the dyadic block. Write f(s)=1_{P^+(s)<=y}. Common parameters matter: if T varies by a fixed factor across the dyadic block, the raw variance of Z contains that deterministic variation.
+
+Put x=m+t, v=x^2-N. The condition 1<=t<=h, with m=ceil(sqrt(N)), is exactly
+
+    2x-1 <= v <= 2x(h+1)-(h+1)^2-1.
+
+Indeed, for t fixed the possible v are consecutive integers from 2xt-t^2 to 2x(t+1)-(t+1)^2-1, and these intervals adjoin as t increases. Also impose N=x^2-v in I.
+
+Consequently
+
+    H E Z = sum_{x,v} f(v) 1_{x^2-v in I}
+                    1_{2x-1 <= v <= 2x(T+1)-(T+1)^2-1}.
+
+For k=t'-t>0 put w=v+2kx+k^2, h=T-k. Then
+
+    H E Z^2 = H E Z + 2 sum_{1<=k<T} sum_{(v,w) in R_k} f(v)f(w),
+
+where R_k is given by
+
+    w-v == k^2 (mod 2k),
+    x=(w-v-k^2)/(2k),
+    x^2-v in I,
+    2x-1 <= v <= 2x(T-k+1)-(T-k+1)^2-1.
+
+These identities include square N and all endpoint conventions.
+
+For fixed t,t', (m,r)->(v,w) has determinant 2(t-t'). Its image is thin. For k comparable with T, after summing t, the v,w region has two dimensions of order sqrt(B)T and lattice index 2k. It is fat. For k much smaller than T it has aspect ratio roughly k/T. The thin-fixed-t description does not justify calling the aggregate second moment an inaccessible binary correlation.
+
+## 2. First moment
+
+PROVED: for fixed 0<c<1/2, y=T=B^c (integer rounding understood), u=1+1/(2c),
+
+    E Z = T(rho(u)+O_c(1/log B)).
+
+A convenient proof exchanges x and v in the first identity. The multiplicity in x is a piecewise smooth weight, up to O(1) per v. Its total O(sqrt(B)T) counting error divided by H T is O(B^{-1/2}). The two x-edge bands have relative size O(T/sqrt(B)). Partial summation of the global Dickman estimate gives the assertion. Uniformly on compact u-ranges, the global estimate is Psi(z,y)=z rho(log z/log y)(1+O(1/log y)). No short-interval theorem is needed.
+
+With the de Bruijn-Saias expansion one also obtains the first-order term
+
+    E Z/T = rho(u) + rho'(u)/log y *
+      (gamma - 3/2 + (3/2)log 2) + O_c((log y)^-2)
+
+when u is in a compact subset of (3,infinity). The coefficient uses the density rho(v)+gamma rho'(v)/log y, the average log(t/T)=-1+o(1), and E log(N/B)=log 2-1+o(1).
+
+## 3. Applicable AP input
+
+Adam J. Harper, arXiv:1208.5992v1 (2012), Theorems 1 and 2. Set Psi=Psi(z,y), v=log z/log y, H(v)=exp(v/log^2(v+1)). There are absolute K,delta>0 such that for log^K z<=y<=z:
+
+* Theorem 1, Q<=sqrt(Psi): sum_{q<=Q} max_{(a,q)=1}|Psi(z,y;q,a)-Psi_q(z,y)/phi(q)| is at most
+
+      C_A Psi(H(v)^(-delta)(log z)^(-A)+y^(-delta))
+          + C sqrt(Psi) Q (log z)^(7/2).
+
+* Theorem 2, Q<=Psi: the corresponding sum of squares, summed over reduced a, is at most
+
+      C_A Psi^2(H(v)^(-delta)(log z)^(-A)+y^(-delta))
+          + C Psi Q.
+
+The arbitrary-A constants can be ineffective. Both have effective alternatives omitting (log z)^(-A). The condition log z/log q -> infinity belongs to Harper's other, individual-AP theorem, not to these averaged theorems.
+
+At z approximately sqrt(B)T and Q approximately T, Q/sqrt(Psi) is a negative power of B when c<1/2. Hence the ineffective versions give every fixed logarithmic saving. Finite logarithmic grids of endpoints and polynomial-logarithmic divisor truncations can be paid for.
+
+Nonreduced residues must be retained. Since v==w (mod k), one has gcd(v,k)=gcd(w,k)=g. Write k=gh and v=ga,w=gb; then (a,h)=(b,h)=1, and b-a==hk (mod 2h). For g of logarithmic size, f(ga)=f(a). The factor 2 requires separate parity/valuation bookkeeping. It cannot simply be discarded.
+
+Using these changes, logarithmic rectangle approximations to R_k, and gcd truncation, the leading-order AP replacement gives
+
+    E Z^2/T^2 = rho(u)^2+o_c(1),
+
+and therefore PROVED: Z/T -> rho(u) in probability over all integers in I. This gives H1 outside o(B) integers (for T=y), which alone does not transfer to almost all balanced semiprimes. A rate better than B/(log B)^2 requires the finer calculation below.
+
+There is also a first-order version sufficient for an upper bound, as opposed to the second-order coefficient identification in (*). For fixed 0<c<1/6 it gives PROVED:
+
+    Var(Z)=O_c(T^2/(log y)^2),
+    #{N in I: Z<rho(u)T/2}=O_c(B/(log B)^2).
+
+Here are the cancellation and convergence details needed for that bound. In the gcd-g part of the arithmetic main term, write k=gh. Inclusion-exclusion gives Psi_h(z/g,y)=sum_{d|h} mu(d)Psi(z/(gd),y). Expand each smooth count through its linear term in log(gd)/log y, with remainder O_c((1+log(gd))^2/(log y)^2). The de Bruijn-Saias formula supplies this expansion for gd of logarithmic size. Terms with larger gcds or inclusion-exclusion divisors can be cut at D=(log B)^R. Their averaged contribution has a power saving in D, after retaining the true width O(sqrt(B)k) of the difference coordinate; bounding by a full square unnecessarily introduces a harmonic loss. A larger R and Harper's arbitrary logarithmic saving absorb these cuts and the rectangle grids.
+
+For the resulting main terms, the average absolute remainder is bounded by convergent sums of the shapes
+
+    sum_g (1+log g)^j/g^2,
+    sum_{d,e} gcd(d,e)(1+log(de))^j/(d^2 e^2),  j<=2.
+
+These converge: write d=ab,e=ac,(b,c)=1, and the denominator weight becomes 1/(a^3 b^2 c^2). The constant terms have total mass one, since sum_{g|k} phi(k/g)=k. The arithmetic linear terms have mean zero. One can check the latter prime by prime: for ell^a||k their factor is the conditional mean of v_ell(s)-1/(ell-1) given s mod ell^a (with the congruence shift retained at ell=2). This conditional mean averages to zero in either marginal. Thus the linear contributions to E Z^2 equal twice the corresponding linear contribution to (E Z)^2, including the real-variable weight. Their difference is O_c(T^2/(log y)^2). No value for the second-order coefficient is used for this upper bound. The diagonal is negligible at this scale.
+
+Together with the local lower bound in the next section, this proves Var(Z)/(E Z)^2 is of exact order (log B)^-2. It does not prove a little-o lower-tail estimate at that scale.
+
+## 4. A proved local lower bound
+
+Fix an odd prime ell. The first-moment calculation in N==a (mod ell), using smooth AP counts at this fixed modulus, gives
+
+    E[Z | N==a (mod ell)]/T - E Z/T
+      = -rho'(u) log(ell)/((ell-1)log y) * (a/ell)
+          + o_c,ell(1/log y).
+
+Here (0/ell)=0. To see the coefficient, smooth v divisible by ell have count Psi(z/ell,y); smooth v in the ell-1 nonzero classes have equal counts to the necessary precision. The number of x satisfying x^2==v+a (mod ell) is 1+(v+a/ell). The resulting correction is
+
+    ((a/ell)/(ell-1)) * (ell Psi(z/ell,y)-Psi(z,y)).
+
+Taylor expansion gives the displayed term. In particular the law of total variance proves
+
+    liminf (log y)^2 Var(Z)/T^2
+       >= rho'(u)^2 log(ell)^2/(ell(ell-1)) > 0.
+
+Thus Var(Z)/(E Z)^2=o(n^-2) is FALSE in this dyadic fixed-u setting. This lower bound does not require proving the full variance asymptotic.
+
+## 5. The candidate corrected second-moment expansion
+
+UNVERIFIED as a global assertion in this note. The following local algebra is PROVED, but the inference from Harper's theorem to the stated complete arithmetic main-term expansion needs a separate detailed proof.
+
+For a prime ell define the p-adic local function
+
+    A_ell(N)=log(ell)*( E_{x in Z_ell} v_ell(x^2-N)-1/(ell-1)).
+
+For odd ell and ell not dividing N, this is (N/ell)log(ell)/(ell-1). Higher valuations of N also affect it. Thus conditioning only on N modulo a squarefree primorial does not remove every fixed local contribution. One needs increasing prime-power precision, or explicit centering by the local functions.
+
+Let A_W denote the conditional projection of these functions onto N mod W, for W a finite product of prime powers. Conditional projection at ell^a includes the geometric tail above valuation a; simple truncation of the valuation sum is not exactly the same projection. Let
+
+    b(N)=log 2 + (1/2)log(N/B) + gamma-1,
+    C = log(2)^2/3
+          + sum_{ell odd prime} ell log(ell)^2/((ell-1)^2(ell+1)).
+
+The local functions have mean zero; their variances sum to C<infinity. For odd ell the variance is ell log(ell)^2/((ell-1)^2(ell+1)); for ell=2 it is log(2)^2/3. One proof expands v_ell(s)-1/(ell-1) in additive Fourier modes. At a primitive frequency mod ell^j its coefficient is 1/(ell^(j-1)(ell-1)). Averaging s=x^2-N multiplies this by the normalized quadratic Gauss sum. Parseval gives the stated values (the mod-2 Gauss sum vanishes; at 2^j,j>=2 its squared magnitude is 2^(j+1)).
+
+The proposed expansion is
+
+    lim_{B->infinity} (log y)^2 E[
+       Z/T-rho(u)-rho'(u)(b(N)-A_W(N))/log y ]^2
+      = rho'(u)^2*(C-Var(A_W)).                    (*)
+
+If (*) is established, it proves both
+
+    Var(Z)/T^2 ~ rho'(u)^2/(log y)^2 *
+       [C + (1-2(log 2)^2)/4]
+
+and
+
+    #{N in I: Z < rho(u)T/2} = o(B/(log B)^2).
+
+For the second implication fix W. The proposed center is uniformly rho(u)+O_W(1/log y), so Chebyshev bounds limsup (log y)^2 times the failure probability by a constant times C-Var(A_W). Then let W increase through products of increasing prime powers. This is an iterated-limit argument; no unjustified uniformity in an enormous primorial is needed.
+
+What must be proved for (*): after the fat-region AP replacement, expand the nonreduced-residue main terms through total order two, justify truncation of all gcd and inclusion-exclusion divisors at polynomial-logarithmic size with error o((log y)^-2), and match the resulting coefficients with the CRT local projections. The formal tail estimates involve convergent sums such as sum_g (log g)^j/g^2 and sum_{d,e}(gcd(d,e)/(d^2 e^2))(log(de))^j. These make (*) plausible and a concrete target; they do not on their own verify the entire uniform transfer, including the parity terms and the moving region.
+
+The input for high-precision global smooth counts is Hildebrand-Tenenbaum, JTNB 5 (1993), Theorem 1.8 and (1.29), followed by expansion of the de Bruijn-Saias approximant. Its exponentially small error is stronger than any logarithmic saving in a fixed-u compact range.
+
+No growing-u version is asserted. For y=L[1/2,a], the relative local perturbation has size approximately (log u)/log y and its square has order (log n)/n. Moreover discarding close pairs using f(v)f(w)<=f(v) now loses a factor 1/rho(u). These issues prevent simply carrying over the fixed-u outline.
+
+## 6. An elementary fruitful-pair lemma
+
+PROVED. Suppose x<z, x,z>sqrt(N), and (x^2-N)(z^2-N)=Y^2. Put X=xz. Then
+
+    (X-N)^2-Y^2=N(z-x)^2>0,
+
+so X-Y>N. If x,z<=ceil(sqrt(N))+T and T=o(sqrt(N)), then
+
+    X+Y <= 2(ceil(sqrt(N))+T)^2-N <2N.
+
+Thus N<X-Y<X+Y<2N. Their product is divisible by N, but neither is divisible by N. If N=pq, p!=q, this forces gcd(X-Y,N) to be proper. This also proves that trivial dependencies of length two cannot occur in the stated short interval. Rank/nullity does not guarantee a dependency of length two.
+
+exec
+/bin/zsh -lc "rg --files ../../../src/detqs ../../../tests | head -100; rg --files -uu ../../.. -g AGENTS.md -g '*detqs*' -g '*critic*' -g '*summary*' | head -100" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+../../../src/detqs/prereg_values.py
+../../../src/detqs/qs.py
+../../../src/detqs/linalg.py
+../../../src/detqs/__init__.py
+../../../src/detqs/sieve.py
+../../../src/detqs/analysis.py
+../../../src/detqs/harness.py
+../../../src/detqs/localmodel.py
+../../../tests/test_dcltheorem.py
+../../../tests/test_tower.py
+../../../tests/test_primality.py
+../../../tests/test_repair_audit.py
+../../../tests/test_repair_c2r.py
+../../../tests/conftest.py
+../../../tests/test_coverage38.py
+../../../tests/test_trackC_baselines.py
+../../../tests/test_hypD.py
+../../../tests/test_cycloharvey.py
+../../../tests/test_ecmavg.py
+../../../tests/test_divcover.py
+../../../tests/test_dchworst.py
+../../../tests/test_trackE.py
+../../../tests/test_unbalanced.py
+../../../tests/test_below16.py
+../../../tests/test_sieve2d_bound.py
+../../../tests/test_lemmaM.py
+../../../tests/test_rkrank.py
+../../../tests/test_multimod.py
+../../../tests/test_dchworst_wc.py
+../../../tests/test_nfsfruit.py
+../../../tests/test_trackA_sections.py
+../../../tests/test_avgtime.py
+../../../tests/test_repair_r5.py
+../../../tests/test_specialfam.py
+../../../tests/test_trackC_mechanisms.py
+../../../tests/test_repair_r4.py
+../../../tests/test_common_ring.py
+../../../tests/test_eps.py
+../../../tests/test_trackBD.py
+../../../tests/test_pm1bsgs.py
+../../../tests/test_sieve2d.py
+../../../tests/test_polyimpl.py
+../../../tests/test_detqs.py
+../../../tests/test_genus2rh.py
+../../../tests/test_seed_checks.py
+../../../tests/test_common_instances.py
+../../../tests/test_unbalanced_obstruction.py
+../../../tests/test_signsplit.py
+../../../experiments/raw/detqs_e1_n72.jsonl
+../../../experiments/raw/detqs_e1_n56.jsonl
+../../../experiments/raw/detqs_e3_n56.npz
+../../../experiments/raw/detqs_e3_n40.npz
+../../../experiments/raw/detqs_e1_n48.jsonl
+../../../experiments/raw/detqs_e2_n64.jsonl
+../../../experiments/raw/detqs_e2_n40.jsonl
+../../../experiments/raw/detqs_e2_n80.jsonl
+../../../experiments/raw/detqs_e1_n40.jsonl
+../../../experiments/raw/detqs_e1_n64.jsonl
+../../../experiments/raw/detqs_e2_n48.jsonl
+../../../experiments/raw/detqs_e3_n64.npz
+../../../experiments/raw/detqs_e3_n72.npz
+../../../experiments/raw/detqs_e2_n56.jsonl
+../../../experiments/raw/detqs_e2_n72.jsonl
+../../../experiments/raw/detqs_e3_n48.npz
+../../../experiments/logs/specialfam_summary.log
+../../../experiments/logs/detqs_e1.log
+../../../experiments/logs/detqs_e2.log
+../../../experiments/analysis/ecmavg_summary.json
+../../../experiments/analysis/below16_summary.json
+../../../experiments/analysis/unbalanced_summary.json
+../../../experiments/analysis/coverage38_summary.json
+../../../experiments/analysis/dchworst_summary.json
+../../../tests/test_detqs.py
+../../../experiments/analysis/eps_fresh_n32_summary.json
+../../../experiments/analysis/sieve2d_summary.json
+../../../experiments/analysis/trackA_summary.md
+../../../experiments/analysis/eps_battery_summary.json
+../../../experiments/analysis/detqs_summary.json
+../../../experiments/analysis/signsplit_summary.json
+../../../experiments/analysis/polyimpl_e1_summary.json
+../../../experiments/analysis/specialfam_summary.json
+../../../experiments/analysis/eps_pccurve_summary.json
+../../../experiments/analysis/multimod_summary.json
+../../../experiments/analysis/dcltheorem_summary.json
+../../../notes/paper_review_opus_critic.md
+../../../notes/codex_r3_critic.md
+../../../notes/detqs_prereg.md
+../../../notes/detqs_results.md
+../../../tests/__pycache__/test_detqs.cpython-312-pytest-9.1.1.pyc
+../../../codex/detqs_1.out
+../../../codex/r3_critic.md
+../../../codex/r3_critic.out
+../../../codex/scratch/coverage38_2/audit_snapshot/experiments/analysis/coverage38_summary.json
+../../../codex/scratch/coverage38_2/audit_recomputed_summary.json
+../../../codex/detqs_1.log
+../../../codex/detqs_2.md
+../../../codex/detqs_2.log
+../../../codex/r3_critic.log
+../../../codex/phase1_summary.json
+../../../codex/detqs_1.md
+../../../lean/.lake/packages/mathlib/.github/workflows/PR_summary.yml
+
+web search: 
+exec
+/bin/zsh -lc 'cat ../../../src/detqs/{analysis,harness}.py' in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+exec
+/bin/zsh -lc 'wc -l ../../../src/detqs/*.py ../../../tests/test_detqs.py; cat ../../../src/detqs/{sieve,linalg,qs}.py' in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+"""HARNESS analysis for E1-E3 (frozen with the pre-registration).  Reads
+experiments/raw/detqs_e*.  Writes experiments/analysis/detqs_summary.json."""
+from __future__ import annotations
+
+import json
+import math
+import os
+from collections import defaultdict
+from typing import Dict, List
+
+import numpy as np
+
+from .harness import ANA, RAW, E1_M, E2_M, T_of, y_of
+
+# model local pair ratios rho_l^model = avg_{l|k} R / avg_{l nmid k} R (frozen, from
+# localmodel.pair_ratio_model at u(T/4), see prereg table)
+MODEL_R = {}  # filled from prereg values at import of summarize
+
+
+def _binom_two_sided(k: int, M: int, p: float) -> float:
+    """Exact two-sided binomial p-value (sum of probs <= P(k)); log-space pmf
+    (post-prereg fix: the float form overflowed at M = 4600; same test)."""
+    def lp(j: int) -> float:
+        return (math.lgamma(M + 1) - math.lgamma(j + 1) - math.lgamma(M - j + 1)
+                + j * math.log(p) + (M - j) * math.log1p(-p))
+    lk = lp(k)
+    tot = 0.0
+    for j in range(M + 1):
+        lj = lp(j)
+        if lj <= lk + 1e-9:
+            tot += math.exp(lj)
+    return min(1.0, tot)
+
+
+def _var(xs: List[float]) -> float:
+    m = sum(xs) / len(xs)
+    return sum((x - m) ** 2 for x in xs) / len(xs)
+
+
+def e1_stats(n: int) -> Dict:
+    recs = [json.loads(l) for l in open(os.path.join(RAW, f"detqs_e1_n{n}.jsonl"))]
+    out: Dict = {"n": n, "y": y_of(n), "T": T_of(n)}
+    I = [r for r in recs if r["kind"] == "int" and not r.get("square")]
+    S = [r for r in recs if r["kind"] == "sp" and not r.get("square")]
+    Zi = [r["Z"] for r in I]
+    Li = [r["L"] for r in I]
+    Zbar = sum(Zi) / len(Zi)
+    Lbar = sum(Li) / len(Li)
+    V = _var([z / Zbar for z in Zi])
+    VL = _var([l / Lbar for l in Li])
+    corr = float(np.corrcoef(np.array(Zi, float), np.array(Li, float))[0, 1])
+    c = sum(Zi) / sum(Li)
+    ri = [z / (c * l) for z, l in zip(Zi, Li)]
+    Vres = _var(ri)
+    strata = defaultdict(list)
+    for r in I:
+        N = int(r["N"])
+        strata[(N % 8, N % 3, N % 5)].append(r["Z"] / Zbar)
+    num, den = 0.0, 0
+    for v in strata.values():
+        if len(v) >= 2:
+            m = sum(v) / len(v)
+            num += sum((x - m) ** 2 for x in v)
+            den += len(v)
+    Vstrat = num / den
+    rs = [r["Z"] / (c * r["L"]) for r in S]
+    out.update(dict(M_int=len(I), M_sp=len(S), Zbar=Zbar, V=V, poisson=1 / Zbar, VL=VL, corr=corr,
+                    Vres=Vres, Vstrat=Vstrat, min_r_int=min(ri), min_r_sp=min(rs),
+                    mean_r_sp=sum(rs) / len(rs), min_Z_over_fb_sp=min(r["Z"] / (r["fb"] + 2) for r in S),
+                    h1_fail_sp=sum(1 for r in S if r["Z"] < r["fb"] + 2),
+                    frac_Z_below_half_mean_int=sum(1 for z in Zi if z < Zbar / 2) / len(Zi)))
+    out["P1a"] = V >= 10 / Zbar
+    out["P1b"] = 0.4 * VL <= V <= 2.5 * VL
+    out["P1c"] = corr >= 0.8
+    out["P1d"] = Vres <= 0.25 * V
+    out["P1e"] = Vstrat <= 0.6 * V
+    out["P1f"] = min(ri) >= 0.5 and min(rs) >= 0.5
+    out["P1g"] = out["h1_fail_sp"] == 0
+    out["P1h"] = abs(out["mean_r_sp"] - 1) <= 0.15
+    return out
+
+
+def e3_stats(n: int, model: Dict[int, float]) -> Dict:
+    d = np.load(os.path.join(RAW, f"detqs_e3_n{n}.npz"))
+    A, G, cnt, T = d["A"], d["G"], int(d["cnt"]), int(d["T"])
+    ks = np.arange(T // 8, T // 2)
+    C = (A[ks] / cnt) / (G[ks] / cnt / cnt)
+    out = {"n": n}
+    for l in (2, 3, 5):
+        a = C[ks % l == 0].mean()
+        b = C[ks % l != 0].mean()
+        rat = float(a / b)
+        out[f"ratio_{l}"] = rat
+        out[f"model_{l}"] = model[l]
+        out[f"P3a_{l}"] = rat > 1
+        out[f"P3b_{l}"] = 0.4 <= (rat - 1) / (model[l] - 1) <= 2.0
+    return out
+
+
+def e2_stats(n: int) -> Dict:
+    recs = [json.loads(l) for l in open(os.path.join(RAW, f"detqs_e2_n{n}.jsonl"))]
+    M = len(recs)
+    dstar = [r["first_fruitful"] if r["first_fruitful"] is not None else 10 ** 6 for r in recs]
+    out: Dict = {"n": n, "M": M}
+    pv = {}
+    for j in range(1, 6):
+        k = sum(1 for d in dstar if d > j)
+        pv[j] = (k, _binom_two_sided(k, M, 2.0 ** (-j)))
+    out["tail_counts"] = {j: pv[j][0] for j in pv}
+    out["tail_pvals"] = {j: pv[j][1] for j in pv}
+    out["n_gt15"] = sum(1 for d in dstar if d > 15)
+    jm = [r["jacobi_match"] for r in recs if r["jacobi_match"] is not None]
+    out["jacobi_runs"] = len(jm)
+    out["P2a"] = all(jm)
+    out["P2b_count"] = sum(1 for j in pv if pv[j][1] >= 0.001)
+    out["h1_fail"] = sum(1 for r in recs if r["Z"] < r["fb"] + 2)
+    out["accidental"] = sum(1 for r in recs if r["class"] == "ACCIDENTAL")
+    out["success"] = sum(1 for r in recs if r["class"] == "STRUCTURAL")
+    small = [(s, o) for r in recs for s, o in zip(r["dep_sizes"], r["outcomes"]) if s <= 2]
+    out["small_deps"] = len(small)
+    out["P2f"] = all(o == 1 for s, o in small)
+    out["mean_deps"] = sum(r["deps_tested"] for r in recs) / M
+    return out
+
+
+def summarize() -> None:
+    from .prereg_values import MODEL_PAIR_RATIO
+    res = {"E1": {}, "E2": {}, "E3": {}}
+    for n in sorted(E1_M):
+        if os.path.exists(os.path.join(RAW, f"detqs_e1_n{n}.jsonl")):
+            res["E1"][n] = e1_stats(n)
+            res["E3"][n] = e3_stats(n, MODEL_PAIR_RATIO[n])
+    for n in sorted(E2_M):
+        if os.path.exists(os.path.join(RAW, f"detqs_e2_n{n}.jsonl")):
+            res["E2"][n] = e2_stats(n)
+    # pooled E2
+    allrec = []
+    for n in res["E2"]:
+        allrec += [json.loads(l) for l in open(os.path.join(RAW, f"detqs_e2_n{n}.jsonl"))]
+    if allrec:
+        M = len(allrec)
+        dstar = [r["first_fruitful"] if r["first_fruitful"] is not None else 10 ** 6 for r in allrec]
+        res["E2_pooled"] = {"M": M, "tail": {j: (sum(1 for d in dstar if d > j),
+                                                _binom_two_sided(sum(1 for d in dstar if d > j), M, 2.0 ** (-j)))
+                                             for j in range(1, 6)},
+                            "n_gt15": sum(1 for d in dstar if d > 15)}
+        res["E2_pooled"]["P2b_pooled"] = all(v[1] >= 0.001 for v in res["E2_pooled"]["tail"].values())
+        res["E2_pooled"]["P2c"] = res["E2_pooled"]["n_gt15"] <= 2
+    json.dump(res, open(os.path.join(ANA, "detqs_summary.json"), "w"), indent=1, default=str)
+    print(json.dumps(res, indent=1, default=str))
+"""HARNESS (diagnostic; uses primality of p, q for instance generation; never
+imported by operational code).  Pre-registered experiments E1-E3 of
+notes/detqs_prereg.md.
+
+    PYTHONPATH=. .venv/bin/python -m src.detqs.harness e1 [n ...]
+    PYTHONPATH=. .venv/bin/python -m src.detqs.harness e2 [n ...]
+    PYTHONPATH=. .venv/bin/python -m src.detqs.harness summary
+
+Parameters (frozen): y(n) = 2^floor(n/5); T(n) from FROZEN_T; samples from FROZEN_M.
+"""
+from __future__ import annotations
+
+import json
+import math
+import os
+import random
+import sys
+import time
+from typing import Dict, List, Tuple
+
+import gmpy2
+import numpy as np
+
+from .localmodel import _vdist, rho, u_blocks
+from .qs import qs_run
+from .sieve import factor_base, primes_upto, smooth_mask
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RAW = os.path.join(ROOT, "experiments", "raw")
+ANA = os.path.join(ROOT, "experiments", "analysis")
+
+FROZEN_T = {40: 16, 48: 18, 56: 18, 64: 19, 72: 20, 80: 21}   # log2 T
+E1_M = {40: (2000, 1000), 48: (2000, 1000), 56: (2000, 1000), 64: (2000, 1000), 72: (1000, 500)}
+E2_M = {40: 1000, 48: 1000, 56: 1000, 64: 1000, 72: 400, 80: 200}
+DMAX = 30
+
+
+def y_of(n: int) -> int:
+    return 1 << (n // 5)
+
+
+def T_of(n: int) -> int:
+    return 1 << FROZEN_T[n]
+
+
+# ----------------------------------------------------------------- instances
+def rand_int(n: int, i: int) -> int:
+    rng = random.Random(f"detqs|int|{n}|{i}")
+    return rng.randrange(1 << (n - 1), 1 << n)
+
+
+def rand_semiprime(n: int, i: int, tag: str = "sp") -> Tuple[int, int, int]:
+    """Uniform over S_n = {(p,q): p < q <= 2p primes, 2^{n-1} <= pq < 2^n} (rectangle rejection)."""
+    rng = random.Random(f"detqs|{tag}|{n}|{i}")
+    lo, hi = 1 << (n - 1), 1 << n
+    A = int(gmpy2.isqrt(lo // 2))
+    B = int(gmpy2.isqrt(hi)) + 1
+    while True:
+        p = rng.randrange(A, B)
+        q = rng.randrange(A, 2 * B)
+        if not (p < q <= 2 * p):
+            continue
+        N = p * q
+        if not (lo <= N < hi):
+            continue
+        if gmpy2.is_prime(p) and gmpy2.is_prime(q):
+            return N, p, q
+
+
+# ----------------------------------------------------------------- local model, fast form
+class LModel:
+    """L(N) of localmodel.model_LN, with per-(l, u) caches (same numbers, faster)."""
+
+    def __init__(self, n: int, y: int, T: int, nblocks: int = 8, E: int = 12):
+        self.y, self.E = y, E
+        self.logy = math.log(y)
+        self.us, self.ws = u_blocks(n, y, T, nblocks)
+        self.ps = primes_upto(y)
+        self.g = {}   # (l, b) -> list g(e)
+        self.den = {}
+        for b, u in enumerate(self.us):
+            r0 = rho(u)
+            for l in self.ps:
+                g = [rho(u - e * math.log(l) / self.logy) / r0 for e in range(E + 1)]
+                self.g[(l, b)] = g
+                self.den[(l, b)] = sum((1 - 1 / l) * l ** (-e) * g[e] for e in range(E)) + l ** (-E) * g[E]
+        self.lam = {}  # (l, b, chi) -> log lambda for odd l not dividing N
+        for b in range(len(self.us)):
+            for l in self.ps:
+                if l == 2:
+                    continue
+                for chi in (1, -1):
+                    Nfake = self._rep(l, chi)
+                    self.lam[(l, b, chi)] = math.log(self._lf(l, b, _vdist(l, Nfake, E)))
+        self.cache2: Dict[Tuple[int, int], List[float]] = {}
+
+    @staticmethod
+    def _rep(l: int, chi: int) -> int:
+        a = 1
+        while True:
+            c = 1 if pow(a, (l - 1) // 2, l) == 1 else -1
+            if a % l and c == chi:
+                return a
+            a += 1
+
+    def _lf(self, l: int, b: int, d: List[float]) -> float:
+        g = self.g[(l, b)]
+        return sum(d[e] * g[e] for e in range(self.E + 1)) / self.den[(l, b)]
+
+    def L(self, N: int) -> float:
+        tot = 0.0
+        dl: Dict[int, List[float]] = {}
+        chis: Dict[int, int] = {}
+        for l in self.ps:
+            if l == 2 or N % l == 0:
+                EE = self.E
+                while l ** EE > 131072:
+                    EE -= 1
+                key = (l, N % (l ** EE))
+                if key not in self.cache2:
+                    self.cache2[key] = _vdist(l, N, self.E)
+                dl[l] = self.cache2[key]
+            else:
+                chis[l] = 1 if pow(N % l, (l - 1) // 2, l) == 1 else -1
+        for b, w in enumerate(self.ws):
+            s = 0.0
+            for l, c in chis.items():
+                s += self.lam[(l, b, c)]
+            for l, d in dl.items():
+                s += math.log(max(self._lf(l, b, d), 1e-300))
+            tot += w * math.exp(s)
+        return tot / sum(self.ws)
+
+
+# ----------------------------------------------------------------- E1 + E3
+def _autocorr(f: np.ndarray) -> np.ndarray:
+    T = f.size
+    F = np.fft.rfft(f.astype(np.float64), 2 * T)
+    a = np.fft.irfft(F * np.conj(F), 2 * T)[:T]
+    r = np.rint(a)
+    assert np.max(np.abs(a - r)) < 0.01
+    return r.astype(np.int64)
+
+
+def run_e1(n: int) -> None:
+    y, T = y_of(n), T_of(n)
+    Mi, Ms = E1_M[n]
+    model = LModel(n, y, T)
+    out = open(os.path.join(RAW, f"detqs_e1_n{n}.jsonl"), "w")
+    A = np.zeros(T, dtype=np.int64)   # sum_N autocorr (integers only, E3)
+    F = np.zeros(T, dtype=np.int64)   # sum_N f
+    cnt = 0
+    t0 = time.time()
+    jobs = [("int", i) for i in range(Mi)] + [("sp", i) for i in range(Ms)]
+    for kind, i in jobs:
+        if kind == "int":
+            N = rand_int(n, i)
+            p = q = None
+        else:
+            N, p, q = rand_semiprime(n, i)
+        r = int(gmpy2.isqrt(N))
+        if r * r == N:
+            out.write(json.dumps({"n": n, "kind": kind, "i": i, "N": str(N), "square": True}) + "\n")
+            continue
+        fb = factor_base(N, y)
+        mask, m, Q, fb = smooth_mask(N, y, T, fb)
+        Z = int(mask.sum())
+        rec = {"n": n, "kind": kind, "i": i, "N": str(N), "Z": Z, "fb": len(fb.primes),
+               "fb_divides_N": fb.divides_N[:3], "L": model.L(N), "N_mod8": N % 8}
+        if kind == "sp":
+            rec["blum"] = bool(p % 4 == 3 and q % 4 == 3)
+        out.write(json.dumps(rec) + "\n")
+        if kind == "int":
+            f = mask.astype(np.int64)
+            A += _autocorr(f)
+            F += f
+            cnt += 1
+    out.close()
+    # E3 aggregate
+    G = _autocorr(F)  # sum_t F(t) F(t+k)
+    np.savez_compressed(os.path.join(RAW, f"detqs_e3_n{n}.npz"), A=A, G=G, cnt=cnt, T=T)
+    print(f"E1/E3 n={n} done in {time.time()-t0:.1f}s", flush=True)
+
+
+# ----------------------------------------------------------------- E2
+def run_e2(n: int) -> None:
+    y, T = y_of(n), T_of(n)
+    out = open(os.path.join(RAW, f"detqs_e2_n{n}.jsonl"), "w")
+    t0 = time.time()
+    for i in range(E2_M[n]):
+        N, p, q = rand_semiprime(n, i, tag="e2")
+        res = qs_run(N, y, T, dmax=DMAX)
+        blum = bool(p % 4 == 3 and q % 4 == 3)
+        cls = "none"
+        if res.factor is not None:
+            cls = "STRUCTURAL" if res.how == "dependency" else "ACCIDENTAL"
+            assert res.factor in (p, q) or res.how == "square"
+        jac_match = None
+        if blum and res.dep_outcomes:
+            jac_match = all((j == -1) == bool(o) for j, o in zip(res.dep_jacobi, res.dep_outcomes))
+        rec = {"n": n, "i": i, "N": str(N), "blum": blum, "Z": res.Z, "fb": res.fb_size,
+               "how": res.how, "class": cls, "first_fruitful": res.first_fruitful,
+               "deps_tested": res.deps_tested, "relations_used": res.relations_used,
+               "dep_sizes": res.dep_sizes, "outcomes": res.dep_outcomes, "jacobi_match": jac_match}
+        out.write(json.dumps(rec) + "\n")
+    out.close()
+    print(f"E2 n={n} done in {time.time()-t0:.1f}s", flush=True)
+
+
+if __name__ == "__main__":
+    os.makedirs(RAW, exist_ok=True)
+    os.makedirs(ANA, exist_ok=True)
+    cmd = sys.argv[1]
+    ns = [int(a) for a in sys.argv[2:]]
+    if cmd == "e1":
+        for n in ns or sorted(E1_M):
+            run_e1(n)
+    elif cmd == "e2":
+        for n in ns or sorted(E2_M):
+            run_e2(n)
+    elif cmd == "summary":
+        from .analysis import summarize
+        summarize()
+
+ succeeded in 0ms:
+      12 ../../../src/detqs/__init__.py
+     150 ../../../src/detqs/analysis.py
+     223 ../../../src/detqs/harness.py
+      32 ../../../src/detqs/linalg.py
+     178 ../../../src/detqs/localmodel.py
+       3 ../../../src/detqs/prereg_values.py
+     106 ../../../src/detqs/qs.py
+     200 ../../../src/detqs/sieve.py
+     121 ../../../tests/test_detqs.py
+    1025 total
+"""OPERATIONAL. Exact smoothness sieve for the deterministic single-polynomial QS.
+
+Q_t(N) = (m + t)^2 - N, m = ceil(sqrt N), t = 1..T.  Factor base: all primes
+l <= y such that x^2 = N (mod l) is solvable (l = 2, l | N, or (N/l) = 1).
+Smoothness is decided EXACTLY: every prime power of every factor-base prime is
+divided out (vectorised repeated division), and Q_t is y-smooth iff the
+remainder is 1.  No logarithmic thresholds, no floating point.
+
+Only N and the public parameters (y, T) are used.  A factor-base prime dividing
+N is reported (it is a factor found by trial division: ACCIDENTAL class).
+"""
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
+
+import gmpy2
+import numpy as np
+
+
+def primes_upto(m: int) -> List[int]:
+    if m < 2:
+        return []
+    s = bytearray([1]) * (m + 1)
+    s[0] = s[1] = 0
+    for i in range(2, math.isqrt(m) + 1):
+        if s[i]:
+            s[i * i::i] = bytearray(len(range(i * i, m + 1, i)))
+    return [i for i in range(m + 1) if s[i]]
+
+
+def sqrt_mod_prime(a: int, l: int) -> int:
+    """A square root of a mod odd prime l (a a nonzero QR). Tonelli-Shanks with
+    the deterministic choice of the least non-residue z (exhaustive search)."""
+    a %= l
+    if l % 4 == 3:
+        return pow(a, (l + 1) // 4, l)
+    q, s = l - 1, 0
+    while q % 2 == 0:
+        q //= 2
+        s += 1
+    z = 2
+    while pow(z, (l - 1) // 2, l) != l - 1:
+        z += 1
+    mm, c, t, r = s, pow(z, q, l), pow(a, q, l), pow(a, (q + 1) // 2, l)
+    while t != 1:
+        i, t2 = 0, t
+        while t2 != 1:
+            t2 = t2 * t2 % l
+            i += 1
+        b = pow(c, 1 << (mm - i - 1), l)
+        mm, c, t, r = i, b * b % l, t * b * b % l, r * b % l
+    return r
+
+
+@dataclass
+class FactorBase:
+    primes: List[int]                 # sorted, includes 2
+    roots: Dict[int, Tuple[int, ...]]  # l -> residues t0 (mod l) with l | Q_t
+    divides_N: List[int]              # factor-base primes dividing N (accidental)
+
+
+def factor_base(N: int, y: int) -> FactorBase:
+    m = int(gmpy2.isqrt(N - 1)) + 1
+    ps: List[int] = []
+    roots: Dict[int, Tuple[int, ...]] = {}
+    hit: List[int] = []
+    for l in primes_upto(y):
+        if l == 2:
+            ps.append(2)
+            roots[2] = ()  # handled separately (all t)
+            continue
+        Nl = N % l
+        if Nl == 0:
+            hit.append(l)
+            ps.append(l)
+            roots[l] = ((-m) % l,)
+            continue
+        if pow(Nl, (l - 1) // 2, l) != 1:
+            continue
+        s = sqrt_mod_prime(Nl, l)
+        ps.append(l)
+        roots[l] = tuple(sorted({(s - m) % l, (-s - m) % l}))
+    return FactorBase(ps, roots, hit)
+
+
+def q_values(N: int, T: int) -> Tuple[int, np.ndarray]:
+    """m and the array Q[t-1] = (m+t)^2 - N for t = 1..T (uint64, exact)."""
+    m = int(gmpy2.isqrt(N - 1)) + 1
+    r = m * m - N
+    top = r + 2 * m * T + T * T
+    if top >= (1 << 63):
+        raise ValueError("Q_T too large for exact uint64 arithmetic")
+    t = np.arange(1, T + 1, dtype=np.uint64)
+    Q = np.uint64(r) + np.uint64(2 * m) * t + t * t
+    return m, Q
+
+
+def _strip(R: np.ndarray, idx: np.ndarray, l: int) -> None:
+    """Divide R[idx] by l as many times as possible (exact, in place)."""
+    L = np.uint64(l)
+    cur = idx
+    while cur.size:
+        sub = R[cur]
+        mask = (sub % L) == 0
+        cur = cur[mask]
+        if cur.size == 0:
+            break
+        R[cur] = sub[mask] // L
+
+
+def smooth_mask(N: int, y: int, T: int, fb: Optional[FactorBase] = None):
+    """Boolean mask over t = 1..T: Q_t is y-smooth (exact). Returns (mask, m, Q, fb)."""
+    if fb is None:
+        fb = factor_base(N, y)
+    m, Q = q_values(N, T)
+    R = Q.copy()
+    # l = 2: remove the full power of two exactly via the lowest set bit
+    nz = R != 0
+    low = R & (~R + np.uint64(1))
+    R[nz] = R[nz] // low[nz]
+    for l in fb.primes:
+        if l == 2:
+            continue
+        for t0 in fb.roots[l]:
+            first = t0 if t0 >= 1 else t0 + l   # t >= 1
+            if first > T:
+                continue
+            idx = np.arange(first - 1, T, l, dtype=np.int64)
+            _strip(R, idx, l)
+    return (R == 1), m, Q, fb
+
+
+def exponents(Qt: int, fb: FactorBase) -> Dict[int, int]:
+    """Exact factorisation of a y-smooth Q_t over the factor base (trial division)."""
+    e: Dict[int, int] = {}
+    x = Qt
+    for l in fb.primes:
+        if x == 1:
+            break
+        if x % l == 0:
+            k = 0
+            while x % l == 0:
+                x //= l
+                k += 1
+            e[l] = k
+    if x != 1:
+        raise ValueError("not smooth")
+    return e
+
+
+def smooth_relations(N: int, y: int, T: int, fb: Optional[FactorBase] = None):
+    """All y-smooth Q_t, t <= T, with exact exponent dicts (vectorised).
+    Returns (m, fb, ts, exps) with ts increasing and exps[i] = {l: v_l(Q_{ts[i]})}."""
+    mask, m, Q, fb = smooth_mask(N, y, T, fb)
+    sel_all = np.nonzero(mask)[0]
+    pos = {int(i): j for j, i in enumerate(sel_all)}
+    exps: List[Dict[int, int]] = [dict() for _ in range(sel_all.size)]
+    Qs = Q[sel_all].copy()
+    # l = 2
+    low = Qs & (~Qs + np.uint64(1))
+    v2 = np.zeros(Qs.size, dtype=np.int64)
+    tmp = low.copy()
+    while True:
+        nz = tmp > 1
+        if not nz.any():
+            break
+        v2[nz] += 1
+        tmp[nz] >>= np.uint64(1)
+    for j in np.nonzero(v2)[0]:
+        exps[int(j)][2] = int(v2[j])
+    for l in fb.primes:
+        if l == 2:
+            continue
+        L = np.uint64(l)
+        for t0 in fb.roots[l]:
+            first = t0 if t0 >= 1 else t0 + l
+            if first > T:
+                continue
+            idx = np.arange(first - 1, T, l, dtype=np.int64)
+            idx = idx[mask[idx]]
+            if idx.size == 0:
+                continue
+            js = np.fromiter((pos[int(i)] for i in idx), dtype=np.int64, count=idx.size)
+            vals = Q[idx].copy()
+            e = np.zeros(idx.size, dtype=np.int64)
+            cur = np.arange(idx.size)
+            while cur.size:
+                mk = (vals[cur] % L) == 0
+                cur = cur[mk]
+                if cur.size == 0:
+                    break
+                vals[cur] //= L
+                e[cur] += 1
+            for j, k in zip(js, e):
+                if k:
+                    exps[int(j)][l] = exps[int(j)].get(l, 0) + int(k)
+    ts = [int(i) + 1 for i in sel_all]
+    return m, fb, ts, exps, Q
+"""OPERATIONAL. Incremental exact Gaussian elimination over F_2 with Python-int
+bitsets.  Rows are added one at a time; when a row reduces to zero, the
+combination (a bitset over row indices) is a new independent left-kernel vector.
+Deterministic (pivot = highest set column bit)."""
+from __future__ import annotations
+
+from typing import Dict, Optional, Tuple
+
+
+class IncrementalF2:
+    def __init__(self) -> None:
+        self.piv: Dict[int, Tuple[int, int]] = {}  # column -> (vector, combo)
+        self.nrows = 0
+
+    def add(self, vec: int) -> Optional[int]:
+        """Add a row; return the kernel combo (bitset of row indices) if dependent."""
+        i = self.nrows
+        self.nrows += 1
+        combo = 1 << i
+        while vec:
+            c = vec.bit_length() - 1
+            p = self.piv.get(c)
+            if p is None:
+                self.piv[c] = (vec, combo)
+                return None
+            vec ^= p[0]
+            combo ^= p[1]
+        return combo
+
+    @property
+    def rank(self) -> int:
+        return len(self.piv)
+"""OPERATIONAL. Deterministic single-polynomial quadratic sieve (no randomness).
+
+qs_run(N, y, T, dmax) sees only N and the public parameters.  Steps:
+1. If N is a perfect square or a factor-base prime divides N, report it
+   (classified ACCIDENTAL by the harness: trial division).
+2. Exact sieve of Q_t = (m+t)^2 - N, t = 1..T (sieve.smooth_mask).
+3. Relations in increasing t; each is added to an incremental F_2 eliminator.
+   Every time the kernel dimension grows, the new kernel vector S gives
+   X_S = prod(m+t_i) mod N, Y_S = prod l^{e_l(S)/2} mod N and g = gcd(X_S - Y_S, N).
+   The run stops at the first proper g, or when dmax kernel vectors were tested.
+Every nonunit met is output (rule 3): gcd(m+t, N) and gcd(Y_S, N) are checked.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+import gmpy2
+
+from .linalg import IncrementalF2
+from .sieve import factor_base, smooth_relations
+
+
+@dataclass
+class QSResult:
+    N: int
+    y: int
+    T: int
+    fb_size: int
+    Z: int                         # number of y-smooth Q_t, t <= T
+    factor: Optional[int] = None
+    how: str = "none"              # 'square' | 'trial' | 'unit' | 'dependency' | 'none'
+    relations_used: int = 0
+    deps_tested: int = 0
+    dep_outcomes: List[int] = field(default_factory=list)   # 1 fruitful, 0 trivial
+    dep_jacobi: List[int] = field(default_factory=list)     # Jacobi (X_S Y_S / N)
+    dep_sizes: List[int] = field(default_factory=list)      # |S|
+    first_fruitful: Optional[int] = None                    # 1-based kernel index
+
+
+def qs_run(N: int, y: int, T: int, dmax: int = 30) -> QSResult:
+    if N < 4:
+        raise ValueError
+    r = int(gmpy2.isqrt(N))
+    if r * r == N:
+        res = QSResult(N, y, T, 0, 0, factor=r, how="square")
+        return res
+    fb = factor_base(N, y)
+    if fb.divides_N:
+        l = fb.divides_N[0]
+        return QSResult(N, y, T, len(fb.primes), 0, factor=l, how="trial")
+    m, fb, ts, exps, Q = smooth_relations(N, y, T, fb)
+    res = QSResult(N, y, T, len(fb.primes), len(ts))
+    col = {l: j for j, l in enumerate(fb.primes)}
+    elim = IncrementalF2()
+    rel_x: List[int] = []
+    rel_e: List[dict] = []
+    for t, e in zip(ts, exps):
+        x = m + t
+        g = gmpy2.gcd(x, N)
+        if 1 < g < N:
+            res.factor, res.how = int(g), "unit"
+            return res
+        chk = 1
+        for l, k in e.items():
+            chk *= l ** k
+        assert chk == int(Q[t - 1]), "exponent vector does not reproduce Q_t"
+        vec = 0
+        for l, k in e.items():
+            if k & 1:
+                vec |= 1 << col[l]
+        rel_x.append(x)
+        rel_e.append(e)
+        combo = elim.add(vec)
+        if combo is None:
+            continue
+        S = [i for i in range(len(rel_x)) if (combo >> i) & 1]
+        X = 1
+        tot: dict = {}
+        for i in S:
+            X = X * rel_x[i] % N
+            for l, k in rel_e[i].items():
+                tot[l] = tot.get(l, 0) + k
+        Y = 1
+        for l, k in tot.items():
+            assert k % 2 == 0
+            Y = Y * pow(l, k // 2, N) % N
+        gy = gmpy2.gcd(Y, N)
+        if 1 < gy < N:
+            res.factor, res.how = int(gy), "unit"
+            return res
+        g = int(gmpy2.gcd(X - Y, N))
+        res.deps_tested += 1
+        res.dep_sizes.append(len(S))
+        res.dep_jacobi.append(int(gmpy2.jacobi(X * Y % N, N)))
+        fr = 1 if 1 < g < N else 0
+        res.dep_outcomes.append(fr)
+        if fr:
+            res.factor, res.how = g, "dependency"
+            res.first_fruitful = res.deps_tested
+            res.relations_used = len(rel_x)
+            return res
+        if res.deps_tested >= dmax:
+            break
+    res.relations_used = len(rel_x)
+    return res
+
+web search: deterministic integer factorization almost all balanced semiprimes one fifth 2025 2026 ...
+codex
+The coordinate identity checks out, but the variance argument has a serious gap: a covariance of residue classes within one box does not automatically represent the product of the two global per-\(t\) means. I’m checking that mismatch, along with the claimed \(k\)-averaging cancellation and the precision of the local-density estimates.
+web search: 
+exec
+/bin/zsh -lc "sed -n '25,170p' ../../../src/detqs/harness.py; cat ../../../src/detqs/localmodel.py ../../../tests/test_detqs.py; cat ../../../experiments/analysis/detqs_summary.json" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+from .qs import qs_run
+from .sieve import factor_base, primes_upto, smooth_mask
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RAW = os.path.join(ROOT, "experiments", "raw")
+ANA = os.path.join(ROOT, "experiments", "analysis")
+
+FROZEN_T = {40: 16, 48: 18, 56: 18, 64: 19, 72: 20, 80: 21}   # log2 T
+E1_M = {40: (2000, 1000), 48: (2000, 1000), 56: (2000, 1000), 64: (2000, 1000), 72: (1000, 500)}
+E2_M = {40: 1000, 48: 1000, 56: 1000, 64: 1000, 72: 400, 80: 200}
+DMAX = 30
+
+
+def y_of(n: int) -> int:
+    return 1 << (n // 5)
+
+
+def T_of(n: int) -> int:
+    return 1 << FROZEN_T[n]
+
+
+# ----------------------------------------------------------------- instances
+def rand_int(n: int, i: int) -> int:
+    rng = random.Random(f"detqs|int|{n}|{i}")
+    return rng.randrange(1 << (n - 1), 1 << n)
+
+
+def rand_semiprime(n: int, i: int, tag: str = "sp") -> Tuple[int, int, int]:
+    """Uniform over S_n = {(p,q): p < q <= 2p primes, 2^{n-1} <= pq < 2^n} (rectangle rejection)."""
+    rng = random.Random(f"detqs|{tag}|{n}|{i}")
+    lo, hi = 1 << (n - 1), 1 << n
+    A = int(gmpy2.isqrt(lo // 2))
+    B = int(gmpy2.isqrt(hi)) + 1
+    while True:
+        p = rng.randrange(A, B)
+        q = rng.randrange(A, 2 * B)
+        if not (p < q <= 2 * p):
+            continue
+        N = p * q
+        if not (lo <= N < hi):
+            continue
+        if gmpy2.is_prime(p) and gmpy2.is_prime(q):
+            return N, p, q
+
+
+# ----------------------------------------------------------------- local model, fast form
+class LModel:
+    """L(N) of localmodel.model_LN, with per-(l, u) caches (same numbers, faster)."""
+
+    def __init__(self, n: int, y: int, T: int, nblocks: int = 8, E: int = 12):
+        self.y, self.E = y, E
+        self.logy = math.log(y)
+        self.us, self.ws = u_blocks(n, y, T, nblocks)
+        self.ps = primes_upto(y)
+        self.g = {}   # (l, b) -> list g(e)
+        self.den = {}
+        for b, u in enumerate(self.us):
+            r0 = rho(u)
+            for l in self.ps:
+                g = [rho(u - e * math.log(l) / self.logy) / r0 for e in range(E + 1)]
+                self.g[(l, b)] = g
+                self.den[(l, b)] = sum((1 - 1 / l) * l ** (-e) * g[e] for e in range(E)) + l ** (-E) * g[E]
+        self.lam = {}  # (l, b, chi) -> log lambda for odd l not dividing N
+        for b in range(len(self.us)):
+            for l in self.ps:
+                if l == 2:
+                    continue
+                for chi in (1, -1):
+                    Nfake = self._rep(l, chi)
+                    self.lam[(l, b, chi)] = math.log(self._lf(l, b, _vdist(l, Nfake, E)))
+        self.cache2: Dict[Tuple[int, int], List[float]] = {}
+
+    @staticmethod
+    def _rep(l: int, chi: int) -> int:
+        a = 1
+        while True:
+            c = 1 if pow(a, (l - 1) // 2, l) == 1 else -1
+            if a % l and c == chi:
+                return a
+            a += 1
+
+    def _lf(self, l: int, b: int, d: List[float]) -> float:
+        g = self.g[(l, b)]
+        return sum(d[e] * g[e] for e in range(self.E + 1)) / self.den[(l, b)]
+
+    def L(self, N: int) -> float:
+        tot = 0.0
+        dl: Dict[int, List[float]] = {}
+        chis: Dict[int, int] = {}
+        for l in self.ps:
+            if l == 2 or N % l == 0:
+                EE = self.E
+                while l ** EE > 131072:
+                    EE -= 1
+                key = (l, N % (l ** EE))
+                if key not in self.cache2:
+                    self.cache2[key] = _vdist(l, N, self.E)
+                dl[l] = self.cache2[key]
+            else:
+                chis[l] = 1 if pow(N % l, (l - 1) // 2, l) == 1 else -1
+        for b, w in enumerate(self.ws):
+            s = 0.0
+            for l, c in chis.items():
+                s += self.lam[(l, b, c)]
+            for l, d in dl.items():
+                s += math.log(max(self._lf(l, b, d), 1e-300))
+            tot += w * math.exp(s)
+        return tot / sum(self.ws)
+
+
+# ----------------------------------------------------------------- E1 + E3
+def _autocorr(f: np.ndarray) -> np.ndarray:
+    T = f.size
+    F = np.fft.rfft(f.astype(np.float64), 2 * T)
+    a = np.fft.irfft(F * np.conj(F), 2 * T)[:T]
+    r = np.rint(a)
+    assert np.max(np.abs(a - r)) < 0.01
+    return r.astype(np.int64)
+
+
+def run_e1(n: int) -> None:
+    y, T = y_of(n), T_of(n)
+    Mi, Ms = E1_M[n]
+    model = LModel(n, y, T)
+    out = open(os.path.join(RAW, f"detqs_e1_n{n}.jsonl"), "w")
+    A = np.zeros(T, dtype=np.int64)   # sum_N autocorr (integers only, E3)
+    F = np.zeros(T, dtype=np.int64)   # sum_N f
+    cnt = 0
+    t0 = time.time()
+    jobs = [("int", i) for i in range(Mi)] + [("sp", i) for i in range(Ms)]
+    for kind, i in jobs:
+        if kind == "int":
+            N = rand_int(n, i)
+            p = q = None
+        else:
+            N, p, q = rand_semiprime(n, i)
+        r = int(gmpy2.isqrt(N))
+        if r * r == N:
+            out.write(json.dumps({"n": n, "kind": kind, "i": i, "N": str(N), "square": True}) + "\n")
+            continue
+        fb = factor_base(N, y)
+        mask, m, Q, fb = smooth_mask(N, y, T, fb)
+        Z = int(mask.sum())
+        rec = {"n": n, "kind": kind, "i": i, "N": str(N), "Z": Z, "fb": len(fb.primes),
+               "fb_divides_N": fb.divides_N[:3], "L": model.L(N), "N_mod8": N % 8}
+        if kind == "sp":
+"""MODEL (predictions only; floating point allowed here as a fit/model).
+
+Local-factor model for Z_N = #{t <= T : Q_t(N) y-smooth}, Q_t = (m+t)^2 - N.
+
+For a prime l <= y and e >= 0 put g_{l,u}(e) = rho(u - e log l / log y) / rho(u)
+(the smoothness chance of a size-y^u integer whose l-part is l^e, relative to
+rho(u)).  Under the uniform law on Z_l, Pr(v_l = e) = (1 - 1/l) l^{-e}; under
+the law of x^2 - N with x uniform in Z_l it is P_N(e), computed exactly by
+Hensel counting.  The local factor is
+
+    lambda_{l,u}(N) = sum_e P_N(e) g(e) / sum_e (1 - 1/l) l^{-e} g(e),
+
+and the model for the conditional mean is E[Z | N] ~ sum_t rho(u_t) prod_{l<=y} lambda_{l,u_t}(N),
+u_t = log Q_t / log y.  Only the N-dependent product L(N) is used in the
+pre-registered tests (normalised by its sample mean).
+"""
+from __future__ import annotations
+
+import math
+from functools import lru_cache
+from typing import Dict, List, Sequence, Tuple
+
+from .sieve import primes_upto
+
+_H = 1e-3
+
+
+@lru_cache(maxsize=1)
+def _rho_table(umax: float = 30.0) -> List[float]:
+    n = int(umax / _H) + 2
+    k = int(round(1.0 / _H))
+    r = [1.0] * n
+    for i in range(k + 1, n):
+        u = i * _H
+        # rho'(u) = -rho(u-1)/u, trapezoid
+        u0 = (i - 1) * _H
+        r[i] = r[i - 1] - 0.5 * _H * (r[i - 1 - k] / u0 + r[i - k] / u)
+    return r
+
+
+def rho(u: float) -> float:
+    if u <= 1.0:
+        return 1.0
+    t = _rho_table()
+    x = u / _H
+    i = int(x)
+    if i + 1 >= len(t):
+        return 0.0
+    f = x - i
+    return t[i] * (1 - f) + t[i + 1] * f
+
+
+def vdist_square_minus_N(l: int, N: int, E: int) -> List[float]:
+    """Exact Pr(v_l(x^2 - N) = e) for e = 0..E-1 (last entry = Pr(v >= E-1)... see code),
+    x uniform mod l^E.  Returns probs for e=0..E (index E collects v >= E)."""
+    mod = l ** E
+    cnt = [0] * (E + 1)
+    if l ** E > 200000:
+        raise ValueError("modulus too large for enumeration")
+    Nm = N % mod
+    for x in range(mod):
+        a = (x * x - Nm) % mod
+        if a == 0:
+            cnt[E] += 1
+            continue
+        e = 0
+        while a % l == 0:
+            a //= l
+            e += 1
+        cnt[e] += 1
+    return [c / mod for c in cnt]
+
+
+def _vdist(l: int, N: int, E: int) -> List[float]:
+    """Pr(v_l(x^2-N) = e), e = 0..E (E = tail >= E). Closed form for odd l not dividing N."""
+    if l != 2 and N % l != 0:
+        chi = 1 if pow(N % l, (l - 1) // 2, l) == 1 else -1
+        if chi == -1:
+            return [1.0] + [0.0] * E
+        # Pr(v >= e) = 2 l^{-e} for e >= 1 (Hensel)
+        ge = [1.0] + [2.0 * l ** (-e) for e in range(1, E + 1)]
+        return [ge[e] - ge[e + 1] for e in range(E)] + [ge[E]]
+    # l = 2 or l | N: enumerate modulo l^E with l^E <= 2^17
+    EE = E
+    while l ** EE > 131072:
+        EE -= 1
+    d = vdist_square_minus_N(l, N, EE)
+    return d + [0.0] * (E - EE)
+
+
+def local_factor(l: int, N: int, u: float, logy: float, E: int = 12) -> float:
+    d = _vdist(l, N, E)
+    r0 = rho(u)
+    if r0 <= 0:
+        return 1.0
+    g = [rho(u - e * math.log(l) / logy) / r0 for e in range(E + 1)]
+    num = sum(d[e] * g[e] for e in range(E + 1))
+    den = sum((1 - 1 / l) * l ** (-e) * g[e] for e in range(E)) + l ** (-E) * g[E]
+    return num / den
+
+
+def model_LN(N: int, y: int, us: Sequence[float], weights: Sequence[float]) -> float:
+    """sum_j w_j prod_l lambda_{l,u_j}(N) / sum_j w_j  (w_j = rho(u_j) * block length)."""
+    logy = math.log(y)
+    ps = primes_upto(y)
+    tot = 0.0
+    for u, w in zip(us, weights):
+        lp = 0.0
+        for l in ps:
+            lp += math.log(local_factor(l, N, u, logy))
+        tot += w * math.exp(lp)
+    return tot / sum(weights)
+
+
+def u_blocks(n: int, y: int, T: int, nblocks: int = 16) -> Tuple[List[float], List[float]]:
+    """Representative u_t and weights rho(u_t)*len over geometric t-blocks (model only)."""
+    m = 2.0 ** (n / 2.0) * 1.2247  # ~ sqrt of a typical n-bit N (1.5 * 2^{n-1})
+    edges = sorted({max(1, int(round(T ** (j / nblocks)))) for j in range(nblocks + 1)} | {1, T})
+    us, ws = [], []
+    for a, b in zip(edges[:-1], edges[1:]):
+        tm = math.sqrt(a * b)
+        Qm = 2 * m * tm + tm * tm
+        u = math.log(Qm) / math.log(y)
+        us.append(u)
+        ws.append(rho(u) * (b - a))
+    return us, ws
+
+
+def expected_Z(n: int, y: int, T: int) -> float:
+    us, ws = u_blocks(n, y, T, 64)
+    return sum(ws)
+
+
+def pair_ratio_model(l: int, u: float, logy: float, E: int) -> Dict[int, float]:
+    """Unconditional local pair factor R_l(j) = E[w(v) w(v')] / E[w]^2 over N, x uniform
+    mod l^E, v = x^2 - N, v' = (x+k)^2 - N, for k with v_l(k) = j (j = 0..E-1).
+    w(v) = g(v_l(v)), g(e) = rho(u - e log l/log y)/rho(u); v_l capped at E."""
+    mod = l ** E
+    r0 = rho(u)
+    g = [rho(u - e * math.log(l) / logy) / r0 for e in range(E + 1)]
+
+    def val(a: int) -> int:
+        if a == 0:
+            return E
+        e = 0
+        while a % l == 0:
+            a //= l
+            e += 1
+        return e
+    vt = [val(a) for a in range(mod)]
+    w = [g[vt[a]] for a in range(mod)]
+    Ew = sum(w) / mod
+    out = {}
+    for j in range(E):
+        k = l ** j  # representative: only v_l(k) matters (k = l^j * unit, unit absorbed by x -> x*unit? see note)
+        s = 0.0
+        for N in range(mod):
+            for x in range(mod):
+                a = (x * x - N) % mod
+                b = ((x + k) * (x + k) - N) % mod
+                s += w[a] * w[b]
+        out[j] = s / (mod * mod) / (Ew * Ew)
+    return out
+
+
+def pair_ratio_avg(l: int, u: float, logy: float, E: int) -> float:
+    """Average of R_l over k with l | k (v_l(k) = j has weight (1-1/l) l^{-(j-1)})."""
+    R = pair_ratio_model(l, u, logy, E)
+    tot, wt = 0.0, 0.0
+    for j in range(1, E):
+        wj = (1 - 1 / l) * l ** (-(j - 1))
+        tot += wj * R[j]
+        wt += wj
+    # tail j >= E: use R[E-1]
+    tail = l ** (-(E - 1))
+    tot += tail * R[E - 1]
+    wt += tail
+    return tot / wt
+"""Tests for src/detqs (sieve exactness, elimination, QS driver, Lemma P, local model)."""
+import math
+import random
+
+import gmpy2
+import pytest
+import sympy
+
+from src.detqs.linalg import IncrementalF2
+from src.detqs.localmodel import _vdist, model_LN, rho, u_blocks, vdist_square_minus_N
+from src.detqs.qs import qs_run
+from src.detqs.sieve import factor_base, smooth_mask, smooth_relations
+
+
+def _brute_smooth(v, y):
+    for l in range(2, y + 1):
+        while v % l == 0:
+            v //= l
+    return v == 1
+
+
+@pytest.mark.parametrize("N", [1000003 * 1000033, 2 ** 40 + 15, 123456789011, 3 ** 5 * 7 * 1000003])
+def test_sieve_exact(N):
+    y, T = 150, 2500
+    mask, m, Q, fb = smooth_mask(N, y, T)
+    assert m * m >= N > (m - 1) ** 2
+    for t in range(1, T + 1):
+        assert int(Q[t - 1]) == (m + t) ** 2 - N
+        assert bool(mask[t - 1]) == _brute_smooth((m + t) ** 2 - N, y)
+
+
+def test_relations_reproduce_Q():
+    N = 1000003 * 1000033
+    m, fb, ts, exps, Q = smooth_relations(N, 300, 20000)
+    assert ts
+    for t, e in zip(ts, exps):
+        assert math.prod(l ** k for l, k in e.items()) == (m + t) ** 2 - N
+
+
+def test_incremental_f2_kernel():
+    rng = random.Random(1)
+    rows = [rng.getrandbits(12) for _ in range(20)]
+    el = IncrementalF2()
+    for i, r in enumerate(rows):
+        c = el.add(r)
+        if c is not None:
+            acc = 0
+            for j in range(i + 1):
+                if (c >> j) & 1:
+                    acc ^= rows[j]
+            assert acc == 0 and (c >> i) & 1
+    assert el.rank <= 12
+
+
+@pytest.mark.parametrize("bits", [32, 40, 48])
+def test_qs_factors_and_jacobi(bits):
+    rng = random.Random(bits)
+    for _ in range(4):
+        while True:
+            p = int(gmpy2.next_prime(rng.getrandbits(bits // 2) | (1 << (bits // 2 - 1))))
+            q = int(gmpy2.next_prime(p + rng.randrange(1, p)))
+            if p % 4 == 3 and q % 4 == 3:
+                break
+        N = p * q
+        r = qs_run(N, 1 << (bits // 5), 1 << 17)
+        assert r.factor in (p, q)
+        for j, o in zip(r.dep_jacobi, r.dep_outcomes):   # Blum rule
+            assert (j == -1) == bool(o)
+
+
+def _sqfree_kernel(v):
+    k = 1
+    for l, e in sympy.factorint(v).items():
+        if e % 2:
+            k *= l
+    return k
+
+
+@pytest.mark.parametrize("N", [10007 * 10009, 1009 * 2003, 3 * 5 * 7 * 11 * 13 * 17 * 101 * 103, 1009 * 1013 * 1019])
+def test_lemma_P_pair_dependencies_always_fruitful(N):
+    """Lemma P: t != t', Q_t Q_t' a square, Q_t != Q_t' => 1 < gcd(X - Y, N) < N."""
+    m = math.isqrt(N - 1) + 1
+    seen = {}
+    pairs = 0
+    for t in range(1, 6000):
+        v = (m + t) ** 2 - N
+        k = _sqfree_kernel(v)
+        if k in seen:
+            t2 = seen[k]
+            v2 = (m + t2) ** 2 - N
+            X = (m + t) * (m + t2)
+            Y = math.isqrt(v * v2)
+            assert Y * Y == v * v2
+            g = math.gcd(X - Y, N)
+            assert 1 < g < N, (N, t, t2)
+            pairs += 1
+        else:
+            seen[k] = t
+    assert pairs >= 1
+
+
+def test_local_model_basic():
+    assert abs(rho(2) - (1 - math.log(2))) < 1e-6
+    for l in (3, 5, 7):
+        for N in (1, 2, 3, 4, 10, 11):
+            d = _vdist(l, N, 6)
+            assert abs(sum(d) - 1) < 1e-12
+            if N % l:
+                e = vdist_square_minus_N(l, N, 5)
+                # closed form agrees with enumeration on e = 0..3
+                for k in range(4):
+                    assert abs(d[k] - e[k]) < 1e-12
+
+
+def test_lmodel_fast_matches_reference():
+    from src.detqs.harness import LModel
+    n, y, T = 40, 256, 1 << 16
+    lm = LModel(n, y, T)
+    us, ws = u_blocks(n, y, T, 8)
+    for N in (2 ** 39 + 7, 2 ** 39 + 1234567, 3 * 2 ** 37 + 11):
+        assert abs(lm.L(N) - model_LN(N, y, us, ws)) < 1e-9 * max(1.0, lm.L(N))
+{
+ "E1": {
+  "40": {
+   "n": 40,
+   "y": 256,
+   "T": 65536,
+   "M_int": 2000,
+   "M_sp": 1000,
+   "Zbar": 116.3785,
+   "V": 0.7133826899650353,
+   "poisson": 0.008592652422913167,
+   "VL": 0.8127232656802781,
+   "corr": 0.9844959628018037,
+   "Vres": 0.022170463144622378,
+   "Vstrat": 0.4653707297414741,
+   "min_r_int": 0.13884691449284908,
+   "min_r_sp": 0.0,
+   "mean_r_sp": 0.9849611828949507,
+   "min_Z_over_fb_sp": 0.0,
+   "h1_fail_sp": 97,
+   "frac_Z_below_half_mean_int": 0.3265,
+   "P1a": true,
+   "P1b": true,
+   "P1c": true,
+   "P1d": true,
+   "P1e": false,
+   "P1f": false,
+   "P1g": false,
+   "P1h": true
+  },
+  "48": {
+   "n": 48,
+   "y": 512,
+   "T": 262144,
+   "M_int": 2000,
+   "M_sp": 1000,
+   "Zbar": 282.5725,
+   "V": 0.5480319286431844,
+   "poisson": 0.0035389147917791013,
+   "VL": 0.5776577123999883,
+   "corr": 0.9902002333064988,
+   "Vres": 0.010399826930444923,
+   "Vstrat": 0.37715497791223523,
+   "min_r_int": 0.3359868229277956,
+   "min_r_sp": 0.4702555550892115,
+   "mean_r_sp": 0.986401886391181,
+   "min_Z_over_fb_sp": 0.3191489361702128,
+   "h1_fail_sp": 24,
+   "frac_Z_below_half_mean_int": 0.2695,
+   "P1a": true,
+   "P1b": true,
+   "P1c": true,
+   "P1d": true,
+   "P1e": false,
+   "P1f": false,
+   "P1g": false,
+   "P1h": true
+  },
+  "56": {
+   "n": 56,
+   "y": 2048,
+   "T": 262144,
+   "M_int": 2000,
+   "M_sp": 1000,
+   "Zbar": 867.244,
+   "V": 0.2670637178052971,
+   "poisson": 0.0011530780264838961,
+   "VL": 0.26576290472630015,
+   "corr": 0.9943631055637402,
+   "Vres": 0.003236387148845851,
+   "Vstrat": 0.16709187307034326,
+   "min_r_int": 0.7058250739887794,
+   "min_r_sp": 0.6801035310742901,
+   "mean_r_sp": 0.9924367682849945,
+   "min_Z_over_fb_sp": 0.9395973154362416,
+   "h1_fail_sp": 1,
+   "frac_Z_below_half_mean_int": 0.1295,
+   "P1a": true,
+   "P1b": true,
+   "P1c": true,
+   "P1d": true,
+   "P1e": false,
+   "P1f": true,
+   "P1g": false,
+   "P1h": true
+  },
+  "64": {
+   "n": 64,
+   "y": 4096,
+   "T": 524288,
+   "M_int": 2000,
+   "M_sp": 1000,
+   "Zbar": 1463.182,
+   "V": 0.20278186159897316,
+   "poisson": 0.0006834419778264085,
+   "VL": 0.19921512202075028,
+   "corr": 0.9950267485411908,
+   "Vres": 0.001980063873108105,
+   "Vstrat": 0.12369531483364961,
+   "min_r_int": 0.7949632361420522,
+   "min_r_sp": 0.6175487593236594,
+   "mean_r_sp": 0.9964610539234818,
+   "min_Z_over_fb_sp": 0.4681647940074906,
+   "h1_fail_sp": 2,
+   "frac_Z_below_half_mean_int": 0.0945,
+   "P1a": true,
+   "P1b": true,
+   "P1c": true,
+   "P1d": true,
+   "P1e": false,
+   "P1f": true,
+   "P1g": false,
+   "P1h": true
+  },
+  "72": {
+   "n": 72,
+   "y": 16384,
+   "T": 1048576,
+   "M_int": 1000,
+   "M_sp": 500,
+   "Zbar": 5248.435,
+   "V": 0.12728433566885808,
+   "poisson": 0.0001905329874524501,
+   "VL": 0.12456243619203414,
+   "corr": 0.9961024531629422,
+   "Vres": 0.0010554876463777902,
+   "Vstrat": 0.06887154250883548,
+   "min_r_int": 0.8730318224824943,
+   "min_r_sp": 0.8964987973374555,
+   "mean_r_sp": 0.9975665699615212,
+   "min_Z_over_fb_sp": 1.859275053304904,
+   "h1_fail_sp": 0,
+   "frac_Z_below_half_mean_int": 0.039,
+   "P1a": true,
+   "P1b": true,
+   "P1c": true,
+   "P1d": true,
+   "P1e": true,
+   "P1f": true,
+   "P1g": true,
+   "P1h": true
+  }
+ },
+ "E2": {
+  "40": {
+   "n": 40,
+   "M": 1000,
+   "tail_counts": {
+    "1": 575,
+    "2": 364,
+    "3": 238,
+    "4": 158,
+    "5": 134
+   },
+   "tail_pvals": {
+    "1": 2.3562931647113404e-06,
+    "2": 1.5090441688822513e-15,
+    "3": 1.0484799026809231e-22,
+    "4": 3.005426676496446e-26,
+    "5": 1.3045880933794396e-44
+   },
+   "n_gt15": 83,
+   "jacobi_runs": 229,
+   "P2a": true,
+   "P2b_count": 0,
+   "h1_fail": 104,
+   "accidental": 0,
+   "success": 917,
+   "small_deps": 138,
+   "P2f": true,
+   "mean_deps": 2.114
+  },
+  "48": {
+   "n": 48,
+   "M": 1000,
+   "tail_counts": {
+    "1": 557,
+    "2": 289,
+    "3": 154,
+    "4": 84,
+    "5": 53
+   },
+   "tail_pvals": {
+    "1": 0.00034770037646780864,
+    "2": 0.004912291942329901,
+    "3": 0.00733508091290269,
+    "4": 0.007237246957843829,
+    "5": 0.0002533399528059032
+   },
+   "n_gt15": 22,
+   "jacobi_runs": 252,
+   "P2a": true,
+   "P2b_count": 3,
+   "h1_fail": 30,
+   "accidental": 0,
+   "success": 978,
+   "small_deps": 43,
+   "P2f": true,
+   "mean_deps": 2.044
+  },
+  "56": {
+   "n": 56,
+   "M": 1000,
+   "tail_counts": {
+    "1": 489,
+    "2": 232,
+    "3": 123,
+    "4": 71,
+    "5": 42
+   },
+   "tail_pvals": {
+    "1": 0.5066600426243302,
+    "2": 0.2011707376487453,
+    "3": 0.8859851521401123,
+    "4": 0.2664114013759973,
+    "5": 0.05583254250216575
+   },
+   "n_gt15": 2,
+   "jacobi_runs": 218,
+   "P2a": true,
+   "P2b_count": 5,
+   "h1_fail": 2,
+   "accidental": 0,
+   "success": 998,
+   "small_deps": 16,
+   "P2f": true,
+   "mean_deps": 1.982
+  },
+  "64": {
+   "n": 64,
+   "M": 1000,
+   "tail_counts": {
+    "1": 516,
+    "2": 249,
+    "3": 130,
+    "4": 70,
+    "5": 41
+   },
+   "tail_pvals": {
+    "1": 0.32693668243152346,
+    "2": 0.9708758941160077,
+    "3": 0.6324921010791165,
+    "4": 0.32674423645730755,
+    "5": 0.083369470824821
+   },
+   "n_gt15": 0,
+   "jacobi_runs": 242,
+   "P2a": true,
+   "P2b_count": 5,
+   "h1_fail": 0,
+   "accidental": 0,
+   "success": 1000,
+   "small_deps": 5,
+   "P2f": true,
+   "mean_deps": 2.056
+  },
+  "72": {
+   "n": 72,
+   "M": 400,
+   "tail_counts": {
+    "1": 207,
+    "2": 104,
+    "3": 52,
+    "4": 22,
+    "5": 13
+   },
+   "tail_pvals": {
+    "1": 0.5157430569919416,
+    "2": 0.6442841749746483,
+    "3": 0.7622101597832692,
+    "4": 0.6058437946008589,
+    "5": 0.8850858608433518
+   },
+   "n_gt15": 0,
+   "jacobi_runs": 111,
+   "P2a": true,
+   "P2b_count": 5,
+   "h1_fail": 0,
+   "accidental": 0,
+   "success": 400,
+   "small_deps": 1,
+   "P2f": true,
+   "mean_deps": 2.04
+  },
+  "80": {
+   "n": 80,
+   "M": 200,
+   "tail_counts": {
+    "1": 89,
+    "2": 46,
+    "3": 19,
+    "4": 12,
+    "5": 6
+   },
+   "tail_pvals": {
+    "1": 0.13736665086863975,
+    "2": 0.5677700317153901,
+    "3": 0.23874075191227295,
+    "4": 1.0,
+    "5": 1.0
+   },
+   "n_gt15": 0,
+   "jacobi_runs": 46,
+   "P2a": true,
+   "P2b_count": 5,
+   "h1_fail": 0,
+   "accidental": 0,
+   "success": 200,
+   "small_deps": 0,
+   "P2f": true,
+   "mean_deps": 1.885
+  }
+ },
+ "E3": {
+  "40": {
+   "n": 40,
+   "ratio_2": 1.4766726016766403,
+   "model_2": 1.5116,
+   "P3a_2": true,
+   "P3b_2": true,
+   "ratio_3": 1.276778685800137,
+   "model_3": 1.2609,
+   "P3a_3": true,
+   "P3b_3": true,
+   "ratio_5": 1.2575521695281648,
+   "model_5": 1.2932,
+   "P3a_5": true,
+   "P3b_5": true
+  },
+  "48": {
+   "n": 48,
+   "ratio_2": 1.3503956440813585,
+   "model_2": 1.3958,
+   "P3a_2": true,
+   "P3b_2": true,
+   "ratio_3": 1.2145217657598735,
+   "model_3": 1.2056,
+   "P3a_3": true,
+   "P3b_3": true,
+   "ratio_5": 1.230891962768667,
+   "model_5": 1.2287,
+   "P3a_5": true,
+   "P3b_5": true
+  },
+  "56": {
+   "n": 56,
+   "ratio_2": 1.2128293091997764,
+   "model_2": 1.2023,
+   "P3a_2": true,
+   "P3b_2": true,
+   "ratio_3": 1.118953788762633,
+   "model_3": 1.1082,
+   "P3a_3": true,
+   "P3b_3": true,
+   "ratio_5": 1.1227632557169114,
+   "model_5": 1.1177,
+   "P3a_5": true,
+   "P3b_5": true
+  },
+  "64": {
+   "n": 64,
+   "ratio_2": 1.1774366020194722,
+   "model_2": 1.1677,
+   "P3a_2": true,
+   "P3b_2": true,
+   "ratio_3": 1.0996442112136176,
+   "model_3": 1.0901,
+   "P3a_3": true,
+   "P3b_3": true,
+   "ratio_5": 1.0996436173072095,
+   "model_5": 1.0973,
+   "P3a_5": true,
+   "P3b_5": true
+  },
+  "72": {
+   "n": 72,
+   "ratio_2": 1.1148882026890103,
+   "model_2": 1.1077,
+   "P3a_2": true,
+   "P3b_2": true,
+   "ratio_3": 1.0593313793402537,
+   "model_3": 1.0583,
+   "P3a_3": true,
+   "P3b_3": true,
+   "ratio_5": 1.0686000967079639,
+   "model_5": 1.0621,
+   "P3a_5": true,
+   "P3b_5": true
+  }
+ },
+ "E2_pooled": {
+  "M": 4600,
+  "tail": {
+   "1": [
+    2433,
+    9.297752253496533e-05
+   ],
+   "2": [
+    1284,
+    6.385737922065205e-06
+   ],
+   "3": [
+    716,
+    1.1072504731660076e-09
+   ],
+   "4": [
+    417,
+    1.1191578630717464e-13
+   ],
+   "5": [
+    289,
+    1.55802174677605e-27
+   ]
+  },
+  "n_gt15": 107,
+  "P2b_pooled": false,
+  "P2c": false
+ }
+}
+web search: "integer factorisation" "almost all" deterministic ...
+web search: 
+web search: 
+exec
+/bin/zsh -lc "sed -n '40,95p' ../../../src/detqs/harness.py; git -C ../../.. status --short; git -C ../../.. log -4 --oneline -- notes/detqs_prereg.md src/detqs/analysis.py" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+
+
+def T_of(n: int) -> int:
+    return 1 << FROZEN_T[n]
+
+
+# ----------------------------------------------------------------- instances
+def rand_int(n: int, i: int) -> int:
+    rng = random.Random(f"detqs|int|{n}|{i}")
+    return rng.randrange(1 << (n - 1), 1 << n)
+
+
+def rand_semiprime(n: int, i: int, tag: str = "sp") -> Tuple[int, int, int]:
+    """Uniform over S_n = {(p,q): p < q <= 2p primes, 2^{n-1} <= pq < 2^n} (rectangle rejection)."""
+    rng = random.Random(f"detqs|{tag}|{n}|{i}")
+    lo, hi = 1 << (n - 1), 1 << n
+    A = int(gmpy2.isqrt(lo // 2))
+    B = int(gmpy2.isqrt(hi)) + 1
+    while True:
+        p = rng.randrange(A, B)
+        q = rng.randrange(A, 2 * B)
+        if not (p < q <= 2 * p):
+            continue
+        N = p * q
+        if not (lo <= N < hi):
+            continue
+        if gmpy2.is_prime(p) and gmpy2.is_prime(q):
+            return N, p, q
+
+
+# ----------------------------------------------------------------- local model, fast form
+class LModel:
+    """L(N) of localmodel.model_LN, with per-(l, u) caches (same numbers, faster)."""
+
+    def __init__(self, n: int, y: int, T: int, nblocks: int = 8, E: int = 12):
+        self.y, self.E = y, E
+        self.logy = math.log(y)
+        self.us, self.ws = u_blocks(n, y, T, nblocks)
+        self.ps = primes_upto(y)
+        self.g = {}   # (l, b) -> list g(e)
+        self.den = {}
+        for b, u in enumerate(self.us):
+            r0 = rho(u)
+            for l in self.ps:
+                g = [rho(u - e * math.log(l) / self.logy) / r0 for e in range(E + 1)]
+                self.g[(l, b)] = g
+                self.den[(l, b)] = sum((1 - 1 / l) * l ** (-e) * g[e] for e in range(E)) + l ** (-E) * g[E]
+        self.lam = {}  # (l, b, chi) -> log lambda for odd l not dividing N
+        for b in range(len(self.us)):
+            for l in self.ps:
+                if l == 2:
+                    continue
+                for chi in (1, -1):
+                    Nfake = self._rep(l, chi)
+                    self.lam[(l, b, chi)] = math.log(self._lf(l, b, _vdist(l, Nfake, E)))
+        self.cache2: Dict[Tuple[int, int], List[float]] = {}
+ M notes/rkrank_results.md
+ M src/detqs/analysis.py
+?? codex/detqs_1.log
+?? codex/detqs_1.out
+?? codex/detqs_2.log
+?? codex/detqs_2.md
+?? codex/hypD_1.log
+?? codex/rkrank_3.log
+?? codex/rkrank_3.md
+?? experiments/analysis/detqs_summary.json
+?? experiments/logs/coverage38_e2.log
+?? experiments/logs/coverage38_e2s.log
+?? experiments/logs/coverage38_e3.log
+?? experiments/logs/detqs_e1.log
+?? experiments/logs/detqs_e2.log
+?? experiments/logs/hypD_done
+?? experiments/logs/hypD_e1.log
+?? experiments/logs/hypD_e1_done
+?? experiments/logs/hypD_e2.log
+?? experiments/logs/hypD_e3a.log
+?? experiments/logs/hypD_e3b.log
+?? experiments/logs/nfsfruit_add.log
+?? experiments/logs/nfsfruit_e1.log
+?? experiments/logs/unbalanced_exc.log
+?? experiments/logs/unbalanced_exc_2.log
+?? experiments/logs/unbalanced_lemma.log
+?? experiments/logs/unbalanced_oper1_2.log
+?? experiments/logs/unbalanced_oper2_2.log
+?? experiments/logs/unbalanced_summarize_2.log
+?? experiments/raw/detqs_e1_n40.jsonl
+?? experiments/raw/detqs_e1_n48.jsonl
+?? experiments/raw/detqs_e1_n56.jsonl
+?? experiments/raw/detqs_e1_n64.jsonl
+?? experiments/raw/detqs_e1_n72.jsonl
+?? experiments/raw/detqs_e2_n40.jsonl
+?? experiments/raw/detqs_e2_n48.jsonl
+?? experiments/raw/detqs_e2_n56.jsonl
+?? experiments/raw/detqs_e2_n64.jsonl
+?? experiments/raw/detqs_e2_n72.jsonl
+?? experiments/raw/detqs_e2_n80.jsonl
+?? experiments/raw/detqs_e3_n40.npz
+?? experiments/raw/detqs_e3_n48.npz
+?? experiments/raw/detqs_e3_n56.npz
+?? experiments/raw/detqs_e3_n64.npz
+?? experiments/raw/detqs_e3_n72.npz
+?? experiments/raw/lemmaM_e1.log
+?? experiments/raw/lemmaM_e2.log
+?? notes/detqs_results.md
+?? paper/main.pdf
+8a6b789 detqs: pre-registration (E1 variance/lower tail, E2 H2 rank event, E3 pair correlations) with frozen code and tests
+
+web search: 
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import json, collections, pathlib
+r=pathlib.Path('../../../experiments/raw')
+for n in [40,48,56,64,72,80]:
+ d=[json.loads(x) for x in (r/f'detqs_e2_n{n}.jsonl').read_text().splitlines()]
+ no=[x for x in d if x['first_fruitful'] is None]
+ print(n,'none',len(no),'H1fail_none',sum(x['Z']<x['fb']+2 for x in no),'no_H1passes',[(x['N'],x['Z'],x['fb'],x['deps_tested']) for x in no if x['Z']>=x['fb']+2], 'tot_triv',sum(x['deps_tested']-int(x['first_fruitful'] is not None) for x in d),'tot_tests',sum(x['deps_tested'] for x in d))
+PY
+sed -n '175,223p' ../../../src/detqs/harness.py; git -C ../../.. diff -- src/detqs/analysis.py" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+40 none 83 H1fail_none 81 no_H1passes [('560915181371', 25, 23, 4), ('738702714041', 26, 23, 4)] tot_triv 1197 tot_tests 2114
+48 none 22 H1fail_none 22 no_H1passes [] tot_triv 1066 tot_tests 2044
+56 none 2 H1fail_none 2 no_H1passes [] tot_triv 984 tot_tests 1982
+64 none 0 H1fail_none 0 no_H1passes [] tot_triv 1056 tot_tests 2056
+72 none 0 H1fail_none 0 no_H1passes [] tot_triv 416 tot_tests 816
+80 none 0 H1fail_none 0 no_H1passes [] tot_triv 177 tot_tests 377
+            A += _autocorr(f)
+            F += f
+            cnt += 1
+    out.close()
+    # E3 aggregate
+    G = _autocorr(F)  # sum_t F(t) F(t+k)
+    np.savez_compressed(os.path.join(RAW, f"detqs_e3_n{n}.npz"), A=A, G=G, cnt=cnt, T=T)
+    print(f"E1/E3 n={n} done in {time.time()-t0:.1f}s", flush=True)
+
+
+# ----------------------------------------------------------------- E2
+def run_e2(n: int) -> None:
+    y, T = y_of(n), T_of(n)
+    out = open(os.path.join(RAW, f"detqs_e2_n{n}.jsonl"), "w")
+    t0 = time.time()
+    for i in range(E2_M[n]):
+        N, p, q = rand_semiprime(n, i, tag="e2")
+        res = qs_run(N, y, T, dmax=DMAX)
+        blum = bool(p % 4 == 3 and q % 4 == 3)
+        cls = "none"
+        if res.factor is not None:
+            cls = "STRUCTURAL" if res.how == "dependency" else "ACCIDENTAL"
+            assert res.factor in (p, q) or res.how == "square"
+        jac_match = None
+        if blum and res.dep_outcomes:
+            jac_match = all((j == -1) == bool(o) for j, o in zip(res.dep_jacobi, res.dep_outcomes))
+        rec = {"n": n, "i": i, "N": str(N), "blum": blum, "Z": res.Z, "fb": res.fb_size,
+               "how": res.how, "class": cls, "first_fruitful": res.first_fruitful,
+               "deps_tested": res.deps_tested, "relations_used": res.relations_used,
+               "dep_sizes": res.dep_sizes, "outcomes": res.dep_outcomes, "jacobi_match": jac_match}
+        out.write(json.dumps(rec) + "\n")
+    out.close()
+    print(f"E2 n={n} done in {time.time()-t0:.1f}s", flush=True)
+
+
+if __name__ == "__main__":
+    os.makedirs(RAW, exist_ok=True)
+    os.makedirs(ANA, exist_ok=True)
+    cmd = sys.argv[1]
+    ns = [int(a) for a in sys.argv[2:]]
+    if cmd == "e1":
+        for n in ns or sorted(E1_M):
+            run_e1(n)
+    elif cmd == "e2":
+        for n in ns or sorted(E2_M):
+            run_e2(n)
+    elif cmd == "summary":
+        from .analysis import summarize
+        summarize()
+
+web search: "Ibarra" "Moran" "Hui" "LSP" 1982 ...
+codex
+Two further issues are concrete. The stated uniform bound \(D_W-1=O_W(1/\log y)\) fails when a retained gcd contains a growing power of a fixed prime. Also, the data contain two 40-bit runs that meet H1 and exhaust their kernel bases without a fruitful vector. The report acknowledges the two exceptions but should identify them explicitly as finite H2 failures.
+web search: 
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 ../../../.venv/bin/python -B - <<'PY'
+import sys, math, json
+sys.path.insert(0,'../../..')
+from src.detqs.qs import qs_run
+for N in [560915181371,738702714041]:
+ r=qs_run(N,256,65536,dmax=1000000)
+ print(N, 'Z',r.Z,'FB',r.fb_size,'used',r.relations_used,'tested',r.deps_tested,'factor',r.factor,'outcomes',r.dep_outcomes)
+PY" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+560915181371 Z 25 FB 23 used 25 tested 4 factor None outcomes [0, 0, 0, 0]
+738702714041 Z 26 FB 23 used 26 tested 4 factor None outcomes [0, 0, 0, 0]
+
+exec
+/bin/zsh -lc 'PYTHONDONTWRITEBYTECODE=1 ../../../.venv/bin/python -B -m pytest -q -p no:cacheprovider ../../../tests/test_detqs.py' in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 867ms:
+...............                                                          [100%]
+15 passed in 0.89s
+
+web search: "smooth" "quadratic" "almost all" sieve integers N ...
+web search: 
+web search: https://arxiv.org/abs/2601.11131
+codex
+Harper’s modulus range is adequate here; that is not the main obstacle. The unresolved part is matching the weighted arithmetic main terms at \(o(1/\log^2 B)\) precision. The weak Dickman estimate also loses the needed precision when subtracted at the endpoints of the short boxes.
+
+The \((\log n)^2/n^2\) barrier appears repairable by using only primes of size \(\asymp\log B\); the claimed uniform formula up to \(B^\varepsilon\) is false. All 15 code tests pass.
+exec
+/bin/zsh -lc "python3 - <<'PY'
+import math
+limit=50000
+sf=list(range(limit+1))
+for d in range(2,math.isqrt(limit)+1):
+ dd=d*d
+ for v in range(dd,limit+1,dd):
+  while sf[v]%dd==0: sf[v]//=dd
+for N in range(100000,1000000):
+ m=math.isqrt(N-1)+1
+ vals=[(m+t)**2-N for t in range(1,10)]
+ ks=[sf[v] for v in vals]
+ lookup={a:i for i,a in enumerate(ks)}
+ for i in range(9):
+  for j in range(i+1,9):
+   h=math.gcd(ks[i],ks[j]); k=lookup.get(ks[i]//h*(ks[j]//h),-1)
+   if k<=j:continue
+   Y=math.isqrt(vals[i]*vals[j]*vals[k]); X=(m+i+1)*(m+j+1)*(m+k+1)
+   g=math.gcd(X-Y,N)
+   if not 1<g<N:continue
+   xs=[m+i+1,m+j+1,m+k+1]
+   A=xs[0]*xs[1]*xs[2]+N*(xs[2]-xs[1]-xs[0])
+   h=A//N
+   if h*N < A-Y < A+Y < (h+1)*N:
+    print('N',N,'T',9,'xs',xs,'Q',[vals[i],vals[j],vals[k]],'Y',Y,'A',A,'h',h,'gcd',g,'sqrt',math.sqrt(N)); raise SystemExit
+print('none')
+PY" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 832ms:
+N 199600 T 9 xs [448, 449, 450] Q [1104, 2001, 2900] Y 80040 A 1297200 h 6 gcd 40 sqrt 446.7661580737735
+
+exec
+/bin/zsh -lc "PYTHONDONTWRITEBYTECODE=1 ../../../.venv/bin/python -B - <<'PY'
+import math, sympy
+limit=70000
+sf=list(range(limit+1))
+for d in range(2,math.isqrt(limit)+1):
+ dd=d*d
+ for v in range(dd,limit+1,dd):
+  while sf[v]%dd==0: sf[v]//=dd
+for N in range(1000001,10000000,2):
+ m=math.isqrt(N-1)+1
+ vals=[(m+t)**2-N for t in range(1,10)]
+ ks=[sf[v] for v in vals]; lookup={a:i for i,a in enumerate(ks)}
+ for i in range(9):
+  for j in range(i+1,9):
+   h=math.gcd(ks[i],ks[j]); k=lookup.get(ks[i]//h*(ks[j]//h),-1)
+   if k<=j:continue
+   Y=math.isqrt(vals[i]*vals[j]*vals[k]); X=(m+i+1)*(m+j+1)*(m+k+1)
+   g=math.gcd(X-Y,N)
+   if not 1<g<N:continue
+   fs=sympy.factorint(N)
+   ps=sorted(fs)
+   if len(ps)"'!=2 or any(e!=1 for e in fs.values()) or ps[1]>2*ps[0]:continue
+   xs=[m+i+1,m+j+1,m+k+1]
+   A=X+N*(xs[2]-xs[1]-xs[0]); h=A//N
+   if h*N < A-Y < A+Y < (h+1)*N:
+    print('"'N',N,'factors',fs,'T',9,'xs',xs,'Q',[vals[i],vals[j],vals[k]],'Y',Y,'A',A,'h',h,'gcd',g,'sqrt',math.sqrt(N)); raise SystemExit
+print('none')
+PY" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 2152ms:
+N 1572001 factors {1097: 1, 1433: 1} T 9 xs [1255, 1257, 1258] Q [3024, 8048, 10563] Y 507024 A 13249776 h 8 gcd 1097 sqrt 1253.794640282052
+
+exec
+/bin/zsh -lc "git -C ../../.. show 8a6b789:src/detqs/analysis.py | head -45; git -C ../../.. log -3 --oneline -- src/detqs/analysis.py; python3 - <<'PY'
+N=1572001; xs=[1255,1257,1258]; Y=507024
+A=xs[0]*xs[1]*xs[2]+N*(xs[2]-xs[1]-xs[0])
+print('size3 check:', 8*N,A-Y,A+Y,9*N, 'square identity', __import__('math').prod(x*x-N for x in xs)==Y*Y)
+PY" in /Volumes/git/factoring-connection/codex/scratch/detqs_2
+ succeeded in 0ms:
+"""HARNESS analysis for E1-E3 (frozen with the pre-registration).  Reads
+experiments/raw/detqs_e*.  Writes experiments/analysis/detqs_summary.json."""
+from __future__ import annotations
+
+import json
+import math
+import os
+from collections import defaultdict
+from typing import Dict, List
+
+import numpy as np
+
+from .harness import ANA, RAW, E1_M, E2_M, T_of, y_of
+
+# model local pair ratios rho_l^model = avg_{l|k} R / avg_{l nmid k} R (frozen, from
+# localmodel.pair_ratio_model at u(T/4), see prereg table)
+MODEL_R = {}  # filled from prereg values at import of summarize
+
+
+def _binom_two_sided(k: int, M: int, p: float) -> float:
+    """Exact two-sided binomial p-value (sum of probs <= P(k))."""
+    from math import comb
+    pk = comb(M, k) * p ** k * (1 - p) ** (M - k)
+    tot = 0.0
+    for j in range(M + 1):
+        pj = comb(M, j) * p ** j * (1 - p) ** (M - j)
+        if pj <= pk * (1 + 1e-9):
+            tot += pj
+    return min(1.0, tot)
+
+
+def _var(xs: List[float]) -> float:
+    m = sum(xs) / len(xs)
+    return sum((x - m) ** 2 for x in xs) / len(xs)
+
+
+def e1_stats(n: int) -> Dict:
+    recs = [json.loads(l) for l in open(os.path.join(RAW, f"detqs_e1_n{n}.jsonl"))]
+    out: Dict = {"n": n, "y": y_of(n), "T": T_of(n)}
+    I = [r for r in recs if r["kind"] == "int" and not r.get("square")]
+    S = [r for r in recs if r["kind"] == "sp" and not r.get("square")]
+    Zi = [r["Z"] for r in I]
+    Li = [r["L"] for r in I]
+    Zbar = sum(Zi) / len(Zi)
+    Lbar = sum(Li) / len(Li)
+61ef4c1 detqs: E1-E3 run as pre-registered (frozen verdicts mixed), draft results (Lemma C fat region, Prop V/Theorem H1-S stratified second moment, Lemma P, Prop S/SZ/B, Theorem DQ conditional on H2*); codex blind round
+8a6b789 detqs: pre-registration (E1 variance/lower tail, E2 H2 rank event, E3 pair correlations) with frozen code and tests
+size3 check: 12576008 12742752 13756800 14148009 square identity True
+
+codex
+I found a counterexample to Proposition SZ’s blanket claim: a dependency of size three for \(N=1097\cdot1433\) has both \(A-Y\) and \(A+Y\) strictly between \(8N\) and \(9N\), which certifies a proper gcd by size. The asserted necessity \(A<N\) is false.
+
+The experimental model also uses a representative square root too large by \(\sqrt2\). The frozen verdicts should remain “mixed”; any corrected model fit should be reported separately.
+codex
+**Proposition V and H1-S remain GAP, not “PROVED IN OUTLINE.”** Several intermediate assertions are false; others conceal the central missing estimate. This does not disprove H1-S.
+
+1. **V ⇒ H1-S — CORRECT; proof of V — GAP.**  
+   The iterated-limit Chebyshev argument using exact conditional means is valid, assuming V and M. But steps 5–7 do not establish V. The corrected statement is: **H1-S is conditional on Proposition V**, which remains an unverified local-projection mean-square estimate. Calling the remaining work “routine bookkeeping” is unjustified.
+
+2. **Lemma C — CORRECT WITH FIXES to its geometric consequences.**  
+   The exact coordinate identities, including square \(N\), check out. However, the region’s relevant widths involve both \(k\) and \(T-k\). “\(k\asymp T\) is fat” fails near \(k=T\). Discard \(T-k\le T/\log^A B\), as well as small \(k\); the former contributes at most \(O(T^2/\log^{2A}B)\). Also discard pairs with \(t<T/\log^A B\) before invoking uniform per-\(t\) estimates.
+
+3. **Harper’s modulus range — CORRECT.**  
+   With endpoint scale \(X\asymp\sqrt B\,T\), fixed \(u\), and fixed \(W\),
+   \[
+   Q\asymp TW\ll B^{-\eta}\sqrt{\Psi(X,y)}
+   \]
+   for every \(c<1/2\). Harper’s Theorem 1 supplies arbitrary logarithmic savings plus \(\sqrt{\Psi}\,Q\log^{7/2}X\); Theorem 2 supplies the corresponding mean-square bound plus \(\Psi Q\). There is no individual-progression condition \(\log X/\log q\to\infty\) here. The cited theorem is appropriate. [Harper, Theorems 1–2](https://arxiv.org/pdf/1208.5992).
+
+4. **Step 4’s implementation — CORRECT WITH FIXES, not an immediate application.**  
+   Harper applies at the **two endpoints** of \(J/g\), not at its interval length. Moving endpoints require a common logarithmic grid or a justified maximal estimate. Distinct \(q=2kW\) do not imply distinct reduced moduli \(q/g\) across different \(g\); sum separately over retained \(g\), charging the multiplicity. The bounded-degree inequalities using \(\nu(W)\) are valid. The \(g>G\) truncation needs a weighted pair-count estimate preserving the difference-coordinate width; a one-dimensional smooth-count assertion alone does not finish it. These repairs appear routine at fixed \(u\).
+
+5. **Step 5’s covariance identity — FALSE as written.**  
+   Uniform residue marginals on one box are not the marginals of the product of the global per-\(t\) means. The latter averages over independent \(N,N'\), with \(t\)-dependent weights; the coupled term uses the same \(N\). Even replacing smoothness by the smooth density \(\rho(\log Q_t(N)/\log y)\) leaves an archimedean covariance, although the residue covariance is zero.  
+   **Fix:** derive both weighted main terms explicitly and apply total covariance, retaining the covariance of their marginal means. An asserted equality of residue marginals does not supply this calculation.
+
+6. **Step 6’s stated smooth-number input — GAP.**  
+   For \(J=[X,X+H]\), \(H=X/\log^A B\), subtracting
+   \(\Psi(X,y)=X\rho(u)(1+O(1/\log y))\)
+   gives an error \(O(X/\log y)\), potentially larger than the interval main term. It cannot establish the displayed local-density precision.  
+   **Fix:** use a sufficiently precise differentiable de Bruijn–Saias approximation, then subtract endpoints and control divisor sums. This is stronger input than the advertised Dickman estimate. [Hildebrand–Tenenbaum, Theorem 1.8 and (1.29)](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+
+7. **LD-a — FALSE uniformly over retained classes.**  
+   The \(W\)-prime part of \(q\) contains the growing valuations of \(k\). For \(g_W=q_W=p^e\le G\),
+   \[
+   D_W(g_W)\approx
+   \frac{\rho(u-\log g_W/\log y)}{\rho(u)}.
+   \]
+   Taking \(e\asymp\log\log B\) gives a deviation of order \(\log\log B/\log y\), contradicting \(C_W/\log y\).  
+   **Fix:** retain a factor \(1+\log g_W\), and prove weighted moment and tail bounds instead of uniform boundedness.
+
+8. **LD-b/LD-c — GAP, with an important qualification.**  
+   LD-c is not disproved simply by pointing to separate \(O(1/\log y)\) errors: after correct normalization, the \(d=1\) inclusion–exclusion term cancels, and errors from \(d>1\) can retain reciprocal-divisor weights. But that cancellation must be shown **before** taking absolute values. The moving-interval precision, many-divisor tails, and \(\Pi(q')\) factors are untreated.  
+   **Fix:** write the normalized difference explicitly, truncate inclusion–exclusion divisors, and establish bounds averaged over \(k\). Do not infer LD-c from unstructured errors in individual counts.
+
+9. **Step 7’s “asymptotic independence” — GAP.**  
+   Depending only on prime factors outside \(W\) does not imply independence from \(k\bmod W\). Moreover, the coefficients also depend on the moving boxes and scales.  
+   **Fix:** obtain a divisor expansion with summable averaged tails, use CRT for each retained divisibility condition, and control the geometric weights by partial summation. This could work, but the assertion currently replaces the required argument.
+
+10. **Valuation truncation and parity — GAP.**  
+    The relevant precision is \(e_p=v_p(2kW)\), not merely \(a\). Replace fine densities by their **conditional projections modulo \(p^a\)**, not by simply substituting a capped valuation. Then the projected functions are fixed functions modulo \(W\), and averaging \(k\bmod W\) can cancel their covariance. Bound the discarded part after averaging strata; probabilities \(p^{-a}\) are not uniform in singular strata such as \(N\equiv0\pmod{p^a}\). Retain
+    \[
+    w-v\equiv k^2\pmod{2k}
+    \]
+    throughout. For odd \(k\), the two values have opposite parity. Require \(2\mid W\) before claiming \(g'\) is shared.
+
+11. **Archimedean \(J^{-2}\) term — GAP; Proposition M — CORRECT.**  
+    The plausible calculation is that the first-order density changes by \(O(1/(J\log y))\) across a slot, whose covariance is \(O(J^{-2}\log^{-2}y)\). “\(\delta\) is nearly constant” does not prove this, particularly given finding 5. Establish the weighted density expansion explicitly. Proposition M needs only fixed-modulus first moments and is substantially easier.
+
+12. **Prop L and H1-int — CORRECT WITH FIXES.**  
+    The fixed-prime local coefficient and positive variance lower bound are correct, provided the sharper smooth-number expansion supplies the \(o(1/\log y)\) remainder. The blind note gives a credible first-order route to the \(O(T^2/\log^2 y)\) upper bound; it also needs the geometric/parity repairs above. These establish the \(O(B/\log^2 B)\) exceptional bound, not the transferred little-\(o\) bound.  
+    **Correction:** variance of exact order \(T^2/\log^2 B\) does **not** imply that the actual H1 exceptional set has size \(\Theta(B/\log^2 B)\). It limits that Chebyshev bound.
+
+13. **Prop B — CORRECT WITH FIXES to the proof; the rate is right.**  
+    The local formula is not uniform up to \(B^\varepsilon\): for \(p>y\), smooth values cannot be divisible by \(p\). Also, total variance does not automatically allow summing separate prime contributions.  
+    **Fix:** use only primes \(p\asymp D\log B\), with sufficiently large fixed \(D\). A modulus satisfying \(\log W=O(\log B)\) cannot contain most primes in that band. Use Bessel’s inequality for the approximately orthogonal Legendre characters after removing their conditional projections onto \(N\bmod W\). Uniform smooth-number ratios in this small-prime range yield
+    \[
+    \frac{\xi(u)^2}{\log^2 y}\frac{\log\log B}{\log B}
+    \asymp\frac{(\log n)^2}{n^2}.
+    \]
+    This is a barrier to the specified variance-based Chebyshev certification, not to H1.
+
+14. **Lemma P and Prop S — CORRECT.**  
+    Lemma P’s interval/divisibility argument works even for general composite \(N\). State the eventual quantitative condition \(2(\lceil\sqrt N\rceil+T)^2<3N\). The size-one argument is also valid eventually. Prop S’s squarefree-kernel count and divisor bound are correct; exclude \(v=w\) before invoking \(\tau(w-v)\). Its negligible-density conclusion also transfers to \(S_n\).
+
+15. **Prop SZ — FALSE as a prohibition on size certificates.**  
+    A size certificate does not require \(A<N\): both \(A\pm Y\) may lie between any consecutive multiples of \(N\). For example,
+    \[
+    N=1572001=1097\cdot1433,\qquad x=(1255,1257,1258).
+    \]
+    The three \(Q\)-values have square product, with \(Y=507024\). For conjugations \((+,+,-)\), \(A=13249776\), and
+    \[
+    8N<A-Y<A+Y<9N.
+    \]
+    This certifies the proper gcd \(1097\) by size. Also, an arbitrary unit need not reduce to a nontrivial square root of \(1\).  
+    **Fix:** withdraw SZ; retain only precisely stated limitations of particular, unshifted certificates.
+
+16. **H2 reformulations and barriers — CORRECT WITH FIXES.**  
+    The Blum Jacobi character and basis criterion are valid for invertible relations. Root-label contributions require exponent-parity weights \(e_{i\ell}\bmod2\), plus the explicit parity terms. In H2*, write **\(1<\gcd(X_S-Y_S,N)<N\)**. The fixed-test counterexample establishes insufficiency of fixed-test cancellation alone; it is not an impossibility theorem for every averaging argument. H2* remains OPEN.
+
+17. **Theorem DQ — CORRECT WITH FIXES, conditional on both H1-S and H2*.**  
+    Deterministic rank-revealing LSP elimination supports the claimed theoretical \(y^{\omega+o(1)}\) kernel cost over \(\mathbf F_2\), including rank-deficient matrices. Basis gcd evaluation costs \(y^{2+o(1)}n^{O(1)}\). Deterministic root preparation can conservatively cost \(y^{2+o(1)}n^{O(1)}\), still dominated by elimination; do not silently charge least-nonresidue search as polylogarithmic. [Ibarra–Moran–Hui](https://csaws.cs.technion.ac.il/~moran/r/PS/LUP82.pdf).  
+    The supplied implementation uses incremental Gaussian elimination, a 30-vector cap, and bounded integer arrays. It does not implement the asymptotic fast algorithm. Distinguish theorem from implementation.
+
+18. **Transfer and “not average-time” — CORRECT WITH FIXES.**  
+    The transfer lemma is correct. Its integer exceptional density \(o(n^{-2})\) becomes only \(o(1)\) on \(S_n\). With fallback cost \(N^{1/5+o(1)}\), an exponent below \(1/6\) requires semiprime failure density \(N^{-1/30-\eta}\) for some \(\eta>0\), alongside a sufficiently fast first stage. Neither proposed H1-S nor H2* supplies that rate.
+
+19. **Frozen experimental verdicts — CORRECT.**  
+    “Mixed” honors the preregistered rules. The log-space binomial repair preserves the specified probability-ordering test. The semiprime rejection sampler targets the stated ensemble. All 15 tests pass. Preserve the frozen failures; post-hoc exclusions cannot turn the original verdict into “supported.”
+
+20. **Experimental interpretation/model — CORRECT WITH FIXES.**  
+    E3’s pooled residue ratios over \(T/8\le k<T/2\) cannot exclude an absolute correlation anomaly common to both residue groups, or anomalies elsewhere. Replace “no large-\(k\) anomaly” by the measured scope.  
+    In `u_blocks`, the representative square root should be approximately \(\sqrt{3/4}\,2^{n/2}\); the code uses \(1.2247\,2^{n/2}\), too large by \(\sqrt2\). Disclose this model error; any corrected fit is post hoc. Define explained variance through regression \(R^2\), not automatically through multiplicative-residual variance.
+
+21. **Post-hoc H2 account — CORRECT WITH FIXES.**  
+    Re-running the two H1-satisfying failures gives:
+    \(N=560915181371\), \(Z=25\), \(|FB|=23\); and
+    \(N=738702714041\), \(Z=26\), \(|FB|=23\).
+    Each exhausts all relations and a four-dimensional kernel basis, with every tested vector trivial. These are genuine finite H2 failures, not 30-vector censoring. They do not refute an almost-all conjecture, but deserve explicit reporting. Correct the introductory 56–80-bit rate range to **0.470–0.514**.
+
+22. **Literature — CORRECT WITH FIXES in scope and currency.**  
+    I found no prior theorem establishing this precise H1 exceptional bound, or a uniform unconditional deterministic algorithm below \(N^{1/5}\) on almost all balanced semiprimes. This remains a negative search finding. Pomerance’s QS analysis is explicitly conjectural. [Pomerance](https://library.slmath.org/books/Book44/files/03carl.pdf). Update the search to include 2026 large-order work; it improves a factoring subroutine without itself establishing either requested result. [Harvey–Hittmeir](https://arxiv.org/abs/2601.11131). “Almost-all integers are easy by trial division” must mean finding one factor, not complete factorization.
+
+**Overall labels:** C, M, transfer, P, S: **PROVED**, with presentation fixes. L/H1-int: **correct outline requiring stronger stated input**. V/H1-S: **GAP**, substantial rather than certified routine. B: **correct barrier rate with repaired proof**. SZ: **FALSE**. DQ: **CONDITIONAL on H1-S and H2***; theoretical cost valid. H2*: **OPEN**. Experiments: **mixed**, with useful finite evidence and the corrections above.
+tokens used
+162,240
+**Proposition V and H1-S remain GAP, not “PROVED IN OUTLINE.”** Several intermediate assertions are false; others conceal the central missing estimate. This does not disprove H1-S.
+
+1. **V ⇒ H1-S — CORRECT; proof of V — GAP.**  
+   The iterated-limit Chebyshev argument using exact conditional means is valid, assuming V and M. But steps 5–7 do not establish V. The corrected statement is: **H1-S is conditional on Proposition V**, which remains an unverified local-projection mean-square estimate. Calling the remaining work “routine bookkeeping” is unjustified.
+
+2. **Lemma C — CORRECT WITH FIXES to its geometric consequences.**  
+   The exact coordinate identities, including square \(N\), check out. However, the region’s relevant widths involve both \(k\) and \(T-k\). “\(k\asymp T\) is fat” fails near \(k=T\). Discard \(T-k\le T/\log^A B\), as well as small \(k\); the former contributes at most \(O(T^2/\log^{2A}B)\). Also discard pairs with \(t<T/\log^A B\) before invoking uniform per-\(t\) estimates.
+
+3. **Harper’s modulus range — CORRECT.**  
+   With endpoint scale \(X\asymp\sqrt B\,T\), fixed \(u\), and fixed \(W\),
+   \[
+   Q\asymp TW\ll B^{-\eta}\sqrt{\Psi(X,y)}
+   \]
+   for every \(c<1/2\). Harper’s Theorem 1 supplies arbitrary logarithmic savings plus \(\sqrt{\Psi}\,Q\log^{7/2}X\); Theorem 2 supplies the corresponding mean-square bound plus \(\Psi Q\). There is no individual-progression condition \(\log X/\log q\to\infty\) here. The cited theorem is appropriate. [Harper, Theorems 1–2](https://arxiv.org/pdf/1208.5992).
+
+4. **Step 4’s implementation — CORRECT WITH FIXES, not an immediate application.**  
+   Harper applies at the **two endpoints** of \(J/g\), not at its interval length. Moving endpoints require a common logarithmic grid or a justified maximal estimate. Distinct \(q=2kW\) do not imply distinct reduced moduli \(q/g\) across different \(g\); sum separately over retained \(g\), charging the multiplicity. The bounded-degree inequalities using \(\nu(W)\) are valid. The \(g>G\) truncation needs a weighted pair-count estimate preserving the difference-coordinate width; a one-dimensional smooth-count assertion alone does not finish it. These repairs appear routine at fixed \(u\).
+
+5. **Step 5’s covariance identity — FALSE as written.**  
+   Uniform residue marginals on one box are not the marginals of the product of the global per-\(t\) means. The latter averages over independent \(N,N'\), with \(t\)-dependent weights; the coupled term uses the same \(N\). Even replacing smoothness by the smooth density \(\rho(\log Q_t(N)/\log y)\) leaves an archimedean covariance, although the residue covariance is zero.  
+   **Fix:** derive both weighted main terms explicitly and apply total covariance, retaining the covariance of their marginal means. An asserted equality of residue marginals does not supply this calculation.
+
+6. **Step 6’s stated smooth-number input — GAP.**  
+   For \(J=[X,X+H]\), \(H=X/\log^A B\), subtracting
+   \(\Psi(X,y)=X\rho(u)(1+O(1/\log y))\)
+   gives an error \(O(X/\log y)\), potentially larger than the interval main term. It cannot establish the displayed local-density precision.  
+   **Fix:** use a sufficiently precise differentiable de Bruijn–Saias approximation, then subtract endpoints and control divisor sums. This is stronger input than the advertised Dickman estimate. [Hildebrand–Tenenbaum, Theorem 1.8 and (1.29)](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+
+7. **LD-a — FALSE uniformly over retained classes.**  
+   The \(W\)-prime part of \(q\) contains the growing valuations of \(k\). For \(g_W=q_W=p^e\le G\),
+   \[
+   D_W(g_W)\approx
+   \frac{\rho(u-\log g_W/\log y)}{\rho(u)}.
+   \]
+   Taking \(e\asymp\log\log B\) gives a deviation of order \(\log\log B/\log y\), contradicting \(C_W/\log y\).  
+   **Fix:** retain a factor \(1+\log g_W\), and prove weighted moment and tail bounds instead of uniform boundedness.
+
+8. **LD-b/LD-c — GAP, with an important qualification.**  
+   LD-c is not disproved simply by pointing to separate \(O(1/\log y)\) errors: after correct normalization, the \(d=1\) inclusion–exclusion term cancels, and errors from \(d>1\) can retain reciprocal-divisor weights. But that cancellation must be shown **before** taking absolute values. The moving-interval precision, many-divisor tails, and \(\Pi(q')\) factors are untreated.  
+   **Fix:** write the normalized difference explicitly, truncate inclusion–exclusion divisors, and establish bounds averaged over \(k\). Do not infer LD-c from unstructured errors in individual counts.
+
+9. **Step 7’s “asymptotic independence” — GAP.**  
+   Depending only on prime factors outside \(W\) does not imply independence from \(k\bmod W\). Moreover, the coefficients also depend on the moving boxes and scales.  
+   **Fix:** obtain a divisor expansion with summable averaged tails, use CRT for each retained divisibility condition, and control the geometric weights by partial summation. This could work, but the assertion currently replaces the required argument.
+
+10. **Valuation truncation and parity — GAP.**  
+    The relevant precision is \(e_p=v_p(2kW)\), not merely \(a\). Replace fine densities by their **conditional projections modulo \(p^a\)**, not by simply substituting a capped valuation. Then the projected functions are fixed functions modulo \(W\), and averaging \(k\bmod W\) can cancel their covariance. Bound the discarded part after averaging strata; probabilities \(p^{-a}\) are not uniform in singular strata such as \(N\equiv0\pmod{p^a}\). Retain
+    \[
+    w-v\equiv k^2\pmod{2k}
+    \]
+    throughout. For odd \(k\), the two values have opposite parity. Require \(2\mid W\) before claiming \(g'\) is shared.
+
+11. **Archimedean \(J^{-2}\) term — GAP; Proposition M — CORRECT.**  
+    The plausible calculation is that the first-order density changes by \(O(1/(J\log y))\) across a slot, whose covariance is \(O(J^{-2}\log^{-2}y)\). “\(\delta\) is nearly constant” does not prove this, particularly given finding 5. Establish the weighted density expansion explicitly. Proposition M needs only fixed-modulus first moments and is substantially easier.
+
+12. **Prop L and H1-int — CORRECT WITH FIXES.**  
+    The fixed-prime local coefficient and positive variance lower bound are correct, provided the sharper smooth-number expansion supplies the \(o(1/\log y)\) remainder. The blind note gives a credible first-order route to the \(O(T^2/\log^2 y)\) upper bound; it also needs the geometric/parity repairs above. These establish the \(O(B/\log^2 B)\) exceptional bound, not the transferred little-\(o\) bound.  
+    **Correction:** variance of exact order \(T^2/\log^2 B\) does **not** imply that the actual H1 exceptional set has size \(\Theta(B/\log^2 B)\). It limits that Chebyshev bound.
+
+13. **Prop B — CORRECT WITH FIXES to the proof; the rate is right.**  
+    The local formula is not uniform up to \(B^\varepsilon\): for \(p>y\), smooth values cannot be divisible by \(p\). Also, total variance does not automatically allow summing separate prime contributions.  
+    **Fix:** use only primes \(p\asymp D\log B\), with sufficiently large fixed \(D\). A modulus satisfying \(\log W=O(\log B)\) cannot contain most primes in that band. Use Bessel’s inequality for the approximately orthogonal Legendre characters after removing their conditional projections onto \(N\bmod W\). Uniform smooth-number ratios in this small-prime range yield
+    \[
+    \frac{\xi(u)^2}{\log^2 y}\frac{\log\log B}{\log B}
+    \asymp\frac{(\log n)^2}{n^2}.
+    \]
+    This is a barrier to the specified variance-based Chebyshev certification, not to H1.
+
+14. **Lemma P and Prop S — CORRECT.**  
+    Lemma P’s interval/divisibility argument works even for general composite \(N\). State the eventual quantitative condition \(2(\lceil\sqrt N\rceil+T)^2<3N\). The size-one argument is also valid eventually. Prop S’s squarefree-kernel count and divisor bound are correct; exclude \(v=w\) before invoking \(\tau(w-v)\). Its negligible-density conclusion also transfers to \(S_n\).
+
+15. **Prop SZ — FALSE as a prohibition on size certificates.**  
+    A size certificate does not require \(A<N\): both \(A\pm Y\) may lie between any consecutive multiples of \(N\). For example,
+    \[
+    N=1572001=1097\cdot1433,\qquad x=(1255,1257,1258).
+    \]
+    The three \(Q\)-values have square product, with \(Y=507024\). For conjugations \((+,+,-)\), \(A=13249776\), and
+    \[
+    8N<A-Y<A+Y<9N.
+    \]
+    This certifies the proper gcd \(1097\) by size. Also, an arbitrary unit need not reduce to a nontrivial square root of \(1\).  
+    **Fix:** withdraw SZ; retain only precisely stated limitations of particular, unshifted certificates.
+
+16. **H2 reformulations and barriers — CORRECT WITH FIXES.**  
+    The Blum Jacobi character and basis criterion are valid for invertible relations. Root-label contributions require exponent-parity weights \(e_{i\ell}\bmod2\), plus the explicit parity terms. In H2*, write **\(1<\gcd(X_S-Y_S,N)<N\)**. The fixed-test counterexample establishes insufficiency of fixed-test cancellation alone; it is not an impossibility theorem for every averaging argument. H2* remains OPEN.
+
+17. **Theorem DQ — CORRECT WITH FIXES, conditional on both H1-S and H2*.**  
+    Deterministic rank-revealing LSP elimination supports the claimed theoretical \(y^{\omega+o(1)}\) kernel cost over \(\mathbf F_2\), including rank-deficient matrices. Basis gcd evaluation costs \(y^{2+o(1)}n^{O(1)}\). Deterministic root preparation can conservatively cost \(y^{2+o(1)}n^{O(1)}\), still dominated by elimination; do not silently charge least-nonresidue search as polylogarithmic. [Ibarra–Moran–Hui](https://csaws.cs.technion.ac.il/~moran/r/PS/LUP82.pdf).  
+    The supplied implementation uses incremental Gaussian elimination, a 30-vector cap, and bounded integer arrays. It does not implement the asymptotic fast algorithm. Distinguish theorem from implementation.
+
+18. **Transfer and “not average-time” — CORRECT WITH FIXES.**  
+    The transfer lemma is correct. Its integer exceptional density \(o(n^{-2})\) becomes only \(o(1)\) on \(S_n\). With fallback cost \(N^{1/5+o(1)}\), an exponent below \(1/6\) requires semiprime failure density \(N^{-1/30-\eta}\) for some \(\eta>0\), alongside a sufficiently fast first stage. Neither proposed H1-S nor H2* supplies that rate.
+
+19. **Frozen experimental verdicts — CORRECT.**  
+    “Mixed” honors the preregistered rules. The log-space binomial repair preserves the specified probability-ordering test. The semiprime rejection sampler targets the stated ensemble. All 15 tests pass. Preserve the frozen failures; post-hoc exclusions cannot turn the original verdict into “supported.”
+
+20. **Experimental interpretation/model — CORRECT WITH FIXES.**  
+    E3’s pooled residue ratios over \(T/8\le k<T/2\) cannot exclude an absolute correlation anomaly common to both residue groups, or anomalies elsewhere. Replace “no large-\(k\) anomaly” by the measured scope.  
+    In `u_blocks`, the representative square root should be approximately \(\sqrt{3/4}\,2^{n/2}\); the code uses \(1.2247\,2^{n/2}\), too large by \(\sqrt2\). Disclose this model error; any corrected fit is post hoc. Define explained variance through regression \(R^2\), not automatically through multiplicative-residual variance.
+
+21. **Post-hoc H2 account — CORRECT WITH FIXES.**  
+    Re-running the two H1-satisfying failures gives:
+    \(N=560915181371\), \(Z=25\), \(|FB|=23\); and
+    \(N=738702714041\), \(Z=26\), \(|FB|=23\).
+    Each exhausts all relations and a four-dimensional kernel basis, with every tested vector trivial. These are genuine finite H2 failures, not 30-vector censoring. They do not refute an almost-all conjecture, but deserve explicit reporting. Correct the introductory 56–80-bit rate range to **0.470–0.514**.
+
+22. **Literature — CORRECT WITH FIXES in scope and currency.**  
+    I found no prior theorem establishing this precise H1 exceptional bound, or a uniform unconditional deterministic algorithm below \(N^{1/5}\) on almost all balanced semiprimes. This remains a negative search finding. Pomerance’s QS analysis is explicitly conjectural. [Pomerance](https://library.slmath.org/books/Book44/files/03carl.pdf). Update the search to include 2026 large-order work; it improves a factoring subroutine without itself establishing either requested result. [Harvey–Hittmeir](https://arxiv.org/abs/2601.11131). “Almost-all integers are easy by trial division” must mean finding one factor, not complete factorization.
+
+**Overall labels:** C, M, transfer, P, S: **PROVED**, with presentation fixes. L/H1-int: **correct outline requiring stronger stated input**. V/H1-S: **GAP**, substantial rather than certified routine. B: **correct barrier rate with repaired proof**. SZ: **FALSE**. DQ: **CONDITIONAL on H1-S and H2***; theoretical cost valid. H2*: **OPEN**. Experiments: **mixed**, with useful finite evidence and the corrections above.

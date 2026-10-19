@@ -1,0 +1,110 @@
+**Proposition V and H1-S remain GAP, not “PROVED IN OUTLINE.”** Several intermediate assertions are false; others conceal the central missing estimate. This does not disprove H1-S.
+
+1. **V ⇒ H1-S — CORRECT; proof of V — GAP.**  
+   The iterated-limit Chebyshev argument using exact conditional means is valid, assuming V and M. But steps 5–7 do not establish V. The corrected statement is: **H1-S is conditional on Proposition V**, which remains an unverified local-projection mean-square estimate. Calling the remaining work “routine bookkeeping” is unjustified.
+
+2. **Lemma C — CORRECT WITH FIXES to its geometric consequences.**  
+   The exact coordinate identities, including square \(N\), check out. However, the region’s relevant widths involve both \(k\) and \(T-k\). “\(k\asymp T\) is fat” fails near \(k=T\). Discard \(T-k\le T/\log^A B\), as well as small \(k\); the former contributes at most \(O(T^2/\log^{2A}B)\). Also discard pairs with \(t<T/\log^A B\) before invoking uniform per-\(t\) estimates.
+
+3. **Harper’s modulus range — CORRECT.**  
+   With endpoint scale \(X\asymp\sqrt B\,T\), fixed \(u\), and fixed \(W\),
+   \[
+   Q\asymp TW\ll B^{-\eta}\sqrt{\Psi(X,y)}
+   \]
+   for every \(c<1/2\). Harper’s Theorem 1 supplies arbitrary logarithmic savings plus \(\sqrt{\Psi}\,Q\log^{7/2}X\); Theorem 2 supplies the corresponding mean-square bound plus \(\Psi Q\). There is no individual-progression condition \(\log X/\log q\to\infty\) here. The cited theorem is appropriate. [Harper, Theorems 1–2](https://arxiv.org/pdf/1208.5992).
+
+4. **Step 4’s implementation — CORRECT WITH FIXES, not an immediate application.**  
+   Harper applies at the **two endpoints** of \(J/g\), not at its interval length. Moving endpoints require a common logarithmic grid or a justified maximal estimate. Distinct \(q=2kW\) do not imply distinct reduced moduli \(q/g\) across different \(g\); sum separately over retained \(g\), charging the multiplicity. The bounded-degree inequalities using \(\nu(W)\) are valid. The \(g>G\) truncation needs a weighted pair-count estimate preserving the difference-coordinate width; a one-dimensional smooth-count assertion alone does not finish it. These repairs appear routine at fixed \(u\).
+
+5. **Step 5’s covariance identity — FALSE as written.**  
+   Uniform residue marginals on one box are not the marginals of the product of the global per-\(t\) means. The latter averages over independent \(N,N'\), with \(t\)-dependent weights; the coupled term uses the same \(N\). Even replacing smoothness by the smooth density \(\rho(\log Q_t(N)/\log y)\) leaves an archimedean covariance, although the residue covariance is zero.  
+   **Fix:** derive both weighted main terms explicitly and apply total covariance, retaining the covariance of their marginal means. An asserted equality of residue marginals does not supply this calculation.
+
+6. **Step 6’s stated smooth-number input — GAP.**  
+   For \(J=[X,X+H]\), \(H=X/\log^A B\), subtracting
+   \(\Psi(X,y)=X\rho(u)(1+O(1/\log y))\)
+   gives an error \(O(X/\log y)\), potentially larger than the interval main term. It cannot establish the displayed local-density precision.  
+   **Fix:** use a sufficiently precise differentiable de Bruijn–Saias approximation, then subtract endpoints and control divisor sums. This is stronger input than the advertised Dickman estimate. [Hildebrand–Tenenbaum, Theorem 1.8 and (1.29)](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+
+7. **LD-a — FALSE uniformly over retained classes.**  
+   The \(W\)-prime part of \(q\) contains the growing valuations of \(k\). For \(g_W=q_W=p^e\le G\),
+   \[
+   D_W(g_W)\approx
+   \frac{\rho(u-\log g_W/\log y)}{\rho(u)}.
+   \]
+   Taking \(e\asymp\log\log B\) gives a deviation of order \(\log\log B/\log y\), contradicting \(C_W/\log y\).  
+   **Fix:** retain a factor \(1+\log g_W\), and prove weighted moment and tail bounds instead of uniform boundedness.
+
+8. **LD-b/LD-c — GAP, with an important qualification.**  
+   LD-c is not disproved simply by pointing to separate \(O(1/\log y)\) errors: after correct normalization, the \(d=1\) inclusion–exclusion term cancels, and errors from \(d>1\) can retain reciprocal-divisor weights. But that cancellation must be shown **before** taking absolute values. The moving-interval precision, many-divisor tails, and \(\Pi(q')\) factors are untreated.  
+   **Fix:** write the normalized difference explicitly, truncate inclusion–exclusion divisors, and establish bounds averaged over \(k\). Do not infer LD-c from unstructured errors in individual counts.
+
+9. **Step 7’s “asymptotic independence” — GAP.**  
+   Depending only on prime factors outside \(W\) does not imply independence from \(k\bmod W\). Moreover, the coefficients also depend on the moving boxes and scales.  
+   **Fix:** obtain a divisor expansion with summable averaged tails, use CRT for each retained divisibility condition, and control the geometric weights by partial summation. This could work, but the assertion currently replaces the required argument.
+
+10. **Valuation truncation and parity — GAP.**  
+    The relevant precision is \(e_p=v_p(2kW)\), not merely \(a\). Replace fine densities by their **conditional projections modulo \(p^a\)**, not by simply substituting a capped valuation. Then the projected functions are fixed functions modulo \(W\), and averaging \(k\bmod W\) can cancel their covariance. Bound the discarded part after averaging strata; probabilities \(p^{-a}\) are not uniform in singular strata such as \(N\equiv0\pmod{p^a}\). Retain
+    \[
+    w-v\equiv k^2\pmod{2k}
+    \]
+    throughout. For odd \(k\), the two values have opposite parity. Require \(2\mid W\) before claiming \(g'\) is shared.
+
+11. **Archimedean \(J^{-2}\) term — GAP; Proposition M — CORRECT.**  
+    The plausible calculation is that the first-order density changes by \(O(1/(J\log y))\) across a slot, whose covariance is \(O(J^{-2}\log^{-2}y)\). “\(\delta\) is nearly constant” does not prove this, particularly given finding 5. Establish the weighted density expansion explicitly. Proposition M needs only fixed-modulus first moments and is substantially easier.
+
+12. **Prop L and H1-int — CORRECT WITH FIXES.**  
+    The fixed-prime local coefficient and positive variance lower bound are correct, provided the sharper smooth-number expansion supplies the \(o(1/\log y)\) remainder. The blind note gives a credible first-order route to the \(O(T^2/\log^2 y)\) upper bound; it also needs the geometric/parity repairs above. These establish the \(O(B/\log^2 B)\) exceptional bound, not the transferred little-\(o\) bound.  
+    **Correction:** variance of exact order \(T^2/\log^2 B\) does **not** imply that the actual H1 exceptional set has size \(\Theta(B/\log^2 B)\). It limits that Chebyshev bound.
+
+13. **Prop B — CORRECT WITH FIXES to the proof; the rate is right.**  
+    The local formula is not uniform up to \(B^\varepsilon\): for \(p>y\), smooth values cannot be divisible by \(p\). Also, total variance does not automatically allow summing separate prime contributions.  
+    **Fix:** use only primes \(p\asymp D\log B\), with sufficiently large fixed \(D\). A modulus satisfying \(\log W=O(\log B)\) cannot contain most primes in that band. Use Bessel’s inequality for the approximately orthogonal Legendre characters after removing their conditional projections onto \(N\bmod W\). Uniform smooth-number ratios in this small-prime range yield
+    \[
+    \frac{\xi(u)^2}{\log^2 y}\frac{\log\log B}{\log B}
+    \asymp\frac{(\log n)^2}{n^2}.
+    \]
+    This is a barrier to the specified variance-based Chebyshev certification, not to H1.
+
+14. **Lemma P and Prop S — CORRECT.**  
+    Lemma P’s interval/divisibility argument works even for general composite \(N\). State the eventual quantitative condition \(2(\lceil\sqrt N\rceil+T)^2<3N\). The size-one argument is also valid eventually. Prop S’s squarefree-kernel count and divisor bound are correct; exclude \(v=w\) before invoking \(\tau(w-v)\). Its negligible-density conclusion also transfers to \(S_n\).
+
+15. **Prop SZ — FALSE as a prohibition on size certificates.**  
+    A size certificate does not require \(A<N\): both \(A\pm Y\) may lie between any consecutive multiples of \(N\). For example,
+    \[
+    N=1572001=1097\cdot1433,\qquad x=(1255,1257,1258).
+    \]
+    The three \(Q\)-values have square product, with \(Y=507024\). For conjugations \((+,+,-)\), \(A=13249776\), and
+    \[
+    8N<A-Y<A+Y<9N.
+    \]
+    This certifies the proper gcd \(1097\) by size. Also, an arbitrary unit need not reduce to a nontrivial square root of \(1\).  
+    **Fix:** withdraw SZ; retain only precisely stated limitations of particular, unshifted certificates.
+
+16. **H2 reformulations and barriers — CORRECT WITH FIXES.**  
+    The Blum Jacobi character and basis criterion are valid for invertible relations. Root-label contributions require exponent-parity weights \(e_{i\ell}\bmod2\), plus the explicit parity terms. In H2*, write **\(1<\gcd(X_S-Y_S,N)<N\)**. The fixed-test counterexample establishes insufficiency of fixed-test cancellation alone; it is not an impossibility theorem for every averaging argument. H2* remains OPEN.
+
+17. **Theorem DQ — CORRECT WITH FIXES, conditional on both H1-S and H2*.**  
+    Deterministic rank-revealing LSP elimination supports the claimed theoretical \(y^{\omega+o(1)}\) kernel cost over \(\mathbf F_2\), including rank-deficient matrices. Basis gcd evaluation costs \(y^{2+o(1)}n^{O(1)}\). Deterministic root preparation can conservatively cost \(y^{2+o(1)}n^{O(1)}\), still dominated by elimination; do not silently charge least-nonresidue search as polylogarithmic. [Ibarra–Moran–Hui](https://csaws.cs.technion.ac.il/~moran/r/PS/LUP82.pdf).  
+    The supplied implementation uses incremental Gaussian elimination, a 30-vector cap, and bounded integer arrays. It does not implement the asymptotic fast algorithm. Distinguish theorem from implementation.
+
+18. **Transfer and “not average-time” — CORRECT WITH FIXES.**  
+    The transfer lemma is correct. Its integer exceptional density \(o(n^{-2})\) becomes only \(o(1)\) on \(S_n\). With fallback cost \(N^{1/5+o(1)}\), an exponent below \(1/6\) requires semiprime failure density \(N^{-1/30-\eta}\) for some \(\eta>0\), alongside a sufficiently fast first stage. Neither proposed H1-S nor H2* supplies that rate.
+
+19. **Frozen experimental verdicts — CORRECT.**  
+    “Mixed” honors the preregistered rules. The log-space binomial repair preserves the specified probability-ordering test. The semiprime rejection sampler targets the stated ensemble. All 15 tests pass. Preserve the frozen failures; post-hoc exclusions cannot turn the original verdict into “supported.”
+
+20. **Experimental interpretation/model — CORRECT WITH FIXES.**  
+    E3’s pooled residue ratios over \(T/8\le k<T/2\) cannot exclude an absolute correlation anomaly common to both residue groups, or anomalies elsewhere. Replace “no large-\(k\) anomaly” by the measured scope.  
+    In `u_blocks`, the representative square root should be approximately \(\sqrt{3/4}\,2^{n/2}\); the code uses \(1.2247\,2^{n/2}\), too large by \(\sqrt2\). Disclose this model error; any corrected fit is post hoc. Define explained variance through regression \(R^2\), not automatically through multiplicative-residual variance.
+
+21. **Post-hoc H2 account — CORRECT WITH FIXES.**  
+    Re-running the two H1-satisfying failures gives:
+    \(N=560915181371\), \(Z=25\), \(|FB|=23\); and
+    \(N=738702714041\), \(Z=26\), \(|FB|=23\).
+    Each exhausts all relations and a four-dimensional kernel basis, with every tested vector trivial. These are genuine finite H2 failures, not 30-vector censoring. They do not refute an almost-all conjecture, but deserve explicit reporting. Correct the introductory 56–80-bit rate range to **0.470–0.514**.
+
+22. **Literature — CORRECT WITH FIXES in scope and currency.**  
+    I found no prior theorem establishing this precise H1 exceptional bound, or a uniform unconditional deterministic algorithm below \(N^{1/5}\) on almost all balanced semiprimes. This remains a negative search finding. Pomerance’s QS analysis is explicitly conjectural. [Pomerance](https://library.slmath.org/books/Book44/files/03carl.pdf). Update the search to include 2026 large-order work; it improves a factoring subroutine without itself establishing either requested result. [Harvey–Hittmeir](https://arxiv.org/abs/2601.11131). “Almost-all integers are easy by trial division” must mean finding one factor, not complete factorization.
+
+**Overall labels:** C, M, transfer, P, S: **PROVED**, with presentation fixes. L/H1-int: **correct outline requiring stronger stated input**. V/H1-S: **GAP**, substantial rather than certified routine. B: **correct barrier rate with repaired proof**. SZ: **FALSE**. DQ: **CONDITIONAL on H1-S and H2***; theoretical cost valid. H2*: **OPEN**. Experiments: **mixed**, with useful finite evidence and the corrections above.

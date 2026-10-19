@@ -20,14 +20,17 @@ let alone subexponentially.** Of the two obligations, relation supply (H1) is no
 hand at the polynomial level. Fruitfulness (H2) is untouched by every averaging argument we have and
 remains the whole obstruction.
 
-**H1 (relation supply) at fixed u: proved in outline for almost all of S_n.**
-- **Theorem H1-S (§4; PROVED IN OUTLINE, conditional on two cited theorems).**
+**H1 (relation supply) at fixed u: reduced to one open estimate, Proposition V.** The codex referee
+rates V a GAP (§10), so H1-S is CONDITIONAL. What is proved in outline is H1 for almost all
+*integers*, with an O(2^n/n²) exceptional set. The transfer to S_n misses by a constant.
+- **Theorem H1-S (§4; CONDITIONAL on Proposition V).**
   - Setting: fix c ∈ (0, 1/2) and K, and put y = T = ⌊2^{cn}⌋.
   - Claim: all but o(2^n/n²) integers N ∈ [2^{n−1}, 2^n) have at least π(y) + K y-smooth values among
     (⌈√N⌉ + t)² − N, 1 ≤ t ≤ T.
   - By the transfer lemma this holds for all but o(|S_n|) balanced semiprimes.
 - **Inputs:**
-  - Harper's Bombieri–Vinogradov theorem for smooth numbers (arXiv 1208.5992, Thm 1);
+  - Bombieri–Vinogradov for smooth numbers at fixed u: Fouvry–Tenenbaum 1996 Théorème 1, or Harper's
+    preprint arXiv 1208.5992 Thm 1 (ineffective any-A version);
   - the uniform Dickman asymptotic Ψ(x, y) = xρ(u)(1 + O(1/log y)) on compact u-ranges.
 - **Four ideas carry the proof:**
   1. *The region is not thin.* After summing over t at fixed gap k = t′ − t, the pair sum runs over a
@@ -40,8 +43,8 @@ remains the whole obstruction.
      local (Knuth–Schroeppel-type) effect, not a proof artefact.
   3. *Stratify* by N mod W (W a product of prime powers) and by the position of N in its dyadic block
      (resolution 1/J).
-  4. *Average the local covariance over k.* Within a stratum, the main-term covariance at the primes of
-     W cancels exactly. The primes outside W and the archimedean slot leave r(W, J)/log² y with
+  4. *Average the local covariance over k (proof strategy for V; GAP).* Within a stratum, the
+     main-term covariance at the primes of W should cancel. The primes outside W and the archimedean slot leave r(W, J)/log² y with
      r → 0. An iterated limit then gives o(n^{−2}).
 - **Codex reached ideas 1–3 independently.** It stated the stratified estimate (its (*)) as
   UNVERIFIED. Idea 4 is our proof of a sufficient form of (*).
@@ -84,7 +87,7 @@ remains the whole obstruction.
 - H2:
   - the Jacobi rule held in 100% of cases;
   - 203/203 size-≤2 dependencies were fruitful (Lemma P);
-  - post hoc, the per-vector trivial rate is 0.497–0.514 at 56–80 bits, but 0.566 at 40 bits (a
+  - post hoc, the per-vector trivial rate is 0.470–0.514 at 56–80 bits, but 0.566 at 40 bits (a
     small-size excess, also seen by below16 E4).
 
 **Literature (§9).**
@@ -177,7 +180,7 @@ remains the whole obstruction.
   B/2·(1 + (j+1)/J)).
 - Put M_σ = E[Z | σ].
 
-**Proposition V (PROVED IN OUTLINE).** For fixed c ∈ (0, 1/2), W and J,
+**Proposition V (OPEN: a GAP per the codex referee; the strategy below is not certified).** For fixed c ∈ (0, 1/2), W and J,
 
   limsup_{n→∞} (log B)² · E_N[(Z_N − M_{σ(N)})²]/T² ≤ C_c · r(W, J),
 
@@ -190,7 +193,11 @@ remains the whole obstruction.
   Theorem 1 at the single modulus W, or Fouvry–Tenenbaum, gives them. Every local factor at a fixed
   place is 1 + O(1/log y).
 
-**Theorem H1-S (PROVED IN OUTLINE from V and M).** Fix c ∈ (0, 1/2), K ≥ 0 and ε > 0.
+**On the range of c.** The BV step needs only c < 1/2. Codex states its theorem for c < 1/6, which is
+the range relevant to beating 1/6, not a constraint of the proof. The < 1/6 algorithm (§7) needs
+c < 1/(6ω).
+
+**Theorem H1-S (CONDITIONAL on V; the deduction from V and M is PROVED).** Fix c ∈ (0, 1/2), K ≥ 0 and ε > 0.
 1. Choose W, J with 32 C_c r(W, J) < ερ(u)². This is possible because r → 0 as z, a, J → ∞.
 2. For n ≥ n₀, Prop M gives M_σ ≥ ρT/2 for every σ. Also π(y) + K ≤ ρT/4, since T = y.
 3. A bad N therefore has |Z − M_σ| ≥ ρT/4.
@@ -280,15 +287,20 @@ N ∈ σ, and put f_t = f(Q_t(N)).
 8. **Summation.** Sum over the boxes of R_k and over k ∈ (K₀, T). The weights Ψ(J)Ψ(J′)|𝒜|/q² add up to
    ≍ (ρT)²·|I_σ|, so Σ_k Σ_t Cov_σ ≤ (C r(W, J) + o(1))T²/log² y. ∎
 
-**Routine verifications still owed** (why this is "in outline"):
-- (a) the exact statements and ranges of Harper's Theorems 1–2 (critic-checked, §10);
-- (b) uniformity of (LD-a)–(LD-c) in the moving boxes, the parity and 2-adic conditions, and the
-  truncation at G, written line by line;
-- (c) the asymptotic independence of λ_k from k mod W, and of the boxes from k, with explicit error
-  terms;
-- (d) the archimedean slot computation.
-None of them needs a new idea. Each is a bookkeeping step of the kind that can hide an error, which is
-why we do not label the theorem PROVED.
+**Known gaps in the proof of V (codex detqs_2 #4–#11). They are substantive, not routine.**
+- (#6) Step 6 cannot use Ψ = xρ(u)(1 + O(1/log y)). On boxes of relative length (log B)^{−A}, endpoint
+  subtraction loses the main term. A differentiable de Bruijn–Saias (Λ) approximation is required.
+- (#7) LD-a is false uniformly. The W-part of q carries the valuations of k, so |D_W − 1| ≍
+  (1 + log g_W)/log y. Weighted moment bounds are needed instead.
+- (#5) Step 5's "marginals coincide" is false as written: the product term averages over independent
+  N, N′ with t-dependent weights. Both weighted main terms must be derived and the archimedean
+  covariance kept.
+- (#8, #9) LD-b/LD-c need the cancellation shown before taking absolute values. The "asymptotic
+  independence" of λ_k from k mod W needs a divisor expansion with summable tails and CRT.
+- (#10) The valuation truncation must use conditional projections modulo p^a, uniformly over singular
+  strata. The parity condition w − v ≡ k² (mod 2k) and 2 | W must be carried throughout.
+- (#2, #4, #11) Discard k close to T and small t; use endpoint grids for Harper; account for repeated
+  moduli q/g; give a weighted pair bound for g > G; compute the archimedean J^{−2} term explicitly.
 
 **Remarks.**
 - Codex's (*) asks more than V: second-order coefficients and an explicit centering. V uses exact
@@ -304,22 +316,20 @@ why we do not label the theorem PROVED.
 **Prop B (PROVED IN OUTLINE; a barrier for the method, not for H1).**
 - Take y = L[1/2, a], T = L[1/2, b], and any stratification by N mod W, with W ≤ B^{1/4−ε} so that
   step 4's level condition holds.
-- *Variance from the unstratified primes.* By the law of total variance over N mod Wp, the primes
-  p ∤ W with p ≤ B^{ε} contribute
+- *Variance from unstratified primes (repaired after codex #13).*
+  - Use only primes p ≍ D log B, with D a large fixed constant. Such p are < y, so the local mean formula
+    of Prop L applies uniformly.
+  - A modulus with log W = O(log B) contains only O(log B/log log B) of these primes, so most of the
+    band stays unstratified.
+  - Remove from each Legendre character (N/p) its conditional projection onto N mod W. Bessel's
+    inequality for the resulting nearly orthogonal family then gives
 
-  E Var(Z | N mod W)/(E Z)² ≥ c ξ(u)² Σ_{p∤W, p≤B^ε} (log p)²/(p² log² y),   ξ(u) ≍ log u.
+    E Var(Z | N mod W)/(E Z)² ≫ ξ(u)²/log² y · Σ_{p≍D log B, p∤W} (log p)²/p² ≍ ξ(u)²/log² y · log log B/log B.
 
-  - This uses the local mean formula of Prop L uniformly for p ≤ B^{ε}.
-  - Harper's Theorem 1 supplies that formula on average over p, which suffices for a sum.
-  - The characters (N/p) for distinct p are orthogonal over N.
-- *Size of that variance.*
-  - W ≤ B^{1/4} with W = ∏_{p≤z_W} p^{a} forces z_W ≤ n ln 2/(4a) ≍ n.
-  - Σ_{p>z}(log p)²/p² ≍ (log z)/z.
-  - With ξ ≍ log u ≍ (1/2) log n and log² y ≍ a² n log n, the bound is
-    ≍ (log n)²·(log n)/(n · n log n) = (log n)²/n².
-  - That is ≫ n^{−2} by a factor (log n)². The constant is UNVERIFIED.
-  - Chebyshev at this variance cannot give o(n^{−2}), even with the largest stratification the BV step
-    allows.
+- *Size.* With ξ ≍ log u ≍ (1/2) log n and log² y ≍ a² n log n, this is ≍ (log n)²/n². That exceeds
+  n^{−2} by the factor (log n)². The constant is UNVERIFIED.
+- So Chebyshev at this variance cannot give o(n^{−2}). This is a barrier for the variance-based
+  certification, not for H1.
 - *Other obstacles at L[1/2]* (codex): close-pair deletion loses 1/ρ(u), and the first-order local
   perturbation squared is ≍ (log n)/n.
 - *Routes not ruled out:*
@@ -340,15 +350,15 @@ why we do not label the theorem PROVED.
   exists when N is prime.
 - *Proof.*
   - (X − N)² − Y² = N(x′ − x)² > 0, so X − Y > N.
-  - X ≤ (√N + T + 1)² and Y ≤ (Q + Q′)/2 ≤ (√N + T + 1)² − N, so X + Y < 2N once
-    (√N + T + 1)² < 1.5N.
+  - X ≤ (⌈√N⌉ + T)² and Y ≤ (Q + Q′)/2 ≤ (⌈√N⌉ + T)² − N, so X + Y < 2N once
+    2(⌈√N⌉ + T)² < 3N. This holds eventually since T = o(√N).
   - N divides (X − Y)(X + Y) = N(N + Q + Q′) but divides neither factor. So the gcd is neither 1
     (that would force N | X + Y) nor N. ∎
 - *Size 1.* Q_t = s² gives N = (m + t − s)(m + t + s) (Fermat). The factor m + t − s exceeds 1 because
   m + t + s < N.
 - Tests: `test_lemma_P_*`. E2 observed 203/203 size-≤2 dependencies fruitful.
-- We found no reference for Lemma P as a QS statement. It is elementary and very likely folklore
-  (Lehman/Hart-type size arguments).
+- Lemma P is a special case of Lehman's nontriviality argument with multiplier (x′ − x)² (literature
+  critic). We found no explicit QS-phrased statement.
 
 **Prop S (PROVED).** For fixed c < 1/2,
 
@@ -363,15 +373,18 @@ why we do not label the theorem PROVED.
   - Each such (v, w) has ≤ τ(w − v) = B^{o(1)} factorisations. ∎
 - *Data.* The observed counts fall with n: 138, 43, 16, 5, 1, 0 small dependencies at 40–80 bits.
 
-**Prop SZ (PROVED; why size arguments stop at |S| = 2).**
-- Write α_S = ∏_{i∈S}(x_i − ε_i√N) ∈ Z[√N], for any signs ε_i. Then α_S has norm Y² and α_S ≡ X_S
-  modulo the ideal (√N) = 𝔭𝔮.
-- Write α_S = A − C√N. Then A ≡ X_S (mod N) and A² − NC² = Y². Fruitfulness by size needs
-  0 < A − Y < N and A + Y < N, which forces A < N.
-- But |A| ≥ Y ≈ N^{|S|(1/2+c)/2}, which exceeds N once |S| ≥ 4. For |S| = 3 no sign pattern pairs all
-  factors, and A ≍ N^{1+c}.
-- So for |S| ≥ 3 no choice of conjugations gives a size certificate. Unit multiples εα_S change A but
-  also multiply X_S by the √1 ε mod (√N). That is the lemmaM unit twist, itself a factorisation.
+**Prop SZ: WITHDRAWN (FALSE; codex detqs_2 #15).**
+- The draft claimed that no conjugation pattern gives a size certificate for |S| ≥ 3. A size certificate
+  does not need A < N. It needs only that A − Y and A + Y lie strictly between the same pair of
+  consecutive multiples of N.
+- *Counterexample (codex, re-verified).* N = 1572001 = 1097·1433, x = (1255, 1257, 1258), so
+  Q = (3024, 8048, 10563) with product Y², Y = 507024.
+  - The conjugation (+, +, −) gives A = 13249776 ≡ X (mod N).
+  - Then 8N < A − Y < A + Y < 9N, so gcd(A − Y, N) = 1097.
+- So for |S| ≥ 3 the size mechanism is not ruled out in principle.
+- What remains true is weaker. For |S| ≥ 3, |A| is typically ≥ N^{1+c}, so the window between
+  consecutive multiples of N has relative width ≍ N^{−c}. Nothing forces A ± Y into the same window.
+  We state no theorem about it.
 
 **Jacobi form (KNOWN; below16 §6.1).**
 - For Blum N, H2 ⇔ ψ_N(S) = (X_S Y_S/N) is a nontrivial character on ker A_N.
@@ -431,8 +444,17 @@ why we do not label the theorem PROVED.
 
 ## 8. Experiments (pre-registered; `notes/detqs_prereg.md`, commit 8a6b789)
 
-**Disclosed deviation.** The pooled E2 binomial p-value overflowed in float (M = 4600). After the data
-existed, the function was rewritten in log space; the test is unchanged. No other change.
+**Disclosed deviations and errors.**
+- The pooled E2 binomial p-value overflowed in float (M = 4600). After the data existed, the function
+  was rewritten in log space; the test is unchanged.
+- **Model error (found by codex detqs_2 #20).** `localmodel.u_blocks` used m ≈ 1.2247·2^{n/2}. The
+  typical value is √(3/4)·2^{n/2} ≈ 0.866·2^{n/2}, so the frozen model overstated m by √2. That shifts
+  u_t by about (1/2) log 2/log y.
+  - The frozen L(N), V_L and MODEL_PAIR_RATIO values contain this error. We did not re-fit them; any
+    corrected fit would be post hoc.
+  - The checks that depend on it (P1b, P1c, P1d, P3b) passed anyway.
+- "Explained variance" below means 1 − V_res/V for the multiplicative residual r = Z/(cL). It is not a
+  regression R². corr² (0.97–0.99) gives a similar figure.
 
 **E1 (variance and lower tail of Z_N).** y = 2^⌊n/5⌋, T = 2^{16..20}.
 
@@ -482,8 +504,14 @@ existed, the function was rewritten in log space; the test is unchanged. No othe
   fails in 104, 30 and 2 runs at 40, 48 and 56 bits).
 - **Frozen verdict: "mixed".**
 - Post hoc (labelled):
-  - Of the 107 runs with no fruitful vector, 105 had too few relations (H1 failures). They are
-    censored runs, not H2 failures.
+  - Of the 107 runs with no fruitful vector, 105 had too few relations (H1 failures), so they are
+    censored runs.
+  - The other **two are genuine finite H2 failures** (both at 40 bits, non-Blum):
+    - N = 560915181371 (Z = 25, |FB| = 23);
+    - N = 738702714041 (Z = 26, |FB| = 23).
+    Each exhausted its relations with a 4-dimensional kernel, every basis vector trivial. The expected
+    count of such runs under the fair-coin model is ≈ 1000·2^{−4}·Pr(dim = 4), so two is not
+    surprising.
   - Per tested kernel vector, the trivial rate is:
 
     | n | 40 | 48 | 56 | 64 | 72 | 80 |
@@ -505,33 +533,87 @@ existed, the function was rewritten in log space; the test is unchanged. No othe
 ## 9. Literature (own search, codex §4, and the Opus literature critic, §10)
 
 - **Rigorous relation methods are randomized.**
-  - Dixon 1981;
-  - Pomerance's random squares (Croot–Granville–Pemantle–Tetali 2012 for running times);
-  - Schnorr–Lenstra 1984 (class groups, randomized);
-  - Vallée 1991 (Math. Comp. 56, 823–849; randomized sampling of small quadratic residues, rigorous
-    L[1/2, √(4/3)]);
-  - Lenstra–Pomerance 1992 (JAMS 5, 483–516; rigorous randomized L[1/2, 1 + o(1)]).
-- **QS analyses are heuristic.** Pomerance 1982 (Math. Centre Tracts 154) and 1985 (LNCS 209), and
-  "Smooth numbers and the quadratic sieve" (MSRI 44, 2008), which explicitly treats QS complexity as
-  conjectural.
-- **Deterministic rigorous factoring.** The best worst-case bound is N^{1/5} (Harvey–Hittmeir, Math. Comp.
-  91 (2022)). Lehman 1974 gives N^{1/3}; Hart 2012 is heuristic for general N.
+  - Dixon 1981 (random squares);
+  - Croot–Granville–Pemantle–Tetali, Annals 175 (2012), give the sharp threshold for Pomerance's
+    random-squares problem;
+  - Vallée, Math. Comp. 56 (1991) 823–849, rigorous randomized L[1/2, √(4/3)];
+  - Seysen 1987 and A. K. Lenstra 1988 (class-group relations, rigorous under GRH);
+  - Lenstra–Pomerance, JAMS 5 (1992) 483–516, rigorous randomized L[1/2, 1 + o(1)], no GRH.
+- **Schnorr–Lenstra 1984** (Math. Comp. 43) is a randomized group-order method. Its conjectured L[1/2]
+  bound was withdrawn (Lenstra–Pomerance 1992), so it is not a rigorous relation method.
+- **Lee–Venkatesan**, J. Number Theory 187 (2018), is rigorous for every n because it randomizes the
+  NFS polynomial. It is the closest precedent for "make a sieve rigorous by averaging over a family".
+  Our averaging is over N, with a deterministic algorithm.
+- **QS analyses are heuristic.**
+  - Pomerance 1982 (Math. Centre Tracts 154) and 1985 (LNCS 209), and "Smooth numbers and the quadratic
+    sieve" (MSRI 44, 2008), which works out the *conjectured* complexity.
+  - Granville's MSRI 44 survey (§4.3) states that a rigorous basic QS needs ≈ y^{1+o(1)} smooth values of
+    one given quadratic, and calls this open.
+  - The smooth-values-of-polynomials literature (Hmyrova, Balog–Ruzsa, Hildebrand 1989, Dartyge 1996,
+    Dartyge–Martin–Tenenbaum 2001, Martin 2002, Bober–Fretwell–Martin–Wooley arXiv 1710.01970) treats a
+    fixed polynomial with the variable far beyond the height. It never averages over the constant term N
+    with t ≤ N^c.
+- **Deterministic rigorous factoring.**
+  - Exponent 1/5: Harvey, Math. Comp. 90 (2021) 2937–2950, building on Hittmeir's 2/9 (Math. Comp.
+    2018).
+  - Harvey–Hittmeir, Math. Comp. 91 (2022), remove a log-log factor.
+  - Lehman 1974 gives N^{1/3}; Hart 2012 is heuristic for general N.
+- **Closest "deterministic almost-all" formulation.** Dąbrowski–Pomykała–Shparlinski, "On oracle
+  factoring of integers" (arXiv 1912.00345). It is deterministic polynomial time and finds one nontrivial
+  factor of almost all n, but only *with an elliptic-curve point-count oracle*. It differs from our
+  setting in three ways: oracle, one factor, and all integers rather than S_n.
 - **Smooth-number tools used.**
-  - Harper, "Bombieri–Vinogradov and Barban–Davenport–Halberstam type theorems for smooth numbers"
-    (arXiv 1208.5992, Theorems 1–2; see §10 for the critic's check);
-  - Hildebrand 1986 and Hildebrand–Tenenbaum 1993 (JTNB 5), Theorem 1.8 and (1.29);
-  - Fouvry–Tenenbaum 1996, Granville 1993 (alternatives at fixed u).
-- **Searches** ("deterministic quadratic sieve almost all", "factoring almost all integers
-  deterministic", Pomerance, Schnorr, Hittmeir) found no deterministic almost-all algorithm below
-  N^{1/5} and no almost-all H1 theorem for (⌈√N⌉ + t)² − N. These are searches, not novelty
-  certificates; we claim "no prior formulation found by us" at most.
-- Averaging over *all integers* N to factor "almost all integers" is trivially easy by trial division,
-  because a random integer has a small factor. The point here is S_n, where the n^{−2} transfer is what
+  - Harper, "Bombieri–Vinogradov and Barban–Davenport–Halberstam type theorems for smooth numbers",
+    arXiv 1208.5992, an **unpublished preprint** (v1 2012), Theorem 1. Statement checked by the critic:
+    log^K x ≤ y ≤ x, Q ≤ √Ψ, max over reduced classes, main term Ψ_q/φ(q). At fixed u only the
+    **ineffective** any-A version saves anything, so n₀ in H1-S is necessarily ineffective.
+  - Primary published alternative at fixed u: **Fouvry–Tenenbaum, Proc. LMS (3) 72 (1996) 481–514,
+    Théorème 1**. Its √x Q term is B^{1/4+3c/2+o(1)} ≪ Ψ/log^A exactly when c < 1/2, the same
+    condition. Granville 1993 (Phil. Trans. A 345) is another alternative.
+  - Theorem 2 is not needed: Theorem 1 with a max bound handles the ‖E‖ terms.
+  - Dickman asymptotic Ψ = xρ(u)(1 + O(log(u+1)/log y)): Hildebrand, J. Number Theory 22 (1986)
+    289–307; Hildebrand–Tenenbaum survey (JTNB 5, 1993) Theorem 1.1. The survey's Theorem 1.8 is
+    Saias's Λ-approximation.
+  - Ψ(X/g, y) ≪ g^{−α}Ψ(X, y): Hildebrand–Tenenbaum 1986 (survey Corollary 1.7).
+- **Lemma P** is a special case of Lehman's nontriviality argument with a square multiplier d². Indeed
+  (X − N)² − Y² = N(x′ − x)² is a Lehman representation A² − B² = kN with k = (x′ − x)². Size 1 is
+  Fermat; the CFRAC analogue is SQUFOF's square form. We found no explicit QS-phrased statement.
+- **Search result.** We found no unconditional, oracle-free, deterministic almost-all (or average-case)
+  factoring algorithm below N^{1/5} other than the project's D′/AV. We found no almost-all H1 theorem for
+  (⌈√N⌉ + t)² − N. "No prior formulation found by us" at most.
+- **Caveat.** Finding *one* factor of almost all integers is easy (trial division). *Complete*
+  factorization of almost all integers is not trivial, and S_n is the case where the n^{−2} transfer
   bites.
 
 ## 10. Reviews
 
-(Filled in after the critic and codex rounds; see below.)
+**GPT-6.1-sol adversarial referee** (`codex/detqs_2.out`). Valid findings applied:
+- V/H1-S downgraded from "proved in outline" to GAP/CONDITIONAL; gaps listed in §4.
+- Prop SZ withdrawn (counterexample re-verified).
+- Prop B proof repaired (primes ≍ log B, Bessel); its rate (log n)²/n² is confirmed.
+- Lemma P's quantitative condition stated.
+- §8:
+  - model error disclosed;
+  - E3 scope narrowed;
+  - the two genuine 40-bit H2 failures reported;
+  - rate range corrected.
+- Its labels: C, M, transfer, P, S PROVED; L/H1-int correct outline needing a stronger stated input;
+  V/H1-S GAP; B correct barrier; SZ FALSE; DQ conditional on H1-S and H2\*; H2\* OPEN; experiments
+  "mixed".
+- Not yet applied: in DQ, deterministic root preparation should be charged y^{2+o(1)}, and the theorem
+  must be distinguished from the implementation, which uses incremental Gauss with a 30-vector cap.
+
+**Opus literature critic** (applied in §9):
+- Harper is an unpublished preprint; only its ineffective version saves at fixed u.
+- Fouvry–Tenenbaum 1996 is the published alternative.
+- The Dickman citation is HT survey Thm 1.1 / Hildebrand 1986.
+- Schnorr–Lenstra is not rigorous; the exponent 1/5 is due to Harvey 2021.
+- Added Dąbrowski–Pomykała–Shparlinski (oracle) and Lee–Venkatesan.
+- Lemma P is a special case of Lehman's argument.
+- "Trial division" applies to one factor only.
+
+**Opus proof critic:** launched but had not reported when this note was frozen. Its findings are not
+included. No theorem here is claimed as passing two critics.
 
 ## 11. Candidate card (BRIEF §4)
 
