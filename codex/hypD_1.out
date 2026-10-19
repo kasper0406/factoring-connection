@@ -1,0 +1,299 @@
+**PROVED below:** your Q2 reduction works, after specifying the split procedure and taking a divisor-closed set of admissible integers. Moreover, the particular semismooth modulus family in Q3 admits an extension of LV’s argument at the inflated heights. The remaining obstacle is an **averaged capped special-q success probability**, stronger than a first moment of relation counts.
+
+**KNOWN:** I found no verified classical factoring algorithm beating \(L_N[1/2,1]\) for every \(N\). The unconditional benchmark remains [Lenstra–Pomerance, JAMS 5 (1992), 483–516](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf). The statements of absence below describe the literature search, not impossibility theorems.
+
+Write
+\[
+n=\log N,\qquad \Lambda=\sqrt{n\log n},\qquad \mathcal L=e^\Lambda,
+\]
+and
+\[
+E(x,y;q,a)=\Psi(x,y;q,a)-\frac{\Psi_q(x,y)}{\varphi(q)},\quad
+u=\frac{\log x}{\log y},\quad
+\mathcal H(u)=e^{u/\log^2(u+1)}.
+\]
+
+**Q1. Exact literature statements.**
+
+**(i) KNOWN — Harper.** There exist absolute effective \(K,c>0\) such that, for large
+\[
+(\log x)^K\le y\le x,\qquad 1\le Q\le\sqrt{\Psi(x,y)},
+\]
+\[
+\sum_{q\le Q}\max_{(a,q)=1}|E(x,y;q,a)|
+\ll
+\Psi(x,y)\bigl(\mathcal H(u)^{-c}+y^{-c}\bigr)
++Q\sqrt{\Psi(x,y)}(\log x)^{7/2}.
+\]
+Thus your proposed shape is correct, with \(\log^2(u+1)\). For every fixed \(A>0\), the first exponential term can additionally be divided by \((\log x)^A\), with an ineffective implied constant. There is no maximum over the endpoint \(x\) in this statement. [Harper, arXiv:1208.5992, Theorem 1](https://arxiv.org/pdf/1208.5992).
+
+**(ii) KNOWN — Drappeau.** For each fixed \(\varepsilon>0\), there are \(C,\delta>0\) such that, when
+\[
+(\log x)^C\le y\le x^{1/C},
+\]
+the sum over \((q,a_1a_2)=1\) of
+\[
+|E(x,y;q,a_1\overline{a_2})|
+\]
+is
+\[
+\ll_A\Psi(x,y)\{\mathcal H(u)^{-\delta}(\log x)^{-A}+y^{-\delta}\},
+\]
+in either range
+\[
+\begin{array}{c|c}
+Q&\text{residue parameters}\\ \hline
+x^{3/5-\varepsilon}&|a_1|,|a_2|\le x^\delta\\
+x^{6/11-\varepsilon}&|a_1|\le x^{1-\varepsilon},\ |a_2|\le x^\delta.
+\end{array}
+\]
+Here \(a_1a_2\ne0\), \((a_1,a_2)=1\); parameters are common across the modulus sum. Effectivity holds for \(A<1\). [Drappeau, Compositio 151 (2015), 828–862, Théorème 1](https://arxiv.org/html/1307.7554v3).
+
+**(iii) KNOWN — Pascadi.** For fixed nonzero integer \(a\), \(A,\varepsilon>0\), some \(C=C(a,A,\varepsilon)\) gives
+\[
+\sum_{\substack{q\le x^{5/8-\varepsilon}\\(q,a)=1}}
+|E(x,y;q,a)|\ll_{a,A,\varepsilon}\frac{\Psi(x,y)}{(\log x)^A},
+\qquad
+(\log x)^C\le y\le x^{1/C}.
+\]
+This is an absolute-value estimate, without well-factorable weights, but **not** a maximum over residues. I found no stronger applicable level. [Pascadi, arXiv:2505.00653v2, Theorem 1.5](https://arxiv.org/html/2505.00653v2).
+
+**(iv) KNOWN — individual moduli.**
+
+- Granville’s 1993 results give asymptotic equidistribution for \(q\le y^{1-\varepsilon}\), as \(y\to\infty\) and \(\log x/\log q\to\infty\). His earlier quantitative statement, for every fixed \(A\), is relative error \(O_A(\log q/\log y)\), uniformly for \(x\ge y\ge2\), \(q\le\min(x,y^A)\). That error alone gives a lower bound only for sufficiently small powers of \(y\). [Granville I](https://dms.umontreal.ca/~andrew/PDF/psinaps1.pdf), [II](https://dms.umontreal.ca/~andrew/PDF/psinaps2.pdf).
+- Soundararajan’s Theorem 1 proves the asymptotic for
+  \[
+  q\le y^{4\sqrt e-\varepsilon},\qquad
+  y^{(\log\log y)^4}\le x\le \exp(y^{1-\varepsilon}).
+  \]
+  [arXiv:0707.0299](https://arxiv.org/pdf/0707.0299).
+- Harper removes those restrictions on \(x\): for every fixed \(\delta>0\),
+  \[
+  y\le x,\quad 2\le q\le y^{4\sqrt e-\delta},\quad (a,q)=1,
+  \]
+  with \(y\ge y_0(\delta)\), the asymptotic holds as \(\log x/\log q\to\infty\). His Theorem 2 gives equidistribution **within cosets** of a bounded-index subgroup for \(q\le y^A\), any fixed \(A\); it does not guarantee mass in every coset. [Harper, JNT 132 (2012), Theorems 1–2](https://arxiv.org/pdf/1103.2106).
+
+**CONJECTURED:** a uniform lower bound in every reduced residue for arbitrary \(q\le y^A\), beyond \(A=4\sqrt e\). Even such a lower bound would improve the general least-quadratic-nonresidue exponent: if every prime \(\le y\) is a quadratic residue modulo a prime \(q\), some residue classes contain no \(y\)-smooth integers.
+
+**(v) KNOWN — sparse moduli.** Restricting a BV sum to an arbitrary subset preserves its absolute error bound, **not** an error divided by the subset’s density.
+
+Pascadi’s Theorem 7.1 genuinely permits two bounds \(y_1,y_2\). For fixed \(\varepsilon,A,k\), suitable \(\delta,C>0\), it bounds
+\[
+\sum_{\substack{q\sim Q\\P^+(q)\le y_2\\(q,a_1a_2)=1}}
+\tau_k(q)|E(x,y_1;q_0q,a_1\overline{a_2})|
+\]
+by
+\[
+\ll
+\frac{\Psi(x,y_1)\Psi(Q,y_2)}
+{\varphi(q_0)Q(\log x)^A}e^{O_k(u_2)},
+\qquad u_2=\frac{\log x}{\log y_2},
+\]
+provided
+\[
+\begin{gathered}
+(\log x)^C\le y_1\le x^{1/C},\quad
+(\log x)^C\le y_2\le x,\quad Q\le x^{5/8-\varepsilon},\\
+|a_1a_2|,q_0\le x^\delta,\quad
+(a_1,a_2)=(q_0,a_1a_2)=1,\quad P^+(q_0)\le y_2.
+\end{gathered}
+\]
+These residue and \(q_0\)-smoothness restrictions matter here. [Pascadi, Theorem 7.1](https://arxiv.org/html/2505.00653v2).
+
+**(vi) KNOWN — polynomial values.** All forms below are fixed; the constants do not give the required uniformity in \(N\).
+
+- BBDT prove \(\Psi_F(x,y)\gg x^2\) for \(y\ge x^{\alpha_F+\varepsilon}\). For irreducible degree \(g\), \(\alpha_F=g-2\); for cubic forms, their improved theorem gives \(\alpha_F=1/\sqrt e\) if irreducible and \(0\) if reducible. [BBDT, Comment. Math. Helv. 87 (2012), Theorems 1–2](https://ems.press/content/serial-article-files/43293?nt=1).
+- Lachand obtains an asymptotic for fixed irreducible cubics in the range
+  \[
+  \exp\!\left(\frac{\log x}{(\log\log x)^{1/2-\varepsilon}}\right)\le y\le x.
+  \]
+  For fixed bounded-coefficient, pairwise affinely independent linear forms, his later theorem allows \(y_i=x^{1/u_i}\), with all \(u_i\) bounded. [Cubic paper](https://arxiv.org/abs/1408.2111), [linear-form Theorem 1.1](https://arxiv.org/html/1609.08872v2).
+- Harper handles the specific ternary system \(a+b=c\) throughout \((\log x)^K\le y\le x\). [arXiv:1408.1662, Corollary 1](https://arxiv.org/pdf/1408.1662).
+- Dartyge–Martin–Tenenbaum prove \(\Psi_F(x,y)\gg x\) for
+  \[
+  y\ge x^{g-1/k+\varepsilon},
+  \]
+  where \(g\) is the largest irreducible-factor degree and \(k\) counts those factors. [Theorem 1.1](https://personal.math.ubc.ca/~gerg/papers/downloads/PVFLPF.pdf).
+- **FALSE attribution:** *Smooth values of polynomials* is by Bober–Fretwell–Martin–Wooley. Its quadratic result is infinitude with \(P^+(f(n))\le n^\varepsilon\), not a uniform density estimate. [arXiv:1710.01970](https://arxiv.org/abs/1710.01970).
+
+**(vii) KNOWN / search result.** Gordon’s and Schirokauer’s NFS-DL analyses retain smoothness/descent heuristics; they do not establish the requested supply estimate. Enge–Gaudry’s rigorous framework requires a verified smoothness model and gives classical index-calculus bounds, rather than a prime-field \(c<1\) theorem. [Gordon](https://www.dmgordon.org/papers/log.pdf), [Schirokauer’s survey](https://library.slmath.org/books/Book44/files/12oliver.pdf), [Enge–Gaudry](https://geodesic.mathdoc.fr/articles/10.4064/aa102-1-6/).
+
+LV prove square congruences at NFS time, with factoring conditional on Conjecture 7.1. Van Leeuwen’s 2020 thesis is an exposition, not closure of that condition. Kleinjung–Wesolowski prove expected time
+\[
+(pn)^{2\log_2 n+O(1)}
+\]
+over \(\mathbf F_{p^n}\); this does not improve prime fields. No verified 2018–2026 follow-up located closes the relevant gaps. [LV](https://arxiv.org/abs/1805.08873), [van Leeuwen](https://arxiv.org/abs/2007.02689), [Kleinjung–Wesolowski](https://arxiv.org/abs/1906.10668).
+
+**Q2. PROVED — the proposed collapse, with precise qualifications.**
+
+Let \(N\) be odd, \(h=2^{\omega(N)}\), \(H_N=(\mathbf Z/N)^{\times2}\), \(X=\lfloor\sqrt N/2\rfloor\), and
+\[
+S\subset[1,X]\cap(\mathbf Z/N)^\times,\qquad M=|S|.
+\]
+Character orthogonality gives
+\[
+A:=\#\{(u,v)\in S^2:u/v\in H_N\}
+=\frac1h\sum_{\chi\in\widehat{(\mathbf Z/N)^\times/H_N}}
+\left|\sum_{u\in S}\chi(u)\right|^2
+\ge M^2/h.
+\]
+
+Pairs with \(\gcd(u,v)>D\) number at most \(O(X^2/D)\). Choose \(D\asymp hX^2/M^2\). A positive fraction of these \(A\) pairs remain, and each reduced fraction has at most \(D\) retained representations. Distinct reduced fractions give distinct residues modulo \(N\), since cross-determinants have absolute value \(<N\). Consequently,
+\[
+\boxed{\Pr_{R\ \mathrm{uniform\ in}\ H_N}
+[\exists u,v\in S:R=u/v]\gg h^{-1}(M/X)^4.}
+\]
+
+**Qualification:** for arbitrary \(S\), reduction need not preserve membership in \(S\). Use a divisor-closed admissible set. Bounded rational reconstruction then returns the admissible reduced pair uniquely. The shortest-vector split also returns it on this event: two independent vectors of those lengths would contradict determinant \(N\).
+
+Now take \(I=(Y,2Y]\), with \(\log Y\asymp n^{3/4}\), and let \(G_A\subset I\) contain primes for which a **specified capped search** succeeds. Define \(S_A\) using primes \(\le B\) and at most \(k\) primes from \(G_A\), with multiplicity, where
+\[
+k=\left\lfloor\frac{\log X}{\log(2Y)}\right\rfloor\asymp n^{1/4}.
+\]
+Put \(U=\lfloor X/(2Y)^k\rfloor\). Unique factorization gives
+\[
+|S_A|\ge \Psi(U,B)\binom{|G_A|+k-1}{k},
+\]
+before deleting nonunits. Uniformly in \(U\le2Y\),
+\[
+\log\frac{\Psi(U,B)}U=-o(\Lambda),\qquad
+k\log(k\log Y)=o(\Lambda).
+\]
+Thus, writing \(g_A=|G_A|/\#\{\text{primes in }I\}\),
+\[
+|S_A|/X\ge \exp\{-k\log(1/g_A)-o(\Lambda)\}.
+\]
+
+Remove factors below \(P_0=\exp(n^{1/2}(\log n)^{1/4})\) first; even trial division costs \(\mathcal L^{o(1)}\). Then \(\log h=o(\Lambda)\). Standard smooth-number divisor bounds make deletion of nonunits negligible.
+
+If
+\[
+\mathbf E_Ag_A\ge\eta,\qquad \log(1/\eta)=o(\Lambda/k),
+\]
+then \(\Pr[g_A\ge\eta/2]\ge\eta/2\). Every such field has capped split-descent probability \(\mathcal L^{-o(1)}\). Both reconstructed coordinates together need at most \(2k\) descents.
+
+**Therefore the complementary-prime-types objection does not invalidate this reduction.** It invalidates an independence argument for a prescribed target list; your construction instead counts a sufficiently dense field-dependent family of successful splits. The interval must be chosen at the stated high scale; arbitrary dyadic intervals do not automatically suffice.
+
+**Q3. PROVED — a restricted extension at the required scale; goodness alone is insufficient.**
+
+LV Lemma 8.5 assumes
+\[
+(\log x)^K<y<x^{1/\log\log x},\quad
+x^\varepsilon\le Q\le\sqrt{\Psi(x,y)},\quad
+\omega\to\infty,\quad \omega=y^{O(1)},
+\]
+and bounds the maximum-residue error over \(y\)-smooth moduli in \([Q/\omega,Q]\) by
+\[
+\Psi(x,y)\frac{\Psi(Q,y)}Q
+\{\mathcal H(u)^{-c}+y^{-c}\}
++Q\sqrt{\Psi(x,y)}(\log x)^{7/2}.
+\]
+[LV, Lemma 8.5 and its character-sum proof](https://arxiv.org/pdf/1805.08873).
+
+For your **one-large-prime** family, one can extend that proof as follows. Take
+\[
+x=N^{\xi+o(1)},\quad Q=N^{q+o(1)},\quad 0<q<\xi/2,\quad
+B=e^{a\Lambda},\quad Y=e^{n^{3/4}},
+\]
+with fixed positive parameters. Let
+\[
+\mathcal T_Q=\{\ell s\in(Q/2,Q]:Y<\ell\le2Y,\ \ell\text{ prime},\ P^+(s)\le B\},
+\quad
+\delta_T=\frac{\Psi(Q/Y,B)}{(Q/Y)\log Y}.
+\]
+Then
+\[
+\sum_{t\in\mathcal T_Q}\max_{(c,t)=1}|E(x,B;t,c)|
+=o\bigl(\Psi(x,B)\delta_T\bigr).
+\]
+
+The proof uses \(\ell>B\):
+
+- Characters principal at \(\ell\) reduce exactly, on \(B\)-smooth integers, to characters modulo \(s\). The character-sum majorant bounded in LV §8 supplies the saving \(\delta_T\).
+- Characters nonprincipal at \(\ell\) have conductor at least \(Y\). Harper’s Proposition 1 plus its zero-density argument bounds conductors between \(Y\) and \(x^\gamma\) by
+  \[
+  \Psi(x,B)(\log x)^{O(1)}(Y^{-1/10}+x^{-c_0}).
+  \]
+  Proposition 2 handles larger conductors by the usual \(Q\sqrt\Psi\) term. Both are negligible here.
+
+This is a scale-specific deduction, not a general two-smoothness-bound theorem. It permits moving residues \(Nb^d\), because of the maximum over residues.
+
+The effective large-sieve requirement is
+\[
+Q(\log x)^{7/2}=o\!\left(\sqrt{\Psi(x,B)}\,\delta_T\right),
+\]
+not merely \(Q<\sqrt x\). A fixed power margin \(q<\xi/2\) suffices.
+
+For rectangular searches \(0<a<b\), \(b\asymp V\), averaging over \(m,a\) makes \(t=a-bm\) run through contiguous intervals. LV’s one-point smoothing then supplies the corresponding relation-count first moment; primitive pairs can be retained, for example by restricting \(b\) to primes.
+
+**FALSE:** the bare condition
+\[
+\Psi(x,B;t,c)=\left(\Psi_t(x,B)/\varphi(t)\right)^{1+o(1)}
+\]
+alone guarantees \(\mathcal L^{o(1)}\) precision. When the main term has logarithm \(\Theta(\log N)\), its exponent error must be \(o(\Lambda/\log N)\). The quantitative BV estimate supplies stronger control.
+
+**Q4. CONJECTURED — existence still requires anti-concentration.**
+
+For \(Z=N_\ell(A;T)\), the sufficient estimate is
+\[
+\mathbf E Z^2\le(\mathbf EZ)^2\exp(o(\Lambda/k)).
+\]
+Paley–Zygmund then gives exactly the marginal success probability needed by Q2. A first moment alone cannot: \(Z=T\) with probability \(1/T\), otherwise zero, has mean one and success probability \(1/T\).
+
+**PROVED lattice detail:** for distinct primitive pairs and \(d\ge2\), the two Veronese evaluation rows
+\[
+(a^{d-1},a^{d-2}b,\ldots,b^{d-1})
+\]
+have minors with gcd exactly \(|ab'-a'b|\). Hence the joint random evaluations occupy an affine lattice of index
+\[
+|tt'(ab'-a'b)|.
+\]
+For pairs in the same special-\(q\) lattice, \(\ell\mid ab'-a'b\). Continuous projection-density bounds therefore do not establish the required smoothness correlation.
+
+**KNOWN/search result:** no located theorem controls these varying-coefficient, discrete-lattice correlations with the required loss. Independent fields avoid correlations only by introducing additional algebraic columns. With \(J=\mathcal L^{o(1)}\), they cannot repair success probabilities as small as \(\mathcal L^{-\Omega(1)}\). One-large-prime partials similarly require a proved collision/elimination estimate. First moments suffice for direct Dixon/Vallée sampling; no verified first-moment-only replacement gives the proposed NFS descent constants.
+
+**Q5. Constants and the missing estimates.**
+
+**PROVED arithmetic; CONJECTURED algorithms where supply is missing.** Set
+\[
+M=N^{1/(d+1)},\qquad H=M^h,
+\]
+where \(H\) is the height of coefficients of **\(R\)**. Then
+\[
+\|f\|\asymp MH,\qquad
+|t/\ell|=N^{1/(d+1)+o(1)},\qquad
+|F|=N^{(1+h)/(d+1)+o(1)}.
+\]
+Thus
+\[
+\theta=\frac{2+h}{d+1},\quad
+\lambda=\frac{\theta}{2a},\quad
+c=\min_a\max\{a+\lambda,2a\}=\sqrt{2\theta}.
+\]
+
+| Design | Formal constant | Missing estimate / proved status |
+|---|---:|---|
+| Minimal-height fixed \(d\) | \(2/\sqrt{d+1}\) | Progression first moment and capped success; not proved |
+| Inflated design, \(H=M^{1+\varepsilon}\) | Infimum \(\sqrt{6/(d+1)}\) | Q4 capped-success estimate; \(d=7\): \(0.866\) |
+| Literal \(H=M^{2+\varepsilon}\) | Infimum \(\sqrt{8/(d+1)}\) | Same estimate; improvement starts at odd \(d\ge9\) |
+| QS descent | \(1\) | Averaged capped success for \(x^2-N=\ell c\), including eligible targets |
+| Direct Dixon | \(\sqrt2\) | KNOWN rigorous |
+| Direct Vallée \(2/3\) sampler | \(\sqrt{4/3}\) | KNOWN rigorous |
+
+The repository’s \(H\ge M^2\) and \(F\asymp M^2\) use incompatible conventions if \(H\) denotes \(R\)-coefficient height. The \(\sqrt6\) constant corresponds to polynomial height \(M^2\), hence \(R\)-height approximately \(M\).
+
+**PROVED cost barrier within Dixon-only descent:** a sampler producing target cofactors of size \(N^\tau\) gives \(c=\sqrt{2\tau}\) in this model. Vallée’s \(\tau=2/3\) therefore gives \(1.155\), not \(c<1\). Conditioning her sampler on a prescribed target is an additional task, not supplied by the sampler theorem.
+
+**CONJECTURED spanning design:** if cheap LV rows span a fresh fruitful rational certificate with probability \(\mathcal L^{-o(1)}\), one fruitful \(N^\tau\)-sized relation costs \(\mathcal L^{\tau/(2a)}\), while linear algebra costs \(\mathcal L^{2a}\). Hence
+\[
+c=\min_a\max\{2a,\tau/(2a)\}=\sqrt\tau.
+\]
+This gives \(1\) for Dixon and \(\sqrt{2/3}=0.816\) for Vallée. The missing estimate is **overlap with the span of the actual LV rows**; relation counts do not prove it.
+
+**PROVED loss accounting:** Q2 charges \(4k\log(1/g_A)+o(\Lambda)\). At \(k\asymp n^{1/4}\), polylogarithmic success losses are harmless; a loss \(\mathcal L^{-\varepsilon}\) per target is not. The remaining supply assertion is precisely
+\[
+\boxed{\Pr_{A,\ell\in I}\!\left[N_\ell(A;T)>0\right]
+\ge e^{-o(\Lambda/k)},\qquad
+T=\mathcal L^{\theta/(2a)+o(1)}.}
+\]
+It remains conjectural. Extending LV’s certificate and square-root machinery to the descent heights also requires an explicit argument before any conditional constant becomes a complete factoring theorem.

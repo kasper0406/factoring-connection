@@ -5,11 +5,12 @@ Agent `hypD`, phase 7, 2026-10-19.
   commit `af85691`, came before E1x.
 - Code: `src/hypD/`. Tests: `tests/test_hypD.py`.
 - Raw data: `experiments/raw/hypD_e{1,1x,2,3a,3b}.jsonl`.
-- GPT-6.1-sol: the blind prompt `codex/hypD_1.md` could not run because the Codex login expired. The
-  prompts are written for a later run.
+- GPT-6.1-sol: blind round `codex/hypD_1.{md,out}` and adversarial round `codex/hypD_2.{md,out}`. Both
+  ran after the Codex login was restored.
 - Reviews: four independent read-only Opus critics (two on proofs, two on prior art) and the
   GPT-6.1-sol adversarial round `codex/hypD_2.out`. All findings were adjudicated and applied (§9).
-  The GPT-6.1-sol blind round `hypD_1` is pending.
+  The GPT-6.1-sol blind round `codex/hypD_1.out` was checked by a dedicated Opus critic on its FM claim,
+  and is integrated (§4.1′, §9.3).
 
 ## Verdict
 
@@ -20,7 +21,7 @@ Review status:
 - Opus-reviewed, with all findings adjudicated and applied (§9): two proof critics and two prior-art
   critics.
 - GPT-6.1-sol adversarial review done (`codex/hypD_2.out`): no fatal error, all fixes applied (§9.2).
-- The GPT-6.1-sol blind round (hypD_1) was still running at this commit.
+- GPT-6.1-sol blind round (`codex/hypD_1.out`) integrated (§4.1′, §9.3).
 
 **Removing two of lemmaM's ingredients.**
 - **Theorem S / S′ [proved; a routine adaptation of the Dixon–Pomerance random-squares lemma].**
@@ -56,9 +57,18 @@ Review status:
   - Bounded k avoids B3 but pays the L_N[1/2, 1/√2] shape cost.
 
 **What is still open for (a′_k).**
-- **FM** is a sketch: a transplant of LV Lemma 8.5 to moduli ℓ·s. The published smooth-moduli BV of
-  de la Bretèche–Drappeau (JEMS 2020, Thm 2.1) and Pascadi (Thm 7.1) does not apply as stated. It
-  requires P⁺(q₀) ≤ y₂, and its e^{O(u₂)} loss is fatal at y₂ = B = L[1/2].
+- **FM, updated after the blind round hypD_1 and a dedicated Opus critic (§4.1′).**
+  - The restricted Bombieri–Vinogradov estimate for the moduli family {ℓs : ℓ ∈ (Y, 2Y] prime,
+    s B-smooth} (Lemma 8.5′) is **proved** in both regimes:
+    - (A) Y = exp((log N)^{3/4}), lemmaM's scale;
+    - (B) Y = N^{1/(2k)} with k fixed.
+  - The key step: characters principal at ℓ act on B-smooth n exactly as characters mod s.
+  - **FM itself, in regime (B), follows modulo bookkeeping that is specified but not written out**
+    (§4.1′, items 1–5). We label it *proved in outline*.
+  - In regime (A), FM holds only in an L^{−o(1)} form. The high-precision form needed by Horn 1 requires
+    rewriting LV §5 with explicit errors.
+  - The published smooth-moduli BV (de la Bretèche–Drappeau Thm 2.1; Pascadi Thm 7.1) still does not
+    apply: it needs P⁺(q₀) ≤ y₂ and carries an e^{O(u₂)} loss.
 - **PC** is open. It splits into:
   - **PC_rat**, a binary correlation of smooth values of two linear forms in one variable;
   - **PC_alg**, which is ⟸ a restricted BDH with residue classes restricted to the moving class
@@ -115,8 +125,8 @@ Review status:
 | Lenstra–Pomerance 1992 (class groups) | 1 | proved (prior art) | — |
 | Vallée 1991 (small squares, θ = 2/3) | √(4/3) ≈ 1.155 | proved (prior art; not re-verified) | — |
 | lemmaM (a), plain fixed-d descent | 2/√(d+1) | heuristic | first moment at t ≍ F^{1−o(1)}, beyond every known level |
-| lemmaM (a′), HECM shape test, k ≍ (log N)^{1/4} | √(6/(d+1)) | conditional on Hyp. D | FM; PC to precision exp(−o((log N)^{1/4}(log log N)^{1/2})) (B3) |
-| **(a′_k), fixed k, LP shape test** | **(1+θ)/√2**, θ → 3/(d+1): d = 7: 0.973; d = 9: 0.920; d = 11: 0.884; d = 19: 0.814; d → ∞: 0.707 | **conditional on D_k ⟸ FM (sketch) + PC (open)** | FM (LV 8.5 transplant), PC_rat (binary smooth correlation), PC_alg (⟸ RBDH′ + 2D kernel lemma), LV §6 |
+| lemmaM (a′) / hypD_1's design, HECM shape test, k ≍ (log N)^{1/4} | infimum √(6/(d+1)) (R-coefficient height ≈ M; d = 7: 0.866; d = 9: 0.775) | conditional on D_k at precision exp(−o(Λ/k)) | Lemma 8.5′ proved; FM to that precision needs an explicit-error rewrite of LV §5; PC to precision exp(−o((log N)^{1/4}(log log N)^{1/2})) (B3) |
+| **(a′_k), fixed k, LP shape test** | **(1+θ)/√2**, θ → 3/(d+1): d = 7: 0.973; d = 9: 0.920; d = 11: 0.884; d = 19: 0.814; d → ∞: 0.707 | **conditional on D_k ⟸ FM (proved in outline, §4.1′) + PC (open)** | FM bookkeeping (§4.1′ items 1–5), PC_rat (binary smooth correlation), PC_alg (⟸ RBDH′ + 2D kernel lemma), LV §6 |
 | (a′_k), recursive shape test | √((1+√2)θ) (d = 9: 0.851) | conditional on D_k at all scales | as above |
 | (a′_k) with a hypothetical coefficient-uniform ρ^{−3/8} PC_rat bound | 1.573 (limit) | hypothetical | the published bound does not apply; c < 1 needs loss exponent < 0.0294 |
 | **Design V (LV rows + Vallée rows)** | **√(2/3) ≈ 0.816** (d ≥ 9) | **conditional on RK** | RK (genuine-certificate deficiency); LV supply at L[1/2] (sketch); LV §6 postprocessing keeping a Vallée projection |
@@ -377,6 +387,78 @@ FM says E N ≥ L^{−o(1)}·S²·ρ(u_rat)·ρ(u_F). Choose S² = T_SQ = L^{o(1
    - The sketch must also pass from "bad t are rare in 𝒯" to "bad t are rare under the induced law of t".
      Here s is B-smooth in a progression mod b, so the bad set could concentrate on progressions.
    - The parameter regime k ≥ (3/4)(d+1), s > 1/(2k) belongs in D_k.
+
+### 4.1′ Lemma 8.5′ and FM after the blind round [Lemma 8.5′ proved; FM proved in outline for regime (B)]
+Source: GPT-6.1-sol blind round `codex/hypD_1.out` (Q3), checked by us and by an independent Opus critic
+(CORRECT WITH FIXES; the fixes are folded in below).
+
+**Lemma 8.5′.** Setup:
+- x = N^{ξ+o(1)}, Q = N^{q+o(1)}, 0 < q < ξ/2, B = L[1/2, a];
+- 𝒯_Q = {ℓs ∈ (Q/2, Q] : ℓ ∈ (Y, 2Y] prime, P⁺(s) ≤ B};
+- δ_𝒯 = Ψ(Q/Y, B)/((Q/Y) log Y);
+- regime (A) Y = exp((log N)^{3/4}), or regime (B) Y = N^{1/(2k)} with k fixed and q > 1/(2k) + η.
+
+Then Σ_{t∈𝒯_Q} max_{(c,t)=1} |Ψ(x, B; t, c) − Ψ_t(x, B)/φ(t)| = o(Ψ(x, B)·δ_𝒯).
+
+*Proof.* Write characters mod t = ℓs as χ_ℓχ_s. Since ℓ > B ≥ P⁺(s), we have ℓ ∤ s, so
+φ(ℓs) = (ℓ−1)φ(s) and t determines ℓ.
+1. **χ_ℓ principal.**
+   - Every B-smooth n is coprime to ℓ, so Ψ(x, B; χ₀^{(ℓ)}χ_s) = Ψ(x, B; χ_s).
+   - This part of LV's majorant W (eq. 8.2) is therefore exactly Σ_ℓ (ℓ−1)^{−1}·W_s, taken over
+     B-smooth moduli s ∈ (Q/2ℓ, Q/ℓ].
+   - Apply LV Lemma 8.5 with Q′ = Q/ℓ ≥ x^ε and window [Q′/ω, Q′], ω = log x. A larger window is
+     allowed by positivity.
+   - This gives Ψ·Σ_ℓ ϱ(Q/ℓ, B)/ℓ·(H(u)^{−c} + B^{−c}) + Σ_ℓ (Q/ℓ²)√Ψ log^{7/2}x.
+   - Since Σ_ℓ ϱ(Q/ℓ)/ℓ ≍ δ_𝒯, this is o(Ψδ_𝒯).
+2. **χ_ℓ non-principal.** The conductor is ℓr′ ≥ Y. Characters with conductor > M = x^η, from both
+   parts, are handled by Harper's large sieve (Prop 2 = LV Fact 8.11):
+   (Q + x^{1/2−η}log²x)√Ψ log^{7/2}x = o(Ψδ_𝒯), with polynomial margins because q < ξ/2 and δ_𝒯, ϱ are
+   x^{−o(1)}. For conductors in [Y, M], which occur only in regime (A) or when Y ≤ x^η:
+   - Harper's Prop 1 (Fact 8.9, the branch ε = 1/300) gives Ψ(x^{−0.001}log x + (ℓr′)^{−2}) per
+     character.
+   - Summed against Σ_{t: ℓr′|t} 1/φ(t) ≪ ϱ(Q/(ℓr′))/φ(ℓr′), and using ϱ(z/r) ≤ rϱ(z) and at most M
+     pairs (ℓ, r′), this is ≤ Ψδ_𝒯·(Y^{−1}(log x)^{O(1)} + x^{−0.001+η}).
+   - Zero-density exceptional characters (Fact 8.10), bounded trivially, contribute
+     Ψ Σ_{R≥Y} R^{−1/10} max_{r∼R} ϱ(Q/r) = Ψδ_𝒯 Y^{−1/10+o(1)}. This uses 1 − α → 0 (LV's "α → 0" is a
+     typo for α → 1).
+   - No Siegel/Page character arises at conductors ≥ Y.
+   - Part 1 inherits LV's effective Page-theorem treatment. ∎
+
+**FM from Lemma 8.5′ (regime (B), fixed k) [proved in outline; critic-checked; items not yet written
+line by line].**
+1. **Quantitative goodness.** LV's Def. 5.12 goodness, with exponent 1 + o(1), allows an N^{o(1)} loss,
+   which is **not** L^{o(1)}; this is a correction to §4.1 found by the blind round.
+   - Use instead |E(x, B; t, c)| ≤ ε·Ψ_t/φ(t) for all c, on a (1+ε)-grid of heights covering
+     [F_max/ω, F_max].
+   - The union bound costs O(log x/ε²) and is absorbed by H(u)^{−c}. Take ε below the
+     (log log log)^{−O(1)} gap between Ψ_t/φ(t) and Ψ/t.
+2. **Induced law.**
+   - Fix ℓ and b. As m runs over m ≡ a/b (mod ℓ) and a over |a| ≤ √ℓS, the cofactor s = t/ℓ is uniform
+     within a factor 3/2 on a dyadic interval of length ≍ bN^s/ℓ, restricted to (s, b) = 1.
+   - Primitivity gives (t, b) = 1, at a (log log)^{−1} loss.
+   - Conditioned on s being smooth, the induced weights on ℓ are within a factor 2 of the BV weights.
+   - So bad t carry an o(1) share of the rational-smooth mass, with Q = Q_b ≍ bN^s.
+3. **Residues.** Nb^d mod t is covered by the max over c. gcd(N, t) > 1 means a factor has been found.
+4. **LV Lemmas 5.18–5.20 additive errors** must be ≪ ρ_F = L^{−O(1)}, not merely o(1).
+   - The ϑ-approximation error O(‖(a,b)‖/H) needs h > 1/(4k) + η, with polynomial margin. That is the
+     h-floor of Corollary K.
+   - Take the truncation parameter ω ≥ L^C.
+   - ϱ varies by (log N)^{O(1)} across [F/ω, F].
+5. **Scales and exclusions.**
+   - Drop small b: there Q′ ≥ x^ε fails, and the dropped mass is polynomially small.
+   - Irregular lattices are an O(S^{−2}) fraction of points, and S^{−2} ≍ ρ_rat ρ_F. So take
+     S² ≥ L^{ε}/(ρ_rat ρ_F) with L^{ε} above FM's loss. Allowed, but it must be stated.
+
+**Regime (A).** The same argument gives FM with an L^{−o(1)} loss. That is not enough for Horn 1, which
+needs E N within exp(o(Λ/k)) of the true local density, to match a PC bound of that precision. Every
+error in items 1–5 is (log N)^{O(1)} = exp(o(Λ/k)), and Lemma 8.5′'s relative error is o(1). But LV §5 is
+written only to L^{o(1)} precision, so it must be redone with explicit errors.
+
+**Consequence for the constants.**
+- (a′_k), regime (B): c = (1+θ(d,k))/√2 (d = 9: 0.920; infimum over growing fixed k). This is now
+  conditional on **PC at L^{o(1)} precision**, the LV §6 adaptation, and FM's bookkeeping.
+- Horn 1, regime (A): infimum √(6/(d+1)) (d = 9: 0.775). It is conditional on PC at precision
+  exp(−o(Λ/k)) and on the explicit-error rewrite of LV §5.
 
 ### 4.2 PC, the second moment [open]
 E[N(N−1)] sums over pairs of distinct box points (a, b), (a′, b′) of one special-q lattice. It splits as
@@ -728,7 +810,7 @@ The E1x summary was computed inline from `experiments/raw/hypD_e1x.jsonl`; the s
 
 - **GPT-6.1-sol adversarial review: DONE** (`codex/hypD_2.out`). No fatal error. Every proved claim was
   judged CORRECT or CORRECT WITH FIXES, and all fixes are applied (§9.2).
-- The blind round `codex/hypD_1` was still running at this commit.
+- The blind round `codex/hypD_1.out` is integrated in §4.1′ and §9.3.
 - **Opus literature subagent:** supplied §8.
 
 ### 9.1 Opus critics: four independent read-only reports, adjudicated
@@ -818,9 +900,35 @@ All findings were accepted.
   L^{o(1)} of them survive. Fixed-test first moments will not suffice. We agree this is the clearest
   route to the conditional √(2/3).
 
+### 9.3 GPT-6.1-sol blind round (hypD_1) and ideas from it
+- **Claim (1), the Q2 collapse.** It agrees with Theorems S and K, independently derived. Codex works at
+  lemmaM's scale (Horn 1, k ≍ (log N)^{1/4}) with a divisor-closed admissible set
+  (B-smooth part × ≤ k primes of G_A). It requires γ ≥ e^{−o(Λ/k)}. **Accepted.**
+- **Claim (2), restricted BV.** Accepted with fixes: Lemma 8.5′ is proved and FM is proved in outline
+  (§4.1′). Dedicated Opus critic: CORRECT WITH FIXES in both regimes. In regime (A), FM's needed precision
+  requires an LV §5 rewrite.
+- **Claim (3).** The remaining obstacle is an averaged capped special-q success probability, not a
+  first moment. **Accepted.** It matches Prop PZ/PC. Codex's example (Z = T with probability 1/T) shows
+  that first moments alone cannot give it.
+- **Ideas and corrections from the blind round.**
+  - **(I1) Height convention.** √(6/(d+1)) corresponds to R-coefficient height ≈ M, i.e. polynomial
+    height M². lemmaM's "H ≥ M^{2+ε}" with H the R-height gives √(8/(d+1)) instead. Our θ(d,k) uses
+    R-height, consistent with √6.
+  - **(I2) Dixon-only descent barrier.** A sampler producing target cofactors of size N^τ gives
+    c = √(2τ) in this model. So Vallée's τ = 2/3 alone gives 1.155.
+  - **(I3) Independent rediscovery of Design V.** Cheap LV rows plus one fruitful N^τ-relation give
+    c = √τ (√(2/3) for Vallée), conditional on overlap with the LV row span. This corroborates §5.
+  - **(I4) Goodness insufficiency.** LV's goodness exponent 1 + o(1) is too weak at L[1/2] scale; use
+    the quantitative BV (adopted in §4.1′).
+  - **(I5) Many independent fields.** J = L^{o(1)} independent fields cannot repair per-field success
+    probabilities of size L^{−Ω(1)}. One-large-prime partials from a common box would need a collision
+    estimate. Neither route avoids PC.
+  - **(I6) Lattice index.** For distinct primitive pairs, the index of the joint evaluation lattice is
+    exactly |tt′(ab′ − a′b)|. This matches the hypD_2 finding D = |Δ|.
+
 ## 10. Candidate cards
 ```text
-ID: KD-1 bounded-k Dixon descent in LV fields (Theorem K + Theorem S' + DD).
+ID: KD-1 bounded-k Dixon descent in LV fields (Theorem K + Theorem S' + DD). FM: Lemma 8.5' proved; FM proved in outline (regime B).
 Target: every N (after trial division to y0).
 Operation: R = r^2; split R = u/v with u, v products of exactly k primes from J ~ N^{1/(2k)}, all in the
   field's descendable set G_A; one special-q relation per prime; DD gives fruitfulness.
