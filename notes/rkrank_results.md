@@ -157,7 +157,10 @@ Pr_μ[Z ∉ V^⊥] ≥ k/T.
 *Remarks.*
 - With G′ = Ann(μ), the theorem is only about finite-sample convergence to span(X) and says nothing
   about RK. With G′ the algebraic space of Prop C, Exp_T itself excludes "accidental" obstructions of X:
-  their escape probability is 0. So Exp_T(G′_alg) is the full content of RK. It is a deterministic
+  their escape probability is 0. So Exp_T(G′_alg) is the full content of RK.
+  - Here G′_alg means the column-functional realisations of the forced obstructions that lie in Ann(μ).
+  - Gen's column version lies in Ann(μ) only when raw W ⊆ Λ/2, which can fail by up to dim H_K
+    (§2.2). It is a deterministic
   expansion property of the finite set X.
 - The natural scale is T = D·L^{o(1)}: rare primes force a k-dependent rate. The frequency ≈ u/B of a
   prime p ≈ B in a relation is heuristic for the joint law.
@@ -211,7 +214,8 @@ where 𝔓_ℓ = (ℓ, α − m).
 **Box-level obstructions [proved].** These are identities on the box only.
 - **Non-monic f (LV).** The |S|-parity column is constant 1 and a − bm < 0 on the box, so
   e_sign + e_{|S|} ∈ R^⊥ and W ⊆ {u_sign = 0} always.
-- **Real places.** A real-sign column that is constant **1** on the rows gives e_sign + e_{rs_j} ∈ R^⊥.
+- **Real places.** If a − bm < 0 on the box (rational sign column constant 1) and a real-sign column is
+  constant **1** on the rows, then e_sign + e_{rs_j} ∈ R^⊥.
   A column constant 0 gives nothing for the rational side.
 - Total: ≤ r₁ + 1 dimensions. Design V uses positive targets, or pairs of negative ones.
 - **Correction to hypD §5.** hypD attributed a sign obstruction to a "real root near m". In LV the sign
@@ -282,8 +286,11 @@ Tetali 2012). We found no statement of this F₂ escape bound.
 - Supply, rank and postprocessing hold **jointly** on a set of fields of measure L^{−o(1)} under the
   law actually reached.
 - **Sampler rows must be supported in U.** If U excludes poorly covered primes, the sampler is
-  conditioned on avoiding them. This costs L^{−o(1)} provided the excluded primes have bounded
-  reciprocal-sum weight; that is an assumption.
+  conditioned on avoiding them. **Assume** Pr[output supported in U | B-smooth] ≥ L^{−o(1)}.
+  - Bounded reciprocal-sum weight of the excluded primes is *not* enough (proof critic). Excluding all of
+    [√B, B] costs u^{−u} = L^{−Θ(1)}.
+  - A sufficient condition: the retained primes have relative density ≥ δ in every dyadic range up to B,
+    with log(1/δ) = o(log log N). The loss is then ≈ δ^u = L^{−o(1)}.
 
 **Algorithm.** Collect D^κ + O(log N) + 1 sampler rows (§2.2). The costs, with η = 3/(d+1), are:
 - linear algebra: L^{2a};
@@ -368,7 +375,7 @@ cells themselves are curved, not linearisable.
 Then E#(𝒞 ∩ S_h) ≤ λ·2^ω(2h+1)(2√h+1)/N, where S_h is the set of units x with |x² mod N| ≤ h. Hence
 N^{1−3θ/2−o(1)} cells are needed per output when λ, 2^ω = L^{o(1)}.
 
-*Proof.* E# = Σ_{y∈S_h}Pr[y ∈ 𝒞] and |S_h| ≤ 2^ω(2h + 1) for squarefree N. ∎
+*Proof.* E# = Σ_{y∈S_h}Pr[y ∈ 𝒞] and |S_h| ≤ 2^ω(2h + 1) (units; each prime-power factor gives ≤ 2 roots for odd N). ∎
 
 *Scope.*
 - Without obliviousness, cells can be aimed at known small squares. Codex rkrank_3 gives an explicit
@@ -519,6 +526,9 @@ Status: refuted for this model (oblivious rank-one linearisable cells; oblivious
 ```
 
 ## 7. Reviews and adjudication
+**Re-check.** The proof critic re-verified the revised note. All items were OK except the §2.8
+U-support condition and two wording points, now fixed.
+
 **GPT-6.1-sol blind rounds.**
 - rkrank_1 (A) contributed: the duality, Prop G′ (rederived), Lemma S, the Fourier identities and the
   collision barrier, the spread example, the (e_i, e_i) example, the check of the V_κ formula, the Stange
