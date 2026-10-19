@@ -1,0 +1,1508 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a15514-b012-7fe3-81f5-874c893dbe6d
+--------
+user
+# rkrank_1 — blind research round on Hypothesis RK (GF(2) rank of NFS relations)
+
+Repo (read-only for you): /Volumes/git/factoring-connection. Context: notes/hypD_results.md §5 (Design V,
+Hypothesis RK, Theorem V, (B7), E3 in §7.3, codex hypD_2 review in §9.2), notes/nfsfruit_results.md (LV
+structure, Lemma H, Prop R), src/hypD/rank.py (toy E3). Lee–Venkatesan = arXiv 1805.08873. Be rigorous;
+label every claim proved / conditional / heuristic / false. Do not overclaim. Answer ≤ 3500 words.
+
+## Problem
+N odd composite, small factors removed (2^ω = L^{o(1)}). Field A = (m, f), m ~ N^{1/(d+1)}, f = f̂_{N,m} +
+(x − m)R with R random of height H (LV-style), fixed odd d ≥ 9, factor base B = L[1/2, a]. Relations:
+coprime (a, b) in a box of size L^{O(1)} with a − bm and F(a, b) both B-smooth (i.i.d. from the kept law of
+one field, or the whole smooth set X_{m,f} of the box). Row of a relation: rational parities (sign,
+v_p(a − bm) mod 2, p ≤ B), algebraic parities v_𝔭(a − bα) mod 2, LV §6 quadratic-character columns.
+R = row space. W = {u : (u, 0, 0) ∈ R} (rational-only part; genuine-certificate version W_true after LV §6).
+Λ/2 = {u : ∏ p^{u_p} ∈ (Z/N)^{×2}}. Known: W_true ⊆ Λ/2. Vallée vectors (parity vectors of smooth
+x² mod N, |x² mod N| ≤ N^{2/3}) lie in Λ/2.
+
+**Hypothesis RK.** With probability ≥ L^{−o(1)} over the field, codim of W_true ∩ U in U is ≤ L^{o(1)}, where U
+is (Λ/2 restricted to well-covered primes, or the span of the Vallée target supports). Then L^{o(1)} Vallée
+relations force a dependency containing a Vallée row, and Dixon/Vallée fibre symmetry makes it fruitful,
+giving rigorous L[1/2, √(2/3)] (Theorem V, conditional also on LV relation supply at L[1/2] and LV §6).
+
+## Tasks (attempt a proof first; if you cannot, find the sharpest precise obstruction)
+1. **Dual obstructions.** W^⊥ = proj_rat(R^⊥). A dual obstruction is (w, y) with w(a − bm) = y(a − bα) for
+   every relation. Classify the forced ones: the ω characters (χ_p, χ_𝔓) for p | N; archimedean ones (sign
+   of a − bm vs sign at the real root near m); leading-coefficient / |S|-parity columns; uncovered or rarely
+   covered primes; anything else (Schirokauer-type maps, small-conductor characters, units, Cl(K)[2]).
+   Is "W^⊥ = Gen + archimedean + sparse-on-rare-primes" plausibly true? Provably?
+2. **Proof routes.** Try: (i) uniform rank growth — for every subspace V of non-forced obstructions,
+   Pr_relation[relation ∉ V^⊥] ≥ dim V/(D·L^{o(1)}) (D = #columns), which gives codim ≤ r after D·L^{o(1)}
+   relations by a coupon-collector sum; (ii) Fourier/Parseval ("large sieve over GF(2) functionals")
+   counting of near-obstructions via collision probabilities of sums of relations; (iii) Halász-type mean
+   values of ±1 multiplicative functions on smooth numbers (de la Bretèche–Tenenbaum friable
+   Turán–Kubilius etc.) — what do they give on the rational side alone, and why does the joint
+   rational/algebraic constraint break them; (iv) Hafner–McCurley / Buchmann random-exponent relation
+   lattice generation: can any cheap NFS-sized relation carry random exponents (exact or quasi-uniform
+   on Λ/2 given the transcript)? (v) many independent fields (W = Σ_i W_i).
+   For each: where exactly does it fail, and what is the minimal extra hypothesis?
+3. **Barriers.** Is there a rigorous reason why averaging over the field (≤ N^{O(1)} fields) cannot give
+   RK via union bounds over 2^D functionals (a "fixed-test" barrier)? Is RK plausibly FALSE anywhere
+   (e.g. structured fake obstructions of large dimension)? Give explicit families if you find any.
+4. **Relaxations.** Show (or refute) that a weaker codimension bound D^κ suffices: with a sampler of exponent
+   θ, Design V costs L[1/2, √(2θ/(2 − κ))] if codim ≤ D^κ = L[1/2, κa]. Check this formula.
+5. **Literature.** Stange 2022 (arXiv 2211.06821) Hypothesis 3.1 and what she proves; Hafner–McCurley 1989,
+   Buchmann 1990, Schnorr–Seysen–Lenstra / Lenstra–Pomerance 1992 (which parts are rigorous, which rank
+   arguments they use); Balister–Bollobás–Morris 2018; rank of sparse random GF(2) matrices (Costello–Vu,
+   Coja-Oghlan et al.); any rigorous span/generation statement for sieve relation matrices (2000–2026).
+   Has anyone rigorously beaten Lenstra–Pomerance c = 1?
+Give a short final verdict: what is proved, the best precise reduction of RK, and the single most promising
+next step.
+
+codex
+I’ll try the rank arguments against the repo’s exact setup, then check the cited literature. I’ll label what is proved, what needs an extra hypothesis, and where the proposed reductions fail.
+exec
+/bin/zsh -lc pwd in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+exec
+/bin/zsh -lc 'ls /Volumes/git/factoring-connection/codex/scratch/rkrank_1' in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/rkrank_1
+
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "rg --files -g AGENTS.md -g '*hypD*' -g '*nfsfruit*' -g 'rank.py' /Volumes/git/factoring-connection" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/src/hypD/rank.py
+/Volumes/git/factoring-connection/notes/hypD_results.md
+/Volumes/git/factoring-connection/notes/nfsfruit_results.md
+/Volumes/git/factoring-connection/notes/nfsfruit_prereg.md
+/Volumes/git/factoring-connection/notes/hypD_prereg.md
+/Volumes/git/factoring-connection/tests/test_nfsfruit.py
+/Volumes/git/factoring-connection/tests/test_hypD.py
+/Volumes/git/factoring-connection/codex/hypD_1.md
+/Volumes/git/factoring-connection/codex/hypD_1.log
+/Volumes/git/factoring-connection/codex/nfsfruit_2.out
+/Volumes/git/factoring-connection/codex/hypD_2.log
+/Volumes/git/factoring-connection/codex/nfsfruit_1.out
+/Volumes/git/factoring-connection/codex/nfsfruit_2.md
+/Volumes/git/factoring-connection/codex/nfsfruit_1.md
+/Volumes/git/factoring-connection/codex/nfsfruit_2.log
+/Volumes/git/factoring-connection/codex/hypD_1.out
+/Volumes/git/factoring-connection/codex/nfsfruit_1.log
+/Volumes/git/factoring-connection/codex/hypD_2.out
+/Volumes/git/factoring-connection/codex/hypD_2.md
+/Volumes/git/factoring-connection/experiments/raw/hypD_e1x.jsonl
+/Volumes/git/factoring-connection/experiments/raw/hypD_e1_crashed_partial.jsonl
+/Volumes/git/factoring-connection/experiments/raw/hypD_e3a.jsonl
+/Volumes/git/factoring-connection/experiments/raw/nfsfruit_e1.jsonl
+/Volumes/git/factoring-connection/experiments/raw/hypD_e3b.jsonl
+/Volumes/git/factoring-connection/experiments/raw/nfsfruit_add.jsonl
+/Volumes/git/factoring-connection/experiments/raw/hypD_e2.jsonl
+/Volumes/git/factoring-connection/experiments/raw/hypD_e1.jsonl
+/Volumes/git/factoring-connection/experiments/configs/hypD_e3b.json
+/Volumes/git/factoring-connection/experiments/configs/hypD_e1.json
+/Volumes/git/factoring-connection/experiments/configs/hypD_e1x.json
+/Volumes/git/factoring-connection/experiments/configs/hypD_e3a.json
+/Volumes/git/factoring-connection/experiments/configs/hypD_e2.json
+/Volumes/git/factoring-connection/experiments/configs/nfsfruit_e1.json
+/Volumes/git/factoring-connection/experiments/logs/hypD_e1_done
+/Volumes/git/factoring-connection/experiments/logs/nfsfruit_e1.log
+/Volumes/git/factoring-connection/experiments/logs/hypD_e3b.log
+/Volumes/git/factoring-connection/experiments/logs/hypD_e3a.log
+/Volumes/git/factoring-connection/experiments/logs/hypD_e2.log
+/Volumes/git/factoring-connection/experiments/logs/hypD_done
+/Volumes/git/factoring-connection/experiments/logs/hypD_e1.log
+/Volumes/git/factoring-connection/experiments/logs/nfsfruit_add.log
+
+web search: 
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/rkrank_1/AGENTS.md; do if [ -f "$p" ]; then cat "$p"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "rg -n '"'^#|Lemma H|Prop.*R|LV|Venkatesan'"' /Volumes/git/factoring-connection/notes/nfsfruit_results.md" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+exec
+/bin/zsh -lc "rg -n '"'^#|Design V|Hypothesis RK|Theorem V|B7|E3|9.2'"' /Volumes/git/factoring-connection/notes/hypD_results.md" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+1:# hypD: relation supply for Dixon descent (Hypothesis D)
+15:## Verdict
+23:- GPT-6.1-sol adversarial review done (`codex/hypD_2.out`): no fatal error, all fixes applied (§9.2).
+90:- **Design V [conditional; components known].** Combine cheap non-fruitful LV relations with L^{o(1)}
+100:  - Design V does not suffer the shape-test problem (its smoothness tests are at B = L[1/2]).
+114:- E3 (20 toy NFS instances):
+121:### Per-design constants (the L[1/2, c] exponent; "inputs" = what a proof would still need)
+125:| Lenstra–Pomerance 1992 (class groups) | 1 | proved (prior art) | — |
+132:| **Design V (LV rows + Vallée rows)** | **√(2/3) ≈ 0.816** (d ≥ 9) | **conditional on RK** | RK (genuine-certificate deficiency); LV supply at L[1/2] (sketch); LV §6 postprocessing keeping a Vallée projection |
+133:| Design V with uniform Dixon rows | 1 | conditional on RK | as above; no gain over LP |
+139:## 1. Setting
+151:## 2. Split counting
+161:**Theorem S [proved; a routine adaptation of the Dixon 1981 / Pomerance 1982 random-squares lemma to the ratio form u ≡ Rv].** Let N be odd and Y ≥ 2 with 2Y² < N, and let S ⊂ [Y/2, Y] ∩ Z be any set of
+219:## 3. Theorem K: bounded-k splits reduce Hypothesis D to one averaged statement
+324:- Either way something is paid. Horn 2 still allows c < 1 conditionally, (1+θ)/√2. But Design V
+327:## 4. From D_k to a first and a second moment
+349:### 4.1 FM, the first moment [sketch; inputs are proved theorems, but the transfer is not written out]
+391:### 4.1′ Lemma 8.5′ and FM after the blind round [Lemma 8.5′ proved; FM proved in outline for regime (B)]
+463:### 4.2 PC, the second moment [open]
+545:## 5. Design V: non-fruitful LV relations plus a few fruitful Vallée relations
+581:**Hypothesis RK (genuine-certificate deficiency form; reformulated after codex).**
+601:**Theorem V [conditional; a new combination of known components, cf. Stange 2022, Dixon, Vallée].**
+618:- Theorem V is unaffected by the HECM correction: its smoothness tests are at B = L[1/2], where
+627:  nonetheless a *different* missing ingredient, and E3 supports it.
+630:## 6. Barriers and what does not work
+660:- **(B7) RK and fruitfulness are different statements [observation].** RK says the NFS relations fill
+663:  which Design V never needs.
+665:## 7. Experiments (pre-registered; exact; toy; correctness and plausibility checks only)
+677:### 7.1 E1 / E1x (Theorem S)
+694:### 7.2 E2 (special-q counts in toy LV-style fields)
+715:### 7.3 E3 (RK in a toy NFS)
+728:### 7.4 Prop P: what a pair-correlation bound of the published *shape* would buy [hypothetical computation; relabelled after review]
+746:  - With a free shape test the values are √(17/12) = 1.1902 and e < 3 − 2√2 = 0.17157. Our numerics
+756:## 8. Literature (Opus literature subagent, read from primary PDFs unless marked; 2026-10-19)
+757:- **Harper, arXiv 1208.5992** (preprint; no journal version found).
+796:  (LV, STOC'89 abstract). **Theorem V's Vallée input is therefore not verified by us.**
+809:## 9. Reviews
+812:  judged CORRECT or CORRECT WITH FIXES, and all fixes are applied (§9.2).
+816:### 9.1 Opus critics: four independent read-only reports, adjudicated
+833:3. **[P1, P2; accepted]** Verdict overclaims: "PC is the single missing estimate" and "Design V needs
+842:8. **[P1, P2; accepted]** Design V:
+854:11. **[A1, A2; accepted]** Theorem S/S′ is a routine adaptation of the Dixon 1981 / Pomerance 1982
+859:13. **[A1, A2; accepted]** Design V needs credit to Stange 2022 (Hyp. 3.1; NFS relations adaptable),
+872:  Design V dependency count and Theorem V's cost count, the PC_rat identity, and "D_k ⇒ complete
+876:### 9.2 GPT-6.1-sol adversarial round (hypD_2): findings and adjudication
+882:    Prop P as a hypothetical (closed forms 1.5731 and 0.029437); the Design V observation (the
+884:  - CORRECT, conditionally: Theorem V's cost, given relation supply, RK and postprocessing.
+894:- **(e) Design V.** Vallée's quasi-uniformity was checked in the primary paper. RK is reformulated as a
+903:### 9.3 GPT-6.1-sol blind round (hypD_1) and ideas from it
+919:  - **(I3) Independent rediscovery of Design V.** Cheap LV rows plus one fruitful N^τ-relation give
+929:## 10. Candidate cards
+942:ID: V-1 LV rows + Vallée rows (Design V). Best conditional route for d < 19.
+946:Status: conditional; E3: 360/400 Dixon vectors in span; span ∩ rational = Lambda/2 on well-covered primes.
+
+ succeeded in 0ms:
+1:# nfsfruit: fruitfulness of square congruences in a rigorous randomized NFS
+7:## Verdict
+10:fruitfulness gap in Lee–Venkatesan (LV) remains open. The study does narrow it to one precisely stated
+15:equidistribution tools behind LV do not reach.
+19:1. **[proved] Lemma H.** For every odd composite n, Blum or not, fruitfulness is a group homomorphism
+20:   Φ: K0 → μ₂(Z/n)/{±1} on the space of true square dependencies. So the argument of LV's conditional
+22:   actually sampled". LV's Remark 7.3 says that for non-Blum n
+38:     (m, f, batch) produced by LV's search, Pr[Φ ≢ 0] ≥ L[1/3,−o(1)].
+41:   - Either condition yields LV-time L[1/3,(64/9)^{1/3}+o(1)] factoring of every semiprime.
+42:     [proved implication, modulo LV's non-monic bookkeeping]
+58:   randomized), degree-3 NFS (base-m and LV-randomized), Blum, mixed, both-1-mod-4 and 3-prime n, at
+64:   - (the toy "LV-randomized" family is monic with deg R = d − 2, so it is LV-*style*, not LV's distribution);
+65:   - Lemma H: 4248 linearity checks, 0 failures;
+77:## 1. Lee–Venkatesan, read from the arXiv PDF (1805.08873v1)
+79:### 1.1 The randomized algorithm and its randomness space
+102:  So the published conditional proof does not literally match the batch algorithm. Prop R below addresses
+105:### 1.2 Theorems (as stated)
+119:### 1.3 The conjecture (verbatim content, §7)
+129:that height. This holds under the literal definition P_S ⊂ P. Under the reading LV's proof uses (P_S as the
+136:### 1.4 Why the standard argument is not available
+146:## 2. Literature, 2018–2026 and the rigorous lineage
+150:  an exposition of LV, with no new fruitfulness result) and citations in Le Gluher–Spaenlehauer–Thomé 2021
+173:## 3. Lemma H and the Bockstein formula
+185:- f is monic, for exposition. LV's f is non-monic (leading coefficient C_d + c_0 random). The statements
+186:  carry over with LV's normalisation: f_d(a − bm), f_d(a − bα), the constant |S|-parity column, and a
+189:**Lemma H [proved].** Φ(S) := [u/φ(v)] ∈ μ₂(Z/n)/{±1} is well defined and Φ(S△T) = Φ(S) + Φ(T).
+197:dependency space actually sampled"; the Blum condition is not needed. LV's Conj. 7.1 is phrased with
+201:Prop. 8.6 and Thm 8.7 (located by codex round 2). Lemma H is the NFS transcription and is probably folklore. The same
+251:## 4. The reduction and a hierarchy of sufficient conditions
+253:**Proposition R [proved; codex round 2 and critic: correct with fixes].** Fix (m, f). Let X = X_{n,m,f} be the
+254:finite set of kept pairs. In LV's search (a reading of their pseudocode, not a theorem of theirs), pairs are
+274:- **(F) Conjecture F, batch level; the weakest, and essentially equivalent to "LV's algorithm factors".**
+275:  Under the law of (m, f, batch) that LV's stochastic-deepening search actually outputs, with batches of
+276:  ≥ C·L^{o(1)} relations, Pr[Φ ≢ 0 on K0(batch)] ≥ L_n[1/3,−o(1)]. With codex's restart lemma, Lemma H and
+277:  LV's Thms 2.5/2.6, (F) gives L[1/3,(64/9)^{1/3}+o(1)] factoring of every semiprime. The measure matters.
+281:- **(E) Full enumeration (LV's proof route).** Enumerate the whole box for (m,f), at cost L(1/3, 2σ), which
+285:  the search-output (|X|-weighted) law. By Prop R, batches of M ≥ (C ln 2 + O(1))/δ relations (an L^{o(1)}
+286:  enlargement of LV's ≈ C) give (F), since 2^C(1−δ)^M = o(1). Lemma M implicitly needs |X| ≫ C/δ; otherwise
+301:**Why existing tools fall short [assessment].** LV's analytic inputs are first-order:
+309:of (x, β) over smooth pairs, uniformly over 2^C linear tests. The union bound in Prop. R absorbs the "uniformly"
+324:## 5. Hidden roots: the degree-1 multiplier (Dixon in disguise) and a counting obstruction
+361:## 6. Experiments (pre-registered; all exact)
+391:instances); this is a yield limitation of the LV-style coefficient growth at toy size, disclosed.
+412:## 7. Candidate cards
+415:ID: NF-1 averaged transversality (Conjecture F / quantitative Lemma M) for LV randomized NFS.
+416:Target: every semiprime n (no Blum condition, by Lemma H).
+417:Representation: LV's (m, f = fhat + (x-m)R, pairs, characters).
+420:Known lemmas: LV Thms 2.1/2.5/2.6; Lemma H; Prop G; Prop R.
+424:Cost: LV's L[1/3,(64/9)^{1/3}+o(1)].
+425:Randomness: LV's coins plus restarts.
+426:Closest prior: LV Conj 7.1 (needs every (m,f), box version). Conjecture F only needs the batch event
+447:## 8. GPT-6.1-sol rounds
+448:- **nfsfruit_1 (blind).** It independently proved Lemma H and the rowspace criterion; gave the Dixon
+471:## 9. Review status
+476:  - Lemma H: ACCEPT WITH FIXES (monic normalisation; which K0).
+480:  - Prop R inequality and the involution criterion: ACCEPT.
+485:  - LV reading: the batch structure (fresh batches of ≈ C relations) was corrected. P_S is defined by height.
+488:- **Surviving claims labelled [proved]:** Lemma H, Prop G, Cor J (J1, J2, degeneracy in its stated scope),
+489:  Prop R, the involution criterion, Theorem L1 (known in substance), Prop B (counting), and the implications
+490:  (F) ⇒ L[1/3] factoring and (M) ⇒ (F) (modulo LV's non-monic bookkeeping, which is not written out).
+491:- Folklore / known: Lemma H (cf. Seysen 1987 p. 777), the involution criterion, the Blum–Jacobi fact behind
+
+web search: https://arxiv.org/abs/1805.08873
+web search: 
+exec
+/bin/zsh -lc "sed -n '77,145p' /Volumes/git/factoring-connection/notes/nfsfruit_results.md
+sed -n '173,316p' /Volumes/git/factoring-connection/notes/nfsfruit_results.md
+cat /Volumes/git/factoring-connection/src/hypD/rank.py" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+## 1. Lee–Venkatesan, read from the arXiv PDF (1805.08873v1)
+
+### 1.1 The randomized algorithm and its randomness space
+The parameters are δ, κ, σ, β, β′ with κ > δ^{-1}, the constraint 2σ > max(β,β′) + δ^{-1}/(3β) + (σδ+κ)/(3β′),
+and δ^{-1} < κ + σδ/2. The degree is d = δ(log n/log log n)^{1/3}, and d is **odd** (needed in Lemma 6.10;
+it also makes μ(K) = {±1}). The random choices are:
+- **m** uniform in [2^{−1/d}L, L], where L = L_n(2/3, δ^{-1}).
+- **f** = f̂_{n,m} + Σ_{i=0}^{d−1} c_i (x − m y) x^{d−i−1} y^i. Here f̂ is the base-m expansion of n, and the
+  c_i are i.i.d. uniform in a centred interval of length 2L_n(2/3, κ − δ^{-1}). The c_i term dominates
+  f̂ because κ > δ^{-1}. There are **no random multiples of n**; the randomness is "Kleinjung-like" but
+  with random R.
+- **(a,b)** uniform with 0 ≤ a < |b| ∈ [½L(1/3,σ), L(1/3,σ)]. A pair is kept iff a − bm is
+  B = L(1/3,β)-smooth and f(a,b) is B′ = L(1/3,β′)-smooth. Smoothness is tested rigorously with the
+  hyperelliptic curve method (Cor. 3.19).
+- **Stochastic deepening** (Lemma 5.6): a random number 2^i of (m,f) pairs is tried, each searched to depth
+  2^{−i}·L(1/3, …). This replaces second-moment bounds.
+- **Quadratic characters** come from IdealSampler: a random degree bound k ∈ [d], a random r near x^{1/k} with
+  log x = L(1/3, ε), ε = (1/3+o(1))δ, Miller–Rabin, a random simple factor of f mod r. They are large
+  primes, chosen to avoid possible Siegel zeros (Lemmas 6.6, 6.10). Their number is
+  4d(δκ log n + δ²κ² log 2 · log^{4/3} n (log log n)^{1/3}).
+- The kernel is **sampled uniformly** (block Wiedemann). ℓ = (4/3) log log n kernel vectors are produced, and
+  two lying over the same element of the small exceptional *set* E_{K,ε} ⊂ H are paired. The §3.3
+  pseudocode (checked by the critic) shows that each kernel vector comes from a **fresh batch of about C
+  relations for the same (m,f)**. The relation list is emptied after each kernel vector. *Mismatch:* the
+  proof of Thm 2.3 instead argues with all of P_S ("running for L(1/3,2σ) finds every generator of P_S").
+  So the published conditional proof does not literally match the batch algorithm. Prop R below addresses
+  this; batches must be enlarged to ≥ C ln2/δ.
+
+### 1.2 Theorems (as stated)
+- **Thm 2.1.** For any n, the Randomised NFS runs in expected time L_n(1/3, (64/9)^{1/3} + o(1)) and
+  produces x, y with x² ≡ y² (mod n). The Coppersmith multiple-polynomial variant gives
+  L(1/3, ((92+26√13)/27)^{1/3}).
+- **Thm 2.3.** For fixed semiprime n with both primes ≡ 3 (mod 4), conditional on Conjecture 7.1, it finds
+  x² ≡ y² with x ≢ ±y in expected time L(1/3, (64/9)^{1/3} + o(1)).
+- **Thm 2.5** (relations). Under (4.1)/(4.2) it finds, almost surely, an irreducible f of degree d and height
+  ≤ L(2/3,κ) with n | f(m), together with L(1/3, max(β,β′)+o(1)) pairs a < |b| ≤ L(1/3,σ) that are smooth on
+  both sides. This takes expected time L(1/3,λ) for any λ > max(β,β′) + δ^{-1}/(3β) + (σδ+κ)/(3β′), and
+  the failure probability is ≤ L(2/3, κ−δ^{-1})^{−1+o(1)}.
+- **Thm 2.6** (squares). For all but an L(2/3, (κ−δ^{-1})/2·(1+o(1)))^{-1} fraction of f, given
+  L(1/3, max(β,β′))·Ω(log log n) smooth pairs, a congruence of squares is found in expected time
+  L(1/3, 2max(2δ/3, β, β′))^{1+o(1)}.
+
+### 1.3 The conjecture (verbatim content, §7)
+Let n = pq with p ≡ q ≡ 3 (mod 4), and χ_n = χ_pχ_q. Define
+P = {h ∈ Z[X] : (h(m),n) = 1, h(m) is a square in Z, h(α) = g² with g ∈ Z[α]}, and P_S as the smooth part:
+products of linear factors a − bX of *height* L(1/3,σ), smooth on both sides. That height set is not the
+same as the sampled box 0 ≤ a < |b| ∈ [½L, L]. Define
+χ_P(h) = χ_n(√h(m))·χ_n(φ_{m,α}(√h(α))). It is well defined because χ_n(−1) = 1, and it extends to an
+order-2 character on Z[X].
+**Conjecture 7.1:** χ_P restricted to P_S cannot be written as a product of the characters χ_𝔭 and
+(−1)^{ord_𝔭}. Every such character is trivial on P_S, which consists of squares, so the conjecture is
+equivalent to **χ_P ≢ 1 on P_S**, i.e. Φ ≢ 0 on the true dependency space of all smooth linear factors of
+that height. This holds under the literal definition P_S ⊂ P. Under the reading LV's proof uses (P_S as the
+group of smooth products), it depends on the chosen extension unless the characters cut out K0 exactly.
+The proof of Thm 2.3: since χ_P is a nonzero linear functional on the kernel, a uniform kernel element
+is fruitful with probability ½. Remark 7.2 supports the conjecture only by counting (dim P_S exceeds the
+number of characters). Remark 7.3 notes that if it fails for (n,f), NFS with those parameters never
+splits n.
+
+### 1.4 Why the standard argument is not available
+In Dixon's algorithm the sampled root x is uniform on its fiber x·μ₂(Z/n), conditional on everything the
+algorithm uses (z = x² mod n and its factorization). So each relation carries an independent uniform
+"root sign", and any dependency is fruitful with probability 1 − 2^{1−ω} (§2.1 of codex/nfsfruit_1.out).
+In QS, linear sieve and NFS there is **no hidden randomness at all**. Both square roots,
+u = √∏(a−bm) ∈ Z and v = √∏(a−bα) ∈ Z[α], are canonical up to ±1. So fruitfulness is a deterministic
+function of (n, m, f, relation set, S). Randomizing m, f, (a,b) does not help unless some measure-preserving
+action on the conditioned data changes the root comparison, and none is known. Our §4 makes this precise:
+the missing object is an x-preserving, β-flipping involution.
+
+## 3. Lemma H and the Bockstein formula
+
+Setting: K = Q(α), f monic irreducible of odd degree, f(m) ≡ 0 (mod n), φ: Z[α] → Z/n with α ↦ m.
+Relations i are coprime (a_i,b_i) with z_i = a_i − b_i m. Let
+K0 = {S : ∏_S z_i ∈ Q^{×2}, ∏_S (a_i − b_iα) ∈ K^{×2}}, an F₂-space (the kernel of the map into
+Q^×/Q^{×2} ⊕ K^×/K^{×2}).
+For S ∈ K0, u = f′(m)√∏z_i ∈ Z and v = f′(α)√∏(a_i−b_iα) ∈ Z[α], using f′(α)O_K ⊆ Z[α].
+Then u² ≡ φ(v)² (mod n), and everything is assumed coprime to n (otherwise a factor is output).
+
+Standing assumptions:
+- gcd(n, f′(m)∏z_i) = 1 (otherwise a factor is output);
+- "semiprime" means p ≠ q, with p, q > max(B, B′);
+- f is monic, for exposition. LV's f is non-monic (leading coefficient C_d + c_0 random). The statements
+  carry over with LV's normalisation: f_d(a − bm), f_d(a − bα), the constant |S|-parity column, and a
+  BLP-type f′ factor. The constant feature must then be included in x. This is routine but not written out here.
+
+**Lemma H [proved].** Φ(S) := [u/φ(v)] ∈ μ₂(Z/n)/{±1} is well defined and Φ(S△T) = Φ(S) + Φ(T).
+*Proof.* u and v are determined up to sign, so the class is well defined. Put I = S∩T. Square roots for
+S△T are u(S)u(T)/∏_I z_i and v(S)v(T)/∏_I(a_i−b_iα), up to sign. Since φ(a_i − b_iα) = z_i, the extra
+factors cancel under φ. ∎
+For odd n with ω prime factors, μ₂(Z/n) ≅ {±1}^ω, so μ₂/{±1} ≅ F₂^{ω−1} (non-canonically), and S is fruitful
+iff Φ(S) ≠ 0. A uniform S in K0 (zero included) is therefore fruitful with probability exactly 1 − 2^{−rank Φ}.
+A basis vector or a uniform nonzero vector does not have this distribution.
+**Consequence:** the argument of Thm 2.3 works for every semiprime under the hypothesis "Φ ≢ 0 on the
+dependency space actually sampled"; the Blum condition is not needed. LV's Conj. 7.1 is phrased with
+Blum characters, so its non-Blum analogue is this hypothesis, not 7.1 itself. **Prior art:** the same
+subgroup mechanism ("dependencies giving trivial factorizations form a proper subgroup", plus uniform
+kernel sampling) is explicit in the class-group setting in Seysen, Math. Comp. 48 (1987), p. 777 before
+Prop. 8.6 and Thm 8.7 (located by codex round 2). Lemma H is the NFS transcription and is probably folklore. The same
+proof works for any two-sided sieve whose relations satisfy r_i ≡ φ(β_i) (degree 1, QS, multiple
+polynomials). Codex nfsfruit_1 §2.3 proves the same statement blind and adds the well-definedness
+caveat that the root must be evaluable, which holds here via f′(α).
+
+**Proposition G (Bockstein formula) [proved].** Let n = pq. Choose χ_p ∈ \widehat{F_p^×} of order
+2^{v₂(p−1)}, so that χ_p(−1) = −1, and likewise χ_q. Let c = max(v₂(p−1), v₂(q−1)) and ζ = e^{2πi/2^c}.
+Define ψ(z) = χ_p(z)χ_q(z) on Z coprime to n, and ψ(x) = χ_p(x mod 𝔭)χ_q(x mod 𝔮) on K^× coprime to
+𝔭𝔮, where 𝔭 = (p, α−m) and 𝔮 = (q, α−m). Then ψ(−1) = 1, and for x ∈ Z[α], ψ(x) = ψ(φ(x)).
+Fix a basis g_1..g_R of U_S/{±1}, where U_S is the S-unit group (S = factor-base primes and infinite places).
+Write z_i = ±∏ℓ^{e_iℓ} and a_i − b_iα = ±∏g_j^{c_ij}. Choose integer lifts τ_ℓ, σ_j with
+ψ(ℓ) = ζ^{τ_ℓ} and ψ(g_j) = ζ^{σ_j}. Put t_i = Σ τ_ℓ e_iℓ − Σ σ_j c_ij. Then 2^c | t_i for every relation, and
+  **Φ(S) = Σ_{i∈S} β_i (mod 2),  where β_i = t_i/2^c mod 2, for all S ∈ K0.**
+*Proof.* First, ψ(z_i) = ψ(φ(a_i−b_iα)) = ψ(a_i−b_iα), so ζ^{t_i} = 1. Next, write u/φ(v) ≡ (s_p, s_q) ∈ {±1}²
+by CRT. Since χ_p(−1) = −1, ψ(u)/ψ(φ(v)) = χ_p(s_p)χ_q(s_q) = s_ps_q, which is −1 iff fruitful.
+The f′ factors cancel because ψ(f′(m)) = ψ(f′(α)). Since S ∈ K0, all E_ℓ = Σ_S e_iℓ and Σ_S c_ij are even,
+√∏z = ±∏ℓ^{E_ℓ/2} and √∏(a−bα) = ±∏g_j^{Σ_S c_ij/2} exactly (μ_K = ±1 as d is odd), and ψ(±1) = 1.
+Hence ψ(u)/ψ(v) = ζ^{(Σ_S t_i)/2} = (−1)^{Σ_S t_i/2^c}. ∎
+Changing the lifts or the basis changes β by an F₂-linear function of the square-class vector
+x_i = (e_iℓ mod 2, c_ij mod 2). More generally, any two valid β, including those from a different choice of
+χ_p among the characters of order 2^{v₂(p−1)}, agree on K0(X), so by duality they differ by some ⟨w,x⟩ on X.
+β is therefore well defined modulo rowspace. β is a fixed function of
+(n, m, f, (a,b)). It depends on hidden data (χ_p, χ_q) and on S-unit coordinates.
+
+**Corollary J (Blum, computable rows) [proved; exhaustively checked in E2].** For Blum n we have c = 1 and
+ψ = J_n (the Jacobi symbol), so everything below is computable from n:
+- (J1) **QS** (z_i = x_i² − n, X_i = x_i). Every odd factor-base prime ℓ | z_i has (n/ℓ) = 1, so J_n(ℓ) = 1.
+  Hence Φ(S) = Σ_{i∈S} β_i with β_i = [J_n(x_i) = −1] + [n ≡ 5 (mod 8)]·[x_i odd]. (For n ≡ 5 (mod 8) and
+  x odd, v₂(x² − n) = 2; the code uses the equivalent form v₂(z_i)/2.)
+  *Proof:* Φ(S) = [J_n(X·Y) = −1] with Y = ∏ℓ^{E_ℓ/2}, and J_n(−1) = 1. The formula is false outside the
+  Blum case: for n = 65, x = 9, z = 16, the congruence is fruitful but the expression gives 0 (codex).
+- (J2) **Degree-1 NFS** (L1 = c1x+c0y, L2 = d1x+d0y, so d1L1 ≡ c1L2). The algorithm *imposes* |S| even,
+  because the congruence U² ≡ λ^{|S|}W² needs λ^{|S|/2}. Here K0 means the even-weight square dependencies;
+  this is a restriction, not a consequence of squareness: codex exhibits an odd-weight square dependency for
+  n = 77. Here
+  Φ(S) = Σ_{i∈S} ⌊t_i/2⌋ mod 2 with t_i = Ω_T(L1L2(a_i,b_i)) and T = {ℓ : J_n(ℓ) = −1}.
+  *Proof:* J_n(L1)J_n(L2) = J_n(c1d1) =: κ for every relation, so t_i ≡ [κ = −1] (mod 2).
+  Φ(S) = [κ=−1]·|S|/2 + Σ_S t_i/2, and both cases reduce to Σ⌊t_i/2⌋ because |S| is even.
+- **Degeneracy:** if ⌊t_i/2⌋ is even for every relation used, in particular if all prime factors have
+  J_n(ℓ) = +1, then every congruence is trivial. The same holds in QS for relations with J_n(x_i) = +1
+  (when (2/n) = 1). So fruitfulness lives entirely in T-primes appearing with exponent sum ≡ 2 or 3 (mod 4),
+  and in the "which root of n mod ℓ" information that the parity matrix does not record.
+  In QS terms, J_n(x) = (−z/x) decomposes by reciprocity into the root choices x ≡ ±√n (mod ℓ) at
+  ℓ ≡ 3 (mod 4). Those are the ideals above ℓ in Q(√n).
+
+So, for Blum n, the r16 §3.3 "factor-detecting row" is a **literal computable row** in QS and degree-1
+NFS. An algorithm may impose c·s = 1 as an inhomogeneous constraint; every solution is then fruitful,
+and a solution exists iff Φ ≢ 0. In NFS of degree ≥ 2, β additionally needs S-unit coordinates and ψ on
+units (hidden). It is a row only "in principle".
+
+## 4. The reduction and a hierarchy of sufficient conditions
+
+**Proposition R [proved; codex round 2 and critic: correct with fixes].** Fix (m, f). Let X = X_{n,m,f} be the
+finite set of kept pairs. In LV's search (a reading of their pseudocode, not a theorem of theirs), pairs are
+i.i.d. uniform in the box and kept iff detected smooth. The first M kept relations are therefore i.i.d.
+from the *kept law* on X, whatever the depth cut-off. That law is uniform weighted by the HECM detection
+probability, and δ is defined with respect to it (or HECM is boosted). If duplicates are discarded the sampling is without
+replacement, and the bound below still holds. Let x: X → F₂^C be the exact square-class vector, with
+coordinates fixed on the span generated by all of X *before* sampling: rational exponent parities and
+sign, U_S/U_S² coordinates, and the constant feature 1 whenever the algorithm imposes |S| even. Then the
+sampled true dependency space is {S : Σ_S x_i = 0}.
+*Every algorithmic restriction must be included in x.* Codex's n = 77 example has Φ ≠ 0 on the square
+kernel but Φ = 0 on its even-weight subspace. For w ∈ F₂^C let δ_w = Pr_{X}[β ≠ ⟨w,x⟩], and let δ = min_w δ_w. Then
+  Pr(Φ|K0 ≡ 0) ≤ Σ_w (1−δ_w)^M ≤ 2^C(1−δ)^M.
+*Proof.* (ker)^⊥ = rowspace. On K0, Φ = β restricted, so Φ ≡ 0 iff the vector (β_i) lies in the span of
+the coordinate vectors (x_i(·))_i, i.e. iff β_i = ⟨w,x_i⟩ for all i, for some w. Take a union bound over w,
+using independence of the M samples. ∎
+Hence M ≥ (C ln 2 + ln(1/ε))/δ relations make the *whole sampled kernel* degenerate with probability ≤ ε.
+One uniform kernel sample is then fruitful with probability ≥ (1−ε)/2, and t samples fail with probability
+≤ ε + 2^{−t}.
+
+**Hierarchy of sufficient conditions (after the critic's correction).** Earlier drafts called Lemma M
+"the exact missing lemma"; that was wrong. It is one sufficient condition among several:
+- **(F) Conjecture F, batch level; the weakest, and essentially equivalent to "LV's algorithm factors".**
+  Under the law of (m, f, batch) that LV's stochastic-deepening search actually outputs, with batches of
+  ≥ C·L^{o(1)} relations, Pr[Φ ≢ 0 on K0(batch)] ≥ L_n[1/3,−o(1)]. With codex's restart lemma, Lemma H and
+  LV's Thms 2.5/2.6, (F) gives L[1/3,(64/9)^{1/3}+o(1)] factoring of every semiprime. The measure matters.
+  Deepening favours (m,f) with large |X|, an event that may have uniform probability only
+  2^{−i*} ≥ L[1/3, −(2σ−τ)]. A condition that holds on a uniformly-L^{−o(1)} set of (m,f) could miss those
+  entirely. (Codex: "favorable fruitfulness parameters could have low relation density".)
+- **(E) Full enumeration (LV's proof route).** Enumerate the whole box for (m,f), at cost L(1/3, 2σ), which
+  at the optimum equals (64/9)^{1/3}, and use all of X. Then Φ ≢ 0 ⟺ δ > 0 ⟺ Conj. 7.1 at (m,f) (box
+  version). So "Conj. 7.1 on a set of (m,f) of measure L^{−o(1)}, *jointly with* enough relation density" suffices.
+- **(M) Lemma M, static.** δ(n,m,f) ≥ L_n[1/3,−o(1)] on a set of (m,f) of measure ≥ L_n[1/3,−o(1)] under
+  the search-output (|X|-weighted) law. By Prop R, batches of M ≥ (C ln 2 + O(1))/δ relations (an L^{o(1)}
+  enlargement of LV's ≈ C) give (F), since 2^C(1−δ)^M = o(1). Lemma M implicitly needs |X| ≫ C/δ; otherwise
+  the x-vectors of the batch are independent and β is trivially linear on it. Lemma M is pointwise *stronger*
+  than Conj. 7.1. Its point is that it removes the batch randomness and asks a single static
+  equidistribution question about one function on the smooth set. That is the form most amenable to
+  analytic attack.
+- **(I) Involution, structural.** An x-preserving, β-flipping involution on a part of X of mass ≥ δ′ implies
+  δ ≥ δ′/2, hence (M). Dixon's ε-multiplication is the case δ′ = 1.
+
+**Involution criterion [proved; a restatement of Dixon's fibre argument].** Suppose some measure-preserving
+involution ι acts on a subset of X of mass ≥ δ′, with x∘ι = x and β∘ι = β + 1. Then δ_w ≥ δ′/2 for every w.
+In Dixon, ι(x) = εx with the nontrivial ε = (1,−1) acts on *all* of X (ε = −1 does not flip β), which
+recovers the classical proof. In QS, what is needed is a smoothness-preserving map that keeps the parity vector
+of x² − n and flips the root class x mod ℓ ↔ −x mod ℓ at an odd number of primes ℓ ≡ 3 (mod 4). x ↦ −x flips
+them all at once and leaves β unchanged. No such map is known for QS or NFS.
+
+**Why existing tools fall short [assessment].** LV's analytic inputs are first-order:
+- smooth numbers in APs (Harper's Bombieri–Vinogradov for smooth numbers; see also Pascadi 2025);
+- effective Chebotarev for quadratic extensions;
+- Siegel-zero sparsity.
+
+These control x (parities and quadratic-character values). β is second-order: it is the 2^{c+1}-adic
+lift of a character that is already trivial mod 2^c on every relation. In QS it is the choice of ideal above ℓ;
+in general it is S-unit coordinates mod 4, weighted by hidden characters. Lemma M needs joint equidistribution
+of (x, β) over smooth pairs, uniformly over 2^C linear tests. The union bound in Prop. R absorbs the "uniformly"
+only if δ is bounded below for *every* w. So a structural (involution-type) argument is needed rather than a
+moment bound. Codex's adversarial view of the routes is in §8.
+
+**Remark (QS: the obstruction is already a short character sum) [assessment].** In QS (Blum,
+n ≡ 1 mod 8), β(x) = [J_n(x) = −1]. Even the case w = 0 of Lemma M, or of Conjecture F (β ≢ 0 on X), asks
+that the Jacobi symbol mod n be non-constant on the smooth-weighted interval x ∈ [√n − M, √n + M] of length
+M = L_n[1/2]. That interval is far below the Burgess range n^{1/4+ε}, where no individual-modulus
+"""Toy test of the rank hypothesis RK (experiment E3 of notes/hypD_prereg.md).
+
+OPERATIONAL: a toy cubic NFS (monic base-m cubic + (x - m)(r1 x + r0)) collects pairs (a, b)
+with a - b m and F(a, b) both B-smooth.  Row of a pair over GF(2):
+    [sign(a - b m)] [v_p(a - b m), p <= B] [v_P(a - b alpha), P = (p, r) degree one, p <= B]
+    [quadratic characters (a - b s | q) for nchar pairs (q, s), f(s) = 0 mod q, q > B]
+(index-divisor subtleties ignored: toy).  A "rational" target vector has support only on
+the sign and rational-prime columns.  `in_rowspace` decides membership by elimination.
+Dixon vectors come from random x with x^2 mod N B-smooth (OPERATIONAL, never factors N).
+"""
+from __future__ import annotations
+
+import random
+from math import gcd
+from typing import Dict, List, Optional, Tuple
+
+import gmpy2
+
+from ..nfsfruit.smooth import FactorBase, primes_upto
+from .specialq import base_m_digits, random_m
+
+
+def poly_coeffs(N: int, m: int, r0: int, r1: int) -> List[int]:
+    c0, c1, c2 = base_m_digits(N, m)
+    # x^3 + c2 x^2 + c1 x + c0 + (x - m)(r1 x + r0)
+    return [c0 - m * r0, c1 + r0 - m * r1, c2 + r1, 1]     # f[0..3]
+
+
+def poly_eval(f, x, p=None):
+    v = 0
+    for co in reversed(f):
+        v = v * x + co
+        if p:
+            v %= p
+    return v
+
+
+def roots_mod(f, p) -> List[int]:
+    return [r for r in range(p) if poly_eval(f, r, p) == 0]
+
+
+class ToyNFS:
+    def __init__(self, N: int, B: int, nchar: int, seed: int, H: int = 4):
+        self.N, self.B = N, B
+        rng = random.Random(f"hypD-rank|{N}|{seed}")
+        while True:
+            self.m = random_m(N, rng)
+            self.r0, self.r1 = rng.randrange(-H, H + 1), rng.randrange(-H, H + 1)
+            self.f = poly_coeffs(N, self.m, self.r0, self.r1)
+            if all(poly_eval(self.f, x) != 0 for x in range(-50, 51)):
+                break                       # crude irreducibility screen (toy)
+        assert poly_eval(self.f, self.m) % N == 0
+        self.fb = FactorBase(B)
+        self.ps = self.fb.primes
+        self.col = {}
+        self.col["sign"] = 0
+        for p in self.ps:
+            self.col[("r", p)] = len(self.col)
+        for p in self.ps:
+            for r in roots_mod(self.f, p):
+                self.col[("a", p, r)] = len(self.col)
+        self.chars = []
+        q = B + 1
+        while len(self.chars) < nchar:
+            q = int(gmpy2.next_prime(q))
+            for s in roots_mod(self.f, q) if q < 20000 else []:
+                if len(self.chars) < nchar:
+                    self.chars.append((q, s))
+        for qs in self.chars:
+            self.col[("c",) + qs] = len(self.col)
+        self.ncols = len(self.col)
+        self.rows: List[int] = []
+        self.pairs: List[Tuple[int, int]] = []
+
+    def F(self, a, b):
+        f = self.f
+        return sum(f[i] * a ** i * b ** (3 - i) for i in range(4))
+
+    def row_of(self, a: int, b: int) -> Optional[int]:
+        t = a - b * self.m
+        rf = self.fb.factor(t)
+        if rf is None:
+            return None
+        Fv = self.F(a, b)
+        if Fv == 0:
+            return None
+        af = self.fb.factor(Fv)
+        if af is None:
+            return None
+        row = 0
+        if t < 0:
+            row ^= 1 << self.col["sign"]
+        for p, e in rf.items():
+            if e & 1:
+                row ^= 1 << self.col[("r", p)]
+        for p, e in af.items():
+            if e & 1:
+                if b % p == 0:
+                    return None          # projective prime: toy skips the pair
+                r = a * pow(b, -1, p) % p
+                key = ("a", p, r)
+                if key not in self.col:
+                    return None          # (index divisor / ramified) toy skips
+                row ^= 1 << self.col[key]
+        for (q, s) in self.chars:
+            if gmpy2.legendre((a - b * s) % q, q) == -1:
+                row ^= 1 << self.col[("c", q, s)]
+        return row
+
+    def sieve(self, A: int, Bb: int, target_rows: int):
+        for b in range(1, Bb + 1):
+            for a in range(-A, A + 1):
+                if gcd(a, b) != 1:
+                    continue
+                r = self.row_of(a, b)
+                if r is not None:
+                    self.rows.append(r)
+                    self.pairs.append((a, b))
+                    if len(self.rows) >= target_rows:
+                        return
+
+    def rational_vector(self, sign: int, exps: Dict[int, int]) -> int:
+        v = (1 << self.col["sign"]) if sign < 0 else 0
+        for p, e in exps.items():
+            if e & 1:
+                v ^= 1 << self.col[("r", p)]
+        return v
+
+
+class RowSpace:
+    def __init__(self, rows: List[int]):
+        self.piv: Dict[int, int] = {}
+        for r in rows:
+            self.add(r)
+
+    def reduce(self, r: int) -> int:
+        while r:
+            c = r.bit_length() - 1
+            if c in self.piv:
+                r ^= self.piv[c]
+            else:
+                return r
+        return 0
+
+    def add(self, r: int):
+        r = self.reduce(r)
+        if r:
+            self.piv[r.bit_length() - 1] = r
+
+    @property
+    def rank(self):
+        return len(self.piv)
+
+    def contains(self, v: int) -> bool:
+        return self.reduce(v) == 0
+
+
+def dixon_vectors(N: int, fb: FactorBase, count: int, seed: int, max_trials: int):
+    rng = random.Random(f"hypD-dixon|{N}|{seed}")
+    out, trials = [], 0
+    while len(out) < count and trials < max_trials:
+        trials += 1
+        x = rng.randrange(2, N - 1)
+        if gcd(x, N) != 1:
+            continue
+        z = x * x % N
+        fz = fb.factor(z)
+        if fz is not None:
+            out.append(fz)
+    return out, trials
+
+exec
+/bin/zsh -lc "sed -n '545,665p' /Volumes/git/factoring-connection/notes/hypD_results.md
+sed -n '715,728p' /Volumes/git/factoring-connection/notes/hypD_results.md
+sed -n '756,809p' /Volumes/git/factoring-connection/notes/hypD_results.md
+sed -n '876,904p' /Volumes/git/factoring-connection/notes/hypD_results.md" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+## 5. Design V: non-fruitful LV relations plus a few fruitful Vallée relations
+
+**Observation [proved; elementary linear algebra + Dixon fibre symmetry].**
+- Let 𝒞 be any multiset of relations whose coins are independent of the hidden roots, for instance LV
+  relations, which need not be fruitful.
+- Let 𝒱 = {(x_i, e_i)} be relations x_i² ≡ ∏p^{e_i} (mod N) whose roots are uniform on their fibre
+  x_i·μ₂ given everything else. Examples: Dixon's uniform x, or Vallée's quasi-uniform small-square
+  sampler, by its x ↦ εx invariance.
+- Then the number of independent dependencies that contain a 𝒱-row is
+  |𝒱| − (rank(𝒞 ∪ 𝒱) − rank 𝒞).
+- With an exactly fibre-uniform sampler, each such dependency is fruitful with probability 1 − 2^{1−ω}.
+  This is Dixon's fibre argument, i.e. Theorem DD with descent replaced by direct sampling.
+- With a κ-quasi-uniform sampler, the guarantee is only ≥ 1 − 2κ·2^{−ω}, which can be ≤ 0. Hence the
+  convolution fix below. The first version's "(1 − 2^{1−ω})·(fibre-bias factor)" was wrong.
+- The sampler's quasi-uniformity must hold on a set closed under x ↦ εx, as {x : |x² mod N| ≤ h} is.
+- The transcript may expose only x² mod N and its factorisation.
+- So it suffices that some Vallée vector lies in the row space of 𝒞, after appending zero algebraic and
+  character coordinates.
+
+**Quasi-uniform samplers [proved].**
+- Vallée's sampler is only *quasi*-uniform: each x in the target set has probability within a constant
+  ratio κ = c₂/c₁ of uniform. It does not assert exact x ↦ εx invariance.
+- Given z = x² mod N, each fibre element εx has probability ≥ 1/(κ2^ω). So for a valid dependency
+  containing that row, **Pr[fruitful] ≥ (2^ω − 2)/(κ2^ω) ≥ 1/(2κ)**. This is codex's pointwise bound;
+  it sums the lower bound over the good fibre elements.
+- The P2 critic's "can fail when κ ≥ 2^{ω−1}" came from bounding the bad elements from above and is
+  superseded. The sampler's root-dependent internal transcript must stay hidden from dependency
+  selection.
+- The convolution argument below is valid but unnecessary.
+- Fix: take t independent dependencies D₁, …, D_t, each containing exactly its own Vallée row, and
+  *multiply their congruences*. Do not GF(2)-sum the vectors, since shared 𝒞-rows would cancel.
+  - The congruence ratio of the sum is ±∏_i ε_iZ_i, with the ε_i independent given everything else.
+  - Each ε_i has min-probability ≥ 1/(κ2^ω) on μ₂ ≅ (Z/2)^ω.
+  - The t-fold convolution is within (1 − 1/κ)^t of uniform in total variation.
+- So t = O(κ(ω + 1)) = L^{o(1)} Vallée rows give fruitfulness 1 − 2^{1−ω} − o(1).
+
+**Hypothesis RK (genuine-certificate deficiency form; reformulated after codex).**
+- Let U_V be the span of the actual Vallée target supports, and W_true the space of rational-only
+  vectors realised by *genuine* certificate squares. These are combinations of LV rows after LV §6's
+  extra combinations remove the residual square-class kernel; raw matrix membership is not enough.
+- RK: with probability ≥ L^{−o(1)} over the LV relation set, dim U_V − dim(W_true ∩ U_V) ≤ r = L^{o(1)}.
+- Batch argument: r + 1 Vallée vectors then force a dependency with nonzero Vallée projection.
+- The earlier form ("one Vallée vector is in the span with probability L^{−o(1)}") does not follow from
+  codimension L^{o(1)}: a uniform target gives only 2^{−r}. So the batch form is the right one.
+- RK is plausible on a well-covered support. Full factor-base saturation can fail through uncovered
+  coordinates.
+- **Credit.** RK is the GF(2) analogue of Stange's Hypothesis 3.1 (arXiv 2211.06821: random
+  relations generate the relation lattice; she reduces factoring to relation lattices via order-finding
+  and notes that NFS relations adapt). It is also the analogue of Hafner–McCurley/Buchmann
+  relation-lattice generation, and of the index-calculus individual-logarithm template ("target in the
+  span of factor-base relations").
+- Necessary structure [proved]: the row space ∩ (rational-only vectors) lies inside
+  Λ/2 := {v : ∏p^{v_p} ∈ Q_N}, as soon as character-trivial even combinations are true squares in K
+  (LV §6). Indeed ∏(a − bm) ≡ φ(γ)².
+- RK asserts the reverse inclusion, up to rarely occurring primes.
+
+**Theorem V [conditional; a new combination of known components, cf. Stange 2022, Dixon, Vallée].**
+Assume:
+- relation supply: LV supply at fixed odd d ≥ 9 and B = L[1/2, 1/√6]. It needs only a first moment,
+  by LV's stochastic deepening; it is the FM-type transfer of §4.1 without special-q;
+- RK in the genuine-certificate deficiency form;
+- the LV §6 square-class postprocessing, adapted to keep a nonzero Vallée projection. Then every N is factored in expected time
+L[1/2, √(2/3) + o(1)].
+- *Cost.* Linear algebra costs L[1/2, 2a]. LV relations cost L[1/2, a + θ/(2a)] with θ = 3/(d+1) ≤ 1/3.
+  Vallée relations each cost L[1/2, (2/3)/(2a)], with L^{o(1)} of them. All three are ≤ L[1/2, 2/√6]
+  at a = 1/√6.
+- Vallée's sampler: B. Vallée, "Generation of elements with small modular squares and provably fast
+  integer factoring algorithms", Math. Comp. 56 (1991) 823–849.
+  - GPT-6.1-sol checked the pointwise quasi-uniformity (Definition 1, Theorem 5) in the primary paper.
+    We did not read it ourselves.
+  - Vallée's small-factor preprocessing should use Pollard–Strassen, since trial division to
+    L[1/2, 1] would exceed the budget.
+  - With uniform Dixon x the same argument gives only c = 1.
+- Theorem V is unaffected by the HECM correction: its smoothness tests are at B = L[1/2], where
+  L_B[2/3] = L_N[1/3].
+- *Proof.* Combine the observation with the cost count. ∎
+
+**Remarks.**
+- RK needs no fruitfulness, no hidden root in 𝒞, and no special-q. It is a statement about the GF(2)
+  rank of NFS relation matrices: the relations "fill" Λ/2.
+- Its natural proof route is relation-lattice generation in the Hafner–McCurley/Buchmann style. That
+  route needs random-exponent (descent-type) relations, so RK is not obviously easier than PC. It is
+  nonetheless a *different* missing ingredient, and E3 supports it.
+- Any rigorous sampler of small squares with θ_V < 2/3 would give c = √θ_V.
+
+## 6. Barriers and what does not work
+
+- **(B1) The log-saving barrier [known; LV §8].** A BV or BDH bound whose saving is
+  (log x)^{−A}, or e^{−cu/log²u}, relative to the sum over *all* moduli says nothing about a moduli
+  family of density L^{−c}. Every first or second moment here lives on such a family. So *restricted*
+  versions, in the style of LV Lemma 8.5, are necessary. This is why FM must transplant LV §8 rather
+  than cite Harper.
+- **(B2) The geometric barrier (Prop G) [proved].** Pair laws in one special-q lattice are carried by an
+  index-D ≥ ℓ sublattice. Slicing and density bounds alone lose at least ℓ = N^{1/(2k)}, so arithmetic
+  equidistribution mod tD is unavoidable.
+- **(B3) The precision requirement for unbounded k [proved arithmetic, §3; a requirement of this
+  route, not a theorem about factoring].**
+  - With k ≍ (log N)^{1/4} targets per split, product-of-marginal strategies must lose at most
+    exp(o((log N)^{1/4}(log log N)^{1/2})). That is finer than LV-type goodness, whose losses are
+    L^{o(1)} in the exponent.
+  - Fixed k removes this, but only at the shape-test cost of Prop H.
+- **(B4) What Theorem K does *not* remove.**
+  - The good-field set and the target set are still field-dependent. That is harmless: Theorem S takes
+    any set.
+  - The first moment still has moving residues Nb^d mod t. LV's goodness handles them because it is
+    uniform in residues: max_r, "for all (a, r) = 1".
+  - Pascadi's level 5/8 is *not* usable. It is for a fixed residue, and our residues move with b.
+- **(B5) The QS-style descent [assessment].** The special-q relation x² − N = ℓc has no randomization to
+  average over. FM and PC would have to hold for the single polynomial x² − N at smoothness L[1/2].
+  Known results on smooth values of quadratic polynomials (Dartyge; Harper; Balog–Blomer–Dartyge–
+  Tenenbaum for binary forms) need smoothness x^{θ} with θ fixed, far above L[1/2] (§8). Not pursued.
+- **(B6) No L[1/3] [lemmaM (c)].**
+  - The descent is one level, and lemmaM's α ≥ 2/5 argument applies to the growing-degree regime.
+  - At fixed k the shape test alone costs L_N[1/2, 1/√2] rigorously, or L_N[2/3] by HECM (Prop H).
+    The first version's claim "HECM does it in L[1/3]" was wrong.
+- **(B7) RK and fruitfulness are different statements [observation].** RK says the NFS relations fill
+  Λ/2. Conjecture F says their *dependencies* carry a nonzero β-label. RK + Vallée ⇒ fruitful
+  dependencies exist, via the Vallée row's hidden root. Conjecture F concerns pure-NFS dependencies,
+  which Design V never needs.
+
+## 7. Experiments (pre-registered; exact; toy; correctness and plausibility checks only)
+### 7.3 E3 (RK in a toy NFS)
+- Grid: 48 bits (B = 1200) and 56 bits (B = 3000), blum/tri, 5 seeds each. All 20 instances were valid
+  (rows/cols 1.29–1.5); rank/cols was 0.92–0.97.
+- **P6 holds:** 360/400 Dixon vectors lie in the row space (90%), 15–20 of 20 per instance.
+- **P7a holds:** 0/5098 single-prime vectors with p ∉ Q_N are in the span.
+- **P7b holds:** 787/787 with p ∈ Q_N and ≥ 3 odd occurrences are in the span.
+- Reading:
+  - Span ∩ rational = Λ/2 restricted to well-covered primes, exactly as RK predicts.
+  - The Dixon failures plausibly come from rarely occurring primes. This was not separately registered,
+    so it is a hypothesis.
+  - The toy skips index-divisor and projective pairs.
+  - No square roots or fruitfulness were computed here; DD-type fruitfulness was tested in lemmaM E1.
+
+### 7.4 Prop P: what a pair-correlation bound of the published *shape* would buy [hypothetical computation; relabelled after review]
+## 8. Literature (Opus literature subagent, read from primary PDFs unless marked; 2026-10-19)
+- **Harper, arXiv 1208.5992** (preprint; no journal version found).
+  - Thm 1 (BV): for log^K x ≤ y ≤ x and Q ≤ √Ψ, the error is ≪ Ψ(e^{−cu/log²(u+1)} + y^{−c}) + Q√Ψ log^{7/2}x.
+  - Thm 2 (BDH): for Q ≤ Ψ, the error is ≪ Ψ²(e^{−cu/log²u} + y^{−c}) + QΨ.
+  - Neither has a restricted-moduli version.
+- **de la Bretèche–Drappeau, JEMS 22 (2020), Thm 2.1 (2.2).** This is a published BV for y₂-smooth moduli
+  q ∼ Q with Q ≤ x^{1/2−ε}.
+  - It includes multiples q₀q of a fixed y₂-smooth q₀ ≤ x^δ, has max over residues, and saves
+    Ψ(Q, y₂)/(φ(q₀)Q)·e^{O(u₂)}(log x)^{−A}.
+  - The authors credit LV for the smooth-moduli modification.
+  - **Bearing on FM (corrected after review): it does not cover FM.**
+    - The saving carries e^{O(u₂)}, through (e^{u₂} log x)^{O_k(1)} in their (2.4). At y₂ = B = L[1/2]
+      we have u₂ ≍ (log N/log log N)^{1/2}, so e^{O(u₂)}(log x)^{−A} → ∞ and the bound is vacuous for a
+      density statement.
+    - Separately, the theorem requires P⁺(q₀) ≤ y₂.
+    - Interestingly, the authors' own Thm 4.1, and Pascadi's Cor. 7.2, apply it with non-smooth
+      q₀ = a. That suggests the condition is removable, but it is not a citation for FM.
+    - LV Lemma 8.5 is genuinely stronger at our parameters: its saving ϱ(Q, y)(e^{−cu/log²u} + y^{−c})
+      has no e^{O(u)} loss. So FM stays a transplant of LV's method.
+- **Drappeau, Compositio 2015**: level 3/5, with a fixed residue a₁ā₂ and no max over residues.
+  **Pascadi**: level 66/107, and 5/8 unconditionally (arXiv 2505.00653), also with a fixed residue.
+  Neither handles our moving residues Nb^d, as (B4) notes.
+- **Pair correlations.**
+  - de la Bretèche–Drappeau Thm 4.1 (ρ^{3/5}); Pascadi Cor. 7.2 (ρ^{5/8}).
+  - Pascadi Cor. 1.6: #{n ≤ x : n, n + 1 ∈ S(y)} ≪ xρ(u)^{1+5/8−ε}.
+  - At fixed y there are only finitely many consecutive y-smooth pairs (Størmer/Lehmer), so smoothness
+    of n and n + 1 is not independent at extremely small y. At y = L[1/2] independence within L^{o(1)}
+    is expected but open. (A "Goldfeld–Yamagishi" reference in the first version could not be
+    verified and was removed.)
+  - Averaged two-point correlation results (Matomäki–Radziwiłł–Tao type) give only o(1) relative
+    savings, which is useless at density L^{−c}. We found nothing beating ρ^{5/8} at y = L[1/2], even on
+    average over coefficients (prior-art critic).
+  - Harper's restriction theory (Compositio 2016) handles ternary problems (a + b = c) at log^K x ≤ y,
+    not binary ones.
+- **Hyperelliptic curve method.** Lenstra–Pila–Pomerance I (Phil. Trans. 1993), Cor. 1.2: for every
+  n ≥ n₀, all prime factors ≤ v are found with probability ≥ ½ in L_v[2/3, c₀](log n)³.
+  - **Caveat:** Part II (Proc. LMS 2002) defers details to a Part III that apparently was never
+    written. The rigorous assembly is not in print. lemmaM and LV (Cor. 3.19) rely on the same method.
+- **Vallée, Math. Comp. 56 (1991).** The primary text could not be retrieved (AMS block). The quasi-uniform
+  sampling of x with x² mod N = O(N^{2/3}) and the rigorous L[1/2, √(4/3)] come from secondary sources
+  (LV, STOC'89 abstract). **Theorem V's Vallée input is therefore not verified by us.**
+- **Rigorous factoring and discrete logs, 2018–2026.**
+  - Nothing found below c = 1 for factoring, or below √2 for discrete logs in prime fields.
+  - Kleinjung–Wesolowski (fixed characteristic, quasi-polynomial) is rigorous but does not transfer.
+  - de Boer–Pellet-Mary–Wesolowski (arXiv 2512.01588, ERH): rigorous class-group sampling toolkit.
+  - Stange 2022 is heuristic (Hypothesis 3.1).
+  - LV follow-ups: van Leeuwen's thesis, Le Gluher–Spaenlehauer–Thomé (heuristic), and an announced
+    Balister–Bollobás–Morris–Lee paper on the 2-core.
+- **Rank.** Balister–Bollobás–Morris (Annals 2018) prove that the GF(2) parity matrix of fewer than
+  (e^{−γ} − ε)J *uniform random* integers has full row rank whp. This is the closest rigorous rank
+  statement to RK, but it is for uniform integers rather than NFS relations, and it concerns rows, not
+  the span of Λ/2. We found no span or relation-lattice result for sieve relations.
+
+## 9. Reviews
+### 9.2 GPT-6.1-sol adversarial round (hypD_2): findings and adjudication
+All findings were accepted.
+- **Verdicts.**
+  - CORRECT: Lemma Ω; Theorem S/S′; K(i); PZ, with N_ℓ counting capped, certified candidates.
+  - CORRECT WITH FIXES: K(ii) (|G_A| ≥ 4k²); K(iii) (accept "at most k" primes); Corollary K (limits
+    are infima over growing fixed k); Prop G (scope (iii) to the counting template; D = |Δ| exactly);
+    Prop P as a hypothetical (closed forms 1.5731 and 0.029437); the Design V observation (the
+    pointwise bound gives ≥ 1/(2κ); convolution unnecessary).
+  - CORRECT, conditionally: Theorem V's cost, given relation supply, RK and postprocessing.
+- **(a) Uniformity.** Growing-k conditions k log log N = o(T) and k log(1/γ) = o(T). Irregular lattices
+  and the finite-interval error belong inside the moments. The field-selection repair ("retain the first
+  field whose attempt succeeds", E[1/q | kept] ≤ 1/μ) is adopted. The LP shape cost is an upper bound
+  only.
+- **(b)** D_k ⇒ complete descents in one field: **confirmed**, and the complementary-types objection is
+  genuinely answered, provided G_A means certified, capped success.
+- **(c) FM.** Plausible transplant, not established. "No new idea expected" withdrawn.
+- **(d) PC.** The identity is confirmed. The 2D kernel needs H ≫ V². RBDH′ alone is not a completed
+  sufficient condition.
+- **(e) Design V.** Vallée's quasi-uniformity was checked in the primary paper. RK is reformulated as a
+  genuine-certificate deficiency with a batch argument. LV §6's residual kernel must preserve a nonzero
+  Vallée projection.
+- **Most promising route (codex).** Prove the genuine-certificate RK, dim U_V − dim(W_true ∩ U_V) ≤ L^{o(1)}
+  with probability L^{−o(1)}. That avoids both special-q FM and binary PC_rat. The proof target is
+  uniform rank growth against every surviving dual obstruction, or a classification showing that only
+  L^{o(1)} of them survive. Fixed-test first moments will not suffice. We agree this is the clearest
+  route to the conditional √(2/3).
+
+### 9.3 GPT-6.1-sol blind round (hypD_1) and ideas from it
+- **Claim (1), the Q2 collapse.** It agrees with Theorems S and K, independently derived. Codex works at
+
+web search: Balister Bollobas Morris 2018 sharp threshold making squares factoring random squares ...
+codex
+The repo already distinguishes raw matrix membership from genuine square certificates. That distinction matters here: the characters from primes dividing \(N\) are forced obstructions for genuine certificates, but they need not be expressible through the raw matrix’s chosen columns. I’ll keep the two spaces separate in the dual analysis.
+web search: 
+web search: 
+exec
+/bin/zsh -lc "sed -n '1,240p' /Volumes/git/factoring-connection/src/hypD/rank.py" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+"""Toy test of the rank hypothesis RK (experiment E3 of notes/hypD_prereg.md).
+
+OPERATIONAL: a toy cubic NFS (monic base-m cubic + (x - m)(r1 x + r0)) collects pairs (a, b)
+with a - b m and F(a, b) both B-smooth.  Row of a pair over GF(2):
+    [sign(a - b m)] [v_p(a - b m), p <= B] [v_P(a - b alpha), P = (p, r) degree one, p <= B]
+    [quadratic characters (a - b s | q) for nchar pairs (q, s), f(s) = 0 mod q, q > B]
+(index-divisor subtleties ignored: toy).  A "rational" target vector has support only on
+the sign and rational-prime columns.  `in_rowspace` decides membership by elimination.
+Dixon vectors come from random x with x^2 mod N B-smooth (OPERATIONAL, never factors N).
+"""
+from __future__ import annotations
+
+import random
+from math import gcd
+from typing import Dict, List, Optional, Tuple
+
+import gmpy2
+
+from ..nfsfruit.smooth import FactorBase, primes_upto
+from .specialq import base_m_digits, random_m
+
+
+def poly_coeffs(N: int, m: int, r0: int, r1: int) -> List[int]:
+    c0, c1, c2 = base_m_digits(N, m)
+    # x^3 + c2 x^2 + c1 x + c0 + (x - m)(r1 x + r0)
+    return [c0 - m * r0, c1 + r0 - m * r1, c2 + r1, 1]     # f[0..3]
+
+
+def poly_eval(f, x, p=None):
+    v = 0
+    for co in reversed(f):
+        v = v * x + co
+        if p:
+            v %= p
+    return v
+
+
+def roots_mod(f, p) -> List[int]:
+    return [r for r in range(p) if poly_eval(f, r, p) == 0]
+
+
+class ToyNFS:
+    def __init__(self, N: int, B: int, nchar: int, seed: int, H: int = 4):
+        self.N, self.B = N, B
+        rng = random.Random(f"hypD-rank|{N}|{seed}")
+        while True:
+            self.m = random_m(N, rng)
+            self.r0, self.r1 = rng.randrange(-H, H + 1), rng.randrange(-H, H + 1)
+            self.f = poly_coeffs(N, self.m, self.r0, self.r1)
+            if all(poly_eval(self.f, x) != 0 for x in range(-50, 51)):
+                break                       # crude irreducibility screen (toy)
+        assert poly_eval(self.f, self.m) % N == 0
+        self.fb = FactorBase(B)
+        self.ps = self.fb.primes
+        self.col = {}
+        self.col["sign"] = 0
+        for p in self.ps:
+            self.col[("r", p)] = len(self.col)
+        for p in self.ps:
+            for r in roots_mod(self.f, p):
+                self.col[("a", p, r)] = len(self.col)
+        self.chars = []
+        q = B + 1
+        while len(self.chars) < nchar:
+            q = int(gmpy2.next_prime(q))
+            for s in roots_mod(self.f, q) if q < 20000 else []:
+                if len(self.chars) < nchar:
+                    self.chars.append((q, s))
+        for qs in self.chars:
+            self.col[("c",) + qs] = len(self.col)
+        self.ncols = len(self.col)
+        self.rows: List[int] = []
+        self.pairs: List[Tuple[int, int]] = []
+
+    def F(self, a, b):
+        f = self.f
+        return sum(f[i] * a ** i * b ** (3 - i) for i in range(4))
+
+    def row_of(self, a: int, b: int) -> Optional[int]:
+        t = a - b * self.m
+        rf = self.fb.factor(t)
+        if rf is None:
+            return None
+        Fv = self.F(a, b)
+        if Fv == 0:
+            return None
+        af = self.fb.factor(Fv)
+        if af is None:
+            return None
+        row = 0
+        if t < 0:
+            row ^= 1 << self.col["sign"]
+        for p, e in rf.items():
+            if e & 1:
+                row ^= 1 << self.col[("r", p)]
+        for p, e in af.items():
+            if e & 1:
+                if b % p == 0:
+                    return None          # projective prime: toy skips the pair
+                r = a * pow(b, -1, p) % p
+                key = ("a", p, r)
+                if key not in self.col:
+                    return None          # (index divisor / ramified) toy skips
+                row ^= 1 << self.col[key]
+        for (q, s) in self.chars:
+            if gmpy2.legendre((a - b * s) % q, q) == -1:
+                row ^= 1 << self.col[("c", q, s)]
+        return row
+
+    def sieve(self, A: int, Bb: int, target_rows: int):
+        for b in range(1, Bb + 1):
+            for a in range(-A, A + 1):
+                if gcd(a, b) != 1:
+                    continue
+                r = self.row_of(a, b)
+                if r is not None:
+                    self.rows.append(r)
+                    self.pairs.append((a, b))
+                    if len(self.rows) >= target_rows:
+                        return
+
+    def rational_vector(self, sign: int, exps: Dict[int, int]) -> int:
+        v = (1 << self.col["sign"]) if sign < 0 else 0
+        for p, e in exps.items():
+            if e & 1:
+                v ^= 1 << self.col[("r", p)]
+        return v
+
+
+class RowSpace:
+    def __init__(self, rows: List[int]):
+        self.piv: Dict[int, int] = {}
+        for r in rows:
+            self.add(r)
+
+    def reduce(self, r: int) -> int:
+        while r:
+            c = r.bit_length() - 1
+            if c in self.piv:
+                r ^= self.piv[c]
+            else:
+                return r
+        return 0
+
+    def add(self, r: int):
+        r = self.reduce(r)
+        if r:
+            self.piv[r.bit_length() - 1] = r
+
+    @property
+    def rank(self):
+        return len(self.piv)
+
+    def contains(self, v: int) -> bool:
+        return self.reduce(v) == 0
+
+
+def dixon_vectors(N: int, fb: FactorBase, count: int, seed: int, max_trials: int):
+    rng = random.Random(f"hypD-dixon|{N}|{seed}")
+    out, trials = [], 0
+    while len(out) < count and trials < max_trials:
+        trials += 1
+        x = rng.randrange(2, N - 1)
+        if gcd(x, N) != 1:
+            continue
+        z = x * x % N
+        fz = fb.factor(z)
+        if fz is not None:
+            out.append(fz)
+    return out, trials
+
+web search: '6.1.'
+web search: "A rigorous subexponential algorithm for computation of class groups" pdf ...
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: '6 Controlling'
+web search: 
+web search: Hafner McCurley 1989 class groups pdf S0894-0347 ...
+web search: 
+web search: https://math.dartmouth.edu/~carlp/
+exec
+/bin/zsh -lc "rg --files /Volumes/git/factoring-connection | rg -i 'pdf|hafner|buchmann|vall[eé]e|lenstra|literature|papers'" in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/paper/main.pdf
+
+web search: 
+web search: 
+web search: 
+web search: "Hafner" "McCurley" "1989" "GRH" ...
+codex
+There is a useful reduction: after the algebraic valuations vanish, the residual square class lies in a space of dimension \(O(\log N)\), for fixed degree and polynomial coefficient height. Requiring a genuine certificate therefore loses at most \(O(\log N)\) rational dimensions. This handles that part of the existential rank claim; efficient certificate recovery still needs LV §6.
+web search: 
+web search: "Hafner" "McCurley" "837" "Riemann" ...
+exec
+/bin/zsh -lc 'curl -L --fail --max-time 30 -o /private/tmp/rkrank_hm.pdf https://mccurley.org/papers/hafner_mccurley.pdf' in /Volumes/git/factoring-connection/codex/scratch/rkrank_1
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: mccurley.org
+
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://www.ams.org/jams/1989-02-04/S0894-0347-1989-1002631-0/S0894-0347-1989-1002631-0.pdf
+web search: 
+web search: "Hafner" "McCurley" "Theorem" "GRH" ...
+web search: 
+web search: https://doi.org/10.3934/amc.2021055
+web search: 
+web search: https://arxiv.org/pdf/2512.01588
+web search: 
+web search: 'Theorem 1.1'
+web search: 
+web search: "number field sieve" "rank" "rigorous" "2025" ...
+web search: 
+web search: https://par.nsf.gov/servlets/purl/10324557
+web search: 
+web search: "A proof of the conjectured run time" pdf ...
+web search: 
+web search: 
+web search: 
+web search: https://studyres.com/doc/14705027/a-rigorous-time-bound-for-factoring-integers-for-real
+web search: 
+web search: 
+codex
+For uniformly sampled smooth integers, I can prove the proposed dimension-dependent escape bound by counting multiplication moves, without a Halász estimate. The NFS step fails at a precise point: those moves do not preserve the primitive pair box or algebraic smoothness. I also checked the cost formula: it is correct when LV relation supply fits within the stated budget, and for Vallée’s \(\theta=2/3\), a deficiency \(D^\kappa\) would beat \(c=1\) when \(\kappa<2/3\).
+web search: 
+web search: 'random exponent'
+web search: 
+web search: "factoring" "rigorous" "1/2" "2024" "Pomerance" ...
+web search: 
+web search: "number field sieve" "relation" "generation" "rigorous" rank theorem ...
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The literature makes an important distinction here. Hafner–McCurley’s generation argument is rigorous under ERH; Buchmann’s 1990 extension needs additional heuristics. Lenstra–Pomerance’s unconditional factoring proof uses enough rows to force a dependency and controls the resulting 2-torsion through random exponent lifts; it does not prove full rank for sieve relations. The 2025–2026 de Boer–Pellet-Mary–Wesolowski preprint proves a broader generation theorem under ERH, for a different sampler.
+codex
+**RK remains unproved.** I obtain an elementary rank-growth theorem for the rational smooth-number model, an \(O(\log N)\) bound on the loss from raw membership to genuine certificates, and a verification of the proposed cost formula with its supply condition. The unresolved step is uniform expansion for the **joint kept law**.
+
+Labels: **P** = proved; **C** = conditional; **H** = heuristic or literature assessment; **F** = false as stated. All square classes below concern units modulo \(N\), with sign included. Perfect powers should first be removed for the fruitfulness argument.
+
+**[P] Duality gives a precise formulation.** Write a row as \((q,z)\), combining algebraic and character coordinates into \(z\). Then
+\[
+W^\perp=\operatorname{proj}_{\rm rat}(R^\perp).
+\]
+Indeed, a functional on the rational coordinates vanishes on \(R\cap(Q\times0)\) exactly when its restriction to \(R\) factors through the second projection. More generally,
+\[
+\boxed{\operatorname{codim}_U(W\cap U)
+=\dim\operatorname{res}_U(W^\perp).}
+\]
+Thus RK asks for a bound on the dimension of projected dual obstructions, rather than on the entire matrix corank.
+
+**[P] Genuine certificates require a slightly larger algebraic space, but only a small correction.** Let \(E_0\) be the coefficient space of combinations with vanishing algebraic valuations and chosen character columns. There is a linear residual-square-class map
+\[
+\rho:E_0\longrightarrow H_K.
+\]
+For complete ideal valuations,
+\[
+0\longrightarrow
+\mathcal O_K^\times/\mathcal O_K^{\times2}
+\longrightarrow H_K
+\longrightarrow \mathrm{Cl}(K)[2]\longrightarrow0.
+\]
+For fixed degree and coefficient height \(N^{O(1)}\),
+\[
+h:=\dim H_K=O(\log N).
+\]
+Order, denominator, and omitted bad-prime corrections also have \(O(\log N)\) dimension when properly included. Consequently,
+\[
+\dim W_{\rm raw}-\dim W_{\rm true}\le h.
+\]
+This is an existential statement; efficient certificate extraction remains a separate algorithmic requirement. It agrees with the obstruction space bounded in [LV §6](https://arxiv.org/html/1805.08873v1).
+
+**[P] This also resolves the existential “preserve a Vallée projection” issue.** If raw deficiency is \(r\), then \(t\) appended target rows give a raw dependency space whose target projection has dimension at least \(t-r\). Imposing \(\rho=0\) reduces that dimension by at most \(h\). Hence
+\[
+t>r+h
+\]
+forces a genuine dependency with nonzero target projection. LV postprocessing must implement this preservation efficiently, but there is no additional existential rank hypothesis.
+
+The forced obstructions can now be distinguished carefully:
+
+- **[P] Characters at factors of \(N\).** For each distinct prime \(\ell\mid N\), reduction \(\alpha\mapsto m\) gives
+  \[
+  \chi_\ell(a-bm)=\chi_{\mathfrak P_\ell}(a-b\alpha),
+  \]
+  away from normalization/index exceptions, handled by localization and gcd checks. On genuine certificates these force the rational Legendre characters. Their restricted rank is **at most** \(\omega(N)\), not necessarily exactly \(\omega(N)\). CRT and the odd-prime-power square criterion show that their common kernel is precisely \(\Lambda/2\). They therefore vanish on either proposed \(U\).
+
+- **[P, with a geometric condition] Archimedean characters.** If a real root \(\xi\) and \(m\) lie on the same side of every admitted slope \(a/b\), then
+  \[
+  \operatorname{sgn}(a-b\xi)=\operatorname{sgn}(a-bm).
+  \]
+  This produces a sign obstruction for genuine squares. There are at most \(d\) real-sign constraints. **[C]** The existence and position of a root “near \(m\)” require an explicit coefficient-height argument; odd degree alone does not establish that location.
+
+- **[P] Leading coefficient and cardinality.** Nonmonic normalization introduces a fixed square class raised to the number of selected rows. A \(|S|\bmod2\) column handles this, costing at most one dimension. Bad/projective/index bookkeeping contributes only the preceding \(O(\log N)\) correction.
+
+- **[P] Uncovered coordinates.** An identically zero rational column gives an exact obstruction. A coordinate occurring with probability \(q_p\) is missed by \(M\) independent samples with probability \((1-q_p)^M\). **[F]** Three occurrences, or any fixed coverage threshold, imply saturation: coverage does not exclude duplicate columns, small components, or correlated blocks.
+
+- **[P] Units, \(\mathrm{Cl}(K)[2]\), and Schirokauer-type maps.** Their square-class contribution is included in \(H_K\); fixed degree prevents a macroscopic loss from these alone. Class-group characters can also give purely algebraic dual identities, which disappear under rational projection. Small-conductor Dirichlet/Hecke characters are possible structured dual tests, but an equality between their rational and algebraic evaluations on the kept set needs proof.
+
+**[H]** “Genus characters + archimedean constraints + support on rare primes” is a reasonable heuristic after full bookkeeping and removal of poorly connected coordinates. It is stronger than RK and remains unproved even for the whole smooth set \(X_{m,f}\). Arbitrary algebraic parity functionals cannot presently be classified as small-conductor characters.
+
+**[C] Route (i): uniform rank growth is sufficient.** In a specified allowable \(s\)-dimensional row space, suppose every surviving dual subspace \(V\), of dimension \(k>r\), satisfies
+\[
+\Pr_\mu[Z\notin V^\perp]\ge \frac{k}{Dq},
+\qquad q=L^{o(1)}.
+\]
+Each escape increases rank. Summing geometric waiting times gives
+\[
+\mathbb E T_r
+\le Dq\sum_{k=r+1}^{s}\frac1k
+=D\,L^{o(1)}.
+\]
+Markov’s inequality supplies constant success probability.
+
+**[H]** No known estimate supplies this for NFS’s joint kept law. The minimal sufficient addition is the corresponding escape bound for the *adaptively surviving* dual spaces, on fields obtainable at the asserted relation-supply cost. A field-averaged bound for each predetermined functional does not provide that conditional statement.
+
+**[P] Route (ii): Fourier analysis gives exact reductions, not automatic cancellation.** For a row law \(\mu\) on \(\mathbf F_2^s\), put
+\[
+\widehat\mu(w)=\mathbb E(-1)^{w\cdot Z}.
+\]
+For \(M\) independent rows,
+\[
+\mathbb E\,2^{s-\operatorname{rank}R_M}
+=\sum_w\left(\frac{1+\widehat\mu(w)}2\right)^M.
+\]
+A bound \(2^{r+O(1)}\) for this sum would imply small corank with constant probability. Parseval also gives
+\[
+\Pr[S_k=S_k']
+=2^{-s}\sum_w\widehat\mu(w)^{2k},
+\]
+where \(S_k,S_k'\) are independent sums of \(k\) rows.
+
+**[P]** Small fixed moments cannot generally prove near-full span. If one row has support of size \(J\), then
+\[
+\Pr[S_k=S_k']\ge J^{-k}.
+\]
+Reaching collision scale \(2^{-s+r}\) requires
+\[
+k\ge\frac{(s-r)\log2}{\log J}.
+\]
+Here \(J\le L^{O(1)}\) and \(s\asymp D\), so this route needs moments of order \(D/L^{o(1)}\). Pair-correlation estimates alone are insufficient. **[C]** The extra hypothesis is an aggregate bound on near-obstructions strong enough for the displayed Fourier sum; a sufficient full-matrix version is stronger than the required projected statement.
+
+**[P] Route (iii): the rational side admits the desired escape estimate directly.** Let \(n\) be uniform among positive \(B\)-smooth integers at most \(x\), and let \(V\) be a \(k\)-dimensional space of prime-parity functionals. Choose primes \(p_1,\ldots,p_k\le B\) whose evaluation vectors form a basis of \(V^*\).
+
+For every smooth \(n\le x/B\), the \(k+1\) integers
+\[
+n,\ p_1n,\ldots,p_kn
+\]
+have distinct evaluation vectors in \(V^*\). At most one annihilates \(V\). Every output integer has at most \(1+\log_2x\) preimages in this construction. Therefore
+\[
+\boxed{\Pr[n\notin V^\perp]\ge
+\frac{k\,\Psi(x/B,B)}
+{(1+\log_2x)\Psi(x,B)}.}
+\]
+For \(x=N^{c+o(1)}\), fixed \(c>0\), and \(B=L[1/2,a]\), smooth-number estimates turn this into
+\[
+\Pr[n\notin V^\perp]\ge \frac{k}{D\,L^{o(1)}}.
+\]
+
+**[P]** Under the independent geometric valuation model with parameter \(\sigma\), a parity character has exact mean
+\[
+\prod_{w(p)=1}\frac{1-p^{-\sigma}}{1+p^{-\sigma}}.
+\]
+Friable Turán–Kubilius theory controls additive fluctuations; parity cancellation requires characteristic-function information beyond a variance bound. See [de la Bretèche–Tenenbaum](https://tenenb.perso.math.cnrs.fr/PPP/TKfriable.pdf).
+
+**[H]** The joint constraint breaks the elementary proof precisely at its multiplication moves. Replacing \(a-bm\) by \(p(a-bm)\) need not preserve the primitive pair box, algebraic smoothness, or the algebraic functional. Even the rational marginal for one field is weighted by these restrictions. Moreover,
+\[
+F(a,b)\equiv Nb^d\pmod{a-bm}
+\]
+couples the two sides. **[C]** A bounded-congestion switching argument preserving the joint kept law, or an equivalent uniform weighted character estimate, would repair this route.
+
+**[P] Route (iv): random exponents explain existing generation proofs.** In class-group algorithms, one samples a large exponent vector \(z\), reduces its represented class, and subtracts the factorization of the reduced representative. Translation by a relation-lattice vector preserves the represented class and acceptance event, apart from box boundaries. This yields conditional distribution control.
+
+**[P]** A single primitive NFS row cannot be quasi-uniform on \(\Lambda/2\): its support has size at most the pair-box size \(L^{O(1)}\), whereas the target space can have \(2^{\Theta(D)}\) elements. Its rational component also need not lie in \(\Lambda/2\).
+
+**[H]** This counting argument does not rule out a cheap random-exponent construction using compact power products or many rows. No such construction retaining the NFS-sized rational and algebraic values is known here. **[C]** The missing addition is a sampler with sufficient random exponent lifts *after conditioning on its acceptance transcript*, together with the required norm and runtime bounds.
+
+**[P] Route (v): multiple fields intersect obstruction spaces.**
+\[
+\left(\sum_iW_i\right)^\perp=\bigcap_iW_i^\perp.
+\]
+Using \(W_i\cap U\) gives a sufficient construction entirely inside \(U\).
+
+**[F]** Independence of fields alone forces rapid saturation: every field might share the same hidden obstruction space. **[C]** A sufficient addition is uniform multiplicative contraction of the surviving dual dimension, above an \(L^{o(1)}\) floor, by a factor \(1-L^{-o(1)}\) per field. Then \(L^{o(1)}\) fields suffice. Fixed-functional survival bounds can instead require \(\Theta(D)\) fields, affecting the cost.
+
+**[P] There is a limited fixed-test barrier.** Suppose field averaging alone is uniform over \(M\le N^C\) choices. Every nonempty field event has probability at least \(1/M\). A uniform nonzero error bound therefore cannot reach the \(2^{-D}\) scale needed for a naive union bound over \(2^D\) tests, since \(D\gg\log N\).
+
+**[F]** This proves that field averaging cannot establish RK. It proves only that this particular union-bound template fails. Structural classification, aggregate counts, exact vanishing for most tests, or additional relation-sampling randomness can evade it.
+
+**[P]** An explicit abstract family demonstrates the gap. For even \(D\), choose \(M\) pairwise disjoint \(D/2\)-dimensional subspaces \(E_A\subset\mathbf F_2^D\), using a finite-field spread. Sample rows uniformly from \(E_A^\perp\). Every fixed nonzero functional is an obstruction for at most one field, yet every field has deficiency \(D/2\).
+
+Likewise, rows \((e_i,e_i)\) have fully covered rational coordinates but \(W=0\). Repetition makes coverage arbitrarily large. These are counterexamples to proposed probabilistic deductions, **not arithmetic counterexamples to LV’s law**.
+
+**[H]** I found no explicit family satisfying the intended LV supply and box conditions that disproves RK. The cubic experiment [E3’s implementation](/Volumes/git/factoring-connection/src/hypD/rank.py) tests raw matrix membership and supplies no genuine-certificate asymptotic theorem.
+
+**[P] The relaxed cost formula is correct with a supply condition.** Define \(\theta\) through a certified fruitful-row cost \(L[1/2,\theta/(2a)]\), and put \(\eta=3/(d+1)\). For \(0\le\kappa\le1\), deficiency \(D^\kappa\) requires \(D^\kappa+1\) target rows. The three cost constants are
+\[
+2a,\qquad a+\frac{\eta}{2a},\qquad
+\kappa a+\frac{\theta}{2a}.
+\]
+Thus
+\[
+\boxed{c_{\min}
+=\sqrt{\,2\max\{\eta,\theta/(2-\kappa)\}\,}.}
+\]
+Your expression
+\[
+\boxed{c=\sqrt{\frac{2\theta}{2-\kappa}}}
+\]
+holds when \(\eta\le\theta/(2-\kappa)\). For Vallée’s \(\theta=2/3\), fixed odd \(d\ge9\), this holds throughout \(0\le\kappa\le1\). It beats \(c=1\) exactly when
+\[
+\kappa<2/3.
+\]
+
+**[C]** These remain conditional factoring bounds: supply, rank, and efficient certificate processing must hold together under the field law actually reached by the algorithm. Separate positive-probability assertions about unrelated field subsets do not suffice.
+
+The literature supports the following distinctions:
+
+- **[C] Stange 2022/2023.** Hypothesis 3.1 concerns saturation on one coordinate axis of an integer relation lattice, rather than generation of the entire lattice. The extracted exponents are always multiples of the relevant order; recovering the order with the asserted probability is conditional. NFS adaptation is suggested, not proved for its kept law. **[P]** The printed coprimality probability \(1-1/\zeta(c+1)\) is reversed: it should be \(1/\zeta(c+1)\). [Primary text](https://arxiv.org/html/2211.06821v2).
+
+- **[C] Hafner–McCurley 1989.** Their imaginary-quadratic class-group computation and relation-generation analysis are rigorous under ERH, with constant \(\sqrt2\). **[H]** Buchmann 1990 extends the framework to general fields using additional distributional heuristics; it is not an unconditional general-field generation theorem.
+
+- **[C/P] Seysen–Lenstra and Lenstra–Pomerance.** Seysen’s relation algorithm and A. K. Lenstra’s improvement use GRH. Lenstra–Pomerance remove it with multipliers and prove unconditional \(L[1/2,1]\) factoring. Their linear algebra needs any dependency; hidden random exponent lifts control the resulting 2-torsion. They do **not** prove saturation of ordinary sieve relations. **[F]** The Schnorr–Lenstra random-class-group/SPAR heuristic belongs to the same proved lineage: LP explicitly refute its assumed runtime behavior on a substantial family. [LP](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+- **[P] Balister–Bollobás–Morris 2018.** They prove the sharp square-dependency threshold \(e^{-\gamma}J(x)\) for independent uniform integers. Below threshold this gives full row rank with high probability. It does not establish the desired NFS projected span. [Paper](https://arxiv.org/pdf/1608.03857).
+
+- **[P] Sparse random matrices.** Costello–Vu’s cited sparse symmetric result concerns complex/characteristic-zero rank, so it cannot simply be transferred to \(\mathbf F_2\). Coja-Oghlan et al. prove normalized-rank and full-row-rank results for specified random configuration models, including finite fields. NFS rows have not been shown to follow those models; normalized rank alone also falls short of RK. [Costello–Vu](https://arxiv.org/pdf/0711.2696), [normalized rank](https://arxiv.org/abs/1906.05757), [full rank](https://arxiv.org/abs/2112.14090).
+
+- **[C] A relevant 2025–2026 advance.** De Boer–Pellet-Mary–Wesolowski prove general class-group/unit-group computation and log-\(S\)-unit lattice generation under ERH. Their distribution control and generation theorem are relevant precedents. Their sampler uses general algebraic elements and Arakelov randomization, rather than the restricted \(a-b\alpha\) family. [Preprint, §§17–18](https://arxiv.org/pdf/2512.01588).
+
+**[H, literature assessment]** I found no published saturation theorem for the actual integer NFS/QS kept relation law, and no unconditional classical worst-case-input factoring improvement below Lenstra–Pomerance’s \(c=1\), through 19 October 2026.
+
+**Verdict. [P]** Raw and genuine-certificate RK differ existentially by only \(O(\log N)\) dimensions. Rational smooth numbers satisfy the desired dimension-dependent escape bound. **[C]** The best precise reduction is adaptive dual-space expansion for the joint kept law on fields reached at the supply budget. **[H]** The most promising next step is a bounded-congestion switching lemma for that joint law, initially allowing deficiency \(D^{2/3-\varepsilon}\): that weaker result would already suffice to beat \(c=1\).
+tokens used
+210,835
+**RK remains unproved.** I obtain an elementary rank-growth theorem for the rational smooth-number model, an \(O(\log N)\) bound on the loss from raw membership to genuine certificates, and a verification of the proposed cost formula with its supply condition. The unresolved step is uniform expansion for the **joint kept law**.
+
+Labels: **P** = proved; **C** = conditional; **H** = heuristic or literature assessment; **F** = false as stated. All square classes below concern units modulo \(N\), with sign included. Perfect powers should first be removed for the fruitfulness argument.
+
+**[P] Duality gives a precise formulation.** Write a row as \((q,z)\), combining algebraic and character coordinates into \(z\). Then
+\[
+W^\perp=\operatorname{proj}_{\rm rat}(R^\perp).
+\]
+Indeed, a functional on the rational coordinates vanishes on \(R\cap(Q\times0)\) exactly when its restriction to \(R\) factors through the second projection. More generally,
+\[
+\boxed{\operatorname{codim}_U(W\cap U)
+=\dim\operatorname{res}_U(W^\perp).}
+\]
+Thus RK asks for a bound on the dimension of projected dual obstructions, rather than on the entire matrix corank.
+
+**[P] Genuine certificates require a slightly larger algebraic space, but only a small correction.** Let \(E_0\) be the coefficient space of combinations with vanishing algebraic valuations and chosen character columns. There is a linear residual-square-class map
+\[
+\rho:E_0\longrightarrow H_K.
+\]
+For complete ideal valuations,
+\[
+0\longrightarrow
+\mathcal O_K^\times/\mathcal O_K^{\times2}
+\longrightarrow H_K
+\longrightarrow \mathrm{Cl}(K)[2]\longrightarrow0.
+\]
+For fixed degree and coefficient height \(N^{O(1)}\),
+\[
+h:=\dim H_K=O(\log N).
+\]
+Order, denominator, and omitted bad-prime corrections also have \(O(\log N)\) dimension when properly included. Consequently,
+\[
+\dim W_{\rm raw}-\dim W_{\rm true}\le h.
+\]
+This is an existential statement; efficient certificate extraction remains a separate algorithmic requirement. It agrees with the obstruction space bounded in [LV §6](https://arxiv.org/html/1805.08873v1).
+
+**[P] This also resolves the existential “preserve a Vallée projection” issue.** If raw deficiency is \(r\), then \(t\) appended target rows give a raw dependency space whose target projection has dimension at least \(t-r\). Imposing \(\rho=0\) reduces that dimension by at most \(h\). Hence
+\[
+t>r+h
+\]
+forces a genuine dependency with nonzero target projection. LV postprocessing must implement this preservation efficiently, but there is no additional existential rank hypothesis.
+
+The forced obstructions can now be distinguished carefully:
+
+- **[P] Characters at factors of \(N\).** For each distinct prime \(\ell\mid N\), reduction \(\alpha\mapsto m\) gives
+  \[
+  \chi_\ell(a-bm)=\chi_{\mathfrak P_\ell}(a-b\alpha),
+  \]
+  away from normalization/index exceptions, handled by localization and gcd checks. On genuine certificates these force the rational Legendre characters. Their restricted rank is **at most** \(\omega(N)\), not necessarily exactly \(\omega(N)\). CRT and the odd-prime-power square criterion show that their common kernel is precisely \(\Lambda/2\). They therefore vanish on either proposed \(U\).
+
+- **[P, with a geometric condition] Archimedean characters.** If a real root \(\xi\) and \(m\) lie on the same side of every admitted slope \(a/b\), then
+  \[
+  \operatorname{sgn}(a-b\xi)=\operatorname{sgn}(a-bm).
+  \]
+  This produces a sign obstruction for genuine squares. There are at most \(d\) real-sign constraints. **[C]** The existence and position of a root “near \(m\)” require an explicit coefficient-height argument; odd degree alone does not establish that location.
+
+- **[P] Leading coefficient and cardinality.** Nonmonic normalization introduces a fixed square class raised to the number of selected rows. A \(|S|\bmod2\) column handles this, costing at most one dimension. Bad/projective/index bookkeeping contributes only the preceding \(O(\log N)\) correction.
+
+- **[P] Uncovered coordinates.** An identically zero rational column gives an exact obstruction. A coordinate occurring with probability \(q_p\) is missed by \(M\) independent samples with probability \((1-q_p)^M\). **[F]** Three occurrences, or any fixed coverage threshold, imply saturation: coverage does not exclude duplicate columns, small components, or correlated blocks.
+
+- **[P] Units, \(\mathrm{Cl}(K)[2]\), and Schirokauer-type maps.** Their square-class contribution is included in \(H_K\); fixed degree prevents a macroscopic loss from these alone. Class-group characters can also give purely algebraic dual identities, which disappear under rational projection. Small-conductor Dirichlet/Hecke characters are possible structured dual tests, but an equality between their rational and algebraic evaluations on the kept set needs proof.
+
+**[H]** “Genus characters + archimedean constraints + support on rare primes” is a reasonable heuristic after full bookkeeping and removal of poorly connected coordinates. It is stronger than RK and remains unproved even for the whole smooth set \(X_{m,f}\). Arbitrary algebraic parity functionals cannot presently be classified as small-conductor characters.
+
+**[C] Route (i): uniform rank growth is sufficient.** In a specified allowable \(s\)-dimensional row space, suppose every surviving dual subspace \(V\), of dimension \(k>r\), satisfies
+\[
+\Pr_\mu[Z\notin V^\perp]\ge \frac{k}{Dq},
+\qquad q=L^{o(1)}.
+\]
+Each escape increases rank. Summing geometric waiting times gives
+\[
+\mathbb E T_r
+\le Dq\sum_{k=r+1}^{s}\frac1k
+=D\,L^{o(1)}.
+\]
+Markov’s inequality supplies constant success probability.
+
+**[H]** No known estimate supplies this for NFS’s joint kept law. The minimal sufficient addition is the corresponding escape bound for the *adaptively surviving* dual spaces, on fields obtainable at the asserted relation-supply cost. A field-averaged bound for each predetermined functional does not provide that conditional statement.
+
+**[P] Route (ii): Fourier analysis gives exact reductions, not automatic cancellation.** For a row law \(\mu\) on \(\mathbf F_2^s\), put
+\[
+\widehat\mu(w)=\mathbb E(-1)^{w\cdot Z}.
+\]
+For \(M\) independent rows,
+\[
+\mathbb E\,2^{s-\operatorname{rank}R_M}
+=\sum_w\left(\frac{1+\widehat\mu(w)}2\right)^M.
+\]
+A bound \(2^{r+O(1)}\) for this sum would imply small corank with constant probability. Parseval also gives
+\[
+\Pr[S_k=S_k']
+=2^{-s}\sum_w\widehat\mu(w)^{2k},
+\]
+where \(S_k,S_k'\) are independent sums of \(k\) rows.
+
+**[P]** Small fixed moments cannot generally prove near-full span. If one row has support of size \(J\), then
+\[
+\Pr[S_k=S_k']\ge J^{-k}.
+\]
+Reaching collision scale \(2^{-s+r}\) requires
+\[
+k\ge\frac{(s-r)\log2}{\log J}.
+\]
+Here \(J\le L^{O(1)}\) and \(s\asymp D\), so this route needs moments of order \(D/L^{o(1)}\). Pair-correlation estimates alone are insufficient. **[C]** The extra hypothesis is an aggregate bound on near-obstructions strong enough for the displayed Fourier sum; a sufficient full-matrix version is stronger than the required projected statement.
+
+**[P] Route (iii): the rational side admits the desired escape estimate directly.** Let \(n\) be uniform among positive \(B\)-smooth integers at most \(x\), and let \(V\) be a \(k\)-dimensional space of prime-parity functionals. Choose primes \(p_1,\ldots,p_k\le B\) whose evaluation vectors form a basis of \(V^*\).
+
+For every smooth \(n\le x/B\), the \(k+1\) integers
+\[
+n,\ p_1n,\ldots,p_kn
+\]
+have distinct evaluation vectors in \(V^*\). At most one annihilates \(V\). Every output integer has at most \(1+\log_2x\) preimages in this construction. Therefore
+\[
+\boxed{\Pr[n\notin V^\perp]\ge
+\frac{k\,\Psi(x/B,B)}
+{(1+\log_2x)\Psi(x,B)}.}
+\]
+For \(x=N^{c+o(1)}\), fixed \(c>0\), and \(B=L[1/2,a]\), smooth-number estimates turn this into
+\[
+\Pr[n\notin V^\perp]\ge \frac{k}{D\,L^{o(1)}}.
+\]
+
+**[P]** Under the independent geometric valuation model with parameter \(\sigma\), a parity character has exact mean
+\[
+\prod_{w(p)=1}\frac{1-p^{-\sigma}}{1+p^{-\sigma}}.
+\]
+Friable Turán–Kubilius theory controls additive fluctuations; parity cancellation requires characteristic-function information beyond a variance bound. See [de la Bretèche–Tenenbaum](https://tenenb.perso.math.cnrs.fr/PPP/TKfriable.pdf).
+
+**[H]** The joint constraint breaks the elementary proof precisely at its multiplication moves. Replacing \(a-bm\) by \(p(a-bm)\) need not preserve the primitive pair box, algebraic smoothness, or the algebraic functional. Even the rational marginal for one field is weighted by these restrictions. Moreover,
+\[
+F(a,b)\equiv Nb^d\pmod{a-bm}
+\]
+couples the two sides. **[C]** A bounded-congestion switching argument preserving the joint kept law, or an equivalent uniform weighted character estimate, would repair this route.
+
+**[P] Route (iv): random exponents explain existing generation proofs.** In class-group algorithms, one samples a large exponent vector \(z\), reduces its represented class, and subtracts the factorization of the reduced representative. Translation by a relation-lattice vector preserves the represented class and acceptance event, apart from box boundaries. This yields conditional distribution control.
+
+**[P]** A single primitive NFS row cannot be quasi-uniform on \(\Lambda/2\): its support has size at most the pair-box size \(L^{O(1)}\), whereas the target space can have \(2^{\Theta(D)}\) elements. Its rational component also need not lie in \(\Lambda/2\).
+
+**[H]** This counting argument does not rule out a cheap random-exponent construction using compact power products or many rows. No such construction retaining the NFS-sized rational and algebraic values is known here. **[C]** The missing addition is a sampler with sufficient random exponent lifts *after conditioning on its acceptance transcript*, together with the required norm and runtime bounds.
+
+**[P] Route (v): multiple fields intersect obstruction spaces.**
+\[
+\left(\sum_iW_i\right)^\perp=\bigcap_iW_i^\perp.
+\]
+Using \(W_i\cap U\) gives a sufficient construction entirely inside \(U\).
+
+**[F]** Independence of fields alone forces rapid saturation: every field might share the same hidden obstruction space. **[C]** A sufficient addition is uniform multiplicative contraction of the surviving dual dimension, above an \(L^{o(1)}\) floor, by a factor \(1-L^{-o(1)}\) per field. Then \(L^{o(1)}\) fields suffice. Fixed-functional survival bounds can instead require \(\Theta(D)\) fields, affecting the cost.
+
+**[P] There is a limited fixed-test barrier.** Suppose field averaging alone is uniform over \(M\le N^C\) choices. Every nonempty field event has probability at least \(1/M\). A uniform nonzero error bound therefore cannot reach the \(2^{-D}\) scale needed for a naive union bound over \(2^D\) tests, since \(D\gg\log N\).
+
+**[F]** This proves that field averaging cannot establish RK. It proves only that this particular union-bound template fails. Structural classification, aggregate counts, exact vanishing for most tests, or additional relation-sampling randomness can evade it.
+
+**[P]** An explicit abstract family demonstrates the gap. For even \(D\), choose \(M\) pairwise disjoint \(D/2\)-dimensional subspaces \(E_A\subset\mathbf F_2^D\), using a finite-field spread. Sample rows uniformly from \(E_A^\perp\). Every fixed nonzero functional is an obstruction for at most one field, yet every field has deficiency \(D/2\).
+
+Likewise, rows \((e_i,e_i)\) have fully covered rational coordinates but \(W=0\). Repetition makes coverage arbitrarily large. These are counterexamples to proposed probabilistic deductions, **not arithmetic counterexamples to LV’s law**.
+
+**[H]** I found no explicit family satisfying the intended LV supply and box conditions that disproves RK. The cubic experiment [E3’s implementation](/Volumes/git/factoring-connection/src/hypD/rank.py) tests raw matrix membership and supplies no genuine-certificate asymptotic theorem.
+
+**[P] The relaxed cost formula is correct with a supply condition.** Define \(\theta\) through a certified fruitful-row cost \(L[1/2,\theta/(2a)]\), and put \(\eta=3/(d+1)\). For \(0\le\kappa\le1\), deficiency \(D^\kappa\) requires \(D^\kappa+1\) target rows. The three cost constants are
+\[
+2a,\qquad a+\frac{\eta}{2a},\qquad
+\kappa a+\frac{\theta}{2a}.
+\]
+Thus
+\[
+\boxed{c_{\min}
+=\sqrt{\,2\max\{\eta,\theta/(2-\kappa)\}\,}.}
+\]
+Your expression
+\[
+\boxed{c=\sqrt{\frac{2\theta}{2-\kappa}}}
+\]
+holds when \(\eta\le\theta/(2-\kappa)\). For Vallée’s \(\theta=2/3\), fixed odd \(d\ge9\), this holds throughout \(0\le\kappa\le1\). It beats \(c=1\) exactly when
+\[
+\kappa<2/3.
+\]
+
+**[C]** These remain conditional factoring bounds: supply, rank, and efficient certificate processing must hold together under the field law actually reached by the algorithm. Separate positive-probability assertions about unrelated field subsets do not suffice.
+
+The literature supports the following distinctions:
+
+- **[C] Stange 2022/2023.** Hypothesis 3.1 concerns saturation on one coordinate axis of an integer relation lattice, rather than generation of the entire lattice. The extracted exponents are always multiples of the relevant order; recovering the order with the asserted probability is conditional. NFS adaptation is suggested, not proved for its kept law. **[P]** The printed coprimality probability \(1-1/\zeta(c+1)\) is reversed: it should be \(1/\zeta(c+1)\). [Primary text](https://arxiv.org/html/2211.06821v2).
+
+- **[C] Hafner–McCurley 1989.** Their imaginary-quadratic class-group computation and relation-generation analysis are rigorous under ERH, with constant \(\sqrt2\). **[H]** Buchmann 1990 extends the framework to general fields using additional distributional heuristics; it is not an unconditional general-field generation theorem.
+
+- **[C/P] Seysen–Lenstra and Lenstra–Pomerance.** Seysen’s relation algorithm and A. K. Lenstra’s improvement use GRH. Lenstra–Pomerance remove it with multipliers and prove unconditional \(L[1/2,1]\) factoring. Their linear algebra needs any dependency; hidden random exponent lifts control the resulting 2-torsion. They do **not** prove saturation of ordinary sieve relations. **[F]** The Schnorr–Lenstra random-class-group/SPAR heuristic belongs to the same proved lineage: LP explicitly refute its assumed runtime behavior on a substantial family. [LP](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+- **[P] Balister–Bollobás–Morris 2018.** They prove the sharp square-dependency threshold \(e^{-\gamma}J(x)\) for independent uniform integers. Below threshold this gives full row rank with high probability. It does not establish the desired NFS projected span. [Paper](https://arxiv.org/pdf/1608.03857).
+
+- **[P] Sparse random matrices.** Costello–Vu’s cited sparse symmetric result concerns complex/characteristic-zero rank, so it cannot simply be transferred to \(\mathbf F_2\). Coja-Oghlan et al. prove normalized-rank and full-row-rank results for specified random configuration models, including finite fields. NFS rows have not been shown to follow those models; normalized rank alone also falls short of RK. [Costello–Vu](https://arxiv.org/pdf/0711.2696), [normalized rank](https://arxiv.org/abs/1906.05757), [full rank](https://arxiv.org/abs/2112.14090).
+
+- **[C] A relevant 2025–2026 advance.** De Boer–Pellet-Mary–Wesolowski prove general class-group/unit-group computation and log-\(S\)-unit lattice generation under ERH. Their distribution control and generation theorem are relevant precedents. Their sampler uses general algebraic elements and Arakelov randomization, rather than the restricted \(a-b\alpha\) family. [Preprint, §§17–18](https://arxiv.org/pdf/2512.01588).
+
+**[H, literature assessment]** I found no published saturation theorem for the actual integer NFS/QS kept relation law, and no unconditional classical worst-case-input factoring improvement below Lenstra–Pomerance’s \(c=1\), through 19 October 2026.
+
+**Verdict. [P]** Raw and genuine-certificate RK differ existentially by only \(O(\log N)\) dimensions. Rational smooth numbers satisfy the desired dimension-dependent escape bound. **[C]** The best precise reduction is adaptive dual-space expansion for the joint kept law on fields reached at the supply budget. **[H]** The most promising next step is a bounded-congestion switching lemma for that joint law, initially allowing deficiency \(D^{2/3-\varepsilon}\): that weaker result would already suffice to beat \(c=1\).

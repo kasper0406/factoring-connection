@@ -1,0 +1,196 @@
+**RK remains unproved.** I obtain an elementary rank-growth theorem for the rational smooth-number model, an \(O(\log N)\) bound on the loss from raw membership to genuine certificates, and a verification of the proposed cost formula with its supply condition. The unresolved step is uniform expansion for the **joint kept law**.
+
+Labels: **P** = proved; **C** = conditional; **H** = heuristic or literature assessment; **F** = false as stated. All square classes below concern units modulo \(N\), with sign included. Perfect powers should first be removed for the fruitfulness argument.
+
+**[P] Duality gives a precise formulation.** Write a row as \((q,z)\), combining algebraic and character coordinates into \(z\). Then
+\[
+W^\perp=\operatorname{proj}_{\rm rat}(R^\perp).
+\]
+Indeed, a functional on the rational coordinates vanishes on \(R\cap(Q\times0)\) exactly when its restriction to \(R\) factors through the second projection. More generally,
+\[
+\boxed{\operatorname{codim}_U(W\cap U)
+=\dim\operatorname{res}_U(W^\perp).}
+\]
+Thus RK asks for a bound on the dimension of projected dual obstructions, rather than on the entire matrix corank.
+
+**[P] Genuine certificates require a slightly larger algebraic space, but only a small correction.** Let \(E_0\) be the coefficient space of combinations with vanishing algebraic valuations and chosen character columns. There is a linear residual-square-class map
+\[
+\rho:E_0\longrightarrow H_K.
+\]
+For complete ideal valuations,
+\[
+0\longrightarrow
+\mathcal O_K^\times/\mathcal O_K^{\times2}
+\longrightarrow H_K
+\longrightarrow \mathrm{Cl}(K)[2]\longrightarrow0.
+\]
+For fixed degree and coefficient height \(N^{O(1)}\),
+\[
+h:=\dim H_K=O(\log N).
+\]
+Order, denominator, and omitted bad-prime corrections also have \(O(\log N)\) dimension when properly included. Consequently,
+\[
+\dim W_{\rm raw}-\dim W_{\rm true}\le h.
+\]
+This is an existential statement; efficient certificate extraction remains a separate algorithmic requirement. It agrees with the obstruction space bounded in [LV §6](https://arxiv.org/html/1805.08873v1).
+
+**[P] This also resolves the existential “preserve a Vallée projection” issue.** If raw deficiency is \(r\), then \(t\) appended target rows give a raw dependency space whose target projection has dimension at least \(t-r\). Imposing \(\rho=0\) reduces that dimension by at most \(h\). Hence
+\[
+t>r+h
+\]
+forces a genuine dependency with nonzero target projection. LV postprocessing must implement this preservation efficiently, but there is no additional existential rank hypothesis.
+
+The forced obstructions can now be distinguished carefully:
+
+- **[P] Characters at factors of \(N\).** For each distinct prime \(\ell\mid N\), reduction \(\alpha\mapsto m\) gives
+  \[
+  \chi_\ell(a-bm)=\chi_{\mathfrak P_\ell}(a-b\alpha),
+  \]
+  away from normalization/index exceptions, handled by localization and gcd checks. On genuine certificates these force the rational Legendre characters. Their restricted rank is **at most** \(\omega(N)\), not necessarily exactly \(\omega(N)\). CRT and the odd-prime-power square criterion show that their common kernel is precisely \(\Lambda/2\). They therefore vanish on either proposed \(U\).
+
+- **[P, with a geometric condition] Archimedean characters.** If a real root \(\xi\) and \(m\) lie on the same side of every admitted slope \(a/b\), then
+  \[
+  \operatorname{sgn}(a-b\xi)=\operatorname{sgn}(a-bm).
+  \]
+  This produces a sign obstruction for genuine squares. There are at most \(d\) real-sign constraints. **[C]** The existence and position of a root “near \(m\)” require an explicit coefficient-height argument; odd degree alone does not establish that location.
+
+- **[P] Leading coefficient and cardinality.** Nonmonic normalization introduces a fixed square class raised to the number of selected rows. A \(|S|\bmod2\) column handles this, costing at most one dimension. Bad/projective/index bookkeeping contributes only the preceding \(O(\log N)\) correction.
+
+- **[P] Uncovered coordinates.** An identically zero rational column gives an exact obstruction. A coordinate occurring with probability \(q_p\) is missed by \(M\) independent samples with probability \((1-q_p)^M\). **[F]** Three occurrences, or any fixed coverage threshold, imply saturation: coverage does not exclude duplicate columns, small components, or correlated blocks.
+
+- **[P] Units, \(\mathrm{Cl}(K)[2]\), and Schirokauer-type maps.** Their square-class contribution is included in \(H_K\); fixed degree prevents a macroscopic loss from these alone. Class-group characters can also give purely algebraic dual identities, which disappear under rational projection. Small-conductor Dirichlet/Hecke characters are possible structured dual tests, but an equality between their rational and algebraic evaluations on the kept set needs proof.
+
+**[H]** “Genus characters + archimedean constraints + support on rare primes” is a reasonable heuristic after full bookkeeping and removal of poorly connected coordinates. It is stronger than RK and remains unproved even for the whole smooth set \(X_{m,f}\). Arbitrary algebraic parity functionals cannot presently be classified as small-conductor characters.
+
+**[C] Route (i): uniform rank growth is sufficient.** In a specified allowable \(s\)-dimensional row space, suppose every surviving dual subspace \(V\), of dimension \(k>r\), satisfies
+\[
+\Pr_\mu[Z\notin V^\perp]\ge \frac{k}{Dq},
+\qquad q=L^{o(1)}.
+\]
+Each escape increases rank. Summing geometric waiting times gives
+\[
+\mathbb E T_r
+\le Dq\sum_{k=r+1}^{s}\frac1k
+=D\,L^{o(1)}.
+\]
+Markov’s inequality supplies constant success probability.
+
+**[H]** No known estimate supplies this for NFS’s joint kept law. The minimal sufficient addition is the corresponding escape bound for the *adaptively surviving* dual spaces, on fields obtainable at the asserted relation-supply cost. A field-averaged bound for each predetermined functional does not provide that conditional statement.
+
+**[P] Route (ii): Fourier analysis gives exact reductions, not automatic cancellation.** For a row law \(\mu\) on \(\mathbf F_2^s\), put
+\[
+\widehat\mu(w)=\mathbb E(-1)^{w\cdot Z}.
+\]
+For \(M\) independent rows,
+\[
+\mathbb E\,2^{s-\operatorname{rank}R_M}
+=\sum_w\left(\frac{1+\widehat\mu(w)}2\right)^M.
+\]
+A bound \(2^{r+O(1)}\) for this sum would imply small corank with constant probability. Parseval also gives
+\[
+\Pr[S_k=S_k']
+=2^{-s}\sum_w\widehat\mu(w)^{2k},
+\]
+where \(S_k,S_k'\) are independent sums of \(k\) rows.
+
+**[P]** Small fixed moments cannot generally prove near-full span. If one row has support of size \(J\), then
+\[
+\Pr[S_k=S_k']\ge J^{-k}.
+\]
+Reaching collision scale \(2^{-s+r}\) requires
+\[
+k\ge\frac{(s-r)\log2}{\log J}.
+\]
+Here \(J\le L^{O(1)}\) and \(s\asymp D\), so this route needs moments of order \(D/L^{o(1)}\). Pair-correlation estimates alone are insufficient. **[C]** The extra hypothesis is an aggregate bound on near-obstructions strong enough for the displayed Fourier sum; a sufficient full-matrix version is stronger than the required projected statement.
+
+**[P] Route (iii): the rational side admits the desired escape estimate directly.** Let \(n\) be uniform among positive \(B\)-smooth integers at most \(x\), and let \(V\) be a \(k\)-dimensional space of prime-parity functionals. Choose primes \(p_1,\ldots,p_k\le B\) whose evaluation vectors form a basis of \(V^*\).
+
+For every smooth \(n\le x/B\), the \(k+1\) integers
+\[
+n,\ p_1n,\ldots,p_kn
+\]
+have distinct evaluation vectors in \(V^*\). At most one annihilates \(V\). Every output integer has at most \(1+\log_2x\) preimages in this construction. Therefore
+\[
+\boxed{\Pr[n\notin V^\perp]\ge
+\frac{k\,\Psi(x/B,B)}
+{(1+\log_2x)\Psi(x,B)}.}
+\]
+For \(x=N^{c+o(1)}\), fixed \(c>0\), and \(B=L[1/2,a]\), smooth-number estimates turn this into
+\[
+\Pr[n\notin V^\perp]\ge \frac{k}{D\,L^{o(1)}}.
+\]
+
+**[P]** Under the independent geometric valuation model with parameter \(\sigma\), a parity character has exact mean
+\[
+\prod_{w(p)=1}\frac{1-p^{-\sigma}}{1+p^{-\sigma}}.
+\]
+Friable Turán–Kubilius theory controls additive fluctuations; parity cancellation requires characteristic-function information beyond a variance bound. See [de la Bretèche–Tenenbaum](https://tenenb.perso.math.cnrs.fr/PPP/TKfriable.pdf).
+
+**[H]** The joint constraint breaks the elementary proof precisely at its multiplication moves. Replacing \(a-bm\) by \(p(a-bm)\) need not preserve the primitive pair box, algebraic smoothness, or the algebraic functional. Even the rational marginal for one field is weighted by these restrictions. Moreover,
+\[
+F(a,b)\equiv Nb^d\pmod{a-bm}
+\]
+couples the two sides. **[C]** A bounded-congestion switching argument preserving the joint kept law, or an equivalent uniform weighted character estimate, would repair this route.
+
+**[P] Route (iv): random exponents explain existing generation proofs.** In class-group algorithms, one samples a large exponent vector \(z\), reduces its represented class, and subtracts the factorization of the reduced representative. Translation by a relation-lattice vector preserves the represented class and acceptance event, apart from box boundaries. This yields conditional distribution control.
+
+**[P]** A single primitive NFS row cannot be quasi-uniform on \(\Lambda/2\): its support has size at most the pair-box size \(L^{O(1)}\), whereas the target space can have \(2^{\Theta(D)}\) elements. Its rational component also need not lie in \(\Lambda/2\).
+
+**[H]** This counting argument does not rule out a cheap random-exponent construction using compact power products or many rows. No such construction retaining the NFS-sized rational and algebraic values is known here. **[C]** The missing addition is a sampler with sufficient random exponent lifts *after conditioning on its acceptance transcript*, together with the required norm and runtime bounds.
+
+**[P] Route (v): multiple fields intersect obstruction spaces.**
+\[
+\left(\sum_iW_i\right)^\perp=\bigcap_iW_i^\perp.
+\]
+Using \(W_i\cap U\) gives a sufficient construction entirely inside \(U\).
+
+**[F]** Independence of fields alone forces rapid saturation: every field might share the same hidden obstruction space. **[C]** A sufficient addition is uniform multiplicative contraction of the surviving dual dimension, above an \(L^{o(1)}\) floor, by a factor \(1-L^{-o(1)}\) per field. Then \(L^{o(1)}\) fields suffice. Fixed-functional survival bounds can instead require \(\Theta(D)\) fields, affecting the cost.
+
+**[P] There is a limited fixed-test barrier.** Suppose field averaging alone is uniform over \(M\le N^C\) choices. Every nonempty field event has probability at least \(1/M\). A uniform nonzero error bound therefore cannot reach the \(2^{-D}\) scale needed for a naive union bound over \(2^D\) tests, since \(D\gg\log N\).
+
+**[F]** This proves that field averaging cannot establish RK. It proves only that this particular union-bound template fails. Structural classification, aggregate counts, exact vanishing for most tests, or additional relation-sampling randomness can evade it.
+
+**[P]** An explicit abstract family demonstrates the gap. For even \(D\), choose \(M\) pairwise disjoint \(D/2\)-dimensional subspaces \(E_A\subset\mathbf F_2^D\), using a finite-field spread. Sample rows uniformly from \(E_A^\perp\). Every fixed nonzero functional is an obstruction for at most one field, yet every field has deficiency \(D/2\).
+
+Likewise, rows \((e_i,e_i)\) have fully covered rational coordinates but \(W=0\). Repetition makes coverage arbitrarily large. These are counterexamples to proposed probabilistic deductions, **not arithmetic counterexamples to LV’s law**.
+
+**[H]** I found no explicit family satisfying the intended LV supply and box conditions that disproves RK. The cubic experiment [E3’s implementation](/Volumes/git/factoring-connection/src/hypD/rank.py) tests raw matrix membership and supplies no genuine-certificate asymptotic theorem.
+
+**[P] The relaxed cost formula is correct with a supply condition.** Define \(\theta\) through a certified fruitful-row cost \(L[1/2,\theta/(2a)]\), and put \(\eta=3/(d+1)\). For \(0\le\kappa\le1\), deficiency \(D^\kappa\) requires \(D^\kappa+1\) target rows. The three cost constants are
+\[
+2a,\qquad a+\frac{\eta}{2a},\qquad
+\kappa a+\frac{\theta}{2a}.
+\]
+Thus
+\[
+\boxed{c_{\min}
+=\sqrt{\,2\max\{\eta,\theta/(2-\kappa)\}\,}.}
+\]
+Your expression
+\[
+\boxed{c=\sqrt{\frac{2\theta}{2-\kappa}}}
+\]
+holds when \(\eta\le\theta/(2-\kappa)\). For Vallée’s \(\theta=2/3\), fixed odd \(d\ge9\), this holds throughout \(0\le\kappa\le1\). It beats \(c=1\) exactly when
+\[
+\kappa<2/3.
+\]
+
+**[C]** These remain conditional factoring bounds: supply, rank, and efficient certificate processing must hold together under the field law actually reached by the algorithm. Separate positive-probability assertions about unrelated field subsets do not suffice.
+
+The literature supports the following distinctions:
+
+- **[C] Stange 2022/2023.** Hypothesis 3.1 concerns saturation on one coordinate axis of an integer relation lattice, rather than generation of the entire lattice. The extracted exponents are always multiples of the relevant order; recovering the order with the asserted probability is conditional. NFS adaptation is suggested, not proved for its kept law. **[P]** The printed coprimality probability \(1-1/\zeta(c+1)\) is reversed: it should be \(1/\zeta(c+1)\). [Primary text](https://arxiv.org/html/2211.06821v2).
+
+- **[C] Hafner–McCurley 1989.** Their imaginary-quadratic class-group computation and relation-generation analysis are rigorous under ERH, with constant \(\sqrt2\). **[H]** Buchmann 1990 extends the framework to general fields using additional distributional heuristics; it is not an unconditional general-field generation theorem.
+
+- **[C/P] Seysen–Lenstra and Lenstra–Pomerance.** Seysen’s relation algorithm and A. K. Lenstra’s improvement use GRH. Lenstra–Pomerance remove it with multipliers and prove unconditional \(L[1/2,1]\) factoring. Their linear algebra needs any dependency; hidden random exponent lifts control the resulting 2-torsion. They do **not** prove saturation of ordinary sieve relations. **[F]** The Schnorr–Lenstra random-class-group/SPAR heuristic belongs to the same proved lineage: LP explicitly refute its assumed runtime behavior on a substantial family. [LP](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+- **[P] Balister–Bollobás–Morris 2018.** They prove the sharp square-dependency threshold \(e^{-\gamma}J(x)\) for independent uniform integers. Below threshold this gives full row rank with high probability. It does not establish the desired NFS projected span. [Paper](https://arxiv.org/pdf/1608.03857).
+
+- **[P] Sparse random matrices.** Costello–Vu’s cited sparse symmetric result concerns complex/characteristic-zero rank, so it cannot simply be transferred to \(\mathbf F_2\). Coja-Oghlan et al. prove normalized-rank and full-row-rank results for specified random configuration models, including finite fields. NFS rows have not been shown to follow those models; normalized rank alone also falls short of RK. [Costello–Vu](https://arxiv.org/pdf/0711.2696), [normalized rank](https://arxiv.org/abs/1906.05757), [full rank](https://arxiv.org/abs/2112.14090).
+
+- **[C] A relevant 2025–2026 advance.** De Boer–Pellet-Mary–Wesolowski prove general class-group/unit-group computation and log-\(S\)-unit lattice generation under ERH. Their distribution control and generation theorem are relevant precedents. Their sampler uses general algebraic elements and Arakelov randomization, rather than the restricted \(a-b\alpha\) family. [Preprint, §§17–18](https://arxiv.org/pdf/2512.01588).
+
+**[H, literature assessment]** I found no published saturation theorem for the actual integer NFS/QS kept relation law, and no unconditional classical worst-case-input factoring improvement below Lenstra–Pomerance’s \(c=1\), through 19 October 2026.
+
+**Verdict. [P]** Raw and genuine-certificate RK differ existentially by only \(O(\log N)\) dimensions. Rational smooth numbers satisfy the desired dimension-dependent escape bound. **[C]** The best precise reduction is adaptive dual-space expansion for the joint kept law on fields reached at the supply budget. **[H]** The most promising next step is a bounded-congestion switching lemma for that joint law, initially allowing deficiency \(D^{2/3-\varepsilon}\): that weaker result would already suffice to beat \(c=1\).

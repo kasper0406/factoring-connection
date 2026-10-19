@@ -1,0 +1,219 @@
+Both constants follow, with Design V retaining the additional hypotheses in the notes. The main correction is that rigorous **batch** smoothness testing suffices; a rigorous \(L^{o(1)}\) test for each isolated candidate is unnecessary. Throughout, algorithms are classical, \(L=\exp\sqrt{\log N\log\log N}\), \(B=L^a\), and \(h=N^{\theta+o(1)}\), with fixed \(\theta>0\).
+
+**Task 1: the consequences are proved implications.**
+
+The smoothness assumption gives acceptance probability
+\[
+p_B\ge L^{-\theta/(2a)-o(1)},
+\]
+because \(\log\rho(\log h/\log B)=-(\theta/(2a)+o(1))\log L\).
+
+Dixon needs \(L^{a+o(1)}\) accepted rows. Relation collection and sparse linear algebra therefore cost
+\[
+L^{a+\theta/(2a)+o(1)},\qquad L^{2a+o(1)}.
+\]
+Minimizing their maximum gives
+\[
+a=\sqrt{\theta/2},\qquad \boxed{c_D=\sqrt{2\theta}}.
+\]
+No rank hypothesis is needed: more rows than columns force a dependency.
+
+For fruitfulness, handle nonunits by gcd and perfect powers separately. Put \(q=|\mu_2|=2^{\omega(N)}\), so \(q\ge4\). Conditional on its square, every root has probability at least \(1/(\kappa q)\). Fix all other roots in a dependency containing a sampler row. Exactly two choices are bad, hence
+\[
+\Pr(\text{proper factor})\ge\frac{q-2}{\kappa q}\ge\frac1{2\kappa}.
+\]
+Dependency selection must inspect squares and certificates only. This costs \(L^{o(1)}\) repetitions; there is no \(\kappa^{\#\text{rows}}\) loss.
+
+For Design V, write \(\delta=3/(d+1)\). Under the **unproved LV supply transfer, genuine-certificate RK, and effective LV §6 postprocessing preserving a nonzero sampler projection**, the three exponents are
+\[
+2a,\qquad a+\frac{\delta}{2a},\qquad\frac{\theta}{2a}.
+\]
+RK deficiency \(r=L^{o(1)}\) requires a batch of \(r+1\) sampler rows, rather than a claim that one target individually lands in the span. Taking \(a=\sqrt\theta/2\) gives
+\[
+\boxed{c_V=\sqrt\theta},\qquad
+\boxed{\delta\le\theta/2}.
+\]
+Thus \(d+1\ge6/\theta\), with \(d\) fixed and odd. For \(\theta=2/3\), \(d\ge9\) suffices. Raw matrix membership alone is insufficient, as [hypD_results.md §5](/Volumes/git/factoring-connection/notes/hypD_results.md:545) correctly specifies.
+
+If each sampler call costs \(L^{s+o(1)}\), the proved optimization becomes
+\[
+\boxed{c_D(s)=s+\sqrt{2\theta}},
+\]
+and, conditionally for Design V,
+\[
+c_V(s)=\min_{a>0}\max\left\{2a,\ a+\frac{\delta}{2a},\
+s+\frac{\theta}{2a}\right\}.
+\]
+When the LV term does not bind,
+\[
+\boxed{c_V(s)=\frac{s+\sqrt{s^2+4\theta}}2},
+\quad \delta\le c_V(s)^2/2.
+\]
+Consequently Dixon beats \(1\) when \(s+\sqrt{2\theta}<1\); Design V does so when \(s+\theta<1\), subject to its hypotheses.
+
+The hidden losses can be controlled rigorously:
+
+- Choose an explicit preprocessing cutoff \(y_0=\exp\sqrt{\log N}\). Trial division costs \(L^{o(1)}\), and afterwards \(\omega(N)\le\sqrt{\log N}\), giving \(2^\omega=L^{o(1)}\). A vaguely specified \(L^{o(1)}\) cutoff alone would not establish this.
+- Vallée’s original counting theorem assumes prime factors exceeding \(L\). Pollard–Strassen removes factors up to \(L\) in \(L^{1/2+o(1)}\), within both constants at \(\theta=2/3\). A hypothetical smaller-\(\theta\) theorem should not inherit that stronger cutoff unnecessarily.
+- Bernstein’s deterministic batch algorithm identifies smooth parts, and his related algorithms recover the factorizations, in time essentially linear in the total input length. Batches of at least \(B\) candidates make the amortized cost \(L^{o(1)}\). Such batches fit both optimizations. Thus no ECM smoothness hypothesis is required here. [D. J. Bernstein, *How to find smooth parts of integers*, 10 May 2004, Theorems 2.2–2.3](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Bernstein04.pdf).
+
+**Smoothness counting in square classes does not introduce a fixed extra constant.** Here is the product argument, including multiplicity.
+
+Set \(Y=\sqrt h\). Standard smooth-number estimates, with a weighted Rankin bound discarding excessive numbers of prime factors, give a set \(S\) of coprime \(B\)-smooth integers at most \(Y\) such that
+\[
+|S|=Y L^{-\theta/(4a)+o(1)},\qquad
+\Omega(u)\le K=\sqrt{\log N}(\log\log N)^{1/4}=o(\log L).
+\]
+Excluding primes dividing the preprocessed \(N\) preserves this estimate. The underlying smooth-number lower bound is [Canfield–Erdős–Pomerance, *J. Number Theory* **17** (1983), 1–28](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf).
+
+Partition \(S\) into its \(q\) square classes modulo \(N\). At least \(|S|^2/q\) ordered pairs have the same class; their products are squares modulo \(N\), smooth, and at most \(h\). Each product has at most
+\[
+\tau(uv)\le2^{2K}=L^{o(1)}
+\]
+representations. Hence there are at least
+\[
+hL^{-\theta/(2a)-o(1)}
+\]
+distinct such products. This proves the required lower bound under quasi-uniform sampling over the interval’s square classes. Using merely the unrestricted bound \(\tau(n)=N^{o(1)}\) would be too weak. **Fibre symmetry by itself supplies no smoothness law**; that remains a separate sampler requirement.
+
+**Task 2: \(2/3\) is Vallée’s curvature–density threshold.**
+
+Writing \(x=x_1+t\), the exact condition is
+\[
+s\equiv x_1^2+2x_1t\pmod N,\qquad |s+t^2|\le h.
+\]
+The affine lattice has determinant \(N\). On a tangent cell \(|t|\le T\), absorbing the quadratic remainder within width \(O(h)\) requires \(T=O(\sqrt h)\). Its largest useful area is therefore
+\[
+Th=O(h^{3/2}).
+\]
+The determinant scale is reached when \(h^{3/2}\gtrsim N\), namely \(\theta\ge2/3\).
+
+Vallée’s actual proof retains the two parabolas and uses variable Farey intervals, rather than assuming every tangent rectangle behaves regularly. Near \(aN/(2q)\), a basis includes
+\[
+(q,\,2qx_1-aN);
+\]
+lattice points lie on nearly horizontal lines with horizontal spacing \(q\) and transverse spacing \(N/q\). Continued fractions locate the interval. Line counts in the “legs,” and exact counts on the bounded number of exceptional “chest/feet” lines, give sampling weights.
+
+With Farey order \(K\asymp N/h\), the largest denominators reach the curvature scale precisely when \(K\lesssim\sqrt h\). Below it, the uniform lower counts fail. Vallée explicitly discusses this failure in §5.1. [B. Vallée, *Generation of elements with small modular squares and provably fast integer factoring algorithms*, **Math. Comp. 56** (1991), 823–849, Theorem 5 and §5.1](https://www.researchgate.net/publication/253163661_Generation_of_elements_with_small_modular_squares_and_provably_fast_integer_factoring_algorithms).
+
+**Task 3(a): the proposed rank-one collapse is proved, with a specific scope.**
+
+For \(x=x_1+\sum_iw_it_i\), the quadratic remainder is
+\[
+Q(\mathbf t)=\left(\sum_iw_it_i\right)^2,
+\]
+whose matrix \(ww^\mathsf T\) has rank one. If \(Q(\mathbf t)\le Ch\) as an ordinary integer throughout the parameter domain, the distinct increments lie in an interval of length \(O(\sqrt h)\). Extra parameters supply multiplicities, not extra distinct \(x\)’s.
+
+On a symmetric box, this follows directly from
+\[
+\max_{\lvert t_i\rvert\le T_i}|w\cdot t|
+=\sum_i|w_i|T_i.
+\]
+Thus the claimed higher-dimensional volume gain is **false for this construction**. Requiring only modular smallness of \(Q\) restores the original nonlinear search problem. CRT-separated nonunit coefficients can evade the integer argument, but their gcds already expose factors.
+
+**Task 3(b): a natural Coppersmith construction fails; a universal barrier is unproved.**
+
+Let
+\[
+F(t,z)=(x_1+t)^2-z,\qquad |t|\le T,\quad |z|\le h.
+\]
+Consider the weighted triangular Howgrave-Graham lattice generated by
+\[
+N^{m-j}t^iF(t,z)^j,\qquad 0\le j\le m,\quad 0\le i\le2(m-j),
+\]
+with coefficient scaling \(t\mapsto Tt,\ z\mapsto hz\). Triangularity gives, exactly,
+\[
+n=(m+1)^2,\qquad \det\Lambda=(NT)^A h^C,
+\]
+\[
+A=\frac{m(m+1)(4m+5)}6,\qquad
+C=\frac{m(m+1)(2m+1)}6.
+\]
+Since \(A+C=mn\), the determinant-based short-vector condition, allowing a fixed margin for LLL and evaluation factors, approaches
+\[
+\boxed{T^2h<N}.
+\]
+But unbiased productive cells require \(Th\ge N^{1-o(1)}\). These regimes do not overlap for polynomially growing \(T\). This is a **proved failure of this shift construction**, not a necessary condition for every possible lattice.
+
+If \(z\) is specified, univariate Coppersmith applies below \(T=N^{1/2}\), but enumerating \(N^\theta\) possible \(z\)’s is too expensive. Introducing the quotient in
+\[
+(x_1+t)^2-kN-z=0
+\]
+creates a third unknown; it does not turn the problem into the proved bivariate integer case. Generic multivariate strategies additionally need algebraic-independence assumptions.
+
+References: Coppersmith, *J. Cryptology* **10** (1997), 233–260, [DOI](https://doi.org/10.1007/s001459900030); Howgrave-Graham, *Cryptography and Coding*, LNCS **1355** (1997), 131–142, [DOI](https://doi.org/10.1007/BFb0024458); Jochemsz–May, ASIACRYPT 2006, LNCS **4284**, 267–282, whose [paper explicitly describes a heuristic multivariate strategy](https://www.iacr.org/archive/asiacrypt2006/42840270/42840270.pdf).
+
+**Task 3(c): Elkies does not provide the missing sampler.**
+
+For \(x^2-kN\) small, tangent subdivision reproduces the curvature restriction. Scanning \(0\le x<N\) requires about \(N/\sqrt h\) tangent cells. There are at most \(2^\omega O(h)\) unit solutions, so scanning all cells costs at least \(N/h^{3/2}\), up to subexponential factors, per output.
+
+Elkies proves a compact cover by points and line segments; general output-sensitive enumeration estimates involve heuristics. Neither yields the required quasi-uniform sampler in time subexponential in \(\log N\) below this threshold. [N. D. Elkies, *Rational points near curves and small nonzero \(|x^3-y^2|\) via lattice reduction*, ANTS IV, LNCS **1838** (2000), 33–63](https://arxiv.org/abs/math/0005139).
+
+**Task 3(d): ratios preserve the problem rather than solve it.**
+
+If \(x^2\equiv u/v\), then
+\[
+(vx)^2\equiv uv,\qquad |uv|\le N^\theta.
+\]
+For invertible \(v\), a root-independent conversion preserves fibre symmetry.
+
+However, starting from uniform \(x\), there are at most \(O(H^2)\) ratios with \(|u|,|v|\le H=N^{\theta/2}\), out of \(\varphi(N)/2^\omega\) square classes. Acceptance is at most
+\[
+N^{\theta-1+o(1)}.
+\]
+Conversely, choosing small \(u,v\) first leaves modular square-root extraction unresolved. This verifies the restricted counting obstruction in [nfsfruit_results.md §5](/Volumes/git/factoring-connection/notes/nfsfruit_results.md:324), without extending it to samplers supported on specially chosen fibres.
+
+**Task 3(e): LP has a precise “effective exponent \(1/2\)” interpretation, but is not a small-square sampler.**
+
+A reduced positive definite form of discriminant \(\Delta<0\) has leading coefficient
+\[
+A\le\sqrt{|\Delta|/3}.
+\]
+Random-exponent relation generation records a known word in class-group generators and reduces it to such a form. Smoothness of \(A\) produces a relation. With \(|\Delta|=N^{1+o(1)}\), this is the size-\(N^{1/2}\) analogue of relation sampling; the smoothness exponent is \(1/(4a)\). The comparison explains the constant \(1\), but the certificates and extraction mechanism are class-group relations and ambiguous forms, not individual modular-root fibres.
+
+LP removes GRH using discriminant multipliers and character estimates. Hafner–McCurley’s class-group analysis assumes ERH. Schnorr–Lenstra’s **random class groups** method, depending on class-number smoothness, must be distinguished from the Seysen relation method. Exact references: [Seysen, *Math. Comp.* **48** (1987), 757–780](https://scispace.com/pdf/a-probabilistic-factorization-algorithm-with-quadratic-forms-4sxy4xmvw9.pdf); [Hafner–McCurley, *JAMS* **2** (1989), 837–850](https://doi.org/10.1090/S0894-0347-1989-1002631-0); [Lenstra–Pomerance, *A rigorous time bound for factoring integers*, *JAMS* **5** (1992), 483–516](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+There is a **proved coverage obstruction** to a smaller exponent for globally uniform class sampling. For fundamental negative \(\Delta\), only
+\[
+O(A\log A)
+\]
+classes have an integral ideal representative of norm at most \(A\), whereas
+\[
+h(\Delta)=|\Delta|^{1/2+o(1)}.
+\]
+Thus norm \(|\Delta|^\theta\), \(\theta<1/2\), covers only a polynomially small fraction of classes. Restricting to special classes avoids this count, but then relation generation and saturation require new proofs. No such factoring improvement emerged from the literature search.
+
+**Task 3(f): polynomially small values alone are insufficient.**
+
+A family \(x=P(t)\), \(P(t)^2\equiv g(t)\pmod N\), must establish both smoothness density and fibre coverage. Neither follows from small \(g(t)\). For nonsquare polynomials, the necessary smooth-value estimates at these parameters are generally missing.
+
+If \(g(t)=Q(t)^2\) identically and the sampler satisfies fibre symmetry, comparison with the known root \(Q(t)\) factors \(N\) with probability at least \(1/(2\kappa)\), on unit outputs. Thus an easy square identity cannot conceal the hard part. Likewise, \(x=\lceil\sqrt N\rceil\) gives a polynomial-time size-\(O(\sqrt N)\) square, but **fails the sampler definition**.
+
+**Task 3(g): other approaches have identifiable missing inputs.**
+
+- **Schnorr CVP/SVP factoring:** short logarithmic approximation does not establish enough smooth residuals, useful matrix rank, or fibre symmetry. The claimed fast factoring bounds are not established rigorous improvements. See Schnorr, [*Fast Factoring Integers by SVP Algorithms, corrected*, ePrint 2021/933](https://eprint.iacr.org/2021/933).
+- **Ajtai-type sieving:** the proved \(2^{O(n)}\) SVP algorithm supplies a lattice subroutine, not a distribution theorem for suitable factoring relations. [Ajtai–Kumar–Sivakumar, STOC 2001, 601–610](https://citeseerx.ist.psu.edu/document?doi=f583f933f10229081db118e7e51e2e6e505ea3c8&repid=rep1&type=pdf).
+- **Boneh CRT decoding:** finds short-interval integers satisfying sufficiently many prescribed congruences. It does not prove the required supply of smooth quadratic values or root symmetry. [*Finding smooth integers in short intervals using CRT decoding*, *JCSS* **64** (2002), 768–784](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html).
+- **Coron/Cohn–Heninger:** Coron’s proved bivariate integer-root result does not remove the unknown quotient above. Multivariate approximate-common-divisor methods require approximate multiples as input and, generally, independence heuristics; those multiples are absent here. [Coron, EUROCRYPT 2004, 492–505](https://www.iacr.org/cryptodb/data/paper.php?pubkey=2177); [Cohn–Heninger, ANTS X, *Open Book Series* **1** (2013), 271–293](https://doi.org/10.2140/obs.2013.1.271).
+- **Hittmeir/Harvey:** their rigorous deterministic improvements remain polynomial in \(N\), hence asymptotically slower than \(L[1/2,1]\). See [Harvey–Hittmeir, *Math. Comp.* **91** (2022), 1367–1379](https://arxiv.org/abs/2105.11105), and their [2026 large-order algorithm](https://arxiv.org/abs/2601.11131).
+
+**Task 4: a restricted \(2/3\) barrier is provable.**
+
+Consider interval cells of length at most \(\sqrt h\,L^{o(1)}\), selected by a uniform ambient point with distortion at most \(L^{o(1)}\). There are at most \(2^\omega O(h)\) unit roots with \(|x^2\bmod N|\le h\). Therefore
+\[
+\Pr(\text{chosen cell contains a root})
+\le L^{o(1)}\,\frac{h^{3/2}}N.
+\]
+For fixed \(\theta<2/3\), rejection needs polynomially many attempts in \(N\). This is a genuine lower bound for that class, even if local enumeration is free.
+
+It does **not** cover arithmetic selection of productive cells, larger exact curved regions, or arbitrary polynomial-shift lattices. Area below determinant alone proves no computational lower bound.
+
+Your sampler with \(\theta<1/2\) implies \(c<1\) by the proved Dixon reduction. It contradicts no known theorem. No universal positive lower bound on \(\theta\) can presently be unconditional: polynomial-time factoring would let one sample uniformly from \(\mu_2\), with square \(1\), giving exponent zero.
+
+**Task 5: the substantive post-1991 sampler improvement is uniformity, not exponent.**
+
+Coron obtained sufficiently uniform sampling for wider intervals: [*Security proof for partial-domain hash signature schemes*, CRYPTO 2002, LNCS **2442**, 613–626](https://doi.org/10.1007/3-540-45708-9_39). Gentry subsequently obtained **exactly uniform**, expected-polynomial-time sampling at width \(8N^{2/3}\), using computable sampling probabilities and rejection: [*How to compress Rabin ciphertexts and signatures (and more)*, CRYPTO 2004, LNCS **3152**, 179–200, §4](https://doi.org/10.1007/978-3-540-28628-8_11).
+
+Recent relevant progress includes de Boer–Pellet-Mary–Wesolowski, [*Rigorous methods for computational number theory*, arXiv:2512.01588, revised 2026](https://arxiv.org/abs/2512.01588): ERH-conditional sampling of smooth/near-prime ideals in prescribed classes. It does not supply the modular-root sampler here.
+
+**Verdict:** The search through 19 October 2026 found no rigorous sampler satisfying your definition with fixed \(\theta<2/3\), and no unconditional classical general-purpose factoring bound \(L[1/2,c]\) with \(c<1\). The strongest justified \(2/3\) barrier here is the stated short-cell rejection bound; extending it to arbitrary lattice samplers remains unproved.
