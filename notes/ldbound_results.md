@@ -16,15 +16,24 @@ Agent `ldbound`, phase 9, 2026-10-19.
 random parameter to the field. Its infimum constant is the same as before, (1 + 3/(d+1))/√2, which is
 0.9192 at d = 9. At d = 9 the minimal k for c < 1 is 13 (for pcest's design: 12).
 
-So Theorem A becomes **Theorem A‴, conditional only on LV6**, plus the explicit caveats pcest already
-listed: HECM, or Theorem A′ without it; the irreducibility transfer; and the internal hypD/lemmaM
-results. Hypothesis LD *for pcest's design (a″_k) itself* remains open, but it is no longer needed.
+So Theorem A becomes **Theorem A‴**, conditional only on LV6, HECM and the irreducibility transfer.
+
+**Combined with agent `lv6`** (Prop LV6 and batch smoothness, proved for (a″_k)), and transferred to
+(a‴_k; μ) in §6.1, which two reviewers checked: **none of those hypotheses remains.**
+- The chain gives a factoring algorithm for every N in expected time L_N[1/2, (1+θ)/√2 + o(1)], with
+  θ = θ(d, k, μ, η₀). Its infimum is 0.9192 at d = 9, approached as k → ∞ and η₀ ↓ 0.
+- It rests on published theorems plus this project's *internal, unrefereed* results: hypD, lemmaM, pcest,
+  lv6 and this note (§6.1 lists them).
+- This would be the first improvement on Lenstra–Pomerance's c = 1, *if the internal chain is correct*.
+  It has not been externally refereed, and we do not claim it as an established result.
+- Hypothesis LD *for pcest's design (a″_k) itself* remains open, but it is no longer needed.
 
 Status of the proof:
 - it passed an Opus proof critic twice, on the draft and on the revised μ-version (no fatal error; fixes
   applied);
 - it passed an Opus literature critic (no prior statement found; credits fixed);
-- it passed two GPT-6.1-sol adversarial rounds, ldbound_2 and ldbound_3 (both CORRECT WITH FIXES; applied).
+- it passed two GPT-6.1-sol adversarial rounds, ldbound_2 and ldbound_3 (both CORRECT WITH FIXES; applied);
+- the §6.1 transfer passed an Opus critic and GPT-6.1-sol ldbound_4 (both CORRECT WITH FIXES; applied).
 - GPT-6.1-sol found the same design and proof independently in its blind round.
 - These are internal, unrefereed results.
 
@@ -63,7 +72,8 @@ Labelled results:
    bound at the main-term scale, with no saving.
 4. **Theorem LD* for (a‴_k) [proved]** (§5): E[N(N−1)] ≤ (log N)^{O(1)}·S⁴ρ_r²ρ_F². With FM,
    PC ≤ (log N)^{O(1)}, so D_k(γ) holds with γ ≥ L^{−o(1)}.
-5. **Theorem A‴ [conditional on LV6 + listed caveats]** (§6). The time is L_N[1/2, (1 + θ)/√2 + O(η₀) + o(1)],
+5. **Theorem A‴ [conditional on LV6 + listed caveats (§6); these are discharged via lv6's results, transferred
+   in §6.1, modulo internal unrefereed results]** (§6). The time is L_N[1/2, (1 + θ)/√2 + O(η₀) + o(1)],
    with θ = min_μ θ_μ(d, k) from the table.
 6. **Design (a″_k)** (§7):
    - LD stays open [conjectured];
@@ -95,7 +105,8 @@ All values are at zero slack (η₀ → 0).
   - d = 9: 0.9864 (k = 50), 0.9766 (k = 100), 0.9680 (k = 1000), limit 0.9670;
   - d = 11: 0.9230 (k = 100), limit 0.9142;
   - d = 19: limit 0.8226.
-  - A fully HECM-free statement also needs LV6 to meet its cost without HECM (pcest §5, open).
+  - Superseded: lv6's batch smoothness (Prop BS) removes HECM at no cost in the exponent (§6.1). So the
+    first table applies without HECM, and Theorem A′ is not needed.
 
 ---
 
@@ -140,14 +151,18 @@ F_A(g₀, g₁) = N·w.
   because the algorithm halts.
 - **Order of operations (codex ldbound_2).**
   - The moment bounds (FM, LD*) are proved under the raw product law 𝒜‴.
-  - Rejection of reducible f is applied afterwards. It costs ≤ max N_ℓ·Pr(reducible) ≤ C_abs S²·H^{−1/4+o(1)}
-    in the first moment, which is polynomially small against FM. It only decreases N(N−1), by positivity.
-  - **A non-unit leading coefficient mod N must NOT be handled this way (Opus proof critic, re-check).**
-    Its probability can be ≈ Σ_{p|N} 1/p ≈ L^{−a}, while max N_ℓ·L^{−a} ≫ E N.
-    - If LV6 requires the restriction, it goes inside FM instead: count only fields with unit leading
-      coefficient in the fibre lower bound, by Möbius on the first kernel parameter c₀. This costs a
-      factor (log N)^{−1} (codex blind report §4, "First moment"; §2 below).
-    - The second moment of the restricted count is ≤ that of the unrestricted count, by positivity.
+  - **Rejection is done at the level of D_k, as in lv6 §4.** This was fixed after the final reviews; an
+    earlier version subtracted it in the first moment.
+    - Raw FM + LD* + PZ give E g_A = γ ≥ L^{−o(1)}, with 0 ≤ g_A ≤ 1 the success indicator (hypD).
+    - The rejection event 𝓡 consists of: f reducible or uncertified (Lemma IR); N | f′(m); content(f) = w
+      (§6.1).
+    - Pr(𝓡) ≤ ε_IR + O(1/H + 1/W) = L^{−ω(1)} = o(γ), where ε_IR ≤ exp(−log H/(13d log log H)) (lv6 Lemma IR).
+    - So E[g_A·1_{𝓡ᶜ}] ≥ γ − Pr(𝓡) ≥ γ/2.
+  - **Proper-factor discoveries are successful exits, not rejections.** These are 1 < gcd(·, N) < N for ℓ, w,
+    g₁, G(P), the leading coefficient f_d or the content.
+    - In particular a leading coefficient that is not a unit mod N gives a factor, since 0 < |f_d| < N.
+    - So no unit-leading-coefficient restriction is needed (Opus transfer critic).
+    - Do **not** subtract max N_ℓ·Pr[(f_d, N) > 1] from FM: that probability can be ≈ L^{−a}, which is ≫ E N/max N.
   - Theorem K's field selection is applied after that, as in pcest.
   - Conditioning on acceptance *before* Step 4 of §5 would destroy the product law, and we never do it.
 - Sampling w uniformly among primes: draw uniform integers in (W, 2W] and test with AKS. The expected
@@ -215,15 +230,12 @@ is, n := G(P)/ℓ is B-smooth), and t := |G(P)|. Then:
     - q₀ < ξ/2 ⟺ h > μ − (d−2)ν, which is the level floor.
     - Goodness concerns all reduced residues, so it is uniform in w.
   - *Step 4.* Unchanged.
-  - *Optional unit-leading-coefficient restriction (needed only if LV6 asks for it).* The leading
-    coefficient is a_d + g₁c_{d−1}. For fixed (g, w, P), the constraint removes one class of the kernel
-    parameter modulo each p | N with p ≠ b, so Möbius inversion keeps a fraction ≥ φ(N)/N − o(1) ≫ 1/log N
-    of each kernel-fibre count. This is codex blind §4's argument: its scalar-kernel basis carries the
-    leading coefficient in the first parameter, with step g₁b. The kernel-parameter intervals have
-    polynomial length H/V.
-  - Restricting g₁ to units mod N works the same way on the rational fibres, which have polynomial length
-    M/V. Both conditions hold for every admissible μ (codex ldbound_3).
-  - Conclusion: E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}, with or without the restriction.
+  - *Unit restrictions (not needed; recorded for completeness).* If one wanted FM only over fields with
+    unit leading coefficient f_d = a_d + g₁c₀ (pcest's indexing R_c = Σ c_i x^{d−1−i}y^i), Möbius on the
+    kernel parameter carrying c₀ (step g₁b, intervals of polynomial length H/V) costs only a logarithm
+    (codex blind §4). The same holds for g₁ units on the rational fibres (length M/V). Both work for every
+    admissible μ (codex ldbound_3).
+  - Conclusion: E_{𝒜‴} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}.
   - No step of FM uses F(g₀, g₁) = N exactly. It uses only Lemma 1.2_w, the coprimality (1.1) and the
     size bound (codex ldbound_2 concurs).
 - **Irreducibility.** The LV Lemma 5.1 transfer reads as in pcest §1, with the affine family
@@ -467,7 +479,8 @@ pairs P ≠ P′ in 𝒫_ℓ ∩ Λ_ℓ(g), with ℓ | Δ and both filtered.
 
 ## 6. Theorem A‴
 
-**Theorem A‴ [conditional].**
+**Theorem A‴ [conditional, as stated here; §6.1 discharges the LV6, HECM and irreducibility hypotheses
+using agent lv6's results].**
 - **Hypotheses.** Fix odd d ≥ 3, k > (d+1)/4, μ ∈ [ν + η₀, 1) and η₀ > 0. Let h := h_*(μ) + η₀, and assume
   θ := 2μ + h + (d−1)ν ≤ 1. Put a := θ/√2 and B = L[1/2, a]. Assume:
   - **LV6** for the law 𝒜‴, and for the field-selected law derived from it. This means LV §6 adapted to:
@@ -501,33 +514,54 @@ batch smoothness per special-q box (its Prop BS), and replaces the LV 5.1 transf
 checklist marks LD as the only open item.
 
 We checked each place where lv6 uses F(g₀, g₁) = N or M = N^{1/(d+1)}.
-[Transfer checked by inspection of lv6's statements and proofs; reviewed in §8.6.]
+[Transfer checked by inspection of lv6's statements and proofs; reviewed by an Opus critic and codex ldbound_4, §8.6.]
 
 | lv6 item | use of the design | in (a‴_k; μ) |
 |---|---|---|
 | ψ: Z[β] → Z/N, β ↦ t g₀g₁^{−1} (§1) | g(tg₀/g₁) = t^{d−1}g₁^{−d}F(g₀, g₁) | = t^{d−1}g₁^{−d}·Nw ≡ 0 (mod N). Unchanged. |
 | ψ(z_P) = t·G(P)/g₁, Norm(z_P) = t^{d−1}F(a, b) | none | unchanged |
 | degree drop impossible: f_d ≡ a_d ≡ Ng₀^{−d} ≢ 0 (mod g₁) | value at (g₀, g₁) | a_d ≡ Nwg₀^{−d} ≢ 0 (mod g₁), since w > M ≥ g₁ is prime (Lemma GB_w) |
-| content(f) > 1 ⟹ proper factor (content \| N) | content \| F(g₀, g₁) | **Changed.** The content e divides Nw. If gcd(e, N) > 1 it gives a proper factor. Otherwise e ∈ {1, w}. **New rejection:** e = w. Then w \| a_d + g₁c_{d−1}, which for fixed (g, w, c₀, …, c_{d−2}) holds for at most ⌈(2H+1)/w⌉ values of c_{d−1}. So Pr ≤ (1 + (2H+1)/w)/(2H+1) ≤ 2/(2H+1) + 1/w = N^{−Ω(1)}. If e = w, every F(P) is divisible by the prime w > B, so the field yields no relation anyway. |
+| content(f) > 1 ⟹ proper factor (content \| N) | content \| F(g₀, g₁) | **Changed.** The content e divides Nw and e ≤ \|f_d\| < N. If gcd(e, N) > 1, a proper factor results. Otherwise e ∈ {1, w}. **New rejection: e = w.** Then w \| f_d = a_d + g₁c₀ (pcest's indexing). g₁ is invertible mod w (w > M ≥ g₁ is prime), so for fixed (g, w, c₁, …, c_{d−1}) this fixes c₀ mod w, and Pr ≤ ⌈(2H+1)/w⌉/(2H+1) ≤ 1/w + 1/(2H+1) = N^{−Ω(1)}. If e = w, every nonzero F(P) is divisible by the prime w > B, so the field has zero counted relations and the rejection loses no success mass. |
+| gcd(f_d, N) ≠ 1 | lv6 §4: factor branch, since 0 < \|f_d\| < N | unchanged: \|f_d\| ≤ M/2 + MH < N because μ + h < θ ≤ 1. So a non-unit leading coefficient is a success, never a rejection. |
+| f reducible: factor branch | ∏_j F_j(g₀, g₁) = N | **Changed.** Now ∏_j F_j(g₀, g₁) = Nw. Output gcd(\|F_j(g₀, g₁)\|, N) only if it is strictly between 1 and N; otherwise reject. Simpler, and adopted: accept f only if it is primitive and some prime of Lemma IR gives an irreducible degree-d reduction; the failure probability is Lemma IR's bound. |
+| Lemma IR, case r \| g₁ | needs a_d ≢ 0 (mod r) | a_d g₀^d ≡ Nw ≢ 0 (mod r), since r < B < w and r ∤ N. Unchanged. |
 | Lemma IR | for r ∈ 𝒫 (r ≤ ½ log H), v_r = Ng₁^{−d} ≠ 0 (mod r) | v_r = Nwg₁^{−d}. It is ≠ 0 because r < B < w and N has no prime factor ≤ B. The near-uniformity and the counting use c only. Unchanged. |
 | N \| f′(m) | f′(m) ≡ f̂′(m) + g₁R_c(m), c_{d−1} has coefficient 1, 2H + 1 < N | unchanged (θ ≤ 1 gives 2H + 1 < N) |
 | scope 0 < \|t\|, content, 2H+1 < N; ‖f‖ = N^{O(1)} | sizes | ‖f‖_∞ ≪ M + Nw/M^d + MH ≪ MH < N for θ ≤ 1. Discriminants and the index are N^{O(1)}. Unchanged. |
 | Lemma H (bad primes, units, Cl[2], index inside H), Lemmas C, E, X, SQ, Wiedemann | only d fixed and N^{O(1)} sizes | unchanged |
 | g₁-parity column | non-monic pair (f, g₁x − g₀) | unchanged; w enters no relation |
 | transcript invariance (T) | post-processing never sees hidden roots | w is drawn from fresh coins with the field. Unchanged. |
-| order of argument: moments under 𝒜, then rejections (γ → γ/2), then Theorem K | the law | identical to our §1. The new rejection (e = w) has probability N^{−Ω(1)} = o(γ). |
+| order of argument: moments under 𝒜, then rejections (γ → γ/2), then Theorem K | the law | the same order as our §1, which now also subtracts the rejection at the D_k level. Pr(𝓡) ≤ ε_IR + O(1/H + 1/W) = o(γ). |
+| lv6 §7: θ formula, checklist items 2 and 4–8, cost assembly | design (a″_k), LD open | replaced by ldbound §1–§6. T_SQ = L^{θ/(2a)}. Prop BS's B ≤ T_SQ uses a = θ/√2 and θ ≤ 1 (equality at θ = 1, so the exponent is unchanged). N₀ now depends on (d, k, μ, η₀). |
+| notation | lv6 §4 uses μ for the field-selection mass, and Lemma IR's "Q(0) = w" for a constant term | these clash with our base exponent μ and multiplier w. They are different objects. |
 | Prop BS (batch smoothness per box of ≤ C_abs S² candidates) | Lemma 1.3, sizes N^{O(1)} | unchanged |
 
 **Consequence [proved modulo the internal results listed].**
-- Combining Theorem LD* (here) with lv6's Prop LV6 and Prop BS, as transferred above, Theorem A‴ holds
-  **without the LV6 and HECM hypotheses**.
-- Every N is factored in expected time L_N[1/2, (1 + θ)/√2 + o(1)], with θ = min_μ θ_μ(d, k) (table). The
-  infimum is 0.9192 at d = 9.
+- Combining Theorem LD* (here) with lv6's Prop LV6, Prop BS and Lemma IR, as transferred above, Theorem A‴
+  holds **without the LV6, HECM and LV Lemma 5.1 transfer hypotheses**.
+- Every N is factored in expected time L_N[1/2, (1 + θ)/√2 + o(1)], where θ = 2μ + h + (d−1)ν includes the
+  actual positive slack η₀.
+  - The table gives the zero-slack values.
+  - 0.9192388… at d = 9 is the infimum as k → ∞ and η₀ ↓ 0. It is not attained at finite parameters.
+  - For example, d = 9, k = 13 gives c < 1 for η₀ < 0.00396.
 - What it still rests on:
-  - published theorems: Lenstra–Pomerance 1992 for the shape test, Harper 2012 / LV §8, Montgomery–Vaughan,
-    Hildebrand, Tenenbaum, Stark, Lagarias–Odlyzko, Wiedemann / Kaltofen–Saunders;
-  - this project's **internal, unrefereed** results: hypD Theorems S′ and K, lemmaM Theorem DD, pcest §1–§4,
-    lv6 §2–§6, and this note.
+  - **published theorems:**
+    - Lenstra–Pomerance 1992 (shape test, via ECM and Pomerance 1987);
+    - Harper 2012 and LV §8 (Lemma 8.5′);
+    - Montgomery–Vaughan (large sieve, Brun–Titchmarsh);
+    - Hildebrand and Tenenbaum (smooth-number estimates);
+    - Stark, Landau (via Davenport), Lagarias–Odlyzko and Lenstra Bull. AMS 1992 Thm 6.5 (or lv6's
+      elementary fallback);
+    - Wiedemann / Kaltofen–Saunders;
+    - AKS;
+    - Bernstein's smooth parts;
+    - standard finite-field factoring and root finding.
+  - **this project's internal, unrefereed results:**
+    - hypD Prop PZ, Theorems S, S′ and K, and Corollary K;
+    - lemmaM Theorem DD;
+    - pcest §1–§5, including Theorem A's assembly;
+    - lv6 §2–§6;
+    - this note.
 - **Effectivity.** The constants (Stark, Landau, Lagarias–Odlyzko) make "N ≥ N₀" effective but enormous
   (lv6).
 - This is a statement about this project's internal proofs. It is not a certified result. An external
@@ -727,6 +761,24 @@ We checked each place where lv6 uses F(g₀, g₁) = N or M = N^{1/(d+1)}.
   - Prop 7.3 has the factor ½ for signed w.
   - Theorem AR is credited as a harmonic q-average.
 
+### 8.6 Transfer of lv6 to (a‴_k; μ) (§6.1): Opus critic and codex ldbound_4 (all accepted)
+- **Verdicts.** Both: CORRECT WITH FIXES. Nothing is fatal.
+  - Every place where lv6 uses F(g₀, g₁) = N, M = N^{1/(d+1)}, coefficient sizes or the field law either
+    carries over or needed a wording or index fix.
+  - No argument downstream needs Res(f, g₁x − g₀) = ±N, or w coprime to f_d, disc f or the index. If w
+    divides f_d or the index, it is covered by the parity coordinate or by H.
+  - Discriminant and index bounds remain N^{O(1)}, and ‖f‖ ≪ MH < N.
+- **Fixes applied.**
+  - Coefficient index: f_d = a_d + g₁c₀.
+  - g₁ invertible mod w, and content w gives zero relations.
+  - New rows: gcd(f_d, N) (a factor, so no unit restriction is needed); the reducible-f branch, with the
+    product now Nw; Lemma IR with r | g₁; lv6 §7 replaced; N₀; notation clashes.
+  - §1's rejection bookkeeping moved to the D_k level, with Lemma IR's L^{−ω(1)} bound rather than a power
+    saving.
+  - The Consequence now also drops the LV 5.1 transfer, notes that θ includes slack, and gives the full
+    lists of published and internal inputs.
+  - The stale "conditional on LV6/HECM" text in the Verdict and §6 is updated.
+
 ## 9. Candidate cards
 
 ```text
@@ -736,11 +788,13 @@ Target: every N (after trial division to B).
 Proved: Lemma GB_w; FM, Theorem R, Lemma Kern re-checked; Lemma W (Brun-Titchmarsh spreading of the forced
   residue N w (b/g1)^d mod G); Theorem L2_fam (all-residue second-moment upper bound for smooth numbers
   modulo l^2 n q at precision (log N)^{O(1)}, via Lemma DS + large sieve + average over l); Theorem LD*.
-Conditional on: LV6 for this law (Res = N w), HECM (or Pollard-Strassen, A'), irreducibility transfer,
-  internal hypD/lemmaM results.
+Conditional on: (as stated) LV6 for this law, HECM, the irreducibility transfer. These are discharged via
+  lv6's Prop LV6, Prop BS and Lemma IR, transferred in section 6.1 (reviewed). What remains is the internal,
+  unrefereed chain hypD + lemmaM + pcest + lv6 + ldbound.
 Cost: L[1/2, (1 + theta)/sqrt 2], theta = min_mu 2mu + max(2nu, mu - (d-2)nu, 1 - d mu + nu) + (d-1)nu;
   inf over k (1 + 3/(d+1))/sqrt 2 (d = 9: 0.919); c < 1 for d = 9 from k = 13.
-Status: proved modulo the listed conditions; reviewed by two Opus critics and two GPT-6.1-sol rounds.
+Status: proved (internal, unrefereed); reviewed by Opus critics (proof x2, literature, transfer) and
+  GPT-6.1-sol (blind, adversarial x3).
 
 ID: B-mult (barrier) a resultant multiplier must have support >= t^{1-o(1)}, so h >= 1 - d mu + nu - o(1).
 Status: proved (elementary). Scope: fixed-M designs randomizing the forced residue via Res(f, g) = N w,
