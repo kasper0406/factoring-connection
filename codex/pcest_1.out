@@ -1,0 +1,284 @@
+**Full PC remains CONJECTURED. I obtain a PROVED partial improvement:** a balanced random rational form removes PC_rat at \(L^{o(1)}\) precision without increasing the norm exponents. The remaining problem is a weighted upper bound for smooth points in the algebraic evaluation lattice. Neither Harper’s theorems nor LV Lemma 8.5 supplies that bound as stated.
+
+Write
+\[
+\Lambda=\sqrt{\log N\log\log N},\quad L=e^\Lambda,\quad
+s=\frac1{d+1},\quad \nu=\frac1{4k},\quad M=N^s,
+\]
+\[
+V=\sqrt\ell S=N^\nu S,\qquad H=N^\eta.
+\]
+The relevant sizes are
+\[
+X_r=MV/\ell=N^{s-\nu}L^{O(1)},\qquad
+X_F=MHV^d=N^{s+\eta+d\nu}L^{O(1)}.
+\]
+Thus, putting \(\sigma_F=s+\eta+d\nu\),
+\[
+\rho_r=L^{-(s-\nu)/(2a)+o(1)},\quad
+\rho_F=L^{-\sigma_F/(2a)+o(1)},\quad
+\theta=2s+\eta+(d-1)\nu.
+\]
+
+**Q1(a): the original rational side.**
+
+**CONJECTURED.** I have no proof, or applicable published theorem, giving the required upper bound under the original pair weights. This is a conclusion about the estimates checked, not an impossibility theorem.
+
+**PROVED.** The fixed-shift twins problem is not literally a subfamily of these boxes: \(b=b'=1\) would give
+\[
+0<|\Delta|=|a-a'|\le2V<\ell,
+\]
+contradicting \(\ell\mid\Delta\). Consequently, the difficulty of twins alone does not establish that the actual averaged problem is inaccessible.
+
+**PROVED: why elementary Rankin/sieve arguments stop.** For \(X=N^\sigma\), the desired pair density is \(L^{-\sigma/a+o(1)}\). The usual sieve normalization for two smooth indicators is approximately
+\[
+\prod_{B<p\le X}(1-2/p)\asymp(\log B/\log X)^2,
+\]
+which is only a logarithmic saving. An exponential Rankin tilt capable of recovering the Dickman exponent has
+\[
+p^{1-\alpha}\asymp u\log u\quad(p\asymp B).
+\]
+It cannot be inserted into a fixed-constant multiplicative-function bound without controlling its growing constants. Expanding simultaneous smooth divisors instead encounters congruence-counting errors once their product exceeds the \(j\)-interval length.
+
+**KNOWN.** Shiu’s Theorem 1 applies to nonnegative multiplicative functions with fixed growth constants, intervals of length \(A\ge X^\kappa\), reduced classes, and \(q<A^{1-\alpha}\), for fixed positive \(\alpha,\kappa\). Its Euler-product bound gives the inadequate normalization above. Nair–Tenenbaum’s polynomial extension, and Henriot’s uniformity in the discriminant, do not supply the missing Dickman exponent. [Shiu, *J. reine angew. Math.* 313 (1980), 161–170](https://geodesic.mathdoc.fr/item/JRAM_1980__313_152201/), [Nair–Tenenbaum, Theorem 1](https://tenenb.perso.math.cnrs.fr/PPP/ShortSums.pdf).
+
+**KNOWN.** Hildebrand’s smooth-pair existence results concern fixed power smoothness, including infinitely many \(n^\varepsilon\)-smooth consecutive pairs for every fixed \(\varepsilon>0\). They do not provide this upper bound with \(u\to\infty\). Matomäki–Radziwiłł, Corollary 6, likewise fixes \(u\). Their general Theorem 1 has additive errors; at \(h=L^{O(1)}\), its logarithmic error exceeds \(\rho_r^2=L^{-C+o(1)}\). Averaging arbitrary shifts also does not justify the present geometric weights. [Hildebrand, *On a conjecture of Balog*](https://doi.org/10.2307/2045835), [Matomäki–Radziwiłł](https://arxiv.org/html/1501.04585).
+
+**KNOWN.** Pascadi’s Corollary 7.2 assumes
+\[
+(a,c)=1,\quad ad-bc\ne0,\quad |a|,|b|,|c|,|d|\le x^\delta,
+\]
+\[
+(\log x)^C\le y_1\le y_2\le x,\qquad y_2\le y_1^C,
+\]
+and gives \(\Psi(x,y_1)\rho(u_2)^{5/8-\varepsilon}\). Here the variable range is
+\[
+x=M/\ell=N^{s-2\nu},\qquad b,b'\asymp N^\nu L^{O(1)}.
+\]
+The coefficient condition needs \(\nu<\delta(s-2\nu)\). It can hold for sufficiently large fixed \(k\), so “never applicable for fixed \(k\)” would be FALSE. Nevertheless, even after correcting normalization and coprimality, the exponent \(13/8-\varepsilon\) remains short of \(2\) by a fixed amount. [Pascadi, Corollary 7.2](https://arxiv.org/html/2505.00653v2#S7).
+
+**PROVED.** The factor \(e^{O(u)}\) in de la Bretèche–Drappeau is itself \(L^{o(1)}\), hence harmless for an upper bound. It is fatal when it multiplies a proposed relative saving \((\log x)^{-A}\). These are different uses of the theorem. Their Theorem 2.1 additionally requires \(P^+(q_0)\le y_2\); its maximum-over-residues version has \(Q\le x^{1/2-\varepsilon}\), and its interval parameter satisfies \(\eta_{\rm int}\ge e^{-\delta\sqrt{\log y_1}}\). [Theorem 2.1, equations (2.1)–(2.2)](https://drappeau.perso.math.cnrs.fr/documents/friable-consec-jems-prefinal-fix1.pdf).
+
+**Q1(b): balanced rational randomization.**
+
+**PROVED: an elementary progression upper bound.** Fix \(\sigma,a,C>0\). Let
+\[
+X=N^\sigma,\quad y=e^{a\Lambda},\quad q\le L^C,
+\]
+and let \(I\subset[1,X]\) have length \(A\ge X/L^C\). Uniformly in **every** residue \(r\bmod q\),
+\[
+\#\{n\in I:n\equiv r\pmod q,\ P^+(n)\le y\}
+ \le \frac Aq\,\rho(\log X/\log y)L^{o(1)}. \tag{1}
+\]
+
+For \((r,q)=1\), count small \(n\le A/q\) globally. Every remaining smooth \(n\) has a smooth divisor
+\[
+A/(qy)<d\le A/q.
+\]
+For each \(d\), counting the complementary factor in its progression costs at most \(2A/(dq)\). Therefore the remaining count is bounded by
+\[
+\frac{2A}{q}\sum_{\substack{A/(qy)<d\le A/q\\P^+(d)\le y}}\frac1d.
+\]
+Partial summation bounds this reciprocal sum by
+\[
+(\log y)\rho(\log X/\log y)L^{o(1)}.
+\]
+All arguments of \(\Psi\) have logarithm \(\log X+O(\Lambda)\); their Dickman densities differ by \(L^{o(1)}\).
+
+For non-reduced \(r\), put \(e=(r,q)\). If \(e\) is not smooth the count is zero. Otherwise divide \(n,r,q,I\) by \(e\); the same argument applies, and \(e\le L^C\) changes the density by \(L^{o(1)}\).
+
+**KNOWN input for (1).** Hildebrand’s global asymptotic
+\[
+\Psi(x,y)=x\rho(u)\left(1+O_\varepsilon\!\left(\frac{\log(u+1)}{\log y}\right)\right)
+\]
+holds for \(\exp((\log\log x)^{5/3+\varepsilon})\le y\le x\), which contains every application above. No progression theorem is being assumed. [Hildebrand, *J. Number Theory* 22 (1986), 289–307](https://doi.org/10.1016/0022-314X(86)90013-2).
+
+**PROVED: resultant and heights.** Choose a uniform primitive pair
+\[
+g_0,g_1\in[M,2M],\qquad g=g_1x-g_0.
+\]
+Construct coefficients \(A_i\) satisfying
+\[
+N=\sum_{i=0}^d A_i g_0^i g_1^{d-i},\qquad |A_i|\ll_d M. \tag{2}
+\]
+Starting with \(Q=N\), successively choose
+\[
+A_i\equiv Qg_0^{-i}\pmod{g_1},\quad |A_i|\le g_1/2,
+\qquad Q\leftarrow(Q-A_i g_0^i)/g_1.
+\]
+The final \(Q=A_0\) is \(O_d(M)\), since \(g_0/g_1\in[1/2,2]\).
+
+Thus \(\widehat f_g=\sum A_ix^i\) has height \(O_d(M)\), and
+\[
+f=\widehat f_g+gR,\qquad \|f\|\ll_d MH,\qquad
+|\operatorname{Res}(f,g)|=N.
+\]
+The norm exponents, \(\theta\), and formal constant \(c=(1+\theta)/\sqrt2\) are unchanged.
+
+**PROVED / KNOWN distinction.** With a prescribed leading coefficient, Kleinjung requires
+\[
+A_dg_0^d\equiv N\pmod{g_1};
+\]
+uniform independent \(g_0,g_1\) would be unjustified. Construction (2) instead lets \(A_d\) vary and enforces this congruence. It does not assume uniformity of Kleinjung’s selected roots. [Kleinjung, *Math. Comp.* 75 (2006), 2037–2047](https://doi.org/10.1090/S0025-5718-06-01870-9).
+
+**PROVED: PC_rat for this modified law.** For a fixed primitive pair \(P=((a,b),(a',b'))\), put
+\[
+\Delta=ab'-a'b=\ell h,\qquad 0<|h|\le2S^2,
+\]
+\[
+G=g_1a-g_0b,\quad G'=g_1a'-g_0b',\quad
+z=(G/\ell,G'/\ell).
+\]
+The allowed \(g\)-vectors form an index-\(\ell\) lattice. Their image in the \(z\)-plane has index
+\[
+|\Delta|\ell/\ell^2=|h|, \tag{3}
+\]
+not \(\ell|h|\).
+
+The image of the \(M\times M\) parameter square is a parallelogram of area
+\[
+\asymp M^2|h|/\ell.
+\]
+Cover it by axis-parallel squares of side \(w\asymp M/V\). Their total area is \(O(M^2|h|/\ell)\): the boundary contribution is \(O(M^2/\ell)\). Each square has side \(N^{s-\nu}L^{O(1)}\).
+
+An index-\(|h|\) lattice occupies exactly \(|h|\) residue pairs modulo \(|h|\). Applying (1) in both coordinates bounds its smooth points in each square by
+\[
+\frac{w^2}{|h|}\rho_r^2L^{o(1)}.
+\]
+Summing and dividing by the \(\asymp M^2/\ell\) allowed parameter vectors proves
+\[
+\Pr_g[G/\ell,G'/\ell\text{ smooth}\mid\ell\mid G,G']
+ \le \rho_r^2L^{o(1)}. \tag{4}
+\]
+
+**PROVED: losses checked.** Here \(M\gg\ell\), with polynomial margin in the stipulated FM range. Conditioning on primitive \(g\) changes the denominator by a bounded factor. Formula (1) handles small \(h\), arbitrary factors of \(h\), non-reduced classes, and intervals shortened by \(L^{O(1)}\). No assumption \((b,b')=1\) occurs.
+
+Counting admissible primitive point pairs gives \(O(V^2S^2)=O(\ell S^4)\). Consequently, for the rational-only count \(R_\ell\),
+\[
+\mathbb E R_\ell(R_\ell-1)\le S^4\rho_r^2L^{o(1)}.
+\]
+The corresponding first moment is \(S^2\rho_rL^{o(1)}\); primitive parameter fibres lose at most logarithmic factors. Thus this proves PC_rat with the square-box counting weights. It does **not** permit multiplying an independently averaged PC_alg estimate into it.
+
+**Q2: the algebraic lattice.**
+
+**PROVED: index and kernel.** For distinct primitive points,
+\[
+[\mathbb Z^2:\Gamma_P]=|\Delta|.
+\]
+Indeed, a unimodular change sends the first point to \((1,0)\), and the second to \((u,\Delta)\), with \((u,\Delta)=1\). The gcd of the evaluation matrix’s minors is then \(|\Delta|\).
+
+The integral kernel consists exactly of homogeneous multiples of
+\[
+(bX-aY)(b'X-a'Y).
+\]
+Gauss’s lemma shows that its monomial multiples give a saturated kernel basis with coefficients \(O_d(V^2)\).
+
+**PROVED: geometric transfer and its price.** Fundamental cells of this kernel have diameter \(O_d(V^2)\). Tiling each evaluation fibre by these cells compares the coefficient-cube distribution with the normalized continuous fibre volumes sampled on \(\Gamma_P\). Only cells within \(O_d(V^2)\) of the cube boundary differ. Hence the total-variation error is
+\[
+O_d(V^2/H).
+\]
+Taking \(\eta>2\nu\), with fixed margin, makes this error polynomially small and therefore negligible against \(\rho_F^2\).
+
+The resulting sufficient height and norm budget is
+\[
+\eta>\max\{2\nu,\ s-(d-2)\nu\},
+\]
+\[
+\theta_{\rm ker}
+=2s+(d-1)\nu+\max\{2\nu,\ s-(d-2)\nu\}. \tag{5}
+\]
+This costs nothing beyond the original height choice once
+\[
+k>d(d+1)/4.
+\]
+For example, \(d=9,k=50\) gives \(\theta_{\rm ker}=0.305\) and conditional \(c=0.922774\), up to arbitrarily small margins.
+
+**CONJECTURED: a sufficient arithmetic statement.** Let \(K_P(z)\) be the normalized sampled fibre-volume distribution just described. Let \(w_P\) include the actual field/prime/point multiplicities and the indicators that both rational cofactors are smooth. It suffices to prove
+\[
+\sum_Pw_P\sum_{z\in\Gamma_P}K_P(z)
+ 1_B(\widehat F+Gz_1)1_B(\widehat F'+G'z_2)
+\le L^{o(1)}\rho_F^2\sum_Pw_P. \tag{6}
+\]
+This is only an upper bound, includes the actual windows, and makes no independence assertion about the weights. Together with (4), FM and the geometric transfer, it implies PC for the modified design.
+
+**PROVED: progression scales.** Decomposing the joint lattice uses
+\[
+q=|G\Delta|,\qquad q'=|G'\Delta|,
+\]
+with only \(D=|\Delta|\) relevant residues in each coordinate. Typically
+\[
+q=N^{s+3\nu}L^{O(1)},\qquad x=X_F=N^{s+\eta+d\nu}L^{O(1)}.
+\]
+Thus \(q<x\) has polynomial room. Requiring \(q<x^{1/2-\varepsilon}\) instead raises the height condition to
+\[
+\eta>s+(6-d)\nu.
+\]
+A blanket assertion that these enlarged moduli remain below the original half level is FALSE.
+
+**KNOWN: what Harper supplies.** For \(y\ge(\log x)^K\), set
+\[
+\epsilon_H=e^{-cu/\log^2(u+1)}+y^{-c}.
+\]
+His Theorems 1–2 give, respectively,
+\[
+\sum_{q\le Q}\max_{(r,q)=1}|E(q,r)|
+ \ll\Psi\epsilon_H+Q\sqrt\Psi\log^{7/2}x,
+ \quad Q\le\sqrt\Psi,
+\]
+\[
+\sum_{q\le Q}\sum_{(r,q)=1}|E(q,r)|^2
+ \ll\Psi^2\epsilon_H+Q\Psi,
+ \quad Q\le\Psi.
+\]
+These concern initial intervals and reduced residues. Our \(x,y\) satisfy their smoothness range. [Harper, Theorems 1–2](https://arxiv.org/html/1208.5992v1).
+
+**PROVED: why that BDH statement does not imply (6).** For one \(q=GD\), the required subset main term is approximately
+\[
+D(\Psi/q)^2=\Psi^2/(Gq).
+\]
+The all-residue main-term scale is \(\Psi^2/q\), larger by \(G=N^{s+\nu}L^{O(1)}\). Positivity cannot recover this polynomial factor. Moreover, the moduli and multiplicities are selected under rational-smoothness weights. The term \(\epsilon_H=L^{-o(1)}\) cannot compensate for polynomial residue restriction.
+
+**KNOWN.** LV Lemma 8.5 assumes
+\[
+(\log x)^K<y<x^{1/\log\log x},\quad
+x^\varepsilon\le Q\le\sqrt{\Psi(x,y)},
+\]
+and averages \(y\)-smooth moduli in \([Q/\omega,Q]\), with \(\omega\to\infty\), \(\omega=y^{O(1)}\). It is an \(L^1\), maximum-over-reduced-residues estimate. It does not state a weighted restricted-residue second moment for
+\[
+q=\ell^2\,(\text{\(B\)-smooth})\,h,\qquad |h|\le L^{O(1)}.
+\]
+[LV, Lemma 8.5](https://arxiv.org/pdf/1805.08873).
+
+**CONJECTURED.** A suitably weighted RBDH′ would suffice, but \(o(1)\) relative variance is stronger than necessary: \(L^{o(1)}\) times the restricted main-square sum is enough. Non-reduced classes must use, for \(e=(r,q)\), the main term
+\[
+\Psi_{q/e}(x/e,B)/\varphi(q/e)
+\]
+when \(e\) is smooth, and zero otherwise. Neither published theorem supplies this formulation.
+
+**Q3: alternatives.**
+
+**PROVED / CONJECTURED, respectively.**
+
+- **Balanced rational side:** proved rational PC and geometric transfer; missing (6). Conditional constant is exactly
+  \[
+  c=(1+\theta_{\rm ker})/\sqrt2.
+  \]
+  For sufficiently large fixed \(k\), this preserves the original constants and their infimum \((1+3/(d+1))/\sqrt2\).
+
+- **Two independently randomized algebraic sides:** independence between fields does not remove correlation between two evaluations within either field. If both norms have exponent \(\xi=s+\eta+d\nu\), and the special prime is removed from one side, the formal budget is
+  \[
+  \theta_{AA}=2\xi-2\nu,\qquad c_{AA}=(1+\theta_{AA})/\sqrt2.
+  \]
+  A conservative enlarged-modulus choice \(\eta>s+(6-d)\nu\), for sufficiently large \(k\), gives \(\theta_{AA}=4s+10\nu+o(1)\). The limiting constant is \((1+4/(d+1))/\sqrt2\). Missing: the analogue of (6) incorporating the special-root conditioning. A complete reduction also requires the completely-split target law; a “single missing estimate” factoring theorem is not established.
+
+- **Restricting pairs:** deleting terms from \(Z(Z-1)\) invalidates PZ. Independent thinning of candidates multiplies both the off-diagonal moment and squared mean by the same factor. A useful restriction must preserve the first moment within \(L^{o(1)}\) and prove its own weighted version of (6); its constant is unchanged only under that retention condition.
+
+- **Weights:** bounded \(L^{o(1)}\) weight changes preserve the constant. Clipping the count to \(1_{Z>0}\) makes the second moment trivial but replaces FM by the desired success-probability estimate.
+
+- **Avoiding PZ:** the notes’ Design V has conditional \(c=\sqrt{2/3}\). Its principal missing estimate is genuine-certificate RK. Relation-supply and square-root transfers remain necessary. Stochastic deepening alone does not establish per-target success: \(Z=T\) with probability \(1/T\) has mean one and success probability \(1/T\).
+
+**Q4: literature status.**
+
+**KNOWN, as literature status rather than a nonexistence theorem.** Through the sources checked to October 2026, I found no published unconditional classical factoring algorithm for every \(N\) with \(L[1/2,c]\), \(c<1\). Lenstra–Pomerance’s proved constant remains \(1\). [*A rigorous time bound for factoring integers*, JAMS 5 (1992), 483–516](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+**KNOWN.** LV rigorously generate congruences of squares using stochastic deepening; their factor-producing conclusion remains conditional. Published smooth-pair upper bounds are genuine correlation results, but have the exponent and coefficient limitations above. I found no published NFS-style second moment matching (6) under these special-\(q\), rational-smoothness and moving-residue weights. The 2025–2026 de Boer–Pellet-Mary–Wesolowski work proves ideal-sampling and class-group results assuming ERH; it does not provide this unconditional integer-value correlation estimate. [LV](https://arxiv.org/abs/1805.08873), [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/abs/2512.01588).
