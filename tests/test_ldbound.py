@@ -18,10 +18,31 @@ def test_theta3_formula_and_limits():
             if 4 * k <= d + 1:
                 continue
             assert params.theta3(d, k) == 3 * s + Fraction(d, 4 * k)
-            assert all(v > 0 for v in params.margins(d, k).values()), (d, k)
+            if params.theta3(d, k) < 1:
+                assert all(v > 0 for v in params.margins(d, k).values()), (d, k)
     assert abs(params.c_const(Fraction(3, 10)) - 0.91924) < 1e-4
     assert params.min_k(9) == 20 and params.min_k(9, design="a2") == 12
     assert params.min_k(11) < params.min_k(9) < params.min_k(7)
+
+
+def test_mu_optimised_design():
+    # codex ldbound_2: d = 9, k = 30, mu = 8/75 gives theta = 197/600
+    mu, th = params.best_mu(9, 30)
+    assert (mu, th) == (Fraction(8, 75), Fraction(197, 600))
+    for d in (5, 7, 9, 11, 13, 19):
+        for k in (d, 2 * d, 30, 100, 1000):
+            if 4 * k <= d + 1:
+                continue
+            mu, th = params.best_mu(d, k)
+            assert th <= params.theta3(d, k)
+            assert th == params.theta_mu(d, k, mu)
+            if th < 1:
+                assert all(v > 0 for v in params.margins(d, k, mu).values()), (d, k)
+            # brute-force check of optimality on a grid
+            grid = [Fraction(i, 2000) for i in range(1, 2000) if Fraction(i, 2000) > Fraction(1, 4 * k)]
+            assert min(params.theta_mu(d, k, m) for m in grid) >= th
+        assert params.c_const(params.theta3opt(d, 10 ** 6)) - params.c_const(Fraction(3, d + 1)) < 1e-4
+    assert params.min_k(9, design="a3opt") == 13
 
 
 def test_field_w_resultant_and_lemma12():
