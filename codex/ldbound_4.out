@@ -1,0 +1,186 @@
+**Overall verdict: CORRECT WITH FIXES.** The multiplier \(w\) and the change \(M=N^\mu\) introduce no obstruction to LV6 or batch smoothness. The “Consequence” follows from the listed internal results after correcting the coefficient index, updating the irreducibility bookkeeping, and making the reducible-field branch explicit. I left the repository unchanged.
+
+The table in [ldbound §6.1](/Volumes/git/factoring-connection/notes/ldbound_results.md:497) covers most dependencies, although its single row grouping C/H/E/X/SQ/Wiedemann hides several checks.
+
+| Item and location in LV6 | Verdict | Transfer check |
+|---|---|---|
+| [Setting, \(\psi\), norm identities and row equation](/Volumes/git/factoring-connection/notes/lv6_results.md:84) | **CORRECT** | The map requires \(N\mid F(g_0,g_1)\), which \(Nw\) supplies. Neither the norm identity nor equation (1.1) requires equality to \(N\). Replace the field tuple by \((g_0,g_1,w,c)\). |
+| [Prop LV6’s field hypotheses](/Volumes/git/factoring-connection/notes/lv6_results.md:114) | **CORRECT** | Its proof is pointwise for every accepted field. Primitivity, irreducibility, and the required units modulo \(N\) must still be checked. No distributional theorem about the selected fields is needed here. |
+| [Degree drop and leading-coefficient gcd](/Volumes/git/factoring-connection/notes/lv6_results.md:455) | **CORRECT** | After \((g_1,N)=1\), \(f_d\equiv Nwg_0^{-d}\not\equiv0\pmod {g_1}\), since \(w>g_1\). Also \(0<|f_d|<N\), so a nonunit leading coefficient produces a proper factor. |
+| [Content event](/Volumes/git/factoring-connection/notes/lv6_results.md:460) | **CORRECT WITH FIXES** | The new classification and probability are valid. The coefficient index in §6.1 is wrong; see below. |
+| [Reducible-polynomial factor branch](/Volumes/git/factoring-connection/notes/lv6_results.md:461) | **CORRECT WITH FIXES** | **Missing explicit transfer-table row.** Factor values now multiply to \(Nw\). Test their gcds with \(N\), or use the irreducibility-certificate route and reject uncertified fields. |
+| [Lemma IR](/Volumes/git/factoring-connection/notes/lv6_results.md:473) | **CORRECT** | Uniformly for fixed \((g,w)\), replace the prescribed value by \(Nwg_1^{-d}\). Both finite-field cases survive, including \(r\mid g_1\). The size of \(a_0\) is irrelevant. |
+| [The \(N\mid f'(m)\) event](/Volumes/git/factoring-connection/notes/lv6_results.md:468) | **CORRECT** | The affine offset changes, but the constant coefficient of \(R_c\) still enters with unit coefficient \(g_1\). Thus the probability remains at most \(1/(2H+1)\). |
+| [Lemma C](/Volumes/git/factoring-connection/notes/lv6_results.md:151) | **CORRECT** | It uses \((a,b)=1\), smoothness of \(F(a,b)\), and \(r\nmid f_d\operatorname{disc}f\). It uses neither the resultant value nor the field law. |
+| [Lemma H, discriminants and index](/Volumes/git/factoring-connection/notes/lv6_results.md:182) | **CORRECT** | The required coefficient bound remains \(O_d(MH)\). All discriminant, index and class-number bounds remain \(N^{O(1)}\); explicit bounds appear below. |
+| [Quadratic-extension discriminant bound and Lemma E](/Volumes/git/factoring-connection/notes/lv6_results.md:215) | **CORRECT** | These use the bad-prime support, polynomial discriminant bounds and odd fixed degree. The Stark–Landau argument is fieldwise; it requires no resultant or \(w\)-coprimality condition. The published inputs are also stated in [LV §6](https://arxiv.org/pdf/1805.08873#page=36). |
+| [Lemma X and character sampler](/Volumes/git/factoring-connection/notes/lv6_results.md:256) | **CORRECT** | \(\log\bar\Delta=O(\log N)\) still gives character primes with \(O((\log N)^2)\) bits and \(t_\chi=O(\log N)\). The estimates hold for every accepted field. |
+| [Wiedemann and row sparsity](/Volumes/git/factoring-connection/notes/lv6_results.md:302) | **CORRECT** | Fixed \(k\), polynomial-size certificates, \(\log g_1=O(\log N)\), and \(O(\log N)\) characters preserve the quadratic cost. No special value of \(\mu\) enters. |
+| [Lemma SQ](/Volumes/git/factoring-connection/notes/lv6_results.md:329) | **CORRECT** | The trace-dual argument, Hensel lifting and exact verification are unchanged. The new heights preserve \(\log A=O_d((1+\sum|e_P|)\log N)\). The Hensel-prime unit argument still uses only smooth norms and \(D\). |
+| [Parity column and final congruence](/Volumes/git/factoring-connection/notes/lv6_results.md:174) | **CORRECT** | \(E\) even handles every prime factor of both \(g_1\) and \(f_d\), including \(w\) if \(w\mid f_d\). The final inversions require units modulo \(N\), not modulo \(w\). |
+| [Transcript invariance](/Volumes/git/factoring-connection/notes/lv6_results.md:412) | **CORRECT** | Include \(w\) among the public field data. Sampling, field selection, rejections, batching, characters and square-root choices remain invariant under hidden-root sign changes. Preserve the fresh-root restart policy. |
+| [Raw law, rejection, then Theorem K](/Volumes/git/factoring-connection/notes/lv6_results.md:438) | **CORRECT WITH FIXES** | The order is right. The old power-saving irreducibility estimate in ldbound §1 must be replaced, and successful factor exits must be accounted for explicitly. |
+| [Prop BS](/Volumes/git/factoring-connection/notes/lv6_results.md:531) | **CORRECT** | The candidate cap is unchanged and both tested integers still have \(O(\log N)\) bits. It recognizes every counted candidate at the claimed cost. |
+| [§7 checklist and cost assembly](/Volumes/git/factoring-connection/notes/lv6_results.md:639) | **CORRECT WITH FIXES** | Substitute the new \(\theta\), rejection rules and field tuple. The cost formula survives. State the numerical infimum with its slack limits. |
+
+The substantive details and repairs are these.
+
+**1. Content rejection: correct probability, incorrect printed coordinate.**
+
+The referenced design uses
+\[
+R_c(x)=\sum_{i=0}^{d-1}c_i x^{d-1-i},
+\]
+so
+\[
+f_d=a_d+g_1c_0,
+\]
+as defined in [pcest §1](/Volumes/git/factoring-connection/notes/pcest_results.md:128). The content row at [ldbound:511](/Volumes/git/factoring-connection/notes/ldbound_results.md:511) must vary \(c_0\), fixing \(c_1,\ldots,c_{d-1}\). Its printed implication involving \(c_{d-1}\) is false under that convention.
+
+Let \(e=\operatorname{content}(f)>0\). Since \(e\mid Nw\), after \((w,N)=1\), either \((e,N)>1\) or \(e\in\{1,w\}\). Because \(e\le |f_d|<N\), the former case gives a proper factor.
+
+Writing \(L_H=2H+1\), uniformly for fixed \((g,w)\),
+\[
+\Pr[e=w]\le\Pr[w\mid f_d]
+ \le \frac{\lceil L_H/w\rceil}{L_H}
+ \le \frac1w+\frac1{L_H}
+ =N^{-\Omega(1)}.
+\]
+Thus the probability claimed in §6.1 is valid, with a slightly stronger bound.
+
+Moreover, \(e=w\) implies every nonzero \(F(P)\) is divisible by \(w>B\). Such a field has **zero counted relations**. Removing it loses no descent-success mass at all.
+
+**2. The coefficient, discriminant and index bounds genuinely survive, including at \(\theta=1\).**
+
+Put \(Q=\max(2,\|f\|_\infty)\). The window condition gives
+\[
+Q\ll_d M+Nw/M^d+MH\ll_d MH.
+\]
+Since
+\[
+\mu+h=\theta-\mu-(d-1)\nu<1,
+\]
+we obtain \(Q<N\), hence \(0<|f_d|<N\) and \(e<N\), for sufficiently large \(N\). Also \(h<1\), giving \(2H+1<N\).
+
+The other gcd checks remain proper-factor checks. In particular,
+\[
+\theta\ge 2\mu+(d+1)\nu+\eta_0
+\quad\Longrightarrow\quad
+\mu+\nu+\eta_0/2
+\le \tfrac12-\tfrac{d-1}{2}\nu.
+\]
+Consequently \(w<N\); likewise \(g_1,\ell,|G(P)|<N\).
+
+For the monic polynomial \(g(y)=f_d^{\,d-1}f(y/f_d)\),
+\[
+|\operatorname{disc}f|\ll_d Q^{2d-2},\qquad
+|D|\ll_d Q^{2d-1},
+\]
+\[
+|\operatorname{disc}g|
+=|f_d|^{(d-1)(d-2)}|\operatorname{disc}f|
+\ll_d Q^{d(d-1)}.
+\]
+Therefore
+\[
+[O_K:\mathbb Z[\beta]]^2
+=\frac{|\operatorname{disc}g|}{|\Delta_K|}
+\le|\operatorname{disc}g|,
+\qquad
+\log\bar\Delta=O_d(\log N).
+\]
+These justify H, E, X and SQ without assuming that any of those integers is coprime to \(w\).
+
+For Lemma IR’s sometimes overlooked branch \(r\mid g_1\), one has
+\[
+a_dg_0^d\equiv Nw\not\equiv0\pmod r.
+\]
+Thus the fixed leading coefficient remains nonzero. For \(r\nmid g_1\), the prescribed value \(Nwg_1^{-d}\) is nonzero because \(r<B<w\) and preprocessing excludes \(r\mid N\). The CRT and counting arguments are unchanged.
+
+**3. Update the irreducibility estimate and state the conditioning argument precisely.**
+
+[ldbound §1](/Volumes/git/factoring-connection/notes/ldbound_results.md:141) still quotes
+\[
+C_{\rm abs}S^2H^{-1/4+o(1)}
+\]
+for the first-moment loss from reducibility. **Lemma IR does not supply that bound.** It supplies
+\[
+\varepsilon_{\rm IR}
+\le \exp\!\left[-\frac{\log H}{13d\log\log H}\right]
+=L^{-\omega(1)}.
+\]
+This is sufficient: even \(S^2\varepsilon_{\rm IR}=L^{-\omega(1)}\).
+
+The clean assembly is
+\[
+\text{raw FM + LD*}
+\ \Longrightarrow\ \text{PZ and }\mathbb E g_A=\gamma\ge L^{-o(1)}
+\ \Longrightarrow\ \text{field rejection}
+\ \Longrightarrow\ \text{Theorem K}.
+\]
+For rejection event \(\mathcal R\) consisting of derivative failure, irreducibility failure and content \(w\),
+\[
+\Pr(\mathcal R)
+\le \varepsilon_{\rm IR}+O(H^{-1}+W^{-1})
+=o(\gamma),
+\]
+so
+\[
+\mathbb E[g_A1_{\mathcal R^c}]
+\ge\gamma-\Pr(\mathcal R)\ge\gamma/2.
+\]
+
+Two qualifications belong in the proof:
+
+- Proper-factor discoveries are successful exits. If the argument additionally conditions them away, justify that step. Here their probabilities are \(o(\gamma)\); for example, after \(g_1\) is a unit,
+  \[
+  \Pr[(f_d,N)>1]\ll \omega(N)(B^{-1}+H^{-1})=L^{-a+o(1)}.
+  \]
+  Alternatively, use the unit restrictions already established inside FM.
+- Do **not** subtract \(\max N_\ell\cdot\Pr[(f_d,N)>1]\) from FM. The note correctly identifies why that first-moment argument can fail. The bounded success indicator \(g_A\), after PZ, permits a different estimate.
+
+No independence of \(g,w,c\) is asserted after rejection or selection. LV6’s subsequent field arguments do not require it.
+
+**4. Add the reducible-evaluation row.**
+
+The old identity
+\[
+\prod_j F_j(g_0,g_1)=N
+\]
+becomes \(Nw\). An individual factor value need not itself divide \(N\). The transferred branch should compute
+\[
+d_j=\gcd\bigl(|F_j(g_0,g_1)|,N\bigr)
+\]
+and return only \(1<d_j<N\); otherwise reject.
+
+The simpler alternative already offered by LV6 is sufficient: require primitive \(f\) and an irreducible degree-\(d\) reduction at one of Lemma IR’s primes. Its proof bounds failure to obtain such a certificate, not merely actual reducibility. This avoids the evaluation branch entirely.
+
+**5. Prop BS and the final cost remain valid.**
+
+The new sizes are
+\[
+|G(P)/\ell|\le N^{\mu-\nu+o(1)},\qquad
+|F(P)|\le N^{\mu+h+d\nu+o(1)}.
+\]
+Thus every input to batching has \(O(\log N)\) bits. With \(O(S^2)\) candidates, the total input length is
+\[
+O(B+S^2\log N),
+\]
+preserving the claimed soft-linear batch cost. Filtering zero values first and trial-dividing only the selected candidate remain essential. This is consistent with [Bernstein’s smooth-parts algorithm](https://cr.yp.to/factorization/smoothparts-20040510.pdf).
+
+With \(B L^{o(1)}\) rows, the total exponent is still
+\[
+\max\left\{a+\frac1{\sqrt2},\
+a+\frac{\theta}{2a},\
+2a\right\}.
+\]
+At \(a=\theta/\sqrt2\) and \(\theta\le1\), this equals \((1+\theta)/\sqrt2\). The shape test remains the published [Lenstra–Pomerance algorithm](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf), whose recognizable-smooth-number route uses ECM. Neither HECM nor genus2rh’s internal propositions are needed for this assembly.
+
+**Answer to the \(w\)-coprimality question: CORRECT, with the explicit content rejection understood.** Nothing downstream requires
+\[
+(w,f_d)=(w,\operatorname{disc}f)
+=(w,[O_K:\mathbb Z[\beta]])=1.
+\]
+If \(w\) divides the leading coefficient or index, its contribution is covered by the parity coordinate and/or the bad-prime group \(H\). Accepted content is \(1\); raw content \(w\) is rejected. The actual coprimalities used are the explicit ones involving \(g_1,N\), small sieve primes, and admissible rational values. No argument requires \(\operatorname{Res}(f,g_1x-g_0)=\pm N\).
+
+**“Consequence” verdict: CORRECT WITH FIXES.** After the repairs above, LV6, HECM and the LV Lemma 5.1 transfer need not remain additional hypotheses. The stated expected-time bound follows from the listed internal inputs and published subroutines. Specify that \(\theta\) includes the actual positive slack; the displayed \(0.9192388\ldots\) at \(d=9\) is the infimum as fixed \(k\to\infty\) and \(\eta_0\downarrow0\), rather than an attained finite-parameter constant.

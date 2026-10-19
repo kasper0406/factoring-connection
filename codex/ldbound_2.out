@@ -1,0 +1,322 @@
+**Overall verdict: CORRECT WITH FIXES for the LD* inequality.** I found no fatal loss in the BDH argument or the second-moment assembly. Several auxiliary statements are false or overstated as written, especially coprimality outside the counted candidates, Prop. 7.2, and the scope of the multiplier barrier.
+
+The source changed during the audit. References **D** below use this [frozen 484-line version](./ldbound_review_snapshot.md); **P** refers to [pcest_results.md](/Volumes/git/factoring-connection/notes/pcest_results.md). I have not edited the source repository.
+
+Write
+\[
+\nu=\frac1{4k},\qquad
+r=s-\nu,\qquad x=s+h+d\nu.
+\]
+Then, suppressing factors \(L^{O(1)}\),
+\[
+Y=N^{2\nu},\quad V=N^\nu,\quad X'_+=N^r,\quad
+X^*=N^x,\quad t=N^{s+\nu},\quad
+t|\Delta|\le N^{s+3\nu}L^{O(1)}.
+\]
+
+**The construction and first moment.**
+
+| Item | Verdict | Reasons and required corrections |
+|---|---|---|
+| Lemma GB_w, D117–125 | **CORRECT** | The recursion works for every integer \(Nw\). The coefficient bound is valid, albeit loose. The nonzero leading residue uses \((g_1,N)=1\), so this assertion belongs on the branch where that gcd check has passed. |
+| Sizes, D128–135 | **CORRECT** | \(\widehat F=O_d(MwV^d)\), \(w/H\ll N^{-\eta _0/2}\), and \(GR_c=O_d(MHV^d)\). Hence \(\theta=2s+h+(d-1)\nu\), giving \(3s+d\nu+\eta _0\) at the proposed height. Choose \(C'_d\) once, large enough also for the enlarged kernel windows. |
+| Lemma 1.2_w, D137 | **CORRECT** | Homogeneity gives the congruence directly. It does not require division by \(g_1\). |
+| Coprimality and (1.1), D139–147 | **WRONG as an unrestricted candidate statement; readily repaired** | The conclusion \((b,t)=(g_1,t)=1\) needs \(Y_P=1\). FM Step 2(a), which is cited here, explicitly uses that hypothesis. State throughout this paragraph: \(Y_P=1\) and \(\ell\nmid N\). |
+| Unchanged-input claim, D151–153 | **CORRECT WITH FIXES** | Lemmas 1.3, Q, DS, R and Kern transplant. Prop. 4.2 does contain \(\widehat F\) through its windows and lift classes, contrary to the wording here; its proof is nevertheless uniform under arbitrary translations, so it transplants too. |
+| FM re-check, D154–172 | **CORRECT WITH FIXES** | The numerical window and distribution conditions work. The probability law and treatment of rejected fields must be stated explicitly, as discussed below. |
+
+The omitted coprimality hypothesis is substantive. For example,
+\[
+P=(6000,5003),\quad g=(793991,995597),\quad \ell=400009
+\]
+have primitive \(P,g\), prime \(b,\ell\), and
+\[
+G_g(P)=400009\cdot5003,\qquad (g_1,G_g(P))=5003.
+\]
+These fit \(M=10^6,V=10^4\) and pass the magnitude filter. Choosing \(N\) coprime to \(G_g(P)\) does not repair invertibility of \(g_1\bmod t\). Such a point is excluded by rational smoothness when \(B<5003\).
+
+For the candidates actually used, the repair is immediate: \(n=G(P)/\ell\) is smooth, whereas \(b>B\), \(b\ne\ell\), and \(b\) is prime. Thus \(b\nmid g_1\), and primitivity of \(g\) gives \((g_1,t)=1\). Preprocessing and \(\ell\nmid N\) give \((N,t)=1\). Equation (1.1) then follows.
+
+The FM checks survive individually:
+
+- **Step 1: CORRECT.** The fibres and rational weights are unchanged.
+- **Steps 2(a)–(c): CORRECT**, with the repaired coprimality hypothesis. All required height margins hold.
+- **Step 2(d): CORRECT.** Uniformly over the proposed \(w\)-range,
+  \[
+  \frac{|\widehat F(P)|}{tY_\omega}
+  \ll_d\frac{\omega w}{H}
+  \ll N^{-\eta _0/2}L^{O(1)}.
+  \]
+  This controls both the sign crossing and the additive subtraction against \(\rho_F=L^{-O(1)}\).
+- **Step 3: CORRECT.** At every point of the common grid,
+  \[
+  s+\nu>2\nu,\qquad
+  x-2(s+\nu)=h-s+(d-2)\nu>0.
+  \]
+  Multiplication of the grid argument by \(B^{O(1)}\) preserves these polynomial margins. Lemma 8.5′ applies.
+- **Step 4: CORRECT.** Its goodness condition ranges over all reduced residues, so the estimate is uniform in \(w\).
+
+No part of this FM argument requires the exact equality \(F(g_0,g_1)=N\); the changed evaluation and baseline-size bound suffice.
+
+**Residue spreading.**
+
+**Lemma W, D188–197: CORRECT.** The displayed argument gives
+\[
+\Pr(w\equiv a\bmod t)
+ \le \frac{8\log W}{\phi(t)\log(2W/t)}
+ \le \frac{24}{\eta _0\phi(t)}.
+\]
+The constant \(2\) in Brun–Titchmarsh is legitimate; Montgomery–Vaughan prove the stronger interval formulation in Theorem 2. This use is standard upper domination of a residue law. It supplies no lower equidistribution assertion, and none is needed. [Montgomery–Vaughan, *The large sieve*](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+**Corollary W, D200–202: CORRECT WITH FIXES.** Restrict its stated scope to \(Y_P=1,\ell\nmid N\), or explicitly require \((bg_1N,t)=1\). The assertion “any \((\ell,P,g)\) with \((G(P),N)=1\)” is not justified by (1.1), because \(g_1^{-1}\) need not exist.
+
+Also specify that \(\Phi\) is fixed independently of \(w\). The enlarged \(\mathfrak Q_0\) satisfies this requirement.
+
+**BDH_fam.**
+
+**Additive Parseval, D216–218: CORRECT.** Each additive character has exactly one reduced denominator \(m'\mid m\). There is no missing \(\phi(m')\), induction multiplicity, or coprimality restriction on \(F\). The \(m'=1\) term is exactly \((\#\mathcal S^*)^2/m\).
+
+The large sieve is applied to an interval containing \(2\lfloor X^*\rfloor+1\) integers. The sharp \(K-1+Q^2\) version, and the weaker \(K+Q^2\) version stated in the note, both justify
+\[
+\sum_{R<m'\le2R}f(m')\ll (X^*+R^2)\Psi(X^*).
+\]
+Neither term can be discarded. Both are retained here. The bibliographic attribution at D222 should be cleaned up; the 1973 Montgomery–Vaughan theorem already suffices for the weaker bound used.
+
+| Part | Verdict | Audit |
+|---|---|---|
+| Rearrangement, D240–242 | **CORRECT** | \(\nu(m')\) counts every eligible signed \(n\), averaged over \(\ell\), with precisely its original multiplicity. |
+| Class (A), D243–252 | **CORRECT** | DS applies to the positive and reflected negative outer intervals, including non-reduced classes. The central interval is absorbed using \(R_0^{-1}\le\rho_F\) and \(m'\le X^*\rho_F\). The latter follows from \(R_0=N^{o(1)}\), \(X^*\rho_F=N^{x-o(1)}\). |
+| Class (B), D253–263 | **CORRECT** | \(m_1=m'/\gcd(m',q)\mid n\), so \(\nu(m')\le2X'_+q/R\). This includes all multiplicities; no additional divisor factor is needed. |
+| Class (C), D264–279 | **CORRECT** | The unique prime factor exceeding \(\max(B,2S^2)\) identifies \(\ell\), giving the full factor \(\pi_J^{-1}\). Both large-sieve contributions are small enough. |
+| Consequence (4.1), D280–283 | **CORRECT WITH FIXES** | Its denominators and principal term are correct. Replace the free \(V=V_\ell\) on the right by a fixed envelope such as \(V_-=\lfloor\sqrt YS\rfloor\), with an adjusted constant. |
+
+For class (A), if \(m_1\) has a prime factor exceeding \(B\), its multiplicity is zero. Otherwise dividing a smooth \(n\) by \(m_1\) preserves smoothness. Therefore
+\[
+\nu(m')\ll \frac{\Psi(X'_+)}{m_1}(\log N)^{O(C_0)}.
+\]
+The injective parametrization \(m'\mapsto(m_1,m_2)\), \(m_2\mid q\), yields exactly the claimed \(\tau(q)\log R_0\) loss.
+
+Here is the numerical audit of the potentially dangerous terms. Divide each contribution by the target
+\[
+T_0=\Psi(X'_+)\Psi(X^*)^2.
+\]
+
+| Contribution | Ratio, up to fixed constants and logarithms | Result |
+|---|---:|---|
+| (B), interval-length term | \(q/(R_0\rho_r\rho_F)\) | Absorbed by D231 |
+| (B), squared-denominator term | \(N^{-h-(d+1)\nu}L^{O(1)}\) | Polynomial saving |
+| (C), interval-length term | \(N^{-2\nu}L^{O(1)}\) | Polynomial saving |
+| (C), squared-denominator term | \(N^{(5-d)\nu-h}L^{O(1)}\) | Polynomial saving |
+
+The last condition is exactly
+\[
+h>(5-d)\nu.
+\]
+At the proposed height its margin is
+\[
+s+(d-4)\nu+\eta _0>0.
+\]
+For \(d=3\), this is \(s-\nu+\eta _0>0\); this boundary case also works.
+
+The use of two different multiplicity bounds in D272 is legitimate. On each block,
+\[
+\nu(m')\le A,\qquad \nu(m')\le B_R
+\]
+implies
+\[
+\sum\nu(m')f(m')
+ \le \min(A,B_R)\sum f(m')
+ \ll A\,X^*\Psi(X^*)+B_RR^2\Psi(X^*).
+\]
+
+There are **no omitted denominator classes**. A denominator with positive multiplicity either has no special prime factor and belongs to (A) or (B), or has one uniquely determined special prime to exponent \(1\) or \(2\), belonging to (C). Denominators containing two special primes have multiplicity zero.
+
+Non-reduced classes are included in (A). Negative values are handled by reflection. Zero is explicitly excluded, and \(n=0\) is excluded by the magnitude filter.
+
+**Theorem BDH_fam overall: CORRECT WITH FIXES**, principally for the fixed-envelope notation and citation precision. I find no missing analytic input.
+
+**LD*, Steps 0–7.**
+
+| Step | Verdict | Precise assessment |
+|---|---|---|
+| 0, D319–321 | **CORRECT WITH FIXES** | This is the identity for the raw product law \(g,w,c\). It is not literally the identity after conditioning on irreducibility or a successful field-selection event. |
+| 1, D322–327 | **CORRECT** | Kern is uniform in the translated target. Its lattice, wedge bound and coefficient probabilities have no \(w\)-dependence. |
+| 2, D328–330 | **CORRECT** | Primitivity of \(P'\) makes \(\kappa\) a unit modulo \(\Delta\). AM–GM and the permutation therefore give the stated inequality. |
+| 3, D331–335 | **CORRECT** | Injectivity and the congruence equivalence hold for either sign of \(G\). The common \(X^*\) covers the entire enlarged \(z\)-box. |
+| 4, D336–342 | **CORRECT WITH FIXES** | Apply the repaired Corollary W under the raw law. Ordered-pair symmetry removes the second AM–GM term with the stated constant. |
+| 5, D343–358 | **CORRECT WITH FIXES** | The fibre and DS argument work. D344 must say that the **algebraic factor** depends only on \(n\); the whole summand also contains \(Y_{P'}\). |
+| 6, D359–362 | **CORRECT** | Twelve partners is a valid generous bound. |
+| 7, D363–374 | **CORRECT WITH FIXES** | The power count is right. Correct the harmonic-sum notation, floor equalities and the word “equivalently.” |
+
+AM–GM does not give a pointwise constant comparison between \(Z\) and its upper bound: \(Z\) can vanish while \(Q(P)+Q(P')\) is positive. That causes no failure here. The averaged upper bound for the squares has exactly the required scale.
+
+Similarly, enlargement is not a pointwise relative approximation. Under the filter,
+\[
+tT\asymp_d MHV^d\asymp_d X^*,
+\]
+so its geometric enlargement has bounded scale. BDH_fam controls the resulting mass, including values near zero, without an \(L^{\Theta(1)}\) loss.
+
+For Step 5, the direction and sign are right:
+\[
+g=(g_0^*,g_1^*)+j(a,b),\qquad
+G_g(P')=G_{g^*}(P')-j\Delta.
+\]
+Thus the signed progression has difference \(-\Delta/\ell=\pm q\).
+
+After reflection, the filtered intervals lie in \([X_r/64,X_r]\). For sufficiently large \(N\), \(R_0\ge64\), so they can be enlarged inside \([X_r/R_0,X_r]\). Moreover,
+\[
+q\le R_0,\qquad
+\frac{X_r}{qR_0}
+ =\frac MV\frac{2V^2}{\ell qR_0}
+ \ll\frac MV.
+\]
+The enlarged interval consequently has length divided by \(q\) bounded by \(O(M/V)\). DS applies in exactly its stated range, including non-reduced residues. Dropping the coprimality restrictions on the fibre only enlarges the count.
+
+The \(\ell\)-average is legitimate in Step 7. Before invoking BDH_fam, replace all \(V_\ell\)-dependent geometric factors by uniform envelopes; \(V_{\max}/V_{\min}\) is bounded. The associated density comparisons cost at most polylogarithms. Thus \(\#\mathcal P_\ell\), \(U_\ell\), and the kernel factor do not introduce an uncontrolled weight into class (C).
+
+The final cancellation is indeed
+\[
+\frac{
+V^2(M/V)(MV/Y)(MHV^d)^2
+}{
+H^2V^{2d-4}M^2Y(MV)^2
+}
+=\frac{V^4}{Y^2}\asymp S^4.
+\]
+FM then supplies the required comparison with \((\mathbb EN)^2\).
+
+Three textual corrections remain:
+
+1. D367 should read
+   \[
+   \sum_{q\le2S^2}\frac{\tau(q)}q\ll(1+\log S)^2.
+   \]
+   Its displayed inequality with constant \(1\) is false.
+2. D371 is an equality only when \(V^2=\ell S^2\); with floors it is comparability.
+3. The normalized conclusion is **also proved** by applying the argument to \(Z\). It is not logically equivalent to the moment bound merely through the one-sided kernel inequality.
+
+In fact, retaining the divisor-weighted harmonic sum gives a polylogarithmic bound here. The final \(\tau^*(S)\) is unnecessary.
+
+**Conditioning, rejection, and downstream use.**
+
+The proof must explicitly use this order:
+
+- Prove the moment bounds under the independent product law.
+- Remove reducible fields using the assumed probability \(H^{-1/3+o(1)}\) and the deterministic cap \(N_\ell\ll S^2\).
+- Apply field selection afterward.
+
+The first-moment loss from reducible fields is negligible because
+\[
+\frac{S^2H^{-1/3+o(1)}}{S^2\rho_r\rho_F/(\log N)^{O(1)}}
+=N^{-h/3+o(1)}L^{O(1)}=o(1).
+\]
+Conditioning on irreducibility before Step 4 would destroy the asserted product law. The field selected with bias proportional to its success probability likewise does not have uniform \(w\).
+
+Proper gcd discoveries are successful absorbing outcomes. The \(\ell\mid N\) branch must be removed explicitly; the snapshot’s added paragraph addresses this. General nonunit checks must distinguish a proper gcd from gcd \(=N\), which requires rejection or another prescribed branch.
+
+The change to \(Nw\) creates no additional obstruction in the following reductions:
+
+- **Theorem K and field selection:** their input is an abstract field and its good-target set. Include \(w\) in that field.
+- **Relation map:** once \(g_1\) is invertible modulo \(N\),
+  \[
+  \psi(a-b\alpha)=G(P)g_1^{-1}\pmod N.
+  \]
+- **The \(g_1\) column:** record atomic relation multiplicities, as P773–774 already requires. There is no new \(w\)-parity column.
+- **Transcript invariance:** sampling \(w\), selecting fields and performing gcd checks use the field and public square \(R\); they do not inspect its hidden root.
+- **Irreducibility:** the prescribed value becomes \(Nw\); the additional excluded sieve primes divide \(w\). Rejection remains necessary because reducibility need not factor \(N\).
+
+The sentence at D67 asserting that the square-root step uses “only” the modular root and coefficient size is too sweeping. LV §6 also supplies characters, exceptional square classes and complexity bounds. Its adaptation must remain an explicit assumption for the **new law**, including the selected-field law. The published theorem does not establish that adaptation at these heights. [Lee–Venkatesan, §§5–6](https://arxiv.org/pdf/1805.08873)
+
+**Theorem A‴, D389–405: CORRECT WITH FIXES as a conditional reduction.** With those conventions, its cost calculation is
+\[
+\max\left\{
+a+\frac1{\sqrt2},\
+a+\frac{\theta'''}{2a},\
+2a
+\right\}.
+\]
+At \(a=\theta'''/\sqrt2\), \(\theta'''\le1\), this is \((1+\theta''')/\sqrt2\). Prime sampling adds only polynomial time in \(\log N\). LV6, HECM and the irreducibility transfer remain assumptions.
+
+**Props. 7.1–7.3.**
+
+**Prop. 7.1, D409–420: CORRECT WITH FIXES as a sufficient reduction.** The displayed sum leaves \(P'\) unbound. Include a sum over its bounded collection of partners, with the filters and admissible fibre indices explicit. Step 5 cannot be used literally before the residue dependence has been removed; the proposed correlation estimate performs that removal. Call this a sufficient missing estimate. AM–GM and enlargement do not establish necessity.
+
+**Prop. 7.2, D422–436: WRONG as a proved impossibility statement.** Conditional determinism does not prohibit averaging over the variables that determine the residue while retaining their weights. A deterministic function of random data can be uniformly distributed, including after conditioning on another function of those data.
+
+Dropping \(Y_{P'}\) loses one \(\rho_r\) in the particular crude upper-bound calculation. That is not an exact loss theorem. The assertion “No estimate on the residue side can recover this loss” is unsupported. Replace the proposition by an account of what the present estimates fail to prove.
+
+**Prop. 7.3, D438–456: CORRECT WITH FIXES within the fixed-\(M\), uniform-envelope method.** The indicator argument gives the support barrier. The integer-radius bound needs an immaterial additive \(1\). The coefficient and norm-equivalence arguments then force \(h\ge s+\nu-o(1)\), provided the design retains \(M=\lfloor N^s\rfloor\) and a uniform whole-box bound \(X_F=O(MHV^d)\).
+
+Its claimed cost relative to the old design is wrong when the old kernel floor binds. The actual increase is
+\[
+\Delta\theta
+=s+\nu-\max\{2\nu,s-(d-2)\nu\}
+=\min\{s-\nu,(d-1)\nu\}.
+\]
+The advertised \((d-1)\nu\) applies only in the appropriate large-\(k\) regime.
+
+There is also a cheaper design once \(M\) is allowed to change. Put \(M=N^m\). The sharper GB estimate is
+\[
+\|\widehat f\|_\infty\ll_d Nw/M^d+M.
+\]
+For a prime randomizer of exponent \(m+\nu\), the relevant height requirements become
+\[
+m>\nu,\qquad
+h>\max\{2\nu,\ m-(d-2)\nu,\ 1-dm+\nu\},
+\]
+with suitable slack. The resulting exponent is
+\[
+\theta=2m+h+(d-1)\nu.
+\]
+The BDH conditions continue to hold.
+
+For example, at \(d=9,k=30\), take
+\[
+m=\frac8{75},\qquad h=\frac{29}{600}+\eta.
+\]
+The window and FM level conditions have positive slack, and
+\[
+\theta=\frac{197}{600}+\eta,\qquad
+c=0.93927\ldots+O(\eta),
+\]
+versus \(0.97227\ldots\) for the stated design. This variation requires its corresponding LV6 assumption. It shows why the barrier’s fixed-\(M\) scope matters.
+
+Even with fixed \(M\), the fixed polynomial slack is avoidable: choose \(W\) above \(2MV_{\max}\) by a polylogarithmic factor and \(H/W\) by a sufficiently large fixed power of \(L\). Brun–Titchmarsh then costs a polylogarithm and FM’s errors remain absorbable. This reaches \(h=s+\nu+o(1)\); it does not lower the leading height exponent.
+
+**Constants table, D69–82: CORRECT WITH FIXES.**
+
+All five main rows and both minimum-\(k\) columns match independent recomputation. They are zero-slack constants. The minimum-\(k\) assertions mean that sufficiently small positive slack can be chosen. For example, \(d=9,k=20\) requires
+\[
+\eta _0<\sqrt2-1-\frac{33}{80}
+=0.001713562\ldots .
+\]
+The general restriction \(\eta _0<1/(8k)\) alone does not guarantee \(c<1\).
+
+The infimum requires letting the slack tend to zero as well as taking arbitrarily large fixed \(k\).
+
+D81’s Pollard–Strassen number is wrong. For \(d=11\),
+\[
+c_{\rm PS}(100)=0.9425145\ldots,\qquad
+c_{\rm PS}(1000)=0.9169712\ldots,\qquad
+\lim c_{\rm PS}=0.9142136\ldots .
+\]
+Delete “\(0.9033\to0.9142\).” A fully HECM-free claim also requires the assumed LV6 implementation to meet its stated cost without HECM; P801–803 leaves that check open.
+
+**Literature assessment.**
+
+I found no standalone published theorem stating this exact \(\ell^2nq\) family bound. Its proof does follow from standard published ingredients. Harper’s progression upper bound supplies the substance of DS, including non-coprime residues. [Harper, *Minor arcs, mean values and restriction theory*, Smooth Numbers Result 3](https://wrap.warwick.ac.uk/107457/7/WRAP-minor-arcs-mean-values-restriction-theory-exponential-sums-over-smooth-numbers-Harper-2018.pdf)
+
+Harper’s 2012 Theorem 2 is an all-moduli variance estimate; direct positivity does not supply this family’s required multiplicity savings. His 2025 Corollary 1 is likewise an all-moduli variance asymptotic, with \(Q\ge x^{0.51}\). Neither is a direct citation for BDH_fam. [Harper 2012](https://arxiv.org/pdf/1208.5992), [Harper 2025](https://arxiv.org/pdf/2412.19644)
+
+Thus the family-specific assembly may merit presentation, but the ingredients and Lemma W’s use are standard. The search does not certify novelty.
+
+The required fixes are:
+
+1. Restrict coprimality and Corollary W to their valid hypotheses.
+2. Define the moment law before rejection and selection; transfer afterward explicitly.
+3. Use common \(\ell\)-independent envelopes before invoking BDH_fam.
+4. Correct the harmonic sum, floor equalities, normalized-form wording and Prop. 4.2 description.
+5. Rewrite Prop. 7.2; narrow Prop. 7.3 and correct its finite-\(k\) cost comparison.
+6. Correct the slack qualifications and Pollard–Strassen prose.
+
+**Final verdict on “Theorem LD* for \((a'''_k)\) is proved”: CORRECT WITH FIXES.** The core second-moment argument survives; the listed repairs do not require a new analytic estimate. **Theorem A‴ is a correct conditional reduction** on LV6 for the new design, HECM, and the stated irreducibility transfer. It remains conditional.
