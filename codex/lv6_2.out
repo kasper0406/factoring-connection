@@ -1,0 +1,153 @@
+**Overall: CORRECT WITH FIXES.** The main LV6 argument and batch-smoothness route survive scrutiny. Several literal algorithmic statements, probability bounds, and claims of completeness need correction. References below are to [lv6_results.md](/Volumes/git/factoring-connection/notes/lv6_results.md). I read the full note and checked the requested supporting sections and original theorem statements.
+
+**(A) Lemma C and rational columns — CORRECT WITH FIXES (lines 137–163).**
+
+The good-prime argument is valid. Since \(r\nmid t\operatorname{disc}(f)\), \(\alpha\) is integral locally at \(r\), the local order is maximal, and the extension is unramified there. If \(r\mid b\), primitivity gives \(r\nmid a\), hence \(F(a,b)\equiv ta^d\ne0\). Otherwise only the linear factor \(x-ab^{-1}\) can contribute, and its residue degree one makes its valuation exactly \(v_r(F(a,b))\).
+
+Fix the global ideal notation: nonintegral \(\alpha\) makes \((r,\alpha-s)\) inappropriate as an integral \(O_K\)-ideal. Write
+\[
+\mathfrak p=(r,\beta-ts)O_K,
+\]
+or explicitly interpret the existing notation locally.
+
+The rational argument is correct: sign, smooth-prime parities, and even \(E\) make \(q_S\) a rational square. **One** \(E\)-column handles both \(g_1^E\) and \(t^{-E}\), including negative \(t\). Signed atomic multiplicities are essential; their signs disappear modulo two.
+
+**(B) Lemma H — CORRECT (lines 165–188).**
+
+The chain \(V_D\supset W\supset Y\supset K^{\times2}\), valuation kernel \(W\), and ideal-class map with kernel \(Y\) are correct. Surjectivity of the valuation map is unnecessary: an upper bound \(2^{|S_D|}\) suffices.
+
+The unit quotient has size \(2^{r_1+r_2}\); a unit square in \(K\) has a unit square root. Odd degree indeed excludes roots of unity beyond \(\pm1\).
+
+The class-number citation is sound. Lenstra’s Theorem 6.5 gives the stated bound initially with \((2/\pi)^{r_2}\sqrt{|\Delta_K|}\); the remark following its proof explicitly permits the Minkowski constant. Dropping the factorial denominator and enlarging logarithms gives the displayed conservative bound. Polynomial coefficient heights imply \(\log_2|H|=O_d(\log N)\). [Lenstra, Theorem 6.5 and following remark](https://arxiv.org/pdf/math/9204234)
+
+**(C) Discriminants, E, X, and sampling — CORRECT WITH FIXES (lines 192–274).**
+
+The discriminant bound is valid. Away from \(2D\), even valuations permit removal of a local square and give unramified quadratic extensions. At odd primes the discriminant exponent is at most one; dyadically it is at most \(2v_{\mathfrak P}(2)+1\). Summing residue-degree contributions gives the factor \(8^d\). No bounded global representative is required.
+
+**Lemma E is correct for every admissible field.** Stark’s Lemma 8 applies to non-normal fields with \(4[L:\mathbf Q]!\); normal fields have constant \(4\), so the chosen threshold is conservative in either case. [Stark, Lemma 8, p. 145](https://gdz.sub.uni-goettingen.de/download/pdf/PPN356556735_0023/PPN356556735_0023.pdf)
+
+The quadratic subfield is unique because \(4\nmid2d\). Since \(K\) has odd degree, \(L_h=KF_h\), proving injectivity \(h\mapsto F_h\). The conductor bound and Landau argument then establish \(|E|\le1\). State that zeros are counted with multiplicity. To avoid the open-endpoint issue, use the already proved stronger bound \(|\Delta_F|\le\bar\Delta^{1/d}\), which places both zeros strictly inside Landau’s interval, or halve the Landau allowance. [LV, Facts 6.22–6.24](https://arxiv.org/pdf/1805.08873)
+
+The quoted **Lagarias–Odlyzko estimate is accurate**: \(L/K\) must be Galois, \(n_L>1\), and \(x\ge\exp(10n_L(\log\Delta_L)^2)\). The exceptional zero is real and simple in their specified rectangle. Both the coefficient \(|C|/|G|\) on \(\operatorname{Li}(x^{\beta_0})\) and the error \(c_1x\exp(-c_2\sqrt{\log x/n_L})\) are correct. Normality over \(\mathbf Q\) is unnecessary. [LO, Theorem 1.3, equations (1.5)–(1.7)](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf)
+
+Required fixes:
+
+- Choose an integer \(x\) satisfying **\(\log(x/2)\ge20d(\log\bar\Delta)^2\)**, so both endpoint applications meet LO’s hypothesis without an unstated slack argument.
+- **Encode characters as bits:** replace the column formula at line 123 by
+  \[
+  \sum_P e_{iP}\frac{1-\left(\frac{a_P-b_Ps_j}{r_j}\right)}2\pmod2.
+  \]
+  Literally reducing Legendre symbols \(\pm1\) modulo two destroys their information. The implementation uses the correct encoding.
+- Justify the sampler’s expected acceptance rate separately, using the prime-ideal theorem for \(K\); Stark excludes sufficiently close zeros because \(K\) has no quadratic subfield.
+
+Uniformity itself is exact: each pair receives proposal mass proportional to \((|Z_r|/d)/|Z_r|=1/d\). Atomic evaluations are nonzero because their norms have prime support in \(B\cup D\).
+
+The negligible-error estimates, removal of higher-degree primes, \(1/(5d)\) detection bound, character count, union bound, and subgroup conclusion \(|H_0|\le2\) are correct after these fixes.
+
+**(D) Sparse linear algebra — CORRECT WITH FIXES (lines 276–295).**
+
+The cited machinery supports the required cost. Explicitly pad the transpose to a square matrix, use fast Toeplitz preconditioning, and map solutions back. Kaltofen–Saunders provide the rank/preconditioning and uniform-solution statements with \(O(m)\) matrix applications and \(\widetilde O(m^2)\) additional field operations. [Kaltofen–Saunders, §4, Theorems 2–4](https://kaltofen.math.ncsu.edu/bibliography/91/KaSa91.pdf)
+
+Make uniform binary sampling precise: solve \(Ay=Ax\), with the solver seeing \(Ax\) and independent coins, return \(x-y\), then take **one fixed binary coordinate** in the extension-field basis. Conditional on \(Ax\), subtraction of a successful solution leaves a uniform kernel element. Verify before accepting. Arbitrarily selecting a nonzero coordinate would require another distribution argument.
+
+The claimed independence probability is **WRONG** for two unconditioned uniform samples. In dimension \(r\),
+\[
+\Pr[\text{independent}]=(1-2^{-r})(1-2^{1-r}).
+\]
+At \(r=12\), failure is \(6143/8388608>2^{-11}\). Use failure \(\le3\cdot2^{-12}\), or first reject a zero first sample.
+
+The three-test pigeonhole is correct. It needs independent nonzero dependencies, not uniformity beyond obtaining them efficiently.
+
+**(E) Lemma SQ — correctness and A CORRECT; stated prime-search cost WRONG (lines 297–360).**
+
+The trace-dual inclusion proves \(g'(\beta)O_K\subset\mathbf Z[\beta]\). Dividing a field square root by \(g'(\beta)\) gives an integral element because its square is integral. Thus a field square has the required order-valued square root.
+
+At an odd unramified prime, unit roots lift uniquely. Enumerating \(2^{\tau-1}\) residue patterns covers roots up to global sign. Step-2 NONSQUARE is valid. Explicitly initialize inverse-square-root Newton iteration with \(z_0=\rho_\varepsilon^{-1}\).
+
+**A is valid.** The potentially suspicious numerator estimate uses the *product* defining Mahler measure:
+\[
+|[y^j]\prod_{\ell\ne k}(y-\beta_\ell)|
+ \le {d-1\choose j}\mathcal M(g)\le2^{d-1}M_h.
+\]
+The derivative-product/discriminant argument supplies the denominator bound.
+
+I checked 900 exact paired-product cases using Eisenstein irreducible polynomials of degrees \(3,5,9\), including negative leading coefficients; all satisfied A. [Independent checks](/Volumes/git/factoring-connection/codex/scratch/lv6_2/exact_checks.py)
+
+Fix the final height estimate to
+\[
+O_d\bigl((1+\sum_P|e_P|)\log N\bigr);
+\]
+all atomic exponents can cancel.
+
+Finding the **least** prime after \(B\) is not justified in polylogarithmic time by counting excluded primes. Reuse an already sampled character prime, or sample and certify primes by rejection. Alternatively add an \(\widetilde O(B)\) sieve cost. After that correction, product trees, precision doubling, and constant branch count give the required quasi-linear height-budget cost.
+
+**(F) Congruence and transcript — CORRECT WITH FIXES (lines 367–390).**
+
+The congruence algebra is correct:
+\[
+\Gamma_S=g'(\beta)^2\gamma'_S(\gamma^-_S)^2
+\]
+gives exactly the displayed \(Y^2=X_S^2\). Every denominator is a unit under the stated checks; \(Y\) is consequently a unit too.
+
+Earlier occurrences of \(\psi(a-b\alpha)\) should be defined through \(t^{-1}\psi(z_P)\), or by extending \(\psi\) to \(\mathbf Z[\beta][1/t]\). This resolves the domain notation without assuming a map on \(K^\times\).
+
+The transcript argument and fresh-row restart are correct. The optional reuse rule is also correct when each new dependency lies outside the span of all previously tested dependencies. Replace “no gcd outcome” with “no earlier final gcd involving the hidden roots”: public field/certificate gcd checks are invariant and permitted.
+
+**(G) Field events and Lemma IR — CORRECT WITH FIXES (lines 391–447).**
+
+Degree drop is impossible after \(\gcd(g_1,N)=1\). Content divides \(N\). Proper gcds give factors. The assertions \(|t|<N\), content \(<N\), and \(2H+1<N\) require the parameter restrictions used in Theorem A; \(\theta<1\) supplies them for sufficiently large \(N\). State that scope.
+
+The affine argument for \(N\mid f'(m)\) is correct: the constant coefficient of \(R_c\) has unit coefficient \(g_1\) modulo \(N\), so its interval contains at most one solution.
+
+The reducibility treatment falsely promises evaluated factors both different from \(\pm1\). Try evaluations and output a proper factor when obtained; otherwise reject.
+
+**Lemma IR is correct in full.** The norm fibre has \((r^d-1)/(r-1)\) elements; subtracting proper-subfield elements gives the stated conservative count. Translation and summing leading coefficients yield \(1/(4d)\). If \(r\mid g_1\), \(-g_0\) is invertible and the fixed leading coefficient is nonzero, giving the second affine bijection and \(1/(2d)\) bound. The CRT near-uniformity factor, \(Q\le H^{1/2+o(1)}\), prime count, and final \(13d\) denominator all check out.
+
+The rejection/conditioning explanation needs precision. Factor-producing events are successful termination branches, not included in the displayed tiny rejection bound. If \(\mathcal G\) literally excludes every such event, its complement needs their probabilities too.
+
+For the clean assembly, first derive \(D_k(\gamma)\) under the original law, then discard unsuccessful rejection events and use
+\[
+E[g_A1_{\mathcal G}]\ge\gamma-\Pr(\text{rejection}).
+\]
+Their probability is \(L^{-\omega(1)}=o(\gamma)\). Invoke Theorem K with the conditioned law. FM, R, Kern, and 4.3 remain valid as originally stated; they do **not automatically become identical statements under a new conditioned coefficient law**.
+
+**(H) Smoothness routes — BS CORRECT WITH FIXES; HS bookkeeping incomplete (lines 467–550).**
+
+Lemma BS’s formula and complexity are correct and match Bernstein’s Algorithm 2.1/Theorems 2.2–2.3. [Bernstein](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Bernstein04.pdf)
+
+Prop BS must filter before batching: the raw box contains \((0,0)\), and possibly other zero values, for which modular reduction is undefined. Apply membership, nonzero, and size filters first; use absolute values and treat \(1\) separately. Then every counted candidate is recognized. Factoring only the selected pair by trial division stays within \(\widetilde O(B+S^2\log N)\).
+
+The exponent claim is correct for this assembly: searches per collected row contribute \(L^{o(1)}\), and the added \(B\) term is covered by \(B^2L^{o(1)}\). At the optimum \(B\le S^2\).
+
+For HS, the quoted LPP I theorem matches the page image, and the interval substitution is valid. Genus2rh Prop B uses LPP II’s lower fibre bound and at most \(p\) exceptional orders; it needs no unproved upper fibre bound. [LPP I, Theorem 1.3](https://math.dartmouth.edu/~carlp/hyperI.pdf), [LPP II, Theorem 1.1](https://math.dartmouth.edu/~carlp/PDF/paper129.pdf)
+
+Required bookkeeping fixes:
+
+- Remove primes through a fixed effective \(P_0\) ensuring both \(p^2-\tfrac12p^{3/2}\ge x_3\) and the asserted smooth-order count \(\ge2p\). Merely removing through \(\sqrt{x_3}\) proves neither.
+- Specify \(n\le X_{\max}=N^C\). Use \(\lambda(X_{\max})\) and \(\log(8\log_2X_{\max})\); otherwise the split-count union bound need not be \(1/8\).
+- Check every certified prime factor is \(\le B\) before declaring smoothness.
+- **The final Markov argument is wrong:** success \(7/8\) minus truncation loss \(1/2\) gives only \(3/8\). Truncate at four times the expectation, giving at least \(5/8\), or omit unnecessary truncation when using a deterministic finite schedule.
+
+With these repairs, the per-stage probability and \(L_B[2/3,2^{2/3}c_1+o(1)]\operatorname{polylog}N\) cost follow.
+
+The LP claim is **CORRECT**: its §7 uses ECM and recognizable smooth numbers, not HECM. [LP 1992, §7](https://community.ams.org/journals/jams/1992-05-03/S0894-0347-1992-1137100-0/S0894-0347-1992-1137100-0.pdf)
+
+**(I) Checklist, cost, and Verdict — CORRECT WITH FIXES (lines 552–601).**
+
+The cost arithmetic is correct after the repairs:
+\[
+\max\{2a,\ a+1/\sqrt2,\ a+\theta/(2a)\},
+\]
+minimized at \(a=\theta/\sqrt2\) for \(\theta<1\). Fresh-root restarts cost at most a factor two; recursive factorization adds only a polylogarithmic factor.
+
+The checklist should explicitly include exact independent uniform unit-root sampling, the character-bit convention, the completed sparse-solver construction, and a justified Hensel-prime selection algorithm. The biased root-drawing implementation mentioned in lemmaM cannot support an **exact** DD probability.
+
+The infimum statement omits \(\eta_0\): for fixed positive \(\eta_0\), the infimum over \(k\) is
+\[
+(1+3/(d+1)+\eta_0)/\sqrt2.
+\]
+The advertised \(0.9192\ldots\) also takes \(\eta_0\downarrow0\). The minimum-\(k\) claims require sufficiently small \(\eta_0\).
+
+The Verdict overclaims “always” finding a square: the guarantee holds on successful character separation. Exact verification and retries make the algorithm Las Vegas. “Height enters in one place only” is also too strong; it enters arithmetic and sparsity bounds throughout.
+
+Replace “LV6 is proved” and “every other ingredient is proved” with **“LV6 and the assembly are valid after the listed repairs, conditional on LD and the accepted internal results.”** The batching removal of HECM and the degree-nine limiting constant survive; HS’s separate bookkeeping errors do not obstruct the batching route.

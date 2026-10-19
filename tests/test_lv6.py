@@ -138,3 +138,22 @@ def test_smooth_factor_and_chars():
     r, s, _ = sample_first_degree_prime(f, 64, rng)
     assert sympy.isprime(r) and sum(f[i] * s ** i for i in range(4)) % r == 0
     assert chi(r, s, 3, 5) in (0, 1)
+
+
+def test_lemma_IR_fraction():
+    """Lemma IR count: among polynomials of degree <= d over F_r with f(m) = v != 0 (an affine space of size r^d),
+    the irreducible ones of degree exactly d are a fraction >= 1/(4d) (exhaustive for small r, d = 3)."""
+    import itertools
+    import flint
+    d = 3
+    for r, m, v in [(17, 5, 3), (19, 0, 1), (23, 7, 11)]:
+        ctx = flint.fmpz_mod_poly_ctx(r)
+        tot = irr = 0
+        for c in itertools.product(range(r), repeat=d):        # f_1..f_d free, f_0 determined by f(m) = v
+            f1_to_d = list(c)
+            f0 = (v - sum(f1_to_d[i] * pow(m, i + 1, r) for i in range(d))) % r
+            P = ctx([f0] + f1_to_d)
+            tot += 1
+            if P.degree() == d and P.is_irreducible():
+                irr += 1
+        assert tot == r ** d and irr / tot >= 1 / (4 * d), (r, irr / tot)

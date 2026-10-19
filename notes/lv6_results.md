@@ -9,24 +9,26 @@ Agent `lv6`, phase 9, 2026-10-19.
 
 ## Verdict
 
-**LV6 is proved (Proposition LV6, §2–§3). The HECM caveat is removed (§6). If Hypothesis LD were proved, Theorem A
-would hold with c = (1+θ)/√2 (infimum (1 + 3/(d+1))/√2, i.e. 0.9192 at d = 9), and every other ingredient would be
-a proved result or a published theorem (§7).** LD is still open (agent `ldbound`). Nothing here is refereed.
+**LV6 holds (Proposition LV6, §2–§3), after the repairs from review (§9). The HECM caveat is removed (§6). If
+Hypothesis LD were proved, Theorem A would hold with c = (1+θ)/√2. Its infimum over k and η₀ → 0 is
+(1 + 3/(d+1))/√2, i.e. 0.9192 at d = 9. Every other ingredient would then be a published theorem or one of this
+project's internal, unrefereed results (§7).** LD is still open (agent `ldbound`). Nothing here is refereed.
 
 In plain terms:
 - LV's §6 was written for degree d ≍ (log N)^{1/3} and heights L(1/3). Our degree is **fixed** (d = 9), and that
   makes everything easier. Every field-dependent quantity (discriminants, the index, the class number, the number
   of bad primes) is N^{O(1)}. The obstruction group H therefore has dimension O(log N), and O(log N) character
   columns suffice.
-- The height V = N^{1/(4k)} enters in one place only: the bit size of the element whose square root is taken,
-  O(rows·log N) bits instead of LV's O(rows·(log N)^{1/3}). Square roots cost quasi-linear time in that size, so
-  this is harmless.
+- The height V = N^{1/(4k)} enters only through bit sizes. Each atom has O(log N) bits, and the element whose
+  square root is taken has O(rows·log N) bits, instead of LV's O(rows·(log N)^{1/3}). Square roots cost
+  quasi-linear time in that size, so this is harmless.
 - The square root needs no inert prime and no lattice reduction. We Hensel-lift at **one** unramified prime
-  p > B and try the 2^{t−1} ≤ 2^{d−1} sign patterns. Each candidate is checked exactly (η² = Γ). Fixed d makes
+  p ∈ (B, 2B] and try the 2^{τ−1} ≤ 2^{d−1} sign patterns. Each candidate is checked exactly (η² = Γ). Fixed d makes
   this rigorous and cheap.
 - Siegel zeros are handled as in LV (Stark plus Landau), but at fixed d they cost even less: **at most one**
-  nonzero square class can escape the characters, for every field. Testing the three dependencies s₁, s₂,
-  s₁ + s₂ then always finds a square. (Codex found this sharpening; LV had O(log log N) exceptional classes and an
+  nonzero square class can escape the characters, for every field. Whenever the characters separate (probability
+  ≥ 1 − (log N)^{−2}), one of the three dependencies s₁, s₂, s₁ + s₂ is a square. Exact verification makes this
+  Las Vegas. (Codex found this sharpening; LV had O(log log N) exceptional classes and an
   exceptional set of fields.)
 - The non-monic pair (f, g₁x − g₀) needs **one** parity column. It makes both g₁^E and f_d^E squares. Bad primes
   (dividing f_d·disc f) get **no** columns; they are absorbed into H.
@@ -89,7 +91,8 @@ Notation follows pcest §1 and hypD §1–§3.
 
 **Rows.** Row i comes from a uniform r_i, R_i = r_i², and an accepted split R_i ≡ u/v with u, v products of
 distinct primes ℓ. Each ℓ has one certified atom P_ℓ, and e_{iP} = +1 if ℓ | u, −1 if ℓ | v. Since
-ℓ ≡ σ_P g₁ ψ(a − bα)/n_P (mod N),
+ℓ ≡ σ_P g₁ t^{−1}ψ(z_P)/n_P (mod N). (Write ψ(a − bα) := t^{−1}ψ(z_P); this is ψ extended to Z[β][1/t], and
+  equals G(P)/g₁.)
 
   r_i² ≡ q_i · ∏_P ψ(a − bα)^{e_{iP}} = q_i · t^{−E_i} ∏_P ψ(z_P)^{e_{iP}}   (mod N),
   q_i := ∏_P (σ_P g₁/n_P)^{e_{iP}} ∈ Q^×,  E_i := Σ_P e_{iP}.   (1.1)
@@ -106,6 +109,8 @@ atom may occur in several rows (cached special-q relations). For a set S of rows
   - N > N₀(d, k) has been preprocessed.
   - The field passes the checks of §4: gcd(g₁ t, N) = 1, f irreducible and primitive, and ψ(g′(β)) is a unit
     mod N; otherwise a factor of N was output or the field was rejected.
+  - The hidden roots r_i are independent and uniform on (Z/N)^×: draw uniformly from [1, N − 1]; a draw with
+    gcd(r, N) > 1 yields a factor.
   - We are given M_rows pure-descent rows as in §1, with M_rows ≥ C_col + 12. Here
     C_col := π(B) + #{(r, s)} + 2 + t_χ ≤ (d+1)π(B) + 2 + t_χ, and t_χ = O_d(log N) is the character count of §3.3.
 - **Algorithm.** There is a Las Vegas algorithm. In expected time (M_rows)^{2}·(log N)^{O_d(1)}, it outputs a
@@ -120,15 +125,16 @@ atom may occur in several rows (cached special-q relations). For a set S of rows
    Σ_P e_{iP}·[a_P ≡ b_P s mod r]·v_r(F(a_P, b_P)); and t_χ character columns (§3.3).
 2. *Characters* (§3.3). Compute x from the explicit discriminant bound. Sample t_χ first-degree primes (r_j, s_j)
    of K independently and uniformly among those with norm in (x/2, x]. Column j holds
-   Σ_P e_{iP}·χ_j(a_P − b_P α) mod 2, where χ_j(a − bα) = ((a − b s_j)/r_j).
+   Σ_P e_{iP}·(1 − χ_j(a_P − b_P α))/2 mod 2, where χ_j(a − bα) = ((a − b s_j)/r_j) ∈ {±1}. Each Legendre
+   symbol is encoded as a bit.
 3. *Linear algebra* (§3.4). Sample two left-kernel vectors s₁, s₂ of the M_rows × C_col matrix over F₂, verify
    them, and retry until they are linearly independent.
 4. *Square test* (§3.5). For S ∈ (s₁, s₂, s₁ + s₂), in this order, run Algorithm SQ on
    Γ_S := g′(β)²·∏_P z_P^{|e_P(S)|}. Take the first S for which it returns η ∈ Z[β] with η² = Γ_S.
 5. *Congruence* (§3.6). Set Y := √q_S · t^{−E(S)/2} · ψ(η) · (ψ(γ⁻_S)·ψ(g′(β)))^{−1} (mod N), where
    q_S = ∏_{i∈S} q_i, √q_S is computed by halving exponents, and γ⁻_S := ∏_{e_P(S)<0} z_P^{|e_P(S)|}.
-6. If step 3 or step 4 fails (probability ≤ 2/(log N)² + 2^{−9} per attempt; §3.3, §3.4), resample the characters
-   and kernel vectors.
+6. If step 3 or step 4 fails (probability ≤ (log N)^{−2} + 3·2^{−12} per attempt; §3.3, §3.4), resample the
+   characters and kernel vectors.
 7. **After a trivial gcd, restart with fresh hidden roots** (new rows). Do not try another dependency of the same
    rows that was chosen in view of the gcd outcome (§3.7).
 
@@ -139,14 +145,16 @@ atom may occur in several rows (cached special-q relations). For a set S of rows
 **Lemma C [proved].** Let r be a prime with r ∤ D, and let (a, b) be coprime with F(a, b) ≠ 0. Then:
 - (i) if r | b, then r ∤ F(a, b), and a − bα is a unit at every prime of O_K above r;
 - (ii) if r ∤ b, the only prime 𝔭 of O_K above r with ord_𝔭(a − bα) ≠ 0 is the first-degree prime
-  𝔭 = (r, α − ab^{−1}). It occurs only if r | F(a, b), and then ord_𝔭(a − bα) = v_r(F(a, b)).
+  𝔭 = (r, β − t·ab^{−1})O_K (the kernel of α ↦ ab^{−1} on the r-integral elements). It occurs only if r | F(a, b),
+  and then ord_𝔭(a − bα) = v_r(F(a, b)).
 
 *Proof.*
 - Since r ∤ t, α is r-integral. Z_(r)[α] has discriminant disc(f)/t^{2d−2} up to an r-unit, which is prime to r.
-  So Z_(r)[α] is the maximal order at r, and by Dedekind–Kummer the primes above r are (r, φ_j(α)), one for each
-  irreducible factor φ_j of f mod r, all unramified.
+  So Z_(r)[α] is the maximal order at r. By Dedekind–Kummer the primes above r correspond to the irreducible
+  factors φ_j of f mod r (locally 𝔭_j = (r, φ_j(α)); globally, 𝔭_j = (r, t^{deg φ_j}φ_j(β/t))O_K), and all are
+  unramified.
 - (i) If r | b, then r ∤ a, and F(a, b) ≡ t a^d ≢ 0 (mod r). Also a − bα ≡ a (mod 𝔭) for every 𝔭 | r.
-- (ii) a − bα ∈ (r, φ_j(α)) iff φ_j(ab^{−1}) ≡ 0, i.e. iff φ_j = x − ab^{−1}, which is a first-degree prime 𝔭.
+- (ii) a − bα ∈ 𝔭_j iff φ_j(ab^{−1}) ≡ 0, i.e. iff φ_j = x − ab^{−1}, which is a first-degree prime 𝔭.
   - Norm_{K/Q}(a − bα) = F(a, b)/t, and 𝔭 is the only prime above r dividing a − bα.
   - Since f(𝔭/r) = 1, ord_𝔭(a − bα) = v_r(F(a, b)/t) = v_r(F(a, b)). ∎
 - Primes r > B with r ∤ D contribute nothing: r ∤ F(a, b) because F(a, b) is B-smooth.
@@ -197,10 +205,13 @@ For 0 ≠ h ∈ H, let L_h := K(√h), so [L_h : Q] = 2d.
   at 𝔓.
 - At 𝔓 | D, 𝔓 ∤ 2: ord_𝔓 𝔡 ≤ 1. At 𝔓 | 2: ord_𝔓 𝔡 ≤ 2·ord_𝔓(2) + 1.
 - So N(𝔡) ≤ 8^d·∏_{𝔓|D} N𝔓 ≤ 8^d |D|^d, and |Δ_K| ≤ |disc g|. Then log Δ̄ = O_d(log N).
+- For the quadratic subfield F of L_h (if any): |Δ_F|^d divides Δ_{L_h}, so |Δ_F| ≤ Δ̄^{1/d}.
 - No small representative of h is needed. LV's minimal-norm representative argument is not used.
 
 **Exceptional classes.** Let c_L > 0 be the absolute constant in Landau's theorem below. Put
-  ν₁ := min( 1/(4·(2d)!·log Δ̄), c_L/(2 log Δ̄) ),
+  ν₁ := min( 1/(4·(2d)!·log Δ̄), c_L/(2 log Δ̄) ).
+(Two quadratic conductors ≤ Δ̄^{1/d} have log(q₁q₂) ≤ (2/d) log Δ̄ < 2 log Δ̄, so 1 − ν₁ lies strictly inside
+Landau's interval.)
 and let E := {0 ≠ h ∈ H : ζ_{L_h} has a real zero β with 1 − ν₁ ≤ β < 1}.
 
 **Lemma E [proved from cited results]. |E| ≤ 1, for every field.**
@@ -210,25 +221,30 @@ and let E := {0 ≠ h ∈ H : ζ_{L_h} has a real zero β with 1 − ν₁ ≤ �
     F ⊂ L.
   - Landau (1918; Davenport, *Multiplicative Number Theory*, Ch. 14; LV Fact 6.24): there is an effective absolute
     c_L > 0 such that, for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at
-    most one real zero in (1 − c_L/log(q₁q₂), 1).
+    most one real zero, counted with multiplicity, in (1 − c_L/log(q₁q₂), 1).
 - *Proof.*
   - Let h ∈ E with zero β. Since ν₁ ≤ 1/(4(2d)! log Δ_{L_h}), Stark gives a quadratic F_h ⊂ L_h with
     ζ_{F_h}(β) = ζ(β)L(β, χ_{F_h}) = 0. Since ζ(β) ≠ 0 on (0, 1), L(β, χ_{F_h}) = 0.
   - [L_h : Q] = 2d with d odd, so L_h has at most one quadratic subfield: two would generate a biquadratic subfield
     of degree 4 ∤ 2d. K has none, so L_h = K·F_h.
   - h ↦ L_h is injective (Kummer theory), hence so is h ↦ F_h.
-  - |Δ_{F_h}| ≤ |Δ_{L_h}|^{1/d} ≤ Δ̄. Two distinct h, h′ ∈ E would give distinct real primitive characters with
-    zeros ≥ 1 − ν₁ ≥ 1 − c_L/log(|Δ_{F_h}||Δ_{F_{h′}}|). Landau forbids this. ∎
+  - |Δ_{F_h}| ≤ |Δ_{L_h}|^{1/d} ≤ Δ̄^{1/d}. Two distinct h, h′ ∈ E would give distinct real primitive characters
+    with zeros ≥ 1 − ν₁ > 1 − c_L/log(|Δ_{F_h}||Δ_{F_{h′}}|), i.e. two zeros (with multiplicity) in Landau's
+    interval. Landau forbids this. ∎
   - (Codex lv6_1 found the bound |E| ≤ 1. LV's dyadic-block argument gives O(log log N), plus an exceptional set
     of fields. Neither is needed at fixed d.)
 
 **Sampler.**
-- Let log x := ⌈max(20d·(log Δ̄)², (log N)²)⌉.
+- Choose an integer x with log(x/2) ≥ max(20d·(log Δ̄)², (log N)²), so that LO applies at both x and x/2.
 - Draw r uniform in (x/2, x]. If r is prime (AKS), compute the set Z_r of simple roots of f mod r (Las Vegas root
   finding). With probability |Z_r|/d, output (r, s) with s uniform in Z_r; otherwise redraw.
 - The output is uniform over first-degree primes 𝔭 = (r, α − s) of K with N𝔭 ∈ (x/2, x]. All of these have
   r > Δ̄ ≥ |D| and r > B.
-- The expected number of draws is O(d log x). Each draw costs (log x)^{O(1)} = (log N)^{O(1)}.
+- The expected number of draws is O(d log x). This needs a lower bound for the number of first-degree primes with
+  norm in (x/2, x]. Apply LO to the trivial extension K/K (G = 1). ζ_K has no real zero in
+  [1 − (4·d!·log|Δ_K|)^{−1}, 1): by Stark's Lemma 8 such a zero would come from a quadratic subfield, and K (odd
+  degree) has none. So π_K(x) − π_K(x/2) ≥ x/(3 log x) for large N; degree ≥ 2 primes are ≤ d√x.
+- Each draw costs (log x)^{O(1)} = (log N)^{O(1)}.
 
 **Lemma X [proved from cited results].** For every field and every h ∈ H ∖ (E ∪ {0}),
   Pr_𝔭[χ_𝔭(h) = −1] ≥ 1/(5d)  (N ≥ N₀(d)).
@@ -274,8 +290,13 @@ M_rows·k·(log N)^{O(1)}.
     basis of F_{2^e} returns an F₂ kernel vector.
 - Each kernel vector is verified, so the method is Las Vegas.
 - Expected cost O(M_rows·w + M_rows²)·(log N)^{O(1)} = (M_rows)^{2}(log N)^{O(1)}.
-- dim ker ≥ 12. So two uniform samples are independent with probability ≥ 1 − 2^{−11}, and the third test vector
-  s₁ + s₂ costs nothing.
+- dim ker =: r ≥ 12. Two independent uniform samples are linearly independent with probability
+  (1 − 2^{−r})(1 − 2^{1−r}) ≥ 1 − 3·2^{−12} (codex lv6_2 corrected our 2^{−11}). The third test vector s₁ + s₂
+  costs nothing.
+- **Uniform binary sampling, precisely.** Draw x uniform in F₂^{M_rows}. Solve Aᵀy = Aᵀx over F_{2^e}; the solver sees
+  only Aᵀx and its own coins. Return one **fixed** F₂-coordinate (in a fixed F₂-basis of F_{2^e} containing 1) of
+  x − y, and verify it. Conditional on Aᵀx, x is uniform on a coset of the kernel, so the output is uniform on the
+  F₂-kernel. Pad Aᵀ to a square matrix for the Kaltofen–Saunders preconditioner.
 - **Why three tests suffice [proved].** φ(s₁), φ(s₂) ∈ H₀, and |H₀| ≤ 2. Either one of them is 0, or both equal the
   unique nonzero element, and then φ(s₁ + s₂) = 0. In every case some S ∈ {s₁, s₂, s₁ + s₂} has γ′_S ∈ K^{×2},
   and S ≠ ∅.
@@ -287,15 +308,17 @@ M_rows·k·(log N)^{O(1)}.
   - Γ ∈ Z[β], given as g′(β)² times a product of atoms z_P (with multiplicities).
   - An integer A with this property: if Γ = η² for some η ∈ Z[β], then ‖η‖_∞ ≤ A.
 - **Steps.**
-  1. Let p be the least prime > B with p ∤ D. It is found among the O(log N) primes after B, since ω(D) = O(log N).
-     Then g mod p is squarefree, and Γ is a unit at p, because Norm(Γ) = ±disc(g)²·∏(t^{d−1}F(a_P, b_P))^{|e_P|}
+  1. Let p be the least prime in (B, 2B] with p ∤ D. It exists because (B, 2B] has ≫ B/log B primes and
+     ω(D) = O(log N). It is found by sieving (B, 2B] once per field, in Õ(B) = L^{a+o(1)} time. (Alternatively reuse
+     a character prime r_j > Δ̄.) Then g mod p is squarefree, and Γ is a unit at p, because Norm(Γ) = ±disc(g)²·∏(t^{d−1}F(a_P, b_P))^{|e_P|}
      has only prime factors ≤ B or dividing D.
   2. Factor ḡ = φ₁⋯φ_τ over F_p (τ ≤ d), Las Vegas. In each F_p[y]/φ_j, test whether Γ is a square (Euler) and take
      a square root ρ_j (Tonelli–Shanks in F_{p^{deg φ_j}}, Las Vegas). If some component is a non-square, output
      NONSQUARE.
   3. For each of the 2^{τ−1} sign vectors ε with ε₁ = +1:
      - CRT the values ε_jρ_j to ρ_ε ∈ Z[β]/p.
-     - Newton-lift the inverse square root, z ↦ z + z(1 − Γz²)/2 mod p^{2^i}, to the first precision p^e > 2A.
+     - Starting from z₀ := ρ_ε^{−1}, Newton-lift the inverse square root, z ↦ z + z(1 − Γz²)/2 mod p^{2^i}, to the
+       first precision p^e > 2A.
      - Put η_ε := Γz mod p^e with centred coefficients. If η_ε² = Γ exactly, output η_ε.
   4. Output NONSQUARE.
 
@@ -305,7 +328,9 @@ M_rows·k·(log N)^{O(1)}.
   - If Γ ∈ K^{×2}, then Γ = η² with η ∈ Z[β], and SQ outputs ±η.
 - (ii) **The bound A.** Let Mh := ⌊‖g‖₂⌋ + 1 (≥ Mahler(g) ≥ max_k max(1, |β_k|)) and g_d := d‖g‖₁Mh^{d−1}. Then
   A := d·⌈U^{1/2}⌉·2^{d−1}Mh·g_d^{d−1}, U := g_d²·∏_P (‖z_P‖₁Mh^{d−1})^{|e_P|},
-  is valid. log₂A ≤ ½·Σ_P|e_P|·log₂(‖z_P‖₁Mh^{d−1}) + O(d² log(d‖g‖₁Mh)) = O_d(Σ|e_P|·log N).
+  is valid. log₂A ≤ ½·Σ_P|e_P|·log₂(‖z_P‖₁Mh^{d−1}) + O(d² log(d‖g‖₁Mh)) = O_d((1 + Σ|e_P|)·log N).
+  (The numerator estimate uses the product defining the Mahler measure:
+  |[y^j]∏_{ℓ≠k}(y − β_ℓ)| ≤ C(d−1, j)·Mahler(g) ≤ 2^{d−1}Mh.)
 - (iii) **Cost.** The cost is O_d(𝖬(log A)·log log A) + (log N)^{O(1)} bit operations, where 𝖬 is integer
   multiplication time. This is quasi-linear in the size of Γ.
 
@@ -361,8 +386,9 @@ a function of (field, R_i, splits, atoms, certificates) and fresh coins:
 - the columns, the characters (r_j, s_j), the kernel vectors, the Hensel prime p, the branch ε, η, the choice
   among s₁, s₂, s₁ + s₂, and Y.
 
-Field rejections (§4) depend on the field only. None of these reads r_i, a Jacobi symbol of r_i, or any gcd
-outcome. So (T) holds, and DD gives Pr[nontrivial | 𝒯] = 1 − 2^{1−ω}.
+Field rejections (§4) depend on the field only. None of these reads r_i, a Jacobi symbol of r_i, or the outcome of
+an earlier final gcd(X_S − Y, N) involving the hidden roots. (Public gcd checks on field and certificate data are
+invariant and allowed.) So (T) holds, and DD gives Pr[nontrivial | 𝒯] = 1 − 2^{1−ω}.
 - **Retry policy.**
   - After a trivial gcd we restart with fresh rows, as in lemmaM's remark R1.
   - (Optional refinement.) Reusing the rows with a new dependency S′ is also exact, provided S′ ∉ {0, S}:
@@ -382,9 +408,19 @@ outcome. So (T) holds, and DD gives Pr[nontrivial | 𝒯] = 1 − 2^{1−ω}.
 ## 4. Field-level events, Lemma IR, and what changes in pcest
 
 The kept field of hypD Corollary K has law ∝ q_A, which amplifies the probability of a field event by at most
-1/μ, with μ ≥ (γ/2)^{2k+1}L^{−o(1)} = L^{−o(1)}. We instead **reject** bad fields before any descent attempt. The
-field law then becomes 𝒜 conditioned on the good event 𝒢. Since g_A ≤ 1, E[g_A | 𝒢] ≥ γ − Pr[𝒢ᶜ] ≥ γ/2. So D_k
-survives with γ/2, and FM, Theorem R, Lemma Kern, Prop 4.2 and Theorem 4.3, all stated for 𝒜, need **no change**.
+1/μ, with μ ≥ (γ/2)^{2k+1}L^{−o(1)} = L^{−o(1)}. We instead **reject** bad fields before any descent attempt.
+- **Scope.** The bounds below use the parameter range of Theorem A (θ < 1, N large): then 0 < |t| < N, content < N
+  and 2H + 1 < N.
+- **Order of the argument (made precise after codex lv6_2).**
+  1. FM, Theorem R, Lemma Kern, Prop 4.2 and Theorem 4.3 are applied **unchanged, to the original law 𝒜**. Under
+     LD they give D_k(γ) for 𝒜.
+  2. Factor-producing events (a proper gcd, a reducible f with a proper factor F₁(g₀, g₁)) end the algorithm
+     successfully. They are not "rejections".
+  3. Let 𝓡 be the remaining rejection event: N | f′(m), or f reducible without a proper factor. Then
+     E_𝒜[g_A·1_{𝓡ᶜ}] ≥ γ − Pr_𝒜[𝓡], and Pr_𝒜[𝓡] = L^{−ω(1)} = o(γ).
+  4. Theorem K is invoked for the law 𝒜 conditioned on "not rejected" (restricted to non-terminating fields). This
+     law has D_k with γ/2 for large N.
+- These statements do not assert that FM etc. hold verbatim for the conditioned law. They do not need to.
 
 | event | bound | treatment |
 |---|---|---|
@@ -392,7 +428,7 @@ survives with γ/2, and FM, Theorem R, Lemma Kern, Prop 4.2 and Theorem 4.3, all
 | degree drop f_d = 0 | **impossible**: f_d ≡ a_d ≡ N g₀^{−d} ≢ 0 (mod g₁) (codex) | — |
 | gcd(f_d, N) ≠ 1 | — | proper factor (0 < \|f_d\| < N) |
 | content(f) > 1 | content divides F(g₀, g₁) = N and is < N | proper factor |
-| f reducible | ≤ exp(−log H/(13d log log H)) (Lemma IR) | reject; a factorization F₁F₂ = N with both ≠ ±1 is output |
+| f reducible | ≤ exp(−log H/(13d log log H)) (Lemma IR) | factor f over Z (LLL, poly time); if some F_j(g₀, g₁) gives a proper factor, output it; otherwise reject |
 | N \| f′(g₀/g₁) | ≤ 1/(2H+1) | reject (a proper gcd is a factor) |
 | bad primes, index, units, Cl[2] | no rarity needed | inside H (Lemma H) |
 | exceptional zero | ≤ 1 class, every field | Lemma E, three tests |
@@ -477,7 +513,9 @@ kernel. It is otherwise self-contained.
 
 **Prop BS [proved].** Replace the per-candidate HECM test in the special-q search (pcest §1) as follows:
 1. enumerate the whole box (≤ C_abs·S² points, or stop at once if the lattice is irregular, Lemma 1.3);
-2. batch-test all values G(P)/ℓ and F_A(P);
+2. **first** apply the membership, nonzero and size filters of pcest §1 (P ∈ 𝒫_ℓ, G(P) ≠ 0, F_A(P) ≠ 0,
+   |G(P)| ≥ MV/32, gcd checks with N). This removes (0, 0) and every zero value. Then batch-test the absolute
+   values |G(P)/ℓ| and |F_A(P)| (the value 1 is smooth trivially);
 3. output the first candidate, in a fixed order, that passes the filters and is doubly smooth;
 4. trial-divide that candidate's two values by the primes ≤ B.
 
@@ -505,28 +543,31 @@ optimum, a = θ/√2 < 1/√2 and T_SQ = L^{1/√2+o(1)} ≥ B in any case.
 
 **Prop HS.** There is a randomized algorithm SMOOTH(n, B) with these properties:
 - It never declares a non-B-smooth n smooth: it outputs a factorization certified by AKS.
-- It factors every B-smooth n ≤ N^{O(1)} with probability ≥ 1/2.
+- It factors every B-smooth n ≤ X_max := N^C (C fixed) with probability ≥ 5/8.
 - Its expected time is ≤ L_B[2/3, 2^{2/3}c₁ + o(1)]·(log N)^{O(1)} = L^{o(1)}.
 
 *Proof (bookkeeping).*
-1. **Small primes.** Trial division by primes ≤ 8100 (and ≤ x₃^{1/2}).
+1. **Small primes.** Trial division by all primes ≤ P₀. Here P₀ ≥ 8100 is a fixed effective constant such that
+   every p > P₀ has p² − ½p^{3/2} ≥ x₃ and p^{3/2}exp(−(log p²)^{1/3}(log log p²)^{8/3}) ≥ 2p.
 2. **Recursive splitting.** Maintain a list of unfactored parts. Remove perfect powers by integer roots and prime
    parts by AKS. On a composite part n′ that is not a prime power, run stages j = 14, …, ⌈log₂B⌉, with
    v_j = 2^j, w_j = ⌈L_{v_j²}[2/3, c₁]⌉ and
-   h_j = ⌈κ·exp((log v_j²)^{1/3}(log log v_j²)^{8/3})·λ(v_j)·λ(N^{O(1)})·log(8 log₂N)⌉
+   h_j = ⌈κ·exp((log v_j²)^{1/3}(log log v_j²)^{8/3})·λ(v_j)·λ(X_max)·log(8 log₂X_max)⌉
    curves of Algorithm C with parameters (v_j, w_j).
 3. **One adequate stage succeeds.** If n′ is B-smooth, its least prime p ≤ B. Let j* be the first stage with
    v_{j*} ≥ p, and let q be another prime factor of n′.
    - Take x = p² − ½p^{3/2} and y = p^{3/2} ≥ x^{3/5}. Since w_{j*} ≥ L_x[2/3, c₁], LPP I Thm 1.3 gives
      S_w(p) ≥ p^{3/2}exp(−(log p²)^{1/3}(log log p²)^{8/3}) ≥ 2p.
    - Then Prop B gives a per-curve success probability π* ≥ exp(−(log p²)^{1/3}(log log p²)^{8/3})/(C·λ(p)λ(q)).
-   - With h_{j*}π* ≥ log(8 log₂N), stage j* fails with probability ≤ 1/(8 log₂N).
-   - Primes p ≤ max(8100, x₃^{1/2}) were removed in step 1.
-4. **All splits.** There are ≤ log₂n ≤ O(log N) splits. A union bound gives overall failure ≤ 1/8 + (Las Vegas
-   overhead).
+   - With h_{j*}π* ≥ log(8 log₂X_max), stage j* fails with probability ≤ 1/(8 log₂X_max).
+   - Primes p ≤ P₀ were removed in step 1.
+4. **All splits.** There are ≤ log₂n ≤ log₂X_max splits. A union bound gives overall failure ≤ 1/8. Finally,
+   check that every certified prime factor is ≤ B before declaring n smooth.
 5. **Cost.** Stage j costs h_j·w_j·O(log v_j)(log N)² (genus2rh §3.1). The largest stage dominates, giving
    L_{B²}[2/3, c₁]·exp(O((log B)^{1/3+o(1)}))·(log N)^{O(1)} = L_B[2/3, 2^{2/3}c₁ + o(1)](log N)^{O(1)}.
-6. **Truncation.** Truncating at twice this expectation (Markov) yields the stated ≥ 1/2. ∎
+6. **Truncation.** The schedule is finite and deterministic in length (stages up to ⌈log₂B⌉, ≤ log₂X_max splits),
+   so the worst-case time is already within the bound and no truncation is needed. (Truncating at 4× the expectation
+   would also leave success ≥ 7/8 − 1/4 = 5/8. Our first draft's "2×, ≥ 1/2" was wrong; codex lv6_2.) ∎
 
 **Status.** This writes out genus2rh §6.3 ("V4, sketch") for the smoothness-test use. It closes the gap that
 LPP's unpublished Part III left, for Theorem A's purposes. Its weak point is that genus2rh's Props A/B are internal
@@ -563,15 +604,16 @@ and unrefereed. Route 1 does not depend on them, so Theorem A uses Route 1.
   - There is a Las Vegas algorithm that splits every composite N that is not a prime power. Its expected time is
     L_N[1/2, (1+θ)/√2 + o(1)].
   - Recursion (with AKS) factors N completely within the same bound.
-  - The infimum over k of the constant is (1 + 3/(d+1))/√2: d = 7: 0.9723; d = 9: 0.9192; d = 11: 0.8839;
-    d = 19: 0.8132.
-  - c < 1 needs d ≥ 7. It needs k ≥ 13 at d = 7 and k ≥ 12 at d = 9.
+  - For fixed η₀ the infimum over k is (1 + 3/(d+1) + η₀)/√2. Letting η₀ ↓ 0 gives (1 + 3/(d+1))/√2: d = 7: 0.9723;
+    d = 9: 0.9192; d = 11: 0.8839; d = 19: 0.8132. These values are not attained at any finite k.
+  - c < 1 needs d ≥ 7. For sufficiently small η₀ it needs k ≥ 13 at d = 7 and k ≥ 12 at d = 9 (pcest).
 
 **Checklist (every ingredient, with its status).**
 
 | # | ingredient | status | source |
 |---|---|---|---|
 | 1 | preprocessing: trial division to B, perfect powers, AKS | standard | — |
+| 1′ | hidden roots r uniform on (Z/N)^× (uniform draw from [1, N − 1], gcd check), independent across rows | needed for DD's exact 1 − 2^{1−ω}; the lemmaM toy code draws from [2, N − 2], which the theorem does not use | lemmaM §1 |
 | 2 | field law (a″_k), Lemma GB, Lemma 1.2, Lemma 1.3 | proved (internal), both critics | pcest §1 |
 | 3 | field rejections: content, N \| f′(m), reducibility (Lemma IR); γ → γ/2 | proved here | §4 |
 | 4 | Theorem FM (uses Harper, LV §8, Tenenbaum, Hildebrand) | proved (internal) + cited | pcest §2 |
@@ -583,7 +625,7 @@ and unrefereed. Route 1 does not depend on them, so Theorem A uses Route 1.
 | 10 | shape test: Lenstra–Pomerance 1992 (ECM + Pomerance 1987; no HECM) | published | LP 1992 Thm, §7, §10 |
 | 11 | special-q smoothness: Prop BS (batch; Lemma BS) | proved here | §6.2 |
 | 12 | Theorem DD with transcript invariance (T) | proved (internal) | lemmaM §1 |
-| 13 | **LV6**: Prop LV6 (Lemmas C, H, E, X, SQ; Wiedemann) | proved here, from cited LO 1977 Thm 1.3, Stark 1974 Lemma 8, Landau, Lenstra 1992 Thm 6.5, Wiedemann 1986 / Kaltofen–Saunders 1991 | §2–§3 |
+| 13 | **LV6**: Prop LV6 (Lemmas C, H, E, X, SQ). Includes the character-bit encoding, the padded Wiedemann / Kaltofen–Saunders solver with fixed-coordinate uniform binary sampling, and Hensel-prime selection by sieving (B, 2B] | proved here, from cited LO 1977 Thm 1.3, Stark 1974 Lemma 8, Landau, Lenstra 1992 Thm 6.5, Wiedemann 1986 / Kaltofen–Saunders 1991 | §2–§3 |
 | 14 | cost assembly | proved arithmetic | below |
 
 **Cost assembly.**
@@ -657,7 +699,35 @@ The run took 216 s in total. Calibration used seeds 100 and 101 only (disclosed 
   - Codex's irreducibility bound is O(H^{−1/3} log H), sketched. We prove the weaker Lemma IR in full, which
     suffices.
   - Codex takes x = 2^{(log N)⁴}. We take log x = max(20d(log Δ̄)², (log N)²).
-- Pending: adversarial round lv6_2 and the two Opus critics (§9.2–§9.4).
+
+### 9.2 GPT-6.1-sol adversarial round (lv6_2): adjudication (all accepted)
+- **Overall verdict: CORRECT WITH FIXES.** "The main LV6 argument and batch-smoothness route survive scrutiny."
+- **Per item.**
+  - Lemma H: CORRECT. Codex checked that Lenstra's Thm 6.5 and the remark after it allow the Minkowski constant.
+  - Lemma C, Lemmas E/X, linear algebra, the congruence, (T), the field events, Lemma IR and Prop BS: CORRECT WITH
+    FIXES.
+  - Lemma SQ: correctness and the bound A CORRECT, checked on 900 exact cases in degrees 3, 5, 9. The prime-search
+    cost as stated was WRONG.
+  - The LO, Stark and Landau statements: quoted correctly.
+  - Lenstra–Pomerance 1992 is HECM-free: CORRECT.
+- **Fixes applied.**
+  - Global ideal notation 𝔭 = (r, β − t·ab^{−1})O_K (α is not integral).
+  - Landau: zeros counted with multiplicity, and the strict interval via |Δ_F| ≤ Δ̄^{1/d}.
+  - log(x/2) ≥ 20d(log Δ̄)², so LO applies at both endpoints.
+  - **Character bits** (1 − χ)/2: the first draft literally reduced ±1 mod 2. The code was already right.
+  - The sampler's acceptance rate, justified via LO for K/K plus Stark (K has no quadratic subfield).
+  - Independence probability (1 − 2^{−r})(1 − 2^{1−r}), not 1 − 2^{−11}; precise uniform binary kernel sampling
+    with a fixed coordinate; padding.
+  - Hensel prime: sieve (B, 2B] in Õ(B), instead of an unjustified polylogarithmic search. Explicit z₀ = ρ_ε^{−1}.
+    Height (1 + Σ|e_P|)·log N.
+  - ψ(a − bα) := t^{−1}ψ(z_P).
+  - (T): "no earlier final gcd" (public gcd checks are allowed).
+  - §4: the parameter scope; the order of the conditioning argument (FM etc. are used for 𝒜, then
+    E[g_A·1_{𝓡ᶜ}] ≥ γ − Pr[𝓡]); reducible f handled by factoring over Z and trying the evaluations.
+  - Prop BS: filter before batching (zero values).
+  - Prop HS: the constant P₀; X_max; the check that primes are ≤ B; the Markov error (2× gave 3/8, not 1/2) fixed.
+  - §7: uniform hidden roots made explicit; the infimum (1 + 3/(d+1) + η₀)/√2 → 0.9192 as η₀ ↓ 0; the Verdict's
+    "always" and "height in one place only" reworded; "LV6 is proved" → "LV6 holds after the repairs".
 
 ## 10. Candidate card
 
