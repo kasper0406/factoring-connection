@@ -1,0 +1,367 @@
+**polyimpl_2 — adversarial referee report**  
+19 October 2026
+
+I read `notes/polyimpl_results.md` in full, followed `codex/polyimpl_1.out` to the actual [blind report](/Volumes/git/factoring-connection/codex/scratch/polyimpl_1/polyimpl_1_report.md), and checked the cited local model definitions, the experiment’s preregistration, code and saved summary, and the external sources identified below. Repository “proved” labels are not substitutes for the hypotheses of the underlying model theorem. The principal problems are lost hypotheses in composing models, promotion of finite diagnostics to asymptotic refutations, and assertions of non-implication presented as theorems.
+
+**1. Theorem DR — CORRECT WITH FIXES.**
+
+The uniform conditional upper bound is valid. Use the circuit-hardness hypothesis in its explicit almost-everywhere form:
+
+\[
+\exists H\in E\;\exists\eta>0\;\exists m_0\;\forall m\ge m_0:
+\operatorname{CC}(H\upharpoonright\{0,1\}^m)\ge 2^{\eta m}.
+\]
+
+Under this hypothesis, the logarithmic-seed hardness-versus-randomness generator has the required parameters: output length sufficient for the random tape, seed length \(O(\log S)\), constant distinguishing error below \(1/4\) against size-\(S\) circuits, and uniform evaluation time \(S^{O(1)}\). The constants depend on the chosen hard language, its evaluation bound and its hardness exponent; they are independent of the factoring input. Cite Impagliazzo–Wigderson, *P = BPP if E Requires Exponential Circuits: Derandomizing the XOR Lemma*, STOC 1997, pp. 220–229 ([original paper](https://www.math.ias.edu/~avi/PUBLICATIONS/MYPAPERS/IW97/proc.pdf)).
+
+The following details make the composition rigorous.
+
+- Choose an explicit computable upper bound \(U(n)=\exp(O(\sqrt{n\log n}))\) on the expected bit running time, uniformly for every \(n\)-bit input. An asymptotic expression containing an unspecified \(o(1)\) is not itself a clock.
+- Truncate the Las Vegas algorithm after \(2U(n)\) steps, counting random bits as operations. Markov gives success probability at least \(1/2\). Truncation is essential: an expected-time computation is not yet a fixed-size circuit.
+- Include factorization verification, and choose \(S\) large enough for the resulting simulation circuit and its random tape. Pad the random tape to length \(S\) if needed. Hardwiring \(N\) is legitimate because the generator fools all circuits of the specified size.
+- Enumerating \(2^{O(\log S)}=S^{O(1)}\) seeds, evaluating the generator and running the verified simulation costs \(L_N[1/2,O(1)]\). This does not preserve the leading constant 1.
+
+The randomized input theorem is indeed unconditional and applies to complete factorization of every positive integer: Lenstra–Pomerance, *A rigorous time bound for factoring integers*, JAMS **5** (1992), 483–516, unnumbered main theorem in §1 ([paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)). The same argument proves H2 ⇒ H1 under IW hardness. Invoking merely the conclusion P = BPP, without a quantitative simulation or padding argument, would not justify the claimed subexponential time bound.
+
+**Exact contrapositive.** If there is no uniform deterministic factorizer with an all-input bound \(L_N[1/2,C]\) for any constant \(C\), then
+
+\[
+\forall H\in E\;\forall\eta>0\;\forall m_0\;\exists m\ge m_0:
+\operatorname{CC}(H_m)<2^{\eta m}.
+\]
+
+Thus \(E\subseteq\bigcap_{\eta>0}\mathrm{i.o.\!\text{-}SIZE}(2^{\eta m})\), interpreted language by language and exponent by exponent. There is no assertion of common easy lengths for all languages, nor an automatic single \(2^{o(m)}\) bound on one common infinite set. “For every C on infinitely many n” must quantify over **every deterministic factoring algorithm**, not merely over one algorithm. Infinitely-often hardness is insufficient for this all-input derandomization proof; the almost-everywhere hypothesis supplies hardness at every required generator length.
+
+I did not locate a separately stated factoring-specific theorem with precisely this formulation. Present DR as a standard corollary of the two cited theorems, without a novelty claim. Replace “lower bounds can never be upgraded” by “such an unrestricted lower bound would refute the stated IW hardness hypothesis.” An unexpected circuit upper-bound consequence is not an impossibility theorem about proving lower bounds. Also replace “the frontier is derandomization, not factoring” by the actual conditional comparison; it is not an equivalence between factoring and general derandomization.
+
+**2. Theorem CB — GAP as an unrestricted adaptive composition; CORRECT WITH FIXES under an explicit closure hypothesis.**
+
+The number-theoretic core works. The model-composition step needs a stated premise.
+
+The box is good: its minimum product is \(0.504P^2\), its maximum is \(0.7735P^2\), and its largest ratio is \(119/60<2\). Consequently all its pairs belong to \(S_n\). F_iv on these two fixed intervals supplies \(\gg P^2/n^2\) pairs. There is no independence assumption here: one takes the Cartesian product of two prime sets in disjoint intervals.
+
+For \(U=(2P)^{1/3}\), the exceptional-prime estimate is
+
+\[
+\#\{r\ge P/2:r\nmid a,\ \operatorname{ord}_r(a)\le U\}
+\le \sum_{k\le U}\frac{\log|a^k-1|}{\log(P/2)}
+\ll \frac{U^2\log|a|}{\log P}.
+\]
+
+Summing over the prescribed base set gives \(O(P/(n^2\log P))=o(P/\log P)\). Negative bases only change an absolute constant. Remove primes dividing the bases as well if unit tests or unit handles are permitted during setup; their number is at most \(\sum_A\log|a|/\log(P/2)\), which is negligible. Specify positive exponents, \(B_2\ge2\), and \(|a|\ge2\). Bases \(0,\pm1\) can instead be handled separately: they do not split odd semiprimes, but they make “every answer is 1” literally false because some answers are \(N\).
+
+For a surviving prime \(p\), let \(\ell=P^+(p-1)>p^{2/3}\). Then \(\ell^2>p\), hence \(v_\ell(p-1)=1\), and \((p-1)/\ell<p^{1/3}\le U\). Every surviving base has order exceeding \(U\), so its order must contain \(\ell\). Since \(\ell>B_2\), no permitted exponent annihilates it. The plus variant follows by applying the same argument to \(2E\). Products of these nonvanishing atoms remain units. This part is correct even for arbitrarily many adaptive exponent choices, since the obstruction holds simultaneously for every allowed base and exponent.
+
+**The missing implication is “constant gcd answers ⇒ one budgeted T1 design.”** T1 fixes each generator’s weights, denominator, class modulus and key modulus; it also restricts target activation/window selection. Its budgets are
+
+\[
+\mathbb E_{\text{all }n\text{-bit }N}\#\tau\le X,
+\qquad
+\mathbb E_{\text{all }n\text{-bit }N}\sum_\tau|S_\tau|\le X^2.
+\]
+
+Neither an expected running-time bound on \(S_n\), nor a budget only on the real executions on the hard set, supplies these two bounds. A forced all-1 execution can have different costs on other inputs. Arbitrarily truncating that execution can itself make target activation depend on non-local information. Likewise, successive locally permitted queries can collectively reveal information not permitted by any one target key.
+
+**Exact repair:** add the following model assumption:
+
+> Replacing every Y₁ gcd response by 1 produces, over all n-bit inputs, one T1 design with the stated fixed generators, locality restrictions and charged moment budgets. Every certified X-hit on the surviving hard pairs is covered by that design. Intermediate residues, timing, and other Y₁ computations may not select or activate targets except through the permitted local keys.
+
+Equivalently, prescribe the collision design independently of Y₁ and permit Y₁ only as an auxiliary success mechanism. A broader adaptive theorem needs a new argument. “No cost bound on Y₁” does not license unrestricted computation to influence the selector.
+
+Allowing \(a^E\bmod N\) as **unit handles** is harmless for this counting argument: certified coverage is still the arithmetic condition (2.1) of T1. Reading those values to choose weights, classes or windows is a different model. Successful order coincidences not certified by (2.1) must remain excluded explicitly. All setup and extraction successes must also be included in the model’s success definition or ruled out.
+
+There is no need to apply T1 to the prime set G as if it were an equidistributed prime box. Apply its **absolute upper bound on total covered pairs**, then intersect with G:
+
+\[
+\#\mathrm{fail}\ge |G|-\#\mathrm{T1\ covered}
+\ge \left(c_0-Cn^2X^{3/2}P^{-1/2}\right)|S_n|.
+\]
+
+This proves the claimed \(P^{1/3}n^{-4/3}\asymp N^{1/6}n^{-4/3}\) threshold under the repaired model.
+
+**F_iv and references.** The foundational reference is Fouvry, *Théorème de Brun–Titchmarsh; application au théorème de Fermat*, Invent. Math. **79** (1985), 383–407 ([DOI](https://doi.org/10.1007/BF01388980)). The cumulative positive-proportion result with an exponent strictly exceeding 2/3 is the relevant input. It cannot be localized to every \([aX,bX]\) merely by subtracting two lower bounds. Baker–Harman’s *Shifted primes without large prime factors*, Acta Arith. **83** (1998), 331–361 ([original](https://matwbn.icm.edu.pl/ksiazki/aa/aa83/aa8342.pdf)), contains the later numerical development; its smooth-shifted-prime theorem must not be confused with a positive-proportion theorem. Runbo Li’s 2025 preprint gives a later large-factor exponent, but its stated Theorem 1 is an infinitude statement ([Theorem 1](https://arxiv.org/html/2508.18285v2)).
+
+I did **not** verify a published theorem with the exact arbitrary-fixed-interval quantifiers of F_iv. Keep F_iv explicit unless a precise theorem or a proof of localization is supplied. This is a source-verification gap, not a claim that such localization is an open problem. The cited WM §35 proof does not close it: its population uses \((x^{1-\varepsilon},x]\), rather than the two fixed relative intervals required here. In particular, its “nearly balanced” population is not automatically the fixed-ratio, fixed-bit population \(S_n\). [WM §35](https://igent.ai/research/floors-not-bounds/factoring_report.pdf#page=100).
+
+The combination is not literally WM’s theorem, because it adds local collision search and simultaneous control of a base portfolio. But the repaired proof is a routine combination of the classical order-removal argument and T1, not a new analytic theorem. Describe it that way; “no prior formulation found” is the appropriate novelty qualification.
+
+**3. Lemma KE and Theorem CS — CORRECT WITH FIXES; the transcription omits important restrictions.**
+
+KE is valid with the hypotheses retained in the blind report: fixed generators, \(M\mid K\), \(M,K\le P/2\), canonical \(D/|A|\ll M^2\), and T1’s charged moment budgets over **all** n-bit integers. Set
+
+\[
+\kappa=\max_\iota\max(1,K_\iota/M_\iota^2).
+\]
+
+The partner count gives a factor \(\sqrt{D/|A|+K}/M\ll\sqrt\kappa\), and summing gives \(O(P^{3/2}\sqrt\kappa X^{3/2})\) covered pairs. One-term targets are handled by swapping sides and transforming the residue class. Division yields the displayed fraction only for a box containing \(\gg P^2/n^2\) prime pairs. Replace “any balanced prime box” by “any fixed-relative-size balanced prime box with that cardinality,” or divide by the actual box cardinality.
+
+The collision inequality is elementary and correct:
+
+\[
+\mathrm{Coll}=\sum_j(a_j/\Pi)^2\ge1/R.
+\]
+
+But Coll samples with replacement. For distinct unordered pairs the **exact** equal-signature fraction is
+
+\[
+c_{\rm eq}=
+\frac{\sum_j a_j(a_j-1)}{\Pi(\Pi-1)}
+=\frac{\Pi\,\mathrm{Coll}-1}{\Pi-1}.
+\]
+
+The clean finite theorem is therefore
+
+\[
+Cn^2\sqrt\kappa X^{3/2}P^{-1/2}\ge c_{\rm eq}-\varepsilon.
+\]
+
+Writing Coll − ε − O(1/Π) is legitimate, but extracting a useful \(R^{-2/3}\) lower bound requires a positive right-hand side—for example \(R=o(\Pi)\) and \(\varepsilon=o(1/R)\). When all signatures are distinct there are no equal-signature distinct pairs. Almost-all success with unspecified \(o(1)\) failure does not suffice when \(R\to\infty\).
+
+**Adaptivity is the substantive issue.** Equal signatures do not imply a common Y transcript for all pairs. If a certificate contains precisely the primes in one signature class, its gcd is N on a pair within that class and 1 on a pair in another class. Those nonsplitting answers identify the class and can choose different collision designs. Thus KE cannot be applied once merely because Y did not split.
+
+The blind report explicitly required the continuation to satisfy Model X; restore this as an **aggregate** condition: all certified X-successes after Y must be contained in one KE-admissible design with the stated global budgets. A per-transcript assertion that “this branch is T1” is insufficient. Alternatively charge the union of all possible branch designs. With at most H such designs, each having the same valid budgets, the immediate union bound has \(H\) times KE’s coverage bound; it does not give the printed CS bound. Even that variant requires the budgets on each forced branch over all inputs.
+
+For richer signatures, additionally state that equality rules out **every** allowed Y-splitting operation; “or richer labels” is not a proof of this property. Certificates and bounds must have prime-local meaning independent of the companion prime. Under these restrictions, CS is correct, and for worst-case success in the nonvacuous range it gives
+
+\[
+X\gg N^{1/6}\kappa^{-1/3}R^{-2/3}n^{-4/3},
+\qquad
+\kappa R^2\gg N^{3\delta}/n^4
+\]
+
+at \(X=N^{1/6-\delta}\). The original proof is a useful counting observation, not a barrier against unrestricted combinations of order information and local searches.
+
+**4. Lemma PF and Corollary PF — CORRECT WITH FIXES; the universal literature conclusion is OVERCLAIMED.**
+
+The two exponents are correct for the specified exhaustive interval recipe. Here is an explicit way to implement the stripping claim, including multiplicities. Put \(H=\lceil2X^{1-\theta}\rceil\), and form
+
+\[
+Q=\left(\prod_{\ell\le H,\ \ell\ {m prime}}\ell\right)^{\lceil\log_2(2X)\rceil}.
+\]
+
+Its bit length is \(H X^{o(1)}\). A remainder tree computes \(Q\bmod n\) for every candidate n; replace n by \(n/\gcd(n,Q)\). This removes all powers of primes at most H. On a promised candidate with \(P^+(n)>X^\theta\), the remaining cofactor is precisely that prime for sufficiently large X when \(\theta>1/2\). Test the remainders for primality. Total bit cost is \((X^\beta+X^{1-\theta})^{1+o(1)}\).
+
+Consequently
+
+\[
+e_{\rm fac}=(\beta+\alpha)/\theta,
+\qquad
+e_{\rm strip}=\max(\beta,1-\theta)/\theta.
+\]
+
+The output guarantee is \(z<p\le2z^{1/\theta}\), not necessarily a prime in \([z,2z]\). All comparisons must concern the same prime-construction task.
+
+The corollary’s algebra is correct when “factoring matters” means that it could beat the \(z^{1/2+o(1)}\) baseline while the stated stripping route cannot. The necessary region is
+
+\[
+2\beta<\theta\le2/3,
+\]
+
+including the case \(\theta\le1/2\), where the stripping lemma is unavailable. With \(\alpha=1/5-\delta\ge0\),
+
+\[
+\beta+1/5-\delta<\theta/2\le1/3
+\quad\Longrightarrow\quad \beta<2/15+\delta.
+\]
+
+These are necessary conditions, not an existence theorem or an exhaustive classification of prime-construction reductions. The threshold \(\theta\le2/3\) is a bound on the **guaranteed lower threshold**, not a claim that the prime obtained must be at most \(X^{2/3}\).
+
+The checked square-root-length inputs do not provide the desired gain. Merikoski’s stated theorem has \((\beta,\theta)=(1/2,18/19)\) up to logarithms ([paper](https://www.utupub.fi/server/api/core/bitstreams/69fee309-ee4f-4185-8e6b-443ce4cc8a3f/content)). Li’s 2026 preprint states \((1/2+\varepsilon,35/36-\varepsilon)\); retain the epsilon losses and preprint status ([Theorem 1](https://arxiv.org/html/2601.00910v1)). Neither has \(\theta>2\beta\).
+
+Required corrections to the literature claims:
+
+- For the stated Sander parameters \(\theta=\beta+c\beta^3\), the best exponent at \(\alpha=0\) is \(\beta/\theta=1/(1+c\beta^2)<1\), **not “≥1.”** To check whether it beats 1/2 one must check \(c\beta^2>1\); the qualitative formula without its constant does not establish the table’s claimed bound. The cited 1994 paper’s correct title is *On numbers with a large prime power factor*; specify the \(j=1\) specialization and its parameter restrictions rather than conflating prime powers with prime factors ([publication](https://doi.org/10.1007/BF01874946)).
+- “Every known theorem allows stripping” is false as written: the supplied below-square-root Sander-type inputs need not have \(\theta>1/2\). Their lack of a useful factoring gain has a different reason.
+- “No known theorem has θ > 2β” requires the **every sufficiently large interval** quantifier. Almost-all short-interval results, including almost-all prime-containing intervals, have different quantifiers and can satisfy such inequalities. They cannot simply be used at a prescribed target interval.
+- Multiplicative or polynomial families require a fresh cost calculation. If there are \(T^{b+o(1)}\) effectively enumerable candidates of size \(T^{d+o(1)}\), and one is guaranteed to have a prime factor above \(T^\lambda\), exhaustive factoring has exponent \((b+d\alpha)/\lambda\) in the target prime scale. An infinitude theorem supplies no bound on how far one must search.
+
+I found no additional **applicable uniform, effective** theorem or family that yields an improvement by this recipe. This supports “none of the checked inputs gives a gain,” not “factoring improves no deterministic prime-finding bound by any route.”
+
+**5. Proposition LW — CORRECT WITH FIXES; the nonresidue comparison is only an analogy.**
+
+The pigeonhole inference is correct: distinct signatures permit at most one all-zero signature. The important correction is to the meaning of a nonzero label. In WM Definition 32.1 the bounded order is
+
+\[
+\operatorname{ord}_{E(\mathbb F_p)}([L]P)\le B_2,
+\qquad
+L=\operatorname{lcm}\{\ell^e:\ell^e\le B_1\},
+\]
+
+not the order of the original starting point. Include all construction/singularity labels, and make the dependence on u and on the chosen range’s bounds explicit. The conclusion is one possible unexposed exception **per range**, not one globally exceptional prime. Exposure is only necessary here; a short least-exposure index does not imply pair separation. Thus Conjecture 33.1 implies a least-witness bound, but is not equivalent to one. [WM Definitions 32.1 and Conjecture 33.1](https://igent.ai/research/floors-not-bounds/factoring_report.pdf#page=95).
+
+Montgomery’s conditional lower bound \(n(p)\gg\log p\log\log p\) infinitely often is correctly described; the reference is *Topics in Multiplicative Number Theory*, LNM **227** (1971). There is also an unconditional obstruction to a universal \(O(\log p)\) bound, due to Graham–Ringrose, *Lower bounds for least quadratic nonresidues*, in *Analytic Number Theory*, Progress in Mathematics **85** (1990), 269–309. See the author’s [overview of the conditional comparison](https://www.cirm-math.fr/ProgWeebly/Renc1595/Lamzouri.pdf). The quoted Bach upper bound is valid but not current best: Lamzouri–Li–Soundararajan give a GRH bound below \((\log p)^2\) for primes \(p\ge5\) ([Corollary 1.1](https://www.math.ksu.edu/~xiannan/papers/QuaResL1ver2Sound.pdf)).
+
+There is no reduction between least nonresidues and these smooth-order witnesses. Multiplicativity creates special correlations for nonresidues. For curve exposure at fixed u, a positive constant success probability and an independence heuristic are compatible with a maximum waiting time of order log p. Moreover, an infinitely-often counterexample to an all-prime nonresidue bound does not by itself refute a statement allowing one exception per range. Present LW as evidence of the strength of the required uniform hitting theorem, not as evidence against it derived from Montgomery. “No GRH-type theorem verified for this explicit family” is justified; “the worst-case direction is killed” is not.
+
+**6. Escape table and (S1)–(S4) — OVERCLAIM.**
+
+An algorithm outside a model is not necessarily a fast algorithm for that model’s task. The table mixes those two notions, as well as theorems, conjectural inputs, empirical failures and proof-method limitations. Each witness needs its success population, randomness, rigor status and actual running-time guarantee. In particular, “every model floor has a known escape” contradicts the table’s own “none” entries.
+
+The following audit addresses every row, in table order. “Fix” means replace the corresponding model, necessity or witness assertion.
+
+| Row | Verdict and exact correction |
+|---|---|
+| WM 3.3/3.4/9.4/2.8 | **CORRECT WITH FIXES.** Separate candidate count from materialized-giant cost. Free giants do not remove the candidate floor. Arbitrary many moduli concern the shared one-modulus assumption; true-factor-only success concerns full coverage. D′ illustrates these changes with its own distributional guarantee. PS is an outside-model example, not a sub-1/6 witness. Coppersmith requires a promise or auxiliary information. |
+| WM 3.6 / multimod A | **CORRECT WITH FIXES.** Retain bounded degree, identity-certified full-candidate coverage and charged target/window budgets. The listed noncollision methods illustrate model exclusion, with their separate status labels. D′ supplies true-factor coverage on its proved population; it does not prove a full-candidate cover for all inputs. |
+| WM 4.4 / 4.5 | **OVERCLAIM.** These are different results, one involving a specified start-statistic envelope, the other bounded-integer divisibility tests. A method can change the family or envelope, use non-oblivious exclusion, or change representation. Implicit product evaluation is one possible escape, not the only “must break.” PS attains its divisibility scale. “None below 1/5” must refer to a specified deterministic full-coverage architecture, not all factoring algorithms. |
+| WM 10.1 | **CORRECT WITH FIXES.** This is the cost of the separately priced piecewise-evaluation architecture. Shared computation changes that premise. “No verified witness supplied” is acceptable; it is not a general factoring floor. |
+| multimod A′/B | **CORRECT WITH FIXES.** A′ needs insufficient degree-1 coverage, rather than the mere presence of higher-degree targets. B needs the distinct-target/height conventions. A sub-1/5 full-cover method in this model needs polynomially many moduli or another departure. D′ demonstrates the many-modulus ingredient, not an unconditional full-cover worst-case algorithm. |
+| below16 T1/T2/T3 | **GAP in the merged description.** These are three different locality classes; arbitrary combinations are not covered. State each class and its moment budgets. KE quantifies only the enlarged-key T1 extension, and only when collisions cover a nonnegligible specified mass. Special-family/Coppersmith witnesses are promise results. |
+| CB | **GAP.** Apply item 2’s closure and budget repair. Increasing B₂, enlarging the base portfolio beyond its height bound, admitting other collision identities or changing selectors can also leave CB while staying in the multiplicative group. “Other groups” is not forced without those alternatives being excluded. |
+| CS | **GAP.** Restore aggregate Model X after Y and use the exact equal-pair fraction from item 3. The R threshold is a worst-case/nonvacuous statement, not an unrestricted almost-all statement. A conjectural list is not a known algorithmic witness. WM Proposition 33.2 assumes two-sided exposure-probability bounds; it does not establish unconditional randomized ECM performance at these parameters. |
+| coverage38 U | **CORRECT WITH FIXES.** Include the charge for every enumerated group, even inactive groups, and WIN only for rules where it is established. Coverage at λ below the J^(1/4) threshold is a necessary achievement **within** the model, not a violated model hypothesis. Adaptive group selection or a different charging architecture are further possible departures. |
+| coverage38 L / dchworst B1 | **CORRECT WITH FIXES.** Label this a limitation of phase-discarding/error-budget arguments. Keeping phases or exploiting correlations can change the argument. “No witness supplied” is fine; no arithmetic lower bound is proved. |
+| dchworst B2 | **CORRECT WITH FIXES.** It obstructs a single-modulus worst-case pigeonhole proof. D′ demonstrates an average union-over-moduli argument, not the required worst-case union theorem. |
+| dchworst B3 | **OVERCLAIM.** One may prove the sparse U statement, use primality, or establish a covered-or-easy dichotomy. No theorem says a dichotomy is mandatory. The all-coprime-pair premise is essential. |
+| sieve2d Proposition 5 | **CORRECT WITH FIXES.** Specify fixed J, the matched low-order event statistics and the resulting λ^(-floor(J/2)) limitation. It does not exclude growing-order information or every moment method. |
+| unbalanced O′ | **WRONG witness classification.** PS attains the sqrt(p) branch; attainment is not escape. The other witnesses change coverage, representation or guarantees. Retain the full/constant-fraction candidate-coverage premise and the normalization restrictions of model L. |
+| Track C O1–O4 | **CORRECT WITH FIXES.** These concern specific unit-predicate representations. PS/BGS is an operational alternative at sqrt(length) cost. Tal with p supplied is not a factoring algorithm from N alone. List it as a different-input comparison. |
+| Track A A1 | **CORRECT WITH FIXES.** State the faithful linear-observable/dense representation restriction. Algorithms avoiding that representation are outside the task model; this row supplies no new fast factoring witness. |
+| Track E | **CORRECT WITH FIXES.** The per-modulus information restriction is essential. Coppersmith uses promised factor information with the requisite shape and amount; it is not an unpromised algorithm from N. |
+| eps battery | **OVERCLAIM as a barrier.** This is a finite negative experiment, not a theorem constraining all algorithms using its statistics. Relations are an untested mechanism, not a mathematical counterexample to the finite observations. |
+| nfsfruit / lemmaM | **WRONG as one “must break” row.** Lemma M is an open sufficient fruitfulness condition, not a proved floor or a necessary condition for every NFS proof. Split it from the even-support two-form obstruction and the one-level HECM cost calculation. Dixon/DD exploit hidden-root fibre symmetry; they do not escape by breaking that symmetry. DD’s fruitfulness theorem alone supplies neither a proved relation-supply bound nor deterministic factoring. |
+| hypD G/H | **CORRECT WITH FIXES.** Keep G’s counting-template restriction and H’s fixed-k shape-testing architecture. New arithmetic estimates could prove the missing hypotheses without violating these statements. “None verified” describes the audit, not an exhaustive impossibility result. |
+| generic group | **OVERCLAIM.** Shoup’s discrete-log theorem and Damgård–Koprowski’s root-extraction theorem concern different tasks/distributions. Neither alone proves that every fast factorizer must be nongeneric. Explicit-modulus algorithms are outside their representations. Remove the universal “everything” witness and the factoring-depth inference. |
+| generic ring | **CORRECT.** These are reductions/equivalences, not factoring lower bounds. Jacobi via reciprocity is the appropriate representation-dependent comparison. |
+| AC⁰[p] | **WRONG scope.** The relevant exclusions concern polynomial-size, exact, all-input circuit families with the specified gates. Multiplication is in TC⁰, so “uses multiplication” does not force superconstant threshold depth. This row does not exclude sub-1/6-time algorithms or promise algorithms on S_n. |
+| τ-conjecture / SLP | **CORRECT WITH FIXES.** Specify the exact product-polynomial SLP family and the conjectured root-count exponent. A factorer need not evaluate that polynomial at all; the claimed tradeoff does not apply merely because an algorithm uses products or polynomial arithmetic. |
+| DR contrapositive | **CORRECT WITH FIXES.** This is a conditional upper bound and its contrapositive, not another unconditional model floor. Use item 1’s quantifiers. |
+
+A defensible signature is much shorter:
+
+- **S1:** a below-1/6 algorithm cannot be a charged, bounded-degree, identity-certified **full-candidate** cover satisfying multimod A.
+- **S2:** if an enlarged-key T1 component alone covers a constant fraction with budget \(N^{1/6-\delta}\), then \(\kappa\gg N^{3\delta}/n^4\). A general non-local selector is outside KE; KE does not measure every possible non-local computation.
+- **S3:** within repaired CB/CS, a complementary mechanism must escape at least one of their explicit assumptions. Other groups and relation methods are examples. Signature richness is relevant only to fixed-list splitting with the appropriate failure bound. “Other groups + a least-witness theorem” is not a universal requirement for all worst-case algorithms.
+- **S4:** delete the asserted general depth necessity. An exact all-input polynomial-size factoring family in TC⁰ would refute Kalai’s stated Möbius-orthogonality conjecture; that is a separate conditional observation. It says nothing comparable about a sub-1/6-time algorithm, whose circuit size can be exponential in n, or an algorithm promised only balanced semiprimes. S_n has density only Θ(n⁻²) among n-bit integers. Hardness on all integers does not automatically restrict that promise.
+
+For the unconditional circuit row, the appropriate source is Allender–Saks–Shparlinski, *A lower bound for primality*, Theorem 1 and its AC⁰[p] consequence ([original](https://eccc.weizmann.ac.il/report/1999/010/comment/1/download/)). The polynomial-size restriction must remain visible.
+
+I found no **unconditional uniform classical deterministic** algorithm with a proved below-1/6 bound on almost all of the specified balanced-semiprime ensemble, or on every such input. This is a literature-search finding, not a completeness theorem. LP has randomness; QS/NFS retain unproved analyses in their usual fast forms; DR has its hardness assumption; explicit ECM separation has its hitting/separation assumption. Positive-proportion and special-family successes are not almost-all witnesses. The “full signature” should mean the desired algorithmic guarantees, since the printed S4 is not a valid necessary condition.
+
+**7. Consequence catalog H1–H5 — CORRECT WITH FIXES for the direct reductions; OVERCLAIM for the negative catalog.**
+
+The phrases “would not give,” “nothing,” “survive,” and “no consequence” repeatedly turn an absence of a known reduction into a proved non-implication. Replace them systematically by “no such implication is established here” or “no such reduction is known to us.” Computational improvements are themselves mathematical consequences. The opening claim that fast factoring changes “almost nothing in mathematics” is an editorial assessment, not a finding proved by this catalog.
+
+**H1.** The direct arithmetic-function formulas, residuosity decision, order computation with further factoring calls, and two-square construction are sound with standard encodings. Required repairs and confirmations follow.
+
+| Entry | Verdict / correction |
+|---|---|
+| Complexity-class placement | **CORRECT WITH FIXES.** Factoring is a function/search problem; specify a threshold decision language when writing NP ∩ coNP or UP ∩ coUP. A unique sorted prime-power factorization, verified with AKS and a canonical encoding, gives the unambiguous certificates directly. No historical “from memory” citation is necessary. Say “no known class collapse follows,” not the unproved logical assertion that H1 cannot imply P = BPP. |
+| Arithmetic functions | **CORRECT.** For σ_k, fix k or account for its encoding and output length. Distinguish rad(N), the largest squarefree divisor, from the squarefree kernel in a decomposition N = ab². |
+| φ, λ, σ reverse arrows | **CORRECT WITH FIXES.** Keep randomized general reductions and the conditional deterministic ones. The displayed quadratic formula is for φ on pq, not for a supplied Carmichael λ-value. |
+| Żrałek | **CORRECT, with an essential clarification.** Corollary 8.2 uses the totient chain N, φ(N), φ²(N), …, 1, with O(log N) queries. Theorem 8.1 instead assumes φ(N) already completely factored. Neither is an L[1/3] reduction from one plain supplied value φ(N). The H5 CRT reconstruction supplies only that one value unless a uniform oracle is available on every successive query. [Original §§8.1–8.2](https://arxiv.org/pdf/0707.4102). |
+| Shallit–Shamir | **CORRECT WITH FIXES.** State a polynomially bounded prime q > 1 + log₂N and one call D = d(N^(q−1)). If r = v_q(D), squarefreeness is equivalent to D = q^r, and then μ(N) = (−1)^r. An exponent e ≥ 2 contributes a non-q factor because e < q. The exponent-multiset equivalence concerns an all-integer oracle and transformed queries; d(N) = 4 alone says nothing on S_n. [Article and author abstract](https://weizmann.elsevierpure.com/en/publications/number-theoretic-functions-which-are-equivalent-to-number-of-divi/). |
+| “No reduction known” from μ, squarefreeness, ω, d | **CORRECT as a scoped open-status statement.** Specify general binary inputs and the kind of reduction. It is not a theorem of nonreducibility and does not make all these oracle problems equivalent. |
+| Buchmann–Lenstra | **CORRECT WITH FIXES.** Theorem 1.3 is polynomial equivalence of maximal-order construction with computing rad(d) for an arbitrary integer d. Given an order A, rad(disc(A)) suffices for the forward construction. Theorem 6.12 is the separate recognition/squarefreeness equivalence. Do not replace the construction oracle by a squarefreeness bit. H1 does give deterministic polynomial-time maximal-order construction. [Original theorem statement](https://www2.math.ethz.ch/EMIS/journals/JTNB/1994-2/BuchmannLenstra.pdf). |
+| Class groups and units | **OVERCLAIM.** No polynomial-time reduction from full class-group/unit computation to integer factoring is supplied; that is the proper conclusion. Existing algorithms are not lower bounds. Hafner–McCurley’s setting is imaginary quadratic class groups, not arbitrary number fields, units and principal-ideal problems en bloc. State the field family, hypotheses and compact/output representation. The formula ω(D) − 1 is appropriate for negative fundamental quadratic discriminants; it is not a general-number-field 2-rank formula. Real quadratic narrow/ordinary class groups require the usual qualifications. |
+| Square-root construction | **CORRECT WITH FIXES.** A supplied factorization gives randomized polynomial-time construction. It does not establish an impossibility of a deterministic construction under H1. “Tonelli–Shanks still needs a deterministically supplied nonresidue” is the accurate algorithm-specific statement. Fixed radicands remain a valid Schoof exception. |
+| DLP | **CORRECT WITH FIXES.** Bach’s general reductions have randomized directions; preserve that qualification. The usual prime-field L[1/3] performance is heuristic, not a proved general bound. H1 supplies no established general prime-field DLP algorithm. |
+| Point counting | **CORRECT WITH FIXES.** Specify elliptic curves with good reduction modulo the prime divisors. For p^e use #E(Z/p^eZ) = p^(e−1)#E(F_p), then CRT. Schoof alone on each p does not state the prime-power step. |
+| Dieulefait–Urroz | **OVERCLAIM as “a twist.”** The operative Theorem 4 requires a twist parameter d with (d/p) = −1 at a factor. A square d can give the same count and no extra information. Their Theorem 5 invokes ERH to find a suitable parameter deterministically by a short search. Cite the qualifying theorem, rather than treating the introductory Theorem 1 as an unconditional arbitrary-twist oracle equivalence. Random parameter selection gives the corresponding randomized formulation. [Theorems 4–5](https://arxiv.org/html/1911.11004v1). |
+| τ(N) forward arrow | **CORRECT.** The deterministic prime-index coefficient algorithm, prime-power recurrence and multiplicativity give the claimed consequence of H1. This is specific to the appropriate fixed form and encoding, not an arbitrary modular-form-input problem. |
+| Bach–Charles | **OVERCLAIM as worst-case RSA factoring-hardness.** Theorem 2.2 gives polynomial-time factoring of a density-one subset of RSA moduli from a uniform coefficient algorithm for a fixed non-CM even-weight eigenform. Its reduction queries a(n) and a(n²), not just the supplied value at one RSA modulus. The exceptional case is both prime coefficients zero; Remark 2.5 handles balanced moduli too. It applies to τ without assuming Lehmer’s conjecture, but does not prove the printed all-instance single-value hardness claim. [Theorem 2.2, Example 2.3 and Remark 2.5](https://arxiv.org/pdf/0708.1192). |
+| Primitive roots / irreducible polynomials | **CORRECT WITH FIXES.** Testing primitive roots under H1 is straightforward; a general deterministic polynomial-time finder is not established by that test. “No change to irreducible-polynomial construction” is an absence-of-reduction assessment, not a theorem. |
+| Analytic NT | **OVERCLAIM in scope.** Fast individual evaluations do not by themselves prove cancellation or improve summatory complexity. They do not prove that no other analytic consequence exists. The Helfgott–Thompson 3/5 exponent is verified: the bit bound is O_ε(x^(3/5)(log x)^(8/5+ε)). [Paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC9731940/). |
+| Cryptography | **CORRECT WITH FIXES.** RSA/Rabin, QR-based encryption and the relevant RSA-group trapdoors are broken on the covered key distribution. For BBS, distinguish loss of the factoring-based security assumption from a proved attack on a completely hidden-state output stream. Given a final BBS state, factoring permits backward reconstruction, which breaks the corresponding exposed-state/Blum–Goldwasser use. Do not reverse a one-way security reduction without an attack. “Class-group, lattice, hash and code schemes survive” should be “their defining assumptions are not refuted by this reduction”; this does not certify every scheme or parameter set. |
+
+**H2.** The randomized analogues of the factorization-oracle reductions are valid, with certification or Las Vegas conversion where needed. The natural-proofs discussion is broadly right: Naor–Reingold’s 2004 paper actually has both factoring-based and DDH-based constructions; the factoring citation is not simply a confusion with the DDH construction ([authors’ publication record](https://weizmann.elsevierpure.com/en/publications/number-theoretic-constructions-of-efficient-pseudo-random-functio/)). However, “the barrier survives” remains conditional on the other PRF assumptions at the quantitative security strength required by the relevant natural-proofs theorem. Ordinary polynomial-adversary security is not automatically every stronger security hypothesis used in a circuit barrier. Likewise, only the factoring-based instances of learning-hardness results lose their premise. Simon/Forrelation comparisons must retain their oracle/query or additional conjectural status; they are not unconditional unrelativized BQP-versus-BPP separations.
+
+**H3.** There are three substantive repairs. First, a heuristic NFS attack is not an unconditional contradiction to a circuit-hardness assumption. Second, an L[a,C] attack rules out hardness at sizes 2^(n^ε) when ε > a; the boundary ε = a depends on logarithmic factors and constants. Replace both strict “ε < …” statements by this qualified comparison. Third, a new rigorous factoring algorithm does not automatically give a new prime-field DLP algorithm. Delete that inference. “A Frobenius substitute would be needed” is at most an analogy about one proposed mechanism, not a necessary condition. “No mathematical consequences” is again an unsupported universal negative.
+
+**H4.** Preserve all-input versus ensemble guarantees. On arbitrary inputs, p − 1 can have size comparable to N; it does not always add only N^(1/10) work. On balanced semiprimes that particular estimate is valid. On general inputs, use H4w itself for the further factoring calls and charge them, which still preserves the exponent up to logarithms. Damgård–Koprowski supplies no universal “generic root-extraction exponent 1/5” for this explicit-modulus task. The WM/R/U/dchworst obligations apply only to algorithms using those coverage certificates and their cost model, not to every H4w algorithm. H4a expected time on S_n does not automatically satisfy T1’s all-integer moment budgets. “Average” and “almost all” must be separate hypotheses: an unspecified exceptional density does not determine average running time with a slow fallback.
+
+**H5.** The constant-value and coprime-mask observations are correct on the stated distinct-prime promise. The ε equivalence needs its promise: for odd pq ≡ 1 mod 4, φ(pq) mod 8 is 0 when both primes are 1 mod 4 and 4 when both are 3 mod 4. For pq ≡ 3 mod 4, φ(pq) ≡ 0 mod 8 while (−1/p) depends on the designated factor, so the unrestricted equivalence is wrong. CRT reconstruction from a uniform family of residues is correct. For general N, the Żrałek conclusion additionally needs oracle access on the totient chain, as explained above. The final claim that these are the **only** small-output oracles that factor is false as a universal classification; limit it to the enumerated oracle menu and model.
+
+**Kalai and Sarnak.** The Kalai implication is correct for exact all-input polynomial-size factoring circuits: postprocess a canonical factorization in TC⁰ to compute μ. To match a Boolean-valued correlation conjecture, take f(n) = μ(n) when μ(n) ≠ 0 and f(n) = 1 otherwise. Then μ(n)f(n) = μ(n)² has mean 6/π². The exact conjecture is in Kalai’s 15 December 2024 post, “Circuit Complexity and Möbius Randomness – the Frontiers,” item 3 ([post](https://gilkalai.wordpress.com/2024/12/15/peter-sarnak-is-coming-to-town-lets-celebrate-it-with-a-post-on-mobius-randomness-computational-complexity-and-ai/)). It has no direct H4/promise-algorithm consequence.
+
+Sarnak’s quotation is authentic and supports the narrow point: he did not expect polynomial-time computability to imply Möbius orthogonality. The source located is his **Mahler Lectures 2011** slides, not an identified ICTS lecture ([slides](https://publications.ias.edu/sites/default/files/Mahler%20Colloquium%20Lecture%204%20-Mobius%20randomness%20and%20dynamics.pdf)). Under H1, ξ = μ has positive self-correlation. This does not contradict the zero-entropy disjointness conjecture. Say “no contradiction is exhibited,” rather than claiming a formal consistency theorem for H1 and Sarnak or τ.
+
+**8. Experiment E1 — OVERCLAIM as a CB⁺ test/refutation; CORRECT WITH FIXES as a whole-order smoothness diagnostic.**
+
+The implemented event is exactly
+
+\[
+P^+(\Phi_d(p))\le B_2.
+\]
+
+This means that a suitably saturated B₂-smooth exponent can annihilate the **whole cyclic torus group**. Ignoring stage-1 restrictions and computation costs makes it generous relative to whole-order stage-1/2 success criteria. It is **not** an upper bound on all actual point/base exposures: an element may have smooth order inside a nonsmooth group. CB’s small-order removal addresses that issue for its integer bases; E1 has no corresponding lemma for its other tori.
+
+A small exact example illustrates the logical distinction. At B₂ = 3, both primes 41 and 43 have all five Φ_d-values nonsmooth; the values for 41 are 40, 42, 1723, 1682, 1641, and for 43 they are 42, 44, 1893, 1850, 1807. Nevertheless
+
+\[
+\gcd(9^4-1,41\cdot43)=41,
+\]
+
+with 4 a 3-smooth exponent. This is a counterexample to identifying the diagnostic residual with non-exposure; it is not a counterexample to CB’s asymptotic base-height restriction.
+
+CB⁺ also needs more than simultaneous large factors of p − 1 and p + 1. Those conditions alone do not obstruct d = 3, 4, 6. One needs a positive-density joint residual for **all allowed groups**, together with control of the chosen elements’ orders, construction degeneracies and the same collision-stage closure as CB. For degree-two Φ_d-values, the order-removal threshold is not automatically p^(1/3): the cofactor after removing a large prime can be much larger. No “same proof” extension has been supplied. The moduli-product observation about two shifts diagnoses a limitation of a direct progression-counting strategy; it does not prove that every level-1 method or every other strategy is incapable of proving the statement.
+
+**A concrete reporting error:** P2 fails at **26 bits as well as 20 bits**, since 0.11475 < 0.12. The note’s “P2, P3, P4 fail at 20 only; they hold at 26 and 32” is false. The saved summary correctly records P2 = false. The actual values are r₁ = 0.0829, 0.1016, 0.1086 and r₂ = 0.0069, 0.0108, 0.0113, with r₁(32)/r₁(20) ≈ 1.31001.
+
+Reporting **“mixed” under the frozen rule is honest**. Reporting the increase as a separately labelled post-hoc observation is also honest. It supports only “no decreasing trend was observed at these sizes.” Three sizes cannot establish a positive asymptotic residual or rule out polynomial decay later. Independence and Dickman predictions for these prime-polynomial values are heuristics, not consequences of the ordinary integer Dickman theorem.
+
+Further scope corrections: the sample is uniform without replacement among primes in one dyadic block, and its matched pairs are not uniform on a single S_n. The fixed B₂ is tied to the block’s upper scale. The printed binomial errors are descriptive approximations; finite-population correction matters at 20 bits, and the disjoint matching is not a set of independent Bernoulli pair samples. These issues do not erase the observed residual but preclude stronger statistical claims without accounting for the sampling design.
+
+Replace **“D6 refuted for cyclotomic portfolios”** by:
+
+> The fixed five-group whole-order-smoothness proxy leaves about a one-percent pair residual at the sampled scales. This is evidence against the proposed fixed-portfolio residual-tail heuristic at these scales; it neither proves an asymptotic obstruction nor bounds all point-order exposure portfolios.
+
+Do not infer that only growing ECM lists remain. Growing degree lists, different element portfolios, adaptive choices and other mechanisms have not been classified or ruled out.
+
+**9. Directions, especially D1 — GAP in the proposed analytic reduction; the transfer lemma is CORRECT.**
+
+The transfer lemma is exactly right. If at most ε_n·2^(n−1) n-bit integers are bad and |S_n| ≥ c·2^n/n², then the bad fraction on S_n is O(ε_n n²). Thus ε_n = o(n⁻²) suffices. For a mean-time result with N^(1/5) fallback, it is not sufficient: the residual must instead satisfy the quantitative fallback inequality, for example η ≤ N^(−1/30−δ) at the claimed target exponent.
+
+The coordinate calculation is also correct, but its consequence is overstated. Put
+
+\[
+m=\lceil\sqrt N\rceil,\quad r=m^2-N,\quad
+v=r+2mt+t^2,\quad w=r+2mt'+t'^2.
+\]
+
+Apart from endpoints, 0 ≤ r < 2m and m ≍ P. For t′ ≠ t the determinant of the affine map (m,r) ↦ (v,w) is 2(t − t′). Writing k = t′ − t gives
+
+\[
+w-v\equiv t'^2-t^2\pmod{2k},\qquad
+m=\frac{w-v-(t'^2-t^2)}{2k}.
+\]
+
+The domain is therefore an affine lattice coset **intersected with a coupled thin region**. It is not an unrestricted product of two progressions. For t,t′ ≍ T,
+
+\[
+w-\frac{t'}t v=kt'-\frac{k}{t}r,
+\]
+
+so the permitted w-window for fixed v has width O(kP/T), and relative width O(k/T²) at size PT. The required sum is a two-variable smoothness correlation in that region, not the ordinary one-variable count of smooth numbers in an AP modulo 2k. Noncoprime residue classes and local divisibility factors also need treatment.
+
+The cited Harper theorem has an additional explicit condition: **log x / log q → ∞**, besides q ≤ y^(4√e−δ). For q ≍ T ≍ y = N^c and x ≍ PT = N^(1/2+c), that quotient is bounded. Checking only the modulus-versus-y inequality does not apply the theorem. Its long-range marginal equidistribution would not by itself resolve the coupled short-window correlation anyway. [Harper, Theorem 1](https://arxiv.org/pdf/1103.2106). A BDH theorem also needs an actual reduction controlling the weights and the thin support; quoting its modulus range is not that reduction.
+
+The first moment over all integers can indeed be expressed as a weighted long-range smooth-number count using the m-blocks. The direct first moment on S_n contains the simultaneous balanced-semiprime condition on m² − r. Ordinary Bombieri–Vinogradov for semiprimes in progressions is not automatically a theorem about that condition. The all-integer transfer route is useful precisely because it offers a way to avoid that extra condition—once a sufficiently strong all-integer exceptional bound is proved.
+
+**Fix the kill criterion.** A particular second-moment estimate giving only O(n^(−c)) exceptional density with c ≤ 2 fails to establish the stated transfer. It does not kill D1, and it is not enough to identify one hard short-window regime. Near-diagonal pairs can often be discarded: |t − t′| ≤ K contributes at most O(TK) pair terms per input, which is a relative O(K/T) after normalization by T². One need not prove a sharp asymptotic for every k = 1 pair. Higher moments, stratification, different schedules and lower-tail arguments remain possible.
+
+A concrete sufficient target is a count Z_N with mean ≍ T, a fixed positive gap above the required relation count, and
+
+\[
+\operatorname{Var}(Z_N)=o(T^2/n^2),
+\]
+
+or a direct lower-tail estimate of strength o(n⁻²). If local means vary, formulate this condition after a justified stratification or prove a lower-tail bound that accommodates the variation. Fruitfulness and deterministic extraction remain separate obligations. Merely detecting one fruitful kernel vector on successful trials does not bound the exceptional set where none exists.
+
+My ranking, by prospects for **verifiable progress**, is:
+
+1. **D3, selector audit.** Highest chance of a sharp result on a concrete proposal. Require a complete key/activation/budget specification; KE is a diagnostic only inside its extension of T1.
+2. **D1, fixed-u relation supply plus fruitfulness.** Best substantial algorithmic target, but the thin-region correlation and exceptional-set bounds are genuinely missing. Start with an explicit all-integer lower-tail lemma and its local factors.
+3. **D5, targeted derandomization.** Worth keeping separate: targeted LP derandomization is not proved equivalent to deterministic QS, and LP’s success predicate is more complicated than merely “a class number is smooth.” Enumerating seeds also requires a proved hitting property and seed-evaluation cost. A below-1/6 exponent requires strict seed-length slack, such as (1/6 − δ)n bits with N^o(1) cost per seed; n/6 bits only reaches the boundary.
+4. **D2, other-group hitting/separation.** Potentially useful, but separate constructive hitting from proving failure of a torus portfolio. Simultaneous large prime factors are an obstruction theorem, not themselves a factoring success theorem. Being beyond a chosen sieve’s range is not a proof of impossibility.
+5. **D4, promise-preserving reductions.** A legitimate reduction problem, with a precise source problem, output distribution and oracle promise. Coprime masks are a valid failure mode; they do not exhaust every possible reduction.
+6. **D6, residual portfolios.** Retain as a quantitative hypothesis to be tested and proved, not as “refuted.” The fallback calculation is correct; the required tail is unsupported. The fixed whole-order proxy in E1 does not settle the broader direction.
+
+**Required fixes**
+
+- Restore the aggregate locality and all-input moment-budget hypotheses in CB/CS; use the exact distinct-pair collision fraction and its nonvacuity conditions.
+- Keep F_iv conditional until its exact interval form is sourced or proved. Call CB a routine conditional combination, with appropriately limited novelty language.
+- Correct LW to residual point order after stage 1. Remove S4 as a general necessity and separate all-input polynomial-size circuit observations from H4/promise guarantees.
+- Repair the catalog’s oracle/query, twist, field-family, randomness and heuristic qualifications; replace universal negative consequences by scoped absence-of-reduction statements.
+- Correct Sander’s exponent row and the 26-bit P2 failure. Rename E1’s event as whole-order smoothness; withdraw the CB⁺/D6 refutation claims.
+- State D1’s thin-region smooth-pair estimate as open, include Harper’s missing limiting hypothesis, and replace the proposed kill criterion by the required exceptional-set/lower-tail target.

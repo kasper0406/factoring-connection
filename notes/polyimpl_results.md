@@ -5,659 +5,754 @@ Agent `polyimpl`, phase 7, 2026-10-19.
 - Code: `src/polyimpl/{residual,primefind}.py`. Tests: `tests/test_polyimpl.py`.
 - Raw data: `experiments/raw/polyimpl_e1.jsonl`. Summary:
   `experiments/analysis/polyimpl_e1_summary.json`.
-- GPT-6.1-sol: blind round `codex/polyimpl_1.{md,out}`; adversarial review
-  `codex/polyimpl_2.{md,out}` (§9).
-- Independent Opus critic: §9.
-- Status labels: **KNOWN** (with reference), **PROVED** (proof here; routine unless said
-  otherwise), **CONDITIONAL**, **SPECULATIVE**, **FALSE**, **experimentally supported**.
-- "Codex §x" refers to sections of `codex/polyimpl_1.out`. Its proofs were re-checked here.
+- GPT-6.1-sol: blind round `codex/polyimpl_1.{md,out}` (the `.out` is the full report);
+  adversarial referee `codex/polyimpl_2.{md,out}`.
+- Independent read-only Opus critic: findings in §9, all applied.
+- Status labels:
+  - **KNOWN**, with a reference;
+  - **PROVED**, with the proof here, routine unless said otherwise;
+  - **CONDITIONAL**, **SPECULATIVE**, **FALSE**, **experimentally supported**.
+- "Codex §x" means a section of `codex/polyimpl_1.out`. Its proofs were re-checked here.
 
 ## 0. Verdict (plain language)
 
-**Fast factoring would change almost nothing in mathematics, and that is the main finding.**
+**We found no consequence of fast factoring outside factorization-derived computation.** This is
+an editorial assessment of the literature we checked, not a theorem.
 
-What each hypothesis would and would not give:
-- Polynomial-time factoring, deterministic or randomized, would give:
-  - fast versions of every factorization-derived function: μ, φ, σ, squarefree parts, rings of
-    integers, order finding, point counts mod N, τ(N);
-  - the death of RSA, Rabin and BBS.
-- It would not give:
-  - class groups, prime-field discrete logs, or deterministic square roots mod p;
-  - any new theorem about primes;
-  - a contradiction with any unconditional theorem or conjecture we checked, including
-    Sarnak's conjecture and the τ-conjecture.
-- **No free lower bound for factoring comes from mathematics.**
+What polynomial-time factoring (H1, H2) would give:
+- fast versions of the factorization-derived functions μ, φ, σ, the squarefree parts, maximal
+  orders, order finding, #E(Z/N) and τ(N);
+- the end of RSA- and Rabin-type cryptography.
 
-**No blocker from prime construction.** The natural candidate fails on arithmetic (Lemma PF,
-§3).
-- Every known "large prime factor in a short interval" theorem is strong enough that the large
-  prime factor can be stripped out *without factoring anything*.
-- So a polynomial-time, or N^{1/6−δ}, factoring algorithm improves no deterministic
-  prime-finding bound. The barrier there is purely analytic.
+What it would not give, as far as we can tell:
+- No implication is established for class groups, prime-field discrete logs, deterministic
+  square roots mod p, or any theorem about primes.
+- No contradiction appears with any unconditional theorem or named conjecture we checked:
+  Sarnak, τ, μ ⊥ AC⁰, Kalai's TC⁰ conjecture (unless the algorithm is in TC⁰).
+- So mathematics supplies **no free lower bound** for factoring.
 
-**One conditional upper bound that changes the framing.**
-- Theorem DR: under the standard derandomization hypothesis (E needs exponential-size circuits,
-  Impagliazzo–Wigderson 1997), Lenstra–Pomerance's rigorous randomized algorithm becomes a
-  **deterministic L_N[1/2, O(1)] factoring algorithm for every N**.
-- So the project's "deterministic" frontier (N^{1/5} worst case, N^{1/6} average) is the
-  frontier of *unconditional derandomization*, not of factoring.
-- Conversely, an unconditional N^{Ω(1)} lower bound for deterministic factoring would prove
-  that E has subexponential circuits infinitely often, which is believed false.
+**No blocker from prime construction (Lemma PF, §3).**
+- The square-root-length "large prime factor in a short interval" theorems we checked need no
+  factoring at all: the large prime is stripped out with one remainder tree.
+- The shorter-interval theorems known (Sylvester–Schur and Sander type) are too weak.
+- So none of these inputs turns an H1 or H4 algorithm into a better deterministic prime
+  construction than z^{1/2+o(1)}.
 
-**Escape signature.**
-- Every model floor in the repository and in Ward–Maestro has a known algorithm that escapes
-  it (§5, table).
-- What has no witness is the *conjunction*: classical + deterministic + rigorous + almost all
-  (or worst case) + below N^{1/6}.
-- Two new combined barriers pin down the shape such an algorithm must have:
-  - **Theorem CB** (ours; conditional on a Fouvry-type sieve bound). Local collision search
-    plus *any* smooth-exponent annihilation in (Z/N)^* fails on a positive proportion of
-    balanced semiprimes below N^{1/6}/polylog. Smoothness bounds up to N^{1/3} and polylog
-    many bases are allowed.
-  - **Theorem CS** (codex, re-checked). Local search plus a fixed list of tests with R prime
-    signatures needs N^{1/6}R^{−2/3}/polylog in the worst case.
-- So a sub-1/6 deterministic algorithm must do one of:
-  - take order information from groups other than (Z/N)^*, such as tori, curves or class
-    groups, *with a hitting theorem*;
-  - use relations with a deterministic smooth supply and fruitfulness;
-  - use a non-local selector.
-- Known families supply each ingredient separately, but none supplies the conjunction
-  unconditionally.
+**A folklore conditional upper bound, worth keeping in view (Theorem DR, §1).**
+- Assume almost-everywhere circuit hardness for E (Impagliazzo–Wigderson 1997).
+- Then derandomizing Lenstra–Pomerance gives deterministic L_N[1/2, O(1)] factoring of every N.
+- So the project's unconditional deterministic exponents, 1/5 worst case and 1/6 average, sit
+  far above what the standard derandomization hypothesis predicts.
+- An unrestricted deterministic N^{Ω(1)} lower bound would refute that hypothesis.
 
-**Experiment E1 (pre-registered; verdict "mixed" under the frozen rule).**
-- Cyclotomic exposure tests d ∈ {1, 2, 3, 4, 6} at the N^{1/6} budget leave a residual of
-  primes:
-  - 8.3% at 20 bits, 10.2% at 26 bits, 10.9% at 32 bits;
-  - pairs: 0.69%, 1.08%, 1.13%.
-- The residual *grows* toward the independence-model value 14.1%.
-- Three of the five frozen ranges were missed on the low side at 20 bits, and the stability
-  ratio was 1.31, just above its band, because of growth, not decay.
-- Read post hoc: no decay, so a cyclotomic exposure portfolio cannot supply the polynomially
-  small residual that codex's Rank-4 route needs (§4.4, §7).
+**Escape signature (§§4.3, 5).**
+- Every model floor we list has some known algorithm outside its model, except the proof-method
+  rows (coverage38, dchworst B1, sieve2d Prop 5), which have none.
+- But no known classical algorithm is unconditionally deterministic, rigorous and below N^{1/6}
+  on almost all (or all) balanced semiprimes.
+- Two combined model barriers constrain such an algorithm. Both are routine combinations of
+  known ingredients, "no prior formulation found by us":
+  - **Theorem CB** (CONDITIONAL on the Fouvry-type interval bound F_iv).
+    - The algorithm runs a T1-local collision search with a per-input budget X.
+    - It may also run the (Z/N)^* tests gcd(∏(a^E ∓ 1), N), with B₂-smooth E (B₂ ≤ N^{1/3}),
+      up to ≈ N^{1/6}/n² bases, adaptively. Order collisions a^E ≡ a^{E′} are excluded.
+    - Under a stated closure condition, it fails on a positive proportion of S_n unless
+      X ≥ N^{1/6}/polylog.
+  - **Theorem CS** (codex, re-checked).
+    - The algorithm combines a T1-local search with a fixed certificate list having R prime
+      signatures, and the collision design does not adapt to the list's answers.
+    - Then worst-case success needs X ≫ N^{1/6}R^{−2/3}/polylog.
+- Inside these models a sub-1/6 almost-all algorithm needs at least one of:
+  - order information from other groups, with a hitting theorem;
+  - relations with a deterministic smooth supply and fruitfulness;
+  - a non-local selector;
+  - something outside every listed model.
 
-**Ranked directions (§7).**
-1. Fixed-u deterministic quadratic sieve on almost all N. Below 1/6 needs only *constant*
-   smoothness density, plus fruitfulness and deterministic elimination.
-2. Group-order hitting theorems outside (Z/N)^*. Theorem CB says this is forced; Prop LW says
-   the worst-case version is a least-witness problem.
-3. Non-local selectors with a key-size certificate (codex Rank 1).
-4. Promise-preserving partial-information reductions (codex Rank 2).
+**Experiment E1 (pre-registered; frozen verdict "mixed").**
+- It measures whole-order smoothness of the five cyclotomic tori at the N^{1/6} budget.
+- The residual of unexposed primes is 8.3% at 20 bits, 10.2% at 26 bits and 10.9% at 32 bits.
+- For pairs it is 0.69%, 1.08% and 1.13%.
+- Post hoc: no decreasing trend at these sizes. That is evidence against a fixed cyclotomic
+  portfolio having the polynomially small residual codex's Rank-4 route needs. It is not an
+  asymptotic statement.
 
-None is cheap *and* decisive beyond E1.
+**Directions (§7).** Two ranked lists:
+- **Ours:**
+  1. D1, fixed-u deterministic QS on almost all N, via all-integer averaging plus the transfer
+     lemma;
+  2. D3, an audit of non-local selectors;
+  3. D2, hitting outside (Z/N)^*;
+  4. D5, targeted derandomization;
+  5. D4, promise-preserving partial-information reductions.
+- **Codex's referee:** D3, D1, D5, D2, D4, D6.
+- No direction has a test that is both cheap and decisive beyond E1.
 
 ---
 
-## 1. Hypotheses and how consequences transfer
+## 1. Hypotheses, transfer, and Theorem DR
 
 The hypotheses:
 - (H1) deterministic polynomial time;
 - (H2) randomized polynomial time (classical);
 - (H3) L[1/3 − δ] or L[1/4], heuristic or rigorous;
-- (H4) either of:
-  - (H4w) deterministic worst case N^{1/5−δ};
-  - (H4a) deterministic average or almost-all N^{1/6−δ} on balanced semiprimes;
-- (H5) partial information only.
+- (H4w) deterministic worst case N^{1/5−δ};
+- (H4a) deterministic average, or almost-all, N^{1/6−δ} on S_n. "Average" and "almost all" are
+  different hypotheses: an unspecified exceptional density does not bound the mean with a slow
+  fallback;
+- (H5) partial-information oracles.
 
-**PROVED (transfer rule; codex §2).** A reduction that makes poly(n) factoring calls on integers
-≤ N^c turns an N^α factorizer into N^{cα+o(1)}, and an L[a, C] factorizer into L[a, Cc^a].
-- Average-case hypotheses (H4a) do **not** transfer to reductions that query integers outside
-  the ensemble (shifted values, p − 1, short intervals). An exceptional set of density
-  N^{−Ω(1)} can contain any prescribed short interval.
+**PROVED (transfer rule; codex §2).** A reduction making poly(n) factoring calls on integers
+≤ N^c turns N^α into N^{cα+o(1)}, and L[a, C] into L[a, Cc^a].
+- H4a does **not** transfer to reductions that query integers outside its ensemble.
+- An exceptional set of density N^{−Ω(1)} can contain any prescribed short interval.
 
-**PROVED (no collapse).** Factoring is a total search problem with a unique, efficiently
-verifiable answer.
-- It lies in NP ∩ coNP (Pratt; AKS). It lies in UP ∩ coUP (Fellows–Koblitz 1992; citation from memory, UNVERIFIED). It lies in
-  BQP (Shor 1997).
-- So H1 collapses no complexity class and needs no NP-hardness to fail. H1 does not imply
-  P = BPP.
+**PROVED (no known collapse).** The threshold language "N has a factor ≤ k" and its complement
+have unique certificates: the sorted factorization, verified with AKS.
+- So that language is in UP ∩ coUP ⊆ NP ∩ coNP. Factoring is also in BQP (Shor 1997).
+- No known class collapse follows from H1, and none of the reductions here gives P = BPP.
 
-**Theorem DR (PROVED; a routine composition of KNOWN results; no explicit statement found by us).**
-- *Hypothesis.* Some language in E = DTIME(2^{O(m)}) has circuit complexity ≥ 2^{εm} for all
-  large m (Impagliazzo–Wigderson, STOC 1997, main theorem).
-- *Conclusion.* There is a deterministic algorithm that outputs the complete factorization of
-  every N in time L_N[1/2, c] for an absolute constant c.
-- *Corollary.* Under the same hypothesis, H2 ⇒ H1.
+**Theorem DR (PROVED; a routine corollary of two KNOWN theorems; folklore).**
+
+*Hypothesis (IW).* There are H ∈ E = DTIME(2^{O(m)}), η > 0 and m₀ such that, for **all**
+m ≥ m₀, H restricted to length m needs circuits of size ≥ 2^{ηm}. This is the hypothesis of
+Impagliazzo–Wigderson, STOC 1997, pp. 220–229.
+
+*Conclusion.* A uniform deterministic algorithm outputs the complete factorization of every N
+in time L_N[1/2, c], for a constant c that depends on H. Under the same hypothesis, H2 ⇒ H1.
 
 *Proof.*
-- Lenstra–Pomerance (JAMS 5 (1992), main theorem, §1) is a Las Vegas algorithm with expected
-  time T = L_N[1/2, 1+o(1)], with no GRH.
-- Truncate it at 2T. By Markov it outputs a full factorization with probability ≥ 1/2, using at
-  most 2T random bits.
-- The output is checked (multiply, then AKS), so the predicate "seed r gives a verified
-  factorization" is computed by a circuit D_N of size S = T^{O(1)}, with N hardwired.
-- The IW97 hardness–randomness trade-off gives a generator G : {0,1}^{O(log S)} → {0,1}^{S}
-  that fools every size-S circuit with error < 1/4. It is computable in time poly(S), because
-  the hard function at input length O(log S) is evaluable in time 2^{O(log S)}.
-- Some seed s therefore has D_N(G(s)) = 1. Enumerate all S^{O(1)} seeds.
-- Total time S^{O(1)} = L_N[1/2, O(1)]. The H2 ⇒ H1 corollary is the same argument with T
-  polynomial. ∎
+1. Lenstra–Pomerance (JAMS 5 (1992), unnumbered main theorem of §1) is Las Vegas, with no GRH.
+   Fix an explicit clock U(n) = exp(C₀√(n log n)) that bounds its expected time on every n-bit
+   input.
+2. Truncate the algorithm after 2U(n) steps, counting random bits as steps. By Markov it
+   succeeds with probability ≥ 1/2.
+3. Add verification of the factorization: multiply out and run AKS. With N hardwired, this is a
+   circuit D_N of size S = U^{O(1)} on a random tape padded to length S.
+4. IW gives G : {0,1}^{O(log S)} → {0,1}^S, computable in time S^{O(1)}, which fools every
+   size-S circuit with error < 1/4.
+5. So some seed s has D_N(G(s)) = 1. Enumerate all S^{O(1)} seeds.
+6. The total cost is S^{O(1)} = L_N[1/2, O(1)]. The leading constant 1 is not preserved. ∎
 
-*Contrapositive.* Suppose deterministic factoring needs time > L_N[1/2, C] for every C on
-infinitely many n.
-- Then for every ε > 0, every language in E has circuits of size < 2^{εm} for infinitely many
-  m: an "i.o. subexponential circuits for E" upper bound, believed false.
-- So a superpolynomial-in-L lower bound for deterministic factoring is out of reach for the
-  same reason circuit upper bounds for E are.
+*Contrapositive.* Suppose **no** deterministic algorithm factors every N in time L_N[1/2, C],
+for any constant C. Then for every H ∈ E, every η > 0 and every m₀, some m ≥ m₀ has
+circuit complexity of H at length m below 2^{ηm}.
+- That is, E ⊆ ⋂_η i.o.-SIZE(2^{ηm}), language by language and exponent by exponent.
+- So an unrestricted deterministic lower bound would refute the IW hypothesis.
 
-Relation to what was known:
-- below16 §6.2(3) and Ward–Maestro §35 already note the *non-uniform* deterministic L[1/2]
-  (Adleman's argument). Theorem DR is the uniform, conditional version.
-- The prime-construction analogue (P = BPP ⇒ primes in polynomial time) is noted in Polymath4.
-- Factoring has a unique output, so "pseudodeterministic" factoring is just Lenstra–Pomerance;
-  compare Chen–Lu–Oliveira–Ren–Santhanam 2023 for primes.
+*Relation to known statements.*
+- below16 §6.2(3) and Ward–Maestro §35 note the non-uniform deterministic L[1/2] (Adleman).
+- Polymath4 notes the prime-construction analogue.
+- Factoring has a unique output, so "pseudodeterministic factoring" is simply Lenstra–Pomerance.
+  Compare Chen–Lu–Oliveira–Ren–Santhanam 2023 for primes.
 
 ---
 
 ## 2. Consequence catalog by hypothesis
 
+Throughout, "no implication established" means none is known to us, not a non-implication
+theorem.
+
 ### 2.1 (H1) deterministic polynomial time
 
 | Area | Consequence | Label / reference |
 |---|---|---|
-| Arithmetic functions | μ, λ (Liouville), ω, Ω, d, φ, σ_k, λ (Carmichael), rad, squarefree part and decomposition are all in FP | PROVED (formulas; codex §3.1) |
-| Reverse reductions | σ ⇒ factoring, randomized | KNOWN: Bach–Miller–Shallit, SIAM J. Comput. 15 (1986), Thm 2 |
-| | φ, λ ⇒ factoring, randomized; deterministic under ERH (Miller 1976); deterministic for N = pq (s = N + 1 − φ) | KNOWN; PROVED for N = pq |
-| | O(log N) φ-queries ⇒ deterministic full factorization in L[1/3, 1+o(1)] | KNOWN: Żrałek, Math. Comp. 79 (2010) 513–533 |
-| | d(N) ⇒ μ with one call, d(N^{q−1}) | KNOWN: Shallit–Shamir, IPL 20 (1985), Thm 1 |
-| | d ⇔ exponent multiset | KNOWN: Shallit–Shamir, Thm 2 |
-| | factoring ≤ μ, ≤ squarefreeness, ≤ ω, ≤ d: **no reduction known** | KNOWN-open |
-| Rings of integers | maximal order ⇔ largest squarefree divisor of the discriminant, so H1 ⇒ O_K in deterministic polynomial time | KNOWN: Buchmann–Lenstra, JTNB 6 (1994), Thms 1.3, 1.4, 6.12; Chistov 1989 |
-| Class groups, units | **not** implied: relation finding, regulators and principal-ideal tests remain L[1/2] (Hafner–McCurley 1989, GRH). H1 does give the 2-rank (genus theory: ω(D) − 1) | KNOWN / SPECULATIVE for "not implied" |
-| QR, square roots | QR decision mod N is in P | PROVED (Euler + CRT) |
-| | square-root *construction* is in randomized polynomial time only; deterministic needs a non-residue (GRH: Ankeny–Bach) or a fixed radicand (Schoof 1985). H1 does not derandomize Tonelli–Shanks | PROVED / KNOWN |
-| | Rabin: square roots ⇒ factoring, randomized | KNOWN |
-| Order finding | ord_N(a) in FP (factor N, then each p − 1) | PROVED (codex §3.2) |
-| | order ⇒ factoring, randomized (Miller/Shor) | KNOWN |
-| Discrete logarithms | DLP mod N ⇒ factoring; DLP mod N ⇐ factoring + DLP mod p. H1 leaves prime-field DLP at L[1/3] | KNOWN: Bach, UCB/CSD-84-186 (1984) |
-| r₂(N), two squares | r₂ in FP; one representation constructed deterministically (Schoof √−1 mod p + Cornacchia) | PROVED + KNOWN |
-| Point counts | #E(Z/N) in FP (CRT + Schoof) | PROVED |
-| | for N = pq, #E and #E′ (twist) ⇒ deterministic factoring | KNOWN: Dieulefait–Urroz, arXiv 1911.11004, Thm 1 |
-| | Kunihiro–Koyama 1998: probabilistic, with a gap noted by Dieulefait–Urroz | KNOWN |
-| Modular-form coefficients | τ(N) in FP (Edixhoven–Couveignes + multiplicativity) | KNOWN / PROVED |
-| | computing τ(N) for RSA moduli is factoring-hard | UNVERIFIED citation: Bach–Charles 2007, "The hardness of computing an eigenform" |
-| Explicit constructions | primitive roots mod p become *testable* in P, but finding one is still p^{1/4+ε} deterministic (Burgess / Shparlinski 1996), or polylog under GRH (Shoup) | KNOWN |
-| | no change to irreducible-polynomial construction | SPECULATIVE |
-| Prime construction | **no new bound** (§3) | PROVED for all known short-interval inputs |
-| Complexity | see §4 | |
-| Analytic NT | **nothing**. Faster evaluation of μ(n), Λ(n) or [P⁺(n) ≤ y] gives no cancellation in sums. Mertens sums are already sub-x^{2/3} without factoring (Deléglise–Rivat x^{2/3}; Helfgott–Thompson 2023 ≈ x^{3/5}, exponent UNVERIFIED by us). Only finite verification gets cheaper: odd-perfect bounds, aliquot sequences, squarefreeness of the Fermat numbers F_m for small m, Cunningham tables | PROVED (codex §6) + SPECULATIVE (none found) |
-| Crypto | RSA, Rabin, BBS, Paillier, Goldwasser–Micali, RSA-group VDFs and accumulators die. Class-group, lattice, hash and code-based schemes survive (H1 does not compute class groups) | KNOWN |
+| Arithmetic functions | μ, Liouville λ, ω, Ω, d, φ, σ_k (fixed k), Carmichael λ, rad(N), squarefree decomposition N = ab² — all in FP | PROVED (codex §3.1) |
+| Reverse reductions | σ(N) ⇒ factoring, randomized | KNOWN: Bach–Miller–Shallit, SIAM J. Comput. 15 (1986), Thm 2 |
+| | φ or λ ⇒ factoring, randomized (deterministic under ERH: Miller 1976). For N = pq, φ gives s = N + 1 − φ, deterministically | KNOWN; PROVED for pq |
+| | Żrałek, Math. Comp. 79 (2010), Cor. 8.2: O(log N) queries along the *totient chain* N, φ(N), φ(φ(N)), … ⇒ deterministic full factorization in L[1/3, 1+o(1)]. It is not one supplied value φ(N); Thm 8.1 assumes φ(N) is already factored | KNOWN |
+| | Shallit–Shamir, IPL 20 (1985): one call d(N^{q−1}), q prime > 1 + log₂N, decides squarefreeness and gives μ. d ⇔ the exponent multiset, for an all-integer oracle | KNOWN (codex §9.3 proof) |
+| | no known reduction of factoring to μ, squarefreeness, ω or d (general binary inputs) | KNOWN-open, scoped |
+| Maximal orders | Buchmann–Lenstra, JTNB 6 (1994): Thm 1.3, maximal-order *construction* ⇔ rad(d) for arbitrary d; Thm 6.12, *recognition* ⇔ squarefreeness. So H1 ⇒ deterministic polynomial-time maximal orders. A squarefreeness bit alone does not suffice | KNOWN |
+| Class groups, units | no reduction from class-group or unit computation to factoring is known. Imaginary quadratic class groups stay at L[1/2] under GRH (Hafner–McCurley 1989). For negative fundamental D, H1 gives the 2-rank ω(D) − 1 | KNOWN (scoped) |
+| Residuosity, roots | QR decision mod N is in P | PROVED |
+| | root *construction* given the factors is randomized polynomial time. Tonelli–Shanks still needs a non-residue (GRH: Ankeny–Bach; Lamzouri–Li–Soundararajan sharpen the constant). Fixed radicands are deterministic (Schoof 1985) | PROVED / KNOWN |
+| | root search ⇒ factoring, randomized (Rabin 1979) | KNOWN |
+| Order finding | ord_N(a) in FP, using further H1 calls on p − 1 | PROVED (codex §3.2) |
+| | order ⇒ factoring, randomized | KNOWN |
+| DLP | Bach 1984 (randomized reductions): composite DLP ⇒ factoring; composite DLP ≤ factoring + prime DLP. No prime-field DLP algorithm follows | KNOWN |
+| Two squares | r₂(N) in FP. One representation is deterministic (Schoof √−1 + Cornacchia) | PROVED + KNOWN |
+| Point counting | #E(Z/N), good reduction at all p ∣ N: #E(Z/p^e) = p^{e−1}#E(F_p), then CRT + Schoof | PROVED (codex §3.4) |
+| | Dieulefait–Urroz (arXiv 1911.11004), Thm 4: #E and #E^d mod N = pq, with (d/p) = −1 at a factor, ⇒ deterministic factoring. Thm 5 finds d under ERH. Kunihiro–Koyama 1998 is probabilistic and has a gap they point out | KNOWN |
+| τ(N) | τ(N) in FP (Edixhoven–Couveignes at primes, recurrence, multiplicativity) | KNOWN / PROVED |
+| | Bach–Charles (arXiv 0708.1192), Thm 2.2: a uniform algorithm for a(n) of a fixed non-CM eigenform, queried at n and n², factors a density-one set of RSA moduli. Not single-value worst-case hardness | KNOWN (checked by codex) |
+| Constructions | primitive roots become testable. Finding one: p^{1/4+ε} deterministic (Burgess; Shparlinski 1996), polylog under GRH (Shoup). No reduction for irreducible polynomials found | KNOWN / SPECULATIVE |
+| Prime construction | no new bound from the checked inputs (§3) | PROVED for those inputs |
+| Analytic NT | faster single evaluations of μ, Λ or [P⁺(n) ≤ y] give no cancellation in sums. Mertens sums are already O(x^{3/5}(log x)^{8/5+ε}) without factoring (Helfgott–Thompson 2023, verified by codex). Only finite verification gets cheaper (odd-perfect bounds, aliquot sequences, Cunningham tables). We found no other consequence | PROVED (codex §6) + assessment |
+| Crypto | RSA, Rabin, Goldwasser–Micali, Paillier and RSA-group trapdoors are broken on the covered keys. BBS loses its security assumption; an exposed final state is reversible (codex §5.4). Class-group, lattice, hash and code assumptions are not refuted by this reduction | KNOWN / PROVED |
 
 ### 2.2 (H2) randomized polynomial time
 
-- Everything in §2.1 holds with "randomized".
-- Under the IW97 hypothesis, H2 ⇒ H1 (Theorem DR). Without it, nothing about derandomization
-  follows.
-- Natural proofs:
-  - Naor–Reingold's factoring-based TC⁰ pseudorandom function (JACM 51 (2004)) loses its
-    hypothesis.
-  - The TC⁰ natural-proofs barrier survives through DDH or lattice PRFs (Banerjee–Peikert–Rosen
-    2012).
-- Learning hardness: Kearns–Valiant 1994 and Kharitonov 1993 lose their factoring instances.
-  Lattice-based versions (Klivans–Sherstov 2009) survive. **KNOWN.**
-- Quantum evidence: factoring stops being evidence that BQP ⊄ BPP. Simon, Forrelation and
-  sampling-type evidence remain. KNOWN (folklore).
+- §2.1 holds with "randomized". Under the IW hypothesis, H2 ⇒ H1 (Theorem DR).
+- Naor–Reingold, JACM 51 (2004), has both factoring-based and DDH-based PRFs in TC⁰. Only the
+  factoring-based instance of the natural-proofs barrier loses its premise. The other
+  instances survive only under their own assumptions, at the required (subexponential)
+  security.
+- Learning hardness: only the factoring-based instances lose their premise (Kearns–Valiant
+  1994; Kharitonov 1993).
+- Quantum evidence: factoring stops being evidence for BQP ⊄ BPP. The other evidence is
+  oracle-relative or conjectural. KNOWN.
 
 ### 2.3 (H3) L[1/3 − δ] or L[1/4]
 
-- There are no mathematical consequences.
-- Complexity: assumptions of the form "factoring is hard for circuits of size 2^{n^ε}"
-  (Kharitonov; Naor–Reingold natural proofs) already need ε < 1/3 because of NFS. H3 would
-  force ε < 1/3 − δ, or ε < 1/4.
-- The only historical analogue of an L[1/3] → L[1/4] jump is discrete logs in small
-  characteristic (Joux 2013; Barbulescu–Gaudry–Joux–Thomé 2014). It used the Frobenius identity
-  x^q − x = ∏(x − a) of a subfield, which has no analogue over Z.
-  - SPECULATIVE: an L[1/4] factoring algorithm would need a "Frobenius substitute" for Z.
-  - Rigorous L[1/3] would be new for factoring *and* for prime-field DLP. The repository's
-    barriers are nfsfruit (Lemma M), lemmaM (c) (HECM splitting forces L[4/9] in that
-    architecture) and hypD (Prop H).
+- No mathematical consequence is established. A rigorous H3 would be a new proved factoring
+  bound; it would not by itself give new prime-field DLP algorithms.
+- An L[a, C] attack rules out "factoring is hard for circuits of size 2^{n^ε}" when ε > a.
+  Heuristic NFS (a = 1/3) is not a proof, so it contradicts nothing unconditionally.
+- Analogy only (SPECULATIVE): the L[1/4] and quasi-polynomial jumps for small-characteristic
+  DLP (Joux 2013; BGJT 2014) used the subfield Frobenius x^q − x. Z has none.
+- In-repo barriers for a *rigorous* L[1/3]: nfsfruit Lemma M (an open sufficient condition),
+  the lemmaM (c) HECM accounting (L[4/9] for that architecture), and hypD Prop H.
 
 ### 2.4 (H4) the project's own frontiers
 
 **(H4w) Deterministic worst case N^{1/5−δ}.**
-- It gives deterministic N^{1/5−δ} versions of:
-  - φ, λ, μ, σ, the squarefree part;
-  - order finding mod N (p − 1 adds only N^{1/10});
-  - strong-root extraction in (Z/N)^*.
-- These already beat the generic-group root-extraction floor (Damgård–Koprowski 2002) at
-  exponent 1/5, through Harvey–Hittmeir: a witness that representation-dependent arithmetic
-  escapes generic floors.
-- It gives no prime-construction gain (§3) and no other mathematical consequence.
-- Inside the project, it must violate the hypotheses of:
-  - Ward–Maestro Thm 3.4 and Thm 9.4;
-  - cycloharvey LB;
-  - multimod Thm A′/B (it needs N^{Ω(1)} moduli, or must leave the model);
-  - coverage38 Theorem U (it needs coverage of *every* pair with λ < J^{1/4}).
-- Through Theorem R, it would prove a covering statement for which no proof method is known
-  (dchworst B1–B3).
+- It gives deterministic N^{1/5−δ} versions of the §2.1 functions on the same inputs, including
+  order finding. For balanced N, the extra calls on p − 1 cost N^{1/10}; on general inputs,
+  charge the H4w calls on p − 1.
+- No other consequence is established, and in particular no prime-construction gain (§3).
+- Obligations apply only to algorithms that use the respective coverage certificates and cost
+  models:
+  - Ward–Maestro Thm 3.4 and Thm 9.4, and cycloharvey LB;
+  - multimod A′/B: N^{Ω(1)} moduli;
+  - coverage38 U: coverage at λ < J^{1/4} for every pair;
+  - dchworst B1–B3, via Theorem R.
 
-**(H4a) Average or almost-all N^{1/6−δ} deterministic.**
-- It must leave:
-  - T1/T2/T3 (below16);
-  - Theorem CB and Theorem CS (§4.3);
-  - multimod Thm A (any full-candidate cover).
-- It implies nothing outside factoring, because transfer fails off-ensemble (§1).
+**(H4a) Average or almost-all N^{1/6−δ}.**
+- In-model obligations:
+  - T1/T2/T3 (each locality class separately);
+  - Theorem CB (per-input budgets, closure condition);
+  - Theorem CS, only when its failure fraction is o(c_eq);
+  - multimod A for full-candidate covers.
+- Expected time on S_n does not by itself satisfy T1's all-integer moment budgets.
 
 ### 2.5 (H5) partial information
 
-| Oracle | What it gives on S_n (balanced semiprimes) | Label |
+| Oracle | On S_n | Label |
 |---|---|---|
-| ω, Ω, d, μ, μ², rad on N | constant (2, 2, 4, 1, 1, N): **0 bits** | PROVED |
+| ω, Ω, d, μ, μ², rad on N | constant (2, 2, 4, 1, 1, N): 0 bits | PROVED |
 | the same on coprime masks Nk, Nk² | determined by k | PROVED (codex §9.3) |
-| "N is a sum of two squares", r₂(N) | for N ≡ 1 (mod 4): ε = (−1/p), 1 bit. For N ≡ 3 (mod 4): constant | PROVED (codex §3.3) |
-| | equivalent to φ(N) mod 8 | PROVED (codex §9.2) |
-| | no reduction from factoring is known (Seurin 2-Φ/4-Hiding; codex r6) | KNOWN-open |
-| φ(N) mod m, all prime m ≤ Cn | φ(N) by CRT, so deterministic factoring for pq | PROVED (codex §9.2) |
-| | general N: randomized (BMS) or deterministic L[1/3] (Żrałek) | KNOWN |
+| two-square decision, r₂(N) | for N ≡ 1 (mod 4): ε = (−1/p), equivalently φ(N) mod 8 ∈ {0, 4}. For N ≡ 3 (mod 4): constant "no", and (−1/p) depends on which factor is called p | PROVED (codex §§3.3, 9.2) |
+| | no reduction from factoring known (Seurin's 2-Φ/4-Hiding; codex r6) | KNOWN-open |
+| φ(N) mod m for all primes m ≤ Cn | CRT recovers φ(N), so pq is factored deterministically. General N needs randomization (BMS) or totient-chain access (Żrałek) | PROVED / KNOWN |
 | φ(N) mod 2^k, k ≥ n/4 + v₂(q − p) | Coppersmith, 2 decodes | PROVED (Track E P-6) |
-| φ(N) mod one fixed m | s mod m only. Information floor: per-modulus symmetric data beyond N mod m needs consistent labels | PROVED (Track E F1/F2) |
-| Jacobi-type bits from N mod m | 0 bits (Track E F1). The eps battery found no predictor of ε | PROVED / experimentally supported |
-| μ in TC⁰ | refutes Kalai's conjecture that μ is asymptotically orthogonal to TC⁰ (blog post, 15 Dec 2024). So factoring in TC⁰ would refute it. The conjecture implies factoring ∉ TC⁰ | PROVED (μ from a factorization is in TC⁰: equality tests and counting) |
+| φ(N) mod one fixed m; Jacobi-type bits from N mod m | s mod m only; 0 bits beyond N mod m (information floor) | PROVED (Track E F1/F2) |
+| factoring in polynomial-size TC⁰ (all inputs) | gives μ in TC⁰, refuting Kalai's conjecture (15 Dec 2024 post, item 3). Take f = μ where μ ≠ 0 and f = 1 elsewhere; then the mean of μf is 6/π². Nothing follows for sub-1/6-time algorithms or for promise algorithms on S_n | PROVED (codex) |
 
-The lesson of H5: one-bit and multiplicative-function oracles on S_n are either constant or
-are ε. The only small-output oracles that factor are **uniform families** of residues of a
-symmetric function (φ mod m for many m), which together encode s.
+Among this oracle menu, the oracles that factor S_n are uniform families of residues of the
+symmetric function s (φ mod m for many m). One-bit and multiplicative-function oracles on N are
+constant, or equal ε.
 
 ---
 
 ## 3. Deterministic prime construction (task 1(b))
 
-**KNOWN.** Polymath (Tao–Croot–Helfgott), Math. Comp. 81 (2012):
-- the best deterministic construction of a prime ≥ z costs z^{1/2+o(1)} (Lagarias–Odlyzko);
-- Theorem 1.2 computes the *parity* of π on intervals of length z^{1/2+c} in z^{1/2−c+o(1)};
-- Conjecture 1.1 is the existence version.
-- The paper says nothing about a factoring oracle.
-- The Polymath4 research thread II (9 Aug 2009), "Strategy 3", assumes an O(1) factoring
-  oracle. It asks for intervals [n, n + a] guaranteed to contain a non-S-smooth number, and
-  notes that S > a² would beat the RH bound.
-- **No bound obtained with the oracle is stated anywhere.**
+**KNOWN.** Polymath, "Deterministic methods to find primes", Math. Comp. 81 (2012).
+- It cites the deterministic constructions z^{0.525+o(1)} (BHP gaps) and z^{1/2+o(1)} (RH, or
+  Lagarias–Odlyzko).
+- Its main result is Theorem 1.2, a parity computation; Conjecture 1.1 is the existence version.
+- Nothing on factoring oracles is stated there.
+- Polymath4 research thread II (9 Aug 2009), "Strategy 3": with an O(1) factoring oracle, find
+  intervals [n, n + a] guaranteed to contain a non-S-smooth number. "S > a²" would beat the RH
+  bound. No oracle bound was obtained.
 
-**Lemma PF (PROVED; code `src/polyimpl/primefind.py`; codex §4.2 for the first route).**
-- *Input theorem T(β, θ).* Every interval [X, X + X^β] contains an n with P⁺(n) > X^θ.
-- *Factoring cost.* Deterministic factoring of n ≤ 2X costs X^{α+o(1)}.
-- *Conclusion.* A prime p > z = X^θ (p ≤ 2X) is found in time z^{e+o(1)} with e = min(e_fac, e_strip):
-  - e_fac = (β + α)/θ: factor every integer of the interval;
-  - e_strip = max(β, 1 − θ)/θ, available when θ > 1/2. Remove all prime factors ≤ 2X^{1−θ}
-    from all integers of the interval with one product/remainder tree, at cost
-    (X^β + X^{1−θ})^{1+o(1)}. When P⁺(n) > X^θ > 2X^{1−θ}, the cofactor n/P⁺(n) < 2X^{1−θ} is
-    removed completely and the remainder is the prime P⁺(n). This uses **no factoring algorithm**.
+**Lemma PF (PROVED; `src/polyimpl/primefind.py`; the first route is codex §4.2).**
+- *Input theorem T(β, θ).* **Every** sufficiently large interval [X, X + X^β] contains n with
+  P⁺(n) > X^θ. Almost-all-interval results have the wrong quantifier.
+- *Factoring cost.* Deterministic full factorization of n ≤ 2X costs X^{α+o(1)}.
+- *Conclusion.* A prime p with z := X^θ < p ≤ 2z^{1/θ} is found in time z^{e+o(1)},
+  e = min(e_fac, e_strip):
+  - e_fac = (β + α)/θ, by factoring every integer of the interval;
+  - e_strip = max(β, 1 − θ)/θ, for θ > 1/2 and **with no factoring**. Let H = ⌈2X^{1−θ}⌉ and
+    Q = (∏_{ℓ≤H} ℓ)^{⌈log₂ 2X⌉}. A remainder tree gives Q mod n for all n in the interval;
+    replace n by n/gcd(n, Q^∞). When P⁺(n) > X^θ > H, the remainder is the prime P⁺(n). The
+    cost is (X^β + X^{1−θ})^{1+o(1)}. ∎
 
-*Proof.* Count the operations; the prime is verified by AKS. ∎
+**Corollary PF (necessary conditions only; not a classification).**
+- (i) Beating 1/2 for some α ≥ 0 needs θ > 2β.
+- (ii) A factoring algorithm is *needed* to beat 1/2 only if, in addition, the strip route
+  fails. With (i) this means 2β < θ ≤ 2/3, hence β < 1/3. (When e_strip < 1/2, factoring
+  can still improve on it if α < 1 − θ − β.)
+- (iii) H4w at α = 1/5 − δ needs θ > 2β + 2/5 − 2δ, hence β < 2/15 + δ.
 
-**Corollary PF.**
-- (i) A recipe of this kind beats 1/2 for some α ≥ 0 only if θ > 2β, i.e. intervals of length h
-  contain a prime factor > h^{2+δ}.
-- (ii) The factoring hypothesis matters only when also e_strip ≥ 1/2. That means θ ≤ 1/2, or
-  max(β, 1 − θ) ≥ θ/2. With (i) this forces β < 1/3 and 2β < θ ≤ 2/3.
-- (iii) For H4w at α = 1/5 − δ, one also needs θ > 2β + 2/5 − 2δ, so β < 2/15 + δ.
+**Checked inputs** (the literature agent read Merikoski's survey table and the Shorey–Tijdeman
+survey; codex checked the primary sources):
 
-*Proof.* Each claim is algebra on the exponents above. ∎
-
-**Known inputs** (literature agent and codex §4.3, read from the sources; exact arithmetic in
-`primefind.py`):
-
-| Theorem (β, θ) | best e (any α) | does factoring matter? |
+| Theorem (β, θ) | best e | factoring needed? |
 |---|---|---|
-| Baker–Harman–Pintz 2001: a prime in X^{0.525} (21/40, 1) | 0.525 (primality test only) | no |
-| Merikoski 2021, MPCPS 170, Thm 1: x^{1/2}log^{1.39}x, P > x^{18/19} (1/2, 18/19) | 19/36 = 0.528 | no (strip) |
-| Jia–Liu 2000, Acta Arith. 95: x^{1/2+ε}, P > x^{25/26} | 13/25 = 0.52 | no |
-| R. Li 2026 (arXiv 2601.00910, preprint): x^{1/2+ε}, P > x^{35/36} | 18/35 = 0.514 | no |
-| Sander 1994 (k^{1+ε} ≤ x short ranges): θ = β + cβ³ | ≥ 1 | no |
-| Sylvester–Schur / Laishram–Shorey: P(Δ) > 1.95k | ≈ 1 | no |
+| Baker–Harman–Pintz 2001: a prime in [X − X^{0.525}, X] | 0.525 (primality test) | no |
+| Merikoski 2021, MPCPS 170, Thm 1: (1/2, 18/19), up to log factors | 19/36 = 0.528 | no (strip) |
+| Jia–Liu 2000, Acta Arith. 95: (1/2+ε, 25/26−ε) | 13/25 + O(ε) | no |
+| R. Li, arXiv 2601.00910 (preprint): (1/2+ε, 35/36−ε) | 18/35 + O(ε) = 0.514 | no |
+| Sander 1994, "On numbers with a large prime power factor" (j = 1 case): θ = β(1 + cβ²), for β ≥ (log x)^{−1/2+o(1)}-type ranges | 1/(1 + cβ²) at α = 0 | **yes** (θ < 1/2) |
+| Sylvester–Schur / Laishram–Shorey: P(Δ) > 1.95k | ≈ 1 | — |
 
-**Conclusion (PROVED for these inputs).**
-- No known short-interval theorem has θ > 2β (all have β ≥ 1/2 or θ ≈ β). So H1 and H4 give
-  **no** new prime-construction bound by this route.
-- The route would need intervals of length h ≤ x^{1/3} that contain a prime factor in
-  (h^{2+δ}, x^{2/3}]. Below β = 1/2 only Sander-type bounds θ = β + O(β³) are known.
-- This is not a blocker, and it confirms "factoring hardness is not tied to prime-finding".
-- Other routes: factoring ⌊z⌋! + 1, or 2^k − 1, costs poly(z) in bits (codex §4.4).
-- H1 + a smooth-run conjecture (every [x, x + (log x)^A] contains a non-x^c-smooth integer)
-  ⇒ polynomial-time primes. The conjecture is far beyond current methods. **CONDITIONAL.**
+**Conclusion.**
+- None of the checked inputs gives e < 1/2. For the square-root-length inputs this holds
+  whatever α is.
+- For Sander-type inputs, H1 would give e = 1/(1 + cβ²). That is < 1/2 only if cβ² > 1 in the
+  admissible range. We did not determine Sander's constant c (**UNVERIFIED**). For small β we
+  expect cβ² ≪ 1, but we have not checked.
+- This is not a blocker for H1 or H4 on the checked inputs. It is a literature check, not a
+  proof that no route exists.
+- Other routes: factoring ⌊z⌋! + 1 or 2^k − 1 costs poly(z) in bits (codex §4.4).
+  Polynomial and multiplicative families need their own count, e = (b + dα)/λ (codex). An
+  infinitude theorem gives no search bound.
+- **CONDITIONAL:** H1 plus "every [x, x + (log x)^A] contains a non-x^c-smooth integer" ⇒
+  polynomial-time primes.
 
 ---
 
 ## 4. Complexity (task 1(c))
 
-### 4.1 Straight-line programs and the τ-conjecture (both directions)
+### 4.1 Straight-line programs and τ (both directions)
 
-- **⇒ factoring:**
-  - uniform polylog SLPs for k! ⇒ factoring ∈ FP by gcd binary search (Lipton 2009; PROVED,
-    codex §5.1);
-  - Lipton 1994 (in the form of Koiran–Portier–Rojas, Thm 1.14(II)): polynomials with
-    R > exp(τ^ε) integer roots ⇒ non-uniform, i.o., positive-fraction factoring circuits;
-  - Shub–Smale / BCSS Thm 3: τ-conjecture ⇒ P_C ≠ NP_C;
-  - Bürgisser 2009, Main Thm 1.2: τ(Per_n) polynomial ⇒ τ(k!) polylog.
-- **⇐ factoring: nothing.** H1 produces no polynomial with many integer roots and no short SLP
-  for k!, so the τ-conjecture is consistent with H1 (codex §5.1). **PROVED (scope).**
-- Blocker for *specific* mechanisms. An algorithm that itself evaluates interval products
-  Π(x + i) (a Pollard–Strassen or BGS type) by a uniform SLP of exponent γ is bounded by the
-  τ-conjecture: exponent c forces γ ≥ 1/c (Ward–Maestro §7.1). With c = 2, Strassen's 1/2 is
-  optimal. So such an algorithm would refute τ with c ≤ 3 if it got below N^{1/6}.
-  - WM (i): an exponent below 2/5 for the rising factorial would give below 1/5.
+**⇒ factoring.**
+- Uniform polylog SLPs for k! ⇒ factoring ∈ FP, by gcd binary search (Lipton 2009; codex §5.1,
+  PROVED).
+- Lipton 1994, in the form of Koiran–Portier–Rojas Thm 1.14(II): polynomials with R > exp(τ^ε)
+  integer roots of bounded height ⇒ non-uniform, i.o., positive-fraction factoring circuits.
+- The τ-conjecture ⇒ P_C ≠ NP_C (BCSS Thm 3).
+- Bürgisser 2009, Main Thm 1.2: polynomial τ(Per_n) ⇒ polylog τ(k!).
 
-### 4.2 Möbius, AC⁰ and Sarnak
+**⇐ factoring.** No implication is established. H1 supplies no polynomial with many integer
+roots and no SLP for k!. We exhibit no contradiction between H1 and τ (codex §5.1).
 
-- **KNOWN.**
-  - Allender–Saks–Shparlinski, JCSS 62 (2001): MAJORITY AC⁰-reduces to primality,
-    squarefreeness and gcd, so none of them is in AC⁰[p].
-  - Green, CPC 21 (2012), Thm 1: μ ⊥ AC⁰(d) for d ≤ c log n/log log n.
-  - Bourgain, Israel J. Math. 197 (2013): the Walsh spectrum of μ is spread.
-- Consequence: a factoring algorithm in AC⁰[p] is impossible, but every real algorithm uses
-  multiplication or gcd anyway, so this barrier is escaped trivially.
-- **Kalai's TC⁰ conjecture** (15 Dec 2024) implies factoring ∉ TC⁰ (§2.5). Modular powering
-  with n-bit exponents and gcd are not known to be in TC⁰. Every known algorithm uses them.
-- **Sarnak.** H1 gives μ ∈ P. This does not contradict Möbius disjointness:
-  - P-computable sequences can have positive entropy (codex §5.2 gives an explicit example);
-  - Sarnak's own slides ("Möbius randomness and dynamics", ICTS) say: "Perhaps ξ ∈ P ⇒ μ is
-    orthogonal to ξ? I don't believe so since I believe factoring and μ itself is in P." He
-    then asks for a bounded ξ ∈ P with (1/N)Σμ(n)ξ(n) → α ≠ 0.
-  - Under H1, ξ = μ answers that question trivially.
+**Mechanism-specific obligation (Ward–Maestro §7.1).**
+- A uniform division-free SLP evaluating the rising factorial P_k with exponent γ factors in
+  N^{γ/2}.
+- The τ-conjecture with exponent c forces γ ≥ 1/c.
+- So a *P_k-evaluation* algorithm below N^{1/6} (γ < 1/3) would refute τ for every c ≤ 3.
+- This applies only to algorithms that evaluate that polynomial.
+
+### 4.2 Möbius, bounded depth, Sarnak
+
+**KNOWN.**
+- Allender–Saks–Shparlinski, JCSS 62 (2001), Thm 1: MAJORITY AC⁰-reduces to primality,
+  squarefreeness and gcd. So polynomial-size AC⁰[p] cannot compute them exactly.
+- Green, CPC 21 (2012), Thm 1: μ ⊥ AC⁰(d) for d ≤ c log n/log log n.
+- Bourgain, Israel J. Math. 197 (2013): the Walsh spectrum of μ is spread.
+
+These concern exact or correlated *polynomial-size* circuit families on all inputs. They do not
+constrain sub-1/6-time algorithms, which have circuits of exponential size, or promise
+algorithms on S_n, which has density Θ(n^{−2}).
+
+**Kalai's TC⁰ conjecture** (μ orthogonal to TC⁰) implies that factoring is not computable by
+polynomial-size TC⁰ circuits on all inputs (§2.5).
+
+**Sarnak.**
+- H1 gives μ ∈ P. No contradiction with zero-entropy Möbius disjointness is exhibited:
+  P-computable sequences can have positive entropy (codex §5.2).
+- Sarnak's Mahler Lectures 2011 slides ("Möbius randomness and dynamics") say: "Perhaps ξ ∈ P ⇒
+  μ is orthogonal to ξ? I don't believe so since I believe factoring and μ itself is in P." He
+  then asks for a bounded ξ ∈ P with (1/N)Σμ(n)ξ(n) → α ≠ 0.
+- Under H1, ξ = μ·1[μ ≠ 0] + 1[μ = 0] answers this.
 
 ### 4.3 Generic models, and the combined barriers (task 2)
 
-- **KNOWN.**
-  - Aggarwal–Maurer (Eurocrypt 2009) and Jager–Schwenk (J. Cryptol. 2013) prove
-    *equivalences*: generic-ring RSA and generic Jacobi symbols reduce to factoring.
-  - Jacobi symbols are easy by reciprocity, which is the canonical witness that generic-ring
-    restrictions omit representation-dependent operations.
-  - Damgård–Koprowski 2002 is a genuine generic-group floor, escaped by Harvey–Hittmeir, NFS
-    and anything that reads N.
-- No unconditional theorem is contradicted by H1–H5. **PROVED (scope; codex §5.3).**
+**KNOWN.**
+- Aggarwal–Maurer (Eurocrypt 2009) and Jager–Schwenk (J. Cryptol. 2013) give *equivalences*:
+  generic-ring RSA and generic Jacobi symbols each reduce to factoring.
+- The Jacobi symbol is easy by reciprocity, the canonical example of a representation-dependent
+  operation outside the generic-ring model.
+- Damgård–Koprowski 2002 is a generic-group floor for hidden-order root extraction. An explicit
+  modulus is outside its model, so it gives no factoring floor.
 
 **Lemma KE (key enlargement; codex §8.1; re-checked).**
-- In T1 (below16 §2.1), replace the key bound K ≤ C₂M² by κ := max(1, K/M²).
-- Then the covered fraction of any balanced prime box is ≤ C n² √κ X^{3/2} N^{−1/4}.
-- So beating the exponent by δ through larger keys alone needs κ ≥ N^{3δ}/polylog.
+- *Setting.* Keep T1's fixed generators, M | K, M, K ≤ P/2, the normalised D/|A| ≤ C₁M², and
+  T1's moment budgets over all n-bit N. Replace K ≤ C₂M² by κ := max_ι max(1, K_ι/M_ι²).
+- *Conclusion.* The covered pairs number O(P^{3/2}√κ X^{3/2}).
+- So, in any balanced prime box of fixed relative size with ≫ P²/n² pairs, the covered fraction
+  is ≤ C n²√κ X^{3/2}N^{−1/4}.
+- *Use.* An N^{1/6−δ} design of this kind covering a constant fraction needs κ ≥ N^{3δ}/n⁴.
 
-**Theorem CS (combined signature barrier; codex §8.2; re-checked).**
-- *Model.* Model X is T1 with key parameter κ. Model Y is a fixed, N-independent list of
-  certificates (V_i). It splits pq only when p and q have different signatures
-  σ(p) = (1[p | V_i])_i, or richer labels, as in Ward–Maestro Prop 32.2. R is the number of
-  distinct signatures on a prime interval I with Π ≍ P/n primes.
-- *Conclusion.* On uniform pairs from I, any X + Y algorithm failing on a fraction ε satisfies
-  C n²√κ X^{3/2}N^{−1/4} ≥ Coll − ε − O(1/Π), where Coll = Σ_j (a_j/Π)² ≥ 1/R is the
-  signature collision probability.
-- Worst case: X ≫ N^{1/6}κ^{−1/3}R^{−2/3}n^{−4/3}.
+**Theorem CS (combined signature barrier; codex §8.2; re-checked, premises restored).**
 
-*Proof.* Equal-signature pairs are never split by Y. They form a fraction ≥ Coll. Model X must
-cover them, so apply KE. ∎
+*Model.*
+- X is the enlarged-key T1 model of KE.
+- Y is a fixed, N-independent list of certificates with prime-local meaning: no N-dependent
+  exponents or curves. Y splits pq only when σ(p) ≠ σ(q). For richer labels, equality of labels
+  must rule out every Y-split.
+- I is a prime interval with Π ≍ P/n primes, and I × I lies in one n-bit balanced range.
+- R is the number of distinct signatures on I, and a_j are the class sizes.
+- **Aggregate closure.** All certified X-successes, after any Y-transcript, lie in **one**
+  KE-admissible design with the stated global budgets.
+- There are no cross-stage correlations and no useful accidental collisions.
 
-- *Use.* A worst-case sub-1/6 algorithm of this type needs κR² ≥ N^{3δ}/polylog: either keys or
-  label richness of polynomial size.
-- Ward–Maestro Conjecture 33.1 (an explicit ECM list with distinct labels on all primes) has
-  R = Π. It is *consistent* with this barrier, and gives N^{1/(2u)}.
+*Conclusion.* Let ε be the failure fraction on distinct unordered pairs from I, and
+c_eq = Σ_j a_j(a_j − 1)/(Π(Π − 1)) = (Π·Coll − 1)/(Π − 1), where Coll = Σ(a_j/Π)² ≥ 1/R. Then
 
-**Theorem CB (local collision search + (Z/N)^* smooth-order exposure; ours; CONDITIONAL on F_iv).**
-- **Hypothesis F_iv** (Fouvry-type, dyadic form). For fixed 0 < a < b there is c(a,b) > 0 with
-  #{p ∈ [aX, bX] prime : P⁺(p − 1) > p^{2/3}} ≥ c(a,b) X/log X for X large.
-  - Fouvry, Invent. Math. 79 (1985) proves #{p ≤ x : P⁺(p−1) > x^{0.6687}} ≫ x/log x.
-  - The fixed-interval form is the natural output of the same sieve. Ward–Maestro §35 uses it in
-    a nearly balanced range. We did not check the interval form in the source: **UNVERIFIED**.
-  - E1 measures the density as 0.33–0.36 at 20–32 bits.
-- **Model.** The algorithm may do two things.
-  - (X) Run T1-local certified collision searches with budget X. Classes and windows depend on N
-    only through N mod K, K ≤ C₂M², and labels are charged (below16 §2.1). Group elements
-    a^E mod N may serve as T1 handles, as in D′'s γ = β^{∏M²}, but not as selectors.
-  - (Y₁) Compute gcd(F, N) for any F = ∏_j (a_j^{E_j} − 1), and also ± variants
-    (a^E + 1 | a^{2E} − 1), where:
-    - every a_j lies in a fixed base set A with Σ_{a∈A} log|a| ≤ P^{1/3}/n²;
-    - every E_j is B₂-smooth, with B₂ ≤ (P/4)^{2/3} (so up to ≈ N^{1/3});
-    - the choices may be adaptive, and there is no cost bound on Y₁.
-  - "Success" means a certified T1 hit or a proper gcd from Y₁. Accidental collisions are
-    excluded, as in T1.
-- **Conclusion.** There are c₀ > 0 and C such that every such algorithm fails on at least
-  (c₀ − C n² X^{3/2} N^{−1/4})·|S_n| inputs of S_n.
-- In particular, success on a (1 − o(1)) fraction (indeed on a fraction > 1 − c₀/2) forces
-  X ≥ c N^{1/6}/n^{4/3}.
+  C n²√κ X^{3/2} N^{−1/4} ≥ c_eq − ε.
+
+*Proof.* Equal-signature pairs are never split by Y. Closure puts their coverage inside one KE
+design. ∎
+
+- *Non-vacuous range.* R = o(Π) and ε = o(1/R). Then X ≫ N^{1/6}κ^{−1/3}R^{−2/3}n^{−4/3}, and
+  X = N^{1/6−δ} forces κR² ≫ N^{3δ}/n⁴.
+- *Closure matters* (Opus critic; codex). Equal-signature pairs from different classes can still
+  get different Y-transcripts: a certificate made of exactly one class's primes returns N on that
+  class and 1 elsewhere. An X that adapts to the transcript can run R designs. Union bounds then
+  give only X ≫ N^{1/6}κ^{−1/3}R^{−4/3}/polylog.
+- Ward–Maestro Conj 33.1 (distinct labels on all primes) has c_eq = 0. It is consistent with CS.
+
+**Theorem CB (local collision search + (Z/N)^* smooth-exponent tests).**
+- **CONDITIONAL on F_iv.**
+- It is a routine combination of T1 with the small-order-removal mechanism of Ward–Maestro
+  Prop 35.3(ii). We extend that mechanism to many bases, ± tests and adaptive smooth exponents.
+  No prior formulation of the combination was found by us.
+
+**Hypothesis F_iv.**
+- *Statement.* For fixed 0 < a < b there is c(a, b) > 0 with
+  #{p ∈ [aX, bX] prime : P⁺(p − 1) > p^{2/3}} ≥ c(a, b)X/log X for large X.
+- *Source.* Fouvry, Invent. Math. 79 (1985) 383–407, gives the cumulative count
+  #{p ≤ x : P⁺(p − 1) > x^{0.6687}} ≫ x/log x. Its localisation to every fixed interval is
+  **UNVERIFIED** in the source.
+- Ward–Maestro Prop 35.3 uses the range (x^{1−ε}, x] and does not supply F_iv.
+- *Unconditional variant (sketch, unreviewed).* Pigeonholing Fouvry's count over dyadic, then
+  2^{1/4}-adic, blocks gives a good block [z, 2^{1/4}z] at a scale z ≍ x. Put both p and q in
+  it. Then CB holds for a set of n with bounded gaps.
+- E1 measures the density of P⁺(p − 1) > B₂ as 0.33–0.36 at 20–32 bits.
+
+**Model.**
+- **(X)** T1-local certified collision search, with the **per-input** budget #τ ≤ X and
+  Σ|S_τ| ≤ X² on every input.
+  - Classes, windows and activations depend only on N mod K (K ≤ C₂M²) and on the **answer
+    bits** of Y₁.
+  - They do not depend on Y₁'s queries, on intermediate residues, on timing, or on group values.
+  - Values a^E mod N may serve as T1 handles, as in D′'s γ = β^{∏M²}.
+- **(Y₁)** Tests gcd(F, N) with F = ∏_j (a_j^{E_j} − 1) or ∏_j (a_j^{E_j} + 1), where:
+  - every a_j lies in a fixed base set A with |a| ≥ 2 and Σ_{a∈A} log|a| ≤ P^{1/3}/n²;
+  - the E_j are positive and B₂-smooth, with 2 ≤ B₂ ≤ (P/4)^{2/3};
+  - the choices may be adaptive, and Y₁ has no cost bound.
+- **Success** means a certified T1 hit, or a proper gcd from a Y₁ test of exactly this form.
+  - *Excluded:* order collisions gcd(a^E − a^{E′}, N), which fire when ord_p(a) | E − E′, and
+    other accidental hits, as in T1.
+  - With a cost-free Y₁, the exclusion is essential: otherwise Y₁ would contain order finding.
+    So CB is **not** about every use of (Z/N)^*.
+
+**Conclusion.** There are c₀ > 0 and C such that every such algorithm fails on
+≥ (c₀ − C n² X^{3/2} N^{−1/4})|S_n| inputs of S_n. Success on a fraction > 1 − c₀/2 forces
+X ≥ cN^{1/6}/n^{4/3}.
 
 *Proof.*
-1. *A good box.* Fix the sub-box p ∈ I_p = [0.6P, 0.65P], q ∈ I_q = [0.84P, 1.19P]. Every such
-   pair has p < q ≤ 2p and P²/2 ≤ pq < P², so it lies in S_n. By F_iv, the set G₀ of pairs with
-   p, q ∈ F := {ℓ prime : P⁺(ℓ−1) > ℓ^{2/3}} has |G₀| ≥ c₁P²/n². Since |S_n| ≤ C P²/n², this is
-   ≥ c₂|S_n|.
-2. *Remove small orders.* Fix a ∈ A with |a| ≥ 2. A prime ℓ ≥ P/2, ℓ ∤ a, with
-   ord_ℓ(a) ≤ (2P)^{1/3} divides a^k − 1 for some k ≤ (2P)^{1/3}. Such a^k − 1 has
-   ≤ k log|a|/log(P/2) prime factors ≥ P/2, so there are ≤ (2P)^{2/3}log|a|/log(P/2) such
-   primes. Summing over A gives ≤ 2^{2/3}P/(n² log(P/2)). That is o(P/log P), so the pairs with
-   p or q among these primes are o(P²/n²). (If ℓ | a, then a^E ∓ 1 ≡ ∓1 is a unit mod ℓ, and
-   nothing needs removing.) Call the rest G; then |G| ≥ c₀|S_n| with c₀ = c₂/2.
-3. *Y₁ never fires on G.* Take (p, q) ∈ G and write ℓ_p = P⁺(p−1) > p^{2/3}.
-   - Then ℓ_p² > p, so ℓ_p ∥ p − 1, and (p−1)/ℓ_p < p^{1/3} ≤ (2P)^{1/3}.
-   - Since ord_p(a) > (2P)^{1/3}, ord_p(a) ∤ (p−1)/ℓ_p, so ℓ_p | ord_p(a).
-   - ℓ_p > p^{2/3} ≥ (0.6P)^{2/3} > (P/4)^{2/3} ≥ B₂, so ℓ_p ∤ E for every B₂-smooth E. Hence
-     a^E ≢ 1 and, since 2E is also B₂-smooth, a^E ≢ −1 (mod p). The same holds mod q.
-   - So every factor a_j^{E_j} ∓ 1 is a unit mod N, and every gcd(F, N) = 1.
-4. *Only T1 remains on G.* Every Y₁ answer on G is the constant 1. The adaptive algorithm
-   therefore runs, on G, as a fixed T1 design. T1 (below16 §2.1, with the budget conventions
-   there) covers at most C n² X^{3/2} N^{−1/4}|S_n| pairs of S_n, hence of G. ∎
+1. **Box.** Let I_p = [0.6P, 0.65P] and I_q = [0.84P, 1.19P].
+   - Then pq ∈ [0.504P², 0.7735P²] and q/p ≤ 119/60 < 2, so every such pair lies in S_n.
+   - F_iv on these two disjoint intervals gives ≫ P²/n² pairs with p, q ∈ F, where
+     F = {ℓ : P⁺(ℓ − 1) > ℓ^{2/3}}. That is ≥ c₂|S_n|.
+2. **Small orders.**
+   - Fix a ∈ A and put U = (2P)^{1/3}. The primes r ≥ P/2 with r ∤ a and ord_r(a) ≤ U all
+     divide ∏_{k≤U}(a^k − 1). So there are ≤ Σ_{k≤U} k log|a|/log(P/2) ≪ U² log|a|/log P of
+     them.
+   - Summed over A, this is O(P/(n² log P)) = o(P/log P).
+   - The primes dividing some a ∈ A number ≤ Σ log|a|/log(P/2); these are negligible too.
+   - Remove all of them, and let G be the remaining pairs, with |G| ≥ c₀|S_n|.
+3. **Y₁ is silent on G.** Take p ∈ G and ℓ = P⁺(p − 1) > p^{2/3}.
+   - ℓ² > p, so ℓ ∥ p − 1, and (p − 1)/ℓ < p^{1/3} ≤ U.
+   - ord_p(a) > U, so ℓ | ord_p(a).
+   - ℓ > (0.6P)^{2/3} > B₂, so ℓ ∤ E and ℓ ∤ 2E. Hence a^E ≢ ±1 (mod p).
+   - The same holds for q, so every F is a unit mod N and every answer is 1.
+4. **Closure.**
+   - Selectors depend only on N mod K and the answer bits. So all inputs with key κ and
+     all-one answers run one design D*(κ). Set D*(κ) = ∅ if no input has key κ and all-one
+     answers.
+   - D*(κ) is actually executed on such an input, so it obeys the per-input budget. Hence D* is
+     a T1 design with T1's budgets over all n-bit N.
+   - On G, the algorithm's certified coverage equals that of D*. T1 counts coverage through
+     (2.1) alone, so handles are irrelevant.
+   - T1 bounds D*'s total covered pairs in S_n by C n² X^{3/2} N^{−1/4}|S_n|. Intersect with G.
+     ∎
 
-Remarks.
-- (a) Theorem CB is the almost-all counterpart of Theorem CS for the specific group (Z/N)^*.
-  Its Coll is bounded below by the *both-unexposed* class, which has positive density even when
-  R is huge.
-- (b) It explains rigorously why Pollard p − 1 succeeds on a positive proportion below N^{1/6}
-  (Ward–Maestro Prop 35.3) but cannot be part of an almost-all sub-1/6 algorithm built on
-  (Z/N)^* alone.
-- (c) **Extension CB⁺ (CONDITIONAL / SPECULATIVE).** Allow all cyclotomic tori T_d,
-  d ∈ {1, 2, 3, 4, 6}, i.e. Lucas sequences and their analogues. The same proof needs a positive
-  proportion of p with P⁺(Φ_d(p)) > p^{2/3} *simultaneously* for d = 1, 2. That is a
-  two-shift large-prime-factor statement: p ≡ 1 (mod ℓ₁) and p ≡ −1 (mod ℓ₂) with
-  ℓ₁ℓ₂ > p^{4/3}, which is beyond level-1 sieve methods. E1 measures the joint residual at
-  12% (32 bits).
-- (d) What escapes Theorem CB, and so what a sub-1/6 almost-all algorithm must contain:
-  - order information from other groups (tori with CB⁺ open, elliptic curves, class groups),
-    with an almost-all hitting theorem (ecmavg HIT; Ward–Maestro Conj 33.1);
-  - relations;
-  - selectors that read N beyond N mod M² (Lemma KE quantifies how far);
-  - use of a^E values as selectors.
+**Remarks.**
+- (a) *Averaged budgets.* Under T1's averaged-budget convention the argument fails (Opus
+  critic). An algorithm could stop cheaply on inputs that Y₁ splits and spend ≫ X on the rest.
+  Closing this needs a rough-numbers-in-progressions bound. So CB does **not** cover "average
+  time" H4a.
+- (b) *Scope.* CB shows that, within this model, Pollard-type exposure in (Z/N)^* cannot be
+  completed to an almost-all sub-1/6 algorithm. Ward–Maestro Prop 35.3 already gives
+  positive-proportion success below N^{1/6}.
+  - Escaping CB while staying in (Z/N)^* is possible by enlarging B₂ or the base portfolio, by
+    admitting order collisions or other identities, or by non-local selectors.
+  - "Other groups" is therefore one escape, not a forced one.
+- (c) *CB⁺ (SPECULATIVE).* Extending CB to the tori T_d, d ∈ {2, 3, 4, 6}, needs three things:
+  - a positive-density joint residual for all allowed groups;
+  - control of element orders inside each torus (the 41·43 example in §8 shows why);
+  - the same closure.
+  The direct progression-counting route for p ≡ 1 (mod ℓ₁), p ≡ −1 (mod ℓ₂) with
+  ℓ₁ℓ₂ > p^{4/3} is beyond level 1. That diagnoses one strategy; it is not an impossibility.
 
-**Prop LW (Ward–Maestro Conj 33.1 is a least-witness statement; PROVED, by pigeonhole).**
-- *Assume* Conj 33.1 (fixed u, C; B₁ = x^{1/u}, B₂ = B₁²): the first C_{u,C} log x Suyama
-  parameters give distinct label vectors (WM Def. 32.1) on all primes in [x, Cx].
-- *Conclusion.* For all but at most one prime p ∈ [x, Cx], some σ among the first
-  C_{u,C} log x has λ_σ(p) ≠ 0. That is, p is degenerate on that curve, or the point order is
-  ≤ B₂. So the least exposing Suyama index w(p) is O(log p) for all p except one per range.
+**Prop LW (WM Conj 33.1 implies a least-exposure bound; PROVED, by pigeonhole).**
+- *Assume* WM Conj 33.1 for fixed u and C: B₁ = x^{1/u}, B₂ = B₁², and the first C_{u,C} log x
+  Suyama parameters give distinct label vectors on the primes of [x, Cx].
+- *Conclusion.* All but at most one prime p in each such range have some σ among the first
+  C_{u,C} log x with λ_σ(p) ≠ 0 (WM Def. 32.1). That is, a construction or singularity label,
+  or ord_{E(F_p)}([L]P) ≤ B₂ for the stage-1 residual point [L]P, L = lcm{ℓ^e ≤ B₁}.
+- So the least exposing index is O(log p), except for one prime per range.
 
-*Proof.* Label 0 means "unexposed". Distinctness allows at most one all-zero vector. ∎
+*Proof.* Label 0 means unexposed, and distinctness allows at most one all-zero vector. ∎
 
-- *Comparison.* For least quadratic non-residues, a bound O(log p) for all p is false under GRH
-  (Montgomery: ≫ log p log log p infinitely often). GRH gives 2 log² p (Bach).
-- For smooth-order witnesses no GRH-type bound of any polylog strength is known. Conj 33.1 is
-  heuristically consistent: the events are not multiplicative, and independence gives
-  max w ≈ log π(x)/|log(1−θ)|. But proving it is a least-witness theorem at log scale.
-  **Blocker** (for that route to a worst-case result).
-- The almost-all version needs only Pr_p[w(p) > L] → 0 with a rate. That is ecmavg's HIT
-  hypothesis, open.
+- *Strength, not refutation.*
+  - LW is necessary for Conj 33.1, not equivalent to it.
+  - It measures the uniform hitting theorem the conjecture needs: a log-scale least-witness
+    bound for a non-character event. No GRH-type theorem of that kind is known for an explicit
+    curve family.
+  - The QNR comparison is only an analogy. Least non-residues are O(log p) for no fixed
+    constant (Graham–Ringrose, unconditional, i.o.; Montgomery under GRH). But the cause is
+    multiplicativity, and an i.o. result does not refute "all but one per range". Under
+    independence, a maximum waiting time ≍ log p is plausible.
+  - Polynomial-length lists (any fixed-list route needs only w(p) ≤ N^{1/6−δ−1/(2u)}) are in a
+    Burgess-type regime that LW does not touch.
 
 ---
 
 ## 5. Escape-signature table (task 2)
 
-Columns:
-- **must break**: the assumption that any polynomial-time, or deterministic sub-1/6, algorithm
-  of the barrier's type must violate;
-- **witnesses**: known algorithms that already escape it.
+Column guide:
+- **Outside-model examples**: known methods that are not in the model. They are not necessarily
+  fast for the model's task; each keeps its own rigor and success population.
+- "Promise" means the method needs auxiliary information or a special family.
+- Full model statements, with the codex row audit, are in codex/polyimpl_1.out §7.1 and
+  codex/polyimpl_2.out item 6.
 
-Abbreviations:
-- PS: Pollard–Strassen / BGS;
-- LP: Lenstra–Pomerance class groups (and Schnorr–Lenstra, Seysen);
-- Copp: Coppersmith;
-- p−1⁺: Pollard p − 1 on a positive proportion (Ward–Maestro Prop 35.3).
-
-Full model statements are in codex §7.1 (re-checked against the notes).
-
-| Barrier (floor) | Model assumptions | Must break | Witnesses |
+| Barrier | Model assumptions | What a faster in-family method must change | Outside-model examples |
 |---|---|---|---|
-| WM Cor 3.3 (N^{1/3} candidates), Thm 3.4 (N^{1/5}, materialised giants), Thm 9.4 (fixed degree), Thm 2.8 (hypothesis thinning) | Oblivious coverage of *every* real p in J_C by Lehman cells aq + bp; materialised giants; one common modulus | non-oblivious exclusion; free giants; non-cell tests | D′/AV (many moduli, true factor only); PS; p−1⁺; ECM; QS/NFS; LP; Shor; Copp |
-| WM Thm 3.6 / multimod Thm A (N^{1/6}, free giants, any moduli) | sumset collision search; full-candidate coverage; Σ W ≤ X² | full coverage → true-factor only; or leave sumset search | p−1⁺, ECM, QS/NFS, LP, Shor (D′ attains; does not break) |
-| WM Thm 4.4 / Prop 4.5 (explicit difference covers; PS optimal for divisibility tests) | explicit B − G representation; start-statistic envelope | implicit product evaluation (WM 7.2) | none below 1/5 known |
-| WM Thm 10.1 (piecewise evaluation ≥ N^{1/4}/√H) | pieces priced ≥ √length separately | shared computation across pieces | none known |
-| multimod A′/B (deg ≥ 2 ⇒ N^{1/5}; J moduli ⇒ N^{1/5}J^{−1/5}) | as Thm A | degree-1 targets with N^{Ω(1)} moduli | D′ |
-| below16 T1/T2/T3 (true factor, local, N^{1/6}/polylog) | key N mod K, K ≤ CM²; ≤ n/2 size bits; charged labels; degree 1 | locality (Lemma KE: κ ≥ N^{3δ}); or leave sumset | p−1⁺, specialfam/Copp families, LP, QS (heuristic) |
-| **Theorem CB** (new; T1 + (Z/N)^* smooth exponents) | as T1, plus B₂-smooth annihilation with B₂ ≤ N^{1/3} | orders from other groups with a hitting theorem; relations; non-local selection | ECM (randomized, heuristic L_p[1/2]); LP; QS/NFS; Shor |
-| **Theorem CS** (codex; T1 + fixed list with R signatures) | fixed-list certificates | R ≥ N^{3δ/2} label richness, or κ large | WM Conj 33.1 lists (conjectural); randomized ECM (Prop 33.2) |
-| coverage38 Thm U (worst case for DCL designs) | N-independent (weight, modulus) groups; WIN | coverage at λ < J^{1/4} for every pair; or WIN-violating windows | none |
-| coverage38 Prop L; dchworst B1 | phase-discarding linear statistics; error ≳ √J | arithmetic structure x_ℓ = pℓ̄ mod q | none (proof-method barrier) |
-| dchworst B2 | single-modulus pigeonhole | union over moduli | D′ (on average) |
-| dchworst B3 | proof valid for all coprime pairs | "covered or easy" dichotomy | coverage38 dichotomy (partial) |
-| sieve2d Prop 5 | only ≤ J-prime statistics | structure beyond moments | none |
-| unbalanced Prop O′ (min(√p, q^{1/3})) | 1-D Lehman-linear full coverage | average-case / non-𝔏 | PS (first branch), ECM, NFS, p−1⁺ |
-| Track C O1–O4 | finite-algebra powers, power maps, subgroup zero sets for unit predicates | non-faithful or nonlinear readouts; different task | PS/BGS (√ cost); Tal (needs p); every factoring algorithm avoids the task |
-| Track A A1 | rank-D linear algebra observables on F_N | not reading F_N; sparse circuits | every algorithm |
-| Track E information floor | per-modulus data | non-per-modulus computation | every algorithm; Copp needs n/4 coset-shaped bits |
-| eps battery | finite menu | untested statistics | CFRAC/QS relations (L[1/2]) |
-| nfsfruit Lemma M; lemmaM B1, (c) | NFS fruitfulness; even-|S| two-form sieves; one-level HECM descent (L[4/9]) | fibre symmetry; multilevel descent | Dixon / Theorem DD (randomized); LP |
-| hypD Props G, H | slicing; bounded-k shape test | new averaged estimates (FM, PC) | none rigorous below L[1/2, 1] |
-| generic group (Shoup; Damgård–Koprowski) | representation-oblivious | read the integer N | HH, NFS, everything |
-| generic ring (AM09, JS13) | equivalence, not a floor | — | Jacobi via reciprocity |
-| AC⁰[p] (ASS, Green, Bourgain) | bounded depth | multiplication or gcd | every algorithm |
-| τ-conjecture (as a floor for SLP product evaluation) | uniform SLP for Π(x+i) | not a single SLP; branching on representation | ECM, QS (branch on lifts) |
-| Theorem DR contrapositive | — | — | conditional deterministic L[1/2] escapes *all* model floors at once |
+| WM Cor 3.3 / Thm 3.4 / Thm 9.4 / Thm 2.8 | oblivious coverage of every real p by Lehman cells; materialised giants (3.4); fixed-degree forms (9.4); one enumerated hypothesis modulus (2.8) | free giants (3.4 only); several moduli plus true-factor-only coverage; non-cell tests | D′/AV (distributional, ≥ 1/6); PS (1/4); p−1⁺; ECM, QS/NFS (heuristic); LP (randomized); Shor; Copp (promise) |
+| WM Thm 3.6 / multimod Thm A | bounded degree; identity-certified **full-candidate** coverage; #τ ≤ X, ΣW ≤ X² | true-factor-only coverage, or leave sumset search | as above; D′ attains, it does not escape |
+| WM Thm 4.4 | explicit difference covers; start-statistic envelope D_max ≤ r^η | different family or envelope; implicit product evaluation (WM 7.2) | none below 1/5 in this architecture |
+| WM Prop 4.5 | divisibility tests by polynomially bounded integers | a different task representation | PS attains 1/4 |
+| WM Thm 10.1 | pieces priced ≥ √length separately | shared computation | none supplied |
+| multimod A′ / B | A′: insufficient degree-1 coverage. B: J moduli, height conventions | N^{Ω(1)} moduli | D′ (the many-moduli ingredient only) |
+| below16 T1 / T2 / T3 (three separate locality classes) | T1: key N mod K ≤ CM², arbitrary windows. T2: plus ≤ PK size boxes. T3: algebraic windows keyed by N mod M. Moment budgets over all n-bit N | KE: κ ≥ N^{3δ}/n⁴ for T1; T2 and T3 by their own terms | p−1⁺; specialfam / Copp (promise); LP (randomized) |
+| Theorem CB (CONDITIONAL on F_iv) | T1 (per-input) + Y₁ smooth-exponent tests, as stated | larger B₂ or base set; order collisions; other groups; relations; non-local selection | ECM (heuristic); LP; QS/NFS; Shor |
+| Theorem CS | T1 (KE) + fixed certificate list; aggregate closure | κR² ≥ N^{3δ}/n⁴; adaptivity | WM Conj 33.1 (conjectural); WM Prop 33.2 (randomized lists under exposure-probability hypotheses) |
+| coverage38 Thm U | N-independent (weight, modulus) groups, all charged; WIN where established | coverage with λ < J^{1/4} for every pair (an achievement inside the model); adaptive groups or other charging | none |
+| coverage38 Prop L; dchworst B1 | phase-discarding / error-budget arguments | keep phases or exploit arithmetic correlations | none (proof-method rows) |
+| dchworst B2 | single-modulus pigeonhole | a worst-case union-over-moduli theorem | D′ (average only) |
+| dchworst B3 | proof valid for all coprime pairs | use primality; prove U(x, Y^{1/8}); or a covered-or-easy dichotomy | none |
+| sieve2d Prop 5 | fixed J; only ≤ J-prime event statistics | growing-order or structural information | none |
+| unbalanced Prop O′ | 1-D Lehman-linear full / constant-fraction candidate coverage | true-factor coverage, or leave 𝔏 | PS *attains* the √p branch; ECM, NFS, p−1⁺ change the task |
+| Track C O1–O4 | specific unit-predicate representations (finite-algebra powers, power maps) | nonlinear or non-faithful readouts, or a different task | PS/BGS at √ cost; Tal needs p (different input) |
+| Track A A1 | faithful linear observables on dense F_N coordinates | avoid that representation | none supplied (no new fast witness) |
+| Track E information floor | per-modulus information | non-per-modulus computation | Copp needs promised coset-shaped n/4 bits |
+| eps battery | finite negative experiment, not a theorem | — | CFRAC/QS relations reveal ε at L[1/2] |
+| nfsfruit Lemma M | an **open sufficient** fruitfulness condition, not a floor | — | Dixon / Theorem DD use the fibre symmetry (randomized) |
+| lemmaM B1 | even-|S| two-form degree-1 sieves | other sieve shapes | QS; hidden-root multipliers |
+| lemmaM (c) | one-level HECM-priced descent: L[4/9] | multilevel descent; other smoothness tests | LP (L[1/2], randomized) |
+| hypD G / H | counting template; fixed-k shape test | new averaged estimates (FM, PC) | none rigorous below L[1/2, 1] |
+| generic ring (AM09, JS13) | equivalences, not floors | — | Jacobi via reciprocity |
+| generic group (Shoup; DK02) | different tasks and representations; no factoring floor | — | — |
+| AC⁰[p] (ASS; Green; Bourgain) | exact or correlated **polynomial-size** circuits on all inputs | irrelevant to exponential-time or promise algorithms | — |
+| τ-conjecture (WM 7.1) | uniform SLP evaluating P_k | do not evaluate P_k | ECM, QS |
+| Theorem DR | a conditional upper bound, not a floor | — | conditional deterministic L[1/2] |
 
-**Escape signature of a deterministic N^{1/6−δ} algorithm (almost all or worst case).**
-Combining rows 2, 6–8 and Theorem DR:
-- (S1) It is not a full-candidate sumset cover (Thm A / WM 3.6).
-- (S2) If it uses sumset collisions, either its selector is non-local with κ ≥ N^{3δ} (KE), or
-  collisions carry only part of the success.
-- (S3) The rest of the success comes from:
-  - (S3a) group orders outside (Z/N)^* (CB), with an almost-all hitting theorem, and for the
-    worst case label richness R ≥ N^{3δ/2} (CS) and a least-witness theorem (LW); or
-  - (S3b) relations with deterministic smooth supply, deterministic fruitfulness and
-    deterministic linear algebra; or
-  - (S3c) something outside all listed models.
-- (S4) It must use representation-dependent operations (not generic) of super-constant depth
-  (not AC⁰[p]; not TC⁰ if Kalai's conjecture holds).
+**A defensible escape signature for an unconditional deterministic N^{1/6−δ} algorithm**
+(almost all, or worst case):
+- **S1.** It is not a charged, bounded-degree, identity-certified full-candidate cover (multimod
+  A / WM 3.6).
+- **S2.** If an enlarged-key T1 component alone covers a constant fraction, then
+  κ ≫ N^{3δ}/n⁴ (KE). General non-local selectors are outside KE.
+- **S3.** Within repaired CB/CS, the complementary mechanism must escape one of their explicit
+  assumptions. Examples:
+  - other groups with a hitting theorem (ecmavg HIT);
+  - relations with a deterministic supply and fruitfulness;
+  - larger B₂ or order collisions with their own analysis.
+  Signature richness (CS) and least witnesses (LW) matter only for fixed-list, worst-case
+  splitting.
+- The earlier draft's S4 (super-constant depth) is **withdrawn** as a necessity. It concerns
+  polynomial-size all-input circuits only.
 
-**Witnesses for each ingredient alone.**
-- (S1)–(S2) with sub-1/6 on a positive proportion: p−1⁺, specialfam.
-- (S3a) randomized: ECM (heuristic), LP (rigorous, class groups).
-- (S3b) randomized: Dixon, LP (rigorous); deterministic heuristic: det-QS (below16 §6).
-- Conditional deterministic: Theorem DR (E-hardness), WM Conj 33.1 (N^{1/(2u)}), det-QS
-  (H1 + H2 of below16).
-- **No family has the whole signature unconditionally.**
+**Witnesses.**
+- No known classical algorithm is unconditional, uniform, deterministic and proved below N^{1/6}
+  on almost all of S_n, or on every input. This is a literature finding, not a completeness
+  theorem.
+- Ingredients exist separately:
+  - p−1⁺ and specialfam (positive proportion or promise);
+  - LP and Dixon (rigorous, randomized);
+  - ECM and det-QS (heuristic);
+  - Theorem DR (conditional on IW);
+  - WM Conj 33.1 (conditional; N^{1/(2u)} for bounded ratio).
 
 ---
 
 ## 6. Blockers (task 3(i))
 
-1. **Least witness (Prop LW).** Worst-case deterministic ECM-type routes, including
-   Ward–Maestro Conj 33.1, imply O(log p) least-witness bounds for smooth-order exposure. No
-   analogous bound is known even under GRH, and for QNRs it is false.
-2. **Two-shift sieve (CB⁺).** Even the barrier for cyclotomic portfolios needs joint large prime
-   factors of p − 1 and p + 1, beyond level 1. Conversely, an algorithm that proves its
-   cyclotomic portfolio exposes almost all p would prove a joint *smoothness* statement of the
-   same depth. E1 says the joint residual does not decay (12% at 32 bits), so no such
-   statement is true at the needed strength.
-3. **Coverage theorems (H4w via Theorem R).** dchworst B1–B3 and coverage38 U/L, unchanged: a
-   sparse covering statement U(x, Y^{1/8}) beyond known methods.
-4. **τ-type.** A product-evaluation (PS/BGS-type) algorithm below N^{1/6} refutes the
-   τ-conjecture with exponent c ≤ 3 (§4.1).
-5. **Lower bounds are blocked (Theorem DR).** Any proof that deterministic factoring needs
-   N^{Ω(1)} would put E in i.o.-SIZE(2^{εm}) for every ε. So the repository's model floors
-   can never be "upgraded" to general deterministic lower bounds.
-6. Not blockers:
-   - prime construction (§3);
-   - Sarnak, τ, μ ⊥ AC⁰ (§4);
-   - analytic NT (§2.1).
+1. **Least witness (Prop LW).** Conj 33.1's *log-length* lists need an O(log p) least-exposure
+   bound for an explicit curve family. No theorem of that kind is known even under GRH. This
+   blocks that route; it does not block polynomial-length lists.
+2. **Joint residuals (CB⁺).** A barrier for torus portfolios needs joint large prime factors.
+   Conversely, a proof that a torus portfolio exposes almost all p would need a joint
+   smoothness statement of comparable depth. E1 (post hoc) shows no decay at 20–32 bits;
+   small-size data cannot settle the asymptotics.
+3. **Coverage theorems (H4w via Theorem R).** dchworst B1–B3 and coverage38 U/L, unchanged.
+4. **τ-type.** A P_k-evaluation algorithm below N^{1/6} refutes τ for every c ≤ 3 (§4.1).
+5. **Lower bounds.** By Theorem DR, an unrestricted deterministic N^{Ω(1)} lower bound would
+   refute the IW hypothesis. The repository's model floors cannot become such lower bounds
+   unless that hypothesis fails.
+6. **Not blockers** on the evidence checked: prime construction (§3), Sarnak, τ, μ ⊥ AC⁰
+   (§4.2), analytic number theory (§2.1).
 
-## 7. New directions (task 3(iii)), ranked
+## 7. New directions (task 3(iii))
 
 **D1. Fixed-u deterministic QS on almost all of S_n.** Feasibility low–medium; payoff high.
-- Below 1/6 needs a factor base y = N^c with c < 1/(6ω), so the smoothness density ρ(u) is a
-  *constant* (below16 §6.3). The fixed-u regime is far more amenable than L[1/2]: constant
-  densities, and first and second moments over N.
-- *First lemma.* The first moment over N ∈ S_n of #{t ≤ T : (⌈√N⌉+t)² − N is y-smooth}. For
-  fixed t, the values over N with ⌈√N⌉ = m fill [2mt + t², 2m(t+1) + t²). Over all m the count
-  is a long-range smooth count, times a Bombieri–Vinogradov input for semiprimes in
-  {x² − v}.
-- *Second step.* The second moment over **all** integers N. For fixed (t, t′) the map
-  (m, m² − N) ↦ (v, w) is linear with determinant 2(t − t′). So the pair count is smooth-pair
-  counting on a sublattice of index 2(t′ − t), i.e. smooth numbers in APs mod 2k ≤ 2T ≈ 2y.
-  That is within Harper's y^{4√e−δ} individual-modulus range and the BDH-type large sieve.
-- *Transfer (PROVED, trivial).* An exceptional set of density ε_n among all n-bit integers is a
-  fraction ≤ Cε_n n² of S_n. So almost-all-integers with ε_n = o(n^{−2}) suffices, and the
-  binary "semiprime + smooth = square" problem of below16 is bypassed.
-- *Kill criteria.*
-  - The error terms available for smooth numbers in short multiplicative windows of relative
-    width 1/T² (needed for k = t′ − t small) give only (log)^{−c} savings with c ≤ 2. Then the
-    transfer fails.
-  - The common-mode α-variation over N mod Q (ecmavg-type) cannot be stratified away.
-- Even if D1 succeeds, fruitfulness (below16 H2) remains. Codex §9.4 turns it into one rank test.
+- Below 1/6 needs y = N^c with c < 1/(6ω), so the smoothness densities are constants
+  (below16 §6.3). The remaining obligations are fruitfulness and deterministic elimination.
+- **Transfer lemma (PROVED, trivial; codex confirms).** If at most ε_n·2^{n−1} n-bit integers
+  are bad, the bad fraction of S_n is O(ε_n n²). So ε_n = o(n^{−2}) suffices for an almost-all
+  statement. For a mean-time statement with an N^{1/5} fallback one needs instead
+  η ≤ N^{−1/30−δ}.
+- **Coordinates.**
+  - Put m = ⌈√N⌉, r = m² − N, v = r + 2mt + t² and w = r + 2mt′ + t′².
+  - The map (m, r) ↦ (v, w) is affine with determinant 2(t − t′). With k = t′ − t:
+    w − v ≡ t′² − t² (mod 2k), and m = (w − v − (t′² − t²))/(2k).
+  - The domain is an affine lattice coset intersected with a **thin coupled region**: for fixed
+    v, w lies in a window of relative width O(k/T²).
+  - So the pair sum is a two-variable smoothness correlation, not a one-variable count of smooth
+    numbers in an AP. (The earlier draft's appeal to Harper was also wrong: Harper's theorem
+    needs log x/log q → ∞, which fails at q ≍ T ≍ y.)
+- **First lemma (target).** An all-integer lower-tail bound. Find a count Z_N with mean ≍ T
+  and a fixed gap above the relation count, with Var(Z_N) = o(T²/n²) after justified
+  stratification by N mod Q, or a direct lower-tail bound of strength o(n^{−2}).
+  - Near-diagonal pairs |t − t′| ≤ K contribute only O(K/T) relatively, so they can be
+    discarded.
+- **Kill criterion.** The thin-region correlation for k in a positive-density range of pairs
+  cannot be bounded with o(n^{−2}) relative error by any available smooth-number technique:
+  short-interval, AP or bilinear.
+- Fruitfulness then reduces to one rank test (codex §9.4), but its *frequency* still has to be
+  proved.
 
-**D2. Group-order hitting outside (Z/N)^*** (forced by CB). Feasibility low.
-- The cheapest instance: one CM-curve family, or a small set of tori, together with a
-  *two-shift* large-prime-factor theorem.
-- *First lemma.* Whether Fouvry's method gives a positive proportion of p with P⁺(p−1) and
-  P⁺(p+1) both > p^{1/2+η}. That is the weakest version CB⁺ needs at budget N^{1/8}.
-- *Kill criterion.* Level-of-distribution arithmetic: ℓ₁ℓ₂ > p^{1+2η} exceeds BV, so it is
-  likely dead unless one shift is handled by a bilinear (Type II) structure.
-- The worst-case version is a least-witness problem (LW): kill.
+**D3. Non-local selector audit (codex Rank 1).** High feasibility for audits.
+- For enlarged-key T1, KE turns a proposal into κ ≥ N^{3δ}/n⁴.
+- Kill the proposal if the key compresses back to M²N^{o(1)}, if placement needs factor
+  information, or if construction cost cancels the gain.
 
-**D3. Non-local selector audit (codex Rank 1).** Feasibility high for an audit, low for a gain.
-- KE turns any proposed selector into one inequality, κ ≥ N^{3δ}.
-- *Kill criterion.* The key compresses back to M²N^{o(1)}, or window placement needs factor
-  information.
+**D2. Hitting outside (Z/N)^*.** Feasibility low.
+- Separate the constructive question (a hitting or separation theorem for an explicit torus or
+  curve family) from the obstructive one (CB⁺).
+- First lemma: positive density of p with P⁺(p ± 1) both > p^{1/2+η}, the CB⁺ input at budget
+  N^{1/8}.
+- Kill criterion: only for strategies whose moduli product exceeds the level of distribution.
+  That is a limitation of the strategy, not an impossibility.
 
-**D4. Promise-preserving partial-information reductions (codex Rank 2).** Feasibility low.
-- ε ⇔ φ mod 8. Target: a reduction from Jacobi-(+1) QR to ε on constructed semiprimes.
-- *Kill criterion.* Every transformation is a coprime mask (codex §9.3) or needs fresh factors.
+**D5. Targeted derandomization (Theorem DR, unconditionally, for one test).** Feasibility very
+low.
+- To get below 1/6 one needs seed length (1/6 − δ)n, with N^{o(1)} cost per seed and a proved
+  hitting property.
+- Dixon's test with structured seeds r = ⌈√(kN)⌉ + t is det-QS (D1).
+- Lenstra–Pomerance's success predicate is more complex than "h(−kN) is smooth"; it is not
+  reducible to D1.
 
-**D5. Unconditional targeted derandomization of Lenstra–Pomerance or Dixon at the N^{1/6}
-scale.** Feasibility very low.
-- Theorem DR shows that only derandomization separates us from L[1/2]. At the N^{1/6} scale a
-  generator needs seed ≤ n/6 bits against one *specific* test.
-- For Dixon that test is "r² mod N is y-smooth". The structured seed set r = ⌈√(kN)⌉ + t *is*
-  det-QS, so D5 reduces to D1. For LP it is "h(−kN) is smooth" for explicit multipliers k, an
-  open short-family smoothness problem.
-- *Kill criterion.* Reduce to D1, or to a short-family Frobenius-equidistribution problem
-  (families of size p^{o(1)}; known methods need ≥ p^{1/2}).
+**D4. Promise-preserving partial-information reductions (codex Rank 2).**
+- Target: Jacobi-(+1) QR ≤ ε on constructed semiprimes, with the promise and query lengths
+  proved.
+- Coprime masks are one failure mode (codex §9.3); they are not the only one.
 
-**D6. Residual-tail portfolios (codex Rank 4).** **Refuted for cyclotomic portfolios
-(heuristic + E1).**
-- The mean bound N^a + ηN^{1/5} needs η ≤ N^{−1/30−δ}. Cyclotomic residues stay ≈ 1–1.1% of
-  pairs (E1).
-- Only list-length-growing ECM portfolios remain: ecmavg, WM Part 5.
+**D6. Residual-tail portfolios (codex Rank 4).**
+- Keep this as a quantitative hypothesis, η ≤ N^{−1/30−δ}.
+- E1's fixed five-group proxy leaves about 1% of pairs at the sampled scales. That is evidence
+  against a fixed cyclotomic portfolio at these scales, not an asymptotic obstruction, and it
+  says nothing about point-order or growing portfolios.
 
-No direction has a test that is both cheap and decisive beyond E1. D3 and D4 are audits of
-specific proposals, and D1/D2 need proofs, not data.
+No direction offers a cheap decisive experiment beyond E1. D1, D2 and D5 need proofs, and D3
+and D4 audit specific proposals.
 
 ---
 
 ## 8. Experiment E1 (pre-registered, `notes/polyimpl_prereg.md`, commit `1a9c3de`)
 
-**Setup.**
-- 20 000 uniform primes per size k (bits).
-- B₂ = ⌊2^{2k/3}⌋, i.e. X² with X = N^{1/6}.
-- Generous exposure: p is exposed by d iff P⁺(Φ_d(p)) ≤ B₂.
-- 10 000 balanced pairs per size.
+**Event.**
+- "Exposed by d" means P⁺(Φ_d(p)) ≤ B₂, i.e. **whole-order smoothness** of the torus T_d(F_p).
+- The proxy is generous relative to whole-order stage-1/2 criteria, because it ignores stage-1
+  cost.
+- It is **not** an upper bound on all exposures: an element may have smooth order inside a
+  non-smooth group.
+  - Codex's example: at B₂ = 3, all five Φ_d values of 41 and of 43 are non-smooth, yet
+    gcd(9^4 − 1, 41·43) = 41.
+  - CB removes small orders for fixed integer bases. E1 has no such step for the other tori.
 
-| k | B₂ | r₁⁽¹⁾ (P⁺(p−1) > B₂) | r₁⁽¹,²⁾ | r₁ (all d ∈ {1,2,3,4,6}) | r₂ (pairs) | unexposed by d = 3, 4, 6 |
+**Sampling.** 20 000 uniform primes per dyadic block k, without replacement. B₂ = ⌊2^{2k/3}⌋.
+10 000 disjoint matched pairs per block (balanced, but not uniform on one S_n).
+
+| k | B₂ | r₁⁽¹⁾ | r₁⁽¹,²⁾ | r₁ (all five d) | r₂ (pairs) | unexposed by d = 3, 4, 6 |
 |---|---|---|---|---|---|---|
-| 20 | 10 321 | 0.330 | 0.095 | 0.083 ± 0.002 | 0.0069 ± 0.0008 | 0.961, 0.958, 0.965 |
-| 26 | 165 140 | 0.350 | 0.115 | 0.102 ± 0.002 | 0.0108 ± 0.0010 | 0.964, 0.959, 0.963 |
-| 32 | 2 642 245 | 0.358 | 0.123 | 0.109 ± 0.002 | 0.0113 ± 0.0011 | 0.958, 0.955, 0.959 |
-| model | | 0.405 | 0.164 | 0.141 | 0.020 | 0.951 |
+| 20 | 10 321 | 0.3304 | 0.0951 | 0.0829 | 0.0069 | 0.961, 0.958, 0.965 |
+| 26 | 165 140 | 0.3497 | 0.1148 | 0.1016 | 0.0108 | 0.964, 0.959, 0.963 |
+| 32 | 2 642 245 | 0.3575 | 0.1226 | 0.1086 | 0.0113 | 0.958, 0.955, 0.959 |
+| Dickman model | | 0.405 | 0.164 | 0.141 | 0.020 | 0.951 |
+
+The descriptive binomial errors are ≈ 0.002 for r₁ and ≈ 0.001 for r₂. They ignore the
+finite-population correction and the matching.
 
 **Frozen checks.**
-- P1 holds.
-- P2, P3, P4 fail at k = 20 only, on the low side: 0.095 < 0.12, 0.083 < 0.09,
-  0.0069 < 0.008. They hold at k = 26 and 32.
-- P5 fails: r₁(32)/r₁(20) = 1.31 > 1.3, by **growth**.
-- **Pre-registered verdict: "mixed".** Neither branch of the decision rule applies: the residual
-  did not shrink, but the stability band was missed.
+- P1 holds at every k.
+- **P2 fails at k = 20 and k = 26** (0.0951, 0.1148 < 0.12) and holds at 32.
+- P3 fails at 20 (0.0829 < 0.09) and holds at 26 and 32.
+- P4 fails at 20 (0.0069 < 0.008) and holds at 26 and 32.
+- P5 fails: r₁(32)/r₁(20) = 1.310 > 1.3, by **growth**.
+- **Pre-registered verdict: "mixed"** (neither branch of the rule applies).
 
-**Post hoc reading (labelled).**
-- The residual increases with k toward the independence model, as finite-size Dickman
-  corrections predict. Pr[P⁺(n) > n^{2/3}] approaches ln(3/2) from below.
-- p − 1 and p + 1 are nearly independent: r₁⁽¹,²⁾ = 0.1226 against r₁⁽¹⁾r₁⁽²⁾ = 0.1269 at
-  k = 32.
-- The failure direction is the opposite of the one that would undercut CB⁺ or rescue D6. So
-  CB⁺ remains experimentally supported only informally (not by the frozen rule), and D6 is
-  refuted for cyclotomic portfolios on heuristic grounds.
+**Post hoc (labelled).**
+- The residuals increase with k toward the Dickman-model values, which are heuristics for these
+  prime-polynomial values, not theorems.
+- p − 1 and p + 1 are close to independent: 0.1226 against 0.3575 × 0.3549 = 0.1269 at k = 32.
+- The data support only "no decreasing trend at these sizes". They give no support to CB⁺ as a
+  theorem, and no refutation of D6 beyond the fixed five-group proxy.
 
-Reproduction: `PYTHONPATH=. .venv/bin/python -m src.polyimpl.residual run` (≈ 2 s);
-`PYTHONPATH=. .venv/bin/python -m src.polyimpl.primefind`; `.venv/bin/python -m pytest -q tests/test_polyimpl.py`.
+**Reproduction.**
+- `PYTHONPATH=. .venv/bin/python -m src.polyimpl.residual run` (≈ 2 s)
+- `PYTHONPATH=. .venv/bin/python -m src.polyimpl.primefind`
+- `.venv/bin/python -m pytest -q tests/test_polyimpl.py`
 
 ## 9. Reviews
 
-See §9.1 (Opus critic) and §9.2 (GPT-6.1-sol adversarial review), filled in after the reviews.
+**Independent Opus critic** (read-only; all findings applied).
+- DR: correct with fixes. Folklore; wording of the contrapositive.
+- CB: gap plus overclaim.
+  - The arithmetic, box and small-order count were all verified.
+  - Fixes: per-input budget only (the averaged convention fails); selectors depend only on N mod
+    K and answer bits; the exact Y₁ form, with order collisions excluded; the false WM §35
+    attribution for F_iv removed; downgraded to a routine combination with WM 35.3(ii) cited.
+  - The critic suggested the unconditional bounded-gap variant.
+- CS: gap. Codex's premises had been dropped. Restored: aggregate closure, the exact
+  distinct-pair fraction, the ε = o(1/R) range, and the adaptive R^{−4/3} caveat.
+- KE: correct with fixes (retained conditions).
+- PF: correct with fixes. "Needed to beat 1/2"; the literature-completeness claim scoped.
+- LW: correct; blocker overclaimed. Polynomial lists are unaffected; Graham–Ringrose; the i.o.
+  versus all-but-one mismatch.
+- Catalog: Kalai item correct. Overclaims fixed (S3c, base count, CONDITIONAL row label,
+  balanced-only N^{1/10}).
+- E1: §8 honest; §§0, 6, 7 had overclaimed. Fixed.
+
+**GPT-6.1-sol adversarial referee** (`codex/polyimpl_2.out`; all valid fixes applied).
+- DR: correct with fixes. The almost-everywhere hypothesis made explicit, the explicit clock,
+  and the quantifiers of the contrapositive.
+- CB: correct with fixes under an explicit closure hypothesis, now in the model. Bases 0, ±1
+  excluded; primes dividing bases removed; F_iv kept conditional.
+- KE/CS: correct with fixes. Fixed-relative-size box; c_eq; aggregate closure; prime-local
+  certificates.
+- PF: correct with fixes.
+  - The Sander row was wrong: e = 1/(1 + cβ²), not ≥ 1, and factoring *is* needed there.
+  - The quantifier is "every interval".
+  - The output range is z < p ≤ 2z^{1/θ}.
+  - Merikoski and Li confirmed.
+- LW: correct with fixes. The label is the order of the stage-1 residual point; one exception
+  per range; the QNR comparison is an analogy only.
+- Escape table: overclaims fixed row by row:
+  - O′: PS attains, not escapes;
+  - AC⁰ row scope;
+  - generic-group row;
+  - nfsfruit row split;
+  - eps row a finite experiment;
+  - S4 withdrawn.
+- Catalog:
+  - Żrałek: totient chain;
+  - Dieulefait–Urroz: Thm 4/5 and the twist condition;
+  - Bach–Charles: verified, density-one, a(n) and a(n²);
+  - class groups: scope;
+  - H5 classification limited to the menu;
+  - Sarnak source: Mahler Lectures 2011;
+  - Helfgott–Thompson verified;
+  - NR has a factoring-based PRF;
+  - H3 quantifiers;
+  - "no known collapse".
+- E1: P2 fails at 26 bits as well (corrected). Event renamed whole-order smoothness. CB⁺ and D6
+  claims withdrawn to "no decreasing trend at these sizes".
+- D1: thin-region correlation; Harper's missing hypothesis; kill criterion replaced by the
+  lower-tail target. Codex's own ranking: D3, D1, D5, D2, D4, D6.
