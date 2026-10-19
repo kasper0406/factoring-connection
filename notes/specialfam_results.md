@@ -11,7 +11,9 @@ Starting point: codex `r18_ideas.out` §1–§2.
   families of N, and we prove them.** But below-1/6 special families are *cheap to come by*. A prime
   in a short interval or in a residue class with a large modulus already gives a factoring exponent
   near 0 by known Coppersmith methods (§6). So the value of this note lies in the general mechanism and
-  in the careful accounting, not in "beating 1/6".
+  in the careful accounting, not in "beating 1/6". The families where the new mechanism is the right
+  tool are those not localised in size or residue: Harman–Lewis sectors (0.15475) and Xiannan Li's
+  sparse x³ + 2y³ (0.1604).
 - **Main statement (Theorem G, proved; no prior formulation found by us).** Pollard–Strassen extends
   from intervals to polynomial values.
   - *Setting.* Φ is any integer polynomial of bounded degree, and the box has a side of length at
@@ -27,12 +29,20 @@ Starting point: codex `r18_ideas.out` §1–§2.
 - **Families (proved, via verified analytic inputs).**
   - p = a² + b² with b ≤ p^{0.119+o(1)} (Harman–Lewis): N^{0.15475+o(1)} balanced, N^{0.1238+o(1)} at
     p ≍ N^{2/5}. This confirms r18 §1.
-  - Gaussian primes in small polar boxes (Harman–Kumchev–Lewis 0.53): N^{0.1325+o(1)} balanced,
-    N^{0.106+o(1)} at N^{2/5}.
-  - Coppersmith known-residue families via Linnik constants (Theorem S). The exponent is 3/20 with
-    Xylouris's L = 5, which supersedes r18's 2/13 (L = 5.2). It is 1/24 for primorial moduli (Chang)
-    and 0.0132 for 2-power moduli (Banks–Shparlinski). These families are "low bits known up to sign"
-    in disguise.
+  - Gaussian primes in small polar boxes:
+    - Harman–Kumchev–Lewis 0.53, read by us: N^{0.1325+o(1)} balanced, N^{0.106+o(1)} at N^{2/5}.
+    - Lewis's thesis 0.528, cited via secondary sources: 0.132 / 0.1056.
+    - A 2025 preprint claim of 0.5248: 0.1312 / 0.10496, UNSURE.
+  - A non-norm polynomial family below 1/6, not localised in size or residue: Xiannan Li's sparse
+    x³ + 2y³ (y ≍ x^{1−γ}, γ < 5/67; refereed; Theorem 1 read by us). By Theorem G it gives
+    N^{43/268+ε} = N^{0.1604+ε} balanced and N^{0.1284+ε} at N^{2/5}.
+  - Coppersmith known-residue families via Linnik constants (Theorem S). These are uniform bounds over
+    the least-prime family; balance is not proved.
+    - 3/20 with Xylouris's published L = 5, superseding r18's 2/13 (L = 5.2).
+    - 1/24 for primorial or 2-power moduli (Chang, Cor. 11).
+    - 0.0132 for 3-power moduli (Banks–Shparlinski).
+
+    These families are "low bits known up to sign" in disguise.
   - In the Theorem A/G/G2 families (HL, HKL, polynomial forms), q can be any prime of the right size.
     In the Theorem S families, q is constrained too (q² ≡ 1 mod g).
 - **One improvement over a 2026 result (Corollary W, proved; small; the γ < 1/12 part is conditional
@@ -74,8 +84,13 @@ Starting point: codex `r18_ideas.out` §1–§2.
     (β = 2/5). The wall-time slope is 0.184, against Pollard–Strassen's 0.25.
   - Corollary W's measured slopes at γ = 1/8 and 1/6 (0.161, 0.096) already sit below WM's E(γ)
     (0.1875, 0.1667). Details in §9.
-- **Reviews.** GPT-6.1-sol could not run: Codex CLI login expired (401). An independent Opus critic
-  (ACCEPT WITH FIXES, all applied) and an Opus prior-art auditor were used instead.
+- **Reviews (all done; every valid fix applied, §10).**
+  - Opus critic: ACCEPT WITH FIXES.
+  - Opus prior-art auditor.
+  - GPT-6.1-sol adversarial referee (`codex/specialfam_1.out`): MAJOR REVISION, no fatal obstruction,
+    Corollary W's improvement confirmed.
+  - GPT-6.1-sol literature audit (`codex/specialfam_2.out`): found stronger family inputs, now in the
+    table.
 
 ## 1. Setting and cost model
 
@@ -150,7 +165,9 @@ bit operations (c_d = d! for Laplace, O(d⁴) for Berkowitz). No element of Z/N 
 - *Setup.* Φ(x, w) ∈ Z[x, w₁, …, w_r] has d = deg_x Φ ≥ 1 and x-leading coefficient c(w) ∈ Z[w]. The
   box is Q = I × W with I = [x₀, x₀ + A) ∩ Z and W ⊂ Z^r finite. Write V = A·|W|, and choose
   1 ≤ m ≤ A, I⁺ = [x₀, x₀ + m⌈A/m⌉).
-- *Hypothesis (H).* For all x ∈ I⁺ and w ∈ W: 0 < |Φ(x, w)| < N and 0 < |c(w)| < N.
+- *Hypothesis (H).* For all x ∈ I⁺ and w ∈ W: 0 < |Φ(x, w)| < N and 0 < |c(w)| < N. Also A ≥ 1 and
+  W ≠ ∅. Throughout, d and the shape of Φ are fixed. Constants depend on d and on the cost of
+  constructing the inputs (the K·h term); Õ(√V) needs that cost to be negligible (codex #2).
 - *Conclusion.* There is a deterministic algorithm which, given N, Φ and Q, outputs a proper divisor
   of N whenever some prime p | N divides Φ(x, w) for some (x, w) ∈ Q. It never outputs anything else.
 - *Cost.* With m = ⌈√V⌉ when A ≥ √V, it uses O_d(√V log³ N + K·h) bit operations, where K ≤ 2√V is
@@ -247,6 +264,12 @@ the following are equivalent:
 - The result is ∏ Nm(D_oℓ_o)^{e_o} = ρΦ with ρ = a/b ∈ Q (a, b integers). Add one factor Z to R with
   the constant affine map L ≡ b. Then Nm_R(L(x)) = b·ρΦ = aΦ, so c = a. ∎
 
+**Transfer from cΦ to Φ (codex #3).** To use G2 for Φ via c·Φ = Nm_R ∘ L:
+- first take gcd(c, N): a proper value is output, and the method fails only if N | c;
+- require 0 < |cΦ| < N on the enlarged set S₁ + S₂;
+- the constants depend on the fixed algebra (rank, multiplication table), coefficient heights, and the
+  cost of evaluating L. The bound is not uniform over arbitrarily encoded inputs.
+
 Theorem G2 holds verbatim for such products R. Work componentwise in R/NR, take Nm_R = ∏ of the
 component norms, and use a common baby set. Each component is a monogenic Z[T]/(g_i); a single
 Z[T]/(∏g_i) would not do over Z. If a number field's basis ω_i is not in a monogenic order (e.g.
@@ -322,6 +345,12 @@ The gcd = N recovery is the block scan of Theorem G. A product-tree descent is n
   p ∈ (X/(C log X), X] with p = a² + b², a ≥ 1 and 1 ≤ b ≤ X^{0.119}.
 - *Consequence.* For every η > 0.119, the family 𝓕_η = {p prime : p = a² + b², 1 ≤ b ≤ p^η} meets
   every interval (X/(C log X), X] for X large.
+- *Exactly 0.119 (codex #5).* To use exactly 0.119, take the public bound b ≤ (C p log p)^{0.119}, which
+  enlarges B by a polylogarithmic factor and leaves the exponent unchanged. HL's proof in fact sieves
+  the dyadic range X/2 < N(π) < X (their §2), which would give b ≤ 2^{0.119}p^{0.119}. We do not rely
+  on that.
+- *Experiments.* E1 used η = 0.119 exactly. Infinitude of that exact sub-family is not proved by
+  Lemma HL; the experiments only exercise correctness and slopes on it.
 
 *Proof.*
 - Apply Theorem 2 with β = 0 and γ = X^{−0.381}.
@@ -385,6 +414,8 @@ ideals of imaginary quadratic fields*, Trans. AMS 356 (2004) 599–620. Read by 
 **Lemma W (divisor window; proved).** If g ≥ D and P⁺(g) ≤ B, then g has a divisor d with
 D ≤ d < BD.
 
+Here D ≥ 1, g ≥ 1 is an integer and B ≥ 2; if g = D = 1, take d = 1 (codex #4).
+
 *Proof.* Remove prime factors of g one at a time while the quotient stays ≥ D. The final d satisfies
 d/ℓ < D for some prime ℓ | d with ℓ ≤ B. ∎
 
@@ -393,7 +424,17 @@ The code tries only d ∈ [D, BD), largest first. The theorem does not need Lemm
 **Theorem S (proved; the decoding step is published).** The decoder in Step 2 is exactly GFHP 2025
 Thm 3.1 / Oznovich–Volk 2025 Thm 3.2 (deterministic known-residue Coppersmith subdivision, with the
 β(1−β) dyadic form in O–V). Theorem S adds only Step 1 and the r² ≡ 1 enumeration.
-- *Setup.* Let p | N be prime with p ∈ [P, 2P], P = N^β (the
+
+**Theory vs implementation (codex #1, critic #15).**
+- *The theorem.* It uses May's Thm 1, with the lattice dimension growing like log N and m ≈ βD.
+- *The implementation.* `copper.py` caps the dimension at 9. Its guaranteed window is N^{2/9} rather
+  than N^{1/4} at β = 1/2, and N^{2/15} rather than N^{4/25} at β = 2/5. So the implementation
+  realises N^{[5/18−γ]₊} rather than N^{[1/4−γ]₊}. This is a permanent loss for that routine, not a
+  finite-size effect.
+- *The fix.* `best_params` is now integer-exact (no float overflow at 5000 bits) and searches m near
+  βD. At the experiment sizes it returns the same parameters as the frozen code (checked on 70 N).
+  Passing a larger Dmax realises the theorem's exponent.
+- *Setup.* Let N be composite and p | N prime with 1 < p < N (codex #6) with p ∈ [P, 2P], P = N^β (the
   band is public). Suppose some integer g satisfies
   - g | p² − 1 and g | N² − 1 (for N = pq this is g | gcd(p² − 1, q² − 1)),
   - g ≥ N^γ,
@@ -482,6 +523,12 @@ Thm 3.1 / Oznovich–Volk 2025 Thm 3.2 (deterministic known-residue Coppersmith 
   E** < E on (0, 1/5) except at γ = 1/12, where they are equal. E** < 1/5 for every γ ∈ (0, 1/2). WM
   need γ > 1/20 to beat 1/5 and γ > 1/6 to reach below 1/6 (critic correction), while E** ≤ 1/6 for
   γ ≥ 1/18.
+- **GFHP on wrong candidates (codex #7).** For a candidate divisor n of H_t, GFHP's congruence
+  promise may fail. Each call is therefore given the explicit budget
+  C·(N^{1/5}log^{16/5}N/n^{3/5} + N^{1/6}log⁴N), is aborted when the budget is exceeded, and its output
+  is verified. There are N^{o(1)} candidates per stage, so the dovetailed cost is unchanged.
+- **Inputs.** The balanced band [√(N/C), √N] is derived from N and the public balance constant C.
+- **Not implemented.** The GFHP branch is not implemented or tested.
 - The composition (g recovered from N − 1, then the GFHP or Coppersmith decoder) was not found
   stated by us: "no prior formulation found by us". Its proof is the dovetailing argument above, with
   GFHP Thm 5.3 as a cited, unrefereed (2025 preprint) input for the γ < 1/12 part.
@@ -490,23 +537,31 @@ Thm 3.1 / Oznovich–Volk 2025 Thm 3.2 (deterministic known-residue Coppersmith 
 - *Construction.* Let g be any modulus with P⁺(g) ≤ (log N)^{O(1)}, e.g. g = 2^k or a primorial. Let
   p and q be the least primes ≡ 1 and ≡ −1 (mod g), so q ≠ p. Then g | gcd(p² − 1, q² − 1).
 - *Exponent.* If p, q ≪ g^L then N ≪ g^{2L}, so γ ≥ 1/(2L) − o(1). The cost is
-  N^{1/4 − 1/(2L) + o(1)} for every β, since β(1−β) ≤ 1/4.
+  N^{1/4 − 1/(2L) + o(1)} for every β, since β(1−β) ≤ 1/4. This is a uniform bound for the
+  least-prime family.
+- *No balance claim (codex #11).* The construction does not prove that infinitely many members have
+  p ≍ q, or p ≍ N^{2/5}. The β-columns in §7 are conditional size specialisations.
+- *Conditional refinement.* If the smaller factor is N^β (β ≤ 1/2), then q ≤ g^L gives
+  γ ≥ (1−β)/L, so the cost is ≤ N^{[(1−β)(β − 1/L)]₊}. That is 0.12 at β = 2/5 for L = 5, and 0 for
+  Chang and Banks–Shparlinski.
   - **L = 5.2** (Xylouris 2009, arXiv 0906.2749, the value r18 used): 2/13 ≈ 0.1538.
   - **L = 5.18** (Xylouris, Acta Arith. 2011): ≈ 0.1535.
   - **L = 5** (Xylouris, *Linniks Konstante ist kleiner als 5*, Chebyshevskii Sbornik 2018,
     published): **3/20 = 0.15**.
-  - **Prime-power moduli ℓ^k, ℓ fixed:** Banks–Shparlinski (J. Anal. Math. 139 (2019) 239–263;
+  - **Prime-power moduli ℓ^k, ℓ fixed odd** (use g = 3^k; the accessible BS manuscript assumes an odd
+    base prime, codex #9): Banks–Shparlinski (J. Anal. Math. 139 (2019) 239–263;
     journal version, which states L < 2.1115) give a lower bound of the right order for π(x; ℓ^k, a)
     when ℓ^k ≤ x^{0.4736}, with constants depending on ℓ. The arXiv v2 does not contain the Linnik
     improvement. Verified via the journal abstract and Baier–Pujahari, arXiv 2107.04348.
-    So with g = 2^k there are p, q ≪ g^{2.1115}, γ ≥ 0.2368 and cost **N^{0.0132+o(1)}**.
+    So with g = 3^k there are p, q ≪ g^{2.1115}, γ ≥ 0.2368 and cost **N^{0.0132+o(1)}**. A 2025
+    preprint (R. Li, arXiv 2308.04458v8, Thm 11) claims 0.4752, i.e. 0.0124; UNSURE, unaudited.
   - **Under GRH** (L = 2 + ε): N^{ε}.
   - **Smooth moduli:** Chang (J. Anal. Math. 123 (2014)), Cor. 11, verified by the prior-art
     auditor. If log ℓ = o(log q) for every prime ℓ | q, the least prime ≡ a (mod q) is
-    < q^{12/5+o(1)}. Primorials qualify, so g = primorial gives γ ≥ 5/24 and cost
-    **N^{1/24+o(1)}**.
-  - Caveat on L = 5: an erratum note (arXiv 2001.00578) says the L ≤ 5 proof still needs checking.
-    5.18 (Acta Arith. 2011) is safe and gives 0.1535.
+    < q^{12/5+o(1)}. Primorials and powers of 2 qualify, so g = primorial or 2^k gives γ ≥ 5/24 and
+    cost **N^{1/24+o(1)}**.
+  - Xylouris's 2018 Theorem 1 states L = 5. The earlier "erratum" remark (a book-errata note calling
+    an older proof unpublished) does not demonstrate a flaw, and is withdrawn here (codex #9).
 - *Honest reading.* These families mean "p ≡ ±1 modulo a known large 2-power or smooth modulus", i.e.
   ≈ γ·n low bits of p known up to sign. That is classical Coppersmith territory (Coppersmith 1996;
   Boneh–Durfee–Howgrave-Graham 1999). The only non-classical ingredient is the *discovery* of the
@@ -541,7 +596,8 @@ The relevant mechanism depends on the shape of the information about p.
   - At cost N^{1/8+η/4}, Theorem A covers a fraction ≈ p^{η−1/2} = N^{η/2−1/4} of balanced semiprimes.
     T1 allows n²·N^{3(1/8+η/4)/2−1/4} = N^{3η/8−1/16+o(1)}. Since η/2 − 1/4 < 3η/8 − 1/16 for all
     η < 3/2, we are below it.
-  - Theorem S / Corollary W classes have density ≈ Σ_{g ≥ N^γ} g^{−2} = N^{−γ+o(1)}.
+  - Theorem S / Corollary W classes have density ≈ Σ_{g ≥ N^γ} g^{−2} = N^{−γ+o(1)}. This density is
+    **heuristic** (codex #13): it is not proved here for prime pairs.
     - For γ < 1/4 the cost is N^{1/4−γ}. T1 allows N^{1/8−3γ/2}, and −γ < 1/8 − 3γ/2 iff γ < 1/4.
     - For γ ≥ 1/6 (Corollary W cost N^{γ/2}) T1 allows N^{3γ/4−1/4}, and −γ < 3γ/4 − 1/4 iff
       γ > 1/7.
@@ -561,15 +617,22 @@ proved (Theorems A/G/G2/S plus the cited analytic input) unless marked.
 | none | — | Pollard–Strassen | 1/2 | 0.25 | 0.2 |
 | p = a² + b², b ≤ p^{0.119+o(1)} | HL Thm 2 | Thm A | 0.3095 | **0.15475** | **0.1238** |
 | (a, b) within 2p^{0.265} of public √(x/2)(1+i) | HKL Thm 2 | Thm G | 0.265 | **0.1325** | **0.106** |
+| disc |π − z₀| ≪ \|z₀\|^{0.528} | Lewis thesis 2002 (via Järviniemi–Teräväinen §1.1 and the Maynard–Merikoski report; thesis not read) | Thm G | 0.264 | 0.132 | 0.1056 |
+| disc, exponent 0.5248 | R. Li 2025 preprint Thm 8 (UNSURE) | Thm G | 0.2624 | 0.1312 | 0.10496 |
+| x³ + 2y³, x ∈ (X, X(1+η)], y ≍ X^{1−γ}, γ < 5/67 | Xiannan Li, Thm 1 (read by us) | Thm G (long x side) | 43/134 + ε | **0.1604** | **0.1284** |
 | x³ + 2y³ | Heath-Brown 2001 | G or G2 (box X×X) | 1/3 | 0.1667 | 0.1333 |
-| Maynard, pure radical, n = 22, k = 7 | Maynard (n ≥ 22k/7); box shape from the abstract, UNVERIFIED | G2 (no long side) | 15/44 | 0.1705 | 0.1364 |
-| Maynard, general K, n = 4k | Maynard (n ≥ 4k); box shape UNVERIFIED | G2 | 3/8 | 0.1875 | 0.15 |
+| Maynard, pure radical Q(ϑ^{1/n}), n = 22, k = 7 | Maynard Thm 1.2 (any ϑ with X^n − ϑ irreducible; box [1,T]^{n−k} per codex audit) | G2 (no long side) | 15/44 | 0.1705 | 0.1364 |
+| Maynard, general K, n = 4k | Maynard Thm 1.1 (box [1,T]^{n−k}) | G2 | 3/8 | 0.1875 | 0.15 |
+| binary cubics | Heath-Brown–Moroz Thm 1.1 | G2 | 1/3 | 0.1667 | 0.1333 |
+| x² + ℓ⁴, ℓ prime | Heath-Brown–Li | G | 3/8 | 0.1875 | 0.15 |
+| a² + b², b in thin digit set / sparse B | Pratt Thm 1.2; Merikoski Thm 1.6 | G | ≈ 0.461; 9/20 + ε | 0.231; 0.225 | — |
 | x² + y⁴ | Friedlander–Iwaniec | G (long x side) | 3/8 | 0.1875 | 0.15 |
 | p − ⌊√p⌋² ≤ 2p^{0.238} | HL Thm 4 | G (a² + k) | 0.369 | 0.1845 | 0.1476 |
 | p ∈ [x − x^{0.525}, x] (comparator) | BHP | Coppersmith | — | 0.0125 | 0.05 |
-| p ≡ 1, q ≡ −1 mod g, least primes | Xylouris L = 5 (5.18 safe) | Thm S | — | 0.15 (0.1535) | ≤ same |
-| same, g = primorial | Chang Cor. 11 (12/5) | Thm S | — | 1/24 | ≤ 1/24 |
-| same, g = 2^k | Banks–Shparlinski 0.4736 | Thm S | — | 0.0132 | ≤ 0.0132 |
+| same with x^{0.52} | R. Li 2025 preprint (abstract states 0.52), UNSURE | Coppersmith | — | 0.01 | 0.048 |
+| p ≡ 1, q ≡ −1 mod g, least primes (uniform bound; β columns conditional) | Xylouris L = 5 (2018, Thm 1) | Thm S | — | 0.15 | 0.12 if β = 2/5 |
+| same, g = primorial or 2^k | Chang Cor. 11 (12/5) | Thm S | — | 1/24 | ≤ 1/24 |
+| same, g = 3^k | Banks–Shparlinski 0.4736 | Thm S | — | 0.0132 | ≤ 0.0132 |
 | gcd(p−1, q−1) = N^γ, g arbitrary | (promise) | Cor. W (+ GFHP 5.3 for γ < 1/12) | — | E**(γ) | max(γ/2, 6/25−γ) for γ ≥ 1/12 |
 
 Notes on the table:
@@ -603,6 +666,24 @@ moduli giving Õ(√V) for primes dividing Φ on a polynomial box; Pollard–Str
 Gaussian points; the norm-form multi-dimensional version; the HL/HKL family exponents. Searches
 covered Pollard–Strassen over Gaussian integers, extension rings and resultants; "prime factor of the
 form f(x)"; and p = a² + b² with small b.
+
+**Further items from the GPT-6.1-sol literature audit (`codex/specialfam_2.out`).**
+- *Bostan–Gaudry–Schost.* Thm 8, Thm 11 and Lemma 13 find a prime divisor ≤ B in Õ(√B). This is the
+  smooth-part step of Theorem S.
+- *Hittmeir 2015.* Thm 3.4 and Remark 3.6 (arXiv 1501.03078) cover product/evaluation collision
+  searches, with Strassen as a special case.
+- *Polynomial values.* G(T) = ∏_{j<m} f(T + j) evaluated at T = mv gives the one-variable
+  polynomial-value analogue. This is a classical direct deduction.
+- *Ruzai et al.* (Symmetry 2022) study RSA with both factors near powers, with offsets supplied as
+  inputs. Not our one-factor Gaussian-box guarantee.
+- *Morain–Renault–Smith.* §§1, 3 and Thm 3.2 (arXiv 1802.08444) connect known-bit and hint
+  factoring.
+- *Stucky* (arXiv 2008.11325): polar-box asymptotics. These do not improve 0.381.
+- *McKee–Pinch.* The common-prime attacks are their 1998 manuscript, not the 1996 deterministic
+  paper.
+- *Remainder trees.* Bernstein §§18–19 already cover arbitrary monic moduli of degree ≥ 2. Our
+  novelty claim is limited to the factoring theorem and the compositions, not the remainder-tree
+  engine.
 
 **Cryptanalysis of structured primes.** Gaussian-integer RSA variants (Elkamchouchi et al.; Teşeleanu
 2024) concern the key equation with (p²−1)(q²−1), not structured factors. Cheng's 4p−1 / CM methods
@@ -668,11 +749,47 @@ Reading E5:
 
 ## 10. Reviews
 
-**GPT-6.1-sol rounds could not run.** Three attempts were made: `specialfam_2` prior art twice, and
-`specialfam_1` adversarial review once. All three failed at startup with Codex CLI authentication
-errors (refresh token reused, then expired; HTTP 401). Logs are in
-`codex/scratch/specialfam_{1,2}_attempt*.log`. The prompts are committed as `codex/specialfam_{1,2}.md`
-and can be re-run after `codex login`. Two independent Opus subagents substituted for them.
+**GPT-6.1-sol: done.** The rounds were re-run by the orchestrator after Codex login was restored; the
+earlier attempts had failed on a 401 and their logs are in `codex/scratch/`.
+
+`codex/specialfam_1.out` (adversarial referee): MAJOR REVISION. It found no fatal obstruction in the
+core reductions, and the improvement of Corollary W over WM is real. Adjudication:
+1. (major) The implementation dimension cap gives exponent 5/18 − γ, and `best_params` overflowed at
+   5000 bits. **Valid.** Theory and implementation are now separated in §5; `best_params` is
+   integer-exact with m ≈ βD; a regression test was added. The parameters are identical at the
+   experiment sizes, so the experiments stand.
+2. Explicit side-length, nonempty-set, degree and construction-cost hypotheses for G. **Valid**,
+   added.
+3. (major) G2/Prop. C transfer from cΦ to Φ. **Valid**: gcd(c, N), 0 < |cΦ| < N, and the constants'
+   dependence are stated.
+4. Lemma W boundary cases. **Valid**, added.
+5. The exact η = 0.119 family needs a polylog enlargement. **Valid**: added to Lemma HL; the
+   experiment caveat is disclosed.
+6. (major) Theorem S needs N composite and 1 < p < N. **Valid**, added.
+7. Explicit time-limited dovetailing for GFHP on wrong candidates; disclose that the branch is
+   unimplemented; band from N. **Valid**, added.
+8. (major) The "no every-disc improvement" claim was false: Lewis's 0.528, and Li's 0.5248 preprint.
+   **Valid**: table and verdict updated, with labels for the secondary and preprint sources.
+9. Xylouris "erratum" implication; BS coverage of 2^k. **Valid**: remark withdrawn; BS family moved to
+   3^k; 2^k is covered by Chang.
+10. Table recomputation is correct; Maynard box shapes are now confirmed via the audit.
+11. (major) Least-prime constructions do not prove balance. **Valid**: β columns are labelled
+    conditional; the uniform bound and the refinement (1−β)(β − 1/L) were added.
+12. Novelty limited to the factoring corollaries and compositions. **Agreed**, wording adjusted.
+13. The T1 density calculation must be labelled heuristic. **Valid**, labelled.
+
+`codex/specialfam_2.out` (literature audit): KNOWN or verified items were incorporated.
+- HL proof dyadic remark.
+- Lewis 0.528; Li 0.5248 (UNSURE).
+- Maynard Thms 1.1/1.2 (any ϑ).
+- Heath-Brown–Moroz; Heath-Brown–Li; Pratt; Merikoski.
+- Xiannan Li's sparse x³ + 2y³. We read Theorem 1 ourselves; it gives a new below-1/6 row.
+- Chang covers 2^k; BS for odd prime powers; Li 0.4752 (UNSURE).
+- May Thm 1 has β²/δ, and δ = 1 is used here.
+- Hinek and McKee–Pinch attribution; BGS Lemma 13; the further prior art listed in §8.
+- R. Li's short-interval claim (0.52; preprint) only changes the comparator row.
+
+Not adopted: nothing. Every item was either incorporated or labelled UNSURE.
 
 **Opus critic (read-only): ACCEPT WITH FIXES, no fatal issue.**
 - *Checks performed.*
@@ -723,11 +840,15 @@ and can be re-run after `codex login`. Two independent Opus subagents substitute
 | Theorem G2 (norm forms, any box) and Proposition C (exact characterisation) | proved |
 | Theorem A (norm boxes; r18 §1 confirmed with corrected leaf condition) | proved |
 | Lemma HL (b ≤ p^{0.119+o(1)}, from HL Thm 2); Lemma HKL | proved from the cited theorems (read by us) |
-| family exponents 0.15475/0.1238 (HL), 0.1325/0.106 (HKL) | proved (conditional only on the cited published theorems) |
+| family exponents 0.15475/0.1238 (HL), 0.1325/0.106 (HKL), 0.1604/0.1284 (Xiannan Li x³+2y³) | proved (conditional only on the cited published theorems, read by us) |
+| Lewis 0.528 row (0.132/0.1056) | proved modulo a thesis result cited via secondary sources |
+| R. Li 0.5248 / 0.4752 / 0.52 rows | UNSURE (2025 preprint, unaudited) |
+| Theorem S/W implementation (dimension ≤ 9) | realises 5/18 − γ, not 1/4 − γ (stated; theory uses growing dimension) |
+| T1 density comparison for Theorem S / W classes | heuristic |
 | Theorem S (η/2 improves r18's η) | proved; routine corollary of published decoders (GFHP Thm 3.1, O–V Thm 3.2) |
 | Corollary W, Coppersmith branch (improves WM Prop. 28.2 on (1/12, 1/5)) | proved; no prior statement found by us |
 | Corollary W, GFHP branch (γ < 1/12) | proved conditional on GFHP Thm 5.3 (2025 preprint, read by us, unrefereed) |
-| Linnik families: 3/20 (L = 5; 5.18 safe), 1/24 (Chang), 0.0132 (Banks–Shparlinski) | proved from cited results (Xylouris L = 5 has an open erratum note) |
+| Linnik families: 3/20 (L = 5), 1/24 (Chang; primorial or 2^k), 0.0132 (Banks–Shparlinski; 3^k) | proved from cited results as uniform bounds; balanced/β = 2/5 specialisations conditional |
 | non-decomposable Φ without a long side is not packaged by G or by G2 with affine L | model observation, not a lower bound |
-| Maynard rows (box shape) | UNVERIFIED (abstract only) |
+| Maynard rows (box shape [1,T]^{n−k}) | confirmed by the GPT audit of Thms 1.1/1.2; abstract read by us |
 | E1–E5 slopes and correctness | experimentally supported |

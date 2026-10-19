@@ -201,3 +201,14 @@ def test_band_box_monotone():
         A, B = band_box(k, eta)
         assert A * A <= 2 ** k < (A + 1) ** 2
         assert B ** 1000 <= 2 ** (k * 119) < (B + 1) ** 1000
+
+
+def test_coppersmith_params_huge_and_unbalanced():
+    """codex specialfam_1 #1: no float overflow for huge N; m ~ beta*D for unbalanced beta."""
+    N = (1 << 5000) + 1
+    D, m, Y = best_params(N, 1 << 2499, 9)
+    assert Y > 0 and rigorous_ok(N, 1 << 2499, Y, D, m) and not rigorous_ok(N, 1 << 2499, Y + 1, D, m)
+    N = (1 << 99) + 12345
+    L = 1 << 39  # beta ~ 0.4
+    D, m, Y = best_params(N, L, 9)
+    assert rigorous_ok(N, L, Y, D, m) and not rigorous_ok(N, L, Y + 1, D, m)

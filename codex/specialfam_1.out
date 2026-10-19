@@ -1,0 +1,52 @@
+1. **MAJOR — The code does not achieve Theorems S/W’s stated exponents.** In [copper.py](/Volumes/git/factoring-connection/src/specialfam/copper.py:47), dimension remains capped at 9. For balanced factors, its guaranteed window is \(N^{2/9+o(1)}\), so subdivision costs \(N^{[5/18-\gamma]_++o(1)}\), rather than \(N^{[1/4-\gamma]_++o(1)}\). This is a permanent asymptotic loss, not a finite-size effect. At \(\beta=2/5\), the window exponent is \(2/15\), rather than \(4/25\). Moreover, parameter selection overflows on `best_params(2**5000+1, 2**2499, 9)`. **Fix:** distinguish the theoretical algorithm from the experimental implementation; let dimension grow, choose \(m\approx\beta D\), and use integer parameter calculations. Merely increasing the existing dimension cap leaves its restriction of \(m\) near \(D/2\) unsuitable for general \(\beta\).
+
+2. **MINOR — Theorem G, Lemmas 1–2 and Proposition P survive the algebraic audit.** Monic division works over composite-modulus rings without coprimality between moduli. The resultant sign and quadratic norm formula are correct. The first nontrivial block gcd yields a factor; when it equals \(N\), hypothesis (H) makes the leaf scan valid, including for prime powers. **Fix:** explicitly require positive integral side lengths, nonempty sets, bounded degree, and charge input reduction/construction costs. Keep (H) on the *extended* box. The headline \(\widetilde O(\sqrt V)\) requires negligible coefficient-construction cost; the formal \(Kh\) qualification is essential.
+
+3. **MAJOR — G2 and Proposition C need a more careful transfer statement.** G2’s algebraic proof is correct for a fixed finite free commutative algebra; irreducibility and separability are unnecessary. Proposition C’s Galois-orbit argument is also correct for nonzero \(\Phi\), with constants interpreted appropriately. But representing **\(c\Phi\)** as a norm does not automatically establish G2’s hypotheses for \(\Phi\). **Fix:** check \(\gcd(c,N)\), require \(0<|c\Phi|<N\) throughout the enlarged set, and state dependence on the fixed form, dimension, coefficient heights and affine-map evaluation. The bound cannot depend only on \(n\) for arbitrary encoded input data.
+
+4. **MINOR — Lemmas B, R and W are sound after boundary conventions.** B’s cardinality bounds check out for positive integer lengths. R’s exceptional factor 2 correctly handles powers of 2, and its divisor-count estimate is sufficient. W needs \(D\ge1\), integral \(g\ge1\), and \(B>1\); handle \(g=D=1\) separately in its proof. Otherwise the strict upper bound fails at \(B=1\).
+
+5. **MINOR — Theorem A and Lemmas HL/HKL are essentially correct.** A’s trial division and stopping inequality repair the small-cofactor problem. HL’s truncation argument correctly produces \(b\le p^{0.119+o(1)}\). HKL’s conversion from the argument of \(\lambda\) to a Gaussian argument correctly includes the factor \(1/4\). The quoted \(0.381\), \(0.765\), and \(0.235\) parameters agree with [HL](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4541183C02D39FD651979931A1B3B302/S0025579300014388a.pdf/gaussian-primes-in-narrow-sectors.pdf) and [HKL](https://repository.royalholloway.ac.uk/items/72b46ee2-6dd6-5519-c21a-c5cdf3528657/1/HarmanPrimeideals.pdf). **Fix:** the precise \(0.15475+o(1)\) family needs a public polylogarithmic enlargement of the \(b\)-bound, or a specified varying \(\eta\). Tests with fixed \(\eta=0.119\) do not establish infinitude of that stricter tested family from Lemma HL alone.
+
+6. **MAJOR — Theorem S omits a proper-factor hypothesis.** Its setup permits \(p=N\) when \(N\) is prime, despite promising a proper divisor. Require \(N\) composite and \(1<p<N\). With that correction, the theoretical reduction works: smooth-part extraction costs \(\widetilde O(\sqrt B)\), rooted-divisor enumeration is subpolynomial, and subdivision gives the stated exponent. Its decoder is established prior art; see [Oznovich–Volk, §3](https://arxiv.org/html/2506.07668v1#S3). The implementation qualification in issue 1 remains necessary.
+
+7. **MINOR — Corollary W genuinely improves the specified WM curve.** Recovering all relevant divisors of the smooth part of \(N-1\), rather than identifying \(g\) uniquely, suffices. The theoretical cost is
+   \[
+   T_W=N^{\max\{\gamma/2,\,1/4-\gamma\}+o(1)}.
+   \]
+   Taking its minimum with [WM Proposition 28.2](https://igent.ai/research/floors-not-bounds/factoring_report.pdf) gives a strict improvement exactly on \((1/12,1/5)\). At \(\gamma=1/6\), the exponents are \(1/12\) and \(1/6\). The stated \(E^{**}\) arithmetic also checks out using [GFHP Theorem 5.3](https://arxiv.org/html/2512.19076v1#S5). **Fix:** give explicit time-limited dovetailing for GFHP calls on *incorrect* candidate divisors, where its congruence promise may fail. Retain the preprint qualification and disclose that this branch is unimplemented. Derive the balanced band internally before describing the actual routine as “given \(N\) alone.”
+
+8. **MAJOR — The “no every-disc improvement” literature claim is false.** Lewis’s 2002 thesis gives \(0.528\), explicitly recorded in the [Maynard–Merikoski research report](https://ems.press/content/serial-article-files/46986). This yields factoring exponents \(0.132\) balanced and \(0.1056\) at \(\beta=2/5\).
+
+   Furthermore, [Li’s 2025 preprint, Theorems 8 and 11](https://arxiv.org/html/2308.04458v8#S7), claims **every-disc** exponent \(0.5248\), giving \(0.1312/0.10496\), and fixed-prime-power progression exponent \(0.4752\), giving balanced smooth-residue cost \(0.0124\). Its short-interval claim \(0.52\) changes the comparator to \(0.01/0.048\). **Fix:** distinguish these preprint inputs from independently checked published results. I located no verified unconditional **every-sector** improvement of HL’s \(0.381\); almost-all sector and moat results do not supply that guarantee.
+
+9. **MINOR — Xylouris and Banks–Shparlinski citations need precision.** Xylouris’s published [2018 Theorem 1](https://www.mathnet.ru/links/9c4db81411532c5ac1e4e26680025f22/cheb681.pdf) states \(L=5\). Finch’s book errata calling an older proof “unpublished” is not an erratum establishing an error in that paper. Remove the implication of a demonstrated unresolved flaw, or identify one.
+
+   Banks–Shparlinski’s [journal abstract](https://link.springer.com/article/10.1007/s11854-019-0060-4) supports \(L<2.1115\); [Baier–Pujahari](https://arxiv.org/abs/2107.04348) explicitly records \(0.4736\). Constants depend on the fixed base prime. The specific \(2^k\) specialization warrants an explicit citation or extension argument: the accessible predecessor states its progression results for odd primes. Choosing \(3^k\) avoids that citation gap.
+
+10. **MINOR — Recomputed table: the principal numerical entries are correct.**
+
+    | Mechanism/family | \(e_p\) | \(\beta=1/2\) | \(\beta=2/5\) |
+    |---|---:|---:|---:|
+    | Pollard–Strassen | \(1/2\) | .25 | .20 |
+    | HL | .3095 | .15475 | .1238 |
+    | HKL, original input | .265 | .1325 | .106 |
+    | Heath–Brown cubic | \(1/3\) | .1666667 | .1333333 |
+    | Maynard \(22,7\) | \(15/44\) | .1704545 | .1363636 |
+    | Maynard \(n=4k\); FI | \(3/8\) | .1875 | .15 |
+    | Near-square | .369 | .1845 | .1476 |
+
+    Harvey’s .20/.20 and BHP’s .0125/.05 are valid upper bounds. The balanced residue bounds recompute as \(3/20\), \(159/1036\approx.1534749\), \(1/24\), and .0132 for \(L=5,5.18,12/5,1/.4736\). Maynard’s box shapes can now be verified directly in [Theorems 1.1–1.2](https://arxiv.org/pdf/1507.05080), rather than left “UNVERIFIED.”
+
+11. **MAJOR — Least-prime constructions do not establish the advertised balance subfamilies.** Bounds \(p,q\ll g^L\) prove an infinite family with a uniform factoring upper bound. They do not prove infinitely many pairs with \(p\asymp q\), or \(p\asymp N^{2/5}\). **Fix:** label those columns as conditional size specializations, or supply suitable progression-counting results. Conditional on the specified \(\beta\le1/2\), both least-prime bounds actually imply
+    \[
+    \gamma\ge(1-\beta)/L-o(1),\qquad
+    E\le[(1-\beta)(\beta-1/L)]_+.
+    \]
+    Thus the \(\beta=2/5\) bounds sharpen to .12 for \(L=5\), approximately .1241699 for \(5.18\), and exponent zero for Chang/Banks–Shparlinski. These calculations do not prove existence at that ratio.
+
+12. **MINOR — Novelty remains limited to the factoring corollaries/compositions.** Arbitrary monic moduli of degree at least two are already explicitly covered by [Bernstein §§18–19](https://library.slmath.org/books/Book44/files/10bern.pdf). Arbitrary scalar baby/giant sets are covered by [Hittmeir Definition 3.1 and Algorithm 3.2](https://publications.sba-research.org/publications/042021_Hittmeir_A%20time-space%20tradeoff%20for%20Lehman%27s%20deterministic%20integer%20factorization%20method.pdf). Quadratic-extension stage-two methods are another close antecedent ([Montgomery–Kruppa](https://antsmath.org/ANTSVIII/files/kruppa.pdf)). I found no explicit prior statement of the full polynomial-box factoring theorem or W’s exact recovered-modulus composition. **Fix:** retain “no prior formulation located”; do not claim a new remainder-tree engine or established priority.
+
+13. **MINOR — The T1/T2 comparison should not introduce unproved density claims.** Their model exclusions are correctly identified. The asserted matching densities of common-factor classes are not proved by the displayed sum over moduli. Label that calculation heuristic, or supply the required prime-pair estimates.
+
+**Verdict: MAJOR REVISION.** No fatal obstruction emerged in the core algebraic reductions; W’s improvement over the specified WM curve is real. The implementation bounds, balance claims and literature audit require correction. All 28 existing tests passed, alongside 1,000 additional product/smooth-part checks and 79 small norm-box cases. No repository files were changed.

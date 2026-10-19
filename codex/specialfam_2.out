@@ -1,0 +1,174 @@
+Read §§1–2. **The proposed costs are defensible with extraction qualifications, but the literature gives substantially stronger special-family bounds than the draft uses.** Below, KNOWN means the cited statement was located; UNSURE identifies an unverified claim or qualification; NOT FOUND is a search result, not a novelty claim.
+
+**1. Harman–Lewis narrow sectors — KNOWN.**
+
+[Harman–Lewis, Theorem 2, p.119](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4541183C02D39FD651979931A1B3B302/S0025579300014388a.pdf/gaussian-primes-in-narrow-sectors.pdf) states that, for sufficiently large \(X\), uniformly for
+\[
+0\le\alpha\le\pi/2,\qquad X^{-0.381}\le\Delta\le\pi/2,
+\]
+the number of Gaussian primes satisfying
+\[
+\alpha\le\arg\pi<\alpha+\Delta,\qquad |\pi|^2\le X
+\]
+exceeds \(c\Delta X/\log X\), with absolute \(c>0\).
+
+This is a lower bound of the expected order, **not an asymptotic formula**. The exponent refers to **norm**:
+\[
+\Delta=X^{-0.381}=|z|^{-0.762}.
+\]
+The displayed theorem says “norm \(\le X\)”; the proof actually sieves the dyadic region \(X/2<|\pi|^2<X\) (§2, p.121, continuing p.123), so the stronger localization is available.
+
+The axis sector gives \(p=a^2+b^2\), \(b\le p^{0.119}\). Your costs \(p^{0.3095+o(1)}\), hence balanced \(N^{0.15475+o(1)}\), are correct.
+
+**NOT FOUND:** a 2015–2026 improvement of \(0.381\) for **every sector position**. Almost-all-sector results do not establish a guarantee at a prescribed angle.
+
+**2. Discs, squares and polar boxes — KNOWN, with a newer UNSURE record claim.**
+
+[Harman–Kumchev–Lewis, Theorem 1 and its Corollary](https://tigerweb.towson.edu/akumchev/a13.pdf) prove, for **every** \(z_0\in\mathbb C\),
+\[
+|\pi-z_0|\ll |z_0|^{0.53}+1.
+\]
+Thus, at norm \(X\), the disc—or a containing square—has area \(O(X^{0.53})\). A public center \(2^k(1+i)\) works. The radius includes an implied constant; a literal unit-constant bound follows with exponent \(0.53+\varepsilon\).
+
+Their **Theorem 2** gives a correct-order lower bound \(\gg\phi y/\log X\) in any ideal class, uniformly in angular position, for
+\[
+X-y\le\mathrm N\mathfrak p<X,\quad
+y\ge X^{0.765},\quad \phi\ge X^{-0.235}.
+\]
+Here \(\phi\) is the argument of their unit-invariant Hecke character; this changes Gaussian angular widths only by a constant. Minimum area is \(X^{0.53}\). Their introduction records Coleman’s earlier exponents \(7/12+\varepsilon\) and \(11/20\).
+
+**KNOWN attribution; NOT FOUND exact thesis theorem number:** Lewis improved \(0.53\) to \(0.528\), according to [Järviniemi–Teräväinen, §1.1](https://ems.press/content/serial-article-files/37565). I did not retrieve the thesis itself.
+
+**UNSURE—stronger preprint:** [Runbo Li, arXiv:2308.04458v8, Theorem 8](https://arxiv.org/pdf/2308.04458v8), states the every-center exponent **\(0.5248\)**. I verified the statement, not its numerical sieve proof or refereed publication status.
+
+These give balanced factoring exponents \(0.1325\), \(0.132\), and provisionally \(0.1312\), respectively.
+
+For more flexible polar boxes, [Stucky, Theorem 1.1](https://arxiv.org/pdf/2008.11325), proves an asymptotic when
+\[
+y=X^\alpha,\quad \alpha>7/10,\quad \Delta y\ge X^{7/10+\varepsilon}.
+\]
+This does not improve Harman–Lewis’s full-annulus angular exponent.
+
+**3. Prime-producing thin families — KNOWN.**
+
+[Maynard, Theorems 1.1–1.2](https://arxiv.org/pdf/1507.05080), has exactly:
+
+- **Theorem 1.1:** arbitrary monic irreducible degree-\(n\) defining polynomial, \(n\ge4k\): asymptotic prime count in \([1,T]^{n-k}\).
+- **Theorem 1.2:** \(K=\mathbb Q(\sqrt[n]{\vartheta})\), with \(X^n-\vartheta\) irreducible, \(n\ge22k/7\): correct-order lower bound. This is **not restricted to \(\vartheta=2\)**.
+
+Write \(V=p^{v+o(1)}\); the proposed search costs \(p^{v/2+o(1)}\):
+
+| Status and source | Family | \(v\) | Cost exponent in \(p\) |
+|---|---|---:|---:|
+| KNOWN, Maynard Thm.1.1 | General incomplete norms | \(1-k/n\ge3/4\) | \(\ge3/8\) |
+| KNOWN, Maynard Thm.1.2 | Pure-field incomplete norms | \(1-k/n\ge15/22\) | \(\ge15/44\) |
+| KNOWN, [Heath-Brown, main unnumbered Theorem](https://doi.org/10.1007/BF02392715) | \(x^3+2y^3\) | \(2/3\) | \(1/3\) |
+| KNOWN, [Heath-Brown–Moroz, Thm.1.1](https://ora.ox.ac.uk/objects/uuid%3Ae1fc87e1-42f5-4827-9b1e-acbc13c8bc99/files/m55653d0698350e03b318cdbb5ef1eccc) | Primitive irreducible binary cubics; divide by 2 in the fixed-even case | \(2/3\) | \(1/3\) |
+| KNOWN, [Xiannan Li, Thm.1](https://arxiv.org/pdf/2111.05403) | \(x^3+2y^3\), \(y\asymp x^{1-\gamma}\), \(0<\gamma<5/67\) | \(43/67+\varepsilon\) attainable | \(43/134+\varepsilon\) |
+| KNOWN, [Friedlander–Iwaniec, Thm.1](https://arxiv.org/pdf/math/9811185) | \(x^2+y^4\) | \(3/4\) | \(3/8\) |
+| KNOWN, [Heath-Brown–Li, Thm.1](https://arxiv.org/pdf/1504.00531) | \(x^2+\ell^4\), \(\ell\) prime | \(3/4\) | \(3/8\) |
+| KNOWN, [Pratt, Thm.1.2](https://arxiv.org/pdf/1806.02699) | \(a^2+b^2\), \(b\) missing three decimal digits | \((1+\log_{10}7)/2\approx0.922549\) | \(0.461275\) |
+| KNOWN, [Merikoski, published Thm.1.6](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/A0778B21557539003BAFE5D2908444E6/S0010437X24007632a.pdf/on_gaussian_primes_in_sparse_sets.pdf) | \(a^2+b^2\), \(|B|\ge p^{2/5+\varepsilon}\), subject to (1.1) | \(9/10+\varepsilon\) | \(9/20+\varepsilon\) |
+
+Merikoski’s arbitrary-\(B\) **Theorem 1.2** only asserts some computable small \(\delta>0\), with a weaker lower bound. Do not silently replace that by \(\delta=1/10\).
+
+Sparse-column cardinality differs from enclosing area. For \(x^2+y^4\), evaluate at columns \(iy^2\); searching every intervening Gaussian column would lose the advertised exponent.
+
+**4. Norm-search prior art and algebraic audit.**
+
+**KNOWN—ingredients:** [Bostan–Gaudry–Schost, Theorem 8, Theorem 11 and Lemma 13](https://specfun.inria.fr/bostan/publications/BoGaSc07.pdf), provide fast recurrence products, deterministic factoring, and finding a prime divisor \(\le B\) in essentially \(\sqrt B\) time. [Hittmeir, Theorem 3.4 and Remark 3.6](https://arxiv.org/pdf/1501.03078), explicitly treat product/evaluation collision searches and Strassen as a special case.
+
+For fixed-degree \(f\), constructing
+\[
+G(T)=\prod_{j<m}f(T+j)
+\]
+and evaluating at \(T=mv\) gives the polynomial-value analogue in \(\widetilde O(\sqrt X)\). This is a direct classical deduction, subject to proper-factor extraction. **NOT FOUND:** a specific Coppersmith attribution matching the description in the question.
+
+**NOT FOUND:** the exact Gaussian-box factoring proposition, or an exact norm-box counterpart, in the searched literature.
+
+**UNSURE as an unrestricted theorem:** divisibility \(p\mid\mathrm{Nm}(L(x))\) alone is insufficient for the stated extraction routine. For constant \(L=N\), every leaf gcd is \(N\). A sufficient clean hypothesis is
+\[
+0<|\mathrm{Nm}(L(x))|<N
+\]
+throughout the searched candidates, together with a promised witness. Your intended norm-\(p\) boxes satisfy this asymptotically.
+
+Fixed-rank affine boxes admit balanced additive baby/giant decompositions, so the square-root operation count checks out. But reducible decomposable forms can require a **product algebra**: \(xy\), for example, is not the norm of an affine linear map into a number field. Fixed ranks, coefficient costs and denominator clearing must be stated.
+
+**KNOWN adjacent cryptanalysis:** [Ruzai et al., Theorems 1–4 and Algorithms 1–3](https://www.mdpi.com/2073-8994/14/9/1898), study **both** RSA factors near powers; the algorithms also take offsets as inputs. Their vaguely stated “sufficiently small” conditions do not establish your one-factor Gaussian-box guarantee.
+
+**5. Linnik constants and modulus classes.**
+
+**KNOWN:**
+
+- [Xylouris, arXiv:0906.2749, Theorem 1.1](https://arxiv.org/pdf/0906.2749): \(L=5.2\).
+- [Acta Arith. 150 (2011), Theorem 1.1](https://doi.org/10.4064/aa150-1-4): \(L=5.18\).
+- [Xylouris, Chebyshevskii Sb. 19(3) (2018), Theorem 1](https://www.mathnet.ru/eng/cheb681): \(L=5\), effective. Thus **5 is published**, not merely a thesis claim. The title does not supply an explicit exponent below 5.
+- [Chang, Corollary 11](https://arxiv.org/pdf/1201.0299): if \(P^+(q)=q^{o(1)}\), every reduced residue class contains a prime \(<q^{12/5+o(1)}\). This covers **primorials and powers of 2**, with no squarefree requirement.
+
+For fixed odd-prime powers, the historical least-prime exponents are \(8/3\), Gallagher’s \(5/2+\varepsilon\), and Huxley’s \(12/5+\varepsilon\); the corresponding asymptotic ranges are summarized in [Baier–Pujahari, §1](https://arxiv.org/pdf/2107.04348). Iwaniec extends the character/zero-free machinery to powerful moduli; that does not make fixed-prime estimates uniform over primorials.
+
+[ Banks–Shparlinski (2019), Theorem 3.6](https://doi.org/10.1007/s11854-019-0060-4), gives a lower-bound range corresponding to
+\[
+L=1/0.4736=2.111486\ldots.
+\]
+**UNSURE:** its precise published coverage of \(2^r\); the accessible 2016 manuscript’s Theorem 3.5 explicitly assumes an odd base prime. Chang independently certifies \(12/5+o(1)\) for \(2^r\).
+
+**UNSURE—newer preprint:** [Li v8, Theorem 11](https://arxiv.org/pdf/2308.04458v8), states \(L=1/0.4752=2.104377\ldots\) for powers of a fixed prime, without excluding 2. Its proof was not independently audited here.
+
+Also, \(12/5=2.4\); “2.2” in the Banks–Shparlinski publisher abstract is a typo.
+
+**6. Smooth common part and Coppersmith — KNOWN ingredients; exact combination NOT FOUND.**
+
+[May’s 2010 survey, Theorem 1, p.327](https://www.ionica.nl/wp-content/uploads/2019/04/the-LLL-Algorithms.pdf), gives
+\[
+|x_0|\le cN^{\beta^2/\delta},
+\qquad O(c\delta^5\log^9N).
+\]
+**Correction:** the degree-\(\delta\) theorem has \(\beta^2/\delta\), not \(\beta^2\). Your linear application has \(\delta=1\), so it is valid.
+
+Because \(H\mid N^2-1\), its divisors are coprime to \(N\), allowing monic normalization. Factoring out all primes \(\le B\), using BGS Lemma 13 repeatedly, costs \(\widetilde O(\sqrt B)\). Rooted-divisor enumeration is \(N^{o(1)}\). Interval subdivision therefore yields your claimed
+\[
+N^{\max\{\eta/2,\,[\beta(1-\beta)-\gamma]_+\}+o(1)}.
+\]
+
+**Important deduction:** Chang improves the primorial construction to
+\[
+p,q\le g^{12/5+o(1)},\quad g\ge N^{5/24-o(1)},
+\]
+hence **\(N^{1/24+o(1)}\)**, replacing \(N^{2/13+\varepsilon}\). This does not require claiming that the two least primes are balanced.
+
+**KNOWN prior art:** [Hinek, Attack 6.1, Theorems 6.3–6.4 and §6.3.4](https://www.collectionscanada.gc.ca/obj/thesescanada/vol2/002/NR34506.PDF), attributes to McKee–Pinch:
+
+- unknown \(g\): expected \(\widetilde O(N^{1/4}/\sqrt g)\);
+- known \(g\): expected \(\widetilde O(N^{1/4}/g)\);
+- known sufficiently large \(g\): polynomial time.
+
+The cited common-prime attacks are the **1998 manuscript**, not automatically the separate 1996 deterministic-factoring paper. Wiener/Hinek/Sun small-exponent attacks often use additional RSA exponent information.
+
+Guessing plus lattices is already present in [Boneh–Durfee–Howgrave-Graham, Theorem 2](https://voidma.in/assets/2019/09/happy/factoring_prq.pdf). Known-bit/hint ancestry includes Rivest–Shamir, Coppersmith, Maurer and Howgrave-Graham; [Morain–Renault–Smith, §§1 and 3, especially Theorem 3.2](https://arxiv.org/pdf/1802.08444), gives precise connections.
+
+[ROCA, §2.3 and Algorithm 1](https://acmccs.github.io/papers/p1631-nemecA.pdf), explicitly enumerates residues modulo a primorial divisor and applies Coppersmith. [Certified-smart-card attacks](https://www.iacr.org/archive/asiacrypt2013/82700341/82700341.pdf) exploit predictable prime bits. [Lu–Peng–Sarkar](https://d-nb.info/1365054233/34) concerns multipower RSA, small exponents and partial prime bits.
+
+**NOT FOUND:** the specific public smooth-part-of-\(N^2-1\), mixed-CRT-sign acquisition mechanism.
+
+**7. Ward–Maestro 2026 — KNOWN as results proved in that report.**
+
+[The report](https://igent.ai/research/floors-not-bounds/factoring_report.pdf), **Lemma 26.2**, makes the unknown-\(g\) collision search deterministic once a suitable base is available. **Corollary 27.1** supplies the large-\(g\) completion. For balanced semiprimes and actual \(g=N^\gamma\), **Proposition 28.2** gives:
+
+| \(\gamma\) | Factoring exponent \(E(\gamma)\) |
+|---|---:|
+| \(0\)–\(1/12\) | \(1/4-\gamma\) |
+| \(1/12\)–\(1/8\) | \(1/8+\gamma/2\) |
+| \(1/8\)–\(1/6\) | \(1/4-\gamma/2\) |
+| \(1/6\)–\(1/5\) | \(1/2-2\gamma\) |
+| \(1/5\)–\(1/4\) | \(\gamma/2\) |
+| \(1/4\)–\(3/8\) | \(1/4-\gamma/2\) |
+| \(3/8\)–\(1/2\) | \(1/(8\sqrt e)+\varepsilon\) |
+
+Thus \(E(\gamma)<1/5\) for \(\gamma>1/20\). The curve is nonmonotone: a lower-bound promise on \(g\) requires taking the appropriate upper envelope.
+
+**Proposition 35.3** proves positive-relative-proportion success of deterministic base-2 \(p-1\), on its specified nearly balanced population, with exponents approaching
+\[
+1/(4\sqrt e)=0.151632\ldots.
+\]
+It does not establish that exponent for every semiprime; its covering-model floors are likewise scoped to their models.

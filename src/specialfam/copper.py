@@ -29,26 +29,36 @@ def rigorous_ok(N: int, L: int, Y: int, D: int, m: int) -> bool:
 
 
 def max_rigorous_Y(N: int, L: int, D: int, m: int) -> int:
-    """Largest Y >= 0 satisfying rigorous_ok (0 if none)."""
-    lnN, lnL = math.log2(N), math.log2(L)
-    est = (4 * m * D * lnL - D * (D - 1) - 2 * D * math.log2(D) - 2 * m * (m + 1) * lnN) / (2 * D * (D - 1))
-    if est < 0:
-        return 0 if not rigorous_ok(N, L, 1, D, m) else 1
-    Y = max(1, int(2 ** est))
-    while Y > 1 and not rigorous_ok(N, L, Y, D, m):
-        Y = Y * 15 // 16
-    while rigorous_ok(N, L, Y * 17 // 16 + 1, D, m):
-        Y = Y * 17 // 16 + 1
-    while not rigorous_ok(N, L, Y, D, m) and Y > 0:
-        Y -= 1
-    return Y
+    """Largest Y >= 0 satisfying rigorous_ok (0 if none). Exact integer binary search
+    (rigorous_ok is monotone in Y); no float overflow for huge N (codex specialfam_1 #1)."""
+    if not rigorous_ok(N, L, 1, D, m):
+        return 0
+    lnN, lnL = N.bit_length(), L.bit_length()
+    est = (4 * m * D * lnL - 2 * m * (m + 1) * (lnN - 1)) // (2 * D * (D - 1)) + 2
+    hi = 1 << max(1, est)
+    while rigorous_ok(N, L, hi, D, m):  # safety: grow until it fails
+        hi <<= 1
+    lo = 1  # invariant: ok(lo) and not ok(hi)
+    while hi - lo > 1:
+        mid = (lo + hi) // 2
+        if rigorous_ok(N, L, mid, D, m):
+            lo = mid
+        else:
+            hi = mid
+    return lo
 
 
 def best_params(N: int, L: int, Dmax: int = 13) -> Tuple[int, int, int]:
-    """(D, m, Y) maximising the rigorous Y over D <= Dmax (deterministic choice)."""
+    """(D, m, Y) maximising the rigorous Y over odd D <= Dmax and m near beta*D, where
+    beta = log L / log N (codex specialfam_1 #1: m ~ beta D, not D/2, for unbalanced beta).
+    The theorem (May 2010, Thm 1) lets D grow like log N; experiments cap Dmax = 9."""
+    beta = (L.bit_length() - 1) / max(1, N.bit_length())
     best = (1, 0, 0)
     for D in range(3, Dmax + 1, 2):
-        for m in range(max(1, (D - 1) // 2 - 1), min(D, (D - 1) // 2 + 2)):
+        cands = set(range(max(1, (D - 1) // 2 - 1), min(D, (D - 1) // 2 + 2)))
+        c = round(beta * D)
+        cands |= {x for x in (c - 1, c, c + 1) if 1 <= x < D}
+        for m in sorted(cands):
             Y = max_rigorous_Y(N, L, D, m)
             if Y > best[2]:
                 best = (D, m, Y)
