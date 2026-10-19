@@ -28,8 +28,16 @@ In plain terms:
 - Siegel zeros are handled as in LV (Stark plus Landau), but at fixed d they cost even less: **at most one**
   nonzero square class can escape the characters, for every field. Whenever the characters separate (probability
   ≥ 1 − (log N)^{−2}), one of the three dependencies s₁, s₂, s₁ + s₂ is a square. Exact verification makes this
-  Las Vegas. (Codex found this sharpening; LV had O(log log N) exceptional classes and an
-  exceptional set of fields.)
+  Las Vegas. This is a direct specialisation of LV's Lemma 6.10 to one conductor range (codex). LV had
+  O(log log N) exceptional classes and an exceptional set of fields.
+- **Prior art.** Almost every component exists already in Buhler–Lenstra–Pomerance (BLP, LNM 1554, 1993) or in LV:
+  - the obstruction-group chain (BLP Thm 6.7);
+  - the random-character idea (BLP §8, carried out by LV §6);
+  - the non-monic parity coordinate (BLP §12.7);
+  - the p-adic Newton square root with 2^t − 1 starting values at a squarefree prime, and exact verification
+    (BLP §9, after Weinberger–Rothschild 1976).
+  - What is ours is the rigorous fixed-degree assembly at our heights, with explicit bounds (A, Δ̄, t_χ), the
+    |E| ≤ 1 specialisation, Lemma IR, and transcript invariance for Dixon descent.
 - The non-monic pair (f, g₁x − g₀) needs **one** parity column. It makes both g₁^E and f_d^E squares. Bad primes
   (dividing f_d·disc f) get **no** columns; they are absorbed into H.
 - The whole post-processing is a function of the certificates (R_i, splits, special-q relations, field) and fresh
@@ -54,8 +62,8 @@ In plain terms:
 **LV6 needs no smoothness tests at all.** The rows arrive factored. The only new integer tests are primality tests
 of the character primes and of the Hensel prime.
 
-**Changes to pcest's theorems: none to FM, R, Kern or 4.3.** Theorem A's *assembly* gains four field-rejection
-events (§4). Their total probability is ≤ 1/(2H+1) + exp(−Ω(log H/log log H)), so γ drops by at most a factor 2.
+**Changes to pcest's theorems: none to FM, R, Kern or 4.3.** Theorem A's *assembly* gains two field-rejection
+events, N | f′(m) and an unhelpful reducible f, plus several factor-found branches (§4). The rejection probability is ≤ 1/(2H+1) + exp(−Ω(log H/log log H)), so γ drops by at most a factor 2.
 Lemma IR (§4) is an elementary proof of the irreducibility bound we need. It replaces the "LV Lemma 5.1 transfer,
 checked at the level of statements" caveat.
 
@@ -169,6 +177,7 @@ q_S = g₁^{E(S)}·∏_P n_P^{−e_P(S)} (sign +1) is a square in Q^×, with exp
 - The **one** parity column also gives E(S) even, which makes t^{−E(S)} a square.
 - So γ_S = t^{−E(S)}·∏_P z_P^{e_P(S)} is a square in K iff γ′_S := ∏_P z_P^{e_P(S)} is.
 - This is the "g₁ column" of pcest §5. It counts atomic relations with multiplicity, and it handles f_d as well.
+  It is BLP §12.7's "condition that #S be even … taken care of by the last coordinate".
 
 ### 3.2 The residual square-class group: Lemma H
 
@@ -187,6 +196,12 @@ Lenstra (Bull. AMS 26 (1992), Thm 6.5) applied to M_K ≤ √|Δ_K| ≤ √|disc
 - Y/K^{×2} ≅ O_K^×/O_K^{×2} has order 2^{r₁+r₂} ≤ 2^d (Dirichlet; roots of unity ±1 for odd d).
 - |S_D| ≤ d·ω(D) ≤ d·log₂|D|.
 - Sizes. ‖f‖_∞ ≤ C_d·g₁H = N^{O(1)}, so |disc f| ≤ d^{2d}‖f‖^{2d−2} and log|D|, log|disc g| = O_d(log N). ∎
+- **Attribution.** This is BLP's Thm 6.7 (LNM 1554, 1993) with the index [O_K : Z[α]] replaced by 2^{|S_D|}.
+  BLP cite the same class-number bound ("[27, Theorem 6.5, Remark]"). Lenstra's Thm 6.5 is stated with
+  (2/π)^{r₂}√|Δ|; the Minkowski-constant form is the Remark after it.
+- **Fallback without the citation.** Every ideal class contains an integral ideal of norm ≤ M_K. The number of
+  integral ideals of norm ≤ M_K is ≤ M_K(1 + ln M_K)^{d−1} (a divisor-function count). This gives the same
+  O_d(log N).
 - **Compared with LV (Claim 6.5).**
   - LV use BLP's [V : W] ≤ [O_K : Z[f_dα]]. We use the cruder 2^{|S_D|}, which needs no l-functions on the
     order, no projective-root bookkeeping, and no index computation.
@@ -220,8 +235,8 @@ and let E := {0 ≠ h ∈ H : ζ_{L_h} has a real zero β with 1 − ν₁ ≤ �
     1 − (c(L) log|Δ_L|)^{−1} ≤ β < 1, where c(L) = 4[L:Q]! for non-normal L, then ζ_F(β) = 0 for some quadratic
     F ⊂ L.
   - Landau (1918; Davenport, *Multiplicative Number Theory*, Ch. 14; LV Fact 6.24): there is an effective absolute
-    c_L > 0 such that, for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at
-    most one real zero, counted with multiplicity, in (1 − c_L/log(q₁q₂), 1).
+    c_L > 0 such that, for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂ with real zeros β₁ of
+    L(s, χ₁) and β₂ of L(s, χ₂), min(β₁, β₂) < 1 − c_L/log(q₁q₂). This form covers β₁ = β₂.
 - *Proof.*
   - Let h ∈ E with zero β. Since ν₁ ≤ 1/(4(2d)! log Δ_{L_h}), Stark gives a quadratic F_h ⊂ L_h with
     ζ_{F_h}(β) = ζ(β)L(β, χ_{F_h}) = 0. Since ζ(β) ≠ 0 on (0, 1), L(β, χ_{F_h}) = 0.
@@ -231,8 +246,12 @@ and let E := {0 ≠ h ∈ H : ζ_{L_h} has a real zero β with 1 − ν₁ ≤ �
   - |Δ_{F_h}| ≤ |Δ_{L_h}|^{1/d} ≤ Δ̄^{1/d}. Two distinct h, h′ ∈ E would give distinct real primitive characters
     with zeros ≥ 1 − ν₁ > 1 − c_L/log(|Δ_{F_h}||Δ_{F_{h′}}|), i.e. two zeros (with multiplicity) in Landau's
     interval. Landau forbids this. ∎
-  - (Codex lv6_1 found the bound |E| ≤ 1. LV's dyadic-block argument gives O(log log N), plus an exceptional set
-    of fields. Neither is needed at fixed d.)
+  - |E| ≤ 1 is a direct specialisation of LV's proof of Lemma 6.10: at fixed d all conductors are ≤ Δ̄^{1/d} =
+    N^{O(1)}, so one conductor range suffices (codex lv6_1). It is not a new idea, but we know of no explicit
+    statement of it. LV's dyadic-block argument gives O(log log N) classes, plus an exceptional set of fields.
+    Neither is needed at fixed d.
+  - Lenstra–Pomerance 1992 §§3–4 is the closest structural precedent. It has an explicit Hecke-character estimate
+    with ≤ 1 exceptional zero per character (Thm 3.1), and random primes up to exp(c₄(log|Δ|)²) to avoid GRH.
 
 **Sampler.**
 - Choose an integer x with log(x/2) ≥ max(20d·(log Δ̄)², (log N)²), so that LO applies at both x and x/2.
@@ -252,6 +271,8 @@ Consequently, with t_χ := ⌈5d·(ln |H|_bound + 2 ln log N)⌉ independent cha
   Pr[H ∩ ⋂_j ker χ_j ⊄ E ∪ {0}] ≤ (log N)^{−2},
 and on the complement H₀ := H ∩ ⋂_j ker χ_j is a subgroup of order ≤ 2.
 - **Cited input.** Lagarias–Odlyzko (in *Algebraic Number Fields*, Durham 1975, Academic Press 1977, Thm 1.3).
+  Sources number this result differently (Pierce–Turnage-Butterbaugh–Wood: "Cor. 1.3"; Serre 1981, Théorème 2,
+  restates it). Its content was checked against those restatements and by codex.
   - Setting: L/K Galois with group G, C a conjugacy class, and x ≥ exp(10 n_L (log d_L)²).
   - Statement: |π_C(x) − (|C|/|G|)Li(x)| ≤ (|C|/|G|)Li(x^{β₀}) + c₁x·exp(−c₂ n_L^{−1/2}(log x)^{1/2}), with c₁, c₂
     absolute and effective.
@@ -280,12 +301,16 @@ M_rows·k·(log N)^{O(1)}.
 
 ### 3.4 Linear algebra
 
-- The matrix has M_rows rows and C_col ≤ M_rows − 12 columns. Its density is w ≤ M_rows·(2k·log₂N + t_χ + 2)
+- The matrix has M_rows rows and C_col ≤ M_rows − 12 columns. Its density is
+  w ≤ M_rows·(2k·log₂N + log₂g₁ + t_χ + 2)
   nonzero entries.
 - A uniformly random left-kernel vector is obtained by Wiedemann's method:
   - It runs over F_{2^e} with 2^e ≥ M_rows⁴ and is applied to the transpose.
   - A singular-system solver with preconditioning is analysed rigorously in Wiedemann (IEEE Trans. IT 32 (1986)
-    54–62) and Kaltofen–Saunders (AAECC-9, LNCS 539 (1991), Thms 2–4). LP 1992 §10 uses the same method.
+    54–62) and Kaltofen–Saunders (AAECC-9, LNCS 539 (1991), Thms 2–4; Thm 4 includes uniform sampling of the
+    solution manifold). KS's rows²·polylog bound needs the Toeplitz preconditioner products done with fast
+    polynomial multiplication. LP 1992 §10 (Alg. 10.1, Thm 10.3) uses Wiedemann's coordinate recurrence to find
+    one dependency; it did not need uniform sampling.
   - "x − A⁻(Ax)" gives a uniform element of the kernel, given the solver's coins. Coordinate expansion over an F₂
     basis of F_{2^e} returns an F₂ kernel vector.
 - Each kernel vector is verified, so the method is Las Vegas.
@@ -358,11 +383,16 @@ M_rows·k·(log N)^{O(1)}.
   - The sign enumeration multiplies by 2^{d−1} = O(1). ∎
 - (E1: all 92 NONSQUARE outputs were independently certified, and all 116 squares were verified. The ratio
   log₂‖η‖/log₂A was 0.08–0.22, so A is conservative but polynomially tight.)
-- **Prior methods.**
-  - Couveignes (LNM 1554, 1993) and Thomé (2012) need a prime inert in K, or a sign fixed by the norm for odd d.
-  - Montgomery's and Nguyen's methods are lattice-based and heuristic.
-  - The 2^{τ−1}-branch enumeration avoids both issues, and is affordable because d is fixed.
-  - LV cite Montgomery "in time O(M²)" without a rigorous analysis. Our Lemma SQ replaces that step.
+- **Prior art (literature critic).** Algorithm SQ is the p-adic method of BLP §9 (LNM 1554, pp. 71–75).
+  - BLP already Newton-iterate the inverse square root to twice a proved coefficient bound.
+  - They optionally verify exactly ("free ourselves from … the unproved conjecture of Section 8").
+  - At a squarefree, non-inert prime they use the 2^t − 1 starting values, after Weinberger–Rothschild (ACM TOMS 2
+    (1976)).
+  - What is ours: the explicit bound A for the non-monic Z[β], the Hensel-prime choice and the cost at our heights.
+- Couveignes (LNM 1554) needs odd degree and inert primes. Montgomery's and Nguyen's methods are lattice-based
+  and heuristic.
+- LV cite Montgomery "in time O(M²)" without a rigorous analysis. Lemma SQ, that is BLP §9 made explicit,
+  replaces that step.
 
 ### 3.6 The congruence and ψ
 
@@ -428,7 +458,7 @@ The kept field of hypD Corollary K has law ∝ q_A, which amplifies the probabil
 | degree drop f_d = 0 | **impossible**: f_d ≡ a_d ≡ N g₀^{−d} ≢ 0 (mod g₁) (codex) | — |
 | gcd(f_d, N) ≠ 1 | — | proper factor (0 < \|f_d\| < N) |
 | content(f) > 1 | content divides F(g₀, g₁) = N and is < N | proper factor |
-| f reducible | ≤ exp(−log H/(13d log log H)) (Lemma IR) | factor f over Z (LLL, poly time); if some F_j(g₀, g₁) gives a proper factor, output it; otherwise reject |
+| f reducible | ≤ exp(−log H/(13d log log H)) (Lemma IR) | factor f over Z (LLL 1982, poly time); if some F_j(g₀, g₁) gives a proper factor, output it; otherwise reject. Simpler (proof critic): accept f only if some r ∈ 𝒫 gives an irreducible degree-d reduction, which certifies irreducibility; the rejection probability is the same bound |
 | N \| f′(g₀/g₁) | ≤ 1/(2H+1) | reject (a proper gcd is a factor) |
 | bad primes, index, units, Cl[2] | no rarity needed | inside H (Lemma H) |
 | exceptional zero | ≤ 1 class, every field | Lemma E, three tests |
@@ -481,12 +511,13 @@ where 𝒫 is the set of primes in (r₀(d), ½ log H]. Hence the bound is ≤ e
 | characters | Lemma 6.6: L(1/3)-size primes, sampler Υ, probability ≥ 1/(2d) | Lemma X: exp(O((log N)²))-size first-degree primes, uniform sampler, ≥ 1/(5d) |
 | Siegel zeros | Lemma 6.10: ≤ (4/3) log log n classes, except an L(2/3)^{−…} set of f | Lemma E: ≤ 1 class, every f |
 | pigeonhole | ℓ = (4/3) log log n repetitions, (ℓ choose 2) tests | 3 tests |
-| square root | Montgomery "O(M²)", not analysed | Lemma SQ, quasi-linear, rigorous |
+| square root | Montgomery "O(M²)", not analysed | Lemma SQ (BLP §9 made explicit), quasi-linear, rigorous |
 | index / non-monic | f′(α)², sketched; "v ∈ Z[α]" for non-monic α | Z[β], β = f_dα, g′(β)O_K ⊂ Z[β]; bad primes in H |
 | transcript invariance | not considered (LV need Conj. 7.1) | §3.7 |
 
 Our proof uses LV §6's architecture: random large characters, Stark plus Landau, a pigeonhole on the residual
-kernel. It is otherwise self-contained.
+kernel. It also uses BLP §§6, 8, 9 and 12 (obstruction chain, random-character idea, p-adic square root, non-monic
+parity). We supply the fixed-degree specialisation and the explicit bounds.
 
 ## 6. The HECM caveat
 
@@ -508,8 +539,14 @@ kernel. It is otherwise self-contained.
   - Cost: a product tree of the x_i, one reduction of 𝒫 modulo their product, and a remainder tree. Each level
     costs O(𝖬(b)) (standard simultaneous reduction: von zur Gathen–Gerhard, *Modern Computer Algebra*, §10.1–10.3).
     Then e = O(log log x) squarings mod x_i, and a gcd.
-  - This is Bernstein, "How to find smooth parts of integers" (2004), Algorithm 2.1 / Thms 2.2–2.3. We use only
-    the elementary version proved here. ∎
+  - This is Bernstein, "How to find smooth parts of integers" (unpublished draft, 2004-05-10), Algorithm 2.1 /
+    Thms 2.2–2.3. A refereed treatment is Bernstein, "Fast multiplication and its applications" (MSRI Publ. 44,
+    CUP 2008), §§20.5–20.7; see also Franke–Kleinjung–Morain–Wirth 2004 §4. We use only the elementary version
+    proved here. ∎
+- **Attribution.** Bernstein ("How to find small factors of integers", draft 2002, §3) already proposed batch
+  smoothness instead of ECM/HECM for rigorous bounds (Dixon, Pomerance 1987, Vallée, LP): "faster, simpler, and
+  much easier to prove". We know of no published proof that carries it out. Prop BS applies it per complete
+  special-q box, so that FM's count is recognized exactly.
 
 **Prop BS [proved].** Replace the per-candidate HECM test in the special-q search (pcest §1) as follows:
 1. enumerate the whole box (≤ C_abs·S² points, or stop at once if the lattice is irregular, Lemma 1.3);
@@ -575,18 +612,25 @@ and unrefereed. Route 1 does not depend on them, so Theorem A uses Route 1.
 
 ### 6.4 Other routes, checked
 - **Pomerance 1987 / Lenstra–Pomerance §7 (ECM on "recognizable" smooth numbers).**
-  - LP Theorem 7.1 (from Lenstra 1987 Cor. 2.8) handles numbers with all prime factors in a set 𝒮 of primes with
-    many smooth numbers in (p − √p, p + √p).
-  - LP §6 shows that recognizable smooth numbers are a fair fraction of the smooth numbers needed *by LP's
-    sampler*.
+  - LP Theorem 7.1 (from Lenstra 1987 Cor. 2.8) is the ECM splitting statement. The set 𝒮 (primes with many smooth
+    numbers in (p − √p, p + √p)) and "recognizable" numbers are defined after it. The recognition guarantee is LP
+    Thm 7.3 (Algorithm 7.2).
+  - LP Thm 6.1 + Thm 7.4 (from Pomerance 1987, Thm B′) + Cor. 7.5 show that recognizable smooth numbers are a fair
+    fraction of the ones LP's sampler needs. LP p. 486: "we are not able to prove that the elliptic curve method can
+    recognize all smooth numbers efficiently".
   - For Theorem A this would require FM (a lower bound in moving progressions) for 𝒮-restricted smooth numbers.
     Theorem R and LD restrict by positivity, so they are unaffected. Not needed.
 - **Pollard–Strassen / Costa–Harvey per-candidate tests (A′):** B^{1/2} per test. Superseded by Prop BS.
 - **Lenstra–Pomerance 1992 itself (the shape test).** It uses ECM with recognizable smooth numbers (LP §7,
-  Theorem 7.1, Algorithm 7.2; checked from the paper) and Wiedemann's linear algebra. **It does not use HECM.** So
+  Thm 7.1, Alg. 7.2, Thm 7.3; checked from the paper; corroborated by LPP I p. 398: "So far it has sufficed to use
+  the elliptic curve method … (see Pomerance 1987; Lenstra & Pomerance 1992)") and Wiedemann's linear algebra. **It does not use HECM.** So
   Theorem A′'s "removal of HECM" was correct, but it was not needed.
 
 ### 6.5 Verdict
+- Comparison point: LV 2018's unconditional L(1/3) *congruence* theorem itself relies on HECM (LPP I Thm 1.1,
+  whose algorithmic half is the unpublished Part III), and its factoring conclusion needs LV's Conjecture 7.1.
+- No published rigorous, or GRH-conditional, L[1/2, c < 1] factoring theorem is known to us (literature critic,
+  codex, and earlier project searches).
 - **Theorem A, at c = (1+θ)/√2, is the honest conditional headline, with no HECM assumption.** Its infimum is
   0.9192 at d = 9, approached as k → ∞ and not attained at any finite k.
 - Theorem A′'s 0.967 is superseded.
@@ -626,6 +670,7 @@ and unrefereed. Route 1 does not depend on them, so Theorem A uses Route 1.
 | 11 | special-q smoothness: Prop BS (batch; Lemma BS) | proved here | §6.2 |
 | 12 | Theorem DD with transcript invariance (T) | proved (internal) | lemmaM §1 |
 | 13 | **LV6**: Prop LV6 (Lemmas C, H, E, X, SQ). Includes the character-bit encoding, the padded Wiedemann / Kaltofen–Saunders solver with fixed-coordinate uniform binary sampling, and Hensel-prime selection by sieving (B, 2B] | proved here, from cited LO 1977 Thm 1.3, Stark 1974 Lemma 8, Landau, Lenstra 1992 Thm 6.5, Wiedemann 1986 / Kaltofen–Saunders 1991 | §2–§3 |
+| 13′ | standard subroutines: factoring f over Z (LLL 1982) or certified irreducibility via Lemma IR's primes; Las Vegas factoring/root finding over F_p, F_{p^f} (Berlekamp, Cantor–Zassenhaus); Tonelli–Shanks in F_{p^f}; fast integer/polynomial multiplication (Schönhage–Strassen) for product/remainder trees and Toeplitz products | standard | — |
 | 14 | cost assembly | proved arithmetic | below |
 
 **Cost assembly.**
@@ -729,6 +774,40 @@ The run took 216 s in total. Calibration used seeds 100 and 101 only (disclosed 
   - §7: uniform hidden roots made explicit; the infimum (1 + 3/(d+1) + η₀)/√2 → 0.9192 as η₀ ↓ 0; the Verdict's
     "always" and "height in one place only" reworded; "LV6 is proved" → "LV6 holds after the repairs".
 
+### 9.3 Opus proof critic: adjudication (all accepted)
+- **Verdict.** No FATAL or MAJOR findings; 12 MINOR. The critic tested bound A on 3000 random exact instances
+  (d = 3, 5, 7; 0 violations) and computed exact irreducible fractions for Lemma IR (≈ 0.33 against the floor 0.083).
+- **Verdicts.**
+  - CORRECT: §1 and (1.1), Lemma C, Lemma H, Δ̄, §3.6, §3.7, §4 (including Lemma IR and γ → γ/2), Lemma BS and
+    Prop BS.
+  - CORRECT WITH FIXES: Lemma E, Lemma X, §3.4, Lemma SQ, Prop HS, §7.
+- **Fixes.**
+  - Already applied from lv6_2: the independence constant, LO at x/2, z₀, the HS union bound via X_max, and the HS
+    Markov step.
+  - Newly applied: Landau in the min(β₁, β₂) form; an elementary class-number fallback; log₂g₁ in the row weight;
+    LLL, or Lemma-IR certification, for irreducibility; a checklist line for the standard subroutines (incl. fast
+    Toeplitz products); "two rejection events + factor-found branches"; uniform sampling attributed to KS Thm 4.
+
+### 9.4 Opus literature critic: adjudication (all accepted)
+- **Prior art.**
+  - LV6's components are prior art in substance: Lemma C/parity (BLP §5, §12.7), Lemma H (BLP Thm 6.7), Lemma SQ
+    (BLP §9 after Weinberger–Rothschild 1976, including the 2^t − 1 starting values and exact verification),
+    Lemmas X/E (LV §6, BLP §8's suggestion; LP 1992 §§3–4 as precedent).
+  - New are the fixed-degree assembly, the explicit bounds, the |E| ≤ 1 specialisation and transcript invariance.
+    The note now says so: Verdict, §3.1, §3.2, §3.5, §5, card.
+- **Citations.**
+  - LO verified (numbering varies). Stark and Landau checked from secondary sources.
+  - Lenstra Thm 6.5 verified (the Remark gives the Minkowski form).
+  - KS Thms 2–4 verified, with padding needed.
+  - LP §10 needed only one dependency.
+  - Bernstein 2004 is an unpublished draft; the refereed MSRI 2008 survey and FKMW 2004 were added.
+  - LPP I Thm 1.3 and LPP II Thm 1.1 verified. LP §7: Thm 7.3, and density via Thms 6.1 + 7.4 / Cor. 7.5.
+- **Batch smoothness for rigorous bounds** was proposed by Bernstein (2002 draft, §3). This is now credited, with
+  "no published proof carrying it out found by us".
+- **Q4.** No rigorous, or GRH-conditional, L[1/2, c < 1] factoring theorem was found. LV's L(1/3) depends on HECM and
+  on Conj. 7.1.
+- Not obtained by the critic: Thomé 2012 (our description of it was removed); the originals of Stark and Davenport.
+
 ## 10. Candidate card
 
 ```text
@@ -737,10 +816,12 @@ Operation: columns = sign, rational primes <= B, ONE parity column (g1 and f_d),
   r !| f_d disc f; O(log N) quadratic characters at exp(O((log N)^2))-size first-degree primes; Wiedemann;
   three square tests by Hensel lifting at one unramified prime with 2^(tau-1) branches; Y via psi on Z[beta].
 Proved: Lemmas C, H, E (<= 1 exceptional class), X, SQ; Prop LV6 (cost rows^2 polylog; transcript invariance).
-Status: proved (internal, unrefereed); E1 toy: 0 violations, 0 uncertified.
+Status: proved (internal, unrefereed); components are BLP 1993 §§6, 8, 9, 12 and LV §6 (prior art); ours is the
+  fixed-degree assembly and explicit bounds. E1 toy: 0 violations, 0 uncertified.
 
 ID: BS-1 batch smoothness inside complete special-q boxes (removes HECM from Theorem A).
-Status: proved (elementary; Bernstein 2004). Cost O~(B + S^2 log N) per search; exponent unchanged.
+Status: proved (elementary; Bernstein 2004 draft / 2008 survey; idea proposed by Bernstein 2002). Cost
+  O~(B + S^2 log N) per search; exponent unchanged.
 
 ID: HS-1 unconditional HECM smoothness test (genus2rh Props A/B + LPP I Thm 1.3 + LPP II Thm 1.1).
 Status: proved modulo genus2rh internal results; cost L_B[2/3, 2^(2/3) c1 + o(1)] (log N)^O(1).
