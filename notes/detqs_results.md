@@ -612,8 +612,40 @@ N ∈ σ, and put f_t = f(Q_t(N)).
 - Lemma P is a special case of Lehman's argument.
 - "Trial division" applies to one factor only.
 
-**Opus proof critic:** launched but had not reported when this note was frozen. Its findings are not
-included. No theorem here is claimed as passing two critics.
+**Opus proof critic** (`detqs_critic_proofs`, reported after the codex round).
+- *Agreements.*
+  - C, first moment, M, P and S: CORRECT. Lemma P was also checked numerically: 73 pairs, 0
+    violations.
+  - The deduction H1-S ⇐ V + M is correct.
+  - The key step-7 cancellation is genuine:
+    E_{k mod W} Cov_x(F(x² − s), G((x + k)² − s)) = 0 for any F, G, using D^tr = E[D | v mod W].
+  - No first-order term can survive.
+- *Its view of V: architecture sound; "PROVED IN OUTLINE" once three fixes are made.*
+  - (c) Use Saias/HT Thm 1.8 (the Λ-approximation), not the crude Dickman asymptotic. This is the same
+    point as codex #6.
+  - (d) Restate step 5 per t as Cov(dδ, d′δ′) = E[dd′]Cov_μ(δ, δ′) + Cov_N(d, d′)EδEδ′, with d the
+    archimedean density. This is the same point as codex #5.
+  - (f) The proved residual is r′ = (1 + log z)²Σ_{p>z}(1 + log p)²/p² + (1 + log z)(Σ_{p≤z}Σ_{e≥a}…)^{1/2}
+    + J^{−2}, which still → 0 (z → ∞, then a(z) → ∞), because ‖D_W − E D_W‖₂ ≍ log z/log y.
+  - Also T₃ = 0 exactly.
+- *Further fixes it requested.*
+  - Prop L's lower bound also needs the Saias input.
+  - DQ must charge deterministic square-root finding mod ℓ at O(y²). The exponent is unchanged.
+  - Testing a basis suffices for all N (homomorphism into μ₂(Z/N)).
+  - Prop B: valid for every W ≤ B^{1/4} via the greedy/primorial argument, with the sum restricted to
+    z < p ≤ n^{O(1)}.
+- *Adjudication.*
+  - The two reviewers disagree on V: Opus says outline after fixes, codex says GAP with substantive
+    repairs.
+  - We keep the **conservative label: V OPEN (GAP), H1-S CONDITIONAL on V.** The repairs both name
+    (Saias input, the per-t covariance identity with the archimedean term, weighted LD bounds,
+    conditional projections, the corrected r′) are not yet written out.
+  - Opus judged Prop SZ correct under an explicit definition (A − Y > 0 and A + Y < N). Codex's
+    counterexample shows the natural notion of a size certificate (a window between consecutive
+    multiples of N) is not ruled out. We keep SZ **withdrawn**; only the narrow definitional version
+    (|S| ≥ 4 ⇒ Y ≥ 4N, so A + Y < N is impossible) is true.
+- *Second-critic requirement.* No theorem in this note has passed two critics unconditionally. The
+  proved items (C, P, S, first moment, M, transfer, and V+M ⇒ H1-S) were judged correct by both.
 
 ## 11. Candidate card (BRIEF §4)
 
