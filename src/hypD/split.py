@@ -104,13 +104,16 @@ def count_S_window(G: Sequence[int], k: int, Y: int) -> int:
 
 def sample_rate(N: int, X: int, inS: Callable[[int], bool], trials: int, seed: int) -> Dict:
     rng = random.Random(f"hypD-split|{N}|{seed}")
-    hits = 0
-    for _ in range(trials):
+    hits = accidental = 0
+    done = 0
+    while done < trials:
         r = rng.randrange(2, N - 1)
         g = gcd(r, N)
         if g != 1:
-            raise FactorFound(g)          # ACCIDENTAL; probability ~ 2/p
+            accidental += 1               # ACCIDENTAL factor (gcd(r, N) > 1); resample
+            continue                      # (deviation from the frozen code, disclosed in notes)
+        done += 1
         R = r * r % N
         if split_in_S(R, N, X, inS):
             hits += 1
-    return dict(trials=trials, hits=hits)
+    return dict(trials=trials, hits=hits, accidental=accidental)

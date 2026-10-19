@@ -76,3 +76,20 @@ Commands:
 
 Any deviation from these commands or parameters will be recorded as a disclosed deviation in
 notes/hypD_results.md.
+
+## Addendum A (2026-10-19, after the E1 run; frozen before E1x is run)
+- **E1 as registered is uninformative for P2. This is a design error, disclosed.** The registered
+  sampling grid had pooled model-expected hits of about 0.3: Pr[E_S] ≈ 10⁻⁶ against 4000 trials per record.
+- The frozen E1 code also crashed on an ACCIDENTAL gcd(r, N) > 1. This happened in a 40-bit `tri`
+  instance with a 13-bit factor. The fix resamples r and counts such events, and E1 was rerun
+  unchanged otherwise. The crashed partial output is kept as `experiments/raw/hypD_e1_crashed_partial.jsonl`.
+- **E1x (exact).** `src/hypD/e1exact.py`, config `experiments/configs/hypD_e1x.json`.
+  - For each record it enumerates S × S and computes |{u/v} ∩ Q_N| / |Q_N| exactly.
+  - Grid: classes {blum, tri} × bits {36, 40} × seeds 0–4 × k ∈ {2, 3}, G-modes random g = 1.0,
+    random g = 0.5, and "qr" (only ℓ ∈ Q_N).
+  - Command: `.venv/bin/python -m src.hypD.e1exact experiments/configs/hypD_e1x.json experiments/raw/hypD_e1x.jsonl 8`
+- Predictions:
+  - **P1′.** exact ≥ Theorem S bound in every record.
+  - **P2′.** For the random modes with |S| ≥ 200: exact/model ∈ [0.7, 1.3].
+  - **P2″.** For the qr mode with |S| ≥ 200: exact/(2^ω·model) ∈ [0.7, 1.3]. This is the positivity
+    excess: when every element of S lies in Q_N, every u/v is a square.
