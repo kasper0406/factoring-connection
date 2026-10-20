@@ -38,9 +38,11 @@ open Real Finset Filter
 
 /-- PUBLISHED INPUT (Lenstra–Pomerance). H. W. Lenstra, Jr. and C. Pomerance, *A rigorous time
 bound for factoring integers*, J. Amer. Math. Soc. 5 (1992), 483–516, Theorem 1.1 ([pp] Fact
-fact:LP): their Las Vegas algorithm finds the complete prime factorisation of every `n > 1` in
-expected time `≤ L_n[1/2, 1 + o(1)]`. Stated for `T n` = the maximum over inputs `≤ n` of that
-expected time, the function used by a cost model below. -/
+fact:LP; the unnumbered Theorem of §1, p. 483, proved in §10): there is a probabilistic algorithm that
+factors any positive integer `n` completely and takes expected time at most `L_n[1/2, 1 + o(1)]`.
+Stated for `T n` = the maximum over inputs `≤ n` of that expected time. As a `Prop` about an arbitrary
+`T` this is only meaningful together with the MODELLING assumption that a cost model's `TLP` is that
+function. -/
 def LenstraPomerance (T : ℕ → ℝ) : Prop := LBound (1 / 2) 1 T
 
 /-- The maximum of `f` over the split inputs `n` with `N₀ ≤ n ≤ x` (`0` if there are none). -/
@@ -403,7 +405,15 @@ structure CostModelA (P : Params) where
   /-- maximum over inputs `≤ n` of the Lenstra–Pomerance expected time -/
   TLP : ℕ → ℝ
 
-/-- The interface of the cost model at smoothness exponent `a` (constants `C`, threshold `N₀`). -/
+/-- INTERNAL HYPOTHESIS (algorithmic interface for Theorem A) at smoothness exponent `a` (constants `C`,
+threshold `N₀`). Each conjunct transcribes one claim of [pp] about its algorithm (cited inline); these
+claims are internal and unrefereed and are NOT proved here. In particular the first conjunct carries
+[pp] Prop. prop:BS (the search recognises `N_ℓ(A) ≥ 1`) and the SAMPLE_FIELD rejection logic; the
+`splitCost` conjunct carries Prop. prop:select(ii) and with it Theorem thm:DD / Remark rem:T (each
+round fruitful with probability ≥ 1/2); the `Tpost` conjunct carries Prop. prop:lv6 (with its
+Lagarias–Odlyzko / Stark / Landau / Wiedemann inputs); the last conjunct carries the factor-tree and
+race accounting of §sec:uniform. Note: these inequalities constrain real numbers; they do not tie the
+model to a program, so the theorems below are conditional COST ASSEMBLY statements. -/
 structure CostInterfaceA (P : Params) (a : ℝ) (M : CostModelA P) : Prop where
   /-- One constant and one threshold for all the bookkeeping below. -/
   bounds : ∃ C N₀ : ℝ, 0 ≤ C ∧
@@ -626,7 +636,10 @@ structure CostModelRA (P : Params) where
   Tsq : ℕ → ℝ
   Tpost : ℕ → ℝ
 
-/-- The interface of the recursive model at smoothness exponent `a`. -/
+/-- INTERNAL HYPOTHESIS (algorithmic interface for Theorem RA) at smoothness exponent `a`: as for
+`CostInterfaceA`, plus [pp] Lemma lem:generala (A1), (A2), and the recursion inequality of the proof of
+Theorem thm:RA, which carries Lemmas lem:OS, lem:waldrec, lem:Trec, the factor tree and the race against
+trial division. Not proved here. -/
 structure CostInterfaceRA (P : Params) (a : ℝ) (M : CostModelRA P) : Prop where
   bounds : ∃ C N₀ : ℝ, 0 ≤ C ∧
     (∀ N : ℕ, N₀ ≤ N → Params.SplitInput a N →
@@ -846,7 +859,7 @@ theorem corollaryP (hCEP : CEP) (hRS : RosserSchoenfeld)
 
 /-! ## Theorem U and Theorem DL: assembly steps only -/
 
-/-- MAIN. lv5unif §10 (Theorem U), assembly step: the recursion inequality (10.1),
+/-- MAIN (ASSEMBLY STEP ONLY; Theorem U itself is NOT formalised). lv5unif §10 (Theorem U), assembly step: the recursion inequality (10.1),
 `F(x) ≤ 2 log₂x [P(x) + D(x) F(√(2x))]` with `P(x) ≤ L_x[2/5, max(2a, a+s+max(a,σ)) + o(1)]` and
 `D(x) ≤ L_x[2/5, a+s+o(1)]`, gives `F(x) ≤ L_x[2/5, c + o(1)]` with
 `c = max(2a, a+s+max(a,σ), (a+s)/(1−2^{−2/5}))` ((10.3)). The inputs (10.1) are INTERNAL and are not
@@ -871,7 +884,7 @@ theorem theoremU_assembly (F Pc D : ℝ → ℝ) (a s σ : ℝ) (ha : 0 < a) (hs
       rw [e]; exact h)
   exact mt_lbound_of_K (2 / 5) (by norm_num) (by norm_num) F _ key
 
-/-- MAIN. [pp] Theorem thm:DL, assembly step: with `B = L^a`, if the expected time is
+/-- MAIN (ASSEMBLY STEP ONLY; Theorem DL itself is NOT formalised; its relation supply at prime modulus is not covered by `FirstMoment`/`SecondMoment`, which are restricted to split inputs). [pp] Theorem thm:DL, assembly step: with `B = L^a`, if the expected time is
 `≤ (M_rows C_trial + T_post)/p` with `M_rows ≤ L^{a+o(1)}`, `C_trial ≤ L^{max(1/√2, θ/(2a))+o(1)}`,
 `T_post ≤ L^{3a+o(1)}` and `p ≥ L^{−o(1)}` (all INTERNAL inputs, not formalised here), then the
 expected time is `≤ L_p[1/2, max(a + 1/√2, a + θ/(2a), 3a) + o(1)]`; at the optimal `a` this is
