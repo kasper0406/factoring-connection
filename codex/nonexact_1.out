@@ -1,0 +1,726 @@
+**OPEN — verdict.** I do not obtain either a general barrier or a sub-\(L[1/3]\) construction. There are, however, three concrete conclusions:
+
+- The fixed-\(P\) congruence lattice has an exact determinant formula, but determinant estimates alone do not control its useful short vectors.
+- In a PTE fibre, a nonconstant inherited compatibility can indeed yield a target-sized smooth-by-construction relation, under explicit hypotheses proved below.
+- Unrestricted evaluated O1 contains the general small-residue product-listing problem. Its unresolved part is computational; abundance is compatible with strong, explicit distribution assumptions.
+
+I use the stipulated results R, W, EX and NX as given. All other mathematical assertions below carry a status label. “PROVED conditional” means that the implication is proved, while the stated assumption remains unproved.
+
+Put
+\[
+ b=\log B,\qquad \ell=\log V
+ =O\!\left(x^{2\beta}(\log x)^{1-2\beta}\right).
+\]
+The asymptotic simplifications below assume \(0<\beta<1/3\); the exact counting and lattice formulas also apply at the boundary \(\beta=0\).
+
+**PROVED — the relevant scales.** For \(M\asymp x/b\),
+\[
+ \ell=O(b^2/\log x),\qquad
+ \frac{\ell}{M}
+ =O\!\left(x^{3\beta-1}(\log x)^{2-3\beta}\right)=o(1).
+ \tag{1}
+\]
+Thus a height \(e^{O(\ell)}\) is small enough for R when its other degree terms are \(o(M)\), whereas a height at least \(N\) is far outside that regime. This follows directly by substituting \(b=\Theta(x^\beta(\log x)^{1-\beta})\).
+
+**PROVED — two distinct congruence problems.** For a fixed presentation define
+\[
+ \mathcal C_{\rm ring}
+ =\{(A,h,r):hP_A-r\in(N,F),\
+       \deg r<k,\ \|r\|_\infty\le H\},
+ \tag{2}
+\]
+and, in View A,
+\[
+ \mathcal C_{\rm val}
+ =\{(A,h,v):h(m)P_A(m)\equiv v\pmod N,\
+                     0<|v|\le V\}.
+ \tag{3}
+\]
+A polynomial \(r\) in the evaluated formulation is merely a representation of \(v=r(m)\): replacing it by the constant polynomial \(v\) preserves the evaluated condition.
+
+The distinction is exact:
+\[
+ (N,F)\subseteq\ker(\operatorname{ev}_m)=(N,X-m).
+ \tag{4}
+\]
+Indeed, divide any polynomial \(g\) by \(X-m\):
+\(g=(X-m)s+g(m)\). This proves the kernel identity; the inclusion follows from \(N\mid F(m)\). For \(d>1\) the inclusion is strict: the first quotient has \(N^d\) elements, while evaluation has a quotient of size \(N\). Consequently, (2) imposes up to \(d\) scalar congruences; (3) imposes one.
+
+For an explicitly given ideal \(I\), the analogous formulation requires
+\[
+ N\in I\subseteq\ker(\operatorname{ev}_m).
+\]
+Increasing \(I\) weakens the conditions, with \((N,X-m)\) giving precisely the evaluated problem.
+
+**PROVED — the quotient certificate needs separate treatment.** The intrinsic condition \(hP-r\in(N,F)\) asserts the existence of
+\[
+ hP-FQ-r=NT. \tag{5}
+\]
+If the supplied \(Q\) must also obey degree and height bounds, those are additional certificate restrictions. They are not part of congruence modulo an ideal by itself.
+
+Below I first analyse the intrinsic lattice. A bounded certificate is handled by the unreduced coefficient matrix for (5), as described after the determinant calculation. This distinction prevents unrestricted certificates from being counted as extra relations.
+
+**PROVED — admissibility for the stated numerical target.** A ring member becomes a target member only after checking all of the following:
+
+\[
+ u=h(m)P_A(m),\quad v=r(m),\quad
+ u\ne v,\quad 0<|v|\le V,
+ \tag{6}
+\]
+together with the required factorisation witness for \(u\). In particular, small height of \(r\) gives only
+\[
+ |r(m)|\le kH\max(1,|m|)^{k-1}. \tag{7}
+\]
+Also, the integers \(\mu-a\) in View B need not be bounded by \(B^{O(1)}\). An arbitrary factor-base atom in that view does not automatically satisfy target condition (a).
+
+The proofs are evaluation and the triangle inequality. Any assertion about numerical smoothness must retain these checks.
+
+**PROVED — precisely where W’s argument stops.** For two exact members, eliminating \(F\) gives
+\[
+ Q'hP-Qh'P'=Q'r-Qr'.
+ \tag{8}
+\]
+Here the left multipliers have degree at most \(j_1+j_2\), while the right side has
+\[
+ \deg(Q'r-Qr')<K:=k+j_2,\qquad
+ \|Q'r-Qr'\|_\infty\le 2(j_2+1)H_QH.
+ \tag{9}
+\]
+This is the low-degree, low-height identity to which R applies.
+
+For modular certificates (5), the same operation instead gives
+\[
+ Q'hP-Qh'P'
+ =Q'r-Qr'+N(Q'T-QT').
+ \tag{10}
+\]
+The added term can have high degree. If cancellation leaves it in low degree, its nonzero coefficients can still have size at least \(N\), up to the small correction in (9). Neither required input to R survives automatically.
+
+Quantitatively, with fixed degrees and
+\(\log H+\log H_Q=O(\ell)\), (1) places (9) in R’s regime. Replacing its height by \(N^{1-o(1)}\) introduces a term
+\[
+ 2\log_2 N+o(x)=\frac{2x}{\log 2}+o(x)
+\]
+in R’s threshold, whereas \(M=\Theta(x/b)=o(x)\). That application of R is impossible.
+
+**PROVED — the root-product estimate also fails quantitatively.** EX says that a nonzero reduced defect has a coefficient of magnitude at least \(N\). Feeding such a defect into R’s Mahler-measure/root-product argument gives a logarithmic root budget of order \(x\), rather than \(o(M)\). Since \(M=o(x)\), it supplies no contradiction.
+
+Small roots themselves do not give small coefficients:
+\[
+ \|P_A\|_\infty\le \|P_A\|_1
+ \le (B+1)^M=\exp(\Theta(x)).
+ \tag{11}
+\]
+The inequality follows by multiplying the coefficient \(1\)-norms of the linear factors. Reduction modulo an arbitrary-height \(F\) can increase coefficient sizes further.
+
+**PROVED — evaluation loses still more information.** A small value supplies no height bound, even for degree one:
+\[
+ r(X)=C(X-m)+v,\qquad r(m)=v,
+ \tag{12}
+\]
+with \(C\) arbitrarily large. More fundamentally, the evaluated condition provides no identity controlling values at the many integer roots used in R. It controls one evaluation modulo \(N\). This remains the obstruction after replacing \(r\) by the constant \(v\).
+
+---
+
+**PROVED — exact determinant of the fixed-\(P\) lattice.** Write \(T\) for the multiplier of \(P\), avoiding confusion with the quotient certificate. Let
+\[
+ t=j+1,\qquad n=t+k,\qquad 1\le k\le d.
+\]
+In the coefficient basis \(1,X,\ldots,X^{d-1}\), form
+\[
+ A_P=\bigl[P\bmod F,\ XP\bmod F,\ldots,X^{t-1}P\bmod F\bigr]
+       \in\mathbb Z^{d\times t},
+\]
+and let \(E_k\) embed the first \(k\) coordinates. Set
+\[
+ C_P=[A_P\mid -E_k].
+\]
+Then
+\[
+ \Lambda_P=\{z\in\mathbb Z^n:C_Pz\equiv0\pmod N\}
+ \tag{13}
+\]
+is a full-rank lattice.
+
+If the nonzero Smith invariants of \(C_P\) are
+\(\delta_1,\ldots,\delta_\rho\), then
+\[
+ \boxed{\det\Lambda_P
+  =\prod_{i=1}^{\rho}\frac{N}{\gcd(N,\delta_i)}.}
+ \tag{14}
+\]
+Equivalently, for \(N=pq\),
+\[
+ \boxed{\det\Lambda_P
+   =p^{\operatorname{rank}_{\mathbb F_p}C_P}
+      q^{\operatorname{rank}_{\mathbb F_q}C_P}.}
+ \tag{15}
+\]
+
+*Proof.* The index of the kernel in (13) equals the cardinality of the image of
+\(C_P:(\mathbb Z/N)^n\to(\mathbb Z/N)^d\).
+Unimodular Smith transformations preserve this cardinality. Multiplication by \(\delta_i\) on \(\mathbb Z/N\) has image size \(N/\gcd(N,\delta_i)\), proving (14). CRT proves (15).
+
+There is a useful equivalent formula. Delete the first \(k\) rows of \(A_P\), obtaining \(A_P^{\rm tail}\). Since the remainder variables freely adjust the first \(k\) image coordinates,
+\[
+ \det\Lambda_P
+   =N^k\left|\operatorname{im}
+       (A_P^{\rm tail}\bmod N)\right|.
+ \tag{16}
+\]
+
+**PROVED — important special cases.**
+
+- If \(t=d\) and multiplication by \(P\) is invertible in
+  \((\mathbb Z/N)[X]/(F)\), then
+  \[
+   \det\Lambda_P=N^d,\qquad n=d+k.
+   \tag{17}
+  \]
+- If \(n\le d\) and \(C_P\) has full column rank modulo both \(p\) and \(q\), then
+  \[
+   \Lambda_P=N\mathbb Z^n.
+   \tag{18}
+  \]
+  Thus bounds \(U,H<N\) allow only the zero vector.
+- More strongly, full column rank modulo just \(p\), together with
+  \(U,H<p\), already excludes every nonzero vector in the box.
+
+These statements follow respectively from surjectivity, injectivity modulo \(N\), and injectivity modulo \(p\). They are genuine fixed-\(P\) barriers under the stated rank hypotheses. There is no proof here that every admissible split \(P\) satisfies those hypotheses.
+
+**PROVED — bounded quotient certificates have the same general index formula.** Include the coefficients of \(h,Q,r\) as variables and use the unreduced coefficient map
+\[
+ (h,Q,r)\longmapsto hP-FQ-r\pmod N.
+ \tag{19}
+\]
+Its kernel determinant is again given by (14)–(15), for its own matrix. Bounds on \(Q\) must then be imposed in its box. Projecting these certificates to \((h,r)\) gives a subset of the intrinsic possibilities; multiple certificates can represent the same member.
+
+---
+
+**KNOWN — Minkowski’s actual guarantee.** Put
+\[
+ K(U,H)=[-U,U]^t\times[-H,H]^k,\qquad D=\det\Lambda_P.
+\]
+Minkowski gives a nonzero lattice point once
+\[
+ U^tH^k\ge D.
+ \tag{20}
+\]
+It does not guarantee that \(r\ne0\), that evaluation gives \(u\ne v\), or that \(T(m)\) is smooth by construction. A precise source is Henk, “Successive minima and lattice points,” *Rend. Circ. Mat. Palermo*, Suppl. 70, part I (2002), 377–384, Theorem 1.2. [Paper](https://arxiv.org/pdf/math/0204158)
+
+**HEURISTIC — Gaussian sizes, assuming a random lattice after the indicated scaling.** Scaling multiplier coordinates by \(U^{-1}\) and remainder coordinates by \(H^{-1}\) gives determinant
+\[
+ \Delta=\frac{D}{U^tH^k}.
+\]
+The Gaussian estimate for the number of box points is
+\[
+ \frac{\operatorname{vol}K(U,H)}D
+   =\frac{2^nU^tH^k}{D}.
+ \tag{21}
+\]
+For a Euclidean ball in the scaled coordinates, the predicted first-vector radius is approximately
+\[
+ \sqrt{\frac{n}{2\pi e}}\ \Delta^{1/n}.
+ \tag{22}
+\]
+
+In case (17), equal unscaled bounds predict size
+\[
+ N^{d/(d+k)}\ge N^{1/2}.
+ \tag{23}
+\]
+With multiplier height restricted to \(U=N^{o(1)}\), the box-volume threshold instead suggests
+\[
+ H\asymp N^{d/k}U^{-d/k}=N^{d/k-o(1)}.
+ \tag{24}
+\]
+Both scales exceed \(e^{O(\ell)}=N^{o(1)}\) enormously.
+
+These are predictions under the named random-lattice assumption, not nonexistence theorems for structured lattices.
+
+**KNOWN — a rigorous Davenport-type count.** Let
+\[
+ \Lambda'=\operatorname{diag}(U^{-1}I_t,H^{-1}I_k)\Lambda_P
+\]
+have Euclidean successive minima \(\eta_1,\ldots,\eta_n\). Barroero–Widmer’s Theorem 1.3, applied to a cube, gives
+\[
+ \left|
+ \#(\Lambda'\cap[-1,1]^n)-\frac{2^n}{\Delta}
+ \right|
+ \le C_n\sum_{i=0}^{n-1}
+ \frac{\binom ni2^i}{\eta_1\cdots\eta_i}.
+ \tag{25}
+\]
+The empty product is \(1\); \(C_n\) depends only on dimension. Translates are handled by the same theorem with the family of translated cubes. Source: Barroero–Widmer, “Counting lattice points and o-minimal structures,” *IMRN* 2014(18), 4932–4957, Theorem 1.3. [Paper](https://www.ma.rhul.ac.uk/mwidmer/Publications/Omincount_final.pdf)
+
+**KNOWN — an explicit successive-minima upper bound.** If \(\lambda_i\) are the successive minima relative to the symmetric box \(K(U,H)\), then, for \(n\ge2\),
+\[
+ \#(\Lambda_P\cap K(U,H))
+ <2^{n-1}\prod_{i=1}^{n}
+       \left\lfloor1+\frac2{\lambda_i}\right\rfloor .
+ \tag{26}
+\]
+This is Henk, cited above, Theorem 1.5. The corresponding product bound without the factor \(2^{n-1}\) must not be silently assumed. [Theorem 1.5](https://arxiv.org/pdf/math/0204158)
+
+**PROVED — why these counts do not close O1.** Neither \(D\) nor the index \(N^d\) supplies lower bounds on the individual minima. For example,
+\[
+ \mathbb Z^{n-d}\times N\mathbb Z^d
+\]
+has determinant \(N^d\), contains \(N\mathbb Z^n\), and has many short vectors in the first \(n-d\) directions. Thus a volume main term can be tiny while a lower-dimensional contribution dominates.
+
+Moreover, when \(n\asymp M\), even the explicit factor \(2^n\) in (26) cannot be discarded as \(B^{o(1)}\). A useful asymptotic count requires actual information about the minima and the admissibility of the vectors being counted.
+
+---
+
+**PROVED — the split condition is thin but not an algebraic codimension condition.** With
+\(D_B=2\lfloor B\rfloor+1\), the number of root multisets is exactly
+\[
+ S_M=\binom{D_B+M-1}{M}.
+ \tag{27}
+\]
+In the stated positive-\(\beta\) range,
+\[
+ \log S_M
+ =Mb-M\log M+O(M).
+ \tag{28}
+\]
+This follows by expanding the rising factorial in (27), since \(B\) exceeds every fixed power of \(M\).
+
+The coefficient map
+\[
+ (a_1,\ldots,a_M)\longmapsto(e_1,\ldots,e_M)
+ \tag{29}
+\]
+has Jacobian equal, up to sign, to the Vandermonde product
+\(\prod_{i<j}(a_i-a_j)\). Hence it has full rank at distinct roots and has an open real image there. As root bounds vary, integer-root coefficient vectors are Zariski dense: a polynomial vanishing on all their images pulls back to a polynomial vanishing on every integer root tuple, and therefore vanishes identically; dominance then finishes the argument.
+
+Thus “all roots are integers” is not supplied by a fixed proper coefficient variety.
+
+**KNOWN — what determinant-method theorems actually require.** Bombieri–Pila’s curve theorem bounds integral points on a specified absolutely irreducible plane curve; it does not bound arbitrary integer-split coefficient vectors in a lattice coset. See Bombieri–Pila, “The number of integral points on arcs and ovals,” *Duke Math. J.* 59(2) (1989), 337–357, Theorem 5. [Paper](https://people.maths.ox.ac.uk/pila/Ovals.pdf)
+
+Dimension-growth results likewise concern specified algebraic varieties. For example, Castryck–Cluckers–Dittmann–Nguyen, *Algebra & Number Theory* 14(8) (2020), Theorem 1, is a uniform projective-variety theorem with constants depending on ambient dimension. It does not impose integer splitting, and here that dimension grows with \(M\). [Paper](https://rcluckers.perso.math.cnrs.fr/prints/Cast-Cl-Ditt-Nguy.pdf)
+
+**PROVED — the missing application step.** One may introduce roots and write the congruences as polynomial equations with integer quotient variables. That produces an algebraic counting problem, but it retains the \(M\) root parameters and introduces quotient ranges. Alternatively, passing to coefficient variables removes those parameters only by replacing them with the unresolved arithmetic condition of integer splitting.
+
+Special fibres can certainly be counted—the supplied PTE results are examples. What is missing is a uniform bound for the full growing-dimensional family, with dependence strong enough for the \(L\)-range.
+
+**OPEN.** I do not know a determinant-method theorem that supplies that bound. The preceding argument explains why the cited theorems do not supply it automatically; it does not prove that the method could never be adapted.
+
+---
+
+**PROVED — what “\(SV/N\) members” means.** For a catalogue \(\mathcal U\) of \(S\) distinct numerical products and
+\[
+ \mathcal T=\{v:0<|v|\le V\},\qquad W=|\mathcal T|=2\lfloor V\rfloor<N,
+\]
+the exact count is
+\[
+ C=\frac{SW}{N}
+ +\frac1N\sum_{a=1}^{N-1}
+ \left(\sum_{u\in\mathcal U}e^{2\pi iau/N}\right)
+ \left(\sum_{v\in\mathcal T}e^{-2\pi iav/N}\right).
+ \tag{30}
+\]
+This is additive-character orthogonality. It identifies precisely the cancellation needed for \(C\sim SW/N\).
+
+Averaging over all additive translates of \(\mathcal T\) gives exactly \(SW/N\), since each residue belongs to \(W\) translates. That averaging identity gives no fixed-target concentration.
+
+Root-multiset counts cannot simply replace \(S\): different multisets can evaluate to the same integer.
+
+**PROVED — there are sufficiently large catalogues of distinct products.** Choose primes in \([B^{1/4},B]\), and take products of exactly \(M\) of them, with repetition. Unique factorisation makes the products distinct, and every product lies between \(B^{M/4}\) and \(B^M\).
+
+There are \(K\gg B/\log B\) available primes. For completeness, the elementary lower bound follows from
+\[
+ \binom{2n}{n}\ge\frac{4^n}{2n+1},
+ \qquad
+ \binom{2n}{n}\le(2n)^{\pi(2n)}.
+\]
+For the second inequality, each prime-power contribution to the binomial coefficient is at most \(2n\). Subtracting the at most \(B^{1/4}\) primes below the cutoff preserves the lower bound.
+
+Consequently, if \(Mb=cx+o(x)\),
+\[
+ S=\binom{K+M-1}{M}=N^{c-o(1)}.
+ \tag{31}
+\]
+The lower bound follows from \(S\ge K^M/M!\); the upper bound follows from the bound \(B^M\) on these distinct positive integers.
+
+**HEURISTIC assumption CS — uniform square-root cancellation over the prime alphabet.** Assume, for every nonprincipal Dirichlet character modulo \(N\),
+\[
+ \left|\sum_{p\in[B^{1/4},B]}\chi(p)\right|
+ \le B^{1/2}x^{C_0}
+ \tag{CS}
+\]
+for a fixed constant \(C_0\). This is an explicit distribution assumption, not an independence assumption on congruence equations.
+
+**PROVED conditional on CS — genuine abundance for \(c>2\).** For the distinct catalogue in (31), if \(c>2\), then uniformly for \(V=N^{o(1)}\),
+\[
+ \boxed{C=(1+o(1))\frac{SW}{\varphi(N)}
+             =(1+o(1))\frac{SW}{N}.}
+ \tag{32}
+\]
+
+*Proof.* For a character \(\chi\), let
+\[
+ H_M(\chi)=\sum_{\substack{A\text{ prime multiset}\\|A|=M}}
+                  \chi\!\left(\prod_{p\in A}p\right).
+\]
+Its generating function is
+\[
+ \sum_{M\ge0}H_M(\chi)z^M
+ =\exp\!\left(
+   \sum_{j\ge1}\frac{z^j}{j}\sum_p\chi(p)^j
+        \right).
+ \tag{33}
+\]
+For nonprincipal \(\chi\), use CS for \(j=1\), and the bound \(K\le B\) for every \(j\ge2\). On the circle
+\[
+ |z|=B^{-1/2}x^{-C_0-2},
+\]
+the absolute value of the exponential in (33) is bounded by an absolute constant. Cauchy’s estimate therefore gives
+\[
+ |H_M(\chi)|
+ \le \exp\!\left(\frac{Mb}{2}+O(M\log x)\right).
+\]
+Meanwhile
+\[
+ S\ge\exp\!\left(Mb-O(M\log x)\right).
+\]
+Thus
+\[
+ \max_{\chi\ne\chi_0}\frac{|H_M(\chi)|}{S}
+ \le N^{-c/2+o(1)}.
+ \tag{34}
+\]
+Multiplicative-character orthogonality bounds the relative error in any residue class by
+\[
+ \varphi(N)N^{-c/2+o(1)}=o(1).
+\]
+Summing over \(\mathcal T\) proves (32). All its elements are units for sufficiently large \(N\), since \(V<\min(p,q)\). Also \(u\ge B^{M/4}\gg V\), so none of these pairs has \(u=v\). ∎
+
+This proof charges integer splitting exactly through prime multisets; it does not treat arbitrary coefficients as split.
+
+**OPEN — unconditional abundance in the required uniformity.** I have not verified an unconditional theorem giving (32) for these catalogues and every balanced semiprime in the prompt’s range. Standard smooth-number equidistribution results cannot simply be substituted: for example, Soundararajan’s Theorem 1 assumes a modulus at most \(y^{4\sqrt e-\varepsilon}\), which fails for \(y=B=N^{o(1)}\) and modulus \(N\). Source: “The distribution of smooth numbers in arithmetic progressions,” *Anatomy of Integers*, CRM Proceedings & Lecture Notes 46 (2008), 115–128, Theorem 1. [Paper](https://arxiv.org/pdf/0707.0299)
+
+This is an example of an inapplicable theorem, not a claim that it is the latest result in every distribution regime.
+
+**PROVED — a limited counting barrier does exist.** If every proposed member satisfies
+\[
+ |u|+V<N,
+\]
+then \(u\equiv v\pmod N\), \(|v|\le V\), forces \(u=v\). Therefore no target member exists. Indeed, the nonzero integer \(u-v\) would otherwise be a multiple of \(N\) of magnitude below \(N\).
+
+For catalogues reaching \(N^c\) with \(c>2\), however, a general scarcity claim would conflict with the explicit assumption CS through (32). Abundance and fast listing are separate questions.
+
+---
+
+**PROVED — a precise query barrier.** Consider the following classical model: a catalogue has \(S\) candidates, and a fresh residue query returns an independent uniform element of \(\mathbb Z/N\). A candidate is successful when its residue lies in \(\mathcal T\). Allow adaptive queries and charge preprocessing queries.
+
+After \(q\) distinct queries,
+\[
+ \mathbb E[\text{successful queried candidates}]
+       =qW/N.
+ \tag{35}
+\]
+Therefore producing \(R\) verified outputs in expectation requires
+\[
+ q\ge RN/W.
+ \tag{36}
+\]
+Producing at least \(R\) outputs with probability at least \(1/2\) requires \(q\ge RN/(2W)\).
+
+*Proof.* Conditional on every preceding answer, a fresh answer succeeds with probability \(W/N\). Sum the corresponding indicator expectations. For the probability statement, the expected number of outputs is at least \(R/2\). ∎
+
+This excludes the target cost in this model, since \(W=N^{o(1)}\). It does not apply to an algorithm exploiting actual multiplication identities.
+
+**KNOWN — a stronger restricted model also has barriers.** For random-list product search in a generic cyclic group, the exact-target problem reduces discrete logarithms: generate list elements with known random exponents, translate one list by the discrete-log target, and recover its logarithm from a product solution. Wagner states this as Theorem 2, with the generic \(\Omega(\sqrt P)\) consequence in Corollary 1, where \(P\) is the largest prime divisor of the group order. Source: Wagner, “A Generalized Birthday Problem,” *CRYPTO 2002*, LNCS 2442, 288–304. [Paper](https://www.enseignement.polytechnique.fr/informatique/profs/Francois.Morain/Master1/Crypto/projects/Wagner02.pdf)
+
+**OPEN — the appropriate unrestricted barrier.** Ordinary integer algorithms see much more: the additive relationship between \(\mu-a\), integer representatives, small target values, gcds, and multiplication. Neither model above captures all of that information. A barrier against such algorithms would require a more faithful computational model or a substantial complexity result. No such barrier is proved here.
+
+---
+
+**PROVED — inheritance for \(k\ge2\).** The following gives a direct extension of the constant-difference mechanism.
+
+Suppose distinct monic split polynomials \(P,P'\), both of degree \(M\), satisfy
+\[
+ D=P-P',\qquad \deg D<k,
+\]
+and suppose
+\[
+ D\equiv T\pmod N
+ \quad\text{coefficientwise},\qquad
+ \deg T<k,\quad\|T\|_\infty\le H,
+ \tag{37}
+\]
+with \(D-T\ne0\). If
+\[
+ M>3k,\qquad 2B<\min(p,q),
+\]
+then one can compute a nontrivial congruence
+\[
+ \boxed{
+ u=\prod_{i=1}^{M}(b-a_i)\equiv v\pmod N,\qquad
+ 0<|v|\le kH\max(1,B)^{k-1},
+ }
+ \tag{38}
+\]
+possibly interchanging \(P,P'\) and changing the sign of \(v\). Every factor of \(u\) has magnitude at most \(2B\).
+
+*Proof.* Since \(P-P'\) has degree below \(k\), Newton’s identities give equality of power sums through degree \(M-k\). The signed difference of their root-multiplicity measures therefore has vanishing moments in degrees \(0,\ldots,M-k\).
+
+Its nonzero support has at least \(M-k+2\) points: otherwise the square Vandermonde system using the first as many moments as support points would force every signed multiplicity to vanish.
+
+At most \(k-1\) distinct roots are common to \(P,P'\), since each is a root of the nonzero polynomial \(D\). At most \(k-1\) further points are roots of \(D-T\). As \(M>3k\), some point \(b\) in the union of root supports is neither common nor a root of \(D-T\).
+
+If \(P'(b)=0\), take
+\[
+ u=P(b)=D(b),\qquad v=T(b).
+\]
+Then \(u\ne0\), \(u-v\ne0\), and \(N\mid u-v\). Its displayed factorisation gives the factor bound. Evaluation gives the bound on \(v\).
+
+If instead \(P(b)=0\), take \(u=P'(b)\), \(v=-T(b)\). Finally, every nonzero root difference is smaller than both prime factors of \(N\), so \(u\) is a unit modulo \(N\). Hence \(v\ne0\). ∎
+
+The conversion takes polynomial time in the explicit input size: inspect the supplied roots and evaluate the displayed polynomials.
+
+**PROVED — application to the stated PTE situation.** If \(h=1\), two members share the first \(M-k\) elementary symmetric functions, \(d\ge k\), and their small remainders are \(r,r'\), then
+\[
+ D-(r-r')\in(N,F),\qquad \deg(D-r+r')<d.
+\]
+Monicity of \(F\) implies coefficientwise divisibility by \(N\). Thus (37) holds with \(T=r-r'\), of height at most \(2H\).
+
+If
+\[
+ \log H+(k-1)b+\log k=O(\ell),
+ \tag{39}
+\]
+the converted relation has the target small-side scale and all \(M\) required small factors. In R’s regime the exceptional exact case \(D=T\) is excluded by R itself.
+
+**PROVED — zero inherited compatibility is more restrictive here than in the supplied example.** If
+\[
+ P\equiv P'\pmod N
+\]
+coefficientwise and \(2B<p\), then \(P=P'\) over \(\mathbb Z\).
+
+*Proof.* Reduce modulo \(p\). Unique factorisation in \(\mathbb F_p[X]\) recovers the multiplicity of every linear factor. Distinct integers in \([-B,B]\) have distinct reductions modulo \(p\), so the original root multisets agree. ∎
+
+Thus the coefficientwise-zero mechanism in the \(N=25\) example cannot persist in the stated asymptotic range. Nonzero small \(T\) remains relevant and is covered by (38).
+
+**OPEN — limits of the inheritance result.** This proves a usable congruence from each compatibility satisfying the hypotheses. It does not prove that many compatibilities produce many distinct or independent relations. It also does not cover arbitrary varying multipliers, or identities
+\[
+ P-P'-T=FS+NU
+\]
+whose left side has degree at least \(d\): evaluation at a root then retains the uncontrolled term \(F(b)S(b)\).
+
+---
+
+**KNOWN — what lattice reduction can find.** LLL runs in polynomial time and returns a vector within a factor \(2^{(n-1)/2}\) of the shortest nonzero Euclidean vector. The bound is recalled explicitly in Coppersmith, “Small solutions to polynomial equations, and low exponent RSA vulnerabilities,” *Journal of Cryptology* 10 (1997), 233–260, §2, preceding Lemma 1. [Paper](https://www.di.ens.fr/~fouque/ens-rennes/coppersmith.pdf)
+
+**PROVED — why fixed-\(P\) reduction is insufficient.** Reduction solves a linear lattice problem after \(P\) has been supplied. Its outputs do not enforce integer splitting of a new \(P\), and a multiplier \(T(m)\) of large unrestricted size is not smooth by construction.
+
+For fixed numerical \(u\), there is at most one \(v\in[-V,V]\) when \(2V<N\). Consequently, many coefficient representations of \(r\), or many certificates \(Q\), do not produce a family of numerical relations.
+
+A lattice basis supplies at most \(n\) linearly independent coefficient vectors. This is not a bound on the number of useful multiplicative relations in the entire lattice: multiplicative exponent vectors are not linear functions of polynomial coefficients. Neither a useful-relation lower bound nor an upper bound follows merely from lattice rank.
+
+---
+
+**PROVED — linearising the last \(s\) roots.** Fix a prefix with evaluated product \(C\), and assume \(\gcd(C,N)=1\). For the remaining roots write
+\[
+ R_s(X)=X^s-e_1X^{s-1}+\cdots+(-1)^se_s.
+\]
+The evaluated condition becomes the affine linear congruence
+\[
+ C m^s+\sum_{\nu=1}^{s}
+       (-1)^\nu C m^{s-\nu}e_\nu
+       \equiv v\pmod N.
+ \tag{40}
+\]
+The coefficient relaxation has
+\[
+ |e_\nu|\le E_\nu:=\binom{s}{\nu}B^\nu.
+\]
+Its affine lattice in \((e_1,\ldots,e_s,v)\) has determinant \(N\), because the coefficient of \(v\) is \(-1\).
+
+Define the exact candidate counts
+\[
+ D_s=\prod_{\nu=1}^{s}(2\lfloor E_\nu\rfloor+1),
+ \qquad
+ T_s=\binom{D_B+s-1}{s}.
+ \tag{41}
+\]
+The first counts relaxed coefficient vectors; the second counts genuine root multisets, whose coefficient vectors are distinct.
+
+For polynomially bounded \(s\) in the positive-\(\beta\) range,
+\[
+ \log D_s=\frac{s(s+1)}2b+O(s^2),\qquad
+ \log T_s=sb-\log(s!)+O(s).
+ \tag{42}
+\]
+Therefore the proportion of split vectors in this coefficient box is exactly \(T_s/D_s\), with
+\[
+ \log(D_s/T_s)
+ =\frac{s(s-1)}2b+O(s^2+s\log s).
+ \tag{43}
+\]
+The formulas follow by multiplying the coordinate ranges and applying (27) to \(s\) roots.
+
+**HEURISTIC — the misleading volume prediction.** Assuming uniform affine residues, the expected relaxed and split counts would be
+\[
+ D_sW/N,\qquad T_sW/N.
+ \tag{44}
+\]
+The relaxed count reaches order one around
+\[
+ s\asymp\sqrt{x/b},
+\]
+while the split entropy there is only
+\[
+ \log T_s=O(\sqrt{xb})=o(x).
+\]
+Thus the expected genuine count is still \(N^{-1+o(1)}\). Reaching order-one split count requires approximately
+\[
+ sb\gtrsim x-\ell+\log(s!),
+ \tag{45}
+\]
+so \(s\) must be of order \(M\).
+
+This is an entropy calculation under uniform-residue assumptions, not an algorithmic lower bound.
+
+**PROVED — the actual relaxation has additional correlations.** For every vector in the relaxed box,
+\[
+ |R_s(m)|\le(|m|+B)^s.
+ \tag{46}
+\]
+Consequently, (40) has at most
+\[
+ \min\{N,\ 2\lfloor(|m|+B)^s\rfloor+1\}
+ \tag{47}
+\]
+distinct evaluated residues, regardless of how large \(D_s\) is. The proof is the binomial theorem followed by counting possible integer values.
+
+At \(m=0\), only \(e_s\) affects evaluation; all other coordinates are invisible. Thus interpreting \(D_s\) as independent residue-search entropy can be false even before integer splitting is imposed.
+
+**HEURISTIC — an optimistic CVP-enumeration cost model.** Suppose a procedure could list relaxed congruence solutions at cost
+\[
+ \widetilde O(C_{\rm lat}(s)+D_sW/N)
+\]
+per prefix, and suppose split acceptance behaved like \(T_s/D_s\). Dividing by the predicted genuine output gives
+\[
+ \boxed{
+ \text{cost/relation}\approx
+ \widetilde O\!\left(
+ \frac{C_{\rm lat}(s)N}{T_sW}+\frac{D_s}{T_s}
+ \right).
+ }
+ \tag{48}
+\]
+This explicitly charges the split condition. Such output-sensitive lattice enumeration and acceptance assumptions are not established here; correlations in (46) can invalidate the model. Even granting them, the two terms expose the problem: small \(s\) has inadequate split entropy, while large \(s\) has enormous rejection overhead.
+
+---
+
+**PROVED — a meet-in-the-middle bound.** Split the variable factors into two blocks, with \(L\) and \(R\) distinct partial products and their factorisation witnesses. One can list all matches
+\[
+ Cuv\bmod N\in\mathcal T
+\]
+in
+\[
+ \boxed{
+ \widetilde O\!\left(
+ \min\{LR,\ L+WR,\ R+WL\}+\text{output}
+ \right).
+ }
+ \tag{49}
+\]
+One should use disjoint factor dictionaries, or explicitly deduplicate, when distinct numerical outputs matter.
+
+*Proof.* Either inspect all pairs, or hash one product list and enumerate the other list against every target \(v\in\mathcal T\), using modular inverses. Nonunits yield a gcd with \(N\) or must be handled separately. ∎
+
+Here \(L,R\) can be bounded explicitly using binomial coefficients like \(T_{\lfloor s/2\rfloor}\) and \(T_{\lceil s/2\rceil}\), adjusted for the chosen dictionaries.
+
+**HEURISTIC — MITM cost per relation under uniform product residues.** The expected output is
+\[
+ E\approx LRW/N.
+\]
+Using the \(R+WL\) implementation gives
+\[
+ \frac{\text{work}}{\text{expected output}}
+ \approx \frac{N}{LW}+\frac NR.
+ \tag{50}
+\]
+At the one-output threshold \(LRW\asymp N\), optimising this implementation gives work of order \(\sqrt N\), when the required list sizes are available.
+
+With a reusable right table and \(J\) desired outputs, the corresponding model gives total work approximately
+\[
+ R+JN/R,
+\]
+optimised at \(R\asymp\sqrt{JN}\). For \(J=B^{O(1)}=N^{o(1)}\), amortised cost remains \(N^{1/2-o(1)}\).
+
+The small interval of target values does not automatically give a \(\sqrt{N/V}\) algorithm: (49) charges the work of matching those values.
+
+**KNOWN — generalized-birthday exponents cannot be transferred freely.** Wagner’s faster many-list algorithms exploit suitable group representations and partial matching. His Theorem 2 and Corollary 1 explicitly obstruct a generic transfer to arbitrary multiplicative groups. Therefore a claimed cost \(N^{1/(1+\log_2 s)}\) for these modular products needs an additional mechanism; it does not follow from the generalized birthday paper. [Wagner, §4](https://www.enseignement.polytechnique.fr/informatique/profs/Francois.Morain/Master1/Crypto/projects/Wagner02.pdf)
+
+**KNOWN — small-root algorithms supply a restricted positive result.** Coppersmith’s Theorem 1 finds all sufficiently small roots of a known monic univariate modular polynomial, with
+\[
+ |a|<\tfrac12N^{1/s-\varepsilon}
+\]
+and polynomial running time in \(x,s,1/\varepsilon\). Thus a repeated-root tail
+\[
+ C(m-a)^s\equiv v\pmod N
+\]
+is tractable for a specified \(v\), after normalising its unit leading coefficient, within that bound. Its candidate family has only \(2B+1\) root choices; the theorem does not provide a lister for arbitrary split tails or an unspecified small \(v\). [Coppersmith, Theorem 1](https://www.di.ens.fr/~fouque/ens-rennes/coppersmith.pdf)
+
+---
+
+**UNVERIFIED SCRATCH RESULTS.** I read no repository files. I created and ran the exact-integer script [nonexact_scratch.py](/Volumes/git/factoring-connection/codex/scratch/nonexact_1/nonexact_scratch.py).
+
+For \(N=101\cdot103=10403\), \(V=30\), and distinct products of exactly \(M\) primes from \(\{2,3,5,7,11,13\}\), it reported:
+
+| \(M\) | Distinct products \(S\) | Observed nontrivial hits | Uniform mean \(60S/N\) |
+|---:|---:|---:|---:|
+| 8 | 1,287 | 14 | 7.42 |
+| 12 | 6,188 | 36 | 35.69 |
+| 16 | 20,349 | 105 | 117.36 |
+
+For \(F=X^2+N\), \(P=(X-2)(X-3)\), multiplier \(q_0+q_1X\), and constant remainder \(r\), the box
+\[
+ |q_0|,|q_1|\le50,\qquad |r|\le100
+\]
+contained five reported lattice points, although its volume divided by determinant was about \(0.0185\). The four nonzero points evaluated at \(m=0\) to \(u=v\), so they supplied no target relations.
+
+These are small illustrations of distribution fluctuation, lattice anisotropy, and inadmissible short vectors; they are not asymptotic evidence.
+
+---
+
+**PROVED — containment of the general listing problem.** Take
+\[
+ m=0,\qquad h=1,\qquad F=X,\qquad r=v.
+\]
+Then
+\[
+ P_A\equiv v\pmod{(N,X)}
+ \quad\Longleftrightarrow\quad
+ P_A(0)=\prod_{a\in A}(-a)\equiv v\pmod N.
+ \tag{51}
+\]
+If \(u=P_A(0)\ne v\), its reduced defect is the nonzero integer \(u-v\), so this is genuinely non-exact.
+
+Hence unrestricted intrinsic ring O1 and evaluated O1 both contain small-residue listing for products of small integers. If one insists on \(F(m)\ne0\), \(F=X+N\) gives the same intrinsic quotient modulo \(N\). A restrictive bound on the certificate \(Q\), or a prescribed higher degree \(d\), can remove this particular ring embedding.
+
+Conversely, every numerically admissible O1 output already comes with precisely such a product witness. Pieces bounded by \(B^{O(1)}\), including any admissible multiplier pieces, can be re-encoded as roots at \(m=0\), replacing \(B\) by a fixed power and preserving \(\beta\).
+
+The conversions use polynomial time in the explicit witness length. Presentation construction and preprocessing must be charged; an \(N\)-dependent \(F\) is not free advice.
+
+**PROVED — a necessary distinction about family size.** Distinct pairs alone do not guarantee distinct useful relations. From one pair \(u\equiv v\), multiplication by small smooth \(t\) produces many pairs
+\[
+ tu\equiv tv,
+\]
+but adding the same factorisation to both sides preserves their exponent-difference row. Therefore the literal conditions (a)–(c) need an additional useful-relation/rank condition when they are used to infer a factoring algorithm.
+
+**OPEN — a precise residual statement.** For some fixed \(0<\beta<1/3\), does there exist a uniform classical algorithm which, from \(N\) alone, outputs at least \(B\) nontrivial congruences
+\[
+ \prod_i c_i\equiv v\pmod N,\qquad
+ |c_i|\le B^{O(1)},\qquad
+ 0<|v|\le e^{O(\ell)},
+\]
+with the required product length, enough distinct useful relation rows, and total cost \(B^{1+o(1)}\) before the stipulated smoothness and linear-algebra costs?
+
+The lattice calculations do not answer this. The inheritance proposition reduces a concrete class of modular compatibilities to it. The unrestricted evaluated formulation includes it outright.
+
+**HEURISTIC — subjective forecast.** I assign about **5%** probability that this O1 program yields a classical sub-\(L[1/3]\) factoring algorithm. This is a research judgement, not a consequence of R or a proved complexity barrier. The positive ingredients are the inheritance conversion and plausible abundance. The missing ingredient is a method that turns abundant split products into useful small-residue outputs at the required amortised cost.
