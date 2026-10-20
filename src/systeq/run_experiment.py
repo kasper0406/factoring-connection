@@ -1,6 +1,6 @@
 """systeq experiment runner (pre-registered in notes/systeq_prereg.md).
 
-    .venv/bin/python -m src.systeq.run_experiment [E1|E2|E3|E4|all]
+    .venv/bin/python -m src.systeq.run_experiment [E1|E1_posthoc|E2|E3|E4|all]
 
 Writes experiments/raw/systeq_<E>.jsonl.  Configuration: experiments/configs/systeq.json.
 Fractions are stored exactly as "num/den" strings plus a float for display only.
@@ -47,6 +47,13 @@ def e1():
     _write("E1", rows)
 
 
+def e1_posthoc():
+    """POST-HOC (disclosed): E1 relation yield split by candidate type (orbit / Frobenius-power)."""
+    from .bgjt import posthoc_by_type
+    rows = [posthoc_by_type(p, e0, CFG["seed"]) for p, e0 in CFG["E1"]["fields"]]
+    _write("E1_posthoc", rows)
+
+
 def e2():
     from .intanalog import random_baseline, vfamily_bits, vfamily_yield
     c = CFG["E2"]
@@ -86,6 +93,6 @@ def e4():
 
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
-    for name, fn in [("E1", e1), ("E2", e2), ("E3", e3), ("E4", e4)]:
+    for name, fn in [("E1", e1), ("E1_posthoc", e1_posthoc), ("E2", e2), ("E3", e3), ("E4", e4)]:
         if which in (name, "all"):
             fn()

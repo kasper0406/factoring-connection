@@ -170,3 +170,32 @@ def control_summary(p: int, e0: int, seed: int = 0) -> Dict:
         "G_FF": Y / (P_rand_q1 * P_rand_3),
         "rel_over_factor_base": Fraction(ry["relations"], Q + 1),
     }
+
+
+def classify_split(F: GF, q: int, f4) -> str:
+    """'orbit' (squarefree split: exactly the PGL2(F_{q^2})-orbit of X^q - X, q^3 + q of them),
+    'frobpow' ((X+b)^q (X+c) or (X+b)^q: repeated roots), or 'deg<=1'."""
+    A, B, C, D = f4
+    if A == 0 and B == 0:
+        return "deg<=1"
+    f = f_poly(F, q, f4)
+    rts = F.root_multiset(f)
+    return "orbit" if len(set(rts)) == len(f) - 1 else "frobpow"
+
+
+def posthoc_by_type(p: int, e0: int, seed: int = 0) -> Dict:
+    """POST-HOC (disclosed, not pre-registered): relation yield split by candidate type."""
+    F, q = make_field(p, e0)
+    ex = exhaustive_v_split(F, q)
+    model = find_model(F, q, seed)
+    out = {"q": q, "Q": F.Q, "P_V": ex["total"]}
+    sq, tq = split_count_formula(F.Q, q + 1)
+    s3, t3 = split_count_formula(F.Q, 3)
+    pred = Fraction(sq, tq) * Fraction(s3, t3)
+    for typ in ("orbit", "frobpow", "deg<=1"):
+        lst = [f4 for f4 in ex["split"] if classify_split(F, q, f4) == typ]
+        ry = relation_yield(F, q, model, lst)
+        out[typ] = {"split": len(lst), "relations": ry["relations"],
+                    "rel_per_split": Fraction(ry["relations"], len(lst)) if lst else None,
+                    "G": Fraction(ry["relations"], ex["total"]) / pred}
+    return out
