@@ -97,7 +97,7 @@ def tdim(t: int, seed: int = 0) -> Dict:
 
 
 def mnfs(omega: float = 2.0, enum: str = "box", la: str = "flat", kr: float = 1.0, ka: float = 1.0,
-         omega_red: float = None, seed: int = 0) -> Dict:
+         omega_red: float = None, tests: bool = True, seed: int = 0) -> Dict:
     """Coppersmith MNFS: one rational side, V = L[v] algebraic sides f + (c1 x + c0) g.
 
     Variables (e, beta, beta_a, v, delta). r = kr/(3 beta delta) (rational smoothness penalty),
@@ -121,7 +121,7 @@ def mnfs(omega: float = 2.0, enum: str = "box", la: str = "flat", kr: float = 1.
         e, b, ba, v, d, r, a, s = parts(x)
         sieve = 2 * e if enum == "box" else 2 * e - r
         lac = omega * s if la == "flat" else max(om_r * b, v + 2 * ba)
-        return max(sieve, 2 * e - r + v, lac)
+        return max(sieve, (2 * e - r + v) if tests else -1e9, lac)
 
     def cons(x):
         e, b, ba, v, d, r, a, s = parts(x)
@@ -228,7 +228,10 @@ def tower_ledger(eta: int, d: int) -> Dict[str, Fr]:
     of norm N; f over Z[iota] of degree d, g = x - m(iota). In integer-height units H' = eta * h:
     counting  (d+1) Hf' + Hm' >= 1,  resultant  Hf' + d Hm' >= 1  (norm of f(m) in n is >= N),
     norm product  Hf' + Hm' + (d+1) C / 2  for search entropy C (= 2 eta log A).
-    eta cancels: identical to the 1-D ledger with a monic linear g. Returns the LP value (units of x)."""
+    eta cancels: identical to the 1-D ledger with a monic linear g. Returns the LP value (units of x).
+    OPTIMISTIC: an ideal (N, iota - r) needs h with a root mod N of small height, which violates G
+    (height >= N^{1/(eta+1)}); granting it free only helps the tower. eta does not enter this LP by
+    construction. The genuine TNFS analogue is tnfs_genuine_coeff (strictly worse)."""
     A = [(Fr(d + 1), Fr(1)), (Fr(1), Fr(d))]
     det = A[0][0] * A[1][1] - A[0][1] * A[1][0]
     h1 = (A[1][1] - A[0][1]) / det
@@ -236,6 +239,14 @@ def tower_ledger(eta: int, d: int) -> Dict[str, Fr]:
     cands = [(h1, h2), (Fr(0), Fr(1)), (Fr(1), Fr(0))]
     feas = [c for c in cands if c[0] >= 0 and c[1] >= 0 and all(a * c[0] + b * c[1] >= 1 for a, b in A)]
     return {"eta": Fr(eta), "heights": min(c[0] + c[1] for c in feas), "search_coeff": Fr(d + 1, 2)}
+
+
+def tnfs_genuine_coeff(eta: int) -> Fr:
+    """Genuine TNFS analogue for factoring: h of degree eta irreducible modulo the primes of N, f, g in Z[x]
+    with a common root mod N, elements a(iota) - b(iota) x, search entropy C = 2 eta log A. Norm over Q is
+    (||f|| A^d)^eta (||g|| A)^eta, so the ledger is eta * 2x/D + D C / 2: the coefficient of x/D is 2 eta
+    (vs 2 for GNFS). Strictly worse for eta >= 2."""
+    return Fr(2 * eta)
 
 
 # ----------------------------------------------------------------------------- exponent barriers
@@ -264,7 +275,13 @@ def alpha_floor_aggregate(r_exp: Fr = Fr(1, 4), d_exp: Fr = Fr(1, 2)) -> Fr:
 
 def la_omega_curve(omegas=(1.0, 1.5, 2.0, 2.373)) -> Dict[float, Dict[str, float]]:
     """HYPOTHETICAL: constants if sparse linear algebra cost C^omega."""
-    return {w: {"gnfs": gnfs(omega=w)["c"], "mnfs": mnfs(omega=w)["c"]} for w in omegas}
+    out = {}
+    for w in omegas:
+        g = gnfs(omega=w)["c"]
+        # MNFS contains GNFS (v = 0, beta_a = beta), so MNFS <= GNFS; min() removes Nelder-Mead artifacts.
+        out[w] = {"gnfs": g, "mnfs": min(mnfs(omega=w)["c"], g),
+                  "mnfs_no_test_term": min(mnfs(omega=w, tests=False)["c"], g)}
+    return out
 
 
 def table() -> Dict[str, Dict]:

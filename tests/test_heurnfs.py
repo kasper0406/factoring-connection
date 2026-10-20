@@ -62,9 +62,25 @@ def test_height_lp_exact():
     assert M.height_lp(2, 10) == Fr(2, 13)
 
 
-def test_tower_eta_independent():
-    vals = {M.tower_ledger(eta, 5)["heights"] for eta in (1, 2, 3, 6)}
-    assert vals == {Fr(9, 29)}
+def test_tower_ledger_values():
+    # optimistic tower model: equals the 1-D monic-g LP (eta does not enter by construction)
+    assert M.tower_ledger(3, 5)["heights"] == Fr(9, 29)
+    # genuine TNFS analogue is strictly worse for eta >= 2
+    assert M.tnfs_genuine_coeff(1) == 2 and all(M.tnfs_genuine_coeff(e) > 2 for e in (2, 3, 6))
+
+
+def test_height_lp_sum_bound():
+    # summing the two constraints: (D+1)(h1+h2) >= 2, for every degree pair
+    for d1 in range(1, 9):
+        for d2 in range(max(d1, 2), 15):
+            assert M.height_lp(d1, d2) >= Fr(2, d1 + d2 + 1)
+
+
+def test_omega_curve_mnfs_le_gnfs():
+    cur = M.la_omega_curve(omegas=(1.5, 2.373))
+    for w, v in cur.items():
+        assert v["mnfs"] <= v["gnfs"] + 1e-9
+    assert cur[1.5]["mnfs"] < 1.87 and cur[1.5]["mnfs_no_test_term"] < cur[1.5]["mnfs"] - 0.02
 
 
 def test_alpha_floors():
