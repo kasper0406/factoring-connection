@@ -56,6 +56,7 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - beating the resultant bound ([`resbarrier`](notes/resbarrier_results.md): N² | disc, area theorem);
   - non-smoothness invariants ([`nonsmooth`](notes/nonsmooth_results.md): FROB, OA). Open remainders, none with a candidate: non-exact compressions; pencils of several presentations; parameter corners; and resbarrier's rank ≥ 3 / no-rational-side case, closed only heuristically (floor L[1/4] even if that heuristic fails).
 - Output-sensitive smooth-pair enumeration: no gain, MNFS stays at 1.902 ([`smoothenum`](notes/smoothenum_results.md)). The heuristic model was validated on real CADO-NFS runs ([`cadobench`](notes/cadobench_results.md)).
+- Non-relational paradigms tried: analytic sums ([`analytic`](notes/analytic_results.md)), short circuits ([`slpcirc`](notes/slpcirc_results.md), Theorem SP), and the floor-sum ladder ([`floorsum`](notes/floorsum_results.md), [`floorhard`](notes/floorhard_results.md)). The ladder at degree j ≥ 3 would require factoring from fewer of p's top bits than Coppersmith needs, a known barrier. The general oracle is NP/#P-hard; top blocks stay open.
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
