@@ -47,19 +47,24 @@ Novelty is never claimed; "no prior statement found by us" is the most we say.
      weights. Within its guaranteed (Johnson-type) range, every certified output has a known divisor at least as
      large as the region searched.
      - Batching all those divisor lattices into one call is then worth only L^{o(1)}. This holds in the
-       random-divisibility model on oblivious regions (Prop JR, model-PROVED).
+       random-divisibility model on oblivious regions, for primitive points, in NFS scaling (the congruence
+       instances are excluded) (Prop JR, model-PROVED).
      - So Boneh's L^{o(1)} is a barrier for that whole class, not an artifact of how Boneh used it.
      - Doing better needs output-sensitive listing beyond the Johnson radius. That would *be* a partial lister,
        i.e. the open problem itself.
-  2. **Adaptive Θ(u)-tail elimination saves no relations.** With boundedly many forced tail primes per relation, a
-     single dependency still needs ≥ L[β]^{1−o(1)} relations (Prop TAIL, under a strengthened randomness
-     hypothesis). Only sub-quadratic sparse linear algebra, or H_sel-type selection, could help.
+  2. **Adaptive Θ(u)-tail elimination saves at most an L^{o(1)} factor in relations.** With boundedly many forced
+     tail primes per relation, a single dependency still needs ≥ 2^{−8}/(kp) = L[β]^{1−o(1)} relations (Prop TAIL,
+     under the strengthened randomness hypothesis H_tail⁺). What could still help:
+     - sub-quadratic sparse linear algebra;
+     - H_sel-type selection;
+     - forcing by other means;
+     - failure of H_tail⁺ itself.
   3. **For Π_β itself the target is extreme.** The congruence instances must cut the per-output cost from L[1 − β]
      (box sieve) to L[1/3, O(1)] even just to beat MNFS. Only the NFS-shaped listers have fixed-fraction
      thresholds.
 - **smoothenum's crux H_sel is not equivalent to the primitive** (a draft claim, withdrawn after review). Its gain
-  form H_sel^gain is exactly the hypothesis LQ uses, and an H_sel violation with fresh outputs is a sufficient
-  criterion for a speedup.
+  form H_sel^gain is exactly the hypothesis LQ uses. A violation of H_sel^gain with fresh primitive outputs, i.e. of
+  H_sel by ≥ (M/U)·L[θ′r]^{−1+ε}, is a sufficient criterion for a speedup.
 - **PTE O2.**
   - The naive three-term rigidity is false: explicit identities at M = 3 (exact) and M = 4 (constant remainder).
   - Even a true Lemma R-shaped version could not bound O2, because of Behrend-type parameter sets.
@@ -220,7 +225,8 @@ For the NFS instances the box has area L[1/3, 2e] and the sieve costs L[1/3, r] 
 **Remark SEL [PROVED, elementary; the draft's "Prop EQ-SEL" equivalence is WITHDRAWN].**
 - *Two hypotheses.* smoothenum's LQ theorem uses
   - H_sel: E[#new box points of Λ_M | 𝓕] ≤ C·U/M for M > U;
-  - H_sel^gain: for every selector, (π(M)/T)·g(M) ≤ L^{o(1)}, where g(M) = ρ(u − log M/log B)/ρ(u).
+  - H_sel^gain: for every selector, (π(M)/T)·g(M) ≤ L^{o(1)}, where π(M) is the expected number of fresh primitive
+    box points per selection and g(M) = ρ(u − log M/log B)/ρ(u).
   - H_sel implies H_sel^gain, but not conversely.
 - (a) H_sel^gain is exactly the hypothesis LQ's proof needs. A partial lister with θ > 0 that acts through LQ
   operations must violate it. This is LQ's contrapositive, restated.
@@ -251,8 +257,9 @@ the largest method class we found.
   certifies one point with gain g(d) = L[1/3, Θ(1)] (critic M2). That is harmless for Table 1.1, because the
   per-output cost stays L[1 − β].
 
-**Certified outputs.** We bound only the *certified* outputs, Cert = {z ∈ R : W(z) ≥ T}. Post-filtering is free.
-Any other returned point is an ordinary test, charged ≥ 1, with yield ≤ E[d^λ]·P(y) = e^{O(u)}P(y) under H_div.
+**Certified outputs.** The class's output is *defined* as Cert = {z ∈ R : W(z) ≥ T}. Post-filtering is free;
+uncertified returns are discarded, and the theorem says nothing about them. Uncertified returns are chosen
+arithmetically (roots of h), so one could sit just below S with gain ≈ S^λ.
 The draft let a call return an arbitrary superset; codex showed that permits Γ = V (codex #1, critic M5).
 
 **Decoder class 𝒟_J (weighted; unweighted is w ≡ 1).** Guruswami–Sahai–Sudan's weighted agreement, with
@@ -261,7 +268,9 @@ nonnegative weights w ≢ 0 on the primes of P = ∏q^{e_q} (prime powers allowe
 - certified iff W ≥ T := √(log V · Q), with Q = Σ e_q w_q² log q.
 - The unweighted case w ≡ 1 is Boneh/GRS/HG: log V ≤ (log S)²/log P.
 - GSS's actual theorem (FOCS 2000, Thm 4) has an extra tolerance √(… + ε z_max²) and guarantees inclusion, not
-  "iff". Our idealised threshold is the limit of their guarantee, and is generous to the decoder.
+  "iff". Its moduli are pairwise coprime, with Guruswami–Sudan multiplicities.
+- Our prime-power score J_q = min(v_q, e_q) is therefore a *GSS-type extrapolation*, not literally a GSS
+  coordinate. Unweighted, it is covered by Boneh/HG in gcd form.
 - Lattice dimension, shifts and multiplicities are arbitrary; only the guaranteed range enters.
 
 **Model H_div (stated after review).**
@@ -304,7 +313,9 @@ Rankin bound).
      - base term Σ_{q≤B} m_q(λ) = O(u + log log B);
      - linear term O(√t), by Cauchy–Schwarz against Q = t;
      - quadratic term O(t(log Z)Z^{−0.4}) = O(F^{0.9} log F).
-5. Sum: t − 2(1 − λ)t + (1 − λ)t = λt, plus the error terms. λt = O(λ log U) = O(log u). ∎
+5. Sum: t − 2(1 − λ)t + (1 − λ)t = λt, plus O(F/log F) (divisors), O(F^{1/4}) (small light primes), O(√t)
+   (linear), O(F^{0.9} log F) (quadratic) and O(u + log log B) (base). λt = O(λ log U) = O(log u). Every error term
+   is O(u) or smaller (proof critic). ∎
 
 **Reading.**
 - Lemma CS says every certified output has a known divisor at least the size of the region. Each divisor class
@@ -337,11 +348,27 @@ prime powers, any dimension; model H_div; NFS scaling).
   factor base (log P ≍ B). That is agreement fraction log S/log P ≍ x^{2/3}/L[1/3]: far below Johnson, above
   capacity. Doing it output-sensitively is a partial lister with θ = θ' (Remark SEL (c)).
 - *Literature status (corrected).* The draft's "every capacity-approaching decoder needs folded or derivative
-  structure" is withdrawn. Codex cites Brakensiek–Chen–Putterman–Zhang–Zheng (arXiv 2609.08005, Sept. 2026):
-  capacity-approaching list decoding of *plain* RS codes over prime fields, without derivative data (literature
-  critic: §8). That decoder works at fixed rate and slack, with lists of bounded size. It is not a CRT decoder
-  and not in our vanishing-rate, huge-list, output-sensitive regime.
-- Cohn–Heninger AMC 2015 Thm 1.3 is the number-field β²/d Johnson-type bound, not capacity (draft misclassified it).
+  structure" is withdrawn.
+  - Brakensiek–Chen–Putterman–Zhang–Zheng, "Algorithmic list decoding of Reed–Solomon codes up to capacity"
+    (arXiv 2609.08005, Sept. 2026; preprint, not yet refereed; verified by the literature critic). It list-decodes
+    *plain* RS codes over prime fields up to radius 1 − ε, at rates up to (1 − θ)ε, extended to all constant rates.
+    The decoder gets no derivative information; Hasse derivatives are hidden formal variables.
+  - Companion: Jeronimo, arXiv 2609.05870.
+  - It needs a prime field. Lists have size n^{O_ε(1)} and time is q^{ε^{−O(1/θ)}}. As the agreement fraction
+    → 0, here ≍ x^{2/3}/L[1/3], that exponent blows up superpolynomially. It is not a CRT decoder, so it does not
+    transfer to our vanishing-agreement, huge-list, output-sensitive regime.
+- *The known integer beyond-Johnson mechanism needs extra structure.* Cohn–Heninger, "Approximate common divisors
+  via lattices" (ANTS X, 2013), the integer analogue of Parvaresh–Vardy, goes beyond the Johnson-type bound only for
+  several correlated inputs sharing one divisor. Our setting has a single word f(z) mod P.
+- No CRT or number-field extension of the hidden-derivative method was found (literature critic).
+- Cohn–Heninger AMC 2015 Thm 1.3 is the number-field β²/d Johnson-type bound, not capacity (draft misclassified
+  it; per codex).
+- *Precursors.* Boneh 2002 §4: the CRT list-decoding bounds "are insufficient for improving the basic quadratic
+  sieve". Boneh's Thm 3.2 already bounds the number of N ∈ I with gcd(N, S) > T, the per-class count used in JR.
+  Guruswami's thesis §12.3.2 makes the same remark. No published L-power impossibility for the Johnson-radius
+  class was found by us or the literature critic.
+- *Chinburg et al.* say explicitly that the unknown-divisor version "appears to pertain to joint capacities of
+  many adelic sets, a topic which has not been developed". The divisor/CRT optimality question is open.
 - Bundling primes into blocks yields (n/w)(u/n)^w → 0 agreeing blocks (codex blind, eq. 17).
 
 **Comparisons.**
@@ -379,7 +406,8 @@ prime powers, any dimension; model H_div; NFS scaling).
 - Not covered: whole-box decoders whose range exceeds HM's. None is known to us.
 
 **Algebraic side (degree δ) and doubly-smooth decoders.**
-- (J) has D = δ, a smaller range. Jochemsz–May needs its Assumption 1.
+- (J) has D = δ, a smaller range. Jochemsz–May (Assumption 1) treats known moduli, so its use for unknown divisors
+  is an extrapolation of their strategy.
 - The JR proof applies with ρ_q ≤ δ roots per prime, provided root counts behave on average as the prime ideal
   theorem predicts. The worst case ω(P) log δ is not o(F).
 - HEURISTIC.
@@ -393,8 +421,8 @@ prime powers, any dimension; model H_div; NFS scaling).
   - What would suffice is output-sensitive listing of {z : smooth part ≥ y^{θ'}} with the full factor base. By
     Remark SEL (c) that is a partial lister. So this open item is not a separate lever: within Johnson it is
     closed conditionally (JR); beyond it, it is the crux.
-  - Known beyond-Johnson decoders (folded RS; multiplicity codes; plain RS per the 2026 claim, §2.3) work at fixed
-    rate with bounded lists. None is a CRT decoder for the vanishing-rate regime here.
+  - Known beyond-Johnson decoders (folded RS; multiplicity codes; plain RS, Brakensiek et al. 2026 preprint, §2.3) work at
+    fixed rate, with n^{O_ε(1)} lists and time that blows up as agreement → 0. None is a CRT decoder for the vanishing-rate regime here.
 - **Cost:** within Johnson 1.9019; beyond, HYPOTHETICAL c(θ') from Table 1.1.
 
 ### 3.3 Adaptive elimination with Θ(u) tail primes (Prop TAIL; restated after review)
@@ -409,6 +437,9 @@ prime powers, any dimension; model H_div; NFS scaling).
 - Entry by entry: given the entire exposure history, including earlier entries of the same relation, each random
   entry equals any fixed prime with probability ≤ p := C′u log u/B^{1−ε} = L[β]^{−1+o(1)}.
 - Without the entry-wise condition the bound fails: rows (Q, Q, Q′, Q′) always cancel (codex).
+- *Relations with fewer than k band primes* (proof critic) cost only an extra e^{−Θ(u)} = L^{o(1)}, so they are
+  not excluded. Discarding them, or keeping only relations whose band count is ≥ k, amounts to a factor base
+  B^{1−ε} = L[β]^{1−o(1)} on the remaining columns. The conclusion R ≥ L[β]^{1−o(1)} is unchanged.
 
 **Prop TAIL [model-PROVED].** Under H_tail⁺, for any adaptive strategy (discards charged), and with
 k ≥ 2j + 2:
@@ -433,6 +464,11 @@ and this is < 1/2 whenever **R ≤ 2^{−8}/(kp)**.
 - 0.55 → 2.11 for j = 2, k = 6 → 64;
 - 0.52 at (16, 6) (critic).
 The draft's "c(k, j) → 1, ≈ 0.8–0.9" was wrong.
+
+**Prior art.** The non-adaptive case is classical: k ≥ 3 random entries per row need Θ(n) rows (Calkin 1997;
+Balakin–Kolchin–Khokhlov 1991; Pittel–Sorkin 2016). Croot–Granville–Pemantle–Tetali (Annals 2012, §8.2) show that
+unlimited large primes cut the stopping time only by a constant factor. Prop TAIL's contribution is the adaptive,
+entry-wise-conditional version with j forced entries. No prior statement of that version was found by us.
 
 **Consequence (narrowed after review).**
 - Under LQ and H_tail⁺, bounded forcing cannot reduce the number of relations needed for one dependency below
@@ -468,7 +504,8 @@ The draft's "c(k, j) → 1, ≈ 0.8–0.9" was wrong.
 - So a rigidity lemma with |c_i| ≤ C can only forbid triples whose ν-ratios (ν₁ − ν₀):(ν₂ − ν₀) have height ≤ C.
 - For any fixed C, ν-sets of size ν_max^{1−o(1)} avoid every such triple. Each such equation says one element is a
   weighted average of the other two, so one Behrend sphere with a large no-carry digit base avoids all of them at
-  once (PROVED from KNOWN). The construction is Behrend-type,
+  once (PROVED from KNOWN: Ruzsa 1993 Thm 2.3 covers each single equation of type (2, 1); the simultaneous
+  version is our straightforward adaptation). The construction is Behrend-type,
   applied to the finitely many invariant equations Σc_iν_i = 0, Σc_i = 0 [KNOWN in substance: Behrend 1946; Ruzsa,
   Acta Arith. 65 (1993)].
 - So TR is consistent with ν-sets of size ν_max^{1−o(1)}, and TR alone cannot bound O2. The right statement is a
@@ -722,8 +759,11 @@ Resources: 3692 s; peak RSS 72 MB. 20 seeds per cell; every run reached a depend
 
 **Reading.**
 - With bounded forcing, dependencies appear at R ≈ n, the column count.
-- The proved threshold (R ≥ 2^{−8}/(kp); the exact first moment gives ≈ (0.5–2.7)/(kp)) is conservative here by
-  a factor of about 1.5–100.
+- The proved threshold (R ≥ 2^{−8}/(kp); the exact first moment gives ≈ (0.5–2.7)/(kp)) is conservative here.
+  The proved 2^{−8}/(kp) = n/(256k) is off by a factor of about 256k ≈ 700–4100; the exact first moment by about
+  1.3–31.
+- The j > 0 `nonadaptive` rows rerun the j = 0 protocol with the same seeds, so 240 of the 1040 legal runs are
+  duplicates (≈ 800 distinct).
 - Toy scale with uniform columns. H_tail⁺ is an assumption and is not tested against real smooth values.
 
 ## 6. Where the L[1/3] limit bites (synthesis; an interpretation, not a proved identification)
@@ -732,10 +772,11 @@ Resources: 3692 s; peak RSS 72 MB. 20 seeds per cell; every run reached a depend
    box sieve's L[1 − β] to L[1/3, O(1)]. That is essentially full output sensitivity. Only NFS-shaped listers admit
    fixed-fraction gains (Table 1.1).
 2. **Box access in general.** The bite is a selection hypothesis. H_sel^gain is exactly what LQ needs, and an
-   H_sel violation with fresh outputs and Dickman-type gains would be an improvement (Remark SEL). We do *not*
-   claim the two are equivalent.
+   H_sel^gain violation with fresh primitive outputs, i.e. a violation of H_sel by ≥ (M/U)·L[θ′r]^{−1+ε}, would be
+   an improvement (Remark SEL). We do *not* claim the two are equivalent.
 3. **Certificate decoders.**
-   - Conditionally on random divisibility on oblivious regions, the Johnson radius is where the limit bites for the
+   - Conditionally on random divisibility on oblivious regions, for primitive points and in NFS scaling, the
+     Johnson radius is where the limit bites for the
      whole Coppersmith/Boneh/GSS class: certified ⇒ d ≥ V, and batching gains L^{o(1)} (Prop JR; E2 Γ̂ ≈ 0.3).
    - The range of the method is proved optimal only for the univariate full-modulus case (Chinburg et al.).
 4. **Adaptive Θ(u) tails.** Conditionally on H_tail⁺, the relation count cannot shrink (Prop TAIL). What remains
@@ -748,42 +789,85 @@ about one unit per region-sized lattice. Each result proves this form only insid
 
 ## 7. References
 
-**Lattice/certificate decoding.**
-- Coppersmith, J. Cryptology 10 (1997).
-- Howgrave-Graham, IMA CCC 1997.
-- Boneh, "Finding smooth integers in short intervals using CRT decoding", STOC 2000; JCSS 64 (2002) 768–784,
-  Thms 3.1, 4.1, §4.
-- Goldreich–Ron–Sudan, "Chinese remaindering with errors", STOC 1999; IEEE TIT 46 (2000).
-- Guruswami–Sahai–Sudan, "Soft-decision decoding of Chinese remainder codes", FOCS 2000.
-- Cohn–Heninger, "Approximate common divisors via lattices", ANTS X (2012); "Ideal forms of Coppersmith's theorem
-  and Guruswami–Sudan list decoding", AMC 9 (2015), Thms 1.1, 1.3.
-- Herrmann–May, ASIACRYPT 2008, Thm 4.
-- Jochemsz–May, ASIACRYPT 2006.
+**Lattice and certificate decoding.**
+- Coppersmith, J. Cryptology 10(4) (1997).
+- Howgrave-Graham, IMA Cryptography & Coding 1997, LNCS 1355.
+- Boneh, "Finding smooth integers in short intervals using CRT decoding", STOC 2000; JCSS 64 (2002) 768–784.
+  Numbering is the JCSS version's: Thms 2.1, 3.1, 3.2, 4.1, §4.
+- Goldreich–Ron–Sudan, "Chinese remaindering with errors", STOC 1999; IEEE TIT 46(4) (2000).
+- Guruswami–Sahai–Sudan, "Soft-decision decoding of Chinese remainder codes", FOCS 2000, Thm 4.
+- Guruswami, *List decoding of error-correcting codes*, PhD thesis, MIT 2001, §12.3.2. The section number is per
+  codex (smoothenum_2); the literature critic could not retrieve the thesis.
+- Cohn–Heninger:
+  - "Approximate common divisors via lattices", ANTS X, Open Book Series 1 (2013);
+  - "Ideal forms of Coppersmith's theorem and Guruswami–Sudan list decoding", AMC 9 (2015), Thms 1.1, 1.3.
+- Herrmann–May, ASIACRYPT 2008, LNCS 5350, 406–424, Thm 4 (Assumption 1; polynomial time needs n = O(log log N)).
+- Jochemsz–May, ASIACRYPT 2006, LNCS 4284, 267–282 (Assumption 1).
 - Chinburg–Hemenway–Heninger–Scherr, "Cryptographic applications of capacity theory: on the optimality of
-  Coppersmith's method for univariate polynomials", ASIACRYPT 2016.
-- Guruswami–Rudra, IEEE TIT 54 (2008).
-- Kopparty, multiplicity codes (list decoding).
+  Coppersmith's method for univariate polynomials", ASIACRYPT 2016 (arXiv 1605.08065), Thms 2, 13.
+- Guruswami–Rudra, IEEE TIT 54(1) (2008) 135–150.
+- Kopparty, "List-decoding multiplicity codes", Theory of Computing 11 (2015), art. 5.
+- Brakensiek–Chen–Putterman–Zhang–Zheng, "Algorithmic list decoding of Reed–Solomon codes up to capacity",
+  arXiv 2609.08005 (2026, preprint).
+- Jeronimo, arXiv 2609.05870 (2026, preprint).
 
-**Hardness of decoding.**
-- Guruswami–Vardy, IEEE TIT 51 (2005).
-- Cheng–Wan, FOCS 2004 / IEEE TIT 56 (2010).
-- Gandikota–Ghazi–Grigorescu, FOCS 2016.
+**Hardness and limits of decoding.**
+- Guruswami–Vardy, IEEE TIT 51(7) (2005).
+- Cheng–Wan: FOCS 2004 / SICOMP 37 (2007), the discrete-log reduction; ICALP 2008 / IEEE TIT 56 (2010), bounded
+  distance at (2/3 + ε)·distance.
+- Gandikota–Ghazi–Grigorescu, "NP-hardness of Reed–Solomon decoding and the Prouhet–Tarry–Escott problem", FOCS
+  2016, 760–769; SICOMP 47(4) (2018) 1547–1584 (verified by the literature critic's second pass). The proof goes
+  through Moments Subset Sum, and GGG identify PTE solutions as the obstacle to widening the gap: a thematic link
+  to §4.
+- Ben-Sasson–Kopparty–Radhakrishnan, IEEE TIT 56(1) (2010) 113–120: over characteristic-2 fields with K = N^δ,
+  superpolynomial lists already at agreement ≈ N^{√δ}, beyond Johnson.
 
 **Enumeration lower bounds.**
-- Aono–Nguyen–Seito–Shikata, CRYPTO 2018.
-- Hanrot–Stehlé, CRYPTO 2007.
+- Aono–Nguyen–Seito–Shikata, "Lower bounds on lattice enumeration with extreme pruning", CRYPTO 2018, LNCS
+  10992, 608–637. The bounds hold in the Gaussian-heuristic model.
+- Hanrot–Stehlé, "Worst-case Hermite–Korkine–Zolotarev reduced lattice bases", arXiv 0801.3331 (2008). This is
+  the tightness result; their CRYPTO 2007 paper is the upper bound.
 
-**Rational points.** Binyamini–Cluckers–Novikov, arXiv 2302.04209 (IMRN 2024), Thm 2.
+**Rational points and separated-variable curves.**
+- Binyamini–Cluckers–Novikov, IMRN 2024(11) 9256–9265 (arXiv 2302.04209), Thm 2, with c = c(2).
+- Context (pointers from the literature critic, not checked by us):
+  - Fried, Crelle 1973;
+  - Bilu–Tichy, Acta Arith. 95 (2000), on f(x) = g(y);
+  - Avanzi–Zannier, Compositio 2003;
+  - S. D. Cohen, Proc. LMS 43 (1981): O(H^{1/2} log H) specialisations with a smaller Galois group, by parameter
+    height and with polynomial-dependent constants.
+  - Nearest B^{1/2}-type result: Cluckers–Dèbes–Hendel–Nguyen–Vermeulen, Forum Math. Sigma 13 (2025) e153
+    (arXiv 2311.16871), Thm 1.10, counts reducible specialisations as ≪ 2^{118(d+1)^n}(log‖F‖ + 1)^{10}B^{1/2}.
+    That is polylog in height but exponential in degree, and by parameter height.
+  - Also Walkowiak (Acta Arith. 2005), Castillo–Dietmann (Acta Arith. 180, 2017) and Dèbes (Manuscripta Math.
+    1996; integral-point method).
+  - (Pointers from the literature critic; not read by us.)
+  - Lemma PEN counts by root range, uniformly in height and (apart from the additive term) in degree. That is the
+    difference from the results above; no prior statement of this form was found by us or the literature critic.
 
-**Additive combinatorics.** Behrend, PNAS 32 (1946); Ruzsa, Acta Arith. 65 (1993).
+**Additive combinatorics.** Behrend, PNAS 32(12) (1946) 331–332; Ruzsa, Acta Arith. 65(3) (1993) 259–282,
+Thm 2.3.
 
-**Smooth numbers.** de Bruijn 1951; Hildebrand–Tenenbaum 1993; Croot–Granville–Pemantle–Tetali, Annals 175
-(2012).
+**Coppersmith and smooth values, further.** Bernstein, "Reducing lattice bases to find small-height values of
+univariate polynomials", MSRI Publ. 44 (2008), generalising Boneh §4; Aono, ePrint 2012/108, on the optimality of
+Coppersmith lattices. (Pointers; not read by us.)
 
-**Random sparse F₂ systems** (k-XORSAT thresholds, context for E3).
+**Smooth numbers and large primes.**
+- de Bruijn, Indag. Math. 13 (1951); Hildebrand–Tenenbaum, JTNB 5 (1993);
+- Croot–Granville–Pemantle–Tetali, Annals 175(3) (2012);
+- Lenstra–Manasse, EUROCRYPT 1990 / Math. Comp. 1994;
+- Leyland–Lenstra–Dodson–Muffett–Wagstaff, ANTS V (2002).
+
+**Random sparse F₂ systems** (context and non-adaptive baseline for Prop TAIL).
+- Calkin, "Dependent sets of constant weight binary vectors", CPC 6(3) (1997) 263–271: random weight-k rows are
+  independent for m ≤ βn, β < β_k, with β_k ~ 1 − e^{−k}/ln 2;
+- Balakin–Kolchin–Khokhlov, Diskret. Mat. 3(3) (1991);
+- Darling–Penrose–Wade–Zabell, EJP 19 (2014), art. 82;
+- Kolchin, *Random Graphs*;
 - Dubois–Mandler, FOCS 2002;
-- Pittel–Sorkin, CPC 25 (2016);
-- Dietzfelbinger et al., ICALP 2010.
+- Pittel–Sorkin, CPC 25(2) (2016);
+- Dietzfelbinger et al., ICALP 2010, LNCS 6198.
+- Prop TAIL's adaptive, forced-entry version goes beyond these non-adaptive results.
 
 **Internal.** notes/smoothenum_results.md (LQ, BC, T1–T8, §3.7); notes/nonexact_results.md §6;
 notes/ptecons_results.md §7; notes/ptebarrier_results.md (Lemma R, O2); notes/ptesplit_results.md;
@@ -791,7 +875,124 @@ notes/heurnfs_results.md.
 
 ## 8. Reviews
 
-(pending)
+### 8.1 Codex blind round (`codex/pilist_1.out`, 18 min)
+
+Same verdict; probability about 5%.
+
+**Adopted:**
+- the pencil theorem, proved independently (M ≥ 4, coprime; sharper repeated-root count);
+- the M = 4 constant-remainder counterexample and its translation family;
+- the first-moment tail theorem in support-counting form;
+- the hidden-residue and public-m remarks on H_sel;
+- the output-capacity remarks;
+- the H_D calibration at α = 1/4 (eqs. 8–10);
+- the block-folding estimate (eq. 17);
+- the Chinburg–Hemenway–Heninger–Scherr and Herrmann–May citations.
+
+**Ours:**
+- the canonical binary-form statement and its congruence/NFS split;
+- Lemma CS and the Johnson-radius ⇒ d ≥ V mechanism;
+- the regime proof of unweighted JR, now superseded;
+- Remark SEL;
+- Prop O2-count (height-free) and Lemma TL;
+- the Behrend limitation;
+- the explicit tail constant;
+- all experiments.
+
+### 8.2 Codex adversarial round (`codex/pilist_2.out`): MAJOR REVISION — all points applied
+
+| # | Severity | Finding | Fix |
+|---|---|---|---|
+| 1 | FATAL (to JR as stated) | supersets permit Γ = V | JR bounds certified outputs only |
+| 2 | MAJOR | divisor sum chained into the exact-gcd moment | moment bound and divisor majorant kept separate |
+| 3 | MINOR | uniformity in the regime proof | superseded by the weighted proof |
+| 4 | MAJOR | H_div does not cover arithmetic selection | oblivious regions; "proves H_sel" withdrawn |
+| 5 | MINOR | the weighted proof; GSS tolerance term | **weighted JR proof adopted** (checked by us); GSS form corrected |
+| 6 | FATAL (to EQ-SEL) | the equivalence fails: θ = 0 sieving also violates H_sel | Remark SEL replaces EQ-SEL |
+| 7 | MAJOR | nonempty lattice without a primitive point (E = 2, M = 12) | primitive-point lemma restated |
+| 8 | MAJOR | TAIL row lengths and entry-wise conditioning | H_tail⁺, exactly k |
+| 9 | MAJOR | (f) not reduced unconditionally | conditional consequence |
+| 10 | MINOR | O2-count degenerate O(B²) (X³ + νX example) | reading fixed |
+| 11 | MAJOR | e ≤ 3 cap not enforced in `targets.py` | enforced; Table 1.1 corrected (0.8246 / 0.5732; θ* 0.0303 / 0.0221) |
+| 12 | MINOR | conditional costs | labelled |
+| 13 | MAJOR | E3 missing at review time | run (§5.3) |
+| 14 | MINOR | e = M qualifier; harness yield | applied |
+| 15 | MAJOR | the capacity-decoding literature claim was outdated (Brakensiek et al. 2026); Cohn–Heninger 1.3 misclassified | §2.3 rewritten |
+| 16 | MINOR | Hanrot–Stehlé, Cheng–Wan and Kopparty citations; g_n ≤ μ² by AM–GM | applied |
+| 17 | MAJOR | "one wall" is an interpretation | §6 retitled and narrowed |
+
+### 8.3 Opus proof critic: MAJOR REVISION, no FATAL — all points applied
+
+**MAJOR:**
+- M1: H_div is circular for arbitrary regions; restricted to oblivious regions and primitive points.
+- M2: Π-nonexact is outside JR's scope (counterexample in congruence scaling); removed.
+- M3: EQ-SEL is overstated, and the primitive-point lemma was wrong. Replaced by Remark SEL with H_sel^gain.
+- M4: Herrmann–May and Chinburg et al. scope narrowed; the homogeneous-form caveat added.
+- M5: extra outputs. JR now bounds certified outputs only.
+- M6: the draft was incomplete; now complete.
+
+**MINOR:**
+- m1: the TAIL constants were wrong; replaced by a proved c₀ = 2^{−8} and the measured table.
+- m2: H_tail⁺ clarifications.
+- m3: regime (iii) constants; superseded.
+- m4: the gain type is exp(O(u + …)), not (u log u)^{v_box}.
+- m5: degenerate W-pencils.
+- m6: the Behrend wording.
+- m7: θ* thresholds; numerical labels.
+- m8: E2 reporting (0.115 primitive; eligibility disclosure; pooled Γ̂ ≈ 0.30).
+- m9: the 1/(q+1) density is exact on average.
+- m10: the class-A dominance claim.
+
+**NITs:** applied, including g_n ≤ μ² upgraded to PROVED and V versus X up to a factor of 2.
+
+The critic verified:
+- the exponent algebra of all three draft regimes;
+- Lemmas S≥V, CS, TL and PEN (A)–(D), and O2-count;
+- both identities;
+- the pre-registration timestamps;
+- the E1/E2 scoring against the raw files.
+
+### 8.4 Opus literature critic: OK WITH FIXES — all applied
+
+- All cited works exist.
+- The Brakensiek et al. preprint is confirmed, including its derivative-free claim. The draft's "lists of bounded
+  size" was wrong (n^{O_ε(1)}, time q^{ε^{−O(1/θ)}}); fixed.
+- §7 corrections: Hanrot–Stehlé, Cheng–Wan and Kopparty. The two passes disagreed on the GGG year; we use the
+  verified FOCS 2016.
+- Added:
+  - Guruswami's thesis §12.3.2, Boneh Thm 3.2 and the Cohn–Heninger multi-input ACD (beyond Johnson only with
+    correlated inputs);
+  - Jeronimo 2026, Ruzsa Thm 2.3 (the simultaneous version is ours), Calkin 1997;
+  - the large-prime cycle literature;
+  - the Chinburg et al. quote that the divisor version is open.
+- The JM extrapolation is labelled.
+- Novelty: none claimed; "no prior statement found by us" is defensible for the JR impossibility and the
+  height-free pencil count.
+- The critic read §0 and §6 before their rewrite. The current versions contain none of the withdrawn claims.
+
+### 8.5 Confirmation round (Opus proof critic, on the revised text): ACCEPT WITH FIXES — all applied
+
+**Verified correct:**
+- the weighted Prop JR proof, every step (every error term is O(u) or smaller);
+- the Prop TAIL constant proof (bracket ≤ e·2^{−4−k}, total ≈ 0.04);
+- Remark SEL, H_sel ⇒ H_sel^gain, and the corrected primitive-point lemma;
+- the E3 table against the raw file.
+
+**Minor fixes applied:**
+- the class output is defined as Cert;
+- the threshold for a useful H_sel violation is stated in §0 and §6;
+- "saves no relations" → "saves at most an L^{o(1)} factor", with the full list of remaining escapes;
+- the NFS-scaling and primitive scope added in §0 and §6;
+- relations with fewer band primes are handled;
+- the E3 conservative factor corrected (256k vs exact 1.3–31) and duplicate runs disclosed.
+
+**Nits applied:** the absorbed error terms are named; π(M) is defined.
+
+The literature critic's final pass (OK WITH FIXES) is also applied: the GSS-type extrapolation label, the GGG and
+BKR wording, the Calkin gloss, the thesis section flagged as per codex, the non-adaptive prior art in §3.3, and the
+CDHNV/Walkowiak context for PEN.
+
+No further codex confirmation round was run on this revision.
 
 ## 9. Reproduction
 

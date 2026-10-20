@@ -159,3 +159,16 @@ def test_first_moment_monotone_and_threshold():
 def test_simulate_runs():
     out = simulate(300, 5, 1, "greedy", 0)
     assert out["R_star"] is not None and out["R_star"] > 10
+
+
+def test_tail_proved_constant():
+    # Prop TAIL: for k >= 2j + 2, R <= 2^-8/(kp) keeps the first-moment bound below 1/2
+    for k, j, p in [(4, 1, 1e-4), (8, 2, 1e-5), (12, 5, 1e-5), (16, 7, 1e-6), (6, 0, 1e-4)]:
+        R = max(1, int(2 ** -8 / (k * p)))
+        assert first_moment_log(R, k, j, p) < log(0.5)
+
+
+def test_nfs_program_respects_e_cap():
+    from src.pilist.targets import nfs_program
+    out = nfs_program("alg", 1.0, emax=3.0, restarts=4)
+    assert out["e"] <= 3.0 + 1e-6 and out["viol"] < 1e-6
