@@ -40,6 +40,7 @@ def test_lps():
         for r in range(2, d + 2):
             assert Lg.gr_min(r, d, d) == max(Fr(r - 1, d + 1), Fr(1, d))
     assert Lg.gr_expected_log_count(3, 10, Fr(1, 10)) < 0
+    assert all(Lg.gr_expected_log_count_upper(r, d, Fr(1, d)) < 0 for d in range(3, 30) for r in range(3, d + 1))
 
 
 def test_res_disc_identity_and_floor():
@@ -67,9 +68,8 @@ def test_c2_bound_small_box():
 
 
 def test_lemma_nd_etale_gives_trivial_idempotent():
-    """Lemma ND: if N | f1(m) f2(m) with each prime of N a root of only one factor (so Res(f1,f2) is a unit
-    mod N, the order Z[x]/(f1 f2) is etale at N), the idempotent phi(e) is computable and either trivial or
-    already splits N: gcd(f1(m), N) is the split."""
+    """Lemma ND (iii)-type sanity check only: when the two linear factors take the root m at different primes
+    (Res a unit mod N), gcd(f1(m), N) already splits N. The idempotent mechanism is tested below."""
     p, q = 1000003, 1000033
     N = p * q
     m = 12345
@@ -93,3 +93,37 @@ def test_lemma_kl_rank3_power_basis():
         v = [1, m, m * m]
         out = F.lemma_kl_check(v, lambda a: int(W2.eval({a0: a[0], a1: a[1], a2: a[2]})), int(N), d, H2)
         assert out["divisible"] and out["nonzero"] and out["ge_N"] and out["upper_ok"]
+
+
+def test_mnfs_res_only_closed_form():
+    c = Lg.mnfs_res_only_closed()
+    assert abs(float(c) - 1.7114326376) < 1e-9
+    t = sp.symbols("t", positive=True)
+    expr = 32 * (sp.Rational(1, 2) + t) / (9 * t ** 2 * (2 - t) ** 2)
+    assert sp.simplify(sp.diff(expr, t).subs(t, sp.sqrt(sp.Rational(2, 3)))) == 0
+    assert sp.simplify(expr.subs(t, sp.sqrt(sp.Rational(2, 3))) - (36 + 16 * sp.sqrt(6)) / 15) == 0
+
+
+def test_lemma_nd_idempotent_mechanism():
+    """Lemma ND (ii): R = Z[x]/(f1 f2) with gcd(Res, N) = 1. The primitive idempotent e1 = u(x) f2(x)/Res
+    (from u f2 + v f1 = Res) maps under x -> m to an idempotent of Z/N computed WITHOUT relations; when m is a
+    root of f1 mod p and of f2 mod q (the only way both factors can map), it splits N directly."""
+    x = sp.symbols("x")
+    p, q = 1000003, 1000033
+    N = p * q
+    m = 777
+    # f1 with root m mod p only, f2 with root m mod q only, coprime over Q
+    f1 = sp.Poly((x - m) * (x + 3) + p, x)
+    f2 = sp.Poly((x - m) * (x - 5) + q, x)
+    R = int(sp.resultant(f1.as_expr(), f2.as_expr(), x))
+    assert gcd(R, N) == 1
+    s_, t_, h = sp.gcdex(f2.as_expr(), f1.as_expr(), x)  # s f2 + t f1 = h (h constant over Q)
+    e1 = sp.Poly(sp.expand(s_ * f2.as_expr() / h), x)
+    # evaluate e1(m) mod N exactly with denominators inverted mod N
+    acc = 0
+    for k, c in enumerate(reversed(e1.all_coeffs())):
+        a, b = sp.fraction(sp.nsimplify(c))
+        assert gcd(int(b), N) == 1
+        acc = (acc + int(a) * pow(int(b), -1, N) * pow(m, k, N)) % N
+    assert (acc * acc - acc) % N == 0          # idempotent mod N
+    assert gcd(acc, N) in (p, q)               # nontrivial: splits N with no relations

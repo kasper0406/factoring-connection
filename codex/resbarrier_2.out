@@ -1,0 +1,180 @@
+**Verdict: substantial revision required.** The elimination theorem, binary-form count, restricted almost-all theorem, and kernel lemma largely survive. The advertised universal factoring barriers do not follow from them.
+
+I read the requested files. All seven tests pass; they check arithmetic identities and selected examples, not the disputed general reductions.
+
+1. **Theorem E (§2.1): CORRECT.** With unital, compatible scalar maps, the common composite annihilates \(J\), giving \(J\cap\mathbb Z\subseteq N\mathbb Z\). The localization criterion is also correct. The multivariate ideal-norm consequence additionally requires the stated field/order setting, integrality, and a nonzero evaluated element.
+
+   **GAP:** bounded lattice coordinates are not “equivalently” cheap computation without discrete logarithms. Compactly represented unit powers demonstrate the distinction. Keep these as separate algorithmic hypotheses.
+
+2. **Lemma ND (§2.2): CORRECT for its exact-square construction; GAP in the unrestricted wording.**
+
+   Since \(cO_A\subseteq R\),
+   \[
+   R[1/c]=O_A[1/c].
+   \]
+   If \((c,N)=1\), every map from **any** intermediate overorder extends uniquely to this localization:
+   \[
+   \psi(z)=c^{-1}\psi(cz),\qquad z\in O_A.
+   \]
+   Thus non-maximal overorders and overorders that are not localizations do **not** escape the argument.
+
+   Nor do square roots of integral common elements: if \(\gamma^2=S\in R\), then \(\gamma\) is integral and belongs to \(O_A\). Allowed denominators coprime to \(N\) can be inverted consistently. Roots requiring other denominators are outside the stated map domains.
+
+   Two roots of the **same element of \(A^\times\)** differ by componentwise signs. Evaluating the primitive idempotents already supplies every possible resulting split; enumerating exponentially many sign patterns is unnecessary.
+
+   However, equality of squares **only modulo \(N\)** is insufficient. In \(R=\mathbb Z\), \(N=15\), the roots \(1,4\) give a factor despite \(c=1\). Specify that extraction compares roots of one common algebraic element, rather than asserting that every ring-map-mediated congruence is useless.
+
+   **WRONG:** \(c=|\operatorname{Res}(f_1,f_2)|\) without maximality assumptions. For monic irreducible factors,
+   \[
+   c=|\operatorname{Res}(f_1,f_2)|
+   [O_{K_1}:\mathbb Z[\alpha_1]]
+   [O_{K_2}:\mathbb Z[\alpha_2]].
+   \]
+   For \(f_1=x^2-5,f_2=x-1\), the resultant has magnitude \(4\), while \(c=8\).
+
+   Also distinguish non-maximality from non-étaleness, and retain squarefreeness: generally the argument gives \(\operatorname{rad}(N)\mid c\).
+
+3. **C2 count: CORRECT, with minor proof repairs.** A slice can be constant: \(F=ab(a-b)\) vanishes identically on \(b=0\), despite nonzero discriminant. Count the closed sublevel set, handle constant slices, and then discard zero values. Box boundaries also contribute endpoints. The generous displayed error absorbs these corrections.
+
+   Bean’s inequality is correctly stated and applicable to reducible squarefree forms. **Citation correction:** it is Theorem 1 in the cited *Compositio* paper; Theorem 2 there concerns degree reduction. The inequality is Theorem 2 in Bean’s separate announcement. [Bean, original paper](https://www.numdam.org/item/CM_1994__92_2_115_0.pdf)
+
+   **C2(a): CORRECT.** The discriminant-product identity gives the \(N^2\) floor when the resultant and component discriminants are nonzero.
+
+   **C2(b), ramified \(k=1\): GAP, repairable.** Ramified extraction forces divisibility by the primes involved, not automatically by all of \(N\). Establish that these primes divide the discriminant of the actual integral norm form. Then compute its gcd with \(N\): a proper gcd already factors \(N\); the remaining case has \(N\mid\operatorname{disc}F\). Explain this reduction and the field-discriminant-to-form-discriminant transfer. It is not a theorem about every class-group architecture merely because it uses class groups.
+
+   **C2(c): WRONG.** The discriminant transformation is right, but
+   \[
+   A_{F\circ M/s}=\frac{s^{2/D}}{|\det M|}A_F.
+   \]
+   For \(s=q=\det M\), the multiplier is \(q^{2/D-1}\), **not \(1/q\)**. The latter describes counting original values at an unchanged threshold. Moreover, lattices for different \(q\)’s overlap; they do not simply partition the plane. Rebuild the special-\(q\) argument with explicit thresholds, cofactors, overlap, transformed boxes, and enumeration costs.
+
+   **C2(d): CORRECT conditionally; GAP as a universal parametrization claim.** A shared degree-\(e\) homogeneous factor modulo each \(p\mid N\) gives Sylvester-matrix nullity at least \(e\), hence \(p^e\mid\operatorname{Res}\). For squarefree \(N\), this yields \(N^e\mid\operatorname{Res}\). State homogeneity, coefficientwise linking, effective factor degree, and nonzero resultant/discriminant. Arbitrary nonlinear parametrizations need not satisfy these hypotheses.
+
+   **C2(e)/RB2: GAP.** The inverse-count ledger follows when \(e^C\) **distinct small-value points** lie in the stipulated box; adjust the negligible endpoint constant. It does not immediately bound the useful relation yield of arbitrary examined subsets. Integrate the counting bound against the smoothness probability and control the \(O(DE)\) contribution.
+
+   In particular, H says how smoothness depends on an examined value’s size. It does not constrain the sizes of a cheaply selected thin family, and does not repair the huge-box exception.
+
+   **CORRECT algebra:** assuming the ledger and usual relation-count model, \(\kappa=k/2\) gives
+   \[
+   c=(16k/9)^{1/3},\qquad \alpha\ge1/3.
+   \]
+   **GAP:** “SNFS is optimal among single-pair NFS for every \(N\), under H” needs additional sampling and exceptional-region hypotheses.
+
+4. **GAE (§2.4): CORRECT with its detailed restrictions.** Coprimality makes the resultant nonzero; the cross-height restriction bounds it by \(N_0^{O(1)}\); its divisor count is \(N_0^{o(1)}\). Counting coefficient boxes and degree/height cells proves the assertion. Dyadic rounding costs \(N_0^{o(1)}\) at the stated degree range.
+
+   **Necessary repairs:**
+
+   - GAE-ram must explicitly exclude \(\operatorname{disc}f=0\); otherwise \(f=x^2\) defeats it for every \(N\).
+   - Preserve the restrictions in the synopsis.
+   - Discarding the large-cross-height regime requires a size/sampling argument.
+   - GAE is a necessary-height theorem, not an existence theorem at the threshold.
+   - Height-to-norm transfer for selected subfamilies does not follow from H alone.
+
+   The argument is elementary enough to regard as a union-bound observation. I cannot certify novelty or a specific prior formulation; “no prior statement located” is appropriate.
+
+5. **KL (§2.5): CORRECT under its explicit hypotheses.** The primitive kernel lattice has covolume \(\|v\|_2\); Minkowski supplies the stated short vector. Linking makes its value divisible by \(N\), and nonvanishing makes that useful.
+
+   Nonvanishing on the integer kernel is indispensable. The norm interpretation also needs defined reduction maps and controlled denominators.
+
+   The exact height LP gives
+   \[
+   \min(h_1+h_2)=\min\{1,(r-1)/d_2\}.
+   \]
+   The text’s shorter expression assumes \(r\le d_2+1\). Track the combinatorial and dimension terms before suppressing them.
+
+   **CORRECT (model):** with the additional typical-size ledger, higher rank worsens the leading balance. This is not a consequence of the modular linking hypothesis alone.
+
+6. **§2.6: GAP in the claimed rigorous scope; plausible conditional heuristics.**
+
+   Two-plane resultant bounds require nonzero restricted resultants. Restrictions can share characteristic-zero factors, or the modular linking functional can vanish on a chosen plane. “Take any coordinate plane” needs qualification.
+
+   The aggregate ledger is **not excluded by the displayed inequalities**. That does not establish consistency with every arithmetic constraint, existence, or constructibility.
+
+   The \(1/4\) balance is correct **if** \(\log X\gtrsim x/d+D\) is assumed. It is not a rigorous universal floor. The random-walk estimate needs balanced embedding profiles: generally the relevant scale is
+   \[
+   \left(\sum_j|\sigma(w_j)|^2\right)^{1/2},
+   \]
+   which can be much smaller than \(\sqrt r\max_j|\sigma(w_j)|\).
+
+   Schmidt’s exponents, after \(M=X^d\) and \(n=r-1\), are correctly converted:
+   \[
+   M^{\max(d+1,r)}\ll\#\ll M^{d+r-1}.
+   \]
+   But these are fixed-dimension estimates with dimension-dependent constants and thresholds. Their application to growing \(d,r\), full-rank tuples, and the chosen norm-form height needs further assumptions. [Schmidt’s statement and height convention](https://matwbn.icm.edu.pl/ksiazki/aa/aa70/aa7043.pdf)
+
+   A **lower** counting bound cannot establish an upper bound on available families. The \(r-1\) linking conditions are a reasonable projective equidistribution hypothesis, not a proved independence statement.
+
+   Consequently, at total height \(1/d\), the heuristic exponent lies between
+   \[
+   \frac{d+1}{d}-(r-1)
+   \quad\text{and}\quad
+   \frac{d+r-1}{d}-(r-1).
+   \]
+   Both are negative for \(3\le r\le d\), but they are not the same exponent. Conditional leading-order power-basis optimality is defensible; the stated rigorous closure is not.
+
+7. **§4.1 Kirchner: reading largely CORRECT; construction diagnosis GAP.** The paper really requires a prime-degree Galois extension, suitable subfield and arithmetic hypotheses, and strongly ambiguous ideals. Its two advertised constants are conditional. [Kirchner](https://www.mathnet.ru/eng/pdma386)
+
+   The Vandermonde obstruction is correct. But “construction is the obstacle, not existence” is unsupported. GAE supplies no existence result, particularly inside the thin family having the required subfield.
+
+   Solving \(\operatorname{disc}f\equiv0\pmod N\) is only one necessary condition. It does not ensure the required field ramification, extension structure, or effective principalization. The claimed multivariate Coppersmith limit based solely on total degree is not a general theorem.
+
+   Fixing a double root does impose two linear conditions and gives the stated **generic** determinant/height ledger. It does not prove every possible construction pays that cost.
+
+   **§4.2: GAP, repairable as a conditional mechanism.** The later parameters require \(r\ll d\), contradicting the introductory \(r\approx d\). The logarithms also matter. Under its assumptions, take
+   \[
+   d\asymp\sqrt{x/\log x},\qquad
+   r\asymp x^{1/4}(\log x)^{3/4}.
+   \]
+   Then \(\log W\asymp\sqrt{x\log x}\) supports the formal \(L[1/4]\) balance. Existence, construction, extraction maps, and useful rank remain missing. “Search costs \(\ge N^{r-2}\)” is not a computational lower bound.
+
+8. **Escape table (§3): mixed verdicts.**
+
+   **(a), (b), (g): GAP** insofar as they inherit the scope problems above.
+
+   **(c): GAP.** Hilbert irreducibility does not automatically reduce arbitrary growing-degree arithmetic-surface algorithms and adaptively selected candidates to this model. Specify specialization, denominators, exceptional sets, and preserved costs.
+
+   **(d): GAP, substantial.** For indefinite Eichler orders over \(\mathbb Q\), norm-one reduction surjectivity and trivial locally principal ideal class set are genuine results. They obstruct the proposed class-invariant character, not every extraction architecture. [Voight, Theorem 28.2.11](https://link.springer.com/chapter/10.1007/978-3-030-56694-4_28)
+
+   For definite orders, the mass is
+   \[
+   \varphi(D_B)\psi(N)/12,\qquad
+   \psi(N)=N\prod_{p\mid N}(1+1/p),
+   \]
+   with unit weights and class-number corrections. Class-number growth does **not** imply a runtime lower bound requiring class enumeration. [Eichler mass formula](https://link.springer.com/chapter/10.1007/978-3-030-56694-4_25)
+
+   Reduced norm is not automatically the entire abelian information of an integral unit group. Wedderburn decomposition over \(\mathbb Q\) also leaves integral gluing and modular representation issues. The blanket “proved structural exclusion” should be withdrawn.
+
+   **(e), (f): CORRECT elementary identities; GAP in the exclusion.** The product formula and absence of unital \(\mathbb Z_p\to\mathbb Z/N\) maps when \(p\nmid N\) are valid. They do not establish the missing cofactor/enumeration argument or treat arbitrary nonglobal adelic identities.
+
+   **(h): CORRECT criticism of Schnorr’s precision; GAP in the replacement barrier.** Short logarithmic error does not provide the necessary absolute remainder bound. Ducas’s reported failures are accurately quoted. [SchnorrGate](https://github.com/lducas/SchnorrGate)
+
+   The pair-count asymptotic needs ranges, signs, error terms, and exclusion of \(v=0\); otherwise diagonal pairs survive below the claimed threshold. For nonzero integer \(u,w,v\), the universal bound is \(|uw|\ge N-1\), attained by \(u=N-1,w=-1,v=1\). This supports an \(L[1/2]\) balance when **both** smoothness costs are charged. “Even with free smooth \(u,v\)” requires a separate distribution argument.
+
+   **(i): GAP/WRONG as written.** Evaluating known unit powers needs no DLP; matching prescribed images may. Cyclotomic root-order statements need unramified primitive-root hypotheses. And \(N^{\varphi(m)}\) is the quotient ring’s cardinality, **not its arithmetic runtime**.
+
+9. **MNFS RES-only floor: CORRECT within the homogeneous equal-degree model; GAP universally.**
+
+   Rational–algebraic resultants give \(k_r\to1\) in the usual viable size regime. Algebraic pairwise resultants give
+   \[
+   h_i+h_j\ge1/d+o(1/d).
+   \]
+   Thus at most one algebraic side can lie below \(1/(2d)\); they do not force every individual side above it. The bulk \(k_a\ge1/2\) model is reasonable after separating that exception.
+
+   I sharpened the numeric optimization. Writing \(t=\beta_a/\beta\), the relaxed program gives
+   \[
+   c^3\ge\min_{0<t\le1}
+   \frac{32(1/2+t)}{9t^2(2-t)^2}
+   =\frac{36+16\sqrt6}{15}.
+   \]
+   Equality occurs at \(t=\sqrt{2/3}\), with the test constraint slack. Hence the exact model optimum is **\(1.7114326376\ldots\)**. Unequal degrees, heterogeneous heights, and different sampling architectures require additional analysis.
+
+**Required fixes, in priority order:**
+
+1. Narrow the universal verdict and make sampling, exceptional-region, and relation-rank hypotheses explicit.
+2. Repair C2(c), then prove the count-to-relation-yield step.
+3. Formalize ND’s exact common-square extraction and discriminant transfers.
+4. Relabel the noncommutative exclusion and Kirchner existence/construction assertions.
+5. Separate Schmidt’s bounds from the uniformity and independence assumptions in \(G_r\); correct §4.2’s parameters.
+6. Add tests for the newly explicit hypotheses and counterexamples.
+
+**No completed sub-\(L[1/3]\) mechanism emerged.** The aggregate family still offers a conditional \(L[1/4]\) mechanism after correcting logarithms. The gaps neither construct that family nor exclude it. The specific overorder/localization objections do not defeat the properly restricted ND lemma.

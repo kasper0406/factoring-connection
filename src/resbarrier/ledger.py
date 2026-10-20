@@ -74,10 +74,23 @@ def kl_min(r: int, d2: int) -> Fr:
     return lp_min([((Fr(d2, r - 1), 1), 1)])
 
 
+def mnfs_res_only_closed() -> sp.Expr:
+    """Exact optimum of the RES-only MNFS program (kr = 1, ka = 1/2): c^3 = min_t 32(1/2+t)/(9 t^2 (2-t)^2)
+    = (36 + 16 sqrt 6)/15 at t = beta_a/beta = sqrt(2/3) (codex resbarrier_2 #9). Numerically 1.7114326...
+    This coincides with the KNOWN medium-prime MexTNFS constant (Kim-Barbulescu 2016; Sarkar-Singh 2016):
+    the same Coppersmith-type program with a halved algebraic height term. Not new."""
+    return sp.cbrt((36 + 16 * sp.sqrt(6)) / 15)
+
+
 def mnfs_floors(seed: int = 0) -> Dict[str, float]:
     """MNFS constants (numeric, heurnfs program) under (i) Lemma RES only: rational multiplier kr = 1 and,
     from pairwise resultants among the V algebraic sides, ka >= 1/2; (ii) G / Theorem GAE: kr = ka = 1."""
     return {"res_only": mnfs(kr=1.0, ka=0.5, seed=seed)["c"], "gae": mnfs(kr=1.0, ka=1.0, seed=seed)["c"]}
+
+
+def gr_expected_log_count_upper(r: int, d: int, h_total: Fr) -> Fr:
+    """Same with Schmidt's UPPER count M^{d+r-1}: (d+r-1) h_total - (r-1) (the exponent relevant for nonexistence)."""
+    return (d + r - 1) * Fr(h_total) - (r - 1)
 
 
 def gr_expected_log_count(r: int, d: int, h_total: Fr) -> Fr:
