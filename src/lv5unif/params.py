@@ -119,8 +119,9 @@ def sizes(a: Fr, d0: Fr, kappa: Fr) -> Dict[str, AExp]:
 
 
 def margins(a: Fr, d0: Fr, kappa: Fr, C: Fr = Fr(100)) -> List[Tuple[str, bool, str]]:
-    """Every growth comparison used in notes/lv5unif_results.md, with a generous constant C where the notes
-    say 'B^{O(1)}' or '(log N)^{O(1)}'.  Returns (name, holds, where-used)."""
+    """The growth comparisons listed in notes/lv5unif_results.md (Lemma P and the margins named in §§4-6, 11), with a
+    generous constant C where the notes say 'B^{O(1)}' or '(log N)^{O(1)}'.  Returns (name, holds, where-used).
+    Leading-order only: each check compares the leading terms of two log-sizes."""
     s = sizes(a, d0, kappa)
     C = Fr(C)
     th0 = theta0(d0, kappa)
@@ -159,6 +160,29 @@ def margins(a: Fr, d0: Fr, kappa: Fr, C: Fr = Fr(100)) -> List[Tuple[str, bool, 
     chk("2 nu logN - C logB", s["log_ell"] - s["logB"].scale(C), "L2_fam (C) first term")
     # Lemma 8.5'(R'): log y >> loglog x (so 1 - beta <= 1/4 etc.)
     chk("logB - C loglogN", s["logB"] - LOGLOGN.scale(C), "(alpha1), (alpha2), HT range")
+    # --- added after codex lv5unif_2 #6 ---
+    # level gap at the smallest grid point: Gamma >= (eta0/2) log N - O(Lambda) must beat (2K0+U0) log B + 4 loglog N
+    chk("Gamma - C logB - C loglogN", s["eta0_logN"].scale(Fr(1, 2)) - LAM.scale(C) - s["logB"].scale(C) - LOGLOGN.scale(C),
+        "Lemma 8.5'(R'4) level gap, every x in the FM grid")
+    # (R'3) is a fixed-coefficient comparison: u log(4u log B)/log B -> (4/5) theta_F0/a^2 <= theta0/a^2 < K0
+    K0 = 1 + (th0 / (Fr(a) * Fr(a))).__ceil__()
+    checks.append(("(R'3): (4/5) theta0/a^2 < K0", Fr(4, 5) * th0 / (Fr(a) * Fr(a)) < K0, "Lemma 8.5'(R'3)"))
+    # P10 heights: (h - 2 nu) log N >= eta0 log N must beat log d + log S^2 + (eta0/2) log N  and log(3 d varpi)
+    chk("eta0 logN/2 - C logS2 - C logB", s["eta0_logN"].scale(Fr(1, 2)) - s["logS2"].scale(C) - s["logB"].scale(C),
+        "P10: H >= d V^2 N^{eta0/2}, H >= 3 d varpi V (varpi = B^2 S^2)")
+    # class (B) 2nd ratio N^{-h-(d+1)nu} B^{O(1)} d^{O(1)}: (h+(d+1)nu) log N >= 2 nu log N
+    chk("(h+(d+1)nu)logN - C logB", s["log_ell"] - s["logB"].scale(C), "L2_fam class (B) second ratio")
+    # class (C) 2nd ratio N^{(5-d)nu - h} B^{O(1)}: for d >= 5 the exponent is <= -h <= -2 nu
+    chk("(h-(5-d)nu)logN - C logB  [d>=5]", s["log_ell"] - s["logB"].scale(C), "L2_fam class (C) second ratio")
+    # primitivity (Moebius) error 2^{omega(l n)} <= exp(C mu log N/loglog N) against M/V = N^{mu - nu}
+    chk("(mu-nu)logN - C mu logN/loglogN", AExp.mono(Fr(1) / d0, Fr(4, 5), Fr(1, 5)).scale(Fr(1, 2))
+        - AExp.mono(C / d0, Fr(4, 5), Fr(1, 5) - 1), "FM fibres: Moebius error")
+    # MF: with the extra floor log H >= 13 (sigma+1) d Lambda loglog N, rejection <= exp(-(sigma+1) Lambda (1+o(1)))
+    sg = sigma(a, d0, kappa)
+    chk("MF: logH/(13 d loglogH) - sigma Lambda - C loglogN", LAM.scale(sg + 1) - LAM.scale(sg) - LOGLOGN.scale(C),
+        "Prop MF: Pr(rejected) <= p1/2 (with the extra height floor)")
+    chk("MF extra floor is o(theta logN)", s["theta_logN"] - AExp.mono(13 * (sg + 1) * d0 * C, Fr(3, 5), Fr(7, 5)),
+        "Prop MF: extra floor does not move the exponent")
     return checks
 
 
@@ -220,7 +244,7 @@ TAU_TABLE = [
     ("Lemma 8.5' (restricted BV)", "none: regime (R') hypotheses (u >= (loglog x)^4, rho >= y^{-K0}, Y >= y^K, "
      "x^lambda >= y^{2K0+6}) hold at y = L[2/5], x = N^{theta}, Y = L[3/5]", "no", "restate regime", 0),
     ("Lemma Kern", "C_d of the cube-section volume ((d+1)H)^{d-2} and (V^2/bb')^{d-2} <= 4^{d-2}",
-     "yes as written (d^{O(d)}, 4^d)", "triangular fibre count: <= e^{1/2}/((2H+1)^2 (bb')^{d-2}); b-window", 0),
+     "yes as written (d^{O(d)}, 4^d)", "triangular fibre count: <= e/((2H+1)^2 (bb')^{d-2}) if bb' <= (2H+1)/d; b-window", 0),
     ("L2_fam", "(log N)^{O(C0)}, C0 = O(log(1/rho)/log B) fixed; tau(q); margins N^{-h}, N^{-2nu}, N^{(5-d)nu-h}",
      "no", "-", 0),
     ("LD* (second moment)", "C_d (Kern), (V_max/V_-)^{2d} <= 2^d, X_F constant 2^{2d+5} squared, <= 12 partners, "
@@ -229,6 +253,6 @@ TAU_TABLE = [
     ("Theorem K / Lemma S''", "(gamma/(16 log N))^{2k+1}/(128k^2): the (log N)^{2k} is the design's split cost, "
      "of order L[2/5] by choice of k; no C(2k,k), no 2^omega", "k only via the split cost (exact order Lambda)", "S'' replaces S'", 0),
     ("LV6", "Stark nu_1 ~ 1/((2d)! log Delta): character primes of (2d)!(log N)^{O(1)} bits; SQ 2^{d-1} sign vectors; "
-     "t_chi = O(d^3 theta log N)", "cost only: exp(O(d log d)) = L[2/5]^{o(1)}", "large character primes", 0),
+     "t_chi = O(d^2 log N)", "cost only: exp(O(d log d)) = L[2/5]^{o(1)}", "large character primes", 0),
     ("Lemma IR / rejections", "exp(-log H/(13 d loglog H)) = exp(-(log N)^{2/5-o(1)}) = o(gamma)", "no", "-", 0),
 ]

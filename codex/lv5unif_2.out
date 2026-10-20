@@ -1,0 +1,135 @@
+The single-field argument appears repairable at \(L_N[2/5,c]\), conditional on the internal chain. I found no surviving exponential loss in the displayed relative moment calculation. However, the uniform analytic lemma and the multi-field alternative are overstated.
+
+Locations below refer to this [reviewed snapshot](/Volumes/git/factoring-connection/codex/scratch/lv5unif_2/reviewed_lv5unif_results.md). I did not consult the earlier blind referee output.
+
+1. **MAJOR — §5, Lemma 8.5′(R′): fixed-\(\lambda\) uniformity does not justify its application.**
+
+   The lemma fixes \(\lambda\), permits \(C,c,x_0\) to depend on it, and is then applied with
+   \[
+   \lambda_N=\frac{\eta_0}{4\xi}\asymp D^{-3/10}\longrightarrow0.
+   \]
+   Neither a bounded precision exponent nor applicability beyond one fixed threshold follows from that statement. The assertion that P8 supplies a “fixed relative level margin” is false in the level-binding regime.
+
+   **Fix:** state and prove a version uniform in \(\lambda\), or formulate the result directly using quantitative gaps. The actual design has sufficient gaps:
+   \[
+   Y/B^C\to\infty,\qquad
+   \sqrt{x}/Q\ge \exp(c\eta_0\log N),\qquad
+   \eta_0\log N\gg C\log B.
+   \]
+   The proof can exploit these without constants depending on \(\lambda_N\).
+
+   In particular, the large-conductor contribution, relative to the required target, is bounded by
+   \[
+   C(\log x)^3\left(
+      \frac{y^{2K_0+9/2}}R+
+      y^{2K_0+7/2}\frac Q{\sqrt x}
+   \right).
+   \]
+   This supplies the necessary uniform saving. The displayed deduction
+   \(x^{-\lambda}y^{2K_0+7}(\log x)^2\le x^{-\lambda/2}\) does **not** follow from R′4 alone; its extra margin must be supplied explicitly.
+
+   Drappeau’s published range itself is adequate: at \(z=x/e\ge\sqrt{x}\), the conditions on \(y\) and the conductor cutoff \(y^K\le z^{\eta_D}\) hold. The problem is the transfer’s formulation, rather than [Drappeau’s Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf).
+
+2. **MAJOR — §§1–2, Lemma CS: the stopping bound is proved circularly, and binary search is unjustified.**
+
+   The size of \(S\) uses P5, while P5 uses the asserted size of \(S\). Also, binary search cannot find the least successful power when the tested approximate function is expressly not assumed monotone.
+
+   **Fix:** first restrict attention to \(S^2\le e^{C\Lambda}\), with a fixed computable \(C>\sigma\). Uniformly on this interval,
+   \[
+   d\log S=o(\theta\log N)
+   \]
+   follows directly from the prescribed growth rates. CEP and the Rankin comparison then give
+   \[
+   \log\!\left(S^2R(X_r(S))R(X_F(S))\right)
+      =\log S^2-\sigma\Lambda+o(\Lambda).
+   \]
+   Consequently the upper endpoint succeeds. Scan successive powers of two; there are \(O(\Lambda)\) evaluations. This establishes termination before invoking P5 and preserves the claimed cost.
+
+   Once existence is established, the predecessor argument giving
+   \[
+   \tfrac14(\log N)^{-2C_R}\le m\le64
+   \]
+   is sound. HT Theorem 1 has the stated broad uniformity range; the saddle-point approximation is applicable here. See [HT, Theorem 1](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+3. **MAJOR — §11: raw-field amplification does not establish amplification through accepted fields.**
+
+   The pointwise independence calculation is valid for **raw** \((w_j,c_j)\). Post-processing requires accepted irreducible fields, however. No pointwise lower bound is proved for
+   \[
+   \Pr[\text{smooth at }P_0\ \text{and field accepted}\mid g,\ell].
+   \]
+
+   The existing rejection estimate cannot simply be subtracted. In the kernel-binding regime,
+   \[
+   \frac{\log H}{d\log\log H}=\Theta(D^{2/5}),
+   \qquad
+   \log(1/\rho_F)=\Theta(D^{2/5}\log\log N).
+   \]
+   Thus the available upper bound for irreducibility rejection is much larger than the one-field success lower bound. Those estimates permit all certified pointwise smoothness mass to lie in rejected fields.
+
+   **Fix:** prove the pointwise bound after acceptance, or modify the MF parameters so rejection is \(o(\rho_F(\log N)^{-C_g})\), uniformly conditional on \(g,w\). For example, an additional height margin
+   \[
+   \log H\ge C\,d\Lambda\log\log N
+   \]
+   with sufficiently large fixed \(C\) would suffice through Lemma IR. This addition is \(o(\theta\log N)\), so it need not change the leading exponent. It is an additional argument and design change, absent from the sketch.
+
+   This finding affects the claimed independent MF proof, not the single-field proof.
+
+4. **MAJOR — §11, multi-field post-processing: the simultaneous probability and kernel dimension are missing.**
+
+   The single-field character failure bound \((\log N)^{-2}\) cannot be union-bounded over \(J_f=L^{\sigma_F+o(1)}\) fields. Moreover, \(C_{\rm col}+12\) rows guarantee only twelve kernel dimensions, insufficient for \(J_f+2\) independent vectors.
+
+   The square/nonsquare indicator is linear on each residual group only after establishing that its order is at most two. For a general residual square-class group, that indicator is not linear.
+
+   **Fix:**
+
+   - Add \(\log J_f\) to each character budget, making the probability of any field’s character failure bounded away from one.
+   - Require at least \(C_{\rm col}+J_f+12\) rows.
+   - Explain linearity on each one-dimensional residual group.
+   - Run exact SQ verification on the final combined dependency and retry if necessary.
+
+   With these changes, the proposed bit-matrix construction and transcript invariance can work. The current outline does not establish its Las Vegas expected-time claim.
+
+5. **MINOR — §9, Lemma H: the discriminant bound loses a factor of \(d\).**
+
+   For the monic transform,
+   \[
+   \operatorname{disc}(g)
+      =f_d^{(d-1)(d-2)}\operatorname{disc}(f).
+   \]
+   Hence the justified bound is
+   \[
+   \log|\operatorname{disc}g|
+      =O\!\left(d^2(\mu+h)\log N+d\log d\right)
+      =O(d\log N),
+   \]
+   rather than the displayed \(O(\log N)\).
+
+   **Fix:** distinguish this from \(\log|D|=O(\log N)\). The resulting \(\log|\mathcal H|=O(d\log N)\), character count, and \(L^{2a+o(1)}\) post-processing bound survive.
+
+6. **MINOR — Lemma P and `params.margins`: the list is not a complete certificate of the claimed margins.**
+
+   The fourteen returned checks pass, but several necessary comparisons are not encoded explicitly: the level gap at the smallest grid point, the coefficient comparison in R′3, both height inequalities in P10, the second class-(B)/(C) ratios, and the primitivity error relative to \(M/V\). The MF rejection comparison above is also absent.
+
+   **Fix:** add those comparisons or narrow the claim that the code checks “every” margin. Most follow from the stated rates; the MF rejection comparison does not hold with the present height in every parameter regime.
+
+7. **MINOR — §10, numerical interpretation.**
+
+   The recursion term does not bind in every reported example. At the displayed \(C_\gamma=0\) tuple,
+   \[
+   a+s+\sigma=\frac{211}{60}=3.516666\ldots,
+   \]
+   whereas the recursion term is approximately \(3.51035\).
+
+   **Fix:** correct the sentence. The reported rounded bound \(3.517\) remains valid.
+
+The principal checks that survived my attacks were:
+
+- **Kern-U:** the integral kernel basis, triangular enumeration, and hypothesis \(bb'\le(2H+1)/d\) are correct.
+- **GM-U/FM-U:** the narrow \(b\)-window prevents an exponential loss in \(V'^{d-1}\); the new envelope is sufficient. The fibre primitivity error is negligible relative to the actual \(M/V\).
+- **LD*-U:** §6 Step 7’s powers cancel exactly to \(V^4/Y^2\le4S^4\). The remaining degree factor is polynomial. I found no hidden \(c^d,d!\), or \((\log N)^{O(d)}\) in this assembly.
+- **L2-U/W-U/DS-U:** the \(B\) cushion suffices for class (B); the class-(C) margins survive. The multiplier contributes only the stated polynomial loss.
+- **K-U/select-U:** S″’s large-set hypothesis holds; the displayed split bound has no residual \(2^\omega\) or central-binomial loss. The sharper treatment of \(T_{\rm post}\) is valid.
+- **LV6-U:** Stark’s \(4(2d)!\) threshold is correctly identified, and factorial-bit character primes remain a cost of \(\exp(O(d\log d))=L^{o(1)}\). The relevant statements agree with [Stark, Lemma 8](https://gdz.sub.uni-goettingen.de/download/pdf/PPN356556735_0023/PPN356556735_0023.pdf) and [LO, Theorem 1.3](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf).
+- **Recursion and costs:** Lemma \(F_\alpha\) is sound. Charging every attempt two shape tests and up to \(2k\) searches gives the stated exponents for \(P\) and \(D\); post-processing belongs outside the split-probability divisor.
+
+**Verdict: ACCEPT WITH FIXES**, conditional on the internal chain, for the single-field Theorem U after repairing the uniform restricted-BV statement and the construction of \(S\). The multi-field alternative needs additional proof. **Weakest point:** the uniform restricted-BV-to-FM interface in §5.

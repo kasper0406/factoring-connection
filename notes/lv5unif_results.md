@@ -52,11 +52,13 @@ in §14.
 - **Below 2/5: not reached.** The floor is the one-level descent geometry (split acceptance (log N)^{−2k} forces
   k = O(D^α); the norm exponent θ ≥ c/√k forces k ≳ D^{2(1−2α)}), not precision (§13). Multi-level descent is
   the open problem, as recurse §3.4 says.
-- **The shared-rational-side multi-field trick works (Proposition MF, §11) [proved in outline].** Conditional on
-  the rational data, the fields are independent, and a pointwise first-moment bound at one good rational
-  candidate suffices. So the algebraic side needs no second moment at all and only exp(o(Λ))·ρ_F precision, at
-  the price of ≈ 1/ρ_F = L[2/5]^{O(1)} fields. It gives a second, independent route to L[2/5] that avoids LD*,
-  Lemma Kern, L2_fam and Lemma W. It does not go below 2/5, because it does not change the geometry.
+- **The shared-rational-side multi-field trick works (Proposition MF, §11) [moment part proved; multi-field
+  post-processing proved in outline].** Conditional on the rational data, the fields are independent, and a
+  pointwise first-moment bound at one good rational candidate suffices. So the algebraic side needs no second moment
+  at all and only exp(o(Λ))·ρ_F precision, at the price of ≈ 1/ρ_F = L[2/5]^{O(1)} fields and one extra height floor
+  log H ≥ 13(σ + 1)dΛ log log N (needed so that rejected fields cannot absorb the pointwise mass; codex lv5unif_2 #3).
+  It gives a second route to L[2/5] that avoids LD*, Lemma Kern, L2_fam and Lemma W. It does not go below 2/5,
+  because it does not change the geometry.
 - **LV6 at growing degree [proved, §9].** Stark's factorial is harmless: character primes of
   s = ⌈(2d)!·(log N + log Δ̄ + d)⁴⌉ bits satisfy every requirement of Lemmas E and X, and cost exp(O(d log d)) =
   L[2/5]^{o(1)}, because d log d ≍ D^{1/5}log log N = o(Λ).
@@ -85,7 +87,7 @@ in §14.
 | L2_fam | (log N)^{O(C₀)} with C₀ ≍ log(1/(ρ_rρ_F))/log B; the old cushion L_N[1/2,1] would force C₀ ≳ D^{1/10} | only via the cushion | cushion B instead of L[1/2] (codex) | **0** |
 | LD* (second moment) | Kern's C_d; (V_max/V₋)^{2d} ≤ 2^d; (2^{2d+5})² in Ψ(X_F)²; "≤ 12 partners" (absolute); C_W | **yes**, 2^{O(d)} | common V; b-window; X_F = (2d+1)MHV^d; Kern-U | **0** |
 | Lemma W | C_W = 24/η₀ | no, if η₀ log N ≫ Λ + log S | η₀ = D^{−1/2} | **0** |
-| Theorem K / S″ | the design's split cost (γ/(16 log N))^{2k+1}/(128k²); no C(2k, k), no 2^ω | k enters only as the (by design) L[2/5]-size split cost | Lemma S″ replaces S′ | **0** |
+| Theorem K / S″ | the design's split cost p ≥ (γ/4)(γ/(16 log N))^{2k}/(32k²); no C(2k, k), no 2^ω | k enters only as the (by design) L[2/5]-size split cost | Lemma S″ replaces S′ | **0** |
 | Lemma CS (computable S) | the old explicit S lost de Bruijn's second-order term (thmA U5), and S^d must be inside X_F | — | Rankin value at an approximate saddle point, evaluated at the actual X_F(S) | **0** |
 | LV6 | Stark ν₁ ≍ 1/((2d)! log Δ̄); SQ's 2^{d−1} sign vectors; t_χ = poly(d, log N) | cost only, exp(O(d log d)) = L[2/5]^{o(1)} | factorial-bit character primes | not a γ-loss |
 | Lemma IR, rejections | exp(−log H/(13 d log log H)) = exp(−(log N)^{2/5−o(1)}) | no | — | not a γ-loss |
@@ -113,7 +115,7 @@ uniformly in N. All "C" below depend only on (a, κ, d₀) and on the absolute c
 - B := ⌊e^{aΛ}⌋. X := ⌊√(N/2)⌋; j maximal with 2^{kj} ≤ X; Y := 2^{j−1}; J := primes in (Y, 2Y]. So
   log Y = log N/(2k) + O(1) = Λ_{3/5}/(2κ)(1 + o(1)), i.e. ℓ = L_N[3/5, 1/(2κ)].
 - M := ⌊N^μ⌋, H := ⌊N^h⌋, W := ⌈N^{μ+ν+η₀/2}⌉ (integer roots of N^p for the rational exponents).
-- S: the least power of 2 such that S²·R(X_r(S))·R(X_F(S)) ≥ 1 (Lemma CS), where
+- S: the first S = 2^j in the scan j = 0, 1, 2, … with S²·R(X_r(S))·R(X_F(S)) ≥ 1 (Lemma CS), where
   **V(S) := ⌊√(2Y)·S⌋, common to all ℓ ∈ J**, X_r(S) := 2MV/Y and **X_F(S) := (2d + 1)·MHV^d**.
   Put V := V(S), X_r, X_F at this S, ρ_r := ϱ(X_r), ρ_F := ϱ(X_F) (ϱ(z) = Ψ(z, B)/z).
 - Candidates (one set for all ℓ): **𝒫 := {(a, b) ∈ Z² : b prime, (1 − 1/d)V < b ≤ V, |a| ≤ V, gcd(a, b) = 1}.**
@@ -133,9 +135,17 @@ alternation, so there is no N₀ branch) with SPLIT, SAMPLE_FIELD, DESCEND_ONCE,
 
 The shape test accepts iff |u₀| and |v₀| are each products of at most k distinct primes, all in J, as in [pp].
 
-**Lemma P (the parameters are consistent) [proved; exact asymptotic arithmetic in `params.margins`].** For
-N ≥ N₀(a, κ, d₀), all of the following hold, each with a ratio that is exp(c(log N)^p(log log N)^q) with c > 0 and
-(p, q) > (0, 0) (checked term by term in `params.margins`; the right-hand "C" is any fixed constant):
+*Common V in the special-q search.* In SQ_SEARCH and in [pp] Lemma `lem:reg`, V_ℓ is replaced by V and S by
+S_ℓ := V/√ℓ ∈ [S/√2·(1 − o(1)), √2·S]. Lemma `lem:reg` then reads: if λ₁ < √ℓ/(2S_ℓ) = ℓ/(2V), the lattice has no
+candidate (the line spacing ℓ/|w₀| exceeds 2V ≥ √2V, and |w₀| < ℓ/(2V) < (1 − 1/d)V < b because ℓ ≤ 2Y < V²/2);
+otherwise it has ≤ (8V² + 32λ₂²)/ℓ ≤ 179V²/ℓ ≤ 400S² points in [−V, V]², since λ₂² ≤ (4/3)ℓ²/λ₁² ≤ (16/3)V² and
+V² ≤ 2YS². The pair bound of [pp] Lemma `lem:pairs` becomes q = |Δ|/ℓ ≤ 2V²/ℓ ≤ 4S².
+
+**Lemma P (the parameters are consistent) [proved; leading-order asymptotic arithmetic, encoded in
+`params.margins`].** For N ≥ N₀(a, κ, d₀), all of the following hold, each with a ratio that is
+exp(c(log N)^p(log log N)^q) with c > 0 and (p, q) > (0, 0); the right-hand "C" is any fixed constant. `params.margins`
+encodes these comparisons and the further margins named in §§4–6 and 11 (22 checks after codex lv5unif_2 #6); it
+compares leading terms only, and is a check of the notes' arithmetic, not an independent proof:
 (P1) Y ≥ B^C; (P2) N^{η₀/4} ≥ B^C, ≥ S^C, ≥ 2^{Cd}; (P3) u_F := log X_F/log B ≥ (log log N)^4; (P4) d log d ≤ Λ/C;
 (P5) d log S = o(θ log N) and η₀ = o(θ); (P6) log Y ≥ ω(N) log 2 + C log log N, since ω(N) ≤ log N/log B;
 (P7) log H/(13d log log H) ≥ C log log N; (P8) μ − ν ≥ η₀ and h − 2ν ≥ η₀ and h − μ + (d−2)ν ≥ η₀;
@@ -167,7 +177,10 @@ since u_z ≤ log z/(2 log log z) for z in range (here u_z ≍ D^{2/5} while log
 R(z) := z^{α̂−1}∏_{p≤B}(1 − p^{−α̂})^{−1}, computed to relative accuracy 2. Then
   R*(z)/2 ≤ R(z) ≤ 2R*(z), where R*(z) := z^{α̂−1}∏_{p≤B}(1 − p^{−α̂})^{−1} exactly, and
   ϱ(z) ≤ R*(z) ≤ (log N)^{C_R}ϱ(z)   (C_R absolute).
-With S defined in §1, (log N)^{−2C_R}/4 ≤ m ≤ 64, and S² = e^{σΛ(1+o(1))} with σ := 2θ₀/(5a). Computing S
+Moreover (existence, proved first, without using the size of S): uniformly for 1 ≤ S² ≤ e^{2σΛ},
+  log(R(X_r(S))R(X_F(S))) = −σΛ(1 + o(1)),  σ := 2θ₀/(5a).
+Hence the scan of §1 (S = 2^j for j = 0, 1, 2, …, stopping at the first success; there is no binary search and no
+monotonicity assumption) stops at some S with S² ≤ e^{(σ+o(1))Λ}; at that S, (log N)^{−2C_R}/4 ≤ m ≤ 64. Computing S
 costs O(Λ)·π(B)(log N)^{O(1)} = B^{1+o(1)}.
 
 *Proof.*
@@ -179,16 +192,20 @@ costs O(Λ)·π(B)(log N)^{O(1)} = B^{1+o(1)}.
   a factor ≤ e³, so if |α̂ − α| ≤ (log N)^{−3}, then g(α̂) − g(α) ≤ e³φ₂(α)(log N)^{−6}/2 ≤ 1. Bisection is valid
   because the defining sum is decreasing in α. Hence R*(z) ≤ e·log N·ϱ(z)(1 + o(1)); take C_R := 2 if HT's implied
   constant is absorbed, and in general C_R absolute.
+- **Existence (codex lv5unif_2 #2).** For 1 ≤ S² ≤ e^{2σΛ}, d log S ≤ dσΛ = o(θ log N) directly from the growth
+  rates d ≍ D^{1/5}, Λ = D^{2/5}λ, θ log N ≍ D^{4/5}λ; so log X_r + log X_F = θ log N(1 + o(1)) uniformly on this range,
+  and Lemma U1(iv) with the bounds ϱ ≤ R* ≤ (log N)^{C_R}ϱ gives the displayed asymptotic. At S² = e^{(σ+ε)Λ} the
+  product S²R_rR_F is therefore ≥ e^{(ε+o(1))Λ} ≥ 1, so the scan stops at or before that S. This argument uses
+  nothing about the S where the scan stops, which removes the circularity of the first draft.
 - **m.** At the chosen S, S²R(X_r)R(X_F) ≥ 1, so m = S²ρ_rρ_F ≥ S²R*_rR*_F(log N)^{−2C_R} ≥ S²R_rR_F/(4(log N)^{2C_R})
   ≥ (log N)^{−2C_R}/4. If S ≥ 2, the inequality failed at S/2, so
   S² < 4/(R_r(S/2)R_F(S/2)) ≤ 16/(R*_r(S/2)R*_F(S/2)) ≤ 16/(ρ_r(S/2)ρ_F(S/2)) ≤ 64/(ρ_r(S)ρ_F(S)),
-  using Lemma U1(i) (X(S/2) ≤ X(S) ≤ 2^{d+1}X(S/2) ≤ BX(S/2)). So m ≤ 64. The size of S² is Lemma U1(iv) with
-  log X_r + log X_F = θ log N(1 + o(1)) (by (P5) the S^d inside X_F is o(θ log N)) and
-  u log u = (θ₀/a)D^{2/5}·(2/5)λ(1 + o(1)) summed over the two sides.
+  using Lemma U1(i) (X(S/2) ≤ X(S) ≤ 2^{d+1}X(S/2) ≤ BX(S/2)). So m ≤ 64. (If S = 1, m ≤ 1 trivially.) The value
+  of σ: u log u summed over the two sides is (θ₀/a)D^{2/5}·(2/5)λ(1 + o(1)) = σΛ(1 + o(1)).
 - **Why S^d must be inside X_F.** S^d = B^{Θ(d)}, and a shift of the argument of ϱ by B^{Θ(d)} changes ϱ by
   (log N)^{Θ(d)} (Lemma U1(ii) with C ≍ d). Evaluating ρ_F at the box size without S would therefore manufacture
-  a (log N)^{Θ(d)} = τ = 1 discrepancy (codex lv5unif_1 §1 (2) makes the same point). The binary search over S
-  handles the circularity; the map S ↦ S²R(X_r(S))R(X_F(S)) is not assumed monotone. ∎
+  a (log N)^{Θ(d)} = τ = 1 discrepancy (codex lv5unif_1 §1 (2) makes the same point). The scan over S = 2^j evaluates
+  R at the actual X_F(S) each time; the map S ↦ S²R(X_r(S))R(X_F(S)) is not assumed monotone. ∎
 
 *Remark.* thmA's explicit S² = ⌈L^{θ/(2a)}⌉ gave only m = L^{o(1)} (thmA U5); at L[1/2] that sufficed. At L[2/5]
 the split raises γ to the power 2k ≍ D^{2/5}, so m must be polylogarithmic, and Lemma CS is needed.
@@ -263,8 +280,9 @@ r₀ := F̂_{g,w}(P) mod t is a unit. Then Pr_c[F_A(P) ∈ 𝒮_B] ≥ ρ_F/(log
   C₁ := ⌈σ/a⌉ + 3 fixed (since X_F/x₁ ≤ 256e(2d + 1)ϖ). If x₁ ≤ X_F, Lemma U1(i) gives ϱ(x₁) ≥ ϱ(X_F)/2; if
   x₁ > X_F, Lemma U1(ii) gives ϱ(x₁) ≥ ϱ(X_F)(log N)^{−2C_U}. Either way ϱ(x₁) ≥ ρ_F/(log N)^{2C_U}.
 - The error terms: (|F̂|/t + 1)/y ≤ 33eϖN^{−η₀/4} and 3d²V/(2H + 1) ≤ N^{−η₀}, both ≤ ρ_F·B^{−1} by (P2), (P10).
-  So the proportion of smooth values in each large layer is ≥ ρ_F/(12(log N)^{2C_U}) − 33eϖN^{−η₀/4}, and
-  Pr_c ≥ (1 − 3/ϖ)(ρ_F/(12(log N)^{2C_U}) − 33eϖN^{−η₀/4}) − N^{−η₀} ≥ ρ_F/(log N)^{C_g}, C_g := 2C_U + 4. ∎
+  So the proportion of smooth values in each large layer is ≥ ρ_F/(24(log N)^{2C_U}) − 33eϖN^{−η₀/4} (each half
+  [0, y′], [−y′, 0] contributes y′ϱ(x₁)/12 of the 2y + 1 points), and
+  Pr_c ≥ (1 − 3/ϖ)(ρ_F/(24(log N)^{2C_U}) − 33eϖN^{−η₀/4}) − N^{−η₀} ≥ ρ_F/(log N)^{C_g}, C_g := 2C_U + 5. ∎
 
 **Lemma FIB (fibres) [proved in [pp] Lemma `lem:fibres`, with V_ℓ := V].** |𝒢_P(n)| ≤ 2M/V for every n; there is an
 interval I_P of length ≥ MV/(16ℓ) − 1 on which ℓn has constant sign, MV/32 ≤ ℓ|n| ≤ 2MV and
@@ -275,6 +293,8 @@ corrected form), which is negligible against M/V ≥ N^{η₀/2}. ∎
   E_{ℓ∈J}E_{A∼𝒜}N_ℓ(A) ≥ S²ρ_rρ_F/(d·(log N)^{C_FM}),  C_FM = C(a, κ, d₀).
 
 *Proof.* [pp] Theorem `thm:FM`, with:
+- The primes of J dividing N are dropped; there are at most log N/log Y ≤ 2k of them, a fraction ≤ 2k/π_J of J
+  (Opus proof critic #6; [pp] says O(1) at fixed k).
 - #𝒫 ≥ V·(V/(2d log V)): primes in ((1 − 1/d)V, V] number ≥ V/(2d log V) by the prime number theorem with
   de la Vallée Poussin's error term, since 1/d ≥ exp(−c√(log V)) (log V ≍ (log N)^{3/5}(log log N)^{2/5}); each b
   has ≥ V coprime a with |a| ≤ V.
@@ -296,36 +316,49 @@ corrected form), which is negligible against M/V ≥ N^{η₀/2}. ∎
 The hypothesis "y = ⌊L_N[1/2, a]⌋, log x/log N in a compact set" of [lem85] §1 is used in its proof only through
 the following consequences. We take them as the hypotheses.
 
-**Regime (R′).** Fix K₀ ≥ 1 and λ ∈ (0, 1/4). Let y ≥ 2 and x, Y, Q satisfy:
+**Regime (R′)** (quantitative gaps; no fixed λ — repair after codex lv5unif_2 #1). Fix K₀ ≥ 1, and let U₀ ≥ 8 be an
+absolute constant such that the error term of Hildebrand–Tenenbaum's Theorem 3 is ≤ 1/100 for u ≥ U₀ − 1. Let y ≥ 2
+and x, Y, Q satisfy:
 - (R′1) log y ≥ 4(log log x)², (log x)^{c_D} ≤ y;
 - (R′2) u := log x/log y ≥ max((log log x)⁴, 4(2K₀ + 6)/η_D);
 - (R′3) u log(4u log y) ≤ K₀ log y;
-- (R′4) Y ≥ y^{K}, K := 2K₀ + 6; x^λY ≤ Q ≤ x^{1/2−λ}; x^{λ} ≥ y^{2K₀+7}.
+- (R′4) Y ≥ y^{K}, K := 2K₀ + 6, and the **level gap** Γ := min(log(Q/Y), log(√x/Q)) satisfies
+  Γ ≥ (2K₀ + U₀)log y + 4 log log x.
 
-**Lemma 8.5′(R′) [proved; re-check of [lem85]].** Under (R′), for x ≥ x₀(K₀, λ),
+**Lemma 8.5′(R′) [proved; re-check of [lem85]].** Under (R′), for x ≥ x₀(K₀),
   Σ_{t∈𝒯_Q} max_{(r,t)=1}|Ψ(x, y; t, r) − Ψ_t(x, y)/φ(t)| ≤ C·Ψ(x, y)·δ_𝒯·ε,
   ε := exp(−c u/log²(u + 1)) + y^{−1/2},
-and Qδ_𝒯/10 ≤ #𝒯_Q ≤ 3Qδ_𝒯 (δ_𝒯 = ϱ(Q/Y, y)/log Y), with C, c depending only on (K₀, λ) and Drappeau's constants.
+and Qδ_𝒯/10 ≤ #𝒯_Q ≤ 3Qδ_𝒯 (δ_𝒯 = ϱ(Q/Y, y)/log Y), where C, c, x₀ depend only on K₀ and on absolute constants
+(Drappeau's η_D, c_D, δ_D, C_D; HT's; C_dBT, C_α).
 
-*Proof (every use of regime (R) in [lem85], replaced).*
+*Proof (every use of regime (R) and of λ in [lem85], replaced).*
 - (α1)/(α2) ([lem85] §2): 1 − β(z, y) ≤ (log(u log y) + C_α log log y)/log y ≤ 1/4 for 2y ≤ z ≤ x, by (R′1).
 - E7: ϱ(z, y) ≥ y^{−1}exp(−u_z log(4u_z log y)) ≥ y^{−1−K₀} for 2y ≤ z ≤ x, by (R′3) (u_z ≤ u). This replaces
   "u log(4u log y) = (ξ/a²)(1 + o(1))log y".
-- Lemma SM (a): Drappeau's Lemme 5 at z = x/d ≥ x^{1/2} needs (log z)^{c_D} ≤ y ≤ z and R₁ = y^K ≤ z^{η_D}; the
-  latter is K log y ≤ (η_D/2)log x, i.e. u ≥ 2K/η_D, which is (R′2). The transfer factor is
-  R₁^{1−β′} ≤ (log x)^{K(1+C_α)} by (α2). The saving exp(−δ_D(u/2)/log²(u/2 + 1)) beats
-  (log x)^{K(1+C_α)+1} because u/log²u ≥ (log log x)^{4}/(16(log log log x)²) by (R′2).
-- Lemma SM (b) and Part 2: Corollary LS′ gives ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/R + y^{1/2}x^{1/2}Q₀) with R = y^K
-  (resp. Y). Against Ψ(x, y)ϱ(·, y) ≥ x·y^{−2−2K₀} (E7), the first term is ≤ y^{−1/2} since K = 2K₀ + 6 and
-  Y ≥ y^K, and the second is ≤ x^{−λ}y^{2K₀+7}(log x)² ≤ x^{−λ/2} by (R′4).
-- (i), the count of 𝒯_Q: HT Theorem 3 at z = Q/(2ℓ) ≥ x^λ/4, where α(z, y) → 1 by (R′1). Unchanged.
+- Lemma SM (a): Drappeau's Lemme 5 at z = x/d ≥ x^{1/2} (d ≤ Q′ ≤ √x) needs (log z)^{c_D} ≤ y ≤ z and
+  R₁ = y^K ≤ z^{η_D}; the latter is K log y ≤ (η_D/2)log x, i.e. u ≥ 2K/η_D, which is (R′2). The transfer factor is
+  R₁^{1−β′} ≤ (log x)^{K(1+C_α)} by (α2). The saving exp(−δ_D(u/2)/log²(u/2 + 1)) beats (log x)^{K(1+C_α)+1}
+  because u/log²u ≥ (log log x)⁴/(16(log log log x)²) by (R′2).
+- Lemma SM (b) and Part 2: Corollary LS′ gives ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/R + y^{1/2}x^{1/2}Q₀) with R = y^K and
+  Q₀ = Q′ (resp. R = Y and Q₀ = Q). The target is Ψ(x, y)ϱ(Q′, y) (resp. Ψ(x, y)δ_𝒯), and by E7 both are
+  ≥ x·y^{−2−2K₀}/log Y. Relative to the target, the first term is ≤ C(log x)³y^{2K₀+9/2}/R ≤ y^{−1/2} because
+  K = 2K₀ + 6 and Y ≥ y^K, and the second is ≤ C(log x)³y^{2K₀+7/2}·Q₀/√x ≤ C(log x)³y^{2K₀+7/2}e^{−Γ} ≤ y^{−1/2}
+  by (R′4) (this is the uniform saving codex lv5unif_2 #1 asks for).
+- Part 1: Lemma SM applies to Q′ = Q/ℓ, since 2y ≤ e^{Γ}/2 ≤ Q/(2Y) ≤ Q′ ≤ Q ≤ √x·e^{−Γ}.
+- (i), the count of 𝒯_Q: HT Theorem 3 at z = Q/(2ℓ) ≥ e^{Γ}/4 ≥ y^{U₀−1}, so u_z ≥ U₀ − 1, and α(z, y) ≥ 0.99 by (α2)
+  and (R′1); the constants 0.8 and 4.1 of [lem85] follow.
 - E2 (lift averaging), E3, E4, E5, E6, E8, Lemma LS, Perron: regime-free. ∎
 
-**In the design.** y = B, x ∈ 𝒳 (so log x = θ log N(1 + o(1)) and u ≍ D^{2/5}), Y as in §1, Q ≈ MV. (R′1): log B ≍ Λ
-≫ (log log N)². (R′2): u ≍ D^{2/5} ≫ (log log N)⁴. (R′3): u log(4u log B)/log B → (4/5)θ_F₀/a², so K₀ := 1 + ⌈θ₀/a²⌉
-works. (R′4): log Y ≍ Λ_{3/5} ≫ K log B; with λ := η₀/(2ξ) we have x^{λ} = N^{η₀/2}(1+o(1)) ≫ B^{2K₀+7} (P2) and
-Q/Y = N^{μ−ν}·O(1) ≥ x^λ (P8). Codex lv5unif_1 §1(b) notes the same: B = L_x[1/2, Θ(1)], and a fixed relative
-level margin is needed, which (P8) supplies. ∎
+**In the design.** y = B, x ∈ 𝒳 (so log x = θ log N(1 + o(1)) and u ≍ D^{2/5}), Y as in §1, Q one of the dyadic
+values covering [MV/32, 2MV]. (R′1): log B ≍ Λ ≫ (log log N)². (R′2): u ≍ D^{2/5} ≫ (log log N)⁴.
+(R′3): u log(4u log B)/log B → (4/5)θ_F₀/a², so K₀ := 1 + ⌈θ₀/a²⌉ works. (R′4): log Y ≍ Λ_{3/5} ≫ K log B; and, for
+every x ∈ 𝒳 (log x ≥ (μ + h + dν)log N − 2 log ϖ) and every such Q,
+  log(Q/Y) ≥ (μ − ν)log N − O(Λ) ≥ η₀ log N − O(Λ),
+  log(√x/Q) ≥ ((h − μ + (d−2)ν)/2)log N − O(Λ) ≥ (η₀/2)log N − O(Λ)
+by the floors (P8). So Γ ≥ (η₀/2)log N − O(Λ), which exceeds (2K₀ + U₀)log B + 4 log log N by (P2). No step uses a
+fixed λ; the gap grows like (log N log log N)^{1/2}, and every constant depends only on K₀ = K₀(a, κ, d₀).
+Codex lv5unif_1 §1(b) notes that B = L_x[1/2, Θ(1)]; codex lv5unif_2 #1 notes that the earlier fixed-λ formulation did
+not justify the application with λ_N = η₀/(4ξ) → 0, which this version removes. ∎
 
 ---
 
@@ -435,7 +468,8 @@ is ≤ 2(M_rowsC_trial/ς_A + T_post) (≤ 2 expected rounds, Theorem DD). Avera
 
 - **Lemma C, rows, columns:** degree-free. Computing the roots of f mod r for all r ≤ B costs π(B)·poly(d, log B).
 - **Lemma H:** log₂|H| ≤ d log₂|D| + d + ½log₂|disc g| + (d−1)log₂(d + log₂|disc g|). With ‖f‖_∞ ≤ 3MH
-  (Lemma GB_w and (P2)): log|D|, log|disc g| = O(d(μ + h)log N + d log d) = O(log N), since d(μ + h) = O(dθ) = O(1).
+  (Lemma GB_w and (P2)): log|D| = log|f_d disc f| = O(d(μ + h)log N + d log d) = O(log N), since d(μ + h) = O(dθ) = O(1);
+  and disc g = f_d^{(d−1)(d−2)}disc f gives log|disc g| = O(d²(μ + h)log N + d log d) = O(d log N) (codex lv5unif_2 #5).
   So log|H| = O(d log N) and t_χ := ⌈5d(ln|H|_bd + 2 ln log N)⌉ = O(d² log N). Polynomial.
 - **Lemma E (≤ 1 exceptional class per field):** valid for every odd d. Stark's Lemma 8 with c(L) = 4(2d)! for
   L_h = K(√h) (non-normal over Q); Landau with conductors ≤ Δ̄^{1/d}.
@@ -505,8 +539,10 @@ almost-sure termination from the finite expectation. ∎
 
 **Exact cost arithmetic (`params.py`, rationals only).** 1/(1 − 2^{−2/5}) ∈ [4.12981, 4.12983] (bracketed by
 checking p⁵ against 4q⁵ exactly). The optimum of (10.3) over a rational grid, by C_γ: 3.517 (C_γ = 0;
-a = 3/5, κ = 1/8, d₀ = 1), 4.047 (C_γ = 1), 5.038 (C_γ = 5), 6.498 (C_γ = 20). The recursion term (a + s)·4.13
-binds in every case; linear algebra (2a) never binds. These numbers illustrate the shape of c; C_γ itself is not
+a = 3/5, κ = 1/8, d₀ = 1), 4.047 (C_γ = 1), 5.038 (C_γ = 5), 6.498 (C_γ = 20). At each optimum the special-q term
+a + s + max(a, σ) and the recursion term (a + s)/(1 − 2^{−2/5}) nearly balance (for C_γ = 0: 3.5167 against 3.5103, so
+the special-q term binds; for C_γ = 5 the recursion term binds); linear algebra (2a) never binds. (Corrected after
+codex lv5unif_2 #7.) These numbers illustrate the shape of c; C_γ itself is not
 computed (it contains HT's implied constants), and C_γ also depends on (a, κ, d₀) through C₀ and C₁.
 
 ---
@@ -518,35 +554,55 @@ F_j := F̂_{g,w_j} + G·R_{c_j}, all with F_j(g₀, g₁) = Nw_j and the common 
 (a″_k), also works: Lemma W is not needed.) A prime ℓ is MF-descendable if some P ∈ 𝒫 ∩ Λ_ℓ(g) has Y_P = 1
 (rational, filtered) and F_j(P) ∈ 𝒮_B for some j.
 
-**Proposition MF [proved in outline: the moment part is proved; the multi-field post-processing is sketched].**
-Let γ_r := Pr_{g,ℓ}[∃P with Y_P = 1 and |G(P)| good]. If J_f ≥ (log N)^{C_g}/ρ_F, then
-  γ_MF := Pr_{g,(w_j,c_j),ℓ}[ℓ MF-descendable] ≥ γ_r/2,  and  γ_r ≥ (log N)^{−C}.
+**Design MF, with an extra height floor.** As above, and additionally H ≥ exp(13(σ + 1)·d·Λ·log log N) (that is,
+h ≥ h_*(μ) + η₀ + 13(σ + 1)dΛ log log N/log N; the extra term is ≍ (log N)^{−2/5}(log log N)^{7/5} = o(θ), so it does
+not move the exponent). This is needed because the pointwise bound below concerns raw fields, and post-processing needs
+accepted ones (codex lv5unif_2 #3: in the kernel-binding regime Lemma IR's rejection bound exp(−log H/(13d log log H))
+= exp(−Θ(D^{2/5})) is far *larger* than ρ_F = exp(−Θ(D^{2/5}log log N)), so without the extra floor all the
+pointwise smoothness mass could sit in rejected fields).
+
+**Proposition MF [moment part proved; multi-field post-processing proved in outline].** Let
+γ_r := Pr_{g,ℓ}[∃P ∈ 𝒫 ∩ Λ_ℓ(g) with Y_P = 1 and |G(P)| good]. If J_f ≥ 4(log N)^{C_g}/ρ_F, then
+  γ_MF := Pr[ℓ is MF-descendable through an *accepted* field] ≥ γ_r/2,  and  γ_r ≥ (log N)^{−C}.
 *Proof.*
 - **Decoupling.** Condition on (g, ℓ) and on the event that some P has Y_P = 1 with t = |G(P)| good; let P₀ be the
   first such P in a fixed order (a function of (g, ℓ)). By Lemma GM-U, for every w_j,
-  Pr_{c_j}[F_j(P₀) ∈ 𝒮_B] ≥ ρ_F/(log N)^{C_g} =: p₁ (its residue c_{P₀}w_j is a unit, [pp] Lemma `lem:coprime`).
-  The pairs (w_j, c_j) are independent of each other and of (g, ℓ), so
-  Pr[no j | g, ℓ] ≤ (1 − p₁)^{J_f} ≤ e^{−1} < 1/2.
+  Pr_{c_j}[F_j(P₀) ∈ 𝒮_B] ≥ ρ_F/(log N)^{C_g} =: p₁ (its residue c_{P₀}w_j is a unit, [pp] Lemma `lem:coprime`). The
+  rejection event of field j depends on (g, w_j, c_j) only, and by Lemma IR (stated for fixed g, w, with c uniform) and
+  [pp] Lemma `lem:reject`, Pr_{c_j}[rejected | g, w_j] ≤ exp(−log H/(13d log log H)) + 3/(2H + 1) + 1/W ≤ p₁/2 by
+  the extra floor. So Pr_{c_j}[F_j(P₀) ∈ 𝒮_B and field j accepted | g, ℓ, w_j] ≥ p₁/2. (A field that makes a factor
+  exit ends the algorithm successfully.) The pairs (w_j, c_j) are independent of each other and of (g, ℓ), so
+  Pr[no accepted j with F_j(P₀) smooth | g, ℓ] ≤ (1 − p₁/2)^{J_f} ≤ e^{−2} < 1/2.
 - **The rational moment.** N_r^{good} := #{P : Y_P = 1, t good}. E N_r^{good} ≥ E N_r/2 ≥ S²ρ_r/(log N)^C (the
   rational part of FM-U, with the bad-mass bound of §4), and E[N_r^{good}(N_r^{good} − 1)] ≤ E[N_r(N_r − 1)] ≤
-  (log N)^C S⁴ρ_r² ([pp] Prop `prop:R` = Theorem R, uniform: it is rational-only, uses Lemma `lem:reg` with ≤ 200S²
-  partners and DS-U). With S² ≥ (log N)^{−C}/ρ_r (a rational-only Lemma CS), Paley–Zygmund gives γ_r ≥ (log N)^{−C}. ∎
+  (log N)^C S⁴ρ_r² ([pp] Prop `prop:R` = Theorem R; it is rational-only and uniform: Lemma `lem:reg` gives ≤ 200S²
+  partners, and its divisor switching is DS-U). With S² ≥ (log N)^{−C}/ρ_r (the rational-only analogue of Lemma CS),
+  Paley–Zygmund gives γ_r ≥ (log N)^{−C}. ∎
 - **Why no algebraic second moment is needed.** The one-point bound is a statement about one fixed candidate, and
   independence across fields turns it into a probability. Codex lv5unif_1 §2 gives a different valid argument
   (conditional PZ on the full count, needing an averaged algebraic second moment with exp(o(Λ)) loss, and only
   exp(o(Λ)) fields). Its counterexample — fields that all succeed on the same deterministic target set — is
   excluded here by the pointwise lower bound p₁ > 0 at every (g, ℓ) with a good rational candidate.
-- **Post-processing with J_f fields (sketch).** Columns: the shared rational ones, and for each field its (r, s),
-  parity and character columns. Each field j has its own residual group H_j with ≤ 1 exceptional class after
-  characters, so H₀ ⊂ ⊕_j H_{j,0} has order ≤ 2^{J_f}, and three tests no longer suffice. Take J_f + 2 independent
-  kernel vectors; Algorithm SQ in each field decides whether each vector's field-j product is a square, giving a
-  J_f × (J_f + 2) bit matrix; a nonzero F₂-combination in its right kernel is a square in every field (codex found
-  the same fix). The congruence is Y := √q_S·∏_j t_j^{−E_j/2}ψ(η_j)(ψ(γ⁻_{j,S})ψ(g_j′(β_j)))^{−1}. (T) holds because
-  every step is a function of certificates and coins. Rows needed: ≈ J_f(d + 1)π(B).
+- **Post-processing with J_f fields (outline, repaired after codex lv5unif_2 #4).**
+  - Columns: the shared rational ones (sign, p ≤ B), and for each field j its parity, (r, s) and character columns.
+    Per field, t_χ^{(j)} := ⌈5d(ln|H_j|_bd + 2 ln log N + ln(4J_f))⌉ characters, so that, by Lemma X and a union bound,
+    with probability ≥ 3/4 every field has |H_{j,0}| ≤ 2 simultaneously. Rows: M_rows ≥ C_col^{MF} + J_f + 12, so the
+    kernel has dimension ≥ J_f + 12.
+  - Linearity: φ_j is F₂-linear on the kernel K of all columns (Lemma H's φ, restricted), with values in H_{j,0}. On
+    the event |H_{j,0}| ≤ 2, H_{j,0} ⊂ F₂, so b_j(s) := [Γ_{j,s} is not a square] = φ_j(s) is an F₂-linear functional
+    on K.
+  - Take J_f + 2 independent uniform kernel vectors s_i (independent with probability ≥ 1 − 2^{−9}); compute the
+    J_f × (J_f + 2) bit matrix b_j(s_i) with Algorithm SQ in each field; take a nonzero x in its right kernel (it
+    exists, J_f equations in J_f + 2 unknowns) and S := Σx_is_i ≠ 0. Then φ_j(S) = 0 for every j, i.e. every field's
+    product is a square. **Verify exactly** with SQ in every field; on failure (characters bad for some field),
+    resample characters and kernel vectors. Expected O(1) repetitions; Las Vegas.
+  - Congruence: Y := √q_S·∏_j t_j^{−E_j(S)/2}ψ(η_j)(ψ(γ⁻_{j,S})ψ(g_j′(β_j)))^{−1}, with one shared ψ: x ↦ m. (T) holds:
+    every quantity is a function of certificates and coins.
+  - Cost: J_f(J_f + 2) SQ calls and (J_f dB)² linear algebra; all exp(O(Λ)).
 - **Cost and exponent.** J_f = L^{σ_F + o(1)}, σ_F := log(1/ρ_F)/Λ. Per special-q: ≤ 200S_r² rational values with
-  S_r² ≈ 1/ρ_r, then J_f algebraic values for each of ≈ S_r²ρ_r rationally smooth candidates. Linear algebra:
-  (J_f dB)². All exponents are finite, so Theorem U's conclusion α = 2/5 also follows from Proposition MF, with
-  a different constant. **The trick does not lower α**: (R1) and (R3) of §13 are unchanged.
+  S_r² ≈ 1/ρ_r, then J_f algebraic values for each of ≈ S_r²ρ_r rationally smooth candidates. All exponents are
+  finite, so Theorem U's conclusion α = 2/5 also follows from Proposition MF, with a different constant, once the
+  outlined post-processing is written in full. **The trick does not lower α**: (R1) and (R3) of §13 are unchanged.
 
 So the answer to the task's item 2: yes, conditioning on g decouples the algebraic sides; the conditional moment
 needed is only the one-candidate first moment Lemma GM-U (provable, proved), and the algebraic precision can be as
@@ -564,7 +620,7 @@ weak as ρ_F·exp(−o(Λ)) (the loss only increases J_f). It is an alternative 
 - Failure mode avoided (codex): if η₀ log N ≤ log S, then W ≤ t for some moduli t ≤ 2MV and Lemma W fails; (P2)
   excludes this. Codex's alternative η₀ ≍ 1/d also works (then C_W = O(d)).
 - No other η₀-dependence: the level and window floors use η₀ only as an additive slack, and Lemma 8.5′(R′) uses it
-  through λ = η₀/(2ξ) with x^λ = N^{η₀/2}(1 + o(1)).
+  through the level gap Γ ≥ (η₀/2)log N − O(Λ) (no fixed λ; §5).
 
 ---
 
@@ -592,7 +648,41 @@ bounds for factoring.
 
 ## 15. Reviews
 
-[Filled in after the reviews.]
+All findings were adjudicated; every valid fix is applied in the text above.
+
+**GPT-6.1-sol blind round `codex/lv5unif_1` (xhigh; items 1–2 of the task, before my draft existed).** Independent
+verdict: τ = 0 after repairs; α = 2/5 reached; 3/7 not forced by precision; the shared-side trick works but needs more
+than conditional independence; factorial-bit characters are a valid LV6 repair. Its specific contributions, adopted:
+the Kern counterexample C_d ≥ (3/2)^d/9 at H = V² (so the height margin is needed); the Lemma W failure mode for
+η₀ = (log N)^{−2}; the L2_fam cushion (B instead of L_N[1/2,1]); S^d inside X_F in both moments; the corrected Möbius
+error 2^{ω(t)} ≤ exp(O(log t/log log t)); the multi-field post-processing repair (bit matrix over J_f + 2 kernel
+vectors). Its mixed-moment version of the MF amplification is recorded in §11 as an alternative. It used a narrow
+ℓ-window where we use a common V; both work.
+
+**GPT-6.1-sol adversarial referee `codex/lv5unif_2` (xhigh): ACCEPT WITH FIXES for Theorem U** ("I found no surviving
+exponential loss in the displayed relative moment calculation"; it confirmed Kern-U, the GM-U/FM-U envelope, the exact
+cancellation V⁴/Y² ≤ 4S⁴ in LD*-U Step 7, L2-U/W-U/DS-U, K-U/select-U, LV6-U and Lemma F_α). Findings:
+
+| # | severity | finding | adjudication |
+|---|---|---|---|
+| 1 | MAJOR | Lemma 8.5′(R′) fixed λ, applied with λ_N → 0; "x^{−λ}y^{2K₀+7}(log x)² ≤ x^{−λ/2}" did not follow | accepted: §5 rewritten with the quantitative level gap Γ, no λ; constants depend on K₀ only |
+| 2 | MAJOR | Lemma CS: size of S proved circularly through (P5); "binary search" with no monotonicity | accepted: existence proved first on S² ≤ e^{2σΛ}; linear scan over powers of 2 |
+| 3 | MAJOR | Prop MF: pointwise bound is for raw fields; Lemma IR's rejection exp(−Θ(D^{2/5})) can exceed ρ_F | accepted: extra height floor log H ≥ 13(σ+1)dΛ log log N (o(θ log N)); pointwise bound now for accepted fields |
+| 4 | MAJOR | MF post-processing: character union bound over J_f fields; kernel dimension; linearity of the square indicator | accepted: per-field ln(4J_f) characters, rows ≥ C_col + J_f + 12, linearity on |H_{j,0}| ≤ 2, final exact SQ verification; still labelled outline |
+| 5 | MINOR | log|disc g| = O(d log N), not O(log N) | accepted (§9); conclusions unchanged |
+| 6 | MINOR | `params.margins` not a complete certificate | accepted: 8 further checks added (22 in all), wording narrowed |
+| 7 | MINOR | "recursion term binds in every case" false | accepted: the two terms balance at the optimum (§10) |
+
+**Opus proof critic (read-only, independent; reviewed the pre-fix snapshot): ACCEPT WITH FIXES, no FATAL.** It
+re-derived every constant of Kern-U, CS, U1, GM-U, FM-U, LD*-U Step 7 (power count M⁰H⁰V⁴Y^{−2}, d-constant ≤ 9d),
+L2-U, W-U, D-U, K-U, select-U, (10.1)/(10.3), Lemma F_α and LV6-U, and ran its own brute-force Kern-U check (300 cases,
+0 violations, maximum 1.18). Findings: MF rejection across fields (MAJOR; same as codex #3; fixed as there); Lemma 8.5′(R′)
+λ → 0, too-weak (R′4), zero slack with λ = η₀/(2ξ) (same as codex #1, and my own pre-review fix to η₀/(4ξ); now
+superseded by the gap formulation); binding term (codex #7); disc g (codex #5); common V in Lemma `lem:reg` (fixed in §1:
+≤ 400S² points, q ≤ 4S²); primes of J dividing N number ≤ 2k (stated in FM-U); stale strings in `params.TAU_TABLE` and
+GM-U's per-layer constant 1/24 (fixed). Its weakest point: §5, now re-proved in gap form.
+
+**Opus literature critic.** See §14.
 
 ---
 

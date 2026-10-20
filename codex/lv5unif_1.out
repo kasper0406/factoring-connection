@@ -1,0 +1,599 @@
+**The apparent \(\tau=1\) barrier is removable.** After matching the smoothness densities and repairing the geometric bounds, the listed moment ingredients admit \(\tau=0\) at the \(2/5\) boundary. The shared-rational-side construction also has a valid amplification argument, but conditional independence alone does not establish it.
+
+I distinguish two claims throughout:
+
+- **Proved below, relative to the supplied internal chain:** the required uniformity repairs and their consequences for that framework.
+- **Established in the literature:** no verified classical factoring bound \(L_N[\alpha,c]\), \(\alpha<1/2\), for arbitrary \(N\). The project’s internal chain remains unrefereed.
+
+The files as written do not state the growing-degree theorem proved by the repairs below.
+
+**1. Precision bookkeeping**
+
+Write
+\[
+T=\log N,\qquad \lambda=\log\log N,\qquad D=T/\lambda,\qquad
+\Lambda_\alpha=D^\alpha\lambda.
+\]
+Use \(\beta(x,B)\) for the saddle point, reserving \(\alpha\) for the complexity exponent.
+
+At the balanced scales in the question,
+\[
+\log x\asymp D^{2\alpha}\lambda,\qquad
+\log B=aD^\alpha\lambda,\qquad
+u=\frac{\log x}{\log B}\asymp D^\alpha.
+\]
+Consequently,
+\[
+1-\beta(x,B)\asymp D^{-\alpha},\qquad
+\log\frac1{\varrho(x,B)}=\Theta(\Lambda_\alpha).
+\tag{1}
+\]
+
+This immediately settles an important normalization issue. For the shifts occurring here, the local smooth-number estimates give
+\[
+\log\frac{\varrho(x/z,B)}{\varrho(x,B)}
+=(1-\beta(x,B))\log z+o(1)
+\]
+when the displayed main term tends to zero; bounded-factor versions suffice elsewhere. These are consequences of Hildebrand–Tenenbaum’s local ratio theorem; see their 1993 survey, Corollary 1.7. [Hildebrand–Tenenbaum](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf)
+
+For \(d\asymp D^{1-2\alpha}\), \(\alpha\ge2/5\), this yields:
+
+| Shift of the argument | Effect on \(\varrho\) |
+|---|---|
+| \(2^{O(d)}\) | \(1+o(1)\) |
+| \(d^{O(d)}\) | \(1+o(1)\) |
+| \(B^c\), fixed \(c\) | \((\log N)^{O(c)}\) |
+| \(B^{O(d)}\) | potentially \(\exp(O(d\log\log N))\) |
+
+Thus an exponential factor **in a norm bound** need not be an exponential precision loss. An exponential factor **multiplying an upper moment after normalization** is different.
+
+Also, the \(S^d\) contribution must be retained in both occurrences of the algebraic density:
+\[
+X_F\asymp dMH V_{\max}^d.
+\tag{2}
+\]
+Dropping \(S^d\) from only the lower-bound normalization manufactures a \((\log N)^{O(d)}\) discrepancy.
+
+For
+\[
+\mathbb EN\ge m/P,\qquad
+\mathbb E[N(N-1)]\le Qm^2,\qquad
+m=S^2\rho_r\rho_F,
+\]
+the correct conclusion is
+\[
+\gamma\ge \frac1{P/m+QP^2}.
+\tag{3}
+\]
+Only \(Q\), \(P\), and whether \(m\) is sufficiently large matter. Common smoothness-density factors cancel.
+
+**1(a). FM: \(\tau=0\), after an explicit uniform rewrite.**
+
+The LV-type coefficient argument has polynomial dimension dependence:
+
+- The small representative construction for \(\phi_P\) has coordinate bound \(O(V)\), independent of \(d\). Its exponentially large cardinality is not a probability loss or an enumeration cost.
+- Convolving the \(d\) small kernels produces displacement \(O(dV)\).
+- The boundary error is \(O(d^2V/H)\).
+- Flattening costs \(O(\omega^{-1})\).
+- The displacement of \(\widehat F\) costs
+  \[
+  O\!\left(\exp(O(d\log d))\,\omega N^{-\eta_0/2}\right)
+  \tag{4}
+  \]
+  using even the coarse coefficient bounds.
+
+Take \(\omega=B^C\), with fixed \(C\) larger than a uniform upper bound for \(\log(1/\rho_F)/\log B\). All these errors are \(o(\rho_F)\) provided
+\[
+\eta_0T\gg \Lambda_\alpha+d\log d+\log d.
+\tag{5}
+\]
+The parameter choice given below satisfies this with substantial room.
+
+For every good rational modulus, the uniform-piece argument then gives
+\[
+\Pr_{w,c}\bigl(F(P)\text{ is }B\text{-smooth}\mid g,P\bigr)
+\ge \rho_F/(\log N)^C,
+\tag{6}
+\]
+uniformly in \(d,k\), with an absolute exponent after fixing the scaled parameters.
+
+The remaining losses are prime-\(b\) density, coprime-fibre density, the grid size, and fixed powers of \(\log N\). Narrowing the \(b\)-window as below adds only a polynomial factor in \(d\).
+
+One correction to the old fibre proof is necessary: replace “\(2^{\omega(t)}=N^{o(1)}\)” by the uniform estimate
+\[
+2^{\omega(t)}\le
+\exp\!\left(O\!\left(\frac{\log t}{\log\log t}\right)\right).
+\]
+Here \(\log(M/V)\asymp\log t\), so the Möbius error remains negligible.
+
+Hence
+\[
+\mathbb EN\ge
+\frac{S^2\rho_r\rho_F}{d^{O(1)}(\log N)^C}.
+\tag{7}
+\]
+
+**Status:** proved by this quantitative version of the internal FM argument, using the restricted BV result below. Published LV alone supplies neither this precision statement nor the special-\(q\) second moment. Its relevant coefficient arguments are Lemmas 5.13, 5.18 and 5.20; its Theorem 5.4 is a first moment. [Lee–Venkatesan](https://arxiv.org/pdf/1805.08873)
+
+**1(b). Lemma 8.5′: the proposed regime still admits \(\tau=0\).**
+
+The essential observation is
+\[
+\log B\asymp\sqrt{\log x\,\log\log x}.
+\tag{8}
+\]
+Thus \(B\) is an \(L_x[1/2,\text{constant}]\) bound, even though it is \(L_N[\alpha,a]\).
+
+Here is a uniform formulation sufficient for FM. Assume fixed \(\lambda_0>0\), fixed sufficiently large \(K\), and
+\[
+B^K\le Y,\qquad x^{\lambda_0}Y\le Q\le x^{1/2-\lambda_0}.
+\tag{9}
+\]
+Then the proof in `lem85_results.md` works with
+\[
+\varepsilon_N=
+\exp\!\left(-c\frac{u}{\log^2(u+1)}\right)+B^{-c}
++x^{-\lambda_0/2}.
+\tag{10}
+\]
+In particular,
+\[
+\sum_{t\in\mathcal T_Q}\max_{(r,t)=1}|E(x,B;t,r)|
+\ll \Psi(x,B)\frac{\varrho(Q/Y,B)}{\log Y}\,\varepsilon_N.
+\tag{11}
+\]
+
+The uniformity checks are:
+
+1. From (1), all smoothness densities used in this proof are \(B^{-O(1)}\), with uniform constants.
+2. Therefore the large-conductor cutoff \(R_1=B^K\) has **fixed** \(K\).
+3. The small-conductor transfer costs
+   \[
+   R_1^{1-\beta(Q/Y,B)}
+   =\exp(O(K\log u))=(\log N)^{O(K)}.
+   \]
+4. The saving \(\exp(-cu/\log^2u)\) absorbs that factor, the FM grid, and any fixed power of \(d\).
+5. The large-conductor terms
+   \[
+   B^{O(1)}\left(\frac{x}{Y}+x^{1/2}Q\right)
+   \]
+   are negligible relative to the right side’s main scale, by (9).
+
+The external small-conductor input is exactly Drappeau, *Théorèmes de type Fouvry–Iwaniec pour les entiers friables*, **Compositio Math. 151 (2015), 828–862, Lemme 5**. Its constants and conductor range are absolute; taking \(A<1\) gives the stated effective implied constant. [Drappeau, Lemme 5](https://arxiv.org/pdf/1307.7554)
+
+At \(\alpha=2/5\),
+\[
+\log x\asymp D^{4/5}\lambda,\qquad
+\log Y\asymp D^{3/5}\lambda,\qquad
+\log B\asymp D^{2/5}\lambda.
+\]
+Thus \(Y\gg B^K\), while \(Y=x^{o(1)}\). There is no conflict with (9).
+
+For a special-\(q\) interval of relative width \(1/d\), apply (11) to its containing dyadic interval and use positivity. This loses at most \(O(d)\) in the relative error, still absorbed by (10).
+
+**Important qualification:** the three scales \(x,B,Y\) alone do not imply the lemma. A fixed relative level margin such as (9) is needed. It is feasible in this framework.
+
+**1(c). Kern: an exponential constant is intrinsic at bare \(H=V^2\), but disappears with \(H\gg dV^2\).**
+
+There is a concrete counterexample to a polynomial \(C_d\) under the literal hypothesis \(H\ge V^2\).
+
+Take primes \(b=V\), \(b'<b-1\), with \(b'/b\to1\), and
+\[
+P=(1,b),\qquad P'=(1,b'),\qquad H=b^2.
+\]
+Put
+\[
+Q=(bx-y)(b'x-y).
+\]
+Every degree-\((d-3)\) form with coefficients in \(\{-1,0,1\}\), multiplied by \(Q\), lies in \(\ker\Phi\cap C_H\), because
+\[
+\|Q\|_1=bb'+b+b'+1=(b+1)(b'+1)<b^2.
+\]
+There are \(3^{d-2}\) distinct such vectors. Meanwhile
+\[
+\frac{\|v\wedge v'\|}{|\Delta|}
+\ge (bb')^{d-2}.
+\]
+The proposed inequality therefore forces
+\[
+C_d\ge
+\frac{3^{d-2}b^4(bb')^{d-2}}{(2b^2+1)^d}.
+\]
+Letting \(b\to\infty\) for each \(d\),
+\[
+C_d\ge \frac19(3/2)^d.
+\tag{12}
+\]
+This concerns the uniform kernel lemma as stated; it does not assert that this example satisfies the special-\(q\) determinant condition.
+
+There is nevertheless a simple polynomial-constant replacement.
+
+The monomial basis of
+\[
+K=Q\,\mathbb Z[x,y]_{d-3}
+\]
+is banded: each coordinate receives contributions from at most three basis vectors. Its fundamental parallelepiped therefore has \(\ell^\infty\)-radius at most \(4V^2\), **independent of \(d\)**.
+
+Let \(D_{\max}\) be the largest absolute \(2\times2\) minor of \([v;v']\). Projection onto the other \(d-2\) coordinates bounds every section of a cube of radius \(R\) by
+\[
+(2R)^{d-2}\frac{\|v\wedge v'\|}{D_{\max}}
+\le d(2R)^{d-2}.
+\]
+Using \(\det K=\|v\wedge v'\|/|\Delta|\), disjoint fundamental cells give
+\[
+\Pr[\Phi(c)=z]
+\ll
+d\left(1+\frac{4V^2}{H}\right)^{d-2}
+\frac{|\Delta|}{H^2\|v\wedge v'\|}.
+\tag{13}
+\]
+Hence, for \(H\ge dV^2\),
+\[
+\Pr[\Phi(c)=z]\ll
+d\,\frac{|\Delta|}{H^2\|v\wedge v'\|}.
+\tag{14}
+\]
+
+The growing-degree parameters below already satisfy \(H/(dV^2)\to\infty\) rapidly.
+
+**Verdict:** bare-height Kern has an intrinsic exponential loss; its \(\tau=1\) contribution is removable by a polynomial height increase, or simply by using the available height margin. The \(d^{O(d)}\) loss from the original cube enlargement is unnecessary.
+
+**1(d). \(L2_{\rm fam}\): \(C_0\) can remain fixed, giving \(\tau=0\).**
+
+Use the actual densities from (2), and replace the discretionary old slack \(L_N[1/2,1]\) in the cutoff definition by \(B\):
+\[
+R_0=B^{C_0}\ge
+\frac{64S^2B}{\rho_r\rho_F}.
+\tag{15}
+\]
+Because \(S^2=B^{O(1)}\) and \((\rho_r\rho_F)^{-1}=B^{O(1)}\), a fixed \(C_0\) suffices.
+
+The dimension enters only through the sizes \(X_F,X_r\) and the comparisons ensuring that the large-sieve remainder is small. The DS losses are shifts by \(B^{O(C_0)}\), hence \((\log N)^{O(C_0)}\), with fixed exponent.
+
+The four remainder ratios in the note become, up to fixed \(B\)-powers and polynomial factors,
+\[
+\frac{q}{R_0\rho_r\rho_F},\quad
+N^{-h-(d+1)\nu}B^{O(1)},\quad
+Y^{-1}B^{O(1)},\quad
+N^{(5-d)\nu-h}B^{O(1)}.
+\tag{16}
+\]
+They tend to zero for the explicit parameters below. Narrowing \(J\) multiplies the conductor-\(\ell\) terms by \(O(d)\), which changes nothing.
+
+Keeping the obsolete \(L_N[1/2,1]\) cushion would unnecessarily force
+\[
+C_0\gtrsim D^{1/2-\alpha}\asymp d^{1/2}.
+\]
+That can manufacture a spurious \(\tau=1/2\) loss. The proof does not require this cushion.
+
+**1(e). LD*: the “12 partners” is harmless; the wide geometric envelopes are not.**
+
+The individual steps have the following dependence:
+
+- **Kernel:** handled by (14).
+- **AM–GM:** absolute factor only.
+- **Prime multiplier:** Lemma W, discussed below.
+- **Rational fibre DS:** fixed-\(C_0\) logarithmic loss.
+- **Partners:** the bound \(12\) is absolute. It has no hidden \(d\) or \(k\).
+- **Harmonic summation:** \(\sum_{q\le2S^2}\tau(q)/q\ll(1+\log S)^2\).
+- **Geometric assembly:** this is where exponential losses occur.
+
+With the original windows, two factors are genuinely present in the displayed upper bound:
+\[
+b^{-(d-2)}b'^{-(d-2)}
+\le 2^{2d-4}V^{-2d+4},
+\tag{17}
+\]
+and
+\[
+(V_{\max}/V_-)^{2d+O(1)}=\exp(O(d)).
+\tag{18}
+\]
+They are multiplicative moment discrepancies. The smoothness-density adjustment for the corresponding \(2^{O(d)}\) argument shift is only \(1+o(1)\), so it cannot cancel them.
+
+A sufficient design repair is
+\[
+b\in((1-1/d)V,V],\qquad
+\ell\in(Y,(1+1/d)Y].
+\tag{19}
+\]
+Then
+\[
+(bb')^{d-2}\gg V^{2d-4},\qquad
+(V_{\max}/V_-)^{2d+O(1)}=O(1).
+\]
+The first moment loses only polynomial factors in \(d\). Ordinary effective PNT suffices to count primes in these intervals: their relative widths are inverse powers of \(\log N\), much larger than the PNT relative error at these sizes.
+
+One further cleanup matters. Although the base expansion has an \(\exp(O(d))\) coefficient bound, its contribution is suppressed by \(N^{-\eta_0/2}\). Under (5), take
+\[
+X_F=C\,dMH V_{\max}^d
+\tag{20}
+\]
+with absolute \(C\), rather than retaining an exponential \(C'_d\) in the final envelope.
+
+After these changes,
+\[
+\mathbb E[N(N-1)]
+\le d^{O(1)}(\log N)^C S^4\rho_r^2\rho_F^2.
+\tag{21}
+\]
+Together with (7) and \(m\ge1\), this gives \(\gamma\ge(\log N)^{-C'}\), with absolute exponents after fixing the scaled parameters.
+
+**Verdict:** literal wide-window assembly has \(\tau=1\); the repaired assembly has \(\tau=0\).
+
+**1(f). Lemma W: \(\eta_0\to0\) by itself is insufficient.**
+
+The actual Brun–Titchmarsh factor is
+\[
+C_W\le \frac{4\log W}{\log(W/t)}.
+\tag{22}
+\]
+Thus one needs
+\[
+\log(W/t)>0,
+\]
+and, for the note’s convenient bound, \(\eta_0T\gg\log S\).
+
+There is a precise failure if the slack shrinks too fast. With fixed \(\mu,\nu\), take \(\eta_0=T^{-2}\). Then
+\[
+W\asymp N^{\mu+\nu},\qquad t_{\max}\asymp N^{\mu+\nu}S.
+\]
+Choose a prime \(t\) near \(t_{\max}\). For any prime \(a\in(W,2W]\), the residue \(a\bmod t\) has probability about \(\log W/W\), whereas
+\[
+\frac{24/\eta_0}{\phi(t)}\asymp \frac{T^2}{t}.
+\]
+Their ratio tends to infinity like \(S\) divided by a polynomial. The claimed uniform Lemma W fails.
+
+Conversely,
+\[
+\eta_0\asymp1/d,\qquad \eta_0T\gg\Lambda_\alpha+d\log d
+\tag{23}
+\]
+works. Then \(24/\eta_0=O(d)\), so \(\tau=0\). With comparable \(\mu,\eta_0\), (22) is even bounded absolutely.
+
+**1(g). Growing-\(k\) split counting: no additional precision exponent.**
+
+The old
+\[
+c_k=8k^2\binom{2k}{k}
+\]
+is removed by S″. Its \(2^\omega\) loss is also removed, under the stated size condition.
+
+To make the narrow special-\(q\) window compatible with products, choose
+\[
+Z=(\sqrt{N/8})^{1/k},\qquad
+J=(Z/(1+1/d),Z]\cap\mathbb P.
+\]
+For a good set of relative density \(g\),
+\[
+n:=|G|\gg \frac{gZ}{d\log Z}.
+\]
+The \(k\)-products occupy at most \(2k\) dyadic product windows. Therefore some window contains
+\[
+|S|\ge \frac1{2k}\binom nk.
+\]
+S″ gives
+\[
+p_{\rm split}\ge
+\frac{\binom nk^2}{8k^2\phi(N)},
+\]
+and hence
+\[
+\log\frac1{p_{\rm split}}
+\le
+2k\bigl(\log(1/g)+\log d+\log k+\log\log Z+O(1)\bigr)
++O(\log k).
+\tag{24}
+\]
+
+The \(k!\) in \(\binom nk\) produces the usual \(O(k\log k)\) cost. It is an explicit split cost, not a loss subsequently raised to the power \(k\).
+
+Also,
+\[
+\log |G|\asymp T/k,\qquad
+\omega(N)\log2\le \frac{T\log2}{\log B}.
+\]
+At \(k\asymp D^{2/5}\), these differ by a factor \(\asymp\log\log N\), so \(|G|\ge4k^3 2^\omega\) holds for good fields.
+
+Charge \(2kT_{\rm SQ}\) to every attempt. Then K(iii)’s waste ratio is unnecessary.
+
+**2. Shared rational side**
+
+**Conditional independence is exact, but insufficient on its own.** Given \(g\), the field vectors generated by independent \((w_j,c_j)\) are independent. Different targets \(\ell\) within one field need not be independent.
+
+A counterexample to independence-only amplification is immediate: let every field succeed exactly on the same deterministic target subset of density \(\varepsilon\). The field vectors are independent—even deterministic—but any number of fields still covers density only \(\varepsilon\).
+
+The following mixed-moment lemma supplies what is missing.
+
+Let \(R(g,\ell)\) count rational-smooth candidates whose rational moduli are good for FM. Put
+\[
+r=S^2\rho_r,\qquad m=r\rho_F.
+\]
+Suppose, with \(P=(\log N)^C\),
+\[
+\mathbb ER\ge r/P,\qquad
+\mathbb ER^2\le Pr^2,
+\tag{25}
+\]
+and
+\[
+\mathbb E_{w,c}[N\mid g,\ell]\ge \rho_F R(g,\ell)/P.
+\tag{26}
+\]
+Suppose further that
+\[
+\mathbb E_{g,\ell}\mathbb E_{w,c}[N^2\mid g,\ell]\le Km^2,
+\qquad \log K=o(\Lambda_\alpha).
+\tag{27}
+\]
+
+Then \(t=\exp(o(\Lambda_\alpha))\) fields sharing \(g\) give descendability density at least an inverse polynomial in \(\log N\).
+
+*Proof.* From (25), a set of \((g,\ell)\)-cells of measure at least \(1/(4P^3)\) satisfies
+\[
+R\ge r/(2P).
+\]
+By Markov and (27), a subset of measure at least \(1/(8P^3)\) also satisfies
+\[
+\mathbb E[N^2\mid g,\ell]\le 24KP^3m^2.
+\]
+On this subset, (26) and conditional PZ give
+\[
+p(g,\ell):=\Pr_{w,c}[N>0\mid g,\ell]
+\ge \frac1{96KP^7}.
+\]
+Taking \(t=\lceil96KP^7\rceil\), conditional independence gives coverage probability at least \(1-e^{-1}\) on this subset. Thus the averaged covered density is \(\gg P^{-3}\). ∎
+
+These premises are available from the repaired arguments:
+
+- (25): rational FM and Theorem R; removing bad moduli changes the first moment negligibly.
+- (26): the pointwise good-modulus coefficient argument.
+- (27): even the **coarse** LD* bound suffices when its loss is \(\exp(O(d\log d))=\exp(o(\Lambda_\alpha))\).
+
+Thus no uniform-in-\(g\) second-moment theorem is required. A conditional mean plus an averaged conditional second moment is enough.
+
+Here “\(L^{-o(1)}\)” must mean relative to **\(L_N[\alpha,1]\)**. An unspecified \(L_N[1/2,1]^{-o(1)}\) loss is insufficient.
+
+There is a post-processing repair too. With \(t\) fields, there can be \(t\) residual exceptional bits, so three dependency tests no longer suffice. Choose \(t+1\) independent kernel vectors. Exact square tests in each field label these vectors by \(t\) binary residual coordinates; solve the resulting binary system and obtain a nonzero combination square in every field. Verification remains exact. All additional work and columns contribute \(\exp(o(\Lambda_\alpha))\).
+
+**Conclusion:** the shared-side trick can remove algebraic precision losses. It does not change the one-level norm geometry, and therefore does not get below \(2/5\).
+
+**3. LV6 at growing degree**
+
+The factorial issue in Lemma X is real. Stark’s relevant result is **Lemma 8**, *Some effective cases of the Brauer–Siegel theorem*, **Invent. Math. 23 (1974), 135–152**, with \(c_1(n)=4n!\) in the non-normal case. [Stark, Lemma 8](https://gdz.sub.uni-goettingen.de/download/pdf/PPN356556735_0023/PPN356556735_0023.pdf)
+
+Put
+\[
+\nu_1\asymp\frac1{(2d)!\log\bar\Delta},\qquad s=\log x.
+\]
+The original argument requires
+\[
+\nu_1s\gg\log s
+\tag{28}
+\]
+to suppress the exceptional term relative to \(x/\log x\).
+
+**Factorial-bit repair: valid.** For example,
+\[
+s=(2d)!\,(T+\log\bar\Delta+d)^4
+\tag{29}
+\]
+satisfies (28) and the ordinary Chebotarev error requirements. It also repairs the first-degree-prime sampler for the odd-degree base field.
+
+Using algorithms polynomial in \(d,s\) with absolute exponents, the resulting overhead is
+\[
+\exp(O(d\log d))\,T^{O(1)}.
+\tag{30}
+\]
+Since \(d\asymp D^{1-2\alpha}\), this is \(L_N[\alpha]^{o(1)}\) whenever \(\alpha>1/3\), including \(2/5\).
+
+The other growing-degree costs are similarly harmless:
+
+- \(\log|H|\) is polynomial in \(d,T\); retaining the actual height bounds gives \(O(dT)\) in the balanced regime.
+- The \(2^{d-1}\) square-root sign enumeration costs \(\exp(O(d))\).
+- Coefficient bounds in SQ affect bit lengths polynomially.
+- IR can be uniform: its finite-field counting argument works with an absolute lower prime threshold. Its rejection bound is
+  \[
+  \exp\!\left(-\Omega\!\left(\frac{\log H}{d\log\log H}\right)\right),
+  \]
+  negligible here.
+
+**Polynomial-bit alternative: also valid, with potentially factorially many tests.**
+
+Use Thorner–Zaman, *A unified and improved Chebotarev density theorem*, **Algebra & Number Theory 13 (2019), 1039–1068, Theorem 1.1**—or its abelian refinement, Theorem 1.4. Its error is relative to
+\[
+\operatorname{Li}(x)-\theta_1\operatorname{Li}(x^{\beta_1}),
+\]
+including when that expression is small. [Thorner–Zaman 2019](https://msp.org/ant/2019/13-5/ant-v13-n5-p02-s.pdf)
+
+Take
+\[
+s=(T+\log\bar\Delta+d)^4.
+\]
+For \(h\notin E\), every possible exceptional zero has \(1-\beta_1\ge\nu_1\). The theorem gives, on the dyadic interval,
+\[
+\#\{\text{inert degree-one primes}\}
+\gg \min(1,\nu_1s)\frac{x}{\log x}.
+\]
+Higher-degree primes are negligible. Comparing with the elementary upper bound \(O(dx/\log x)\), the detection probability is
+\[
+\gg \frac{\min(1,\nu_1s)}d.
+\tag{31}
+\]
+Thus polynomial-bit character primes suffice with
+\[
+\exp(O(d\log d))\,T^{O(1)}
+\]
+sampling and character overhead. The same reasoning repairs the base-field sampler.
+
+This is enough for the factoring exponent. It is **not** a claim of polynomial total overhead.
+
+For comparison, the earlier lower bound in Thorner–Zaman, **Algebra & Number Theory 11 (2017), 1135–1197, Theorem 3.1**, includes a factor \((D_KQn_K^{n_K})^{-5}\). Used directly, that density is far too small. A least-prime theorem alone likewise does not justify efficient random sampling. [Thorner–Zaman 2017, Theorem 3.1](https://arxiv.org/pdf/1604.01750)
+
+**4. Literature**
+
+I found no verified classical theorem giving \(L_N[\alpha,c]\), \(\alpha<1/2\), for factoring arbitrary \(N\), unconditionally or with hypotheses confined to primality testing.
+
+The established general bound remains:
+
+H. W. Lenstra Jr. and C. Pomerance, **“A rigorous time bound for factoring integers,” J. Amer. Math. Soc. 5 (1992), 483–516**, expected \(L_N[1/2,1+o(1)]\). [Original paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+Harvey’s **“An exponent one-fifth algorithm for deterministic integer factorisation,” Math. Comp. 90 (2021), 2937–2950**, explicitly identifies this as the best rigorous probabilistic bound. [Harvey](https://arxiv.org/pdf/2010.05450)
+
+LV does not supply a counterexample: its unconditional conclusions concern congruences of squares. Its factoring result, Theorem 2.3, assumes **Conjecture 7.1** and concerns a restricted semiprime class. That is an additional number-theoretic hypothesis, unrelated to primality testing. [LV, Theorem 2.3](https://arxiv.org/pdf/1805.08873)
+
+**Summary table**
+
+Here \(\tau\) measures a *relative descendability loss*, not direct computational overhead.
+
+| Ingredient | Where \(d,k\) enter | \(\tau\) | Removable? | Fix |
+|---|---|---:|---|---|
+| FM | \(d^2V/H\), offset error, prime windows; \(k\) through \(\nu\) | \(0\) | — | Quantitative goodness; matched actual densities |
+| Lemma 8.5′ | Scaled \(x,B,Y,Q\); fixed conductor cutoff | \(0\) | — | Rebase to \(B=L_x[1/2,\Theta(1)]\) |
+| Kern | Boundary-cell count; bare \(H=V^2\) permits \(C_d\ge c(3/2)^d\) | \(1\to0\) | Yes | Banded basis; \(H\ge dV^2\) |
+| \(L2_{\rm fam}\) | \((\log N)^{O(C_0)}\); size margins | \(0\) | Yes, if inflated | Keep \(C_0\) fixed; replace old \(L[1/2]\) cushion |
+| LD* | \(b\)-window and \(V_{\max}/V_-\) raised to \(O(d)\) | \(1\to0\) | Yes | Relative-width \(1/d\) windows; polynomial norm envelope |
+| Lemma W | \(4\log W/\log(W/t)\), or \(24/\eta_0\) | \(0\) with suitable slack | Yes | \(\eta_0\asymp1/d\); retain actual margins |
+| K / S″ | \(k!\), \(O(k\log k)\), \(2k\log(1/\gamma)\) | No extra \(\tau\) | Old losses: yes | S″; charge searches per attempt |
+| Shared-side bundle | Conditional mean and averaged second moment | Algebraic \(L_\alpha^{o(1)}\) suffices | Yes | Mixed-moment amplification |
+| LV6 | \((2d)!\), \(2^d\), polynomial height bounds | Not a \(\gamma\)-loss | Yes | Factorial-bit primes, or polynomial-bit primes with more tests |
+
+**Verdict on the achievable exponent**
+
+An explicit parameter choice shows that these repairs are compatible, rather than merely formal:
+\[
+d\sim D^{1/5}\ \text{odd},\qquad
+k=\lceil d^2\rceil,\qquad
+\mu=1/d,\qquad h=2/d,\qquad
+\eta_0=1/(4d),
+\]
+\[
+B=e^{\Lambda_{2/5}},\qquad S=e^{2\Lambda_{2/5}},
+\tag{32}
+\]
+with the narrow windows (19).
+
+Then
+\[
+\log X_r=(1+o(1))D^{4/5}\lambda,\qquad
+\log X_F=(13/4+o(1))D^{4/5}\lambda,
+\]
+and therefore
+\[
+\log\frac1{\rho_r\rho_F}
+=(17/10+o(1))\Lambda_{2/5}.
+\]
+Thus \(S^2\rho_r\rho_F\) grows exponentially in \(\Lambda_{2/5}\); the diagonal term is harmless. All margins in (5), (9), (15), (16), and (23) hold. The repaired moments give inverse-polylogarithmic \(\gamma\), and (24) gives split cost \(\exp(O(\Lambda_{2/5}))\).
+
+The recursive inequality consequently has the form
+\[
+F(N)\le e^{p\Lambda_{2/5}+o(\Lambda_{2/5})}
++e^{\delta\Lambda_{2/5}+o(\Lambda_{2/5})}F(\sqrt{2N}),
+\]
+for finite constants \(p,\delta\). Lemma F gives a finite \(L_N[2/5,c]\) bound.
+
+**Accordingly, relative to the supplied internal chain, the repaired one-level framework reaches \(2/5\); \(3/7\) is not forced by precision.** The unchanged notes establish only their fixed-parameter results and portfolio consequence.
+
+The \(2/5\) geometric floor remains: the shared-side trick changes precision, not the inequalities \(d\gtrsim D^{1-2\alpha}\), \(k\gtrsim d^2\). Below it, nested descendability remains **open**.
+
+The weakest analytic input is the relative smooth-modulus estimate and its small-conductor transfer. The most delicate bookkeeping is LD*’s matching of geometric envelopes and smoothness densities. Neither can safely be replaced by an unspecified \(L^{o(1)}\) assertion.
