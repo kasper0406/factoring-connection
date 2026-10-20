@@ -136,3 +136,36 @@ def test_dickson_example_split_member():
     p[0] += 3
     assert split_over_Z(p) == [-2, -1, -1, 1, 1, 2]
     assert split_over_Z(F) is None
+
+
+def test_codex2_counterexamples_regression():
+    """codex ptebarrier_2 counterexamples to draft overclaims (kept as regressions)."""
+    # (1) NX: distinct defects but a shared congruence inherited from P - P' = 14400, 25 | 14400
+    P = mul([0, 0, 1], mul(from_roots([7, -7]), from_roots([7, -7])))
+    P2 = from_roots([8, -8, 5, -5, 3, -3])
+    assert sub(P, P2) == [14400]
+    F = add(P, [26])
+    assert evalp(F, 4) % 25 == 0
+    assert (evalp(P, 4) - (-1)) % 25 == 0 and (evalp(P2, 4) - (-1)) % 25 == 0
+    # (2) Corollary P needs h_A = 1: F = P P' + 1 has two exact members with multipliers P', P
+    F2 = add(mul(P, P2), [1])
+    assert sub(mul(P2, P), [-1]) == F2 and sub(mul(P, P2), [-1]) == F2
+    assert str(psi_invariant(P2, P, [-1])) == str(psi_invariant(P, P2, [-1]))
+    # (3) Prop S: cancelling gcd(P, r) can leave a root outside S_F
+    T = [1, 1, 1, 1, 1]
+    Fs = sub(mul([200], [-1, 1]), mul(T, T))
+    Ps, Qs = from_roots([1, 1, 1]), from_roots([1, 1])
+    rs = mul(add([-1, 0, 0, 0, 0, 1], []), add([-1, 0, 0, 0, 0, 1], []))
+    assert mul([200], Ps) == add(mul(Fs, Qs), rs)
+    assert prop_S_hypothesis(Fs, 0, 1, 10, 2)
+    S = view_a_small_value_set(Fs, 0, 1, 10, 2)
+    assert 1 not in S and len(S) <= 8
+    # but the uncancelled statement holds: root 1 is a root of r
+    assert evalp(rs, 1) == 0
+
+
+def test_k1_nonsquarefree_levels_at_most_two():
+    """Rolle: within one k=1 fiber, at most two members have a repeated root."""
+    for B, M in ((3, 5), (4, 5), (5, 4), (6, 4)):
+        for mem in group_by_top(list(split_polys(B, M)), 1).values():
+            assert sum(1 for roots, _ in mem if len(set(roots)) < M) <= 2

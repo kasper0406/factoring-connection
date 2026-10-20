@@ -1,0 +1,228 @@
+**Overall verdict: MAJOR REVISION.** Lemma R survives. Several downstream statements are false as written, and the claimed closure of systeq’s open escape does not follow.
+
+**1. Lemma R (§5.1): CORRECT.**
+
+Every substantive step checks out.
+
+- **Mahler bound:** writing \(n=\deg\widetilde G\le K-1-\deg g\),
+  \[
+  \|\widetilde G\|_1\le 2^n\mathcal M(\widetilde G)
+  \le 2^{K-1}\sqrt K\,h.
+  \]
+  Since \(B\ge1\), evaluation at \(|a|\le B\) gives the claimed \(\Delta\). Dividing by \(g\) need not preserve coefficient height; the Mahler argument correctly avoids assuming that.
+- **Far roots:** at a good root, every integer gap is nonzero and has absolute value at least one. Each gap of size at least two contributes a factor of at least two. Multiplicities must be counted here, and the proof counts them correctly.
+- **Unequal degrees or leading coefficients:** then \(\deg\widetilde G\ge r\), hence \(\deg G\ge M\). This contradicts \(M>K-1\). No assumption that the multipliers are monic or primitive is needed.
+- **Newton/Vandermonde:** the guaranteed number of matching top coefficients is
+  \[
+  J=r+j'-K+\deg g=M+j'-K.
+  \]
+  This is correct. Equal degrees also give the zeroth moment. The signed root measure is nonzero because equal root multisets, together with equal leading coefficients, would imply \(G=0\). Complex multiplier roots cause no difficulty: Vandermonde works over \(\mathbb C\).
+- **Case 2:** the two neighbourhoods \(\{a'_i-1,a'_i+1\}\) are disjoint when the good roots differ by at least three. Each contains at least \(r-L\) roots, counted with multiplicity, forcing \(r\le2L\). Thus the good roots occupy at most three integer values. The stated support bound is conservative but valid.
+- **Final threshold:** \(M-K+2\ge2L+4j+5\) exceeds every support bound. There is no missing case.
+
+**MINOR — domain conventions.** State \(K\ge1\) and handle \(h=0\) separately before defining \(\log_2\Delta\).
+
+**MINOR — lattice extension.** “Verbatim” is inaccurate. Eisenstein integers have **12**, not eight, nonzero lattice points of modulus below two. Case 2 also needs a revised neighbourhood argument. Fix: supply lattice-specific constants and proof.
+
+Common factors, repeated roots and multiplier roots do not evade the argument. Prouhet–Thue–Morse constructions preserve too few moments; Chebyshev/Dickson compositions would need all the relevant preimages to remain integers, which the proof already obstructs in the claimed regime.
+
+**2. Theorem W (§5.2): CORRECT WITH FIXES.**
+
+The polynomial argument is correct. Each product coefficient involves at most \(\min(k,j_2+1)\) summands, so
+\[
+\|Q_{A'}r_A-Q_A r_{A'}\|
+ \le2\min(k,j_2+1)H_QH.
+\]
+The choices \(K=k+j_2\) and \(j=j_1+j_2\) are correct. Nonzero multipliers remain nonzero in \(\mathbb Z[X]\). Lemma R gives the asserted equality in \(\mathbb Q(X)\).
+
+**MAJOR — the assertion for “every homomorphism” is undefined.** Nonzero polynomials need not map to units, or even to nonzero elements.
+
+For example,
+\[
+P=X^{12},\quad F=X^{12}-15,\quad h=Q=1,\quad r=15
+\]
+satisfies W’s threshold with \(B=1,k=1\). Under \(X\mapsto0\pmod{15}\), however, \(\phi(r)=0\). The displayed inverse does not exist.
+
+Fix: distinguish the unconditional rational-function statement from its specialization. Require unit images for a modular multiplicative relation, and nonzero numerator and denominator values for integer evaluation. Nonunits require a gcd check.
+
+With those conditions, equal rational functions do give equal exponent vectors after evaluation. Include integer contents and signs among the generators; primitive polynomial factors alone omit constant prime factors. The rank-\(\le1\) conclusion then follows.
+
+**3. Corollary P (§5.3): CORRECT. Prop S (§5.4): CORRECT WITH FIXES.**
+
+Corollary P’s degree argument is valid even for nonmonic \(F\), given the asserted integral identities. It applies to
+\[
+P_A=FQ_A+r_A,
+\]
+with multiplier \(h_A=1\). That restriction matters later.
+
+Prop S(i) and (ii) are correct. The interpolation denominators are nonzero integers, so each Lagrange coefficient has absolute value at most \(Y^d\). The use of \(N\le|F(m)|\) is legitimate.
+
+**MAJOR — cancellation does not preserve the original fixed set \(S_F\).** Cancelling \(\gcd(P,r)\) can increase the remainder’s height and leave a root of \(P\) behind.
+
+Take
+\[
+T=1+X+\cdots+X^4,\quad
+F=200(X-1)-T^2,
+\]
+\[
+P=(X-1)^3,\quad Q=(X-1)^2,\quad
+r=(X^5-1)^2,\quad h=200.
+\]
+Then \(hP=FQ+r\). Set \(m=0,Y=1,\rho=10,H=2,N=201,d=8\). The hypothesis holds:
+\[
+22\cdot9=198<201=|F(0)|.
+\]
+But \(|F(1)|=25>22\), so \(1\notin S_F\). Cancelling \((X-1)^2\) leaves \(P_{\rm red}=X-1\): the root remains outside the original \(S_F\).
+
+Fix: impose the height bound **after reduction**, or recompute the height bound and small-value set after cancellation.
+
+The **PTE consequence survives** without cancellation. The original root supports lie in
+\[
+S_F\cup Z(r_A)\cup Z(r_{A'}),
+\]
+of size at most \(d+2\rho\). Matching moments through \(M-k\), including moment zero, therefore gives uniqueness when
+\[
+M-k\ge d+2\rho-1.
+\]
+
+**MAJOR — the density consequences overreach.** A bound on distinct pieces does not bound total multiplicity or relation rank. Also, “at that degree the family on \(F\) is a PTE fiber” is false for arbitrary varying quotients and multipliers.
+
+Fix: state the support theorem separately; impose PTE structure before invoking Corollary P.
+
+**4. Prop NX / ONE-RING (§5.5): CORRECT WITH FIXES; the independence interpretation is WRONG.**
+
+NX’s injectivity proof, defect-cell bound and Hadamard bound are correct under their stated regime and degree assumptions.
+
+**MAJOR — injective defects do not imply independent congruence conditions.** Different defects can be inherited from one shared congruence.
+
+Use
+\[
+P=X^2(X^2-49)^2,\qquad
+P'=(X^2-64)(X^2-25)(X^2-9).
+\]
+Then \(P-P'=14400\). Set
+\[
+N=25,\quad \mu=4,\quad F=P+26,\quad r=r'=-1.
+\]
+Here \(F(4)\equiv0\pmod{25}\), and the defects are
+\[
+D=-25,\qquad D'=-14425.
+\]
+Both members are non-exact. They share their top five coefficients, and \(M=6,B=8,k=1,H=1\) satisfies NX’s rigidity regime. Their distinct defects nevertheless come from the single identity \(P-P'=14400\equiv0\pmod{25}\).
+
+Fix: delete “every member pays its own congruence” and “no shared congruence.” Injectivity supplies neither independence nor a construction-cost lower bound.
+
+**MAJOR — ONE-RING needs arithmetic hypotheses.** Generators must be units in the rational algebra, and denominators must specialize invertibly. The stated factor-evaluation gcd formula also fails for arbitrary nonprimitive \(F\).
+
+For example,
+\[
+F=15(3X+1)(5X+1),\qquad u=4+15X
+\]
+satisfies \(u^2-1=F\). With \(N=15,\mu=0\), \(u(\mu)=4\) yields the factor \(3\), whereas both primitive factors of \(F\) evaluate to \(1\).
+
+The factors were already visible in their leading coefficients, so this does not defeat a properly formulated “no additional information” claim. Fix: assume monic \(F\), state unit conditions, and account explicitly for contents, leading coefficients and denominator gcds.
+
+**5. Vinogradov (§3): CORRECT WITH FIXES. Determinant argument (§4): CORRECT WITH FIXES. BCN citation: CORRECT.**
+
+The second-moment identity and Fourier pointwise bound are correct.
+
+**MINOR — ordered versus unordered fibers.** \(R(c)\) counts ordered tuples, whereas the injection bound counts multisets. Fix the notation when comparing them. Also retain both Vinogradov terms outside the compression range.
+
+The BCN theorem really does give
+\[
+\#C(\mathbb Z,B)\le c(n)d^2B^{1/d}(\log B)^\kappa,
+\]
+with \(c(2)\) absolute and \(\kappa\) absolute. No numerical value of \(\kappa\) is required or supplied. Cite Theorem 2, equation (27), rather than leaving this “UNVERIFIED.” [Binyamini–Cluckers–Novikov](https://arxiv.org/pdf/2302.04209)
+
+**MAJOR — the pair count assumes squarefreeness.** “At least three distinct roots” does not supply \(M(M-2)\) off-line pairs. For instance,
+\[
+X^2(X^2-25)
+\]
+has degree four but only three distinct roots. It belongs to the same constant-difference fiber as
+\[
+(X^2-9)(X^2-16).
+\]
+
+Fix: first remove the repeated-root levels. Rolle/interlacing shows that the levels \(t\) for which \(Q_0-t\) is real-rooted form an interval, and repeated-root levels can occur only at its endpoints. Thus there are at most two exceptional levels. Apply the pair count to the squarefree levels. This repairs the desired uniform bound.
+
+**MINOR — components.** There is at most one **rational** line component, not one complex line component. For \(Q_0=X^M\), there are many complex lines. The conjugate-intersection argument handles non-\(\mathbb Q\) components; use geometric components and sum their degrees. Multiplicities of defining factors should not be counted as extra components.
+
+**MAJOR — PB(e) needs \(M\ge3\).** For \(M=2\), the fiber
+\[
+\{X^2-a^2:0\le a\le B\}
+\]
+has \(B+1\) members, contradicting the stated square-root bound.
+
+**6. Theorem PB and §6’s scope: WRONG AS WRITTEN.**
+
+**MAJOR — PB(b) drops \(h_A=1\).** Using the degree-six \(P,P'\) above, set
+\[
+F=PP'+1.
+\]
+Both
+\[
+P'P=F-1,\qquad PP'=F-1
+\]
+are exact compressed members, with split polynomials \(P,P'\), multipliers \(P',P\), quotient \(1\), and remainder \(-1\).
+
+They satisfy PB(b)’s displayed threshold: \(M=6,k=1,H=1\). Yet there are two members. A valid presentation is obtained by taking \(N=|F(1)|=27869183,\mu=1\).
+
+Fix: restore \(h_A=1\) and all Corollary P hypotheses. This example gives the same rational-function relation, so it does not contradict W.
+
+PB(d) likewise needs NX’s monicity, height and rigidity hypotheses stated explicitly.
+
+**MAJOR — (★) does not imply Lemma R’s threshold.** The relevant degree scale is
+\[
+M\asymp\frac{x}{\log Y}
+=x^{1-\beta}(\log x)^{\beta-1},
+\]
+not \(x^{1-\beta}\). A sufficient condition is
+\[
+(k+j)\log B+\log(HH_Q)=o(M).
+\]
+
+For example, take \(\beta=1/4\), \(H=H_Q=1,j=0\), and
+\[
+\log B=x^{1/4}(\log x)^{3/4},\qquad
+k\asymp x^{1/2}/\log x.
+\]
+Then (★) holds, but \(k\log B/M\asymp\sqrt{\log x}\to\infty\). The claimed threshold implication fails.
+
+Fix: retain the logarithmic factors. Fixed-degree BGJT-shaped parameters still qualify.
+
+**MAJOR — View A mixes actual degree with a degree cap.** The inequality
+\[
+|r(m)|\ge |m|^{\deg r}/2
+\]
+is correct when \(|m|\ge2H+1\). It bounds \((\deg r)\log|m|\), not automatically \((k-1)\log|m|\).
+
+Fix: choose \(k-1\) as the maximum actual remainder degree. Furthermore, the \(d\ge k\) branch invokes Corollary P without establishing PTE structure and \(h_A=1\). General families require W with the translated multiplier heights included. Merely having \(d<k\) also does not imply Prop S’s size inequality.
+
+**FATAL TO THE CLAIMED CLOSURE — \(\mathcal M_{\rm sys}\) excludes natural versions of systeq’s open escape.** Systeq §6 asks for small reductions modulo \((N,F)\) and small evaluated values. Neither implies exact identities over \(\mathbb Z[X]\) with small coefficient height.
+
+Lemma EX controls the reduced **difference**, not the proposed small remainder alone. That difference can contain large multiples of \(N\), coherently across a family. NX does not rule out such coherence.
+
+Fix: retract “the PTE family exactly as systeq §6 posed it … is unconditional.” What is proved is a barrier for the explicitly restricted exact, small-coefficient model in the stated regime. Calling the surviving problem “ordinary relation search” does not establish an equivalence or lower bound.
+
+O1–O4 are useful headings, but their descriptions need repair:
+
+- O1 remains a substantive structural problem; injectivity does not settle shared construction.
+- O2 includes presentations whose compatibility is inherited jointly. W gives no lower bound on generating them together.
+- O3’s “only \(\beta\ge1/4\)” requires an additional degree bound. At \(m=0\), \(r=X^t+1\) has value \(1\) for arbitrary \(t\); the value target alone does not bound \(t\).
+- O4 is appropriately open under the stated single-embedding bounds, subject to correcting the lattice remark.
+
+**7. Prior art: UNCLEAR for the full multiplier lemma; established special cases require clearer attribution.**
+
+**MINOR — ideal PTE attribution.** If \(P-P'=C\ne0\), the classical result is
+\[
+(M-1)!\mid C,
+\]
+stronger than the ideal-case CW estimate quoted here. Caley explicitly attributes it to Kleiman and Rees–Smyth, Proposition 2.1. The currently revised ptecons note already recognizes this. [Caley, §5](https://arxiv.org/pdf/1011.1262)
+
+Borwein–Lisoněk–Percival give the standard moment/polynomial equivalence and prime-divisor matching argument. Those ingredients should be credited. [Their paper, §2](https://www.daemonology.net/papers/pte.pdf)
+
+I found no verified prior statement identical to R with arbitrary low-degree multipliers. That establishes neither novelty nor absence of prior art. W is an elimination corollary once R is available; Prop S is an elementary interpolation consequence.
+
+Mason–Stothers concerns degree versus radical support and does not directly supply R’s archimedean height bound. Lenstra-style gap theorems concern separated monomial exponents, rather than this split-product representation; applying them here would require another argument. [Avendaño–Krick–Sombra, introduction and §2](https://www.maia.ub.edu/~sombra/publications/factorizacion/AvKrSo06.pdf)
+
+All 10 existing tests passed. My additional 42-cell multiplier search found 10,985 nonzero low-degree differences and zero violations; these examples remained outside R’s threshold. Reproduction files: [search script](referee_checks.py), [results](referee_search_results.json), [explicit counterexamples](explicit_counterexamples.py).
