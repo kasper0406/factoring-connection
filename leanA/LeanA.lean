@@ -5,3 +5,6 @@ import LeanA.SplitCounting
 import LeanA.Moments
 import LeanA.Kern
 import LeanA.Recursion
+import LeanA.LiftAveraging
+import LeanA.RelationSupply
+import LeanA.MainTheorems

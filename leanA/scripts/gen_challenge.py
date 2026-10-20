@@ -16,7 +16,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DEF_FILES = ["LeanA/Defs.lean", "LeanA/DefsNFS.lean"]
 STMT_FILES = ["LeanA/Exponents.lean", "LeanA/Fruitfulness.lean", "LeanA/SplitCounting.lean",
               "LeanA/Moments.lean", "LeanA/Kern.lean", "LeanA/Recursion.lean",
-              "LeanA/RelationSupply.lean", "LeanA/MainTheorems.lean"]
+              "LeanA/RelationSupply.lean", "LeanA/MainTheorems.lean", "LeanA/LiftAveraging.lean"]
 KEEP_DEFS = {"supSplit", "CostModelA", "CostInterfaceA", "CostModelRA", "CostInterfaceRA"}
 TOP = re.compile(r"^(/--|/-!|theorem |lemma |def |abbrev |structure |private |protected |noncomputable |"
                  r"@\[|section|end |end$|namespace |open |variable |instance |set_option |#)")
@@ -100,7 +100,7 @@ def main():
             if kind in ("theorem", "lemma") and d.startswith("MAIN"):
                 out.append(stmt_only(ch)); out.append("")
             elif kind in ("def", "structure", "abbrev") and (
-                    d.startswith("PUBLISHED INPUT") or d.startswith("INTERNAL HYPOTHESIS") or name in KEEP_DEFS):
+                    d.startswith("PUBLISHED INPUT") or d.startswith("INTERNAL HYPOTHESIS") or d.startswith("TRUSTED") or name in KEEP_DEFS):
                 text = "\n".join(ch).rstrip()
                 out.append(text); out.append("")
         out += ["end FactoringA", ""]

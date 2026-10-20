@@ -188,7 +188,11 @@ lemma properGcd_iff_ne_pm_one_aux (N : ℕ) [NeZero N] (hodd : Odd N) (h1 : 1 < 
 /-- MAIN. [pp] Theorem thm:DD, exact form. Let `N > 1` be odd. Fix the squares `R` and the coins
 `ξ`, and suppose the dependency `S(R, ξ)` is nonempty and `X² = Y²` holds on the fibre, where
 `X = ∏_{i ∈ S} r_i`. Then among the roots `r` with `r_i² = R_i`, exactly the proportion
-`1 − 2/|μ₂(ℤ/N)|` has `1 < gcd(X − Y, N) < N`. -/
+`1 − 2/|μ₂(ℤ/N)|` has `1 < gcd(X − Y, N) < N`. The probabilistic reading (conditioning on
+`𝓕 = σ(R, ξ)` for `r` uniform on units and `ξ` independent of `r`) and hypothesis (T) for SPLIT
+([pp] Remark rem:T, Lemma lem:Trec) are informal premises. In the cost layer, Theorem DD enters
+only through the cost-interface bound for SPLIT (Prop. prop:select(ii)); this theorem is not
+consumed by `theoremA`. -/
 theorem dixon_descent (N : ℕ) [NeZero N] (hodd : Odd N) (h1 : 1 < N) {n : ℕ} {Ξ : Type*}
     (S : (Fin n → (ZMod N)ˣ) → Ξ → Finset (Fin n))
     (Y : (Fin n → (ZMod N)ˣ) → Ξ → (ZMod N)ˣ)

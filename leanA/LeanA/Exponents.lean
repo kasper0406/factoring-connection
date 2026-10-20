@@ -127,6 +127,31 @@ theorem theta_at_muOpt (d k : ℕ) (η₀ : ℚ) (hd : 3 ≤ d) (hk : 1 ≤ k) :
     show ((d : ℚ) ^ 2 + 1) * (1 / (4 * (k : ℚ))) ≤ 1
     rw [mul_one_div, div_le_one hk4]; push_neg at hc; exact hc
 
+/-- MAIN. [pp] Lemma lem:optmu, range: for `k > (d+1)/4` the optimal `μ` lies in `(ν, 1)`. -/
+theorem muOpt_mem (d k : ℕ) (hd : 3 ≤ d) (hk : ((d : ℚ) + 1) / 4 < k) :
+    1 / (4 * (k : ℚ)) < muOpt d k ∧ muOpt d k < 1 := by
+  have hd' : (3 : ℚ) ≤ d := by exact_mod_cast hd
+  have hk1 : (1 : ℚ) < k := by linarith
+  have hk4 : (0 : ℚ) < 4 * (k : ℚ) := by linarith
+  set ν : ℚ := 1 / (4 * (k : ℚ)) with hν
+  have hν0 : 0 < ν := by positivity
+  have hνk : ν * (4 * k) = 1 := by rw [hν]; field_simp
+  have hk' : (d : ℚ) + 1 < 4 * k := by linarith
+  have hdν : ((d : ℚ) + 1) * ν < 1 := by
+    have := mul_lt_mul_of_pos_right hk' hν0
+    linarith
+  have hν4 : ν < 1 / 4 := by nlinarith
+  unfold muOpt
+  rw [← hν]
+  split_ifs
+  · constructor
+    · rw [lt_div_iff₀ (by linarith)]; nlinarith
+    · rw [div_lt_one (by linarith)]; linarith
+  · constructor
+    · rw [lt_div_iff₀ (by linarith)]; nlinarith
+    · rw [div_lt_one (by linarith)]
+      nlinarith [mul_lt_mul_of_pos_left hν4 (by linarith : (0 : ℚ) < (d : ℚ) - 1)]
+
 /-- MAIN. `(1+θ)/√2 < 1 ↔ θ < √2 − 1` ([pp] §1.2). -/
 theorem cA_lt_one_iff (P : Params) (hθ : 0 ≤ (P.θ : ℝ)) :
     P.cA < 1 ↔ (P.θ : ℝ) < Real.sqrt 2 - 1 := by
@@ -276,6 +301,49 @@ theorem d9_k_le_12 (P : Params) (hP : P.Admissible) (hd : P.d = 9) (hk : P.k ≤
   rw [le_div_iff₀ (Real.sqrt_pos.2 (by norm_num))]
   linarith
 
+/-- MAIN. [pp] Table tab:constants: at `d = 9` every `k ≥ 13` admits an admissible tuple with
+constant below 1 (so `k ≥ 13` is necessary and sufficient). -/
+theorem d9_k_ge_13 (k : ℕ) (hk : 13 ≤ k) :
+    ∃ μ η₀ : ℚ, Params.Admissible ⟨9, k, μ, η₀⟩ ∧ Params.cA ⟨9, k, μ, η₀⟩ < 1 := by
+  have hkq : (13 : ℚ) ≤ k := by exact_mod_cast hk
+  have hk4 : (0 : ℚ) < 4 * (k : ℚ) := by linarith
+  have hk1 : 1 ≤ k := by omega
+  have ht : 1 / (4 * (k : ℚ)) ≤ 1 / 52 := by
+    rw [div_le_div_iff₀ hk4 (by norm_num)]; linarith
+  have ht0 : 0 < 1 / (4 * (k : ℚ)) := by positivity
+  generalize htt : 1 / (4 * (k : ℚ)) = t at ht ht0
+  have hθm : thetaMin 9 k ≤ 16 / 39 := by
+    unfold thetaMin
+    rw [htt]
+    split_ifs <;> norm_num <;> linarith
+  have hμ : t + 1 / 1000 ≤ muOpt 9 k := by
+    unfold muOpt
+    rw [htt]
+    split_ifs
+    · rw [le_div_iff₀ (by norm_num)]; norm_num; linarith
+    · rw [le_div_iff₀ (by norm_num)]; norm_num; linarith
+  have hθ : Params.θ ⟨9, k, muOpt 9 k, 1 / 1000⟩ = thetaMin 9 k + 1 / 1000 :=
+    theta_at_muOpt 9 k (1 / 1000) (by norm_num) hk1
+  have hθq : Params.θ ⟨9, k, muOpt 9 k, 1 / 1000⟩ ≤ 14113 / 10000 - 1 := by
+    rw [hθ]; linarith
+  have hθr : ((Params.θ ⟨9, k, muOpt 9 k, 1 / 1000⟩ : ℚ) : ℝ) ≤ 14113 / 10000 - 1 := by
+    have := (Rat.cast_le (K := ℝ)).2 hθq
+    push_cast at this; exact this
+  have hs : (14114 / 10000 : ℝ) < Real.sqrt 2 := by
+    rw [Real.lt_sqrt (by norm_num)]; norm_num
+  refine ⟨muOpt 9 k, 1 / 1000, ⟨⟨4, by norm_num⟩, by norm_num, ?_, by norm_num, ?_,
+    (muOpt_mem 9 k (by norm_num) ?_).2, ?_⟩, ?_⟩
+  · show (((9 : ℕ) : ℚ) + 1) / 4 < (k : ℚ)
+    norm_num; linarith
+  · show 1 / (4 * (k : ℚ)) + 1 / 1000 ≤ muOpt 9 k
+    rw [htt]; exact hμ
+  · norm_num; linarith
+  · show Params.θ ⟨9, k, muOpt 9 k, 1 / 1000⟩ < 1
+    linarith
+  · unfold Params.cA
+    rw [div_lt_one (Real.sqrt_pos.2 (by norm_num))]
+    linarith
+
 /-! ### Real-analysis helpers -/
 
 lemma sqrt2_facts : Real.sqrt 2 * Real.sqrt 2 = 2 ∧ 0 < Real.sqrt 2 ∧ 1 < Real.sqrt 2 ∧
@@ -372,11 +440,11 @@ theorem costExpRA_min (θ : ℝ) (h0 : 0 < θ) :
     rw [e, max_self]
 
 /-- MAIN. [pp] Remark rem:RA(a): for `0 ≤ θ`, `√((1+√2)θ) < 1 ↔ (1+θ)/√2 < 1`, and for
-`0 < θ < √2 − 1`, `√((1+√2)θ) < (1+θ)/√2`. -/
+`0 < θ < 1`, `√((1+√2)θ) < (1+θ)/√2 ↔ θ < √2 − 1`. -/
 theorem cRA_vs_cA (θ : ℝ) (h0 : 0 ≤ θ) :
     (Real.sqrt ((1 + Real.sqrt 2) * θ) < 1 ↔ (1 + θ) / Real.sqrt 2 < 1) ∧
-      (0 < θ → θ < Real.sqrt 2 - 1 →
-        Real.sqrt ((1 + Real.sqrt 2) * θ) < (1 + θ) / Real.sqrt 2) := by
+      (0 < θ → θ < 1 →
+        (Real.sqrt ((1 + Real.sqrt 2) * θ) < (1 + θ) / Real.sqrt 2 ↔ θ < Real.sqrt 2 - 1)) := by
   obtain ⟨hs, hs0, hs1, _⟩ := sqrt2_facts
   set s := Real.sqrt 2
   constructor
@@ -389,7 +457,12 @@ theorem cRA_vs_cA (θ : ℝ) (h0 : 0 ≤ θ) :
       nlinarith [mul_lt_mul_of_pos_left (by linarith : θ < s - 1) (by linarith : (0 : ℝ) < 1 + s)]
   · intro hθ0 hθ1
     rw [Real.sqrt_lt' (by positivity), div_pow, sq s, hs, lt_div_iff₀ (by norm_num : (0 : ℝ) < 2)]
-    nlinarith [mul_pos (by linarith : (0 : ℝ) < s - 1 - θ) (by linarith : (0 : ℝ) < s + 1 - θ)]
+    constructor
+    · intro h
+      by_contra hc; push_neg at hc
+      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ θ - (s - 1)) (by linarith : (0 : ℝ) ≤ s + 1 - θ)]
+    · intro h
+      nlinarith [mul_pos (by linarith : (0 : ℝ) < s - 1 - θ) (by linarith : (0 : ℝ) < s + 1 - θ)]
 
 lemma portfolio_fields (j : ℕ) :
     (portfolioParams j).d = 2 * j + 7 ∧ (portfolioParams j).k = j ^ 2 + 8 * j + 13 ∧
@@ -571,9 +644,11 @@ theorem costExpDL_min (θ : ℝ) (h0 : 0 < θ) (h1 : θ < 1) :
       nlinarith [mul_pos hr0 hs0]
     linarith
 
-/-- MAIN. The size-model floor of [rec] §3.3 / lv5unif §13: with precision exponent `τ ≥ 0`,
-the constraints `k ≳ D^{2(1−2α)}` and `k·d^τ = O(D^α)` are compatible iff
-`(2+τ)(1−2α) ≤ α`, i.e. `α ≥ (2+τ)/(5+2τ)`; at `τ = 0` this is `α ≥ 2/5`. -/
+/-- MAIN. Arithmetic step of the size-model floor (recurse §3.3, lv5unif §13): with precision
+exponent `τ ≥ 0`, the constraints `k ≳ D^{2(1−2α)}` and `k·d^τ = O(D^α)` are compatible iff
+`(2+τ)(1−2α) ≤ α`. Those constraints themselves are heuristic and are not formalised here; only
+the arithmetic equivalence `(2+τ)(1−2α) ≤ α ↔ α ≥ (2+τ)/(5+2τ)` (and its `τ = 0` case
+`α ≥ 2/5`) is. -/
 theorem size_model_floor (τ α : ℝ) (hτ : 0 ≤ τ) :
     ((2 + τ) * (1 - 2 * α) ≤ α ↔ (2 + τ) / (5 + 2 * τ) ≤ α) ∧
       ((2 : ℝ) * (1 - 2 * α) ≤ α ↔ 2 / 5 ≤ α) := by

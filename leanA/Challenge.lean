@@ -386,6 +386,11 @@ theorem theta_at_muOpt (d k : ℕ) (η₀ : ℚ) (hd : 3 ≤ d) (hk : 1 ≤ k) :
     (Params.θ ⟨d, k, muOpt d k, η₀⟩) = thetaMin d k + η₀ := by
   sorry
 
+/-- MAIN. [pp] Lemma lem:optmu, range: for `k > (d+1)/4` the optimal `μ` lies in `(ν, 1)`. -/
+theorem muOpt_mem (d k : ℕ) (hd : 3 ≤ d) (hk : ((d : ℚ) + 1) / 4 < k) :
+    1 / (4 * (k : ℚ)) < muOpt d k ∧ muOpt d k < 1 := by
+  sorry
+
 /-- MAIN. `(1+θ)/√2 < 1 ↔ θ < √2 − 1` ([pp] §1.2). -/
 theorem cA_lt_one_iff (P : Params) (hθ : 0 ≤ (P.θ : ℝ)) :
     P.cA < 1 ↔ (P.θ : ℝ) < Real.sqrt 2 - 1 := by
@@ -423,6 +428,12 @@ theorem d9_k_le_12 (P : Params) (hP : P.Admissible) (hd : P.d = 9) (hk : P.k ≤
     1 ≤ P.cA := by
   sorry
 
+/-- MAIN. [pp] Table tab:constants: at `d = 9` every `k ≥ 13` admits an admissible tuple with
+constant below 1 (so `k ≥ 13` is necessary and sufficient). -/
+theorem d9_k_ge_13 (k : ℕ) (hk : 13 ≤ k) :
+    ∃ μ η₀ : ℚ, Params.Admissible ⟨9, k, μ, η₀⟩ ∧ Params.cA ⟨9, k, μ, η₀⟩ < 1 := by
+  sorry
+
 /-- MAIN. [pp] Prop. prop:cost and the remark after it: for `0 < θ < 1` the cost exponent
 `max(a + 1/√2, a + θ/(2a), 2a)` is minimised at `a = θ/√2`, with minimum `(1+θ)/√2`. -/
 theorem costExpA_min (θ : ℝ) (h0 : 0 < θ) (h1 : θ < 1) :
@@ -438,11 +449,11 @@ theorem costExpRA_min (θ : ℝ) (h0 : 0 < θ) :
   sorry
 
 /-- MAIN. [pp] Remark rem:RA(a): for `0 ≤ θ`, `√((1+√2)θ) < 1 ↔ (1+θ)/√2 < 1`, and for
-`0 < θ < √2 − 1`, `√((1+√2)θ) < (1+θ)/√2`. -/
+`0 < θ < 1`, `√((1+√2)θ) < (1+θ)/√2 ↔ θ < √2 − 1`. -/
 theorem cRA_vs_cA (θ : ℝ) (h0 : 0 ≤ θ) :
     (Real.sqrt ((1 + Real.sqrt 2) * θ) < 1 ↔ (1 + θ) / Real.sqrt 2 < 1) ∧
-      (0 < θ → θ < Real.sqrt 2 - 1 →
-        Real.sqrt ((1 + Real.sqrt 2) * θ) < (1 + θ) / Real.sqrt 2) := by
+      (0 < θ → θ < 1 →
+        (Real.sqrt ((1 + Real.sqrt 2) * θ) < (1 + θ) / Real.sqrt 2 ↔ θ < Real.sqrt 2 - 1)) := by
   sorry
 
 /-- MAIN. [pp] Corollary cor:P: the portfolio parameter tuples are admissible for every `j ≥ 1`,
@@ -468,9 +479,11 @@ theorem costExpDL_min (θ : ℝ) (h0 : 0 < θ) (h1 : θ < 1) :
         costExpDL θ (Real.sqrt θ / 2) = 3 * Real.sqrt θ / 2) := by
   sorry
 
-/-- MAIN. The size-model floor of [rec] §3.3 / lv5unif §13: with precision exponent `τ ≥ 0`,
-the constraints `k ≳ D^{2(1−2α)}` and `k·d^τ = O(D^α)` are compatible iff
-`(2+τ)(1−2α) ≤ α`, i.e. `α ≥ (2+τ)/(5+2τ)`; at `τ = 0` this is `α ≥ 2/5`. -/
+/-- MAIN. Arithmetic step of the size-model floor (recurse §3.3, lv5unif §13): with precision
+exponent `τ ≥ 0`, the constraints `k ≳ D^{2(1−2α)}` and `k·d^τ = O(D^α)` are compatible iff
+`(2+τ)(1−2α) ≤ α`. Those constraints themselves are heuristic and are not formalised here; only
+the arithmetic equivalence `(2+τ)(1−2α) ≤ α ↔ α ≥ (2+τ)/(5+2τ)` (and its `τ = 0` case
+`α ≥ 2/5`) is. -/
 theorem size_model_floor (τ α : ℝ) (hτ : 0 ≤ τ) :
     ((2 + τ) * (1 - 2 * α) ≤ α ↔ (2 + τ) / (5 + 2 * τ) ≤ α) ∧
       ((2 : ℝ) * (1 - 2 * α) ≤ α ↔ 2 / 5 ≤ α) := by
@@ -496,7 +509,11 @@ open Real Finset Filter Topology
 /-- MAIN. [pp] Theorem thm:DD, exact form. Let `N > 1` be odd. Fix the squares `R` and the coins
 `ξ`, and suppose the dependency `S(R, ξ)` is nonempty and `X² = Y²` holds on the fibre, where
 `X = ∏_{i ∈ S} r_i`. Then among the roots `r` with `r_i² = R_i`, exactly the proportion
-`1 − 2/|μ₂(ℤ/N)|` has `1 < gcd(X − Y, N) < N`. -/
+`1 − 2/|μ₂(ℤ/N)|` has `1 < gcd(X − Y, N) < N`. The probabilistic reading (conditioning on
+`𝓕 = σ(R, ξ)` for `r` uniform on units and `ξ` independent of `r`) and hypothesis (T) for SPLIT
+([pp] Remark rem:T, Lemma lem:Trec) are informal premises. In the cost layer, Theorem DD enters
+only through the cost-interface bound for SPLIT (Prop. prop:select(ii)); this theorem is not
+consumed by `theoremA`. -/
 theorem dixon_descent (N : ℕ) [NeZero N] (hodd : Odd N) (h1 : 1 < N) {n : ℕ} {Ξ : Type*}
     (S : (Fin n → (ZMod N)ˣ) → Ξ → Finset (Fin n))
     (Y : (Fin n → (ZMod N)ˣ) → Ξ → (ZMod N)ˣ)
@@ -651,16 +668,17 @@ theorem split_cost_bookkeeping {α : Type*} (s : Finset α) (ς : α → ℝ)
 
 /-- PUBLISHED INPUT (Brun–Titchmarsh). H. L. Montgomery and R. C. Vaughan, *The large sieve*,
 Mathematika 20 (1973), 119–134, Theorem 2: for positive reals `x, y` and coprime positive integers
-`q, a` with `y > q`, `π(x+y; q, a) − π(x; q, a) < 2y/(φ(q) log(y/q))`. -/
+`q, a` with `y > q`, `π(x+y; q, a) − π(x; q, a) < 2y/(φ(q) log(y/q))`. (The strict form is also
+implied by T. Yamada, arXiv:2312.16090, which has `log(y/q) + 0.8601` in the denominator.) -/
 def BrunTitchmarsh : Prop :=
   ∀ (x y : ℝ) (q a : ℕ), 0 < x → 0 < y → 1 ≤ q → 1 ≤ a → Nat.Coprime a q → (q : ℝ) < y →
     (primeCountAP (x + y) q a : ℝ) - primeCountAP x q a <
       2 * y / ((Nat.totient q : ℝ) * Real.log (y / q))
 
 /-- PUBLISHED INPUT (Rosser–Schoenfeld). J. B. Rosser and L. Schoenfeld, *Approximate formulas
-for some functions of prime numbers*, Illinois J. Math. 6 (1962), 64–94: Corollary 1
-(`π(z) < 1.25506 z/log z` for `z > 1`) and Corollary 3 (`π(2z) − π(z) > 3z/(5 log z)` for
-`z ≥ 20.5`). -/
+for some functions of prime numbers*, Illinois J. Math. 6 (1962), 64–94, p. 69: (3.6) of Corollary 1
+after Theorem 2 (`π(z) < 1.25506 z/log z` for `1 < z`) and (3.8) of Corollary 3
+(`3z/(5 log z) < π(2z) − π(z)` for `20½ ≤ z`). -/
 def RosserSchoenfeld : Prop :=
   (∀ z : ℝ, 1 < z → (Nat.primeCounting ⌊z⌋₊ : ℝ) < 1.25506 * z / Real.log z) ∧
     (∀ z : ℝ, 20.5 ≤ z →
@@ -825,11 +843,14 @@ theorem lemmaF_logfactor (α : ℝ) (hα0 : 0 < α) (hα1 : α < 1) (F P D : ℝ
     ∀ η > 0, ∃ K : ℝ, ∀ x, 2 ≤ x → F x ≤ K * LN α (max p (δ / (1 - 2 ^ (-α))) + η) x := by
   sorry
 
-/-- MAIN. [pp] Corollary cor:P, the series of the restart schedule:
+/-- MAIN. [pp] Corollary cor:P, the series of the restart schedule: the series
+`Σ_{m ≥ 1} 2^{s₀+m} 2^{−m(m+1)/2}` converges and
 `2^{s₀+1} + Σ_{m ≥ 1} 2^{s₀+m} 2^{−m(m+1)/2} ≤ 4·2^{s₀}`. -/
 theorem restart_series (s₀ : ℕ) :
-    (2 : ℝ) ^ (s₀ + 1) + ∑' m : ℕ, (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2) ≤
-      4 * 2 ^ s₀ := by
+    Summable (fun m : ℕ => (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2)) ∧
+      (2 : ℝ) ^ (s₀ + 1) +
+          ∑' m : ℕ, (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2) ≤
+        4 * 2 ^ s₀ := by
   sorry
 
 /-- MAIN. [pp] Corollary cor:P, assembly: if `T_j(N) ≤ L_N[1/2, c_j + o(1)]` for each `j`, with
@@ -854,10 +875,16 @@ open Real Finset Filter Topology
 
 /-- PUBLISHED INPUT (Canfield–Erdős–Pomerance). E. R. Canfield, P. Erdős and C. Pomerance, *On a
 problem of Oppenheim concerning "factorisatio numerorum"*, J. Number Theory 17 (1983), 1–28,
-Corollary to Theorem 3.1 ([pp] Fact fact:CEP): for each `ε > 0`, uniformly for `u → ∞` with
-`u ≤ (1 − ε) log x / log log x`, `Ψ(x, x^{1/u}) = x u^{−u(1+o(1))}`. -/
+Corollary on p. 15 (lower half: their Theorem 3.1; upper half: de Bruijn, Indag. Math. 28 (1966),
+Part II, Thm 2): if `ε > 0` and `3 ≤ u ≤ (1 − ε) log x / log log x`, then
+`Ψ(x, x^{1/u}) = x·exp{−u(log u + log log u − 1 + (log log u − 1)/log u + E(x, u))}` with
+`|E(x, u)| ≤ c_ε (log log u)²/(log u)²`. In particular ([pp] Fact fact:CEP)
+`Ψ(x, x^{1/u}) = x u^{−u(1+o(1))}` uniformly as `u → ∞` in that range. We state this consequence,
+for `x ≥ 16` (so that `log log x > 0`; the source tacitly assumes `x` large — without a lower bound
+on `x` the Lean statement would be false, e.g. for negative `x` or `x` just above `e`). -/
 def CEP : Prop :=
-  ∀ ε > 0, ∀ δ > 0, ∃ U₀ : ℝ, ∀ x u : ℝ, U₀ ≤ u → u ≤ (1 - ε) * Real.log x / Real.log (Real.log x) →
+  ∀ ε > 0, ∀ δ > 0, ∃ U₀ : ℝ, ∀ x u : ℝ, 16 ≤ x → U₀ ≤ u →
+    u ≤ (1 - ε) * Real.log x / Real.log (Real.log x) →
     x * u ^ (-(u * (1 + δ))) ≤ (Psi x (x ^ (1 / u)) : ℝ) ∧
       (Psi x (x ^ (1 / u)) : ℝ) ≤ x * u ^ (-(u * (1 - δ)))
 
@@ -973,7 +1000,7 @@ structure CostInterfaceA (P : Params) (a : ℝ) (M : CostModelA P) : Prop where
       M.Tsq N ≤ (Real.log N) ^ C * ((Params.Bsm a N : ℝ) + (P.Ssz a N : ℝ) ^ 2 * Real.log N) ∧
       0 ≤ M.Tpost N) ∧
     -- [pp] Prop. prop:lv6: `T_post ≤ M_rows² (log N)^{O(1)} + B^{1+o(1)}`.
-    (∀ ε > 0, ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
+    (∀ ε : ℝ, 0 < ε → ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
       M.Tpost N ≤ M.Mrows N ^ 2 * (Real.log N) ^ C + (Params.Bsm a N : ℝ) ^ (1 + ε)) ∧
     -- [pp] §sec:uniform (proof of Theorem thm:main): at most `log₂N` calls of SPLIT, each raced
     -- against trial division (constant cost below `N₀`), on inputs `≤ N`, plus preprocessing
@@ -993,17 +1020,16 @@ theorem theoremA (P : Params) (hP : P.Admissible) (hCEP : CEP) (hRS : RosserScho
     LBound (1 / 2) P.cA M.factorCost := by
   sorry
 
-/-- MAIN. [pp] Corollary cor:main, conditional form: if the hypotheses of `theoremA` hold for every
-admissible tuple, then for every `c > 1/√2` some admissible tuple's FACTOR runs in expected time
-`O(L_N[1/2, c])`. -/
-theorem corollaryA (hCEP : CEP) (hRS : RosserSchoenfeld)
-    (hFM : ∀ P : Params, P.Admissible → FirstMoment P ((P.θ : ℝ) / Real.sqrt 2))
-    (hLD : ∀ P : Params, P.Admissible → SecondMoment P ((P.θ : ℝ) / Real.sqrt 2))
-    (M : ∀ P : Params, CostModelA P)
-    (hM : ∀ P : Params, P.Admissible → CostInterfaceA P ((P.θ : ℝ) / Real.sqrt 2) (M P))
-    (hLP : ∀ P : Params, LenstraPomerance (M P).TLP) (c : ℝ) (hc : 1 / Real.sqrt 2 < c) :
-    ∃ P : Params, P.Admissible ∧
-      ∃ K : ℝ, ∀ N : ℕ, 2 ≤ N → (M P).factorCost N ≤ K * LN (1 / 2) c N := by
+/-- MAIN. [pp] Corollary cor:main, conditional form: for every `c > 1/√2` there is an admissible
+tuple, with constant below `c`, whose FACTOR runs in expected time `O(L_N[1/2, c])` whenever that
+tuple's hypotheses hold. -/
+theorem corollaryA (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (hc : 1 / Real.sqrt 2 < c) :
+    ∃ P : Params, P.Admissible ∧ P.cA < c ∧
+      ∀ (_hFM : FirstMoment P ((P.θ : ℝ) / Real.sqrt 2))
+        (_hLD : SecondMoment P ((P.θ : ℝ) / Real.sqrt 2))
+        (M : CostModelA P) (_hM : CostInterfaceA P ((P.θ : ℝ) / Real.sqrt 2) M)
+        (_hLP : LenstraPomerance M.TLP),
+        ∃ K : ℝ, ∀ N : ℕ, 2 ≤ N → M.factorCost N ≤ K * LN (1 / 2) c N := by
   sorry
 
 /-- Cost-accounting model of FACTOR_rec[a] ([pp] §sec:recursive). -/
@@ -1040,7 +1066,7 @@ structure CostInterfaceRA (P : Params) (a : ℝ) (M : CostModelRA P) : Prop wher
       -- most 2k searches charged to every DESCEND_ONCE call.
       M.nonO N ≤ 3 * (M.Mrows N * (2 * P.k * M.Tsq N + (Real.log N) ^ C) + M.Tpost N) / M.pTrial N) ∧
     -- [pp] Prop. prop:lv6, as in `CostInterfaceA`
-    (∀ ε > 0, ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
+    (∀ ε : ℝ, 0 < ε → ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
       M.Tpost N ≤ M.Mrows N ^ 2 * (Real.log N) ^ C + (Params.Bsm a N : ℝ) ^ (1 + ε)) ∧
     -- `F` is finite, nonnegative, nondecreasing ([pp] Theorem thm:RA, "Finiteness").
     (∀ x, 2 ≤ x → 0 ≤ M.Fsup x) ∧ MonotoneOn M.Fsup (Set.Ici 2) ∧
@@ -1109,13 +1135,88 @@ theorem theoremU_assembly (F Pc D : ℝ → ℝ) (a s σ : ℝ) (ha : 0 < a) (hs
 expected time is `≤ L_p[1/2, max(a + 1/√2, a + θ/(2a), 3a) + o(1)]`; at the optimal `a` this is
 `c_DL(θ)` (`costExpDL_min`). -/
 theorem theoremDL_assembly (θ a : ℝ) (ha : 0 < a) (T Mrows Ctrial Tpost pT : ℕ → ℝ)
-    (hT : ∀ᶠ N : ℕ in atTop, T N ≤ (Mrows N * Ctrial N + Tpost N) / pT N)
+    (hT : ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ N : ℕ in atTop,
+      T N ≤ K * (Real.log N) ^ K * (Mrows N * Ctrial N + Tpost N) / pT N)
     (hM : LBound (1 / 2) a Mrows) (hM0 : ∀ᶠ N : ℕ in atTop, 0 ≤ Mrows N)
-    (hC : LBound (1 / 2) (max (1 / Real.sqrt 2) (θ / (2 * a))) Ctrial)
+    (hC : LBound (1 / 2) (max a (max (1 / Real.sqrt 2) (θ / (2 * a)))) Ctrial)
     (hC0 : ∀ᶠ N : ℕ in atTop, 0 ≤ Ctrial N)
     (hTp : LBound (1 / 2) (3 * a) Tpost)
     (hp : ∀ ε > 0, ∀ᶠ N : ℕ in atTop, LN (1 / 2) (-ε) N ≤ pT N) :
     LBound (1 / 2) (costExpDL θ a) T := by
+  sorry
+
+end FactoringA
+
+-- ===== statements from LeanA/LiftAveraging.lean =====
+
+noncomputable section
+open Classical
+
+namespace FactoringA
+
+open Real Finset Filter Topology
+
+/-- TRUSTED. `n` is `y`-smooth: every prime factor `p` of `n` satisfies `p ≤ y`
+(used only for `n ≥ 1`). -/
+def IsYSmooth (y : ℝ) (n : ℕ) : Prop := ∀ p : ℕ, p.Prime → p ∣ n → (p : ℝ) ≤ y
+
+/-- TRUSTED. `S(z, y)`: the `y`-smooth integers `1 ≤ n ≤ z`. -/
+def smoothSet (z y : ℝ) : Finset ℕ := (Finset.Icc 1 ⌊z⌋₊).filter (IsYSmooth y)
+
+/-- TRUSTED. `Ψ(z, y; q, a) = #{n ∈ S(z, y) : n ≡ a (mod q)}`. -/
+def PsiAP (z y : ℝ) (q a : ℕ) : ℕ := ((smoothSet z y).filter (fun n => n ≡ a [MOD q])).card
+
+/-- TRUSTED. `Ψ_q(z, y) = #{n ∈ S(z, y) : gcd(n, q) = 1}`. -/
+def PsiCop (z y : ℝ) (q : ℕ) : ℕ := ((smoothSet z y).filter (fun n => Nat.Coprime n q)).card
+
+/-- TRUSTED. `E(z, y; q, a) = Ψ(z, y; q, a) − Ψ_q(z, y)/φ(q)`. -/
+def Eerr (z y : ℝ) (q a : ℕ) : ℝ := (PsiAP z y q a : ℝ) - (PsiCop z y q : ℝ) / (q.totient : ℝ)
+
+/-- TRUSTED. `Ψ(z, y; χ) = ∑_{n ∈ S(z, y)} χ(n)` for a Dirichlet character `χ` mod `q`. -/
+def PsiChi (z y : ℝ) {q : ℕ} (χ : DirichletCharacter ℂ q) : ℂ :=
+  ∑ n ∈ smoothSet z y, χ (n : ZMod q)
+
+/-- TRUSTED. `Δ_ℓ(t) = φ(t)⁻¹ ∑_{χ mod t, ℓ ∣ cond χ} |Ψ(z, y; χ)|`. -/
+def DeltaEll (z y : ℝ) (ℓ t : ℕ) : ℝ :=
+  (1 / (t.totient : ℝ)) *
+    ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ t)).filter (fun χ => ℓ ∣ χ.conductor),
+      ‖PsiChi z y χ‖
+
+/-- TRUSTED. `Δ(q) = φ(q)⁻¹ ∑_{χ mod q, χ ≠ χ₀} |Ψ(z, y; χ)|`. -/
+def DeltaAll (z y : ℝ) (q : ℕ) : ℝ :=
+  (1 / (q.totient : ℝ)) *
+    ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ q)).filter (fun χ => χ ≠ 1), ‖PsiChi z y χ‖
+
+/-- MAIN. [pp] Lemma lem:E1 (orthogonality): for `q ≥ 1` and `(a, q) = 1`,
+`E(z, y; q, a) = φ(q)⁻¹ ∑_{χ ≠ χ₀} χ̄(a) Ψ(z, y; χ)`, where `χ̄(a) = χ(a⁻¹)`. -/
+theorem orthogonality_E1 (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Coprime a q) :
+    ((Eerr z y q a : ℝ) : ℂ) =
+      (1 / (q.totient : ℂ)) *
+        ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ q)).filter (fun χ => χ ≠ 1),
+          χ ((a : ZMod q)⁻¹) * PsiChi z y χ := by
+  sorry
+
+/-- MAIN. [pp] Lemma lem:E1, second part: `|E(z, y; q, a)| ≤ Δ(q)` for `q ≥ 1`, `(a, q) = 1`. -/
+theorem abs_Eerr_le_DeltaAll (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Coprime a q) :
+    |Eerr z y q a| ≤ DeltaAll z y q := by
+  sorry
+
+/-- MAIN. [pp] Lemma lem:E2 (lift averaging), exact form: let `ℓ > y` be prime, `s ≥ 1`,
+`ℓ ∤ s`, `t = ℓ s`, `(r, t) = 1`. Then
+`E(z, y; t, r) − E(z, y; s, r)/(ℓ − 1) = φ(t)⁻¹ ∑_{χ mod t, ℓ ∣ cond χ} χ̄(r) Ψ(z, y; χ)`. -/
+theorem lift_averaging_E2_eq (z y : ℝ) (ℓ s t r : ℕ) (hℓ : ℓ.Prime) (hyℓ : y < ℓ)
+    (hs : 1 ≤ s) (hℓs : ¬ ℓ ∣ s) (ht : t = ℓ * s) (hr : Nat.Coprime r t) :
+    ((Eerr z y t r - Eerr z y s r / ((ℓ : ℝ) - 1) : ℝ) : ℂ) =
+      (1 / (t.totient : ℂ)) *
+        ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ t)).filter (fun χ => ℓ ∣ χ.conductor),
+          χ ((r : ZMod t)⁻¹) * PsiChi z y χ := by
+  sorry
+
+/-- MAIN. [pp] Lemma lem:E2 (lift averaging): let `ℓ > y` be prime, `s ≥ 1`, `ℓ ∤ s`,
+`t = ℓ s`. For every `(r, t) = 1`, `|E(z, y; t, r) − E(z, y; s, r)/(ℓ − 1)| ≤ Δ_ℓ(t)`. -/
+theorem lift_averaging_E2 (z y : ℝ) (ℓ s t r : ℕ) (hℓ : ℓ.Prime) (hyℓ : y < ℓ)
+    (hs : 1 ≤ s) (hℓs : ¬ ℓ ∣ s) (ht : t = ℓ * s) (hr : Nat.Coprime r t) :
+    |Eerr z y t r - Eerr z y s r / ((ℓ : ℝ) - 1)| ≤ DeltaEll z y ℓ t := by
   sorry
 
 end FactoringA

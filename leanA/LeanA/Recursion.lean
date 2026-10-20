@@ -309,11 +309,14 @@ theorem lemmaF_logfactor (α : ℝ) (hα0 : 0 < α) (hα1 : α < 1) (F P D : ℝ
         ring
     _ ≤ _ := add_le_add hT1 hT2
 
-/-- MAIN. [pp] Corollary cor:P, the series of the restart schedule:
+/-- MAIN. [pp] Corollary cor:P, the series of the restart schedule: the series
+`Σ_{m ≥ 1} 2^{s₀+m} 2^{−m(m+1)/2}` converges and
 `2^{s₀+1} + Σ_{m ≥ 1} 2^{s₀+m} 2^{−m(m+1)/2} ≤ 4·2^{s₀}`. -/
 theorem restart_series (s₀ : ℕ) :
-    (2 : ℝ) ^ (s₀ + 1) + ∑' m : ℕ, (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2) ≤
-      4 * 2 ^ s₀ := by
+    Summable (fun m : ℕ => (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2)) ∧
+      (2 : ℝ) ^ (s₀ + 1) +
+          ∑' m : ℕ, (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2) ≤
+        4 * 2 ^ s₀ := by
   have hle : ∀ m : ℕ, (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2) ≤
       2 ^ s₀ * (2 : ℝ)⁻¹ ^ m := by
     intro m
@@ -334,6 +337,7 @@ theorem restart_series (s₀ : ℕ) :
   have hsum' : Summable (fun m : ℕ =>
       (2 : ℝ) ^ (s₀ + (m + 1)) * (2 : ℝ)⁻¹ ^ ((m + 1) * (m + 2) / 2)) :=
     Summable.of_nonneg_of_le (fun m => by positivity) hle hsum
+  refine ⟨hsum', ?_⟩
   have htsum := hsum'.tsum_le_tsum hle hsum
   rw [tsum_mul_left, tsum_geometric_inv_two] at htsum
   rw [pow_succ]
