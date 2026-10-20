@@ -85,3 +85,12 @@ Frozen before any experiment below is run. Code: `src/prepread/*`. Raw output:
 
 Any deviation (prime counts, sizes, time-outs) will be recorded as a disclosed deviation. Post-hoc analyses
 will be labelled as such.
+
+## Amendment A1 (2026-10-20, committed before any experiment ran)
+
+H7(b) as written is mis-specified. For g a generator the estimator in step 1 of the reduction is unbiased
+for F̂(j)·χ_j(y) for ANY f with F̂(j) ≠ 0, so with m = ⌈200/|F̂(j)|²⌉ samples per estimate the recovery
+succeeds for every f; what separates a real observable from a flat one is the query cost. Amended H7(b):
+recovery succeeds in ≥ 18/20 targets, and the queries per recovery are ≥ p − 1 (no better than exhaustive
+search), whereas in (a) they are ≤ 10^4·⌈log₂ p⌉. The reduction code uses a precomputed table of g^s (pure
+speed shortcut).
