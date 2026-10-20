@@ -1,0 +1,82 @@
+Audited commit `c8e1ee5`. **I found no FATAL or MAJOR defect in the two extensions, conditional on the earlier analytic results.** The following fixes are local.
+
+The substantive checks pass: at every fixed \(a>0\), the auxiliary constants remain fixed and the required power-of-\(N\) margins survive. Retaining the batch cost \(B+S^2\) gives (A1)–(A3). Oracle substitution is applied to the core inside strong induction; adaptive Wald and transcript invariance are sound. Lemma F, the RA optimizer, the fixed-depth recurrence, the numerical constants, and the restart tail \(2^{-m(m+1)/2}\) check out.
+
+For Section 16, the row identity, fractional-ideal normalization, reduction map, saturation argument, torsion calculation, and hidden-exponent argument are sound. The unit-lattice gap supplies a sufficiently small relation and an effective precision bound. Verified rank profiles and Dixon lifting support the claimed \(L^{3a+o(1)}\) cost. The arbitrary-base reduction and both recursion interactions also check out, subject to the small-input repair below.
+
+1. **[Section 15, Corollary P, parameter sequence](/Volumes/git/factoring-connection/paper2/main.tex:2238); MINOR.**  
+   The condition \(|a_j-a_j^*|\to0\) does **not** ensure \(c(a_j)\to0\), because \(a_j^*\to0\). For example, the computable rational choice \(a_j=\theta_j^2\) satisfies that condition, but
+   \[
+   a_j+\frac{\theta_j}{2a_j}
+   =\theta_j^2+\frac1{2\theta_j}\longrightarrow\infty.
+   \]
+   **Concrete fix:** require, for example, \(a_j^*\le a_j\le2a_j^*\), or relative error tending to zero. For the fixed-\(d=9\) portfolio, explicitly specify both \(k_j\to\infty\) and \(\eta_{0,j}\to0\); varying \(k\) with fixed positive slack does not attain \(0.9192\ldots+o(1)\).
+
+2. **[Section 15, Corollary P, admissibility justification](/Volumes/git/factoring-connection/paper2/main.tex:2240); PRESENTATION.**  
+   “Monotone in \(j\); checked … \(j\le60\)” should be replaced by a proof covering the infinite sequence. The assertion is correct. Writing \(d=2j+7\) and \(D=d^2+2d-11\), one has
+   \[
+   k=D/4,\quad \nu=1/D,\quad
+   \mu=\frac{1+(d-1)/D}{d+1},\quad
+   \theta=\frac3{d+1}+\frac{4d-2}{(d+1)D}+\frac1{d^2}.
+   \]
+   Since \(d\ge9\) and \(D\ge d^2\),
+   \[
+   \mu-\nu=\frac{1-2/D}{d+1}\ge\frac1{d^2},
+   \qquad
+   \theta<\frac3{d+1}+\frac5{d^2}<1.
+   \]
+   These formulas also establish \(\theta\to0\).  
+   **Concrete fix:** insert these inequalities. The restart computation itself is correct, including its bookkeeping factors; no computable \(N_0(j)\) or uniform estimate in \(j\) is needed. “No effective rate supplied” is appropriately cautious.
+
+3. **[Section 16, Algorithm DLOG and Theorem DL](/Volumes/git/factoring-connection/paper2/main.tex:2321); MINOR.**  
+   The displayed algorithm is not almost surely terminating for every prime covered by the theorem. For small \(p\), the irreducibility-certificate interval can be empty, so field selection rejects forever. For instance, with the \(d=9,k=13\) parameters and small slack, \(p=3\) gives \(H=1\). Section 16 has no counterpart of FACTOR’s trial-division race.
+   
+   **Concrete fix:** race DLOG against exhaustive enumeration of \(g^x\), accepting only a verified logarithm, and handle \(p=2\) explicitly. This preserves the asymptotic bound and also makes the later DL portfolio independent of unknown thresholds \(p_0(j)\).
+
+4. **[Abstract and Section 16 constants paragraph](/Volumes/git/factoring-connection/paper2/main.tex:125); MINOR.**  
+   The abstract states the DL constant \((1+\theta)/\sqrt2\) without the necessary restriction \(\theta\le1/2\). The introduction includes that restriction correctly.
+
+   Also, “below \(\sqrt2\) … includes every optimised tuple” is false if “optimised” means the optimal \(\mu\) at fixed \(d,k,\eta_0\). Take
+   \[
+   d=3,\quad k=3,\quad \mu=7/24,\quad \eta_0=1/100.
+   \]
+   This is admissible and optimizes \(\mu\), but \(\theta=581/600>8/9\), giving \(c_{\rm DL}\approx1.47606>\sqrt2\).
+   
+   **Concrete fix:** use \(c_{\rm DL}(\theta)\) in the abstract, or explicitly restrict to \(\theta\le1/2\). Replace “every optimised tuple” by “the optimized infimum at every degree, approached with sufficiently large \(k\) and sufficiently small slack.” Label \(3\sqrt3/4\) at \(d=3\) as an **infimum**.
+
+5. **[Abstract and introduction, fixed-degree nonattainment statements](/Volumes/git/factoring-connection/paper2/main.tex:258); PRESENTATION.**  
+   The manuscript both denies a single fixed-degree algorithm attaining the limiting constant and proves precisely such a result at \(d=9\) through Corollary P. A portfolio over \(k\) still has fixed number-field degree. The parenthetical cross-reference does not resolve the contradictory wording.
+   
+   **Concrete fix:** distinguish **one fixed parameter tuple** from **one algorithm scheduling many tuples at fixed degree**. Say that no fixed tuple attains the infimum, while scheduling attains the stated limiting exponent.
+
+6. **[Section 16, proof of Theorem DL, row cost](/Volumes/git/factoring-connection/paper2/main.tex:2464); MINOR.**  
+   The general-\(a\) row-cost expression drops the \(B\) term in batch smoothness. The correct averaged collection bound is
+   \[
+   L^{\max(2a,\ a+1/\sqrt2,\ a+\theta/(2a))+o(1)}.
+   \]
+   The displayed expression need not bound collection for arbitrary \(a\).
+   
+   **Concrete fix:** retain \(2a\), then discard it only after including post-processing, since \(3a\ge2a\). The final minimization and both branches of Theorem DL remain unchanged. Apply the same accounting when replacing \(1/\sqrt2\) by \(\tau/\sqrt2\) in Remark DLrec.
+
+7. **[Section 16, transfer lemma (iii)](/Volumes/git/factoring-connection/paper2/main.tex:2346); PRESENTATION.**  
+   The conditioning transcript’s “all coins” needs an explicit exclusion: coins used to generate the current labels reveal those labels. Likewise, “every computation other than the final \(A_*,B_*\)” should mean computations **before** label-dependent step 4; its gcd, candidate logarithm, and verification are label-dependent too.
+   
+   **Concrete fix:** define \(\mathcal T_j\) using the attempted targets, accepted indices, field, auxiliary coins independent of current labels, and earlier-round information, stopping before step 4. Under that definition, conditional independence of the accepted \(b_i\), primitivity-based surjectivity, and simultaneous treatment of all prime powers of \(p-1\) are correct.
+
+8. **[Section 16, transfer lemma (i)](/Volumes/git/factoring-connection/paper2/main.tex:2342); MINOR.**  
+   “Every gcd-checked quantity is nonzero and smaller than \(p\)” is false for the derivative check. The expression \(f_d^{d-2}f'(m)\) need not be smaller than \(p\), and the algorithm explicitly permits its gcd with \(p\) to equal \(p\), causing rejection.
+   
+   **Concrete fix:** state that primality excludes a **proper-factor exit**, while a zero derivative causes rejection. Restrict the size argument to the quantities for which the stated bounds actually hold. The prime-input transfer remains valid.
+
+9. **[Section 16 literature and bibliography](/Volumes/git/factoring-connection/paper2/refs.bib:588); PRESENTATION.**  
+   The Biasse reference has exactly two authors: **Jean-François Biasse and Muhammed Rashad Erukulangara**, rather than “Biasse and others.” Its published abstract supports the stated GRH class-group constant. [Publisher record](https://www.aimsciences.org/article/doi/10.3934/amc.2021055)
+
+   I corroborated the Vollmer retraction through Biasse–Erukulangara’s introduction, which explicitly identifies the 2000 claim and its retraction in the 2002 corrigendum. I could not retrieve the corrigendum itself. **Concrete fix:** attribute this statement to the published Biasse–Erukulangara account, instead of the internal literature reviewer. [Paper](https://par.nsf.gov/servlets/purl/10324557)
+
+   The distinctions between class-group algorithms, fixed-characteristic algorithms, and prime-field DL are appropriate. The de Boer–Pellet-Mary–Wesolowski exclusion is explicit in their introduction. The negative literature searches and internal-review status are honestly qualified. [de Boer–Pellet-Mary–Wesolowski](https://arxiv.org/pdf/2512.01588)
+
+**VERDICT SECTION 15: CORRECT WITH FIXES**, conditional on the earlier analytic inputs.
+
+**VERDICT SECTION 16: CORRECT WITH FIXES**, conditional on the transferred relation supply.
+
+**WEAKEST LINK:** The inherited moving-residue first-moment/relation-supply interface, especially FM’s use of Lemma \(8.5'\), together with LD*. Within Section 16, certified Log/LLL unit elimination is the most delicate new step; I found no gap in its fixed-degree precision or cost argument.

@@ -104,3 +104,40 @@ Not adopted: none, apart from #6 (reviewer error), #16 (no change needed) and th
    be relaxed. If it finds a gap, Section 15 needs revision.
 2. A paper-level referee pass on Section 15 (as typeset) has not been run.
 3. Unverified bibliographic details are listed in the header of `paper2/refs.bib`.
+
+## Round 2 (orchestrator follow-ups): auditRA verdict, RA/P fixes, discrete-log section, codex preprint_3
+
+**Changes.**
+- The auditRA verdict (`notes/auditRA_audit.md`) was ACCEPT WITH FIXES for both RA and P, from three blind referees with no FATAL or MAJOR finding.
+  - The §15 audit box is replaced by a short status remark: conditional on Theorem A, internally audited by three blind referees, not peer reviewed.
+  - The intro footnote is updated. RA and P now appear in the abstract as further consequences. The headline sentence is unchanged.
+- The five auditRA MINOR fixes are applied:
+  - core-vs-trial-division race, with OS applied to the core inside the strong induction;
+  - η₀_j = 1/d_j² and a computable parameter sequence;
+  - "no effective rate supplied";
+  - 0.851 stated as an infimum (k = 13 gives 0.9952);
+  - the "|u₀v₀| ≍ N" claim was never in the paper.
+- auditRA's sanity remark was added: RA's constant is 1.346× the heuristic 2/√(d+1), and the reasons the random-squares folklore does not bind.
+- New §16, "Application: discrete logarithms in F_p^*", from `notes/dlog_results.md`. It contains:
+  - Theorem DL and Corollary DL′;
+  - the literature paragraph (Pomerance 1987 √2; Vollmer retraction; Biasse–Erukulangara; Hafner–McCurley; Enge–Gaudry; KW; Bender–Pomerance; dBPW);
+  - Algorithm DLOG, the transfer lemma, Lemmas XK0/XK1–5 and HX, and Proposition XK with proofs;
+  - the recursion-interaction remark (c_DL = c\* with RA; 3√θ/2 with the portfolio, where the 3a term takes over);
+  - a prior-art and non-transfer remark, and the toy check.
+
+**Codex preprint_3** (`codex/preprint_3.{md,out}`, §§15–16 at c8e1ee5). Verdicts: §15 CORRECT WITH FIXES; §16 CORRECT WITH FIXES. No FATAL or MAJOR. All
+nine items were FIXED:
+
+| # | issue | sev. | fix |
+|---|---|---|---|
+| 1 | \|a_j − a\*_j\| → 0 does not give c(a_j) → 0; the d = 9 portfolio needs k_j → ∞ and η₀_j → 0 | MINOR | a\*_j ≤ a_j ≤ (1+1/j)a\*_j; both limits stated |
+| 2 | admissibility for all j asserted by "monotone, checked j ≤ 60" | PRES. | closed-form proof (D = d² + 2d − 11; μ − ν ≥ 1/d²; θ < 3/(d+1) + 5/d²) |
+| 3 | DLOG may not terminate for tiny p (empty IR interval); no race | MINOR | race with exhaustive enumeration; p = 2 handled |
+| 4 | abstract's DL constant lacks θ ≤ 1/2; "every optimised tuple" false (d=3, k=3, μ=7/24, η₀=1/100 gives θ = 581/600, c_DL ≈ 1.476); 3√3/4 is an infimum | MINOR | fixed |
+| 5 | "not attained at fixed d" contradicts Corollary P | PRES. | distinguished one parameter tuple from one algorithm scheduling tuples at fixed degree |
+| 6 | DL row cost omitted the 2a batch term | MINOR | max(2a, …), dominated by 3a; also in Remark DLrec |
+| 7 | T_j "all coins" includes the label coins; step 4 is label-dependent | PRES. | T_j defined explicitly |
+| 8 | "every gcd-checked quantity < p" is false for f′(m) | MINOR | stated precisely: no proper-factor exit, p \| f′(m) is a rejection |
+| 9 | Biasse co-author; attribution of the Vollmer retraction | PRES. | Biasse–Erukulangara; retraction attributed to their published introduction |
+
+Paper: 54 pages; compiles with no errors, no undefined references and no overfull boxes.

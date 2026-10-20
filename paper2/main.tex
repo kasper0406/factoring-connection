@@ -122,8 +122,8 @@ As further consequences of the same proof (Sections~\ref{sec:recursive} and~\ref
   $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$. The infimum is $0.851$ at $d=9$, and it tends to $0$ as $d$ grows.
 \item A restart schedule over such algorithms yields a single Las Vegas algorithm with expected time $L_N[1/2,o(1)]$; no effective
   rate is supplied. This is not $L_N[\alpha]$ for any $\alpha<1/2$.
-\item The same relation supply computes discrete logarithms in $\F_p^*$ in expected time $L_p[1/2,(1+\theta)/\sqrt2+o(1)]$, below
-  Pomerance's $L_p[1/2,\sqrt2]$.
+\item The same relation supply computes discrete logarithms in $\F_p^*$ in expected time $L_p[1/2,(1+\theta)/\sqrt2+o(1)]$ whenever $\theta\le1/2$
+  (in particular whenever the factoring constant is below $1$), below Pomerance's $L_p[1/2,\sqrt2]$.
 \end{itemize}
 \end{abstract}
 
@@ -255,12 +255,12 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
 
 \begin{remark}[what is and is not claimed]\label{rem:claims}
 \begin{enumerate}[label=(\alph*)]
-\item \emph{Infimum, not $o(1)$.} At fixed $d$ the value $(1+3/(d+1))/\sqrt2$ is an infimum over fixed
-  $(k,\eta_0)$. It is not attained, and we do not claim $L_N[1/2,(1+3/(d+1))/\sqrt2+o(1)]$ for any fixed
-  $d$. That would require letting $k=k(N)\to\infty$. Our constants depend on $k$ through factors
+\item \emph{Infimum, not $o(1)$, for one parameter tuple.} At fixed $d$ the value $(1+3/(d+1))/\sqrt2$ is an infimum over fixed
+  $(k,\eta_0)$. No single parameter tuple attains it, and Theorem~\ref{thm:main} does not claim $L_N[1/2,(1+3/(d+1))/\sqrt2+o(1)]$ for one
+  tuple. That would require letting $k=k(N)\to\infty$. Our constants depend on $k$ through factors
   $(\log N)^{O(k)}$, $\binom{2k}{k}$ and thresholds $N_0(k)$, and we have not carried out such a
   diagonalisation. At $d=9$ the first parameter choice below $1$ ($k=13$) has $c\approx0.9972+\eta_0/\sqrt2$; larger fixed $k$ give smaller constants (Table~\ref{tab:constants}), but none attains $0.9192$.
-  (Corollary~\ref{cor:P} obtains a genuine $+o(1)$ by scheduling instead.)
+  One algorithm that schedules many tuples of the same degree does attain it as a genuine $+o(1)$ (Corollary~\ref{cor:P}).
 \item \emph{Complete factorisation.} The algorithm outputs the full factorisation, with every prime
   certified (AKS \cite{aks2004}). Prime powers, perfect powers and small prime factors are handled before the
   main splitting routine. The splitting routine is applied at most $\log_2N$ times
@@ -2237,8 +2237,10 @@ fixed $d=9$, without recursion, gives a single algorithm with expected time $L_N
 \begin{proof}
 Let $(A_j)_{j\ge1}$ be the algorithms $\mathrm{FACTOR}_{\rm rec}[a_j]$ for a computable sequence of admissible parameters with $c(a_j)\to0$. For example, take
 $d_j=2j+7$, $k_j=\lceil d_j^2/4\rceil+j$, $\mu_j$ the (rational) optimum of Lemma~\ref{lem:optmu}, $\eta_{0,j}:=1/d_j^2$, and $a_j$ rational with
-$|a_j-a^*_j|\to0$. These tuples are admissible for every $j$ (the inequalities are monotone in $j$; checked exactly for $j\le60$, where
-$c^*=0.239$ at $j=60$). The slack must tend to $0$, since $\theta\ge\eta_0$. The map $j\mapsto A_j$ is computable. No threshold $N_0(j)$ enters
+$a^*_j\le a_j\le(1+1/j)a^*_j$, so that $c(a_j)\le(1+1/j)c^*_j$. These tuples are admissible for every $j$. Indeed, with $d=d_j$ and $D:=d^2+2d-11$ one has
+$k=D/4$, $\nu=1/D$, $\mu=(1+(d-1)/D)/(d+1)$ and $\theta=3/(d+1)+(4d-2)/((d+1)D)+1/d^2$. Since $d\ge9$ and $D\ge d^2$, this gives
+$\mu-\nu=(1-2/D)/(d+1)\ge1/d^2=\eta_{0,j}$ and $\theta<3/(d+1)+5/d^2<1$, and also $\theta\to0$. (At $j=60$, $c^*=0.239$.) The slack must tend to $0$,
+since $\theta\ge\eta_0$. The map $j\mapsto A_j$ is computable. No threshold $N_0(j)$ enters
 the algorithms, because each $A_j$ races its core against trial division at every node (step~3 of Algorithm~\ref{alg:factor}); so
 $N_0(j)$ need not be computable. Let $T_j(N)$ be the running time of $A_j$ on $N$.
 
@@ -2251,8 +2253,9 @@ time is at most a polylogarithmic factor times
 \[
 2^{s_0+1}+\sum_{m\ge1}2^{s_0+m}2^{-m(m+1)/2}=O\bigl(2^j\,\Ex T_j(N)\bigr).
 \]
-Hence $\limsup_N\log\Ex T(N)/\cL_N\le c(a_j)$ for every $j$. The second statement is the same argument over $k$ at $d=9$, with
-Theorem~\ref{thm:main} in place of Theorem~\ref{thm:RA}. Since $j$ is fixed in each step, no uniformity in $j$ is needed; for the same reason no effective rate is supplied.
+Hence $\limsup_N\log\Ex T(N)/\cL_N\le c(a_j)$ for every $j$. The second statement is the same argument at $d=9$ over tuples with $k_j\to\infty$
+and $\eta_{0,j}\to0$ (with fixed positive slack the limit would be $0.9192+\eta_0/\sqrt2$), and with Theorem~\ref{thm:main} in place of
+Theorem~\ref{thm:RA}. Since $j$ is fixed in each step, no uniformity in $j$ is needed; for the same reason no effective rate is supplied.
 \end{proof}
 
 \noindent Corollary~\ref{cor:P} answers Remark~\ref{rem:claims}(a): the infimum $0.9192$ at $d=9$ becomes a genuine $+o(1)$ for one
@@ -2284,7 +2287,9 @@ No factorisation of $p-1$, no unit or class group computation, no Schirokauer ma
 
 So $c_{\rm DL}$ equals the factoring constant whenever $\theta\le1/2$, which covers every tuple with $(1+\theta)/\sqrt2<1$. It is $0.99720$ at
 $d=9$, $k=13$ (exactly $55\sqrt2/78$, plus $\eta_0/\sqrt2$), and its infimum is $13\sqrt2/20=0.91924$ at $d=9$ and $1/\sqrt2$ over all $d$.
-It is below $\sqrt2$ iff $\theta<8/9$, which includes every optimised tuple; at $d=3$ the cubic term binds and $c_{\rm DL}=3\sqrt3/4\approx1.299$.
+It is below $\sqrt2$ iff $\theta<8/9$. This includes the optimised infimum at every degree, approached with $k$ large and the slack small; it
+does not include every admissible tuple (for example $d=3$, $k=3$, $\mu=7/24$, $\eta_0=1/100$ gives $\theta=581/600$ and $c_{\rm DL}\approx1.476$). At
+$d=3$ the cubic term binds, and the infimum is $c_{\rm DL}=3\sqrt3/4\approx1.299$.
 
 \begin{corollary}[arbitrary base]\label{cor:DLprime}
 For $g,h\in\F_p^*$ with $h\in\langle g\rangle$, $\log_gh\bmod\mathrm{ord}(g)$ can be computed in the same expected time.
@@ -2304,9 +2309,9 @@ $\sqrt2$ for all primes or for almost all primes, unconditionally or under GRH. 
 \item Finite fields $\F_{p^n}$ with small characteristic have stronger rigorous results: Bender--Pomerance \cite{benderpomerance1998} and
   Kleinjung--Wesolowski's quasi-polynomial algorithm for fixed characteristic \cite{kw2022}.
 \item Class groups of imaginary quadratic fields have $L[1/2,\sqrt2]$ under ERH (Hafner--McCurley \cite{hafnermccurley1989}). Under GRH the
-  constant $3/\sqrt8$ is proved by Biasse and coauthors \cite{biasse2023} for computing the group structure, not for discrete logarithms.
-  Vollmer's earlier claim of that constant (ANTS IV, 2000 \cite{vollmer2000}) was retracted in a corrigendum in his ANTS V paper
-  \cite{vollmer2002}, as recorded by our literature reviewer (we did not re-check the corrigendum).
+  constant $3/\sqrt8$ is proved by Biasse and Erukulangara \cite{biasse2023} for computing the group structure, not for discrete logarithms.
+  Vollmer's earlier claim of that constant (ANTS IV, 2000 \cite{vollmer2000}) was retracted in a 2002 corrigendum \cite{vollmer2002}, as
+  Biasse and Erukulangara record in their introduction \cite{biasse2023}; we did not obtain the corrigendum itself.
 \item Enge and Gaudry \cite{engegaudry2002} give a general framework with hidden exponents.
 \item The ERH-rigorous number-field toolkit of de Boer, Pellet-Mary and Wesolowski \cite{dbpw2025} explicitly leaves finite-field discrete
   logarithms aside.
@@ -2328,6 +2333,9 @@ For a field $A$ write $m:=g_0g_1^{-1}\bmod p$ and $\psi(a-b\alpha):=a-bm$.
 \item Put $A_*:=\sum_ix^*_ia_i$ and $B_*:=\sum_ix^*_ib_i\bmod n$. If $\gcd(B_*,n)=1$, put $X:=(\lambda-A_*)B_*^{-1}\bmod n$. If $g^X=h$, return $X$.
   Otherwise start a new round in the same field, with fresh rows.
 \end{enumerate}
+For $p=2$ return $0$. In general, steps~1--4 are run in alternation with exhaustive enumeration of $g^x$, and the first verified logarithm is
+returned. As in FACTOR, this makes the algorithm terminate for small $p$ (where, for example, the irreducibility-certificate interval
+can be empty), costs at most a factor $2$, and removes any dependence on the threshold $p_0$.
 \end{algorithm}
 
 Each row satisfies, with $G(P_\ell)=\sigma_\ell\ell n_\ell$ and $G(P)\equiv g_1\psi(a-b\alpha)\pmod p$,
@@ -2340,18 +2348,21 @@ where $e_\ell=\pm1$ according as $\ell\mid u_0$ or $\ell\mid v_0$, and $e_q=v_q(
 With $N:=p$, the following hold for every $p\ge p_0(d,k,\mu,\eta_0,a)$:
 \begin{enumerate}[label=(\roman*)]
 \item Lemmas~\ref{lem:GB}--\ref{lem:coprime}, Proposition~\ref{prop:BS}, Theorems~\ref{thm:FM}, \ref{thm:LD} and~\ref{thm:Dk}, and
-  Lemma~\ref{lem:reject} hold verbatim. No factor exit can occur, since every gcd-checked quantity is nonzero and smaller than $p$.
+  Lemma~\ref{lem:reject} hold verbatim. No factor exit can occur.
 \item Theorem~\ref{thm:Sprime} holds with $h_2=1$ for $T$ uniform on $\F_p^*$: $\Prob[\exists u,v\in\cS:u\equiv Tv]\ge|\cS|^2/(c_k(p-1))$.
   Consequently Theorem~\ref{thm:K} holds without the factor $2^{-\omega}$, and Proposition~\ref{prop:select} holds with $p_F=0$.
-\item (Hidden labels.) $T_i$ is uniform on $\F_p^*$, and given $T_i$ the label $b_i$ is uniform on $\Z/n$. Within a round, every accepted row and
-  every computation other than the final $A_*,B_*$ is a function of the $T$'s and of coins independent of the labels. So, conditional on the
-  round's transcript $\cT_j$ (all $T$'s, all coins, and all labels and outcomes of earlier rounds), the $b_i$ of round $j$ are i.i.d.\ uniform.
+\item (Hidden labels.) $T_i$ is uniform on $\F_p^*$, and given $T_i$ the label $b_i$ is uniform on $\Z/n$. Let $\cT_j$ consist of the field,
+  all targets $T_i$ of round $j$ and which of them were accepted, all auxiliary coins (shape test, searches, EXACT\_DEPENDENCE), and everything from
+  earlier rounds. It excludes the coins that generated the current labels and everything computed in step~4. Every computation of round $j$
+  before step~4 is a function of $\cT_j$. Conditional on $\cT_j$, the labels $b_i$ of the accepted rows of round $j$ are i.i.d.\ uniform on $\Z/n$.
 \end{enumerate}
 \end{lemma}
 
 \begin{proof}
 (i) The prime $N$ enters those sections only through $\gcd(N,t)=1$ for $0<t\le2MV<N$, through $N\mid F(g_0,g_1)$, and through preprocessing, which
-is not needed ($\omega=1$). By Lemma~\ref{lem:valuesizes} and Lemma~\ref{lem:sizes}, $|G(P)|$, $|F_A(P)|\le\XF$ and $0<|f_d|$ are all less than $p$.
+is not needed ($\omega=1$). Since $p$ is prime, no gcd check can produce a proper factor. The quantities $g_1$, $w$, $f_d$, the content, $G(P)$ and
+$F_A(P)$ are nonzero and smaller than $p$ (Lemmas~\ref{lem:sizes} and~\ref{lem:valuesizes}), so their checks pass. The derivative check can still give
+$p\mid f'(m)$, which is a rejection, accounted for by Lemma~\ref{lem:reject}.
 (ii) In the proof of Theorem~\ref{thm:Sprime}, $\sum_Tn(T)=|\cS|^2$ exactly, because every pair determines $T=uv^{-1}$ and there is no square-class
 condition. The second moment bound and Cauchy--Schwarz are unchanged. (iii) $(a,b)\mapsto(\log_gT,b)=(a+Xb,b)$ is a bijection of $(\Z/n)^2$.
 \end{proof}
@@ -2462,7 +2473,8 @@ this is $\tilde O(\rho^3)=L^{3a+o(1)}$, and the outputs have $\beta_x=O(\rho\log
 
 \begin{proof}[Proof of Theorem~\ref{thm:DL}]
 By Lemma~\ref{lem:DLtransfer} and Proposition~\ref{prop:select}, with $p_F=0$ and the per-row cost of Proposition~\ref{prop:cost} at a general $a$
-(Lemma~\ref{lem:generala}), the rows of a round cost $L^{a+\max(1/\sqrt2,\theta/(2a))+o(1)}$. Post-processing costs $L^{3a+o(1)}$ (Proposition~\ref{prop:XK}).
+(Lemma~\ref{lem:generala}), the rows of a round cost $L^{\max(2a,\,a+1/\sqrt2,\,a+\theta/(2a))+o(1)}$; the $2a$ comes from batch smoothness
+and is dominated by the $3a$ of post-processing. Post-processing costs $L^{3a+o(1)}$ (Proposition~\ref{prop:XK}).
 By Lemma~\ref{lem:HX} each round succeeds with conditional probability at least $1/(1+\log_2n)$, independently of earlier rounds, so the expected number of
 rounds is $L^{o(1)}$. Wald's identity gives the total $L^{\max(a+1/\sqrt2,\,a+\theta/(2a),\,3a)+o(1)}$. At $a=\theta/\sqrt2$ the first two terms are
 $(1+\theta)/\sqrt2$, and $3a\le(1+\theta)/\sqrt2$ iff $\theta\le1/2$; no $a$ does better, by the factoring optimisation. For $\theta>1/2$ the minimum is at
@@ -2473,7 +2485,7 @@ $a=\sqrt\theta/2$, where $a+\theta/(2a)=3a=3\sqrt\theta/2\ge a+1/\sqrt2$.
 The shape test in DLOG is integer factorisation of $|u_0|,|v_0|\le\sqrt{2p}$. Logarithms cannot be computed recursively, because the logarithms
 of the halves live in the same group $\F_p^*$, but the factoring subroutine can be replaced. With a factoring constant $\tau$ for that subroutine,
 \[
-c_{\rm DL}=\min_a\max\bigl(a+\tau/\sqrt2,\ a+\theta/(2a),\ 3a\bigr)=\begin{cases}s+\theta/(2s),& s:=\tau/\sqrt2\ge\sqrt\theta,\\ 3\sqrt\theta/2,& s<\sqrt\theta.\end{cases}
+c_{\rm DL}=\min_a\max\bigl(2a,\ a+\tau/\sqrt2,\ a+\theta/(2a),\ 3a\bigr)=\begin{cases}s+\theta/(2s),& s:=\tau/\sqrt2\ge\sqrt\theta,\\ 3\sqrt\theta/2,& s<\sqrt\theta.\end{cases}
 \]
 With the recursive constant $\tau=c^*=\sqrt{(1+\sqrt2)\theta}$ of Theorem~\ref{thm:RA}, $s\ge\sqrt\theta$ and $c_{\rm DL}=c^*$. With the portfolio of
 Corollary~\ref{cor:P} as the subroutine ($\tau\to0$), the cubic post-processing term $3a$ takes over and $c_{\rm DL}=3\sqrt\theta/2$. This is $0.822$ as an
