@@ -1,0 +1,137 @@
+1. **MAJOR — NC’s norm identity is correct; its “zero information” conclusion is false.**  
+   For monic \(\widetilde F\), nonzero pieces, and \(\delta\ge2\), multiplicativity and Mahler measure give
+   \[
+   \prod_j|\widehat G(a_j,b_j)|
+   =|N(r(\theta))|
+   \le \|r\|_1^\delta\|\widetilde F\|_2^{\deg r}.
+   \]
+   Thus the displayed \(d-1\) exponent is valid. The irreducible-factor reduction is also correct: unless some \(G_i(m)\) is divisible by all of \(N\), a proper gcd exposes a factor.
+
+   But unit-dominated members can be informative through the rational map. Take
+   \[
+   F=X^2-2,\quad m=11,\quad N=119.
+   \]
+   Both \(X+1\) and \(X-1\) represent units. The members
+   \[
+   (X+1)^2\equiv2X+3,\qquad X^2-1\equiv1\pmod F
+   \]
+   have the same empty non-unit part. The first gives \(12^2\equiv25=5^2\pmod{119}\), recovering
+   \(\gcd(12-5,119)=7\) and \(\gcd(12+5,119)=17\).
+
+   **Fix:** retain NC’s identity and non-unit count; withdraw the inference that equal non-unit parts imply redundant relations. Redundancy must be proved in the complete relation matrix, including the second side.
+
+2. **MAJOR — “Element-factor-base NFS” is a description, not a lower-bound reduction.**  
+   The unit-type counts are essentially sound: at most \(2\delta\) monic types; \(O(\delta)\) primitive types for \(\delta\ge3\); Pell-type \(O(\log B)\) growth in real quadratic orders, and finitely many in imaginary quadratic orders. These count **types**, not occurrences or independent relations. Repetition is unrestricted. The linear-in-degree Thue count is consistent with [Schmidt’s primary result](https://www.jstor.org/stable/2000791).
+
+   Calling \(r(\theta)\) an algebraic sieving element is reasonable. However, box-linear elements need not belong to an ordinary prime-ideal factor base of bounded norm. Their norms can be large or deliberately structured. Consequently, classical smoothness probabilities cannot simply be transferred.
+
+   KL also needs its hypotheses: a fixed coefficient module, nonvanishing on the rational kernel, and appropriate independence. In particular, its displayed argument does not apply at rank \(k=1\), and algebraic independence can fail when \(k>\delta\). Resbarrier explicitly distinguishes its rigorous height inequality from its **typical-size model**.
+
+   **Fix:** supply a factor-base and cost-preserving reduction satisfying those hypotheses. Otherwise replace “small \(M\) is closed by NC” with “small \(M\) admits an NFS-like interpretation; no exclusion follows from NC alone.”
+
+3. **MAJOR — The synthesis drops essential hypotheses from the draft barriers.**  
+   Lemma R’s proof appears sound within its stated integer-root model. W and Corollary P require explicit degree, height, and regime bounds. They do not establish the unrestricted slogan “one congruence gives at most one relation.”
+
+   The unqualified Prop NX summary is concretely false. For any \(N>4\), put
+   \[
+   F=X^2-(N+2),\quad P=X^2,\quad P'=X^2-1,
+   \quad r=2,\quad r'=1.
+   \]
+   These form a \(k=1\) PTE pair with \(d=2\), \(H=2<N/2\), but both non-exact defects equal \(N\). This is outside Lemma R’s regime, precisely the condition omitted by the synthesis.
+
+   Even injective defects do not establish independent congruence costs or exclude a shared generator.
+
+   **Fix:** attach the regime and monic integer-root assumptions to every W/P/NX consequence. Preserve the source’s explicit statement that counting attainable non-exact defect cells remains open.
+
+4. **MAJOR — The window calculation is conditionally right, but its conclusions are too strong.**  
+   Write
+   \[
+   b\asymp x^\alpha(\log x)^{1-\alpha},\qquad
+   S=x^{2\alpha}(\log x)^{1-2\alpha}.
+   \]
+   Granting the generic-size assumptions, with \(q=M-k+1\) and \(t=k-1\),
+   \(qb\lesssim S\), \(t\lambda\lesssim S\), and \(M\lambda\gtrsim x\) imply
+   \[
+   \lambda\gtrsim x^{1-\alpha}(\log x)^\alpha,\qquad
+   k-1\lesssim (x/\log x)^{3\alpha-1}.
+   \]
+   Thus \(k=1\) follows for fixed \(\alpha<1/3\), **under that heuristic**.
+
+   What does not follow is \(M\approx x^\alpha\). One obtains an upper bound on \(M\); smaller \(M\) with larger \(\lambda\) remains possible. Nor is “generic \(\Delta e\)” a justified distribution on exceptional, moment-conditioned PTE fibres—the very objects being investigated. Smoothness by identity can also bypass T-v.
+
+   **Fix:** show the logarithms, replace \(M\approx\) by the appropriate upper bound, and make every ideal-fibre necessity explicitly conditional on generic coefficient sizes and random residual smoothness.
+
+5. **MAJOR — The seed-source argument does not close mechanism B.**  
+   An amplifier cannot lower a **proved per-seed complexity exponent**. No such lower bound is supplied. “No cheap seed source is known” is an assessment, not a theorem; distinct seeds need not incur independent construction costs.
+
+   Cheap special seeds exist. Let
+   \[
+   A=\{0,3,4,7\},\qquad A'=\{1,1,6,6\},
+   \qquad P_{A'}-P_A=36.
+   \]
+   At \(m=24\),
+   \[
+   N=P_A(24)-1=171359=349\cdot491,
+   \]
+   giving residuals \(1\) and \(37\) immediately. This does not supply a dense asymptotic family, but it defeats blanket seed-hardness language.
+
+   Likewise, the asserted Coppersmith condition cannot be used as a necessary condition for every structured root-finding method.
+
+   **Fix:** state “bounded amplification; no sub-\(L[1/3]\) implementation known.” Give an explicit seed-cost hypothesis for any exponent conclusion and replace “only when” with a precisely scoped algorithmic guarantee.
+
+6. **MINOR — The determinant bound needs its degree and multiplicity qualifications.**  
+   The external input is real: [Binyamini–Cluckers–Novikov, Theorem 2](https://arxiv.org/pdf/2302.04209), gives the uniform integral-point bound \(cd^2B^{1/d}(\log B)^\kappa\).
+
+   Nevertheless, the synthesis’s unrestricted “uniformly in \(M\)” fibre claim fails for \(M=2\):
+   \[
+   P_a=X^2-a^2,\qquad 0\le a\le B
+   \]
+   is one ideal fibre of size \(B+1\). The draft’s pair-count argument also uses \(M(M-2)\) distinct-root pairs and therefore needs separate treatment of repeated-root members; its final theorem retains an \(O(M)\) term.
+
+   **Fix:** state the applicable \(M\)-range and retain the exceptional term, or prove the sharper repeated-root treatment. Separate entry bound \(B\) from factor-base cardinality. The unknown absolute constants also mean preregistration’s finite-size “contradiction” signal is only an investigation trigger.
+
+7. **MAJOR — §2.4 establishes a scoped representation, not universal containment.**  
+   For two finite number-field orders, maps agreeing on the residual generators, and candidates in a fixed bounded coefficient span, the pairs
+   \((r(\theta),r(\theta'))\) do form a linked module. Its effective rank is at most \(k\); rank two and rank at least three must be distinguished. Denying the converse is reasonable: general linked modules need no split structure.
+
+   But Theorem E/ND do not prove that every useful extraction must have this particular two-order, same-\(r\) form. ND explicitly restricts the extraction scheme. Nor does a geometric representation automatically transfer the sampling and smoothness assumptions used for the complexity barrier.
+
+   Uncovered cases include multivariate presentations without a demonstrated finite étale specialization, individually recentered residues, and more general piece dictionaries. Non-monic presentations require denominator accounting: for \(2X^2-1\), \(N(\theta)=-1/2\), so NC’s integral-norm argument does not apply directly. Higher-degree pieces retain norm multiplicativity but lose the linear Thue count.
+
+   **Fix:** claim containment only for the specified bounded-coordinate linked-order implementation. Keep other presentations open until coordinate heights, denominators, extraction, and sampling hypotheses are verified. G_r is a generic-modulus heuristic, not an all-\(N\) closure.
+
+8. **MINOR — NF’s asymptotic upper bound survives; its proof and interpretation need correction.**  
+   The bit-length bound concerns \(s\), whereas the divisor count concerns \(s-v\). Use
+   \[
+   T_*=\left\lceil\log_2(2^T+V)\right\rceil
+   \]
+   in the divisor estimate, or assume \(V\le2^T\) and justify the displayed \(2T\) allowance.
+
+   Balanced semiprimes in the interval number \(e^{x+o(x)}\), so the resulting successful fraction is **at most**
+   \(e^{-x+o(x)}\) in the stated subexponential regime. It need not equal that expression and does not establish AVG’s uniform-rate heuristic.
+
+   The lcm counterexample requires neither many elements nor dependence on the sampled \(N\): a singleton fixed for the population suffices, with exponential bit length.
+
+   **Fix:** repair the height parameter, write an upper bound, and add “or exponential bit length” to the counterexample discussion. Conclude necessity of adaptation only for almost-all success under these resource bounds.
+
+9. **MAJOR — The verdict is stronger than its cited sources.**  
+   Marking ptebarrier “[pb-draft]” is candid, but does not supply missing hypotheses or close its O2–O4 cases. Ptecons explicitly leaves systematic near-ideal cancellation, non-star complex families, and infinite-unit-group cases open. Its STAR result combines proved counting with heuristic NC; “STAR … is proved” suppresses that distinction.
+
+   The ptecons experimental summary also drops its tolerance: the quartic median \(0.565\) beats COS’s \(0.574\), although within the registered \(0.02\) margin.
+
+   **Fix:** replace the opening closure claim with the supported conclusion: systematic compression is excluded in the stated rigidity regime; other mechanisms face conditional barriers, and no successful construction is known. Label STAR’s consequence heuristic and preserve the experimental margin and confounds.
+
+10. **MINOR — P1–P9 are honestly scored, but several reported quantities are wrong.**  
+    My independent raw-file scoring agrees: P1–P3 and P5–P8 pass; P4 fails at \((4,60,3)\), ratio \(1.84935\); P9 fails in all twelve eligible cells. I recomputed all thirty E2 rows exactly, with no mismatches.
+
+    Corrections:
+
+    - E1 contains **62,213,970** multisets, not \(7.2\cdot10^7\).
+    - P6’s largest ratio is **\(2/325\)** at \((8,24,2)\), not \(14/12341\).
+    - E2’s member range is **299–5128**, not 353–5128.
+    - P8 measures residual/non-unit-part multiplicity, not useful relation rank.
+    - The deterministic double hashes do not themselves justify an independent-uniform collision probability.
+
+    **Fix:** correct the numbers; verify moment vectors within reported collision groups or qualify “exhaustive.” Keep P9 failed. Its post-hoc diagnosis is reasonable, but means E2 does not test unit domination—the norm identity itself has no minimum-\(M\) validity regime.
+
+**Overall verdict: MAJOR REVISION.** The norm identity, scoped rigidity results, and experimental scores survive. The claimed closure of the escape does not.

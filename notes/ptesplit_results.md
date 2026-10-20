@@ -1,256 +1,293 @@
 # ptesplit: synthesis on route 1's open escape (dense N-dependent split families / multigrade PTE)
 
-Agent `ptesplit`, phase 16, 2026-10-20.
+Agent `ptesplit`, phase 16, 2026-10-20. This note is revised after codex ptesplit_2 (MAJOR REVISION, all points applied)
+and two Opus critics (§7).
 
 **Files.**
-- Formulation (shared with ptebarrier and ptecons): `notes/ptesplit_formulation.md` (commit 641c3e2).
+- Formulation, shared with ptebarrier and ptecons: `notes/ptesplit_formulation.md` (commit 641c3e2).
 - Pre-registration: `notes/ptesplit_prereg.md` (commit 987a9c7, made before E1/E2).
-- Code: `src/ptesplit/{census,nccheck,run_experiment}.py`. Tests: `tests/test_ptesplit.py`.
-- Config: `experiments/configs/ptesplit.json`. Raw results: `experiments/raw/ptesplit_E{1,2}.jsonl`.
-- Codex: blind round `codex/ptesplit_1.{md,out}`; adversarial round `codex/ptesplit_2.{md,out}` (§7).
+- Code: `src/ptesplit/{census,nccheck,run_experiment,verify}.py`.
+- Tests: `tests/test_ptesplit.py`.
+- Config: `experiments/configs/ptesplit.json`.
+- Raw results: `experiments/raw/ptesplit_E{1,2}.jsonl`, plus the post-hoc check `ptesplit_E1_verify_posthoc.jsonl`.
+- Codex: blind round `codex/ptesplit_1.{md,out}`; adversarial round `codex/ptesplit_2.{md,out}`.
 
 **Sources synthesised.**
-- `notes/ptebarrier_results.md` (task 2): **draft** ab0be49, whose codex/Opus reviews were pending when this note was
-  written. Its results are used as stated there and are marked [pb-draft].
-- `notes/ptecons_results.md` (task 3, final 6ce0300).
-- `notes/resbarrier_results.md` (§2.6, §4.2), `notes/systeq_results.md`, `notes/smoothenum_results.md`,
-  `notes/heurnfs_results.md`.
+- `notes/ptebarrier_results.md`: final revision 4ac68dc, after its codex round and its Opus critics.
+- `notes/ptecons_results.md`: final, 6ce0300.
+- `notes/resbarrier_results.md`: §2.6 and §4.2.
+- `notes/systeq_results.md`, `notes/smoothenum_results.md`, `notes/heurnfs_results.md`.
 
-**Labels.**
-- **PROVED**: a proof is given here or in the cited note.
-- **KNOWN**: published, with a citation.
-- **HEURISTIC**: the assumption is named.
-- **measured**.
-- **open**.
-- **assessment**.
-
-Novelty is never claimed.
+**Labels.** PROVED (proof here or in the cited note) / KNOWN (cited) / HEURISTIC (assumption named) / measured / open /
+assessment. Novelty is never claimed.
 
 ---
 
 ## 0. Verdict
 
-**Plain language.** The last open door of route 1 is closed in every form in which it differs from ordinary relation
-search. That door was: many split ("smooth by construction") polynomials sharing one small reduction modulo an
-N-dependent presentation.
+**Plain language.** The escape asked for many split ("smooth by construction") polynomials that share one small
+reduction modulo an N-dependent presentation. This is the integer version of how the finite-field algorithms get about
+q³ relations from one congruence.
 
-The finite-field trick gets roughly q³ relations out of *one* congruence. Over the integers one congruence gives at most
-*one* relation. The reason is archimedean.
-- An exact identity in an integral ring has norms in Z. A small residual therefore forces almost every split piece to be
-  a unit.
-- Two distinct split polynomials with bounded roots cannot differ by a small, low-degree polynomial.
+**What is proved: the faithful, systematic version gives no amplification.**
+- This is the version where the reduction is an *exact* polynomial identity with small multipliers and a small remainder,
+  the analogue of the BGJT identity.
+- In the stated rigidity regime, one presentation yields one relation (ptebarrier Theorem W and Corollary P).
+- The reason is archimedean. Over Z, norms and heights are integers that cannot be small for many independent pieces.
+  Over F_q, every constant is a unit.
 
-What survives is not a compression mechanism. It is either:
-- the original relation-finding problem, i.e. each member pays its own congruence mod N (that is smoothenum's
-  doubly-smooth listing); or
-- in the "residue" view with no rational side, an *instance* of resbarrier's open rank-r case (§2.6/§4.2). There it is
-  closed only under the heuristic G_r, and the PTE structure adds nothing to that case.
+**What is not proved.** Any barrier for reductions that hold only modulo N, or only in value at an integer. These remain
+open, under conditional barriers only:
+- ptecons' no-cancellation heuristic NC;
+- the window heuristic below;
+- resbarrier's G_r.
 
-**The escape and resbarrier's open case: contained in it, not equal to it.**
-- Route 1's escape, with its split-specific amplification removed, is a special case of resbarrier's rank-k,
-  two-nonlinear-sides linked module. The split side is an extreme form of norm-smoothness.
-- The converse fails. The rank-r case is broader, and nothing in it needs split structure.
-- So the two open problems should be stated jointly as **one** problem: resbarrier §2.6. Closing §2.6 (proving G_r, or a
-  rigorous rank-r ledger) would also close what is left of route 1.
-- With the rational side present ("View A", integer evaluation), the escape is outside §2.6. It is closed rigorously
-  in the size model: resbarrier KL, ptebarrier Prop S, and Lemma NC here.
+No construction meets the target. ptecons examined seven families, and our census shows fibres collapsing by M ≈ 8.
 
-**Verdict on route 1's open escape.**
-- **Refuted** in its systematic (BGJT) form, unconditionally. This rests on ptebarrier Theorem W / Corollary P [pb-draft],
-  ptecons LEDGER/CUN/Kleiman, and Lemma NC below.
-- **Refuted** in the integer-evaluation view, rigorously in the size model (Prop S [pb-draft]; Lemma NC; resbarrier KL).
-- **No exponent gain** in seeded additive form for ideal fibres. Kleiman spacing and the B^{1/2} determinant bound
-  (ptecons §3.4; ptebarrier §4) make it a relation amplifier with gain ≤ B^{1/2+o(1)} per seed, so it cannot beat its
-  own seed source.
-- **Heuristically refuted** for near-ideal fibres (ptecons NC, the window lemma below).
-- **Open** only as:
-  - (i) resbarrier's rank-r case (G_r);
-  - (ii) relation search itself (non-exact members; smoothenum's doubly-smooth listing);
-  - (iii) ptebarrier's corners O2–O4, which have no candidate.
+**Precise verdict on route 1's open escape.**
+1. **Exact compressions: refuted, in the regime.** By ptebarrier Theorem W, Corollary P and Prop S [PROVED, with their
+   degree, height and regime hypotheses], an exact compressed family whose degrees and log-heights are
+   o(x/log B) provides ≤ 1 relation per presentation. This covers every BGJT-shaped family.
+   - Outside the regime it is open: large multiplier or quotient degree, and corner parameters (ptebarrier O3).
+   - For small M, Lemma NC gives an NFS-like *description* of the members. It does **not** give an exclusion (codex #2).
+2. **Seeded additive (PTE fibres): bounded amplification.**
+   - A k = 1 fibre has ≤ 2c·B^{1/2}(log B)^κ + 4 members for M ≥ 4 (ptebarrier, from Binyamini–Cluckers–Novikov).
+   - Its residuals are spaced by (M − 1)! (Kleiman).
+   - So one seed buys at most B^{1/2+o(1)} relations.
+   - No sub-L[1/3] seed source is known. That is an assessment: we prove no seed-cost lower bound, and cheap special seeds
+     exist (codex #5).
+   - Near-ideal fibres (k ≥ 2) are controlled only heuristically (NC; the window lemma).
+3. **Non-exact and evaluated compressions: open (ptebarrier O1).** No barrier and no candidate. Any construction would
+   have to live here: congruences mod N that are coherent across a family without being exact over Z.
+   - The sufficient primitive is smoothenum's output-sensitive split or doubly-smooth listing.
+4. **Relation to resbarrier §2.6.** In the residue view (no rational side), the exact two-order implementation of the
+   escape is a bounded-coefficient rank-≤ k linked module between two nonlinear orders: an *instance* of resbarrier
+   §2.6 (§2.4). That case is closed only under the generic-modulus heuristic G_r, with a conditional formal floor of
+   L[1/4] for aggregate families.
+   - The containment is scoped. It covers that implementation only; other presentations and extraction schemes are not
+     shown to reduce to it (codex #7).
+   - The converse fails: §2.6 needs no split structure.
+   - **Joint statement:** in the residue view, what remains of route 1 that is not already O1 lies inside resbarrier's
+     single open case. A rigorous rank-r ledger, or a proof of G_r, would close both at once. In the integer-evaluation
+     view (rational side present), ptebarrier Prop S applies in its regime. resbarrier KL bounds heights only under its
+     own hypotheses (fixed module, rank ≥ 2), which we have not verified here for every member shape.
 
-Assessment: < 1% that this escape yields sub-L[1/3]. This agrees with ptebarrier (< 1%), ptecons (< 1%), codex blind
-(1–3%) and systeq (< 1%).
+**Assessment.** Probability < 1% that this escape yields sub-L[1/3]. The other estimates:
+- ptebarrier: < 1%; ptecons: < 1%;
+- codex: 1–3% (blind), ~2% (ptebarrier's round);
+- systeq: < 1%.
 
 **My own contributions.**
-- The formulation: mechanisms A/B/C, targets, and the window lemma.
-- Lemma NC (norm compression): the same identity as ptecons LEDGER, read here as a reduction to element-factor-base NFS.
-- Prop NF (N-free families are useless for almost all balanced semiprimes).
+- The shared formulation: mechanisms A/B/C and the cost targets.
+- The window lemma (conditional).
+- Lemma NC, the same identity as ptecons LEDGER, read as an NFS-like description.
+- Prop NF.
 - The joint statement with resbarrier.
 - The literature map.
-- Pre-registered experiments:
-  - E1, an exhaustive PTE fibre census, M ≤ 10, 7.2·10⁷ multisets: 5 of 6 predictions held, 1 failed as stated;
-  - E2, a norm-compression check: 2 of 3 held; P9 failed because the cells sit below the lemma's regime.
+- Two pre-registered experiments:
+  - E1, an exhaustive PTE fibre census, M ≤ 10, 62 213 970 multisets: P1–P3 and P5–P6 held, P4 failed as stated;
+  - E2, a norm-ledger check: P7–P8 held; P9 failed because the cells lie below the lemma's regime.
 
 ---
 
 ## 1. Exact formulation (summary of `ptesplit_formulation.md`)
 
-A **relation** is (u, v) with u ≡ v (mod N), u ≠ v. Here u = ∏_j π_j(m) is split by construction over a factor base 𝒫,
-|𝒫| = L[α], and v is L[α]-smooth.
+**Objects.**
+- A **relation** is (u, v) with u ≡ v (mod N) and u ≠ v. Here u = ∏_j π_j(m) is split by construction over a factor base
+  𝒫 with |𝒫| = L[α], and v is L[α]-smooth.
+- A **split member** is P = ∏_{j≤M}(b_jX − a_j), with (a_j, b_j) ∈ [−B, B]².
+- A **presentation** is (F̃, φ), where φ: Z[X]/(F̃) → A is a map to a Z/N-algebra. View A: φ(X) = m ∈ Z, with N | F̃(m).
+  View B: φ(X) = μ ∈ Z/N.
+- The **reduction** is r_P = P mod F̃, of degree < k and height ≤ h.
 
-A **split member** is P = ∏_{j≤M}(b_jX − a_j) with (a_j, b_j) ∈ [−B, B]².
+**Mechanisms.**
+- **(A) exact:** P ≡ r_P mod F̃ in Z[X].
+- **(B) seeded additive:** one seed relation, and fibre members P with deg(P − P₁) < k.
+- **(C) non-exact:** a congruence only mod (N, F̃).
 
-A **presentation** is (F̃, φ), with φ: Z[X]/(F̃) → A a Z/N-algebra map.
-- View A: φ(X) = m ∈ Z with N | F̃(m).
-- View B: φ(X) = μ ∈ Z/N, a residue only.
+**Targets** (L-cost model, LA quadratic in |𝒫|). Write b = log B ≍ x^α(log x)^{1−α} and S = x^{2α}(log x)^{1−2α}.
+- **(T-v)** log|v| ≲ S. For α = 1/3, 1/4, 1/10 this is x^{2/3}, x^{1/2}, x^{1/5} up to logarithms. Codex: a v that is
+  common to all members needs no smoothness, since one formal column suffices.
+- **(T-u)** M·log(max piece) ≥ x − 1.
+- **(T-N)** About L[α] useful relations at cost L[α].
 
-The *reduction* is r_P = P mod F̃, of degree < k and height ≤ h.
+**Window lemma [the inequality is PROVED; the sizes are HEURISTIC: generic Δe and random residual smoothness].**
+- Setting: mechanism (B) with pieces m − a_j and λ = log m. Then
+  (P − P₁)(m) = Σ_{l<k} Δe_{M−l} m^l, with |Δe_{M−l}| ≤ 2C(M, l)B^{M−l}.
+- Put q = M − k + 1 and t = k − 1. If the Δe have generic size, (T-v) forces q·b ≲ S and t·λ ≲ S, while (T-u) forces
+  M·λ ≳ x. Hence
 
-Three mechanisms by which N enters:
-- **(A) exact presentation:** P ≡ r_P mod F̃ in Z[X];
-- **(B) seeded additive:** one seed relation, and fibre members P with P − P₁ of degree < k;
-- **(C) non-exact:** congruence only mod (N, F̃).
+  λ ≳ x^{1−α}(log x)^α,  k − 1 ≲ (x/log x)^{3α−1},  M ≲ S/b + t ≍ x^α(log x)^{−α}.
 
-**Targets.** In the L-cost model (LA quadratic in |𝒫|):
-- (T-v) log|v| ≤ c·x^{2α}(log x)^{1−2α}. For α = 1/3, 1/4, 1/10 this is log|v| ≲ x^{2/3}, x^{1/2}, x^{1/5}.
-- (T-u) M·log(max piece) ≥ x − 1.
-- (T-N) The family must supply ≈ L[α] useful relations at cost L[α].
+- So under the heuristic, k = 1 for fixed α < 1/3, and M is bounded *above* by about x^α. Smaller M with larger λ is
+  allowed.
+- Caveat: the escape is exactly about exceptional, moment-conditioned fibres, for which "generic Δe" is not justified.
+  Smoothness by identity could also bypass (T-v). This is a heuristic guide, not a barrier (codex #4).
 
-Codex adds that a *common* residual v need not be smooth: one formal column suffices. A common residual is, however,
-exactly what Theorem W shows yields only one relation.
+## 2. Status by mechanism
 
-**Window lemma [PROVED inequality + HEURISTIC sizes].** In mechanism (B), with pieces m − a_j and λ = log m:
-- The residual difference is (P − P₁)(m) = Σ_{l<k} Δe_{M−l} m^l, with |Δe_{M−l}| ≤ 2C(M,l)B^{M−l}.
-- For generic Δe, (T-v) and (T-u) give λ ≥ x^{1−α} and k − 1 ≤ x^{3α−1}.
-- So for α < 1/3 only **ideal-PTE fibres (k = 1)**, with M ≈ x^α, can serve. At α = 1/3, k = O(1).
-- Beating L[1/3], L[1/4] or L[1/10] thus requires all of the following:
-  - k = 1 fibres of size L[α, c > 0] with M ≈ x^α → ∞;
-  - ~|𝒫|/|fibre| seeds of that special shape at total cost L[α];
-  - smooth v-sides.
+### 2.1 Mechanism A (exact presentation)
 
-The ideal-PTE requirement is exactly where Kleiman and the determinant method bite (§2.3).
+**ptebarrier (final, 4ac68dc) [PROVED, with hypotheses].**
+- Lemma R: let P, P′ be monic and split over Z with roots in [−B, B]. Suppose QP − Q′P′ has degree < K and height ≤ h,
+  with deg Q, deg Q′ ≤ j. If M ≥ K + 2⌊log₂(2^{K−1}√K·h·B^{K−1})⌋ + 4j + 3, then QP = Q′P′.
+- Theorem W: in that regime, every exact family h_A·P_A = F·Q_A + r_A gives one common relation. F may have any degree and
+  height.
+- Corollary P: an exact PTE family with d ≥ k has ≤ 1 member.
+- Prop S: in View A, under (ρ+1)H(|m|+Y)^ρ(d+1)Y^d < N, an exact PTE family has ≤ 1 member once M − k ≥ d + 2ρ − 1.
+- Scope: (k + j)·log B + log(H·H_Q) = o(x/log B) in View B. Outside it (O3) the question is open.
 
-## 2. Barrier status, by mechanism
+**Lemma NC (norm ledger) [PROVED identity; the same identity as ptecons LEDGER].**
+- *Setting.* F̃ is monic. G is a monic irreducible factor of F̃ of degree δ ≥ 2 with N | G(m). If no factor G_i has
+  N | G_i(m), then some gcd(N, G_i(m)) is a proper factor of N. Suppose P = ∏(b_jX − a_j) ≡ r (mod F̃) in Z[X]; r is
+  integral because F̃ is monic. Let θ be a root of G.
+- *Statement.* P(θ) = r(θ) in Z[θ], and
 
-### 2.1 Mechanism A (exact presentation): refuted
+  ∏_j |Ĝ(a_j, b_j)| = |N(r(θ))| ≤ ‖r‖₁^δ‖F̃‖₂^{deg r}.
 
-**Lemma NC (norm compression) [PROVED; the same identity as ptecons LEDGER].**
-- Let F̃ be monic, and G | F̃ monic irreducible of degree δ with N | G(m). If no such G exists, some gcd(N, G_i(m)) splits N.
-- If P = ∏(b_jX − a_j) ≡ r (mod F̃) in Z[X], then P(θ) = r(θ) in Z[θ] (θ a root of G), and
+- *Proof of the bound.* Use |r(θ_i)| ≤ ‖r‖₁·max(1, |θ_i|)^{deg r} and ∏_i max(1, |θ_i|) = M(G) ≤ M(F̃) ≤ ‖F̃‖₂
+  (Landau).
+- *Consequences.*
+  - At most log₂(‖r‖₁^δ‖F̃‖₂^{deg r}) pieces are non-units. This counts piece *types*; unit pieces may repeat without limit.
+  - Unit types bθ − a: ≤ 2δ monic ones; O(δ) primitive ones for δ ≥ 3 (Thue; the Bombieri–Schmidt / Schmidt counts);
+    O(log B) in the box for real quadratic orders and O(1) for imaginary quadratic orders.
+  - δ = 1 is the rational case: the identity is an exact integer identity, and the only N-information is m ≡ c (mod N).
+  - Non-monic F̃ needs denominator accounting and is not covered. For 2X² − 1, N(θ) = −1/2 (codex #7).
+- *Withdrawn (codex #1).* The draft said that members with the same non-unit part are redundant. That is **false**.
+  - Counterexample: F = X² − 2, m = 11, N = 119. Both (X + 1)² ≡ 2X + 3 and X² − 1 ≡ 1 have an empty non-unit part.
+  - Yet the first gives 12² ≡ 5² (mod 119) and factors N.
+  - Unit-dominated members are informative through the rational map. Redundancy must be judged in the full relation
+    matrix.
+- *Reading.* An exact member is an NFS-like relation: a sieving element r(θ) of degree < k with an element factorisation
+  on the algebraic side.
+  - Box-linear elements need not lie in a bounded-norm prime-ideal factor base, so NFS smoothness probabilities do not
+    transfer automatically.
+  - **NC alone excludes nothing for small M.** Its force is the regime M ≫ log₂‖r‖₁^δ, where ptebarrier's Lemma R already
+    applies.
 
-  ∏_j |Ĝ(a_j, b_j)| = |N(r(θ))| ≤ ‖r‖₁^δ‖F̃‖₂^{d−1}.
+**Function-field contrast [assessment].** In BGJT the identity lives in the finite ring F_{q²}[X]/(I). Every piece X − a
+is a unit there and the norm carries no size. Over Z the ledger charges every root with |F(a)| ≥ 2 (ptecons LEDGER).
 
-- *Proof of the bound:* |r(θ_i)| ≤ ‖r‖₁·max(1, |θ_i|)^{deg r}, and ∏_i max(1, |θ_i|) = M(G) ≤ M(F̃) ≤ ‖F̃‖₂ (Landau).
-- Hence at most log₂(‖r‖₁^δ‖F̃‖₂^{d−1}) pieces are non-units. The rest are units bθ − a:
-  - ≤ 2δ monic ones;
-  - O(δ) primitive ones for δ ≥ 3 (Bombieri–Schmidt 1987; *count cited, not re-checked*);
-  - O(log B) in the box for δ = 2.
-- Members with the same non-unit part differ by exact unit relations, which give zero information (systeq EX).
+### 2.2 Mechanism C (non-exact) and N-free families
 
-**Reading.** Every exact member is an NFS relation for the pair (G, X − m), with sieving element r(θ) of degree ≤ k − 1 and
-an *element* (not ideal) factorisation on the algebraic side.
-- In View A this is a rank-k linked module **with** a rational side. It falls under resbarrier Lemma KL (rigorous, size
-  model) and heurnfs B2 (t-dimensional sieving, α ≥ 1/3 under G).
-- In the function field the identity lives in the finite ring F_{q²}[X]/(I). There every piece is a unit and the norm
-  carries no size. That is the precise point where Z differs (also ptecons LEDGER).
+**Non-exact members.**
+- ptebarrier Prop NX [PROVED]: in the PTE setting with d ≥ k, distinct members have distinct reduced N-defects.
+- This does **not** imply independent costs. Members can inherit compatibility from one difference identity.
+- Codex gives an outside-regime example: F = X² − (N+2), P = X², P′ = X² − 1, with equal defects.
+- For k = 1 the inherited compatibility is itself a split relation (ptebarrier NX1).
+- Counting the attainable defect cells is **open** (O1).
 
-**ptebarrier [pb-draft] closes the regime with M large, uniformly in the presentation.**
-- Lemma R (rigidity): two split polynomials with roots in [−B, B] whose (multiplier-weighted) difference is small and of
-  low degree are equal, once M ≥ K + 2⌊log₂(2^{K−1}√K·h·B^{K−1})⌋ + 4j + 3.
-- Theorem W: hence a single presentation of any degree and height yields **one** relation.
-- Prop S (View A): the split side uses ≤ deg F fixed pieces.
-- With pieces ≤ L[β], β < 1/3, the regime condition (★) holds for every BGJT-shaped family and for every View-A
-  parameter compatible with the L[β] target, except the corner O3.
-- Lemma NC is the complement for small M: there the members are just NFS relations, so no dense family appears either.
+**Codex blind [PROVED].** If d ≥ k, a shared remainder mod (N, F) forces P = P′ whenever some p | N exceeds 2B.
 
-### 2.2 Mechanism C (non-exact): this is relation search
+**Prop NF [PROVED; elementary].**
+- *Statement.* Let S be a set of integers of bit-size ≤ T, fixed independently of N, and put T* = ⌈log₂(2^T + V)⌉. The
+  balanced semiprimes N = pq ∈ [X, 2X] (p, q > √X/2) for which some s ∈ S and |v| ≤ V with s ≠ v satisfy N | s − v
+  number at most
 
-- ptebarrier Prop NX [pb-draft]: in the PTE setting with d ≥ k, distinct members have distinct N-defects, so nothing is
-  inherited.
-- Codex blind [PROVED, codex]: with d ≥ k, a shared remainder mod (N, F) forces P = P′ whenever some p | N exceeds 2B.
-- What is left is "find split u with u ≡ small (mod N)", the original problem. A sufficient primitive would be an
-  output-sensitive enumerator of {P split} ∩ {P(m) ≡ small mod N}. That is smoothenum's algebraic or doubly-smooth
-  listing, worth (4/9)^{1/3} or polynomial time, and not known.
+  |S|(2V+1)(T*/log₂(√X/2))².
 
-**Prop NF [PROVED; elementary].** Let S be a set of integers of bit-size ≤ T, fixed independently of N.
-- Statement: the balanced semiprimes N = pq ∈ [X, 2X] with some (s, v), |v| ≤ V, s ≠ v, N | s − v number at most
-  |S|(2V+1)(2T/log₂(√X/2))².
-- Proof: s − v has at most T/log₂(√X/2) prime factors above √X/2.
-- For |S|, V, T = e^{o(x)} this is a fraction e^{−x+o(x)}.
-- This makes rigorous, for semiprimes, what ptecons' AVG states conditionally. Codex's counterexamples to the
-  universal form (squares; lcm(range) + 1) need either exponentially many elements or N-dependence. N must enter the
-  construction.
+- *Proof.* s − v ≠ 0 has bit-size ≤ T*, so it has at most T*/log₂(√X/2) prime factors above √X/2.
+- *Consequence.* Balanced semiprimes in the interval number e^{x+o(x)}. So for |S|, V, T = e^{o(x)} the successful
+  fraction is **at most** e^{−x+o(x)}.
+- *Scope.* This shows that families succeeding for almost all N under these resource bounds must adapt to N. It does not
+  establish ptecons' uniform-rate heuristic AVG. Codex's counterexamples to the universal form (squares; lcm(range) + 1)
+  have exponentially many elements or exponential bit length.
 
-### 2.3 Mechanism B (seeded additive PTE): refuted for ideal fibres, heuristic for near-ideal
+### 2.3 Mechanism B (seeded additive PTE fibres)
 
-- **Injection bound [PROVED; ptesplit/codex/ptebarrier].** |𝓕_K(h)| ≤ C(2B + k, k).
-- **Kleiman 1975 [KNOWN].** For an ideal pair the constant C = P − P′ is divisible by (M − 1)!.
-  - So the residuals v₁ + C_i of one seeded k = 1 cluster are pairwise spaced by multiples of (M − 1)!, and at most
-    1 + 2V/(M − 1)! members have |v| ≤ V (ptecons §3.4).
-  - A cluster of size L[α] inside the (T-v) window therefore needs M log M ≲ x^{2α}.
-  - (T-u) then forces pieces of log-size λ ≳ x^{1−2α}·log x, consistent with the window lemma's λ ≥ x^{1−α}.
-  - So Kleiman alone does not kill the cluster. It restricts the shape: few, huge pieces.
-- **Determinant method, k = 1 [PROVED from KNOWN; ptebarrier §4, pb-draft].**
-  - A k = 1 fibre has ≤ C·B^{1/2}(log B)^κ + 2 members, uniformly in M. The constants come from the uniform Bombieri–Pila
-    bound of Binyamini–Cluckers–Novikov; the citation is flagged UNVERIFIED in ptebarrier.
-  - So one fibre cannot fill a factor base of size B, and ≳ B^{1/2} independent N-dependent seeds are needed.
-  - Each seed is itself a relation of the target shape. With a fixed Q, finding m with Q(m) ≡ small (mod N) is
-    root-finding mod N.
-  - Mechanism B is therefore a *relation amplifier* with gain ≤ B^{1/2+o(1)} = L[α, O(1)] per seed.
-  - Total cost ≥ (#seeds)·(cost per seed) ≥ cost of one seed. An amplifier changes L-constants at most, never the
-    exponent of the seed source [PROVED, trivial].
-  - Seeds are relations of the target shape. With a fixed Q, finding m with Q(m) ≡ small (mod N) is root-finding mod N.
-    Lattice (Coppersmith) methods solve Q(m₀ + y) ≡ v only when Y^M·V < N, where generically no solution exists
-    (HEURISTIC count YV/N).
-  - **Assessment:** no seed source cheaper than relation search is known.
-- **Near-ideal (k ≥ 2).** The residual is controlled only under ptecons' no-cancellation heuristic NC. This is ptecons'
-  open item 1. Our E1 shows how thin such fibres are at M ≥ 8 (§4).
+- **Injection bound [PROVED; ptesplit, codex, ptebarrier].** |𝓕_K(h)| ≤ C(2B + k, k).
+- **Kleiman 1975 [KNOWN].**
+  - For an ideal pair, (M − 1)! divides the constant C = P − P′.
+  - So at most 1 + 2V/(M − 1)! members of one seeded k = 1 cluster have |v| ≤ V (ptecons §3.4).
+  - An L[α]-size cluster inside (T-v) therefore needs M log M ≲ S. Kleiman alone restricts the shape (few, huge pieces)
+    but does not kill it.
+- **Determinant method, k = 1 [PROVED from KNOWN; ptebarrier final].**
+  - For M ≥ 4 a fibre has ≤ 2c·B^{1/2}(log B)^κ + 4 members, with c and κ absolute. The squarefree levels are bounded by
+    the Binyamini–Cluckers–Novikov uniform bound (arXiv 2302.04209, Thm 2: c·d²·B^{1/d}(log B)^κ). Rolle's theorem
+    allows at most two non-squarefree levels.
+  - M = 2 is genuinely exceptional: X² − a² is one fibre of size B + 1 (codex #6).
+- **Reading.** Mechanism B is a relation amplifier, with gain ≤ B^{1/2+o(1)} = L[α, O(1)] per seed.
+  - Total cost ≥ (#seeds)·(cost per seed).
+  - So any exponent statement needs an explicit **seed-cost hypothesis**, and we prove none.
+  - Cheap special seeds exist. Codex: A = {0, 3, 4, 7}, A′ = {1, 1, 6, 6}, m = 24, N = P_A(24) − 1 = 349·491 gives
+    residuals 1 and 37.
+  - For general N with a fixed Q, no seed method below relation search is known [assessment].
+- **Near-ideal fibres (k ≥ 2).** Controlled only under ptecons' NC heuristic. This is ptecons' open item 1.
 
-**VMVT [KNOWN; analysis agreed by all three agents].**
-- J_{s,t}(X) ≪_{s,t,ε} X^{s+ε} + X^{2s − t(t+1)/2 + ε} (BDG 2016; Wooley 2016, 2019) bounds Σ fibre², i.e. collisions.
-- Its best pointwise consequence is J_{M/2,t} ≪ B^{M/2+ε}, weaker than the injection bound whenever k < M/2.
-- Constants are non-uniform in (M, t), and the X^ε loss is B^ε = L[α, ε], the very scale in question.
-- **VMVT does not give the barrier.** The barrier is archimedean (the height of the remainder; norms), not cardinality.
+**Vinogradov's mean value theorem [KNOWN; the analysis is agreed by all three agents].**
+- The bound J_{s,t}(X) ≪_{s,t,ε} X^{s+ε} + X^{2s−t(t+1)/2+ε} controls Σ fibre², i.e. collisions.
+- Its pointwise consequence is max fibre ≪ B^{M/2+ε}. That is weaker than the injection bound whenever k < M/2.
+- Its constants are not uniform in (M, t), and the loss B^ε = L[α, ε] sits at the scale in question.
+- **VMVT is the wrong tool.** Where a barrier exists, it is archimedean: remainder heights and norms.
 
-### 2.4 Coincidence with resbarrier §2.6 (requested by the orchestrator)
+### 2.4 Relation to resbarrier §2.6 (orchestrator's question)
 
-**Claim [PROVED reduction + assessment].** In View B (no integer lift of X), an exact member gives P(θ) = r(θ) in one
-order O = Z[θ].
-- By resbarrier Theorem E / Lemma ND (and ptebarrier §5.5, "single rings"), relations comparing the images of *one*
-  element of *one* ring extract nothing.
-- Information requires a second order O′ = Z[θ′] with φ′(θ′) = μ, in which the same r is factored. The candidate set
-  {(r(θ), r(θ′)) : deg r < k, ‖r‖ ≤ h} is then a **rank-k linked module between two nonlinear orders**. That is resbarrier
-  §2.6's open case (rank r = k ≥ 3, no rational side).
-- The split requirement constrains only the O-side: ∏|Ĝ(a_j, b_j)| = |N(r(θ))|. It is a stronger smoothness condition
-  (factorisation into box-linear elements), not a new source of candidates.
-- By Theorem W [pb-draft], one presentation still yields ≤ 1 relation in the regime (★). So the module's size, not the PTE
-  fibre, sets the count, and that count is resbarrier's G_r question.
+**Representation [PROVED, scoped].**
+- *Setting.* View B, exact members, implemented with two orders. O = Z[θ] carries the split side; O′ = Z[θ′], with
+  φ′(θ′) = μ, factors the same residual r; the maps to Z/N agree on the residual generators.
+- *Claim.* The candidates {(r(θ), r(θ′)) : deg r < k, ‖r‖ ≤ h} form a linked module of effective rank ≤ k, with
+  bounded coordinates.
+- *Classification.* For k ≥ 3 with O′ nonlinear, this is resbarrier §2.6. Rank 2 is resbarrier's C2 case.
+- *Role of the split requirement.* It only strengthens the O-side condition, via ∏|Ĝ| = |N(r(θ))|.
+- *Why two orders.* A single order is the one-ring situation of resbarrier Theorem E and Lemma ND, which extracts nothing
+  *for the extraction schemes that ND covers*.
+
+**Scope [codex #7].**
+- Theorem E and Lemma ND do not prove that *every* useful extraction has this two-order, same-r form. The geometric
+  representation also does not automatically carry resbarrier's sampling and smoothness assumptions.
+- Not covered:
+  - multivariate presentations without a finite étale specialisation;
+  - individually recentred residues;
+  - general piece dictionaries;
+  - non-monic presentations;
+  - pieces of higher degree. Norm multiplicativity survives there, but the linear Thue count does not.
+- G_r is a generic-modulus heuristic, not an all-N closure.
 
 **Consequence.**
-- Route 1's open escape ⊆ resbarrier §2.6 (with View A excluded: there the rational side makes it KL-rigorous).
-- §2.6 is strictly larger: the aggregate family of §4.2 uses {0, ±1}-combinations of r ≪ d linked elements, which are not
-  split.
-- **Joint statement:** under G_r both are closed with α ≥ 1/3. Without G_r, resbarrier gives a conditional formal floor
-  L[1/4] for aggregate families. Split families are not aggregate families, but they inherit no better rigorous bound
-  than §2.6 in View B.
-- *Assessment:* View B with split O-side is, if anything, harder to populate than §4.2. Kleiman / LEDGER force any small
-  r(θ) with split factorisation to be unit-dominated once M exceeds log₂|N(r(θ))|.
+- The exact two-order residue-view implementation of route 1's escape is an instance of resbarrier's single open case.
+  The converse fails.
+- The two open problems should be stated **jointly**. A rigorous rank-r ledger, or a proof of G_r, closes both for that
+  implementation. Neither problem has a candidate construction.
 
-## 3. Constructions (ptecons, final; summarised)
+## 3. Constructions (ptecons, final; summary)
 
-No candidate meets (a)–(c). Seven families were examined:
-- Dickson/Chebyshev: Niven; D_n(X) − c splits over Z only for n | 6 or degenerate c;
-- PTE (Prouhet–Thue–Morse, Frolov, Choudhry chains, which fix O(log M) moments);
-- cyclotomic/Galois orbits: the finite subgroups of PGL₂(Q) have order ≤ 12;
+No candidate meets (a)–(c). ptecons examined seven families:
+- Dickson/Chebyshev;
+- PTE, including Prouhet–Thue–Morse, Frolov and Choudhry chains, which fix O(log M) moments;
+- cyclotomic and Galois orbits;
 - elliptic preimages;
 - (C₂)^r group rings;
 - lattice/LLL;
 - aligned clusters.
 
-LIN-R (real rigidity, de Gua), STAR and CUN are proved there.
+Proved there: LIN-R (real rigidity, via de Gua), CUN, and LEDGER. STAR combines proved counting with the heuristic NC, so
+its consequence is heuristic.
 
-The codex blind round agrees: Dickson D_n(X) − c has no integer-split fibre for n ≥ 7, and dilations multiply the
-ideal constant by a^M.
+Open there:
+- systematic near-ideal cancellation;
+- non-star complex-direction families;
+- infinite-unit-group fields;
+- an output-sensitive enumerator.
 
-E2 of ptecons: N-aligned higher-degree split families did not beat the degree-2 COS shape at 64/80 bits.
+ptecons E2 (toy scale; confounded by different root bounds and pool truncation): the generic quartic's median residual
+exponent was 0.565 against COS's 0.574. That is within the registered 0.02 margin, so it is not a gain.
+
+Codex blind agrees:
+- D_n(X) − c has no integer-split fibre for n ≥ 7;
+- dilation multiplies the ideal constant by a^M.
 
 ## 4. Experiments vs frozen predictions (pre-registration 987a9c7)
 
 ### E1: exhaustive PTE fibre census
 
-**Setup.** All multisets of size M over {0..R} (7.2·10⁷ in total), grouped by (p₁..p_s), s = M − k. Grouping used a double
-64-bit hash (false-merge probability ≲ 10⁻²³ per cell, disclosed); the tests cross-check against brute force. Raw data:
+**Setup.** All multisets of size M over {0..R} (62 213 970 in total), grouped by (p₁..p_s), s = M − k. Grouping used a double
+64-bit hash (see the exact verification below); the tests cross-check against brute force. Raw data:
 `experiments/raw/ptesplit_E1.jsonl`.
+
+**Post-hoc exact verification (disclosed; codex #10).** `src/ptesplit/verify.py` recomputes the exact power-sum
+vectors of every member of every nontrivial hash group: 12660528 member-checks over all cells and k, **0 mismatches**
+(`experiments/raw/ptesplit_E1_verify_posthoc.jsonl`). The census is therefore exact rather than probabilistic. Peak RSS
+was 2.52 GB, again above the target.
 
 **Resources.** 176 s; peak RSS **2.35 GB**, above the 2 GB target. This is a disclosed deviation; nothing else was running.
 
@@ -277,7 +314,7 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
   - Part 2, nontrivial k = 3 fibres for M ≤ 8: held.
   - *Post hoc:* with s = 1 prescribed moment the box model is already near-correct; structure dominates only once s ≥ 2.
 - **P5 (k = 1 max ≤ 2√(R+1) + 2): held.** The maxima are 4, 2, 2, 1, 1, 1, 1.
-- **P6 (max fibre ≤ 0.1 × injection for M ≥ 6, k ∈ {2, 3}): held.** The largest ratio is 14/12341.
+- **P6 (max fibre ≤ 0.1 × injection for M ≥ 6, k ∈ {2, 3}): held.** The largest ratio is 2/325, at (8, 24, k = 2).
 
 **Reading [measured].**
 - Structure (symmetric and affine families) beats the box model by up to 10¹⁵ at small M. But fibres collapse to size ≤ 4
@@ -288,19 +325,20 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
 ### E2: norm compression on exact presentations
 
 **Setup.** F ∈ {X³ − 2, X³ + X + 1, X² − 2, X² + 1, X⁴ + X + 1}, (M, B) ∈ {(4, 8), (5, 8), (6, 6)}, h ∈ {20, 200}; 30 cells,
-353–5128 members each. Raw data: `experiments/raw/ptesplit_E2.jsonl`.
+299–5128 members each. Raw data: `experiments/raw/ptesplit_E2.jsonl`.
 
 **Predictions.**
 - **P7 (ledger identity and bound): held.** In all 30 cells ∏|F(a_j)| = |Res(F, r)| exactly, within the bound; 0 violations.
-- **P8 (#(r, non-unit part) ≤ 3·#r): held.** The largest ratio is 1.94 (X² − 2, M = 6, h = 20). X² − 2 and X² + 1 show
+- **P8 (#(r, non-unit part) ≤ 3·#r): held.** This measures residual and non-unit-part multiplicity, not the rank of useful
+  relations. The largest ratio is 1.94 (X² − 2, M = 6, h = 20). X² − 2 and X² + 1 show
   genuine multiplicity, from unit pieces a = ±1 and from factorisation non-uniqueness. The cubic and quartic F have
   ratio 1.00.
 - **P9 (d ≥ 3, M ≥ 5: > ½ of members have ≤ 2 non-unit pieces): FAILED** in all 12 eligible cells (0.02–0.48).
   - *Post-hoc diagnosis:* the cells sit **below the lemma's regime**. The allowed non-unit count log₂(‖r‖₁^d‖F‖₂^{d−1}) is
     ≈ 20–30 for d = 3, h ≥ 20, while M ≤ 6. So the ledger permits every piece to be a non-unit, and the maximum observed
     non-unit count equals M in every cell.
-  - The prediction was badly calibrated. The lemma's force needs M ≫ d·log₂ h. E2 is a correctness check of the identity
-    only.
+  - The prediction was badly calibrated. The ledger has force only for M ≫ d·log₂ h, while the identity itself holds for
+    every M. E2 is a correctness check of the identity and does **not** test unit domination.
 
 ## 5. Literature (task 5; cross-checked against the codex, ptecons and ptebarrier lists)
 
@@ -337,35 +375,58 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
 
 ## 6. What remains open (joint list)
 
-1. **resbarrier §2.6/§4.2:** rank-r ≥ 3 linked modules with two nonlinear sides. Closed only under G_r (conditional floor
-   L[1/4] for aggregate families). Route 1's View-B residue is an instance of it.
-2. **Relation search itself.** Non-exact members; an output-sensitive split enumerator in {P(m) ≡ small mod N}
-   (smoothenum's listing primitive; ptecons open 3).
-3. **Near-ideal fibres with systematic cancellation at an N-aligned point** (ptecons open 1, heuristic NC).
-4. **ptebarrier O2–O4:** pencils of ≥ 2 presentations, which need three-term rigidity; the corner |m| tiny with k ≍ x^{2β};
-   other root rings and multivariate presentations.
-
-No candidate is known for any of them.
+1. **Non-exact and evaluated compressions** (ptebarrier O1). These are congruences mod N that are coherent across a
+   family without being exact over Z. There is no barrier and no candidate. A sufficient primitive is smoothenum's
+   output-sensitive split or doubly-smooth listing.
+2. **resbarrier §2.6/§4.2:** rank-r ≥ 3 linked modules with two nonlinear sides. They are closed only under G_r. The
+   exact two-order residue-view implementation of route 1 is an instance of this case (§2.4).
+3. **Near-ideal fibres with systematic cancellation at an N-aligned point** (ptecons open 1; heuristic NC). Also any
+   seed source for mechanism B below relation search.
+4. **ptebarrier O2–O4.** These are:
+   - pencils of ≥ 2 presentations (the missing lemma is three-term rigidity);
+   - exact families outside the regime (large multiplier degree or height; tiny m with a high-degree small side);
+   - other root rings and multivariate presentations;
+   - non-monic presentations, which also lie outside Lemma NC.
 
 ## 7. Reviews
 
-- **Codex blind (`ptesplit_1.out`).**
-  - Same verdict: no construction, 1–3%.
-  - It contributed:
-    - the shared-remainder obstruction for d ≥ k (§2.2);
-    - the injection bound (independently);
-    - the 2B-smoothness of ideal constants;
-    - the pointwise VMVT bound;
-    - the EX qualification: an exact identity plus an N-dependent evaluation is informative, which is our View A and
-      Lemma NC;
-    - the PTM/doubling and Dickson audits;
-    - the M = 4 fibre counts, reproduced exactly by our E1.
-- Codex adversarial (`ptesplit_2`), Opus proof critic, Opus literature critic: see §7.1 (addendum).
+### 7.1 Codex blind round (`ptesplit_1.out`)
+
+Same verdict: no construction; 1–3%. Codex contributed:
+- the shared-remainder obstruction for d ≥ k;
+- the injection bound (found independently);
+- the 2B-smoothness of ideal constants;
+- the pointwise VMVT bound;
+- the EX qualification (exact identity plus N-dependent evaluation is informative);
+- the PTM, doubling and Dickson audits;
+- the M = 4 fibre counts, which our E1 reproduces exactly.
+
+### 7.2 Codex adversarial round (`ptesplit_2.out`): MAJOR REVISION; all points applied
+
+| # | Severity | Issue | Fix |
+|---|---|---|---|
+| 1 | MAJOR | "same non-unit part ⇒ redundant" is false: X² − 2, m = 11, N = 119 factors N from a unit-only member | withdrawn (§2.1) |
+| 2 | MAJOR | "element-factor-base NFS" is a description, not a lower-bound reduction; KL hypotheses | relabelled; "NC alone excludes nothing for small M" |
+| 3 | MAJOR | W/P/NX hypotheses dropped; NX does not imply independent costs (codex example) | regimes attached; NX scoped; ptebarrier final folded in |
+| 4 | MAJOR | window lemma: logs; M is bounded above, not ≈ x^α; "generic Δe" unjustified on exceptional fibres | rewritten as a conditional heuristic (§1) |
+| 5 | MAJOR | the seed argument proves nothing without a seed-cost bound; cheap special seeds exist | "bounded amplification; seed-cost hypothesis needed"; codex seed quoted |
+| 6 | MINOR | determinant bound: M = 2 exception, repeated roots | M ≥ 4 and the +4 term from ptebarrier final |
+| 7 | MAJOR | §2.4 is a scoped representation, not universal containment; non-monic denominators | scoped; uncovered cases listed |
+| 8 | MINOR | Prop NF: bit-size of s − v; "at most"; lcm example | T* and an upper-bound reading |
+| 9 | MAJOR | the verdict is stronger than its sources; STAR is heuristic; ptecons E2 margin | verdict rewritten; STAR relabelled; margin stated |
+| 10 | MINOR | numbers (62 213 970; 2/325; 299–5128); P8 meaning; hash exactness | corrected; exact post-hoc verification, 0 mismatches |
+
+Codex independently re-scored P1–P9 from the raw files and agrees: P4 and P9 failed, the rest held.
+
+### 7.3 Opus critics
+
+See §7.4 (addendum).
 
 ## 8. Reproduction
 
 ```bash
 .venv/bin/python -m pytest -q tests/test_ptesplit.py
-.venv/bin/python -m src.ptesplit.run_experiment E1   # ~3 min, 2.35 GB peak
-.venv/bin/python -m src.ptesplit.run_experiment E2   # ~1 s
+.venv/bin/python -m src.ptesplit.run_experiment E1   # about 3 min, 2.35 GB peak
+.venv/bin/python -m src.ptesplit.run_experiment E2   # about 1 s
+.venv/bin/python -m src.ptesplit.verify              # post hoc, about 3 min, 2.52 GB peak
 ```
