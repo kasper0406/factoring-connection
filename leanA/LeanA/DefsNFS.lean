@@ -48,7 +48,8 @@ def Xsp : ℕ := ⌊Real.sqrt ((N : ℝ) / 2)⌋₊
 /-- `j`, maximal with `2^{kj} ≤ X`. -/
 def jJ : ℕ := Nat.log (2 ^ P.k) (Xsp N)
 
-/-- `Y = 2^{j−1}`. -/
+/-- `Y = 2^{j−1}` (for `j ≥ 1`, i.e. all large `N`; at `j = 0` natural subtraction gives `Y = 1`
+instead of the paper's `1/2`, which only affects tiny `N` where SPLIT's guards return FAIL). -/
 def Yj : ℕ := 2 ^ (P.jJ N - 1)
 
 /-- `J = {ℓ prime : Y < ℓ ≤ 2Y}`. -/
