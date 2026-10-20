@@ -58,11 +58,12 @@ and need nothing new.
    coprime to p − 1, a unit/class-index condition we cannot control (§7).
 6. **Literature (search result, §1).** The best rigorous prime-field DL bound we found is still Pomerance 1987,
    L_p[1/2, √2] (precomputation) and L_p[1/2, 1/√2] per logarithm; nothing below α = 1/2 for prime fields, for all p
-   or almost all p, unconditional or under GRH. For F_{p^n}, rigorous results below L[1/2] exist only in small
-   characteristic (Kleinjung–Wesolowski: quasi-polynomial for fixed p, L_Q[α + o(1)] for p = L_Q[α]). **Extension
-   fields in medium characteristic: the transfer does not give anything as it stands** (§8). The split counting
-   transfers to fixed n, but the rational side becomes a number field and Lemma 8.5′ would be needed for smooth
-   ideals in residue classes modulo ideals, which is not available.
+   or almost all p, unconditional or under GRH. For F_{p^n}, the rigorous results below L_Q[1/2] that we found are in
+   small and lower-medium characteristic, p = L_Q[β] with β < 1/2 (Kleinjung–Wesolowski: quasi-polynomial for fixed p,
+   L_Q[β + o(1)] for p = L_Q[β]). Here "medium/large characteristic" means p ≥ L_Q[1/2]. **Extension fields with
+   p ≥ L_Q[1/2]: the transfer does not give anything as it stands** (§8). Only the injectivity step of the split
+   counting transfers (heuristically, for fixed n); the rational side becomes a number field, and Lemma 8.5′ would be
+   needed for smooth ideals in residue classes modulo ideals, which is not available.
 7. **Toy checks (experimentally supported; correctness only; §9).** E1: the split identity
    #{T : E(T)} = #{coprime pairs} held exactly in 8/8 exhaustive cases, and the lower bound held in every case where
    its hypothesis held. E2: Lemma XK4-U with the *explicit* κ and R certified a nonzero torsion relation in 15/15 runs at
@@ -83,7 +84,7 @@ at growing degree (§4), the only genuinely new DL-specific estimate.
 | DL in F_p^*, heuristic | L_p[1/3, (64/9)^{1/3}] | heuristic | Gordon, SIAM J. Discrete Math. 6 (1993) 124–138; Schirokauer, Phil. Trans. R. Soc. A 345 (1993) 409–423 |
 | F_{p^n}, p ≤ n^{o(n)} | L_Q[1/2, √2] | none | Lovorn Bender–Pomerance, AMS/IP Stud. Adv. Math. 7 (1998) 221–232 |
 | F_{p^n}, any p, n | (pn)^{2 log₂ n + O(1)}; quasi-polynomial for fixed p; L_Q[α + o(1)] when p = L_Q[α] | none | Kleinjung–Wesolowski, J. Amer. Math. Soc. 35 (2022) 581–624, Thm 1.1 (arXiv 1906.10668) |
-| F_{p^n}, medium/large characteristic (p ≥ L_Q[1/2]) | nothing below L_Q[1/2] found; the KW bound is L_Q[α] for p = L_Q[α] | — | search (see the literature critic, §10) |
+| F_{p^n}, medium/large characteristic (here: p ≥ L_Q[1/2]) | nothing below L_Q[1/2] found; the KW bound is L_Q[α] for p = L_Q[α] | — | search (see the literature critic, §10) |
 | factoring, all N | L_N[1/2, 1 + o(1)] | none | Lenstra–Pomerance, JAMS 5 (1992) 483–516 |
 
 Rows on class groups, hyperelliptic Jacobians and Ge / Lenstra–Silverberg exact relations are as in [DL] §1. The
@@ -126,7 +127,9 @@ G(P) ≡ g₁ψ(a − bα) (mod p),
 
 **Where N's arithmetic enters.** Checked against [U] §§1–8 and the [pp] lemmas they cite. The prime N enters only
 through: (N, t) = 1 for 0 < t ≤ 2MV; N | F(g₀, g₁) (= Nw); ω(N) (Lemma S″'s 2^ω, (P6), FM-U's primes of J dividing N);
-the gcd checks (factor exits); and the law of the target R.
+the gcd checks (factor exits); the law of the target R; and three size or trivial conditions, all satisfied by a large
+prime p: N has no prime factor ≤ B ([pp] Lemma coprime), 2X² < N (N odd), and the f′(m) rejection modulo N. This is a
+reading claim over a long chain (the weakest DL-specific step, per the Opus proof critic); we found no other use.
 
 | [U] ingredient | N := p |
 |---|---|
@@ -179,11 +182,11 @@ because only its output enters the row and that output is deterministic.)
 **Lemma Sel-DL (cost of selection and rounds; proved).** Let p_sel be the probability that one trial (SAMPLE_FIELD +
 DESCEND_ONCE) returns a row, C_trial a bound on the conditional expected cost of one trial or one DESCEND_ONCE given the
 past, and T_post a bound on the expected cost of EXACT_DEPENDENCE_U. Then
-  E[cost of DLOG25] ≤ (1 + log₂ n)·((M_DL + 1)·C_trial/p_sel + T_post + O(M_DL log² p)) + T_S,
+  E[cost of DLOG25] ≤ (1 + log₂ n)·((M_DL + 1)·C_trial/p_sel + T_post) + T_S,
 where T_S = B^{1+o(1)} is the cost of S (Lemma CS), and p_sel ≥ (γ/4)(γ/(16 log p))^{2k}/(32k²).
 *Proof.* p_sel: [U] select-U(i) with K-U for DL; there are no factor exits. Selection: Wald, ≤ C_trial/p_sel. Kept field:
-size-biased law, E[1/ς_{A*}] ≤ 1/p_sel ([U] select-U(ii), verbatim). A round in field A costs ≤ M_DL·C_trial/ς_A + T_post
-+ O(M_DL log² p) (labels, exponentiations). By Lemmas T_p-U and HX, each round succeeds with conditional probability
+size-biased law, E[1/ς_{A*}] ≤ 1/p_sel ([U] select-U(ii), verbatim). A round in field A costs ≤ M_DL·C_trial/ς_A + T_post;
+C_trial includes the O(log³ p) cost of drawing (a_i, b_i) and computing T_i, paid by every draw. By Lemmas T_p-U and HX, each round succeeds with conditional probability
 ≥ φ(n)/n ≥ 1/(1 + log₂ n) given all earlier rounds, so the number of rounds is dominated by a geometric variable with
 mean ≤ 1 + log₂ n; Wald's identity (each round's conditional expected cost is bounded as above given A) gives the
 bound. ∎
@@ -208,8 +211,8 @@ log|disc f| ≤ d log d + (2d − 2) log(√(d + 1)·3MH) = O(d(μ + h) log p + 
 For each, an r-maximal order, the primes above r and the valuations v_𝔯(𝔍_P) are computed in expected time
 poly(d, log p) (Round 2 at a known prime, Buchmann–Lenstra 1994; decomposition and valuations, Cohen GTM 138,
 Algs. 6.1.8, 6.2.9, 4.8.17; the only randomness is Cantor–Zassenhaus factoring over F_r, and r ≤ B; v_r(disc f) =
-O(log p) bounds the r-adic precision). Finding them: t·disc f mod r for all r ≤ B, Õ(dB). Total O(log p)·poly(d, log p)
-plus Õ(dB) = L^{a+o(1)}. ∎
+O(log p) bounds the r-adic precision). Finding them: t·disc f mod r for all r ≤ B, Õ(dB). Total, including the
+valuations of the ≤ 2kM atom occurrences at the bad primes: ≤ 2kM·O(log p)·poly(d, log p) + Õ(dB) = L^{a+o(1)}. ∎
 
 **Lemma XK4-U (unit elimination at growing degree; proved).** Let s := r₁ + r₂ ≤ d, r_U := s − 1, and x₁, …, x_s ∈ Λ₁
 independent with entries of at most β_x bits. One finds a nonzero n ∈ Z^s with Σ n_jx_j ∈ Λ₂ in time
@@ -234,16 +237,22 @@ poly(d)·Õ(M·(P + β_x) + κ²) with κ, P = O(dβ_x + d² + d·log(kMd log p)
     log₂R ≤ r_U log₂ r_U + r_U(r_U log₂(3/2) + r_U/2 + β_x + log₂(4kMd^{3/2} log p) + log₂(105d² log 6d))
           = O(dβ_x + d² + d log(kMd log p)).
 - **LLL with the explicit precision.** b_j := (e_j, ⌊2^κ v_j⌉) ∈ Z^{s + s}, coordinates within 1 of 2^κv_j. If n ∈ Rel,
-  ‖Σn_jb_j‖ ≤ (1 + s√s)‖n‖; if n ∉ Rel, ‖Σn_jb_j‖ ≥ 2^κβ_d − s√s‖n‖. LLL's first vector has norm ≤ R′ :=
-  2^{(s−1)/2}(1 + s√s)R (the lattice contains Σ n₀,jb_j), so its coefficient vector has norm ≤ R′; with
-  2^κβ_d > (1 + s√s)R′ it lies in Rel, and it is nonzero. So κ := ⌈log₂((1 + s√s)R′/β_d)⌉ + 1 = log₂R + O(d + log d·…)
-  = O(dβ_x + d² + d log(kMd log p)).
+  ‖Σn_jb_j‖ ≤ (1 + s√s)‖n‖; if n ∉ Rel, ‖Σn_jb_j‖ ≥ 2^κβ_d − s√s‖n‖. Since R bounds ‖n₀‖_∞, ‖n₀‖₂ ≤ √s·R, so the
+  lattice contains a vector of norm ≤ √s(1 + s√s)R and LLL's first vector has norm ≤ R′ := 2^{(s−1)/2}√s(1 + s√s)R; its
+  coefficient vector has norm ≤ R′. With 2^κβ_d > (1 + s√s)R′ it lies in Rel, and it is nonzero. So
+  κ := ⌈log₂((1 + s√s)R′/β_d)⌉ + 1 = log₂R + O(d + log d) + log₂(1/β_d) = O(dβ_x + d² + d log(kMd log p)).
+  (Corrected after the Opus proof critic, #2: the first draft used R as a Euclidean bound. The toy's
+  `toy_xk.explicit_kappa` uses the draft's R′ without √s but adds 2 to the ceiling, so it gives
+  2^κβ_d ≥ 4(1 + s√s)²2^{(s−1)/2}R ≥ (1 + s√s)R′ whenever √s ≤ 4; every E2 run has s ≤ 4, so E2 used a valid κ.)
 - **Precision ledger.** Each coordinate of each Log(a_P − b_Pα) to absolute precision 2^{−P}, P := κ + β_x +
   log₂(2kM) + O(log d), suffices for rounding, accumulation and certification ([DL] Lemma XK4 ledger, with the sum over
   ≤ 2kM occurrences and s ≤ d coordinates). By the conjugate lower bound, absolute precision P + log₂V + d log₂p + O(1)
   on the roots of f gives this (relative error of σ(a − bα) ≤ V·ε·p^d). Root approximation of a degree-d integer
   polynomial with O(log p)-bit coefficients to b bits costs poly(d, log p, b) (Schönhage 1982; Pan, J. Symbolic Comput.
-  33 (2002) 701–733).
+  33 (2002) 701–733). The roots must be *certified* (isolated), to separate real from complex roots and to pair the
+  complex embeddings consistently across atoms: f is squarefree (irreducible), its root separation is
+  ≥ 2^{−O(d log d + d log‖f‖)} = 2^{−O(d log p)} (Mahler), and P exceeds this, so isolating enclosures (e.g. by
+  Newton–Kantorovich or Gershgorin tests on the approximations) cost poly(d, log p, P) (Opus proof critic, #3).
 - **Cost.** Roots: poly(d, log p, P). Logs of ≤ 2kM atoms in s coordinates: d·2kM·Õ(P). The sums: Õ(dM(P + β_x)).
   LLL (Nguyen–Stehlé L², SIAM J. Comput. 39 (2009) 874–903) in dimension ≤ 2d with O(κ)-bit entries: poly(d)·Õ(κ²).
 - **Certification.** Accept n only if ‖Σn_jv_j‖_∞ < β_d/2 is certified by ball arithmetic: a true relation passes by the
@@ -271,7 +280,8 @@ only post-processing term that is not L^{2a}; its effect is computed in §6.
 ## 5. Shape test, recursion, and why DL has no log recursion
 
 - **The shape test is factoring.** DESCEND_ONCE needs the complete factorisations of |u₀|, |v₀| ≤ √(2p). DLOG25 calls
-  FACTOR_U[τ′] on each, with fresh coins. By Theorem U, for every integer m ≤ √(2p), E[cost of FACTOR_U[τ′](m)] ≤
+  FACTOR_U[τ′] on each, with fresh coins. Theorem U's proof bounds the sup form F_U(x) := sup_{2≤m≤x} E[cost of
+  FACTOR_U[τ′](m)] ([U] §10: Lemma F_α is applied to this F), so for every integer m ≤ √(2p), E[cost of FACTOR_U[τ′](m)] ≤
   F_U(√(2p)) ≤ L_{√(2p)}[2/5, c_U(τ′) + o(1)] ≤ e·L_p[2/5, 2^{−2/5}c_U(τ′) + o(1)] (the scaling step of [U] Lemma F_α:
   Λ(√(2p)) ≤ 2^{−2/5}Λ(p) + o(1)). This bound is uniform in m, and conditional on the past (fresh coins), so it is a valid
   C_trial term in Lemma Sel-DL ([rec] Lemma W covers adaptively chosen sub-calls).
@@ -315,7 +325,9 @@ from codex dlog25_1). ≥: by (ii) with τ′ = τ. (ii): let x := c_DL(τ; τ�
 a + s ≤ x − 2^{−2/5}c_U(τ′) < (1 − 2^{−2/5})x, so (a + s)/(1 − 2^{−2/5}) < x; also T₁ ≤ x and 2a < 3a ≤ x; so
 c_U(τ) ≤ x. (iii): (i) and (ii). ∎
 
-**Numbers** (`.venv/bin/python -m src.dlog25.params`, exact rationals, 2^{±2/5} bracketed; grid as in [U]; the
+**Numbers** (`.venv/bin/python -m src.dlog25.params`, exact rationals, 2^{±2/5} bracketed; the same grid for U and DL,
+`dlog25.params.default_grids`, which differs from [U]'s default grid: κ ∈ {i/200 ≤ 1/5} ∪ {2^{−j}}, a ≤ 2 — this is why
+C_γ = 0 gives 3.51035 here against [U]'s 3.517; the
 subroutine uses the grid-optimal τ′ for the same C_γ; the reported value is the upper bracket):
 
 | C_γ | inf c_U (grid, upper) | c_DL (grid, upper) | outer τ = (a, κ, d₀) | 3a | binding term |
@@ -354,11 +366,13 @@ is not computed.
   is below L_Q[1/2] only for β < 1/2. For p ≥ L_Q[1/2] (medium and large characteristic) we found nothing rigorous
   below L_Q[1/2] (search result).
 - **Does the transfer give anything? Not as it stands.**
-  - What transfers (fixed n, or n slowly growing): the Dixon split. Represent F_{p^n} = Z[x]/(p, φ), φ monic of
-    degree n irreducible mod p, and let Λ_T := {(u, v) ∈ Z[x]_{<n}² : u ≡ Tv mod (p, φ)}, of rank 2n and covolume p^n.
-    The analogue of Lemma S_p″'s injectivity holds when the coefficients of u, v are ≤ Y with N_{Q(φ)}(uv′ − u′v) < p^n,
-    since uv′ − u′v ∈ (p, φ(θ)) forces the norm to be ≥ p^n unless it is 0. So split counting over "k-products of
-    degree-one prime ideals" can be written.
+  - What plausibly transfers (heuristic; fixed n): one step of the Dixon split. Represent F_{p^n} = Z[x]/(p, φ), φ
+    monic of degree n irreducible mod p, and let Λ_T := {(u, v) ∈ Z[x]_{<n}² : u ≡ Tv mod (p, φ)}, of rank 2n and
+    covolume p^n. The analogue of Lemma S_p″'s *injectivity* holds when the coefficients of u, v are ≤ Y with
+    N_{Q(φ)}(uv′ − u′v) < p^n, since uv′ − u′v ∈ (p, φ(θ)) forces the norm to be ≥ p^n unless it is 0. The
+    *primitive-vector* step does not transfer as is: Λ_T contains θ^i·(u, v), so there is no unique shortest vector
+    (module-lattice reduction would be needed), and coprimality needs ideal-theoretic care since Z[θ] need not be a UFD
+    (Opus proof critic, #7).
   - What fails: the halves are elements of a degree-n number field Q(φ), not integers. The rational side of the relation
     supply becomes an algebraic side, and FM/LD* need Lemma 8.5′ (restricted BV for smooth numbers, Drappeau Lemme 5) for
     **smooth ideals in residue classes modulo ideals of Q(φ)**, plus Theorem U for factoring ideals of norm ≈ Q^{1/2}
