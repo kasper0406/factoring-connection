@@ -1,0 +1,471 @@
+**PROVED, using the known Manders–Adleman theorem below:** a uniform deterministic polylogarithmic algorithm for the **restricted Taylor-polynomial oracle as stated** would imply \(P=NP\). Short intervals, hyperbolic coefficient relations, and even the additional promise \(\gcd(N,x)=1\) do not prevent a reduction.
+
+The key is to increase the ambient \(N\) by a polynomial factor. After subtracting an integer linear function, a short Taylor polynomial can reproduce an arbitrary quadratic polynomial closely enough to preserve every floor. The construction and its error bounds appear below.
+
+Throughout, computation means classical bit computation; degree is fixed; integers and rational numbers are encoded in binary. “Polylogarithmic” includes polynomial dependence on the complete input bit length. Statements marked **UNVERIFIED** identify limitations of this report, not established impossibility results.
+
+**PROVED — Two shifts extract congruence counts.** Write
+\[
+S_m(q;I)=\sum_{h\in I}\left\lfloor\frac{q(h)}m\right\rfloor,
+\]
+where \(I\) is an interval of integers. For any integer polynomial \(q\),
+\[
+\boxed{\quad
+S_m(q;I)-S_m(q-1;I)
+=\#\{h\in I:q(h)\equiv0\pmod m\}.
+\quad}                                                    \tag{1}
+\]
+Indeed, write \(q(h)=km+r\), \(0\le r<m\). The two floors differ precisely when \(r=0\). This proof also covers negative values of \(q\).
+
+More generally, for \(0\le Y\le m\),
+\[
+\boxed{\quad
+\#\{h\in I:q(h)\bmod m<Y\}
+=|I|-S_m(q+m-Y;I)+S_m(q;I).
+\quad}                                                    \tag{2}
+\]
+The floor difference on the right counts residues at least \(Y\).
+
+Thus the distinction between sums of quotients and distributions of residues disappears once constant shifts are available.
+
+**KNOWN — Bounded quadratic congruence is NP-complete.** Given binary integers \(A,m,X\), deciding whether
+\[
+0\le h<X,\qquad h^2\equiv A\pmod m
+\]
+has a solution is NP-complete. The precise reference is Kenneth L. Manders and Leonard Adleman, “NP-Complete decision problems for binary quadratics,” *Journal of Computer and System Sciences* **16** (1978), 168–184. Endpoint conventions do not affect the result. [Original article](https://doi.org/10.1016/0022-0000(78)90044-2).
+
+**PROVED — General quadratic floor sums are NP-hard.** Apply (1) to
+\[
+q(h)=h^2-A,\qquad I=[0,X).
+\]
+Two oracle calls decide the preceding problem.
+
+We may assume \(0\le A<m\) and \(X\le m\): if \(X\ge m\), the interval contains a complete residue system, so replacing it by \([0,m)\) preserves existence. Both numerator polynomials have coefficients of \(O(\log m)\) bits.
+
+Consequently,
+\[
+\boxed{\text{polylogarithmic exact quadratic floor sums on arbitrary intervals}
+\ \Longrightarrow\ P=NP.}                                \tag{3}
+\]
+This is stronger than a reduction to factoring or class numbers. It is a polynomial-time Turing reduction using two evaluations; I do **not** infer a \(\#P\)-completeness theorem merely from this NP-hardness result.
+
+**PROVED — Arbitrary intervals give deterministic polynomial-time factoring.** For an odd integer \(m\), count roots of
+\[
+h^2\equiv1\pmod m
+\]
+inside \([2,m-1)\), using (1).
+
+If \(m\) has at least two distinct prime factors, CRT supplies roots other than \(1\) and \(m-1\): there are exactly \(2^{\omega(m)}\) roots modulo an odd \(m\). To see this, modulo each odd prime power, \((h-1)(h+1)\equiv0\) forces \(h\equiv\pm1\), since the two factors have gcd dividing \(2\).
+
+Bisect an interval containing a nontrivial root, using root counts, until a root \(r\) is isolated. Then
+\[
+1<\gcd(r-1,m)<m.
+\]
+Either excluded equality would force \(r\equiv-1\) or \(1\pmod m\).
+
+Remove powers of \(2\), detect perfect powers by integer-root computations, and recurse. An odd integer with no nontrivial root and no perfect-power representation is prime, by the CRT observation. Complete factorization takes \(O(\log^2 m)\) oracle calls, with polynomial additional bit work.
+
+This proof uses interval access essentially. A full-period count tells us how many roots exist, without locating one.
+
+**PROVED — The basic requirements are small.** All coefficients in this table have \(O(\log m)\) bits, or \(O(\log p)\) in prime-modulus rows.
+
+| Consequence | Oracle intervals | Numerators or shifts needed |
+|---|---|---|
+| Bounded quadratic congruence | \([0,X)\), \(X\le m\) | \(h^2-A,\ h^2-A-1\) |
+| Quadratic residuosity modulo composite \(m\) | \([0,m)\) | Same two polynomials |
+| Deterministic factoring | Adaptive subintervals of \([0,m)\) | \(h^2-1,\ h^2-2\) |
+| \(h(-p)\), prime \(p>3,\ p\equiv3\pmod4\) | One complete period | \(h^2\) |
+| Partial Legendre sums | One complete period per query | \(h^2,\ h^2+p-Y\) |
+
+Quadratic residuosity decision alone is weaker than the interval root-location capability used in the factoring proof. In particular, that proof does not establish factoring from a residuosity-decision oracle alone.
+
+**PROVED — Partial Legendre sums follow from complete-period shifted sums.** For an odd prime \(p\), let
+\[
+C_p(Y)=\#\{0\le h<p:h^2\bmod p<Y\}.
+\]
+The number of square roots of \(t\pmod p\) is \(1+\left(\frac tp\right)\), including \(t=0\). Therefore
+\[
+C_p(Y)=Y+\sum_{t=1}^{Y-1}\left(\frac tp\right),
+\]
+and hence
+\[
+\boxed{\quad
+\sum_{t=1}^{X}\left(\frac tp\right)
+=C_p(X+1)-(X+1).
+\quad}                                                    \tag{4}
+\]
+Equation (2) computes \(C_p\) with two complete-period quadratic floor sums.
+
+Notice which interval is short: \(X\) is an interval in **residue values**; the oracle’s summation variable still runs through \(p\) values. One cannot directly replace that summation interval by length \(X\).
+
+The same identity computes the number of nonresidues up to \(X\), namely
+\[
+\frac{X-\sum_{t\le X}(t/p)}2.
+\]
+Bisection consequently finds the least quadratic nonresidue with \(O(\log p)\) such evaluations.
+
+**KNOWN — Burgess estimates address a different question.** For fixed \(r\), the classical prime-modulus bound has the shape
+\[
+\left|\sum_{M<n\le M+H}\chi(n)\right|
+\ll_{r,\varepsilon}
+H^{1-1/r}p^{(r+1)/(4r^2)+\varepsilon}.
+\]
+See D. A. Burgess, “On Character Sums and Primitive Roots,” *Proceedings of the London Mathematical Society* **12** (1962), 179–192. [Original paper](https://doi.org/10.1112/plms/s3-12.1.179).
+
+**PROVED — Algorithmic evaluation does not itself improve Burgess.** Formula (4) would evaluate individual sums exactly, including in the Burgess range. It supplies no new uniform inequality for all primes and intervals.
+
+**KNOWN — Dirichlet’s class-number identities.** For prime \(p>3\), \(p\equiv3\pmod4\),
+\[
+\sum_{t=1}^{p-1}t\left(\frac tp\right)=-p\,h(-p),
+\]
+and
+\[
+\sum_{1\le t<p/2}\left(\frac tp\right)
+=\left(2-\left(\frac2p\right)\right)h(-p).
+\]
+For prime \(p\equiv1\pmod4\),
+\[
+h(-4p)=2\sum_{1\le t<p/4}\left(\frac tp\right).
+\]
+Here \(h(D)\) denotes the class number of discriminant \(D\); the field \(\mathbb Q(\sqrt{-p})\) has discriminant \(-4p\) in the latter case. References include Bruce C. Berndt, “Classical theorems on quadratic residues,” *L’Enseignement Mathématique* **22** (1976), 261–304, especially its treatment of Dirichlet’s fundamental formulas; Coates also states the half-interval formula explicitly. [Berndt article](https://www.e-periodica.ch/digbib/view?pid=ens-001%3A1976%3A22%3A%3A442), [Coates, Theorem 2.1](https://cmsa.fas.harvard.edu/media/Coates_Exact-formulae-Arithmetic-Geometry.pdf).
+
+**PROVED — The complete quadratic identity, including its coefficient.** If \(p>3\), \(p\equiv3\pmod4\), and \(p\nmid a\), then
+\[
+\boxed{
+\sum_{h=0}^{p-1}\left\lfloor\frac{ah^2}{p}\right\rfloor
+=
+\frac{a(p-1)(2p-1)}6-\frac{p-1}2
++\left(\frac ap\right)h(-p).
+}                                                         \tag{5}
+\]
+Indeed, the multiplicity of residue \(t\) among \(ah^2\) is
+\(1+(a/p)(t/p)\). Thus its residue sum is
+\[
+\frac{p(p-1)}2+\left(\frac ap\right)
+\sum_{t=1}^{p-1}t\left(\frac tp\right).
+\]
+Subtract this from \(a\sum h^2\), divide by \(p\), and apply Dirichlet’s identity.
+
+For \(p=3\), replace \(h(-3)\) in (5) by \(h(-3)/3\), reflecting the extra units.
+
+For \(p\equiv1\pmod4\), the weighted character sum vanishes: pairing \(t\) with \(p-t\), and using \((-1/p)=1\), reduces it to \(p/2\) times the zero complete character sum. Consequently the same unshifted floor sum is elementary:
+\[
+\frac{a(p-1)(2p-1)}6-\frac{p-1}2.
+\]
+Nevertheless, shifted complete sums recover \(h(-4p)\) through (4) and the quarter-interval formula.
+
+Thus “complete periods have closed forms” sometimes means an elementary algorithm and sometimes means a class-number computation.
+
+**PROVED — Composite moduli require more care.** For odd squarefree \(m\), let
+\[
+r_m(t)=\#\{h\bmod m:h^2\equiv t\pmod m\}.
+\]
+CRT gives
+\[
+r_m(t)=\prod_{p\mid m}\left(1+\left(\frac tp\right)\right)
+=\sum_{d\mid m}\chi_d(t),
+\]
+where \(\chi_d(t)=(t/d)\) and \(\chi_1=1\).
+
+It is generally false that \(r_m(t)=1+(t/m)\). For example, modulo \(15\), the residue \(1\) has four roots.
+
+For \(\gcd(a,m)=1\), the preceding expansion and Dirichlet’s weighted identity give
+\[
+\boxed{
+S_m(ah^2;[0,m))
+=
+\frac{a(m-1)(2m-1)}6-\frac{m-1}2+
+\sum_{\substack{d\mid m\\d\equiv3\ (4)}}\chi_d(a)\,H(d),
+}                                                         \tag{6}
+\]
+where \(H(d)=h(-d)\) for \(d>3\), and \(H(3)=1/3\).
+
+For the proof, if \(d>1\) divides \(m\), splitting a weighted sum modulo \(m\) into periods modulo \(d\) gives
+\[
+\sum_{t=0}^{m-1}t\chi_d(t)=\frac md\sum_{r=0}^{d-1}r\chi_d(r).
+\]
+This is zero for even characters and \(-mH(d)\) for odd characters. Substitution proves (6).
+
+For squarefree \(m\equiv3\pmod4\), define
+\[
+G(m)=S_m(h^2;[0,m))
+-\frac{(m-1)(2m-1)}6+\frac{m-1}2.
+\]
+Then \(G(m)=\sum_{d\mid m,\ d\equiv3(4)}H(d)\). Möbius inversion recovers \(H(m)\) from \(G(d)\), \(d\mid m\), using at most \(2^{\omega(m)}\) evaluations once the divisors are available. Likewise,
+\[
+\chi_m(t)=\sum_{d\mid m}\mu(m/d)\,r_d(t)
+\]
+reduces incomplete Jacobi sums to residue-count queries over these divisors.
+
+**UNVERIFIED — A uniform polylogarithmic composite-class-number reduction.** These formulas give polynomially many calls when \(\omega(m)\) is fixed. They do not give polynomially many calls in \(\log m\) for unrestricted \(\omega(m)\). I do not claim that one unshifted sum computes \(h(-m)\) for every composite \(m\). Nonsquarefree moduli additionally require distinguishing primitive characters, field discriminants, and order discriminants.
+
+**KNOWN — Class-number upper bounds are not lower bounds.** Hafner–McCurley’s “A rigorous subexponential algorithm for computation of class groups,” *JAMS* **2** (1989), 837–850, is the foundational \(L_{|D|}[1/2]\) algorithm. Under GRH, Biasse–Erukulangara prove an expected bound
+\[
+\exp\!\left((3/\sqrt8+o(1))
+\sqrt{\log|D|\log\log|D|}\right).
+\]
+Their paper appeared in *Advances in Mathematics of Communications* **17** (2023), 1388–1405. The historical \(D^{1/5+o(1)}\) bound also needs its GRH assumptions and Lenstra–Schoof refinements stated; it is not an unqualified unconditional Shanks bound. [Hafner–McCurley](https://doi.org/10.1090/S0894-0347-1989-1002631-0), [Biasse–Erukulangara](https://doi.org/10.3934/amc.2021055), [Biasse–Fieker’s historical account](https://mathweb.ucsd.edu/~kedlaya/ants10/biasse/paper.pdf).
+
+**CONJECTURED.** Worst-case classical exact computation of \(h(-p)\) requires super-polylogarithmic time. No such lower bound follows from the cited algorithms. The NP-hardness reduction above supplies a stronger conventional barrier for the unrestricted floor-sum problem.
+
+**PROVED — General quadratic sums embed in the restricted Taylor class.** This is the central reduction.
+
+Fix \(j\ge2\). First consider
+\[
+S=\sum_{u\le h<v}\left\lfloor\frac{ah^2+bh+c}{m}\right\rfloor,
+\qquad 0\le u<v\le m,
+\]
+with
+\[
+m\ge2,\qquad 1\le a<m,\qquad 0\le b<m.
+\]
+The constant \(c\) may be any integer.
+
+Choose
+\[
+x=16m^4,\qquad
+N=\frac{ax^3-bx^2}{m}+1,                                  \tag{7}
+\]
+and let
+\[
+Q_j(h)=\sum_{i=0}^{j}\frac{(-1)^iNh^i}{x^{i+1}}
++\frac cm-\frac Nx+\frac1{2m}.                             \tag{8}
+\]
+This is exactly an allowed Taylor polynomial of \(N/(x+h)\), plus a rational constant.
+
+Because \(m\mid x\), \(N\) is integral. Moreover,
+\[
+N\equiv1\pmod x,\qquad \gcd(N,x)=1,
+\]
+and
+\[
+x^2\le N\le x^3\le4096m^{12}.                             \tag{9}
+\]
+
+Let \(K=-ax/m\), an integer. Expanding the first three coefficients yields
+\[
+Q_j(h)
+=Kh+\frac{ah^2+bh+c}{m}+\frac1{2m}+E_j(h).
+\]
+For \(j=2\),
+\[
+E_2(h)=-\frac h{x^2}-\frac{bh^2}{mx}+\frac{h^2}{x^3},
+\qquad |E_2(h)|<\frac{2m^2}{x}\quad(0\le h\le m).
+\]
+The higher Taylor terms, when present, have total absolute value at most
+\[
+\frac Nx\sum_{i=3}^{j}\left(\frac hx\right)^i
+\le \frac{m^3}{x(1-m/x)}
+<\frac{2m^3}{x}.
+\]
+Therefore, for every \(j\ge2\),
+\[
+|E_j(h)|
+<\frac{2m^2+2m^3}{16m^4}
+\le\frac{3}{16m}<\frac1{4m}.                              \tag{10}
+\]
+
+Every fractional part of \((ah^2+bh+c)/m\) lies on the grid
+\(\{0,1/m,\ldots,(m-1)/m\}\). Equations (8)–(10) add a quantity strictly between \(0\) and \(1/m\). Hence no floor changes:
+\[
+\left\lfloor Q_j(h)\right\rfloor
+=Kh+\left\lfloor\frac{ah^2+bh+c}{m}\right\rfloor.
+\]
+Thus
+\[
+\boxed{
+S=F(Q_j;u,v)-K\sum_{h=u}^{v-1}h.
+}                                                         \tag{11}
+\]
+One restricted query recovers the general quadratic sum.
+
+**PROVED — The constructed interval is admissibly short.** By (9),
+\[
+x\le\sqrt N,\qquad
+N^{1/(j+2)}\le x,
+\]
+and the natural Taylor block length satisfies
+\[
+\frac{x}{N^{1/(j+2)}}
+\ge x^{1-3/(j+2)}
+\ge x^{1/4}=2m.
+\]
+The requested interval lies inside this block. Also
+\[
+\frac{x}{N^{1/(j+2)}}
+\le N^{1/2-1/(j+2)},
+\]
+as required by the question.
+
+The coefficients and shift have \(O(j\log m)\)-bit encodings. Since \(\gcd(N,x)=1\), the leading coefficient really has denominator \(x^{j+1}\) in lowest terms. Thus the construction does not depend on a hidden small reduced denominator. The shift can be reduced modulo \(1\), correcting the answer by a known integer multiple of the interval length.
+
+**PROVED — This covers general quadratic inputs.** Reduce coefficients modulo \(m\), removing the resulting integer polynomial explicitly. If the quadratic coefficient becomes zero, the remaining linear floor sum has the Euclidean algorithm.
+
+For a longer or translated interval, substitute \(h=L+t\). The residue sequence \(q(L+t)\bmod m\) has period \(m\). If its length is \(km+r\), its residue sum is \(k\) times one complete-period residue sum plus one prefix residue sum. The polynomial numerator sum is elementary, and
+\[
+S_m(q;I)=\frac{\sum_{h\in I}q(h)-\sum_{h\in I}(q(h)\bmod m)}m.
+\]
+Consequently at most two applications of (11), plus polynomial bit work, handle an arbitrary interval.
+
+This establishes a polynomial-time reduction from **general degree-two floor sums to the stated restricted class**, for every fixed \(j\ge2\). For \(j=2\), the reverse reduction is immediate by expressing the Taylor polynomial over a common denominator.
+
+**PROVED — A quantitative barrier statement.** Let \(\mathcal T_j(m)\) bound restricted-oracle time on instances with ambient parameter \(N\le4096m^{12}\), coefficient sizes \(O(j\log m)\), and queried intervals of length at most \(m\). Then:
+
+- bounded quadratic congruence is decidable in
+  \(O(\mathcal T_j(m)+\operatorname{polylog}m)\);
+- complete factorization of \(m\) takes
+  \(O(\log^2m)\) such queries and polynomial additional work;
+- the prime class numbers and Legendre sums above inherit the corresponding reductions.
+
+In particular, a deterministic \(\operatorname{polylog}N\) restricted oracle implies \(P=NP\). An always-correct Las Vegas oracle with expected polylogarithmic time would instead imply \(\mathrm{NP}\subseteq\mathrm{ZPP}\).
+
+This is substantially stronger than applying Theorem \(L_j\) to factor the ambient \(N\).
+
+**OPEN — Additional promises can change the problem.** The construction uses the syntactic class specified in the question: admissible integer centers, arbitrary rational shifts, and arbitrary subintervals. It does not establish hardness for an additional promise such as \(x\asymp\sqrt N\), only selected shifts, or only the exact centers visited by one fixed factoring implementation. Such a narrower oracle needs a separate definition and reduction.
+
+**PROVED — The proposed top-coefficient scale needs correction.** For
+\(H\asymp xN^{-1/(j+2)}\),
+\[
+\frac{N}{x^{j+1}}H^j
+\asymp\boxed{\frac{N^{2/(j+2)}}x},
+\]
+rather than \(N^{(j+1)/(j+2)}\). The first omitted term has scale
+\[
+\frac{N}{x^{j+2}}H^{j+1}
+\asymp\frac{N^{1/(j+2)}}x.
+\]
+At \(x\asymp\sqrt N\), the retained top term has scale
+\(N^{2/(j+2)-1/2}\), equal to \(1\) for \(j=2\).
+
+The embedding explains the arithmetic obstruction: a very smooth decreasing arc can hide an arbitrary quadratic residue pattern after an integer shear \(y\mapsto y-Kh\). Small real approximation error preserves that pattern when a rational buffer separates it from floor discontinuities.
+
+**PROVED — Degree at least three inherits quadratic hardness.** An oracle for degree at most three includes degree two. Even requiring an exactly cubic numerator does not help for the general oracle: add \(mh^3\), whose floor contribution is the explicitly summable integer \(h^3\). For restricted Taylor polynomials of exactly degree \(j\ge3\), construction (7)–(11) already proves the same hardness.
+
+**PROVED — Unshifted complete cubic sums can nevertheless be elementary.** Suppose \(f(-h)\equiv-f(h)\pmod m\), and let
+\[
+Z=\#\{h\bmod m:f(h)\equiv0\pmod m\}.
+\]
+Negation pairs every nonzero residue value \(r\) with \(m-r\). Therefore
+\[
+\sum_{h\bmod m}(f(h)\bmod m)=\frac m2(m-Z),
+\]
+and
+\[
+\sum_{h=0}^{m-1}\left\lfloor\frac{f(h)}m\right\rfloor
+=\frac1m\sum_{h=0}^{m-1}f(h)-\frac{m-Z}2.                  \tag{12}
+\]
+
+For squarefree \(m\) and \(\gcd(a,m)=1\), \(ah^3\equiv0\) has only the root \(0\). Thus
+\[
+\boxed{
+\sum_{h=0}^{m-1}\left\lfloor\frac{ah^3}{m}\right\rfloor
+=\frac{am(m-1)^2}{4}-\frac{m-1}{2}.
+}                                                         \tag{13}
+\]
+In particular, this formula applies to the promised semiprimes
+\(m=pq\), \(p\equiv q\equiv1\pmod3\), without knowing their factors.
+
+Therefore the unshifted complete cubic floor sum in (13) supplies no factoring advantage: it is already explicitly computable.
+
+**PROVED — Shifts reveal cubic residuosity, but not automatically a Weyl sum.** Equation (1), applied to \(ah^3-A\), counts cubic roots of \(A\) over a complete period. Equation (2) counts cubes in residue intervals.
+
+If
+\[
+r_f(t)=\#\{h\bmod m:f(h)\equiv t\pmod m\},
+\]
+then
+\[
+\sum_{h\bmod m}e(f(h)/m)=\sum_{t=0}^{m-1}r_f(t)e(t/m).
+\]
+Knowing all \(m\) multiplicities determines the exponential sum. These identities give an \(O(m)\)-query reconstruction, not a polylogarithmic one.
+
+**OPEN / UNVERIFIED — The full-period cubic factoring bridge.** I have not verified a polynomial-time reduction from the project’s cubic-Weyl-sum factoring premise to **complete-period cubic floor-sum evaluations with arbitrary coefficients and shifts**. The unshifted pure-cubic case is settled by (13); the broader shifted case requires another argument. General arbitrary-interval cubic oracles factor deterministically by the quadratic reduction.
+
+**PROVED — The character connection is real but distinct from class-number hardness.** For prime \(p\equiv1\pmod3\), choose a cubic character \(\chi\). The multiplicity of \(t\) as a cube is
+\[
+1+\chi(t)+\overline{\chi(t)},
+\]
+with nonprincipal characters extended by zero at \(0\). Hence
+\[
+\sum_{h\bmod p}e(ah^3/p)
+=\overline{\chi(a)}\,\tau(\chi)+\chi(a)\,\tau(\overline\chi),
+\]
+by substituting \(u=at\) in the two character sums.
+
+This relates cubic residue distributions to cubic Gauss sums. It does not identify a floor sum with a varying cubic-field class number. Moreover, \(\mathbb Q(\sqrt{-3})\) itself has class number \(1\): its Eisenstein integer ring is norm-Euclidean, since rounding in the triangular lattice leaves a remainder of strictly smaller norm. Varying conductors and Hecke characters introduce additional arithmetic data; no further class-number reduction is proved here.
+
+**PROVED — Conic counting has several meanings.** The graph
+\(y=ah^2+bh+c\) over \(\mathbb F_p\) has exactly \(p\) affine points, one for each \(h\). By contrast, integer points on
+\[
+h^2-my=A,\qquad 0\le h<X,
+\]
+are exactly bounded modular square roots. Equation (1) counts this conic’s integer points by subtracting two floor sums. Thus bounded integer conic counting already contains the NP-complete problem; easy finite-field examples do not address it.
+
+**KNOWN — Fixed-dimensional polygon counting is polynomial-time.** Barvinok proves polynomial-time lattice-point counting for rational polyhedra in fixed dimension: A. I. Barvinok, “A Polynomial Time Algorithm for Counting Integral Points in Polyhedra When the Dimension is Fixed,” *Mathematics of Operations Research* **19** (1994), 769–779. This theorem concerns linear inequalities. [Original paper](https://doi.org/10.1287/moor.19.4.769).
+
+**PROVED — The quadratic boundary changes that complexity conclusion.** After a known vertical shift makes all heights nonnegative, a quadratic floor sum counts points under a parabola in a finite box. Two such counts solve bounded quadratic congruence by (1). Therefore a direct extension of Barvinok’s polynomial bound to these succinct quadratic regions would imply \(P=NP\). Fixed dimension and fixed algebraic degree alone are insufficient.
+
+**KNOWN — Exact circle counting has an \(X^{1/3}\)-type geometric algorithm.** Sariel Har-Peled, “An Output Sensitive Algorithm for Discrete Convex Hulls,” *Computational Geometry* **10** (1998), 125–138, computes the integer hull of a disk of radius \(R\) in \(O(R^{2/3}\log R)\) geometric operations; see Corollary 3.12. [Author’s paper](https://sarielhp.org/p/97/dhull/dch.pdf).
+
+**PROVED — This gives exact summation of \(r_2\).** Put
+\[
+A(X)=\#\{(u,v)\in\mathbb Z^2:u^2+v^2\le X\}
+=1+\sum_{n\le X}r_2(n).
+\]
+The disk and its integer hull contain exactly the same lattice points: the hull lies inside the convex disk and contains every lattice point of the disk. For an integer polygon, triangulation into primitive lattice triangles and Euler’s formula give
+\[
+\#(P\cap\mathbb Z^2)=\operatorname{area}(P)+B/2+1,
+\]
+where \(B=\sum_{\text{edges}}\gcd(|\Delta x|,|\Delta y|)\). Thus its vertices determine the count exactly. With \(R=\sqrt X\), Har-Peled’s algorithm gives \(O(X^{1/3}\operatorname{polylog}X)\) bit time: disk ray intersections reduce to quadratic inequalities on integers of \(O(\log X)\) bits.
+
+This is an upper bound, not a claim of an optimal exponent.
+
+**KNOWN — Exact divisor summation has classical \(X^{1/3}\)-type algorithms.** Richard Sladkey, “A Successive Approximation Algorithm for Computing the Divisor Summatory Function,” arXiv:1206.3369 (2012), gives an \(O(X^{1/3})\)-time, \(O(\log X)\)-space algorithm in its arithmetic model. Bit complexity incurs arithmetic costs. [Paper](https://arxiv.org/abs/1206.3369).
+
+**KNOWN — There is a very recent improvement claim.** As of the stated date, October 20, 2026, Darren Li’s September 24 preprint, “Computing the divisor summatory function in \(N^{9/28+o(1)}\),” arXiv:2609.29949, states an unconditional exact randomized algorithm with expected bit time and space \(N^{9/28+o(1)}\). Since \(9/28<1/3\), a current literature report should mention it. **UNVERIFIED:** I have checked the statement and outline, not independently audited its proof; I treat it as a recent preprint claim. [Preprint and Theorem 1](https://arxiv.org/html/2609.29949v1).
+
+**KNOWN — Hull-size obstructions are method-specific.** Alcántara, Blanco, Criado, and Santos, “On the convex hull of integer points above the hyperbola,” arXiv:2501.19193 (2025), prove an \(\Omega(N^{1/3})\) lower bound on the number of hull vertices. [Paper](https://arxiv.org/abs/2501.19193).
+
+**PROVED — Such an output bound is not a counting lower bound.** It constrains algorithms explicitly enumerating those vertices. An algorithm returning one integer \(D(N)\) need not enumerate a hull.
+
+Also,
+\[
+D(N)-D(N-1)=d(N),
+\]
+but this alone does not locate divisors. In contrast, an oracle for arbitrary truncated hyperbola sums would locate them, because
+\[
+\sum_{u\le h<v}
+\left(\left\lfloor\frac Nh\right\rfloor
+-\left\lfloor\frac{N-1}{h}\right\rfloor\right)
+=\#\{h\in[u,v):h\mid N\}.
+\]
+Bisection then finds a proper divisor. Complete summation and interval summation again provide different capabilities.
+
+**OPEN / UNVERIFIED — No general \(1/3\) complexity barrier is established here.** I know no verified general theorem that computing \(D(X)\) in \(X^{1/3-\varepsilon}\) time would collapse a standard complexity class. The geometric output bounds do not establish one. Neither do the analytic error-term problems for divisor or circle asymptotics establish running-time lower bounds for exact evaluation.
+
+**KNOWN — Prime-counting comparisons need updating and correction.**
+
+- Lagarias–Miller–Odlyzko, “Computing \(\pi(x)\): The Meissel–Lehmer Method,” *Mathematics of Computation* **44** (1985), 537–560, gives the classical \(x^{2/3+o(1)}\) combinatorial bound. [Original paper](https://doi.org/10.1090/S0025-5718-1985-0777285-5).
+- Lagarias–Odlyzko, “Computing \(\pi(x)\): An Analytic Method,” *Journal of Algorithms* **8** (1987), 173–191, gives \(x^{1/2+\varepsilon}\) time, with space tradeoffs. [Original paper](https://doi.org/10.1016/0196-6774(87)90037-X).
+- Helfgott–Thompson’s \(x^{3/5}\)-type result concerns the **Mertens function**, rather than a new prime-counting exponent. [Their paper](https://arxiv.org/abs/2101.08773).
+- Hirsch–Kessler–Mendlovic, “Computing \(\pi(N)\): An Elementary Approach in \(\widetilde O(\sqrt N)\) Time,” arXiv:2212.09857, gives the elementary square-root-time algorithm. [Paper](https://arxiv.org/abs/2212.09857).
+
+**OPEN / UNVERIFIED.** These algorithms do not furnish a conditional positive-power lower bound for the polynomial floor-sum problem. I have not verified an equivalence between a specified sub-\(1/3\) divisor algorithm and faster exact polynomial floor summation.
+
+**PROVED — NP-hardness does not rule out \(H^{o(1)}\).** Under the embedding, an \(H^{o(1)}\operatorname{polylog}N\) restricted algorithm would give \(m^{o(1)}\)-time general quadratic floor summation. This is much stronger than polylogarithmic time numerically, but weaker in terms of input bit length.
+
+The bounded-root problem itself illustrates the limitation. For odd squarefree \(m\) and unit \(A\), supplied factorization lets us enumerate at most \(2^{\omega(m)}\) CRT roots and test the interval. Since \(m\ge\omega(m)!\),
+\[
+2^{\omega(m)}
+=\exp\!\left(O\!\left(\frac{\log m}{\log\log m}\right)\right)
+=m^{o(1)}.
+\]
+Thus this NP-hardness reduction alone cannot exclude subpolynomial dependence on \(m\). An ETH conclusion would require a quantitative analysis of the reduction’s encoding growth.
+
+**KNOWN.** Even factoring already has an unconditional randomized expected \(m^{o(1)}\) algorithm: Lenstra–Pomerance, “A rigorous time bound for factoring integers,” *JAMS* **5** (1992), 483–516, proves an \(L_m[1/2,1+o(1)]\) bound. Therefore a randomized subpolynomial factoring consequence is not itself a new barrier. [Original paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf).
+
+**HEURISTIC — Probability assessment.** For the uniform deterministic restricted degree-two oracle **as stated**, I assign a probability below \(0.1\%\) to a polylogarithmic algorithm: the proved implication to \(P=NP\) dominates that assessment. Conditional on \(P\ne NP\), the probability is zero.
+
+For a uniform \(H^{o(1)}\operatorname{polylog}N\) exact algorithm, my subjective estimate is roughly **10%**, with substantial uncertainty. The reductions do not exclude it, and subpolynomial algorithms for the simpler extracted tasks offer some plausibility. They do not supply an algorithm for the floor sum itself. These numbers express judgment, not a mathematical probability model.
+
+**PROVED — Small exact checks.** The standard-library script [verify_floorhard.py](/Volumes/git/factoring-connection/codex/scratch/floorhard_1/verify_floorhard.py) passed 2,784 Taylor-embedding cases at degrees \(2,3,4,7\), bounded-congruence extraction checks, prime class-number and partial-Legendre identities for primes below \(200\), and the squarefree composite and cubic identities for odd moduli below \(100\). These computations check the formulas; the proofs above establish their generality.
