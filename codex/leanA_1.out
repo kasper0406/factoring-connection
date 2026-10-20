@@ -1,0 +1,116 @@
+**REJECT.**
+
+The full [statement-layer report](/Volumes/git/factoring-connection/codex/scratch/leanA_1/statement_layer_report.md) covers all definitions and 57 MAIN statements. Repository files were left unchanged; audit artifacts are confined to the permitted scratch directory.
+
+1. **FATAL — `CEP` is false as transcribed.**
+
+   **Lean:** [`FactoringA.CEP`](/Volumes/git/factoring-connection/leanA/Challenge.lean:859).  
+   **Paper:** `fact:CEP`, `lem:local(iv)`, `eq:rhosizes`.
+
+   `CEP` quantifies over every real `x`, without a large-`x` restriction. For any proposed threshold \(U_0\), choose
+   \[
+   u\ge\max(U_0,1),\quad t=1/(4u),\quad x=\exp(-\exp(-t)).
+   \]
+   Then \(0<x<1\), so `Psi x y = 0`. But Lean’s logarithm satisfies
+   \[
+   \log x=-e^{-t},\qquad \log(\log x)=-t,
+   \]
+   making the stated range condition hold with \(\varepsilon=1/2\):
+   \[
+   \tfrac12\log x/\log\log x=2u e^{-1/(4u)}\ge u.
+   \]
+   The lower bound supplied by `CEP` is strictly positive, a contradiction.
+
+   **This refutation compiles against the repository’s actual definition**, with only `propext`, `choice`, and `Quot.sound`, and no `sorryAx`: [counterexample](/Volumes/git/factoring-connection/codex/scratch/leanA_1/RepositoryCounterexample.lean), [verification output](/Volumes/git/factoring-connection/codex/scratch/leanA_1/verification.log).
+
+   Thus `relation_supply`, `descent_supply`, `theoremA`, `corollaryA`, `theoremRA`, `theoremRA_opt`, and `corollaryP` have an impossible premise.
+
+   **Fix:** require a genuinely large domain, such as \(x\ge e^e\), and \(U_0\ge3\), or introduce separate large-\(x\) and large-\(u\) thresholds. Adding merely `x > 0`, or even `x > e`, is insufficient. The intended source is the [CEP corollary following Theorem 3.1](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf).
+
+2. **FATAL for the claimed algorithmic conclusions — the main statements admit models with zero cost and no algorithm.**
+
+   **Lean:** [`CostModelA`](/Volumes/git/factoring-connection/leanA/Challenge.lean:929), [`CostModelRA`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1010), `theoremA`, `theoremRA`, `corollaryP`.  
+   **Paper:** `thm:main`, `thm:RA`, `cor:P`, `alg:factor`.
+
+   These records contain numerical functions. Nothing identifies them with a program, output distribution, or actual expected runtime. No conclusion asserts complete prime factorisation, correctness, or almost-sure termination.
+
+   Independently of the false CEP premise, both cost interfaces admit trivial data: all costs zero, `pTrial = 1`, `rej = ∅`, and `Mrows = 1`. Their inequalities hold with a suitable threshold and constant. `LenstraPomerance (fun _ => 0)` also holds.
+
+   **Fix:** connect the models to specified probabilistic computations and their actual costs, with correctness and termination contracts. Otherwise describe the results as numerical cost-assembly lemmas.
+
+3. **MAJOR — the cost interfaces assume the essential algorithmic bridges.**
+
+   **Lean:** [`CostInterfaceA.bounds`](/Volumes/git/factoring-connection/leanA/Challenge.lean:953), [`CostInterfaceRA.bounds`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1026).  
+   **Paper:** `prop:select`, `eq:Mrows`, `lem:reject`, `prop:BS`, `prop:lv6`, `sec:uniform`.
+
+   The interfaces permit:
+
+   - `pTrial > 1`, without identifying it with a trial probability.
+   - An arbitrary small `rej`, including the empty set, without identifying actual rejection conditions.
+   - `Mrows = 1`, although post-processing requires at least \(C_{\rm col}+12\) rows.
+   - The complete split-cost and factor-tree inequalities as assumptions.
+
+   `harmonic_mean_identity` and `split_cost_bookkeeping` establish numerical formulas; they do not establish the required trial law, conditional cost bounds, transcript invariance, or post-processing contract.
+
+   **Fix:** state those semantic prerequisites explicitly, constrain probabilities, define rejection and sufficient row counts, and derive the split/tree inequalities—or identify them clearly as additional internal algorithmic hypotheses.
+
+4. **MAJOR — `LenstraPomerance` omits the published theorem’s algorithmic content.**
+
+   **Lean:** [`LenstraPomerance`](/Volumes/git/factoring-connection/leanA/Challenge.lean:921), `CostModelA.TLP`.  
+   **Paper:** `fact:LP`, `prop:cost`.
+
+   Its entire content is `LBound (1/2) 1 T` for a supplied arbitrary function. It supplies no factoring algorithm and does not define `T` as its runtime maximum. The [published theorem](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf) supplies an algorithm with an expected-time guarantee.
+
+   **Fix:** separate `LPCostBound` from a semantic LP algorithm witness and derive the bound for that witness. The accessed original’s front-page result is labelled “Theorem,” rather than “Theorem 1.1.”
+
+5. **MAJOR — recursive finiteness and self-substitution are assumed.**
+
+   **Lean:** `CostModelRA.Fsup`, `CostInterfaceRA.bounds`, [`theoremRA`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1057).  
+   **Paper:** `lem:OS`, `lem:waldrec`, `lem:Trec`, and the finiteness/recursion argument in `thm:RA`.
+
+   `Fsup` is already a finite real-valued function, assumed monotone and satisfying the full recurrence. The theorem solves that recurrence. It does not establish finite expected runtime of recursive FACTOR, canonical factorisation by recursive calls, fresh randomness, or applicability of the oracle-substitution argument.
+
+   **Fix:** specify the recursive computation, establish finiteness by strong induction and the trial-division race, then derive its recurrence.
+
+6. **MAJOR — the portfolio theorem assumes the scheduler’s crucial estimate.**
+
+   **Lean:** [`corollaryP`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1077), `portfolio_assembly`, particularly `hport`.  
+   **Paper:** `cor:P`, including its restart schedule and Markov argument.
+
+   `hport` already supplies domination of `T` by every fixed component’s cost. No computable algorithm family, truncated execution, independent restarts, or certified-output scheduler is represented. `restart_series` proves only the deterministic series inequality.
+
+   The fixed-\(d=9\), nonrecursive portfolio conclusion attaining \(13\sqrt2/20+o(1)\) is also absent.
+
+   **Fix:** formalise a restart-schedule theorem for a computable family of correct algorithms, derive `hport`, and instantiate both portfolio claims. The existing fixed-\(j\) limit argument correctly requires no uniformity in \(j\).
+
+7. **MAJOR — the general-\(a\) DL assembly premise omits batch smoothness’s \(B\) term.**
+
+   **Lean:** [`theoremDL_assembly`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1111), hypothesis `hC`.  
+   **Paper:** `prop:BS`, `lem:generala`, proof of `thm:DL`.
+
+   Lean demands trial exponent
+   \[
+   \max(1/\sqrt2,\theta/(2a)).
+   \]
+   The paper supplies
+   \[
+   \max(a,1/\sqrt2,\theta/(2a)),
+   \]
+   because search costs include \(B=L^a\). For example, \(\theta=1/4,a=1\) separates these bounds.
+
+   **Fix:** include `a` in `hC`’s maximum. The conclusion remains unchanged because the resulting row-cost term \(2a\) is dominated by \(3a\).
+
+   Also, a full DL application needs prime-modulus relation supply: current `FirstMoment`/`SecondMoment` exclude primes through `SplitInput`.
+
+8. **MINOR — `Yj` differs from the paper at small inputs.**
+
+   **Lean:** [`Params.Yj`](/Volumes/git/factoring-connection/leanA/Challenge.lean:279).  
+   **Paper:** `sec:params`, structural guards in `alg:split`.
+
+   Natural subtraction makes \(2^{j-1}=1\) when `j = 0`; the paper’s literal value is \(1/2\). At \(N=2\), this changes `Jset` from empty to `{2}`.
+
+   **Fix:** document a guarded small-input convention or restrict identification with the paper to `j ≥ 1`. This does not affect eventual bounds.
+
+The core definitions otherwise largely match the supplied paper: candidate windows, smoothness filters, raw field law, GB digits and coefficient order, factorial moments, PZ, split-counting constants, Kern-U, Lemma F, and the degree-9 threshold. The finite-fibre `dixon_descent` statement is correct; it does not itself establish the algorithm’s transcript invariance. The U declaration is accurately scoped as an assembly step.
+
+Literally, `theoremA` bounds a supplied `factorCost`; `theoremRA` bounds a supplied `Fsup` satisfying the assumed recurrence; `corollaryP` bounds a supplied `T` satisfying `hport`. Their fixed-parameter quantifier order is appropriate. They neither construct the claimed algorithms nor establish their output correctness—and currently all three also depend on the refutable `CEP` premise.

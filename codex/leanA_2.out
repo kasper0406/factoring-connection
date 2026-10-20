@@ -1,0 +1,54 @@
+**ACCEPT WITH FIXES — minor documentation fixes only.**
+
+I checked all 63 MAIN statements. `Challenge.lean` matches commit `be06d50` exactly. I found no FATAL or MAJOR defect, no successful refutation of the revised published inputs, and no new vacuity mechanism beyond the accepted numerical-model scope.
+
+1. **MINOR — `theoremDL_assembly`’s docstring still states the old hypothesis.**
+
+   **Declaration:** [`FactoringA.theoremDL_assembly`](/Volumes/git/factoring-connection/leanA/Challenge.lean:1145).  
+   **Paper:** `prop:BS`, `lem:generala`, `thm:DL`.
+
+   The actual `hC` correctly uses
+   \[
+   \max\!\left(a,\frac1{\sqrt2},\frac{\theta}{2a}\right),
+   \]
+   but the docstring still omits `a`. The mathematical repair is correct: the resulting additional numerator exponent `2a` is absorbed by `3a`.
+
+   **Fix:** update the docstring’s trial-cost exponent to match `hC`.
+
+2. **MINOR — `Params.Yj` still has an undocumented small-input convention.**
+
+   **Declaration:** [`FactoringA.Params.Yj`](/Volumes/git/factoring-connection/leanA/Challenge.lean:279).  
+   **Paper:** `sec:params`, structural guards in `alg:split`.
+
+   This carries forward first-round finding #8. When `j = 0`, natural subtraction gives `Yj = 1`, whereas the paper’s literal \(2^{j-1}\) is \(1/2\). For example, at `N = 2`, Lean’s prime window contains `2`; the literal paper window is empty. This does not affect eventual statements.
+
+   **Fix:** document the saturation convention and identify the definition with the paper’s formula only when `j ≥ 1`.
+
+The principal adversarial checks passed:
+
+- **`CEP` is now a valid consequence of the quoted corollary.** Put \(t=\log u\), \(v=\log t\). The exponent’s coefficient, divided by \(\log u\), differs from `1` by
+  \[
+  \frac{v-1}{t}+\frac{v-1}{t^2}+\frac{E}{t},
+  \qquad
+  \left|\frac{E}{t}\right|\le c_\varepsilon\frac{v^2}{t^3}.
+  \]
+  This tends uniformly to zero, giving precisely the two δ-bounds. The existential threshold can be enlarged to ensure `u ≥ 3`. On `x ≥ 16`, `log log x` is bounded below by a positive constant; the range condition therefore forces `x` past any fixed source threshold as `u → ∞`. For `ε ≥ 1`, the range is empty once `u ≥ 3`. Lean verifies this threshold argument and excludes the entire old counterexample family. Source: [CEP, corollary on p. 15](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf).
+
+- **`BrunTitchmarsh` and `RosserSchoenfeld`: no trivial contradiction found.** The interval endpoints, floors, real subtraction, and parameter ranges match `fact:BT` and `fact:RS`. In particular, `Nat.primeCounting n` counts primes **≤ n**, and Lean verifies positivity of BT’s denominator throughout its domain. BT matches the [original Theorem 2](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf). Additional numerical searches found no counterexample in 6,642,000 BT cases and approximately five million RS checks; these searches are supplementary evidence, not proofs.
+
+- **The moment assumptions avoid the proposed empty-set traps.** Lean proves that, for admissible `P`, `P.fields N` is nonempty for every `N ≥ 1`; `P.Jset N` is nonempty for every `N`. It also proves that split inputs are unbounded for every fixed `a > 0`, using products of two distinct primes in a Bertrand interval. Finally, the FirstMoment lower-bound expression is eventually strictly positive for every real `C`, and FirstMoment forces an actual field/prime pair with positive `countN`. These checks do not prove the internal moment estimates, but rule out the specified trivial falsity/vacuity mechanisms.
+
+- **Every cost-interface field is jointly satisfiable.** Explicit models with all numerical entries equal to `1`, and `rej = ∅`, satisfy both complete interfaces with `C = 4`, `N₀ = exp 1`; the A model also satisfies `LenstraPomerance`. These certificates require no moment or published-input assumptions. Thus no field introduces an accidental contradiction. This is a satisfiability check within the agreed numerical scope.
+
+- **No further harmful elaboration surprise found.** Expanded types confirm real ε binders in both lv6 clauses, real moment constants/thresholds, subtraction after real coercion in factorial moments, real division in `Xr` and the character errors, and guarded natural indices in `kern_kernel`. Classical filtering uses the intended predicates. The natural division in `restart_series` is intentional: its numerator is always even. Admissibility excludes degenerate `Nat.log` bases; the remaining logarithmic totalisations are harmless eventually.
+
+- **The revised/new MAIN statements match their advertised scope.** This includes `muOpt_mem`, `d9_k_ge_13`, both parts of `cRA_vs_cA`, the four E1/E2 character statements, and `restart_series` with genuine summability. `corollaryA` now requires hypotheses only for its single chosen tuple.
+
+The complete Lean audit is [AllChecks.lean](/Volumes/git/factoring-connection/codex/scratch/leanA_2/AllChecks.lean), with [successful verification output](/Volumes/git/factoring-connection/codex/scratch/leanA_2/all-checks.log). It compiles using:
+
+```sh
+cd /Volumes/git/factoring-connection/leanA
+~/.elan/bin/lake env lean -j 1 ../codex/scratch/leanA_2/AllChecks.lean
+```
+
+All reported certificates use only `propext`, `choice`, and `Quot.sound`, without `sorryAx`. **No successful Lean refutation file was produced.** All writes were confined to the permitted scratch directory.

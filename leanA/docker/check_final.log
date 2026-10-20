@@ -1,0 +1,402 @@
+== toolchain
+Lean (version 4.35.0, aarch64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+Lake version 5.0.0-src+eb6cafb (Lean version 4.35.0)
+/home/checker/.elan/toolchains/leanprover--lean4---v4.35.0/bin/nanoda_bin
+== mathlib cache
+Using cache from origin: (some leanprover-community/mathlib4)
+No files to download
+Already decompressed 9031 file(s)
+== build
+```
+warning: LeanA/MainTheorems.lean:305:30: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/MainTheorems.lean:778:82: Variable name `hσ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hσ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/MainTheorems.lean:809:5: Variable name `hC0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hC0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (9062 jobs).
+== sorry scan (proof layer)
+no sorry in LeanA/
+== axiom scan (proof layer)
+no axiom/opaque/unsafe/implemented_by/extern in LeanA/
+== #print axioms
+      1 'FactoringA.abs_Eerr_le_DeltaAll' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.cA_gt_inf' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.cA_lt_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.cRA_vs_cA' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.card_muTwo' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.card_unitSquares_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.complete_descent_prob' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.corollaryA' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.corollaryA_forall' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.corollaryP' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.costExpA_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.costExpDL_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.costExpRA_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.d9_k13' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.d9_k_ge_13' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.d9_k_le_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.dd_prob_ge_half' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.descent_supply' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.dixon_descent' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.exists_admissible_cA_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.exists_admissible_cRA_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.exists_admissible_fixed_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.forced_residue' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.gb_a0_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.gb_ad_not_dvd' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.gb_digit_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.gb_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.harmonic_mean_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.homogeneity' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.kernU_count' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.kernU_prob' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.kern_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.kern_prob' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.lemmaF' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.lemmaF_logfactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.lift_averaging_E2' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.lift_averaging_E2_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.muOpt_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.omega_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.orthogonality_E1' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.pairs' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.pairs_count' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.paley_zygmund' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.portfolioParams_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.portfolio_assembly' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.properGcd_iff_ne_pm_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.recursion_factor_two_fifths' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.relation_supply' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.relation_supply_from_moments' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.residue_spreading' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.restart_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.reverse_markov' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.size_model_floor' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.split_cost_bookkeeping' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.split_counting' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.split_counting_kprod' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.split_multiple_of_shortest' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theoremA' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theoremDL_assembly' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theoremRA' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theoremRA_opt' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theoremU_assembly' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theta_at_muOpt' depends on axioms: [propext, Classical.choice, Quot.sound]
+      1 'FactoringA.theta_ge_thetaMin' depends on axioms: [propext, Classical.choice, Quot.sound]
+== lake comparator --paranoid
+Resolving dependencies
+Building Challenge
+⚠ [9047/9051] Replayed LeanA.Defs
+warning: LeanA/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9050/9051] Built Challenge (2.6s)
+warning: Challenge.lean:32:8: declaration uses `sorry`
+warning: Challenge.lean:37:8: declaration uses `sorry`
+warning: Challenge.lean:42:8: declaration uses `sorry`
+warning: Challenge.lean:47:8: declaration uses `sorry`
+warning: Challenge.lean:53:8: declaration uses `sorry`
+warning: Challenge.lean:59:8: declaration uses `sorry`
+warning: Challenge.lean:66:8: declaration uses `sorry`
+warning: Challenge.lean:72:8: declaration uses `sorry`
+warning: Challenge.lean:79:8: declaration uses `sorry`
+warning: Challenge.lean:85:8: declaration uses `sorry`
+warning: Challenge.lean:91:8: declaration uses `sorry`
+warning: Challenge.lean:98:8: declaration uses `sorry`
+warning: Challenge.lean:105:8: declaration uses `sorry`
+warning: Challenge.lean:113:8: declaration uses `sorry`
+warning: Challenge.lean:121:8: declaration uses `sorry`
+warning: Challenge.lean:127:8: declaration uses `sorry`
+warning: Challenge.lean:139:8: declaration uses `sorry`
+warning: Challenge.lean:145:8: declaration uses `sorry`
+warning: Challenge.lean:169:8: declaration uses `sorry`
+warning: Challenge.lean:183:8: declaration uses `sorry`
+warning: Challenge.lean:189:8: declaration uses `sorry`
+warning: Challenge.lean:196:8: declaration uses `sorry`
+warning: Challenge.lean:214:8: declaration uses `sorry`
+warning: Challenge.lean:220:8: declaration uses `sorry`
+warning: Challenge.lean:229:8: declaration uses `sorry`
+warning: Challenge.lean:238:8: declaration uses `sorry`
+warning: Challenge.lean:253:8: declaration uses `sorry`
+warning: Challenge.lean:276:8: declaration uses `sorry`
+warning: Challenge.lean:284:8: declaration uses `sorry`
+warning: Challenge.lean:293:8: declaration uses `sorry`
+warning: Challenge.lean:303:8: declaration uses `sorry`
+warning: Challenge.lean:313:8: declaration uses `sorry`
+warning: Challenge.lean:324:8: declaration uses `sorry`
+warning: Challenge.lean:343:8: declaration uses `sorry`
+warning: Challenge.lean:348:8: declaration uses `sorry`
+warning: Challenge.lean:353:8: declaration uses `sorry`
+warning: Challenge.lean:359:8: declaration uses `sorry`
+warning: Challenge.lean:365:8: declaration uses `sorry`
+warning: Challenge.lean:374:8: declaration uses `sorry`
+warning: Challenge.lean:389:8: declaration uses `sorry`
+warning: Challenge.lean:399:8: declaration uses `sorry`
+warning: Challenge.lean:408:8: declaration uses `sorry`
+warning: Challenge.lean:418:8: declaration uses `sorry`
+warning: Challenge.lean:429:8: declaration uses `sorry`
+warning: Challenge.lean:438:8: declaration uses `sorry`
+warning: Challenge.lean:459:8: declaration uses `sorry`
+warning: Challenge.lean:470:8: declaration uses `sorry`
+warning: Challenge.lean:483:8: declaration uses `sorry`
+warning: Challenge.lean:493:8: declaration uses `sorry`
+warning: Challenge.lean:512:8: declaration uses `sorry`
+warning: Challenge.lean:518:8: declaration uses `sorry`
+warning: Challenge.lean:527:8: declaration uses `sorry`
+warning: Challenge.lean:551:8: declaration uses `sorry`
+warning: Challenge.lean:562:8: declaration uses `sorry`
+warning: Challenge.lean:574:8: declaration uses `sorry`
+warning: Challenge.lean:585:8: declaration uses `sorry`
+warning: Challenge.lean:593:8: declaration uses `sorry`
+warning: Challenge.lean:608:8: declaration uses `sorry`
+warning: Challenge.lean:627:8: declaration uses `sorry`
+warning: Challenge.lean:643:8: declaration uses `sorry`
+warning: Challenge.lean:668:8: declaration uses `sorry`
+warning: Challenge.lean:676:8: declaration uses `sorry`
+warning: Challenge.lean:684:8: declaration uses `sorry`
+warning: Challenge.lean:694:8: declaration uses `sorry`
+Build completed successfully (9051 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, FactoringA.theta_ge_thetaMin, FactoringA.theta_at_muOpt, FactoringA.muOpt_mem, FactoringA.cA_lt_one_iff, FactoringA.cA_gt_inf, FactoringA.exists_admissible_fixed_d, FactoringA.exists_admissible_cA_lt, FactoringA.d9_k13, FactoringA.d9_k_le_12, FactoringA.d9_k_ge_13, FactoringA.costExpA_min, FactoringA.costExpRA_min, FactoringA.cRA_vs_cA, FactoringA.portfolioParams_spec, FactoringA.exists_admissible_cRA_lt, FactoringA.costExpDL_min, FactoringA.size_model_floor, FactoringA.recursion_factor_two_fifths, FactoringA.dixon_descent, FactoringA.card_muTwo, FactoringA.dd_prob_ge_half, FactoringA.properGcd_iff_ne_pm_one, FactoringA.card_unitSquares_mul, FactoringA.split_counting, FactoringA.split_multiple_of_shortest, FactoringA.split_counting_kprod, FactoringA.complete_descent_prob, FactoringA.reverse_markov, FactoringA.paley_zygmund, FactoringA.relation_supply_from_moments, FactoringA.harmonic_mean_identity, FactoringA.split_cost_bookkeeping, FactoringA.residue_spreading, FactoringA.gb_identity, FactoringA.gb_digit_bound, FactoringA.gb_a0_bound, FactoringA.gb_ad_not_dvd, FactoringA.homogeneity, FactoringA.forced_residue, FactoringA.kern_kernel, FactoringA.kernU_count, FactoringA.kernU_prob, FactoringA.kern_prob, FactoringA.pairs, FactoringA.pairs_count, FactoringA.lemmaF, FactoringA.lemmaF_logfactor, FactoringA.restart_series, FactoringA.portfolio_assembly, FactoringA.omega_le, FactoringA.relation_supply, FactoringA.descent_supply, FactoringA.theoremA, FactoringA.corollaryA, FactoringA.corollaryA_forall, FactoringA.theoremRA, FactoringA.theoremRA_opt, FactoringA.corollaryP, FactoringA.theoremU_assembly, FactoringA.theoremDL_assembly, FactoringA.orthogonality_E1, FactoringA.abs_Eerr_le_DeltaAll, FactoringA.lift_averaging_E2_eq, FactoringA.lift_averaging_E2, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Challenge
+Building LeanA
+⚠ [9047/9062] Replayed LeanA.Defs
+warning: LeanA/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9050/9062] Replayed LeanA.Exponents
+warning: LeanA/Exponents.lean:77:22: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:64:47: Variable name `hν` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hν
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:98:20: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:84:47: Variable name `hν` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hν
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:106:55: Variable name `hk` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hk
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:106:70: Variable name `hμ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hμ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:128:38: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:156:36: Variable name `hθ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hθ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:205:55: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:207:22: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: LeanA/Exponents.lean:213:59: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: LeanA/Exponents.lean:431:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:454:20: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:462:20: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:444:27: Variable name `h0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Exponents.lean:475:15: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:481:19: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: LeanA/Exponents.lean:493:15: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:499:25: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: LeanA/Exponents.lean:502:22: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: LeanA/Exponents.lean:594:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:627:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:643:20: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:671:17: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: LeanA/Exponents.lean:676:17: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [9054/9062] Replayed LeanA.Kern
+warning: LeanA/Kern.lean:62:43: Variable name `hg1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hg1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Kern.lean:75:77: Variable name `hid` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hid
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Kern.lean:338:6: Unused tactic linter: `ring` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: LeanA/Kern.lean:667:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Kern.lean:667:34: Variable name `ha'` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha'
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/Kern.lean:715:23: Variable name `hℓ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hℓ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [9060/9062] Replayed LeanA.MainTheorems
+warning: LeanA/MainTheorems.lean:305:30: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/MainTheorems.lean:778:82: Variable name `hσ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hσ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: LeanA/MainTheorems.lean:809:5: Variable name `hC0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hC0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (9062 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, FactoringA.theta_ge_thetaMin, FactoringA.theta_at_muOpt, FactoringA.muOpt_mem, FactoringA.cA_lt_one_iff, FactoringA.cA_gt_inf, FactoringA.exists_admissible_fixed_d, FactoringA.exists_admissible_cA_lt, FactoringA.d9_k13, FactoringA.d9_k_le_12, FactoringA.d9_k_ge_13, FactoringA.costExpA_min, FactoringA.costExpRA_min, FactoringA.cRA_vs_cA, FactoringA.portfolioParams_spec, FactoringA.exists_admissible_cRA_lt, FactoringA.costExpDL_min, FactoringA.size_model_floor, FactoringA.recursion_factor_two_fifths, FactoringA.dixon_descent, FactoringA.card_muTwo, FactoringA.dd_prob_ge_half, FactoringA.properGcd_iff_ne_pm_one, FactoringA.card_unitSquares_mul, FactoringA.split_counting, FactoringA.split_multiple_of_shortest, FactoringA.split_counting_kprod, FactoringA.complete_descent_prob, FactoringA.reverse_markov, FactoringA.paley_zygmund, FactoringA.relation_supply_from_moments, FactoringA.harmonic_mean_identity, FactoringA.split_cost_bookkeeping, FactoringA.residue_spreading, FactoringA.gb_identity, FactoringA.gb_digit_bound, FactoringA.gb_a0_bound, FactoringA.gb_ad_not_dvd, FactoringA.homogeneity, FactoringA.forced_residue, FactoringA.kern_kernel, FactoringA.kernU_count, FactoringA.kernU_prob, FactoringA.kern_prob, FactoringA.pairs, FactoringA.pairs_count, FactoringA.lemmaF, FactoringA.lemmaF_logfactor, FactoringA.restart_series, FactoringA.portfolio_assembly, FactoringA.omega_le, FactoringA.relation_supply, FactoringA.descent_supply, FactoringA.theoremA, FactoringA.corollaryA, FactoringA.corollaryA_forall, FactoringA.theoremRA, FactoringA.theoremRA_opt, FactoringA.corollaryP, FactoringA.theoremU_assembly, FactoringA.theoremDL_assembly, FactoringA.orthogonality_E1, FactoringA.abs_Eerr_le_DeltaAll, FactoringA.lift_averaging_E2_eq, FactoringA.lift_averaging_E2, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from LeanA
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 58517 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 58520 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 58520 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+COMPARATOR_EXIT=0
