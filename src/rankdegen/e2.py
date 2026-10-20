@@ -28,9 +28,30 @@ def short_quadratic_kernel(N: int, m: int):
     raise RuntimeError("no quadratic kernel element")
 
 
-def main() -> None:
+def admissible_quadratic_kernel(N: int, m: int):
+    """CORRECTED design (rankdegen_2 #11): the LLL-selected quadratic h with h(m) = 0 mod N that is irreducible over Q
+    (non-square discriminant), so not a multiple of a linear kernel element. Searches small combinations of the
+    LLL-reduced basis and returns the shortest admissible one found (an LLL-selected candidate, not a proven minimum)."""
+    import itertools as it, math as mt
+    L = fmpz_mat([[N, 0, 0], [-(m % N), 1, 0], [-(m * m % N), 0, 1]]).lll()
+    rows = [[int(L[i, j]) for j in range(3)] for i in range(3)]
+    best = None
+    for c in it.product(range(-3, 4), repeat=3):
+        h = [sum(ci * row[j] for ci, row in zip(c, rows)) for j in range(3)]
+        if h[2] == 0:
+            continue
+        disc = h[1] * h[1] - 4 * h[0] * h[2]
+        if disc >= 0 and mt.isqrt(disc) ** 2 == disc:
+            continue
+        if best is None or sum(x * x for x in h) < sum(x * x for x in best):
+            best = h
+    return best
+
+
+def main(corrected: bool = False) -> None:
     rows = []
-    with open(OUT, "w") as fhd:
+    out = OUT.replace(".jsonl", "_corrected.jsonl") if corrected else OUT
+    with open(out, "w") as fhd:
         for n in (40, 50, 60):
             for s in range(3):
                 rnd = random.Random(f"{R3.SEED}-E2-{n}-{s}")
@@ -38,7 +59,7 @@ def main() -> None:
                 f_rat, g_rat, m = R3.base_m(N, 3)
                 h1, h2 = R3.lattice_pair(N, m, 3)
                 mm = m % N
-                nu = short_quadratic_kernel(N, mm)
+                nu = admissible_quadratic_kernel(N, mm) if corrected else short_quadratic_kernel(N, mm)
                 res = {"n": n, "seed": s, "N": N, "m": m, "h1": h1, "h2": h2, "nu": nu}
                 t0 = time.time()
                 res["R2-rat"] = R3.evaluate(f_rat, g_rat, [[1], [0, -1]], R3.box2())
@@ -67,4 +88,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(corrected="--corrected" in sys.argv)

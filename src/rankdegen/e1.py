@@ -118,7 +118,7 @@ def run_one(I):
                 for bname, lj in bounds:
                     main = (lj + arb(yK.numerator) / yK.denominator * arb(Y1).log()
                             + arb(yK2.numerator) / yK2.denominator * arb(Y2).log()).exp()
-                    ok = bool(c <= main.upper() + err)
+                    ok = bool(c <= main.lower() + err)  # certified: compare with the lower end of the ball
                     nchk += 1
                     cnt_ok &= ok
                     viol += not ok

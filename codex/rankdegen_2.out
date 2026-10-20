@@ -1,0 +1,203 @@
+**Verdict: MAJOR REVISION.** FH and the unramified linking argument survive scrutiny. The claimed closure of degenerate modules does not: there are false structural assertions, configurations outside the stated classification, and missing implications between the counting bounds and ledger constraints.
+
+I read the requested material, ran all 12 tests, independently recomputed P5, and repeated E1 using lower interval endpoints to certify the comparisons. Those checks passed.
+
+FH itself looks correct: the marginals give precisely the Hölder factorization; the real change of variables gives \(\Phi_S^{-1/(r+1)}\); and Jensen applied to the **sum** of the minor logarithms supplies one phase vector for all minors of each frame. Uniform weights reproduce the stated Bean–Thunder exponent. Indeed, [Bean–Thunder’s original statement](https://doi.org/10.1112/jlms/54.1.39) already allows arbitrary complex coefficients, so applying it to each frame would remove the \(2^r\) loss.
+
+FN’s orbit product is an integer, and the unramified valuation argument works with \(v_{\mathfrak P}(p)=1\). Taking the minimum over cross pairs and averaging an LP optimum are valid when the prescribed marginals are invariant. S1–S4 also look correct, assuming the combined module has rank \(r\).
+
+1. **MAJOR — “Decoupled implies both norms are divisible by \(N\)” is false.**
+
+   Take \(K=K'=\mathbb Q(\alpha)\), \(\alpha^3=2\), \(N=1271=31\cdot41\), and map \(\alpha\mapsto128\). Use
+   \[
+   u=(1,\alpha,0,0),\qquad
+   u'=(1,128,N,N\alpha).
+   \]
+   Linking holds because \(128^3\equiv2\pmod N\). The two row spans each have dimension two and are complementary in dimension four. Nevertheless,
+   \[
+   W(e_1)=W'(e_1)=1.
+   \]
+   This example has no projective subfield reduction. The determinant separating the spans contains \(N^2\): complementarity over \(\mathbb Q\) does not make the projections compatible with reduction modulo \(N\).
+
+   **Fix:** delete the unconditional “useless” row. Require the rational projections to be integral locally at every \(p\mid N\), or retain and analyse the index of the integral linking lattice.
+
+2. **MAJOR — The classification is not exhaustive as written.**
+
+   Let \(s=\sqrt2\), \(t=\sqrt3\), \(N=23\), with maps \(s\mapsto5,\ t\mapsto7\). Take
+   \[
+   K=\mathbb Q(s),\quad K'=\mathbb Q(s,t),\qquad
+   u=(1,s,0),\quad u'=(1,s,t-7).
+   \]
+   At each fixed sign of \(s\), one K-row and two K′-rows are collinear, so \(\Delta_F=0\). But:
+
+   - A and B do not apply.
+   - C1 excludes it because the deficient side has exactly \(\rho=2\) distinct rows.
+   - C2 requires both sides to have full span.
+   - D cannot describe a whole rank-three module over the common quadratic field.
+   - The spans are not complementary.
+
+   **Fix:** remove “more than \(\rho\) distinct rows” from the structural classification and explicitly allow mixed rank loss and accidental dependencies. State which additional genericity assumptions each ledger requires.
+
+   Also distinguish D from **Schmidt degeneracy**. The latter includes a *proper nonzero subspace* stable under a subfield; it does not require the whole module to be a module over that field. See [Evertse’s definition and finiteness criterion](https://publi.math.unideb.hu/paper/592/download/10_5486_PMD_2000_2325.pdf).
+
+3. **MAJOR — Finite-volume, full-span C2 configurations can have no frames.**
+
+   Put \(s=\sqrt2,\ t=\sqrt[3]3\), \(K=K'=\mathbb Q(s,t)\), \(N=23\), and use
+   \[
+   u=(1,s,t,t^2),\qquad u'=(1,s+23,t,t^2).
+   \]
+   Both maps can send \(s\mapsto5,\ t\mapsto12\). Both sides have full rank four, both ratio fields are the full field, and there are no cross coincidences.
+
+   The twelve rows fall into three groups indexed by the conjugate of \(t\), with four rows per group. Each group spans dimension two, and the three spans share the \(s\)-coordinate direction.
+
+   Any five rows either contain three from one group, or have group sizes \(2,2,1\). In the latter case, deleting the singleton leaves rank at most three. **There are no frames.** Enumeration gives 288 nonzero four-minors and zero frames.
+
+   This is not whole-module type D: multiplication by \(s\) does not preserve \(\operatorname{span}_{\mathbb Q}(1,s,t,t^2)\). Its real volume is finite. Writing
+   \[
+   h(z)=(z^2-2)((z+23)^2-2),
+   \]
+   integration reduces to convergent factors
+   \(\int_{\mathbb R}|h|^{-1/3}\) and \(\int_{\mathbb C}|h|^{-2/3}\).
+
+   **Fix:** add finite-volume configurations with an infeasible frame LP to the open cases. A more general decomposition inequality is needed to cover them. D is not the sole family outside the ledger.
+
+4. **MAJOR — PR’s fibre estimate is sound, but the program constraint needs another hypothesis.**
+
+   Provided the combined module is injective, \(\theta'(z_0)\neq0\), and the quotient by its principal ideal surjects onto \(\mathbb Z/N\). Thus \(|W'(z_0)|\ge N\). The Pólya estimate and the \(d'+\text{measure}\) integer-point allowance are correct.
+
+   What does not follow automatically is
+   \[
+   \rho q_1\ge1.
+   \]
+   The displayed projected count still contains a Davenport error. A primitive kernel vector may have enormous coordinates; a quotient basis can turn the original box into a very long zonotope. Original H5\(_r\) does not control that projected error.
+
+   Moreover, FH bounds \(V_{\bar W}\) only when the side has the required frame distribution in its span. Rank deficiency alone does not guarantee this.
+
+   **Fix:** impose and verify a separate projected-error condition wherever PR supplies a constraint. For both-deficient C1, verify it on both sides. State the side-frame hypothesis explicitly. Without these conditions, the blanket scoped C1 rows are unproved.
+
+5. **MAJOR — The algebraic Φ optimization is correct; several geometric inputs are not established.**
+
+   I found no error in the AM–GM reduction, PHI crossing proof, or
+   \[
+   c_{\rm formal}^3=64\Phi/9,\qquad
+   c_{\rm scoped}=2(4r(r-1)\Phi/9)^{1/3}.
+   \]
+   The balanced GP values \(2/3,\ 8/9\), and the stated general parity formulas also check out.
+
+   For a degenerate configuration, however, the correct pure-class coverage is
+   \[
+   t_s=\min_{i,j}\frac{\#\{\text{frames of class }s\text{ containing }i,j\}}
+                              {\#\{\text{frames of class }s\}}.
+   \]
+   Replacing this by \(s(r+1-s)/(dd')\) requires proof.
+
+   “Pure \(s\) suffice” is justified in the complete-class setting stated before the program. It is not a general assertion about degenerate configurations. Your own C2 data demonstrate the distinction: every uniform pure class has coverage at most \(1/11\), while the optimized LP reaches \(1/9\).
+
+   **Fix:** attach an explicit frame-incidence hypothesis or exact incidence LP to each ledger row. Correct P5’s last case: ranks \((2,3)\), \(r=4\), permit only \(s=2\), whereas the saved computation uses \([2,3]\). Recomputing with \([2]\) still gives \(3/4\), so the numerical conclusion survives.
+
+6. **MAJOR — The perturbative C2 row does not imply the concluding GP constants.**
+
+   Define \(\varepsilon_{s,ij}\) as the fraction of potential class-\(s\) subsets containing \(i,j\) that fail to be frames, and \(\varepsilon_s\) as the corresponding class fraction. Then
+   \[
+   t_s=
+   \min_{i,j}\frac{1-\varepsilon_{s,ij}}{1-\varepsilon_s}
+   \frac{s(r+1-s)}{dd'}.
+   \]
+   This is the quantity FN actually supplies.
+
+   A lower bound involving
+   \((1-\varepsilon)^2(1-\varepsilon')\Phi_0\)
+   does not establish \(\Phi=\Phi_0\), or even the rank-two floor, for fixed non-negligible losses. The frame-free example makes this limitation decisive.
+
+   The estimate \(\varepsilon'=O(k/D)\) also needs degree-balance assumptions; conditioning on a cross pair involves the individual side populations.
+
+   **Fix:** define the fractions precisely and prove the resulting constraint system. Claim asymptotic GP constants only under vanishing losses and valid endpoint constraints; otherwise report the configuration-specific bound. Rewrite the task-1 conclusion accordingly.
+
+7. **MINOR — CC and SUB need precise local and odd-parity statements.**
+
+   CC’s even-cardinality argument works under the stated agreement hypotheses and invertibility of the extracted quantities. Odd cardinality requires a torsor:
+   \[
+   T=\{[e]\in K_0^\times/K_0^{\times2}:
+        u_{j_0}e\in K^{\times2},\
+        u'_{j_0}\iota(e)\in K'^{\times2}\}.
+   \]
+   It is empty or a coset of \(C\). The relevant roots are
+   \(\sqrt{u_{j_0}e}\) and \(\sqrt{u'_{j_0}\iota(e)}\), not simply \(\sqrt e\).
+
+   Also, an index sharing primes with \(N\) yields a factor only when the gcd is proper. Gcd equal to \(N\) remains an excluded case. A chosen generator reducing to zero does not by itself make the whole module trivial.
+
+   **Fix:** give the torsor formula, specify the N-local orders and unit conditions, and retain the all-bad-prime case explicitly. In SUB, track scalar norms, denominators and fixed prime contributions through smoothness and extraction; “fixed primes aside” is insufficient when these depend on \(N\).
+
+8. **MAJOR — LP_exc is not yet a sufficient, well-defined hypothesis.**
+
+   Products of binary candidates are not linear images of a linked module of rank below three. Their coefficient map is bilinear with four input parameters. Their harmlessness follows from **relation-span containment**, not from treating their candidate count as a lower-rank linear count.
+
+   Restrictions also need not inherit GP, frame feasibility, or a safe box condition after changing lattice basis. Thus “each exceptional family obeys its own ledger” is an additional assertion.
+
+   Finally, an \(L[1/3,o(1)]\) allowance is too coarse by itself to exclude every exponent below \(1/3\). For that conclusion, losses must be negligible on the proposed algorithm’s cost scale.
+
+   **Fix:** separate linear exceptions, with induced lattices and geometry, from multiplicative exceptions, with bounds on constituent generation and independent relation rank. Require controlled aggregate costs and losses such as \(\exp(o(\log B))\).
+
+   Norm-equation and unit-orbit families are further natural tests. I found no useful new factoring family of this kind, but §6 does not establish that sublattices and products exhaust all relevant exceptions.
+
+9. **MINOR — Narrow and correct the §6 negative statements.**
+
+   The scaled large-box counterexample is valid, including its \(L[1/3]\)-scale discrepancy. The comparison of the binary and ternary main terms is also correct.
+
+   Three corrections are needed:
+
+   - “A square discriminant” describes an arithmetic subset of coefficient space. The quadric is in four variables, \(b^2-4ac=z^2\).
+   - The full-width slab argument requires a real linear factor. Complex factors generally have real zero sets of codimension two.
+   - The cited [Evertse Theorem 1](https://publi.math.unideb.hu/paper/592/download/10_5486_PMD_2000_2325.pdf) concerns non-degenerate norm forms, counts integer solutions, and has constant \((16D)^{(r+11)^3/3}\). It is not the stated general-product, primitive-class theorem.
+
+   **Fix:** retain the valid counterexamples and failures of the displayed bounds. Replace “not provable with present tools” by the narrower claim that these estimates do not supply the required uniform bound.
+
+10. **MINOR — SPL needs availability conditions; sharpness needs a matching construction.**
+
+   The algebra is correct for existing pure classes. In GP the admissible range is
+   \[
+   \max(1,r+1-d')\le s\le\min(r,d).
+   \]
+   Consequently the advertised threshold \((r-1)x/d'\) requires \(d'\ge r\). Otherwise the largest threshold furnished by these classes is
+   \[
+   \frac{(r-1)\min(r,d')}{r d'}x.
+   \]
+
+   A resultant height lower bound does not establish the existence of irreducible, linked polynomials attaining that height. The shifted-cyclotomic example lies far above the threshold and proves only that charging can eventually disappear.
+
+   **Fix:** restrict the range of \(s\), and either supply a matching construction or qualify the sharpness claim.
+
+   Conditional on the legitimate GP constraints and H_split, the formal infimum \(c^3=8\Phi/9\) and the scoped constant check out. The formal value is approached through a singular limit with \(\gamma\to\infty\); it is not a finite attained optimum.
+
+11. **MAJOR — E2 contains an undisclosed preregistration violation.**
+
+   All nine raw D-C1 runs use
+   \[
+   \nu(x)=x^2-mx=x(x-m).
+   \]
+   This is a multiple of a linear kernel element, expressly excluded by the preregistration. The implementation checks only that the quadratic coefficient is nonzero.
+
+   There is a second interpretation problem: the lattice polynomials are non-monic, and the harness evaluates resultants. Changing the candidate degree from one to two introduces another leading-coefficient factor. Those measurements cannot silently be presented as comparable integral norms.
+
+   **Fix:** disclose the deviation, retain these runs as exploratory, and rerun the registered design using an admissibility check and consistent integral generators/norm normalization. Label “shortest” as an LLL-selected candidate unless minimality is established.
+
+12. **MINOR — The prediction scores reproduce, but E3’s prose and E1’s certification need correction.**
+
+   My re-score is:
+
+   | Prediction | Result |
+   |---|---|
+   | P1 | Pass: 0/259,194 violations; 2,923 informative |
+   | P2 | Pass: 30/30 |
+   | P3 | Pass |
+   | P4 | Pass: 3/3 |
+   | P5 | Pass: 9/9 numerical programs |
+   | P6, P7 | Pass: 9/9 each, for the implemented designs |
+   | P8 | Fails universally: holds in 3/6 instances |
+   | P9 | Pass: 6/6 |
+
+   The disclosed E3 selection correction is reasonable, but does not cover the E2 deviation. Irreducible quadratic points first appear at \(k=77,72,71\) for A and \(k=5,8,5\) for B—not generally near 80. Across all six instances, the largest \(G/\text{main}\) is approximately **0.135**, contradicting “main is \(10^8\) times larger.”
+
+   E1 accepts comparisons against `main.upper()`, which does not certify the comparison with the exact expression. **Fix:** accept against `main.lower()` and refine ambiguous cases. I repeated the entire experiment this way: all 259,194 comparisons still pass.
+
+Reproduction artifacts: [audit script](/Volumes/git/factoring-connection/codex/scratch/rankdegen_2/audit_rankdegen.py), [audit results](/Volumes/git/factoring-connection/codex/scratch/rankdegen_2/audit_summary.json), [certified E1 rerun](/Volumes/git/factoring-connection/codex/scratch/rankdegen_2/e1_lower_summary.json).
