@@ -37,16 +37,19 @@ Agent `analytic`, phase 17. The verdicts point to `notes/analytic_results.md`.
 - **Randomness.** 48/81 success per attempt.
 - **Closest prior method.** van Dam–Seroussi's Gauss-sum estimation versus discrete log (multiplicative
   characters, quantum).
-- **Experiment.** E2, done: 100/100, δ* ≈ 3.
+- **Experiment.** E2, done: 100/100, typical δ* ≈ 3 (rounding decoder).
+- **Precision.** Codex: a conic small-root decoder (Coron 2004) tolerates N^{1/6−ε}. So constant precision
+  is sufficient but not necessary.
 - **Refutation criterion.** Failure on exact values. None was seen.
-- **Verdict.** A barrier, not an algorithm.
+- **Verdict.** A barrier, not an algorithm. The degree-k extension is REFUTED (k = 4, N = 77).
 
 ---
 **A3. Hull walk.**
 - **Mechanism.** Enumerate the vertices of the integer hull of {xy ≥ N} (Alcántara et al.). Divisors
   are vertices.
-- **Cost.** Θ(N^{1/3} log N) (Balog–Bárány).
-- **Verdict.** KNOWN-equivalent to Hiary. It is a lower bound for every walk-type method (barrier H).
+- **Cost.** Θ(N^{1/3} log N) vertices (Balog–Bárány) and O(N^{1/3} log² N) operations (Alcántara et al.).
+- **Verdict.** KNOWN (Alcántara et al.). Hiary has the same order of cost but is not a hull walk. Barrier H
+  bounds enumerating methods only.
 
 ---
 **A4. Band-limited sawtooth / exponential-sum divisor detector.**

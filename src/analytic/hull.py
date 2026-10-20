@@ -8,8 +8,8 @@ Facts used in notes/analytic_results.md:
     the strictly convex region H_N and therefore a vertex of I(H_N) (proved, trivial);
   * #vertices = Theta(N^{1/3} log N) (Balog--Barany, arXiv 2602.06897; lower bound and
     O(N^{1/3} log N) upper bound: Alcantara--Blanco--Criado--Santos, arXiv 2501.19193).
-So any algorithm that walks the hull vertex by vertex costs Omega(N^{1/3} log N); Hiary's
-blocks are one realisation of such a walk.
+So any algorithm that walks the hull vertex by vertex costs Omega(N^{1/3} log N).  Hiary's
+blocks have the same order of count but are NOT hull edges (measured ratio -> ~1.84 per window).
 
 `hull_vertices(N, X1, X2)` brute-forces the lower hull of the minimal points with x in a
 padded window and returns the vertices with X1 <= x <= X2.  O(X2 - X1 + padding) time; it
