@@ -1,0 +1,473 @@
+## 1. Canonical statement and cost thresholds
+
+**OPEN — principal conclusion.** I do not obtain a lower bound for arithmetic product listing on NFS inputs. I do obtain a lower bound in an explicit adaptive tail model, and a uniform extension of the root-pair argument to coprime pencils. Neither settles Π or O2.
+
+Write
+\[
+F_\alpha=x^\alpha(\log x)^{1-\alpha},\qquad
+L[\alpha,c]=\exp((c+o(1))F_\alpha).
+\]
+This avoids using \(\beta\) both for an \(L[1/3]\) constant and for a subexponential exponent.
+
+### A canonical problem
+
+**Definition — constrained product-incidence listing, Π.** An instance consists of:
+
+- finite factor bases in explicitly presented rings or ideal monoids;
+- an implicitly described window \(\mathcal W\) of candidate objects;
+- specified product, evaluation, norm and congruence equations connecting those objects;
+- a quota \(R\), nontriviality conditions, and a required parity rank.
+
+Output \(R\) distinct witnesses, with their factorizations and parity vectors. Charge factor-base construction, presentations, extraction, duplicate removal and any rank-based selection. A presentation representing many witnesses must permit their extraction within the claimed total cost.
+
+Only the specified arithmetic equations are allowed; an arbitrary membership oracle is not part of the input.
+
+**PROVED — containments.**
+
+| Primitive | Instance of Π |
+|---|---|
+| Π-nonexact | Integer products of the supplied atoms, evaluated in \(\mathbb Z/N\mathbb Z\), meeting a small-value window or another factored product |
+| Π-split | Products of \(X-a\) in \(\mathbb Z[X]\), with root and degree bounds, evaluated at \(m\bmod N\) |
+| Π-NFS | Objects \(a-bX\) in the box; require factorization of \(a-bm\), the algebraic norm \(F(a,b)\), or both; use prime-ideal certificates where appropriate |
+
+The embeddings preserve witnesses by retaining their defining equations. Thus each restricted task reduces to Π. There is no converse reduction supplied here.
+
+Evaluating a split polynomial gives a scalar product of \(m-a\); lifting such a product gives its split polynomial. This equivalence preserves the corresponding root constraints, but does **not** automatically preserve every rank promise. Algebraic NFS smoothness requires the norm/ideal extension: it is not literally scalar product listing modulo \(N\).
+
+### Exact accounting
+
+**PROVED.** Literal explicit listing cannot cost less than one unit per output. The intended saving is relative to scanning the window.
+
+Let \(U=|\mathcal W|\), let \(Q\) be its qualifying output count, let \(C\) be the column count, let \(P_0\) be setup cost, and let \(\tau\) be amortized cost per listed witness. Under H’s linear-algebra convention,
+\[
+T=\max\{P_0,Q\tau,C^{2+o(1)}\}.
+\tag{1}
+\]
+For a prefix-listing algorithm with a proved amortized delay bound, replace \(Q\) by the requested quota \(R=C^{1+o(1)}\).
+
+Writing \(P_0=L[\alpha,p]\), \(Q=L[\alpha,q]\), \(C=L[\alpha,b]\), and \(\tau=L[\alpha,t]\), the budget is
+\[
+c=\max\{p,q+t,2b\}.
+\tag{2}
+\]
+Consequently, a full listing fits strictly below \(L[\alpha,c_*]\) when
+\[
+p<c_*,\quad 2b<c_*,\quad t<c_*-q.
+\tag{3}
+\]
+For quota listing, the last condition becomes \(t<c_*-b\). These follow by multiplying costs and taking logarithms.
+
+Window size and factor-base size alone do not determine the threshold: output count, certificate length and prefix guarantees matter.
+
+### (a) Beating MNFS at exponent \(1/3\)
+
+**model-PROVED — H, with rational outputs reused across fields.** For rational listing with \(\tau_r=L[\lambda]\),
+\[
+c=\max\{2e-r+\lambda,\;2e-r+v,\;2s\},
+\tag{4}
+\]
+subject to
+\[
+2e+v-r-a\ge s.
+\]
+The middle term charges algebraic tests across the fields. Thus the exact budget condition is
+\[
+\lambda<c_{\rm MNFS}-2e+r,
+\tag{5}
+\]
+together with \(2s<c_{\rm MNFS}\), \(2e-r+v<c_{\rm MNFS}\), and sufficient relations.
+
+For the supplied partial-listing model,
+\[
+T_r=L[2e-\theta r],\qquad
+\tau_r=L[(1-\theta)r].
+\tag{6}
+\]
+Every fixed positive \(\theta\) permits an improvement after retuning; \(\theta=o(1)\) gives no fixed constant improvement.
+
+**model-PROVED — numerical verification of a feasible optimized branch.** Put \(z=v/s\) and
+\[
+K=2-\theta-(1-\theta)z,\qquad
+Y=\frac{2\sqrt K+\sqrt{4K+2\theta(1-z^2)}}{6(1-z^2)}.
+\]
+Taking
+\[
+s=Y^{2/3},\quad \delta=\sqrt{K/s},\quad
+e=s+\theta r/2,\quad \beta=s,\quad\beta_a=s-v
+\]
+saturates the relation constraint and the listing/LA balance. Minimizing this branch gives:
+
+| \(\theta\) | \(c\) | Per-rational-output exponent \((1-\theta)r\) |
+|---:|---:|---:|
+| 0 | 1.9018836 | 0.2500652 |
+| 0.1 | 1.8803951 | 0.2312973 |
+| 0.5 | 1.7859705 | 0.1460093 |
+| 1 | 1.6385862 | 0 |
+
+The finite-difference initial slope is \(-0.21135\). These calculations reproduce the supplied targets; they are not an independent proof of global optimality.
+
+For completeness, the full-list output exponents on the other sides are
+\[
+q_a=2e+v-a,\qquad q_{ra}=2e+v-r-a.
+\]
+Their listing terms are \(q_a+\lambda_a\) and \(q_{ra}+\lambda_{ra}\). The supplied ideal constants remain model results: \(0.7631428\) for algebraic listing and infimum \(0\) for double listing.
+
+### (b) Any exponent \(\alpha<1/3\)
+
+**model-PROVED — quota accounting.** It suffices, as far as relation production and H-style LA are concerned, to have
+\[
+C=L[\alpha,b],\quad
+P_0=L[\alpha,p],\quad
+\tau=L[\alpha,t],
+\]
+with
+\[
+\max\{p,b+t,2b\}\le c.
+\tag{7}
+\]
+Fruitful dependencies and the required rank remain separate assumptions.
+
+For an effective window with \(Q\asymp C\), a partial-listing law \(T=U\rho^\theta\), \(\rho=C/U\), gives
+\[
+\tau=(U/C)^{1-\theta}.
+\]
+Therefore its exact budget condition is
+\[
+1-\theta\le
+\frac{(c-b)F_\alpha}{\log U-bF_\alpha}.
+\tag{8}
+\]
+If \(\log U\gg F_\alpha\), a fixed \(\theta<1\) is insufficient.
+
+**HEURISTIC — extended Dickman model \(H_D\).** H as stated does not cover changing the subexponential exponent. Under the additional assumption
+\(\log\rho(Y,B)=-(1+o(1))u\log u\), with joint randomness, take
+\[
+B=L[\alpha,b],\quad E=L[1-2\alpha,e],\quad
+d=\delta(x/\log x)^\alpha.
+\]
+The leading double-smoothness penalty, on the \(F_{1-2\alpha}\) scale, is
+\[
+D=\frac{1-2\alpha}{b}\left(\delta e+\frac2\delta\right).
+\]
+The leading abundance condition \(2e\ge D\) is possible when
+\[
+e\ge \frac{2(1-2\alpha)^2}{b^2}.
+\tag{9}
+\]
+Proof: minimize \(\delta e+2/\delta\) at \(\delta=\sqrt{2/e}\), then solve the inequality. This establishes a leading counting balance, not a listing algorithm or the necessary lower-order uniformity.
+
+### (c) Exponent \(1/4\)
+
+**model-PROVED — budget example.** For \(L[1/4,1]\), take
+\[
+C=L[1/4,1/2],\qquad \tau\le L[1/4,1/2],\qquad P_0\le L[1/4,1].
+\]
+Then quota listing and LA both fit the target.
+
+**HEURISTIC — \(H_D\) window calibration.** Equation (9) has boundary parameters \(b=1/2,e=2,\delta=1\), giving \(U=L[1/2,4]\). For a quota-calibrated effective window, (8) becomes
+\[
+1-\theta\le
+\frac{\tfrac12F_{1/4}}
+{4F_{1/2}-\tfrac12F_{1/4}}
+\sim \frac18x^{-1/4}(\log x)^{1/4}.
+\tag{10}
+\]
+At \(x=10^6\), this requires \(\theta\ge0.9923207\). A full list with substantially more than the target output count would itself exceed the budget; a prefix guarantee is essential.
+
+## 2. Barrier attempts
+
+### (a) Lattice-oracle models
+
+**model-PROVED — fresh hidden residues.** Suppose each query uses a residue \(R_M\) uniform modulo \(M\), independent of its transcript, and every eligible box point has \(\gcd(b,M)=1\). Each point satisfies \(a\equiv R_Mb\bmod M\) with probability \(1/M\). Hence
+\[
+\mathbb E[\#\text{points}\mid\text{history}]=U_M/M\le U/M.
+\]
+This proves H_sel with \(C=1\) in that model.
+
+**OPEN — applicability to NFS.** The fresh-residue model removes the main arithmetic information: every root is a reduction of the public integer \(m\). Independent prime residues are consistent with one uniformly random CRT integer, but that does not justify hiding the public lift or ignoring adaptive reuse of primes.
+
+For unrestricted public \(m\), a uniform H_sel assertion is false: take a known smooth \(M\gg U\) and \(m=1+M\). The primitive point \((1,1)\) belongs to the lattice. This does not refute an appropriately averaged NFS statement. Such a statement must specify the distribution, transcript and charged selection operations.
+
+**model-PROVED — hidden good-subset model.** If the \(Q\) good locations form a hidden uniform subset of \(U\) locations, adaptive point testing needs expected
+\[
+\frac{R(U+1)}{Q+1}
+\]
+tests for \(R\) successes. Proof: unrevealed locations remain exchangeable; the expected position of the \(R\)-th marked location is the displayed negative-hypergeometric mean. Arithmetic product catalogues do not satisfy this model merely because their smoothness densities are small.
+
+**model-PROVED — supplied lattice-query model.** Assuming conditional cofactor randomness and H_sel, the supplied gain bound has logarithm
+\[
+\log G\le \frac{\log U}{\log B}\log(Cu\log u).
+\]
+For the ordinary NFS box, \(\log U/\log B=O(1)\) and \(u=x^{O(1)}\), so \(G=L^{o(1)}\). The unproved step remains H_sel.
+
+### (b) Small-polynomial certificates
+
+**PROVED.** If \(h\in(f,P)^k\) and \(g=\gcd(f(t),P)\), then \(g^k\mid h(t)\): every generator \(f(t)^iP^{k-i}\) is divisible by \(g^k\). Thus
+\[
+|h(t)|<S^k,\quad g\ge S
+\quad\Longrightarrow\quad h(t)=0.
+\]
+This proves the certificate implication; it does not prove that a suitable small polynomial exists.
+
+**KNOWN.** The univariate guarantee is
+\[
+H<P^{\mu^2/D},\qquad
+\gcd(f(t),P)\ge P^\mu,
+\]
+or
+\[
+\log H<\frac{(\log S)^2}{D\log P}.
+\tag{11}
+\]
+See Boneh, *STOC* 2000; *JCSS* 64 (2002), Theorems 3.1/4.1, and the precise formulation in Cohn–Heninger, *Advances in Mathematics of Communications* 9 (2015), Theorem 1.1. [Boneh](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html), [Cohn–Heninger](https://arxiv.org/pdf/1008.1284).
+
+**KNOWN — genuine certificate-class optimality.** Chinburg–Hemenway–Heninger–Scherr, *ASIACRYPT* 2016, Theorem 2 of the linked version, exclude nonzero standard auxiliary polynomials uniformly small on a complex disk of radius \(N^{1/D+\varepsilon}\). This excludes improved lattice reduction as a way around that particular certificate obstruction. It does not exclude instance-specific identities or all multivariate/discrete certificates. [Theorem and proof](https://arxiv.org/pdf/1605.08065).
+
+**PROVED — an output-size tightness example.** For \(f(t)=t^D\), \(P=k^D\), the roots are precisely multiples of \(k\). A window of radius \(P^{1/D+\varepsilon}\) contains \(2P^\varepsilon+O(1)\) roots. Thus a uniform polynomial-time complete decoder cannot extend arbitrarily beyond the bound. This example is not a balanced squarefree semiprime instance.
+
+**PROVED — bounded-degree limitation.** A nonzero univariate certificate of degree \(D\) certifies at most \(D\) distinct outputs. This only proves an output-capacity bound. It does not rule out finding one useful output cheaply per call. Positive-dimensional multivariate certificate sets require separate analysis.
+
+**KNOWN.** Weighted CRT interpolation and multiplicities are covered by Guruswami–Sahai–Sudan, *FOCS* 2000, Theorems 3–6. Their input moduli may be relatively prime prime powers. Repeated powers of the same prime are valuation information, not independent coordinates. [Paper](https://www.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf).
+
+**HEURISTIC — conditional cofactor randomness.** If a degree-\(D\) call certifies at most \(D\) candidates after forcing divisor \(M\), its expected useful yield is at most
+\[
+D\,\rho(Y/M,B).
+\tag{12}
+\]
+In the single-lattice H_sel model, the sharper bound is
+\[
+\min\{D,CU/M\}\rho(Y/M,B).
+\tag{13}
+\]
+A decoder batching many moduli is not covered by assigning it one single-lattice charge.
+
+### (c) Generic CRT manipulation and comparisons
+
+**OPEN.** Public integer CRT operations, gcds and lattice reduction do not define a sufficiently restrictive computational model for a lower bound. Stronger models can hide residues, forbid batching, or charge every tested modulus; each restriction needs justification before transferring its conclusion to Π.
+
+**KNOWN — enumeration comparison.** Aono–Nguyen–Seito–Shikata, *CRYPTO* 2018, Theorem 1, bound the cylinder radii necessary to retain a specified fraction of a ball. Their enumeration lower bounds combine such geometry with an enumeration cost model. They do not bound arithmetic selection among different lattices. [Paper](https://eprint.iacr.org/2018/586.pdf).
+
+**KNOWN — decoding hardness comparisons.** Numbering below refers to the linked versions.
+
+- Guruswami–Vardy, *IEEE TIT* 51 (2005), Theorem 5: maximum-likelihood RS decoding is NP-complete. [Proof](https://arxiv.org/pdf/cs/0405005).
+- Cheng–Wan, *IEEE TIT* 56 (2010), Theorem 1 in the linked precursor: polynomial-time maximum-likelihood decoding of specified positive-rate families would yield polynomial-time finite-field discrete logarithms. [Statement](https://arxiv.org/pdf/0802.1220).
+- Gandikota–Ghazi–Grigorescu, *FOCS* 2016, Theorem I.1: NP-hardness at radius \(n-k-d\) for \(d=O(\log n/\log\log n)\), with a quasipolynomial-reduction extension. [Statement](https://cs.uwaterloo.ca/~elena-g/papers/RS_BDD_hard.pdf).
+
+**PROVED — scope of these comparisons.** None of those statements supplies an average-case lower bound for the special CRT words arising from \(m\), nor an \(L[1/3]\) time lower bound. Those would require additional reductions with the appropriate input distribution and quantitative parameters.
+
+**OPEN — decision on Boneh.** Its \(L^{o(1)}\) gain is a barrier for the supplied row-wise implementation and its analyzed certificate regime. It is not a theorem about every bounded-dimensional decoder, every small-polynomial certificate, or whole-box arithmetic listing.
+
+## 3. Construction attempts and their costs
+
+### Whole-box multivariate decoding
+
+**model-PROVED — necessary batch budget.** Suppose a call covers a patch of \(L[\omega]\) candidate points, costs \(L[\kappa]\), and lists all qualifying points. Under homogeneous H densities,
+\[
+\mathbb E[\text{rational outputs}]=L[\omega-r],\qquad
+\mathbb E[\text{double outputs}]=L[\omega-r-a].
+\tag{14}
+\]
+Covering the box costs \(L[2e-\omega+\kappa]\), before output processing. To obtain the rational partial-listing saving \(\theta r\), one needs
+\[
+\omega-\kappa\ge\theta r.
+\tag{15}
+\]
+This quantifies the required batching advantage.
+
+**HEURISTIC — Herrmann–May algebraic-independence assumption.** Their \(n\)-variable linear-equation construction, *ASIACRYPT* 2008, Theorem 4, has the bound
+\[
+\prod_iX_i
+<P^{g_n(\mu)-\varepsilon},\qquad
+g_n(\mu)=(n+1)\mu-n+n(1-\mu)^{1+1/n}.
+\tag{16}
+\]
+For \(n=2,\mu=1/2\), \(g_2=0.2071068\); for \(n=1\), \(g_1=\mu^2\). These are small-root bounds given a suitable modulus, not a procedure for selecting productive moduli. [Original paper](https://www.iacr.org/archive/asiacrypt2008/53500412/53500412.pdf).
+
+**HEURISTIC — Jochemsz–May resultant assumption.** Their framework explicitly assumes successful elimination from the auxiliary polynomials: *ASIACRYPT* 2006, Assumption 1. Linearly independent coefficient vectors need not give a zero-dimensional common-zero set. [Paper](https://iacr.org/archive/asiacrypt2006/42840270/42840270.pdf).
+
+**OPEN — resulting Π cost.** No specified whole-box construction here establishes (15). Given a known \(M\), recovering the points of the linear congruence is already the lattice-query operation. The missing construction identifies productive combinations of divisors, or additional independent equations, with enough output per setup. Assigning it an improved NFS constant before establishing that step would be unsupported.
+
+### CRT, folded and multiplicity-style decoding
+
+**KNOWN.** Goldreich–Ron–Sudan’s CRT list decoder has a Johnson-type square-root agreement requirement: *STOC* 1999, Theorem 11 of their author version. Boneh improves its threshold; GSS supplies weighted refinement. [GRS theorem](https://www.wisdom.weizmann.ac.il/~oded/PSX/crt.pdf).
+
+**model-PROVED — full-factor-base obstruction to the guarantee.** For
+\[
+P=\prod_{p\le B}p,\quad \log P\asymp B,\quad
+y=\log Y=x^{O(1)},
+\]
+the largest possible smooth-part agreement satisfies \(\log S\le y\). Equation (11) permits only
+\[
+\log H\lesssim y^2/B=o(1)
+\]
+when \(B=L[\beta]\). Thus the full-base univariate guarantee does not cover an NFS row of length \(E\).
+
+Writing weighted rate and agreement as
+\[
+\mathcal R=\frac{\log H}{\log P},\qquad
+\sigma=\frac{\log S}{\log P},
+\]
+the desired agreement is exponentially below \(\sqrt{\mathcal R}\) on the \(L[1/3]\) scale. A useful beyond-Johnson theorem must operate in this vanishing-rate, vanishing-agreement regime.
+
+**KNOWN — positive benchmark.** Guruswami–Rudra, *IEEE TIT* 54 (2008), Theorem 4.4 of the linked version, give folded RS codes approaching agreement \(R+\varepsilon\). Their theorem requires folding structure and parameter-dependent running time. [Theorem](https://arxiv.org/pdf/cs/0511072).
+
+**HEURISTIC — random tail locations.** Bundling unrelated primes into blocks of \(w\) does not supply that folding structure. If a smooth value hits roughly \(u\) of \(n\) tail coordinates, the expected number of wholly agreeing blocks is approximately
+\[
+\frac nw\left(\frac un\right)^w.
+\tag{17}
+\]
+For fixed \(w\ge2\), this tends to zero in the NFS regime. Parvaresh–Vardy-style correlated channels or multiplicity data likewise need an arithmetic mechanism producing useful extra information. Merely transforming the same residues does not establish one.
+
+**KNOWN — number-field analogue.** Cohn–Heninger, *AMC* 9 (2015), Theorem 1.3, obtain the analogous squared-agreement exponent over number fields, with explicit dependence on field degree. [Theorem](https://arxiv.org/pdf/1008.1284).
+
+**OPEN — what would suffice.** A decoder must:
+
+1. accept the actual CRT/norm data without expensive auxiliary channels;
+2. reach the relevant vanishing agreement;
+3. charge setup, growing multiplicities and output extraction;
+4. satisfy (14)–(15), or the quota budget (7);
+5. produce nontrivial, sufficiently independent relations.
+
+A smaller decoding radius alone does not imply a factoring improvement.
+
+### Adaptive special-\(q\) elimination
+
+**model-PROVED — adaptive random-tail theorem.** Consider \(K\) tail columns. Each of \(T\) rows contains \(d\) independently sampled distinct random columns and at most \(f\) arbitrary forced columns. Forced choices may depend on history. Assume
+\[
+f=O(1),\quad d\to\infty,\quad d=K^{o(1)},\quad T\le K^A.
+\]
+Then, for every fixed \(\varepsilon>0\), with probability \(1-o(1)\), no dependency has at most \(K^{1-\varepsilon}/d\) rows.
+
+**Proof.** For a dependency using \(\ell\) rows, let \(v\) be the number of columns touched by its \(d\ell\) random incidences. At least \(2v-d\ell\) columns occur exactly once randomly. Forced incidences must cancel all of them, so
+\[
+v\le a\ell,\qquad a=(d+f)/2.
+\]
+Independent random supports give the union bound
+\[
+\Pr(\exists\text{ dependency of size }\le L)
+\le\sum_{\ell\le L}
+ {T\choose\ell}{K\choose\lfloor a\ell\rfloor}
+ \left(\frac{a\ell}{K}\right)^{d\ell}.
+\tag{18}
+\]
+Terms with \(\lfloor a\ell\rfloor<d\) are zero. The remaining terms are bounded by
+\[
+\left[
+e^{a+1}\frac{T}{\ell}
+\left(\frac{a\ell}{K}\right)^{(d-f)/2}
+\right]^\ell.
+\]
+For \(L=K^{1-\varepsilon}/d\), the bracket tends uniformly to zero sufficiently rapidly: its negative logarithm contains \(\Omega(d\log K)\), dominating \(A\log K+O(d)\). Summation proves the claim.
+
+**model-PROVED — implication.** With \(K=L[\beta]\), \(d=\Theta(u)\), and only bounded forcing, adaptivity cannot reduce the required relation count by a fixed power of \(K\). Constant or polylogarithmic savings are not excluded.
+
+**OPEN — elimination cost.** This proves neither that \(K\) rows are necessary nor an \(\Omega(K^2)\) solving lower bound. Structured elimination could be cheaper. Forcing \(\Theta(d)\) columns, or accepting only selected random samples, falls outside the theorem unless rejected samples are charged.
+
+## 4. PTE O2 and pencils
+
+### The naive three-term statement
+
+**PROVED — counterexample to an unqualified common-factor/pencil conclusion.** Let
+\[
+\begin{aligned}
+P_0&=(X+8)(X+1)(X-3)(X-4),\\
+P_1&=(X+5)(X+4)X(X-7),\\
+P_2&=(X+7)(X+2)(X-1)(X-6).
+\end{aligned}
+\]
+Their coefficient vectors, from constant term upwards, are
+\[
+(96,52,-43,2,1),\quad
+(0,-140,-43,2,1),\quad
+(84,-44,-43,2,1).
+\]
+Hence
+\[
+P_0+P_1-2P_2=-72.
+\tag{19}
+\]
+They are squarefree and pairwise coprime. They do not form an exact affine pencil, since their midpoint discrepancy is nonzero. Moreover, \(P_0\)’s roots are not symmetric about any centre, excluding a common quadratic-composition explanation. Integer translations give an infinite family with the same constant remainder.
+
+**OPEN — quantitative rigidity.** “Degenerate pencil” needs a definition. Equation (19) refutes several naive interpretations, but does not refute a theorem requiring \(M\) large compared with \(\log(Bh)\). I have not proved that strengthened three-term lemma.
+
+### A uniform theorem for general coprime pencils
+
+**KNOWN.** Binyamini–Cluckers–Novikov, arXiv:2302.04209v2 (2023), Theorem 2, published in *IMRN* (2024), gives for an integral plane curve of degree \(d\)
+\[
+\#C(\mathbb Z,B)\le c\,d^2B^{1/d}(\log B)^\kappa.
+\tag{20}
+\]
+[Exact theorem](https://arxiv.org/pdf/2302.04209).
+
+**PROVED — pencil theorem.** Let \(F_0,F_1\in\mathbb Q[X]\), with \(F_0\) monic of degree \(M\ge4\), \(\deg F_1<M\), and \(\gcd(F_0,F_1)=1\). The number \(J\) of parameters \(t\) for which \(F_0+tF_1\) splits completely over integers in \([-B,B]\), counting root multiplicities, satisfies
+\[
+J\le64c\sqrt B(\log B)^\kappa+3.
+\tag{21}
+\]
+
+**Proof.** Put \(R=-F_0/F_1\). Roots of distinct members are disjoint. Distinct roots \(a,b\) of one member satisfy
+\[
+H(a,b)=0,\qquad
+H(X,Y)=
+\frac{F_0(X)F_1(Y)-F_0(Y)F_1(X)}{X-Y},
+\]
+whose degree \(D\le2M-2\).
+
+There is at most one real linear component of this curve. A nonvertical line gives an affine map \(g\) satisfying \(R\circ g=R\). Such a map has finite order, since it permutes a generic finite fibre. Over the reals a nonidentity finite-order affine map is a reflection. Two different reflections generate a nontrivial translation, which cannot preserve a nonconstant rational function. Vertical and horizontal components are impossible by coprimality.
+
+If a member has \(r_t\) distinct roots, it therefore supplies at least \(r_t(r_t-2)\) ordered root pairs on nonlinear components.
+
+Repeated roots are controlled by
+\[
+W=F_0'F_1-F_0F_1',\qquad \deg W\le2M-2.
+\]
+A root of multiplicity \(e\) contributes at least \(e-1\) to \(W\). Disjointness across members gives
+\[
+\sum_t(M-r_t)\le2M-2.
+\]
+Thus at most three members have \(r_t\le M/2\). Every other member supplies at least \(M^2/16\) nonlinear pairs.
+
+Factor the nonlinear part over \(\mathbb R\), with component degrees \(d_i\ge2\). By (20),
+\[
+\#\text{integer pairs}
+\le c\sum_i d_i^2\sqrt B(\log B)^\kappa
+\le cD^2\sqrt B(\log B)^\kappa.
+\]
+Divide by \(M^2/16\), use \(D<2M\), and add the three exceptions. ∎
+
+**PROVED — necessary qualifications.** A common split factor can be removed, but the residual degree matters. Residual degree one gives \(\Theta(B)\) members, exactly the obvious \((X+t)G\) phenomenon.
+
+For O2 with \(\deg r<k\) and coefficient height at most \(h\), there are at most \((2h+1)^k\) remainders. If every fixed-remainder pencil is coprime and has effective degree at least four, (21) gives
+\[
+J\le(2h+1)^k
+\left(64c\sqrt B(\log B)^\kappa+3\right).
+\tag{22}
+\]
+This is a counting bound, not rigidity, and can be too large for the desired application.
+
+**OPEN.** Uniformly controlling exceptional fixed-remainder pencils, and eliminating the potentially large remainder factor in (22), remain genuine O2 issues.
+
+## 5. Exact experiments
+
+**PROVED — completed scratch checks.** Standard-library code reproduced the numerical constants above, verified (19) coefficient by coefficient, and ran small adaptive-tail simulations. Peak reported RSS was about 16 MB. Files: [code](/Volumes/git/factoring-connection/codex/scratch/pilist_1/pilist_checks.py), [results](/Volumes/git/factoring-connection/codex/scratch/pilist_1/pilist_checks_results.json).
+
+Three bounded-memory experiments would be useful:
+
+1. **Residue exposure versus public \(m\).** Enumerate primitive boxes for small moduli, comparing fresh hidden residues with public-\(m\) selectors. Charge every modulus construction and emptiness test. **model-PROVED prediction:** the fresh model has exact mean \(U_M/M\). A persistent selection bias in the public model falsifies its identification with that model.
+
+2. **Adaptive tail supports.** Increase \(K,d\), comparing bounded forcing with forcing proportional to \(d\). Use integer-bitset elimination. **model-PROVED prediction:** bounded forcing cannot produce dependencies of polynomially smaller weight under (18). In 20 trials at \(K=512,d=12\), first-dependency means were \(509.5\) without forcing and \(510.35\) with two forced coordinates; these tiny trials are not asymptotic evidence.
+
+3. **Split-member catalogues.** Stream monic split polynomials of small degree and root height, grouping their coefficients into pencils and O2 fibres. Track gcds, multiplicities and residual degrees. **PROVED prediction:** every nondegenerate pencil obeys the proof of (21). **OPEN prediction to test:** whether O2 fibres exhibit large families beyond identifiable low-effective-degree exceptions.
+
+All three can use streaming records or bounded bitsets well below 2 GB RSS.
+
+## 6. Verdict
+
+**HEURISTIC — \(H_D\).** The classical \(1/3\) balance occurs when scanning must pay for smoothness. With \(E=B=L[\alpha,O(1)]\), optimized base-\(m\) norm sizes have exponent \((1+\alpha)/2\), and their smoothness penalty has exponent \((1-\alpha)/2\). Balancing candidate supply against that penalty requires
+\[
+\alpha\ge(1-\alpha)/2,\qquad\text{hence }\alpha\ge1/3.
+\]
+
+**OPEN.** This is an algorithmic balance, not a universal product-listing lower bound. The unresolved issue is finding enough qualifying products, with useful rank, while avoiding most failed candidates. Whole-box identification, correlated arithmetic certificates and substantial adaptive forcing remain outside the established barriers.
+
+**HEURISTIC — subjective probability.** I assign about **5%** probability to a uniform classical algorithm solving a factoring-useful Π family at some fixed exponent below \(1/3\). This concerns the strong listing, extraction and rank requirements. The model lower bounds above are too restricted to make that probability negligible.
