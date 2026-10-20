@@ -1,0 +1,343 @@
+# auditU: codex auditU_1 (GPT-6.1-sol, xhigh, blind) — verbatim report
+
+Prompt: codex/auditU_1.md. Raw output: codex/auditU_1.out. Scratch: codex/scratch/auditU_1/check_kernel.py (git-ignored).
+
+ACCEPT WITH FIXES — conditional on the stipulated fixed-degree chain; I found no fatal growing-degree loss in the main proof, but §13 contains an incorrect smoothness asymptotic.
+
+| Severity | Location | Issue | Fix |
+|---|---|---|---|
+| MINOR | [Blind claim, §13, line 641](/Volumes/git/factoring-connection/notes/auditU_blind_claims.md:641) | The claimed CEP exponent has coefficient \(1-\alpha\). When \(\theta\asymp D^{2\alpha-1}\), the coefficient is **\(\alpha\)**. Indeed \(u=\theta D^{1-\alpha}/a\asymp D^\alpha\), so \(\log u\sim\alpha\log\log N\). | Replace the displayed asymptotic by \(\exp((\alpha+o(1))\theta\log N\log\log N/\log B)\). The \(2/5\) threshold survives. The main proof already uses the correct coefficient through \(\sigma=2\theta_0/(5a)\). |
+
+This verdict concerns the extension to growing parameters under the assumption requested in the question. It does not independently certify the underlying fixed-degree factoring theorem.
+
+**Single weakest link**
+
+Lemma \(8.5'(R')\), particularly the transfer from primitive small-conductor character sums to **smooth-modulus weighted** sums, remains the most delicate analytic link. I checked the proof in [pp], Appendix A, rather than treating ordinary Bombieri–Vinogradov as sufficient.
+
+The decisive comparison is
+\[
+(\log x)^{O(K)}
+ \exp\!\left(-\frac{\delta_D u/2}{\log^2(u/2+1)}\right)
+ \le
+ \exp\!\left(-\frac{c u}{\log^2(u+1)}\right),
+\]
+with **fixed** \(K\). Here \(u\asymp D^{2/5}\), so the exponential saving absorbs every displayed logarithmic transfer factor. The growing-degree parameters do not enter Drappeau’s constants. The large-conductor terms also fit the new level gap. I therefore do not find an unresolved uniformity assumption at this link.
+
+**1. The four repairs**
+
+**(a) Narrow \(b\)-window and common \(V\): valid.** The geometric factor that previously caused trouble becomes
+\[
+\left(\frac{V^2}{bb'}\right)^{d-2}
+ \le (1-1/d)^{-2d+4}\le e^{8/3}.
+\]
+This is an absolute bound, not an exponential loss hidden in notation.
+
+The first moment loses a factor \(d\), because
+\[
+\#\mathcal P\asymp \frac{V^2}{d\log V}.
+\]
+The prime-number-theorem error is small enough for this window:
+\[
+\log d=O(\log\log N)
+ \ll \sqrt{\log V}.
+\]
+Thus subtracting the two PNT estimates supplies the claimed number of primes.
+
+The rational-fibre argument survives: \(b>2V/3\), \(V'\asymp V\), and all chord-length constants remain absolute. The moduli still occupy the fixed range \([MV/32,2MV]\); common \(V\) actually simplifies the bad-modulus summation.
+
+The modified regularity argument also works. In the irregular case, line spacing exceeds \(2V>\sqrt2V\), so every box point lies on the shortest-vector line. Its only primitive points are excluded by the \(b\)-window. In the regular case,
+\[
+\lambda_2^2\le \frac{16}{3}V^2,\qquad
+\#(\Lambda_\ell\cap[-V,V]^2)
+ \le179V^2/\ell\le400S^2.
+\]
+There is no remaining special-\(q\) dyadic ratio raised to degree \(d\).
+
+**(b) Envelope \(X_F=(2d+1)MHV^d\): valid.** The base-expansion constant is used before taking a smoothness density:
+\[
+2^{2d+5}N^{-\eta_0/2}\le N^{-\eta_0/4},
+\]
+since \(d=o(\eta_0\log N)\). Meanwhile,
+\[
+|G(P)\langle c,v(P)\rangle|\le2dMHV^d.
+\]
+Consequently the proposed envelope contains every original coefficient-box value.
+
+The smoothing distribution extends slightly beyond the original coefficient-box support. This is harmless too: its support has
+\[
+|z|\le d(H+1)V^{d-1},
+\]
+and the extra \(2d/H\) is absorbed by the additional \(1\) in \(2d+1\), for sufficiently large \(N\).
+
+**(c) Kern-U: true.** Gauss’s lemma identifies the integral kernel with multiples of the primitive quadratic
+\[
+Q=(bx-ay)(b'x-a'y).
+\]
+In its monomial basis, coordinate \(i\) has the form
+\[
+c_i=c_{0,i}+bb'\lambda_i
+ -(ab'+a'b)\lambda_{i-1}+aa'\lambda_{i-2}.
+\]
+After earlier \(\lambda_j\) are fixed, there are at most
+\(\lfloor2H/(bb')\rfloor+1\) choices for \(\lambda_i\). Ignoring the last two coordinate restrictions gives exactly the claimed fibre bound.
+
+Writing \(A=2H+1\), its probability consequence is
+\[
+\Pr[\Phi(c)=z]
+ \le\frac{(1+(bb'-1)/A)^{d-2}}{A^2(bb')^{d-2}}
+ \le\frac{e}{A^2(bb')^{d-2}}
+\]
+when \(d\,bb'\le A\).
+
+I also independently enumerated 180 small pair/cube cases, without importing repository code; none violated either bound. The proof, rather than this finite check, establishes uniformity. Scratch script: [check_kernel.py](/Volumes/git/factoring-connection/codex/scratch/auditU_1/check_kernel.py).
+
+The height requirement does **not** change the leading \(\theta\):
+\[
+\log\frac{H}{dV^2}
+ \ge \eta_0\log N-2\log S-\log d-O(1)\to+\infty.
+\]
+The existing slack supplies the additional factor \(dS^2\).
+
+**(d) Lemma \(8.5'(R')\): the repair works in the stated application.** Put \(y=B\). The actual parameters satisfy
+\[
+u\asymp D^{2/5},\quad
+\log y\asymp D^{2/5}\lambda,\quad
+\log Y\asymp D^{3/5}\lambda,
+\]
+and, uniformly over the grid,
+\[
+\Gamma\ge \tfrac12\eta_0\log N-O(\Lambda)
+ \gg \log y.
+\]
+Thus \(Y\ge y^K\), the conductor cutoff \(y^K\le(x/j)^{\eta_D}\), and the large-sieve level restrictions all hold with fixed \(K\).
+
+Neither FM-U nor K-U is broken by these changes.
+
+**2. Uniformity of the relation-supply chain**
+
+The following are the substantive checks behind my verdict.
+
+| Ingredient | Growing-parameter check |
+|---|---|
+| HT/local smoothness | Shifts are by \(B^{O(1)}\), with fixed exponents. Their density losses are \((\log N)^{O(1)}\). The relevant errors \(1/u+\log B/B\) tend uniformly to zero. |
+| CEP/de Bruijn | CEP applies with a fixed admissible \(\varepsilon\), since \(u\asymp D^{2/5}\ll\log x/\log\log x\asymp D^{4/5}\). Leading asymptotics are used for sizes, not to establish polylogarithmic precision. |
+| One-point smoothing | The actual proof gives \(3d^2V/(2H+1)\), centre displacement \(O(dV^{d-1})\), and a dimension-free convolution maximum. No smoothing-set cardinality becomes a probability loss. |
+| FM-U | Candidate counting costs \(d\log V\); fibre coprimality costs \(\log\log N\); good-modulus smoothing costs a fixed logarithmic power. |
+| Theorem R | The pair-image lattice and its covering by \(O(qS^2)\) squares use absolute geometric constants. DS is applied only with \(q\le B^{C_0}\), where \(C_0\) is fixed. |
+| Lemma W | \(\log(W/t)\ge(\eta_0/3)\log N\). Hence \(C_W\le24/\eta_0\), a polynomial in \(\log N\). |
+| \(L2_{\rm fam}\) | Class A loses logarithmic powers depending on fixed \(C_0\). Classes B and C have the explicit power savings discussed below. |
+| LD*-U | Kern-U, common \(V\), the narrow window and the polynomial envelope leave only \(d\eta_0^{-1}(\log N)^{O(1)}\). |
+| Theorem D-U | The integer-valued Paley–Zygmund argument requires neither \(\mathbb EN\ge1\) nor an additional uniformity theorem. |
+| S″ and K-U | S″ is an exact counting argument for arbitrary \(k\); its size hypothesis holds with a large margin. |
+
+The HT estimates being used really are uniform in the required variables; this is not an extrapolation from a fixed-\(u\) theorem. [Hildebrand–Tenenbaum, Theorems 1–3](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+Several interfaces deserve explicit explanation.
+
+**The computable \(S\) fixes a real precision problem.** Discarding de Bruijn’s second-order term would be fatal here: its size greatly exceeds \(O(\log\log N)\). Lemma CS avoids doing that.
+
+At the saddle point,
+\[
+\frac{R^*(z)}{\varrho(z)}
+ \asymp \alpha\sqrt{\phi_2(\alpha,B)}
+ \le(\log N)^{O(1)}.
+\]
+The proposed saddle-point accuracy changes the logarithm of the Rankin value by
+\[
+O\!\left(\phi_2(\alpha,B)(\log N)^{-6}\right)=o(1).
+\]
+Both \(S\) and \(S^d\) are included in the arguments being evaluated. Doubling \(S\) changes \(X_F\) by \(2^d\le B\), so a **single** HT comparison controls the overshoot. Therefore
+\[
+\frac1{4(\log N)^{2C_R}}\le S^2\rho_r\rho_F\le64.
+\]
+The scan is not circular: its termination is first established uniformly over a deterministic range of \(S\).
+
+**The large-sieve proof retains its savings.** Reading [pp]’s \(L2_{\rm fam}\) proof, the potentially dangerous relative errors are bounded by
+\[
+\frac q{R_0\rho_r\rho_F},\qquad
+\frac{X_rq^2}{X_F\rho_r\rho_F},\qquad
+\frac{\log N}{\pi_J\rho_F},\qquad
+\frac{X_rq^2Y^4}{\pi_JX_F\rho_r\rho_F}.
+\]
+The first is controlled by the new cushion. The others are respectively bounded by
+\[
+N^{-h-(d+1)\nu}B^{O(1)}d^{O(1)},\quad
+N^{-2\nu}B^{O(1)},\quad
+N^{(5-d)\nu-h}B^{O(1)}.
+\]
+All tend to zero. Powers of \(S\) suppressed in these upper bounds are favourable. Also,
+\[
+C_0\le 2\sigma/a+3
+\]
+eventually, so the divisor-switching logarithmic exponent stays bounded independently of \(N,d,k\).
+
+**The restricted BV proof supplies the needed relative normalization.** Drappeau’s Lemme 5 supplies the small-conductor input with absolute constants; its statement covers the arguments used here. [Drappeau, Lemme 5](https://arxiv.org/pdf/1307.7554).
+
+In [pp]’s proof, Möbius inversion and the smooth-modulus weights introduce
+\[
+R_1^{1-\beta'}\le(\log x)^{O(K)},\qquad
+\sum_{\substack{j\ge1\\j\ \mathrm{squarefree}}}
+ \frac{j^{1-\beta-\beta'}}{\varphi(j)}=O(1).
+\]
+These are affordable. The large-conductor estimate, divided by the crude density lower bound, gives terms bounded by
+\[
+(\log x)^3y^{2K_0+9/2}/R,\qquad
+(\log x)^3y^{2K_0+7/2}e^{-\Gamma}.
+\]
+Taking \(R=y^K\) or \(Y\) and \(K=2K_0+6\) makes both negligible.
+
+Harper’s §3.3 has the relevant effective saving \(e^{-cu/\log^2(u+1)}+y^{-c}\); there is no degree parameter in its constants. The present argument uses the published Drappeau statement rather than importing Harper’s full BV theorem into a new modulus family. [Harper, §3.3, equation (3.1)](https://arxiv.org/pdf/1208.5992).
+
+**LD*-U’s cancellation is genuine.** Its geometric powers give
+\[
+V^2M^{-2}H^{-2}V^{-2d+4}
+ \frac MV\frac{MV}{Y}
+ \frac{(MHV^d)^2}{Y(MV)^2}
+ =\frac{V^4}{Y^2}.
+\]
+The remaining envelope/candidate factor is
+\[
+(2d+1)^2/d=O(d).
+\]
+No \(2^{O(d)}\) remains.
+
+**Field rejections stay below \(\gamma\).** The finite-field irreducible count works uniformly for \(r\ge16,d\ge3\). CRT distortion is bounded because
+\[
+dQ_{\rm IR}/H=H^{-1/2+o(1)}d=o(1).
+\]
+Even in the smallest-height regime,
+\[
+\frac{\log H}{d\log\log H}\gg\log\log N.
+\]
+Thus rejection is smaller than every fixed negative logarithmic power.
+
+For the rational fibres, the correct comparison is
+\[
+\log 2^{\omega(\ell n)}
+ =O(\mu\log N/\lambda)
+ =o(\log(M/V)).
+\]
+A generic \(N^{o(1)}\) estimate would not suffice with shrinking \(\eta_0\); the more precise estimate does.
+
+**The old Theorem 4.3 is superseded.** Its hypothesis \(\mathbb EN\ge1\) cannot simply be carried over to Lemma CS. D-U instead uses
+\[
+\gamma\ge\frac1{P_1^2P_2+P_1/m},
+\quad
+P_1=d(\log N)^{C_{\rm FM}},\quad
+P_2=d\eta_0^{-1}(\log N)^{C_{\rm LD}},
+\]
+which is valid and gives a fixed logarithmic exponent.
+
+After these replacements, I find no surviving appeal to fixed-degree compactness, an uncontrolled \(O_d(1)\), or an unbounded logarithmic exponent on the critical path. The \(d\) base-expansion steps are polynomial work; the exponential base-expansion constant is absorbed before density estimation. The \(2^d\) square-root branches are a cost term, not a loss in \(\gamma\).
+
+**3. LV6 at growing degree**
+
+The factorial-bit repair works.
+
+The coefficient bounds imply
+\[
+\log|D|=O(\log N),\qquad
+\log|\operatorname{disc}g|=O(d\log N),\qquad
+\log\bar\Delta=O(d\log N).
+\]
+Hence \(\log|\mathcal H|=O(d\log N)\) and \(t_\chi=O(d^2\log N)\).
+
+The exceptional-class proof is degree-uniform. Since \(d\) is odd, \(K\) has no quadratic subfield and a degree-\(2d\) field has at most one. Distinct exceptional square classes therefore give distinct quadratic fields. Their discriminants are bounded by \(\bar\Delta^{1/d}\), and Landau’s theorem excludes two sufficiently close zeros. Nothing here enumerates \(2^d\) classes.
+
+For the proposed \(s\), insertion into the displayed zero gap gives
+\[
+\nu_1s\gg\log s.
+\]
+It also gives
+\[
+s\gg d(\log\bar\Delta)^2,\qquad
+\sqrt{s/d}\gg\log s.
+\]
+These control both the exceptional-zero contribution and the ordinary Chebotarev error, at both ends of the sampling interval. The base-field sampler has the weaker \(d!\) requirement and is covered as well. The relevant Chebotarev theorem uses the actual extension \(L_h/K\), of absolute degree \(2d\). [Lagarias–Odlyzko, Theorem 1.3](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf).
+
+The computational distinction is crucial:
+\[
+s=\exp(O(d\log d))(\log N)^{O(1)}
+\]
+is the **bit length** of a character prime. Primality testing, root finding and Legendre symbols are polynomial in that bit length. Since
+\[
+d\log d=o(\Lambda),
+\]
+the overhead is \(\exp(o(\Lambda))\).
+
+Square-root extraction also fits. There are at most \(2^{d-1}\) branches, while the coefficient precision is bounded by
+\[
+\log A_{\rm sq}\le
+ M_{\rm rows}\operatorname{poly}(d,k,\log N).
+\]
+Product trees and Newton lifting therefore cost \(L^{a+o(1)}\), including sign enumeration. Linear algebra costs \(L^{2a+o(1)}\). I find no additional contribution to \(C_\gamma\), or to the claimed leading post-processing exponent \(2a\).
+
+**4. Recursion at \(\Lambda_{2/5}\)**
+
+Lemma \(F_\alpha\) is valid in this application. For \(y=\sqrt{2x}\),
+\[
+\Lambda_\alpha(y)\le
+ 2^{-\alpha}\Lambda_\alpha(x)+o(1).
+\]
+The induction with a fixed positive exponent margin therefore gives
+\[
+c=\max\!\left(p,\frac{\delta}{1-2^{-\alpha}}\right).
+\]
+
+The recursive oracle remains admissible:
+
+- Trial-division alternation gives finite expected cost on every fixed input.
+- For large inputs, the shape-test children satisfy \(\sqrt{2N}<N\).
+- Canonical complete factorizations make the outer logical transcript independent of the factoring oracle’s coins.
+- Fresh inner coins preserve invariance under changing an outer hidden square root within its fibre.
+
+Adaptive-call accounting uses conditional expectations, not independence of the child inputs. Growing \(d(N),k(N)\) does not change these arguments.
+
+**5. Cost and the \(2/5\) geometry**
+
+From \(\gamma\ge(\log N)^{-C_\gamma}\),
+\[
+\log(1/p)
+ \le 2k(1+C_\gamma)\lambda+o(\Lambda)
+ =s\Lambda+o(\Lambda),
+\quad s=2\kappa(1+C_\gamma).
+\]
+Also,
+\[
+M_{\rm rows}=L^{a+o(1)},\qquad
+T_{\rm SQ}=L^{\max(a,\sigma)+o(1)},\qquad
+T_{\rm post}=L^{2a+o(1)}.
+\]
+
+The sharpened selection accounting correctly avoids multiplying post-processing by \(1/p\). Thus the nonrecursive exponent is
+\[
+p_0=\max(2a,\ a+s+\max(a,\sigma)),
+\]
+and the recursive multiplier exponent is \(\delta=a+s\). This gives
+\[
+\boxed{
+c=\max\left(
+2a,\ a+s+\max(a,\sigma),\
+\frac{a+s}{1-2^{-2/5}}
+\right).
+}
+\]
+
+**Yes, \(c\) is finite without numerically knowing \(C_\gamma\).** The bounded quantities \(C_0,C_1,K_0\), the absolute smooth-number constants and the explicit polynomial geometric losses give a finite \(C_\gamma(a,\kappa,d_0)\). The algorithm does not need its value to run. The numerical examples remain conditional illustrations, not established numerical factoring constants.
+
+The corrected §13 arithmetic gives
+\[
+\theta=O(D^{2\alpha-1}),\qquad
+k\gtrsim D^{2(1-2\alpha)}.
+\]
+Together with the size-model constraint \(k=O(D^\alpha)\), this yields \(\alpha\ge2/5\). However, §13 explicitly labels its split-density upper estimate heuristic. Consequently this is a barrier in the stated size model, not a proved impossibility theorem for all variants of the design.
+
+**6. Sanity and prior work**
+
+There is no contradiction with Lee–Venkatesan. Their congruence theorem does not prove unconditional fruitfulness for arbitrary inputs; their factoring result has additional hypotheses. The proposed Dixon construction supplies a different fruitfulness argument through hidden-root symmetry. [Lee–Venkatesan, Theorems 2.1 and 2.3](https://arxiv.org/html/1805.08873v1).
+
+Nor does their first-moment analysis automatically prove the present result. The additional burden is reusable special-\(q\) supply in one field, with sufficiently precise moments. Raising an unspecified \(L^{o(1)}\) loss to \(2k\) would fail. The narrow window, common envelope, triangular count and computable \(S\) address that additional burden.
+
+Gordon’s 1993 individual-logarithm construction is a relevant descent precedent, but its smooth-value analysis is heuristic and its modulus is prime. It supplies neither the present relation-supply estimate nor a factoring fruitfulness theorem. Its individual-logarithm calculation is stated at \(L[1/3]\), rather than establishing this \(L[2/5]\) factoring result. [Gordon, §3](https://www.dmgordon.org/papers/log.pdf).
+
+I cannot establish why earlier authors did not find this combination. I found no known obstruction that contradicts it under the fixed-degree assumption. The decisive new assertion is the polylogarithmic relation-supply precision; after checking the displayed repairs against [pp]’s proofs, I find that assertion supported.

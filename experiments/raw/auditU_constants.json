@@ -1,0 +1,385 @@
+{
+ "A1_theta": [
+  {
+   "d0": "1",
+   "kappa": "1/8",
+   "theta0": "4",
+   "rows": [
+    {
+     "t": 10,
+     "d": 11,
+     "k": 13,
+     "theta*t": "45/11",
+     "float": 4.090909090909091
+    },
+    {
+     "t": 100,
+     "d": 101,
+     "k": 1250,
+     "theta*t": "406/101",
+     "float": 4.01980198019802
+    },
+    {
+     "t": 1000,
+     "d": 1001,
+     "k": 125000,
+     "theta*t": "4006/1001",
+     "float": 4.001998001998002
+    },
+    {
+     "t": 10000,
+     "d": 10001,
+     "k": 12500000,
+     "theta*t": "40006/10001",
+     "float": 4.000199980002
+    }
+   ]
+  },
+  {
+   "d0": "1",
+   "kappa": "1",
+   "theta0": "3",
+   "rows": [
+    {
+     "t": 10,
+     "d": 11,
+     "k": 100,
+     "theta*t": "207/80",
+     "float": 2.5875
+    },
+    {
+     "t": 100,
+     "d": 101,
+     "k": 10000,
+     "theta*t": "20067/6800",
+     "float": 2.951029411764706
+    },
+    {
+     "t": 1000,
+     "d": 1001,
+     "k": 1000000,
+     "theta*t": "2000667/668000",
+     "float": 2.995010479041916
+    },
+    {
+     "t": 10000,
+     "d": 10001,
+     "k": 100000000,
+     "theta*t": "200006667/66680000",
+     "float": 2.999500104979004
+    }
+   ]
+  },
+  {
+   "d0": "2",
+   "kappa": "1/2",
+   "theta0": "2",
+   "rows": [
+    {
+     "t": 10,
+     "d": 21,
+     "k": 50,
+     "theta*t": "43/21",
+     "float": 2.0476190476190474
+    },
+    {
+     "t": 100,
+     "d": 201,
+     "k": 5000,
+     "theta*t": "403/201",
+     "float": 2.0049751243781095
+    },
+    {
+     "t": 1000,
+     "d": 2001,
+     "k": 500000,
+     "theta*t": "4003/2001",
+     "float": 2.0004997501249377
+    },
+    {
+     "t": 10000,
+     "d": 20001,
+     "k": 50000000,
+     "theta*t": "40003/20001",
+     "float": 2.000049997500125
+    }
+   ]
+  },
+  {
+   "d0": "1/2",
+   "kappa": "1/32",
+   "theta0": "8",
+   "rows": [
+    {
+     "t": 10,
+     "d": 5,
+     "k": 6,
+     "theta*t": "19/3",
+     "float": 6.333333333333333
+    },
+    {
+     "t": 100,
+     "d": 51,
+     "k": 313,
+     "theta*t": "42950/5321",
+     "float": 8.071791016726179
+    },
+    {
+     "t": 1000,
+     "d": 501,
+     "k": 31250,
+     "theta*t": "4012/501",
+     "float": 8.007984031936127
+    },
+    {
+     "t": 10000,
+     "d": 5001,
+     "k": 3125000,
+     "theta*t": "40012/5001",
+     "float": 8.000799840031993
+    }
+   ]
+  }
+ ],
+ "A2_LDstep7": {
+  "Step7_product_without_rho_and_polylogs": "V**4*(2*d + 1)**2/(Y**2*d)",
+  "expected": "(2d+1)^2 V^4/(d Y^2)  -> 9d * 4 S^4 since V^2 = 2YS^2"
+ },
+ "A3_kernU": {
+  "cases": 75,
+  "violations": 0,
+  "max const (2H+1)^2(bb')^{d-2}maxPr where bb'<=(2H+1)/d": 1.2121212121212122,
+  "e": 2.718281828,
+  "family_H_eq_b2": [
+   {
+    "d": 3,
+    "b": 3,
+    "H": 9,
+    "maxfibre": 2,
+    "C_d_needed": 1.263157894736842,
+    "Kern-U hypothesis bb'<=(2H+1)/d": false
+   },
+   {
+    "d": 4,
+    "b": 3,
+    "H": 9,
+    "maxfibre": 4,
+    "C_d_needed": 1.5955678670360112,
+    "Kern-U hypothesis bb'<=(2H+1)/d": false
+   },
+   {
+    "d": 5,
+    "b": 2,
+    "H": 4,
+    "maxfibre": 6,
+    "C_d_needed": 1.7777777777777777,
+    "Kern-U hypothesis bb'<=(2H+1)/d": false
+   }
+  ]
+ },
+ "A4_image_index": {
+  "pairs": 100,
+  "index != |Delta|": 0
+ },
+ "A5_alpha_floor": {
+  "tau=0": {
+   "alpha_min_grid": "2/5",
+   "delta": "1/5",
+   "kap": "2/5",
+   "formula (2+tau)/(5+2tau)": "2/5"
+  },
+  "tau=1": {
+   "alpha_min_grid": "103/240",
+   "delta": "17/120",
+   "kap": "17/60",
+   "formula (2+tau)/(5+2tau)": "3/7"
+  },
+  "tau=2": {
+   "alpha_min_grid": "107/240",
+   "delta": "13/120",
+   "kap": "13/60",
+   "formula (2+tau)/(5+2tau)": "4/9"
+  }
+ },
+ "A6_cost": {
+  "1/(1-2^{-2/5}) bracket": [
+   "329877/79877",
+   "13195079/3195079"
+  ],
+  "C_gamma=0": {
+   "c_hi": 3.509453210632079,
+   "c_lo": 3.509453210632079,
+   "a": "23/40",
+   "d0": "17/16",
+   "kappa": "35/256",
+   "sigma": 2.661015710632079,
+   "s": 0.2734375,
+   "terms": {
+    "2a": 1.15,
+    "a+s+max(a,sigma)": 3.509453210632079,
+    "(a+s)/(1-2^-2/5)": 3.5038882728916874
+   }
+  },
+  "C_gamma=1": {
+   "c_hi": 4.039473404843824,
+   "c_lo": 4.039472446699301,
+   "a": "13/20",
+   "d0": "3/4",
+   "kappa": "21/256",
+   "sigma": 3.0476190476190474,
+   "s": 0.328125,
+   "terms": {
+    "2a": 1.3,
+    "a+s+max(a,sigma)": 4.025744047619048,
+    "(a+s)/(1-2^-2/5)": 4.039473404843824
+   }
+  },
+  "C_gamma=5": {
+   "c_hi": 5.035046296296296,
+   "c_lo": 5.035046296296296,
+   "a": "3/4",
+   "d0": "9/16",
+   "kappa": "5/128",
+   "sigma": 3.8162962962962963,
+   "s": 0.46875,
+   "terms": {
+    "2a": 1.5,
+    "a+s+max(a,sigma)": 5.035046296296296,
+    "(a+s)/(1-2^-2/5)": 5.033209673767065
+   }
+  },
+  "C_gamma=20": {
+   "c_hi": 6.472191413831238,
+   "c_lo": 6.472189878657185,
+   "a": "43/40",
+   "d0": "5/16",
+   "kappa": "3/256",
+   "sigma": 4.862015503875969,
+   "s": 0.4921875,
+   "terms": {
+    "2a": 2.15,
+    "a+s+max(a,sigma)": 6.429203003875969,
+    "(a+s)/(1-2^-2/5)": 6.472191413831238
+   }
+  },
+  "C_gamma=100": {
+   "c_hi": 8.855111882716049,
+   "c_lo": 8.855111882716049,
+   "a": "27/20",
+   "d0": "3/16",
+   "kappa": "1/256",
+   "sigma": 6.716049382716049,
+   "s": 0.7890625,
+   "terms": {
+    "2a": 2.7,
+    "a+s+max(a,sigma)": 8.855111882716049,
+    "(a+s)/(1-2^-2/5)": 8.833928260752707
+   }
+  }
+ },
+ "A7_margins": {
+  "params": {
+   "a": "3/5",
+   "d0": "1",
+   "kappa": "1/8",
+   "C_gamma": "20",
+   "C": "1000"
+  },
+  "checks": {
+   "2k*(1+Cg)*loglogN == 2kappa(1+Cg)Lambda": true,
+   "2^d loss in gamma is NOT affordable: k*d >> Lambda": true,
+   "(logN)^d loss NOT affordable": true,
+   "d^{C} loss costs O(Lambda) (finite, enters c)": true,
+   "N^{eta0/4} >> B^C": true,
+   "N^{eta0/4} >> S^C": true,
+   "N^{eta0/4} >> 2^{Cd}": true,
+   "Y >> B^C (8.5'(R'4), L2_fam (C))": true,
+   "u >> (loglogN)^4 (R'2)": true,
+   "(2d)! bits: d log d = o(Lambda)": true,
+   "S^d = N^{o(theta)}": true,
+   "eta0 = o(theta)": true,
+   "|D_A| >= 4k^3 2^omega (S'')": true,
+   "rejection exp(-logH/(13 d loglogH)) = o(gamma)": true,
+   "C_W = 24/eta0 polylog (eta0 logN >> log S)": true,
+   "level gap Gamma >> (2K0+U0) log B": true,
+   "Drappeau saving u/log^2 u >> loglog (in exponent: D^{2/5}/(loglog)^2 vs loglog)": true,
+   "2^omega NOT L^{o(1)} (why S'' is needed)": true
+  }
+ },
+ "A8_crossover": {
+  "P2: N^(eta0/4) >= B^3: D >= (4Ca)^10": 374390624.2624487,
+  "P2: N^(eta0/4) >= B^10: D >= (4Ca)^10": 63403380965376.0,
+  "P2: N^(eta0/4) >= B^11.9: D >= (4Ca)^10": 357705073152834.7,
+  "C_W: eta0 logN/3 >= 2 log S: D >= (3 sigma)^10": 1073741824.0,
+  "(2d)!: D^{1/5} >= 10*d0/5 (cost exponent < 0.1*Lambda): D >=": 32.0,
+  "S'': loglogN > 2kappa*log2/a (log N > ...)": 0.28881125,
+  "d >= 3 honestly (d0 D^{1/5} >= 3): D >=": 243.0
+ },
+ "A9_stark_alpha": {
+  "nested alpha=1/3, d ~ D^{1/3}": {
+   "exponent of D in (2 d log d)/Lambda_alpha": "0",
+   "verdict": "L[alpha, Theta(d0*delta)] (finite, enters c)"
+  },
+  "Theorem U alpha=2/5, d ~ D^{1/5}": {
+   "exponent of D in (2 d log d)/Lambda_alpha": "-1/5",
+   "verdict": "L^{o(1)}"
+  },
+  "hypothetical alpha=2/5 with d ~ D^{2/5}": {
+   "exponent of D in (2 d log d)/Lambda_alpha": "0",
+   "verdict": "L[alpha, Theta(d0*delta)] (finite, enters c)"
+  },
+  "concrete (float, print only)": [
+   {
+    "D": "1e6",
+    "d": 16,
+    "7*2d ln(2d)/Lambda": 0.187978103856126
+   },
+   {
+    "D": "1e10",
+    "d": 100,
+    "7*2d ln(2d)/Lambda": 0.028352234125721864
+   },
+   {
+    "D": "1e20",
+    "d": 10000,
+    "7*2d ln(2d)/Lambda": 0.0002779565943932333
+   },
+   {
+    "D": "1e40",
+    "d": 100000000,
+    "7*2d ln(2d)/Lambda": 2.7693655628758316e-08
+   },
+   {
+    "D": "1e80",
+    "d": 10000000000000000,
+    "7*2d ln(2d)/Lambda": 2.7741271738412906e-16
+   }
+  ]
+ },
+ "compare_lv5unif": {
+  "C_gamma=0": {
+   "lv5unif_hi": 3.5166666666666666,
+   "a": "3/5",
+   "kappa": "1/8",
+   "d0": "1"
+  },
+  "C_gamma=1": {
+   "lv5unif_hi": 4.046923076923077,
+   "a": "13/20",
+   "kappa": "2/25",
+   "d0": "4/5"
+  },
+  "C_gamma=5": {
+   "lv5unif_hi": 5.03838269584078,
+   "a": "4/5",
+   "kappa": "7/200",
+   "d0": "1/2"
+  },
+  "C_gamma=20": {
+   "lv5unif_hi": 6.497536231884058,
+   "a": "23/20",
+   "kappa": "1/100",
+   "d0": "3/10"
+  }
+ }
+}
