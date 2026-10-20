@@ -1,0 +1,327 @@
+**PROVED — There is no universal norm-size barrier in the setting proposed.** Common modular maps force a size bound on a **nonzero elimination certificate**, when one exists. They do not force a size bound on candidate norms.
+
+**HEURISTIC assessment — None of (a)–(i) supplies a complete classical factoring algorithm with exponent below \(1/3\).** However, a theorem excluding all those architectures would substantially exceed what the resultant argument proves.
+
+Write
+\[
+L=\log N,\qquad C=\log(\#\text{candidates}),\qquad b=\log B,
+\]
+and exclude zero norms throughout.
+
+**PROVED — The unrestricted lower bound is exactly zero.** Take any number of copies of
+\[
+R=\mathbb Z[\epsilon]/(\epsilon^2),\qquad \phi(\epsilon)=0\pmod N.
+\]
+The determinant norm of \(a_t=1+t\epsilon\) is \(1\). The family \(|t|\le H\) has coefficient height \(H\), entropy \(C=\log H+O(1)\), and
+\[
+\sum_i\log|\operatorname{Norm}_i(a_t)|=0.
+\]
+Thus even finite freeness over \(\mathbb Z\), genuine determinant norms, commutativity, and small coefficient height do not suffice. These particular modular images are all \(1\), so the family gives no factor-revealing information.
+
+**PROVED — Requiring reduced number-field algebras still does not give an arbitrary-family bound.** For \(N\ge3\), put
+\[
+f=x^2-Nx-1,\qquad g=x^2+Nx-1.
+\]
+Both are irreducible, coprime, and vanish at \(1\bmod N\), with
+\[
+\operatorname{Res}(f,g)=-4N^2.
+\]
+Nevertheless every \(x^j\) has norm \((-1)^j\) on both sides. Here the missing restriction is the sampling model: these are powers of units, with increasing archimedean height, rather than a full box of linear elements.
+
+**PROVED — Theorem 1: the general elimination barrier.** Let \(S\) be any unital \(\mathbb Z\)-algebra, possibly noncommutative, with maps
+\[
+\psi_i:S\longrightarrow R_i,\qquad \phi_i:R_i\longrightarrow A
+\]
+whose composites agree. Assume that \(\mathbb Z/N\hookrightarrow A\) is injective and scalar multiplication is the specified \(\mathbb Z\)-algebra structure. Put
+\[
+J=\sum_i\ker\psi_i
+\]
+using two-sided ideals.
+
+Then
+\[
+J\cap\mathbb Z\subseteq N\mathbb Z.
+\tag{1}
+\]
+Consequently every nonzero integer certificate \(d\in J\) satisfies
+\[
+|d|\ge N.
+\tag{2}
+\]
+Moreover,
+\[
+J\cap\mathbb Z\ne0
+\quad\Longleftrightarrow\quad
+(S/J)\otimes_{\mathbb Z}\mathbb Q=0.
+\tag{3}
+\]
+
+*Proof.* The common composite kills \(J\). Hence \(d\in J\cap\mathbb Z\) gives \(d1_A=0\), implying \(N\mid d\). Equation (3) is the criterion for \(1\in S/J\) to vanish after localization at the nonzero integers. ∎
+
+**PROVED — Hypotheses and limits.** This theorem needs neither finitely generated rings, commutativity, dimension zero, archimedean heights, nor norm maps. It needs a faithful scalar copy of \(\mathbb Z/N\), agreement of the maps, and, for a nontrivial conclusion, a nonzero integer certificate. Agreement alone does not ensure the last condition.
+
+**PROVED — Determinantal version.** Suppose a square integer matrix \(T\) presents a module whose cokernel surjects onto \(\mathbb Z/N\). If \(\det T\ne0\), then
+\[
+N\mid\det T,\qquad
+L\le\log|\det T|
+ \le\sum_j\log\|T_j\|_2.
+\tag{4}
+\]
+The determinant annihilates the cokernel by the adjugate identity; Hadamard gives the inequality. For a rectangular presentation, every maximal minor is divisible by \(N\). These minors, or the corresponding Fitting ideal, replace the resultant.
+
+**KNOWN — Geometric interpretation.** Resultants and suitable Chow-form specializations provide such certificates. Arithmetic Bézout bounds their heights in terms of degrees and input heights, under the relevant intersection hypotheses. These are bounds on the elimination object; transferring them to sampled function values requires another argument. See Bost–Gillet–Soulé, *Heights of projective varieties and positive Green forms*, JAMS 7 (1994), especially the arithmetic Bézout and resultant results. [Paper record](https://geodesic.mathdoc.fr/articles/10.1090/S0894-0347-1994-1260106-X/)
+
+**PROVED — Theorem 2: a genuine typical-norm barrier in an explicit model.** Let \(f,g\in\mathbb Z[x]\) have positive degrees \(d,e\), be coprime over \(\mathbb Q\), and share a root modulo \(N\). Let \(F,G\) be their binary homogenizations. Sample uniformly from
+\[
+\mathcal B_A=\{(a,b)\in\mathbb Z^2:|a|,|b|\le A\},
+\qquad C=\log|\mathcal B_A|.
+\]
+Assume \(A\to\infty\) and \(d+e=o(A)\). Then, for a proportion \(1-o(1)\) of these pairs,
+\[
+\log|F(a,b)G(a,b)|
+ \ge (1-o(1))\sqrt{2LC}.
+\tag{5}
+\]
+
+*Proof.* Let \(\mathcal M(f)\) denote Mahler measure, and write \(m_f=\log\mathcal M(f)\). From the root-product formula,
+\[
+N\le|\operatorname{Res}(f,g)|
+ \le 2^{de}\mathcal M(f)^e\mathcal M(g)^d.
+\]
+With \(D=\max(d,e)\), integrality gives \(m_f,m_g\ge0\), hence
+\[
+m_f+m_g\ge L/D-\min(d,e)\log2.
+\tag{6}
+\]
+
+For each root \(\alpha\), normalize its linear factor as
+\[
+\ell_\alpha(a,b)=\frac{a-\alpha b}{\max(1,|\alpha|)}.
+\]
+One coefficient has modulus one. Fixing the other integer coordinate therefore gives the uniform strip estimate
+\[
+\Pr\bigl(|\ell_\alpha|<Ae^{-t}\bigr)
+ \ll e^{-t}+A^{-1}.
+\tag{7}
+\]
+Discard the \(O((d+e)/A)\) fraction where some factor has modulus below \(1\). Integrating (7) from \(0\) to \(\log A\) shows that the expected total logarithmic deficit below \((d+e)\log A\) is \(O(d+e)\). Markov’s inequality consequently gives, outside a proportion \(O(\eta+(d+e)/A)\),
+\[
+\log|FG|
+ \ge m_f+m_g+(d+e)\log A-O((d+e)/\eta).
+\]
+Use (6), \(C=2\log A+O(1)\), and \(\eta=C^{-1/2}\). The result is
+\[
+\log|FG|\ge L/D+D\bigl(C/2-O(\sqrt C)\bigr).
+\]
+AM–GM proves (5). ∎
+
+**PROVED — Scope.** Theorem 2 uses two univariate integer polynomials, nonzero resultant, ordinary absolute values, binary homogenizations, and uniform sampling of a full box. Irreducibility is unnecessary. For monic polynomials, the homogenizations are determinant norms in finite free algebras. Nonmonic field implementations must account for leading coefficients and denominators. The theorem does not apply to an arbitrary thin subfamily.
+
+**HEURISTIC — Complexity corollary, with the additional assumptions exposed.** Adopt:
+
+- **Typical-value smoothness:** joint smoothness is governed by the usual norm-size ledger, including the contribution of exceptional regions.
+- **CEP transfer:** polynomial norms behave, for smoothness purposes, like appropriately sized random integers.
+- **Enumeration and rank:** candidates are charged for, factor bases are charged for, and relations have the usual useful rank.
+
+CEP estimates for random integers are established analytic results; their application to these polynomial values is the heuristic. [Canfield–Erdős–Pomerance, 1983](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf)
+
+For two integers of total logarithmic size \(X\), this model gives a smoothness penalty at least
+\[
+-\log P\gtrsim \frac Xb\log\frac{X}{2b}.
+\]
+Combining \(C\gtrsim-\log P\) with \(X\gtrsim\sqrt{LC}\) yields
+\[
+b^2C\gtrsim L(\log u)^2,\qquad u=X/(2b).
+\tag{8}
+\]
+If \(t=\log T\) and \(b,C\le O(t)\), then \(t^3\gtrsim L\), up to logarithmic factors. Thus \(\alpha\ge1/3\) **inside this model**.
+
+**PROVED — A typical lower bound alone does not prove this complexity corollary.** A density-zero region can still contain exponentially many useful relations. Its contribution cannot be dismissed without the smoothness/sampling assumptions above.
+
+**(a) More rings and MNFS. HEURISTIC — Only constants change in the classical MNFS model.** Put \(C_0=2\log A\). The standard general-NFS size ledger for one rational/algebraic pair is
+\[
+X_{\rm pair}\simeq 2L/d+dC_0/2,
+\]
+whose minimum is \(2\sqrt{LC_0}\). This is stronger than the resultant-only coefficient bound because it includes the usual general-input polynomial-selection assumptions.
+
+With \(V\) fields, counting field-labelled trials gives \(C=C_0+\log V\); thus the pair ledger is \(2\sqrt{L(C-\log V)}\), rather than a universal bound solely in terms of \(C\). However, \(V\) also multiplies the algebraic factor bases. In the standard rank model, with \(e^{b_a}\) columns per field and algebraic smoothness penalty \(\tau_a\),
+\[
+Ve^{C_0-\tau_a}\gtrsim Ve^{b_a},
+\quad\text{so}\quad C_0\gtrsim b_a+\tau_a.
+\]
+The field multiplicity cancels. Since
+\[
+X_a\simeq L/d+dC_0/2,
+\]
+the same cubic balance follows.
+
+**KNOWN — Published optimization** gives
+\[
+L_N\!\left[1/3,
+\left(\frac{92+26\sqrt{13}}{27}\right)^{1/3}\right]
+=L_N[1/3,1.9018836\ldots],
+\]
+compared with \(1.9229994\ldots\) for GNFS. See Coppersmith, *Modifications to the number field sieve* (1993), and Lee–Venkatesan, Remark 4.4. [Lee–Venkatesan](https://arxiv.org/pdf/1805.08873)
+
+**(b) Multivariate curves and surfaces. PROVED — The universal bound remains \(X\ge0\).** A small-height variety with a point modulo \(N\) need not carry any elimination obstruction: it may have that point over \(\mathbb Z\), and its defining equations may have a common characteristic-zero component. Then the relevant elimination certificate is zero.
+
+**HEURISTIC — A useful conditional ledger is**
+\[
+X(D)\gtrsim A_N/D+DC/r,
+\qquad
+\min_D X(D)\gtrsim2\sqrt{A_NC/r},
+\tag{9}
+\]
+where \(r\) counts effective coefficient parameters and \(A_N\) measures the height cost of encoding the modular constraint. Standard coefficient models give \(A_N=\Theta(rL)\), recovering \(\Theta(\sqrt{LC})\). **There is no general theorem establishing that scaling for arbitrary varieties.** Proving or violating it is part of the research problem.
+
+**PROVED — Merely adding coordinates establishes neither more independent relations nor smaller integer norms.** One must specify a finite projection, a norm or specialization, its denominators, the actual point count, and how the resulting identities reveal a factor.
+
+**(c) Function fields over number fields. PROVED — Again, no positive universal \(L,C\) bound.** A relative function-field norm is normally a rational function, not an integer. Producing integer smoothness targets requires specialization or arithmetic intersection, with vertical contributions and denominators included.
+
+**KNOWN — Arakelov theory supplies global height accounting**, rather than an automatic prohibition on small local or relative norms. [Schoof, *Computing Arakelov class groups*](https://arxiv.org/pdf/0801.3835)
+
+**HEURISTIC —** If this accounting produces (9) with \(A_N=\Theta(rL)\), the exponent stays \(1/3\). A two-dimensional arithmetic scheme, by itself, does not establish that ledger.
+
+**(d) Noncommutative rings. PROVED — There is no universal norm barrier.** In \(M_n(\mathbb Z)\), upper unipotent matrices have reduced norm \(1\), with arbitrarily large bounded-entry families and reduction maps modulo every \(N\).
+
+For comparison, a full fixed-\(n\) matrix box has entropy
+\[
+C=n^2\log H+O(1)
+\]
+and typical determinant logarithm
+\[
+\log|\det a|=n\log H+O(1)=C/n+O(1),
+\]
+with no \(L\) term. A fixed definite quaternion order similarly has four coefficient parameters and quadratic reduced norm, giving typical size \(C/2+O(1)\). Constants depending on an \(N\)-dependent order must be charged.
+
+**KNOWN —** Reduced norms become determinants after splitting; quaternion reduced norms are quadratic forms. [Voight, *Quaternion Algebras*, Chapter 4](https://link.springer.com/chapter/10.1007/978-3-030-56694-4_4)
+
+**PROVED —** For \(\mathbb Z[G]\), the regular determinant norm has degree \(|G|\); a full coefficient box therefore has typical logarithmic norm \(C+O_G(1)\), again without an \(L\) term. A modular representation need not supply an integral lift of its determinant character.
+
+The replacement for the resultant is an elimination certificate or presentation/Fitting determinant as in Theorem 1. Also, images of a commutative common source necessarily commute. Parity of reduced norms alone does not turn arbitrary noncommuting products into squares.
+
+**(e) Different multiplicative heights. PROVED — No positive bound without a normalization tying the height to the actual integers being factored.** The constant function \(1\) is multiplicative. A single nonarchimedean absolute value can ignore all growth elsewhere.
+
+For a reduced rational number \(u/v\), testing smoothness of both numerator and denominator charges
+\[
+X=\log|u|+\log|v|.
+\]
+Renaming or rescaling a height does not alter this arithmetic task.
+
+**PROVED —** The product formula balances places for global elements; it gives no lower bound on an arbitrarily selected subset of places.
+
+**(f) \(p\)-adic and adelic relations. PROVED — The exact global bound is elementary.** If a nonzero rational \(U/V\), with \((V,N)=1\), vanishes modulo \(N^s\), then
+\[
+N^s\mid U,\qquad \log|U|\ge sL.
+\tag{10}
+\]
+A relation only in \(\mathbb Q_p\) has no corresponding \(N\)-dependent bound unless a global connection to \(N\) is supplied. Knowing a prime \(p\mid N\) already factors \(N\).
+
+**PROVED —** Arbitrary adelic points need not come from a global element. Turning local identities into principal global identities is additional arithmetic work. Thus the unrestricted smooth-target bound is zero; globalization, when it produces (10), restores the integer size cost.
+
+**(g) Kirchner 2018. KNOWN — The verified claim is conditional and retains exponent \(1/3\).** The publisher’s abstract proposes factoring relative discriminants through strongly ambiguous ideals in prime-degree Galois extensions. It gives conditional constants
+\[
+(16/9)^{1/3}=1.2114137\ldots
+\]
+for special inputs and potentially
+\[
+(32/9)^{1/3}=1.5262857\ldots
+\]
+for general inputs. It explicitly reports no evidence that the required field families can be constructed. [Kirchner, *NFS factorization: new hopes*](https://www.mathnet.ru/eng/pdma386)
+
+**Bibliographic limitation:** I could verify that abstract but could not retrieve the full paper. I therefore cannot certify its complete quantitative field hypotheses; that requested part remains unresolved here.
+
+**PROVED — Necessary requirements for such a mechanism** include an explicit cyclic extension and automorphism, target primes genuinely represented in its relative ramification, sufficiently accessible unit/ideal arithmetic, and a nontrivial ramified ideal that yields a proper divisor. Polynomial-discriminant divisibility alone is insufficient: the order index can absorb primes without field ramification. The distinction between ambiguous classes and classes represented by invariant ideals is substantive. [Lemmermeyer, Theorem 1 and Proposition 1](https://arxiv.org/pdf/1309.1071)
+
+**PROVED — A necessary height obstruction, not a nonexistence theorem:** if
+\[
+N^a\mid\operatorname{disc}(f),\qquad \deg f=d,
+\]
+then Vandermonde–Hadamard gives
+\[
+aL\le(2d-2)\log\mathcal M(f)+d\log d.
+\tag{11}
+\]
+Indeed, normalize each Vandermonde row by \(\max(1,|\alpha_i|)^{d-1}\) and apply Hadamard. Equation (11) restricts the parameters but does not contradict the existence of suitable fields.
+
+**HEURISTIC —** Counting \(M\) coefficient choices subject to \(q\) independent modular conditions predicts roughly \(M/N^q\) solutions. This Gaussian counting assumption must account for movable roots and dependent constraints. It does not justify declaring Kirchner’s fields impossible.
+
+**(h) Schnorr-style lattices. PROVED — The missing quantitative implication is precise.** Define
+\[
+\delta=\log(u/v)-L,\qquad W=|u-vN|.
+\]
+Then exactly
+\[
+W=Nv|e^\delta-1|,
+\]
+and for \(0<|\delta|\le1\),
+\[
+\log W=L+\log v+\log|\delta|+O(1).
+\tag{12}
+\]
+To guarantee \(W\le B\), one therefore needs
+\[
+|\delta|\lesssim B/(Nv).
+\tag{13}
+\]
+Small relative logarithmic error does not establish small absolute remainder.
+
+**PROVED —** In the corrected preprint’s displayed lattice, put \(q=N^{1/(n+1)}\). Its triangular determinant is
+\[
+\det R=n!\,qL.
+\]
+A radius bound \(R_0\) on a vector in the required target slice gives only
+\[
+|\delta|\le R_0/q,
+\]
+hence
+\[
+\log W\le L+\log v+\log R_0-L/(n+1)+O(1).
+\tag{14}
+\]
+This does not establish (13), a polynomially frequent smooth remainder, or even that an unrestricted shortest vector lies in the required slice. [Schnorr, corrected preprint](https://eprint.iacr.org/2021/933)
+
+For \(N=2^{400}\), \(n=47\), \(q\approx322.54\). Guaranteeing \(W\le211\) requires approximately \(|\delta|\lesssim e^{-271.91}/v\).
+
+**HEURISTIC —** Larger \(W\) may still be smooth, but then the missing assertion is sufficient success probability:
+\[
+C\gtrsim \frac{\log W}{b}\log\frac{\log W}{b},
+\]
+together with enough distinct, useful relations. Lattice shortness alone supplies neither assertion.
+
+**KNOWN —** Ducas’s reproduction reported zero factoring relations in 1,000 trials at the advertised 400-bit parameters. Later experiments also identify repeated relations and inadequate relation supply. These observations refute the advertised performance evidence, not every conceivable lattice-based factoring algorithm. [SchnorrGate](https://github.com/lducas/SchnorrGate), [Aboumrad–Widdows–Kaushik, §§3.3, 5](https://arxiv.org/pdf/2308.07804)
+
+**(i) Units, class groups, and cyclotomic identities. PROVED — Norm-one families really do evade a norm-size lower bound.** Their missing resource is useful arithmetic information.
+
+**KNOWN —** Dirichlet’s theorem gives
+\[
+\dim_{\mathbb F_2}\mathcal O_K^\times/
+(\mathcal O_K^\times)^2=r_1+r_2.
+\]
+For \(S\)-units the dimension becomes \(r_1+r_2+|S|\). [Schoof](https://arxiv.org/pdf/0801.3835)
+
+**PROVED —** Generating many products of known units therefore does not generate proportionally many independent square classes. Computing new generators, principalizations, and the relevant modular images must be charged. Large heights alone are not runtime lower bounds: compact representations may help, but require their own algorithms and analysis.
+
+**KNOWN —** Nontrivial finite-field Gauss sums have conjugates of absolute value \(\sqrt q\). In a containing number field of degree \(D\),
+\[
+\log|\operatorname{Norm}(\tau)|=(D/2)\log q.
+\]
+Stickelberger describes their prime-ideal factorization; it does not erase that size. [Beukers, §2](https://archive.intlpress.com/site/pub/files/_fulltext/journals/pamq/2015/0011/0004/PAMQ-2015-0011-0004-a002.pdf)
+
+**PROVED —** If \(q\le B\), these norms are smooth by construction. The remaining task is to connect the identities to unknown prime factors of \(N\), with useful rank and factor-revealing output. The identities themselves do not provide that connection.
+
+**HEURISTIC — Ranking the near-misses.**
+
+1. **Ramification/class-group methods, including Kirchner.** They can avoid the two-polynomial modular-root architecture. The needed object is a cheaply constructible family whose accessible arithmetic reveals nontrivial ramified support. The resultant theorem does not exclude it.
+2. **Multivariate or relative-norm constructions.** They would need a demonstrable failure of \(A_N=\Theta(rL)\) in (9), while preserving efficient enumeration and useful relations. More coordinates alone do not establish this.
+3. **Constructive unit or \(S\)-unit methods.** They already violate norm growth. They would need cheap access to sufficiently informative square classes or cohomological data, with nontrivial behavior at the unknown factors of \(N\).
+4. **Lattice targeting.** It would need a quantitative theorem or supported heuristic producing enough distinct smooth remainders at the precision dictated by (12), with the lattice-solving cost included.
+
+**PROVED — What an escape must actually supply.** For \(t=L^{\alpha+o(1)}\), \(\alpha<1/3\), a smooth-relation escape would need, within \(e^{O(t)}\) total classical work:
+
+- \(e^{\Theta(t)}\) genuinely useful candidates;
+- integer smoothness targets with total logarithmic size \(L^{2\alpha+o(1)}\), with the appropriate logarithmic factors;
+- enough relation rank and a factor-revealing dependency;
+- charged construction, denominator, field-arithmetic, and extraction costs.
+
+The elimination theorem is unconditional. The binary-box norm theorem is unconditional. Their extension to an all-architecture \(1/3\) factoring barrier is unsupported; the smoothness complexity conclusion remains conditional on the explicitly stated model.
