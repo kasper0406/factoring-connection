@@ -1,0 +1,307 @@
+| Rank | New combination | Payoff if the missing lemma holds | Assessment | Chance* |
+|---|---|---|---|---:|
+| **1** | Saddle-point weights + sparse transference for complete descent certificates | Rigorous \(L_N[3/8,O(1)]\) | **SPECULATIVE; strongest survivor** | **3%** |
+| **2** | Inverse sieve + constructive classification of uncovered factors | Deterministic \(N^{6/31+o(1)}\) on every balanced semiprime | **SPECULATIVE; survives** | **2%** |
+| **3** | Connected Hecke correspondences + compressed cohomological traces | Deterministic almost-all \(N^{2/13+o(1)}\), given the proposed trace algorithm | **SPECULATIVE; survives** | **1%** |
+| **4** | Jacobian Kummer cohomology + odd-isogeny certificate transport | Fresh-field descent below \(L[2/5]\), potentially \(L[1/3]\) | **SPECULATIVE; survives narrowly** | **0.5%** |
+| **5** | Toric elimination + separation of search entropy from norm height | Heuristic \(L[1/4]\) for general integers | **SPECULATIVE; only the nongeneric version survives** | **0.3%** |
+| **6** | Small-characteristic elimination + Witt-vector carry correction | Heuristic \(L[1/4]\), potentially better | **SPECULATIVE; extreme long shot** | **0.1%** |
+| **7** | Gassmann equivalence + odd-degree torus transport | Would refresh algebraic children | **Killed for the universal transport formulation** | **0%** |
+| **8** | Coefficient-digit independence + high-moment amplification | Would prove all-target descendability at \(L[1/3]\) | **Killed for the uniform-fibre proof strategy** | **0%** |
+| **9** | Spatially coupled LDPC methods + global large-prime recombination | Would replace descent trees by global cancellation | **Killed under diffuse-child statistics** | **0%** |
+
+\(*\) Subjective chances of obtaining the indicated breakthrough within two years of focused expert work, conditional on the repository’s internal chain where used. They are not sampling-success probabilities.
+
+I read all nine requested files and kept the repository read-only. “New” means I did not find the **specific mechanism** in those files or the cited literature; it is not a publication-priority claim. **KNOWN** denotes an external result with a reference. **PROVED** below denotes the stated elementary implication or obstruction, with its premises. No new factoring algorithm is proved here.
+
+**1. Count complete certificates using tilted smooth-number measures**
+
+**Mechanism — SPECULATIVE.**  
+Replace induction on the density of “good children” by a weighted count of **completed two-level certificates**.  
+After fixing the points and factorization labels of a certificate, polynomial evaluations become an overdetermined affine system in the field coefficients.  
+Use saddle-point weights for smooth numbers, remove explicit local factors, and apply a relative counting argument to that entire system.  
+The proposed cross-pollination is sparse transference: correlated values need not behave independently if their joint configuration count remains controllable.
+
+The genuinely new twist is to attack overdetermination directly, rather than repeatedly invoking FM/LD* beyond their coefficient budget.
+
+**Payoff and calculation — HEURISTIC size model.** Put \(D=\log N/\log\log N\). Choose
+\[
+\alpha=\frac38,\qquad d\asymp D^{1/4},
+\qquad
+\beta_1=\frac58,\quad \beta_2=\frac12,\quad \beta_3=\frac38.
+\]
+The two norm-size exponents are
+\[
+\sigma_1=\max\left(\frac34,\frac14+\frac58\right)=\frac78,
+\qquad
+\sigma_2=\max\left(\frac34,\frac14+\frac12\right)=\frac34.
+\]
+Thus both smoothness costs have exponent \(3/8\):
+\[
+\sigma_1-\beta_2=\sigma_2-\beta_3=\frac38.
+\]
+Two levels avoid the accumulating depth losses at the \(1/3\) endpoint.
+
+**Precise missing lemma — OPEN.** Let \(Z_{A,q}\) count completed two-level certificates in prescribed boxes, including their actual algebraic children. With \(q\) uniform in the initial rational-prime shell, prove
+\[
+\mathbb E Z_{A,q}\ge(\log N)^{-C},
+\qquad
+\mathbb E Z_{A,q}^{2}
+ \le(\log N)^C(\mathbb E Z_{A,q})^2,
+\]
+uniformly at the displayed parameters, after admissibility filters. This gives a polylogarithmic density of completely descendable initial targets. The existing split-counting machinery could then use that target set.
+
+**KNOWN:** Harper obtains sparse smooth-number restriction estimates and smooth \(a+b=c\) asymptotics. Matthiesen–Wang establish weighted nilsequence orthogonality and linear-pattern results. Neither provides this growing-complexity, large-coefficient, certificate-conditioned estimate. [Harper](https://arxiv.org/abs/1408.1662), [Matthiesen–Wang](https://arxiv.org/abs/2211.16892).
+
+**First step / kill test.** Write the smallest overdetermined certificate system explicitly, including congruences imposed by child labels. Attempt its weighted second moment before considering general trees. Kill the proposed transference argument if its majorant loses \(\exp(\Omega(d))\) in the **relative** moment ratio, or if its constants grow exponentially in the number of forms.
+
+**Adversarial verdict.** Prop SI does not refute this: the lemma counts the actual endogenous configurations, not arbitrary dense good sets. OD identifies exactly why the new theorem is difficult. This survives, but it requires substantial new smooth-number analysis.
+
+**Probability/significance:** **3%**. The first rigorous exponent below \(2/5\) would already be a major result.
+
+**2. Turn noncoverage into an efficiently decodable structure theorem**
+
+**Mechanism — SPECULATIVE.**  
+Run a DCL covering design slightly below the worst-case coverage threshold.  
+Instead of proving that every prime pair is covered, study the arithmetic structure forced by simultaneous noncoverage.  
+Use an inverse-sieve argument retaining the phases and correlations discarded by current positivity estimates.  
+Convert the resulting structure into explicit short intervals containing the uncovered factor, then apply Coppersmith.
+
+This changes the objective from “the exceptional set is empty” to “the exceptional set has a cheap, constructive description.”
+
+**Payoff — PROVED conditional calculation.** The repository’s balanced-case ledger gives
+\[
+\lambda=J^\vartheta
+\quad\Longrightarrow\quad
+X=N^{(1+\vartheta)/(6+\vartheta)+o(1)}.
+\]
+At \(\vartheta=1/5\),
+\[
+X=N^{6/31+o(1)}=N^{0.193548\ldots+o(1)}.
+\]
+If the uncovered branch can also be decoded within \(X\), this beats \(1/5\) for **every balanced semiprime**. Extending that conclusion to arbitrary factor ratios remains a separate obligation.
+
+**Precise missing lemma — OPEN.** For a specified attaining design with \(\lambda=J^{1/5}\), construct, from \(N\) and the formal noncoverage constraints, at most \(N^{6/31+o(1)}\) intervals of length
+\[
+N^{1/4-\varepsilon},
+\]
+one containing the smaller prime whenever the true balanced pair is uncovered. Construction must fit the same budget. Coppersmith handles each interval in polynomial time for fixed \(\varepsilon>0\).
+
+**KNOWN:** inverse-large-sieve results relate restrictive residue patterns to algebraic structure, but they do not supply this constructive, input-specific compression. [Green–Harper](https://arxiv.org/abs/1311.6176).
+
+**First step / kill test.** Derive the exact forbidden residue sets for one DCL band and inspect their additive energies. Attempt a weak inverse theorem whose conclusion is stronger than the already-known equation \(pq=N\). Kill any argument that merely rediscovers that hyperbola, or produces a structured container requiring \(N^{1/5}\) work to enumerate.
+
+**Adversarial verdict.** “Noncoverage implies structure” alone is insufficient. The structure must expose factor information and be computable without the factors. This escapes the local-selector barriers only through that genuinely global construction.
+
+**Probability/significance:** **2%**. Even the balanced worst-case improvement would break an important deterministic frontier.
+
+**3. Compute a connected Hecke trace instead of individual Euler factors**
+
+**Mechanism — SPECULATIVE.**  
+Use a fixed non-CM eigenform, preferably \(\Delta\), whose coefficient field is \(\mathbb Q\).  
+Represent the difference \(T_m^2-T_{m^2}\) geometrically through a fibre product of Hecke correspondences.  
+Seek cancellations at the cohomological level before enumerating isogenies or divisor-indexed components.  
+Compute the resulting traces modulo small auxiliary primes and reconstruct the required integers by CRT.
+
+The earlier notes list modular coefficients as an oracle. The proposed new algorithmic primitive is a **compressed trace of a difference of correspondences**.
+
+**Payoff — KNOWN reduction; PROVED cost transfer.** Bach–Charles show that \(a(N)\) and \(a(N^2)\) factor a density-one set of RSA moduli, including balanced ones. An evaluator costing \(m^{\theta+o(1)}\) would therefore cost \(N^{2\theta+o(1)}\). Consequently:
+\[
+\theta<\frac1{10}\Rightarrow\text{below }N^{1/5},
+\qquad
+\theta<\frac1{12}\Rightarrow\text{below }N^{1/6}.
+\]
+The benchmark \(\theta=1/13\) gives \(N^{2/13+o(1)}\). This is an almost-all conclusion, not an average-time conclusion with an unrestricted fallback. [Bach–Charles](https://arxiv.org/abs/0708.1192).
+
+For \(\Delta\), write \(A=\tau(N)\) and
+\[
+C=A^2+N^{11}-\tau(N^2).
+\]
+When \(N=pq\),
+\[
+C=\tau(p)^2q^{11}+\tau(q)^2p^{11},
+\]
+so
+\[
+C^2-4A^2N^{11}
+=\bigl(\tau(p)^2q^{11}-\tau(q)^2p^{11}\bigr)^2.
+\]
+The reduced denominators after dividing the two roots by \(N^{11}\) expose a factor, except for the known zero-coefficient exceptions.
+
+**Precise missing lemma — OPEN, very ambitious.** Give a deterministic algorithm computing \(A\) and \(C\), or equivalent sufficient data, in \(N^{2/13+o(1)}\) time without factoring \(N\), constructing a degree-\(N\) correspondence explicitly, or summing over its unknown divisors. Modular-cohomology algorithms are a precedent for efficient coefficient computation, not a solution at composite indices. [Edixhoven et al.](https://arxiv.org/abs/math/0605244).
+
+**First step / kill test.** Produce an explicit trace formula for the connected correspondence with a succinct description at composite \(m\). Kill the proposal if constructing the operator still requires its full degree, or if its decomposition asks for the divisors of \(m\).
+
+**Adversarial verdict.** Fixed cohomological dimension does not make a huge correspondence cheap. This survives as a sharply specified alternative computational problem, with no present complexity evidence supporting the desired exponent.
+
+**Probability/significance:** **1%**. Success would create a deterministic route outside the repository’s collision and smooth-order models.
+
+**4. Transport Kummer classes rather than prime ideals**
+
+**Mechanism — SPECULATIVE.**  
+Associate the odd-degree NFS polynomial \(f\) with the hyperelliptic Jacobian of \(y^2=f(x)\).  
+Separate an algebraic square class into its rational norm component and its norm-kernel component.  
+Transport the latter through explicit Kummer-cohomology correspondences, initially testing odd-degree isogenies.  
+Use transport certificates to close an old algebraic obligation through a new representation or field block.
+
+There is a useful elementary identity here. For odd \(d=[K:\mathbb Q]\), set \(n=\operatorname{Norm}(z)\). Then
+\[
+\operatorname{Norm}(z/n)=n^{1-d}
+\]
+is a square. Thus arbitrary NFS square classes can be reduced to rational classes plus norm-kernel classes; one need not assume every atom is already a Selmer class.
+
+**KNOWN:** hyperelliptic 2-descent realizes Kummer data in the associated étale algebra. An odd-degree isogeny induces an isomorphism on 2-torsion. Neither fact supplies efficient evaluated certificate transport. [Schaefer](https://doi.org/10.1006/jnth.1995.1044), [Stoll](https://doi.org/10.4064/aa98-3-4).
+
+**Payoff — SPECULATIVE calculation.** At \(L[3/8]\), polynomially many bridges per completed certificate, each costing \(L[3/8,O(1)]\) and adding only \(O(\Lambda_{3/8})\) to logarithmic sizes, preserve the exponent. Successful repeated transport could attack the same-field component restriction behind OD. The \(1/3\) endpoint would additionally need controlled total transport and search costs.
+
+**Precise missing lemma — OPEN.** Construct a useful supply of admissible transport pairs, with explicit certificates giving
+\[
+\psi_f(z)\equiv u\,s^2\,\psi_{f'}(z')\pmod N,
+\]
+where \(u\) has a known factorization, \(s\) is explicit, old algebraic obligations are correctly transported modulo squares, and all new children satisfy the desired contraction bounds. Crucially, the available new representations must retain a conditional relation-supply bound after the previous history.
+
+**First step / kill test.** Find **one nontrivial pair** with explicit transport formulas and an evaluation-compatible marking; verify the identity symbolically. Measure height growth before seeking a family. Reject ordinary multiplication isogenies that merely return the same representation.
+
+**Adversarial verdict.** Rational odd isogenies are not freely available; an isogenous abelian variety need not remain a hyperelliptic Jacobian; cohomological equivalence does not preserve the chosen evaluation automatically. This survives only as a research programme for a new certificate representation.
+
+**Probability/significance:** **0.5%**. It addresses the algebraic-children problem at its representation layer.
+
+**5. Toric sieving with an entropy–height separation**
+
+**Mechanism — SPECULATIVE.**  
+Replace linear elements \(a-b\alpha\) by families supported on carefully chosen Newton polytopes.  
+Price search by lattice-point entropy and arithmetic size by mixed resultant degrees.  
+Seek structured multiplication tensors where many search coordinates share one coefficient-height cost.  
+Require smallness on both the algebraic and rational sides, including denominators.
+
+The goal is stronger than “use more dimensions”: it is to break the usual payment of coefficient height for every extra dimension.
+
+**Payoff — HEURISTIC calculation.** Let \(t=\log N\), \(D=t/\log t\), and let \(C\) denote logarithmic search volume. Generic degree-\((r-1)\) elements have a ledger of the form
+\[
+\log X\approx \frac{rt}{d}+\frac dr C.
+\]
+Writing \(e=d/r\) recovers \(t/e+eC\), hence the familiar \(1/3\) balance.
+
+Suppose a structured construction instead achieved the **aggregate two-sided** bound
+\[
+\log X\ll \frac td+\frac dr C.
+\]
+Taking
+\[
+d\asymp D^{1/2},\qquad r\asymp D^{1/4},
+\qquad C\asymp\Lambda_{1/4}
+\]
+would give \(\log X=O(\Lambda_{1/2})\), whose smoothness cost at \(B=L[1/4]\) is \(L[1/4,O(1)]\).
+
+**Precise missing lemma — OPEN; nongeneric.** Construct such supports and polynomial-selection data for general \(N\), within \(L[1/4,O(1)]\) work, while retaining enough usable relations and the aggregate height bound. Sparse resultant multidegrees are explicitly governed by mixed volumes; these must be computed, not replaced by tensor rank. [Sombra](https://www.maia.ub.edu/~sombra/publications/res/res.pdf).
+
+**First step / kill test.** Enumerate modest toric support families and calculate all resultant multidegrees, including rational evaluation. Kill any family where reducing evaluation cost leaves the \(rt/d\) height term intact.
+
+**Adversarial verdict.** Generic higher-dimensional NFS is killed by the displayed cancellation. Only a special arithmetic family separating entropy from height survives. Faster tensor contraction alone supplies no exponent gain.
+
+**Probability/significance:** **0.3%**. This is a concrete geometric target for heuristic factoring below \(1/3\).
+
+**6. Lift small-characteristic elimination while compressing the carries**
+
+**Mechanism — SPECULATIVE.**  
+Encode \(N\) by its base-\(p\) digit polynomial \(P_N(T)\), with \(P_N(p)=N\).  
+Generate elimination identities in the small-characteristic algebra and its field components.  
+Lift identities through truncated Witt vectors, recording the integer carry errors explicitly.  
+Seek a small correction module whose dependencies become valid integer square congruences.
+
+This reverses the direction of r19’s function-field transfer.
+
+**KNOWN:** fixed-characteristic finite-field discrete logarithms admit quasi-polynomial expected time. Witt vectors provide characteristic-\(p^k\) lift structures. Neither theorem transfers those identities modulo an unrelated integer \(N\). [Kleinjung–Wesolowski](https://arxiv.org/abs/1906.10668), [Hazewinkel](https://people.math.rochester.edu/faculty/doug/otherpapers/Hazewinkel-Witt.pdf).
+
+**Payoff — HEURISTIC calculation.** Finite-field elimination would be inexpensive relative to \(L_N[1/4]\). If a corrected relation’s total carry norm satisfied
+\[
+\log X_{\rm carry}=O(\Lambda_{1/2}),
+\]
+then smoothing those corrections at \(B=L[1/4]\) costs \(L[1/4,O(1)]\). Polynomial powers of the resulting factor-base size preserve the exponent.
+
+**Precise missing lemma — OPEN, highly implausible without additional structure.** Lift sufficiently many elimination identities to integer certificates with the displayed aggregate carry bound, at most \(L[1/4,O(1)]\) correction coordinates, and verified congruences modulo \(N\). Fruitfulness of the corrected dependencies needs its own argument or explicit heuristic.
+
+**First step / kill test.** Lift one elimination step to precision \(p^k>N\). Track the multiplicative rank and total logarithmic norm of the correction terms after square cancellations. Kill the construction if ordinary size-\(N^{\Theta(1)}\) carry factors persist without an exploitable relation.
+
+**Adversarial verdict — PROVED obstruction to the naive version.** A unital map
+\[
+\mathbb Z/p^k\mathbb Z\longrightarrow\mathbb Z/N\mathbb Z
+\]
+requires \(N\mid p^k\). Thus a direct ring transplant is impossible for \((p,N)=1\). Only a new identity-with-corrections construction survives.
+
+**Probability/significance:** **0.1%**. The payoff is enormous; the carry lemma is almost the entire breakthrough.
+
+**7. Gassmann-equivalent fields as interchangeable certificate stores**
+
+**Mechanism — SPECULATIVE proposal, then rejection.**  
+Use nonisomorphic fields whose restriction-of-scalars tori are isomorphic or linked by an odd-degree isogeny.  
+Transport multiplicative classes through monomial maps between conjugates.  
+Choose a new field representation with refreshed coefficients.  
+Hope that the selected evaluation modulo \(N\) survives up to a known square.
+
+**KNOWN:** nonisomorphic fields with isomorphic multiplicative tori exist. [Prasad](https://arxiv.org/abs/1409.3173).
+
+**Payoff if it worked.** Height-controlled universal transport would directly attack algebraic field-binding and make the nested \(L[1/3]\) size model relevant.
+
+**Missing lemma — false in the following universal formulation.** Require an odd-degree torus isogeny whose pullback sends a selected embedding character to the old selected embedding character modulo twice the character lattice.
+
+**PROVED kill.** Over a common Galois closure, the character lattices are permutation lattices. Odd isogeny degree makes the character map invertible modulo \(2\). If one embedding basis vector maps to one embedding basis vector modulo \(2\), Galois equivariance gives the same property throughout its orbit. Invertibility makes this a bijection of the embedding \(G\)-sets. The corresponding fields are therefore isomorphic.
+
+**First kill test.** Reduce the monomial transport matrix modulo \(2\). Nonisomorphic examples necessarily mix embedding coordinates in the relevant sense.
+
+**Verdict/probability/significance:** **0% for this universal formulation.** Restricted transport on selected certificate subgroups remains conceivable, but the isomorphic-tori theorem alone does not provide an escape. Idea 4 deliberately asks for a different, cohomological representation.
+
+**8. Use coefficient digits as a limited-independence generator**
+
+**Mechanism — SPECULATIVE proposal, then rejection of one proof strategy.**  
+Split the random coefficients into digit blocks.  
+Try to obtain high-order independence among candidate success indicators without increasing degree.  
+Use limited-independence concentration to make every target descendable.  
+Spend the field’s randomness on a strong zero-count tail instead of a second moment.
+
+**KNOWN:** sufficiently high limited independence supports strong concentration bounds. The issue is obtaining that independence arithmetically. [Schmidt–Siegel–Srinivasan](https://www.cs.umd.edu/~srin/PDF/ch-bounds.pdf).
+
+**Payoff — HEURISTIC calculation.** At \(1/3\), write \(E=\Lambda_{1/3}\), \(Q=\Lambda_{2/3}\), and \(d\asymp Q/E\). A mean candidate count \(\mu=e^{cE}\), together with suitable moments of order \(\asymp d\), could give a dead-target probability \(e^{-\Omega(dE)}=e^{-\Omega(Q)}\), enough for an all-target union bound.
+
+**Precise missing lemma — OPEN generally; the triangular-fibre route fails.** Prove those high central moments while keeping coefficient height \(\log H=O(Q)\) and conditioning on local factors.
+
+For \(r\) retained evaluation points, the generalized triangular kernel basis has leading multiplier \(\prod_i b_i\). The dimension-uniform fibre estimate used by this strategy needs roughly
+\[
+H\gg d\prod_i b_i.
+\]
+For \(r\asymp d\) and \(b_i\asymp e^{z/2}\), \(z\asymp Q\), this demands
+\[
+\log H=\Omega(dQ)=\Omega(\log N).
+\]
+That destroys the intended norm scale.
+
+**First kill test.** Generalize Kern-U to three and then \(r\) evaluations, retaining its exact lattice factors. This already rejects the proposed uniform-fibre implementation; digit blocks do not remove those factors.
+
+**Verdict/probability/significance:** **0% for this proof strategy.** High moments remain possible through a genuinely different arithmetic estimate. Limited independence cannot simply be declared from the number of coefficient bits.
+
+**9. Spatially coupled relation graphs instead of individually successful trees**
+
+**Mechanism — SPECULATIVE proposal, then rejection under diffuse labels.**  
+Retain large-prime columns and organize relations in size layers.  
+Seed the bottom layer with factor-base relations.  
+Use spatial coupling and peeling, as in LDPC decoding, to propagate cancellation upward.  
+Hope that global linear dependencies replace the requirement that every child have its own completed descent.
+
+**KNOWN:** spatial coupling can improve decoding thresholds. Large-prime recombination is classical. Neither creates arithmetic coincidences among labels. [Kudekar–Richardson–Urbanke](https://arxiv.org/abs/1001.1826), [Lenstra–Manasse](https://doi.org/10.1090/S0025-5718-1994-1250773-9).
+
+**Payoff if it worked.** It would replace the completed-tree requirement by a global rank condition, potentially avoiding same-field overdetermination.
+
+**Precise missing lemma — OPEN.** Construct relations whose large-child labels concentrate in reservoirs of effective size \(L[\alpha,O(1)]\), despite having norms up to \(L[\beta]\), \(\beta>\alpha\), without paying that concentration cost in lattice determinants or search probability.
+
+**PROVED conditional kill calculation.** If \(M=L[\alpha,O(1)]\) relations each expose polynomially many child labels diffusely among \(V=L[\beta,\Theta(1)]\) possibilities, then
+\[
+\mathbb E[\text{accidental repeated labels}]
+\ll \frac{M^2\operatorname{polylog}N}{V}=o(1).
+\]
+Reusing a forced target cancels that target but leaves fresh children. Peeling cannot eliminate terminal private columns merely by reorganizing the matrix.
+
+**First kill test.** Contract forced-target edges and count repeated child labels and private terminal columns. Charge any CRT constraints used to force reservoir membership.
+
+**Verdict/probability/significance:** **0% under diffuse-child statistics.** A successful arithmetic reservoir construction would be a different breakthrough; coding theory would then help exploit it.
+
+**Adversarial ranking.** The survivors are **1 \(>\) 2 \(>\) 3 \(>\) 4 \(>\) 5 \(>\) 6**. I would start with the explicit two-level correlation system in **1**, and the constructive exceptional-set formulation in **2**. For **4–6**, require one exact transport or size identity before investing in asymptotic machinery. **7–9** should be rejected in the formulations analyzed above.
