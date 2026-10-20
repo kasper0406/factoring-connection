@@ -1,0 +1,658 @@
+**HEURISTIC assessment:** I did not obtain a construction meeting (a)–(c). The most useful outcome is a **PROVED additional obstruction for ideal PTE over \(\mathbb Z\)**:
+\[
+P-Q=C\ne0,\quad \deg P=\deg Q=M,\quad P,Q\text{ monic and integer-split}
+\quad\Longrightarrow\quad
+\log |C|\ge \tfrac12M\log M-O(M).
+\]
+Repeated roots are allowed. This blocks the requested residual size when an ideal PTE class is compressed by one common integer offset. It does **not** cover independently recentering every residual modulo \(N\), or norm-only bounds in a general number field.
+
+I read no existing repository files. Scratch programs, results, and a proof are linked below. Labels apply to the following paragraph, equations, or table until another label appears.
+
+**PROVED — Counting conventions.** Write \(b=\log B\), and let \(D=[K:\mathbb Q]\). For number-field counts I use the house
+\[
+\|a\|_\infty=\max_\sigma|\sigma(a)|.
+\]
+For a fixed field,
+\[
+q_K(A):=\#\{a\in\mathcal O_K:\|a\|_\infty\le A\}=\Theta_K(A^D).
+\]
+There are exactly
+\[
+S_K(A,M)=\binom{q_K(A)+M-1}{M}
+\]
+monic degree-\(M\) polynomials split over this alphabet, counting multiplicities. Over \(\mathbb Z\), \(q=2\lfloor A\rfloor+1\).
+
+**PROVED — Two accounting requirements.** If the actual integer pieces have absolute value at most \(B^{C_0}\), and \(|v|=o(N)\), nontriviality forces
+\[
+M\ge \frac{x-O(1)}{C_0b}.
+\]
+Also, a low-degree remainder need not have small coefficients, small evaluation, or small norm. In particular, taking a degree-\(M\) presentation \(F=P-R\) does not make the algebraic pieces \(\theta-a\) small-norm: their norms are \(F(a)\), potentially of size \(A^M\).
+
+**PROVED — Scope of EX.** An exact polynomial identity is useful for constructing smoothness, but supplies no \(N\)-dependence by itself. A scalar evaluation condition \(F(m)\equiv0\pmod N\) is one congruence. Equality in a free rank-\(d\) algebra can impose \(d\) congruences. These should not be charged interchangeably.
+
+---
+
+**1. Dickson/Chebyshev compositions**
+
+**PROVED — Explicit family and a correction.** With \(\tau+\tau^{-1}=t\),
+\[
+D_n(X)-D_n(t)
+ =\prod_{j=0}^{n-1}
+ \left(X-\tau\zeta_n^j-\tau^{-1}\zeta_n^{-j}\right).
+\]
+It splits in \(\mathbb Q(\zeta_n,\tau)\). The smaller field stated in the prompt is insufficient in general. For example,
+\[
+D_3(X)-D_3(3)=(X-3)(X^2+3X+6)
+\]
+has nonreal roots, whereas
+\(\mathbb Q(\zeta_3+\zeta_3^{-1},\tau)=\mathbb Q(\sqrt5)\) is real.
+
+**PROVED — Complete integer-\(t\) classification, including multiplicities.**
+
+| Degree \(n\ge1\) | Integer \(t\) for which \(D_n(X)-D_n(t)\) splits over \(\mathbb Z\) |
+|---|---|
+| \(1,2\) | Every integer |
+| \(3\) | \(-2,-1,1,2\) |
+| \(4\) | \(-2,0,2\) |
+| \(6\) | \(-2,-1,1,2\) |
+| All other \(n\ge3\) | None |
+
+**PROVED — Reason.** For \(|t|>2\) and \(n\ge3\), the displayed roots include a nonreal root. Thus only \(t\in\{-2,-1,0,1,2\}\) remain. Their Dickson values belong to \(\{-2,-1,0,1,2\}\). For value \(2\), a root is \(2\cos(2\pi/n)\); its rationality requires \(n\in\{1,2,3,4,6\}\). For value \(-2\), use \(2\cos(\pi/n)\), leaving \(n\le3\). For the three interior values, integer roots must lie in \(\{-1,0,1\}\), and all roots are simple, reducing the check to \(n\le3\). Direct substitution finishes the table.
+
+**PROVED — Generalization of the \(D_6\) example.** For integers \(\lambda\ne0,h\),
+\[
+P_{\lambda,h}(X)
+=\big((X-h)^2-4\lambda^2\big)
+ \big((X-h)^2-\lambda^2\big)^2.
+\]
+There are \(\Theta(A^2)\) distinct such root multisets with roots bounded by \(A\). Any
+\[
+F_{\lambda,h,R}(X)=P_{\lambda,h}(X)-R(X)
+\]
+gives \(P_{\lambda,h}\equiv R\pmod F\). But varying \((\lambda,h)\) changes \(F\). If one degree-six \(F\) is fixed and remainders have degree below four, its leading coefficients fix \(h\) and \(\lambda^2\), so this two-parameter family disappears.
+
+**PROVED — Fixed-field restriction.** Suppose \(n\ge3\) and \(D_n(X)-c\) splits in a fixed field \(K\). Choose a nonzero root \(r_0\) and label the roots as above. Then
+\[
+r_1+r_{-1}=(\zeta_n+\zeta_n^{-1})r_0,
+\]
+so \(\mathbb Q(\zeta_n+\zeta_n^{-1})\subseteq K\), and
+\[
+\varphi(n)/2\le D.
+\]
+Thus \(n\) is bounded when \(D\) is fixed. Composition cannot produce unbounded split degree in a fixed small field.
+
+**PROVED using the KNOWN unit theorem — Density of shifts.** Put \(L=K(\zeta_n)\). From the roots one recovers \(\tau\in L\). Since \(\tau^2-r_0\tau+1=0\), integral roots make \(\tau\) an algebraic unit. Roots of house at most \(A\) give \(\|\tau\|_\infty\le A+1\). Consequently, for fixed \(K,n\ge3\),
+\[
+\#\{c:D_n(X)-c\text{ splits in }\mathcal O_K,\ 
+             \text{roots of house }\le A\}
+=O_{K,n}\big((\log A)^{r_L}\big),
+\]
+where \(r_L\) is the unit rank. Integer traces in a fixed quadratic Pell family give the familiar \(O(\log A)\) example. This follows from the logarithmic unit lattice. [Dirichlet’s unit theorem, Conrad](https://kconrad.math.uconn.edu/blurbs/gradnumthy/unittheorem.pdf)
+
+**PROVED — Residual and \(N\)-dependence.** A common presentation
+\[
+F=D_n-H
+\]
+gives
+\[
+D_n(X)-c_i\equiv H(X)-c_i\pmod F.
+\]
+At a supplied root \(m\bmod N\), the residual is \(v_i=H(m)-c_i\). Here \(|c_i|\le2(A+1)^n\) in the integer realization. For arbitrary \(N\), obtaining a small \(H\) and small \(m\) with \(D_n(m)\equiv H(m)\pmod N\) is the missing alignment. Selecting \(F\) as an exact difference does not perform it.
+
+**PROVED / UNVERIFIED — (a)–(c).** Fixed fields force bounded primitive degree, so (a) fails at subexponential \(B\). Growing cyclotomic fields abandon the fixed-small-field condition. Affine variants enumerate cheaply and can be genuinely different products, but no compatible, small, \(N\)-dependent common reduction was obtained. Galois relabelling of the complete root set gives the same polynomial.
+
+---
+
+**2. Prouhet–Tarry–Escott families**
+
+**PROVED — Exact formulation.** Put \(k=M-t\). A PTE class is
+\[
+P_i(X)=T(X)+r_i(X),\qquad \deg r_i<t,
+\]
+where all \(P_i\) are monic and split, and \(T\) contains their common coefficients of degrees \(M,M-1,\ldots,t\). Newton identities identify this with equality of power sums through degree \(k\).
+
+**PROVED — Residual height is the first problem.** Roots bounded by \(A\) imply
+\[
+|e_j|\le\binom Mj A^j.
+\]
+Although \(P_i-P_j\) has degree below \(t\), its coefficients can therefore have logarithmic size \(M\log A+O(M)\). Without additional cancellation,
+\[
+\log |(P_i-P_j)(m)|
+\le M\log(A+|m|)+O(M).
+\]
+Small \(t\) alone gives no useful smallness.
+
+**PROVED — Explicit structured families and their counts.**
+
+- A fixed primitive PTE pair, with maximum entry \(H_0\), has \(\Theta_{H_0}(A^2)\) distinct integral affine images under \(a\mapsto \lambda a+h\). Each image remains a pair; different affine images generally have different common top parts.
+
+- A concrete ideal quartic family is
+  \[
+  \{\pm a,\pm b\},\qquad a^2+b^2=R,
+  \]
+  with polynomial \(X^4-RX^2+a^2b^2\). A four-parameter identity is
+  \[
+  \begin{aligned}
+  a&=ph-qk,& b&=pk+qh,\\
+  c&=ph+qk,& d&=pk-qh,
+  \end{aligned}
+  \]
+  giving \(a^2+b^2=c^2+d^2\). Parameters bounded by \(H\) give roots bounded by \(2H^2\), hence \(O(A^2)\) parameter choices. For one fixed \(R\le A^2\), the class size is \(r_2(R)/8\), apart from zero/equal-coordinate corrections. If \(R\) is a product of \(s\) distinct primes \(1\bmod4\), it has \(2^{s-1}\) members. The divisor bound gives class size \(A^{o(1)}\).
+
+- Frolov lifting is explicit:
+  \[
+  A={}_kB
+  \Longrightarrow
+  A\cup(B+h)={}_{k+1}B\cup(A+h).
+  \]
+  After \(r\) lifts from size \(M_0\),
+  \[
+  M=M_0\,2^r,\qquad k=k_0+r.
+  \]
+  Entries are bounded by \(A_0+\sum|h_j|\); the \(r\) shifts give \(O(A^r)\) parameter choices. The defect is \(t=M-O(\log M)\), so compression is weak.
+
+- Weighted Thue–Morse gives
+  \[
+  A_\pm=\left\{\sum_{j=1}^r\epsilon_jh_j:
+          \epsilon_j\in\{0,1\},\
+          (-1)^{\sum\epsilon_j}=\pm1\right\}.
+  \]
+  Each multiset has \(M=2^{r-1}\) entries and equal moments through \(k=r-1\), since
+  \[
+  \sum_\epsilon(-1)^{\sum\epsilon_j}
+  e^{z\sum\epsilon_jh_j}
+  =\prod_j(1-e^{zh_j})=O(z^r).
+  \]
+  Taking positive \(h_j\) with \(\sum h_j\le A\) gives \(O(A^r)\) parameter tuples. Again \(t=M-r+1\).
+
+**KNOWN — Fixed-size ideal examples and chains.** Ideal examples at sizes through ten and at twelve are documented; for example,
+\[
+\{0,5,6,16,17,22\}={}_5\{1,2,10,12,20,21\},
+\]
+and the size-twelve pair
+\[
+\{\pm22,\pm61,\pm86,\pm127,\pm140,\pm151\},
+\quad
+\{\pm35,\pm47,\pm94,\pm121,\pm146,\pm148\}.
+\]
+I checked both exactly. These are fixed-degree examples, not a family with \(M\to\infty\). [Borwein–Lisoněk–Percival](https://www.daemonology.net/papers/pte.pdf)
+
+**KNOWN — Long chains do exist.** Arbitrarily long ideal chains are known at some fixed small sizes; their existence should not be dismissed. General multigrade constructions also give \(j\)-member chains with size \(M=j^k\); Choudhry improves this to \(M=2j^{k-1}\). The latter still has defect \(M-k\), almost the whole degree. Numerous partitions are not automatically numerous distinct class members. [Choudhry](https://arxiv.org/abs/1908.11192)
+
+**PROVED — General class-size bounds.** Let \(C\) be the number of distinct members in one class over an alphabet of size \(q\). Two distinct members cannot share a degree-\(t\) monic divisor. Therefore
+\[
+C\le \binom{q+t-1}{t},
+\]
+including repeated roots. For squarefree members, packing all their \(t\)-subsets gives the stronger
+\[
+C\binom Mt\le\binom qt.
+\]
+Moreover, if \(q\le k+1\), the moment equations of degrees \(0,\ldots,k\) determine every root multiplicity by a Vandermonde matrix. Thus a nontrivial class requires
+\[
+q\ge k+2=M-t+2.
+\]
+These statements also hold over a number field with \(q=q_K(A)\).
+
+**HEURISTIC — Generic counting.** There are roughly \(A^M/M!\) integer root multisets and \(A^{k(k+1)/2}\) possible moment vectors, ignoring \(M\)-dependent factors. A naïve generic fiber size is consequently
+\[
+A^{M-k(k+1)/2}.
+\]
+When this is large, \(k\) is at most about \(\sqrt{2M}\), and the residual degree \(t=M-k\) remains large. For near-ideal classes the heuristic predicts exceptional fibers, rather than a broadly dense construction.
+
+**KNOWN — What VMVT actually supplies.** For fixed \(M,k\), the Vinogradov mean value theorem gives
+\[
+J_{M,k}(A)\ll_{M,k,\epsilon}
+ A^{M+\epsilon}
+ +A^{2M-k(k+1)/2+\epsilon}.
+\]
+When \(k(k+1)/2\ge M\), this implies that the fraction of multisets lying in classes of size at least \(A^\delta\) tends to zero, for every fixed \(\delta>0\). It does not rule out exceptional large classes. Its constants must not be silently treated as uniform when \(M\) grows with \(N\). [Bourgain–Demeter–Guth, Theorem 1.1](https://arxiv.org/pdf/1512.01565)
+
+**PROVED — The most constructive alignment.** If
+\[
+F=T-R_0,\qquad T(m)\equiv R_0(m)\pmod N,
+\]
+then
+\[
+u_i=P_i(m)=\prod_j(m-a_{ij}),\qquad
+v_i=R_0(m)+r_i(m)
+\]
+is an explicit congruent family. This is the desired mechanism, conditional on finding the alignment and controlling the residuals.
+
+For an ideal class, \(r_i=c_i=(-1)^M\prod_j a_{ij}\). Choosing \(R_0=0\) makes **both sides smooth by construction**:
+\[
+\prod_j(m-a_{ij})
+ \equiv (-1)^M\prod_j a_{ij}\pmod N.
+\]
+This is worth retaining as a candidate even though the right side generally fails (b).
+
+**HEURISTIC — Alignment cost.** If the available class parameters and \(m\)'s make \(T(m)\bmod N\) behave randomly, obtaining
+\[
+|T(m)\bmod N|\le e^y
+\]
+costs about \(e^{x-y}\) trials. A free rank-\(d\) coefficient alignment can instead have density approximately \((2H/N)^d\). A lattice or arithmetic parametrization could beat this trial model; no such efficient alignment was established here.
+
+**PROVED — Ideal constants are smooth, but large.** If \(P_i-P_j=C\ne0\), evaluate at any root \(a\) of \(P_j\):
+\[
+C=P_i(a)=\prod_b(a-b).
+\]
+Hence every prime divisor of \(C\) is at most \(2A\). In particular, \(N\nmid C\) when all primes of \(N\) exceed \(2A\).
+
+Here is the factorial lower bound. Each member of a nontrivial ideal pair has at least \(s=\lceil M/2\rceil\) distinct roots. Otherwise, for its support \(S\),
+\[
+W(X)=\prod_{a\in S}(X-a)^2
+\]
+has degree at most \(M-1\). Equal moments make its sums over the two root multisets equal. The first sum is zero and the second strictly positive, because an ideal pair has disjoint root supports.
+
+At a root of the other polynomial, the product defining \(C\) therefore contains at least \(s\) distinct nonzero integer differences. Their absolute product is at least
+\[
+\lfloor s/2\rfloor!\,\lceil s/2\rceil!,
+\]
+so
+\[
+\boxed{\log|C|\ge \tfrac12M\log M-O(M).}
+\]
+For squarefree members the stronger bound is \(M\log M-O(M)\).
+
+**PROVED — A near-ideal extension.** If \(\deg(P-Q)<t\), put \(k=M-t\), \(s=\lfloor k/2\rfloor+1\), and let \(H\) be the coefficient height of \(P-Q\). Then
+\[
+\boxed{
+H\ge
+\frac{\lfloor s/2\rfloor!\,\lceil s/2\rceil!}
+     {t\,2^{t-1}A^{t-1}}.
+}
+\]
+Remove the common polynomial divisor, apply the support argument above, and evaluate a suitable derivative of \(P-Q\) at a root. The derivative is a product of nonzero integer differences. A full proof is saved in [ptecons_pte_height_lemma.md](/Volumes/git/factoring-connection/codex/scratch/ptecons_1/ptecons_pte_height_lemma.md).
+
+**PROVED / UNVERIFIED — Distinctness and (a)–(c).** Different PTE multisets can give genuinely different exponent vectors; they are not automatically one relation. But affine images are different classes, and multiplying already-known relations adds no information. Fixed-size ideal families fail the required growing factor count. Unwrapped ideal compression fails (b) by the factorial bound. Near-ideal families with growing \(M\), small residual height, enough independent rows, and cheap \(N\)-alignment remain **UNVERIFIED**.
+
+---
+
+**3. Cyclotomic and Galois orbits**
+
+**PROVED — Explicit families and density.** In \(K\supseteq\mathbb Q(\zeta_n)\),
+\[
+P_{a,h}(X)=\prod_{j=0}^{n-1}(X-h-a\zeta_n^j)
+=(X-h)^n-a^n.
+\]
+Integer \(a,h\) bounded by \(A\) give \(\Theta(A^2)\) members, up to finite symmetries. Allowing \(a,h\in\mathcal O_K\) gives \(\Theta_K(A^{2D})\) for fixed \(n,K\).
+
+A projective version, with matrix entries bounded by \(A\), is
+\[
+H_g(X)
+=\prod_j\big((c\zeta_n^j+d)X-(a\zeta_n^j+b)\big)
+=(dX-b)^n-(a-cX)^n.
+\]
+There are \(\Theta_n(A^4)\) primitive integer matrices modulo the finite set stabilizer, for fixed \(n\ge3\). These are small-coefficient linear factors; the associated roots are generally nonintegral. Thus this count must not be advertised as an integer-root count.
+
+**PROVED — Why the projective orbit does not compress.** Reducing \(X^n\) to a low-degree expression does not eliminate the mixed binomial terms in \((dX-b)^n\) and \((a-cX)^n\). Their ordinary product-size bound at \(m\) is
+\[
+\log |H_g(m)|=O\!\left(n\log(A(|m|+1))\right).
+\]
+Demanding the finite-field-style compatibility for sufficiently many shifts enters the supplied F′ obstruction.
+
+**PROVED — Field degree.** Full cyclotomic splitting requires \(\varphi(n)\le D\), so \(n\) is bounded in a fixed small field. The set stabilizer of \(\mu_n\) has size \(2n\); the large characteristic-zero projective orbit above exists because the matrices range over infinitely many rational transformations, and it lacks the finite-field reduction identity.
+
+**PROVED — Special \(N\).** If a pair \((n,m)\) with
+\[
+N\mid\Phi_n(m)
+\]
+is supplied, \(F=\Phi_n\) and the evaluation map are available and checkable without factoring \(N\). This is a valid special-input presentation. However,
+\[
+\operatorname{Norm}(m-\zeta_n)=\Phi_n(m)
+\]
+already has logarithmic size at least \(x\), and increasing \(n\) increases the field degree. Small root house does not imply small factor norm. The usual useful optimization is the special-NFS route; no smaller exponent follows from the orbit alone. [Pomerance’s NFS discussion](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf)
+
+**KNOWN — Jacobi sums give real arithmetic relations.** For a known prime \(\ell\equiv1\pmod n\), let \(\chi\) have order \(n\). Then
+\[
+J_{a,b}=\sum_{z\in\mathbb F_\ell}\chi(z)^a\chi(1-z)^b
+\]
+lies in \(\mathbb Z[\zeta_n]\), and, in the nondegenerate cases,
+\[
+J_{a,b}\overline{J_{a,b}}=\ell.
+\]
+Stickelberger gives explicit ideal factorizations. These can yield distinct ideal-relation vectors, rather than merely identical equations. [Bernard–Kučera, including Proposition 5.1](https://arxiv.org/pdf/2109.13329)
+
+**PROVED / UNVERIFIED — Density and limitation.** For each \(\ell\), there are \(O(n^2)\) indexed Jacobi sums. House at most \(A\) restricts \(\ell\le A^2\), giving the elementary upper count \(O(n^2A^2)\). Direct character-sum evaluation costs \(O(\ell)\) per sum. Neither this count nor the ideal factorization supplies a reduction tied to arbitrary \(N\). Taking a finite field of unknown characteristic dividing \(N\) would require the missing information.
+
+**PROVED — Galois distinctness.** A full root product is invariant under Galois relabelling. Integer norms of conjugates are identical. Individual ideal-factorization vectors can be different and even independent, but a fixed-degree Galois orbit has at most \(D\) members. It cannot supply an asymptotically large family by itself.
+
+**PROVED — Norm inputs are not automatically special enough.** Every integer has a trivial quadratic norm presentation:
+\[
+N=\operatorname{Norm}_{\mathbb Q(\sqrt{m^2-N})/\mathbb Q}
+       \big(m+\sqrt{m^2-N}\big).
+\]
+The field parameters or element heights contain the size of \(N\). Multiplying the element by units leaves its norm unchanged. This supplies representations of the same norm, not automatically new smooth congruences with small residuals.
+
+---
+
+**4. Elliptic analogues**
+
+**KNOWN — Explicit split objects.** For odd \(n\), the division polynomial has
+\[
+\psi_n(X)
+=n\prod_{T\in(E[n]\setminus\{O\})/\{\pm1\}}
+       (X-x(T)),
+\qquad \deg\psi_n=(n^2-1)/2.
+\]
+Writing
+\[
+x([n]P)=\frac{\phi_n(x(P))}{\psi_n(x(P))^2},
+\]
+a generic preimage polynomial is
+\[
+\phi_n(X)-x(Q)\psi_n(X)^2
+=\text{constant}\cdot\prod_{[n]R=Q}(X-x(R)),
+\]
+of degree \(n^2\). [Sutherland, division polynomials](https://ocw.mit.edu/courses/18-783-elliptic-curves-fall-2025/mit18_783_f25_lec05.pdf)
+
+**KNOWN — Fixed-field obstruction.** Full \(n\)-torsion over \(K\) forces \(\mu_n\subset K\) by the Weil pairing, hence \(\varphi(n)\le D\). Merel also bounds \(|E(K)_{\rm tors}|\) in terms of \(D\), even when \(E\) varies. Thus unbounded torsion degree cannot remain in a fixed-degree number field. [Weil pairing](https://ocw.mit.edu/courses/18-783-elliptic-curves-fall-2025/mit18_783_f25_lec23.pdf), [Merel’s theorem](https://perso.imj-prg.fr/loic-merel/wp-content/uploads/merel-pub/torsion.pdf)
+
+**PROVED — Using only \(x\)-coordinates does not rescue generic full fibers.** Suppose \(Q\in E(K)\) is not 2-torsion and all \(x\)-coordinates of \([n]^{-1}(Q)\) lie in \(K\). Adjoin one preimage point, a degree-at-most-two extension. Over that extension, Galois can send another preimage only to itself or its negative; the negative maps to \(-Q\), so is excluded. All preimages, and therefore their differences \(E[n]\), are rational over this extension. Thus \(\varphi(n)\le2D\).
+
+**PROVED from the KNOWN height theory — Density.** For a fixed \(E/K\) of Mordell–Weil rank \(r\), the number of rational points whose \(x\)-coordinate has multiplicative height at most \(A\) is
+\[
+O_{E,K}\big((1+\log A)^{r/2}\big).
+\]
+Canonical height turns the count into lattice points in an ellipsoid. Requiring integral coordinates leaves only finitely many points on the fixed curve by Siegel. Constants are not uniform over arbitrary varying curves. [Silverman](https://www.math.brown.edu/johsilve/AECHome.html)
+
+**PROVED — Residual and \(N\).** The group law is additive, but its coordinate maps have degree \(n^2\). Imposing a low-degree value of the Lattès map leaves denominator factors \(\psi_n^2\); clearing denominators restores their size and factorization cost. There is no automatic degree-three reduction. Curves and points can be selected over \(\mathbb Z/N\) cheaply, but this does not make their torsion or preimages split over a small number field.
+
+**KNOWN / UNVERIFIED — What remains.** Unknown-characteristic Frobenius is unavailable without the prime factors. Exploiting smooth group orders instead leads to ECM, whose balanced-semiprime heuristic exponent is \(1/2\). An alternative compression satisfying (a)–(c) is **UNVERIFIED**. [Lenstra](https://annals.math.princeton.edu/1987/126-3/p09)
+
+**PROVED — Distinctness.** Translating a complete preimage fiber by torsion permutes its roots and leaves its polynomial unchanged. Changing \(Q\) gives genuinely different fibers, but does not supply a common small reduction.
+
+---
+
+**5. Group rings, norms, and split resultants**
+
+**PROVED — A useful high-degree family over \(\mathbb Z\).** Take
+\[
+G=(C_2)^r,\qquad z=\sum_{j=1}^r a_jg_j.
+\]
+Its regular-representation characteristic polynomial is
+\[
+P_{\mathbf a}(X)
+=\prod_{\epsilon\in\{\pm1\}^r}
+   \left(X-\sum_j\epsilon_ja_j\right),
+\qquad M=2^r.
+\]
+This gives arbitrarily high split degree over \(\mathbb Q\), using only \(r=\log_2M\) parameters. Thus growing field degree does **not** obstruct every group-ring attempt.
+
+**PROVED — Density.** Choose positive \(a_j\), unordered, with \(\sum a_j\le A\). The root multiset determines the subset-sum multiset and hence the \(a_j\)'s by greedy recovery. For fixed \(r\), the number of distinct members is
+\[
+\sim \frac{A^r}{(r!)^2}.
+\]
+At \(m\), all \(M\) pieces have size at most \(|m|+A\), and
+\[
+\log|P_{\mathbf a}(m)|\le M\log(|m|+A).
+\]
+This is a genuine dense split family. The missing ingredient is compression.
+
+**PROVED — Why common leading coefficients rigidify it.** Its normalized exponential moment generating function is
+\[
+2^{-r}\sum_{\alpha\text{ root}}e^{z\alpha}
+=\prod_j\cosh(a_jz).
+\]
+Taking logarithms, the coefficient of \(z^{2s}\) is a nonzero rational multiple of \(\sum_j a_j^{2s}\). Thus the first \(2r\) root moments determine
+\(\sum_j a_j^{2s}\) for \(s=1,\ldots,r\), and Newton identities recover \(\{a_j^2\}\). Consequently, distinct members cannot agree in their first \(2r\) leading coefficients:
+\[
+k<2r=2\log_2M.
+\]
+Within this family, PTE compression necessarily leaves residual degree essentially \(M\).
+
+**PROVED — How \(N\) enters.** For odd \(N\), the character transform is invertible modulo \(N\). The group algebra is an explicitly split product algebra; it does not create an unknown-characteristic Frobenius. Requiring a small determinant residue is still a modular condition on an ordinary product. Requiring componentwise small congruences imposes many conditions. This family meets the split-product part of (a), but supplies no small \(N\)-dependent residual.
+
+**PROVED — General norms.** For abelian \(G\),
+\[
+\det(m_z)=\prod_\chi\sum_g c_g\chi(g).
+\]
+For nonabelian groups, this becomes a product of representation determinants, usually no longer linear split factors. Permuting roots changes no product. Conjugating a number-field norm changes no integer norm. More indexed group actions therefore need not mean more relation vectors.
+
+**PROVED — Split resultants.**
+\[
+P=\prod_{i=1}^{r}(X-a_i),\quad
+Q=\prod_{j=1}^{s}(X-b_j)
+\quad\Longrightarrow\quad
+\operatorname{Res}(P,Q)=\prod_{i,j}(a_i-b_j).
+\]
+All \(rs\) pieces are at most \(2A\). The indexed family has size
+\[
+\binom{q+r-1}{r}\binom{q+s-1}{s},
+\]
+before excluding common roots. Distinct exponent vectors can be much fewer: simultaneous translation preserves every difference. For fixed \(r,s\), quotienting this alone gives an \(O(A^{r+s-1})\) upper bound on distinct difference configurations.
+
+**PROVED — The zero-residual shortcut fails.** If \(N\mid\operatorname{Res}(P,Q)\), every prime divisor of \(N\) divides one of the known differences. Either all differences are too small, making divisibility impossible, or gcd computations expose factors. A small nonzero resultant residue is a legitimate candidate, but its smallness is not supplied by the resultant identity.
+
+---
+
+**6. Lattice/LLL families**
+
+**PROVED — Explicit \(N\)-dependent lattice.**
+\[
+\Lambda_{N,m,d}
+=\{(c_0,\ldots,c_d)\in\mathbb Z^{d+1}:
+               \sum_jc_jm^j\equiv0\pmod N\}
+\]
+has index and determinant \(N\): the constant coefficient makes evaluation surjective. Its monic slice can be intersected with split polynomials. Unlike the preceding exact identities, this lattice genuinely contains \(N\).
+
+**PROVED — Split density in coefficient space.** The natural monic coefficient box has side bounds
+\[
+H_j=\binom MjA^j,\qquad j=1,\ldots,M.
+\]
+For fixed \(M\), its volume is \(\Theta_M(A^{M(M+1)/2})\), while the number of integer-split members is \(\Theta_M(A^M)\). Their density is therefore
+\[
+\Theta_M\!\left(A^{-M(M-1)/2}\right).
+\]
+Short coefficient vectors are overwhelmingly not split, even before imposing \(N\).
+
+**HEURISTIC — Expected intersection size.** Among \(S=S_{\mathbb Z}(A,M)\) split polynomials, uniform residues predict
+\[
+\#\{P:|\operatorname{center}(P(m)\bmod N)|\le Y\}
+\approx S\,\frac{2Y}{N}.
+\]
+A full-rank rank-\(d\) algebra condition with coefficient allowance \(H\) predicts \(S(2H/N)^d\). Correlations, zero factors, repeated products, and exact identities must be removed before interpreting these as independent relations.
+
+**PROVED / UNVERIFIED — Algorithmic gap.** Enumerating roots enforces splitting but pays the modular rejection rate. Enumerating short coefficient-lattice vectors enforces congruence but encounters very low split density. LLL supplies neither an output-sensitive enumeration of their intersection nor a guarantee of enough independent short split vectors. Such an enumeration is **UNVERIFIED**.
+
+**KNOWN — Schnorr/Adleman form.** Prime-log lattices seek
+\[
+U=\prod p_i^{e_i^+},\qquad W=\prod p_i^{e_i^-},
+\qquad v=U-NW.
+\]
+Both \(U,W\) are smooth by construction; small \(v\) would finish the relation. [Vera’s effective analysis](https://arxiv.org/pdf/1003.5461)
+
+**PROVED — Required approximation.** To obtain \(|v|\le Y\),
+\[
+\left|\log U-\log W-\log N\right|
+\lesssim\frac{Y}{NW}.
+\]
+This demands exponentially fine approximation in the relevant heights, together with enough admissible exponent vectors and sufficiently cheap enumeration. Polynomial-time LLL does not itself establish those properties.
+
+**KNOWN — Evidence is narrower than an impossibility theorem.** Implementations of particular proposed small-dimensional variants fail to collect sufficient relations as inputs grow; this does not prove that every relation lattice must fail. [Khattar–Yosri](https://arxiv.org/abs/2307.09651)
+
+---
+
+**7. Additional constructions and their failure modes**
+
+**PROVED — Exponentially many block choices.** Let \(P_j,Q_j\) be split degree-\(m_0\) polynomials with \(P_j-Q_j=C_j\). Then
+\[
+R_\epsilon(X)=\prod_{j=1}^r
+ \begin{cases}
+ P_j(X),&\epsilon_j=0,\\
+ Q_j(X),&\epsilon_j=1
+ \end{cases}
+\]
+has degree \(M=rm_0\) and up to \(2^r\) distinct members, all agreeing in their first \(m_0-1\) leading coefficients. Residual degree is therefore
+\[
+t=M-m_0+1,
+\]
+almost \(M\).
+
+**PROVED — The relation-rank trap.** If each block is already aligned,
+\[
+P_j(m)\equiv p_j,\qquad Q_j(m)\equiv q_j\pmod N,
+\]
+multiplying these congruences constructs all \(2^r\) residuals. The full exponent rows are sums of the block rows; their span has dimension at most \(2r\), regardless of the number of products. If residuals are instead independently recentered modulo \(N\), this rank conclusion need not hold—but their smallness becomes a fresh search problem.
+
+**PROVED — Reusing identical blocks is worse.** With one pair \(P,Q\), the apparent \(2^r\) choices give only
+\[
+P^sQ^{r-s},\qquad 0\le s\le r,
+\]
+hence \(r+1\) distinct products.
+
+**PROVED — Multipliers and powers.** From \(U\equiv V\), families \(wU\equiv wV\) and \(U^j\equiv V^j\) add no new rational exponent relation after cancelling known common factors. Their residual sizes also grow.
+
+**PROVED — Auxiliary-characteristic lifting.** Constructing Frobenius identities modulo known small primes and combining them by CRT gives an identity modulo their known product. It does not give one modulo \(N\). Making that product divisible by \(N\) requires the missing prime divisors; lifting arbitrary residue data to heights comparable with the CRT modulus loses the smallness. This route does not transfer the finite-field engine.
+
+---
+
+**PROVED — Check against the supplied barriers.** “Not invoked” below means the candidate avoids that theorem’s hypotheses, not that the candidate succeeds.
+
+| Route | F′ | CF | DES | EX |
+|---|---|---|---|---|
+| Dickson | Applies to the attempted many-shift Frobenius compatibility | Not needed for ordinary Dickson identities | Usually outside \(V_n\) | Exact reduction still needs \(N\)-alignment |
+| PTE | Not invoked | Does not prohibit moment matching | Dense coefficient support avoids \(V_n\) | Common top part does not align itself with \(N\) |
+| Cyclotomic/projective | Applies to the attempted finite-field-style power reduction | Blocks a universal scalar annihilator of small degree | Complex roots avoid the real-root hypothesis | Distribution/norm identities are exact before \(N\) enters |
+| Elliptic | Group additivity is not restricted power compatibility | No short universal scalar annihilator supplied | Division polynomials are outside \(V_n\) | Coordinate identities do not create the required presentation |
+| Group ring/resultant | Character decomposition is not Frobenius | Zero products expose known factor differences | Usually outside \(V_n\) | Determinant identities are exact |
+| Lattice | Not invoked | Not invoked | Not invoked | Congruence conditions are explicitly paid; split intersection remains hard |
+| Block/product closure | Not invoked | Not invoked | Not invoked | New equations are generated by old identities/relations |
+
+**PROVED — Interpretation.** F′, CF, and DES do not constitute a universal no-go theorem. Several candidates genuinely avoid them. EX is more pervasive: it identifies precisely where an exact compression still lacks the arithmetic connection to \(N\). The supplied \(N^{d/(d+1)}\) norm estimate for non-exact free-presentation compression remains a **HEURISTIC** size barrier under its stated model.
+
+---
+
+**HEURISTIC — Best two directions.** I would retain:
+
+1. Near-ideal PTE classes with growing \(M\), especially over a fixed small field and with nonconstant residuals.
+2. Output-sensitive enumeration of split polynomials in an \(N\)-dependent lattice.
+
+The elementary-abelian group-ring family is an attractive source of high-degree split polynomials, but its \(2\log M\)-moment rigidity makes its direct PTE use poor.
+
+**CONJECTURED — Required algorithmic primitive.** Given \(N\), construct a class
+\[
+P_i=T+r_i,\quad \deg r_i<t,
+\]
+and a presentation/evaluation with
+\[
+T(m)\equiv R_0(m)\pmod N,
+\]
+then output enough genuinely different pairs
+\[
+\left(\prod_j(m-a_{ij}),\,R_0(m)+r_i(m)\right)
+\]
+with \(|m-a_{ij}|\le B^{O(1)}\) and \(\log|v_i|\le y\). Both the setup and enumeration must fit the intended sub-\(L[1/3]\) budget. Near-linear enumeration of already-aligned pairs, with only \(L[o(1)]\) overhead, is the unachieved parameter.
+
+**HEURISTIC — \(L\)-cost calculation.** Let the factor-base size be \(Q_B=\exp(b+o(b))\), and suppose residuals of size \(e^y\) behave like random integers. Put \(z=y/b\). Then
+\[
+P_{\rm smooth}\approx \rho(z)
+=\exp(-(1+o(1))z\log z).
+\]
+With per-aligned-candidate overhead \(e^h\), the collection and quadratic linear-algebra costs are
+\[
+T_{\rm coll}\approx
+ \exp\!\left(h+b+\frac yb\log\frac yb\right),
+\qquad
+T_{\rm LA}\approx e^{2b}.
+\]
+Thus a class needs approximately
+\[
+Q_B/\rho(y/b)
+\]
+candidates, not merely \(Q_B\) indexed members.
+
+If
+\[
+y=c_yx^\gamma(\log x)^{1-\gamma},
+\qquad h=o(b),
+\]
+balancing gives exponent
+\[
+\beta=\gamma/2.
+\]
+For this one-random-side model, optimizing constants gives \(L[\beta,\sqrt{2c_y\gamma}]\), before charging setup.
+
+**PROVED within this cost model — Precise threshold.** A fixed exponent \(\beta<1/3\) requires a power saving
+\[
+\gamma<2/3,
+\]
+plus cheap alignment and adequate independent output. Merely \(y=o(x^{2/3})\) need not imply an \(L\)-exponent strictly below \(1/3\); it can give a logarithmic or constant improvement at exponent \(1/3\).
+
+**PROVED — Ideal integer PTE fails the requested threshold without modular wrapping.** Since two residuals obtained by one common offset differ by \(C\),
+\[
+y\ge \tfrac12M\log M-O(M).
+\]
+Combining this with \(M\ge(x-O(1))/(C_0b)\) gives
+\[
+y\ge
+\frac{x}{2C_0b}\log\frac xb-O(x/b).
+\]
+For \(b\) at any fixed \(L\)-exponent below \(1/3\), this is larger than \(x^{2/3}\). In the random-residual cost model it also restores the \(1/3\) balance.
+
+**PROVED — Important limitation.** This does not prove a factoring lower bound. In the ideal construction with \(T(m)\equiv0\), the large constants \(c_i\) are themselves smooth by identity, so the random-smoothness penalty disappears. That version fails target (b), while cheap alignment and enough independent relations remain unresolved.
+
+**HEURISTIC — Lattice threshold.** Without a way to skip rejected split products, collection instead costs roughly
+\[
+\frac{N}{2e^y}\,
+\frac{Q_B}{\rho(y/b)}.
+\]
+The factor \(e^{x-y}\) overwhelms any sub-\(L[1/3]\) budget. The necessary improvement is an algorithm that directly enumerates the short split intersection, rather than testing arbitrary smooth products or arbitrary short coefficient vectors.
+
+---
+
+**HEURISTIC — Single strongest general obstruction:** making the common reduction depend on \(N\) while retaining many small, independent split objects. Exact identities provide the split side cheaply. Known large families either leave large residual height, require growing arithmetic degree, or return the \(N\)-dependence to a sparse modular intersection.
+
+**PROVED — What can currently be made rigorous.**
+
+- Newton identities and positivity give the factorial PTE bound above.
+- VMVT bounds average moment-fiber density, with fixed-parameter limitations.
+- The determinant method can bound points on particular irreducible parameter varieties; it does not uniformly exclude arbitrary structured split loci. [Heath-Brown](https://ora.ox.ac.uk/objects/uuid%3A61776df1-3232-4fdc-87de-f3c01f6bce3f)
+- Bilu–Tichy classifies polynomial pairs admitting infinitely many bounded-denominator solutions, including exceptional power/Dickson patterns. It does not bound every growing-degree split family. [Bilu–Tichy](https://doi.org/10.4064/aa-95-3-261-288)
+- Siegel gives finiteness for suitable fixed curves, not uniform bounds for all curves and degrees varying with \(N\).
+
+**CONJECTURED / UNVERIFIED — Generality.** A universal theorem forcing this cost for every proposed construction is not established here. Applying those tools as though they already proved such a theorem would overstate the evidence.
+
+---
+
+**PROVED — Small exact experiment.** I enumerated every degree-six monic split polynomial with root multiset in \([-12,12]\), grouped them by power sums \(1,\ldots,5\), and evaluated at
+\[
+m=13,\qquad B=25,\qquad N=1009\cdot1013=1\,022\,117.
+\]
+The calculations use only \(N\), not its factors. Runtime was about \(2.6\) seconds; peak resident memory was about \(392\) MB.
+
+| Quantity | Exact result |
+|---|---:|
+| Root multisets | 593,775 |
+| Singleton ideal PTE classes | 593,751 |
+| Two-member classes | 12 |
+| Classes with at least three members | 0 |
+| Distinct evaluated integer products | 49,775 |
+| Distinct products giving genuine centered congruences | 40,960 |
+
+**PROVED — Modular yield versus a uniform-residue control.** The control assigns one independent uniform residue to each distinct genuine product.
+
+| Residual bound \(V\) | Distinct products with \(0<|v|\le V\) | Control |
+|---:|---:|---:|
+| 100 | 24 | 8 |
+| 1,000 | 96 | 88 |
+| 10,000 | 849 | 817 |
+
+**PROVED — Independence collapse.** At \(V=1000\), requiring the residual also to be \(25\)-smooth gave:
+
+- 567 indexed relations;
+- 55 distinct integer pairs;
+- only three pairs after cancelling \(\gcd(u,|v|)\):
+  \[
+  (1\,022\,112,-5),\quad
+  (1\,022\,208,91),\quad
+  (5\,110\,677,92);
+  \]
+- three distinct parity rows, of rank three, against ten factor-base columns including sign.
+
+**PROVED — PTE-specific yield.** None of the 24 members in nontrivial ideal classes had \(|v|\le1000\). Their constant differences ranged from \(14\,400\) to \(100\,800\). Since every difference lies strictly between \(2V\) and \(N-2V\), no common modular offset can put both members of any pair inside \([-1000,1000]\).
+
+**HEURISTIC — Interpretation.** The control is a null model, not a matched model of smooth-product residues. The small-\(V\) excess does not establish an asymptotic improvement. The exact cancellation results demonstrate why indexed family size is an unreliable proxy for useful relation yield.
+
+The reproducible artifacts are [experiment code](/Volumes/git/factoring-connection/codex/scratch/ptecons_1/ptecons_blind_experiment.py), [results](/Volumes/git/factoring-connection/codex/scratch/ptecons_1/ptecons_blind_experiment_results.json), and [630 exact Dickson checks](/Volumes/git/factoring-connection/codex/scratch/ptecons_1/ptecons_dickson_check.py).
+
+**HEURISTIC verdict:** No candidate currently meets (a)–(c). Ideal integer PTE with one unwrapped common offset is excluded by the factorial height bound; fixed-field Dickson and elliptic families cannot grow their primitive split degree; group-ring families grow but lose compression; lattice families retain the central enumeration problem. The remaining openings are modularly wrapped PTE residuals, number-field norm constructions beyond the integer positivity argument, and a substantially better split-lattice enumeration algorithm. My subjective probability that a construction within this broad template yields classical sub-\(L[1/3]\) factoring for generic balanced semiprimes is about **2%**; this is a research judgment, not a statistical estimate.
