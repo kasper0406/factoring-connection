@@ -1,0 +1,158 @@
+**Major revision required.** “No speedup was found” survives this audit. Several statements labelled “model-PROVED” do not follow from the written assumptions.
+
+I left the repository unchanged. My [independent minimizer](/Volumes/git/factoring-connection/codex/scratch/smoothenum_2/referee_calc.py) eliminates the relation constraint and uses its own simplex implementation; [finite-size checks](/Volumes/git/factoring-connection/codex/scratch/smoothenum_2/referee_finite.py) independently evaluate Dickman ratios.
+
+1. **Table 1: mostly CORRECT; T5 has a numerical error and T8 has a GAP.**
+
+   | Item | Verdict | Independent result |
+   |---|---|---|
+   | T1 | CORRECT | \(1.901883612\); reported parameters agree. |
+   | T2 | CORRECT | \(1.901884,1.891230,1.880395,1.846713,1.785971,1.717727,1.638586\). |
+   | T3 | CORRECT | \(1.638586234\); precomputation \(2.006850087\). Closed-form derivation checks out. |
+   | T4 | CORRECT | Thresholds \(0.004729,0.046956,0.227506,0.437034\). |
+   | T5 | WRONG entry | \(1.893438,1.885004,1.859769,1.817937\). At \(\sigma=.02\), replace **1.8852 by 1.8850**. Initial slope is approximately **−0.84506**, so “−0.84” is right. |
+   | T6 | CORRECT within H | Infimum \(0.763142828\); with \(e\le10\), approximately \(0.778603\). |
+   | T7 | CORRECT within H | Infimum zero; the displayed family is feasible. |
+   | T8 | GAP / OVERSTATED | Correct conditional counting exponent; polynomial-time factoring needs additional assumptions. |
+
+   For T6, the relation constraint becomes
+   \[
+   \left(2-\frac{\delta}{3\beta_a}\right)e
+   \ge s+r+\frac1{3\beta_a\delta}-v.
+   \]
+   Its right side is positive because \(s\ge\beta_a+v\). Thus **\(\delta<6\beta_a\) is necessary**. At minimum relation supply, enumeration costs \(s+r\), while
+   \[
+   r>\frac1{18\beta\beta_a}\ge\frac1{18s^2}.
+   \]
+   Minimizing \(\max(2s,s+1/(18s^2))\) gives the claimed infimum. Equality is approached with \(\beta=\beta_a\), \(v=0\), \(\delta\uparrow6\beta\), and \(e\to\infty\).
+
+   This is legitimate as an **infimum over fixed parameter choices**: for every fixed tolerance, choose a sufficiently large fixed \(e\), then let \(N\to\infty\). It does not automatically justify substituting an arbitrary growing \(e(N)\) into fixed-parameter asymptotics. T7 has the same quantifier issue, readily avoided by fixing \(h>0\).
+
+   For T8, require \(\kappa>1\), and write the predicted count as
+   \[
+   N^{\,2K-(2K+1)/\kappa+o(1)}.
+   \]
+   CEP supplies a single-integer smoothness estimate, not joint smoothness, relation rank, or fruitful dependencies for these two forms. More immediately, for fixed \(K\) strictly above the threshold, this predicts **exponentially many outputs**. Total output-sensitive running time does not imply polynomial time to obtain the first polynomially many outputs.
+
+   **Fix:** assume polynomial delay or prefix-output cost, plus joint smoothness and fruitfulness; alternatively supply a uniform box-tuning argument controlling the *total* output to polynomial size.
+
+2. **Proposition LQ: GAP. Its main analytic estimate is sound; its selection argument is not established.**
+
+   The Dickman inequality is appropriate asymptotically, uniformly for bounded \(0\le v\le v_{\rm box}\):
+   \[
+   \log\frac{\rho(u-v)}{\rho(u)}
+   =\int_{u-v}^{u}-(\log\rho)'(t)\,dt
+   \le v\log(Cu\log u).
+   \]
+   However, the integer-step asymptotic quoted in the note does not alone prove the fractional, uniform inequality. State the logarithmic-derivative estimate and its range.
+
+   **The fatal step is the large-modulus branch.** H_sel allows
+   \[
+   \mathbb E Z_M=U/M(1+o(1))+O(1),
+   \]
+   but the proof subsequently uses \(\mathbb E Z_M\lesssim U/M\). For \(M\gg U\), the additive \(O(1)\) dominates. The stated assumption even permits \(Z_M=1\) always, which supplies no \(U/M\) suppression.
+
+   **Fix:** specify the probability space, filtration, charged operations, and conditional assumptions. For every permitted query after its history, require an appropriate bound on **new** incidences, such as
+   \[
+   \mathbb E[Z_M^{\rm new}\mid\mathcal F]\le C U/M,
+   \]
+   together with conditional cofactor randomness for unrevealed outcomes. The two-sided case also needs conditional **joint** smoothness randomness.
+
+   “Selection is blind to box hits” is doing the essential work. It is not sufficiently precise to reconcile unrestricted adaptivity with the theorem. Replay of known smooth points defeats a literal multiplicity bound unless previously revealed successes are excluded or explicitly accounted for. Likewise, overlap can reveal useful information for later queries.
+
+   I found **no distinct-output speedup inside the repaired conditional model**. Under those assumptions, charging queries and applying conditional expectation works. But the repaired assumption excludes cheap identification of nonempty lattices by definition; it does not prove such identification arithmetically impossible.
+
+   **Finite-size table: approximately CORRECT arithmetic, OVERSTATED interpretation.** At 1024 bits I obtain \(u=4.1084051\), gain \(68.5043\), \(\sigma_{\rm eff}=0.1351528\), and fraction \(0.756651\). Thus “76%” is correct for the explicitly defined finite Dickman penalty—not for the leading asymptotic penalty \(r\lambda\).
+
+   The code’s grid maximum is not a certified supremum of its own envelope. Evaluating at \(v=2\) gives gains approximately
+   \[
+   36.258,\ 53.441,\ 68.504,\ 126.234,\ 228.707,\ 729.283,\ 2246.431,\ 19764.357.
+   \]
+   The later table entries should be corrected. Also, with \(x=\log N\), the stated decay rate should be
+   \[
+   \sigma_{\rm eff}=\Theta\!\left((\log x)^{1/3}/x^{1/3}\right).
+   \]
+
+   Multiplicity is a necessary caveat, but “distinct yield is far smaller” needs a coverage calculation. Neither a universal multiplicity loss nor an attainable RSA-scale 70-fold gain follows from this table.
+
+3. **GEN, W, BC: several correct calculations are presented as stronger barriers than they establish.**
+
+   **GEN: CORRECT density accounting; GAP in the reduction.** Injectivity requires
+   \[
+   |Y_0|/\gcd(Y_0,Y_1)>2A,
+   \]
+   not merely \(|Y_0|>2A\), unless primitiveness is assumed. Residue-blind generation then suffers the advertised \(m/E\) rejection cost under equidistribution.
+
+   The chosen-factor argument proves an equality of candidate sets. It does **not** prove algorithmic equivalence: an algorithm might generate admissible smooth cofactors without visiting every lattice point. Calling that “exactly LQ” silently imposes the access restriction being investigated. **Fix:** restrict the claim to generators that enumerate lattice points and test their cofactors.
+
+   **W: CORRECT for balanced, height-bounded Wagner trees; OVERSTATED otherwise.** The inequality follows for equal-sized bottom lists whose height bounds keep their Cartesian products below \(Em\). Its limiting conclusion \(k\le2\), and the \(L[2/3]\)-sized two-list obstruction, are correct.
+
+   It is not a general lower bound for arbitrary product search: unequal height strata, rejection of oversized products, ratios, representations, and other merging algorithms require separate accounting. Furthermore, Wagner’s additive merging is unavailable for the multiplicative residue window as stated. Cite the [original Wagner paper](https://www.enseignement.polytechnique.fr/informatique/profs/Francois.Morain/Master1/Crypto/projects/Wagner02.pdf) and narrow the algorithm class.
+
+   **BC: essentially CORRECT decoding criterion; GAP in the hit-rate derivation.** The precise formulation concerns a polynomial \(f\) of degree \(D\), monic modulo \(P\), and solutions satisfying
+   \[
+   \gcd(f(t),P)\ge S,\qquad
+   \log H\lesssim\frac{(\log S)^2}{D\log P}.
+   \]
+   Here \(D\) is polynomial degree, not lattice dimension. For a rational row, \(D=1\). This follows directly from the standard divisor-modulus Coppersmith theorem; see [Cohn–Heninger, Theorem 1.1](https://arxiv.org/pdf/1008.1284).
+
+   **Wrong inference:** bounding \(\log P\) does not force every prime dividing \(P\) below approximately \(\log N\). Sparse products can contain much larger primes. That conclusion requires a primorial-style choice.
+
+   Nevertheless, the conservative \(S^{-1/2+o(1)}\) bound is repairable in the random-integer model. A Rankin/Markov bound on \(\gcd(n,P)^{1/2}\), using the product-size budget, gives it without a fictitious prime cutoff. Stratify by the actual gcd size when estimating cofactor yield. The displayed Dickman approximation is not itself a uniform proof.
+
+   Finally, Boneh’s threshold is a **sufficient decoding guarantee**, not an impossibility theorem beyond it.
+
+   **Whole-box multivariate decoding remains outside the proof.** Homogeneous rational reconstruction can process slopes \(a/b\) together; its usual determinant calculation involves the box area and appears to retain only an \(L^{o(1)}\) gain here. But arbitrary bivariate Coppersmith/Boneh constructions require their own lattice, extraction, and yield analysis. Row-by-row accounting does not exclude them.
+
+4. **FT: partly WRONG. Bounded tails: conditionally CORRECT. Unbounded-tail verdict: OVERSTATED.**
+
+   The shared-root \(kN\) construction fits MNFS under H. The coordinate-change identity also checks out.
+
+   **“Distinct shifted tables … no sharing” is false.** For shifts differing by one, row-\(b\) rational intervals overlap in length \(2E-b\). Summing over \(1\le b\le E\), their overlap is approximately **75%**. This does not establish an asymptotic improvement, but the note must analyze the union and norm costs instead of denying sharing.
+
+   The \(2.00685\) precomputation belongs to the **optimized 1.638586 online factory point**. It is not a universal minimum preprocessing cost. Also, \(L[0.368264]\) targets amortize that table down to the factory online exponent; approximately \(L[0.104966]\) suffice to amortize it below 1.901884, ignoring boundary constants. State which comparison is intended.
+
+   For bounded tails, removing only \(O(1)\) primes of \(L[1/3]\) size shifts smoothness parameters by \(O(1)\), so the claimed leading constant survives **provided repaired LQ assumptions apply**.
+
+   The argument extends to slowly growing tails satisfying \(k\log u=o(\lambda)\), approximately \(k=o(u)\). Thus “bounded versus \(k\sim u\)” misses an intermediate regime.
+
+   For \(k=\Theta(u)\), cheap tail elimination is **not excluded**. Hyperedges of growing polylogarithmic weight need not automatically be expensive to eliminate. The \(2^{c-h}\) bound is valid for independent uniform head labels, but neither that assumption nor a random-core model proves the assertion for adaptively selected relations.
+
+5. **Experiments: mostly honestly reported, but the `las` comparison contains a confirmed configuration error.**
+
+   `-dup-qmin 61961,61961` enables duplicate suppression against **rational-side jobs that were never run**. The log explicitly shows these hypothetical side-0 checks.
+
+   I repeated the identical sieve in scratch with the unused side disabled:
+   ```
+   -dup-qmin 0,61961 -dup-qmax 0,63961
+   ```
+   It returns **4473 unique relations**, adding **37**, losing none. All 37 additions pass the exact side tests. The [corrected output](/Volumes/git/factoring-connection/codex/scratch/smoothenum_2/c61_las_corrected.rels) is retained. **Fix:** correct the configuration and repeat the equal-output comparison with the corrected target.
+
+   P2’s \(340/367.476=0.92523\) failure is explicitly reported: good. Its Poisson-standardized residual is indeed −1.433. However, a Poisson law for these lattice counts is not established. “The band was too tight” is a post-hoc explanation, not a consequence of the preregistered decision rule. Preserve the registered failure of the finite-size geometry prediction.
+
+   The remaining reported pass/fail outcomes survive my checks. There are two qualifications:
+
+   - P3’s low-bucket table uses weighted estimates, whereas the preregistration specifies raw tested-point sums. Both pass, but use the registered estimator.
+   - Exact testing of **all E1 windows** finds **74** doubly passing pairs versus the sieve’s **70**. Consequently, the advertised 14.6-fold gain includes missed baseline relations; against the exact yield it is approximately **13.8-fold**.
+
+   The timing comparison is explicitly two threads versus one, as registered. Different regions and heterogeneous “points + setups” units make it descriptive, not a controlled mechanism comparison. Recorded `las` relations reach \(|a|=25{,}443{,}305\), substantially beyond the note’s approximately \(5\cdot10^6\).
+
+   Equal raw relation counts also do not establish equal useful dependency yield. The data support “consistent with the proposed asymptotic explanation,” not “demonstrated to be \(u^{O(1)}\)” from one instance.
+
+6. **Literature: OVERSTATED novelty and incomplete attribution.**
+
+   - The factory constants and shared rational-table program are already Coppersmith’s construction, documented by [Bernstein–Lange](https://cr.yp.to/factorization/batchnfs-20141109.pdf). The oracle interpretation is a useful reformulation.
+   - Credit classical lattice sieving explicitly, including [Franke–Kleinjung](https://www.hyperelliptic.org/tanja/SHARCS/talks/FrankeKleinjung.pdf). I found no published theorem matching the note’s exact adaptive LQ formulation; describe that as a conditional formalization.
+   - Composite/mixed-side special-q has prior discussion in [Boudot et al.](https://eprint.iacr.org/2020/697). Distinguish simultaneous mixed-side divisors from alternating sides, already discussed in [Aoki’s 2008 slides](https://members.loria.fr/EThome/cado2008/slides/aoki.pdf).
+   - Cite [Boneh’s 2000/2002 work](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html) precisely. The decoding-threshold obstacle was already explicitly discussed in [Guruswami’s thesis, §12.3.2](https://www.cs.cmu.edu/~venkatg/pubs/papers/frozen.pdf): applicable random intervals contain too few smooth integers.
+   - Wagner supplies the birthday algorithm; the additional smooth-product height restriction needs its own stated assumptions.
+
+7. **Required fixes, ordered by severity:**
+
+   1. Repair LQ’s missing \(U/M\) suppression and conditional adaptive assumptions; revise dependent “model-PROVED” claims.
+   2. Add T8’s delay/prefix, joint smoothness, and fruitfulness assumptions.
+   3. Withdraw general exclusions of unbounded-tail elimination and whole-box multivariate decoding.
+   4. Correct `las` duplicate suppression and rerun the equal-output comparison.
+   5. Replace FT’s false no-sharing assertion and clarify preprocessing tradeoffs.
+   6. Narrow GEN/W; repair BC’s prime-cutoff and hit-rate reasoning.
+   7. Correct T5, finite-table maximization and decay rate, baseline recall, and literature attribution.

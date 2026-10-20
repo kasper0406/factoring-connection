@@ -61,7 +61,7 @@ def lq_gain(u: float, v: float) -> float:
 def lq_best_at(u: float, v_box: float, logB: float) -> Dict[str, float]:
     """Best yield-per-cost gain over all lattice indices M = B^v (natural logs):
     gain(v) = min(1, exp((v_box - v) logB)) * rho(u - v)/rho(u). Returns argmax v and gain."""
-    vs = np.linspace(0.0, min(u, v_box + 50.0), 5001)
+    vs = np.union1d(np.linspace(0.0, min(u, v_box + 50.0), 5001), [min(v_box, u)])  # include v_box exactly
     best = (0.0, 1.0)
     for v in vs:
         g = log_rho(max(u - v, 0)) - log_rho(u) + min(0.0, (v_box - v) * logB)
@@ -70,27 +70,32 @@ def lq_best_at(u: float, v_box: float, logB: float) -> Dict[str, float]:
     return {"v": best[0], "gain": best[1], "gain_at_box": lq_gain(u, v_box)}
 
 
-def mnfs_point(bits: int, e: float = 0.95094, beta: float = 0.95094, delta: float = 1.40175) -> Dict[str, float]:
-    """Concrete sizes at the MNFS optimum for an N of `bits` bits (natural logs). lam = x^{1/3}(log x)^{2/3}."""
+def mnfs_point(bits: int, e: float = 0.95094, beta: float = 0.95094, delta: float = 1.40175,
+               beta_a: float = 0.82591) -> Dict[str, float]:
+    """Concrete sizes at the (asymptotic) MNFS optimum for an N of `bits` bits, natural logs, o(1) terms dropped
+    and continuous d: ILLUSTRATIVE, not tuned parameters. lam = x^{1/3}(log x)^{2/3}."""
     x = bits * log(2)
     lam = x ** (1 / 3) * log(x) ** (2 / 3)
     d = max(1.0, delta * (x / log(x)) ** (1 / 3))
-    logB, logE = beta * lam, e * lam
+    logB, logBa, logE = beta * lam, beta_a * lam, e * lam
     log_rat = x / (d + 1) + logE        # rational norm ~ m E
-    u = log_rat / logB
-    return {"bits": bits, "x": x, "lam": lam, "d": d, "logB": logB, "logE": logE, "u_rat": u,
-            "v_box": 2 * logE / logB}
+    log_alg = x / (d + 1) + d * logE    # algebraic norm ~ m E^d
+    return {"bits": bits, "x": x, "lam": lam, "d": d, "logB": logB, "logE": logE, "u_rat": log_rat / logB,
+            "v_box": 2 * logE / logB, "logBa": logBa, "u_alg": log_alg / logBa, "v_box_alg": 2 * logE / logBa}
 
 
 def lq_gain_table(bits_list=(512, 768, 1024, 2048, 4096, 16384, 65536, 2 ** 20)) -> List[Dict[str, float]]:
-    """Proposition LQ, numerically: the best LQ gain g* on the rational side at the MNFS optimum, and its
-    L[1/3]-exponent sigma_eff = log g* / lam, which must tend to 0 (it is ~ v_box log(u log u)/lam)."""
+    """Proposition LQ, numerically: the LQ upper bound g* (with multiplicity) on each side separately at the MNFS
+    point, and sigma_eff = log g*/lam, which tends to 0 like (log x)^{1/3}/x^{1/3}
+    (log g* ~ v_box log(u log u) ~ log x, lam = x^{1/3} (log x)^{2/3})."""
     rows = []
     for n in bits_list:
         p = mnfs_point(n)
         b = lq_best_at(p["u_rat"], p["v_box"], p["logB"])
-        rows.append({**p, **b, "sigma_eff": log(b["gain"]) / p["lam"],
-                     "theta_eff": log(b["gain"]) / (p["u_rat"] * -log_rho(p["u_rat"]) / p["u_rat"])})
+        ba = lq_best_at(p["u_alg"], p["v_box_alg"], p["logBa"])
+        rows.append({**p, "v": b["v"], "gain": b["gain"], "gain_alg": ba["gain"],
+                     "sigma_eff": log(b["gain"]) / p["lam"], "sigma_eff_alg": log(ba["gain"]) / p["lam"],
+                     "frac_rat_dickman_penalty": log(b["gain"]) / -log_rho(p["u_rat"])})
     return rows
 
 

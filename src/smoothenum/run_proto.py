@@ -125,6 +125,26 @@ def cmd_e1():
     print(json.dumps(tot, indent=1))
 
 
+def cmd_e1exact():
+    """Post-review check (codex smoothenum_2): exact two-sided test of every coprime point of the E1 windows,
+    to measure the sieve's two-sided recall (the E4 gain is quoted against this exact baseline)."""
+    P, rfb, afb, rt, at = setup()
+    tot = {"points": 0, "rat_exact": 0, "both_exact": 0}
+    for (b, lo, hi) in e1_rows():
+        for a in range(lo, hi):
+            if gcd(a, b) != 1:
+                continue
+            if rt.ok(P.G(a, b)):
+                tot["rat_exact"] += 1
+                if at.ok(P.F(a, b)):
+                    tot["both_exact"] += 1
+        tot["points"] += hi - lo
+    tot["Ybox_both_exact"] = tot["both_exact"] / tot["points"]
+    tot["Ybox_rat_exact"] = tot["rat_exact"] / tot["points"]
+    json.dump(tot, open(os.path.join(RAW, "e1_exact.json"), "w"), indent=1)
+    print(json.dumps(tot, indent=1))
+
+
 def random_modulus(rng: random.Random, primes: List[int], roots: Dict[int, int], t: int):
     """Squarefree M in [2^t, 2^(t+1)) from distinct rational FB primes >= 2^8 (rejection sampling)."""
     while True:
@@ -255,7 +275,8 @@ def cmd_e4ours(K: int, tmax: float):
     aq = [(int(r), int(p)) for p, r in zip(afb.p.tolist(), afb.r.tolist()) if p >= 2 ** 13]
     seen, cnt, t0 = set(), Counters(), time.time()
     tests = 0
-    log = open(os.path.join(RAW, "e4_ours.jsonl"), "w")
+    tag = "" if K == 4436 else f"_K{K}"
+    log = open(os.path.join(RAW, f"e4_ours{tag}.jsonl"), "w")
     while len(seen) < K and time.time() - t0 < tmax:
         r1, q1 = rng.choice(rq)
         r2, q2 = rng.choice(aq)
@@ -273,7 +294,7 @@ def cmd_e4ours(K: int, tmax: float):
     wall = time.time() - t0
     res = {"K_target": K, "distinct": len(seen), "wall": wall, **cnt.as_dict(), "tests": tests,
            "rels_per_cost": len(seen) / cnt.cost(), "sec_per_rel": wall / max(1, len(seen))}
-    json.dump(res, open(os.path.join(RAW, "e4_ours_summary.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(RAW, f"e4_ours{tag}_summary.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
@@ -289,7 +310,7 @@ def cmd_e4check(relfile: str):
     ok = sum(1 for a, b in ab if rt.ok(P.G(a, b)) and at.ok(P.F(a, b)))
     inbox = sum(1 for a, b in ab if abs(a) < A_BOX and 1 <= b <= BM_BOX)
     res = {"las_unique": len(ab), "pass_ours": ok, "frac": ok / max(1, len(ab)), "in_our_box": inbox}
-    json.dump(res, open(os.path.join(RAW, "e4_las_check.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(RAW, os.path.basename(relfile) + ".check.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
@@ -299,6 +320,8 @@ if __name__ == "__main__":  # pragma: no cover
         cmd_calib()
     elif c == "e1":
         cmd_e1()
+    elif c == "e1exact":
+        cmd_e1exact()
     elif c == "e2":
         cmd_e2()
     elif c == "geo":
