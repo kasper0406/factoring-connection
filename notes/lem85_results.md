@@ -9,7 +9,8 @@ Agent `lem85`, phase 11, 2026-10-20.
 
 **Lemma 8.5′ is now proved (status: proved), in the generality Theorem A needs. Part 1, the
 referees' weakest link, is closed in the sense the brief asked for.** No step uses the inside of
-another paper's proof. Harper's preprint arXiv 1208.5992 is no longer cited at all. Lee–Venkatesan's
+another paper's proof. Harper's preprint arXiv 1208.5992 is no longer used as a direct input. It appears only as the
+provenance of one published lemma, below. Lee–Venkatesan's
 Lemma 8.5 is no longer used, neither its statement nor its proof.
 
 In plain terms:
@@ -19,8 +20,8 @@ In plain terms:
   needed is a restricted Bombieri–Vinogradov theorem over smooth moduli s, with a *relative* saving
   (Lemma SM, §5). We prove Lemma SM ourselves.
 - **Large conductors** (conductor ≥ y^K, K fixed) are handled by our Lemma LS (§4). It uses only the
-  classical multiplicative large sieve (Iwaniec–Kowalski Thm 7.13), Davenport's truncated Perron
-  lemma, and the smooth-number factorisation n = mk. At y = L[1/2] every smooth-number density is
+  classical multiplicative large sieve (Iwaniec–Kowalski Thm 7.13), a truncated Perron kernel
+  bound (proved in §2), and the smooth-number factorisation n = mk. At y = L[1/2] every smooth-number density is
   y^{−O(1)} = x^{−o(1)}, so crude losses of y^{O(1)} are affordable. This replaces Harper's
   Proposition 2 (LV Fact 8.11).
 - **Small conductors** (2 ≤ r ≤ y^K) use one published, numbered statement: **Drappeau, Compositio
@@ -33,9 +34,12 @@ In plain terms:
     (1 − α) log y ≍ log(u log y). The saving H(u)^{−δ} absorbs this loss because u/log²u ≫ log log x.
   - Both facts are specific to y = L[1/2, a]. This regime is exactly where the argument works.
 - **Exceptional (Siegel/Page) zeros.** Our own steps use no information about zeros. Drappeau's
-  Lemme 5 is used with A = 1/2, and its implied constant is stated to be effective for A < 1. **Every
-  constant is therefore effective, uniformly in N.** The algorithm uses none of these constants in any
-  case (§7).
+  Lemme 5 is used with A = 1/2, and its implied constant is stated to be effective for A < 1. Its
+  (log x)^{−A} factor is discarded, so Siegel's theorem is never needed.
+  - **Every bound holds uniformly for N ≥ N₀.** N₀ is effective provided Lemme 5's constants
+    η, c, δ are. Drappeau does not state this explicitly; we read Harper's source as giving it.
+  - The algorithm uses no analytic constant except through thmA's "N′ < N₀" branch. That branch can
+    be removed (§7).
 
 **What remains external (stated precisely, §2).**
 - The published input is Drappeau's Lemme 5. In both published sources its proof is a reference to
@@ -49,9 +53,16 @@ In plain terms:
 - **Harper 1208.5992 was never published.** zbMATH (queried 2026-10-20) lists it as "Preprint,
   arXiv:1208.5992 (2012)", and it is cited as a preprint in 2019–2025 papers.
 
+**Reviews (§10).**
+- GPT-6.1-sol adversarial referee: ACCEPT WITH FIXES (4 MINOR).
+- Opus proof critic: CORRECT WITH MINOR FIXES.
+- Opus citation critic: every citation confirmed, or confirmed after a correction.
+- None found anything FATAL or MAJOR, and all fixes are applied. All three name (D) as the weakest
+  remaining link.
+
 Everything else cited is a classical published statement, checked against the source where marked:
-Hildebrand–Tenenbaum 1986, de la Bretèche–Tenenbaum 2005, Iwaniec–Kowalski Thm 7.13, Davenport ch. 17,
-and Rosser–Schoenfeld 1962.
+Hildebrand–Tenenbaum 1986, Drappeau 2015 Lemme 1(i) (from de la Bretèche–Tenenbaum 2005), Iwaniec–Kowalski
+Thm 7.13 and Rosser–Schoenfeld 1962.
 
 ---
 
@@ -119,18 +130,27 @@ numbering matches the published version.
     moduli*, Compos. Math. 161 (2025), no. 8, 1923–1974, Lemma 3.2**. Pascadi gives the range
     (log x)^C ≤ y ≤ x, Q ≤ x, conductor ≤ x^ε, and "effective if A < 1". Checked in arXiv
     2304.11696v3. Pascadi cites it as "[7, Lemme 5]", where [7] is the Compositio version.
-  - **Provenance:** both papers justify it by reference to Harper arXiv 1208.5992 §3.3, eq. (3.1)
-    and the remark after it. We use it with **A = 1/2**.
-- **(dBT) de la Bretèche–Tenenbaum, *Propriétés statistiques des entiers friables*, Ramanujan J. 9
-  (2005), 139–202, Théorème 2.4(i) with m = 1.**
-  - Statement: Ψ(x/d, y) ≪ Ψ(x, y)/d^{α} uniformly for x ≥ y ≥ 2 and 1 ≤ d ≤ x.
-  - For m = 1 the extra condition ω(m) ≪ 1 holds, which allows the full range 1 ≤ d ≤ x.
-  - The same statement is **Drappeau 2015, Lemme 1(i)**, with α the saddle point of Drappeau's (1.6).
-  - Checked: the author's PDF, and Drappeau. The text extraction loses overbars, so we cannot tell
-    from it whether (2·19) uses the saddle point α or dBT's explicit
-    ᾱ := log(1 + y/log x)/log y of (2·4). Drappeau's Lemme 1(i) states it with the saddle point. We
-    use only the consequences (α1)–(α2) below, which hold for both.
-  - We write C_dBT for the implied constant.
+  - **Provenance.** Drappeau writes only "il découle des calculs de la section 3.3 de [Har12b]"; Pascadi
+    writes "follows from the work of Harper in [21, Section 3.3]".
+    - *Our reading*, not either author's statement: the relevant computation is Harper's eq. (3.1),
+      the effective bound Σ_{1<r≤x^η} Σ*_{χ*} Σ_{q≤Q} φ(q)^{−1} Σ_{χ induced by χ*} |Ψ(x, y; χ)| ≪
+      Ψ(x, y)(e^{−cu/log²(u+1)} + y^{−c}), with an ineffective (log x)^{−A} strengthening asserted after it.
+    - Harper's literal context is that of his Theorems 1–2 (Q ≤ √Ψ(x, y), log^K x ≤ y). Drappeau's
+      "Q ≤ x" is a legitimate reading of the computation, since it uses only Σ_{s≤Q/r} 1/φ(s) ≪ log x.
+      The "effective if A < 1" form is Drappeau's addition.
+    - **Our use lies inside even Harper's literal context.** We take Q = R₁ = y^K ≤ √Ψ(x/d, y), and we
+      discard the (log x)^{−A} factor entirely, so Harper's effective form (3.1) is all that is needed.
+      We take **A = 1/2** only to quote Drappeau's effective statement.
+- **(dBT) Drappeau 2015 (as in (D)), Lemme 1(i).** (α is the saddle point. The citation critic
+  confirmed this from the proof of dBT's (2·19), via their Lemme 5.1.)
+  - Statement: "Lorsque 2 ⩽ y ⩽ x et 1 ⩽ d ⩽ x, on a Ψ(x/d, y) ≪ Ψ(x, y)/d^α", where α = α(x, y) is
+    the saddle point of Drappeau's (1.6) (= HT86 (3.1)). Checked in arXiv v3 and the author's copy.
+  - Drappeau derives it from de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), 139–202,
+    Théorème 2.4(i) with m = 1. For m = 1, ω(m) ≪ 1 holds, which allows the full range 1 ≤ d ≤ x.
+    - The dBT author copy we read says it includes corrections relative to the published version
+      ("Nous incluons ici certaines corrections par rapport à la version publiée"). So we anchor the
+      citation to Drappeau's published, numbered Lemme 1(i), and give dBT only as its source.
+  - We write C_dBT for the implied constant (absolute).
 - **(HT) Hildebrand–Tenenbaum, *On integers free of large prime factors*, Trans. AMS 296 (1986),
   265–290.** Checked (scan).
   - Theorem 2(i), eq. (2.4): α(x, y) = (log(1 + y/log x)/log y)·(1 + O(log log(1 + y)/log y)),
@@ -140,24 +160,36 @@ numbering matches the published version.
 - **(LS) Iwaniec–Kowalski, *Analytic Number Theory* (AMS Colloq. Publ. 53, 2004), Theorem 7.13.**
   For complex a_n with M < n ≤ M + N:
     Σ_{q≤Q} (q/φ(q)) Σ*_{χ (mod q)} |Σ_n a_n χ(n)|² ≤ (Q² + N − 1) Σ|a_n|²,
-  where Σ* is over primitive characters. Quoted verbatim as Drappeau's Lemme 6 and Pascadi's
-  Lemma 3.3.
-- **(P) Davenport, *Multiplicative Number Theory* (3rd ed., GTM 74), Chapter 17, Lemma (p. 105).**
-  For c > 0, T > 0 and w > 0 with w ≠ 1:
-    |(2πi)^{−1}∫_{c−iT}^{c+iT} w^s ds/s − 1_{w>1}| < w^c min(1, 1/(T|log w|)).
-  Not re-checked against the book. This is the standard statement; Montgomery–Vaughan, *Multiplicative
-  Number Theory I*, Cor. 5.3, gives it with an O-constant, which would also suffice.
+  where Σ* is over primitive characters. Quoted verbatim as Drappeau's Lemme 6, and as Pascadi's
+  Lemma 3.3 in arXiv v3, which is **Lemma 3.4 in the published version** (codex lem85_1, finding 12).
+  We apply it with Q = ⌊2R⌋, an integer.
+- **(P) Truncated Perron kernel — proved here, not cited.** For c > 0, T > 0 and w > 0 with w ≠ 1:
+    |(2πi)^{−1}∫_{c−iT}^{c+iT} w^s ds/s − 1_{w>1}| ≤ w^c/(πT|log w|).
+  *Proof.*
+  - The integrand w^s/s is meromorphic, with a single simple pole at s = 0 of residue 1.
+  - If w > 1, close the segment [c − iT, c + iT] by the rectangle with vertical side Re s = −σ₀,
+    σ₀ → ∞. The left side contributes ≤ w^{−σ₀}·2T/σ₀ → 0. Each horizontal side contributes
+    ≤ (2π)^{−1}∫_{−∞}^{c} w^σ dσ/T = w^c/(2πT log w). The residue theorem gives the claim.
+  - If w < 1, close to the right instead. There is no pole, and the same bound holds with |log w|. ∎
+  - (This is the standard lemma of Davenport, *Multiplicative Number Theory*, ch. 17, and of
+    Montgomery–Vaughan, *Multiplicative Number Theory I*, Cor. 5.3. We prove it so that nothing
+    unnumbered is cited.)
 - **(RS) Rosser–Schoenfeld, Illinois J. Math. 6 (1962), 64–94.** Numbering as commonly cited, not
   re-checked; any Chebyshev-strength substitute changes only constants.
   - Corollary 1: π(z) < 1.25506 z/log z for z > 1.
   - Corollary 3: π(2z) − π(z) > 3z/(5 log z) for z ≥ 20.5.
-  - Theorem 15: n/φ(n) < e^γ log log n + 2.51/log log n for n ≥ 3.
+  - Theorem 15: n/φ(n) < e^γ log log n + 2.50637/log log n for n ≥ 3, except n = 223092870, which
+    needs 2.51. We use the 2.51 form. These statements were confirmed from secondary sources; the
+    "Corollary 3" label was not.
 
-Consequences used, valid in regime (R) for N ≥ N₀. Write β(z, y) for whichever exponent (dBT) uses.
-- **(α1)** β(z, y) ≥ 3/4 for 2y ≤ z ≤ x.
+Consequences used, valid in regime (R) for N ≥ N₀. Write β(z, y) := α(z, y), the saddle point.
+- **(α1)** 3/4 ≤ β(z, y) ≤ 1 for 2y ≤ z ≤ x.
 - **(α2)** 1 − β(z, y) ≤ (log(u log y) + C_α log log y)/log y for 2y ≤ z ≤ x, with C_α absolute.
-- Proof: for ᾱ, compute log(1 + y/log z) = log y − log log z + O(log z/y). For the saddle point, use
-  (HT) Theorem 2(i), together with log z ≤ log x = u log y.
+- Proof of (α2): by (HT) Theorem 2(i), α ≥ ᾱ(1 − C loglog y/log y) with ᾱ := log(1 + y/log z)/log y.
+  Also log(1 + y/log z) ≥ log y − log log z, and log z ≤ log x = u log y.
+- (α1) follows from (α2) in regime (R). The upper bound α ≤ 1 holds because y > log z, so that
+  Σ_{p≤y} log p/(p − 1) > log z (Mertens) and the defining equation forces α < 1. Only α ≥ 3/4 is
+  actually used.
 
 ---
 
@@ -259,7 +291,7 @@ Neither sequence depends on χ, and #supp a^{(p)} ≤ yM₁, #supp b^{(p)} ≤ z
 - Let z′ := ⌊z⌋ + 1/2, c := 1/log(2z) and T := (2zR)^4. For integers m, k ≥ 1, 1_{mk≤z} = 1_{z′/(mk)>1}.
 - On the support, mk ≤ (yM₁)(z/M₁) = yz and |z′ − mk| ≥ 1/2. Hence |log(z′/mk)| ≥ |z′−mk|/max(z′, mk)
   ≥ 1/(4yz), and (z′/mk)^c ≤ (2z)^c = e.
-- By (P), each pair (m, k) contributes an error < 4eyz/T. There are ≤ yz pairs per p, at most y
+- By (P), each pair (m, k) contributes an error ≤ 4eyz/(πT) < 4eyz/T. There are ≤ yz pairs per p, at most y
   primes p, and total character weight ≤ 4R². So the total error over all χ and p is
   < 16e y³z²R²/T ≤ e·y³/(z²R²) ≤ 3.
 - The main term is (2πi)^{−1}∫_{c−iT}^{c+iT} A_p(χ, s)B_p(χ, s) z′^s ds/s, where
@@ -302,10 +334,13 @@ for N ≥ N₀:
 1 < r ≤ R₁ = y^K, and case (b) is r > R₁.
 
 **(a) Small conductors.**
-- Apply E3 (s is y-smooth, so s_y = rad s) and swap the sums. With W(r, d) from E8:
-    (a) ≤ Σ_{1<r≤R₁} Σ*_{χ* (mod r)} Σ_{d sqfree, P⁺(d)≤y, (d,r)=1} |Ψ(x/d, y; χ*)|·W(r, d)
-        ≤ 10 C_dBT log log(Q′+16)·ϱ(Q′, y)·R₁^{1−β′}·Σ_d (d^{1−β′}/φ(d))·D(x/d),
+- Apply E3 (s is y-smooth, so s_y = rad s) and swap the sums. W(r, d) = 0 unless rd ≤ Q′, so only
+  d ≤ Q′ occurs. With W(r, d) from E8:
+    (a) ≤ Σ_{1<r≤R₁} Σ*_{χ* (mod r)} Σ_{d≤Q′ sqfree, P⁺(d)≤y, (d,r)=1} |Ψ(x/d, y; χ*)|·W(r, d)
+        ≤ 10 C_dBT log log(Q′+16)·ϱ(Q′, y)·R₁^{1−β′}·Σ_{d≤Q′} (d^{1−β′}/φ(d))·D(x/d),
     where D(z) := Σ_{1<r≤R₁} φ(r)^{−1} Σ*_{χ (mod r)} |Ψ(z, y; χ)|.
+  The cutoff d ≤ Q′ is kept through the next two steps, (D) and (dBT). Only the final Euler sum is
+  extended to all squarefree d, by positivity. (Fix from codex lem85_1 #2 and the Opus proof critic #5.)
 - *Apply (D) to the primitive characters only.* Take q = r ≤ R₁ and χ = χ* primitive. These pairs
   are among the terms of Lemme 5's left side with Q := R₁. Take A = 1/2 and the argument z = x/d.
   - The hypotheses hold: x/d ≥ x/Q′ ≥ x^{1/2}, so (log z)^{c_D} ≤ y ≤ z and R₁ = y^K =
@@ -313,8 +348,8 @@ for N ≥ N₀:
   - Hence D(x/d) ≤ C_D Ψ(x/d, y)(H(u_d)^{−δ_D} + y^{−δ_D}), where u_d := log(x/d)/log y ≥ u/2
     (because d ≤ Q′ ≤ x^{1/2}).
   - H is increasing on [4, ∞), so H(u_d) ≥ H(u/2).
-- By (dBT), Ψ(x/d, y) ≤ C_dBT Ψ(x, y)d^{−β}, with β := β(x, y). By (α1) and E6,
-  Σ_d d^{1−β′−β}/φ(d) < 6.
+- By (dBT) (d ≤ Q′ ≤ x), Ψ(x/d, y) ≤ C_dBT Ψ(x, y)d^{−β}, with β := β(x, y). By (α1) and E6,
+  extending to all squarefree d, Σ_{d≤Q′} d^{1−β′−β}/φ(d) < 6.
 - By (α2), R₁^{1−β′} = exp(K(1 − β′) log y) ≤ (u log y)^K (log y)^{KC_α} ≤ (log x)^{K(1+C_α)}.
 - Therefore
     (a) ≤ 60 C_dBT² C_D·log log x·(log x)^{K(1+C_α)}·(e^{−δ_D (u/2)/log²(u/2+1)} + y^{−δ_D})·Ψ(x, y)ϱ(Q′, y).
@@ -325,7 +360,8 @@ for N ≥ N₀:
 - Hence (a) ≤ Ψ(x, y)ϱ(Q′, y)ε_N for N ≥ N₀.
 
 **(b) Large conductors.**
-- Apply Corollary LS′ with z₀ = x, Q₀ = Q′, R₀ = R₁ and 𝒳(s) = {χ (mod s) : cond χ > R₁}, keeping
+- If Q′ ≤ R₁, case (b) is empty: every conductor divides s ≤ Q′. (Fix from codex #3 and Opus #6.)
+  Otherwise apply Corollary LS′ with z₀ = x, Q₀ = Q′, R₀ = R₁ and 𝒳(s) = {χ (mod s) : cond χ > R₁}, keeping
   only the moduli s ∈ 𝒮 (positivity). This gives
     (b) ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/y^K + y^{1/2}x^{1/2}Q′).
 - By E7, Ψ(x, y)ϱ(Q′, y) ≥ x·y^{−2−2ξ_max/a²−o(1)}.
@@ -385,25 +421,43 @@ Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
   of conductor ≤ y^K. Lemma LS, Corollary LS′ and E1–E8 use no information about L-function zeros.
 - **How it is handled.** Through (D) with A = 1/2. Drappeau states that its implied constant is
   effective for A < 1.
-  - In the source computation (Harper §3.3) the possible exceptional real character of small
-    conductor is bounded by an Euler-product argument for Ψ(x, y; χ). That argument does not depend
-    on the location of the real zero, and it produces the H(u)^{−δ} saving.
-  - Siegel's ineffective theorem is needed only for the extra (log x)^{−A} with A ≥ 1, which we do
-    not use. This is a description of the source, not a step of our proof.
+  - We describe the source computation (Harper §3.3) here; this is not a step of our proof.
+    - By Page's theorem, at most one exceptional real primitive character χ_bad has small conductor.
+    - For it, Harper bounds Ψ(x, y; χ_bad) by an Euler-product (saddle-point) argument. For
+      |t| < 1/(2 log y), that argument uses the favourable sign of the exceptional-zero term in
+      Σ Λ(n)χ(n). It uses **no lower bound on 1 − β**, which is why it is effective. It yields the
+      e^{−cu/log²(u+1)} saving.
+    - In regime (R), u ≫ (log log x)², so only this Euler-product branch is relevant. Harper's other
+      branch, y > x^{1/(log log x)²}, rests on Fouvry–Tenenbaum and an unwritten check, and is not
+      needed.
+  - Siegel's ineffective theorem enters only the (log x)^{−A} strengthening, which we discard.
 - **Uniformity.** Every bound above holds for all N ≥ N₀(a, Ξ, λ), uniformly in x, Y, Q in the stated
   ranges. There is no exceptional set of N and no exceptional set of moduli: the conductor of a
   potential exceptional character is absorbed in (a) like any other. The dependence on the
   constants of (D), (dBT) and (HT) is explicit.
-- **Effectivity.** All constants are effective, provided the constants of (D) (η_D, c_D, δ_D and the
-  implied constant for A = 1/2) are effective, as Drappeau states. Those of (dBT), (HT), (LS), (P) and
-  (RS) are effective.
-- **Does the algorithm need them?** No.
+- **Effectivity.**
+  - Drappeau states effectivity only for the *implied constant* of (D) when A < 1. He does not state
+    it for η_D, c_D, δ_D.
+  - In Harper's source, c and K are "fixed and effective constants" (his Theorem 1), and η, δ are
+    absolute constants fixed explicitly in §3.3 from Theorem 3, Proposition 1 and the log-free
+    zero-density estimate.
+  - So all our constants are effective, provided (D)'s η_D, c_D, δ_D are. We read Harper as giving
+    this, but neither published source states it. (Correction from the Opus critics.)
+  - The constants of (dBT), (HT), (LS), (P) and (RS) are effective. Note that δ_D enters c₀ and hence
+    ε_N.
+- **Does the algorithm need them?** Only through one threshold, which can be removed.
   - Lemma 8.5′ enters Theorem A only through FM, which is a lower bound on an expectation in the
     running-time analysis.
   - The algorithm's parameters (B, S, M, H, W, J, the grid) are explicit functions of N and of the
-    fixed (d, k, μ, η₀). None of C, c₀, N₀ is used by the algorithm.
-  - Even an ineffective N₀ would leave Theorem A true as stated: a Las Vegas algorithm with expected
-    time L[1/2, c + o(1)], with an ineffective o(1). The algorithm itself is unchanged.
+    fixed (d, k, μ, η₀). C and c₀ are not used by the algorithm.
+  - **However**, thmA_proof §3 (FACTOR) branches on "N′ < N₀", and U3 collects the sources' N₀ into
+    that threshold. So the explicit algorithm does use N₀ (Opus proof critic #10).
+  - If every N₀ is effective, as we believe (see above), nothing changes. If one were ineffective,
+    Theorem A as an existence statement survives, but the algorithm could not be written down
+    explicitly.
+  - *Robust fix, for the thmA/preprint owners:* run trial division (or any unconditional method) and
+    SPLIT in alternation, step by step, with no N₀ branch. This costs at most a factor 2 in expected
+    time for large N, and the algorithm then uses no analytic constant at all.
 
 ---
 
@@ -413,7 +467,7 @@ Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
   arXiv:1208.5992 [math.NT] (2012)". The following still cite it as a preprint:
   - Drappeau 2015 [Har12b];
   - Pascadi 2025 [21];
-  - a 2019 *Arch. Math.* paper and a 2023 arXiv paper (found by web search).
+  - later papers found by web search (not itemised).
 
   Harper's published related work is a different paper: J. Number Theory 132 (2012), 182–199, which
   treats individual moduli q ≤ y^{4√e−δ} and does not contain the needed averaged statements. Harper's
@@ -434,8 +488,11 @@ Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
 - **Ruled out as substitutes for (D).**
   - de la Bretèche–Drappeau JEMS 2020 Thm 2.1 carries e^{O(u₂)} (hypD §8).
   - Fouvry–Tenenbaum 1996 needs y ≥ exp((log x)^{2/3+ε}).
-  - Granville 1993 and Harper JNT 2012 are individual-modulus results with q ≤ y^{O(1)}, and
-    Granville's saving is only 1/log y.
+  - Harper JNT 2012 is an individual-modulus result with q ≤ y^{4√e−δ}. Granville's Acta Math. 1993
+    paper has individual-modulus results for q < √y (saving 1/log y), and an averaged BV result with
+    saving (log x)^{−A}, but only for Q ≤ min{√x/log^B x, y^{C(A) log log y/log log log y}}. That Q range is
+    far below our Q′, and the saving is not relative to smooth moduli. (Corrected after the citation
+    critic.)
   - A key point: *no unrestricted Bombieri–Vinogradov statement over all moduli can give the relative
     saving over smooth moduli*. Its total modulus weight is ≍ log x, while smooth moduli carry weight
     ϱ(Q′). That is why (D) is applied to primitive characters and transferred by E3 and E8, not
@@ -452,8 +509,65 @@ Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
 6. E7 and the choice of K.
 7. Parameter interface with thmA_proof §1 (§1 Remarks).
 
-## 10. Reviews
-(Filled in below after the GPT-6.1-sol and Opus rounds.)
+## 10. Reviews (all three returned "accept with fixes"; every fix applied)
+
+**GPT-6.1-sol adversarial referee (`codex/lem85_1.out`, xhigh): ACCEPT WITH FIXES.**
+- No FATAL or MAJOR findings.
+- It independently confirmed:
+  - the quotation and application of Drappeau's Lemme 5;
+  - the transfer weights (no hidden 2^{ω(s)} loss);
+  - the absorption of the transfer cost: log H(u/2) has coefficient ≥ 4c₀, against an O(log log N) loss;
+  - E4, the Perron and bilinear steps (constants 30 and 1440 ≤ 1500);
+  - E7 and the choice of K, with exponent ≤ −3/2;
+  - E2, the counting in (i), the FM interface, and effectivity.
+- Its four MINOR findings, all applied:
+
+| # | finding | fix |
+|---|---|---|
+| 2 | §5(a): the displayed d-sum dropped the cutoff d ≤ Q′, which (D) and u_d ≥ u/2 need | cutoff kept through (D) and (dBT); extended only in the final Euler sum |
+| 3 | §5(b): LS′ needs R₀ ≤ Q₀, which fails if Q′ < y^K | case (b) is empty then |
+| 12 | Pascadi's large-sieve lemma is Lemma 3.4 in print (3.3 in arXiv v3) | corrected |
+| 13 | "only published numbered statements" overstated: Davenport's Perron lemma is unnumbered and was unchecked; the dBT author copy contains corrections to the printed version | Perron kernel bound now proved in §2 (P); (dBT) anchored to Drappeau's published Lemme 1(i), with β = α the saddle point |
+
+**Opus proof critic (read-only): CORRECT WITH (MINOR) FIXES.**
+- It recomputed every constant numerically, with primes up to 10⁷:
+  - ∏(1 + 1/(p(p−1))) = 1.9436;
+  - Σp^{−3/2} = 0.84953;
+  - ∏(1 + 2p^{−3/2}) = 4.24;
+  - ∏(1 + p^{−1/2}/(p−1)) = 3.07;
+  - H is increasing from u ≈ 3.92.
+- It rechecked the Perron total e·y³/(z²R²), the E7 asymptotics, the margin in (a) (a factor 4 in
+  the exponent over ε_N), and the FM interface (#bad ≤ 40C|𝒳|ε_N·#𝒯_Q).
+- Findings and fixes:
+  - #5 and #6 are the same as codex #2 and #3; applied.
+  - #10: thmA's algorithm branches on N′ < N₀. We corrected §7 and proposed a fix for the thmA and
+    preprint owners: alternate trial division with SPLIT, with no N₀ branch.
+  - #11: Drappeau states effectivity only for the implied constant, not for η, c, δ. §7 and the Verdict
+    are corrected. The §7 paraphrase of Harper's exceptional-character step was also corrected.
+  - #12: the Verdict said Harper's preprint was "no longer cited at all"; this is reworded. pcest §2
+    and thmA_proof §7 still list LV 8.5 and Harper as inputs. Those files belong to other owners and
+    are not edited here; they should now cite this note.
+- Weakest link named: (D). Next: the (log x)^{O(K)} transfer cost, which is fine but specific to regime (R).
+
+**Opus citation critic (read-only): every citation CONFIRMED, or confirmed after a correction.**
+- Confirmed verbatim or exactly: Drappeau Lemme 5 (statement and numbering, also via Pascadi's
+  "[7, Lemme 5]"), Lemme 1(i), Lemme 6 and H(u); Pascadi Lemma 3.2 (arXiv v3); dBT Théorème 2.4(i)
+  (α is the saddle point, from its proof); HT86 Theorem 2(i) and Theorem 3; the zbMATH entries for LV,
+  Drappeau, Pascadi and Harper. Harper's preprint is unpublished: confirmed.
+- Corrections, all applied:
+  - the "(3.1) and the remark after it" pinpoint is our reading, not the authors';
+  - effectivity of η, c, δ is not stated by Drappeau;
+  - §7: "independent of the location of the zero" becomes "uses no lower bound on 1 − β (Page plus a
+    sign argument)";
+  - unidentified "2019/2023 papers" removed;
+  - Granville 1993 also has an averaged BV, but only for tiny Q;
+  - RS Theorem 15's exact form, and that the "Corollary 3" label is unverified.
+- It also noted, and §2 now records, that our use of (D) lies inside even Harper's *literal* context:
+  Q = y^K ≤ √Ψ, the (log x)^{−A} factor discarded, and only the Euler-product branch, since
+  u ≫ (log log x)².
+- Not verified by anyone (books or paywalls): IK Thm 7.13 from the book itself (confirmed through two
+  published verbatim quotations); RS numbering; de la Bretèche–Drappeau JEMS 2020 Thm 2.1 (only used
+  to rule it out).
 
 ## 11. Checks
 `.venv/bin/python -m pytest -q tests/test_lem85.py`: exact checks of E2 (lift averaging, 4 parameter

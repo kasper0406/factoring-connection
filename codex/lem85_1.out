@@ -1,0 +1,88 @@
+1. **OK — §2(D), Drappeau’s statement and §5(a) application.** The quotation is correct: \(Q\le x\), conductor \(1<\operatorname{cond}\chi\le x^{\eta_D}\), all characters including imprimitive ones, arbitrary fixed \(A>0\), and effectivity for \(A<1\). Restricting its nonnegative left side to primitive pairs \(q=r\le R_1\) is legitimate. With \(d\le Q'\), \(z=x/d\ge x^{1/2+\lambda}\), so uniformly
+   \[
+   R_1=y^K=z^{o(1)}\le z^{\eta_D},\qquad (\log z)^{c_D}\le y\le z.
+   \]
+   No contradiction with Harper’s (3.1) emerges. [Drappeau, Lemme 5](https://arxiv.org/html/1307.7554v3).
+
+2. **MINOR — §5(a), the displayed Möbius sum drops an essential cutoff.** After replacing \(W(r,d)\), the note writes an unrestricted \(\sum_d D(x/d)\), then asserts \(d\le Q'\). That restriction has disappeared from the displayed expression. For unrestricted squarefree smooth \(d\), \(x/d\) can be below \(y\), invalidating Drappeau’s hypotheses and \(u_d\ge u/2\).
+
+   **Fix:** retain \(d\le Q'\) through the application of Drappeau and dBT. Extend the resulting positive Euler sum to all squarefree \(d\) only afterward. Originally \(rd\le Q'\), so this repair costs nothing.
+
+3. **MINOR — §5(b), illegal application when \(Q'<R_1\).** Lemma SM allows \(2y\le Q'<y^K\), whereas LS′ requires \(R_0\le Q_0\). The advertised substitution \(R_0=R_1,\ Q_0=Q'\) then violates its hypotheses.
+
+   **Fix:** state that case (b) is empty when \(Q'\le R_1\), since every conductor divides \(s\le Q'\). Apply LS′ only when \(Q'>R_1\). The main application has \(Q'\ge x^\lambda/2\gg R_1\), so this affects the broader SM statement only.
+
+4. **OK — E3, E8 and §5(a), transfer weights.** The bookkeeping works:
+   \[
+   W(r,d)\ll \log\log Q'\,\varrho(Q',y)
+   \frac{r^{1-\beta'}d^{1-\beta'}}{\varphi(r)\varphi(d)}.
+   \]
+   Coprimality \((r,d)=1\) supplies \(\varphi(rd)=\varphi(r)\varphi(d)\); overlapping factors in \(j\) cause no reverse inequality. After the local bound, the remaining divisor sum is
+   \[
+   \sum_{d\ \mathrm{squarefree}}\frac{d^{1-\beta-\beta'}}{\varphi(d)}
+   \le\prod_p\left(1+\frac{p^{-1/2}}{p-1}\right)<6.
+   \]
+   There is no hidden \(2^{\omega(s)}\) loss. Even for moduli with many prime factors, the pointwise totient loss is only \(O(\log\log Q')\).
+
+5. **OK — §5(a), absorption of the transfer cost.** Put
+   \[
+   V_N=\frac{\sqrt{\log N}}{(\log\log N)^{5/2}}.
+   \]
+   The calculation gives
+   \[
+   \delta_D\log H(u/2)=\left(\frac{2\delta_D\xi}{a}+o(1)\right)V_N.
+   \]
+   Its coefficient is at least \(4c_0+o(1)\). Meanwhile
+   \[
+   \log\!\left[\log\log x\,(\log x)^{K(1+C_\alpha)}\right]
+   =O(\log\log N)=o(V_N).
+   \]
+   Thus the claimed \(\varepsilon_N\) survives with substantial slack. Fixed, possibly large \(K\) does not break this argument.
+
+6. **OK — E4 and §4, factorisation, Perron and bilinear estimate.** E4 is unique, including repeated equal primes. The coefficient sequences are character independent and supported within intervals of lengths at most \(y\sqrt z\) and \(\sqrt z\). Perron separates the remaining condition \(mk\le z\).
+
+   The half-integer \(z'\) gives \(|z'-mk|\ge1/2\); the claimed \(|\log(z'/mk)|\ge1/(4yz)\) is valid. With \(T=(2zR)^4\), the aggregate truncation error is at most \(ey^3/(z^2R^2)\le e\). The integral and Cauchy–Schwarz estimates have enough slack for constant \(30\). In LS′, the final coefficients are at most \(480\) and \(1440\), both below \(1500\).
+
+7. **OK — E7, §5(b), §6 Part 2: the large-sieve saving is sufficient.** The distinct-prime-products argument proves the crude density bound. Its exponent is correctly
+   \[
+   \frac{u\log(4u\log y)}{\log y}=\frac{\xi}{a^2}+o(1).
+   \]
+   Writing \(b=\xi_{\max}/a^2\), the first LS′ term divided by \(\Psi(x,y)\varrho(Q',y)\) is
+   \[
+   y^{9/2-K+2b+o(1)}\le y^{-3/2+o(1)}.
+   \]
+   The second is \(x^{-\lambda}y^{O(1)}\). The additional \(\log Y\le\log x\) in Part 2 is \(y^{o(1)}\). Both errors are smaller than \(\varepsilon_N\). Conductors immediately above \(y^K\) are covered.
+
+8. **OK — E2 and the residue maximum.** The decomposition is exact. It requires \(\ell>y\) and \((\ell,s)=1\), but does **not** require every prime factor of \(s\) to be at most \(y\). Smoothness supplies the coprimality automatically here. Every reduced class modulo \(s\) has \(\ell-1\) reduced lifts modulo \(\ell s\), so replacing the maximum over reduced \(r\bmod t\) by the maximum modulo \(s\) is valid.
+
+9. **OK — §6(i), counting.** HT Theorem 3 is used only with fixed multipliers \(2\) and \(4\), within its range. Uniformly, \(Q/(4Y)\ge x^\lambda/4\), hence \(u_z\to\infty\) and \(\alpha(z,y)\to1\). The stated constants give
+   \[
+   0.19\cdot\frac35=0.114>0.1.
+   \]
+   Thus the claimed lower constant \(1/10\) follows; the upper constant \(3\) also has slack.
+
+10. **OK — §1 interface and FM Step 3.** The final design supplies
+    \[
+    \mu-\nu\ge\eta_0,\qquad
+    \xi/2-(\mu+\nu)\ge\eta_0/2.
+    \]
+    Choosing \(\lambda=\eta_0/(4\xi_{\max})\) leaves fixed positive margins. Every grid point has exponent \(\xi+o(1)\), since its displacement is \(L^{O(1)}\), so one fixed compact \(\Xi\) works uniformly. Also
+    \[
+    (\log\omega)\varepsilon_N\log\log N
+    =\exp\{-c_0V_N+O(\log\log N)\}\longrightarrow0.
+    \]
+    The replacement saving is sufficient for FM’s bad-modulus argument.
+
+11. **OK — §7, exceptional zeros and effectivity.** Taking \(A=1/2\) uses the effective version explicitly stated in the published input. Exceptional characters remain inside that estimate; no exceptional modulus is silently discarded. The subsequent transformations introduce no ineffective zero estimate. The algorithm’s parameters do not use \(C,c_0,N_0\). This conclusion accepts Drappeau’s published effectivity assertion; Pascadi repeats it but supplies no independent proof. [Published Lemma 3.2](https://doi.org/10.1112/S0010437X2500747X).
+
+12. **MINOR — §2(LS), false claim about matching published numbering.** Pascadi’s published multiplicative large sieve is **Lemma 3.4**, not Lemma 3.3. The intervening remark became numbered Remark 3.3. The supplied arXiv extraction therefore does **not** have identical numbering throughout.
+
+    **Fix:** change the citation to “published Lemma 3.4; arXiv v3 Lemma 3.3.” The crucial small-conductor statement remains Lemma 3.2. [Published version](https://www.cambridge.org/core/journals/compositio-mathematica/article/smooth-numbers-in-arithmetic-progressions-to-large-moduli/D8E4EE07BDAA6D41CCD8C5455D81CD7A).
+
+13. **MINOR — §2(P), §2(dBT), “only published numbered statements” is overstated.** Davenport’s cited kernel lemma is unnumbered and expressly unchecked. The supplied dBT author copy explicitly contains corrections to the published version; matching theorem numbers alone does not verify unchanged statements. [Corrected author copy](https://tenenb.perso.math.cnrs.fr/PPP/PropStatFriables.pdf).
+
+    **Fix:** prove the elementary Perron kernel estimate locally, or verify a numbered substitute and adjust constants. Anchor the local bound directly to Drappeau’s numbered Lemme 1(i), set \(\beta=\alpha\) consistently, and remove the unresolved overbar discussion. Explicitly record \(0<\beta\le1\) in the relevant asymptotic range.
+
+**Overall verdict: ACCEPT WITH FIXES.**
+
+Weakest remaining link: Drappeau Lemme 5’s effective small-conductor estimate, whose proof still rests on Harper §3.3.
