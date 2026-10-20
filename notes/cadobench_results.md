@@ -29,7 +29,7 @@ before every validation run). Code: `src/cadobench/`. Tests: `tests/test_cadoben
   - 13–25% of all las relations are duplicates found by two special-q.
 - **Linear algebra stays small.** It is 9–19% of wall time, the matrix has 5–12% as many rows as there are
   unique relations, and the LA share grows with size. The empirical L[1/3] constant fitted over c70–c110 is
-  **c ≈ 1.13**: o(1) terms dominate at these sizes, so the asymptotic constant 1.923 says nothing quantitative
+  **c ≈ 1.12**: o(1) terms dominate at these sizes, so the asymptotic constant 1.923 says nothing quantitative
   here.
 - **For smoothenum:**
   - las spends **0.18–0.69 ms of single-core CPU per relation** (c70–c110), visiting 16k–47k box points
@@ -120,7 +120,19 @@ Notes:
 
 ### 2.1 Run-to-run spread
 
-See the addendum at the end of this note (filled in after the repeats finished).
+Three runs each at c70, c80 and c90, back to back, with the same N and `-t 10`. The polynomial
+selection is redone each time. Values are wall seconds: mean ± sd, with the 95% t-interval (n = 3).
+
+| size | total | polyselect | sieve | filter | linalg |
+|---|---|---|---|---|---|
+| c70 | 19.6 ± 0.1 (±0.3) | 3.3 ± 0.1 | 9.9 ± 0.1 | 2.5 ± 0.1 | 2.4 ± 0.1 |
+| c80 | 75.7 ± 5.6 (±13.9) | 7.7 ± 0.9 | 52.4 ± 3.8 | 6.7 ± 0.2 | 6.6 ± 0.2 |
+| c90 | 227.7 ± 6.8 (±17.0) | 10.2 ± 0.1 | 172.6 ± 4.8 | 18.4 ± 0.5 | 23.2 ± 1.8 |
+
+- The run-1 numbers at c80 and c90 are the fastest of the three, by 4–13%. They ran while the machine was
+  quieter, before other agents' load and the memory-pressure warn state.
+- c100 and c110 have one run each.
+- The V7 fit uses the means: c = 1.12 (total), 1.16 (sieve), 1.24 (LA).
 
 ## 3. Sieve profile (las, special-q on side 1)
 
@@ -178,7 +190,7 @@ Caveats:
 | V5b | matrix N / unique relations in [0.05, 0.5] | 0.117, 0.078, 0.059 (c70 0.083, c110 0.052) | **confirmed** |
 | V5c | LA grows faster than sieve from c80 to c100 | LA ×9.3 vs sieve ×5.6 (ratio 1.67); c100→c110 ×4.5 vs ×3.6 | **confirmed** |
 | V6 | after purge: fraction of large ideals with exactly 2 occurrences < 50% **and** mean ≥ 3 (c80–c100) | exactly 2: 51.2%, 50.5%, 55.4% (c110 55.5%); mean 2.85, 3.01, 3.26 (c110 2.97) | **refuted** (first part fails at every size) |
-| V7 | fitted L[1/3] constant c in [1.0, 1.9], c70–c100 (c110 included) | total wall 1.13; sieve 1.17; LA 1.24 (local slopes 0.85–1.33) | **confirmed** (descriptive only) |
+| V7 | fitted L[1/3] constant c in [1.0, 1.9], c70–c100 (c110 included) | total wall 1.12; sieve 1.16; LA 1.24 (means of repeats; local slopes 0.81–1.33) | **confirmed** (descriptive only) |
 
 Details.
 
@@ -228,7 +240,7 @@ ideals (p > lim) of all unique relations. CADO additionally removes cliques, so 
 **V7 (`analyze.v7`).**
 - The fit is log T = log A + c·(ln N)^{1/3}(ln ln N)^{2/3} over c70–c110, on means of runs.
 - Five points with an implicit o(1) make this purely descriptive. The local slopes jump around
-  (c90→c100 = 0.85) because CADO's per-size parameter files and its filtering rounds change discretely.
+  (c90→c100 = 0.81) because CADO's per-size parameter files and its filtering rounds change discretely.
 
 ## 5. What this means for the asymptotic programme (and for smoothenum)
 
