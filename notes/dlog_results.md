@@ -15,8 +15,8 @@ chain of Theorem A, Steps 1–7 of `notes/thmA_proof.md`) · **known** (publishe
 
 In plain terms: yes, the transfer works. Theorem A's relation supply, with the prime p in the role of N, gives an
 index-calculus algorithm for discrete logarithms in F_p^*. Its constant is below Pomerance's √2 for every
-optimised tuple (θ < 8/9), and below 1 at degree d = 9. As with Theorem A, this rests on the internal, unrefereed supply chain. The DL-specific part is new and
-proved here, and it needs no unproved hypothesis.
+optimised tuple (θ < 8/9), and below 1 at degree d = 9. As with Theorem A, this rests on the internal, unrefereed supply chain. The DL-specific part is proved here and
+needs no unproved hypothesis. Its components have prior art (§9b); the quantified combination appears new to us.
 
 1. **Theorem DL** (proved from A). Fix any admissible Theorem-A parameter tuple (d, k, μ, η₀) with θ < 1.
    - There is a Las Vegas algorithm that, given a prime p, a primitive root g and h ∈ F_p^*, computes log_g h mod
@@ -39,6 +39,9 @@ proved here, and it needs no unproved hypothesis.
    - Then ∏T_i^{x_i} is ±1 exactly. One primitive dependency gives A + X·B ≡ λ (mod p − 1), with B uniform mod p − 1
      because of the hidden exponents (Lemma HX).
    - All prime powers of p − 1 are handled at once, and the cost is L^{3a+o(1)}.
+   - The ingredients are known: LLL unit relations (Buchmann–Pohst 1989), explicit units in place of Schirokauer maps
+     (Schirokauer 2008, Ex. 2.6) and hidden exponents (Pomerance 1987, Enge–Gaudry 2002). What is new to us is the
+     combination with no unit-group or class-group computation and a quantified cost.
    - This quantified cost (post-processing exponent C_LA = 3) is what keeps the d = 9 constants. Codex dlog_1 shows that a post-processing exponent
      C_LA preserves them iff C_LA ≤ 1 + 1/θ (55/16 at k = 13, 13/3 for the infimum). The black-box route through
      Ge / Lenstra–Silverberg Thm 1.11 has an unquantified exponent.
@@ -86,18 +89,18 @@ proved here, and it needs no unproved hypothesis.
 |---|---|---|---|
 | DL in F_p^* (p prime), all p | L_p[1/2, √2] precomputation, L_p[1/2, 1/√2] per logarithm (expected) | none (ECM-based smoothness test, Wiedemann) | Pomerance, *Fast, rigorous factorization and discrete logarithm algorithms*, Discrete Algorithms and Complexity (1987) 119–143, §1 (read from the scan: "L(q)^{√2+o(1)} for a preprocessing stage and … L(q)^{√1/2+o(1)} for the actual discrete logarithm", q prime or 2^n) |
 | same, earlier | L[1/2, 2√2] (Adleman's sketch), √(5/2) with Pomerance's tools | — | Pomerance 1987 §1 |
-| same, heuristic | L_p[1/3, (64/9)^{1/3}] (NFS; Gordon 1993: 3^{2/3}) | heuristic, not GRH-conditional | Gordon, SIAM J. Discrete Math. 6 (1993); Schirokauer 2008 survey §2.8 |
-| F_{p^n}, p ≤ n^{o(n)} | L_q[1/2, √2] | none | Lovorn Bender–Pomerance, AMS/IP Stud. Adv. Math. 7 (1998) 221–232, §1. Also L(q)^{√(8/3)} for p < n^{4n/3}, and p^{2+o(1)} above that |
+| same, heuristic | L_p[1/3, (64/9)^{1/3}] (NFS; Gordon 1993: 3^{2/3}) | heuristic, not GRH-conditional | Gordon, SIAM J. Discrete Math. 6 (1993) 124–138; Schirokauer, Phil. Trans. R. Soc. A 345 (1993) 409–423; Schirokauer 2008 survey (MSRI 44) §2.8 |
+| F_{p^n}, p ≤ n^{o(n)} | L_q[1/2, √2] | none | Lovorn Bender–Pomerance, AMS/IP Stud. Adv. Math. 7 (1998) 221–232, §1 (read from the scan, which also states L(q)^{√(8/3)} for p < n^{4n/3} and p^{2+o(1)} above that; the literature critic could not verify the last two ranges independently) |
 | F_{p^n}, n = 2 | rigorous subexponential (Lovorn's thesis; constant 3/2 commonly quoted, not verified) | none | Lovorn 1992 thesis, cited in Bender–Pomerance §1 |
 | F_{p^n}, any p, n | (pn)^{2 log₂ n + O(1)}; quasi-polynomial for fixed p; L_Q[α + o(1)] for p = L_Q[α] (a fixed constant needs log p ≍ t^α(log t)^{−α}, t = log Q; codex dlog_1 §1(b)) | none | Kleinjung–Wesolowski, JAMS 35 (2022) 581–624, Thm 1.1 (arXiv 1906.10668) |
 | imag. quadratic class group structure | L[1/2, √2] | ERH | Hafner–McCurley, JAMS 2 (1989) |
-| imag. quadratic DL / class group | L[1/2, 3√2/4] | GRH | Vollmer, ANTS IV (2000), LNCS 1838; Biasse–Erukulangara, AMC 17 (2023) for structure |
-| imag. quadratic DL, cyclic class group of known order | L[1/2, 1] | ERH | Enge–Gaudry, Acta Arith. 102 (2002), Thm 1 (per codex dlog_1 §1(c)) |
+| imag. quadratic class group structure | L[1/2, 3/√8 = 3√2/4] | GRH | Biasse–Erukulangara, Adv. Math. Commun. 17(6) (2023) 1388–1405 (computes Cl, not DL). Vollmer's ANTS IV (2000) claim of this constant was **retracted** in the corrigendum of Vollmer, ANTS V, LNCS 2369 (2002) 148–162 |
+| imag. quadratic DL, cyclic class group of known order N | L_N[1/2, √2] = L_{|D|}[1/2, 1] | ERH | Enge–Gaudry, Acta Arith. 102 (2002) 83–103, Thm 1 |
 | arbitrary number fields: class/unit group | L_{|Δ|}[1/2, O(1)] (fixed degree) | ERH | de Boer–Pellet-Mary–Wesolowski, arXiv 2512.01588 (2025), Thm 1.3; finite-field DL explicitly not investigated |
-| hyperelliptic Jacobians, g ≥ ϑ log q | L_{q^g}[1/2, (5/√6)(√(1+3/(2ϑ)) + √(3/(2ϑ)))] | none | Enge, Math. Comp. 71 (2002), Thm 1.1 |
-| same, cyclic of known order, g/log q → ∞ | L_{q^g}[1/2, √2] | none | Enge–Gaudry, Acta Arith. 102 (2002), Thm 1 |
-| fixed-genus curves | Õ(q^{2−2/g}) (exponential in log q^g) | none | Diem, Math. Comp. 80 (2011), Thm 1 |
-| exact multiplicative relations in a Q-algebra | deterministic polynomial time (exponent not stated) | none | Ge 1993 thesis (fields); Lenstra–Silverberg, arXiv 1509.08843, Thm 1.11(i) |
+| hyperelliptic Jacobians, g ≥ ϑ log q | L_{q^g}[1/2, (5/√6)(√(1+3/(2ϑ)) + √(3/(2ϑ)))] | none | Enge, Math. Comp. 71 (2002) 729–742 (journal version; the CORR 99-04 preprint states a different form; theorem number unverified) |
+| same, cyclic of known order, g/log q → ∞ | L_{q^g}[1/2, √2]; for g ≥ ϑ log q, √2(√(1+1/(2ϑ)) + √(1/(2ϑ))) | none | Enge–Gaudry, Acta Arith. 102 (2002), Thm 1 and §5 |
+| fixed-genus curves | Õ(q^{2−2/g}) (exponential in log q^g) | none | Diem, Math. Comp. 80 (2011) 443–475 (theorem number unverified) |
+| exact multiplicative relations in a Q-algebra | deterministic polynomial time (exponent not stated) | none | Ge 1993 thesis (fields); Lenstra–Silverberg, Found. Comput. Math. 18 (2018) 159–180, Thm 1.11(i); Babai–Beals–Cai–Ivanyos–Luks, SODA 1996 (in substance equivalent) |
 
 - **known (search result).** No rigorous prime-field DL with constant below √2, for all p or for almost all p, under
   any standard hypothesis. Searched by me (WebSearch, the Galbraith book ch. 15, the KW introduction, the
@@ -311,13 +314,17 @@ the round's transcript 𝒯_j (Lemma T_p). Then B_ := Σ x*_i b_i is uniform on 
   - b ↦ b·x* mod n is a surjective homomorphism, since gcd(x*) = 1 and so a Bezout vector exists. Hence the image of
     the uniform law is uniform.
   - log_g W(x*) = Σ x*_i(a_i + Xb_i) = A_ + X·B_ (mod n), by T_i = g^{a_i}h^{b_i}. ∎
-  - The bound φ(n)/n ≥ 1/(1 + log₂ n) is codex dlog_1's elementary telescoping. Mertens gives ≫ 1/log log n.
+  - The bound φ(n)/n ≥ 1/(1 + log₂ n) is an elementary telescoping (as in codex dlog_1). Mertens gives
+    ≫ 1/log log n.
+  - **Prior art.** The hidden-exponent argument is known: Pomerance 1987; Galbraith's book, Exercise 15.5.3;
+    Enge–Gaudry 2002 §§3–5, with Pr ≥ (φ(N)/N)². The small twist here is that uniformity mod the *unfactored* n comes
+    from a primitive Z-vector.
 
 **Algorithm EXACT_DEPENDENCE and Proposition XK (proved).** On M ≥ C̄ + d ≥ C_col + d rows:
 1. Compute E exactly (Lemma XK0).
 2. Pick a random prime q ∈ [Q, 2Q] with Q := M·(log p)³. Compute by Gaussian elimination mod q a rank profile
    (I, J), |I| = |J| = ρ.
-3. For d rows i ∉ I, solve yᵀE_{I,J} = −E_{i,J} over Q by Dixon's p-adic lifting (Dixon 1982), and clear
+3. For d rows i ∉ I, solve yᵀE_{I,J} = −E_{i,J} over Q by Dixon's p-adic lifting (Dixon, Numer. Math. 40 (1982) 137–141, as usually restated: O(n³ log²(n‖A‖))), and clear
    denominators: x_i := D·(y, e_i).
 4. Verify x_iᵀE = 0 exactly on all columns. If it fails, then rank_Q E > ρ: restart step 2.
 5. Apply Lemma XK4 to s = r_U + 1 of the x_i, giving n ≠ 0.
@@ -556,6 +563,30 @@ Miller–Rabin, flint nullspace.
   asymptotic cost.
 - Commands are in the prereg. Analysis: `.venv/bin/python -m src.dlog.analyze experiments/raw/dlog_e1.jsonl`.
 
+## 9b. Prior art for Proposition XK (literature critic): partially pre-empted
+
+- **Lemma XK4 is methodologically pre-empted.** Exact integer kernels whose product is a unit, with units removed by
+  Log + LLL and a minimum-length bound, are the classical route to unit and S-unit relations in class-group and
+  regulator algorithms:
+  - Buchmann–Pohst, EUROCAL '87, LNCS 378 (1989) 54–63;
+  - Buchmann 1990; Buchmann–Düllmann;
+  - Ge 1993;
+  - de Boer–Pellet-Mary–Wesolowski arXiv 2512.01588, Part 3 (§§23–25, Thm 12.1), for a modern rigorous treatment.
+- **Explicit units instead of Schirokauer maps in NFS-DL are known when units are computable.**
+  - Schirokauer's 2008 survey, Example 2.6, notes that explicit generators and units would avoid the additive
+    characters and the factoring of p − 1. It credits Lenstra et al. 1993.
+  - Joux–Lercier–Smart–Vercauteren 2006 and Barbulescu–Gaudry–Guillevic–Morain (arXiv 1408.0718) use explicit units.
+- **Lemma HX is known** (see its prior-art note).
+- **What appears new, to the best of both searches (mine and the Opus critic's):**
+  - computing *no* unit or class group at all;
+  - one exact dependency with exact cancellation of the valuations of the ideals (a − bα)(1, α)^{−1};
+  - units removed only on the d-dimensional image;
+  - the quantified L^{3a} cost, which keeps Theorem A's constants;
+  - its use with descended uniform targets.
+  The novelty claim is limited to this combination: "no prior formulation found by us".
+- KW Thm 3.1 (= Wesolowski 2018, Thm 1.4) is a related generic post-processing reference: factor base plus descent
+  gives DL with O(m³ log log n) operations in Z/nZ.
+
 ## 10. Reviews
 
 - **GPT-6.1-sol dlog_1 (blind, xhigh).** It independently found exact dependencies via Ge's algorithm, Lemma S_p, the
@@ -567,4 +598,12 @@ Miller–Rabin, flint nullspace.
 
 ## 11. Review log
 
-(Filled in after the reviews.)
+| reviewer | scope | verdict | main fixes (all applied) |
+|---|---|---|---|
+| GPT-6.1-sol dlog_1 (blind, xhigh) | literature + design | exact-dependency route via Ge; open: quantified post-processing exponent | — (merged; gap closed by Prop. XK) |
+| GPT-6.1-sol dlog_2 (adversarial, xhigh) | whole note | DL part: **ACCEPT WITH FIXES**; transfer: **ACCEPT WITH FIXES** | 4 items labelled MAJOR, all wording or scope; no FATAL: (7) √2 claim only for θ < 8/9, table = zero-slack infima, +η₀/√2; (8) Cor DL′ inconsistent congruence for non-primitive t (counterexample p = 7); (9) Schirokauer "iff" false on H_ℓ (example 18 = 2·3², ℓ = 5); (11) §7 optimality only within the cost model. MINOR: R = max(1, ·), Step 4 does not certify rank, precision ledger, per-round transcript, free a, KW L[α + o(1)], "integral vs mod-2 rank discrepancy", factoring remark cost not established |
+| Opus proof critic | §§3–5 line by line | DL part: **ACCEPT WITH FIXES**; transfer: **ACCEPT WITH FIXES**; no FATAL/MAJOR | sign typo in G(P) identity; free a for θ > 1/2; XK4 cost statement; conjugate lower bound; Z_(r)[α]; computable row bound C̄; per-round HX; Cor DL′ budget 4×, c(1 + log₂ n) bases, gcd check; θ < 8/9; §6 wording; notation κ; composite-N ψ remark |
+| Opus literature critic | §1, prior art | **citations OK with fixes**; claim (a) stands as a search result; XK **partially pre-empted** | Vollmer's 2000 claim retracted (2002 corrigendum), so 3√2/4 is credited to Biasse–Erukulangara (structure, not DL); Enge–Gaudry class-group half added; Enge journal version; LS journal + BBCIL 1996; Schirokauer 1993; Dixon wording; prior art §9b; HX credits |
+
+- All three reviewers independently confirm the cost (no hidden L^{4a}) and the constants table.
+- None of them certifies the internal supply chain (Steps 1–7). The theorem stays labelled **proved from A**.
