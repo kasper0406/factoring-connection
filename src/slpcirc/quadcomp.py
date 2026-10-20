@@ -3,7 +3,7 @@
 Usage: python -m src.slpcirc.quadcomp OUT.jsonl
 """
 from __future__ import annotations
-import json, random, statistics, sys, time
+import json, math, random, statistics, sys, time
 from sympy import primerange
 
 CS = (-2, -1, 0, 1, 2)
@@ -58,7 +58,7 @@ def main(out):
         for seq, n in all_fibres_depth(8, p, sqs[p]).items():
             table.setdefault(seq, []).append(n)
     med = {s: statistics.median(v) for s, v in table.items()}
-    thr = {p: p / (p.bit_length() - 1) ** 2 for p in primes}
+    thr = {p: p / math.log2(p) ** 2 for p in primes}  # prereg threshold p/(log2 p)^2
     def heavy(vals):
         return sum(1 for p, n in zip(primes, vals) if n >= thr[p])
     top_med = sorted(med.items(), key=lambda kv: -kv[1])[:15]

@@ -1,0 +1,316 @@
+**Overall: REJECT as written.** The elementary core—S1, S1-k, the formal SP divisibility statement, LP, and SP-U’s counting inequality—survives. Several advertised consequences do not follow, and parts of the experimental narrative are inaccurate.
+
+I read [the complete results note](/Volumes/git/factoring-connection/notes/slpcirc_results.md), the preregistration, relevant source and raw results, and the earlier report. All nine existing tests pass. The findings below distinguish mathematical validity from interpretation.
+
+1. **[OK] S1 survives the proposed attacks.**
+
+   The compression occurs separately on each coset \(x\mu_\ell\). Its coefficients \(c_ix^{e_i}\) remain nonzero. Reduction modulo \(\ell\) is valid there; the proof never needs the compression multiplier to permute all of \(G\).
+
+   Distinct residues remain distinct after multiplication by \(m^*\ne0\bmod\ell\), so the compressed polynomial cannot vanish formally. Multiplying by \(y^w\) handles Laurent exponents correctly. The ordinary root bound works over \(\mathbb F_Q\), including extension-field coefficients.
+
+   **Fix:** Retain the proof. Explicitly emphasize that the power substitution permutes \(\mu_\ell\), not necessarily \(G\).
+
+2. **[OK] S1-k also survives.**
+
+   Each excluded hyperplane has exactly \(\ell^{k-1}\) points because its defining difference vector is nonzero modulo \(\ell\). The strict inequality \(\ell>\binom t2\) leaves an admissible \(w\). For \(t\ge2\), that \(w\) is nonzero modulo \(\ell\), making \(\iota\) injective. The coset count \(n^k/\ell\) is correct.
+
+   **Fix:** State \(t\ge2\) explicitly. Keep the strict hyperplane threshold.
+
+3. **[OK] The formal SP conclusion, including all three cases, is correct.**
+
+   Case 1 correctly handles a formally nonzero polynomial inducing the zero function. Case 2 is impossible at positive density. In Case 3, merging modulo \(n\) is legitimate, and
+   \[
+   t'\le t\quad\Longrightarrow\quad K_\ell(t')\ge K_\ell(t).
+   \]
+   Representatives of merged classes are original exponents; because \(\ell\mid n\), their congruences modulo \(\ell\) agree with the class representatives.
+
+   Thus **every** prime \(\ell\ge\ell_0(t,\lambda)\) dividing \(n\) really does divide \(\Lambda\). The multivariate coordinate-product conclusion also follows: a vector collision modulo \(\ell\) makes every coordinate difference divisible by \(\ell\).
+
+   **Fix:** Describe this as a statement about prime support. It gives no required \(\ell\)-adic multiplicities.
+
+4. **[MAJOR] “Exactly a group-order method” substantially overstates SP.**
+
+   SP gives a necessary divisibility obstruction. It does not characterize root sets, supply a group algorithm, or give an equivalent success condition.
+
+   For example, on \(\mathbb F_{23}^*\), \(F(u)=u^{22}-2\) has no roots although \(\Lambda=22\) contains the entire group order. Coefficients and compatibility conditions remain decisive.
+
+   **Fix:** Replace “exact group-order dichotomy,” “precisely the Pollard … success condition,” and the proved classification language with **“necessary large-prime-factor alignment.”** Keep the displayed theorem.
+
+5. **[MINOR] The written \(\ell_0\) is valid, but the implementation computes something different.**
+
+   With integer thresholds, the written definition gives exactly
+   \[
+   \ell_0(t,\lambda)=
+   \bigl(\lfloor2/\lambda\rfloor+1\bigr)^{t-1}+1.
+   \]
+   For \(\lambda=1/20\), these values are \(42,1682,68922\) for \(t=2,3,4\). The code returns \(41,1601,64001\), testing the rounded coset bound instead.
+
+   That alternative test need not remain true at every subsequent integer: for \(t=3,\lambda=3/4\), the code stops at 6, but its bound fails the density test at the later prime 7. This does not itself disprove SP, but invalidates the claimed equivalence between code and threshold definition.
+
+   **Fix:** Implement the displayed integer formula, or prove a separate eventual threshold for the rounded bound.
+
+6. **[OK, with minor repairs] SP-1, SP-D, SP-K and SP-\(\Pi\) have sound local arguments.**
+
+   SP-1’s loss for the origin is safe. A Laurent polynomial, however, has no value at zero without a convention.
+
+   For SP-D, the transfer is actually stronger than stated. Counting the split and nonsplit tori as a **disjoint union**, every \(x\in\mathbb F_p\), including the endpoints, has two preimages counted with multiplicity across the two copies. Consequently,
+   \[
+   Z_{\mathrm{split}}+Z_{\mathrm{nonsplit}}=2Z_F,
+   \]
+   and one torus has density at least \(\lambda\). The \(2/p\) loss is unnecessary. The conclusion concerns **one of** \(p-1,p+1\), not both.
+
+   The displayed Dickson \(\Lambda\) omits squares on the cross terms compared with the actual Vandermonde product. Its prime support is nevertheless correct when the indices are distinct and nonzero.
+
+   **Fix:** Use torus sampling or specify denominator clearing for Laurent expressions. Merge repeated Dickson exponents, handle \(m_j=0\), and call the displayed product a prime-support surrogate. State that SP-\(\Pi\) uses a common sampling group.
+
+7. **[OK, with a technical repair] LP’s analytic argument works, including \(p+1\).**
+
+   BV applies to the dyadic difference with \(D=X^\theta\), for fixed \(\theta<1/2\). The additional \(\Lambda(d)\le\log(2X)\) weight costs a logarithm, absorbed by taking a stronger BV error estimate. The main-term identity
+   \[
+   \sum_{d\le D}\frac{\Lambda(d)}{\varphi(d)}
+   =\log D+O(1)
+   \]
+   supplies the claimed coefficient.
+
+   The prime-power estimate is valid **after truncating the powers**:
+   \[
+   \sum_{\ell\le D}\log\ell
+   \sum_{\substack{a\ge2\\D<\ell^a\le2X+1}}
+   \left(\frac X{\ell^a}+1\right)
+   \ll X/\sqrt D+D\log^2X.
+   \]
+   As printed, the unrestricted sum of the \(+1\) terms diverges.
+
+   For \(p+1\), the progression is \(-1\bmod d\), always a reduced residue class. Goldfeld’s original paper explicitly treats fixed shifts. [Goldfeld, *On the number of primes \(p\) for which \(p+a\) has a large prime factor*](https://www.math.columbia.edu/~goldfeld/PrimeShifts.pdf).
+
+   **Fix:** Insert the truncation and explain absorption of the BV weight. Keep the fixed-\(\theta\) qualification.
+
+8. **[OK] SP-U’s displayed counting inequality is correct.**
+
+   A fixed \(\ell\) can arise from at most \(X/\ell+1\) primes in the interval satisfying \(p\equiv1\bmod\ell\). Selecting only those with largest prime factor \(\ell\) cannot increase this count. Distinct captured primes contribute at least \(\theta\log X\) each to \(\log|\Lambda|\).
+
+   The content exclusion in the definition of \(P\) is sufficient here: a nonzero product over the Laurent polynomial domain has no zero factor.
+
+   **Fix:** Specify distinct supports and \(D\ge1\). Also state that the bound becomes useful only when
+   \[
+   |P|>(\theta+o(1))\pi^*(X).
+   \]
+   A positive fraction smaller than a previously fixed \(\theta\) gives no conclusion.
+
+9. **[FATAL] The stated “weakest sufficient statement” is false.**
+
+   “Balanced density at all but two primes” permits both exceptions to have density zero. Their product then has zero success probability. Such local polynomial data can be realized by coefficient CRT, so this is an actual logical counterexample.
+
+   The necessity argument—at most one low-density prime and at most one high-density prime—is correct. It loses information when converted into two unrestricted exceptions.
+
+   Even with only one exceptional prime, the universal bound is \(\mu\), not necessarily \(2\mu(1-\mu)\).
+
+   **Fix:** Require at most one unrestricted exception, or retain the stronger condition “at most one exception below the interval and at most one above it.” Separate this sufficient condition from the proved necessity statement.
+
+10. **[MAJOR] SP-U1’s degree bridge is invalid for the stated Laurent/product representation.**
+
+    \(D\) is an upper bound on factor exponents, so \(\deg F_X\ge D\) does not follow. Even taking \(D\) to be the actual maximum absolute exponent does not repair Laurent monomial shifts:
+    \[
+    F_1=x^M,\qquad F_2=x^{-M}(x-1),\qquad F_1F_2=x-1.
+    \]
+
+    The repair is available. Define \(B\) using the maximum **coordinate span within a factor**, rather than absolute exponents. Then
+    \[
+    \log|\Lambda|\le r\binom t2\log\max(2,B).
+    \]
+    Coordinate spans add under multiplication, so an ordinary polynomial output has degree at least \(B\). Laurent or rational circuits require the corresponding numerator/denominator degree argument.
+
+    The density loss also needs a uniform parameter. Writing
+    \[
+    a_p=(1-1/p)^k,\qquad
+    \delta_p=a_p\delta_p^*+(1-a_p)\delta_{p,\mathrm{boundary}}
+    \]
+    gives a safe loss at most \(k/p\). Choose, for example,
+    \[
+    \lambda_X=\mu/2-k/X>0,
+    \]
+    and impose the threshold condition using that actual value. The printed \(4r/\mu\) condition silently ignores this loss.
+
+    **Fix:** Rewrite the proof using spans and a single \(\lambda_X\). For fixed \(t,r\) and suitable \(\mu\), the claimed leading \(N^{1/4-\varepsilon}\) obstruction survives. Replace the literal \(X\)-to-\(N\) equality by an asymptotic comparison and rename \(\varepsilon\).
+
+11. **[MAJOR] The uniform extension to Dickson tests needs an argument; the general fixed-dimensional torus extension is unproved here.**
+
+    SP-D lets the successful sign vary with \(p\). LP for one sign alone does not justify applying SP-U unchanged.
+
+    A repair for Dickson tests is straightforward: LP bounds the exceptional smooth sets for \(p-1\) and \(p+1\) by \((\theta+o(1))\pi^*\) each. Outside their union, either successful sign supplies a large prime. Count a fixed \(\ell\) in the two progressions \(p\equiv\pm1\bmod\ell\). The leading exponent survives, with changed constants.
+
+    For \(\Phi_k(p)\), neither LP nor the one-progression counting argument applies verbatim. Arbitrary products of different groups are also outside S1-k’s common-\(G\) hypothesis.
+
+    **Fix:** Supply the two-sign proof. Remove the generic uniform torus claim until the needed large-factor and residue-class estimates are established.
+
+12. **[MAJOR] The adaptive-trials remark needs clarification and multiplication of the \(\Lambda\)’s.**
+
+    Divisibility is preserved by their **product**, not their sum.
+
+    A fixed menu of \(T\) programs admits the proposed union argument. A depth-\(T\) adaptive tree can contain more than \(T\) distinct programs, so that interpretation requires justification.
+
+    For the stated deterministic selection rule, a useful repair is to use the \(T\) programs on the branch where every previous gcd equals 1. If both local densities are below \(\lambda\) along that branch, the probability of ever leaving it is at most \(2\lambda T\). Therefore uniform success exceeding that quantity forces coverage by those programs.
+
+    **Fix:** Write this branch argument, use \(\prod_\tau\Lambda_\tau\), and charge every tested program. Randomized constructors need a separate quantified argument.
+
+13. **[FATAL] SP-U2 does not establish the advertised average-case barrier.**
+
+    There are three independent defects.
+
+    * The claimed lower bound for \(|P|\) fails without a content exclusion. Let \(C_X\) be the product of roughly half the primes in the window and use the constant polynomial \(F_X=C_X\). Its average splitting probability is approximately \(1/2\), while \(P\) is empty.
+    * LP is stated for fixed \(\theta\). Substituting \(\theta=\mu(X)/8\) requires uniform estimates, including errors smaller than \(\mu\).
+    * The last inference is numerically false. For \(\mu=1/\log X\),
+      \[
+      X^{\mu/8}=e^{1/8},
+      \]
+      which is not superpolylogarithmic. The sparsity threshold may fail as well.
+
+    **Fix:** Retain only a constant-\(\mu\) corollary, with nonvanishing throughout the range, torus losses, the degree repair, and an explicit distribution on prime pairs. An inverse-polylogarithmic average-case result needs a new quantitative argument—for example, sufficiently strong smooth-number estimates. Delete the current final conclusion.
+
+14. **[MAJOR] SP-N proves a scoped density statement, not the unrestricted claim “succeeds on density zero.”**
+
+    The central congruence \(N\equiv q\bmod\ell\) and the fixed-\(q\) count are correct. Handle the finitely many roots of \(\Pi(q)\) separately.
+
+    However, “success” must mean attaining a specified local density threshold. Literal positive gcd success occurs for essentially every pair for examples such as \(x^{N-1}-1\). Nor does an \(o(1)\) fraction alone rule out inverse-polylogarithmic average success.
+
+    For splitting, either component can provide the density. The displayed argument gives \(2\theta+o(1)\) for that union, rather than \(\theta+o(1)\); the final \(o(1)\) conclusion survives.
+
+    **Fix:** State the density threshold and require \(\ell_0(t,\lambda_X)\le X^\theta\) eventually for every fixed \(\theta>0\). Exclude content at both components. Replace “successes concentrate” by the actual exceptional-pair estimate.
+
+15. **[OK, with scope repairs] Prop R is essentially correct.**
+
+    The residue-size argument is valid. The CRT construction gives density \((r-1)/(2r)\), in the required interval for odd primes. Construction time, rather than existence, is correctly the difficult part.
+
+    **Fix:** State odd inputs with at least two distinct prime factors, with even inputs and perfect powers handled beforehand. Qualify the verdict’s “construction is factoring” by the useful-density requirement: constructing an arbitrary short SLP from \(N\) plainly is not equivalent to factoring.
+
+16. **[MAJOR] Prop DIV’s final-\(AB\) reduction loses intermediate division failures.**
+
+    General division is
+    \[
+    (a/b)/(c/d)=ad/(bc);
+    \]
+    only taking a reciprocal is a swap.
+
+    More seriously, consider
+    \[
+    y=1/x,\qquad z=1/y,\qquad w=z+1.
+    \]
+    The final pair is \((x+1,1)\). At \(N=101\cdot103\), \(x=101\), the original first inversion finds 101, whereas the final product is coprime to \(N\).
+
+    **Fix:** Preserve and test all relevant intermediate divisor numerators, together with final outputs. This gives an \(O(s)\)-size arithmetic DAG with \(O(s)\) checks. Intermediate checks on an existing input are not automatically fresh-input model-U trials. Sparsity restrictions must apply to every checked polynomial.
+
+17. **[MAJOR] Bürgisser’s implication is correct; BB’s factorial-to-\(W\) bridge is not.**
+
+    Bürgisser 2009 Main Theorem 1.2 really does give
+    \[
+    \tau(\mathrm{Per}_m)=m^{O(1)}
+    \Longrightarrow
+    \tau(k!)=(\log k)^{O(1)}
+    \]
+    in the constant-free, division-free sense. The corresponding ECCC version numbers the main theorem 1.1. [Bürgisser’s paper](https://eccc.weizmann.ac.il/report/2006/113/download/).
+
+    The factorial binary search is arithmetically valid: for \(p\le k<q\), the gcd is \(p\), and the transition can be found in \(O(\log X)\) queries. But constant programs have local densities 0 or 1; this does not establish the defined balanced-density \(W_{\rm poly}\). Uniform construction also needs a uniform circuit-selection assumption. [Lipton explicitly distinguishes uniformity](https://rjlipton.com/2009/02/23/factoring-and-factorials/).
+
+    There is a direct repair for BB’s main conclusion. Bürgisser’s proof supplies short constant-free division-free circuits for
+    \[
+    2^{e(n)}\prod_{a=1}^n(x-a).
+    \]
+    Take \(n=\lfloor X/2\rfloor\). At odd primes in the window, its density is approximately between \(1/4\) and \(1/2\); the power of 2 is harmless.
+
+    **Fix:** Use this implication directly. Also replace the earlier degree-\(X\) Pochhammer example: \(X/p\) approaching 1 does not supply an inverse-polylogarithmic upper gap.
+
+18. **[MAJOR] The per-prime structural result is already a direct literature corollary.**
+
+    The exact relevant Kelley statements are:
+
+    * Theorem 2.2: a complete root coset of size \(h\mid q-1\) requires every support exponent to have another exponent congruent modulo \(h\).
+    * Theorem 2.3:
+      \[
+      R(f)\le2(q-1)^{1-1/(t-1)}C(f)^{1/(t-1)},
+      \]
+      where \(C(f)\) is the largest complete root coset.
+
+    These imply \(C\ge(q-1)(\lambda/2)^{t-1}\). If \(\ell\mid q-1\) but \(\ell\nmid\Lambda\), then \(\ell\nmid C\), hence \(C\le(q-1)/\ell\). Therefore SP follows already for
+    \[
+    \ell>(2/\lambda)^{t-1}.
+    \]
+    [Kelley, Theorems 2.2–2.3](https://arxiv.org/pdf/1602.00208).
+
+    CFKLLS Lemma 7 already bounds roots by
+    \[
+    2q^{1-1/(t-1)}\Delta^{1/(t-1)}
+    +O\!\left(q^{1-2/(t-1)}\Delta^{2/(t-1)}\right),
+    \quad
+    \Delta=\min_i\max_{j\ne i}\gcd(e_i-e_j,q-1).
+    \]
+    [CFKLLS, author-uploaded paper](https://www.researchgate.net/publication/2796972_On_the_statistical_properties_of_Diffie-Hellman_distributions).
+
+    Bi–Cheng–Rojas Theorem 1.1 gives a root-set decomposition into at most \(2\eta\) cosets of two nested subgroups, with
+    \[
+    \delta=\gcd(q-1,a_2,\ldots,a_t),\qquad
+    \eta=\sqrt{t-1}\bigl((q-1)/\delta\bigr)^{(t-2)/(t-1)}.
+    \]
+    [Author version](https://qcheng2023.github.io/paper/spff.pdf).
+
+    **Fix:** Label SP a corollary/reformulation with an elementary proof. I did not locate the exact SP-U cross-prime inequality in these sources; describe it cautiously as an elementary consequence of sparse-root bounds and Goldfeld counting, rather than claim established novelty.
+
+19. **[MAJOR] The construction-table classification has unsupported arrows.**
+
+    The multiplicative indexing law alone does not imply the Ritt classification. For arbitrary \(f\), setting
+    \[
+    f_m=f^{\circ v_2(m)}
+    \]
+    satisfies \(f_m\circ f_n=f_{mn}\) and has circuits of size \(O(\log m)\). Ritt’s exceptional-family conclusion requires a commuting pair without a common iterate. [Masuda–Zieve, introduction](https://dept.math.lsa.umich.edu/~zieve/papers/ariane-pams.pdf).
+
+    **Fix:** Add an appropriate degree condition or explicitly require multiplicatively independent degrees.
+
+    Also replace “equivalent to \(\tau\)/ultimately easy factorials” by the proved one-way implications. Integer-root bounds, exact factorial complexity, complexity of factorial multiples, and Pochhammer complexity are distinct questions.
+
+    No table entry supplies a verified new non-group construction with useful uniform density at polylogarithmic size. Chebotarev supplies an asymptotic average for fixed polynomials, not a pointwise root bound or a uniform theorem for growing circuit families.
+
+20. **[MAJOR] E2 honestly reports H1’s failure, but its explanation contains false factual claims.**
+
+    The raw results confirm \(701/771=90.9209\%\), below the preregistered 95%.
+
+    The assertion that the offending OTHER factors all split completely is false. For example,
+    \[
+    g=x^{12}-x^9-1
+    \]
+    contributes six OTHER roots at \(p=79\), namely \(6,14,18,19,42,59\), in an actual H1 failure. It has degree twelve. My audit found 42 OTHER-factor occurrences in failed pairs that do not split completely.
+
+    Among the 27 distinct offending OTHER factors, I count **11**, rather than 12, with three nonzero terms. The window contains 36 primes, not the preregistration’s stated 37.
+
+    **Fix:** Preserve “H1 FAILED.” Replace the hand-inspection narrative with a checkable factor table. Treat H2 as a finite observation consistent with Chebotarev, rather than confirmation of a uniform obstruction.
+
+21. **[MINOR] E4’s pass survives, but its reporting needs correction.**
+
+    The code tests \(p/\lfloor\log_2p\rfloor^2\), a larger threshold than preregistered. I reran the actual \(p/(\log_2p)^2\) threshold: the maximum heavy-prime counts remain 3 and 8, so P4c still passes.
+
+    The largest-fibre sequence has zero roots at **55**, not 52, primes. Its maximum occurs at \(p=4457\), giving \(272/4457\approx0.061\), rather than 0.04.
+
+    Mixed \(0,-2\) layers do not automatically constitute a power/Chebyshev family. Even repeated \(-2\) layers ending in \(-1\) can introduce 3-torsion.
+
+    **Fix:** Correct the threshold implementation and narrative. Supply explicit conjugacies or factorizations before classifying selected sequences as group mechanisms.
+
+22. **[MAJOR] The opening verdict exceeds the established results.**
+
+    “The SLP paradigm gives no route below \(L[1/3]\)” is unsupported while the unrestricted dense-circuit question remains open. The sparse lower bound also does not show methods “cannot match” Pollard–Strassen: its repaired form excludes a fixed improvement in the leading exponent within its hypotheses.
+
+    **Fix:** State: **“No new factoring mechanism was found. The stated sparse subclasses face the following restricted barriers; the general model remains open.”** Replace “no general theorem possible” by the precise conditional consequence concerning permanent lower bounds.
+
+Recommendations concern the claims **as currently written**, including their advertised scope:
+
+| Claim | Recommendation |
+|---|---|
+| S1 | **ACCEPT** |
+| S1-k | **ACCEPT** |
+| SP | **ACCEPT WITH FIXES** — retain divisibility; remove classification/equivalence language |
+| SP-D | **ACCEPT WITH FIXES** — clarify sign and exponent product |
+| LP | **ACCEPT WITH FIXES** — truncate powers; explain weighted BV |
+| SP-U | **ACCEPT** — displayed counting inequality |
+| SP-U1 | **ACCEPT WITH FIXES** — spans, density loss, narrower extensions |
+| SP-U2 | **REJECT** — current average-case conclusion is unproved |
+| SP-N | **ACCEPT WITH FIXES** — specify density threshold and pair counting |
+| R | **ACCEPT WITH FIXES** — preprocessing and useful-density scope |
+| DIV | **REJECT as stated** — final outputs lose intermediate checks |
+| BB | **ACCEPT WITH FIXES** — use scaled Pochhammer implication directly |

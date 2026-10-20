@@ -129,4 +129,9 @@ def test_quadcomp_fibre_matches_polynomial():
 
 def test_ell0_monotone():
     assert ell0(2, 1, 20) <= ell0(3, 1, 20) <= ell0(4, 1, 20)
-    assert s1_coset_bound(ell0(3, 1, 20), 3) * 20 < ell0(3, 1, 20)
+    assert ell0(2, 1, 20) == 42 and ell0(3, 1, 20) == 1682 and ell0(4, 1, 20) == 68922
+    for t in (2, 3, 4):
+        for lam in ((1, 20), (3, 4), (1, 3)):
+            l0 = ell0(t, *lam)
+            for ell in range(l0, l0 + 300):
+                assert s1_coset_bound(ell, t) * lam[1] < lam[0] * ell

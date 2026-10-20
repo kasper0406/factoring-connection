@@ -30,13 +30,9 @@ def s1_coset_bound(ell: int, t: int) -> int:
 
 
 def ell0(t: int, lam_num: int, lam_den: int) -> int:
-    """Least ell such that 2/K_ell < lam (lam = lam_num/lam_den), i.e. coset density bound < lam."""
-    ell = 2
-    while True:
-        b = s1_coset_bound(ell, t)
-        if b * lam_den < lam_num * ell:
-            return ell
-        ell += 1
+    """Threshold of Theorem SP: ell0 = (floor(2/lam) + 1)^(t-1) + 1 (lam = lam_num/lam_den).
+    For every ell >= ell0, K_ell(t) = floor((ell-1)^(1/(t-1))) >= floor(2/lam) + 1 > 2/lam."""
+    return (2 * lam_den // lam_num + 1) ** (t - 1) + 1
 
 
 def reduced_terms(coeffs_exps, n, p):
