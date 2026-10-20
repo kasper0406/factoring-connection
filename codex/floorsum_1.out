@@ -1,0 +1,266 @@
+**Verdict — UNVERIFIED as a literature-completeness claim:** I found no checked classical exact oracle costing \(H^{1/3-\varepsilon}\) for the promised quadratic regime. **PROVED below:** continued-fraction linearisation gives \(\widetilde O(H^{1/3})\), including rational shifts and arbitrary subintervals. Applied throughout the ladder, its cost is \(\widetilde O(N^{1/3})\) for every fixed \(j\ge2\).
+
+Two premises need correction: the top-degree term has constant excursion only for \(j=2\), and the ladder guarantees \(O(1)\) candidates **on average**, not in every block. Neither the geometric nor Fourier obstruction below proves a general lower bound for the promised oracle.
+
+Here \(\widetilde O\) suppresses polynomial factors in coefficient bit length and logarithms. I use Theorem \(L_j\) from [the notes, §3](/Volumes/git/factoring-connection/notes/analytic_results.md) and the oracle interface in [ladder.py](/Volumes/git/factoring-connection/src/analytic/ladder.py).
+
+**1. The convexity trap**
+
+**PROVED.** For fixed \(j\ge2\), uniformly on sufficiently large ladder blocks,
+\[
+P_j''(h)=\frac{N}{x^3}
+ \sum_{r=0}^{j-2}(-1)^r(r+2)(r+1)(h/x)^r
+ \asymp_j \frac N{x^3},
+\]
+because \(h/x\le c/B\to0\). Thus the proposed curvature cost is
+\[
+H(P_j'')^{1/3}\asymp H\,\frac{N^{1/3}}x.
+\]
+Consecutive blocks satisfy
+\[
+\sum_{\text{blocks}}\frac Hx
+ \asymp \log\frac{\sqrt N}{B/c}.
+\]
+Consequently its sum is
+\[
+\Theta_{j,c}(N^{1/3}\log N).
+\]
+Capping the per-block cost by direct summation does not change this order: blocks with \(x\ge N^{1/3}\) already contribute that order. This verifies the stated **cost model**, independently of \(j\).
+
+**PROVED, scaling correction.** Writing \(\beta_i=N/x^{i+1}\),
+\[
+\beta_iH^i\asymp c^i\,\frac{N}{xB^i}.
+\]
+At \(x\asymp\sqrt N\),
+\[
+\beta_jH^j\asymp c^jN^{(2-j)/(2(j+2))},
+\qquad
+P''H^2\asymp N^{(j-2)/(2(j+2))}.
+\]
+For \(j>2\), the top term shrinks while the total departure from the tangent grows. For example, \(j=4\) has quadratic excursion \(N^{1/6}\).
+
+**KNOWN.** Balog–Bárány, *The integer hull of the set \(\{xy\ge N\}\)*, Theorem 1.1, proves \(\Theta(N^{1/3}\log N)\) vertices for the full hyperbolic hull. This supplies an output-size obstruction to enumerating that hull. It does not establish the same lower bound for every Taylor-polynomial block. [Checked theorem](https://arxiv.org/html/2602.06897)
+
+**PROVED.** Curvature alone cannot give a universal per-block lower bound: for
+\[
+P(h)=h+\gamma h^2/H^2,\qquad 0<\gamma<1,
+\]
+every floor is \(h\), so the sum is elementary despite \(H(P'')^{1/3}\asymp H^{1/3}\).
+
+Degree alone cannot bound an explicitly output hull either: the points \((h,h^2)\), \(0\le h<H\), are all vertices, by strict convexity. A method exploiting a compressed representation remains possible; I found no checked degree-dependent shortcut for the ladder oracle.
+
+**2. Fourier and smoothing**
+
+**PROVED.** With the midpoint-normalised sawtooth \(\psi_0(n)=0\),
+\[
+\lfloor y\rfloor=y-\tfrac12-\psi_0(y)
+                  +\tfrac12\,1_{\mathbb Z}(y).
+\]
+The endpoint term must be retained. Fourier convergence by itself supplies midpoint values at jumps.
+
+**KNOWN: Hiary’s quadratic theorem.** In *A nearly-optimal method to compute the truncated theta function, its derivatives, and integrals*, Annals **174** (2011), 859–889, Theorem 1.1 evaluates
+\[
+L^{-r}\sum_{n=0}^{L}n^r e(an+bn^2)
+\]
+for arbitrary \(a,b\in[0,1)\). Put \(\nu=(r+1)\log(L/\epsilon)\). The theorem gives absolute error \(A\nu^\kappa\epsilon\), \(\nu^{O(1)}\) arithmetic operations, and \(O(\nu^2)\)-bit working numbers, with no precomputation. Thus inverse-polynomial absolute error costs polylogarithmically for fixed \(r\). This is numerical evaluation, not an exact floor sum. [Checked paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v174-n2-p03-p.pdf)
+
+**KNOWN: cubic range and preprocessing.** Hiary’s *Fast methods to compute the Riemann zeta function*, Annals **174** (2011), 891–946, Theorem 2.2 gives analogous accuracy and polylogarithmic query cost for
+\[
+L^{-r}\sum_{n=0}^{L}n^r e(an+bn^2+dn^3),
+\quad 0\le d\le L^{\mu-3},\quad 0\le\mu\le1,
+\]
+after \(L^{4\mu}\nu^{O(1)}\) arithmetic preprocessing and comparable storage. Conjugation handles negative cubic coefficients. Preprocessing must be charged or demonstrably shared. [Checked theorem](https://annals.math.princeton.edu/wp-content/uploads/annals-v174-n2-p04-p.pdf)
+
+**PROVED application.** Near \(\sqrt N\), the \(j=3\) ladder has cubic coefficient \(\asymp H^{-10/3}\). Frequencies \(k\lesssim H^{1/3}\) therefore fit \(\mu=0\). Small cubic coefficients genuinely help low-frequency evaluation; they do not resolve exactness.
+
+**KNOWN.** Vaaler’s degree-\(K\) sawtooth approximants have integrated majorant/minorant gap \(\asymp1/K\). See Vaaler, *Some extremal functions in Fourier analysis*, Bull. AMS **12** (1985), 183–216; the periodic extremal result is also explicitly established in Carneiro, Theorem 1, specialised to the first Bernoulli function. [Checked formulation](https://arxiv.org/html/0809.4049)
+
+**PROVED.** Averaging a constant shift makes the summed envelope gap \(\asymp H/K\). Consequently that envelope cannot uniformly certify rounding when \(K\ll H\). Correcting only points with \(\|P(h)\|<1/K\) does not automatically fix this: the approximation still has error outside that band. One must additionally certify that the remaining total error is below the rounding margin.
+
+Here is a precise obstruction to the proposed correction strategy.
+
+**PROVED, explicit model.** Suppose a method spends \(\Omega(K)\) work on frequencies and separately corrects every member of
+\[
+\mathcal C_K=\{h:\|P(h)\|<1/K\}.
+\]
+Grant it free localisation and unit-cost correction. Its cost is still
+\[
+\Omega(K+|\mathcal C_K|).
+\]
+
+For any prescribed \(K\ge2\), averaging a constant shift gives
+\[
+\mathbb E_s|\mathcal C_K(P+s)|=2H/K.
+\]
+A sufficiently fine rational grid of polynomial-sized denominator preserves this order. Hence the worst-input frequency/correction balance is at least \(\Omega(\sqrt H)\).
+
+More strongly, take
+\[
+P(h)=h+\gamma h^2/H^2,\qquad 0<\gamma<1/4.
+\]
+Every \(h<cH/\sqrt K\) belongs to \(\mathcal C_K\). Therefore, for this fixed promised-regime polynomial,
+\[
+T\ge\Omega(K+H/\sqrt K)=\Omega(H^{2/3}),
+\]
+after minimising over \(K\). In particular, polylogarithmic \(K\) requires almost linearly many individual corrections.
+
+**HEURISTIC.** Equidistribution suggests \(K+H/K\), optimised at \(\sqrt H\), for generic inputs. It supplies neither an exact locator nor a worst-case bound.
+
+**UNVERIFIED.** I found no Fourier scheme improving the exact oracle in task 5. The lower bound applies specifically to individual correction; aggregating a resonant cluster can evade it. Such aggregation is essentially another exact counting problem.
+
+**3. Euclid for quadratics, reciprocity, and conic counting**
+
+**PROVED: the axis swap.** Split a quadratic into monotone pieces and remove integer polynomial parts. For an increasing, nonnegative \(Q\),
+\[
+\sum_{h=0}^{H-1}\lfloor Q(h)\rfloor
+ =\sum_{k=1}^{\lfloor Q(H-1)\rfloor}(H-t(k)),
+\]
+where \(t(k)\) is the first index satisfying \(Q(h)\ge k\), clipped to \([0,H]\). For \(Q(h)=(ah^2+bh+c)/m\), the relevant inverse branch is
+\[
+t(k)=\left\lceil
+\frac{-b+\sqrt{b^2+4a(mk-c)}}{2a}
+\right\rceil.
+\]
+Thus swapping axes produces a square-root sum. Swapping back need not reduce any parameter.
+
+Completing the square similarly gives
+\[
+(2ah+b)^2\le4amy+b^2-4ac,
+\qquad 2ah+b\equiv b\pmod{2a}.
+\]
+It preserves the arithmetic restriction rather than eliminating it.
+
+**PROVED.** An invertible linear transformation preserves the rank-one quadratic part of a parabola’s implicit equation. It cannot turn that boundary into a line. Integer shears remove integral slope; subtracting an integer quadratic removes integral curvature. Neither supplies a shrinking-modulus recurrence.
+
+The “universal Euclidean” idea of aggregating operations along a linear staircase does not change this closure issue: polynomial weights on a linear boundary are different from a polynomial boundary.
+
+**KNOWN plus PROVED reduction: unrestricted hardness.** Manders–Adleman prove NP-completeness of deciding whether
+\[
+ax^2+by=c
+\]
+has nonnegative integer solutions: *NP-Complete Decision Problems for Binary Quadratics*, JCSS **16** (1978), 168–184. [Checked primary statement](https://www.sciencedirect.com/science/article/pii/0022000078900442)
+
+Two unrestricted quadratic floor-sum calls count the eligible roots, since
+\[
+\left\lfloor\frac{ah^2-c}{b}\right\rfloor
+-\left\lfloor\frac{ah^2-c-1}{b}\right\rfloor
+=1_{ah^2\equiv c\pmod b}.
+\]
+Restrict \(0\le h\le\lfloor\sqrt{c/a}\rfloor\). A polynomial-time algorithm in binary input length for **unrestricted** quadratic floor sums would therefore imply \(P=NP\). This reduction does not preserve the ladder’s small-curvature promise.
+
+**PROVED: a complete-period identity.** For an odd prime \(p\), with Legendre character \(\chi\),
+\[
+\sum_{h=0}^{p-1}\left\lfloor\frac{h^2}{p}\right\rfloor
+=\frac{(p-1)(p-2)}3-\frac1p\sum_{r=1}^{p-1}r\chi(r).
+\]
+Proof: each nonzero residue \(r\) has \(1+\chi(r)\) square roots; subtract the sum of least residues from \(\sum h^2\), then divide by \(p\). This exposes a weighted character moment. Fast Gauss-sum evaluation does not itself evaluate an incomplete floor sum.
+
+The checked geometric algorithms give the following picture.
+
+- **KNOWN:** Har-Peled, *An output sensitive algorithm for discrete convex hulls*, Computational Geometry **10** (1998), 125–138, Corollary 3.12 computes a radius-\(R\) disc hull in \(O(R^{2/3}\log R)\) operations. **PROVED application:** the disc and its integer hull contain precisely the same lattice points, so shoelace area, edge gcds and Pick’s theorem give the exact count. Rational ellipses satisfying the paper’s shape/access hypotheses admit the same framework, with coefficient bit costs charged. [Checked paper and hypotheses](https://arxiv.org/html/2601.00392)
+- **KNOWN:** Jacobi gives \(r_2(n)=4\sum_{d\mid n}\chi_4(d)\). Summing this identity expresses disc counting as a weighted divisor summatory problem, not a polylogarithmic computation. [NIST DLMF, equation 27.13.7](https://dlmf.nist.gov/27.13#E7)
+- **KNOWN:** Sladkey, *A Successive Approximation Algorithm for Computing the Divisor Summatory Function* (2012), Theorem 1, gives exact \(D(N)\) in \(O(N^{1/3})\) arithmetic operations and \(O(\log N)\) space, using geometric transformations without factoring. [Checked theorem](https://arxiv.org/html/1206.3369)
+- **KNOWN as a published claim; UNVERIFIED here as a complete proof audit:** Darren Li’s September 2026 preprint claims exact expected \(N^{9/28+o(1)}\) time. Its Theorem 1 and correction lemma explicitly use Lenstra–Pomerance factorisation of nearby integers. It does not answer the “without factoring” requirement. [Checked statement and dependency](https://arxiv.org/html/2609.29949v1)
+
+**UNVERIFIED as a literature-completeness claim:** I found no checked factorisation-free algorithm below \(N^{1/3}\), or a quadratic Euclidean recurrence overcoming the promised-regime obstruction.
+
+**4. Arithmetic structure and partial information**
+
+**PROVED.** The notes give
+\[
+\rho H=\frac{NH^{j+2}}{x^{j+2}}\asymp c^{j+2}.
+\]
+This explains the expected constant occupancy under equidistribution. The actual theorem bounds the **total** candidate count by \(O(B\log N)\).
+
+A block can contain many candidates. For \(j=2\), take \(N=4x^2+1\), so \(H\asymp\sqrt x\) and \(\rho\asymp x^{-1/2}\). Then
+\[
+P(h)=4x-4h+\frac1x-\frac h{x^2}
+                     +\left(\frac4x+\frac1{x^3}\right)h^2.
+\]
+For all sufficiently small \(h\lesssim x^{1/4}\), its fractional part lies in \([0,\rho]\). Hence this admissible block has \(\Omega(x^{1/4})=\Omega(\sqrt H)\) candidates. This does not contradict the total bound.
+
+**KNOWN.** The Coppersmith–Howgrave-Graham unknown-divisor theorem finds small roots of a monic degree-\(d\) polynomial satisfying
+\[
+\gcd(f(h),N)\ge N^\beta,\qquad |h|\le N^{\beta^2/d},
+\]
+in polynomial time for fixed parameters. An exact checked formulation is Cohn–Heninger, *Ideal forms of Coppersmith’s theorem and Guruswami–Sudan list decoding*, Theorem 1.1. [Checked theorem](https://arxiv.org/html/1008.1284)
+
+**PROVED application.** Put \(f(h)=x+h\), \(x=N^\alpha\). For \(j=2\),
+\[
+H\lesssim N^{\alpha-1/4}\le N^{\alpha^2},
+\]
+because \(\alpha^2-\alpha+1/4=(\alpha-1/2)^2\ge0\). Thus lattice reduction can find the **actual divisors** in a quadratic ladder block in polynomial time, with constant slack.
+
+That is a sufficient weaker primitive for divisor search. It does not evaluate \(F(P+s)\), or count all near-integer candidates associated with shifted integers \(N-k\).
+
+**PROVED, conditional consequences of \(L_j\).** Near balanced factors:
+
+| \(j\) | Block width | Known high bits, divided by \(\log_2N\) | Global cost with polylog oracle |
+|---|---:|---:|---:|
+| 1 | \(N^{1/6}\) | \(1/3\) | \(\widetilde O(N^{1/3})\) |
+| 2 | \(N^{1/4}\) | \(1/4\) | \(\widetilde O(N^{1/4})\) |
+| 3 | \(N^{3/10}\) | \(1/5\) | \(\widetilde O(N^{1/5})\) |
+| 4 | \(N^{1/3}\) | \(1/6\) | \(\widetilde O(N^{1/6})\) |
+
+Generally the known fraction of the factor’s bits is \(2/(j+2)\).
+
+**KNOWN.** Rivest–Shamir’s two-dimensional partial-information method corresponds to the \(j=1\) strength; Hiary explicitly compares its required \((1/3)\log_2N\) high bits with Coppersmith’s \((1/4)\log_2N\). [Checked comparison and original reference](https://arxiv.org/html/1408.2608)
+
+**PROVED qualification.** A floor oracle locates a block’s candidates in \(O((C+1)\operatorname{polylog}N)\) time. Therefore the table does not automatically imply polynomial-time recovery from those high bits for every individual interval. That conclusion additionally needs a polynomial candidate bound or a way to bypass false candidates.
+
+**UNVERIFIED.** For \(j=3\), \(N^{3/10}\) exceeds the standard balanced-factor \(N^{1/4}\) bound. I have no proved lattice construction covering that interval or computing the full floor oracle. Exceeding the standard bound is not an impossibility theorem.
+
+**5. Best exact oracle obtained**
+
+**PROVED.** For a fixed-degree rational polynomial with
+\[
+|P''(h)|\le M,
+\]
+there is an exact algorithm costing
+\[
+\widetilde O_j\!\left(\min\{H,\;1+HM^{1/3}\}\right).
+\]
+
+Here is the construction and proof.
+
+Choose an integer cell length \(L\) with \(ML^3\le1/64\); use direct evaluation if no useful such length exists. On a cell write
+\[
+P(t+u)+s=v+\alpha u+R(u),\qquad |R(u)|\le Mu^2/2.
+\]
+Continued fractions supply integers \(b,q\) satisfying
+\[
+1\le q\le Q:=8L,\qquad |q\alpha-b|\le1/Q.
+\]
+Let \(A\) be a nearest integer to \(qv\), and define
+\[
+E(u)=q(P(t+u)+s)-A-bu.
+\]
+For \(0\le u<L\),
+\[
+|E(u)|\le\tfrac12+L/Q+QML^2/2
+       \le\tfrac12+\tfrac18+\tfrac1{16}<1.
+\]
+Consequently the following identity is exact:
+\[
+\boxed{\;
+\lfloor P(t+u)+s\rfloor
+=\left\lfloor\frac{A+bu}{q}\right\rfloor
+ -1_{\{q\mid A+bu,\ E(u)<0\}}.
+\;}
+\]
+
+The first sum uses the linear Euclidean floor-sum algorithm. The congruence defines either no points or one arithmetic progression. Restricted to it, \(E\) remains a fixed-degree polynomial, whose negative integer arguments can be counted using exact root isolation and integer endpoint comparisons. For quadratics, splitting at the vertex and binary searching suffices. Each cell therefore costs polynomially in input bit length; there are \(O(1+H/L)\) cells. This proves the bound, including shifts and subintervals.
+
+For the quadratic promise \(M\asymp H^{-2}\),
+\[
+T_2(H)=\widetilde O(H^{1/3}).
+\]
+For the actual higher-degree ladder near \(\sqrt N\), the same construction gives
+\[
+T_j(H)=\widetilde O\!\left(H^{\,2(j-1)/(3j)}\right),
+\]
+including \(H^{4/9}\) for \(j=3\) and \(H^{1/2}\) for \(j=4\). Task 1 then yields total \(\widetilde O(N^{1/3})\).
+
+**PROVED by finite exact computation:** the [quadratic prototype](/Volumes/git/factoring-connection/codex/scratch/floorsum_1/quadratic_oracle.py) passed 2,548 differential checks against direct summation, including negative coefficients, rational shifts and root endpoints.
+
+**UNVERIFIED:** no better promised-regime oracle was established. The strongest obstructions here concern explicit hull output, individual Fourier correction, and unrestricted quadratic counting. None proves an \(H^{1/3}\) lower bound for the ladder’s exact oracle.
