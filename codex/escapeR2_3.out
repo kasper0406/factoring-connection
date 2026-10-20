@@ -1,0 +1,86 @@
+Reviewed **commit `e6a1adb`**, read-only. Concurrent working-tree edits are excluded from this report.
+
+| Issue | Status | Confirmation |
+|---|---|---|
+| 1 | FIXED | §1 requires a supplied compatible compositum evaluation, including the square-root domain. |
+| 2 | PARTLY FIXED | Unramifiedness in \(L\) is explicit; the claimed bound on excluded primes needs qualification for arbitrary \(L\). |
+| 3 | PARTLY FIXED | EX’s localized index and norm are corrected; §1 still uses undefined \([O_K:\mathbb Z[\alpha]]\) for nonintegral \(\alpha\). |
+| 4 | PARTLY FIXED | §2.3 acknowledges conditional randomness; §2.2 retains the uncosted inclusion test and categorical “only through \(\mathbb Q\)” assertion. |
+| 5 | FIXED | KT now proves faithfulness for every nonidentity permutation. |
+| 6 | FIXED | The false generator-height claim is withdrawn. |
+| 7 | FIXED | KT’s exclusion is restricted to the stated étale-algebra/module-isomorphism setting. |
+| 8 | FIXED | Finite-window pigeonholing replaces Chebotarev; E3’s insufficient sizes are disclosed. |
+| 9 | FIXED | The signed-pair obstruction and seed-3 exception are stated correctly. |
+| 10 | FIXED | Re-split bounds are restricted to uniform masks; alternative modular bridges remain open. |
+| 11 | FIXED | The incoming target is retained and the tree recurrence is corrected. See the new DAG qualification below. |
+| 12 | FIXED | Degree three receives a separate bounded-component argument. Degree two permits no nonempty component under the stated budget. |
+| 13 | FIXED | The envelope, \(C\ge r\) restriction, helper and off-grid example are corrected. |
+| 14 | FIXED | LS\(_C\) now requires targetwise moments and algorithmic search. |
+| 15 | FIXED | Padding repairs the original split-window error. |
+| 16 | PARTLY FIXED | Uniform degree/work requirements and doubling are supplied; the successful-factor stopping time needs to be explicit. |
+| 17 | FIXED | Targetwise quantifiers and the counterexample to joint averaging are explicit. |
+| 18 | FIXED | Failed searches are charged through the fixed-depth recurrence. |
+| 19 | FIXED | Verdict and §9 expressly disclaim an exhaustive reduction. |
+
+**(a) Theorem NR-q — MAJOR proof bookkeeping gap; padding itself passes.**
+
+The padded split works:
+
+- \(2X^2\le 2\cdot4^kN<9^{k+1}N=N_*\).
+- For odd \(N\), \(3\nmid N\), the square-class index is \(2^{\omega(N)+1}\).
+- Eventually \(Y>3\), so the target primes are coprime to \(N_*\).
+- S″ gives the claimed exponent, with only \(\exp(-O(k))\) additional loss.
+- The halves remain \(N^{1/2+o(1)}\), and CRT preserves conditional hidden-root uniformity modulo \(N\).
+
+Explicitly condition sampling on units modulo \(N_*\), with the usual gcd exits/rejections; uniform unrestricted \(r\) does not directly give S″’s sampling law.
+
+The **total-work requirement** now correctly includes failed branches and backtracking.
+
+However, §8 step 1 defines \(p_q\) using **factor exit or tree**, while \(G_{\rm pool}\) contains **trees only**. Consequently,
+\[
+\Pr(q\notin G_{\rm pool})\le(1-p_q)^{J_f}
+\]
+does not follow. Apply the pooling argument to targets for which some pool call returns **either a tree or a factor exit**, and propagate that disjunction through split acceptance. This repairs the argument without strengthening T\(_q\).
+
+The doubling arithmetic is correct:
+\[
+p_0=0.72252654\ldots,\qquad 2(1-p_0)=0.55494692\ldots<1.
+\]
+But \(T^*\) must mean expected time **until a verified factor**, including character retries and fresh-row retries after trivial gcds. Completing one LV6 batch is insufficient: it still has the fruitfulness failure probability. State that inner retry loop explicitly.
+
+**(b) Prop R3 — tree proof passes; MINOR DAG proof omission.**
+
+For trees, the corrected recurrence, constant \(2(1+2\kappa)\), \(\kappa\ge2\), and degree-three argument are sound. The claim that \(\kappa=2\) covers \(d+1\) points is correctly restricted to \(d\ge5\).
+
+The DAG remark does not justify the same unrolling: shared descendants occur along multiple paths. In particular, reusing the same ideal does not make its target logarithm the sum of its incoming occurrences.
+
+The qualitative conclusion is repairable. Under the displayed edge recurrence, an acyclic component with \(n\) distinct nodes satisfies
+\[
+X_v\le \frac d{d-2}\left(1+\frac2{d-2}\right)^{n-1}\Lambda U
+\le 2e^{2\kappa}\Lambda U\quad(d\ge4).
+\]
+Thus the \(O_\kappa(\Lambda U)\) bound and \(2/5\) floor survive; supply this argument or restrict the proof to trees.
+
+**(c) Chain envelope — correct; MINOR wording error.**
+
+The piecewise fixed-depth formula and its lower envelope are correct. So are the plateau endpoints
+\[
+\left[r+1-\frac1{r+1},\ r+2-\frac1{r+1}\right]
+\]
+and \(\alpha^*(13/5)=7/19\).
+
+Exact-rational checks passed at 115 fixed-depth optima around plateau transitions, plus the \(13/5\) example.
+
+“Level \(r\) is optimal **exactly** on the plateau” is false: it is also optimal along its preceding descending segment. Replace this with “the plateau at value \((r+2)/(3r+5)\) is exactly…”.
+
+**(d) Exhaustive-reduction claim — FIXED; no adverse finding.**
+
+Both the Verdict and §9 now explicitly present a catalogue of inspected failures and sufficient hypotheses. Tied-field randomness, directed recombination and structured image certificates remain open alternatives.
+
+**(e) Other new or residual errors.**
+
+- **MAJOR — newly weakened Bach hypothesis.** Verdict item 4 and §4 replace ERH by RH for \(\zeta_K\) alone. The cited class-group generation result requires RH for the relevant class-character Hecke \(L\)-functions; the weaker assertion is unsupported. See the explicit hypothesis in [Grenié–Molteni, Theorem 2.4](https://arxiv.org/pdf/1607.02430).
+- **MINOR — endpoint scope mismatch.** §8 requires \(d\asymp D^\delta\), \(\delta<\alpha\), but then claims to contain nested’s \(\alpha=1/3,\ d\asymp D^{1/3}\) theorem. That boundary case needs separate admission; the parenthetical character-cost calculation already anticipates it.
+- **MINOR — excluded ramification.** The union of the source polynomial discriminants bounds ramification of their common normal closure, not an arbitrary larger Galois \(L\). Restrict \(L\) accordingly or charge its additional ramification.
+
+**Overall verdict:** **NR-q: CORRECT WITH FIXES, not yet fully confirmed as written.** The central padded-split repair is valid; the factor-exit success event and successful-factor restart loop need explicit correction. No FATAL defect was found. The note’s revised scoped conclusion survives, with the qualifications above; it establishes no unconditional improvement below \(L[2/5]\).

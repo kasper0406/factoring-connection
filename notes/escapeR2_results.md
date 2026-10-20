@@ -142,7 +142,8 @@ containing all K_j. To use it one also needs a ring homomorphism ψ_L on a suita
   statement about valuations only, so it applies to the whole superset. Its obstructions therefore hold a fortiori.
 
 An **algebraic child** of a degree-one element z_P = a − bα (gcd(a, b) = 1) is a prime 𝔭 = (ℓ, a/b mod ℓ) with
-ℓ > B, ℓ ∤ b·f_d·[O_K : Z[α]]. To *remove* it means to reach a certificate in which v_𝔭 is even.
+ℓ > B, ℓ ∤ b·f_d and ℓ ∤ [O_{K,(ℓ)} : Z_{(ℓ)}[α]] (localised index, so non-monic f is fine). To *remove* it means
+to reach a certificate in which v_𝔭 is even.
 
 ---
 
@@ -165,8 +166,9 @@ invariant under left multiplication by H_1 and by H′, hence by H₁⁺. Two pr
 same prime of k_1 iff τ ∈ H₁⁺σD. So x_1 takes equal values on them. ∎
 
 *Remarks.*
-- *Excluded primes (codex escapeR2_2 #2).* TI needs ℓ unramified in L, so it excludes every ℓ dividing some
-  disc(f_j), j ≥ 1, and not only the source field's own exceptional primes. There are ≤ Σ_j log|disc f_j|/log B =
+- *Excluded primes (codex escapeR2_2 #2, escapeR2_3 (e)).* TI needs ℓ unramified in L. Take L to be the compositum of
+  the Galois closures of the K_j; that suffices for TI. Then the excluded ℓ divide some disc(f_j), j ≥ 1, and not only
+  the source field's own exceptional primes. For a larger L, its extra ramification must be charged. There are ≤ Σ_j log|disc f_j|/log B =
   O(J·d·t/Λ) such ℓ > B. They are fixed once the fields are fixed. A descent can declare them non-targets, as nested
   excludes q | D_A, at the price of rejecting points whose values they divide. Parity transfer at ramified ℓ is not
   analysed here.
@@ -203,8 +205,8 @@ prime above ℓ, instead of one in 𝔭 (codex escapeR2_1 §3 proves the d > 1 c
 **When does k_1 = Q hold?** If f_1 has Galois group S_d with d ≥ 3, then K_1 is primitive (the point stabiliser is
 maximal), so k_1 ∈ {Q, K_1}. Thus k_1 = Q unless K_1 ⊂ K_2⋯K_J. For the independent random fields of lv5unif's Design MF
 (shared g, independent (w_j, c_j)), inclusion is a closed condition we do not expect. We do not prove a probability
-bound; the algorithm can test it exactly, since K_1 ⊂ K_2⋯K_J is decidable. Sharing the rational side ties the fields
-only through Q.
+bound. The inclusion K_1 ⊂ K_2⋯K_J is decidable, but we do not cost the test. Sharing the rational side does not, by
+itself, create a common subfield.
 
 ### 2.3 Tied fields: parity transfer exists; usefulness is open
 
@@ -441,7 +443,10 @@ use their own fields (any d, H_f, H_g); algebraic children are closed in the par
 component** is the set of nodes linked by algebraic edges, all in one field. *Budget:* every component has at most
 κ(d − 2) points, for a constant κ ≥ 2. κ = 2 covers the d + 1 points that the known moment methods control (nested
 Lemma OD), for d ≥ 5. Components are trees: one closing point per child, as in RW. A point that closes several children
-satisfies the same inequality with the sum, so DAGs without cycles are covered as well.
+may also be shared (an acyclic component, i.e. a DAG). Then the path-weighted unrolling below double-counts shared
+descendants. Instead, order the n ≤ κ(d − 2) distinct nodes topologically and apply the same edge recurrence node by
+node: X_v ≤ (d/(d − 2))(1 + 2/(d − 2))^{n−1}ΛU ≤ 2e^{2κ}ΛU for d ≥ 4 (codex escapeR2_3 (b)). This is again O_κ(ΛU), and
+the conclusion below is unchanged. Cyclic components are not covered.
 
 **Prop R3 [model computation].** Under these premises, α ≥ 2/5.
 
@@ -480,7 +485,7 @@ this implicitly; the draft's helper `closed_budget` did not (it returned 3/7 at 
 infeasible). It was fixed after review; the global minimum is unaffected. Hence
   α_r(C) = max((r+2)/(3r+5), (r+2−C)/(2r+5−2C)) for r ≤ C < r + 1;  (r+2)/(3r+5) for C ≥ r + 1;  infeasible for C < r,
   α*(C) = min_r α_r(C).
-Level r is optimal exactly on the plateau [r+1 − 1/(r+1), r+2 − 1/(r+1)] (both reviewers). Between plateaus α* interpolates; for
+The plateau at value (r+2)/(3r+5) is exactly [r+1 − 1/(r+1), r+2 − 1/(r+1)] (both reviewers); level r is also optimal on the descending segment just before it. Between plateaus α* interpolates; for
 example α*(13/5) = 7/19 ≈ 0.368 (proof critic).
 
 **E2 (exact-rational simplex; all pre-registered predictions hold).**
@@ -572,7 +577,9 @@ with saddle-point-tilted weights and sparse transference, and requires polylogar
 ## 8. Theorem NR-q: the weakest hypothesis we know that suffices
 
 **Setting.** Fix α ∈ [1/3, 1/2), parameters as in nested §8 (α = 1/3) or the chain sub-model of §7.2, and a field law
-𝔉 (admissible fields of degree d ≍ D^δ with δ < α, sampled in time e^{o(Λ_α)}). Fix also a deterministic in-field
+𝔉, sampled in time e^{o(Λ_α)}. Its admissible fields have degree d ≍ D^δ, with δ < α, or α = 1/3 and nested's
+d = δ′D^{1/3}. In the boundary case the character and LV6′ costs are L[1/3, Θ(δ′)] rather than e^{o(Λ)}, which only
+changes c′. Fix also a deterministic in-field
 descent procedure 𝔇, for example nested's DESC (first good point, recursing) or the bounded-depth feasibility search of
 §7.3. Requirements on 𝔇:
 - on every admissible field and every target, its total work per call, including all backtracking and failed
@@ -595,7 +602,8 @@ algorithm that completely factors every N in expected time L_N[α, c′] for a f
 
 *Proof.*
 1. **Pool.** Sample J_f := ⌈4e^{cΛ_α}⌉ fields A_1, …, A_{J_f} ∼ 𝔉 independently (factor exits end the run). Let
-   G_pool := {q ∈ J : ∃j, 𝔇_{A_j}(q) returns a tree}. For a good q (p_q ≥ e^{−cΛ_α}), Pr[q ∉ G_pool] ≤ (1 − p_q)^{J_f} ≤ e^{−4}.
+   G_pool := {q ∈ J : ∃j, 𝔇_{A_j}(q) returns a tree or a factor exit} (the same disjunction as in p_q; codex
+   escapeR2_3 (a)). A factor exit met while descending a split target ends the run successfully. For a good q (p_q ≥ e^{−cΛ_α}), Pr[q ∉ G_pool] ≤ (1 − p_q)^{J_f} ≤ e^{−4}.
    By linearity the expected number of missed good q is ≤ e^{−4}·#good, with no independence between different q
    needed. By Markov, with probability ≥ 1 − 2e^{−4} at least half the good q are in G_pool, so |G_pool| ≥ γ#J with
    γ := (log N)^{−C₀}/2. Call such a pool *good*. G_pool is never enumerated; membership of a given q is tested by running
@@ -603,7 +611,8 @@ algorithm that completely factors every N in expected time L_N[α, c′] for a f
 2. **Split, on a padded modulus (repair by codex escapeR2_2 #15).** With Y = ⌊N^{1/(2k)}⌋, every k-product of primes in
    (Y, 2Y] exceeds about √N. It therefore cannot be the Gauss-shortest vector modulo N, so Lemma S″ cannot be applied
    modulo N as the draft did. Instead:
-   - After preprocessing (3 ∤ N), put N_* := 9^{k+1}N, draw r uniform modulo N_*, and Gauss-reduce R = r² modulo N_*.
+   - After preprocessing (3 ∤ N), put N_* := 9^{k+1}N, draw r uniform among the units modulo N_* (non-units give gcd
+     exits or rejections), and Gauss-reduce R = r² modulo N_*.
    - All k-products of G_pool lie in (Y^k, 2^kY^k]. One of the k dyadic windows inside contains ≥ C(|G_pool|, k)/k of
      them, and its upper end X satisfies 2X² ≤ 2·4^kN < N_*.
    - Lemma S″ applies modulo N_*: its square-class index is 2^{ω(N)+1} ≤ |G_pool|/(4k³), by lv5unif (P6) at general α.
@@ -623,8 +632,9 @@ algorithm that completely factors every N in expected time L_N[α, c′] for a f
 6. **Fruitfulness.** 𝔇 is deterministic and the pool is chosen before the Dixon draws. Every exposed quantity is a
    function of the R_i and coins independent of the hidden roots (nested Lemma T_multi, with the pool as part of the
    coins). So each LV6 round succeeds with probability ≥ 1/2.
-7. **Restarts (doubling schedule).** The good-pool expected cost T* is not computable in advance (c, C₀ are not
-   explicit). Run rounds i = 1, 2, …: in round i, sample a fresh pool and run steps 2–6 with a work budget 2^i,
+7. **Restarts (doubling schedule).** Let T* be the good-pool expected time *until a verified proper factor*, including
+   the inner LV6 loop: character resampling, and fresh rows after a trivial gcd (each round succeeds with probability
+   ≥ 1/2 by step 6). T* is not computable in advance (c, C₀ are not explicit). Run rounds i = 1, 2, …: in round i, sample a fresh pool and run steps 2–6 with a work budget 2^i,
    aborting on overrun.
    - Once 2^i ≥ 4T*, a round succeeds with probability ≥ p₀ := (1 − 2e^{−4})·3/4 > 0.7: the pool is good, and by Markov
      the cost is within the budget.
@@ -788,10 +798,24 @@ precision CORRECT WITH FIXES; exhaustive Verdict WRONG. 19 issues:
 | 13 | MINOR | C ≥ r omitted in closed form / `closed_budget` | accepted: formula and code fixed, test added |
 | 14 | MAJOR | LS_C as an averaged count controls neither overlaps nor search | accepted: LS_C restated as targetwise moments + search |
 | 15 | MAJOR | NR-q split window invalid (k-products > √N) | accepted: codex's padded modulus N_* = 9^{k+1}N adopted |
-| 16 | MINOR | uniform costs and implementable runtime cap | accepted: doubling schedule, with corrected convergence arithmetic |
+| 16 | MINOR | uniform costs and implementable runtime cap | accepted: doubling schedule, with corrected convergence arithmetic; stopping time = verified factor incl. LV6 retries (escapeR2_3) |
 | 17 | MAJOR | jointly averaged moments can concentrate | accepted: targetwise quantifier made explicit, with codex's counterexample |
 | 18 | MINOR | TS bounds successful trees only | accepted: search recurrence T_h ≤ W(work + mT_{h−1}) |
 | 19 | MAJOR | failed implementations promoted to an exhaustive reduction | accepted: Verdict and §9 rewritten as a catalogue |
+
+**GPT-6.1-sol confirmation round `codex/escapeR2_3` (high; on commit e6a1adb).**
+- Status of the 19 issues: 15 FIXED; #2, #3, #4 and #16 PARTLY FIXED. The residuals are now applied: the ramification set
+  restricted to the compositum of Galois closures; the localised index in §1; softened §2.2 wording; the stopping time.
+- NR-q: the padded split passes. Remaining bookkeeping, now applied:
+  - the factor-exit disjunction in G_pool;
+  - sampling units modulo N_*;
+  - T* counted until a verified factor;
+  - admission of the α = 1/3 boundary case.
+- R3: the tree proof passes. The DAG remark was replaced by the topological-order bound 2e^{2κ}ΛU.
+- Chain envelope and 115 exact checks pass. A plateau wording slip was fixed.
+- The Verdict no longer claims an exhaustive reduction.
+- Bach: its "RH for ζ_K alone" finding referred to e6a1adb; it was already fixed to ERH for Hecke L-functions in 71701e4.
+- *Overall:* NR-q CORRECT WITH FIXES (now applied). No FATAL defect. No unconditional improvement below L[2/5].
 
 **Opus proof critic (read-only, independent).** TI, EX, TB CORRECT; KT, PR/Bach, R3, NR-q CORRECT WITH FIXES; the
 recursion claim WRONG as worded; §7.2's general α*(C) equality WRONG (grid values right). No FATAL.
