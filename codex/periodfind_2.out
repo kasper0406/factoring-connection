@@ -1,0 +1,247 @@
+**Overall verdict: OVERCLAIMED.** T, W, DB, and the leaf-output version of GR-F are sound. They establish useful restrictions on specified observables, not the absence of a classical Fourier mechanism. The main failures are GR-F’s unrestricted corollary, BASIS’s “iff,” SM’s nonexistence inference, Q1(d), and PF’s complexity conclusion.
+
+Throughout, distinguish absolute power \(A_j=|\widehat F(j)|^2\) from relative power \(A_j/\operatorname{Var}(F)\). The note switches between them.
+
+**T — CORRECT.**
+
+Fourier inversion on \(G\), followed by restriction to \(H\), gives
+\[
+g(a^t)=\sum_{\chi\in\widehat G}\widehat g(\chi)\chi(a)^t.
+\]
+Orthogonality gives the identity. Every character of \(H\) has exactly \(i\) extensions; Cauchy–Schwarz gives the stated bounds. Indeed, the order of the restriction **divides** the order of every extension.
+
+This is the standard restriction formula in finite abelian harmonic analysis. “Only characters concentrate” is acceptable shorthand for a necessary condition, but not an algorithmic characterization:
+
+- The factor \(i\) can make the conclusion weak.
+- Extension coefficients can cancel. If \(\lambda|_H=1\), then \(g=(\chi-\chi\lambda)/2\) vanishes on \(H\), despite substantial character correlations.
+
+Thus T supplies no converse and no efficient way to identify the relevant characters.
+
+**W — CORRECT, with the numerical assertion requiring reproducible inputs.**
+
+For unit \(h\),
+\[
+\sum_{y\in H}\overline{\eta_j(y)}e(hy/N)
+=\frac1i\sum_{\chi|_H=\eta_j}
+\sum_{y\in G}\overline{\chi(y)}e(hy/N).
+\]
+Each complete sum factors into prime-modulus Gauss sums, each bounded by the square root of its prime modulus. This proves the bound.
+
+For the shifted Jacobi observable, \(c\in G\) is essential. Local complete sums are Jacobi sums; their exceptional character cases have magnitude \(1\), rather than producing an exceptional large frequency. The claimed bound survives.
+
+Interval completion gives the MSB bound. Nonunit additive frequencies require separate treatment; their larger complete sums are compensated by their smaller interval Fourier coefficients.
+
+My small-case computation gives a near-sharp example:
+\[
+N=143,\quad a=123,\quad h=142,\quad r=60,\quad j=58,
+\]
+with \(|\widehat F(j)|/(\sqrt N/r)=0.999547\).
+
+These are classical Gauss/Jacobi-sum arguments. Relevant stronger subgroup-cancellation literature is [Bourgain–Glibichuk–Konyagin, *Estimates for the Number of Sums and Products and for Exponential Sums in Fields of Prime Order*, JLMS 73 (2006), 380–398](https://doi.org/10.1112/S0024610706022721). Its prime-field results do not classify arbitrary computable observables modulo \(pq\).
+
+**HNP — CORRECT WITH FIXES.**
+
+The change of Fourier geometry is correct: under your convention,
+\[
+\widehat{b(\alpha\,\cdot)}(k)=\widehat b(k\alpha^{-1}),
+\]
+so additive concentration moves to frequencies \(\alpha k\). Exponentiation instead pulls back the multiplicative spectrum.
+
+However, Akavia’s actual oracle is \(P(sg^a)\), indexed by exponents. Her advice contains **discrete logs of the prescribed additive SFT query points**, allowing access to \(x\mapsto P(sx)\). This access conversion is an essential part of the explanation, not merely a distinction between two homomorphisms. See [Akavia, *Solving Hidden Number Problem with One Bit Oracle and Advice*, CRYPTO 2009, LNCS 5677, 337–354, §3.1, Theorem 1](https://people.csail.mit.edu/akavia/akaviaCrypto2009.pdf).
+
+Also, “multiplicatively flat” must retain the quantitative bound and its dependence on \(r\). W becomes uninformative for sufficiently short orbits.
+
+The learning machinery is known: [Goldreich–Levin, STOC 1989, 25–32](https://www.wisdom.weizmann.ac.il/~oded/annot/node43.html); [Kushilevitz–Mansour, *Learning Decision Trees Using the Fourier Spectrum*, SIAM J. Comput. 22 (1993), 1331–1348](https://doi.org/10.1137/0222080); [Gilbert–Muthukrishnan–Strauss, *Improved Time Bounds for Near-Optimal Sparse Fourier Representations*, SPIE 5914, 59141A (2005)](https://doi.org/10.1117/12.615931); and [Akavia’s 2008 MIT thesis, Chapter 3, especially Theorem 3.16](https://people.csail.mit.edu/akavia/AkaviaPhDThesis.pdf). Her [COLT 2010 paper, 381–393, Theorem 1](https://www.learningtheory.org/colt2010/papers/005akavia.pdf), gives deterministic SFT with an additional Fourier-\(\ell^1\) bound.
+
+**GR-F — CORRECT WITH FIXES; the unrestricted corollary is false.**
+
+For a terminating deterministic tree with fixed complex leaf labels, the proof works, including adaptive branching within an evaluation. Before the first split, all three executions follow the same path; outside \(S\), they reach the same labelled leaf. Hence
+\[
+\|F-F_p\|_2^2,\ \|F-F_q\|_2^2\le4\varepsilon.
+\]
+Writing \(A_p=(r/r_p)\mathbb Z/r\) and \(A_q=(r/r_q)\mathbb Z/r\), Parseval gives
+\[
+\sum_{j\notin A_p\cap A_q}|\widehat F(j)|^2
+\le \|F-F_p\|_2^2+\|F-F_q\|_2^2\le8\varepsilon.
+\]
+Their intersection is indeed \((r/g)\mathbb Z/r\).
+
+The interpretation is arithmetically right:
+\[
+j=k(r/g)\quad\Longrightarrow\quad
+\operatorname{ord}(\eta_j)=g/\gcd(g,k).
+\]
+But **divisors of \(g\) need not be small, smooth, or useless**. The theorem leaves all common-order information unrestricted.
+
+A decisive example is \(N=77,\ a=-1\). Use one test \(y-1=0\), returning \(+1\) on equality and \(-1\) otherwise. Then
+\[
+r_p=r_q=r=g=2,\qquad \varepsilon=0,\qquad F(t)=(-1)^t.
+\]
+There is a unit-power nonzero peak, with no splits. Thus “generic observables give no useful Fourier information unless they split” does not follow.
+
+Further qualifications:
+
+- **Randomness:** fix and couple the random tape across the three executions. The inequality then holds averaged over tapes; Jensen also bounds the spectrum of the expected observable.
+- **Computed-value outputs:** excluded. Allowing arbitrary decoding of a computed residue destroys the theorem. For \(N=15,a=2,\Psi(y)=e(y/15)\), no tests occur, yet the mass outside the common frequencies is exactly \(5/8\).
+- **Extensions and curves:** require a specified CRT-compatible representation and operations. An extension-ring split is detected through coordinate gcds; “\(\gcd(v,N)\)” is otherwise undefined. Representation-dependent output decoding remains excluded.
+- **Across-query adaptivity:** does not automatically produce one fixed observable. Condition on history and state the sampling model.
+
+Uniform independent evaluations find a split in expected \(O(1/\varepsilon)\) evaluations, monitoring gcds at every test. This is an available factoring algorithm, **not a proved lower bound on every Fourier strategy**. Evaluation size and monitoring costs must be counted.
+
+The generic CRT-simulation method has substantial precedent: [Aggarwal–Maurer, *Breaking RSA Generically is Equivalent to Factoring*, EUROCRYPT 2009, 36–53](https://crypto.ethz.ch/publications/AggMau09.html). Especially relevant is [Jager–Schwenk, *On the Analysis of Cryptographic Assumptions in the Generic Ring Model*, ASIACRYPT 2009, 399–416](https://eprint.iacr.org/2009/621): even Jacobi-symbol computation becomes factoring-equivalent generically, although it is easy with ordinary integer representations. Your spectral packaging may merit recording; a new general hardness barrier has not been established.
+
+**DB — CORRECT.**
+
+For \(0<\rho<1\) and \(j\ne0\),
+\[
+|\widehat F(j)|\le \rho,\qquad
+\operatorname{Var}(F)=\rho(1-\rho).
+\]
+The complement also gives \(|\widehat F(j)|\le1-\rho\), yielding the stronger symmetric bound
+\[
+\frac{|\widehat F(j)|^2}{\operatorname{Var}(F)}
+\le\min\!\left\{\frac{\rho}{1-\rho},\frac{1-\rho}{\rho}\right\}.
+\]
+This is elementary and known. The conclusion concerns **superpolynomially small** densities; inverse-polynomial rarity still permits inverse-polynomial relative peaks.
+
+**SM — OVERCLAIMED.**
+
+A simultaneous-approximation argument supplies a nontrivial character with small phases on the specified unit primes, with the stated scale. But it does not ensure:
+
+1. large character order;
+2. a nontrivial restriction to \(H\);
+3. efficient construction.
+
+A character annihilating \(H\) only produces the DC coefficient.
+
+If a suitable restriction is nontrivial and
+\[
+|\arg\chi(y)|\le 2\pi\delta\Omega(y)\ll1
+\]
+on the smooth orbit representatives, then directly
+\[
+|\widehat F(j)|\gtrsim\rho.
+\]
+Therefore absolute power is approximately \(\rho^2\), while relative power is approximately \(\rho/(1-\rho)\). The reported “\(0.3–0.5\,\rho\)” must mean **relative** power; for small \(\rho\), that value as absolute power contradicts DB.
+
+The density calculation \(u\log u=O(\log n)\) for inverse-polynomial smoothness density is a reasonable Dickman-model estimate. It makes the pigeonhole guarantee ineffective because \(\pi(B)\) becomes enormous. **An ineffective existence guarantee is not a nonexistence theorem.** The proposed equidistribution of character values needs a precise conjecture, including their dependencies.
+
+[Granville–Soundararajan, *Large Character Sums: Pretentious Characters and the Pólya–Vinogradov Theorem*, JAMS 20 (2007), 357–384](https://arxiv.org/abs/math/0503113), provides relevant pretentious-character theory, not the claimed smoothness-observable barrier.
+
+The finite data cannot establish domination by relation collection. “Primal versus dual” is a useful analogy only after defining \(L\); Shor samples annihilator information, and the analogy supplies no complexity comparison.
+
+**UP — CORRECT WITH FIXES; a stronger elementary statement holds.**
+
+Your inequalities establish \(m>r/2\), retaining the strict inequality. But strict Fourier diagonal dominance actually requires
+\[
+\boxed{m=r}.
+\]
+If \(w(x_*)=0\), Fourier inversion gives
+\[
+\widehat w(j_0)e(j_0x_*/r)
+=-\sum_{j\ne j_0}\widehat w(j)e(jx_*/r),
+\]
+contradicting strict dominance.
+
+Thus the stated hypothesis is meaningful but extremely demanding: one coefficient must dominate every adversarial phase alignment. Actual modular-exponentiation signals do not provide arbitrary independent phases. The conclusion does not cover nonlinear statistics, adaptive identification, approximate cancellation, or distributional success.
+
+The uncertainty framework is classical: [Donoho–Stark, *Uncertainty Principles and Signal Recovery*, SIAM J. Appl. Math. 49 (1989), 906–931](https://doi.org/10.1137/0149053). [Tao, *An Uncertainty Principle for Cyclic Groups of Prime Order*, MRL 12 (2005), 121–127](https://arxiv.org/abs/math/0308286), concerns support sizes and prime cyclic groups; it is not this amplitude-dominance theorem.
+
+The \(r/\log r\) sampling observation needs a signal ensemble, estimator, and success criterion. It is not a universal lower bound. [Aaronson, *BQP and the Polynomial Hierarchy*, STOC 2010, §4](https://www.scottaaronson.com/papers/bqpph.pdf), establishes Fourier Fishing hardness in an oracle setting, not for these explicit arithmetic signals.
+
+**BASIS — OVERCLAIMED.**
+
+For the ideal state \(r^{-1/2}\sum_t|t\rangle|a^t\rangle\),
+\[
+w_k=\frac1r\sum_t|\beta_k(a^t)|^2,\qquad
+|\phi_k\rangle=
+\frac{\sum_t\overline{\beta_k(a^t)}|t\rangle}{\sqrt{r w_k}}.
+\]
+These identities and Schmidt rank \(r\) are correct. An arbitrary basis expansion is generally **not** a Schmidt decomposition.
+
+The algorithmic “iff” fails. T is one-way, contains cancellation, and concerns unnormalised coefficients. One must additionally provide efficient branch sampling, amplitude access, normalisation, and enough frequency-order information to recover \(r\).
+
+The character expansion requires the normalising factor \(1/\sqrt r\). It still has \(r\) terms, and the rank remains \(r\). Qubit-product assertions also depend on register conventions.
+
+Faithful, accurately labelled character evaluation can expose discrete logs; low-order character evaluation need not. “Entries are characters, i.e. discrete logs” is too broad.
+
+Nearby established simulation results are [Van den Nest, *Simulating Quantum Computers with Probabilistic Methods*, QIC 11 (2011), 784–812](https://www.rintonpress.com/xxqic11/qic-11-910/0784-0812.pdf), including a condition on classical postprocessing spectra, and [Schwarz–Van den Nest, *Simulating Quantum Circuits with Sparse Output Distributions* (2013), arXiv:1310.6749](https://arxiv.org/abs/1310.6749). Their explicit tractability and sparsity assumptions cannot be replaced by a choice of basis.
+
+**Q1(a) — CORRECT.**
+
+For Blum \(N\), the 2-primary subgroup is \(C_2\times C_2\). Thus
+\[
+v_2(r)=0\iff a\text{ is square modulo both primes}.
+\]
+Otherwise \(v_2(r)=1\). This is the standard elementary QR equivalence; Jacobi-\(-1\) inputs are already decidable.
+
+**Q1(b) — CORRECT.**
+
+For \(N\equiv1\pmod3\), excluding the impossible factor \(3\), the primes are either both \(1\) or both \(2\pmod3\). In the latter case every answer is false. In the former, writing \(\alpha=v_3(p-1)\), \(\beta=v_3(q-1)\),
+\[
+\Pr[3\mid\operatorname{ord}_N(a)]
+=1-3^{-\alpha-\beta}\ge8/9.
+\]
+Repeated independent samples decide the property with bounded error. It is equivalent to \(-3\) being square modulo both primes.
+
+Computed examples: the probabilities for \(N=91,133,55,187\) are respectively \(8/9,26/27,0,0\). This proves the stated reduction, not a factoring equivalence.
+
+**Q1(c) — CORRECT WITH FIXES.**
+
+With \(s=p+q\), both identities follow from
+\[
+N\equiv s-1\pmod{\lambda(N)}.
+\]
+Balance places \(s\) in an interval of width \(O(\sqrt N)\), allowing an \(O(N^{1/4})\) interval-DL search. However, a returned exponent need only equal \(s\) modulo \(r\); it need not identify the actual sum.
+
+The Cheon sentence is inaccurate. Standard auxiliary-input attacks include divisors of a known prime group order **minus or plus one**, with different auxiliary-input requirements. See [Cheon, *Discrete Logarithm Problems with Auxiliary Inputs*, Journal of Cryptology 23 (2010), 457–476](https://www.math.snu.ac.kr/~jhcheon/publications/2010/StrongDH_JoC_Final2.pdf), extending EUROCRYPT 2006. No applicable speedup is established here, but the proposed universal prerequisite is wrong.
+
+**Q1(d) — FALSE as written.**
+
+There is no stated model supporting this classification of “computable.”
+
+Concrete counterexample: modulo \(35\), inflate a cubic character modulo \(7\). It is not generated by the Jacobi symbol modulo \(35\): the cubic character can take value \(\zeta_3\) at \(3\), whereas \((3/35)=1\).
+
+Moreover, no Eisenstein integer has norm \(35\), because \(5\) is inert and must occur to an even exponent in a norm. Thus an order-\(3\) character does **not** require an element of norm \(N\); a denominator above the factor \(7\) suffices.
+
+If the intended restriction is “uniform polynomial time, given only an unfactored cryptographic modulus,” say so. The asserted classification then remains unsupported, rather than becoming a theorem. Higher reciprocity computations with supplied algebraic denominators are standard; see [Bach–Sandlund, *On Euclidean Methods for Cubic and Quartic Jacobi Symbols* (2018)](https://arxiv.org/abs/1807.07719).
+
+Cancellation of rational-input symbols at the rational ideal \((N)\) in appropriate higher-residue settings does not establish uniqueness of Jacobi. Nor is any unconditional theorem supplied forcing every efficiently evaluable character to have polynomially smooth order.
+
+**Q3 — OVERCLAIMED.**
+
+The displayed equivalence is correct:
+\[
+r_p\mid N^e-1\iff q^e\equiv1\pmod{r_p},
+\]
+because \(p\equiv1\pmod{r_p}\).
+
+But “all special elements” is an undefined class, and the proposed dichotomy is not proved. Lucas, torus, and elliptic-curve methods require their actual group orders and success conditions to be analysed.
+
+In the dual-number ring, write \(1+t\), \(t^2=0\). Then \((1+t)^k=1+kt\), so its order is exactly \(N\). This elementary fact changes the group and provides no recovery of the original \(r\).
+
+**PF — FALSE as a blanket statement.**
+
+The justified bounds, for their respective classes, are
+\[
+A_j\le8\varepsilon\quad((r/g)\nmid j),\qquad
+A_j\le B^2N/r^2,\qquad
+A_j\le\rho^2.
+\]
+Common-order peaks must remain exempt; the \(N=77\) example shows why. Jacobi-generated observables can also have a unit-power order-two peak. “Nontrivial” must therefore specify an order threshold, not merely \(j\ne0\).
+
+For relative thresholds, the first two bounds require division by \(\operatorname{Var}(F)\). A general “Weil-class” additionally needs explicit twist exceptions.
+
+An output-list guarantee gives an **upper bound** \(O(1/\tau)\) on list size after energy normalisation. Output-size lower bounds require a family actually having \(\Theta(1/\tau)\) mandatory outputs; they are not instancewise lower bounds for every observable class.
+
+Finally, ordinary SFT assumes a known Fourier domain. Here \(r\) is unknown. A reduction must specify a known sampling window, frequency resolution, and reconstruction procedure.
+
+[Cleve, *The Query Complexity of Order-Finding*, Information and Computation 192 (2004), 162–171](https://arxiv.org/abs/quant-ph/9911124), proves an exponential classical lower bound for a permutation-power oracle model. It does not establish an arithmetic lower bound for modular exponentiation.
+
+My reproducible [checks](/Volumes/git/factoring-connection/codex/scratch/periodfind_2/referee_checks.py) include T, 276 density cases, 1,248 Gauss/Jacobi cases, and 150 adaptive trees.
+
+## strongest objection to the verdict
+
+The strongest objection to my negative overall verdict is that the core mathematics survives substantial scrutiny: GR-F is valid in its stated leaf-output model, W and DB exclude important observable families, and UP can be strengthened. These are worthwhile results.
+
+None of my counterexamples supplies a new polynomial-time factoring algorithm. They show that the note should claim **conditional obstructions for specified observables and access models**, while leaving the search for an efficiently evaluable observable with useful large-order concentration open.
