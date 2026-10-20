@@ -1,0 +1,2807 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/lem85_1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a1582e-36c5-74e1-b77d-438e1ca7bb36
+--------
+user
+You are an adversarial referee in analytic number theory (smooth numbers in arithmetic progressions, large sieve, Dirichlet characters). Your job is to FIND ERRORS. Be concrete and quantitative. Do not be polite.
+
+Read: /Volumes/git/factoring-connection/notes/lem85_results.md (the claimed proof). Background, if you need it: notes/pcest_results.md §2 (the old proof and how Lemma 8.5′ is consumed by Theorem FM, Step 3) and notes/thmA_proof.md §1 (parameters of the final design).
+
+Source texts (text extractions; overbars lost) are in /Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/:
+- Drappeau, Compositio 151 (2015) [arXiv 1307.7554v3]: Lemme 5 (the key external input), Lemme 1(i), Lemme 6.
+- Pascadi, Compositio 161 (2025) [arXiv 2304.11696v3]: Lemma 3.2 = Drappeau Lemme 5.
+- de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005): Théorème 2.4(i).
+- Hildebrand–Tenenbaum, Trans. AMS 296 (1986) (scan OCR): Theorem 2(i) (2.4), Theorem 3.
+- Harper arXiv 1208.5992 (§3.3, eq. (3.1), is the source Drappeau cites for Lemme 5); Lee–Venkatesan arXiv 1805.08873 §8 (the old route).
+You may also use web search to check statements (arXiv, journal pages, zbMATH).
+
+The claim: Lemma 8.5′ (restricted Bombieri–Vinogradov for moduli t = ℓ·s, ℓ prime in (Y, 2Y], s y-smooth, with relative saving δ_𝒯·ε_N) holds in regime (R) (y = L_N[1/2, a], x = N^{ξ}, y^K ≤ Y, x^λ Y ≤ Q ≤ x^{1/2−λ}), using only published numbered statements, with effective constants. The structure:
+(1) E2: an exact "lift averaging" identity reducing the χ_ℓ-principal part to E(x,y;s,·)/(ℓ−1);
+(2) Lemma LS / LS′: large-sieve bound for conductors > y^K (IK Thm 7.13 + Davenport's Perron lemma + the n = mk factorisation, with crude y^{O(1)} losses);
+(3) Lemma SM: smooth moduli s ~ Q′ with relative saving ϱ(Q′)ε_N; small conductors ≤ R₁ = y^K handled by applying Drappeau's Lemme 5 ONLY to primitive characters (q = r), then transferring to smooth moduli by Möbius (E3) and the de la Bretèche–Tenenbaum bound Ψ(x/d,y) ≪ Ψ(x,y)d^{−α} (E8), at cost R₁^{1−α} = (log x)^{O(1)}.
+
+Attack, in particular:
+A. Is Drappeau's Lemme 5 stated exactly as quoted (ranges, conductor condition, imprimitive characters, the A-dependence and effectivity)? Is it legitimate to restrict its left side to {q = r ≤ R₁, χ primitive} and to apply it at x/d uniformly in d? Is its published status and numbering correct? Could it be false at these parameters (sanity-check against Harper's (3.1) and what you know)?
+B. The relative-saving transfer (Lemma SM (a)): check every weight — W(r,d), the Σ_d d^{1−β−β′}/φ(d) sum, the factor R₁^{1−β′} via (α2), and that H(u/2)^{−δ_D} really beats loglog x·(log x)^{K(1+C_α)} in regime (R). Is anything lost when s has many small prime factors (ω(s) ~ log x/loglog x)?
+C. Lemma LS: Perron details (z′ half-integer, the |log w| lower bound, T, c), the bilinear bound, whether the coefficient sequences are χ-independent and supported on intervals of the stated lengths, uniqueness in E4, and the final constant. Is the bound strong enough for conductors just above y^K given ϱ(x,y)ϱ(Q′,y) ≥ y^{−2−2ξ/a²−o(1)} (E7)? Check E7 and the choice K = 6 + ⌈2ξ_max/a²⌉.
+D. E2: is the decomposition correct, including when s has prime factors > y? (s is y-smooth here.) Does max over r mod t correctly reduce?
+E. The counting statement (i) and its use of HT Thm 3; the interface to FM Step 3 (pcest §2.3): is ε_N = exp(−c₀√log N/(loglog N)^{5/2}) enough, given |𝒳| = O(log ω), ω = L^{C₁}? Are the regime (R) hypotheses satisfied by the final design of thmA_proof §1 uniformly over FM's grid?
+F. Exceptional zeros and effectivity: is the claim "all constants effective, uniformly in N; the algorithm needs none of them" correct?
+G. Anything the note claims as "published and numbered" that is not, or any step that silently borrows from inside another proof.
+
+Output format: a numbered list of findings, each with severity FATAL / MAJOR / MINOR / OK, location (section/step), the precise problem, and a concrete fix if one exists. End with an overall verdict (ACCEPT / ACCEPT WITH FIXES / REJECT) and one line naming the weakest remaining link. Keep it under 2000 words. Write scratch files only under codex/scratch/lem85_1/.
+
+codex
+I’ll check the proof against the source statements, then audit the transfer weights, large-sieve bound, and final parameter choices. I’ll give quantitative failure points where I find them.
+
+exec
+/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '*.md' -g '*.txt' -g '*.tex' sources /Volumes/git/factoring-connection/notes /Volumes/git/factoring-connection/codex/scratch/lem85_1 2>/dev/null" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/lem85_1
+/Volumes/git/factoring-connection/notes/codex_r6_eps_reduction.md
+/Volumes/git/factoring-connection/notes/codex_r1_priorart.md
+/Volumes/git/factoring-connection/notes/codex_r11_qrh_factoring.md
+/Volumes/git/factoring-connection/notes/detqs_prereg.md
+/Volumes/git/factoring-connection/notes/dcltheorem_results.md
+/Volumes/git/factoring-connection/notes/leanform_results.md
+/Volumes/git/factoring-connection/notes/hypD_results.md
+/Volumes/git/factoring-connection/notes/trackBD_analysis.md
+/Volumes/git/factoring-connection/notes/codex_r13_final_referee.md
+/Volumes/git/factoring-connection/notes/pcest_prereg.md
+/Volumes/git/factoring-connection/notes/dlog_prereg.md
+/Volumes/git/factoring-connection/notes/tower_results.md
+/Volumes/git/factoring-connection/notes/repair_C2R_results.md
+/Volumes/git/factoring-connection/notes/lemmaM_prereg.md
+/Volumes/git/factoring-connection/notes/thmA_proof.md
+/Volumes/git/factoring-connection/notes/lemmaM_results.md
+/Volumes/git/factoring-connection/notes/sieve2d_results.md
+/Volumes/git/factoring-connection/notes/eps_results.md
+/Volumes/git/factoring-connection/notes/codex_r10_frontier.md
+/Volumes/git/factoring-connection/notes/multimod_results.md
+/Volumes/git/factoring-connection/notes/codex_r15_lean_faithfulness.md
+/Volumes/git/factoring-connection/notes/lem85_results.md
+/Volumes/git/factoring-connection/notes/detqs_results.md
+/Volumes/git/factoring-connection/notes/dcltheorem_prereg.md
+/Volumes/git/factoring-connection/notes/trackA_analysis.md
+/Volumes/git/factoring-connection/notes/trackC_tal_audit.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_paradigms_4_6.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_coppersmith_exponent_bridge.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_pm1_frobenius_bsgs.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_graycode_harvey_benchmark.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_chirp_quadratic_exponents.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_crt_sign_splitting.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_mod_M2_lattice_T_MK.md
+/Volumes/git/factoring-connection/notes/user_ideas/2026-10-18_schoof_semigroups_and_cross_difference.md
+/Volumes/git/factoring-connection/notes/nfsfruit_results.md
+/Volumes/git/factoring-connection/notes/trackC_candidates.md
+/Volumes/git/factoring-connection/notes/rkrank_prereg.md
+/Volumes/git/factoring-connection/notes/paper_review_r17.md
+/Volumes/git/factoring-connection/notes/nfsfruit_prereg.md
+/Volumes/git/factoring-connection/notes/multimod_prereg.md
+/Volumes/git/factoring-connection/notes/ldbound_results.md
+/Volumes/git/factoring-connection/notes/thmA_codex2_report.md
+/Volumes/git/factoring-connection/notes/AGENT_PHASE5_COMMON.md
+/Volumes/git/factoring-connection/notes/primality_explainer.md
+/Volumes/git/factoring-connection/notes/below16_prereg.md
+/Volumes/git/factoring-connection/notes/specialfam_results.md
+/Volumes/git/factoring-connection/notes/lv6_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r2_generic_ring.md
+/Volumes/git/factoring-connection/notes/review_and_repairs.md
+/Volumes/git/factoring-connection/notes/polyimpl_results.md
+/Volumes/git/factoring-connection/notes/specialfam_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r9_tower_audit.md
+/Volumes/git/factoring-connection/notes/signsplit_results.md
+/Volumes/git/factoring-connection/notes/sieve2d_prereg.md
+/Volumes/git/factoring-connection/notes/cycloharvey_prereg.md
+/Volumes/git/factoring-connection/notes/prior_art_map.md
+/Volumes/git/factoring-connection/notes/codex_r7_cyclo_harvey.md
+/Volumes/git/factoring-connection/notes/paper_review_opus_critic.md
+/Volumes/git/factoring-connection/notes/rkrank_results.md
+/Volumes/git/factoring-connection/notes/pcest_results.md
+/Volumes/git/factoring-connection/notes/paper_review_gpt_r14.md
+/Volumes/git/factoring-connection/notes/genus2rh_results.md
+/Volumes/git/factoring-connection/notes/trackC_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_prereg.md
+/Volumes/git/factoring-connection/notes/trackA_candidates.md
+/Volumes/git/factoring-connection/notes/cycloharvey_results.md
+/Volumes/git/factoring-connection/notes/codex_r1_mechanisms.md
+/Volumes/git/factoring-connection/notes/hypD_prereg.md
+/Volumes/git/factoring-connection/notes/thmA_codex1_report.md
+/Volumes/git/factoring-connection/notes/dchworst_prereg.md
+/Volumes/git/factoring-connection/notes/trackE_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r3_critic.md
+/Volumes/git/factoring-connection/notes/ecmavg_results.md
+/Volumes/git/factoring-connection/notes/ldbound_codex1_report.md
+/Volumes/git/factoring-connection/notes/repair_C2R_prereg.md
+/Volumes/git/factoring-connection/notes/thmA_prereg.md
+/Volumes/git/factoring-connection/notes/signsplit_prereg.md
+/Volumes/git/factoring-connection/notes/codex_r12_dcl_audit.md
+/Volumes/git/factoring-connection/notes/seed_lemmas.md
+/Volumes/git/factoring-connection/notes/codex_r8_copp_bridge.md
+/Volumes/git/factoring-connection/notes/thmA_audit.md
+/Volumes/git/factoring-connection/notes/AGENT_RULES.md
+/Volumes/git/factoring-connection/notes/coverage38_prereg.md
+/Volumes/git/factoring-connection/notes/repair_adjudication.md
+/Volumes/git/factoring-connection/notes/unbalanced_prereg.md
+/Volumes/git/factoring-connection/notes/coverage38_results.md
+/Volumes/git/factoring-connection/notes/ecmavg_prereg.md
+/Volumes/git/factoring-connection/notes/dchworst_results.md
+/Volumes/git/factoring-connection/notes/codex_r6_primality_lit.md
+/Volumes/git/factoring-connection/notes/trackE_analysis.md
+/Volumes/git/factoring-connection/notes/trackBD_candidates.md
+/Volumes/git/factoring-connection/notes/codex_r1_tal_bgs.md
+/Volumes/git/factoring-connection/notes/polyimpl_prereg.md
+/Volumes/git/factoring-connection/notes/genus2rh_prereg.md
+/Volumes/git/factoring-connection/notes/below16_results.md
+/Volumes/git/factoring-connection/notes/avgtime_results.md
+/Volumes/git/factoring-connection/notes/pm1bsgs_analysis.md
+/Volumes/git/factoring-connection/notes/divcover_results.md
+/Volumes/git/factoring-connection/notes/codex_r4_sos_classgroup.md
+/Volumes/git/factoring-connection/notes/lv6_results.md
+/Volumes/git/factoring-connection/notes/eps_prereg.md
+/Volumes/git/factoring-connection/notes/primality_analysis.md
+/Volumes/git/factoring-connection/notes/unbalanced_results.md
+sources/harper_arxiv1208.5992.txt
+sources/drappeau2015_arxiv1307.7554v3.txt
+sources/lee_venkatesan_arxiv1805.08873.txt
+sources/pascadi_arxiv2304.11696v3.txt
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt
+sources/delaBreteche_Tenenbaum2005.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/harper_arxiv1208.5992.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/drappeau2015_arxiv1307.7554v3.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/lee_venkatesan_arxiv1805.08873.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/pascadi_arxiv2304.11696v3.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/Hildebrand_Tenenbaum1986_scanOCR.txt
+/Volumes/git/factoring-connection/codex/scratch/lem85_1/sources/delaBreteche_Tenenbaum2005.txt
+
+exec
+/bin/zsh -lc 'wc -l /Volumes/git/factoring-connection/notes/lem85_results.md /Volumes/git/factoring-connection/notes/pcest_results.md /Volumes/git/factoring-connection/notes/thmA_proof.md && cat /Volumes/git/factoring-connection/notes/lem85_results.md' in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+     461 /Volumes/git/factoring-connection/notes/lem85_results.md
+    1000 /Volumes/git/factoring-connection/notes/pcest_results.md
+     368 /Volumes/git/factoring-connection/notes/thmA_proof.md
+    1829 total
+# lem85: a self-contained proof of Lemma 8.5′ (restricted Bombieri–Vinogradov for moduli ℓ·(smooth))
+
+Agent `lem85`, phase 11, 2026-10-20.
+- Code (exact checks of the elementary identities only): `src/lem85/identities.py`; tests `tests/test_lem85.py`.
+- GPT-6.1-sol adversarial referee: `codex/lem85_1.{md,out}`. Opus critics (proof; citations): §10.
+- No experiments, so no pre-registration.
+
+## Verdict
+
+**Lemma 8.5′ is now proved (status: proved), in the generality Theorem A needs. Part 1, the
+referees' weakest link, is closed in the sense the brief asked for.** No step uses the inside of
+another paper's proof. Harper's preprint arXiv 1208.5992 is no longer cited at all. Lee–Venkatesan's
+Lemma 8.5 is no longer used, neither its statement nor its proof.
+
+In plain terms:
+- **Part 1 needed no character majorant.** The old proof imported LV's majorant W from inside LV's
+  proof. That import was unnecessary. For t = ℓs with ℓ a prime > y, the "χ_ℓ principal" part of the
+  error mod t is *exactly* the error mod s divided by ℓ − 1 (lift averaging, §3 E2). What is then
+  needed is a restricted Bombieri–Vinogradov theorem over smooth moduli s, with a *relative* saving
+  (Lemma SM, §5). We prove Lemma SM ourselves.
+- **Large conductors** (conductor ≥ y^K, K fixed) are handled by our Lemma LS (§4). It uses only the
+  classical multiplicative large sieve (Iwaniec–Kowalski Thm 7.13), Davenport's truncated Perron
+  lemma, and the smooth-number factorisation n = mk. At y = L[1/2] every smooth-number density is
+  y^{−O(1)} = x^{−o(1)}, so crude losses of y^{O(1)} are affordable. This replaces Harper's
+  Proposition 2 (LV Fact 8.11).
+- **Small conductors** (2 ≤ r ≤ y^K) use one published, numbered statement: **Drappeau, Compositio
+  Math. 151 (2015), Lemme 5**, restated as Pascadi, Compositio Math. 161 (2025), Lemma 3.2. It is an
+  averaged bound for smooth-number character sums of conductor ≤ x^η. We apply it only to
+  *primitive* characters, which makes it independent of the moduli. Möbius inversion plus de la
+  Bretèche–Tenenbaum's local bound Ψ(x/d, y) ≪ Ψ(x, y)d^{−α} transfer it to smooth moduli with
+  a relative saving.
+  - The transfer costs only R₁^{1−α} = (log x)^{O(1)}. That is because log R₁ ≍ log y and
+    (1 − α) log y ≍ log(u log y). The saving H(u)^{−δ} absorbs this loss because u/log²u ≫ log log x.
+  - Both facts are specific to y = L[1/2, a]. This regime is exactly where the argument works.
+- **Exceptional (Siegel/Page) zeros.** Our own steps use no information about zeros. Drappeau's
+  Lemme 5 is used with A = 1/2, and its implied constant is stated to be effective for A < 1. **Every
+  constant is therefore effective, uniformly in N.** The algorithm uses none of these constants in any
+  case (§7).
+
+**What remains external (stated precisely, §2).**
+- The published input is Drappeau's Lemme 5. In both published sources its proof is a reference to
+  the computations of §3.3 of Harper's *unpublished* preprint 1208.5992. Drappeau writes "il découle
+  des calculs de la section 3.3 de [Har12b]"; Pascadi writes "follows from the work of Harper in
+  [21, Section 3.3]".
+- So the chain now rests on a refereed, published, numbered statement, as the brief allows. Our
+  argument nowhere enters the preprint, but the preprint is still behind that statement. We could not
+  remove it without re-proving Harper's Theorem 3 and Proposition 1. That is a zero-density and
+  zero-free-region analysis of Ψ(x, y; χ), with Page's theorem, and we did not attempt it.
+- **Harper 1208.5992 was never published.** zbMATH (queried 2026-10-20) lists it as "Preprint,
+  arXiv:1208.5992 (2012)", and it is cited as a preprint in 2019–2025 papers.
+
+Everything else cited is a classical published statement, checked against the source where marked:
+Hildebrand–Tenenbaum 1986, de la Bretèche–Tenenbaum 2005, Iwaniec–Kowalski Thm 7.13, Davenport ch. 17,
+and Rosser–Schoenfeld 1962.
+
+---
+
+## 1. Statement
+
+Notation.
+- P⁺(n) and P⁻(n) are the largest and smallest prime factors of n, with P⁺(1) = 1 and P⁻(1) = +∞.
+- S(z, y) is the set of y-smooth n ≤ z, Ψ(z, y) = #S(z, y), and ϱ(z, y) := Ψ(z, y)/z.
+- For a Dirichlet character χ of any modulus, Ψ(z, y; χ) := Σ_{n∈S(z,y)} χ(n). Here χ(n) = 0 when
+  (n, mod χ) > 1.
+- For (a, q) = 1: Ψ(z, y; q, a) := #{n ∈ S(z, y) : n ≡ a (mod q)}, Ψ_q(z, y) := #{n ∈ S(z, y) :
+  (n, q) = 1}, and E(z, y; q, a) := Ψ(z, y; q, a) − Ψ_q(z, y)/φ(q).
+- u := log x/log y, and H(u) := exp(u/log²(u + 1)) (Drappeau's normalisation).
+- α(z, y) is the Hildebrand–Tenenbaum saddle point: the solution of Σ_{p≤y} log p/(p^α − 1) = log z.
+- L = L_N[1/2, 1] = exp((log N log log N)^{1/2}).
+
+**Regime (R).** Fix a > 0, a compact Ξ ⊂ (0, ∞) with ξ_max := max Ξ, and λ ∈ (0, 1/4).
+- N → ∞, y := ⌊L_N[1/2, a]⌋ (this is B), and x is real with log x/log N ∈ Ξ.
+- K := 6 + ⌈2ξ_max/a²⌉ and R₁ := y^K.
+- ε_N := exp(−c₀ (log N)^{1/2}/(log log N)^{5/2}). Here c₀ := δ_D·min Ξ/(2a) > 0, and δ_D is the
+  constant of Drappeau's Lemme 5 (§2, D).
+
+**Lemma 8.5′.** In regime (R), let Y, Q be reals with y^K ≤ Y and x^λ·Y ≤ Q ≤ x^{1/2−λ}. Put
+- J := {ℓ prime : Y < ℓ ≤ 2Y};
+- 𝒯_Q := {t = ℓs ∈ (Q/2, Q] : ℓ ∈ J, P⁺(s) ≤ y};
+- δ_𝒯 := ϱ(Q/Y, y)/log Y.
+
+Then there are N₀, C > 0, depending only on (a, Ξ, λ) and on the constants of the results in §2, all
+effective, such that for N ≥ N₀:
+- (i) Qδ_𝒯/10 ≤ #𝒯_Q ≤ 3Qδ_𝒯;
+- (ii) Σ_{t∈𝒯_Q} max_{(r,t)=1} |Ψ(x, y; t, r) − Ψ_t(x, y)/φ(t)| ≤ C·Ψ(x, y)·δ_𝒯·ε_N.
+
+*Remarks on the statement.*
+- This contains pcest §2.2's Lemma 8.5′ (regime (B), which is what Theorem A uses), with ε_N in
+  place of H(u)^{−c} + B^{−c} + x^{−η₂}.
+  - In regime (R), H(u)^{−c} = exp(−c′(log N)^{1/2}/(log log N)^{5/2}(1 + o(1))), so the two forms of
+    ε_N are of the same type.
+  - FM Step 3 (pcest §2.3) needs only (log ω)·ε_N·log log N → 0 with log ω = O((log N log log N)^{1/2}).
+    This holds.
+- The condition y^K ≤ Y also covers hypD's regime (A), Y = exp((log N)^{3/4}). Regime (A) is not used
+  by Theorem A.
+- Interface with the final design (thmA_proof §1):
+  - Y = 2^{j−1} = N^{2ν+o(1)}, Q = N^{μ+ν+o(1)}, Q/Y = N^{μ−ν+o(1)} with μ − ν ≥ η₀, and
+    x = N^{ξ+o(1)} with ξ = μ + h + dν. Also ξ/2 − (μ + ν) ≥ η₀/2 (the FM level-½ floor).
+  - So the hypotheses hold with λ := η₀/(4ξ_max), Ξ a small closed neighbourhood of ξ, and a = θ/√2.
+    They hold uniformly over FM's grid 𝒳 and its O(1) dyadic Q, because ω = L^{C₁} changes log x
+    by o(log N).
+
+---
+
+## 2. Cited results (exact statements; only these are used)
+
+All are published. "Checked" means we read the statement in the source, or in an author copy whose
+numbering matches the published version.
+
+- **(D) Drappeau, *Théorèmes de type Fouvry–Iwaniec pour les entiers friables*, Compos. Math. 151
+  (2015), no. 5, 828–862, Lemme 5.**
+  - Statement: there exist constants η_D, c_D, δ_D > 0 such that whenever (log x)^{c_D} ≤ y ≤ x and
+    Q ≤ x, for every fixed A > 0,
+      Σ_{q≤Q} φ(q)^{−1} Σ_{χ (mod q), 1<cond(χ)≤x^{η_D}} |Σ_{n∈S(x,y)} χ(n)|
+        ≪_A Ψ(x, y){H(u)^{−δ_D}(log x)^{−A} + y^{−δ_D}}.
+  - "La constante implicite est effective si A < 1."
+  - Checked in arXiv 1307.7554v3 and in the author's copy (bffi-friable.pdf, numbering identical).
+  - The same statement appears as **Pascadi, *Smooth numbers in arithmetic progressions to large
+    moduli*, Compos. Math. 161 (2025), no. 8, 1923–1974, Lemma 3.2**. Pascadi gives the range
+    (log x)^C ≤ y ≤ x, Q ≤ x, conductor ≤ x^ε, and "effective if A < 1". Checked in arXiv
+    2304.11696v3. Pascadi cites it as "[7, Lemme 5]", where [7] is the Compositio version.
+  - **Provenance:** both papers justify it by reference to Harper arXiv 1208.5992 §3.3, eq. (3.1)
+    and the remark after it. We use it with **A = 1/2**.
+- **(dBT) de la Bretèche–Tenenbaum, *Propriétés statistiques des entiers friables*, Ramanujan J. 9
+  (2005), 139–202, Théorème 2.4(i) with m = 1.**
+  - Statement: Ψ(x/d, y) ≪ Ψ(x, y)/d^{α} uniformly for x ≥ y ≥ 2 and 1 ≤ d ≤ x.
+  - For m = 1 the extra condition ω(m) ≪ 1 holds, which allows the full range 1 ≤ d ≤ x.
+  - The same statement is **Drappeau 2015, Lemme 1(i)**, with α the saddle point of Drappeau's (1.6).
+  - Checked: the author's PDF, and Drappeau. The text extraction loses overbars, so we cannot tell
+    from it whether (2·19) uses the saddle point α or dBT's explicit
+    ᾱ := log(1 + y/log x)/log y of (2·4). Drappeau's Lemme 1(i) states it with the saddle point. We
+    use only the consequences (α1)–(α2) below, which hold for both.
+  - We write C_dBT for the implied constant.
+- **(HT) Hildebrand–Tenenbaum, *On integers free of large prime factors*, Trans. AMS 296 (1986),
+  265–290.** Checked (scan).
+  - Theorem 2(i), eq. (2.4): α(x, y) = (log(1 + y/log x)/log y)·(1 + O(log log(1 + y)/log y)),
+    uniformly for x ≥ y ≥ 2.
+  - Theorem 3: Ψ(cx, y) = Ψ(x, y)c^{α(x,y)}(1 + O(1/u + log y/y)), uniformly for x ≥ y ≥ 2 and
+    1 ≤ c ≤ y.
+- **(LS) Iwaniec–Kowalski, *Analytic Number Theory* (AMS Colloq. Publ. 53, 2004), Theorem 7.13.**
+  For complex a_n with M < n ≤ M + N:
+    Σ_{q≤Q} (q/φ(q)) Σ*_{χ (mod q)} |Σ_n a_n χ(n)|² ≤ (Q² + N − 1) Σ|a_n|²,
+  where Σ* is over primitive characters. Quoted verbatim as Drappeau's Lemme 6 and Pascadi's
+  Lemma 3.3.
+- **(P) Davenport, *Multiplicative Number Theory* (3rd ed., GTM 74), Chapter 17, Lemma (p. 105).**
+  For c > 0, T > 0 and w > 0 with w ≠ 1:
+    |(2πi)^{−1}∫_{c−iT}^{c+iT} w^s ds/s − 1_{w>1}| < w^c min(1, 1/(T|log w|)).
+  Not re-checked against the book. This is the standard statement; Montgomery–Vaughan, *Multiplicative
+  Number Theory I*, Cor. 5.3, gives it with an O-constant, which would also suffice.
+- **(RS) Rosser–Schoenfeld, Illinois J. Math. 6 (1962), 64–94.** Numbering as commonly cited, not
+  re-checked; any Chebyshev-strength substitute changes only constants.
+  - Corollary 1: π(z) < 1.25506 z/log z for z > 1.
+  - Corollary 3: π(2z) − π(z) > 3z/(5 log z) for z ≥ 20.5.
+  - Theorem 15: n/φ(n) < e^γ log log n + 2.51/log log n for n ≥ 3.
+
+Consequences used, valid in regime (R) for N ≥ N₀. Write β(z, y) for whichever exponent (dBT) uses.
+- **(α1)** β(z, y) ≥ 3/4 for 2y ≤ z ≤ x.
+- **(α2)** 1 − β(z, y) ≤ (log(u log y) + C_α log log y)/log y for 2y ≤ z ≤ x, with C_α absolute.
+- Proof: for ᾱ, compute log(1 + y/log z) = log y − log log z + O(log z/y). For the saddle point, use
+  (HT) Theorem 2(i), together with log z ≤ log x = u log y.
+
+---
+
+## 3. Elementary lemmas (all proved here)
+
+**E1 (orthogonality majorant).** For (a, q) = 1, E(z, y; q, a) = φ(q)^{−1} Σ_{χ≠χ₀ (mod q)} χ̄(a)Ψ(z, y; χ).
+Hence max_{(a,q)=1} |E(z, y; q, a)| ≤ Δ(q) := φ(q)^{−1} Σ_{χ≠χ₀} |Ψ(z, y; χ)|.
+*Proof.* Orthogonality, together with the fact that Ψ(z, y; χ₀) = Ψ_q(z, y). ∎
+
+**E2 (lift averaging).** Let ℓ be a prime with ℓ > y, let s ≥ 1 with ℓ ∤ s, and put t = ℓs. For every
+r with (r, t) = 1:
+  E(z, y; t, r) = E(z, y; s, r)/(ℓ − 1) + Rem(t, r),
+  where |Rem(t, r)| ≤ Δ_ℓ(t) := φ(t)^{−1} Σ_{χ (mod t), ℓ | cond χ} |Ψ(z, y; χ)|.
+
+*Proof.* (ℤ/t)^* = (ℤ/ℓ)^* × (ℤ/s)^*, and every χ (mod t) factors as χ_ℓχ_s. Also ℓ | cond χ if and
+only if χ_ℓ ≠ χ₀^{(ℓ)}.
+- Every y-smooth n is coprime to ℓ. So for χ_ℓ = χ₀^{(ℓ)} we get Ψ(z, y; χ₀^{(ℓ)}χ_s) = Ψ(z, y; χ_s).
+  Also Ψ_t(z, y) = Ψ_s(z, y), and φ(t) = (ℓ − 1)φ(s).
+- In E1 for modulus t, the terms with χ_ℓ = χ₀^{(ℓ)} and χ_s ≠ χ₀^{(s)} sum to
+  ((ℓ−1)φ(s))^{−1} Σ_{χ_s≠χ₀} χ̄_s(r)Ψ(z, y; χ_s) = E(z, y; s, r)/(ℓ − 1).
+- The remaining terms have ℓ | cond χ.
+
+Equivalently, without characters: averaging E(z, y; t, ·) over the ℓ − 1 lifts of r (mod s) to
+(ℤ/t)^* gives exactly E(z, y; s, r)/(ℓ − 1). This is checked exactly in `tests/test_lem85.py`. ∎
+
+**E3 (coprimality by Möbius).** Let χ (mod q) be induced by a primitive χ* (mod r), and put
+q_y := ∏_{p|q, p≤y} p. Then
+  Ψ(z, y; χ) = Σ_{d | q_y, (d,r)=1} μ(d)χ*(d)Ψ(z/d, y; χ*).
+
+*Proof.* For y-smooth n, (n, q) = 1 if and only if (n, q_y) = 1. Expand 1_{(n,q_y)=1} = Σ_{d|(n,q_y)} μ(d).
+Then n = dn′ with n′ ∈ S(z/d, y), because d is y-smooth. Terms with (d, r) > 1 vanish. Checked
+exactly for real characters in the tests. ∎
+
+**E4 (factorisation).** Let M₁ ≥ 1. Every n ∈ S(z, y) with n > M₁ has exactly one factorisation n = mk
+with:
+- M₁ < m ≤ P⁺(m)M₁ (that is, m/P⁺(m) ≤ M₁ < m);
+- P⁺(m) ≤ P⁻(k);
+- k ∈ S(z, y).
+
+Moreover k ≤ z/M₁.
+
+*Proof.* Write n = p₁p₂⋯p_J with p₁ ≤ ⋯ ≤ p_J, and let m = p₁⋯p_j with j minimal such that the product
+exceeds M₁. Conversely, if (m, k) satisfies the three conditions, the primes of m come first in the
+sorted list of n's primes (ties at P⁺(m) = P⁻(k) are harmless). Then m/P⁺(m) ≤ M₁ < m forces j to be
+the number of prime factors of m. Checked exhaustively on toy ranges in the tests. ∎
+
+**E5.** Σ_{j≤X} 1/φ(j) ≤ 2(1 + log X) for X ≥ 1.
+*Proof.* j/φ(j) = Σ_{e|j} μ²(e)/φ(e). So the sum is at most (1 + log X)·Σ_e μ²(e)/(eφ(e)), and
+Σ_e μ²(e)/(eφ(e)) = ζ(2)ζ(3)/ζ(6) < 1.95. ∎
+
+**E6 (constants).** Over squarefree d:
+- Σ_d 1/(dφ(d)) < 1.95;
+- Σ_d 1/(φ(d)d^{1/2}) ≤ ∏_p (1 + 2p^{−3/2}) ≤ exp(2Σ_p p^{−3/2}) < e^{1.7} < 6, since Σ_p p^{−3/2} < 0.85;
+- if β, β′ ≥ 3/4, then Σ_d d^{1−β−β′}/φ(d) ≤ ∏_p (1 + p^{−1/2}/(p − 1)) < 6.
+
+Also n/φ(n) ≤ 5 log log(n + 16) for all n ≥ 1, by (RS) Theorem 15 for n ≥ 16 and by inspection for
+n < 16.
+
+**E7 (density lower bound).** For z ≥ 2y with u_z := log z/log y ≤ u and N ≥ N₀:
+  ϱ(z, y) ≥ y^{−1}exp(−u log(4u log y)).
+In regime (R), u log(4u log y) = (ξ/a²)(1 + o(1)) log y. Hence ϱ(z, y) ≥ y^{−1−ξ_max/a²−o(1)}.
+
+*Proof.* Let k := ⌊u_z⌋ and 𝒫 := primes in (y/2, y]. By (RS) Cor. 3, #𝒫 ≥ 3y/(10 log y) ≥ k. The
+products of k distinct primes of 𝒫 are distinct, y-smooth, and ≤ y^k ≤ z. So
+  Ψ(z, y) ≥ C(#𝒫, k) ≥ (#𝒫/k)^k ≥ (z/y)(3/(10k log y))^k.
+Then use k ≤ u. In regime (R), log y = a(log N log log N)^{1/2}(1 + o(1)) and
+u = (ξ/a)(log N/log log N)^{1/2}(1 + o(1)). ∎
+
+**E8 (weights over smooth moduli).** Let 2y ≤ Q′ ≤ x, r, d ≥ 1 with (r, d) = 1, and β′ := β(Q′, y).
+Then
+  W(r, d) := Σ_{Q′/2<s≤Q′, P⁺(s)≤y, rd|s} 1/φ(s) ≤ 10 C_dBT log log(Q′ + 16)·ϱ(Q′, y)·(rd)^{1−β′}/(φ(r)φ(d)).
+
+*Proof.*
+- Write s = rdj, so that 1/φ(s) ≤ 1/(φ(rd)φ(j)) and φ(rd) = φ(r)φ(d). Here j is y-smooth and
+  j ∈ (J/2, J] with J := Q′/(rd); the sum is empty if J < 1.
+- By E6, Σ_j 1/φ(j) ≤ 5 log log(Q′ + 16)·(2/J)Ψ(J, y) = 10 log log(Q′ + 16)·ϱ(J, y).
+- By (dBT) at (Q′, y) with d := rd: ϱ(J, y) = Ψ(Q′/(rd), y)·rd/Q′ ≤ C_dBT ϱ(Q′, y)(rd)^{1−β′}. ∎
+
+---
+
+## 4. Lemma LS (large conductors, from the classical large sieve)
+
+**Lemma LS.** Let y ≥ 2, z ≥ max(4, y^{3/2}) and R ≥ 1. Then
+  Σ_{R<r≤2R} (r/φ(r)) Σ*_{χ (mod r)} |Ψ(z, y; χ)| ≤ 30π(y) log(2zR)·(y^{3/2}z + y^{1/2}z^{1/2}R²).
+
+*Proof.* Write w_χ := r/φ(r) for χ primitive of conductor r ∈ (R, 2R]. Then Σ_χ w_χ ≤ Σ_{r≤2R} r ≤ 4R².
+Put M₁ := z^{1/2}. By E4,
+  Ψ(z, y; χ) = Σ_{n≤M₁, n∈S(y)} χ(n) + Σ_{p≤y} Σ_{m,k: mk≤z} a^{(p)}_m b^{(p)}_k χ(m)χ(k),
+where:
+- a^{(p)}_m := 1 if P⁺(m) = p and M₁ < m ≤ pM₁, and 0 otherwise;
+- b^{(p)}_k := 1 if P⁻(k) ≥ p, P⁺(k) ≤ y and k ≤ z/M₁, and 0 otherwise.
+
+Neither sequence depends on χ, and #supp a^{(p)} ≤ yM₁, #supp b^{(p)} ≤ z/M₁.
+
+*Short part.* By Cauchy–Schwarz and (LS) with Q = 2R:
+  Σ_χ w_χ |Σ_{n≤M₁}| ≤ (4R²)^{1/2}((4R² + M₁)M₁)^{1/2} ≤ 2Rz^{1/2} + 4R²z^{1/4}.
+
+*Bilinear part.*
+- Let z′ := ⌊z⌋ + 1/2, c := 1/log(2z) and T := (2zR)^4. For integers m, k ≥ 1, 1_{mk≤z} = 1_{z′/(mk)>1}.
+- On the support, mk ≤ (yM₁)(z/M₁) = yz and |z′ − mk| ≥ 1/2. Hence |log(z′/mk)| ≥ |z′−mk|/max(z′, mk)
+  ≥ 1/(4yz), and (z′/mk)^c ≤ (2z)^c = e.
+- By (P), each pair (m, k) contributes an error < 4eyz/T. There are ≤ yz pairs per p, at most y
+  primes p, and total character weight ≤ 4R². So the total error over all χ and p is
+  < 16e y³z²R²/T ≤ e·y³/(z²R²) ≤ 3.
+- The main term is (2πi)^{−1}∫_{c−iT}^{c+iT} A_p(χ, s)B_p(χ, s) z′^s ds/s, where
+  A_p(χ, s) = Σ_m a^{(p)}_m χ(m)m^{−s} and B_p is defined similarly.
+- For each fixed t, Cauchy–Schwarz and (LS) with coefficients a_m m^{−c−it} (of modulus ≤ 1) give
+    Σ_χ w_χ |A_p(χ, c+it)B_p(χ, c+it)| ≤ (yM₁ + 4R²)^{1/2}(z/M₁ + 4R²)^{1/2}(yM₁)^{1/2}(z/M₁)^{1/2}
+      ≤ (yz^{1/2} + 4R²)(yz)^{1/2} = y^{3/2}z + 4y^{1/2}z^{1/2}R².
+- Also ∫_{−T}^{T} dt/|c + it| ≤ 2/c + 2 log T ≤ 10 log(2zR) and z′^c ≤ e. So the bilinear part is
+  ≤ 5π(y) log(2zR)(y^{3/2}z + 4y^{1/2}z^{1/2}R²) + 3.
+
+Adding the two parts, and using 2Rz^{1/2} + 4R²z^{1/4} + 3 ≤ 9y^{1/2}z^{1/2}R² + y^{3/2}z, gives the
+bound. ∎
+
+**Corollary LS′ (moduli with smooth cofactor, any sub-family).** Let z₀ ≥ max(4, y^{3/2}), and let
+1 ≤ R₀ ≤ Q₀ with z₀/Q₀ ≥ max(4, y^{3/2}). For each modulus q ≤ Q₀ let 𝒳(q) be any set of characters
+mod q whose conductors lie in (R₀, Q₀]. Then
+  Σ_{q≤Q₀} φ(q)^{−1} Σ_{χ∈𝒳(q)} |Ψ(z₀, y; χ)| ≤ 1.5·10³ π(y)(log z₀)²·(y^{3/2}z₀/R₀ + y^{1/2}z₀^{1/2}Q₀).
+
+*Proof.*
+- Group (q, χ) by the inducing primitive χ* (mod r) and apply E3: |Ψ(z₀, y; χ)| ≤ Σ_{d|q_y, (d,r)=1}
+  |Ψ(z₀/d, y; χ*)|, with d squarefree and d ≤ Q₀.
+- Swap the sums. By E5 and φ(rdj) ≥ φ(r)φ(d)φ(j), Σ_{q≤Q₀, rd|q} 1/φ(q) ≤ 2(1 + log Q₀)/(φ(r)φ(d)).
+- On each dyadic block r ∈ (R, 2R] with R₀ ≤ R ≤ Q₀, use 1/φ(r) ≤ (r/φ(r))/R and Lemma LS at
+  z = z₀/d ≥ z₀/Q₀. This gives 30π(y)·2 log z₀·(y^{3/2}z/R + y^{1/2}z^{1/2}R).
+  (Here log(2zR) ≤ log(2z₀Q₀) ≤ 2 log z₀, because Q₀ ≤ z₀/4.)
+- Sum over the blocks R = 2^iR₀ (Σ1/R ≤ 2/R₀, ΣR ≤ 2Q₀), then over d with weights 1/φ(d), using
+  Σ_d 1/(dφ(d)) < 2 and Σ_d 1/(φ(d)d^{1/2}) < 6 (E6). This gives
+    ≤ 2(1 + log Q₀)·60π(y) log z₀·(4y^{3/2}z₀/R₀ + 12y^{1/2}z₀^{1/2}Q₀),
+  and 1 + log Q₀ ≤ log z₀ because eQ₀ ≤ z₀. ∎
+
+---
+
+## 5. Lemma SM (smooth moduli, relative saving)
+
+**Lemma SM.** In regime (R), let 2y ≤ Q′ ≤ x^{1/2−λ}, and let 𝒮 := {s ∈ (Q′/2, Q′] : P⁺(s) ≤ y}. Then
+for N ≥ N₀:
+  Σ_{s∈𝒮} max_{(a,s)=1} |E(x, y; s, a)| ≤ Σ_{s∈𝒮} Δ(s) ≤ C_SM·Ψ(x, y)·ϱ(Q′, y)·ε_N.
+
+*Proof.* The first inequality is E1. Split each Δ(s) according to the conductor r of χ: case (a) is
+1 < r ≤ R₁ = y^K, and case (b) is r > R₁.
+
+**(a) Small conductors.**
+- Apply E3 (s is y-smooth, so s_y = rad s) and swap the sums. With W(r, d) from E8:
+    (a) ≤ Σ_{1<r≤R₁} Σ*_{χ* (mod r)} Σ_{d sqfree, P⁺(d)≤y, (d,r)=1} |Ψ(x/d, y; χ*)|·W(r, d)
+        ≤ 10 C_dBT log log(Q′+16)·ϱ(Q′, y)·R₁^{1−β′}·Σ_d (d^{1−β′}/φ(d))·D(x/d),
+    where D(z) := Σ_{1<r≤R₁} φ(r)^{−1} Σ*_{χ (mod r)} |Ψ(z, y; χ)|.
+- *Apply (D) to the primitive characters only.* Take q = r ≤ R₁ and χ = χ* primitive. These pairs
+  are among the terms of Lemme 5's left side with Q := R₁. Take A = 1/2 and the argument z = x/d.
+  - The hypotheses hold: x/d ≥ x/Q′ ≥ x^{1/2}, so (log z)^{c_D} ≤ y ≤ z and R₁ = y^K =
+    N^{o(1)} ≤ z^{η_D} for N ≥ N₀.
+  - Hence D(x/d) ≤ C_D Ψ(x/d, y)(H(u_d)^{−δ_D} + y^{−δ_D}), where u_d := log(x/d)/log y ≥ u/2
+    (because d ≤ Q′ ≤ x^{1/2}).
+  - H is increasing on [4, ∞), so H(u_d) ≥ H(u/2).
+- By (dBT), Ψ(x/d, y) ≤ C_dBT Ψ(x, y)d^{−β}, with β := β(x, y). By (α1) and E6,
+  Σ_d d^{1−β′−β}/φ(d) < 6.
+- By (α2), R₁^{1−β′} = exp(K(1 − β′) log y) ≤ (u log y)^K (log y)^{KC_α} ≤ (log x)^{K(1+C_α)}.
+- Therefore
+    (a) ≤ 60 C_dBT² C_D·log log x·(log x)^{K(1+C_α)}·(e^{−δ_D (u/2)/log²(u/2+1)} + y^{−δ_D})·Ψ(x, y)ϱ(Q′, y).
+- In regime (R), u = (ξ/a)(log N/log log N)^{1/2}(1 + o(1)) and log²(u + 1) = (1/4)(log log N)²(1 + o(1)).
+  So δ_D(u/2)/log²(u/2+1) = (2δ_Dξ/a)(log N)^{1/2}/(log log N)^{5/2}·(1 + o(1)).
+  - This beats the (log x)^{O(1)} = exp(O(log log N)) factor and the threshold 2c₀ = δ_D min Ξ/a.
+  - y^{−δ_D} = exp(−δ_D a(log N log log N)^{1/2}) is smaller still.
+- Hence (a) ≤ Ψ(x, y)ϱ(Q′, y)ε_N for N ≥ N₀.
+
+**(b) Large conductors.**
+- Apply Corollary LS′ with z₀ = x, Q₀ = Q′, R₀ = R₁ and 𝒳(s) = {χ (mod s) : cond χ > R₁}, keeping
+  only the moduli s ∈ 𝒮 (positivity). This gives
+    (b) ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/y^K + y^{1/2}x^{1/2}Q′).
+- By E7, Ψ(x, y)ϱ(Q′, y) ≥ x·y^{−2−2ξ_max/a²−o(1)}.
+  - The first term is ≤ Ψϱ(Q′)·y^{5/2−K+2+2ξ_max/a²+o(1)} ≤ Ψϱ(Q′)y^{−1}, because
+    K = 6 + ⌈2ξ_max/a²⌉.
+  - The second is ≤ Ψϱ(Q′)·x^{−λ}y^{O(1)}, because Q′ ≤ x^{1/2−λ}.
+  - Both are ≤ Ψϱ(Q′)ε_N for N ≥ N₀. ∎
+
+*Why this works exactly at y = L[1/2].*
+- The large sieve needs R₁ ≥ 1/(ϱ(x)ϱ(Q′)) up to y^{O(1)}, that is, log R₁ ≳ u log u.
+- The small-conductor transfer costs R₁^{1−β} = exp(log R₁·log(u log y)/log y).
+- Both are compatible with log R₁ ≍ log y precisely when u log u ≍ log y, i.e. y = L^{Θ(1)}.
+- For much smaller y one would need the medium-conductor zero-density analysis of Harper/LV; we
+  avoid it.
+
+---
+
+## 6. Proof of Lemma 8.5′
+
+*(i) Counting 𝒯_Q.*
+- Since ℓ > y ≥ P⁺(s), each t ∈ 𝒯_Q determines (ℓ, s), and ℓ ∤ s. So
+  #𝒯_Q = Σ_{ℓ∈J} (Ψ(Q/ℓ, y) − Ψ(Q/2ℓ, y)).
+- Upper bound: #𝒯_Q ≤ #J·Ψ(Q/Y, y) ≤ (1.256·2Y/log 2Y)(Q/Y)ϱ(Q/Y, y) ≤ 3Qδ_𝒯, by (RS) Cor. 1.
+- Lower bound:
+  - Put z := Q/(2ℓ) ≥ x^λ/4. Then u_z → ∞ and α(z, y) → 1, by (HT) Theorem 2(i).
+  - (HT) Theorem 3 with c = 2 gives Ψ(2z, y) − Ψ(z, y) ≥ 0.8Ψ(z, y). With c = 4 it gives
+    Ψ(Q/Y, y) ≤ 4.1Ψ(Q/4Y, y) ≤ 4.1Ψ(z, y).
+  - So each ℓ contributes ≥ 0.19(Q/Y)ϱ(Q/Y, y).
+  - #J ≥ 3Y/(5 log Y), by (RS) Cor. 3. Hence #𝒯_Q ≥ 0.11Qδ_𝒯.
+
+*(ii) The error sum.* By E2, for t = ℓs ∈ 𝒯_Q,
+  max_{(r,t)=1} |E(x, y; t, r)| ≤ max_{(a,s)=1} |E(x, y; s, a)|/(ℓ − 1) + Δ_ℓ(t).
+
+**Part 1 (χ_ℓ principal).**
+- Σ_t max_a |E(x, y; s, a)|/(ℓ − 1) = Σ_{ℓ∈J} (ℓ − 1)^{−1} Σ_{s∈(Q/2ℓ, Q/ℓ], P⁺(s)≤y} max_a |E(x, y; s, a)|.
+- Apply Lemma SM with Q′ = Q/ℓ. Its hypotheses hold: Q/ℓ ≥ Q/(2Y) ≥ x^λ/2 ≥ 2y and
+  Q/ℓ < Q ≤ x^{1/2−λ}.
+- This gives ≤ C_SM Ψ(x, y)ε_N Σ_ℓ ϱ(Q/ℓ, y)/(ℓ − 1).
+- Ψ(·, y) is nondecreasing and ℓ ∈ (Y, 2Y], so ϱ(Q/ℓ, y) = Ψ(Q/ℓ, y)ℓ/Q ≤ Ψ(Q/Y, y)·2Y/Q =
+  2ϱ(Q/Y, y). Also Σ_{ℓ∈J} 1/(ℓ − 1) ≤ #J/Y ≤ 2.6/log Y, by (RS) Cor. 1.
+- So **Part 1 ≤ 5.2 C_SM·Ψ(x, y)δ_𝒯ε_N.**
+
+**Part 2 (ℓ | conductor).**
+- Every χ counted in Δ_ℓ(t) has conductor r with ℓ | r, so r > Y.
+- Apply Corollary LS′ with z₀ = x, Q₀ = Q, R₀ = Y and 𝒳(t) = {χ : ℓ_t | cond χ} for t ∈ 𝒯_Q (empty
+  for other q). This gives Part 2 ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/Y + y^{1/2}x^{1/2}Q).
+- By E7, Ψ(x, y)δ_𝒯 ≥ x·y^{−2−2ξ_max/a²−o(1)}/log Y. With Y ≥ y^K and Q ≤ x^{1/2−λ} this gives
+  **Part 2 ≤ Ψ(x, y)δ_𝒯·y^{−1/2} ≤ Ψ(x, y)δ_𝒯ε_N** for N ≥ N₀.
+
+Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
+
+---
+
+## 7. Exceptional zeros, effectivity, uniformity in N
+
+- **Where a Siegel or Page zero could enter.** Only in case (a) of Lemma SM, the primitive characters
+  of conductor ≤ y^K. Lemma LS, Corollary LS′ and E1–E8 use no information about L-function zeros.
+- **How it is handled.** Through (D) with A = 1/2. Drappeau states that its implied constant is
+  effective for A < 1.
+  - In the source computation (Harper §3.3) the possible exceptional real character of small
+    conductor is bounded by an Euler-product argument for Ψ(x, y; χ). That argument does not depend
+    on the location of the real zero, and it produces the H(u)^{−δ} saving.
+  - Siegel's ineffective theorem is needed only for the extra (log x)^{−A} with A ≥ 1, which we do
+    not use. This is a description of the source, not a step of our proof.
+- **Uniformity.** Every bound above holds for all N ≥ N₀(a, Ξ, λ), uniformly in x, Y, Q in the stated
+  ranges. There is no exceptional set of N and no exceptional set of moduli: the conductor of a
+  potential exceptional character is absorbed in (a) like any other. The dependence on the
+  constants of (D), (dBT) and (HT) is explicit.
+- **Effectivity.** All constants are effective, provided the constants of (D) (η_D, c_D, δ_D and the
+  implied constant for A = 1/2) are effective, as Drappeau states. Those of (dBT), (HT), (LS), (P) and
+  (RS) are effective.
+- **Does the algorithm need them?** No.
+  - Lemma 8.5′ enters Theorem A only through FM, which is a lower bound on an expectation in the
+    running-time analysis.
+  - The algorithm's parameters (B, S, M, H, W, J, the grid) are explicit functions of N and of the
+    fixed (d, k, μ, η₀). None of C, c₀, N₀ is used by the algorithm.
+  - Even an ineffective N₀ would leave Theorem A true as stated: a Las Vegas algorithm with expected
+    time L[1/2, c + o(1)], with an ineffective o(1). The algorithm itself is unchanged.
+
+---
+
+## 8. Literature status of the inputs (checked 2026-10-20)
+
+- **Harper, arXiv 1208.5992: unpublished.** zbMATH's author profile (API query) lists it as "Preprint,
+  arXiv:1208.5992 [math.NT] (2012)". The following still cite it as a preprint:
+  - Drappeau 2015 [Har12b];
+  - Pascadi 2025 [21];
+  - a 2019 *Arch. Math.* paper and a 2023 arXiv paper (found by web search).
+
+  Harper's published related work is a different paper: J. Number Theory 132 (2012), 182–199, which
+  treats individual moduli q ≤ y^{4√e−δ} and does not contain the needed averaged statements. Harper's
+  JLMS 2025 BDH paper is about general sequences. **No longer used by us.**
+- **Lee–Venkatesan, *Rigorous analysis of a randomised number field sieve*, J. Number Theory 187
+  (2018), 92–159** (zbMATH). We did not compare its Lemma 8.5 numbering with the arXiv version.
+  **No longer used by us.**
+- **What replaced what.**
+
+  | old input (pcest §2.1–2.2) | status | replaced by |
+  |---|---|---|
+  | majorant W from *inside* LV Lemma 8.5's proof (Part 1) | proof-internal | E2 (exact identity) + Lemma SM |
+  | LV Lemma 8.5 statement | published, but proof gap at the top of its y-range (Page step) | Lemma SM (our proof, our regime) |
+  | Harper Prop. 2 = LV Fact 8.11 (Part 2, large conductors) | preprint | Lemma LS / LS′ (IK 7.13 + Perron) |
+  | Harper Thm 3, Prop. 1, p. 15–16 facts = LV Facts 8.8–8.10, 8.12; Page's theorem | preprint / proof-internal | (D) Drappeau Lemme 5 = Pascadi Lemma 3.2 (published, numbered) |
+  | LV Claims 8.14, 8.16 | proof-internal | E6–E8 with (dBT), (HT) |
+
+- **Ruled out as substitutes for (D).**
+  - de la Bretèche–Drappeau JEMS 2020 Thm 2.1 carries e^{O(u₂)} (hypD §8).
+  - Fouvry–Tenenbaum 1996 needs y ≥ exp((log x)^{2/3+ε}).
+  - Granville 1993 and Harper JNT 2012 are individual-modulus results with q ≤ y^{O(1)}, and
+    Granville's saving is only 1/log y.
+  - A key point: *no unrestricted Bombieri–Vinogradov statement over all moduli can give the relative
+    saving over smooth moduli*. Its total modulus weight is ≍ log x, while smooth moduli carry weight
+    ϱ(Q′). That is why (D) is applied to primitive characters and transferred by E3 and E8, not
+    applied to the moduli s directly.
+
+## 9. What a referee should check (our own list)
+1. E2: the identity, and the condition ℓ > y with ℓ ∤ s.
+2. E3/E8 bookkeeping: (d, r) = 1 makes rd | s with φ(rd) = φ(r)φ(d); the sum over d is over all
+   squarefree y-smooth d.
+3. (a): applying (D) to the sub-family {q = r, χ primitive}, with Q := R₁ and argument x/d; the range
+   conditions; A = 1/2.
+4. (α2) and R₁^{1−β′} ≤ (log x)^{O(1)}. This is the step where y = L[1/2] is used.
+5. Lemma LS: the Perron constants, and that (LS) is applied with coefficient sequences independent of χ.
+6. E7 and the choice of K.
+7. Parameter interface with thmA_proof §1 (§1 Remarks).
+
+## 10. Reviews
+(Filled in below after the GPT-6.1-sol and Opus rounds.)
+
+## 11. Checks
+`.venv/bin/python -m pytest -q tests/test_lem85.py`: exact checks of E2 (lift averaging, 4 parameter
+sets, all residues), E3 (Möbius identity, real characters, 4 sets), E4 (uniqueness of n = mk on 3
+ranges) and E5. These are correctness checks of elementary identities only.
+
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/lem85_1/AGENTS.md; do if [ -f "$p" ]; then printf '"'\\n%s\\n' \""'$p"; cat "$p"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "rg -n 'Lemme 5|Lemme 1|Lemme 6|Lemma 3.2|Théorème 2.4|Theorem 2|Theorem 3|3\\.1|3\\.3' sources/*.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+sources/pascadi_arxiv2304.11696v3.txt: binary file matches (found "\0" byte around offset 6939)
+sources/drappeau2015_arxiv1307.7554v3.txt:21:3.1 Calcul de dispersion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1 1
+sources/drappeau2015_arxiv1307.7554v3.txt:23:3.3 Estimation de S2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+sources/drappeau2015_arxiv1307.7554v3.txt:143:Par un argument de découpage dichotomique similaire aux cal culs de la section 3.1 de [FT96],
+sources/drappeau2015_arxiv1307.7554v3.txt:166:Une analyse plus ﬁne des calculs de Harper menant au Lemme 5 pe rmet de considérer plus
+sources/drappeau2015_arxiv1307.7554v3.txt:237:ité 2 −α + o(1) lorsque x→∞ , cf. le Lemme 1 infra.
+sources/drappeau2015_arxiv1307.7554v3.txt:340:Lemme 1. (i) Lorsque 2 ⩽ y ⩽ x et 1 ⩽ d ⩽ x, on a
+sources/drappeau2015_arxiv1307.7554v3.txt:475:précisément, il découle des calculs de la section 3.3 de [Har 12b] la majoration suivante, qui
+sources/drappeau2015_arxiv1307.7554v3.txt:477:Lemme 5. Il existe des constantes η, c, δ > 0 telles que lorsque (log x)c ⩽ y ⩽ x et Q ⩽ x, pour
+sources/drappeau2015_arxiv1307.7554v3.txt:493:Lemme 6. Pour tous entiers Q, M, N /greaterorequalslant 1 et toute suite de nombres complexes (an)M <n⩽M +N ,
+sources/drappeau2015_arxiv1307.7554v3.txt:515:χ(k) (3.1)
+sources/drappeau2015_arxiv1307.7554v3.txt:529:M ⩽ R ⩽ x−εN L, N 3L4 ⩽ x2−ε, N 6L5 ⩽ x4−εR−2, (3.3)
+sources/drappeau2015_arxiv1307.7554v3.txt:569:entiers friables en vertu du Lemme 5 de Harper précité.
+sources/drappeau2015_arxiv1307.7554v3.txt:574:système (3.3) sont
+sources/drappeau2015_arxiv1307.7554v3.txt:596:3.1 Calcul de dispersion
+sources/drappeau2015_arxiv1307.7554v3.txt:753:Chacun des deux systèmes de conditions (3.2) et (3.3) impliq ue K ⩽ x2/3, quitte à supposer ε
+sources/drappeau2015_arxiv1307.7554v3.txt:755:3.3 Estimation de S2
+sources/drappeau2015_arxiv1307.7554v3.txt:915:les hypothèses (3.2) ou (3.3), on a R2≪ x6ε{K 5/2R−1 + K}≪ x1−εKR −1, ce qui fournit
+sources/drappeau2015_arxiv1307.7554v3.txt:916:S2 = ˆf (0)X2 + O(x1−εKR −1). (3.10)
+sources/drappeau2015_arxiv1307.7554v3.txt:1087:, (3.11)
+sources/drappeau2015_arxiv1307.7554v3.txt:1128:R(v; d1, e1, e2) + O(x1−η/4KR −1) (3.12)
+sources/drappeau2015_arxiv1307.7554v3.txt:1143:Il reste à étudier le second terme du membre de droite de (3.12 ). La suite ( uvk′ )k′ est une
+sources/drappeau2015_arxiv1307.7554v3.txt:1175:(3.13)
+sources/drappeau2015_arxiv1307.7554v3.txt:1183:(3.14)
+sources/drappeau2015_arxiv1307.7554v3.txt:1186:M ⩽ R ⩽ K, K ⩽ M N1/2E −1, N 1/2L1/4 ⩽ M R−1/2E −1 (3.15)
+sources/drappeau2015_arxiv1307.7554v3.txt:1188:ment égal à N L. Dans la somme du membre de gauche de (3.13), les deux conditi ons d1k≡
+sources/drappeau2015_arxiv1307.7554v3.txt:1190:Admettons temporairement la Proposition 1. Pour tout indic e k2 dans la déﬁnition (3.11),
+sources/drappeau2015_arxiv1307.7554v3.txt:1218:~R(v; d1, d2, δ1, δ3; e1, e2) (3.16)
+sources/drappeau2015_arxiv1307.7554v3.txt:1231:Pour chaque choix d’indices dans la somme (3.16), on appliqu e la Proposition 1 avec les paramètres
+sources/drappeau2015_arxiv1307.7554v3.txt:1249:ou (3.3), respectivement, et on obtient pour un certain δ > 0
+sources/drappeau2015_arxiv1307.7554v3.txt:1250:S1 = ˆf (0)X1 + O(x1−δKR −1). (3.17)
+sources/drappeau2015_arxiv1307.7554v3.txt:1253:d’abord que la majoration (3.13) n’est non-triviale en prat ique que lorsque le majorant est nég-
+sources/drappeau2015_arxiv1307.7554v3.txt:1256:gauche de (3.13). Cela est du à l’utilisation de la formule de Poisson (Lemme 2) qui exprime un
+sources/drappeau2015_arxiv1307.7554v3.txt:1262:βnλℓ. (3.18)
+sources/drappeau2015_arxiv1307.7554v3.txt:1276:ˆf( hr)e(− ah νk1r ). (3.19)
+sources/drappeau2015_arxiv1307.7554v3.txt:1447:En injectant la déﬁnition (3.18) et en renommant k1 en k, on obtient
+sources/drappeau2015_arxiv1307.7554v3.txt:1752:et grâce aux hypothèses (3.14), on obtient
+sources/drappeau2015_arxiv1307.7554v3.txt:1761:Sous les conditions (3.14), le membre de droite est O(M KN LE −1) et on obtient ﬁnalement la
+sources/drappeau2015_arxiv1307.7554v3.txt:1792:où l’on rappelle que R, déﬁni par (3.19), est l’objet que l’on souhaite majorer. On rappelle
+sources/drappeau2015_arxiv1307.7554v3.txt:1882:1 + |a|HTνd2KN L) supK<K ′⩽2KD(K ′) (3.30)
+sources/drappeau2015_arxiv1307.7554v3.txt:1907:D(K ′)≪ HT KN L +D1 + (KN L)ενd2D2 (3.31)
+sources/drappeau2015_arxiv1307.7554v3.txt:1974:(3.32)
+sources/drappeau2015_arxiv1307.7554v3.txt:2014:(3.33)
+sources/drappeau2015_arxiv1307.7554v3.txt:2015:A vecη = ε/2, on injecte les majorations (3.32) et (3.33) dans (3.31) pu is (3.30) pour obtenir
+sources/drappeau2015_arxiv1307.7554v3.txt:2019:Par déﬁnition, T ⩽ d1KR −1, les conditions (3.15) impliquent donc
+sources/drappeau2015_arxiv1307.7554v3.txt:2025:(3.10) et (3.17) montrent que le membre de gauche de (3.4) est majoré par
+sources/drappeau2015_arxiv1307.7554v3.txt:2032:+ O(x1−δ) (3.34)
+sources/drappeau2015_arxiv1307.7554v3.txt:2126:Dans l’avant-dernière inégalité, on a fait usage du grand cr ible sous la forme du Lemme 6. En
+sources/drappeau2015_arxiv1307.7554v3.txt:2153:⏐⏐⏐≪ x1−δ (|a1|,|a2| ⩽ xδ), (3.35)
+sources/drappeau2015_arxiv1307.7554v3.txt:2166:(3.36)
+sources/drappeau2015_arxiv1307.7554v3.txt:2169:On rappelle que ωε(k; r) est déﬁni par (3.1).
+sources/drappeau2015_arxiv1307.7554v3.txt:2170:Proof. On montre dans un premier temps l’estimation (3.35). Soit ε > 0 et c > 1/ε. On
+sources/drappeau2015_arxiv1307.7554v3.txt:2232:1ϑ>0 = 12 + 12πi∫1/T ⩽|t|⩽T eiϑtt dt + O(|ϑ| +|ϑ|−1T ). (3.37)
+sources/drappeau2015_arxiv1307.7554v3.txt:2246:Dans l’expression déﬁnissant ∆ ∗(M, N, L, R), on applique l’estimation (3.37) avec T = x2 quatre
+sources/drappeau2015_arxiv1307.7554v3.txt:2276:) (3.38)
+sources/drappeau2015_arxiv1307.7554v3.txt:2310:certains entiers positifs ou nuls ej. En injectant cela dans l’expression (3.38), on obtient
+sources/drappeau2015_arxiv1307.7554v3.txt:2373:Il découle par ailleurs du Lemme 5 que
+sources/drappeau2015_arxiv1307.7554v3.txt:2383:L’estimation (3.36) se montre par une méthode similaire, po ur les choix des paramètres
+sources/drappeau2015_arxiv1307.7554v3.txt:2414:On vériﬁe que l’on a x3/5−6ε ⩽ (x2−I )3/5−4ε, ce qui assure que l’estimation (3.35) de la Proposi-
+sources/drappeau2015_arxiv1307.7554v3.txt:2436:⏐⏐⏐≪ (log x)x1−δ + x1−ε/2≪ x1−δ/2 (3.39)
+sources/drappeau2015_arxiv1307.7554v3.txt:2451:on obtient l’inégalité suivante, où la variable q joue le rôle de la variable r de la majoration (3.39),
+sources/drappeau2015_arxiv1307.7554v3.txt:2496:Le Lemme 5 implique
+sources/drappeau2015_arxiv1307.7554v3.txt:2521:l’estimation (3.36) de la Proposition 2, que
+sources/drappeau2015_arxiv1307.7554v3.txt:2595:Le theorem 4 de [Hil85] et le point (i) du Lemme 1 (avec d = ∆ j(1− ∆−1)−1) impliquent
+sources/drappeau2015_arxiv1307.7554v3.txt:2732:Le point (ii) du Lemme 1 fournit pour tout r,
+sources/drappeau2015_arxiv1307.7554v3.txt:2750:Par ailleurs, le point (i) du Lemme 1 et une intégration par pa rties fournissent
+sources/drappeau2015_arxiv1307.7554v3.txt:2760:Une analyse classique, similaire par exemple à la démonstra tion du Lemme 3.1 de [FT90], fournit
+sources/drappeau2015_arxiv1307.7554v3.txt:2780:On suppose maintenant ( x, y)∈ (Hε). Le point (iii) du Lemme 1 fournit
+sources/drappeau2015_arxiv1307.7554v3.txt:2804:On a ( ry, n) = 1⇔ (r, ny) = 1, de sorte que le lemme 3.1 de [FT90] fournit pour t ⩽ x
+sources/harper_arxiv1208.5992.txt:119:Theorem 2. Let logK x ≤ y ≤ x be large and let 1 ≤ Q ≤ Ψ(x, y). Then
+sources/harper_arxiv1208.5992.txt:171:previous results like Theorem 2 in the literature, although the metho ds of Fouvry and
+sources/harper_arxiv1208.5992.txt:199:Theorem 3. There exist a small absolute constant b > 0, and a large absolute constant
+sources/harper_arxiv1208.5992.txt:220:The left hand side in Theorem 2 is equal to ∑q≤Q(1/φ(q))∑χ (mod q), χ⁄=χ0 |Ψ(x, y; χ)|2,
+sources/harper_arxiv1208.5992.txt:301:The ﬁrst bound follows immediately from Theorem 3 of Hildebrand and T enen-
+sources/harper_arxiv1208.5992.txt:332:by iteratively applying Theorem 3 of Hildebrand and Tenenbaum [14] wit h the choice
+sources/harper_arxiv1208.5992.txt:378:We will then use Proposition 1 to deduce Theorem 3, and to handle cha racters on
+sources/harper_arxiv1208.5992.txt:396:Thirdly, the multiplier √log x log y in Proposition 1 and Theorem 3, which will
+sources/harper_arxiv1208.5992.txt:405:3.1. Proof of Proposition 1. The proposition will be a relatively easy consequence
+sources/harper_arxiv1208.5992.txt:523:3.2. Proof of Theorem 3. We will apply Proposition 1 with a suitable choice of ǫ and
+sources/harper_arxiv1208.5992.txt:524:H. We assume, as we may, that the value of b > 0 in Theorem 3 was set small enough
+sources/harper_arxiv1208.5992.txt:526:also that the value of M in Theorem 3 was set large enough in terms of b, d, C.
+sources/harper_arxiv1208.5992.txt:527:In Theorem 3 we have r := cond(χ) ≤ yb, so for any 2 ≤ H ≤ y50b we have
+sources/harper_arxiv1208.5992.txt:531:sumptions of Theorem 3 imply that L(s, χ) has no zeros in the region
+sources/harper_arxiv1208.5992.txt:537:Theorem 3), and so all the conditions of Proposition 1 will be satisﬁed . Since we have
+sources/harper_arxiv1208.5992.txt:549:as asserted in Theorem 3.
+sources/harper_arxiv1208.5992.txt:551:3.3. Application to Theorems 1 and 2. Recall that in Theorem 1 we are trying to
+sources/harper_arxiv1208.5992.txt:561:various constants b, M, d, C in Theorem 3 and Proposition 1, and provided the constants
+sources/harper_arxiv1208.5992.txt:578:− culog2(u+1) + y−c) , (3.1)
+sources/harper_arxiv1208.5992.txt:580:also prove corresponding statements for Theorem 2. The remainin g characters, with
+sources/harper_arxiv1208.5992.txt:582:We remark that we will break the sum in (3.1) into a few diﬀerent pieces , as suggested
+sources/harper_arxiv1208.5992.txt:586:This is certainly acceptable for (3.1), since (recalling that u := (log x)/ log y) we always
+sources/harper_arxiv1208.5992.txt:589:(as we have already seen in the proof of Theorem 3). The only instan ce in which
+sources/harper_arxiv1208.5992.txt:604:where M is the absolute constant from the statement of Theorem 3. These are sets of
+sources/harper_arxiv1208.5992.txt:606:Indeed, using Theorem 3 we see the contribution to (3.1) from char acters induced from
+sources/harper_arxiv1208.5992.txt:641:contribution to (3.1) from characters induced from χ∗ ∈ G 2 is also seen to be
+sources/harper_arxiv1208.5992.txt:722:which is acceptable for (3.1).
+sources/harper_arxiv1208.5992.txt:723:At this point the only contribution to (3.1) we have not dealt with is tha t of
+sources/harper_arxiv1208.5992.txt:798:11.3.1.2 of Montgomery and Vaughan [20]) implies
+sources/harper_arxiv1208.5992.txt:840:(combined with e.g. Theorem 3 of Hildebrand and Tenenbaum [14]) give s the stronger
+sources/harper_arxiv1208.5992.txt:852:This is obviously acceptable for the eﬀective part of Theorem 1, as in (3.1). As usual,
+sources/harper_arxiv1208.5992.txt:857:Theorem 1. One can handle the contribution from such characters to Theorem 2 using
+sources/harper_arxiv1208.5992.txt:858:exactly the same arguments, since in Theorem 2 one needs to bound
+sources/harper_arxiv1208.5992.txt:883:Indeed, we can ﬁnish the proof of Theorem 2 almost immediately using Multiplicative
+sources/harper_arxiv1208.5992.txt:884:Large Sieve 1. In view of the calculations in §3.3, it remains to bound the contribution
+sources/harper_arxiv1208.5992.txt:971:say. Since we assume that y ≥ logK x in Theorem 2, and Ψ( x, logK x) = x1−1/K+o(1)
+sources/harper_arxiv1208.5992.txt:974:large enough in terms of η. This bound is acceptable for Theorem 2, provided the value
+sources/harper_arxiv1208.5992.txt:997:The reader may easily check that, together with the calculations in §3.3 (and on
+sources/harper_arxiv1208.5992.txt:998:setting the value of η as in §3.3), Proposition 2 will complete the proof of Theorem 1 for
+sources/harper_arxiv1208.5992.txt:1207:as at the beginning of §4, when we proved Theorem 2, we ﬁnd the left hand side in
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:180:From part (i) of Theorem 2, we see that
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:188:Combining Theorem 1 with part (i) of Theorem 2, we obtain the following corol-
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:211:From part (i) of Theorem 2, we see that 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:219:Combining Theorem 1 with part (i) of Theorem 2, we obtain the following corol­
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:238:When we combine Theorem 1 with part (ii) of Theorem 2, we derive a smooth
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:277:When we combine Theorem 1 with part (ii) of Theorem 2, we derive a smooth 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:306:it follows from part (i) of Theorem 2 that the estimate
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:308:holds uniformly for x > y > 2 and 1 < c < 2. Substituting in Theorem 3 we derive
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:316:Theorem 3 can also be interpreted as a short interval estimate for *(x,j/). It
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:321:we can in fact sharpen Theorem 3 for large values of z in the following way.
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:340:Corollary 4 should be compared with Theorem 3 of [12], where the relation
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:344:it follows from part (i) of Theorem 2 that the estimate 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:347:holds uniformly for x ~ y ~ 2 and 1 :S c :S 2. Substituting in Theorem 3 we derive 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:355:Theorem 3 can also be interpreted as a short interval estimate for IV ( x, y). It 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:360:we can in fact sharpen Theorem 3 for large values of z in the following way. 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:380:Corollary 4 should be compared with Theorem 3 of [12], where the relation 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:429:(3.1) (-4>x(a,y)=)Yd^A[=\ogx.
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:442:(3.3) a(g'y)x«(logi/)2  (y^loSx)'
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:452:This last estimate gives the upper bound of (3.3). By (3.6), we may write
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:454:which implies the lower bounds of (3.3) and (3.4).
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:463:"logp (3.1) (-¢1(0,y) =)~~=log x. 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:476:(3.3) a(x, y) ::::: (1 y )2 u og y (y ~ log x), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:486:This last estimate gives the upper bound of (3.3). By (3.6), we may write 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:490:implies the lower bounds of (3.3) and (3.4). 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:498:First, consider the case ÿ S tog z. Etom (3.3) we iufer
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:515:If y S log c, we have a < 1/log g by (3.3), whence
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:520:and the desired estimate follonrs from (3.3).
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:553:(3.10) £ A(n)n"* = |^ + Oe (1(1 + /exp{-(log y)e/2})) .
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:563:PROOF. It suffices to apply (3.10) with s - 1 - ß and s = 1 - ß + ir and to
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:590:(3.10) L A(n)n-s = ;/3::: + Oe (½(1 + y19 exp{-(log yt 12})). 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:601:PROOF. It suffices to apply (3.10) with s = 1 - /3 and s = 1 - /3 + iT and to 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:607:(3.11)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:608:(3.12)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:609:(3.13)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:610:(3.14)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:619:(3.15) ?(*.!/) < expt(a,y)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:626:<<£  eXPrC0(l-o)2+r2}(3.16)
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:632:(3.17) 1-p-
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:634:We first consider the case |r| < 1/log y.   If y < log x, we have by (3.17) and
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:635:(3.11), for p<y,
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:640:Taking the product over p <y yields (3.15) since by (3.3) and (3.8),
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:642:If y > log x, then a » 1/log y by (3.4), whence by (3.11) and (3.12),
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:645:Next, we apply (3.13) with A = ci to the right-hand side of (3.17). We obtain
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:650:(3.11) 2(J2 /1r2 ~ 1 - cos 0 ~ 02 /2 (101 ~ 1r), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:651:(3.12) ev(l - e-v)2 ~ v2 {v ER), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:652:(3.13) {1 + t)- 1 ~ exp{-t/(1 + .X)} {0 ~ t ~ .X), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:653:(3.14) (1 + 4vt/(t - 1)2 )- 1 ~ exp{-4v/t} (0 ~ V ~ 1 < t). 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:658:{3.15) I s-(s, y) I ~ exp {- coy log (1 + r2</>2{0:, y))} . s-(o:,y) logy (y/log y) 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:660:(3.16) I s-(s, y) I «e 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:666:(3.17) 11-p-al = (1+ 2(1-cos(rlogp)))-1/2 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:669:consider the case lrl ~ 1/log y. If y ~ log x, we have by (3.17) and 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:670:(3.11), for p ~ y, 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:674:Taking the product over p ~ y yields {3.15) since by (3.3) and (3.8), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:677:If y > log x, then o: » 1/log y by (3.4), whence by (3.11) and (3.12), 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:681:apply (3.13) with .X = c1 to the right-hand side of (3.17). We obtain 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:684:with C2 = 2/(7T2(l + A)). Multiplying this for p < y gives again (3.15), since in the
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:690:(3.18) y1_axölog«   (y>yo(e),u>u0(e)).
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:692:Now, by (3.17) and (3.14) with v = (1 - cos(r log p))/2, t = pa,
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:707:From (3.18) we easily see that in the ranges considered
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:711:This completes the proof of (3.16).
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:713:with c2 = 2/(1r2(1 + >.)). Multiplying this for p ~ y gives again (3.15), since in the 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:719:(3.18) y1- 0 :::::: ulog u (y ~ Yo(c), u ~ uo(c)). 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:722:Now, by (3.17) and (3.14) with v = (l - cos(r log p))/2, t = p0 , 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:738:From (3.18) 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:744:This completes the proof of (3.16). 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:748:(3.19) *(x+.x/z,y)-tf(x,y)«£  xac(a,y){l/z + e"C5"}.
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:749:PROOF. The left-hand side of (3.19) is
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:787:(3.19) 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:788:PROOF. The left-hand side of (3.19) is 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:831:Theorem 2 and the special case u = \/Xög2y of Theorem 1, which is covered by
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:832:(4.1). Theorem 2 (and hence (2.6)) will be established in the last section without
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:884:Theorem 2 and the special case u = ✓log 2y of Theorem 1, which is covered by 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:885:(4.1). Theorem 2 (and hence (2.6)) will be established in the last section without 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1190:6. Proof of Theorem 3. Theorem 3 could be proved directly in the same
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1229:6. Proof of Theorem 3. Theorem 3 could be proved directly in the same 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1250:Estimate (2.9) of Theorem 3 is therefore, in the range (6.2), equivalent to the
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1286:Estimate {2.9) of Theorem 3 is therefore, in the range {6.2), equivalent to the 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1322:of Lemmas 2,4, we obtain (6.a) and (6.5), and hence the assertion of Theorem 3
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1324:7. Proof of Theorem 2. The proof is somewhat lengthy but not difficult. We
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1531:Next, we establish estimate (2.5) of Theorem 2. By (7.2) we have
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1567:Next, we establish estimate (2.5) of Theorem 2. By (7.2) we have 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1601:Let us now turn to part (ii) of Theorem 2. We first establish the estimate
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1633:Let us now turn to part (ii) of Theorem 2. We first establish the estimate 
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1664:This completes the proof of Theorem 2.
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt:1705:This completes the proof of Theorem 2. 
+sources/delaBreteche_Tenenbaum2005.txt:11:3.1 Point-selle .......................................................................... 11
+sources/delaBreteche_Tenenbaum2005.txt:13:3.3 Sommes sur les nombres premiers ................................................... 14
+sources/delaBreteche_Tenenbaum2005.txt:96:notamment, le Lemme 3.1 infra.
+sources/delaBreteche_Tenenbaum2005.txt:217:me 3.18 et la Proposition 4.1 infra.
+sources/delaBreteche_Tenenbaum2005.txt:219:3. Voir la remarque qui suit le Lemme 3.14.
+sources/delaBreteche_Tenenbaum2005.txt:673:Lorsque ν <1, nous pouvons ainsi d´ eduire, par exemple, du Lemme 3.1infra que
+sources/delaBreteche_Tenenbaum2005.txt:684:Lemme 3.1. On a
+sources/delaBreteche_Tenenbaum2005.txt:741:Lemme 3.3 (Hildebrand & Tenenbaum). On a
+sources/delaBreteche_Tenenbaum2005.txt:1175:Lemme 3.10. Soit a ∈ ]0, 1[. Il existe une constante b = b(a) > 0 telle que, pour m > 1,
+sources/delaBreteche_Tenenbaum2005.txt:1234:Lemme 3.11. Pour 1 ⩽u ⩽ (log2y)2 et ω(m)≪√y, on a
+sources/delaBreteche_Tenenbaum2005.txt:1296:Lemme 3.12. Pour 1 ⩽u ⩽ (log2y)2, m > 1, ω(m)≪√y, on a
+sources/delaBreteche_Tenenbaum2005.txt:1315:Lemme 3.13. On a uniform´ ement pour0<σ < 1 etℜes =σ
+sources/delaBreteche_Tenenbaum2005.txt:1332:Lemme 3.14. Soit ε> 0. Sous les conditions
+sources/delaBreteche_Tenenbaum2005.txt:1345:Lorsque (logx)1+ε ⩽y ⩽x, ω(m)≪√y, le Lemme 3.13 fournit
+sources/delaBreteche_Tenenbaum2005.txt:1354:Remarque. La premi` ere partie du Lemme 3.14 pr´ ecise et rectiﬁe le lemme 5 de [34]. Nous notons en
+sources/delaBreteche_Tenenbaum2005.txt:1368:Lemme 3.15. Sous les conditions
+sources/delaBreteche_Tenenbaum2005.txt:1388:Lemme 3.16. Sous les conditions
+sources/delaBreteche_Tenenbaum2005.txt:1420:Lemme 3.17. Il existe une constante absolue b3 telle que, pour toute constante positive c, sous
+sources/delaBreteche_Tenenbaum2005.txt:1590:Lemme 3.18. Il existe une constanteu0 telle que l’on ait uniform´ ement pouru0 ⩽u ⩽ (log2y)3/2,
+sources/delaBreteche_Tenenbaum2005.txt:1909:La quantit´ eFm(x) est major´ ee grˆ ace au Lemme 3.12. Nous obtenons que sa contribution peut
+sources/delaBreteche_Tenenbaum2005.txt:1933:o` u l’on a utilis´ e (3·34), le Lemme 3.16 et l’´ evaluation classique(10)
+sources/delaBreteche_Tenenbaum2005.txt:2013:D’apr` es le Lemme 3.11, il suit donc
+sources/delaBreteche_Tenenbaum2005.txt:2122:d´ eveloppement limit´ e de l’int´ egrande. Le Lemme 3.14 implique en eﬀet, sous l’hypoth` ese eﬀectu´ ee,
+sources/delaBreteche_Tenenbaum2005.txt:2284:Nous d´ eduisons alors du Lemme 3.13 que l’on aγ′m(α)≪Wm, d’o` u
+sources/delaBreteche_Tenenbaum2005.txt:2376:Lemme 5.1. On a uniform´ ement pourx >y > 2, 1 ⩽c ⩽x, t := logc/ logy,
+sources/delaBreteche_Tenenbaum2005.txt:2390:D’apr` es le Lemme 3.3, il nous suﬃt donc de montrer que
+sources/delaBreteche_Tenenbaum2005.txt:2706:Lemme 6.1. On a uniform´ ement pourx >y >z > 2, 1 ⩽j ⩽ 3,
+sources/delaBreteche_Tenenbaum2005.txt:3011:Lemme 6.2. Pourσ >0, y > 2, on a
+sources/delaBreteche_Tenenbaum2005.txt:3016:D´ emonstration du Lemme 6.2.Lorsque σ >2/5, nous avons, avec la notation H0(σ,y ) de (3·18),
+sources/lee_venkatesan_arxiv1805.08873.txt:19:5 Finding Many Relationships and the Proof of Theorem 2.5 15
+sources/lee_venkatesan_arxiv1805.08873.txt:20:6 Controlling Algebraic Obstructions to Squares and the Pro of of Theorem 2.6 25
+sources/lee_venkatesan_arxiv1805.08873.txt:199:(see Corollary 3.12 (p. 8) with b = 1 and a = 12 ).
+sources/lee_venkatesan_arxiv1805.08873.txt:282:Theorem 2.1. For any n, the Randomised NFS runs in expected time:
+sources/lee_venkatesan_arxiv1805.08873.txt:304:Theorem 2.3. For a ﬁxed n semiprime with both prime factors congruent to 3 mod (4) , conditional on
+sources/lee_venkatesan_arxiv1805.08873.txt:323:Theorem 2.5. Takeδ,κ,σ,β,β ′ subject to the conditions of Equation 4.1 (p. 14) and 4.2 (p. 1 4). For any
+sources/lee_venkatesan_arxiv1805.08873.txt:344:Theorem 2.6. LetB =Ln
+sources/lee_venkatesan_arxiv1805.08873.txt:390:3.1. Notation and Deﬁnitions
+sources/lee_venkatesan_arxiv1805.08873.txt:391:Deﬁnition 3.1. For any ﬁnite set S, we denote the uniform measure over S by Uniform(S).
+sources/lee_venkatesan_arxiv1805.08873.txt:398:Deﬁnition 3.3. We deﬁne the centred interval of length L in Z to be
+sources/lee_venkatesan_arxiv1805.08873.txt:444:Deﬁnition 3.10. Fory∈ N, we say x∈ N is y-smooth if p prime∧p|x⇒p<y.
+sources/lee_venkatesan_arxiv1805.08873.txt:456:F act 3.11 (Canﬁeld, Erd˝ os and Pomerance [7, Corollary pp.15]) . Let ǫ >0 be arbitrary and let 3 ≤ u≤
+sources/lee_venkatesan_arxiv1805.08873.txt:470:Corollary 3.12. Fix 0<a<b ≤ 1. Then uniformly in c,d> 0:
+sources/lee_venkatesan_arxiv1805.08873.txt:494:F act 3.13 (Hildebrand [20, Theorems 3 and 1]) . Fix any ǫ > 0. For any x ≥ 3, logx ≥ logy ≥
+sources/lee_venkatesan_arxiv1805.08873.txt:501:Remark 3.14. We note that Theorem 3 of [20] provides a short interval estimate in terms of the Dickman
+sources/lee_venkatesan_arxiv1805.08873.txt:504:F act 3.15 (Hildebrand and Tenenbaum [21, Theorem 3]) . For any x,y , we set u := log xlog y . There exists an
+sources/lee_venkatesan_arxiv1805.08873.txt:523:F act 3.16(Tenenbaum [55, Main Theorem]). Takec> 0 an arbitrary constant. Denote the number of prime
+sources/lee_venkatesan_arxiv1805.08873.txt:529:Corollary 3.17. Take c > 0 an arbitrary constant, and retain ω as above. Let 2≤ y ≤ x and with
+sources/lee_venkatesan_arxiv1805.08873.txt:541:F act 3.18 (Lenstra, Pila and Pomerance [36, Theorem 1.1]) . There exists a constant c such that the
+sources/lee_venkatesan_arxiv1805.08873.txt:548:Corollary 3.19. Suppose y = log ω(1)x. Then the hyperelliptic curve method can factor any y-smooth
+sources/lee_venkatesan_arxiv1805.08873.txt:632:ci(x−ym)yixd−i−1 (3.1)
+sources/lee_venkatesan_arxiv1805.08873.txt:702:3.3. Concrete Speciﬁcation of the Algorithm
+sources/lee_venkatesan_arxiv1805.08873.txt:811:tion 3.1 (p. 10)), for a,b ﬁxed our randomisation will constrain f (a,b ) to lie on an arithmetic progression
+sources/lee_venkatesan_arxiv1805.08873.txt:867:Theorem 2.6 (p. 6) will give us broad conditions under which Step 4 and Step 5 can be completed in
+sources/lee_venkatesan_arxiv1805.08873.txt:912:(Recall Deﬁnition 3.3 (p. 7)), and set
+sources/lee_venkatesan_arxiv1805.08873.txt:964:have an impact in the proof of Theorem 2.6 (p. 6), although we will see there that the bounds are still
+sources/lee_venkatesan_arxiv1805.08873.txt:968:We ﬁrst reduce Theorem 2.1 (p. 5) to Theorems 2.5 (p. 6) and 2.6 (p. 6).
+sources/lee_venkatesan_arxiv1805.08873.txt:969:Proof of Theorem 2.1 (p. 5). Fix n,β,β ′, σ, δ, κ satisfying the conditions of Equation 4.1 (p. 14) and
+sources/lee_venkatesan_arxiv1805.08873.txt:970:Equation 4.2 (p. 14). Then by Theorem 2.6 (p. 6) we can extract a co ngruence of squares mod n from
+sources/lee_venkatesan_arxiv1805.08873.txt:982:Theorem 2.5 (p. 6) tells us that a ﬁxed ( m,f ) and this many pairs ( a,b )∈X n,m,f will be found in
+sources/lee_venkatesan_arxiv1805.08873.txt:1042:5. Finding Many Relationships and the Proof of Theorem 2.5
+sources/lee_venkatesan_arxiv1805.08873.txt:1129:From the Tur´ an Sieve [8, Theorem 4.3.1], considering all primes r≤ z for any z≪
+sources/lee_venkatesan_arxiv1805.08873.txt:1144:complete the proof of Theorem 2.5 (p. 6).
+sources/lee_venkatesan_arxiv1805.08873.txt:1161:Proof of Theorem 2.5 (p. 6). Deﬁne τ = 2σ− δ−13β′− σδ+κ3β , and note that:
+sources/lee_venkatesan_arxiv1805.08873.txt:1163:For any ﬁxed pair (m,f ), Corollary 3.19 (p. 9) that we can use the hyperelliptic curve metho d to examine
+sources/lee_venkatesan_arxiv1805.08873.txt:1291:O(log logx). Hence from Fact 3.13 (p. 8) the number of smooth values of a−mb is:
+sources/lee_venkatesan_arxiv1805.08873.txt:1314:Hence recalling Corollary 3.12 (p. 8):
+sources/lee_venkatesan_arxiv1805.08873.txt:1599:with 5.5 (p. 23) are not centred (recall Deﬁnition 3.3 (p. 7)). Howev er, the centre of each of these intervals
+sources/lee_venkatesan_arxiv1805.08873.txt:1690:positive (respectively) in the above two equations. From the deﬁnit ion of B′-good and Corollary 3.17 (p. 9),
+sources/lee_venkatesan_arxiv1805.08873.txt:1765:6. Controlling Algebraic Obstructions to Squares and the Pr oof of Theorem 2.6
+sources/lee_venkatesan_arxiv1805.08873.txt:1911:To bound|H|, we follow Buhler, Lenstra and Pomerance’s presentation of the NF S, using Lemma 3.3 and
+sources/lee_venkatesan_arxiv1805.08873.txt:1917:Remark 6.3. We note that the result in [6, Lemma 3.3], claims a bound of form d2dn2M −3 in the setting
+sources/lee_venkatesan_arxiv1805.08873.txt:2397:Proof of Theorem 2.6 (p. 6). With the claims of the previous section, we are in a position to produce our
+sources/lee_venkatesan_arxiv1805.08873.txt:2736:Proof of Theorem 2.3 (p. 5). Finding a fruitful congruence is precisely ﬁnding a polynomial P ∈P such
+sources/lee_venkatesan_arxiv1805.08873.txt:2769:and the analogous proof for Theorem 2.3 (p. 5) are unchanged.
+sources/lee_venkatesan_arxiv1805.08873.txt:2819:F act 8.2 (Harper [17, Theorem 2]) . There exist c and K ﬁxed and eﬀective constants such that for any
+sources/lee_venkatesan_arxiv1805.08873.txt:2914:where for the ﬁrst equality we use Corollary 3.17 (p. 9), noting that B≤B′ sor isB′-smooth, u< log logn
+sources/lee_venkatesan_arxiv1805.08873.txt:3008:rq−1. We also recall the saddlepoint α of Fact 3.15 (p. 8).
+sources/lee_venkatesan_arxiv1805.08873.txt:3009:F act 8.8 ([17, Theorem 3]) . There exist constants b,B > 0, such that if log Bx≤ y ≤ x and χq is a
+sources/lee_venkatesan_arxiv1805.08873.txt:3190:Proof. From Fact 3.15 (p. 8), for any 1 ≤v≤y:
+sources/lee_venkatesan_arxiv1805.08873.txt:3504:Note that Q/ωM =yω(1), so in Fact 3.15 (p. 8) the saddlepoint α→ 0 and hence ̺( Qωr,y)r−1/10 decreases
+
+exec
+/bin/zsh -lc "sed -n '325,470p' /Volumes/git/factoring-connection/notes/lem85_results.md" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+- Hence (a) ≤ Ψ(x, y)ϱ(Q′, y)ε_N for N ≥ N₀.
+
+**(b) Large conductors.**
+- Apply Corollary LS′ with z₀ = x, Q₀ = Q′, R₀ = R₁ and 𝒳(s) = {χ (mod s) : cond χ > R₁}, keeping
+  only the moduli s ∈ 𝒮 (positivity). This gives
+    (b) ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/y^K + y^{1/2}x^{1/2}Q′).
+- By E7, Ψ(x, y)ϱ(Q′, y) ≥ x·y^{−2−2ξ_max/a²−o(1)}.
+  - The first term is ≤ Ψϱ(Q′)·y^{5/2−K+2+2ξ_max/a²+o(1)} ≤ Ψϱ(Q′)y^{−1}, because
+    K = 6 + ⌈2ξ_max/a²⌉.
+  - The second is ≤ Ψϱ(Q′)·x^{−λ}y^{O(1)}, because Q′ ≤ x^{1/2−λ}.
+  - Both are ≤ Ψϱ(Q′)ε_N for N ≥ N₀. ∎
+
+*Why this works exactly at y = L[1/2].*
+- The large sieve needs R₁ ≥ 1/(ϱ(x)ϱ(Q′)) up to y^{O(1)}, that is, log R₁ ≳ u log u.
+- The small-conductor transfer costs R₁^{1−β} = exp(log R₁·log(u log y)/log y).
+- Both are compatible with log R₁ ≍ log y precisely when u log u ≍ log y, i.e. y = L^{Θ(1)}.
+- For much smaller y one would need the medium-conductor zero-density analysis of Harper/LV; we
+  avoid it.
+
+---
+
+## 6. Proof of Lemma 8.5′
+
+*(i) Counting 𝒯_Q.*
+- Since ℓ > y ≥ P⁺(s), each t ∈ 𝒯_Q determines (ℓ, s), and ℓ ∤ s. So
+  #𝒯_Q = Σ_{ℓ∈J} (Ψ(Q/ℓ, y) − Ψ(Q/2ℓ, y)).
+- Upper bound: #𝒯_Q ≤ #J·Ψ(Q/Y, y) ≤ (1.256·2Y/log 2Y)(Q/Y)ϱ(Q/Y, y) ≤ 3Qδ_𝒯, by (RS) Cor. 1.
+- Lower bound:
+  - Put z := Q/(2ℓ) ≥ x^λ/4. Then u_z → ∞ and α(z, y) → 1, by (HT) Theorem 2(i).
+  - (HT) Theorem 3 with c = 2 gives Ψ(2z, y) − Ψ(z, y) ≥ 0.8Ψ(z, y). With c = 4 it gives
+    Ψ(Q/Y, y) ≤ 4.1Ψ(Q/4Y, y) ≤ 4.1Ψ(z, y).
+  - So each ℓ contributes ≥ 0.19(Q/Y)ϱ(Q/Y, y).
+  - #J ≥ 3Y/(5 log Y), by (RS) Cor. 3. Hence #𝒯_Q ≥ 0.11Qδ_𝒯.
+
+*(ii) The error sum.* By E2, for t = ℓs ∈ 𝒯_Q,
+  max_{(r,t)=1} |E(x, y; t, r)| ≤ max_{(a,s)=1} |E(x, y; s, a)|/(ℓ − 1) + Δ_ℓ(t).
+
+**Part 1 (χ_ℓ principal).**
+- Σ_t max_a |E(x, y; s, a)|/(ℓ − 1) = Σ_{ℓ∈J} (ℓ − 1)^{−1} Σ_{s∈(Q/2ℓ, Q/ℓ], P⁺(s)≤y} max_a |E(x, y; s, a)|.
+- Apply Lemma SM with Q′ = Q/ℓ. Its hypotheses hold: Q/ℓ ≥ Q/(2Y) ≥ x^λ/2 ≥ 2y and
+  Q/ℓ < Q ≤ x^{1/2−λ}.
+- This gives ≤ C_SM Ψ(x, y)ε_N Σ_ℓ ϱ(Q/ℓ, y)/(ℓ − 1).
+- Ψ(·, y) is nondecreasing and ℓ ∈ (Y, 2Y], so ϱ(Q/ℓ, y) = Ψ(Q/ℓ, y)ℓ/Q ≤ Ψ(Q/Y, y)·2Y/Q =
+  2ϱ(Q/Y, y). Also Σ_{ℓ∈J} 1/(ℓ − 1) ≤ #J/Y ≤ 2.6/log Y, by (RS) Cor. 1.
+- So **Part 1 ≤ 5.2 C_SM·Ψ(x, y)δ_𝒯ε_N.**
+
+**Part 2 (ℓ | conductor).**
+- Every χ counted in Δ_ℓ(t) has conductor r with ℓ | r, so r > Y.
+- Apply Corollary LS′ with z₀ = x, Q₀ = Q, R₀ = Y and 𝒳(t) = {χ : ℓ_t | cond χ} for t ∈ 𝒯_Q (empty
+  for other q). This gives Part 2 ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/Y + y^{1/2}x^{1/2}Q).
+- By E7, Ψ(x, y)δ_𝒯 ≥ x·y^{−2−2ξ_max/a²−o(1)}/log Y. With Y ≥ y^K and Q ≤ x^{1/2−λ} this gives
+  **Part 2 ≤ Ψ(x, y)δ_𝒯·y^{−1/2} ≤ Ψ(x, y)δ_𝒯ε_N** for N ≥ N₀.
+
+Adding Parts 1 and 2 proves (ii) with C := 5.2 C_SM + 1. ∎
+
+---
+
+## 7. Exceptional zeros, effectivity, uniformity in N
+
+- **Where a Siegel or Page zero could enter.** Only in case (a) of Lemma SM, the primitive characters
+  of conductor ≤ y^K. Lemma LS, Corollary LS′ and E1–E8 use no information about L-function zeros.
+- **How it is handled.** Through (D) with A = 1/2. Drappeau states that its implied constant is
+  effective for A < 1.
+  - In the source computation (Harper §3.3) the possible exceptional real character of small
+    conductor is bounded by an Euler-product argument for Ψ(x, y; χ). That argument does not depend
+    on the location of the real zero, and it produces the H(u)^{−δ} saving.
+  - Siegel's ineffective theorem is needed only for the extra (log x)^{−A} with A ≥ 1, which we do
+    not use. This is a description of the source, not a step of our proof.
+- **Uniformity.** Every bound above holds for all N ≥ N₀(a, Ξ, λ), uniformly in x, Y, Q in the stated
+  ranges. There is no exceptional set of N and no exceptional set of moduli: the conductor of a
+  potential exceptional character is absorbed in (a) like any other. The dependence on the
+  constants of (D), (dBT) and (HT) is explicit.
+- **Effectivity.** All constants are effective, provided the constants of (D) (η_D, c_D, δ_D and the
+  implied constant for A = 1/2) are effective, as Drappeau states. Those of (dBT), (HT), (LS), (P) and
+  (RS) are effective.
+- **Does the algorithm need them?** No.
+  - Lemma 8.5′ enters Theorem A only through FM, which is a lower bound on an expectation in the
+    running-time analysis.
+  - The algorithm's parameters (B, S, M, H, W, J, the grid) are explicit functions of N and of the
+    fixed (d, k, μ, η₀). None of C, c₀, N₀ is used by the algorithm.
+  - Even an ineffective N₀ would leave Theorem A true as stated: a Las Vegas algorithm with expected
+    time L[1/2, c + o(1)], with an ineffective o(1). The algorithm itself is unchanged.
+
+---
+
+## 8. Literature status of the inputs (checked 2026-10-20)
+
+- **Harper, arXiv 1208.5992: unpublished.** zbMATH's author profile (API query) lists it as "Preprint,
+  arXiv:1208.5992 [math.NT] (2012)". The following still cite it as a preprint:
+  - Drappeau 2015 [Har12b];
+  - Pascadi 2025 [21];
+  - a 2019 *Arch. Math.* paper and a 2023 arXiv paper (found by web search).
+
+  Harper's published related work is a different paper: J. Number Theory 132 (2012), 182–199, which
+  treats individual moduli q ≤ y^{4√e−δ} and does not contain the needed averaged statements. Harper's
+  JLMS 2025 BDH paper is about general sequences. **No longer used by us.**
+- **Lee–Venkatesan, *Rigorous analysis of a randomised number field sieve*, J. Number Theory 187
+  (2018), 92–159** (zbMATH). We did not compare its Lemma 8.5 numbering with the arXiv version.
+  **No longer used by us.**
+- **What replaced what.**
+
+  | old input (pcest §2.1–2.2) | status | replaced by |
+  |---|---|---|
+  | majorant W from *inside* LV Lemma 8.5's proof (Part 1) | proof-internal | E2 (exact identity) + Lemma SM |
+  | LV Lemma 8.5 statement | published, but proof gap at the top of its y-range (Page step) | Lemma SM (our proof, our regime) |
+  | Harper Prop. 2 = LV Fact 8.11 (Part 2, large conductors) | preprint | Lemma LS / LS′ (IK 7.13 + Perron) |
+  | Harper Thm 3, Prop. 1, p. 15–16 facts = LV Facts 8.8–8.10, 8.12; Page's theorem | preprint / proof-internal | (D) Drappeau Lemme 5 = Pascadi Lemma 3.2 (published, numbered) |
+  | LV Claims 8.14, 8.16 | proof-internal | E6–E8 with (dBT), (HT) |
+
+- **Ruled out as substitutes for (D).**
+  - de la Bretèche–Drappeau JEMS 2020 Thm 2.1 carries e^{O(u₂)} (hypD §8).
+  - Fouvry–Tenenbaum 1996 needs y ≥ exp((log x)^{2/3+ε}).
+  - Granville 1993 and Harper JNT 2012 are individual-modulus results with q ≤ y^{O(1)}, and
+    Granville's saving is only 1/log y.
+  - A key point: *no unrestricted Bombieri–Vinogradov statement over all moduli can give the relative
+    saving over smooth moduli*. Its total modulus weight is ≍ log x, while smooth moduli carry weight
+    ϱ(Q′). That is why (D) is applied to primitive characters and transferred by E3 and E8, not
+    applied to the moduli s directly.
+
+## 9. What a referee should check (our own list)
+1. E2: the identity, and the condition ℓ > y with ℓ ∤ s.
+2. E3/E8 bookkeeping: (d, r) = 1 makes rd | s with φ(rd) = φ(r)φ(d); the sum over d is over all
+   squarefree y-smooth d.
+3. (a): applying (D) to the sub-family {q = r, χ primitive}, with Q := R₁ and argument x/d; the range
+   conditions; A = 1/2.
+4. (α2) and R₁^{1−β′} ≤ (log x)^{O(1)}. This is the step where y = L[1/2] is used.
+5. Lemma LS: the Perron constants, and that (LS) is applied with coefficient sequences independent of χ.
+6. E7 and the choice of K.
+7. Parameter interface with thmA_proof §1 (§1 Remarks).
+
+## 10. Reviews
+(Filled in below after the GPT-6.1-sol and Opus rounds.)
+
+## 11. Checks
+`.venv/bin/python -m pytest -q tests/test_lem85.py`: exact checks of E2 (lift averaging, 4 parameter
+sets, all residues), E3 (Möbius identity, real characters, 4 sets), E4 (uniqueness of n = mk on 3
+ranges) and E5. These are correctness checks of elementary identities only.
+
+exec
+/bin/zsh -lc "sed -n '1,190p' /Volumes/git/factoring-connection/notes/thmA_proof.md && sed -n '95,370p' /Volumes/git/factoring-connection/notes/pcest_results.md" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+# Theorem A in design (a‴_k; μ): statement, algorithm and proof roadmap
+
+Agent `thmA`, phase 10, 2026-10-19. This document assembles a claimed theorem from five internal,
+unrefereed project notes. It is a roadmap that cites them; it does not re-prove every lemma. Each step below
+names the exact result it uses and the place where that result is proved, and it states the conditions under
+which that result is applied in the final design. Assessments of correctness belong in `notes/thmA_audit.md`,
+not here.
+
+Sources (all in `notes/`):
+- **[DD]** `lemmaM_results.md` §1: Theorem DD and remarks R1–R4.
+- **[hypD]** `hypD_results.md`: §2 Lemma Ω, Theorems S, S′; §3 Theorem K(i)–(iii), Corollary K; §4 Prop PZ.
+- **[pcest]** `pcest_results.md`: §1 design, Lemmas GB, 1.2, 1.3, sizes; §2.1 cited facts; §2.2 Lemma 8.5′;
+  §2.3 Theorem FM; §3 Lemma DS; §4.1 Lemma Kern.
+- **[lv6]** `lv6_results.md`: §1 rows and (1.1); §2 Prop LV6 and Algorithm LV6; §3.1–3.7 Lemmas C, H, E, X,
+  linear algebra, SQ, congruence, (T); §4 field events and Lemma IR; §6.2 Lemma BS, Prop BS; §7 cost.
+- **[ld]** `ldbound_results.md`: §1 design (a‴_k; μ), Lemma GB_w, sizes, Lemma 1.2_w, coprimality (1.1) and
+  order of operations; §2 re-checks; §3 Lemma W; §4 Theorem L2_fam; §5 Theorem LD*; §6 Theorem A‴; §6.1
+  transfer of lv6.
+
+Notation: L = L_N[1/2, 1] = exp((log N log log N)^{1/2}); L[1/2, c] = L^c. "L^{o(1)}" means exp(o((log N log log
+N)^{1/2})) uniformly in N; fixed powers L^ε and N^{o(1)} are not L^{o(1)}. ϱ(x) = ϱ(x, B) = Ψ(x, B)/x.
+
+---
+
+## 1. Parameters
+
+Fixed (independent of N):
+- an odd degree **d ≥ 3**;
+- an integer **k > (d + 1)/4**, and ν := 1/(4k);
+- a rational base exponent **μ** with ν + η₀ ≤ μ < 1;
+- a slack **η₀ > 0**.
+
+Derived exponents:
+- **h-floor**: h_*(μ) := max(2ν [Kern], μ − (d − 2)ν [FM level ½], 1 − dμ + ν [window]); h := h_*(μ) + η₀.
+- **θ** := (μ − ν) + (μ + h + dν) = 2μ + h + (d − 1)ν. The two summands are the exponents of the rational
+  cofactor G(P)/ℓ and of the algebraic value F_A(P).
+- **a** := θ/√2. Require **θ < 1** (θ ≤ 1 suffices for every size side-condition; θ < 1 for the final
+  inequality 2a < (1 + θ)/√2).
+
+N-dependent quantities (N is the integer after preprocessing, §3):
+- **B** := ⌊L_N[1/2, a]⌋, the smoothness bound and trial-division bound.
+- **X** := ⌊√(N/2)⌋. Let j be maximal with 2^{kj} ≤ X, Y := 2^{j−1}, and **J** := (Y, 2Y] ∩ primes, so
+  ℓ ∈ J means ℓ = N^{2ν+o(1)}, and every product of k primes of J is ≤ X.
+- **S**: a computable function of N with S = L^{θ/(4a)+o(1)}; for example S² := ⌈L^{θ/(2a)}⌉·⌈log N⌉^{C₃}
+  (§6, item U5). The theory needs only S = L^{σ+o(1)} with σ in a fixed compact set, S² ≥ ρ_r^{−2}L^{c}
+  for some fixed c > 0, and S² = L^{o(1)}/(ρ_rρ_F); here ρ_r := ϱ(X_r), ρ_F := ϱ(X_F) with X_r, X_F below.
+  The roadmap's quoted form S² = (log N)^{C₃}/(ρ_rρ_F) ([pcest] Thm 4.3, [ld] §5) is one such choice.
+- **V_ℓ** := ⌊√ℓ·S⌋ for ℓ ∈ J; envelopes V₋ := ⌊√Y·S⌋ ≤ V_ℓ ≤ V_max := ⌊√(2Y)·S⌋.
+- **M** := ⌊N^μ⌋; **H** := ⌊N^h⌋; **W** := ⌈N^{μ+ν+η₀/2}⌉.
+- **Sizes** ([ld] §1 "Sizes"): X_r := 2MV/ℓ = N^{μ−ν}L^{O(1)}; X_F ≍ X* := C′_d·M·H·V_max^d =
+  N^{μ+h+dν}L^{O(1)}.
+- **Row target** M_rows := C_col + 12, C_col := 2 + π(B) + #{(r, s): r ≤ B prime, r ∤ D, f(s) ≡ 0 mod r} + t_χ
+  ≤ (d + 1)π(B) + 2 + t_χ, with t_χ := ⌈5d(ln|H|_bound + 2 ln log N)⌉ = O_d(log N) ([lv6] §2, §3.3).
+
+**w distribution.** w is uniform among the primes in (W, 2W]. Since W > 2M·V_max for large N, w exceeds
+every rational modulus t = |G(P)| ≤ 2MV, every ℓ ∈ J, B and M ≥ g₁. Since μ + ν + η₀/2 < 1 (θ ≤ 1 gives
+μ + ν + η₀/2 ≤ ½), w < N.
+
+**Field law 𝒜‴** ([ld] §1). Independent: (g₀, g₁) uniform on 𝒢 := {(g₀, g₁) ∈ [M/2, M]² ∩ Z² : gcd = 1};
+w as above; c uniform on C_H := [−H, H]^d ∩ Z^d. Then
+- F̂_{g,w} := Lemma GB applied to the integer N·w, so F̂(g₀, g₁) = Nw ([ld] Lemma GB_w);
+- G(x, y) := g₁x − g₀y; R_c(x, y) := Σ_{i<d} c_i x^{d−1−i}y^i; F_A := F̂_{g,w} + G·R_c; f(x) := F_A(x, 1).
+- So F_A(g₀, g₁) = Nw, f_d = a_d + g₁c₀, and ψ: x ↦ g₀g₁^{−1} (mod N) kills f.
+
+**Candidates** ([pcest] §1, [ld] §1). For ℓ ∈ J:
+- 𝒫_ℓ := {P = (a, b) : b prime, V_ℓ/2 < b ≤ V_ℓ, |a| ≤ V_ℓ, gcd(a, b) = 1};
+- Λ_ℓ(g) := {P : ℓ | G(P)};
+- the **filtered count** N_ℓ(A) := #{P ∈ 𝒫_ℓ ∩ Λ_ℓ(g) : MV_ℓ/32 ≤ |G(P)| ≤ 2MV_ℓ, G(P)/ℓ B-smooth,
+  F_A(P) ≠ 0 B-smooth}, and N_ℓ(A) := 0 if ℓ | N;
+- **G_A** := {ℓ ∈ J : N_ℓ(A) ≥ 1}, g_A := |G_A|/π_J, γ := E_{𝒜‴} g_A.
+
+**The regime in which c < 1.** c := (1 + θ)/√2 < 1 ⟺ (1 + θ)² < 2 ⟺ θ < √2 − 1 = 0.41421….
+Minimising θ over μ (exactly, `src/thmA/params.py`, independent of `src/ldbound/params.py` and agreeing with
+it on every tested (d, k)):
+- for k < (d² + 1)/4: μ_opt = (1 − ν)/d, θ = 2/d + ((d² + d − 2)/d)ν (Kern and window floors bind);
+- for k ≥ (d² + 1)/4: μ_opt = (1 + (d − 1)ν)/(d + 1), θ = 3/(d + 1) + ((4d − 2)/(d + 1))ν (level and window
+  floors bind).
+
+| d | min k with c < 1 (η₀ ↓ 0) | θ there | c there | η₀ must be < | c at k = 50 | k = 1000 | inf over k, η₀ |
+|---|---|---|---|---|---|---|---|
+| 7 | 21 | 139/336 | 0.99963 | 0.00052 | 0.98376 | 0.97285 | 0.97227 |
+| 9 | **13** | **16/39** (μ = 17/156, h = 1/26 + η₀) | **0.99720** | **0.00396** | 0.93126 | 0.91984 | **0.91924** |
+| 11 | 13 | 9/22 | 0.99638 | 0.00512 | 0.89626 | 0.88450 | 0.88388 |
+| 19 | 17 | 257/646 | 0.98842 | 0.01638 | 0.85188 | 0.81383 | 0.81317 |
+
+At d = 9, k = 12 the minimum is θ = 23/54 = 0.4259 > √2 − 1, so k ≥ 13 is necessary and sufficient
+((1 + 16/39)² = 3025/1521 < 2 = 3042/1521). The infimum (1 + 3/(d + 1))/√2 over (k, η₀) is not attained.
+
+## 2. Statement
+
+**Theorem A (design (a‴_k; μ)) [claimed; assembled from the sources].** Fix (d, k, μ, η₀) as in §1 with θ < 1.
+There is a randomized Las Vegas algorithm that, on input any integer N ≥ 2, outputs the complete prime
+factorisation of N, and whose expected running time is at most
+  L_N[1/2, (1 + θ)/√2 + o(1)],
+where the o(1) → 0 as N → ∞ at a rate depending only on (d, k, μ, η₀).
+
+Remarks on the statement.
+- **(S1) Infimum, not o(1).** For each ε > 0 there are fixed parameters with (1 + θ)/√2 < 0.91924 + ε at d = 9
+  (and < 1/√2 + ε as d grows). The form "L[1/2, (1 + 3/(d + 1))/√2 + o(1)] at fixed d" would require letting
+  k = k(N) → ∞, and the sources do not carry out that diagonalisation: their N₀ and polylog exponents depend on
+  k, and k enters as (log N)^{O(k)} and C(2k, k). At d = 9 the smallest admissible fixed k gives c ≈ 0.9972.
+- **(S2)** Everything is unconditional apart from the cited published theorems (§7). The internal results are
+  unrefereed.
+
+## 3. The algorithm
+
+All primality tests are AKS (deterministic polynomial time). "gcd check x" means: compute g = gcd(x, N); if
+1 < g < N output g (a proper factor; recursion continues on g and N/g); if g = N reject the current object.
+
+```
+FACTOR(N):
+  if N = 1: return []
+  if N is prime (AKS): return [N]
+  if N = m^e for some e ≥ 2 (integer roots, e ≤ log2 N): return FACTOR(m) repeated e times
+  trial-divide N by all primes ≤ B(N); recurse on each prime found; let N' be the cofactor
+  if N' ∈ {1} or N' prime or N' a perfect power: handle as above
+  if N' < N₀(d,k,μ,η₀): factor N' by trial division (O(1) time)
+  g := SPLIT(N')           # 1 < g < N', g | N'
+  return FACTOR(g) ++ FACTOR(N'/g)
+
+SPLIT(N):    # N > N₀, odd, every prime factor > B, not a prime power (so ω(N) ≥ 2)
+  # Phase F: field selection ([hypD] Corollary K, "retain the first field whose attempt succeeds")
+  loop:
+    A := SAMPLE_FIELD(N)                       # may exit with a proper factor
+    if A = REJECT: continue
+    row := DESCEND_ONCE(A, N)                  # may exit with a proper factor
+    if row ≠ FAIL: keep A; rows := [row]; break
+  # Phase R + L
+  loop:
+    while |rows| < M_rows: row := DESCEND_ONCE(A, N); if row ≠ FAIL: append row
+    (S, Y) := LV6(A, rows)                     # [lv6] Algorithm LV6 steps 1–6, Las Vegas
+    X := ∏_{i ∈ S} r_i mod N
+    g := gcd(X − Y, N); if 1 < g < N: return g
+    rows := []                                 # trivial gcd: fresh hidden roots, same field ([lv6] §3.7)
+
+SAMPLE_FIELD(N):
+  draw (g0, g1) uniform in [M/2, M]^2 until gcd(g0, g1) = 1
+  draw w uniform among primes in (W, 2W] (uniform integers + AKS)
+  draw c uniform in [−H, H]^d
+  gcd checks: g1, w, then f_d = a_d + g1 c0 (0 < |f_d| < N)
+  f := F̂_{g,w}(x, 1) + (g1 x − g0) R_c(x, 1)        # Lemma GB on N·w
+  e := content(f);  e | N w;  if 1 < gcd(e, N) < N: output it;  if e = w: return REJECT   # e ∈ {1, w} otherwise
+  if no prime r ∈ (r0(d), ½ log H] gives an irreducible degree-d reduction f mod r: return REJECT   # Lemma IR
+  m := g0 g1^{-1} mod N;  gcd check f'(m) (with the factor t^{d−2}); if N | f'(m): return REJECT
+  return A = (g0, g1, w, c, f)
+
+DESCEND_ONCE(A, N):
+  draw r uniform in [1, N − 1]; gcd check r            # a non-unit r is a factor (gcd = N impossible)
+  R := r^2 mod N
+  (u0, v0) := shortest nonzero vector of {(u, v) ∈ Z^2 : u ≡ R v (mod N)} (Gauss reduction)
+  factor |u0| and |v0| completely with Lenstra–Pomerance (1992)          # the shape test, T_shape
+  certify every output prime by AKS                                       # Las Vegas (complexity critic C1)
+  gcd checks u0, v0
+  require: |u0|, |v0| each a product of at most k DISTINCT primes, all in J;  else return FAIL
+  for each prime ℓ | u0 v0:  P_ℓ := SQ_SEARCH(A, ℓ)  (cached per (A, ℓ));  if FAIL: return FAIL
+  return row (r, R, sign(u0 v0), {ℓ: ±1}, {P_ℓ with factorisations of G(P_ℓ)/ℓ and F_A(P_ℓ)})
+
+SQ_SEARCH(A, ℓ):           # deterministic function of (A, ℓ); [pcest] §1, Lemma 1.3; [lv6] Prop BS
+  gcd check ℓ
+  Gauss-reduce a basis of Λ_ℓ(g); if λ1 < √ℓ/(2S): return FAIL      # irregular: no candidates (Lemma 1.3)
+  enumerate Λ_ℓ(g) ∩ [−V, V]^2 (≤ C_abs S^2 points)
+  keep P ∈ 𝒫_ℓ (b prime by AKS), G(P) ≠ 0, F_A(P) ≠ 0, MV/32 ≤ |G(P)| ≤ 2MV; gcd checks G(P), F_A(P)
+  batch-compute the B-smooth parts of all |G(P)/ℓ| and |F_A(P)| (Bernstein product/remainder tree)
+  return the first P in a fixed order with both values B-smooth (trial-divide its two values), else FAIL
+
+LV6(A, rows):              # [lv6] §2 Algorithm LV6, transferred by [ld] §6.1
+  columns: sign; v_p mod 2 for p ≤ B; ONE parity column E_i = Σ_P e_iP mod 2;
+           (r, s) for r ≤ B, r ∤ D := f_d·disc f, s a root of f mod r; t_χ quadratic characters at
+           uniform first-degree primes of norm in (x/2, x], x := the least integer with log(x/2) ≥ max(20d (log Δ̄)^2, (log N)^2), so log x = O_d((log N)^2)
+  two uniform left-kernel vectors s1, s2 (Wiedemann / Kaltofen–Saunders, verified; retry until independent)
+  for S in (s1, s2, s1+s2): Γ_S := g'(β)^2 ∏_P z_P^{|e_P(S)|};  η := SQ(Γ_S) (Hensel at the least odd prime p ∈ (B, 2B] with p ∤ D);
+                            if η found: break      (if none: resample characters and kernel vectors)
+  Y := √q_S · t^{−E(S)/2} · ψ(η) · (ψ(γ⁻_S) ψ(g'(β)))^{−1} mod N
+  return (S, Y)
+```
+
+Row algebra ([lv6] §1, with the sign made explicit). With t := f_d, β := tα, z_P := ta_P − b_Pβ ∈ Z[β], and
+G(P_ℓ) = σ_ℓ ℓ n_ℓ (σ_ℓ = ±1, n_ℓ > 0 B-smooth), ψ(z_P) = tG(P)/g₁, hence ℓ ≡ σ_ℓ g₁ t^{−1}ψ(z_P)/n_ℓ (mod N).
+For a row with R ≡ u₀/v₀ and e_ℓ = +1 for ℓ | u₀, −1 for ℓ | v₀:
+  r² ≡ q · t^{−E} · ∏_ℓ ψ(z_{P_ℓ})^{e_ℓ} (mod N),  q := sign(u₀v₀)·∏_ℓ (σ_ℓ g₁/n_ℓ)^{e_ℓ} ∈ Q^×,  E := Σ e_ℓ.
+(The factor sign(u₀v₀) is implicit in [lv6] (1.1), which writes u, v as positive products; see §6, U6.)
+
+## 4. Proof roadmap
+
+Each step lists: what is used, where it is proved, the hypotheses as they must hold in (a‴_k; μ), and what the
+next step consumes. "Proved in X" means proved in that internal note.
+
+**Step 0 — preprocessing and the size of ω.**
+- FACTOR removes prime factors ≤ B, perfect powers and primes. The surviving N has every prime factor > B
+  and ω(N) ≥ 2. Then ω(N) ≤ log N/log B, so 2^{ω} ≤ exp(O((log N/log log N)^{1/2})) = L^{o(1)}
+| Vallée 1991 (θ = 2/3) | √(4/3) ≈ 1.155 | proved (prior art) | — |
+| hypD (a′_k): rational side x − m, LP shape test | (1+θ)/√2, θ → 3/(d+1) (d = 9: 0.920) | conditional | PC_rat (binary, open), PC_alg (open), LV §6; FM by the §2 method with Harper BV on the rational side (k ≥ 3(d+1)/4): outline only, not written out |
+| **(a″_k): 2D-randomized rational side, LP shape test** | **(1+θ)/√2**, θ(d,k) = 2s + (d−1)/(4k) + max(1/(2k), s − (d−2)/(4k)); infimum (1+3/(d+1))/√2: d = 7: 0.972; d = 9: 0.919; d = 11: 0.884; d = 19: 0.813 | **conditional on LD + LV §6** | **Hypothesis LD** (restricted lift-dispersion upper bound, §4.2); LV §6 adaptation; FM, PC_rat and the kernel transfer are proved |
+| (a″_k), recursive shape test | √((1+√2)θ) (d = 9: 0.851) | conditional on LD at every scale | as above, at all scales |
+| (a′_k)/(a″_k) at Horn 1 (k ≍ (log N)^{1/4}, HECM shape test) | √(6/(d+1)) infimum (d = 9: 0.775) | conditional | LD at precision exp(−o(Λ/k)) (B3); explicit-error LV §5. Theorem R's polylog loss would suffice there, but FM and LD would need explicit errors |
+| two randomized algebraic sides (codex) | (1 + 4/(d+1))/√2 (limit) | conditional | analogue of LD with special-root conditioning; completely-split target law |
+| Design V (hypD §5) | √(2/3) ≈ 0.816 | conditional on RK | unchanged by this note |
+
+---
+
+## 1. Design (a″_k): a two-dimensional random rational side
+
+Everything not mentioned here is as in hypD §1–§3: Dixon descent, Theorem DD, Theorems S/S′ and K, the
+field-selection rule and the LP shape test. Those results treat the field A abstractly and act only on
+R and A, so they apply verbatim to the field law below.
+
+**Notation.**
+- L = L_N[1/2, 1] and Λ = (log N log log N)^{1/2}.
+- s = 1/(d+1), M = ⌊N^s⌋, B = L[1/2, a], ϱ(x, y) = Ψ(x, y)/x, and 𝒮_B = the B-smooth integers (sign
+  ignored).
+- ℓ is uniform among the primes of J = (2^{j−1}, 2^j], with 2^{kj} ≍ √N, so ℓ = N^{1/(2k)+o(1)}.
+- S = S(N) = L^{σ+o(1)}, with σ in a fixed compact subinterval of (0, ∞), and V = ⌊√ℓ·S⌋.
+  - S is common to all ℓ ∈ J. Theorem 4.3 takes S² = (log N)^{C₃}/(ρ_rρ_F), with ρ_r, ρ_F evaluated at
+    the dyadic envelope V_max = √(2Y)·S; this gives σ = θ/(4a).
+  - All statements below are uniform in such sequences: every polynomial margin and auxiliary exponent
+    depends only on the compact σ-range (codex pcest_3).
+  - Equalities involving V are up to bounded factors (floors).
+- H = N^h.
+
+**Preprocessing [standard].** Trial division up to B, at cost B·(log N)^{O(1)} = L^{a+o(1)}. This is
+below the final cost L^{c}, since c ≥ 2a. Afterwards N has no prime factor ≤ B, and is not a prime
+power. This replaces Lemma Ω for everything below; 2^ω = L^{o(1)} still holds.
+
+**Field law 𝒜.**
+- (g₀, g₁) is uniform on 𝒢 := {(g₀, g₁) ∈ Z² ∩ [M/2, M]² : gcd(g₀, g₁) = 1}, and G(x, y) := g₁x − g₀y.
+- c is uniform on C_H := [−H, H]^d ∩ Z^d, and R_c(x, y) := Σ_{i<d} c_i x^{d−1−i}y^i.
+- F_A := F̂_g + G·R_c, with F̂_g from Lemma GB. For P = (a, b):
+    F_A(P) = F̂_g(P) + G(P)·⟨c, v(P)⟩,  v(P) := (a^{d−1−i}b^i)_{0≤i<d}.
+- If gcd(g₁, N) > 1 or gcd(G(P), N) > 1, a factor of N has been found. Otherwise put
+  ψ: Z[x] → Z/N, x ↦ g₀g₁^{−1}. It is well defined on Z[x]/(f): g₁^d f(g₀/g₁) = F(g₀, g₁) = N ≡ 0
+  (mod N).
+- F_A(P) = 0 is excluded from the counts.
+
+**Lemma GB (generalized base expansion) [proved].** Let g₁ ≥ 2 and gcd(g₀, g₁) = 1. Define
+T_d := N, and for i = d, d−1, …, 1:
+  a_i ≡ T_i g₀^{−i} (mod g₁), |a_i| ≤ g₁/2,  T_{i−1} := (T_i − a_i g₀^i)/g₁,
+and finally a_0 := T_0. Then F̂(g₀, g₁) := Σ_i a_i g₀^i g₁^{d−i} = N. If g₀, g₁ ∈ [M/2, M], then
+|a_0| ≤ 2^{d+1}M + d2^{d−1}M, so ‖f̂‖_∞ = O_d(M).
+*Proof.*
+1. T_i ≡ a_i g₀^i (mod g₁) by the choice of a_i, so T_{i−1} ∈ Z.
+2. By induction, T_i = Σ_{j≤i} a_j g₀^j g₁^{i−j}. At i = d this is the claim.
+3. For the bound, a_0 = (N − Σ_{i≥1} a_i g₀^i g₁^{d−i})/g₁^d. Here N/g₁^d ≤ 2^d N/M^d ≤ 2^{d+1}M, and
+   each |a_i|(g₀/g₁)^i ≤ (g₁/2)·2^i ≤ 2^{i−1}M. ∎
+(`src/pcest/geometry.py: gbe`; tested.)
+
+*Remarks.*
+- **Prior art.** The non-monic linear side g₁x − g₀ with a base-(g₀, g₁) expansion is Buhler–Lenstra–
+  Pomerance's base-(m₁, m₂) variant (LNM 1554 (1993) 50–94; Murphy, thesis, ANU 1999, §2.3.2). Lemma GB
+  is that construction with explicit bounds. The design is not new. What we did not find elsewhere is
+  its use to randomize the rational side in a rigorous pair-correlation argument (Theorem R).
+- **Kleinjung constraint.** Kleinjung (Math. Comp. 75, 2006) prescribes a small leading coefficient
+  a_d, and therefore needs a_d g₀^d ≡ N (mod g₁). Here a_d is *determined* by (g₀, g₁), so (g₀, g₁)
+  can be sampled freely subject only to coprimality. Codex makes the same point.
+- **Sizes.** The price is a_d ≈ g₁ rather than a small leading coefficient. That is irrelevant at the
+  exponent level, because LV's f̂ already has coefficients ≈ M.
+
+**Lemma 1.2 [proved].** For every P = (a, b), g₁^d F_A(P) ≡ N b^d (mod G(P)).
+*Proof.* g₁·P − b·(g₀, g₁) = (G(P), 0). Since F_A is an integral form, g₁^d F_A(P) = F_A(g₁P) ≡
+F_A(b·(g₀, g₁)) = b^d F_A(g₀, g₁) = b^d N, because G(g₀, g₁) = 0. ∎
+
+**Relations.** If G(P) = ±ℓn with n ∈ 𝒮_B and F_A(P) ∈ 𝒮_B, then
+  ψ(a − bα) = G(P)/g₁ = ±ℓn/g₁ (mod N).
+This is hypD's descent relation, multiplied by the per-field unit g₁^{−1}.
+- One extra column, the parity of the number of relations, makes g₁ a square in every dependency.
+  This is the same device LV and Buhler–Lenstra–Pomerance use for f_d.
+- **Irreducibility.** LV Lemma 5.1 transfers. Its Turán-sieve count uses only the affine structure
+  f ∈ f̂ + (x − m)·Z[x]_{d−1}, and the condition "g(m) ≡ n (mod r)" for the reductions g mod r. With
+  g₁x − g₀ in place of x − m, the condition becomes ĝ(g₀, g₁) ≡ N (mod r) for r ∤ g₁N. Claim 5.2
+  counts monic irreducibles with a prescribed value at an affine point m, here m = g₀g₁^{−1} mod r
+  (r ∤ g₁). It is unchanged.
+  [transfer of a published proof, checked at the level of its statements]
+  - a_d ≠ 0 in Lemma GB, because a_d ≡ N g₀^{−d} (mod g₁) and gcd(g₁, N) = 1.
+- A reducible f either gives F₁(g₀, g₁)F₂(g₀, g₁) = N with both factors ≠ ±1, which is a factorization,
+  or is rare.
+- **Quantified (Opus proof critic).** LV's bound transplants as Pr(f reducible) ≤ H^{−1/3+o(1)}. Field
+  selection keeps a field with law ∝ q_A, which amplifies rare events by at most 1/μ. So
+  Pr(kept field reducible) ≤ H^{−1/3+o(1)}/μ = N^{−h/3+o(1)}. The degree-drop event
+  a_d + g₁c₀ = 0 has probability ≤ 1/(2H + 1). Reducible fields are rejected.
+  - Status: transfer of LV Lemma 5.1, checked at the level of statements. It is listed among the
+    assumptions of Theorem A.
+
+**Counted candidates and the capped search.**
+- Put 𝒫_ℓ := {(a, b) : b prime, V/2 < b ≤ V, |a| ≤ V, gcd(a, b) = 1}, and
+  Λ_ℓ(g) := {P : ℓ | G(P)}, which has index ℓ when ℓ ∤ g₁.
+- The search enumerates Λ_ℓ(g) ∩ [−V, V]² from a Gauss-reduced basis, tests membership in 𝒫_ℓ, and
+  tests G(P)/ℓ and F_A(P) for B-smoothness.
+  - Primality of b uses a deterministic polynomial-time test (AKS).
+  - Smoothness is tested by HECM, as in LV Cor. 3.19.
+- N_ℓ(A) := #{P ∈ 𝒫_ℓ ∩ Λ_ℓ(g) : |G(P)| ≥ MV/32, G(P)/ℓ ∈ 𝒮_B, F_A(P) ∈ 𝒮_B}. Each such P is a
+  certified descent relation. ℓ² ∤ G(P) holds automatically, because ℓ > B.
+  - The **filter |G(P)| ≥ MV/32** was added after codex pcest_2 (§7.2). Without it, candidates with
+    |G| as small as ℓ have algebraic values smaller by a polynomial factor. Their smoothness density
+    can then exceed ρ_F by L^{Θ(1)}, which breaks Theorem 4.3's comparison. FM only ever uses
+    |G| ∈ [MV/32, 2MV], so the filter costs nothing there.
+  - A capped randomized smoothness test is repeated O(log N) times, so that a smooth value is
+    recognized with probability ≥ 1 − N^{−2}. This costs a polylogarithmic factor.
+- **Lemma 1.3 (regularity) [proved].** Suppose λ₁(Λ_ℓ(g)) < √ℓ/(2S), attained at w. Then
+  Λ_ℓ(g) ∩ 𝒫_ℓ = ∅. Otherwise #(Λ_ℓ(g) ∩ [−V, V]²) ≤ C_abs·S² for an absolute constant C_abs (e.g. 100).
+  *Proof.*
+  - w is primitive in Z²: its content e satisfies e ≤ |w| < ℓ, so gcd(e, ℓ) = 1 and w/e ∈ Λ_ℓ(g); by
+    minimality e = 1.
+  - So w is primitive in Λ_ℓ(g) (index ℓ), and the lattice is the union of the lines jw′ + Zw, j ∈ Z,
+    which are parallel to w at mutual distance ℓ/|w| > 2V.
+  - Every point of [−V, V]² has norm ≤ √2V < 2V, so it lies on the central line Zw. The only primitive
+    points there are ±w, and |w| < V/2 < b for every point of 𝒫_ℓ.
+  - In the regular case take a reduced basis (λ₁ ≤ λ₂, λ₁λ₂ ≤ (2/√3)ℓ). The translates of the
+    fundamental cell F at the lattice points of K = [−V, V]² are disjoint and lie in K + F. So the count
+    is ≤ (area(K) + perimeter(K)·diam F + π diam(F)²)/ℓ ≤ 4S² + O(V/λ₁) + O(λ₂/λ₁) ≤ C_abs S², using
+    λ₁ ≥ √ℓ/(2S), V/λ₁ ≤ 2S² and λ₂/λ₁ ≤ (2/√3)ℓ/λ₁² ≤ 8S²/√3. ∎
+- So the cap T_SQ := C_abs S²·(log N)^{O(1)} is never binding on a lattice that contains a candidate.
+  Irregular lattices need no separate exclusion: they contribute nothing.
+
+**Sizes [proved arithmetic].** For P ∈ 𝒫_ℓ and g ∈ 𝒢:
+- |G(P)| ≤ 2MV, so |G/ℓ| ≤ X_r := 2MV/ℓ = N^{s−1/(4k)}L^{O(1)};
+- |F̂_g(P)| = O_d(MV^d);
+- |G(P)⟨c, v(P)⟩| ≤ 2dMHV^d, so |F_A(P)| ≤ X_F := C_d MHV^d = N^{s+h+d/(4k)}L^{O(1)}.
+
+With ρ_r := ϱ(X_r, B) and ρ_F := ϱ(X_F, B), these are exactly hypD's exponents, so
+θ = 2s + h + (d−1)/(4k) as in `src/pcest/params.py`.
+
+## 2. FM in full (regime (B), design (a″_k))
+
+### 2.1 Cited results, with their exact ranges
+
+Throughout, x = N^{ξ+o(1)} with ξ = s + h + d/(4k) fixed, y = B = L[1/2, a], and u = log x/log y ≍
+(log N/log log N)^{1/2}. So (log x)^K < y < x^{1/log log x} for any fixed K and large N.
+
+- **(H) Harper, arXiv 1208.5992; LV Facts 8.8–8.12.** The constants are absolute and effective.
+  - Fact 8.11 (Harper Prop. 2): for 0 < η < 1/80, y ≤ x^{9/10}, x^η ≤ Q ≤ √x and M₀ = x^η,
+      Σ_{M₀≤r≤Q} Σ_{χ*_r} Σ_{t∈[M₀,Q]} φ(t)^{−1} Σ_{χ_t induced by χ*_r} |Ψ(x, y; χ_t)|
+        ≪ log^{7/2}x · √Ψ(x, y)·(Q + x^{1/2−η} log²x).
+- **(LV8.5) LV Lemma 8.5 and its proof.** Fix ε > 0. For (log x)^K < y < x^{1/log log x},
+  x^ε ≤ Q ≤ √Ψ(x, y), ω₀ → ∞ and ω₀ = y^{O(1)}, the majorant
+    W(Q) := Σ_{t∈[Q/ω₀, Q], t y-smooth} φ(t)^{−1} Σ_{χ_t ≠ χ₀} |Ψ(x, y; χ_t)|
+  (LV eq. (8.2)) satisfies W(Q) ≪ Ψ(x, y)ϱ(Q, y)(H(u)^{−c} + y^{−c}) + Q√Ψ(x, y) log^{7/2}x, where
+  H(u) = e^{u/log²(u+1)}.
+  - LV's proof bounds W itself, not only the max-residue sum, which W majorizes.
+  - The constant is effective; Siegel and Page characters are treated in LV's G₁ part.
+- **(T) Tenenbaum (LV Fact 3.16, Cor. 3.17).** If ω(t) ≤ y^c/log(1 + u), then
+    Ψ_t(x, y) = (φ(t)/t)Ψ(x, y)(1 + O(log(1+u) log(1+ω(t))/log y))(1 + O(ω(t)/y)).
+  In our range the error is o(1) uniformly for t ≤ x, since ω(t) ≤ log x.
+- **(Hi) Hildebrand.**
+  - LV Fact 3.13: for log y ≥ (log log x)^{5/3+ε} and 1 ≤ z ≤ y^{5/12},
+      Ψ(x(1 + 1/z), y) − Ψ(x, y) = (Ψ(x, y)/z)(1 + O(log(u+1)/log y)).
+  - Ψ(2x, y) ≤ 2Ψ(x, y) (LV ref. [19, Thm 4]). Hence ϱ(z₂) ≤ 2ϱ(z₁) whenever z₂ ≥ z₁.
+- **(C8.16) LV Claim 8.16.** If u → ∞ and c ≥ 0 is fixed, then ϱ(x, y) = ϱ(xy^c, y)(log x)^{O(⌈c⌉)}.
+  So ϱ changes by (log N)^{O(1)} = L^{o(1)} when its argument moves by a factor y^{O(1)} = L^{O(1)}.
+- **(LV5) LV Lemmas 5.13, 5.18, 5.20.** These concern only the linear map φ_P(c) = ⟨c, v(P)⟩. They do
+  not involve m, so they transplant verbatim (§2.3, step 2).
+
+### 2.2 Lemma 8.5′ (restricted BV for moduli ℓ·(smooth)) [proved; regime (B)]
+
+**Statement.**
+- Let 0 < q < ξ/2 with q > 1/(2k) + η₁, for some fixed η₁ > 0, and Q = N^{q+o(1)}.
+- Let Y = 2^{j−1} and 𝒯_Q := {t = ℓs ∈ (Q/2, Q] : ℓ ∈ (Y, 2Y] prime, P⁺(s) ≤ B}.
+- Let δ_𝒯 := ϱ(Q/Y, B)/log Y. Then #𝒯_Q ≍ Qδ_𝒯.
+- Conclusion: Σ_{t∈𝒯_Q} max_{(r,t)=1} |Ψ(x, B; t, r) − Ψ_t(x, B)/φ(t)| ≪ Ψ(x, B)δ_𝒯·ε_N, where
+  ε_N := H(u)^{−c} + B^{−c} + x^{−η₂} for some fixed η₂ > 0.
+
+*Proof.*
+- **Setup.**
+  - #𝒯_Q = Σ_ℓ (Ψ(Q/ℓ) − Ψ(Q/2ℓ)).
+  - Fact 3.15 gives Ψ(z/2) = 2^{−α}Ψ(z)(1 + o(1)) with α ≥ 1/2, so each difference is ≍ Ψ(Q/ℓ).
+  - Summing gives #𝒯_Q ≍ Qδ_𝒯.
+  - Since ℓ > B ≥ P⁺(s), ℓ ∤ s and φ(t) = (ℓ − 1)φ(s). Every character mod t is χ_ℓχ_s, and t
+    determines (ℓ, s).
+  - The left side is at most W′ := Σ_{t∈𝒯_Q} φ(t)^{−1} Σ_{χ≠χ₀ mod t} |Ψ(x, B; χ)|.
+- **Part 1: χ_ℓ principal, χ_s ≠ χ₀.**
+  - Every B-smooth n is coprime to ℓ, so Ψ(x, B; χ₀^{(ℓ)}χ_s) = Ψ(x, B; χ_s).
+  - So this part equals Σ_ℓ (ℓ−1)^{−1} Σ_{s∈(Q/2ℓ, Q/ℓ], smooth} φ(s)^{−1} Σ_{χ_s≠χ₀} |Ψ(x, B; χ_s)|.
+  - By positivity this is ≤ Σ_ℓ (ℓ−1)^{−1} W(Q/ℓ), with ω₀ = log x.
+  - (LV8.5) applies with Q′ = Q/ℓ = N^{q−1/(2k)+o(1)} ≥ x^ε, where ε := η₁/(2ξ), and Q′ ≤ √Ψ.
+  - Hence Part 1 ≪ Ψ(H(u)^{−c} + B^{−c})·Σ_ℓ ϱ(Q/ℓ)/ℓ + Q√Ψ log^{7/2}x·Σ_ℓ ℓ^{−2}.
+  - The first sum is ≤ 2ϱ(Q/2Y)Σ_ℓ ℓ^{−1} ≪ δ_𝒯, using (Hi) and Mertens on (Y, 2Y].
+  - The second term is ≪ (Q/Y)√Ψ log^{7/2}x ≤ Ψδ_𝒯x^{−η₂}. This holds because Q ≤ x^{1/2−(ξ/2−q)/2ξ}
+    and Ψ, δ_𝒯 ≥ x^{−o(1)}.
+- **Part 2: χ_ℓ non-principal.**
+  - The conductor is ℓ·r′ ≥ Y = N^{1/(2k)+o(1)}.
+  - Choose η := min(1/100, 1/(4kξ)). Then Y ≥ x^η = M₀, so all these characters have conductor in
+    [M₀, Q], with moduli t ∈ (Q/2, Q] ⊂ [M₀, Q].
+  - By positivity, Part 2 is at most the left side of Fact 8.11, which is
+      ≪ log^{7/2}x √Ψ (Q + x^{1/2−η} log²x) ≤ Ψδ_𝒯 x^{−η₂},
+    using q < ξ/2 and Ψ, δ_𝒯 ≥ x^{−o(1)}.
+- The principal character of t contributes exactly Ψ_t(x)/φ(t), which is the subtracted main term. ∎
+
+*Remarks.*
+- Unlike hypD §4.1′, no conductor range [Y, M₀] arises in regime (B), so neither Fact 8.9 nor Fact 8.10
+  is needed for χ_ℓ ≠ χ₀.
+- Inherited from LV's proof: the Page-character step absorbs (log x)^{O(1)} into exp(−cu/log²u), which
+  needs u/log²u ≫ log log x. That holds in regime (B), where u ≍ (log N/log log N)^{1/2}, but not at
+  the edge of LV's stated range. We use Lemma 8.5′ only in regime (B).
+- In the setup, Fact 3.15 is used with α → 1. Ψ(2x, y) ≤ 2Ψ(x, y) can equally be taken from Fact 3.15,
+  up to a factor 1 + o(1).
+- ε_N → 0 uniformly in N, and ε_N·(log L)^{O(1)} → 0, since H(u)^{−c} = exp(−c(log N)^{1/2}/
+  (log log N)^{5/2+o(1)}).
+
+### 2.3 Theorem FM [proved]
+
+**Statement.**
+- Fix odd d ≥ 3, k > (d+1)/4, a > 0, a compact σ-range ⊂ (0, ∞) for S = L^{σ+o(1)}, and η₀ > 0. Let
+  h ≥ max(1/(4k), s − (d−2)/(4k)) + η₀.
+- Then for all large N (preprocessed), with an implied constant depending only on (d, k, a, σ, h, η₀):
+    E_{ℓ∈J, A∼𝒜} N_ℓ(A) ≥ S²ρ_rρ_F/(log N)^{O(1)}.
+
+*Proof.* Write Pr_A for g uniform on 𝒢 and c uniform on C_H, independently. Then
+  E N ≥ π_J^{−1} Σ_{ℓ∈J} Σ_{P∈𝒫_ℓ} Σ_{n∈I_P∩𝒮_B} (|𝒢_P(n)|/|𝒢|)·E_{g∈𝒢_P(n)} Pr_c[F_A(P) ∈ 𝒮_B],
+with I_P from Step 1(ii). This is an inequality: the filter |G| ≥ MV/32 holds on I_P, and the other
+n are dropped.
+where 𝒢_P(n) := {g ∈ 𝒢 : G_g(P) = ℓn}. Throughout, (log)^{O(1)} denotes (log N)^{O(1)}.
+
+**Step 1 (fibres and the induced law; hypD item 2).** Fix ℓ and P = (a, b) ∈ 𝒫_ℓ, and put V′ :=
+max(|a|, b) ∈ (V/2, V].
+- (i) The g with G_g(P) = ℓn lie on a line with direction (a, b) and point spacing |P|₂ ≥ V/2. The
+  square has chords of length ≤ M/√2. So |𝒢_P(n)| ≤ √2M/V + 1 for every n.
+- (ii) Consider the continuous model (g₀, g₁) uniform on [M/2, M]².
+  - G = g₁a − g₀b is a sum of independent uniforms on intervals of lengths |a|M/2 and bM/2.
+  - Its density is ≥ 1/(MV′) on a central interval of length ≥ MV′/2 ≥ MV/4.
+  - Removing |G| < MV/32 leaves an interval I*_P of G-values, of length ≥ MV/16, on which
+    |G| ∈ [MV/32, 2MV] and G has constant sign.
+  - For t ∈ I*_P the chord {G = t} has length ≥ (M²/4)|P|₂/(MV′) ≥ M/4, so it carries ≥ M/(8V)
+    lattice points for large N.
+  - Put I_P := I*_P/ℓ, a set of n-values of length ≥ MV/(16ℓ).
+- (iii) **Coprimality.** The integer points of the line g = g* + j(a, b) on which e | gcd(g₀, g₁) form
+  one residue class of j mod e if e | ℓn, and none otherwise, because gcd(a, b) = 1. By Möbius
+  inversion, for n ∈ I_P,
+    |𝒢_P(n)| ≥ (φ(ℓn)/ℓn)·M/(8V) − 2^{ω(ℓn)} ≥ M/(C V log log N),
+  since 2^{ω(ℓn)} ≤ N^{o(1)} ≪ M/V.
+
+**Step 2 (the algebraic side; hypD items 3, 4).** Fix ℓ, P, n ∈ I_P ∩ 𝒮_B and g ∈ 𝒢_P(n). Put
+t := |G(P)| = ℓ|n| and r := F̂_g(P) mod t.
+- (a) **(r, t) = 1, so the moving residue is reduced (item 3).**
+  - gcd(G, b) = gcd(g₁, b), and g₁a ≡ ℓn (mod b). Since b is a prime > B ≥ P⁺(n) and b ≠ ℓ (b ≤ V < ℓ),
+    gcd(g₁, b) = 1.
+  - gcd(G, g₁) = gcd(g₀b, g₁) = 1.
+  - Lemma 1.2 then gives gcd(r, t) = gcd(N, t) = 1, by preprocessing and ℓ ∤ N.
+  - The residue r moves with g and b. It enters only through max_r below.
+- (b) **Kernel and ϑ (LV 5.13, 5.18; item 4).**
+  - LV's induction in Lemma 5.13 uses only gcd(a, b) = 1. Exchanging the roles of a and b when
+    |a| > b, and absorbing signs into the x_i, it gives S_P ⊂ [−2V′, 2V′]^d on which φ_P is a
+    bijection onto an interval of length V′^{d−1}. It also gives the sub-kernels ν_l with
+    φ_Pν_l = Unif(I(l)).
+  - As in Lemma 5.18, with μ = Unif(C_H) and ν = μ ⋆ (⋆_i ν_{l_i}), l_i = |a|^{d−1−i}b^i:
+    ‖μ − ν‖₁ ≤ 2·Pr_μ[dist(c, ∂C_H) ≤ 4dV′] ≤ 8d²V/H.
+  - Also φ_Pν = ϑ, a convolution of d uniforms on intervals of lengths 2Hl_i, shifted by
+    |M₀| ≤ dV^{d−1}.
+  - Its density is ≤ (2H max_i l_i)^{−1} = (2HV′^{d−1})^{−1}, and its support lies in
+    [M₀ − T′, M₀ + T′] with T′ ≤ dHV^{d−1}.
+- (c) **Truncation (LV 5.20; item 4).** Fix ω := L^{C₁}, where C₁ exceeds the exponent of 1/ρ_F.
+  - Put Y_ω := (2H + 1)V′^{d−1}/ω. Let ϑ′ be LV's **flattening** of ϑ on the central part:
+    ϑ′(z) = ϑ(max(z, Y_ω)) for z ≥ 0 and ϑ(min(z, −Y_ω)) for z < 0. Nothing is deleted. Discrete
+    interval lengths are 2H + 1 rather than 2H; this changes only constants.
+  - Then ‖ϑ − ϑ′‖₁ ≤ 2/ω.
+  - ϑ′ is monotone away from 0, since Y_ω > |M₀| when H > dωV. So ϑ′ = Σ_{y≥Y_ω} (W_y Unif[0, y] +
+    W_{−y} Unif[−y, 0)), with W ≥ 0 and |1 − ΣW| ≤ 2/ω.
+- (d) **One uniform piece.**
+  - Let y ∈ [Y_ω, 2T′]. The values F̂ + G·m, m ∈ [0, y], form a progression ≡ r (mod t).
+  - **Sign correction (codex pcest_2).** If G and F̂ have opposite signs, the progression can cross 0;
+    its far endpoint then has absolute value ty − |F̂|, not ty. In every case, all terms except at most
+    2(|F̂|/t + 1) of them have one sign and absolute value in (|F̂|, ty − |F̂|]. This interval contains
+    (ty/4, ty/2], because |F̂| ≤ ty/4.
+  - Let X_F^max := C_d MH V_max^d with V_max := ⌊√(2Y)·S⌋, so it is common to all ℓ ∈ J. Let
+    𝒳 := {X_F^max ω^{−2}(1 + 1/2)^i} ∩ [X_F^max ω^{−2}, 16dX_F^max].
+    - 𝒳 has O(log ω) = O(Λ) elements.
+    - It is independent of t, P, ℓ and the residue.
+    - It contains a point x₁ ∈ (ty/4, ty/2]. Consecutive points differ by the factor 3/2 < 2, and
+      ty/4 ≥ tY_ω/4 ≥ X_F^max ω^{−2} for large N, since tY_ω ≥ X_F^max/(C_d 2^{2d}ω).
+
+exec
+/bin/zsh -lc "rg -n 'Lemme 5|Lemme 1\\.|Lemme 6|Lemma 3.2|Lemma 3.3|2[·.]4\\.|TH[ÉE]|THÉORÈME' sources/drappeau2015_arxiv1307.7554v3.txt sources/pascadi_arxiv2304.11696v3.txt sources/delaBreteche_Tenenbaum2005.txt && sed -n '545,610p' sources/harper_arxiv1208.5992.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+sources/pascadi_arxiv2304.11696v3.txt: binary file matches (found "\0" byte around offset 6939)
+sources/drappeau2015_arxiv1307.7554v3.txt:166:Une analyse plus ﬁne des calculs de Harper menant au Lemme 5 pe rmet de considérer plus
+sources/drappeau2015_arxiv1307.7554v3.txt:340:Lemme 1. (i) Lorsque 2 ⩽ y ⩽ x et 1 ⩽ d ⩽ x, on a
+sources/drappeau2015_arxiv1307.7554v3.txt:477:Lemme 5. Il existe des constantes η, c, δ > 0 telles que lorsque (log x)c ⩽ y ⩽ x et Q ⩽ x, pour
+sources/drappeau2015_arxiv1307.7554v3.txt:493:Lemme 6. Pour tous entiers Q, M, N /greaterorequalslant 1 et toute suite de nombres complexes (an)M <n⩽M +N ,
+sources/drappeau2015_arxiv1307.7554v3.txt:569:entiers friables en vertu du Lemme 5 de Harper précité.
+sources/drappeau2015_arxiv1307.7554v3.txt:2126:Dans l’avant-dernière inégalité, on a fait usage du grand cr ible sous la forme du Lemme 6. En
+sources/drappeau2015_arxiv1307.7554v3.txt:2373:Il découle par ailleurs du Lemme 5 que
+sources/drappeau2015_arxiv1307.7554v3.txt:2496:Le Lemme 5 implique
+sources/delaBreteche_Tenenbaum2005.txt:252:Th´ eor` eme 2.4.(i) L’estimation
+sources/delaBreteche_Tenenbaum2005.txt:2376:Lemme 5.1. On a uniform´ ement pourx >y > 2, 1 ⩽c ⩽x, t := logc/ logy,
+sources/delaBreteche_Tenenbaum2005.txt:2706:Lemme 6.1. On a uniform´ ement pourx >y >z > 2, 1 ⩽j ⩽ 3,
+sources/delaBreteche_Tenenbaum2005.txt:3011:Lemme 6.2. Pourσ >0, y > 2, on a
+sources/delaBreteche_Tenenbaum2005.txt:3016:D´ emonstration du Lemme 6.2.Lorsque σ >2/5, nous avons, avec la notation H0(σ,y ) de (3·18),
+log x log y(x−0.3ǫ log H + y−b + e−b√log x + e−b(log x)/ log r + e−(b log x)(1−β))
+≪ Ψ(x, y)
+√
+log x log y(e−(b log x) min{1/ log r,1−β} log log x + y−b + e−b√log x),
+as asserted in Theorem 3.
+Q.E.D.
+3.3. Application to Theorems 1 and 2. Recall that in Theorem 1 we are trying to
+bound
+∑
+q≤Q
+max
+(a,q)=1
+⏐⏐⏐⏐Ψ(x, y; q, a) − Ψq(x, y)φ(q) ⏐⏐⏐⏐ ≤∑q≤Q 1φ(q) ∑χ (mod q),
+χ⁄=χ0
+|Ψ(x, y; χ)|.
+In this subsection we will show that, provided η is ﬁxed small enough in terms of the
+various constants b, M, d, C in Theorem 3 and Proposition 1, and provided the constants
+c, K in Theorem 1 are ﬁxed suitably small and large (respectively) in terms of η, then
+∑
+1<r≤xη
+∑
+χ∗(mod r),
+χ∗ primitive
+∑
+q≤Q
+1
+φ(q)
+∑
+χ(mod q),
+χ∗ induces χ
+|Ψ(x, y; χ)| ≪ Ψ(x, y)
+(
+e
+− culog2(u+1) + y−c) , (3.1)
+and also that it satisﬁes the stronger ineﬀective bound claimed in The orem 1. We will
+also prove corresponding statements for Theorem 2. The remainin g characters, with
+conductor xη < r ≤ Q, will be dealt with in §4.
+We remark that we will break the sum in (3.1) into a few diﬀerent pieces , as suggested
+in the introduction, and for most of the pieces will obtain bounds of t he form
+≪ Ψ(x, y)(e−Θ(√log x) + y−Θ(1)).
+14 ADAM J HARPER
+This is certainly acceptable for (3.1), since (recalling that u := (log x)/ log y) we always
+have e−√log x ≤ max{y−1, e−u}. As in many multiplicative problems, a term e−√log x
+arises from balancing contributions of the form e−(log x)/ log r +r−1 and e−(log x)/ log H +H −1
+(as we have already seen in the proof of Theorem 3). The only instan ce in which
+we actually obtain a bound ≪ Ψ(x, y)
+(
+e−cu/ log2(u+1) + y−c) is, as we shall see, when
+considering the contribution from an exceptional character that gives rise to a Siegel
+zero.
+For ease of writing, let us introduce some temporary notation: we w ill let
+G1 :=
+⋃
+1<r≤min{yη ,eη√log x}
+{χ∗ (mod r) : L(s, χ∗) has no real zero that is > 1− Mmin{log y, √log x} },
+G2 :=
+⋃
+min{yη,eη√log x}<r≤xη
+{χ∗ (mod r) : L(s, χ∗) ⁄= 0 for any ℜ(s) > 299300, |ℑ(s)| ≤ r100},
+where M is the absolute constant from the statement of Theorem 3. These are sets of
+“good” characters corresponding to the ranges (i) and (ii) descr ibed in the introduction.
+Indeed, using Theorem 3 we see the contribution to (3.1) from char acters induced from
+χ∗ ∈ G 1 has order at most
+∑
+χ∗∈G1
+∑
+
+exec
+/bin/zsh -lc "sed -n '292,335p' /Volumes/git/factoring-connection/notes/lem85_results.md && sed -n '332,355p' sources/drappeau2015_arxiv1307.7554v3.txt && sed -n '461,512p' sources/drappeau2015_arxiv1307.7554v3.txt && sed -n '235,280p' sources/delaBreteche_Tenenbaum2005.txt && sed -n '367,411p' /Volumes/git/factoring-connection/notes/pcest_results.md" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+
+---
+
+## 5. Lemma SM (smooth moduli, relative saving)
+
+**Lemma SM.** In regime (R), let 2y ≤ Q′ ≤ x^{1/2−λ}, and let 𝒮 := {s ∈ (Q′/2, Q′] : P⁺(s) ≤ y}. Then
+for N ≥ N₀:
+  Σ_{s∈𝒮} max_{(a,s)=1} |E(x, y; s, a)| ≤ Σ_{s∈𝒮} Δ(s) ≤ C_SM·Ψ(x, y)·ϱ(Q′, y)·ε_N.
+
+*Proof.* The first inequality is E1. Split each Δ(s) according to the conductor r of χ: case (a) is
+1 < r ≤ R₁ = y^K, and case (b) is r > R₁.
+
+**(a) Small conductors.**
+- Apply E3 (s is y-smooth, so s_y = rad s) and swap the sums. With W(r, d) from E8:
+    (a) ≤ Σ_{1<r≤R₁} Σ*_{χ* (mod r)} Σ_{d sqfree, P⁺(d)≤y, (d,r)=1} |Ψ(x/d, y; χ*)|·W(r, d)
+        ≤ 10 C_dBT log log(Q′+16)·ϱ(Q′, y)·R₁^{1−β′}·Σ_d (d^{1−β′}/φ(d))·D(x/d),
+    where D(z) := Σ_{1<r≤R₁} φ(r)^{−1} Σ*_{χ (mod r)} |Ψ(z, y; χ)|.
+- *Apply (D) to the primitive characters only.* Take q = r ≤ R₁ and χ = χ* primitive. These pairs
+  are among the terms of Lemme 5's left side with Q := R₁. Take A = 1/2 and the argument z = x/d.
+  - The hypotheses hold: x/d ≥ x/Q′ ≥ x^{1/2}, so (log z)^{c_D} ≤ y ≤ z and R₁ = y^K =
+    N^{o(1)} ≤ z^{η_D} for N ≥ N₀.
+  - Hence D(x/d) ≤ C_D Ψ(x/d, y)(H(u_d)^{−δ_D} + y^{−δ_D}), where u_d := log(x/d)/log y ≥ u/2
+    (because d ≤ Q′ ≤ x^{1/2}).
+  - H is increasing on [4, ∞), so H(u_d) ≥ H(u/2).
+- By (dBT), Ψ(x/d, y) ≤ C_dBT Ψ(x, y)d^{−β}, with β := β(x, y). By (α1) and E6,
+  Σ_d d^{1−β′−β}/φ(d) < 6.
+- By (α2), R₁^{1−β′} = exp(K(1 − β′) log y) ≤ (u log y)^K (log y)^{KC_α} ≤ (log x)^{K(1+C_α)}.
+- Therefore
+    (a) ≤ 60 C_dBT² C_D·log log x·(log x)^{K(1+C_α)}·(e^{−δ_D (u/2)/log²(u/2+1)} + y^{−δ_D})·Ψ(x, y)ϱ(Q′, y).
+- In regime (R), u = (ξ/a)(log N/log log N)^{1/2}(1 + o(1)) and log²(u + 1) = (1/4)(log log N)²(1 + o(1)).
+  So δ_D(u/2)/log²(u/2+1) = (2δ_Dξ/a)(log N)^{1/2}/(log log N)^{5/2}·(1 + o(1)).
+  - This beats the (log x)^{O(1)} = exp(O(log log N)) factor and the threshold 2c₀ = δ_D min Ξ/a.
+  - y^{−δ_D} = exp(−δ_D a(log N log log N)^{1/2}) is smaller still.
+- Hence (a) ≤ Ψ(x, y)ϱ(Q′, y)ε_N for N ≥ N₀.
+
+**(b) Large conductors.**
+- Apply Corollary LS′ with z₀ = x, Q₀ = Q′, R₀ = R₁ and 𝒳(s) = {χ (mod s) : cond χ > R₁}, keeping
+  only the moduli s ∈ 𝒮 (positivity). This gives
+    (b) ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/y^K + y^{1/2}x^{1/2}Q′).
+- By E7, Ψ(x, y)ϱ(Q′, y) ≥ x·y^{−2−2ξ_max/a²−o(1)}.
+  - The first term is ≤ Ψϱ(Q′)·y^{5/2−K+2+2ξ_max/a²+o(1)} ≤ Ψϱ(Q′)y^{−1}, because
+    K = 6 + ⌈2ξ_max/a²⌉.
+  - The second is ≤ Ψϱ(Q′)·x^{−λ}y^{O(1)}, because Q′ ≤ x^{1/2−λ}.
+  - Both are ≤ Ψϱ(Q′)ε_N for N ≥ N₀. ∎
+où Rm(t) := 1t
+( ∑
+n⩽t,(n,m)=1
+1
+)
+− ϕ(m)m .
+Le résultat suivant découle des théorème 2.4, 2.1 et de la for mule (4.1) de [dlBT05]. On y utilise
+la notation ω(m) pour désigner le nombre de facteurs premiers distincts de m∈ N.
+Lemme 1. (i) Lorsque 2 ⩽ y ⩽ x et 1 ⩽ d ⩽ x, on a
+Ψ
+( x
+d , y
+)
+≪ 1dα Ψ(x, y).
+(ii) Lorsque (log x)2 ⩽ y ⩽ x, P +(m) ⩽ y et ω(m)≪√y, on a
+Ψm(x, y) = gm(α)Ψ(x, y)
+{
+1 + O
+( Em(1 + Em)
+u
+)}
+,
+où, en notant γm := log(ω(m) + 1) log(u + 1)/ log y, la quantité Em est déﬁnie par
+Em := (log(u + 1))−1{ exp(2γm)− 1}
+|Bn,r,s|2
+}1/2
+.
+La constante implicite dépend au plus de g0 et ε.
+8
+Théorèmes de type Fouvry–Iwaniec pour les entiers friables
+Selberg a émis la conjecture que le Laplacien agissant sur Γ \H n’a aucune valeur propre
+dans ]0 , 1/4[, lorsque Γ est un sous-groupe de congruence ( cf. [Sar95] pour plus d’explications
+à ce sujet). Si cette conjecture est vraie, on peut ignorer le terme C 2DS√(RS + N )R dans la
+majoration du Lemme 4. Cela n’a aucune incidence sur le résul tat du Théorème 1. Par ailleurs,
+la majoration du Lemme 4 ne dépend pas directement du réel κ tel qu’il soit connu que le spectre
+du Laplacien est inclus dans {0}∪ [κ,∞[. Deshouillers et Iwaniec utilisent à la place des résultat s
+de densité sur le spectre du Laplacien [DI83, theorem 6].
+L’argument que l’on présente ici fait usage d’un résultat ré cent de Harper [Har12b]. Plus
+précisément, il découle des calculs de la section 3.3 de [Har 12b] la majoration suivante, qui
+concerne les moyennes de sommes de caractères de petits cond ucteurs sur les entiers friables.
+Lemme 5. Il existe des constantes η, c, δ > 0 telles que lorsque (log x)c ⩽ y ⩽ x et Q ⩽ x, pour
+tout A > 0 ﬁxé,
+∑
+q⩽Q
+1
+ϕ(q)
+∑
+χ (mod q)
+1<cond(χ)⩽xη
+⏐⏐⏐ ∑
+n∈S(x,y)
+χ(n)
+⏐⏐⏐≪ Ψ(x, y){H(u)−δ(log x)−A + y−δ}.
+La constante implicite est eﬀective si A < 1.
+On fera également usage d’une inégalité de grand crible, sou s la forme classique suivante ( cf.
+le theorem 7.13 de [IK04]).
+Lemme 6. Pour tous entiers Q, M, N /greaterorequalslant 1 et toute suite de nombres complexes (an)M <n⩽M +N ,
+on a
+∑
+q⩽Q
+q
+ϕ(q)
+∑
+χ (mod q)
+χ primitif
+⏐⏐⏐ ∑
+M <n⩽M +N
+anχ(n)
+⏐⏐⏐2 ⩽ (N + Q2− 1) ∑
+M <n⩽M +N
+|an|2
+3. Démonstration du Théorème 1
+Dans toute la suite, pour tous r∈ N, k (mod r) et ε > 0, on note
+ωε(k; r) :=
+∑
+χ primitif
+(x
+d,y
+){
+1 +O
+(
+E(x,y ;d)
+)}
+avec
+(2·17) E(x,y ;d) := 1logy log( u + 2u + 1−t) +(dx)C
+o` u l’on a pos´ et := (logd)/ logy.
+Lorsque l’on ins` ere l’heuristique (2 ·2) dans le terme principal de (2 ·16), on obtient pour
+Ψm(x/d,y ) l’approximation gm(α)Ψ(x,y )/dα. Le r´ esultat suivant fournit une mesure quantitative
+de la qualit´ e de cette approximation.
+Nous introduisons la notation
+(2·18) uy :=u + (logy)/ log(u + 2) ( y > 2)
+qui simpliﬁe l’´ ecriture des termes d’erreur. Il est ` a noter queuy≫ (logy)/ log2(2y) pourx >y > 2.
+Nous rappelons par ailleurs la d´ eﬁnition (2·8) de δ =δ(x,y ).
+Th´ eor` eme 2.4.(i) L’estimation
+(2·19) Ψ m
+(x
+d,y
+)
+≪ gm(α)dα Ψ(x,y )
+a lieu uniform´ ement pour1 ⩽d ⩽x/y dans le domaine
+(2·20) x >y > 2, P (m) ⩽y, ω (m)≪√y/(logy)δ,
+et uniform´ ement pour1 ⩽d ⩽x lorsque l’on impose la condition suppl´ ementaireω(m)≪ 1.
+(ii) Plus pr´ ecis´ ement, il existe des constantes absolues positives b1, b2, et une fonction b =
+b(x,y ;d,m ) satisfaisant ` ab1 ⩽ b ⩽ b2 (x > y > 2, d> 1, m> 1) telles que, sous les conditions
+1 ⩽d ⩽x/y et
+(2·21) x >y > 2, P (m) ⩽y, ω (m)≪√y/(logy)δ,
+on ait uniform´ ement
+(2·22) Ψ m
+(x
+d,y
+)
+=
+{
+1 +O(hm)
+}(
+1− t2
+u2 +u2
+)bu
+gm(α)Ψ(x,y )dα
+o` u l’on a pos´ et := (logd)/ logy et
+hm =hm(x,y ;d) := 1uy + (1 +Em)(tu + Emu ).
+Lorsque ω(m)≪ 1, la formule (2·22) est valable uniform´ ement sous les conditions1 ⩽ d ⩽ x et
+    - 𝒳 has O(log ω) = O(Λ) elements.
+    - It is independent of t, P, ℓ and the residue.
+    - It contains a point x₁ ∈ (ty/4, ty/2]. Consecutive points differ by the factor 3/2 < 2, and
+      ty/4 ≥ tY_ω/4 ≥ X_F^max ω^{−2} for large N, since tY_ω ≥ X_F^max/(C_d 2^{2d}ω).
+  - Call t **good** if, for all x ∈ 𝒳 and all reduced residues r′,
+    |Ψ(x, B; t, r′) − Ψ_t(x, B)/φ(t)| ≤ Ψ_t(x, B)/(2φ(t)).
+  - For good t, (T) and (Hi) give
+      #{smooth terms} ≥ Ψ(x₁; t, ±r) − Ψ(|F̂|; t, ±r) − 2(|F̂|/t + 1)
+                      ≥ Ψ(x₁)/(4t) − 3(|F̂|/t + 1) ≥ Ψ(ty)/(16t) − 3(|F̂|/t + 1).
+      (The progression contains every integer ≡ ±r (mod t) with absolute value in (|F̂|, x₁].)
+  - Dividing by y + 1 and using ϱ(ty) ≥ ϱ(16dX_F^max)/2 ≥ ρ_F/(log)^{O(1)} (by (Hi) and (C8.16)) gives
+    Pr ≥ ρ_F/(log)^{O(1)} − O(ωV/H). The error term is polynomially small, since |F̂|/(tY_ω) ≪ ωV/H.
+- Combining (b)–(d): **if t is good, then Pr_c[F_A(P) ∈ 𝒮_B] ≥ ρ_F/(log)^{O(1)} − 8d²V/H − 4/ω ≥
+  ρ_F/(log)^{O(1)}.**
+  - Here V/H ≤ N^{−η₀}L^{O(1)} by the h-floor 1/(4k) + η₀, and 1/ω = L^{−C₁}.
+  - This is hypD item 4: additive errors ≪ ρ_F rather than o(1), with truncation ω ≥ L^C.
+
+**Step 3 (bad moduli are rare; hypD item 1).**
+- If t is not good, then for some x ∈ 𝒳 and some r′, |E(x; t, r′)| > Ψ_t(x)/(2φ(t)) ≥ Ψ(x)/(4t), by (T).
+- So, by Lemma 8.5′ applied at each x ∈ 𝒳 and each of the O(1) dyadic Q covering
+  [MV/32, 2MV]·L^{o(1)}:
+    #{bad t ∈ 𝒯_Q} ≤ Σ_{x∈𝒳} (4Q/Ψ(x))·CΨ(x)δ_𝒯ε_N ≪ (log ω)·ε_N·#𝒯_Q.
+- The hypotheses of Lemma 8.5′ hold:
+  - q = s + 1/(4k) + o(1) > 1/(2k) + η₁, because k > (d+1)/4;
+  - q < ξ/2 ⟺ h > s − (d−2)/(4k), the level-½ condition, with margin η₀.
+- The goodness exponent is a constant 1/2. LV's Definition 5.12 exponent 1 + o(1) is not used, so the
+  N^{o(1)} loss that the blind round flagged does not arise.
+
+**Step 4 (assembly; hypD items 2 and 5).**
+- *Good mass.* By Step 1(ii)–(iii) and (Hi) with z ≤ 64:
+    Σ_{n∈I_P∩𝒮_B} |𝒢_P(n)| ≥ (M/(CV log log N))·Ψ(I_P) ≥ M²ρ_r/(Cℓ log log N).
+- *Bad mass.* By Step 1(i), the n with ℓn bad carry total weight ≤ (2M/V)·#{bad n ≤ 2MV/ℓ}. Averaged
+  over ℓ, Step 3 gives
+    π_J^{−1} Σ_ℓ #{bad n for ℓ} ≤ (log ω)ε_N·π_J^{−1} Σ_ℓ #{n ≤ 2MV/ℓ : n ∈ 𝒮_B} ≪ (log ω)ε_N MVρ_r/ℓ.
+  This is o(1/log log N) times the good mass, uniformly in N.
+- *Total.* Summing over P ∈ 𝒫_ℓ, with #𝒫_ℓ ≍ V²/log V and |𝒢| ≍ M², and inserting Step 2:
+    E N ≥ (log)^{−O(1)}·(V²/ℓ)·ρ_rρ_F = S²ρ_rρ_F/(log N)^{O(1)}.
+- *Item 5.* Small b cannot occur, since b > V/2. Irregular lattices contain no candidates (Lemma 1.3).
+  The finite-interval error of sampling g in a square rather than mod ℓ is inside Step 1, because the
+  fibres are counted exactly. ∎
+
+*Remarks.*
+- **What was needed beyond hypD §4.1′.**
+  - Restricting b to primes in (V/2, V]. This makes every moving residue reduced and removes small b.
+  - The 2D field. This makes the rational side a plain interval count, (Hi), with no BV.
+
+codex
+Drappeau’s Lemme 5 matches the quotation, including imprimitive characters and effectivity for \(A<1\). The transfer weights also appear consistent so far. I’m checking the large-sieve constants and the case \(Q'<y^K\), where the stated corollary cannot be applied directly.
+
+exec
+/bin/zsh -lc "sed -n '80,230p' sources/Hildebrand_Tenenbaum1986_scanOCR.txt && rg -a -n 'Lemma 3.2|Lemma 3.3|effective|conductor|Lemme 5' sources/pascadi_arxiv2304.11696v3.txt | head -35 && sed -n '760,859p' sources/harper_arxiv1208.5992.txt && sed -n '55,115p' sources/delaBreteche_Tenenbaum2005.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+266 ADOLF HILDEBRAND AND GERALD TENENBAUM 
+where P(n) stands for the largest prime factor of n. By choosing u optimally and 
+estimating further the right-hand side of (1.4), one arrives at an upper bound for 
+\Jf(x, y) which turns out to be especially useful when y is relatively small compared 
+with x. When y is a fixed or slowly decreasing power of x, however, (1.4) becomes 
+weaker than the trivial bound \Jf(x, y) ::; x. Rankin's method 
+was fully exploited 
+by de Bruijn [4] in 1966. 
+Most of the work on \Jf(x, y) in the literature deals with the case when u = 
+(log x)/(log y) is relatively small. The aim is then to give quantitative and uniform 
+versions of Dickman's relation (1.1). In 1951, de Bruijn [3] produced an estimate 
+for \Jf(x, y) which implies that the formula 
+(1.5) \Jf(x, y) = xp( u) ( 1 + Oc (1°~~:: l))) 
+(where, here and in the sequel, we write systematically u = (log x)/(log y)), and 
+hence ( 1. 1), hold uniformly in the range 
+(1.6) x 2: 2, exp{(log x)5/8+c} < y::; x, 
+where € is any fixed positive number. Similar results have been established sub­
+sequently by several authors on using different methods, but de Bruijn's estimate 
+remained for a long time the best of its type. It can be shown that the error term 
+in (1.5) is best possible, and it was only recently that the range of validity (1.6) 
+was improved. Maier [14] established (1.5) for the range 
+x 2: 2, exp{(log xY}::; y '.S x. 
+Hensley [10] proved the lower estimate 
+\Jf(x, y) »c xp(u) 
+for an even larger range, namely 
+(1.7) x 2: 2, exp{(loglog x)5/3+c} < y::; x. 
+In [12] the first author showed that de Bruijn's formula (1.5) actually holds in 
+the above range (1.7). It seems that this is the limit of what can be reached 
+unconditionally. On the Riemann hypothesis, one can prove that (1.5) holds in the 
+range x 2: 2, (log x)2+c < y::; x. 
+The behavior of \Jf(x, y) is quite different when y is very small compared with x. 
+Ennola [9] showed that uniformly for 
+(1.8) 2 :Sy '.S 0ogx 
+the estimate 
+(1.9) \Jf(x, y) = 1r(~)! IT G::;) ( 1 + 0 Cog ::og y)) 
+p-5,y 
+holds, where 1r(y) is the prime counting function. The right-hand side of (1.9) 
+depends strongly on irregularities in the distribution of primes and cannot be re­
+placed by a smooth function as in (1.5). Ennola also gave a similar, but much more 
+complicated, formula for the range 
+(1.10) 2::; y::; (log x)3/4-c. 
+INTEGERS FREE OF LARGE PRIME FACTORS 267
+Between the rangee (1.10) and (f.7), in which asymptotic formulae for ü(r,g)
+are known, there remains a large gap where the estimates a\railable are much lesg
+precise. For these intermediate values, the best known upper bound is due to de
+Bruijn [a] and achieved by Rankin's method. Varioue lorrer bounds have beeu given
+[4, 6, 10, 12], but they are far from being asymptotically equal to the corresponding
+upper estimates. In the case ÿ - log r, for instance, the known upper and lower
+bounds differ by a factor )s exp{yl-e} for every e > 0.
+The main purpose of this paper is to close this gap and give an expression
+appro:rimating ü(o, y) uniformly for æ 2 g 2 2 within a factor l+O(l / u+ (loe ù / y)
+and thus yield an asymptotic formula whenever g and I : (log r)/(log g) tend to
+infinity.
+2. Statement of results. For complex s : o * ir, put
+ç(s,y):lI(t-p-";-r.
+p3v
+This finite part of the Euler product for the Riemann zeta function is meromorphic
+in s in the whole plane. It never vanishes, and all its poles are located on the line
+a :0. We also set
+6(tt,ù:: log ç(s, y) (, > 0),
+a,nd denote by dr(s, y\, k > 0, the kth partial derivative of ,p(s, g) with respect to
+s. Flom the definition of @(s, y) we thus have
+ô,.s,v): - p, ffi , ôzG,ù: r»* #Y#
+By Rankin's upper bound (1.4) we have
+(2.1) ÿ(r,y) < in1,or"ç(o,y).
+This infimum is in fact a minimum, and is attained for a: a: a(rty) defined as
+the (unique) solution of the equation
+(2.2) ô{a,s\*logc:0.
+We reserve henceforth the letter o to denote the solution of. (2.2). Our approx-
+imation for !û(o,y) will consist of the right-hand side of (2.1), namely æ"s(a,y\,
+multiplied by a factor of a fairly simple shape.
+We now state our main result.
+THEoREM 1. We haae unilormly for x ) y >2,
+(2.8) ÿ(c,s)=ffi(,*o(*.ry))
+It is plain from the definitions that a, and hence ôz(a,y), are positive. Thus
+dividing the right-hand side of (2.1) by atffiTziffifi yields an asymptotic formula
+for ![(c, y) whenever U and u tend to infinity.
+For applications, it is useful to have approximations of a = a(ftg) and ôz(a,y)
+at hand. Although these quantities are defined only implicitlg via prime number
+surns, they can be replaced in (2.3) by smooth functions at the coet of a weaker error
+268 ADOLF HILDEBRAND AND GERALD TENENBAUM
+term. The following theorem shows that they can both be well approximated over
+the whole range x > y > 2. This takes into account the factor (a\l/2ir(f>2(a,y))~1
+in (2.3) and enables one to compare Rankin's upper bound with the true order of
+magnitude of ty(x,y). Moreover, if x is not too large with respect to y, we can
+derive a reasonably smooth approximation for the whole right-hand side of (2.3).
+THEOREM 2.   (i) We have uniformly for x > y > 2,
+(2.4) a{Xjy) = ^(l + y/logx)/l + 0floglog(l + y)
+logy   V   V      i°g y
+and
+(2.5)       «»,„) = (l + Üp) log x . tag , (l + O (jjj-L-j + A
+(ii) Let £, 0 < £ < 1/2, be fixed. Then we have uniformly for x>2, (log x)1+£ <
+y<x,
+xac(a,y)
+ay/2Tr(f)2(a,y)
+'ç»V/2  Í a ^      [iiu)e°-l
+(2.6) = x (ï^p)      expL- uç» + lo dss
++0£(i^i)+Uexp{-(logy)3/^})},
+where 7 denotes Euler's constant, £ = £(u) is the unique positive solution of the
+equation e^ = 1 + u£ and £'(u) is the derivative of the function £(w).
+From part (i) of Theorem 2, we see that
+asj2-K<t>2(a,y) « y/y/log y.
+Thus Rankin's upper bound differs from V(x,y) by a factor at most 0(\/y/log y).
+This is surprisingly small, compared with the precision of the estimates for v|/(x, y)
+available in the literature, which in the case y = log x, for example, involve an error
+factor of order >£  exp{y1~£}. On the other hand, (2.4) and (2.5) also imply
+ct\/2-K(i>2(a,y) » log y
+uniformly for x > y > 2, so we never have asymptotic equality in (2.1).
+Combining Theorem 1 with part (i) of Theorem 2, we obtain the following corol-
+lary.
+COROLLARY l.   If y and u tend to infinity, we have
+*(x, y) ~ x«c(a, y) (2™ (l + ^) ) (loS (l + ^
+In particular
+H/(x,y) ~    J?*[*,y}-r  Wvfiog * - 00),v27rulog(y/log x)
+268 ADOLF HILDEBRAND AND GERALD TENENBAUM 
+term. The following theorem shows that they can both be well approximated over 
+the whole range x 2 y 2 2. This takes into account the factor (aJ21r¢ 2(a,y))- 1 
+in (2.3) and enables one to compare Rankin's upper bound with the true order of 
+magnitude of W(x, y). Moreover, if x is not too large with respect to y, we can 
+derive a reasonably smooth approximation for the whole right-hand side of (2.3). 
+THEOREM 2. (i) We have uniformly for x 2 y 2 2, 
+(2.4) a(x, y) = log(l ~:(log x) ( 1 + 0 ('og l~:?y + y))) 
+and 
+(2.5) <P2(a, y) = ( 1 + lo! x) log x -log Y ( 1 + 0 Cog(/+ u) + lo~ Y)) . 
+(ii) Lets, 0 < s:::; 1/2, be fixed. Then we have uniformly for x 2 2, (log x)l+" < 
+y:::; x, 
+aJ21!'¢2(a,y) 
+(2.6) = X ( E~~))11\xp { 1 - uE(u) + foE(u) es s l ds 
++Oc: (' 0 ~~~: u) + u exp{-(log y)315-"})}, 
+where 1 denotes Euler's constant, E = E(u) is the unique positive solution of the 
+equation eE = 1 + uE and E' ( u) is the derivative of the function E ( u). 
+From part (i) of Theorem 2, we see that 
+aJ21r<h(a, y) « Jy/log y. 
+Thus Rankin's upper bound differs from w(x, y) by a factor at most 0( Jy/log y). 
+This is surprisingly small, compared with the precision of the estimates for W(x, y) 
+available in the literature, which in the case y = log x, for example, involve an error 
+factor of order »c: exp{y 1-"}. On the other hand,.(2.4) and (2.5) also imply 
+aJ2mh(a,y) »logy 
+uniformly for x 2 y 2 2, so we never have asymptotic equality in (2.1). 
+Combining Theorem 1 with part (i) of Theorem 2, we obtain the following corol­
+lary. 
+COROLLARY 1. If y and u tend to infinity, we have 
+W ( x, y) ~ x0 d a, y) ( 21ru ( 1 + 10! x) ) - 112 ( log ( 1 + lo: x) ) - l 
+In particular 
+w(x y) ~ xc,da, y) 
+' J'27ruJog(y/log x) 
+( if y /log x ---> oo), 
+INTEGERS FREE OF LARGE PRIME FACTORS 269
+and
+0/(x,y) ~ -2fe¿=    (if y/log x-+0).
+y/2iry/log y
+112:for all a1, a2 ∈ Z with 1 ≤ |a1|, |a2| ≤xδ, and allA ≥ 0. The implicit constant is effective ifA <1.
+115:Drappeau’s result [7, Théorème 1], and ultimately comes from a result of Harper (see Lemma 3.2).
+370:in Theorem 4.1, after separating the contribution of small-conductor Dirichlet characters
+378:from (2.1); this can be handled via Lemma 3.2. As a result, the simpler two dispersion sumsS2, S3
+380:bring in the classical Gauss sum bound (Lemma 3.6) and the multiplicative large sieve (Lemma 3.3).
+414:Contribution of small-conductor
+415:characters (Lemma 3.2)
+425:(Lemma 3.3)
+488:φ(q)), and denote by cond(χ) the conductor of χ (which divides q; this is the smallest positive
+493:Lemma 3.2 (Contribution of small-conductor characters). There exist constantsε, δ, C >0 such
+505:u log−2(u + 1). The implicit constant is effective ifA <1.
+506:Proof. This is the same as [7, Lemme 5], and follows from the work of Harper in [21, Section 3.3].□
+507:Remark. The condition cond(χ) > 1 in Lemma 3.2 leaves out the trivial characterχ0.
+509:Lemma 3.3 (Multiplicative large sieve). For Q, M, N≥ 1 and any sequence (an) of complex
+704:becomes x1−δ(log x)4, i.e., a power-saving; having an explicit dependence on the conductor bound
+721:Given Theorem 4.1 and Lemma 3.2, deducing Theorem 1.4 is now a routine modification of Drap-
+725:between ε−1(1 − ε)−1 and the constantC given by Lemma 3.2,δ be the minimum betweenε/100
+726:and the δ’s of Lemma 3.2 and Theorem 4.1, and let(log x)C ≤ y ≤ x1/C, D := xε/10, θ := θmax. It
+773:which is appropriately bounded by Lemma 3.2 and the triangle inequality. It remains to bound the
+844:tion of the small-conductor characters, since Lemma 3.2 is no longer applicable; as a replacement,
+1387:Finally, applying the multiplicative large sieve from Lemma 3.3 as in [8, (2.6)], we conclude that
+1480:character χ1χ21 (·,r)=1 (mod r) (whose conductor dividesr and is at most equal toD2 ≤ x2ε). This
+Therefore Lemma 5.2 of Soundararajan [21] implies that, if 1 /(2 log y) ≤ |t| ≤ y/2,
+∑
+p≤y,p∤q
+1 − ℜ(χ(p)/pit)
+pα ≫ ulog2(u + 1) .
+When |t| < 1/(2 log y), Soundararajan’s lemma instead yields (keeping in mind that χ
+and χ∗bad are real characters) that
+∑
+p≤y,p∤q
+1 − ℜ(χ(p)/pit)
+pα ≫
+∑
+p≤y,p∤q
+1 − χ(p)
+pα =
+∑
+p≤y,p∤q
+1 − χ∗bad(p)
+pα
+≥ 1log y
+
+ ∑
+√y≤p≤y,p∤q
+log p
+pα −
+∑
+√y≤p≤y,p∤q
+χ∗bad(p) log p
+pα
+
+ .
+3Lemma 5.2 of Soundararajan [21], which we shall ultimately use, has a r elatively straightforward
+proof using the Cauchy–Schwarz inequality and estimates for the R iemann zeta function, but it will
+nevertheless produce good bounds. A direct argument using infor mation about L(α + it, χ) would seem
+(when |t| is large) to be far more complicated.
+BOMBIERI–VINOGRADOV THEOREMS FOR SMOOTH NUMBERS 17
+Since we assume that rbad = cond(χ∗bad) is at most yη, with η small, partial summation
+from standard estimates for ∑n≤z Λ(n)χ(n) (as in e.g. Theorem 11.16 and Exercise
+11.3.1.2 of Montgomery and Vaughan [20]) implies
+∑
+√y≤p≤y
+log p
+pα −
+∑
+√y≤p≤y
+χ∗bad(p) log p
+pα ≫
+∑
+√y≤p≤y
+log p
+pα ≫ y1−α1 − α ≫ u log y = log x,
+recalling from §2 that α(x, y) = 1 − (log(u log u) + O(1))/ log y. The essential point in
+these calculations is that the contribution to ∑n≤z Λ(n)χ(n) from an exceptional real
+zero comes with a negative sign, so when subtracted makes a positiv e (i.e. a helpful)
+contribution to our lower bounds. We need to be careful about the contribution from
+primes p that divide q, but in fact this is ≪ (log q)/yα/2 ≪ (log q)/ log x ≪ 1 (bearing
+in mind that α(x, y) ≥ α(x, logK x) ≫ 1), which is negligible.
+In summary we have shown, as we wanted, that when log K x ≤ y ≤ x1/(log log x)2,
+⏐⏐⏐⏐⏐ 12πi∫ α+iy/2α−iy/2 L(s, χ; y) xss ds⏐⏐⏐⏐⏐ ≪ L(α, χ0; y)e−Θ(u/ log2(u+1))xα log y
+≪ e−Θ(u/ log2(u+1))Ψ(x, y)√log x log3/2 y,
+where the ﬁnal inequality uses Smooth Numbers Result 1.
+We must still bound the contribution from χ∗bad in the case where x1/(log log x)2 <
+y ≤ x, which is potentially diﬃcult because of various logarithmic multipliers th at
+occur. Fortunately we can deploy existing results of Fouvry and Te nenbaum [6, 7], who
+carefully investigated the inﬂuence of exceptional zeros on Ψ( x, y; χ) when y isn’t too
+small. Indeed, since we assume that rbad ≤ eη√log x ≤ yη/ log log x, say, Lemme 2.2 of
+Fouvry and Tenenbaum [7] implies that
+|Ψ(x, y; χ)| =
+⏐⏐⏐⏐⏐⏐⏐⏐ ∑n≤x,n∈S(y),(n,q/rbad)=1 χ∗bad(n)⏐⏐⏐⏐⏐⏐⏐⏐ ≪  ∑d|(q/rbad) 1dα(x,y) Ψ(x, y) log(rbad)log y e−Θ(u/ log2(u+1))
+≪
+
+ ∑
+d|(q/rbad)
+1√
+d
+
+ Ψ(x, y) log(rbad)log x e−Θ(u/ log2(u+1)).
+Here the second inequality uses the facts that α(x, y) = 1 −(log(u log u)+ O(1))/ log y ≥
+1/2 on our range of y, and that log x = u log y. Actually Fouvry and Tenenbaum’s result
+would give this with the sum replaced by ∑d|(q/rbad) 1, but one can check that their proof
+(combined with e.g. Theorem 3 of Hildebrand and Tenenbaum [14]) give s the stronger
+18 ADAM J HARPER
+bound that we claimed. Thus the contribution from characters indu ced by χ∗bad is
+≪ Ψ(x, y) log(rbad)log x e−Θ(u/ log2(u+1)) ∑q≤Q,
+rbad|q
+1
+φ(q)
+∑
+d|(q/rbad)
+1√
+d
+≪ Ψ(x, y) log(rbad)φ(rbad) e−Θ(u/ log2(u+1)).
+This is obviously acceptable for the eﬀective part of Theorem 1, as in (3.1). As usual,
+the stronger ineﬀective bound ≪A Ψ(x, y)e−Θ(u/ log2(u+1)) log−A x follows from Siegel’s
+theorem (in Zeros Result 1), which implies that if L(s, χ∗bad) has a real zero that is
+> 1 − M/√log x then we must have rbad ≫A logA x.
+We have now completed our treatment of all characters with condu ctor ≤ xη in
+Theorem 1. One can handle the contribution from such characters to Theorem 2 using
+exactly the same arguments, since in Theorem 2 one needs to bound
+∑
+Hildebrand [14] ; et la mise en œuvre de la m´ ethode du col par Hildebrand et Tenenbaum [16].
+Chacune de ces trois m´ ethodes poss` ede ses avantages et inconv´ enients propres. Cependant, la
+m´ ethode du col fournit, en compl` ete exclusivit´ e, des renseignements sp´ eciﬁques d’un type nouveau :
+les formules semi-asymptotiques, selon l’expression d’Erd˝ os, qui permettent d’´ evaluer Ψ(cx,y ) en
+fonction de Ψ(x,y ) mˆ eme dans des domaines en x, y, o` u aucune approximation r´ eguli` ere de la
+seconde quantit´ e n’est connue, voire mˆ eme possible — cf. [28] pour une discussion d´ etaill´ ee sur cet
+aspect de la question.
+Nous d´ esignons l’ensemble des propri´ et´ es relatives ` a ces ph´ enom` enes sous le terme decomporte-
+ment local.
+La connaissance du comportement local de Ψ( x,y ) et de la g´ en´ eralisation
+(1·1) Ψ m(x,y ) :=
+∑
+n∈S(x,y)
+(n,m)=1
+1
+est capitale dans la plupart des probl` emes arithm´ etiques utilisant les entiers friables. Cela explique
+pourquoi l’´ etude des ﬂuctuations locales de Ψm(x,y ) a suscit´ e un nombre important de travaux
+depuis une quinzaine d’ann´ ees : voir notamment Hensley [12], Friedlander–Granville [9], Hildebrand
+[13], [15], Granville [10], Hildebrand–Tenenbaum [16], et, pour le cas particulierm =∏p⩽zp, Saias
+[23].
+Cet article est essentiellement d´ evolu ` a fournir, pour le comportement local de la quantit´ e (1·1),
+un document synth´ etique contenant des formules aussi pr´ ecises et aussi g´ en´ erales que le permettent
+les techniques actuellement disponibles.
+Si notre motivation premi` ere consiste ` a ´ etablir les estimations n´ ecessaires ` a la preuve, d´ evelopp´ ee
+dans [3], d’une in´ egalit´ e de type Tur´ an–Kubilius pour l’ensemble des entiers friables, nos r´ esultats
+sont ´ egalement susceptibles de nombreuses autres applications. `A titre d’illustration, nous en
+d´ eveloppons ici quelques unes, concernant les valeurs moyennes de fonctions arithm´ etiques sur
+l’ensemble des entiers friables. Les ´ enonc´ es correspondants sont pr´ esent´ es au paragraphe 2.2.
+2. R´ esultats
+2·1. Entiers friables cribl´ es
+Le col, ou point-selle, apparaissant dans l’´ evaluation de Ψ(x,y ) comme int´ egrale de Perron inverse
+est d´ eﬁni, pourx >y > 2, comme l’unique solution positive α :=α(x,y ) de l’´ equation
+(2·1)
+∑
+p⩽y
+logp
+pα− 1 = logx.
+Tous les r´ esultats de comportement local sont alors du type
+(2·2) Ψ( cx,y )≈cαΨ(x,y )
+sous diverses contraintes concernant les tailles relatives de c, x, y. Bien qu’elle soit d´ eﬁnie
+implicitement, la quantit´ eα poss` ede un comportement asymptotique suﬃsamment ´ elucid´ e — cf.,
+notamment, le Lemme 3.1 infra.
+D´ eﬁnissons
+gm(s) :=
+∏
+p|m
+(1−p−s) =∑
+d|m
+µ(d)/ds,
+o` uµ d´ esigne la fonction de M¨ obius. Compte tenu de l’heuristique (2·2), le terme principal attendu
+pour
+Ψm(x,y ) =
+∑
+d|m
+µ(d)Ψ(x/d,y )
+Propri´ et´ es statistiques des entiers friables 3
+est ∑
+d|m
+µ(d)Ψ(x,y )/dα =gm(α)Ψ(x,y ),
+lorsque m est y-friable.
+Notre premier r´ esultat ´ etablit qu’une telle approximation est eﬀectivement valable dans un large
+
+exec
+/bin/zsh -lc "rg --files sources && ls -la && rg -n 'AGENTS|delegat|sub.agent' .agents .codex 2>/dev/null" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ exited 2 in 0ms:
+sources/harper_arxiv1208.5992.txt
+sources/drappeau2015_arxiv1307.7554v3.txt
+sources/lee_venkatesan_arxiv1805.08873.txt
+sources/pascadi_arxiv2304.11696v3.txt
+sources/Hildebrand_Tenenbaum1986_scanOCR.txt
+sources/delaBreteche_Tenenbaum2005.txt
+total 0
+drwxr-xr-x   3 knielsen  staff    96 Oct 20 09:19 .
+drwxr-xr-x  52 knielsen  staff  1664 Oct 20 09:19 ..
+drwxr-xr-x   8 knielsen  staff   256 Oct 20 09:19 sources
+
+web search: 
+web search: https://arxiv.org/abs/1307.7554
+exec
+/bin/zsh -lc "sed -n '228,332p' sources/Hildebrand_Tenenbaum1986_scanOCR.txt && sed -n '485,510p' sources/pascadi_arxiv2304.11696v3.txt && sed -n '118,145p' sources/delaBreteche_Tenenbaum2005.txt && sed -n '700,759p' sources/delaBreteche_Tenenbaum2005.txt && sed -n '1,88p' sources/harper_arxiv1208.5992.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+and
+0/(x,y) ~ -2fe¿=    (if y/log x-+0).
+y/2iry/log y
+This shows that the behaviour of ty(x,y) is quite different according as y /log x
+is small or large. This phenomenon has already been stressed by de Bruijn [4].
+It is due to the fact that for y > yo(e) and ky < (1 — e)log x, we have by the
+prime number theorem that (ILk« P)k — x so tnat tne numbers that do not have a
+prime factorization with exceptionally high powers contribute little to $(x,y)—for
+instance the squarefree numbers contribute at most x1^. This feature does not
+occur when y /log x is large.
+When we combine Theorem 1 with part (ii) of Theorem 2, we derive a smooth
+approximation for Si!(x,y), which in the range
+x > 2,  (loglog x)5/3+£ < log y < \/log x
+is as sharp as de Bruijn's estimate (1.5). Apart from the upper restriction for y,
+this range coincides with (1.7), where (1.5) is known to be valid. For larger y,
+estimates (2.3) and (2.6) together are less precise than (1.5) because of the error
+term 0(1/«) in (2.3).
+The approximations (1.5) and (2.6) are of quite different type. Equalizing the
+two expressions in the case u = (log 2?/)1/2, say, we obtain the following result.
+Corollary 2. 4s u —* oo, we have
+(2.7)     p(„) = (, + o(i))(^)1/!expj^„«tl)+jr£W!^i,i»j.
+This formula is not new. Thirty years ago, de Bruijn [2] established the asymp-
+totic relation
+(2.8) p(u) ~ ~^=exp i -y - <(«) + fV2'ku Jo
+1 Mf   n        /•««) e* _ 1   j-ds
+which is a weaker form of (2.7) since £'(«) ~ 1/«, as can easily be shown. De
+Bruijn's proof was quite elaborate. A different demonstration has been given re-
+cently by Canfield [5]. The more precise formula (2.7) has been first proved by
+Alladi [1, p. 186] using de Bruijn's method. In our case, this formula arises quite
+naturally, since both sides appear as approximations, obtained from different meth-
+ods, for the same arithmetical quantity ^(x,y)/x.
+From Theorem 1, we shall deduce the following simple formula for the ratio
+$(cx,y)/^(x,y), where 1 < c < y.
+THEOREM 3.   We have uniformly for x > y > 2 and 1 < c < y,
+(2.9) »(ex, y) = ?(*, y)ca^ (l + oß + ^V).
+This improves on results of Hensley [11] and the first author [13], where estimates
+of the same type, but with weaker error terms and only for a restricted range, had
+been obtained.
+INTEGERS FREE OF LARGE PRIME FACTORS 269 
+and 
+w(x y) ~ x<>~(o:,y) (if y/log x----+ 0). 
+' J21ry /log y 
+This shows that the behaviour of W(x, y) is quite different according as y/log x 
+is small or large. This phenomenon has already been stressed by de Bruijn [4]. 
+It is due to the fact that for y 2: Yo(c) and ky :::;; (1 - c)log x, we have by the 
+prime number theorem that (TTP~Y p)k :::; x so that the numbers that do not have a 
+prime factorization with exceptionally high powers contribute little to \Jl(x, y)-for 
+instance the squarefree numbers contribute at most x 1lk_ This feature does not 
+occur when y /log x is large. 
+When we combine Theorem 1 with part (ii) of Theorem 2, we derive a smooth 
+approximation for w(x, y), which in the range 
+X 2 2, (log log x )5/3+e < log y :::;; Jiogx 
+is as sharp as de Bruijn's estimate (1.5). Apart from the upper restriction for y, 
+this range coincides with (1.7), where (1.5) is known to be valid. For larger y, 
+estimates (2.3) and (2.6) together are less precise than (1.5) because of the error 
+term O(1/u) in (2.3). 
+The approximations (1.5) and (2.6) are of quite different type. Equalizing the 
+two expressions in the case u = (log 2y) 112 , say, we obtain the following result. 
+COROLLARY 2. As u ----+ oo, we have 
+(2.7) p(u)= (1+0(~)) (~~~)r12exp{,-u~(u)+ foE(u)es;1 ds}. 
+This formula is not new. Thirty years ago, de Bruijn [2] established the asymp­
+totic relation 
+(2.8) p(u) ~ r.c::exp 1 - u~(u) + --- ds , 1 { 1E(u) e8 1 } v21ru o s 
+which is a weaker form of (2.7) since €'(u) ~ 1/u, as can easily be shown. De 
+Bruijn's proof was quite elaborate. A different demonstration has been given re­
+cently by Canfield [5]. The more precise formula (2.7) has been first proved by 
+Alladi [1, p. 186] using de Bruijn's method. In our case, this formula arises quite 
+naturally, since both sides appear as approximations, obtained from different meth­
+ods, for the same arithmetical quantity \lf(x, y)/x. 
+From Theorem 1, we shall deduce the following simple formula for the ratio 
+w(cx, y)/w(x, y), where 1 :::; c :::; y. 
+THEOREM 3. We have uniformly for x 2 y 2 2 and 1:::; c:::; y, 
+(2.9) \Jl(cx, y) = \Jl(x, y)c<>(x,y) ( 1 + 0 ( ~ + 10! y)). 
+This improves on results of Hensley [11] and the first author [13], where estimates 
+of the same type, but with weaker error terms and only for a restricted range, had 
+been obtained. 
+270 ADOLF HILDEBRAND AND GERALD TENENBAUM
+The factor ca^x'y^ can be well approximated by a smooth function. For instance,
+it follows from part (i) of Theorem 2 that the estimate
+c«:,>=(1+jL.Y°°°),('°,",(l+ori°swi+»ilog x) V       V     i°g y
+holds uniformly for x > y > 2 and 1 < c < 2. Substituting in Theorem 3 we derive
+as an immediate consequence the following result.
+COROLLARY 3.   Let x and y tend to infinity.
+Then the relation *(2x, y) ~ ^(x, y) holds if and only ¿flog y < (l+o(l))loglog x.
+Moreover, we have ty(2x,y) ~ 2vC(x, y) if and only if (log y)/(loglog x) —> oo.
+The first of these asymptotic formulae is new; the second has been recently
+proved by Hensley [11], using a completely different method. The corollary shows
+once more how the behaviour of "^(x, y) changes at y ~ log x.
+Theorem 3 can also be interpreted as a short interval estimate for *(x,j/). It
+leads to an asymptotic formula for \I>(x + x/z,y) - ^(x,y) in terms of ^(x,y)
+provided z is not too large. More precisely, z has to be smaller than u and y /log y.
+Setting, for 0 < £ < 1,
+Y(e) = exP{(log y)3/2~£},
+we can in fact sharpen Theorem 3 for large values of z in the following way.
+THEOREM 4.   We have uniformly for x > y > 2, z > 1, 0 < e < 1,
+(210) •(,+ï.,)-,h>).î!&»l,(„,(1+0(i + i + !5i)
++ 0£(V(x,y)R(x,y))
+with
+R(x,y) := 7(e)-1 +exp{-60«(log 2u)"2}(log y)
+for some positive absolute constant bo-
+The last error term in (2.10) can be omitted if we suppose a/z » R(x,y)1^2
+and modify adequately &o and s. Using estimate (2.4) for a(x,y), we see that this
+condition is certainly fulfilled in the range
+f911x Jx>2, (loglogx)2/3+£<logi/< (logx)2/5,
+1        ' \l<z< Y(£).
+φ(n) ≪ (log x)2.
+(The latter follows from the former, using thatφ(ab) ≫ φ(a)φ(b) for positive integersa, b.)
+We write χ (mod q) to indicate that χ is a Dirichlet character with periodq (of which there are
+φ(q)), and denote by cond(χ) the conductor of χ (which divides q; this is the smallest positive
+integer d such that there exists a Dirichlet characterχ′ (mod d) with χ(n) = χ′(n)1 (n,q)=1 for all
+n ∈ Z); we say thatχ (mod q) is primitive when cond(χ) = q. We will require a couple of results
+involving Dirichlet characters, the first being essentially due to Harper.
+SMOOTH NUMBERS IN ARITHMETIC PROGRESSIONS TO LARGE MODULI 9
+Lemma 3.2 (Contribution of small-conductor characters). There exist constantsε, δ, C >0 such
+that for (log x)C ≤ y ≤ x, Q ≤ x and A >0, one has
+X
+q≤Q
+1
+φ(q)
+X
+χ (mod q)
+1<cond(χ)≤xε
+ Xn∈S(x,y) χ(n) ≪A Ψ(x, y) H(u)−δ(log x)−A + y−δ ,
+with u := (log x)/(log y), H(u) := exp
+ 
+u log−2(u + 1). The implicit constant is effective ifA <1.
+Proof. This is the same as [7, Lemme 5], and follows from the work of Harper in [21, Section 3.3].□
+Remark. The condition cond(χ) > 1 in Lemma 3.2 leaves out the trivial characterχ0.
+The second result is the classical multiplicative large sieve, as stated in [7, Lemme 6].
+Lemma 3.3 (Multiplicative large sieve). For Q, M, N≥ 1 and any sequence (an) of complex
+numbers, one has
+et nous d´ esignons parω(n) (resp. Ω(n)) le nombre des facteurs premiers de l’entier n compt´ es sans
+(resp. avec) multiplicit´ e. Nous introduisons ´ egalement la quantit´ e
+(2·3) Wm := logpω(m)≍ log
+{
+ω(m) + 2
+}
+(m > 1)
+o` upk d´ esigne lek-i` eme nombre premier et o` u l’on convient, par commodit´ e d’´ ecriture, quep0 = 2.
+Nous notons encore
+(2·4) ϑm =ϑm(y) := Wmlogy, α =α(x,y ) := log(1 +y/ logx)logy ,
+(2·5) Em :=Em(x,y ) =
+
+
+
+ϑm{u log(u + 2)}ϑm
+1 +ϑm log(u + 2) si y >(logx)2,
+u (u logy)ϑm
+u logy
+(
+1 + 1ϑmα logy) si y ⩽ (logx)2.
+Th´ eor` eme 2.1.Sous les conditions
+(2·6) x >y > 2, P (m) ⩽y, ω (m)≪√y,
+on a
+(2·7) Ψ m(x,y ) =gm(α)Ψ(x,y )
+{
+1 +O
+(Em(1 +Em)
+u
+Nous notons que (3·2) implique
+(3·4) u + logyu logy ≪α≪ uu.
+Comme on a classiquement
+∑
+p⩽x
+logp
+p− 1 = logx−γ +o(1) ( x→∞ )(8)
+8. Ici et dans tout l’article, nous d´ esignons parγ la constante d’Euler.
+12 R. de la Bret `eche et G. Tenenbaum
+on a aussi pour une constante convenable x0,
+(3·5) α< 1 ( x>x 0, x>y > 2).
+Le lemme suivant, qui est implicitement contenu dans [16], fournit une ´ evaluation tr` es utile pour
+estimer les sommes sur les nombres premiers apparaissant lors de la mise en œuvre de la m´ ethode
+du col.
+Lemme 3.2. On a
+(3·6) y1−α− 1(1−α) logy ={1 +O( 1logy)} uyy + logx (x >y > 2).
+D´ emonstration.Il d´ ecoule du lemme 13 de [16] que
+logx =
+{
+1 +O
+( 1
+logy
+)} y1−α− 1
+(1−y−α)(1−α) +O(1)
+alors que la formule (7·18) de [16] fournit l’estimation
+(3·7) 11−y−α ={1 +O( 1logy)}y + logxy (x >y > 2).
+Cela implique bien (3·6). ⊓ ⊔
+D´ esignons par
+ζ(s,y ) :=
+∏
+p⩽y
+(
+1− 1/ps)−1
+le facteur initial du produit eul´ erien deζ(s). Nous posons
+(3·8) ϕ0(s,y ) := logζ(s,y ), ϕ k(s,y ) :=ϕ(k)0 (s,y ),
+σk := (−1)kϕk(α,y ) ( k∈ N).
+Nous ferons usage des relations
+(3·9) σk≍ (u logy)k/(u)k−1 (k > 1),
+´ etablies aux lemmes 2 et 4 de [16].
+Le r´ esultat suivant, qui d´ ecrit une approximation uniforme de Ψ(x,y ) en fonction de α et y,
+constitue le th´ eor` eme principal de [16].
+Lemme 3.3 (Hildebrand & Tenenbaum). On a
+(3·10) Ψ( x,y ) = xαζ(α,y )α√2πσ2{1 +O( 1u)} (x >y > 2).
+3·2. Preuve du Corollaire 2.2
+Nous allons ´ etablir des majorations deEm(x,y ) qui impliquent directement le Corollaire 2.2.
+Proposition 3.4. Sous les conditions x >y > 2 et P (m) ⩽y, on a
+(3·11) Em(x,y )≪
+
+
+
+ϑmu
+αu ≪ϑm log(u + 2)≪ 1 si (C1) est r´ ealis´ ee,
+ϑm
+√
+u√
+log(u + 2)
+si (C2) ou (C3) est r´ ealis´ ee,
+√
+u si (C4) est r´ ealis´ ee.
+La d´ eduction du Corollaire 2.2 ` a partir de la Proposition 3.4 est imm´ ediate sous les conditions
+arXiv:1208.5992v1  [math.NT]  29 Aug 2012
+BOMBIERI–VINOGRADOV AND
+BARBAN–DA VENPORT–HALBERSTAM TYPE THEOREMS FOR
+SMOOTH NUMBERS
+ADAM J HARPER
+Abstract. We prove Bombieri–Vinogradov and Barban–Davenport–Halberstam type
+theorems for the y-smooth numbers less than x, on the range log K x ≤ y ≤ x. This
+improves on the range exp {log2/3+ǫ x} ≤ y ≤ x that was previously available. Our
+proofs combine zero-density methods with direct applications of th e large sieve, which
+seems to be an essential feature and allows us to cope with the spar seness of the
+smooth numbers. We also obtain improved individual (i.e. not average d) estimates
+for character sums over smooth numbers.
+1. Introduction
+For y ≥ 1, let S(y) denote the set of y-smooth numbers: that is, the set of numbers
+all of whose prime factors are less than or equal to y. Smooth numbers are ubiquitous in
+analytic number theory, (see e.g. the survey paper [15] of Hildebra nd and Tenenbaum),
+and it is natural to investigate many of the same questions for them as are studied for
+the prime numbers. For example, one might be interested in the distr ibution of smooth
+numbers among the integers less than x; in arithmetic progressions; in short intervals
+[x, x + z]; or in arithmetic progressions on average. In this paper we will prov e some
+results concerning the latter problem.
+In the case of primes, the most celebrated theorem concerning th eir average distribu-
+tion in arithmetic progressions is undoubtedly the Bombieri–Vinogradov theorem: for
+any ﬁxed A > 0, and any √x log−A x ≤ Q ≤ √x, we have
+∑
+q≤Q
+max
+y≤x
+max
+(a,q)=1
+⏐⏐⏐⏐Ψ(y; q, a) − yφ(q)⏐⏐⏐⏐ ≪A √xQ log4 x,
+where as usual we set Ψ(y; q, a) :=∑n≤y,n≡a(mod q) Λ(n). In particular, if Q = √x log−A x
+then the right hand side is ≪A x log4−A x, which beats the trivial bound ≪ x log Q (ob-
+tained since Ψ( x; q, a) ≪ x/φ(q) for q ≤ √x) provided A > 3.
+If one is prepared to sum over residue classes a, rather than taking a maximum,
+then one can obtain an interesting bound with Q much larger. Such a result may
+Date: 29th August 2012.
+The author is supported by a Doctoral Prize from the Engineering a nd Physical Sciences Research
+Council of the United Kingdom.
+1
+2 ADAM J HARPER
+be called a Barban–Davenport–Halberstam theorem: for any ﬁxed A > 0, and any
+x log−A x ≤ Q ≤ x, we have
+∑
+q≤Q
+∑
+(a,q)=1
+⏐⏐⏐⏐Ψ(x; q, a) − xφ(q)⏐⏐⏐⏐2 ≪A xQ log x.
+The theorems quoted above are essentially as stated in Davenport ’s book [3], and are
+actually due to Vaughan [23] and to Gallagher [8], respectively 1. The original results
+of Bombieri [2] and Vinogradov [24], and of Barban (see §3 of [1]) and Davenport and
+Halberstam [4], were slightly quantitatively weaker.
+Let us point out two things about these results that will be signiﬁcan t later. Firstly,
+both bounds are ineﬀective (unless A is very small), because the proofs rely on in-
+formation about possible Siegel zeros of Dirichlet L-functions. In our current state of
+knowledge this ineﬀectiveness seems unavoidable, because if a Siege l zero did exist it
+would genuinely distort the distribution of primes in arithmetic progre ssions. Secondly,
+the known proofs actually give bounds for absolute values of chara cter sums, namely
+∑
+q≤Q
+1
+φ(q)
+∑
+χ (mod q),
+χ⁄=χ0
+⏐⏐⏐⏐⏐∑n≤x Λ(n)χ(n)⏐⏐⏐⏐⏐ and ∑q≤Q 1φ(q) ∑χ (mod q),
+χ⁄=χ0
+⏐⏐⏐⏐⏐∑n≤x Λ(n)χ(n)⏐⏐⏐⏐⏐2 ,
+respectively. One wouldn’t hope for a better bound than |∑n≤x Λ(n)χ(n)| ≪ √x, and
+the right hand sides in the theorems do indeed correspond, up to log arithmic factors, to
+such squareroot cancellation. Thus, although we would expect a no n-trivial Bombieri–
+Vinogradov type theorem to hold with Q much larger than √x, we wouldn’t hope to
+prove such a result in this way (i.e. by bounding absolute values of cha racter sums).
+In the case of the Barban–Davenport–Halberstam theorem the b ound is known to be
+sharp: see e.g. the paper [19] of Montgomery. Indeed, in that cas e the original problem
+is equivalent to bounding the character sum that we wrote down.
+Now we turn to the case of smooth numbers. For x ≥ 1, and natural numbers a, q,
+we deﬁne
+Ψq(x, y) :=
+∑
+n≤x,(n,q)=1
+1{n∈S(y)} and Ψ( x, y; q, a) :=
+∑
+n≤x,n≡a(mod q)
+1{n∈S(y)},
+where 1 denotes the indicator function. We will also write Ψ( x, y) := ∑n≤x 1{n∈S(y)}.
+Thus our task is to give bounds, on average, for |Ψ(x, y; q, a) − Ψq(x, y)/φ(q)|. As in the
+case of prime numbers, one of our concerns will be to obtain good bo unds with as large
+
+web search: 
+web search: https://arxiv.org/html/1307.7554v3
+web search: 
+web search: Rosser Schoenfeld 1962 "Corollary 3" "20.5" ...
+codex
+I found two gaps in the written argument: the Möbius sum must retain \(d\le Q'\) when Drappeau is applied, and \(Q'<y^K\) needs a separate sentence because the large-conductor contribution is empty. Both have direct repairs. The transfer cost is polynomial in \(\log x\), and the saving absorbs it. The choice of \(K\) leaves a margin of \(y^{3/2-o(1)}\) in the large-sieve estimate.
+
+web search: 
+web search: "Propriétés statistiques des entiers friables" pdf Tenenbaum 2005 ...
+exec
+/bin/zsh -lc "sed -n '1,38p' sources/delaBreteche_Tenenbaum2005.txt && sed -n '260,291p' sources/drappeau2015_arxiv1307.7554v3.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+Ramanujan J. 9
+(2005), 139–202.
+Propri´ et´ es statistiques des entiers friables∗
+R. de la Bret` eche & G. Tenenbaum
+Sommaire
+1 Introduction............................................................................... 1
+2 R´ esultats.................................................................................. 2
+2.1 Entiers friables cribl´ es............................................................... 2
+2.2 Valeurs moyennes friables de fonctions arithm´ etiques................................. 6
+3 Pr´ eliminaires.............................................................................. 11
+3.1 Point-selle .......................................................................... 11
+3.2 Preuve du Corollaire 2.2 ............................................................ 12
+3.3 Sommes sur les nombres premiers ................................................... 14
+3.4 La fonction de Dickman ............................................................ 16
+3.5 Estimations de crible ............................................................... 17
+3.6 Estimations relatives ` agm(s)....................................................... 21
+4 Entiers friables cribl´ es : preuves du Th´ eor` eme 2.1 et du Corollaire 2.2...................... 26
+4.1 Estimation de Ψ m(x,y ) pour les petites valeurs de u................................. 26
+4.2 Estimation de Ψ m(x,y ) pour les grandes valeurs de u................................ 33
+5 Comportement local ...................................................................... 37
+5.1 Preuve du Th´ eor` eme 2.3............................................................ 37
+5.2 Preuve du Th´ eor` eme 2.4 : casm = 1................................................ 37
+5.3 Preuve du Th´ eor` eme 2.4(i) : cas g´ en´ eral............................................. 39
+5.4 Preuve du Th´ eor` eme 2.4(ii) : cas g´ en´ eral............................................ 40
+6 Valeurs moyennes de fonctions arithm´ etiques.............................................. 41
+6.1 Preuve du Corollaire 2.6 ............................................................ 41
+6.2 Preuve du Th´ eor` eme 2.7............................................................ 44
+6.3 Preuve du Corollaire 2.8 ............................................................ 44
+6.4 Preuve du Corollaire 2.10 ........................................................... 44
+6.5 Preuve du Corollaire 2.11 ........................................................... 45
+6.6 Preuve de la Proposition 2.12 ....................................................... 46
+1. Introduction
+La d´ ecomposition canonique d’un nombre entiern sous la forme
+n =ab, avec a :=
+∏
+pν‖n
+p⩽y
+pν, b := ∏
+Diderot – Paris 7. Il tient à exprimer sa plus profonde reconn aissance à son directeur de thèse
+Régis de la Bretèche et à Étienne Fouvry pour leurs conseils e t leurs encouragements durant la
+rédaction de ce travail, ainsi que son extrême gratitude au r apporteur anonyme pour sa relecture
+attentive et des remarques ayant permis d’améliorer ce manu scrit.
+2. Lemmes
+2.1 Entiers friables
+Dans [Hil86], Hildebrand étudie la fonction Ψ( x, y) en itérant une équation fonctionelle. On
+rappelle que la quantité u est liée à x et y par la relation u = (log x)/ log y, et on déﬁnit la
+fonction de Dickman ρ(u) pour tout u /greaterorequalslant 0 par
+ρ′(u) + uρ(u− 1) = 0 , (u /greaterorequalslant 1) (2.1)
+5
+Sary Drappeau
+avec la condition initiale ρ(u) = 1 pour u∈ [0, 1]. On prolonge ρ à R par ρ(u) = 0 pour u < 0.
+Lorsque ( x, y)∈ (Hε), on a
+Ψ(x, y) = xρ(u)
+{
+1 + Oε
+( log(u + 1)
+log y
+)}
+. (2.2)
+Le terme d’erreur est optimal pour le terme principal xρ(u). Saias [Sai89] montre que l’on peut
+préciser cette estimation au prix d’un terme principal fais ant intervenir la fonction ρ de façon
+plus ﬁne. On déﬁnit pour 2 ⩽ y ⩽ x,
+Λ(x, y) :=
+{
+x
+∫ +∞
+0− ρ(u− v)d(⌊yv⌋/yv) si x⁄∈ Z
+Λ(x + 0, y) sinon,
+ainsi que Lε(y) := exp{(log y)3/5−ε}. Lorsque ( x, y)∈ Hε, on a
+Ψ(x, y) = Λ( x, y)
+
+web search: 
+web search: https://tenenb.perso.math.cnrs.fr/PPP/
+exec
+/bin/zsh -lc "rg -n 'correction|publi|version|errat' sources/delaBreteche_Tenenbaum2005.txt | head -25 && sed -n '40,55p' sources/delaBreteche_Tenenbaum2005.txt" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ succeeded in 0ms:
+49:∗ Nous incluons ici certaines corrections par rapport ` a la version publi´ ee.
+340:quelques versions eﬀectives de ce principe.
+865:Un calcul classique reposant sur la formule d’inversion de M¨ obius fournit
+1121:par inversion de M¨ obius,
+1197:De plus, sous la mˆ eme condition, la formule d’inversion de M¨ obius permet d’´ ecrire
+1330:sont des versions amend´ ees de certains ´ enonc´ es de [34]. Nous rappelons les d´ eﬁnitions (2·4) de ϑm
+1655:taille du domaine d’int´ egration fournissant la contribution principale : c’est la version⟨⟨indirecte⟩⟩
+1897:d’o` u, d’apr` es la formule d’inversion de Fourier,
+p>y
+pν,
+constitue un outil eﬃcace dans beaucoup de probl` emes arithm´ etiques. Alors que les techniques de
+crible sont pertinentes pour l’´ etude des facteursb, des m´ ethodes sp´ eciﬁques sont n´ ecessaires pour
+appr´ ehender les facteursa.
+D´ esignons parP (n) le plus grand facteur premier d’un entier n> 1 et convenons que P (1) = 1.
+L’´ etude de l’ensembleS(x,y ) des entiers y-friables n’exc´ edant pasx, autrement dit des entiers n
+tels que P (n) ⩽y et n ⩽x, s’est ainsi r´ ev´ el´ ee, ces derni` eres ann´ ees, comme une partie int´ egrante
+de la th´ eorie analytique des nombres.
+∗ Nous incluons ici certaines corrections par rapport ` a la version publi´ ee.
+2 R. de la Bret `eche et G. Tenenbaum
+En ce qui concerne la fonction de comptage
+Ψ(x,y ) :=|S(x,y )|,
+trois approches ont ´ et´ e utilis´ ees ` a ce jour : l’exploitation de l’´ equation fonctionnelle de Buchstab,
+dans les travaux de de Bruijn [4] ; celle d’une ´ equation int´ egrale avec param` etre dans l’article de
+Hildebrand [14] ; et la mise en œuvre de la m´ ethode du col par Hildebrand et Tenenbaum [16].
+
+web search: 
+web search: '[99]'
+web search: 
+web search: https://projecteuclid.org/journals/illinois-journal-of-mathematics/volume-6/issue-1/Approximate-formulas-for-some-functions-of-prime-numbers/10.1215/ijm/1255631807.pdf
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/bin/zsh -lc "curl -L --fail --max-time 20 -o dbt2005.pdf https://tenenb.perso.math.cnrs.fr/PPP/PropStatFriables.pdf && python3 -c 'import importlib.util; print({m: importlib.util.find_spec(m) is not None for m in [\"fitz\", \"pypdf\", \"PIL\"]})'" in /Volumes/git/factoring-connection/codex/scratch/lem85_1
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: tenenb.perso.math.cnrs.fr
+
+web search: 
+web search: site.cambridge.org "Smooth numbers in arithmetic progressions to large moduli" "Lemma 3.2" ...
+codex
+I found a published-numbering error: Pascadi’s large-sieve statement is Lemma 3.4, not Lemma 3.3; the journal version numbers the intervening remark. Lemma 3.2 still matches the claimed input. The large-sieve calculation and the final design’s fixed power margins check out. I have found no fatal analytic error.
+
+web search: 
+web search: 
+web search: 
+web search: 'Lemma 3.4'
+codex
+1. **OK — §2(D), Drappeau’s statement and §5(a) application.** The quotation is correct: \(Q\le x\), conductor \(1<\operatorname{cond}\chi\le x^{\eta_D}\), all characters including imprimitive ones, arbitrary fixed \(A>0\), and effectivity for \(A<1\). Restricting its nonnegative left side to primitive pairs \(q=r\le R_1\) is legitimate. With \(d\le Q'\), \(z=x/d\ge x^{1/2+\lambda}\), so uniformly
+   \[
+   R_1=y^K=z^{o(1)}\le z^{\eta_D},\qquad (\log z)^{c_D}\le y\le z.
+   \]
+   No contradiction with Harper’s (3.1) emerges. [Drappeau, Lemme 5](https://arxiv.org/html/1307.7554v3).
+
+2. **MINOR — §5(a), the displayed Möbius sum drops an essential cutoff.** After replacing \(W(r,d)\), the note writes an unrestricted \(\sum_d D(x/d)\), then asserts \(d\le Q'\). That restriction has disappeared from the displayed expression. For unrestricted squarefree smooth \(d\), \(x/d\) can be below \(y\), invalidating Drappeau’s hypotheses and \(u_d\ge u/2\).
+
+   **Fix:** retain \(d\le Q'\) through the application of Drappeau and dBT. Extend the resulting positive Euler sum to all squarefree \(d\) only afterward. Originally \(rd\le Q'\), so this repair costs nothing.
+
+3. **MINOR — §5(b), illegal application when \(Q'<R_1\).** Lemma SM allows \(2y\le Q'<y^K\), whereas LS′ requires \(R_0\le Q_0\). The advertised substitution \(R_0=R_1,\ Q_0=Q'\) then violates its hypotheses.
+
+   **Fix:** state that case (b) is empty when \(Q'\le R_1\), since every conductor divides \(s\le Q'\). Apply LS′ only when \(Q'>R_1\). The main application has \(Q'\ge x^\lambda/2\gg R_1\), so this affects the broader SM statement only.
+
+4. **OK — E3, E8 and §5(a), transfer weights.** The bookkeeping works:
+   \[
+   W(r,d)\ll \log\log Q'\,\varrho(Q',y)
+   \frac{r^{1-\beta'}d^{1-\beta'}}{\varphi(r)\varphi(d)}.
+   \]
+   Coprimality \((r,d)=1\) supplies \(\varphi(rd)=\varphi(r)\varphi(d)\); overlapping factors in \(j\) cause no reverse inequality. After the local bound, the remaining divisor sum is
+   \[
+   \sum_{d\ \mathrm{squarefree}}\frac{d^{1-\beta-\beta'}}{\varphi(d)}
+   \le\prod_p\left(1+\frac{p^{-1/2}}{p-1}\right)<6.
+   \]
+   There is no hidden \(2^{\omega(s)}\) loss. Even for moduli with many prime factors, the pointwise totient loss is only \(O(\log\log Q')\).
+
+5. **OK — §5(a), absorption of the transfer cost.** Put
+   \[
+   V_N=\frac{\sqrt{\log N}}{(\log\log N)^{5/2}}.
+   \]
+   The calculation gives
+   \[
+   \delta_D\log H(u/2)=\left(\frac{2\delta_D\xi}{a}+o(1)\right)V_N.
+   \]
+   Its coefficient is at least \(4c_0+o(1)\). Meanwhile
+   \[
+   \log\!\left[\log\log x\,(\log x)^{K(1+C_\alpha)}\right]
+   =O(\log\log N)=o(V_N).
+   \]
+   Thus the claimed \(\varepsilon_N\) survives with substantial slack. Fixed, possibly large \(K\) does not break this argument.
+
+6. **OK — E4 and §4, factorisation, Perron and bilinear estimate.** E4 is unique, including repeated equal primes. The coefficient sequences are character independent and supported within intervals of lengths at most \(y\sqrt z\) and \(\sqrt z\). Perron separates the remaining condition \(mk\le z\).
+
+   The half-integer \(z'\) gives \(|z'-mk|\ge1/2\); the claimed \(|\log(z'/mk)|\ge1/(4yz)\) is valid. With \(T=(2zR)^4\), the aggregate truncation error is at most \(ey^3/(z^2R^2)\le e\). The integral and Cauchy–Schwarz estimates have enough slack for constant \(30\). In LS′, the final coefficients are at most \(480\) and \(1440\), both below \(1500\).
+
+7. **OK — E7, §5(b), §6 Part 2: the large-sieve saving is sufficient.** The distinct-prime-products argument proves the crude density bound. Its exponent is correctly
+   \[
+   \frac{u\log(4u\log y)}{\log y}=\frac{\xi}{a^2}+o(1).
+   \]
+   Writing \(b=\xi_{\max}/a^2\), the first LS′ term divided by \(\Psi(x,y)\varrho(Q',y)\) is
+   \[
+   y^{9/2-K+2b+o(1)}\le y^{-3/2+o(1)}.
+   \]
+   The second is \(x^{-\lambda}y^{O(1)}\). The additional \(\log Y\le\log x\) in Part 2 is \(y^{o(1)}\). Both errors are smaller than \(\varepsilon_N\). Conductors immediately above \(y^K\) are covered.
+
+8. **OK — E2 and the residue maximum.** The decomposition is exact. It requires \(\ell>y\) and \((\ell,s)=1\), but does **not** require every prime factor of \(s\) to be at most \(y\). Smoothness supplies the coprimality automatically here. Every reduced class modulo \(s\) has \(\ell-1\) reduced lifts modulo \(\ell s\), so replacing the maximum over reduced \(r\bmod t\) by the maximum modulo \(s\) is valid.
+
+9. **OK — §6(i), counting.** HT Theorem 3 is used only with fixed multipliers \(2\) and \(4\), within its range. Uniformly, \(Q/(4Y)\ge x^\lambda/4\), hence \(u_z\to\infty\) and \(\alpha(z,y)\to1\). The stated constants give
+   \[
+   0.19\cdot\frac35=0.114>0.1.
+   \]
+   Thus the claimed lower constant \(1/10\) follows; the upper constant \(3\) also has slack.
+
+10. **OK — §1 interface and FM Step 3.** The final design supplies
+    \[
+    \mu-\nu\ge\eta_0,\qquad
+    \xi/2-(\mu+\nu)\ge\eta_0/2.
+    \]
+    Choosing \(\lambda=\eta_0/(4\xi_{\max})\) leaves fixed positive margins. Every grid point has exponent \(\xi+o(1)\), since its displacement is \(L^{O(1)}\), so one fixed compact \(\Xi\) works uniformly. Also
+    \[
+    (\log\omega)\varepsilon_N\log\log N
+    =\exp\{-c_0V_N+O(\log\log N)\}\longrightarrow0.
+    \]
+    The replacement saving is sufficient for FM’s bad-modulus argument.
+
+11. **OK — §7, exceptional zeros and effectivity.** Taking \(A=1/2\) uses the effective version explicitly stated in the published input. Exceptional characters remain inside that estimate; no exceptional modulus is silently discarded. The subsequent transformations introduce no ineffective zero estimate. The algorithm’s parameters do not use \(C,c_0,N_0\). This conclusion accepts Drappeau’s published effectivity assertion; Pascadi repeats it but supplies no independent proof. [Published Lemma 3.2](https://doi.org/10.1112/S0010437X2500747X).
+
+12. **MINOR — §2(LS), false claim about matching published numbering.** Pascadi’s published multiplicative large sieve is **Lemma 3.4**, not Lemma 3.3. The intervening remark became numbered Remark 3.3. The supplied arXiv extraction therefore does **not** have identical numbering throughout.
+
+    **Fix:** change the citation to “published Lemma 3.4; arXiv v3 Lemma 3.3.” The crucial small-conductor statement remains Lemma 3.2. [Published version](https://www.cambridge.org/core/journals/compositio-mathematica/article/smooth-numbers-in-arithmetic-progressions-to-large-moduli/D8E4EE07BDAA6D41CCD8C5455D81CD7A).
+
+13. **MINOR — §2(P), §2(dBT), “only published numbered statements” is overstated.** Davenport’s cited kernel lemma is unnumbered and expressly unchecked. The supplied dBT author copy explicitly contains corrections to the published version; matching theorem numbers alone does not verify unchanged statements. [Corrected author copy](https://tenenb.perso.math.cnrs.fr/PPP/PropStatFriables.pdf).
+
+    **Fix:** prove the elementary Perron kernel estimate locally, or verify a numbered substitute and adjust constants. Anchor the local bound directly to Drappeau’s numbered Lemme 1(i), set \(\beta=\alpha\) consistently, and remove the unresolved overbar discussion. Explicitly record \(0<\beta\le1\) in the relevant asymptotic range.
+
+**Overall verdict: ACCEPT WITH FIXES.**
+
+Weakest remaining link: Drappeau Lemme 5’s effective small-conductor estimate, whose proof still rests on Harper §3.3.
+tokens used
+149,699
+1. **OK — §2(D), Drappeau’s statement and §5(a) application.** The quotation is correct: \(Q\le x\), conductor \(1<\operatorname{cond}\chi\le x^{\eta_D}\), all characters including imprimitive ones, arbitrary fixed \(A>0\), and effectivity for \(A<1\). Restricting its nonnegative left side to primitive pairs \(q=r\le R_1\) is legitimate. With \(d\le Q'\), \(z=x/d\ge x^{1/2+\lambda}\), so uniformly
+   \[
+   R_1=y^K=z^{o(1)}\le z^{\eta_D},\qquad (\log z)^{c_D}\le y\le z.
+   \]
+   No contradiction with Harper’s (3.1) emerges. [Drappeau, Lemme 5](https://arxiv.org/html/1307.7554v3).
+
+2. **MINOR — §5(a), the displayed Möbius sum drops an essential cutoff.** After replacing \(W(r,d)\), the note writes an unrestricted \(\sum_d D(x/d)\), then asserts \(d\le Q'\). That restriction has disappeared from the displayed expression. For unrestricted squarefree smooth \(d\), \(x/d\) can be below \(y\), invalidating Drappeau’s hypotheses and \(u_d\ge u/2\).
+
+   **Fix:** retain \(d\le Q'\) through the application of Drappeau and dBT. Extend the resulting positive Euler sum to all squarefree \(d\) only afterward. Originally \(rd\le Q'\), so this repair costs nothing.
+
+3. **MINOR — §5(b), illegal application when \(Q'<R_1\).** Lemma SM allows \(2y\le Q'<y^K\), whereas LS′ requires \(R_0\le Q_0\). The advertised substitution \(R_0=R_1,\ Q_0=Q'\) then violates its hypotheses.
+
+   **Fix:** state that case (b) is empty when \(Q'\le R_1\), since every conductor divides \(s\le Q'\). Apply LS′ only when \(Q'>R_1\). The main application has \(Q'\ge x^\lambda/2\gg R_1\), so this affects the broader SM statement only.
+
+4. **OK — E3, E8 and §5(a), transfer weights.** The bookkeeping works:
+   \[
+   W(r,d)\ll \log\log Q'\,\varrho(Q',y)
+   \frac{r^{1-\beta'}d^{1-\beta'}}{\varphi(r)\varphi(d)}.
+   \]
+   Coprimality \((r,d)=1\) supplies \(\varphi(rd)=\varphi(r)\varphi(d)\); overlapping factors in \(j\) cause no reverse inequality. After the local bound, the remaining divisor sum is
+   \[
+   \sum_{d\ \mathrm{squarefree}}\frac{d^{1-\beta-\beta'}}{\varphi(d)}
+   \le\prod_p\left(1+\frac{p^{-1/2}}{p-1}\right)<6.
+   \]
+   There is no hidden \(2^{\omega(s)}\) loss. Even for moduli with many prime factors, the pointwise totient loss is only \(O(\log\log Q')\).
+
+5. **OK — §5(a), absorption of the transfer cost.** Put
+   \[
+   V_N=\frac{\sqrt{\log N}}{(\log\log N)^{5/2}}.
+   \]
+   The calculation gives
+   \[
+   \delta_D\log H(u/2)=\left(\frac{2\delta_D\xi}{a}+o(1)\right)V_N.
+   \]
+   Its coefficient is at least \(4c_0+o(1)\). Meanwhile
+   \[
+   \log\!\left[\log\log x\,(\log x)^{K(1+C_\alpha)}\right]
+   =O(\log\log N)=o(V_N).
+   \]
+   Thus the claimed \(\varepsilon_N\) survives with substantial slack. Fixed, possibly large \(K\) does not break this argument.
+
+6. **OK — E4 and §4, factorisation, Perron and bilinear estimate.** E4 is unique, including repeated equal primes. The coefficient sequences are character independent and supported within intervals of lengths at most \(y\sqrt z\) and \(\sqrt z\). Perron separates the remaining condition \(mk\le z\).
+
+   The half-integer \(z'\) gives \(|z'-mk|\ge1/2\); the claimed \(|\log(z'/mk)|\ge1/(4yz)\) is valid. With \(T=(2zR)^4\), the aggregate truncation error is at most \(ey^3/(z^2R^2)\le e\). The integral and Cauchy–Schwarz estimates have enough slack for constant \(30\). In LS′, the final coefficients are at most \(480\) and \(1440\), both below \(1500\).
+
+7. **OK — E7, §5(b), §6 Part 2: the large-sieve saving is sufficient.** The distinct-prime-products argument proves the crude density bound. Its exponent is correctly
+   \[
+   \frac{u\log(4u\log y)}{\log y}=\frac{\xi}{a^2}+o(1).
+   \]
+   Writing \(b=\xi_{\max}/a^2\), the first LS′ term divided by \(\Psi(x,y)\varrho(Q',y)\) is
+   \[
+   y^{9/2-K+2b+o(1)}\le y^{-3/2+o(1)}.
+   \]
+   The second is \(x^{-\lambda}y^{O(1)}\). The additional \(\log Y\le\log x\) in Part 2 is \(y^{o(1)}\). Both errors are smaller than \(\varepsilon_N\). Conductors immediately above \(y^K\) are covered.
+
+8. **OK — E2 and the residue maximum.** The decomposition is exact. It requires \(\ell>y\) and \((\ell,s)=1\), but does **not** require every prime factor of \(s\) to be at most \(y\). Smoothness supplies the coprimality automatically here. Every reduced class modulo \(s\) has \(\ell-1\) reduced lifts modulo \(\ell s\), so replacing the maximum over reduced \(r\bmod t\) by the maximum modulo \(s\) is valid.
+
+9. **OK — §6(i), counting.** HT Theorem 3 is used only with fixed multipliers \(2\) and \(4\), within its range. Uniformly, \(Q/(4Y)\ge x^\lambda/4\), hence \(u_z\to\infty\) and \(\alpha(z,y)\to1\). The stated constants give
+   \[
+   0.19\cdot\frac35=0.114>0.1.
+   \]
+   Thus the claimed lower constant \(1/10\) follows; the upper constant \(3\) also has slack.
+
+10. **OK — §1 interface and FM Step 3.** The final design supplies
+    \[
+    \mu-\nu\ge\eta_0,\qquad
+    \xi/2-(\mu+\nu)\ge\eta_0/2.
+    \]
+    Choosing \(\lambda=\eta_0/(4\xi_{\max})\) leaves fixed positive margins. Every grid point has exponent \(\xi+o(1)\), since its displacement is \(L^{O(1)}\), so one fixed compact \(\Xi\) works uniformly. Also
+    \[
+    (\log\omega)\varepsilon_N\log\log N
+    =\exp\{-c_0V_N+O(\log\log N)\}\longrightarrow0.
+    \]
+    The replacement saving is sufficient for FM’s bad-modulus argument.
+
+11. **OK — §7, exceptional zeros and effectivity.** Taking \(A=1/2\) uses the effective version explicitly stated in the published input. Exceptional characters remain inside that estimate; no exceptional modulus is silently discarded. The subsequent transformations introduce no ineffective zero estimate. The algorithm’s parameters do not use \(C,c_0,N_0\). This conclusion accepts Drappeau’s published effectivity assertion; Pascadi repeats it but supplies no independent proof. [Published Lemma 3.2](https://doi.org/10.1112/S0010437X2500747X).
+
+12. **MINOR — §2(LS), false claim about matching published numbering.** Pascadi’s published multiplicative large sieve is **Lemma 3.4**, not Lemma 3.3. The intervening remark became numbered Remark 3.3. The supplied arXiv extraction therefore does **not** have identical numbering throughout.
+
+    **Fix:** change the citation to “published Lemma 3.4; arXiv v3 Lemma 3.3.” The crucial small-conductor statement remains Lemma 3.2. [Published version](https://www.cambridge.org/core/journals/compositio-mathematica/article/smooth-numbers-in-arithmetic-progressions-to-large-moduli/D8E4EE07BDAA6D41CCD8C5455D81CD7A).
+
+13. **MINOR — §2(P), §2(dBT), “only published numbered statements” is overstated.** Davenport’s cited kernel lemma is unnumbered and expressly unchecked. The supplied dBT author copy explicitly contains corrections to the published version; matching theorem numbers alone does not verify unchanged statements. [Corrected author copy](https://tenenb.perso.math.cnrs.fr/PPP/PropStatFriables.pdf).
+
+    **Fix:** prove the elementary Perron kernel estimate locally, or verify a numbered substitute and adjust constants. Anchor the local bound directly to Drappeau’s numbered Lemme 1(i), set \(\beta=\alpha\) consistently, and remove the unresolved overbar discussion. Explicitly record \(0<\beta\le1\) in the relevant asymptotic range.
+
+**Overall verdict: ACCEPT WITH FIXES.**
+
+Weakest remaining link: Drappeau Lemme 5’s effective small-conductor estimate, whose proof still rests on Harper §3.3.
