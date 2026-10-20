@@ -22,83 +22,99 @@ own algorithm is internal and unrefereed.
 
 **Plain language.** None of the proposed escapes gives a rigorous factoring algorithm below L[2/5], and neither does
 ERH. We tried norm export, fresh shared-root fields, class-group principalisation, Galois and Kummer transport,
-re-splitting and factor-then-descend. Each one fails at an identifiable step: it either cannot remove an algebraic
-child at all, or it hands the problem back in an equivalent form. What we can now say is narrower than before:
-- the only way to remove an algebraic child is inside its own field;
-- inside a field, the whole difficulty is one analytic statement: a lower bound for the number of field coefficient
-  vectors at which **more values of one polynomial than it has coefficients** are simultaneously smooth;
-- in the size model, every polynomial excess helps. If such joint control held for d^{C} points with any fixed
-  C > 1, the exponent would drop below 2/5. C = 3/2 gives 3/8, and C → ∞ approaches 1/3.
-- after a pooling trick, this statement is needed only up to a factor L^{O(1)}, not to polylogarithmic precision.
+re-splitting and factor-then-descend. In every one we inspected, a specific step fails, and the failure is now
+written down precisely. Three kinds of finding come out of it:
+- **Proved obstructions.** In the standard certificate form (per-field squares), an algebraic child can only be
+  removed by elements of its own field, unless the fields are tied together by a common subfield structure (Lemma TI).
+  The Kummer/odd-isogeny transport of r20 #4 lands back in the original field for the generic Galois group (Prop KT).
+  The counting lemma behind the Dixon split does not extend to arbitrary square cosets (Prop RS).
+- **A sharp model picture.** Inside one field, descent below 2/5 needs joint control of more values of one polynomial
+  than it has coefficients. Components of O(d) points give nothing (Prop R3). In the chain sub-model, d^{C} points with
+  any C > 1 give an exponent below 2/5: 3/8 at C = 3/2, tending to 1/3 as C → ∞.
+- **A weaker sufficient hypothesis.** Pooling fields (Theorem NR-q) reduces "rigorous L[α]" to a per-target,
+  field-averaged success probability of only L^{−O(1)}. It must hold on a polylog-dense set of split primes.
 
-So the problem is not in the algebra, the precision bookkeeping or ERH. It is one open estimate about smooth
-values of overdetermined linear systems.
+This is a catalogue of failed implementations plus one precise sufficient target. It is **not** a proof that every
+route reduces to that target: conditional randomness in tied fields, directed recombination with non-diffuse labels,
+and structured image certificates remain separate open alternatives (§9; codex escapeR2_2 §9).
 
 **Precisely.**
 1. **Lemma TI (cross-field parity transfer) [proved].** Let K_1, …, K_J lie in a Galois field L, and let ∏Γ_j be a square
    in L with Γ_j ∈ K_j. At every prime ℓ unramified in L, the parity vector of Γ_1 at the primes of K_1 above ℓ is
-   pulled back from the subfield k_1 := K_1 ∩ K_2⋯K_J. **Corollary EX:** if k_1 = Q (for example, K_1 primitive and not
-   contained in the compositum of the other fields), no combination of other fields, rational integers or norms can
-   remove an algebraic child of a degree-one element of K_1. The certificate must contain other elements of K_1 lying
-   in primes above the same ℓ. This kills families 1(a), 1(b) and 3 in their stated forms (§§2–3, 5). E1 checks it
-   exactly on 72 824 group configurations (0 violations).
-2. **Tied fields do transfer, but are not fresh [proved example + structural].** If k_1 ≠ Q, transfer happens. For
-   example, a prime of Q(√ab) is congruent mod 2 to a sum of primes of Q(√a) and Q(√b) (E1: τ = 1). Such fields are
-   subfields of one Galois field L, so they bring no independent randomness (§2.3).
-3. **Kummer / odd-isogeny transport (r20 #4) [proved for S_d-fields, d ≥ 7, given fact (F)].** If J′[2] ≅ J[2] (in particular if J′
-   is odd-degree isogenous to J = Jac(y² = f)), and Gal(f) = S_d, then the étale algebra of f′ is K or K × Q. The
-   transported class lands back in K (Prop KT, §5.2). A different generator of the same field needs a min-polynomial
-   of height ≈ N (heuristic count, §5.2), so the transport gives no fresh representation.
+   pulled back from k_1 := K_1 ∩ K_2⋯K_J. **Corollary EX:** if k_1 = Q (e.g. K_1 primitive and not contained in the
+   compositum of the others), then other fields, rational integers and norms cannot remove an algebraic child of a
+   degree-one element of K_1 at such an ℓ. The certificate must contain further elements of K_1 in primes above ℓ. This
+   blocks families 1(a), 1(b) and the conjugate/splitting-type versions of 3 in their stated forms (§§2–3, 5). Children
+   ℓ dividing another field's discriminant are excluded from the statement; they are O(J·d·t/Λ) primes (§2.1). E1
+   checks TI exactly on 72 824 group configurations: 0 violations.
+2. **Tied fields do transfer parity [proved example].** A prime of Q(√ab) is ≡ mod 2 a sum of primes of Q(√a) and Q(√b)
+   (E1: τ = 1). Whether such transfer can be made *useful* is open, i.e. realised by short elements with a compatible
+   evaluation map and with fresh randomness (b can be fresh given a). We do not exclude it (§2.3).
+3. **Kummer/odd-isogeny transport (r20 #4) [proved, for f of odd degree d ≥ 7 with Gal(f) = S_d and deg f′ ∈ {d, d+1}].**
+   If J′[2] ≅ J[2] for J = Jac(y² = f), J′ = Jac(y² = f′), then the étale algebra of f′ is K or K × Q (Prop KT; Fact (F)
+   from Dixon–Mortimer Thm 5.2B). So 2-torsion-preserving transport through hyperelliptic models returns to the same
+   field. KT does not rule out other cohomological representations, other Galois groups, or even d (§5.2).
 4. **Principalisation and class groups (families 1(c), 2) [proved reduction + model].** Removing 𝔭 modulo squares
-   requires θ with (θ) = 𝔭·(factor-base)·(square) (codex escapeR2_1 (5.1)). Under ERH such θ always exist (Bach), but
-   only at the Arakelov scale ≥ √|Δ_K| (nested Thm AF). There ψ(θ) is a generic residue. Its only known treatment is
-   a re-split modulo N, which resets targets to the top scale L[1 − α] (§4, §6). Rigorous class-group algorithms are
-   L_{|Δ|}(1/2) (dBPW, ERH). For fields with explicit ψ, |Δ_K| = N^{Θ(1)} heuristically, so this route gives L[1/2].
-5. **Re-splitting (family 4(b,c)) [proved obstruction + model].** The square-corrected re-split w ≡ u/(v s²) is valid,
-   but Lemma S″ does not extend from the square class to a coset wQ. An adversarial target set gives zero pairs
-   (Prop RS; E3: 0 pairs on 5 toy moduli). Any re-split also returns targets at scale ≥ L[1 − α]. Recursion supplies
-   factorisations, never relations modulo N (§6).
+   requires θ with (θ) = 𝔭·(factor base)·(square) (codex escapeR2_1 (5.1)). Under GRH for ζ_K, θ exists once the factor
+   base contains all prime ideals of norm ≤ 12 log²|Δ_K| (Bach). The only general rigorous way to *find* θ is at the
+   Arakelov scale ≥ √|Δ_K| (dBPW; nested Thm AF). ψ(θ) is then a generic residue, whose only treatment we know is a
+   re-split modulo N. A re-split puts the targets back at the top scale (§4, §6). For fields with explicit ψ, |Δ_K| = N^{Θ(1)}
+   heuristically, so this route is L[1/2]. A structured way of producing θ with small evaluated image is a separate
+   open alternative.
+5. **Re-splitting (family 4(b,c)) [proved obstruction + proved bound for uniform masks].**
+   - The square-corrected re-split w ≡ u/(v s²) is valid.
+   - Lemma S″ does not extend from the square class to a coset wQ_N: pigeonholing the window primes by square class
+     gives target sets with zero pairs (Prop RS(ii); E3).
+   - For uniform masks, Pr[max(|u|, |v|) ≤ H] ≤ (2H + 1)²/|Q_N| (codex escapeR2_2), so masked re-splits do not contract.
+   - Recursion supplies factorisations and tests. It is not itself a modular bridge (§6).
 6. **Budget-respecting in-field descent stays at 2/5 [model] (Prop R3).** Under nested's premises M1–M4 and the
-   typical-factorisation model, suppose every algebraic component has O(d) points, which is what the known moment
-   method controls. Then the floor is 2/5. This extends Prop R2 from "no algebraic children" to "budget-respecting
-   algebraic children" (§7.1).
-7. **The budget exponent is the whole story [model; E2 exact].** Allow components of up to d^{C} points (chain
-   sub-model). The floor is α*(C) = (3 − C)/(7 − 2C) for 1 ≤ C ≤ 3/2, and α*(C) = (r + 2)/(3r + 5) once C ≥ r + 1 (7/18
-   at C = 5/4; 3/8 at C = 3/2; 4/11 at C = 8/3; 5/14 at C = 4; 11/32 at C = 10). It is below 2/5 for every C > 1 and
-   above 1/3 for every finite C (§7.2). Codex escapeR2_1 found the C = ∞ level thresholds independently.
-8. **Theorem NR-q [proved conditional on Hyp T_q, LV6′ and the multi-field post-processing of lv5unif Prop MF
-   (outline)].** Suppose a positive-density set of split primes q (density ≥ (log N)^{−C₀}) each satisfies:
-   Pr_A[the in-field descent of q completes] ≥ L[α, −c]. Then factoring runs in L[α, c′]. This is weaker than nested's
-   AD in three ways: it is averaged over the field, pointwise in the target, and needs only L^{−O(1)} success (§8). Consequence for r20 #1:
-   its two-level moment lemma is needed only up to L^{O(1)}, not (log N)^{O(1)}. Losses of exp(O(#forms)) are
-   affordable, so the "kill test" in r20 #1 does not kill it (§7.3).
-9. **ERH.** ERH is not the missing input anywhere. It removes character costs (Lemma X_ERH) and makes Bach's generation
-   bound available, but supplies neither in-field joint smoothness nor small evaluated images.
-10. **Literature (§11).** No rigorous or ERH-conditional L[α < 1/2] factoring was found. No rigorous L(1/3) class-group
-    or principal-ideal algorithm was found. No smooth-number result for overdetermined linear systems at L-scale was
-    found. Lemma TI is elementary and close to the norm-relation and Brauer-relation literature. We make no novelty claim.
+   typical-factorisation model, the floor is 2/5 when every algebraic component has O(d) points. O(d) is what the known
+   moment methods control. This extends Prop R2 from "no algebraic children" to "budget-respecting algebraic children"
+   (§7.1).
+7. **Superlinear budgets in the chain sub-model [model; E2 exact].** Allow components of up to d^{C} points. The
+   sub-model floor is α*(C) = min_{r ≤ C} max((r+2)/(3r+5), [C < r+1]·(r+2−C)/(2r+5−2C)):
+   - (3 − C)/(7 − 2C) on [1, 3/2], so it falls below 2/5 for every C > 1;
+   - 3/8 on [3/2, 5/2], 7/19 at C = 13/5, 4/11 on [8/3, 11/3], 5/14 at C = 4, 11/32 at C = 10;
+   - plateaus (r+2)/(3r+5) on [r+1 − 1/(r+1), r+2 − 1/(r+1)], so it is above 1/3 for every finite C.
+
+   This is an *upper bound* on the general model floor: one field, B-smooth rational sides, uniform child sizes.
+   Prop R3 is the only general lower bound (C = 1 + o(1)) (§7.2). Codex escapeR2_1 found the C = ∞ level thresholds
+   independently.
+8. **Theorem NR-q [proved conditional on Hyp T_q, Hyp LV6′ at degree D^δ, character columns via ERH or the
+   factorial-bit repair, and lv5unif's multi-field post-processing (outline)].** Suppose that for a set of split primes q
+   of density ≥ (log N)^{−C₀}, Pr_A[the in-field search for q completes] ≥ L[α, −c]. Then factoring runs in L[α, c′].
+   - The split uses a padded modulus N_* = 9^{k+1}N; codex escapeR2_2 found and repaired a window error in the draft.
+   - This is weaker than nested's AD: averaged over fields, pointwise in the target, with only L^{−O(1)} success.
+   - Consequence for r20 #1: its two-level moment ratio is needed only up to L^{O(1)} **fieldwise, for each q in a
+     polylog-dense set**, rather than up to (log N)^{O(1)}. Jointly averaged moments do not suffice (codex
+     escapeR2_2 §8 counterexample). The target density itself is still needed at polylog precision (§§7.3, 8).
+9. **ERH.** ERH supplies none of the missing inputs. It removes character costs (Lemma X_ERH) and gives Bach's bound,
+   but supplies neither in-field joint smoothness nor small evaluated images.
+10. **Literature (§11).** We found no rigorous or ERH-conditional L[α < 1/2] factoring algorithm, no rigorous L(1/3)
+    class-group or principal-ideal algorithm, and no smooth-number result for overdetermined linear systems at L-scale.
+    Lemma TI is elementary and close to the norm-relation and Brauer-relation literature. We make no novelty claim.
 
 ### Per-approach exponent table
 
-α is the size-model exponent the approach would give if its missing lemma were proved. "Refuted" means refuted in
-the certificate class of §1 (products of field elements that are squares in a common Galois field), not for every
-conceivable algorithm.
+α is the size-model exponent the approach would give if its missing lemma were proved. "Blocked" means blocked in the
+certificate class of §1 (per-field square certificates, or squares in a common Galois field with a supplied
+compatible evaluation), not for every conceivable algorithm.
 
-| # | approach | α in the model | status | exact missing lemma |
+| # | approach | α in the model | status | missing lemma |
 |---|---|---|---|---|
-| 1a | replace 𝔭 by its norm ℓ (with Galois conjugates / closure) | none: the complement is ≥ as hard | **refuted** (Cor EX, codex §3) | — |
-| 1b | second field K′ sharing m; re-descend ℓ there | 2/5 (it is Prop MF) | cross-field closing **refuted** when K ∩ K′ = Q (TI) | — |
-| 1b′ | tied fields inside one Galois L (norm relations) | no gain: the component lives in L, same budget | proved example; structural | budget lemma for L |
-| 1c | ψ-image of a generator / S-unit | ≥ 2/5 (collapses to a re-split) | model | contracting image certificate (codex (5.2)) |
-| 2 | class-group descent (dBPW, Biasse–Fieker) | 1/2 rigorous (ERH); 1/3 only under the same descent heuristics | KNOWN + model | rigorous L_{|Δ|}(1/3) PIP with controlled ψ-images, or small-|Δ| fields with explicit ψ |
-| 3 | Galois/Chebotarev, conjugate families, Kummer transport (r20 #4), Gassmann (r20 #7) | no gain | **refuted** for S_d-fields (TI, KT; r20 #7) | a non-S_d family with transfer *and* freshness (none known) |
-| 4a | independent one-level descents; global recombination (r20 #9) | 2/5 (R2, R3) | model; r20 #9 killed under diffuse labels | concentrated-label reservoirs |
-| 4b | split law with halves re-split recursively | no contraction (scale reset) | **refuted as stated** (RS) | coset equidistribution + a contracting re-split |
-| 4c | factor-then-descend | = special-q descent | structural (recursion gives no relations mod N) | — |
+| 1a | replace 𝔭 by its norm ℓ (Galois conjugates / closure) | none: complement ≥ as hard | **blocked** (Cor EX, codex §3) | — |
+| 1b | second field K′ sharing m; re-descend ℓ there | 2/5 (it is Prop MF) | cross-field closing **blocked** when K ∩ K′ = Q (TI) | — |
+| 1b′ | tied fields in one Galois L (norm relations) | open | transfer exists (example TB); usefulness unproved | short transfer elements with compatible ψ and fresh randomness |
+| 1c | ψ-image of a generator / S-unit | ≥ 2/5 if treated by re-split | model | contracting image certificate (codex (5.2)) |
+| 2 | class-group descent (dBPW, Biasse–Fieker) | 1/2 rigorous (ERH); 1/3 only under descent heuristics | KNOWN + model | rigorous L_{|Δ|}(1/3) PIP with controlled ψ-images, or small-|Δ| fields with explicit ψ |
+| 3 | Galois/Chebotarev; Kummer transport (r20 #4); Gassmann (r20 #7) | no gain in the inspected forms | blocked for 2-torsion-preserving transport, S_d, odd d ≥ 7 (KT); r20 #7 kill | a transport not induced by 2-torsion, or a non-S_d family with useful transfer |
+| 4a | independent one-level descents; diffuse recombination (r20 #9) | 2/5 (R2, R3) | model; r20 #9 killed under diffuse labels | directed recombination with seeded rank surplus (open) |
+| 4b | split law with halves re-split | no contraction for uniform masks | S″ fails on cosets (RS(ii)); uniform-mask bound (RS(iii)) | coset equidistribution + a contracting bridge |
+| 4c | factor-then-descend | needs a modular bridge | structural | a costed modular bridge |
 | 5a | in-field multi-level, components O(d) points | 2/5 | model (Prop R3) | — |
-| 5b | in-field multi-level, components d^{C} points | α*(C): 3/8 at C = 3/2 → 1/3 | model (E2) | **Hyp LS_C** (joint smooth supply for d^{C}-point configurations) |
-| 5c | r20 #1: moments of complete two-level certificates | 3/8 (needs C = 3/2) | open; precision relaxed to L^{O(1)} (§7.3) | Hyp T_q at 3/8 |
-| 5d | full multi-level descent | 1/3 | conditional (Thm NR: AD; Thm NR-q: T_q) | Hyp T_q at 1/3 |
+| 5b | in-field multi-level, components d^{C} points | chain sub-model: 7/18 at C = 5/4, 3/8 at C = 3/2, → 1/3 | model (E2) | Hyp LS_C (targetwise moments + search) |
+| 5c | r20 #1: moments of complete two-level certificates | 3/8 | open; ratio needed only to L^{O(1)} fieldwise, targetwise (§7.3) | Hyp T_q at 3/8 |
+| 5d | full multi-level descent | 1/3 | conditional (NR: AD; NR-q: T_q) | Hyp T_q at 1/3 (with a search analysis for growing depth) |
 
 ---
 
@@ -111,10 +127,19 @@ Z_j ∈ K_j^{×2} for every j. The congruence is then completed by codex's squar
 denominator-square corrections. That identity is a direct check and is correct; it is lv5unif §11's multi-field
 post-processing written as a formula.
 
-**The most general multi-field square certificate** asks instead that ∏_j Γ_j be a square in a Galois field L
-containing all K_j, with ψ extended to O_L. Such an extension exists on Z[α_1, …, α_J] (all α_j ↦ m). It is a ring
-homomorphism because Z[α_1,…,α_J] is a quotient of Z[x_1,…,x_J]/(f_1(x_1),…,f_J(x_J)) and every f_j(m) ≡ 0. The
-per-field certificate is the special case Γ_j ∈ K_j^{×2}. Lemma TI applies to the general version.
+**A more general multi-field square certificate** asks instead that ∏_j Γ_j be a square in a Galois field L
+containing all K_j. To use it one also needs a ring homomorphism ψ_L on a suitable order of L, restricting to every
+ψ_j, defined at the square root.
+- *Such a ψ_L need not exist* (both reviewers). The map x_j ↦ m on Z[x_1,…,x_J]/(f_j(x_j)) descends to the order
+  generated by the α_j only if the extra relations among the α_j vanish at (m, …, m).
+- *Counterexample* (codex escapeR2_2): N = 119, α_1 = √2, α_2 = −√2, m = 11 (11² ≡ 2). Each field separately allows
+  α_j ↦ 11, but α_1 + α_2 = 0 while 11 + 11 ≢ 0.
+- In the V₄ triple Q(√ab), Q(√a), Q(√b), forcing all three generators to m forces m ≡ ±1 (proof critic).
+- *When it does exist:* the compatibility is automatic, away from finitely many primes, when K_1 ⊗ … ⊗ K_J is a field
+  (linearly disjoint fields).
+- *How we use the class.* We treat it as a *superset* of the usable certificates: a ψ_L must be supplied, and the
+  per-field certificate (Γ_j ∈ K_j^{×2}) is the special case actually used by NR-q and lv5unif. Lemma TI is a
+  statement about valuations only, so it applies to the whole superset. Its obstructions therefore hold a fortiori.
 
 An **algebraic child** of a degree-one element z_P = a − bα (gcd(a, b) = 1) is a prime 𝔭 = (ℓ, a/b mod ℓ) with
 ℓ > B, ℓ ∤ b·f_d·[O_K : Z[α]]. To *remove* it means to reach a certificate in which v_𝔭 is even.
@@ -140,18 +165,23 @@ invariant under left multiplication by H_1 and by H′, hence by H₁⁺. Two pr
 same prime of k_1 iff τ ∈ H₁⁺σD. So x_1 takes equal values on them. ∎
 
 *Remarks.*
-- Ramified primes and primes dividing indices are finitely many per field. They are exactly the primes that LV6
-  places in its residual group H, handled by characters. TI is about large unramified primes.
-- The two-field case is sharp: Im_1 ∩ Im_2 is exactly the image of the ideals of K_1 ∩ K_2 (E1 P3: τ₂ = 0 in all
-  6 883 two-field cases).
+- *Excluded primes (codex escapeR2_2 #2).* TI needs ℓ unramified in L, so it excludes every ℓ dividing some
+  disc(f_j), j ≥ 1, and not only the source field's own exceptional primes. There are ≤ Σ_j log|disc f_j|/log B =
+  O(J·d·t/Λ) such ℓ > B. They are fixed once the fields are fixed. A descent can declare them non-targets, as nested
+  excludes q | D_A, at the price of rejecting points whose values they divide. Parity transfer at ramified ℓ is not
+  analysed here.
+- The two-field case is sharp: Im_1 ∩ Im_2 consists of the functions left-invariant under ⟨H_1, H_2⟩, i.e. exactly the
+  image of the ideals of K_1 ∩ K_2. This is a one-line consequence of the proof; E1 P3 confirms it, with τ₂ = 0 in all
+  6 883 two-field cases.
 - For three or more fields, the sum of the images can contain more than the separate pairwise intersections; that is
   why k_1 is defined with the compositum (E1(b)). The bound in TI is an inclusion, not an equality.
 
 ### 2.2 Corollary EX: export of algebraic children is impossible between unrelated fields
 
 **Corollary EX [proved].** Assume k_1 = K_1 ∩ K_2⋯K_J = Q. Let Γ_1 = ∏ z_i^{e_i} be a product of degree-one elements
-z_i = a_i − b_iα_1 (gcd(a_i, b_i) = 1). Let 𝔭 = (ℓ, r) be a prime of degree one with ℓ unramified in L, ℓ ∤ f_d and
-ℓ ∤ [O_{K_1}:Z[α_1]], and with v_𝔭(Γ_1) odd. Then:
+z_i = a_i − b_iα_1 (gcd(a_i, b_i) = 1). Let 𝔭 = (ℓ, r) be a prime of degree one with ℓ unramified in L and ℓ ∤ f_d. Since
+ℓ ∤ f_d, α_1 is ℓ-integral. Assume ℓ ∤ [O_{K_1,(ℓ)} : Z_{(ℓ)}[α_1]] (localised index; this handles non-monic f), and
+v_𝔭(Γ_1) odd. Then:
 - (i) every prime of K_1 above ℓ has odd valuation in Γ_1;
 - (ii) all primes of K_1 above ℓ have degree one, and each of them contains some z_i with e_i odd;
 - (iii) in particular Γ_1 contains, besides the element that opened 𝔭, at least one further z_i lying in a prime above
@@ -159,7 +189,7 @@ z_i = a_i − b_iα_1 (gcd(a_i, b_i) = 1). Let 𝔭 = (ℓ, r) be a prime of deg
 
 *Proof.* (i) is TI with k_1 = Q: there is one prime of Q above ℓ, so x_1 is constant, and it equals 1 at 𝔭.
 (ii) If ℓ ∤ b_i, then z_i lies in at most one prime above ℓ, namely (ℓ, a_i/b_i), which has degree one. If ℓ | b_i,
-then ℓ ∤ a_i and z_i is an ℓ-unit (its norm F(a_i, b_i) is ≡ f_d a_i^d ≢ 0 mod ℓ). A prime 𝔓 of degree ≥ 2 above ℓ therefore has
+then ℓ ∤ a_i and z_i is an ℓ-unit (its norm F(a_i, b_i)/f_d is ≡ a_i^d ≢ 0 mod ℓ). A prime 𝔓 of degree ≥ 2 above ℓ therefore has
 v_𝔓(Γ_1) = 0, contradicting (i). So every prime above ℓ has degree one, and for each such prime the sum Σ e_i v(z_i)
 is odd, so some z_i with e_i odd lies in it. (iii) If [K_1 : Q] = d > 1, then (ii) gives d ≥ 2 distinct primes
 above ℓ, each containing an element of Γ_1. ∎
@@ -176,7 +206,7 @@ maximal), so k_1 ∈ {Q, K_1}. Thus k_1 = Q unless K_1 ⊂ K_2⋯K_J. For the in
 bound; the algorithm can test it exactly, since K_1 ⊂ K_2⋯K_J is decidable. Sharing the rational side ties the fields
 only through Q.
 
-### 2.3 Tied fields: transfer exists, freshness does not
+### 2.3 Tied fields: parity transfer exists; usefulness is open
 
 **Example TB [proved; E1(b)].** In L = Q(√a, √b) with G = V₄, let ℓ split completely, and label the four primes of L
 by sign pairs (ε_a, ε_b) of √a, √b mod ℓ. A prime of Q(√a) is a set {(ε, ±)}, a prime of Q(√b) is a set {(±, ε′)},
@@ -188,12 +218,17 @@ in Q[V₄] (§11).
 E1's census shows the same thing is common in small groups. Among 65 940 subgroup triples with D ranging over all
 cyclic subgroups, τ > 0 in 40 149. In every one of them k_1 ≠ Q: among the 7 948 triples with k_1 = Q, τ > 0 in 0.
 
-*Why this is no escape [structural].* Transfer needs a common Galois field L in which K_1 is not disjoint from the
-others. All such fields are subfields of one object L, and none of them is chosen
-independently of K_1. The descent problem moves into L. Its children are ideals of L, closed by elements of L, whose
-parameter budget is that of L's defining data. This is the same situation as one field. We do not claim more; a
-construction with many subfields *and* independent randomness per subfield would be new. The multiquadratic fields
-of §4 show the scale problem such constructions meet.
+*What this does and does not show.*
+- *First obstruction: an evaluation map.* Transfer needs a common Galois field L in which K_1 meets the compositum of
+  the others non-trivially. Parity transfer by itself is not a certificate: it also needs a compatible ψ_L. In the
+  V₄ triple, all generators mapping to the same m forces m ≡ ±1 (§1). With ψ(√a) = s_a and ψ(√b) = s_b chosen
+  separately, each subfield needs its own small rational representation of s_a, s_b and s_a s_b for degree-one sieving.
+- *Our first draft overstated the second obstruction.* It said such fields bring no independent randomness. That is
+  false: fixing a and choosing a fresh b gives Q(√a), Q(√b), Q(√ab) with exactly the V₄ structure, while b remains free
+  given a (codex escapeR2_2 §9).
+- **[open]** Can parity transfer between tied fields be realised by short elements, with a compatible evaluation and
+  enough conditional randomness for a moment argument? We do not exclude it, and we know no construction. The
+  multiquadratic scale problem of §4 is one obstacle: discriminants ≥ √N per quadratic factor.
 
 ---
 
@@ -224,9 +259,11 @@ algebraic value by another field's value at the same point. It gives the one-lev
 (θ) = 𝔭·𝔞·𝔟² (𝔞 supported on the factor base 𝒮) exists iff [𝔭] ∈ 2Cl(K) + ⟨[𝔰] : 𝔰 ∈ 𝒮⟩. Replacing a row's Z by Zθ^{−1}
 and a by a·ψ(θ) preserves the row and removes 𝔭 mod 2 (codex (2.4)).
 
-*Under ERH existence is free.* Bach's bound: Cl(K) is generated by primes of norm ≤ 12 log²|Δ_K|. Once the factor base
-contains those primes (they are below B), every 𝔭 satisfies the condition of Lemma PR. So the question is never
-existence. It is (i) finding θ, and (ii) handling ψ(θ).
+*Under GRH for ζ_K, existence is free.* Bach (Math. Comp. 55, 1990) shows that Cl(O_K) is generated by the prime
+ideals of norm ≤ 12 log²|Δ_K|. These are prime ideals of every residue degree, including those above index primes,
+and the bound uses GRH for ζ_K. The NFS factor base of nested Lemma RW has only degree-one primes of Z[α], so 𝒮 must be
+enlarged to all prime ideals of O_K of norm ≤ 12 log²|Δ_K|. That is cheap, since |Δ_K| ≤ |disc f| and log|disc f| = O(d t).
+Then every 𝔭 satisfies the condition of Lemma PR, and the question is never existence. It is (i) finding θ, and (ii) handling ψ(θ).
 
 *(i) Finding θ.* The only rigorous general method is dBPW's sampler (ERH), at cost L_{|Δ_K|}(1/2), with cofactor norm
 ≥ √|Δ_K| (nested Theorem AF). For fields carrying an explicit ψ, the counting premise M1 gives a polynomial
@@ -243,8 +280,8 @@ problem.
 
 *Small-discriminant fields (codex row 4).* If fields with log|Δ_K| = O(Λ_{2/3}) and explicit ψ existed for every N,
 then L_{|Δ|}(1/2) would be L_N[1/3]. But an explicit ψ on a field of small discriminant means an explicit root modulo N
-of a polynomial of small height. For a fixed small field that is a root-finding problem modulo a composite: for
-x² − c it is equivalent to factoring (Rabin). The NFS avoids this only by building f from N, which forces large height.
+of a polynomial of small height. For a fixed small field that is a root-finding problem modulo a composite. For
+x² − c with fixed small c it is not known to be easier than factoring; Rabin's equivalence is for random residues. The NFS avoids this only by building f from N, which forces large height.
 Example: quadratic fields Q(√(a² − kN)) have explicit ψ(√D) = a, but |D| ≳ √N unless one is lucky (probability
 ≈ |D|/√N per trial), so the Arakelov scale is ≥ N^{1/4} and the method is L[1/2] (it is MPQS-like). [heuristic.] Codex
 found the same and leaves it as a 5% speculative row; we agree it is not excluded, but we know no construction.
@@ -277,8 +314,11 @@ correspondences between Jac(y² = f) and Jac(y² = f′), using odd-degree isoge
 adversarial verdict already noted that rational odd isogenies are rare and that isogenous varieties need not be
 Jacobians. We add a structural kill for the generic case.
 
-**Fact (F) [KNOWN; Dixon–Mortimer, *Permutation Groups*, §5.2 (Thm 5.2B); flagged for the literature critic].** For
-d ≥ 7, every subgroup of S_d of index ≤ d + 1 is S_d, A_d or a point stabiliser.
+**Fact (F) [KNOWN].** For d ≥ 7, every subgroup of S_d of index ≤ d + 1 is S_d, A_d or a point stabiliser. Source:
+Dixon–Mortimer, *Permutation Groups* (GTM 163, 1996), Theorem 5.2B, p. 150, with r = 2. Its hypothesis
+|S_d : H| < C(d, 2) holds since d + 1 < C(d, 2). The non-exceptional conclusions with index ≤ d + 1 are S_d, A_d and
+S_{d−1}; A_{d−1} has index 2d. The exceptional and imprimitive cases have index > d + 1 for d ≥ 7. Codex escapeR2_2
+checked this against the book, and the literature critic re-checked it (§12).
 
 **Proposition KT [proved, given (F)].** Let f ∈ Z[x] be squarefree of odd degree d ≥ 7 with Galois group S_d,
 K = Q[x]/(f), J = Jac(y² = f). Let f′ be squarefree of degree d or d + 1, J′ = Jac(y² = f′) of the same genus, and
@@ -289,24 +329,38 @@ defined over Q. Then Q[x]/(f′) ≅ K if deg f′ = d, and ≅ K × Q if deg f�
 J′[2] ≅ F₂[X′]⁰/⟨𝟙⟩ (Schaefer 1995 §2; Stoll 2001). An odd-degree isogeny has odd-order kernel, so it is injective on
 2-torsion, hence an isomorphism J[2] → J′[2] of Galois modules. The field Q(J[2]) is the splitting field L of f,
 because S_X acts faithfully on F₂[X]⁰ for |X| ≥ 3. Likewise Q(J′[2]) is the splitting field of f′, because S_{X′}
-acts faithfully on F₂[X′]⁰/⟨𝟙⟩ for |X′| ≥ 5: a transposition (12) sends e_1 + e_3 to e_2 + e_3, and the difference
-e_1 + e_2 is not in ⟨𝟙⟩. So both splitting fields equal L, and G = S_d acts faithfully on X′ with |X′| ≤ d + 1. By
+acts faithfully on F₂[X′]⁰/⟨𝟙⟩ for |X′| ≥ 5 (repaired after both reviewers):
+- take π ≠ 1, x with π(x) = y ≠ x, and z ∉ {x, y};
+- then π(e_x + e_z) = e_y + e_{π(z)} is a weight-2 vector different from e_x + e_z, since {x, z} = {y, π(z)} would
+  force z = y;
+- it is also different from e_x + e_z + 𝟙, which has weight |X′| − 2 ≠ 2;
+- so π acts non-trivially. The same argument without the 𝟙 case gives the odd case.
+
+The module descriptions are standard (Schaefer 1995 §2; Morgan, Proc. LMS 2025, §8.1). So both splitting fields equal L, and G = S_d acts faithfully on X′ with |X′| ≤ d + 1. By
 (F), each orbit has size 1, 2 or d, since 2d > d + 1. If no orbit has size d, then A_d fixes X′ pointwise,
 contradicting faithfulness. So there is exactly one orbit of size d, with point stabiliser S_{d−1}, and it is
 isomorphic to X as a G-set (d ≠ 6, all index-d subgroups are conjugate). The remainder has size 0 or 1. The étale
 algebra of f′ is therefore K, or K × Q. ∎
 
-So any transport that preserves 2-torsion lands in a conjugate of K itself. Within K, a "new representation" means
-a different generator α′ with ψ(α′) ≡ g′₀/g′₁. Rigorously |F′(g′₀, g′₁)| ≥ N, so H_{f′}·H_{g′}^d ≥ N/(d + 1), the
-same constraint as for α. Heuristically, generators of O_K with min-polynomial height ≤ H number about H/√|Δ_K|, so
-the next one after α has height ≈ √|Δ_K| ≈ N^{(d−1)/(d+1)}. Each also needs ψ(α′) to be a small fraction modulo N,
-with probability ≈ H_{g′}²/N. [heuristic count.] So the transported representation has Arakelov-scale heights.
+So any transport that preserves 2-torsion through hyperelliptic models lands in a conjugate of K itself.
+- *A new representation of the same field* is a different generator α′ with ψ(α′) ≡ g′₀/g′₁.
+- *Withdrawn.* Our draft claimed, by a heuristic count, that every such α′ has Arakelov-scale height. That is false
+  (codex escapeR2_2 #6). α′ = α + 1 has H_{f(x−1)} ≤ (d+1)2^d H_f and ψ(α′) = (g₀ + g₁)/g₁.
+- *Möbius changes.* For α′ = (pα + q)/(rα + s) with small p, q, r, s, a − bα′ = ((as − bq) − (bp − ar)α)/(rα + s). So
+  degree-one elements in α′ are degree-one elements in α, divided by one fixed element, under a unimodular-up-to-scalar
+  change of (a, b). They give no new values.
+- *Other generators.* Generators that are not Möbius images of α give elements of degree ≥ 2 in α. We prove nothing about
+  their heights.
 
-*Scope.* KT needs Gal(f) = S_d and d ≥ 7. For exotic Galois groups with non-conjugate subfields carrying isomorphic
-2-torsion modules (Gassmann-type), r20 #7 shows that transport mapping embedding vectors to embedding vectors forces
-isomorphic fields. Mixing transports remain conceivable, but such fields are tied (§2.3) and hence not fresh. We do
-not rule out a cohomological transport that is not induced by a 2-torsion isomorphism. r20 #4 must then name its
-mechanism.
+*Scope (narrowed after codex escapeR2_2 #7).*
+- KT identifies the étale algebra of any hyperelliptic model whose 2-torsion is isomorphic to J[2], for Gal(f) = S_d,
+  d odd, d ≥ 7, and deg f′ ∈ {d, d + 1}. That kills r20 #4's odd-isogeny formulation for generic NFS fields.
+- It does not classify all useful representations or transports. Excluded from the statement:
+  - other Galois groups, d < 7, even d;
+  - cohomological transports not induced by a 2-torsion isomorphism;
+  - non-hyperelliptic carriers.
+- For exotic groups (Gassmann-type), r20 #7's kill covers the transports that send embedding vectors to embedding
+  vectors. Mixing transports there land in tied fields (§2.3), whose usefulness is open.
 
 ### 5.3 Gassmann / torus transport (r20 #7)
 
@@ -321,33 +375,48 @@ tied structure).
 
 **Prop RS (re-splitting modulo N).**
 - (i) [proved; codex (10.1)] For a unit w and fresh s, R := ws² and a Gauss-reduced u ≡ Rv give w ≡ u/(v s²). The
-  original target is preserved with an explicit square correction.
-- (ii) [proved; E3] Lemma S″'s lower bound Pr ≥ |S|²/(2φ(N)) holds for R uniform on the squares Q_N. For R uniform on
-  a coset wQ_N, the relevant pair count is Σ_c n_c n_{wc} (codex (10.2)), and it can be 0. Take the target set
-  G ⊂ {primes that are squares mod every p | N}; then every product of G-primes is in Q_N, and for w ∉ Q_N no pair
-  exists. Such G have relative density 2^{−ω(N)} among primes (Chebotarev), which can exceed (log N)^{−C} when ω is
-  small. E3 (5 seeds, 48-bit N): 0 pairs and 0 hits in 2 000 draws for non-square w, against 263 040–640 312 pairs for
-  w = 1 on the same S. The control G = all window primes gives 4.02·10⁷ pairs ≥ |S|²/(2h) = 2.06·10⁷.
-- (iii) [model] Every re-split is a 2-dimensional Gauss split modulo N, so its values are ≈ √N whatever the incoming
-  target size. Targets return to scale Y with u-cost log(1/Pr) ≈ (t/(2 log Y))·log(t/log Y), so L[α] cost forces
-  Y ≥ L[1 − α]. A re-split never contracts.
-- *Missing lemma:* class equidistribution of k-products of the descendable primes in arbitrary cosets of Q_N, and a
-  contracting replacement for (iii). Neither is in sight. (i) and (ii) were found independently by codex.
+  original target is preserved with an explicit square correction. Non-units give gcd exits.
+- (ii) [proved; construction after codex escapeR2_2 #8] Lemma S″'s bound Pr ≥ |S|²/(2φ(N)) holds for R uniform on the
+  squares Q_N. For R uniform on a coset wQ_N the relevant count is Σ_c n_c n_{wc} (codex (10.2)), and it can vanish.
+  - *Construction:* partition the primes of any window (coprime to N) into their h = 2^{ω(N)} square classes, and let G
+    be a largest class. Then |G| ≥ #window/h, every k-product from G lies in one class, so every ratio of two lies in
+    Q_N.
+  - For w ∉ Q_N ∪ −Q_N (such w exist for ω ≥ 2), no signed pair exists. For large windows, |G| ≥ 4k³h and S″'s product
+    window are available too, so this is a full-hypothesis counterexample. No prime-distribution theorem is needed.
+  - *E3* (5 seeds, 48-bit N; an illustration with smaller adversarial G, 59–70 primes < 128) found 0 positive pairs for
+    non-square w, against 263 040–640 312 for w = 1 on the same S.
+  - *Disclosure (codex escapeR2_2 #9).* E3 drew w only with (w/p₁) = −1. In seeds 2, 3 and 5 the class of w is (−1, 1).
+    For seed 3, whose primes are 3 and 1 mod 4, that is the class of −1. There signed pairs exist and the
+    absolute-value hit probability is positive, although 0 hits occurred in 2 000 draws. The positive-pair count of R1
+    is unaffected; the intended obstruction needs w ∉ ±Q_N.
+  - The control G = all window primes gives 4.02·10⁷ pairs ≥ |S|²/(2h) = 2.06·10⁷.
+- (iii) [proved for uniform masks; codex escapeR2_2 §4] Let R be uniform on wQ_N. The pairs (u, v) with |u|, |v| ≤ H
+  account for at most (2H + 1)² residue ratios, so Pr[max(|u|, |v|) ≤ H] ≤ (2H + 1)²/|Q_N| ≤ (2H + 1)²·4^{ω}/N, uniformly
+  in w. For H = N^{1/2−ε} this is N^{−2ε+o(1)} after preprocessing (ω = o(log N)). So L[α, O(1)] masked trials do not
+  contract the value size. *[model]* Translating "values ≈ √N" into "targets ≥ L[1 − α]" uses the smoothness model.
+  Deliberately constructed identities (e.g. s = 1 and small w) are not covered by this sampling-law statement.
+- *Missing lemma:* class equidistribution of k-products of the descendable primes in arbitrary cosets of Q_N, plus a
+  contracting bridge not of uniform-mask type. (i) and (ii) were found independently by codex.
 
-**Recursion cannot replace descent [proved, structural].** The recursive call returns the complete factorisation of a
-public integer M < N. A congruence modulo N needs a multiplicative relation x ≡ ∏p_i^{e_i} (mod N). A factorisation of
-M gives one only if M ≡ x (mod N) by construction, and that is exactly a special-q relation (M = G(P), x = g₁ψ(z_P)).
-Factoring M = ℓ + jN directly would need M ≥ N, which recursion does not cover. Codex §10 also observes that a square
-congruence modulo M says nothing modulo N. So 4(c) is the special-q design, with factoring used only for testing,
-and 4(b)'s "halves descended by recursion" means re-splits, i.e. (iii).
+**What recursion does and does not supply [structural; reworded after both reviewers].**
+- The recursive call returns the complete factorisation of a public integer M < N.
+- A congruence modulo N needs a multiplicative relation. Factorisations enter such relations only through a separate
+  modular bridge, i.e. an identity x ≡ a·M, x ≡ M/s², x ≡ u/v, … (mod N) that is constructed and costed independently.
+- The bridges used in this project are special-q lattice values (M = G(P) ≡ g₁ψ(z_P)) and Gauss splits / re-splits
+  (values ≈ √N; RS(iii)). Recursion adds no new bridge; it makes testing cheap.
+- We do not claim these are the only possible bridges. Codex §10 also notes that a square congruence modulo M says
+  nothing modulo N.
 
 **Independent one-level descents [model].** If every descent closes fully at one level, combining them changes
 constants only (R2, R3). Global recombination of partial rows needs repeated large labels. Under diffuse labels the
 expected number of repeats is ≪ M²/V = o(1) (codex §8, r20 #9). We agree with r20's kill under diffuse statistics.
+*Directed* recombination is not covered: rows deliberately constrained to share large ideals, with a seeded rank-surplus
+theorem for the resulting graph. It is a separate open alternative, and cyclic components escape R3's unrolling
+(codex escapeR2_2 §9).
 
 ---
 
-## 7. In-field descent: the budget is the whole problem
+## 7. In-field descent and the component budget
 
 ### 7.1 Prop R3: budget-respecting components stay at 2/5
 
@@ -356,18 +425,24 @@ of a node, of log-size X, is the sum of the log-sizes of its children plus a B-s
 Λ = log B, U is the largest u with u log u ≤ Λ, and a node costs L[α] only if each smoothness event has u ≤ U. Nodes may
 use their own fields (any d, H_f, H_g); algebraic children are closed in the parent's field. An **algebraic
 component** is the set of nodes linked by algebraic edges, all in one field. *Budget:* every component has at most
-κ(d − 2) points, for a constant κ ≥ 1. The known moment methods need ≤ d + 1 (nested Lemma OD).
+κ(d − 2) points, for a constant κ ≥ 2. κ = 2 covers the d + 1 points that the known moment methods control (nested
+Lemma OD), for d ≥ 5. Components are trees: one closing point per child, as in RW. A point that closes several children
+satisfies the same inequality with the sum, so DAGs without cycles are covered as well.
 
 **Prop R3 [model computation].** Under these premises, α ≥ 2/5.
 
-*Proof.* Claim: every node v satisfies X_v := log H_f + (d/2)z_v ≤ (1 + 2κ)ΛU, where z_v is the target's log-size
-(for an algebraic target, X_v − z_v is the cofactor). The closing node w of a child of log-size y_w has value
-≥ log H_f + (d/2 − 1)y_w. So y_w ≤ 2X_w/(d − 2). Write X_v ≤ ΛU + Σ_{w child of v} y_w ≤ ΛU + (2/(d − 2))Σ_w X_w.
-Unrolling over the component, rooted at v, gives X_v ≤ ΛU·Σ_u (2/(d − 2))^{depth(u)} ≤ ΛU(1 + 2κ(d − 2)/(d − 2)) =
-(1 + 2κ)ΛU, since every node below v has weight ≤ 2/(d − 2) and there are ≤ κ(d − 2) of them. This is R2's
-"algebraic feasibility gives log H_f + (d/2)z = O(ΛU)", with the constant 1 + 2κ in place of 1, and R2's window
-argument applies verbatim with A replaced by (1 + 2κ)²A:
-- if log H_g ≤ t/4, then log H_f ≥ t/(2(d + 1)), so √(tz)/2 ≤ (1 + 2κ)ΛU and z ≲ A;
+*Proof.* Claim: every node v satisfies X_v := log H_f + (d/2)z_v ≤ 2(1 + 2κ)ΛU for d ≥ 4, where z_v is the target's
+log-size. The value of v consists of: the target itself (only if v is an algebraic node, log-size z_v ≤ 2X_v/d), the
+children (log-sizes y_w), and a B-smooth part (≤ ΛU in the model). So X_v ≤ z_v + ΛU + Σ_w y_w, hence
+X_v ≤ c(ΛU + Σ_w y_w) with c := d/(d − 2). (This corrects the draft, which dropped z_v. Codex escapeR2_2 #11 showed the
+draft's constant 1 + 2κ fails: a d = 5 chain has full norm logarithms 5/3, 25/9, 95/27 > 3. The corrected constant
+2(1 + 2κ) = 6 covers it.) The closing node w of a child of log-size y_w has X_w ≥ (d/2)y_w, so
+y_w ≤ (2/d)X_w. Hence X_v ≤ cΛU + (2/(d − 2))Σ_{w child of v} X_w. Unrolling over the component below v gives
+X_v ≤ cΛU·Σ_u (2/(d − 2))^{depth(u)}. Every node u below v contributes ≤ 2/(d − 2), and there are ≤ κ(d − 2) of
+them, so X_v ≤ cΛU(1 + 2κ) ≤ 2(1 + 2κ)ΛU. This is R2's "algebraic feasibility gives log H_f + (d/2)z = O(ΛU)", with
+the constant 2(1 + 2κ) in place of 1. For d = 3 the weights are 2, and the bounded node count κ gives
+X_v ≤ 3·κ2^{κ}ΛU = O_κ(ΛU) instead. R2's window argument then applies verbatim with A replaced by O_κ(A):
+- if log H_g ≤ t/4, then log H_f ≥ t/(2(d + 1)), so by AM–GM X_v ≥ √(tz/2) and z ≤ 8(1 + 2κ)²Λ²U²/t ≍ A;
 - if z ≫ A, the rational cofactor has log-size ≥ t/8, so a rational child has log-size ≥ W = t/(8U);
 - children in the window (A, W) are infeasible, and jumping below e^A costs u ≥ t/(8A) ≫ U for α < 2/5;
 - the top targets z₁ ≍ D^{1−α} log t lie above A ≍ D^{4α−1} log t exactly when α < 2/5.
@@ -385,7 +460,14 @@ v_r ≤ 2α; B-smooth rational sides (1 − δ ≤ 2α, ζ_j ≤ 2α); component
 *Closed form.* When v_j = δ + ζ_j, the component exponent telescopes to rδ + ζ₀ − ζ_r. It is minimised at
 ζ_r = 2α − δ. The chain needs δ ≤ ((r + 3)α − 1)/(r + 1), and the rational sides need δ ≥ 1 − 2α. This gives
 α ≥ (r + 2)/(3r + 5) without a budget (codex escapeR2_1 §1: (r_c + 1)/(3r_c + 2) with r_c = r + 1). With a budget,
-(r + 1 − C)δ ≤ 3α − 1, so α ≥ (r + 2 − C)/(2r + 5 − 2C) when r + 1 > C.
+(r + 1 − C)δ ≤ 3α − 1, so α ≥ (r + 2 − C)/(2r + 5 − 2C) when r + 1 > C. Moreover fixed depth r ≥ 1 needs C ≥ r:
+monotone targets give v_j − ζ_{j+1} ≥ δ, so the component exponent is ≥ rδ (codex escapeR2_2 #13). The LP enforces
+this implicitly; the draft's helper `closed_budget` did not (it returned 3/7 at r = 2, C = 1, where the LP is
+infeasible). It was fixed after review; the global minimum is unaffected. Hence
+  α_r(C) = max((r+2)/(3r+5), (r+2−C)/(2r+5−2C)) for r ≤ C < r + 1;  (r+2)/(3r+5) for C ≥ r + 1;  infeasible for C < r,
+  α*(C) = min_r α_r(C).
+Level r is optimal exactly on the plateau [r+1 − 1/(r+1), r+2 − 1/(r+1)] (both reviewers). Between plateaus α* interpolates; for
+example α*(13/5) = 7/19 ≈ 0.368 (proof critic).
 
 **E2 (exact-rational simplex; all pre-registered predictions hold).**
 
@@ -394,6 +476,7 @@ v_r ≤ 2α; B-smooth rational sides (1 − δ ≤ 2α, ζ_j ≤ 2α); component
 | 1 | **2/5** | 0 | 2/5 (= R3) |
 | 5/4 | 7/18 ≈ 0.389 | 1 | (3 − C)/(7 − 2C) |
 | 3/2, 2, 5/2 | **3/8** | 1 | 3/8 |
+| 13/5 (post-review check) | 7/19 ≈ 0.368 | 2 | (r+2−C)/(2r+5−2C) |
 | 8/3, 3 | 4/11 ≈ 0.364 | 2 | 4/11 |
 | 4 | 5/14 ≈ 0.357 | 3 | 5/14 |
 | 6 | 7/20 = 0.35 | 5 | 7/20 |
@@ -404,13 +487,24 @@ The LP agrees with the closed form to 10⁻⁹ at every grid point. Each closed 
 10⁻⁶ below. At α = 3/8 (δ = 1/4, ζ_1 = 1/2) the first-level value has exponent v₀ = 7/8. Its children number
 D^{3/8} = d^{3/2}: the "3/8 vs 1/4" count of codex §11 and r20 #1.
 
-*Reading.* Any fixed C > 1 gives an exponent below 2/5 in the model, and no finite C reaches 1/3. The single missing
-input is:
+*Reading.*
+- These are floors of the **chain sub-model**: one field, B-smooth rational sides at the algebraic levels, base-m
+  heights, uniform child sizes, no sharing. Each is achievable in the size model, so it is an *upper bound* on the
+  general model floor for budget d^C.
+- The only general *lower bound* we have is Prop R3, for O(d)-point components.
+- Within the sub-model, any fixed C > 1 gives an exponent below 2/5, and no finite C reaches 1/3.
+- The *component size* is the D-exponent of the typical point count (distinct, typically sized children). It is a
+  model count, not one forced by smoothness alone.
 
-**Hypothesis LS_C (joint smooth supply, informal) [open].** For a degree-d field law and configurations of s ≤ d^C
-points arising as complete descent certificates, the number of field coefficient vectors c ∈ [−H, H]^d at which all s
-affine forms F_c(P_i) have the prescribed large divisors and B-smooth cofactors is ≥ L^{−O(1)} times its heuristic
-value, on average over configurations.
+The in-field input this needs is:
+
+**Hypothesis LS_C (joint smooth supply; stated as moments plus search) [open].** For a degree-d field law, and for each
+target q in a set of split primes of density ≥ (log N)^{−C₀}, let Z_{A,q} count the complete certificates for q (of
+≤ d^C points, in the prescribed boxes). Two conditions are needed:
+- (a) *targetwise moments:* E_A[Z_{A,q}²] ≤ L^{c}·(E_A Z_{A,q})² with E_A Z_{A,q} > 0;
+- (b) *search:* a deterministic search, of cost L[α, O(1)] in every field, finds a certificate whenever Z_{A,q} ≥ 1.
+Codex escapeR2_2 #14: a lower bound on an averaged count alone controls neither overlaps nor search. (a) and (b)
+together imply Hyp T_q (§8). (b) holds at bounded depth (§7.3).
 
 For s > d + 1 the forms are linearly dependent (nested Lemma OD). This is a "linear equations in smooth numbers"
 problem of growing complexity (s ≈ d^C forms in d variables), with coefficients of size up to exp(Λ_{7/8}), at
@@ -422,52 +516,87 @@ y ≥ (log x)^K) and Matthiesen–Wang (finite complexity, Ψ(x, y) ≥ x/(log x
 r20 #1 proposes first and second moments of Z_{A,q} = #complete two-level certificates for q, at α = 3/8, d ≍ D^{1/4},
 with saddle-point-tilted weights and sparse transference, and requires polylogarithmic precision.
 
-- **The exponent is right [model; E2].** Two levels at 3/8 need C = 3/2. They are the cheapest step below 2/5.
-- **The precision requirement can be relaxed to L^{O(1)} [proved conditional, §8].** With a pool of J_f = L^{O(1)}
-  fields (lv5unif Prop MF's mechanism), one needs, for a (log N)^{−C₀} fraction of q,
-  E_A Z ≥ L^{−c} and E_A Z² ≤ L^{c}(E_A Z)². By Paley–Zygmund, Pr_A[Z ≥ 1] ≥ L^{−2c}. At bounded depth the
-  exhaustive search finds a certificate whenever Z ≥ 1, at cost L^{O(1)}. The split then sees a target set of
-  polylog density, and the γ^{2k} amplification hits only the pool's coverage, not the moment ratio.
+- **The exponent is right [model; E2].** Two levels at 3/8 need C = 3/2. Smaller budgets already give exponents
+  below 2/5 in the chain sub-model (7/18 at C = 5/4), so 3/8 is not the "first" step. It is the first plateau, the
+  least C at which a single algebraic level is unconstrained by the budget.
+- **The moment ratio can be relaxed to L^{O(1)}, fieldwise and targetwise [proved conditional, §8].** With a pool of
+  J_f = L^{O(1)} fields (lv5unif Prop MF's mechanism), it suffices that, for every q in a set of density
+  ≥ (log N)^{−C₀}, E_A Z² ≤ L^{c}(E_A Z)². By Paley–Zygmund, Pr_A[Z ≥ 1] ≥ (E_A Z)²/E_A Z² ≥ L^{−c}. This needs no
+  independence between certificates. Then:
+  - The pool covers half of these q with probability ≥ 1/2.
+  - The split sees a target set of polylog density, and the γ^{2k} amplification hits only that density, not the moment
+    ratio.
+  - *The quantifier matters (codex escapeR2_2 §8, proof critic #3).* Moments averaged jointly over (A, q) do not
+    suffice. Take Z_{A,q} = 1 on a target subset of density ε = e^{−cΛ} and 0 elsewhere, for every A. Then
+    E Z = ε and E Z²/(E Z)² = 1/ε: both relaxed joint inequalities hold. But the split pays ε^{2k} = exp(−Θ(kΛ)), outside
+    L[α]. r20 #1 stated its moments with q uniform in the shell; the relaxation applies only to the targetwise
+    version, and the target *density* is still needed at polylog precision.
+- **Search at bounded depth [proved; codex escapeR2_2 §8].** A recursive feasibility search finds a certificate whenever
+  one exists: for each candidate point, check each child independently. Its cost satisfies T_h ≤ W·(work per
+  candidate + m·T_{h−1}), with W = L[α, O(1)] candidates per box and m = e^{o(Λ)} children per candidate. That is
+  L[α, O(h)] at fixed depth h. (nested's Lemma TS bounds successful trees only; failed searches need this recurrence.)
 - **Consequence for r20's kill test.** r20 would kill the transference route if its majorant lost exp(Ω(d)) in the
-  relative moment ratio. After the pool trick, a loss of exp(O(s)) with s = d^{3/2} = D^{3/8} is exp(o(Λ_{3/8})), and
-  even exp(O(s log log N)) is L[3/8, O(1)]. Both are affordable. So local-factor losses of e^{O(1)} per form, which a
-  transference majorant typically incurs, no longer kill the route.
-- **What remains [open].** A lower bound of the right order L^{−O(1)} times the main term for the number of c at which
-  s ≈ d^{3/2} dependent affine forms are simultaneously smooth with prescribed divisibility. The main term itself is
-  tiny: ∏_i ρ_i ≈ exp(−s·u log u) = L[3/4]^{−Θ(1)} per configuration. So any additive error must be smaller than that,
-  which no existing circle-method or transference estimate gives at L-scale.
-- **Verdict.** It survives as the right analytic target and is the cheapest one. We agree with r20's 3% and do not
-  raise it: the relaxation removes the precision objection, not the core estimate.
+  relative moment ratio. After pooling, a targetwise relative loss of exp(O(s)) with s = d^{3/2} = D^{3/8} is
+  exp(o(Λ_{3/8})), and even exp(O(s log log N)) is L[3/8, O(1)]. Neither is raised to the power 2k. So local-factor
+  losses of e^{O(1)} per form, which a transference majorant typically incurs, no longer kill the route on that count.
+- **What remains [open].**
+  - A lower bound, within L^{O(1)} of the main term, for the number of c at which s ≈ d^{3/2} dependent affine forms are
+    simultaneously smooth with prescribed divisibility.
+  - A matching targetwise second moment.
+  - The main term is tiny: ∏_i ρ_i ≈ exp(−s·u log u) = L[3/4]^{−Θ(1)} per configuration. A relative loss exp(O(s)) is
+    affordable, but additive errors must be below that scale, which no existing circle-method or transference estimate
+    gives at L-scale.
+  - An averaged first moment alone also does not control rare fields carrying very many certificates; that is what the
+    second moment is for.
+- **Verdict.** It survives as a precise sufficient analytic target. We agree with r20's 3% and do not raise it: the
+  relaxation removes one precision objection, not the core estimate.
 
 ---
 
 ## 8. Theorem NR-q: the weakest hypothesis we know that suffices
 
-**Setting.** Fix α ∈ (1/3, 1/2), parameters as in nested §8 or §7.2, a field law 𝔉 (admissible fields of degree
-d ≍ D^δ, sampled in time e^{o(Λ_α)}), and a deterministic in-field descent procedure 𝔇. Examples: nested's DESC (first
-good point, recursing), or exhaustive search at bounded depth. On every admissible field and every target, 𝔇 must make
-at most e^{o(Λ_α)} tree nodes and scan boxes of ≤ L[α, 2s] points (nested Lemma TS). It calls the recursive factoring
-oracle on integers ≤ N^{τ_F}, τ_F < 1, and outputs either FAIL or an RW tree (nested Lemma RW) whose leaves lie in the
-factor base. For a rational prime q put p_q := Pr_{A∼𝔉}[A admissible and 𝔇_A(q) ≠ FAIL].
+**Setting.** Fix α ∈ [1/3, 1/2), parameters as in nested §8 (α = 1/3) or the chain sub-model of §7.2, and a field law
+𝔉 (admissible fields of degree d ≍ D^δ with δ < α, sampled in time e^{o(Λ_α)}). Fix also a deterministic in-field
+descent procedure 𝔇, for example nested's DESC (first good point, recursing) or the bounded-depth feasibility search of
+§7.3. Requirements on 𝔇:
+- on every admissible field and every target, its total work per call, including all backtracking and failed
+  branches, is ≤ L[α, s′] for a constant s′, excluding oracle calls;
+- it calls the recursive factoring oracle only on integers ≤ N^{τ_F}, τ_F < 1;
+- it outputs FAIL, or a factor exit, or an RW tree (nested Lemma RW) whose leaves lie in the factor base.
 
-**Hypothesis T_q(α; 𝔉, 𝔇, c, C₀).** With J = primes in (Y, 2Y], Y = N^{1/(2k)}, k = ⌈κD^α⌉:
-#{q ∈ J : p_q ≥ e^{−cΛ_α}} ≥ (log N)^{−C₀}·#J.
+(The draft required "e^{o(Λ)} tree nodes", which excludes the bounded-depth search; proof critic #6.) For a rational
+prime q put p_q := Pr_{A∼𝔉}[a factor exit occurs, or A is admissible and 𝔇_A(q) returns a tree]. Factor exits count as
+success, as in lv5unif Prop MF.
 
-**Theorem NR-q [proved conditional on T_q, nested's Hypothesis LV6′ for each field, character columns via Lemma
-X_ERH (ERH) or lv5unif's factorial-bit repair, and the multi-field post-processing of lv5unif §11 (proved there in
-outline; codex escapeR2_1 (2.5) gives the square-root identity)].** There is a Las Vegas algorithm that completely
-factors every N in expected time L_N[α, c′] for a finite c′ = c′(α, c, C₀, κ, …).
+**Hypothesis T_q(α; 𝔉, 𝔇, c, C₀).** Let k := ⌈κD^α⌉, Y := ⌊N^{1/(2k)}⌋, and J := primes in (Y, 2Y] not dividing N.
+Then #{q ∈ J : p_q ≥ e^{−cΛ_α}} ≥ (log N)^{−C₀}·#J.
+
+**Theorem NR-q [proved conditional on T_q; on nested's Hypothesis LV6′ restated at degree d ≍ D^δ with overheads
+e^{o(Λ_α)}; on character columns via Lemma X_ERH (ERH) or lv5unif's factorial-bit repair (cost e^{O(d log d)},
+which is e^{o(Λ_α)} for δ < α, and L[1/3, Θ(δ)] at α = 1/3 with d = δD^{1/3}); and on the multi-field post-processing of
+lv5unif §11 (proved there in outline; codex escapeR2_1 (2.5) gives the square-root identity)].** There is a Las Vegas
+algorithm that completely factors every N in expected time L_N[α, c′] for a finite c′ = c′(α, c, C₀, κ, s′, …).
 
 *Proof.*
 1. **Pool.** Sample J_f := ⌈4e^{cΛ_α}⌉ fields A_1, …, A_{J_f} ∼ 𝔉 independently (factor exits end the run). Let
-   G_pool := {q ∈ J : ∃j, 𝔇_{A_j}(q) ≠ FAIL}. For a good q (p_q ≥ e^{−cΛ_α}), Pr[q ∉ G_pool] ≤ (1 − p_q)^{J_f} ≤ e^{−4}. By
-   Markov, with probability ≥ 1 − 2e^{−4} ≥ 1/2 at least half the good q are in G_pool, so |G_pool| ≥ γ#J with
-   γ := (log N)^{−C₀}/2. Call such a pool *good*.
-2. **Split.** G_pool is a fixed set before any Dixon draw, so Lemma S″ (recurse §3.2) applies to it with the window
-   bookkeeping of lv5unif Theorem K-U (|G_pool| ≥ 4k³2^{ω} by lv5unif (P6)). An attempt is accepted with probability
-   ≥ (γ/(4 log N))^{2k}/(32k²) = L[α, −2κ(1 + C₀) − o(1)].
-3. **Descent.** For each of the 2k primes of an accepted split, run 𝔇_{A_j} for j = 1, 2, … until success: at most
-   J_f·e^{o(Λ)}·L[α, 2s] work, plus oracle calls on integers ≤ N^{τ_F}. By nested Lemma RW each tree gives
+   G_pool := {q ∈ J : ∃j, 𝔇_{A_j}(q) returns a tree}. For a good q (p_q ≥ e^{−cΛ_α}), Pr[q ∉ G_pool] ≤ (1 − p_q)^{J_f} ≤ e^{−4}.
+   By linearity the expected number of missed good q is ≤ e^{−4}·#good, with no independence between different q
+   needed. By Markov, with probability ≥ 1 − 2e^{−4} at least half the good q are in G_pool, so |G_pool| ≥ γ#J with
+   γ := (log N)^{−C₀}/2. Call such a pool *good*. G_pool is never enumerated; membership of a given q is tested by running
+   𝔇 in the pool order.
+2. **Split, on a padded modulus (repair by codex escapeR2_2 #15).** With Y = ⌊N^{1/(2k)}⌋, every k-product of primes in
+   (Y, 2Y] exceeds about √N. It therefore cannot be the Gauss-shortest vector modulo N, so Lemma S″ cannot be applied
+   modulo N as the draft did. Instead:
+   - After preprocessing (3 ∤ N), put N_* := 9^{k+1}N, draw r uniform modulo N_*, and Gauss-reduce R = r² modulo N_*.
+   - All k-products of G_pool lie in (Y^k, 2^kY^k]. One of the k dyadic windows inside contains ≥ C(|G_pool|, k)/k of
+     them, and its upper end X satisfies 2X² ≤ 2·4^kN < N_*.
+   - Lemma S″ applies modulo N_*: its square-class index is 2^{ω(N)+1} ≤ |G_pool|/(4k³), by lv5unif (P6) at general α.
+     Acceptance is ≥ (γ/(4 log N))^{2k}·e^{−O(k)}/poly(k) = L[α, −2κ(1 + C₀) − o(1)], since k = o(Λ_α).
+   - The row is read modulo N. Halves are ≤ √(2N_*) = N^{1/2+o(1)}, which preserves the recursive contraction.
+   - By CRT, given R mod N_*, the reduction r mod N is uniform among the square roots of R mod N. The hidden-root
+     argument survives.
+3. **Descent.** For each of the 2k primes of an accepted split, run 𝔇_{A_1}, 𝔇_{A_2}, … in order until success. That is
+   at most J_f·L[α, s′] work, plus oracle calls on integers ≤ N^{τ_F}. By nested Lemma RW each tree gives
    ℓ ≡ (rational)·ψ_j(Z) with Z supported on factor-base primes of A_j.
 4. **Rows and columns.** Columns: the shared rational ones, plus for each pool field its parity, (p, r) and character
    columns with t_χ^{(j)} = ⌈5d(ln|H_j| + 2 ln log N + ln 4J_f)⌉. That is ≤ J_f·L[α, b + o(1)] columns in total. Collect
@@ -478,13 +607,20 @@ factors every N in expected time L_N[α, c′] for a finite c′ = c′(α, c, C
 6. **Fruitfulness.** 𝔇 is deterministic and the pool is chosen before the Dixon draws. Every exposed quantity is a
    function of the R_i and coins independent of the hidden roots (nested Lemma T_multi, with the pool as part of the
    coins). So each LV6 round succeeds with probability ≥ 1/2.
-7. **Restarts.** A bad pool is detected only by running time. Run each pool with a budget of 4× the good-pool expected
-   cost, and resample the pool on overrun. The expected number of pools is ≤ 2.
-8. **Recursion.** F(N) ≤ L[α, p₀] + L[α, δ₀]F(√(2N)) + L[α, δ₁]F(N^{τ_F + o(1)}) with finite exponents, so Lemma F_α
-   (lv5unif §10; for the third term, nested's strong induction with Λ_α(N^τ) = τ^α Λ_α(N)) gives L[α, c′]. ∎
+7. **Restarts (doubling schedule).** The good-pool expected cost T* is not computable in advance (c, C₀ are not
+   explicit). Run rounds i = 1, 2, …: in round i, sample a fresh pool and run steps 2–6 with a work budget 2^i,
+   aborting on overrun.
+   - Once 2^i ≥ 4T*, a round succeeds with probability ≥ p₀ := (1 − 2e^{−4})·3/4 > 0.7: the pool is good, and by Markov
+     the cost is within the budget.
+   - The total expected work is ≤ Σ_{i ≤ i₀} 2^i + Σ_{j ≥ 0} 2^{i₀+j}(1 − p₀)^j = O(T*), because 2(1 − p₀) < 1.
+   - (The draft's "probability ≥ 1/4" would not make this sum converge.)
+8. **Recursion.** F(N) ≤ L[α, p₀] + L[α, δ₀]F(N^{1/2+o(1)}) + L[α, δ₁]F(N^{τ_F + o(1)}) with finite exponents. Strong
+   induction with Λ_α(N^τ) = (τ^α + o(1))Λ_α(N) (nested's proof of NR; lv5unif Lemma F_α for the first two terms)
+   gives L[α, c′]. ∎
 
 *Relations to known hypotheses.*
-- AD (nested §8) ⇒ T_q with p_q ≥ 1/2 for every q, using DESC. So NR-q contains NR.
+- AD (nested §8) ⇒ T_q with p_q ≥ 1/2 − o(1) for every q ∈ J, using DESC (factor exits are in both events; the q | D_A
+  are o(#J)). So NR-q contains NR, at α = 1/3 with nested's parameters.
 - T_q is field-averaged and target-pointwise. That is the form Prop SI(ii) allows: the root target q is exogenous to
   the pool. The endogeneity now lives entirely inside one field's tree, i.e. in Hypothesis LS_C.
 - A sufficient condition for T_q is r20 #1's moment pair at L^{O(1)} precision (§7.3), when 𝔇 is exhaustive at
@@ -494,19 +630,23 @@ factors every N in expected time L_N[α, c′] for a finite c′ = c′(α, c, C
 
 ---
 
-## 9. The missing lemmas, collected
+## 9. The missing lemmas, collected (a catalogue, not a reduction)
 
-1. **Hyp LS_C / T_q** (in-field joint smooth supply; §§7.2, 8). This is *the* missing lemma: every other route
-   reduces to it or to something stronger. At C = 3/2 it gives 3/8; as C → ∞ it gives → 1/3.
+These are separate sufficient inputs. We do not show that the others are stronger than item 1. As both reviewers
+stress, the failed implementations in §§3–6 do not prove that every route reduces to item 1.
+
+1. **Hyp LS_C → T_q** (in-field joint smooth supply: targetwise moments plus search; §§7.2, 8). This is the most
+   precise target. At C = 3/2 it gives 3/8 in the chain sub-model, and as C → ∞ it gives → 1/3.
 2. **Contracting image certificate** (codex (5.2)): for θ from principalisation, ψ(θ) ≡ w²·a·∏q_ν (mod N) with
-   q_ν ≤ q^λ, λ < 1. It is not known how to produce this without a re-split (§4).
-3. **Coset re-split** (Prop RS): class equidistribution of products of descendable primes in every coset, plus
-   contraction. False for adversarial sets; open for the actual ones; no contraction in any case.
-4. **A fresh-and-tied construction** (§2.3, §5): fields that share a Galois structure rich enough for parity transfer
-   (TI with k_1 ≠ Q) while carrying independent randomness per subfield. No candidate is known. KT excludes the
-   Kummer/odd-isogeny version for S_d-fields.
-5. **Small-discriminant fields with explicit ψ** (§4): would make L_{|Δ|}(1/2) = L_N[1/3]; equivalent, for small fixed
-   fields, to root-finding modulo composites.
+   q_ν ≤ q^λ, λ < 1. We know no way to produce this other than by a re-split (§4).
+3. **Coset re-split** (Prop RS): class equidistribution of products of the actual descendable primes in every coset,
+   plus a contracting bridge not of uniform-mask type. False for adversarial sets; open for the actual ones.
+4. **Useful transfer between tied fields** (§2.3, §5): fields with parity transfer (k_1 ≠ Q), a compatible evaluation
+   map, short transfer elements and enough conditional randomness (e.g. Q(√a), Q(√b), Q(√ab) with b fresh). No
+   construction is known. KT excludes the hyperelliptic 2-torsion-preserving version for S_d-fields of odd degree ≥ 7.
+5. **Directed recombination** (§6): rows constrained to share large ideals, with a seeded rank-surplus theorem.
+6. **Small-discriminant fields with explicit ψ** (§4): these would make L_{|Δ|}(1/2) = L_N[1/3]. For a small fixed field
+   this is root-finding modulo composites, which is not known to be easier than factoring.
 
 ---
 
@@ -531,6 +671,12 @@ Command: `.venv/bin/python -m src.escapeR2.run_experiments experiments/raw` (44 
 - E1(c)'s pair-case count is 6 832 including both orders; the prereg did not fix a number.
 - E3 used 48-bit moduli for all seeds (within the registered 40–48 range). The product window is [Y′/2, Y′] with
   Y′ = 2^{⌊(n−2)/2⌋} (so 2Y′² < N, as Lemma S″ needs); the prereg said "the top window" without fixing Y′.
+- E3 (codex escapeR2_2 #8–9): the adversarial G (59–70 primes) are below S″'s size threshold 4k³h = 128, so E3 is an
+  illustration. The full-hypothesis counterexample is the pigeonhole construction of Prop RS(ii). w was drawn with
+  (w/p₁) = −1 only; in seed 3 it lies in −Q_N, so the zero-hit record there is luck, not the obstruction.
+- Post-review code change: `sizemodel.closed_budget` now returns "infeasible" for r > C (codex #13), and
+  `tests/test_escapeR2.py` gained `test_closed_budget_matches_lp_off_grid` (α*(13/5) = 7/19). E2's registered outputs
+  are unchanged: the LP never used the helper, and the global minima agree.
 
 E1–E3 check algebra and arithmetic only. They say nothing about relation supply.
 
@@ -557,22 +703,112 @@ E1–E3 check algebra and arithmetic only. They say nothing about relation suppl
 
 ## 12. Reviews
 
-(Pending: codex escapeR2_2 adversarial referee; Opus proof critic; Opus literature critic.)
+All valid findings were applied in the text above. Nothing was rejected outright; two items were applied in narrowed
+form (noted below).
+
+**GPT-6.1-sol blind round `codex/escapeR2_1` (xhigh; the whole problem, before my draft).**
+- *Verdict:* no rigorous α < 2/5, unconditionally or under ERH; the same per-family failures.
+- *Contributions adopted (credited in place):*
+  - the parity invariant (2.2) and the multi-field square root (2.5);
+  - the norm-substitution failures and odd-degree norm parity (§3);
+  - mod-square principalisation (5.1) and the contracting-image lemma (5.2);
+  - the S-unit dimension bound (8.1);
+  - the square-corrected re-split and the coset pair count (10.1)–(10.2);
+  - the level thresholds (r+1)/(3r+2);
+  - the 3/8 two-level table with its D^{3/8}-vs-D^{1/4} overdetermination count.
+- Its ranking put "fixed-field completed descent at 3/8" first, which is what §7 sharpens.
+
+**Orchestrator's wild round `codex/r20_wild`.**
+- #1 (complete-certificate moments) is evaluated in §7.3. Its precision requirement is relaxed to L^{O(1)}, fieldwise
+  and targetwise; the core estimate stays open.
+- #4 (Kummer transport) is evaluated in §5.2, with a structural kill of its 2-torsion-preserving hyperelliptic form for
+  S_d-fields.
+- #7–#9 kills checked and agreed (§§5.3, 6).
+
+**GPT-6.1-sol adversarial referee `codex/escapeR2_2` (xhigh).** TI CORRECT; EX, KT, RS, R3, chain model, NR-q and
+precision CORRECT WITH FIXES; exhaustive Verdict WRONG. 19 issues:
+
+| # | sev. | issue | adjudication |
+|---|---|---|---|
+| 1 | MAJOR | §1: a common evaluation on the compositum need not exist (√2, −√2 counterexample) | accepted: §1 rewritten; the general class is a superset, ψ_L must be supplied |
+| 2 | MINOR | TI excludes ℓ ramified via other fields | accepted: excluded set stated, O(J d t/Λ) primes |
+| 3 | MINOR | non-monic index / norm normalisation in EX | accepted: localised index, F(a,b)/f_d |
+| 4 | MAJOR | tied fields may keep conditional randomness | accepted: §2.3 rewritten as an open question |
+| 5 | MINOR | KT faithfulness via one transposition | accepted: general argument |
+| 6 | MAJOR | generator-height count false (α + 1) | accepted: claim withdrawn; Möbius remark instead |
+| 7 | MAJOR | KT does not kill all transports | accepted: scope narrowed in Verdict, table, §5.2 |
+| 8 | MINOR | Chebotarev density in a growing window; E3 sets below S″ threshold | accepted: pigeonhole construction; E3 relabelled illustration |
+| 9 | MINOR | E3 seed 3 has w ∈ −Q_N | accepted: disclosed |
+| 10 | MAJOR | "every re-split" / bridge classification unsupported | accepted: RS(iii) restricted to uniform masks (codex's proved bound); recursion paragraph restated |
+| 11 | MAJOR | R3 recurrence drops the incoming target; constant fails (d = 5 chain) | accepted: recurrence corrected (my own pre-review fix coincided), constant 2(1+2κ) |
+| 12 | MINOR | R3 weights at d = 3 | accepted: O_κ bound for d = 3 |
+| 13 | MINOR | C ≥ r omitted in closed form / `closed_budget` | accepted: formula and code fixed, test added |
+| 14 | MAJOR | LS_C as an averaged count controls neither overlaps nor search | accepted: LS_C restated as targetwise moments + search |
+| 15 | MAJOR | NR-q split window invalid (k-products > √N) | accepted: codex's padded modulus N_* = 9^{k+1}N adopted |
+| 16 | MINOR | uniform costs and implementable runtime cap | accepted: doubling schedule, with corrected convergence arithmetic |
+| 17 | MAJOR | jointly averaged moments can concentrate | accepted: targetwise quantifier made explicit, with codex's counterexample |
+| 18 | MINOR | TS bounds successful trees only | accepted: search recurrence T_h ≤ W(work + mT_{h−1}) |
+| 19 | MAJOR | failed implementations promoted to an exhaustive reduction | accepted: Verdict and §9 rewritten as a catalogue |
+
+**Opus proof critic (read-only, independent).** TI, EX, TB CORRECT; KT, PR/Bach, R3, NR-q CORRECT WITH FIXES; the
+recursion claim WRONG as worded; §7.2's general α*(C) equality WRONG (grid values right). No FATAL.
+
+| # | sev. | issue | adjudication |
+|---|---|---|---|
+| 1 | MAJOR | §1 extension of ψ backwards (x² − 2 and V₄ counterexamples) | accepted (= codex #1) |
+| 2 | MAJOR | "recursion cannot replace descent [proved]" contradicts RS(i) | accepted: relabelled structural, restated |
+| 3 | MAJOR | precision relaxation only targetwise; the density is still polylog | accepted (= codex #17); Verdict wording fixed |
+| 4 | MINOR | α*(C) plateau formula false off the grid: α*(13/5) = 7/19 | accepted: exact lower-envelope formula, plateaus [r+1−1/(r+1), r+2−1/(r+1)], new table row and test |
+| 5 | MINOR | R3: z_v omitted; κ ≥ 1 misses d + 1; tree assumption | accepted: κ ≥ 2, DAG remark |
+| 6 | MINOR | NR-q's node bound excludes exhaustive search | accepted: total-work condition |
+| 7 | MINOR | α = 1/3 excluded; factor exits in p_q; AD ⇒ p_q ≥ 1/2 − o(1) | accepted |
+| 8 | MINOR | Y window, ambiguous reference, LV6′ at D^δ, budget, ERH in Verdict | accepted (window via codex's padded modulus) |
+| 9 | MINOR | chain-model floors are upper bounds on the model floor | accepted: labelled throughout |
+| 10 | MINOR | PZ gives L^{−c}, not L^{−2c}; "cheapest step" inaccurate | accepted |
+| 11 | MINOR | KT even faithfulness; (F) at d = 7, 8; Verdict hypotheses; height wording | accepted: (F) cited as D–M 5.2B (codex checked the book: valid for d ≥ 7 since d + 1 < C(d,2)); height claim withdrawn (codex #6) |
+| 12 | MINOR | Bach needs all prime ideals and GRH(ζ_K) | accepted |
+| 13 | MINOR | index undefined for non-monic f | accepted (= codex #3) |
+| 14 | MINOR | Rabin attribution | accepted: "not known to be easier than factoring" |
+| 15 | MINOR | table rows 3 and 4b overstated | accepted |
+
+**Opus literature critic (read-only, independent).** (Re-spawned after the first instance was lost to an API limit;
+pending at the time of writing; see the addendum below.)
 
 ---
 
 ## 13. Candidate card
 
-- **Mechanism.** Escape nested Prop R2 by exporting algebraic children (norms, fresh shared-root fields, generators,
-  Galois/Kummer transport), by class-group principalisation, or by changing the problem (re-splits, recursion,
-  independent descents).
-- **Model.** Theorem U / nested architecture; certificate class of §1; size model of recurse §3 and nested R2.
+- **Mechanism.** Escape nested Prop R2 in one of three ways:
+  - export algebraic children (norms, fresh shared-root fields, generators, Galois/Kummer transport);
+  - class-group principalisation;
+  - change the problem (re-splits, recursion, independent descents).
+- **Model.** The Theorem U / nested architecture; the certificate class of §1; the size model of recurse §3 and nested
+  R2.
 - **Result.** No rigorous or ERH-conditional α < 2/5.
-  - Proved: Lemma TI and Cor EX (export impossible across fields with k_1 = Q); Example TB (tied fields transfer);
-    Prop KT (Kummer/odd-isogeny transport returns to K for S_d, d ≥ 7, given (F)); Lemma PR and Prop RS(i, ii).
-  - Model: Prop R3 (O(d)-point components ⇒ 2/5); α*(C) (E2).
-  - Conditional: Theorem NR-q (T_q ⇒ L[α]).
-- **Failure scope.** Certificates built from field elements squared in a common Galois field; designs under (M1)–(M4).
-  Outside: non-square certificates, structured polynomial selection, fields with explicit ψ and small discriminant.
-- **Next step.** The smallest case of Hyp LS_{3/2}: two-level certificates at α = 3/8 with L^{O(1)} precision. Find
-  any lower bound for smooth points of an overdetermined affine system of d^{3/2} forms in d variables at L-scale.
+  - Proved:
+    - Lemma TI and Cor EX: no export across fields with k_1 = Q, at primes unramified in the common field;
+    - Example TB: tied fields transfer parity; usefulness open;
+    - Prop KT: 2-torsion-preserving hyperelliptic transport returns to K, for S_d with odd d ≥ 7;
+    - Lemma PR;
+    - Prop RS(i)–(iii): RS(iii) for uniform masks.
+  - Model:
+    - Prop R3 (O(d)-point components ⇒ 2/5);
+    - chain-sub-model floors α*(C) (E2): 7/18 at C = 5/4, 3/8 at C = 3/2, → 1/3.
+  - Conditional: Theorem NR-q (T_q ⇒ L[α]), which relaxes r20 #1's moment ratio to L^{O(1)} fieldwise and
+    targetwise.
+- **Failure scope.** Square certificates built from field elements; designs under (M1)–(M4); the inspected
+  implementations. Not covered:
+  - useful transfer between tied fields;
+  - directed recombination;
+  - structured image certificates;
+  - fields with explicit ψ and small discriminant;
+  - non-square certificates;
+  - structured polynomial selection.
+- **Next step.** The smallest case of Hyp LS_{3/2}: two-level certificates at α = 3/8. It needs a targetwise
+  L^{O(1)}-precision second moment, i.e. any lower bound for smooth points of an overdetermined affine system of d^{3/2}
+  forms in d variables at L-scale.
+
+## Reproduction
+
+- `.venv/bin/python -m src.escapeR2.run_experiments experiments/raw` (E1–E3, 44 s).
+- `.venv/bin/python -m pytest -q tests/test_escapeR2.py`.

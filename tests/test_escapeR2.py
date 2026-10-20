@@ -85,6 +85,15 @@ def test_budget_three_halves_reaches_three_eighths():
     assert not SM.chain_feasible(Fr(3, 8), 1, Fr(3, 2) - Fr(1, 100))
 
 
+def test_closed_budget_matches_lp_off_grid():
+    # post-review: C = 13/5 interpolates between plateaus (proof critic); r > C is infeasible (codex escapeR2_2 #13)
+    a, r = SM.best_floor(Fr(13, 5), rmax=6)
+    assert abs(a - Fr(7, 19)) < Fr(1, 10 ** 9) and r == 2
+    assert min(SM.closed_budget(rr, Fr(13, 5)) for rr in range(7)) == Fr(7, 19)
+    assert SM.closed_budget(2, Fr(1)) == 1
+    assert not SM.chain_feasible(Fr(1, 2), 2, Fr(1))
+
+
 # ---------------------------------------------------------------- re-split obstruction
 def test_resplit_coset_obstruction_small():
     d = resplit.build(1)

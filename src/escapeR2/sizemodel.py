@@ -156,8 +156,12 @@ def closed_no_budget(r: int) -> Fr:
 
 
 def closed_budget(r: int, C: Fr) -> Fr:
-    """max((r+2)/(3r+5), (r+2-C)/(2r+5-2C)) when r+1 > C; else (r+2)/(3r+5).  (Derivation in the results note.)"""
+    """Fixed-depth optimum alpha_r(C): infeasible (returned as 1) if r >= 1 and C < r (monotone targets force
+    component exponent >= r*delta; codex escapeR2_2 #13); max((r+2)/(3r+5), (r+2-C)/(2r+5-2C)) if r <= C < r+1;
+    (r+2)/(3r+5) if C >= r+1.  (Post-review fix: the draft omitted the C >= r condition.)"""
     base = closed_no_budget(r)
+    if r >= 1 and C < r:
+        return Fr(1)
     if r + 1 <= C:
         return base
     return max(base, Fr(r + 2 - C) / Fr(2 * r + 5 - 2 * C))

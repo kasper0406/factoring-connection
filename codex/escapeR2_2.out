@@ -1,0 +1,142 @@
+Full report: [referee_report.md](/Volumes/git/factoring-connection/codex/scratch/escapeR2_2/referee_report.md). The source repository was left unchanged.
+
+**The parity lemma survives. The exhaustive Verdict does not.** R3 contains an incorrect recurrence, NR-q’s split window is invalid as written, and the claimed height of a new generator is false. I give repairs for the first two.
+
+**Verdicts**
+
+1. **CORRECT — TI.** The prime correspondence is \(H_j\backslash G/D\), with the stated left/right conventions. Invariance under \(H_1\) and \(\bigcap_{j\ge2}H_j\) proves precisely constancy on fibres over \(k_1\). Unramifiedness in the common \(L\) matters.
+2. **CORRECT WITH FIXES — EX.** The local argument works, including \(\ell\mid b_i\), under a good-order hypothesis. Nonmonic notation needs localization, and \(N(a-b\alpha)=F(a,b)/f_d\). The \(S_d\)-field intermediate-field dichotomy is correct.
+3. **CORRECT WITH FIXES — KT.** Fact (F) and KT’s étale-algebra conclusion are true. The faithfulness proof needs completion. KT excludes distinct root algebras under the stipulated module isomorphism; it does not eliminate every representation or cohomological transport in r20 #4.
+4. **CORRECT WITH FIXES — RS/recursion.** The square correction and positive-pair coset obstruction are correct. Universal claims about every re-split and every modular bridge overreach.
+5. **CORRECT WITH FIXES — R3.** The displayed bound for every \(X_v\) is false. Tracking cofactors instead restores an \(O_\kappa(\Lambda U)\) bound and the model’s \(2/5\) floor.
+6. **CORRECT WITH FIXES — chain model.** The reported global values check out. The fixed-depth formula omits \(C\ge r\), and the global optimum requires a lower-envelope interpretation. These remain restricted model conclusions.
+7. **CORRECT WITH FIXES — NR-q.** Pooling and transcript invariance work. Its stated shell cannot use K-U verbatim. A larger, known splitting modulus repairs the window while preserving the stated \(T_q\).
+8. **CORRECT WITH FIXES — precision.** Paley–Zygmund permits correlated certificates. The advertised losses are affordable for **fieldwise moments at sufficiently many individual targets**. Relaxed moments averaged jointly over \((A,q)\) are insufficient.
+9. **WRONG — exhaustive Verdict.** No reduction of every escape family to LS\(_C\)/\(T_q\), or something stronger, is established. Controlled image bridges, directed recombination, and conditional randomness in tied fields remain separate possibilities.
+
+**Issue table**
+
+| # | Severity | Location | Issue | Suggested fix |
+|---|---|---|---|---|
+| 1 | MAJOR | §1, lines 114–117 | Separate evaluations need not descend to the chosen compositum. | Require a supplied compatible evaluation map. |
+| 2 | MINOR | §2.1 remarks | Ramification introduced by other fields need not lie in the source field’s exceptional support. | State and charge the excluded union. |
+| 3 | MINOR | §2.2 | Nonmonic order index and norm normalization are inaccurate. | Use local orders or \(\beta=f_d\alpha\). |
+| 4 | MAJOR | §2.3; Verdict | Sharing \(L\) does not prove absence of conditional randomness or an unchanged budget. | Replace the exclusion by a qualified open obstruction. |
+| 5 | MINOR | KT proof | One nontrivial transposition does not establish faithfulness. | Use the two-subset argument below. |
+| 6 | MAJOR | §5.2, generator-height claim | \(\alpha+1\) supplies an immediate counterexample. | Delete the counting inference. |
+| 7 | MAJOR | Verdict’s Kummer exclusion | KT identifies the étale algebra, not all useful representations or transports. | Narrow the claimed kill. |
+| 8 | MINOR | RS(ii), E3 | Chebotarev does not justify density in the growing finite window; adverse E3 sets miss S″’s size threshold. | Use a square-class pigeonhole construction. |
+| 9 | MINOR | E3 absolute-value hits | Signed pairs are possible when \(w\in -Q_N\); seed 3 has this property. | Choose \(w\notin Q_N\cup -Q_N\). |
+| 10 | MAJOR | §6 | “Every re-split” and the asserted classification of modular bridges are unsupported. | Restrict statements to the specified sampling law. |
+| 11 | MAJOR | R3 recurrence | It drops the incoming algebraic target. | Unroll cofactor logarithms. |
+| 12 | MINOR | R3 weights | The weight comparison fails at \(d=3\); \(d=2\) is undefined. | Handle small degrees separately. |
+| 13 | MINOR | §7.2; `closed_budget` | Necessary condition \(C\ge r\) is omitted. | Mark \(r>C\) infeasible; distinguish fixed depth from global optimum. |
+| 14 | MAJOR | LS\(_C\), Verdict | An informal averaged lower count supplies neither overlap control nor algorithmic success. | State separate moment and search hypotheses. |
+| 15 | MAJOR | NR-q split step | Every specified \(k\)-product exceeds \(\sqrt N\). | Change the shell or pad the splitting modulus. |
+| 16 | MINOR | NR-q post-processing/restarts | Uniform expanded-input costs and an implementable runtime cap need stating. | Supply an envelope or doubling schedule. |
+| 17 | MAJOR | §7.3 versus r20 #1 | Jointly averaged moment losses can concentrate on too few targets. | Require targetwise moments or a coverage theorem. |
+| 18 | MINOR | Exhaustive-search example | TS bounds successful trees, not every failed partial search. | Use a fixed-depth search recurrence. |
+| 19 | MAJOR | Verdict; §9.1 | Failed implementations are promoted to an exhaustive reduction theorem. | Replace it with a scoped catalogue. |
+
+**Concrete arguments and replacements**
+
+**PROVED — the common evaluation assertion is false.** Take
+\[
+N=119,\quad m=11,\quad \alpha_1=\sqrt2,\quad \alpha_2=-\sqrt2.
+\]
+Each separate order admits \(\alpha_j\mapsto11\), since \(11^2\equiv2\pmod{119}\). But their compositum satisfies \(\alpha_1+\alpha_2=0\), whereas the proposed images sum to \(22\ne0\). A map from the tensor-product presentation need not descend through its additional relations.
+
+This does not invalidate abstract TI or the per-field certificate used by NR-q.
+
+**KNOWN / PROVED — KT’s algebraic core survives.** Fact (F) follows from Dixon–Mortimer, *Permutation Groups*, Theorem 5.2B, p. 150, with \(r=2\); the exceptional and imprimitive indices exceed \(d+1\) for \(d\ge7\). [Primary reference](https://ebooks.karbust.me/Mathematics/John%20D.%20Dixon%2C%20Brian%20Mortimer%20-%20Permutation%20Groups%20%281996%29%20%5B978-1-4612-0731-3%5D.pdf).
+
+For even root-set size \(n\ge6\), a kernel permutation on
+\(\mathbf F_2[X]^0/\langle\mathbf1\rangle\) must fix every two-element subset modulo complementation. A two-element subset cannot be another’s complement when \(n\ge6\); hence it fixes every pair and is the identity. The stated hyperelliptic module description is correct. [Morgan, §8.1](https://londmathsoc.onlinelibrary.wiley.com/doi/full/10.1112/plms.70066).
+
+The subsequent generator-height claim fails:
+\[
+H_{f(x-1)}\le(d+1)2^dH_f,\qquad
+\psi(\alpha+1)=\frac{g_0+g_1}{g_1}.
+\]
+Thus another generator and another small evaluated fraction need not have Arakelov-sized height. These coordinate changes do not prove fresh randomness, but they refute the stated inference.
+
+**MODEL — repaired R3.** Put \(M=\Lambda U\). For algebraic targets define
+\[
+C_v=X_v-z_v;
+\]
+for rational targets set \(C_v=X_v\). The correct recurrence is
+\[
+C_v\le M+\sum_w z_w,\qquad
+z_w\le\frac{2C_w}{d-2}.
+\]
+For a tree with at most \(\kappa(d-2)\) nodes and \(d\ge4\),
+\[
+C_v\le(1+2\kappa)M,\qquad
+X_v\le2(1+2\kappa)M.
+\]
+Degree three has a separate bounded geometric sum. These constant changes suffice for R2’s window argument.
+
+The original constant actually fails: with \(d=5,\kappa=1,M=1\), a three-node algebraic chain with negligible coefficient height has successive full norm logarithms
+\[
+\frac53,\quad\frac{25}{9},\quad\frac{95}{27}.
+\]
+The last exceeds \(1+2\kappa=3\).
+
+**MODEL / PROVED calculation — chain floors.** For fixed \(r\ge1\), feasibility requires \(C\ge r\). Indeed, monotonic targets give
+\[
+v_j-\zeta_{j+1}\ge\delta,
+\]
+so the budget is at least \(r\delta\).
+
+For \(C\ge r\), the exact fixed-depth optimum is
+\[
+\alpha_r(C)=
+\begin{cases}
+\displaystyle\max\!\left(
+\frac{r+2}{3r+5},
+\frac{r+2-C}{2r+5-2C}\right),&C<r+1,\\[4pt]
+\displaystyle\frac{r+2}{3r+5},&C\ge r+1.
+\end{cases}
+\]
+The saturation threshold is actually \(C=r+1-1/(r+1)\).
+
+| \(C\) | \(\alpha\) | \(\delta\) | Targets | Norm exponents |
+|---|---:|---:|---|---|
+| \(1\) | \(2/5\) | \(1/5\) | \(3/5\) | \(4/5\) |
+| \(3/2\) | \(3/8\) | \(1/4\) | \(5/8,1/2\) | \(7/8,3/4\) |
+| \(3\) | \(4/11\) | \(3/11\) | \(7/11,6/11,5/11\) | \(10/11,9/11,8/11\) |
+
+I checked these and additional transition points against the exact LP. The code’s `closed_budget(2, 1)` returns \(3/7\), but the LP rejects it. This error does not change the reported global minimum.
+
+**PROVED — NR-q window repair.** With its stated \(Y=N^{1/(2k)}\), all \(k\)-products exceed \(\sqrt N\), so S″ cannot apply modulo \(N\) as claimed.
+
+After preprocessing \(3\nmid N\), instead split modulo
+\[
+N_* =9^{k+1}N.
+\]
+The products lie in \((\sqrt N,2^k\sqrt N]\). One of its \(k\) dyadic windows contains the required fraction, and every upper endpoint \(X\) satisfies
+\[
+2X^2\le2\cdot4^kN<N_*.
+\]
+S″ now applies. The additional probability loss is \(\exp(-O(k))\), which is harmless because \(k=o(\Lambda_\alpha)\). Recursive halves remain \(N^{1/2+o(1)}\). CRT preserves the hidden-root uniformity modulo \(N\).
+
+Thus the split defect is repairable without strengthening \(T_q\).
+
+**PROVED — precisely where precision can still be amplified.** For any nonnegative integer certificate count,
+\[
+\Pr_A(Z\ge1)\ge\frac{(\mathbb E_AZ)^2}{\mathbb E_AZ^2};
+\]
+correlation causes no problem.
+
+But let a target subset have density \(\varepsilon=e^{-c\Lambda}\), and put \(Z_{A,q}=1\) exactly on that subset, independently of \(A\). Then the relaxed **joint** moments satisfy
+\[
+\mathbb EZ=\varepsilon,\qquad
+\frac{\mathbb EZ^2}{(\mathbb EZ)^2}=\varepsilon^{-1}.
+\]
+Every pool still covers only that subset. The split pays \(\varepsilon^{2k}\). Targetwise field moments on a polylogarithmic-density target set avoid this; jointly averaged moments alone do not.
+
+Finally, tied fields can retain conditional randomness: fixing \(a\) and choosing fresh \(b\) gives
+\[
+\mathbf Q(\sqrt a),\quad\mathbf Q(\sqrt b),\quad\mathbf Q(\sqrt{ab}).
+\]
+Their dependence does not remove the free parameter \(b\). Useful evaluated transfer remains unproved, but membership in one Galois field does not exclude it. This is one concrete reason the Verdict’s exhaustive reduction is unjustified.
