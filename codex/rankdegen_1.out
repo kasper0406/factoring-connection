@@ -1,0 +1,262 @@
+**PROVED / REFUTED:** A nonzero-minor replacement for R1 survives under additional hypotheses. A volume-only count fails by more than \(B\) at the requested rank-3 scale. An explicit split construction has large free norms and small charged norms, but adds no relation rank. General closure remains unresolved. No novelty is claimed.
+
+Write
+\[
+x=\log N,\qquad t=x^{1/3}(\log x)^{2/3}.
+\]
+
+For task 1, the following reductions are **PROVED**.
+
+- **Rational rank loss.** If the combined module map has rank \(s<r\), write its coordinate map in an image basis as \(M:\mathbb Z^r\to\mathbb Z^s\). Candidate images lie in \(M[-E,E]^r\). Each image has at most \((2E+1)^{r-s}\) preimages: fix coordinates outside any nonsingular \(s\)-column submatrix; the others are determined. Repeated images have identical prime-ideal valuation rows. Restricting candidates to a rational \(s\)-plane likewise gives a linked rank-\(s\) module. Applying R3 requires checking GP and the error after this coordinate change; distortion can depend on \(N\).
+
+- **Subfields.** Suppose \(u_j\in A\subset K\), \(u'_j\in A'\subset K'\). Put \(m=[K:A]\), \(m'=[K':A']\), and \(D_0=[A:\mathbb Q]+[A':\mathbb Q]\). Then
+  \[
+  W=G^m,\qquad W'=(G')^{m'},
+  \]
+  and the maps restrict to the intersection orders. If the reduced rank-\(s\) configuration is GP, \(D_0>s\), and its box error is at most half its population \(e^\lambda\), then
+  \[
+  \boxed{\frac{\log X_1}{m}+\frac{\log X_2}{m'}
+  \ge \frac{s-1}{D_0-1}x+
+       \frac{D_0}{s}\bigl(\lambda-\log(2C_s)\bigr).}
+  \tag{1}
+  \]
+  Indeed, these candidates satisfy \(|GG'|\le X_1^{1/m}X_2^{1/m'}\); apply R1–R2 after reduction. For equal multiplicities and \(|F|\le X\), replace the left side by \((\log X)/m\). Smoothness must be charged to \(G,G'\): powers introduce no additional requirement.
+
+- **Projectively repeated rows.** Choose \(u_0\ne0\) and put \(A=\mathbb Q(u_j/u_0:j)\). Two \(K\)-rows are proportional exactly when their embeddings agree on \(A\). Thus every projective row occurs \([K:A]\) times, and
+  \[
+  W(a)=N_K(u_0)\,
+       N_A\!\left(\sum_j a_j u_j/u_0\right)^{[K:A]}.
+  \]
+  This follows by dividing embedding rows by their \(u_0\)-coordinates and counting extensions of embeddings of \(A\). For cross rows, first require identical zero-coordinate supports. Using a common nonzero coordinate, proportionality occurs exactly when the ratio fields admit an isomorphism carrying every coordinate ratio to its counterpart. This includes scalar twists. Denominators and induced orders still matter. ND applies if the maps agree on a common order containing the extracted roots; proportionality alone does not establish that.
+
+**REFUTED:** Higher dependencies need not arise from these reductions.
+
+Take \(\alpha^6=2\), \(K=K'=\mathbb Q(\alpha)\), and
+\[
+(1,\alpha,\alpha^3),\qquad (1,\alpha+N,\alpha^3).
+\tag{2}
+\]
+For \(N=31\), use \(\alpha\mapsto2\), since \(2^6\equiv2\pmod{31}\). Both projections are injective, and their generators generate \(K\). The twelve distinct projective rows lie on two affine lines, with third coordinate \(\pm\sqrt2\), six rows per line. Hence \(\Delta_F=0\).
+
+No cross rows are proportional for \(N>3\): first coordinates are \(1\), while the second-coordinate sets are disjoint because every conjugate of \(\alpha\) has modulus \(2^{1/6}\). Moreover, \((\alpha,\alpha+N)\) generates \(K\times K\), by CRT applied to its coprime minimal polynomials. The characteristic-0 algebra therefore does not collapse. Exactly
+\[
+\binom{12}{3}-2\binom63=180
+\]
+unordered minors are nonzero.
+
+**PROVED:** This example has finite volume. Set \(q=\sqrt2\), \(x_\pm=a\pm qc\), and, off \(b=0\), \(x_\pm=by_\pm\). Then
+\[
+F=b^{12}h_+(y_+)h_-(y_-),\qquad
+h_\pm(y)=(y^3\pm q)((y+N)^3\pm q).
+\]
+The Jacobian is a constant times \(|b|^2\). Integrating \(b\) first expresses \(V_F\) as a constant times
+\[
+\prod_{\pm}\int_{\mathbb R}|h_\pm(y)|^{-1/4}\,dy.
+\]
+Both integrals converge: real roots are simple, and the integrands are \(O(|y|^{-3/2})\) at infinity.
+
+**PROVED:** A nonzero-minor replacement for R1 exists.
+
+Assume total row rank \(r\ge2\) and **no proportional cross rows**. Let \(\mathcal B\) be the nonzero unordered \(r\)-minors,
+\[
+b_i=\#\{I\in\mathcal B:i\in I\},
+\]
+and let \(S\) be the product of all ordered nonzero minors. Galois invariance gives \(S\in\mathbb Z\setminus\{0\}\). Transitivity makes \(b_i\) constant on each side, say \(b_1,b_2\). Put \(b_*=\max(b_1,b_2)\). Then
+\[
+\boxed{v_p(S)\ge \frac{r!b_*}{D-r+1}\quad(p\mid N).}
+\tag{3}
+\]
+
+*Proof.* For an independent pair \(i,j\), let \(b_{ij}\) count bases containing both. Basis exchange gives
+\[
+b_i\le(D-r+1)b_{ij}.
+\]
+Indeed, insert \(j\) into a basis containing \(i\), removing a circuit element \(k\ne i\). The resulting basis and \(k\) determine the original basis. Each resulting basis has at most \(D-r\) predecessors, plus itself. Consequently every cross pair satisfies
+\[
+b_{ij}\ge b_* /(D-r+1).
+\]
+
+Normalize local valuations by \(v(p)=1\). As in R1, lift each kernel prime to the maximal order and normal closure. Its \(ef\) embeddings give rows congruent to the common integer lifts to valuation at least \(1/e\). Thus there are sets \(T_1,T_2\), of sizes \(t_1\ge e,t_2\ge e'\), whose union has row differences of valuation at least \(1/e_*\), where \(e_*=\max(e,e')\).
+
+For a nonzero minor \(I\), write \(k_\nu=|I\cap T_\nu|\). Row subtraction gives
+\[
+v(\det_I)\ge (k_1+k_2-1)_+/e_*.
+\]
+Since
+\[
+k_1k_2\le\min(t_1,t_2)(k_1+k_2-1)_+,
+\]
+summing cross-pair incidences gives
+\[
+\sum_{I\in\mathcal B}(k_1+k_2-1)_+
+\ge \frac{\max(t_1,t_2)b_*}{D-r+1}
+\ge \frac{e_*b_*}{D-r+1}.
+\]
+Multiply by \(r!/e_*\). This includes ramified and index-dividing primes. ∎
+
+**PROVED:** If both projections are \(\mathbb Q\)-injective, then
+\[
+\boxed{m(F)\ge N^{1/(D-r+1)}.}
+\tag{4}
+\]
+Here \(m(F)=\inf_{|\det T|=1}\prod_i\|L_iT\|_2\).
+
+*Proof.* Write \(H_\nu(T)\) for the row-norm product on side \(\nu\). Each side has rank \(r\). Its own ordered nonzero-minor product is a nonzero integer; every row has equal incidence in that product. Hadamard therefore gives \(H_\nu(T)\ge1\). Applying Hadamard to \(S\),
+\[
+N^{r!b_* /(D-r+1)}
+\le |S|
+\le H_1(T)^{r!b_1}H_2(T)^{r!b_2}
+\le(H_1(T)H_2(T))^{r!b_*}.
+\]
+Take the infimum. Without injective projections, the middle weighted inequality survives, but the last step is unjustified. ∎
+
+**PROVED:** For \(r\) independent integer candidates,
+\[
+\prod_i\max_k|L_i(a^{(k)})|
+\ge r^{-D/2}N^{1/(D-r+1)}.
+\tag{5}
+\]
+Their column matrix \(A\) has \(|\det A|\ge1\). Normalizing its determinant gives \(H(F\circ A)\ge m(F)\), while each row norm is at most \(\sqrt r\) times its largest evaluated coordinate.
+
+**PROVED:** Suppose additionally \(V_F<\infty\), and put \(h=x/(D-r+1)\ge D\). Thunder’s Theorem 4 implies
+\[
+V_F\le C_{r,D}e^{-rh/D}(1+h)^{r-1}.
+\]
+Injective projections ensure no nonzero rational zero. The function
+\(z^{-r/D}(1+\log z)^{r-1}\) decreases for \(\log z\ge D\), permitting substitution of (4). Therefore \(e^\lambda\) small-norm candidates, with Davenport error at most \(e^\lambda/2\), force
+\[
+\boxed{\log X\ge h+\frac Dr
+ \left[\lambda-\log(2C_{r,D})-(r-1)\log(1+h)\right].}
+\tag{6}
+\]
+This is a ledger for a class of non-GP configurations. [Thunder, Theorem 4](https://arxiv.org/pdf/math/0305078).
+
+**PROVED (model), conditional:** For fixed \(r\), without projective repetitions, if the loss in (6) is \(o(\lambda)\), then AM–GM gives \(\log X\gg_r\sqrt{x\lambda}\), hence \(\alpha\ge1/3\) under H. In R3’s \(L[1/3]\) parametrization, \(\log C_{r,D}=o(t)\) suffices. The norm coefficient satisfies
+\[
+\eta\ge1/\delta+\delta\gamma/r.
+\]
+With H5 and quadratic linear algebra,
+\[
+c^3\ge32(r-1)/9.
+\]
+Indeed, putting \(z=\gamma/\beta\le r/(r-1)\le2\), H gives
+\[
+\beta^3\ge\frac{4z}{9r(z-1)^2},\qquad c\ge2\beta.
+\]
+Maximize the allowed \(z\). The needed growing-degree uniformity of \(C_{r,D}\) remains unproved here.
+
+**REFUTED:** Nonzero minors do not universally carry \(N\).
+
+Take identical modules \((1,\zeta_5,\zeta_5^2)\), with identical maps, using \(\zeta_5\mapsto2\pmod{31}\). Each projective row is duplicated. If \(Q_2\) is the squared product of nonzero unordered minors, Vandermonde gives
+\[
+Q_2=\operatorname{disc}(\Phi_5)^{16}=5^{48},
+\qquad |S|=Q_2^3=5^{144}.
+\]
+Thus \(31\nmid S\). The form and volume are independent of every admissible \(N\). These identical-map relations are trivial.
+
+**PROVED:** Finite volume can fail without cross coincidences. Put \(s=\sqrt2,z=\sqrt3\) and use
+\[
+(1,s,z,sz),\qquad(1,s,z+N,s(z+N)).
+\]
+At \(N=23\), take \(s\mapsto5,z\mapsto7\). Both projections are bases; no cross rows coincide for \(N>4\). In coordinates \(x_\pm=a\pm sb,\ y_\pm=c\pm sd\),
+\[
+F=H(x_+,y_+)H(x_-,y_-),\quad
+H(x,y)=(x^2-3y^2)((x+Ny)^2-3y^2).
+\]
+Scaling the two blocks by \(e^q,e^{-q}\) preserves both \(F\) and measure. A positive-volume compact subset of \(|F|<1\), with first-block radius in a short annulus, has infinitely many disjoint translates. Hence \(V_F=\infty\). The common unit \(3+2\sqrt2\) also produces integral constant-norm orbits.
+
+**PROVED, task-1 verdict:** Subfield reductions and (3)–(6) supply partial ledgers. Universal characteristic-0 coincidence and unconditional semi-discriminant divisibility are refuted. Noninjective projections, infinite-volume cases and growing-degree constants remain outside this closure. No useful family beating rank 2 is established.
+
+For task 2, the following scale-relevant counterexample is **PROVED**.
+
+For any sufficiently large odd squarefree \(N\), choose \(d\ge3\), and let \(m\) be the largest odd integer at most \(N^{1/d}\), with \(m>4d\). Construct monic irreducible \(f\), height at most \(4m\), satisfying \(f(m)=N\):
+
+1. Start with the base-\(m\) expansion of \(N\), whose leading digit is \(1\), since \(m^d\le N<(m+2)^d<2m^d\).
+2. Descending through coefficients \(j=d-1,\ldots,1\), add \((X-m)X^{j-1}\) whenever coefficient \(j\) is odd.
+3. The constant is even. If divisible by \(4\), add \(2(X-m)\).
+
+Now \(f\) is Eisenstein at \(2\), has the stated height, and retains its value at \(m\). Put \(g=f+4(X-m)\). It is also Eisenstein, has height at most \(8m\), and \(g(m)=N\). The polynomials are coprime, since a common root would equal \(m\).
+
+Let \(\alpha,\alpha'\) be roots and take
+\[
+(1,\alpha,\alpha^2),\qquad(1,\alpha',(\alpha')^2),
+\]
+both reduced to \((1,m,m^2)\pmod N\). All \(D=2d\) parameters are distinct; every triple is Vandermonde. Both sides are nonlinear and GP.
+
+Scale the third generator on both sides by \(T\). Then
+\[
+F_T(a,b,c)=F_0(a,b,Tc),\qquad V_{F_T}=V_{F_0}/T.
+\]
+On \(c=0\), every nonzero integer pair has nonzero \(F_T\), and
+\[
+|F_T(a,b,0)|\le X:=64m^2(d+1)2^D E^D.
+\]
+Indeed,
+\[
+\prod(1+|\alpha_i|)\le2^dM(f),\quad
+M(f)\le4m\sqrt{d+1},\quad M(g)\le8m\sqrt{d+1}.
+\]
+There are \((2E+1)^2-1\) such points, including at least \(E^2/4\) primitive positive pairs: discard pairs divisible by \(n\ge2\), using \(\sum_{n\ge2}n^{-2}\le3/4\).
+
+Choose \(T=10^4N^{10}X^3\). R1 and \(C_3\le1536\) give
+\[
+V_{F_T}X^{3/D}<1.
+\]
+Yet for \(E=\lfloor B^{2/3}\rfloor\), there are \(\gg B^{4/3}\) primitive candidates. With \(D\sim\delta(x/\log x)^{1/3}\),
+\[
+\log X\le
+\left(\frac4\delta+\frac{2\delta\beta}{3}+o(1)\right)
+x^{2/3}(\log x)^{1/3}.
+\]
+Thus the discrepancy exceeds \(B\) at the requested side exponent and usual norm-size scale. Each large generator has only \(O(x)\) bits, and \(F_T(1,0,0)=1\).
+
+**REFUTED:** A uniform \(L^{o(1)}\)-times-volume bound with negligible exceptions cannot hold. This example’s excess lies on \(c=0\). Its binary restriction is GP and \(DE=o(B)\), so rank 2 handles it. It does **not** refute a quantitatively controlled lower-rank decomposition or settle the unscaled optimum.
+
+**PROVED:** Barroero–Widmer’s discrepancy bound involves projection volumes. Here the \((a,b)\)-projection contains \([-E,E]^2\), of area \(4E^2\gg B\). Small total volume cannot remove that term. [Barroero–Widmer, Theorem 1.3](https://arxiv.org/pdf/1210.5943).
+
+**PROVED:** Under finite type and \(a'(F)<D/r\), Thunder gives
+\[
+N_F(X)\ll_{r,D}(X/m(F))^{r/D}+X^{(r-1)/D}.
+\]
+Even with uniform constants, the displayed error allowance exceeds \(B\) at the formal special-pair rank-3 optimum:
+\[
+\gamma=2\beta,\quad \delta^2=3/\beta,\quad
+\eta=4\sqrt{\beta/3}
+\quad\Longrightarrow\quad
+X^{2/D}=L[1/3,8\beta/3].
+\]
+GP alone does not imply finite type in the stated setting: a rational side gives a rational zero hyperplane. [Thunder, Theorem 3](https://arxiv.org/pdf/math/0305078).
+
+**PROVED:** In rank \(r\), the same scaling leaves \(3^{r-1}-1\) nonzero ternary-box points on \(a_r=0\), while making volume arbitrarily small; use these power bases with \(d\ge r\). Such exceptions can exceed \(B\). This provides no improved algorithm.
+
+**CONJECTURE / unresolved, task-2 verdict:** A useful bound with \(L^{o(1)}\) loss and controlled exceptional sublattices remains possible. Arbitrary lower-rank contributions make the assertion vacuous: every point lies on its own rational line. Their number, geometry, restricted degeneracies and aggregate yield must be bounded against \(B\).
+
+For task 3, multiplicative recombination is **REFUTED** as an improvement in this explicit construction.
+
+Use the GP shifted cyclotomic module. Let dictionary pieces be
+\[
+p_{s,t}=s+t(\zeta_5+N),\qquad |s|,|t|\le H,
+\]
+with charged lifts \(p'_{s,t}=s+t\zeta_5\). Products of two pieces have coefficient triples
+\[
+(su,\ sv+tu,\ tv).
+\]
+For \(t,v\ne0\) and \(H<N/2-1\), their split norms are at least \((N/2)^8\), while charged norms are at most \((2H)^8\). Thus large split norm by construction and small charged norm coexist in GP, far above the \(2x/7\) threshold.
+
+**PROVED:** These products add no relation rank. The charged element is exactly the product of its charged lifts. Its integral norm is \(B\)-smooth only if both constituent norms are. Every exponent row, including multiplicative auxiliary characters, is the sum of constituent rows.
+
+With \(H^2\asymp B\), enumerating \(B^2\) products costs \(L[1/3,2\beta]\), but all rows lie in the span of \(O(B)\) constituent rows. With distinct dictionary columns, each constituent has its own pivot. Parity dependencies created solely by recombination have explicit square roots on both sides, agreeing under the maps.
+
+**PROVED:** This extends to dictionaries whose charged lifts multiply to the candidate’s charged element. General exact O3 residues need not satisfy that condition. There
+\[
+P=Qf+r,\qquad P(\alpha')-r(\alpha')=Q(\alpha')f(\alpha')=z.
+\]
+If \(z\ne0\), linking gives \(|N_{K'}(z)|\ge N\), because \(O'/zO'\) surjects onto \(\mathbb Z/N\). This bounds the difference; it supplies no charged-norm bound after cancellation.
+
+**PROVED:** Norm-only counting cannot exclude the regime. Multiplicativity bounds nonunit pieces by \(\log_2X_1\), but arbitrary unit powers remain; real quadratic orders already contain infinitely many norm-one elements. Archimedean size, construction cost and independent rank must enter.
+
+**PROVED:** R5 counts coefficient vectors. Different words can represent the same residual with different dictionary rows: \((\sqrt2+1)(\sqrt2-1)=1\) and the empty product both represent \(1\). Subtracting presentations of the same linked pair gives characteristic-0 multiplicative identities. A yield argument must account for these identity rows; every presentation is not an independent smoothness trial.
+
+**CONJECTURE / unresolved, task-3 verdict:** General exact O3 families with nonmultiplicative charged residues remain unexcluded. The explicit above-threshold family fails by relation rank; no exploiting algorithm is established.
+
+**PROVED:** The write-up and exact finite checks are saved in [rankdegen_1.txt](/Volumes/git/factoring-connection/codex/scratch/rankdegen_1/rankdegen_1.txt), [verification script](/Volumes/git/factoring-connection/codex/scratch/rankdegen_1/verify_rankdegen.py), and [results](/Volumes/git/factoring-connection/codex/scratch/rankdegen_1/verification.json). Repository access outside scratch was read-only.
