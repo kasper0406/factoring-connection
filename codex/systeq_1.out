@@ -1,0 +1,200 @@
+**HEURISTIC — Referee verdict.** None of these constructions currently supplies the missing integer descent. Several produce abundant smooth numbers; others supply genuine endomorphisms or splitting identities. The unresolved requirement is to combine these with useful congruences modulo \(N\), while repeatedly reducing arithmetic size. My subjective probability that a straightforward transfer of the listed mechanisms beats \(L[1/3]\) for general balanced semiprimes is below 1%. That is a research judgment, not a lower bound.
+
+**PROVED — A sufficient abstract descent specification follows.** It is not a characterization of every possible fast algorithm.
+
+- **E1: Power compatibility and bounded coefficients.** A target algebra has a cheap endomorphism \(\phi\), compatible with an actual power operation and its action on coefficients. Coefficients remain cheaply representable throughout descent.
+- **E2: A systematically split identity.** There is a high-degree expression with a known factorization into inexpensive factors. In characteristic \(p\),
+  \[
+  U^qV-UV^q
+  =V\prod_{a\in\mathbf F_q}(U-aV).
+  \]
+  This follows because the two homogeneous polynomials have the same \(q+1\) distinct projective zeros and matching normalization.
+- **E3: Sufficiently many useful variations.** An efficiently sampled family transforms that identity into enough distinct relations. Raw orbit size is insufficient: successful relations must have adequate rank or support a different proven reconstruction method.
+- **E4: Compression after evaluation.** In the target, applying \(\phi\) to the coordinate agrees with a rational function of bounded degree—or an analogous bounded-degree geometric operation. Thus the systematically split expression also has a representation of much smaller degree.
+- **E5: Targeted, repeatable elimination.** A prescribed object of size \(D\) can be expressed using objects of size at most \(D/2\), with polynomial branching and polynomial expected work per node. Descendants remain eligible for elimination.
+- **E6: Completion.** Arbitrary targets can enter the descent; exceptional cases, denominators, constants, and the terminal factor base are handled.
+
+**PROVED.** If branching and node cost are \((qn)^{O(1)}\), and depth is \(O(\log n)\), total work is \((qn)^{O(\log n)}\). For \(q=n^{O(1)}\), this is quasi-polynomial. A literal fixed subring or a particular group is therefore not logically necessary; their algorithmic consequences are.
+
+**KNOWN — BGJT.** The standard model is
+\[
+K=\mathbf F_{q^2}[t]/(I),\qquad
+I\mid h_1(t)t^q-h_0(t),\quad \deg h_i=O(1).
+\]
+For a degree-\(D\) polynomial, transformed systematic equations have reduced numerators of degree at most \((1+\delta)D\), with \(\delta=\max\deg h_i\). Relations whose numerators are \(\lceil D/2\rceil\)-smooth permit recursive descent. Representation existence, appropriate smoothness behavior, and relation rank are heuristic. [BGJT](https://arxiv.org/pdf/1306.4244)
+
+**PROVED — Correction to the group count.** Over \(\mathbf F_q\), the homographies stabilize the projective splitting set. The useful BGJT variations come from cosets in
+\[
+\mathrm{PGL}_2(\mathbf F_{q^2})/\mathrm{PGL}_2(\mathbf F_q),
+\]
+whose number is
+\[
+\frac{q^2(q^4-1)}{q(q^2-1)}=q(q^2+1).
+\]
+These are candidate relations, not automatically independent relations.
+
+**KNOWN — GKZ.** Quadratic elimination uses unusually split polynomials of shape
+\[
+T^{q+1}+aT^q+bT+c.
+\]
+An irreducible polynomial of degree \(2d\) becomes quadratic over an extension; eliminating there and taking norms expresses it through at most \(q+2\) good irreducibles of degrees dividing \(d\). Trap avoidance makes this repeatable. The size decreased is polynomial degree over the original coefficient field. The proof covers infinitely many explicit fields in each fixed characteristic; extension to all fields through that polynomial model requires an additional representation conjecture. [GKZ](https://arxiv.org/pdf/1507.01495)
+
+**KNOWN — KW separately.** KW constructs an elliptic-curve model with a degree-\(n\) place \(\mathscr I\) satisfying
+\[
+\operatorname{Fr}_q(P)=P+Q
+\quad\text{at }\mathscr I.
+\]
+Translation supplies the bounded-degree replacement for Frobenius. Split forms from \(\mathrm{PGL}_2\) and \(\mathrm{PGL}_3\) orbits give trap-safe divisor eliminations \(4\to3\to2\). Norms down a quadratic tower repeatedly reduce degree over the base field. Model existence after a logarithmic-degree extension and successful descent are proved. The resulting expected bound is
+\[
+(pn)^{2\log_2 n+O(1)}.
+\]
+The measure is divisor degree, not integer coefficient height. [KW](https://arxiv.org/html/1906.10668v2)
+
+**KNOWN — Why \(L[1/4]\) is different.** Joux already combined systematically split relation generation with bilinear-system elimination and a subexponential descent analysis. The quasi-polynomial breakthrough requires stronger control of the entire recursive descent; E1–E4 alone do not imply it. [Joux](https://eprint.iacr.org/2013/095.pdf)
+
+**PROVED — Integer accounting convention.** Write \(B=L[\alpha,c]\), \(b=\log B\), and let \(H=\widetilde O(x^{2\alpha})\) be the permitted logarithmic candidate size. For \(\alpha<1/3\), \(H=o(x)\), hence \(e^H=N^{o(1)}\). A product of \(r\) explicitly known integers at most \(B\) is smooth and has logarithm at most \(rb\). A family with \(s\) integer parameters bounded by \(A\) contains at most \((2A+1)^s\) parameter choices. Neither fact supplies a congruence modulo \(N\).
+
+**HEURISTIC — Smoothness baseline.** For an unfactored piece of logarithmic size \(h\), the usual baseline is \(\rho(h/b)\). Applying this to structured values assumes random-like smoothness after accounting for local restrictions; independence between pieces is an additional assumption. Arithmetic structure can alter this baseline. [Smooth-number estimates](https://www.math.dartmouth.edu/~carlp/smooth051317.pdf)
+
+**KNOWN — Cyclotomic and Aurifeuillian identities** provide algebraic splitting, including useful further factorizations at special arguments. [Brent](https://arxiv.org/pdf/1004.5466)
+
+**PROVED — Their ledger.** For \(2\le a\le A\),
+\[
+|\Phi_d(a)|\le(A+1)^{\varphi(d)},
+\]
+because every complex root has modulus one. Enumerating \(a\le A,n\le D\) gives at most \(AD\) factored expressions \(a^n-1\), each with \(\tau(n)\) cyclotomic pieces. Those pieces need not be \(B\)-smooth. Splitting over \(\mathbf Q(\zeta_n)\) supplies E2 in an enlarged coefficient ring; its Galois action supplies partial E1/E3.
+
+For an elementary further split,
+\[
+a^4+4b^4=(a^2-2ab+2b^2)(a^2+2ab+2b^2).
+\]
+Expansion proves the identity. If \(|a|,|b|\le A\) and \(5A^2\le B\), it gives \(O(A^2)=O(B)\) guaranteed smooth values, of size at most \(B^2\).
+
+Modulo \(N\), these remain the same exact identities. Requiring \(a^n\equiv1\pmod N\) adds an order condition; the factorization does not enforce it. No E4 compression tied to general \(N\), or E5 elimination, has been supplied.
+
+**PROVED — Consecutive products, factorials, binomials.** Every \(\binom nk\), \(n\le B\), is \(B\)-smooth: it is an integer divisor of \(n!\). There are \(O(B^2)\) parameter choices, with
+\[
+\log\binom nk\le n\log2,\qquad \log(n!)\le n\log n.
+\]
+Even within the budget \(H\), taking \(n\asymp B\) and \(k\le H/b\) gives \(\Theta(BH/b)\) parameter choices, since \(\binom nk\le n^k\). Thus smooth-number supply genuinely can reach factor-base scale. These constructions supply E2-like factorization and exact valuations, but no useful E1/E3/E4/E5.
+
+Their congruences modulo \(N\) are exact integer identities reduced modulo \(N\). Two distinct positive values below \(N\) cannot collide modulo \(N\): their difference has absolute value below \(N\).
+
+**KNOWN/PROVED — Factorial factoring.** If \(p\) is the least prime factor of \(N\), then
+\[
+\gcd(n!,N)=1\quad(n<p).
+\]
+Consequently, direct factorial coverage must reach \(p\), which is about \(\sqrt N\) for balanced semiprimes. Classical product/multipoint methods achieve roughly \(\widetilde O(N^{1/4})\) work, exponential in \(x\). This is a limitation of that method and its analysis, not a theorem that every conceivable factorial algorithm is exponential. [Bostan–Gaudry–Schost](https://doi.org/10.1137/S0097539704443793)
+
+**PROVED — Chebyshev/Dickson composition.** The defining relation
+\[
+D_n(z+a/z,a)=z^n+(a/z)^n
+\]
+gives
+\[
+D_m(D_n(T,a),a^n)=D_{mn}(T,a).
+\]
+The unchanged-parameter formula holds for \(a=1\). Composition supplies a cheap formal endomorphism, hence weak E1, but degree multiplies. For fixed \(a=1\), \(T\ge3\), the displayed relation gives
+\[
+\log|D_m(T,1)|=\Theta(m\log T).
+\]
+There are at most \(AD\) outputs with \(T\le A,m\le D\), with no guaranteed smoothness. Splitting through roots of unity supplies only cyclotomic E2/E3. A congruence \(D_m(T)=T\) imposes an order condition in a multiplicative torus: writing \(T=z+z^{-1}\), it implies \(z^m=z^{\pm1}\). It does not provide general-\(N\) E4/E5.
+
+**KNOWN — Lucas sequences and elliptic divisibility sequences** have divisibility properties and, under their standard nondegeneracy hypotheses, primitive divisors in sufficiently late terms. Divisibility is therefore not a smoothness guarantee. [Lucas/Lehmer theorem](https://www.researchgate.net/profile/Paul_Voutier/publication/2397582_Existence_of_Primitive_Divisors_of_Lucas_and_Lehmer_Numbers/links/559999c308ae99aa62cc6983/Existence-of-Primitive-Divisors-of-Lucas-and-Lehmer-Numbers.pdf), [elliptic primitive divisors](https://arxiv.org/pdf/math/0409540)
+
+**KNOWN/PROVED — Their scale and \(N\)-connection.** Standard growing Lucas sequences have logarithmic term size \(\Theta(n)\); denominator EDS from a fixed non-torsion rational point have size \(\Theta(n^2)\). Thus a fixed sequence offers only \(O(H)\), respectively \(O(\sqrt H)\), terms within logarithmic budget \(H\). [EDS height analysis](https://msp.org/ant/2008/2-2/ant-v2-n2-s.pdf)
+
+Modulo a good prime divisor \(p\mid N\), vanishing tests detect whether a group element’s order divides the index. Multiplication maps supply formal E1, but their divisibility identities do not supply E2–E5 in the required sense.
+
+**HEURISTIC — The surviving algorithm here is ECM.** Randomizing the curve randomizes its order modulo an unknown factor. Assuming standard smooth-order behavior gives \(L_p[1/2,\sqrt2]\), hence \(L_N[1/2]\) for balanced factors. This exploits smooth group orders, not smooth-by-construction integer relations. [Lenstra](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf)
+
+**PROVED — Cyclotomic norm forms.** For \(d=\varphi(m)\) and
+\[
+z=\sum_{j<d}a_j\zeta_m^j,\qquad |a_j|\le A,
+\]
+every conjugate has absolute value at most \(dA\), so
+\[
+|\operatorname{Norm}(z)|\le(dA)^d.
+\]
+There are at most \((2A+1)^d\) coefficient choices and at most \(d\) Galois conjugates per choice. These give E1 and partial E3, but norms are not automatically smooth; no E4/E5 follows.
+
+**KNOWN — Gauss/Jacobi sums** improve this particular ledger: suitable Jacobi sums over an auxiliary prime field \(\mathbf F_\ell\) have all conjugate absolute values \(\sqrt\ell\), and known ideal factorizations above \(\ell\). In a degree-\(d\) field their norm is \(\ell^{d/2}\). Characters of order dividing \(m\) give at most \(m^2\) Jacobi-sum parameter pairs per \(\ell\). These are genuinely smooth norms when \(\ell\le B\), with logarithmic size \(d\log\ell/2\). [Jacobi sums and Stickelberger formulas](https://www.imo.universite-paris-saclay.fr/~yves.benoist/prepubli/24fourierv3.pdf)
+
+**PROVED — What they carry modulo \(N\).** Reduction preserves these algebraic identities in \((\mathbf Z/N)[\zeta_m]\). A map to the base ring requires an element \(r\) satisfying \(\Phi_m(r)=0\). Relating another polynomial representation to that same \(r\) is again a common-root condition. Known ideal relations can aid algebraic precomputation; their smooth norms alone supply no new \(N\)-dependent identification.
+
+**KNOWN — Witt/Teichmüller lifts** preserve a striking analogue of E2:
+\[
+T^q-T=\prod_{a\in\mathbf F_q}(T-[a])
+\quad\text{in }W_s(\mathbf F_q)[T].
+\]
+The Teichmüller representatives are the roots, and their pairwise differences are units. Witt Frobenius supplies E1, but these representatives are not an additive coefficient subfield in mixed characteristic. [Witt vectors](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Hazewinkel-Witt.pdf)
+
+**PROVED — The characteristic obstruction.** A unital map
+\[
+\mathbf Z/p^s\longrightarrow\mathbf Z/N
+\]
+exists exactly when \(N\mid p^s\): applying it to \(p^s1=0\) proves necessity; reduction proves sufficiency. Thus “impossible” needs the prime-power exception. It cannot transfer the construction to a general semiprime. E4 fails at the target connection, before any relation-yield calculation; no compatible descent has been supplied.
+
+**KNOWN — \(\Lambda\)-rings** organize simultaneous commuting Frobenius lifts; \(\psi^p(T)=T^p\) on \(\mathbf Z[T]\) is a genuine example. Borger’s \(\mathbf F_1\) interpretation formalizes this structure. [Borger](https://maths-people.anu.edu.au/~borger/papers/_all/LambdaRingsAndTheFieldWithOneElement.pdf)
+
+**PROVED — Why Fermat does not transfer.** Evaluation at \(a\) satisfies
+\[
+\operatorname{ev}_a(\psi^pT)=a^p,
+\]
+whereas every unital endomorphism of \(\mathbf Z/N\) fixes \(a\). Equivariance therefore requires the additional condition \(a^p\equiv a\pmod N\).
+
+For squarefree \(N=PQ\), the exact fraction of residues satisfying this condition is
+\[
+\frac{(1+\gcd(p-1,P-1))(1+\gcd(p-1,Q-1))}{N}
+\le\frac{p^2}{N}.
+\]
+Each field contributes zero plus the roots of unity of order dividing \(p-1\); CRT proves the formula.
+
+**HEURISTIC — Yield.** Under uniform-residue sampling, \(M\) smooth inputs give at most \(Mp^2/N\) expected compatible evaluations. With \(M,p=L[\alpha,O(1)]\), this is \(\exp(-x+o(x))\). Smoothness does not repair the missing equivariance.
+
+**PROVED — The integer splitting error is visible explicitly:**
+\[
+T^p-T=\prod_{a=0}^{p-1}(T-a)+pC_p(T),
+\qquad C_p\in\mathbf Z[T].
+\]
+Reduction modulo \(p\) proves coefficientwise divisibility. Modulo \(N\), the correction remains; it is not systematically smooth or zero.
+
+**PROVED — Group rings and cyclotomic automorphisms.** For \((a,m)=1\), \(\zeta_m\mapsto\zeta_m^a\) is an automorphism over every \(\mathbf Z/N\). It permutes conjugates, but does not act as a power map on arbitrary sums. Norm identities multiply the conjugates together and incur the corresponding degree/height cost. Thus E1–E3 have formal analogues; E4/E5 remain missing.
+
+Auxiliary idempotents need not factor \(N\): in a group ring with \(g^2=1\) and \(2\) invertible, \((1+g)/2\) is idempotent for every \(N\). It splits the known auxiliary algebra.
+
+**PROVED — Three precise barriers, with limited scope.**
+
+1. **Small integer products.** If both positive sides have at most \(r\) factors of logarithmic size at most \(H\), and \(rH<x\), a congruence between them is an integer equality. The number of nontrivial such congruences is exactly zero. Factor-base valuation rows from exact integer equalities are zero.
+
+2. **Polynomial representations.** If coprime \(f,g\in\mathbf Z[T]\) share a root modulo \(N\), then
+   \[
+   0<N\le|\operatorname{Res}(f,g)|
+   \le\|f\|_2^{\deg g}\|g\|_2^{\deg f}.
+   \]
+   The integer Bézout identity for the resultant gives divisibility by \(N\); Hadamard applied to the Sylvester matrix gives the upper bound. If the resultant is zero, this argument gives no bound.
+
+3. **Base-ring endomorphisms.** A unital endomorphism fixes \(1\), hence every integer residue, so it is the identity. A nonunital endomorphism has form \(a\mapsto ae\), with \(e^2=e\). A nontrivial such \(e\) already yields a proper factor \(\gcd(e,N)\).
+
+**PROVED — A correction to the proposed example.** Substitution \(T\mapsto T^N\) is always an endomorphism of \((\mathbf Z/N)[T]\). It descends through \(F\) exactly when \(F(T^N)=0\) modulo \(F\). This differs from mapping every element \(u\mapsto u^N\). Even the latter can work for composites: on \(\mathbf Z/561\), it is the identity, by CRT and Fermat since \(2,10,16\mid560\).
+
+**HEURISTIC — Scope of the wall.** “Every smooth construction is a product of small linear forms” is not a useful universal theorem: writing its prime factorization merely restates smoothness. Nor must every useful congruence arise from two fixed coprime univariate polynomials. The resultant theorem supports the stated polynomial-selection ledger; it does not establish a universal classical \(1/3\) barrier.
+
+**SPECULATIVE — Best remaining mechanism.** Auxiliary algebras are still worth considering because they admit genuine automorphisms. A credible proposal must add an \(N\)-dependent evaluation and an elimination that reduces both algebraic complexity and logarithmic height, with controlled branching and exceptional cases. None of the listed identities supplies that step. I would prioritize finding that operation over collecting further splitting identities.
+
+**HEURISTIC — A cheap kill test for the strongest actual smooth-number supply.** Use
+\[
+N=1{,}000{,}003\cdot1{,}000{,}033
+ =1{,}000{,}036{,}000{,}099
+\]
+and \(B=4096\). Enumerate \(\binom nk\) for \(n\le4096\), \(2\le k\le n/2\), retaining values of at least 80 bits. Remove exact duplicate integers, then count distinct-value collisions modulo \(N\). This tests whether constructed smooth values have an excess of modular identifications.
+
+**PROVED — Null prediction.** For \(M\) independent uniform units, the expected collision count is exactly
+\[
+\frac{M(M-1)}{2\varphi(N)}.
+\]
+The experiment has \(M=4{,}155{,}871\), giving **8.6353362044 expected collisions**. Uniform-residue behavior of the binomial family is the heuristic being tested.
+
+**PROVED — Computed outcome.** The exact run found **10 collisions**, with parity-row rank **10**, against a factor base of **564 primes**. Independently sampled random integers of matching bit lengths, conditioned on being units, gave **8 collisions**. Runtime was about 37 seconds. The [script](/Volumes/git/factoring-connection/codex/scratch/systeq_1/systeq_blind_binomial_test.py) and [results](/Volumes/git/factoring-connection/codex/scratch/systeq_1/systeq_blind_binomial_result.json) are reproducible.
+
+**HEURISTIC — Interpretation.** This shows no excess modular yield. It grants much larger values than the desired asymptotic budget, so it is deliberately generous. It rejects this direct collision strategy as promising evidence; it does not exclude an adaptive descent with additional arithmetic structure.
