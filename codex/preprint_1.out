@@ -1,0 +1,436 @@
+I found several literal errors and omitted details, but no demonstrated FATAL or MAJOR defect. The principal arguments survive the checks below. In particular, the new one-point smoothing lemma appears correct, and I find no missing power of N or L in the second moment.
+
+I use lemma names where the numbering in the question differs from the supplied TeX. The original Stark scan was not accessible; its quoted statement was checked against Lee–Venkatesan’s explicit restatement.
+
+1) Location: Section 8, Theorem 8.7, “Bad mass”.
+Severity: MINOR.
+
+The definition of beta_ell includes every smooth n with 1 <= |n| <= 2 M V_ell / ell. The subsequent application of Lemma 8.4 covers only moduli in [M V_minus/32, 2 M V_max]. Thus the claimed covering does not cover the beta_ell actually defined: small n are missing.
+
+Fix: Define beta_ell using
+M V_ell/32 <= ell |n| <= 2 M V_ell.
+Only these n can occur in I_P, so the preceding subtraction remains valid. The O(1) dyadic covering and the rest of the estimate then work.
+
+2) Location: Section 10, rejection lemma; Section 7, definition of the rejection event under the raw field law.
+Severity: MINOR.
+
+The raw law includes g with gcd(g_1,N) > 1. On those fields, m = g_0 g_1^(-1) modulo N is undefined. Consequently, “N divides f'(m)” does not define an event on the entire raw probability space as written.
+
+Fix: Define that rejection event only on gcd(g_1,N)=1, assigning it false otherwise. Nonunit g_1 belongs to the factor-exit bookkeeping. Take unconditional bounds on these explicitly defined events; do not condition the moment estimates on acceptance.
+
+This repairs the formulation without changing the probability estimates.
+
+3) Location: Section 2, proof of Lemma 2.4(i).
+Severity: MINOR.
+
+The displayed approximation for alpha proves alpha -> 1 and bounds |1-alpha| log B. By itself it does not establish alpha <= 1, which the upper bound c^(alpha-1) <= 1 uses.
+
+Fix: State the defining saddlepoint equation
+sum_{p<=B} log p/(p^alpha-1) = log x.
+At alpha=1, the left side is O(log B), whereas log x is a fixed positive multiple of log N. Monotonicity therefore gives alpha<1 throughout the range used here. The remainder of the proof follows.
+
+The quoted Hildebrand–Tenenbaum ratio theorem has the appropriate range. [Hildebrand–Tenenbaum, Theorem 3](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf)
+
+4) Location: Section 3, generalised base-expansion lemma.
+Severity: MINOR.
+
+“The integer” satisfying |a_i| <= g_1/2 and the specified congruence is not unique when g_1 is even and the residue is g_1/2. A deterministic field law requires a tie rule.
+
+Fix: Use the half-open interval -g_1/2 < a_i <= g_1/2. All stated bounds remain valid.
+
+5) Location: Section 3, numerical example immediately following the size-relations lemma.
+Severity: MINOR.
+
+At d=9, k=13, the algebraic exponent is incorrectly printed as 59/156 + eta_0. It is
+17/156 + 6/156 + 27/156 + eta_0
+= 50/156 + eta_0
+= 25/78 + eta_0.
+
+Together with the rational exponent 14/156, this gives theta=64/156+eta_0=16/39+eta_0, as required elsewhere.
+
+Fix: Replace 59/156 by 50/156.
+
+6) Location: Section 8, conclusion of the good-modulus lemma.
+Severity: MINOR.
+
+The inequality V/H <= N^(-nu-eta_0) drops the positive L factor in V. It is generally false when h=2nu+eta_0.
+
+Fix: Write
+V/H = N^(nu-h+o(1)) <= N^(-nu-eta_0+o(1)),
+or use the eventual bound N^(-nu-eta_0/2). Either is more than sufficient to make the total-variation error negligible.
+
+7) Location: Section 9, Proposition “Theorem R”, covering argument.
+Severity: MINOR.
+
+The asserted inequality w_0=M/V >= X_r/(2S^2) has the wrong constant. Since X_r=2 M V_max/Y, it would require V V_max <= Y S^2, which need not hold.
+
+Fix: Use
+w_0 >= X_r/(4S^2),
+which follows from V V_max <= V_max^2 <= 2YS^2. Divisor switching only needs a fixed L-power comparison, so the proposition is unaffected. This proposition is not used in the main proof.
+
+8) Location: Section 10, proof of the residual square-class group bound.
+Severity: MINOR.
+
+The asserted coefficient bound ||f||_infinity <= M(H+1) is false. An interior coefficient contains g_1 c_i - g_0 c_{i-1}, whose magnitude can approach 2MH.
+
+Fix: Use ||f||_infinity <= C_d M(H+1), or, for sufficiently large N, a suitable explicit constant such as 3. Since mu+h<1, the corrected bound is still eventually below N and still gives log|D|, log|disc g|=O_d(log N).
+
+The source notes retain a constant in this bound; its disappearance is a distillation error.
+
+9) Location: Section 10, definition of t_chi.
+Severity: MINOR.
+
+The algorithm needs a computable upper bound for |H|. The displayed bound 2^(d omega(D)+d) h_K involves quantities that the algorithm has not computed. The asymptotic statement log|H|=O_d(log N) alone is not an executable specification.
+
+Fix: Give an explicit bound requiring neither factorisation of D nor computation of h_K. For example, with X=ceil(sqrt(|disc g|)),
+H_bd = 2^d |D|^d X(1+log X)^(d-1)
+suffices. Use this bound in t_chi.
+
+10) Location: Section 10, Proposition 10.15, kernel-sampling complexity.
+Severity: MINOR.
+
+The precise operation count attributed to Kaltofen–Saunders omits logarithmic factors. Their Toeplitz preconditioning and rank computation do not directly give the stated O(M_rows * entries + M_rows^2) field-operation bound.
+
+Fix: State a soft-O bound, or include the logarithmic factors explicitly. They are absorbed by the final M_rows^2 (log N)^O(1) bound, so the factoring exponent does not change. The paper’s separate argument for obtaining an exactly uniform binary kernel vector is valid. [Kaltofen–Saunders, Theorems 3–4](https://kaltofen.math.ncsu.edu/bibliography/91/KaSa91.pdf)
+
+11) Location: Section 7, field-selection proposition, proof of part (ii).
+Severity: MINOR.
+
+The proof divides by b without separating the possibility b=0. Positive p does not imply positive b: all successful trials could be factor exits.
+
+Fix: Handle b=0 first. Selection then terminates with a factor in expected cost at most C_trial/p. For b>0, the posterior law and harmonic-mean calculation are correct.
+
+Also use a deterministic upper bound for M_rows when writing an unconditional expected-cost inequality, since the actual column count depends on the selected field.
+
+12) Location: Sections 3 and 13, small-input dovetailing.
+Severity: MINOR.
+
+Dovetailing repairs missing asymptotic success estimates, but it does not automatically define invalid arithmetic in the SPLIT branch. For small inputs one can have M=1, g_1=1, an empty J, or unavailable subroutine prerequisites.
+
+Fix: Add explicit guards that make the SPLIT branch return FAIL or yield whenever its structural prerequisites fail. In particular, never invoke the base-expansion lemma with g_1<2 or sample from an empty set. Continue the trial-division branch independently. These guards eventually disappear and have no asymptotic cost.
+
+13) Location: Section 13, uniformity over recursive inputs.
+Severity: MINOR.
+
+The assertion that replacing an unspecified o(1) by a non-increasing envelope “costs only a polylogarithmic factor” is not justified as stated. Monotonicity of that envelope does not itself make the resulting running-time bound monotone.
+
+Fix: Use the standard epsilon argument. For every epsilon>0, all sufficiently large recursive inputs m have expected cost at most L_m[1/2,c+epsilon] <= L_N[1/2,c+epsilon]. The finitely many smaller inputs have bounded cost through trial division. Summing over O(log N) recursive calls proves the desired bound.
+
+14) Location: Appendix A, Fact “Lee–Venkatesan”.
+Severity: MINOR.
+
+The fact is stated over the full published y range, although the manuscript’s own final remark acknowledges that its absorption of logarithmic losses is justified only in a narrower regime. The broad quantified statement is therefore insufficiently justified by the argument presented.
+
+Fix: State the imported character-majorant estimate only in the regime actually needed:
+x=N^(xi+o(1)), y=B=L_N[1/2,a], and Q'=N^(q'+o(1)) with fixed positive exponent margins, taking omega_0=log x.
+
+In that regime, u/log^2 u >> log log x, and the logarithmic losses are absorbed. The published proof explicitly introduces and bounds the character majorant W, so using its interior is legitimate; the TODO is not, by itself, a missing hypothesis. [Lee–Venkatesan, equation (8.2) and proof of Lemma 8.5](https://arxiv.org/pdf/1805.08873)
+
+15) Location: Section 10, definition of quadratic characters on H.
+Severity: PRESENTATION.
+
+The expression gamma times a power of the prime ideal is not a field element whose Legendre symbol can be taken.
+
+Fix: Choose a local uniformiser pi at the sampled prime and use gamma*pi^(-ord gamma). Since ord gamma is even, changing pi changes the residue by a square. For the actual atoms, the sampled primes already have valuation zero, so their displayed evaluation formula needs no modification.
+
+16) Location: Section 10, square-root lemma, inverse-Vandermonde coefficient bound.
+Severity: PRESENTATION.
+
+The bound on the numerator coefficients is correct, but its justification is omitted. Bounding each root separately by Mh would give a much weaker bound.
+
+Fix: Invoke the Mahler-measure inequality. For
+g(y)/(y-beta_k)=product_{j!=k}(y-beta_j),
+each coefficient is bounded by
+2^(d-1) product_j max(1,|beta_j|)
+=2^(d-1) M(g)
+<=2^(d-1)||g||_2.
+This proves the claimed numerator bound and hence A_sq.
+
+17) Location: Introduction, main statement and “what is and is not claimed”.
+Severity: PRESENTATION.
+
+Three formulations need correction.
+
+First, write “expected time at most L_N[...]”. Literal asymptotic equality is false for the stated algorithm on prime inputs, which stop after polynomial-time primality testing.
+
+Second, “the best single algorithm we analyse” at d=9 is not c approximately 0.9972: the paper also analyses every larger fixed k, including the smaller constants in its own table. Say “the example d=9, k=13”.
+
+Third, Section 3 requires rational eta_0, whereas the introductory admissibility definition does not. Make the convention consistent. Restricting eta_0 to positive rationals leaves the corollary unchanged.
+
+18) Location: Table 1, “need eta_0<” column.
+Severity: PRESENTATION.
+
+The decimals are correctly rounded, but they must not be read as exact sufficient cutoffs. In particular,
+sqrt(2)-1-16/39 = 0.003957152116...
+is smaller than 0.00396.
+
+Fix: Label the column as an approximate threshold, or print the exact expression sqrt(2)-1-theta_min(d,k).
+
+19) Location: Introduction, prior-art paragraph; Section 15, recursive numerical example.
+Severity: PRESENTATION.
+
+The phrase excluding earlier rigorous c<1 results “conditional or unconditional” is too broad and conflicts with the discussion of conditional NFS results. The relevant novelty claim is an unconditional classical bound for every integer. The conditional factoring conclusion in Lee–Venkatesan has a restricted input class. [Lee–Venkatesan, Theorem 2.3](https://arxiv.org/pdf/1805.08873)
+
+Also, the speculative recursive constant approximately 0.851 at d=9 uses the infimum theta=0.3, not the displayed fixed parameters d=9,k=13.
+
+Fix: Narrow the novelty wording and label 0.851 as an infimum in the unproved recursive model. I found no earlier unconditional classical c<1 bound for every integer in the sources checked.
+
+20) Location: Bibliography.
+Severity: PRESENTATION.
+
+The Joux–Lercier title omits its subtitle, “A comparison with the Gaussian integer method”. The Bernstein draft entries should identify the actual drafts rather than merely linking to cr.yp.to.
+
+Fix: Restore the complete Joux–Lercier title and give precise draft links and version dates. Bernstein’s own bibliography identifies the relevant versions as 2002-09-23 and 2004-05-10. [Joux–Lercier paper](https://citeseerx.ist.psu.edu/document?doi=c0f2bad7857b21d1c5abd54b28ca4e87b280e336&repid=rep1&type=pdf), [Bernstein’s bibliography](https://cr.yp.to/factorization.html)
+
+The central bibliography data for LP, LV, Harper, Hildebrand–Tenenbaum, Tenenbaum, Montgomery–Vaughan, Lagarias–Odlyzko and Stark agree with the records checked.
+
+
+Section 1: CORRECT WITH FIXES.
+
+The fixed-parameter quantifiers and the distinction between an infimum and an attained o(1) constant are substantively correct. Choosing d, then k, then sufficiently small positive rational eta_0 gives the stated “for every c>1/sqrt(2)” corollary.
+
+I recomputed Table 1 using rational arithmetic. The exact test for c<1 was (1+theta)^2<2, including verification that the preceding integer k fails.
+
+The recomputed rows, in the table’s column order, are:
+
+d=7: k=21; theta=139/336; c=0.999630122213; eta threshold=0.000523086183; c(50)=0.983762309326; c(1000)=0.972846348391; infimum=0.972271824132.
+
+d=9: k=13; theta=16/39; c=0.997201870904; eta threshold=0.003957152117; c(50)=0.931259630823; c(1000)=0.919839856307; infimum=0.919238815543.
+
+d=11: k=13; theta=9/22; c=0.996377737126; eta threshold=0.005122653282; c(50)=0.896257845154; c(1000)=0.884502194917; infimum=0.883883476483.
+
+d=13: k=14; theta=73/182; c=0.990726534080; eta threshold=0.013114661274; c(50)=0.871256569676; c(1000)=0.859261008210; infimum=0.858629662869.
+
+d=19: k=17; theta=257/646; c=0.988417064104; eta threshold=0.016380745036; c(50)=0.851877590598; c(1000)=0.813826872137; infimum=0.813172798365.
+
+The exact theta values at k=50 are, respectively:
+313/800, 317/1000, 107/400, 13/56, 389/1900.
+
+At k=1000 they are:
+6013/16000, 6017/20000, 2007/8000, 241/1120, 6037/40000.
+
+All printed numerical entries are correctly rounded. The defects are the interpretation of rounded inequalities and the “best single algorithm” sentence.
+
+
+Section 2: CORRECT WITH FIXES.
+
+CEP is used in its appropriate large-u range. The actual arguments have x=N^(positive constant+o(1)) and B=L^a, comfortably inside that range.
+
+The Hildebrand–Tenenbaum ratio estimate is appropriate. Lemma 2.4 needs the saddlepoint observation in issue 3; its remaining deductions are valid. The fixed-Z interval estimate does not require a shrinking relative interval.
+
+Tenenbaum’s theorem applies first to the B-smooth part of the modulus. Removing larger prime factors changes the Euler factor by 1+O(omega(q)/B), giving the stated extension. For the moduli used here, its relative error is o(1). [Tenenbaum’s theorem and first remark](https://tenenb.perso.math.cnrs.fr/PPP/Psi_q(x,y).pdf)
+
+The LP input is correctly a complete-factorisation expected-time bound. AKS certification does not change its L exponent. [Lenstra–Pomerance](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+The additive large sieve and interval Brun–Titchmarsh statements have the required constants and ranges. [Montgomery–Vaughan, Theorems 1–2](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+
+Section 3: CORRECT WITH FIXES.
+
+The parameter optimisation is correct. At zero slack,
+theta(mu)=max(2mu+(d+1)nu, 3mu+nu, 1+(2-d)mu+dnu),
+and the stated intersections give the two branches.
+
+The size floors provide all three essential positive margins:
+
+mu-nu >= eta_0;
+h-2nu >= eta_0;
+h-mu+(d-2)nu >= eta_0.
+
+The constants in the value-size lemma are sufficient. In particular, the large constant coefficient is suppressed by N^(-eta_0/2), and C'_d accommodates both that term and Gz.
+
+Homogeneity and the forced-residue congruence are correct. Coprimality genuinely follows from prime b>B, smooth n, ell not dividing N, and w>|G(P)|; it is not being assumed for arbitrary candidates.
+
+The regularity lemma is correct. In the irregular case, noncentral lattice lines have distance greater than 2V from the origin. The only primitive central-line points are too short to satisfy b>V/2. In the regular case the displayed estimate gives
+8S^2+(512/3)S^2 < 200S^2.
+
+The operational search matches the counted relations. Its decisions do not inspect the hidden square root. Fix the base-expansion tie, numerical typo and small-input guards identified above.
+
+
+Section 4: CORRECT.
+
+The dependency order is appropriate. In particular, moments are taken under the raw product law, rejection is charged afterwards through bounded delta_A, and field selection comes last.
+
+The distinction between L^(-o(1)) and a polylogarithmic lower bound for gamma is important and correctly maintained.
+
+
+Section 5: CORRECT.
+
+Theorem S has the correct h_2 factor. Character positivity supplies the first moment; proportionality and the gcd sum supply the second.
+
+The shortest-vector argument is valid: both vectors have norm at most sqrt(2)Y', their determinant is a multiple of N, and its absolute value is less than N because 2Y'^2<N. Primitivity in the lattice then gives an integer multiple.
+
+For S', the binomial overcount is legitimate, the sqrt(2) estimate follows from n>=4k^2, and summing binom(k,i)^2 gives the stated c_k.
+
+The bound 2^omega(N)=L^o(1) after trial division is also correct.
+
+
+Section 6: CORRECT.
+
+The measurable random finite index set is sufficient: conditional on all squares and independent coins, its selected unit fibres retain independent uniform signs. No independence of accepted squares is required.
+
+The exact success probability remains valid for odd nonsquarefree inputs, because roots of unity modulo each odd prime power are exactly ±1.
+
+One sentence should be read more carefully: the numerical value gcd(r,N) is not always a function of r^2 modulo a nonsquarefree N. Its unit/nonunit status is. Since nonunit roots cause immediate factor exits, the continuing transcript still has the required invariance. State this distinction explicitly.
+
+
+Section 7: CORRECT WITH FIXES.
+
+Theorem K correctly uses closure under taking divisors: the shortest split can lose shared primes, so “at most k distinct primes” is essential and sufficient.
+
+The N versus N-1 denominator is conservative, not an error.
+
+After the b=0 case is separated, field selection is correct. The selected-field law is proportional to varsigma_A, and
+E[1/varsigma_A*] <= 1/b
+is the appropriate identity.
+
+Wald’s argument does not require independence between a trial’s cost and its outcome. Independence of fresh trial blocks, or the stated conditional cost bound together with a stopping-time sum, suffices.
+
+Factor exits are incorporated as successful outcomes. I find no illicit conditioning on a favourable field or on acceptance.
+
+
+Section 8: CORRECT WITH FIXES.
+
+Lemma 8.1 survives the detailed audit.
+
+The adjacent kernel vectors have maximal minors with gcd 1, so they generate the full saturated kernel. This is stronger than merely spanning its rational vector space.
+
+The representation argument for every integer |m|<=||v||_2 is valid. The orthogonal real representative has infinity norm at most 1; reduction into the fundamental cell adds at most 2V', giving 2V'+1.
+
+The smoothing construction produces independent contiguous integer uniforms. The translation bound gives precisely 3d^2 V'/(2H+1). Symmetry is preserved by convolution; log-concavity gives unimodality, and therefore nested symmetric interval level sets. The layer-cake decomposition is valid. The maximum-mass bound follows from the factor having l_i=V'^(d-1).
+
+The good-modulus lemma correctly discards small layers and uses large layers whose lengths dominate both their centre displacement and the base-polynomial shift. The common grid is independent of all residues. Its lower endpoint remains N^(xi+o(1)), and comparisons by L^O(1)=B^O(1) lose only polylogarithms.
+
+The fibre lemma is correct. Its Möbius error 2^omega(ell|n|)=N^o(1) is compared with the positive power M/V, not silently treated as L^o(1).
+
+For the first moment, the relevant powers are:
+(V^2/log V) * (1/M^2) * (M^2 rho_r/(ell log log N)) * rho_F/polylog,
+which gives S^2 rho_r rho_F/polylog.
+
+After correcting beta_ell, the bad mass has the same geometric scale multiplied by epsilon_N times a fixed polylogarithm. Thus the claimed first moment follows.
+
+
+Section 9: CORRECT WITH FIXES.
+
+The pair lemma is correct, including the bound of 12 partners for fixed P and q.
+
+Kernel transfer is correct. After sending P to (1,0), the gcd of the evaluation minors is |Delta|, not a higher power of Delta. The kernel consists exactly of multiples of the two primitive linear factors. The determinant calculation, fundamental-cell bound and wedge minor give the claimed probability bound.
+
+Brun–Titchmarsh spreading is valid. The proof actually provides 12/eta_0; the stated 24/eta_0 is safe.
+
+Divisor switching is valid for arbitrary residues, including nonreduced ones. The extracted smooth divisor lies in (D/B,D], and D>=XB^(-2C_0). The reciprocal-divisor sum therefore costs only a polylogarithm.
+
+The L^2 family proof is internally consistent. Its relative error terms have exponents:
+
+Class B: N^(-h-(d+1)nu) L^O(1).
+
+Class C: N^(-2nu) L^O(1), and
+N^((5-d)nu-h) L^O(1).
+
+The last exponent is at most -eta_0 when d=3 and is more negative for larger d. These are genuine power savings.
+
+The class-C use of two different multiplicity bounds is legitimate: a common upper bound by their minimum permits assigning the first bound to the length term and the second to the denominator-squared term.
+
+The second-moment order of operations is correct. AM–GM precedes enlargement; enlargement removes the w dependence except through one residue; w averaging then removes that residue before the rational fibre estimate. No joint distribution of the two forced residues is needed.
+
+The partner estimate retains the second rho_r factor. Substitution cancels M and H exactly and leaves V^4/Y^2 asymptotic to S^4. The q sum contributes only a polylogarithm.
+
+Paley–Zygmund is applied correctly even when the mean tends to zero. Its displayed denominator P^3+P/m is algebraically correct.
+
+The unused rational-pair proposition needs only the constant correction in issue 7.
+
+
+Section 10: CORRECT WITH FIXES.
+
+Lemma IR’s affine coefficient distributions and CRT argument are valid. The prescribed-norm count gives the required irreducible fraction, and the numerical exponent 13d has sufficient slack.
+
+The rejection estimates are valid once their raw-law events are defined correctly. Content w costs at most 1/W+1/(2H+1); the derivative event costs at most 1/(2H+1).
+
+The signed row identity is correct, including negative rational values, denominator exponents and repeated cached atoms. The single parity column handles both g_1^E and f_d^(-E).
+
+Lemma C correctly excludes primes dividing f_d disc(f), assigns the remaining valuations to degree-one primes, and uses norm valuations appropriately.
+
+The obstruction-group bound is correct after correcting the coefficient height. It includes units, class-group 2-torsion and primes above D.
+
+The relative quadratic discriminant bound is sufficient, including dyadic primes.
+
+The quoted Lagarias–Odlyzko threshold is the appropriate unconditional one. It applies to L_q/K, which is Galois of degree two; normality over Q is unnecessary. [Lagarias–Odlyzko, Theorem 1.3](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf)
+
+The exceptional-class argument works: odd d excludes quadratic subfields of K and biquadratic subfields of L_q; Stark descends a sufficiently close zero to a quadratic subfield; Landau allows at most one such quadratic field. Kummer injectivity then gives |E|<=1.
+
+The character sampler is uniform on degree-one prime ideals. The LO main term, exceptional-zero decay and removal of higher-degree primes leave ample room for 1/(5d).
+
+SQ is complete as well as sound. The codifferent inclusion puts an existing square root in Z[beta]; the local sign enumeration covers it up to global sign; centred reconstruction recovers it at the stated precision. Exact verification prevents false positives.
+
+The binary kernel-sampling argument is correct. The solver sees only A^T x, so conditional on that right side, taking the coefficient at basis element 1 preserves uniformity on the binary kernel. Verification and retries do not introduce dependence on hidden roots.
+
+Consequently Proposition 10.15 retains its claimed final complexity and congruence after the local corrections.
+
+
+Section 11: CORRECT.
+
+The smooth-part identity is exact. Product/remainder trees, modular squaring and gcd computations give the required soft-linear batch cost.
+
+The search recognises precisely the filtered count, subject to factor exits. Trial division of the two selected smooth values costs soft-O(B), already included.
+
+There is no remaining HECM dependency in this search.
+
+
+Section 12: CORRECT.
+
+With fixed theta<1,
+c(a)=max(2a, a+1/sqrt(2), a+theta/(2a))
+is minimised at a=theta/sqrt(2).
+
+At this choice, shape testing and box searches both cost L^(1/sqrt(2)+o(1)); multiplication by the row count gives (1+theta)/sqrt(2). Linear algebra has exponent sqrt(2)theta, strictly smaller because theta<1.
+
+The L^o(1) loss from field selection is permissible for fixed k. It does not change the leading constant.
+
+
+Section 13: CORRECT WITH FIXES.
+
+Complete factorisation, certified primality, perfect powers and nonsquarefree inputs are handled correctly in substance.
+
+Trial division removes the small-factor obstruction. Recomputing parameters for each cofactor is legitimate. The recursion has O(log N) calls.
+
+Add structural guards to make the dovetailed branch a total algorithm, and replace the envelope sentence by the epsilon argument in issue 13.
+
+
+Section 14: CORRECT as a limited experimental report.
+
+The disclosed deviations prevent these experiments from testing the analytic relation-supply theorems or the asymptotic constant. The manuscript largely makes that limitation clear.
+
+The reported runs were not independently reproduced in this audit. They support the implemented algebra but cannot validate the first or second moment.
+
+
+Section 15: CORRECT WITH FIXES.
+
+The limitations concerning fixed parameters, impractical constants and the unproved recursive variant are appropriate. Correct the interpretation of the speculative 0.851 value.
+
+The random-integer square-dependence threshold is not a theorem prohibiting this architecture. The cited sharp-threshold result concerns independent uniformly sampled integers. [Balister–Bollobás–Morris](https://annals.math.princeton.edu/2018/188-1/p02)
+
+
+Appendix A: CORRECT WITH FIXES.
+
+Apart from the overbroad formulation of the imported fact, Parts 1 and 2 work in the actual regime.
+
+In Part 1, only the principal ell component is removed. Smooth integers are coprime to ell, so the remaining character sum is exactly the sum for the s component. The use of W, rather than the smaller max-residue sum, is essential. The range Q/ell=N^(q_0-2nu+o(1)) has a positive power lower bound and lies below sqrt(Psi).
+
+Its large-conductor error, relative to Psi times the family density, has exponent
+q_0-2nu-xi/2<0.
+
+In Part 2, a nonprincipal character modulo the prime ell has conductor ell. Thus every character considered has conductor exceeding Y. With
+eta=min(1/100,nu/xi),
+one has eta<1/80 and x^eta<Y with a fixed exponent margin. Harper’s Proposition 2 therefore applies after enlargement by positivity. [Harper, Proposition 2](https://arxiv.org/pdf/1208.5992)
+
+The two relative errors have exponents
+q_0-xi/2<0
+and -eta xi<0.
+The family density is N^(-o(1)), so it cannot erase these margins.
+
+Finally, u/log^2 u is of order sqrt(log N)/(log log N)^(5/2), which dominates log log N. The required absorption of fixed logarithmic losses is valid here.
+
+A self-contained rewrite would improve the paper, but importing an explicitly bounded intermediate quantity from a published proof is mathematically legitimate. I do not identify the known TODO as a fatal gap.
+
+WHOLE-PAPER VERDICT: ACCEPT WITH MINOR FIXES
+WEAKEST LINK: Appendix A’s character-majorant import; its precise range and exceptional-character bookkeeping should be stated explicitly before publication.

@@ -1,0 +1,66 @@
+1. **Theorem 8.7, definition of \(\beta_\ell\) and “Bad mass” ([main.tex:1277](/Volumes/git/factoring-connection/paper2/main.tex:1277)); MAJOR, locally repairable.**  
+   The defined \(\beta_\ell\) includes every \(1\le |n|\le2MV_\ell/\ell\). Its moduli therefore need not lie in the subsequently claimed interval \([MV_-/32,2MV_{\max}]\). The displayed application of Corollary 8.5 does not bound this \(\beta_\ell\).
+
+   **Fix:** redefine it with
+   \[
+   MV_\ell/32\le\ell|n|\le2MV_\ell.
+   \]
+   Every \(n\in I_P\) already satisfies this condition, so the preceding subtraction remains valid. The claimed \(O(1)\) dyadic covering and subsequent estimates then follow. This is a pre-existing interface error exposed by checking the revised lemma’s application.
+
+2. **Effectivity claims ([main.tex:259](/Volumes/git/factoring-connection/paper2/main.tex:259), [main.tex:1996](/Volumes/git/factoring-connection/paper2/main.tex:1996), versus [main.tex:2179](/Volumes/git/factoring-connection/paper2/main.tex:2179)); MINOR.**  
+   The introduction and main-theorem proof assert that \(N_0\) is effective. The appendix explicitly leaves effectivity of \(\eta_D,c_D,\delta_D\) unestablished from the published statements. The unconditional effectivity assertion therefore exceeds the paper’s declared justification.
+
+   **Fix:** qualify effectivity by those constants’ effectivity, or remove the assertion. Remark `rem:noN0` correctly explains why this does not affect the explicit algorithm or its asymptotic expected-time conclusion.
+
+3. **Paragraph following Lemma SM ([main.tex:2376](/Volumes/git/factoring-connection/paper2/main.tex:2376)); MINOR.**  
+   “Exactly” and “precisely when” overstate the range restriction. Compatibility also holds when \(u\log u\ll\log y\), for example at \(y=\exp((\log x)^{2/3})\). Moreover, the displayed equality for \(R_1^{1-\beta'}\) is not an identity following from \((\alpha2)\).
+
+   **Fix:** state only sufficiency in regime (R), using
+   \[
+   R_1^{1-\beta'}
+   \le \exp\!\left(K[\log(u\log y)+C_\alpha\log\log y]\right).
+   \]
+
+4. **Factorisation lemma and Lemma LS ([main.tex:2248](/Volumes/git/factoring-connection/paper2/main.tex:2248)); PRESENTATION.**  
+   Both require the case \(k=1\), but \(P^-(1)\) is undefined in the manuscript.
+
+   **Fix:** explicitly set \(P^-(1)=+\infty\). With this convention, the factorisation and its uniqueness argument are correct.
+
+5. **Constants lemma, proof of (ii) ([main.tex:2268](/Volumes/git/factoring-connection/paper2/main.tex:2268)); PRESENTATION.**  
+   The Euler-product wording identifies an upper bound as an actual product. The relevant identity and comparison are
+   \[
+   \sum_{\substack{d\ge1\\d\ \mathrm{squarefree}}}
+   \frac1{\sqrt d\,\varphi(d)}
+   =\prod_p\left(1+\frac1{\sqrt p(p-1)}\right)
+   \le\prod_p(1+2p^{-3/2}).
+   \]
+   **Fix:** replace “are” with the appropriate identities and inequalities. The numerical bounds \(1.95\) and \(6\) are valid.
+
+6. **Hildebrand–Tenenbaum attribution ([main.tex:442](/Volumes/git/factoring-connection/paper2/main.tex:442)); PRESENTATION.**  
+   The ratio formula is Theorem 3; the accompanying approximation for \(\alpha\) is Theorem 2(i), equation (2.4).
+
+   **Fix:** cite both Theorems 2(i) and 3. Both quoted formulas agree with the [author-hosted paper](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+The substantive quantitative checks pass:
+
+- The small-conductor transfer costs at most \((\log x)^{K(1+C_\alpha)}\). Writing \(F_N=(\log N)^{1/2}/(\log\log N)^{5/2}\),
+  \[
+  \delta_D\log H(u/2)=(2\delta_D\xi/a+o(1))F_N
+  \ge(4c_0+o(1))F_N.
+  \]
+  This leaves ample room to absorb every fixed logarithmic loss.
+- With \(C_*=\xi_{\max}/a^2\), the first large-conductor term, relative to the required main term, is
+  \[
+  y^{9/2+2C_*-K+o(1)}\le y^{-3/2+o(1)}.
+  \]
+  The extra \(\log Y\) in Part 2 is \(y^{o(1)}\); the other term is \(x^{-\lambda}y^{O(1)}\). Thus the stated \(K\) and \(\varepsilon_N\) suffice.
+- The Perron bound, lift identity, Möbius expansion, density lower bound, smooth-modulus weights, Lemma LS and its corollary check out. The corollary’s loose coefficient is \(1440<1500\). The counting constants and Part 1’s \(5.2\) are also sufficient.
+- Corollary 8.5 retains its factor \(3\). After issue 1’s correction, Theorem 8.7 needs only \(|\mathcal X|\varepsilon_N(\log N)^{O(1)}\to0\), which holds.
+
+The provenance disclosure is honest: [Drappeau’s Lemme 5](https://arxiv.org/html/1307.7554v3) and [Pascadi’s published Lemma 3.2](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/D8E4EE07BDAA6D41CCD8C5455D81CD7A/S0010437X2500747Xa.pdf/smooth_numbers_in_arithmetic_progressions_to_large_moduli.pdf) give the quoted statement and refer to Harper §3.3; Pascadi’s bibliography labels Harper’s work a preprint. I found no remaining active import of LV Lemma 8.5 or Harper’s Proposition 2.
+
+FACTOR’s alternation is valid: under the stated step model it takes at most twice the smaller completion time, hence satisfies the claimed expected-time bound without knowing \(N_0\). No analytic constant from Appendix A enters its executable parameters.
+
+**VERDICT ON REVISED PARTS: CORRECT WITH FIXES**
+
+**WEAKEST LINK: Drappeau’s published small-conductor lemma, whose proof is delegated to Harper’s unpublished §3.3. The internal relative-saving argument survives scrutiny.**
