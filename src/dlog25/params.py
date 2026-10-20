@@ -14,8 +14,8 @@ Cost model, exponents of L := L_p[2/5, 1] = exp(Lambda), Lambda = (log p)^{2/5}(
 Facts verified here exactly (and proved in the note, Lemma C25):
   (i)  with the same tuple for both levels, c_DL <= max(3a, c_U);
   (ii) for any c* and any tuple, max(3a, T1, a+s+2^{-2/5}c*) < c*  implies  c_U(tuple) < c*;
-       hence inf c_DL >= inf c_U when the subroutine uses c* = inf c_U, so the two infima coincide whenever 3a does not
-       bind at a (near-)optimal tuple.
+       hence c_DL(tau; tau') >= min(c_U(tau), c_U(tau')) and inf c_DL = inf c_U;
+  (iii) 3a < a/(1 - 2^{-2/5}) <= c_U for every tuple, so with tau' = tau, c_DL = c_U exactly (codex dlog25_1).
 """
 from __future__ import annotations
 

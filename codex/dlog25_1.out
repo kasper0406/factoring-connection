@@ -1,0 +1,422 @@
+**YES \(L[2/5]\), conditional on the stated internal chain; the growing-degree XK step introduces no larger exponent.**
+
+With identical parameters for the outer DL algorithm and its Theorem U factoring subroutine, the resulting cost constant equals Theorem U’s stated constant. This establishes a bound for computing one logarithm. A cheaper subsequent-logarithm bound does not follow from the supplied relation-supply statements.
+
+I respected the blindness restrictions.
+
+**1. Algorithm and theorem**
+
+Write
+\[
+\lambda=\log\log p,\qquad D=\frac{\log p}{\lambda},\qquad
+\Lambda=D^{2/5}\lambda,\qquad r=2^{-2/5}.
+\]
+Here \(L_p[2/5,c]=\exp(c\Lambda)\), and every \(o(1)\) below is relative to \(\Lambda\).
+
+Fix positive rationals \(a,\kappa,d_0\). Use U’s parameters:
+\[
+\begin{aligned}
+d&=\text{least odd integer }\ge\max(3,d_0D^{1/5}),\\
+k&=\max(\lceil\kappa D^{2/5}\rceil,d+1),\qquad \nu=\frac1{4k},\\
+\eta_0&=\frac1{\lceil D^{1/2}\rceil},\qquad B=\lfloor e^{a\Lambda}\rfloor,\\
+\mu&=
+\begin{cases}
+(1-\nu)/d,&k<(d^2+1)/4,\\
+(1+(d-1)\nu)/(d+1),&k\ge(d^2+1)/4,
+\end{cases}\\
+h&=\max(2\nu,\mu-(d-2)\nu,1-d\mu+\nu)+\eta_0.
+\end{aligned}
+\]
+Put \(M=\lfloor p^\mu\rfloor\), \(H=\lfloor p^h\rfloor\), and
+\(W=\lceil p^{\mu+\nu+\eta_0/2}\rceil\).
+
+The remaining parameters are exactly U’s:
+
+- \(X=\lfloor\sqrt{p/2}\rfloor\); \(j\) maximal with \(2^{kj}\le X\); \(Y=2^{j-1}\); \(J=(Y,2Y]\cap\mathbb P\).
+- Common radius \(V(S)=\lfloor\sqrt{2Y}\,S\rfloor\).
+- Candidates have prime \(b\in((1-1/d)V,V]\), \(|a|\le V\), and \(\gcd(a,b)=1\).
+- \(S\) is found by U’s Rankin-value scan, evaluated at the actual
+  \[
+  X_r(S)=2MV(S)/Y,\qquad X_F(S)=(2d+1)MHV(S)^d.
+  \]
+- Fields satisfy \(F(g_0,g_1)=pw\), with U’s field law and rejection tests.
+
+These choices are specified in [U’s parameter section](/Volumes/git/factoring-connection/notes/lv5unif_results.md:103).
+
+For a primitive root \(g\), target \(h\), and \(n=p-1\), run the following algorithm.
+
+1. Select a field by retaining the first field whose descent attempt returns a row.
+2. Each attempt independently draws \(a_i,b_i\) uniformly modulo \(n\), forms
+   \[
+   T_i=g^{a_i}h^{b_i},
+   \]
+   and Gauss-splits \(T_i\equiv u_0/v_0\pmod p\).
+3. Completely factor \(|u_0|,|v_0|\le\sqrt{2p}\) using **Theorem U**. Accept the shape only when both sides are products of at most \(k\) distinct primes in \(J\). Descend every prime through U’s special-\(q\) search.
+4. Collect
+   \[
+   m_{\rm rows}=\bar C+d,\qquad
+   \bar C=(d+1)\pi(B)+1
+   \]
+   rows. Construct XK’s exact integer exponent matrix.
+5. Apply the growing-degree XK procedure proved below. Obtain a primitive \(x\in\mathbb Z^{m_{\rm rows}}\) with
+   \[
+   W_x=\prod_iT_i^{x_i}\in\{1,-1\}.
+   \]
+   Its known logarithm is \(\ell_x=0\) or \(n/2\).
+6. Set \(A=\sum x_i a_i\), \(B_*=\sum x_i b_i\pmod n\). If \(\gcd(B_*,n)=1\), return
+   \[
+   X=(\ell_x-A)B_*^{-1}\pmod n
+   \]
+   after verifying \(g^X=h\). Otherwise discard the round’s rows and draw fresh ones in the retained field.
+
+Small inputs can be handled by an interleaved exhaustive DL algorithm, so no unknown asymptotic threshold needs to be tested.
+
+**Theorem DL25, as I would state it.** Assume the stipulated uniform internal chain of Theorem U, including its validity for the raw relation construction at prime \(N\). Suppose the complete factoring subroutine has uniform expected cost
+\[
+F(x)\le L_x[2/5,c_F+o(1)].
+\]
+Then the algorithm above computes \(\log_g h\) for every prime \(p\), primitive root \(g\), and \(h\ne0\), with expected bit complexity
+\[
+L_p[2/5,c_{\rm DL}+o(1)],
+\]
+where
+\[
+\boxed{
+c_{\rm DL}
+=\max\left\{
+3a,\;
+a+s+\max(a,\sigma,r c_F)
+\right\},
+}
+\tag{1}
+\]
+and
+\[
+s=2\kappa(1+C_\gamma),\qquad
+\sigma=\frac{2\theta_0}{5a},\qquad
+\theta_0=
+\begin{cases}
+3/d_0,&\kappa\ge d_0^2/4,\\
+2/d_0+d_0/(4\kappa),&\kappa<d_0^2/4.
+\end{cases}
+\tag{2}
+\]
+Here \(C_\gamma=C_\gamma(a,\kappa,d_0)<\infty\) is U’s exponent in
+\(\gamma\ge(\log p)^{-C_\gamma}\).
+
+There is no additional conjecture concerning units, class groups, Schirokauer maps, matrix rank, or the factorization of \(p-1\). The arbitrary-base version, promised \(h\in\langle g\rangle\), follows by the existing auxiliary-base and verified-restart reduction, with the same constant.
+
+**2. Ingredient audit**
+
+“Verbatim” means U’s repaired, uniform statement—not substitution into an estimate containing an uncontrolled \(O_d\).
+
+| Ingredient | Status | Reason |
+|---|---|---|
+| Field construction, GB, sizes | Transfers verbatim | \(F(g_0,g_1)=pw\) gives the required root modulo \(p\); no compositeness is needed. |
+| FM-U | Transfers verbatim | Its arithmetic requirement is the reduced moving residue, particularly \((p,t)=1\). Here \(0<t\le2MV<p\). |
+| Lemma \(8.5'(R')\) | Transfers verbatim | The smooth-number and modulus parameters are unchanged. The ambient integer enters through sizes and reduced residues. |
+| Kern-U | Transfers verbatim | An integer fibre-counting statement; independent of the arithmetic of \(p\). |
+| W-U, DS-U, L2-U, LD*-U | Transfer verbatim | The multiplier law, common radius, narrow \(b\)-window, and height margins are unchanged. |
+| Lemma CS | Transfers verbatim | Same computable saddle-point scan, including the \(S^d\) contribution to \(X_F\). |
+| D-U | Transfers verbatim | Same moments and Paley–Zygmund argument give the same polylogarithmic \(\gamma\). |
+| Lemma S″ | Replaced | Uniform targets range over all of \(\mathbb F_p^\times\); use the coprime-pair injection below. |
+| K-U | Modified | Same shape event and special-\(q\) recognition; use the new split lemma. The leading split cost is unchanged. |
+| select-U | Modified | Replace expected rounds \(\le2\) by \(n/\varphi(n)\). Keep its sharper treatment of post-processing. |
+| Field rejections | Transfer | Irreducibility, content, leading coefficient, and simple-root tests remain necessary. Their rejection mass is \(o(\gamma)\). |
+| Outer factor exits | Disappear | A gcd with prime \(p\) cannot return a proper factor. A zero residue causes rejection where prescribed. |
+| LV6 and DD | Replaced | Factoring fruitfulness fails at prime modulus: DD gives success probability zero. XK and hidden exponents supply DL extraction instead. |
+| Recursive shape test | Used as a factoring subroutine | Inner inputs are ordinary integers, so Theorem U applies directly. |
+
+The relevant arithmetic checks are stronger asymptotically than at fixed degree:
+\[
+2MV,\quad X_F,\quad |f_d|,\quad w<p
+\]
+for sufficiently large \(p\). In particular, the nonzero rational and algebraic values used in rows are units modulo \(p\).
+
+Since \(\|f\|_\infty<p\) and its content divides \(pw\), retained content is \(1\); the \(e=w\) case is rejected. The selected root \(m=g_0/g_1\) must remain simple. **It is unnecessary to require \(p\nmid\operatorname{disc}f\) globally**: other roots may be multiple while the selected root still defines the required degree-one prime.
+
+No outer step uses \(\omega(N)\ge2\), after DD is removed. Inner factoring calls retain U’s usual prime tests and factor exits.
+
+**The replacement for S″.** Let \(\mathcal G\subset J\), \(m=|\mathcal G|\ge4k^3\), and let \(\mathcal S\) contain products of \(k\) distinct primes of \(\mathcal G\) in \([Z/2,Z]\), where
+\[
+|\mathcal S|\ge\binom mk/(2k),\qquad 2Z^2<p.
+\]
+For each \(u\in\mathcal S\), the number of \(v\in\mathcal S\) sharing a prime with \(u\) is at most
+\[
+k\binom{m-1}{k-1}
+\le \frac{2k^3}{m}|\mathcal S|.
+\]
+Thus at least \(|\mathcal S|^2/2\) ordered pairs are coprime.
+
+The map
+\[
+(u,v)\longmapsto uv^{-1}\pmod p
+\]
+is injective on these pairs: equality modulo \(p\) implies
+\(uv'-u'v=0\), because its absolute value is below \(p\), and reduced positive fractions are unique.
+
+Moreover, any shortest lattice vector for this target is \(\pm(u,v)\). Its determinant with \((u,v)\) is a multiple of \(p\) of absolute value at most \(2Z^2<p\), hence zero; coprimality then identifies the vector. Consequently,
+\[
+\boxed{\Pr_T[\text{accepted split}]\ge
+\frac{|\mathcal S|^2}{2(p-1)}.}
+\tag{3}
+\]
+This proves the needed growing-\(k\) statement without square classes, a central binomial coefficient, or a second-moment multiplicity factor.
+
+It yields U’s usable lower bound
+\[
+q_{\rm sel}\ge
+\frac{\gamma}{4}\,
+\frac{(\gamma/(16\log p))^{2k}}{32k^2},
+\qquad
+q_{\rm sel}^{-1}\le \exp((s+o(1))\Lambda).
+\tag{4}
+\]
+
+**3. Shape factoring, recursion, and the cost constant**
+
+The outer DL algorithm is **non-recursive**. It calls an already analysed factoring algorithm on smaller integers:
+\[
+F(\sqrt{2p})\le L_p[2/5,r c_F+o(1)].
+\]
+The fixpoint belongs to the proof of Theorem U. There is no second DL fixpoint.
+
+Logging \(u_0\) or \(v_0\) would leave the computation in \(\mathbb F_p^\times\). Their small integer representatives do not give smaller DL groups, nor do their logarithms certify the required prime-product shape.
+
+A descent attempt has expected cost at most
+\[
+L_p[2/5,t+o(1)],\qquad
+t=\max(r c_F,a,\sigma),
+\]
+because U’s special-\(q\) search costs \(\widetilde O(B+S^2)\), with
+\(S^2=L_p[2/5,\sigma+o(1)]\).
+
+Field selection gives the retained field the usual size-biased distribution. In particular,
+\[
+\mathbb E[1/q_A\mid A\text{ retained}]\le1/q_{\rm sel}.
+\]
+The \(m_{\rm rows}=L_p[2/5,a+o(1)]\) rows therefore cost
+\(L_p[2/5,a+s+t+o(1)]\). XK costs \(L_p[2/5,3a+o(1)]\).
+
+The number of rounds contributes only
+\[
+n/\varphi(n)=\exp(o(\Lambda)).
+\]
+Post-processing is multiplied by this round factor, **not** by \(q_{\rm sel}^{-1}\). This proves (1).
+
+For comparison, [Theorem U](/Volumes/git/factoring-connection/notes/lv5unif_results.md:614) gives
+\[
+c_U=\max\left\{
+2a,\;
+P,\;
+\frac{\delta}{1-r}
+\right\},
+\quad
+P=a+s+\max(a,\sigma),\quad \delta=a+s.
+\]
+Here \(P\ge2a\), and
+\[
+c_U=\max(P,\delta+r c_U).
+\]
+Also
+\[
+c_U\ge\frac{a+s}{1-r}>
+\frac a{1-r}>4.1298a>3a.
+\]
+Therefore, using U with the **same parameter tuple**,
+\[
+\boxed{c_{\rm DL}=c_U.}
+\tag{5}
+\]
+
+Thus cubic linear algebra is strictly slack throughout this inherited family, including its optimum. The fixed-degree statement that “\(3a\) takes over” in some \(L[1/2]\) regimes does not apply here.
+
+For a concrete finite choice, take
+\((a,\kappa,d_0)=(3/5,1/8,1)\). Then \(\theta_0=4\), \(\sigma=8/3\), and
+\[
+c_{\rm DL}=c_U=
+\max\left\{
+\frac{49}{15}+\frac{1+C_\gamma}{4},\;
+\frac{\frac35+\frac{1+C_\gamma}{4}}{1-2^{-2/5}}
+\right\}<\infty.
+\]
+This is an explicit formula, not a certified numerical constant: the actual \(C_\gamma\) has not been numerically bounded.
+
+**4. Proposition XK at growing degree**
+
+The fixed-degree notation \(\widetilde O_d\) alone would not justify this transfer. The following bounds do.
+
+**Exact ideals and local orders.** Put \(t=f_d\), \(\alpha\) a root, and
+\[
+\mathfrak a=(1,\alpha),\qquad
+\mathfrak J_P=(a-b\alpha)\mathfrak a^{-1}.
+\]
+The ideals \(\mathfrak J_P\) are integral and have norm \(|F(P)|\). Include all occurring prime ideals above rational primes at most \(B\), including those above bad primes. There are at most \(d\pi(B)\) such columns.
+
+At each known bad prime \(r\le B\), compute an \(r\)-maximal order and the required valuations. This is polynomial in the field’s input size and \(\log r\); it does not require factoring the large part of the discriminant. Buchmann–Lenstra’s Theorem 1.2 and Algorithm 6.1/Proposition 6.2 explicitly provide the local maximal-order algorithm. I read those statements and the polynomial-time argument. [Buchmann–Lenstra, 1994, pp. 225, 246–247](https://www.numdam.org/item/JTNB_1994__6_2_221_0.pdf).
+
+The \(g_1\) column enforces zero total atom exponent, thereby cancelling the common fractional ideal \(\mathfrak a\). This also handles its possible support above primes larger than \(B\).
+
+**Integer solving and coefficient sizes.** Matrix entries and row support sizes are polynomial in \(d,k,\log p\), hence polynomial in \(\log p\). If the rational rank is \(\rho\), Hadamard gives kernel-vector entry lengths
+\[
+\beta_x=O(\rho\log\log p)
+=L_p[2/5,a+o(1)].
+\]
+Compute a modular rank profile, solve only \(d\) right-hand sides, and verify the resulting integer dependencies on every column. A rank-preserving prime guarantees success with constant probability. Verification need not certify the full rational rank: the selected dependencies are independent through their separate free coordinates.
+
+Dixon lifting has cubic cost in \(\rho\), up to factors polynomial in \(d,\log p,\log\rho\), rather than elimination on large rational fractions. Its lifting and rational-reconstruction bounds therefore give
+\[
+L_p[2/5,3a+o(1)].
+\]
+I checked Dixon’s original argument in a text reproduction, including the dependence on entry bounds. [Dixon, *Numerische Mathematik* 40 (1982), 137–141](https://paperzz.com/doc/8594966/exact-solution-of-linear-equations-using).
+
+**Conjugate lower bounds and precision.** Cauchy’s root bound gives
+\[
+|\sigma(a-b\alpha)|\le U,\qquad \log U=O(\log p).
+\]
+Since
+\[
+|N_{K/\mathbb Q}(a-b\alpha)|=|F(P)|/|t|\ge1/|t|,
+\]
+every conjugate satisfies
+\[
+|\sigma(a-b\alpha)|\ge |t|^{-1}U^{-(d-1)}.
+\]
+Thus atom logarithms have magnitude polynomial in \(d,\log p\). Converting absolute root precision into logarithm precision loses only \(O(d\log p)\) additional bits.
+
+Certified root isolation requires polynomial work in \(d\) and the coefficient bit length; high-precision refinement can then be performed with cost nearly linear in the requested precision. There is no need to construct a huge product \(\gamma_x\) explicitly. [Pan, *Journal of Symbolic Computation* 33 (2002), 701–733](https://www.sciencedirect.com/science/article/pii/S0747717102905316).
+
+**The gap and small relations.** The supplied Blanksby–Montgomery bound gives the explicit unit-log gap
+\[
+\beta_d=\frac1d\log\left(1+\frac1{52d\log(6d)}\right)
+\asymp\frac1{d^2\log d}.
+\]
+For \(s=r_U+1\le d\) independent exact kernel vectors, put
+\(v_j=\operatorname{Log}\gamma_{x_j}\). The LLL-basis argument in XK bounds a nonzero integer relation by
+\[
+R\le
+\max\left(1,\,
+d!\left(\frac{2^{O(d^2)}\max_j\|v_j\|}{\beta_d}\right)^d
+\right).
+\]
+Consequently,
+\[
+\log R=
+O\!\left(
+d\beta_x+d\log m_{\rm rows}
++d\log(kd\log p)+d^3
+\right).
+\tag{6}
+\]
+The \(d!\) and \(2^{O(d^2)}\) factors are harmless here because the algorithm uses **\(\log R\)** to choose precision. It does not enumerate vectors up to \(R\).
+
+Taking the scaled-log lattice precision above \(\log R\), with the usual LLL approximation-factor margin, forces its short vector to be a true unit-log relation. Evaluate atom logs to a further
+\[
+\beta_x+\log(2k m_{\rm rows})+O(d\log p)
+\]
+bits to control weighted accumulation and rounding. The total required precision is therefore
+\[
+P=L_p[2/5,a+o(1)].
+\]
+
+LLL acts on a lattice of rank at most \(d\), in ambient dimension at most \(2d\). A proven quadratic-in-bit-length implementation costs
+\[
+\operatorname{poly}(d)\,\widetilde O(P^2)
+=L_p[2/5,2a+o(1)].
+\]
+Nguyen–Stehlé give precisely such polynomial dimension dependence. [*SIAM Journal on Computing* 39 (2009), 874–903](https://epubs.siam.org/doi/abs/10.1137/070705702).
+
+Log evaluation, exact verification, and final modular exponentiation likewise cost at most \(L_p[2/5,2a+o(1)]\). In particular,
+\[
+d^2=o(\Lambda),\qquad d\log d=o(\Lambda).
+\]
+Even an actual \(2^{O(d^2)}\) runtime multiplier would be \(L_p[2/5,o(1)]\). No actual \(2^{O(d^3)}\) runtime is incurred by (6).
+
+Finally, odd \(d\) implies \(\mu_K=\{\pm1\}\). The torsion-relation lattice is saturated in \(\mathbb Z^{m_{\rm rows}}\), so dividing the returned vector by its coordinate gcd preserves the torsion property. This supplies the primitive vector required for extraction.
+
+Hence the uniform extension of [Proposition XK](/Volumes/git/factoring-connection/notes/dlog_results.md:260) has total cost
+\[
+\boxed{T_{\rm XK}=L_p[2/5,3a+o(1)].}
+\]
+
+**5. Randomization, recursive coins, and individual logarithms**
+
+For \(X=\log_g h\), the map
+\[
+(a,b)\longmapsto(a+Xb,b)
+\]
+is a bijection modulo \(n\). Thus \(T=g^ah^b\) is uniform, and \(b\) is uniform conditional on \(T\).
+
+Every operation before extraction—including field selection, shape factoring, special-\(q\) caching, exact solving, and unit elimination—must depend only on the targets and coins independent of their labels. The shape-factorization calls receive only the integer halves and fresh coins. Their sorted prime-factor outputs are canonical; their random durations do not reveal information about \(b\) conditional on \(T\).
+
+For each round, condition on its targets, all its independent coins, and the complete history of earlier rounds. The current \(b_i\) remain independent uniform residues. Because \(x\) is primitive,
+\[
+\sum_i x_i b_i
+\]
+is uniform modulo \(n\). The extraction probability is exactly
+\(\varphi(n)/n\).
+
+This conditioning is deliberately **per round**. Conditioning on the current round’s final gcd outcome would destroy that uniformity statement.
+
+The algorithm already performs individual-target descent: every row is a descended randomized target. However, it needs about \(B\) such rows for each requested logarithm.
+
+A target-independent field can be selected beforehand using uniform powers of \(g\). Its setup cost is bounded by
+\[
+L_p[2/5,s+t+o(1)].
+\]
+That field, prime tables, and caches can be reused. The proven per-log bound remains (1), averaged over this preprocessing.
+
+A Pomerance-style cheaper per-log phase needs more. Precomputed rows must span the later target rows in a suitable saturated module, with useful coefficients modulo the unfactored \(p-1\). The supplied chain proves neither property. An exact primitive dependency after adjoining a target could use only precomputed rows; rational spanning alone can also introduce a denominator sharing a factor with \(p-1\).
+
+Thus **the full-run bound per logarithm is justified; a strictly cheaper per-log bound is not established here**. This is a limitation of the available proof, not an impossibility result for preprocessing.
+
+**Weakest link and limits of the conclusion**
+
+The decisive inherited input remains
+\[
+\gamma\ge(\log p)^{-C_\gamma}
+\]
+uniformly in growing degree, after field rejections. It is raised to approximately \(2k\). Replacing that precision by an unspecified \(L_p[2/5,-o(1)]\) would not suffice.
+
+Under the stipulated \(\tau=0\) chain, I found no additional obstruction. The new bookkeeping requiring care is the explicit precision estimate (6), rather than reliance on fixed-degree \(\widetilde O_d\) notation.
+
+This one-level design does not justify \(\alpha<2/5\). Its size constraints give
+\[
+k=O(D^\alpha),\qquad
+\theta=O(D^{2\alpha-1}),\qquad
+\theta\gtrsim1/d,\qquad \theta\gtrsim d/k,
+\]
+hence \(k\gtrsim D^{2-4\alpha}\), forcing \(\alpha\ge2/5\). This is a restriction of the analysed design.
+
+**6. Literature and extension fields**
+
+The literature conclusions below are separate from the conditional internal theorem.
+
+| Setting | Bound/status | Source and reading scope |
+|---|---|---|
+| Every prime field | Expected \(L_p[1/2,\sqrt2]\) preprocessing and \(L_p[1/2,1/\sqrt2]\) per log | Pomerance, *Fast, rigorous factorization and discrete logarithm algorithms*, 1987, pp. 119–143. I read the publisher’s summary stating both constants; the original scan was not text-readable through the available tools. [Publisher](https://www.sciencedirect.com/science/chapter/edited-volume/abs/pii/B9780123868701500149). |
+| Prime-field NFS | Heuristic \(L_p[1/3,(64/9)^{1/3}]\) | I read Schirokauer’s §2.8, including the explicit random-smoothness assumption and conjectured complexity. [Schirokauer, 2008, pp. 406–407](https://library.slmath.org/books/Book44/files/12oliver.pdf). |
+| \(\mathbb F_{p^n}\), \(p\le n^{o(n)}\) | Rigorous expected \(L_{p^n}[1/2,\sqrt2]\) | Lovorn Bender–Pomerance, 1998, pp. 221–232. I located the original scan but could not read its text; the stated range is explicitly recorded in Galbraith §15.5.3, p. 338, which I read. I have not independently checked sharper transition-range constants. [Original](https://math.dartmouth.edu/~carlp/PDF/paper115.pdf), [Galbraith](https://www.math.auckland.ac.nz/~sgal018/crypto-book/ch15.pdf). |
+| Explicit extension families in fixed characteristic | Rigorous quasi-polynomial time | Granger–Kleinjung–Zumbrägel, Theorems 1–2. I read those statements and their model hypotheses; their all-extension conclusion there requires an additional conjecture. [Paper](https://arxiv.org/pdf/1507.01495). |
+| Every \(\mathbb F_{p^n}\) | Expected \((pn)^{2\log_2n+O(1)}\), unconditionally | Kleinjung–Wesolowski, *JAMS* 35 (2022), 581–624, Theorem 1.1. I read the introduction, model construction, and §3 overview, not the complete elimination proof. [Paper](https://arxiv.org/pdf/1906.10668), [Published abstract](https://doi.org/10.1090/jams/985). |
+
+I also read the relevant analysis in Garefalakis–Panario, *Math. Comp.* 70 (2001), 1253–1264: their generalized polynomial factor base preserves the classical asymptotic bound; their Waterloo and Coppersmith analyses remain heuristic. [Author-uploaded text](https://www.researchgate.net/publication/220576694_The_index_calculus_method_using_non-smooth_polynomials).
+
+My search found **no better rigorous general prime-field bound**, either for every prime or a density-one set of primes, unconditionally or under GRH alone. That is a search finding, not a theorem asserting that no such publication exists. GRH alone does not establish the smoothness and relation-supply assumptions in the cited NFS analysis.
+
+For medium characteristic, KW’s exact bound is particularly informative. If \(Q=p^n\) and \(p=L_Q[\beta,c]\), with fixed \(0<\beta<1\), it gives
+\[
+\log T_{\rm KW}
+=
+\left(\frac{2c(1-\beta)}{\log2}+o(1)\right)
+(\log Q)^\beta(\log\log Q)^{2-\beta}.
+\]
+This calculation follows directly from their theorem. It is commonly expressed as \(L_Q[\beta+o(1)]\); it does **not** give \(L_Q[\beta,C]\) for fixed \(C\). For \(\beta<2/5\), it already beats a finite-constant \(L_Q[2/5]\) bound.
+
+The present transfer does not automatically cover extension fields:
+
+- Setting \(N=p^n\) produces arithmetic modulo an integer, not \(\mathbb F_{p^n}\). For example, \((\mathbb Z/9\mathbb Z)^\times\) has order \(6\), whereas \(\mathbb F_9^\times\) has order \(8\).
+- Integer ratios reduce into the prime subfield, so they cannot supply uniform extension-field targets.
+- A number-field reduction onto \(\mathbb F_{p^n}\) needs a residue-degree-\(n\) prime, requiring absolute field degree at least \(n\). That can exceed the entire degree budget of this design.
+
+An extension-field analogue would therefore require a new relation-supply and split-counting construction, probably over a polynomial or relative-field model. XK’s exact-dependency principle is portable; the hypotheses supplied here do not establish the required extension-field supply chain.

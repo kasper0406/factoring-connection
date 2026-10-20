@@ -80,3 +80,17 @@ def test_xk4_toy_d3():
     rec = toy_xk.run_one(3, 900, 600, 150, 150, 400)
     assert rec["status"] == "ok" and rec["certified"] and rec["aux_pm1"] and rec["aux_sign_consistent"]
     assert rec["nonunit_kernel_vectors"] == 0 and rec["unit_rank_implied"] <= rec["rU"]
+
+
+def test_la_never_binds_any_tuple():
+    """3a < (a+s)/(1 - 2^{-2/5}) <= c_U for every tuple, hence c_DL(tau; tau) = c_U(tau) (Lemma C25(i))."""
+    f_lo, _ = up.recursion_factor_bracket()
+    assert f_lo > 3
+    rng = random.Random(11)
+    for _ in range(200):
+        a = Fr(rng.randint(1, 60), 20)
+        kappa = Fr(rng.randint(1, 60), 200)
+        d0 = Fr(rng.randint(5, 60), 20)
+        Cg = rng.choice([0, 1, 5, 20])
+        cu = P.c_u(a, d0, kappa, Cg)
+        assert 3 * a < cu[0]

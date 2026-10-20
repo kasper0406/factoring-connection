@@ -1,7 +1,7 @@
 # dlog25: rigorous L_p[2/5] discrete logarithms in F_p^* (Theorem DL × Theorem U)
 
 Agent `dlog25`, phase 13, 2026-10-20.
-- Files: `src/dlog25/{params,toy_sp,toy_xk}.py`, `tests/test_dlog25.py` (7 tests).
+- Files: `src/dlog25/{params,toy_sp,toy_xk}.py`, `tests/test_dlog25.py` (8 tests).
 - Pre-registration: `notes/dlog25_prereg.md` (commit `70317f3`).
 - Data: `experiments/raw/dlog25_e1.jsonl`, `experiments/raw/dlog25_e2.jsonl`, `experiments/raw/dlog25_params.txt`.
 - Codex: `codex/dlog25_1.{md,out}` (blind), `codex/dlog25_2.{md,out}` (adversarial referee).
@@ -32,12 +32,12 @@ and need nothing new.
    - Hence also L_p[α, o(1)] discrete logarithms for every α > 2/5.
 2. **The DL constant equals the factoring constant (Lemma C25, proved; arithmetic checked exactly in
    `src/dlog25/params.py`).**
-   - For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)). So DL is never cheaper than Theorem U in this cost model.
-   - For τ′ = τ: c_DL(τ; τ) ≤ max(3a, c_U(τ)).
-   - Hence inf c_DL ∈ [inf c_U, (3/2)·inf c_U], with equality inf c_DL = inf c_U whenever near-optimal tuples have
-     3a ≤ c_U. That holds at every grid optimum we computed: for C_γ = 0, 1, 5, 20 the upper brackets are
-     3.5103, 4.0469, 5.0384, 6.4975 (the same values as for Theorem U on the same grid), with 3a = 1.65, 1.95, 2.40, 3.45.
-     The cubic linear algebra never binds; the shape-test and special-q terms balance as in Theorem U.
+   - For every tuple τ: **c_DL(τ; τ) = c_U(τ) exactly.** The cubic linear algebra never binds, for any tuple:
+     c_U(τ) ≥ (a + s)/(1 − 2^{−2/5}) > 4.129a > 3a (observation of codex dlog25_1).
+   - For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)). So DL is never cheaper than Theorem U in this cost model, and
+     inf c_DL = inf c_U.
+   - Grid values (same grid as Theorem U): for C_γ = 0, 1, 5, 20 the upper brackets are 3.5103, 4.0469, 5.0384, 6.4975,
+     identical to Theorem U's; 3a = 1.65, 1.95, 2.40, 3.45 there.
    - Like Theorem U's, these numbers are illustrations: C_γ is a finite but uncomputed constant.
 3. **Every ingredient transfers (§3, §4).**
    - The supply chain (FM-U, Lemma 8.5′(R′), LD*-U, Kern-U, W-U, L2-U, DS-U, CS, D-U, Lemma IR and rejections) holds
@@ -306,13 +306,14 @@ doubling budgets with Markov, every output verified, inconsistent congruences di
 
 **Lemma C25 (the DL constant is the factoring constant; proved).** Write T₁(τ) := a + s + max(a, σ) and
 c_U(τ) = max(2a, T₁(τ), (a + s)/(1 − 2^{−2/5})).
-- (i) c_DL(τ; τ) ≤ max(3a, c_U(τ)).
+- (i) c_DL(τ; τ) = c_U(τ) for every τ; in particular the term 3a never binds.
 - (ii) For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)).
-- (iii) Hence inf_{τ,τ′} c_DL ∈ [inf c_U, inf_τ max(3a, c_U(τ))] ⊂ [inf c_U, (3/2) inf c_U], and inf c_DL = inf c_U if
-  3a ≤ c_U(τ) along a minimising sequence for c_U.
-*Proof.* (i): (a + s) ≤ (1 − 2^{−2/5})c_U(τ), so a + s + 2^{−2/5}c_U(τ) ≤ c_U(τ); the other terms are 3a and
-T₁ ≤ c_U. (ii): let x := c_DL(τ; τ′) and suppose x < c_U(τ′). Then a + s ≤ x − 2^{−2/5}c_U(τ′) < (1 − 2^{−2/5})x, so
-(a + s)/(1 − 2^{−2/5}) < x; also T₁ ≤ x and 2a < 3a ≤ x; so c_U(τ) ≤ x. (iii): (ii), (i), and c_U ≥ T₁ ≥ 2a. ∎
+- (iii) Hence inf_{τ,τ′} c_DL = inf_τ c_U.
+*Proof.* (i) ≤: (a + s) ≤ (1 − 2^{−2/5})c_U(τ), so a + s + 2^{−2/5}c_U(τ) ≤ c_U(τ); T₁ ≤ c_U(τ); and
+3a < a/(1 − 2^{−2/5}) ≤ (a + s)/(1 − 2^{−2/5}) ≤ c_U(τ), since 1/(1 − 2^{−2/5}) > 4.129 > 3 and s ≥ 0 (this observation is
+from codex dlog25_1). ≥: by (ii) with τ′ = τ. (ii): let x := c_DL(τ; τ′) and suppose x < c_U(τ′). Then
+a + s ≤ x − 2^{−2/5}c_U(τ′) < (1 − 2^{−2/5})x, so (a + s)/(1 − 2^{−2/5}) < x; also T₁ ≤ x and 2a < 3a ≤ x; so
+c_U(τ) ≤ x. (iii): (i) and (ii). ∎
 
 **Numbers** (`.venv/bin/python -m src.dlog25.params`, exact rationals, 2^{±2/5} bracketed; grid as in [U]; the
 subroutine uses the grid-optimal τ′ for the same C_γ; the reported value is the upper bracket):
@@ -324,9 +325,10 @@ subroutine uses the grid-optimal τ′ for the same C_γ; the reported value is 
 | 5 | 5.03838 | 5.03838 | (4/5, 7/200, 1/2) | 2.40 | shape test |
 | 20 | 6.49754 | 6.49754 | (23/20, 1/100, 3/10) | 3.45 | special-q |
 
-So the linear-algebra term ("the 3a term takes over" at L[1/2] for θ > 1/2, [DL] §5) never binds at L[2/5]: the
-row cost there is at least a + s + max(a, σ) ≥ 2a + s, and at the optima a is small against the special-q and shape-test
-terms. As in [U], these are grid values and C_γ is not computed.
+So the linear-algebra term ("the 3a term takes over" at L[1/2] for θ > 1/2, [DL] §5) never binds at L[2/5], for any
+tuple (Lemma C25(i)): the recursion already makes c_U ≥ 4.129a. At L[1/2] there is no recursion factor 1/(1 − 2^{−1/2})
+in the fixed-shape-test constant, which is why 3a could bind there. As in [U], the table entries are grid values and C_γ
+is not computed.
 
 ## 7. Individual logarithms and the target randomisation
 
@@ -340,12 +342,17 @@ terms. As in [U], these are grid values and C_γ is not computed.
   governed by unit and class indices of K and cannot be controlled (this is exactly what Schirokauer maps or virtual logs
   address, at the cost of factoring n and the conditions of [DL] §6). With ≥ C̄ + d fresh h-rows the precomputation is
   useless. **Not established.** At L[2/5] this matters less than at L[1/2]: both phases would be L[2/5, Θ(1)].
+- What can be shared between logarithms: the field. SELECT may use targets g^a only (no h), so the kept field, the
+  factor-base tables and the special-q cache are target-independent and reusable (codex dlog25_1); the per-log bound
+  stays L_p[2/5, c_DL].
 
 ## 8. Extension fields F_{p^n} in medium characteristic
 
-- **Known (rigorous).** Bender–Pomerance L_Q[1/2, √2] for p ≤ n^{o(n)}; Kleinjung–Wesolowski (pn)^{2 log₂n + O(1)}, i.e.
-  L_Q[α + o(1)] for p = L_Q[α], which is below L_Q[1/2] only for α < 1/2 (small/lower-medium characteristic). For
-  p ≥ L_Q[1/2] (medium and large characteristic) we found nothing rigorous below L_Q[1/2] (search result).
+- **Known (rigorous).** Bender–Pomerance L_Q[1/2, √2] for p ≤ n^{o(n)}; Kleinjung–Wesolowski (pn)^{2 log₂n + O(1)}. For
+  Q = p^n and p = L_Q[β, c] with fixed 0 < β < 1 this is exp((2c(1 − β)/log 2 + o(1))(log Q)^β(log log Q)^{2−β})
+  (codex dlog25_1), i.e. L_Q[β + o(1)] but not L_Q[β, C] for a fixed C; it beats any L_Q[2/5, C] only for β < 2/5, and
+  is below L_Q[1/2] only for β < 1/2. For p ≥ L_Q[1/2] (medium and large characteristic) we found nothing rigorous
+  below L_Q[1/2] (search result).
 - **Does the transfer give anything? Not as it stands.**
   - What transfers (fixed n, or n slowly growing): the Dixon split. Represent F_{p^n} = Z[x]/(p, φ), φ monic of
     degree n irreducible mod p, and let Λ_T := {(u, v) ∈ Z[x]_{<n}² : u ≡ Tv mod (p, φ)}, of rank 2n and covolume p^n.
@@ -357,6 +364,10 @@ terms. As in [U], these are grid values and C_γ is not computed.
     **smooth ideals in residue classes modulo ideals of Q(φ)**, plus Theorem U for factoring ideals of norm ≈ Q^{1/2}
     (the shape test). Neither is available. The pair (Q(φ), K_A) would also need a common-root construction F(g₀, g₁) =
     p·w over Q(φ) (a "conjugation"-type pair of fields), whose field law is not covered by Lemma IR / FM-U.
+  - Two simpler objections (codex dlog25_1): putting N := p^n in Theorem U's design gives arithmetic in Z/p^n, not in
+    F_{p^n}; and integer ratios u₀/v₀ reduce into the prime field, so they cannot represent uniform targets of F_{p^n}.
+    A number-field reduction onto F_{p^n} needs a prime of residue degree n, i.e. field degree ≥ n, which for n ≫ d
+    exceeds this design's degree budget.
   - So in medium characteristic this is a research programme, not a corollary. Not pursued.
 
 ## 9. Toy experiments (pre-registered, `notes/dlog25_prereg.md`, commit 70317f3)
@@ -380,7 +391,18 @@ Commands as in the prereg; E1 ≈ 23 s, E2 ≈ 9 s.
 
 ## 10. Reviews
 
-(See the review log below; filled in after the reviews.)
+**GPT-6.1-sol blind round `codex/dlog25_1` (xhigh; before it saw any draft).** Verdict: "YES (L[2/5]), conditional on
+the stated internal chain; the growing-degree XK step introduces no larger exponent." It independently derived the
+same algorithm, the same coprime-pair replacement for Lemma S″ (bound (3) = Lemma S_p″), the same cost formula
+c_DL = max(3a, a + s + max(a, σ, 2^{−2/5}c_F)), c_DL = c_U at the same tuple, XK at growing degree with
+log R = O(dβ_x + d log M + d log(kd log p) + d³) (it kept the 2^{O(d²)} coordinate bound of [DL]; we use 2^{O(d)}), the
+per-round hidden-label conditioning, and the same negative answers on per-log precomputation and medium characteristic.
+Adopted from it: (a) c_U ≥ (a + s)/(1 − 2^{−2/5}) > 4.129a > 3a, which upgrades Lemma C25 from "inf c_DL ∈ [c*, 3c*/2],
+= c* on the grid" to c_DL(τ; τ) = c_U(τ) for every τ; (b) the precise KW exponent for p = L_Q[β, c]; (c) the two
+elementary extension-field objections in §8; (d) the remark that p ∤ disc f is not needed globally (only a simple root
+m), which is already how SAMPLE_FIELD is written; (e) the reusable target-independent field (selected with powers of g
+only, §7). It read Buchmann–Lenstra 1994 Thm 1.2, Alg. 6.1/Prop. 6.2 (local maximal orders in polynomial time) and
+Dixon 1982.
 
 ## 11. Dependencies of Theorem DL25
 
