@@ -1,0 +1,304 @@
+**UNVERIFIED — Verdict.** I found no substantiated classical mechanism improving the general heuristic \(L_N[1/3]\) benchmark. The proposed heavy-Fourier construction remains open for unrestricted efficiently computable preprocessing. Below are two rigorous, narrower barriers: a spectral obstruction for additive constructions, and a membership-query lower bound.
+
+**FOLKLORE-KNOWN.** The benchmark is heuristic, rather than a proved optimal complexity: Buhler, H. W. Lenstra Jr., and Pomerance (1993), [“Factoring integers with the number field sieve,” pp. 50–94](https://link.springer.com/chapter/10.1007/BFb0091539).
+
+Here **PROVED** means established by the accompanying calculation or proof; **UNVERIFIED** includes claims for which no general algorithm or reduction was established.
+
+**1. Non-black-box structure and partial information**
+
+**PROVED.** The exponent homomorphism and repeated squaring already exist in a generic group. Additional accessible structure consists of integer representatives, addition, gcds, Jacobi symbols, comparisons, and arithmetic in auxiliary rings. These permit tests that can distinguish the two CRT components without knowing their moduli.
+
+**FOLKLORE-KNOWN.** NFS already exploits additive–multiplicative interplay through algebraic relations and smooth norms; it does not require a smooth group order. Thus the stipulated order-annihilation barrier does not encompass every non-black-box approach. [Buhler–Lenstra–Pomerance, 1993](https://link.springer.com/chapter/10.1007/BFb0091539).
+
+**PROVED — Cheap certificates.** Write \(r_p=\operatorname{ord}_p(a)\), \(r_q=\operatorname{ord}_q(a)\).
+
+| Information | What is efficiently obtainable |
+|---|---|
+| Divisibility by a specified exponent \(M\) | \(a^M=1\iff r\mid M\), in time polynomial in \(\log N+\log M\). |
+| CRT asymmetry | \(1<\gcd(a^M-1,N)<N\) precisely when exactly one of \(r_p,r_q\) divides \(M\). |
+| Polylogarithmic smoothness | For \(B=\operatorname{poly}(\log N)\), set \(E_B=\prod_{\ell\le B}\ell^{\lfloor\log_\ell N\rfloor}\). Then \(a^{E_B}=1\iff r\) is \(B\)-smooth. A positive result permits exact recovery by stripping prime factors from \(E_B\). |
+| Jacobi information | \((a/N)=(a/p)(a/q)\). A value \(-1\) implies \(2\mid r\). |
+| A known annihilator | If a factored \(M\) satisfies \(r\mid M\), repeated tests \(a^{M/\ell}=1\) recover \(r\), hence all valuations and gcds. |
+
+**UNVERIFIED.** Without an annihilator, no general cheap procedure was established here for \(\gcd(r,M)\), the complete small-prime valuation profile, or \(r\bmod3\). Testing \(a^M\) does not compute \(\gcd(r,M)\). Likewise, failure of the smoothness test does not expose the smooth part of \(r\).
+
+**PROVED — Valuations versus residuosity.** Factoring \(N\) suffices to compute \(v_\ell(r)\) for any specified prime \(\ell\): remove the \(\ell\)-part from \(p-1\), exponentiate, determine the remaining \(\ell\)-power order, and repeat modulo \(q\).
+
+For a Blum modulus, \(p,q\equiv3\pmod4\),
+
+\[
+v_2(r)\in\{0,1\},\qquad
+v_2(r)=0\iff a\in QR_N.
+\]
+
+Indeed, each local cyclic group has exactly one factor of \(2\), and its squares are exactly its odd-order elements. Therefore order parity, exact \(v_2(r)\), and quadratic-residuosity decision are polynomial-time equivalent on this promised family.
+
+**FOLKLORE-KNOWN.** Quadratic-residuosity decision reduces to factoring; the converse is unknown. Consequently, asserting that \(v_2(r)\) is factoring-equivalent would resolve a longstanding open reduction. See Menezes–van Oorschot–Vanstone (1996), [*Handbook of Applied Cryptography*, §3.4](https://cacr.uwaterloo.ca/hac/about/chap3.pdf).
+
+**PROVED.** More generally, under the promise
+
+\[
+v_\ell(p-1)=v_\ell(q-1)=1,
+\]
+
+\(a\) is an \(\ell\)-th power modulo \(N\) iff \(\ell\nmid r\). Unequal local valuations prevent this simple equivalence.
+
+**PROVED.** An oracle for \(r\bmod\ell\) computes \(v_\ell(r)\) by querying \(a,a^\ell,a^{\ell^2},\ldots\): the first nonzero residue occurs after the \(\ell\)-part has disappeared. Conversely, valuations alone do not algebraically specify the nonzero residue.
+
+**UNVERIFIED.** No general factoring reduction for the single fixed predicate \(r\bmod3\) was established. However:
+
+**PROVED.** Efficiently obtaining \(r\bmod\ell\) for *all* primes \(\ell\le C\log N\), with sufficiently large fixed \(C\), recovers \(r<N\) by CRT. Thus this collective capability gives randomized factoring. A general integer-factoring oracle supplies the reverse reduction by additionally factoring \(p-1,q-1\); merely being handed \(p,q\) does not automatically provide those auxiliary factorizations.
+
+**PROVED.** A known divisor \(m\mid r\) helps quantitatively:
+
+\[
+\operatorname{ord}_N(a^m)=r/m.
+\]
+
+BSGS therefore costs \(O(\sqrt{r/m})\) group operations. Similarly, knowing \(r\equiv c\pmod m\) and \(r\le R\) yields an interval discrete-log search of size \(O(R/m)\).
+
+**2. Fourier sampling and explicit spectra**
+
+**PROVED — Conventions.** Let \(e(t)=\exp(2\pi it)\), with normalized Fourier coefficients and energy
+
+\[
+\widehat g_Q(k)=Q^{-1}\sum_{x<Q}g(x)e(-kx/Q),
+\qquad E=\|g\|_2^2.
+\]
+
+For an \(r\)-periodic sequence define
+
+\[
+c_j=r^{-1}\sum_{x<r}g(x)e(-jx/r).
+\]
+
+If \(r\mid Q\), its only possible frequencies are \(k=jQ/r\), with coefficient \(c_j\). This divisibility assumption is for analysis, not an algorithmic entitlement.
+
+**PROVED — Construction A: a fibre indicator.** For \(c=a^t\),
+
+\[
+f_c(x)=[x\equiv t\pmod r],\qquad
+c_j=\frac{e(-jt/r)}r.
+\]
+
+Hence
+
+\[
+E=\frac1r,\quad |c_j|^2=\frac1{r^2},\quad
+\frac{|c_j|^2}{E}=\frac1r.
+\]
+
+There are \(r\) equally weighted peaks. All Fourier energy lies on period frequencies, but no individual peak is heavy.
+
+**PROVED.** Retaining \(k\) coefficients captures exactly \(k/r\) of the energy. Constant-relative-error sparse approximation consequently requires \(k=\Omega(r)\), exceeding BSGS’s \(O(\sqrt r)\) group-operation count.
+
+**FOLKLORE-KNOWN.** This is the parameter obstruction for Gilbert–Muthukrishnan–Strauss (2005), [“Improved Time Bounds for Near-Optimal Sparse Fourier Representations”](https://web.eecs.umich.edu/~martinjs/papers/fourier-spie.pdf), and Hassanieh–Indyk–Katabi–Price (2012), [“Nearly Optimal Sparse Fourier Transform”](https://arxiv.org/abs/1201.2501): their complexity depends on sparsity or approximation quality, not merely on \(\log Q\).
+
+**FOLKLORE-KNOWN — Threshold accounting.** Akavia’s (2009) [“Solving Hidden Number Problem with One Bit Oracle and Advice,” Theorem 4](https://people.csail.mit.edu/akavia/akaviaCrypto2009.pdf), and (2010) [“Deterministic Sparse Fourier Approximation via Fooling Arithmetic Progressions,” Theorem 1](https://people.csail.mit.edu/akavia/akaviaCOLT10.pdf), have polynomial dependence on inverse significance and a spectral \(\ell_1\) parameter. They do not promise polylogarithmic complexity independent of these parameters.
+
+**PROVED.** For the indicator, relative squared significance requires \(\tau\le1/r\). An absolute squared threshold on the original bounded function requires \(\eta\le1/r^2\). In general,
+
+\[
+\eta=\tau E/\|g\|_\infty^2
+\]
+
+after scaling into the unit ball. Unit-energy normalization of \(f_c\) instead gives \(\sqrt r f_c\), whose supremum and Fourier \(\ell_1\) norm both equal \(\sqrt r\). Rescaling cannot remove the adverse parameters. Listing all significant peaks alone costs \(\Omega(r)\).
+
+**FOLKLORE-KNOWN.** Goldreich–Levin (1989), [“A Hard-Core Predicate for All One-Way Functions”](https://www.cs.bu.edu/fac/lnd/pdf/hard.pdf), and Kushilevitz–Mansour (1993), [“Learning Decision Trees Using the Fourier Spectrum”](https://www.cs.princeton.edu/courses/archive/spring09/cos522/KushilevitsMansour.pdf), locate significant Walsh coefficients. Binary encoding of \(x\) does not identify Walsh characters with cyclic Fourier characters.
+
+**PROVED — Construction B: multiplicative characters.** If \(\chi(a)=e(t/r)\), then
+
+\[
+g(x)=\chi(a^x)=e(tx/r),\qquad c_j=[j=t].
+\]
+
+This is perfectly Fourier-sparse. However, the reduced denominator is
+
+\[
+d=\operatorname{ord}(\chi(a))\mid r,
+\]
+
+not necessarily \(r\). In particular,
+
+\[
+(a^x/N)=(a/N)^x
+\]
+
+has only frequency \(0\), or frequency \(1/2\). The latter certifies even order and discards its odd part.
+
+**PROVED — Construction C: additive characters.** For \(\gcd(h,N)=1\),
+
+\[
+g_h(x)=e(ha^x/N),\qquad
+c_j=S_j(h):=\frac1r\sum_{x<r}e(ha^x/N-jx/r),
+\]
+
+and
+
+\[
+|S_j(h)|\le\frac{\sqrt N}{r}.
+\]
+
+Since \(E=1\), every peak has relative mass at most \(N/r^2\). Section 5 proves this uniformly in \(j,h,a\). A nontrivial \(\gcd(h,N)\) already factors \(N\).
+
+**PROVED — Construction D: a threshold bit.** Put \(L=\lceil N/2\rceil\), \(\psi(y)=[0\le y<L]\). Its additive expansion has
+
+\[
+b_0=L/N,\qquad
+b_h=\frac{1-e(-hL/N)}{N(1-e(-h/N))}\quad(h\ne0).
+\]
+
+Thus, exactly,
+
+\[
+c_j=b_0[j=0]+\sum_{h\ne0}b_hS_j(h).
+\]
+
+The bounds \(|b_h|=O(1/\min(h,N-h))\) give \(\sum|b_h|=O(\log N)\). Terms with \(p\mid h\) or \(q\mid h\) contribute at most
+\(O(\log N(1/p+1/q))\), using \(|S_j(h)|\le1\). Therefore, for balanced factors and \(j\ne0\),
+
+\[
+|c_j|=O(\sqrt N\log N/r).
+\]
+
+For the signed bit \(2\psi(a^x)-1\), energy is exactly \(1\), so every nonzero coefficient has mass \(O(N\log^2N/r^2)\).
+
+**PROVED.** Shifted compositions introduce no independent orbit variables:
+
+\[
+h(a^x,a^{x+1},\ldots,a^{x+s})
+=\Psi(a^x),\quad
+\Psi(y)=h(y,ay,\ldots,a^sy).
+\]
+
+Linear additive phases collapse to Construction C. Arbitrary nonlinear \(h\) remains outside that barrier.
+
+**PROVED.** For arbitrary \(Q\), windowing gives the exact formula
+
+\[
+\widehat g_Q(k)=\sum_jc_jD_Q(j/r-k/Q),
+\qquad D_Q(u)=Q^{-1}\sum_{x<Q}e(ux).
+\]
+
+For \(Q\ge N^2\), the sum of absolute Dirichlet factors is
+\(O(1+(r/Q)\log r)\). Thus these long windows do not amplify exponentially small coefficients into inverse-polynomial ones.
+
+**PROVED — Subgroup invariance.** If \(\Psi\) is invariant under \(K\le G=(\mathbb Z/N)^*\), then \(\Psi(a^x)\) has period dividing
+
+\[
+d=[\langle a\rangle:\langle a\rangle\cap K].
+\]
+
+Its frequency denominators divide \(d\). Easily computable examples include Jacobi and functions \(F(y^M)\), invariant under \(G[M]=\{z:z^M=1\}\).
+
+**UNVERIFIED.** There is no established complete classification of efficiently computable subgroup-invariant predicates without factoring. Jacobi is an example, not a completeness theorem.
+
+**PROVED — The key logical distinction.** Total inverse-polynomial mass on an exponentially large set does not imply a heavy coefficient: \(f_c\) already has total mass \(1\) on period frequencies. Even a heavy coefficient need not reveal enough: the Jacobi spike has denominator \(2\).
+
+A sufficient condition is a coefficient yielding \(j/r\) with \(\gcd(j,r)\le\operatorname{poly}(\log N)\); enumerate the missing multiplier and test powers. Efficient construction, sufficient SFT parameters, and such recoverability together imply randomized polynomial-time factoring.
+
+**UNVERIFIED.** No converse impossibility theorem for arbitrary efficient \(\Psi\) is known. The implication above is a reduction, not an explanation excluding a discovery.
+
+**FOLKLORE-KNOWN.** Akavia’s HNP application supplies discrete logarithms of selected query points as advice, enabling queries in a different coordinate system. Generating that advice uniformly is not supplied by the theorem. Also, *Learning Noisy Characters, Multiplication Codes, and Cryptographic Hardcore Predicates* is Akavia’s [2008 thesis](https://people.csail.mit.edu/akavia/AkaviaPhDThesis.pdf).
+
+**3. Special bases and auxiliary rings**
+
+**UNVERIFIED.** Smallness of \(a\), including \(a=2\), gives no established general asymptotic improvement of the requested kind. Random-base factoring reductions must not silently become fixed-base reductions.
+
+**PROVED.** A specified base can have identical local orders: for \(N=23\cdot89\), both orders of \(2\) equal \(11\). Consequently every gcd \(\gcd(2^M-1,N)\) is \(1\) or \(N\). Likewise, \(a=-1\) has known order \(2\) for every odd \(N\).
+
+**PROVED — The small-exponent identity does help, modestly.**
+
+\[
+a^{N+1}=a^{p+q}.
+\]
+
+For balanced factors, \(p+q\) belongs to an interval of \(O(\sqrt N)\) integers. Interval BSGS finds some \(s\) satisfying \(a^s=a^{N+1}\) in \(O(N^{1/4})\) group operations. Then \(N+1-s\ne0\) is an order multiple. This is a concrete non-black-box mechanism, but slower than \(L_N[1/3]\).
+
+**PROVED — Quadratic extensions.** For unit discriminant \(d\), a norm-one element, for example
+
+\[
+z=(u+\sqrt d)/(u-\sqrt d),
+\]
+
+has local order dividing \(p-(d/p)\). The split algebra gives \(p-1\); the nonsplit algebra gives \(p+1\). An arbitrary \(u+\sqrt d\) is not automatically norm-one.
+
+**PROVED.** Formal \(\sqrt N\) behaves differently: modulo \(N\), its square is zero. In \((\mathbb Z/N)[t]/(t^2)\),
+
+\[
+(1+t)^k=1+kt,
+\]
+
+so \(1+\sqrt N\) has known order exactly \(N\). This order contains no additional unknown information.
+
+**PROVED — Cyclotomic rings.** In \((\mathbb Z/N)[X]/(\Phi_k(X))\), \(X^k=1\), so \(X^N=X^{N\bmod k}\) is transparent. For \(p\nmid k\), the local algebra is a product of fields of degree \(\operatorname{ord}_k(p)\); general unit orders divide \(p^{\operatorname{ord}_k(p)}-1\), an unknown quantity.
+
+**FOLKLORE-KNOWN.** Norm constructions isolate cyclotomic factors \(\Phi_d(p)\). Bach–Shallit (1989), [“Factoring with Cyclotomic Polynomials,” *Math. Comp.* 52, 201–219](https://www.ams.org/journals/mcom/1989-52-185/S0025-5718-1989-0947467-1/S0025-5718-1989-0947467-1.pdf), develop corresponding factoring methods. They generalize the favorable-order conditions; they do not supply unconditional annihilators for arbitrary RSA factors.
+
+**4. Why the dequantizations do not furnish Shor sampling**
+
+- **FOLKLORE-KNOWN.** Tang (2018/2019), [“A Quantum-Inspired Classical Algorithm for Recommendation Systems”](https://arxiv.org/abs/1807.04271), and Chia–Gilyén–Li–Lin–Tang–Wang (2020/2022), [“Sampling-Based Sublinear Low-Rank Matrix Arithmetic Framework…”](https://arxiv.org/abs/1910.06151), require sampling access and favorable rank/norm parameters. **PROVED:** for \(r\mid Q\), the normalized exponentiation matrix \(M_{x,y}=Q^{-1/2}[y=a^x]\) has \(r\) equal nonzero singular values \(1/\sqrt r\); its stable rank is \(r\).
+
+- **FOLKLORE-KNOWN.** Gharibian–Le Gall (2022), [“Dequantizing the Quantum Singular Value Transformation…”](https://arxiv.org/abs/2111.09079), Theorem 4.1 in the journal version, has runtime \(O^*(s^{2d}/\epsilon^2)\). Constant-degree, coarse-precision simulation does not yield general fine spectral sampling. Their BQP-hardness result concerns guided Hamiltonian problems, not a hardness theorem for factoring.
+
+- **FOLKLORE-KNOWN.** Aharonov–Landau–Makowsky (2006/2007), [“The Quantum FFT Can Be Classically Simulated”](https://arxiv.org/abs/quant-ph/0611156), and Yoran–Short (2007), [“Efficient Classical Simulation of the Approximate Quantum Fourier Transform”](https://arxiv.org/abs/quant-ph/0611241), impose input or circuit-composition conditions not furnished by Shor’s modular-exponentiation stage.
+
+- **FOLKLORE-KNOWN.** Schwarz–Van den Nest (2013), [“Simulating Quantum Circuits with Sparse Output Distributions,” Theorem 1](https://arxiv.org/abs/1310.6749), requires approximately polynomially sparse output. **PROVED:** the ideal order-finding output has \(r\) equiprobable peaks and violates this promise when \(r\) is superpolynomial. The joint state before the final QFT is nevertheless computationally tractable; entanglement alone is not the missing hypothesis.
+
+- **FOLKLORE-KNOWN.** Van den Nest (2009/2011), [“Simulating Quantum Computers with Probabilistic Methods,” Theorem 2](https://arxiv.org/abs/0911.1624), supplies another partial simulation conditional on Fourier concentration of the classical postprocessing function. It does not establish that condition for factoring.
+
+- **FOLKLORE-KNOWN.** Bravyi–Gosset (2016), [“Improved Classical Simulation of Quantum Circuits Dominated by Clifford Gates”](https://arxiv.org/abs/1601.07601), is exponential in the number of non-Clifford \(T\) gates. Standard Shor circuits do not have the logarithmic \(T\)-count needed for that bound to become polynomial.
+
+**PROVED — Structured classical HSP examples.** If an oracle is an explicit linear map \(\mathbb F_\ell^n\to\mathbb F_\ell^m\), querying a basis recovers its kernel by Gaussian elimination. Small periods are also classically tractable. Merely knowing the abelian domain’s decomposition is insufficient: Simon’s domain is already explicit.
+
+**FOLKLORE-KNOWN.** Simon (1997), [“On the Power of Quantum Computation”](https://epubs.siam.org/doi/10.1137/S0097539796298637), establishes an oracle separation. Its classical obstruction is birthday-scale collision information, not an obstruction applying to every structured implementation.
+
+**5. Precise barriers**
+
+**PROVED — Additive-preprocessing spectral theorem.** Let
+
+\[
+\Psi(y)=b_0+\sum_{h\in(\mathbb Z/N)^*}b_he(hy/N),
+\qquad A=\sum_{h\ne0}|b_h|.
+\]
+
+For \(g(x)=\Psi(a^x)\), every \(j\ne0\) satisfies
+
+\[
+\boxed{\quad |c_j|^2\le A^2N/r^2.\quad}
+\]
+
+Thus no nonzero coefficient has relative mass \(\tau\) if
+
+\[
+r>A\sqrt{N/(\tau E)}.
+\]
+
+Moreover, capturing \(\eta E\) on nonzero frequencies requires at least
+\(\eta E r^2/(A^2N)\) coefficients.
+
+**PROVED — Proof sketch.** Put \(H=\langle a\rangle\), \(G=(\mathbb Z/N)^*\), and \(\eta_j(a^x)=e(jx/r)\). Every character of \(H\) extends to \(G\). Orthogonality gives
+
+\[
+rS_j(h)=\frac1{[G:H]}
+\sum_{\chi|_H=\overline{\eta_j}}
+\sum_{y\in G}\chi(y)e(hy/N).
+\]
+
+Each inner Gauss sum has magnitude at most \(\sqrt N\): CRT splits it into prime-modulus sums, each of magnitude \(1\) or \(\sqrt p\). Averaging and the triangle inequality prove the bound. The Gauss identities are in Montgomery–Vaughan (2007), [*Multiplicative Number Theory I*, Theorems 9.7 and 9.10](https://personal.science.psu.edu/rcv4/personal/Publications/MNTI/13.0_pp_282_325_Primitive_characters_and_Gauss_sums.pdf).
+
+**PROVED — Membership-query theorem.** Choose an unknown prime \(r\) uniformly among \(M\) primes in \([R,2R]\). Give only the oracle \(F_r(x)=[r\mid x]\), allowing \(|x|<2^b\). Any randomized algorithm making \(T\) queries identifies \(r\) with probability at most
+
+\[
+\frac{1+Tb/\log_2R}{M}.
+\]
+
+Consequently constant success requires \(T=\Omega(R/b)\).
+
+**PROVED — Proof sketch.** Fix the random coins. Along the path with no positive nonzero query, queried integers are fixed. Each has at most \(b/\log_2R\) candidate prime divisors. Only their union can cause a first positive response; otherwise the final output guesses at most one remaining prime. Average over the coins. This covers indicator membership access, not full modular-power access or arbitrary computation on \(N,a\).
+
+**FOLKLORE-KNOWN — Citation correction.** Cleve (2004), [“The Query Complexity of Order-Finding,” Theorems 1–2](https://arxiv.org/abs/quant-ph/9911124), proves deterministic \(\Omega(2^{n/2}/\sqrt m)\) and randomized \(\Omega(2^{n/3}/\sqrt m)\) bounds in his permutation-power model. His randomized theorem is not itself a \(\sqrt r\) lower bound.
+
+**FOLKLORE-KNOWN — Generic-ring scope.** Aggarwal–Maurer (2009), [“Breaking RSA Generically Is Equivalent to Factoring,” Theorem 1](https://crypto.ethz.ch/publications/files/AggMau09.pdf), is a restricted-model reduction. Jager–Schwenk (2009/2013), [“On the Analysis of Cryptographic Assumptions in the Generic Ring Model”](https://eprint.iacr.org/2009/621.pdf), show that even Jacobi computation is factoring-equivalent *generically*, despite its efficient integer-representation algorithm.
+
+**UNVERIFIED.** Therefore neither generic-ring results nor Fourier flatness establish the desired universal non-black-box barrier. What remains open is a uniformly efficient preprocessing construction with individually significant, recoverable period frequencies and controlled SFT parameters.
