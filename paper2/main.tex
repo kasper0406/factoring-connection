@@ -115,6 +115,11 @@ prime multiplier $w$ of the resultant, $F(g_0,g_1)=Nw$, which spreads a forced r
 It is then proved with divisor switching and the large sieve. Fourth, the number field sieve
 post-processing of Buhler--Lenstra--Pomerance and Lee--Venkatesan is carried out rigorously at fixed
 degree, and batch smoothness detection removes any dependence on the hyperelliptic curve method.
+
+We also show (Section~\ref{sec:recursive}; these results are still under independent audit) that replacing the Lenstra--Pomerance
+subroutine by a recursive call of the algorithm itself gives $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$ ($0.851$ at $d=9$,
+tending to $0$ as $d$ grows). A restart schedule over such algorithms then yields a single Las Vegas algorithm with
+expected time $L_N[1/2,o(1)]$, at an ineffective rate. It does not give $L_N[\alpha]$ for any $\alpha<1/2$.
 \end{abstract}
 
 \maketitle
@@ -249,7 +254,8 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   $(k,\eta_0)$. It is not attained, and we do not claim $L_N[1/2,(1+3/(d+1))/\sqrt2+o(1)]$ for any fixed
   $d$. That would require letting $k=k(N)\to\infty$. Our constants depend on $k$ through factors
   $(\log N)^{O(k)}$, $\binom{2k}{k}$ and thresholds $N_0(k)$, and we have not carried out such a
-  diagonalisation. At $d=9$ the best single algorithm we analyse has $c\approx0.9972+\eta_0/\sqrt2$.
+  diagonalisation. At $d=9$ the best single algorithm of Theorem~\ref{thm:main} has $c\approx0.9972+\eta_0/\sqrt2$.
+  (Corollary~\ref{cor:P}, which is still under audit, obtains a genuine $+o(1)$ by scheduling instead.)
 \item \emph{Complete factorisation.} The algorithm outputs the full factorisation, with every prime
   certified (AKS \cite{aks2004}). Prime powers, perfect powers and small prime factors are handled before the
   main splitting routine. The splitting routine is applied at most $\log_2N$ times
@@ -266,6 +272,20 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   delicate interfaces, so it should be treated with caution until experts have checked it.
 \end{enumerate}
 \end{remark}
+
+\subsection{Further results under audit: the recursive shape test}
+The subroutine that costs $L_N[1/2,1/\sqrt2]$ can be replaced by the algorithm itself, called recursively on the two halves. Section~\ref{sec:recursive}
+derives the following from the proof of Theorem~\ref{thm:main}.\footnote{Theorem~\ref{thm:RA} and Corollary~\ref{cor:P} have been
+reviewed by GPT-6.1-sol (blind and adversarial rounds) and two Claude critics, with all fixes applied, but have not yet had the
+independent blind end-to-end audit that Theorem~\ref{thm:main} received; that audit is in progress. We therefore keep them out of the
+headline.}
+\begin{itemize}
+\item \emph{Theorem~\ref{thm:RA}.} At fixed parameters the expected time is $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$. The infimum over $(k,\eta_0)$ is
+  $\sqrt{3(1+\sqrt2)/(d+1)}$, which is $0.851$ at $d=9$ and $0.777$ at $d=11$, and tends to $0$ as $d\to\infty$.
+\item \emph{Corollary~\ref{cor:P}.} A restart schedule over such algorithms gives a single algorithm with expected time
+  $L_N[1/2,o(1)]$, at an ineffective rate. The same device turns the infimum $0.9192$ at $d=9$ into a genuine $+o(1)$.
+\end{itemize}
+Neither gives a rigorous $L_N[\alpha]$ with $\alpha<1/2$ (Section~\ref{sec:limits}).
 
 \subsection{Comparison with Lenstra--Pomerance}
 
@@ -399,7 +419,8 @@ Section~\ref{sec:notation} fixes notation and lists the published results we use
 ranges. Section~\ref{sec:algorithm} gives the parameters, the field law and the algorithm.
 Section~\ref{sec:overview} outlines the proof and gives a dependency diagram. The proof proper is in
 Sections~\ref{sec:split}--\ref{sec:uniform}, and Appendix~\ref{app:85} proves Lemma~\ref{lem:85}.
-Section~\ref{sec:toy} describes a toy implementation, and Section~\ref{sec:limits} lists the limitations.
+Section~\ref{sec:recursive} treats the recursive shape test (under audit). Section~\ref{sec:toy} describes a toy implementation, and
+Section~\ref{sec:limits} discusses limitations and the growing-degree outlook.
 
 %======================================================================
 \section{Notation and published inputs}\label{sec:notation}
@@ -2024,6 +2045,189 @@ no cap on its running time is needed.
 \end{remark}
 
 %======================================================================
+\section{The recursive shape test}\label{sec:recursive}
+%======================================================================
+
+\begin{center}
+\fbox{\parbox{0.92\textwidth}{\small\textbf{Audit status of this section.} The results below (Theorem~\ref{thm:RA} and
+Corollary~\ref{cor:P}) are derived from the proof of Theorem~\ref{thm:main}. They have been reviewed by two GPT-6.1-sol rounds
+(one blind, one adversarial) and by two Claude critics, and all their fixes are applied. Unlike Theorem~\ref{thm:main}, however, they
+have \emph{not yet} had the independent blind end-to-end audit, which is in progress. Until it is complete they should be read
+as claims under review, and they are not part of the headline statement.}}
+\end{center}
+
+The constant $1/\sqrt2$ in Theorem~\ref{thm:main} enters at exactly one place: the Lenstra--Pomerance factorisation of the two
+$\sqrt N$-size halves $u_0,v_0$ in the shape test (Proposition~\ref{prop:cost}). In this section that subroutine is replaced by a
+recursive call of the algorithm itself.
+
+\subsection{The algorithm and what is used from the main proof}
+Fix admissible $(d,k,\mu,\eta_0)$ with $\theta<1$, and fix any $a>0$. Let $\mathrm{FACTOR}_{\rm rec}[a]$ be Algorithm~\ref{alg:factor} with two
+changes:
+\begin{enumerate}[label=(\roman*)]
+\item $B:=\lfloor L^a\rfloor$ and $S:=\lceil L^{\theta/(4a)}\rceil$, so that $S^2\rr\rF=L^{o(1)}$ as before;
+\item in step~3 of DESCEND\_ONCE, $|u_0|$ and $|v_0|$ are factored by $\mathrm{FACTOR}_{\rm rec}[a]$ itself, with fresh coins. Its output is
+  returned in canonical form: the sorted list of primes with multiplicities. The loop over $\ell\mid u_0v_0$ in step~4 runs in increasing order.
+\end{enumerate}
+For a procedure $O$ that, given $m\ge1$, always returns the canonical factorisation of $m$, terminates almost surely, and uses coins
+independent of everything else, write $\mathrm{SPLIT}^O$ for SPLIT with shape test $O$. Call such an $O$ \emph{admissible}.
+
+\begin{lemma}[the main proof at a general $a$]\label{lem:generala}
+For every fixed $a>0$, Sections~\ref{sec:split}--\ref{sec:batch} hold verbatim with $B=\lfloor L^a\rfloor$ and $S=\lceil L^{\theta/(4a)}\rceil$, with $N_0$
+depending also on $a$. Consequently, for preprocessed $N\ge N_0$ and every admissible $O$:
+\begin{enumerate}[label=(A\arabic*)]
+\item the expected number $\tau$ of calls of DESCEND\_ONCE in $\mathrm{SPLIT}^O(N)$ is at most $L_N^{a+o(1)}$, and each call makes at most two calls
+  of $O$, on integers at most $\sqrt{2N}$;
+\item the expected work of $\mathrm{SPLIT}^O(N)$ outside the calls of $O$ is at most $L_N^{\max(2a,\,a+\theta/(2a))+o(1)}$;
+\item $\mathrm{SPLIT}^O(N)$ returns a proper factor almost surely.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The value $a=\theta/\sqrt2$ is used only in the cost optimisation (Proposition~\ref{prop:cost}). The one size relation tied to it,
+$B<2S^2$ in Lemma~\ref{lem:sizes}(a), is used only to bound the cost of batch smoothness. That cost is $\tilde O(B+S^2)$, which is
+$L^{\max(a,\theta/(2a))+o(1)}$ for any $a$. Every other estimate is stated for an arbitrary fixed $a$. This covers
+Lemma~\ref{lem:local}, the constants $C_0$ and $R_0$ of Section~\ref{sec:SM}, the grid $\cX$, Lemma~\ref{lem:85}
+(Appendix~\ref{app:85}), and Lemma~\ref{lem:omega}. Then (A1)--(A3) follow from the proof of Proposition~\ref{prop:select}, with
+$M_{\rm rows}=L^{a+o(1)}$. In that proof, charge at most $2k$ special-$q$ searches to every call of DESCEND\_ONCE. The
+harmonic-mean identity applies as before, and the post-processing costs $L^{2a+o(1)}$.
+\end{proof}
+
+\begin{lemma}[oracle substitution; ``Lemma OS'']\label{lem:OS}
+For all admissible $O$, the joint law of the outer transcript of $\mathrm{SPLIT}^O(N)$ is the same. The outer transcript consists of
+the outer coins and every value computed outside $O$, but not running times. In particular $\tau$, the work outside $O$, and the
+output have the same law for every admissible $O$.
+\end{lemma}
+
+\begin{proof}
+The outer computation is a deterministic function of the outer coins and of the values returned by $O$. Each call of $O$ on $m$ returns
+the canonical factorisation of $m$, which is a function of $m$ alone. No step of the algorithm depends on a running time. Induction over the
+steps of the outer computation shows that every outer value is a function of the outer coins only, and this function does not depend on $O$.
+\end{proof}
+
+\begin{lemma}[Wald for adaptive sub-calls]\label{lem:waldrec}
+Suppose a randomised procedure makes sub-calls $i=1,2,\dots$. Suppose the decision to make call $i$, and its input, are measurable with
+respect to the history $\cF_{i-1}$. Suppose call $i$ uses fresh coins and has cost $C_i$ with $\Ex[C_i\mid\cF_{i-1},\text{input}]\le\bar F$. Then
+$\Ex[\sum_{i\le\tau}C_i]\le\bar F\,\Ex[\tau]$.
+\end{lemma}
+
+\begin{proof}
+$\Ex\sum_iC_i1_{\tau\ge i}=\sum_i\Ex\bigl[1_{\tau\ge i}\Ex[C_i\mid\cF_{i-1},\text{input}]\bigr]\le\bar F\sum_i\Prob[\tau\ge i]$, by monotone
+convergence.
+\end{proof}
+
+\begin{lemma}[transcript invariance under recursion; ``Lemma T$_{\rm rec}$'']\label{lem:Trec}
+The hypothesis of Theorem~\ref{thm:DD} holds for $\mathrm{SPLIT}^O$ with $O=\mathrm{FACTOR}_{\rm rec}[a]$.
+\end{lemma}
+
+\begin{proof}
+The inputs $|u_0|,|v_0|$ of the inner calls are functions of $R$, and their coins are fresh. Each inner call's whole transcript is a
+function of its input and its coins. This includes the inner call's own hidden roots, fields and dependencies, and its inner gcds,
+which are taken with $|u_0|$, $|v_0|$ and their divisors, not with $N$. So the outer transcript together with all inner transcripts is a
+function of $(R_i)_i$ and of coins independent of the outer roots $(r_i)_i$. The inner transcripts are not independent of the outer squares,
+but they are invariant under $r_i\mapsto\epsilon r_i$ on each outer fibre, which is all Theorem~\ref{thm:DD} needs. Its proof then applies verbatim.
+\end{proof}
+
+\subsection{Solving the recursion}
+
+Write $L_x:=\exp\bigl(\sqrt{\log x\cdot\max(1,\log\log x)}\bigr)$ for all $x\ge2$.
+
+\begin{lemma}[``Lemma F'']\label{lem:F}
+Let $F:[2,\infty)\to[0,\infty)$ be nondecreasing and finite, and suppose that for $x\ge x_0$,
+\[
+F(x)\le L_x^{p+\epsilon(x)}+L_x^{\delta+\epsilon(x)}F(\sqrt{2x}),\qquad\epsilon(x)\to0 .
+\]
+Then $F(x)\le L_x^{c+o(1)}$ with $c=\max\bigl(p,\ \delta/(1-1/\sqrt2)\bigr)=\max(p,(2+\sqrt2)\delta)$.
+\end{lemma}
+
+\begin{proof}
+\emph{Scaling.} For $y=\sqrt{2x}$, $\log y\log\log y\le\frac12(\log x+\log2)\log\log x$, so $L_y^b\le e\,L_x^{b/\sqrt2}$ for $x\ge x_1(b)$.
+\emph{Margin.} Fix $\eta>0$ and put $\eta':=\eta(1-1/\sqrt2)/4$. Choose $X\ge\max(x_0,x_1(c+\eta),4)$ such that for $x\ge X$:
+$\epsilon(x)\le\eta'$, $L_x^{\eta-\eta'}\ge2$ and $L_x^{3\eta'}\ge2e$. Put $K:=\max(1,F(X))$. Then $F(x)\le K\le KL_x^{c+\eta}$ on $[2,X]$.
+\emph{Induction.} Suppose $F\le KL_x^{c+\eta}$ on $[2,Y]$ with $Y\ge X$, and let $x\in(Y,Y^2/2]$. Then $\sqrt{2x}\le Y$, and
+\[
+F(x)\le L_x^{p+\eta'}+K\,e\,L_x^{\delta+\eta'+(c+\eta)/\sqrt2}.
+\]
+Since $\delta\le c(1-1/\sqrt2)$, the second exponent is at most $c+\eta/\sqrt2+\eta'=c+\eta-3\eta'$, so that term is at most
+$(K/2)L_x^{c+\eta}$. The first term is at most $L_x^{c+\eta}/2$. As $Y^2/2>Y$, the bound holds for all $x$, and $\eta$ was arbitrary.
+\end{proof}
+
+\begin{theorem}[recursive shape test; ``Theorem RA'']\label{thm:RA}
+For admissible $(d,k,\mu,\eta_0)$ with $\theta<1$ and fixed $a>0$, $\mathrm{FACTOR}_{\rm rec}[a]$ is a Las Vegas algorithm that outputs the complete
+factorisation of every $N\ge2$ in expected time
+\[
+L_N\bigl[1/2,\ c(a)+o(1)\bigr],\qquad c(a):=\max\bigl(a+\theta/(2a),\ (2+\sqrt2)a\bigr).
+\]
+The minimum over $a$ is attained at $a^*=\sqrt{(\sqrt2-1)\theta/2}$, with value $c^*=\sqrt{(1+\sqrt2)\theta}$.
+\end{theorem}
+
+\begin{proof}
+Let $F(x):=\sup_{2\le n\le x}\Ex[\text{cost of }\mathrm{FACTOR}_{\rm rec}[a](n)]$.
+
+\emph{Finiteness.} We argue by strong induction on $n$. For $n<N_0$ the cost is $O(1)$, because FACTOR alternates SPLIT with trial division
+(step~3). For $n\ge N_0$ the inequality below calls $F$ only at $\sqrt{2n}<n$.
+
+\emph{Recursion.} The factorisation tree of $N$ has fewer than $2\log_2N$ nodes. Each node costs $L^{a+o(1)}$ for preprocessing, plus
+one call of $\mathrm{SPLIT}^O$ with $O=\mathrm{FACTOR}_{\rm rec}[a]$. By Lemma~\ref{lem:OS}, (A1)--(A3) hold for this $O$. Every call of $O$ is on an integer
+at most $\sqrt{2N}$ with fresh coins, so its conditional expected cost is at most $F(\sqrt{2N})$. By Lemma~\ref{lem:waldrec},
+\[
+F(x)\le2\log_2x\Bigl[L_x^{\max(2a,\,a+\theta/(2a))+o(1)}+2L_x^{a+o(1)}F(\sqrt{2x})\Bigr].
+\]
+Lemma~\ref{lem:F} with $p=\max(2a,a+\theta/(2a))$ and $\delta=a$ gives $c=\max(2a,a+\theta/(2a),(2+\sqrt2)a)=c(a)$.
+
+\emph{Correctness.} Every output prime is certified by AKS. Termination is almost sure because the expected time is finite. Fruitfulness
+holds by Lemma~\ref{lem:Trec}.
+
+\emph{Optimisation.} $a+\theta/(2a)$ is decreasing on $(0,\sqrt{\theta/2}]$ and $(2+\sqrt2)a$ is increasing. They meet where
+$(1+\sqrt2)a=\theta/(2a)$, that is at $a^*<\sqrt{\theta/2}$. Then $c^{*2}=(2+\sqrt2)^2(\sqrt2-1)\theta/2=(1+\sqrt2)\theta$.
+\end{proof}
+
+\begin{remark}\label{rem:RA}
+\begin{enumerate}[label=(\alph*)]
+\item $c^*<1$ iff $(1+\theta)^2<2$, the same threshold as Theorem~\ref{thm:main}, and $c^*<(1+\theta)/\sqrt2$ iff $\theta<\sqrt2-1$. So
+  recursion helps exactly when Theorem~\ref{thm:main} already beats Lenstra--Pomerance. At $d=9$, $k=13$, $c^*=0.99521$
+  (against $0.99720$).
+\item The infima over $(k,\eta_0)$ are $c^*=\sqrt{3(1+\sqrt2)/(d+1)}$: $0.9515$ ($d=7$), $0.8510$ ($d=9$), $0.7769$ ($d=11$), $0.7193$ ($d=13$),
+  $0.6018$ ($d=19$). They tend to $0$ as $d\to\infty$.
+\item \emph{What binds.} After recursion the binding pair is the recursive shape test and the special-$q$ search. Linear algebra and
+  batch smoothness are slack by the factor $2a^*/c^*=2-\sqrt2$.
+\item \emph{Fixed-depth recursion.} With Lenstra--Pomerance at the bottom, the constants are $c_{j+1}=(\theta/c_j+c_j)/\sqrt2$ with $c_0=1$, so
+  $c_1=(1+\theta)/\sqrt2$ is Theorem~\ref{thm:main}. At $d=9$ (with $\theta\to3/10$) the sequence is $1,0.9192,0.8808,0.8637,\dots\to0.8510$.
+\item \emph{Prior art.} We found no rigorous analysis that calls a factoring algorithm recursively on auxiliary $\sqrt N$-size
+  numbers, and no fixed-point equation for the $L$-constant. The nearest precedent is Pomerance's use of his own rigorous factoring algorithm
+  on the auxiliary $p-1$ inside a discrete-logarithm algorithm \cite[pp.~138--139]{pomerance1987}. That is a single call, not a recursion. The
+  recursive variant was first computed in this project, and GPT-6.1-sol re-derived it independently.
+\end{enumerate}
+\end{remark}
+
+\subsection{A portfolio: \texorpdfstring{$L_N[1/2,o(1)]$}{L[1/2,o(1)]} and a genuine \texorpdfstring{$+o(1)$}{+o(1)}}
+
+\begin{corollary}[portfolio; ``Corollary P'']\label{cor:P}
+There is a single Las Vegas algorithm that outputs the complete factorisation of every $N\ge2$ in expected time $L_N[1/2,o(1)]$, that is,
+$\exp\bigl(o(\sqrt{\log N\log\log N})\bigr)$. The rate of the $o(1)$ is not effective. Likewise, running the same schedule over $k$ at
+fixed $d=9$, without recursion, gives a single algorithm with expected time $L_N[1/2,0.9192\ldots+o(1)]$.
+\end{corollary}
+
+\begin{proof}
+Let $(A_j)_{j\ge1}$ be the algorithms $\mathrm{FACTOR}_{\rm rec}[a_j]$ for a computable sequence of admissible parameters with $c(a_j)\to0$. For example, take
+$d_j=2j+7$, $k_j=\lceil d_j^2/4\rceil+j$, $\mu_j$ optimal, $\eta_0$ small and rational, and $a_j$ rational near $a^*_j$. Let $T_j(N)$ be the running time of $A_j$ on $N$.
+
+\emph{Restart schedule.} In phase $s=1,2,\dots$, run $A_i$ for each $i\le s$, from scratch with fresh coins, for at most $2^{s-i}$ steps.
+Stop at the first certified output. Phase $s$ costs at most $2^s$ steps, up to a polylogarithmic bookkeeping factor.
+
+\emph{Bound.} Fix $j$ and put $s_0:=j+\lceil\log_2(2\Ex T_j(N))\rceil$. In each phase $s\ge s_0$, the run of $A_j$ fails to finish within
+$2^{s-j}\ge2^{s-s_0}\cdot2\Ex T_j$ steps with probability at most $2^{-(s-s_0)-1}$, by Markov. Runs in different phases are independent. So the expected
+time is at most a polylogarithmic factor times
+\[
+2^{s_0+1}+\sum_{m\ge1}2^{s_0+m}2^{-m(m+1)/2}=O\bigl(2^j\,\Ex T_j(N)\bigr).
+\]
+Hence $\limsup_N\log\Ex T(N)/\cL_N\le c(a_j)$ for every $j$. The second statement is the same argument over $k$ at $d=9$, with
+Theorem~\ref{thm:main} in place of Theorem~\ref{thm:RA}. Since $j$ is fixed in each step, no uniformity in $j$ is needed. This is also why the rate is not effective.
+\end{proof}
+
+\noindent Corollary~\ref{cor:P} answers Remark~\ref{rem:claims}(a): the infimum $0.9192$ at $d=9$ becomes a genuine $+o(1)$ for one
+algorithm, through scheduling rather than through uniform estimates in $k$. It is \emph{not} an $L_N[\alpha]$ bound for any $\alpha<1/2$.
+
+%======================================================================
 \section{A toy implementation}\label{sec:toy}
 %======================================================================
 
@@ -2072,30 +2276,65 @@ rows and took $0.15$--$3.1$\,s. The toy confirms the algebra and the hidden-root
 (Theorems~\ref{thm:FM} and~\ref{thm:LD}), which is where the content of the theorem lies, and its running times say nothing about
 the constant $c$.
 
+\paragraph{The recursive variant.} A second pre-registered toy run (commit \texttt{ea5953b}; code in \texttt{src/recurse/}) ran 22 instances
+twice: once with Pollard--Brent as the shape test, and once with the pipeline itself as the shape test (recursion depth 1, inner
+inputs of 25--28 bits).
+\begin{itemize}
+\item Both runs produced correct complete factorisations in $22/22$ instances.
+\item The outer transcripts were bit-identical in $22/22$ instances, as Lemma~\ref{lem:OS} predicts.
+\item There were no row-identity violations.
+\item The fruitful fraction for $\omega=2$ was $2390/4936=0.484$ ($z=-2.22$, inside the pre-registered $|z|\le3$).
+\end{itemize}
+Again, this checks code and the exact Lemma~\ref{lem:OS} only.
+
 %======================================================================
-\section{Limitations and open problems}\label{sec:limits}
+\section{Limitations and outlook}\label{sec:limits}
 %======================================================================
 
+\subsection{Limitations}
 \begin{itemize}
 \item \emph{Not refereed.} The proof was produced and checked with AI assistance only (see the Acknowledgements). An earlier version of
   Lemma~\ref{lem:85} imported a bound from inside the proof of Lee--Venkatesan's Lemma~8.5; reviewers named it the weakest link,
   and it has been replaced by the self-contained proof of Appendix~\ref{app:85}. The one remaining external input there, Drappeau's
   Lemme~5, is published, but its proof refers to an unpublished preprint of Harper. The second moment
   (Theorem~\ref{thm:LD}) is the most novel analytic component, and the field-selection bookkeeping (Proposition~\ref{prop:select}) is
-  the most delicate probabilistic one.
-\item \emph{Infimum versus a single algorithm.} At fixed $d$ we prove $(1+\theta)/\sqrt2+o(1)$ for each fixed $k$; the infimum over $k$ is not attained.
-  Proving $(1+3/(d+1))/\sqrt2+o(1)$ at fixed $d$ would need $k=k(N)\to\infty$ with control of the $k$-dependence of every constant.
-\item \emph{The constant $1/\sqrt2$.} It comes from factoring two $\sqrt N$-size integers with Lenstra--Pomerance. A recursive variant that uses the
-  algorithm itself as its shape test, if it could be made rigorous at all scales, would give the fixed point $c=\sqrt{(1+\sqrt2)\theta}$
-  ($\approx0.851$ at $d=9$). We have not proved this.
-\item \emph{Practicality.} The constants (Stark, Landau, Lagarias--Odlyzko) are effective but astronomically large (and the effectivity of
-  the constants of Drappeau's Lemme~5 is not stated in the literature; this affects only the threshold $N_0$, not Theorem~\ref{thm:main}), and the algorithm is a vehicle for a
-  rigorous bound, not a practical method. The heuristic number field sieve is far faster.
-\item \emph{Below $L[1/2]$.} This architecture does not reach a rigorous $L[1/3]$. Bounded $k$ forces the $L[1/2,1/\sqrt2]$ shape test, and unbounded
-  $k$ needs averaged estimates of a precision we cannot prove.
+  the most delicate probabilistic one. Section~\ref{sec:recursive} is still under independent audit.
+\item \emph{Infimum versus a single algorithm.} At fixed $d$, Theorem~\ref{thm:main} gives $(1+\theta)/\sqrt2+o(1)$ for each fixed $k$; the infimum
+  over $k$ is not attained by any one of these algorithms. Corollary~\ref{cor:P} (under audit) obtains it by a restart schedule. A uniform
+  version, with $k=k(N)\to\infty$ and effective rates, would need control of the $k$-dependence of every constant.
+\item \emph{Effectivity and practicality.} The constants (Stark, Landau, Lagarias--Odlyzko) are effective but astronomically large. The
+  effectivity of the constants of Drappeau's Lemme~5 is not stated in the literature; this affects only the threshold $N_0$, not
+  Theorem~\ref{thm:main}. Corollary~\ref{cor:P} has an ineffective rate. The algorithm is a vehicle for a rigorous bound, not a practical
+  method; the heuristic number field sieve is far faster.
 \item \emph{Other problems.} Whether the same devices (Dixon descent, the random resultant multiplier, the two-dimensional rational side and the
   family large-sieve bound) improve rigorous bounds for discrete logarithms or class groups is open.
 \end{itemize}
+
+\subsection{Outlook: growing degree}
+Recursion (Section~\ref{sec:recursive}) removes every cost barrier that comes from testing smoothness or shape. The argument of
+Lemma~\ref{lem:F} works at any level $L[\alpha]$, with scaling factor $2^{-\alpha}$ in place of $1/\sqrt2$. A shape test on $\sqrt N$-size halves then costs
+$L_N[\alpha,2^{-\alpha}c]$, and intermediate smoothness tests on values $\exp((\log N)^\gamma)$, $\gamma<1$, cost $L_N[\alpha]^{o(1)}$. In particular the barrier
+that rigorous hyperelliptic smoothness tests impose on one-level descent ($L[4/9]$ at a splitting bound $L[2/3]$) disappears. We
+nevertheless do \emph{not} obtain a rigorous $L_N[\alpha]$ with $\alpha<1/2$. What binds is the geometry of the descent and the precision of the
+relation-supply estimates. The following are heuristic targets in a size model, not theorems.
+\begin{itemize}
+\item \emph{One-level descent, $2/5$.} With $d$ and $k$ growing ($d\asymp(\log N/\log\log N)^{1/5}$, $k\asymp(\log N/\log\log N)^{2/5}$), split acceptance requires
+  $k(\log\log N+\log(1/\gamma))=O((\log N)^\alpha(\log\log N)^{1-\alpha})$, and the design floors force $d$ and $k$ to grow. Together these give $\alpha\ge2/5$,
+  provided the first and second moments hold with polylogarithmic precision uniform in $(d,k)$.
+\item \emph{$3/7$.} If the provable moments lose $(\log N)^{O(d)}$, the floor becomes $\alpha\ge(2+\tau)/(5+2\tau)$ with $\tau=1$, that is $3/7$.
+  This is the realistic first target.
+\item \emph{Multi-level descent, $1/3$.} With $O(\log\log N)$ levels of degree-one descent in one field of degree $\asymp(\log N/\log\log N)^{1/3}$, whose sizes
+  contract by constant factors, the size model reaches $L[1/3]$. This is the heuristic picture of number field sieve discrete-logarithm descent. A
+  rigorous version needs a \emph{nested descendability} statement: lower bounds for polynomial values whose prime factors lie in a
+  field-dependent set of relative density $(\log N)^{-O(1)}$. We know of no tool for this. The nearest are Lenstra--Pomerance's lower bound for
+  integers in an interval composed of primes from an arbitrary set \cite[Thm.~6.1]{lp1992}, and the ERH-conditional ideal sampling of de
+  Boer, Pellet-Mary and Wesolowski \cite{dbpw2025}.
+\end{itemize}
+Below $L[1/2]$ trial division no longer makes $2^{\omega(N)}$ negligible. This one obstruction can be removed at once: restricting the split
+count to coprime pairs makes each square hit at most once, which removes the factor $2^{-\omega}$ of Theorems~\ref{thm:S}--\ref{thm:Sprime}
+(``Lemma S$''$'' in the project notes). The decisive missing input is an explicit-error version of the first and second moments, and of
+Lemma~\ref{lem:85} at $Y=L[3/5]$, uniform in $(d,k)$. Two further pieces need repair: the post-processing at growing degree, where the
+factorial in Stark's threshold must be absorbed by the character-prime size, and a slack $\eta_0=\eta_0(N)$ that shrinks with $N$.
 
 %======================================================================
 \section*{Acknowledgements}
