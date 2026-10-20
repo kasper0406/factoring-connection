@@ -253,3 +253,95 @@ def e2_baseline2(cfg):
                             "vectors_degQ": nvec, "observed_rate": qroots / nvec if nvec else None})
                 print(out[-1], flush=True)
     return out
+
+
+def rescore(cfg):
+    """POST-HOC rescoring after review: P3 with the FROZEN statistic T(1 + p_bar)/hits (prereg text),
+    P8 root-rate factors against the registered baseline, and the E1 best-s summary per (n, B)."""
+    out = {"P3": [], "P8": [], "E1_best": []}
+    rows = [json.loads(l) for l in open(os.path.join(RAW, "nonexact_E1.jsonl"))]
+    best = {}
+    for r in rows:
+        if not r.get("run"):
+            continue
+        box = r["box_subset"]
+        pbar = (sum(box) / len(box)) if (box and r["pred_p"] >= 1) else r["pred_p"]
+        frozen = r["T"] * (1 + pbar) / r["hits"]
+        model = r["pred_cost_per_hit"]
+        out["P3"].append({"n": r["n"], "B": r["B"], "s": r["s"], "frozen_meas": frozen,
+                          "frozen_over_model": frozen / model, "pass": 0.6 <= frozen / model <= 1.5})
+        key = (r["n"], r["B"])
+        if key not in best or frozen < best[key]["meas"]:
+            best[key] = {"n": r["n"], "B": r["B"], "s": r["s"], "meas": frozen, "model": model,
+                         "brute": r["brute_cost_per_hit"], "per_lattice_yield": r["hits"] / r["T"]}
+    out["E1_best"] = list(best.values())
+    for l in open(os.path.join(RAW, "nonexact_E2.jsonl")):
+        r = json.loads(l)
+        be = r["baseline_expected_count"]
+        if be is None or be < 10:
+            continue
+        obs = r["Q_with_int_root"]
+        f = be / obs if obs else float("inf")
+        out["P8"].append({"n": r["n"], "d": r["d"], "j": r["j"], "obs": obs, "baseline_expected": be,
+                          "factor": f, "pass": (1 / 3) <= (obs / be) <= 3})
+    return out
+
+
+def e3_theorem_check(cfg):
+    """POST-HOC: replay run_E3 and evaluate the corrected Prop IH (hypothesis ||delta|| sum R^l < N;
+    good points >= M - 2k + 3; distinct >= ceil((M-2k+3)/(2 deg D)))."""
+    import itertools
+    from sympy import primefactors
+    from flint import fmpz_poly, nmod_poly
+    from src.nonexact.run_experiment import _fibre_pairs, _monic_factor_of_degree
+    c3 = cfg["E3"]
+    rng = random.Random(c3["rng_seed"])
+    H = c3["H"]
+    out = []
+    for (k, M, R) in c3["cells"]:
+        pairs, _ = _fibre_pairs(k, M, R, c3["pairs_cap"], rng)
+        d = max(k, 2)
+        n_t, n_hyp, v_good, v_dist = 0, 0, 0, 0
+        for (A, A2) in pairs:
+            P, P2 = C.from_roots(A), C.from_roots(A2)
+            D = P - P2
+            cD = C.coeffs(D, k)
+            cand = []
+            for delta in itertools.product(range(-2 * H, 2 * H + 1), repeat=k):
+                diff = [cD[i] - delta[i] for i in range(k)]
+                if not any(diff):
+                    continue
+                g = 0
+                for x in diff:
+                    g = gcd(g, x)
+                for N in primefactors(abs(g)):
+                    if N > max(4 * H + 1, c3["N_min"]):
+                        cand.append((N, list(delta)))
+            if not cand:
+                continue
+            N, delta = cand[rng.randrange(len(cand))]
+            built = None
+            for _ in range(c3["r_tries"]):
+                r = [rng.randint(max(-H, x - H), min(H, x + H)) for x in delta]
+                f = nmod_poly([int(x) % N for x in C.coeffs(P - fmpz_poly(r), M + 1)], N)
+                g = _monic_factor_of_degree(f, d)
+                if g is not None:
+                    built = r
+                    break
+            if built is None:
+                continue
+            r = built
+            r2 = [r[i] - delta[i] for i in range(k)]
+            n_t += 1
+            if not C.ih_hypothesis(delta, R, N):
+                continue
+            n_hyp += 1
+            rels, E = C.ih_relations(A, A2, r, r2, N, k)
+            good = sum(1 for (_, u, v, nt) in rels if nt)
+            distinct = {(u, v) if u > 0 else (-u, -v) for (_, u, v, nt) in rels if nt}
+            v_good += int(good < C.ih_good_points_bound(M, k))
+            v_dist += int(len(distinct) < C.ih_distinct_bound(M, k, D.degree()))
+        out.append({"k": k, "M": M, "R": R, "tested": n_t, "hypothesis_holds": n_hyp,
+                    "good_bound_violations": v_good, "distinct_bound_violations": v_dist})
+        print(out[-1], flush=True)
+    return out

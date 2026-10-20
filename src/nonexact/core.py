@@ -335,15 +335,36 @@ def ih_relations(A: Sequence[int], A2: Sequence[int], r: Sequence[int], r2: Sequ
 
 
 def ih_distinct_lower_bound(M: int, k: int, degD: int, n_supp: int | None = None) -> int:
-    """Lower bound of Prop IH on distinct nontrivial relations (u_b, v_b) up to sign: with n_supp distinct
-    non-common roots in total (>= M - k + 2 by the Vandermonde support count), at most k - 1 of them are roots
-    of E; D of degree degD >= 1 takes each value at most degD times.  degD = 0 => 1."""
+    """REGISTERED (historical, used for the frozen P9(e) scoring; REFUTED as a theorem: it ignores the sign
+    identification (u, v) ~ (-u, -v)).  Kept unchanged so the registered scoring is reproducible."""
     if n_supp is None:
         n_supp = M - k + 2
     good = n_supp - (k - 1)
     if degD <= 0:
         return 1 if good >= 1 else 0
     return max(0, -(-good // degD))
+
+
+def ih_hypothesis(delta: Sequence[int], B: int, N: int) -> bool:
+    """Prop IH's value-smallness hypothesis: ||delta||_inf * sum_{l<k} B^l < N (k = len(delta))."""
+    k = len(delta)
+    return height(delta) * sum(B ** l for l in range(k)) < N
+
+
+def ih_good_points_bound(M: int, k: int) -> int:
+    """Prop IH(b), under ih_hypothesis: at least M - 2k + 3 good points (non-common roots b with E(b) != 0)."""
+    return max(0, M - 2 * k + 3)
+
+
+def ih_distinct_bound(M: int, k: int, degD: int) -> int:
+    """Prop IH(c), corrected (post hoc), under ih_hypothesis: distinct nontrivial relations up to sign
+    >= ceil((M - 2k + 3)/(2 deg D)) for deg D >= 1; exactly 1 if deg D = 0 (then delta is constant)."""
+    good = ih_good_points_bound(M, k)
+    if good <= 0:
+        return 0
+    if degD <= 0:
+        return 1
+    return -(-good // (2 * degD))
 
 
 # --------------------------------------------------------------------------- Prop LAT: multiplier lattices

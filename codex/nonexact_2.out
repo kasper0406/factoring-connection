@@ -1,0 +1,464 @@
+**Recommendation: MAJOR REVISION.** Several statements labelled PROVED are false as written, and the experimental scorecard understates failures. The defensible conclusion remains: **no general barrier and no construction have been established**.
+
+I checked the frozen preregistration against commit `e4e203e`, read all 100 raw JSONL records, independently re-scored P1–P10, replayed all 246 E3 constructions with separate polynomial arithmetic, and independently enumerated the two feasible \(B=8\) member spaces. All 15 existing tests pass; they miss the counterexamples below.
+
+Reproducible scratch evidence: [scores](./audit_scores.json), [counterexamples](./counterexamples.json), [independent E3 checks](./ih_independent_checks.json), and [exhaustive member checks](./members_independent.json).
+
+**The corrected experimental scorecard**
+
+| Prediction | Independent score |
+|---|---|
+| P1 | **10/12 pass**. Failures: \((24,8,1)\), ratio \(0.53750\); \((32,8,3)\), ratio \(4.93749\). |
+| P2 | **6/6 eligible cells pass**; six cells fall below the preregistered 30-point threshold. |
+| P3 | **8/12 pass under the frozen formula**. Four failures, detailed below. The arg-min clause holds among measured choices. |
+| P4 | **12/12 pass**, including when measured cost is corrected to the registered definition. |
+| P5 | **450/450 enumerations match**, across nine cells. Reported median node ratios also pass. |
+| P6 | **21/21 pass**. |
+| P7 | **21/21 pass**. |
+| P8, useful-vector count | **21/21 pass**; one qualifying vector in total. |
+| P8, root-rate comparison | **16/21 pass** using the raw file’s `baseline_expected_count` threshold. Five failures, detailed below. |
+| P9(a)–(d) | **246/246 pass**. |
+| P9(e), registered | **31 failures**: \(15+10+6\), all at \(k=2\). |
+| P9(e), post-hoc denominator \(2\deg D\) | No violations in these 246 examples. This does **not** validate the proposition’s missing hypotheses. |
+| P10 | **35/35 pass**. |
+| E1 kill signal | **Triggered** at \((32,8,3)\). |
+| E2 kill signal | Not triggered. |
+
+**1. MAJOR — Prop EQ omits the multiplier’s factorization requirement.**
+
+Location: [draft:144](/Volumes/git/factoring-connection/notes/nonexact_results.md:144), especially lines 146–159.
+
+Lemma COL(a) correctly gives
+\[
+h(m)P_A(m)\equiv v\pmod N.
+\]
+Prop EQ(i) then identifies this with a listing problem whose left side contains only the specified factor-base symbols. That does not follow for unrestricted \(h\).
+
+For example, take
+\[
+N=77,\quad m=0,\quad A=\{-2\},\quad h=39,\quad r=1.
+\]
+This is an evaluated non-exact member because \(39\cdot2=78\equiv1\pmod{77}\). The corresponding product \(P_A(0)=2\) is not congruent to \(1\). The multiplier cannot simply disappear.
+
+**Fix:** impose \(h=1\), or require and charge an explicit admissible factorization of \(h(m)\), then absorb its pieces into the factor base. This qualification was present in the blind round’s admissibility discussion.
+
+Likewise, ring membership alone does not put an arbitrary \(r(\mu)\) into either form of Π. It must satisfy the numerical window or have the required split witness. A second-order ledger is an additional construction, not automatic containment in the stated Π.
+
+The degree-one embedding is correct for admissible products. The warning about prescribed higher degree and bounded certificates is also correct.
+
+**2. MAJOR — Π and Πβ are not faithful residual statements yet.**
+
+Location: [draft:153](/Volumes/git/factoring-connection/notes/nonexact_results.md:153), [draft:605](/Volumes/git/factoring-connection/notes/nonexact_results.md:605), and the asserted equivalence at lines 118–119.
+
+The definitions omit essential requirements:
+
+- \(u\ne v\) as actual integers;
+- nonzero/unit conditions, or explicit handling of gcd discoveries;
+- an admissible factorization witness for every multiplier;
+- the meaning of the exponent columns and the field over which rank is measured;
+- identification of columns representing the same prime or known multiplicative identity;
+- enough surviving smooth relations and dependencies for extraction;
+- construction, smoothness testing, linear algebra, and extraction costs.
+
+In the doubly split form, \(A'\ne A\) does not exclude exact integer identities. At \(m=0\),
+\[
+2\cdot6=3\cdot4
+\]
+has different root multisets but supplies no nontrivial numerical congruence. Formal symbol rows and prime-factor rows behave differently.
+
+Near-full rank alone also does not establish fruitful square dependencies.
+
+**Fix:** distinguish a product-listing problem from a sufficient factoring primitive, and state the admissibility and extraction hypotheses explicitly. Until then, “O1 is equivalent to Πβ” is too strong.
+
+**3. MINOR, with substantive scope corrections — Prop BRK’s main scale comparison is sound, but several universal statements are not.**
+
+Location: [draft:181](/Volumes/git/factoring-connection/notes/nonexact_results.md:181).
+
+For a genuinely nonzero compatibility defect and \(H=N^{o(1)}\), the comparison
+\[
+M\gtrsim2\log_2N=\frac{2x}{\log2}
+\quad\text{versus}\quad M=o(x)
+\]
+is correct. The root budget in Lemma R consequently becomes vacuous in the intended regime. The evaluated obstruction through \(X-m\) is correct for \(k\ge2\).
+
+Corrections:
+
+- **Line 191:** the added term has degree below \(d+j_2\) only after specifying reduced defects \(T,T'\) of degree below \(d\). Arbitrary certificates do not have that bound.
+- **Line 192:** certificate quotients are not intrinsically forced:
+  \[
+  Q\mapsto Q+NS,\qquad T\mapsto T-FS
+  \]
+  preserves the certificate. Canonical Euclidean quotients are forced, but need not be large. Taking \(F=P-r+N\) gives \(Q=1,T=-1\).
+- **Line 198:** equality of quotients survives for canonical Euclidean quotients, not arbitrary modular certificates.
+- **Line 207:** \(k=1\) makes *pairwise fibre compatibility* a constant congruence. It does not make evaluated membership equal ring membership when \(d>1\).
+
+For the last point, take
+\[
+N=77,\ m=10,\ F=X^2-23,\ P=(X-1)(X-2),\ r=-5.
+\]
+Then \(F(10)=77\) and \(P(10)=72\equiv-5\pmod{77}\), but
+\[
+\operatorname{red}_F(P-r)=30-3X
+\]
+is not coefficientwise divisible by \(77\).
+
+Also, “exact \(\subset\) non-exact” at line 140 is not literal set inclusion: the definitions exclude exact members from O1-(i).
+
+**4. MAJOR — Prop AB is correct; “no counting barrier is possible” is overclaimed.**
+
+Location: [draft:218](/Volumes/git/factoring-connection/notes/nonexact_results.md:218), conclusions at lines 44–46, 245–250, 397–398, and 596.
+
+The coincidence inequality
+\[
+\sum_c n_c(n_c-1)\ge S^2/N-S
+\]
+is correct. The distinct prime-product catalogue also supplies the claimed number of distinct numerical products in the stated positive-\(\beta\) regime.
+
+It proves abundance of **doubly split coincidences**. It does not establish:
+
+- one-sided small-residue abundance;
+- independent or fruitful factoring rows;
+- abundance within every prescribed presentation or restricted family.
+
+Thus line 246 does not follow for one-sided members. Large sets can avoid a specified target window.
+
+In View B, different formal products give nonzero formal exponent rows when the symbols are units. They need not give useful numerical rows: evaluation can turn them into exact integer identities, and many coincidence rows can be dependent.
+
+**Fix:** replace the headline by: “Unrestricted doubly split numerical coincidences have no scarcity obstruction of this kind.” Retain the independence caveat prominently.
+
+**5. MAJOR — Prop LAT uses \(N^d\) where the actual determinant is required.**
+
+Location: [draft:254](/Volumes/git/factoring-connection/notes/nonexact_results.md:254), especially lines 263–268.
+
+The Smith-form determinant is correct. The CRT expression assumes distinct prime factors \(N=pq\). The full-column-rank exclusion and the stated unit/surjectivity sufficient condition are also correct.
+
+Henk’s theorem is quoted correctly for dimension at least two. The subsequent bound requires consistent normalization and the **actual determinant** \(D\). With \(\lambda_i\) relative to the unit cube and \(R\ge\lambda_n\),
+\[
+\#(L\cap[-R,R]^n)
+<2^{n-1}3^n n!\,\frac{R^n}{D}.
+\]
+Using \(N^d\) requires the additional hypothesis \(D=N^d\). [Henk, Theorem 1.5](https://arxiv.org/pdf/math/0204158).
+
+A counterexample inside the stated general setting is
+\[
+N=77,\quad P=F=X^2,\quad j=0,\quad k=1.
+\]
+Then \(L=\mathbb Z\times77\mathbb Z\), so \(D=77\), not \(77^2\). At \(R=77\), the box contains **465** points, while the displayed bound with denominator \(N^d\) gives **36**.
+
+Barroero–Widmer supplies an error estimate in the minima; “matching asymptotic” needs the error to be smaller than the main term. Merely reaching the last minimum is insufficient. Growing-dimension constants also need control. [Barroero–Widmer, Theorem 1.3](https://arxiv.org/pdf/1210.5943).
+
+Finally, Minkowski guarantees a nonzero coefficient vector, not a nonzero residual, a non-exact relation, or an admissible multiplier.
+
+**6. MAJOR — Prop VA’s exact average is false without coprimality.**
+
+Location: [draft:276](/Volumes/git/factoring-connection/notes/nonexact_results.md:276), line 281.
+
+For \(g=\gcd(q,N)\), \(qu\equiv v\pmod N\) has \(g\) solutions in \(u\) when \(g\mid v\), and none otherwise. The correct total is
+\[
+\sum_{0<|q|\le Q_0}
+\gcd(q,N)\left(2\left\lfloor\frac V{\gcd(q,N)}\right\rfloor+1\right).
+\]
+
+For \(N=15,Q_0=5,V=1\), the actual total is **34**, versus the claimed **30**.
+
+The stated identity holds if all counted \(q\) are units. Moreover, a first moment gives an average scarcity statement for \(Q_0V\ll N\), not a pointwise product lower bound. Exceptional \(u\) can have tiny pairs.
+
+The projection into the determinant-\(N\) value lattice is correct. It does not prove that polynomial structure cannot improve the cost of locating selected points.
+
+**7. MAJOR — Prop CS’s inequality is correct, but its necessity claim and “trivial bound only” conclusion are false.**
+
+Location: [draft:287](/Volumes/git/factoring-connection/notes/nonexact_results.md:287), also lines 64–66 and 596–597.
+
+For \(c\ne0\) and \(M\ge2\), orthogonality and Parseval give
+\[
+\left|R_M(c)-\frac{n^M}{p-1}\right|
+\le nS_{\max}^{M-2}.
+\]
+
+But:
+
+- The displayed condition on \(S_{\max}\) is **sufficient for this absolute-value argument**, not necessary for the actual count.
+- If \(M\sim cx/\log B\) and \(p=N^{1/2+o(1)}\), its threshold is
+  \[
+  S_{\max}\lesssim n^{\,1-1/(2c)+o(1)}.
+  \]
+  Square-root cancellation corresponds to \(c=1\), not merely \(M\asymp x/\log B\).
+- Rigorous bounds beating “one root determined” already exist.
+
+Cilleruelo–Garaev prove, uniformly in the target and shift, \(n^{o(1)}\) solutions for two-variable interval products when \(n<p^{1/4}\), and for three-variable products when \(n\ll p^{1/8}\). Freezing the other variables therefore gives
+\[
+R_M(c)\ll n^{M-2+o(1)},\qquad
+R_M(c)\ll n^{M-3+o(1)},
+\]
+respectively. These beat \(n^{M-1}\) in this draft’s interval regime. [Cilleruelo–Garaev, Theorems 1–2](https://arxiv.org/pdf/1007.1526).
+
+They do not reach the desired equidistribution main term or furnish an O1 barrier. They do refute the claimed methodological impasse. The classical Burgess comparison is appropriate for individual interval character sums; it cannot exclude these alternative counting arguments.
+
+**8. MAJOR — Prop BP-NO does not establish inapplicability.**
+
+Location: [draft:302](/Volumes/git/factoring-connection/notes/nonexact_results.md:302).
+
+The dominance/Zariski-density argument, with root bounds allowed to vary, is correct. It does not prohibit determinant methods that introduce roots, exploit congruences, partition into fibres, or construct auxiliary equations.
+
+Likewise, lifting a congruence to a ruled variety does not prove that its bounded integral points cannot be estimated geometrically. Modular small-box methods explicitly combine divisibility of determinants with archimedean bounds. [Chang et al., proofs of Theorems 1–2](https://arxiv.org/pdf/1111.1543).
+
+The cited integral-curve bound itself is valid, with its ambient-dimension qualification. [Binyamini–Cluckers–Novikov, Theorem 2](https://arxiv.org/pdf/2302.04209). But lines 320–321 do not show that every large structured family must be a linearly coherent COH family.
+
+**Fix:** label this “the cited theorems do not directly provide the required uniform bound.” That was the appropriately limited conclusion in the blind round.
+
+**9. MAJOR — Prop IH’s corrected theorem is still false under its stated hypotheses.**
+
+Location: [draft:325](/Volumes/git/factoring-connection/notes/nonexact_results.md:325).
+
+Parts (a), the criterion \(u_b\ne v_b\iff E(b)\ne0\), and the size bounds are correct.
+
+The Vandermonde statement correctly bounds the support of the **signed multiplicity measure** by \(M-k+2\). That support need not equal the non-common root set: a root common to both polynomials can survive cancellation with unequal multiplicity.
+
+The assertion that common roots are roots of \(E\) requires \(|\delta(b)|<N\), which is absent from the hypotheses. It is false in the experiment itself.
+
+One recorded E3 example has
+\[
+A=(-8,-7,-7,2,2),\quad
+A'=(-8,-6,-6,-3,5),\quad N=109,
+\]
+and \(\delta=2-3X+3X^2\). At the common root \(b=-8\),
+\[
+\delta(b)=218,\qquad E(b)=-2.
+\]
+My replay finds **12** constructed pairs contradicting that proof assertion.
+
+There are also two recorded examples where the non-common support has fewer than \(M-k+2\) points.
+
+More decisively, the corrected distinct-relation bound is false under the printed hypotheses. Take
+\[
+\begin{aligned}
+A&=(1,1,1,1,2,3),\\
+A'&=(0,1,2,2,2,2),\\
+N&=101,\quad M=6,\quad k=4,\\
+D&=6-13X+9X^2-2X^3,\\
+E&=X(X-3),\qquad \delta=D-101E.
+\end{aligned}
+\]
+All hypotheses hold. The only non-common roots are \(0,3\), where \(E=0\); both extracted relations are trivial. Yet the proposed lower bound is
+\[
+\left\lceil\frac{6-8+3}{2\cdot3}\right\rceil=1.
+\]
+
+**Fix:** add a sufficient hypothesis such as
+\[
+\|\delta\|_\infty\sum_{\ell<k}B^\ell<N.
+\]
+Then common roots are roots of \(E\), and the signed-support argument yields the claimed good-point count. Under that hypothesis, the factor \(2\deg D\) correctly handles sign identification. Without it, a universally safe weaker good-point count is \(M-3k+4\).
+
+Also restrict “\(\deg D=0\): exactly one relation” to \(k=1\), or otherwise ensure that \(\delta\) is constant.
+
+**10. MAJOR — IH does not establish the advertised “all \(k\)” existence or close the independence gap.**
+
+Location: [draft:67](/Volumes/git/factoring-connection/notes/nonexact_results.md:67), lines 335–350 and 599–600.
+
+The displayed bound can be zero. Existence requires a positive good-point count.
+
+For example, with prime \(N=5\),
+\[
+P=X^5,\quad P'=(X-1)^5,\quad k=M=5,\quad\delta=1,
+\]
+we have \(D\equiv1\pmod5\) coefficientwise and \(D\ne1\). At both non-common roots \(0,1\), the extracted relation is \(1=1\). There is no nontrivial extracted relation.
+
+To obtain a target-sized small side also requires
+\[
+\log\|\delta\|_\infty+(k-1)\log B+\log k=O(\ell).
+\]
+The condition \(d\ge k\) alone does not supply this.
+
+Even after repair, converting compatibility into one or several numerical relations does not establish independence across a family, or a per-member search cost.
+
+**Fix:** say that IH resolves a *relation-valued conversion question* in the specified regime. It does not prove independence of inherited conditions.
+
+**11. MAJOR — Remark PEN’s rank-one conclusion is false in the stated relation ledger.**
+
+Location: [draft:378](/Volumes/git/factoring-connection/notes/nonexact_results.md:378).
+
+The derivation
+\[
+(\rho-\rho')\mu\equiv c'\rho-c\rho'
+\]
+is correct. Its interpretation as a small rational modulo \(N\), and the elementary probability upper bound, are valid with the stated unit condition.
+
+The subsequent replacement by an “exact identity of rationals” loses a modular relation. It does not preserve the original exponent-row ledger.
+
+A counterexample is
+\[
+N=77,\quad \mu=75,\quad T=X+1,\quad
+c=0,\ c'=1,\quad \rho=2,\ \rho'=3.
+\]
+Both seed congruences hold and \(\rho-\rho'=-1\) is a unit. Pencil members \(t=0,1\) give
+\[
+5624\equiv3,\qquad11324\equiv5\pmod{77}.
+\]
+Their prime exponent rows are independent: the first has a nonzero \(37\)-coordinate, the second a nonzero \(149\)-coordinate. Their formal polynomial rows likewise contain different primitive linear factors.
+
+**Fix:** retain the small-rational alignment result. Withdraw “the pencil has rank 1,” or define a new quotient ledger and account for the relations discarded in passing to it.
+
+The test at [tests:174](/Volumes/git/factoring-connection/tests/test_nonexact.py:174) checks the modular algebra, not rank.
+
+**12. MINOR — NF′ and the linear closure part of COH survive, with narrower wording.**
+
+Location: [draft:360](/Volumes/git/factoring-connection/notes/nonexact_results.md:360).
+
+NF′’s union bound is sound: one nonzero coefficient difference supplies the necessary divisibility condition. Its fraction estimate is an almost-all statement for an explicitly bounded, \(N\)-independent catalogue. It does not cover large implicit catalogues or establish adaptive search lower bounds.
+
+COH’s linear identity and remainder-height bound are correct. The polynomial lattice has rank **at most** \(e+1\), unless independence is assumed. Calling the seeds “paid” does not prove a lower bound on their construction cost. COH classifies the stipulated linear families; it does not classify all coherent arithmetic mechanisms.
+
+**13. MAJOR scope issue — Prop LIN’s asymptotics are defensible for exhaustive box enumeration, not arbitrary lattice strategies.**
+
+Location: [draft:414](/Volumes/git/factoring-connection/notes/nonexact_results.md:414), and the broader language at lines 47–51.
+
+The combinatorial inequality is valid. For example,
+\[
+T_s=\frac{(2B)^s}{s!}\prod_{j=1}^s\left(1+\frac j{2B}\right)
+\]
+and \(D_s\ge2^sB^{s(s+1)/2}\prod_i\binom si\) give the stated weaker bound.
+
+For fixed \(0<\beta<1/3\), polynomially bounded \(s\), and exhaustive box enumeration, optimizing gives
+\[
+s\sim\sqrt{\frac{2\log(N/W)}{\log B}},
+\]
+and the claimed leading saving
+\[
+\sqrt{2\log(N/W)\log B}.
+\]
+Thus \(N^{1-o(1)}\) per relation is a reasonable conclusion **inside that model**.
+
+But whole-box frequencies alone do not imply that every selected subset or partial enumeration has split density \(T_s/D_s\). The \(D_s/T_s\) charge requires exhaustive enumeration or an explicit acceptance/order hypothesis.
+
+The model excludes targeted CVP searches, partial enumeration exploiting split structure, thin regions, exceptional prefixes, batching, and hybrid strategies. These are open algorithmic possibilities, not excluded algorithms.
+
+**Fix:** specify the exhaustive-enumeration restriction and distinguish expected-work/output ratios from a general lower bound. Replace “lattice reduction does not find them cheaply” by the narrower model conclusion.
+
+**14. MAJOR — P3 was scored using a different cost formula from the frozen prediction.**
+
+Locations: [prereg:70](/Volumes/git/factoring-connection/notes/nonexact_prereg.md:70), [runner:93](/Volumes/git/factoring-connection/src/nonexact/run_experiment.py:93), [draft:516](/Volumes/git/factoring-connection/notes/nonexact_results.md:516).
+
+The preregistered measured cost is
+\[
+\frac{T(1+\bar p)}{\text{hits}}.
+\]
+The runner substitutes \(T\max(1,\bar p)/\text{hits}\), with its stated small-\(p\) convention. These differ substantially near \(p=1\).
+
+Using the frozen formula produces:
+
+| Cell \((n,B,s)\) | Registered measured/model ratio | Result |
+|---|---:|---|
+| \((24,8,1)\) | 1.86167 | Fail |
+| \((24,16,2)\) | 2.02051 | **Additional fail** |
+| \((32,8,3)\) | 0.29897 | Fail |
+| \((40,8,3)\) | 1.53926 | **Additional fail** |
+
+**Fix:** score the registered statistic and report four failures. The runner’s alternative statistic may be shown separately.
+
+These costs are synthetic work proxies based on sampled box counts. E1 actually obtains hits by exhaustive suffix evaluation; it does not measure a complete lattice lister’s runtime over all prefixes.
+
+**15. MAJOR — P8’s root-rate failures are underreported.**
+
+Location: [draft:548](/Volumes/git/factoring-connection/notes/nonexact_results.md:548), summary lines 100–102.
+
+The frozen factor-three rule fails in **five** cells:
+
+| Cell \((n,d,j)\) | Observed root count | Baseline expected count | Baseline/observed |
+|---|---:|---:|---:|
+| \((32,1,2)\) | 1 | 12.8096 | **12.81** |
+| \((32,1,4)\) | 22 | 68.7557 | **3.125** |
+| \((48,1,4)\) | 4 | 16.95 | **4.238** |
+| \((48,2,10)\) | 10 | 53.8 | **5.38** |
+| \((64,2,10)\) | 2 | 11.05 | **5.525** |
+
+A narrow miss is still a preregistered failure. The first cell is omitted altogether.
+
+The baseline’s tendency to overproduce small coefficients and roots is a plausible, properly post-hoc explanation. The replacement baseline does not universally agree within \(1.5\times\): at \((32,1,2)\), observed rate \(0.0025\) versus \(0.01325\) differs by \(5.3\times\), albeit with small expected counts.
+
+**Fix:** report all five failures and qualify the replacement-baseline comparison by sample size. Agreement on one root statistic does not establish that entire multiplier polynomials are random.
+
+**16. MAJOR — E1’s counts, best-\(s\) summary, and 40-bit cost claims contradict the raw files.**
+
+Locations: [draft:85](/Volumes/git/factoring-connection/notes/nonexact_results.md:85), [draft:495](/Volumes/git/factoring-connection/notes/nonexact_results.md:495), and lines 518–533.
+
+Corrections:
+
+- E1 has **18 cells, 12 run and six skipped**.
+- P1 holds in **10**, not seven, run cells.
+- P2 has **six**, not seven, eligible cells.
+- P4 holds in **12**, not nine, cells.
+- Nine cells belong to **E1b**, explaining the 450 enumerations.
+- At \((40,16)\), the best measured and modelled choice is **\(s=2\)**, not \(s=3\).
+- Its runner cost is approximately \(1.0754\times10^4\); the registered cost is \(1.0814\times10^4\).
+- The 40-bit brute-force proxy is approximately **\(6.0333\times10^6\)** because \(V=65535\), not \(1.5\times10^9\).
+- Its best-cell observed yield is about \(9.30\times10^{-5}\) detections per prefix, not \(4\times10^{-6}\).
+
+Three bit sizes, changing \(V\), repeated detections, and synthetic costs cannot empirically establish \(N^{1-o(1)}\) asymptotics.
+
+**17. MAJOR — The multiplicity diagnosis is partly correct, but does not explain both P1 failures or justify the stated significance calculations.**
+
+Location: [draft:498](/Volumes/git/factoring-connection/notes/nonexact_results.md:498).
+
+The replay correctly establishes that 395 detections represent four members. My independent exhaustive enumeration confirms:
+
+| Space | Members | Uniform-residue heuristic mean |
+|---|---:|---:|
+| \((24,8,8)\) | 31 | 27.95245 |
+| \((32,8,10)\) | 4 | 0.837391 |
+
+Weighting the four 32-bit members by the **actual ordered-prefix sampler** predicts **396.656** detections, versus 395 observed. This explains repeated detection conditional on that catalogue. It does not explain away the catalogue’s four-versus-0.84 excess.
+
+For \((24,8,1)\), weighting all 31 members predicts **70.718** detections, versus 43 observed. Here every successful prefix has exactly one successful suffix; under independent uniform prefix draws, the corresponding binomial lower tail is approximately \(2.64\times10^{-4}\). Thus the offered explanation for the low cell is incomplete.
+
+Sampling with replacement is not itself dependence between successive draws: conditional on the fixed presentation, independently drawn prefixes are independent. The relevant issue is the small, weighted catalogue and shared arithmetic across candidate products.
+
+The Poisson tail for four against mean \(0.837391\) is indeed about **0.01059**, **under an independent-residue Poisson model**. That model has not been established. The “12-cell look-elsewhere probability” is also not calibrated: cells share presentations and, across \(s\), the same full member space.
+
+**Fix:** retain the kill signal as triggered; report the weighted-catalogue explanation separately; label Poisson and look-elsewhere numbers as model-based illustrations. “No structure found” is an honest limited observation, not a statistical resolution.
+
+**18. MAJOR — The corrected IH bound remains unimplemented in the main helper and tests.**
+
+Location: [core:337](/Volumes/git/factoring-connection/src/nonexact/core.py:337), [tests:132](/Volumes/git/factoring-connection/tests/test_nonexact.py:132).
+
+`ih_distinct_lower_bound` still divides by `degD`, not `2*degD`. Its docstring also identifies non-common support with the Vandermonde support incorrectly. The corresponding test asserts the obsolete bound.
+
+The post-hoc diagnostic separately computes the corrected denominator, explaining its zero violations.
+
+**Fix:** preserve the registered formula explicitly for historical scoring, add a correctly named repaired helper with its hypotheses, and add regressions for sign identification and unequal common-root multiplicities. Passing the present tests is not evidence for the repaired theorem.
+
+**19. MAJOR — The verdict conflates reformulation, classification, and stronger listing oracles.**
+
+Location: [draft:589](/Volumes/git/factoring-connection/notes/nonexact_results.md:589), especially lines 620–625.
+
+After the qualifications above, unrestricted evaluated O1 can be reformulated as an admissible product-listing problem. This is useful clarification. It does not establish that polynomial structure offers no computational mechanism.
+
+Nor does fixed-\(\beta\) Πβ automatically supply smoothenum’s T8 primitive. T8 needs an appropriate **polylogarithmic factor base, prefix-output/delay guarantee, joint smoothness, and fruitful extraction**. T7’s infimum-zero constant is not itself polynomial time. The draft imports a stronger oracle when claiming that Πβ’s doubly split form would give heuristic polynomial time.
+
+Still-open mechanisms include nonlinear \(N\)-aligned families, higher-rank modules, arithmetic exploiting the additive structure of \(\mu-a\), targeted lattice searches, and preprocessing shared across prefixes. None is a known construction here; none has been excluded.
+
+The \(<1\%\) forecast is permissible as subjective assessment. These experiments do not calibrate it, and the stronger polynomial-time inference should not support it as written.
+
+| Issue | Severity | Required correction |
+|---|---|---|
+| EQ drops unrestricted multipliers | MAJOR | Require and charge admissible multiplier witnesses |
+| Πβ lacks complete admissibility/extraction conditions | MAJOR | State a precise factoring primitive |
+| BRK certificate and \(k=1\) scope | MINOR | Specify canonical certificates and pairwise compatibility |
+| AB interpreted as universal absence of counting barriers | MAJOR | Restrict conclusion to the counted coincidences |
+| LAT substitutes \(N^d\) for the actual index | MAJOR | Use Smith determinant and explicit surjectivity |
+| VA exact average | MAJOR | Include gcd weights or restrict to unit multipliers |
+| CS necessity and “trivial bound only” claims | MAJOR | Correct quantifiers; include short-product bounds |
+| BP-NO inapplicability claim | MAJOR | Downgrade to absence of a demonstrated application |
+| IH common-root/support argument | MAJOR | Add the missing value-smallness hypothesis |
+| IH all-\(k\) existence and independence reading | MAJOR | Require positive bounds and target-size conditions |
+| PEN rank-one assertion | MAJOR | Withdraw or specify a different quotient ledger |
+| NF′/COH scope and rank wording | MINOR | Preserve almost-all and stipulated-linear scope |
+| LIN universal lattice interpretation | MAJOR | Restrict to exhaustive enumeration model |
+| P3 changed statistic | MAJOR | Report four registered failures |
+| P8 undercounted failures | MAJOR | Report five failures |
+| E1 totals and 40-bit summary | MAJOR | Rebuild directly from raw records |
+| Multiplicity/significance diagnosis | MAJOR | Separate weighted sampling from unexplained catalogue excess |
+| Corrected IH helper/tests absent | MAJOR | Preserve historical scoring and implement repaired statement |
+| Verdict/oracle-strength/probability reading | MAJOR | Separate reformulation from exclusion and stronger hypotheses |
+
+**Overall recommendation: MAJOR REVISION.**

@@ -191,3 +191,123 @@ def test_remark_pen_pencil_has_rank_one():
             assert Tmu * L % N == (rho2 + t * rho) % N
             # L_t(mu) is the small rational (c'-c)(rho'+t rho)/(rho-rho')
             assert L == (c2 - c) * (rho2 + t * rho) * pow(rho - rho2, -1, N) % N
+
+
+def _rels_for(A, A2, delta, N, k):
+    P, P2 = C.from_roots(A), C.from_roots(A2)
+    D = P - P2
+    rels, E = C.ih_relations(A, A2, list(delta), [0] * k, N, k)
+    good = sum(1 for _, u, v, nt in rels if nt)
+    distinct = {(u, v) if u > 0 else (-u, -v) for _, u, v, nt in rels if nt}
+    return D, good, distinct
+
+
+def test_ih_counterexamples_without_hypothesis():
+    """Reviewers' counterexamples: without ||delta|| sum B^l < N the good-point count fails."""
+    # proof critic, k = 2: N = 6, delta = 2 - 2X
+    D, good, distinct = _rels_for((-8, -8, -5, -5), (-8, -7, -7, -4), (2, -2), 6, 2)
+    assert not C.ih_hypothesis((2, -2), 8, 6)
+    assert good < C.ih_good_points_bound(4, 2)
+    # codex, k = 4: both extracted relations trivial
+    A, A2, N = (1, 1, 1, 1, 2, 3), (0, 1, 2, 2, 2, 2), 101
+    Dp = C.from_roots(A) - C.from_roots(A2)
+    E = fmpz_poly([0, -3, 1])
+    delta = C.coeffs(Dp - 101 * E, 4)
+    assert not C.ih_hypothesis(delta, 3, N)
+    D, good, distinct = _rels_for(A, A2, delta, N, 4)
+    assert good == 0
+
+
+def test_ih_corrected_bound_exhaustive_under_hypothesis():
+    """Prop IH(b),(c) under the hypothesis: exhaustive over small fibre pairs and all valid (N, delta)."""
+    from sympy import isprime
+    checked = 0
+    for (M, k, R) in [(4, 2, 5), (5, 2, 4), (5, 3, 3)]:
+        groups = {}
+        for A in combinations_with_replacement(range(-R, R + 1), M):
+            key = tuple(sum(a ** t for a in A) for t in range(1, M - k + 1))
+            groups.setdefault(key, []).append(A)
+        for g in groups.values():
+            for i in range(len(g)):
+                for j in range(i + 1, len(g)):
+                    A, A2 = g[i], g[j]
+                    D = C.from_roots(A) - C.from_roots(A2)
+                    c = C.coeffs(D, k)
+                    for N in range(5, 400):
+                        delta = [C.centred(x, N) for x in c]
+                        if delta == c or not C.ih_hypothesis(delta, R, N):
+                            continue
+                        _, good, distinct = _rels_for(A, A2, delta, N, k)
+                        assert good >= C.ih_good_points_bound(M, k)
+                        assert len(distinct) >= C.ih_distinct_bound(M, k, D.degree())
+                        checked += 1
+    assert checked > 100
+
+
+def test_ih_sign_identification_needs_factor_two():
+    """Regression: under the hypothesis, the registered bound (denominator deg D) can exceed the true distinct
+    count, while the corrected bound (denominator 2 deg D) holds."""
+    found = False
+    M, k, R = 4, 2, 8
+    groups = {}
+    for A in combinations_with_replacement(range(-R, R + 1), M):
+        key = tuple(sum(a ** t for a in A) for t in range(1, M - k + 1))
+        groups.setdefault(key, []).append(A)
+    for g in groups.values():
+        for i in range(len(g)):
+            for j in range(i + 1, len(g)):
+                A, A2 = g[i], g[j]
+                D = C.from_roots(A) - C.from_roots(A2)
+                if D.degree() != 1:
+                    continue
+                c = C.coeffs(D, 2)
+                for N in range(60, 600):
+                    delta = [C.centred(x, N) for x in c]
+                    if delta == c or not C.ih_hypothesis(delta, R, N):
+                        continue
+                    _, good, distinct = _rels_for(A, A2, delta, N, 2)
+                    assert len(distinct) >= C.ih_distinct_bound(M, k, 1)
+                    if len(distinct) < good:
+                        found = True
+        if found:
+            break
+    assert found
+
+
+def test_remark_pen_view_a_exact_case_rank_one():
+    """Remark PEN, View A, m = a0/b0 exactly: every pencil member has the same prime-exponent row as the seed
+    relation T(m)(c'-c) == rho - rho'."""
+    from sympy import factorint, primefactors
+    c, c2, rho, rho2 = 1, 3, 4, 2           # a0 = c'rho - c rho' = 10, b0 = 2 => m = 5
+    m = (c2 * rho - c * rho2) // (rho - rho2)
+    assert m * (rho - rho2) == c2 * rho - c * rho2
+    T = C.from_roots([-3, 7, 11, -6])
+    Tm = int(T(m))
+    N = max(primefactors(Tm * (m - c) - rho))
+    assert N > 100
+
+    def row(num, den):
+        f = {}
+        for k_, v in factorint(abs(num)).items():
+            f[k_] = f.get(k_, 0) + v
+        for k_, v in factorint(abs(den)).items():
+            f[k_] = f.get(k_, 0) - v
+        f[-1] = (0 if num * den > 0 else 1)
+        return {k_: v for k_, v in f.items() if v}
+
+    seed = row(Tm * (c2 - c), rho - rho2)
+    for t in range(-4, 5):
+        Lt = (1 + t) * m - (c2 + t * c)
+        rhs = rho2 + t * rho
+        if Lt == 0 or rhs == 0:
+            continue
+        assert (Tm * Lt - rhs) % N == 0
+        assert row(Tm * Lt, rhs) == seed
+
+
+def test_remark_pen_codex_counterexample_view_a_large_m():
+    """Codex: N = 77, mu = 75 (= -2 mod N, not exactly a0/b0): members have independent prime rows; the pieces
+    are of size ~ N (outside target (a))."""
+    N, mu = 77, 75
+    assert (76 * 74) % N == 3 and (76 * 149) % N == 5
+    assert mu * (-1) % N == (1 * 2 - 0 * 3) % N  # (rho - rho') mu == c' rho - c rho'
