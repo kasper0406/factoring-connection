@@ -97,3 +97,15 @@ scaling data were produced.
 
 - Hull counts are brute force (diagnostic); the operational oracle never enumerates the block.
 - Sizes are small: slopes over 28–44 bits carry finite-size log factors (cf. analytic E1).
+
+## Amendment A1 (before any E1–E5 run; committed with `src/floorsum/{lattice_block,run_experiments}.py`)
+
+- **Disclosed peek.** While developing `lattice_block.py` I ran `lattice_factor` on four
+  semiprimes (32 and 40 bits, seeds 100–101; all factored) and printed `best_params` at one 48-bit
+  N: X(√N) = 1 248 with (m, n) = (7, 16), versus the ladder's j = 2 block H = 1 836. So P5.2 as
+  written would fail at dimension ≤ 16. The reason is known: for fixed lattice dimension n the
+  Howgrave-Graham bound loses a factor N^{Θ(1/n)} (plus the 2^{(n−1)/4} LLL factor), and the
+  containment X ≥ x^β needs n ≍ log N.
+- **E5 replaced.** Sizes n ∈ {36, 40, 44, 48}, seeds 0..2 (12 instances; the 56-bit runs are too
+  slow in Python). P5.1′: correctness 12/12. P5.2′ (report): X(√N)/H_ladder at dimension ≤ 16;
+  predicted ∈ [0.2, 2]. E5 still supports no new claim.
