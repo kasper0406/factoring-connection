@@ -199,3 +199,37 @@ def posthoc_by_type(p: int, e0: int, seed: int = 0) -> Dict:
                     "rel_per_split": Fraction(ry["relations"], len(lst)) if lst else None,
                     "G": Fraction(ry["relations"], ex["total"]) / pred}
     return out
+
+
+def _linear_factor_multiset(F: GF, f):
+    """Multiset of points of P^1(F_Q) (roots; Q = infinity) of the split form f of formal
+    degree q+1 or 3, returned as a sorted tuple; used to cancel common factors."""
+    rts = F.root_multiset(f)
+    return rts
+
+
+def distinct_relations(F: GF, q: int, model: Dict, split_list) -> Dict:
+    """POST-HOC (critic fix): count DISTINCT informative relations by type.
+
+    A relation is the vector  sum_{roots of f} [X - c]  -  sum_{roots of r_f} [X - c]  (+ the
+    h1 / leading-scalar terms, which are common to all relations and ignored) after cancelling
+    common linear factors; roots at infinity are dropped since both sides are reduced to the
+    affine model.  Empty vectors (tautologies) are not counted."""
+    h0, h1 = model["h0"], model["h1"]
+    seen = {"orbit": set(), "frobpow": set(), "deg<=1": set()}
+    for f4 in split_list:
+        r = r_of(F, f4, h0, h1)
+        if not r or not F.splits(r):
+            continue
+        typ = classify_split(F, q, f4)
+        from collections import Counter
+        lhs = Counter(F.root_multiset(f_poly(F, q, f4)))
+        rhs = Counter(F.root_multiset(r))
+        common = lhs & rhs
+        vec = tuple(sorted(((c, lhs[c] - rhs[c]) for c in set(lhs) | set(rhs)
+                            if lhs[c] - rhs[c] != 0)))
+        if vec:
+            seen[typ].add(vec)
+    out = {k: len(v) for k, v in seen.items()}
+    out["all_distinct"] = len(seen["orbit"] | seen["frobpow"] | seen["deg<=1"])
+    return out

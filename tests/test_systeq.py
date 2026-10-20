@@ -131,3 +131,31 @@ def test_integer_systematic_small_q():
 def test_zsigmondy_antismooth():
     hits, tot = zsigmondy_check(16, 12, 10)
     assert tot == 110 and hits == 0
+
+
+def test_prop_F_prime_restricted():
+    from src.systeq.barriers import restricted_power_compat
+    import random
+    N = 101 * 103
+    rng = random.Random(5)
+    for d in (4, 5):
+        F = [rng.randrange(N) for _ in range(d)] + [1]
+        for s in (3, 5, 7, 11):
+            assert restricted_power_compat(N, F, s, list(range(s + 1))) == [0]
+    # rank 2 escapes (codex systeq_2): every (X+b)^2 lies in span(1, X^2) in R[X]/(X^2-X-1)
+    assert restricted_power_compat(N, [N - 1, N - 1, 1], 2, list(range(6))) == list(range(6))
+
+
+def test_descartes_sign_bound():
+    from src.systeq.barriers import sign_variation_bound
+    for n in range(4, 12):
+        assert sign_variation_bound(n) <= 4 < n + 1
+
+
+def test_vfamily_degenerate_exclusion():
+    from src.systeq.intanalog import vfamily_candidates
+    N, c = vfamily_candidates(13, 11, 32, 3000, 0)
+    mn = 11 ** 13
+    deg = [(v, r) for v, r in c if v == r or v == mn * r]
+    assert deg  # degenerate candidates exist (A m + B = 0 or C m + D = 0)
+    assert all(abs(v) > N for v, r in c if not (v == r or v == mn * r))

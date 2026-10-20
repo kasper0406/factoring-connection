@@ -14,6 +14,7 @@ Zsigmondy: m^n - 1 (m >= 2, n >= B >= 7) is never B-smooth.
 from __future__ import annotations
 
 import random
+from math import gcd
 from itertools import product
 from typing import List, Tuple
 
@@ -111,3 +112,38 @@ def zsigmondy_check(B: int, m_max: int, n_extra: int) -> Tuple[int, int]:
             tot += 1
             hits += is_smooth(m ** n - 1, B)
     return hits, tot
+
+
+# --- Prop F' (restricted additivity on s+1 constants, target of rank >= 4) -------------
+def restricted_power_compat(N: int, F: List[int], s: int, consts: List[int]) -> List[int]:
+    """For A = (Z/N)[X]/(F) (F monic, low->high), return the constants b in `consts` for which
+    (X + b)^s lies in the Z/N-span of {1, X^s}.  Solved exactly: write (X+b)^s = alpha + beta X^s
+    and test consistency of the d coordinate equations (requires X^s to have a unit coordinate
+    outside the constant term, which is checked)."""
+    d = len(F) - 1
+    Xs = _alg_pow(tuple([0, 1] + [0] * (d - 2)), s, F, N)
+    piv = next((i for i in range(1, d) if gcd(Xs[i], N) == 1), None)
+    if piv is None:
+        raise ValueError("X^s has no unit non-constant coordinate; choose another F")
+    inv = pow(Xs[piv], -1, N)
+    good = []
+    for b in consts:
+        v = _alg_pow(tuple([b % N, 1] + [0] * (d - 2)), s, F, N)
+        beta = v[piv] * inv % N
+        resid = [(v[i] - beta * Xs[i]) % N for i in range(1, d)]
+        if all(r == 0 for r in resid):
+            good.append(b)
+    return good
+
+
+def sign_variation_bound(n: int) -> int:
+    """max over sign patterns of V(f) + V(f(-x)) for f = A x^{n+1} + B x^n + C x + D (all
+    nonzero), i.e. Descartes' bound on the number of nonzero real roots."""
+    best = 0
+    for sg in product((1, -1), repeat=4):
+        exps = [n + 1, n, 1, 0]
+        v1 = sum(1 for i in range(3) if sg[i] != sg[i + 1])
+        sg2 = [s * ((-1) ** e) for s, e in zip(sg, exps)]
+        v2 = sum(1 for i in range(3) if sg2[i] != sg2[i + 1])
+        best = max(best, v1 + v2)
+    return best

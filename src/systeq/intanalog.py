@@ -106,8 +106,14 @@ def vfamily_candidates(n: int, m: int, H: int, count: int, seed: int):
 
 
 def vfamily_yield(n: int, m: int, H: int, count: int, B: int, base: Dict[int, Fraction],
-                  seed: int) -> Dict:
+                  seed: int, exclude_degenerate: bool = False) -> Dict:
+    """exclude_degenerate (POST-HOC, critic fix): drop candidates with A m + B = 0 (then
+    f(m) = r_f exactly) or C m + D = 0 (then f(m) = m^n r_f): their 'relations' only restate
+    m^n == 1.  The candidate list is regenerated with the same seed and filtered."""
     N, cands = vfamily_candidates(n, m, H, count, seed)
+    if exclude_degenerate:
+        mn = m ** n
+        cands = [(v, r) for v, r in cands if v != r and v != mn * r]
     obs = 0
     pred = Fraction(0)
     for v, r in cands:
@@ -115,7 +121,9 @@ def vfamily_yield(n: int, m: int, H: int, count: int, B: int, base: Dict[int, Fr
         pred += base[lv] * base[lr]
         if is_smooth(v, B) and is_smooth(r, B):
             obs += 1
-    return {"n": n, "m": m, "N_bits": N.bit_length(), "H": H, "B": B, "candidates": count,
+    return {"n": n, "m": m, "N_bits": N.bit_length(), "H": H, "B": B, "candidates": len(cands),
+            "min_v_bits": min(abs(v).bit_length() for v, _ in cands),
+            "max_r_abs": max(abs(r) for _, r in cands),
             "observed": obs, "predicted": pred, "G": (Fraction(obs) / pred) if pred else None,
             "v_bits": sorted({abs(v).bit_length() for v, _ in cands})}
 

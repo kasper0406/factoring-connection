@@ -1,6 +1,6 @@
 """systeq experiment runner (pre-registered in notes/systeq_prereg.md).
 
-    .venv/bin/python -m src.systeq.run_experiment [E1|E1_posthoc|E2|E3|E4|all]
+    .venv/bin/python -m src.systeq.run_experiment [E1|E1_posthoc|E1_distinct|E2|E2_nondeg|E3|E4|all]
 
 Writes experiments/raw/systeq_<E>.jsonl.  Configuration: experiments/configs/systeq.json.
 Fractions are stored exactly as "num/den" strings plus a float for display only.
@@ -54,6 +54,35 @@ def e1_posthoc():
     _write("E1_posthoc", rows)
 
 
+def e1_distinct():
+    """POST-HOC (critic fix): distinct informative relations by type."""
+    from .bgjt import distinct_relations, exhaustive_v_split, find_model, make_field
+    rows = []
+    for p, e0 in CFG["E1"]["fields"]:
+        F, q = make_field(p, e0)
+        ex = exhaustive_v_split(F, q)
+        d = distinct_relations(F, q, find_model(F, q, CFG["seed"]), ex["split"])
+        d.update(q=q, Q=F.Q, FB=F.Q + 1)
+        rows.append(d)
+    _write("E1_distinct", rows)
+
+
+def e2_nondeg():
+    """POST-HOC (critic/codex fix): E2 with degenerate Am+B=0 / Cm+D=0 candidates removed."""
+    from .intanalog import random_baseline, vfamily_bits, vfamily_candidates, vfamily_yield
+    c = CFG["E2"]
+    rows = []
+    for n, m in c["instances"]:
+        _, cands = vfamily_candidates(n, m, c["H"], c["count"], CFG["seed"])
+        mn = m ** n
+        bits = vfamily_bits(n, m, c["H"], c["count"], CFG["seed"])
+        base = random_baseline(bits, c["B"], c["baseline_samples"], CFG["seed"])
+        r = vfamily_yield(n, m, c["H"], c["count"], c["B"], base, CFG["seed"], exclude_degenerate=True)
+        r["degenerate_removed"] = sum(1 for v, rr in cands if v == rr or v == mn * rr)
+        rows.append(r)
+    _write("E2_nondegenerate", rows)
+
+
 def e2():
     from .intanalog import random_baseline, vfamily_bits, vfamily_yield
     c = CFG["E2"]
@@ -93,6 +122,7 @@ def e4():
 
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
-    for name, fn in [("E1", e1), ("E1_posthoc", e1_posthoc), ("E2", e2), ("E3", e3), ("E4", e4)]:
+    for name, fn in [("E1", e1), ("E1_posthoc", e1_posthoc),
+                     ("E1_distinct", e1_distinct), ("E2", e2), ("E2_nondeg", e2_nondeg), ("E3", e3), ("E4", e4)]:
         if which in (name, "all"):
             fn()

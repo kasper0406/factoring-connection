@@ -1,0 +1,190 @@
+**PROVED — The claimed universal barrier is unsupported.** The conditional results do not exclude partial power identities or freely chosen auxiliary algebras. I found explicit escapes and a failed preregistered prediction. These constructions do not supply a fast general factoring algorithm.
+
+**1. Prop F — CORRECT WITH FIXES.**
+
+**PROVED.** The proof is correct, and can be shortened. An additive power map fixes every integer scalar, so
+\[
+a^s\equiv a\pmod{\operatorname{char}A}.
+\]
+Restriction to \(\mathbf F_p\) gives \((p-1)\mid(s-1)\). Moreover, \(\operatorname{char}A\) is automatically squarefree: reduction modulo \(p^2\), applied to \(a=p\), would otherwise give \(p^s\equiv p\pmod{p^2}\). Thus the squarefreeness assumption is redundant.
+
+**PROVED — The proposed partial replacement is false.** Write \(R=\mathbf Z/N\). In
+\[
+A=R[X]/(X^2-X-1)
+\]
+one has, for **every** \(a,b\in R\),
+\[
+(aX+b)^2=(a^2+2ab)X^2+(b^2-2ab).
+\]
+Everything is computable from \(N\); global additivity generally fails. Here the output coefficients depend jointly on \(a,b\), so this is coordinate closure, not Frobenius semilinearity.
+
+**PROVED.** Even requiring \(a'=a^s,\ b'=b^s\) on a small subset does not rescue the assertion. For a prime \(\ell\), define the monic integer polynomial
+\[
+C_\ell(T)=\frac{(T+1)^\ell-T^\ell-1}{\ell}.
+\]
+In \(R[X]/(C_\ell)\),
+\[
+(aX+b)^\ell=a^\ell X^\ell+b^\ell
+\qquad(a,b\in\{0,1\}).
+\]
+This faithful algebra exists for every \(N\). For \(\ell=11,\ N=101\cdot103\), neither \(100\) nor \(102\) divides \(10\), and global additivity fails since \(2^{11}-2=2046\not\equiv0\pmod N\).
+
+**PROVED — Fix.** Distinguish arbitrary coordinate closure, restricted power compatibility, and compatibility with a genuine coefficient automorphism. If the latter fixes \(R\) and compatibility includes all scalar inputs, then \(b^s=b\) already forces Prop F’s conclusion. A tiny coefficient subset does not. A recursive descent also needs compatibility for its subsequent targets, not merely the original generator.
+
+**2. Lemma CF — CORRECT WITH FIXES; the advertised classification is WRONG.**
+
+**PROVED.** The conditional root-covering argument is sound. It proves a **lower bound** on \(|S|\), not that the constant set must equal \(\mathbf F_p\), nor that all computable systematic products satisfy its hypothesis.
+
+**PROVED.** Assuming \((n,N)=1\), in \(R[\zeta_n]\),
+\[
+P(T)=T\prod_{j=0}^{n-1}(T-\zeta_n^j)=T^{n+1}-T
+\]
+is available without factoring \(N\). For restricted inputs \(z=u\zeta_n^j\),
+\[
+P(z)=(u^n-1)z.
+\]
+Thus restricted inputs admit a linear expression in \(z\), without covering the prime field. Computing its coefficient takes \(O(\log n)\) multiplications, although its integer height can grow like \(n\log|u|\).
+
+**PROVED.** Conversely, if \(P(z)=\sigma(z)-z\) holds on a set containing every scalar, a unital automorphism fixes those scalars. Consequently \(P\) vanishes there, and CF applies. More generally, a uniformly bounded-degree expression \(E(z,\sigma z)\), valid for every scalar, faces polynomial root counting after setting \(\sigma(b)=b\).
+
+**PROVED — Fix.** State CF as an obstruction to identities valid on all scalars, especially automorphism-difference identities. “Low complexity” must specify degree, coefficient height, and input domain: \(T^{n+1}-T\) already has a short arithmetic circuit. Restricted identities remain possible; CF does not establish that they cannot provide enough useful affine variations.
+
+**3. Lemma DES — CORRECT WITH FIXES.**
+
+**PROVED.** Under the stated \(A\ne0\) restriction, the conclusion is correct and can be strengthened to **\(n\ge4\)**. Apply Descartes to \(f(X)\) and \(f(-X)\) together:
+
+- When \(D\ne0\), the combined sign-variation bound is at most \(3\) for even \(n\), and \(4\) for odd \(n\).
+- When \(D=0\ne C\), divide by \(X\); the corresponding bounds are \(2\) and \(3\).
+
+These exclude complete real splitting for every \(n\ge4\). When \(C=D=0\), the stated degenerate family remains. If claiming a result about all of \(V_n\), explicitly exclude its low-degree members.
+
+**KNOWN.** The Lenstra citation and root-bound statement are correct. His theorem is stronger: for bounded number-field degree, sparsity, and factor degree, it bounds the total degree of the nonzero-root factors, including multiplicities. See [Lenstra, *On the factorization of lacunary polynomials* (1999)](https://doi.org/10.1515/9783110285581.277). Do not confuse it with his adjacent paper, *Finding small degree factors of lacunary polynomials*.
+
+**PROVED — Escape outside the fixed sparse space.** Bounded-degree outer polynomials in \(F(X^q)-G(X)\) retain bounded sparsity, but dense compositions and Chebyshev families are outside that restriction. For a concrete Dickson/Chebyshev example,
+\[
+P(X)=(X^2-4)(X^2-1)^2=X^6-6X^4+9X^2-4.
+\]
+Choose
+\[
+F=P-X-3.
+\]
+Then in \(R[X]/(F)\), a product of six rational linear factors equals \(X+3\). Exact resultant computation gives
+\[
+\operatorname{Norm}(X-2,X+2,X-1,X+1)=(-5,-1,-4,-2),
+\]
+and
+\[
+\operatorname{Norm}(X+3)=320=(-5)(-1)(-4)^2(-2)^2.
+\]
+This supplies splitting and degree compression for arbitrary \(N\). Its limitation is the exact norm equality, addressed next.
+
+**4. Rigidity and E5 — WRONG as general barriers.**
+
+**PROVED.** The presentation of an auxiliary algebra really is free. For every \(N\), choose
+\[
+A=R[X]/(X^d-h(X)),\qquad \deg h=O(1).
+\]
+Then \(X^d=h(X)\) holds, without searching for a small scalar root modulo \(N\). The scalar polynomial-selection argument in §5.5 does not cover this construction.
+
+**PROVED — Quantitative norm accounting.** Choose a monic integer lift \(\widetilde F\) of degree \(d\), with coefficient height \(H_F\). For \(g\) of degree \(e\) and height \(C\), the integer norm lift is
+\[
+\mathcal N(g)=\operatorname{Res}(\widetilde F,g).
+\]
+Hadamard gives
+\[
+|\mathcal N(g)|
+\le(\sqrt{d+1}H_F)^e(\sqrt{e+1}C)^d.
+\]
+For a linear factor \(aX+b\), with \(|a|,|b|\le E\),
+\[
+|\mathcal N(aX+b)|\le(d+1)H_FE^d.
+\]
+Therefore **norms do not automatically reintroduce \(\log N\)**. Small \(H_F,d,E\) give small integer norms, independently of \(N\).
+
+**PROVED — What happens instead in the simplest escape.** If \(F=X^d-h\) is chosen over \(\mathbf Z\), its compression identities already hold in \(\mathbf Z[X]/(F)\). Taking norms produces exact integer equalities. Their rational-prime valuation rows are zero; these identities alone supply no \(N\)-dependent relation information.
+
+**PROVED — A stronger family.** Let
+\[
+P_M(X)=\prod_{j=0}^{M-1}(X-j),\qquad F_M=P_M-X-1.
+\]
+In the freely chosen algebra,
+\[
+\prod_{j=0}^{M-1}(X-j)=X+1.
+\]
+All \(M\) factors are explicit and distinct. Yet
+\[
+|\mathcal N(X-j)|=j+1,\qquad \mathcal N(X+1)=M!.
+\]
+The entire relation is smooth by construction. Its norm equality is simply the known factorization of \(M!\). The linear “small side” has logarithmic norm \(\log(M!)\sim M\log M\), independent of \(N\).
+
+**PROVED — Where modulus-dependent size can enter.** For \(M=4\), instead lift the same modular defining polynomial as
+\[
+\widetilde F_N=P_4-X-1+N.
+\]
+The four factor norms become
+\[
+N-1,\ N-2,\ N-3,\ N-4,
+\]
+while the compressed side has norm \(N+24\). Now there is a nontrivial integer congruence, but the integers being tested are \(N\)-sized. This explicitly exhibits the distinction between exact lifted identities and modular identifications.
+
+**PROVED.** Generally, if resulting nonzero integer sides satisfy \(U\equiv V\pmod N\) and \(U\ne V\), then
+\[
+\max(|U|,|V|)\ge N/2.
+\]
+This is only an **aggregate** bound. It allows one side to be assembled from many known small factors; it does not prove that an unfactored piece must be \(N\)-sized.
+
+**PROVED.** Factoring the auxiliary algebra need not itself factor \(N\). For example, \(R[X]/(X^2-1)\) has the known auxiliary idempotent \((1+X)/2\) for every odd \(N\). A reduction must extract a base-ring zero divisor, not merely split the auxiliary presentation.
+
+**HEURISTIC — Fix.** Retain the RES/G ledger as a conditional barrier for its specified polynomial-selection model. For auxiliary algebras, require an explicit analysis of nontrivial modular relations, surviving height, independence, and completion to factoring \(N\). The fact that prime-ideal norms are at least the underlying rational prime does not establish the absence of such a descent.
+
+**SPECULATIVE.** A useful auxiliary-algebra escape would preserve these cheap identities while adding enough \(N\)-dependent identifications to support repeated elimination. The examples above do not supply that step; your current proofs do not exclude it.
+
+**5. Experiments — CORRECT WITH FIXES; “all predictions held” is WRONG.**
+
+**PROVED — E1.** The binary-form formula for \(P_{\rm rand}(D)\) is correct. The reported gain is a valid descriptive comparison with an independent-random-sides baseline, but it substantially counts repeated relations. For
+\[
+f=(X+b)^q(X+c),
+\]
+the reduced numerator is
+\[
+(X+c)(h_0+b^qh_1).
+\]
+Canceling \(X+c\) removes the dependence on \(c\). At \(q=16\), the reported \(32\,896\) Frobenius-family successes are \(128\cdot257\) versions of at most \(128\) such constraints. Raw relation count does not establish rank.
+
+**PROVED.** The squarefree orbit still has a large measured gain: approximately \(4.33\cdot10^{10}\) at \(q=16\). Report it separately, cancel common factors before assigning sizes, and distinguish successful candidates from independent equations.
+
+**PROVED — E2.** Prediction P2c is false. When \(Am+B=0\),
+\[
+f(m)=Cm+D=r_f.
+\]
+The existing samples contain **112** such equalities for \((11,19)\), and **217** for \((13,11)\). Removing them leaves gains approximately **1.041** and **1.061** respectively, so the numerical interpretation barely changes, but these were not nontrivial relations.
+
+**PROVED.** Every sampled small side is automatically smooth:
+\[
+|r_f|\le64(m+1)\le33344<65536.
+\]
+E2 therefore measures one difficult smoothness event. It also samples duplicates and nonunits; the first modulus has the easily detectable factor \(11\).
+
+**HEURISTIC — Fix.** Match controls more closely by magnitude within bit bins, known divisors, and local conditions; remove exact equalities and account for duplicate relation rows. The proposed “log-uniform within bins” explanation is untested and does not follow from uniform coefficient sampling. The results support this particular sampled family, not every structured integer family.
+
+**PROVED — E4.** Its reported ratios implement the stated baseline, but that baseline multiplies marginal smoothness probabilities for pieces evaluated at the same \(m\). Independence is an additional assumption.
+
+**PROVED.** Restricting primes to \(1\bmod d\) alone does not establish smoothness suppression: an eligible prime has \(\varphi(d)\) roots of \(\Phi_d\), increasing its divisibility frequency. The universal anti-smoothness wording also needs its exceptions: \(3^2-1=8\) is \(2\)-smooth.
+
+**HEURISTIC — Fix.** Treat E4 as two finite calibrations. Use joint controls incorporating local restrictions, and report uncertainty, particularly for the row with only eight successes. Neither the product baseline nor the observed deficit proves a universal upper bound.
+
+**6. Literature and novelty — CORRECT WITH FIXES.**
+
+**KNOWN.** Power-map endomorphisms on finite algebras already have substantial literature. [Howe, *Higher-order Carmichael numbers* (1998/2000), Theorem 1](https://arxiv.org/pdf/math/9812089), characterizes when \(n\)-th powering is an endomorphism on every bounded-rank \(\mathbf Z/n\)-algebra, using congruences modulo \(p^r-1\). This is direct prior context for Prop F, although its quantifiers differ.
+
+**KNOWN.** Factoring from an exponent multiple is classical. Cite [Miller (1976)](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf), distinguishing the unconditional randomized reduction from ERH-dependent deterministic conclusions.
+
+**PROVED.** CF is an elementary root-covering corollary. DES for this particular \(V_n\) is a specialization of sign variation; I did not locate prior BGJT-specific wording. Neither observation supports the stronger classification claims.
+
+**KNOWN / PROVED.** The pointed-\(\mu_n\)-set convention is established; see [Le Bruyn, *Absolute geometry and the Habiro topology*, §2](https://arxiv.org/pdf/1304.6532). It immediately gives
+\[
+GL_2=\mu_n^2\rtimes S_2,\qquad |PGL_2|=2n,
+\]
+and preservation of the homogeneous form \(U^n-V^n\) up to sign. That calculation is correct. It concerns this restricted group, however, and does not restrict all homographies over the actual coefficient ring.
+
+**PROVED — Computational record.** The exact sample audit and resultant examples are reproducible in the scratch [script](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py) and [results](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.json). The repository notes were left unchanged.

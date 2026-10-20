@@ -1,0 +1,2377 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /Volumes/git/factoring-connection/codex/scratch/systeq_2
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a159b3-49c7-70b1-8849-2d0ff3a140ab
+--------
+user
+# systeq round 2 (ADVERSARIAL): break our barriers for integer analogues of the systematic equation
+
+You are an adversarial referee. Read `notes/systeq_results.md` in this repository (read-only),
+and optionally `src/systeq/*.py`, `notes/systeq_prereg.md` and `experiments/raw/systeq_*.jsonl`.
+Your blind round is `codex/systeq_1.out`. Scratch work goes in the current directory.
+
+Your job is to find errors and escapes, not to agree. Specifically:
+
+1. **Prop F (§5.1).** Is the proof correct? Is the hypothesis "z ↦ z^s additive on all of A" too strong
+   for what BGJT actually uses? BGJT uses additivity only on elements of the form aX + b with a, b
+   in the base field k′ and X the generator. Could an exponent s exist with (aX+b)^s = a′X^s + b′ for
+   all a, b in a small subset, without global additivity, in some Z/N-algebra, computable from N?
+   Construct one or prove that the partial version also forces (p−1)|(s−1) or similar.
+2. **Lemma CF (§5.2).** Is the claim that "the only computable systematic equation over Z/N has
+   constant field F_p" overstated? Consider S = μ_n ∪ {0} inside (Z/N)[ζ_n] with the product
+   T^{n+1} − T, and an abstract automorphism σ instead of a power map. Is there any way to make
+   ∏_{c∈S}(z − c) equal to a low-complexity expression in σ(z), z for the elements z one needs?
+3. **Lemma DES (§5.3).** Check the case analysis for V_n and the claim "no nondegenerate split
+   member for n ≥ 6". Check the Lenstra 1999 citation and statement. Is there a characteristic-0
+   family other than fewnomials (e.g. polynomials of the form F(x^q) − G(x), compositions,
+   Chebyshev-type, or polynomials over Z[ζ_n] where splitting is free) that keeps E4's "small side"
+   while making the big side split into many small pieces? Be concrete; compute a small example.
+4. **Rigidity (§5.5) and E5 (§5.6).** Is there an integer setting with presentation freedom we
+   missed, e.g. replacing Z/N by a finite Z/N-algebra A = (Z/N)[x]/(F) (where factoring A still
+   factors N) and choosing F freely so that "x^n ≡ h(x) mod F" holds with small h? Here the
+   presentation IS free (F is ours). Does that give BGJT-like relations whose sides are smooth
+   integers, or do the norms N_{A/(Z/N)} reintroduce N-size? Work it out quantitatively: what is
+   the size of the integers one must factor? This is our biggest worry, so please be thorough.
+5. **Experiments.** Are E1 (positive-control gain G_FF), E2 (Cunningham V-family G ≈ 1.04) and
+   E4 fair tests of what they claim? Is the size-bound prediction set up correctly? Any bias?
+6. **Literature.** Are any of our "no prior statement found by us" items (Prop F as stated,
+   Lemma CF, Lemma DES applied to the BGJT space V, the F_1 PGL₂ remark) known? Cite.
+
+For each item give a verdict: CORRECT / CORRECT WITH FIXES / WRONG, with the fix. Label every
+claim KNOWN / PROVED / HEURISTIC / SPECULATIVE. Keep it under ~3000 words.
+
+codex
+I’ll read the barriers and experiment code, then try concrete counterexamples and check the cited literature. I’ll focus especially on whether a freely chosen algebra presentation escapes the norm-size argument.
+exec
+/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g 'systeq*' -g '*.py' notes src experiments codex . 2>/dev/null" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ exited 2 in 0ms:
+/Volumes/git/factoring-connection/codex/scratch/systeq_2
+
+exec
+/bin/zsh -lc 'ls -la' in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 0ms:
+total 0
+drwxr-xr-x   2 knielsen  staff    64 Oct 20 16:24 .
+drwxr-xr-x  94 knielsen  staff  3008 Oct 20 16:24 ..
+
+exec
+/bin/zsh -lc 'for p in /AGENTS.md /Volumes/AGENTS.md /Volumes/git/AGENTS.md /Volumes/git/factoring-connection/AGENTS.md /Volumes/git/factoring-connection/codex/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/AGENTS.md /Volumes/git/factoring-connection/codex/scratch/systeq_2/AGENTS.md; do if [ -f "$p" ]; then cat "$p"; fi; done' in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "rg --files /Volumes/git/factoring-connection -g 'systeq_results.md' -g 'systeq_prereg.md' -g 'AGENTS.md' -g 'systeq_1.out' -g 'systeq_*.jsonl'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 0ms:
+/Volumes/git/factoring-connection/notes/systeq_prereg.md
+/Volumes/git/factoring-connection/notes/systeq_results.md
+/Volumes/git/factoring-connection/codex/systeq_1.out
+/Volumes/git/factoring-connection/experiments/raw/systeq_E4.jsonl
+/Volumes/git/factoring-connection/experiments/raw/systeq_E3.jsonl
+/Volumes/git/factoring-connection/experiments/raw/systeq_E1.jsonl
+/Volumes/git/factoring-connection/experiments/raw/systeq_E1_posthoc.jsonl
+/Volumes/git/factoring-connection/experiments/raw/systeq_E2.jsonl
+
+exec
+/bin/zsh -lc 'cat notes/systeq_results.md' in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+# systeq: is there an integer analogue of the systematic equation x^q − x = ∏(x − a)?
+
+Agent `systeq`, phase 16 (route 1), 2026-10-20.
+
+**Files.**
+- Code: `src/systeq/`.
+  - `ffield.py`: table arithmetic for F_Q.
+  - `bgjt.py`: the positive control.
+  - `intanalog.py`: integer analogues and exact smoothness.
+  - `barriers.py`: diagnostic checkers.
+  - `run_experiment.py`.
+- Tests: `tests/test_systeq.py`.
+- Pre-registration: `notes/systeq_prereg.md` (commit 29d9ae8, made before the runs).
+- Config: `experiments/configs/systeq.json`. Raw results: `experiments/raw/systeq_E{1,2,3,4}.jsonl`, plus `systeq_E1_posthoc.jsonl`.
+- Codex: blind round `codex/systeq_1.{md,out}`; adversarial round `codex/systeq_2.{md,out}` (§7).
+
+**Labels.**
+- **PROVED**: proof given here.
+- **KNOWN**: published, with a citation.
+- **HEURISTIC**: the assumption is named.
+- **experimentally supported**.
+- **refuted for this model**.
+- **UNVERIFIED**.
+
+---
+
+## 0. Verdict
+
+**Plain language.** No integer analogue of the systematic equation exists that could push factoring below L[1/3]. We can say precisely why. The small-characteristic engine rests on one fact: **the q-th power map is additive, so a two-term polynomial X^q − X has q roots.**
+
+Characteristic 0 and Z/N each destroy that fact in their own provable way:
+1. **Prop F.** An additive power map z ↦ z^s on any faithful Z/N-algebra forces (p − 1) | (s − 1) for every prime p | N. So s ≥ p, and anyone who can exhibit such an s can already factor N (Miller).
+2. **Lemma CF.** The constants of any "systematic product" over a Z/N-algebra must cover F_p, so its degree is ≥ p. The Wilson/factorial identity is the integer systematic equation over the hidden field F_p. That is why every factorial method is exponential (N^{1/4}).
+3. **Lemma DES.** In characteristic 0, fewnomials have few roots.
+   - Descartes: a real polynomial with k terms has ≤ 2k − 2 nonzero real roots.
+   - Lenstra 1999: over a number field of bounded degree, the number of roots is bounded in terms of k and the degree.
+   - So the four-term BGJT/GKZ/KW space V = span(X^{q+1}, X^q, X, 1) has *no* nondegenerate member splitting over Q once q ≥ 6. Over F_{q²} it has q³ + q of them.
+   - Escaping through cyclotomic fields (X^n − 1 = ∏(X − ζ^j)) yields only the Q-irreducible pieces Φ_d(t). Their largest piece is a factor ≤ n/φ(n) = O(log log n) smaller in log-size. By Zsigmondy those pieces are *anti*-smooth: they contain a prime ≥ n + 1.
+4. **Rigidity.** A BGJT model exists for every small-characteristic target because all fields of a given order are isomorphic. Z/N admits only polynomial-selection presentations, which are governed by Lemma RES and heuristic G (heurnfs B1). An integer "X^q ≡ h₀/h₁" with small heights exists only for special N, and then nothing beyond SNFS follows.
+
+**Experiment (pre-registered; all predictions held).**
+- Positive control (exact, over F_{q²}, q = 4..16): the systematic family beats the size-bound prediction by G_FF = 9, 38, 1.3·10³, 8.7·10³, 7.0·10⁴, 6.4·10⁶, 8.6·10⁸, **2.3·10¹²**.
+- The closest integer analogue (the "F_{1^n}" V-family on Cunningham-type N = Φ_n(m), where μ_n ⊂ Z/N is an explicit constant set and m^n ≡ 1 plays X^q ≡ h₀/h₁) gives **G = 1.03–1.06**. That is no gain: its systematic side is a random integer of size ≥ N.
+- Cyclotomic splitting is anti-smooth relative to the per-piece prediction: R = 0.61 and 0.25.
+- Codex independently ran a binomial-coefficient collision test: 10 collisions against 8.6 expected.
+
+**Verdict on route 1: refuted for every analogue we could formulate.** The precise barriers are in §5. What remains open is not an "analogue" at all. It would be an elimination operation whose output size is independent of N (codex's E4/E5). By heurnfs B1/B5 such an operation cannot come from polynomial selection. We have no candidate. Our probability that route 1 yields sub-L[1/3] is < 0.5% (assessment).
+
+---
+
+## 1. The descent engine, axiomatised (Step 1)
+
+Sources:
+- Joux 2013 (L[1/4]; ePrint 2013/095);
+- BGJT 2014 (arXiv 1306.4244);
+- GKZ 2018 (arXiv 1507.01495, "On the powers of 2");
+- Kleinjung–Wesolowski 2019/2022 (arXiv 1906.10668, §§2–3.4, read by us).
+
+KW state the core in one sentence: "All we need is a property similar to Equation (1): applying Frobenius is equivalent to a small degree rational function."
+
+| Axiom | Content in F_{q^{2k}} | Used by |
+|---|---|---|
+| **E0 Size = degree** | Non-archimedean size with no carries. Linear polynomials (q² of them) form a factor base of size *polynomial* in log Q | all |
+| **E1 Small constant field** | k = F_q with q = (log Q)^{O(1)} inside the base k′ = F_{q²}. The systematic equation T^q − T = ∏_{c∈k}(T − c) is a 2-term polynomial that splits completely over k | all |
+| **E2 Additive Frobenius** | z ↦ z^q is a ring endomorphism fixing k: (aX + b)^q = a^σX^q + b^σ | all |
+| **E3 Presentation freedom** | Target ≅ k′[X]/(I) with X^q ≡ h₀/h₁ mod I, deg h_i ≤ 2 (BGJT/GKZ). KW: an elliptic model where Frobenius equals translation by Q ∈ E(F_q) at a degree-n place; it always exists after a degree-O(log n) extension. This works because the target depends only on its cardinality | all |
+| **E4 Homographic family + compression** | For V = span(X^{q+1}, X^q, X, 1), the PGL₂(k′)-orbit of X^q − X (q³ + q cosets mod PGL₂(F_q)) consists of split forms. Every f ∈ V reduces mod I to degree ≤ 3, so one side splits for free and the other has degree independent of k | Joux (L[1/4]) and all later work |
+| **E5 Size-halving elimination at cost poly(q)** | A degree-D element over F_{q^{2^e}} (degree 4 → 3 → 2, trap-avoiding) is rewritten via E4 over the *extended constant field*, with splitting probability 1/O(q³) *independent of the extension*. Norms go down the quadratic tower (zigzag). Depth O(log n) gives (qn)^{O(log n)} | BGJT/GKZ/KW (quasi-polynomial) |
+
+E0–E4 give L[1/4] (Joux). Quasi-polynomial time needs E5, which is E4 used over arbitrarily large extensions of the constants at a cost governed by q alone.
+
+Codex's independent axiomatisation (`systeq_1.out`, E1–E6) matches this, with a stricter split of E5 into "elimination" and "completion/traps".
+
+**Measured (E1, exact) [experimentally supported; new only as a measurement].** Over F_{q²} the split members of P(V) are exactly:
+- the PGL₂ orbit (q³ + q squarefree forms; the count holds for every q tested);
+- the degenerate Frobenius-power forms (X + b)^q(X + c) and (X + b)^q;
+- forms of degree ≤ 1.
+
+So frac_split ≈ (q + 1)/q³.
+
+## 2. Integer analogues, axiom by axiom (Step 2)
+
+| # | Candidate | Axioms supplied | Smooth supply near the needed size | Tie to N | Verdict |
+|---|---|---|---|---|---|
+| 1 | Cyclotomic X^n − 1 = ∏_{d\|n} Φ_d(X), at integers | E1 only over Z[ζ_n] (constants μ_n, "F_{1^n}") | The pieces Φ_d(t) have log-size φ(d) log t: the gain is ≤ n/φ(n) = O(log log n) [PROVED, §5.4]. Zsigmondy: m^n − 1 is never B-smooth for n ≥ B [PROVED via KNOWN]. E4 measured R = 0.61 and 0.25 | Only for N \| Φ_n(m) (special N). Then it is SNFS: the systematic product ∏_j(t − sζ^j) *is* the algebraic norm Φ_n(t, s) | refuted for this model (general N); special N gives only SNFS, L[1/3, 1.526] |
+| 2 | Aurifeuillian factorisations | Splits Φ_n(m) into 2 pieces for special m | Factor 2 in log-size | Special N | constant factor only (snfsrig §3) |
+| 3 | Consecutive products / binomials (Kummer, Legendre) | "Smooth by construction": C(n, k) is n-smooth | Abundant (O(B²) values ≤ 2^B). But products of factor-base primes are already free: supply was never the bottleneck | None. Exact integer identities carry no information mod N (codex Barrier 1). Codex test: 10 collisions vs 8.64 expected | refuted (no excess yield) |
+| 4 | Factorials mod N (Pollard–Strassen) | Lemma CF: ∏_{c<p}(z − c) ≡ σ(z) − z mod p is the systematic equation over F_p | N/A | Needs degree ≥ p | exponential, N^{1/4} (KNOWN, BGS 2007). The exponent is forced by Lemma CF. A polylog SLP for n! would factor N (Lipton 1994; Shub–Smale τ) |
+| 5 | Chebyshev/Dickson composition D_m ∘ D_n = D_{mn} | A cheap iterate (E2-like, but multiplicative only). It is cyclotomic in disguise (x = u + 1/u) | As in row 1 | Mod N: the p + 1 (torus) group-order method | group-order method, not relations |
+| 6 | Elliptic divisibility sequences / division polynomials ([m] as "Frobenius") | E1 over Q(E[n]) (degree ~n⁴) | Primitive part ≥ (6/π²)·log\|W_n\|: gain ≤ π²/6. Primitive divisors ℓ ≥ (√n − 1)² (Silverman) | Mod N: ECM, L_p[1/2] | group-order method |
+| 7 | Lucas sequences | Cyclotomic over a quadratic field | As in row 1 (Bilu–Hanrot–Voutier primitive divisors, n > 30) | p ± 1 methods | group-order method |
+| 8 | Cyclotomic norm forms, Gauss/Jacobi sums, Stickelberger | Galois automorphisms σ_a of (Z/N)[ζ] exist over every N (E2 as an automorphism, not as a power). Jacobi sums give explicit smooth norms ℓ^{d/2} | Explicit generators of small ideals | Fixed ring ⊇ Z/N, so Lemma CF applies. A map to Z/N needs a root of Φ_m mod N (special N) | NFS in cyclotomic fields: covered by RES/G. Jacobi sums mod N are the APR-CL *primality* test (a Frobenius exists iff N is prime) |
+| 9 | p-adic / Witt lift of X^q − X | Teichmüller: X^p − X = ∏(X − [a]) in Z_p[X] (a 2-term polynomial with p roots in Q_p) | — | A unital map Z/p^s → Z/N exists iff N \| p^s (codex). With ℓ small and known, the ℓ-adic constants never reach Z/N | refuted (r20 #6; heurnfs §5(ii)) |
+| 10 | Group rings, x^{λ(N)+1} ≡ x (Carmichael) | The *genuine* field equation of Z/N (squarefree N): T^{λ+1} − T vanishes on Z/N | — | Degree λ(N) ≥ p − 1. Knowing it factors N (Miller) | equivalent to the problem |
+| 11 | Λ-rings / Adams operations / Borger's F_1 | ψ_q(T) = T^q is a Frobenius lift on Z[T] by substitution | — | Lemma SUB: σ_q(f)g − fσ_q(g) = det·(T^q − T) for linear f, g. The homography trick yields **one** relation, not q³ [PROVED, tested] | refuted |
+| 12 | Integer systematic equations for q ≤ 3: T² − T = T(T − 1), T³ − T = (T − 1)T(T + 1) | E1 holds exactly over Z for q = 2, 3 only (tested q ≤ 8) | 4 pieces | No additivity: (aT + b)³ is not linear in T³ | no compression (E4 fails) |
+| 13 | **Best: the "F_{1^n}" V-family on Cunningham N = Φ_n(m)** (§3) | E1 (μ_n = ⟨m⟩ ⊂ Z/N explicit), E3 (m^n ≡ 1, the analogue of X^q ≡ h₀/h₁), E4 *small side* (f(m) ≡ (A + C)m + (B + D)) | E4 *split side* fails (Lemma DES). f(m) is a random integer of size ≥ N | Special N only | measured G = 1.03–1.06; refuted |
+
+## 3. The best candidate, developed (Step 3)
+
+**Construction (the closest instance of E1 + E3 + half of E4).**
+- Let N | Φ_n(m). Then m has order n mod N, μ_n = ⟨m⟩ ⊂ (Z/N)^× is an explicit "constant field F_{1^n}", and m^n ≡ 1 is the analogue of X^q ≡ h₀/h₁.
+- For f = A x^{n+1} + B x^n + C x + D ∈ V_n:
+
+  f(m) ≡ r_f := (A + C)m + (B + D) (mod N).
+
+  The small side has size ≈ 2Hm: the compression half of E4 holds.
+- A BGJT relation needs f to split into linear factors with small values.
+
+**What fails: Lemma DES.**
+- For n ≥ 6, the only members of V_n(R) that split over R are x^n(Ax + B). Their relation reads m^n(Am + B) ≡ Am + B, i.e. just m^n ≡ 1.
+- So f(m) is an unstructured integer of size H·m^{n+1} ≥ H·m^{n+1−φ(n)}·N, i.e. log-size ≥ log N.
+
+**Heuristic cost [HEURISTIC: CEP smoothness of linear-form values].**
+- Relations need f(m) B-smooth at size ≥ N. This is the Dixon/random-squares regime, with optimum L_N[1/2, √2], worse than SNFS.
+- The same structure used as a number field sieve (algebraic side t − sζ, rational side t − sm) is SNFS, L[1/3, 1.526]. There the "systematic product" ∏_j(t − sζ^j) appears as the irreducible norm form Φ_n(t, s), whose values are generic.
+- For general N, a pair (m, n) with m^n ≡ small (mod N) at small height violates heuristic G.
+
+**Experiment E2 (pre-registered).** N of 37–43 bits, B = 2^16, H = 32, 200 000 candidates each. Baseline: the exact empirical smooth rate of 200 000 uniform integers per bit length.
+
+| (n, m) | N bits | observed | predicted (size bound) | G |
+|---|---|---|---|---|
+| (5, 520) | 37 | 2325 | 2221.6 | 1.047 |
+| (7, 130) | 43 | 1684 | 1628.1 | 1.034 |
+| (11, 19) | 43 | 3820 | 3674.0 | 1.040 |
+| (13, 11) | 42 | 5574 | 5263.9 | 1.059 |
+
+- (P2a) G ∈ [0.5, 2]: **held**.
+- (P2b) Kill signal G ≥ 4: not triggered.
+- The consistent +4–6% is HEURISTIC: candidate values are log-uniform inside each dyadic bit-length bin, while the baseline is uniform, so candidates sit lower in the bin and are slightly smoother. This was not tested further.
+
+**Positive control E1 (pre-registered; exact enumeration of P(V)(F_{q²})).**
+- G_FF = (relations/|P(V)|) / (P_rand(q+1)·P_rand(3)), where P_rand(D) is the exact fraction of split binary forms of degree D.
+- Every relation was verified as h₁f ≡ r_f mod I.
+
+| q | k = deg I | \|P(V)\| | split in V | relations | rel/(Q+1) | G_FF | G_FF* (prereg model) |
+|---|---|---|---|---|---|---|---|
+| 4 | 6 | 4369 | 357 | 160 | 9.4 | 9.1 | (not predicted) |
+| 5 | 6 | 16276 | 806 | 362 | 13.9 | 38 | (not predicted) |
+| 7 | 8 | 120100 | 2850 | 1362 | 27.2 | 1.27e3 | (not predicted) |
+| 8 | 8 | 266305 | 4745 | 2215 | 34.1 | 8.7e3 | 2.7e3 |
+| 9 | 9 | 538084 | 7462 | 3464 | 42.2 | 7.0e4 | 2.0e4 |
+| 11 | 13 | 1786324 | 16226 | 7626 | 62.5 | 6.4e6 | 1.5e6 |
+| 13 | 14 | 4855540 | 31110 | 14996 | 88.2 | 8.6e8 | 1.7e8 |
+| 16 | 15 | 16843009 | 70161 | 33776 | 131.4 | 2.3e12 | 3.8e11 |
+
+- (P1a) Within one decade: **held** (deviations 0.50–0.79 decades). The model's 8/q³ underestimates frac_split ≈ (q + 1)/q³.
+- (P1b) Monotone: **held**.
+- (P1c) Relations exceed the factor base: **held**.
+- (P1d) All relations verified: **held**.
+
+**Post-hoc decomposition (disclosed, not pre-registered; `systeq_E1_posthoc.jsonl`).**
+- The PGL₂ orbit (q³ + q forms) yields relations at 0.10–0.18 per form, ≈ 1/6. G_orbit runs from 0.4 (q = 4) to 4.3·10¹⁰ (q = 16).
+- The Frobenius-power family (X + b)^q(X + c) yields ≈ 1/2 (the relation holds when the quadratic h₀ + b^q h₁ splits). G reaches 2.3·10¹² at q = 16.
+- That family is the exact counterpart of the integer degenerate x^n(Ax + B). In F_q it carries the nontrivial Frobenius relation (X + b)^q ≡ (h₀ + b^q h₁)/h₁. In Z/N its counterpart says only m^n ≡ 1.
+
+**E3 (pre-registered; exhaustive, H = 4).** Nondegenerate members of V_n(Z) splitting over Q:
+
+| n | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|
+| count | 208 | 16 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+- (P3: 0 for n ≥ 7) **held**. Lemma DES in fact proves 0 for n ≥ 6.
+
+**E4 (pre-registered).**
+- n = 6, m ∈ [2^20, 2^20 + 30000): R_piece = 113/184.8 = 0.61.
+- n = 12, m ∈ [4096, 16384): R_piece = 8/31.9 = 0.25.
+- (P4: [0.1, 1.5]) **held**. Cyclotomic pieces are *less* smooth than random integers of their size, because their primes are confined to ≡ 1 (mod d).
+
+## 4. Why "smooth by construction" is not the bottleneck in Z
+
+Smooth integers by construction are free: any product of factor-base primes, binomials, factorials. What BGJT supplies is a *congruence* between a free-smooth object and a *small* object, and that congruence comes from E2 + E3.
+
+- Codex Barrier 1 [PROVED]: two products of small integers that are both below N and congruent mod N are equal.
+- So the integer question is entirely "where does the small side come from?". By Lemma RES / heuristic G (heurnfs B1), every polynomial presentation pays N^{2/D}E^D.
+- In F_q, E3 + E4 make the small side's degree independent of the target degree k. Integers have no presentation with that property for general N (§5.5).
+
+## 5. Barriers (Step 4)
+
+### 5.1 Prop F (additive power maps exist only where factoring is already done) [PROVED]
+
+**Statement.** Let A ≠ 0 be a commutative Z/N-algebra and s ≥ 2 with (x + y)^s = x^s + y^s for all x, y ∈ A. Then (p − 1) | (s − 1) for every prime p | char A. If A is faithful (char A = N) and N is squarefree, then λ(N) | s − 1. Given s, N then factors in randomised time poly(log N, log s) (Miller 1976; any multiple of λ(N) suffices).
+
+**Proof.**
+- π(z) = z^s is additive and multiplicative with π(1) = 1, so it is a ring endomorphism, and π(𝔪) ⊆ 𝔪 for every ideal 𝔪.
+- For p | char A, A/pA ≠ 0 (CRT on Z/N), so A has a maximal ideal 𝔪 of residue characteristic p. π induces z ↦ z^s on κ = A/𝔪, which is a ring endomorphism.
+- On the prime field F_p ⊆ κ, a ring endomorphism is the identity. So c^s = c for all c ∈ F_p, and with c a generator of F_p^× this gives (p − 1) | (s − 1).
+- If char A = N is squarefree, lcm_{p|N}(p − 1) = λ(N). ∎
+
+**Consequences.**
+- s ≥ p for each p | N. The BGJT exponent s = |k| therefore has size ≥ the hidden prime.
+- Tests: `test_prop_F_additive_exponents`. On (Z/15)[t]/(t² + 1) ≅ F₉ × F₅ × F₅ the additive s ≤ 40 are exactly those predicted; on Z/21 they are s ≡ 1 mod 6.
+- Codex adds that on Z/N itself the additive power maps are the identity map (e.g. u ↦ u^{561} on Z/561), and that a nonunital endomorphism is z ↦ ez with e idempotent, which already yields a factor.
+
+### 5.2 Lemma CF (the constant field is the hidden prime field) [PROVED]
+
+**Statement.** Let A be a Z/N-algebra, S ⊂ A finite and P(T) = ∏_{c∈S}(T − c). If P vanishes on the image of Z in A, then for each p | char A the image of S in a residue field of characteristic p contains F_p, so |S| ≥ p. This holds in particular when S is the fixed ring of a ring endomorphism, since every fixed ring contains Z·1.
+
+**Proof.** In κ[T] the product P̄ = ∏(T − c̄) has every c ∈ F_p as a root, so c = c̄ for some c ∈ S. ∎
+
+**Instance (tested).** In F_p[√D] with D a non-residue, ∏_{c=0}^{p−1}(z − c) = σ(z) − z, where σ is conjugation, which equals Frobenius. This is the Wilson/factorial shadow of X^p − X. Pollard–Strassen and Bostan–Gaudry–Schost evaluate it in ≈ √p, which gives N^{1/4}. That is the precise sense in which "factorial methods are exponential": the only computable systematic equation over Z/N has the hidden prime field as its constant field.
+- KNOWN context: Lipton 1994 and Shub–Smale 1995 show that short straight-line programs for n! would factor fast. This is the integer counterpart of the function-field fact that X^{q^k} − X has an O(k log q) SLP, which is distinct-degree factorisation.
+
+### 5.3 Lemma DES (fewnomials have few roots in characteristic 0) [PROVED from KNOWN]
+
+**Statement.**
+- Descartes' rule: f ∈ R[x] with k nonzero terms has at most k − 1 positive and k − 1 negative roots, with multiplicity.
+- Hence a k-term f that splits over R has deg f ≤ 2(k − 1) + ord₀ f.
+- For V_n with A ≠ 0:
+  - if D ≠ 0, splitting forces n + 1 ≤ 6;
+  - if D = 0 ≠ C, then f = x(Ax^n + Bx^{n−1} + C) forces n ≤ 4;
+  - if C = D = 0, f is the degenerate x^n(Ax + B).
+- So for n ≥ 6 there are **no nondegenerate split members**.
+- Over a number field K, Lenstra (1999, "On the factorization of lacunary polynomials") bounds the number of roots in K of a k-nomial, apart from 0, by c(k, [K : Q]), independent of the degree.
+
+**Consequence.**
+- In F_q the 2-nomial X^q − X has q roots, which is E1 + E2. No number field of bounded degree has an analogue.
+- Unbounded-degree fields (Q(ζ_n), Q(E[n])) give splitting only at the price of the Splitting Lemma (§5.4).
+- Over Q_p the 2-nomial X^p − X does have p roots (Teichmüller). That is the only characteristic-0 escape, and it lives at the hidden prime (row 9).
+
+### 5.4 Splitting Lemma and anti-smoothness [PROVED / KNOWN]
+
+**Splitting Lemma.** For F ∈ Z[x], t ∈ Z and any number field K ∋ α with F(α) = 0:
+
+N_{K/Q}(t − α) = ±(minpoly_α(t))^{[K:Q(α)]}, up to leading-coefficient factors.
+
+So any factorisation of F over any K induces, on the integer F(t), nothing finer than the Q-irreducible factorisation F(t) = ∏ F_j(t). Hence:
+- **Cyclotomic:** the largest piece of t^n − 1 is Φ_n(t), with log-size φ(n) log t. The gain in log-size is ≤ n/φ(n) ≤ e^γ log log n + O(1/log log n) (Rosser–Schoenfeld 1962, Thm 15). This changes L[α, c] by at most a factor (log log)^{O(1)} inside the constant, never the exponent.
+- **EDS:** the primitive part has log-size ≥ (6/π²)·log |W_n|, so the gain is ≤ π²/6.
+
+**Anti-smoothness [KNOWN ⇒ PROVED corollary].**
+- Zsigmondy (1892): m^n − 1 (m ≥ 2) has a primitive prime ℓ ≡ 1 (mod n), apart from (2, 6) and n = 2.
+- So m^n − 1 is not B-smooth whenever n ≥ B. Test `test_zsigmondy_antismooth`, and E4 (R = 0.25 at n = 12).
+- Lucas sequences: Bilu–Hanrot–Voutier 2001, n > 30. EDS: Silverman 1988, with ℓ ≥ (√n − 1)² by Hasse.
+
+### 5.5 Rigidity of Z/N (no presentation freedom) [PROVED part + HEURISTIC part]
+
+**F_q side [KNOWN].** BGJT/GKZ need some irreducible I of degree k dividing h₁X^q − h₀. Any such I presents *the* field F_{Q^k}. KW prove that an elliptic model exists after a degree-O(log n) extension. In both cases the freedom comes from all targets of one size being isomorphic.
+
+**Z/N side.**
+- [PROVED] Every ring presentation Z[x]/(f) → Z/N with x ↦ m satisfies Lemma RES (snfsrig §1.1).
+- [HEURISTIC G] An integer counterpart of X^q ≡ h₀/h₁, namely N | h₁(m)m^q − h₀(m) with small h_i and small m, has ≈ (Hm²)²·M parameter choices against probability 1/N. For general N this needs Hm² ≥ N^{1/3}-ish.
+- [PROVED] Even when such a presentation exists (special N), Prop F and Lemma DES leave the f-side unstructured. The best use of the structure is SNFS.
+- [PROVED] Extensions of the target ((Z/N)[x]/(F)) do not change the prime field, so Lemma CF still applies.
+
+### 5.6 E5 has no integer counterpart [PROVED for the size-invariance part]
+
+**Quasi-polynomial descent.** It halves the absolute degree at cost poly(q), independent of the constant field F_{q^{2^e}} in which it runs: the splitting probability in V is 1/O(q³) over every extension. The size of the other side is (1 + δ)D, with no dependence on the target degree k.
+
+**Integer side.**
+- Under RES/G every candidate tied to N has log-norm-product ≥ 2√(2·log N·log E) (heurnfs B1). The other side's size therefore depends on N, and the descent's bottom level costs L[1/3] (heurnfs B5, §3.1 bottom bound).
+- [PROVED] In a number field a rational prime ℓ has prime ideals of norm ℓ^f ≥ ℓ, so base change never lowers absolute size. There is no "extend the constants" step.
+
+### 5.7 The F_1 dictionary [PROVED, elementary]
+
+- Over "F_{1^n}" = μ_n ∪ {0}, GL₂ is the monomial group μ_n² ⋊ S₂ (Kapranov–Smirnov convention), so PGL₂(F_{1^n}) has order 2n.
+- It sends T^n − 1 only to unit multiples of T^n − 1 and 1 − T^n. That is O(1) relations, against q³ + q for PGL₂(F_{q²})/PGL₂(F_q).
+- Additivity is exactly what turns the monomial group into PGL₂. Its absence (Prop F) collapses E4.
+
+## 6. What it would take (precise missing step)
+
+A route-1 success would need a family 𝓕 of pairs (u, v) with u ≡ v (mod N), u ≠ v, satisfying:
+- (a) u is a product of ≳ log N/log B pieces, each ≤ B^{O(1)}, by an identity;
+- (b) v has log-size independent of log N (or o(x^{2/3}));
+- (c) |𝓕| ≥ L[α] for α < 1/3, computable without the factors.
+
+By Prop F, Lemma CF and Lemma DES, (a) cannot come from a Frobenius, from a systematic product over Z/N, or from a fewnomial identity over a number field of bounded degree. By RES/G, (b) cannot come from polynomial selection for general N. Neither we nor codex found any other source.
+
+## 7. Reviews
+
+### 7.1 Codex blind round (`codex/systeq_1.out`, launched before our analysis)
+
+**Same verdict.** It gives < 1% for a straightforward transfer.
+
+**Independent contributions:**
+- the E1–E6 axiomatisation;
+- the correct coset count q(q² + 1);
+- unital Z/p^s → Z/N exists iff N | p^s;
+- the Λ-ring equivariance failure, i.e. a^p ≡ a mod N has density ≤ p²/N;
+- the explicit carry T^p − T = ∏(T − a) + pC_p(T);
+- the Jacobi-sum smooth norms ℓ^{d/2};
+- the a⁴ + 4b⁴ Aurifeuillian example;
+- the binomial collision kill test: N = 1 000 003 · 1 000 033, B = 4096, M = 4 155 871 binomials of ≥ 80 bits, **10 collisions observed against 8.635 expected for uniform units** (random control: 8). The script is `codex/scratch/systeq_1/` (git-ignored; not re-run by us).
+
+**What we add.** Prop F (in its quantitative "s − 1 ≡ 0 mod λ(N)" form), Lemma CF, Lemma DES applied to V, the measured positive-control contrast and the Cunningham V-family. For each of these: no prior statement found by us.
+
+### 7.2 Codex adversarial round and Opus critics
+
+See §7.3 (filled in after the reviews).
+
+## 8. Reproduction
+
+```bash
+.venv/bin/python -m src.systeq.run_experiment all      # E1-E4, ~3 min
+.venv/bin/python -m pytest -q tests/test_systeq.py
+```
+
+The post-hoc decomposition is `bgjt.posthoc_by_type(p, e0)` over the E1 fields. It is also `run_experiment.py E1_posthoc` (same output file).
+
+exec
+/bin/zsh -lc 'cat notes/systeq_prereg.md && rg --files src/systeq && cat codex/systeq_1.out' in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+# systeq pre-registration (agent `systeq`, phase 16, 2026-10-20)
+
+Committed before any run of the experiments below.
+
+## Disclosed pre-registration activity
+
+The following was run before this file was committed:
+- A code smoke test of the positive control for q = 4, 5, 7. It gave G_FF = 9.1, 38.2 and 1265 and verified every relation mod I.
+- A bit-length and timing check of the E2 parameters: no smoothness counts were taken.
+- A tiny Descartes check (n = 7, H = 2): 0 nondegenerate split members.
+
+The q ≤ 7 positive-control rows are therefore *not* predictions. Only q ∈ {8, 9, 11, 13, 16} are predicted.
+
+## Question
+
+The small-characteristic engine has a structural feature: the systematic equation makes one side of a relation smooth BY CONSTRUCTION. Does the closest integer analogue give any such smoothness gain? The gain is measured against the size-bound prediction, i.e. random elements of the same size.
+
+**Gain** G = (observed relation yield) / (yield predicted if each side were a random element of its size).
+
+## E1: positive control, F_{q²}[X]/(I) with I | h₁X^q − h₀ (BGJT/KW model)
+
+- **Candidates:** all of P(V)(F_{q²}), V = span(X^{q+1}, X^q, X, 1), enumerated exactly.
+- **Relation:** f splits over F_{q²}, and r_f = A X h₀ + B h₀ + C X h₁ + D h₁ (degree ≤ 3, h₁f ≡ r_f mod I) also splits.
+- **Size prediction:** P_rand(q+1)·P_rand(3). Here P_rand(D) = C(Q+D, D)/((Q^{D+1}−1)/(Q−1)), the exact fraction of split binary forms of degree D.
+- **Model M_KW:** frac_split(V) ≈ 8/q³ and P(r_f splits | f split) ≈ 1/6. This gives the predicted G_FF* = (8/q³)/6 / (P_rand(q+1)P_rand(3)):
+
+  | q | G_FF* |
+  |---|---|
+  | 8 | 2.7e3 |
+  | 9 | 2.0e4 |
+  | 11 | 1.5e6 |
+  | 13 | 1.7e8 |
+  | 16 | 3.8e11 |
+
+- **Predictions:**
+  - (P1a) |log₁₀ G_FF − log₁₀ G_FF*| ≤ 1 for each q ∈ {8, 9, 11, 13, 16}.
+  - (P1b) G_FF is increasing in q.
+  - (P1c) #relations ≥ Q + 1 (the size of the linear factor base) for every q.
+  - (P1d) The congruence h₁f ≡ r_f mod I holds for every relation (asserted in code).
+
+## E2: integer analogue, the "F_{1^n}" V-family on Cunningham-type N = Φ_n(m)
+
+- **Setup:**
+  - m^n ≡ 1 (mod N), so μ_n = ⟨m⟩ is an explicit "constant field" in Z/N, and X^n ≡ 1 plays the role of X^q ≡ h₀/h₁.
+  - For f = A x^{n+1} + B x^n + C x + D with |A|, …, |D| ≤ H = 32 and A ≠ 0, f(m) ≡ r_f := (A+C)m + (B+D) (mod N). This is checked on every candidate.
+- **Relation:** f(m) and r_f are both B-smooth, with B = 2^16.
+- **Instances:** (n, m) ∈ {(5, 520), (7, 130), (11, 19), (13, 11)}, giving N of 37–43 bits. There are 200 000 seeded candidates each.
+- **Size prediction:** Σ base(bitlen f(m))·base(bitlen r_f). Here base(ℓ) is the exact empirical B-smooth rate of 200 000 seeded uniform integers in [2^{ℓ−1}, 2^ℓ).
+- **Predictions:**
+  - (P2a) G ∈ [0.5, 2] for every instance.
+  - (P2b) **Kill signal for the barrier:** G ≥ 4 on any instance would mean that structured integer smoothness exists, and would trigger investigation.
+  - (P2c) The f(m) side has log-size ≥ log N. This is the Dixon/L[1/2] regime, which the barrier predicts.
+
+## E3: Descartes count
+
+- **Setup:** exhaustive over A x^{n+1} + B x^n + C x + D ∈ Z[x], coefficients in [−4, 4], A ≠ 0, n = 2..10. Count the members that split completely over Q, excluding the degenerate x^n(Ax + B) (C = D = 0).
+- **Prediction (P3, PROVED by Descartes' rule, so this is an exact check):** 0 nondegenerate split members for every n ≥ 7.
+- For n ≤ 6 the counts are reported without prediction. n = 2 is all cubics, so the count is positive.
+
+## E4: cyclotomic calibration (no N)
+
+- **Setup:** m^n − 1 = ∏_{d|n} Φ_d(m), with n = 6, m ∈ [2^20, 2^20 + 30000), and n = 12, m ∈ [4096, 16384); B = 2^16.
+- **Per-piece prediction:** Σ_m ∏_d base(bitlen Φ_d(m)).
+- **Prediction (P4):** R_piece = observed/predicted ∈ [0.1, 1.5] for both instances. Cyclotomic splitting gives at most per-piece-size smoothness, and the residue-class restrictions (Zsigmondy) push it down. It never gives smoothness by construction.
+
+## Command
+
+```
+.venv/bin/python -m src.systeq.run_experiment all
+```
+
+Config: `experiments/configs/systeq.json` (seed 0). Raw: `experiments/raw/systeq_E{1,2,3,4}.jsonl`. Memory is under 300 MB; it runs as one job.
+src/systeq/bgjt.py
+src/systeq/run_experiment.py
+src/systeq/intanalog.py
+src/systeq/ffield.py
+src/systeq/__init__.py
+src/systeq/barriers.py
+**HEURISTIC — Referee verdict.** None of these constructions currently supplies the missing integer descent. Several produce abundant smooth numbers; others supply genuine endomorphisms or splitting identities. The unresolved requirement is to combine these with useful congruences modulo \(N\), while repeatedly reducing arithmetic size. My subjective probability that a straightforward transfer of the listed mechanisms beats \(L[1/3]\) for general balanced semiprimes is below 1%. That is a research judgment, not a lower bound.
+
+**PROVED — A sufficient abstract descent specification follows.** It is not a characterization of every possible fast algorithm.
+
+- **E1: Power compatibility and bounded coefficients.** A target algebra has a cheap endomorphism \(\phi\), compatible with an actual power operation and its action on coefficients. Coefficients remain cheaply representable throughout descent.
+- **E2: A systematically split identity.** There is a high-degree expression with a known factorization into inexpensive factors. In characteristic \(p\),
+  \[
+  U^qV-UV^q
+  =V\prod_{a\in\mathbf F_q}(U-aV).
+  \]
+  This follows because the two homogeneous polynomials have the same \(q+1\) distinct projective zeros and matching normalization.
+- **E3: Sufficiently many useful variations.** An efficiently sampled family transforms that identity into enough distinct relations. Raw orbit size is insufficient: successful relations must have adequate rank or support a different proven reconstruction method.
+- **E4: Compression after evaluation.** In the target, applying \(\phi\) to the coordinate agrees with a rational function of bounded degree—or an analogous bounded-degree geometric operation. Thus the systematically split expression also has a representation of much smaller degree.
+- **E5: Targeted, repeatable elimination.** A prescribed object of size \(D\) can be expressed using objects of size at most \(D/2\), with polynomial branching and polynomial expected work per node. Descendants remain eligible for elimination.
+- **E6: Completion.** Arbitrary targets can enter the descent; exceptional cases, denominators, constants, and the terminal factor base are handled.
+
+**PROVED.** If branching and node cost are \((qn)^{O(1)}\), and depth is \(O(\log n)\), total work is \((qn)^{O(\log n)}\). For \(q=n^{O(1)}\), this is quasi-polynomial. A literal fixed subring or a particular group is therefore not logically necessary; their algorithmic consequences are.
+
+**KNOWN — BGJT.** The standard model is
+\[
+K=\mathbf F_{q^2}[t]/(I),\qquad
+I\mid h_1(t)t^q-h_0(t),\quad \deg h_i=O(1).
+\]
+For a degree-\(D\) polynomial, transformed systematic equations have reduced numerators of degree at most \((1+\delta)D\), with \(\delta=\max\deg h_i\). Relations whose numerators are \(\lceil D/2\rceil\)-smooth permit recursive descent. Representation existence, appropriate smoothness behavior, and relation rank are heuristic. [BGJT](https://arxiv.org/pdf/1306.4244)
+
+**PROVED — Correction to the group count.** Over \(\mathbf F_q\), the homographies stabilize the projective splitting set. The useful BGJT variations come from cosets in
+\[
+\mathrm{PGL}_2(\mathbf F_{q^2})/\mathrm{PGL}_2(\mathbf F_q),
+\]
+whose number is
+\[
+\frac{q^2(q^4-1)}{q(q^2-1)}=q(q^2+1).
+\]
+These are candidate relations, not automatically independent relations.
+
+**KNOWN — GKZ.** Quadratic elimination uses unusually split polynomials of shape
+\[
+T^{q+1}+aT^q+bT+c.
+\]
+An irreducible polynomial of degree \(2d\) becomes quadratic over an extension; eliminating there and taking norms expresses it through at most \(q+2\) good irreducibles of degrees dividing \(d\). Trap avoidance makes this repeatable. The size decreased is polynomial degree over the original coefficient field. The proof covers infinitely many explicit fields in each fixed characteristic; extension to all fields through that polynomial model requires an additional representation conjecture. [GKZ](https://arxiv.org/pdf/1507.01495)
+
+**KNOWN — KW separately.** KW constructs an elliptic-curve model with a degree-\(n\) place \(\mathscr I\) satisfying
+\[
+\operatorname{Fr}_q(P)=P+Q
+\quad\text{at }\mathscr I.
+\]
+Translation supplies the bounded-degree replacement for Frobenius. Split forms from \(\mathrm{PGL}_2\) and \(\mathrm{PGL}_3\) orbits give trap-safe divisor eliminations \(4\to3\to2\). Norms down a quadratic tower repeatedly reduce degree over the base field. Model existence after a logarithmic-degree extension and successful descent are proved. The resulting expected bound is
+\[
+(pn)^{2\log_2 n+O(1)}.
+\]
+The measure is divisor degree, not integer coefficient height. [KW](https://arxiv.org/html/1906.10668v2)
+
+**KNOWN — Why \(L[1/4]\) is different.** Joux already combined systematically split relation generation with bilinear-system elimination and a subexponential descent analysis. The quasi-polynomial breakthrough requires stronger control of the entire recursive descent; E1–E4 alone do not imply it. [Joux](https://eprint.iacr.org/2013/095.pdf)
+
+**PROVED — Integer accounting convention.** Write \(B=L[\alpha,c]\), \(b=\log B\), and let \(H=\widetilde O(x^{2\alpha})\) be the permitted logarithmic candidate size. For \(\alpha<1/3\), \(H=o(x)\), hence \(e^H=N^{o(1)}\). A product of \(r\) explicitly known integers at most \(B\) is smooth and has logarithm at most \(rb\). A family with \(s\) integer parameters bounded by \(A\) contains at most \((2A+1)^s\) parameter choices. Neither fact supplies a congruence modulo \(N\).
+
+**HEURISTIC — Smoothness baseline.** For an unfactored piece of logarithmic size \(h\), the usual baseline is \(\rho(h/b)\). Applying this to structured values assumes random-like smoothness after accounting for local restrictions; independence between pieces is an additional assumption. Arithmetic structure can alter this baseline. [Smooth-number estimates](https://www.math.dartmouth.edu/~carlp/smooth051317.pdf)
+
+**KNOWN — Cyclotomic and Aurifeuillian identities** provide algebraic splitting, including useful further factorizations at special arguments. [Brent](https://arxiv.org/pdf/1004.5466)
+
+**PROVED — Their ledger.** For \(2\le a\le A\),
+\[
+|\Phi_d(a)|\le(A+1)^{\varphi(d)},
+\]
+because every complex root has modulus one. Enumerating \(a\le A,n\le D\) gives at most \(AD\) factored expressions \(a^n-1\), each with \(\tau(n)\) cyclotomic pieces. Those pieces need not be \(B\)-smooth. Splitting over \(\mathbf Q(\zeta_n)\) supplies E2 in an enlarged coefficient ring; its Galois action supplies partial E1/E3.
+
+For an elementary further split,
+\[
+a^4+4b^4=(a^2-2ab+2b^2)(a^2+2ab+2b^2).
+\]
+Expansion proves the identity. If \(|a|,|b|\le A\) and \(5A^2\le B\), it gives \(O(A^2)=O(B)\) guaranteed smooth values, of size at most \(B^2\).
+
+Modulo \(N\), these remain the same exact identities. Requiring \(a^n\equiv1\pmod N\) adds an order condition; the factorization does not enforce it. No E4 compression tied to general \(N\), or E5 elimination, has been supplied.
+
+**PROVED — Consecutive products, factorials, binomials.** Every \(\binom nk\), \(n\le B\), is \(B\)-smooth: it is an integer divisor of \(n!\). There are \(O(B^2)\) parameter choices, with
+\[
+\log\binom nk\le n\log2,\qquad \log(n!)\le n\log n.
+\]
+Even within the budget \(H\), taking \(n\asymp B\) and \(k\le H/b\) gives \(\Theta(BH/b)\) parameter choices, since \(\binom nk\le n^k\). Thus smooth-number supply genuinely can reach factor-base scale. These constructions supply E2-like factorization and exact valuations, but no useful E1/E3/E4/E5.
+
+Their congruences modulo \(N\) are exact integer identities reduced modulo \(N\). Two distinct positive values below \(N\) cannot collide modulo \(N\): their difference has absolute value below \(N\).
+
+**KNOWN/PROVED — Factorial factoring.** If \(p\) is the least prime factor of \(N\), then
+\[
+\gcd(n!,N)=1\quad(n<p).
+\]
+Consequently, direct factorial coverage must reach \(p\), which is about \(\sqrt N\) for balanced semiprimes. Classical product/multipoint methods achieve roughly \(\widetilde O(N^{1/4})\) work, exponential in \(x\). This is a limitation of that method and its analysis, not a theorem that every conceivable factorial algorithm is exponential. [Bostan–Gaudry–Schost](https://doi.org/10.1137/S0097539704443793)
+
+**PROVED — Chebyshev/Dickson composition.** The defining relation
+\[
+D_n(z+a/z,a)=z^n+(a/z)^n
+\]
+gives
+\[
+D_m(D_n(T,a),a^n)=D_{mn}(T,a).
+\]
+The unchanged-parameter formula holds for \(a=1\). Composition supplies a cheap formal endomorphism, hence weak E1, but degree multiplies. For fixed \(a=1\), \(T\ge3\), the displayed relation gives
+\[
+\log|D_m(T,1)|=\Theta(m\log T).
+\]
+There are at most \(AD\) outputs with \(T\le A,m\le D\), with no guaranteed smoothness. Splitting through roots of unity supplies only cyclotomic E2/E3. A congruence \(D_m(T)=T\) imposes an order condition in a multiplicative torus: writing \(T=z+z^{-1}\), it implies \(z^m=z^{\pm1}\). It does not provide general-\(N\) E4/E5.
+
+**KNOWN — Lucas sequences and elliptic divisibility sequences** have divisibility properties and, under their standard nondegeneracy hypotheses, primitive divisors in sufficiently late terms. Divisibility is therefore not a smoothness guarantee. [Lucas/Lehmer theorem](https://www.researchgate.net/profile/Paul_Voutier/publication/2397582_Existence_of_Primitive_Divisors_of_Lucas_and_Lehmer_Numbers/links/559999c308ae99aa62cc6983/Existence-of-Primitive-Divisors-of-Lucas-and-Lehmer-Numbers.pdf), [elliptic primitive divisors](https://arxiv.org/pdf/math/0409540)
+
+**KNOWN/PROVED — Their scale and \(N\)-connection.** Standard growing Lucas sequences have logarithmic term size \(\Theta(n)\); denominator EDS from a fixed non-torsion rational point have size \(\Theta(n^2)\). Thus a fixed sequence offers only \(O(H)\), respectively \(O(\sqrt H)\), terms within logarithmic budget \(H\). [EDS height analysis](https://msp.org/ant/2008/2-2/ant-v2-n2-s.pdf)
+
+Modulo a good prime divisor \(p\mid N\), vanishing tests detect whether a group element’s order divides the index. Multiplication maps supply formal E1, but their divisibility identities do not supply E2–E5 in the required sense.
+
+**HEURISTIC — The surviving algorithm here is ECM.** Randomizing the curve randomizes its order modulo an unknown factor. Assuming standard smooth-order behavior gives \(L_p[1/2,\sqrt2]\), hence \(L_N[1/2]\) for balanced factors. This exploits smooth group orders, not smooth-by-construction integer relations. [Lenstra](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf)
+
+**PROVED — Cyclotomic norm forms.** For \(d=\varphi(m)\) and
+\[
+z=\sum_{j<d}a_j\zeta_m^j,\qquad |a_j|\le A,
+\]
+every conjugate has absolute value at most \(dA\), so
+\[
+|\operatorname{Norm}(z)|\le(dA)^d.
+\]
+There are at most \((2A+1)^d\) coefficient choices and at most \(d\) Galois conjugates per choice. These give E1 and partial E3, but norms are not automatically smooth; no E4/E5 follows.
+
+**KNOWN — Gauss/Jacobi sums** improve this particular ledger: suitable Jacobi sums over an auxiliary prime field \(\mathbf F_\ell\) have all conjugate absolute values \(\sqrt\ell\), and known ideal factorizations above \(\ell\). In a degree-\(d\) field their norm is \(\ell^{d/2}\). Characters of order dividing \(m\) give at most \(m^2\) Jacobi-sum parameter pairs per \(\ell\). These are genuinely smooth norms when \(\ell\le B\), with logarithmic size \(d\log\ell/2\). [Jacobi sums and Stickelberger formulas](https://www.imo.universite-paris-saclay.fr/~yves.benoist/prepubli/24fourierv3.pdf)
+
+**PROVED — What they carry modulo \(N\).** Reduction preserves these algebraic identities in \((\mathbf Z/N)[\zeta_m]\). A map to the base ring requires an element \(r\) satisfying \(\Phi_m(r)=0\). Relating another polynomial representation to that same \(r\) is again a common-root condition. Known ideal relations can aid algebraic precomputation; their smooth norms alone supply no new \(N\)-dependent identification.
+
+**KNOWN — Witt/Teichmüller lifts** preserve a striking analogue of E2:
+\[
+T^q-T=\prod_{a\in\mathbf F_q}(T-[a])
+\quad\text{in }W_s(\mathbf F_q)[T].
+\]
+The Teichmüller representatives are the roots, and their pairwise differences are units. Witt Frobenius supplies E1, but these representatives are not an additive coefficient subfield in mixed characteristic. [Witt vectors](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Hazewinkel-Witt.pdf)
+
+**PROVED — The characteristic obstruction.** A unital map
+\[
+\mathbf Z/p^s\longrightarrow\mathbf Z/N
+\]
+exists exactly when \(N\mid p^s\): applying it to \(p^s1=0\) proves necessity; reduction proves sufficiency. Thus “impossible” needs the prime-power exception. It cannot transfer the construction to a general semiprime. E4 fails at the target connection, before any relation-yield calculation; no compatible descent has been supplied.
+
+**KNOWN — \(\Lambda\)-rings** organize simultaneous commuting Frobenius lifts; \(\psi^p(T)=T^p\) on \(\mathbf Z[T]\) is a genuine example. Borger’s \(\mathbf F_1\) interpretation formalizes this structure. [Borger](https://maths-people.anu.edu.au/~borger/papers/_all/LambdaRingsAndTheFieldWithOneElement.pdf)
+
+**PROVED — Why Fermat does not transfer.** Evaluation at \(a\) satisfies
+\[
+\operatorname{ev}_a(\psi^pT)=a^p,
+\]
+whereas every unital endomorphism of \(\mathbf Z/N\) fixes \(a\). Equivariance therefore requires the additional condition \(a^p\equiv a\pmod N\).
+
+For squarefree \(N=PQ\), the exact fraction of residues satisfying this condition is
+\[
+\frac{(1+\gcd(p-1,P-1))(1+\gcd(p-1,Q-1))}{N}
+\le\frac{p^2}{N}.
+\]
+Each field contributes zero plus the roots of unity of order dividing \(p-1\); CRT proves the formula.
+
+**HEURISTIC — Yield.** Under uniform-residue sampling, \(M\) smooth inputs give at most \(Mp^2/N\) expected compatible evaluations. With \(M,p=L[\alpha,O(1)]\), this is \(\exp(-x+o(x))\). Smoothness does not repair the missing equivariance.
+
+**PROVED — The integer splitting error is visible explicitly:**
+\[
+T^p-T=\prod_{a=0}^{p-1}(T-a)+pC_p(T),
+\qquad C_p\in\mathbf Z[T].
+\]
+Reduction modulo \(p\) proves coefficientwise divisibility. Modulo \(N\), the correction remains; it is not systematically smooth or zero.
+
+**PROVED — Group rings and cyclotomic automorphisms.** For \((a,m)=1\), \(\zeta_m\mapsto\zeta_m^a\) is an automorphism over every \(\mathbf Z/N\). It permutes conjugates, but does not act as a power map on arbitrary sums. Norm identities multiply the conjugates together and incur the corresponding degree/height cost. Thus E1–E3 have formal analogues; E4/E5 remain missing.
+
+Auxiliary idempotents need not factor \(N\): in a group ring with \(g^2=1\) and \(2\) invertible, \((1+g)/2\) is idempotent for every \(N\). It splits the known auxiliary algebra.
+
+**PROVED — Three precise barriers, with limited scope.**
+
+1. **Small integer products.** If both positive sides have at most \(r\) factors of logarithmic size at most \(H\), and \(rH<x\), a congruence between them is an integer equality. The number of nontrivial such congruences is exactly zero. Factor-base valuation rows from exact integer equalities are zero.
+
+2. **Polynomial representations.** If coprime \(f,g\in\mathbf Z[T]\) share a root modulo \(N\), then
+   \[
+   0<N\le|\operatorname{Res}(f,g)|
+   \le\|f\|_2^{\deg g}\|g\|_2^{\deg f}.
+   \]
+   The integer Bézout identity for the resultant gives divisibility by \(N\); Hadamard applied to the Sylvester matrix gives the upper bound. If the resultant is zero, this argument gives no bound.
+
+3. **Base-ring endomorphisms.** A unital endomorphism fixes \(1\), hence every integer residue, so it is the identity. A nonunital endomorphism has form \(a\mapsto ae\), with \(e^2=e\). A nontrivial such \(e\) already yields a proper factor \(\gcd(e,N)\).
+
+**PROVED — A correction to the proposed example.** Substitution \(T\mapsto T^N\) is always an endomorphism of \((\mathbf Z/N)[T]\). It descends through \(F\) exactly when \(F(T^N)=0\) modulo \(F\). This differs from mapping every element \(u\mapsto u^N\). Even the latter can work for composites: on \(\mathbf Z/561\), it is the identity, by CRT and Fermat since \(2,10,16\mid560\).
+
+**HEURISTIC — Scope of the wall.** “Every smooth construction is a product of small linear forms” is not a useful universal theorem: writing its prime factorization merely restates smoothness. Nor must every useful congruence arise from two fixed coprime univariate polynomials. The resultant theorem supports the stated polynomial-selection ledger; it does not establish a universal classical \(1/3\) barrier.
+
+**SPECULATIVE — Best remaining mechanism.** Auxiliary algebras are still worth considering because they admit genuine automorphisms. A credible proposal must add an \(N\)-dependent evaluation and an elimination that reduces both algebraic complexity and logarithmic height, with controlled branching and exceptional cases. None of the listed identities supplies that step. I would prioritize finding that operation over collecting further splitting identities.
+
+**HEURISTIC — A cheap kill test for the strongest actual smooth-number supply.** Use
+\[
+N=1{,}000{,}003\cdot1{,}000{,}033
+ =1{,}000{,}036{,}000{,}099
+\]
+and \(B=4096\). Enumerate \(\binom nk\) for \(n\le4096\), \(2\le k\le n/2\), retaining values of at least 80 bits. Remove exact duplicate integers, then count distinct-value collisions modulo \(N\). This tests whether constructed smooth values have an excess of modular identifications.
+
+**PROVED — Null prediction.** For \(M\) independent uniform units, the expected collision count is exactly
+\[
+\frac{M(M-1)}{2\varphi(N)}.
+\]
+The experiment has \(M=4{,}155{,}871\), giving **8.6353362044 expected collisions**. Uniform-residue behavior of the binomial family is the heuristic being tested.
+
+**PROVED — Computed outcome.** The exact run found **10 collisions**, with parity-row rank **10**, against a factor base of **564 primes**. Independently sampled random integers of matching bit lengths, conditioned on being units, gave **8 collisions**. Runtime was about 37 seconds. The [script](/Volumes/git/factoring-connection/codex/scratch/systeq_1/systeq_blind_binomial_test.py) and [results](/Volumes/git/factoring-connection/codex/scratch/systeq_1/systeq_blind_binomial_result.json) are reproducible.
+
+**HEURISTIC — Interpretation.** This shows no excess modular yield. It grants much larger values than the desired asymptotic budget, so it is deliberately generous. It rejects this direct collision strategy as promising evidence; it does not exclude an adaptive descent with additional arithmetic structure.
+exec
+/bin/zsh -lc "sed -n '230,450p' notes/systeq_results.md" in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+
+**Anti-smoothness [KNOWN ⇒ PROVED corollary].**
+- Zsigmondy (1892): m^n − 1 (m ≥ 2) has a primitive prime ℓ ≡ 1 (mod n), apart from (2, 6) and n = 2.
+- So m^n − 1 is not B-smooth whenever n ≥ B. Test `test_zsigmondy_antismooth`, and E4 (R = 0.25 at n = 12).
+- Lucas sequences: Bilu–Hanrot–Voutier 2001, n > 30. EDS: Silverman 1988, with ℓ ≥ (√n − 1)² by Hasse.
+
+### 5.5 Rigidity of Z/N (no presentation freedom) [PROVED part + HEURISTIC part]
+
+**F_q side [KNOWN].** BGJT/GKZ need some irreducible I of degree k dividing h₁X^q − h₀. Any such I presents *the* field F_{Q^k}. KW prove that an elliptic model exists after a degree-O(log n) extension. In both cases the freedom comes from all targets of one size being isomorphic.
+
+**Z/N side.**
+- [PROVED] Every ring presentation Z[x]/(f) → Z/N with x ↦ m satisfies Lemma RES (snfsrig §1.1).
+- [HEURISTIC G] An integer counterpart of X^q ≡ h₀/h₁, namely N | h₁(m)m^q − h₀(m) with small h_i and small m, has ≈ (Hm²)²·M parameter choices against probability 1/N. For general N this needs Hm² ≥ N^{1/3}-ish.
+- [PROVED] Even when such a presentation exists (special N), Prop F and Lemma DES leave the f-side unstructured. The best use of the structure is SNFS.
+- [PROVED] Extensions of the target ((Z/N)[x]/(F)) do not change the prime field, so Lemma CF still applies.
+
+### 5.6 E5 has no integer counterpart [PROVED for the size-invariance part]
+
+**Quasi-polynomial descent.** It halves the absolute degree at cost poly(q), independent of the constant field F_{q^{2^e}} in which it runs: the splitting probability in V is 1/O(q³) over every extension. The size of the other side is (1 + δ)D, with no dependence on the target degree k.
+
+**Integer side.**
+- Under RES/G every candidate tied to N has log-norm-product ≥ 2√(2·log N·log E) (heurnfs B1). The other side's size therefore depends on N, and the descent's bottom level costs L[1/3] (heurnfs B5, §3.1 bottom bound).
+- [PROVED] In a number field a rational prime ℓ has prime ideals of norm ℓ^f ≥ ℓ, so base change never lowers absolute size. There is no "extend the constants" step.
+
+### 5.7 The F_1 dictionary [PROVED, elementary]
+
+- Over "F_{1^n}" = μ_n ∪ {0}, GL₂ is the monomial group μ_n² ⋊ S₂ (Kapranov–Smirnov convention), so PGL₂(F_{1^n}) has order 2n.
+- It sends T^n − 1 only to unit multiples of T^n − 1 and 1 − T^n. That is O(1) relations, against q³ + q for PGL₂(F_{q²})/PGL₂(F_q).
+- Additivity is exactly what turns the monomial group into PGL₂. Its absence (Prop F) collapses E4.
+
+## 6. What it would take (precise missing step)
+
+A route-1 success would need a family 𝓕 of pairs (u, v) with u ≡ v (mod N), u ≠ v, satisfying:
+- (a) u is a product of ≳ log N/log B pieces, each ≤ B^{O(1)}, by an identity;
+- (b) v has log-size independent of log N (or o(x^{2/3}));
+- (c) |𝓕| ≥ L[α] for α < 1/3, computable without the factors.
+
+By Prop F, Lemma CF and Lemma DES, (a) cannot come from a Frobenius, from a systematic product over Z/N, or from a fewnomial identity over a number field of bounded degree. By RES/G, (b) cannot come from polynomial selection for general N. Neither we nor codex found any other source.
+
+## 7. Reviews
+
+### 7.1 Codex blind round (`codex/systeq_1.out`, launched before our analysis)
+
+**Same verdict.** It gives < 1% for a straightforward transfer.
+
+**Independent contributions:**
+- the E1–E6 axiomatisation;
+- the correct coset count q(q² + 1);
+- unital Z/p^s → Z/N exists iff N | p^s;
+- the Λ-ring equivariance failure, i.e. a^p ≡ a mod N has density ≤ p²/N;
+- the explicit carry T^p − T = ∏(T − a) + pC_p(T);
+- the Jacobi-sum smooth norms ℓ^{d/2};
+- the a⁴ + 4b⁴ Aurifeuillian example;
+- the binomial collision kill test: N = 1 000 003 · 1 000 033, B = 4096, M = 4 155 871 binomials of ≥ 80 bits, **10 collisions observed against 8.635 expected for uniform units** (random control: 8). The script is `codex/scratch/systeq_1/` (git-ignored; not re-run by us).
+
+**What we add.** Prop F (in its quantitative "s − 1 ≡ 0 mod λ(N)" form), Lemma CF, Lemma DES applied to V, the measured positive-control contrast and the Cunningham V-family. For each of these: no prior statement found by us.
+
+### 7.2 Codex adversarial round and Opus critics
+
+See §7.3 (filled in after the reviews).
+
+## 8. Reproduction
+
+```bash
+.venv/bin/python -m src.systeq.run_experiment all      # E1-E4, ~3 min
+.venv/bin/python -m pytest -q tests/test_systeq.py
+```
+
+The post-hoc decomposition is `bgjt.posthoc_by_type(p, e0)` over the E1 fields. It is also `run_experiment.py E1_posthoc` (same output file).
+
+exec
+/bin/zsh -lc 'cat src/systeq/bgjt.py && cat src/systeq/barriers.py' in /Volumes/git/factoring-connection
+exec
+/bin/zsh -lc 'cat notes/systeq_prereg.md && cat src/systeq/intanalog.py' in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+"""POSITIVE CONTROL: the small-characteristic systematic-equation relation family (BGJT/KW).
+
+Setting (Kleinjung-Wesolowski 2019, Sect. 2-3.4; BGJT 2014):
+  * base field k' = F_Q with Q = q^2, q = p^{e0};
+  * target F_{Q^kk} = F_Q[X]/(I), I an irreducible factor of degree kk of h1 X^q - h0,
+    deg h0, h1 <= 2, so that X^q == h0/h1 (mod I)   ("Frobenius is a small rational function");
+  * V = span(X^{q+1}, X^q, X, 1).  For f = A X^{q+1} + B X^q + C X + D in V,
+        h1 f == r_f := A X h0 + B h0 + C X h1 + D h1   (mod I),   deg r_f <= 3;
+  * a RELATION is an f in P(V)(F_Q) that splits into linear factors over F_Q and whose
+    r_f also splits.  The PGL_2(F_Q)-orbit of X^q - X (size q^3 + q) consists of split f.
+
+Everything is exact.  `exhaustive_v_split` counts the split elements of P(V)(F_Q) exactly
+(all ~Q^3 of them), using the fact that for f = t(x) + D the roots are the fibre t^{-1}(-D)
+and that a repeated root can only sit at the unique zero of f' (= A x^q + C in char p).
+"""
+from __future__ import annotations
+
+import random
+from fractions import Fraction
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+
+from .ffield import GF, split_count_formula
+
+
+def make_field(p: int, e0: int) -> Tuple[GF, int]:
+    """F_{q^2} with q = p^e0. Returns (field, q)."""
+    return GF(p, 2 * e0), p ** e0
+
+
+def _mult_at(F: GF, f: List[int], x0: int) -> int:
+    mu = 0
+    while len(f) > 1 and F.peval(f, x0) == 0:
+        f, rem = F.pdivmod(f, [int(F.neg[x0]), 1])
+        assert not rem
+        mu += 1
+    return mu
+
+
+def exhaustive_v_split(F: GF, q: int) -> Dict:
+    """Exact enumeration of P(V)(F_Q). Returns counts and the list of split (A,B,C,D)."""
+    Q = F.Q
+    xs = F.elems
+    xq = F.powvec(q)
+    xq1 = F.mul[xq, xs]
+    split: List[Tuple[int, int, int, int]] = []
+    total = 0
+    # case A = 1: f = x^{q+1} + B x^q + C x + D ; f' = x^q + C
+    # x0 with x0^q = -C : Frobenius is a bijection, x0 = (-C)^{q^{?}}; find by table.
+    inv_frob = np.zeros(Q, dtype=np.int64)
+    inv_frob[xq] = xs  # xq is a permutation
+    for B in range(Q):
+        base = F.add[xq1, F.mul[B, xq]]
+        for C in range(Q):
+            t = F.add[base, F.mul[C, xs]]
+            cnt = np.bincount(t, minlength=Q)
+            x0 = int(inv_frob[int(F.neg[C])])
+            D0 = int(F.neg[int(t[x0])])  # the only D for which x0 is a (repeated) root
+            total += Q
+            for val in np.nonzero(cnt >= 1)[0]:
+                D = int(F.neg[int(val)])
+                c = int(cnt[val])
+                if D == D0:
+                    f = [D, C] + [0] * (q - 2) + [B, 1]
+                    mu = _mult_at(F, f, x0)
+                    if c - 1 + mu == q + 1:
+                        split.append((1, B, C, D))
+                elif c == q + 1:
+                    split.append((1, B, C, D))
+    # case A = 0, B = 1: f = x^q + C x + D ; f' = C
+    for C in range(Q):
+        t = F.add[xq, F.mul[C, xs]]
+        cnt = np.bincount(t, minlength=Q)
+        total += Q
+        for D in range(Q):
+            if C == 0:
+                split.append((0, 1, 0, D))  # (x + D^{1/q})^q
+            elif cnt[int(F.neg[D])] == q:
+                split.append((0, 1, C, D))
+    # case A = B = 0, C = 1 (degree 1) and the constant form: always split
+    for D in range(Q):
+        split.append((0, 0, 1, D))
+    split.append((0, 0, 0, 1))
+    total += Q + 1
+    assert total == (Q ** 4 - 1) // (Q - 1)
+    return {"total": total, "split": split}
+
+
+def orbit_size(q: int) -> int:
+    """|PGL2(F_{q^2})| / |PGL2(F_q)| = q^3 + q."""
+    return q ** 3 + q
+
+
+def find_model(F: GF, q: int, seed: int, min_k: int = 3, tries: int = 4000):
+    """Random h0, h1 of degree <= 2 with an irreducible factor I of h1 x^q - h0 of the largest
+    degree kk >= min_k found (DDF piece of degree kk that is itself a single factor)."""
+    rng = random.Random(f"systeq|bgjt-model|{F.Q}|{q}|{seed}")
+    best = None
+    for _ in range(tries):
+        h0 = F.trim([rng.randrange(F.Q) for _ in range(3)])
+        h1 = F.trim([rng.randrange(F.Q) for _ in range(2)] + [rng.randrange(1, F.Q)])
+        if not h0:
+            continue
+        P = F.psub(F.pmul(h1, [0] * q + [1]), h0)
+        dP = F.trim([F.m(i % F.p, c) for i, c in enumerate(P)][1:])
+        if len(F.pgcd(P, dP)) > 1:
+            continue
+        for deg, g in F.irreducible_factors_ddf(P):
+            if len(g) - 1 == deg and deg >= min_k and (best is None or deg > best[0]):
+                best = (deg, h0, h1, g)
+        if best is not None and best[0] >= q - 1:
+            break
+    if best is None:
+        raise RuntimeError("no model found")
+    kk, h0, h1, I = best
+    return {"k": kk, "h0": h0, "h1": h1, "I": I}
+
+
+def r_of(F: GF, f4, h0, h1):
+    A, B, C, D = f4
+    r = F.padd(F.pmul(F.trim([B, A]), h0), F.pmul(F.trim([D, C]), h1))
+    return r
+
+
+def f_poly(F: GF, q: int, f4):
+    A, B, C, D = f4
+    return F.trim([D, C] + [0] * (q - 2) + [B, A])
+
+
+def relation_yield(F: GF, q: int, model: Dict, split_list) -> Dict:
+    """Among split f in P(V), count those whose r_f is nonzero and splits.  Verifies
+    h1 f == r_f (mod I) exactly for every relation."""
+    h0, h1, I = model["h0"], model["h1"], model["I"]
+    rel = 0
+    checked = 0
+    for f4 in split_list:
+        r = r_of(F, f4, h0, h1)
+        if not r:
+            continue
+        if F.splits(r):
+            rel += 1
+            f = f_poly(F, q, f4)
+            lhs = F.pmod(F.psub(F.pmul(h1, f), r), I)
+            assert not lhs, "congruence h1 f == r_f mod I failed"
+            checked += 1
+    return {"relations": rel, "verified_mod_I": checked}
+
+
+def control_summary(p: int, e0: int, seed: int = 0) -> Dict:
+    F, q = make_field(p, e0)
+    Q = F.Q
+    ex = exhaustive_v_split(F, q)
+    S = len(ex["split"])
+    model = find_model(F, q, seed)
+    ry = relation_yield(F, q, model, ex["split"])
+    sq, tq = split_count_formula(Q, q + 1)
+    s3, t3 = split_count_formula(Q, 3)
+    P_rand_q1 = Fraction(sq, tq)
+    P_rand_3 = Fraction(s3, t3)
+    frac_split = Fraction(S, ex["total"])
+    Y = Fraction(ry["relations"], ex["total"])
+    return {
+        "p": p, "q": q, "Q": Q, "k": model["k"], "P_V": ex["total"], "split_in_V": S,
+        "orbit_q3_plus_q": orbit_size(q),
+        "frac_split_V": frac_split, "P_rand_split_deg_q+1": P_rand_q1,
+        "G_V": frac_split / P_rand_q1,
+        "relations": ry["relations"], "verified_mod_I": ry["verified_mod_I"],
+        "yield_per_candidate": Y, "pred_size": P_rand_q1 * P_rand_3,
+        "G_FF": Y / (P_rand_q1 * P_rand_3),
+        "rel_over_factor_base": Fraction(ry["relations"], Q + 1),
+    }
+
+
+def classify_split(F: GF, q: int, f4) -> str:
+    """'orbit' (squarefree split: exactly the PGL2(F_{q^2})-orbit of X^q - X, q^3 + q of them),
+    'frobpow' ((X+b)^q (X+c) or (X+b)^q: repeated roots), or 'deg<=1'."""
+    A, B, C, D = f4
+    if A == 0 and B == 0:
+        return "deg<=1"
+    f = f_poly(F, q, f4)
+    rts = F.root_multiset(f)
+    return "orbit" if len(set(rts)) == len(f) - 1 else "frobpow"
+
+
+def posthoc_by_type(p: int, e0: int, seed: int = 0) -> Dict:
+    """POST-HOC (disclosed, not pre-registered): relation yield split by candidate type."""
+    F, q = make_field(p, e0)
+    ex = exhaustive_v_split(F, q)
+    model = find_model(F, q, seed)
+    out = {"q": q, "Q": F.Q, "P_V": ex["total"]}
+    sq, tq = split_count_formula(F.Q, q + 1)
+    s3, t3 = split_count_formula(F.Q, 3)
+    pred = Fraction(sq, tq) * Fraction(s3, t3)
+    for typ in ("orbit", "frobpow", "deg<=1"):
+        lst = [f4 for f4 in ex["split"] if classify_split(F, q, f4) == typ]
+        ry = relation_yield(F, q, model, lst)
+        out[typ] = {"split": len(lst), "relations": ry["relations"],
+                    "rel_per_split": Fraction(ry["relations"], len(lst)) if lst else None,
+                    "G": Fraction(ry["relations"], ex["total"]) / pred}
+    return out
+"""DIAGNOSTIC checkers for the systeq barriers (they may use the factors of toy N; never
+imported by operational code).  Exact arithmetic.
+
+Prop F  (additive power maps): if z -> z^s is additive on a Z/N-algebra A, then (p-1) | (s-1)
+        for every prime p dividing char A.  Checked by brute force on tiny algebras.
+Lemma CF (constant field): a systematic product prod_{c in S}(T - c) vanishing on the image
+        of Z in A has |S| >= p for each p | char A; over F_p[sqrt D] (D a non-residue) the
+        Wilson-type identity prod_{c=0}^{p-1}(z - c) = sigma(z) - z holds.
+Lemma SUB (substitution Frobenius in char 0): with sigma_q(f)(t) = f(t^q),
+        sigma_q(f) g - f sigma_q(g) = (ad - bc)(t^q - t) for f = at+b, g = ct+d: the
+        homography trick yields ONE relation, not q^3.
+Zsigmondy: m^n - 1 (m >= 2, n >= B >= 7) is never B-smooth.
+"""
+from __future__ import annotations
+
+import random
+from itertools import product
+from typing import List, Tuple
+
+from sympy import Poly, symbols
+
+from .intanalog import is_smooth
+
+
+# --- Prop F ------------------------------------------------------------------------------
+def _alg_mul(a, b, F, N):
+    """Multiply in (Z/N)[t]/(F), F monic given low->high; elements are coefficient tuples."""
+    d = len(F) - 1
+    r = [0] * (2 * d - 1)
+    for i, x in enumerate(a):
+        for j, y in enumerate(b):
+            r[i + j] += x * y
+    for k in range(len(r) - 1, d - 1, -1):
+        c = r[k]
+        if c:
+            for i in range(d + 1):
+                r[k - d + i] -= c * F[i]
+    return tuple(v % N for v in r[:d])
+
+
+def _alg_pow(a, s, F, N):
+    d = len(F) - 1
+    r = tuple([1] + [0] * (d - 1))
+    while s:
+        if s & 1:
+            r = _alg_mul(r, a, F, N)
+        a = _alg_mul(a, a, F, N)
+        s >>= 1
+    return r
+
+
+def additive_exponents(N: int, F: List[int], s_max: int) -> List[int]:
+    """All s in [2, s_max] with (x+y)^s = x^s + y^s for ALL x, y in A = (Z/N)[t]/(F)."""
+    d = len(F) - 1
+    elems = list(product(range(N), repeat=d))
+    out = []
+    for s in range(2, s_max + 1):
+        pw = {e: _alg_pow(e, s, F, N) for e in elems}
+        ok = True
+        for x in elems:
+            for y in elems:
+                z = tuple((u + v) % N for u, v in zip(x, y))
+                if pw[z] != tuple((u + v) % N for u, v in zip(pw[x], pw[y])):
+                    ok = False
+                    break
+            if not ok:
+                break
+        if ok:
+            out.append(s)
+    return out
+
+
+# --- Lemma CF ------------------------------------------------------------------------------
+def wilson_frobenius_check(p: int, D: int, trials: int = 50, seed: int = 0) -> bool:
+    """In F_p[sqrt D], D a non-residue: prod_{c=0}^{p-1} (z - c) == sigma(z) - z."""
+    assert pow(D % p, (p - 1) // 2, p) == p - 1
+    rng = random.Random(f"systeq|wilson|{p}|{D}|{seed}")
+    mul = lambda u, v: ((u[0] * v[0] + D * u[1] * v[1]) % p, (u[0] * v[1] + u[1] * v[0]) % p)
+    for _ in range(trials):
+        z = (rng.randrange(p), rng.randrange(p))
+        pr = (1, 0)
+        for c in range(p):
+            pr = mul(pr, ((z[0] - c) % p, z[1]))
+        sig = (z[0], (-z[1]) % p)
+        if pr != ((sig[0] - z[0]) % p, (sig[1] - z[1]) % p):
+            return False
+    return True
+
+
+def systematic_degree_lower_bound(S: List[int], p: int) -> bool:
+    """prod_{c in S}(T - c) vanishes on F_p  =>  S covers all residues mod p (so |S| >= p)."""
+    return {c % p for c in S} == set(range(p))
+
+
+# --- Lemma SUB -----------------------------------------------------------------------------
+def substitution_homography(q: int):
+    a, b, c, d, t = symbols("a b c d t")
+    f, g = a * t + b, c * t + d
+    sf, sg = a * t ** q + b, c * t ** q + d
+    lhs = Poly(sf * g - f * sg, t)
+    rhs = Poly((a * d - b * c) * (t ** q - t), t)
+    return lhs == rhs
+
+
+# --- Zsigmondy ---------------------------------------------------------------------------
+def zsigmondy_check(B: int, m_max: int, n_extra: int) -> Tuple[int, int]:
+    """Count (m, n), 2 <= m <= m_max, B <= n < B + n_extra, with m^n - 1 B-smooth (expect 0)."""
+    hits, tot = 0, 0
+    for m in range(2, m_max + 1):
+        for n in range(B, B + n_extra):
+            tot += 1
+            hits += is_smooth(m ** n - 1, B)
+    return hits, tot
+
+ succeeded in 0ms:
+# systeq pre-registration (agent `systeq`, phase 16, 2026-10-20)
+
+Committed before any run of the experiments below.
+
+## Disclosed pre-registration activity
+
+The following was run before this file was committed:
+- A code smoke test of the positive control for q = 4, 5, 7. It gave G_FF = 9.1, 38.2 and 1265 and verified every relation mod I.
+- A bit-length and timing check of the E2 parameters: no smoothness counts were taken.
+- A tiny Descartes check (n = 7, H = 2): 0 nondegenerate split members.
+
+The q ≤ 7 positive-control rows are therefore *not* predictions. Only q ∈ {8, 9, 11, 13, 16} are predicted.
+
+## Question
+
+The small-characteristic engine has a structural feature: the systematic equation makes one side of a relation smooth BY CONSTRUCTION. Does the closest integer analogue give any such smoothness gain? The gain is measured against the size-bound prediction, i.e. random elements of the same size.
+
+**Gain** G = (observed relation yield) / (yield predicted if each side were a random element of its size).
+
+## E1: positive control, F_{q²}[X]/(I) with I | h₁X^q − h₀ (BGJT/KW model)
+
+- **Candidates:** all of P(V)(F_{q²}), V = span(X^{q+1}, X^q, X, 1), enumerated exactly.
+- **Relation:** f splits over F_{q²}, and r_f = A X h₀ + B h₀ + C X h₁ + D h₁ (degree ≤ 3, h₁f ≡ r_f mod I) also splits.
+- **Size prediction:** P_rand(q+1)·P_rand(3). Here P_rand(D) = C(Q+D, D)/((Q^{D+1}−1)/(Q−1)), the exact fraction of split binary forms of degree D.
+- **Model M_KW:** frac_split(V) ≈ 8/q³ and P(r_f splits | f split) ≈ 1/6. This gives the predicted G_FF* = (8/q³)/6 / (P_rand(q+1)P_rand(3)):
+
+  | q | G_FF* |
+  |---|---|
+  | 8 | 2.7e3 |
+  | 9 | 2.0e4 |
+  | 11 | 1.5e6 |
+  | 13 | 1.7e8 |
+  | 16 | 3.8e11 |
+
+- **Predictions:**
+  - (P1a) |log₁₀ G_FF − log₁₀ G_FF*| ≤ 1 for each q ∈ {8, 9, 11, 13, 16}.
+  - (P1b) G_FF is increasing in q.
+  - (P1c) #relations ≥ Q + 1 (the size of the linear factor base) for every q.
+  - (P1d) The congruence h₁f ≡ r_f mod I holds for every relation (asserted in code).
+
+## E2: integer analogue, the "F_{1^n}" V-family on Cunningham-type N = Φ_n(m)
+
+- **Setup:**
+  - m^n ≡ 1 (mod N), so μ_n = ⟨m⟩ is an explicit "constant field" in Z/N, and X^n ≡ 1 plays the role of X^q ≡ h₀/h₁.
+  - For f = A x^{n+1} + B x^n + C x + D with |A|, …, |D| ≤ H = 32 and A ≠ 0, f(m) ≡ r_f := (A+C)m + (B+D) (mod N). This is checked on every candidate.
+- **Relation:** f(m) and r_f are both B-smooth, with B = 2^16.
+- **Instances:** (n, m) ∈ {(5, 520), (7, 130), (11, 19), (13, 11)}, giving N of 37–43 bits. There are 200 000 seeded candidates each.
+- **Size prediction:** Σ base(bitlen f(m))·base(bitlen r_f). Here base(ℓ) is the exact empirical B-smooth rate of 200 000 seeded uniform integers in [2^{ℓ−1}, 2^ℓ).
+- **Predictions:**
+  - (P2a) G ∈ [0.5, 2] for every instance.
+  - (P2b) **Kill signal for the barrier:** G ≥ 4 on any instance would mean that structured integer smoothness exists, and would trigger investigation.
+  - (P2c) The f(m) side has log-size ≥ log N. This is the Dixon/L[1/2] regime, which the barrier predicts.
+
+## E3: Descartes count
+
+- **Setup:** exhaustive over A x^{n+1} + B x^n + C x + D ∈ Z[x], coefficients in [−4, 4], A ≠ 0, n = 2..10. Count the members that split completely over Q, excluding the degenerate x^n(Ax + B) (C = D = 0).
+- **Prediction (P3, PROVED by Descartes' rule, so this is an exact check):** 0 nondegenerate split members for every n ≥ 7.
+- For n ≤ 6 the counts are reported without prediction. n = 2 is all cubics, so the count is positive.
+
+## E4: cyclotomic calibration (no N)
+
+- **Setup:** m^n − 1 = ∏_{d|n} Φ_d(m), with n = 6, m ∈ [2^20, 2^20 + 30000), and n = 12, m ∈ [4096, 16384); B = 2^16.
+- **Per-piece prediction:** Σ_m ∏_d base(bitlen Φ_d(m)).
+- **Prediction (P4):** R_piece = observed/predicted ∈ [0.1, 1.5] for both instances. Cyclotomic splitting gives at most per-piece-size smoothness, and the residue-class restrictions (Zsigmondy) push it down. It never gives smoothness by construction.
+
+## Command
+
+```
+.venv/bin/python -m src.systeq.run_experiment all
+```
+
+Config: `experiments/configs/systeq.json` (seed 0). Raw: `experiments/raw/systeq_E{1,2,3,4}.jsonl`. Memory is under 300 MB; it runs as one job.
+"""Integer analogues of the systematic-equation relation family.  Exact arithmetic.
+
+OPERATIONAL-SAFE: nothing here factors N or uses its factors.  Smoothness is tested against
+the fixed primorial of B (Bernstein's test), which is a test of the candidate values, not of N.
+
+E2  Cunningham-type "F_{1^n}" V-family (the closest integer instance of the BGJT axioms):
+    N = Phi_n(m), so m^n == 1 (mod N): mu_n = <m> is an explicit "constant field" inside Z/N
+    and X^n == 1 plays the role of X^q == h0/h1.  For f = A x^{n+1} + B x^n + C x + D,
+        f(m) == r_f := (A + C) m + (B + D)   (mod N).
+    A relation is a pair (f(m), r_f) with both sides B-smooth.  The BGJT analogue would need
+    f to split over Z into linear factors with small values; Descartes forbids that (E3).
+E3  Descartes count: completely split members of V_n(Z) of small height.
+E4  Cyclotomic calibration: m^n - 1 = prod_{d|n} Phi_d(m); smoothness versus the per-piece
+    random baseline (cyclotomic splitting is a size reduction, not smoothness by construction).
+"""
+from __future__ import annotations
+
+import random
+from fractions import Fraction
+from typing import Dict, List
+
+import gmpy2
+from flint import fmpz_poly
+from sympy import cyclotomic_poly, divisors, primerange
+from sympy.abc import x as _x
+
+
+# ---------------------------------------------------------------------------------------
+# exact smoothness
+_PRIMORIAL: Dict[int, gmpy2.mpz] = {}
+
+
+def primorial(B: int) -> gmpy2.mpz:
+    if B not in _PRIMORIAL:
+        P = gmpy2.mpz(1)
+        for p in primerange(2, B + 1):
+            P *= p
+        _PRIMORIAL[B] = P
+    return _PRIMORIAL[B]
+
+
+def is_smooth(v: int, B: int) -> bool:
+    """Exact: |v| is B-smooth (v != 0).  v | P^(2^k) with 2^k >= log2|v|  <=>  B-smooth."""
+    v = abs(int(v))
+    if v == 0:
+        raise ValueError("0")
+    if v <= B:
+        return True
+    v = gmpy2.mpz(v)
+    r = primorial(B) % v
+    k = 1
+    while (1 << k) < v.bit_length():
+        k += 1
+    for _ in range(k):
+        if r == 0:
+            return True
+        r = r * r % v
+    return r == 0
+
+
+def random_baseline(bits: List[int], B: int, samples: int, seed: int) -> Dict[int, Fraction]:
+    """Exact empirical B-smooth rate of uniform integers in [2^(l-1), 2^l), per bit length l.
+    For l <= floor(log2 B) the rate is 1 exactly (every such integer is <= B)."""
+    out = {}
+    for l in sorted(set(bits)):
+        if (1 << l) - 1 <= B:
+            out[l] = Fraction(1)
+            continue
+        rng = random.Random(f"systeq|baseline|{B}|{l}|{seed}")
+        hits = sum(is_smooth(rng.randrange(1 << (l - 1), 1 << l), B) for _ in range(samples))
+        out[l] = Fraction(hits, samples)
+    return out
+
+
+def phi_n(n: int) -> List[int]:
+    return [int(c) for c in reversed(cyclotomic_poly(n, _x, polys=True).all_coeffs())]
+
+
+def ev(coeffs: List[int], m: int) -> int:
+    r = 0
+    for c in reversed(coeffs):
+        r = r * m + c
+    return r
+
+
+# ---------------------------------------------------------------------------------------
+# E2
+def vfamily_candidates(n: int, m: int, H: int, count: int, seed: int):
+    """Seeded sample of (A,B,C,D) in [-H,H]^4, A != 0, r_f != 0; yields (v=f(m), r_f)."""
+    N = ev(phi_n(n), m)
+    rng = random.Random(f"systeq|vfam|{n}|{m}|{H}|{seed}")
+    mn = m ** n
+    out = []
+    while len(out) < count:
+        A, Bc, C, D = (rng.randint(-H, H) for _ in range(4))
+        if A == 0:
+            continue
+        r = (A + C) * m + (Bc + D)
+        v = A * mn * m + Bc * mn + C * m + D
+        if r == 0 or v == 0:
+            continue
+        out.append((v, r))
+    # exactness check of the congruence on every candidate
+    assert all((v - r) % N == 0 for v, r in out)
+    return N, out
+
+
+def vfamily_yield(n: int, m: int, H: int, count: int, B: int, base: Dict[int, Fraction],
+                  seed: int) -> Dict:
+    N, cands = vfamily_candidates(n, m, H, count, seed)
+    obs = 0
+    pred = Fraction(0)
+    for v, r in cands:
+        lv, lr = abs(v).bit_length(), abs(r).bit_length()
+        pred += base[lv] * base[lr]
+        if is_smooth(v, B) and is_smooth(r, B):
+            obs += 1
+    return {"n": n, "m": m, "N_bits": N.bit_length(), "H": H, "B": B, "candidates": count,
+            "observed": obs, "predicted": pred, "G": (Fraction(obs) / pred) if pred else None,
+            "v_bits": sorted({abs(v).bit_length() for v, _ in cands})}
+
+
+def vfamily_bits(n: int, m: int, H: int, count: int, seed: int) -> List[int]:
+    _, cands = vfamily_candidates(n, m, H, count, seed)
+    return [abs(v).bit_length() for v, _ in cands] + [abs(r).bit_length() for _, r in cands]
+
+
+# ---------------------------------------------------------------------------------------
+# E3
+def descartes_count(n: int, H: int) -> Dict:
+    """Exhaustive over A x^{n+1} + B x^n + C x + D, coefficients in [-H, H], A != 0.
+    Counts members that split completely over Q, separating the degenerate x^n (A x + B)."""
+    split_nondeg, split_deg, total = 0, 0, 0
+    examples = []
+    for A in range(-H, H + 1):
+        if A == 0:
+            continue
+        for Bc in range(-H, H + 1):
+            for C in range(-H, H + 1):
+                for D in range(-H, H + 1):
+                    total += 1
+                    coeffs = [D, C] + [0] * (n - 2) + [Bc, A]
+                    f = fmpz_poly(coeffs)
+                    _, facs = f.factor()
+                    if all(g.degree() == 1 for g, _ in facs):
+                        if C == 0 and D == 0:
+                            split_deg += 1
+                        else:
+                            split_nondeg += 1
+                            if len(examples) < 5:
+                                examples.append((A, Bc, C, D))
+    return {"n": n, "H": H, "total": total, "split_nondegenerate": split_nondeg,
+            "split_degenerate": split_deg, "examples": examples}
+
+
+# ---------------------------------------------------------------------------------------
+# E4
+def cyclo_calibration(n: int, m_lo: int, m_hi: int, B: int, base: Dict[int, Fraction]) -> Dict:
+    ds = divisors(n)
+    polys = {d: phi_n(d) for d in ds}
+    obs = 0
+    pred = Fraction(0)
+    for m in range(m_lo, m_hi):
+        pieces = [ev(polys[d], m) for d in ds]
+        assert eval_prod(pieces) == m ** n - 1
+        pr = Fraction(1)
+        for v in pieces:
+            pr *= base[abs(v).bit_length()]
+        pred += pr
+        if all(is_smooth(v, B) for v in pieces):
+            obs += 1
+    return {"n": n, "m_range": [m_lo, m_hi], "B": B, "observed": obs, "predicted": pred,
+            "R_piece": (Fraction(obs) / pred) if pred else None}
+
+
+def cyclo_bits(n: int, m_lo: int, m_hi: int) -> List[int]:
+    ds = divisors(n)
+    return [abs(ev(phi_n(d), m)).bit_length() for m in range(m_lo, m_hi) for d in ds]
+
+
+def eval_prod(xs):
+    r = 1
+    for v in xs:
+        r *= v
+    return r
+
+exec
+/bin/zsh -lc 'cat src/systeq/run_experiment.py && cat experiments/configs/systeq.json && cat experiments/raw/systeq_E2.jsonl && cat experiments/raw/systeq_E4.jsonl' in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+"""systeq experiment runner (pre-registered in notes/systeq_prereg.md).
+
+    .venv/bin/python -m src.systeq.run_experiment [E1|E1_posthoc|E2|E3|E4|all]
+
+Writes experiments/raw/systeq_<E>.jsonl.  Configuration: experiments/configs/systeq.json.
+Fractions are stored exactly as "num/den" strings plus a float for display only.
+"""
+from __future__ import annotations
+
+import json
+import sys
+import time
+from fractions import Fraction
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+CFG = json.loads((ROOT / "experiments/configs/systeq.json").read_text())
+
+
+def _ser(v):
+    if isinstance(v, Fraction):
+        return {"exact": f"{v.numerator}/{v.denominator}", "float": float(v)}
+    if isinstance(v, dict):
+        return {k: _ser(x) for k, x in v.items()}
+    if isinstance(v, (list, tuple)):
+        return [_ser(x) for x in v]
+    return v
+
+
+def _write(name, rows):
+    out = ROOT / f"experiments/raw/systeq_{name}.jsonl"
+    with out.open("w") as fh:
+        for r in rows:
+            fh.write(json.dumps(_ser(r)) + "\n")
+    print(f"wrote {out}")
+
+
+def e1():
+    from .bgjt import control_summary
+    rows = []
+    for p, e0 in CFG["E1"]["fields"]:
+        t = time.time()
+        s = control_summary(p, e0, seed=CFG["seed"])
+        s["seconds"] = round(time.time() - t, 2)
+        rows.append(s)
+        print({k: (float(v) if isinstance(v, Fraction) else v) for k, v in s.items()})
+    _write("E1", rows)
+
+
+def e1_posthoc():
+    """POST-HOC (disclosed): E1 relation yield split by candidate type (orbit / Frobenius-power)."""
+    from .bgjt import posthoc_by_type
+    rows = [posthoc_by_type(p, e0, CFG["seed"]) for p, e0 in CFG["E1"]["fields"]]
+    _write("E1_posthoc", rows)
+
+
+def e2():
+    from .intanalog import random_baseline, vfamily_bits, vfamily_yield
+    c = CFG["E2"]
+    B = c["B"]
+    rows = []
+    for n, m in c["instances"]:
+        bits = vfamily_bits(n, m, c["H"], c["count"], CFG["seed"])
+        base = random_baseline(bits, B, c["baseline_samples"], CFG["seed"])
+        r = vfamily_yield(n, m, c["H"], c["count"], B, base, CFG["seed"])
+        rows.append(r)
+        print({k: (float(v) if isinstance(v, Fraction) else v) for k, v in r.items() if k != "v_bits"})
+    _write("E2", rows)
+
+
+def e3():
+    from .intanalog import descartes_count
+    c = CFG["E3"]
+    rows = []
+    for n in c["n"]:
+        r = descartes_count(n, c["H"])
+        rows.append(r)
+        print(r)
+    _write("E3", rows)
+
+
+def e4():
+    from .intanalog import cyclo_bits, cyclo_calibration, random_baseline
+    c = CFG["E4"]
+    rows = []
+    for n, lo, hi in c["instances"]:
+        base = random_baseline(cyclo_bits(n, lo, hi), c["B"], c["baseline_samples"], CFG["seed"])
+        r = cyclo_calibration(n, lo, hi, c["B"], base)
+        rows.append(r)
+        print({k: (float(v) if isinstance(v, Fraction) else v) for k, v in r.items()})
+    _write("E4", rows)
+
+
+if __name__ == "__main__":
+    which = sys.argv[1] if len(sys.argv) > 1 else "all"
+    for name, fn in [("E1", e1), ("E1_posthoc", e1_posthoc), ("E2", e2), ("E3", e3), ("E4", e4)]:
+        if which in (name, "all"):
+            fn()
+{
+  "seed": 0,
+  "E1": {"fields": [[2, 2], [5, 1], [7, 1], [2, 3], [3, 2], [11, 1], [13, 1], [2, 4]]},
+  "E2": {"B": 65536, "H": 32, "count": 200000, "baseline_samples": 200000,
+         "instances": [[5, 520], [7, 130], [11, 19], [13, 11]]},
+  "E3": {"H": 4, "n": [2, 3, 4, 5, 6, 7, 8, 9, 10]},
+  "E4": {"B": 65536, "baseline_samples": 100000,
+         "instances": [[6, 1048576, 1078576], [12, 4096, 16384]]}
+}
+{"n": 5, "m": 520, "N_bits": 37, "H": 32, "B": 65536, "candidates": 200000, "observed": 2325, "predicted": {"exact": "444310271/200000", "float": 2221.551355}, "G": {"exact": "465000000/444310271", "float": 1.0465659480557}, "v_bits": [55, 56, 57, 58, 59, 60]}
+{"n": 7, "m": 130, "N_bits": 43, "H": 32, "B": 65536, "candidates": 200000, "observed": 1684, "predicted": {"exact": "325624311/200000", "float": 1628.121555}, "G": {"exact": "336800000/325624311", "float": 1.0343208065935838}, "v_bits": [56, 57, 58, 59, 60, 61, 62]}
+{"n": 11, "m": 19, "N_bits": 43, "H": 32, "B": 65536, "candidates": 200000, "observed": 3820, "predicted": {"exact": "734792399/200000", "float": 3673.961995}, "G": {"exact": "764000000/734792399", "float": 1.0397494599015307}, "v_bits": [4, 5, 6, 7, 8, 9, 10, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]}
+{"n": 13, "m": 11, "N_bits": 42, "H": 32, "B": 65536, "candidates": 200000, "observed": 5574, "predicted": {"exact": "1052787349/200000", "float": 5263.936745}, "G": {"exact": "1114800000/1052787349", "float": 1.0589033018480924}, "v_bits": [1, 3, 4, 5, 6, 7, 8, 9, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]}
+{"n": 6, "m_range": [1048576, 1078576], "B": 65536, "observed": 113, "predicted": {"exact": "577538806635524795553/3125000000000000000", "float": 184.81241812336793}, "R_piece": {"exact": "353125000000000000000/577538806635524795553", "float": 0.6114307747684414}}
+{"n": 12, "m_range": [4096, 16384], "B": 65536, "observed": 8, "predicted": {"exact": "99661134017777809471/3125000000000000000", "float": 31.8915628856889}, "R_piece": {"exact": "25000000000000000000/99661134017777809471", "float": 0.2508500454704884}}
+
+codex
+Prop F’s global proof appears sound, but its proposed partial replacement already has an escape in a quadratic algebra: every affine expression has a two-coordinate representation. I also found sampled E2 values far smaller than \(N\) in the raw output, contrary to prediction P2c. I’ll check what causes them and how much they affect the measured gain.
+web search: 
+web search: Lenstra 1999 factorization lacunary polynomials number roots number field bound ...
+exec
+/bin/zsh -lc "sed -n '195,245p' notes/systeq_results.md && cat src/systeq/ffield.py | tail -55 && ls .venv/bin/python*" in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+### 5.2 Lemma CF (the constant field is the hidden prime field) [PROVED]
+
+**Statement.** Let A be a Z/N-algebra, S ⊂ A finite and P(T) = ∏_{c∈S}(T − c). If P vanishes on the image of Z in A, then for each p | char A the image of S in a residue field of characteristic p contains F_p, so |S| ≥ p. This holds in particular when S is the fixed ring of a ring endomorphism, since every fixed ring contains Z·1.
+
+**Proof.** In κ[T] the product P̄ = ∏(T − c̄) has every c ∈ F_p as a root, so c = c̄ for some c ∈ S. ∎
+
+**Instance (tested).** In F_p[√D] with D a non-residue, ∏_{c=0}^{p−1}(z − c) = σ(z) − z, where σ is conjugation, which equals Frobenius. This is the Wilson/factorial shadow of X^p − X. Pollard–Strassen and Bostan–Gaudry–Schost evaluate it in ≈ √p, which gives N^{1/4}. That is the precise sense in which "factorial methods are exponential": the only computable systematic equation over Z/N has the hidden prime field as its constant field.
+- KNOWN context: Lipton 1994 and Shub–Smale 1995 show that short straight-line programs for n! would factor fast. This is the integer counterpart of the function-field fact that X^{q^k} − X has an O(k log q) SLP, which is distinct-degree factorisation.
+
+### 5.3 Lemma DES (fewnomials have few roots in characteristic 0) [PROVED from KNOWN]
+
+**Statement.**
+- Descartes' rule: f ∈ R[x] with k nonzero terms has at most k − 1 positive and k − 1 negative roots, with multiplicity.
+- Hence a k-term f that splits over R has deg f ≤ 2(k − 1) + ord₀ f.
+- For V_n with A ≠ 0:
+  - if D ≠ 0, splitting forces n + 1 ≤ 6;
+  - if D = 0 ≠ C, then f = x(Ax^n + Bx^{n−1} + C) forces n ≤ 4;
+  - if C = D = 0, f is the degenerate x^n(Ax + B).
+- So for n ≥ 6 there are **no nondegenerate split members**.
+- Over a number field K, Lenstra (1999, "On the factorization of lacunary polynomials") bounds the number of roots in K of a k-nomial, apart from 0, by c(k, [K : Q]), independent of the degree.
+
+**Consequence.**
+- In F_q the 2-nomial X^q − X has q roots, which is E1 + E2. No number field of bounded degree has an analogue.
+- Unbounded-degree fields (Q(ζ_n), Q(E[n])) give splitting only at the price of the Splitting Lemma (§5.4).
+- Over Q_p the 2-nomial X^p − X does have p roots (Teichmüller). That is the only characteristic-0 escape, and it lives at the hidden prime (row 9).
+
+### 5.4 Splitting Lemma and anti-smoothness [PROVED / KNOWN]
+
+**Splitting Lemma.** For F ∈ Z[x], t ∈ Z and any number field K ∋ α with F(α) = 0:
+
+N_{K/Q}(t − α) = ±(minpoly_α(t))^{[K:Q(α)]}, up to leading-coefficient factors.
+
+So any factorisation of F over any K induces, on the integer F(t), nothing finer than the Q-irreducible factorisation F(t) = ∏ F_j(t). Hence:
+- **Cyclotomic:** the largest piece of t^n − 1 is Φ_n(t), with log-size φ(n) log t. The gain in log-size is ≤ n/φ(n) ≤ e^γ log log n + O(1/log log n) (Rosser–Schoenfeld 1962, Thm 15). This changes L[α, c] by at most a factor (log log)^{O(1)} inside the constant, never the exponent.
+- **EDS:** the primitive part has log-size ≥ (6/π²)·log |W_n|, so the gain is ≤ π²/6.
+
+**Anti-smoothness [KNOWN ⇒ PROVED corollary].**
+- Zsigmondy (1892): m^n − 1 (m ≥ 2) has a primitive prime ℓ ≡ 1 (mod n), apart from (2, 6) and n = 2.
+- So m^n − 1 is not B-smooth whenever n ≥ B. Test `test_zsigmondy_antismooth`, and E4 (R = 0.25 at n = 12).
+- Lucas sequences: Bilu–Hanrot–Voutier 2001, n > 30. EDS: Silverman 1988, with ℓ ≥ (√n − 1)² by Hasse.
+
+### 5.5 Rigidity of Z/N (no presentation freedom) [PROVED part + HEURISTIC part]
+
+**F_q side [KNOWN].** BGJT/GKZ need some irreducible I of degree k dividing h₁X^q − h₀. Any such I presents *the* field F_{Q^k}. KW prove that an elliptic model exists after a degree-O(log n) extension. In both cases the freedom comes from all targets of one size being isomorphic.
+
+**Z/N side.**
+- [PROVED] Every ring presentation Z[x]/(f) → Z/N with x ↦ m satisfies Lemma RES (snfsrig §1.1).
+- [HEURISTIC G] An integer counterpart of X^q ≡ h₀/h₁, namely N | h₁(m)m^q − h₀(m) with small h_i and small m, has ≈ (Hm²)²·M parameter choices against probability 1/N. For general N this needs Hm² ≥ N^{1/3}-ish.
+- [PROVED] Even when such a presentation exists (special N), Prop F and Lemma DES leave the f-side unstructured. The best use of the structure is SNFS.
+- [PROVED] Extensions of the target ((Z/N)[x]/(F)) do not change the prime field, so Lemma CF still applies.
+
+            if k & 1:
+                r = self.pmod(self.pmul(r, f), mod)
+            f = self.pmod(self.pmul(f, f), mod)
+            k >>= 1
+        return r
+
+    def peval(self, f, x):
+        r = 0
+        for c in reversed(f):
+            r = self.a(self.m(r, x), c)
+        return r
+
+    def root_multiset(self, f) -> List[int]:
+        """All roots of f in F_Q, with multiplicity (exact, by repeated division)."""
+        f = self.trim(f)
+        roots = []
+        for x in range(self.Q):
+            while len(f) > 1 and self.peval(f, x) == 0:
+                roots.append(x)
+                f, rem = self.pdivmod(f, [int(self.neg[x]), 1])
+                assert not rem
+        return roots
+
+    def splits(self, f) -> bool:
+        """True iff the nonzero polynomial f is a product of linear factors over F_Q."""
+        f = self.trim(f)
+        if not f:
+            raise ValueError("zero polynomial")
+        return len(self.root_multiset(f)) == len(f) - 1
+
+    def irreducible_factors_ddf(self, f) -> List[Tuple[int, List[int]]]:
+        """Distinct-degree factorisation of a squarefree monic f: list of (degree, product)."""
+        f = self.monic(f)
+        out, i, h = [], 1, [0, 1]
+        while len(f) - 1 >= 2 * i:
+            h = self.ppowmod(h, self.Q, f)
+            g = self.pgcd(f, self.psub(h, [0, 1]))
+            if len(g) > 1:
+                out.append((i, g))
+                f = self.pdivmod(f, g)[0]
+                h = self.pmod(h, f)
+            i += 1
+        if len(f) > 1:
+            out.append((len(f) - 1, f))
+        return out
+
+
+def split_count_formula(Q: int, D: int):
+    """Number of split binary forms of degree D over F_Q, up to scalars, and the total.
+
+    Split forms up to scalars <-> multisets of D points of P^1(F_Q): C(Q+D, D).
+    All nonzero forms up to scalars: (Q^{D+1}-1)/(Q-1).
+    """
+    from math import comb
+    return comb(Q + D, D), (Q ** (D + 1) - 1) // (Q - 1)
+.venv/bin/python
+.venv/bin/python3
+.venv/bin/python3.12
+
+web search: 
+web search: "Carmichael" "rings" "endomorphism" power ...
+exec
+/bin/zsh -lc "rg -n 'Lemma RES|N\\"'^'"\\{2|norm.product|2/D|log.E|heuristic G|B1|B5' notes/heurnfs* notes/snfsrig* && cat experiments/raw/systeq_E1_posthoc.jsonl" in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+notes/heurnfs_results.md:23:    1. the norm-size ledger 2x/d + d·log E;
+notes/heurnfs_results.md:41:  - Under the counting heuristic G for polynomial heights, every two-polynomial selection obeys
+notes/heurnfs_results.md:42:    log X ≥ 2x/D (1+o(1)) + D·log E. This holds for any degrees (d₁, d₂) and any sieving dimension t.
+notes/heurnfs_results.md:129:  §5(i): it would amount to breaking heuristic G (SNFS-like heights for general N).
+notes/heurnfs_results.md:146:| 4 | SNFS (κ = 1), special N only | 1.5263 | KNOWN | violates heuristic G; not general N |
+notes/heurnfs_results.md:148:| 6 | Two degree-d polys (Montgomery/JL-type) | 1.9230 | KNOWN (Joux–Lercier 2003; Barbulescu–Gaudry–Guillevic–Morain 2015) | ledger x/d + 2d log E: same as GNFS after δ ↦ 2δ |
+notes/heurnfs_results.md:316:### 4.1 Barrier B1: the two-polynomial height LP [model-PROVED under G]
+notes/heurnfs_results.md:333:**Consequence.** The norm product is ≥ N^{2/D}·E^{D}, so log X ≥ 2x/D + D·log E ≥ 2√(2x·log E).
+notes/heurnfs_results.md:335:  heuristic G is what does that work.
+notes/heurnfs_results.md:358:- The norm product is H_f′ + H_m′ + (d+1)C/2.
+notes/heurnfs_results.md:411:### 4.5 Barrier B5: why the exponent is 1/3 [model-PROVED for the ledger]
+notes/heurnfs_results.md:414:- Barriers B1–B3 give log X ≥ 2√(κ′·x·C) for search entropy C.
+notes/heurnfs_results.md:421:- The search entropy must then pay d·log E.
+notes/heurnfs_results.md:426:  but its bottom level is bound by B1.
+notes/heurnfs_results.md:466:**(iv) Recursion or descent below 1/3.** Every descent tree ends in bottom relations bound by B1. Recursion only
+notes/heurnfs_results.md:484:- B1 as an exact LP. The resultant bound itself is standard in polynomial-selection optimality
+notes/heurnfs_results.md:486:  packaging with heuristic G is ours.
+notes/heurnfs_results.md:511:| 9 | MINOR | B1 was only spot-checked | one-line proof (D+1)(h₁+h₂) ≥ 2; test |
+notes/snfsrig_results.md:77:   - **Lemma RES [proved].** If coprime f, g ∈ Z[x] have a common root mod N, then
+notes/snfsrig_results.md:83:     - The (R3) floor changes only in its constant: θ ≈ 1/√k for SNFS, against √2/√k for heuristic GNFS and for
+notes/snfsrig_results.md:180:### 1.1 Lemma RES and the coefficient floor [proved]
+notes/snfsrig_results.md:182:**Lemma RES.** Let f, g ∈ Z[x] with deg f = d ≥ 1 and deg g = δ ≥ 1. Suppose they are coprime in Q[x] and
+notes/snfsrig_results.md:232:| heuristic GNFS (base m, both heights N^{1/(d+1)}) | 2/d₀ + d₀/(4κ) | √(2/κ) |
+notes/snfsrig_results.md:377:*Proof.* f₀ is irreducible and does not divide f, so the two are coprime. Apply Lemma RES. ∎
+notes/snfsrig_results.md:478:  π_J ≤ 2Y = O(N^{2ν}) and W = L^{O(1)}, we get |𝒱| ≤ N^{(2+o(1))ν}. The values have size x ≥ X_r/C = N^{1/d−ν−o(1)}.
+notes/snfsrig_results.md:751:  randomising SNFS, of Prop RB, or of Prop R2-S. Lemma RES is classical (resultant/Hadamard). The cyclotomic reduction
+{"q": 4, "Q": 16, "P_V": 4369, "orbit": {"split": 68, "relations": 7, "rel_per_split": {"exact": "7/68", "float": 0.10294117647058823}, "G": {"exact": "21931/55233", "float": 0.397063349808991}}, "frobpow": {"split": 272, "relations": 136, "rel_per_split": {"exact": "1/2", "float": 0.5}, "G": {"exact": "25064/3249", "float": 7.714373653431825}}, "deg<=1": {"split": 17, "relations": 17, "rel_per_split": {"exact": "1/1", "float": 1.0}, "G": {"exact": "3133/3249", "float": 0.9642967066789782}}}
+{"q": 5, "Q": 25, "P_V": 16276, "orbit": {"split": 130, "relations": 24, "rel_per_split": {"exact": "12/65", "float": 0.18461538461538463}, "G": {"exact": "17538838/6931197", "float": 2.5304197817490977}}, "frobpow": {"split": 650, "relations": 338, "rel_per_split": {"exact": "13/25", "float": 0.52}, "G": {"exact": "8769419/246078", "float": 35.63674525963312}}, "deg<=1": {"split": 26, "relations": 0, "rel_per_split": {"exact": "0/1", "float": 0.0}, "G": {"exact": "0/1", "float": 0.0}}}
+{"q": 7, "Q": 49, "P_V": 120100, "orbit": {"split": 350, "relations": 62, "rel_per_split": {"exact": "31/175", "float": 0.17714285714285713}, "G": {"exact": "6150197555461/106778636250", "float": 57.59764098374126}}, "frobpow": {"split": 2450, "relations": 1250, "rel_per_split": {"exact": "25/49", "float": 0.5102040816326531}, "G": {"exact": "198393469531/170845818", "float": 1161.242761768977}}, "deg<=1": {"split": 50, "relations": 50, "rel_per_split": {"exact": "1/1", "float": 1.0}, "G": {"exact": "198393469531/4271145450", "float": 46.44971047075908}}}
+{"q": 8, "Q": 64, "P_V": 266305, "orbit": {"split": 520, "relations": 70, "rel_per_split": {"exact": "7/52", "float": 0.1346153846153846}, "G": {"exact": "358328361960170/1300899087631", "float": 275.44670095257214}}, "frobpow": {"split": 4160, "relations": 2145, "rel_per_split": {"exact": "33/64", "float": 0.515625}, "G": {"exact": "76784648991465/9097196417", "float": 8440.473907760961}}, "deg<=1": {"split": 65, "relations": 0, "rel_per_split": {"exact": "0/1", "float": 0.0}, "G": {"exact": "0/1", "float": 0.0}}}
+{"q": 9, "Q": 81, "P_V": 538084, "orbit": {"split": 738, "relations": 102, "rel_per_split": {"exact": "17/123", "float": 0.13821138211382114}, "G": {"exact": "36928908831885421233/18011192648106658", "float": 2050.331122063002}}, "frobpow": {"split": 6642, "relations": 3280, "rel_per_split": {"exact": "40/81", "float": 0.49382716049382713}, "G": {"exact": "246192725545902808220/3734027744119673", "float": 65932.21647418282}}, "deg<=1": {"split": 82, "relations": 82, "rel_per_split": {"exact": "1/1", "float": 1.0}, "G": {"exact": "12309636277295140411/7468055488239346", "float": 1648.3054118545704}}}
+{"q": 11, "Q": 121, "P_V": 1786324, "orbit": {"split": 1342, "relations": 184, "rel_per_split": {"exact": "92/671", "float": 0.13710879284649777}, "G": {"exact": "228431716973104847304858779/1487028294841530695800", "float": 153616.2544892586}}, "frobpow": {"split": 14762, "relations": 7442, "rel_per_split": {"exact": "61/121", "float": 0.5041322314049587}, "G": {"exact": "9931813781439341187167773/1598525444602559200", "float": 6213109.597331861}}, "deg<=1": {"split": 122, "relations": 0, "rel_per_split": {"exact": "0/1", "float": 0.0}, "G": {"exact": "0/1", "float": 0.0}}}
+{"q": 13, "Q": 169, "P_V": 4855540, "orbit": {"split": 2210, "relations": 376, "rel_per_split": {"exact": "188/1105", "float": 0.17013574660633485}, "G": {"exact": "4005327714401099828840941885999/185230373922337307729625", "float": 21623493.110694893}}, "frobpow": {"split": 28730, "relations": 14620, "rel_per_split": {"exact": "86/169", "float": 0.5088757396449705}, "G": {"exact": "85219738604278719762573231617/101357249752304956350", "float": 840785822.548828}}, "deg<=1": {"split": 170, "relations": 0, "rel_per_split": {"exact": "0/1", "float": 0.0}, "G": {"exact": "0/1", "float": 0.0}}}
+{"q": 16, "Q": 256, "P_V": 16843009, "orbit": {"split": 4112, "relations": 623, "rel_per_split": {"exact": "623/4112", "float": 0.1515077821011673}, "G": {"exact": "591026351910660868646901584702917/13642384904599573759899", "float": 43322802870.8818}}, "frobpow": {"split": 65792, "relations": 32896, "rel_per_split": {"exact": "1/2", "float": 0.5}, "G": {"exact": "75651373044564591186803402841973376/33070839671461223550261", "float": 2287555253997.636}}, "deg<=1": {"split": 257, "relations": 257, "rel_per_split": {"exact": "1/1", "float": 1.0}, "G": {"exact": "591026351910660868646901584702917/33070839671461223550261", "float": 17871525421.856533}}}
+
+web search: 
+web search: https://arxiv.org/pdf/math/9812089
+exec
+/bin/zsh -lc "sed -n '316,340p' notes/heurnfs_results.md && sed -n '411,431p' notes/heurnfs_results.md" in /Volumes/git/factoring-connection
+ succeeded in 0ms:
+### 4.1 Barrier B1: the two-polynomial height LP [model-PROVED under G]
+
+**Setting.** Take polynomials f₁, f₂ of degrees d₁ ≤ d₂ with heights N^{h₁}, N^{h₂} and a common root mod N.
+
+**Constraints.**
+- *Resultant [PROVED].* N | Res(f₁, f₂) ≠ 0, and |Res| ≲ H₁^{d₂}H₂^{d₁}. So d₂h₁ + d₁h₂ ≥ 1.
+- *Counting [G].* (d₁+1)h₁ + (d₂+1)h₂ ≥ 1.
+
+**The LP.** `height_lp` solves it exactly:
+- min(h₁ + h₂) = 2/(d+2) for (1, d);
+- min(h₁ + h₂) = 1/d for (d, d);
+- min(h₁ + h₂) = 2/13 for (2, 10).
+
+**General proof (one line).** Summing the two constraints gives (D+1)(h₁ + h₂) ≥ 2, so
+h₁ + h₂ ≥ 2/(D+1) for *every* degree pair, with D = d₁ + d₂ (`test_height_lp_sum_bound`). The resultant
+bound itself is standard in polynomial-selection optimality arguments (BGGM 2015; Sarkar–Singh 2015/944).
+
+**Consequence.** The norm product is ≥ N^{2/D}·E^{D}, so log X ≥ 2x/D + D·log E ≥ 2√(2x·log E).
+- Codex rightly notes that (R) alone does *not* give a universal lower bound on H₁H₂. The counting
+  heuristic G is what does that work.
+- Under G every two-polynomial selection is GNFS-equivalent at leading order.
+- SNFS shows that G is the operative assumption: dropping the 2x/D to x/D gives 1.526.
+
+### 4.2 Barrier B2: sieving dimension [model-PROVED]
+
+### 4.5 Barrier B5: why the exponent is 1/3 [model-PROVED for the ledger]
+
+**Argument.**
+- Barriers B1–B3 give log X ≥ 2√(κ′·x·C) for search entropy C.
+- With C ~ x^α, X has exponent (1+α)/2.
+- Smoothing at L[α] costs exponent (1+α)/2 − α = (1−α)/2.
+- That must be ≤ α, so **α ≥ 1/3** (`alpha_floor_generic`).
+
+**The 1/3 is the balance.**
+- The degree must grow like x^{1/3} to shrink N^{1/d}.
+- The search entropy must then pay d·log E.
+
+**Other floors.**
+- One descent level gives the worse floor 2/5: 1 − η ≤ α and (1+η)/2 ≤ 2α (codex; lemmaM (b)).
+- Multi-level descent with O(log log N) contracting levels reaches 1/3 in the size model (recurse §3.4),
+  but its bottom level is bound by B1.
+
+**Scope.** This is a barrier for algorithms whose relations are smooth values of resultants of a small search
+family against fixed polynomials with a root mod N. It is not a lower bound for factoring. Recall
+Pomerance 1982 ("Analysis and comparison of some integer factoring algorithms"): his L[1/2] barrier for an
+algorithm class was broken by NFS. No lower bound for NFS-type algorithms is published.
+
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py
+diff --git a/codex/scratch/systeq_2/audit_systeq.py b/codex/scratch/systeq_2/audit_systeq.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..d968fe37f38527273b5a276663d71759da4fd0b3
+--- /dev/null
++++ b/codex/scratch/systeq_2/audit_systeq.py
+@@ -0,0 +1,36 @@
++"""Read-only audit of repository inputs; outputs stay in this scratch directory."""
++import sys, json, random, math, collections
++from pathlib import Path
++ROOT = Path('/Volumes/git/factoring-connection')
++sys.path.insert(0, str(ROOT))
++from src.systeq.intanalog import vfamily_candidates, is_smooth, phi_n, ev
++import sympy as S
++
++rows=[]
++for n,m in [(5,520),(7,130),(11,19),(13,11)]:
++    N,cands=vfamily_candidates(n,m,32,200000,0)
++    trivial=[(v,r) for v,r in cands if v==r]
++    nontrivial=[(v,r) for v,r in cands if v!=r]
++    below=[(v,r) for v,r in cands if abs(v)<N]
++    obs=sum(is_smooth(v,65536) for v,r in cands)
++    nontriv_obs=sum(is_smooth(v,65536) for v,r in nontrivial)
++    row=dict(n=n,m=m,N=N,observed=obs,trivial=len(trivial),below_N=len(below),
++             nontrivial_observed=nontriv_obs,max_abs_r=max(abs(r) for v,r in cands),
++             unique_unsigned_pairs=len(set((abs(v),abs(r)) for v,r in cands)),
++             nonunit=sum(math.gcd(v,N)>1 for v,r in cands),
++             example_trivial=trivial[:1])
++    original=next(json.loads(t) for t in (ROOT/'experiments/raw/systeq_E2.jsonl').read_text().splitlines() if json.loads(t)['n']==n)
++    pred=original['predicted']['float']
++    row['G_excluding_trivial']=nontriv_obs/(pred-len(trivial))
++    rows.append(row)
++    print(json.dumps(row),flush=True)
++
++x=S.symbols('x')
++examples={}
++F=x**6-x-1
++examples['free_cyclotomic']={str(g):int(S.resultant(F,g,x)) for g in [x,x**6-1,x-1,x+1,x*x+x+1,x*x-x+1]}
++F4=S.prod(x-j for j in range(4))-x-1
++examples['falling_factorial']={'F':str(S.expand(F4)),'norms':[int(S.resultant(F4,x-j,x)) for j in range(4)],'norm_h':int(S.resultant(F4,x+1,x))}
++examples['cyclotomic_at_2']={'Phi12_2':int(S.cyclotomic_poly(12,x).subs(x,2)),'Phi6_2':int(S.cyclotomic_poly(6,x).subs(x,2))}
++print(json.dumps(examples),flush=True)
++Path('audit_systeq.json').write_text(json.dumps({'E2':rows,'examples':examples},indent=2)+'\n')
+
+exec
+/bin/zsh -lc '/Volumes/git/factoring-connection/.venv/bin/python audit_systeq.py' in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 9785ms:
+{"n": 5, "m": 520, "N": 73257038921, "observed": 2325, "trivial": 0, "below_N": 0, "nontrivial_observed": 2325, "max_abs_r": 33336, "unique_unsigned_pairs": 197741, "nonunit": 18309, "example_trivial": [], "G_excluding_trivial": 1.0465659480557}
+{"n": 7, "m": 130, "N": 4864226124031, "observed": 1684, "trivial": 0, "below_N": 0, "nontrivial_observed": 1684, "max_abs_r": 8376, "unique_unsigned_pairs": 197749, "nonunit": 370, "example_trivial": [], "G_excluding_trivial": 1.0343208065935838}
+{"n": 11, "m": 19, "N": 6471681049901, "observed": 3820, "trivial": 112, "below_N": 112, "nontrivial_observed": 3708, "max_abs_r": 1272, "unique_unsigned_pairs": 175841, "nonunit": 0, "example_trivial": [[-222, -222]], "G_excluding_trivial": 1.0409993158840538}
+{"n": 13, "m": 11, "N": 3452271214393, "observed": 5574, "trivial": 217, "below_N": 217, "nontrivial_observed": 5357, "max_abs_r": 761, "unique_unsigned_pairs": 141687, "nonunit": 0, "example_trivial": [[114, 114]], "G_excluding_trivial": 1.0614359304794496}
+{"free_cyclotomic": {"x": -1, "x**6 - 1": -1, "x - 1": -1, "x + 1": 1, "x**2 + x + 1": 1, "x**2 - x + 1": 1}, "falling_factorial": {"F": "x**4 - 6*x**3 + 11*x**2 - 7*x - 1", "norms": [-1, -2, -3, -4], "norm_h": 24}, "cyclotomic_at_2": {"Phi12_2": 13, "Phi6_2": 3}}
+
+web search: 
+web search: "KapranovSmirnov.pdf" ...
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'import sympy as s; x=s.symbols(\"x\"); print(s.factor(((x+1)**11-x**11-1)/11)); print(s.factor(((x+1)**13-x**13-1)/13))'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 94ms:
+x*(x + 1)*(x**2 + x + 1)*(x**6 + 3*x**5 + 7*x**4 + 9*x**3 + 7*x**2 + 3*x + 1)
+x*(x + 1)*(x**2 + x + 1)**2*(x**6 + 3*x**5 + 8*x**4 + 11*x**3 + 8*x**2 + 3*x + 1)
+
+web search: 
+web search: "Kapranov" "Smirnov" "mu" monomial matrices pdf F1 ...
+codex
+The free-algebra concern is real: choosing the defining polynomial gives arbitrary \(N\) a small-degree compression, and its norms need not have \(N\)-sized lifts. In the examples I’ve checked, however, the relation already holds over \(\mathbf Z\), so taking norms gives an exact integer equality. That is a narrower obstruction than §§5.5–5.6 claim.
+web search: 
+web search: http://www.neverendingbooks.org/DATA/KapranovSmirnov.pdf
+web search: 
+web search: https://neverendingbooks.org/DATA/KapranovSmirnov.pdf
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'from pathlib import Path; import sympy as s; x=s.symbols(\"x\"); N=101*103; F=x**6+3*x**5+7*x**4+9*x**3+7*x**2+3*x+1; print(s.rem((x+1)**11-x**11-1,F,x)); print((2**11-2)%N); print(s.factorint(73257038921)); print(s.factorint(4864226124031))'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 219ms:
+0
+2046
+{11: 1, 2381: 1, 2797031: 1}
+{911: 1, 5339435921: 1}
+
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'import sympy as s; from pathlib import Path; import json; [print(r[\"n\"],r[\"N\"],s.isprime(r[\"N\"]),s.factorint(r[\"N\"])) for r in json.loads(Path(\"audit_systeq.json\").read_text())[\"E2\"]]'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 36ms:
+5 73257038921 False {11: 1, 2381: 1, 2797031: 1}
+7 4864226124031 False {911: 1, 5339435921: 1}
+11 6471681049901 False {104281: 1, 62060021: 1}
+13 3452271214393 False {1093: 1, 3158528101: 1}
+
+web search: 
+web search: 'monomial'
+web search: 
+web search: Kapranov Smirnov monomial matrices "GL" F1 pdf ...
+web search: 
+web search: "Cohomology determinants" "pdf" -site:scribd.com -site:researchgate.net -site:mathoverflow.net ...
+web search: 
+web search: "Absolute geometry and the Habiro topology" arxiv ...
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/bin/zsh -lc "curl -L --fail --max-time 20 'https://cage.ugent.be/~kthas/Fun/library/KapranovSmirnov.pdf' -o KapranovSmirnov.pdf" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: cage.ugent.be
+
+web search: 
+web search: https://arxiv.org/pdf/1304.6532
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py
+diff --git a/codex/scratch/systeq_2/audit_systeq.py b/codex/scratch/systeq_2/audit_systeq.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..293119b99c7defb6f35cd3c69a727f01d28e903a
+--- /dev/null
++++ b/codex/scratch/systeq_2/audit_systeq.py
+@@ -0,0 +1,52 @@
++"""Read-only audit of repository inputs; outputs stay in this scratch directory."""
++import sys, json, random, math, collections
++from pathlib import Path
++ROOT = Path('/Volumes/git/factoring-connection')
++sys.path.insert(0, str(ROOT))
++from src.systeq.intanalog import vfamily_candidates, is_smooth, phi_n, ev
++import sympy as S
++
++rows=[]
++for n,m in [(5,520),(7,130),(11,19),(13,11)]:
++    N,cands=vfamily_candidates(n,m,32,200000,0)
++    trivial=[(v,r) for v,r in cands if v==r]
++    nontrivial=[(v,r) for v,r in cands if v!=r]
++    below=[(v,r) for v,r in cands if abs(v)<N]
++    obs=sum(is_smooth(v,65536) for v,r in cands)
++    nontriv_obs=sum(is_smooth(v,65536) for v,r in nontrivial)
++    row=dict(n=n,m=m,N=N,observed=obs,trivial=len(trivial),below_N=len(below),
++             nontrivial_observed=nontriv_obs,max_abs_r=max(abs(r) for v,r in cands),
++             unique_unsigned_pairs=len(set((abs(v),abs(r)) for v,r in cands)),
++             nonunit=sum(math.gcd(v,N)>1 for v,r in cands),
++             example_trivial=trivial[:1])
++    original=next(json.loads(t) for t in (ROOT/'experiments/raw/systeq_E2.jsonl').read_text().splitlines() if json.loads(t)['n']==n)
++    pred=original['predicted']['float']
++    row['G_excluding_trivial']=nontriv_obs/(pred-len(trivial))
++    rows.append(row)
++    print(json.dumps(row),flush=True)
++
++x=S.symbols('x')
++examples={}
++F=x**6-x-1
++examples['free_cyclotomic']={str(g):int(S.resultant(F,g,x)) for g in [x,x**6-1,x-1,x+1,x*x+x+1,x*x-x+1]}
++F4=S.prod(x-j for j in range(4))-x-1
++examples['falling_factorial']={'F':str(S.expand(F4)),'norms':[int(S.resultant(F4,x-j,x)) for j in range(4)],'norm_h':int(S.resultant(F4,x+1,x))}
++examples['cyclotomic_at_2']={'Phi12_2':int(S.cyclotomic_poly(12,x).subs(x,2)),'Phi6_2':int(S.cyclotomic_poly(6,x).subs(x,2))}
++Fpartial=x**6+3*x**5+7*x**4+9*x**3+7*x**2+3*x+1
++examples['partial_power']={'F':str(Fpartial),'s':11,
++    'carry_remainder':str(S.rem((x+1)**11-x**11-1,Fpartial,x)),
++    'failure_global_mod_10403':(2**11-2)%10403}
++examples['falling_factorial_N_shift']={'norm_factors':'N-1,N-2,N-3,N-4','norm_h':'N+24'}
++from itertools import product
++def variation(vals):
++    signs=[1 if v>0 else -1 for v in vals if v]
++    return sum(a!=b for a,b in zip(signs,signs[1:]))
++examples['descartes_max']={}
++for n in range(2,11):
++    max_nonzero=max(variation([a,b,c,d])+variation([a*(-1)**(n+1),b*(-1)**n,-c,d])
++        for a,b,c,d in product([-1,0,1],repeat=4) if a and d)
++    max_Dzero=max(variation([a,b,c])+variation([a*(-1)**n,b*(-1)**(n-1),c])
++        for a,b,c in product([-1,0,1],repeat=3) if a and c)
++    examples['descartes_max'][n]={'D_nonzero':max_nonzero,'D_zero_C_nonzero_after_x':max_Dzero}
++print(json.dumps(examples),flush=True)
++Path('audit_systeq.json').write_text(json.dumps({'E2':rows,'examples':examples},indent=2)+'\n')
+
+exec
+/bin/zsh -lc '/Volumes/git/factoring-connection/.venv/bin/python audit_systeq.py' in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+web search: 
+web search: 'Linear maps are then'
+ succeeded in 9201ms:
+{"n": 5, "m": 520, "N": 73257038921, "observed": 2325, "trivial": 0, "below_N": 0, "nontrivial_observed": 2325, "max_abs_r": 33336, "unique_unsigned_pairs": 197741, "nonunit": 18309, "example_trivial": [], "G_excluding_trivial": 1.0465659480557}
+{"n": 7, "m": 130, "N": 4864226124031, "observed": 1684, "trivial": 0, "below_N": 0, "nontrivial_observed": 1684, "max_abs_r": 8376, "unique_unsigned_pairs": 197749, "nonunit": 370, "example_trivial": [], "G_excluding_trivial": 1.0343208065935838}
+{"n": 11, "m": 19, "N": 6471681049901, "observed": 3820, "trivial": 112, "below_N": 112, "nontrivial_observed": 3708, "max_abs_r": 1272, "unique_unsigned_pairs": 175841, "nonunit": 0, "example_trivial": [[-222, -222]], "G_excluding_trivial": 1.0409993158840538}
+{"n": 13, "m": 11, "N": 3452271214393, "observed": 5574, "trivial": 217, "below_N": 217, "nontrivial_observed": 5357, "max_abs_r": 761, "unique_unsigned_pairs": 141687, "nonunit": 0, "example_trivial": [[114, 114]], "G_excluding_trivial": 1.0614359304794496}
+{"free_cyclotomic": {"x": -1, "x**6 - 1": -1, "x - 1": -1, "x + 1": 1, "x**2 + x + 1": 1, "x**2 - x + 1": 1}, "falling_factorial": {"F": "x**4 - 6*x**3 + 11*x**2 - 7*x - 1", "norms": [-1, -2, -3, -4], "norm_h": 24}, "cyclotomic_at_2": {"Phi12_2": 13, "Phi6_2": 3}, "partial_power": {"F": "x**6 + 3*x**5 + 7*x**4 + 9*x**3 + 7*x**2 + 3*x + 1", "s": 11, "carry_remainder": "0", "failure_global_mod_10403": 2046}, "falling_factorial_N_shift": {"norm_factors": "N-1,N-2,N-3,N-4", "norm_h": "N+24"}, "descartes_max": {"2": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "3": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "4": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "5": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "6": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "7": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "8": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "9": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "10": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}}}
+
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'import sympy as s; x=s.symbols(\"x\"); N=s.symbols(\"N\"); F=s.prod(x-j for j in range(4))-x-1+N; print([s.resultant(F,x-j,x) for j in range(4)]); print(s.resultant(F,x+1,x)); print(s.factor(s.prod(N-j-1 for j in range(4))-(N+24)))'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 50ms:
+[N - 1, N - 2, N - 3, N - 4]
+N + 24
+N*(N**3 - 10*N**2 + 35*N - 51)
+
+codex
+The experiment audit found 112 and 217 exact equalities counted as E2 relations in the last two instances. Removing them leaves the gains close to the reported values, but P2c is false. E1 also counts many repeated versions of the same Frobenius relation; its squarefree orbit still shows a large gain. I’m now narrowing the verdicts to what the proofs and measurements support.
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'import sympy as s; x=s.symbols(\"x\"); P=(x*x-4)*(x*x-1)**2; F=s.expand(P-x-3); print(F,s.factor(F)); print([s.resultant(F,x-a,x) for a in [2,-2,1,-1]]); print(s.resultant(F,x+3,x))'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 45ms:
+x**6 - 6*x**4 + 9*x**2 - x - 7 x**6 - 6*x**4 + 9*x**2 - x - 7
+[-5, -1, -4, -2]
+320
+
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py
+diff --git a/codex/scratch/systeq_2/audit_systeq.py b/codex/scratch/systeq_2/audit_systeq.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..3f531e78ac7f4e597f893e5bc063e843857bec33
+--- /dev/null
++++ b/codex/scratch/systeq_2/audit_systeq.py
+@@ -0,0 +1,57 @@
++"""Read-only audit of repository inputs; outputs stay in this scratch directory."""
++import sys, json, random, math, collections
++from pathlib import Path
++ROOT = Path('/Volumes/git/factoring-connection')
++sys.path.insert(0, str(ROOT))
++from src.systeq.intanalog import vfamily_candidates, is_smooth, phi_n, ev
++import sympy as S
++
++rows=[]
++for n,m in [(5,520),(7,130),(11,19),(13,11)]:
++    N,cands=vfamily_candidates(n,m,32,200000,0)
++    trivial=[(v,r) for v,r in cands if v==r]
++    nontrivial=[(v,r) for v,r in cands if v!=r]
++    below=[(v,r) for v,r in cands if abs(v)<N]
++    obs=sum(is_smooth(v,65536) for v,r in cands)
++    nontriv_obs=sum(is_smooth(v,65536) for v,r in nontrivial)
++    row=dict(n=n,m=m,N=N,observed=obs,trivial=len(trivial),below_N=len(below),
++             nontrivial_observed=nontriv_obs,max_abs_r=max(abs(r) for v,r in cands),
++             unique_unsigned_pairs=len(set((abs(v),abs(r)) for v,r in cands)),
++             nonunit=sum(math.gcd(v,N)>1 for v,r in cands),
++             example_trivial=trivial[:1])
++    original=next(json.loads(t) for t in (ROOT/'experiments/raw/systeq_E2.jsonl').read_text().splitlines() if json.loads(t)['n']==n)
++    pred=original['predicted']['float']
++    row['G_excluding_trivial']=nontriv_obs/(pred-len(trivial))
++    rows.append(row)
++    print(json.dumps(row),flush=True)
++
++x=S.symbols('x')
++examples={}
++F=x**6-x-1
++examples['free_cyclotomic']={str(g):int(S.resultant(F,g,x)) for g in [x,x**6-1,x-1,x+1,x*x+x+1,x*x-x+1]}
++F4=S.prod(x-j for j in range(4))-x-1
++examples['falling_factorial']={'F':str(S.expand(F4)),'norms':[int(S.resultant(F4,x-j,x)) for j in range(4)],'norm_h':int(S.resultant(F4,x+1,x))}
++examples['cyclotomic_at_2']={'Phi12_2':int(S.cyclotomic_poly(12,x).subs(x,2)),'Phi6_2':int(S.cyclotomic_poly(6,x).subs(x,2))}
++Pcheb=(x*x-4)*(x*x-1)**2
++Fcheb=S.expand(Pcheb-x-3)
++examples['chebyshev']={'F':str(Fcheb),'P':str(S.factor(Pcheb)),
++    'norms':[int(S.resultant(Fcheb,x-a,x)) for a in [2,-2,1,-1]],
++    'norm_h':int(S.resultant(Fcheb,x+3,x))}
++Fpartial=x**6+3*x**5+7*x**4+9*x**3+7*x**2+3*x+1
++examples['partial_power']={'F':str(Fpartial),'s':11,
++    'carry_remainder':str(S.rem((x+1)**11-x**11-1,Fpartial,x)),
++    'failure_global_mod_10403':(2**11-2)%10403}
++examples['falling_factorial_N_shift']={'norm_factors':'N-1,N-2,N-3,N-4','norm_h':'N+24'}
++from itertools import product
++def variation(vals):
++    signs=[1 if v>0 else -1 for v in vals if v]
++    return sum(a!=b for a,b in zip(signs,signs[1:]))
++examples['descartes_max']={}
++for n in range(2,11):
++    max_nonzero=max(variation([a,b,c,d])+variation([a*(-1)**(n+1),b*(-1)**n,-c,d])
++        for a,b,c,d in product([-1,0,1],repeat=4) if a and d)
++    max_Dzero=max(variation([a,b,c])+variation([a*(-1)**n,b*(-1)**(n-1),c])
++        for a,b,c in product([-1,0,1],repeat=3) if a and c)
++    examples['descartes_max'][n]={'D_nonzero':max_nonzero,'D_zero_C_nonzero_after_x':max_Dzero}
++print(json.dumps(examples),flush=True)
++Path('audit_systeq.json').write_text(json.dumps({'E2':rows,'examples':examples},indent=2)+'\n')
+
+apply patch
+patch: completed
+/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py
+diff --git a/codex/scratch/systeq_2/audit_systeq.py b/codex/scratch/systeq_2/audit_systeq.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..27464f3d6c6b4a830cee14db44feda0e2ebbb34b
+--- /dev/null
++++ b/codex/scratch/systeq_2/audit_systeq.py
+@@ -0,0 +1,59 @@
++"""Read-only audit of repository inputs; outputs stay in this scratch directory."""
++import sys, json, random, math, collections
++from pathlib import Path
++ROOT = Path('/Volumes/git/factoring-connection')
++sys.path.insert(0, str(ROOT))
++from src.systeq.intanalog import vfamily_candidates, is_smooth, phi_n, ev
++import sympy as S
++
++rows=[]
++for n,m in [(5,520),(7,130),(11,19),(13,11)]:
++    N,cands=vfamily_candidates(n,m,32,200000,0)
++    trivial=[(v,r) for v,r in cands if v==r]
++    nontrivial=[(v,r) for v,r in cands if v!=r]
++    below=[(v,r) for v,r in cands if abs(v)<N]
++    obs=sum(is_smooth(v,65536) for v,r in cands)
++    nontriv_obs=sum(is_smooth(v,65536) for v,r in nontrivial)
++    row=dict(n=n,m=m,N=N,observed=obs,trivial=len(trivial),below_N=len(below),
++             nontrivial_observed=nontriv_obs,max_abs_r=max(abs(r) for v,r in cands),
++             unique_unsigned_pairs=len(set((abs(v),abs(r)) for v,r in cands)),
++             nonunit=sum(math.gcd(v,N)>1 for v,r in cands),
++             factorization={str(p):int(e) for p,e in S.factorint(N).items()},
++             example_trivial=trivial[:1])
++    original=next(json.loads(t) for t in (ROOT/'experiments/raw/systeq_E2.jsonl').read_text().splitlines() if json.loads(t)['n']==n)
++    pred=original['predicted']['float']
++    row['G_excluding_trivial']=nontriv_obs/(pred-len(trivial))
++    rows.append(row)
++    print(json.dumps(row),flush=True)
++
++x=S.symbols('x')
++examples={}
++F=x**6-x-1
++examples['free_cyclotomic']={str(g):int(S.resultant(F,g,x)) for g in [x,x**6-1,x-1,x+1,x*x+x+1,x*x-x+1]}
++F4=S.prod(x-j for j in range(4))-x-1
++examples['falling_factorial']={'F':str(S.expand(F4)),'norms':[int(S.resultant(F4,x-j,x)) for j in range(4)],'norm_h':int(S.resultant(F4,x+1,x))}
++examples['cyclotomic_at_2']={'Phi12_2':int(S.cyclotomic_poly(12,x).subs(x,2)),'Phi6_2':int(S.cyclotomic_poly(6,x).subs(x,2))}
++Pcheb=(x*x-4)*(x*x-1)**2
++Fcheb=S.expand(Pcheb-x-3)
++examples['chebyshev']={'F':str(Fcheb),'P':str(S.factor(Pcheb)),
++    'norms':[int(S.resultant(Fcheb,x-a,x)) for a in [2,-2,1,-1]],
++    'norm_h':int(S.resultant(Fcheb,x+3,x))}
++Fpartial=x**6+3*x**5+7*x**4+9*x**3+7*x**2+3*x+1
++examples['partial_power']={'F':str(Fpartial),'s':11,
++    'carry_remainder':str(S.rem((x+1)**11-x**11-1,Fpartial,x)),
++    'failure_global_mod_10403':(2**11-2)%10403}
++examples['falling_factorial_N_shift']={'norm_factors':'N-1,N-2,N-3,N-4','norm_h':'N+24'}
++examples['E1_q16']=next(json.loads(t) for t in (ROOT/'experiments/raw/systeq_E1_posthoc.jsonl').read_text().splitlines() if json.loads(t)['q']==16)
++from itertools import product
++def variation(vals):
++    signs=[1 if v>0 else -1 for v in vals if v]
++    return sum(a!=b for a,b in zip(signs,signs[1:]))
++examples['descartes_max']={}
++for n in range(2,11):
++    max_nonzero=max(variation([a,b,c,d])+variation([a*(-1)**(n+1),b*(-1)**n,-c,d])
++        for a,b,c,d in product([-1,0,1],repeat=4) if a and d)
++    max_Dzero=max(variation([a,b,c])+variation([a*(-1)**n,b*(-1)**(n-1),c])
++        for a,b,c in product([-1,0,1],repeat=3) if a and c)
++    examples['descartes_max'][n]={'D_nonzero':max_nonzero,'D_zero_C_nonzero_after_x':max_Dzero}
++print(json.dumps(examples),flush=True)
++Path('audit_systeq.json').write_text(json.dumps({'E2':rows,'examples':examples},indent=2)+'\n')
+
+exec
+/bin/zsh -lc '/Volumes/git/factoring-connection/.venv/bin/python audit_systeq.py' in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 9215ms:
+{"n": 5, "m": 520, "N": 73257038921, "observed": 2325, "trivial": 0, "below_N": 0, "nontrivial_observed": 2325, "max_abs_r": 33336, "unique_unsigned_pairs": 197741, "nonunit": 18309, "factorization": {"11": 1, "2381": 1, "2797031": 1}, "example_trivial": [], "G_excluding_trivial": 1.0465659480557}
+{"n": 7, "m": 130, "N": 4864226124031, "observed": 1684, "trivial": 0, "below_N": 0, "nontrivial_observed": 1684, "max_abs_r": 8376, "unique_unsigned_pairs": 197749, "nonunit": 370, "factorization": {"911": 1, "5339435921": 1}, "example_trivial": [], "G_excluding_trivial": 1.0343208065935838}
+{"n": 11, "m": 19, "N": 6471681049901, "observed": 3820, "trivial": 112, "below_N": 112, "nontrivial_observed": 3708, "max_abs_r": 1272, "unique_unsigned_pairs": 175841, "nonunit": 0, "factorization": {"104281": 1, "62060021": 1}, "example_trivial": [[-222, -222]], "G_excluding_trivial": 1.0409993158840538}
+{"n": 13, "m": 11, "N": 3452271214393, "observed": 5574, "trivial": 217, "below_N": 217, "nontrivial_observed": 5357, "max_abs_r": 761, "unique_unsigned_pairs": 141687, "nonunit": 0, "factorization": {"1093": 1, "3158528101": 1}, "example_trivial": [[114, 114]], "G_excluding_trivial": 1.0614359304794496}
+{"free_cyclotomic": {"x": -1, "x**6 - 1": -1, "x - 1": -1, "x + 1": 1, "x**2 + x + 1": 1, "x**2 - x + 1": 1}, "falling_factorial": {"F": "x**4 - 6*x**3 + 11*x**2 - 7*x - 1", "norms": [-1, -2, -3, -4], "norm_h": 24}, "cyclotomic_at_2": {"Phi12_2": 13, "Phi6_2": 3}, "chebyshev": {"F": "x**6 - 6*x**4 + 9*x**2 - x - 7", "P": "(x - 2)*(x - 1)**2*(x + 1)**2*(x + 2)", "norms": [-5, -1, -4, -2], "norm_h": 320}, "partial_power": {"F": "x**6 + 3*x**5 + 7*x**4 + 9*x**3 + 7*x**2 + 3*x + 1", "s": 11, "carry_remainder": "0", "failure_global_mod_10403": 2046}, "falling_factorial_N_shift": {"norm_factors": "N-1,N-2,N-3,N-4", "norm_h": "N+24"}, "E1_q16": {"q": 16, "Q": 256, "P_V": 16843009, "orbit": {"split": 4112, "relations": 623, "rel_per_split": {"exact": "623/4112", "float": 0.1515077821011673}, "G": {"exact": "591026351910660868646901584702917/13642384904599573759899", "float": 43322802870.8818}}, "frobpow": {"split": 65792, "relations": 32896, "rel_per_split": {"exact": "1/2", "float": 0.5}, "G": {"exact": "75651373044564591186803402841973376/33070839671461223550261", "float": 2287555253997.636}}, "deg<=1": {"split": 257, "relations": 257, "rel_per_split": {"exact": "1/1", "float": 1.0}, "G": {"exact": "591026351910660868646901584702917/33070839671461223550261", "float": 17871525421.856533}}}, "descartes_max": {"2": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "3": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "4": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "5": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "6": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "7": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "8": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}, "9": {"D_nonzero": 4, "D_zero_C_nonzero_after_x": 3}, "10": {"D_nonzero": 3, "D_zero_C_nonzero_after_x": 2}}}
+
+exec
+/bin/zsh -lc "/Volumes/git/factoring-connection/.venv/bin/python -c 'import sys; sys.path.insert(0,\"/Volumes/git/factoring-connection\"); from src.systeq.bgjt import make_field,find_model; import json; cfg=json.load(open(\"/Volumes/git/factoring-connection/experiments/configs/systeq.json\"));
+for p,e in cfg[\"E1\"][\"fields\"]:
+ F,q=make_field(p,e); m=find_model(F,q,0); print(q,\"h0,h1 gcd degree\",len(F.pgcd(m[\"h0\"],m[\"h1\"]))-1,\"h1 split\",F.splits(m[\"h1\"]))'" in /Volumes/git/factoring-connection/codex/scratch/systeq_2
+ succeeded in 420ms:
+4 h0,h1 gcd degree 0 h1 split True
+5 h0,h1 gcd degree 0 h1 split False
+7 h0,h1 gcd degree 0 h1 split True
+8 h0,h1 gcd degree 0 h1 split False
+9 h0,h1 gcd degree 0 h1 split True
+11 h0,h1 gcd degree 0 h1 split False
+13 h0,h1 gcd degree 0 h1 split False
+16 h0,h1 gcd degree 0 h1 split True
+
+codex
+**PROVED — The claimed universal barrier is unsupported.** The conditional results do not exclude partial power identities or freely chosen auxiliary algebras. I found explicit escapes and a failed preregistered prediction. These constructions do not supply a fast general factoring algorithm.
+
+**1. Prop F — CORRECT WITH FIXES.**
+
+**PROVED.** The proof is correct, and can be shortened. An additive power map fixes every integer scalar, so
+\[
+a^s\equiv a\pmod{\operatorname{char}A}.
+\]
+Restriction to \(\mathbf F_p\) gives \((p-1)\mid(s-1)\). Moreover, \(\operatorname{char}A\) is automatically squarefree: reduction modulo \(p^2\), applied to \(a=p\), would otherwise give \(p^s\equiv p\pmod{p^2}\). Thus the squarefreeness assumption is redundant.
+
+**PROVED — The proposed partial replacement is false.** Write \(R=\mathbf Z/N\). In
+\[
+A=R[X]/(X^2-X-1)
+\]
+one has, for **every** \(a,b\in R\),
+\[
+(aX+b)^2=(a^2+2ab)X^2+(b^2-2ab).
+\]
+Everything is computable from \(N\); global additivity generally fails. Here the output coefficients depend jointly on \(a,b\), so this is coordinate closure, not Frobenius semilinearity.
+
+**PROVED.** Even requiring \(a'=a^s,\ b'=b^s\) on a small subset does not rescue the assertion. For a prime \(\ell\), define the monic integer polynomial
+\[
+C_\ell(T)=\frac{(T+1)^\ell-T^\ell-1}{\ell}.
+\]
+In \(R[X]/(C_\ell)\),
+\[
+(aX+b)^\ell=a^\ell X^\ell+b^\ell
+\qquad(a,b\in\{0,1\}).
+\]
+This faithful algebra exists for every \(N\). For \(\ell=11,\ N=101\cdot103\), neither \(100\) nor \(102\) divides \(10\), and global additivity fails since \(2^{11}-2=2046\not\equiv0\pmod N\).
+
+**PROVED — Fix.** Distinguish arbitrary coordinate closure, restricted power compatibility, and compatibility with a genuine coefficient automorphism. If the latter fixes \(R\) and compatibility includes all scalar inputs, then \(b^s=b\) already forces Prop F’s conclusion. A tiny coefficient subset does not. A recursive descent also needs compatibility for its subsequent targets, not merely the original generator.
+
+**2. Lemma CF — CORRECT WITH FIXES; the advertised classification is WRONG.**
+
+**PROVED.** The conditional root-covering argument is sound. It proves a **lower bound** on \(|S|\), not that the constant set must equal \(\mathbf F_p\), nor that all computable systematic products satisfy its hypothesis.
+
+**PROVED.** Assuming \((n,N)=1\), in \(R[\zeta_n]\),
+\[
+P(T)=T\prod_{j=0}^{n-1}(T-\zeta_n^j)=T^{n+1}-T
+\]
+is available without factoring \(N\). For restricted inputs \(z=u\zeta_n^j\),
+\[
+P(z)=(u^n-1)z.
+\]
+Thus restricted inputs admit a linear expression in \(z\), without covering the prime field. Computing its coefficient takes \(O(\log n)\) multiplications, although its integer height can grow like \(n\log|u|\).
+
+**PROVED.** Conversely, if \(P(z)=\sigma(z)-z\) holds on a set containing every scalar, a unital automorphism fixes those scalars. Consequently \(P\) vanishes there, and CF applies. More generally, a uniformly bounded-degree expression \(E(z,\sigma z)\), valid for every scalar, faces polynomial root counting after setting \(\sigma(b)=b\).
+
+**PROVED — Fix.** State CF as an obstruction to identities valid on all scalars, especially automorphism-difference identities. “Low complexity” must specify degree, coefficient height, and input domain: \(T^{n+1}-T\) already has a short arithmetic circuit. Restricted identities remain possible; CF does not establish that they cannot provide enough useful affine variations.
+
+**3. Lemma DES — CORRECT WITH FIXES.**
+
+**PROVED.** Under the stated \(A\ne0\) restriction, the conclusion is correct and can be strengthened to **\(n\ge4\)**. Apply Descartes to \(f(X)\) and \(f(-X)\) together:
+
+- When \(D\ne0\), the combined sign-variation bound is at most \(3\) for even \(n\), and \(4\) for odd \(n\).
+- When \(D=0\ne C\), divide by \(X\); the corresponding bounds are \(2\) and \(3\).
+
+These exclude complete real splitting for every \(n\ge4\). When \(C=D=0\), the stated degenerate family remains. If claiming a result about all of \(V_n\), explicitly exclude its low-degree members.
+
+**KNOWN.** The Lenstra citation and root-bound statement are correct. His theorem is stronger: for bounded number-field degree, sparsity, and factor degree, it bounds the total degree of the nonzero-root factors, including multiplicities. See [Lenstra, *On the factorization of lacunary polynomials* (1999)](https://doi.org/10.1515/9783110285581.277). Do not confuse it with his adjacent paper, *Finding small degree factors of lacunary polynomials*.
+
+**PROVED — Escape outside the fixed sparse space.** Bounded-degree outer polynomials in \(F(X^q)-G(X)\) retain bounded sparsity, but dense compositions and Chebyshev families are outside that restriction. For a concrete Dickson/Chebyshev example,
+\[
+P(X)=(X^2-4)(X^2-1)^2=X^6-6X^4+9X^2-4.
+\]
+Choose
+\[
+F=P-X-3.
+\]
+Then in \(R[X]/(F)\), a product of six rational linear factors equals \(X+3\). Exact resultant computation gives
+\[
+\operatorname{Norm}(X-2,X+2,X-1,X+1)=(-5,-1,-4,-2),
+\]
+and
+\[
+\operatorname{Norm}(X+3)=320=(-5)(-1)(-4)^2(-2)^2.
+\]
+This supplies splitting and degree compression for arbitrary \(N\). Its limitation is the exact norm equality, addressed next.
+
+**4. Rigidity and E5 — WRONG as general barriers.**
+
+**PROVED.** The presentation of an auxiliary algebra really is free. For every \(N\), choose
+\[
+A=R[X]/(X^d-h(X)),\qquad \deg h=O(1).
+\]
+Then \(X^d=h(X)\) holds, without searching for a small scalar root modulo \(N\). The scalar polynomial-selection argument in §5.5 does not cover this construction.
+
+**PROVED — Quantitative norm accounting.** Choose a monic integer lift \(\widetilde F\) of degree \(d\), with coefficient height \(H_F\). For \(g\) of degree \(e\) and height \(C\), the integer norm lift is
+\[
+\mathcal N(g)=\operatorname{Res}(\widetilde F,g).
+\]
+Hadamard gives
+\[
+|\mathcal N(g)|
+\le(\sqrt{d+1}H_F)^e(\sqrt{e+1}C)^d.
+\]
+For a linear factor \(aX+b\), with \(|a|,|b|\le E\),
+\[
+|\mathcal N(aX+b)|\le(d+1)H_FE^d.
+\]
+Therefore **norms do not automatically reintroduce \(\log N\)**. Small \(H_F,d,E\) give small integer norms, independently of \(N\).
+
+**PROVED — What happens instead in the simplest escape.** If \(F=X^d-h\) is chosen over \(\mathbf Z\), its compression identities already hold in \(\mathbf Z[X]/(F)\). Taking norms produces exact integer equalities. Their rational-prime valuation rows are zero; these identities alone supply no \(N\)-dependent relation information.
+
+**PROVED — A stronger family.** Let
+\[
+P_M(X)=\prod_{j=0}^{M-1}(X-j),\qquad F_M=P_M-X-1.
+\]
+In the freely chosen algebra,
+\[
+\prod_{j=0}^{M-1}(X-j)=X+1.
+\]
+All \(M\) factors are explicit and distinct. Yet
+\[
+|\mathcal N(X-j)|=j+1,\qquad \mathcal N(X+1)=M!.
+\]
+The entire relation is smooth by construction. Its norm equality is simply the known factorization of \(M!\). The linear “small side” has logarithmic norm \(\log(M!)\sim M\log M\), independent of \(N\).
+
+**PROVED — Where modulus-dependent size can enter.** For \(M=4\), instead lift the same modular defining polynomial as
+\[
+\widetilde F_N=P_4-X-1+N.
+\]
+The four factor norms become
+\[
+N-1,\ N-2,\ N-3,\ N-4,
+\]
+while the compressed side has norm \(N+24\). Now there is a nontrivial integer congruence, but the integers being tested are \(N\)-sized. This explicitly exhibits the distinction between exact lifted identities and modular identifications.
+
+**PROVED.** Generally, if resulting nonzero integer sides satisfy \(U\equiv V\pmod N\) and \(U\ne V\), then
+\[
+\max(|U|,|V|)\ge N/2.
+\]
+This is only an **aggregate** bound. It allows one side to be assembled from many known small factors; it does not prove that an unfactored piece must be \(N\)-sized.
+
+**PROVED.** Factoring the auxiliary algebra need not itself factor \(N\). For example, \(R[X]/(X^2-1)\) has the known auxiliary idempotent \((1+X)/2\) for every odd \(N\). A reduction must extract a base-ring zero divisor, not merely split the auxiliary presentation.
+
+**HEURISTIC — Fix.** Retain the RES/G ledger as a conditional barrier for its specified polynomial-selection model. For auxiliary algebras, require an explicit analysis of nontrivial modular relations, surviving height, independence, and completion to factoring \(N\). The fact that prime-ideal norms are at least the underlying rational prime does not establish the absence of such a descent.
+
+**SPECULATIVE.** A useful auxiliary-algebra escape would preserve these cheap identities while adding enough \(N\)-dependent identifications to support repeated elimination. The examples above do not supply that step; your current proofs do not exclude it.
+
+**5. Experiments — CORRECT WITH FIXES; “all predictions held” is WRONG.**
+
+**PROVED — E1.** The binary-form formula for \(P_{\rm rand}(D)\) is correct. The reported gain is a valid descriptive comparison with an independent-random-sides baseline, but it substantially counts repeated relations. For
+\[
+f=(X+b)^q(X+c),
+\]
+the reduced numerator is
+\[
+(X+c)(h_0+b^qh_1).
+\]
+Canceling \(X+c\) removes the dependence on \(c\). At \(q=16\), the reported \(32\,896\) Frobenius-family successes are \(128\cdot257\) versions of at most \(128\) such constraints. Raw relation count does not establish rank.
+
+**PROVED.** The squarefree orbit still has a large measured gain: approximately \(4.33\cdot10^{10}\) at \(q=16\). Report it separately, cancel common factors before assigning sizes, and distinguish successful candidates from independent equations.
+
+**PROVED — E2.** Prediction P2c is false. When \(Am+B=0\),
+\[
+f(m)=Cm+D=r_f.
+\]
+The existing samples contain **112** such equalities for \((11,19)\), and **217** for \((13,11)\). Removing them leaves gains approximately **1.041** and **1.061** respectively, so the numerical interpretation barely changes, but these were not nontrivial relations.
+
+**PROVED.** Every sampled small side is automatically smooth:
+\[
+|r_f|\le64(m+1)\le33344<65536.
+\]
+E2 therefore measures one difficult smoothness event. It also samples duplicates and nonunits; the first modulus has the easily detectable factor \(11\).
+
+**HEURISTIC — Fix.** Match controls more closely by magnitude within bit bins, known divisors, and local conditions; remove exact equalities and account for duplicate relation rows. The proposed “log-uniform within bins” explanation is untested and does not follow from uniform coefficient sampling. The results support this particular sampled family, not every structured integer family.
+
+**PROVED — E4.** Its reported ratios implement the stated baseline, but that baseline multiplies marginal smoothness probabilities for pieces evaluated at the same \(m\). Independence is an additional assumption.
+
+**PROVED.** Restricting primes to \(1\bmod d\) alone does not establish smoothness suppression: an eligible prime has \(\varphi(d)\) roots of \(\Phi_d\), increasing its divisibility frequency. The universal anti-smoothness wording also needs its exceptions: \(3^2-1=8\) is \(2\)-smooth.
+
+**HEURISTIC — Fix.** Treat E4 as two finite calibrations. Use joint controls incorporating local restrictions, and report uncertainty, particularly for the row with only eight successes. Neither the product baseline nor the observed deficit proves a universal upper bound.
+
+**6. Literature and novelty — CORRECT WITH FIXES.**
+
+**KNOWN.** Power-map endomorphisms on finite algebras already have substantial literature. [Howe, *Higher-order Carmichael numbers* (1998/2000), Theorem 1](https://arxiv.org/pdf/math/9812089), characterizes when \(n\)-th powering is an endomorphism on every bounded-rank \(\mathbf Z/n\)-algebra, using congruences modulo \(p^r-1\). This is direct prior context for Prop F, although its quantifiers differ.
+
+**KNOWN.** Factoring from an exponent multiple is classical. Cite [Miller (1976)](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf), distinguishing the unconditional randomized reduction from ERH-dependent deterministic conclusions.
+
+**PROVED.** CF is an elementary root-covering corollary. DES for this particular \(V_n\) is a specialization of sign variation; I did not locate prior BGJT-specific wording. Neither observation supports the stronger classification claims.
+
+**KNOWN / PROVED.** The pointed-\(\mu_n\)-set convention is established; see [Le Bruyn, *Absolute geometry and the Habiro topology*, §2](https://arxiv.org/pdf/1304.6532). It immediately gives
+\[
+GL_2=\mu_n^2\rtimes S_2,\qquad |PGL_2|=2n,
+\]
+and preservation of the homogeneous form \(U^n-V^n\) up to sign. That calculation is correct. It concerns this restricted group, however, and does not restrict all homographies over the actual coefficient ring.
+
+**PROVED — Computational record.** The exact sample audit and resultant examples are reproducible in the scratch [script](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py) and [results](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.json). The repository notes were left unchanged.
+tokens used
+204,919
+**PROVED — The claimed universal barrier is unsupported.** The conditional results do not exclude partial power identities or freely chosen auxiliary algebras. I found explicit escapes and a failed preregistered prediction. These constructions do not supply a fast general factoring algorithm.
+
+**1. Prop F — CORRECT WITH FIXES.**
+
+**PROVED.** The proof is correct, and can be shortened. An additive power map fixes every integer scalar, so
+\[
+a^s\equiv a\pmod{\operatorname{char}A}.
+\]
+Restriction to \(\mathbf F_p\) gives \((p-1)\mid(s-1)\). Moreover, \(\operatorname{char}A\) is automatically squarefree: reduction modulo \(p^2\), applied to \(a=p\), would otherwise give \(p^s\equiv p\pmod{p^2}\). Thus the squarefreeness assumption is redundant.
+
+**PROVED — The proposed partial replacement is false.** Write \(R=\mathbf Z/N\). In
+\[
+A=R[X]/(X^2-X-1)
+\]
+one has, for **every** \(a,b\in R\),
+\[
+(aX+b)^2=(a^2+2ab)X^2+(b^2-2ab).
+\]
+Everything is computable from \(N\); global additivity generally fails. Here the output coefficients depend jointly on \(a,b\), so this is coordinate closure, not Frobenius semilinearity.
+
+**PROVED.** Even requiring \(a'=a^s,\ b'=b^s\) on a small subset does not rescue the assertion. For a prime \(\ell\), define the monic integer polynomial
+\[
+C_\ell(T)=\frac{(T+1)^\ell-T^\ell-1}{\ell}.
+\]
+In \(R[X]/(C_\ell)\),
+\[
+(aX+b)^\ell=a^\ell X^\ell+b^\ell
+\qquad(a,b\in\{0,1\}).
+\]
+This faithful algebra exists for every \(N\). For \(\ell=11,\ N=101\cdot103\), neither \(100\) nor \(102\) divides \(10\), and global additivity fails since \(2^{11}-2=2046\not\equiv0\pmod N\).
+
+**PROVED — Fix.** Distinguish arbitrary coordinate closure, restricted power compatibility, and compatibility with a genuine coefficient automorphism. If the latter fixes \(R\) and compatibility includes all scalar inputs, then \(b^s=b\) already forces Prop F’s conclusion. A tiny coefficient subset does not. A recursive descent also needs compatibility for its subsequent targets, not merely the original generator.
+
+**2. Lemma CF — CORRECT WITH FIXES; the advertised classification is WRONG.**
+
+**PROVED.** The conditional root-covering argument is sound. It proves a **lower bound** on \(|S|\), not that the constant set must equal \(\mathbf F_p\), nor that all computable systematic products satisfy its hypothesis.
+
+**PROVED.** Assuming \((n,N)=1\), in \(R[\zeta_n]\),
+\[
+P(T)=T\prod_{j=0}^{n-1}(T-\zeta_n^j)=T^{n+1}-T
+\]
+is available without factoring \(N\). For restricted inputs \(z=u\zeta_n^j\),
+\[
+P(z)=(u^n-1)z.
+\]
+Thus restricted inputs admit a linear expression in \(z\), without covering the prime field. Computing its coefficient takes \(O(\log n)\) multiplications, although its integer height can grow like \(n\log|u|\).
+
+**PROVED.** Conversely, if \(P(z)=\sigma(z)-z\) holds on a set containing every scalar, a unital automorphism fixes those scalars. Consequently \(P\) vanishes there, and CF applies. More generally, a uniformly bounded-degree expression \(E(z,\sigma z)\), valid for every scalar, faces polynomial root counting after setting \(\sigma(b)=b\).
+
+**PROVED — Fix.** State CF as an obstruction to identities valid on all scalars, especially automorphism-difference identities. “Low complexity” must specify degree, coefficient height, and input domain: \(T^{n+1}-T\) already has a short arithmetic circuit. Restricted identities remain possible; CF does not establish that they cannot provide enough useful affine variations.
+
+**3. Lemma DES — CORRECT WITH FIXES.**
+
+**PROVED.** Under the stated \(A\ne0\) restriction, the conclusion is correct and can be strengthened to **\(n\ge4\)**. Apply Descartes to \(f(X)\) and \(f(-X)\) together:
+
+- When \(D\ne0\), the combined sign-variation bound is at most \(3\) for even \(n\), and \(4\) for odd \(n\).
+- When \(D=0\ne C\), divide by \(X\); the corresponding bounds are \(2\) and \(3\).
+
+These exclude complete real splitting for every \(n\ge4\). When \(C=D=0\), the stated degenerate family remains. If claiming a result about all of \(V_n\), explicitly exclude its low-degree members.
+
+**KNOWN.** The Lenstra citation and root-bound statement are correct. His theorem is stronger: for bounded number-field degree, sparsity, and factor degree, it bounds the total degree of the nonzero-root factors, including multiplicities. See [Lenstra, *On the factorization of lacunary polynomials* (1999)](https://doi.org/10.1515/9783110285581.277). Do not confuse it with his adjacent paper, *Finding small degree factors of lacunary polynomials*.
+
+**PROVED — Escape outside the fixed sparse space.** Bounded-degree outer polynomials in \(F(X^q)-G(X)\) retain bounded sparsity, but dense compositions and Chebyshev families are outside that restriction. For a concrete Dickson/Chebyshev example,
+\[
+P(X)=(X^2-4)(X^2-1)^2=X^6-6X^4+9X^2-4.
+\]
+Choose
+\[
+F=P-X-3.
+\]
+Then in \(R[X]/(F)\), a product of six rational linear factors equals \(X+3\). Exact resultant computation gives
+\[
+\operatorname{Norm}(X-2,X+2,X-1,X+1)=(-5,-1,-4,-2),
+\]
+and
+\[
+\operatorname{Norm}(X+3)=320=(-5)(-1)(-4)^2(-2)^2.
+\]
+This supplies splitting and degree compression for arbitrary \(N\). Its limitation is the exact norm equality, addressed next.
+
+**4. Rigidity and E5 — WRONG as general barriers.**
+
+**PROVED.** The presentation of an auxiliary algebra really is free. For every \(N\), choose
+\[
+A=R[X]/(X^d-h(X)),\qquad \deg h=O(1).
+\]
+Then \(X^d=h(X)\) holds, without searching for a small scalar root modulo \(N\). The scalar polynomial-selection argument in §5.5 does not cover this construction.
+
+**PROVED — Quantitative norm accounting.** Choose a monic integer lift \(\widetilde F\) of degree \(d\), with coefficient height \(H_F\). For \(g\) of degree \(e\) and height \(C\), the integer norm lift is
+\[
+\mathcal N(g)=\operatorname{Res}(\widetilde F,g).
+\]
+Hadamard gives
+\[
+|\mathcal N(g)|
+\le(\sqrt{d+1}H_F)^e(\sqrt{e+1}C)^d.
+\]
+For a linear factor \(aX+b\), with \(|a|,|b|\le E\),
+\[
+|\mathcal N(aX+b)|\le(d+1)H_FE^d.
+\]
+Therefore **norms do not automatically reintroduce \(\log N\)**. Small \(H_F,d,E\) give small integer norms, independently of \(N\).
+
+**PROVED — What happens instead in the simplest escape.** If \(F=X^d-h\) is chosen over \(\mathbf Z\), its compression identities already hold in \(\mathbf Z[X]/(F)\). Taking norms produces exact integer equalities. Their rational-prime valuation rows are zero; these identities alone supply no \(N\)-dependent relation information.
+
+**PROVED — A stronger family.** Let
+\[
+P_M(X)=\prod_{j=0}^{M-1}(X-j),\qquad F_M=P_M-X-1.
+\]
+In the freely chosen algebra,
+\[
+\prod_{j=0}^{M-1}(X-j)=X+1.
+\]
+All \(M\) factors are explicit and distinct. Yet
+\[
+|\mathcal N(X-j)|=j+1,\qquad \mathcal N(X+1)=M!.
+\]
+The entire relation is smooth by construction. Its norm equality is simply the known factorization of \(M!\). The linear “small side” has logarithmic norm \(\log(M!)\sim M\log M\), independent of \(N\).
+
+**PROVED — Where modulus-dependent size can enter.** For \(M=4\), instead lift the same modular defining polynomial as
+\[
+\widetilde F_N=P_4-X-1+N.
+\]
+The four factor norms become
+\[
+N-1,\ N-2,\ N-3,\ N-4,
+\]
+while the compressed side has norm \(N+24\). Now there is a nontrivial integer congruence, but the integers being tested are \(N\)-sized. This explicitly exhibits the distinction between exact lifted identities and modular identifications.
+
+**PROVED.** Generally, if resulting nonzero integer sides satisfy \(U\equiv V\pmod N\) and \(U\ne V\), then
+\[
+\max(|U|,|V|)\ge N/2.
+\]
+This is only an **aggregate** bound. It allows one side to be assembled from many known small factors; it does not prove that an unfactored piece must be \(N\)-sized.
+
+**PROVED.** Factoring the auxiliary algebra need not itself factor \(N\). For example, \(R[X]/(X^2-1)\) has the known auxiliary idempotent \((1+X)/2\) for every odd \(N\). A reduction must extract a base-ring zero divisor, not merely split the auxiliary presentation.
+
+**HEURISTIC — Fix.** Retain the RES/G ledger as a conditional barrier for its specified polynomial-selection model. For auxiliary algebras, require an explicit analysis of nontrivial modular relations, surviving height, independence, and completion to factoring \(N\). The fact that prime-ideal norms are at least the underlying rational prime does not establish the absence of such a descent.
+
+**SPECULATIVE.** A useful auxiliary-algebra escape would preserve these cheap identities while adding enough \(N\)-dependent identifications to support repeated elimination. The examples above do not supply that step; your current proofs do not exclude it.
+
+**5. Experiments — CORRECT WITH FIXES; “all predictions held” is WRONG.**
+
+**PROVED — E1.** The binary-form formula for \(P_{\rm rand}(D)\) is correct. The reported gain is a valid descriptive comparison with an independent-random-sides baseline, but it substantially counts repeated relations. For
+\[
+f=(X+b)^q(X+c),
+\]
+the reduced numerator is
+\[
+(X+c)(h_0+b^qh_1).
+\]
+Canceling \(X+c\) removes the dependence on \(c\). At \(q=16\), the reported \(32\,896\) Frobenius-family successes are \(128\cdot257\) versions of at most \(128\) such constraints. Raw relation count does not establish rank.
+
+**PROVED.** The squarefree orbit still has a large measured gain: approximately \(4.33\cdot10^{10}\) at \(q=16\). Report it separately, cancel common factors before assigning sizes, and distinguish successful candidates from independent equations.
+
+**PROVED — E2.** Prediction P2c is false. When \(Am+B=0\),
+\[
+f(m)=Cm+D=r_f.
+\]
+The existing samples contain **112** such equalities for \((11,19)\), and **217** for \((13,11)\). Removing them leaves gains approximately **1.041** and **1.061** respectively, so the numerical interpretation barely changes, but these were not nontrivial relations.
+
+**PROVED.** Every sampled small side is automatically smooth:
+\[
+|r_f|\le64(m+1)\le33344<65536.
+\]
+E2 therefore measures one difficult smoothness event. It also samples duplicates and nonunits; the first modulus has the easily detectable factor \(11\).
+
+**HEURISTIC — Fix.** Match controls more closely by magnitude within bit bins, known divisors, and local conditions; remove exact equalities and account for duplicate relation rows. The proposed “log-uniform within bins” explanation is untested and does not follow from uniform coefficient sampling. The results support this particular sampled family, not every structured integer family.
+
+**PROVED — E4.** Its reported ratios implement the stated baseline, but that baseline multiplies marginal smoothness probabilities for pieces evaluated at the same \(m\). Independence is an additional assumption.
+
+**PROVED.** Restricting primes to \(1\bmod d\) alone does not establish smoothness suppression: an eligible prime has \(\varphi(d)\) roots of \(\Phi_d\), increasing its divisibility frequency. The universal anti-smoothness wording also needs its exceptions: \(3^2-1=8\) is \(2\)-smooth.
+
+**HEURISTIC — Fix.** Treat E4 as two finite calibrations. Use joint controls incorporating local restrictions, and report uncertainty, particularly for the row with only eight successes. Neither the product baseline nor the observed deficit proves a universal upper bound.
+
+**6. Literature and novelty — CORRECT WITH FIXES.**
+
+**KNOWN.** Power-map endomorphisms on finite algebras already have substantial literature. [Howe, *Higher-order Carmichael numbers* (1998/2000), Theorem 1](https://arxiv.org/pdf/math/9812089), characterizes when \(n\)-th powering is an endomorphism on every bounded-rank \(\mathbf Z/n\)-algebra, using congruences modulo \(p^r-1\). This is direct prior context for Prop F, although its quantifiers differ.
+
+**KNOWN.** Factoring from an exponent multiple is classical. Cite [Miller (1976)](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf), distinguishing the unconditional randomized reduction from ERH-dependent deterministic conclusions.
+
+**PROVED.** CF is an elementary root-covering corollary. DES for this particular \(V_n\) is a specialization of sign variation; I did not locate prior BGJT-specific wording. Neither observation supports the stronger classification claims.
+
+**KNOWN / PROVED.** The pointed-\(\mu_n\)-set convention is established; see [Le Bruyn, *Absolute geometry and the Habiro topology*, §2](https://arxiv.org/pdf/1304.6532). It immediately gives
+\[
+GL_2=\mu_n^2\rtimes S_2,\qquad |PGL_2|=2n,
+\]
+and preservation of the homogeneous form \(U^n-V^n\) up to sign. That calculation is correct. It concerns this restricted group, however, and does not restrict all homographies over the actual coefficient ring.
+
+**PROVED — Computational record.** The exact sample audit and resultant examples are reproducible in the scratch [script](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.py) and [results](/Volumes/git/factoring-connection/codex/scratch/systeq_2/audit_systeq.json). The repository notes were left unchanged.
