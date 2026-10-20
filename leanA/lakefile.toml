@@ -1,0 +1,20 @@
+name = "LeanA"
+version = "0.1.0"
+defaultTargets = ["LeanA"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.35.0"
+
+# Proof layer. Never imports Challenge.
+[[lean_lib]]
+name = "LeanA"
+
+# Trusted statement layer (Comparator challenge). Its theorem bodies are `sorry` placeholders.
+[[lean_lib]]
+name = "Challenge"
