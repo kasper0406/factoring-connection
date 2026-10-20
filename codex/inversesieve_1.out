@@ -1,0 +1,211 @@
+**UNVERIFIED — Referee verdict:** I found no theorem yielding the proposed constructive compression. There are rigorous locality barriers, but they require an explicit restriction on what the selector knows. A lower bound for arbitrary \(N\)-dependent selectors would be substantially stronger and is not proved here.
+
+**PROVED — Scales.** For the attaining dense band, balancing the stated costs gives
+\[
+Y,J=N^{5/31+o(1)},\quad H=N^{1/62+o(1)},\quad
+\lambda=N^{1/31+o(1)},\quad \rho_\ell=N^{-4/31+o(1)}.
+\]
+Below, \(I=[P/2,P]\), \(L=|I\cap\mathbb Z|\sim P/2\), and
+\(\Lambda(N)=\sum_\ell\rho_\ell(N)\).
+Use \(\Lambda\), rather than an unspecified constant multiple of \(\lambda\), inside exponential probabilities.
+
+For question 1, the distinction is between **few occupied classes** and **few forbidden classes**.
+
+- **KNOWN — Green–Harper: no informative application from the supplied hypotheses.** Their Theorem 1.1 assumes, for every prime \(\ell\le T^{1/2}\), that \(A\bmod\ell\) lies in a prescribed set \(S_\ell\) of size \((\ell+1)/2\), with additive energy at least \((1/16+\delta)\ell^3\), for fixed \(\delta>0\). It gives \(|A\cap[T]|\ll T^{1/2-c\delta^2}\). Theorem 1.3 instead assumes containment in arithmetic progressions of length \((1-\varepsilon)\ell\), with fixed \(\varepsilon>0\), throughout that prime range. Neither follows from your nearly full complements on one band. Their proposed classification of sharp examples as quadratic sets is a conjecture; their robustness results require additional quadratic correlation. A singleton can satisfy relevant residue restrictions trivially, but the resulting size estimates disclose nothing. [Green–Harper, §§1–2](https://arxiv.org/pdf/1311.6176).
+
+- **KNOWN — Helfgott–Venkatesh: yes to trivial embeddings; no additional structure.** For \(S\subset[0,T]^2\), assume \(|S\bmod\ell|\le\alpha\ell\) for every prime, with fixed \(\alpha\). Then either \(|S|\ll_{\alpha,\varepsilon}T^\varepsilon\), or a bounded-degree curve contains at least \((1-\varepsilon)|S|\). A singleton satisfies this, and \(U\times\{0\}\) satisfies it with the already known line \(y=0\). Exact divisor pairs satisfy the already known hyperbola. Across varying \(N\), the exclusion condition permits approximately \((1-\rho_\ell)\ell^2\) pair classes, not \(O(\ell)\). [Helfgott–Venkatesh, Theorem 1.1](https://webusers.imj-prg.fr/~harald.helfgott/texts/howsmall.pdf).
+
+- **KNOWN — Walsh, high dimensions: no informative application.** For integers \(0\le k<d\), assume \(|S\bmod\ell|\le\alpha\ell^k\) for every prime. Then either \(|S|\ll T^{k-1+\varepsilon}\), or a bounded-degree polynomial of coefficient size \(T^{O(1)}\) vanishes on \(1-\eta\) of \(S\). His restricted-prime version requires weighted prime mass
+  \(\sum_{\ell\in\mathcal Q}\log\ell/\ell\ge\kappa\log Q\).
+  Your single band has weighted mass \(O(1)\), not \(\gg\log P\). Padding by zero again produces only a known hyperplane. [Walsh, Theorems 1.1 and 2.4](https://arxiv.org/html/1105.1551v2).
+
+- **KNOWN — Walsh’s later theorem: no from the band data; yes vacuously for a singleton.** It assumes \(|S\bmod\ell|\ll\ell^\kappa\), fixed \(\kappa<d\), for every prime; a refinement uses a specified polylogarithmic band. It produces a polynomial of complexity \(O((\log T)^{\kappa/(d-\kappa)})\) vanishing on \(1-\varepsilon\) of \(S\). Your allowed classes have no power-saving cardinality. For \(S=\{p\}\), \(\kappa=0\) applies, but \(x-p\) is precisely the unknown answer. [Walsh, Theorems 1.2–1.3](https://arxiv.org/pdf/1307.0259).
+
+- **KNOWN — Gallagher: congruence hypothesis yes; useful denominator no.** With \(|A\bmod\ell|\le\nu_\ell\),
+  \[
+  |A|\le
+  \frac{\sum\log\ell-\log L}
+       {\sum(\log\ell)/\nu_\ell-\log L},
+  \]
+  provided the denominator is positive. Substituting \(\nu_\ell=\ell-|R_\ell|\) gives \(\sum(\log\ell)/\nu_\ell=O(1)\), so the denominator is negative. **KNOWN — Croot–Elsholtz:** their Variant 1 additionally requires \(|A|>\sum\log\ell\), and gives
+  \[
+  |A|\le eL\exp\!\left[-\sum_\ell\log\ell
+       \left(\nu_\ell^{-1}-\ell^{-1}\right)\right].
+  \]
+  Here its exponent is \(O(\Lambda\log Y/Y)=o(1)\): trivial. For tiny \(U\), its cardinality premise fails. These are cardinality bounds, not constructive classifications. [Croot–Elsholtz, Theorems 2–3](https://ecroot.math.gatech.edu/gallagher.pdf).
+
+- **KNOWN — A relevant 2026 update technically applies.** Croot–Mao–Pohoata–Yip, Proposition 5.1, assumes nonempty \(E\subset[T]\) and band-prime product \(\Delta\le\sqrt T/2\). Writing \(s_\ell=|E\bmod\ell|\), it guarantees a quadratic translate containing
+  \[
+  \gg\frac{|E|}{\sqrt T}
+  \exp\!\left(c\sum_{\ell\mid\Delta}
+       \sqrt{\frac{\ell-s_\ell}{\ell s_\ell}}\right)
+  \]
+  points. For \(T\asymp P\), at most one of your band primes fits. **PROVED:** the gain certified solely by \(s_\ell\le(1-\rho_\ell)\ell\) is only \(e^{O(\sqrt{\rho_\ell/\ell})}=e^{o(1)}\). The theorem neither computes the translate nor gives near-containment. Its stronger half-density results require different hypotheses. [September 2026 version, Proposition 5.1](https://arxiv.org/html/2607.15311v2#S5).
+
+**PROVED — Singleton obstruction to the proposed use of inverse sieves.** Every singleton has bounded-degree algebraic descriptions, including \(x-p=0\). An existence theorem about such a description is insufficient unless it computes coefficients without knowing \(p\). Small cardinality and efficient location are separate obligations.
+
+For question 2, the literal container lower bound needs correction.
+
+**PROVED — It is false with an exact-residue oracle.** If \(p\bmod M\) is supplied and \(M\ge N^{1/4+\varepsilon}\), one residue container suffices. Learning the residue supplies roughly \(\log M\) bits; learning only that it avoids forbidden classes supplies approximately \(\sum_{\ell\mid M}\rho_\ell\) nats in the uniform model. Those are different observations. Also, \(M\le P\) is a locality restriction, not an upper limit imposed by Coppersmith: larger known moduli are easier.
+
+**PROVED — Correct deterministic replacement.** Let \(S\) contain \(k=O(1)\) band primes, and define
+\[
+A_S=\{x\in I:x\bmod\ell\notin R_\ell(N)\;\forall\ell\in S\}.
+\]
+Counting removed integers separately,
+\[
+|I\setminus A_S|
+ \le \sum_{\ell\in S}|R_\ell|
+       \left(\frac L\ell+1\right)
+ \ll k\rho_{\max}(L+Y)=o(L).
+\]
+Thus \(|A_S|=(1-o(1))L\), uniformly in the forbidden sets.
+
+Consequently, a family required to cover **every locally admissible integer** needs
+\[
+K\ge(1-o(1))L/(w+1)
+\]
+intervals of length \(w\). At \(w=N^{1/4-\varepsilon}\), this is
+\(\Omega(N^{1/4+\varepsilon})\), stronger than the requested exponent.
+
+A residue container of modulus at least \(N^{1/4+\varepsilon}\) contains at most \(O(N^{1/4-\varepsilon})\) integers of \(I\), giving the same bound. This proves an exhaustive local-covering barrier, not a lower bound for locating the true divisor.
+
+**PROVED — CRT enumeration formulation.** For \(M=\prod_{\ell\in S}\ell\),
+\[
+\#\{\text{allowed CRT residues}\}
+=M\prod_{\ell\in S}(1-\rho_\ell)=M(1-o(1)).
+\]
+At the attaining scales, \(M\le P\) implies \(k\le3\) asymptotically. Moreover, the preceding interval-counting proof works for any bounded \(k\), even when \(M>P\).
+
+**UNVERIFIED — Extension to globally selected local containers.** Merely requiring each output box to mention boundedly many primes is insufficient: the algorithm might inspect all \(J\) primes before selecting those boxes. The proof above requires a common bounded set of observations, or an exhaustive local-covering requirement.
+
+**PROVED — Cleaner probabilistic locality barrier.** In the independent-coordinate model, conditioning on avoidance changes the marginal on coordinates \(S\) by
+\[
+d_{\rm TV}=1-\prod_{\ell\in S}(1-\rho_\ell)
+ \le\sum_{\ell\in S}\rho_\ell,
+\qquad
+D_{\rm KL}=\sum_{\ell\in S}-\log(1-\rho_\ell).
+\]
+Proof: the conditioned distribution is uniform on the allowed product set. For bounded \(k\), both quantities are \(o(1)\). Thus rare global avoidance need not noticeably bias any bounded collection of coordinates. This is a theorem about that model, not about the actual integer embedding.
+
+**PROVED — Polynomial-box extension, with explicit charging.** Separate Theorem-G calls on volumes \(V_i\) require the budget
+\[
+\sum_i\sqrt{V_i}\le X.
+\]
+The proposed conditions “\(K\le X\), each \(V_i\le X^2\)” alone permit cost \(X^2\), not \(X\).
+
+Each nonzero value of absolute size below \(N\) has \(N^{o(1)}\) integer divisors. Therefore these boxes can contain at most
+\[
+N^{o(1)}\sum_iV_i
+\le N^{o(1)}X^2
+\]
+candidate divisors. Exhaustively covering \(A_S\) requires \(X\ge N^{1/4-o(1)}\). This applies under Theorem G’s stated polynomial and box hypotheses and separate-call accounting. A new batching theorem could alter that accounting.
+
+For question 3, fix one design across a dyadic input range \(N\in[T,2T)\).
+
+**PROVED within the independent-hit model; HEURISTIC for arithmetic.**
+\[
+a_N:=\Pr(x\in U(N))
+=\prod_\ell(1-\rho_\ell)
+=\exp[-\Lambda(N)+o(1)],
+\]
+because
+\[
+\sum_\ell\rho_\ell^2\ll\lambda^2/J=J^{-3/5}=o(1).
+\]
+If the intensity is common across the range, linearity of expectation gives
+\[
+\mathbb E\sum_{T\le N<2T}|U(N)|
+ \asymp T^{3/2}e^{-\Lambda}.
+\]
+Restricting the sum to balanced semiprime inputs gives
+\[
+\mathbb E\sum_{N\in\mathcal S_T}|U(N)|
+ \asymp \frac{T^{3/2}}{(\log T)^2}e^{-\Lambda}.
+\]
+For true pairs, using their corresponding local hit intensity,
+\[
+\mathbb E\,\#\{\text{uncovered balanced pairs}\}
+ \asymp \frac T{(\log T)^2}e^{-\Lambda_{\rm pair}}.
+\]
+If intensities vary, retain the corresponding sums of exponentials.
+
+**HEURISTIC — Interpretation.** Since \(\Lambda,\Lambda_{\rm pair}=T^{1/31+o(1)}\), all these expectations tend to zero. Markov’s inequality then predicts complete coverage, even complete candidate coverage across the dyadic range, with probability tending to one. Thus this model supplies no positive population of asymptotic exceptions whose structure needs explaining. Rare-event structure must be tested conditionally.
+
+**PROVED — Logical content.** For an \(N\)-computable union \(C_N\),
+\[
+\text{uncovered true pair}\Longrightarrow p\in C_N
+\]
+is exactly equivalent to
+\[
+p\notin C_N\Longrightarrow\text{covered}.
+\]
+It is a coverage theorem outside the containers, plus a decoding theorem inside them.
+
+**KNOWN — Large-sieve comparison.** Your supplied bound becomes
+\[
+|U(N)|\ll P/\lambda=N^{29/62+o(1)}.
+\]
+At sieve level \(Q\asymp\sqrt P\), products of two band primes already exceed \(Q\); the usual denominator gains only the single-prime contribution \(\lambda\). The analogous fixed-\(q\) bounds give, up to logarithms, \(N^{30/31+o(1)}\) uncovered pairs. D′’s stated exceptional fraction \(O((\log N)^2/H^2)\) has the same power \(N^{-1/31+o(1)}\). [Repository discussion](/Volumes/git/factoring-connection/notes/dchworst_results.md:303).
+
+**PROVED — What stronger bounds would follow.** If the inverse theorem covered **all of \(U(N)\)** by \(K\le X\) short intervals or large-modulus classes, then
+\[
+|U(N)|\ll XN^{1/4-\varepsilon}
+=N^{55/124-\varepsilon+o(1)}.
+\]
+This improves the large-sieve exponent by \(3/124+\varepsilon\). Polynomial boxes under total Theorem-G budget \(X\) would give
+\[
+|U(N)|\le N^{12/31+o(1)},
+\]
+improving it by \(5/62\).
+
+If the theorem covers only the true factor, neither cardinality bound follows. Nor does it automatically bound the number of exceptional semiprimes: an arbitrarily \(N\)-dependent singleton could contain the factor for every input. The missing restriction is algorithmic or structural, not set cardinality.
+
+For question 4, the strongest concrete candidate I can justify is a continued-fraction **decoding criterion**, not an implication from noncoverage.
+
+**KNOWN — Cheap Lehman branch.** With
+\[
+L^*(p,q)=\min_{(A,B)}
+ \max\!\left(h^2,\ |Bp-Aq|\sqrt{h/P}\right),
+\]
+the height-dependent stationary-window machinery handles \(L^*\le X\) in \(\widetilde O(X)\) work. This is the corrected score in [coverage38, Proposition D](/Volumes/git/factoring-connection/notes/coverage38_results.md:389).
+
+**PROVED — A quantitative sufficient condition.** Let \(A/B\) be a convergent of \(p/q\), with next denominator \(B'\), and \(B\le\sqrt X\). Then
+\[
+|Bp-Aq|<q/B'\ll P/B'.
+\]
+Hence
+\[
+B'\ge C\sqrt{PB}/X
+\]
+implies \(L^*\ll X\). At \(B\asymp\sqrt X=N^{3/31}\), it suffices that
+\[
+B'/B\gg N^{1/124}.
+\]
+This identifies a precise exceptional rational-approximation condition with an enumeration cost below \(N^{1/5}\).
+
+**UNVERIFIED — Missing inverse implication.** Nothing found proves that uncovered pairs have this denominator jump, a comparably cheap polynomial representation, or an enumerable CRT forcing pattern. The repository’s Lehman experiments provide no support for the required implication; the corrected-score experiment slightly enriches uncovered pairs among hard pairs. [Existing results](/Volumes/git/factoring-connection/notes/coverage38_results.md:437). The candidate passes the decoding-cost test and fails the implication test.
+
+**PROVED — A stronger barrier in a clearly defined search model.** Plant one hidden survivor \(z\), uniformly in \(I\). An algorithm has public data independent of \(z\), may query “is \(x=z\)?”, and then outputs containers containing at most \(B\) integers in total. After \(Q\) queries,
+\[
+\Pr(\text{success})\le(Q+B)/L.
+\]
+Proof: unsuccessful queries leave \(z\) uniform among unqueried points; add the queried and output sets.
+
+Thus, for every algorithm chosen independently of the planted point, budget \(Q=N^{1/5+o(1)}\) gives success at most \(N^{-1/20+o(1)}\) for \(Q\) intervals of length \(N^{1/4}\), or \(N^{-1/10+o(1)}\) for polynomial boxes charged by total square-root volume. This formalizes a conditional pseudorandom-survivor obstruction.
+
+**UNVERIFIED — Arithmetic transfer.** Actual \(N\) is not independent of its factor, and the forbidden sets are algebraically related. Transferring that model bound to arithmetic would require a major new result. I cannot prove pseudorandomness against every \(N^{1/5}\)-time arithmetic selector. T1/T2’s local \(1/6\) floors do not themselves refute a \(6/31\) global selector.
+
+For question 5, I would run the following five experiments.
+
+**UNVERIFIED — Experimental proposals.** Use \(n=24,28,32,36,40\), exact bitset computation of \(U(N)\), and record actual \(J,H,\Lambda\) and cost. At the attaining scale, \(J\) is very small at these sizes; include larger-band stress controls, explicitly labelled as departing from that cost scale. Preserve \(H^2<Y/2\). Use both nulls: random even forbidden sets of matching size, excluding zero; and independently randomized local inputs \(N_\ell\), rebuilding the genuine quadratic-root sets.
+
+1. **Survivor trajectories and extremes.** Measure survivors after each prime, mean/variance of \(|U|\), empty-set frequency, maximum \(|U|\), and spatial gaps. Compare with full modular-mask simulations, not just a Poisson count. This detects clustering that one-point survival probabilities miss.
+
+2. **Residual CRT/window concentration.** For one-, two-, and three-prime products, measure residue occupancy, collision entropy, and maximum occupancy in windows of length \(\lfloor N^{1/4}\rfloor\). Compare with uniform subsets of the locally admissible integers **conditioned on the observed \(|U|\)**. Otherwise tiny sets appear structured automatically.
+
+3. **Held-out-prime prediction.** Use one half of the band to select candidates or fit scores; measure survival on the other half. Report enrichment and predictive log loss against size-, density-, and local-algebra-matched nulls. Freeze features before evaluating held-out inputs.
+
+4. **Targeted factor structure.** Compare uncovered and matched covered true pairs using continued-fraction denominator jumps, \(L^*/N^{6/31}\), near-rational distances, and membership in a preregistered library of valid polynomial boxes. Report effect sizes, confidence intervals, and operation counts. The denominator-jump threshold above is a concrete primary endpoint.
+
+5. **Blind constructive challenge.** Freeze an \(N\)-only container generator and budget before revealing factors. Measure true-factor capture, candidate mass covered, and total decoding cost on held-out inputs. Include planted-survivor controls and report performance conditional on an uncovered true pair. This directly tests the missing constructive claim.
