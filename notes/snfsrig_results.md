@@ -132,10 +132,15 @@ are a different question (§3.2).
 6. **Literature (§5).**
    - No rigorous or GRH-conditional sub-1/2 result was found for factoring special-form N or for discrete logs in prime
      fields with special p.
-   - SNFS (LLMP 1990: "this paper does not contain a rigorous mathematical result"), Gordon, Semaev, Joux–Lercier and
-     Joux–Pierrot are heuristic. Lee–Venkatesan is for random polynomials.
-   - The only rigorous L[α < 1/2] for a natural family that we found is Kleinjung–Wesolowski's, for F_{p^n} with
-     p = L(α). It concerns extension fields, not integers or prime fields.
+   - SNFS (LLMP 1990: "this paper does not contain a rigorous mathematical result"), Semaev and Joux–Pierrot are
+     heuristic. Gordon 1993 and Joux–Lercier 2003, also heuristic, are general-p results.
+   - Lee–Venkatesan is for random polynomials. They state the rigidity of a fixed f informally ("very rigid").
+   - Among *form-defined* families attacked by index calculus, the rigorous sub-L[1/2] results we found are both for
+     extension fields of small characteristic, not for integers or prime fields:
+     - Granger–Kleinjung–Zumbrägel 2018: quasi-polynomial time, unconditionally, on infinitely many explicit F_{p^n}
+       with a special model. Here special structure is exactly what gives rigour.
+     - Kleinjung–Wesolowski 2022: F_{p^n} with p = L(α).
+   - Families defined by their factors are a different matter (§3.2).
 
 **Weakest points.**
 - The barriers are method barriers, not impossibility theorems:
@@ -614,7 +619,11 @@ because its recursive calls need the algorithm for all integers, which is (O2) a
   - BBDT 2012 prove Ψ_F(x, y) ≍ x² for fixed degree-g forms only for y ≥ x^{g−2+ε} (x^{1/√e+ε} for cubics), with x the
     variable size: power-size y and bounded u.
   - Barbulescu–Lachand 2017, Thm 4.2, go down to y ≥ exp((log log x)^{5/3+ε}), but only for fixed primitive imaginary
-    *quadratic* forms of fundamental discriminant, in form-adapted regions, and without joint rational smoothness.
+    *quadratic* forms of fundamental discriminant, and in form-adapted regions.
+  - Joint linear–quadratic smoothness is known only at near-power y (Lachand 2015).
+  - The nearest published result is Lachand 2018 for the Kummer cubic X₁³ + 2X₂³. It reaches
+    y = exp(log x/(log log x)^{1/2−ε}), i.e. u up to about (log log x)^{1/2}, at fixed degree 3 and without special-q
+    lattices.
   - None of these results establishes the required uniform statement.
 - **Rational half.**
   - The values a − b·m_d with |a|, |b| ≤ V lie in the integers below m_dV whose residue mod m_d = r^{q_d} lies in
@@ -624,7 +633,8 @@ because its recursive calls need the algorithm for all integers, which is (O2) a
     at α = 1/3 it is ≈ (D′ − φ_Fb)/(D′ + φ_Fb).
   - RT tests (a − bm)/q, and division by q destroys the block. The relevant problem is therefore *multiples of q* with a
     prescribed block whose cofactor is smooth.
-  - Bourgain (2013, 2015) and Swaenepoel (2020) prescribe only a small positive proportion of the digits of primes.
+  - Bourgain 2013 prescribes c(n/log n)^{4/7} binary digits of primes; Bourgain 2015 prescribes cn, for a small c > 0.
+    Swaenepoel (2020) allows any base, with an explicit proportion c(g) < 1. None comes close to a proportion → 1.
   - None of these establishes even the rational half. Prop RB shows that statistics of smooth numbers alone cannot
     replace it.
 
@@ -635,7 +645,7 @@ Sources:
   [sec] secondary);
 - codex snfsrig_1 §5.
 
-The Opus literature critic's check of these citations is still outstanding; see §6.1.
+Citations were re-checked by the Opus literature critic (§6.1); its fixes are applied.
 
 - **SNFS is heuristic.**
   - Lenstra–Lenstra–Manasse–Pollard, "The number field sieve", STOC 1990, 564–572 [read, preprint]. They give
@@ -648,20 +658,29 @@ The Opus literature critic's check of these citations is still outstanding; see 
   - Thm 2.3: non-triviality only for p ≡ q ≡ 3 (mod 4), under their Conjecture 7.1.
   - The polynomials are random with height L[2/3, κ]. This is exactly the randomisation SNFS gives up, so special forms
     are not covered.
+  - They state the rigidity obstacle informally: "there is a fixed choice of the polynomial f for each m … Both of
+    these choices make the NFS very rigid, and a proper analysis would seem to require precisely understanding the
+    distribution of smooth numbers on curves of high degree." This is the nearest prior statement of (O1).
 - **Special-prime discrete logs: all heuristic.**
-  - Gordon, SIAM J. Discrete Math. 6 (1993) 124–138 [abs]: heuristic L_p[1/3, 3^{2/3}].
+  - Gordon, SIAM J. Discrete Math. 6 (1993) 124–138 [abs]: heuristic L_p[1/3, 3^{2/3}] for **general** p. Its
+    special-form variant is called "asymptotically slower but more practical" (literature critic).
   - Semaev, Math. Comp. 71 (2002) 363–377 [abs, + codex read]: primes ab^t + c, heuristic L_p[1/3, (32/9)^{1/3}].
-  - Joux–Lercier, Math. Comp. 72 (2003) 953–967 [sec, + codex read].
+  - Joux–Lercier, Math. Comp. 72 (2003) 953–967 [abs]: GNFS improvements for **general** prime fields (moved here
+    for completeness, not a special-prime result).
   - Joux–Pierrot, Pairing 2013 (LNCS 8365) [abs].
   - Fried–Gaudry–Heninger–Thomé, Eurocrypt 2017 [abs]: experimental.
   - Schirokauer, Math. Comp. 79 (2010) 583–602, low-weight integers [abs]: conjectural.
   - Schirokauer, MSRI Publ. 44 (2008) survey [read]: these times are "conjectured".
 - **Rigorous index calculus.**
   - Prime fields: Pomerance 1987 gives L_p[1/2, √2] [sec].
-  - F_{p^n}: Lovorn Bender–Pomerance 1998 give L[1/2, √2] [sec].
+  - F_{p^n}: Lovorn Bender–Pomerance 1998 give L[1/2, √2] [sec], for p small relative to n (roughly p ≤ n^{o(n)};
+    the range was not verified).
   - Kleinjung–Wesolowski, JAMS 35 (2022) 581–624 [read]: rigorous quasi-polynomial time in fixed characteristic, and
-    L_{p^n}(α + o(1)) when p = L_{p^n}(α), α ∈ (0, 1/2). This is the only rigorous L[α < 1/2] for a natural infinite
-    family that we found. It concerns extension fields of small characteristic, not prime fields or integers.
+    L_{p^n}(α + o(1)) when p = L_{p^n}(α), α ∈ (0, 1/2).
+  - Granger–Kleinjung–Zumbrägel, Trans. AMS 370 (2018) 3129–3145 [abs, literature critic]: unconditional
+    quasi-polynomial discrete logs, for every p, on infinitely many explicit F_{p^n} admitting a special model. This is
+    the closest analogue of "special structure gives rigour", but for extension fields.
+  - Both concern extension fields of small characteristic, not prime fields or integers.
   - No rigorous L[1/3] for prime fields, special or not, was found.
 - **Rigorous factoring of special N.**
   - Families with structured *factors* are easy: Boneh–Durfee–Howgrave-Graham, CRYPTO '99 [abs], factor N = p^r q in
@@ -675,8 +694,14 @@ The Opus literature critic's check of these citations is still outstanding; see 
     - Thm 1: Ψ_F(x, y) ≍ x² for y ≥ x^{g−2+ε} (degree g);
     - Thm 2: y ≥ x^{1/√e+ε} for cubics.
   - Dartyge–Martin–Tenenbaum 2001 [sec]: power-size thresholds.
-  - Lachand (thesis; Ann. Inst. Fourier 68 (2018)) [sec/abs]: degree 2 down to exp((log x)^{2/5+ε}); degree 3 with an
-    error that is non-trivial only near power-size y.
+  - **Lachand, Ann. Inst. Fourier 68 (2018) 1297–1363 [read by the literature critic]: the Kummer cubic X₁³ + 2X₂³.**
+    This is exactly the SNFS shape and the nearest published result to RT's algebraic half. Thm 1.1 gives
+    Ψ = (6/π²)Vol(K)x²ρ(3u) + O(x²/(log log x)^{1−ε}) for y ≥ exp(log x/(log log x)^{1−ε}). It is an asymptotic
+    equivalent for y ≥ exp(log x/(log log x)^{1/2−ε}). So u → ∞, but only up to about (log log x)^{1/2}: far from
+    L-scale, fixed degree 3, and no special-q lattice. (My draft's "non-trivial only near power-size y" was wrong.)
+  - Lachand, QJM 66 (2015) 225–244: joint smoothness of a linear and a quadratic form (a degree-2 NFS-type pair), at
+    near-power y.
+  - The "degree 2 down to exp((log x)^{2/5+ε})" attribution is UNVERIFIABLE and is dropped.
   - Mounier, Acta Arith. 220 (2025) [read]: effective versions, still power-size.
   - Barbulescu–Lachand, Math. Comp. 86 (2017) 397–418, Thm 4.2 [read; confirmed]: for primitive irreducible imaginary
     quadratic forms of fundamental discriminant, smooth-value asymptotics uniformly for
@@ -684,8 +709,8 @@ The Opus literature critic's check of these citations is still outstanding; see 
     only.
   - **For degree ≥ 3 nothing is proved at y = exp((log x)^c) with c < 1.** RT needs growing degree, special-q lattices,
     joint smoothness with the rational form, and pointwise boxes.
-- **Prescribed digits.** Bourgain, Israel J. Math. 194 (2013) and 206 (2015) [abs]: primes with up to cn prescribed
-  binary digits, for a small unspecified c > 0. Swaenepoel, Proc. LMS (2020) [sec]: any base, an explicit proportion
+- **Prescribed digits.** Bourgain, Israel J. Math. 194 (2013) [abs]: r < c(n/log n)^{4/7} prescribed binary digits of
+  primes. Bourgain, Israel J. Math. 206 (2015) 165–182 [abs]: r < cn, for a small unspecified c > 0. Swaenepoel, Proc. LMS (2020) [sec]: any base, an explicit proportion
   c(g) < 1. The SNFS rational side needs a proportion → 1, for smooth numbers rather than primes.
 - **Recognition ((O2), Prop REC).**
   - Lenstra, Ann. Math. 126 (1987) 649–673 [read]:
@@ -693,8 +718,14 @@ The Opus literature critic's check of these citations is still outstanding; see 
       w-smooth integers in the Hasse interval of p;
     - conditional: the L_p[1/2, √2] running time (Conjecture 2.10), which needs smooth numbers in √p-intervals.
   - Pomerance 1987, Thm 2.1 [sec; text not obtained]: a rigorous ECM smoothness procedure that recognises all but an
-    exceptional set (Granville, MSRI 44 (2008) §2.6, [read]). We could not verify the exceptional-set bound, nor whether
-    it covers primes of size L[2/3] with w = L_p[1/2]. It is the natural candidate for (O2) with a target set
+    exceptional set (Granville, MSRI 44 (2008) §2.6, [read]).
+  - LP92 (literature critic, scanned pages read):
+    - Algorithm 7.2 uses w = exp((log y)^{6/7}).
+    - Thm 7.3: on recognisable y-smooth a it succeeds with probability ≥ 1 − (log a)/a, in time
+      O((log(a+1))⁴exp(2(log y)^{6/7})).
+    - Thm 7.4: the non-recognisable primes up to x number ≤ c₇x·exp(−½(log x)^{1/6}). This comes via Pomerance 1987
+      Thm B′ and Friedlander–Lagarias 1987.
+    - So the recognisable set has density 1 − o(1), which meets REC's density requirement, at β = 6/7. It is the natural candidate for (O2) with a target set
     G = J ∖ (bad primes). Codex snfsrig_2 reports
     that the explicit version in Lenstra–Pomerance 1992 §7 runs in (log n)^{O(1)}exp(O((log y)^{6/7})) on
     recognisable y-smooth integers, with a large recognisable prime set. That is β = 6/7, not 1/2.
@@ -706,12 +737,16 @@ The Opus literature critic's check of these citations is still outstanding; see 
     "to be written". **The rigorous L_y[2/3] HECM bound used in Prop REC(b) and lemmaM (c) is therefore announced but
     not completely in print.** That makes REC's conclusion stronger: even fewer proved recognisers exist.
   - Short intervals: Matomäki–Radziwiłł 2016 (x^ε-smooth in [x, x + c√x]) [abs]; Croot 2007 [abs]; Hildebrand–Tenenbaum
-    almost-all-intervals (exp((log x)^{5/6+ε})) [sec]. None gives L[1/2]-smooth numbers in every Hasse interval.
+    almost-all-intervals result at exp((log x)^{5/6+ε}) is due to Friedlander–Lagarias 1987, J. Number Theory 25, as
+    cited in LP92 (corrected attribution). None gives L[1/2]-smooth numbers in every Hasse interval.
 - **Explicit statements that rigorous NFS is open.**
   - LLMP 1990 (above).
   - Lee–Venkatesan 2018: "Even assuming standard conjectures (e.g. GRH), there is no analysis that any substantial part
     of the NFS will halt."
   - Pomerance and Schirokauer, MSRI 44 (2008).
+- **Prop RB's spirit.** It is close in spirit to sieve-theoretic limits such as Selberg's parity problem: statistical
+  inputs that do not change when a sparse set is deleted (literature critic). It is not claimed as a new kind of
+  barrier.
 - **Search conclusion (not a novelty claim).** We found no prior statement of Lemma HR/RS/PH as obstructions to
   randomising SNFS, of Prop RB, or of Prop R2-S. Lemma RES is classical (resultant/Hadamard). The cyclotomic reduction
   is classical; its L[2/5, o(1)] consequence depends on Theorem U.
@@ -797,8 +832,30 @@ RB's application"; no new FATAL; the draft's FATAL compatibility gap is FIXED.
 
 ### 6.1 Opus literature critic
 
-Launched on the revised note but not yet reported when this note was committed. Its fixes, if any, are outstanding.
-Until it reports, the literature items marked [abs]/[sec] in §5 are unverified by a second reader.
+Independent and read-only, on the revised note. **Verdict: ACCEPT WITH FIXES, nothing fatal.** All fixes are applied.
+
+1. "Only rigorous L[α < 1/2] natural family = KW" was wrong. It **missed Granger–Kleinjung–Zumbrägel 2018**, where
+   special structure is what gives rigour (for extension fields). The claim is now restricted to form-defined
+   index-calculus families, consistent with §3.2.
+2. The Lachand entry was wrong. AIF 2018 is the Kummer cubic X₁³ + 2X₂³ with u → ∞ up to about (log log x)^{1/2}, the
+   nearest published result to RT. It is added in §4 and §5, together with Lachand QJM 2015 (joint
+   linear–quadratic).
+3. Gordon 1993 and Joux–Lercier 2003 are general-p results; they are re-filed.
+4. Other fixes:
+   - the LV "very rigid" quotation is added as prior informal motivation for (O1);
+   - **LP92 Thm 7.3/7.4 settle the averaged-ECM exceptional set** (density 1 − o(1), β = 6/7, so 6/13 stands);
+   - the 5/6-power almost-all-intervals result is attributed to Friedlander–Lagarias;
+   - Bourgain I vs II separated;
+   - a Lovorn Bender–Pomerance range qualifier;
+   - the Rosser–Schoenfeld attribution confirmed;
+   - the parity-problem analogy for RB.
+5. Confirmed:
+   - LLMP's quote, LV Thms 2.1/2.3/2.5, KW's quote, LPP I/II (part III not found);
+   - BBDT 1/√e for cubics, Barbulescu–Lachand Thm 4.2;
+   - Capelli and Eisenstein;
+   - BDH as abstract-level;
+   - no rigorous special-form factoring found;
+   - no prior HR/RS/PH/RB/R2-S statement found.
 
 ---
 
