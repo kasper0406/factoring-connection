@@ -184,3 +184,10 @@ Agents commit LOCALLY only; the orchestrator pushes.
 |---|---|---|
 | `smoothenum` | output-sensitive enumeration of doubly-smooth (a,b) pairs without sieving the box (target MNFS → L[1/3, 1.639] per N); theory + prototypes | notes/smoothenum_*, src/smoothenum/*, tests/test_smoothenum* |
 | `cadobench` | build CADO-NFS on M4, factor C80–C110, profile, testbed for real-size experiments (cofactorization, batch smoothness, enumeration heuristics, GPU/SME offload) | notes/cadobench_*, src/cadobench/*, experiments/*/cadobench*, external build in ~/src/cado-nfs (not committed) |
+
+## Phase 16 (2026-10-20): breaking the exponent (beyond L[1/3])
+| Agent | Task | Files |
+|---|---|---|
+| `systeq` | route 1: an integer analogue of the small-characteristic systematic equation (x^q − x = ∏(x−a)) — structured families of numbers tied to N that are smooth by construction | notes/systeq_*, src/systeq/*, tests/test_systeq* |
+| `resbarrier` | route 2: algebraic objects linked to N whose relevant norms beat the resultant bound Res(f,g) ≥ N (beyond two integer polynomials with a common root) | notes/resbarrier_*, src/resbarrier/*, tests/test_resbarrier* |
+| `nonsmooth` | route 3: factoring paradigms not based on smoothness (invariants equivalent to factoring with unexpected efficient computation: Galois representations / Edixhoven–Couveignes, point counting, p-adic cohomology, dequantised period finding, lattices, group/ring structure) | notes/nonsmooth_*, src/nonsmooth/*, tests/test_nonsmooth* |
