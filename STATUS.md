@@ -129,3 +129,12 @@ Agents commit LOCALLY only; the orchestrator pushes.
 |---|---|---|
 | `thmA` | self-contained proof of Theorem A in design (a‴_k; μ) across hypD/lemmaM/pcest/lv6/ldbound; interface audit; end-to-end toy run; fresh blind referees (2 GPT-6.1-sol, 3 Opus); literature | notes/thmA_*, src/thmA/*, tests/test_thmA*, experiments/*/thmA* |
 - 2026-10-19: **thmA** audit of Theorem A in design (a‴_k; μ) (notes/thmA_proof.md roadmap, notes/thmA_audit.md, src/thmA/*, tests/test_thmA.py; prereg `9c67cc6`). **No FATAL or MAJOR gap found**: 2 blind GPT-6.1-sol referees (analytic, algebraic/algorithmic) + 3 blind Opus critics all ACCEPT WITH FIXES; 23 issues logged, all MINOR, fixes applied in the roadmap (factor-exit bookkeeping, γ ≥ L^{−o(1)} not 1/polylog for computable S, LD* uniform in S, FM averaged over ℓ, Tenenbaum hypothesis, split sign, fibre-uniform roots, K(ii)/T_J). Precise claim: for each fixed (d,k,μ,η₀) with θ<1, Las Vegas L_N[1/2,(1+θ)/√2+o(1)] for every N; d=9 needs k≥13 (θ=16/39, c≈0.9972); 0.9192 is an infimum over fixed k, not a single o(1) (no diagonalisation). Weakest link (both analytic referees): Lemma 8.5′ Part 1's import of LV Lemma 8.5's proof-internal character majorant (Harper Prop. 2 preprint; Page/Siegel step loosely written) — needs a self-contained write-up. Toy E1/E1b (d=3, 30–50 bits, 60 N): 48/48 + 12/12 correct, 0 row/congruence violations, 352/352 squares, DD rates 0.476 (ω=2, z=−0.82) and 0.766 (ω=3, z=+0.29). Literature: no rigorous c<1 and no barrier theorem at c=1 found. Internal, unrefereed.
+
+## Phase 11 (2026-10-20): harden Theorem A, preprint, transfer the new devices
+| Agent | Task | Files |
+|---|---|---|
+| `lem85` | self-contained proof of Lemma 8.5′ Part 1 (no reliance on inside of LV's Lemma 8.5 proof; Harper preprint dependence isolated/replaced) | notes/lem85_*, src/lem85/*, tests/test_lem85* |
+| `preprint` | standalone LaTeX preprint of Theorem A (private, draft, author blank) | paper2/*, notes/preprint_* |
+| `recurse` | recursive shape test: factor split halves with the algorithm itself ⇒ fixed-d constant below (1+θ)/√2, and growing-degree regime (rigorous L[α<1/2]?) | notes/recurse_*, src/recurse/*, tests/test_recurse* |
+| `dlog` | transfer Theorem A machinery to rigorous discrete logs in F_p* (beat Pomerance's L[1/2, √2]?) | notes/dlog_*, src/dlog/*, tests/test_dlog* |
+| codex r19 | where else do the new devices (Dixon descent, N·w multiplier, 2D-random rational side, divisor switching + large sieve, batch smoothness, recursion) give speedups? | codex/r19_transfer.* |
