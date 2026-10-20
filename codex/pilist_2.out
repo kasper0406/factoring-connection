@@ -1,0 +1,285 @@
+**Recommendation: MAJOR REVISION.**
+
+The pencil theorem survives. The intended JR bound survives after correcting its output accounting, and its weighted analogue can be proved. EQ-SEL’s equivalence and the claimed closure of adaptive tail elimination do not follow.
+
+“FATAL” below means fatal to the proposition as stated, rather than irreparable damage to the project. Copies are saved as the [referee report](/Volumes/git/factoring-connection/codex/scratch/pilist_2/referee_report.txt), [reproducible checks](/Volumes/git/factoring-connection/codex/scratch/pilist_2/audit_checks.py), and [detailed weighted proof](/Volumes/git/factoring-connection/codex/scratch/pilist_2/weighted_JR_proof.txt).
+
+**1. FATAL — §2.2: the call definition permits \(\Gamma=L^{\Omega(1)}\).**
+
+A call returns a set *containing* all qualifying points. It may return the whole region.
+
+Take \(V=L[1/3,c]\), \(P=2^{\lceil\log_2 V\rceil}\), and \(S=P\). Then (J) holds. A call that scans and returns every point has \(\Gamma=V\) under the baseline random-smoothness interpretation.
+
+Charging those scans does not repair the displayed theorem: \(\Gamma\) measures yield **per call**, without a cost denominator.
+
+Correct statement: bound certified outputs satisfying \(d\ge S\), or normalize yield by charged work and account separately for ordinary point tests. For certified outputs under \(H_{\rm div}\), I find no counterexample; the weighted proof below excludes one.
+
+**2. MAJOR — §2.2, displayed (JR): the divisor sum cannot be chained into the exact-gcd moment.**
+
+The correct bound is
+\[
+\Gamma_{\rm cert}\le V\,\mathbb E[d^\lambda1_{d\ge S}]
+ \le \inf_{s\ge0}VS^{-s}\mathbb E[d^{s+\lambda}].
+\]
+Separately,
+\[
+\Gamma_{\rm cert}\le V\sum_{a\mid P,\ a\ge S}a^{\lambda-1}.
+\]
+
+The draft replaces exact-gcd probabilities by divisibility probabilities, then treats the resulting divisor sum as though it were the exact-gcd moment.
+
+Counterexample: \(P=30,V=1,S=2,\lambda=0\). The divisor sum is \(1.4\), whereas the moment bound evaluated at \(s=0\) is \(1\). This persists for sufficiently small positive \(\lambda\).
+
+Use the moment bound in regime (i), and the separate divisor majorant in (ii)–(iii).
+
+**3. MINOR — §2.2: the regime proof needs uniformity repairs, but its intended conclusion survives.**
+
+- **Lemma \(S\ge V^D\):** correct for \(1\le S\le P\).
+- **Rearrangement:** correct. A feasible prime set has no more elements than the initial prime segment fitting the logarithmic budget; decreasing summands favor that segment. Define the cutoff by inequalities: \(\vartheta(z_\Lambda)=\Lambda\) need not have an exact solution.
+- **Regime (i):** the estimate
+  \[
+  \sum_{q\le z}q^{\sigma-1}\ll z^\sigma/(\sigma\log z)
+  \]
+  omits a harmonic contribution. For \(\sigma=2/\log z\), the left side grows like \(\log\log z\), while the right side stays bounded. Retain \(O(\log\log z)\).
+- The domination dichotomy is repairable: the sum is uniformly \(O(\Lambda^{1-\eta})\), so failure of quadratic domination implies \(\beta=O(\Lambda^{-\eta/2})\). Consequently \(z^{2\beta}=O(1)\). Split \(\lambda\log z\le1\) from its complement before comparing with the endpoint \(B\). This gives the intended \(O(u+\log\log B)\).
+- **Regime (ii):** the complementary-divisor algebra is correct:
+  \[
+  \beta^2+\lambda-1+(1-\beta)(1-\lambda+\beta/2)
+  =-\beta[(1-\beta)/2-\lambda].
+  \]
+  The negative \(\Lambda^{0.9}\) term dominates the stated \(O(\Lambda^{0.8}/\log\Lambda)\).
+- **Regime (iii):** both subcases work asymptotically. However, \(\Lambda\le1.1\log S\) requires \(\lambda\to0\) and sufficiently large \(\Lambda\), rather than merely \(\lambda\le0.1\). Handle bounded \(\Lambda\) separately. State \(S\le y\) when invoking \(\log S\le\log y\).
+
+The boundaries are exhaustive asymptotically. \(V\le U\) is legitimate for the expressly restricted NFS box; it does not extend the theorem to the larger congruence boxes.
+
+All retained terms are indeed \(o(F_{1/3})\):
+\[
+u=\Theta(F_{1/3}/\log x),\qquad
+\lambda\log U=O(\log u),\qquad
+\frac{\log U}{\log\log U}=O(F_{1/3}/\log x).
+\]
+“Not growing with \(N\)” is nevertheless unsupported: the reported row maxima increase from \(3.13\) to \(4.53\).
+
+**4. MAJOR — §§2.2–2.3/6: \(H_{\rm div}\) does not establish a barrier for actual arithmetic selection.**
+
+Independence and conditional cofactor randomness must hold **after conditioning on the transcript and the selected \(P,R\), and weights**. Unconditional local densities do not imply this. Selecting a region inside a \(q\)-divisibility lattice already violates the unforced \(1/q\) hypothesis.
+
+Thus corrected JR is a meaningful conditional model theorem. It does not prove \(H_{\rm sel}\) for actual public-arithmetic decoders.
+
+Likewise, a guaranteed Coppersmith range is not a necessary bound on every successful certificate or shift set. Its size parameter concerns root bounds and geometry, not the cardinality of an arbitrary scattered subset.
+
+**5. MINOR — §2.2, GSS formulation; the weighted bound can be proved.**
+
+Lemma CS is correct when
+\[
+Q=\sum_q e_qw_q^2\log q>0.
+\]
+Exclude the zero vector: otherwise \(W=T=0\) accepts everything.
+
+GSS Theorem 4 includes a positive tolerance term:
+\[
+\sum_i a_i z_i\log p_i
+\ge
+\sqrt{\log K\left(\sum_i z_i^2\log p_i+\varepsilon z_{\max}^2\right)}.
+\]
+It guarantees inclusion, not “output iff.” The draft’s expression is a limiting idealization. Partial valuation agreement for prime powers requires an ideal-based argument; nested powers are not independent CRT coordinates. [GSS, Theorem 4](https://people.csail.mit.edu/madhu/papers/2000/gss-conf.pdf).
+
+Here is a uniform proof for the draft’s modeled score.
+
+Put \(F=F_{1/3}\), \(t=\log V=O(F)\), \(J_q=\min(v_q,e_q)\), and rescale the nonzero nonnegative weights so \(Q=t\). The event becomes \(W\ge t\). Independent domination by truncated geometric variables gives, for \(s=2(1-\lambda)\),
+\[
+\log\Gamma_{\rm cert}
+\le t-st+\sum_q m_q(sw_q+\lambda),
+\quad m_q(a)=\log\mathbb E[q^{aJ_q}].
+\]
+
+For \(H=\{q:w_q>1/4\}\), \(\log P_H\le16t\). Using
+\[
+m_q(a)\le e_q(a-1)_+\log q+\log(e_q+1),
+\qquad (2w-1)_+\le w^2,
+\]
+their contribution is at most
+\[
+(1-\lambda)Q_H+\log\tau(P_H),
+\qquad \log\tau(P_H)=O(F/\log F).
+\]
+
+For the remaining primes, \(sw_q+\lambda\le0.55\). Split at \(Z=F^{1/4}\). Small primes contribute \(O(Z)\), uniformly in their exponents. For larger primes, Taylor expansion gives a baseline \(O(u+\log\log B)\), a linear term \(O(\sqrt t)\) by Cauchy–Schwarz, and a quadratic term \(O(t\log Z\,Z^{-0.4})\). The derivative estimates are
+\[
+m'_q(\lambda)\ll(\log q)q^{\lambda-1},\qquad
+m''_q(a)\ll(\log q)^2q^{-0.4}\quad(a\le0.6).
+\]
+Consequently
+\[
+\log\Gamma_{\rm cert}
+\le\lambda t+
+O\!\left(
+F/\log F+F^{1/4}+\sqrt F+F^{0.9}\log F+u+\log\log B
+\right)=o(F).
+\]
+
+For \(t=0\), use \(\mathbb E[d^\lambda]\) directly. This proves the weighted result for **every nonzero nonnegative weight vector**, including arbitrary prime powers, within the independent model. Unweighted JR is a special case.
+
+**6. FATAL — §2.1: EQ-SEL is not the claimed equivalence or contrapositive.**
+
+A listed smooth point \(z\) is already **revealed**. Returning \(M=|G(z)|\) afterwards supplies no new point in smoothenum’s stated LQ model.
+
+If revealed points are allowed instead, the same argument makes the ordinary \(\theta=0\) box sieve violate \(H_{\rm sel}\): its \(L[r]\) cost per smooth output is also far below \(y/U\). Thus the argument cannot distinguish partial listing from ordinary sieving.
+
+Conversely, a constant-factor \(H_{\rm sel}\) violation need not give an \(L\)-power improvement. Nor does an arbitrary violation guarantee enough distinct smooth outputs, useful rank, or favorable cofactors. Part (iii)’s exponent calculation can furnish a sufficient criterion under its Dickman-gain assumption and suitable fresh-output accounting; it is not the reverse implication claimed in the synthesis.
+
+Correct conclusion: \(H_{\rm LQ}+H_{\rm sel}\) are sufficient hypotheses for a particular no-improvement theorem. They are not equivalent to nonexistence of a partial lister.
+
+**7. MAJOR — §2.1: nonempty lattice does not imply a primitive box point.**
+
+Dividing an integer lattice vector by its coordinate gcd need not preserve membership in this congruence lattice.
+
+Take \(E=2,M=12>2E^2,R=5\). In \([-2,2]\times[1,2]\), the lattice
+\[
+a\equiv5b\pmod{12}
+\]
+contains \((-2,2)\), and contains no primitive point. Its primitive direction \((-1,1)\) is outside the lattice.
+
+Restrict “nonempty” throughout to primitive points. Also distinguish \(M>2U\), the uniqueness threshold proved, from \(M>U\); that constant discrepancy is repairable.
+
+**8. MAJOR — §3.3: TAIL needs stronger and more precise hypotheses.**
+
+The pairing union bound works for **exactly \(k\)** random incidences per row, with the atom bound conditional on the entire **entry-by-entry** exposure history. Adaptivity and discards then work when every generated sample is charged.
+
+If “whole past” means earlier rows only, use \(k=4,j=0\) and rows
+\[
+(Q,Q,Q',Q'),
+\]
+with independent uniform \(Q,Q'\). Each marginal has probability \(1/n\), but the first row always cancels; the proposed first moment is only \(3/n^2\).
+
+Even entrywise control does not justify “at least \(k\).” Set \(k=3,j=0\), but generate four independent uniform entries. For \(R=1\), the code’s odd-matching term is zero, whereas cancellation probability is \(3/n^2-2/n^3>0\).
+
+State actual row lengths or sum over them. Explicitly define odd unmatched terms as zero. The \(1/2\) threshold is a probability/median statement, not deterministic necessity.
+
+**9. MAJOR — §3.3/6: item (f) has not been reduced to \(H_{\rm sel}\) plus sparse LA.**
+
+The saddle-point picture supports \(\Theta(u)\) band factors, ordinarily counted with multiplicity, and the displayed \(p\) is conservative on the \(L\)-scale. It does not establish the required transcript-conditional joint law, a deterministic minimum of odd entries, or universality over arithmetic strategies.
+
+The index argument correctly bounds the number of distinct forced band divisors by \(O(1)\) when their product is at most \(U\). It does not classify every mechanism producing correlated parity rows.
+
+A support-counting lower bound proves neither quadratic elimination cost nor that every allowed adaptive matrix has a stalled 2-core.
+
+Correct consequence: **under LQ and a strengthened \(H_{\rm tail}\)**, bounded forcing does not save a fixed power in relation count. The additional randomness assumption remains part of the obstruction.
+
+**10. MINOR — §4.3: O2-count is correct, but its reading drops qualifications.**
+
+Quotient linearity and injectivity check out. Require \(0\le k\le M\), and define \(W=\prod(X-a)\), rather than a product of root numbers.
+
+The \(B^{3/2+o(1)}\) conclusion for \(k=1\) concerns nondegenerate \(W\)-pencils and requires the additive \(M\) term to be negligible. Degenerate classes can contribute \(O(B^2)\) altogether.
+
+Counterexample to the unqualified sentence: \(M=3,k=1,F_0=X^3,F_1=X\). Every three-root multiset in \([-B,B]\) whose sum is zero belongs to \(F_0+\mathbb ZF_1+\mathbb Z\). There are \(\Theta(B^2)\) such polynomials; their moving quotients have degree at most two.
+
+The substantive §4 proofs survive:
+
+- TL correctly uses Mahler measure after dividing by \(g\); the exceptional sets are disjoint at distance at least three; \(G=0\) forces the reduced polynomials to be pairwise coprime.
+- PEN(A)–(D) hold. An affine stabilizer has finite order; over \(\mathbb Q\), its only possible nonidentity element is one reflection.
+- Each squarefree moving member supplies at least \(e(e-2)\) off-line ordered pairs.
+- \(4(e-1)^2/[e(e-2)]\le16/3\), with equality at \(e=3\).
+- BCN Theorem 2 provides the required height-uniform integral-point estimate. [BCN](https://arxiv.org/pdf/2302.04209).
+
+The simultaneous Behrend construction is also valid for fixed coefficient bound \(C\): a sufficiently large no-carry digit base and one sphere exclude all the finitely many weighted-average equations. This establishes a limitation of bounded-coefficient triple exclusions; it does not construct split O2 members at those parameters. [Behrend](https://pmc.ncbi.nlm.nih.gov/articles/instance/1078964/pdf/pnas01693-0039.pdf), [Ruzsa](https://www.impan.pl/en/publishing-house/journals-and-series/acta-arithmetica/all/65/3/107841/solving-a-linear-equation-in-a-set-of-integers-i).
+
+**11. MAJOR — §1.3/Table 1.1, `targets.py`: the advertised \(e\le3\) cap is absent.**
+
+`targets.py:94` passes `emax` as an **initialization endpoint**. `heurnfs/optim.py:45–67` enforces positivity and supplied constraints, but never enforces `lo`/`hi`. `nfs_program` supplies only the yield constraint.
+
+With `emax=3`, three restarts reproduce
+\[
+c_{\rm alg}(1)=0.7994218858
+\quad\text{at}\quad e=4.64445947.
+\]
+Thus precisely the published \(0.7994\) value violates the claimed cap. Doubly split runs escape it too.
+
+Enforcing \(e\le3\) alone in the reduced program gives approximately \(0.8241491\) algebraic and \(0.5715539\) doubly. Alternatively, label the current numbers as numerical feasible upper bounds from an unbounded search. Running minima cannot certify optimality or repair missing constraints.
+
+A reduced numerical calculation gives
+\[
+\theta^*_{\rm alg}\approx0.0291472,\qquad
+\theta^*_{\rm both}\approx0.0218807.
+\]
+These agree with the claimed intervals, but the draft’s search does not certify those thresholds. The rational closed-form values and the \(\alpha=1/4\) finite-size ratio check out.
+
+**12. MINOR — §§1.2–1.3: distinguish conditional costs from proved factoring costs.**
+
+The congruence formula and optimization are algebraically correct:
+\[
+\max(\kappa+\tau+\alpha\nu/\kappa,2\kappa),
+\qquad
+\tau_{\max}=\sup_{0<\kappa\le c/2}
+(c-\kappa-\alpha\nu/\kappa).
+\]
+They give the two stated branches. Doubly split has supremum \(c\), not an attained maximum. The Dixon check gives \(\sqrt2\).
+
+But the factoring consequence assumes random window smoothness and useful rank. Listing smooth \(u\) does not establish the required distribution of its induced \(v\).
+
+For the intended \(\alpha<1/3\) congruence regime, reducing \(L[1-\alpha]\) per output to \(L[1/3,O(1)]\) does require \(\theta\to1\). That target comparison is correct. “Strictly harder” is not a proved complexity separation.
+
+**13. MAJOR — §5.3: E3 is missing.**
+
+The supplied repository has no `experiments/raw/pilist_E3.jsonl`. Section 5.3 contains a placeholder without results. Therefore P10–P12 are **unscorable**, rather than failed or confirmed.
+
+The available raw files give:
+
+| Prediction | Rescore |
+|---|---|
+| P1 | Pass: zero violations |
+| P2 | Pass in every cell |
+| P3 | **Fail:** 92 exact qualifying lines at \(M=3\), zero at \(M=4\) |
+| P4 | **Fail as registered:** two flags at \((6,4)\), `kproj=1` |
+| P5 | Pass: maximum three exact nondegenerate members |
+| P6 | Pass: zero misses in 272 certified checks |
+| P7 | **Fail:** one of eight cells; \(154/64.8664=2.37411\) |
+| P8 | Pass: maximum mean count \(0.77\) |
+| P9 | Pass: maximum \(\widehat\Gamma=0.981518\); ceilings satisfied |
+| P10–P12 | Missing E3 data |
+
+**14. MINOR — §5: disclosures are honest; several interpretations need narrowing.**
+
+The E1 crash repair matches the preregistration-to-current code diff. P4’s two triples genuinely have moving degree two after removing their degree-four gcd. The rescoring changes the registered rule, and the note correctly leaves P4 failed. P7 likewise remains explicitly failed. I find no concealment.
+
+However, “from \(M=4\) on none has a small-\(c\) triple” drops the \(e=M\) qualification. Multiply the cubic identity by \((X-2)^{M-3}\): this produces an \(e=3\) pencil with coefficients \((1,-2,1)\) in every registered box. P5’s registered score remains a pass.
+
+For a nonzero homogeneous linear form on primitive residue pairs,
+\[
+\Pr[q\mid G]=\frac{q-1}{q^2-1}=\frac1{q+1}.
+\]
+At prime powers the density is \(1/[q^{j-1}(q+1)]\le q^{-j}\). These are local/asymptotic box densities, not exact probabilities in every deterministic skinny box.
+
+The post-hoc total \(85/96.1653=0.884\) and quoted ratios are correct. “Not a failure” is nevertheless too definite: the diagnosis does not prove the conditional model. Eligibility also changes between post-hoc models; one retained final prediction is only \(4.98\).
+
+Finally, E2’s yield comes from the **threshold truth set**, not the operational HG decoder’s returned roots. Label it a harness measurement; the 272-call check establishes P6 separately.
+
+**15. MAJOR — §§2.3/3.2/6: the capacity-decoding literature claim is outdated.**
+
+Brakensiek–Chen–Putterman–Zhang–Zheng, September 2026, give deterministic capacity-approaching decoding of ordinary Reed–Solomon codes over prime fields, for arbitrary evaluation sets and fixed rate/slack. Their decoder explicitly receives **no derivative evaluations**; derivatives are hidden formal variables.
+
+This invalidates the claim that known capacity-approaching decoders require folding or derivative data in the codeword. It does not provide the required CRT decoder or uniform efficiency in the draft’s vanishing-rate regime. [Primary theorem and explanation](https://arxiv.org/pdf/2609.08005).
+
+Cohn–Heninger Theorem 1.3 is also misclassified there: its exponent is \(\beta^2/d\), not capacity-approaching. [Cohn–Heninger](https://arxiv.org/pdf/1008.1284).
+
+Chinburg–Hemenway–Heninger–Scherr 2016 **exists**, with the stated authors, title, and venue. Its optimality theorem concerns the specified full-modulus univariate auxiliary-polynomial construction. The caveat in §2.2 is appropriate; §§2.3/6 overextend it to divisor-modulus and arbitrary-region/multivariate certificates. [Original theorem](https://arxiv.org/pdf/1605.08065).
+
+**16. MINOR — §7: attribution corrections and remaining citation checks.**
+
+Hanrot–Stehlé is a citation mismatch. CRYPTO 2007 is *Improved Analysis of Kannan’s Shortest Lattice Vector Algorithm*. The matching HKZ-input lower bound is in *Worst-Case Hermite-Korkine-Zolotarev Reduced Lattice Bases*, the 2007/2008 report. [Authors’ bibliography](https://perso.ens-lyon.fr/damien.stehle/index.html), [lower-bound paper](https://arxiv.org/pdf/0801.3331).
+
+Cheng–Wan’s bounded-distance claim is real. Distinguish FOCS 2004/SICOMP 37 (2007) from ICALP 2008/IEEE TIT 56 (2010). The final 2010 paper includes bounded-distance hardness at \((2/3+\varepsilon)\) times minimum distance. [2004 paper](https://arxiv.org/pdf/math/0405082), [2010 publisher statement](https://doi.org/10.1109/TIT.2010.2060234).
+
+Herrmann–May’s formula is correct under Assumption 1 and an \(\varepsilon\) slack. The comparison needs no numerical grid: with \(a=1-\mu\),
+\[
+\mu^2-g_n(\mu)=a[(n-1)+a-na^{1/n}]\ge0
+\]
+by AM–GM. This bounds that construction’s guaranteed range, not all whole-box decoders. [Theorem 4](https://www.iacr.org/archive/asiacrypt2008/53500412/53500412.pdf).
+
+The remaining named references correspond to real works with the claimed broad subject matter: Coppersmith; HG; Boneh; GRS; GSS; both Cohn–Heninger papers; Jochemsz–May; Guruswami–Rudra; Guruswami–Vardy; Gandikota–Ghazi–Grigorescu; Aono–Nguyen–Seito–Shikata; BCN; Behrend/Ruzsa; de Bruijn; Hildebrand–Tenenbaum; CGPT; Dubois–Mandler; Pittel–Sorkin; and Dietzfelbinger et al. Complete Kopparty’s entry as *List-Decoding Multiplicity Codes*, **Theory of Computing 11 (2015)**. [Paper](https://theoryofcomputing.org/articles/v011a005/v011a005.pdf).
+
+**17. MAJOR — §6: “one wall, three faces” is an interpretation, not a proved identification.**
+
+The corrected JR model bound and pencil count are supportable. EQ-SEL is not an equivalence. TAIL retains an additional joint randomness hypothesis and does not classify all adaptive elimination. Certificate optimality has narrower scope, the optimizer omits its advertised cap, and E3 is unavailable.
+
+The synthesis must retain those limitations explicitly. Correcting them, fixing the numerical program, and completing or removing E3 are required before acceptance.

@@ -136,6 +136,8 @@ def small_c_triples(ts: Sequence[int], cmax: int = 2) -> int:
     max |c_i| <= cmax (c0 P0 + c1 P1 + c2 P2 is then low-degree with small coefficients)."""
     cnt = 0
     for a, b, c in combinations(ts, 3):
+        if len({a, b, c}) < 3:      # a repeated position is a two-term (fibre) relation, not a three-term one
+            continue
         v = (b - c, c - a, a - b)
         g = gcd(gcd(abs(v[0]), abs(v[1])), abs(v[2]))
         if max(abs(x) for x in v) // g <= cmax:

@@ -90,7 +90,9 @@ def nfs_program(mode: str, theta: float, emax: float = 3.0, vmax: float = 0.6, r
         return max(c["enum"], c["test"], c["la"])
 
     def cons(x):
-        return [nfs_costs(x, mode, theta)["slack"]]
+        # the box bounds are ENFORCED as constraints (minimise() uses lo/hi only to draw starting points;
+        # codex pilist_2 #11 caught that the e <= emax cap was not enforced in the draft)
+        return [nfs_costs(x, mode, theta)["slack"], emax - x[0], vmax - x[3]]
     x, val = minimise(obj, cons, [.3, .3, .3, .001, .3], [emax, 1.3, 1.3, vmax, 3.0], restarts=restarts,
                       seed=seed)
     out = {k: float(t) for k, t in zip(("e", "beta", "beta_a", "v", "delta"), x)}

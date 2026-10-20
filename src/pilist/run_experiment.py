@@ -33,7 +33,23 @@ def run_E1():
         t0 = time.time()
         ms, arr = enumerate_split(M, B)
         for kproj in (0, 1):
-            lines = find_lines(arr, kproj=kproj)
+            if kproj == 0:
+                lines = find_lines(arr)
+                arr_l = arr
+            else:
+                # DEVIATION (disclosed): collapse equal projections (same e_1..e_{M-1}) into classes; lines are
+                # found among distinct projections and a member triple must use three distinct classes.
+                proj = arr[:, : M - 1]
+                uniq, inv = np.unique(proj, axis=0, return_inverse=True)
+                inv = inv.ravel()
+                cls_members = {}
+                for i, u in enumerate(inv):
+                    cls_members.setdefault(int(u), []).append(i)
+                lines = []
+                for memu, D in find_lines(uniq):
+                    mem = tuple(sorted(i for u in memu for i in cls_members[u]))
+                    lines.append((mem, D))
+                arr_l = arr
             by = Counter()
             viol_disjoint = viol_nonsqf = 0
             max_m_e3 = 0
@@ -51,7 +67,7 @@ def run_E1():
                         viol_nonsqf += 1
                 if st["e"] >= 3:
                     max_m_e3 = max(max_m_e3, st["m"])
-                ts = line_params(arr, mem, D, kproj=kproj)
+                ts = line_params(arr_l, mem, D, kproj=kproj)
                 nsc = small_c_triples(ts, CFG["E1"]["cmax"])
                 if nsc and st["e"] == M:
                     e_full_smallc += 1
@@ -59,6 +75,8 @@ def run_E1():
                     continue
                 # classify the small-c triples
                 for (i0, t0_), (i1, t1), (i2, t2) in combinations(list(zip(mem, ts)), 3):
+                    if len({t0_, t1, t2}) < 3:
+                        continue
                     v = (t1 - t2, t2 - t0_, t0_ - t1)
                     g = gcd(gcd(abs(v[0]), abs(v[1])), abs(v[2]))
                     c = tuple(x // g for x in v)
