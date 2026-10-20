@@ -1,0 +1,277 @@
+ACCEPT WITH FIXES
+
+Conditional on Theorem U and its stated chain, I found **no surviving FATAL or MAJOR gap in Theorem DL25**. The new reduction appears sound. Several statements and precision estimates need correction; none changes the claimed \(L_p[2/5]\) exponent or the diagonal constant identity.
+
+| Severity | Location and quoted text | Why | Fix |
+|---|---|---|---|
+| MINOR | [DL25 L232–239](/Volumes/git/factoring-connection/notes/dlog25_results.md:232): “\(\|n_0\|_\infty\le R\)”, followed by the Euclidean LLL bound using \(R\) | The displayed argument changes norms without accounting for \(\sqrt{s}\). | Use \(R_2=\sqrt{s}R\) in \(R'\). This adds only \(O(\log d)\) precision bits. |
+| MINOR | [DL25 L245–248](/Volumes/git/factoring-connection/notes/dlog25_results.md:245): roots cost “\(\operatorname{poly}(d,\log p,P)\)” | An unspecified polynomial in \(P=L^{a+o(1)}\) does not establish the subsequent \(L^{2a+o(1)}\) bound. | State the near-linear dependence on requested precision supplied by Pan; see item 4 below. |
+| MINOR | [DL25 L210–211](/Volumes/git/factoring-connection/notes/dlog25_results.md:210): “\(v_r(\operatorname{disc}f)=O(\log p)\) bounds the \(r\)-adic precision” | For the cited implementation using \(\beta=t\alpha\), the starting order has discriminant \(t^{(d-1)(d-2)}\operatorname{disc}f\). | Use the actual starting-order discriminant, whose logarithm is \(O(d\log p)\). Still polynomial. |
+| MINOR | [DL25 L172–175](/Volumes/git/factoring-connection/notes/dlog25_results.md:172): “Every computation … is a function of \(\mathcal T_j\)” | Literally false for generating the labels and evaluating \(g^{a_i}h^{b_i}\). Conditioning on survival of the exhaustive-search wrapper could also reveal timing information. | Define the transcript for the untruncated core after target construction. Analyze the wrapper by domination, without conditioning on its survival. |
+| MINOR | [DL25 L35–36](/Volumes/git/factoring-connection/notes/dlog25_results.md:35), [L328–330](/Volumes/git/factoring-connection/notes/dlog25_results.md:328): “3a … never binds … for any tuple” | Correct on the diagonal \(\tau'=\tau\); false for arbitrary independently chosen tuples in the displayed cost model. | Say explicitly “when the same tuple is used at both levels.” |
+| MINOR | [DL25 L357–365](/Volumes/git/factoring-connection/notes/dlog25_results.md:357): extension-field “injectivity”; “Neither is available” | A zero cross-product identifies a number-field ratio, not a unique element pair: units remain. Also, factoring an explicit ideal of bounded norm can use integer norm factorization and local decomposition. | Qualify the proposed split transfer; identify smooth-ideal distribution and field construction as the outstanding obstacles. |
+| MINOR | [DL25 L61–65](/Volumes/git/factoring-connection/notes/dlog25_results.md:61): rigorous sub-\(L[1/2]\) results “only in small characteristic” | KW also covers characteristic ranges commonly called medium characteristic, including \(1/3<\beta<1/2\). | State the quantitative characteristic ranges; retain “nothing found” as a search result. |
+
+**Weakest new link.** Lemma XK4-U’s quantified implementation is the part requiring the most care: relation size, precision, certified roots and quadratic-bit-complexity LLL must be combined explicitly. Its mathematical mechanism survives scrutiny. The inherited LD*/smooth-number supply estimate remains outside this verdict, as requested.
+
+**1. Transfer to \(N=p\), selection and random costs**
+
+The transfer works componentwise. The factoring theorem’s conclusion alone would not supply prime-input relations—`FACTOR_U(p)` immediately recognizes a prime—but the supplied chain contains the required estimates.
+
+For sufficiently large \(p\):
+
+- \(p>B\), and every nonzero modulus \(t\le2MV\) is coprime to \(p\).
+- \(F(g_0,g_1)=pw\) gives the same common-root construction.
+- Relevant gcd checks cannot produce proper factors. Zero-value exclusions and the rejection \(p\mid f'(m)\) must remain.
+- The use of \(\omega(N)\ge2\) in successful square-root extraction disappears with DD/LV6. It is replaced by HX.
+- The square-target law is replaced exactly where needed, by S_p″.
+
+The selection argument is sound, including possible bias from unsuccessful rounds. Let \(\mathcal A\) be the field-trial measure, including rejection mass, and let \(\varsigma_A\) be its row probability. Then
+\[
+p_{\rm sel}=\int\varsigma_A\,d\mathcal A,\qquad
+d\Pr(A^*=A)=\frac{\varsigma_A}{p_{\rm sel}}\,d\mathcal A,
+\]
+and hence
+\[
+\mathbb E\frac1{\varsigma_{A^*}}
+=\frac{\mathcal A(\varsigma_A>0)}{p_{\rm sel}}
+\le\frac1{p_{\rm sel}}.
+\]
+
+Condition **first on \(A\)**. Every fresh round has success probability
+\[
+q_n=\frac{\varphi(n)}n
+\]
+given its preceding history, and conditional expected cost at most
+\[
+H(A)=\frac{M_{\rm DL}C_{\rm trial}}{\varsigma_A}+T_{\rm post}
++\operatorname{poly}(\log p)M_{\rm DL}.
+\]
+Thus its total expected round cost is at most \(H(A)/q_n\). Integrating over the kept-field law proves Sel-DL’s bound.
+
+No independence between trial cost and success is needed. The appropriate accounting is
+\[
+\mathbb E\sum_i1_{\{\text{call }i\text{ occurs}\}}C_i
+\le C_{\rm trial}\sum_i\Pr(\text{call }i\text{ occurs}),
+\]
+using conditional expected costs and fresh coins.
+
+**2. S_p″ and K-U**
+
+The exact counting identity is correct.
+
+For coprime positive pairs in the window,
+\[
+uv'\equiv u'v\pmod p,\qquad |uv'-u'v|<Y'^2<p
+\]
+forces equality over \(\mathbb Z\), hence equality of the pairs.
+
+Moreover, if \(s\) is a shortest lattice vector,
+\[
+|\det(s,(u,v))|
+\le\|s\|_2\|(u,v)\|_2
+\le2Y'^2<p.
+\]
+The determinant is divisible by \(p\), so it is zero. Coprimality and shortestness then force \(s=\pm(u,v)\). This also removes any tie-breaking concern.
+
+The shared-prime count gives
+\[
+P'\ge |S|^2\left(1-\frac{2k^3}{|G|}\right)\ge\frac{|S|^2}{2}.
+\]
+
+The actual windows are valid:
+\[
+Y'_i=2^{i+1}Y^k,\quad 0\le i<k,\qquad
+Y'_i\le(2Y)^k=2^{kj}\le X.
+\]
+For odd prime \(p\), \(2X^2<p\) strictly. Also,
+\[
+Y^{2k}\ge \frac{p}{4\cdot16^k}
+\]
+for sufficiently large \(p\). Substitution gives the stated
+\[
+\Pr(\text{row}\mid A)\ge
+\frac{(\delta_A/(4\log p))^{2k}}{32k^2}.
+\]
+There is no residual square-class or \(2^{\omega}\) loss.
+
+**3. Hidden labels and randomized shape tests**
+
+For fixed true logarithm \(X\),
+\[
+(a,b)\longmapsto(a+Xb,b)
+\]
+is a bijection modulo \(n\). Consequently, conditioning on targets leaves all \(b_i\) independent and uniform.
+
+Adding every factoring-subroutine coin to the transcript is legitimate: conditional on its input and coins, the subroutine’s execution, internal recursion, restarts and running time are determined. Its canonical factorization output introduces no label dependence.
+
+Likewise, stopping after \(M_{\rm DL}\) accepted rows preserves the law because acceptance depends on targets and independent auxiliary coins.
+
+The exhaustive-search wrapper needs the clarification in the table. Analyze a virtual untruncated core; alternation gives
+\[
+T_{\rm wrapped}\le2T_{\rm core}+O(1)
+\]
+whenever the core finishes. There is no need to condition hidden labels on the wrapper still running. The arbitrary-base corollary’s budgets are handled through verified outputs and Markov bounds on primitive auxiliary bases.
+
+For primitive \(x^*\),
+\[
+b\longmapsto\sum_i x_i^*b_i\pmod n
+\]
+is surjective. Therefore round success is **exactly** \(\varphi(n)/n\), conditional on the core transcript—not merely an unconditional average.
+
+**4. XK at growing degree**
+
+The algebraic argument and the asymptotic cost survive.
+
+For an atom,
+\[
+|\sigma(a-b\alpha)|\le U<p,\qquad
+|\sigma(a-b\alpha)|
+=\frac{|F(a,b)|/|t|}{\prod_{\sigma'\ne\sigma}|\sigma'(a-b\alpha)|}
+\ge p^{-d}.
+\]
+Thus the stated log-vector bounds hold.
+
+Using the stated Blanksby–Montgomery bound, the factor \(d\) is correctly retained:
+\[
+\log M(z)=\frac{d'}d\sum_\sigma\log^+|\sigma z|
+\le d\|\operatorname{Log}z\|_\infty.
+\]
+Hence \(\beta_d\gg(d^2\log d)^{-1}\) is valid.
+
+Put \(r=r_U\). LLL gives
+\[
+\|u_i^*\|\ge2^{-(i-1)/2}\beta_d.
+\]
+Back-substitution in the size-reduced basis yields
+\[
+|c_i|\le(3/2)^r2^{r/2}\frac{\|v\|}{\beta_d}.
+\]
+There is no missing regulator or large fundamental-unit computation: the unit basis is used only for an existence bound.
+
+Taking a maximum over the \(v_j\), Cramer gives
+\[
+\log_2R=O\!\left(d\beta_x+d^2+d\log(kMd\log p)\right).
+\]
+Correcting the norm mismatch by \(R_2=\sqrt{s}R\), choose
+\[
+R'=2^{(s-1)/2}(1+s\sqrt{s})R_2,\qquad
+2^{K_{\rm prec}}\beta_d>(1+s\sqrt{s})R'.
+\]
+This preserves the displayed asymptotic precision bound.
+
+The ledger
+\[
+P=K_{\rm prec}+\beta_x+\log_2(2kM)+O(\log d)
+\]
+works: accumulated errors in each \(v_j\) are \(2^{-K_{\rm prec}}/\operatorname{poly}(d)\), and multiplication by the bounded relation coefficients still permits half-gap certification.
+
+For roots, the required absolute precision is
+\[
+b=P+\log_2V+d\log_2p+O(1).
+\]
+After scaling roots into the unit disk, Pan’s factorization theorem and root-approximation corollary give a bound near-linear in precision, for example
+\[
+\widetilde O\!\left(d^2(P+d\log p+d)\right).
+\]
+This supplies the missing explicit estimate in the prose. [Pan 2002, Theorem 2.1.1 and Corollary 2.1.2](https://doi.org/10.1006/jsco.2002.0531)
+
+Quadratic dependence on precision for LLL is also justified, with polynomial dimension dependence. [Nguyen–Stehlé, Theorem 2](https://perso.ens-lyon.fr/damien.stehle/downloads/fpLLL_journal.pdf)
+
+For bad primes, polynomial-time local maximal orders at a known prime are genuinely available; global discriminant factorization is unnecessary. [Buchmann–Lenstra, Theorem 1.2](https://www.numdam.org/item/JTNB_1994__6_2_221_0.pdf) The precision qualification matters: for
+\[
+f=2x^3+x+1,\qquad g=x^3+2x+4,
+\]
+the discriminants are \(-116\) and \(-464\), respectively. Using \(\operatorname{disc}g\) changes only polynomial factors.
+
+For the rank prime, writing \(\rho_{\mathbb Q}\) for the true rank,
+\[
+\log|\Delta|\le O(\rho_{\mathbb Q}\log\log p).
+\]
+Therefore
+\[
+\Pr(q\mid\Delta)
+=O\!\left(\frac{\rho_{\mathbb Q}\log\log p}{Q}\right)
+=O\!\left(\frac{\log\log p}{(\log p)^3}\right).
+\]
+The modular-rank/verification argument is safe even if verification passes at a smaller rank.
+
+Dixon lifting for \(d\) right-hand sides costs
+\(\widetilde O(d\rho^3)\), with
+\(\beta_x=O(\rho\log\log p)\). Consequently:
+
+| Operation | Cost |
+|---|---:|
+| Exponent matrix and local arithmetic | \(L^{a+o(1)}\) |
+| Modular elimination and rational solving | \(L^{3a+o(1)}\) |
+| Verification, unit elimination, final exponentiations | \(L^{2a+o(1)}\) |
+
+Odd degree gives \(\mu_K=\{\pm1\}\); saturation permits primitive normalization.
+
+I found no hidden cost exceeding this budget. Even \(\exp(O(d\log d))\), \((\log p)^{O(d)}\), and \(\exp(O(d^2))\) would be \(L^{o(1)}\) here. Crucially, \(R\) is never enumerated: only its bit length enters.
+
+**5. Cost formula and C25**
+
+The accounting gives
+\[
+p_{\rm sel}^{-1}=L^{s+o(1)},\quad
+M_{\rm DL}=L^{a+o(1)},\quad
+C_{\rm trial}=L^{\max(2^{-2/5}c_U(\tau'),a,\sigma)+o(1)}.
+\]
+Post-processing is outside the rejection multiplier. Thus (6.1) follows exactly.
+
+Write \(q=2^{-2/5}\), \(A=a+s\), and \(T_1=A+\max(a,\sigma)\).
+
+- **(i)** \(c_U\ge A/(1-q)>4.129a>3a\), while \(A+qc_U\le c_U\). Together with (ii), this proves \(c_{\rm DL}(\tau;\tau)=c_U(\tau)\).
+- **(ii)** If \(x=c_{\rm DL}(\tau;\tau')<c_U(\tau')\), then \(A<(1-q)x\). Since \(T_1\le x\) and \(2a<3a\le x\), \(c_U(\tau)\le x\).
+- **(iii)** The infimum identity follows from (ii) and the diagonal construction.
+
+The numerical table reproduces:
+
+| \(C_\gamma\) | Recomputed upper bracket, both U and DL |
+|---:|---:|
+| 0 | 3.510348599561199 |
+| 1 | 4.046923076923077 |
+| 5 | 5.038382695840780 |
+| 20 | 6.497536231884058 |
+
+The tuples and binding terms also match.
+
+The unqualified cubic claim fails outside the diagonal. In the note’s illustrative \(C_\gamma=20\) model, take
+\[
+\tau=(3,1/100,3/10),\qquad
+\tau'=(23/20,1/100,3/10).
+\]
+The three DL terms are
+\[
+9,\qquad6.42,\qquad[8.344211321,\;8.344215053].
+\]
+Here **\(3a\) binds strictly**. C25(i) itself remains correct.
+
+These are identities between derived upper-bound expressions, not lower bounds on actual DL complexity.
+
+**6. Scope and literature**
+
+The §7 conclusion—**a cheap individual-log phase is not established**—is justified. Saturation of the whole lattice does not force its projection onto new coordinates to have index coprime to \(p-1\). This does not establish an impossibility theorem for precomputation.
+
+The negative conclusion in §8 is also justified: the prime-field algorithm does not transfer as written. Its positive injectivity assertion needs qualification. For example, in \(\mathbb Q(\sqrt2)\), let
+\[
+u=3+\sqrt2,\quad v=5+2\sqrt2,\quad \varepsilon=3+2\sqrt2.
+\]
+Then
+\[
+(\varepsilon u,\varepsilon v)=(13+9\sqrt2,\;23+16\sqrt2)
+\]
+is a different pair with the same ratio. Both pairs have coprime principal ideals of norms \(7,17\), and their cross-product difference is zero. Unit normalization and principality issues remain after the norm argument.
+
+For KW, putting \(t=\log Q\) gives exactly the stated expansion
+\[
+\log T=
+\left(\frac{2c(1-\beta)}{\log2}+o(1)\right)
+t^\beta(\log t)^{2-\beta}.
+\]
+Thus it is \(L_Q[\beta+o(1)]\), rather than \(L_Q[\beta,C]\). The comparisons at \(\beta=2/5\) and \(1/2\) are correct. [Kleinjung–Wesolowski, Theorem 1.1](https://arxiv.org/pdf/1906.10668)
+
+The literature’s “nothing found” wording is appropriately a search result. It should explicitly concern classical algorithms and use quantitative characteristic ranges instead of “only small characteristic.”
+
+Verification: all **8 repository tests passed**. Independent scratch checks confirmed four exhaustive split identities, 144 hidden-label cases, 108 exact diagonal interval identities, and the mixed-tuple counterexample. The repository was left unchanged; [scratch checks](/Volumes/git/factoring-connection/codex/scratch/dlog25_2/adversarial_checks.py) and [parameter output](/Volumes/git/factoring-connection/codex/scratch/dlog25_2/params_check.txt) are available.

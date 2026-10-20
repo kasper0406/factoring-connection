@@ -32,7 +32,8 @@ and need nothing new.
    - Hence also L_p[α, o(1)] discrete logarithms for every α > 2/5.
 2. **The DL constant equals the factoring constant (Lemma C25, proved; arithmetic checked exactly in
    `src/dlog25/params.py`).**
-   - For every tuple τ: **c_DL(τ; τ) = c_U(τ) exactly.** The cubic linear algebra never binds, for any tuple:
+   - For every tuple τ, using the same tuple at both levels: **c_DL(τ; τ) = c_U(τ) exactly.** On this diagonal the
+     cubic linear algebra never binds, for any τ:
      c_U(τ) ≥ (a + s)/(1 − 2^{−2/5}) > 4.129a > 3a (observation of codex dlog25_1).
    - For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)). So DL is never cheaper than Theorem U in this cost model, and
      inf c_DL = inf c_U.
@@ -178,7 +179,9 @@ k windows holds |𝒮| ≥ C(|𝒟_A|, k)/k ≥ C(|𝒟_A|, k)/(2k) products, wi
 rest of the computation is [U]'s. On E the shape test passes (FACTOR_U returns the true factorisations, which consist
 of exactly k distinct primes of 𝒟_A ⊂ J on each side), and every special-q search returns an atom ([pp] Prop BS). ∎
 
-**Lemma T_p-U (hidden labels; proved).** (a, b) ↦ (log_g T, b) = (a + Xb, b) is a bijection of (Z/n)², so T is uniform
+**Lemma T_p-U (hidden labels; proved).** (The transcript below is that of the *untruncated core* algorithm after
+target construction: drawing (a_i, b_i) and computing T_i are not functions of 𝒯_j, and the exhaustive-search wrapper is
+analysed by domination, T_wrapped ≤ 2T_core + O(1), never by conditioning on the wrapper still running; codex dlog25_2.) (a, b) ↦ (log_g T, b) = (a + Xb, b) is a bijection of (Z/n)², so T is uniform
 on F_p^* and, given T, b is uniform on Z/n and independent of T. Let 𝒯_j be: the field, all targets of round j and their
 acceptance outcomes, every coin of every FACTOR_U call, SQ_SEARCH and EXACT_DEPENDENCE_U in round j, and everything from
 earlier rounds; it excludes the label coins of round j and step "A*, B*". Every computation of round j before that step
@@ -221,8 +224,9 @@ For each, an r-maximal order, the primes above r and the valuations v_𝔯(𝔍_
 poly(d, log p) (an overorder maximal at r in deterministic polynomial time: Buchmann–Lenstra, J. Théor. Nombres
 Bordeaux 6 (1994) 221–260, Thm 1.2 / Alg. 6.1 and Prop. 6.2, a Round-2-type iteration, cf. Cohen GTM 138 Alg. 6.1.8;
 since f need not be monic, the input order is Z[tα] (or the standard order of f), as in [DL]'s Z_(r)[α] remark;
-decomposition and valuations: Cohen §§6.2, 4.8.3 (algorithm numbers 6.2.9, 4.8.17 not verified against the book); the only randomness is Cantor–Zassenhaus factoring over F_r, and r ≤ B; v_r(disc f) =
-O(log p) bounds the r-adic precision). Finding them: t·disc f mod r for all r ≤ B, Õ(dB). Total, including the
+decomposition and valuations: Cohen §§6.2, 4.8.3 (algorithm numbers 6.2.9, 4.8.17 not verified against the book); the only randomness is Cantor–Zassenhaus factoring over F_r, and r ≤ B; the r-adic
+precision is bounded by v_r of the discriminant of the actual starting order, e.g. disc Z[tα] = t^{(d−1)(d−2)}disc f, whose
+logarithm is O(d log p); codex dlog25_2). Finding them: t·disc f mod r for all r ≤ B, Õ(dB). Total, including the
 valuations of the ≤ 2kM atom occurrences at the bad primes: ≤ 2kM·O(log p)·poly(d, log p) + Õ(dB) = L^{a+o(1)}. ∎
 
 **Lemma XK4-U (unit elimination at growing degree; proved).** Let s := r₁ + r₂ ≤ d, r_U := s − 1, and x₁, …, x_s ∈ Λ₁
@@ -259,12 +263,14 @@ poly(d)·Õ(M·(P + β_x) + κ²) with κ, P = O(dβ_x + d² + d·log(kMd log p)
   log₂(2kM) + O(log d), suffices for rounding, accumulation and certification ([DL] Lemma XK4 ledger, with the sum over
   ≤ 2kM occurrences and s ≤ d coordinates). By the conjugate lower bound, absolute precision P + log₂V + d log₂p + O(1)
   on the roots of f gives this (relative error of σ(a − bα) ≤ V·ε·p^d). Root approximation of a degree-d integer
-  polynomial with O(log p)-bit coefficients to b bits costs poly(d, log p, b) (A. Schönhage, *The fundamental theorem of algebra in terms of computational
+  polynomial with O(log p)-bit coefficients to b bits costs Õ(d²(b + d log p + d)), near-linear in b (Pan 2002,
+  Thm 2.1.1 and Cor. 2.1.2, after scaling the roots into the unit disk; codex dlog25_2); with b = P + log₂V + d log₂p + O(1)
+  this is L^{a+o(1)} (A. Schönhage, *The fundamental theorem of algebra in terms of computational
   complexity*, preliminary report, Math. Inst. Univ. Tübingen, 1982; Pan, J. Symbolic Comput. 33 (2002) 701–733). The roots must be *certified* (isolated), to separate real from complex roots and to pair the
   complex embeddings consistently across atoms: f is squarefree (irreducible), its root separation is
   ≥ 2^{−O(d log d + d log‖f‖)} = 2^{−O(d log p)} (Mahler), and P exceeds this, so isolating enclosures (e.g. by
   Newton–Kantorovich or Gershgorin tests on the approximations) cost poly(d, log p, P) (Opus proof critic, #3).
-- **Cost.** Roots: poly(d, log p, P). Logs of ≤ 2kM atoms in s coordinates: d·2kM·Õ(P). The sums: Õ(dM(P + β_x)).
+- **Cost.** Roots: Õ(d²(P + d log p)). Logs of ≤ 2kM atoms in s coordinates: d·2kM·Õ(P). The sums: Õ(dM(P + β_x)).
   LLL (Nguyen–Stehlé L², SIAM J. Comput. 39 (2009) 874–903) in dimension ≤ 2d with O(κ)-bit entries: poly(d)·Õ(κ²).
 - **Certification.** Accept n only if ‖Σn_jv_j‖_∞ < β_d/2 is certified by ball arithmetic: a true relation passes by the
   precision, a non-relation cannot pass by the gap. ∎
@@ -327,7 +333,9 @@ doubling budgets with Markov, every output verified, inconsistent congruences di
 
 **Lemma C25 (the DL constant is the factoring constant; proved).** Write T₁(τ) := a + s + max(a, σ) and
 c_U(τ) = max(2a, T₁(τ), (a + s)/(1 − 2^{−2/5})).
-- (i) c_DL(τ; τ) = c_U(τ) for every τ; in particular the term 3a never binds.
+- (i) c_DL(τ; τ) = c_U(τ) for every τ; in particular the term 3a never binds when the same tuple is used at both
+  levels. (Off the diagonal it can bind: for C_γ = 20, τ = (3, 1/100, 3/10), τ′ = (23/20, 1/100, 3/10) the terms are
+  9, 6.42, 8.344, so 3a binds; codex dlog25_2. This does not affect (iii).)
 - (ii) For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)).
 - (iii) Hence inf_{τ,τ′} c_DL = inf_τ c_U.
 *Proof.* (i) ≤: (a + s) ≤ (1 − 2^{−2/5})c_U(τ), so a + s + 2^{−2/5}c_U(τ) ≤ c_U(τ); T₁ ≤ c_U(τ); and
@@ -348,8 +356,8 @@ subroutine uses the grid-optimal τ′ for the same C_γ; the reported value is 
 | 5 | 5.03838 | 5.03838 | (4/5, 7/200, 1/2) | 2.40 | shape test |
 | 20 | 6.49754 | 6.49754 | (23/20, 1/100, 3/10) | 3.45 | special-q |
 
-So the linear-algebra term ("the 3a term takes over" at L[1/2] for θ > 1/2, [DL] §5) never binds at L[2/5], for any
-tuple (Lemma C25(i)): the recursion already makes c_U ≥ 4.129a. At L[1/2] there is no recursion factor 1/(1 − 2^{−1/2})
+So the linear-algebra term ("the 3a term takes over" at L[1/2] for θ > 1/2, [DL] §5) never binds at L[2/5] on the
+diagonal τ′ = τ, which already attains inf c_DL (Lemma C25): the recursion already makes c_U ≥ 4.129a. At L[1/2] there is no recursion factor 1/(1 − 2^{−1/2})
 in the fixed-shape-test constant, which is why 3a could bind there. As in [U], the table entries are grid values and C_γ
 is not computed.
 
@@ -382,13 +390,17 @@ is not computed.
     monic of degree n irreducible mod p, and let Λ_T := {(u, v) ∈ Z[x]_{<n}² : u ≡ Tv mod (p, φ)}, of rank 2n and
     covolume p^n. The analogue of Lemma S_p″'s *injectivity* holds when the coefficients of u, v are ≤ Y with
     N_{Q(φ)}(uv′ − u′v) < p^n, since uv′ − u′v ∈ (p, φ(θ)) forces the norm to be ≥ p^n unless it is 0. The
+    "injectivity" only identifies the *ratio* u/v ∈ Q(φ)^×: unit multiples (εu, εv) give the same ratio (e.g. in
+    Q(√2), (3 + √2, 5 + 2√2) and ε = 3 + 2√2; codex dlog25_2), so unit normalisation and principality issues remain. The
     *primitive-vector* step does not transfer as is: Λ_T contains θ^i·(u, v), so there is no unique shortest vector
     (module-lattice reduction would be needed), and coprimality needs ideal-theoretic care since Z[θ] need not be a UFD
     (Opus proof critic, #7).
   - What fails: the halves are elements of a degree-n number field Q(φ), not integers. The rational side of the relation
     supply becomes an algebraic side, and FM/LD* need Lemma 8.5′ (restricted BV for smooth numbers, Drappeau Lemme 5) for
-    **smooth ideals in residue classes modulo ideals of Q(φ)**, plus Theorem U for factoring ideals of norm ≈ Q^{1/2}
-    (the shape test). Neither is available. The pair (Q(φ), K_A) would also need a common-root construction F(g₀, g₁) =
+    **smooth ideals in residue classes modulo ideals of Q(φ)**, which is not available. (The shape test itself is not
+    an obstacle: an explicit ideal of norm ≈ Q^{1/2} can be factored by factoring its integer norm with Theorem U and
+    decomposing locally; codex dlog25_2.) The outstanding obstacles are the smooth-ideal distribution and the field
+    construction. The pair (Q(φ), K_A) would also need a common-root construction F(g₀, g₁) =
     p·w over Q(φ) (a "conjugation"-type pair of fields), whose field law is not covered by Lemma IR / FM-U.
   - Two simpler objections (codex dlog25_1): putting N := p^n in Theorem U's design gives arithmetic in Z/p^n, not in
     F_{p^n}; and integer ratios u₀/v₀ reduce into the prime field, so they cannot represent uniform targets of F_{p^n}.
@@ -451,6 +463,26 @@ by us"); the split-and-descend step is the classical heuristic individual-log st
 √2; KW's α-range; for p ≥ L_Q[1/2] nothing rigorous even at L_Q[1/2]; Lido and GKZ rows; Gordon's constant 3^{2/3};
 Buchmann–Lenstra pinpoint and the non-monic input order; Cohen algorithm numbers 6.2.9/4.8.17 flagged unverified;
 Schönhage 1982 full reference.
+
+**GPT-6.1-sol adversarial referee `codex/dlog25_2` (xhigh): ACCEPT WITH FIXES, "no surviving FATAL or MAJOR gap".** It
+confirmed the transfer to N = p, the size-biased selection and Wald accounting, Lemma S_p″'s exact identity and K-U's
+windows, the hidden labels with the randomized subroutine (round success exactly φ(n)/n given the core transcript), XK-U
+at growing degree (no hidden exp(d)-type cost; R is never enumerated), (6.1), Lemma C25 and the table, and the scope of
+§§7–8; it re-ran the 8 tests and its own scratch checks. Fixes applied (all MINOR): √s in R′ (as the proof critic);
+near-linear root-approximation cost via Pan Thm 2.1.1/Cor. 2.1.2; r-adic precision from the starting order's
+discriminant (O(d log p)); the hidden-label transcript is that of the untruncated core after target construction, with
+the exhaustive-search wrapper handled by domination; "3a never binds" only on the diagonal τ′ = τ (off-diagonal
+counterexample recorded); in §8, unit multiples defeat pair uniqueness and the shape test is not an obstacle; the
+characteristic ranges stated quantitatively. Weakest new link in its view: XK4-U's quantified implementation.
+
+| reviewer | scope | verdict | main fixes (all applied) |
+|---|---|---|---|
+| GPT-6.1-sol dlog25_1 (blind, xhigh) | whole question | YES L[2/5], conditional on U's chain | c_U > 4.129a > 3a (diagonal identity), KW exponent, extension-field objections |
+| Opus proof critic | §§3–8 line by line | ACCEPT WITH FIXES, no FATAL/MAJOR | √s in R′, certified roots, bad-prime valuations, grid wording, scope wording |
+| Opus literature critic | §1, citations, novelty | OK WITH FIXES | 3 novelty overclaims removed; heuristic split-and-descend prior art; Lee–Venkatesan, Lido, GKZ, Enge–Gaudry rows |
+| GPT-6.1-sol dlog25_2 (adversarial, xhigh) | whole note | ACCEPT WITH FIXES, no FATAL/MAJOR | Pan's near-linear root cost, starting-order discriminant, core transcript, diagonal qualifier |
+
+None of the reviewers certifies Theorem U or its chain; Theorem DL25 stays labelled **proved from U**.
 
 ## 11. Dependencies of Theorem DL25
 
