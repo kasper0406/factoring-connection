@@ -58,6 +58,11 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
 - Output-sensitive smooth-pair enumeration: no gain, MNFS stays at 1.902 ([`smoothenum`](notes/smoothenum_results.md)). The heuristic model was validated on real CADO-NFS runs ([`cadobench`](notes/cadobench_results.md)).
 - Non-relational paradigms tried: analytic sums ([`analytic`](notes/analytic_results.md)), short circuits ([`slpcirc`](notes/slpcirc_results.md), Theorem SP), and the floor-sum ladder ([`floorsum`](notes/floorsum_results.md), [`floorhard`](notes/floorhard_results.md)). The ladder at degree j ≥ 3 would require factoring from fewer of p's top bits than Coppersmith needs, a known barrier. The general oracle is NP/#P-hard; top blocks stay open.
 - Classical "Fourier side" ([`periodfind`](notes/periodfind_results.md)): for an observable g, g(a^x) has period-concentrated Fourier mass only if g predicts a large-order multiplicative character (Theorem T). Additive, ring-op and computable-character observables are provably flat. Smoothness observables are the only class with real peaks, which leads back to relation methods.
+- Phase 18, where the limit bites for each open remainder:
+  - algebraic preprocessing + readout: it would also solve prime-field discrete logs ([`prepread`](notes/prepread_results.md));
+  - floor-sum ladder: exactly Coppersmith's known-bits barrier ([`topblock`](notes/topblock_results.md));
+  - degenerate / large-box rank-r: area theorems plus one counting hypothesis ([`rankdegen`](notes/rankdegen_results.md));
+  - product listing: Johnson-radius decoders gain only L^{o(1)} ([`pilist`](notes/pilist_results.md) Prop JR).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
