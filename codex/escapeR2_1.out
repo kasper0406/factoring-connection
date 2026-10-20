@@ -1,0 +1,579 @@
+**I do not obtain a rigorous exponent below \(2/5\), either unconditionally or under ERH alone.** The literal norm export and fresh-field substitution fail algebraically. Principalization can repair the algebra, but its image modulo \(N\) introduces another descent problem whose required bounds are unproved.
+
+The useful refinements are:
+
+- Algebraic export needs only **principalization modulo ideal squares**, rather than a full class-group computation.
+- Nevertheless, it needs **both a source-field certificate and a contracting certificate for its image modulo \(N\)**.
+- Re-splitting modulo \(N\) preserves the required congruence only with an explicit square correction; the available counting lemma does not automatically apply to the resulting square coset.
+- A narrower analytic milestone is **two descent levels at the model exponent \(3/8\)**.
+
+I read the requested sources, including `nested_results.md` in full, without accessing any `notes/escapeR2_*` file. No files were changed. I treat Theorem U as conditional on the repository’s internal, unrefereed chain; this report does not independently audit that chain.
+
+Throughout, **PROVED** means an elementary argument given here; **KNOWN** identifies an external theorem; **MODEL** explicitly assumes the stated size and smoothness model; **HEURISTIC** concerns an unproved distribution; **SPECULATIVE** identifies an unavailable escape lemma.
+
+**Ranked assessment.** Probabilities are subjective plausibility estimates for the indicated escape, including its quantitative requirements. They are not estimates of whether present techniques can prove it. Zero refers to a literal, refuted substitution or to obtaining an improvement from the cited bounds unchanged.
+
+| Rank | Approach | \(\alpha\) in the model | Exact missing lemma | Known/open/false | Probability |
+|---:|---|---|---|---|---:|
+| 1 | Fixed-field completed descent, first at two levels | \(3/8\); ultimately \(1/3\) | Joint supply of completed certificates for endogenous algebraic children; uniform cost and rejection control | **SPECULATIVE**, open; existing AD route | 65% |
+| 2 | \(1(c),2\): principalization modulo squares, followed by image descent | \(1/3\) **if both operations preserve contraction** | Efficient \(\theta\) with prescribed source-field valuation parity **and** a contracting certificate for \(\phi(\theta)\) | **SPECULATIVE**, open | 10% |
+| 3 | \(4(a)\): retain partial rows and recombine globally | Potentially \(1/3\) | A rank/cycle theorem producing dependencies with nonzero projection onto the Dixon seed rows | **SPECULATIVE**, open | 10% |
+| 4 | Small-discriminant fields plus class-group methods | Potentially \(1/3\) when \(\log|\Delta_K|=O(\Lambda_{2/3})\) | Uniform field selection for every \(N\), known evaluation map, and compatible image certificates | **SPECULATIVE**, outside R2’s usual selection model | 5% |
+| 5 | Constrained resampling with small algebraic components | Potentially below \(2/5\) | A completed-component supply theorem within the coefficient/height budget | **SPECULATIVE**, open; already identified in `nested` | 3% |
+| 6 | \(3\): Galois/Chebotarev with a new transfer certificate | No improvement from splitting types alone; \(1/3\) only with a genuine bridge | Kill the nonrational valuation component while preserving the chosen evaluation modulo \(N\) | Literal conjugacy argument **false**; stronger construction open | 2% |
+| 7 | \(4(c)\): factor values, then re-split | Resetting to a one-level design gives \(2/5\) | A square-corrected, contracting re-split modulo \(N\), valid conditionally on history | Factoring alone insufficient; stronger lemma open | 2% |
+| 8 | \(4(a,b)\): independent closed one-level descents, or new split sets followed only by factoring | \(\ge 2/5\) under M1–M4 | Escape M1–M4, retain large columns, or introduce a new relation mechanism | **MODEL** exclusion | 0% within M1–M4 |
+| 9 | \(2\): use the current dBPW sampler unchanged at generic discriminant scale | \(1/2\) after optimizing the smoothness bound | A smaller-scale sampler, or exceptional field selection plus residue compatibility | **KNOWN** bounds do not establish the goal | 0% unchanged |
+| 10 | \(1(a)\): replace \(\mathfrak p\) by its norm \(\ell\) | No valid algorithm | A missing source-field multiplier cancelling the complementary primes | **PROVED false** as a direct substitution | 0% |
+| 11 | \(1(b)\): descend \(\ell\) in \(K'\) and declare \(\mathfrak p\) closed | No valid algorithm | A relation with a nontrivial \(K\)-component cancelling \(\mathfrak p\) | **PROVED false** without that component | 0% |
+
+The first row is a calibration against the existing conditional route, not a claim of a new approach.
+
+---
+
+**1. The exponent calculations distinguish a cost problem from a certificate problem.** Put
+\[
+t=\log N,\qquad \lambda=\log t,\qquad D=t/\lambda,\qquad
+\Lambda_\alpha=D^\alpha\lambda.
+\]
+
+**MODEL.** With \(d=D^\delta\), the multi-level size conditions in [recurse §3](/Volumes/git/factoring-connection/notes/recurse_results.md:440) give
+\[
+\delta\ge 1-2\alpha,\qquad
+\beta_{j+1}\ge \beta_j-(\alpha-\delta),
+\qquad \beta_1=1-\alpha.
+\]
+Taking the smallest permissible degree exponent,
+\[
+\beta_{j+1}\ge\beta_j-(3\alpha-1).
+\]
+Consequently, \(r\) descent levels require
+\[
+1-\alpha-r(3\alpha-1)\le\alpha,
+\qquad\text{hence}\qquad
+\boxed{\alpha\ge\frac{r+1}{3r+2}}.
+\]
+
+| Descent levels \(r\) | Model threshold |
+|---:|---:|
+| 1 | \(2/5\) |
+| 2 | \(3/8\) |
+| 3 | \(4/11\) |
+| 4 | \(5/14\) |
+| 6 | \(7/20\) |
+| Growing depth, with constant contraction at the endpoint | \(1/3\) |
+
+These are exponent calculations, not relation-supply theorems. Endpoint constants and logarithmic factors still require accounting.
+
+**PROVED, conditional on an outer algorithm.** Recursive factoring of a public \(x=N^\tau\), for fixed \(\tau<1\), changes the leading constant by \(\tau^\alpha\):
+\[
+\Lambda_\alpha(x)=(\tau^\alpha+o(1))\Lambda_\alpha(N).
+\]
+If \(\log x=t^{\gamma+o(1)}\), \(\gamma<1\), its factoring cost has exponent \(\gamma\alpha<\alpha\).
+
+But an arbitrary representative \(u\in[1,N/2]\) does **not** provide such a contraction:
+\[
+\Lambda_\alpha(N/2)=(1+o(1))\Lambda_\alpha(N).
+\]
+This matters for images of principal generators: “it is a public number” does not make factoring an arbitrary residue representative negligible.
+
+---
+
+**2. The exact bookkeeping needed for export.** For clarity, absorb leading-coefficient constants into the rational factors and work in orders localized at explicitly checked units modulo \(N\).
+
+A certified row has the form
+\[
+r_i^2\equiv a_i\prod_{j=1}^{J}\psi_j(Z_{ij})\pmod N,
+\tag{2.1}
+\]
+where \(a_i\in\mathbf Q^\times\), \(Z_{ij}\in K_j^\times\), and all reductions and inverses are certified.
+
+For each field, let \(\mathcal S_j\) contain its allowed factor-base and bad primes. Define the large-prime parity vector
+\[
+v_j(Z)=
+\bigl(\operatorname{ord}_{\mathfrak p}Z\bmod2\bigr)_{\mathfrak p\notin\mathcal S_j}.
+\]
+
+**PROVED — source-field requirement.** To remove an odd occurrence of a particular old prime \(\mathfrak p\subset K\), a certificate must change the old \(K\)-valuation vector. A relation confined to \(K'\) has no such component.
+
+Allowing rational multipliers gives a slightly more precise invariant:
+\[
+\frac{I_K}
+ {2I_K+I_{\mathcal S}+\operatorname{Res}_{K/\mathbf Q} I_{\mathbf Q}}.
+\tag{2.2}
+\]
+Fresh-field relations and rational substitutions cannot change this quotient. A genuine source-field element can.
+
+This is an obstruction to the stated LV6 representation, not to every possible factoring certificate.
+
+**PROVED — a sufficient parity bridge.** Suppose one produces \(\theta\), evaluable modulo \(N\), with
+\[
+(\theta)=\mathfrak p\,\mathfrak a\,\mathfrak b^2,
+\qquad
+\operatorname{supp}(\mathfrak a)\subseteq\mathcal S.
+\tag{2.3}
+\]
+Fractional ideals and negative exponents are allowed. Then
+\[
+Z'=Z\theta^{-1},\qquad a'=a\,\psi(\theta)
+\tag{2.4}
+\]
+preserves the residue identity and cancels \(\mathfrak p\) modulo \(2\), up to allowed primes.
+
+Equation (2.4) also exposes the second obligation: **the image \(\psi(\theta)\) must be handled**. Principalization does not make it disappear.
+
+**PROVED — multiple-field square roots remain valid.** Suppose a dependency makes
+\[
+a=\prod_i a_i^{e_i}=a_0^2,\qquad
+Z_j=\prod_i Z_{ij}^{e_i}\in K_j^{\times2}
+\]
+for every \(j\). Write \(Z_j=A_j/B_j\) in the integral order, and compute
+\[
+\eta_j^2=g_j'(\beta_j)^2 A_jB_j.
+\]
+Then
+\[
+Y=a_0\prod_j
+\frac{\psi_j(\eta_j)}
+     {\psi_j(g_j'(\beta_j))\,\psi_j(B_j)}
+\tag{2.5}
+\]
+satisfies
+\[
+Y^2\equiv\prod_i r_i^{2e_i}\pmod N.
+\]
+
+Thus the denominator-square correction survives across several fields. Each field needs its own ideal columns, residual square-class treatment, characters and square root. Constants such as \(f_{d,j}\) need the corresponding parity bookkeeping.
+
+**PROVED, conditional on uniform LV6 inputs — Las Vegas post-processing.** Under ERH, characters can separate each finite residual group \(H_j\), with a union bound over fields. Unconditionally, the LV6 “at most one exceptional class per field” mechanism leaves at most \(J\) residual bits: provide enough kernel dimension, evaluate those bits using exact square tests, and combine kernel vectors to kill them. Final square-root verification makes the procedure Las Vegas.
+
+This costs polynomially in the number of fields, rows and expanded certificate sizes. Therefore \(J=L_N[\alpha,O(1)]\) can be affordable. Arbitrarily many private fields, or huge compact generators without a suitable square-root algorithm, are not free. This is the algebraic content behind [Proposition MF](/Volumes/git/factoring-connection/notes/lv5unif_results.md:641), rather than an export lemma.
+
+---
+
+**3. Family \(1(a)\): replacing \(\mathfrak p\) by \(\ell\) loses essential coordinates.**
+
+Let
+\[
+(\ell)=\prod_{i=1}^{s}\mathfrak p_i^{e_i},
+\qquad \mathfrak p=\mathfrak p_1.
+\]
+In ideal parity coordinates, multiplication by \(\ell\) adds
+\[
+(e_1,\ldots,e_s)\pmod2.
+\]
+Cancelling only \(\mathfrak p_1\) requires adding
+\[
+(1,0,\ldots,0).
+\]
+
+**PROVED — direct norm substitution fails at every good degree-one prime in degree \(d>1\).** At an unramified prime, all \(e_i=1\). A degree-one prime in a degree-\(d>1\) field cannot be the sole prime above \(\ell\): otherwise \(d=e_1f_1=1\). Hence \(s\ge2\), and
+\[
+(1,0,\ldots,0)\notin\langle(1,\ldots,1)\rangle.
+\]
+Replacing \(\mathfrak p\) by \(\ell\) cancels its coordinate only by opening the other primes above \(\ell\).
+
+Their residue degrees do not rescue the substitution. They may be absent from primitive linear atoms, but multiplying by the rational integer introduces them.
+
+**PROVED — odd degree makes part of the error invisible to the norm.** The ideal norm on parity coordinates is
+\[
+(x_i)\longmapsto\sum_i f_i x_i\pmod2.
+\]
+For odd \(d\), the complementary vector introduced by the substitution has norm parity
+\[
+\sum_{i>1}f_i=d-1\equiv0\pmod2.
+\]
+Thus a rational norm calculation can report success while uncancelled algebraic coordinates remain.
+
+There is also an element-level version. For monic \(f\), \(f(m)\equiv0\pmod N\), and \(z=a-b\alpha\),
+\[
+N_{K/\mathbf Q}(z)=F(a,b)
+\equiv(a-bm)\,C(a,b,m)\pmod N.
+\tag{3.1}
+\]
+The factor \(C\) is explicitly computable, but generally has no known square root or small-prime representation. It contains the complementary conjugate information. Descent of \(F(a,b)\) does not give descent of \(\psi(z)=a-bm\).
+
+**PROVED — square norm does not imply square element.** Even units can have square norm without being squares. For example, \(2+\sqrt3\) has norm \(1\) and is not a square in \(\mathbf Q(\sqrt3)\). Characters address such residual classes only after the required valuation conditions have been imposed.
+
+**PROVED — ramification is an exception, not a universal export mechanism.** If \((\ell)=\mathfrak p^d\) with odd \(d\), then \(\ell\) and \(\mathfrak p\) have the same ideal parity. Such \(\ell\) divide the discriminant. A fixed field has only finitely many of them. Making endogenous children ramified requires a new field-selection construction, with its discriminant, height and evaluation costs charged.
+
+**SPECULATIVE missing lemma.** Supply (2.3), plus a contracting residue certificate for \(\psi(\theta)\). The equation \(N\mathfrak p=\ell\) supplies neither.
+
+---
+
+**4. Family \(1(b)\): a shared root permits multiplication of relations, not identification of ideals.**
+
+Suppose \(K,K'\) share the rational side and evaluation point \(m\). A fresh-field relation might give
+\[
+\ell\equiv b\,\psi'(W)\pmod N.
+\tag{4.1}
+\]
+It is valid and can be multiplied into a global row.
+
+**PROVED.** Equation (4.1) does not change the old \(K\)-ideal of \(Z\). If one first moves \(\ell\) into the old algebraic block, it changes that block by the full rational ideal \((\ell)\), leaving precisely the complementary coordinates from §3.
+
+There is a legitimate cross-field identity:
+\[
+\psi(a-b\alpha)=a-bm=\psi'(a-b\alpha').
+\tag{4.2}
+\]
+But (4.2) transfers the **whole atom**. Its old ideal factorization is replaced by the entire new factorization. It does not transfer one selected factor of the old atom while preserving the others.
+
+This explains the limitation of constrained resampling. Preserving retained values or divisibility labels can transport a component, but the cancellations inside that component must remain compatible. Refreshing one closing atom alone generally reopens the prime it had cancelled in its parent.
+
+**PROVED / structural.** Proposition R correctly makes rational children exogenous to a fresh field. It does not prove the necessary conditional success probability, simultaneous supply, or field-block budget. Those remain requirements even after a valid algebraic bridge is found.
+
+**MODEL conclusion.** If fresh fields merely ensure that each algebraic value is factor-base smooth, this is a design without algebraic children and R2 retains the \(2/5\) floor. If a genuine bridge permits contracting algebraic exports, the multi-level \(1/3\) calculation becomes available, subject to the additional supply and bookkeeping requirements.
+
+---
+
+**5. Family \(1(c)\): principalization gives the right kind of object, but the norm is not its image.**
+
+There is no intrinsic \(\phi(\mathfrak p)\). Evaluation applies to elements of an appropriate order or localization. Denominators must reduce to units; failed unit checks can give factor exits.
+
+**PROVED — only a modulo-\(2\) class-group problem is necessary.** An element satisfying (2.3) exists exactly when
+\[
+[\mathfrak p]\in
+2\operatorname{Cl}(K)+
+\langle[\mathfrak s]:\mathfrak s\in\mathcal S\rangle.
+\tag{5.1}
+\]
+Indeed, (2.3) implies this class relation, and conversely such a relation makes the corresponding fractional ideal principal.
+
+This is weaker than computing all of \(\operatorname{Cl}(K)\), and weaker than finding the exact order of \([\mathfrak p]\). ERH bounds on small prime generators address the existence of a sufficiently large factor base; they do not provide short, efficiently computable generators for the resulting principal ideals. See [Wesolowski, *Generating subgroups of ray class groups with small prime ideals*](https://arxiv.org/abs/1807.01561).
+
+If
+\[
+(\theta)=\mathfrak p^h,
+\]
+then:
+
+- **PROVED:** odd \(h\) permits cancellation of the \(\mathfrak p\)-valuation modulo \(2\);
+- **PROVED:** even \(h\) does not permit that cancellation using this generator;
+- **PROVED:** a huge \(h\) may make the expanded generator prohibitively large;
+- **SPECULATIVE:** a compact representation helps only if evaluation, certificate verification and final square-root processing have compatible bounds.
+
+For odd \(h\),
+\[
+N_{K/\mathbf Q}(\theta)=\pm\ell^h
+\]
+does **not** imply
+\[
+\psi(\theta)\equiv\pm\ell^h\pmod N.
+\]
+That would conflate norm and evaluation again.
+
+The exact positive input would be the following.
+
+**SPECULATIVE — contracting parity export.** For every visited endogenous \(\mathfrak p\) of norm \(q>B\), construct, with the required conditional expected cost:
+
+1. an evaluable \(\theta\) satisfying (2.3);
+2. a verified identity
+   \[
+   \psi(\theta)\equiv
+   w^2 a\prod_\nu q_\nu^{c_\nu}\pmod N,
+   \qquad
+   q_\nu\le\max(B,q^\lambda),\quad \lambda<1,
+   \tag{5.2}
+   \]
+   where \(a\) is supported on the rational factor base;
+3. certificate-size and evaluation bounds compatible with LV6;
+4. choices independent of the hidden roots of the original Dixon rows.
+
+Together with suitable fresh-field rational supply, this would support \(1/3\) **in the model**. Neither ERH nor known class-group generation results establish this lemma.
+
+---
+
+**6. Family \(2\): class-group relations do not by themselves remove ideal parity.**
+
+**PROVED.** A product \(Z\) of algebraic atoms already has
+\[
+[(Z)]=0\quad\text{in }\operatorname{Cl}(K).
+\]
+This says nothing about whether its individual ideal valuations are even. Replacing each prime class by factor-base classes becomes useful only when actual principal generators are retained. Their evaluations then enter the residue identity, as in (2.4).
+
+Thus “solve the class-group part and descend only the principal part” still needs:
+
+- principal generators, not merely class equalities;
+- height or compact-representation bounds;
+- descent of their images modulo \(N\).
+
+**KNOWN.** Biasse’s \(L(1/3)\) algorithms for suitable field families invoke unproved smoothness and relation-generation hypotheses. The principality paper explicitly states these hypotheses; the published Biasse–Fieker large-degree treatment likewise assumes GRH plus smoothness and relation-generation heuristics. These are not ERH-only relation-supply theorems. See [Biasse, class groups and regulators](https://arxiv.org/pdf/0912.1927), [Biasse, principality testing](https://arxiv.org/pdf/1204.1292), and [Biasse–Fieker, 2014](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4387ACB036E3358143A563F196E386CB/S1461157014000345a.pdf/subexponential_class_group_and_unit_group_computation_in_large_degree_number_fields.pdf).
+
+**KNOWN.** dBPW provides rigorous ERH-conditional ideal sampling and class-group/S-unit algorithms. Theorem 9.5 uses a certified cofactor envelope with
+\[
+r^n=
+48^n\omega^n b^{2n^2/b}n^{7n/2}|\Delta_K|^{3/2}
+\]
+for trivial finite modulus. The Haar comparison in §7 operates at an envelope at least proportional to \(\sqrt{|\Delta_K|}\), with degree factors. The density is among all ideals at that scale, not among short binary-form values. Theorems 17.7 and 21.2 retain discriminant- and degree-dependent complexity terms. See [dBPW, v2](https://arxiv.org/pdf/2512.01588v2).
+
+**MODEL — the generic-discriminant calculation.** Assume
+\[
+\log|\Delta_K|\asymp t
+\]
+and the usual smooth-ideal density model. At envelope \(X=\exp(ct)\) and bound \(B=\exp(b\Lambda_\alpha)\),
+\[
+u=\frac{ct}{b\Lambda_\alpha},
+\]
+so
+\[
+u\log u=
+\left(\frac{c(1-\alpha)}b+o(1)\right)
+t^{1-\alpha}(\log t)^\alpha.
+\tag{6.1}
+\]
+Thus smoothness at \(B=L_N[\alpha]\) costs \(L_N[1-\alpha]\) in this model. Balancing the factor base and sampling cost gives \(\alpha\ge1/2\).
+
+At \(B=L_N[1/3]\), the modeled sampling cost is \(L_N[2/3]\), rather than \(L_N[1/3]\). Repeating the sampler on a smaller input ideal does not shrink its discriminant-scale envelope.
+
+This is **not** a rigorous lower bound on all class-group algorithms, nor even a pointwise lower bound on every sampler output. The AF comparison and the smooth-ideal upper-density model are separate ingredients.
+
+**SPECULATIVE exception — unusually small discriminant.** If one could uniformly construct usable fields with
+\[
+\log|\Delta_K|=O(\Lambda_{2/3}),
+\]
+then the \(L_{|\Delta_K|}[1/2]\) term would have \(L_N[1/3]\) scale. This is not excluded by a universal discriminant lower bound; no such bound holds for every usable field.
+
+But three obligations remain: construct the fields for every \(N\), provide the evaluation map without already solving a hard root problem, and handle the generator images. Imposing the image directly through a ray condition modulo the evaluation ideal introduces an \(N\)-sized modulus factor into the sampler envelope, restoring the large scale. This exception is therefore a separate field-selection and compatibility problem.
+
+---
+
+**7. Family \(3\): Galois symmetry preserves the obstruction.**
+
+**PROVED.** A large Galois group of the normal closure does not give many automorphisms of \(K\). For a typical \(S_d\)-field, \(\operatorname{Aut}(K)\) is trivial.
+
+If \(K/\mathbf Q\) itself is Galois and an unramified \(\ell\) has a degree-one prime, then \(\ell\) splits completely:
+\[
+(\ell)=\prod_{\sigma\in G}\sigma(\mathfrak p).
+\]
+The rational ideal is the all-ones vector on this orbit. An individual prime is a coordinate vector. Conjugacy permutes those coordinates; it does not identify them.
+
+**PROVED.** For odd \(|G|\), the group-algebra norm operator projects onto the invariant part. It is not the identity on the complementary module. Averaging therefore discards the component needed to distinguish \(\mathfrak p\) from its conjugates.
+
+The evaluation map introduces a second obstruction:
+\[
+\psi\!\left(N_{K/\mathbf Q}z\right)
+=
+\prod_{\sigma\in G}\psi(\sigma z),
+\]
+whereas the original row contains \(\psi(z)\). The other factors need their own certificates.
+
+Conjugate copies equipped with transported evaluation maps give isomorphic pointed fields. They are not independent fresh polynomial samples.
+
+**KNOWN / inference.** Chebotarev controls splitting types and prime counts. That does not establish smoothness of short values of one fixed binary form, or descendability of the recursively selected ideals dividing those values. Conditioning fresh fields on a prescribed splitting type for \(\ell\) still supplies no old-\(K\) multiplier.
+
+**PROVED — extension fields are not a free square-class sink.** If \(L/K\) has odd degree, then
+\[
+K^\times/K^{\times2}\longrightarrow L^\times/L^{\times2}
+\]
+is injective: apply the norm to a square in \(L\). Even-degree extensions can kill square classes, but extending the evaluation to \(K(\sqrt z)\) requires a square root of \(\psi(z)\) modulo \(N\). That is precisely additional information the construction must produce.
+
+**SPECULATIVE missing lemma.** Construct a compatible transfer that kills the nonrational valuation component and supplies computable square corrections, with controlled field degrees, discriminants and image sizes. Splitting-type information alone is insufficient.
+
+---
+
+**8. Family \(4(a)\): independent one-level descents can improve selection, but their product does not add descent depth.**
+
+**PROVED / structural.** If every one-level descent is fully closed, combining several such descents can improve success probabilities or constants. It leaves the one-level size tradeoff intact.
+
+If partial rows retain large primes, recombination becomes a genuinely different possibility. But separate algebraic blocks must still close. A shared rational norm does not match two different prime ideals.
+
+**MODEL — collision calculation.** Suppose \(M=\exp(O(\Lambda_\alpha))\) unresolved ideal occurrences are distributed over roughly
+\[
+\exp(c\Lambda_\beta),\qquad \beta>\alpha,
+\]
+possible labels, without concentration. Then the expected number of accidental matches is bounded on the scale
+\[
+M^2\exp(-c\Lambda_\beta)=o(1).
+\]
+Independent partial rows will generally have private large-prime coordinates, preventing dependencies.
+
+This calculation does not cover deliberately engineered correlations or special-\(q\) matching. Those are precisely where a new recombination theorem could enter.
+
+**SPECULATIVE missing lemma.** Prove that, within \(L_N[\alpha,O(1)]\) work, the augmented relation matrix has a kernel vector whose projection onto the original Dixon seed rows is nonzero. An auxiliary-only dependency does not supply the hidden-root fruitfulness argument.
+
+There is also a precise limitation on putting every unresolved prime into the LV6 exceptional support.
+
+**PROVED — exceptional support has a dimension cost.** For any finite set \(S\) of finite primes, let
+\[
+H_S=\{x\in K^\times:v_{\mathfrak p}(x)\equiv0\pmod2
+\text{ for }\mathfrak p\notin S\}/K^{\times2}.
+\]
+The \(S\)-units inject modulo squares into \(H_S\), and the \(S\)-unit theorem gives
+\[
+\boxed{\dim_{\mathbf F_2}H_S\ge |S|+r_1+r_2.}
+\tag{8.1}
+\]
+Indeed, an \(S\)-unit which is a square in \(K\) has an \(S\)-unit square root. Therefore enlarging \(S\) by all private large primes does not provide dimension-free compression. For the actual row subspace, a smaller rank is possible, but it requires proof.
+
+---
+
+**9. Family \(4(b)\): arbitrary split sets are useful only when their members have completed certificates.**
+
+**PROVED.** The split argument can target a set selected after fixing a field, provided its counting and coprimality hypotheses hold. This avoids needing square-class equidistribution of individual good primes.
+
+But choosing the target set to be “integers whose factors the recursive algorithm can factor” adds no useful restriction: every public integer has that property under the inductive factoring hypothesis. Its prime factors still require certificates modulo the original \(N\).
+
+Factoring the split halves and retaining all their primes as columns merely enlarges the relation universe. A small generating set, completed descent, or a recombination theorem is still needed.
+
+**MODEL — the R2 window makes this precise.** Write
+\[
+\Lambda=\log B,\qquad U\asymp\Lambda/\log t.
+\]
+Under M1–M4, a node without algebraic children has the infeasible window
+\[
+A\ll z\ll W,\qquad
+A\asymp\frac{\Lambda^2U^2}{t},
+\quad
+W\asymp\frac tU.
+\]
+In \(D\)-notation,
+\[
+A\asymp D^{4\alpha-1}\lambda,\qquad
+W\asymp D^{1-\alpha}\lambda,\qquad
+\frac WA\asymp D^{2-5\alpha}.
+\tag{9.1}
+\]
+It is nonempty for \(\alpha<2/5\).
+
+For a feasible node above the window, jumping directly below \(A\) would require a rational cofactor of logarithmic size \(\Omega(t)\) to be \(e^A\)-smooth. Its smoothness parameter exceeds the budget by
+\[
+\frac{t/A}{U}\asymp D^{2-5\alpha}\longrightarrow\infty.
+\tag{9.2}
+\]
+Recursive factoring tests this event cheaply; it does not increase its modeled probability.
+
+This exclusion is conditional on M1–M4. Structured polynomial selection outside M1, atypically small values, higher-dimensional searches, and global large-prime recombination remain outside its scope.
+
+---
+
+**10. Family \(4(c)\): factor-then-re-split needs a congruence modulo the original \(N\).**
+
+**PROVED.** A recursive factorization of an algebraic norm reveals its prime factors and, at good primes, their degree-one ideal labels. It does not create a second occurrence of those ideals.
+
+A congruence obtained while factoring a public \(M\),
+\[
+x^2\equiv y^2\pmod M,
+\]
+only says
+\[
+x^2-y^2=kM.
+\]
+It supplies no multiplicative square-class replacement for \(M\) modulo the original \(N\).
+
+There is a valid square-corrected re-split modulo \(N\). For a unit target \(w\), choose fresh \(s\), set
+\[
+R\equiv ws^2\pmod N,
+\]
+and find \(u\equiv Rv\pmod N\). Then
+\[
+\boxed{w\equiv \frac{u}{v\,s^2}\pmod N.}
+\tag{10.1}
+\]
+The original target is preserved. The two missing properties are supply and contraction.
+
+**PROVED — the square-coset issue.** Here \(R\) is uniform on \(wQ_N\), not generally on \(Q_N\). If \(n_c\) counts suitable target products in square class \(c\), the relevant pair count is
+\[
+\sum_c n_c n_{wc},
+\tag{10.2}
+\]
+after coprimality exclusions.
+
+For \(w=1\), Cauchy–Schwarz lower-bounds \(\sum_c n_c^2\). For general \(w\), expression (10.2) can vanish: put the entire target set in one square class and choose \(w\) outside that class. Thus the arbitrary-good-set form of S″ does not automatically prove useful re-splits for every \(w\).
+
+Smooth masks might randomize the square coset, but their size, sampling law and rational columns must be charged.
+
+**MODEL — the scale reset.** A generic fresh split modulo \(N\) produces values on the \(\sqrt N\) scale, regardless of whether the incoming target was much smaller. Their prime factors return to the top target scale. Repeating that operation gives no decreasing target parameter.
+
+If the returned primes are closed by one-level descents, the \(2/5\) floor returns. If they are recursively re-split again, a termination or global recombination theorem is missing.
+
+**SPECULATIVE missing lemma.** For every visited target, produce a verified identity like (10.1), conditionally on history, whose unresolved outputs contract under a well-founded size measure, or whose aggregate matrix has the required seeded rank surplus. Factoring the values establishes neither assertion.
+
+---
+
+**11. A concrete intermediate target: two levels at \(3/8\).**
+
+**MODEL.** Take
+\[
+\alpha=\frac38,\qquad d\asymp D^{1/4},\qquad
+B=\exp(b\Lambda_{3/8}).
+\]
+Choose first targets on the \(L_N[5/8]\) scale and intermediate children on the \(L_N[1/2]\) scale.
+
+| Node | Target logarithm | Algebraic-value logarithm | Required cofactor bound |
+|---|---:|---:|---:|
+| First level | \(O(\Lambda_{5/8})\) | \(O(\Lambda_{7/8})\) | \(\exp(O(\Lambda_{1/2}))\) |
+| Terminal level | \(O(\Lambda_{1/2})\) | \(O(\Lambda_{3/4})\) | \(B\) |
+
+The smoothness parameters satisfy
+\[
+u_1\asymp D^{7/8-1/2}=D^{3/8},
+\qquad
+u_2\asymp D^{3/4-3/8}=D^{3/8}.
+\]
+Hence both modeled smoothness costs are \(\exp(O(\Lambda_{3/8}))\). Reduced-basis boxes avoid assuming regular lattices; their worse coordinate bounds change constants here, not these exponents.
+
+Factoring the intermediate values is also affordable relative to this target. Conditional on Theorem U, a value of size \(\exp(O(\Lambda_{7/8}))\) can be factored at \(L_N[7/20,O(1)]\) scale, and
+\[
+7/20<3/8.
+\]
+The original split-half calls still require the contracting recursive wrapper.
+
+A sufficient input can be stated precisely.
+
+**SPECULATIVE hypothesis D2.** With probability bounded below over a uniformly computable admissible field law of degree \(d\asymp D^{1/4}\) and heights \(\exp(O(\Lambda_{3/4}))\):
+
+1. every allowed rational target up to \(\exp(O(\Lambda_{5/8}))\) above the intermediate cutoff has a first-level point with both cofactors below that cutoff;
+2. every allowed rational or degree-one algebraic target up to \(\exp(O(\Lambda_{1/2}))\) has a terminal point with both cofactors \(B\)-smooth;
+3. all points lie in specified reduced-basis boxes containing at most \(\exp(O(\Lambda_{3/8}))\) candidates, with the required bad-prime exclusions.
+
+**PROVED implication, conditional on D2 and the repository’s remaining inputs.** D2, the uniform LV6 machinery, admissible-field sampling, S″, transcript invariance and the recursive factoring wrapper give an \(L_N[3/8,C]\) Las Vegas algorithm for some finite \(C\).
+
+The proof is: a good field closes every permitted depth-two tree; the tree has only polynomially many nodes; scans and intermediate factorizations fit the stated budget; S″ charges \(\exp(O(\Lambda_{3/8}))\) split attempts; the matrix has \(L_N[3/8,O(1)]\) columns; exact post-processing and the hidden-root argument give a constant factor-extraction probability. The recurrence has the form
+\[
+F(N)\le e^{O(\Lambda_{3/8})}
++e^{O(\Lambda_{3/8})}F(\sqrt{2N}),
+\]
+which closes for a sufficiently large constant.
+
+**D2 is unproved. This is not an ERH-only theorem.** It is a narrower sufficient target than full AD.
+
+Its difficulty is already substantial. **MODEL:** a typical first-level algebraic cofactor has about
+\[
+\frac{\Lambda_{7/8}}{\Lambda_{1/2}}\asymp D^{3/8}
+\]
+large factors near the intermediate scale, while the field has only \(O(D^{1/4})\) coefficients. The overdetermined configuration appears before a straightforward field-averaged proof can finish those children.
+
+---
+
+**12. Adversarial audit of the apparent positive proofs.**
+
+No argument above establishes the requested new factoring theorem. The following are the specific points at which tempting proofs fail.
+
+- **PROVED:** substituting \(\ell\) for \(\mathfrak p\) leaves complementary source-field valuations.
+- **PROVED:** multiplying by a relation in \(K'\) does not cancel an old individual ideal modulo rational diagonals.
+- **PROVED:** a class equality without its principal generator does not change the row.
+- **PROVED:** a generator’s norm does not determine its evaluation modulo \(N\).
+- **PROVED:** a general square-coset re-split lacks the Cauchy–Schwarz lower bound used for the square subgroup.
+- **PROVED:** factoring a value supplies labels, not cancellation relations.
+- **MODEL:** a generic modulo-\(N\) re-split resets the target scale and needs a separate termination mechanism.
+- **PROVED:** enlarging the exceptional support can enlarge the residual square-class dimension proportionally.
+- **SPECULATIVE:** compact generators require compatible verification and square-root costs; compact modular evaluation alone is insufficient.
+- **PROVED / conditional:** any final construction must retain a nonzero Dixon seed dependency selected independently of its hidden roots. A root chosen from those hidden roots can simply reproduce the trivial congruence.
+
+The precision issue also remains. In the naive independent-child backtracking model, a polylogarithmic good-set density at each of \(O(\log t)\) levels gives
+\[
+\log(\text{overhead})=O(D^{1/3}(\log t)^2)
+=O(\Lambda_{1/3}\log t),
+\]
+rather than a fixed \(L_N[1/3,c]\) bound. Constant geometric-mean densities, an AD-type statement, or a better global selection argument is needed. This is a limitation of that strategy, not a general necessity theorem.
+
+Finally, the alternative global route still encounters fruitfulness. **KNOWN:** Lee–Venkatesan prove an \(L[1/3]\) congruence-of-squares result, while their stated nontriviality theorem assumes an additional conjecture and restricts the semiprime factors to \(3\bmod4\). Their theorem does not fill the seeded-dependency gap here. See [Lee–Venkatesan, Theorems 2.1 and 2.3](https://arxiv.org/pdf/1805.08873).
+
+**My strongest precise conclusion is that the unresolved export object is the pair**
+\[
+\boxed{\text{source-field parity cancellation}
+\quad+\quad
+\text{a contracting certificate for its evaluated image}.}
+\]
+Norms, splitting types and recursive factorizations do not provide that pair. The most focused analytic next target is completed two-level supply at \(3/8\); the most distinct algebraic target is an efficient modulo-square principalization theorem with controlled evaluated images.
