@@ -72,7 +72,7 @@ All of these are in [`APPROACHES.md`](APPROACHES.md).
 | `APPROACHES.md` | Catalogue of everything tried, with verdicts |
 | `src/`, `tests/` | Python code per work item; pytest suite |
 | `codex/` | GPT-6.1-sol prompts and outputs; `codex/run.sh` wrapper |
-| `lean/`, `leanA/` | Lean 4 formalizations: D′ lemmas; conditional Theorem A layer (in progress) |
+| `lean/`, `leanA/` | Lean 4: D′ lemmas; conditional Theorems A/RA/P (cost assembly + glue proved; FM, LD* and 4 published theorems as hypotheses; checked by Comparator --paranoid, Nanoda, lean4lean) — see [`leanA_results`](notes/leanA_results.md) |
 | `experiments/` | Configs, raw JSONL, summaries |
 
 **Rules the agents followed:**
