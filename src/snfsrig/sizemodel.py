@@ -161,7 +161,7 @@ def r2s_floor() -> Fr:
     return Fr(1, 3)
 
 
-def r2s_alpha_third(b, s, phiF, phiR, b1) -> Dict:
+def r2s_alpha_third(b, s, phiF, phiR, b1, regular: bool = True) -> Dict:
     """alpha = 1/3, E = t^{1/3}(log t)^{2/3}, Q = t^{2/3}(log t)^{1/3}, D' = Q/E, t = D'Q.
     B = e^{bE}; box radius e^{sE} sqrt(q); algebraic smoothness u_F = phiF D' (cost e^{phiF E/3});
     rational-cofactor smoothness u_R = phiR D' (cost e^{phiR E/3}); split targets z_1 = b1 Q.
@@ -171,8 +171,11 @@ def r2s_alpha_third(b, s, phiF, phiR, b1) -> Dict:
     heuristic per-target good-point exponent 2s - (phiF + phiR)/3 (must be > 0 for an all-target supply under the
     random-integer model), and the top-level rational-value exponent tau = 1/d1 (values N^{tau})."""
     b, s, phiF, phiR, b1 = map(Fr, (b, s, phiF, phiR, b1))
-    lam = (Fr(1, 2) + s / b) / (phiF * phiR * b)
-    d1 = 2 * phiF * b / b1
+    # regular lattices: box radius e^{sE} sqrt(q); worst-case reduced-basis boxes (nested section 8):
+    # ||P|| <= 3 e^{sE} q, so the algebraic log-size is d(z + sE) instead of d(z/2 + sE).
+    h = Fr(1, 2) if regular else Fr(1)
+    lam = (h + s / b) / (phiF * phiR * b)
+    d1 = phiF * b / (h * b1)
     margin = 2 * s - (phiF + phiR) / 3
     return {"lam": lam, "contracts": lam < 1, "d1": d1, "d1_ge_1": d1 >= 1,
             "good_point_margin": margin, "heuristic_ok": margin > 0,
@@ -190,3 +193,28 @@ TABLE: List[Tuple[str, str, str, str]] = [
     ("SNFS (||f|| = N^{o(1)}, ||g|| = N^{1/d}; fixed fields)", "2/5 (theta0 smaller by sqrt 2 vs heuristic GNFS)",
      "1/3", "1/3 (Prop R2-S, per-node degree)"),
 ]
+
+
+def cost_constant_nonrec(design: str, a, d0, kappa, C_gamma, c_shape) -> Fr:
+    """Variant for a special family (Prop REC): the split halves u0, v0 are NOT special, so they are factored by the
+    general algorithm (Theorem U) at cost L_N[2/5, 2^{-2/5} c_shape] each, instead of by self-recursion:
+        c = max(2a, a + s + max(a, sigma), a + s + 2^{-2/5} c_shape).
+    Returns an upper bracket (2^{-2/5} bracketed above by 1/lo_t)."""
+    a, kappa, C_gamma, c_shape = Fr(a), Fr(kappa), Fr(C_gamma), Fr(c_shape)
+    sg = 2 * theta0(design, d0, kappa) / (5 * a)
+    s = 2 * kappa * (1 + C_gamma)
+    lo_t, _ = two_pow_2_5_bracket()
+    return max(2 * a, a + s + max(a, sg), a + s + c_shape / lo_t)
+
+
+def optimise_nonrec(design: str, C_gamma, c_shape, grid_a=None, grid_kappa=None) -> Dict:
+    grid_a = grid_a or [Fr(i, 20) for i in range(1, 81)]
+    grid_kappa = grid_kappa or [Fr(i, 400) for i in range(1, 81)]
+    best = None
+    for kappa in grid_kappa:
+        for d0 in [Fr(i, 20) for i in range(1, 300) if kappa <= Fr(i, 20) ** 2 <= 32 * kappa]:
+            for a in grid_a:
+                c = cost_constant_nonrec(design, a, d0, kappa, C_gamma, c_shape)
+                if best is None or c < best["c"]:
+                    best = {"design": design, "a": a, "kappa": kappa, "d0": d0, "c": c}
+    return best

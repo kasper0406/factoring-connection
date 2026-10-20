@@ -1,0 +1,180 @@
+**Verdict: GAP — major revision required.** The \(2/5\) one-level and \(1/3\) rational-only calculations largely survive within the stated model. The advertised universal rigidity, recognition necessity, and relativisation conclusions exceed their proofs. The proposed RT+(O2) implication also lacks a necessary compatibility hypothesis.
+
+References are to [the note under review](/Volumes/git/factoring-connection/notes/snfsrig_results.md). Theorem U is treated as an internal assumption, not independently certified here.
+
+1. **RES, HR, PH, RS: CORRECT. DI: WRONG in one row, otherwise CORRECT WITH FIXES — MAJOR overall.**
+
+   RES’s integral resultant identity and Hadamard bound are valid. With Euclidean coefficient norms, \(\theta_{\rm coeff}\ge1/d\) holds exactly; changing to height introduces the stated degree factors. HR follows correctly. PH’s maximal-coefficient argument works. RS’s strict inequality is correct.
+
+   Preserve HR’s scope: **the specified modular root**, comparison degree \(\delta\), and, for the displayed asymptotic separation, \(\delta\le d\) and \(d^2\log r=o(t)\). It does not classify small polynomials at other roots. Nor does coefficient height give a pointwise lower bound on every evaluated norm.
+
+   DI’s twist, shift and scaling matrices are correct. For Möbius substitution, take \(G=G_0\circ T\), giving \(c_2=1\); primitive normalization divides this by the content. Compatibility with the modular evaluation requires the relevant determinants and denominators to be units modulo \(N\), or appropriate gcd handling.
+
+   **The last row is wrong.** Write \(j=dq-e\). The corresponding representations are
+   \[
+   r^{j+dh}N=(r^hm)^d-sr^{j+dh}.
+   \]
+   Their matrix is \(\operatorname{diag}(1,r^h)\), with \(c_1=c_2=1\), not \(\operatorname{diag}(1,r^i)\) when \(i\) denotes the multiplier exponent. For example, \(N=125\), \(f_0=x^3-12\), \(m=8\), and
+   \[
+   2^5N=16^3-96;
+   \]
+   the required scaling is \(2\), not \(2^5\).
+
+   Replace “same values” by “scaled values of the original forms on the transformed region.” A non-unimodular \(T\) changes the sampled sublattice; even a translation changes the searched region.
+
+   Finally, delete the Minkowski remark asserting shortest vectors \(\asymp\sqrt N\). Minkowski supplies an upper bound, not that lower bound. The listed Cunningham roots even include \(1\) in the elementary \(x^d-1\) case.
+
+2. **UF: CORRECT WITH FIXES as model arithmetic; GAP as a universal theorem — MAJOR.**
+
+   Under R1–R3, eliminating
+   \[
+   px\ge1-2\alpha,\qquad y-x\ge1-2\alpha,\qquad y\le\alpha
+   \]
+   gives \((1+p)/(3p+2)\); \(p=0\) gives \(1/2\).
+
+   “RES forces \(p\le1\)” is logically incorrect under the stated *lower-bound* premise: \(1/d\) also exceeds \(d^{-2}\). Say instead: **RES permits applying the proposition with \(p=1\)**. Alternatively define \(p\) through a two-sided asymptotic.
+
+   The universality is restricted to the Dixon split, its acceptance accounting, regular two-dimensional search geometry, typical norm envelopes, and random-integer smoothness model. RES alone does not establish R1 or R3 for every 2D sieve architecture. Ordinary SNFS relation collection illustrates why “one-level” needs an explicit architectural definition.
+
+   Non-monic polynomials do not evade RES. Neither do valid projective roots: use homogeneous resultants and a unimodular modular point. Skewness changes weighted heights and requires corresponding norm-envelope accounting; it does not invalidate the resultant obstruction. Several rational sides do not erase any applicable pairwise bound. Independent linear sides through the same modular point additionally have determinant divisible by \(N\).
+
+   **A separate displayed constant formula is wrong:** §1.2 gives U’s exponent as \(3/(d+1)+(d+1)/(4k)\). Its minimum would have leading constant \(\sqrt3\), not \(\sqrt2\). Replace it with U’s actual piecewise leading formula:
+   \[
+   \theta_{0,U}=
+   \begin{cases}
+   3/d_0,&\kappa\ge d_0^2/4,\\
+   2/d_0+d_0/(4\kappa),&\text{otherwise}.
+   \end{cases}
+   \]
+   The code uses this correct formula. The four hypothetical constant-table entries reproduce as stated.
+
+3. **R2-S: CORRECT WITH FIXES in the model; “Why GNFS cannot do this” WRONG as stated — MAJOR.**
+
+   The balance
+   \[
+   d(z)\asymp\frac{\Xi}{z+\Lambda},\qquad
+   \frac yz\asymp\frac{t}{\Xi U}\asymp D^{1-3\alpha}
+   \]
+   is correct for the specified typical-size model. It gives the \(1/3\) threshold and the stated level counts.
+
+   The continuous \(\alpha=1/3\) arithmetic gives
+   \[
+   \lambda=11/64,\qquad 2s-(\phi_F+\phi_R)/3=5/6.
+   \]
+   Integer degrees and envelope errors require slack. In particular, the displayed degree interval has the wrong lower endpoint: at \(z=b_1Q\), the unrounded degree approaches \(8\) **from below**, so its floor is eventually \(7\), not \(8\). State an asymptotic top degree and choose a slightly relaxed contraction constant after rounding.
+
+   Below \(1/3\), the conclusion concerns the child-smoothness threshold required for an affordable *typical* node. It does not assert that every actual candidate produces a larger prime. Indeed, the proposed top-degree choice eventually falls below \(2\).
+
+   The GNFS dilemma does not follow. HR concerns one fixed root and specified degrees; R2 excludes a complete tree satisfying M1 everywhere. Neither proves that **every large-target node** in every faster tree must have height \(N^{o(1/d)}\), or belong to the displayed \(O(D^2)\) family. Hybrid trees and other modular roots are not covered.
+
+   Exact fix: retain R2’s conditional model obstruction and HR’s fixed-root separation; delete the exhaustive classification.
+
+4. **REC: CORRECT accounting; GAP as a lower bound or necessity claim — MAJOR.**
+
+   The exponent conversions are correct:
+   \[
+   L_Y[2/3]\leadsto L_N[2(1-\alpha)/3],\qquad
+   2(1-\alpha)/3\le\alpha\iff\alpha\ge2/5.
+   \]
+   U at \(\sqrt{2N}\) has constant \(2^{-2/5}c_U\).
+
+   But these are available **upper-bound guarantees**, not lower bounds on actual recognizer costs. Replace “expected cost … is not bounded” with “these guarantees do not establish the required bound.” This remains an accounting limitation of the chosen architecture.
+
+   ECM speed is also **not necessary for every sub-\(2/5\) improvement**. A recognizer with exponent \(\beta\) meets the recognition budget when
+   \[
+   \alpha\ge\frac{\beta}{1+\beta}.
+   \]
+   Any \(\beta<2/3\) opens some sub-\(2/5\) interval. Exponent \(1/2\) reaches the model endpoint \(1/3\).
+
+   The \(\delta^{2k}\) calculation describes product-family counts and the S″ guarantee. S″ alone does not prove a universal necessity of polylogarithmic density; square-class concentration needs attention.
+
+   The claimed Dickman **asymptotic for shifted primes \(p-1\)** is not established here. Fortunately an upper bound suffices:
+   \[
+   \#\{p\in(Y,2Y]:P^+(p-1)\le B\}\le\Psi(2Y,B).
+   \]
+   Relative to \(\pi(2Y)-\pi(Y)\), its extra logarithmic factor does not change the stated exponential rejection penalty.
+
+   **Literature answer:** neither cited 1987 result supplies unconditional (O2) at the stated \(1/2\) exponent. Lenstra’s rigorous result is conditional on the actual smooth-number count in the Hasse interval; the ECM-speed estimate is explicitly Conjecture 2.10. [Lenstra 1987, §§2.7–2.12](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf).
+
+   Pomerance supplies a rigorous weaker averaged smoothness test, which must be acknowledged. An explicit version in Lenstra–Pomerance has runtime \((\log n)^{O(1)}\exp(O((\log y)^{6/7}))\) on recognizable \(y\)-smooth integers, with a large recognizable prime set—not the claimed \(L_y[1/2,O(1)]\). [Pomerance 1987](https://math.dartmouth.edu/~carlp/disclog.pdf), [Lenstra–Pomerance 1992, §7](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+5. **RB: CORRECT elementary deletion observation; GAP in its application — MAJOR.**
+
+   Parts (i)–(iii) contain a valid sparse-image observation for a fixed finite query set and suitably fixed main terms. They do not establish the advertised barrier against every proof using smooth-number statistics.
+
+   Required fixes:
+
+   - An estimate with error \(E\) becomes one with error \(E+\Delta\). Merely having \(\Delta<E\) does not preserve the original hypothesis. State robustness and quantitative slack.
+   - Check the actual indexed sums, weights, main terms, and algebraic properties used. Removing arbitrary integers destroys multiplicative closure. BV sums with a maximum over residues are not interchangeable with BDH sums over all residue classes.
+   - Single-AP main terms can involve large denominators; they are not automatically \(x\rho/B^{O(1)}\).
+
+   The useful cardinality statement is
+   \[
+   |\mathcal V|\le N^{(2+o(1))\nu},
+   \]
+   assuming \(W\Phi=N^{o(\nu)}\), not an equality with an uncontrolled \(o(1)\) exponent. The note’s notation is too weak when \(\nu\to0\).
+
+   For the **particular crude deletion estimate** with \(O(\sqrt x)\) summands and \(x=X_r\), the algebra
+   \[
+   2\nu<(1/d-\nu)/2\iff5\nu<1/d
+   \]
+   is correct. One needs enough margin to absorb smoothness and error factors. The \(2/5\) regime supplies it. This does not verify every claimed application.
+
+   The U comparison also mismatches marginals: RB deletes **rational cofactors**, whereas the comparison bounds algebraic-value point masses. Explain U’s rational-side spreading as well. Large support with quantitative spreading is relevant; “full support” alone is insufficient.
+
+6. **CY/CY-P: CORRECT WITH FIXES — MINOR for bounds, MAJOR for the impossibility wording.**
+
+   The product decompositions, bound
+   \[
+   \Phi_a(r)\le(r+1)^{\varphi(a)},
+   \]
+   and divisor monotonicity of \(\varphi\) are correct. The plus case uses \(\varphi(2e)/e\). Polynomially many pieces do not alter the \(L\)-constant.
+
+   The summary’s sharper \(\varepsilon=\varphi(e)/e\) can be justified: Möbius inversion gives, uniformly for \(r\ge2\),
+   \[
+   \log\Phi_a(r)=\varphi(a)\log r+O(1).
+   \]
+   Add this proof, or consistently retain the weaker \(\log(r+1)/\log r\) factor.
+
+   CY-P’s \(o(1)\) constant along primorial exponents is correct, conditional on U.
+
+   Replace “no exponent gain is possible from algebraic factors” by: **applying U separately to these cyclotomic pieces and bounded-degree Aurifeuillian splittings does not yield a smaller fixed exponent through this size calculation.** A large remaining piece is not a factoring lower bound; “general-looking” proves nothing.
+
+   Also qualify the order statement: \(p\mid\Phi_e(r)\) implies \(e\mid p-1\) when \(p\nmid e\), with exceptional index-dividing primes handled separately.
+
+7. **§4: GAP — FATAL to the stated sufficiency implication; other fixes MAJOR/MINOR.**
+
+   **RT and the stated (O2) do not jointly suffice.** O2 recognizes factors in \(G\); RT only promises a smooth rational cofactor. It does not require that cofactor’s large prime factors to belong to \(G\). Restricting initial split primes to \(G\) does not control endogenous children.
+
+   Fix this by requiring RT’s successful cofactors to factor over \(G\cup\{p\le B\}\), with uniform recognition guarantees and bounded-time rejection, or strengthen O2 to all relevant primes. Density alone cannot supply this compatibility.
+
+   The regular-lattice envelope also needs correction. A reduced-basis coefficient box need not have physical radius \(S\sqrt q\); the second minimum can be of order \(q\). Either restrict to regular targets and prove the required target supply, or redo the degree/constants with the actual minima. Keep multi-field LV6 post-processing as an additional unproved condition.
+
+   Rename the box parameter \(s\): it currently collides with the prime in \(N=r^e-s\).
+
+   The digit argument is a useful approximation, not the claimed exact characterization. Precisely,
+   \[
+   (a-br^{q_d})\bmod r^{q_d}
+   \in[0,V]\cup[r^{q_d}-V,r^{q_d}-1],
+   \]
+   with quotient bounds and endpoint corrections. The prescribed-block fraction is
+   \[
+   \frac{\log m-\log V}{\log m+\log V},
+   \]
+   yielding \((1-d\nu)/(1+d\nu)\) only after omitting the search-width term and rounding. Its convergence to \(1\) is valid in the intended regime.
+
+   Crucially, RT tests **\((a-bm)/q\)**. Division by \(q\) does not preserve the digit block. The relevant problem concerns multiples of smooth numbers having that block.
+
+   The literature comparisons are substantially accurate: [BBDT](https://tenenb.perso.math.cnrs.fr/PPP/friableforms.pdf) gives the quoted power thresholds; [Barbulescu–Lachand, Theorem 4.2](https://arxiv.org/pdf/1403.0184) gives the exceptional small threshold for fixed primitive imaginary quadratic forms of fundamental discriminant. Its natural region is form-adapted, not an arbitrary box. [Swaenepoel](https://doi.org/10.1112/plms.12314) generalizes Bourgain’s small positive prescribed proportion. These results do not supply RT. Phrase broader “nothing is known” statements as “none of these results establishes the required uniform statement.”
+
+8. **Global claims and missing scope: GAP — MAJOR.**
+
+   Fix \(r,s\) and let \(e\to\infty\), or state uniform growth conditions. The displayed \(\mathcal E\) allows varying \(r,s\), whereas M1-S silently uses \(\log r+\log s=O(1)\). Merely allowing \(s=N^{o(1)}\) does not ensure sufficiently small coefficients.
+
+   HR/RS/DI are not an exhaustive classification of randomization devices. For example, for \(N=m^5-s\), the small polynomials \(x^5-s\) and \(x^5-s^2\) have known roots \(m,m^2\) and define the same field through \(\alpha\mapsto\alpha^2\). That generator change is not Möbius: such an identity would give a polynomial relation of degree at most three for a degree-five \(\alpha\). Thus “same field” does not imply DI’s binary-value identity.
+
+   The close-semiprime and smooth-\(p-1\) promises already recorded give rigorous sub-\(2/5\) families. Consequently the opening negative verdict must concern the specified special-form residuals without extra factor promises. No established faster algorithm for those residuals emerged from this audit.
+
+   Finally, §5 is unfinished. Replace blanket literature negatives with a documented search conclusion and retain U’s internal conditional status throughout.
+
+Verification: all 16 tests passed; the four constant-table entries reproduced. Those checks do not validate the universal or barrier claims. Repository unchanged.

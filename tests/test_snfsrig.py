@@ -159,3 +159,11 @@ def test_primorial_largest_piece_shrinks():
     assert ratios[2] < Fr(22, 100)                    # phi(2310)/2310 = 0.2078
     lo, hi = C.cost_exponent_ratio(ratios[2])
     assert lo < Fr(54, 100) < hi + Fr(1, 100)
+
+
+def test_r2s_worst_case_lattices_and_nonrec_constants():
+    ex = S.r2s_alpha_third(b=4, s=Fr(3, 4), phiF=1, phiR=1, b1=1, regular=False)
+    assert ex["lam"] == Fr(19, 64) and ex["contracts"] and ex["d1"] == 4
+    # without self-recursion (Prop REC) the hypothetical SNFS constant is only slightly below Theorem U's
+    c = S.cost_constant_nonrec("SNFS", Fr(9, 20), Fr(13, 20), Fr(9, 80), 0, Fr(3510348, 1000000))
+    assert Fr(333, 100) < c < Fr(334, 100)

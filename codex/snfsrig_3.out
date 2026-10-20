@@ -1,0 +1,84 @@
+**Verdict: GAP — further revision required, principally for RB’s application.** The original fatal compatibility gap is fixed. The main exponent calculations survive. I found no new FATAL error, but the worst-case lattice constants need another rounding correction.
+
+References below are to the [revised note](/Volumes/git/factoring-connection/notes/snfsrig_results.md).
+
+1. **RES/HR/PH/RS and DI: FIXED.**  
+   The resultant and height arguments remain valid within HR’s stated fixed-root, bounded-degree scope. The Minkowski claim is removed. DI now correctly uses
+   \[
+   T=\operatorname{diag}(1,r^h),\qquad c_1=c_2=1
+   \]
+   in its last row. The transformed-region and modular-unit qualifications are adequate. One new ancillary claim about different fields is false; see below.
+
+2. **UF and one-level universality: FIXED.**  
+   The restriction to Dixon split plus (R1)–(R3) is explicit and adequate. “RES lets us apply UF with \(p=1\)” corrects the previous logical error. Eliminating the constraints gives
+   \[
+   \alpha\ge\frac{1+p}{3p+2}.
+   \]
+   U’s piecewise coefficient formula is corrected. I reproduced the revised hypothetical constants: **3.335, 3.847, 4.788, 6.189**. Factoring the halves with U resolves the earlier inconsistency.
+
+3. **R2-S and the GNFS comparison: PARTLY.**  
+   The typical-node qualification and withdrawal of exhaustive classification are adequate. The \(1/3\) exponent calculation survives. The regular-lattice top degree \(7\), with contraction slack, is correctly handled.
+
+   The worst-case physical envelope \(3e^{\sigma_bE}q\) is valid, and \(19/64\) is the correct **continuous** contraction bound. Integer rounding is not incorporated into that example; see the new error below. The quoted worst-case margin “approximately \(1/2\)” also needs an actual derivation: the cited function returns \(5/6\) for both lattice settings.
+
+4. **REC: FIXED as accounting of available guarantees.**  
+   Substitution gives
+   \[
+   L_p[\beta,O(1)]\longrightarrow L_N[\beta(1-\alpha),O(1)],
+   \]
+   so the displayed guarantee fits precisely when
+   \[
+   \alpha\ge\frac{\beta}{1+\beta}.
+   \]
+   Thus \(2/3\mapsto2/5\), \(6/7\mapsto6/13\), and \(1/2\mapsto1/3\). The table distinguishes U’s internal status, HECM’s incomplete publication, and the RH route.
+
+   “Iff” must continue to refer to **this bound fitting the budget**, not necessity for an algorithm’s actual runtime. The surrounding text now makes that distinction adequately. The shifted-prime argument appropriately uses an upper bound through \(\Psi(2Y,B)\).
+
+5. **RB: PARTLY.**  
+   The abstract deletion lemma is sound: fixed-main-term linear counting estimates acquire at most \(|\mathcal V||\mathcal I|\) additional error. Explicit slack and exclusion of multiplicative closure repair important defects. Also,
+   \[
+   |\mathcal V|\le N^{(2+o(1))\nu}
+   \]
+   follows under the stated \(\Phi W=N^{o(\nu)}\) assumption.
+
+   The application remains incomplete. The named estimates are not all literally members of the defined class \(\mathcal K\), and their actual indexing and error norms have not been checked. The \(5\nu<1/d\) calculation works for the specified crude deletion model, with sufficient quantitative separation; that separation holds comfortably at the \(2/5\) design. It does not verify the blanket statistical barrier repeated in the summaries.
+
+6. **CY/CY-P and CY-LP: FIXED.**  
+   The Möbius argument is correct:
+   \[
+   \left|\log\Phi_a(r)-\varphi(a)\log r\right|
+   \le\sum_{b\ge1}-\log(1-2^{-b})<1.242063<1.25.
+   \]
+   This justifies the sharper \(\varepsilon_e\), including the plus case. The primorial calculation is correct.
+
+   CY-LP follows by the same polynomial-overhead reduction using the unconditional \(L_n[1/2,1+o(1)]\) algorithm. Its \(L_N[1/2,o(1)]\) conclusion needs no internal U assumption. [Lenstra–Pomerance 1992](https://math.dartmouth.edu/~carlp/PDF/paper85.pdf).
+
+   The restricted “no exponent gain through this size calculation” wording is adequate.
+
+7. **§4 compatibility and the RH route: FIXED within the explicitly provisional formulation.**  
+   Requiring large rational children to belong to \(\mathcal G\) repairs the original fatal gap. Relabelling the section as missing inputs, while listing character and multi-field requirements, appropriately withdraws the unsupported sufficiency theorem.
+
+   The RH recognition route is valid **conditional on the genus-2 note’s internal Theorem R**. Precisely, R returns a proper divisor with cost controlled by the least prime factor; recursive splitting, primality tests and perfect-power handling give the required \(L_y[1/2,O(1)](\log n)^{O(1)}\) guarantee on \(y\)-smooth inputs. The note’s [Corollary R2](/Volumes/git/factoring-connection/notes/genus2rh_results.md:384) supplies this step. Time limits give bounded-cost rejection of unsuccessful candidates.
+
+   The analytic interval fit is correct: the genus-2 interval has length \(x^{3/4}\), inside [Younis’s RH theorem](https://arxiv.org/pdf/2409.05761). This removes O2 internally; it does not complete the separately acknowledged assembly.
+
+8. **Global scope and presentation: PARTLY.**  
+   Fixed \(r,s\), exclusion of extra factor promises, the non-Möbius generator example, and U’s internal status are all adequately corrected. §5 is now substantive.
+
+   However, §§0, 2.6 and 7 still turn RB’s conditional deletion argument into an established barrier against statistical proofs generally. They also sometimes revert to “keeps the value set,” losing DI’s transformed-region qualification. Those summaries should match the narrower propositions.
+
+New errors introduced by the revision:
+
+- **MAJOR — worst-case rounding, [lines 292–294](/Volumes/git/factoring-connection/notes/snfsrig_results.md:292).** With the stated constants and \(z=Q\),
+  \[
+  d_*=\frac{4Q}{Q+\tfrac34E}\to4^{-}.
+  \]
+  Following the regular example’s downward rounding gives \(d=3\). Then the typical rational cofactor requires \(y/z\to1/3\) when \(\varphi_R=1\), exceeding \(19/64\). A safe repair is a relaxed contraction such as \(19/48+\epsilon<1\), with corresponding envelope accounting. The \(1/3\) exponent survives.
+
+- **MAJOR — incorrect named membership in \(\mathcal K\), [lines 438–462](/Volumes/git/factoring-connection/notes/snfsrig_results.md:438).** L2_fam is a pair/Fourier-moment statement, not the defined linear count bound; its uncentred pair version can be handled separately, but Fourier moments are not generally monotone under deletion. Standard BDH is quadratic and sums over residues. For moduli through \(Q_0\), all residue slots number \(\asymp Q_0^2\), not \(O(Q_0)\). Consequently the displayed slot calculation does not establish the claimed BV/BDH coverage. Also, bare strict inequality \(5\nu<1/d\) does not itself provide an \(N^{\Omega(1/d)}\) margin.
+
+- **MINOR — false field distinction, [line 417](/Volumes/git/factoring-connection/notes/snfsrig_results.md:417).** “Other residues of \(j\) give different fields” is false without further hypotheses. For \(r=4,s=3,d=2\), \(x^2-3\) and \(x^2-12\) define the same field. This does not invalidate the corrected DI identities.
+
+- **MINOR — review record inconsistency.** Line 620 says the literature critic rechecked the citations, whereas §6.1 remains “Pending.” Line 241 also identifies the wrong table column as the first-draft constants.
+
+**Verification:** all **17 tests passed**; the revised constant table reproduced. Repository left unchanged.
