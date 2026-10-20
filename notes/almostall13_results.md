@@ -55,9 +55,8 @@ Precisely:
      ≤ X^{−1/2+2/d+o(1)}. If anything, the almost-all setting is the less favourable one for the size model.
    - (c) An average-case AD implies AD for most N, by Markov (Lemma AV).
 3. **Recursion does not tolerate an "o(1)" exceptional set (Prop HR) [proved].** The recursive sub-inputs live in thin
-   sets of density e^{−Θ(E)}: the accepted halves u₀, v₀, which are products of k primes in a window, and the
-   algebraic values F(P). An exceptional *measure* bound of density o(1), or even e^{−cE} for small c, is consistent
-   with all of them being exceptional. A recursive almost-all design therefore needs a *hereditary* hypothesis. With
+   sets such as the accepted halves u₀, v₀ (products of k primes in a window), of density e^{−Θ(E)}. An exceptional *measure* bound of density o(1), or even e^{−cE} for small c, is consistent
+   with all of these being exceptional. A recursive almost-all design therefore needs a *hereditary* hypothesis. With
    one (closure under divisors as well as under descent values and split halves), **Theorem NR-AA** holds [proved
    conditional on Hypothesis HAD + LV6′; no ERH]: a Las Vegas algorithm, alternating with FACTOR_U, completely
    factors every N.
@@ -322,7 +321,7 @@ certify Pr[X = 0] < η. (`bounds.mp_mixture`.)
 - *Heuristic order count.* With mean count e^{(2s−φ/3)E} ([nested] §8), a 2j-th central moment with j ≍ b₁D′/(2s − φ/3)
   is needed. That involves 2j-point configurations, against the budget d + 1 = δD′ + 1.
   - At nested's example parameters, 2s − φ/3 = 5/48, so j ≈ 9.6D′, far above 0.5D′.
-  - Much larger boxes (s ≳ 1.7; codex gives s > 40/23 in one convention) bring it within budget at a higher L[1/3]
+  - Much larger boxes (s > 64/23 ≈ 2.8 at nested's example parameters, so that 2j ≤ d + 1; codex almostall13_3) bring it within budget at a higher L[1/3]
     constant.
   - So OD is not the only obstacle to this route; precision is.
 - The best known relative errors for smooth numbers in progressions at L-scale have the shape
@@ -343,13 +342,11 @@ certify Pr[X = 0] < η. (`bounds.mp_mixture`.)
     from the computed factorisation), the variant that pads to FACTOR_U's time on 𝒮 meets Definition AA with density ε.
   - So an outer analysis that needs the recursive sub-inputs to lie in a set of density σ ≤ ε at scale Y, and is fed
     only "𝒜 has exceptional density ε", cannot conclude anything: the needed sub-inputs may be exactly the exceptions.
-- (b) [proved] In NEST ([nested] §8) the needed recursive sub-inputs include two kinds, each of density e^{−Θ(E)} in
-  its dyadic window:
-  - accepted halves: |u₀|, |v₀| ∈ 𝒰_A, the products of k = ⌈t/(2b₁Q)⌉ + 1 ≍ D′ distinct primes of (Y, 2Y], of density
-    ≤ (C/log N)^{k}·e^{O(k)} = e^{−Θ(E)};
-  - algebraic values |F(P)| at good points: max(B, q^λ)-smooth numbers with u = O(D′) at every level, so of density
-    e^{−Θ(E)}.
-
+- (b) [proved] In NEST ([nested] §8) the needed recursive sub-inputs include the accepted halves |u₀|, |v₀| ∈ 𝒰_A, the
+  products of k = ⌈t/(2b₁Q)⌉ + 1 ≍ D′ distinct primes of (Y, 2Y]. Their density in their dyadic window is
+  ≤ (C/log N)^{k}·e^{O(k)} = e^{−Θ(E)}. (An earlier draft also claimed this for the algebraic values F(P). That was
+  wrong: a good point needs only F(P)/q to be smooth, and small cofactors can have large smooth density. The
+  accepted-half family suffices; codex almostall13_3.)
   So "o(1)", and even "e^{−cE}" for c below the relevant constants, is vacuous for the recursion.
 - (c) [proved; codex's dovetail form; a sufficient condition] Suppose each recursive query at scale y is dominated by
   K(y) times the uniform measure, conditionally on history.
@@ -408,10 +405,11 @@ Then the following hold.
 
 *Proof (changes to [nested]'s proof of Theorem NR).*
 - **Correctness and termination.** Outputs are certified (AKS, gcds), and timeouts only reject candidates. The alternation gives the L[2/5] bound for every N.
-- **Base case and the constant K.** Because every call alternates with trial division, E T(m) ≤ 2√m + O(1) for all m.
+- **Base case and the constant K.** Because every call alternates with trial division, E T(m) ≤ D(m) := O(√m(log m)^C) for all m (bit cost,
+    including factor-tree and arithmetic overhead).
   - Let n₂(c′) be the threshold beyond which the recursion inequality below closes. Its o(1)s do not depend on K,
     because K enters linearly.
-  - Choose K ≥ 8·max_{m<n₂}(2√m + O(1))/β(m). Then E T(m) ≤ Kβ(m)/4 for every m < n₂.
+  - Choose K ≥ 8·max_{m<n₂}D(m)/β(m). Then E T(m) ≤ Kβ(m)/4 for every m < n₂.
 - **Strong induction over 𝒦.** Claim: E T(m) ≤ Kβ(m)/4 for all m ∈ 𝒦. Assume it below N ∈ 𝒦, N ≥ n₂.
   - By Markov a clocked call on m ∈ 𝒦 succeeds with probability ≥ ¾, so all r calls fail with probability ≤ 4^{−E²}.
   - A call on m ∉ 𝒦 costs at most rKβ(m) whatever happens.
@@ -560,7 +558,7 @@ Hafner–McCurley, Pomerance 1987, Lenstra 1987, LV, KW, Barbulescu–Jouve, PTB
     prime ≤ v outside an exceptional set of size O(x·exp(−½(log x)^{1/6})) is found in time
     O((log N)⁴·exp(2(log v)^{6/7})). LP92 §7 (Thms 7.3–7.4) re-uses this as a smoothness *recogniser*.
   - Hafner–McCurley Thms 3.1–3.2 extend this to every θ > 5/6.
-  - Barbulescu–Jouve (arXiv 2212.11724) give ECM smoothness asymptotics for a fixed curve over primes under
+  - Barbulescu–Jouve, Acta Arith. 213 (2024) (arXiv 2212.11724), give ECM smoothness asymptotics for a fixed curve over primes under
     Elliott–Halberstam-type hypotheses (Conj 1.1/4.1, Hypothesis 1).
   - **Worst case:** Lenstra–Pila–Pomerance, "A hyperelliptic smoothness test I", Phil. Trans. R. Soc. A 345 (1993),
     Thm 1.1/Cor 1.2, and II, Proc. LMS (3) 84 (2002): rigorous L_p[2/3, c₀]·(log n)² for every p.
@@ -640,9 +638,21 @@ All valid findings were applied in the text above.
 10. HR(a) put in measure form; HR(b)'s blanket G-value claim dropped.
 11. Bound per LV6 round.
 12. *MAJOR.* The headline is narrowed to "the best bound established here; no improvement proved; not an impossibility".
-13. Literature: LP92 7.2 is an algorithm; Barbulescu–Jouve's published version is 2024 (venue not checked by us).
+13. Literature: LP92 7.2 is an algorithm; Barbulescu–Jouve's published version is Acta Arith. 213 (2024).
 14. Q3 wording: "no statistically detected effect".
 - It reproduced E1 and all E2 summary values exactly from the raw files.
+
+**GPT-6.1-sol confirmation round `codex/almostall13_3`** (high).
+- Status of the 14 issues: 11 FIXED, 3 PARTLY FIXED. No FATAL issue remains.
+- **NR-AA: CORRECT CONDITIONALLY** (HAD with (H0)–(H2), LV6′, Theorem U). Heredity, the factor-tree accounting via SPLIT
+  costs, the clocks (r = ⌈E²⌉), the split on 𝒰_A ∩ 𝒦, the characters and the n_U threshold all check out.
+- Residual fixes applied:
+  - HR(b)'s algebraic-value clause was false (good points need only F(P)/q smooth), so it is deleted; HR(b) now rests
+    on the accepted halves alone. This was the one remaining MAJOR issue, local to HR(b); it does not affect NR-AA.
+  - The base bound is now D(m) = O(√m(log m)^C).
+  - The MP box threshold is s > 64/23, counting 2j points.
+  - Barbulescu–Jouve is cited as Acta Arith. 213 (2024).
+- It reproduced E1 and E2 exactly again.
 
 **Opus proof critic (read-only, independent).** No FATAL issue; three MAJOR issues, all in NR-AA. Fixes applied:
 1. The repetition count r = ⌈E⌉ was too small for b > ln 4. It is now r = ⌈E²⌉ (I had changed this before the report

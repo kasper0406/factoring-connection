@@ -1,0 +1,87 @@
+**NR-AA’s principal repair works:** the complete-factorisation induction now closes under HAD, LV6′ and Theorem U. I found no remaining FATAL issue. One MAJOR error remains in HR(b)’s auxiliary density statement; it does not invalidate NR-AA.
+
+I reread all 687 lines, including §9. All eight tests pass; all ten E1 rows and the complete E2 summary reproduce exactly. Writes were confined to the permitted scratch directory.
+
+| Prior issue | Status | One-line reason |
+|---|---|---|
+| 1. Heredity for complete factorisation | **FIXED** | H0 covers preprocessing cofactors, perfect-power bases and divisors; SPLIT accounting avoids assuming rapid shrinkage along factor-tree edges. |
+| 2. DF and gcd \(=N\) | **FIXED** | The contracting, nonzero-value restriction excludes gcd \(=N\), and the target-set difference is reversed correctly. |
+| 3. Project-wide scope | **FIXED** | Scope is restricted to fixed-polynomial special-q descent; escapeR2 and nonuniform \(\bar\mu\) are acknowledged. |
+| 4. NB dimensions and multiple fields | **FIXED** | Nondegeneracy assumptions are supplied; independent multipliers correctly give \(r(d+1)\), while fixed multipliers permit \(rd+1\). |
+| 5. OD-AA and Info-AA | **FIXED** | The counts are \(d-k\) and \(d+1-k\); recovery explicitly requires \(g,w\), and the children count remains a model. |
+| 6. W-AA averaging bookkeeping | **FIXED** | The residue inequality, common parameter regime, rejection-indicator removal and per-input second-moment argument are now stated. |
+| 7. M1-AA qualifications | **FIXED** | The \(\beta\)-range, rough-input qualification, diagonal slack and degree-dependent SNFS bound are supplied. |
+| 8. MP scope and moment order | **PARTLY FIXED** | The information model and conditioning are repaired, but the larger-box numerical threshold still counts \(j\), despite now requiring \(2j\) evaluations. |
+| 9. HR(c) clocked fallback | **FIXED** | The claimed bound now uses uncapped dovetailing; the clocked alternative includes its timeout contribution. |
+| 10. HR(a)–(b) scope | **PARTLY FIXED** | The arbitrary-set construction and blanket G-value claim are repaired, but HR(b)’s remaining F-value statement is false as written. |
+| 11. NR-AA clocks, split and costs | **FIXED** | \(r=\lceil E^2\rceil\), per-round accounting, restricted split sets, characters and the small-input threshold give the required exponent bounds. |
+| 12. Headline versus impossibility | **FIXED** | The headline now states the best established bound and explicitly disclaims an impossibility theorem. |
+| 13. Literature precision | **PARTLY FIXED** | The substantive attributions are corrected, but §7 still gives only the Barbulescu–Jouve arXiv citation despite §9 claiming the published citation was added. |
+| 14. Experimental interpretation | **FIXED** | Q3 now says “no statistically detected” effect and the experiments retain their toy qualification. |
+
+For **NR-AA**, the revised argument has the necessary structure:
+
+- **Heredity:** H0 places every factor-tree node above \(n_U(N)\) in \(\mathcal K\). Smaller nodes can use Theorem U. H1 handles both successful field supply and immediate proper-factor exits; H2 supplies tame split halves even in fields that fail AD.
+- **Induction:** bounding each node’s SPLIT cost, then multiplying by at most \(2\log_2N\) nodes, avoids circularly charging complete factorisation of divisors arbitrarily close to \(N\). Induction is needed only for the contracting shape-test and value calls.
+- **Clocks:** the induction bound \(ET(m)\le K\beta(m)/4\) gives timeout probability at most \(1/4\). Fresh repetitions give \(4^{-r}\), and \(r=\lceil E^2\rceil\) defeats the exponentially many visited targets. Polynomial amplification costs \(e^{o(E)}\).
+- **Split acceptance:** \(\mathcal U_A\cap\mathcal K\) retains at least half the products, meets S″’s cardinality condition, and preserves the exponent \(1/b_1\).
+- **Characters:** \(\log s_\chi=(2\delta/3+o(1))E\). Polynomial work in this bit length, including Hensel lifting, fits the stated \(C_\chi\delta\) allowance. The four terms defining \(c_{\mathrm{NR-AA}}\) therefore have the correct exponent arithmetic.
+- **Small inputs:** \(\Lambda_{2/5}(n_U(N))=t^{8/25+o(1)}=o(E)\), so the threshold works.
+
+One minor proof correction remains at [line 411](/Volumes/git/factoring-connection/notes/almostall13_results.md:411): \(2\sqrt m+O(1)\) is too literal for complete factorisation in a bit-cost model. Replace it by a uniform finite bound
+\[
+D(m)=O\!\left(\sqrt m\,(\log m)^C\right),
+\]
+including factor-tree and arithmetic overhead, and choose
+\[
+K\ge 8\max_{m<n_2}D(m)/\beta(m).
+\]
+This preserves the argument: the finite base bound is independent of \(K\), and the asymptotic induction has strict exponent slack.
+
+The remaining **MAJOR issue is local to [HR(b), lines 346–351](/Volumes/git/factoring-connection/notes/almostall13_results.md:346)**. At an algebraic target of norm \(q>B\), goodness requires **\(F(P)/q\)** to be \(\max(B,q^\lambda)\)-smooth. It does not require \(F(P)\) to be smooth at that bound. Indeed, \(q\mid F(P)\) and
+\[
+q>\max(B,q^\lambda),
+\]
+so the displayed smoothness assertion fails at every such good algebraic point.
+
+Replacing \(F(P)\) by its cofactor alone does not prove the asserted density in every dyadic window: \(u=O(D')\) supplies no lower bound on \(u\), and small cofactors can have substantial smooth density.
+
+**Concrete fix:** delete the algebraic-value bullet and base HR(b) on the accepted-half family alone. That already proves the intended obstruction to composing bounds from exceptional density. Alternatively, restrict the cofactor statement to specified size windows with \(u\asymp D'\) and prove the corresponding density bound. Neither repair changes HAD or NR-AA.
+
+Two smaller corrections remain:
+
+1. **MP’s box threshold.** At nested’s example parameters,
+   \[
+   A(s):=2s-\phi/3=\frac{23s-16}{12},\qquad
+   j\sim D'/A(s).
+   \]
+   Requiring \(2j\le d+1\sim D'/2\) needs \(A(s)\ge4\), hence **\(s>64/23\)** with slack. The retained \(40/23\) threshold counts only \(j\) evaluations. The mixture identity and precision obstruction remain valid.
+2. **Published citation.** Add Barbulescu–Jouve, *Acta Arithmetica* **213** (2024), to §7; publication is confirmed on [Jouve’s institutional page](https://www.math.u-bordeaux.fr/~fjouve001/).
+
+| Claim | Final verdict |
+|---|---|
+| Definition AA | **CORRECT** |
+| TR: semiprime transfer and sufficient mean-envelope condition | **CORRECT** |
+| DF in the stated contracting regime | **CORRECT** |
+| NB(i)–(iii): mixture, recovery, rank bounds | **CORRECT** |
+| NB(iv): dimensions under the stated full-box design assumptions | **CORRECT** |
+| Multiple fields: fixed versus independent multipliers | **CORRECT** |
+| OD-AA, SI-AA, Info-AA | **CORRECT**, retaining the children-count model qualification |
+| W-AA congruence and residue bound | **CORRECT** |
+| W-AA relation-supply consequence | **CORRECT within its stated averaging conditions** |
+| M1-AA(a)–(c) | **CORRECT** |
+| M1-AA counting and SNFS consequences | **CORRECT**; R2 remains conditional on its models |
+| AV | **CORRECT** |
+| MP mixture identity and conditional scope | **CORRECT** |
+| MP precision barrier | **CORRECT for the specified moment-information method** |
+| MP larger-box numerical threshold | **INCORRECT; replace by \(64/23\)** |
+| HR(a), HR(c) | **CORRECT under their stated assumptions** |
+| HR(b): accepted-half obstruction | **CORRECT** |
+| HR(b): algebraic-value smoothness/density clause | **INCORRECT; delete or restrict and prove** |
+| HAD as sufficient hereditary control | **SUFFICIENT**, with the stated internal hypotheses |
+| NR-AA universal fallback bound | **CORRECT** |
+| NR-AA fast complete factorisation on \(\mathcal K\) | **CORRECT CONDITIONALLY**, with the minor finite-base bound correction |
+| NR-AA semiprime consequence | **CORRECT CONDITIONALLY** |
+| Literature §7 | **SUBSTANTIALLY CORRECT; citation completion remains** |
+| E1/E2 numerical reporting | **CORRECT; independently reproduced** |
+| \(2/5\) as the best bound established here | **CORRECT, assuming the internal chain** |
