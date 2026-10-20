@@ -1,0 +1,83 @@
+**Don’t commit a long thread to achieving \(n^{1.67}\).** Generic sparse GF(2) dependency finding is a major open algorithmic problem. A narrower question about **adaptive NFS relation collection versus the size of the surviving matrix core** could support worthwhile research.
+
+I read [the cost model](/Volumes/git/factoring-connection/notes/heurnfs_results.md) read-only and searched through 20 October 2026.
+
+**1. State of the art**
+
+Write \(m=\operatorname{nnz}(A)=\widetilde O(n)\), assume \(n+k=\Theta(n)\), and let \(\mu\) denote the **dense matrix-multiplication exponent**, distinct from your proposed sparse-LA exponent. Bounds below count field operations; small-field extensions introduce polylogarithmic overhead.
+
+| Algorithm/problem | Bound and scope |
+|---|---|
+| **Wiedemann, 1986:** one kernel vector or one solution | Randomized \(\widetilde O(nm+n^2)=\widetilde O(n^2)\), with \(O(m+n)\) storage. A returned kernel vector is cheaply verifiable. [Original paper](https://doi.org/10.1109/TIT.1986.1057137). |
+| **Block Wiedemann / block Lanczos** | For fixed block width, the same quadratic work exponent. Width \(b\) reduces sequential iterations to roughly \(n/b\), while processing \(b\) vectors per iteration. Bit packing and parallelism substantially improve practical time. [Coppersmith, 1994](https://www.ams.org/mcom/1994-62-205/S0025-5718-1994-1192970-7/), [Montgomery, 1995](https://doi.org/10.1007/3-540-49264-X_9). |
+| **Rank, allowing Monte Carlo error** | Kaltofen–Saunders: \(\widetilde O(nm+n^2)\). This distinction matters: certified rank is a different bound. [Statement and discussion, Theorem 19](https://drops.dagstuhl.de/storage/00lipics/lipics-vol215-itcs2022/LIPIcs.ITCS.2022.33/LIPIcs.ITCS.2022.33.pdf). |
+| **Eberly–Giesbrecht–Giorgi–Storjohann–Villard, 2007** | Las Vegas explicit inverse, certified rank, and full nullspace basis in \(\widetilde O(n^{\,3-1/(\mu-1)})\) for sparse matrices; approximately \(n^{2.273}\) using their multiplication bound. Their 2006 sparse rational-system result was approximately \(\widetilde O(n^{2.5})\). These do not improve one-vector finite-field solving. [Paper](https://cs.uwaterloo.ca/~astorjoh/issac086e-eberly.pdf). |
+| **Peng–Vempala, SODA 2021** | For polynomially conditioned **real systems in finite precision**: \(\widetilde O(n^{(5\mu-4)/(\mu+1)})\), then \(n^{2.331645}\). **Not a GF(2) improvement.** [Paper](https://arxiv.org/abs/2007.10254). |
+| **Casacuberta–Kyng, ITCS 2022** | Expected \(O(n^{2.2131})\), as published, for explicit inverse, certified rank and full nullspace basis over finite fields. Again, this exceeds the one-vector quadratic bound. [Paper](https://arxiv.org/abs/2106.09830). |
+
+Precisely, CK’s sparse bound is \(n^{c+o(1)}\), where, writing \(\rho(t)=\mu(1,t,1)\),
+\[
+c=\min_{0\le t\le1}\max\{3-t,\;1+(\mu-1)t,\;\rho(t)\}.
+\]
+Their numerical optimization balances \(\rho(t)=3-t\).
+
+Relevant subsequent developments:
+
+- **Nie, STOC 2022:** improves the real finite-precision exponent to \((3\mu-4)/(\mu-1)\), then approximately \(2.2716\). [Paper](https://arxiv.org/abs/2111.05553).
+- **Harrison–Johnson–Saunders, 2022:** stronger block-Wiedemann success-probability analysis over small fields; no subquadratic total-work exponent. [Paper](https://arxiv.org/abs/1803.03864).
+- **Giesbrecht, July 2026:** sparse Smith multiplicities modulo \(p^2\) in \(\widetilde O(n^{3-1/(\mu-1)})\); a different task, still superquadratic. [Preprint](https://arxiv.org/abs/2607.05800).
+- **Very recent October 2026 claims:** the [all-fields formalization of \(\mu\le9/4\)](https://github.com/jzuiddam/omega-nine-quarters-all-fields) would give Eberly exponent \(2.2\). Combining it with [known rectangular bounds](https://arxiv.org/abs/2307.07970) gives CK exponent at most \(2.176803\) by interpolation—**my substitution, not a published sparse-algorithm record**. The newer [Uznański rectangular theorem](https://arxiv.org/html/2610.10494v2) states characteristic zero. None supplies subquadratic GF(2) solving.
+
+**Natural easy sparse classes do exist.** Graph vertex–edge incidence matrices admit cycle dependencies and rank computation in linear time. For nonsingular matrices with planar sparsity graphs, Alon–Yuster obtain randomized \(O(n^{\mu/2})\) solving over arbitrary fields. [Nested-dissection paper](https://web.math.princeton.edu/~nalon/PDFS/sparsesystem.pdf). Thus sparsity plus suitable structure can beat quadratic; sparsity alone has no known general power-saving algorithm.
+
+**2. Lower bounds and barriers**
+
+**Yes: subquadratic sparse GF(2) kernel finding is part of the longstanding sparse exact-linear-solving problem.** Already the case \(k=1\) includes nonsingular sparse solving: given invertible \(B\), every nonzero kernel vector of
+\[
+[\,B\mid b\,]
+\]
+has last coordinate \(1\), and its other coordinates solve \(Bx=b\). The reduction preserves sparsity.
+
+There is **no known unconditional \(\Omega(n^2)\) time lower bound for explicit sparse input**. Nor does this reduction equate its exponent with dense matrix multiplication.
+
+The Krylov barrier is real but model-dependent:
+
+- A scalar Krylov sequence can have grade \(n\), requiring \(\Theta(n)\) applications before the needed polynomial relation appears. Sparse companion or bidiagonal examples already exhibit this.
+- Blocking usually exchanges \(n\) scalar steps for approximately \(n/b\) block steps; the straightforward implementation still performs \(\Theta(n)\) scalar-equivalent matrix applications.
+- For unrestricted finite-field matrices accessed only through matrix–vector products, an actual \(\Omega(n)\) query lower bound holds for exact solving, even with bounded-error quantum queries. **That theorem does not impose the same bound on explicitly given sparse matrices.** [Childs–Hung–Li, Theorem 24](https://drops.dagstuhl.de/storage/00lipics/lipics-vol198-icalp2021/LIPIcs.ICALP.2021.55/LIPIcs.ICALP.2021.55.pdf).
+
+**3. NFS-specific possibilities**
+
+Existing exploitation is extensive. Besides cycle finding and filtering, [Joux–Pierrot](https://eprint.iacr.org/2015/930) modify block Wiedemann to handle a sparse body with a few dense columns, particularly for NFS discrete logarithms. [Bender–Canfield’s model](https://www.sciencedirect.com/science/article/pii/S0196677499910088) already studies reciprocal column densities and predicts a residual core of linear size under its assumptions. I found no published power-saving dependency algorithm using the arithmetic geometry of NFS rows.
+
+Three concrete directions:
+
+| Idea | Feasibility check and novelty |
+|---|---|
+| **Adaptive collection aimed at closing labelled cycles.** Choose special-\(q\)’s to reconnect existing partial relations, carrying the remaining factor-base parity as a cycle label. | Large-prime cycles and special-\(q\) reuse are known. The missing step is cancelling the **small-prime labels** cheaply. In the toy model of independent uniform \(h\)-bit labels, \(c\le h\) independent tail cycles contain a dependency with probability at most \(2^{c-h}\). Thus early cycles alone offer no escape. A provable arithmetic bias or effective head-aware collection rule would be interesting; I found no subquadratic result of this kind. |
+| **Overcollect to obtain a polynomially smaller core.** Seek a head of \(h=n^\alpha\) ideals and a graph-like tail, then eliminate the tail cheaply. | With \(\widetilde O(n)\) total cycle support and more than \(h\) independent cycles, one dependency costs \(\widetilde O(n+h^\mu)\). Your target requires \(\alpha<1.67/\mu\). The reduction is familiar filtering; novelty would be proving that NFS can produce this structure at an acceptable **total sieving cost**. Allowing only a fixed number of larger primes usually retains the leading smoothness penalty of the smaller head bound, so the gain is not free. |
+| **Use congruence lattices to engineer overlap or separators.** Generate relations sharing selected ideals, seeking small interfaces between groups. | Lattice sieving already engineers individual divisibility conditions. No known implication gives small separators or low displacement rank for the surviving matrix. Each added congruence consumes lattice density; small shared primes also connect distant sieve regions. This is the least promising route without a specific arithmetic construction. |
+
+The “graph-like tail” condition means **at most two tail coordinates per relation**, which is different from having many columns of weight two. Weight-three constraints can already form a difficult hypergraph core. All coordinates must represent valuation parity, including the necessary signs and quadratic characters.
+
+A useful **elementary starting lemma** for the third direction is:
+
+> For two distinct primitive relation pairs in \([-E,E]^2\), let \(Q\) be the product of distinct rational primes at which they share the same degree-one prime ideal. Then
+> \[
+> Q\mid ab'-a'b,\qquad Q\le 2E^2,
+> \]
+> provided the pairs are not proportional.
+
+Each shared ideal forces the corresponding prime to divide the determinant. This limits how much large-prime overlap short lattice rows can share. The lemma itself is not a novelty claim.
+
+**4. Verdict**
+
+The worthwhile question is:
+
+> **Can adaptive special-\(q\) collection produce a polynomially smaller dependency core at a total cost below ordinary MNFS, or can one prove a yield–core-size obstruction under explicit smoothness assumptions?**
+
+That is sufficiently specific to interest experts if resolved. Merely proposing cycle-based collection, more relations, or lattice-aware filtering is already well-trodden ground. [Cavallar’s filtering work](https://ir.cwi.nl/pub/2078) is essential prior art.
+
+My subjective probabilities: **about 15% for a publishable structural or obstruction result; below 1% for achieving effective exponent \(\le1.67\)** from these ideas.
+
+**Recommendation: don’t launch the long breakthrough thread.** A short, capped thread on the adaptive yield–core tradeoff is defensible. Any claimed \(1.86\) MNFS constant must charge the extra relation collection explicitly.
