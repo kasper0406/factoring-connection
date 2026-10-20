@@ -1,4 +1,4 @@
-# lv5unif: the relation-supply chain at growing degree, with explicit errors — rigorous L[2/5]
+# lv5unif: the relation-supply chain at growing degree, with explicit errors — L[2/5] (claimed, conditional on internal unrefereed results)
 
 Agent `lv5unif`, phase 12, 2026-10-20.
 
@@ -44,7 +44,7 @@ in §14.
   polynomial factors in d, which are (log N)^{O(1)}.
   - The size model of recurse §3.3 then gives α = (2 + τ)/(5 + 2τ) = **2/5**, attained (not just approached),
     with a finite constant.
-- **GPT-6.1-sol's blind round (`codex/lv5unif_1`) reached the same verdict independently**: "the apparent τ = 1
+- **GPT-6.1-sol, in a blind round (`codex/lv5unif_1`, same base texts, before my draft), reached the same verdict**: "the apparent τ = 1
   barrier is removable … the repaired one-level framework reaches 2/5; 3/7 is not forced by precision". It found
   the same three repairs (with a narrow ℓ-window instead of a common V). It also supplied a counterexample showing
   that Lemma Kern at the bare height H = V² really has C_d ≥ (3/2)^d/9, so the height margin H ≥ dV² is needed,
@@ -57,16 +57,20 @@ in §14.
   pointwise first-moment bound at one good rational candidate suffices. So the algebraic side needs no second moment
   at all and only exp(o(Λ))·ρ_F precision, at the price of ≈ 1/ρ_F = L[2/5]^{O(1)} fields and one extra height floor
   log H ≥ 13(σ + 1)dΛ log log N (needed so that rejected fields cannot absorb the pointwise mass; codex lv5unif_2 #3).
-  It gives a second route to L[2/5] that avoids LD*, Lemma Kern, L2_fam and Lemma W. It does not go below 2/5,
-  because it does not change the geometry.
+  It would give a second route to L[2/5] that avoids LD*, Lemma Kern, L2_fam and Lemma W, once the multi-field
+  post-processing is written out in full; it still uses Lemma GM-U, Theorem R, LV6 and the internal chain, so it is not
+  independent of them. It does not go below 2/5, because it does not change the geometry.
 - **LV6 at growing degree [proved, §9].** Stark's factorial is harmless: character primes of
   s = ⌈(2d)!·(log N + log Δ̄ + d)⁴⌉ bits satisfy every requirement of Lemmas E and X, and cost exp(O(d log d)) =
   L[2/5]^{o(1)}, because d log d ≍ D^{1/5}log log N = o(Λ).
 - **η₀ bookkeeping [proved, §12].** η₀ := 1/⌈D^{1/2}⌉. Then every N^{η₀}-margin is L_N[1/2, 1/3]-large, which beats
   every L[2/5]^{O(1)}; Lemma W's constant is 24/η₀ = O((log N)^{1/2}); and η₀ = o(θ), so the slack does not move c.
-- **Literature [§14].** We found no rigorous L[α, c] with α < 1/2 for factoring arbitrary N. The record we know is
-  Lenstra–Pomerance 1992, L[1/2, 1 + o(1)]. Lee–Venkatesan 2018 prove L[1/3] bounds for finding a *congruence of
-  squares*, and their factoring theorem assumes their Conjecture 7.1. This is a search result, not a novelty claim.
+- **Literature [§14].** We found no rigorous L[α, c] with α < 1/2 for factoring arbitrary N, unconditional or under
+  GRH. The best rigorous bound for arbitrary N that we found is Lenstra–Pomerance 1992, L[1/2, 1 + o(1)].
+  Lee–Venkatesan 2018 prove unconditionally, for every n, that a randomised NFS finds a possibly trivial congruence of
+  squares in L[1/3, (64/9)^{1/3} + o(1)] (their Thm 2.1); their non-triviality theorem (Thm 2.3) covers only semiprimes
+  with p ≡ q ≡ 3 (mod 4) and assumes their Conjecture 7.1. We found no prior formulation, heuristic or rigorous, of an
+  L[2/5] Dixon-split algorithm with one-level NFS-type descent. This is a search result, not a novelty claim.
 
 **The weakest points** (my assessment, shared by codex):
 1. Everything rests on the internal fixed-degree chain (hypD, lemmaM, pcest, lv6, ldbound, lem85, recurse), which
@@ -167,7 +171,8 @@ X_r B^{−2C₀−1}, with log X_r/log B ≍ D^{2/5}.
 (iii) for fixed Z ≥ 1, Ψ(z₁(1 + 1/Z)) − Ψ(z₁) ≥ Ψ(z₁)/(3Z), and Ψ(z₁/2) ≥ Ψ(z₁)/3;
 (iv) log(1/ϱ(z)) = u_z log u_z (1 + o(1)), u_z = log z/log B.
 
-*Proof.* As [pp] Lemma `lem:local`, whose proof uses only Hildebrand–Tenenbaum's Theorems 2(i) and 3 and u → ∞:
+*Proof.* As [pp] Lemma `lem:local`, whose proof uses only Hildebrand–Tenenbaum's Theorems 2(i) and 3 (Theorem 3 needs
+1 ≤ c ≤ y, so a shift by B^C is applied as ≤ C + 1 successive shifts by factors ≤ B) and u → ∞:
 (1 − α(z, B))log B = log log z − log(1 + log z/B) + O(log log B) ≤ log log N + C log log B, so
 B^{1 − α} ≤ (log N)^{1+C}; and 1/u_z ≤ D^{−1/3} → 0 uniformly in range. (iv) is Canfield–Erdős–Pomerance, valid
 since u_z ≤ log z/(2 log log z) for z in range (here u_z ≍ D^{2/5} while log z/log log z ≫ D^{4/5} for z ≥ X_r^{1/2}). ∎
@@ -193,7 +198,7 @@ costs O(Λ)·π(B)(log N)^{O(1)} = B^{1+o(1)}.
   because the defining sum is decreasing in α. Hence R*(z) ≤ e·log N·ϱ(z)(1 + o(1)); take C_R := 2 if HT's implied
   constant is absorbed, and in general C_R absolute.
 - **Existence (codex lv5unif_2 #2).** For 1 ≤ S² ≤ e^{2σΛ}, d log S ≤ dσΛ = o(θ log N) directly from the growth
-  rates d ≍ D^{1/5}, Λ = D^{2/5}λ, θ log N ≍ D^{4/5}λ; so log X_r + log X_F = θ log N(1 + o(1)) uniformly on this range,
+  rates d ≍ D^{1/5}, Λ = D^{2/5}λ, θ log N ≍ D^{4/5}λ; so log X_r + log X_F = θ log N(1 + o(1)) (the rational and algebraic sizes together) uniformly on this range,
   and Lemma U1(iv) with the bounds ϱ ≤ R* ≤ (log N)^{C_R}ϱ gives the displayed asymptotic. At S² = e^{(σ+ε)Λ} the
   product S²R_rR_F is therefore ≥ e^{(ε+o(1))Λ} ≥ 1, so the scan stops at or before that S. This argument uses
   nothing about the S where the scan stops, which removes the circularity of the first draft.
@@ -293,7 +298,7 @@ corrected form), which is negligible against M/V ≥ N^{η₀/2}. ∎
   E_{ℓ∈J}E_{A∼𝒜}N_ℓ(A) ≥ S²ρ_rρ_F/(d·(log N)^{C_FM}),  C_FM = C(a, κ, d₀).
 
 *Proof.* [pp] Theorem `thm:FM`, with:
-- The primes of J dividing N are dropped; there are at most log N/log Y ≤ 2k of them, a fraction ≤ 2k/π_J of J
+- The primes of J dividing N are dropped; there are at most log N/log Y = 2k + o(1), hence ≤ 2k + 1, of them, a fraction ≤ (2k + 1)/π_J of J
   (Opus proof critic #6; [pp] says O(1) at fixed k).
 - #𝒫 ≥ V·(V/(2d log V)): primes in ((1 − 1/d)V, V] number ≥ V/(2d log V) by the prime number theorem with
   de la Vallée Poussin's error term, since 1/d ≥ exp(−c√(log V)) (log V ≍ (log N)^{3/5}(log log N)^{2/5}); each b
@@ -317,7 +322,8 @@ The hypothesis "y = ⌊L_N[1/2, a]⌋, log x/log N in a compact set" of [lem85] 
 the following consequences. We take them as the hypotheses.
 
 **Regime (R′)** (quantitative gaps; no fixed λ — repair after codex lv5unif_2 #1). Fix K₀ ≥ 1, and let U₀ ≥ 8 be an
-absolute constant such that the error term of Hildebrand–Tenenbaum's Theorem 3 is ≤ 1/100 for u ≥ U₀ − 1. Let y ≥ 2
+absolute constant such that the error term O(1/u + log y/y) of Hildebrand–Tenenbaum's Theorem 3 is ≤ 1/100 for
+u ≥ U₀ − 1 and y ≥ y₀ (the threshold y₀ is supplied by (R′1) and x ≥ x₀(K₀)). Let y ≥ 2
 and x, Y, Q satisfy:
 - (R′1) log y ≥ 4(log log x)², (log x)^{c_D} ≤ y;
 - (R′2) u := log x/log y ≥ max((log log x)⁴, 4(2K₀ + 6)/η_D);
@@ -349,14 +355,15 @@ and Qδ_𝒯/10 ≤ #𝒯_Q ≤ 3Qδ_𝒯 (δ_𝒯 = ϱ(Q/Y, y)/log Y), where C,
   and (R′1); the constants 0.8 and 4.1 of [lem85] follow.
 - E2 (lift averaging), E3, E4, E5, E6, E8, Lemma LS, Perron: regime-free. ∎
 
-**In the design.** y = B, x ∈ 𝒳 (so log x = θ log N(1 + o(1)) and u ≍ D^{2/5}), Y as in §1, Q one of the dyadic
+**In the design.** y = B, x ∈ 𝒳 (so log x = (μ + h + dν)log N(1 + o(1)) = θ_F₀D^{−1/5}log N(1 + o(1)) with
+θ_F₀ := θ₀ − 1/d₀ the algebraic part of θ₀, and u ≍ D^{2/5}), Y as in §1, Q one of the dyadic
 values covering [MV/32, 2MV]. (R′1): log B ≍ Λ ≫ (log log N)². (R′2): u ≍ D^{2/5} ≫ (log log N)⁴.
-(R′3): u log(4u log B)/log B → (4/5)θ_F₀/a², so K₀ := 1 + ⌈θ₀/a²⌉ works. (R′4): log Y ≍ Λ_{3/5} ≫ K log B; and, for
+(R′3): u log(4u log B)/log B → (4/5)θ_F₀/a² < θ₀/a², so K₀ := 1 + ⌈θ₀/a²⌉ works. (R′4): log Y ≍ Λ_{3/5} ≫ K log B; and, for
 every x ∈ 𝒳 (log x ≥ (μ + h + dν)log N − 2 log ϖ) and every such Q,
   log(Q/Y) ≥ (μ − ν)log N − O(Λ) ≥ η₀ log N − O(Λ),
   log(√x/Q) ≥ ((h − μ + (d−2)ν)/2)log N − O(Λ) ≥ (η₀/2)log N − O(Λ)
 by the floors (P8). So Γ ≥ (η₀/2)log N − O(Λ), which exceeds (2K₀ + U₀)log B + 4 log log N by (P2). No step uses a
-fixed λ; the gap grows like (log N log log N)^{1/2}, and every constant depends only on K₀ = K₀(a, κ, d₀).
+fixed λ; the guaranteed lower bound for the gap grows like (log N log log N)^{1/2}, and every constant depends only on K₀ = K₀(a, κ, d₀).
 Codex lv5unif_1 §1(b) notes that B = L_x[1/2, Θ(1)]; codex lv5unif_2 #1 notes that the earlier fixed-λ formulation did
 not justify the application with λ_N = η₀/(4ξ) → 0, which this version removes. ∎
 
@@ -404,7 +411,7 @@ X′₊ := 2MV/Y, 𝒩_ℓ := {n ∈ 𝒮_B : MV/32 ≤ ℓ|n| ≤ 2MV}, and R�
   modulus q ≤ 4S² ≤ B^{C₀} and X_rB^{−C₀}/q ≤ M/V (because X_r/(M/V) = 2V²/Y ≤ 4S²).
 - **Step 7 (assembly; the exact powers).** Since the n-sum does not depend on P,
   E[N(N−1)] ≤ (#𝒫/|𝒢|)·10·(e^{11/3}C_W/((2H+1)²V^{2d−4}))·U·Σ_{q≤4S²}τ(q)(log N)^{C_L}Ψ(X′₊)Ψ(X_F)²/(Yq(MV)²).
-  Insert #𝒫 ≤ 4V²/(d log V) (Brun–Titchmarsh on the b-window), |𝒢| ≥ M²/8, Ψ(X′₊) = X_rρ_r (X′₊ = X_r),
+  Insert #𝒫 ≤ 5V²/(d log V) (Brun–Titchmarsh on the b-window gives (2V + 1)·2(V/d)/log(V/d); literature critic), |𝒢| ≥ M²/8, Ψ(X′₊) = X_rρ_r (X′₊ = X_r),
   Ψ(X_F) = (2d + 1)MHV^dρ_F, and Σ_q τ(q)/q ≤ (1 + log 4S²)². (FM-U's ρ_r is ϱ at the I_P scale ∈ [X_r/128, X_r],
   within a factor 2 of ϱ(X_r) by Lemma U1(i).)
   The powers of M, H and V cancel exactly:
@@ -496,7 +503,11 @@ T_post ≤ M_rows²(log N)^{O(1)}·exp(O(d log d)) + B^{1+o(1)} = L^{2a+o(1)}, a
 *Polynomial-bit alternative (not used).* Codex lv5unif_1 §3: Thorner–Zaman, Algebra & Number Theory 13 (2019),
 Thm 1.1/1.4, gives a lower bound relative to Li(x) − θ₁Li(x^{β₁}); with polynomial s the detection probability is
 ≫ min(1, ν₁s)/d, so factorially many characters are needed, again exp(O(d log d)). We have not checked those
-statements against the paper. **UNVERIFIED**, and not needed.
+statements against the paper ourselves; the Opus literature critic did: Thm 1.1 is an asymptotic
+π_C(x) = (|C|/|G|)(Li(x) − θ₁Li(x^{β₁}))(1 + O(e^{−c₃ log x/log(D_L n_L^{n_L})} + e^{−(c₃ log x)^{1/2}/n_L^{1/2}})) for
+x ≥ (D_L n_L^{n_L})^{c₂}; it is not itself a lower bound, which comes from their (1.7)/(1.9) together with Stark's
+1 − β₁ ≫ (n_L^{n_L}log D_L + D_L^{1/n_L})^{−1}. So polynomially many bits suffice but the detection probability carries a
+factorial-type loss, as codex said. Not needed.
 
 ---
 
@@ -519,7 +530,7 @@ with s := 2κ(1 + C_γ), because:
 - 1/p ≤ 4γ^{−1}(16 log N/γ)^{2k}·32k² = exp((2k + 1)(log 16 + (1 + C_γ)log log N) + O(log k)) = L^{s+o(1)},
   since 2k log log N = 2κΛ(1 + o(1));
 - C_trial = 2F(√(2N)) [shape test] + 2k·T_SQ + (log N)^{O(1)}poly(d), with T_SQ = Õ(B + S²) = L^{max(a,σ)+o(1)}
-  ([pp] Prop `prop:BS`; the batch has ≤ 200S²·2 numbers of ≤ log X_F = O(log N) bits);
+  ([pp] Prop `prop:BS`; the batch has ≤ 400S²·2 numbers of ≤ log X_F = O(log N) bits);
 - T_post = L^{2a+o(1)} (Prop LV6-U); preprocessing L^{a+o(1)}; S costs B^{1+o(1)} (Lemma CS).
 
 **Theorem U [proved, conditional as stated in the Verdict].** For fixed rationals a, κ, d₀ > 0, FACTOR_U[a, κ, d₀] is
@@ -554,8 +565,8 @@ F_j := F̂_{g,w_j} + G·R_{c_j}, all with F_j(g₀, g₁) = Nw_j and the common 
 (a″_k), also works: Lemma W is not needed.) A prime ℓ is MF-descendable if some P ∈ 𝒫 ∩ Λ_ℓ(g) has Y_P = 1
 (rational, filtered) and F_j(P) ∈ 𝒮_B for some j.
 
-**Design MF, with an extra height floor.** As above, and additionally H ≥ exp(13(σ + 1)·d·Λ·log log N) (that is,
-h ≥ h_*(μ) + η₀ + 13(σ + 1)dΛ log log N/log N; the extra term is ≍ (log N)^{−2/5}(log log N)^{7/5} = o(θ), so it does
+**Design MF, with an extra height floor.** As above, and additionally H ≥ exp(13(σ + 1)·d·Λ·log log N) (a sufficient
+explicit choice is h := h_*(μ) + η₀ + 13(σ + 1)dΛ log log N/log N; taking the maximum of the two floors also works; the extra term is ≍ (log N)^{−2/5}(log log N)^{7/5} = o(θ), so it does
 not move the exponent). This is needed because the pointwise bound below concerns raw fields, and post-processing needs
 accepted ones (codex lv5unif_2 #3: in the kernel-binding regime Lemma IR's rejection bound exp(−log H/(13d log log H))
 = exp(−Θ(D^{2/5})) is far *larger* than ρ_F = exp(−Θ(D^{2/5}log log N)), so without the extra floor all the
@@ -563,19 +574,22 @@ pointwise smoothness mass could sit in rejected fields).
 
 **Proposition MF [moment part proved; multi-field post-processing proved in outline].** Let
 γ_r := Pr_{g,ℓ}[∃P ∈ 𝒫 ∩ Λ_ℓ(g) with Y_P = 1 and |G(P)| good]. If J_f ≥ 4(log N)^{C_g}/ρ_F, then
-  γ_MF := Pr[ℓ is MF-descendable through an *accepted* field] ≥ γ_r/2,  and  γ_r ≥ (log N)^{−C}.
+  γ_MF := Pr[a factor exit occurs, or ℓ is MF-descendable through an accepted field] ≥ γ_r/2,  and  γ_r ≥ (log N)^{−C}.
+(Factor exits — gcd checks of g₁, ℓ, w_j, f_d, the content, G(P), F_j(P) — end the algorithm successfully, so they belong
+to the success event, as in [pp] Prop `prop:select`; corrected after codex lv5unif_3 #1.)
 *Proof.*
 - **Decoupling.** Condition on (g, ℓ) and on the event that some P has Y_P = 1 with t = |G(P)| good; let P₀ be the
   first such P in a fixed order (a function of (g, ℓ)). By Lemma GM-U, for every w_j,
   Pr_{c_j}[F_j(P₀) ∈ 𝒮_B] ≥ ρ_F/(log N)^{C_g} =: p₁ (its residue c_{P₀}w_j is a unit, [pp] Lemma `lem:coprime`). The
   rejection event of field j depends on (g, w_j, c_j) only, and by Lemma IR (stated for fixed g, w, with c uniform) and
   [pp] Lemma `lem:reject`, Pr_{c_j}[rejected | g, w_j] ≤ exp(−log H/(13d log log H)) + 3/(2H + 1) + 1/W ≤ p₁/2 by
-  the extra floor. So Pr_{c_j}[F_j(P₀) ∈ 𝒮_B and field j accepted | g, ℓ, w_j] ≥ p₁/2. (A field that makes a factor
-  exit ends the algorithm successfully.) The pairs (w_j, c_j) are independent of each other and of (g, ℓ), so
-  Pr[no accepted j with F_j(P₀) smooth | g, ℓ] ≤ (1 − p₁/2)^{J_f} ≤ e^{−2} < 1/2.
+  the extra floor (since H < N, log H/(13d log log H) ≥ (σ + 1)Λ while log(1/p₁) ≤ σΛ + o(Λ)). So
+  Pr_{c_j}[F_j(P₀) ∈ 𝒮_B and (field j accepted or a factor exit) | g, ℓ, w_j] ≥ p₁/2. The pairs (w_j, c_j) are independent
+  of each other and of (g, ℓ), so Pr[no j with F_j(P₀) smooth and (accepted or factor exit) | g, ℓ] ≤ (1 − p₁/2)^{J_f}
+  ≤ e^{−2} < 1/2.
 - **The rational moment.** N_r^{good} := #{P : Y_P = 1, t good}. E N_r^{good} ≥ E N_r/2 ≥ S²ρ_r/(log N)^C (the
   rational part of FM-U, with the bad-mass bound of §4), and E[N_r^{good}(N_r^{good} − 1)] ≤ E[N_r(N_r − 1)] ≤
-  (log N)^C S⁴ρ_r² ([pp] Prop `prop:R` = Theorem R; it is rational-only and uniform: Lemma `lem:reg` gives ≤ 200S²
+  (log N)^C S⁴ρ_r² ([pp] Prop `prop:R` = Theorem R; it is rational-only and uniform: Lemma `lem:reg` with common V gives ≤ 400S²
   partners, and its divisor switching is DS-U). With S² ≥ (log N)^{−C}/ρ_r (the rational-only analogue of Lemma CS),
   Paley–Zygmund gives γ_r ≥ (log N)^{−C}. ∎
 - **Why no algebraic second moment is needed.** The one-point bound is a statement about one fixed candidate, and
@@ -599,7 +613,7 @@ pointwise smoothness mass could sit in rejected fields).
   - Congruence: Y := √q_S·∏_j t_j^{−E_j(S)/2}ψ(η_j)(ψ(γ⁻_{j,S})ψ(g_j′(β_j)))^{−1}, with one shared ψ: x ↦ m. (T) holds:
     every quantity is a function of certificates and coins.
   - Cost: J_f(J_f + 2) SQ calls and (J_f dB)² linear algebra; all exp(O(Λ)).
-- **Cost and exponent.** J_f = L^{σ_F + o(1)}, σ_F := log(1/ρ_F)/Λ. Per special-q: ≤ 200S_r² rational values with
+- **Cost and exponent.** J_f = L^{σ_F + o(1)}, σ_F := log(1/ρ_F)/Λ. Per special-q: ≤ 400S_r² rational values with
   S_r² ≈ 1/ρ_r, then J_f algebraic values for each of ≈ S_r²ρ_r rationally smooth candidates. All exponents are
   finite, so Theorem U's conclusion α = 2/5 also follows from Proposition MF, with a different constant, once the
   outlined post-processing is written in full. **The trick does not lower α**: (R1) and (R3) of §13 are unchanged.
@@ -642,7 +656,34 @@ bounds for factoring.
 
 ## 14. Literature (has anyone proved a rigorous L[α < 1/2] for factoring?)
 
-[Filled in after the Opus literature critic; see §15.]
+From the Opus literature critic (primary sources read where stated; OpenAlex citation lists of LV (12 works) and of
+LP92 (32 since 2017) checked):
+- **No rigorous L_N[α, c] with α < 1/2 for arbitrary N was found, unconditional or under GRH.** Rigorous bounds for
+  arbitrary N are all at α = 1/2: Dixon 1981; Pomerance 1987 (√2); Vallée (√(4/3)); Seysen and A. K. Lenstra (GRH;
+  √(5/4), 1); **Lenstra–Pomerance, JAMS 5 (1992) 483–516: L[1/2, 1 + o(1)], unconditional**, still called the fastest
+  rigorous method in Pomerance's 2008 survey (MSRI Publ. 44). Lenstra–Pila–Pomerance's hyperelliptic method is rigorous
+  in L_p[2/3] in the smallest prime factor p. The deterministic record is N^{1/5+o(1)} (Harvey, Math. Comp. 90 (2021);
+  Harvey–Hittmeir).
+- **Lee–Venkatesan, JNT 187 (2018) 92–159, arXiv 1805.08873 (PDF read).** Thm 2.1 (unconditional, every n): a randomised
+  NFS finds x² ≡ y² (mod n), possibly trivial, in expected L_n[1/3, (64/9)^{1/3} + o(1)]. Thm 2.3 (x ≢ ±y) is for
+  semiprimes with p ≡ q ≡ 3 (mod 4) and assumes Conjecture 7.1 (a character independence statement). LV §5 is at
+  growing degree d = δ(log n/log log n)^{1/3} and is a first moment only (Thm 5.4; Lemmas 5.13, 5.18, 5.20, 5.21 as the
+  note describes). Later work found: expository (van Leeuwen, arXiv 2007.02689) or heuristic; none proves fruitfulness.
+- **de Boer–Pellet-Mary–Wesolowski, arXiv 2512.01588**: ERH-rigorous class groups and units of arbitrary number fields;
+  they explicitly leave the NFS aside; no factoring result.
+- Rigorous index calculus elsewhere (Hafner–McCurley 1989, GRH, L[1/2]; Biasse's L(1/3) work, heuristic;
+  Kleinjung–Wesolowski, rigorous quasi-polynomial DL in fixed characteristic) does not give factoring below 1/2.
+- **No prior formulation, heuristic or rigorous, of an L[2/5] Dixon-split algorithm with one-level NFS-type descent was
+  found.** In the discrete-log descents we checked (Gordon 1993; Joux–Lercier 2003; Commeine–Semaev 2006) individual
+  logarithms are reported at L[1/3]. (recurse's remark that lemmaM attributed a "one-stage L[2/5]" to Gordon remains
+  unverified and is not used.)
+- Citation checks: Hildebrand–Tenenbaum 1986 Thms 1, 2(i), 3 CONFIRMED (uniform for x ≥ y ≥ 2); Stark 1974 Lemma 8
+  CONFIRMED (c₁(n) = 4·n! for non-normal fields; LV's Cor. 6.23 is LV's own derivation and is not used);
+  Lagarias–Odlyzko content CONFIRMED, theorem number varies between sources (Thm 1.3 / Cor. 1.3) and was not checked
+  against the volume; Drappeau 2015 Lemme 5 and Lemme 1(i) CONFIRMED (arXiv v3); Canfield–Erdős–Pomerance CONFIRMED;
+  Montgomery–Vaughan Thms 1, 2 CONFIRMED from standard citations; Thorner–Zaman 2019 CORRECTED (§9).
+
+This is a search result, not a novelty claim; the conclusion rests on internal results no outside referee has read.
 
 ---
 
@@ -682,7 +723,17 @@ superseded by the gap formulation); binding term (codex #7); disc g (codex #5); 
 ≤ 400S² points, q ≤ 4S²); primes of J dividing N number ≤ 2k (stated in FM-U); stale strings in `params.TAU_TABLE` and
 GM-U's per-layer constant 1/24 (fixed). Its weakest point: §5, now re-proved in gap form.
 
-**Opus literature critic.** See §14.
+**Opus literature critic (read-only, independent).** Findings in §14; corrections applied: the LV bullet in the Verdict
+(Thm 2.1 vs 2.3), "record we know" → "best rigorous bound for arbitrary N that we found", the title qualifier
+"claimed, conditional", MF downgraded to "would give … once written out; not independent", "independently" → "in a
+blind round", Thorner–Zaman statement (§9), Theorem 3 applied in ≤ C + 1 steps (Lemma U1), #𝒫 ≤ 5V²/(d log V).
+
+**GPT-6.1-sol targeted re-referee `codex/lv5unif_3` (high): Theorem U ACCEPT WITH MINOR FIXES**; the §5 gap
+formulation and Lemma CS repairs close lv5unif_2 #1–#2; the MF post-processing repairs are sound. Fixes applied: MF's
+success event is "factor exit or accepted-field descendability" (MAJOR for MF only); log x = (μ + h + dν)log N with
+θ_F₀ = θ₀ − 1/d₀ in §5; "guaranteed lower bound" for Γ; HT's y-threshold in U₀; 400S² propagated; ≤ 2k + 1 primes of J
+divide N; MF height as a sufficient explicit choice; candidate card qualified. Its verdict on MF: accepted-or-factor-exit
+version justified, full algorithmic write-up of the multi-field post-processing still needed (as §11 says).
 
 ---
 
@@ -708,7 +759,7 @@ bound is tight to within a factor ≈ 1.6 in the design's regime. E1 tests an ex
   degree, with a recursive shape test.
 - **Model.** Design (a‴_k; μ) with d ≍ D^{1/5}, k ≍ D^{2/5}, a b-window of relative width 1/d, one box radius for all
   special-q primes, B = L[2/5, a].
-- **Result.** τ = 0 for every ingredient; rigorous L[2/5, c] (conditional on the internal chain); also via the
-  multi-field route.
+- **Result.** τ = 0 for every ingredient; rigorous L[2/5, c] (conditional on the internal chain). The multi-field
+  route would give the same once its post-processing is written in full (§11).
 - **Failure scope.** Below 2/5 the one-level geometry fails (§13), whatever the precision.
 - **Next step.** Nested descendability for multi-level descent (L[1/3] in the size model).

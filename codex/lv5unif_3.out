@@ -1,0 +1,79 @@
+The main repairs work. I found **no FATAL issue**, one remaining **MAJOR issue in Proposition MF’s stated success event**, and several MINOR inconsistencies.
+
+The quantitative-gap version of §5 closes earlier finding #1. Relative to the target, its large-conductor terms are bounded by
+\[
+C(\log x)^3y^{-3/2},
+\qquad
+C(\log x)^{-1}y^{7/2-U_0},
+\]
+so both are \(O(y^{-1/2})\). The small-conductor transfer also works uniformly: the omitted \(y^{-\delta_D}\) contribution is absorbed into \(e^{-cu/\log^2(u+1)}\) using (R′1) and (R′3). The remaining range conditions and counting argument require only enlarging \(x_0(K_0)\). There is no surviving dependence on a shrinking \(\lambda\). These uses agree with [Drappeau’s Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf) and [HT’s Theorems 1–3](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+The design’s lower bound
+\[
+\Gamma\ge(\eta_0/2)\log N-O(\Lambda)
+\]
+is correct, including at the smallest grid point. In particular, the second gap retains the helpful term \((d/2-1)\log S\); dropping it gives the claimed lower bound.
+
+Lemma CS’s existence-first proof and linear scan close earlier finding #2. The bounded search interval follows directly from the growth rates, before P5 is invoked. The predecessor argument correctly gives
+\[
+\tfrac14(\log N)^{-2C_R}\le m\le64,
+\]
+and \(O(\Lambda)\) evaluations preserve the stated cost.
+
+1. **MAJOR — §11 proves “accepted field or factor exit,” not its displayed accepted-field-only bound.**  
+   At [lines 571–575](/Volumes/git/factoring-connection/notes/lv5unif_results.md:571), subtracting rejection probability establishes
+   \[
+   \Pr[\text{smooth and (accepted or factor exit)}\mid g,\ell,w_j]\ge p_1/2.
+   \]
+   It does not establish the displayed bound with “accepted” alone: factor exits are neither acceptance nor rejection. For example, if the fixed sampled prime \(w_j\mid N\), SAMPLE_FIELD always exits with a factor, so its acceptance probability is zero.
+
+   **Fix:** define the amplified success event as **a factor exit or descendability through an accepted field**, and handle the initial \(g_1\) and \(\ell\) gcd checks explicitly. The parenthetical sentence already indicates this intention, but the probability statement must match it. Keeping the accepted-only statement would require an additional bound on smooth mass lost to factor exits.
+
+   The height floor itself is sufficient. Since \(H<N\),
+   \[
+   \frac{\log H}{13d\log\log H}\ge(\sigma+1)\Lambda,
+   \]
+   while \(\log(1/p_1)\le\sigma\Lambda+o(\Lambda)\). Thus the stated rejection estimate is \(o(p_1)\), uniformly for admissible fixed \(g,w_j\).
+
+2. **MINOR — §5 retains incorrect size notation and overstates the size of the actual gap.**  
+   At [line 352](/Volumes/git/factoring-connection/notes/lv5unif_results.md:352), \(\log x=\theta\log N(1+o(1))\) is false: \(\theta\) combines the rational and algebraic sides. The correct statement is
+   \[
+   \log x=(\mu+h+d\nu)\log N(1+o(1)).
+   \]
+   Consequently define
+   \[
+   \theta_{F0}:=\lim(\mu+h+d\nu)D^{1/5}
+              =\theta_0-1/d_0.
+   \]
+   The stated R′3 limit and choice of \(K_0\) then work.
+
+   Likewise, [line 359](/Volumes/git/factoring-connection/notes/lv5unif_results.md:359) should say the **guaranteed lower bound** grows like \((\log N\log\log N)^{1/2}\); the actual gap can grow faster.
+
+   **Fix:** make these substitutions. Also define \(U_0\) with a sufficiently large \(y\) threshold: HT’s error includes \(\log y/y\), so a condition on \(u\) alone does not make it arbitrarily small. R′1 and \(x_0(K_0)\) already supply that threshold.
+
+3. **MINOR — the common-\(V\) repair is correct, but its enumeration constant was not propagated.**  
+   The geometry at [lines 138–142](/Volumes/git/factoring-connection/notes/lv5unif_results.md:138) correctly gives at most \(400S^2\) points and \(q\le4S^2\). Later passages still invoke \(200S^2\): [the batch cost](/Volumes/git/factoring-connection/notes/lv5unif_results.md:522), [the rational moment](/Volumes/git/factoring-connection/notes/lv5unif_results.md:578), and [the MF search cost](/Volumes/git/factoring-connection/notes/lv5unif_results.md:602).
+
+   **Fix:** use \(400S^2\), respectively \(400S_r^2\), throughout. This changes no exponent.
+
+4. **MINOR — FM-U’s divisor count is right asymptotically, but its displayed inequality is reversed by rounding.**  
+   At [line 296](/Volumes/git/factoring-connection/notes/lv5unif_results.md:296), \(\log N/\log Y\le2k\) is false for the prescribed \(Y\). Instead,
+   \[
+   \frac{\log N}{\log Y}=2k+O(k^2/\log N)=2k+o(1).
+   \]
+   The number of distinct primes of \(J\) dividing \(N\) is an integer, so it is still at most \(2k\) for sufficiently large \(N\).
+
+   **Fix:** insert the integer-rounding argument, or simply use \(2k+1\). Dropping these primes remains negligible.
+
+5. **MINOR — MF’s height prescription and summary status need consistent wording.**  
+   At [lines 557–558](/Volumes/git/factoring-connection/notes/lv5unif_results.md:557), adding the height floor means taking the maximum of the old height and the new floor; the displayed additive prescription is stronger, rather than equivalent.
+
+   **Fix:** call the additive prescription a sufficient explicit choice, or use a maximum. Also qualify the unconditional “also via the multi-field route” in the [candidate card](/Volumes/git/factoring-connection/notes/lv5unif_results.md:711) consistently with §11’s remaining outline status.
+
+The multi-field post-processing repairs themselves are sound: the extra \(\ln(4J_f)\) supports the simultaneous character bound; the row surplus supplies enough independent kernel vectors; the square indicator is linear after identifying each residual group of order at most two with a subgroup of \(\mathbf F_2\); and final exact SQ verification makes retries valid. With verified independence of the sampled vectors, the success probability per round is bounded below by an absolute constant.
+
+Earlier findings #5–#7 are otherwise addressed. The 22 margin checks are correctly described as leading-order arithmetic checks; six targeted bookkeeping tests passed. Repository files were left unchanged.
+
+**Theorem U: ACCEPT WITH MINOR FIXES, conditional on the internal chain.** Its two earlier major repair requirements are resolved.
+
+**Proposition MF: the accepted-only moment claim remains unproved as written.** The accepted-or-factor-exit version is justified, and the repaired post-processing outline is sound; a complete algorithmic proof still needs the expansion acknowledged in §11.
