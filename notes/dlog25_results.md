@@ -43,7 +43,7 @@ and need nothing new.
    - The supply chain (FM-U, Lemma 8.5′(R′), LD*-U, Kern-U, W-U, L2-U, DS-U, CS, D-U, Lemma IR and rejections) holds
      verbatim for prime N = p. N's arithmetic enters only through (N, t) = 1 for t ≤ 2MV, N | F(g₀, g₁), ω(N) and the
      target law; there are no factor exits.
-   - Split counting: Lemma S_p″ (new, elementary) replaces Lemma S″. For T uniform on F_p^*, Pr ≥ |S|²/(2(p − 1))
+   - Split counting: Lemma S_p″ (elementary; a counting form of the classical uniqueness of rational number reconstruction, cf. Wang 1981 and von zur Gathen–Gerhard, *Modern Computer Algebra*, §5.10) replaces Lemma S″. For T uniform on F_p^*, Pr ≥ |S|²/(2(p − 1))
      once |G| ≥ 4k³. No square classes, no 2^ω.
    - Proposition XK at growing degree d ≍ D^{1/5} (Proposition XK-U): every d-dependence is polynomial. The
      Blanksby–Montgomery gap is ≍ 1/(d² log d); conjugates lie in [p^{−d}, p]; the relation bound is
@@ -58,9 +58,15 @@ and need nothing new.
    coprime to p − 1, a unit/class-index condition we cannot control (§7).
 6. **Literature (search result, §1).** The best rigorous prime-field DL bound we found is still Pomerance 1987,
    L_p[1/2, √2] (precomputation) and L_p[1/2, 1/√2] per logarithm; nothing below α = 1/2 for prime fields, for all p
-   or almost all p, unconditional or under GRH. For F_{p^n}, the rigorous results below L_Q[1/2] that we found are in
+   or almost all p, unconditional or under GRH. Splitting randomised targets T ≡ u/v with |u|, |v| ≈ √p and
+   descending the halves is the classical *heuristic* individual-logarithm step (Blake–Fuji-Hara–Mullin–Vanstone 1984,
+   cf. Galbraith, *Mathematics of Public Key Cryptography*, Ex. 15.5.10; Coppersmith–Odlyzko–Schroeppel, Algorithmica 1
+   (1986) 1–15; Joux–Lercier, Math. Comp. 72 (2003) 953–967; Commeine–Semaev, PKC 2006, LNCS 3958, 174–190), and
+   Pomerance 1987 already tests smoothness with a factoring subroutine (ECM). We found no rigorous analysis of the
+   split-and-descend step and no prior formulation of an L_p[2/5] DL algorithm; this is a search result, not a priority
+   claim. For F_{p^n}, the rigorous results below L_Q[1/2] that we found are in
    small and lower-medium characteristic, p = L_Q[β] with β < 1/2 (Kleinjung–Wesolowski: quasi-polynomial for fixed p,
-   L_Q[β + o(1)] for p = L_Q[β]). Here "medium/large characteristic" means p ≥ L_Q[1/2]. **Extension fields with
+   L_Q[β + o(1)] for p = L_Q[β]; Lido 2026 for p < n). For p ≥ L_Q[1/2] we found nothing rigorous even at L_Q[1/2]. Here "medium/large characteristic" means p ≥ L_Q[1/2]. **Extension fields with
    p ≥ L_Q[1/2]: the transfer does not give anything as it stands** (§8). Only the injectivity step of the split
    counting transfers (heuristically, for fixed n); the rational side becomes a number field, and Lemma 8.5′ would be
    needed for smooth ideals in residue classes modulo ideals, which is not available.
@@ -71,7 +77,8 @@ and need nothing new.
 
 **Weakest links.** (i) Everything in Theorem U's dependency list ([U] §10; weakest: γ ≥ (log N)^{−C_γ}, i.e. LD* with
 Lemma 8.5′(R′) and Drappeau's Lemme 5; auditU). (ii) Theorem U itself as a subroutine. (iii) Lemma XK4-U's bookkeeping
-at growing degree (§4), the only genuinely new DL-specific estimate.
+at growing degree (§4), the only DL-specific estimate not inherited from [DL] (its method, Log + LLL with a
+Mahler-measure gap, is classical: [DL] §9b).
 
 ---
 
@@ -79,13 +86,15 @@ at growing degree (§4), the only genuinely new DL-specific estimate.
 
 | problem | best rigorous bound found | hypotheses | reference |
 |---|---|---|---|
-| DL in F_p^*, all primes p | L_p[1/2, √2] precomputation, L_p[1/2, 1/√2] per logarithm | none | Pomerance, *Fast, rigorous factorization and discrete logarithm algorithms*, in Discrete Algorithms and Complexity (Academic Press 1987) 119–143 ([DL] §1 read the scan) |
+| DL in F_p^*, all primes p | L_p[1/2, √2] precomputation, L_p[1/2, 1/√2] per logarithm | none | Pomerance, *Fast, rigorous factorization and discrete logarithm algorithms*, in Discrete Algorithms and Complexity (Academic Press 1987) 119–143 ([DL] §1 read the scan); same constant for one logarithm including precomputation (group order p − 1 known): Enge–Gaudry, Acta Arith. 102 (2002) 83–103, §5 Example 1 (read by the literature critic) |
+| DL in F_p^*, split-and-descend of randomised targets | heuristic individual-log step only; no rigorous analysis found | — | Blake–Fuji-Hara–Mullin–Vanstone 1984 (via Galbraith Ex. 15.5.10, "does not lower the complexity" at L[1/2]); Coppersmith–Odlyzko–Schroeppel 1986; Joux–Lercier 2003; Commeine–Semaev 2006 |
 | same | nothing with α < 1/2 or with constant < √2 found (all p, almost all p, GRH) | — | search: this note, [DL] §1, codex dlog_1, dlog25_1 |
-| DL in F_p^*, heuristic | L_p[1/3, (64/9)^{1/3}] | heuristic | Gordon, SIAM J. Discrete Math. 6 (1993) 124–138; Schirokauer, Phil. Trans. R. Soc. A 345 (1993) 409–423 |
+| DL in F_p^*, heuristic | L_p[1/3, (64/9)^{1/3}] (Schirokauer 1993; Gordon 1993: 3^{2/3}) | heuristic | Gordon, SIAM J. Discrete Math. 6 (1993) 124–138; Schirokauer, Phil. Trans. R. Soc. A 345 (1993) 409–423 |
 | F_{p^n}, p ≤ n^{o(n)} | L_Q[1/2, √2] | none | Lovorn Bender–Pomerance, AMS/IP Stud. Adv. Math. 7 (1998) 221–232 |
-| F_{p^n}, any p, n | (pn)^{2 log₂ n + O(1)}; quasi-polynomial for fixed p; L_Q[α + o(1)] when p = L_Q[α] | none | Kleinjung–Wesolowski, J. Amer. Math. Soc. 35 (2022) 581–624, Thm 1.1 (arXiv 1906.10668) |
-| F_{p^n}, medium/large characteristic (here: p ≥ L_Q[1/2]) | nothing below L_Q[1/2] found; the KW bound is L_Q[α] for p = L_Q[α] | — | search (see the literature critic, §10) |
-| factoring, all N | L_N[1/2, 1 + o(1)] | none | Lenstra–Pomerance, JAMS 5 (1992) 483–516 |
+| F_{p^n}, any p, n | (pn)^{2 log₂ n + O(1)}; quasi-polynomial for fixed p; L_Q[α + o(1)] when p = L_Q[α] (stated by KW for α ∈ (0, 1/2), §1 after Thm 1.1) | none | Kleinjung–Wesolowski, J. Amer. Math. Soc. 35 (2022) 581–624, Thm 1.1 (arXiv 1906.10668) |
+| F_{p^n}, p < n | (log Q)^{O(log log Q)} expected | none | Lido, Finite Fields Appl. 111 (2026) 102753 (arXiv 2206.10327), Thm 1.1; also Granger–Kleinjung–Zumbrägel, Trans. AMS 370 (2018) 3129–3145, for fields with a suitable model |
+| F_{p^n}, medium/large characteristic (here: p ≥ L_Q[1/2]) | nothing at or below L_Q[1/2] found: Bender–Pomerance needs p ≤ n^{o(n)}; KW gives L_Q[α + o(1)] for p = L_Q[α], 1/2 ≤ α < 1; nothing subexponential found for fixed n ≥ 3, p → ∞ (n = 2: Lovorn 1992 thesis, unverified) | — | search (this note and the Opus literature critic) |
+| factoring, all N | L_N[1/2, 1 + o(1)]; a possibly trivial congruence of squares in L_N[1/3, (64/9)^{1/3} + o(1)] | none (non-triviality only for N = pq, p ≡ q ≡ 3 mod 4, under their Conj. 7.1) | Lenstra–Pomerance, JAMS 5 (1992) 483–516; Lee–Venkatesan, J. Number Theory 187 (2018) 92–159, Thms 2.1, 2.3 (they state in §1 that they do not treat DL) |
 
 Rows on class groups, hyperelliptic Jacobians and Ge / Lenstra–Silverberg exact relations are as in [DL] §1. The
 "none found" rows are search results, not theorems.
@@ -209,8 +218,10 @@ C_col ≤ (d + 1)π(B) + 1 = C̄ = L^{a+o(1)} (d ≤ log p). Rank Λ₂ ≥ M �
 **Lemma XK0-U (bad primes; proved).** The primes r ≤ B with r | t·disc(f) number ≤ log₂|t·disc f| = O(log p), because
 log|disc f| ≤ d log d + (2d − 2) log(√(d + 1)·3MH) = O(d(μ + h) log p + d log d) = O(log p) (d(μ + h) = O(dθ) = O(1)).
 For each, an r-maximal order, the primes above r and the valuations v_𝔯(𝔍_P) are computed in expected time
-poly(d, log p) (Round 2 at a known prime, Buchmann–Lenstra 1994; decomposition and valuations, Cohen GTM 138,
-Algs. 6.1.8, 6.2.9, 4.8.17; the only randomness is Cantor–Zassenhaus factoring over F_r, and r ≤ B; v_r(disc f) =
+poly(d, log p) (an overorder maximal at r in deterministic polynomial time: Buchmann–Lenstra, J. Théor. Nombres
+Bordeaux 6 (1994) 221–260, Thm 1.2 / Alg. 6.1 and Prop. 6.2, a Round-2-type iteration, cf. Cohen GTM 138 Alg. 6.1.8;
+since f need not be monic, the input order is Z[tα] (or the standard order of f), as in [DL]'s Z_(r)[α] remark;
+decomposition and valuations: Cohen §§6.2, 4.8.3 (algorithm numbers 6.2.9, 4.8.17 not verified against the book); the only randomness is Cantor–Zassenhaus factoring over F_r, and r ≤ B; v_r(disc f) =
 O(log p) bounds the r-adic precision). Finding them: t·disc f mod r for all r ≤ B, Õ(dB). Total, including the
 valuations of the ≤ 2kM atom occurrences at the bad primes: ≤ 2kM·O(log p)·poly(d, log p) + Õ(dB) = L^{a+o(1)}. ∎
 
@@ -248,8 +259,8 @@ poly(d)·Õ(M·(P + β_x) + κ²) with κ, P = O(dβ_x + d² + d·log(kMd log p)
   log₂(2kM) + O(log d), suffices for rounding, accumulation and certification ([DL] Lemma XK4 ledger, with the sum over
   ≤ 2kM occurrences and s ≤ d coordinates). By the conjugate lower bound, absolute precision P + log₂V + d log₂p + O(1)
   on the roots of f gives this (relative error of σ(a − bα) ≤ V·ε·p^d). Root approximation of a degree-d integer
-  polynomial with O(log p)-bit coefficients to b bits costs poly(d, log p, b) (Schönhage 1982; Pan, J. Symbolic Comput.
-  33 (2002) 701–733). The roots must be *certified* (isolated), to separate real from complex roots and to pair the
+  polynomial with O(log p)-bit coefficients to b bits costs poly(d, log p, b) (A. Schönhage, *The fundamental theorem of algebra in terms of computational
+  complexity*, preliminary report, Math. Inst. Univ. Tübingen, 1982; Pan, J. Symbolic Comput. 33 (2002) 701–733). The roots must be *certified* (isolated), to separate real from complex roots and to pair the
   complex embeddings consistently across atoms: f is squarefree (irreducible), its root separation is
   ≥ 2^{−O(d log d + d log‖f‖)} = 2^{−O(d log p)} (Mahler), and P exceeds this, so isolating enclosures (e.g. by
   Newton–Kantorovich or Gershgorin tests on the approximations) cost poly(d, log p, P) (Opus proof critic, #3).
@@ -364,7 +375,8 @@ is not computed.
   Q = p^n and p = L_Q[β, c] with fixed 0 < β < 1 this is exp((2c(1 − β)/log 2 + o(1))(log Q)^β(log log Q)^{2−β})
   (codex dlog25_1), i.e. L_Q[β + o(1)] but not L_Q[β, C] for a fixed C; it beats any L_Q[2/5, C] only for β < 2/5, and
   is below L_Q[1/2] only for β < 1/2. For p ≥ L_Q[1/2] (medium and large characteristic) we found nothing rigorous
-  below L_Q[1/2] (search result).
+  at or below L_Q[1/2]: Bender–Pomerance needs p ≤ n^{o(n)}, and for fixed n ≥ 3, p → ∞ nothing subexponential
+  (Enge–Gaudry p. 97 remark; n = 2: Lovorn's thesis, unverified) (search result).
 - **Does the transfer give anything? Not as it stands.**
   - What plausibly transfers (heuristic; fixed n): one step of the Dixon split. Represent F_{p^n} = Z[x]/(p, φ), φ
     monic of degree n irreducible mod p, and let Λ_T := {(u, v) ∈ Z[x]_{<n}² : u ≡ Tv mod (p, φ)}, of rank 2n and
@@ -418,12 +430,35 @@ m), which is already how SAMPLE_FIELD is written; (e) the reusable target-indepe
 only, §7). It read Buchmann–Lenstra 1994 Thm 1.2, Alg. 6.1/Prop. 6.2 (local maximal orders in polynomial time) and
 Dixon 1982.
 
+**Opus proof critic (read-only, independent; reviewed the pre-merge draft): ACCEPT WITH FIXES, no FATAL/MAJOR.** It
+re-checked §3 (where N enters; Lemma S_p″; K-U; T_p-U; Sel-DL), §4 line by line (Cauchy and conjugate bounds, BM gap
+with log M(z) ≤ d′‖Log z‖_∞, LLL coordinate bound, Cramer, κ, ledger, Hadamard/random prime, Dixon, μ_K), the scaling
+of the subroutine cost, (6.1) and Lemma C25; reproduced the §6 table; found c_U/(3a) ≥ 1.382 at all 211 680 grid points;
+and re-ran the S_p″ identity in 5 cases. Fixes applied: (1) 3a never binds for any tuple (same as codex's observation,
+already merged); (2) R is an ℓ^∞ bound, so R′ gains √s (fixed in XK4-U; the toy κ remains valid for s ≤ 16); (3) certified
+root isolation via the root-separation bound; (4) per-atom bad-prime valuations in XK0-U's total; (5) the grid differs
+from [U]'s default (explains 3.51035 vs 3.517); (6), (7) scope wording (lower-medium characteristic; only the injectivity
+step transfers to F_{p^n}, heuristically); (8) three size conditions on N listed in §3; (9) exponentiation cost in
+C_trial, sup form of F_U; (10) test count. Weakest DL-specific step in its view: the §3 reading claim, then XK4-U.
+
+**Opus literature critic (read-only, independent): OK WITH FIXES.** It read Enge–Gaudry 2002 (§1, §5 Ex. 1, p. 97),
+Galbraith ch. 15, Lee–Venkatesan pp. 1–3, Buchmann–Lenstra 1994 (Thms 1.1–1.4, Alg. 6.1, Prop. 6.2), Kleinjung–Wesolowski
+Thm 1.1, Lido Thm 1.1 and the dBPW abstract; Pomerance 1987 and Bender–Pomerance were image-only scans. It found nothing
+beating Pomerance 1987 for prime fields. Fixes applied: three novelty overclaims (Lemma S_p″ is a counting form of
+rational-reconstruction uniqueness; XK4-U's method is classical; "new here" → "proved here, no prior formulation found
+by us"); the split-and-descend step is the classical heuristic individual-log step (BFMV 1984, COS 1986, Joux–Lercier
+2003, Commeine–Semaev 2006), now cited, with no rigorous analysis found; Lee–Venkatesan row; Enge–Gaudry confirmation of
+√2; KW's α-range; for p ≥ L_Q[1/2] nothing rigorous even at L_Q[1/2]; Lido and GKZ rows; Gordon's constant 3^{2/3};
+Buchmann–Lenstra pinpoint and the non-monic input order; Cohen algorithm numbers 6.2.9/4.8.17 flagged unverified;
+Schönhage 1982 full reference.
+
 ## 11. Dependencies of Theorem DL25
 
 - Internal (unrefereed): Theorem U and its whole dependency list ([U] §10), used twice: the supply chain with N := p,
   and FACTOR_U as the shape-test subroutine; [DL] Lemmas XK0–XK5, HX, T_p, Corollary DL′ (reviewed at fixed d, all
   degree-free except XK0(iii) and XK4, re-proved here); [rec] Lemma W (adaptive sub-calls).
-- New here: Lemma S_p″, K-U for DL, Lemma T_p-U, Lemma Sel-DL, Lemma XK0-U, Lemma XK4-U, Proposition XK-U, Theorem DL25,
+- Proved here (new to this project; no prior formulation of these statements found by us; methods partly classical,
+  see §1 and [DL] §9b): Lemma S_p″, K-U for DL, Lemma T_p-U, Lemma Sel-DL, Lemma XK0-U, Lemma XK4-U, Proposition XK-U, Theorem DL25,
   Corollary DL25′, Lemma C25.
 - Published: Blanksby–Montgomery 1971; Nguyen–Stehlé 2009 (L²); Schönhage 1982 / Pan 2002 (roots); Dixon 1982
   (p-adic lifting); Buchmann–Lenstra 1994 and Cohen GTM 138 (local maximal orders, decomposition, valuations);
