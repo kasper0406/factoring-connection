@@ -116,10 +116,15 @@ It is then proved with divisor switching and the large sieve. Fourth, the number
 post-processing of Buhler--Lenstra--Pomerance and Lee--Venkatesan is carried out rigorously at fixed
 degree, and batch smoothness detection removes any dependence on the hyperelliptic curve method.
 
-We also show (Section~\ref{sec:recursive}; these results are still under independent audit) that replacing the Lenstra--Pomerance
-subroutine by a recursive call of the algorithm itself gives $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$ ($0.851$ at $d=9$,
-tending to $0$ as $d$ grows). A restart schedule over such algorithms then yields a single Las Vegas algorithm with
-expected time $L_N[1/2,o(1)]$, at an ineffective rate. It does not give $L_N[\alpha]$ for any $\alpha<1/2$.
+As further consequences of the same proof (Sections~\ref{sec:recursive} and~\ref{sec:dlog}) we show the following.
+\begin{itemize}
+\item Replacing the Lenstra--Pomerance subroutine by a recursive call of the algorithm itself gives
+  $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$. The infimum is $0.851$ at $d=9$, and it tends to $0$ as $d$ grows.
+\item A restart schedule over such algorithms yields a single Las Vegas algorithm with expected time $L_N[1/2,o(1)]$; no effective
+  rate is supplied. This is not $L_N[\alpha]$ for any $\alpha<1/2$.
+\item The same relation supply computes discrete logarithms in $\F_p^*$ in expected time $L_p[1/2,(1+\theta)/\sqrt2+o(1)]$, below
+  Pomerance's $L_p[1/2,\sqrt2]$.
+\end{itemize}
 \end{abstract}
 
 \maketitle
@@ -255,7 +260,7 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   $d$. That would require letting $k=k(N)\to\infty$. Our constants depend on $k$ through factors
   $(\log N)^{O(k)}$, $\binom{2k}{k}$ and thresholds $N_0(k)$, and we have not carried out such a
   diagonalisation. At $d=9$ the first parameter choice below $1$ ($k=13$) has $c\approx0.9972+\eta_0/\sqrt2$; larger fixed $k$ give smaller constants (Table~\ref{tab:constants}), but none attains $0.9192$.
-  (Corollary~\ref{cor:P}, which is still under audit, obtains a genuine $+o(1)$ by scheduling instead.)
+  (Corollary~\ref{cor:P} obtains a genuine $+o(1)$ by scheduling instead.)
 \item \emph{Complete factorisation.} The algorithm outputs the full factorisation, with every prime
   certified (AKS \cite{aks2004}). Prime powers, perfect powers and small prime factors are handled before the
   main splitting routine. The splitting routine is applied at most $\log_2N$ times
@@ -273,19 +278,21 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
 \end{enumerate}
 \end{remark}
 
-\subsection{Further results under audit: the recursive shape test}
+\subsection{Further consequences: the recursive shape test and discrete logarithms}
 The subroutine that costs $L_N[1/2,1/\sqrt2]$ can be replaced by the algorithm itself, called recursively on the two halves. Section~\ref{sec:recursive}
-derives the following from the proof of Theorem~\ref{thm:main}.\footnote{Theorem~\ref{thm:RA} and Corollary~\ref{cor:P} have been
-reviewed by GPT-6.1-sol (blind and adversarial rounds) and two Claude critics, with all fixes applied, but have not yet had the
-independent blind end-to-end audit that Theorem~\ref{thm:main} received; that audit is in progress. We therefore keep them out of the
-headline.}
+derives the following from the proof of Theorem~\ref{thm:main}.\footnote{Theorem~\ref{thm:RA} and Corollary~\ref{cor:P} are conditional on
+Theorem~\ref{thm:main}'s proof. They were audited internally by three blind referees (one GPT-6.1-sol, two Claude), all of whom returned
+``accept with fixes'' with no fatal or major finding. They are not peer reviewed.}
 \begin{itemize}
 \item \emph{Theorem~\ref{thm:RA}.} At fixed parameters the expected time is $L_N[1/2,\sqrt{(1+\sqrt2)\theta}+o(1)]$. The infimum over $(k,\eta_0)$ is
-  $\sqrt{3(1+\sqrt2)/(d+1)}$, which is $0.851$ at $d=9$ and $0.777$ at $d=11$, and tends to $0$ as $d\to\infty$.
+  $\sqrt{3(1+\sqrt2)/(d+1)}$, which is $0.851$ at $d=9$ and $0.777$ at $d=11$, and tends to $0$ as $d\to\infty$. These are infima; for example
+  $d=9$, $k=13$ gives $0.9952$.
 \item \emph{Corollary~\ref{cor:P}.} A restart schedule over such algorithms gives a single algorithm with expected time
-  $L_N[1/2,o(1)]$, at an ineffective rate. The same device turns the infimum $0.9192$ at $d=9$ into a genuine $+o(1)$.
+  $L_N[1/2,o(1)]$; no effective rate is supplied. The same device turns the infimum $0.9192$ at $d=9$ into a genuine $+o(1)$.
 \end{itemize}
-Neither gives a rigorous $L_N[\alpha]$ with $\alpha<1/2$ (Section~\ref{sec:limits}).
+Neither gives a rigorous $L_N[\alpha]$ with $\alpha<1/2$ (Section~\ref{sec:limits}). Section~\ref{sec:dlog} transfers the relation supply to
+discrete logarithms in $\F_p^*$ (Theorem~\ref{thm:DL}): expected time $L_p[1/2,(1+\theta)/\sqrt2+o(1)]$ whenever $\theta\le1/2$. This beats Pomerance's
+rigorous $L_p[1/2,\sqrt2]$ \cite{pomerance1987}, which is the best bound we found for all primes.
 
 \subsection{Comparison with Lenstra--Pomerance}
 
@@ -419,7 +426,7 @@ Section~\ref{sec:notation} fixes notation and lists the published results we use
 ranges. Section~\ref{sec:algorithm} gives the parameters, the field law and the algorithm.
 Section~\ref{sec:overview} outlines the proof and gives a dependency diagram. The proof proper is in
 Sections~\ref{sec:split}--\ref{sec:uniform}, and Appendix~\ref{app:85} proves Lemma~\ref{lem:85}.
-Section~\ref{sec:recursive} treats the recursive shape test (under audit). Section~\ref{sec:toy} describes a toy implementation, and
+Section~\ref{sec:recursive} treats the recursive shape test, and Section~\ref{sec:dlog} discrete logarithms. Section~\ref{sec:toy} describes a toy implementation, and
 Section~\ref{sec:limits} discusses limitations and the growing-degree outlook.
 
 %======================================================================
@@ -2057,11 +2064,10 @@ no cap on its running time is needed.
 %======================================================================
 
 \begin{center}
-\fbox{\parbox{0.92\textwidth}{\small\textbf{Audit status of this section.} The results below (Theorem~\ref{thm:RA} and
-Corollary~\ref{cor:P}) are derived from the proof of Theorem~\ref{thm:main}. They have been reviewed by two GPT-6.1-sol rounds
-(one blind, one adversarial) and by two Claude critics, and all their fixes are applied. Unlike Theorem~\ref{thm:main}, however, they
-have \emph{not yet} had the independent blind end-to-end audit, which is in progress. Until it is complete they should be read
-as claims under review, and they are not part of the headline statement.}}
+\fbox{\parbox{0.92\textwidth}{\small\textbf{Status.} Theorem~\ref{thm:RA} and Corollary~\ref{cor:P} are conditional on the proof of
+Theorem~\ref{thm:main}. They add no new analytic input. They were audited internally by three blind referees, all of whom returned
+``accept with fixes'', with no fatal or major finding. They are not peer reviewed. Note that they raise the stakes on
+Theorem~\ref{thm:main}: if it is correct, so is a rigorous $L_N[1/2,o(1)]$.}}
 \end{center}
 
 The constant $1/\sqrt2$ in Theorem~\ref{thm:main} enters at exactly one place: the Lenstra--Pomerance factorisation of the two
@@ -2174,8 +2180,11 @@ Let $F(x):=\sup_{2\le n\le x}\Ex[\text{cost of }\mathrm{FACTOR}_{\rm rec}[a](n)]
 \emph{Finiteness.} We argue by strong induction on $n$. For $n<N_0$ the cost is $O(1)$, because FACTOR alternates SPLIT with trial division
 (step~3). For $n\ge N_0$ the inequality below calls $F$ only at $\sqrt{2n}<n$.
 
-\emph{Recursion.} The factorisation tree of $N$ has fewer than $2\log_2N$ nodes. Each node costs $L^{a+o(1)}$ for preprocessing, plus
-one call of $\mathrm{SPLIT}^O$ with $O=\mathrm{FACTOR}_{\rm rec}[a]$. By Lemma~\ref{lem:OS}, (A1)--(A3) hold for this $O$. Every call of $O$ is on an integer
+\emph{Recursion.} The factorisation tree of $N$ has fewer than $2\log_2N$ splitting nodes, plus $O(\log N)$ perfect-power steps. Each node costs
+$L^{a+o(1)}$ for preprocessing, plus one race between the core $\mathrm{SPLIT}^O$, with $O=\mathrm{FACTOR}_{\rm rec}[a]$, and trial division. The race costs at most
+twice the core. Inside the strong induction, $O$ is applied only to inputs at most $\sqrt{2n}<n$, on which it is already known to be admissible
+(exact, canonical output, almost surely terminating; nested calls share no mutable state). So Lemma~\ref{lem:OS} applies to the core, and
+(A1)--(A3) hold for this $O$. Every call of $O$ is on an integer
 at most $\sqrt{2N}$ with fresh coins, so its conditional expected cost is at most $F(\sqrt{2N})$. By Lemma~\ref{lem:waldrec},
 \[
 F(x)\le2\log_2x\Bigl[L_x^{\max(2a,\,a+\theta/(2a))+o(1)}+2L_x^{a+o(1)}F(\sqrt{2x})\Bigr].
@@ -2200,6 +2209,16 @@ $(1+\sqrt2)a=\theta/(2a)$, that is at $a^*<\sqrt{\theta/2}$. Then $c^{*2}=(2+\sq
   batch smoothness are slack by the factor $2a^*/c^*=2-\sqrt2$.
 \item \emph{Fixed-depth recursion.} With Lenstra--Pomerance at the bottom, the constants are $c_{j+1}=(\theta/c_j+c_j)/\sqrt2$ with $c_0=1$, so
   $c_1=(1+\theta)/\sqrt2$ is Theorem~\ref{thm:main}. At $d=9$ (with $\theta\to3/10$) the sequence is $1,0.9192,0.8808,0.8637,\dots\to0.8510$.
+\item \emph{Sanity check against heuristics and folklore.} The heuristic fixed-degree number field sieve (balanced non-monic pair,
+  \cite[\S12]{blp1993}) has constant $2/\sqrt{d+1}$, which is $0.632$ at $d=9$. The infimum in (b) is exactly $\sqrt{3(1+\sqrt2)/4}\approx1.346$ times
+  larger, for every $d$. So Theorem~\ref{thm:RA} claims less than the heuristic picture, and $L_N[1/2,o(1)]$ is weaker than the heuristic
+  $L_N[1/3]$. The folklore ``constant~$1$'' is not a theorem. It is the random-squares ledger $\max(a+\xi/(2a),2a)$ for relations built from
+  random-like integers of size $N^\xi$, evaluated at $\xi=1/2$. That ledger is sharp for \emph{independent uniform} integers
+  \cite{cgpt2012,bbm2018}, but it does not bind here. The $\sqrt N$-size halves are never required to be smooth: they must be products of
+  $k$ primes of a fixed size, an event of probability $L^{-o(1)}$ for fixed $k$, and they are then factored completely. Only the descent
+  values, of total size $N^\theta$, enter the matrix. Applied to those values the ledger gives the heuristic floor $\sqrt{2\theta}$. The
+  constant $\sqrt{(1+\sqrt2)\theta}$ lies above it, because the recursive shape test costs $L^{a+c/\sqrt2}$. This evasion is legitimate only to
+  the extent that the relation-supply estimates (Theorems~\ref{thm:FM} and~\ref{thm:LD}) are correct.
 \item \emph{Prior art.} We found no rigorous analysis that calls a factoring algorithm recursively on auxiliary $\sqrt N$-size
   numbers, and no fixed-point equation for the $L$-constant. The nearest precedent is Pomerance's use of his own rigorous factoring algorithm
   on the auxiliary $p-1$ inside a discrete-logarithm algorithm \cite[pp.~138--139]{pomerance1987}. That is a single call, not a recursion. The
@@ -2211,13 +2230,17 @@ $(1+\sqrt2)a=\theta/(2a)$, that is at $a^*<\sqrt{\theta/2}$. Then $c^{*2}=(2+\sq
 
 \begin{corollary}[portfolio; ``Corollary P'']\label{cor:P}
 There is a single Las Vegas algorithm that outputs the complete factorisation of every $N\ge2$ in expected time $L_N[1/2,o(1)]$, that is,
-$\exp\bigl(o(\sqrt{\log N\log\log N})\bigr)$. The rate of the $o(1)$ is not effective. Likewise, running the same schedule over $k$ at
+$\exp\bigl(o(\sqrt{\log N\log\log N})\bigr)$. No effective rate for the $o(1)$ is supplied. Likewise, running the same schedule over $k$ at
 fixed $d=9$, without recursion, gives a single algorithm with expected time $L_N[1/2,0.9192\ldots+o(1)]$.
 \end{corollary}
 
 \begin{proof}
 Let $(A_j)_{j\ge1}$ be the algorithms $\mathrm{FACTOR}_{\rm rec}[a_j]$ for a computable sequence of admissible parameters with $c(a_j)\to0$. For example, take
-$d_j=2j+7$, $k_j=\lceil d_j^2/4\rceil+j$, $\mu_j$ optimal, $\eta_0$ small and rational, and $a_j$ rational near $a^*_j$. Let $T_j(N)$ be the running time of $A_j$ on $N$.
+$d_j=2j+7$, $k_j=\lceil d_j^2/4\rceil+j$, $\mu_j$ the (rational) optimum of Lemma~\ref{lem:optmu}, $\eta_{0,j}:=1/d_j^2$, and $a_j$ rational with
+$|a_j-a^*_j|\to0$. These tuples are admissible for every $j$ (the inequalities are monotone in $j$; checked exactly for $j\le60$, where
+$c^*=0.239$ at $j=60$). The slack must tend to $0$, since $\theta\ge\eta_0$. The map $j\mapsto A_j$ is computable. No threshold $N_0(j)$ enters
+the algorithms, because each $A_j$ races its core against trial division at every node (step~3 of Algorithm~\ref{alg:factor}); so
+$N_0(j)$ need not be computable. Let $T_j(N)$ be the running time of $A_j$ on $N$.
 
 \emph{Restart schedule.} In phase $s=1,2,\dots$, run $A_i$ for each $i\le s$, from scratch with fresh coins, for at most $2^{s-i}$ steps.
 Stop at the first certified output. Phase $s$ costs at most $2^s$ steps, up to a polylogarithmic bookkeeping factor.
@@ -2229,11 +2252,254 @@ time is at most a polylogarithmic factor times
 2^{s_0+1}+\sum_{m\ge1}2^{s_0+m}2^{-m(m+1)/2}=O\bigl(2^j\,\Ex T_j(N)\bigr).
 \]
 Hence $\limsup_N\log\Ex T(N)/\cL_N\le c(a_j)$ for every $j$. The second statement is the same argument over $k$ at $d=9$, with
-Theorem~\ref{thm:main} in place of Theorem~\ref{thm:RA}. Since $j$ is fixed in each step, no uniformity in $j$ is needed. This is also why the rate is not effective.
+Theorem~\ref{thm:main} in place of Theorem~\ref{thm:RA}. Since $j$ is fixed in each step, no uniformity in $j$ is needed; for the same reason no effective rate is supplied.
 \end{proof}
 
 \noindent Corollary~\ref{cor:P} answers Remark~\ref{rem:claims}(a): the infimum $0.9192$ at $d=9$ becomes a genuine $+o(1)$ for one
 algorithm, through scheduling rather than through uniform estimates in $k$. It is \emph{not} an $L_N[\alpha]$ bound for any $\alpha<1/2$.
+
+%======================================================================
+\section{Application: discrete logarithms in \texorpdfstring{$\F_p^*$}{F\_p*}}\label{sec:dlog}
+%======================================================================
+
+\begin{center}
+\fbox{\parbox{0.92\textwidth}{\small\textbf{Status.} Theorem~\ref{thm:DL} is a reduction to the relation supply of
+Theorem~\ref{thm:main}: Sections~\ref{sec:split}, \ref{sec:K}--\ref{sec:SM} and~\ref{sec:batch} with $N:=p$. The DL-specific part
+is proved below and needs no further hypothesis. Its components have prior art (Remark~\ref{rem:DLprior}). It was reviewed by
+GPT-6.1-sol (one blind and one adversarial round) and by two Claude critics, with all fixes applied. It has not had an independent
+end-to-end audit, and it is not peer reviewed.}}
+\end{center}
+
+\subsection{Statement and literature}
+Let $p$ be prime, $n:=p-1$, $g$ a primitive root and $h\in\F_p^*$. We want $X=\log_gh\bmod n$.
+
+\begin{theorem}[discrete logarithms; ``Theorem DL'']\label{thm:DL}
+Fix admissible $(d,k,\mu,\eta_0)$ with $\theta<1$. There is a Las Vegas algorithm which, given a prime $p$, a primitive root $g$ and
+$h\in\F_p^*$, computes $\log_gh\bmod(p-1)$ in expected time $L_p[1/2,c_{\rm DL}(\theta)+o(1)]$, where
+\[
+c_{\rm DL}(\theta):=\min_{a>0}\max\bigl(a+1/\sqrt2,\ a+\theta/(2a),\ 3a\bigr)=\begin{cases}(1+\theta)/\sqrt2,&\theta\le1/2,\\ 3\sqrt\theta/2,&1/2<\theta<1.\end{cases}
+\]
+No factorisation of $p-1$, no unit or class group computation, no Schirokauer map and no power-residue character is used.
+\end{theorem}
+
+So $c_{\rm DL}$ equals the factoring constant whenever $\theta\le1/2$, which covers every tuple with $(1+\theta)/\sqrt2<1$. It is $0.99720$ at
+$d=9$, $k=13$ (exactly $55\sqrt2/78$, plus $\eta_0/\sqrt2$), and its infimum is $13\sqrt2/20=0.91924$ at $d=9$ and $1/\sqrt2$ over all $d$.
+It is below $\sqrt2$ iff $\theta<8/9$, which includes every optimised tuple; at $d=3$ the cubic term binds and $c_{\rm DL}=3\sqrt3/4\approx1.299$.
+
+\begin{corollary}[arbitrary base]\label{cor:DLprime}
+For $g,h\in\F_p^*$ with $h\in\langle g\rangle$, $\log_gh\bmod\mathrm{ord}(g)$ can be computed in the same expected time.
+\end{corollary}
+
+\begin{proof}
+Draw random auxiliary bases $t$. A primitive root occurs with probability $\varphi(n)/n\ge1/(1+\log_2n)$. Run DLOG$(p,t,g)$ and DLOG$(p,t,h)$
+under a budget that doubles at each stage, with $c(1+\log_2n)$ fresh $t$ per stage, where $c$ is a constant fixed so that a stage whose
+budget exceeds $4$ times the expected time for a primitive root fails with probability at most $1/4$ (Markov). Every output is verified ($t^u=g$,
+$t^v=h$). Then solve $ux\equiv v\pmod n$, discard the result if $\gcd(u,n)\nmid v$, and check $g^x=h$ before output. The doubling series converges.
+\end{proof}
+
+\paragraph{Literature.} The best rigorous bound for discrete logarithms in $\F_p^*$, for all primes $p$, that we found is still Pomerance's
+\cite{pomerance1987}: $L_p[1/2,\sqrt2+o(1)]$ for precomputation and $L_p[1/2,1/\sqrt2+o(1)]$ per logarithm. We found nothing below
+$\sqrt2$ for all primes or for almost all primes, unconditionally or under GRH. For comparison:
+\begin{itemize}
+\item Finite fields $\F_{p^n}$ with small characteristic have stronger rigorous results: Bender--Pomerance \cite{benderpomerance1998} and
+  Kleinjung--Wesolowski's quasi-polynomial algorithm for fixed characteristic \cite{kw2022}.
+\item Class groups of imaginary quadratic fields have $L[1/2,\sqrt2]$ under ERH (Hafner--McCurley \cite{hafnermccurley1989}). Under GRH the
+  constant $3/\sqrt8$ is proved by Biasse and coauthors \cite{biasse2023} for computing the group structure, not for discrete logarithms.
+  Vollmer's earlier claim of that constant (ANTS IV, 2000 \cite{vollmer2000}) was retracted in a corrigendum in his ANTS V paper
+  \cite{vollmer2002}, as recorded by our literature reviewer (we did not re-check the corrigendum).
+\item Enge and Gaudry \cite{engegaudry2002} give a general framework with hidden exponents.
+\item The ERH-rigorous number-field toolkit of de Boer, Pellet-Mary and Wesolowski \cite{dbpw2025} explicitly leaves finite-field discrete
+  logarithms aside.
+\end{itemize}
+This is a search result, not a certification.
+
+\subsection{The algorithm and the transfer of the relation supply}
+
+The parameters are those of Section~\ref{sec:params} with $N:=p$, except that $a>0$ is a free fixed constant (Lemma~\ref{lem:generala}).
+For a field $A$ write $m:=g_0g_1^{-1}\bmod p$ and $\psi(a-b\alpha):=a-bm$.
+
+\begin{algorithm}[$\mathrm{DLOG}(p,g,h)$]\label{alg:dlog}
+\begin{enumerate}[label=\arabic*.]
+\item Select a field $A$ exactly as in step~1 of Algorithm~\ref{alg:split}, with targets drawn as in step~2 below.
+\item \emph{Round.} Repeat until $\bar C+d$ rows are held, where $\bar C:=(d+1)\pi(B)+1$: draw $(a_i,b_i)$ uniform in $(\Z/n)^2$, put
+  $T_i:=g^{a_i}h^{b_i}$, and run DESCEND\_ONCE$(A)$ with $R:=T_i$ (the Gauss split $T_i\equiv u_0/v_0$, the shape test, and a special-$q$ atom for each
+  large prime). Store the row together with its label $(a_i,b_i)$.
+\item Run EXACT\_DEPENDENCE (Proposition~\ref{prop:XK}). It returns a primitive $x^*\in\Z^M$ and $\lambda=\log_g\prod_iT_i^{x^*_i}$.
+\item Put $A_*:=\sum_ix^*_ia_i$ and $B_*:=\sum_ix^*_ib_i\bmod n$. If $\gcd(B_*,n)=1$, put $X:=(\lambda-A_*)B_*^{-1}\bmod n$. If $g^X=h$, return $X$.
+  Otherwise start a new round in the same field, with fresh rows.
+\end{enumerate}
+\end{algorithm}
+
+Each row satisfies, with $G(P_\ell)=\sigma_\ell\ell n_\ell$ and $G(P)\equiv g_1\psi(a-b\alpha)\pmod p$,
+\begin{equation}\label{eq:DLrow}
+T\equiv\varepsilon\prod_{q\le B}q^{e_q}\,g_1^E\prod_\ell\psi(a_\ell-b_\ell\alpha)^{e_\ell}\pmod p,\qquad \varepsilon=\pm1,\quad E=\sum_\ell e_\ell,
+\end{equation}
+where $e_\ell=\pm1$ according as $\ell\mid u_0$ or $\ell\mid v_0$, and $e_q=v_q(u_0)-v_q(v_0)-\sum_\ell e_\ell v_q(n_\ell)$.
+
+\begin{lemma}[transfer]\label{lem:DLtransfer}
+With $N:=p$, the following hold for every $p\ge p_0(d,k,\mu,\eta_0,a)$:
+\begin{enumerate}[label=(\roman*)]
+\item Lemmas~\ref{lem:GB}--\ref{lem:coprime}, Proposition~\ref{prop:BS}, Theorems~\ref{thm:FM}, \ref{thm:LD} and~\ref{thm:Dk}, and
+  Lemma~\ref{lem:reject} hold verbatim. No factor exit can occur, since every gcd-checked quantity is nonzero and smaller than $p$.
+\item Theorem~\ref{thm:Sprime} holds with $h_2=1$ for $T$ uniform on $\F_p^*$: $\Prob[\exists u,v\in\cS:u\equiv Tv]\ge|\cS|^2/(c_k(p-1))$.
+  Consequently Theorem~\ref{thm:K} holds without the factor $2^{-\omega}$, and Proposition~\ref{prop:select} holds with $p_F=0$.
+\item (Hidden labels.) $T_i$ is uniform on $\F_p^*$, and given $T_i$ the label $b_i$ is uniform on $\Z/n$. Within a round, every accepted row and
+  every computation other than the final $A_*,B_*$ is a function of the $T$'s and of coins independent of the labels. So, conditional on the
+  round's transcript $\cT_j$ (all $T$'s, all coins, and all labels and outcomes of earlier rounds), the $b_i$ of round $j$ are i.i.d.\ uniform.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) The prime $N$ enters those sections only through $\gcd(N,t)=1$ for $0<t\le2MV<N$, through $N\mid F(g_0,g_1)$, and through preprocessing, which
+is not needed ($\omega=1$). By Lemma~\ref{lem:valuesizes} and Lemma~\ref{lem:sizes}, $|G(P)|$, $|F_A(P)|\le\XF$ and $0<|f_d|$ are all less than $p$.
+(ii) In the proof of Theorem~\ref{thm:Sprime}, $\sum_Tn(T)=|\cS|^2$ exactly, because every pair determines $T=uv^{-1}$ and there is no square-class
+condition. The second moment bound and Cauchy--Schwarz are unchanged. (iii) $(a,b)\mapsto(\log_gT,b)=(a+Xb,b)$ is a bijection of $(\Z/n)^2$.
+\end{proof}
+
+\subsection{Exact dependencies}
+Fix an accepted field: $f$ irreducible with content $1$, $0<|f_d|<p$, and $m$ a simple root of $f\bmod p$ (the rejection $p\mid f'(m)$). Let
+$K=\Q(\alpha)$, $t:=f_d$, $\mathfrak a:=\cO_K+\alpha\cO_K$, and for a primitive atom $P=(a,b)$ let $\mathfrak J_P:=(a-b\alpha)\mathfrak a^{-1}$.
+
+\begin{lemma}[ideal bookkeeping]\label{lem:XK0}
+(i) $\mathfrak J_P$ is integral, with $\Norm\mathfrak J_P=|F(a,b)|$. (ii) If $r\nmid t\disc f$, the primes dividing $\mathfrak J_P$ above $r$ are of degree one,
+namely $(r,\alpha-ab^{-1})$, with valuation $v_r(F(a,b))$. (iii) For each of the $O(d\log p)$ primes $r\le B$ dividing $t\disc f$, an $r$-maximal order,
+the primes above $r$ and the valuations of $\mathfrak J_P$ can be computed in time $\mathrm{poly}(d,\log r,\log p)$.
+\end{lemma}
+
+\begin{proof}
+(i) $a-b\alpha\in\mathfrak a$. Since $f$ is primitive, Gauss's content lemma gives $\Norm\mathfrak a=|t|^{-1}$, and $|\Norm(a-b\alpha)|=|F(a,b)|/|t|$.
+(ii) For $r\nmid t$, $\mathfrak a$ is trivial at $r$; for $r\nmid t\disc f$, argue as in Lemma~\ref{lem:C}. (iii) This is the standard local
+computation (Round~2 at a known prime, decomposition, valuations; \cite[\S\S4.8, 6.1--6.2]{cohen1993}, \cite{buchmannlenstra1994}). The bad $r\le B$
+are found by reducing $t\disc f$ modulo each $r\le B$, in time $\tilde O(B)$.
+\end{proof}
+
+\emph{Columns.} There is one column for each prime $q\le B$ (entry $e_q$), one column for $g_1$ (entry $E$), and one column for each prime ideal of
+$\cO_K$ above some $r\le B$ that occurs (entry $\sum_\ell e_\ell v(\mathfrak J_{P_\ell})$). There are at most $\bar C$ columns. Let $E\in\Z^{M\times C}$ be the exact
+exponent matrix, $\Lambda_1:=\{x\in\Z^M:x^\top E=0\}$, and $\gamma_x:=\prod_P(a_P-b_P\alpha)^{y_P(x)}$, where $y_P(x):=\sum_ix_i\sum_{\ell:P_\ell=P}e_{i\ell}$.
+
+\begin{lemma}\label{lem:XK123}
+\begin{enumerate}[label=(\roman*)]
+\item For $x\in\Lambda_1$, $\gamma_x\in\cO_K^\times$.
+\item Let $\fp$ be the degree-one prime above $p$ with $\alpha\equiv m\pmod\fp$, and $\mathrm{red}_\fp:\cO_{K,\fp}^\times\to\F_p^\times$. For $x\in\Lambda_1$,
+  $W(x):=\prod_iT_i^{x_i}\equiv\pm\,\mathrm{red}_\fp(\gamma_x)\pmod p$.
+\item $\Lambda_2:=\{x\in\Lambda_1:\gamma_x\in\mu_K\}$ is saturated in $\Z^M$, and $\mathrm{rank}\,\Lambda_2\ge M-C-(r_1+r_2-1)\ge1$ when $M\ge C+d$. Every
+  primitive vector of $\Lambda_2$ is primitive in $\Z^M$.
+\item For $x\in\Lambda_2$, $W(x)=\pm1$ ($d$ odd, so $\mu_K=\{\pm1\}$), and $\lambda:=\log_gW(x)\in\{0,n/2\}$ is read off.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $(\gamma_x)=\prod_P\mathfrak J_P^{y_P}\mathfrak a^{\sum_Py_P}$. The $g_1$-column gives $\sum_Py_P=0$, and the ideal columns give valuation $0$ at every prime
+above $r\le B$. Every prime dividing some $\mathfrak J_P$ lies above some $r\le B$, because $\Norm\mathfrak J_P=|F(P)|$ is $B$-smooth. (ii) Each $a-b\alpha$
+is a $\fp$-unit ($|F(P)|<p$ and $p\nmid t$), and $\mathrm{red}_\fp(a-b\alpha)=\psi(a-b\alpha)$. Raise \eqref{eq:DLrow} to the power $x_i$ and multiply: the
+rational and $g_1$ factors cancel because $x^\top E=0$, and the signs give $\pm1$. (iii) $u:x\mapsto[\gamma_x]\in\cO_K^\times/\mu_K\cong\Z^{r_1+r_2-1}$ is a
+homomorphism with kernel $\Lambda_2$; if $jx\in\Lambda_2$ then $\gamma_x^j\in\mu_K$, so $\gamma_x\in\mu_K$. (iv) By (ii), $\mathrm{red}_\fp$ maps $\mu_K$ into $\{\pm1\}$.
+\end{proof}
+
+\begin{lemma}[unit elimination]\label{lem:XK4}
+Given $s:=r_1+r_2\le d$ independent $x_1,\dots,x_s\in\Lambda_1$ with entries of at most $\beta_x$ bits, a nonzero $\mathbf n\in\Z^s$ with
+$\sum_jn_jx_j\in\Lambda_2$ can be found in time $\tilde O_d\bigl(M(\beta_x+\log p)+(\beta_x+\log p)^2\bigr)$.
+\end{lemma}
+
+\begin{proof}
+Let $\mathrm{Log}:K^\times\to\R^{r_1+r_2}$ be the usual logarithmic embedding, and $v_j:=\mathrm{Log}(\gamma_{x_j})=\sum_Py_P(x_j)\mathrm{Log}(a_P-b_P\alpha)$. These vectors
+lie in the unit lattice $\Lambda_U$, of rank $r_U:=r_1+r_2-1$, and $\mathrm{Log}\,z=0$ iff $z\in\mu_K$ (Kronecker).
+
+\emph{Gap.} By Blanksby--Montgomery \cite{blanksbymontgomery1971}, a non-torsion algebraic integer of degree $d'\le d$ has Mahler measure
+$>1+1/(52d'\log6d')$. For a unit $z$ of $K$, $\log\mathrm M(z)\le d\|\mathrm{Log}\,z\|_\infty$, so every nonzero $w\in\Lambda_U$ has
+$\|w\|_\infty\ge\beta_d:=\log(1+1/(52d\log6d))/d$.
+
+\emph{Small relations exist.} $\mathrm{Rel}:=\{\mathbf n:\sum n_jv_j=0\}$ has rank at least $1$. In an LLL-reduced basis of $\Lambda_U$ the Gram--Schmidt norms are at least
+$2^{-r_U/2}\beta_d$, so the integer coordinates of $v_j$ are at most $2^{O(d^2)}\|v_j\|/\beta_d$. Cramer's rule then gives a nonzero relation of norm at most
+$R:=\max\bigl(1,d!(2^{O(d^2)}\max_j\|v_j\|/\beta_d)^d\bigr)$. Each $|\sigma_i(a-b\alpha)|$ lies between $p^{-O(d)}$ and $p^{O(1)}$ (the lower bound from
+$|\Norm(a-b\alpha)|\ge1/|t|$), so $\|\mathrm{Log}(a-b\alpha)\|=O_d(\log p)$, $\|v_j\|\le2^{\beta_x}M\cdot2k\cdot O_d(\log p)$, and $\log R=O_d(\beta_x+\log p)$.
+
+\emph{LLL.} Let $b_j:=(e_j,\lfloor2^\kappa v_j\rceil)$, with each coordinate within $1$ of $2^\kappa v_j$. If $\mathbf n\in\mathrm{Rel}$, then
+$\|\sum n_jb_j\|\le(1+s\sqrt d)\|\mathbf n\|$. If $\mathbf n\notin\mathrm{Rel}$, then $\|\sum n_jb_j\|\ge2^\kappa\beta_d-s\sqrt d\|\mathbf n\|$. LLL returns a first vector of norm at
+most $R':=2^{(s-1)/2}(1+s\sqrt d)R$. Choosing $2^\kappa\beta_d>(1+s\sqrt d)R'$, its coefficient vector (of norm at most $R'$) is a nonzero relation. So
+$\kappa=O_d(\beta_x+\log p)$. The roots of $f$ are needed to $\kappa+O(\beta_x+\log p)$ bits, the logarithms to the same precision, and the sums over at most
+$2kM$ atoms cost $\tilde O(M(\kappa+\beta_x))$. LLL in dimension at most $2d$ with $O(\kappa)$-bit entries costs $\tilde O(\kappa^2)$ \cite{nguyenstehle2009}.
+\emph{Certification.} Accept $\mathbf n$ only if $\|\sum n_jv_j\|_\infty<\beta_d/2$ is certified by interval arithmetic. A true relation passes, and by the gap a
+non-relation cannot.
+\end{proof}
+
+\begin{lemma}[hidden exponents]\label{lem:HX}
+Let $x^*\in\Z^M$ be primitive and a function of the round's transcript $\cT_j$. Then $B_*=\sum_ix^*_ib_i$ is uniform on $\Z/n$ given $\cT_j$, so
+$\Prob[\gcd(B_*,n)=1\mid\cT_j]=\varphi(n)/n\ge1/(1+\log_2n)$. If $\gcd(B_*,n)=1$, then $X=(\lambda-A_*)B_*^{-1}\bmod n$, exactly for every prime
+power of $n$ at once.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:DLtransfer}(iii) the $b_i$ are i.i.d.\ uniform given $\cT_j$, and $b\mapsto b\cdot x^*\bmod n$ is a surjective homomorphism
+(a Bezout vector exists), so the image of the uniform law is uniform. Also $\log_gW(x^*)=\sum_ix^*_i(a_i+Xb_i)=A_*+XB_*$. The bound on $\varphi(n)/n$ is
+elementary.
+\end{proof}
+
+\begin{proposition}[``Proposition XK'']\label{prop:XK}
+The following procedure EXACT\_DEPENDENCE is Las Vegas. On $M\ge\bar C+d$ rows with $M=L^{a+o(1)}$ it outputs a primitive $x^*\in\Lambda_2$ and
+$\lambda=\log_gW(x^*)$ in expected time $L^{3a+o(1)}$.
+\begin{enumerate}[label=\arabic*.]
+\item Compute $E$ exactly (Lemma~\ref{lem:XK0}).
+\item Pick a random prime $q\in[Q,2Q]$ with $Q:=M(\log p)^3$, and compute by Gaussian elimination modulo $q$ a rank profile $(I,J)$ of size $\rho$.
+\item For $d$ rows $i\notin I$, solve $y^\top E_{I,J}=-E_{i,J}$ over $\Q$ by $p$-adic lifting \cite{dixon1982}, and clear denominators: $x_i:=D(y,e_i)$.
+\item Verify $x_i^\top E=0$ on all columns. If this fails, return to step~2.
+\item Apply Lemma~\ref{lem:XK4} to $s$ of the $x_i$. Put $x^*:=\sum n_jx_j/\gcd$.
+\item Compute $W(x^*)$ and $\lambda$ (Lemma~\ref{lem:XK123}(iv)).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\emph{Correctness.} This follows from Lemmas~\ref{lem:XK123} and~\ref{lem:XK4}. The verified $x_i$ are independent through their free coordinates $e_i$,
+which is all Lemma~\ref{lem:XK4} needs; step~4 does not certify that $\rho$ is the rational rank, and nothing requires it.
+\emph{Step 2.} A fixed maximal nonsingular minor of $E$ has determinant at most $(O(k\log p))^{1.5\rho}$, since every row has at most $2k(1+\log_2p)$
+nonzero entries of size $O(k\log p)$. So at most $O(\rho\log\log p)$ primes divide it, while $[Q,2Q]$ contains $\gg\rho\log p$ primes. With probability
+at least $1/2$ the minor survives, and then verification passes. So the expected number of restarts is at most $2$, and each costs
+$O(MC\rho)=L^{3a+o(1)}$ operations modulo $q$.
+\emph{Step 3.} One inverse modulo a prime costs $\rho^3$, and $O(\rho\log(\rho\|E\|))$ lifting steps cost $O(\rho^2)$ each, for $d$ right-hand sides. In total
+this is $\tilde O(\rho^3)=L^{3a+o(1)}$, and the outputs have $\beta_x=O(\rho\log\log p)=L^{a+o(1)}$ bits (Hadamard).
+\emph{Steps 4--6.} These cost $L^{2a+o(1)}$ (Lemma~\ref{lem:XK4} with this $\beta_x$, and $M$ modular exponentiations with $L^{a+o(1)}$-bit exponents).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:DL}]
+By Lemma~\ref{lem:DLtransfer} and Proposition~\ref{prop:select}, with $p_F=0$ and the per-row cost of Proposition~\ref{prop:cost} at a general $a$
+(Lemma~\ref{lem:generala}), the rows of a round cost $L^{a+\max(1/\sqrt2,\theta/(2a))+o(1)}$. Post-processing costs $L^{3a+o(1)}$ (Proposition~\ref{prop:XK}).
+By Lemma~\ref{lem:HX} each round succeeds with conditional probability at least $1/(1+\log_2n)$, independently of earlier rounds, so the expected number of
+rounds is $L^{o(1)}$. Wald's identity gives the total $L^{\max(a+1/\sqrt2,\,a+\theta/(2a),\,3a)+o(1)}$. At $a=\theta/\sqrt2$ the first two terms are
+$(1+\theta)/\sqrt2$, and $3a\le(1+\theta)/\sqrt2$ iff $\theta\le1/2$; no $a$ does better, by the factoring optimisation. For $\theta>1/2$ the minimum is at
+$a=\sqrt\theta/2$, where $a+\theta/(2a)=3a=3\sqrt\theta/2\ge a+1/\sqrt2$.
+\end{proof}
+
+\begin{remark}[interaction with recursion]\label{rem:DLrec}
+The shape test in DLOG is integer factorisation of $|u_0|,|v_0|\le\sqrt{2p}$. Logarithms cannot be computed recursively, because the logarithms
+of the halves live in the same group $\F_p^*$, but the factoring subroutine can be replaced. With a factoring constant $\tau$ for that subroutine,
+\[
+c_{\rm DL}=\min_a\max\bigl(a+\tau/\sqrt2,\ a+\theta/(2a),\ 3a\bigr)=\begin{cases}s+\theta/(2s),& s:=\tau/\sqrt2\ge\sqrt\theta,\\ 3\sqrt\theta/2,& s<\sqrt\theta.\end{cases}
+\]
+With the recursive constant $\tau=c^*=\sqrt{(1+\sqrt2)\theta}$ of Theorem~\ref{thm:RA}, $s\ge\sqrt\theta$ and $c_{\rm DL}=c^*$. With the portfolio of
+Corollary~\ref{cor:P} as the subroutine ($\tau\to0$), the cubic post-processing term $3a$ takes over and $c_{\rm DL}=3\sqrt\theta/2$. This is $0.822$ as an
+infimum at $d=9$, and it tends to $0$ as $d$ grows, so a portfolio over $d$ gives $L_p[1/2,o(1)]$ for discrete logarithms as well. We record these as
+consequences only; they were not separately reviewed.
+\end{remark}
+
+\begin{remark}[prior art and what does not transfer]\label{rem:DLprior}
+The unit elimination by $\mathrm{Log}$, LLL and a minimum-length bound is the classical route to unit relations in class group and
+regulator computations (see \cite{cohen1993} and, for a modern rigorous treatment, \cite[Part~3]{dbpw2025}). Explicit units in place of
+Schirokauer maps are known when units are computable \cite[Ex.~2.6]{schirokauer2008}. Hidden exponents are classical
+\cite{pomerance1987,engegaudry2002}. What we did not find elsewhere is the combination that computes no unit or class group at all, uses one exact
+dependency with exact cancellation of the ideals $(a-b\alpha)\mathfrak a^{-1}$ and removes units only on a $d$-dimensional image, has a quantified
+$L^{3a}$ cost (so the constants of Theorem~\ref{thm:main} survive), and is applied to descended uniform targets.
+
+The square-class machinery of Section~\ref{sec:lv6} does not extend uniformly to $\ell$-th powers for large $\ell\mid p-1$. The Kummer extensions
+have degree growing with $\ell$, each character value would need an order-$\ell$ discrete logarithm to be linearised, and Schirokauer maps need a
+Leopoldt/Wieferich-type condition that is not known for a prescribed $\ell$. Exact dependencies avoid all of this, because they never form a
+modular kernel.
+\end{remark}
+
+\paragraph{Toy check.} The DL pipeline ran on 36 pre-registered instances with 30--50-bit primes ($d=3$). It returned the correct logarithm in
+$36/36$ cases, with no row, kernel or torsion violation. All $3465$ certified torsion dependencies had $W=\pm1$. None of the $707$ non-torsion
+kernel vectors with nontrivial algebraic part passed the auxiliary torsion test, which shows that the unit step is necessary. The hidden-label
+law held for $\ell=2,3,5,7$. One pre-registered descriptive prediction (full unit rank in at least $9/12$ runs) failed at $5/12$, because the toy's
+pair box was too small. This is a design shortfall, not a violation. The code is in \texttt{src/dlog/}.
 
 %======================================================================
 \section{A toy implementation}\label{sec:toy}
@@ -2306,16 +2572,16 @@ Again, this checks code and the exact Lemma~\ref{lem:OS} only.
   and it has been replaced by the self-contained proof of Appendix~\ref{app:85}. The one remaining external input there, Drappeau's
   Lemme~5, is published, but its proof refers to an unpublished preprint of Harper. The second moment
   (Theorem~\ref{thm:LD}) is the most novel analytic component, and the field-selection bookkeeping (Proposition~\ref{prop:select}) is
-  the most delicate probabilistic one. Section~\ref{sec:recursive} is still under independent audit.
+  the most delicate probabilistic one. Sections~\ref{sec:recursive} and~\ref{sec:dlog} received internal AI audits only.
 \item \emph{Infimum versus a single algorithm.} At fixed $d$, Theorem~\ref{thm:main} gives $(1+\theta)/\sqrt2+o(1)$ for each fixed $k$; the infimum
-  over $k$ is not attained by any one of these algorithms. Corollary~\ref{cor:P} (under audit) obtains it by a restart schedule. A uniform
+  over $k$ is not attained by any one of these algorithms. Corollary~\ref{cor:P} obtains it by a restart schedule. A uniform
   version, with $k=k(N)\to\infty$ and effective rates, would need control of the $k$-dependence of every constant.
 \item \emph{Effectivity and practicality.} The constants (Stark, Landau, Lagarias--Odlyzko) are effective but astronomically large. The
   effectivity of the constants of Drappeau's Lemme~5 is not stated in the literature; this affects only the threshold $N_0$, not
-  Theorem~\ref{thm:main}. Corollary~\ref{cor:P} has an ineffective rate. The algorithm is a vehicle for a rigorous bound, not a practical
+  Theorem~\ref{thm:main}. No effective rate is supplied for Corollary~\ref{cor:P}. The algorithm is a vehicle for a rigorous bound, not a practical
   method; the heuristic number field sieve is far faster.
-\item \emph{Other problems.} Whether the same devices (Dixon descent, the random resultant multiplier, the two-dimensional rational side and the
-  family large-sieve bound) improve rigorous bounds for discrete logarithms or class groups is open.
+\item \emph{Other problems.} For discrete logarithms in $\F_p^*$ the same devices give Theorem~\ref{thm:DL}. Whether they improve rigorous bounds
+  for class groups, or for discrete logarithms in other finite fields, is open.
 \end{itemize}
 
 \subsection{Outlook: growing degree}
