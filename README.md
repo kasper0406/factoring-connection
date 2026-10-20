@@ -43,7 +43,14 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
 - T1/T2: local designs need N^{1/6}.
 - Coverage cost ≥ N^{1/5}(λ⁴/J)^{1/5}.
 - Ratio gap peaking at 1/5.
-- Nested descent gives no route below 2/5 (Prop R2).
+- Below 2/5 is blocked for every route tried:
+  - nested descent (Prop R2);
+  - exporting algebraic children ([`escapeR2`](notes/escapeR2_results.md) Cor EX);
+  - averaging over N, which adds no parameters ([`almostall13`](notes/almostall13_results.md) Prop NB);
+  - special forms ([`snfsrig`](notes/snfsrig_results.md)).
+- Heuristic NFS: nothing beats MNFS 1.902 or exponent 1/3 ([`heurnfs`](notes/heurnfs_results.md)).
+- Deterministic under GRH: fruitfulness is not the obstruction, deterministic relation supply is ([`detGRH`](notes/detGRH_results.md)).
+- Inverse-sieve containers for the deterministic worst case fail: the information is spread too thin ([`inversesieve`](notes/inversesieve_results.md)).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
