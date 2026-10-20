@@ -169,3 +169,25 @@ def test_runner_smoke(tmp_path, monkeypatch):
     import json
     rows = [json.loads(l) for l in open(tmp_path / "nonexact_E3.jsonl")]
     assert all(r["violations"] == 0 for r in rows)
+
+
+def test_remark_pen_pencil_has_rank_one():
+    """Remark PEN: two seeds T(mu)(mu-c) == rho, T(mu)(mu-c') == rho' force mu == (c'rho - c rho')/(rho - rho');
+    every pencil member T(mu)L_t(mu) == rho' + t rho is then the single relation T(mu)(c'-c) == rho - rho'."""
+    N = 1000000007
+    rng = random.Random(4)
+    for _ in range(20):
+        c, c2 = rng.randint(-9, 9), rng.randint(-9, 9)
+        rho, rho2 = rng.randint(-50, 50), rng.randint(-50, 50)
+        if c == c2 or rho == rho2:
+            continue
+        # build mu, T(mu) consistent with both seeds: mu = a0/b0, T(mu) = (rho - rho')/(c' - c)
+        a0, b0 = c2 * rho - c * rho2, rho - rho2
+        mu = a0 * pow(b0, -1, N) % N
+        Tmu = (rho - rho2) * pow(c2 - c, -1, N) % N
+        assert Tmu * (mu - c) % N == rho % N and Tmu * (mu - c2) % N == rho2 % N
+        for t in range(-5, 6):
+            L = ((1 + t) * mu - (c2 + t * c)) % N
+            assert Tmu * L % N == (rho2 + t * rho) % N
+            # L_t(mu) is the small rational (c'-c)(rho'+t rho)/(rho-rho')
+            assert L == (c2 - c) * (rho2 + t * rho) * pow(rho - rho2, -1, N) % N
