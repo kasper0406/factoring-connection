@@ -163,3 +163,10 @@ Agents commit LOCALLY only; the orchestrator pushes.
 | `dlog25` | rigorous L_p[2/5] discrete logs in F_p^* (Theorem DL × lv5unif) | notes/dlog25_*, src/dlog25/*, tests/test_dlog25* |
 | `inversesieve` | r20 idea 2: inverse-sieve structure of DCL non-coverage ⇒ constructive short-interval containers + Coppersmith ⇒ deterministic worst case N^{6/31} (< 1/5) for balanced N | notes/inversesieve_*, src/inversesieve/*, tests/test_inversesieve* |
 | codex r20 | wild cross-field ideas | codex/r20_wild.* |
+
+## Phase 14 (2026-10-20): untried randomized corners
+| Agent | Task | Files |
+|---|---|---|
+| `almostall13` | rigorous L[1/3] (or below 2/5) for almost all N: average over N to supply the missing parameters for algebraic children (nested Lemma OD budget) | notes/almostall13_*, src/almostall13/*, tests/test_almostall13* |
+| `snfsrig` | rigorous sub-2/5 factoring for special forms (r^e ± s etc.): small-coefficient polynomials, randomness from multipliers/twists/w | notes/snfsrig_*, src/snfsrig/*, tests/test_snfsrig* |
+| `heurnfs` | heuristic frontier: beat L[1/3, 1.923] / MNFS 1.902, or below L[1/3], using the project's new devices (descent, recursion, w multiplier, 2D-random rational side) | notes/heurnfs_*, src/heurnfs/*, tests/test_heurnfs* |
