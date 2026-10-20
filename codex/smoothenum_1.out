@@ -1,0 +1,350 @@
+**KNOWN — literature audit:** I found no algorithm in the checked literature that lists most smooth rational values in this NFS box at output cost, or that gives a positive constant \(\theta\) in the proposed cost model. The factory supplies the desired list through charged precomputation; ordinary smooth-number generators enumerate a much larger ambient set. These distinctions are explicit in [Bernstein–Lange, *Batch NFS*](https://eprint.iacr.org/2014/921) and [Bach–Sorenson](https://arxiv.org/pdf/2006.07445).
+
+**SPECULATIVE:** A faster enumerator remains possible. The failures below are barriers to particular constructions, not a lower bound proving sieving optimal.
+
+Labels apply to their following paragraph, display, or table. “PROVED” calculations below are implications of the stated model, not proofs of NFS smoothness heuristics.
+
+## 1. Target
+
+**HEURISTIC — assumptions H:** Throughout, assume the question’s norm-size and smoothness estimates for primitive pairs, joint rational/algebraic smoothness with the product probability, comparable estimates across the selected number fields, and sufficient relation rank. An enumeration oracle must return most **primitive, nonzero-norm** pairs, with their factorizations or with \(L^{o(1)}\) verification cost. Merely returning most unrestricted pairs would not guarantee useful NFS relations.
+
+**HEURISTIC — H:** Put
+\[
+r=\frac1{3\delta\beta},\qquad
+\alpha=\frac{\delta e+1/\delta}{3\beta_a}.
+\]
+For \(K=L[\kappa]\) algebraic fields sharing the rational polynomial,
+\[
+h=\max(\beta,\beta_a+\kappa)
+\]
+is the column exponent. The relation constraint is
+\[
+R:=2e+\kappa-r-\alpha\ge h.
+\tag{1}
+\]
+If rational enumeration has exponent \(\nu\), the optimization program is
+\[
+\boxed{\min\max\{\nu,\;2e-r+\kappa,\;2h\}}
+\quad\text{subject to (1).}
+\tag{2}
+\]
+The middle term charges testing every rational survivor in every field.
+
+**HEURISTIC — H plus the indicated enumeration assumption:** The three oracle programs are therefore
+\[
+\begin{aligned}
+c_R(\theta)&=\inf\max\{2e-\theta r,\;2e-r+\kappa,\;2h\},\\
+c_A&=\inf\max\{2e+\kappa-\alpha,\;2h\},\\
+c_D&=\inf\max\{R,\;2h\},
+\end{aligned}
+\tag{3}
+\]
+always subject to (1), positive parameters, and \(\kappa\ge0\). GNFS restricts \(\kappa=0\); MNFS allows it.
+
+**PROVED — reduction:** We can take \(\beta=h,\ \beta_a=q=h-\kappa\). For fixed \(h,q,\delta\), the relation equality gives
+\[
+e=\frac{q+(1/h+1/q)/(3\delta)}
+        {2-\delta/(3q)},\qquad 0<\delta<6q.
+\tag{4}
+\]
+Increasing either factor-base bound to its allowed maximum improves feasibility. After eliminating \(e\), the rational cost is
+\[
+\max\{q+\alpha+(1-\theta)r,\ h+\alpha,\ 2h\},
+\]
+whose first two terms decrease when the necessary \(e\) and \(r\) decrease. This proves the reduction for the rational program; the other programs simplify directly through \(R=h\).
+
+**HEURISTIC — H plus the respective oracle:** Numerical results are:
+
+| Enumerator | \(c\) | \(\delta\) | \(e\) | \(\beta\) | \(\beta_a\) | \(\kappa\) |
+|---|---:|---:|---:|---:|---:|---:|
+| Ordinary GNFS | 1.922999427 | 1.442250 | 0.961500 | 0.961500 | 0.961500 | 0 |
+| Ordinary MNFS | 1.901883612 | 1.401753 | 0.950942 | 0.950942 | 0.825909 | 0.125033 |
+| Rational output oracle | **1.638586234** | 1.104792 | 1.003425 | 0.819293 | 0.819293 | 0 |
+| Algebraic output oracle | **infimum 0.763142828** | \(\to2.289428485\) | \(\to\infty\) | \(\to0.381571414\) | same | 0 |
+| Double-smooth output oracle | **infimum 0** | no finite optimum | no finite optimum | — | — | 0 suffices |
+
+**KNOWN:** The first two constants and the factory constant are the conventional heuristic RAM-work constants. *Batch NFS* separately optimizes circuit area–time, so its batch area–time figures cannot replace these numbers. [Bernstein–Lange](https://eprint.iacr.org/2014/921)
+
+### Rational oracle: re-deriving the factory constant
+
+**PROVED — conditional optimization algebra:** At the rational-oracle optimum,
+\[
+\kappa=0,\quad \beta=\beta_a=h,\quad
+2e-r=2h,\quad \alpha=h.
+\]
+Consequently
+\[
+e=h+\frac1{6\delta h},\qquad
+3h^2=\delta h+\frac1\delta+\frac1{6h}.
+\]
+Minimizing \(\delta h+1/\delta\) gives \(\delta=h^{-1/2}\), hence
+\[
+3h^2=2\sqrt h+\frac1{6h},
+\qquad
+\boxed{c=2h=\left(\frac{20+8\sqrt6}{9}\right)^{1/3}
+=1.638586234.}
+\]
+The numerical minimization below also checks the unrestricted reduced program.
+
+**HEURISTIC — H plus rational output enumeration:** At this optimum,
+\[
+r=0.368263852,\quad
+2e=2.006850087,\quad
+2e-r=1.638586234.
+\]
+Thus the factory’s construction cost is exactly the box cost at these parameters; replacing construction by output enumeration would remove that expense for one \(N\).
+
+### Algebraic-only and double-smooth oracles
+
+**PROVED — conditional optimization algebra:** Algebraic enumeration costs
+\[
+2e+\kappa-\alpha=h+r.
+\]
+Feasibility requires \(\delta<6q\le6h\), so
+\[
+r>\frac1{18h^2},\qquad
+c_A\ge\inf_{h>0}\max\left(2h,h+\frac1{18h^2}\right)
+=\left(\frac49\right)^{1/3}.
+\]
+This infimum is approached with \(\kappa=0,\ \beta=\beta_a=h\), \(h\downarrow18^{-1/3}\), \(\delta\uparrow6h\), and
+\[
+e=\frac{h+2r}{2-\delta/(3h)}\longrightarrow\infty.
+\]
+It is not attained by finite constants.
+
+**PROVED — conditional optimization algebra:** For the double-smooth oracle, choose any \(h>0\), set
+\[
+\beta=\beta_a=h,\quad \kappa=0,\quad
+\delta=3h,\quad r=\frac1{9h^2},\quad e=h+2r.
+\]
+Then \(\alpha=e+r\), so \(R=h\) and total cost is \(L[2h]\). Hence the infimum is zero.
+
+**SPECULATIVE:** These extreme answers illustrate how strong the oracle is. They do not establish a uniform \(L_N[1/3,0]\) factoring algorithm: the assumption only gives guarantees for each fixed parameter choice.
+
+### Partial rational enumeration
+
+**PROVED — conditional reduction:** Let \(t=q/h\). Eliminating the relation equality and minimizing over \(\delta\) gives
+\[
+\boxed{
+c_R(\theta)=2\min_{0<t\le1}
+\left[
+\frac{
+\sqrt{A}+\sqrt{A+\theta t(2-t)/2}
+}{
+3t(2-t)
+}
+\right]^{2/3},
+\qquad A=1+(1-\theta)t.
+}
+\tag{5}
+\]
+At the computed minimum,
+\[
+\delta=\sqrt{A/h},\qquad e=h+\theta r/2.
+\]
+The algebraic-testing term is below the objective for \(\theta<1\), meeting it at \(\theta=1\).
+
+**HEURISTIC — H plus enumeration cost \(E^2L[-\theta r]\):**
+
+| \(\theta\) | \(c_R(\theta)\) |
+|---:|---:|
+| 0 | 1.901883612 |
+| 0.05 | 1.891229846 |
+| 0.10 | 1.880395079 |
+| 0.25 | 1.846713410 |
+| 0.50 | 1.785970548 |
+| 0.75 | 1.717727411 |
+| 1 | 1.638586234 |
+
+**PROVED — interpretation:** “Non-negligible margin” needs a specified gap. Every fixed positive \(\theta\) improves the leading constant; there is no smallest positive such \(\theta\). Numerically, improvements of \(0.01,\ 0.05,\ 0.10\) below the exact MNFS constant require respectively
+\[
+\theta\approx0.04695565,\quad0.22750628,\quad0.43703363.
+\]
+If \(\theta(N)\to0\), this model gives no fixed improvement in the leading constant.
+
+**KNOWN — reproducible computation:** I ran pure-Python minimization, including a separate nested search of the reduced program without imposing cost balance. The [complete code](/Volumes/git/factoring-connection/codex/scratch/smoothenum_1/optimize.py) and [results](/Volumes/git/factoring-connection/codex/scratch/smoothenum_1/optimization-results.txt) include the oracle limits and threshold searches. The core computation is:
+
+```python
+from math import sqrt
+
+def golden(f, lo, hi):
+    z = (sqrt(5)-1)/2
+    a, b = hi-z*(hi-lo), lo+z*(hi-lo)
+    fa, fb = f(a), f(b)
+    while hi-lo > 1e-13:
+        if fa < fb:
+            hi, b, fb = b, a, fa
+            a = hi-z*(hi-lo)
+            fa = f(a)
+        else:
+            lo, a, fa = a, b, fb
+            b = lo+z*(hi-lo)
+            fb = f(b)
+    return min([lo, hi, (lo+hi)/2], key=f)
+
+def rational(theta):
+    def h(t):
+        A = 1+(1-theta)*t
+        v = (sqrt(A)+sqrt(A+theta*t*(2-t)/2))/(3*t*(2-t))
+        return v**(2/3)
+    t = 1.0 if theta == 1 else golden(h, 1e-6, 1)
+    return 2*h(t)
+
+# Full reduced rational program; z=delta/h, t=beta_a/h.
+def cost(h, t, z, theta):
+    R = 1/(3*z*h**3)                 # r/h
+    A = (z*t+(z+6)*R)/(6*t-z)       # alpha/h
+    return h*max(t+A+(1-theta)*R, 1+A, 2)
+
+for theta in [0, .05, .1, .25, .5, .75, 1]:
+    print(theta, rational(theta))
+```
+
+## 2. Mechanisms
+
+### (a) Bottom-up products
+
+**PROVED:** For a given signed smooth integer \(s\),
+\[
+b\in[-E,E]\cap
+\left[\frac{-E-s}{m},\frac{E-s}{m}\right],\qquad a=s+bm.
+\]
+The latter interval has length \(2E/m<1\) asymptotically. Therefore each \(s\) produces at most one pair. Averaged over the full norm interval \(|s|\lesssim Em\), the number of pairs per integer \(s\) is approximately \(2E/m\), not \(E\).
+
+**HEURISTIC — H plus equidistribution of smooth integers among the box’s admissible residues:** Generating all smooth \(s\le Em\) costs at least
+\[
+\Psi(Em,B)\approx EmL[-r],
+\]
+while useful rational outputs number \(E^2L[-r]\). The wasted factor is approximately
+\[
+m/E.
+\]
+For fixed \(\delta\), this is an \(L_N[2/3,1/\delta]\)-scale obstruction. Testing the algebraic side afterward does not repair it.
+
+**KNOWN:** Efficient generation of unrestricted smooth integers is real; it does not impose the additional residue/box condition. [Bach–Sorenson](https://arxiv.org/pdf/2006.07445)
+
+### (b) Multiple special-\(q\)’s
+
+**PROVED:** A fixed number of special primes, each of size \(L[O(1)]\), removes only \(O((\log N)^{1/3}(\log\log N)^{2/3})\) bits from norms whose logarithms have the larger \(2/3\)-scale. It does not change \(r\) or \(\alpha\) at leading order.
+
+**HEURISTIC — uniform congruence lattices and ordinary smooth-cofactor probabilities:** A modulus \(Q=L[\gamma]\) reduces each lattice’s point count to approximately \(E^2/Q\), but covering most smooth pairs requires \(L[\gamma+o(1)]\) such moduli. Their total visited-point count remains \(E^2L^{o(1)}\). Two-sided congruences have determinant approximately \(Q_rQ_a\); the same accounting applies.
+
+**PROVED:** Using the same prime on both sides has an additional constraint. For primitive \((a,b)\), if
+\[
+p\mid a-bm,\qquad p\mid b^df(a/b),
+\]
+then \(p\nmid b\), hence \(p\mid f(m)\). When \(f(m)=N\), this already exposes a factor of \(N\).
+
+**SPECULATIVE:** A growing-depth nested construction might reuse empty-lattice certificates or compress modulus families. The cancellation argument for ordinary special-\(q\) scheduling does not exclude such an algorithm.
+
+### (c) Huge smooth modulus and small roots
+
+**PROVED:** Once \(M\) is given, the rational condition is simply a two-dimensional lattice of determinant \(M\):
+\[
+\Lambda_M=\langle(M,0),(m,1)\rangle.
+\]
+The difficult step is selecting useful smooth \(M\)’s.
+
+**PROVED:** For smooth \(M\), its fraction among all smooth integers up to \(X\) is exactly
+\[
+\frac{\Psi(\lfloor X/M\rfloor,B)}{\Psi(X,B)}.
+\tag{6}
+\]
+This follows from the bijection \(n=Mt\).
+
+**HEURISTIC — smooth-number estimates plus equidistribution into the box:** Write \(X=Em\), with leading norm-size coefficient \(s=1/\delta\). If \(M\) has \(2/3\)-scale coefficient \(\mu<s\), (6) is
+\[
+M^{-1}L[\mu/(3\beta)].
+\]
+For \(M\asymp X\), a single modulus captures roughly \(1/\Psi(X,B)\) of the smooth values. An unbiased family therefore needs approximately
+\[
+M\,L[-\mu/(3\beta)]
+\]
+moduli to cover a constant fraction. For huge \(M\), their number is again on the \(2/3\)-scale.
+
+**HEURISTIC — random-lattice geometry:** If \(M\gg E^2\), most lattices contain no admissible primitive point. Selecting \(M\) specifically because it has such a point avoids this estimate, but requires solving the original search problem.
+
+**KNOWN:** Boneh’s CRT-decoding algorithm is a genuine exception to indiscriminate scanning in certain short-interval regimes. Its standard small-root formulation requires, for degree \(D\), search radius \(H\), and unknown divisor \(S\mid P\),
+\[
+\log H\lesssim\frac{(\log S)^2}{D\log P}.
+\tag{7}
+\]
+[Boneh](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html); [May, “Finding Smooth Numbers and Factoring”](https://www.ionica.nl/wp-content/uploads/2019/04/the-LLL-Algorithms.pdf#page=344)
+
+**PROVED — failure of that reduction here:** Take \(P\) to contain every required power of every prime \(\le B\). Then \(\log P=L[\beta+o(1)]\), whereas \(\log S\) is polynomial in \(\log N\). The right side of (7) tends to zero, while \(\log H\asymp\log E\) grows. Restricting \(P\) avoids this bound only by discarding most possible prime supports. This defeats the standard reduction, not every possible multivariate lattice construction.
+
+### (d) Transferring the factory to one \(N\)
+
+**PROVED:** At the factory parameters, paying for construction gives exponent \(2.006850087\). Amortizing this below \(1.638586234\) requires more than
+\[
+L[0.368263852]
+\]
+targets. Manufacturing those targets does not remove construction from the total work needed to factor the original \(N\).
+
+**HEURISTIC — H and independent new fields:** Pooling relations from base-\(m\) polynomials for \(kN\) gives polynomials sharing a root modulo \(N\), but their algebraic columns must also be pooled. The straightforward construction is covered by the MNFS program and reoptimizes to \(1.901883612\).
+
+**PROVED:** Translations that preserve both field and norms give coordinate changes, not independent smoothness chances. For example, replacing \(m\) by \(m+t\), \(f(X)\) by \(f(X-t)\), and \(a\) by \(a+tb\) preserves the two norm values.
+
+**SPECULATIVE:** A more elaborate related-target construction might share useful algebraic information too. Ordinary factory amortization supplies no such mechanism.
+
+### (e) Product splitting, birthdays, and batch tests
+
+**HEURISTIC — conventional product-list sizes:** Splitting smooth products near \(\sqrt X\) gives lists of size approximately \(\Psi(\sqrt X,B)\), still on the \(2/3\)-scale. Schroeppel–Shamir rearrangements reduce memory; they do not make this time an \(L[1/3]\) enumeration bound.
+
+**KNOWN:** Wagner’s generalized birthday algorithm exploits sufficiently long lists of approximately random additive values. [Wagner](https://people.eecs.berkeley.edu/~daw/papers/genbday.html)
+
+**HEURISTIC — applying the random-list birthday model:** Enforcing residue/approximation conditions with entropy \(\asymp\log m\), using \(k\) product components, requires list lengths on the order of
+\[
+\exp\!\left(\frac{\Omega(\log m)}{1+\log k}\right).
+\]
+A positive-integer product has only \(k\le\log_2 X\) nontrivial factors. Thus this conventional application remains super-\(L[1/3]\). Matching real logarithms coarsely also does not enforce \(s\bmod m\in[-E,E]\).
+
+**KNOWN:** Bernstein’s batch smooth-part algorithm is quasi-linear in the total input bit length, up to logarithmic factors. It recognizes smoothness in an existing list; processing all box norms still charges that list’s size. [Bernstein](https://cr.yp.to/factorization/smoothparts-20040510.pdf)
+
+## 3. Barriers
+
+**PROVED:** Explicitly writing \(K\) output pairs requires \(\Omega(K)\) operations. There is no corresponding information-theoretic \(\Omega(E^2)\) consequence: a sparse list can be encoded in \(O(K\log(E^2))\) bits.
+
+**PROVED — restricted oracle model:** Suppose the box has \(U\) positions, independently marked with probability \(p\), and the algorithm learns marks only by point-membership queries. After \(q\) distinct adaptive queries, expected discoveries are \(pq\): each unqueried position retains marking probability \(p\). Finding a constant fraction of the expected \(Up\) marks therefore requires \(\Omega(U)\) queries.
+
+**SPECULATIVE:** Treating actual smoothness as that oracle would erase arithmetic structure. It cannot justify a lower bound for algorithms using divisibility, CRT, products, or lattices. A divisibility-query lower bound needs explicit query semantics, answer costs, preprocessing limits, and allowable arithmetic; none follows from the smoothness-density assumption alone.
+
+**PROVED:** Rational enumeration is exactly smooth-number enumeration in the structured set
+\[
+\bigcup_{|b|\le E}[-bm-E,-bm+E].
+\]
+Equivalently, it imposes a size bound and a small-residue condition modulo \(m\). A prescribed \(b\)-slice is a smooth-number problem in an extremely short interval.
+
+**SPECULATIVE:** This connects the task to algorithmic smooth numbers in intervals and progressions, but establishes no equivalence to factoring or another standard hard problem. Moreover, an oracle returning “most” of the entire box need not solve a prescribed slice.
+
+**HEURISTIC — mechanism-specific conclusions:** Ambient generation loses \(m/E\); ordinary special-\(q\) scheduling pays back its determinant saving through modulus coverage; huge moduli create a modulus-selection problem; factory transfer retains construction cost; conventional birthday lists remain too large. None establishes a universal box-area floor.
+
+## 4. Literature
+
+- **KNOWN:** [Coppersmith (1993)](https://research.ibm.com/publications/modifications-to-the-number-field-sieve) introduces reuse of smoothness computations and precomputed tables. [*Batch NFS*, §1–2](https://eprint.iacr.org/2014/921) explicitly distinguishes MNFS, the nonuniform factory, charged precomputation, RAM work, and circuit area–time. It does not provide the requested single-target rational enumerator.
+
+- **KNOWN:** [Franke–Kleinjung, *Continued Fractions and Lattice Sieving*](https://www.hyperelliptic.org/tanja/SHARCS/talks/FrankeKleinjung.pdf) improves lattice-point traversal and parallel organization. Its inner operation still marks sieve positions. The paper is from SHARCS 2005; recent search-engine crawl dates are misleading.
+
+- **KNOWN:** [Boudot et al. (2020), §4](https://arxiv.org/pdf/2006.06197) documents both-side placement and acknowledges hybrid special-\(q\)’s involving both sides. Composite \(q=q_iq_j\) was used for **DLP-240**; RSA-240 used prime special-\(q\)’s. Batch smoothness detection was used for both computations. Bucket sieving improves memory access, not output sensitivity.
+
+- **KNOWN:** Large-prime variants accept partial relations and later eliminate extra ideals. “Double large prime” and “simultaneous special-\(q\) constraints on both sides” are different techniques. Their roles are distinguished in [Boudot et al.](https://arxiv.org/pdf/2006.06197).
+
+- **KNOWN:** [Kirchner (2018), *NFS factorization: new hopes*](https://www.mathnet.ru/eng/pdma386) proposes special number-field constructions and explicitly states that the needed families lack supporting evidence. It is not a demonstrated smooth-pair enumerator.
+
+- **KNOWN:** [TNFS/exTNFS](https://eprint.iacr.org/2015/1027) exploits extension-field structure and polynomial selection for discrete logarithms. [Flassenberg–Paulus’s function-field sieving](https://doi.org/10.1007/0-387-23483-7_397) and [Joux–Lercier’s FFS constructions](https://doi.org/10.1007/3-540-45455-1_34) concern function-field settings. These results supply no transfer to arbitrary integer \(N\) in the stated model.
+
+- **KNOWN:** Output-sensitive enumeration of **unrestricted smooth integers** is known through product enumeration. [Bach–Sorenson](https://arxiv.org/pdf/2006.07445) also develops factored smooth-number sampling, with explicitly differing rigor and heuristic assumptions. Neither operation automatically satisfies the box’s residue restriction.
+
+- **KNOWN:** [Boneh’s short-interval algorithm](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html) is especially relevant, but has quantitative decoding conditions. Distribution theorems, including [Pascadi’s work on smooth numbers in progressions](https://arxiv.org/abs/2304.11696), concern counts/equidistribution and do not furnish the desired enumeration runtime.
+
+- **KNOWN:** [Bouillaguet–Fleury–Fouque–Kirchner (2023)](https://eprint.iacr.org/2023/801) studies practical hybrid sieving and batch factoring. Pomerance’s discussion of [smooth numbers in algorithms](https://math.dartmouth.edu/~carlp/PDF/paper104.pdf) explains sieving’s effectiveness; I did not locate a general theorem asserting its optimality.
+
+## 5. Ranked near misses
+
+1. **SPECULATIVE — strongest structural candidate:** CRT/list decoding that searches over unknown smooth supports collectively. Boneh proves that collective recovery can work. The adversarial test is equation (7): the full factor-base product overwhelms the available smooth divisor in this regime.
+
+2. **SPECULATIVE:** Nested smooth-modulus lattices with shared pruning. A useful result would bound **all visited nodes, empty lattices, duplicate representations, and missed primitive outputs** by \(E^2L[-\theta r]\). Achieving \(\theta\approx0.047\) would already improve the constant by \(0.01\). The adversarial test is coverage when determinants approach and exceed \(E^2\).
+
+3. **KNOWN:** Factory reuse genuinely achieves the lower per-target exponent after shared construction. Its applicability is amortized, as specified in [*Batch NFS*](https://eprint.iacr.org/2014/921).
+
+**HEURISTIC — H:** With currently supported mechanisms in this model, the single-\(N\) constant remains **1.901883612**. The missing result is an arithmetic search algorithm with a quantified enumeration saving; the smoothness probabilities alone neither provide it nor rule it out.
