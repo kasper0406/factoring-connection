@@ -1,0 +1,9 @@
+Completed the [self-contained Markdown report](analytic_1_report.md), covering all six parts with references, proofs, status labels, and two proposed mechanisms.
+
+Key findings:
+
+- **KNOWN:** Hiary’s factoring algorithm uses continued fractions and quadratic root extraction, not exponential-sum evaluation.
+- **PROVED, conditional:** Exact cubic floor sums costing \(K^\beta\) give exponent \((1+\beta)/4\) through the specified construction. Even free cubic floor sums yield only \(N^{1/4}\).
+- **UNVERIFIED:** No applicable general smoothness-free subexponential analytic mechanism was found. The established barriers have restricted scope.
+
+[Exact-arithmetic checks](verify_math.py) passed all 1,054 cases.
