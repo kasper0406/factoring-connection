@@ -20,7 +20,12 @@ sources; dBPW (arXiv 2512.01588v2) was read in the original (Thms 1.1, 6.4, 7.1 
 ## Verdict
 
 **Plain language.** We did not find an ERH-conditional proof that the multi-level descent works, and so no rigorous
-or ERH-conditional L[1/3], nor any fixed exponent below 1/2. No such result is in the literature either. What we
+or ERH-conditional L[1/3], nor any fixed exponent below 1/2 *from the nested-descent route*. (Scope: this note is
+about multi-level descent. Agent lv5unif's Theorem U, notes/lv5unif_results.md §10, a one-level design without
+algebraic children, audited ACCEPT WITH FIXES in notes/auditU_audit.md, claims an unconditional L[2/5], conditional
+only on the project's internal unrefereed chain. That is consistent with our Prop R2, whose model floor for designs
+without algebraic children is exactly 2/5. Nested descent would be needed only to go *below* 2/5.) No ERH-conditional
+L[1/3] factoring result is in the literature either. What we
 can say precisely:
 - The de Boer–Pellet-Mary–Wesolowski sampler does not fit this job. Up to a factor e^{±1/4} its success
   probability is the density of the target family among ideals of norm up to about √|Δ_K| (a rereading of their own
@@ -41,7 +46,9 @@ can say precisely:
   - LV6′, lv6's remaining lemmas at growing degree with stated costs, plus an admissible-field sampler.
   The tree, costs, recursion, transcript invariance and row algebra are proved here. ERH is used only for the
   character columns.
-- **Best α under ERH from this work: α = 1/2 (no improvement).**
+- **Best α under ERH from the nested-descent route: no improvement over what one-level designs give.** This work alone
+  gives α = 1/2. The project's current best is Theorem U (lv5unif), an unconditional L[2/5] (internal, audited by
+  auditU). Nested descent and ERH did not lower α below 2/5.
 
 Precisely:
 1. **dBPW extracted (§1).**
@@ -676,7 +683,9 @@ factor 1.25); independent field A′ for rational children. 145 s total.
    nested descent; no family-averaged replacement exists for growing degree.
 6. Literature: §10. L[1/3] under ERH for factoring is not known.
 
-**Best α under ERH: 1/2.** (Unconditional L[1/2, 1] by LP92; internally L[1/2, o(1)] by RA + P, unrefereed.)
+**Best α under ERH via nested descent: no improvement.** This work alone gives 1/2 (unconditional L[1/2, 1] by LP92;
+internally L[1/2, o(1)] by RA + P). The project's one-level Theorem U (lv5unif, audited by auditU) claims an
+unconditional L[2/5], consistent with Prop R2's model floor. Nothing here, ERH included, goes below 2/5.
 **Sharpest barrier:** a quantitative supply of short two-sided special-q relations whose children lie in the
 recursively defined good sets *of the same field* (the same algebraic component). Hypothesis AD is a sufficient
 strengthening of it (Theorem NR). Density-only lemmas cannot give it for a fixed field (Prop SI); independence-over-
@@ -776,7 +785,7 @@ All valid findings were applied in the text above.
 - **Mechanism.** ERH-conditional nested descent for the recursive Dixon-descent factoring algorithm, via dBPW sampling,
   fresh fields, or inductive good sets.
 - **Model.** Theorem A / recurse architecture, one field of degree δD′, O(log log N) levels.
-- **Result.** No rigorous α < 1/2 under ERH. Proved: Theorem AF (dBPW's success probability ≈ density among ideals of
+- **Result.** No α below what one-level designs give (Theorem U: L[2/5], lv5unif) via nested descent, ERH included. Proved: Theorem AF (dBPW's success probability ≈ density among ideals of
   norm ≲ √|Δ_K|, a rereading of their (46)–(48)), Prop SI (sparse-image dilemma), Lemma FB, Lemma OD, Lemma X_ERH,
   Lemmas RW/TS/T_multi, and Theorem NR (ERH + AD + LV6′ + admissible sampler ⇒ L[1/3, c_NR]). Model computations:
   Prop R2, children counts, Prop BT.
