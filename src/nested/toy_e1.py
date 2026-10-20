@@ -21,10 +21,10 @@ from src.thmA.smooth import primorial, smooth_parts
 
 
 # ------------------------------------------------------------------ field
-def sample_field(N: int, rng: random.Random, d: int = 3, H: int = 4, wlo: int = 2 ** 5, whi: int = 2 ** 6
-                 ) -> Dict:
+def sample_field(N: int, rng: random.Random, d: int = 3, H: int = 4, wlo: int = 2 ** 5, whi: int = 2 ** 6,
+                 M_bits: int | None = None) -> Dict:
     n = N.bit_length()
-    M = 1 << ((n + 3) // 4)
+    M = 1 << (M_bits if M_bits is not None else (n + 3) // 4)
     while True:
         while True:
             g0, g1 = rng.randrange(M // 2, M + 1), rng.randrange(M // 2, M + 1)

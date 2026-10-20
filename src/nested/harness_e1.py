@@ -22,8 +22,8 @@ def run_instance(N: int, seed: int, cfg: dict) -> dict:
     rngA = random.Random(f"nested_e1|fieldA|{seed}")
     rngA2 = random.Random(f"nested_e1|fieldA2|{seed}")
     rngB = random.Random(f"nested_e1|baseline|{seed}")
-    A = T.sample_field(N, rngA)
-    A2 = T.sample_field(N, rngA2)
+    A = T.sample_field(N, rngA, M_bits=cfg.get("M_bits"))
+    A2 = T.sample_field(N, rngA2, M_bits=cfg.get("M_bits"))
     U, U2 = T.Uniform(A, ctx), T.Uniform(A2, ctx)
     cA, cA2 = {}, {}
     parents = []

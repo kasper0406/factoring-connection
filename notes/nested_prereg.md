@@ -62,3 +62,19 @@ children; run time.
 is what the standard heuristic predicts and what Hypothesis AD (notes/nested_results.md) would need. It does not
 support any rigorous statement. If P1 or P3 fails with a *negative* difference, that is evidence of an endogeneity
 penalty in a fixed field, and it will be reported as such.
+
+## Addendum A (2026-10-20, after calibration, before the main run)
+
+Disclosed deviations, fixed before any main-run seed was executed:
+1. **M = 2^{20}** (config `M_bits = 20`) instead of M = 2^{⌈n/4⌉} = 2^{11}. With M = 2^{11} the rational cofactor
+   G(P)/ℓ ≈ M·S/√ℓ ≈ 2^{4} lies below B, so no parent had a rational child (calibration at S = 16: 0 rational
+   children in 4 instances) and P2/P4 would be vacuous. With M = 2^{20} the rational cofactor is ≈ 2^{13–14}, inside
+   (B, Y]. This is the design-(a‴) freedom μ (base M = N^μ with μ ≈ 0.45 here).
+2. **max_parents = 400** instead of 120, so that the rational-children sample is large enough for the ±0.08 window
+   (calibration: about 0.3 rational children per parent).
+3. **S = 32**, chosen by the pre-registered rule. Calibration (seeds 900–903, M = 2^{20}, uniform algebraic D1 rate):
+   S = 4: 0.05–0.09; S = 8: 0.08–0.14; S = 16: 0.15–0.29; S = 24: 0.19–0.37; S = 32: 0.22–0.48 (mean 0.36). S = 32 is
+   the only listed value whose four calibration rates all lie in [0.2, 0.8]. Run time ≈ 3.5 s per instance at
+   120 parents.
+Calibration file: `experiments/raw/nested_e1_calib.jsonl` (kept; excluded from E1). Predictions P1–P4, the analysis
+and all other definitions are unchanged.
