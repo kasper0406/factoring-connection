@@ -1,0 +1,206 @@
+**Verdict — UNVERIFIED:** An efficient equivalence between the full top-block **window-counting oracle** and known-top-bits factoring has not been established. **PROVED:** The *promised task of finding a divisor inside one top block* is equivalent, up to constant factors and binary alignment, to factoring from \(2/(j+2)\) of one balanced factor’s bits. These are different statements.
+
+The missing reductions matter: window enumeration incurs false candidates, and a divisor finder does not automatically count them. Multiple shifts give no independent constraints; consecutive disjoint blocks give alternatives, not simultaneous conditions. No checked construction below beats the usual exposure range. However, **PROVED:** one additional Taylor degree eliminates false candidates on the original block—a useful, precise degree tradeoff.
+
+Write \(n=\log_2N\), \(\alpha=1/(j+2)\), and suppress polynomial factors in \(n\) with \(\widetilde O\). Degrees and balance constants are fixed; query encodings have polynomial length in \(n\).
+
+**PROVED — Task 1: interval promises and bits.** A binary prefix specifying \(t\) high bits of \(p\) leaves an interval of length
+\[
+2^{n/2-t+O(1)}.
+\]
+Thus \(H=\Theta(N^{1/2-\alpha})\) corresponds to \(t=\alpha n+O(1)\), or fraction \(2\alpha\) of \(p\)’s bits.
+
+Both reductions cost polynomial time and \(O(1)\) calls to the corresponding interval/prefix solver: cover an arbitrary interval by at most two dyadic intervals of comparable length; conversely, cover a prefix interval by \(O_{j,c}(1)\) top blocks. Returned factors are checked by division. This proves equivalence of **promised divisor search**, with only \(O(1)\) bits of alignment loss.
+
+**PROVED — From window counts to divisor search, with its loss.** Let \(C_x\) be the number of points in the canonical divisor-catching window. Counting and recursively bisecting locates them using
+\[
+O\bigl((C_x+1)\log(H+1)\bigr)
+\]
+oracle calls and \(O(C_x+1)\) trial divisions.
+
+For even \(j\), put \(m=\lfloor P_j(h)\rfloor\). Since \(P_j=N/(x+h)+E\), \(0\le E\le\rho\), a window candidate satisfies
+\[
+\left|\frac N{x+h}-m\right|\le\rho.
+\]
+Consequently, with \(d=x+h\),
+\[
+k=N-dm\in\mathbb Z,\qquad |k|\le \rho d=O_{j,c}(B).
+\]
+The odd-degree proof uses \(m=\lceil P_j(h)\rceil\). Hence candidates include divisors of neighbouring integers \(N-k\), and
+\[
+C_x\le
+\sum_{|k|\le K}
+\#\{d\mid N-k:x\le d<x+H\},\qquad K=\lceil\rho(x+H)\rceil.
+\]
+
+The cited [Theorem \(L_j\)](/Volumes/git/factoring-connection/notes/analytic_results.md:198) bounds the **total** candidates over the ladder by \(O_{j,c}(B\log N)\), yielding \(O_{j,c}(B\log^2N)\) calls. It does not supply a polylogarithmic bound for every promised block.
+
+**HEURISTIC:** Equidistribution predicts
+\[
+C_x\approx \rho H
+=\frac{NH^{j+2}}{x^{j+2}}\le c^{j+2}.
+\]
+Using this expectation as a worst-case per-block bound would be unjustified.
+
+**UNVERIFIED — The reverse reduction.** A solver that returns \(p\) from its prefix does not thereby compute arbitrary shifted-window counts, including false candidates. Even for \(j=2\), Coppersmith’s divisor finder supplies no such counter.
+
+Explicit available simulations have losses:
+
+- **PROVED:** Enumerating all \(h\) answers any query in \(\widetilde O(H)\), without factoring.
+- **PROVED:** For the canonical narrow windows, completely factor all \(O(B)\) integers \(N-k\), enumerate their divisors, and test the exact predicates. Preprocessing costs \(O(B)\) general-factorization calls plus divisor enumeration; subsequent subinterval counts use sorted lists. These neighbouring integers need not be balanced semiprimes, so this is not a reduction to the stated partial-exposure problem. See [§6.5](/Volumes/git/factoring-connection/notes/floorsum_results.md:586).
+
+Thus “the full oracle is exactly partial key exposure” is an **UNVERIFIED** complexity claim, not an equivalence proved by the ladder.
+
+**PROVED — Shifts, windows, and degrees.** For one polynomial,
+\[
+\{P(h)+s\}\in W
+\iff
+\{P(h)\}\in W-s\pmod1.
+\]
+Shifts merely rotate the window. Intersections of several windows are intersections of arcs on the same circle, not independent congruences. Counts for separate polynomials also do not directly provide counts of their intersections. Each count returns at most \(\lceil\log_2(H+1)\rceil\) bits.
+
+Different degrees have a quantifiable benefit. Use degree \(j+1\) on the original degree-\(j\) block and choose its tighter window:
+\[
+\rho'=\frac{NH^{j+2}}{x^{j+3}}.
+\]
+Then
+\[
+\rho'(x+H)
+\le (1+c/B)c^{j+2}<1.
+\]
+Every candidate therefore satisfies \(|N-dm|<1\), forcing \(N=dm\). Divisors are included by the remainder formula. After testing the block start separately, one count and bisection find a divisor in \(O(\log H)\) calls, with **no false candidates**.
+
+With degree \(j\) alone, the same argument works after recentering on pieces of length
+\[
+L=\Theta(xN^{-1/(j+1)}).
+\]
+Scanning those pieces and bisecting the first positive one costs
+\[
+O\!\left(N^{1/((j+1)(j+2))}+\log H\right)
+\]
+calls. Neither reduction gives a lossless polynomial-time equivalence at the original degree and block length.
+
+**KNOWN — Task 2: the checked exposure frontier.**
+
+- **Coppersmith:** Don Coppersmith, *Journal of Cryptology* **10** (1997), 233–260, **Theorem 4**, factors \(N=PQ\) in polynomial time from the high-order \(\tfrac14\log_2N\) bits of \(P\). Theorem 5 treats low-order bits. For balanced factors, this is half a factor’s bits. [Checked paper](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf).
+
+- **May’s general formulation:** Alexander May, “Using LLL-Reduction for Solving RSA and Factorization Problems,” in *The LLL Algorithm*, Springer, **2010**, 315–348, **Theorem 1**: given a monic degree-\(\delta\) polynomial \(f\), an unknown divisor \(b\ge N^\beta\), and \(A\ge1\), find all
+  \[
+  f(z)\equiv0\pmod b,\qquad |z|\le A N^{\beta^2/\delta}
+  \]
+  in time \(O(A\delta^5\log^9N)\). The dependence on \(A\) is linear, not polynomial in \(\log A\). [Checked chapter, printed p. 320](https://www.ionica.nl/wp-content/uploads/2019/04/the-LLL-Algorithms.pdf).
+
+**PROVED — Fewer consecutive high bits.** Given \(t<n/4\) high bits, guess the next \(\lceil n/4\rceil-t+O(1)\) bits and apply Coppersmith. The cost is
+\[
+2^{n/4-t+O(1)}\operatorname{poly}(n)
+=\widetilde O(N^{1/4-\alpha})
+\quad(t=\alpha n).
+\]
+Equivalently, subdivide the uncertainty interval into \(O(H/N^{1/4}+1)\) intervals. Guessing all initial prefixes afterwards gives \(\widetilde O(N^{1/4})\) overall.
+
+- **HEURISTIC — Herrmann–May:** Mathias Herrmann and Alexander May, “Solving Linear Equations Modulo Divisors: On Factoring Given Any Bits,” **ASIACRYPT 2008**, 406–424, **Theorems 4–5 and Assumption 1**. For \(k\) unknown chunks of sizes \(X_i\), their distribution-independent balanced-factor bound is
+  \[
+  \prod_iX_i\le N^{\gamma_k-\varepsilon},\qquad
+  \gamma_k=1-\frac{k+1}{2}+k\,2^{-1-1/k}.
+  \]
+  Here \(\gamma_1=1/4\), \(\gamma_2\approx0.207107\), and
+  \[
+  \gamma_k\longrightarrow \frac{1-\ln2}{2}\approx0.153426.
+  \]
+  Thus the limiting sufficient known fraction is \(\ln2\approx69.315\%\) of \(p\), with slack—not fewer than half. Complexity is polynomial in \(n\) and \((e/\varepsilon)^k\), hence polynomial for \(k=O(\log n)\) at fixed slack. Root extraction assumes suitably independent polynomials and efficient recovery of their common roots. [Checked paper](https://link.springer.com/content/pdf/10.1007/978-3-540-89255-7_25.pdf).
+
+- **KNOWN / HEURISTIC — May–Ritzenhofen:** Alexander May and Maike Ritzenhofen, “Implicit Factoring,” **PKC 2009**, 1–14. **Theorem 5** rigorously factors two moduli \(N_i=p_iq_i\), with \(\alpha_q\)-bit \(q_i\), when the \(p_i\) share \(t>2(\alpha_q+1)\) low bits. **Theorem 7**, under **Assumption 6**, handles \(k\) moduli with \(t\ge k\alpha_q/(k-1)\), in time polynomial in \(k^{k/2}\) and their bit lengths. The general result needs unbalanced factors. Their balanced adaptation, **Theorem 9**, retains a \(2^{n/4}\) guessing factor. The extra moduli are essential input. [Checked full version](https://informatik.ruhr-uni-bochum.de/wp-content/uploads/2022/01/implicit_final.pdf).
+
+- **KNOWN — Prime powers:** Dan Boneh, Glenn Durfee and Nick Howgrave-Graham, “Factoring \(N=p^rq\) for Large \(r\),” **CRYPTO 1999**, 326–337, **Lemma 1**: if \(q<p^C\), an approximation satisfying
+  \[
+  |P-p|<p^{\,1-C/(r+C)-2/(rd)}
+  \]
+  permits recovery using a dimension-\(d\) lattice. For comparable primes, the sufficient high-bit fraction approaches \(1/(r+1)\) of \(p\); \(p^2q\) needs approximately one third. **Theorem 2** gives deterministic time \(p^{(C+1)/(r+C)}\) times a polynomial lattice cost, becoming polynomial for \(r=\Theta(\log p)\). The repeated prime power changes the problem. [Checked paper](https://link.springer.com/content/pdf/10.1007/3-540-48405-1_21.pdf).
+
+- **HEURISTIC — Heninger–Shacham:** Nadia Heninger and Hovav Shacham, “Reconstructing RSA Private Keys from Random Key Bits,” **CRYPTO 2009**, 1–17; checked full version **Theorem 4.1 and Conjecture 4.3**. For small public exponent, random \(27\%\) leakage across \(p,q,d,d_p,d_q\) supports expected quadratic reconstruction with high probability under their error-propagation model. This is not \(27\%\) of one prime. For only \(p,q\), their §4 branching calculation requires \(\delta>2-\sqrt2\approx58.58\%\). The method is branching and pruning, not LLL. [Checked full version](https://hovav.net/ucsd/dist/reconstruction.pdf).
+
+**UNVERIFIED:** Polynomial-time recovery from only \((1/4-\varepsilon)n\) contiguous high bits of one unrestricted balanced factor remains unsupported by these results. There is no general impossibility theorem established by the following optimality arguments.
+
+**PROVED — The standard determinant obstruction.** Put \(f(z)=a+z\), with \(f(z_0)=p\ge N^\beta\). Use rows
+\[
+N^{m-i}f^i\ (0\le i<m),\qquad
+z^kf^m\ (0\le k<t).
+\]
+For dimension \(w=m+t\), after scaling \(z\mapsto Xz\),
+\[
+\det L=N^{m(m+1)/2}X^{w(w-1)/2}.
+\]
+Every row evaluates to a multiple of \(p^m\). Ignoring lower-order terms, the usual short-vector certificate requires, with \(X=N^\xi\) and \(\theta=m/w\),
+\[
+\xi<2\beta\theta-\theta^2\le\beta^2.
+\]
+For \(\beta=1/2\), this gives \(X<N^{1/4}\). It limits this determinant-based certificate; failure of a sufficient certificate is not algorithmic impossibility.
+
+**KNOWN / HEURISTIC — “Optimality of lattices.”** Yoshinori Aono, Manindra Agrawal, Takakazu Satoh and Osamu Watanabe, **ACISP 2012**, 376–389, **Theorem 1 in the original full version**, prove failure of their simplified determinant condition for canonical constructions at \(U\ge N^{1/d}\). This concerns that condition, not every possible short vector.
+
+Their extended treatment, *AAECC* **29** (2018), 169–195—checked revised ePrint **Theorem 2**—obtains canonical-construction failure at \(U\ge16N^{\beta^2/d}\) **under Assumption 1**, namely a Gaussian lower bound \(\lambda_1(L_d)\ge\mathrm{GH}(L_d)/2\) with high probability. This is a **HEURISTIC** assumption about these structured lattices, not a worst-case RSA lower bound. [Checked revised statement](https://eprint.iacr.org/2012/108.pdf).
+
+**KNOWN — Stronger auxiliary-polynomial nonexistence, narrower application.** Ted Chinburg, Brett Hemenway, Nadia Heninger and Zachary Scherr, **ASIACRYPT 2016**, 759–788, **Theorem 2** in the checked preprint: for monic degree-\(d\) \(f\), no nonzero
+\[
+h(z)=\sum a_{uv}z^u(f(z)/M)^v,\qquad a_{uv}\in\mathbb Z,
+\]
+is uniformly smaller than \(1\) on the complex disk of radius \(M^{1/d+\varepsilon}\). The theorem allows arbitrary degree; its real-interval version applies when \(\varepsilon>\log_M2\). It excludes this auxiliary-polynomial mechanism for a **known modulus \(M\)**. It does not establish the balanced unknown-factor \(N^{1/4}\) threshold for all multivariate methods. [Checked preprint](https://arxiv.org/pdf/1605.08065).
+
+**PROVED — List-size arguments have different scope.** For \(f(z)=z^d\), \(M=s^d\), all multiples of \(s\) are roots modulo \(M\). The range \(M^{1/d+\varepsilon}\) therefore contains \(\Theta(M^\varepsilon)\) roots, excluding polynomial-time *complete listing* for unrestricted moduli. This example does not apply to balanced squarefree RSA with linear \(a+z\): an interval shorter than both factors contains at most two relevant roots.
+
+**KNOWN + PROVED — The Johnson-bound analogy.** Henry Cohn and Nadia Heninger, *Advances in Mathematics of Communications* **9** (2015), 311–339, **Theorem 1.1**, gives the unknown-divisor bound \(X\le M^{\beta^2/d}\). [Checked theorem](https://arxiv.org/pdf/1008.1284).
+
+For CRT coordinates with product \(M\), combine received residues into \(a\bmod M\). Agreement on coordinates whose product is at least \(M^\beta\) means \(\gcd(z-a,M)\ge M^\beta\). The theorem recovers messages of size \(M^\xi\) for \(\xi\le\beta^2\): the square-root/Johnson-type sufficient radius. A sufficient list-decoding radius is not a necessity theorem for decoding beyond it, especially for a promised unique RSA factor.
+
+**PROVED — Task 3: consecutive blocks cannot be conjoined.** A factor belongs to one member of a disjoint block partition. Their conditions form a disjunction. Multiplying moduli as though the same root satisfied all those local window conditions is invalid.
+
+For overlapping blocks, write \(h_i=z+a-x_i\). Modulo the unknown \(p\),
+\[
+x_i+h_i=z+a.
+\]
+All affine divisor equations become the same polynomial. Mixed products of these identical affine equations reproduce its powers; after elimination, they give no determinant improvement over the univariate lattice above.
+
+Likewise, artificially splitting one unknown suffix into chunks preserves \(\prod X_i=H\). The Herrmann–May bound decreases with the number of chunks. Their gain is accommodating *actually known intervening bits*, which block translations do not supply.
+
+**PROVED — Exact integer relations expose the correlation.** Let \(A_i=D_iP_{j,x_i}(h_i)\), \(r_i=A_i-D_im\), \(d=x_i+h_i\), and \(k=N-dm\). The finite geometric-series identity gives
+\[
+d\,r_i=(-1)^jNh_i^{j+1}+D_i k.
+\]
+For a divisor, \(k=0\). Overlapping narrow-window candidates share the same nearby integer quotient \(m\), hence the same \(k\). Treating their residuals as independent random samples discards this correlation.
+
+**PROVED — What the standard known-\(D\) window lattice certifies.** For
+\[
+F(h,r)=r-A(h)\equiv0\pmod D,
+\]
+use \(h^uF^kD^{m-k}\), \(0\le k\le m\), \(0\le u\le j(m-k)\). Its dimension is
+\[
+w=(m+1)(jm/2+1).
+\]
+Triangularity gives leading determinant exponents
+\[
+\log\det L=
+\frac{m^3}{6}
+\bigl(j^2\log X+j\log Y+2j\log D\bigr)
++O(m^2\log(DXY)).
+\]
+Comparison with \(D^{mw}\) yields \(X^jY<D\). With \(Y=\rho D\), this becomes \(X<\rho^{-1/j}\). This is a determinant calculation; obtaining enough independent equations for root extraction requires further justification.
+
+**HEURISTIC:** The repository’s stronger observed range \(X\asymp xN^{-1/3}\) comes from absorbing nonlinear terms into the residual of a linear congruence:
+\[
+X\max\{\rho D,\;Nx^{j-2}X^2\}\lesssim D.
+\]
+Its curvature term gives \(NX^3\lesssim x^3\). Crucially, premise (d) is an experimental/heuristic description of the tested construction, not a proved upper bound on all window lattices; [§6.4 explicitly preserves that distinction](/Volumes/git/factoring-connection/notes/floorsum_results.md:531).
+
+**PROVED / UNVERIFIED — Combining lattices.** A direct sum of \(s\) identical window lattices has dimension \(sw\), determinant \((\det L)^s\), and unchanged determinant per dimension: no gain. A mixed construction with one location variable and \(s\) residual variables has up to
+\[
+\binom{M+s+1}{s+1}
+\]
+monomials at total degree \(M\). Its actual determinant and independent-root recovery must be established; replacing the moduli by their product supplies neither. No improved mixed construction is verified here.
+
+**HEURISTIC — A useful experiment, not an asymptotic decision procedure.** Generate balanced semiprimes with generic ratios, plant \(p\) inside several overlapping blocks, and build bases using only public inputs. Compare single and mixed constructions as both bit size and lattice dimension grow. Record exact determinants, certified norm bounds, recovery of planted roots, and independence after removing common factors. Require improvement at fixed positive exponent slack; empty boxes and shrinking finite-size slack do not count.
+
+As a small exact check, [this scratch program](/Volumes/git/factoring-connection/codex/scratch/topblock_1/window_sanity.py) verifies six instances. One degree-2 block has 91 candidates; degree 3 on the same interval has only its actual divisor. This verifies finite cases of the degree tradeoff, not asymptotic performance.
+
+**UNVERIFIED — Task 4:** The defensible conclusion is therefore narrower than either proposed alternative: interval-promised search is partial exposure at known fraction \(2/(j+2)\); full counting has additional requirements and an unresolved reverse reduction. Same-degree block/shift combinations supply no demonstrated escape from the exposure barrier. The \(N^{1/3}\) window cost remains a construction-specific obstacle, not an impossibility theorem.
+
+**KNOWN:** These are not general classical factoring lower bounds. David Harvey and Markus Hittmeir, *Mathematics of Computation* **91** (2022), **Theorem 1.1**, already give deterministic unconditional factoring in \(\widetilde O(N^{1/5})\). Their algorithm does not give polynomial-time recovery from the prescribed short prefix. [Checked theorem](https://arxiv.org/pdf/2105.11105).
