@@ -1,0 +1,224 @@
+**DL-specific part: ACCEPT WITH FIXES.** Proposition XK and Lemma HX survive the audit. I found no fatal algebraic obstruction or hidden \(L^{4a}\) cost. Several auxiliary claims are false as written.
+
+**Transfer of Steps 1–7: ACCEPT WITH FIXES**, conditional on those internal supply estimates. I found no additional dependence on compositeness. This verdict does not certify the underlying FM/LD* proofs.
+
+No repository files were changed.
+
+1. **MINOR — XK0–XK3: the algebra works; make two implicit steps explicit.**  
+   Location: [§4, ideal bookkeeping and lattices](/Volumes/git/factoring-connection/notes/dlog_results.md:188).
+
+   **PROVED.** The fractional ideal construction is correct. Since \(a-b\alpha\in\mathfrak a\),
+   \[
+   (a-b\alpha)\mathfrak a^{-1}\subseteq\mathcal O_K.
+   \]
+   In a normal closure, Gauss’s content lemma gives
+   \[
+   (1)=(t)\prod_{\sigma:K\hookrightarrow\overline{\mathbf Q}}(1,\sigma\alpha),
+   \]
+   hence \(N(\mathfrak a)=|t|^{-1}\) and \(N(\mathfrak J_P)=|F(a,b)|\). At good primes, primitivity of \((a,b)\) ensures \(r\nmid b\); only the degree-one prime with root \(ab^{-1}\) can occur.
+
+   The bad-prime valuation formula is also correct:
+   \[
+   v_{\mathfrak r}(\mathfrak J_P)
+   =v_{\mathfrak r}(ta-b\beta)-\min\{v_{\mathfrak r}(t),v_{\mathfrak r}(\beta)\}.
+   \]
+   Local maximal orders at the **known** primes \(r\le B\) suffice; factoring the remaining discriminant is unnecessary. This is standard local-order computation. [Buchmann–Lenstra](https://jtnb.centre-mersenne.org/item/JTNB_1994__6_2_221_0/)
+
+   **PROVED.** The \(g_1\) exponent has the correct sign:
+   \[
+   \ell\equiv \sigma_\ell g_1\psi(a_\ell-b_\ell\alpha)n_\ell^{-1}.
+   \]
+   Its column also cancels the fractional-ideal contribution \(\mathfrak a^{\sum y_P}\). Every remaining ideal divisor lies above \(r\le B\), including bad primes.
+
+   **Fix.** Spell out the content-ideal norm identity above. In XK3, first infer \(x\in\Lambda_1\) from \(jx\in\Lambda_1\), then use torsion-freeness of \(\mathcal O_K^\times/\mu_K\). The resulting saturation and primitive-vector claims are correct.
+
+2. **MINOR — XK2: uniqueness concerns the chosen root, not all degree-one primes above \(p\).**  
+   Location: [XK2](/Volumes/git/factoring-connection/notes/dlog_results.md:224).
+
+   **PROVED.** A simple root \(m\), together with \(p\nmid t\), determines a unique prime **associated with that root**, with residue field \(\mathbf F_p\). Other simple roots can determine other degree-one primes.
+
+   Every atom is a unit at this prime: \(p\nmid t\), and its nonzero ideal norm is \(<p\). Thus reduction applies to negative powers as well as positive ones. Exact rational and \(g_1\) cancellation gives
+   \[
+   W(x)=\pm\operatorname{red}_{\mathfrak p}(\gamma_x).
+   \]
+   No global reduction homomorphism on all of \(K\) is needed.
+
+   **Fix.** Say “the unique prime corresponding to \(m\)” and retain the localization domain \(\mathcal O_{K,\mathfrak p}^{\times}\).
+
+3. **MINOR — XK4: the relation bound fails in the all-zero case; the main argument otherwise works.**  
+   Location: [XK4, relation bound and precision](/Volumes/git/factoring-connection/notes/dlog_results.md:243).
+
+   **PROVED.** If every \(v_j=0\), the displayed \(R\) equals zero. It cannot bound the norm of a nonzero integer relation. This case is particularly relevant to the reported E1 experiments.
+
+   **Fix.** Replace \(R\) by \(\max(1,R)\). For rank-deficient coordinate matrices, apply the minor argument at their actual rank.
+
+   **PROVED.** The substantive coefficient bound survives. An LLL-reduced basis of the unit lattice has Gram–Schmidt lengths bounded below by \(2^{-O(d)}\beta_d\). Back substitution therefore bounds the integer coordinates of each \(v_j\), without computing fundamental units or a regulator.
+
+   **KNOWN.** The quoted Blanksby–Montgomery Mahler-measure bound has the stated \(52d\log(6d)\) denominator; it is not the weaker house bound with an additional degree factor. [Stewart, introduction, equation (1)](https://www.numdam.org/item/10.24033/bsmf.1868.pdf)
+
+   **PROVED.** Complex weights introduce no missing factor. For a unit \(u\),
+   \[
+   \sum_i\max(0,\operatorname{Log}_i u)
+   =[K:\mathbf Q(u)]\log M(u).
+   \]
+   Consequently \(\log M(u)\le d\|\operatorname{Log}u\|_\infty\), as used.
+
+   **Fix.** Give an explicit precision ledger. If \(P\) denotes absolute precision for each atom logarithm, it suffices to take
+   \[
+   P\ge \kappa+\beta_x+\log_2 M+O_{d,k}(1).
+   \]
+   The rounding error, coefficient accumulation and final relation certification then all fit. Lower bounds
+   \(|a-b\sigma\alpha|\ge p^{-O_d(1)}\), obtained from the nonzero norm and bounds on the other conjugates, justify the additional root precision.
+
+4. **MINOR — Proposition XK: cubic cost survives, but two statements in its proof need correction.**  
+   Location: [EXACT_DEPENDENCE and its cost proof](/Volumes/git/factoring-connection/notes/dlog_results.md:295).
+
+   **PROVED.** Checking only the selected \(d\) nonpivot rows does **not** certify that the modular rank equals the rational rank. A deficient modular profile can pass if those particular rows already lie in the rational span of the selected rows.
+
+   This does not harm correctness: successful verification supplies \(d\) valid independent kernel vectors, distinguished by their free coordinates. Nor does it harm expected time: a prime preserving a fixed maximal minor guarantees success.
+
+   **Fix.** Delete “Step 4 detects \(\rho<\operatorname{rank}_{\mathbf Q}E\).” Replace it with the preceding argument.
+
+   **PROVED.** There is no hidden fourth power in Dixon lifting. Only the inverse modulo the lifting prime is stored. The residual right-hand sides remain small; the algorithm does not repeatedly multiply an exact inverse of \(L^a\)-bit entries. The standard dense Dixon bound is cubic up to logarithmic factors. [Eberly–Giesbrecht–Giorgi–Storjohann–Villard, introduction](https://www.lirmm.fr/~giorgi/issac06.pdf)
+
+   **PROVED.** Hadamard gives \(\beta_x=O_{d,k}(\rho\log\log p)\). Only \(d\) kernel vectors are required, so their total output size is \(L^{2a+o(1)}\). Sparse verification, denominator clearing and processing the final vector fit that bound.
+
+   There is, however, an arithmetic mismatch: XK4’s **stated** bound \(M(\beta_x+\log p)^{2+o(1)}\) gives \(L^{3a+o(1)}\), not the asserted \(L^{2a+o(1)}\).
+
+   **Fix.** State the sharper bound supported by its detailed proof:
+   \[
+   \widetilde O_{d,k}(MP+P^2).
+   \]
+   Specify a quadratic-in-bit-length LLL implementation. [Nguyen–Stehlé](https://epubs.siam.org/doi/abs/10.1137/070705702) Even retaining the weaker cubic unit-elimination bound leaves Proposition XK’s overall \(L^{3a+o(1)}\) bound intact.
+
+5. **MINOR — T\(_p\)/HX: “the whole transcript” needs a precise stopping-time interpretation.**  
+   Location: [Lemma T\(_p\)](/Volumes/git/factoring-connection/notes/dlog_results.md:179), [HX](/Volumes/git/factoring-connection/notes/dlog_results.md:283).
+
+   **PROVED.** The bijection
+   \[
+   (a,b)\longmapsto(a+Xb,b)
+   \]
+   establishes the required independence. Target-based field selection, acceptance, retained rows and exact-dependency selection preserve it.
+
+   But a transcript containing the current extraction result or stopping decision cannot leave \(B_\) uniform: conditioning on success already conditions on \(\gcd(B_\!,n)=1\).
+
+   **Fix.** Define the transcript separately in each round, immediately before exposing its label sums. It may include the complete previous history and current target certificates, but excludes current hidden labels and current extraction outcomes.
+
+   **PROVED.** Under that formulation, \(\gcd(x^*)=1\) is sufficient for surjectivity modulo the **unfactored** integer \(n\). Every round has conditional success probability exactly \(\varphi(n)/n\). Thus the expected number of rounds is \(n/\varphi(n)\le1+\log_2 n\). No prime-power obstruction remains.
+
+6. **MINOR — §3 transfer: valid, but reset the free parameter \(a\) explicitly.**  
+   Location: [§3](/Volumes/git/factoring-connection/notes/dlog_results.md:144), [§5 cost](/Volumes/git/factoring-connection/notes/dlog_results.md:350).
+
+   **PROVED, conditional on the internal estimates.** I found no additional compositeness requirement in Steps 1–7. All relevant small moduli are coprime to \(p\); the content, derivative and irreducibility rejections remain applicable.
+
+   Lemma S\(_p\) is correct. Its first moment is exactly \(|S|^2\); its second moment is the shared-prime count from S′. The determinant argument and divisor-closed acceptance also survive. Field selection retains the required size-biased law.
+
+   The bookkeeping defect is that §2 imports \(a=\theta/\sqrt2\) from the roadmap, whereas §5 subsequently minimizes over \(a\).
+
+   **Fix.** Explicitly allow arbitrary fixed \(a>0\), reset \(S=L^{\theta/(4a)+o(1)}\), and cite the underlying estimates in that regime. Also write
+   \[
+   T_{\rm SQ}=L^{\max(a,\theta/(2a))+o(1)}.
+   \]
+   The resulting extra row term \(2a\) is dominated by \(3a\), so the displayed minimization is unchanged.
+
+7. **MAJOR — §5: correct minimization, incorrect universal improvement claim, and unattained “exact values.”**  
+   Location: [§5 and table](/Volumes/git/factoring-connection/notes/dlog_results.md:357).
+
+   **PROVED.** The piecewise minimum is correct:
+   \[
+   c_{\rm DL}(\theta)=
+   \begin{cases}
+   (1+\theta)/\sqrt2,&\theta\le1/2,\\
+   3\sqrt\theta/2,&1/2<\theta<1.
+   \end{cases}
+   \]
+   However, “in every case it is \(<\sqrt2\)” is false. An admissible counterexample is
+   \[
+   d=3,\quad k=4,\quad\mu=9/32,\quad\eta_0=1/100,
+   \]
+   giving \(\theta=733/800\) and \(c_{\rm DL}\approx1.435814>\sqrt2\).
+
+   **Fix.** State the necessary and sufficient condition \(\theta<8/9\), or take the minimum with the published \(\sqrt2\) algorithm.
+
+   **PROVED.** The table’s arithmetic is correct at zero slack. But \(\eta_0>0\) is required. At \(d=9,k=13,\mu=17/156\),
+   \[
+   c_{\rm DL}=\frac{55\sqrt2}{78}+\frac{\eta_0}{\sqrt2},
+   \]
+   within the relevant branch. A fixed positive slack cannot be absorbed into \(o(1)\).
+
+   **Fix.** Label the finite table entries “zero-slack infima.” State the degree-nine result with any fixed positive excess above \(55\sqrt2/78\). The threshold \(\eta_0<0.00395715211668\ldots\), and both advertised infima, are correct.
+
+8. **MAJOR — Corollary DL′: verified auxiliary logarithms need not yield a consistent congruence modulo \(p-1\).**  
+   Location: [Corollary DL′](/Volumes/git/factoring-connection/notes/dlog_results.md:384).
+
+   **PROVED counterexample.** Take
+   \[
+   p=7,\quad t=2,\quad g=4,\quad h=2.
+   \]
+   Then \(h=g^2\), and the verified auxiliary logarithms \(t^2=g,\ t^1=h\) give \(u=2,v=1\). Nevertheless \(2x\equiv1\pmod6\) is inconsistent.
+
+   Verification only establishes the congruence modulo \(\operatorname{ord}(t)\).
+
+   **Fix.** Reject inconsistent congruences and restart. Return only a verified exponent satisfying \(g^x=h\). Distinguish this from returning a canonical representative together with the exact modulus \(\operatorname{ord}(g)\).
+
+   **PROVED.** The expected-time argument survives. Use \(C(1+\log_2 n)\) fresh bases per doubled budget, with \(C\) large enough that the failure probability of each sufficiently large stage is at most \(1/4\). Markov’s inequality on the combined cost of the two primitive-base calls gives the required summable doubling tail.
+
+   Delete the optional appeal to factoring \(p-1\) by **full Theorem A** if the corollary is meant to assume only Steps 1–7.
+
+9. **MAJOR — §6(b): the Schirokauer-map “if and only if” is false on \(H_\ell\).**  
+   Location: [§6(b)](/Volumes/git/factoring-connection/notes/dlog_results.md:417).
+
+   **PROVED.** A map into \(\mathbf F_\ell^d\) cannot be injective on an \(H_\ell\) of dimension greater than \(d\). Enlarging \(S\) creates this obstruction independently of the class number and ordinary unit regulator.
+
+   A concrete example is \(K=\mathbf Q\), \(S=\{2,3\}\), \(\ell=5\). The class number is one and the rank-zero regulator condition is vacuous, but the Fermat-quotient map kills the non-fifth-power \(18=2\cdot3^2\):
+   \[
+   \frac{18^4-1}{5}\equiv0\pmod5.
+   \]
+
+   **Fix.** Restrict the assertion to ordinary units in the appropriate good-prime domain, and state the precise full-rank condition there. Handle \(S\)-unit valuations separately. Present \(\ell\nmid h_K\) as a sufficient condition removing the class-group obstruction, not a general necessary-and-sufficient characterization. The standard exposition makes these separate assumptions. [Schirokauer, §2.2, Step 3](https://library.slmath.org/books/Book44/files/12oliver.pdf)
+
+10. **MINOR — §6(a): replace the asserted DL lower bound and justify the exceptional-zero sentence.**  
+    Location: [§6(a)](/Volumes/git/factoring-connection/notes/dlog_results.md:410).
+
+    **PROVED.** “Costing \(\ge\sqrt\ell\)” is unjustified for finite-field DL. Square-root lower bounds require a generic-group model; finite fields admit additional algorithms.
+
+    **Fix.** Say that BSGS supplies an \(\widetilde O(\sqrt\ell)\) upper bound, and that the proposed transfer supplies no uniformly cheap linearization for large \(\ell\).
+
+    **PROVED.** Odd-order Kummer characters being nonreal does not itself remove real quadratic characters arising from the cyclotomic base. A relative-character cancellation argument may resolve this, but it must be supplied.
+
+    **Fix.** Separate the order-\(\ell\) character estimate from sampling primes split in \(K(\mu_\ell)\). Until that argument is written, label the claimed small-\(\ell\) transfer as requiring this additional verification.
+
+11. **MAJOR — §7: the “optimality” and \(1/\sqrt2\) floor are overstated.**  
+    Location: [§7](/Volumes/git/factoring-connection/notes/dlog_results.md:438).
+
+    **PROVED.** The concavity calculation for the assumed function
+    \[
+    f(\kappa)=\frac{1-2\kappa}{2a}+\sqrt\kappa
+    \]
+    is correct. Its minimum occurs at an endpoint, with the stated comparison.
+
+    But optimizing an assigned cost expression does not prove a lower bound on algorithms. Lenstra–Pomerance supplies an **upper** bound for factoring the halves; it does not show that a single descent costs at least \(L^{1/\sqrt2}\).
+
+    **Fix.** Restrict the conclusion to the displayed cost model and described implementations. Replace the asserted floor by “the present analysis retains a \(1/\sqrt2\) shape-test term.” This does not change Theorem DL’s upper bound.
+
+12. **MINOR — the character-free factoring remark establishes existence, not its claimed algorithmic cost.**  
+    Location: [Proposition XK, remark (iii)](/Volumes/git/factoring-connection/notes/dlog_results.md:336).
+
+    **PROVED.** The index-at-most-four argument and the resulting existence of an odd vector are sound. However, XK currently outputs one primitive torsion relation. It does not automatically compute the required odd vector satisfying both sign constraints.
+
+    **Fix.** Supply an algorithm producing enough independent torsion relations, saturating their span, and imposing the two sign constraints within the claimed budget. Otherwise label the factoring consequence as an algorithmic sketch whose cost remains to be established.
+
+13. **MINOR — literature and experiment wording need narrower claims.**  
+    Location: [§1](/Volumes/git/factoring-connection/notes/dlog_results.md:82), [§6(d)](/Volumes/git/factoring-connection/notes/dlog_results.md:426), [toy unit elimination](/Volumes/git/factoring-connection/src/dlog/pipeline.py:203).
+
+    **KNOWN.** Pomerance’s rigorous benchmark is as quoted; his later account explicitly explains the rigorous smoothness-testing ingredient. [Pomerance, §7](https://library.slmath.org/books/Book44/files/11carl.pdf)
+
+    **HEURISTIC — literature assessment.** I found no verified general prime-field improvement below \(\sqrt2\), including for almost all primes or under GRH. I also found no DL-index-calculus reference pre-empting the precise specialized \(L^{3a}\) proposition. These are search conclusions, not nonexistence theorems.
+
+    **KNOWN.** Polynomial-time exact multiplicative-relation algorithms substantially predate this note. Novelty should concern the specialized construction, quantified cost and DL application. [Lenstra–Silverberg, Theorem 1.11](https://arxiv.org/pdf/1509.08843)
+
+    **PROVED.** The KW table entry needs \(L_Q[\alpha+o(1)]\), rather than \(L_Q[\alpha]\), when \(p=L_Q[\alpha]\). Their theorem’s extra \(\log n\) factor prevents the latter fixed-constant conclusion. [Kleinjung–Wesolowski, Theorem 1.1 and introduction](https://arxiv.org/pdf/1906.10668)
+
+    **PROVED.** The difference between modular and rational kernel dimensions detects Smith-invariant divisibility, not specifically class-group torsion; the matrix \([2]\) already exhibits it. Also, the toy code runs LLL on the entire returned kernel, rather than the fixed-size subset used in XK4.
+
+    **Fix.** Call the experimental discrepancy “integral versus mod-2 rank discrepancy,” and explicitly state that the toy implementation does not validate XK’s asymptotic cost.
