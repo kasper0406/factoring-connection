@@ -209,3 +209,5 @@ Agents commit LOCALLY only; the orchestrator pushes.
 |---|---|---|
 | `nonexact` | O1: non-exact / evaluated compressions (reductions holding only mod N, or small only in value at m) — construction or barrier | notes/nonexact_*, src/nonexact/*, tests/test_nonexact* |
 | `rank3` | resbarrier §2.6: rank r ≥ 3 linked modules with two nonlinear sides (and ptesplit's O3 remainder) — prove G_r-type bound charging both sides, or find a family | notes/rank3_*, src/rank3/*, tests/test_rank3* |
+| `analytic` | non-relational: analytic algorithms (fast exponential/theta sums, Hiary-type N^{1/3}, Odlyzko–Schönhage, Riemann–Siegel analogues) for factor-revealing arithmetic functions; dequantisation angle (classical evaluation of Shor-type exponential sums) | notes/analytic_*, src/analytic/*, tests/test_analytic* |
+| `slpcirc` | non-relational: algebraic complexity — short straight-line programs / circuits mod N for factor-revealing products (n!, ∏(x+i)), τ-conjecture weak forms, Lipton/Shub–Smale route | notes/slpcirc_*, src/slpcirc/*, tests/test_slpcirc* |
