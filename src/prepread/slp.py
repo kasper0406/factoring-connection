@@ -176,19 +176,23 @@ def ph_phi(ys: np.ndarray, w: int, p: int, e: int, m: int):
     return L, ops
 
 
-def chain_slp(size: int, rng: random.Random, consts=(1, 2, 3), pmul: float = 0.6):
-    """Post-hoc generator (E1b): each op takes the previous node as left operand and a uniformly random
-    earlier node as right operand, with '*' chosen with probability pmul. Degrees grow like 2^{Theta(size)}
-    and the output depends on the whole chain (no dead code)."""
+def chain_slp(size: int, rng: random.Random, consts=(1, 2, 3), pmul: float = 0.7, psq: float = 0.6):
+    """Post-hoc generator (E1b): each op takes the previous node as left operand. '*' is chosen with
+    probability pmul and is a squaring with probability psq, otherwise the right operand is a uniformly
+    random earlier node. Degrees grow like 2^{Theta(size)}; the output depends on the whole chain."""
     leaves = ['x'] + list(consts)
     n = len(leaves)
     ops = []
     cur = 0
     for k in range(size):
-        op = '*' if rng.random() < pmul else rng.choice('+-')
-        j = rng.randrange(n + k)
-        if op != '*' and j == cur:
-            j = 0
+        if rng.random() < pmul:
+            op = '*'
+            j = cur if rng.random() < psq else rng.randrange(n + k)
+        else:
+            op = rng.choice('+-')
+            j = rng.randrange(n + k)
+            if j == cur:
+                j = 0
         ops.append((op, cur, j))
         cur = n + k
     return (leaves, ops)

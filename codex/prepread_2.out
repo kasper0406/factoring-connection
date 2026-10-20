@@ -1,0 +1,226 @@
+**Overall verdict: MAJOR REVISION.**
+
+Theorem MIN is sound after a minor proof repair—and its argument proves a stronger result. O1-N also survives, provided efficiency, uniformity, and randomness are stated explicitly. However, Prop CS is false as written, Prop PH has a conjugation error, and several headline conclusions exceed what the reductions establish.
+
+| Claim | Verdict | Required correction |
+|---|---|---|
+| Prop UF | CORRECT | Additive-character orthogonality gives the identity exactly. |
+| §1 “order is the dial” | OVERCLAIMED | Order distinguishes the observables formally; computational difficulty depends on the order’s factorisation, access, and uniformity. |
+| §2.1 Laurent bound | KNOWN | Correct; cite corrected Fu–Wan preprint **Theorem 4.6**, version 3, as specified below. |
+| §2.1 cyclic width and threshold | CORRECT WITH FIXES | Width and single-prime threshold are correct. Fix composite normalisation and qualify “generic SLPs.” |
+| §2.1 composition/sheaf remark | CORRECT WITH FIXES | The displayed square-root-character identity requires \(\chi(-1)=1\); otherwise the sum vanishes. Retain heuristic status. |
+| §2.2 monomials | CORRECT WITH FIXES | BGK gives the claimed power saving; include an implicit constant or sufficiently-large-\(p\) qualification. |
+| Prop PH | CORRECT WITH FIXES | Bit peeling and size are correct. Replace \(A_p(\chi,c)\) by \(A_p(\bar\chi,c)\). State the exact prime-family and auxiliary-input qualifications. |
+| Theorem O1-DL | CORRECT WITH FIXES | Repair SFT citation, list-output formulation, confidence accounting, and runtime. |
+| O1-DL no-generator remark | CORRECT WITH FIXES | Full-log verification works after cofactor completion; partial logs alone are not automatically checkable. |
+| Corollary O1-N | CORRECT WITH FIXES | CRT, order bound, and averaging work. Require efficient \(h\), available programs, uniform parameter bounds, and a quantified randomness hypothesis. |
+| §2.5 quantitative hardness inequality | OVERCLAIMED | SFT has unspecified polynomial dependence on \(1/\tau\); the displayed square-root tradeoff does not follow. |
+| §2.5 “exceptions exactly” / sharpness | OVERCLAIMED | PH supplies examples, not a classification of all exceptions. OA does not classify arbitrary correlating SLPs. |
+| §2.5 unconditional barrier discussion | CORRECT WITH FIXES | Restrict to suitable hard-order characters; an unrestricted cancellation bound conflicts with PH. |
+| §3.1 Frobenius dictionary/Burnside/Markov | CORRECT | Use distinct roots and exclude the stated bad primes. |
+| §3.1 universal FPP upper bound | WRONG | Transitive groups can have FPP tending to \(1\), not merely \(1-e^{-1}\). |
+| Prop CS | WRONG | Missing bad-prime contribution; the “silent by \(\sqrt X\)” conclusion compares against the wrong target. |
+| GAL-0(a) | CORRECT | Integer roots remain distinct because \(D<p\). |
+| GAL-0(b) | CORRECT WITH FIXES | Impose Eisenstein conditions modulo \(\ell_1^2\); choose auxiliary primes large enough for the prescribed squarefree types. |
+| GAL-0(c) | CORRECT | The Kummer/Chebotarev and integral CRT construction works, including primitivity and distinct reduction. |
+| GAL-0 permanent-hard consequence | CORRECT WITH FIXES | The barrier must cover unit multiples of Pochhammer, including Bürgisser’s power-of-two multiple. |
+| Prop AB | CORRECT WITH FIXES | Replace \(\deg F\) by \(\deg\operatorname{rad}F\), or assume squarefree. Separate field containment from algorithmic classification. |
+| §3.4 GL₂ remark | WRONG | Division-polynomial roots see torsion modulo sign; include the twist, and use the full Frobenius action. |
+| Frobenius-pinning conjecture | CORRECT WITH FIXES | Keep explicitly conjectural; Kronecker–Weber and Ritt–Eremenko do not establish the proposed classification. |
+| §4 preimage recurrence | CORRECT WITH FIXES | Require odd \(p\); define \(\beta_j\) only for nonempty \(T_j\). |
+| Lemma DEF | CORRECT | Positive final root count ensures all relevant sets are nonempty. |
+| Prop OUT | CORRECT | Uniformity follows from the finite alphabet and fixed quadratic characters. |
+| Prop PFX | CORRECT WITH FIXES | Require nested outer prefixes actually dividing every sufficiently deep word under consideration. |
+| Theorem MIN | CORRECT WITH FIXES | Repair the general invariant-disc calculation; the remaining argument works. |
+| MIN depth/GRH remarks | CORRECT WITH FIXES | Fixed parameters are essential. Slow growing excess is possible; the quantitative GRH sketch needs proof. |
+| §4.5 random coefficients | CORRECT WITH FIXES | For interval sampling, state an upper bound with factor \((1+p/H)^k\), not an exact expectation. |
+| Conjecture QC and “remaining class” | CORRECT WITH FIXES | QC remains open; OUT/MIN do not establish its shrinking-density conclusion or reduce it solely to intersective words. |
+| §5 table | OVERCLAIMED | Carry forward the efficiency, fixed-\(\mu\), PH, and partial-versus-full-DL qualifications. |
+
+**1. O1-DL and O1-N**
+
+Write \(n=p-1\), \(C_j=\widehat F(j)\), and \(x=\log_g y\). The essential identity is correct:
+\[
+\mathbb E_s f(yg^s)e(-js/n)=C_j e(jx/n).
+\]
+Estimate both this expectation and \(C_j\) to additive accuracy \(O(\tau)\). With sufficiently small absolute constants, their quotient determines the phase within \(1/16\) turn using
+\[
+O\!\left(\tau^{-2}\log((K+2)/\delta)\right)
+\]
+samples per measurement. Include the coefficient estimate and SFT failure probability in the confidence budget.
+
+Backward unwrapping works on the circle: if the next estimate has error \(E\), one of its two half-angle lifts has error \(E/2\); the other is half a turn away. Measurements accurate to \(1/16\) select the correct lift. The stated \(K\) is ample. Finally, with \(a=\gcd(j,n)\),
+\[
+x\equiv (jx/a)(j/a)^{-1}\pmod{n/a}.
+\]
+Thus the gcd cofactor is handled correctly. Full completion solves
+\[
+y g^{-x_0}=(g^{n/a})^t,\qquad 0\le t<a,
+\]
+by BSGS in \(O(\sqrt a)\) group operations.
+
+The SFT reference needs correction. **AGS 2003, Theorem 5** directly treats complex-valued functions over finite abelian groups with known coordinates. Mansour’s cited result has a power-of-two restriction. **Akavia 2009, Theorem 4** additionally depends on Fourier \(\ell^1\)-norm; it does not justify the stated cost for arbitrary bounded \(f\). Approximate SFT returns \(O(\tau^{-2})\) candidates, rather than necessarily exactly the \(\le\tau^{-2}\) genuinely heavy frequencies. [AGS, §7](https://www.cs.tau.ac.il/~safra/PapersAndTalks/hardcore.pdf), [Akavia 2009, Theorem 4](https://people.csail.mit.edu/akavia/akaviaCrypto2009.pdf).
+
+An unspecified correlating character is not identifiable uniquely. State a list guarantee containing a suitable frequency and its corresponding partial logarithm, or specify an order criterion. Trying the list and cofactor completion preserves polynomial time, but changes the advertised detailed runtime.
+
+The no-generator observation is repairable: retry random bases, complete full logs, and verify. For a DL instance with prescribed base \(b\), recover verified logs of both \(b\) and \(y\) relative to a successful random generator, then solve the resulting congruence. Do not claim that an arbitrary partial-log answer certifies success.
+
+For O1-N, the CRT formula is **exactly right**:
+\[
+e(h\Phi(y)/pq)
+=e(hq^{-1}\Phi(y_p)/p)\,
+ e(hp^{-1}\Phi(y_q)/q).
+\]
+Consequently, Fourier conjugation gives the stated two \(A\)-factors. Each factor has magnitude at least \(\sqrt\tau/i\). Also,
+\[
+\frac{(p-1)(q-1)}{\kappa i}
+\le \operatorname{ord}\chi
+\le \operatorname{ord}\chi_p\,(q-1),
+\]
+which proves the required order bound.
+
+The averaging is valid—indeed, the usual reverse averaging bound gives at least \(\mu/(2-\mu)\) of vertices with partner fraction at least \(\mu/2\). Sample \(q'\ne p\) uniformly by rejection. Computing
+\[
+c=h(pq')\,q'^{-1}\pmod p
+\]
+requires neither an unknown factor nor the witness \(a\). Freeze \(h\)’s coins throughout each trial.
+
+But the statement needs:
+
+- polynomial-time \(h\), with its runtime counted;
+- uniform bounds \(i\le I\), \(\kappa\le K\);
+- \(\Phi_X\) supplied as advice, or efficiently constructible;
+- success probability over **pairs and random coins**, or a specified per-good-pair success probability.
+
+Mere existence of favourable random coins is insufficient. Under these repairs, **the \(\ge\mu/2\) prime-field full-DL conclusion is correct**, with polynomial dependence on the stated parameters. Without constructibility, it is a nonuniform conclusion.
+
+This is established Fourier/list-decoding methodology applied to the observable, not a new cryptographic principle. Boneh–Venkatesan’s HNP concerns approximate **field products**, so it is related background rather than the exact theorem being used. [Boneh–Venkatesan, CRYPTO 1996, pp. 129–142](https://theory.stanford.edu/~dabo/abstracts/dhmsb.html).
+
+Delete §2.5’s explicit square-root hardness tradeoff unless a suitable frequency is supplied or SFT cost is incorporated. Also distinguish DL in the quotient detected by \(\chi\) from DL in an order-\(\ell\) subgroup: if \(\ell^2\mid p-1\), an order-\(\ell\) character can be trivial on that subgroup. The near-full-order corollary avoids this through bounded cofactor completion.
+
+**2. PH and Weil**
+
+PH’s invariant, peeling update, and \(O(\log m+e^2)\) size are correct. The correlation sign is wrong under the paper’s definition:
+\[
+\chi(y)=e(L(y)/2^e)
+\quad\Longrightarrow\quad
+\text{large }A_p(\bar\chi,c).
+\]
+Concrete counterexample: \(p=13,e=2,m=3,c=3\) gives
+\[
+|A_p(\chi,3)|\approx0.05994,\qquad
+|A_p(\bar\chi,3)|\approx0.99090.
+\]
+The corrected \(0.8\) bound is safe.
+
+“N-independent” applies to the two-input arithmetic program with fixed \(e,m\). The nonresidue \(w\) remains an auxiliary random input, and \(c\) is prime-dependent. Moreover, \(u\mid m\) is stronger than “\(u\) is \(B\)-smooth” when \(m\) is the odd part of \(\operatorname{lcm}(1,\ldots,B)\): prime-power exponents matter. The construction refutes an unrestricted size/order cancellation theorem; it does not classify its exceptions.
+
+The Laurent bound and cyclic width are correct. Cite **Fu–Wan, corrected preprint v3, Theorem 4.6**; its \(d=1,f(t)=t\) specialization gives the quoted rational-function bound. Constants are handled separately by character orthogonality. [Fu–Wan, Theorem 4.6](https://arxiv.org/pdf/1303.3650v3).
+
+For two nontrivial component characters, the exact composite bound is
+\[
+|\widehat\Psi(\chi)|
+\le \frac{w_pw_q\sqrt N}{(p-1)(q-1)},
+\]
+not \(w_pw_q/\sqrt N\). The latter is asymptotic. “Generic SLPs have width \(\approx p\)” needs a probability model; \(w\le2^s\) alone establishes no typical behaviour.
+
+For the composition identity, square roots \(\lambda^2=\chi\) exist precisely when \(\chi(-1)=1\); otherwise pairing \(x,-x\) gives zero.
+
+The monomial deduction is sound. A checked formulation of the needed BGK input is **Kowalski, Theorem 1.1**, including its implied constant. [Complete proof and statement](https://people.math.ethz.ch/~kowalski/small-subgroups.pdf).
+
+**3. Galois claims**
+
+The FPP upper bound is false. In the degree-\(D\) action of \(\operatorname{AGL}_1(\mathbb F_D)\), for prime-power \(D\), only nonidentity translations are derangements. Hence
+\[
+\operatorname{FPP}=1-\frac1D\longrightarrow1.
+\]
+
+Prop CS has two independent defects.
+
+First, excluding polynomial-discriminant primes cannot be paid for using only field discriminants. Let
+\[
+M=\prod_{X<p\le2X}p,\qquad F=x(x-M).
+\]
+Both factor fields are \(\mathbb Q\), but every interval prime is excluded. The displayed left side is zero while its asserted main term is \(2(\pi(2X)-\pi(X))\), exceeding the stated error.
+
+Add a bad-prime term, safely bounded by \(D\,\#B_X\), or assume there are no bad primes in the interval. The underlying GRH prime-ideal error
+\[
+O\!\left(\sqrt X\sum_i(\log|d_{K_i}|+n_i\log X)\right)
+\]
+is otherwise legitimate. The cited unconditional range is a **sufficient range of that theorem**, not a necessary limit on all methods. [Lagarias–Odlyzko, Theorems 1.1 and 1.3](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf).
+
+Second, dense roots require a total of order \(\mu X^2/\log X\), not the ordinary main term \(tX/\log X\). For example, with \(t=O(1)\), \(D\asymp X\), no interval bad primes, and \(\sum\log|d_{K_i}|=O(X\log X)\), the asserted error is \(O(X^{3/2}\log X)\), which **does exclude** uniform positive root density. Delete the universal “silent by \(\sqrt X\)” conclusion.
+
+GAL-0(b) works: Eisenstein gives transitivity; a \((D-1)\)-cycle makes the action doubly transitive; conjugating the transposition produces every transposition. State the auxiliary congruences precisely.
+
+GAL-0(c) also works. Choose \(\ell\) splitting completely in the indicated Galois Kummer extension. Its Frobenius conditions put every interval prime in the kernel defining the degree-\(D\) cyclotomic subfield. Integral CRT assigns distinct residues at its \(D\) primes above each \(p\). These assignments force all conjugates of \(\theta\) to be distinct, so \(\theta\) is primitive, and their differences remain units above \(p\).
+
+“Density \(\approx1/3\)” should read “between approximately \(1/6\) and \(1/3\)” for \(D=\lfloor X/3\rfloor\).
+
+The permanent consequence holds for barriers covering
+\(2^{e(n)}\prod_{a\le n}(x-a)\), whose splitting field is still trivial. Hardness solely of the **unscaled, monic, division-free** Pochhammer program does not follow from the quoted scaled construction. [Bürgisser, preprint Theorem 4.1(2)](https://eccc.weizmann.ac.il/report/2006/113/download/).
+
+AB’s character decomposition is correct on **distinct roots**:
+\[
+\sum_\chi n_\chi=\deg\operatorname{rad}F.
+\]
+Each irreducible abelian factor has a regular quotient action, hence contributes its full degree or zero. This establishes cyclotomic containment and residue-class dependence; it does not turn every such polynomial into an efficient torus algorithm.
+
+For odd \(M\), away from bad primes,
+\[
+Z_p(\psi_M)
+=\frac{|E(\mathbb F_p)[M]|+|E^{\mathrm{tw}}(\mathbb F_p)[M]|-2}{2}.
+\]
+The root permutation action factors through torsion modulo \(\pm1\). The characteristic polynomial alone need not determine these kernels: identity and nontrivial unipotent matrices modulo \(\ell\) have the same characteristic polynomial but different fixed-space sizes.
+
+**4. MIN: proof audit and attempted counterexamples**
+
+The statement is true.
+
+Replace the general invariant-disc calculation by this simpler estimate. If degrees are at most \(D_0\), lower coefficients have magnitude at most \(H\), and \(r>R=D_0H+2\), then
+\[
+|g(z)|\ge r^{d-1}(r-dH)>r>R.
+\]
+Thus every preimage of the closed \(R\)-disc lies inside it. The quadratic radius stated in the manuscript is correct.
+
+Northcott finiteness here is elementary coefficient boundedness. With \(a=\mu2^{-\Delta}\),
+\[
+\frac{t_P}{\deg P}
+\le \frac{N(d)}{2^m}+\frac1{d+1}<a.
+\]
+The choices of \(d,m\) establish exactly this. Multiplicities cause no problem: they increase the degree budget without increasing the number of distinct irreducible factors.
+
+Prefix transfer is correct. Burnside must act on the distinct roots of \(\operatorname{rad}P\), as written. Its discriminant is nonzero; only finitely many primes are bad. Fixed-field Chebotarev gives dyadic proportions, and finitely many prefixes give uniformity. The shallow-word argument and the positive minimum defining \(\kappa\) are valid.
+
+The proposed counterexamples do not break this:
+
+- powers of \(x^2\) have one distinct root;
+- a fully rationally split prefix has only finitely many possible distinct integer roots in \([-R,R]\);
+- \(x^2-1\), PCF behaviour, and repeated roots are covered without separability of the full composition;
+- Chebyshev/power families still satisfy the same low-degree-factor bound.
+
+In fact, choose \(d,m\) so that \(t_P/\deg P<\varepsilon a\), then apply **Markov**, not merely “the bad set is nonempty.” The same proof establishes
+\[
+\sup_{\deg F\le2^\Delta X}
+\frac{\#\{p\in(X,2X]:Z_p(F)\ge\mu p\}}
+{\pi(2X)-\pi(X)}
+\longrightarrow0.
+\]
+This strengthens MIN substantially.
+
+The parameters \(\mu,\Delta\) remain fixed. Qualitative diagonalisation permits some arbitrarily slowly growing excess depth. Under GRH, \(\log N(d)=O_{\mathcal G}(d^2)\) makes a sufficiently small \(c\log\log\log X\) extension plausible, but the splitting-field degree/discriminant estimates must be supplied. This method does not presently reach general polylogarithmic depth or \(\mu=(\log X)^{-B}\).
+
+I found no exact prior statement of this uniform finite-alphabet theorem. Its fixed-prefix machinery is standard arithmetic dynamics: **Stoll as quoted in Jones 2013, Theorem 2.3**, verifies the \(x^2+1\) example. [Jones’s survey](https://www.numdam.org/item/PMB_2013____107_0.pdf). Related results have materially different hypotheses: **Doyle–Healey–Hindes–Jones, Theorem 1.5**, assumes large arboreal image; **Ferraguti, Theorem 2.3**, concerns stable primes; Benedetto–Juul and Looper construct surjective arboreal representations. These do not establish MIN’s universal statement. [DHHJ](https://arxiv.org/pdf/2108.11233), [Ferraguti](https://arxiv.org/pdf/1704.02204), [Benedetto–Juul](https://rlbenedetto.people.amherst.edu/papers/RLBJLJodoni.pdf), [Looper](https://arxiv.org/abs/1609.03398).
+
+**5. Remaining corrections and §0**
+
+DEF is correct. PFX needs an actual nested outer-prefix tower, not merely one fixed polynomial \(P\). In §4.5, uniform coefficients give expectation exactly one; interval coefficients give the stated multiplicative **upper bound**, useful when its factor is controlled.
+
+OUT excludes approximately half the primes; it does not prove QC’s \(o(1)\) dense-prime conclusion. Likewise, fixed-\(\mu\) MIN does not settle shrinking-\(\mu\) QC. The claim that only intersective growing-excess words remain conflates failure of W_U with QC’s stronger assertion.
+
+Finally:
+
+- “Separate exactly at character order” is a useful framing, not a proved complexity dichotomy.
+- “No per-prime obstruction” is correct for unrestricted, prime-specific polynomials.
+- “O1 strictly stronger than factoring” is unjustified: **no known reduction** is not a separation. Say that an efficient O1 factoring method satisfying the repaired hypotheses would additionally yield prime-field DL on a positive prime fraction.
+- The existential peak hypothesis alone should not be advertised as a complete factoring algorithm; Theorem T supplies a necessary condition, with possible restriction-class cancellation.

@@ -49,12 +49,23 @@ def e1_members():
     return mem
 
 
-def e1():
+def e1b_members():
+    """POST-HOC (not pre-registered): high-degree chain SLPs, see slp.chain_slp."""
+    mem = []
+    for size in (24, 32, 40):
+        for i in range(10):
+            rng = random.Random(f'prepread|E1b|{size}|{i}')
+            mem.append((f'E1b_s{size}_{i}', 'E1b', S.chain_slp(size, rng)))
+    return mem
+
+
+def e1(members=None, tag='e1'):
     t0 = time.time()
     small = seeded_primes('E1small', 2 ** 13, 2 ** 14, 4)
     large = seeded_primes('E1large', 2 ** 15, 2 ** 16, 2)
-    f = out('e1')
-    members = e1_members()
+    f = out(tag)
+    if members is None:
+        members = e1_members()
     for p in small + large:
         g = SP.primitive_root(p)
         orb = SP.orbit(p, g)
@@ -90,8 +101,10 @@ def e1():
                     row['M_allnonzero'] = Mall
                     row['weil_ok'] = Mall <= row['weil_bound'] * (1 + 1e-9)
             f.write(json.dumps(row) + '\n'); f.flush()
+        if tag != 'e1':
+            print(p, 'done', round(time.time() - t0, 1), flush=True)
+            continue
         # planted DL control (HARNESS)
-        logs = np.empty(p, dtype=np.int64); logs[orb] = np.arange(p - 1)
         v = (p * np.arange(p - 1)) // (p - 1)
         M, cm, jm = SP.spectrum_max(v, p, cs, mask)
         f.write(json.dumps({'kind': 'member', 'name': 'F4_planted_DL', 'family': 'F4', 'p': p,
@@ -242,14 +255,18 @@ def e4():
 
 
 # ---------------------------------------------------------------- E5
-def e5():
+def e5(gen='random', tag='e5'):
+    """gen='chain' (tag e5b) is POST-HOC: chain SLPs of size 40 (high degree)."""
     t0 = time.time()
     primes = seeded_primes('E5', 2 ** 13, 2 ** 14, 12)
     xs = {p: np.arange(p, dtype=np.int64) for p in primes}
-    f = out('e5')
+    f = out(tag)
     nhit = 0
     for i in range(2000):
-        prog = S.random_slp(20, random.Random(f'prepread|E5|{i}'))
+        if gen == 'random':
+            prog = S.random_slp(20, random.Random(f'prepread|E5|{i}'))
+        else:
+            prog = S.chain_slp(40, random.Random(f'prepread|E5b|{i}'))
         dens, zero = [], []
         for p in primes:
             v = S.eval_mod(prog, xs[p], p)
@@ -269,4 +286,4 @@ def e5():
 
 
 if __name__ == '__main__':
-    {'e1': e1, 'e2': e2, 'e3': e3, 'e4': e4, 'e5': e5}[sys.argv[1]]()
+    {'e1': e1, 'e1b': lambda: e1(e1b_members(), 'e1b'), 'e2': e2, 'e3': e3, 'e4': e4, 'e5': e5, 'e5b': lambda: e5('chain', 'e5b')}[sys.argv[1]]()
