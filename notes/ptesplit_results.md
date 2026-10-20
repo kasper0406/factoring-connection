@@ -42,35 +42,42 @@ open, under conditional barriers only:
 - the window heuristic below;
 - resbarrier's G_r.
 
-No construction meets the target. ptecons examined seven families, and our census shows fibres collapsing by M ≈ 8.
+No construction meets the target. ptecons examined seven families. Our census shows fibres collapsing by M ≈ 8; this is at
+R ≤ 30 only, with R decreasing in M.
 
 **Precise verdict on route 1's open escape.**
 1. **Exact compressions: refuted, in the regime.** By ptebarrier Theorem W, Corollary P and Prop S [PROVED, with their
    degree, height and regime hypotheses], an exact compressed family whose degrees and log-heights are
-   o(x/log B) provides ≤ 1 relation per presentation. This covers every BGJT-shaped family.
+   o(x/log B) provides ≤ 1 relation per presentation. Precisely, the View B scope is
+   (k + j)·log B + log(H·H_Q) = o(x/log B). In View A, Prop S needs instead (ρ+1)H(|m|+Y)^ρ(d+1)Y^d < N, with all
+   roots within Y of m. This covers every BGJT-shaped family.
    - Outside the regime it is open: large multiplier or quotient degree, and corner parameters (ptebarrier O3).
    - For small M, Lemma NC gives an NFS-like *description* of the members. It does **not** give an exclusion (codex #2).
 2. **Seeded additive (PTE fibres): bounded amplification.**
    - A k = 1 fibre has ≤ 2c·B^{1/2}(log B)^κ + 4 members for M ≥ 4 (ptebarrier, from Binyamini–Cluckers–Novikov).
    - Its residuals are spaced by (M − 1)! (Kleiman).
-   - So one seed buys at most B^{1/2+o(1)} relations.
+   - So one seed buys at most B^{1/2+o(1)} relations. This is proved only for k = 1 and M ≥ 4.
+   - For k ≥ 2 the proved bound is the injection bound C(2B + k, k) ≤ (2B + k)^k, and the residual sizes are only
+     heuristic.
    - No sub-L[1/3] seed source is known. That is an assessment: we prove no seed-cost lower bound, and cheap special seeds
      exist (codex #5).
    - Near-ideal fibres (k ≥ 2) are controlled only heuristically (NC; the window lemma).
 3. **Non-exact and evaluated compressions: open (ptebarrier O1).** No barrier and no candidate. Any construction would
    have to live here: congruences mod N that are coherent across a family without being exact over Z.
    - The sufficient primitive is smoothenum's output-sensitive split or doubly-smooth listing.
-4. **Relation to resbarrier §2.6.** In the residue view (no rational side), the exact two-order implementation of the
-   escape is a bounded-coefficient rank-≤ k linked module between two nonlinear orders: an *instance* of resbarrier
-   §2.6 (§2.4). That case is closed only under the generic-modulus heuristic G_r, with a conditional formal floor of
-   L[1/4] for aggregate families.
-   - The containment is scoped. It covers that implementation only; other presentations and extraction schemes are not
-     shown to reduce to it (codex #7).
+4. **Relation to resbarrier §2.6.**
+   - Theorem W already covers the exact two-order residue-view implementation inside its regime.
+   - *Outside* that regime (ptebarrier O3), the implementation is an instance of resbarrier §2.6 (§2.4): a
+     bounded-coefficient linked module of rank ≤ k between two nonlinear orders (δ ≥ 2), with k ≥ 3.
    - The converse fails: §2.6 needs no split structure.
-   - **Joint statement:** in the residue view, what remains of route 1 that is not already O1 lies inside resbarrier's
-     single open case. A rigorous rank-r ledger, or a proof of G_r, would close both at once. In the integer-evaluation
-     view (rational side present), ptebarrier Prop S applies in its regime. resbarrier KL bounds heights only under its
-     own hypotheses (fixed module, rank ≥ 2), which we have not verified here for every member shape.
+   - The other scope exclusions (§2.4) and O2/O4 stay separately open.
+   - **Joint statement (corrected after the proof critic).**
+     - A rigorous rank-r ledger that also charges the split side would close this remainder. So would G_r together with a
+       transfer of resbarrier's heuristic H to box-linear element factor bases, which is not shown.
+     - G_r alone does *not* suffice. G_r is an aggregate-height exclusion, while here the O-side is split by construction,
+       so a family can put its height on O.
+   - In the integer-evaluation view, ptebarrier Prop S applies in its regime. resbarrier KL bounds heights only under its
+     own hypotheses (a fixed module, rank ≥ 2), which we have not verified for every member shape.
 
 **Assessment.** Probability < 1% that this escape yields sub-L[1/3]. The other estimates:
 - ptebarrier: < 1%; ptecons: < 1%;
@@ -82,7 +89,7 @@ No construction meets the target. ptecons examined seven families, and our censu
 - The window lemma (conditional).
 - Lemma NC, the same identity as ptecons LEDGER, read as an NFS-like description.
 - Prop NF.
-- The joint statement with resbarrier.
+- The (corrected) joint statement with resbarrier.
 - The literature map.
 - Two pre-registered experiments:
   - E1, an exhaustive PTE fibre census, M ≤ 10, 62 213 970 multisets: P1–P3 and P5–P6 held, P4 failed as stated;
@@ -133,13 +140,15 @@ No construction meets the target. ptecons examined seven families, and our censu
   with deg Q, deg Q′ ≤ j. If M ≥ K + 2⌊log₂(2^{K−1}√K·h·B^{K−1})⌋ + 4j + 3, then QP = Q′P′.
 - Theorem W: in that regime, every exact family h_A·P_A = F·Q_A + r_A gives one common relation. F may have any degree and
   height.
-- Corollary P: an exact PTE family with d ≥ k has ≤ 1 member.
-- Prop S: in View A, under (ρ+1)H(|m|+Y)^ρ(d+1)Y^d < N, an exact PTE family has ≤ 1 member once M − k ≥ d + 2ρ − 1.
+- Corollary P: an exact PTE family with d ≥ k has ≤ 1 member once M ≥ k + 2⌊log₂(2^k√k·H·B^{k−1})⌋ + 3.
+- Prop S: in View A, with all roots within Y of m and (ρ+1)H(|m|+Y)^ρ(d+1)Y^d < N, an exact PTE family has ≤ 1 member
+  once M − k ≥ d + 2ρ − 1.
 - Scope: (k + j)·log B + log(H·H_Q) = o(x/log B) in View B. Outside it (O3) the question is open.
 
 **Lemma NC (norm ledger) [PROVED identity; the same identity as ptecons LEDGER].**
 - *Setting.* F̃ is monic. G is a monic irreducible factor of F̃ of degree δ ≥ 2 with N | G(m). If no factor G_i has
-  N | G_i(m), then some gcd(N, G_i(m)) is a proper factor of N. Suppose P = ∏(b_jX − a_j) ≡ r (mod F̃) in Z[X]; r is
+  N | G_i(m), then some gcd(N, G_i(m)) is a nontrivial proper factor of N. Ĝ(a, b) := b^δ·G(a/b) is the
+  homogenisation, and (a_j, b_j) ≠ (0, 0). Suppose P = ∏(b_jX − a_j) ≡ r (mod F̃) in Z[X]; r is
   integral because F̃ is monic. Let θ be a root of G.
 - *Statement.* P(θ) = r(θ) in Z[θ], and
 
@@ -148,8 +157,9 @@ No construction meets the target. ptecons examined seven families, and our censu
 - *Proof of the bound.* Use |r(θ_i)| ≤ ‖r‖₁·max(1, |θ_i|)^{deg r} and ∏_i max(1, |θ_i|) = M(G) ≤ M(F̃) ≤ ‖F̃‖₂
   (Landau).
 - *Consequences.*
-  - At most log₂(‖r‖₁^δ‖F̃‖₂^{deg r}) pieces are non-units. This counts piece *types*; unit pieces may repeat without limit.
-  - Unit types bθ − a: ≤ 2δ monic ones; O(δ) primitive ones for δ ≥ 3 (Thue; the Bombieri–Schmidt / Schmidt counts);
+  - At most log₂(‖r‖₁^δ‖F̃‖₂^{deg r}) pieces are non-units, counted with multiplicity. Unit types are few (below), but
+    unit pieces may repeat without limit.
+  - Unit types bθ − a: ≤ 2δ monic ones; O(δ) primitive ones for δ ≥ 3 (Thue; the Bombieri–Schmidt count);
     O(log B) in the box for real quadratic orders and O(1) for imaginary quadratic orders.
   - δ = 1 is the rational case: the identity is an exact integer identity, and the only N-information is m ≡ c (mod N).
   - Non-monic F̃ needs denominator accounting and is not covered. For 2X² − 1, N(θ) = −1/2 (codex #7).
@@ -162,19 +172,25 @@ No construction meets the target. ptecons examined seven families, and our censu
   on the algebraic side.
   - Box-linear elements need not lie in a bounded-norm prime-ideal factor base, so NFS smoothness probabilities do not
     transfer automatically.
-  - **NC alone excludes nothing for small M.** Its force is the regime M ≫ log₂‖r‖₁^δ, where ptebarrier's Lemma R already
-    applies.
+  - **NC alone excludes nothing for small M.** Its force is the regime M ≫ log₂‖r‖₁^δ, which overlaps Lemma R's regime
+    but is not contained in it.
 
 **Function-field contrast [assessment].** In BGJT the identity lives in the finite ring F_{q²}[X]/(I). Every piece X − a
 is a unit there and the norm carries no size. Over Z the ledger charges every root with |F(a)| ≥ 2 (ptecons LEDGER).
 
 ### 2.2 Mechanism C (non-exact) and N-free families
 
-**Non-exact members.**
-- ptebarrier Prop NX [PROVED]: in the PTE setting with d ≥ k, distinct members have distinct reduced N-defects.
-- This does **not** imply independent costs. Members can inherit compatibility from one difference identity.
-- Codex gives an outside-regime example: F = X² − (N+2), P = X², P′ = X² − 1, with equal defects.
-- For k = 1 the inherited compatibility is itself a split relation (ptebarrier NX1).
+**Non-exact members (ptebarrier §5.5).**
+- *Prop NX [PROVED, with hypotheses].*
+  - Setting: the PTE setting with deg(P − P′) < k, F monic of degree d ≥ k, members P_A ≡ r_A mod (N, F) with
+    ‖r_A‖ ≤ H < N/2, and M ≥ k + 2⌊log₂(2^k√k·H·B^{k−1})⌋ + 3.
+  - Conclusion: distinct members have distinct reduced N-defects.
+  - **Without these hypotheses it is false.** Codex's example has d = 2 ≥ k = 1, outside the M-threshold:
+    F = X² − (N+2), P = X², P′ = X² − 1, r = 2, r′ = 1, and both defects equal N.
+- *Inherited compatibility (a separate phenomenon).* Even injective defects do not mean independent congruence costs.
+  - ptebarrier's example: P = X²(X² − 49)², P′ = (X² − 64)(X² − 25)(X² − 9), P − P′ = 14400, N = 25.
+  - The members are compatible because 25 | 14400.
+  - For k = 1 such an inheritance is itself a split relation (NX1). For k ≥ 2 nothing is proved.
 - Counting the attainable defect cells is **open** (O1).
 
 **Codex blind [PROVED].** If d ≥ k, a shared remainder mod (N, F) forces P = P′ whenever some p | N exceeds 2B.
@@ -190,7 +206,9 @@ is a unit there and the norm carries no size. Over Z the ledger charges every ro
 - *Consequence.* Balanced semiprimes in the interval number e^{x+o(x)}. So for |S|, V, T = e^{o(x)} the successful
   fraction is **at most** e^{−x+o(x)}.
 - *Scope.* This shows that families succeeding for almost all N under these resource bounds must adapt to N. It does not
-  establish ptecons' uniform-rate heuristic AVG. Codex's counterexamples to the universal form (squares; lcm(range) + 1)
+  establish ptecons' uniform-rate heuristic AVG.
+- *Comparison.* The factorization factory (Coppersmith 1993) precomputes N-free data, namely rational-side smooth values,
+  not congruences mod N. Its N-dependence enters per N through the algebraic side. That is consistent with Prop NF. Codex's counterexamples to the universal form (squares; lcm(range) + 1)
   have exponentially many elements or exponential bit length.
 
 ### 2.3 Mechanism B (seeded additive PTE fibres)
@@ -206,8 +224,9 @@ is a unit there and the norm carries no size. Over Z the ledger charges every ro
     the Binyamini–Cluckers–Novikov uniform bound (arXiv 2302.04209, Thm 2: c·d²·B^{1/d}(log B)^κ). Rolle's theorem
     allows at most two non-squarefree levels.
   - M = 2 is genuinely exceptional: X² − a² is one fibre of size B + 1 (codex #6).
-- **Reading.** Mechanism B is a relation amplifier, with gain ≤ B^{1/2+o(1)} = L[α, O(1)] per seed.
-  - Total cost ≥ (#seeds)·(cost per seed).
+- **Reading.** Mechanism B is a relation amplifier, with gain ≤ B^{1/2+o(1)} = L[α, O(1)] per seed. This is proved for
+  k = 1 and M ≥ 4; for k ≥ 2 only the injection bound (2B + k)^k is proved.
+  - Total cost ≥ (#seeds)·(cost per seed), *if seeds are found independently*. Shared seed production is not excluded.
   - So any exponent statement needs an explicit **seed-cost hypothesis**, and we prove none.
   - Cheap special seeds exist. Codex: A = {0, 3, 4, 7}, A′ = {1, 1, 6, 6}, m = 24, N = P_A(24) − 1 = 349·491 gives
     residuals 1 and 37.
@@ -227,7 +246,10 @@ is a unit there and the norm carries no size. Over Z the ledger charges every ro
   φ′(θ′) = μ, factors the same residual r; the maps to Z/N agree on the residual generators.
 - *Claim.* The candidates {(r(θ), r(θ′)) : deg r < k, ‖r‖ ≤ h} form a linked module of effective rank ≤ k, with
   bounded coordinates.
-- *Classification.* For k ≥ 3 with O′ nonlinear, this is resbarrier §2.6. Rank 2 is resbarrier's C2 case.
+- *Classification.* For k ≥ 3 with both O (δ ≥ 2) and O′ nonlinear, this is resbarrier §2.6. Rank 2 is resbarrier's C2
+  case.
+- *Relation to Theorem W.* Inside ptebarrier's regime, Theorem W already gives ≤ 1 relation per presentation. Only the
+  O3 remainder lands in §2.6.
 - *Role of the split requirement.* It only strengthens the O-side condition, via ∏|Ĝ| = |N(r(θ))|.
 - *Why two orders.* A single order is the one-ring situation of resbarrier Theorem E and Lemma ND, which extracts nothing
   *for the extraction schemes that ND covers*.
@@ -243,11 +265,13 @@ is a unit there and the norm carries no size. Over Z the ledger charges every ro
   - pieces of higher degree. Norm multiplicativity survives there, but the linear Thue count does not.
 - G_r is a generic-modulus heuristic, not an all-N closure.
 
-**Consequence.**
-- The exact two-order residue-view implementation of route 1's escape is an instance of resbarrier's single open case.
-  The converse fails.
-- The two open problems should be stated **jointly**. A rigorous rank-r ledger, or a proof of G_r, closes both for that
-  implementation. Neither problem has a candidate construction.
+**Consequence (critic wording).**
+- The exact two-order residue-view implementation, *outside Theorem W's regime (O3)*, is an instance of §2.6.
+- What would close it: a rigorous rank-r ledger that also charges the split side, or G_r plus a transfer of resbarrier's H
+  to box-linear element factor bases (not shown).
+- G_r alone does not close it. G_r is an aggregate-height exclusion, while a split-by-construction O-side lets a family
+  put its height on O.
+- The scope exclusions above and O2/O4 remain separately open. Neither problem has a candidate construction.
 
 ## 3. Constructions (ptecons, final; summary)
 
@@ -270,7 +294,8 @@ Open there:
 - an output-sensitive enumerator.
 
 ptecons E2 (toy scale; confounded by different root bounds and pool truncation): the generic quartic's median residual
-exponent was 0.565 against COS's 0.574. That is within the registered 0.02 margin, so it is not a gain.
+exponent (0.565) was below COS's (0.574) by 0.009. That is within the registered 0.02 margin. COS wins on the post-hoc
+per-column yield.
 
 Codex blind agrees:
 - D_n(X) − c has no integer-split fibre for n ≥ 7;
@@ -287,7 +312,7 @@ Codex blind agrees:
 **Post-hoc exact verification (disclosed; codex #10).** `src/ptesplit/verify.py` recomputes the exact power-sum
 vectors of every member of every nontrivial hash group: 12660528 member-checks over all cells and k, **0 mismatches**
 (`experiments/raw/ptesplit_E1_verify_posthoc.jsonl`). The census is therefore exact rather than probabilistic. Peak RSS
-was 2.52 GB, again above the target.
+was 2.52 GB (2 516 238 336 bytes, from `/usr/bin/time -l` in this session), again above the target.
 
 **Resources.** 176 s; peak RSS **2.35 GB**, above the 2 GB target. This is a disclosed deviation; nothing else was running.
 
@@ -317,8 +342,11 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
 - **P6 (max fibre ≤ 0.1 × injection for M ≥ 6, k ∈ {2, 3}): held.** The largest ratio is 2/325, at (8, 24, k = 2).
 
 **Reading [measured].**
-- Structure (symmetric and affine families) beats the box model by up to 10¹⁵ at small M. But fibres collapse to size ≤ 4
-  by M = 7 and to size 1 by M = 9 at these entry bounds.
+- Structure (symmetric and affine families) beats the box model by large factors at small M.
+  - Ratios reach about 10²¹ in cells whose box prediction is ≤ 10⁻¹³; there the ratio is not meaningful.
+  - Fibres collapse to size ≤ 4 by M = 7 and to size 1 by M = 9. This is at these entry bounds only (R ≤ 30, with R
+    decreasing in M).
+- The pre-registered kill signal (a k = 1 fibre of size ≥ R/2) was **not triggered**: the k = 1 maximum was 4.
 - No k ≤ 3 fibre of size > 4 exists for M ≥ 7. That is the opposite of the dense L[α] fibres (M → ∞) the escape needs.
 - These are finite sizes. The asymptotic statements rest on Kleiman, the determinant method and Theorem W, not on E1.
 
@@ -331,8 +359,8 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
 - **P7 (ledger identity and bound): held.** In all 30 cells ∏|F(a_j)| = |Res(F, r)| exactly, within the bound; 0 violations.
 - **P8 (#(r, non-unit part) ≤ 3·#r): held.** This measures residual and non-unit-part multiplicity, not the rank of useful
   relations. The largest ratio is 1.94 (X² − 2, M = 6, h = 20). X² − 2 and X² + 1 show
-  genuine multiplicity, from unit pieces a = ±1 and from factorisation non-uniqueness. The cubic and quartic F have
-  ratio 1.00.
+  genuine multiplicity. It comes from unit pieces (a = ±1 for X² − 2; a = 0 for X² + 1) and from factorisation
+  non-uniqueness. The cubic and quartic F have ratios between 1.000 and 1.003 (X³ − 2, M = 6: 299/298).
 - **P9 (d ≥ 3, M ≥ 5: > ½ of members have ≤ 2 non-unit pieces): FAILED** in all 12 eligible cells (0.02–0.48).
   - *Post-hoc diagnosis:* the cells sit **below the lemma's regime**. The allowed non-unit count log₂(‖r‖₁^d‖F‖₂^{d−1}) is
     ≈ 20–30 for d = 3, h ≥ 20, while M ≤ 6. So the ledger permits every piece to be a non-unit, and the maximum observed
@@ -343,8 +371,9 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
 ## 5. Literature (task 5; cross-checked against the codex, ptecons and ptebarrier lists)
 
 - **PTE.**
-  - Prouhet (1851); Tarry/Escott (1910s); Wright, Quart. J. Math. 6 (1935), the conjecture that ideal solutions exist for
-    every size.
+  - Prouhet (1851); Tarry/Escott (1910s).
+  - E. M. Wright, "On Tarry's problem (I)", Quart. J. Math. (Oxford) 6 (1935) 261–267 (pages as given by the literature
+    critic): the conjecture that ideal solutions exist for every size. arXiv 2307.11330 claims a proof; it is unrefereed.
   - Hua, *Additive theory of prime numbers*, on Tarry's problem and mean values.
   - Borwein–Ingalls, Enseign. Math. 40 (1994); Borwein, *Computational Excursions in Analysis and Number Theory* (2002),
     Ch. 11.
@@ -353,25 +382,36 @@ codex's independent counts exactly (4878 / 1 928 985 / 1 548 937 735; max 4 / 29
   - Coppersmith–Mossinghoff–Scheinerman–VanderKam, arXiv 2304.11254: searches to size 16, including Z[i] and Z[ω].
   - Alpers–Tijdeman, J. Number Theory 123 (2007): the two-dimensional PTE problem.
   - Caley: thesis, Waterloo 2012, on the constants C_n; Math. Comp. 82 (2013), on PTE over Z[i].
-  - Kleiman, J. reine angew. Math. 278/279 (1975): (n − 1)! | C_n. Rees–Smyth (1990); Filaseta–Markovich.
+  - Kleiman, J. reine angew. Math. 278/279 (1975): (n − 1)! | C_n.
+  - Rees–Smyth, LNM 1415 (1990); Filaseta–Markovich, J. Number Theory 174 (2017)
+    384–400.
+  - A recent PTE survey: arXiv 2506.11429 (optional; not read by us).
 - **PTE and VMVT.**
   - Wooley, "Some remarks on Vinogradov's mean value theorem and Tarry's problem", Monatsh. Math. 122 (1996). This is the
-    direct PTE/VMVT link: it bounds the degree attainable with s variables, not fibre sizes.
+    direct PTE/VMVT link. It bounds W(k, 2), the least number of variables for which the degree-k Tarry system has
+    non-trivial solutions; it does not bound fibre sizes. After BDG, W(k, h) ≤ ½k(k+1) + 1.
   - BDG, Ann. Math. 184 (2016); Wooley, Adv. Math. 294 (2016) (cubic) and Proc. LMS 118 (2019) (all degrees).
 - **Determinant method.**
   - Bombieri–Pila, Duke 59 (1989); Pila (1995);
   - Heath-Brown, Ann. Math. 155 (2002); Salberger (2007, 2023);
   - Castryck–Cluckers–Dittmann–Nguyen, Algebra Number Theory 14 (2020);
-  - Binyamini–Cluckers–Novikov (uniform affine curve bound; cited via ptebarrier, UNVERIFIED by us).
+  - Binyamini–Cluckers–Novikov, IMRN 2024, arXiv 2302.04209, Thm 2 with n = 2: c(n)·d²·B^{1/d}(log B)^κ integral points
+    on an integral affine curve of degree d. Verified by the literature critic. The curve must be integral
+    (irreducible), and c = c(n).
 - **Thue counts.** Bombieri–Schmidt, Invent. Math. 88 (1987).
 - **PTE in cryptography/factoring.**
   - Costello–Meyer–Naehrig, EUROCRYPT 2021 (ePrint 2020/1283): twin-smooth integers via PTE, N-free parameter generation.
-  - Follow-ups optimise PTE-based twin-smooth searches (codex cites Ahrens; UNVERIFIED).
-  - Moment subset sum / Reed–Solomon decoding (Gandikota–Ghazi–Grigorescu, ECCC 2016/176).
-  - **No use of PTE in integer factoring or in breaking a modulus-dependent problem was found** (by us, codex, ptecons or
-    ptebarrier).
-- **Prior informal statement of the obstruction.** Granger–Kleinjung–Zumbrägel, AMC 12 (2018) §7: prime fields need
-  "fundamentally new ideas".
+  - Ahrens, IACR ePrint 2023/219 (verified by the literature critic): optimised PTE-based twin-smooth searches.
+  - Moment subset sum / Reed–Solomon decoding: Gandikota–Ghazi–Grigorescu, ECCC 2016/176; FOCS 2016; SICOMP 2018.
+  - **Search result:** our searches, and those of codex, ptecons, ptebarrier and the literature critic, found no use of PTE
+    in integer factoring or in breaking a modulus-dependent problem. This is a search result, not a claim of absence.
+- **The finite-field line, and statements of the obstruction.**
+  - Barbulescu–Gaudry–Joux–Thomé, EUROCRYPT 2014, arXiv 1306.4244. Its scope remark limits the method to small
+    characteristic.
+  - Kleinjung–Wesolowski, J. AMS 35 (2022).
+  - Joux–Odlyzko–Pierrot 2014 (optional, on the method's limits).
+  - Granger–Kleinjung–Zumbrägel, AMC 12 (2018) §7: prime fields need "fundamentally new ideas".
+- **Factorization factory.** Coppersmith, Math. Comp. 61 (1993) (see Prop NF).
 
 ## 6. What remains open (joint list)
 
@@ -418,9 +458,34 @@ Same verdict: no construction; 1–3%. Codex contributed:
 
 Codex independently re-scored P1–P9 from the raw files and agrees: P4 and P9 failed, the rest held.
 
-### 7.3 Opus critics
+### 7.3 Opus critics (re-spawned after a session loss; both reported)
 
-See §7.4 (addendum).
+**Proof critic: ACCEPT WITH FIXES; all applied.**
+- MAJOR (3): Prop NX was stated without its regime and is false as written. Its hypotheses are now restored (F monic,
+  H < N/2, the M-threshold, deg(P − P′) < k). The non-injectivity example is separated from inherited compatibility.
+- MAJOR (6): the joint statement overclaimed.
+  - Theorem W covers the in-regime two-order case, so only O3 lands in §2.6.
+  - G_r alone does not close it, because the split O-side can carry the height. The critic's wording is adopted.
+  - O must be nonlinear (δ ≥ 2).
+- MINOR (1, 2, 4, 5, 7, 8, 9, 11, 12, 13):
+  - scope lines, Corollary P's threshold and Prop S's Y-hypothesis;
+  - NC: multiplicity, (a, b) ≠ 0, Ĝ defined, "overlaps but is not contained in";
+  - the B^{1/2} gain holds only for k = 1;
+  - the seed-cost inequality is conditional on independent seeds;
+  - the census caveat (R ≤ 30);
+  - ptecons E2 wording;
+  - meaningless 10²¹ ratios;
+  - the E2 unit pieces and ratios;
+  - the source of the RSS figure; the kill signal was not triggered.
+- The critic confirmed that the pre-registration was committed before the raw files.
+
+**Literature critic: OK WITH FIXES; all applied.**
+- BCN and Ahrens verified.
+- Wooley 1996 summary corrected.
+- Wright, Rees–Smyth, Filaseta–Markovich and GGG completed.
+- "Schmidt" dropped from the Thue count.
+- Added Coppersmith 1993, BGJT, Kleinjung–Wesolowski, Joux–Odlyzko–Pierrot and the 2025 PTE survey.
+- The "no PTE in factoring" statement kept as a search result.
 
 ## 8. Reproduction
 
