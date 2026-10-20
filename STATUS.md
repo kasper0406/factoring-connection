@@ -161,4 +161,5 @@ Agents commit LOCALLY only; the orchestrator pushes.
 | `detGRH` | deterministic subexponential factoring under GRH: multiplicative square-root map + least-character bound for fruitfulness over small seeds; derandomized field search | notes/detGRH_*, src/detGRH/*, tests/test_detGRH* |
 | `escapeR2` | below L[2/5]: escape Prop R2 (algebraic children) via norm/Galois export, MNFS shared-root fields, class-group descent | notes/escapeR2_*, src/escapeR2/*, tests/test_escapeR2* |
 | `dlog25` | rigorous L_p[2/5] discrete logs in F_p^* (Theorem DL × lv5unif) | notes/dlog25_*, src/dlog25/*, tests/test_dlog25* |
+| `inversesieve` | r20 idea 2: inverse-sieve structure of DCL non-coverage ⇒ constructive short-interval containers + Coppersmith ⇒ deterministic worst case N^{6/31} (< 1/5) for balanced N | notes/inversesieve_*, src/inversesieve/*, tests/test_inversesieve* |
 | codex r20 | wild cross-field ideas | codex/r20_wild.* |
