@@ -112,6 +112,17 @@ class FloorSumConvex:
             m = max(m, Fraction(abs(d2), 2 * self.den))
         return m
 
+    def _check_convexity(self):
+        """Necessary check of the precondition (constant sign of P''): the second differences at
+        the two ends of the range must not have opposite signs.  Sufficient for degree <= 3 (P''
+        linear); for degree >= 4 the caller must guarantee it (true for ladder blocks)."""
+        lo, hi = self.lo, self.hi
+        if hi - lo < 3:
+            return
+        d = [self._num(t + 2) - 2 * self._num(t + 1) + self._num(t) for t in (lo, hi - 3)]
+        if (d[0] > 0 and d[1] < 0) or (d[0] < 0 and d[1] > 0):
+            raise ValueError("FloorSumConvex: P'' changes sign on the range (split at the inflection)")
+
     # -- decomposition
     def _build(self):
         lo, hi = self.lo, self.hi
@@ -124,6 +135,7 @@ class FloorSumConvex:
             self.runs.append((lo, hi, c1, self.den, c0))
             self.cnt.bump("windows")
             return
+        self._check_convexity()
         beta = self._beta()
         if beta == 0:
             Q = hi - lo + 1

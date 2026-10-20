@@ -126,3 +126,11 @@ def test_divisor_summatory_ladder(j):
         s = isqrt(N)
         D = 2 * sum(N // d for d in range(1, s + 1)) - s * s
         assert divisor_summatory_ladder(N, j) == D
+
+
+def test_inflection_rejected():
+    # P(h) = (h - 50)^3 / 1000 has an inflection inside [0, 100)
+    coef = [-125000, 7500, -150, 1]
+    with pytest.raises(ValueError):
+        floor_sum_poly(coef, 1000, 0, 100)
+    assert floor_sum_poly(coef, 1000, 50, 100) == floor_sum_brute(coef, 1000, 50, 100)

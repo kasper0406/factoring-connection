@@ -16,7 +16,8 @@ Agent `floorsum`. Verdicts point to `notes/floorsum_results.md`.
 - **Correctness.** PROVED; 0 mismatches in E2.
 - **Cost.** O((1 + Hβ^{1/3}) log H) per block; N^{1/3} polylog in total for every j.
 - **Randomness.** Deterministic.
-- **Closest prior.** Hull walks (Sladkey; Har-Peled; Alcántara et al.); codex's fixed-cell variant.
+- **Closest prior.** Hull walks (Sladkey; Har-Peled; Alcántara et al., whose Cor 1.4 already factors
+  in O(N^{1/3} log² N)); codex's fixed-cell variant.
   Difference: generic degree, rational shifts and subinterval queries for the ladder.
 - **Smallest experiment.** E2/E2b/E3, done.
 - **Refutation criterion.** Cost slope ≠ 2(j−1)/(3j) on generic blocks. Not seen (0.337/0.442/0.506).
@@ -26,15 +27,18 @@ Agent `floorsum`. Verdicts point to `notes/floorsum_results.md`.
 ---
 **F2. Fourier smoothing + exact correction.**
 - **Mechanism.** ⌊y⌋ = y − ½ − ψ(y); replace ψ by a degree-K trigonometric approximant (Vaaler); each
-  frequency is an incomplete Weyl sum computed in polylog time (Hiary); correct the h with P(h) near
-  an integer exactly.
+  frequency is an incomplete Weyl sum, computed in polylog time by Hiary for j = 2 (and for j = 3 only
+  at low frequencies; nothing for j ≥ 4); correct exactly the h with P(h) near an integer.
 - **Target.** Same as F1.
 - **New lemma required.** K polylog with few corrections.
 - **Correctness/cost.** Prop F (PROVED): the approximant is off by ≥ ¼ on measure ≥ 1/(51K), so
   ≥ 1/(51Kg) − O(K) corrections, cost ≥ 0.099/√g − 3 ≍ √H for ladder blocks (E4).
 - **Closest prior.** Vaaler; Hiary's theta algorithm; barrier F of analytic.
 - **Refutation criterion.** Near-integer counts ≪ δH on ladder blocks. Not seen (ratio 0.998–1.003).
-- **Verdict.** REFUTED for the certified model: ≥ N^{1/4 + 1/(2(j+2))} in total, never below N^{1/4}.
+- **Verdict.** REFUTED for the certified model as a route below N^{1/4}: the total is
+  ≳ N^{1/4 + 1/(2(j+2))}, experimentally supported for j = 2 (it needs a small max gap g). For j ≥ 5
+  that is below N^{1/3}; there the blockers are the missing Weyl-sum algorithms and the cost of
+  locating E.
 
 ---
 **F3. Quadratic Euclid / reciprocity.**
@@ -67,3 +71,16 @@ Agent `floorsum`. Verdicts point to `notes/floorsum_results.md`.
 - **Mechanism.** Aggregate consecutive Farey windows that form an arithmetic chain of fractions.
 - **Obstruction.** Generic chains have O(1) length (long only near major arcs); constant-factor gain.
 - **Verdict.** HEURISTIC no-go for an exponent; not implemented.
+
+---
+**F7. Lattice window oracle at top blocks (bivariate Coppersmith; orchestrator request).**
+- **Mechanism.** {P_j(h)} ∈ [0, ρ] ⇔ r − g(h) ≡ 0 (mod x^{j+1}) with 0 ≤ r ≤ ρD; basic-strategy
+  lattice h^u f^k D^{m−k}; good rows vanish on all roots in the box.
+- **Target.** The ladder's positive-width windows on top blocks x ∈ [√N/2, √N].
+- **Correctness.** Howgrave-Graham (PROVED for the box); root extraction needs two independent rows
+  (E6c: planted roots recovered 12/12).
+- **Cost.** Measured X_max ≈ xN^{−1/3} (ratio 0.69–1.75, E6b), i.e. Hiary's scale: cN^{1/3}/B calls
+  per block, N^{1/3} total. HEURISTIC explanation: the nonlinear part can be absorbed into a linear
+  congruence only while X·N x^{j−2}X² ≲ x^{j+1}.
+- **Verdict.** No gain over the trap, in this construction. Major-arc blocks (slope ≈ integer) are
+  resolved whole.

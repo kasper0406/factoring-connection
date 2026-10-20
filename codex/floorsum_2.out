@@ -1,0 +1,213 @@
+**Overall verdict: ACCEPT WITH FIXES, requiring major revision.** The Farey construction supports the claimed \(\widetilde O(N^{1/3})\) upper bound. I found no faster exact oracle returning the individual floor sums. However, the convex-access conclusion is overstated, Theorem O’s explicit run bound is false, the Fourier exponent is conditional, and the claimed equivalence with partial-information factoring is unjustified.
+
+The 18 repository tests passed, as did 6,000 additional quadratic differential checks. Reproduction code is in [audit_checks.py](/Volumes/git/factoring-connection/codex/scratch/floorsum_2/audit_checks.py). Repository files were left unchanged.
+
+1. **Lemma V and Balog–Bárány — ACCEPT WITH FIXES.**
+
+   The principal argument is correct. For even \(j\), \(P_j\ge f=N/(x+h)\), hence
+   \[
+   S_b\subseteq\{m>f\}\subseteq G.
+   \]
+   If the global vertex \((d,\lceil f\rceil)\) is missing from \(S_b\), then the integer \(\lceil f\rceil\) lies in \([f,P_j]\). Consequently
+   \[
+   \{P_j\}\le P_j-f\le\rho.
+   \]
+   This includes divisors and the equality case \(h=0\). Extremality transfers correctly to a subset containing the vertex.
+
+   Two details need adding:
+
+   * [Balog–Bárány, Theorem 1.1](https://arxiv.org/html/2602.06897) concerns the **whole** hull. Symmetry gives half its vertices below \(\sqrt N\), up to an endpoint; removing \(d<x_0\) loses at most \(O(x_0)=O(B)\). Thus the restricted lower bound follows.
+   * E1 measures \(\lceil P_j\rceil\), whereas the lemma defines \(\lfloor P_j\rfloor+1\). An empirical absence of integer values is unnecessary: prove the closed version directly. Its epigraph also lies inside \(G\), and every noncandidate global vertex belongs to it.
+
+   The odd-\(j\) aside needs an endpoint exception: the open epigraph excludes \((x,N/x)\) when \(x\mid N\). Forced block-start tests handle this.
+
+2. **Theorem T and its application — REJECT as currently scoped.**
+
+   The deletion construction is legitimate:
+   \[
+   R_v=\operatorname{conv}(L\setminus\{v\}),\qquad
+   R_v\cap\mathbb Z^2=L\setminus\{v\}.
+   \]
+   Convexity puts \(R_v\) inside \(R\), and extremality excludes \(v\).
+
+   The LP interface must return **one optimizer**, with adversarial legal replies or a specified deletion-consistent tie rule. Mathematical “argmax” ordinarily denotes the entire optimizer set; then \(w=0\) returns \(L\) and reveals its cardinality in one query. Under the repaired interface, retaining a returned optimizer keeps the reply valid for every alternative except possibly its deletion.
+
+   Specify deterministic exact algorithms, or separately formulate the randomized guarantee. Also specify the finite truncating box: the block epigraph itself contains infinitely many lattice points. With integer ceiling \(M>\max P\), its truncated lattice count is \(HM-F(P)\).
+
+   The decisive application defect is that the ladder needs
+   \[
+   F(P;I)-F(P-\rho-\eta;I),
+   \]
+   rather than either summand independently. A lower bound for the individual counts does not establish the same lower bound for their difference. Nor does a per-region argument automatically exclude shared preprocessing across structured blocks.
+
+   **Fix:** claim \(\Omega(N^{1/3}\log N)\) only for full scans that independently compute the individual sums through the repaired arbitrary-convex-region interface. Polynomial promises, arithmetic access, coupled differences, and shared preprocessing require separate arguments.
+
+3. **Proposition PL — ACCEPT WITH FIXES.**
+
+   The integer-hull construction is sound. At integer \(u\), the lowest integer satisfying
+   \[
+   m\ge \ell(u)-1+1/q
+   \]
+   is exactly \(\lfloor\ell(u)\rfloor\).
+
+   [Cook–Hartmann–Kannan–McDiarmid](https://www.math.uwaterloo.ca/~bico/papers/ippoints.pdf) prove \(O(m^n\varphi^{n-1})\) vertices, hence \(O(\varphi)\) in dimension two with constantly many inequalities. This is an **encoding-length** bound, not immediately \(O(\log H)\).
+
+   Normalize each interval by integer translation and shear, removing the integral slope and intercept. The remaining description has size \(O(\log H+\log q)\), which justifies the displayed denominator-dependent bound. To replace this by \(O(\log H)\), supply a denominator bound or an additional representation lemma. Farey’s \(q\le H+1\) suffices for that implementation.
+
+   Also change \(p_k,q_k\ge1\) to \(p_k\in\mathbb Z,\ q_k\ge1\): the ladder polynomials decrease.
+
+   The result bounds explicit decompositions satisfying the stated floor-equality condition. It does not cover every algorithm using continued fractions somewhere internally.
+
+4. **Farey oracle — ACCEPT WITH FIXES; explicit constants are false.**
+
+   Lemma R is correct, including negative numerators. The implementation’s extremum split is correct: the first zero or sign change of the forward difference separates two monotone sequences. Endpoint zero differences cause no failure. Prefix sums and range queries also check out.
+
+   The continued-fraction estimate is valid: if the next convergent denominator exceeds \(Q\), then \(|qs-p|<1/Q\); an exact rational convergent has zero error.
+
+   But this input refutes the stated run bound:
+   \[
+   P(h)=\frac{(h-5)^2-4}{10^6},\qquad 0\le h<10.
+   \]
+   Here \(\widehat\beta=10^{-6}\), \(\kappa=1\). The code produces one window and **four runs**, while the claimed upper bound is
+   \[
+   2+6H\widehat\beta^{1/3}=2.6.
+   \]
+   Both computed and brute-force sums are \(-3\); this is a proof/cost defect, not an output error.
+
+   The false step is “variation \(+1\)” distinct floors. A monotone function crossing an integer can have two floor values despite arbitrarily small variation. Use variation \(+2\) per side, allowing four boundary runs per window.
+
+   Further fixes:
+
+   * With capped \(Q\), use \(H/Q\le1+H\widehat\beta^{1/3}\), not the displayed inequality without \(1\).
+   * The integer cube-root expression can exceed \(\lceil\widehat\beta^{-1/3}\rceil\) by one.
+   * Three samples are not a general upper bound for curvature. Retain the explicit \(\kappa\) hypothesis; justify bounded \(\kappa\) separately for ladder blocks.
+
+   These repairs preserve
+   \[
+   O\!\left((1+\kappa)(1+H\widehat\beta^{1/3})\log H\right).
+   \]
+   This remains an upper bound, not a matching lower bound for every input or every odd \(j\).
+
+5. **Proposition F — ACCEPT WITH FIXES; reject the unconditional ladder consequence.**
+
+   The analytic constants survive inspection. Erdélyi’s quoted estimate is
+   \[
+   C(K,s)\le e^{4Ks},\qquad s\le\pi/2,
+   \]
+   with angular measure \(s\). Thus \(s=2\pi\mu\) gives the stated exponent. The missing restriction holds under \(\mu\le1/(16\pi K)\). This formulation and attribution appear explicitly in [Tikhonov–Yuditskii, introduction](https://arxiv.org/html/1809.09726).
+
+   The bounds \((3/4)e^{1/2}<1.24\), \(2\pi(1.24)<7.8\), the chosen \(\delta\), and \(1/(51K)\) are correct.
+
+   The \(2K+2\) interval conclusion is also correct, but the proof should handle tangencies. Each interior component of \(\{|\psi-T|\ge1/4\}\) contains a critical point; there are at most \(2K\), plus endpoint components.
+
+   Max-gap counting and “at most one uncorrected bad point” are valid, counting multiplicities. The optimization point stated in the notes ignores the \(-3\), but the weaker conclusion survives:
+   \[
+   C\ge\frac1{\sqrt{102g}}-3\ge\frac{0.099}{\sqrt g}-3.
+   \]
+
+   Required scope corrections:
+
+   * Degree \(K\) does not imply \(K\) nonzero frequencies. Charging bandwidth \(K\), or evaluating all frequencies through \(K\), must be an explicit model assumption.
+   * Median \(gH\approx\log H\) at three sizes proves no asymptotic gap bound. Even assuming that behavior, the conclusion is \(\widetilde\Omega(\sqrt H)\), not an unqualified \(\Omega(\sqrt H)\).
+   * There are admissible Taylor blocks with large gaps. For \(N=x^2+1,\ j=2,\ H\sim\sqrt x/2\), fractional parts occupy approximately a quarter-circle interval and \(g\to3/4\). Computation confirms this.
+   * The total exponent \(1/4+1/(2(j+2))\) is therefore conditional on sufficiently many queried blocks satisfying the requisite gap bound.
+   * Hiary’s polylogarithmic Weyl-sum statement covers quadratics and the specified small-coefficient cubic range, not arbitrary degrees and frequencies.
+
+   Retain the certified individual-correction theorem. Downgrade the blanket ladder rejection to a conditional conclusion supported by experiments.
+
+6. **Proposition A — ACCEPT WITH FIXES.**
+
+   The invariance theorem is correct:
+   \[
+   \lambda(A\Gamma)=|\det A|^{1/3}\lambda(\Gamma).
+   \]
+   It therefore holds for determinant \(\pm1\), including reflections, and gives \(\lambda=\int|P''|^{1/3}\,dh\).
+
+   A positive-length arc cannot be transformed into a line by an invertible affine map. That does **not** prohibit a fast counting recurrence. An algorithm may split arcs, remove contributions, or use compressed arithmetic representations; it need not straighten the entire boundary.
+
+   Replace the explanatory claim by: “Affine length gives a geometric analogy for the cost of local linearization. It does not prove that a quadratic Euclidean recurrence is impossible.” The claimed explanation of the theta/floor distinction should likewise be labeled heuristic.
+
+7. **High bits, Coppersmith, and E5 — ACCEPT WITH FIXES.**
+
+   The high-bit table is correct at \(x\asymp\sqrt N\), up to additive constants and binary alignment. It expresses interval uncertainty, not literally identical leading bits in every interval.
+
+   Keep the candidate-count caveat prominent: the floor oracle gives \(O((1+C_b)\operatorname{polylog}N)\) candidate recovery. Consequently, the claimed **equivalence** between a structured floor oracle and polynomial-time recovery from fewer high bits is unproved in both directions.
+
+   Constants in the \(j=2\) containment work. With ceiling \(B\) and \(c\le1/2\),
+   \[
+   H\le\tfrac12N^{\alpha-1/4}
+     \le\tfrac12N^{\alpha^2}.
+   \]
+   The floor-root implementation also retains sufficient slack. [Cohn–Heninger, Theorem 1.1](https://arxiv.org/html/1008.1284) states the unknown-divisor root bound \(|h|\le N^{\alpha^2}\).
+
+   For \(j=3\), solving \(\alpha-1/5\le\alpha^2\) gives
+   \[
+   \alpha\le(1-\sqrt{1/5})/2=0.276393\ldots
+   \]
+   below \(1/2\). This is an exponent threshold; constants affect finite instances near it.
+
+   “Beating \(n/4\) high bits is open” needs qualification. Guessing \(O(\log\log N)\) additional bits still costs polynomial time. State instead: **no general classical polynomial-time method is known using only \((1/4-\varepsilon)\log_2N\) contiguous MSBs of one balanced factor, for fixed \(\varepsilon>0\), without additional information.** Cite Coppersmith’s EUROCRYPT ’96 paper and [De Micheli–Heninger, §4.2.2](https://cseweb.ucsd.edu/classes/sp24/cse291-b/survey_journal.pdf). “Since 1996” is historical context, not a separately established hardness theorem.
+
+   E5’s lattice algebra is correct. Its determinant and exact sufficient inequality are
+   \[
+   \det=N^{m(m+1)/2}X^{n(n-1)/2},
+   \]
+   \[
+   2^{n(n-1)}\det^4n^{2n}<x^{4mn}.
+   \]
+   They ensure the first reduced polynomial vanishes over \(\mathbb Z\) at every eligible root. Column unscaling is exact; FLINT’s `fmpz_poly.roots()` returns integer roots, and final division verification is correct.
+
+   However, fixed \((m,n)=(7,16)\) gives radius exponent \(7/30\) at \(\sqrt N\), not \(1/4\). The asymptotic theorem requires growing dimension. E5 is correctly described as a finite demonstration.
+
+8. **Proposition D and divisor-sum literature — ACCEPT WITH FIXES.**
+
+   The correction is correct for both parities. For even \(j\), \(\lfloor P\rfloor-\lfloor f\rfloor\in\{0,1\}\), supported on candidates. For odd \(j\), it belongs to \(\{-1,0\}\), again supported on candidates. Subtracting the signed correction handles both. At \(h=0\), the correction is zero.
+
+   The Shiu bound supplies the total candidate budget for fixed \(j\); the additional bisection logarithm gives the claimed oracle-call bound.
+
+   The literature conclusion should be a search report: **“We found no general exact factorisation-free algorithm with exponent below \(1/3\).”** [Sladkey](https://arxiv.org/abs/1206.3369) provides the elementary \(O(N^{1/3})\) method. [Li’s Theorem 1 and correction discussion](https://arxiv.org/html/2609.29949v1) explicitly use nearby-integer factorization for expected \(N^{9/28+o(1)}\) time. I found no contrary general algorithm.
+
+   Restricted sums require careful wording: a sum over fewer than \(N^{1/3}\) denominators already costs less by direct evaluation. The unresolved issue is uniform coverage or total amortized cost.
+
+9. **Pre-registration — ACCEPT WITH FIXES.**
+
+   The handling is substantially transparent. E2 failed its registered decision rule; E2b and E4b are labeled post hoc; E5’s amendment discloses the peek and weakens the failed containment prediction.
+
+   Necessary wording changes:
+
+   * Say “before the formal E1–E5 runs,” not “before any experiment”: development checks and calibration were already performed.
+   * E2’s major arcs invalidate a generic lower-scaling prediction, not the oracle’s upper bound.
+   * E2b is exploratory support, not a replacement confirmatory success.
+   * E5’s revised ratio range, chosen after seeing a ratio, supplies little independent evidence for containment.
+   * Finite-size slopes and median gaps cannot establish asymptotic laws.
+
+   The disclosed failures should remain in the abstract-level summary.
+
+10. **Attempt to refute the verdict — ACCEPT WITH FIXES for individual floor sums; an arithmetic bypass exists for the ladder’s necessary counts.**
+
+   I found no exact individual-sum oracle meeting the requested exponents. However, the actual candidate-count interface admits shared arithmetic preprocessing if factorization is allowed.
+
+   Every candidate determines
+   \[
+   d=x+h,\qquad m=\lfloor P(h)\rfloor\ \text{or}\ \lceil P(h)\rceil,
+   \qquad k=N-dm,
+   \]
+   with \(|k|\le C_jB\). Therefore:
+
+   * Factor every \(N-k\) in that range once.
+   * Enumerate its divisors \(d\le\sqrt N\).
+   * Assign each \(d\) to its block by binary search.
+   * Check the exact rational candidate predicate.
+   * Store sorted candidate positions; answer subinterval counts by rank queries.
+
+   My prototype reconstructed the exact candidate sets on all 16 tested \((N,j)\) instances.
+
+   [Lenstra–Pomerance’s theorem](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf) gives rigorous expected \(L_N[1/2,1+o(1)]=N^{o(1)}\) factorization time. Divisor enumeration and assignment add \(BN^{o(1)}\). Thus total preprocessing costs
+   \[
+   N^{1/(j+2)+o(1)}
+   \]
+   expected time, followed by logarithmic candidate-count queries. This is below \(N^{1/3}\) for both \(j=2\) and \(j=4\).
+
+   This is not a new factoring algorithm: \(k=0\) factors \(N\) itself. It also does not return the two individual floor sums. It nevertheless defeats an unrestricted claim that the ladder’s necessary counting interface must pay the hull cost.
+
+   The remaining defensible research question is narrower: find a **deterministic, factorisation-free** structured difference oracle, or a faster oracle returning the individual sums, with all shared preprocessing charged. Neither the convex adversary nor affine length nor the present Fourier argument settles that question.
