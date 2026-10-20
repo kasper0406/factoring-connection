@@ -1,0 +1,493 @@
+| Rank | Target | KNOWN rigorous benchmark | Result of this investigation | Main remaining obligation | Success probability* |
+|---|---|---|---|---|---|
+| **1** | Recursive factoring | \(L_N[1/2,1]\), Lenstra–Pomerance 1992 | **PROVED from A:** fixed point \(C_\theta=\sqrt{(1+\sqrt2)\theta}\); consequently every positive \(L[1/2]\) constant | Write the recursive expected-time argument with slack | **95%**; major |
+| **2** | Discrete logarithms in \(\mathbb F_p^\times\) | \(L_p[1/2,\sqrt2]\), Pomerance 1987 | **PROVED reduction from A’s supply lemmas:** every positive \(L[1/2]\) constant, using exact multiplicative dependencies | Audit the prime-input transfer and the certificate implementation | **85%**; major |
+| **3** | \(\varphi(N)\), \(\lambda(N)\), multiplicative orders | \(L_N[1/2,1]\), through factoring | **PROVED from A:** inherit the factoring bound, including the recursive improvement | None mathematically | **>99%**; useful corollaries |
+| **4** | Factoring with a fixed exponent \(\alpha<1/2\) | \(L_N[1/2,1]\) | **SPECULATIVE:** \(L[3/7,O(1)]\) is a plausible conservative target; \(L[2/5,O(1)]\) needs stronger uniformity | Quantitative FM/LD* as \(d,k\) grow | **40%** for some \(\alpha<1/2\); **20%** for \(2/5\) |
+| **5** | Extension-field DL in intermediate characteristic | Bender–Pomerance’s \(L[1/2,\sqrt2]\) in its range; Kleinjung–Wesolowski elsewhere | **SPECULATIVE:** function-field version of the construction could improve the \(L[1/2]\) constant | Polynomial-ring FM/LD*, geometricity, and constant-field bookkeeping | **35%**; potentially major |
+| — | Fixed imaginary-quadratic class groups without GRH | Fully unconditional polynomial-discriminant algorithms; under GRH, \(L[1/2,3/\sqrt8]\) | **SPECULATIVE; reject the direct transplant** | Fixed-field generation, relation-lattice saturation, certification | **<5%** by these devices alone |
+| — | Deterministic QS / worst-case coverage | Harvey–Hittmeir \(N^{1/5+o(1)}\); stronger internal average-case results | **SPECULATIVE; no speedup established** | Explicit hitting sets or deterministic fruitfulness | **<3%** by the proposed transplant |
+| — | Explicit ECM families / general Jacobian DL | Regime-dependent bounds discussed below | **HEURISTIC transfers fail to become proofs** | Smooth-order hitting, or a new certificate representation | **<5%** by these devices alone |
+
+\(*\) These are judgments about completing the indicated extension **assuming the project’s underlying supply lemmas are correct**, not algorithmic success probabilities. Here **PROVED from A** denotes a proved implication from the internal, unrefereed chain. It does not promote that chain to an established theorem. I kept the repository read-only.
+
+Write
+\[
+\Lambda_N=\sqrt{\log N\log\log N},\qquad L_N^c=\exp(c\Lambda_N).
+\]
+The two strongest findings are the recursive improvement and a prime-field DL transfer that avoids the usual NFS rank assumption.
+
+**1. Recursive factoring: the fixed-point calculation survives scrutiny.**
+
+The published comparison is Lenstra–Pomerance, “A rigorous time bound for factoring integers,” *JAMS* **5** (1992), 483–516, giving expected \(L_N[1/2,1]\) complete factorization. [Original paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf).
+
+The source chain proves its moment estimates for arbitrary fixed \(a>0\), before the final choice \(a=\theta/\sqrt2\). That freedom is essential: keeping the old choice of \(a\) does not give the optimized recursion.
+
+Suppose the shape test uses a factoring algorithm of constant \(C\). Since its two inputs are at most \(\sqrt{2N}\), its cost is
+\[
+L_N^{C/\sqrt2+o(1)}.
+\]
+The parent’s exponent is therefore
+\[
+\max\left\{
+a+\frac C{\sqrt2},\
+a+\frac{\theta}{2a},\
+2a
+\right\}.                                                    \tag{1}
+\]
+The batch-smoothness \(B\) term is already covered by \(2a\). This is the ledger in [Theorem A, Step 10](/Volumes/git/factoring-connection/notes/thmA_proof.md:309), with its shape-test entry replaced.
+
+At a recursive fixed point, put
+\[
+a=\left(1-\frac1{\sqrt2}\right)C.
+\]
+Equating the two relation terms gives
+\[
+C=a+\frac{\theta}{2a},
+\qquad
+\boxed{C_\theta^2=(1+\sqrt2)\theta}.
+\]
+Moreover,
+\[
+2a=(2-\sqrt2)C<C,
+\]
+so linear algebra does not obstruct this solution.
+
+For an actual theorem, choose \(C>C_\theta\) and retain positive slack in every inequality. For the maximum expected cost on integers up to \(N\), the resulting recurrence has the form
+\[
+T(N)\le
+L_N^{a+\varepsilon}\,T(\sqrt{2N})
++
+L_N^{a+\theta/(2a)+\varepsilon}
++
+L_N^{2a+\varepsilon},
+\]
+up to polynomial factors in \(\log N\). Strong induction closes it. Complete factorization adds only \(O(\log N)\) splitting calls. Recursive shape-test coins depend on \(u,v\), hence on \(R\), and preserve transcript invariance.
+
+Some finite-parameter checks, before adding positive slack:
+
+| \(d,k\) | Optimized \(\theta\) | Recursive threshold \(C_\theta\) |
+|---|---:|---:|
+| \(9,13\) | \(16/39\) | \(0.995212\) |
+| \(9,1000\) | \(0.30085\) | \(0.852242\) |
+| **\(15,1000\)** | **\(0.18840625\)** | **\(0.674428\)** |
+| \(31,1000\) | \(0.094703125\) | \(0.478156\) |
+
+Thus the \(1/\sqrt2\) floor is genuinely removed. The recursive formula was already anticipated in [hypD](/Volumes/git/factoring-connection/notes/hypD_results.md:104); the later supply results make its use substantive.
+
+Because
+\[
+\inf_{k,\eta_0}\theta=\frac3{d+1},
+\]
+the recursive constants tend to zero as fixed odd \(d\) increases. Consequently:
+
+> **PROVED from the internal chain:** for every \(c>0\), some fixed-parameter Las Vegas algorithm completely factors every \(N\) in expected \(L_N[1/2,c]\) time.
+
+There is also a single-algorithm consequence. Dovetail all validated fixed-parameter algorithms with fixed positive time shares. For each \(c>0\), one component supplies that bound; its fixed scheduling overhead does not affect the exponent. This yields
+\[
+\boxed{\mathbb E T(N)=\exp(o(\Lambda_N)).}
+\]
+This portfolio argument needs no uniform growing-degree estimate. It supplies **no specified rate** for the \(o(\Lambda_N)\), however, and therefore proves no \(L[\alpha]\) bound with fixed \(\alpha<1/2\).
+
+**Missing lemma:** none beyond A’s internal ingredients; the remaining task is a formal recursive cost lemma.
+
+**First step:** write that lemma using the maximum expected complete-factorization cost up to \(N\), positive exponent slack, and the existing absorbing-factor-exit bookkeeping. This should precede growing-degree work.
+
+---
+
+**2. Prime-field discrete logarithms: exact certificate dependencies give a stronger transfer than ordinary NFS linear algebra.**
+
+The best unconditional prime-field bound I could verify remains
+\[
+L_p[1/2,\sqrt2].
+\]
+The exact reference is Pomerance, “Fast, rigorous factorization and discrete logarithm algorithms,” in *Discrete Algorithms and Complexity* (1987), 119–143. I found no published unconditional improvement of its \(\sqrt2\) constant for all prime fields. [Original paper](https://math.dartmouth.edu/~carlp/disclog.pdf).
+
+Merely replacing NFS parity columns by columns modulo a large prime is insufficient. LV6 establishes squares, not arbitrary large-prime power relations. Nor does abundant relation supply establish the usual full-rank assertion.
+
+There is a different route.
+
+A descent certificate represents
+\[
+R_i=\operatorname{ev}(c_i),\qquad
+c_i=(q_i,\gamma_i)\in\mathbb Q^\times\times K^\times.
+\]
+All certificates lie in one explicitly given rational algebra
+\[
+E=\mathbb Q\times K.
+\]
+
+**KNOWN:** Lenstra–Silverberg, *Foundations of Computational Mathematics* **18** (2018), 159–180, Theorem 1.11(i), computes generators for the exact multiplicative-relation lattice of supplied elements of a rational algebra in deterministic polynomial time. Its field case is Ge’s algorithm. It does not require computing the full class group or fundamental unit group. [Paper, Theorem 1.11 and §8](https://arxiv.org/pdf/1509.08843).
+
+That theorem permits the following argument.
+
+Take a primitive root \(z\bmod p\), and write the target as \(h=z^x\). Draw independent uniform
+\[
+a_i,b_i\pmod{p-1},\qquad R_i=z^{a_i}h^{b_i}.
+\]
+Pass only \(R_i\) to the descent procedure. Conditional on \(R_i\), the label \(b_i\) remains uniform.
+
+The supply lemmas extend to this sampling law. For prime input \(p\), their coprimality and size hypotheses still hold. A uniform element of \(\mathbb F_p^\times\) is a square with probability \(1/2\), so the square-based split lower bound gives a lower bound for uniform elements with only that constant loss.
+
+Now collect sufficiently many certificates. Let \(t=f_d\). The rational components are supported on primes at most \(B\) and primes dividing \(g_1\). The algebraic components are \(S\)-units supported above primes at most \(B\) and primes dividing \(t\). Thus their generated group has free rank at most
+\[
+r\le (d+1)\pi(B)+d\,\omega(t)+\omega(g_1)+r_1+r_2-1
+   =B\,L_p^{o(1)}.                                           \tag{2}
+\]
+This is a rank bound, not a generation assumption. It requires neither factoring \(t\) nor computing the ambient \(S\)-unit group.
+
+With \(m\ge r+3\) rows, use Lenstra–Silverberg to compute
+\[
+\mathcal L=\left\{e\in\mathbb Z^m:\prod_i c_i^{e_i}=1\right\}.
+\]
+Its rank is at least three.
+
+For every prime \(\ell\mid p-1\), this lattice contains a vector nonzero modulo \(\ell\):
+
+- For odd \(\ell\), its saturation quotient has no \(\ell\)-torsion.
+- For \(\ell=2\), that quotient embeds in
+  \(\mu(\mathbb Q\times K)\), which has order at most four because \(d\) is odd. A rank-three lattice contained in \(2\mathbb Z^m\) would force saturation index at least eight.
+
+Consequently a computed generating set contains an eligible \(e\). Evaluating its exact dependency gives
+\[
+\sum_i e_i a_i+x\sum_i e_i b_i\equiv0\pmod{p-1}.              \tag{3}
+\]
+Conditional on the certificates and the chosen \(e\), the second coefficient is uniform modulo \(\ell\). It is invertible modulo \(\ell^v\) with probability \(1-1/\ell\). Solve (3) modulo each prime-power divisor of \(p-1\), then combine by CRT. Fresh rows handle unsuccessful coefficients; final exponentiation verifies the result.
+
+Factor \(p-1\) first to certify a primitive root and obtain its prime powers. An arbitrary input base is handled by computing its ambient logarithm as well.
+
+The important cost qualification is that exact integer dependencies are **not** known here to cost \(B^{2+o(1)}\). Let their polynomial cost be bounded by
+\[
+B^\kappa(\log p)^{O(1)}
+\]
+for some absolute constant \(\kappa\). The polynomial-time theorem is uniform in the algebra’s dimension, so \(\kappa\) need not grow with fixed \(d\).
+
+If factoring has constant \(\tau\), the DL exponent is bounded by
+\[
+\boxed{
+\max\left\{
+\tau,\
+a+\frac{\tau}{\sqrt2},\
+a+\frac{\theta}{2a},\
+\kappa a
+\right\}.}                                                   \tag{4}
+\]
+This includes factoring \(p-1\), relation collection, batch smoothness, and exact post-processing.
+
+For any requested \(c>0\), recursion supplies \(\tau<c\). Choose
+\[
+0<a<\min\{c-\tau/\sqrt2,\ c/\kappa\},
+\qquad
+0<\theta<2a(c-a).
+\]
+A sufficiently large **fixed** degree and then sufficiently large fixed \(k\) supply this \(\theta\). Every term in (4) is then below \(c\).
+
+> **PROVED reduction from the internal supply chain:** prime-field DL admits every positive \(L_p[1/2,c]\) constant, and a portfolio gives expected \(\exp(o(\Lambda_p))\) time.
+
+Even without device 7, Theorem A’s constants approaching \(1/\sqrt2\), substituted into (4), give DL constants arbitrarily close to \(1/\sqrt2\) from above.
+
+**Missing lemma:** no additional analytic or rank conjecture. The prime-input transfer and exact-certificate reduction above need an independent audit and a careful implementation-level statement.
+
+**First step:** formulate a certificate-dependency proposition for \(E=\mathbb Q\times K\), including (2), the torsion argument, and hidden-label independence. Do not claim the same finite-degree constant as factoring: \(\kappa a\) must be charged.
+
+There is a useful additional consequence. For factoring, an exact dependency with an odd coefficient gives
+\[
+\left(\prod_i r_i^{e_i}\right)^2=1\pmod N.
+\]
+DD then makes its gcd fruitful. Thus exact dependencies offer an alternative to LV6, including its characters and algebraic square root. They may cost more, but could substantially simplify a proof whose objective is an arbitrarily small constant.
+
+---
+
+**3. Totients and multiplicative orders inherit the improvement immediately.**
+
+**KNOWN:** factoring \(N\), followed by elementary arithmetic, computes
+\[
+\varphi(N)=\prod_{p^e\parallel N}p^{e-1}(p-1)
+\]
+and \(\lambda(N)\). For a unit \(a\bmod N\), factor an annihilating exponent and repeatedly remove prime divisors whenever the corresponding modular-power test succeeds. These are standard reductions; the published \(L[1/2,1]\) upper bound follows from LP92. [Shoup’s text, group algorithms and Euler’s function](https://shoup.net/ntb/ntb-b1.pdf).
+
+For order computation, factoring \(N\) alone is not enough. Also factor the integers \(p-1\) for \(p\mid N\). There are only polynomially many such calls, each on an integer at most \(N\). Therefore
+\[
+T_{\varphi,\lambda,\mathrm{ord}}(N)
+\le(\log N)^{O(1)}\max_{m\le N}T_{\mathrm{factor}}(m).
+\]
+No \(L\)-constant is lost.
+
+**PROVED from A:** all three problems inherit A’s constants, the recursive constants, and the portfolio \(\exp(o(\Lambda_N))\) bound.
+
+**Missing lemma:** none.
+
+**First step:** state these as corollaries, with the additional \(p-1\) factorizations explicit.
+
+Other immediate applications include modular square-root extraction and multiplicative-group structure. Likewise, for a point in a finite group whose cardinality \(H\) is already known, factoring \(H\) accelerates exact point-order computation. This applies to elliptic curves and Jacobians without implying a faster general discrete-log algorithm in those groups.
+
+---
+
+**4. Growing degree: recursion removes the shape-test barrier, but the one-level descent geometry still forces \(2/5\).**
+
+Set
+\[
+t=\log N,\qquad \log B\asymp t^\alpha(\log t)^{1-\alpha},
+\]
+and let the largest initial split primes have
+\[
+\log B_1\asymp t^\beta(\log t)^{1-\beta}.
+\]
+Then
+\[
+k\asymp (t/\log t)^{1-\beta}.
+\]
+
+The initial split restriction costs an exponential on the scale
+\[
+k\log t\asymp t^{1-\beta}(\log t)^\beta.
+\]
+Thus one needs
+\[
+1-\beta\le\alpha.                                            \tag{5}
+\]
+
+Let \(d\asymp(t/\log t)^\delta\). The generalized base expansion and special-\(q\) box force the norm-size exponent to satisfy
+\[
+\sigma\ge\max\{1-\delta,\ \beta+\delta\}.
+\]
+Here the second term is the crucial \(d\log\ell\) contribution from
+\[
+V\gtrsim\sqrt\ell,\qquad F(a,b)\sim V^d.
+\]
+Smoothness testing at \(B=L[\alpha]\) then requires
+\[
+\sigma-\alpha\le\alpha.
+\]
+Optimizing \(\delta\) gives
+\[
+\frac{1+\beta}{2}\le2\alpha,\qquad \beta\le4\alpha-1.          \tag{6}
+\]
+Combining (5) and (6),
+\[
+\boxed{\alpha\ge2/5.}
+\]
+
+**PROVED feasibility obstruction within this one-level architecture:** this calculation survives removal of HECM. The HECM inequality in [lemmaM §2(c)](/Volumes/git/factoring-connection/notes/lemmaM_results.md:132) is no longer the decisive restriction once shape tests recurse. The lattice-height/norm restriction remains.
+
+At equality,
+\[
+\alpha=2/5,\qquad \beta=3/5,\qquad \delta=1/5.
+\]
+
+There are two quantitative issues.
+
+First, the existing \(L^{o(1)}\) statements are insufficient when raised to \(2k\). A bound
+\[
+\gamma\ge(\log N)^{-C_d}
+\]
+can be disastrous if \(C_d\) grows rapidly. At the \(2/5\) schedule, one wants roughly
+\[
+\log(1/\gamma)=O(\log\log N),
+\]
+with controlled constants. That is compatible with polynomial dependence on \(d\), since \(\log d=O(\log\log N)\); it is incompatible with \(\gamma=\exp(-\Omega(d))\).
+
+Second, the apparent \(2^{\omega(N)}\) obstruction can be removed in the relevant range by strengthening Theorem S′.
+
+**PROVED elementary refinement: an index-free split bound.** Let \(G\) contain \(n\) primes, let \(S\) be a subset of its squarefree \(k\)-products with
+\[
+|S|\ge\binom nk/(2k),
+\]
+and suppose all its elements are at most \(X\), with \(2X^2<N\). Put \(h=2^{\omega(N)}\), and assume coprimality with \(N\). If
+\[
+n\ge8hk^4,
+\]
+then a uniform square \(R\bmod N\) satisfies
+\[
+\boxed{\Pr[R=u/v,\ u,v\in S,\ (u,v)=1]\ge\frac{|S|^2}{2\varphi(N)}.} \tag{7}
+\]
+
+Indeed, character positivity gives at least \(|S|^2/h\) square-ratio pairs. The number of pairs sharing a prime is at most
+\[
+n\binom{n-1}{k-1}^2
+\le \frac{4k^4}{n}|S|^2.
+\]
+Discard them. The remaining pairs have distinct ratios modulo \(N\): equality modulo \(N\) implies equality over \(\mathbb Q\), and coprimality makes the representation unique. Dividing by \(\varphi(N)/h\) proves (7).
+
+This condition holds at the proposed one-level scales after trial division to \(B\). At \(\beta=1-\alpha\), \(\log |G|\) exceeds the elementary upper bound for \(\log h\) by a factor of order \(\log\log N\). Charge every trial the full capped descent cost; then the old shape/success comparison introduces no replacement \(h\)-loss.
+
+A conservative alternative to the ideal \(2/5\) schedule is worth investigating. Suppose the uniform moment argument yields
+\[
+\log(1/\gamma)=O(d^A\log t)
+\]
+for some fixed \(A\). The extra split cost requires
+\[
+1-\beta+A\delta\le\alpha.
+\]
+Together with the norm constraints, the formal optimum becomes
+\[
+\boxed{\alpha\ge\frac{A+2}{2A+5}.}                            \tag{8}
+\]
+Thus:
+
+| Degree dependence of \(\log(1/\gamma)\) | Formal target |
+|---|---:|
+| \(O(\log t)\) | \(2/5\) |
+| \(O(d\log t)\) | \(3/7\) |
+| \(O(d^2\log t)\) | \(4/9\) |
+
+These are **HEURISTIC parameter calculations**, not established algorithms. They explain why proving *some* exponent below \(1/2\) may be easier than obtaining \(2/5\).
+
+**Exact missing lemma:** a uniform FM/LD* theorem for the chosen \(d(N),k(N)\), with explicit degree dependence, valid coefficient margins, controlled rejection probabilities, and the split acceptance cost from (7). A recursive \(L[\alpha]\) induction must then be proved directly; the fixed-degree portfolio is not a sufficiently fast black box.
+
+**First step:** extract explicit dependence on \(d\) from Kern and FM, and bound \(\log(1/\gamma)\). Constants exponential in \(d\log d\) suggest starting with \(3/7\). The exact-dependency alternative above removes growing-degree Chebotarev and square-root costs from this audit.
+
+To go below \(2/5\), one needs several descent levels or a different representation. The missing statement then concerns **whole descent trees**: prime factors produced by an accepted norm must enter the next field-dependent good sets with controlled total work. Marginal success for a uniform special-\(q\) prime does not establish this. Theorem K solves the freely sampled initial split problem; it does not automatically solve that endogenous-child problem.
+
+---
+
+**5. Extension fields: the polynomial-ring transplant is promising in a specific regime.**
+
+The rigorous benchmarks must be separated.
+
+- **KNOWN:** Bender–Pomerance, “Rigorous discrete logarithm computations in finite fields via smooth polynomials,” *AMS/IP Studies* **7** (1998), 221–232, gives the classical \(L_{p^n}[1/2,\sqrt2]\) result in its growing-extension range, including \(p\le n^{o(n)}\). [Original paper](https://math.dartmouth.edu/~carlp/PDF/paper115.pdf).
+- **KNOWN:** Kleinjung–Wesolowski, *JAMS* **35** (2022), 581–624, proves expected time
+  \[
+  (pn)^{2\log_2 n+O(1)}.
+  \]
+  In fixed characteristic this is quasi-polynomial and already far faster than the proposed \(L[1/2]\) transfer. [Theorem and publication](https://doi.org/10.1090/jams/985).
+
+Consider the intermediate regime \(p\approx\exp(n)\). The latter bound has logarithm \(O(n\log n)\), whereas the \(L_{p^n}[1/2]\) scale is \(n\sqrt{\log n}\). Improving the classical \(L[1/2]\) constant here would matter.
+
+Represent the target field as
+\[
+\mathbb F_p[T]/(P(T)),\qquad \deg P=n,
+\]
+and construct over \(\mathbb F_p[T]\)
+\[
+F(g_0,g_1)=P(T)w(T).
+\]
+Use random coprime polynomial pairs \((g_0,g_1)\), an irreducible multiplier \(w\), and special-\(q\) lattices over \(\mathbb F_p[T]\).
+
+Several components become easier:
+
+- rational reconstruction and polynomial factorization have polynomial expected cost;
+- there are no number-field Siegel zeros;
+- divisor switching has a direct polynomial counterpart;
+- exact function-field dependencies can be found from divisors, with a remaining constant-field calculation.
+
+If the corresponding supply lemmas hold, the formal cost is
+\[
+\max\left\{a+\frac{\theta}{2a},\ \kappa a\right\},
+\]
+plus lower-order polynomial work and constant-field DL. As \(\theta\to0\) with fixed auxiliary degree, this again suggests arbitrarily small \(L[1/2]\) constants.
+
+**SPECULATIVE**, because integer FM/LD* cannot simply be cited over a polynomial ring.
+
+**Exact missing lemma:** polynomial-ring FM and LD* uniform in both \(p,n\), including smooth-polynomial densities, the restricted modulus family, irreducible candidate coordinates, and a geometric auxiliary function field. Its constants must remain valid in the chosen characteristic range.
+
+**First step:** prove the analogue of Lemma W and the additive large-sieve rearrangement, then formulate the first moment. Start with \(\log p\asymp n\), where the parameter comparison is clean.
+
+This does not settle fixed \(n\ge3\), \(p\to\infty\). A linear rational side only gives a degree-one residue-field map; those targets need a common irreducible factor of degree \(n\) and a higher-dimensional construction. I would not use Adleman–DeMarrais’s 1993 heuristic analysis as a rigorous baseline for that transfer.
+
+---
+
+**6. Fixed class groups and unit groups: reject the direct removal of GRH.**
+
+Two literature corrections matter.
+
+**KNOWN under GRH:** Hafner–McCurley’s original constant \(\sqrt2\) has been improved to
+\[
+3/\sqrt8=1.060660\ldots
+\]
+by Biasse–Erukulangara, “A proof of the conjectured run time of the Hafner–McCurley class group algorithm,” *Advances in Mathematics of Communications* **17** (2023), 1388–1405. Their theorem still assumes a generalized RH. [Paper](https://www.aimsciences.org/article/doi/10.3934/amc.2021055).
+
+**KNOWN under ERH:** de Boer–Pellet-Mary–Wesolowski now prove subexponential class- and unit-group computation for arbitrary number fields. Their current Theorem 1.3 includes \(L_{|\Delta_K|}[1/2,O(1)]\) for fixed degree. Thus “general fields still require smooth-ideal heuristics under ERH” is outdated. [Current paper](https://koendeboer.com/publication/rigorousmethods/RigorousMethods.pdf).
+
+Without GRH, the fully unconditional general benchmark I could verify for complete imaginary-quadratic class-number/group computation remains polynomial in \(D=|\Delta|\), on the \(D^{1/2+o(1)}\) scale. Louboutin gives the analytic class-number computation; enumeration of reduced forms also supplies a complete unconditional route. Faster customary Shanks computations must not be confused with an unconditional certification theorem. [Louboutin, *Math. Comp.* **71** (2002), 1735–1743](https://doi.org/10.1090/S0025-5718-01-01367-9).
+
+Why the transplant fails:
+
+1. **The target field is fixed.** Replacing a discriminant by \(-Dw\) changes the class group. Factoring can choose an auxiliary field freely; computing \(\mathrm{Cl}(K)\) cannot.
+2. **Existence is insufficient.** Second moments can produce relations without proving that the factor base generates the full class group or that the relation lattice is saturated.
+3. **The size floor remains.** In the uniform-class model, representatives have norm about \(D^{1/2}\), giving the familiar ledger
+   \[
+   \max\left\{b+\frac1{4b},\,2b\right\}\ge1.
+   \]
+   Randomizing an auxiliary resultant does not remove that norm scale.
+4. **Exact dependencies do not certify completeness.** Lenstra–Silverberg finds relations among supplied elements. It does not show that supplied units are fundamental or that supplied ideals generate every class.
+
+For imaginary quadratic fields the unit group itself is finite and easy; the difficult target here is the class group.
+
+**Exact missing lemma:** an unconditional, certified decomposition/sampling theorem for **every class of the fixed field**, together with generation and relation-lattice saturation at the desired subexponential cost.
+
+**First step:** isolate the ERH uses in the new Arakelov-sampling theorem and test one proposed replacement there. A demonstration that only accelerates factoring norms has not removed the class-group bottleneck.
+
+The significance would be enormous, but these devices currently supply no credible direct proof.
+
+---
+
+**7. Deterministic QS and coverage: existence over coins is not derandomization.**
+
+The published worst-case benchmark is
+\[
+O\!\left(
+\frac{N^{1/5}\log^{16/5}N}{(\log\log N)^{3/5}}
+\right)
+\]
+from Harvey–Hittmeir, “A log-log speedup for exponent one-fifth deterministic integer factorisation.” Their 2026 large-order work improves an auxiliary subroutine, without establishing a smaller factoring exponent. [Factoring paper](https://arxiv.org/abs/2105.11105), [2026 order paper](https://arxiv.org/abs/2601.11131).
+
+The multiplier does not provide a short deterministic replacement preserving Lemma W. Pointwise domination over all residues modulo \(t\) requires support at least
+\[
+\varphi(t)/L^{o(1)},
+\]
+as [ldbound Proposition 7.3](/Volumes/git/factoring-connection/notes/ldbound_results.md:610) shows. At fixed parameters that is polynomial in \(N\), far too expensive to enumerate. The analogous full enumeration of \((g_0,g_1)\) is also polynomial in \(N\).
+
+This excludes preserving that particular domination argument with a tiny support. It does not exclude a different deterministic hitting-set proof.
+
+For deterministic QS, the exact missing fruitfulness statement remains
+\[
+\#\{N\in S_n:H1\text{ holds and }\psi_N|_{\ker A_N}=1\}
+=o(|S_n|).
+\]
+DD proves fruitfulness under a sampling symmetry. It does not establish this statement for the fixed near-\(\sqrt N\) QS root choices. H1 also remains unresolved at the requested subexponential scale. [detqs §6.2](/Volumes/git/factoring-connection/notes/detqs_results.md:399).
+
+For coverage, a theorem with mean coverage \(\lambda=J^\vartheta\), \(\vartheta<1/4\), would give the internal exponent
+\[
+\frac{1+\vartheta}{6+\vartheta}<\frac15.
+\]
+For example \(\vartheta=1/5\) gives \(6/31\). But averaged multiplier success gives no such uniform covering theorem. [coverage38 §2](/Volumes/git/factoring-connection/notes/coverage38_results.md:155).
+
+**Exact missing lemma:** an explicitly constructible short seed list hitting a successful transcript for every input, or the original uniform coverage/fruitfulness theorem.
+
+**First step:** choose one of those precise targets and prove a nontrivial deterministic hitting statement. Repeating the second-moment existence argument with “random” replaced by “enumerate” does not advance it.
+
+---
+
+**8. ECM families and Jacobians: retain the arithmetic-order corollaries, reject the general smooth-relation claims.**
+
+For ECM, the canonical \(L_p[1/2,\sqrt2]\) small-factor analysis still depends on smooth-number supply in Hasse intervals. Barbulescu–Jouve obtain rigorous CM-family results conditional on Elliott–Halberstam for quadratic fields; the non-CM analogue remains hypothetical. [“ECM and the Elliott–Halberstam conjecture for quadratic fields,” *Acta Arithmetica* (2024)](https://www.math.u-bordeaux.fr/~fjouve001/ECM-EH.pdf).
+
+The new devices do not immediately address this:
+
+- multiplying a curve order by \(w\) does not produce another elliptic-curve order in the required Hasse interval;
+- randomizing curve coefficients does not turn their traces into the linear lattice images used by Kern;
+- batch smoothness recognizes smooth orders that are available; it does not make a short explicit curve family encounter them.
+
+There is nevertheless an exact attractive target in the project. The hypothesis
+\[
+\Pr_{N\in S_n}[\text{first }j\text{ explicit curves all fail}]
+\le j^{-1},\qquad j\le N^{1/14},
+\]
+at stage bound \(B=N^{1/8}\), would yield average \(N^{1/8+o(1)}\) factoring through its fallback theorem:
+\[
+\frac16-\frac7{12}\cdot\frac1{14}=\frac18.
+\]
+That is a useful feasibility calculation, but the required **HIT** theorem is essentially the unresolved ECM-family problem. [ecmavg](https://www.math.u-bordeaux.fr/~fjouve001/ECM-EH.pdf), [internal formulation](/Volumes/git/factoring-connection/notes/ecmavg_results.md:210).
+
+**Missing lemma:** this explicit-family hitting bound, retaining staged separation of the two factors.
+
+**First step:** establish any power-saving zero-hit bound for a genuinely short explicit family. Covariance control for fixed-level divisibility alone is insufficient.
+
+For Jacobian DL, the regime distinction is equally important. **KNOWN:** high-genus index calculus already has rigorous \(L_{q^g}[1/2,O(1)]\) analyses; Enge–Gaudry’s framework reaches the \(\sqrt2\) constant in its stated known-order/basis and genus-growth setting. [Enge–Gaudry, *Acta Arithmetica* **102** (2002), 83–103](https://doi.org/10.4064/aa102-1-6). Fixed-genus cryptographic Jacobians are a different asymptotic problem.
+
+The prime-field proof above uses a certificate homomorphism from a subgroup of a rational algebra into \(\mathbb F_p^\times\). It supplies no corresponding representation for an arbitrary Jacobian. Changing a curve or a resultant does not preserve the specified target group.
+
+**Missing lemma:** a target-preserving certificate construction with demonstrably smaller smoothness sizes and an efficient exact-dependency map into the given Jacobian.
+
+**First step:** exhibit that homomorphism and its size ledger before attempting moment estimates. Until then, the defensible new Jacobian application is faster **point-order computation from a known cardinality**, inherited from factoring, rather than a new general DL bound.
