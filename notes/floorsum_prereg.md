@@ -109,3 +109,21 @@ scaling data were produced.
 - **E5 replaced.** Sizes n ∈ {36, 40, 44, 48}, seeds 0..2 (12 instances; the 56-bit runs are too
   slow in Python). P5.1′: correctness 12/12. P5.2′ (report): X(√N)/H_ladder at dimension ≤ 16;
   predicted ∈ [0.2, 2]. E5 still supports no new claim.
+
+## Amendment A2 (2026-10-20, after E1–E5 and the reviews; before E6 was run)
+
+Requested by the orchestrator after `floorhard` finished: test whether lattice small-root methods
+answer the ladder's positive-width WINDOW queries on top blocks. Code: `src/floorsum/lattice_window.py`
+(basic-strategy bivariate lattice for f(h, r) = r − g(h) mod D, D = x^{j+1}). Analytic prediction:
+the determinant condition tends to X^j·Y < D with Y = R = ⌈ρD⌉, so a lattice call resolves windows
+only on sub-blocks of length X ≈ ρ^{−1/j} ≈ H^{1/j}. No E6 data have been produced.
+
+E6 (`run_experiments e6`): j = 2 with m ∈ {2, 3, 4} and j = 3 with m ∈ {2, 3}; random odd N of
+48, 64, 80 bits, 4 top blocks each (x = ⌊√N⌋ − U[0, 10⁴], H = ⌊x/(2B)⌋, ρ as in the ladder). For
+each (block, m), X_max = largest power of two such that LLL gives ≥ 2 rows with n‖v‖² < D^{2m}.
+- P6.1 (bug check): every such row vanishes at every true root (h, r) of its box (brute force over
+  h < X_max).
+- P6.2: X_max ≤ H/16 on every block, and log₂(X_max^j·R/D) ∈ [−24, 1].
+- P6.3 (best m per block): ln(H/X_max)/ln H ∈ [0.35, 0.80] for j = 2 and [0.50, 0.90] for j = 3.
+Decision: "lattice window oracles cost ≥ H^{1−1/j−o(1)} lattice calls per top block in this
+construction" is supported iff P6.1–P6.3 hold.

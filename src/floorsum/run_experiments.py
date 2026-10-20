@@ -324,6 +324,67 @@ def run_e5():
         print("e5", bits, flush=True)
 
 
+# ------------------------------------------------------------------ E6 (Amendment A2)
+E6_CFG = {2: (2, 3, 4), 3: (2, 3)}
+E6_BITS = (48, 64, 80)
+
+
+def run_e6():
+    from src.floorsum.lattice_window import good_vectors, log2_det_condition, window_lattice
+    from src.floorsum.farey import poly_eval
+    path = f"{RAW}/floorsum_e6.jsonl"
+    _fresh(path)
+    rng = random.Random("floorsum-e6")
+    for j, ms in E6_CFG.items():
+        for bits in E6_BITS:
+            for t in range(4):
+                N = rng.getrandbits(bits) | (1 << (bits - 1)) | 1
+                B = iroot_floor(N, j + 2)
+                x = isqrt(N) - rng.randint(0, 10 ** 4)
+                H = max(1, x // (2 * B))
+                blk = _Block(N, x, H, j)
+                D = blk.den
+                R = _ceil_div(blk.rho.numerator * D, blk.rho.denominator)
+                g = [c % D for c in blk.coef]
+                for m in ms:
+                    best = None
+                    X = 1
+                    while X <= 4 * H:
+                        n, monos, L = window_lattice(g, D, j, m, X, R + 1)
+                        if good_vectors(L, n, D, m) >= 2:
+                            best = (X, n, monos, L)
+                            X *= 2
+                        else:
+                            break
+                    vanish_ok, roots = True, 0
+                    if best is not None:
+                        Xb, n, monos, L = best
+                        rows = []
+                        bound = D ** (2 * m)
+                        for i in range(n):
+                            v = [int(L[i, k]) for k in range(n)]
+                            if n * sum(c * c for c in v) < bound:
+                                rows.append(v)
+                        scale = [Xb ** a * (R + 1) ** b for (a, b) in monos]
+                        for h in range(Xb):
+                            r = poly_eval(blk.coef, h) % D
+                            if r <= R:
+                                roots += 1
+                                for v in rows:
+                                    val = sum((v[k] // scale[k]) * h ** a * r ** b
+                                              for k, (a, b) in enumerate(monos))
+                                    if val != 0:
+                                        vanish_ok = False
+                    Xm = best[0] if best else 0
+                    _append(path, {"exp": "e6", "j": j, "bits": bits, "m": m, "N": N, "x": x,
+                                   "H": H, "D_bits": D.bit_length(), "R_bits": R.bit_length(),
+                                   "X_max": Xm, "roots_checked": roots, "vanish_ok": vanish_ok,
+                                   "log2_XjR_over_D": (j * math.log2(Xm) + math.log2(R + 1) -
+                                                       math.log2(D)) if Xm else None,
+                                   "det_cond_at_Xmax": log2_det_condition(j, m, max(Xm, 1), R + 1, D)})
+            print("e6", j, bits, flush=True)
+
+
 # ------------------------------------------------------------------ summary
 def _load(name):
     p = f"{RAW}/floorsum_{name}.jsonl"
@@ -436,6 +497,22 @@ def summary():
                      "rows": [{k: r[k] for k in ("bits", "seed", "X_at_sqrtN", "H_ladder_j2", "m", "n",
                                                  "wall_s")} | {"blocks": r["stats"].get("blocks")}
                               for r in e5]}
+    e6 = _load("e6")
+    if e6:
+        rows = []
+        for j in E6_CFG:
+            for b in E6_BITS:
+                for N in sorted({r["N"] for r in e6 if r["j"] == j and r["bits"] == b}):
+                    rb = [r for r in e6 if r["j"] == j and r["N"] == N]
+                    bst = max(rb, key=lambda r: r["X_max"])
+                    rows.append({"j": j, "bits": b, "H": bst["H"], "best_m": bst["m"],
+                                 "X_max": bst["X_max"],
+                                 "lnH_over_X_over_lnH": (math.log(bst["H"] / bst["X_max"]) /
+                                                         math.log(bst["H"])) if bst["X_max"] else None,
+                                 "log2_XjR_over_D": [r["log2_XjR_over_D"] for r in rb],
+                                 "vanish_ok": all(r["vanish_ok"] for r in rb),
+                                 "roots": sum(r["roots_checked"] for r in rb)})
+        out["e6"] = rows
     os.makedirs(ANA, exist_ok=True)
     with open(f"{ANA}/floorsum_summary.json", "w") as f:
         json.dump(out, f, indent=1, default=str)
@@ -443,5 +520,5 @@ def summary():
 
 
 if __name__ == "__main__":
-    {"e1": run_e1, "e2": run_e2, "e2b": run_e2b, "e3": run_e3, "e4": run_e4, "e4b": run_e4b, "e5": run_e5,
+    {"e1": run_e1, "e2": run_e2, "e2b": run_e2b, "e3": run_e3, "e4": run_e4, "e4b": run_e4b, "e5": run_e5, "e6": run_e6,
      "summary": summary}[sys.argv[1]]()
