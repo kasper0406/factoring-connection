@@ -70,7 +70,14 @@ supply.**
      impossibility result.
    - The Z route's ingredients are classical (Miller; Bach; index calculus mod N, cf. Bach 1984). We found no
      explicit statement of Proposition EQ, which is folklore-level.
-7. **Experiments (pre-registered E1; toy sizes, correctness only) [§7].** RESULTS_PLACEHOLDER
+7. **Experiments (pre-registered E1; toy sizes, correctness only) [§7].**
+   - 240 instances at 28–40 bits, plus an exhaustive check over N < 3000.
+   - Every exact prediction held: Lemma MR (0/1499 violations), Proposition FL, the cocycle identity, and the Z
+     route, which factored 237/237 full-rank instances including the F₂-dead doubled control.
+   - The orchestrator's multiplicativity is refuted: products of certified squares disagree with products of roots
+     at rate 0.500 (semiprimes) and 0.746 (ω = 3), and each disagreement is a factor.
+   - One pre-registered heuristic window failed (P-CY3: non-diagonal seeds 0.24). The explanation is post hoc: half
+     of the seeds' canonical certificates are their own honest relation.
 
 **The single most promising open statement** is Hypothesis DS-NFS (§5.3): for every N, some field in an explicit
 list of L^{O(1)} NFS fields has a deterministic, explicitly enumerable set of descents whose exact rational
@@ -390,7 +397,60 @@ arithmetic of the good set: which fields have many smooth values. Moment bounds 
 
 ## 7. Experiment E1 (pre-registered, `7cab676`; toy sizes, correctness only)
 
-E1_PLACEHOLDER
+All predictions were frozen in `notes/detGRH_prereg.md` before any code existed.
+
+**Disclosed deviations.**
+- (1) The tri class cannot have all three factors > B(28) = 768 at 28 bits, since the smallest factor is
+  ≤ N^{1/3} < 2^{9.4}. tri/28 was therefore replaced by tri/40, in the config before the run. Every tri prime has
+  ⌈n/3⌉ bits.
+- (2) The blind prompt pointed to Miller/Bach in question 2(c) (disclosed in the prereg).
+- No other deviations.
+
+**Results (240 instances + exhaustive E1a; `experiments/analysis/detGRH_e1_summary.json`).**
+
+| prediction | result | verdict |
+|---|---|---|
+| P-MR1: #sections = [all p ≡ 3 mod 4], every odd N < 3000 | 1499 N, 0 violations; an independent backtracking count agrees for N < 160 (test) | **pass** |
+| P-MR2: the principal root is multiplicative (Blum-type N < 400) | 85 N, 0 violations | **pass** |
+| primes < 2 log² N generate (Z/N)^× (diagnostic) | 240/240 | as predicted |
+| full Q-rank within the caps (descriptive) | 237/240; the 3 failures are tri/40 at the cap K = 600 | — |
+| P-Z1: full rank ⇒ Miller factors N | **237/237**; base 2 in 165 cases, 3 in 48, 5 in 14, at most 13 | **pass** |
+| P-Z2: control 2Λ_c, F₂ route dead and Z route alive | F₂ fruitless 240/240; Z route factors 237/237 | **pass** |
+| P-FL1: dim W = ω − 1 | 240/240 | **pass** |
+| P-FL2: c < dim W ⇒ fruitful | premise true in 42 instances (all tri, c = 1), 0 violations | **pass** |
+| P-CY1: δ ∈ μ₂; δ ∉ {±1} ⇒ proper gcd | 0 violations; 61 734 nontrivial defects, all giving proper factors | **pass** |
+| P-CY2: nontrivial-defect rate, semiprimes [0.30, 0.70] | 52 401/104 800 = **0.500** | **pass** |
+| P-CY2: tri [0.55, 0.95] | 9 333/12 506 = **0.746** | **pass** |
+| P-CY3: non-diagonal χ(r_i), semiprimes [0.30, 0.70] | 6 227/25 992 = **0.240** | **FAIL** |
+| P-CY3: tri [0.55, 0.95] | 1 344/5 747 = **0.234** | **FAIL** |
+
+**What E1 shows.**
+- **Exact algebra.** MR, FL, Z and CY are confirmed with no exceptions. These are correctness checks of proved
+  statements.
+- **The orchestrator's multiplicativity hypothesis is refuted on every class.** Products of certified squares
+  re-certified independently disagree with the product of the roots in exactly the fair-coin proportion,
+  1 − 2^{1−ω}. Every disagreement is a factor, as Theorem M(G) predicts.
+- **The Z route works with no F₂ input**, including the doubled control, where every F₂ dependency is fruitless by
+  construction.
+
+**Post-hoc analysis (labelled; `src/detGRH/posthoc_e1.py`; 16 instances at 32 bits).**
+- **Why P-CY3 failed.** For 1 211/2 388 seeds, the canonical completion of e(R_i) is the seed's own relation
+  2e(r_i) − e(R_i). Then y(R_i) = r_i exactly and χ(r_i) = 1 by construction: an honest certificate, as in Lemma SC.
+  Among the other 1 177 seeds the non-diagonal rate is 0.538.
+- The pre-registered window wrongly assumed that the completion is a uniform dependency. The failure is in our
+  heuristic prediction, not in a claim.
+- It does illustrate Theorem M(G): χ at the seeds is mostly trivial, and the fruitful information sits in the
+  cocycles.
+- **Why c ≥ 1 in every instance (c_hist: 1 → 149, 2 → 49, 3 → 21, 4 → 12, 5 → 4, 6 → 1, 21 → 1).**
+  - Both relation sources have positive values, so no found relation has an odd −1 coordinate (0/11 499 rows).
+    Hence Λ_c lies in the index-2 sublattice {e ∈ Λ : e_{−1} even}, and Λ does contain elements with e_{−1} odd,
+    since −1 ∈ ⟨primes⟩.
+  - So [Λ : Λ_c] is always even. Proposition FL(iii)'s sufficient condition then never applies to semiprimes, yet the
+    F₂ route was fruitful in 240/240 instances (195/195 with c ≥ dim W).
+  - The criterion is sufficient, not necessary, as stated.
+- **The rank shortfall.** It is a pinning failure: for example one prime (971, in a 32-bit trial run with a small
+  cap) occurred in no relation. This is the detectable degeneracy of Z3.
+- **No complexity claim.** Toy sizes, rational relation sources with Dixon-size values.
 
 ## 8. Literature (question 5)
 
