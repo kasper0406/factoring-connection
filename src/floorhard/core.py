@@ -111,7 +111,7 @@ def class_part(m, a, oracle=full_period_brute):
     return Fraction(oracle(m, a)) - Fraction(a * (m - 1) * (2 * m - 1), 6) + Fraction(m - 1, 2)
 
 
-def decode_class_number_semiprime(m, rng, oracle=full_period_brute, max_calls=40):
+def decode_class_number_semiprime(m, rng, oracle=full_period_brute, max_calls=40, amax=None):
     """m = pq odd squarefree, 3 does not divide m. Returns (M, h(-M), calls) with M = m (m = 3 mod 4)
     or M = 3m (m = 1 mod 4). Uses multipliers a with (a/M) = 1 (and (a/3) = 1 if M = 3m), so that
     the class part is h(-M) + (const) +- X with an unknown sign; two distinct values average to the
@@ -122,7 +122,7 @@ def decode_class_number_semiprime(m, rng, oracle=full_period_brute, max_calls=40
     seen = set()
     calls = 0
     while calls < max_calls:
-        a = rng.randrange(2, 1000)
+        a = rng.randrange(2, amax) if amax else rng.randrange(1, M)   # theorem: uniform mod M
         if gcd(a, M) != 1 or jacobi(a, M) != 1:
             continue
         if M != m and jacobi(a, 3) != 1:
@@ -166,7 +166,7 @@ def subset_sum_count(w, T):
     return cnt.get(T, 0)
 
 
-def subset_sum_to_qc(w, T):
+def subset_sum_to_qc(w, T, deterministic=False):
     """Parsimonious reduction (Prop B). Returns dict with a, b, primes, theta, windows.
 
     #{x in windows : x^2 = a (mod b)} = #{delta in {0,1}^k : sum delta_i w_i = T}.
@@ -177,19 +177,37 @@ def subset_sum_to_qc(w, T):
     """
     k = len(w)
     S = sum(w)
+    assert k >= 1 and min(w) >= 1
+    if not 0 <= T <= S:
+        return None                            # count is 0 (referee fix: aliasing mod M otherwise)
     M = 4 * S + 4
     P = max(k * M, 4 * M) + 1
-    primes = []
-    q = P
-    while len(primes) < k:
-        q = int(gmpy2.next_prime(q))
-        primes.append(q)
+    primes = []                                # moduli q_i (primes, or prime powers if deterministic)
+    if deterministic:
+        # codex floorhard_2 repair: first k odd primes, each raised to a power > 8kM (poly-time, no
+        # prime search); u_i adjusted by <= 1 to be a unit, |eta| < 3/(16M).
+        ell = 3
+        while len(primes) < k:
+            q = ell
+            while q <= 8 * k * M:
+                q *= ell
+            primes.append(q)
+            ell = int(gmpy2.next_prime(ell))   # small primes (<= k-th prime): trial division is poly
+    else:
+        q = P
+        while len(primes) < k:
+            q = int(gmpy2.next_prime(q))
+            primes.append(q)
     b = 1
     for p in primes:
         b *= p
     theta = []
     for wi, p in zip(w, primes):
         u = (2 * p * wi + M) // (2 * M)        # round(p w / M), in [1, p/4]
+        if deterministic:
+            base = next(l for l in range(3, p + 1, 2) if p % l == 0)
+            if u % base == 0:
+                u += 1
         assert 1 <= u < p
         theta.append((b // p) * u)
     a = pow(sum(theta), 2, b)
@@ -207,6 +225,8 @@ def subset_sum_to_qc(w, T):
 
 def qc_count_crt(inst):
     """Diagnostic: enumerate the 2^k CRT roots and count those in the windows."""
+    if inst is None:
+        return 0
     b, theta = inst["b"], inst["theta"]
     k = len(theta)
     cnt = 0
@@ -220,6 +240,8 @@ def qc_count_crt(inst):
 
 def qc_count_floorsums(inst, oracle=floor_sum_brute):
     """The count through identity (W) with f(x) = x^2 - a, D = b, [u, v) = [0, 1): 2 calls/window."""
+    if inst is None:
+        return 0
     f = [-inst["a"], 0, 1]
     return sum(window_count(oracle, f, inst["b"], lo, hi, 0, 1) for lo, hi in inst["windows"])
 

@@ -1,0 +1,248 @@
+**Overall: major revision.** The uniform hardness conclusions are repairable. The top-block question remains open, but several statements presented as proved are false or insufficiently scoped.
+
+I read the complete note, code, tests, background theorem, and blind report. All nine tests pass. Additional exact checks, including 972 subset-sum instances and a repaired construction, are reproducible in [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/floorhard_2/referee_checks.py).
+
+**1. Theorem SS — ACCEPT WITH FIXES.**
+
+The CRT geometry works after requiring \(k\ge1\) and handling \(T\notin[0,S]\) separately.
+
+The inequalities are sound:
+
+- \(p_i>4M\) gives \(u_i\ge1\). Moreover,
+  \[
+  u_i\le p_iS/M+1/2=p_i/4-p_i/M+1/2<p_i/4.
+  \]
+- \(p_i>kM\) gives \(|\eta|\le\sum_i(2p_i)^{-1}<1/(2M)\).
+- Distinct **subset-sum values**, rather than distinct subsets, have signed centers separated by \(2/M\). Equal sums correctly contribute multiple distinct CRT roots.
+- For \(0\le T\le S\), the centers and window endpoints lie strictly within \((-1/4,1/4)\). Reduction modulo one introduces only the split at zero.
+- No root hits an endpoint. Consequently the code’s `floor(endpoint)+1` convention preserves the count, including when an endpoint itself is integral.
+
+The missing target check is substantive: for \(w=[1]\), \(T=5\), the code returns one selected root although the subset-sum count is zero.
+
+The larger problem is **construction time**. Searching deterministically for primes near \(kS\) is not a proved polynomial-time procedure in \(\log S\). Primality testing does not solve prime generation. [Polymath’s discussion](https://arxiv.org/html/1009.3956) explicitly distinguishes these tasks.
+
+A deterministic repair preserves the stated bit bound: choose the first \(k\) odd primes, raise each to a power \(q_i>8kM\), and round \(q_iw_i/M\) to a nearby integer coprime to its underlying prime. The adjustment costs at most \(3/2\), so
+\[
+|\eta|<\frac{3}{16M}<\frac1{2M}.
+\]
+Unit squares modulo odd prime powers still have exactly two roots. The construction takes polynomial time and uses \(O(k\log(kS))\) bits. If squarefree \(b\) is essential, the existing deterministic proof remains incomplete.
+
+The clause-target claim is **correct**. With \(s=1,2,3\) satisfied literals, the required slack is respectively \(3,2,1\), uniquely represented by subsets of \(\{1,2\}\); slack \(4\) is impossible. With carry-free digits and one selected truth number per variable, this is parsimonious. Thus #SubsetSum is #P-complete under parsimonious reductions.
+
+After repairing prime generation, sparse 3SAT gives \(k=O(n)\), weights \(2^{O(n)}\), and \(L=O(n^2)\). Hence a deterministic \(2^{o(\sqrt L)}\) evaluator contradicts ETH. The reduction to the root count is parsimonious; the subsequent floor-sum reduction uses differences of oracle outputs and should be described as a constant-query Turing reduction.
+
+**2. Prop FP and FP2 — ACCEPT WITH FIXES.**
+
+Prop FP is correct, including \(h^*(-3)=1/3\). The CRT expansion and weighted primitive-character identities supply the stated signs and normalization.
+
+For FP2, assume **distinct odd primes \(p,q>3\)**. Write \(C_M(a)\) for the class part.
+
+If \(m\equiv3\pmod4\), with \(q\equiv3\pmod4\), restriction to \((a/m)=1\) gives
+\[
+C_m(a)=h(-m)+s\,h(-q),\qquad s=\pm1.
+\]
+
+If \(m\equiv1\pmod4\), impose \((a/3)=(a/M)=1\), where \(M=3m\). Then
+\[
+C_M(a)-\tfrac13=h(-M)+sX,
+\]
+where
+\[
+X=
+\begin{cases}
+h(-3p)+h(-3q),&p,q\equiv1\pmod4,\\
+h(-p)+h(-q),&p,q\equiv3\pmod4.
+\end{cases}
+\]
+The displayed formula in the draft misses the first case: \(-p\) is not even a quadratic discriminant when \(p\equiv1\pmod4\).
+
+There is **no coincidence obstruction**: \(X>0\), so precisely two distinct values occur. Exact examples, after subtracting \(1/3\) where appropriate:
+
+| \(m\) | \(M\) | Values | Their mean |
+|---|---:|---:|---:|
+| \(65\) | \(195\) | \(-2,10\) | \(4=h(-195)\) |
+| \(77\) | \(231\) | \(10,14\) | \(12=h(-231)\) |
+| \(115\) | \(115\) | \(-1,5\) | \(2=h(-115)\) |
+
+The conductor-two identity
+\[
+h(-4M)=h(-M)\bigl(2-(-M/2)\bigr)
+\]
+is correct here, since \(-M\) is fundamental and \(M>3\).
+
+The probability claim requires uniform sampling modulo \(M\), conditioned on the character restrictions. Sampling only \(2\le a<1000\), as implemented, does not guarantee either sign occurs.
+
+Finally, ambiguous forms expose factors, but the fixed small-prime sampler and capped retries do not establish an asymptotic polynomial-time factoring theorem. Supply an appropriate sampling theorem and its assumptions, or retain this step as an experimental implementation. [Schoof’s treatment](https://reneschoof.github.io/mcpaper.pdf) does not justify an assumption-free polynomial runtime merely by citation.
+
+**3. Theorem TE and prime-\(N\) variant — ACCEPT WITH FIXES.**
+
+For integer \(A,b,c',t\), the geometric remainder estimate is correct:
+\[
+|R(h)|\le \frac{Ac'^3}{b^2t}\frac1{1-c'/(bt)}
+\le\frac{2Ac'^3}{b^2t}<\frac1{4b}.
+\]
+The shifted fractional values therefore lie strictly inside the correct residue windows. State \(0\le r<b\).
+
+The block condition is also repairable with explicit rounding margin. For example, alongside the remainder conditions,
+\[
+t\ge (4/c)^4Ac'^4/b^2
+\]
+is a sufficient conservative choice. Include the dependence on \(c\).
+
+For prime padding, the query must subtract the constant **\(e/x\)**. The code does this; the variant’s statement should too. Then
+\[
+|\text{varying perturbation}|
+\le 2ec'/x^2<1/(8b).
+\]
+Together with \(t>16Ac'^3/b\), this gives total error \(<1/(4b)\).
+
+The claimed prime-interval exponent is **wrong when the other parameters grow**:
+\[
+E=\frac{bt^2}{16c'}
+=\frac{N_0^{2/3}}{16A^{2/3}b^{1/3}c'},\qquad N_0=Ab^2t^3.
+\]
+For \(A=1,c'=b,t\asymp b^2\), one has \(E\asymp N_0^{1/2}\), below \(N_0^{0.525}\). Increasing \(t\) by a fixed factor does not fix this.
+
+A valid choice is \(A=1,c'\le b,t\asymp b^3\): then \(E\asymp N_0^{6/11}\), which exceeds \(N_0^{0.525}\). The quantitative prime-density bound in [Baker–Harman–Pintz](https://www.researchgate.net/profile/Roger-Baker-2/publication/228991240_The_Difference_Between_Consecutive_Primes_II/links/53e14c630cf2235f35296d79/The-Difference-Between-Consecutive-Primes-II.pdf), applied across this interval, yields expected \(O(\log N)\) trials.
+
+Prime-only consequences are randomized: polylogarithmic evaluation gives zero-error randomized exact counting and \(\mathrm{NP}\subseteq\mathrm{ZPP}\). It does not establish deterministic \(\mathrm{FP}=\#P\). Likewise, the subexponential conclusion requires randomized ETH, unless ETH is explicitly defined to prohibit randomized algorithms.
+
+**4. Corollary DOM — ACCEPT WITH FIXES.**
+
+The comparison exponent is correct. Direct factoring has exponent \(\delta\); the ladder has exponent
+\[
+\frac1{j+2}+\delta\left(\frac12-\frac1{j+2}\right).
+\]
+The direct route is strictly better exactly when
+\[
+\delta<\frac2{j+4}.
+\]
+At equality the power exponents tie; logarithmic factors decide.
+
+The conclusion “informative only for non-uniform oracles” is false. For example, \(j=2,\delta=1/2\) gives direct exponent \(1/2\) versus ladder exponent \(3/8\), even with a uniform oracle.
+
+Also, an algorithm uniform over all inputs satisfying \(x\asymp\sqrt N\) is a **uniform promise algorithm**, not a nonuniform algorithm.
+
+Replace the conclusion by: “For sufficiently small query-length exponents, uniform padding gives a stronger factoring reduction than the ladder; the top-block promise avoids the currently known padding constructions.”
+
+State explicitly that \(T(H)\) depends on the **queried interval length**, with polynomial dependence on ambient bit length. A runtime governed by preprocessing the entire enclosing block needs a different comparison.
+
+**5. Location and top blocks — REJECT AS STATED.**
+
+The open question survives; the claimed obstruction and equivalence do not.
+
+**Location.** For the displayed TE families with \(c'=b^{1-o(1)}\),
+\[
+t\ge A b^{2-o(1)},\qquad x\le N^{3/8+o(1)}
+\]
+is sound. This describes these constructions, not a necessity theorem for hardness. The other embedding has \(x=N^{4/11+o(1)}\) only when \(a=m^{o(1)}\); for \(a\asymp m\), its exponent approaches \(1/3\). Its asserted upper bound below \(3/8\) survives.
+
+**T1: ACCEPT WITH FIXES.** The bounded-wrap arithmetic is correct. However, “short congruence counting is trivial because the quotient is at most one” applies to suitable intervals starting at zero, not arbitrary translated intervals. For example, \(11^2=1+8\cdot15\), although \([11,12)\) has length below \(\sqrt{15}\). Use the shifted-polynomial Coppersmith theorem instead.
+
+**T2: ACCEPT.** Take \(\beta=\log x/\log N\). A divisor in the block is at least \(N^\beta\), and
+\[
+\beta^2-(\beta-\tfrac14)=(\beta-\tfrac12)^2\ge0.
+\]
+Endpoint losses are manageable. [May, Theorem 7](https://d-nb.info/972386416/34) explicitly removes the fixed-\(\varepsilon\) loss by taking \(\varepsilon=1/\log N\) and subdividing intervals. Constant or polylogarithmic factors are allowed, with polynomial-time overhead. A generic \(N^{o(1)}\) enlargement is **not** automatically covered in polynomial time; subdivision costs that many calls. T2 concerns detection, not exact floor-sum evaluation.
+
+**T3: REJECT as a general obstruction.** The calculation excludes the particular SS positioning construction at fixed \(j\). It does not show that every CRT encoding needs its window fraction, or that the modulus can contain only \(O(j)\) primes.
+
+A concrete warning is square padding. From
+\[
+y^2\equiv a\pmod b,\quad y<c\le b,
+\]
+choose a prime power \(q\) coprime to \(b\). Then
+\[
+z^2\equiv q^2a\pmod{bq^2},\quad z<qc
+\]
+is equivalent under \(z=qy\). For every fixed \(\delta>1/2\), polynomially large \(q\) places this hard family below \((bq^2)^\delta\). Thus short period fraction alone is no universal hardness obstruction. This example uses a nonunit target.
+
+I tried this padding route and rational-slope/unimodular frames. **I obtained no top Taylor-class embedding.** Square padding introduces unwanted integers between the multiples of \(q\); higher Taylor terms exceed the narrow residue spacing needed to exclude them. A unimodular transformation produces a general conic, requiring an additional reduction back to the allowed Taylor class.
+
+There is a useful positive constraint. Put
+\[
+D=\frac{x^{j+1}}{\gcd(N,x^{j+1})}\ge x^{j-1}/\kappa^2.
+\]
+Fixing one fractional value of \(P_j\) gives a monic degree-\(j\) congruence modulo \(D\). Since
+\[
+H\ll x^{j/(j+2)}\le x^{(j-1)/j},
+\]
+these equality queries fall within univariate Coppersmith bounds, up to constant subdivision. This supports studying **windows**, but supplies no algorithm or hardness exclusion for them.
+
+**T4: REJECT.** The strip identity is exact for \(N/d\), not for its Taylor polynomial.
+
+A balanced-semiprime counterexample is
+\[
+N=101\cdot103=10403,\quad x=100,\quad j=2,\quad H=4.
+\]
+At \(h=1\),
+\[
+N/(x+h)=103,\qquad P_2(1)=103+103/10^6.
+\]
+The window \([0,1/20000)\) counts the hyperbola point and misses the Taylor value.
+
+The valid direction is the ladder’s candidate enumeration followed by division tests. Even for exact hyperbola windows, the divisor-sum reformulation has \(d\)-dependent bounds:
+\[
+\sum_d\sum_{\substack{d\mid N-k\\ \alpha d\le k<\beta d}}1.
+\]
+It is not simply a fixed window of neighboring divisor counts. Replace “equivalent” by the precise reduction proved.
+
+**6. Section 4.3 and Manders–Adleman size — ACCEPT WITH FIXES.**
+
+For the sparse-3SAT image of SS, \(\log b=\Theta(k^2)\), trial division costs \(b^{O(1/k)}\), and enumerating \(2^k\) roots is \(H^{o(1)}\). The conclusion about that family is correct.
+
+The displayed \(2^k=2^{O(\sqrt{\log b})}\) is not true for arbitrary SS inputs: weights all equal to one give \(\log b=\Theta(k\log k)\). The weaker subpolynomial enumeration bound survives.
+
+With supplied factorization and unit targets, more generally,
+\[
+2^{\omega(b)}=\exp(O(\log b/\log\log b))=b^{o(1)}.
+\]
+Keep the unit/root-structure qualifications.
+
+Manders–Adleman does **not** furnish a linear-size reduction. Its construction uses
+\[
+K=\prod_{i=0}^{n}p_i^{\,n+1},
+\]
+with polynomially sized small primes, giving \(\log K=\Theta(n^2\log n)\). The original formulation additionally enumerates possible clauses. There is no \(2^{\Omega(L)}\) ETH consequence hiding in this construction. See the [authors’ original report, §§2.1–2.2](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1976/ERL-m-615.pdf).
+
+Hypothetically, \(L=O(n\log^c n)\) would exclude \(2^{o(L/\log^c L)}\), still not every \(2^{\varepsilon L}\). A genuinely linear-size reduction would be materially stronger—and incompatible with ETH for a supplied-factorization family already solvable in \(2^{o(L)}\).
+
+Replace “hardness is irrelevant” with “these reductions provide no positive-power runtime exclusion.”
+
+**7. Cubics and literature — REJECT AS STATED.**
+
+C1 is correct, including its squarefree hypothesis. The remaining claims need these corrections.
+
+For integer \(0\le c<m\),
+\[
+F(c)-F(0)
+=\#\{h:(ah^3\bmod m)\in[m-c,m)\}.
+\]
+This is the clean shifted-floor identity. The stated \(-m\) multiple of incomplete character sums is not the floor-sum formula.
+
+For unit \(c\) and \(m=pq\), cube-root counts are \(0\) or \(3^s\), where \(s\) counts factors congruent to \(1\bmod3\). They are \(0\) or \(9\) only when both primes split. Exact counterexamples: modulo \(55\), every unit has one cube root; modulo \(35\), counts are \(0\) or \(3\).
+
+The earlier report established an **\(O(m)\) reconstruction upper bound**, not an \(\Omega(m)\) lower bound for arithmetic cubic distributions. Delete the claimed necessity of \(\asymp m\) intervals. Also replace “and nothing new” by “no additional consequence is established here.” General odd twists need not be sextic; that description requires further restrictions.
+
+The literature table is broadly useful, but:
+
+- Cite Polymath **§2.1**, not Proposition 2.2, for \(x^{1/3+o(1)}\). Proposition 2.2 states the weaker \(x^{0.49+o(1)}\) partition bound. The paper does not establish the specific \(O(x^{1/3}\log x)\) bit bound claimed there. [Primary text](https://arxiv.org/html/1009.3956).
+- Li’s \(9/28\) result is accurately described as a recent, unaudited preprint claim for isolated full values. [Theorem 1](https://arxiv.org/html/2609.29949v1).
+- The HKM square-root bounds for prime counting and Mertens are supported; distinguish the randomized table refinements where relevant. [Paper](https://arxiv.org/html/2212.09857v4).
+- Credit the current one-fifth factoring refinement to [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+- The \(\Theta(N^{1/3}\log N)\) hull result is [Balog–Bárány](https://arxiv.org/abs/2602.06897); Alcántara et al. established earlier upper and lower bounds.
+- “The only hardness for lattice counting under algebraic curves” is an unsupported literature-exhaustiveness claim. Say which relevant hardness results were verified.
+
+**8. Verdict and sharp barrier — REJECT AS WRITTEN.**
+
+A defensible replacement is:
+
+- After deterministic repair of SS, uniform polylogarithmic Taylor evaluation implies \(\mathrm{FP}=\#P\), hence \(P=NP\); deterministic \(2^{o(\sqrt{\log N})}\) evaluation contradicts ETH.
+- Prime-only evaluation yields randomized consequences, after enlarging the padding interval.
+- Under the stated query-length cost model, BIS gives \(O(\log^2m)\) queries; strict power-law domination holds for \(\delta<2/(j+4)\).
+- No NP/#P-hardness reduction to the top-block promise was found. No stronger factoring reduction than the ladder was established.
+- A subpolynomial top-block oracle gives \(N^{1/(j+2)+o(1)}\) factoring for the promised balanced-semiprime family. It does not automatically improve worst-case general factoring.
+
+Define a uniform algorithm over varying promised inputs and count preprocessing. “One fixed \(N\)” with unrestricted advice has no useful asymptotic interpretation.
+
+The 2–5% estimate is permissible as personal judgment, but the paper supplies no calibration supporting that precision. My own estimate is **about 5%, with uncertainty spanning roughly 1–20%**, for a deterministic subpolynomial top-block evaluator at some fixed \(j\ge4\). The missing exact-counting mechanism motivates skepticism; the failed hardness constructions provide little additional negative evidence.

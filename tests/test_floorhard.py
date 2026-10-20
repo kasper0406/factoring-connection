@@ -92,3 +92,14 @@ def test_factor_via_taylor_class():
         g, calls, N = core.factor_via_taylor_class(m)
         assert g is not None and 1 < g < m and m % g == 0
         assert calls <= 2 * (m - 1).bit_length() + 4
+
+
+def test_subset_sum_deterministic_and_range():
+    rng = random.Random(8)
+    for _ in range(40):
+        k = rng.randint(1, 6)
+        w = [rng.randint(1, 12) for _ in range(k)]
+        T = rng.randint(-3, sum(w) + 3)
+        inst = core.subset_sum_to_qc(w, T, deterministic=True)
+        assert core.qc_count_crt(inst) == (core.subset_sum_count(w, T) if T >= 0 else 0)
+    assert core.subset_sum_to_qc([1, 2], 9) is None      # referee counterexample (aliasing)

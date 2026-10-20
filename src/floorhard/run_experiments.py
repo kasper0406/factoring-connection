@@ -67,7 +67,7 @@ def e1():
         p, q = _semiprime(rng, bits, cls)
         m = p * q
         t0 = time.time()
-        M, hM, calls = core.decode_class_number_semiprime(m, rng)
+        M, hM, calls = core.decode_class_number_semiprime(m, rng, amax=1000)  # as run (prereg); theorem samples mod M
         true_h = forms.class_number(-M)
         g = core.factor_from_class_number(m, M, hM, rng) if hM is not None else None
         r = dict(part="E1b", cls=cls, bits=m.bit_length(), m=m, M=M, h_decoded=hM, h_true=true_h,
@@ -96,7 +96,7 @@ def e2():
         inst = core.subset_sum_to_qc(w, T)
         truth = core.subset_sum_count(w, T)
         c = core.qc_count_crt(inst)
-        rows.append(dict(part="E2b", k=k, w=w, T=T, bbits=inst["b"].bit_length(), truth=truth, crt_count=c,
+        rows.append(dict(part="E2b", k=k, w=w, T=T, bbits=(inst["b"].bit_length() if inst else 0), truth=truth, crt_count=c,
                          ok=(c == truth)))
     print("E2b", sum(r["ok"] for r in rows if r["part"] == "E2b"), "/ 200", flush=True)
     _dump("e2", rows)
@@ -158,9 +158,25 @@ def e3():
     _dump("e3", rows)
 
 
+def e2c():
+    """POST-HOC (after referee round): deterministic prime-power variant and out-of-range targets."""
+    rows = []
+    rng = random.Random(9090)
+    for i in range(300):
+        k = 1 + i % 10
+        w = [rng.randint(1, 2 ** min(k, 8)) for _ in range(k)]
+        T = sum(x for x in w if rng.random() < 0.5) if i % 3 else rng.randint(-5, sum(w) + 5)
+        inst = core.subset_sum_to_qc(w, T, deterministic=True)
+        truth = core.subset_sum_count(w, T) if T >= 0 else 0
+        c = core.qc_count_crt(inst)
+        rows.append(dict(part="E2c", k=k, w=w, T=T, truth=truth, crt_count=c, ok=(c == truth)))
+    print("E2c", sum(r["ok"] for r in rows), "/", len(rows), flush=True)
+    _dump("e2c", rows)
+
+
 def summary():
     out = {}
-    for e in ("e1", "e2", "e3"):
+    for e in ("e1", "e2", "e2c", "e3"):
         path = f"{RAW}/floorhard_{e}.jsonl"
         if not os.path.exists(path):
             continue
@@ -195,4 +211,4 @@ def summary():
 
 
 if __name__ == "__main__":
-    {"e1": e1, "e2": e2, "e3": e3, "summary": summary}[sys.argv[1]]()
+    {"e1": e1, "e2": e2, "e2c": e2c, "e3": e3, "summary": summary}[sys.argv[1]]()
