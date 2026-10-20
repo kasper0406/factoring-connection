@@ -64,3 +64,20 @@ gcd with x^{p−1} − 1 (plus x = 0). Check the implication
 
 Resources: single core, < 2 GB RSS, `memory_pressure` checked first. Raw output:
 experiments/raw/slpcirc_E{1,2,3}.jsonl.
+
+## Addendum A (2026-10-20, before running E4; E1–E3 already run)
+
+Motivated by the codex blind round (codex/slpcirc_1.out, open question: dense fibres of logarithmically
+many quadratic composition layers with small fixed coefficients, outside group-induced families).
+
+**E4 — fibres of quadratic compositions.** F = f_k ∘ … ∘ f_1, f_i(x) = x² + c_i, c_i ∈ {−2,…,2}
+(SLP size 2k, constants from a fixed small set, N-independent). Fibre T(F,p) = {x ∈ F_p : F(x) = 0},
+computed exactly by backward preimage propagation mod p. Primes: 60 primes drawn with seed 17 from
+(2^12, 2^13]. (a) all 5^8 sequences with k = 8 (exhaustive, DFS sharing suffixes); (b) 10^4 seeded random
+sequences with k = 39 (≈ 3 log2 p). Predictions:
+- P4a: max over all k = 8 sequences of the median (over the 60 primes) of |T| is ≤ 16.
+- P4b: for random k = 39 sequences, the mean of |T| over (sequence, prime) lies in [0.5, 2]
+  (critical branching: each point has 1 + χ(s − c) preimages).
+- P4c: no sequence in (a) or (b) has |T| ≥ p/(log2 p)² (≈ 25–30) at ≥ half of the 60 primes.
+Top sequences are listed and checked for group structure (c ≡ 0 layers = powers, c = −2 = Chebyshev).
+Raw: experiments/raw/slpcirc_E4.jsonl.
