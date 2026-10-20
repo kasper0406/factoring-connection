@@ -1,0 +1,151 @@
+The full structured report is in [report.md](/Volumes/git/factoring-connection/codex/scratch/slpcirc_1/report.md), including the literature audit, construction table, proofs, and experiment specification. Original theorem numbers that I could not verify are explicitly marked **UNVERIFIED**.
+
+The principal findings follow.
+
+## 1. Weakest sufficient statement
+
+**PROVED.** The essential property is efficient **CRT separation**, not root density by itself.
+
+For \(N=pq\), fix \(F_N\), sample \(x\) uniformly modulo \(N\), and write
+\[
+\rho_r=\Pr_{u\in\mathbb F_r}[F_N(u)=0].
+\]
+Then
+\[
+\epsilon_N
+=\Pr[1<\gcd(F_N(x),N)<N]
+=\rho_p(1-\rho_q)+\rho_q(1-\rho_p).
+\]
+
+If constructing, sampling, evaluating, and checking one independent trial costs \(C_N\), expected splitting time is \(O(C_N/\epsilon_N)\). Thus:
+
+- Polynomial \(C_N\) and inverse-polynomial \(\epsilon_N\), measured in \(\log N\), suffice for randomized polynomial-time factoring.
+- \(C_N/\epsilon_N\le L_N[\alpha,c]\) suffices for that subexponential bound.
+- Divisions, auxiliary-algebra ranks, constants, and gcd checks must all be charged.
+
+**PROVED.** A particularly weak sufficient density condition is
+\[
+\delta_N\le \rho_p\le1-\delta_N
+\]
+at **one** prime divisor. Whatever \(\rho_q\) is, separation probability is at least \(\delta_N\).
+
+**PROVED objection to the proposed criterion.** Formal nonvanishing supplies no upper bound on density: \(X^p-X\) is a nonzero polynomial defining the zero function. Even requiring a nonzero function permits density \(1-1/p\). If \(K=(p-1)(q-1)\), then \(X^K-1\) has a short circuit and densities \(1-1/p,1-1/q\), but random evaluation splits with probability
+\[
+\frac{p+q-2}{N}\asymp N^{-1/2}
+\]
+on balanced inputs.
+
+This invalidates the proposed random-evaluation argument. It does **not** disprove a more sophisticated reduction that examines the circuit; the unrestricted density-only implication remains **UNVERIFIED** here.
+
+## 2. A corrected equivalence does hold
+
+**PROVED.** Classical expected polynomial-time factoring is equivalent to uniform expected-polynomial-time construction of polynomial-size SLPs with constant balanced root density at every prime divisor.
+
+For the reverse direction, factor
+\[
+N=\prod_r r^{a_r},
+\]
+construct CRT idempotents \(e_r\), and output
+\[
+F_N(X)=\sum_{r\mid N}e_r\bigl(X^{(r-1)/2}-1\bigr).
+\]
+After removing the factor \(2\), its density modulo each \(r\) is
+\[
+\rho_r=\frac{r-1}{2r}\in[1/3,1/2).
+\]
+Binary powering gives \(O(\log N)\) ring operations once the constants are supplied. Any two CRT components separate with probability at least \(4/9\).
+
+The constructor is a Boolean algorithm and may run the assumed factorer. No conversion of bit extraction on an arbitrary residue \(X\) into an arithmetic polynomial is needed.
+
+Two qualifications matter:
+
+- **PROVED:** Without uniform construction, such short circuits exist unconditionally by hardwiring the factorization.
+- **UNVERIFIED:** The literal requirement “every prime \(p\le\sqrt N\)” includes nondivisors. For a polynomial specified only over \(\mathbb Z/N\mathbb Z\), reduction at those primes is not intrinsic; an integer lift must be specified. Even with that convention, the construction above establishes only the prime-divisor version.
+
+Density-based evaluation gives randomized factoring. A deterministic conclusion additionally needs an efficiently constructible hitting list.
+
+## 3. Literature: what actually constrains this model
+
+The complete report gives author, year, venue, version-specific locators, and limitations. The decisive references are:
+
+| Status | Reference and locator | Relevance |
+|---|---|---|
+| **KNOWN implication; CONJECTURED hypothesis** | Shub–Smale, *Duke Math. J.* **81** (1995), Main Theorem; [preprint](https://janos.cs.technion.ac.il/COURSES/238900-13/Papers-1/ShubSmale-pap97.pdf) | Integer-root tau conjecture implies \(P_{\mathbb C}\ne NP_{\mathbb C}\); no finite-field density bound. |
+| **KNOWN** | Bürgisser, *Computational Complexity* **18** (2009), **Main Theorem 1.2**; [paper](https://doi.org/10.1007/s00037-009-0260-x) | Tau/factorial hardness implies permanent lower bounds, with the stated constant-free restrictions. |
+| **CONJECTURED; KNOWN conditional consequences** | Koiran, ICS 2011; extended version **Conjecture 3, Theorem 7**; [paper](https://arxiv.org/pdf/1004.4960) | Real tau concerns sums of products of sparse polynomials, not arbitrary SLPs. |
+| **KNOWN** | Koiran–Portier–Tavenas, *JSC* **68** (2015), **Theorem 12** in the cited preprint; [paper](https://arxiv.org/pdf/1205.1015) | Wronskian root bounds in characteristic zero. |
+| **CONJECTURED** | Phillipson–Rojas, *Contemporary Mathematics* **605** (2013), §2, **Theorems 2.4, 2.7**; [paper](https://arxiv.org/pdf/1011.4128) | Adelic SPS/tau conjecture concerns real or \(p\)-adic roots, not \(\mathbb F_p\)-roots. |
+| **CONJECTURED** | Cheng, *Computational Complexity* **12** (2003 volume), **Conjecture 2, Theorem 2**; [paper](https://qcheng2023.github.io/paper/BSS.pdf) | WL conjecture over number fields; even its weak exponential bound implies bounded elliptic torsion. |
+| **KNOWN** | Kelley, *LMS J. Comput. Math.* **19(A)** (2016), **Theorems 2.2–2.3**; [paper](https://arxiv.org/pdf/1602.00208) | A genuine modular restriction: many roots of a fixed-sparsity polynomial force a large multiplicative coset. |
+| **KNOWN** | Kelley–Owen, *JSC* **79** (2017), **Theorems 1.2–1.3**; [paper](https://arxiv.org/pdf/1510.01758) | Sharp trinomial bounds and extension-field examples. |
+| **KNOWN** | Cheng–Gao–Rojas–Wan, *FFA* **46** (2017), **Theorems 1.2–1.3**; [paper](https://arxiv.org/pdf/1411.6346) | Many-root sparse constructions; distinguishes prime fields from extension fields. |
+
+**KNOWN scope conclusion.** The characteristic-zero results of Strassen, Schnorr, Heintz–Sieveking, Heintz–Schnorr, Borodin–Cook, Grigoriev–Risler, and Baur–Strassen provide no general obstruction to the unrestricted modular, \(N\)-dependent paradigm.
+
+**UNVERIFIED attribution.** I found no precise “Kayal factoring via SLP” theorem matching the suggested claim. A likely nearby reference is **Kaltofen’s** polynomial-factorization algorithm for SLP inputs, whose complexity depends polynomially on **degree**, not its logarithm. [Kaltofen, 1989, §6](https://users.cs.duke.edu/~elk27/bibliography/89/Ka89_slpfac.pdf)
+
+## 4. Constructions and the group-order thesis
+
+Representative entries from the full construction table:
+
+| Family | Root count / governing mechanism |
+|---|---|
+| \(X^m-1\) | **PROVED:** \(\gcd(m,p-1)\); multiplicative group. |
+| \(D_m(X,1)-2\) | **PROVED:** \(\bigl(\gcd(m,p-1)+\gcd(m,p+1)\bigr)/2\); split and nonsplit tori. |
+| Odd elliptic division polynomial, \(p\nmid m\) | **PROVED:** \(\bigl(\#E(\mathbb F_p)[m]+\#E^d(\mathbb F_p)[m]-2\bigr)/2\); curve and quadratic twist. |
+| Lucas/Lehmer, Lattès | **KNOWN/PROVED mechanisms:** torus or elliptic torsion and kernel cosets. |
+| \(X^{p^k}-X\), trace constructions | **KNOWN/PROVED:** Frobenius and additive linear algebra; characteristic-dependent, without multiplicative smoothness. |
+| General quadratic compositions | **PROVED degree bound:** at most \(2^k\) roots; no general algebraic-group explanation supplied. |
+| \(X^a-X-1\) at selected split primes | **KNOWN:** growing root counts controlled by nonabelian splitting; insufficient density for factoring. |
+| Square predicates | **KNOWN:** density approximately \(1/2\), but the polynomial encoding uses the hidden exponent \((p-1)/2\). |
+
+**PROVED.** “Every such family is secretly a group-order method” is too broad. For example, \(X^3-X-1\) has Galois group \(S_3\). Its root counts \(0,1,3\) are not determined by any fixed congruence class of \(p\): even among \(p\equiv1\pmod M\), both zero-root and three-root primes occur infinitely often.
+
+This refutes classification by finitely many fixed exponent/order-congruence tests. It does not construct a high-density splitter for arbitrary \(N\).
+
+Also, **group-order dependence does not imply smoothness dependence**. When \(p\) is known, \(X^{(p-1)/2}-1\) has density approximately \(1/2\) without smoothing \(p-1\). The difficulty is choosing a useful exponent without knowing \(p\).
+
+## 5. The strongest clean restricted barrier
+
+**KNOWN theorem; PROVED corollary.** Kelley’s bound is
+\[
+R\le2(p-1)^{1-1/(t-1)}C^{1/(t-1)},
+\]
+where \(t\) is sparsity and \(C\) is the largest complete multiplicative coset contained in the nonzero root set.
+
+Therefore, if \(t\) is fixed and \(C\le p^{1-\eta}\),
+\[
+\rho_p\le2p^{-\eta/(t-1)}+1/p.
+\]
+On balanced semiprimes, uniform evaluation and gcd consequently require
+\[
+N^{\Omega(1)}
+\]
+tests for constant success. This excludes every subexponential test budget in that restricted model.
+
+It permits \(N\)-dependent coefficients and exponents. It does **not** cover growing sparsity, targeted sampling, arbitrary inspection of circuit descriptions, or general gcd protocols.
+
+**PROVED limitations of the other barriers.**
+
+- Degree gives only \(s\ge\log_2(p\delta)\).
+- Fixed-polynomial Chebotarev plus Burnside gives prime density at most \(r/D\) for at least \(D\) roots, where \(r\) is the number of rational irreducible factors. It does not control \(F_N\) at its own selected prime divisors.
+- Counting short circuits requires an additional, presently missing bound on each circuit’s prime coverage.
+- The graph \(y=F(x)\) has exactly \(p\) points. Weil bounds on that graph say nothing about \(F(x)=0\).
+
+The repository’s O1–O4, Lemma CF, and Proposition OA are cited in the report within their corrected scopes.
+
+## 6. Experiment and final assessment
+
+**PROPOSED experiment.** Enumerate shared-subexpression DAGs using \(+,-,*\), constants \(\{-1,0,1,2\}\), and progressively increase size toward 6–8. Preserve complete register states when deduplicating; cheapest-output-only enumeration can lose useful sharing.
+
+Record exact root sets, balanced density, largest translated multiplicative root coset, and failure to match a preregistered group-construction catalogue. Validate on held-out primes. The factoring statistic must be
+\[
+\rho_p+\rho_q-2\rho_p\rho_q,
+\]
+including its minimum and lower quantiles—not merely average root count.
+
+An unpruned size-eight space has approximately \(2.6\times10^{18}\) descriptions, so exhaustiveness must be demonstrated. No exhaustive search is claimed here. The accompanying [sanity checks](/Volumes/git/factoring-connection/codex/scratch/slpcirc_1/math_checks.py) passed 1,898 small cases for the displayed formulas.
+
+**CONJECTURED — single best guess.** The general paradigm contains fast factoring in essentially its full difficulty. Familiar order constructions offer no automatic escape below \(L[1/3]\); a new uniformly accessible CRT-sensitive compression could still change that. There is no general impossibility theorem.
+
+**OPEN — single most promising question.** Can logarithmically many quadratic composition layers, with coefficients from a fixed small set and chosen without the hidden prime, produce fibres of size \(p/\operatorname{polylog}p\) on a uniformly useful set of primes outside the explicit group-induced families? Construct such a family, or prove a quantitative dense-fibre inverse theorem for that restricted class.
