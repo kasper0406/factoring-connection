@@ -129,6 +129,41 @@ def degree_one_both_sides_polytime(kappa: float = 2.0, K: float = 1.0) -> Dict[s
     return {"log_count_over_x": 2 * K - (2 * K + 1) / kappa, "needs_K_above": 1 / (2 * (kappa - 1))}
 
 
+def c_rat_theta_closed(theta: float) -> float:
+    """Reduced one-variable form of the 'rat' program (derived by codex smoothenum_1 eq. (5); re-checked here
+    against the 5-variable Nelder-Mead program in tests): with t = beta_a/beta in (0, 1], A = 1 + (1-theta) t,
+        c(theta) = 2 min_t [ (sqrt A + sqrt(A + theta t (2-t)/2)) / (3 t (2-t)) ]^{2/3}.
+    Golden-section search on t (ANALYSIS)."""
+    from math import sqrt
+
+    def h(t):
+        A = 1 + (1 - theta) * t
+        return ((sqrt(A) + sqrt(A + theta * t * (2 - t) / 2)) / (3 * t * (2 - t))) ** (2 / 3)
+    lo, hi = 1e-6, 1.0
+    z = (sqrt(5) - 1) / 2
+    a, b = hi - z * (hi - lo), lo + z * (hi - lo)
+    for _ in range(200):
+        if h(a) < h(b):
+            hi, b = b, a
+            a = hi - z * (hi - lo)
+        else:
+            lo, a = a, b
+            b = lo + z * (hi - lo)
+    return 2 * min(h(lo), h(hi), h(1.0))
+
+
+def theta_for_gain(gain: float) -> float:
+    """Least theta with c_rat_theta_closed(theta) <= C_MNFS - gain (bisection; c is decreasing in theta)."""
+    lo, hi = 0.0, 1.0
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if c_rat_theta_closed(mid) <= C_MNFS - gain:
+            hi = mid
+        else:
+            lo = mid
+    return hi
+
+
 def table(seed: int = 0) -> Dict[str, Dict]:
     out = {
         "mnfs_box": program("box", seed=seed),

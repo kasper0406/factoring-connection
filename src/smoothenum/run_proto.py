@@ -271,7 +271,7 @@ def cmd_e4ours(K: int, tmax: float):
                     seen.add((a, b))
                     log.write(json.dumps([a, b, q1, q2]) + "\n")
     wall = time.time() - t0
-    res = {"K_target": K, "distinct": len(seen), "wall": wall, "tests": tests, **cnt.as_dict(),
+    res = {"K_target": K, "distinct": len(seen), "wall": wall, **cnt.as_dict(), "tests": tests,
            "rels_per_cost": len(seen) / cnt.cost(), "sec_per_rel": wall / max(1, len(seen))}
     json.dump(res, open(os.path.join(RAW, "e4_ours_summary.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))

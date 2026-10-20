@@ -100,3 +100,11 @@ def test_bottom_up_unique_hit():
         a, b = rng.choice(sorted(box))
         assert bottom_up_hit(P, P.G(a, b), A, Bm) == (a, b)
     assert bottom_up_hit(P, P.G(A + 5, 3), A, Bm) is None or abs(P.G(A + 5, 3)) > 0
+
+
+def test_theta_closed_form_endpoints_and_numeric():
+    assert abs(T.c_rat_theta_closed(0.0) - T.C_MNFS) < 1e-6
+    assert abs(T.c_rat_theta_closed(1.0) - float(T.factory_closed())) < 1e-6
+    num = T.program("rat", theta=0.5, restarts=15, seed=1)["c"]
+    assert num >= T.c_rat_theta_closed(0.5) - 1e-4 and num - T.c_rat_theta_closed(0.5) < 3e-3
+    assert abs(T.theta_for_gain(0.01) - 0.04696) < 5e-4

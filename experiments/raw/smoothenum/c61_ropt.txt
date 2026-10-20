@@ -1,0 +1,53 @@
+# (692ecb7e6) /Users/knielsen/src/cado-nfs/build/kmini/polyselect/polyselect_ropt -inputpolys c61_sizeopt.poly -ropteffort 0.1 -I 10 -Bf 111342 -Bg 78682 -t 2
+# Compiled with gcc Apple LLVM 21.0.0 (clang-2100.0.123.102)
+# Compilation flags (C) -std=c99 -W -Wall -O2 -DNDEBUG -I/opt/homebrew/opt/libomp/include 
+# Compilation flags (C++) -std=c++20 -O2 -DNDEBUG -I/opt/homebrew/opt/libomp/include 
+# Info: Will use 2 threads
+# Info: ropteffort = 0
+# Info: L1_cachesize = 16384, size_tune_sievearray = 8192
+# Reading polynomials from c61_sizeopt.poly
+# 1 polynomial(s) read.
+# Info: Using OpenMP with 2 thread(s)
+
+### input polynomial 0 ###
+# n: 1217940351784746548729576199041331080813409572953985217811559
+# Y0: -377800786728324
+# Y1: 1435984943
+# c0: 4384822006080742
+# c1: 563944453434
+# c2: -5555915219
+# c3: -93300
+# c4: 120
+# skew: 2946.310
+# # side 1 lognorm 20.09, exp_E 17.36, alpha 1.34 (proj -1.12), 4 real roots
+
+### root-optimized polynomial 0 ###
+n: 1217940351784746548729576199041331080813409572953985217811559
+Y0: -385104206148422
+Y1: 1435984943
+c0: -94904516744943597
+c1: 186157889040748
+c2: 6528098179
+c3: -1267290
+c4: 60
+skew: 9594.258
+# side 1 lognorm 22.01, E 18.62, alpha -3.40 (proj -1.00), 2 real roots
+# side 1 MurphyE(Bf=1.113e+05,Bg=7.868e+04,area=5.838e+10)=3.397e-07
+### Best MurphyE so far is 3.397e-07, av. exp_E 17.36, av. E 18.62
+
+
+# Stat: total phase took 0.09s
+# Stat: rootsieve took 0s (fake placeholder, we lack RUSAGE_THREAD)
+# 0-th best polynomial found (revision 692ecb7e6):
+# n: 1217940351784746548729576199041331080813409572953985217811559
+# Y0: -385104206148422
+# Y1: 1435984943
+# c0: -94904516744943597
+# c1: 186157889040748
+# c2: 6528098179
+# c3: -1267290
+# c4: 60
+# skew: 9594.258
+# # side 1 lognorm 22.01, E 18.62, alpha -3.40 (proj -1.00), 2 real roots
+# # side 1 MurphyE(Bf=1.113e+05,Bg=7.868e+04,area=5.838e+10)=3.397e-07
+# Average exp_E: 17.36, average E: 18.62
