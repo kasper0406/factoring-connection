@@ -51,6 +51,11 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
 - Heuristic NFS: nothing beats MNFS 1.902 or exponent 1/3 ([`heurnfs`](notes/heurnfs_results.md)).
 - Deterministic under GRH: fruitfulness is not the obstruction, deterministic relation supply is ([`detGRH`](notes/detGRH_results.md)).
 - Inverse-sieve containers for the deterministic worst case fail: the information is spread too thin ([`inversesieve`](notes/inversesieve_results.md)).
+- Below L[1/3]: no mechanism was found on any of the three routes tried:
+  - integer "systematic equations" ([`systeq`](notes/systeq_results.md)); the exact PTE version is refuted by [`ptebarrier`](notes/ptebarrier_results.md) Lemma R / Theorem W, and the joint verdict is in [`ptesplit`](notes/ptesplit_results.md);
+  - beating the resultant bound ([`resbarrier`](notes/resbarrier_results.md): N² | disc, area theorem);
+  - non-smoothness invariants ([`nonsmooth`](notes/nonsmooth_results.md): FROB, OA). One case stays open: rank ≥ 3 with no rational side, closed only heuristically (floor L[1/4] even if that heuristic fails).
+- Output-sensitive smooth-pair enumeration: no gain, MNFS stays at 1.902 ([`smoothenum`](notes/smoothenum_results.md)). The heuristic model was validated on real CADO-NFS runs ([`cadobench`](notes/cadobench_results.md)).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
