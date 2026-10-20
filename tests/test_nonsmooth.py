@@ -197,3 +197,45 @@ def test_census_D_is_3_mod_8():
         assert r["D_mod8"] == 3
         m = (4 * r["p"] - 1) // r["D"]
         assert gmpy2.is_square(m)
+
+
+@pytest.mark.parametrize("ell", [5, 7, 11, 13])
+def test_gl2_sign_character_is_legendre_det(ell):
+    assert equiv.sign_character_check(ell)
+
+
+def test_division_poly_disc_legendre():
+    import sympy as sp
+    P = equiv.division_poly_x(5, 2, 3)
+    D = int(sp.discriminant(P))
+    rng = random.Random(7)
+    for _ in range(60):
+        p = int(gmpy2.next_prime(rng.randrange(10 ** 5, 10 ** 6)))
+        if D % p:
+            assert equiv.jacobi(D % p, p) == equiv.jacobi(p, 5)
+
+
+def test_frob_fixed_space_on_schoof_algebra():
+    """Prop FROB(b) on Schoof's algebra (Z/N)[x]/psi_5 with (N/5) = -1."""
+    import sympy as sp
+    P = equiv.division_poly_x(5, 2, 3)
+    lc = int(P.LC())
+    rng = random.Random(11)
+    done = 0
+    while done < 6:
+        p = int(gmpy2.next_prime(rng.randrange(10 ** 6, 10 ** 7)))
+        q = int(gmpy2.next_prime(rng.randrange(10 ** 6, 10 ** 7)))
+        N = p * q
+        if p == q or equiv.jacobi(N, 5) != -1 or gcd_(int(sp.discriminant(P)) * lc, N) != 1:
+            continue
+        inv = pow(lc, -1, N)
+        f = [int(c) * inv % N for c in reversed(P.all_coeffs())]   # monic mod N, low first
+        M = equiv.oracle_frobenius_matrix(p, q, f)
+        g, _ = equiv.reduce_frobenius_fixed_space(N, M)
+        assert g in (p, q)
+        done += 1
+
+
+def gcd_(a, b):
+    from math import gcd
+    return gcd(a, b)

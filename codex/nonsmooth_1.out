@@ -1,0 +1,136 @@
+**SPECULATIVE — Verdict:** I found no credible general-purpose, smoothness-free route below \(L_N[1/3]\). The most interesting surviving target is **fast evaluation of an entire trace/class-number sum**, without computing its individual terms. Prime-field algorithms, reciprocity, and “pretend \(N\) is prime” constructions do not currently supply that operation.
+
+**KNOWN — Background retained:** I use the existing consequence catalogue and scoped barriers in [polyimpl_results.md §§0, 2, 5](/Volumes/git/factoring-connection/notes/polyimpl_results.md:17), and the information floor and decoder prices in [trackE_analysis.md §§1–5](/Volumes/git/factoring-connection/notes/trackE_analysis.md:51). These are not re-derived below. The \(L[1/3]\) benchmark is heuristic NFS complexity, not a factoring lower bound.
+
+**1. Equivalence map**
+
+Write \(F\) for complete factoring, \(D\) for deterministic polynomial time, and \(R\) for randomized expected polynomial time. An arrow involving an oracle means access to the **function on requested inputs**, unless explicitly described as one supplied value. Write \(d(N)\) for divisor count and \(\tau_\Delta(N)\) for Ramanujan’s function.
+
+| Status; invariant | Reduction and exact scope | Computation without factoring; prime-input difficulty | Reference |
+|---|---|---|---|
+| **KNOWN — \(\varphi(N)\)** | \(F\to\varphi:D\). One exact \(\varphi(N)\to F:R\), all \(N\), unconditionally; deterministic under ERH. For distinct-prime \(N=pq\), extraction is \(D\). | \(\varphi(p)=p-1\). | Miller, 1976, *JCSS* 13, 300–317, Thm. 3 and Lemma 5, [DOI](https://doi.org/10.1016/S0022000076800438). |
+| **KNOWN — Carmichael \(\lambda(N)\)** | \(F\to\lambda:D\). A supplied polynomial-bit-length multiple of \(\lambda(N)\) gives \(F:R\), all \(N\); \(D\) under ERH. | \(\lambda(p)=p-1\). Knowing \(\lambda\) does not require factoring its value for the randomized reduction. | Miller, same reference; see repository §2.1. |
+| **KNOWN — \(\sigma(N)\)** | \(F\to\sigma:D\); one exact \(\sigma(N)\to F:R\), all \(N\), no ERH. | \(\sigma(p)=p+1\). A promise such as \(\sigma(N)=2N\) supplies the invariant directly and therefore makes those promised inputs easy to factor. | Bach–Miller–Shallit, 1986, *SIAM J. Comput.* 15, 1143–1154, Thms. 1–2, [DOI](https://doi.org/10.1137/0215083). |
+| **KNOWN + PROVED — \(r_4(N)\)** | Equivalent to \(\sigma\), hence \(F:R\) in reverse, all \(N\). Strip powers of two; for odd \(m\), \(r_4(m)=8\sigma(m)\). | \(r_4(p)=8(p+1)\), odd prime \(p\). The global formula contains a divisor sum. | Jacobi’s identity; Hirschhorn, 1987, *Proc. AMS* 101, 436–438, [DOI](https://doi.org/10.1090/S0002-9939-1987-0908644-9). |
+| **KNOWN — element-order function \(\operatorname{ord}_N(a)\)** | An order oracle gives \(F:R\), all \(N\), after handling primes and perfect powers; deterministic under ERH. \(F\to\operatorname{ord}:D\) uses additional factoring calls on \(p-1\). One arbitrary element’s order need not factor \(N\). | **Difficult even at prime arguments:** no general classical polynomial-time algorithm known for \(\operatorname{ord}_p(a)\). | Miller, Thm. 4; [paper](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf). |
+| **KNOWN + PROVED — projective \(\#E(\mathbb Z/N)\), good reduction** | \(F\to\#E:D\), all \(N\), by local counting and CRT. A count oracle on quadratic twists gives \(F:R\) for every odd RSA modulus, without ERH; proof below. A single fixed curve count is a weaker input. | Schoof computes prime counts deterministically in polynomial time. | Schoof, 1985, *Math. Comp.* 44, 483–494, [DOI](https://doi.org/10.1090/S0025-5718-1985-0777280-6). Related: Dieulefait–Urroz, 2020, [DOI](https://doi.org/10.3390/math8122126). |
+| **KNOWN — \(\tau_\Delta(N)\)** | \(F\to\tau_\Delta:D\). Values at \(N,N^2\) factor a density-one subset of RSA moduli, unconditionally; the extraction is deterministic. Under Lehmer’s conjecture, the exceptional RSA cases disappear. | Prime values are \(D\), unconditionally. | Bach–Charles, 2007 preprint/2008 *Contemp. Math.* 463, 9–15, Thm. 2.2 and Cor. 2.8, [arXiv](https://arxiv.org/abs/0708.1192); Edixhoven–Couveignes et al., 2011, Thm. 15.1.1, [book](https://arxiv.org/abs/math/0605244). |
+| **KNOWN / CONDITIONAL — fixed non-CM eigenform \(a_f(N)\)** | Bach–Charles Thm. 2.2 applies to fixed even weight, using \(a_f(N),a_f(N^2)\), on a density-one RSA set; no GRH needed for that density statement. The reverse computation has the hypotheses of the applicable prime-coefficient algorithm. | Bruin’s general algorithm is Las Vegas under number-field GRH, with the index supplied **in factored form**. | Bruin, 2011, *Publ. Math. Besançon*, 19–36, Thms. 1.1, 5.1 and Remark 1.3, [DOI](https://doi.org/10.5802/pmb.a-133/). |
+| **CONDITIONAL — imaginary quadratic class-number oracle \(h(D)\)** | Suitable discriminants derived from \(N\), plus \(h(D)\), give deterministic factoring under GRH using small generators and ambiguous classes. **No converse reduction from class-number computation to factoring is established.** | **Difficult at prime discriminants:** factoring the discriminant does not supply \(h(-p)\). No general polynomial-time algorithm is known. | Schoof, 1982, *Computational Methods in Number Theory II*, 235–286, §6, especially Cor. 6.2 and Algorithm 6.4, [text](https://www.mat.uniroma2.it/~schoof/mcpaper.pdf). |
+| **KNOWN — represented class group / ambiguous subgroup** | A sufficiently explicit represented \(2\)-torsion subgroup yields discriminant factors deterministically. An abstract group type or its \(2\)-rank alone is insufficient. Factoring does not presently give the entire class group efficiently. | The odd part remains difficult for prime discriminants. | Schoof, §6, especially pp. 265–266; same reference. |
+| **PROVED — dimensions at level \(N\)** | \(D_{16}(N)-D_4(N)=\psi(N)\), where \(D_k=\dim S_k(\Gamma_0(N))\) and \(\psi(N)=N\prod_{p\mid N}(1+1/p)\). Thus two dimensions factor every RSA modulus deterministically. \(F\to D_k:D\) for fixed weights. | Prime levels are easy from the dimension formula. A formula involving prime divisors is not a factor-free evaluation algorithm. | Substitute into Stein, 2007, *Modular Forms: A Computational Approach*, Prop. 6.1, [formula](https://wstein.org/books/modform/modform/dimension_formulas.html). For \(pq\), \(\psi=N+p+q+1\). |
+| **PROVED — \(\#\mathbb P^1(\mathbb Z/N)\)** | Equals \(\psi(N)\); hence deterministic equivalence on RSA moduli. More generally, see the polynomial-count theorem below. | Prime count \(p+1\) is trivial. At \(pq\), the count is \((p+1)(q+1)\), **not \(N+1\)**. | CRT and the preceding identity. |
+| **PROVED — \(\zeta_{\operatorname{Spec}(\mathbb Z/N)}(1)\)** | Equals \(\prod_{p\mid N}(1-p^{-1})^{-1}=N/\varphi(N)\). Exact rational evaluation is therefore equivalent to factoring under randomized reductions, all \(N\). | Prime evaluation is trivial. The Euler product is a definition, not an efficient evaluator. | Directly from the closed-point definition of scheme zeta functions. |
+| **KNOWN + PROVED — aggregate Hurwitz class number \(C(N)\)** | For nonsquare \(N\), \(C(N)=\sum_{t^2<4N}H(4N-t^2)=\sum_{ab=N}\max(a,b)\). For \(N=pq,\ p<q\), \(C(N)=2N+2q\): one value factors deterministically. | For prime \(p\), the entire sum is simply \(2p\), despite its difficult individual terms. | Gross–Zagier, 1985, *J. reine angew. Math.* 355, 191–220, Eq. (4.4), [DOI](https://doi.org/10.1515/crll.1985.355.191). |
+| **FALSE as a settled equivalence — divisor count \(d(N)\)** | \(F\to d:D\). A reverse polynomial-time reduction is **not known**. On RSA inputs \(d(N)=4\). | Prime values are trivial. An all-input oracle supplies exponent-pattern information, not automatically the primes. | Shallit–Shamir, 1985, *IPL* 20, 151–153, [DOI](https://doi.org/10.1016/0020-0190(85)90084-5); repository §2.1. |
+
+**UNVERIFIED — “Hard even at primes” means an unresolved algorithmic task, not a proved strict complexity separation from factoring.** This distinction particularly matters for class numbers and element orders.
+
+**PROVED — Four-twist reduction, avoiding a single-count overclaim.** Let \(N=pq\) and \(E\) have good reduction. Choose independent random units \(d,e\), and request counts for \(E,E^d,E^e,E^{de}\). With probability \(3/8\), their Legendre-sign vectors generate \(\{\pm1\}^2\). Then their counts sum to
+\[
+4(p+1)(q+1),
+\]
+because the local Frobenius traces cancel independently. This gives \(p+q\), hence the factors. Try the resulting quadratic and verify; repeat on failure. Thus the count-oracle reduction is unconditional Las Vegas with constant expected rounds.
+
+**UNVERIFIED — Reference qualification:** Dieulefait–Urroz’s published Thm. 3 states a deterministic ERH equivalence. Its projective argument invokes Lemma 1 using \(PQ=(p+1)(q+1)\) before recovering that unknown quantity. I therefore do not use that proof for the stronger deterministic statement. The four-twist argument above suffices for the randomized map.
+
+**2. Paradigm verdicts**
+
+| Paradigm | Precise failure; surviving variant |
+|---|---|
+| **KNOWN — Edixhoven–Couveignes / modular Galois representations** | The fast local step evaluates \(\rho(\mathrm{Frob}_p)\) at a **known prime**. At composite index \(N\), the Hecke coefficient is assembled from local Euler factors; replacing those factors by one “Frobenius at \(N\)” loses the required data. The global operator \(T_N\) remains perfectly well-defined. [Book, Thms. 15.1.1–15.2.1](https://arxiv.org/abs/math/0605244). |
+| **KNOWN — Bruin / composite \(a(N)\bmod\ell\)** | Bruin explicitly requires the coefficient index in factored form. Computing one exceptional congruence may be easy, but an efficient uniform evaluator for enough small \(\ell\) would reconstruct the exact coefficient and invoke Bach–Charles; the modulus reduction alone removes no obstacle. [Bruin, Thm. 1.1, Remark 1.3](https://pub.math.leidenuniv.nl/~pbruin/coefficients.pdf). |
+| **PROVED — Eichler–Shimura over \(\mathbb Z/N\)** | The correspondence survives, but the characteristic-\(p\) relation uses the relative Frobenius on each fibre. There is generally no ring endomorphism \(x\mapsto x^N\), and no single local trace whose substitution gives the composite Hecke coefficient. CRT-local formulations survive, with the unknown local data retained. |
+| **KNOWN + PROVED — Dokchitser Frobenius resolvents** | Their criterion evaluates a trace involving \(x^p\) in \(\mathbb F_p[x]/(f)\). Modulo \(p\mid N\), using \(x^N\) gives \(x^{p(N/p)}\), which generally does not even permute the roots of \(f\); the resolvent classification therefore does not apply. A gcd exposed by an accidental one-sided vanishing is valid, but no general hitting theorem is known. Dokchitser–Dokchitser, 2013, *ANT* 7, 1325–1352, Thm. 5.3, [DOI](https://doi.org/10.2140/ant.2013.7.1325). |
+| **KNOWN + PROVED — Schoof/SEA pretending \(N\) prime** | Division-polynomial arithmetic can expose nonunits and therefore factors. But the fundamental Frobenius equation is unsupported after \(p\mapsto N\); a run need neither produce a correct composite point count nor encounter a useful nonunit promptly. Local degree discrepancies and failed inversions survive as special-purpose factor witnesses. [Schoof 1985](https://doi.org/10.1090/S0025-5718-1985-0777280-6). |
+| **KNOWN — Kedlaya, Lauder deformation, Satoh lifts** | These require a specified residue characteristic and its Frobenius lift; Satoh additionally uses ordinarity. Lifting modulo \(N^k\) does not identify the different characteristic-\(p\) Frobenii hidden inside it. Characteristic-zero deformation equations survive, but the local Frobenius initial data remain missing. [Kedlaya 2001](https://arxiv.org/abs/math/0105031), [Lauder 2004](https://doi.org/10.1112/S0024611503014461), [Satoh–Skjernaa–Taguchi 2003](https://doi.org/10.1016/S1071-5797(02)00013-8). |
+| **KNOWN + PROVED — Harvey batch point counting** | Average polynomial time per prime is obtained by sharing work across **all known primes below \(X\)**; total output size already grows at least as \(\pi(X)\). Reaching an unknown balanced factor requires \(X\asymp\sqrt N\), and placing that factor directly at a tree leaf already requires finding it. Remainder trees remain useful for factorial/product factoring, without a known subexponential consequence here. Harvey, 2014, *Annals* 179, 783–803, [DOI](https://doi.org/10.4007/annals.2014.179.2.7). |
+| **KNOWN — Eichler–Selberg / Kronecker–Hurwitz** | These formulas are valid at composite indices and need not presuppose factoring: enumeration of forms and trace terms is possible directly. The displayed trace interval has \(\Theta(\sqrt N)\) indices, and the class numbers and divisor corrections are computational work, not free constants. Charles gives factor-free direct \(\tau_\Delta(N)\) algorithms of \(O(N^{1/2+\epsilon})\) randomized and \(O(N^{3/4+\epsilon})\) deterministic time—both exponential in input length. Charles, 2006, *Ramanujan J.* 11, 221–224, [DOI](https://doi.org/10.1007/s11139-006-6509-y). |
+| **KNOWN — classical dequantization of order finding** | Cleve’s lower bound is for an unknown permutation with power queries: randomized query complexity \(\Omega(2^{n/3}/\sqrt m)\), for \(m\)-bit exponents. It is **not** a lower bound for explicitly represented modular multiplication. Exploiting that representation remains possible; known general fast routes return to factoring/smoothness, while special forms give special-purpose attacks. Cleve, 2004, *Information and Computation* 192, 162–171, Thm. 2, [DOI](https://doi.org/10.1016/j.ic.2004.04.001), [arXiv](https://arxiv.org/abs/quant-ph/9911124). |
+| **PROVED — elements whose orders are cheap** | \(1,-1\) have cheap orders but synchronized local behaviour. Conversely, a nontrivial square root of \(1\bmod N\) immediately factors \(N\); constructing one has already solved the separation problem. A portfolio of known small-order elements needs a theorem guaranteeing different local orders, not merely cheap global order verification. |
+| **KNOWN — lattices/Coppersmith** | About \(\tfrac14\log_2N\) suitably positioned factor bits suffice for balanced RSA; this is a sufficient structured-information threshold, not a universal information lower bound. No invariant examined here cheaply supplies the required interval/coset hint. Use the existing [decoder and list prices](/Volumes/git/factoring-connection/notes/trackE_analysis.md:132). |
+| **KNOWN + PROVED — varieties with global formulas; zeta functions** | CRT multiplies local point counts; substituting \(N\) into a prime-field formula usually computes a different quantity. Scheme zeta functions over \(\mathbb Z/N\) do exist, as products over closed points, but their local Euler factors retain the unknown primes. The classification below makes this obstruction exact for polynomial point counts. |
+| **KNOWN — generic rings** | Aggarwal–Maurer reduce generic RSA breaking to factoring; Jager–Schwenk prove analogous generic hardness for the efficiently computable Jacobi symbol. These are model equivalences, not unrestricted factoring lower bounds, and the latter example directly warns against interpreting them as such. [AM, EUROCRYPT 2009](https://doi.org/10.1007/978-3-642-01001-9_2); [JS, *J. Cryptology* 2013](https://doi.org/10.1007/s00145-012-9120-y). |
+| **KNOWN / CONDITIONAL — reciprocity beyond Jacobi** | Higher power-residue symbols can avoid factoring the denominator ideal; this is genuine representation-sensitive structure. However, de Boer–Pagano’s general expected-polynomial analysis uses heuristic sampling/density assumptions, and auxiliary near-prime ideals with smooth cofactors: it is not an unconditional, entirely smoothness-free general tool. De Boer–Pagano, ISSAC 2017, §§5.2–5.3, Assumptions 5.18, 5.21, 5.22, [DOI](https://doi.org/10.1145/3087604.3087637). |
+| **KNOWN — analytic/lattice-point methods** | Hiary’s interval divisibility algorithm, Pollard–Strassen/Bostan–Gaudry–Schost product methods, and Harvey–Hittmeir collision methods genuinely avoid smoothness. Their costs are powers of \(N\), rather than \(L[1/3]\); fast summatory estimates do not automatically resolve individual divisor contributions. [Hiary, 2016, \(N^{1/3+o(1)}\)](https://arxiv.org/abs/1408.2608); [BGS, 2007](https://doi.org/10.1137/S0097539704443793); [Harvey–Hittmeir, 2022, \(N^{1/5+o(1)}\)](https://arxiv.org/abs/2105.11105). |
+| **KNOWN — CM/anomalous curves** | Cheng’s \(4p-1=Db^2\) method is a real nonsmooth success: CM gives an anomalous local curve, whose order \(p\) divides the public scalar \(N\). Its efficiency is restricted by finding small \(D\) and handling the associated class polynomial; arbitrary primes do not have this promise. Cheng, 2002, [ePrint 2002/109](https://eprint.iacr.org/2002/109), and generalized [preprint](https://citeseerx.ist.psu.edu/document?doi=184373605e846f90b0a9d7252931bab4c47a1ec7&repid=rep1&type=pdf). |
+
+**PROVED — Small-discriminant anomalous curves cannot cover typical primes.** The number of integers \(p\le X\) satisfying \(4p-1=Db^2\) for some \(D\le B\) is
+\[
+O\!\left(\sum_{D\le B}\sqrt{X/D}\right)=O(\sqrt{BX}).
+\]
+Consequently any subpolynomial discriminant portfolio covers a density-zero subset of primes. This kills that generalization of Cheng, not arbitrary CM-based algorithms.
+
+**KNOWN — Recent prime-counting progress does not change the base-ring issue.** Saxena–Venkatesh’s 2025 preprint announces randomized polynomial-time local zeta computation for fixed smooth projective surfaces at sufficiently large good primes; its input is still a prime. [Preprint, Thm. 1.1](https://arxiv.org/abs/2511.05272).
+
+**3. Candidate mechanisms and adversarial tests**
+
+**UNVERIFIED — Literature scope:** The following exact computational architectures were **not found by us** in the searches performed. Their ingredients and invariant reductions are known. No novelty is claimed, and none constitutes an algorithm with an established improved bound.
+
+| Candidate mechanism | Exact missing lemma and conditional cost | First kill test; verdict |
+|---|---|---|
+| **SPECULATIVE — Compress composite coefficients by Cartier sections.** Represent \(\Delta\bmod\ell\) in a small space closed under \(S_r(\sum a_nq^n)=\sum a_{\ell n+r}q^n\), then follow the digits of \(N\). | Construct the necessary section space with dimension and construction cost polynomial in \(\ell,\log N\), uniformly for small primes. This would compute enough residues to reconstruct \(\tau_\Delta(N),\tau_\Delta(N^2)\), giving polynomial-time factoring on the Bach–Charles population. | **FALSE in this uniform form.** Modulo \(2\), \(\Delta=\sum_{j\ge0}q^{(2j+1)^2}\). Its depth-\(k\) sections already have exponentially growing linear rank; proof below. Skipping \(2\) requires a separate analysis and supplies no positive evidence. |
+| **SPECULATIVE — Amplify reciprocity using incomplete autocorrelation.** Evaluate \(A_N(H)=\sum_{h=1}^{H}\sum_{x\bmod N}(\frac{x(x+h)}N)\) through reciprocity and block compression, with \(H=\lfloor\sqrt N\rfloor\). | A polynomial-time exact block evaluator would factor balanced RSA deterministically, since \(A_N(H)=H-p\). An \(L[1/4]\) evaluator would give the same factoring cost. | **PROVED collapse to an existing task.** Each complete inner correlation is \(1\) for \(\gcd(h,N)=1\), and \(1-\gcd(h,N)\) otherwise, for \(h<N\). Thus the proposal is an interval divisor selector in disguise. Discard as a new information mechanism; only the already-missing fast aggregate operation remains. |
+| **SPECULATIVE — Compute the Hurwitz aggregate geometrically, before expanding class numbers.** Apply modular transformations/contour decomposition to the class-number–theta product and compress whole boundary blocks, retaining certified rounding information. | For fixed \(\epsilon>0\), approximate \(C(N)=\sum_{t^2<4N}H(4N-t^2)\) within \(N^{1/4-\epsilon}\), uniformly on balanced RSA, in \(L_N[1/4,O(1)]\), without local class-number or factoring oracles. Since \(C(N)=2N+2q\), Coppersmith then factors at the same cost. | First test: does the proposed error certificate retain the secondary \(2q\) contribution, or absorb it into a generic \(O(\sqrt N)\) error? **SPECULATIVE survivor, very weak:** standard identities recover the divisor sum, and standard termwise evaluation remains exponential. No compression lemma was found. |
+
+**PROVED — Cartier kill test.** For \(k\ge3\), there are \(2^{k-3}\) odd-square residue classes \(r\bmod2^k\). Each corresponding section of \(\Delta\bmod2\) has infinite support. Supports for distinct \(r,s\) intersect only finitely often: an intersection gives two integer squares differing by the fixed nonzero number \(r-s\), hence only finitely many factorizations
+\[
+(u-v)(u+v)=r-s.
+\]
+These sections are therefore linearly independent. Any representation containing all depth-\(k\) sections needs dimension at least \(2^{k-3}\).
+
+**KNOWN — Context for that test:** rational diagonals/algebraic series over finite fields do admit logarithmic-index coefficient algorithms; applying that machinery requires the algebraicity/finite-section hypothesis. [Bostan–Christol–Dumas, ISSAC 2016](https://arxiv.org/abs/1602.00545). The obstruction above concerns this representation, not coefficient computation in general: the odd-square predicate itself is easy.
+
+**PROVED — Correlation kill test.** Locally,
+\[
+\sum_{x\bmod p}\left(\frac{x(x+h)}p\right)
+=\begin{cases}p-1,&p\mid h,\\-1,&p\nmid h.\end{cases}
+\]
+Multiply by CRT. For balanced \(p<q\le2p\), exactly one multiple of \(p\), and no multiple of \(q\), lies in \(1\le h\le\lfloor\sqrt N\rfloor\), giving the claimed \(H-p\).
+
+**SPECULATIVE — Ranking by probability × significance:** the Hurwitz aggregate is the sole substantive survivor. Its significance would be very high; my probability assessment is very low. The other two architectures fail their advertised justification. Assigning numerical probabilities would imply more calibration than this investigation supplies.
+
+**4. What unifying barrier can actually be proved?**
+
+**PROVED — Abelian aggregate theorem.** Let \(K/\mathbb Q\) be a finite abelian extension of conductor \(m\), and \((N,m)=1\). Then
+\[
+\operatorname{Art}_{K/\mathbb Q}((N))
+\]
+depends only on \(N\bmod m\).
+
+*Proof.* By Kronecker–Weber, \(K\subseteq\mathbb Q(\zeta_m)\). The Artin action upstairs is \(\zeta_m\mapsto\zeta_m^N\); restrict it to \(K\). Thus products of local abelian Frobenii provide no information beyond that residue. The same holds for adaptively chosen conductors once their residues are supplied. ∎  
+**KNOWN — Reference:** Kronecker–Weber and Artin reciprocity; [Milne, *Class Field Theory*, Thm. I.4.16](https://www.jmilne.org/math/CourseNotes/CFT.pdf).
+
+**PROVED — Scope limitation:** this is a redundancy theorem for specified observables, not a computational lower bound. In particular,
+\[
+\operatorname{tr}(AB)\ne \operatorname{tr}(A)\operatorname{tr}(B)
+\]
+in general. An abelian representation’s trace at \(\operatorname{Art}(N)\) therefore need not equal its composite Euler coefficient. For example, the easy aggregate \(1+N^k\) differs from
+\[
+\sigma_k(pq)=1+N^k+p^k+q^k.
+\]
+“Abelian origin” does not make the latter easy.
+
+**PROVED — Polynomial point-count dichotomy on RSA inputs.** Fix a nonzero polynomial
+\[
+P(X)=\sum_{i=r}^{d}c_iX^i,\qquad c_rc_d\ne0.
+\]
+Suppose a fixed variety has \(\#V(\mathbb F_p)=P(p)\) at good primes.
+
+- If \(r=d\), then \(\#V(\mathbb Z/pq)=c_r^2N^r\), determined by \(N\).
+- If \(r<d\), then exact \(\#V(\mathbb Z/pq)\) is deterministically polynomial-time equivalent to factoring \(pq\).
+
+*Proof.* CRT gives \(C=P(p)P(q)\). Put \(s=p+q\), and define
+\[
+U_0=2,\quad U_1=s,\quad U_j=sU_{j-1}-NU_{j-2}.
+\]
+Then \(U_j=p^j+q^j\), and
+\[
+C=\sum_i c_i^2N^i+
+  \sum_{i<j}c_ic_jN^iU_{j-i}(s,N).
+\]
+As a polynomial in \(s\), this has fixed degree \(d-r\) and nonzero leading coefficient \(c_rc_dN^r\). Find its integer roots, and test which yield integral roots of \(X^2-sX+N\). All degrees are fixed and coefficient lengths are \(O(\log N)\). The reverse direction is immediate. ∎
+
+**FALSE — Universal principle:** “Everything efficiently computable is abelian and therefore carries no factor information.” Gcd computations and special-purpose nonsmooth factoring already contradict such a classification; easy nonperiodic predicates such as \(\tau_\Delta(N)\bmod2\) also lie outside a fixed-conductor account.
+
+**SPECULATIVE — The useful common diagnosis is narrower:** the available fast operations usually compute an **aggregate that forgets the CRT components**. Recovering a component-sensitive quantity requires one of three unpaid operations: selecting a local component, constructing its Frobenius/order data, or evaluating a large arithmetic sum without expanding it. The first two are often factoring in another representation. The third remains the clearest place where a genuinely different algorithm could enter.

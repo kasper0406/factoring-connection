@@ -352,3 +352,166 @@ def class_number_half_sum(N):
     s = sum(jacobi(a, N) for a in range(1, (N + 1) // 2))
     denom = 2 - jacobi(2, N)
     return Fraction(s, denom)
+
+
+# ---------------------------------------------------------------- division polynomials (diagnostic)
+
+def division_poly_x(ell, a, b):
+    """psi_ell(x) in Z[x] for odd ell on y^2 = x^3 + a x + b (sympy; small ell only).
+
+    Used to check (disc psi_ell / p) = (p / ell): Frobenius permutes the roots of psi_ell with sign
+    Legendre(det) = (p/ell), since the sign character of GL2(F_ell) on (F_ell^2 - 0)/{+-1} is the
+    Legendre symbol of the determinant (checked for ell = 5, 7, 11, 13 in tests).
+    """
+    import sympy as sp
+    x, y = sp.symbols("x y")
+    F = x ** 3 + a * x + b
+    psi = {0: sp.Integer(0), 1: sp.Integer(1), 2: 2 * y,
+           3: 3 * x ** 4 + 6 * a * x ** 2 + 12 * b * x - a * a,
+           4: 4 * y * (x ** 6 + 5 * a * x ** 4 + 20 * b * x ** 3 - 5 * a * a * x ** 2
+                       - 4 * a * b * x - 8 * b * b - a ** 3)}
+
+    def red(e):
+        e = sp.expand(e)
+        P = sp.Poly(e, y)
+        out = 0
+        for (k,), c in P.terms():
+            out += c * F ** (k // 2) * y ** (k % 2)
+        return sp.expand(out)
+
+    def get(n):
+        if n in psi:
+            return psi[n]
+        m = n // 2
+        if n % 2:
+            v = get(m + 2) * get(m) ** 3 - get(m - 1) * get(m + 1) ** 3
+        else:
+            v = sp.cancel(get(m) * (get(m + 2) * get(m - 1) ** 2
+                                     - get(m - 2) * get(m + 1) ** 2) / (2 * y))
+        psi[n] = red(v)
+        return psi[n]
+
+    g = get(ell)
+    return sp.Poly(g, x)
+
+
+def sign_character_check(ell):
+    """True iff the GL2(F_ell) permutation sign on (F_ell^2 - 0)/{+-1} equals Legendre(det)
+    on the diagonal generators diag(g, 1) (hence everywhere for ell >= 5, SL2 being perfect)."""
+    from itertools import product
+    pts, idx = [], {}
+    for a_, b_ in product(range(ell), repeat=2):
+        if (a_, b_) == (0, 0):
+            continue
+        key = min((a_, b_), ((-a_) % ell, (-b_) % ell))
+        if key not in idx:
+            idx[key] = len(pts)
+            pts.append(key)
+    for g in range(1, ell):
+        perm = []
+        for (u, v) in pts:
+            w = (g * u % ell, v)
+            perm.append(idx[min(w, ((-w[0]) % ell, (-w[1]) % ell))])
+        seen, s = set(), 1
+        for i in range(len(perm)):
+            if i in seen:
+                continue
+            j, L = i, 0
+            while j not in seen:
+                seen.add(j)
+                j = perm[j]
+                L += 1
+            if L % 2 == 0:
+                s = -s
+        if s != jacobi(g, ell):
+            return False
+    return True
+
+
+# ---------------------------------------------------------------- Prop FROB(b): fixed-space rank
+
+def _polymulmod(u, v, f, m):
+    """(u * v) mod (f, m); polys as coefficient lists (low degree first), f monic."""
+    n = len(f) - 1
+    prod_ = [0] * (len(u) + len(v) - 1)
+    for i, ui in enumerate(u):
+        if ui:
+            for j, vj in enumerate(v):
+                prod_[i + j] = (prod_[i + j] + ui * vj) % m
+    for k in range(len(prod_) - 1, n - 1, -1):
+        c = prod_[k]
+        if c:
+            for i in range(n + 1):
+                prod_[k - n + i] = (prod_[k - n + i] - c * f[i]) % m
+    return (prod_[:n] + [0] * n)[:n]
+
+
+def _polypowmod(base, e, f, m):
+    n = len(f) - 1
+    r = [1] + [0] * (n - 1)
+    while e:
+        if e & 1:
+            r = _polymulmod(r, base, f, m)
+        base = _polymulmod(base, base, f, m)
+        e >>= 1
+    return r
+
+
+def oracle_frobenius_matrix(p, q, f):
+    """DIAGNOSTIC: matrix of the componentwise Frobenius Phi_B on B = (Z/N)[x]/(f), f monic integer
+    coefficient list (low first), in the basis 1, x, ..., x^{n-1}: column j = Phi(x^j) = CRT of
+    x^{jp} mod (f, p) and x^{jq} mod (f, q)."""
+    N = p * q
+    n = len(f) - 1
+    cols = []
+    xp = _polypowmod([0, 1] + [0] * (n - 2), p, [c % p for c in f], p) if n > 1 else [0]
+    xq = _polypowmod([0, 1] + [0] * (n - 2), q, [c % q for c in f], q) if n > 1 else [0]
+    ip, iq = pow(q, -1, p), pow(p, -1, q)
+    cp = [1] + [0] * (n - 1)
+    cq = [1] + [0] * (n - 1)
+    for j in range(n):
+        cols.append([(cp[i] * q * ip + cq[i] * p * iq) % N for i in range(n)])
+        cp = _polymulmod(cp, xp, [c % p for c in f], p)
+        cq = _polymulmod(cq, xq, [c % q for c in f], q)
+    return [[cols[j][i] for j in range(n)] for i in range(n)]
+
+
+def reduce_frobenius_fixed_space(N, M):
+    """OPERATIONAL (given the oracle matrix M of Phi_B): Gaussian elimination on M - I over Z/N.
+
+    If every pivot is a unit the kernel is free; by Prop FROB(b) it is not when
+    (disc f / N) = -1, so a nonzero nonunit entry appears and its gcd with N is returned.
+    Returns (factor or None, number of pivots).
+    """
+    n = len(M)
+    A = [[(M[i][j] - (1 if i == j else 0)) % N for j in range(n)] for i in range(n)]
+    rank = 0
+    row = 0
+    for col in range(n):
+        piv = None
+        for i in range(row, n):
+            v = A[i][col]
+            if v:
+                g = gcd(v, N)
+                if 1 < g < N:
+                    return g, rank
+                piv = i
+                break
+        if piv is None:
+            continue
+        A[row], A[piv] = A[piv], A[row]
+        inv = pow(A[row][col], -1, N)
+        A[row] = [x * inv % N for x in A[row]]
+        for i in range(n):
+            if i != row and A[i][col]:
+                c = A[i][col]
+                A[i] = [(A[i][j] - c * A[row][j]) % N for j in range(n)]
+        row += 1
+        rank += 1
+    # remaining entries (all columns processed): any nonzero nonunit left?
+    for i in range(n):
+        for j in range(n):
+            g = gcd(A[i][j], N)
+            if 1 < g < N:
+                return g, rank
+    return None, rank
