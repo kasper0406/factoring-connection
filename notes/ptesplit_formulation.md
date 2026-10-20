@@ -53,7 +53,8 @@ For α = 1/3, 1/4 and 1/10 this means log|v| ≲ x^{2/3}, x^{1/2} and x^{1/5}. "
 **Window lemma (HEURISTIC sizes; PROVED inequality).** In mechanism (B) with pieces m − a_j (λ = log m > b):
 (P − P₁)(m) = Σ_{l<k} Δe_{M−l} m^l with |Δe_{M−l}| ≤ 2·C(M, l)·B^{M−l}. For *generic* Δe, (T-v) and (T-u) force
   (k−1)λ ≤ x^{2α} and (M−k+1)b ≤ x^{2α}, hence λ ≥ x^{1−α} and k − 1 ≤ x^{3α−1}.
-So for α < 1/3 the fibre must be an **ideal-PTE fibre (k = 1)**: M ≈ x^α, B = L[α], pieces of log-size x^{1−α}.
+So, under the generic-Δe HEURISTIC, for α < 1/3 the fibre must be an **ideal-PTE fibre (k = 1)** with M ≲ x^α (an upper
+bound; see the results note §1), B = L[α], pieces of log-size x^{1−α}.
 Escaping k = 1 needs Δe much smaller than generic (structured families). At α = 1/3, k = O(1).
 
 **What would beat L[1/3].** The cheapest sufficient package, in mechanism (B), is all of:
@@ -73,7 +74,7 @@ For L[1/4] and L[1/10], put α = 1/4 or 1/10 in the above: M ≈ x^{1/4} or x^{1
 N | G(m). If no such G exists, then some gcd(N, G_i(m)) is a proper factor of N. Let θ be a root of G and
 P = ∏_j(b_jX − a_j) ≡ r (mod F̃) in Z[X]. Then P(θ) = r(θ) in Z[θ], so
 
-  ∏_j |Ĝ(a_j, b_j)| = |N_{Q(θ)/Q}(r(θ))| ≤ ‖r‖₁^δ · ‖F̃‖₂^{d−1},
+  ∏_j |Ĝ(a_j, b_j)| = |N_{Q(θ)/Q}(r(θ))| ≤ ‖r‖₁^δ · ‖F̃‖₂^{deg r} (≤ ‖F̃‖₂^{d−1}),
 
 where Ĝ(a, b) = b^δ G(a/b) ∈ Z. For δ ≥ 2, Ĝ(a, b) ≠ 0.
 - Proof of the bound: |r(θ_i)| ≤ ‖r‖₁ max(1, |θ_i|)^{deg r}, and ∏_i max(1, |θ_i|) = M(G) ≤ M(F̃) ≤ ‖F̃‖₂ (Landau).
@@ -81,16 +82,18 @@ where Ĝ(a, b) = b^δ G(a/b) ∈ Z. For δ ≥ 2, Ĝ(a, b) ≠ 0.
   - at most 2δ monic ones;
   - O(δ) primitive ones for δ ≥ 3 (Thue; Bombieri–Schmidt 1987 count);
   - O(log B) in the box for δ = 2.
-- Members with the same non-unit part differ by exact unit relations, which are uninformative (EX).
-- So every mechanism-(A) member is an NFS relation for the pair (G, X − m), sieving element r(θ) of degree ≤ d − 1,
-  with an element (not ideal) factorisation. It is subject to heurnfs B1/B2 (α ≥ 1/3 under G).
+- *Revised after codex ptesplit_2:* the earlier claim that members with the same non-unit part are uninformative is
+  WITHDRAWN. Counterexample: F = X² − 2, m = 11, N = 119, member (X+1)² ≡ 2X + 3 gives 12² ≡ 5² and factors N.
+- The NFS reading is a description, not a lower-bound reduction (see `ptesplit_results.md` §2.1).
 - Function-field contrast: in BGJT the identity holds in the finite ring F_{q²}[X]/(I), where every piece X − a is a
   unit, so the norm carries no size.
 
 **Prop NF (N-free families are useless for almost all N) [PROVED].** Let S be any set of integers of bit-size ≤ T,
 fixed before N. The number of balanced semiprimes N = pq ∈ [X, 2X] (p, q > √X/2) with some s ∈ S, |v| ≤ V, v ≠ s,
-N | s − v is at most |S|(2V+1)(2T/log₂(√X/2))². That is a fraction e^{−x+o(x)} when |S|, V, T = e^{o(x)}.
-- Proof: s − v ≠ 0 has at most T/log₂(√X/2) prime factors above √X/2, so at most that number squared such divisors pq.
+N | s − v is at most |S|(2V+1)(T*/log₂(√X/2))², where T* = ⌈log₂(2^T + V)⌉ (corrected). That is a fraction of *at most*
+  e^{−x+o(x)} when |S|, V, T = e^{o(x)}.
+- Proof: s − v ≠ 0 has bit-size ≤ T*, hence at most T*/log₂(√X/2) prime factors above √X/2, and at most that number
+  squared such divisors pq.
 - Consequence: N must enter the construction of the family (seed, or presentation).
 
 ## F5. Heuristic count (generic fibres)
