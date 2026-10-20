@@ -39,7 +39,8 @@ that the readout needs.** This is a framing, not a proved complexity dichotomy.
 
 **O1 (high-degree preprocessing, additive readout).** A working O1 observable would also be a prime-field
 discrete-log algorithm.
-- Theorem O1-DL (§2.4, PROVED; routine Fourier/list-decoding methodology): an efficiently computable phase that
+- Theorem O1-DL (§2.4, KNOWN in substance: AGS 2003, Akavia 2008 Ch. 7, Håstad–Näslund 2004; our transcription):
+  an efficiently computable phase that
   correlates with a character of order d at a known prime p yields discrete logarithms modulo d.
 - Corollary O1-N: an efficiently constructible O1 observable with the heavy large-order peaks that periodfind's
   Theorem T requires would give polynomial-time discrete logarithms in F_p^* for at least a μ/2 fraction of the
@@ -125,7 +126,8 @@ factorisation, on access to the multiplier and frequency, and on uniformity (cod
 
 - This is Weil's bound for L_χ ⊗ L_ψ(f) on G_m. The Swan conductors are at most a at 0 and b at ∞, and H²_c = 0.
 - References: Castro–Moreno, Proc. AMS 128 (2000) 2529–2537. The conductor form for rational f is Fu–Wan,
-  Quart. J. Math. 65 (2014) 1195–1211, Theorem 4.6 of arXiv:1303.3650v3 (checked by codex against v3).
+  Quart. J. Math. 65 (2014) 1195–1211, Theorem 4.6 of arXiv:1303.3650v3. v3 corrects the journal version's
+  Thm 4.6 (credited to Oliveira–Reis), so cite v3. Codex and the literature critic both checked it.
 - Brute force (proof critic): p ≤ 127, a, b ≤ 6, all nontrivial χ. The maximum ratio to the bound is 1.0000,
   attained by Gauss sums.
 
@@ -157,8 +159,8 @@ Let d = gcd(m, p − 1), H = (F_p^*)^m and L = |H|.
 
     |A_p(χ, c)| ≪ (L^{−1} + p^{−η(ε)})^{1/2}  for ord χ ≥ p^ε.
 
-  A checked statement of the input with an explicit implied constant is Kowalski's notes on sums over small
-  subgroups, Thm 1.1 (codex).
+  A modern statement of the input is Kowalski, "Exponential sums over small subgroups, revisited",
+  arXiv:2401.04756, Thm 1.1. Its implied constant depends only on γ and is not explicit (literature critic).
 
 So monomial preprocessing of any degree has power cancellation against characters of polynomially large order.
 Concentration at small L is order annihilation (periodfind §1.3f). E1's largest non-control ratio, 6.6, is
@@ -202,7 +204,7 @@ Checks:
 - The next theorem says what any example must be: a discrete-log algorithm for the part of the group that the
   character detects.
 
-### 2.4 Theorem O1-DL (correlation ⇒ discrete logarithm). PROVED (routine)
+### 2.4 Theorem O1-DL (correlation ⇒ discrete logarithm). KNOWN in substance (AGS 2003; Akavia thesis 2008 Ch. 7; Håstad–Näslund JACM 2004); our transcription
 
 This is established Fourier/list-decoding methodology applied to our observable (codex), the classical analogue of
 the Fourier step in Shor's DL algorithm.
@@ -220,7 +222,8 @@ the Fourier step in Shor's DL algorithm.
 1. *Frequency list.* F(t) = f(g^t) on Z/n has F̂(j) = ⟨f, χ⟩. Since g is a generator, restriction classes are
    singletons (Theorem T with i = 1). The sparse Fourier transform over Z_n with known n returns a list of O(τ^{−2})
    candidates containing every τ-heavy frequency (Akavia–Goldwasser–Safra, FOCS 2003, Thm 5; corrected citation,
-   codex). Mansour's algorithm assumes a power-of-two modulus, and Akavia 2009 Thm 4 depends on the Fourier ℓ¹
+   codex). The extended abstract proves only the Boolean Z_N case. The complex-valued case we use is Akavia's
+   MIT thesis (2008), Thm 3.30 (literature critic). Mansour's algorithm assumes a power-of-two modulus, and Akavia 2009 Thm 4 depends on the Fourier ℓ¹
    norm.
 2. *One phase.* For any z, E_s f(zg^s)e(−js/n) = F̂(j)·e(j·log_g z/n). Estimate this and F̂(j) to additive accuracy
    cτ. Their quotient determines θ(z) = j·log_g z/n mod 1 to within 1/16 turn, using O(τ^{−2} log(1/δ′)) samples.
@@ -243,7 +246,8 @@ the Fourier step in Shor's DL algorithm.
 - Codex proved the same per-prime statement in its blind round and labelled the resulting barrier CONJECTURED.
   Ours adds the N-level corollary.
 
-**Corollary O1-N (an O1 factoring observable is a prime-field DL algorithm). PROVED.**
+**Corollary O1-N (an O1 factoring observable is a prime-field DL algorithm). PROVED (routine); no prior formulation
+found by us.**
 
 *Hypotheses* (made explicit after the adversarial round):
 - (i) The programs Φ_X of size s are N-independent and constructible in poly(log X) time, or given as advice.
@@ -285,8 +289,9 @@ in expected time poly(s, log X, 1/τ, I, K, 1/μ) plus the cost of h.
    - τ ≤ w_p√p/(p − 1). This is vacuous for s ≥ ½·log₂ p.
    - An unconditional bound τ ≤ poly(s)·p^{−c} for all size-s SLPs and hard-order characters would be a
      superpolylogarithmic algebraic-circuit lower bound for weak DL predictors.
-   - Coppersmith–Shparlinski (J. Cryptology 13 (2000) 339–360) leave the SLP complexity of DL open. The known
-     lower bounds concern degree, sparsity or linear complexity: Coppersmith–Shparlinski Thms 1 and 3;
+   - Coppersmith–Shparlinski (J. Cryptology 13 (2000) 339–360) give no SLP *size* lower bound beyond the trivial
+     log₂(deg). Their degree bounds yield parallel arithmetic depth and Boolean complexity bounds. Known lower
+     bounds concern degree, sparsity, linear complexity, depth or Boolean degree (theorem numbers UNVERIFIED): Coppersmith–Shparlinski Thms 1 and 3;
      Lange–Winterhof, Acta Arith. 101 (2002); Meidl–Winterhof, IEEE-IT 47 (2001).
 
 **What remains open in O1.** O1-DL shows that a short SLP with large hard-order correlation is a polylog
@@ -332,7 +337,7 @@ twice over:
 - **Reading.** Short SLPs reach degree X^{3/2} at size ≈ 1.5·log₂ X. Compositions of depth ≈ log₂ X have
   discriminants with log ≈ D log D and possibly many bad primes in the interval. So CS is a genuine but weak
   conditional filter. MIN (§4.4) is the unconditional statement for the composition class.
-- The unconditional range in Lagarias–Odlyzko Thm 1.3 (x ≥ exp(10 n_K (log d_K)²)) is a sufficient range for that
+- The unconditional range in Lagarias–Odlyzko Thm 1.3 (log x ≥ 10·n_L (log d_L)², L the Galois closure) is a sufficient range for that
   theorem, not a limit on all methods (codex).
 
 ### 3.3 Prop GAL-0 (no Galois-only barrier). PROVED
@@ -361,7 +366,7 @@ Codex's variant prescribes ⌊p/2⌋ linear factors at each p, giving δ_p ≈ 1
 **Consequence.**
 - A barrier must use the SLP structure.
 - Any barrier covering the trivial-group case must cover the unit multiples 2^{e(n)}∏_{a≤n}(x − a). By Bürgisser,
-  Comput. Complexity 18 (2009), preprint Thm 4.1(2), that would make τ(Per) superpolynomial (slpcirc Prop BB(b)).
+  Comput. Complexity 18 (2009), ECCC TR06-113 Thm 4.1(2), that would make τ(Per) superpolynomial (slpcirc Prop BB(b)).
 - So a barrier "short SLP + Galois group in 𝒢 ⇒ no W_U" is permanent-hard whenever 𝒢 contains the trivial
   group. Hardness of the unscaled monic Pochhammer program alone does not follow from the quoted construction
   (codex).
@@ -441,7 +446,7 @@ Let m → ∞. ∎
 For the full binary wreath product, q_{n+1} = q_n − q_n²/2 and q_n ~ 2/n (Odoni 1985). For bounded degree the FPP
 is O(1/n) (codex). E3 tests this Haar model in the silent regime.
 
-### 4.4 Theorem MIN (no dense compositions of near-minimal degree). PROVED; no prior formulation found by us
+### 4.4 Theorem MIN (no dense compositions of near-minimal degree). PROVED (an elementary combination of standard ingredients: Chebotarev, Burnside/Markov, Kronecker–Northcott); no prior formulation found by us
 
 **Statement.**
 - Let 𝒢 be a finite set of monic polynomials in Z[x] of degree ≥ 2, and fix μ ∈ (0, 1] and Δ ≥ 0.
@@ -499,7 +504,10 @@ pointed out that Markov in step 5 gives the "almost all primes" form.
   - The method does not reach polylogarithmic depth, or μ = (log X)^{−B}.
 - *General SLPs.* MIN is for compositions. A general SLP has no outer prefix of bounded degree.
 - *Literature* (codex). Related results have different hypotheses:
-  - Doyle–Healey–Hindes–Jones (arXiv 2108.11233), Thm 1.5: assumes large arboreal image;
+  - Juul–Kurlberg–Madhu–Tucker (IMRN 2016, 3944–3969): the nearest technique; Chebotarev for φ(x) − t over k(t)
+    plus wreath-product fixed-point proportions shows that periodic-point proportions mod p → 0;
+  - Doyle–Healey–Hindes–Jones (arXiv 2108.11233; Math. Proc. Cambridge Philos. Soc.), Thm 1.5: assumes a large
+    arboreal image;
   - Ferraguti (Proc. AMS 2018), Thm 2.3: stable primes;
   - Benedetto–Juul and Looper: surjective arboreal representations.
 
@@ -715,4 +723,74 @@ The reduction code sees only p, g, a target y and oracle access to f.
 
 ## 9. Review record
 
-REVIEW_PLACEHOLDER
+**Codex blind round** (`codex/prepread_1.out`; it ran before any of our analysis was shared). It independently
+found:
+- the per-prime correlation ⇒ partial-DL reduction, labelled CONJECTURED as a barrier;
+- the prime-specific Pohlig–Hellman counterexample to an order-only barrier;
+- BGK for monomials;
+- the dense DL interpolation coefficients;
+- the fixed-prefix tower theorem (PFX) and the outer-constant obstruction (OUT);
+- the Galois-only CRT construction with group S_D;
+- the Fulman–Guralnick / Selmer–Osada references;
+- the Gleason-type candidate H_k, killed by exact counts.
+
+It did not have Prop UF, Corollary O1-N, Theorem MIN, Prop CS or the N-independent PH program.
+
+**Codex adversarial round** (`codex/prepread_2.out`): **MAJOR REVISION**. All fixes are applied:
+
+| Item | Finding | Action |
+|---|---|---|
+| Prop CS | WRONG: bad primes ignored (F = x(x − M)); wrong comparison target (dense needs ≈ μX²/log X) | rewritten as a GRH filter with explicit escapes; "silent by √X" deleted (§3.2) |
+| §3.1 FPP range | WRONG (AGL₁ has FPP 1 − 1/D) | corrected to [1/D, 1 − 1/D] |
+| GL₂ remark | WRONG: needs the twist and the full Frobenius action | corrected formula (§3.4) |
+| Prop PH | sign: A_p(χ̄, c), not A_p(χ, c); u \| m stronger than B-smooth; auxiliary w, p-dependent c | fixed |
+| O1-DL | SFT citation (AGS 2003 Thm 5), list output, confidence accounting | fixed |
+| O1-N | needs efficient h, uniform I and K, constructible Φ, randomness over pairs and coins | hypotheses (i)–(iv) added |
+| §2.5 | square-root trade-off overclaimed; subgroup versus quotient | deleted / clarified |
+| MIN | correct; simpler invariant disc; Markov gives "almost all primes" | adopted (statement strengthened) |
+| PFX, §4.5, QC | nested tower; interval sampling is an upper bound; QC not reduced to intersective words | fixed |
+| §0 | "strictly stronger than factoring" and "separate exactly" overclaimed | reworded |
+| Weil composite | exact normalisation √N/((p−1)(q−1)) | fixed |
+
+**Opus proof critic.** It ran all tests and wrote its own brute-force scripts. Verdicts:
+- MIN: **ACCEPT**, and recommended the Markov strengthening (adopted). Its enumeration of all 5^m prefixes for
+  m ≤ 7 gives maximum t_P = m + 1.
+- O1-DL and O1-N: ACCEPT WITH FIXES (list identification, uniform i, generator certification, randomised h,
+  §2.5 exponent). All applied.
+- PH: ACCEPT WITH FIXES (sinc bound ≥ 0.95; 37 primes checked, minimum 0.994; the p-dependent multiplier stated in
+  §0). Applied.
+- Weil width: ACCEPT. Brute force gives a maximum ratio of 1.0000.
+- GAL-0: ACCEPT WITH FIXES (ℓ₁², ℓ₃ > D, ℓ_i ∉ (X, 2X], (1/6, 1/3]). Applied.
+- CS: ACCEPT WITH FIXES (per-factor silence). Superseded by codex's stronger objection.
+- AB: ACCEPT (deg rad F). DEF: ACCEPT ("convexity" wording). §4.5: ACCEPT. UF: ACCEPT.
+- Flagged the FPP-range error and the garbled PFX statement. Both fixed.
+
+**Opus literature critic.** Most references were verified, including:
+- Fu–Wan v3 Thm 4.6, instantiated to give exactly (a + b)√p;
+- BGK Thm 6;
+- AGS Thm 5;
+- Akavia 2009 Thm 4;
+- Mansour (SIAM J. Comput. 24 (1995));
+- Lagarias–Odlyzko;
+- Odoni;
+- Stoll via Jones Thm 2.3 (x² + 1 maximal);
+- Bürgisser ECCC Thm 4.1(2);
+- Xylouris (L ≤ 5.18);
+- DHHJ Thm 1.5;
+- Ferraguti Thm 2.3;
+- the division-polynomial formula (needs p ∤ 2MΔ_E).
+
+Fixes applied:
+- **O1-DL relabelled KNOWN in substance** (AGS 2003 treats EXP_{p,g}; the doubling step is the Blum–Micali /
+  Håstad–Näslund technique).
+- O1-N kept as "no prior formulation found by us".
+- Kowalski's constant is not explicit.
+- Akavia's thesis Thm 3.30 added for complex-valued SFT.
+- Coppersmith–Shparlinski wording softened (theorem numbers UNVERIFIED, paywalled).
+- Thm 1.3 range notation n_L, d_L.
+- Fu–Wan: cite v3.
+- JKMT 2016 added as the nearest technique to MIN.
+
+Novelty of MIN: no prior formulation found; the related results bound root-existence, prime-divisor or
+periodic-point proportions under large-image hypotheses. The venues of Benedetto–Juul and Looper (Bull. LMS 2019)
+are UNVERIFIED.
