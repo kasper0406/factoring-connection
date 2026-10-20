@@ -37,7 +37,7 @@ and need nothing new.
      c_U(τ) ≥ (a + s)/(1 − 2^{−2/5}) > 4.129a > 3a (observation of codex dlog25_1).
    - For all τ, τ′: c_DL(τ; τ′) ≥ min(c_U(τ), c_U(τ′)). So DL is never cheaper than Theorem U in this cost model, and
      inf c_DL = inf c_U.
-   - Grid values (same grid as Theorem U): for C_γ = 0, 1, 5, 20 the upper brackets are 3.5103, 4.0469, 5.0384, 6.4975,
+   - Grid values (one grid for both U and DL, `dlog25.params.default_grids`, not [U]'s default): for C_γ = 0, 1, 5, 20 the upper brackets are 3.5103, 4.0469, 5.0384, 6.4975,
      identical to Theorem U's; 3a = 1.65, 1.95, 2.40, 3.45 there.
    - Like Theorem U's, these numbers are illustrations: C_γ is a finite but uncomputed constant.
 3. **Every ingredient transfers (§3, §4).**
@@ -68,8 +68,8 @@ and need nothing new.
    claim. For F_{p^n}, the rigorous results below L_Q[1/2] that we found are in
    small and lower-medium characteristic, p = L_Q[β] with β < 1/2 (Kleinjung–Wesolowski: quasi-polynomial for fixed p,
    L_Q[β + o(1)] for p = L_Q[β]; Lido 2026 for p < n). For p ≥ L_Q[1/2] we found nothing rigorous even at L_Q[1/2]. Here "medium/large characteristic" means p ≥ L_Q[1/2]. **Extension fields with
-   p ≥ L_Q[1/2]: the transfer does not give anything as it stands** (§8). Only the injectivity step of the split
-   counting transfers (heuristically, for fixed n); the rational side becomes a number field, and Lemma 8.5′ would be
+   p ≥ L_Q[1/2]: the transfer does not give anything as it stands** (§8). Even the injectivity step of the split counting
+   transfers only up to units (heuristically, for fixed n); the rational side becomes a number field, and Lemma 8.5′ would be
    needed for smooth ideals in residue classes modulo ideals, which is not available.
 7. **Toy checks (experimentally supported; correctness only; §9).** E1: the split identity
    #{T : E(T)} = #{coprime pairs} held exactly in 8/8 exhaustive cases, and the lower bound held in every case where
