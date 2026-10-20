@@ -1,0 +1,228 @@
+[Full report, with proofs and references](./report.md). Reproducible experiments: [root counts](./exact_root_probe.json), [quadratic-word search](./exact_word_probe.json).
+
+**1. Preprocessing and additive readout**
+
+**KNOWN — exact mixed-sum bound.** Let \(\psi(z)=e^{2\pi iz/p}\), let \(\chi\) be nontrivial, and write \(\Phi=A/B\in\mathbb F_p(y)\) in lowest terms. Put
+\[
+a=\deg A,\qquad b=\deg B,\qquad
+t=\#\{\text{distinct nonzero geometric roots of }B\}.
+\]
+If
+\[
+\Phi\ne H^p-H+c\quad\text{in }\overline{\mathbb F}_p(y),
+\]
+then
+\[
+\left|\sum_{\substack{y\in\mathbb F_p^*\\B(y)\ne0}}
+\chi(y)\psi(\Phi(y))\right|
+\le [b+\max(a-b,0)+t]\sqrt p. \tag{1}
+\]
+This is the \(d=1,f(y)=y\) specialization of Fu–Wan, *Quarterly J. Math.* **65** (2014), 1195–1211, **author-preprint Theorem 4.6**. [Primary source](https://arxiv.org/pdf/1303.3650v3). **UNVERIFIED:** Castro–Moreno’s original theorem numbering; their paper is *Proc. AMS* **128** (2000), 2529–2537, [DOI](https://doi.org/10.1090/S0002-9939-00-05441-1).
+
+**PROVED — effective degree.** Reduce polynomial functions modulo \(y^p-y\), but for this sum use the unique representative modulo \(y^{p-1}-1\), of degree \(d\le p-2\). If nonconstant, its pole at infinity has order \(d<p\), excluding Artin–Schreier degeneracy. Equation (1) gives
+\[
+|S|\le d\sqrt p.
+\]
+A constant representative gives \(S=0\). Thus Weil becomes trivial at \(d\asymp\sqrt p\), and excludes \(|S|\ge p/L\) only when \(d<\sqrt p/L\), up to endpoint constants.
+
+Polynomial degree is not the optimal analytic complexity: \(y^{p-2}\) represents \(1/y\), whose bound is \(\sqrt p\). After Artin–Schreier reduction, rational poles of orders \(m_v\) give conductor coefficient
+\[
+\sum_v m_v+\#\{\text{poles outside }\{0,\infty\}\},
+\]
+with additional excluded points accounted for. Reducing a short SLP to a low-conductor representation need not be computationally cheap.
+
+**PROVED, using a KNOWN theorem — monomials are excluded.** Set
+\[
+d=(m,p-1),\quad H=(\mathbb F_p^*)^m,\quad L=|H|,\quad R=\operatorname{ord}\chi.
+\]
+If \(\chi\) is nontrivial on the power-map kernel, fibre summation gives \(S=0\). Otherwise \(\chi=\theta\circ(y\mapsto y^m)\), so
+\[
+S=dT,\qquad T=\sum_{z\in H}\theta(z)\psi(z),\qquad L\ge R.
+\]
+Expanding \(|T|^2\), writing \(z=uv\), gives
+\[
+|T|^2\le L+(L-1)\max_{a\ne0}
+\left|\sum_{v\in H}\psi(av)\right|.
+\]
+Bourgain–Glibichuk–Konyagin, *JLMS* **73** (2006), 380–398, **Theorem 6**, bounds the maximum by \(Lp^{-\eta(\epsilon)}\) when \(L\ge p^\epsilon\). Consequently
+\[
+\frac{|S|}{p-1}\le
+\sqrt{L^{-1}+p^{-\eta(\epsilon)}}\qquad(R\ge p^\epsilon). \tag{2}
+\]
+This handles arbitrarily large exponents, including Gauss periods beyond the degree-based Weil range. [Primary paper](https://doi.org/10.1112/S0024610706022721).
+
+**PROVED — exact DL interpolation is dense, but that is not an SLP lower bound.** For primitive \(g\), let \(L_g(g^k)=k\), \(0\le k<p-1\). Fourier interpolation gives
+\[
+[y^0]L_g=-1,\qquad
+[y^j]L_g=(g^{-j}-1)^{-1}\ne0\quad(1\le j\le p-2).
+\]
+Indeed, differentiate the finite geometric series in
+\[
+[y^j]L_g=(p-1)^{-1}\sum_k k g^{-jk}.
+\]
+Thus its degree is exactly \(p-2\), and every representing polynomial has at least \(p-1\) monomials before exponent merging. This proves only \(s\ge\log_2(p-2)\). Furthermore, \(\psi(L_g(y))\) imitates the primitive complex character with phase error below \(2\pi/p\).
+
+**KNOWN — the literature bounds different resources.** Coppersmith–Shparlinski, *J. Cryptology* **13** (2000), 339–360, **Theorem 1**, proves
+\[
+\deg P\ge\frac{M(M-1)}{2(p-2)}
+\]
+when \(P\) agrees modulo \(p\) with DL at \(M\) inputs. **Theorem 3** gives total degree at least \(M/\sqrt{3p}\) for a nonzero algebraic relation \(Q(y,\log_g y)=0\). They explicitly leave straight-line complexity open on p.341. [Full paper](https://link.springer.com/content/pdf/10.1007/s001450010002.pdf).
+
+**KNOWN:** Lange–Winterhof, *Acta Arith.* **101** (2002), 223–229, **Theorem 2 and Corollary 2**, concern Boolean sparsity and degree of a DL bit; Meidl–Winterhof, *IEEE Trans. IT* **47** (2001), 2807–2811, **Theorems 1–3**, concern linear recurrence complexity. Neither resource is unrestricted arithmetic SLP size. [Lange–Winterhof](https://www.impan.pl/shop/en/publication/transaction/download/product/82707), [Meidl–Winterhof, author upload](https://www.researchgate.net/publication/3080528_Lower_bounds_on_the_linear_complexity_of_the_discrete_logarithm_in_finite_fields).
+
+**UNVERIFIED:** exact theorem numbers in Winterhof, *DCC* **25** (2002), 63–72, and Lange–Winterhof’s elliptic/XTR paper, *COCOON 2002*, LNCS **2387**, 137–143. Their documented scope is interpolation degree; I found no unrestricted super-polylogarithmic SLP lower bound to import. [Winterhof](https://doi.org/10.1023/A:1012556500517), [elliptic/XTR](https://doi.org/10.1007/3-540-45655-4_16).
+
+**PROVED — order alone cannot imply SLP cancellation.** For \(R=2^b\mid p-1\), choose \(\zeta\) of order \(R\), and set \(u=y^{(p-1)/R}\). Recover \(k=\log_\zeta u\) bitwise. Given corrected \(u_i=\zeta^{2^iq_i}\), compute
+\[
+b_i=\frac{1-u_i^{R/2^{i+1}}}{2}\in\{0,1\},\qquad
+u_{i+1}=u_i[1+b_i(\zeta^{-2^i}-1)].
+\]
+Then \(k=\sum_i2^ib_i\). A polynomial-size Boolean circuit computes
+\[
+A=\left\lfloor pk/R+1/2\right\rfloor
+\]
+from these bits. Replace AND and NOT by multiplication and \(1-z\). Integer representatives of all field constants cost \(O(\log p)\) operations each. This produces a constant-free, division-free integer SLP of size \(\operatorname{poly}(\log p)\), satisfying
+\[
+\Re\sum_{y\ne0}\overline{\chi(y)}\psi(\Phi(y))
+\ge(p-1)\cos(\pi/p),\qquad \chi(y)=e^{2\pi ik/R}.
+\]
+Infinitely many examples have \(R\ge p^{0.19}\): choose the least prime \(p\equiv1\pmod{2^b}\), using Xylouris, *Acta Arith.* **150** (2011), 65–91, **Theorem 1.1**, \(p\ll(2^b)^{5.18}\). [Primary theorem](https://www.impan.pl/shop/publication/transaction/download/product/83078).
+
+This construction depends on \(p\). It refutes an order-only barrier for prime-specific programs, while supplying no single program for every prime in the interval.
+
+**PROVED — correlation yields partial DL with explicit access assumptions.** Suppose \(p,g,R\) and the frequency \(\chi(g)=e^{2\pi i/R}\) are supplied, \(|u|\le1\) is efficiently evaluable, and
+\[
+c=\mathbb E_yu(y)\overline{\chi(y)},\qquad |c|\ge\rho.
+\]
+Then
+\[
+\mathbb E_tu(xg^t)e^{-2\pi it/R}=c\chi(x).
+\]
+Sampling estimates this and its value at \(x=1\) to error \(O(\rho)\) using \(O(\rho^{-2})\) samples, yielding constant-precision \(\chi(x)\). Repeat for \(x^{2^j}\), \(j=0,\ldots,\lceil\log_2R\rceil+O(1)\). Backwards phase unwrapping selects between two half-angle lifts; errors below \(1/16\) turn shrink geometrically, recovering \(\log_gx\bmod R\) by rounding. Amplification adds logarithmic factors.
+
+**CONJECTURED conditional barrier:** hardness of this partial DL problem excludes efficiently constructible correlating phases for that specified character. Nonuniform SLP existence requires nonuniform hardness.
+
+**UNVERIFIED/open:** no bound
+\[
+|S|\le\operatorname{poly}(s,\log p)p^{1-c}
+\]
+is established here for uniform dense integer programs. The degree argument covers \(2^s<\sqrt p/L\); polylogarithmic size alone does not. Nor is O1 equivalent to full DL/order finding: smooth orders, unknown frequencies, unknown prime factors, and cancellation in character restriction classes remain separate issues.
+
+**2. Galois theory and growing depth**
+
+**PROVED.** If the leading coefficient and discriminant remain nonzero modulo \(p\), then
+\[
+Z_p=\#\{x:F(x)=0\}=\operatorname{fix}(\mathrm{Frob}_p)
+\]
+even when \(\deg F\ge p\): reduction identifies distinct geometric roots, and Frobenius fixes precisely the rational ones.
+
+For a permutation group with \(t\) orbits,
+\[
+\mathbb E_G\operatorname{fix}=t,\qquad
+\mathrm{FPP}(G)=\Pr_G(\operatorname{fix}>0),\qquad
+\Pr_G(\operatorname{fix}\ge M)\le t/M. \tag{3}
+\]
+Count pairs \((g,\alpha)\) with \(g\alpha=\alpha\), orbit by orbit; then apply Markov. A transitive action has mean **one**, whereas model U requires \(Z_p\ge\mu p\). Constant FPP does not supply this.
+
+**PROVED.** A faithful transitive abelian action is regular: an element fixing one point fixes every point by commutativity. Its FPP is \(1/D\). If the question literally requires the unnormalized mean below \(1-1/\operatorname{polylog}D\), no transitive action qualifies.
+
+**KNOWN — effective Chebotarev scope.** Lagarias–Odlyzko, in *Algebraic Number Fields* (Academic Press, 1977), 409–464, **Theorems 1.1 and 1.3**, give GRH and unconditional effective forms. The unconditional theorem’s stated range is
+\[
+x\ge\exp\!\left(10[K:\mathbb Q](\log|\Delta_K|)^2\right),
+\]
+with a possible exceptional-zero term. GRH removes that range restriction, while retaining dependence on splitting-field degree and discriminant. [Original paper, retypeset](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf).
+
+**PROVED — limitation.** For moving \(F_X\), substituting \(x=X\) into a fixed-field asymptotic is invalid without uniform errors. Conversely, \(D\ge p\) does not invalidate the Frobenius identity or itself establish silence. At good primes, classes fixing more than \(p\) roots simply cannot occur.
+
+**KNOWN — arboreal inputs.** Odoni, *Proc. LMS* **51** (1985), 385–414, **Theorem I**, gives full rooted-tree automorphism groups for the generic monic polynomial in characteristic zero; **Lemma 4.3** gives vanishing FPP for repeated wreath products of a nontrivial transitive group.
+
+Stoll, *Arch. Math.* **59** (1992), 239–244, proves full binary arboreal image for \(x^2+c\) when \(-c\) is nonsquare and either \(c>0,\ c\equiv1,2\pmod4\), or \(c<0,\ c\equiv0\pmod4\), as stated in Jones, *Publ. Math. Besançon* (2013), **Theorem 2.3**. This includes \(x^2+1\). [Jones’s survey](https://www.numdam.org/item/PMB_2013____107_0.pdf).
+
+**PROVED — wreath-product barrier.** For the full binary tree group, let \(q_n\) be FPP at level \(n\). A top swap fixes no leaves; a top identity leaves two independent subtrees. Hence
+\[
+q_0=1,\qquad q_{n+1}=q_n-q_n^2/2,\qquad q_n\sim2/n.
+\]
+Indeed \(q_n\downarrow0\), and
+\[
+q_{n+1}^{-1}-q_n^{-1}=1/(2-q_n)\longrightarrow1/2.
+\]
+A subgroup of index at most \(I\) has FPP at most \(Iq_n\).
+
+More generally, a transitive top group of degree \(2\le d\le B\), with fixed-point count \(Z\), transforms survival probability to \(1-\mathbb E(1-q)^Z\). Since \(\mathbb EZ=1\), \(|G|\le B!\), and
+\[
+(1-q)^z\ge1-zq+(z-1)q^2\quad(z\ge2),
+\]
+this is at most \(q-q^2/B!\), using the identity element alone. The inequality follows from
+\[
+(1-q)^z-1+zq
+=q^2\sum_{j=0}^{z-2}(z-1-j)(1-q)^j.
+\]
+Thus arbitrary full bounded-degree wreath towers have FPP \(O_B(1/n)\).
+
+**PROVED — a barrier beyond the apparent Chebotarev-silent regime.** Fix \(f\in\mathbb Z[x]\) and target \(b\), and suppose the Galois FPP of \(f^{\circ m}-b\) tends to zero. For **every** \(k(X)\to\infty\), the proportion of primes in \((X,2X]\) where \(f^{\circ k(X)}-b\) has any root tends to zero.
+
+Proof: fix \(m\). For \(k\ge m\), a depth-\(k\) root maps under \(f^{\circ(k-m)}\) to a depth-\(m\) root. Fixed-depth Chebotarev bounds the upper limiting dyadic proportion by \(\mathrm{FPP}(G_m)\); finitely many shallow bad primes disappear. Let \(m\to\infty\).
+
+The same proof applies to fixed outer-prefix towers \(F_k=F_m\circ R_{m,k}\) with vanishing FPP. Deep bad reduction causes no problem because composition still maps roots to shallow roots. This kills model U for those towers even at \(k\ge\log_2p\).
+
+**PROVED — a simpler composition obstruction.** If the outermost map belongs to a fixed finite collection of irreducible quadratics \(x^2+c\), every word has no roots at asymptotically half the primes in each dyadic interval. A composition root would give an outer-map root; \(-c\) is a quadratic nonresidue at half the primes. Finiteness makes this uniform over the outer-map choice.
+
+**UNVERIFIED — no general inverse theorem.** New *outer* maps in \(q_k\circ\cdots\circ q_1\) destroy the fixed-prefix implication. Reducible outer maps need further analysis. Moreover, \(x^2-1\) has a rational preimage of zero at every depth, so vanishing root-existence probability is false for arbitrary quadratics.
+
+**KNOWN — periodic points are different.** Juul–Kurlberg–Madhu–Tucker, *IMRN* **2016**, 3944–3969, **Theorem 1.5**, proves
+\[
+\liminf_{N\mathfrak p\to\infty}
+\frac{\#\mathrm{Per}(f_{\mathfrak p})}{N\mathfrak p+1}=0
+\]
+for quadratic \(f\) over a number field unless linearly conjugate over that field to \(x^2-2\). Their **Proposition 5.3 and Corollary 5.4** use function-field groups of \(f^{\circ n}(x)-t\), rather than the arithmetic specialization \(t=0\). [Author manuscript](https://kurlberg.github.io/eprints/Paper1005.pdf).
+
+**KNOWN:** Ferraguti, *Proc. AMS* **146** (2018), 2773–2784, **author-preprint Theorem 2.3**, proves density zero of primes preserving irreducibility of every composition when tree-group index is \(o(\deg F_n)\). This concerns irreducibility, not positive root density. [Primary preprint](https://arxiv.org/pdf/1704.02204).
+
+**HEURISTIC.** Generic quadratic backward branching predicts survival \(\sim2/k\), conditional root count \(\sim k/2\), and unconditional mean \(\sim1\). Polylogarithmic depth therefore gives tiny root density. Forward rho collisions instead occur on the \(\sqrt p\) scale; a polylogarithmic-length collision product has density about \(k^2/p\). The crossing \(2^k=p\) is not a birthday threshold.
+
+**3. Groups, candidates, and verdict**
+
+**PROVED.** Natural \(S_D\) has
+\[
+\mathrm{FPP}=1-\sum_{j=0}^D(-1)^j/j!\longrightarrow1-e^{-1}
+\]
+by inclusion–exclusion. Odd-degree dihedral actions have FPP \((D+1)/(2D)\): reflections fix one point, and only the identity rotation fixes points. Both have mean one.
+
+**KNOWN:** \(x^D-x-1\) has Galois group \(S_D\), by Selmer, *Math. Scand.* **4** (1956), 287–302, **Theorem 1**, and Osada, *J. Number Theory* **25** (1987), 230–238, **Corollary 3**. Its SLP has size \(O(\log D)\), but repository Theorem SP covers it. [Selmer](https://journals.msp.org/mscand/article/download/2841/2840/2872), [Osada](https://doi.org/10.1016/0022-314X(87)90029-1).
+
+**KNOWN:** Fulman–Guralnick, *Trans. AMS* **370** (2018), 4601–4622, **Theorem 1.1**, bounds derangement proportion below by \(.016\), apart from finitely many exceptions, for faithful nontrivial transitive actions of finite simple groups. This controls a probability over group elements, not small-prime Frobenius sequences. [Primary paper](https://arxiv.org/pdf/1508.00039).
+
+**PROVED — Galois theory alone cannot classify uniform density.** Fix \(X\) and \(D>2X\). At every prime in \((X,2X]\), prescribe a squarefree monic reduction with \(\lfloor p/2\rfloor\) distinct linear factors and an irreducible remaining factor. Coefficientwise CRT realizes all prescriptions. At three additional primes impose Eisenstein conditions and factorization types \((D-1,1)\), \((2,1,\ldots,1)\). Eisenstein gives transitivity; the long cycle gives double transitivity; conjugating the transposition gives all transpositions. The resulting polynomial has Galois group \(S_D\) and density approximately \(1/2\) throughout the interval. No short SLP is asserted.
+
+**UNVERIFIED:** “uniformly many fixed points require group order” therefore needs a computational hypothesis. Cyclotomic/Chebyshev and commutative torsion constructions remain within repository SP/OA where those propositions apply. Non-CM \(\mathrm{GL}_2\) torsion does not escape OA merely through nonabelian Galois image; constructing prime-Frobenius operators over \(\mathbb Z/N\) encounters FROB.
+
+**CONJECTURED — restricted target.** For every fixed finite \(\mathcal Q=\{x^2+c:c\in C\subset\mathbb Z\}\) and \(A,B>0\), uniformly over words of length at most \((\log X)^A\),
+\[
+\#\{p\in(X,2X]:\delta_p(F)\ge(\log X)^{-B}\}
+=o(\pi(2X)-\pi(X)).
+\]
+The fixed-prefix wreath case is proved above. Arbitrary changing words remain open here. An unrestricted dense-SLP barrier encounters repository Prop BB’s permanent-lower-bound obstruction.
+
+**Candidate — PROVED properties, UNVERIFIED eligibility.**
+\[
+H_1(x)=1,\qquad H_{j+1}(x)=xH_j(x)^2+1,
+\]
+with prime \(k\asymp\log X\), is constant-free, N-independent, size \(3(k-1)\), and degree \(2^{k-1}-1\). Every integer coefficient is positive: squaring fills \([0,2\deg H_j]\), then multiplication by \(x\) and addition of one fill the next interval.
+
+Also \(f_x^{\circ k}(0)=xH_k(x)\), so roots of \(H_k\), for prime \(k\), are exactly parameters where zero has exact period \(k\). **UNVERIFIED:** density in every torus coordinate and absence of any hidden group-order interpretation. I cannot certify the requested stronger eligibility.
+
+**HEURISTIC — kill as a factoring lead; keep as a diagnostic.** Random-map return counting predicts about one parameter root per prime, hence average density \(\asymp1/p\). Exact computations support that objection:
+
+| \(X\) | \(k\) | Primes | Mean roots | Primes without roots |
+|---:|---:|---:|---:|---:|
+| 128 | 11 | 23 | \(14/23\) | 12 |
+| 512 | 11 | 75 | \(28/25\) | 22 |
+| 2048 | 13 | 255 | \(263/255\) | 86 |
+
+**PROVED by exhaustive computation:** these counts have \(\deg H_k>p\) throughout. [Script](/Volumes/git/factoring-connection/codex/scratch/prepread_1/exact_root_probe.py), [data](/Volumes/git/factoring-connection/codex/scratch/prepread_1/exact_root_probe.json).
+
+**Experiments — HEURISTIC discriminators.** Extend those exact dyadic counts, tracking minima as well as means. Separately enumerate words from \(\{x^2-1,x^2-4\}\), whose outer maps have rational roots, and maximize minimum density across primes.
+
+**PROVED by exhaustive computation:** the second experiment searched 254, 510, and 1,022 words at \(X=32,64,128\), respectively. Best minimum densities were \(2/61,2/109,2/251\), attained by short words with rational roots. No macroscopic density appeared. [Script](/Volumes/git/factoring-connection/codex/scratch/prepread_1/exact_word_probe.py), [data](/Volumes/git/factoring-connection/codex/scratch/prepread_1/exact_word_probe.json).
+
+**Repository results used without re-derivation:** [periodfind: T, W, GR-F, O1](/Volumes/git/factoring-connection/notes/periodfind_results.md:120); [slpcirc: model U, SP, Prop BB](/Volumes/git/factoring-connection/notes/slpcirc_results.md:108); [nonsmooth: OA and FROB](/Volumes/git/factoring-connection/notes/nonsmooth_results.md:268).
