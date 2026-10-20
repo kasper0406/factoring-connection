@@ -1,0 +1,312 @@
+**Verdict — PROVED conditional on the project’s internal chain:** the supported exponent remains **\(2/5\)**, already for every input by Theorem U. Averaging over \(N\) gives useful residue and counting estimates, proved below, but does not establish nested descendability. **MODEL:** \(1/3\) remains attainable in the descent size model. **PROVED conditional on additional hypotheses:** ERH + AD + LV6′ gives \(1/3\), as in nested’s Theorem NR.
+
+[Markdown report](/Volumes/git/factoring-connection/codex/scratch/almostall13_1/report.md)
+
+Here \(L_x[\alpha,c]=\exp((c+o(1))(\log x)^\alpha(\log\log x)^{1-\alpha})\). “PROVED” identifies elementary arguments below or explicitly states the internal hypotheses used. It does not certify the unrefereed analytic chain. I read the requested material and avoided the excluded blind-round files.
+
+**1. Re-examining the obstructions with random \(N\).**
+
+**1(a) PROVED: the coefficient budget is not doubled.** Let \(V_d=\mathbb Q[x,y]_d\), of dimension \(d+1\), and fix primitive \(g=(g_0,g_1)\). Evaluation \(E_g:F\mapsto F(g_0,g_1)\) is a nonzero linear functional. Since \(G=g_1x-g_0y\),
+
+\[
+\ker E_g=G V_{d-1},\qquad \dim\ker E_g=d.
+\]
+
+Indeed, a homogeneous form vanishes at \((g_0:g_1)\) exactly when it is divisible by \(G\). Thus design (a‴),
+
+\[
+F=\widehat F_{N,g,w}+G R_c,\qquad E_g(F)=Nw,
+\]
+
+already randomizes every coefficient direction compatible with its prescribed evaluation.
+
+| Conditioning and randomization | Coefficient rank | Additional rank from varying \(N\) |
+|---|---:|---:|
+| Fixed \(N,g,w\); vary \(c\) | \(d\) | — |
+| Fixed \(g,w\); vary \(N,c\) | \(d+1\) | Exactly \(1\) |
+| Fixed \(N,g\); vary \(w,c\) | \(d+1\), if \(w\) has two choices | \(0\) beyond this rank |
+| Plain base-\(m\), fixed \(N,m,w\), without \(c\) | \(0\) | — |
+| Plain base-\(m\), varying \(N\), fixed \(m,w\) | At most \(d+1\), or \(d\) for monic forms | Potentially the existing coefficient budget |
+
+These are affine ranks, not assertions of product distributions. Varying \(N\) can add \(\log X+O(1)\) bits of entropy, but only **one transverse coefficient direction** beyond the \(c\)-family, and none beyond the rank already supplied by \(w,c\).
+
+For every fixed collection \(P_i=(a_i,b_i)\),
+
+\[
+(F(P_i))_{i\le s}
+=\big(a_i^{d-j}b_i^j\big)_{i,j}(f_0,\ldots,f_d)^T.
+\]
+
+Its rank is at most \(d+1\), under every distribution of \(N,g,w,c\). For \(s>d+1\), an integer linear relation among these evaluations holds for every polynomial. For distinct projective points the rank is \(\min(s,d+1)\), by Vandermonde. Monicity reduces the affine budget to \(d\). This version of OD survives input averaging exactly.
+
+**PROVED: digit randomness is real, but ensemble-dependent.** With fixed \(m\), write \(N=\sum_{j=0}^d a_jm^j\). The digit map is a bijection onto the vectors whose weighted sum belongs to the input interval. In an interval containing \(X+O(1)\) integers, each residue modulo \(m^r\) occurs either \(\lfloor X/m^r\rfloor\) or \(\lceil X/m^r\rceil\) times. Hence the bottom \(r\) digits have total variation distance \(O(m^r/X)\) from independent uniform digits. All \(d+1\) digits are exactly independent on \([0,m^{d+1})\).
+
+A dyadic interval does not automatically give the full-block law. With fixed \(m\asymp X^{1/(d+1)}\), degree \(d\) can have \(d+1\) broadly varying digits, up to boundary slabs. With the usual \(m=\lfloor N^{1/d}\rfloor\), conditioning on \(m\) gives
+
+\[
+m^d\le N<(m+1)^d.
+\]
+
+For \(d=o(m)\), the leading digit is \(1\), the next digit ranges over only \(O(d)\) possibilities, and \(d-1\) lower digits vary broadly. The residue estimate quantifies their approximate uniformity. Fixing \(w\) makes \(Nw\) an arithmetic progression, not a uniform interval.
+
+Thus the plain design acquires genuine coefficient randomness from its input, but acquires **the existing polynomial budget**. Across fields this randomness is shared: conditional on other coins, every digit expansion is a function of the same \(N\). With common \(g\) and fixed \(w_j\), \(r\) forms satisfy \(E_g(F_j)/w_j=N\); their joint coefficient space has at most \(rd+1\) dimensions, rather than \(r(d+1)\).
+
+**PROVED / MODEL:** Lemma RW still puts an algebraic component in one field. Input averaging changes neither that identity nor Lemma FB’s tower obstruction. Preserving \(k\) distinct retained points and the evaluation at \(g\) leaves \(d-k\) directions:
+
+\[
+\Delta F=G\prod_i L_{P_i}H.
+\]
+
+Varying \(N\) releases at most the evaluation constraint, giving \(d+1-k\). During an actual run \(N\) is fixed.
+
+Nested’s approximately \(d/(2\lambda)\) algebraic children is a **MODEL**, not a universal lower bound. Its overdetermination is asymptotically unchanged by one extra direction. This remains a proof-method obstruction: correlated smoothness, thin components, transfer certificates, and recombination are not excluded.
+
+**1(b) PROVED: sparse-image failure persists under joint averaging.** For each \((N,A)\), define
+
+\[
+\mathcal S_{N,A}
+=\mathcal I_{N,A}\setminus\Phi_{N,A}(\Omega).
+\]
+
+If \(|\Omega|\le W=o(|\mathcal I_{N,A}|)\), this family has density \(1-o(1)\), while the node hits it with probability zero for every \((N,A)\). Averaging preserves both statements. For ideals, use field-labelled ideal sets: ideals of unrelated fields cannot be identified.
+
+This disproves a density-only implication for arbitrary input-and-field-dependent families. It does not prove that the actual recursively descendable families are adversarial. Averaging helps for a family independent of the sampled coefficients, provided the requisite distribution estimate is proved; it does not establish independence from their own recursively defined good family.
+
+**1(c) SPECULATIVE: the required new statement concerns joint input–field averages.** Define \(\mathcal G_j(N,A)\) as targets having completed certificates within the remaining levels. One needs short special-\(q\) relations whose children belong to \(\mathcal G_{j+1}(N,A)\), under the target law produced by successful parents, field selection, and adaptive history. An independently sampled uniform prime has a different law.
+
+A sufficient averaged AD statement would give
+
+\[
+\Pr_N[p_N<1/2]\le\varepsilon(X),
+\]
+
+where \(p_N\) is the admissible-field sampler’s probability of a factor exit or an AD-good field. A stronger joint estimate,
+
+\[
+\mathbb E_N(1-p_N)\le\delta_X,
+\]
+
+implies this with exceptional density \(2\delta_X\), by Markov. Merely bounding \(\mathbb E_Np_N\) below by a constant permits a positive fraction of inputs with \(p_N=0\).
+
+Theorem U’s \(\tau=0\) bounds losses in first and two-point moments. It supplies neither these endogenous correlations nor a lower-tail theorem for whole components. Adding an outer sum over \(N\) retains the exact evaluation relations. Large-sieve or Barban–Davenport–Halberstam estimates do not automatically control weights encoding recursively defined field-dependent factorization conditions. **SPECULATIVE:** a suitable averaged theorem could exist, but would constitute new analytic input.
+
+**PROVED: input averaging buys two concrete improvements.**
+
+First, a restricted substitute for Lemma W is elementary. Freeze \(g,P,w\), put \(t=|G(P)|\), and assume \((w,t)=1\). For uniform \(N\) in an interval of \(X\) integers,
+
+\[
+\Pr[Nw\equiv r\pmod t]\le \frac1t+\frac1X.
+\]
+
+This can replace the prime-multiplier residue upper bound in a suitably frozen average calculation, avoiding its Brun–Titchmarsh slack loss. Field acceptance and previous relations can bias \(N\bmod t\), so conditional use needs justification.
+
+Second, **M1 has a rigorous almost-all version** in a bounded-resultant regime. Fix \(d,H_f,H_g\). There are at most
+
+\[
+M=(2\lfloor H_f\rfloor+1)^{d+1}
+  (2\lfloor H_g\rfloor+1)^2
+\]
+
+integer pairs of degrees \(d,1\) within those heights. Restrict to nonzero resultants of size at most \(X^C\), with fixed \(C\). An admissible common root modulo \(N\) implies \(N\mid\operatorname{Res}(F,G)\). Each resultant has at most
+
+\[
+\exp(O_C(\log X/\log\log X))
+\]
+
+divisors. Therefore
+
+\[
+\Pr_N[\exists\text{ such common-root pair}]
+\le M X^{-1}
+ \exp(O_C(\log X/\log\log X)).
+\tag{1}
+\]
+
+In particular \(M\le X^{1-\eta}\) gives exceptional density \(X^{-\eta+o(1)}\). Polynomially many degree choices and dyadic height bins preserve this estimate. A shrinking deficit much larger than \(1/\log\log X\) yields, outside an exceptionally small set,
+
+\[
+(d+1)\log(2H_f+1)+2\log(2H_g+1)
+\ge(1-o(1))\log X.
+\]
+
+For \(d=o(\log X)\), this is M1 to leading order. Here \(\operatorname{Res}(F,G)=\pm F(g_0,g_1)\), bounded by \((d+1)H_fH_g^d\). Zero resultants must be excluded; irreducibility of \(F\), of degree at least two, does so.
+
+There is also an elementary variant for \(B\)-rough inputs. If \(\log|R|\le R_{\log}\), a resultant has at most
+
+\[
+\exp((\log2)R_{\log}/\log B)
+\]
+
+\(B\)-rough divisors, because \(\tau(R_{>B})\le2^{\Omega(R_{>B})}\). Thus (1) remains \(MX^{-1+o(1)}\) whenever \(R_{\log}=o(\log X\log B)\). In particular, \(R_{\log}=O(d\log X)\) works for \(d=o(\log B)\), including the proposed degrees. Applying this to structured residuals still requires distribution control.
+
+The counting argument covers adaptive selection by counting all pairs. R2 nevertheless remains a **MODEL** floor: typical value sizes, random-integer smoothness, and the split-size premise remain assumptions.
+
+Within U’s design, the exact floors still imply \(\theta^2\ge(3+o(1))/(4k)\). Combining modeled smoothness \(\theta=O(D^{2\alpha-1})\) with modeled split budget \(k=O(D^\alpha)\) gives \(\alpha\ge2/5\). Lemma S″ already supplies the useful split lower bound without \(2^{-\omega(N)}\), pointwise in \(N\). This is no lower bound for almost-all factoring.
+
+**2. Multi-level descent, recursion, and character primes.**
+
+**MODEL:** the size arithmetic continues to support \(1/3\). With \(t=\log N\), \(D=t/\log t\), degree \(D^\delta\), and targets \(L[\beta_j]\),
+
+\[
+\delta\ge1-2\alpha,\qquad
+\beta_{j+1}\ge\beta_j-(\alpha-\delta),\qquad
+\beta_1=1-\alpha.
+\]
+
+For \(\alpha>1/3\), this gives finitely many levels. At \(1/3\), write
+
+\[
+E=t^{1/3}(\log t)^{2/3},\quad
+Q=t^{2/3}(\log t)^{1/3},\quad
+d\sim\delta(t/\log t)^{1/3}.
+\]
+
+Constant contraction gives \(O(\log t)\) levels and \(e^{O((\log t)^2)}=e^{o(E)}\) nodes. Nested’s reduced-basis boxes certify top norms \(N^{\tau_F+o(1)}\), \(\tau_F=\delta b_1<1\). The smaller \(\delta b_1/2\) coefficient applies to regular lattices, not uniformly.
+
+**PROVED: an almost-all promise does not close recursion.** The Gauss halves and the values \(F(P),G(P)\) are structured and adaptively selected. Fresh coins preserve independence from hidden square roots; they do not make the arguments uniform. A zero-density exceptional set can contain an entire sparse image of recursive arguments. Even a power-saving density does not universally prevent this.
+
+A sufficient distribution hypothesis is that a query at scale \([y,2y]\), conditional on the relevant history, is dominated by \(K(y)\) times uniform measure. Then
+
+\[
+\Pr[\text{bad argument}\mid\text{history}]
+\le K(y)\varepsilon(y).
+\tag{2}
+\]
+
+This hypothesis is additional; excessive conditioning may make it useless. An integrated bound on the expected counting measure of all queries could replace it.
+
+Dovetail clocked independent fast attempts with a universal algorithm. If fast attempts cost \(T_f(y)\) and succeed with probability at least \(1/2\) on good inputs, while universal expected cost is at most \(U(y)\), then (2) gives
+
+\[
+O(T_f(y))+O(K(y)\varepsilon(y)U(y)).
+\tag{3}
+\]
+
+For \(M_j\) expected calls at scales \(y_j\), a sufficient fallback budget is
+
+\[
+\sum_j M_jK(y_j)\varepsilon(y_j)U(y_j)
+\le L_N[\alpha,O(1)].
+\tag{4}
+\]
+
+When \(y=N^\beta\), \(\beta>0\), and \(U=L_y[\rho,C]\) with \(\rho>\alpha\), inverse-polynomial density in \(\log y\) is insufficient for this strategy. Roughly,
+
+\[
+\log(1/\varepsilon(y))
+\ge C\Lambda_\rho(y)+\log K(y)+\log M_j
+-O(\Lambda_\alpha(N))
+\]
+
+is needed. Internally one can use \(\rho=2/5\); the published fallback has \(\rho=1/2\).
+
+Aborting timed-out fields avoids paying this fallback per call, but requires proving that aborts preserve enough completed rows. Avoiding all bad arguments by a union bound requires \(MK\varepsilon=o(1)\); expected-time bounds additionally require restart and tail control.
+
+Lemma \(F_\alpha\) applies to a uniform recursive cost bound. Under nested’s all-input hypotheses,
+
+\[
+F(N)\le e^{(2b+o(1))E}
++e^{(b+1/b_1+o(1))E}F(\sqrt{2N})
++e^{(b+2s+o(1))E}F(N^{\tau_F+o(1)}),
+\]
+
+which closes for
+
+\[
+c>\max\left(
+2b,\frac{b+1/b_1}{1-2^{-1/3}},
+\frac{b+2s}{1-\tau_F^{1/3}}
+\right).
+\]
+
+Replacing the supremum defining \(F\) with a uniform-input average requires a distribution argument, not a formal substitution.
+
+**PROVED conditional on the row identities: (T) survives.** Fix \(N\). Canonical recursive factorizations, scans, timeouts, restarts, characters, and dependencies must depend only on the \(R_i=r_i^2\) and coins independent of hidden root choices. The required root ratio then remains uniform in \(\mu_2((\mathbb Z/N)^\times)\), giving fruitfulness \(1-2^{1-\omega(N)}\ge1/2\) after preprocessing. Averaging preserves this pointwise argument.
+
+**MODEL: precision remains separate.** Prop BT’s independent-child strategy has logarithmic overhead
+
+\[
+\sum_j(\log m+m\log(1/p_j)).
+\]
+
+For \(m\asymp D^{1/3}\), \(O(\log t)\) levels, and \(p_j\ge t^{-C}\), this allows \(O(E\log t)\), rather than \(O(E)\), overhead. It gives \(L[1/3]^{O(\log\log N)}\), not fixed \(L[1/3,c]\). Bounded average \(\log(1/p_j)\), or AD, restores \(O(E)\). This is a bound for that strategy, not a universal necessity.
+
+**PROVED conditional on remaining LV6 inputs: ERH is unnecessary for the exponent.** The unconditional repair uses character-prime bit lengths
+
+\[
+s_\chi=(2d)!\,t^{O(1)},\qquad
+\log s_\chi=2d\log d+O(d+\log t).
+\]
+
+At \(d\sim\delta D^{1/3}\),
+
+\[
+2d\log d=(2\delta/3+o(1))E.
+\]
+
+Polynomial work in \(s_\chi\) therefore costs \(L[1/3,O(\delta)]\): it enlarges a finite constant while preserving exponent \(1/3\). The exceptional square class must be handled by LV6’s square tests. ERH removes that exception and permits polynomial-bit character work. This agrees with Lee–Venkatesan’s Remark 6.7. [Primary text](https://arxiv.org/pdf/1805.08873).
+
+For \(\alpha>1/3\), \(d\asymp D^{1-2\alpha}\) gives \(d\log d=o(\Lambda_\alpha)\). Input averaging supplies no proved replacement zero-free theorem for these growing-degree fields. LV6′ and admissible-field sampling remain additional obligations.
+
+**3. Quantifiers and transfer.**
+
+**PROVED:** the desired assertion is one fixed uniform probabilistic algorithm \(\mathcal A\), a finite \(c\), and \(\eta(X),\varepsilon(X)\to0\), such that
+
+\[
+\#\left\{N\in[X,2X]:
+\mathbb E_\omega T_{\mathcal A}(N)
+>\exp((c+\eta(X))\Lambda_\alpha(X))\right\}
+\le\varepsilon(X)X
+\tag{5}
+\]
+
+for every sufficiently large \(X\). The algorithm returns certified complete factorizations and terminates almost surely on every input. Dovetailing ensures universal termination; its cost on good inputs still needs bounding. Exceptions concern expected time, never correctness.
+
+A joint high-probability claim over \((N,\omega)\) does not alone imply (5). Conversely, an actual input mean bound implies (5), by Markov, with exceptional density smaller than every inverse power of \(\log X\), allowing \(o(1)\) slack in \(c\).
+
+**PROVED:** if a balanced semiprime ensemble satisfies \(|S_X|\ge aX/(\log X)^2\), a bad set of size \(\varepsilon(X)X\) occupies at most
+
+\[
+a^{-1}\varepsilon(X)(\log X)^2
+\]
+
+of that ensemble. Thus \(\varepsilon(X)=o((\log X)^{-2})\), equivalently \(o(n^{-2})\), suffices. Density merely \(o(1)\) can contain every balanced semiprime. An actual all-integer mean-time bound transfers to the semiprime mean with a polylogarithmic factor. Neither transfer covers structured recursive arguments.
+
+**4. Literature verified in primary sources.**
+
+**KNOWN:** Lenstra–Pomerance, “A rigorous time bound for factoring integers,” *JAMS* **5** (1992), 483–516, **Theorem 10.5**, proves complete factorization of every integer in expected \(L_N[1/2,1+o(1)]\). I verified the theorem and recursive conclusion in indexed original text; the scanned PDF did not expose ordinary browser text. [Original paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf).
+
+**KNOWN:** Pomerance, “Fast, rigorous factorization and discrete logarithm algorithms,” *Discrete Algorithms and Complexity* (1987), 119–143, proves worst-case expected \(L_N[1/2,\sqrt2+o(1)]\) factoring and \(L[1/2]\)-scale discrete logarithms. Its useful averaging concerns auxiliary inputs to a partially effective ECM subroutine. I verified these claims in the publisher’s primary summary, not the inaccessible scanned theorem statements. [Publisher summary](https://www.sciencedirect.com/science/chapter/edited-volume/abs/pii/B9780123868701500149).
+
+**KNOWN:** Hafner–McCurley, “On the distribution of running times of certain integer factoring algorithms,” *J. Algorithms* **10** (1989), 531–556, **Theorems 3.1–3.2**, supplies quantified almost-all-prime ECM results. For fixed \(\theta>5/6\), its eligible primes satisfy
+
+\[
+\pi(x)-\pi_\theta(x)
+\ll_\theta x\exp(-\tfrac12(\log x)^{1/6}),
+\]
+
+and an ECM-based algorithm recovers their factors up to \(v\), with probability at least \(3/4\), in \(\exp(O((\log v)^\theta))\operatorname{poly}(\log m)\) operations. I verified the indexed primary statements. When complete factorization is guaranteed, certification and restart make the computation Las Vegas. [Author-hosted paper](https://www.mccurley.org/papers/running.pdf).
+
+This is weaker than the familiar \(L_p[1/2,\sqrt2]\) ECM estimate. Lenstra’s *Annals* **126** (1987), 649–673, **Corollary 2.8 and Conjecture 2.10**, explicitly leaves the requisite Hasse-interval smoothness estimate conjectural; I read those passages. I found no primary theorem establishing that familiar bound for almost all primes. The \(5/6\) example is not a claim of optimality among current partial results. [Original text](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf).
+
+**KNOWN:** Lee–Venkatesan, *JNT* **187** (2018), 92–159, **Theorem 2.1 and Remark 2.2**, proves \(L_N[1/3,(64/9)^{1/3}+o(1)]\) generation of potentially trivial square congruences for every \(N\). **Theorem 2.3** obtains factors for \(N=pq\), \(p\equiv q\equiv3\pmod4\), conditional on **Conjecture 7.1**. I read these statements. Their averaging is over algorithmic choices at fixed input, not a proved almost-all-input factorization theorem. [Primary text](https://arxiv.org/pdf/1805.08873).
+
+**KNOWN:** Kleinjung–Wesolowski, *JAMS* **35** (2022), 581–624, **Theorem 1.1**, proves expected \((pn)^{2\log_2n+O(1)}\) discrete logarithms in \(\mathbb F_{p^n}^\times\). I verified the theorem, §2’s elliptic-curve model, and the descent overview. Frobenius identities and algebraic elimination supply structure absent from integer descent; the theorem covers every such finite field. [Primary text](https://arxiv.org/pdf/1906.10668).
+
+**KNOWN, conditional:** Barbulescu–Jouve’s ECM work assumes Elliott–Halberstam hypotheses for its CM-curve results. I verified that scope in its primary abstract/introduction. It supplies no unconditional below-\(L[1/2]\) almost-all-integer theorem. [Primary text](https://arxiv.org/pdf/2212.11724).
+
+I found no published classical complete-factorization theorem below \(L[1/2]\) for almost every uniform integer or balanced semiprime. This is a literature-search finding, not a theorem of nonexistence.
+
+**5. Supported exponent and missing lemma.**
+
+| Status | Supported claim |
+|---|---|
+| **KNOWN**, published, unconditional | \(1/2\), every input |
+| **PROVED conditional on U’s internal chain** | \(2/5\), every input |
+| **PROVED conditional on ERH + AD + LV6′** | \(1/3\), every input |
+| **MODEL / HEURISTIC** | \(1/3\), constant-contracting multi-level descent |
+| **SPECULATIVE** | Proving input-averaged nested supply and recursive distribution bounds |
+
+The missing result is **a quantitative joint input–field theorem for completed same-field descent certificates, together with control of structured recursive query distributions**. Sufficient inputs are averaged AD with suitably small exceptional density, bounds such as (2)–(4) at recursive scales, and uniform LV6′. A weaker visited-target theorem could replace AD, but must address the endogenous conditional law and expected restart costs.
+
+Input averaging supplies residue averaging and the counting bound (1). It supplies no extra coefficient rank beyond \(w,c\) in design (a‴), and at most the existing polynomial budget in the plain digit design. The sparse-family counterexample survives averaging. These facts reject the parameter-doubling argument while leaving a genuinely new averaged smooth-correlation approach open. **The supplied machinery supports no exponent below \(2/5\).**

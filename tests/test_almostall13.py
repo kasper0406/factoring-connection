@@ -48,3 +48,37 @@ def test_stats_helpers():
     assert A2.sd_between([0.5, 0.5, 0.5], 100) == 0.0
     F = A2.anova_F([[1.0, 1.1, 0.9], [5.0, 5.1, 4.9]])
     assert F > 100
+
+
+# ---------------------------------------------------------------- bounds.py (Lemma M1-AA, Lemma MP, NR-AA)
+from fractions import Fraction
+
+from src.almostall13 import bounds as Bd
+
+
+def test_window_divisors_and_rankin():
+    rng = random.Random(11)
+    X = 2 ** 12
+    for _ in range(30):
+        R = rng.randrange(1, 2 ** 40)
+        assert Bd.rankin_half_exact_holds(R, X)
+    # a primorial has many divisors in the window, still below the Rankin bound
+    R = 1
+    for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
+        R *= p
+    cnt = Bd.window_divisors(R, X)
+    assert cnt > 10
+    assert Bd.rankin_half_exact_holds(R, X)
+
+
+def test_mp_mixture():
+    law = {5: Fraction(1, 2), 7: Fraction(1, 2)}
+    out = Bd.mp_mixture(law, Fraction(1, 1000), 6)
+    assert out["p0"] == Fraction(1, 1000)
+    assert all(r == Fraction(-1, 1000) for r in out["rel_changes"])
+
+
+def test_nraa_constant_reduces_to_nr():
+    from src.nested.barrier import nr_constant
+    assert abs(Bd.nraa_constant(4, 1, 0.75, 0.5, 0.0) - nr_constant(4, 1, 0.75, 0.5)) < 1e-12
+    assert Bd.nraa_constant(4, 1, 0.75, 0.5, 100.0) >= 4 + 50 - 1e-9
