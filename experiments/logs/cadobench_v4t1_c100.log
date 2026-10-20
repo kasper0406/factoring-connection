@@ -1,0 +1,77 @@
+[v4 c100] I=10 rep=0 cpu=0.77 rels=2126 pp=0.7702702702702704 cof=0.08108108108108109
+[v4 c100] I=10 rep=1 cpu=0.77 rels=2126 pp=0.7702702702702704 cof=0.08108108108108109
+[v4 c100] I=10 rep=2 cpu=0.77 rels=2126 pp=0.7702702702702704 cof=0.08108108108108109
+[v4 c100] I=11 rep=0 cpu=1.34 rels=4491 pp=0.6917293233082706 cof=0.12781954887218044
+[v4 c100] I=11 rep=1 cpu=1.34 rels=4491 pp=0.6917293233082706 cof=0.12781954887218044
+[v4 c100] I=11 rep=2 cpu=1.36 rels=4491 pp=0.6865671641791045 cof=0.12686567164179105
+[v4 c100] I=12 rep=0 cpu=3.33 rels=9148 pp=0.6676829268292682 cof=0.14939024390243902
+[v4 c100] I=12 rep=1 cpu=3.31 rels=9148 pp=0.6676923076923077 cof=0.14769230769230768
+[v4 c100] I=12 rep=2 cpu=3.26 rels=9148 pp=0.67601246105919 cof=0.14641744548286603
+{
+ "by_I": [
+  {
+   "I": 10,
+   "area_per_q": 497664,
+   "cpu_mean": 0.77,
+   "cpu_sd": 0.0,
+   "relations": 2126,
+   "unique_ab": 2126,
+   "survivors_cofact": 3468,
+   "per_point_share": 0.7702702702702705,
+   "cofact_share": 0.08108108108108109,
+   "tree_shares": {
+    "bucket_fill": 0.6538044348482686,
+    "per_point": 0.1176973802638851,
+    "trial_division": 0.04201027929802963,
+    "cofactorization": 0.11410254703348349,
+    "other": 0.07238535855633321
+   },
+   "n_special_q": 50
+  },
+  {
+   "I": 11,
+   "area_per_q": 2004992,
+   "cpu_mean": 1.3466666666666667,
+   "cpu_sd": 0.011547005383792525,
+   "relations": 4491,
+   "unique_ab": 4489,
+   "survivors_cofact": 7357,
+   "per_point_share": 0.6900086035985487,
+   "cofact_share": 0.12750158979538398,
+   "tree_shares": {
+    "bucket_fill": 0.4873400383908623,
+    "per_point": 0.2410520662673209,
+    "trial_division": 0.07359699277188934,
+    "cofactorization": 0.1403819334885341,
+    "other": 0.0576289690813934
+   },
+   "n_special_q": 50
+  },
+  {
+   "I": 12,
+   "area_per_q": 8036352,
+   "cpu_mean": 3.3000000000000003,
+   "cpu_sd": 0.03605551275464005,
+   "relations": 9148,
+   "unique_ab": 9142,
+   "survivors_cofact": 15686,
+   "per_point_share": 0.6704625651935886,
+   "cofact_share": 0.14783333235920426,
+   "tree_shares": {
+    "bucket_fill": 0.34902598309104754,
+    "per_point": 0.38062528974310467,
+    "trial_division": 0.10060356949079696,
+    "cofactorization": 0.12844204443321783,
+    "other": 0.04130311324183302
+   },
+   "n_special_q": 50
+  }
+ ],
+ "exp_cpu_vs_area": 0.5230696769565774,
+ "exp_yield_vs_area": 0.5245923138382651,
+ "fit_cpu_area_out": {
+  "c_area_per_point": 1.2092657195208069e-09,
+  "c_out_per_survivor": 0.0001784846699601805,
+  "area_term_share_at_default": 0.09002109258094536
+ }
+}

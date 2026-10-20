@@ -1,0 +1,44 @@
+{
+ "digits": 70,
+ "N": "2272911996904194935366757041082728901314986707795378351935853052431961",
+ "generator": "common.instances.balanced_semiprime(231, 0)",
+ "f0_rational_low_to_high": [
+  "-43803153559419671",
+  "851348526569"
+ ],
+ "f1_algebraic_low_to_high": [
+  "-168039819478616781496",
+  "22681727716860478",
+  "-36161797811",
+  "12785934",
+  "240"
+ ],
+ "skew": "33154.237",
+ "poly_file": "n: 2272911996904194935366757041082728901314986707795378351935853052431961\nskew: 33154.237\nc0: -168039819478616781496\nc1: 22681727716860478\nc2: -36161797811\nc3: 12785934\nc4: 240\nY0: -43803153559419671\nY1: 851348526569\n# MurphyE (Bf=2.097e+06,Bg=1.049e+06,area=3.909e+10) = 1.565e-05\n# f(x) = 240*x^4+12785934*x^3-36161797811*x^2+22681727716860478*x-168039819478616781496\n# g(x) = 851348526569*x-43803153559419671\n",
+ "cado_params": {
+  "I": "11",
+  "lim0": "343245",
+  "lim1": "244248",
+  "lpb0": "20",
+  "lpb1": "21",
+  "mfb0": "19",
+  "mfb1": "42",
+  "ncurves0": "16",
+  "ncurves1": "14"
+ },
+ "qmin": 18640,
+ "alpha": [
+  0.5700261935598997,
+  -4.39359715688753
+ ],
+ "cado_commit": "692ecb7e62f0f3bdab88ee44cc60b8ded0ea1a1b",
+ "conventions": {
+  "homogenisation": "F(a,b) = sum_k c_k a^k b^(d-k)",
+  "special_q_side": 1,
+  "lattice": "a = i*a0 + j*a1, b = i*b0 + j*b1, then (a,b) -> (-a,-b) if b < 0; i in [-I/2, I/2), j in [0, J); points with gcd(a,b) > 1 are not relations",
+  "norms": "n0 = |G(a,b)|, n1 = |F(a,b)|/q",
+  "S_B": "n0 is 2^lpb0-smooth and n1 is 2^lpb1-smooth",
+  "S_CADO": "S_B and, per side, the cofactor above lim_i (n_i divided by its lim_i-smooth part) is < 2^mfb_i",
+  "relation_line": "CADO format a,b:hex primes of G(a,b):hex primes of F(a,b) (with multiplicity; q included)"
+ }
+}

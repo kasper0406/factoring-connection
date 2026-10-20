@@ -11,7 +11,9 @@ It kills the whole process group (SIGTERM, then SIGKILL) when
   * the tree RSS exceeds --max-rss-gb (default 8), or
   * the "available" memory (free + inactive + speculative + purgeable pages) drops below
     --min-avail-gb (default 2), or
-  * the pressure level reaches warn (2) or critical (4) for --pressure-grace samples in a row.
+  * the pressure level reaches warn (2) or critical (4) for --pressure-grace samples in a row; if the
+    system is already at warn when the job starts (baseline load from other processes), only critical
+    or a rise above the starting level counts.
 
 Usage:
   python -m cadobench.memwatch --json out.json [--max-rss-gb 8] -- cmd args...
@@ -130,6 +132,9 @@ def run(cmd: List[str], max_rss_gb: float = 8.0, min_avail_gb: float = 2.0, pres
     bad_pressure = 0
     killed = None
     samples = 0
+    # Baseline-aware pressure rule: when the system is already at "warn" before the job starts (other
+    # agents / Docker), only a rise above that level, or "critical", counts.
+    start_level = _sysctl_int("kern.memorystatus_vm_pressure_level") or 1
     while proc.poll() is None:
         time.sleep(interval)
         samples += 1
@@ -142,7 +147,7 @@ def run(cmd: List[str], max_rss_gb: float = 8.0, min_avail_gb: float = 2.0, pres
             min_avail = avail if min_avail is None else min(min_avail, avail)
         level = _sysctl_int("kern.memorystatus_vm_pressure_level") or 1
         max_level = max(max_level, level)
-        bad_pressure = bad_pressure + 1 if level >= 2 else 0
+        bad_pressure = bad_pressure + 1 if (level >= 4 or (level >= 2 and level > start_level)) else 0
         reason = None
         if total > max_rss_gb * 2**30:
             reason = f"tree RSS {total / 2**30:.2f} GB > {max_rss_gb} GB"
@@ -160,12 +165,12 @@ def run(cmd: List[str], max_rss_gb: float = 8.0, min_avail_gb: float = 2.0, pres
             for sig in (signal.SIGTERM, signal.SIGKILL):
                 try:
                     os.killpg(proc.pid, sig)
-                except ProcessLookupError:
+                except OSError:  # group already gone (macOS reports EPERM for a reaped group)
                     pass
                 for v in victims:
                     try:
                         os.kill(v, sig)
-                    except ProcessLookupError:
+                    except OSError:
                         pass
                 time.sleep(5)
             break
@@ -178,6 +183,7 @@ def run(cmd: List[str], max_rss_gb: float = 8.0, min_avail_gb: float = 2.0, pres
         "peak_rss_by_cmd_bytes": dict(sorted(peak_by_cmd.items(), key=lambda kv: -kv[1])),
         "min_available_bytes": min_avail,
         "max_pressure_level": max_level,
+        "start_pressure_level": start_level,
         "killed": killed,
         "samples": samples,
     }

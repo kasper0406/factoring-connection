@@ -1,0 +1,191 @@
+[v6] c70 done
+[v6] c80 done
+[v6] c90 done
+[v6] c100 done
+[memwatch] t=31s rss=0.45GB avail=4.40GB level=2
+[memwatch] t=61s rss=1.18GB avail=4.41GB level=2
+[v6] c110 done
+| digits | total wall (s) | polyselect | sieve | filter | linalg | sqrt | other | CPU (s) | peak RSS (MB) |
+|---|---|---|---|---|---|---|---|---|---|
+| c70 | 19.6 | 3.3 (17%) | 9.9 (50%) | 2.6 (13%) | 2.4 (12%) | 0.9 (5%) | 0.4 (2%) | 70 | 101 |
+| c80 | 69.3 | 6.7 (10%) | 48.0 (69%) | 6.5 (9%) | 6.5 (9%) | 1.3 (2%) | 0.4 (1%) | 344 | 139 |
+| c90 | 220.1 | 10.1 (5%) | 167.3 (76%) | 17.8 (8%) | 21.3 (10%) | 2.3 (1%) | 1.1 (0%) | 1236 | 1089 |
+| c100 | 477.5 | 25.6 (5%) | 267.4 (56%) | 114.1 (24%) | 60.5 (13%) | 2.8 (1%) | 7.1 (1%) | 2905 | 1398 |
+| c110 | 1453.0 | 101.9 (7%) | 960.4 (66%) | 96.4 (7%) | 271.1 (19%) | 5.6 (0%) | 17.1 (1%) | 8266 | 1858 |
+{
+ "v5": {
+  "70": {
+   "unique_relations": 156312,
+   "raw_relations": 178943,
+   "purge_rounds": 0,
+   "free_relations": 3397,
+   "matrix_N": 12994,
+   "matrix_nc": 12802,
+   "matrix_W": 2209385,
+   "krylov_cpu": 2.19,
+   "krylov_wct": 0.82,
+   "krylov_iter": 448,
+   "mksol_cpu": 1.79,
+   "mksol_wct": 0.68,
+   "lingen_cpu": 0.37,
+   "lingen_wct": 0.36,
+   "las_cpu_total": 36.97,
+   "avg_J": 1015.16,
+   "n_special_q": 1488,
+   "linalg_share": 0.12344922632458581,
+   "sieve_share": 0.5031398413649165,
+   "filter_share": 0.13182212851617195,
+   "sieve_wall": 9.855000019073486,
+   "linalg_wall": 2.4179999828338623,
+   "matrix_over_unique": 0.08312861456574032
+  },
+  "80": {
+   "unique_relations": 257992,
+   "raw_relations": 314492,
+   "purge_rows": 152115,
+   "purge_cols": 152155,
+   "purge_excess": -40,
+   "purge_rounds": 3,
+   "free_relations": 6387,
+   "matrix_N": 30082,
+   "matrix_nc": 29890,
+   "matrix_W": 5123359,
+   "krylov_cpu": 6.79,
+   "krylov_wct": 2.3,
+   "krylov_iter": 960,
+   "mksol_cpu": 4.82,
+   "mksol_wct": 1.77,
+   "lingen_cpu": 0.95,
+   "lingen_wct": 1.33,
+   "las_cpu_total": 165.31,
+   "avg_J": 987.425,
+   "n_special_q": 6045,
+   "linalg_share": 0.0937463944158666,
+   "sieve_share": 0.6917330090708613,
+   "filter_share": 0.09364543720048228,
+   "sieve_wall": 47.96199989318848,
+   "linalg_wall": 6.5,
+   "matrix_over_unique": 0.11660051474464324
+  },
+  "90": {
+   "unique_relations": 890927,
+   "raw_relations": 1077246,
+   "purge_rows": 368815,
+   "purge_cols": 380804,
+   "purge_excess": -11989,
+   "purge_rounds": 2,
+   "free_relations": 23740,
+   "matrix_N": 69312,
+   "matrix_nc": 69119,
+   "matrix_W": 11811431,
+   "krylov_cpu": 32.71,
+   "krylov_wct": 9.38,
+   "krylov_iter": 2200,
+   "mksol_cpu": 13.71,
+   "mksol_wct": 3.03,
+   "lingen_cpu": 5.54,
+   "lingen_wct": 6.85,
+   "las_cpu_total": 652.1,
+   "avg_J": 1003.27,
+   "n_special_q": 19558,
+   "linalg_share": 0.09671279086942645,
+   "sieve_share": 0.7601873470116491,
+   "filter_share": 0.08100815106555394,
+   "sieve_wall": 167.33699989318848,
+   "linalg_wall": 21.288999795913696,
+   "matrix_over_unique": 0.0777976197825411
+  },
+  "100": {
+   "unique_relations": 3221231,
+   "raw_relations": 4279900,
+   "purge_rows": 869799,
+   "purge_cols": 872586,
+   "purge_excess": -2787,
+   "purge_rounds": 10,
+   "free_relations": 17458,
+   "matrix_N": 190329,
+   "matrix_nc": 190148,
+   "matrix_W": 16317456,
+   "krylov_cpu": 82.3,
+   "krylov_wct": 14.36,
+   "krylov_iter": 6000,
+   "mksol_cpu": 59.62,
+   "mksol_wct": 10.55,
+   "lingen_cpu": 20.16,
+   "lingen_wct": 20.15,
+   "las_cpu_total": 1299.28,
+   "avg_J": 965.072,
+   "n_special_q": 54380,
+   "linalg_share": 0.12670440390006307,
+   "sieve_share": 0.5600015082822467,
+   "filter_share": 0.23887517144787457,
+   "sieve_wall": 267.4080002307892,
+   "linalg_wall": 60.503000020980835,
+   "matrix_over_unique": 0.05908579670318583
+  },
+  "110": {
+   "unique_relations": 6048941,
+   "raw_relations": 8032191,
+   "purge_rounds": 0,
+   "free_relations": 33048,
+   "matrix_N": 315609,
+   "matrix_nc": 315422,
+   "matrix_W": 30108078,
+   "krylov_cpu": 412.21,
+   "krylov_wct": 99.89,
+   "krylov_iter": 10000,
+   "mksol_cpu": 298.26,
+   "mksol_wct": 74.98,
+   "lingen_cpu": 48.61,
+   "lingen_wct": 48.64,
+   "las_cpu_total": 4670.7,
+   "avg_J": 1910.68,
+   "n_special_q": 62063,
+   "linalg_share": 0.18660706608412225,
+   "sieve_share": 0.6609763903306287,
+   "filter_share": 0.0663418226290697,
+   "sieve_wall": 960.4019999504089,
+   "linalg_wall": 271.1410000324249,
+   "matrix_over_unique": 0.05217590979974842
+  }
+ },
+ "v7": {
+  "digits": [
+   70,
+   80,
+   90,
+   100,
+   110
+  ],
+  "total": {
+   "c_fit": 1.1285214283667855,
+   "logA": -15.045953296317613,
+   "local_c": [
+    1.2257063634303893,
+    1.2073169113913653,
+    0.8484648801932315,
+    1.3282764019337459
+   ]
+  },
+  "sieve": {
+   "c_fit": 1.1666220484084937,
+   "logA": -16.194576679088954,
+   "local_c": [
+    1.5343702435242748,
+    1.3059359818624179,
+    0.5136051569773232,
+    1.5261559058645495
+   ]
+  },
+  "linalg": {
+   "c_fit": 1.2434795063980995,
+   "logA": -19.217460607867526,
+   "local_c": [
+    0.9588288098261294,
+    1.2398738087733543,
+    1.1444132662072897,
+    1.790390904019002
+   ]
+  }
+ }
+}

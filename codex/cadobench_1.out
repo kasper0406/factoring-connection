@@ -1,0 +1,87 @@
+**The best first targets are scheduling, sieve geometry, and joint parameter tuning.** CADO already implements most named algorithms. Published record-scale gains do not establish comparable gains at c90–c110.
+
+**Scope:** I checked web-visible upstream `master` files; their identity with your exact October 2026 checkout is **UNVERIFIED**. “KNOWN” below means documented or author-reported, not reproduced on an M4.
+
+**1. Practical levers used in 2020–2026**
+
+- **Polynomial selection.** The established pipeline combines Kleinjung’s construction with size optimisation and root optimisation. CADO documents the 2008 algorithm and Bai–Bouvier–Kruppa–Zimmermann improvements; these predate 2020. A distinct, newly deployed “third-generation Kleinjung” algorithm is **UNVERIFIED**. David–Zimmermann’s 2020 ranking work addresses Murphy-E misranking. The Gaudry–Thomé–Zimmermann record team used linear/sextic pairs for RSA-240/250. [CADO NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS), [David–Zimmermann](https://members.loria.fr/PZimmermann/papers/), [record paper, §3 and appendix B](https://arxiv.org/html/2006.06197)
+- **Measured polynomial benefit:** the 2026 RSA-260 report says an earlier trial-sieved polynomial yielded **13–16% fewer relations** than the selected polynomial. This measures polynomial quality, not selection-algorithm speed. [RSA-260 report, polynomial selection](https://cognition.com/blog/factoring-rsa-260)
+- **Lattice sieving.** Bucket sieving, specialised small-prime sieving, Franke–Kleinjung lattice enumeration, and multilevel buckets are established CADO techniques. A portable, controlled 2020–2026 comparison establishing “`las` is X% faster than `lasieve4`” is **UNVERIFIED**; compare identical polynomials, bounds, q ranges and filtering outcomes. [Thomé’s implementation course](https://members.loria.fr/EThome/teaching/2022-cse-291-14/), [`las.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las.cpp)
+- **A genuine recent sieve experiment:** Bouillaguet–Fleury–Fouque–Kirchner replace extra-small-prime sieving with batch extraction. They report up to **1.10× local throughput**, estimating about **5% overall relation-collection improvement** after compensating for lost relations. This is not a demonstrated complete-factorization speedup. [ePrint **2023/801**, Tables 6–7](https://eprint.iacr.org/2023/801.pdf)
+- **Cofactorization.** Bouvier–Imbert improve ECM using mixed Edwards/Montgomery representations, double-base chains and stage-two tuning. At \(B_1=8192\), reported modular-multiplication counts fall **104,428→89,572** in stage one and **134,761→89,866** in stage two: approximately **14% and 33% less arithmetic**, not equivalent whole-sieve savings. [PKC 2020, Tables 9–10; ePrint **2018/669**](https://iacr.org/archive/pkc2020/12110112/12110112.pdf)
+- **Filtering.** Distinguish Cavallar’s older framework, Bouvier’s older matrix reduction, and **Bouillaguet–Zimmermann’s** parallel merge, published in 2021. The latter reports **38 minutes→20 seconds** and **6.7 hours→2.3 minutes**, using 32 cores on two benchmark instances. CADO’s older NEWS reports approximately **5% fewer matrix rows** from Bouvier’s work. [Authors’ publication account](https://perso.lip6.fr/charles.bouillaguet/pub.html), [NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS)
+- **Linear algebra.** Blocking, independent sequences, MPI decomposition and matrix density matter. Reference points: RSA-250 ≈**405M rows**, density **252**, \(m/n=1024/512\); DLP-240 ≈**36M**, density **253**, \(48/16\). These are different fields and workloads. [Record paper, §§5–6, appendix B](https://arxiv.org/html/2006.06197)
+- **Square root.** RSA-240 algebraic-square-root improvements reduced **17 hours→5 hours**, about **3.4× for that operation**. [Record paper, §7](https://arxiv.org/html/2006.06197)
+
+**2. What CADO already implements and controls**
+
+| Lever | Existing implementation and relevant controls |
+|---|---|
+| Polynomial selection | Kleinjung construction, size/root optimisation, improved ranking. `tasks.polyselect.degree`, `P`, `admin/admax`, `incr`, `nq`, `nrkeep`, `sopteffort`, `ropteffort`. [NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS), [documented c90 file](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c90) |
+| Sieving and 3LP | Small sieve, bucket hierarchy and cofactorization. `lim0/1` bound sieving; `lpb0/1` bound individual accepted primes; `mfb0/1` bound residual cofactors; `lambda0/1` control approximate post-sieve qualification. **3LP is not a single switch:** compatible bounds and factoring effort are required. [`las-side-config.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-side-config.cpp), [`facul_strategies.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/facul_strategies.cpp) |
+| Geometry and q range | `tasks.I` or `tasks.A`; conventionally \(A=2I-1\), with \(2^A\) positions. `tasks.sieve.adjust_strategy=0/1/2` changes adaptation of width/height; `tasks.qmin`, `tasks.sieve.qrange`, `sqside` control work distribution. **`sqside` chooses special-q placement; it does not mean “sieve only that side.”** [c90 documentation](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c90) |
+| Cofactorization | P−1, P+1, then ECM chains; mixed-representation ECM is already integrated. `ncurves0/1`; custom `las -file-cofact` strategies. The default strategy explicitly describes **three initial methods plus n additional ECM curves**. [`facul_strategies.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/facul_strategies.cpp), [`ecm.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/ecm.cpp), [`las.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las.cpp) |
+| Batch | `batch`, `batchlpb0/1`, `batchmfb0/1`, `batchfile0/1`; external-survivor and chunk controls also exist in `las`. [`las-info.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-info.cpp), [Python wrapper](https://github.com/cado-nfs/cado-nfs/blob/master/scripts/cadofactor/cadoprograms.py) |
+| Filtering | Singleton/clique removal and parallel structured elimination. `tasks.filter.purge.keep`, `required_excess`, `target_density`; `tasks.sieve.rels_wanted` affects when filtering begins. [c90 documentation](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c90), [`merge.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/filter/merge.cpp) |
+| Linear algebra | `bwc`: MPI/thread grids, `m`, `n`, `interleaving`, `mm_impl`, CPU binding. `interval` controls checking/checkpoint frequency; larger values are not an algorithmic acceleration. [BWC README](https://github.com/cado-nfs/cado-nfs/blob/master/linalg/bwc/README) |
+| Square root | Multithreaded implementation; `tasks.sqrt.threads`. CRT implementation exists for exceptional cases. [README](https://github.com/cado-nfs/cado-nfs), [wrapper](https://github.com/cado-nfs/cado-nfs/blob/master/scripts/cadofactor/cadoprograms.py) |
+
+**Known limitations:** default cofactor chains remain heuristic; batch code contains an explicit FIXME about static side ordering; BWC documents machine-dependent binding/cache choices. These identify tuning opportunities, not guaranteed regressions. Attribution of a separate Bouvier–Imbert *global strategy optimiser* is **UNVERIFIED**—their cited contribution concerns ECM arithmetic/chains. [`facul_strategies.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/facul_strategies.cpp), [`batch.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/batch.cpp), [BWC README](https://github.com/cado-nfs/cado-nfs/blob/master/linalg/bwc/README)
+
+**3. GPU and SIMD offload**
+
+**KNOWN historical foundations:** Bos–Kleinjung’s *ECM at Work* is **2012**, and Miele–Bos–Kleinjung–Lenstra’s integrated GPU cofactorization is **2014**, not new 2020–2026 work. Miele’s GTX580 implementation served several quad-core i7 CPUs simultaneously. [ePrint **2012/089**](https://eprint.iacr.org/2012/089), [ePrint **2014/397**](https://eprint.iacr.org/2014/397)
+
+**KNOWN 2020:** Wloka et al., *Revisiting ECM on GPUs*, report **214,000 stage-one trials/s**, 192-bit moduli, \(B_1=8192\), RTX2080Ti; and **2,781 complete trials/s**, 448 bits, \(B_1=50,000,B_2=5,000,000\). A DLP experiment reduced individual-log latency **three minutes→two**. Their repository builds `cuda-ecm`; these measurements do not establish c100 GNFS speedups. [ePrint **2020/1265**](https://eprint.iacr.org/2020/1265.pdf), [implementation](https://github.com/Chair-for-Security-Engineering/ecmongpu)
+
+**KNOWN, author-reported 2026:** RSA-260 used GPU polynomial selection, lattice sieving, block Wiedemann and square root. Sieving consumed **3,813 GPU-days**; upgrades reduced GB200 workunit time **585→486 seconds**, approximately **17%**. Its ≈656M-row matrix was solved with GPU Wiedemann. This establishes real-factorization use; a controlled CPU-normalised speedup is **UNVERIFIED**. [RSA-260 technical report](https://cognition.com/blog/factoring-rsa-260)
+
+**Msieve:** its documented solver is block Lanczos. The v1.54 **10–15%** improvement concerns CPU long-vector code from `msieve-lacuda`; it should not be cited as GPU acceleration. A reproducible 2020–2026 `msieve-gpu` whole-factorization gain is **UNVERIFIED**. [Msieve documentation](https://github.com/azet/msieve/blob/master/Readme.nfs), [release notes](https://github.com/upiter/msieve/releases)
+
+**Apple/ARM:** CADO contains NEON capability detection. Published M4/Metal/SME GNFS gains, and measured upstream NEON/SVE acceleration of `fill_in_buckets` or norm initialisation, remain **UNVERIFIED**. The inspected kernels alone do not establish vectorisation quality. [Configuration tree](https://github.com/cado-nfs/cado-nfs/tree/master/config), [bucket kernel](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-fill-in-buckets.inl), [norm initialisation](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-norms.cpp)
+
+**4. Batch smoothness in practice**
+
+`batchlpbX` extracts factors between `limX` and \(2^{batchlpbX}\) using product trees. `batchmfbX` bounds the remaining cofactor admitted to ECM. **Batch detection does not necessarily eliminate final factoring.** Both default to `lpbX`. [`las-side-config.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-side-config.cpp)
+
+The record approach replaces sieving on one side when survivors are sufficiently sparse; DLP-240 reported roughly **2× time/memory savings** versus both-side sieving. RSA-240 batching accumulated approximately **16M survivors/file**, on nodes with at least **4GB/physical core**. [Record paper, §4](https://arxiv.org/html/2006.06197)
+
+| Computation | Reported settings |
+|---|---|
+| RSA-240 | `lpb=36/37`, area \(2^{32}\). q=0.8–2.1G: both sides, 2/3 LP. q=2.1–7.4G: side1 sieve, side0 trees, 2/2 LP. |
+| RSA-250 | `lpb=36/37`, area \(2^{33}\), `lim=2^31`. q=1–4G: both sides, 2/3 LP. q=4–12G: side1 sieve, side0 trees, 2/2 LP. |
+| DLP-240 | `lpb=35/35`, area \(2^{31}\); composite q=150–300G. Side0 sieve bound \(2^{29}\); side1 tree bound \(2^{28}\); 2/2 LP. |
+
+[Record paper, Table 1 and appendix B](https://arxiv.org/html/2006.06197)
+
+RSA-240’s **280 versus 514 core-years** describe different q ranges, **not an A/B batch benchmark**. Exact record `batchmfb` command lines and a c90–c110 crossover are **UNVERIFIED**. [Record paper, §4.4](https://arxiv.org/html/2006.06197)
+
+**5. Are c90–c110 defaults near-optimal?**
+
+**KNOWN:** CADO says default files were optimised with **OPAL/NOMAD**. They are informed baselines; this does not establish optimality for Apple heterogeneous cores. [NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS)
+
+| File | `lpb0/1` | `mfb0/1` | `lambda0/1` | `I` |
+|---|---:|---:|---:|---:|
+| c90 | 23/23 | 46/46 | derived | 11 |
+| c100 | 25/26 | 48/51 | 1.90/1.93 | 11 |
+| c110 | 26/27 | 50/52 | 1.88/1.92 | 12 |
+
+[c90](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c90), [c100](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c100), [c110](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c110)
+
+I could not verify a Mersenne Forum post establishing **10–30% end-to-end improvement over current defaults** at these sizes. Treat that claim as **UNVERIFIED**.
+
+**6. Ranked one-week M4 experiments**
+
+All percentages below are **my estimates of possible total wall-clock reduction**, conditional on your profile. They are neither additive nor published M4 results.
+
+| Rank | Experiment | Estimated gain and evidence |
+|---|---|---|
+| **1** | Sweep process/thread layouts: 10×1, 5×2, 2×5; measure sustained throughput and memory pressure. | **5–20%** if defaults schedule poorly. CADO already supports coarse/fine parallelism; heterogeneous-core benefit is an inference. [README](https://github.com/cado-nfs/cado-nfs) |
+| **2** | Sweep area by one bit around default; test `adjust_strategy=0,2`, then bucket thresholds. | **5–15%** if geometry/cache balance is mismatched. Controls and trade-offs are documented. [c90](https://github.com/cado-nfs/cado-nfs/blob/master/parameters/factor/params.c90) |
+| **3** | Jointly tune `lim`, `lpb±1`, nearby `mfb`, `lambda`, curve counts and relation target. | **5–20%**, low confidence. Include filtering and LA costs; defaults already received numerical optimisation. [NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS), [strategy source](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/ecm/facul_strategies.cpp) |
+| **4** | Increase polynomial-search budget modestly; trial-sieve finalists. | **0–15% net** after selection cost. Real polynomial-yield differences support the experiment; c100 payoff is **UNVERIFIED**. [RSA-260 trials](https://cognition.com/blog/factoring-rsa-260) |
+| **5** | Profile-guided scalar/NEON optimisation of one dominant kernel. | **0–10%**, speculative. Prefer this only if profiling identifies sufficient headroom in bucket filling, small sieve or norm initialisation. [Bucket source](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-fill-in-buckets.inl), [norm source](https://github.com/cado-nfs/cado-nfs/blob/master/sieve/las-norms.cpp) |
+
+I cannot substantiate **five independently reliable ≥5% wins**. My experimental protocol would hold polynomials fixed for kernel tests, sample several q ranges, and validate finalists through complete factorizations.
+
+**Already implemented—avoid rebuilding:** mixed-representation ECM, bucket sieving, size/root optimisation, parallel merge and MPI Wiedemann. Their remaining opportunity is tuning. Batch, GPU offload and square-root rewrites rank below the experiments above for this laptop and size range. [NEWS](https://github.com/cado-nfs/cado-nfs/blob/master/NEWS), [`merge.cpp`](https://github.com/cado-nfs/cado-nfs/blob/master/filter/merge.cpp), [BWC README](https://github.com/cado-nfs/cado-nfs/blob/master/linalg/bwc/README)
