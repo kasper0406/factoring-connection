@@ -54,7 +54,7 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
 - Below L[1/3]: no mechanism was found on any of the three routes tried:
   - integer "systematic equations" ([`systeq`](notes/systeq_results.md)); the exact PTE version is refuted by [`ptebarrier`](notes/ptebarrier_results.md) Lemma R / Theorem W, and the joint verdict is in [`ptesplit`](notes/ptesplit_results.md);
   - beating the resultant bound ([`resbarrier`](notes/resbarrier_results.md): N² | disc, area theorem);
-  - non-smoothness invariants ([`nonsmooth`](notes/nonsmooth_results.md): FROB, OA). One case stays open: rank ≥ 3 with no rational side, closed only heuristically (floor L[1/4] even if that heuristic fails).
+  - non-smoothness invariants ([`nonsmooth`](notes/nonsmooth_results.md): FROB, OA). Open remainders, none with a candidate: non-exact compressions; pencils of several presentations; parameter corners; and resbarrier's rank ≥ 3 / no-rational-side case, closed only heuristically (floor L[1/4] even if that heuristic fails).
 - Output-sensitive smooth-pair enumeration: no gain, MNFS stays at 1.902 ([`smoothenum`](notes/smoothenum_results.md)). The heuristic model was validated on real CADO-NFS runs ([`cadobench`](notes/cadobench_results.md)).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
