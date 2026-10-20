@@ -1,0 +1,238 @@
+The fixed-degree recursion survives this audit, conditional on the internal proof of Theorem A. I found no counterexample to S″. The growing-degree arithmetic also checks out, but its inventory contains a definite uniformity failure involving Stark’s factorial.
+
+**1. Theorem RA — CORRECT WITH FIXES, conditional on Theorem A’s proof.**
+
+The “every fixed \(a>0\)” extension is supported by the source proofs. It does not require uniformity as \(a\to0\) or \(a\to\infty\).
+
+Write
+\[
+\xi_r=\mu-\nu>0,\qquad \xi_F=\mu+h+d\nu,\qquad \theta=\xi_r+\xi_F.
+\]
+For either smooth-number argument \(x=N^{\xi+o(1)}\),
+\[
+u=\frac{\log x}{\log B}
+ =\left(\frac{\xi}{a}+o(1)\right)
+   \sqrt{\frac{\log N}{\log\log N}}\longrightarrow\infty.
+\]
+Thus every fixed positive \(a\) eventually satisfies the required smooth-number ranges. In particular:
+
+- **FM and LV’s kernel/truncation argument:** [pcest:304](/Volumes/git/factoring-connection/notes/pcest_results.md:304) explicitly fixes arbitrary \(a>0\). The errors \(V/H\), \(\omega N^{-\eta_0/2}\) remain polynomially small, whereas \(\rho_F=L^{-O_a(1)}\). Choose the truncation exponent \(C_1\) depending on \(a\).
+- **Restricted BV:** the margins \(q_0>2\nu\) and \(q_0<\xi_F/2\) are polynomial margins independent of \(a\); see [ldbound:227](/Volumes/git/factoring-connection/notes/ldbound_results.md:227). Also
+  \[
+  u/\log^2u\asymp_a
+  \frac{\sqrt{\log N}}{(\log\log N)^{5/2}}
+  \gg\log\log x.
+  \]
+  Consequently, the Page-character logarithmic absorption remains available for every fixed \(a\). These are the relevant ranges in [LV, Lemma 8.5 and its proof](https://arxiv.org/pdf/1805.08873).
+- **LD\*:** the cutoff \(B^{C_0}\) in [ldbound:303](/Volumes/git/factoring-connection/notes/ldbound_results.md:303) can be chosen with \(C_0=C_0(a,\sigma,\ldots)\). It remains \(N^{o(1)}<Y\). The proof does not need the exact, noncomputable normalization \(S^2=(\log N)^{C_3}/(\rho_r\rho_F)\).
+- **Sigma range:** \(\sigma=\theta/(4a)\) lies inside some fixed compact subinterval of \((0,\infty)\), separately for each fixed \(a\).
+- **Lemma Omega:** after trial division,
+  \[
+  \frac{\log 2^{\omega(N)}}{\Lambda_N}
+  \le \frac{\log2+o(1)}{a\log\log N}\to0.
+  \]
+- **Prop BS and LV6:** \(B\le S^2\) is unnecessary. Retaining the complete cost \(\widetilde O(B+S^2)\) gives precisely the proposed extra \(2a\) term.
+
+There is, however, a definite error in [recurse:140](/Volumes/git/factoring-connection/notes/recurse_results.md:140): **the margin is a power of \(L\), not a fixed power of \(N\)**. The correct calculation is
+\[
+\log(S^2\rho_r^2)
+ =\left(\frac{\xi_F-\xi_r}{2a}+o(1)\right)\Lambda_N
+ =\left(\frac{h+(d+1)\nu}{2a}+o(1)\right)\Lambda_N.
+\]
+Hence \(S^2\ge\rho_r^{-2}L^c\) holds for any fixed
+\[
+0<c<\frac{h+(d+1)\nu}{2a}.
+\]
+The conclusion survives; its stated justification needs replacement.
+
+All thresholds and auxiliary constants must explicitly allow dependence on \(a\). This includes the LV6 threshold through the requirement that \(B\) eventually dominate polynomial functions of \(\log N\). No additional restriction on fixed positive \(a\) emerged.
+
+**(A1)–(A3): CORRECT WITH BOOKKEEPING CLARIFIED.**
+
+The absorbing repair in [thmA:261](/Volumes/git/factoring-connection/notes/thmA_proof.md:261) works. It is essential: conditioning directly on nonterminating fields would not justify the claimed supply bound.
+
+For a raw field trial, let \(q_A\) be its row-delivery probability and let
+\[
+p=\Pr[\text{row delivered or proper factor found}].
+\]
+The counting argument gives \(p\ge L^{-o(1)}\): an otherwise successful counted attempt either delivers its row or encounters an absorbing factor exit first.
+
+The retained-field subprobability law is \(q_A\,d\mathcal A/p\). Conditional on a retained field, collecting \(C\) rows costs at most \(C/q_A\) attempts before allowing for factor exits. Integrating cancels \(q_A\):
+\[
+\int \frac{q_A}{p}\frac{C}{q_A}\,d\mathcal A\le C/p.
+\]
+Fresh-row DD rounds add at most another constant factor.
+
+This also supplies a simpler proof of (A2): **charge up to \(2k\) special-q searches to every DESCEND_ONCE attempt**. Then
+\[
+E[\#\text{searches}]\le 2kE[\tau]=L^{a+o(1)}.
+\]
+Thus the disputed K(iii) waste ratio is unnecessary for these fixed-degree bounds. Including LV6 gives
+\[
+E[\text{non-oracle work}]
+ \le L^{\max(2a,\ a+\theta/(2a))+o(1)}.
+\]
+This argument handles thin retained fields without asserting that every retained field satisfies a good-field pointwise bound.
+
+**OS and W — CORRECT, with a transcript-definition fix.**
+
+At [recurse:148](/Volumes/git/factoring-connection/notes/recurse_results.md:148), OS holds for the logical outer computation provided factorization outputs have a canonical encoding and oracle coins use separate streams. The mathematical algorithm has no timeout, race, or branch depending on oracle duration or private coins.
+
+The literal phrase “every value computed outside O” is too broad for the toy implementation: it records elapsed seconds at [pipeline_rec.py:207](/Volumes/git/factoring-connection/src/recurse/pipeline_rec.py:207). Its comparison function deliberately excludes those measurements at [pipeline_rec.py:230](/Volumes/git/factoring-connection/src/recurse/pipeline_rec.py:230). Specify **logical transcript excluding timing instrumentation**.
+
+Lemma W’s proof at [recurse:160](/Volumes/git/factoring-connection/notes/recurse_results.md:160) is valid. Independence of the stopping count from costs is unnecessary. What matters is that the decision to start call \(i\) is measurable before that call, and its fresh randomness gives the stated conditional expected-cost bound. Tonelli then applies to nonnegative costs.
+
+**F and recursive termination — CORRECT.**
+
+The argument at [recurse:168](/Volumes/git/factoring-connection/notes/recurse_results.md:168) is not inherently circular:
+
+1. Establish finite expectation by strong induction on the integer input.
+2. Above the fallback threshold, every shape-test input is strictly smaller.
+3. Apply OS/W using those already terminating smaller calls.
+4. Only then form the finite supremum \(F(x)\).
+
+Taking suprema over \(n\le x\) preserves \(L_x^{p+o(1)}\): finitely many small-input constants are harmless, and the remaining errors are uniformly small beyond a fixed threshold.
+
+The \(\sqrt{2x}\) scaling is a valid one-sided bound. The induction intervals grow by \(Y\mapsto Y^2/2\), starting at \(Y\ge4\), and cover every sufficiently large input. The margin calculation absorbs both summands. Define the small-input \(L\)-notation separately if retaining the domain starting at \(2\).
+
+**T_rec — CORRECT WITH WORDING FIXED.**
+
+The group-action argument at [recurse:233](/Volumes/git/factoring-connection/notes/recurse_results.md:233) survives nested hidden roots. An inner transcript is a function of outer-square-derived inputs and fresh coins, so replacing an outer root by \(\varepsilon r_i\) leaves it unchanged.
+
+The sentence claiming inner hidden roots are “independent of the outer ones” is stronger than warranted: their input-dependent distributions can correlate with outer squares. The required statement is conditional invariance on each outer square-root fibre. That statement holds. Fresh rows after a failed final gcd remain essential.
+
+**The constants are correct.**
+
+The recursion yields
+\[
+c(a)=\max\left(a+\frac{\theta}{2a},\frac{a}{1-2^{-1/2}}\right)
+=\max\left(a+\frac{\theta}{2a},(2+\sqrt2)a\right).
+\]
+Balancing its two terms gives
+\[
+a_*^2=\frac{(\sqrt2-1)\theta}{2},\qquad
+c_*^2=(1+\sqrt2)\theta.
+\]
+
+Independent computations using `fractions` and `math` reproduced:
+
+| \(d\) | \(\inf\theta=3/(d+1)\) | \(\inf c_*\) |
+|---:|---:|---:|
+| 7 | \(3/8\) | 0.951488353 |
+| 9 | \(3/10\) | 0.851037055 |
+| 11 | \(1/4\) | 0.776886987 |
+| 19 | \(3/20\) | 0.601774073 |
+| 99 | \(3/100\) | 0.269121547 |
+
+At \(d=9\), \(k=12\) gives \(\theta_0=23/54\) and \(c_*=1.014039519\); \(k=13\) gives \(\theta_0=16/39\) and \(c_*=0.995211832\). Positive slack must still be added.
+
+I also checked `best_mu` against `closed_form` for odd \(3\le d\le101\), admissible \(k\le1000\), with no discrepancies. The repository’s constants module itself could not run because `sympy` is unavailable.
+
+**2. Corollary P — CORRECT WITH IMPLEMENTATION FIXES.**
+
+The limiting argument at [recurse:272](/Volumes/git/factoring-connection/notes/recurse_results.md:272) is sound. A computable family with \(c_j\to0\), finite expected times, and certified outputs suffices. No uniform analytic estimate in \(j\) is needed.
+
+Specify lazy initialization and an actual scheduler. In an elementary-step model, scheduling thread \(j=1+v_2(t)\) at step \(t\) supplies its \(s\)-th step by time \(2^js\). Therefore
+\[
+E[T(N)]\le 2^jE[T_j(N)]
+\]
+for every fixed \(j\), regardless of heavy tails.
+
+One technical trap deserves explicit treatment: a simulator bound \(O(T_j\log T_j)\) does **not** follow in expectation from \(E[T_j]<\infty\). Finite mean need not imply finite \(E[T_j\log T_j]\).
+
+A robust implementation uses geometrically increasing capped runs with fresh restarts. Once a cap exceeds \(4E[T_j]\), Markov bounds each fresh failure probability by \(1/4\), while stage costs grow geometrically. This preserves the required expected bound with polynomial overhead in \(\log E[T_j]\), hence an \(L^{o(1)}\) factor.
+
+With that clarification, the portfolio conclusion and the fixed-\(d\) infimum corollary survive.
+
+**3. Lemma S″ — CORRECT.**
+
+The proof at [recurse:318](/Volumes/git/factoring-connection/notes/recurse_results.md:318) passes all three requested attacks.
+
+For \(m=|G|\), fixing \(u\in S\) leaves at most
+\[
+k\binom{m-1}{k-1}
+=\frac{k^2}{m}\binom mk
+\le\frac{2k^3}{m}|S|
+\]
+partners sharing a prime. This is a valid union bound, including \(v=u\).
+
+Consequently,
+\[
+P'\ge \frac{|S|^2}{h}-\frac{2k^3}{m}|S|^2
+\ge\frac{|S|^2}{2h}
+\]
+under exactly the stated hypothesis \(m\ge4k^3h\).
+
+Injectivity holds because congruent ratios imply
+\[
+uv'-u'v\equiv0\pmod N,\qquad |uv'-u'v|<Y^2<N.
+\]
+Equality of the positive reduced fractions then identifies the ordered pairs.
+
+Finally, the determinant argument forces any shortest lattice vector to be \(\pm(u,v)\). Dividing by the square subgroup’s size \(\varphi(N)/h\) cancels \(h\), giving the claimed probability.
+
+The claim that the cardinality hypothesis is “mild” applies to **good fields with the asserted density lower bound**, not arbitrary retained fields. Under the proposed growing-degree densities, the stated logarithmic comparison does verify it.
+
+**4. Growing degree — floors CORRECT; inventory CORRECT WITH FIXES, with a GAP in its sufficiency claim.**
+
+The exact piecewise optimum in [params.py:66](/Volumes/git/factoring-connection/src/thmA/params.py:66) confirms the required inequalities
+\[
+\theta\ge\frac3{d+1},\qquad
+\theta\ge\frac{d+1}{4k}.
+\]
+Neither design floor is misstated.
+
+Writing \(d\asymp D^\delta\), the model requires
+\[
+\delta\ge1-2\alpha,\qquad
+k\gtrsim D^{2(1-2\alpha)}.
+\]
+Combining this with \(kd^\tau=O(D^\alpha)\) gives
+\[
+(2+\tau)(1-2\alpha)\le\alpha
+\quad\Longleftrightarrow\quad
+\alpha\ge\frac{2+\tau}{5+2\tau}.
+\]
+Thus \(2/5,\ 3/7,\ 4/9\) are correct within the stated model.
+
+The multi-level calculation also checks:
+\[
+\beta_{j+1}\ge\beta_j-(\alpha-\delta),\qquad
+\delta\ge1-2\alpha.
+\]
+The maximum decrement is \(3\alpha-1\), yielding the displayed level count. These are model constraints, not algorithmic lower bounds.
+
+The definite inventory failure is [recurse:432](/Volumes/git/factoring-connection/notes/recurse_results.md:432). The inherited exceptional-zero threshold is
+\[
+\nu_1\asymp\frac1{(2d)!\log\bar\Delta}
+\]
+from [lv6:227](/Volumes/git/factoring-connection/notes/lv6_results.md:227). The proof at [lv6:287](/Volumes/git/factoring-connection/notes/lv6_results.md:287) suppresses the zero term using fixed-\(d\) constants.
+
+For \(d=D^\delta\), a polynomial-in-\(\log N\) character-prime bit budget does not establish
+\[
+\nu_1\log x\gg\log\log x.
+\]
+The factorial defeats it. Therefore **the stated character-prime bit budget is not justified by this proof**.
+
+A plausible repair is to enlarge \(\log x\) by a factorial factor. Its computational cost can still be
+\[
+\exp(O(d\log d))(\log N)^{O(1)}
+=L_N[\alpha]^{o(1)}
+\]
+when \(\delta=1-2\alpha<\alpha\). This preserves the proposed floors, but must be proved and included in the inventory.
+
+Two further corrections are needed:
+
+- Positive fixed \(\eta_0\) is incompatible with \(\theta\to0\). Growing-degree parameters need an explicit shrinking slack and renewed margin checks; the Brun–Titchmarsh constant \(24/\eta_0\) must be charged.
+- The “iff” in [recurse:438](/Volumes/git/factoring-connection/notes/recurse_results.md:438) is unsupported. These are proposed sufficient inputs after the other uniformity repairs, not established necessary conditions.
+
+The note’s headline that it obtains **no rigorous fixed \(\alpha<1/2\) theorem** remains correct.
+
+| Claim | Overall verdict |
+|---|---|
+| RA, conditional on Theorem A’s proof | **CORRECT WITH FIXES** |
+| Portfolio P | **CORRECT WITH FIXES** |
+| S″ | **CORRECT** |
+| Growing-degree assessment | **CORRECT WITH FIXES** for the floors; **GAP** in the inventory’s sufficiency assertion |
+
+**Single weakest point:** the inherited restricted-BV absolute-character majorant at [pcest:272](/Volumes/git/factoring-connection/notes/pcest_results.md:272), especially the induced exceptional-character treatment. Its fixed-\(a\) ranges survive this audit, but it remains the most delicate analytic input supporting RA and P.

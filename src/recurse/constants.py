@@ -118,6 +118,7 @@ def main():
               f"{float(r['c_rec_k50']):.5f}", f"{float(r['c_A_k50']):.5f}",
               f"{float(r['c_rec_k1000']):.5f}", f"{float(r['c_rec_inf']):.5f}",
               f"{float(r['c_A_inf']):.5f}", f"{float(r['c_noshape_inf']):.5f}"]))
+    print("(c_rec > c_A only when theta >= sqrt2 - 1; then use LP / Theorem A: the best constant is the min.)")
     print("fixed-depth iteration at d = 9, theta = 3/10 (infimum):")
     cs = fixed_depth(Fr(3, 10), 8)
     print("  ", [f"{float(c):.5f}" for c in cs], " limit", f"{float(cstar(Fr(3, 10))):.5f}")
