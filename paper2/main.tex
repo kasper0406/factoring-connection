@@ -156,8 +156,9 @@ Rigorous analysis has a separate history.
 \item Pomerance analysed and refined these methods \cite{pomerance1982}, and proved $L_N[1/2,\sqrt2+o(1)]$ for
   random squares with a rigorous elliptic curve smoothness test \cite{pomerance1987}. Vallée's
   sampler of small squares gave $L_N[1/2,\sqrt{4/3}+o(1)]$ \cite{vallee1991}.
-\item Class-group methods reached exponent $1$: Schnorr and Lenstra \cite{schnorrlenstra1984} under
-  hypotheses, and Seysen \cite{seysen1987} and A.~K.~Lenstra \cite{aklenstra1988} under the generalised Riemann hypothesis. Lenstra and Pomerance
+\item Class-group methods reached exponent $1$. Schnorr and Lenstra \cite{schnorrlenstra1984} did so under
+  heuristic hypotheses. Seysen \cite{seysen1987} gave a class-group algorithm rigorous under the generalised Riemann hypothesis, and A.~K.~Lenstra
+  \cite{aklenstra1988} brought the GRH-conditional constant to $1$. Lenstra and Pomerance
   \cite{lp1992} removed every hypothesis. They proved that the complete prime factorisation of every
   $N$ can be found in expected time $L_N[1/2,1+o(1)]$. That bound has stood since 1992. It is still
   described as the best rigorous probabilistic bound, for instance by Pomerance \cite{pomerance2008}
@@ -168,7 +169,8 @@ Rigorous analysis has a separate history.
   stated for $N=pq$ with $p\equiv q\equiv3\pmod 4$. Their techniques for the first moment of smooth
   values (a randomisation that makes algebraic values nearly uniform on long progressions, and a restricted
   Bombieri--Vinogradov estimate for smooth moduli built on Harper's work \cite{harper2012}) and for the post-processing
-  (random characters, Stark--Landau) are the models for ours.
+  (random characters, Stark--Landau) are the models for ours. We use their randomisation idea and the Stark and Landau
+  statements as quoted there, but none of their lemmas on smooth numbers.
 \end{itemize}
 There is also a folklore heuristic that $L[1/2,1]$ is a natural barrier for methods that combine random-like
 auxiliary integers of size at least $N^{1/2}$ into a square. Croot, Granville, Pemantle and Tetali
@@ -257,8 +259,9 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   incomplete), and no exceptional set of $N$. Every input is a published, numbered statement. One of them,
   Drappeau's Lemme~5, has a published proof that points to computations in Harper's unpublished preprint
   (Appendix~\ref{app:85}). The threshold beyond which the time bound holds involves Stark's, Landau's and
-  Lagarias--Odlyzko's effective constants, so it is effective but enormous; the algorithm itself uses no analytic
-  constant (Remark~\ref{rem:noN0}). The bound holds for every $N$, not on average.
+  Lagarias--Odlyzko's effective constants; it is enormous, and effective provided the constants of Drappeau's Lemme~5 are
+  (which we believe but no published source states). The algorithm itself uses no analytic constant (Remark~\ref{rem:noN0}),
+  so Theorem~\ref{thm:main} is unaffected either way. The bound holds for every $N$, not on average.
 \item \emph{Status.} The proof is new and has not been peer reviewed. It is long and rests on several
   delicate interfaces, so it should be treated with caution until experts have checked it.
 \end{enumerate}
@@ -1049,8 +1052,9 @@ of DESCEND\_ONCE. Its outcome is a factor exit, a row, or neither. Let $p_F$ and
 outcomes and $p:=p_F+b$. For a field $A$ let $\varsigma_A$ be the probability that DESCEND\_ONCE$(A)$ returns a row ($\varsigma_A:=0$
 for rejected fields and for fields on which SAMPLE\_FIELD exits). Let $C_{\rm trial}$ be a uniform upper bound for the
 expected cost of one trial and of one call of DESCEND\_ONCE, conditional on everything before it.
-Let $\mathrm T_{\rm post}$ be a uniform bound for the expected cost of POSTPROCESS. Let $\cR$ be the set of fields rejected in steps~2--4 of
-SAMPLE\_FIELD, regardless of exits.
+Let $\mathrm T_{\rm post}$ be a uniform bound for the expected cost of POSTPROCESS. Let $\cR$ be the set of fields $A$ with $\gcd(g_1,N)=1$
+that satisfy one of the rejection conditions (i)--(iii) of Lemma~\ref{lem:reject}, regardless of other exits. (A field with
+$\gcd(g_1,N)>1$ always produces a factor exit.)
 
 \begin{proposition}[field selection with factor exits]\label{prop:select}
 \begin{enumerate}[label=(\roman*)]
@@ -1129,7 +1133,7 @@ applying the map $\langle\cdot,v\rangle$.
 (c) A uniform distribution on an integer interval is a log-concave sequence, symmetric about the midpoint of the
 interval. Convolutions of log-concave sequences without internal zeros are log-concave (see e.g.\
 \cite{stanley1989}), and a log-concave sequence is unimodal. A symmetric unimodal sequence is
-non-increasing in the distance to its centre. The centre of $Y_i$ is $(l_i-1)/2$ or its negative, so $|M_0|\le\sum l_i/2\le dV'^{d-1}$.
+non-increasing in the distance to its centre. The centre of $Y_i$ is $(l_i-1)/2$ for either sign of $v_i$, so $|M_0|\le\sum l_i/2\le dV'^{d-1}/2$.
 (d) A convolution of probability measures has maximum at most the maximum of any factor. Take the factor with
 $l_i=V'^{d-1}$.
 \end{proof}
@@ -1272,22 +1276,25 @@ This is an inequality, because the filter $|G(P)|\ge MV_\ell/32$ holds on $I_P$ 
 $(\ell,P,n,g)$ and every $w$, Lemma~\ref{lem:coprime} shows that $r_0$ is reduced, so Lemma~\ref{lem:goodmod} bounds the inner
 probability below by $\rF/(\log N)^C$. Hence
 \[
-\Ex_AN_\ell(A)\ge\frac{\rF}{(\log N)^C|\cG|}\sum_{P\in\cP_\ell}\Bigl(\sum_{n\in I_P\cap\cS_B}|\cG_P(n)|-\frac{2M}{V_\ell}\beta_\ell\Bigr),
+\Ex_AN_\ell(A)\ge\frac{\rF}{(\log N)^C|\cG|}\sum_{P\in\cP_\ell}\Bigl(\sum_{n\in I_P\cap\cS_B}|\cG_P(n)|-\frac{2M}{V_\ell}\mathfrak b_\ell\Bigr),
 \]
-where $\beta_\ell:=\#\{n:1\le|n|\le2MV_\ell/\ell,\ n\in\cS_B,\ \ell|n|\text{ bad}\}$ depends on $\ell$ only.
+where $\mathfrak b_\ell:=\#\{n:\ MV_\ell/32\le\ell|n|\le2MV_\ell,\ n\in\cS_B,\ \ell|n|\text{ bad}\}$ depends on $\ell$ only (only $n\in I_P$
+enter, and on $I_P$ the filter holds).
 
-\emph{Good mass.} $I_P$ is an interval of length $\lambda\ge MV_\ell/(16\ell)-1$ whose right end (in absolute value) is at most
-$32\lambda$. By Lemma~\ref{lem:local}(iii),(i) it contains at least $c\lambda\rr$ smooth integers. By Lemma~\ref{lem:fibres}(ii),
+\emph{Good mass.} After reflection, $I_P=(z_1,z_2]$ with $z_2-z_1=\lambda\ge MV_\ell/(16\ell)-1$ and $z_2\le2MV_\ell/\ell\le33\lambda$. If
+$z_1\le z_2/2$, Lemma~\ref{lem:local}(iii) with $Z=1$ gives at least $\Psi(z_2/2)/3$ smooth integers in $I_P$. Otherwise
+$z_2\ge z_1(1+1/33)$, and (iii) with $Z=33$ gives at least $\Psi(z_1)/99$. In both cases, by Lemma~\ref{lem:local}(i),(ii), $I_P$ contains
+at least $c\lambda\rr$ smooth integers. By Lemma~\ref{lem:fibres}(ii),
 $\sum_{n\in I_P\cap\cS_B}|\cG_P(n)|\ge cM^2\rr/(\ell\log\log N)$.
 
-\emph{Bad mass.} The moduli $\ell|n|$ counted by the $\beta_\ell$ lie in $\bigcup_Q\cT_Q$ for $O(1)$ dyadic values $Q$ covering
+\emph{Bad mass.} The moduli $\ell|n|$ counted by the $\mathfrak b_\ell$ lie in $\bigcup_Q\cT_Q$ for $O(1)$ dyadic values $Q$ covering
 $[M\Vm/32,2M\VM]$, all with $Q=N^{\mu+\nu+o(1)}$. Lemma~\ref{lem:85} applies with $\xi=\mu+h+d\nu$ and $q_0=\mu+\nu$, because
 $q_0-2\nu=\mu-\nu\ge\eta_0$ and $\xi/2-q_0=(h-\mu+(d-2)\nu)/2\ge\eta_0/2$ by the level floor. By Corollary~\ref{cor:bad},
 \[
-\frac1{\pi_J}\sum_{\ell\in J}\beta_\ell\le\frac{2}{\pi_J}\sum_Q3|\cX|\varepsilon_N\#\cT_Q
+\frac1{\pi_J}\sum_{\ell\in J}\mathfrak b_\ell\le\frac{2}{\pi_J}\sum_Q3|\cX|\varepsilon_N\#\cT_Q
 \le C|\cX|\varepsilon_N\frac{M\VM}{Y}\rr(\log N)^C,
 \]
-since $\#\cT_Q\le\sum_{\ell\in J}\Psi(Q/\ell)\le C\pi_J(M\VM/Y)\rr$ by Lemma~\ref{lem:local}(i).
+since $\#\cT_Q\le\sum_{\ell\in J}\Psi(Q/\ell)\le C\pi_J(M\VM/Y)\rr(\log N)^C$ by Lemma~\ref{lem:local}(i),(ii).
 
 \emph{Assembly.} $\#\cP_\ell\asymp V_\ell^2/\log V_\ell$ (there are $\asymp V/\log V$ primes $b\in(V/2,V]$, and for each at least $V$ values of
 $a$ coprime to $b$), $|\cG|\asymp M^2$, and $V_\ell^2/\ell\ge S^2/2$. Averaging over $\ell$, the good mass contributes at least
@@ -1327,7 +1334,7 @@ points for each of $D=\pm\ell q$.
 Let $d\ge3$ and let $P=(a,b)\ne P'=(a',b')$ be primitive, with $\Delta=\det(P,P')\ne0$. Put $v=v(P)$, $v'=v(P')$ and
 $\Phi:\Z^d\to\Z^2$, $c\mapsto(\langle c,v\rangle,\langle c,v'\rangle)$. Let $\kappa$ be an integer with $P'\equiv\kappa P\pmod\Delta$.
 \begin{enumerate}[label=(\roman*)]
-\item $\Gamma:=\Phi(\Z^d)=\{(X,X')\in\Z^2:X'\equiv\kappa^{d-1}X\pmod{\Delta}\}$, of index $|\Delta|$, and $\kappa$ is a unit modulo $\Delta$.
+\item $\Gamma_\Phi:=\Phi(\Z^d)=\{(X,X')\in\Z^2:X'\equiv\kappa^{d-1}X\pmod{\Delta}\}$, of index $|\Delta|$, and $\kappa$ is a unit modulo $\Delta$.
 \item $\ker\Phi=Q_{PP'}\cdot\Z[x,y]_{d-3}$ with $Q_{PP'}=(bx-ay)(b'x-a'y)$, identifying $\Z^d$ with forms of degree $d-1$.
 \item If $|a|,|b|,|a'|,|b'|\le V$ and $H\ge4V^2$, then for every $z\in\Z^2$,
   $\Prob_{c\in C_H}[\Phi(c)=z]\le C_d|\Delta|/(H^2\|v\wedge v'\|)\le C_d/(H^2(bb')^{d-2})$.
@@ -1394,7 +1401,7 @@ $D\le\min(I/e)$. Every smooth $n_1\ge D$ has a divisor $d_1\in(D/B,D]$: take the
 exceeding $D$. Write $n_1=d_1m$. Then $(d_1,q')=1$, $m\equiv(r/e)d_1^{-1}\pmod{q'}$, and $m$ lies in an interval of length
 $A/(ed_1)$. So there are at most $A/(d_1q)+1\le2A/(d_1q)$ choices of $m$ (as $d_1\le A/q$), and the count is at most
 $(2A/q)\sum_{D/B<d_1\le D,\,\Pp(d_1)\le B}1/d_1$. Splitting into dyadic blocks and using Lemma~\ref{lem:local}(i), this sum is at most
-$8\log_2(2B)\varrho(D/B)$. Finally $D\ge XB^{-2C_0}$, so $X/(D/B)\le B^{2C_0+1}$, and Lemma~\ref{lem:local}(ii) gives
+$8\log_2(2B)\varrho(D/B)$. Finally $D\ge XB^{-2C_0}$, so $X/(D/B)\le B^{2C_0+1}$; in particular $D/B$ is in range (with $\xi_1$ replaced by $\xi_1/2$), and Lemma~\ref{lem:local}(ii) gives
 $\varrho(D/B)\le\varrho(X)(\log N)^{O(C_0)}$.
 \end{proof}
 
@@ -1430,7 +1437,7 @@ and consequently
 Every prime factor of $|n|q$ is at most $\max(B,2S^2)<Y$, so $|n|q$ has no prime factor in $J$.
 
 \emph{Rearrangement.} Since $\XF$ does not depend on $\ell$, neither does $f$. So the left side of \eqref{eq:L2a} is
-$\sum_{m'>1}f(m')\nu(m')$ with $\nu(m'):=\Ex_\ell\#\{n\in\cN_\ell:m'\mid\ell^2|n|q\}$. Partition the $m'>1$ into three classes:
+$\sum_{m'>1}f(m')\mathrm{mult}(m')$ with $\mathrm{mult}(m'):=\Ex_\ell\#\{n\in\cN_\ell:m'\mid\ell^2|n|q\}$. Partition the $m'>1$ into three classes:
 (A) no prime factor in $J$ and $m'\le R_0$; (B) no prime factor in $J$ and $m'>R_0$; (C) some prime factor in $J$. The partition does
 not depend on $\ell$. In classes (A) and (B), $m'\mid\ell^2|n|q$ iff $m'\mid|n|q$. In class (C), $m'\mid\ell^2|n|q$ forces the
 $J$-primes of $m'$ to be exactly $\{\ell\}$, with exponent $i\in\{1,2\}$.
@@ -1441,20 +1448,20 @@ $m'\mapsto(m_1,m_2)$ is injective and $m_2\mid q$.
 \emph{Class (A).} By Parseval over all $b\bmod m'$, $f(m')\le m'\sum_{c\bmod m'}N_c^2$ with $N_c:=\#\{F\in\cS^*:F\equiv c\ (m')\}$. Lemma~\ref{lem:DS}
 on $\pm[\XF R_0^{-1},\XF]$, plus the trivial bound $\XF/(R_0m')+1$ on $|F|<\XF/R_0$, gives $N_c\le(\XF/m')\rF(\log N)^C$ (using
 $R_0^{-1}\le\rF$ and $m'\le R_0\le\XF\rF$). Hence $f(m')\le m'\max_cN_c\cdot\#\cS^*\le\Psi(\XF)^2(\log N)^C$. For the multiplicity,
-$\nu(m')=0$ unless $m_1$ is smooth, and then $\nu(m')\le2\Psi(X'_+/m_1)\le(\Psi(X'_+)/m_1)(\log N)^{O(C_0)}$ by Lemma~\ref{lem:local}(ii).
+$\mathrm{mult}(m')=0$ unless $m_1$ is smooth, and then $\mathrm{mult}(m')\le2\Psi(X'_+/m_1)\le(\Psi(X'_+)/m_1)(\log N)^{O(C_0)}$ by Lemma~\ref{lem:local}(ii).
 Since $\sum_{m'\le R_0}1/m_1\le\tau(q)(1+\log R_0)$, class (A) contributes at most $\tau(q)(\log N)^C\Psi(X'_+)\Psi(\XF)^2$.
 
-\emph{Class (B).} Here $\nu(m')\le\#\{1\le|n|\le X'_+:m_1\mid n\}\le2X'_+q/m'$, and $\nu(m')=0$ unless $m'\le X'_+q$. On dyadic blocks
+\emph{Class (B).} Here $\mathrm{mult}(m')\le\#\{1\le|n|\le X'_+:m_1\mid n\}\le2X'_+q/m'$, and $\mathrm{mult}(m')=0$ unless $m'\le X'_+q$. On dyadic blocks
 $(R,2R]$ with $R=R_02^i\le X'_+q$, Fact~\ref{fact:LS} with $K=2\lfloor\XF\rfloor+1$ gives
 $\sum_{m'\in(R,2R]}f(m')\le(3\XF+4R^2)\cdot2\Psi(\XF)$. Summing over blocks, class (B) contributes at most
 $C X'_+q\XF\Psi(\XF)/R_0+C(X'_+q)^2\Psi(\XF)$. Relative to $\Psi(X'_+)\Psi(\XF)^2=X'_+\XF\rr\rF\Psi(\XF)$ these are $Cq/(R_0\rr\rF)\le1$ and
 $CX'_+q^2/(\XF\rr\rF)=N^{-h-(d+1)\nu}L^{O(1)}=o(1)$.
 
 \emph{Class (C).} Let $\ell=\ell(m')$ be the unique $J$-prime of $m'$ and $m'':=m'/\ell^i$. Only this $\ell$ contributes, so
-$\nu(m')=\pi_J^{-1}\#\{n\in\cN_\ell:m''\mid|n|q\}$. We have two bounds: $\nu(m')\le2\Psi(X'_+)/\pi_J$, and, as $m''\ge m'/(4Y^2)$,
-$\nu(m')\le8X'_+qY^2/(\pi_Jm')$. The relevant $m'$ lie in $[Y,4Y^2X'_+q]$, which is $O(\log N)$ dyadic blocks. On each block
+$\mathrm{mult}(m')=\pi_J^{-1}\#\{n\in\cN_\ell:m''\mid|n|q\}$. We have two bounds: $\mathrm{mult}(m')\le2\Psi(X'_+)/\pi_J$, and, as $m''\ge m'/(4Y^2)$,
+$\mathrm{mult}(m')\le8X'_+qY^2/(\pi_Jm')$. The relevant $m'$ lie in $[Y,4Y^2X'_+q]$, which is $O(\log N)$ dyadic blocks. On each block
 use the large sieve bound $(3\XF+4R^2)\cdot2\Psi(\XF)$, and the first bound for $\nu$ against $3\XF$ and the second against $4R^2$
-(if $\nu\le A_1$ and $\nu\le A_2$ then $\nu(K_1+K_2)\le A_1K_1+A_2K_2$). Class (C) contributes at most
+(if $\mathrm{mult}\le A_1$ and $\mathrm{mult}\le A_2$ then $\mathrm{mult}\cdot(K_1+K_2)\le A_1K_1+A_2K_2$). Class (C) contributes at most
 \[
 \frac{C\log N}{\pi_J}\Psi(X'_+)\XF\Psi(\XF)+\frac{C}{\pi_J}(X'_+)^2q^2Y^4\Psi(\XF).
 \]
@@ -1494,7 +1501,7 @@ the sum running over $P\ne P'$ in $\cP_\ell\cap\Lambda_\ell(g)$. By Lemma~\ref{l
 $\hat F_{g,w}$ depends on $w$.
 
 \emph{Step 1 (kernel).} By Lemma~\ref{lem:kern}(iii), $\Prob_c[\Phi(c)=z]\le C_d/(H^2V^{2d-4})$. Since $\Phi(C_H)\subset[-T,T]^2$ and
-$\Gamma=\{z_2\equiv\kappa^{d-1}z_1\ (\Delta)\}$,
+$\Gamma_\Phi=\{z_2\equiv\kappa^{d-1}z_1\ (\Delta)\}$,
 \[
 \Prob_c[\text{both smooth}]\le\frac{C_d}{H^2V^{2d-4}}\,Z,\qquad Z:=\sum_{j\bmod|\Delta|}A_j(P)A_{\kappa^{d-1}j}(P'),
 \]
@@ -1591,7 +1598,7 @@ making an angle in $[\arctan\frac12,\arctan2]$ with the axes. Cover $\Pi$ by $O(
 away from the axes, Lemma~\ref{lem:DS} in each coordinate (modulus $q$, length $w_0\ge\Xr/(2S^2)$) gives at most
 $\sum_{r\bmod q}\bigl((w_0/q)\rr(\log N)^C\bigr)^2=(w_0^2/q)\rr^2(\log N)^{2C}$ smooth points of $\Gamma_q$. Near the axes the filter
 $|n|,|n'|\ge\Xr/256$ removes everything. So each pair has at most $(M^2/\ell)\rr^2(\log N)^C$ admissible $g$. There are at most $200S^2$
-partners $P'$ per $P$ (they lie in the regular lattice $\Lambda_\ell((a,b))\cap[-V,V]^2$), and $\#\cP_\ell\le CV^2$. Dividing by $|\cG|\asymp M^2$ gives
+partners $P'$ per $P$: they lie in the lattice $\{P':\ell\mid\det(P,P')\}$, which is $\Lambda_\ell(g)$ for $g=(a,b)$ and contains $P\in\cP_\ell$, so it is regular and Lemma~\ref{lem:reg} applies, and $\#\cP_\ell\le CV^2$. Dividing by $|\cG|\asymp M^2$ gives
 $R_2\le CV^2S^2\ell^{-1}\rr^2(\log N)^C\le(\log N)^CS^4\rr^2$.
 \end{proof}
 
@@ -1637,7 +1644,7 @@ factorisation with positive degrees, since $r\nmid f_d$.
 \end{proof}
 
 \begin{lemma}[rejection events]\label{lem:reject}
-Under the raw law $\cA$, let $\cR$ be the union of the events: (i) no irreducibility certificate; (ii) $N\mid f'(m)$; (iii) the
+Under the raw law $\cA$, let $\cR$ be the event that $\gcd(g_1,N)=1$ and one of the following holds: (i) no irreducibility certificate; (ii) $N\mid f'(m)$; (iii) the
 content of $f$ equals $w$. Then $\Prob(\cR)\le\exp(-\log H/(13d\log\log H))+2/(2H+1)+1/W=L^{-\omega(1)}$. In particular $\Prob(\cR)\le\gamma/2$
 for large $N$, by Theorem~\ref{thm:Dk}.
 \end{lemma}
@@ -1938,7 +1945,7 @@ $O(\log N)$ bits (Lemma~\ref{lem:valuesizes}). Trial division of the two chosen 
 \begin{remark}
 Since $B\le S^2$ when $\theta\le1$, the batch costs $\tilde O(S^2)$ per box, the same as the enumeration. No smoothness test is
 probabilistic, and in particular no hyperelliptic curve method is used. (The published proof of the hyperelliptic
-curve method's running time \cite{lpp1993} refers to an unpublished third part; Lee--Venkatesan's congruence theorem relies on it.)
+curve method's running time \cite{lpp1993,lpp2002} defers details to a third part that has not appeared; Lee--Venkatesan's congruence theorem relies on it.)
 The Lenstra--Pomerance algorithm used in the shape test does not use the hyperelliptic method either; it uses the elliptic
 curve method on ``recognisable'' smooth numbers \cite[\S7]{lp1992}.
 \end{remark}
@@ -1993,13 +2000,16 @@ sections use only $\gcd(N',t)=1$ and $N'\mid F_A(g_0,g_1)$.
 
 \emph{Small $N'$.} Step~3 of FACTOR runs SPLIT and trial division in parallel, so its cost is at most twice the smaller of their costs. For
 $N'<N_0$, trial division bounds it by $O(\sqrt{N_0})=O(1)$. For $N'\ge N_0$, Proposition~\ref{prop:cost} bounds it by
-$L_{N'}^{(1+\theta)/\sqrt2+o(1)}\le L_N^{(1+\theta)/\sqrt2+o(1)}$. Here $N_0=N_0(d,k,\mu,\eta_0)$ is effective (it involves the effective constants of
-Facts~\ref{fact:Stark}--\ref{fact:LO} and of the smooth-number facts), but it need not be known to the algorithm.
+$L_{N'}^{(1+\theta)/\sqrt2+o(1)}\le L_N^{(1+\theta)/\sqrt2+o(1)}$. Here $N_0=N_0(d,k,\mu,\eta_0)$ is effective provided the constants $\eta_D,c_D,\delta_D$ of Fact~\ref{fact:D} are (Remark~\ref{rem:noN0});
+it involves the effective constants of
+Facts~\ref{fact:Stark}--\ref{fact:LO} and of the smooth-number facts, but it need not be known to the algorithm.
 
 \emph{Recursion.} Every call of SPLIT produces a proper factor, and the factorisation tree has fewer than $\log_2N$ internal nodes. So
 there are at most $\log_2N$ calls of SPLIT and of trial division, each on an integer $\le N$, plus polynomial bookkeeping. The bound of
-Proposition~\ref{prop:cost} is uniform in the input. To apply it to all smaller inputs at once, replace the $o(1)$ by a non-increasing
-envelope; this costs only a polylogarithmic factor. Hence the expected total time is $L_N^{(1+\theta)/\sqrt2+o(1)}$.
+Proposition~\ref{prop:cost} is uniform in the input: write its bound as $L_n^{c+\epsilon(n)}$ with $c=(1+\theta)/\sqrt2$ and $\epsilon(n)\to0$. For
+fixed $\epsilon>0$ there is $n_\epsilon$ with $\epsilon(n)\le\epsilon$ for $n\ge n_\epsilon$. So every call on an $N'\le N$ costs at most
+$C_\epsilon+L_N^{c+\epsilon}$, since $L_{N'}\le L_N$. Summing over at most $\log_2N$ calls, the expected total time is at most
+$\log_2N\,(C_\epsilon+L_N^{c+\epsilon})$ for every $\epsilon>0$, that is, $L_N^{c+o(1)}$.
 
 \emph{Uniformity.} All $L^{o(1)}$ factors are uniform in $N$: $(\log N)^{O(k)}$, $\binom{2k}k$, $2^{O(\omega(N))}$ (Lemma~\ref{lem:omega}),
 $\gamma^{-O(k)}$ (Theorem~\ref{thm:Dk}), and the Wiedemann and Hensel polylogarithms. No exceptional set of $N$ arises. The analytic inputs need
@@ -2078,7 +2088,8 @@ the constant $c$.
 \item \emph{The constant $1/\sqrt2$.} It comes from factoring two $\sqrt N$-size integers with Lenstra--Pomerance. A recursive variant that uses the
   algorithm itself as its shape test, if it could be made rigorous at all scales, would give the fixed point $c=\sqrt{(1+\sqrt2)\theta}$
   ($\approx0.851$ at $d=9$). We have not proved this.
-\item \emph{Practicality.} The constants (Stark, Landau, Lagarias--Odlyzko) are effective but astronomically large, and the algorithm is a vehicle for a
+\item \emph{Practicality.} The constants (Stark, Landau, Lagarias--Odlyzko) are effective but astronomically large (and the effectivity of
+  the constants of Drappeau's Lemme~5 is not stated in the literature; this affects only the threshold $N_0$, not Theorem~\ref{thm:main}), and the algorithm is a vehicle for a
   rigorous bound, not a practical method. The heuristic number field sieve is far faster.
 \item \emph{Below $L[1/2]$.} This architecture does not reach a rigorous $L[1/3]$. Bounded $k$ forces the $L[1/2,1/\sqrt2]$ shape test, and unbounded
   $k$ needs averaged estimates of a precision we cannot prove.
@@ -2318,8 +2329,9 @@ error at most $4eyz/(\pi T)$. Summing over at most $yz$ pairs per $p$, at most $
 at most $16ey^3z^2R^2/T\le3$. The main term is $(2\pi i)^{-1}\int_{c-iT}^{c+iT}A_p(\chi,s)B_p(\chi,s)z'^s\,ds/s$, with
 $A_p(\chi,s)=\sum_ma^{(p)}_m\chi(m)m^{-s}$ and $B_p$ similarly. For each $t$, Cauchy--Schwarz and Fact~\ref{fact:IK} give
 \[
-\sum_\chi w_\chi|A_pB_p|(c+it)\le(yM_1+4R^2)^{1/2}(z/M_1+4R^2)^{1/2}(yM_1)^{1/2}(z/M_1)^{1/2}\le y^{3/2}z+4y^{1/2}z^{1/2}R^2 .
+\sum_\chi w_\chi|A_pB_p|(c+it)\le(yM_1+4R^2)^{1/2}(z/M_1+4R^2)^{1/2}(yM_1)^{1/2}(z/M_1)^{1/2}\le y^{3/2}z+4y^{1/2}z^{1/2}R^2 ,
 \]
+because $M_1=z^{1/2}$ and $y\ge1$ give $(z/M_1+4R^2)\le(yM_1+4R^2)$ and $(yM_1)(z/M_1)=yz$.
 Also $\int_{-T}^T dt/|c+it|\le2/c+2\log T\le10\log(2zR)$ and $z'^c\le e$. Summing over $p\le y$ and adding the short part gives the bound.
 \end{proof}
 
