@@ -185,7 +185,7 @@ theorem showing that $c=1$ is a barrier for rigorous factoring itself.
 \subsection{The result}
 
 All our parameters are fixed: an odd degree $d\ge3$, an integer $k>(d+1)/4$, a rational base exponent
-$\mu$ and a slack $\eta_0>0$. Put $\nu=1/(4k)$ and
+$\mu$ and a rational slack $\eta_0>0$. Put $\nu=1/(4k)$ and
 \begin{equation}\label{eq:theta}
 h_*(\mu)=\max\bigl(2\nu,\ \mu-(d-2)\nu,\ 1-d\mu+\nu\bigr),\qquad
 \theta=\theta(d,k,\mu,\eta_0)=2\mu+h_*(\mu)+\eta_0+(d-1)\nu .
@@ -194,7 +194,7 @@ The parameters are \emph{admissible} if $\nu+\eta_0\le\mu<1$ and $\theta<1$.
 
 \begin{theorem}[main theorem, fixed parameters]\label{thm:main}
 For every admissible $(d,k,\mu,\eta_0)$ there is a Las Vegas algorithm which, given any integer $N\ge2$,
-outputs the complete prime factorisation of $N$. Its expected running time is
+outputs the complete prime factorisation of $N$. Its expected running time is at most
 \[
 L_N\bigl[1/2,\ (1+\theta)/\sqrt2+o(1)\bigr]\qquad(N\to\infty),
 \]
@@ -228,7 +228,7 @@ Table~\ref{tab:constants} lists exact values. The constant is below $1$ if and o
 \centering\small
 \begin{tabular}{@{}rcccccccc@{}}
 \toprule
-$d$ & least $k$ & $\theta$ there ($\eta_0\downarrow0$) & $c$ there & need $\eta_0<$ & $c$ at $k=50$ & $k=1000$ & $\inf_{k,\eta_0}c$\\
+$d$ & least $k$ & $\theta$ there ($\eta_0\downarrow0$) & $c$ there & need $\eta_0\lesssim$ & $c$ at $k=50$ & $k=1000$ & $\inf_{k,\eta_0}c$\\
 \midrule
 7  & 21 & $139/336$ & $0.99963$ & $0.00052$ & $0.98376$ & $0.97285$ & $0.97227$\\
 9  & 13 & $16/39$   & $0.99720$ & $0.00396$ & $0.93126$ & $0.91984$ & $0.91924$\\
@@ -241,7 +241,7 @@ $d\to\infty$ & & & & & & & $1/\sqrt2=0.70711$\\
 \end{tabular}
 \medskip
 \caption{The constant $c=(1+\theta)/\sqrt2$ of Theorem~\ref{thm:main} at the optimal $\mu$. ``Least $k$''
-is the least $k$ with $c<1$ for all sufficiently small $\eta_0>0$. At $d=9$, $k=13$: $\mu=17/156$,
+is the least $k$ with $c<1$ for all sufficiently small $\eta_0>0$; the exact condition is $\eta_0<\sqrt2-1-\theta$ (rounded in the table, e.g.\ $0.0039571\ldots$ at $d=9$). At $d=9$, $k=13$: $\mu=17/156$,
 $h_*=1/26$, and $(1+16/39)^2=3025/1521<2=3042/1521$; at $k=12$ the minimum is $\theta=23/54>\sqrt2-1$.
 For $d\le5$ the constant is never below $1$ ($d=5$: infimum $1.0607$). Computed in exact rational
 arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two referee rounds.}
@@ -254,7 +254,7 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   $(k,\eta_0)$. It is not attained, and we do not claim $L_N[1/2,(1+3/(d+1))/\sqrt2+o(1)]$ for any fixed
   $d$. That would require letting $k=k(N)\to\infty$. Our constants depend on $k$ through factors
   $(\log N)^{O(k)}$, $\binom{2k}{k}$ and thresholds $N_0(k)$, and we have not carried out such a
-  diagonalisation. At $d=9$ the best single algorithm of Theorem~\ref{thm:main} has $c\approx0.9972+\eta_0/\sqrt2$.
+  diagonalisation. At $d=9$ the first parameter choice below $1$ ($k=13$) has $c\approx0.9972+\eta_0/\sqrt2$; larger fixed $k$ give smaller constants (Table~\ref{tab:constants}), but none attains $0.9192$.
   (Corollary~\ref{cor:P}, which is still under audit, obtains a genuine $+o(1)$ by scheduling instead.)
 \item \emph{Complete factorisation.} The algorithm outputs the full factorisation, with every prime
   certified (AKS \cite{aks2004}). Prime powers, perfect powers and small prime factors are handled before the
@@ -412,7 +412,7 @@ Most components are known. We list them with the precise debt; the combination i
 \item \emph{Shape test.} Lenstra--Pomerance \cite{lp1992}, used as a black box.
 \end{itemize}
 We make no novelty claim beyond saying that we did not find this combination, or a rigorous
-$L_N[1/2,c]$ with $c<1$ (conditional or unconditional), in the literature.
+$L_N[1/2,c]$ with $c<1$ for factoring every integer (unconditional, or conditional on the generalised Riemann hypothesis), in the literature.
 
 \subsection{Organisation}
 Section~\ref{sec:notation} fixes notation and lists the published results we use, with their exact
@@ -463,7 +463,7 @@ For each $\varepsilon>0$, uniformly for $u\to\infty$ with $u\le(1-\varepsilon)\l
 $\Psi(x,x^{1/u})=x\,u^{-u(1+o(1))}$.
 \end{fact}
 
-\begin{fact}[Hildebrand--Tenenbaum {\cite[Thm.~3]{ht1986}}; {\cite[Fact~3.15]{lv2018}}]\label{fact:HT}
+\begin{fact}[Hildebrand--Tenenbaum {\cite[Thms.~2(i), 3]{ht1986}}; {\cite[Fact~3.15]{lv2018}}]\label{fact:HT}
 Put $u=\log x/\log y$. There is $\alpha=\alpha(x,y)$ such that, uniformly for $x\ge y\ge2$ and $1\le c\le y$,
 \[
 \Psi(cx,y)=\Psi(x,y)\,c^{\alpha}\Bigl(1+O\Bigl(\frac1u+\frac{\log y}{y}\Bigr)\Bigr),\qquad
@@ -495,7 +495,8 @@ Let $C\ge1$ be fixed. For $N\ge N_0(C,\xi_1,\xi_2,a)$ and $z_1\le z_2\le z_1B^{C
 
 \begin{proof}
 By Fact~\ref{fact:HT}, $\log(1+B/\log x)=\log B-\log\log x+O(\log x/B)$, so
-$(1-\alpha)\log B=\log\log x+O(\log\log B)=O(\log\log N)$; in particular $\alpha\to1$. For $1\le c\le B$,
+$(1-\alpha)\log B=\log\log x+O(\log\log B)=O(\log\log N)$; in particular $\alpha\to1$. Moreover $\alpha<1$: $\alpha$ solves
+$\sum_{p\le B}\log p/(p^\alpha-1)=\log x$, the left side is decreasing in $\alpha$, and at $\alpha=1$ it is $O(\log B)<\log x$. For $1\le c\le B$,
 Fact~\ref{fact:HT} gives $\varrho(cx)/\varrho(x)=c^{\alpha-1}(1+O(1/u))$, which lies between
 $B^{\alpha-1}(1-O(1/u))\ge(\log N)^{-O(1)}$ and $1+O(1/u)$. Writing $z_2/z_1$ as a product of at most $C+1$ factors in
 $[1,B]$ gives (i) and (ii), since $u\to\infty$ uniformly in range. For (iii), $\Psi(z_1(1+1/Z))-\Psi(z_1)=\Psi(z_1)\bigl((1+1/Z)^\alpha(1+O(1/u))-1\bigr)\ge\Psi(z_1)(\alpha/(Z+1)-O(1/u))$.
@@ -580,7 +581,7 @@ For $N\ge N_0(d,k,\mu,\eta_0)$:
 \end{proof}
 
 \noindent At $d=9$, $k=13$ the exponents are $\nu=1/52$, $\mu=17/156$, $h=1/26+\eta_0$; the rational
-cofactor has exponent $\mu-\nu=14/156$ and the algebraic value $\mu+h+d\nu=59/156+\eta_0$.
+cofactor has exponent $\mu-\nu=14/156$ and the algebraic value $\mu+h+d\nu=50/156+\eta_0$, which add up to $\theta=16/39+\eta_0$.
 
 \begin{lemma}[optimal $\mu$]\label{lem:optmu}
 At $\eta_0\downarrow0$, the minimum of $\theta$ over $\mu\in[\nu,1)$ is attained at $\mu=(1-\nu)/d$ with
@@ -600,7 +601,7 @@ at $\mu=(1-\nu)/d$ means $k<(d^2+1)/4$.
 
 \begin{lemma}[generalised base expansion; cf.\ {\cite[\S3]{blp1993}}]\label{lem:GB}
 Let $g_1\ge2$, $\gcd(g_0,g_1)=1$, $\gcd(g_1,N)=1$, and let $w$ be a prime with $w>g_1$. Put $T_d:=Nw$
-and, for $i=d,d-1,\dots,1$: let $a_i$ be the integer with $|a_i|\le g_1/2$ and $a_i\equiv T_ig_0^{-i}\pmod{g_1}$,
+and, for $i=d,d-1,\dots,1$: let $a_i$ be the integer with $-g_1/2<a_i\le g_1/2$ and $a_i\equiv T_ig_0^{-i}\pmod{g_1}$,
 and $T_{i-1}:=(T_i-a_ig_0^i)/g_1$. Put $a_0:=T_0$. Then the form $\hat F(x,y):=\sum_{i=0}^da_ix^iy^{d-i}$ satisfies
 $\hat F(g_0,g_1)=Nw$. If $g_0,g_1\in[M/2,M]$, then $|a_0|\le2^dNw/M^d+d2^{d-1}M$, and $a_d\not\equiv0\pmod{g_1}$.
 \end{lemma}
@@ -721,6 +722,8 @@ $\gcd(g_1,t)=b$ is possible). Such candidates never enter the moment sums.
 
 \begin{algorithm}[$\mathrm{SPLIT}(N)$; $N$ odd, all prime factors $>B$, not a prime power]\label{alg:split}
 \begin{enumerate}[label=\arabic*.]
+\item[0.] \emph{Guards.} If any structural prerequisite fails ($M<4$, $J=\emptyset$, $(W,2W]$ contains no prime, $H<1$, or $2X^2\ge N$), return FAIL
+  at once. This happens only for $N$ below an explicit bound, where the trial-division branch of FACTOR finishes the job.
 \item \emph{Field selection.} Repeat: $A\leftarrow\mathrm{SAMPLE\_FIELD}$; if $A$ is rejected, continue;
   $\mathrm{row}\leftarrow\mathrm{DESCEND\_ONCE}(A)$; if a row is returned, keep $A$ and go to step~2.
   (Any factor exit returns the factor.)
@@ -1092,7 +1095,9 @@ $\pi_J=N^{2\nu+o(1)}$), and Theorem~\ref{thm:K} applies. Hence
 $p\ge(\gamma/4)c_k'(\gamma/(4\log N))^{2k}2^{-\omega(N)}=L^{-o(1)}$, by Lemma~\ref{lem:omega} and because $k$ is fixed.
 
 (ii) Trials are i.i.d., so the number of trials until the outcome is a factor or a row is geometric with
-mean $1/p$. By Wald's identity the expected cost of selection is at most $C_{\rm trial}/p$. On a factor exit we are done.
+mean $1/p$. By Wald's identity the expected cost of selection is at most $C_{\rm trial}/p$. On a factor exit we are done; in
+particular, if $b=0$ the bound is $C_{\rm trial}/p$. Assume $b>0$, and let $M_{\rm rows}$ denote a deterministic upper bound for the row target (as in
+\eqref{eq:Mrows}).
 Otherwise the outcome is a row, and the kept field $A^*$ has law $\Prob[A^*\in dA]=\varsigma_A\Prob_\cA(dA)/b$. Given $A^*=A$, a
 round collects $M_{\rm rows}$ rows with an expected $M_{\rm rows}/\varsigma_A$ calls (or ends earlier with a factor), at expected cost at most
 $M_{\rm rows}C_{\rm trial}/\varsigma_A+\mathrm T_{\rm post}$. By Theorem~\ref{thm:DD} and Remark~\ref{rem:T}, each round that reaches its final gcd succeeds with
@@ -1217,7 +1222,7 @@ the proportion of smooth values in the layer is at least
 \frac{\rF}{3(\log N)^C}-\frac{|\hat F|/t+1}{y}\ \ge\ \frac{\rF}{3(\log N)^C}-C\varpi N^{-\eta_0/2}.
 \]
 \emph{Conclusion.} $\Prob_c\ge(1-3/\varpi)\bigl(\rF/(3(\log N)^C)-C\varpi N^{-\eta_0/2}\bigr)-3d^2V/(2H+1)$. Here $\rF=L^{-O(1)}$,
-$\varpi=L$ and $V/H\le N^{-\nu-\eta_0}$, so the error terms are negligible.
+$\varpi=L$ and $V/H\le N^{-\nu-\eta_0/2}$, so the error terms are negligible.
 \end{proof}
 
 \subsection{Bad moduli are rare}
@@ -1616,7 +1621,7 @@ has determinant $-\Delta\ne0$. Its image is the lattice $\Gamma_q=\{(n,n'):n'\eq
 ($b>2S^2\ge q$ is prime, so $b$ is a unit modulo $q$). Indeed $bG_g(P')-b'G_g(P)=-g_1\Delta$, so the image lies in $\Gamma_q$, and both lattices have index $q$.
 The image of $\cG$ lies in a parallelogram $\Pi$ of area $M^2q/(4\ell)$ inside $[-\Xr,\Xr]^2$, with one side of length $\asymp MV/\ell$ in a direction
 making an angle in $[\arctan\frac12,\arctan2]$ with the axes. Cover $\Pi$ by $O(qS^2)$ squares of side $w_0=M/V$. In a square $I_1\times I_2$
-away from the axes, Lemma~\ref{lem:DS} in each coordinate (modulus $q$, length $w_0\ge\Xr/(2S^2)$) gives at most
+away from the axes, Lemma~\ref{lem:DS} in each coordinate (modulus $q$, length $w_0\ge\Xr/(4S^2)$, since $V\VM\le2YS^2$) gives at most
 $\sum_{r\bmod q}\bigl((w_0/q)\rr(\log N)^C\bigr)^2=(w_0^2/q)\rr^2(\log N)^{2C}$ smooth points of $\Gamma_q$. Near the axes the filter
 $|n|,|n'|\ge\Xr/256$ removes everything. So each pair has at most $(M^2/\ell)\rr^2(\log N)^C$ admissible $g$. There are at most $200S^2$
 partners $P'$ per $P$: they lie in the lattice $\{P':\ell\mid\det(P,P')\}$, which is $\Lambda_\ell(g)$ for $g=(a,b)$ and contains $P\in\cP_\ell$, so it is regular and Lemma~\ref{lem:reg} applies, and $\#\cP_\ell\le CV^2$. Dividing by $|\cG|\asymp M^2$ gives
@@ -1752,7 +1757,7 @@ $|\sH|\le2^{d\,\omega(D)+d}h_K$, and $\log|\sH|=O_d(\log N)$.
 Let $W_0:=\{\gamma:\gamma\cO_K=\fa^2\}$ and $Y_0:=\cO_K^\times K^{\times2}$. Then $V_D\supset W_0\supset Y_0\supset K^{\times2}$. The map
 $V_D\to\bigoplus_{\fP\in S_D}\Z/2$, $\gamma\mapsto(\ord_\fP\gamma\bmod2)$, has kernel $W_0$. The map $W_0\to\mathrm{Cl}(K)[2]$,
 $\gamma\mapsto[\fa]$, is well defined (the ideal group is torsion-free) with kernel $Y_0$. And $Y_0/K^{\times2}\cong\cO_K^\times/\cO_K^{\times2}$ has order
-$2^{r_1+r_2}\le2^d$, since the only roots of unity are $\pm1$ ($d$ odd). Also $|S_D|\le d\,\omega(D)$. For the size: $\|f\|_\infty\le M(H+1)<N$ and
+$2^{r_1+r_2}\le2^d$, since the only roots of unity are $\pm1$ ($d$ odd). Also $|S_D|\le d\,\omega(D)$. For the size: $\|f\|_\infty\le3M(H+1)<N$ for large $N$ (Lemma~\ref{lem:GB}, the window floor and $\mu+h<1$), and
 $d$ is fixed, so $\log|D|$ and $\log|\disc g|$ are $O_d(\log N)$. Every ideal class contains an integral ideal of norm at most
 $\sqrt{|\Delta_K|}\le\sqrt{|\disc g|}$, and there are at most $X(1+\log X)^{d-1}$ integral ideals of norm at most $X$. So $\log h_K=O_d(\log N)$.
 \end{proof}
@@ -1817,13 +1822,15 @@ interval of Fact~\ref{fact:LO} contributes at most $x^{1-1/(4d!\log\bar\Delta)}=
 $x/(3\log x)$ prime ideals of $K$ with norm in $(x/2,x]$; those of degree $\ge2$ number at most $d\sqrt x$.
 
 \emph{Characters.} A degree-one prime $\fp=(r,\alpha-s)$ with $r\nmid D$ defines a quadratic character on $\sH$: $\chi_\fp(\fq):=$ the
-Legendre symbol modulo $\fp$ of a $\fp$-unit in the class $\gamma\fp^{-\ord_\fp\gamma}$, which is well defined on $V_D/K^{\times2}$.
+Legendre symbol modulo $\fp$ of the $\fp$-unit $\gamma\pi^{-\ord_\fp\gamma}$, for a representative $\gamma\in V_D$ and a uniformiser $\pi$ at $\fp$. Since
+$\ord_\fp\gamma$ is even, this does not depend on $\pi$, and it is well defined on $V_D/K^{\times2}$.
 On atoms, $\chi_\fp(a-b\alpha)=\bigl((a-bs)/r\bigr)$. The character columns are $\sum_\ell e_{i\ell}(1-\chi_{\fp_j}(a_{P_\ell}-b_{P_\ell}\alpha))/2\bmod2$,
 for independent samples $\fp_1,\dots,\fp_{t_\chi}$.
 
 \begin{lemma}[characters separate]\label{lem:X}
 For every field and every $\fq\in\sH\setminus(\mathsf E\cup\{0\})$, $\Prob_\fp[\chi_\fp(\fq)=-1]\ge1/(5d)$ for $N\ge N_0(d)$. With
-$t_\chi:=\lceil5d(\ln|\sH|_{\rm bd}+2\ln\log N)\rceil=O_d(\log N)$, where $|\sH|_{\rm bd}$ is the bound of Lemma~\ref{lem:H}, the probability that
+$t_\chi:=\lceil5d(\ln|\sH|_{\rm bd}+2\ln\log N)\rceil=O_d(\log N)$, where $|\sH|_{\rm bd}:=2^d|D|^dX_0(1+\log X_0)^{d-1}$ with $X_0:=\lceil\sqrt{|\disc g|}\,\rceil$ is a
+computable upper bound for $|\sH|$ (proof of Lemma~\ref{lem:H}, using $2^{\omega(D)}\le|D|$), the probability that
 $\sH_0:=\sH\cap\bigcap_j\ker\chi_{\fp_j}$ is not contained in $\mathsf E\cup\{0\}$ is at most $(\log N)^{-2}$. Otherwise $|\sH_0|\le2$.
 \end{lemma}
 
@@ -1870,7 +1877,8 @@ one $\epsilon$ with $\epsilon_1=+1$. A unit square root with prescribed residue 
 $\pm\eta$ since $p^e>2A_{\rm sq}$. NONSQUARE at step~2 is correct, since $\eta$ would reduce to a square in each residue field
 $\cO_K/\fP=\F_p[y]/(\phi_j)$ ($p$ is prime to the index). The coefficient bound: the conjugates satisfy $|\sigma_k(z)|\le\|z\|_1\mathrm{Mh}^{d-1}$ and
 $|g'(\beta_k)|\le g_{\rm d}$, so $|\sigma_k(\eta)|\le U^{1/2}$. The coefficients of $\eta$ are recovered with the inverse Vandermonde matrix,
-$(V^{-1})_{jk}=[y^j](g(y)/(y-\beta_k))/g'(\beta_k)$. Its numerators are at most $2^{d-1}\mathrm{Mh}$ in absolute value, and
+$(V^{-1})_{jk}=[y^j](g(y)/(y-\beta_k))/g'(\beta_k)$. Its numerators are the coefficients of $\prod_{j\ne k}(y-\beta_j)$, which are at most $2^{d-1}\prod_j\max(1,|\beta_j|)=2^{d-1}\mathrm{M}(g)\le2^{d-1}\mathrm{Mh}$ in absolute
+value (Mahler measure, $\mathrm M(g)\le\|g\|_2$), and
 $\prod_k|g'(\beta_k)|=|\disc g|\ge1$ gives $|g'(\beta_k)|\ge g_{\rm d}^{-(d-1)}$. (ii) The bound on $\log A_{\rm sq}$ is immediate. The cost
 consists of a product tree for $\Gamma$, Newton iteration doubling the precision with $O(d^2)$ multiplications per step, and $2^{d-1}=O(1)$ sign vectors.
 \end{proof}
@@ -1901,7 +1909,7 @@ certificates $(R_i,u_0,v_0,\text{atoms})$ and its own coins.
 \begin{proof}
 \emph{Kernel sampling.} The matrix has at most $M_{\rm rows}(2k\log_2N+t_\chi+2)$ nonzero entries. Wiedemann's method with the Kaltofen--Saunders preconditioners,
 run over $\F_{2^e}$ with $2^e\ge M_{\rm rows}^4$, returns a uniformly random kernel element of a black-box singular system in expected
-$O(M_{\rm rows}\cdot\#\text{entries}+M_{\rm rows}^2)$ field operations \cite[Thms.~2--4]{kaltofensaunders1991}. Here is how to sample uniformly from the binary
+$\tilde O(M_{\rm rows}\cdot\#\text{entries}+M_{\rm rows}^2)$ field operations \cite[Thms.~2--4]{kaltofensaunders1991}. Here is how to sample uniformly from the binary
 kernel. Draw $x$ uniform in $\F_2^{M_{\rm rows}}$, solve $A^\top y=A^\top x$ (padding $A^\top$ to a square matrix), and return the coordinate of $x-y$ at the basis
 element $1$ of a fixed $\F_2$-basis of $\F_{2^e}$. Given $A^\top x$, the vector $x$ is uniform on a coset of the kernel, and the solver sees only $A^\top x$; so
 the output is uniform on the binary kernel. Every output is verified. The kernel has dimension $r\ge12$, so two samples are independent with probability
@@ -2392,7 +2400,7 @@ Throughout, $y:=B=\lfloor L^a\rfloor$, and $S(z,y)$ is the set of $y$-smooth $n\
 $\varrho(z,y)=\Psi(z,y)/z$ and $\Psi(z,y;\chi)=\sum_{n\in S(z,y)}\chi(n)$. For $(a,q)=1$ put
 $E(z,y;q,a):=\Psi(z,y;q,a)-\Psi_q(z,y)/\varphi(q)$, and let $\Delta(q):=\varphi(q)^{-1}\sum_{\chi\ne\chi_0\bmod q}|\Psi(z,y;\chi)|$. Let
 $H(u):=\exp(u/\log^2(u+1))$ and $u=\log x/\log y$. Let $\alpha(z,y)$ be the Hildebrand--Tenenbaum saddle point. $\Pp(n)$ and
-$P^-(n)$ denote the largest and smallest prime factors.
+$P^-(n)$ denote the largest and smallest prime factors, with $P^-(1):=+\infty$.
 
 \emph{Regime (R).} Fix $a>0$, a compact $\Xi\subset(0,\infty)$ with $\xi_{\max}:=\max\Xi$, and $\lambda\in(0,1/4)$. Let
 $x$ be real with $\log x/\log N\in\Xi$. Put $K:=6+\lceil2\xi_{\max}/a^2\rceil$, $R_1:=y^K$, and
@@ -2515,8 +2523,8 @@ force the primes of $m$ to come first, and $m/\Pp(m)\le M_1<m$ fixes their numbe
 
 \begin{proof}
 (i) $j/\varphi(j)=\sum_{e\mid j}\mu^2(e)/\varphi(e)$, so the sum is at most $(1+\log X)\sum_e\mu^2(e)/(e\varphi(e))$, and
-$\sum_e\mu^2(e)/(e\varphi(e))=\zeta(2)\zeta(3)/\zeta(6)<1.95$. (ii) The Euler products are $\prod_p(1+2p^{-3/2})\le\exp(2\sum_pp^{-3/2})<e^{1.7}<6$ and
-$\prod_p(1+p^{-1/2}/(p-1))<6$. (iii) Fact~\ref{fact:RS} for $n\ge16$, and inspection for $n<16$.
+$\sum_e\mu^2(e)/(e\varphi(e))=\zeta(2)\zeta(3)/\zeta(6)<1.95$. (ii) Over squarefree $d$, $\sum_d1/(\varphi(d)d^{1/2})=\prod_p(1+p^{-1/2}/(p-1))\le\prod_p(1+2p^{-3/2})\le\exp(2\sum_pp^{-3/2})<e^{1.7}<6$; and
+$\sum_dd^{1-\beta-\beta'}/\varphi(d)\le\sum_dd^{-1/2}/\varphi(d)<6$ for $\beta,\beta'\ge3/4$. (iii) Fact~\ref{fact:RS} for $n\ge16$, and inspection for $n<16$.
 \end{proof}
 
 \begin{lemma}[density lower bound]\label{lem:E7}
@@ -2624,8 +2632,9 @@ $\Psi(x,y)\varrho(Q',y)\ge xy^{-2-2\xi_{\max}/a^2-o(1)}$. The first term is then
 at most $\Psi\varrho(Q')x^{-\lambda}y^{O(1)}$, since $Q'\le x^{1/2-\lambda}$.
 \end{proof}
 
-\noindent The argument works exactly at $y=L^{\Theta(1)}$. The large sieve needs $\log R_1\gtrsim u\log u$, while the small-conductor transfer
-costs $R_1^{1-\beta'}=\exp(\log R_1\cdot\log(u\log y)/\log y)$. Both are compatible with $\log R_1\asymp\log y$ precisely when $u\log u\asymp\log y$.
+\noindent The argument is tailored to regime (R). The large sieve needs $\log R_1\gtrsim u\log u$, while the small-conductor transfer
+costs $R_1^{1-\beta'}\le\exp\bigl(K[\log(u\log y)+C_\alpha\log\log y]\bigr)$ by ($\alpha2$). With $\log R_1\asymp\log y$ both are affordable when
+$u\log u\ll\log y$, which holds for $y=L^{\Theta(1)}$.
 
 \subsection{Proof of Lemma~\ref{lem:85gen}}
 
