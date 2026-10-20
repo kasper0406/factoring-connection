@@ -43,7 +43,7 @@ What we established:
    - Two independent facts give the same order:
      - the integer hull of {x, y > 0, xy ≥ N} has Θ(N^{1/3} log N) vertices, and every divisor is a
        vertex (KNOWN);
-     - Hiary needs "1/3 of the bits of p", the 2-D lattice (Rivest–Shamir) strength.
+     - Hiary needs "(1/3)·log₂N bits", i.e. 2/3 of the bits of p, the 2-D lattice (Rivest–Shamir) strength. *(Corrected by the orchestrator after topblock: the earlier text said "1/3 of the bits of p".)*
    - These are consistent readings, not one theorem. A claimed universal "curvature law" explaining
      Lehman and Rubinstein as well was rejected on review.
 2. **Reduction L_j, the floor-sum ladder (PROVED for each fixed j).**
