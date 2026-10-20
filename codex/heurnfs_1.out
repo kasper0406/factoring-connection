@@ -1,0 +1,338 @@
+**HEURISTIC verdict, under the assumptions below:** I found no defensible improvement beyond Coppersmith’s
+\[
+c_M=\frac{(92+26\sqrt{13})^{1/3}}3=1.9018836119\ldots
+\]
+for one fresh general integer, counting all classical computation. Strictly, Coppersmith already satisfies “\(c<1.902\)”; I interpret the challenge as improving his exact constant.
+
+## 1. State of the art, precisely
+
+**KNOWN.** Write \(t=\log N\), \(\ell=\log\log N\), \(D=t/\ell\), and
+\[
+L_N[\alpha,c]=\exp((c+o(1))t^\alpha\ell^{1-\alpha}).
+\]
+For uniform integers, the relevant smoothness estimate is
+\(\rho(u)=u^{-u(1+o(1))}\), \(u=\log X/\log B\). Applying it to polynomial values is an additional assumption. [Canfield–Erdős–Pomerance](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf).
+
+**HEURISTIC H.** Throughout the classical calculations:
+
+* Norms have uniform-integer smoothness probabilities at their stated sizes, including after imposed congruences.
+* Joint smoothness probabilities multiply up to \(\exp(o(t^{1/3}\ell^{2/3}))\).
+* Collected rows supply sufficient rank; square extraction and polynomial construction fit the stated cost; dependencies yield proper factors with probability bounded away from zero.
+
+Descent requires the stronger conditional assumption **HD**: the same estimates remain valid for targets and children selected by earlier descent steps, with total restart and branching overhead \(L[1/3,o(1)]\). H alone does not imply HD.
+
+**KNOWN — these are published heuristic bounds, not unconditional factoring theorems:**
+
+| Method | Constant/accounting |
+|---|---|
+| GNFS | \((64/9)^{1/3}=1.9230\) |
+| Coppersmith MNFS | \(c_M=1.9019\) |
+| Coppersmith factorization factory | \(1.6386\) per integer **after** shared precomputation \(2.0069\) |
+| Bernstein–Lange batch NFS | \(1.704\ldots\) amortized **circuit area–time per integer**, for a batch of \(L[1/3,0.5]\) integers |
+
+The factory and MNFS are different parameter choices. [Coppersmith, §§3–4](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf). Bernstein–Lange’s circuit has area \(L^{1.181\ldots}\), time \(L^{1.022\ldots}\), and the stated batch size; its 1.704 is not a single-integer RAM constant. [Batch NFS](https://eprint.iacr.org/2014/921).
+
+**HEURISTIC H — explicit GNFS optimisation.** Choose
+\[
+d=\delta D^{1/3},\quad m\asymp N^{1/d},\quad \|f\|_\infty\ll m,
+\quad E=L[1/3,e],\quad B=L[1/3,\beta].
+\]
+For \(|a|,|b|\le E\),
+\[
+|a-bm|\approx EN^{1/d},\qquad |F(a,b)|\approx E^dN^{1/d}.
+\]
+Their \(L[2/3]\) constants are \(1/\delta\) and \(\delta e+1/\delta\). Thus the joint smoothness penalty is
+\[
+P=\frac{\delta e+2/\delta}{3\beta}.
+\]
+Relations, enumeration, and sparse linear algebra give
+\[
+2e-P\ge\beta,\qquad C_G=\max(2e,2\beta).
+\]
+An explicit two-variable objective is
+\[
+C_G(\delta,\beta)=
+\max\left\{
+2\frac{\beta+2/(3\beta\delta)}{2-\delta/(3\beta)},\,2\beta
+\right\},\qquad \delta<6\beta .
+\]
+Its minimum has
+\[
+e=\beta=(8/9)^{1/3}=0.9615,\quad
+\delta=3^{1/3}=1.4422,\quad C_G=1.9230.
+\]
+At balance, \(3\beta^2=\delta\beta+2/\delta\); minimizing the right side gives the displayed solution.
+
+**HEURISTIC H — explicit MNFS optimisation.** Let
+\[
+V=L[1/3,v],\qquad B_{\rm alg}=B^\kappa,
+\]
+and define
+\[
+r=\frac1{3\delta\beta},\quad
+a=\frac{\delta e+1/\delta}{3\kappa\beta},\quad
+s=\max(\beta,\kappa\beta+v).
+\]
+Here \(s\) counts all factor-base columns, including every algebraic field. Rational prefiltering followed by algebraic tests gives
+\[
+2e+v-r-a\ge s,
+\qquad
+C_M=\max\{2e,\;2e-r+v,\;2s\}.
+\tag{M}
+\]
+For numerical minimisation, eliminate \(e\):
+\[
+e=\frac{s+r+1/(3\kappa\beta\delta)-v}
+        {2-\delta/(3\kappa\beta)}.
+\]
+The optimum is
+\[
+\begin{aligned}
+e=\beta=s&=0.9509418059,\\
+\delta&=1.4017532353,\\
+\kappa\beta&=0.8259092118,\\
+v&=0.1250325942,\qquad \kappa=0.8685170918 .
+\end{aligned}
+\]
+It satisfies \(r=2v\), \(a=\kappa\beta\), and gives \(C_M=1.9019\). This reproduces Coppersmith’s optimisation, including the charge for separate algebraic columns. [Original derivation](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf).
+
+**HEURISTIC H — factory accounting.** With GNFS’s relation constraint, replace the online objective by
+\[
+C_{\rm online}=\max(2e-r,2\beta).
+\]
+Its minimum is \(1.6386\), at \(e=1.0034,\beta=0.8193,\delta=1.1048\); precomputation costs \(2e=2.0069\). For \(L[1/3,m]\) suitable integers sharing the table, amortized cost is
+\[
+\max(2e-m,C_{\rm online}).
+\]
+For one fresh integer, the precomputation remains chargeable.
+
+**KNOWN — DL constants and their scope.** Kim–Barbulescu obtain exTNFS constant
+\[
+(48/9)^{1/3}=1.7472,
+\]
+and best-case MexTNFS constant
+\[
+\frac{3+\sqrt{3(11+4\sqrt6)}}{(18(7+3\sqrt6))^{1/3}}
+=1.7114.
+\]
+Special-characteristic variants attain \((32/9)^{1/3}=1.5263\). These require specified characteristic/extension-degree regimes and suitable divisors of the extension degree. [Kim–Barbulescu](https://eips-wg.github.io/EIPs/3068/assets/2015-1027_exTNFS.pdf).
+
+**KNOWN.** Sarkar–Singh’s earlier Algorithm C has best constant \(1.9230\) for power-of-two extension degrees; their later Algorithm D reaches the \(1.7472\) exTNFS envelope for suitable arbitrary composite extension degrees and improves parameter ranges for both exTNFS and MexTNFS. There is no universal “Sarkar–Singh constant” independent of field parameters. [Algorithm C](https://eprint.iacr.org/2016/485.pdf), [Algorithm D, published 2019](https://www.aimsciences.org/article/doi/10.3934/amc.2019028).
+
+**PROVED — why these are not factoring bounds.** Their input is a known field \(\mathbb F_{p^n}\), whose proper subfields permit coefficient sizes governed by quantities smaller than \(p^n\). A general factoring input \(N\) supplies neither that known characteristic nor that extension structure. Artificially extending \(\mathbb Z/N\mathbb Z\) adds coordinates; it does not turn \(N\) into a known prime-power field cardinality. Consequently, the cited hypotheses do not hold merely by substituting \(Q=N\).
+
+**KNOWN — Lee–Venkatesan’s exact achievement.** Their 2018 randomized NFS rigorously produces square congruences at the GNFS constant; their MNFS modification reproduces Coppersmith’s constant. Nontrivial factor extraction remains conditional: Theorem 2.3 uses Conjecture 7.1 for Blum semiprimes. It is not an unconditional \(L[1/3]\) factoring theorem. [Theorems 2.1–2.3, Remarks 2.7 and 4.4](https://arxiv.org/pdf/1805.08873).
+
+**KNOWN — search findings through 20 October 2026.** I found no validated 2018–2026 improvement on \(c_M\). Relevant hits include:
+
+* Stange’s 2022 relation-based factoring, explicitly slower than existing methods. [Paper](https://arxiv.org/abs/2211.06821).
+* Kirchner–Fouque’s parallelism/area–time improvements, not a smaller general factoring RAM constant. [Paper](https://eprint.iacr.org/2020/1619).
+* Schnorr’s 2021 claims of dramatically faster factoring. These are claims I found, not a verified replacement for the frontier; I could not validate a scalable relation-supply argument at the claimed cost. [Corrected submission](https://eprint.iacr.org/2021/933).
+* A 2021 polynomial-time ECM claim based on uniformity assumptions. Uniformity alone does not establish the required smoothness frequency. [Paper](https://arxiv.org/abs/2101.09151).
+* Umans–Wang’s 2025 conjectural \(N^{1/6+o(1)}\) deterministic target: this is exponential in input length, not \(L_N[1/6]\). [Paper](https://arxiv.org/abs/2511.10851).
+
+This is a literature-search result, not a proof that no further claim exists.
+
+## 2. Evaluation of the project’s devices
+
+**HEURISTIC convention.** “Unchanged” below means \(1.9230\) for the ordinary model, or \(1.9019\) when existing MNFS sharing is retained. “No finite constant” means the specified architecture does not obtain \(L[1/3,c]\) in this model—not an impossibility theorem for factoring.
+
+**KNOWN — Dixon descent, three-line description.**  
+Draw a hidden root \(r\), expose \(R=r^2\bmod N\), and reconstruct \(R=u/v\).  
+Descend the primes of \(uv\) through special-\(q\) relations.  
+This builds fruitful rows without requiring ordinary NFS dependencies to satisfy a separate fruitfulness conjecture. [Definition](../../notes/lemmaM_results.md).
+
+**PROVED — its fruitfulness benefit.** After removing even factors and prime powers, let \(N\) have \(\omega\ge2\) distinct prime factors. Conditional on \(R\), \(r\) is uniform on a fibre of size \(2^\omega\). If the transcript and dependency selection ignore which root was drawn, a dependency containing this row has root ratio uniform in \(\mu_2(\mathbb Z/N)\). Exactly two ratios are \(\pm1\); hence its proper-factor probability is \(1-2^{1-\omega}\).
+
+**HEURISTIC H+HD — cost effect.** At the bottom of a descent, let \(q=L[1/3,\gamma]\), \(\gamma\ge\beta\). A special-\(q\) lattice has only \(E^2/q\) candidates. Removing \(q\) changes neither norm’s leading \(L[2/3]\) constant. Therefore
+\[
+2e-\gamma\ge P,\qquad
+C_{\rm bottom}\ge\max(\beta+P,2\beta).
+\]
+The optimistic choice \(\gamma=\beta\) gives exactly the GNFS relation constraint and minimum **1.9230**. Earlier levels can add cost; the symmetry proof does not remove this balance.
+
+**HEURISTIC H+HD — one-level warning.** If the initial smoothness bound is \(B_1=L[\eta]\), splitting random reconstructed targets costs exponent \(1-\eta\). Optimizing special-\(q\) norm sizes gives exponent \((1+\eta)/2\). Runtime \(L[\alpha]\) requires
+\[
+1-\eta\le\alpha,\qquad (1+\eta)/2\le2\alpha,
+\]
+hence \(\alpha\ge2/5\). A single descent level has **no finite \(L[1/3]\) constant**.
+
+**KNOWN — Theorem K, three-line description.**  
+Restrict each reconstructed half to at most \(k\) primes from a field-dependent descendable set.  
+Averaging selects fields where that set has sufficient density.  
+Recognizing the accepted shape still requires factoring the reconstructed halves. [Theorem K](../../notes/hypD_results.md).
+
+**HEURISTIC — modified system.** The current design’s size constraints include
+\[
+\theta=2\mu+h+(d-1)\nu,\quad \nu=\frac1{4k},
+\]
+\[
+h\ge\max\{2\nu,\mu-(d-2)\nu,1-d\mu+\nu\}.
+\]
+For \(L[\alpha]\), polynomially small good-set density requires
+\[
+k\lesssim D^\alpha,\quad
+\theta\lesssim D^{2\alpha-1},\quad
+\theta\ge\frac3{d+1},\quad
+\theta\ge\frac{d+1}{4k}.
+\]
+Thus \(d\gtrsim D^{1-2\alpha}\), \(k\gtrsim D^{2-4\alpha}\), again forcing \(\alpha\ge2/5\). There is **no finite one-level \(L[1/3]\) constant**. Uniform density estimates in growing \(d,k\) are additional assumptions; fixed-degree statements cannot simply be substituted.
+
+**KNOWN — recursion, three-line description.**  
+Recursively factor auxiliary cofactors or reconstructed halves.  
+This changes the price of recognizing a candidate.  
+It does not automatically change the probability that the candidate supplies a relation. [Recursion note](../../notes/recurse_results.md).
+
+**HEURISTIC H — bounded large-prime variants.** Allow a bounded number \(j\) of primes up to \(B^A\), with fixed \(A\). Their removal changes \(u\) by \(O(1)\), so
+\[
+\log\frac{\rho(u-O(1))}{\rho(u)}=O(\log u)=o(t^{1/3}\ell^{2/3}).
+\]
+Cofactorization of \(B^{O(1)}\)-size integers is also subleading. Thus (M) is unchanged: **1.9019**. This conclusion does not cover an unbounded descent tree.
+
+**HEURISTIC — broader recursion can change constants.** The notes’ fixed-degree model instead has
+\[
+c\ge\max\left\{2a,\ a+\frac{\theta}{2a},\ a+\frac c{\sqrt2}\right\},
+\]
+whose minimum is \(\sqrt{(1+\sqrt2)\theta}\). At \(\theta=0.3\), this is **0.8510 at exponent \(1/2\)**. Therefore “recursion never changes a leading constant” is false; it supplies no demonstrated improvement at exponent \(1/3\).
+
+**KNOWN — multiplier, three-line description.**  
+Replace resultant \(N\) by \(Nw\).  
+The note uses independent \(w\) to spread a forced residue class.  
+Its purpose is controlling correlations, rather than reducing norms. [Multiplier design](../../notes/ldbound_results.md).
+
+**HEURISTIC H — optimisation.** For \(w=N^{\omega+o(1)}\), ordinary base expansion replaces \(1/\delta\) by \((1+\omega)/\delta\):
+\[
+P_w=\frac{\delta e+2(1+\omega)/\delta}{3\beta}.
+\]
+Rescaling gives
+\[
+C_G(w)=1.9230(1+\omega)^{1/3},\qquad
+C_M(w)=1.9019(1+\omega)^{1/3}.
+\]
+The infimum is at \(\omega=0\). Subpolynomial multipliers leave the leading constants unchanged. Many multipliers must pay for their searches and separate columns; reusing one rational sieve is already priced by (M).
+
+**KNOWN — 2D rational randomization, three-line description.**  
+Choose \(g=g_1x-g_0\) with both coefficients randomized.  
+Construct \(F(g_0,g_1)=N\), then randomize the algebraic polynomial.  
+The note improves rational pair-correlation control while preserving its size ledger. [Design](../../notes/pcest_results.md).
+
+**HEURISTIC H — optimisation.** Minimal balanced heights satisfy
+\[
+H_g,H_f\approx N^{1/(d+1)},\quad
+|G|\approx H_gE,\quad |F|\approx H_fE^d.
+\]
+At growing NFS degree, replacing \(d\) by \(d+1\) is lower order. The GNFS system is unchanged: **1.9230**, or **1.9019** with MNFS. Proof-oriented coefficient inflation can increase the norm coefficient; it cannot lower this optimum.
+
+**PROVED — multiple rational sides are constrained.** Two linear forms \(a_ix-b_i\) with the same root modulo \(N\), and invertible \(a_i\bmod N\), satisfy
+\[
+N\mid a_1b_2-a_2b_1.
+\]
+If their heights obey \(2H_1H_2<N\), the determinant must be zero. Thus independent rational sides of NFS’s subpolynomial heights cannot freely share the same evaluation map.
+
+**KNOWN — batch smoothness, three-line description.**  
+Enumerate a complete candidate batch.  
+Use product/remainder trees to extract all \(B\)-smooth parts.  
+This replaces individual ECM tests without increasing the number of smooth values. [Project implementation argument](../../notes/lv6_results.md), [Bernstein’s algorithm](https://cr.yp.to/factorization/smoothparts-20040510.pdf).
+
+**PROVED — recognition and cost.** For \(P_B=\prod_{p\le B}p\) and sufficiently large \(K\),
+\[
+\gcd(x,P_B^K)
+\]
+is exactly the \(B\)-smooth part of \(x\): every required prime power divides \(P_B^K\), and no other prime does. Trees process a batch of \(M\) polynomial-bit-length values in \(\widetilde O(B+M\log X)\).
+
+**HEURISTIC H — optimisation.** The added MNFS setup exponents are at most \(\beta\) and \(\kappa\beta+v\):
+\[
+C_{\rm batch}=\max(C_M,\beta,\kappa\beta+v)=C_M.
+\]
+The optimum stays **1.9019**. Candidate supply and \(L[1/3,2s]\) linear algebra remain unchanged.
+
+**KNOWN — the two structural proposals, three lines each.**  
+Entropy–height separation seeks many search coordinates without proportional evaluation-height growth.  
+Generic higher-dimensional elements fail this separation.  
+Section 3 gives the missing inequality; no construction fixes its constant.
+
+Witt lifting starts with small-characteristic elimination identities.  
+It records the integer carries needed to lift them.  
+Section 3 identifies the missing bound on their aggregate size. [Both proposals](../../r20_wild.out).
+
+## 3. Structurally new attempts below \(1/3\)
+
+**PROVED — resultant constraint.** Suppose \(f,g\in\mathbb Z[x]\), of degrees \(d,e\), share a root modulo \(N\), and \(\operatorname{Res}(f,g)\ne0\). The resultant Bézout identity gives
+\[
+N\mid\operatorname{Res}(f,g).
+\]
+Hadamard’s inequality on the Sylvester matrix gives
+\[
+N\le|\operatorname{Res}(f,g)|
+\le
+(\sqrt{d+1}H_f)^e(\sqrt{e+1}H_g)^d.
+\tag{R}
+\]
+For linear \(g\), directly evaluating the homogeneous form yields
+\[
+N\le(d+1)H_fH_g^d.
+\]
+
+**PROVED — limitation of that argument.** Neither (R) nor Minkowski proves a universal
+\(H_fH_g\ge N^{2/(d+1)}\). The resultant weights the heights asymmetrically. The polynomial evaluation lattice has determinant \(N\), but Minkowski supplies existence bounds, not a universal lower bound on two selected heights. Nor does a height bound lower-bound every individual polynomial value.
+
+**HEURISTIC — balanced generic construction.** Assuming both heights have scale \(N^{1/(d+1)}\), typical two-sided values have product
+\[
+X\approx N^{2/(d+1)}E^{d+1}.
+\]
+That is the familiar “\(N^{2/(d+1)}\)-ish” quantity. It is a construction/model statement, not a proved universal optimum.
+
+**PROVED conditional on this size model — origin of \(1/3\).** Let search entropy have logarithmic size \(C\asymp\Lambda_\alpha=t^\alpha\ell^{1-\alpha}\). The generic ledger is
+\[
+\log X\asymp t/d+dC\ge2\sqrt{tC}.
+\]
+Thus \(X\) has exponent \((1+\alpha)/2\). Smoothing at \(B=L[\alpha]\) costs exponent \((1-\alpha)/2\); fitting inside \(L[\alpha]\) requires
+\[
+(1-\alpha)/2\le\alpha,\qquad \alpha\ge1/3.
+\]
+This is a barrier for that ledger, not a lower bound for arbitrary factoring algorithms.
+
+**HEURISTIC — higher-dimensional/toric attempt.** The note’s generic ledger
+\[
+\log X\approx rt/d+(d/r)C
+\]
+reduces to \(t/d'+d'C\), with \(d'=d/r\). Extra dimensions alone do not change the barrier. The proposed breakthrough would instead require the **aggregate two-sided** bound
+\[
+\log X\ll t/d+(d/r)C.
+\]
+Then \(d\asymp D^{1/2},r\asymp D^{1/4},C\asymp\Lambda_{1/4}\) gives \(\log X=O(\Lambda_{1/2})\), compatible with \(L[1/4]\) smoothing. Missing: a constructible family satisfying this bound, including denominators, with sufficient search entropy and relation rank.
+
+**HEURISTIC — why no numerical constant exists yet.** If such a family supplied aggregate norm \(L[1/2,h]\), quasi-linear candidate generation, and ordinary relation supply, its formal objective would be
+\[
+\min_{\beta>0}\max\left\{\beta+\frac h{4\beta},2\beta\right\}
+=\sqrt h.
+\]
+The proposal supplies neither an achievable \(h\) nor a candidate-enumeration bound. Reporting four decimal places would invent missing data.
+
+**KNOWN.** Fixed-characteristic finite-field DL has a proved quasi-polynomial expected algorithm. It uses finite-field structure, rather than generic integer smoothness alone. [Kleinjung–Wesolowski](https://arxiv.org/abs/1906.10668).
+
+**HEURISTIC — descent and function-field barrier.** Small-characteristic elimination exploits Frobenius and a known field of definition. Over \(\mathbb Z\), powering introduces cross terms and carries; the unknown prime factors of \(N\) provide different, unknown characteristics. Nested integer descent therefore needs HD and contracting norm bounds. The notes’ nested size model can reach \(1/3\); it supplies no mechanism crossing below it.
+
+**PROVED — naive Witt transplant fails.** A unital homomorphism
+\[
+\mathbb Z/p^k\mathbb Z\longrightarrow\mathbb Z/N\mathbb Z
+\]
+requires \(N\mid p^k\), because it must send \(p^k\cdot1=0\) to zero. For \((p,N)=1\), no such map exists. An identity-with-corrections construction remains conceivable, but is additional mathematics.
+
+**HEURISTIC — carry requirement.** To obtain the proposed \(1/4\) exponent, aggregate carry norms must be \(L[1/2,h]\), giving the same formal \(\sqrt h\) objective above. Ordinary \(N^{\Theta(1)}\)-size corrections instead require smoothing exponent at least \(1/2\). No carry-compression construction establishes the required \(h\).
+
+**KNOWN / HEURISTIC distinction — lattice approaches.** Coppersmith’s theorem finds sufficiently small roots of supplied polynomials. [Original paper](https://citeseerx.ist.psu.edu/document?doi=e3e49df9da4ee17c8ee37e7104177331bb14af99&repid=rep1&type=pdf). A factoring improvement must additionally supply suitable polynomials, roots, and independent relations within budget. Assuming Gaussian short-vector behaviour does not by itself establish smooth residuals or their independence.
+
+## 4. Best candidate and adversarial verdict
+
+**HEURISTIC verdict under H:** none of the examined variants survives as an improvement on \(c_M\), and none supplies a credible exponent below \(1/3\).
+
+**HEURISTIC ranking of near misses:**
+
+1. **Factory:** a real \(1.6386\) online bound, defeated here by chargeable precomputation.
+2. **Batch NFS:** a real \(1.704\ldots\) amortized area–time bound, with different accounting.
+3. **Nested Dixon descent:** useful fruitfulness structure; its optimistic size model reaches \(1/3\), while conditional child distributions and total costs remain essential.
+4. **Entropy–height separation:** the clearest proposed route to \(1/4\), but its defining arithmetic construction is missing.
+5. **Witt carry compression:** additionally faces the proved characteristic obstruction and an unbounded correction ledger.
+
+**KNOWN — numerical audit:** the scratch [optimiser](/Volumes/git/factoring-connection/codex/scratch/heurnfs_1/optimize.py) and [results](/Volumes/git/factoring-connection/codex/scratch/heurnfs_1/optimization_results.json) reproduce GNFS, MNFS, and factory constants. Repository sources were left unchanged.
