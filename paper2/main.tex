@@ -4,6 +4,7 @@
 % notes/pcest_results.md (Lemma GB, FM, Lemma 8.5', Lemma DS, Theorem R, Lemma Kern),
 % notes/lv6_results.md (post-processing, Lemma IR, batch smoothness),
 % notes/ldbound_results.md (design (a'''_k; mu), Lemma W, Theorem L2_fam, Theorem LD*).
+% notes/lem85_results.md (self-contained proof of Lemma 8.5', Appendix A).
 \documentclass[11pt]{amsart}
 
 \usepackage[utf8]{inputenc}
@@ -108,7 +109,7 @@ root $r$ is never used, every dependency is fruitful with probability $1-2^{1-\o
 the halves $u,v$ are completely factored with the Lenstra--Pomerance algorithm at cost $L_{\sqrt
 N}[1/2,1]=L_N[1/2,1/\sqrt2]$, rather than being combined. Third, the supply of relations is reduced
 to a single averaged estimate, which we prove by the Paley--Zygmund inequality from a first moment (a
-restricted Bombieri--Vinogradov theorem of Lee--Venkatesan/Harper type) and a second moment. The
+restricted Bombieri--Vinogradov theorem for the moduli $\ell\cdot(\text{smooth})$, in the spirit of Lee--Venkatesan) and a second moment. The
 second moment is made tractable by randomising the rational side in two dimensions and by a random
 prime multiplier $w$ of the resultant, $F(g_0,g_1)=Nw$, which spreads a forced residue class.
 It is then proved with divisor switching and the large sieve. Fourth, the number field sieve
@@ -123,10 +124,9 @@ degree, and batch smoothness detection removes any dependence on the hyperellipt
 \footnote{This manuscript has not been peer reviewed. Its proofs were written and checked with
 substantial AI assistance (see the Acknowledgements). They have been checked by AI referees only,
 and not by any human referee.}
-Do not distribute. The author field is intentionally blank. One step, Part~1 of the proof of
-Lemma~\ref{lem:85}, currently imports a bound established inside the proof of a published lemma
-(Lee--Venkatesan, Lemma~8.5) rather than its statement; see Appendix~\ref{app:85} and the TODO box there.
-A self-contained replacement is being written.}}
+Do not distribute. The author field is intentionally blank. All inputs are published, numbered
+statements. One of them, Drappeau's Lemme~5 (used in Appendix~\ref{app:85}), has a published proof that refers to
+computations in an unpublished preprint of Harper; see the discussion at the start of Appendix~\ref{app:85}.}}
 \end{center}
 
 \tableofcontents
@@ -166,8 +166,9 @@ Rigorous analysis has a separate history.
   congruences of squares in expected time $L_N[1/3,(64/9)^{1/3}+o(1)]$. Whether these congruences yield
   a factor is left to a conjecture (their Conjecture~7.1), and their factoring conclusion is
   stated for $N=pq$ with $p\equiv q\equiv3\pmod 4$. Their techniques for the first moment of smooth
-  values (a restricted Bombieri--Vinogradov estimate for smooth moduli built on Harper's work
-  \cite{harper2012}) and for the post-processing (random characters, Stark--Landau) are used here.
+  values (a randomisation that makes algebraic values nearly uniform on long progressions, and a restricted
+  Bombieri--Vinogradov estimate for smooth moduli built on Harper's work \cite{harper2012}) and for the post-processing
+  (random characters, Stark--Landau) are the models for ours.
 \end{itemize}
 There is also a folklore heuristic that $L[1/2,1]$ is a natural barrier for methods that combine random-like
 auxiliary integers of size at least $N^{1/2}$ into a square. Croot, Granville, Pemantle and Tetali
@@ -253,8 +254,11 @@ arithmetic by \texttt{src/thmA/params.py}; independently re-derived in two refer
   (Section~\ref{sec:uniform}).
 \item \emph{No hypotheses, no exceptional set.} Nothing is assumed beyond published theorems. In
   particular no Riemann hypothesis, no hyperelliptic curve method (whose published proof trail is
-  incomplete), and no exceptional set of $N$. The constants are effective but enormous, because Stark's, Landau's and
-  Lagarias--Odlyzko's effective constants enter. The bound holds for every $N$, not on average.
+  incomplete), and no exceptional set of $N$. Every input is a published, numbered statement. One of them,
+  Drappeau's Lemme~5, has a published proof that points to computations in Harper's unpublished preprint
+  (Appendix~\ref{app:85}). The threshold beyond which the time bound holds involves Stark's, Landau's and
+  Lagarias--Odlyzko's effective constants, so it is effective but enormous; the algorithm itself uses no analytic
+  constant (Remark~\ref{rem:noN0}). The bound holds for every $N$, not on average.
 \item \emph{Status.} The proof is new and has not been peer reviewed. It is long and rests on several
   delicate interfaces, so it should be treated with caution until experts have checked it.
 \end{enumerate}
@@ -362,10 +366,13 @@ Most components are known. We list them with the precise debt; the combination i
   the leading coefficient \cite[\S\S6,8,9,12]{blp1993}, the last after Weinberger--Rothschild \cite{weinbergerrothschild1976}. It also follows
   Lee--Venkatesan's rigorous treatment of characters through Stark and Landau \cite[\S6]{lv2018}. What we add
   is the fixed-degree specialisation with explicit bounds (Section~\ref{sec:lv6}).
-\item \emph{Randomised NFS and the first moment.} The randomisation $f=\hat f+(x-m)R$ and the restricted Bombieri--Vinogradov
-  estimate for smooth moduli are due to Lee--Venkatesan \cite[\S\S5,8]{lv2018}, building on Harper's
-  Bombieri--Vinogradov and Barban--Davenport--Halberstam theorems for smooth numbers \cite{harper2012}. Our Lemma~\ref{lem:85} adapts
-  their Lemma~8.5 to the moduli $\ell\cdot(\text{smooth})$.
+\item \emph{Randomised NFS and the first moment.} The randomisation $f=\hat f+(x-m)R$ and the use of a restricted
+  Bombieri--Vinogradov estimate over smooth moduli are due to Lee--Venkatesan \cite[\S\S5,8]{lv2018}, building on Harper's
+  Bombieri--Vinogradov and Barban--Davenport--Halberstam theorems for smooth numbers \cite{harper2012}. Our Lemma~\ref{lem:85} is the
+  analogue for the moduli $\ell\cdot(\text{smooth})$. Its proof (Appendix~\ref{app:85}) is self-contained apart from one published lemma
+  of Drappeau \cite[Lemme~5]{drappeau2015} (also Pascadi \cite[Lemma~3.2]{pascadi2025}) for characters of small conductor, and
+  the classical large sieve \cite[Thm.~7.13]{ik2004}. Our one-point smoothing Lemma~\ref{lem:smooth1} replaces Lee--Venkatesan's
+  Lemmas~5.13--5.20.
 \item \emph{Second moment.} Lemma~\ref{lem:DS} is a progression form of the standard flexible factorisation
   of smooth numbers \cite{friedlander1981,hildebrand1985} (cf.\ \cite[Smooth Numbers Result~3]{harper2016}). Theorem~\ref{thm:L2} follows
   the classical large-sieve route to Barban--Davenport--Halberstam upper bounds \cite{gallagher1967,montgomery1970}, with a
@@ -493,8 +500,8 @@ $\sum_{m\le Q}\sum_{(b,m)=1,\,b\bmod m}\bigl|\sum_Fa_Fe(bF/m)\bigr|^2\le(K+Q^2)\
 For $1\le q<y$ and $(a,q)=1$, $\pi(x+y;q,a)-\pi(x;q,a)<2y/(\varphi(q)\log(y/q))$.
 \end{fact}
 
-\noindent The restricted Bombieri--Vinogradov input (Lee--Venkatesan's Lemma~8.5 and Harper's
-Proposition~2) is stated in Appendix~\ref{app:85}. The number-field inputs (Lagarias--Odlyzko, Stark,
+\noindent The inputs for the restricted Bombieri--Vinogradov estimate (Drappeau's Lemme~5, de la
+Bret\`eche--Tenenbaum's local bound, and the multiplicative large sieve) are stated in Appendix~\ref{app:85}. The number-field inputs (Lagarias--Odlyzko, Stark,
 Landau) are stated in Section~\ref{sec:lv6}.
 
 %======================================================================
@@ -682,7 +689,8 @@ $\gcd(g_1,t)=b$ is possible). Such candidates never enter the moment sums.
 \item Trial-divide $N$ by all primes $\le B(N)$. Record the primes found, and let $N'$ be the cofactor. If $N'=1$,
   stop. If $N'$ is prime or a perfect power, handle it as in step 1.
 \item Run $\mathrm{SPLIT}(N')$ and trial division of $N'$ in parallel, alternating steps, until one returns a
-  proper factor $g$ of $N'$. (Dovetailing removes the need to know the threshold $N_0$ of the analysis.)
+  proper factor $g$ of $N'$. (This alternation removes the need for any branch ``$N'<N_0$'': the algorithm then uses no analytic
+  constant at all, and pays at most a factor $2$ in expected time; see Remark~\ref{rem:noN0}.)
 \item Return $\mathrm{FACTOR}(g)$ merged with $\mathrm{FACTOR}(N'/g)$, together with the primes from step 2.
 \end{enumerate}
 \end{algorithm}
@@ -826,7 +834,7 @@ The proof of Theorem~\ref{thm:main} has three parts. Figure~\ref{fig:deps} shows
   x=3.15cm,y=1.45cm]
 \node[box] (SETUP) at (1,1) {\S\ref{sec:algorithm}: field law, sizes, \eqref{eq:forced}, regularity};
 \node[pub] (LS) at (4,1) {large sieve, Brun--Titchmarsh};
-\node[pub] (LV) at (0,0) {LV Lemma 8.5 (proof), Harper Prop.~2};
+\node[pub] (LV) at (0,0) {Drappeau Lemme~5, large sieve};
 \node[box] (L85) at (1,0) {Lemma~\ref{lem:85} restricted BV};
 \node[box] (FM) at (2,0) {Thm~\ref{thm:FM} first moment};
 \node[box] (L2) at (3,0) {Thm~\ref{thm:L2} $L^2$ family bound};
@@ -848,9 +856,8 @@ The proof of Theorem~\ref{thm:main} has three parts. Figure~\ref{fig:deps} shows
 \draw[arr] (K)--(LV6); \draw[arr] (NT)--(LV6); \draw[arr] (LV6)--(MAIN); \draw[arr] (DD)--(MAIN);
 \draw[arr] (LP)|-(MAIN);
 \end{tikzpicture}
-\caption{Dependencies. Shaded boxes are published results. The single place where the argument relies on the
-interior of a published proof, rather than on a published statement, is the arrow from ``LV Lemma 8.5
-(proof)'' to Lemma~\ref{lem:85} (see Appendix~\ref{app:85}).}
+\caption{Dependencies. Shaded boxes are published results, used only through their statements. Drappeau's Lemme~5 is
+published, but its proof refers to computations in Harper's unpublished preprint (Appendix~\ref{app:85}).}
 \label{fig:deps}
 \end{figure}
 
@@ -1190,7 +1197,8 @@ $\varpi=L$ and $V/H\le N^{-\nu-\eta_0}$, so the error terms are negligible.
 
 \subsection{Bad moduli are rare}
 The next lemma is a restricted Bombieri--Vinogradov estimate for moduli of the form $\ell\cdot(\text{smooth})$.
-It adapts Lee--Venkatesan's Lemma~8.5 \cite{lv2018}, and its proof is in Appendix~\ref{app:85}.
+It is the analogue of Lee--Venkatesan's Lemma~8.5 \cite{lv2018} for these moduli. Its proof, in Appendix~\ref{app:85}, does not use
+that lemma; it rests on the exact identity of Lemma~\ref{lem:E2}, the large sieve, and Drappeau's Lemme~5.
 
 \begin{lemma}[restricted BV for the moduli $\ell s$; ``Lemma~8.5$'$'']\label{lem:85}
 Fix $\xi>0$ and $q_0$ with $2\nu<q_0<\xi/2$. Let $x=N^{\xi+o(1)}$ and $Q=N^{q_0+o(1)}$, and let
@@ -1201,7 +1209,7 @@ Then, uniformly in such $x,Q$,
 \[
 \sum_{t\in\cT_Q}\ \max_{(r,t)=1}\Bigl|\Psi(x;t,r)-\frac{\Psi_t(x)}{\varphi(t)}\Bigr|\ \le\ \varepsilon_N\,\Psi(x)\,\frac{\#\cT_Q}{Q},
 \]
-where $\varepsilon_N=O\bigl(e^{-cu/\log^2u}+B^{-c}+N^{-c}\bigr)$ for some fixed $c>0$, with $u=\log x/\log B$. In particular
+where $\varepsilon_N=C\exp\bigl(-c_0(\log N)^{1/2}(\log\log N)^{-5/2}\bigr)$ for some fixed $C,c_0>0$. In particular
 $\varepsilon_N(\log N)^{A}\to0$ for every fixed $A$.
 \end{lemma}
 
@@ -2059,8 +2067,10 @@ the constant $c$.
 %======================================================================
 
 \begin{itemize}
-\item \emph{Not refereed.} The proof was produced and checked with AI assistance only (see the Acknowledgements). Several reviewers
-  independently identified Part~1 of the proof of Lemma~\ref{lem:85} as the weakest link (Appendix~\ref{app:85}). The second moment
+\item \emph{Not refereed.} The proof was produced and checked with AI assistance only (see the Acknowledgements). An earlier version of
+  Lemma~\ref{lem:85} imported a bound from inside the proof of Lee--Venkatesan's Lemma~8.5; reviewers named it the weakest link,
+  and it has been replaced by the self-contained proof of Appendix~\ref{app:85}. The one remaining external input there, Drappeau's
+  Lemme~5, is published, but its proof refers to an unpublished preprint of Harper. The second moment
   (Theorem~\ref{thm:LD}) is the most novel analytic component, and the field-selection bookkeeping (Proposition~\ref{prop:select}) is
   the most delicate probabilistic one.
 \item \emph{Infimum versus a single algorithm.} At fixed $d$ we prove $(1+\theta)/\sqrt2+o(1)$ for each fixed $k$; the infimum over $k$ is not attained.
@@ -2107,75 +2117,299 @@ No human has checked the proofs line by line. AI review is not peer review.
 %======================================================================
 \appendix
 \section{Proof of Lemma~\ref{lem:85}}\label{app:85}
-%======================================================================
 
-\TODO{\textbf{Part 1 below is not self-contained.} It uses a bound for Lee--Venkatesan's character majorant $\mathcal W$
-(their equation (8.2)) that is established \emph{inside the proof} of their Lemma~8.5 \cite[\S8]{lv2018}. The published
-\emph{statement} of that lemma bounds only the smaller max-residue sum. That proof in turn relies on Harper's Facts 8.8--8.12 (a
-preprint, \cite{harper2012}) and on a treatment of Siegel/Page characters, which we use at $u\asymp(\log N/\log\log N)^{1/2}$. Two independent
-analytic referees checked this import against the sources and found it valid in our regime: the ranges hold with fixed power margins, and
-$u/\log^2u\gg\log\log x$, so the logarithmic losses are absorbed. Both nevertheless named it the weakest link of the whole argument. A self-contained proof of Part~1,
-which does not rely on the interior of Lee--Venkatesan's proof, is being written (project agent \texttt{lem85}) and will replace this
-paragraph.}
+This appendix gives a self-contained proof of Lemma~\ref{lem:85}. It does not use Lee--Venkatesan's Lemma~8.5,
+neither its statement nor its proof. It also does not use Harper's preprint \cite{harper2012} directly.
+\begin{itemize}
+\item For moduli $t=\ell s$ with $\ell$ a prime $>B$, the part of the error coming from characters principal at $\ell$ is
+  \emph{exactly} the error modulo $s$ divided by $\ell-1$ (Lemma~\ref{lem:E2}). So we need a restricted Bombieri--Vinogradov estimate over
+  smooth moduli with a relative saving, which we prove as Lemma~\ref{lem:SM}.
+\item Characters of large conductor are handled by the classical multiplicative large sieve and a Perron bound (Lemma~\ref{lem:LS}).
+\item Characters of small conductor are handled by one published lemma of Drappeau (Fact~\ref{fact:D}).
+\end{itemize}
+The proof follows the project note \texttt{notes/lem85\_results.md}, which was checked by one GPT-6.1-sol and two Claude referees.
 
-\begin{fact}[Lee--Venkatesan {\cite[Lemma~8.5 and its proof, eq.~(8.2)]{lv2018}}]\label{fact:LV85}
-Fix $\varepsilon>0$. There are effective constants $K,c>0$ such that for $(\log x)^K<y<x^{1/\log\log x}$, $u=\log x/\log y$,
-$x^\varepsilon\le Q\le\sqrt{\Psi(x,y)}$, and $\omega_0\to\infty$ with $\omega_0=y^{O(1)}$,
-\begin{multline*}
-\mathcal W(Q):=\sum_{\substack{r\in[Q/\omega_0,Q]\\ \Pp(r)\le y}}\frac1{\varphi(r)}\sum_{\chi\bmod r,\ \chi\ne\chi_0}|\Psi(x,y;\chi)|\\
-\ll\ \Psi(x,y)\varrho(Q,y)\bigl(e^{-cu/\log^2u}+y^{-c}\bigr)+Q\sqrt{\Psi(x,y)}\log^{7/2}x .
-\end{multline*}
+\paragraph{Honest statement of the one external input.} Fact~\ref{fact:D} is a published, numbered statement:
+Drappeau \cite[Lemme~5]{drappeau2015}, restated by Pascadi \cite[Lemma~3.2]{pascadi2025}. In both sources, however, its proof
+consists of a reference to the computations of \S3.3 of Harper's preprint \cite{harper2012}, which has not been published. Drappeau
+writes ``il d\'ecoule des calculs de la section~3.3 de [Har12b]''. Our argument never enters the preprint, but the preprint stands
+behind that published statement. Removing it would mean re-proving Harper's zero-density and zero-free-region analysis of
+$\Psi(x,y;\chi)$, with Page's theorem, and we have not done that. We apply Fact~\ref{fact:D} with $A=1/2$ and discard the factor
+$(\log x)^{-A}$. So Siegel's theorem is never needed, and only the effective part of Harper's computation is involved.
+
+\subsection{Setting and statement}
+Throughout, $y:=B=\lfloor L^a\rfloor$, and $S(z,y)$ is the set of $y$-smooth $n\le z$. We write $\Psi(z,y)=\#S(z,y)$,
+$\varrho(z,y)=\Psi(z,y)/z$ and $\Psi(z,y;\chi)=\sum_{n\in S(z,y)}\chi(n)$. For $(a,q)=1$ put
+$E(z,y;q,a):=\Psi(z,y;q,a)-\Psi_q(z,y)/\varphi(q)$, and let $\Delta(q):=\varphi(q)^{-1}\sum_{\chi\ne\chi_0\bmod q}|\Psi(z,y;\chi)|$. Let
+$H(u):=\exp(u/\log^2(u+1))$ and $u=\log x/\log y$. Let $\alpha(z,y)$ be the Hildebrand--Tenenbaum saddle point. $\Pp(n)$ and
+$P^-(n)$ denote the largest and smallest prime factors.
+
+\emph{Regime (R).} Fix $a>0$, a compact $\Xi\subset(0,\infty)$ with $\xi_{\max}:=\max\Xi$, and $\lambda\in(0,1/4)$. Let
+$x$ be real with $\log x/\log N\in\Xi$. Put $K:=6+\lceil2\xi_{\max}/a^2\rceil$, $R_1:=y^K$, and
+$\varepsilon_N:=\exp\bigl(-c_0(\log N)^{1/2}/(\log\log N)^{5/2}\bigr)$, where $c_0:=\delta_D\min\Xi/(2a)$ and $\delta_D$ is the constant of
+Fact~\ref{fact:D}.
+
+\begin{lemma}[general form of Lemma~\ref{lem:85}]\label{lem:85gen}
+In regime (R), let $Y,Q$ satisfy $y^K\le Y$ and $x^\lambda Y\le Q\le x^{1/2-\lambda}$. Put $J_Y:=\{\ell\text{ prime}:Y<\ell\le2Y\}$,
+$\cT_Q:=\{t=\ell s\in(Q/2,Q]:\ell\in J_Y,\ \Pp(s)\le y\}$ and $\delta_\cT:=\varrho(Q/Y,y)/\log Y$. Then there are $N_0,C$, depending only
+on $(a,\Xi,\lambda)$ and on the constants of the cited results, such that for $N\ge N_0$:
+\begin{enumerate}[label=(\roman*)]
+\item $Q\delta_\cT/10\le\#\cT_Q\le3Q\delta_\cT$;
+\item $\sum_{t\in\cT_Q}\max_{(r,t)=1}|E(x,y;t,r)|\le C\,\Psi(x,y)\,\delta_\cT\,\varepsilon_N$.
+\end{enumerate}
+\end{lemma}
+
+\emph{Deduction of Lemma~\ref{lem:85}.} In Lemma~\ref{lem:85}, $Y=N^{2\nu+o(1)}\ge y^K$ and $Q/Y=N^{q_0-2\nu+o(1)}$. Take $\Xi$ a small
+closed neighbourhood of $\xi$ and $\lambda:=\min(q_0-2\nu,\ \xi/2-q_0)/(4\xi)$. Then $x^\lambda Y\le Q\le x^{1/2-\lambda}$. By~(i),
+$\delta_\cT\le10\#\cT_Q/Q$, so~(ii) gives Lemma~\ref{lem:85} with this $\varepsilon_N$. In the regime of Lemma~\ref{lem:85},
+$u\asymp(\log N/\log\log N)^{1/2}$, so $\varepsilon_N$ beats every power of $\log N$. The bound is uniform over the grid $\cX$ and the
+$O(1)$ dyadic values of $Q$ used in Theorem~\ref{thm:FM}. \qed
+
+\subsection{Cited results}
+
+\begin{fact}[Drappeau {\cite[Lemme~5]{drappeau2015}}; Pascadi {\cite[Lemma~3.2]{pascadi2025}}]\label{fact:D}
+There exist constants $\eta_D,c_D,\delta_D>0$ such that, whenever $(\log x)^{c_D}\le y\le x$ and $Q\le x$, for every fixed $A>0$,
+\[
+\sum_{q\le Q}\frac1{\varphi(q)}\sum_{\substack{\chi\bmod q\\1<\mathrm{cond}(\chi)\le x^{\eta_D}}}\Bigl|\sum_{n\in S(x,y)}\chi(n)\Bigr|\ \ll_A\
+\Psi(x,y)\bigl\{H(u)^{-\delta_D}(\log x)^{-A}+y^{-\delta_D}\bigr\}.
+\]
+The implied constant is effective if $A<1$.
 \end{fact}
 
-\noindent Lee--Venkatesan state this bound for $\sum_r\max_{(a,r)=1}|\Psi(x,y;r,a)-\Psi_r(x,y)/\varphi(r)|$, which $\mathcal W(Q)$ majorises \cite[(8.2)]{lv2018}.
-Their proof bounds $\mathcal W(Q)$ itself, splitting it into characters of small, medium and large conductor and treating exceptional
-characters separately. This is the imported step.
+\noindent Drappeau states effectivity for the implied constant when $A<1$, but not for $\eta_D,c_D,\delta_D$. Harper fixes
+these explicitly from effective inputs, so we believe they are effective, but no published source says so. Our use lies within Harper's
+literal setting: we take $Q=R_1=y^K\le\sqrt{\Psi}$ and discard $(\log x)^{-A}$. The algorithm never uses these constants (see
+Remark~\ref{rem:noN0}).
 
-\begin{fact}[Harper {\cite[Prop.~2]{harper2012}}; {\cite[Fact~8.11]{lv2018}}]\label{fact:Harper}
-For $0<\eta<1/80$, $y\le x^{9/10}$ and $x^\eta\le Q\le\sqrt x$, with $M_0:=x^\eta$,
-\begin{multline*}
-\sum_{M_0\le r\le Q}\ \sum_{\chi^*\bmod r\text{ primitive}}\ \sum_{t\in[M_0,Q]}\frac1{\varphi(t)}\sum_{\chi\bmod t\text{ induced by }\chi^*}|\Psi(x,y;\chi)|\\
-\ll\ \log^{7/2}x\,\sqrt{\Psi(x,y)}\,\bigl(Q+x^{1/2-\eta}\log^2x\bigr).
-\end{multline*}
+\begin{fact}[Drappeau {\cite[Lemme~1(i)]{drappeau2015}}, from de la Bret\`eche--Tenenbaum {\cite[Thm.~2.4(i)]{dbt2005}}]\label{fact:dBT}
+For $2\le y\le x$ and $1\le d\le x$, $\Psi(x/d,y)\le C_{\rm dBT}\Psi(x,y)d^{-\alpha(x,y)}$, with $C_{\rm dBT}$ absolute.
 \end{fact}
 
-\begin{proof}[Proof of Lemma~\ref{lem:85}]
-Write $\Psi=\Psi(x)$ and $\delta:=\#\cT_Q/Q$.
+\begin{fact}[Iwaniec--Kowalski {\cite[Thm.~7.13]{ik2004}}]\label{fact:IK}
+For complex $a_n$ supported on $M<n\le M+N'$ and integers $Q\ge1$,
+$\sum_{q\le Q}\frac q{\varphi(q)}\sum^*_{\chi\bmod q}\bigl|\sum_na_n\chi(n)\bigr|^2\le(Q^2+N'-1)\sum|a_n|^2$, where $\sum^*$ runs over primitive characters.
+\end{fact}
 
-\emph{Setup.} Since $\ell>B\ge\Pp(s)$, each $t\in\cT_Q$ determines $(\ell,s)$, and $\ell\nmid s$. So $\#\cT_Q=\sum_{\ell\in J}(\Psi(Q/\ell)-\Psi(Q/2\ell))\asymp\pi_J(Q/Y)\varrho(Q/Y)$
-by Lemma~\ref{lem:local}, and $\delta\asymp\varrho(Q/Y)/\log Y=N^{-o(1)}$. By orthogonality,
-$\Psi(x;t,r)-\Psi_t(x)/\varphi(t)=\varphi(t)^{-1}\sum_{\chi\ne\chi_0}\bar\chi(r)\Psi(x;\chi)$. So the left side of the lemma is at most
-$\sum_{t\in\cT_Q}\varphi(t)^{-1}\sum_{\chi\ne\chi_0\bmod t}|\Psi(x;\chi)|$. Every character modulo $t=\ell s$ is $\chi=\chi^{(\ell)}\chi^{(s)}$, and
-$\varphi(t)=(\ell-1)\varphi(s)$.
+\begin{fact}[Rosser--Schoenfeld \cite{rs1962}]\label{fact:RS}
+$\pi(z)<1.25506z/\log z$ for $z>1$; $\pi(2z)-\pi(z)>3z/(5\log z)$ for $z\ge20.5$; and $n/\varphi(n)<e^\gamma\log\log n+2.51/\log\log n$ for $n\ge3$.
+\end{fact}
 
-\emph{Part 1: $\chi^{(\ell)}$ principal, $\chi^{(s)}$ non-principal.} Every $B$-smooth $n$ is coprime to $\ell$, so $\Psi(x;\chi)=\Psi(x;\chi^{(s)})$. This part
-equals
-\[
-\sum_{\ell\in J}\frac1{\ell-1}\sum_{\substack{s\in(Q/2\ell,Q/\ell]\\ \Pp(s)\le B}}\frac1{\varphi(s)}\sum_{\chi^{(s)}\ne\chi_0}|\Psi(x;\chi^{(s)})|\ \le\ \sum_{\ell\in J}\frac{\mathcal W(Q/\ell)}{\ell-1},
-\]
-by positivity, with $\omega_0:=\log x$. Fact~\ref{fact:LV85} applies with $y=B$: we have $Q/\ell=N^{q_0-2\nu+o(1)}\ge x^\varepsilon$ for
-$\varepsilon:=(q_0-2\nu)/(2\xi)$, and $Q/\ell\le\sqrt\Psi$ because $q_0<\xi/2$. Hence Part~1 is
-\[
-\ll\Psi\bigl(e^{-cu/\log^2u}+B^{-c}\bigr)\sum_{\ell\in J}\frac{\varrho(Q/\ell)}{\ell}+\sqrt\Psi\log^{7/2}x\sum_{\ell\in J}\frac Q{\ell^2}.
-\]
-The first sum is at most $2\varrho(Q/2Y)\sum_{\ell\in J}1/\ell\ll\varrho(Q/Y)/\log Y\asymp\delta$, by Lemma~\ref{lem:local} and Mertens. The second
-term is $\ll(Q/Y)\sqrt\Psi\log^{7/2}x/\log Y$. Relative to $\Psi\delta$ this is $N^{q_0-2\nu-\xi/2+o(1)}$, which is polynomially small.
+\noindent Hildebrand--Tenenbaum (Fact~\ref{fact:HT}) gives, in regime (R) and for $N\ge N_0$:
+\begin{itemize}
+\item[($\alpha1$)] $3/4\le\alpha(z,y)\le1$ for $2y\le z\le x$;
+\item[($\alpha2$)] $1-\alpha(z,y)\le(\log(u\log y)+C_\alpha\log\log y)/\log y$ for $2y\le z\le x$.
+\end{itemize}
+To see ($\alpha2$), note that $\log(1+y/\log z)\ge\log y-\log\log z$ and $\log z\le u\log y$. ($\alpha1$) follows in regime (R).
 
-\emph{Part 2: $\chi^{(\ell)}$ non-principal.} The conductor of $\chi$ is divisible by $\ell>Y$. Put $\eta:=\min(1/100,\nu/\xi)$ and $M_0:=x^\eta$. Then
-$M_0\le Y$, every conductor lies in $[M_0,Q]$, every modulus $t\in(Q/2,Q]$ lies in $[M_0,Q]$, $Q\le\sqrt x$, and $B\le x^{9/10}$. By positivity, Part~2
-is at most the left side of Fact~\ref{fact:Harper}, which is $\ll\log^{7/2}x\sqrt\Psi(Q+x^{1/2-\eta}\log^2x)$. Relative to $\Psi\delta$ this is
-$N^{q_0-\xi/2+o(1)}+N^{-\eta\xi+o(1)}$.
+\begin{lemma}[truncated Perron kernel]\label{lem:perron}
+For $c>0$, $T>0$ and $w>0$ with $w\ne1$,
+$\bigl|\frac1{2\pi i}\int_{c-iT}^{c+iT}w^s\frac{ds}s-1_{w>1}\bigr|\le\frac{w^c}{\pi T|\log w|}$.
+\end{lemma}
 
-The principal character of $t$ contributes exactly the subtracted main term. Adding the two parts gives the lemma with
-$\varepsilon_N=O(e^{-cu/\log^2u}+B^{-c}+N^{-c})$. Finally, $e^{-cu/\log^2u}=\exp(-c'(\log N)^{1/2}(\log\log N)^{-5/2+o(1)})$ beats every power of $\log N$.
+\begin{proof}
+The integrand $w^s/s$ has one simple pole, at $s=0$, with residue $1$. If $w>1$, close the contour with a rectangle whose left side is at
+$\Re s=-\sigma_0$, $\sigma_0\to\infty$. The left side contributes at most $w^{-\sigma_0}2T/\sigma_0\to0$, and each horizontal side at most
+$(2\pi)^{-1}\int_{-\infty}^cw^\sigma d\sigma/T=w^c/(2\pi T\log w)$. If $w<1$, close to the right; there is no pole.
 \end{proof}
 
-\begin{remark}
-In the regime used here no conductor in $[Y,M_0)$ occurs for $\chi^{(\ell)}\ne\chi_0$, so neither Harper's Proposition~1 nor the zero-density
-estimate is needed in Part~2. All Siegel/Page considerations are inside Fact~\ref{fact:LV85}, and they concern only characters
-of $B$-smooth moduli. The absorption of $(\log x)^{O(1)}$ into $e^{-cu/\log^2u}$ there requires $u/\log^2u\gg\log\log x$, which holds for
-$u\asymp(\log N/\log\log N)^{1/2}$ but not at the edge of Lee--Venkatesan's stated range of $y$.
+\subsection{Elementary lemmas}
+
+\begin{lemma}[orthogonality]\label{lem:E1}
+For $(a,q)=1$, $E(z,y;q,a)=\varphi(q)^{-1}\sum_{\chi\ne\chi_0}\bar\chi(a)\Psi(z,y;\chi)$. Hence $\max_{(a,q)=1}|E(z,y;q,a)|\le\Delta(q)$.
+\end{lemma}
+
+\begin{proof}
+Orthogonality of characters, together with $\Psi(z,y;\chi_0)=\Psi_q(z,y)$.
+\end{proof}
+
+\begin{lemma}[lift averaging]\label{lem:E2}
+Let $\ell>y$ be prime, let $\ell\nmid s$, and put $t=\ell s$. For every $(r,t)=1$,
+\[
+E(z,y;t,r)=\frac{E(z,y;s,r)}{\ell-1}+\mathrm{Rem}(t,r),\qquad|\mathrm{Rem}(t,r)|\le\Delta_\ell(t):=\frac1{\varphi(t)}\sum_{\chi\bmod t,\ \ell\mid\mathrm{cond}\chi}|\Psi(z,y;\chi)|.
+\]
+\end{lemma}
+
+\begin{proof}
+Every character modulo $t$ is $\chi_\ell\chi_s$, and $\ell\mid\mathrm{cond}\chi$ iff $\chi_\ell$ is non-principal. Every $y$-smooth $n$ is
+coprime to $\ell$, so $\Psi(z,y;\chi_0^{(\ell)}\chi_s)=\Psi(z,y;\chi_s)$. Also $\Psi_t=\Psi_s$ and $\varphi(t)=(\ell-1)\varphi(s)$. In
+Lemma~\ref{lem:E1} for the modulus $t$, the terms with $\chi_\ell$ principal and $\chi_s$ non-principal add up to $E(z,y;s,r)/(\ell-1)$.
+\end{proof}
+
+\begin{lemma}[coprimality by M\"obius]\label{lem:E3}
+Let $\chi\bmod q$ be induced by a primitive $\chi^*\bmod r$, and put $q_y:=\prod_{p\mid q,\,p\le y}p$. Then
+$\Psi(z,y;\chi)=\sum_{d\mid q_y,\,(d,r)=1}\mu(d)\chi^*(d)\Psi(z/d,y;\chi^*)$.
+\end{lemma}
+
+\begin{proof}
+For $y$-smooth $n$, $(n,q)=1$ iff $(n,q_y)=1$. Expand $1_{(n,q_y)=1}=\sum_{d\mid(n,q_y)}\mu(d)$ and write $n=dn'$ with $n'\in S(z/d,y)$. Terms with
+$(d,r)>1$ vanish.
+\end{proof}
+
+\begin{lemma}[factorisation]\label{lem:E4}
+Let $M_1\ge1$. Every $n\in S(z,y)$ with $n>M_1$ has exactly one factorisation $n=mk$ with $M_1<m\le\Pp(m)M_1$, $\Pp(m)\le P^-(k)$
+and $k\in S(z,y)$. Moreover $k\le z/M_1$.
+\end{lemma}
+
+\begin{proof}
+List the primes of $n$ in increasing order and let $m$ be the shortest initial product exceeding $M_1$. Conversely, the two conditions
+force the primes of $m$ to come first, and $m/\Pp(m)\le M_1<m$ fixes their number.
+\end{proof}
+
+\begin{lemma}[constants]\label{lem:E56}
+\begin{enumerate}[label=(\roman*)]
+\item $\sum_{j\le X}1/\varphi(j)\le2(1+\log X)$ for $X\ge1$.
+\item Over squarefree $d$: $\sum_d1/(d\varphi(d))<1.95$, $\sum_d1/(\varphi(d)d^{1/2})<6$, and $\sum_dd^{1-\beta-\beta'}/\varphi(d)<6$ if $\beta,\beta'\ge3/4$.
+\item $n/\varphi(n)\le5\log\log(n+16)$ for all $n\ge1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $j/\varphi(j)=\sum_{e\mid j}\mu^2(e)/\varphi(e)$, so the sum is at most $(1+\log X)\sum_e\mu^2(e)/(e\varphi(e))$, and
+$\sum_e\mu^2(e)/(e\varphi(e))=\zeta(2)\zeta(3)/\zeta(6)<1.95$. (ii) The Euler products are $\prod_p(1+2p^{-3/2})\le\exp(2\sum_pp^{-3/2})<e^{1.7}<6$ and
+$\prod_p(1+p^{-1/2}/(p-1))<6$. (iii) Fact~\ref{fact:RS} for $n\ge16$, and inspection for $n<16$.
+\end{proof}
+
+\begin{lemma}[density lower bound]\label{lem:E7}
+For $2y\le z\le x$ and $N\ge N_0$, $\varrho(z,y)\ge y^{-1}\exp(-u\log(4u\log y))$. In regime (R), $\varrho(z,y)\ge y^{-1-\xi_{\max}/a^2-o(1)}$.
+\end{lemma}
+
+\begin{proof}
+Let $k_0:=\lfloor\log z/\log y\rfloor\le u$, and let $\cP$ be the set of primes in $(y/2,y]$, so $\#\cP\ge3y/(10\log y)\ge k_0$ by Fact~\ref{fact:RS}. Products
+of $k_0$ distinct primes of $\cP$ are distinct, $y$-smooth and at most $y^{k_0}\le z$. So
+$\Psi(z,y)\ge\binom{\#\cP}{k_0}\ge(z/y)(3/(10k_0\log y))^{k_0}$. In regime (R), $u\log(4u\log y)=(\xi/a^2)(1+o(1))\log y$.
+\end{proof}
+
+\begin{lemma}[weights over smooth moduli]\label{lem:E8}
+Let $2y\le Q'\le x$, let $r,d\ge1$ with $(r,d)=1$, and put $\beta':=\alpha(Q',y)$. Then
+\[
+\sum_{\substack{Q'/2<s\le Q',\ \Pp(s)\le y\\ rd\mid s}}\frac1{\varphi(s)}\ \le\ 10C_{\rm dBT}\log\log(Q'+16)\,\varrho(Q',y)\frac{(rd)^{1-\beta'}}{\varphi(r)\varphi(d)}.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $s=rdj$, so $1/\varphi(s)\le1/(\varphi(r)\varphi(d)\varphi(j))$, with $j$ $y$-smooth in $(J'/2,J']$, $J':=Q'/(rd)$. By
+Lemma~\ref{lem:E56}(iii), $\sum_j1/\varphi(j)\le5\log\log(Q'+16)(2/J')\Psi(J',y)$. By Fact~\ref{fact:dBT},
+$\varrho(J',y)=\Psi(Q'/(rd),y)rd/Q'\le C_{\rm dBT}\varrho(Q',y)(rd)^{1-\beta'}$.
+\end{proof}
+
+\subsection{Large conductors}
+
+\begin{lemma}[large conductors]\label{lem:LS}
+Let $y\ge2$, $z\ge\max(4,y^{3/2})$ and $R\ge1$. Then
+\[
+\sum_{R<r\le2R}\frac r{\varphi(r)}\sum^*_{\chi\bmod r}|\Psi(z,y;\chi)|\ \le\ 30\pi(y)\log(2zR)\bigl(y^{3/2}z+y^{1/2}z^{1/2}R^2\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Write $w_\chi:=r/\varphi(r)$, so $\sum_\chi w_\chi\le4R^2$. Put $M_1:=z^{1/2}$. By Lemma~\ref{lem:E4},
+\[
+\Psi(z,y;\chi)=\sum_{n\le M_1,\,n\in S(z,y)}\chi(n)+\sum_{p\le y}\ \sum_{mk\le z}a^{(p)}_mb^{(p)}_k\chi(m)\chi(k),
+\]
+with $a^{(p)}_m:=1$ if $\Pp(m)=p$ and $M_1<m\le pM_1$, and $b^{(p)}_k:=1$ if $P^-(k)\ge p$, $\Pp(k)\le y$, $k\le z/M_1$ (and $0$ otherwise).
+Neither sequence depends on $\chi$, and their supports have sizes at most $yM_1$ and $z/M_1$.
+
+\emph{Short part.} Cauchy--Schwarz and Fact~\ref{fact:IK} with $Q=\lfloor2R\rfloor$ give at most
+$(4R^2)^{1/2}((4R^2+M_1)M_1)^{1/2}\le2Rz^{1/2}+4R^2z^{1/4}$.
+
+\emph{Bilinear part.} Let $z':=\lfloor z\rfloor+\frac12$, $c:=1/\log(2z)$ and $T:=(2zR)^4$. For integers $m,k\ge1$ we have $1_{mk\le z}=1_{z'/(mk)>1}$.
+On the support, $mk\le yz$ and $|z'-mk|\ge1/2$, so $|\log(z'/mk)|\ge1/(4yz)$ and $(z'/mk)^c\le e$. By Lemma~\ref{lem:perron} each pair contributes an
+error at most $4eyz/(\pi T)$. Summing over at most $yz$ pairs per $p$, at most $y$ primes $p$, and total weight $4R^2$, the error is
+at most $16ey^3z^2R^2/T\le3$. The main term is $(2\pi i)^{-1}\int_{c-iT}^{c+iT}A_p(\chi,s)B_p(\chi,s)z'^s\,ds/s$, with
+$A_p(\chi,s)=\sum_ma^{(p)}_m\chi(m)m^{-s}$ and $B_p$ similarly. For each $t$, Cauchy--Schwarz and Fact~\ref{fact:IK} give
+\[
+\sum_\chi w_\chi|A_pB_p|(c+it)\le(yM_1+4R^2)^{1/2}(z/M_1+4R^2)^{1/2}(yM_1)^{1/2}(z/M_1)^{1/2}\le y^{3/2}z+4y^{1/2}z^{1/2}R^2 .
+\]
+Also $\int_{-T}^T dt/|c+it|\le2/c+2\log T\le10\log(2zR)$ and $z'^c\le e$. Summing over $p\le y$ and adding the short part gives the bound.
+\end{proof}
+
+\begin{corollary}[moduli with smooth cofactor]\label{cor:LS}
+Let $z_0\ge\max(4,y^{3/2})$ and $1\le R_0\le Q_0$ with $z_0/Q_0\ge\max(4,y^{3/2})$. For each $q\le Q_0$ let $\mathcal X(q)$ be any set of
+characters modulo $q$ whose conductors lie in $(R_0,Q_0]$. Then
+\[
+\sum_{q\le Q_0}\frac1{\varphi(q)}\sum_{\chi\in\mathcal X(q)}|\Psi(z_0,y;\chi)|\ \le\ 1.5\cdot10^3\pi(y)(\log z_0)^2\bigl(y^{3/2}z_0/R_0+y^{1/2}z_0^{1/2}Q_0\bigr).
+\]
+\end{corollary}
+
+\begin{proof}
+Group $(q,\chi)$ by the inducing primitive $\chi^*\bmod r$ and apply Lemma~\ref{lem:E3}: $|\Psi(z_0,y;\chi)|\le\sum_{d\mid q_y,(d,r)=1}|\Psi(z_0/d,y;\chi^*)|$,
+with $d$ squarefree and $d\le Q_0$. By Lemma~\ref{lem:E56}(i) and $\varphi(rdj)\ge\varphi(r)\varphi(d)\varphi(j)$, we have
+$\sum_{q\le Q_0,\,rd\mid q}1/\varphi(q)\le2(1+\log Q_0)/(\varphi(r)\varphi(d))$. On each dyadic block $r\in(R',2R']$ with $R_0\le R'\le Q_0$, use
+$1/\varphi(r)\le(r/\varphi(r))/R'$ and Lemma~\ref{lem:LS} at $z=z_0/d\ge z_0/Q_0$. Here $\log(2zR')\le2\log z_0$. Sum over the blocks
+($\sum1/R'\le2/R_0$, $\sum R'\le2Q_0$) and then over $d$ with Lemma~\ref{lem:E56}(ii). Finally $1+\log Q_0\le\log z_0$.
+\end{proof}
+
+\subsection{Smooth moduli with a relative saving}
+
+\begin{lemma}[smooth moduli]\label{lem:SM}
+In regime (R), let $2y\le Q'\le x^{1/2-\lambda}$ and $\cS':=\{s\in(Q'/2,Q']:\Pp(s)\le y\}$. Then for $N\ge N_0$,
+\[
+\sum_{s\in\cS'}\max_{(a,s)=1}|E(x,y;s,a)|\le\sum_{s\in\cS'}\Delta(s)\le C_{\rm SM}\Psi(x,y)\varrho(Q',y)\varepsilon_N .
+\]
+\end{lemma}
+
+\begin{proof}
+The first inequality is Lemma~\ref{lem:E1}. Split $\Delta(s)$ by the conductor $r$ of $\chi$: case (a) $1<r\le R_1$, case (b) $r>R_1$.
+
+\emph{(a) Small conductors.} Apply Lemma~\ref{lem:E3} ($s$ is $y$-smooth) and exchange the sums. Only $d\le Q'$ occurs. By Lemma~\ref{lem:E8} with $\beta'=\alpha(Q',y)$,
+\begin{gather*}
+(a)\le10C_{\rm dBT}\log\log(Q'+16)\varrho(Q',y)R_1^{1-\beta'}\sum_{d\le Q'}\frac{d^{1-\beta'}}{\varphi(d)}\mathsf D(x/d),\\
+\mathsf D(z):=\sum_{1<r\le R_1}\frac1{\varphi(r)}\sum^*_{\chi\bmod r}|\Psi(z,y;\chi)|,
+\end{gather*}
+with $d$ squarefree, $y$-smooth and coprime to $r$. Apply Fact~\ref{fact:D} to the primitive characters only (the terms $q=r$ of its left
+side, with $Q:=R_1$), with $A=1/2$ and argument $x/d$. Its hypotheses hold: $x/d\ge x^{1/2}$, so $(\log(x/d))^{c_D}\le y$, and
+$R_1=N^{o(1)}\le(x/d)^{\eta_D}$. Hence $\mathsf D(x/d)\le C_D\Psi(x/d,y)(H(u/2)^{-\delta_D}+y^{-\delta_D})$, because $u_d:=\log(x/d)/\log y\ge u/2$ and $H$ is
+increasing on $[4,\infty)$. By Fact~\ref{fact:dBT}, $\Psi(x/d,y)\le C_{\rm dBT}\Psi(x,y)d^{-\beta}$ with $\beta=\alpha(x,y)$. By ($\alpha1$) and
+Lemma~\ref{lem:E56}(ii), $\sum_dd^{1-\beta-\beta'}/\varphi(d)<6$. By ($\alpha2$), $R_1^{1-\beta'}\le(\log x)^{K(1+C_\alpha)}$. Therefore
+\[
+(a)\le60C_{\rm dBT}^2C_D\log\log x\,(\log x)^{K(1+C_\alpha)}\bigl(e^{-\delta_D(u/2)/\log^2(u/2+1)}+y^{-\delta_D}\bigr)\Psi(x,y)\varrho(Q',y).
+\]
+In regime (R), $\delta_D(u/2)/\log^2(u/2+1)=(2\delta_D\xi/a)(\log N)^{1/2}(\log\log N)^{-5/2}(1+o(1))$. This beats $(\log x)^{O(1)}$ and gives
+$(a)\le\Psi(x,y)\varrho(Q',y)\varepsilon_N$.
+
+\emph{(b) Large conductors.} If $Q'\le R_1$, case (b) is empty. Otherwise apply Corollary~\ref{cor:LS} with $z_0=x$, $Q_0=Q'$, $R_0=R_1$, keeping only
+the moduli in $\cS'$. This gives $(b)\le1.5\cdot10^3\pi(y)(\log x)^2(y^{3/2}x/y^K+y^{1/2}x^{1/2}Q')$. By Lemma~\ref{lem:E7},
+$\Psi(x,y)\varrho(Q',y)\ge xy^{-2-2\xi_{\max}/a^2-o(1)}$. The first term is then at most $\Psi\varrho(Q')y^{-1}$ by the choice of $K$, and the second
+at most $\Psi\varrho(Q')x^{-\lambda}y^{O(1)}$, since $Q'\le x^{1/2-\lambda}$.
+\end{proof}
+
+\noindent The argument works exactly at $y=L^{\Theta(1)}$. The large sieve needs $\log R_1\gtrsim u\log u$, while the small-conductor transfer
+costs $R_1^{1-\beta'}=\exp(\log R_1\cdot\log(u\log y)/\log y)$. Both are compatible with $\log R_1\asymp\log y$ precisely when $u\log u\asymp\log y$.
+
+\subsection{Proof of Lemma~\ref{lem:85gen}}
+
+\emph{(i).} Since $\ell>y\ge\Pp(s)$, each $t$ determines $(\ell,s)$, so $\#\cT_Q=\sum_{\ell\in J_Y}(\Psi(Q/\ell,y)-\Psi(Q/2\ell,y))$. The upper
+bound follows from $\#J_Y\le1.256\cdot2Y/\log2Y$ and $\Psi(Q/\ell,y)\le(Q/Y)\varrho(Q/Y,y)$. For the lower bound put $z:=Q/(2\ell)\ge x^\lambda/4$. Then
+Fact~\ref{fact:HT} with $c=2$ and $c=4$ (and $\alpha\to1$) gives $\Psi(2z,y)-\Psi(z,y)\ge0.8\Psi(z,y)$ and $\Psi(Q/Y,y)\le4.1\Psi(z,y)$. So each
+$\ell$ contributes at least $0.19(Q/Y)\varrho(Q/Y,y)$, and $\#J_Y\ge3Y/(5\log Y)$.
+
+\emph{(ii).} By Lemma~\ref{lem:E2}, $\max_{(r,t)=1}|E(x,y;t,r)|\le\max_{(a,s)=1}|E(x,y;s,a)|/(\ell-1)+\Delta_\ell(t)$.
+
+\emph{Part 1 (characters principal at $\ell$).} The sum of the first terms is
+\[
+\sum_{\ell\in J_Y}\frac1{\ell-1}\sum_{s\in(Q/2\ell,Q/\ell],\,\Pp(s)\le y}\max_a|E(x,y;s,a)|.
+\]
+Lemma~\ref{lem:SM} applies with $Q'=Q/\ell$, since $Q/\ell\ge x^\lambda/2\ge2y$ and $Q/\ell\le x^{1/2-\lambda}$. It gives at most
+$C_{\rm SM}\Psi(x,y)\varepsilon_N\sum_\ell\varrho(Q/\ell,y)/(\ell-1)$. Now $\varrho(Q/\ell,y)\le2\varrho(Q/Y,y)$ and $\sum_{\ell\in J_Y}1/(\ell-1)\le2.6/\log Y$, so Part~1
+is at most $5.2C_{\rm SM}\Psi(x,y)\delta_\cT\varepsilon_N$.
+
+\emph{Part 2 (characters with $\ell\mid$ conductor).} Every such conductor exceeds $Y$. Apply Corollary~\ref{cor:LS} with $z_0=x$, $Q_0=Q$,
+$R_0=Y$, and $\mathcal X(t)=\{\chi\bmod t:\ell_t\mid\mathrm{cond}\chi\}$ for $t\in\cT_Q$ (empty otherwise). This gives at most
+$1.5\cdot10^3\pi(y)(\log x)^2(y^{3/2}x/Y+y^{1/2}x^{1/2}Q)$. By Lemma~\ref{lem:E7}, $\Psi(x,y)\delta_\cT\ge xy^{-2-2\xi_{\max}/a^2-o(1)}/\log Y$. Since
+$Y\ge y^K$ and $Q\le x^{1/2-\lambda}$, Part~2 is at most $\Psi(x,y)\delta_\cT y^{-1/2}\le\Psi(x,y)\delta_\cT\varepsilon_N$.
+
+Adding the two parts proves (ii). \qed
+
+\begin{remark}[exceptional zeros, effectivity, and the algorithm]\label{rem:noN0}
+Only case (a) of Lemma~\ref{lem:SM} could see a Siegel or Page zero, and it is handled entirely through Fact~\ref{fact:D} with $A=1/2$. Every
+other step uses no information about zeros of $L$-functions. There is no exceptional set of $N$ and no exceptional set of moduli. The
+algorithm uses none of the analytic constants: its parameters $B,S,M,H,W,J$ and $\cX$ are explicit functions of $N$ and of $(d,k,\mu,\eta_0)$. The only
+place where a threshold $N_0$ could enter the algorithm is the small-$N$ branch, and FACTOR removes it by alternating trial division with SPLIT
+step by step (Algorithm~\ref{alg:factor}, step~3). This costs at most a factor~$2$ in expected time. So even if some constant behind
+Fact~\ref{fact:D} were ineffective, the algorithm would be explicit and Theorem~\ref{thm:main} would be unaffected; only the threshold beyond
+which its time bound applies would become ineffective.
 \end{remark}
+
 
 \bibliographystyle{plain}
 \bibliography{refs}
