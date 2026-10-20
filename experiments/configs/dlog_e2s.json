@@ -1,0 +1,156 @@
+{
+ "note": "SUPPLEMENTARY (post-prereg, disclosed deviation): E2s = E2 with a larger pair box, to exercise unit elimination more often; not a pre-registered test",
+ "calibration_seeds_used_before_prereg": [
+  900,
+  901,
+  902,
+  903,
+  904,
+  905,
+  906
+ ],
+ "pipeline": {
+  "d": 3,
+  "mu": "1/3",
+  "hbits": 2,
+  "W_mult": 2,
+  "k_large": 2,
+  "min_large": 1,
+  "extra_rows": 6,
+  "max_rounds": 4,
+  "max_fields": 20000,
+  "max_rtrials": 3000000,
+  "irr_primes": [
+   5,
+   7,
+   11,
+   13,
+   17,
+   19,
+   23,
+   29,
+   31,
+   37,
+   41,
+   43,
+   47,
+   53,
+   59,
+   61,
+   67,
+   71,
+   73,
+   79,
+   83,
+   89,
+   97
+  ],
+  "N0": 1048576,
+  "tiers": [
+   {
+    "bits_max": 36,
+    "Bbits": 10,
+    "B1_mult": 4,
+    "S": 12
+   },
+   {
+    "bits_max": 44,
+    "Bbits": 11,
+    "B1_mult": 4,
+    "S": 12
+   },
+   {
+    "bits_max": 60,
+    "Bbits": 12,
+    "B1_mult": 4,
+    "S": 12
+   }
+  ],
+  "n_chars": 0,
+  "char_bits": 0,
+  "n_deps": 0
+ },
+ "blocks": [
+  {
+   "name": "E2s",
+   "pipeline_override": {
+    "pair_rows": 700,
+    "pair_box": 600
+   },
+   "instances": [
+    {
+     "bits": 30,
+     "seed": 200
+    },
+    {
+     "bits": 30,
+     "seed": 201
+    },
+    {
+     "bits": 30,
+     "seed": 202
+    },
+    {
+     "bits": 30,
+     "seed": 203
+    },
+    {
+     "bits": 30,
+     "seed": 204
+    },
+    {
+     "bits": 30,
+     "seed": 205
+    },
+    {
+     "bits": 36,
+     "seed": 200
+    },
+    {
+     "bits": 36,
+     "seed": 201
+    },
+    {
+     "bits": 36,
+     "seed": 202
+    },
+    {
+     "bits": 36,
+     "seed": 203
+    },
+    {
+     "bits": 36,
+     "seed": 204
+    },
+    {
+     "bits": 36,
+     "seed": 205
+    },
+    {
+     "bits": 42,
+     "seed": 200
+    },
+    {
+     "bits": 42,
+     "seed": 201
+    },
+    {
+     "bits": 42,
+     "seed": 202
+    },
+    {
+     "bits": 42,
+     "seed": 203
+    },
+    {
+     "bits": 42,
+     "seed": 204
+    },
+    {
+     "bits": 42,
+     "seed": 205
+    }
+   ]
+  }
+ ]
+}
