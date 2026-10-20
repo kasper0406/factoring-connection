@@ -1,0 +1,153 @@
+I read [nonsmooth_1.out](/Volumes/git/factoring-connection/codex/nonsmooth_1.out). **The draft establishes several useful reductions, but no general barrier. OA(c), EIS’s proposed kill, and RANK are false as stated. FROB(a–c) largely survive.**
+
+- **OA(a) — TRUE, fibrewise.** Chevalley–Lang gives the order formula. Define \(F\) on the character lattice as the finite-order Galois action, rather than the \(p\)-power pullback. Its eigenvalues are roots of unity, giving the torus bound and prime-to-\(p\) assertion. This is standard structure theory, not a new dichotomy. See [Milne, Theorem 8.27, Corollary 16.15 and the finite-field discussion](https://www.jmilne.org/math/Books/iAG2022.pdf).
+
+- **OA(b) — NEEDS-FIX: the sampling assumption is missing.** Require \(x\bmod p\) uniform and \(m\) fixed independently of that sample. Otherwise choosing \(x=0\), or sampling a known torsion subgroup, refutes it.
+
+  For \(G(\mathbf F_p)\cong\prod_i\mathbf Z/d_i\mathbf Z\), the complete proof is
+  \[
+  \Pr([m]x=0)=\prod_i\frac{\gcd(m,d_i)}{d_i}.
+  \]
+  If \(\ell\nmid m\), this is at most \(\ell^{-v_\ell(\#G)}\le1/\ell\). This is elementary finite-abelian-group theory.
+
+- **OA(c) — FALSE: \(N^k\) already contains another potentially useful large prime, \(q\).** A concrete counterexample is
+  \[
+  N=35,\qquad E:y^2=x^3+2x+6,\qquad
+  \#E(\mathbf F_5)=7,\quad\#E(\mathbf F_7)=11.
+  \]
+  With \(m=N\), \(S=1\), and \(B=3\), uniform-point annihilation factors with probability \(10/11\), although \(m_5=7\) is not \(B\)-smooth.
+
+  **Correct statement:** success probability \(>1/B\) requires every prime divisor of \(\#G(\mathbf F_p)\) exceeding \(B\) to divide \(m\). For \(m=N^kS\), remove the entire \(p\)- and \(q\)-primary parts before imposing smoothness. This remains necessary, not sufficient: exponent valuations and separation at the other prime matter.
+
+  The implication
+  \[
+  m_p=1\Longrightarrow T=0,\quad A(\mathbf F_p)\text{ a }p\text{-group}
+  \]
+  is true for \(p>2\). Calling it the *only* smoothness-free possibility is false. Public structured exponents, selected subgroups, stage two, and collision/order searches are outside that conclusion. The statement about failure when both fibres are \(p\)-primary also assumes \(k\) annihilates both local exponents and only the final zero test is used.
+
+  The annihilation precedents include [Bach–Shallit’s cyclotomic framework](https://www.ams.org/journals/mcom/1989-52-185/S0025-5718-1989-0947467-1/S0025-5718-1989-0947467-1.pdf); these do not establish a universal smoothness barrier.
+
+- **OA(d), non-CM curves — NEEDS-FIX: the Lang–Trotter constant can vanish.** A non-CM curve with rational \(2\)-torsion has even \(a_p\) at every good odd prime, so \(a_p=1\) never occurs. Write the conjecture with \(C_{E,1}\ge0\), and require positivity before using \(\asymp\).
+
+  Moving from a fixed curve over varying primes to \(K\) operationally selected curves requires a separate family/distribution assumption. Generic random curves support the \(\widetilde\Theta(p^{-1/2})\) frequency and \(\widetilde\Theta(\sqrt p)\) trial-cost heuristic; Lang–Trotter alone does not prove portfolio coverage or independence. See [Baier’s refinement](https://arxiv.org/abs/0801.3946) and [the average theorem](https://arxiv.org/abs/math/0609095).
+
+- **OA(d), CM portfolio — NEEDS-FIX: plausible coverage heuristic, restricted cost argument.** The \(\sqrt{Y/p}\) coverage is heuristic, with admissibility and local constants understood. Unconditionally, the elementary count of candidate integers up to \(X\) is only \(O(\sqrt{XY})\).
+
+  The \(\sum h(-D)\asymp Y^{3/2}\) degree count supports a lower bound for a portfolio that explicitly processes every corresponding class polynomial. It is not a lower bound for every compressed, batched, or differently represented CM algorithm. Attribute the actual special-purpose method to [Cheng](https://eprint.iacr.org/2002/109).
+
+- **OA(d), \(g\ge2\) — FALSE as universal “rarer”; exponent UNKNOWN without a family.** Take \(A=E^g\): then
+  \[
+  \#A(\mathbf F_p)=p^g\iff\#E(\mathbf F_p)=p,
+  \]
+  so the event is no rarer than for \(E\). For fixed \(g\) and sufficiently large \(p\), Weil bounds force \(j=g\); they supply no universal probability exponent. Specify geometric simplicity, monodromy and a sampling measure before proposing one.
+
+- **FROB(a) — TRUE for supplied \(d\); deterministic polynomial-time preparation NEEDS-FIX.** The coefficient \(\varepsilon\) is a nontrivial square root of \(1\), so the gcd factors. Randomly finding a unit with Jacobi symbol \(-1\) takes constant expected trials. “Choose the least such \(d\)” gives deterministic enumeration, not an unconditional polynomial-time bound.
+
+- **FROB(b) — TRUE, with a finite locally free algebra and explicit matrix representation.** The fixed-space dimensions and parity identity are correct. Unit-pivot elimination must eventually expose a proper zero divisor: otherwise the two residual ranks could never diverge. Say that a suitable elimination algorithm extracts a factor; not every implementation must literally report a “nonunit pivot.”
+
+  The named attribution is **Pellet–Stickelberger**, commonly presented through [Swan, *Factorization of polynomials over finite fields* (1962)](https://msp.org/pjm/1962/12-3/pjm-v12-n3-p27-p.pdf).
+
+- **FROB(c) — TRUE after adding \(\ell\nmid N\), an explicitly represented primitive root, and coordinate gcds.** For the correct exponent, the difference is zero in one fibre and nonzero in the other. Taking the gcd with \(N\) of its coordinates extracts the factor. Cost is polynomial in the represented algebra size and \(\ell\), not automatically in \(\log\ell\).
+
+- **FROB(d) — NEEDS-FIX: hardness of a uniform operator problem does not imply hardness on every algebra or every compressed output.** For example, \(B=\mathbf Z/N\) has \(\Phi_B=\mathrm{id}\), trivially computable. Uniform computation on arbitrary finite étale algebras is randomized polynomial-time factoring-equivalent by (a) and CRT. A particular algebra needs a separation argument.
+
+  **For Schoof, there is a useful stronger calculation.** For odd \(\ell\nmid N\) and good reduction, the sign of the action on
+  \[
+  (\mathbf F_\ell^2\setminus\{0\})/\{\pm1\}
+  \]
+  is \((\det/\ell)\). Thus, for the normalized division polynomial,
+  \[
+  \left(\frac{\operatorname{disc}\psi_\ell}{N}\right)
+  =\left(\frac N\ell\right).
+  \]
+  Consequently **(b) applies whenever \((N/\ell)=-1\)**. This follows by combining the sign calculation with Stickelberger. It is not guaranteed at every \(\ell\).
+
+  On full \(E[\ell]\), the Weil pairing gives determinant \(p\bmod\ell\). The \(x\)-coordinate action loses a global sign, which leaves determinant unchanged, but efficient extraction still needs an argument; the \(x\)-coordinate algebra does not automatically contain \(\mu_\ell\). Hence (c) is not directly applicable merely because division polynomials occur. See [Schoof’s original paper](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf).
+
+  Dokchitser’s resolvent values, modular-representation conjugacy data, and \(p\)-adic cohomological matrices are different outputs. Their relationship to the full separating operator must be proved individually. The observation about \(x^N\) is correct for the stated semiprimes, but does not exclude guessed automorphisms or other operators.
+
+  [Lenstra (1985)](https://doi.org/10.1007/BFb0074800) and [Grantham (2001)](https://www.ams.org/mcom/2001-70-234/S0025-5718-00-01197-2/S0025-5718-00-01197-2.pdf) are appropriate nearby primality-testing references, not citations for the unrestricted conclusion in (d).
+
+- **EIS, exact identity — TRUE for nonsquare \(N\), with the standard Hurwitz normalization.** Equivalently,
+  \[
+  C(N)=2\sigma(N)-\lambda_1(N),\qquad
+  \lambda_1(N)=\sum_{d\mid N}\min(d,N/d).
+  \]
+  For \(pq\), this gives \(2N+2q\). The classical identity is also displayed in [Beckwith–Diamantis–Gupta–Rolen–Thalagoda, equation (1.1)](https://arxiv.org/html/2505.05574v1).
+
+- **EIS(i) — FALSE as written, and incomplete as a barrier.** There are three separate problems.
+
+  First, the ordinary imprimitive quadratic \(L\)-function gives the weighted **primitive** class number. Hurwitz numbers additionally sum over square divisors. For example,
+  \[
+  H(12)=4/3,\qquad
+  \frac{\sqrt{12}}{\pi}L(1,\chi_{-12})=1.
+  \]
+  See the class-number examples in [Li’s survey](https://www.math.columbia.edu/~chaoli/ASWSurvey.pdf).
+
+  Second, for the Euler factor actually written, direct averaging gives, for odd \(\ell\nmid N\),
+  \[
+  \frac1\ell\sum_{t\bmod\ell}
+  \frac1{1-\chi_\ell(t^2-4N)/\ell}
+  =
+  1-\frac{1+(N/\ell)}{\ell(\ell^2-1)}.
+  \]
+  It **depends on \(N\)**. Corrected Hurwitz local densities are a different calculation.
+
+  Third, the mean at \(p\) is \(1+1/p\), but multiplying that bias by a main term does not derive the exact \(2q\): conductor terms, correlations, interval weights and the \(\lambda_1\) correction remain unpaid. In particular, the divisor-sum side also contains a \(p\)-contribution that the hyperbolic correction cancels.
+
+  No restricted algorithmic model or uniform error theorem establishes “every small-prime-density approximation has error \(\asymp2q\).”
+
+- **EIS(ii) — FALSE conclusion from a true dimension statement.** \(S_2(\mathrm{SL}_2(\mathbf Z))=0\); this removes the holomorphic cuspidal trace contribution. It does not prohibit other representations, nonholomorphic/shadow terms, continuous spectral expansions, or new coefficient algorithms. Here \(E_2\) is quasimodular, and the correction \(\lambda_1\) is essential.
+
+- **EIS(iii) — FALSE as a mechanism kill.** The identity establishes that accurate evaluation supplies a factor hint. It does not establish that every evaluation mechanism presupposes that hint.
+
+  More precisely, \(C\) is a **linear approximation to \(q\)**:
+  \[
+  q=(C-2N)/2.
+  \]
+  An equally accurate \(\sigma\)-approximation is not interchangeable by the elementary quadratic-root conversion uniformly near \(p=q\); that conversion becomes ill-conditioned. Calling both hints identical needs an additional argument.
+
+- **EIS, Rademacher escape — UNVERIFIED as a fast algorithm; not excluded.** Hurwitz numbers genuinely have an index-zero Rademacher representation: [Duncan–Mertens–Ono, Proposition 5.2](https://arxiv.org/pdf/1702.03516). Their shadow/index-zero contribution cannot be discarded using a partition-function-style dominant polar term. The newer [mock-modular summation formulas](https://arxiv.org/html/2505.05574v1) retain dual arithmetic coefficients and nonholomorphic terms; they do not provide the requested complexity bound.
+
+  There is, however, an **exact obstruction for one specific expansion**. Ramanujan’s identity is
+  \[
+  \sigma(N)=N\zeta(2)\sum_{c\ge1}\frac{c_c(N)}{c^2}.
+  \]
+  See [Tóth, equation (1.1)](https://real.mtak.hu/162024/1/1705.01363.pdf). Subtract the known coprime baseline:
+  \[
+  \sigma(N)=N+N\zeta(2)
+  \sum_{c\ge1}\frac{c_c(N)-\mu(c)}{c^2}.
+  \]
+  Every summand with \(c<p\) vanishes. Truncating there returns \(N\), missing exactly \(p+q+1\asymp\sqrt N\). Enumerating to the first factor-sensitive modulus already costs \(\asymp\sqrt N\).
+
+  **That proves a limitation of this expansion.** There is no justified universal cutoff for all Rademacher, theta-lift or Shintani representations. A claimed fast alternative must supply its particular tail bound and evaluation cost.
+
+- **RANK — FALSE universally; TRUE for the basic linear divisor formulas.** From either
+  \[
+  \varphi=N+1-(p+q),\qquad \sigma=\psi=N+1+(p+q),
+  \]
+  one residue determines \(p+q\bmod\ell\), and hence the unordered roots of \(X^2-sX+N\). For \(r_4=8\sigma\), require \(\ell\ne2\).
+
+  Exact factoring equivalence does **not** imply injectivity modulo each small prime. Two counterexamples:
+
+  * A curve with rational \(\ell\)-torsion has \(\#E(\mathbf Z/N)\equiv0\pmod\ell\) at all good inputs. Even this reducible representation supplies no QR bit through that count.
+  * For \(T=\mathbf G_m^2\), the count is \(\varphi(N)^2\). Modulo \(7\), residue pairs \(\{2,4\}\) and \(\{6,6\}\) both give \(N=1\) and count \(2\), but have opposite local quadratic-residuosity signs.
+
+  Eisenstein coefficients involving \(p^k,q^k\) generally recover their **powers**; recovering the original residues needs injectivity or further information. Dimensions also need their correction terms handled: \(D_{16}-D_4=\psi\) works, not an arbitrary single dimension. This follows from [Stein, Proposition 6.1](https://wstein.org/books/modform/modform/dimension_formulas.html). If \(\tau\) denotes divisor count, it is simply \(4\) here.
+
+- **RANK’s reciprocity statement — NEEDS-FIX.** Products of local Dirichlet characters give only \(\chi(N)\). That is a correct redundancy statement for that observable, not a classification of everything computable using reciprocity.
+
+- **Fixed-base QR versus factoring — UNVERIFIED equivalence; known upper reduction only.** Factoring decides it. Neither a general factoring reduction from fixed-base decision nor a strict separation is known. Even general QR decision is not known factoring-equivalent; root extraction is a different problem.
+
+  For \(-1\) on \(N\equiv1\bmod4\), the exact nearby assumption is **Seurin’s \(2\)-\(\Phi/4\)-Hiding**: distinguish Blum from pseudo-Blum moduli. See [Seurin, §3.1](https://eprint.iacr.org/2013/256). “Independent of factoring” is not an established complexity result. For odd \(\ell\nmid N\), the stated implication from the residue pair to \(QR_N(\ell^*)\) is correct by reciprocity.
+
+- **Global exclusion — UNVERIFIED as a theorem; defensible only as a literature-search verdict.** These arguments leave subgroup sampling, general endomorphisms, collision methods, global Hecke/trace evaluation, infrastructure and other compressed arithmetic operations outside their scope.
+
+  Two relevant omitted variants are:
+
+  * **SQUFOF2:** heuristic \(L[1/2]\), but explicitly uses smooth form values and quadratic-sieve-style linear algebra. See [Bradford–Wagstaff, §§7–8](https://homes.cerias.purdue.edu/~ssw/squfof2.pdf).
+  * **Regulator-based factoring:** Murru–Salvatori obtain a conjectured \(L[1/2,3/\sqrt8]\) route using Vollmer/Buchmann regulator computation; its subexponential engine collects smooth relations. See [their §3](https://arxiv.org/html/2409.03486v1).
+
+  Thus these are missed subexponential *infrastructure variants*, but not smoothness-free counterexamples. Schnorr-style lattice relation methods likewise retain smoothness. Big-Witt Frobenius operators exist operationally over general rings; they must not be conflated with the hidden characteristic-specific operator in FROB.
+
+  I found no established classical, general-purpose algorithm avoiding both order smoothness and smooth-relation collection with a subexponential bound. This remains a statement about known algorithms. Generic-ring results, including [Jager–Schwenk](https://doi.org/10.1007/s00145-012-9120-y), do not upgrade it to an unrestricted lower bound.

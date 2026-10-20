@@ -90,15 +90,12 @@ def test_tau_and_bach_charles_pair():
     assert tau[1:8] == [1, -24, 252, -1472, 4830, -6048, -16744]
     # multiplicativity spot check
     assert tau[6] == tau[2] * tau[3] and tau[35] == tau[5] * tau[7]
-    for p, q in [(5, 7), (11, 13), (13, 29), (17, 19), (101, 103), (199, 197)]:
+    for p, q in [(3, 5), (5, 7), (2, 7), (11, 13), (13, 29), (17, 19), (101, 103), (199, 197)]:
         A, B = equiv.oracle_tau_pair(p, q, tau)
         if p * q <= 400:
             assert A == tau[p * q]
         f = equiv.reduce_tau_pair(p * q, A, B)
-        if tau[p] % p == 0 and tau[q] % q == 0:
-            assert f is None      # both non-ordinary (e.g. 5 | tau(5), 7 | tau(7)): documented
-        else:
-            assert f in (p, q)
+        assert f in (p, q)        # includes N = 35, where 5 | tau(5) and 7 | tau(7)
 
 
 @pytest.mark.parametrize("p,q", MID)
@@ -109,7 +106,7 @@ def test_quadratic_frobenius_reduction(p, q):
     assert f in (p, q) and calls <= 1
 
 
-@pytest.mark.parametrize("p,q", MID[:3])
+@pytest.mark.parametrize("p,q", MID[:3] + [(1009, 1013), (2003, 3001), (4001, 5003)])
 def test_class_number_reduction(p, q):
     N = p * q
     h = equiv.oracle_class_number_4N(p, q)
@@ -204,15 +201,16 @@ def test_gl2_sign_character_is_legendre_det(ell):
     assert equiv.sign_character_check(ell)
 
 
-def test_division_poly_disc_legendre():
+@pytest.mark.parametrize("ell,a,b", [(5, 2, 3), (7, 2, 3), (5, -1, 1), (7, 3, -5)])
+def test_division_poly_disc_legendre(ell, a, b):
     import sympy as sp
-    P = equiv.division_poly_x(5, 2, 3)
+    P = equiv.division_poly_x(ell, a, b)
     D = int(sp.discriminant(P))
     rng = random.Random(7)
-    for _ in range(60):
+    for _ in range(100):
         p = int(gmpy2.next_prime(rng.randrange(10 ** 5, 10 ** 6)))
         if D % p:
-            assert equiv.jacobi(D % p, p) == equiv.jacobi(p, 5)
+            assert equiv.jacobi(D % p, p) == equiv.jacobi(p, ell)
 
 
 def test_frob_fixed_space_on_schoof_algebra():
@@ -239,3 +237,26 @@ def test_frob_fixed_space_on_schoof_algebra():
 def gcd_(a, b):
     from math import gcd
     return gcd(a, b)
+
+
+def test_ramanujan_sum_expansion_vanishes_below_p():
+    """sigma(N) = N + N zeta(2) sum_c (c_c(N) - mu(c))/c^2: every term with gcd(c, N) = 1 is 0
+    (codex nonsmooth_2), so truncating below p returns N exactly."""
+    from sympy import mobius, divisors
+    from math import gcd
+    def ramanujan(c, n):
+        return sum(mobius(c // d) * d for d in divisors(gcd(c, n)))
+    for p, q in [(11, 13), (101, 103)]:
+        N = p * q
+        for c in range(1, p):
+            assert ramanujan(c, N) - mobius(c) == 0
+        assert ramanujan(p, N) - mobius(p) == p
+
+
+@pytest.mark.parametrize("p,q", SMALL[:4] + MID)
+def test_conic_quasi_polynomial(p, q):
+    N = p * q
+    C = equiv.oracle_conic(p, q)
+    if N < 2000:
+        assert C == sum(1 for x in range(N) for y in range(N) if (x * x + y * y - 1) % N == 0)
+    assert equiv.reduce_conic(N, C) == p

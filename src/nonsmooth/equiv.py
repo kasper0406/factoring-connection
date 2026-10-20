@@ -210,11 +210,12 @@ def oracle_tau_pair(p, q, tau):
 
 
 def reduce_tau_pair(N, A, B):
-    """Bach-Charles-type: from A = tau(N), B = tau(N^2).
+    """Bach-Charles (arXiv 0708.1192, Thm 2.2 proof): from A = tau(N), B = tau(N^2).
 
     C = A^2 + N^11 - B = tau(p)^2 q^11 + tau(q)^2 p^11, and the two summands are the roots of
-    z^2 - C z + A^2 N^11. gcd(tau(p)^2 q^11, N) = q unless p | tau(p), and symmetrically, so this
-    fails only if BOTH p, q are non-ordinary for Delta (p | tau(p): 2, 3, 5, 7, 2411, ...).
+    z^2 - C z + A^2 N^11. Dividing a root by N^11 gives tau(p)^2 / p^11 in lowest terms; its
+    denominator is divisible by p unless p^11 | tau(p)^2, which by Deligne (|tau(p)| < 2 p^{11/2})
+    forces tau(p) = 0. So this fails only if tau(p) = tau(q) = 0 (none known; Lehmer).
     """
     C = A * A + N ** 11 - B
     disc = C * C - 4 * A * A * N ** 11
@@ -224,7 +225,10 @@ def reduce_tau_pair(N, A, B):
     if r * r != disc:
         return None
     for root in ((C + r) // 2, (C - r) // 2):
-        g = gcd(root, N)
+        if root == 0:
+            continue
+        den = Fraction(root, N ** 11).denominator
+        g = gcd(den, N)
         if 1 < g < N:
             return g
     return None
@@ -309,7 +313,12 @@ def reduce_class_number(N, h, rng, tries=64):
         if prev is None or g != ident:
             continue
         a, b, c = prev
-        for x in (a, c, b):
+        # ambiguous forms of disc -4N: (a,0,c): ac = N; (a,a,c): a(4c-a) = 4N;
+        # (a,b,a): (a - b/2)(a + b/2) = N  (b even since D = 0 mod 4)
+        cands = [a, c, b]
+        if b % 2 == 0:
+            cands += [a - b // 2, a + b // 2]
+        for x in cands:
             gg = gcd(x, N)
             if 1 < gg < N:
                 return gg, t
@@ -515,3 +524,31 @@ def reduce_frobenius_fixed_space(N, M):
             if 1 < g < N:
                 return g, rank
     return None, rank
+
+
+# ---------------------------------------------------------------- quasi-polynomial counts (conic)
+
+def oracle_conic(p, q):
+    """#{(x, y) in (Z/N)^2 : x^2 + y^2 = 1} = (p - (-1/p)) (q - (-1/q)) (affine conic, a torus)."""
+    return (p - jacobi(-1, p)) * (q - jacobi(-1, q))
+
+
+def reduce_conic(N, C):
+    """Quasi-polynomial extension of the point-count dichotomy: with e_p e_q = (-1/N) known, the
+    two cases e_p = e_q = e (C = N - e s + 1) and e_p = -e_q (C = N + e_p (p - q) - 1) are tried."""
+    if N % 2 == 0:
+        return None
+    for e in (1, -1):
+        if jacobi(-1, N) == 1:
+            # C = N - e s + 1
+            if (N + 1 - C) % e == 0:
+                f = split_from_s(N, (N + 1 - C) * e)
+                if f:
+                    return f
+        else:
+            # C = N + e (p - q) - 1 with e = e_p: d = q - p = -e (C - N + 1)
+            d = -e * (C - N + 1)
+            f = split_from_s(N, isqrt(d * d + 4 * N)) if d * d + 4 * N >= 0 else None
+            if f:
+                return f
+    return None
