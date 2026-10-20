@@ -1,0 +1,198 @@
+**Recommendation: major revision.** The coefficient-rank observation and M1-AA survive scrutiny. The note overstates their scope, HR(c) is incorrect for a clocked attempt, and the stated hypotheses do not close NR-AA’s complete-factorisation induction.
+
+I read all 492 lines, the relevant supporting sections, all `src/almostall13/*.py`, and the raw experiments. E1 and the E2 summary reproduce exactly; all eight existing tests pass. Repository files were left untouched.
+
+1. **FATAL — NR-AA lacks heredity for the actual factorisation tree.** [Lines 289–349](/Volumes/git/factoring-connection/notes/almostall13_results.md:289).
+
+   HAD controls complete factorisations of split halves and values at 𝒦-good points. It does **not** control the other recursive inputs inherited from the FACTOR wrapper: the cofactor after preprocessing, perfect-power bases, and the proper divisors returned by a successful split or factor exit. These can be large composites outside 𝒦.
+
+   In particular, H1 counts a *proper factor discovery* as success, whereas the theorem promises a *complete factorisation*. Completing that discovery can require an uncontrolled call outside 𝒦. Bounding rejected row/point tests by \(r\beta(m)\) does not resolve this issue.
+
+   **Fix:** add heredity covering every recursive factorisation input. One sufficient condition is: for \(N\in\mathcal K\), every composite divisor \(m\mid N\) exceeding \(n_U(N)\) belongs to 𝒦; smaller divisors use FACTOR_U. Include preprocessing and perfect-power reductions explicitly. Alternatively, redesign and analyse completion while retaining the original modulus. Until then, withdraw the claimed \(L[1/3]\) complete-factorisation bound on arbitrary 𝒦. The \( \mathcal K=\mathbb Z_{\ge2}\) specialization avoids this gap.
+
+2. **MAJOR — DF’s universal statement overlooks gcd = N rejection.** [Lines 124–133](/Volumes/git/factoring-connection/notes/almostall13_results.md:124).
+
+   The inherited convention distinguishes a proper gcd, which exits with a factor, from gcd \(=N\), which rejects the current object. Removing gcd checks can therefore change the scan without producing a factor exit.
+
+   For example,
+   \[
+   F(x,y)=x^3-289xy^2+15y^3,\qquad G=x,\qquad N=15
+   \]
+   has \(F(0,1)=15\), \(\gcd(g_1f_d\operatorname{disc}f,N)=1\), and \(F(17,1)=15\). At that point the F-gcd is N, rather than a proper factor. The claimed inspection proof does not cover this case.
+
+   **Fix:** restrict DF to the contracting NEST regime, with fixed public parameters and every scanned nonzero value smaller than N. Nested’s \(\tau_F<1\) bounds provide this asymptotically. Under that restriction, the point-search comparison works until a proper factor exit.
+
+   Also reverse the target-set difference: removing N from \(D_A\) **adds** targets. It is
+   \(\mathcal T^\circ(A)\setminus\mathcal T(A)\) that can contain primes dividing N.
+
+3. **MAJOR — the claimed project-wide scope has an existing counterexample.** [Lines 472–475](/Volumes/git/factoring-connection/notes/almostall13_results.md:472).
+
+   The project already studies descent using arithmetic modulo N: [escapeR2, Prop RS](/Volumes/git/factoring-connection/notes/escapeR2_results.md:376) re-splits a target using
+   \(R=ws^2\bmod N\) and Gauss reduction in a lattice of determinant N. This dependence is substantive and remains when the polynomial pair is fixed.
+
+   **Fix:** replace “None is known” and “all NFS-type designs we know” with a restriction to nested’s fixed-polynomial special-q search. Acknowledge re-splitting and its separately established obstructions.
+
+   NB(i)’s mixture identity remains correct for genuinely field-measurable events. However, its induced law \(\bar\mu\) need not be the uniform law on polynomial pairs of specified heights. Lines 246–248 should retain that distinction.
+
+4. **MAJOR — NB(iv) needs nondegeneracy assumptions; the multi-field count is false.** [Lines 145–181](/Volumes/git/factoring-connection/notes/almostall13_results.md:145).
+
+   The fibre identity is correct. The exact evaluation dimensions require distinct projective points, \(G(P_i)\ne0\), coefficient support spanning the fibre, and genuine variation of T. At \(P=(g_0,g_1)\), fixed N and w give dimension zero, contrary to the displayed \(\min(s,d)\). Arbitrary laws can also have singleton support.
+
+   More seriously, sharing g and N does **not** give dimension at most \(rd+1\) when each field has independent \(w_j\). Each \(T_j=Nw_j\) varies independently, giving \(r(d+1)\) coefficient dimensions. An exact diagnostic with two cubic fields gave rank **8**, versus the claimed bound **7**. This is the independent-multiplier design already used by the project.
+
+   **Fix:** retain the unconditional rank upper bounds in NB(iii), and state equality only under explicit support assumptions. The \(rd+1\) bound requires fixed multiplier ratios, such as fixed \(w_j\), or a shared transverse coordinate.
+
+   The plain base-m discussion is sound as an **upper bound**: digits supply coefficient directions, without another independent block. In (a‴), c alone supplies d directions; \((w,c)\) supplies the possible \(d+1\).
+
+5. **MINOR — OD-AA has an off-by-one; Info-AA needs w.** [Lines 163–180](/Volumes/git/factoring-connection/notes/almostall13_results.md:163).
+
+   With k retained points,
+   \[
+   G\prod_{i=1}^k L_{P_i}H,\qquad \deg H=d-1-k,
+   \]
+   has **\(d-k\)** free coefficients. Releasing the resultant constraint gives \(d+1-k\). Lines 165–166 currently conflict.
+
+   Revealed independent evaluations determine F; recovering N additionally requires w. Say “given g and w.” The children-count discussion must retain nested’s **typical-factorisation model** qualification.
+
+6. **MINOR — W-AA’s congruence is correct; its application needs explicit averaging bookkeeping.** [Lines 185–196](/Volumes/git/factoring-connection/notes/almostall13_results.md:185).
+
+   Homogeneity gives the stated congruence, and multiplication by the unit \((bg_1^{-1})^dw\) proves the residue bound.
+
+   A rigorous replacement for LD*-U Step 4 is
+   \[
+   \mathbb E_N\mathfrak Q_0
+   \le (1/t+1/X)\mathfrak Q(t|\Delta|)
+   \le \frac{1+t/X}{\varphi(t)}\mathfrak Q(t|\Delta|).
+   \]
+   Freeze the rational sampling parameters and smooth-value envelope over the input window, or partition into common parameter regimes. Remove N-dependent rejection indicators when taking this upper bound. In the relevant range \(t=o(X)\), the constant is \(1+o(1)\).
+
+   **Fix:** display this inequality. For the “most N” relation-supply conclusion, apply Markov to the **per-N second moment**, together with a uniform per-N first-moment lower bound, then use Paley–Zygmund. A lower bound on average success alone would not suffice, as Lemma AV correctly notes.
+
+7. **MINOR — M1-AA’s intended counting argument works; qualify its consequences.** [Lines 198–233](/Volumes/git/factoring-connection/notes/almostall13_results.md:198).
+
+   The Rankin bound is valid. Replacing the distinct prime factors by the first \(\omega(R)\) primes increases the product. Their largest prime is \(O(L)\), since their primorial is at most \(|R|\). Thus, at exponent ½,
+   \[
+   \log\prod_{p\mid R}(1-p^{-1/2})^{-1}
+   =O(\sqrt L/\log L)=o(\log X)
+   \]
+   for \(L\le(\log X)^{1.9+o(1)}\). Dyadic rounding costs \(O(d)=o(\log X)\), so the binning argument works.
+
+   Part (b) works in the intended fixed range \(0\le\beta<1\), with
+   \((1+\beta)(1-\sigma)<1\). State that range and the height threshold explicitly. Part (c)’s divisor bound is also correct. Obtain “\(1-o(1)\)” through an explicit diagonal choice of the fixed slack.
+
+   **Fix the summaries:** retain the d-dependent SNFS density bound, or assume \(d\to\infty\); the universal \(X^{-1/2+o(1)}\) wording in the verdict does not follow as written. Also distinguish almost-all **B-rough inputs** from residual cofactors produced by preprocessing arbitrary inputs.
+
+   M1 does supply R2’s counting premise up to constants. R2 nevertheless remains a **model computation**, conditional on M2–M4.
+
+8. **MAJOR — MP supports a narrower method barrier than the text claims.** [Lines 252–268](/Volumes/git/factoring-connection/notes/almostall13_results.md:252).
+
+   The mixture identity is correct. Its conditional version requires the added Bernoulli variable to remain independent of the conditioning information; “any σ-algebra” is too broad if that information reveals the mixture coin or an affected adaptive history.
+
+   For a **uniform per-target union-bound argument**, the required failure scale is indeed approximately \(\delta e^{-b_1Q}\). MP shows an ambiguity at that scale in a model using only relatively approximate positive moments. It does not establish a universal precision requirement for methods using additional support constraints, structural identities, or different information.
+
+   The “moment order within budget” assertion is only a heuristic feasibility calculation. With the example parameters from nested §8,
+   \[
+   2s-\phi/3=5/48,\qquad j\approx9.6D',
+   \]
+   far above \(d+1\approx0.5D'\). Larger boxes can repair this: under the note’s convention, \(s>40/23\) suffices. A central-moment proof must also distinguish moment order \(2j\) from j and charge the corresponding evaluations.
+
+   **Fix:** specify the moment-information model, the actual high-moment inequality sought, and the parameter condition ensuring its evaluation count fits.
+
+9. **MAJOR — HR(c)’s clocked fallback bound omits ordinary timeout failures.** [Lines 283–287](/Volumes/git/factoring-connection/notes/almostall13_results.md:283).
+
+   Even when \(\varepsilon=0\), an expected-time bound on the fast algorithm permits a positive probability of exceeding a fixed clock. Sending those runs to a costly fallback can contribute \(\Theta(U)\), contradicting \(O(T_f)\).
+
+   **Fix:** either race the **uncapped** fast algorithm against the fallback, which supports the displayed expectation bound, or include the clock failure term. With amplified timeout probability \(\theta\), the bound becomes
+   \[
+   O(rT_f)+O((K\varepsilon+\theta)U).
+   \]
+   The exceptional-density exponent calculation is then valid for that repaired bound.
+
+10. **MINOR — HR(a) is a valid information objection, but not the stated arbitrary-set algorithm construction.** [Lines 272–282](/Volumes/git/factoring-connection/notes/almostall13_results.md:272).
+
+    An arbitrary 𝒮 need not be computable, and a uniform factoring algorithm fast everywhere outside it cannot simply be asserted.
+
+    **Fix:** formulate the argument as a counterexample between measures and exceptional sets. An algorithmic construction additionally needs decidable membership and an available fast baseline.
+
+    HR(b)’s accepted-half density is correct at exponential scale. The blanket density claim for both F and G values is too broad: at top levels, G may have bounded smoothness parameter and nonvanishing smooth density. The thin accepted-half and algebraic-value sets already establish the intended obstruction.
+
+11. **NR-AA’s remaining clock, split and cost calculations check out, subject to issue 1.** [Lines 303–349](/Volumes/git/factoring-connection/notes/almostall13_results.md:303).
+
+    The current file uses \(r=\lceil E^2\rceil\), not \(\lceil E\rceil\). With the induction hypothesis, Markov gives failure at most \(1/4\) per tame call, hence \(4^{-r}\). Polynomial amplification is absorbed in \(e^{o(E)}\). Using merely \(r=\lceil E\rceil\) would require \(b<\log4\), or a larger constant multiplying E.
+
+    Applying S″ to \(\mathcal U_A\cap\mathcal K\) works; the strengthened \(8k^3 2^\omega\) condition is sufficient. Bound one LV6 round first and then sum over rounds, rather than asserting a deterministic bound on all targets visited in a field.
+
+    Timeouts preserve (T), because their inputs and fresh coins do not expose hidden roots.
+
+    The unconditional-character calculation
+    \[
+    \log s_\chi=(2\delta/3+o(1))E
+    \]
+    is correct. Polynomial arithmetic therefore contributes \(L[1/3,C_\chi\delta]\), and the displayed maximum defining \(c_{\rm NR-AA}\) has the correct exponent arithmetic.
+
+    Finally,
+    \[
+    \Lambda_{2/5}(\exp(t^{4/5}))
+       =t^{8/25+o(1)}=o(E),
+    \]
+    so the FACTOR_U threshold is valid.
+
+12. **MAJOR — the headline must distinguish the best supplied bound from an impossibility theorem.** [Lines 19–32](/Volumes/git/factoring-connection/notes/almostall13_results.md:19).
+
+    Pushforward identities and coefficient-rank bounds do not prove that changing the field distribution cannot improve descendability. They refute an **extra-parameter counting argument**. They do not exclude all benefits of averaging.
+
+    **Fix:** say: “Assuming the internal chain, the best bound established here remains 2/5; this note proves no improvement from input averaging.” Remove categorical claims excluding every improvement below 2/5.
+
+    Definition AA is satisfactory. TR’s semiprime transfer is correct. Its mean-runtime condition is a sufficient condition for the stated worst-case envelope argument, rather than a necessary condition on the actual mean.
+
+13. **MINOR — literature is substantially accurate; make the citations precise.** [Section 7](/Volumes/git/factoring-connection/notes/almostall13_results.md:436).
+
+    Hafner–McCurley’s Theorem 3.1 gives the stated exceptional-prime estimate; Theorem 3.2 removes recognizable prime factors up to v with constant success probability and the stated \(\exp(O((\log v)^\theta))\) scale, including input-length factors. [Original paper](https://www.mccurley.org/papers/running.pdf).
+
+    LP92 §7 supports the 6/7 statement: 7.1 is the ECM success estimate, **7.2 is an algorithm**, 7.3 gives the recognizable-smooth factorisation bound, and 7.4 bounds exceptional primes. Replace “Thms 7.1–7.4” accordingly. [Original paper](https://community.ams.org/journals/jams/1992-05-03/S0894-0347-1992-1137100-0/S0894-0347-1992-1137100-0.pdf).
+
+    The Lee–Venkatesan distinction between square congruences and conditional nontrivial factorisation is correct, as is the algorithmic rather than input averaging. [Paper](https://arxiv.org/abs/1805.08873). Kleinjung–Wesolowski cover every field with their stated characteristic-dependent bound; they are not an exceptional-input result. [Paper](https://doi.org/10.1090/jams/985). Barbulescu–Jouve’s EH qualifications are correctly identified; update the bibliographic entry to the published 2024 article. [Author’s paper](https://www.math.u-bordeaux.fr/~fjouve001/ECM-EH.pdf).
+
+    Keep “no result found” explicitly as a search conclusion.
+
+14. **MINOR — experimental numbers are correct; soften Q3’s interpretation.** [Sections 5–6](/Volumes/git/factoring-connection/notes/almostall13_results.md:388).
+
+    All ten E1 rows match. Reanalysis of all 144 E2 records reproduces every stored summary value exactly: means, bootstrap interval, SD ratio, permutation p-values, Jensen ratios, node counts, correlations and 608.776-second total.
+
+    **Fix:** replace “no N effect” by “no statistically detected N-group effect in this toy.” A nonsignificant test does not establish absence of an effect. The experiments support descriptive toy conclusions only.
+
+| Claim | Verdict |
+|---|---|
+| Definition AA | CORRECT |
+| TR: balanced-semiprime transfer | CORRECT |
+| TR: necessary mean condition | CORRECT WITH FIXES |
+| DF, universally quantified | INCORRECT |
+| DF restricted to contracting NEST | CORRECT WITH FIXES |
+| NB(i): mixture identity | CORRECT |
+| NB(ii): recovery with w supplied | CORRECT |
+| NB(iii): evaluation-rank bounds | CORRECT |
+| NB(iv): exact dimensions | CORRECT WITH FIXES |
+| Shared-N multi-field \(rd+1\) bound | INCORRECT |
+| OD-AA | CORRECT WITH FIXES |
+| SI-AA | CORRECT |
+| Info-AA | CORRECT WITH FIXES |
+| W-AA congruence and residue bound | CORRECT |
+| W-AA relation-supply consequence | CORRECT WITH FIXES |
+| M1-AA(a) | CORRECT |
+| M1-AA(b)–(c), R2/SNFS consequences | CORRECT WITH FIXES |
+| AV | CORRECT |
+| MP mixture identity | CORRECT |
+| MP conditional scope, precision and order claims | CORRECT WITH FIXES |
+| HR(a)–(b) | CORRECT WITH FIXES |
+| HR(c), clocked formulation | INCORRECT |
+| HAD as sufficient for complete factorisation on 𝒦 | INCORRECT |
+| NR-AA: universal fallback bound | CORRECT |
+| NR-AA: fast complete factorisation on arbitrary 𝒦 | INCORRECT |
+| NR-AA: clocks, S″, (T), characters, constants, threshold | CORRECT WITH FIXES |
+| NR-AA with \(\mathcal K=\mathbb Z_{\ge2}\) | CORRECT WITH FIXES |
+| Literature §7 | CORRECT WITH FIXES |
+| E1 and E2 numerical reporting | CORRECT |
+| Project-wide exclusion and categorical 2/5 barrier | INCORRECT |
+| 2/5 as the best bound supplied, assuming the internal chain | CORRECT |
+
+**Overall recommendation: major revision.** Preserve the rank and counting results, repair HR and the hereditary completion hypothesis, and narrow the verdict to what the arguments establish.
