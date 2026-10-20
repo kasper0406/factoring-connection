@@ -1,0 +1,290 @@
+**SPECULATIVE — verdict.** I found no construction meeting the factoring target. There is, however, a clean theorem killing an important version: an exact PTE family cannot also have one common polynomial remainder when the presentation degree is at least the number of free coefficients and \(N\) has a prime divisor exceeding \(2B\). Families with different small residuals remain open. VMVT does not supply a universal barrier for them.
+
+**KNOWN — correction to the benchmark.** The \(q^3+q\) candidates in Joux’s construction come from cosets of \(\mathrm{PGL}_2(\mathbb F_q)\) in \(\mathrm{PGL}_2(\mathbb F_{q^2})\). The smaller group preserves the projective root set of \(X^qY-XY^q\), so its own orbit gives one form up to scaling. The comparison should therefore be with transformations over the extension field. [Joux, §4.2](https://eprint.iacr.org/2013/095.pdf)
+
+**PROVED — a precise model.** Separate the entry bound \(B\) from the smoothness bound \(Y\). A presentation consists of:
+
+- An explicitly represented algebra
+  \[
+  A_N=(\mathbb Z/N)[z_1,\ldots,z_s]/I_N
+  \]
+  and an evaluation homomorphism \(\phi:A_N\to\mathbb Z/N\).
+- A dictionary of allowed factors \(\ell_a\), indexed by integer parameters of height at most \(B\).
+- Products \(P=\prod_{j=1}^M\ell_{a_j}\).
+- A module \(W=\langle b_1,\ldots,b_k\rangle\) of allowed residual representatives
+  \[
+  r_P=\sum_{i=1}^k c_{P,i}b_i,\qquad |c_{P,i}|\le h,
+  \]
+  together with certificates \(P=r_P\) in \(A_N\).
+
+The presentation, dictionary and reduction algorithm must be shared across the family; their construction cost counts. For a monic univariate \(F\), \(A_N\) is free of rank \(d=\deg F\). For finite free multivariate presentations, replace \(d\) by their rank \(D\). Freeness is required only for arguments using unique coordinates or norms.
+
+Crucially, attach **actual integers**
+\[
+U_P=\prod_j s_{a_j},\qquad V_P,
+\]
+where \(s_a\equiv\phi(\ell_a)\pmod N\), \(V_P\equiv\phi(r_P)\pmod N\), and certify the claimed factorization and size bounds. Polynomial splitting alone says nothing about the sizes of these integers.
+
+For \(P(X)=\prod(X-a_j)\) and a chosen integer representative \(m\),
+\[
+U_P=P(m),\qquad V_P=r_P(m).
+\]
+Thus a sufficient condition for constructed smoothness is \(|m-a_j|\le Y\), while
+\[
+\log\max(1,|V_P|)
+ \le \log(kh)+(k-1)\log\max(1,|m|).
+\]
+This follows by the triangle inequality. Small coefficients with a large \(m\) need not give a small value.
+
+For number fields, record factor-base ideal decompositions, norms, denominators and the unit/class-group information needed by the relation algorithm. Smallness in one embedding is insufficient: multiplying all conjugates determines the norm.
+
+**PROVED — corrections to (a)–(c).** Pieces bounded by \(B^C\) guarantee smoothness for factor base \(Y=B^C\), preserving the \(L\)-exponent. If \(|V|=\exp(o(x))\), non-exactness implies
+\[
+|U|\ge N-|V|,\qquad M\log Y\ge(1-o(1))x.
+\]
+Hence \(M\gtrsim x/\log Y\) is necessary.
+
+For varying \(V_P\), one needs smooth residuals, or another mechanism eliminating their unknown factors. A small residual is automatically smooth only when \(|V_P|\le Y\).
+
+There is an important exception: **one common scalar \(V\) need not be smooth**. Give it one extra formal column in the relation matrix. Even total multiplicity makes its contribution a computable square. More generally, a small residual dictionary can be treated this way; one unique residual per row generally supplies no dependencies.
+
+Finally, count useful relation vectors. Permutations, repeated square factors and algebraic tautologies can inflate \(|\mathcal F|\) without supplying useful rank. Nonunits either reveal a factor through a gcd or require separate treatment.
+
+**HEURISTIC — the cost target.** Assume polynomial amortized generation/testing cost, residual smoothness distributed like random integers of their size, and sufficient matrix rank and nontrivial square dependencies. Put
+\[
+\ell_\beta=x^\beta(\log x)^{1-\beta},\qquad
+\log Y=b\ell_\beta,
+\]
+and suppose
+\[
+R:=\log|V|
+ =(\lambda+o(1))x^{2\beta}(\log x)^{1-2\beta}.
+\]
+Then \(u=R/\log Y\) satisfies
+\[
+u\log u=(\beta\lambda/b+o(1))\ell_\beta.
+\]
+To obtain approximately \(Y\) relations, the candidate family must supply
+\[
+|\mathcal F|\gtrsim L[\beta,b+\beta\lambda/b].
+\]
+Quadratic linear algebra costs \(L[\beta,2b]\), giving
+\[
+T=L\!\left[\beta,\max\{b+\beta\lambda/b,\;2b\}\right].
+\]
+Ignoring other parameter couplings, optimization gives \(b=\sqrt{\beta\lambda}\) and constant \(2\sqrt{\beta\lambda}\).
+
+| Boundary runtime exponent | Residual log-size compatible with that exponent | Necessary \(M\), up to constants |
+|---|---:|---:|
+| \(1/3\) | \(O(x^{2/3}(\log x)^{1/3})\) | \((x/\log x)^{2/3}\) |
+| \(1/4\) | \(O(x^{1/2}(\log x)^{1/2})\) | \((x/\log x)^{3/4}\) |
+| \(1/10\) | \(O(x^{1/5}(\log x)^{4/5})\) | \((x/\log x)^{9/10}\) |
+
+To beat a boundary **in exponent**, take \(\beta\) strictly below it. Merely reducing the displayed residual bound by a slowly vanishing factor need not lower the \(L\)-exponent.
+
+Thus (a)–(c) omit generation cost, constants in the family size, residual handling and useful rank. With a common residual dictionary, smoothness probability can be replaced by dictionary size, but those other requirements remain.
+
+**HEURISTIC — generic PTE counting.** Write
+\[
+t=M-k,\qquad K=t(t+1)/2,\qquad Q=2\lfloor B\rfloor+1.
+\]
+There are exactly
+\[
+T_{\rm all}=\binom{Q+M-1}{M}
+\]
+multisets. The approximation \(Q^M/M!\) requires, for example, \(M^2/Q=o(1)\).
+
+The suggested independent-coefficient-box model predicts mean occupancy roughly
+\[
+\mu\approx\frac{Q^M/M!}{(MB)^K}.
+\]
+When \(\log B\gg\log M\), the leading power is \(B^{M-K}\). Under approximately uniform, independent occupancy, large fibres therefore require approximately
+\[
+K\lesssim M,\qquad t\lesssim\sqrt{2M}.
+\]
+That leaves \(k=M-O(\sqrt M)\) free coefficients: little degree compression.
+
+This is a model of generic behaviour, not a bound on exceptional fibres. Symmetry and arithmetic correlations make it spectacularly inaccurate for some PTE families, as the experiment below demonstrates.
+
+**PROVED — a uniform fibre bound.** For every prescribed moment vector \(\sigma\),
+\[
+\boxed{\quad
+T_t(\sigma)\le\binom{Q+k-1}{k}.
+\quad}
+\]
+Proof: specify the largest \(k\) entries. Subtract their first \(t\) power sums from \(\sigma\). Newton’s identities recover the monic degree-\(t\) polynomial whose roots are the remaining entries, uniquely. Thus the chosen \(k\)-multiset determines the whole multiset.
+
+In particular, fixed \(k\) gives \(O_k(B^k)\), uniformly in the prescribed coefficients. At \(B\asymp M\asymp q\), \(k=1,2\) exclude \(q^3\) members; \(k=3\) leaves room for that order of magnitude.
+
+**KNOWN — exactly what VMVT says.** If \(R_{M,t}(\sigma)\) counts ordered tuples with those moments, then
+\[
+\sum_\sigma R_{M,t}(\sigma)^2
+ =J_{M,t}(Q)
+ \ll_{M,t,\varepsilon}
+ Q^\varepsilon\bigl(Q^M+Q^{2M-K}\bigr).
+\]
+Translation converts \([-B,B]\) to an interval of length \(Q\). This is the main conjecture proved by Bourgain–Demeter–Guth, with the cubic case proved by Wooley. [BDG, Theorem 1.1](https://annals.math.princeton.edu/wp-content/uploads/annals-v184-n2-p07-p.pdf), [Wooley](https://arxiv.org/abs/1401.3150)
+
+**PROVED — consequences and limits.** VMVT bounds total PTE collisions and yields
+\[
+\#\{\sigma:R_{M,t}(\sigma)\ge H\}\le J_{M,t}(Q)/H^2.
+\]
+It does not make every fibre small or eliminate exceptional structured fibres. The \(Q^M\) term includes permutations of identical multisets; it cannot be interpreted as a count of nontrivial PTE pairs.
+
+A pointwise consequence is
+\[
+T_t(\sigma)\ll_{M,t,\varepsilon}
+Q^\varepsilon\bigl(Q^{M/2}+Q^{M-K}\bigr).
+\]
+Indeed, Fourier inversion bounds a coefficient by \(\int|f|^M\); use the critical moment \(J_{K,t}\), Hölder below exponent \(2K\), and \(|f|\le Q\) above it. For small \(k\), the elementary binomial bound is stronger.
+
+The displayed VMVT constants depend on \(M,t,\varepsilon\). Since factoring requires growing \(M\), their dependence must be controlled before extracting an asymptotic factoring barrier.
+
+**KNOWN — determinant methods.** Bombieri–Pila bounds integral points on irreducible plane curves of fixed degree \(D\) by \(O_{D,\varepsilon}(B^{1/D+\varepsilon})\). Heath-Brown’s determinant method and Salberger’s dimension-growth results extend the toolkit substantially. [Bombieri–Pila](https://people.maths.ox.ac.uk/pila/Ovals.pdf), [Salberger](https://doi.org/10.1112/plms.12508)
+
+**PROVED — why these are not the requested universal barrier.** PTE fibres have special components and can have dimension \(k\). Applying a curve theorem requires a justified projection, bounds on its fibres, and treatment of exceptional components. Moreover, common reduction modulo arbitrary \(F\) does **not** imply common leading coefficients. Neither VMVT nor a generic determinant-method citation bridges that gap.
+
+**PROVED — a stronger obstruction involving \(N\).** Suppose:
+
+1. \(P,P'\) are monic degree-\(M\) polynomials with integer roots in \([-B,B]\);
+2. \(\deg(P-P')<k\);
+3. \(P\equiv P'\pmod{N,F}\), where \(F\) is monic of degree \(d\ge k\);
+4. some prime \(p\mid N\) satisfies \(p>2B\).
+
+Then **\(P=P'\)**.
+
+Proof: a polynomial of degree below \(d\) is its own remainder modulo monic \(F\), so all coefficients of \(P-P'\) vanish modulo \(N\). Over \(\mathbb F_p\), unique factorization gives identical root multisets. Reduction modulo \(p\) is injective on \([-B,B]\), hence the integer multisets coincide.
+
+This kills exact high-moment families with the **same algebraic remainder**, regardless of presentation height. It does not kill different residuals \(r_P\).
+
+For ideal PTE, \(k=1\), the obstruction is stronger still. If
+\[
+P-P'=C\ne0,
+\]
+evaluation at any root \(b\) of \(P'\) gives
+\[
+C=P(b)=\prod_i(b-a_i).
+\]
+Thus \(C\) is \(2B\)-smooth. Consequently, when every prime dividing \(N\) exceeds \(2B\), two distinct members cannot have the same scalar value modulo \(N\), for **any** \(m\).
+
+**PROVED — a qualified bound for general common remainders.** Suppose every \(X-a\) occurring is a unit in \(A_N\), \(F\) is monic of degree \(d\le M\), and \(N\) has a prime divisor \(>2B\). For one fixed remainder,
+\[
+T\le\binom{Q+M-d-1}{M-d}.
+\]
+Proof: fix the largest \(M-d\) roots, obtaining a known unit product \(A(X)\). The remaining monic degree-\(d\) factor is uniquely determined modulo \(N,F\); two completions have difference of degree \(<d\), hence identical coefficients modulo \(N\), and then identical bounded integer roots by the preceding argument.
+
+Allowing \(k\) residual coefficients bounded by \(h\) multiplies this bound by at most \((2h+1)^k\). This is a genuine presentation-dependent bound, but for small \(d\) it is much too weak to prohibit the target.
+
+**HEURISTIC — modular compression cost.** Under uniform distribution in a free rank-\(D\) algebra, hitting a fixed remainder costs \(N^{-D}\). Hitting any residual in a \(k\)-coordinate box of radius \(h<N/2\) costs approximately
+\[
+(2h+1)^k/N^D.
+\]
+Allowing unrestricted coefficients in that subspace costs \(N^{-(D-k)}\). Requiring only one small scalar evaluation costs about \(2\exp(R)/N\). Adaptive \(N\)-dependent presentations invalidate automatic multiplication by these probabilities; their selection cost and correlations must be analyzed.
+
+**PROVED — EX needs a qualification.** Its lifting statement is correct in a free integral model: reduced coefficients divisible by \(N\) and smaller than \(N\) are zero. But an exact identity modulo \(\widetilde F\) can still produce a non-exact integer congruence through an \(N\)-dependent evaluation.
+
+For example, \(X^2\equiv-1\pmod{X^2+1}\) is exact algebraically, while \(m=8,N=65\) gives \(64\equiv-1\pmod{65}\). The information enters through \(N\mid F(m)\).
+
+If \(F(m)\ne0\), degree \(d\) and coefficient height \(H\) imply
+\[
+x\le\log(d+1)+\log H+d\log\max(1,|m|),
+\]
+because \(N\le|F(m)|\). Thus the prompt’s fixed sextic identity requires \(|m|\gtrsim N^{1/6}\) asymptotically. Its linear factors are then too large for a subexponential factor base. An \(N\)-dependent large height can evade this inequality, but does not itself provide small residuals.
+
+**PROVED — construction audit: affine and symmetric PTE families.** A fixed seed pair supplies \(O(B^2)\) integer affine images, but these generally occupy different moment fibres. Once the first two moments are fixed, the mean determines translation and variance determines the squared dilation, leaving at most two affine images of that seed.
+
+For an ideal seed with difference \(C\), dilation by \(a\) changes the difference to \(a^M C\). A constant polynomial difference can therefore have logarithmic height \(\Theta(M\log B)\), approximately \(x\) in the required regime. “Degree zero” does not mean “small integer.”
+
+Symmetry removes many equations and produces useful parametric pairs, but supplies neither a fixed congruence for arbitrary \(N\) nor a dense fibre with controlled residual height. [Borwein–Ingalls](https://www.cecm.sfu.ca/~pborwein/PAPERS/P98.pdf), [Borwein–Lisoněk–Percival](https://www.daemonology.net/papers/pte.pdf)
+
+**PROVED — Prouhet–Thue–Morse and doubling.** The identity
+\[
+\prod_{i=0}^{t}(1-z^{2^i})
+\]
+has a zero of order \(t+1\) at \(1\). Its positive and negative exponent sets therefore give equal moments through degree \(t\), with
+\[
+M=2^t,\qquad B\asymp M,\qquad k=M-t.
+\]
+It supplies two members with weak degree compression. The \(q\)-ary digit construction supplies \(q\) blocks of size \(q^t\), still with only \(t\) matching moments.
+
+The doubling construction raises moment order by one while doubling size: the new moment difference is the finite difference of the old one. Without cancellations, exponential growth in size prevents \(t\approx M\). These constructions satisfy splitting, but do not establish the required residual size or \(N\)-dependence.
+
+**PROVED — Dickson/Chebyshev.** With \(D_n=D_n(X,1)\),
+\[
+D_n(\tau+\tau^{-1})=\tau^n+\tau^{-n}.
+\]
+Therefore
+\[
+D_n(X)-D_n(t)
+=\prod_{j=0}^{n-1}
+\left(X-\zeta_n^j\tau-\zeta_n^{-j}\tau^{-1}\right),
+\qquad t=\tau+\tau^{-1}.
+\]
+This follows by evaluating \(D_n\) at the displayed roots.
+
+For integer \(|t|\le B\), there are only \(O(B)\) such polynomials. Modulo \(F=D_n(X)-c_0\), their residuals are
+\[
+c_0-D_n(t),
+\]
+whose general logarithmic size is \(O(n\log(B+2)+\log(1+|c_0|))\), rather than a bound independent of \(n\).
+
+The roots are generally algebraic, and for \(|t|>2\) generally nonreal. A direct implementation uses \(K=\mathbb Q(\zeta_n,\tau)\), of degree between \(\varphi(n)\) and \(2\varphi(n)\). Each factor obeys
+\[
+|\operatorname{Norm}_{K/\mathbb Q}(m-a_j)|
+ \le (|m|+B+2)^{[K:\mathbb Q]}.
+\]
+Thus splitting in this field does not certify small norm factors. Conjugate factors also have equal norms, which can collapse the apparent supply of independent generators.
+
+For fixed parameter \(1\), there are no completely integer-split fibres \(D_n(X)-c\) for \(n\ge7\): complete real splitting forces \(|c|\le2\); if \(c<2\), the largest root lies strictly between \(1\) and \(2\). If \(c=2\), \(2\cos(2\pi/n)\) does. Composition \(D_m\circ D_n=D_{mn}\) preserves these obstacles.
+
+**PROVED / HEURISTIC — norm, cyclotomic and group orbits.** Galois permutations and symmetric-group permutations of a whole root multiset produce the same polynomial. Rational Möbius transformations produce new rational roots, but clearing denominators introduces factors of size
+\[
+O\!\left(T(B+1)(|m|+1)\right)
+\]
+for matrix entries bounded by \(T\). Their transformed products retain degree approximately \(M\). Under the uniform-compression heuristic above, no automatic small remainder follows.
+
+Multidimensional and number-field PTE constructions enlarge the available arithmetic, but require the same norm, height and residual accounting. [Alpers–Tijdeman](https://doi.org/10.1016/j.jnt.2006.07.001), [Caley](https://arxiv.org/abs/1011.1262)
+
+**SPECULATIVE — construction assessment.** None of these audited constructions achieves \(q^3\) useful integer relations at degree \(q\), comparable entry bound and constant residual degree. For \(k=3\), the elementary bound permits that density; it does not construct it. Arbitrary presentations with varying residuals remain beyond the proved obstruction.
+
+**PROVED — exact kill experiment.** I ran [this standalone script](/Volumes/git/factoring-connection/codex/scratch/ptesplit_1/ptesplit_blind_experiment.py), reading no existing repository files. Full counts are in [the JSON output](/Volumes/git/factoring-connection/codex/scratch/ptesplit_1/ptesplit_blind_counts.json). Collision pairs mean unordered pairs of distinct multisets.
+
+| Search | Objects | Collision pairs | Largest fibre |
+|---|---:|---:|---:|
+| \(M=4,\ [-30,30],\ t=1\) | 635,376 | 1,548,937,735 | 6,786 |
+| Same, \(t=2\) | 635,376 | 1,928,985 | 29 |
+| Same, \(t=3\) | 635,376 | 4,878 | 4 |
+| Symmetric \(M=6,\ B=60,\ t=5\) | 39,711 | 213 | 4 |
+| Symmetric \(M=8,\ B=30,\ t=7\) | 46,376 | 1 | 2 |
+| Symmetric \(M=10,\ B=30,\ t=9\) | 324,632 | 0 | 1 |
+
+The symmetric searches enumerate multisets \(\{\pm a_1,\ldots,\pm a_{M/2}\}\), including repetitions and zero.
+
+**HEURISTIC — predictions versus observations.** Independent uniform occupancy of the full quartic moment boxes predicts approximately \(8.38\times10^8\), \(232{,}590\), and \(1.08\) collision pairs for \(t=1,2,3\). The final discrepancy is decisive evidence against treating that model as a theorem. Centrally symmetric quartics explain one mechanism: their first three moments depend only on their centre and the sum of two squared radii.
+
+For a fixed generic-looking presentation
+\[
+N=1{,}022{,}117,\quad m=314159,\quad
+F=X^2+271828X+402937,
+\]
+the same quartic enumeration gave:
+
+| Measurement | Random-map prediction | Exact count |
+|---|---:|---:|
+| Equal polynomial-remainder pairs | 0.193 | 0 |
+| Equal scalar-value pairs | 197,483 | 193,212 |
+| Scalar residues of absolute size \(\le1000\) | 1,244 | 1,194 |
+
+This cleanly distinguishes equality in the algebra from equality after evaluation. These are counting experiments, not successful factoring parameters.
+
+**KNOWN — literature and its implications.** Borwein–Ingalls is the foundational survey; Borwein–Lisoněk–Percival develops symmetric ideal searches. Coppersmith–Mossinghoff–Scheinerman–VanderKam substantially extended searches through size \(16\), finding no new integral configurations beyond known affine classes in their searched ranges. [2024 paper](https://arxiv.org/abs/2304.11254)
+
+Wright’s conjecture concerns existence of ideal pairs for every size, without the density, height or effective \(N\)-dependence needed here. Hua’s work and subsequent analytic work connect Tarry problems to mean values; existence bounds must be distinguished from uniform fibre counts. [Hua](https://doi.org/10.1112/jlms/s1-24.2.157), [Wooley’s direct PTE/VMVT treatment](https://www.math.purdue.edu/~twooley/publ/1996%20PTE.pdf)
+
+There is directly relevant cryptographic work: Costello–Meyer–Naehrig use split polynomials differing by a constant to sieve for twin smooth integers. Ahrens subsequently optimizes searches using single PTE solutions. These generate cryptographic parameters, rather than factoring an arbitrary prescribed modulus. [EUROCRYPT 2021](https://www.microsoft.com/en-us/research/publication/sieving-for-twin-smooth-integers-with-solutions-to-the-prouhet-tarry-escott-problem/), [Ahrens, 2026](https://doi.org/10.13069/jacodesmath.v13i2.426)
+
+PTE also appears in Reed–Solomon decoding hardness through moment subset sum; that connection supplies no factoring lower bound. [Gandikota–Ghazi–Grigorescu](https://eccc.weizmann.ac.il/report/2016/176/download/)
+
+**SPECULATIVE — subjective probabilities.** For the exact high-moment integer route with varying residuals, I would assign about **1%** to eventual sub-\(L[1/3]\) factoring; allowing the broader presentations in the prompt raises my estimate to **3%**. My corresponding broad-route estimates are **0.3%** below \(L[1/4]\) and **0.01%** below \(L[1/10]\). These are research bets, not statistical estimates.
+
+I would continue only with an explicit generator that demonstrates small **evaluated or norm residuals**, affordable generation and useful relation rank. Dense PTE identities alone leave all three unresolved.
