@@ -97,3 +97,42 @@ def ladder_factor_op(N: int, j: int, c: Fraction = Fraction(1, 2),
     stats["oracle_builds"] = orc.blocks_built
     stats.update({f"op_{k}": v for k, v in orc.cnt.items()})
     return found
+
+
+def divisor_summatory_ladder(N: int, j: int, c: Fraction = Fraction(1, 2),
+                             stats: Optional[Dict] = None) -> int:
+    """D(N) = sum_{n <= N} tau(n) = 2 sum_{d <= s} floor(N/d) - s^2 (s = isqrt N), computed with
+    the degree-j ladder (Prop D, notes/floorsum_results.md).  OPERATIONAL, exact.
+
+    Per block, sum_{h<H} floor(N/(x+h)) = F(P_j; 0, H) - sum_{h in C} (floor(P_j(h)) - floor(N/(x+h)))
+    where C is the located candidate set (it contains every h with floor(P_j) != floor(f)).
+    With the Farey oracle the cost is ~ N^{1/3} polylog; with a polylog oracle it would be
+    O(N^{1/(j+2)} log^2 N) oracle calls."""
+    if stats is None:
+        stats = {}
+    stats.setdefault("blocks", 0)
+    stats.setdefault("located", 0)
+    orc = FareyOracle()
+    s = isqrt(N)
+    B = iroot_floor(N, j + 2)
+    x0 = min(s + 1, -((-B * c.denominator) // c.numerator))
+    tot = sum(N // d for d in range(1, min(x0, s + 1)))
+    x = x0
+    while x <= s:
+        H = max(1, (c.numerator * x) // (c.denominator * B))
+        H = min(H, s - x + 1)
+        blk = _Block(N, x, H, j)
+        stats["blocks"] += 1
+        cands: List[int] = []
+        cnt = _candidate_count(orc, blk, 0, H)
+        _locate(orc, blk, 0, H, cnt, cands)
+        stats["located"] += len(cands)
+        F = orc.floor_range(blk, Fraction(0), 0, H)
+        corr = 0
+        for h in cands:
+            corr += blk.num(h) // blk.den - N // (x + h)
+        tot += F - corr
+        x += H
+    stats["oracle_calls"] = orc.calls
+    stats.update({f"op_{k}": v for k, v in orc.cnt.items()})
+    return 2 * tot - s * s

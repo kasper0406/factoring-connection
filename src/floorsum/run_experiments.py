@@ -173,6 +173,35 @@ def run_e2():
             print("e2 scale", j, bits, flush=True)
 
 
+def run_e2b():
+    """POST-HOC (disclosed; not pre-registered).  E2's scaling design put x = sqrt(N)/2 + O(1000),
+    where the slope N/x^2 is within O(1/sqrt N) of the integer 4: a major arc of the Farey
+    dissection, on which the oracle is cheap.  E2b repeats the scaling with x uniform in
+    [sqrt(N)/4, sqrt(N)] (generic slopes), 8 blocks per size."""
+    path = f"{RAW}/floorsum_e2b.jsonl"
+    _fresh(path)
+    rng = random.Random("floorsum-e2b")
+    for j, sizes in E2_SCALE.items():
+        for bits in sizes:
+            for t in range(8):
+                N = rng.getrandbits(bits) | (1 << (bits - 1)) | 1
+                B = iroot_floor(N, j + 2)
+                sN = isqrt(N)
+                x = rng.randint(sN // 4, sN)
+                H = max(1, x // (2 * B))
+                blk = _Block(N, x, H, j)
+                cnt = Counters()
+                t0 = time.perf_counter()
+                F = FloorSumConvex(_ladder_coef(blk, 0, 1), blk.den, 0, H, cnt)
+                wall = time.perf_counter() - t0
+                _append(path, {"exp": "e2_scale", "j": j, "bits": bits, "N": N, "x": x, "H": H,
+                               "B": B, "Q": getattr(F, "Q", None),
+                               "windows": cnt.get("windows", 0), "runs": cnt.get("runs", 0),
+                               "evals": cnt.get("evals", 0), "bsearch": cnt.get("bsearch", 0),
+                               "wall_s": wall})
+            print("e2b scale", j, bits, flush=True)
+
+
 # ------------------------------------------------------------------ E3
 E3_BITS = (28, 32, 36, 40, 44)
 
@@ -244,6 +273,31 @@ def run_e4():
         print("e4", bits, flush=True)
 
 
+def run_e4b():
+    """POST-HOC diagnostic (disclosed; not pre-registered): the same 600 blocks as E4 (same RNG),
+    max gap g of the points {P(h)} mod 1, which enters Prop F's certified lower bound
+    cost >= 0.1/sqrt(g) - 3 (notes/floorsum_results.md)."""
+    path = f"{RAW}/floorsum_e4b.jsonl"
+    _fresh(path)
+    rng = random.Random("floorsum-e4")
+    for bits in E4_BITS:
+        for t in range(200):
+            N = rng.getrandbits(bits) | (1 << (bits - 1)) | 1
+            B = iroot_floor(N, 4)
+            sN = isqrt(N)
+            x = rng.randint(sN // 4, sN)
+            H = max(1, x // (2 * B))
+            blk = _Block(N, x, H, 2)
+            den = blk.den
+            rs = sorted(blk.num(h) % den for h in range(H))
+            gmax = max([rs[i + 1] - rs[i] for i in range(len(rs) - 1)] + [rs[0] + den - rs[-1]])
+            g = gmax / den
+            _append(path, {"exp": "e4b", "bits": bits, "N": N, "x": x, "H": H, "g": g,
+                           "gH": g * H, "bound": 0.1 / math.sqrt(g) - 3,
+                           "bound_over_sqrtH": (0.1 / math.sqrt(g) - 3) / math.sqrt(H)})
+        print("e4b", bits, flush=True)
+
+
 # ------------------------------------------------------------------ E5
 E5_BITS = (36, 40, 44, 48)
 E5_SEEDS = 3
@@ -309,8 +363,10 @@ def summary():
             s[j] = {"P1.1_holds": p11, "ratio_min": min(ratios), "ratio_max": max(ratios),
                     "slope": _slope(xs, ys) if len(xs) > 1 else None, "per_bits": per}
         out["e1"] = s
-    e2 = _load("e2")
-    if e2:
+    for name in ("e2", "e2b"):
+        e2 = _load(name)
+        if not e2:
+            continue
         s = {"exact": [r for r in e2 if r["exp"].startswith("e2_exact")]}
         for j in E2_SCALE:
             rows = [r for r in e2 if r["exp"] == "e2_scale" and r["j"] == j]
@@ -328,8 +384,9 @@ def summary():
                 xs.append(sum(math.log(r["H"]) for r in rb) / len(rb))
                 ys.append(math.log(sum(r["windows"] + r["runs"] for r in rb) / len(rb)))
             s[j] = {"ratio_min": min(ratios), "ratio_max": max(ratios),
+                    "ratio_median": sorted(ratios)[len(ratios) // 2],
                     "slope_vs_lnH": _slope(xs, ys), "pred": 2 * (j - 1) / (3 * j)}
-        out["e2"] = s
+        out[name] = s
     e3 = _load("e3")
     if e3:
         s = {"correct": sum(r["correct"] for r in e3), "total": len(e3)}
@@ -362,6 +419,17 @@ def summary():
                         "mean_M_over_sqrtH": sum(r["M_over_sqrtH"] for r in rb) / len(rb),
                         "mean_H": sum(r["H"] for r in rb) / len(rb)}
         out["e4"] = s
+    e4b = _load("e4b")
+    if e4b:
+        s = {}
+        for b in E4_BITS:
+            rb = [r for r in e4b if r["bits"] == b]
+            if rb:
+                gh = sorted(r["gH"] for r in rb)
+                s[b] = {"median_gH": gh[len(gh) // 2], "max_gH": gh[-1],
+                        "median_bound_over_sqrtH": sorted(r["bound_over_sqrtH"] for r in rb)[len(rb) // 2],
+                        "mean_H": sum(r["H"] for r in rb) / len(rb)}
+        out["e4b"] = s
     e5 = _load("e5")
     if e5:
         out["e5"] = {"correct": sum(r["correct"] for r in e5), "total": len(e5),
@@ -375,5 +443,5 @@ def summary():
 
 
 if __name__ == "__main__":
-    {"e1": run_e1, "e2": run_e2, "e3": run_e3, "e4": run_e4, "e5": run_e5,
+    {"e1": run_e1, "e2": run_e2, "e2b": run_e2b, "e3": run_e3, "e4": run_e4, "e4b": run_e4b, "e5": run_e5,
      "summary": summary}[sys.argv[1]]()
