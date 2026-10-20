@@ -41,8 +41,11 @@ def test_cunningham_bound():
     for _ in range(200):
         n = rng.randint(3, 9)
         roots = [rng.choice([-1, 0, 1, 0, rng.randint(-6, 6)]) for _ in range(rng.randint(1, 12))]
-        lhs, rhs = lemmas.cunningham_bound(n, roots)
-        assert lhs >= rhs - 1e-9
+        rhs, lhs = lemmas.cunningham_bound(n, roots)
+        assert rhs >= lhs
+    # codex ptecons_2 counterexample to the uncorrected odd-n form: n = 3, roots 1, (-2)^84
+    rhs, lhs = lemmas.cunningham_bound(3, [1] + [-2] * 84)
+    assert rhs >= lhs
 
 
 def test_galois_orbit_collapse():
@@ -98,3 +101,18 @@ def test_operational_no_leakage():
     src = inspect.getsource(acs)
     for bad in ("factorint", "factor(", "isprime", "labels", "phi"):
         assert bad not in src
+
+
+def test_star_gaussian():
+    rng = random.Random(3)
+    units = [1, -1, 1j, -1j]
+    for _ in range(300):
+        half = []
+        for _ in range(rng.randint(1, 6)):
+            c = rng.choice(units) if rng.random() < 0.7 else complex(rng.randint(-3, 3), rng.randint(-3, 3))
+            half.append(c)
+        cs = half + [z.conjugate() for z in half]
+        Mp, s, bound = lemmas.star_gaussian_check(cs)
+        assert Mp <= bound
+    # mu_4 orbit: prod (Y - u) = Y^4 - 1, s = 0
+    assert lemmas.star_gaussian_check([1, -1, 1j, -1j])[:2] == (4, 0)

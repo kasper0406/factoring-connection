@@ -1,0 +1,179 @@
+**AVG and CUN are false as stated. GAP-R/LIN-R survive. CW is valid but substantially weaker than a known theorem. HALF and the claimed exhaustiveness overstate the evidence.**
+
+**UNVERIFIED:** The quoted experimental results. I inspected the parent repository’s code and prior output, but did not rerun the experiments; `ptecons_results.md` was absent.
+
+1. **AVG — false; replace with a conditional equidistribution heuristic.**
+
+   **PROVED:** Even squares give systematic excess over semiprimes. For distinct odd primes \(p,q\), \(N=pq\),
+   \[
+   \#\{t\bmod N:|t^2\bmod_\pm N|\le1\}
+   =5+4\,\mathbf1_{p\equiv q\equiv1\pmod4}.
+   \]
+   There is one solution of \(t^2=0\), four of \(t^2=1\), and either zero or four of \(t^2=-1\). Thus an independently fixed, sufficiently long interval of squares gives probability approximately \(5/N\) or \(9/N\), versus the asserted \(3/N\).
+
+   **PROVED:** Arbitrarily large excesses and deficits are also possible. Fix the modulus range \(\mathcal D\) first and let \(L=\operatorname{lcm}(\mathcal D)\). For \(N>2V+2\), \(u=L+1\) always succeeds, whereas \(u=L+V+1\) never succeeds. Both choices are independent of the subsequently sampled \(N\).
+
+   **PROVED:** The correct exact average, for uniform \(N\in\mathcal D\) and \(N>2V\), is
+   \[
+   \frac1{|\mathcal D|}
+   \sum_{u\in U}\sum_{r=-V}^{V}
+   \#\{N\in\mathcal D:N<|u|,\ N\mid u-r\}.
+   \]
+   A uniform-residue approximation requires hypotheses on these divisor counts. No BDH-style theorem can establish the stated conclusion for arbitrary \(U\), because the counterexamples forbid it.
+
+   **HEURISTIC:** Such excess need not change the factoring exponent. But “\(N\)-independence gives no excess yield” must be deleted.
+
+2. **GAP-R/LIN-R — hold; the complex-direction interpretation is false.**
+
+   **PROVED:** GAP-R’s derivative argument is correct. LIN-R follows for \(M\ge3\), assuming the coefficients are affine as identities on \(\mathbb R^s\). After the pointwise support bound, two nonzero forms are excluded by choosing a point outside their two kernels.
+
+   **KNOWN:** The underlying no-internal-double-zero property and inherited derivative multiplicities are classical; both appear explicitly in Popoviciu, *Sur les équations algébriques ayant toutes leurs racines réelles* (1935), §§2 and 9. LIN-R is an immediate corollary, rather than a separate established theorem I located. [Original paper](https://ictp.acad.ro/wp-content/uploads/2025/10/1935-a-Popoviciu-Mathematica-Sur-les-equations-algebriques-ayant-toutes-leurs-racines-reelles.pdf)
+
+   **PROVED:** Complex cancellation does **not** force growing cyclotomic fields. For example,
+   \[
+   P(X)=(X^4-1)^4(X^4+4)
+       =X^{20}-10X^{12}+20X^8-15X^4+4
+   \]
+   splits over \(\mathbb Z[i]\), has house \(\sqrt2\), and satisfies
+   \(p_1=\cdots=p_7=0\). Scaling its roots gives a complex-direction family.
+
+   **PROVED — quantitative construction:** For every \(k\), there is a nonzero Gaussian-integer multiset with
+   \[
+   p_1=\cdots=p_k=0,\qquad
+   A=O(k^3),\qquad
+   M\le \exp(O(k^2\log k)).
+   \]
+   Round a regular \((2k+1)\)-gon of radius \(Ck^3\) to Gaussian integers. The normalized moment matrix is a small perturbation of the Fourier matrix, so its uniquely normalized vanishing-moment weights remain positive. They are rational; clearing denominators and applying Hadamard’s bound gives the stated multiplicity bound. Conjugate-symmetric rounding makes the resulting polynomial integral. The same argument works over the Eisenstein integers.
+
+   **PROVED:** Conversely, at least \(k+1\) distinct nonzero directions are necessary by Vandermonde invertibility, giving \(A=\Omega(\sqrt{k})\) over \(\mathbb Z[i]\). Their quadratic norms satisfy
+   \[
+   \operatorname N(m-z)\le(|m|+A)^2.
+   \]
+   Thus small-degree norms remain possible. This construction supplies no useful compression-to-degree ratio or cheap \(N\)-alignment.
+
+   **PROVED:** Also correct the Newton-identity wording: \(e_2=\cdots=e_k=0\) implies \(p_j=e_1^j\), not \(p_j=0\), unless \(e_1=0\).
+
+3. **CUN — false for the stated range; LEDGER holds.**
+
+   **PROVED counterexample:** Take \(n=3\), \(M=85\), and
+   \[
+   P=(X-1)(X+2)^{84}.
+   \]
+   Then
+   \[
+   r=27^{14}(X-1),\qquad
+   2^{84}>2\cdot27^{14}(8/7)^{85}.
+   \]
+   The ratio is approximately \(1.040115\); I checked the violation using exact integer arithmetic.
+
+   **PROVED:** The error is the number of nonreal roots: it is \(n-1\) for odd \(n\), versus \(n-2\) for even \(n\). Writing \(K=\#\{\ell:|a_\ell|\ge2\}\), the supplied argument establishes
+   \[
+   \prod_{|a_\ell|\ge2}|a_\ell|
+   \le
+   \|r\|_1^{(n-\gcd(n,2))/(n-2)}
+   (1-2^{-n})^{-K/(n-2)}.
+   \]
+
+   **PROVED:** For even \(n\ge4\), there is a stronger, exact result:
+   \[
+   \boxed{\prod_{|a_\ell|\ge2}|a_\ell|\le\|r\|_1.}
+   \]
+   Indeed,
+   \[
+   \prod_{\zeta\ {\rm nonreal}}|\zeta-a|
+   =\frac{|a^n-1|}{|a^2-1|}
+   \ge |a|^{n-2}.
+   \]
+   Hence the root count is exactly at most \(\log_2\|r\|_1\) in this case. The original all-\(n\), additive-\(o(1)\) conclusion is unsupported.
+
+   **PROVED:** LEDGER’s resultant identity and Mahler-measure bound are correct. Their obstruction strength depends on lower bounds for the particular \(F(a_\ell)\). For example, \(F=P-1\) has \(F(a_\ell)=-1\) at every root of \(P\); the unresolved issue then becomes arranging \(N\mid F(m)\). LEDGER alone supplies no universal obstruction.
+
+4. **CW — holds with stronger bound and narrower interpretation; label KNOWN.**
+
+   **KNOWN:** Kleiman proved
+   \[
+   (M-1)!\mid C,
+   \qquad
+   \boxed{\log|C|\ge M\log M-O(M),}
+   \]
+   including repeated roots. This is explicitly Proposition 2 in Costello–Meyer–Naehrig. Your claimed leading coefficient \(1/2\) can therefore be doubled. [CMN, §3](https://iacr.org/archive/eurocrypt2021/126960046/126960046.pdf)
+
+   **PROVED — short proof:** Equal lower moments and Newton’s identities give
+   \[
+   \sum_\ell\binom{a_\ell}{M}
+   -\sum_\ell\binom{b_\ell}{M}
+   =-\frac{C}{(M-1)!}\in\mathbb Z.
+   \]
+
+   **PROVED:** This bounds a cluster’s **maximum residual**, rather than every residual. Under one common offset, two distinct residuals differ by a nonzero multiple of \((M-1)!\). Consequently,
+   \[
+   \#\{|v_i|\le V\}\le1+\left\lfloor\frac{2V}{(M-1)!}\right\rfloor.
+   \]
+   Separate modular recentering destroys this spacing argument.
+
+5. **HALF — false as a general barrier; retain only a specified generic-model heuristic.**
+
+   **PROVED:** Large root radius gives no lower bound on the product of roots:
+   \[
+   (a_1,\ldots,a_M)=(t,-t,0,\ldots,0)
+   \quad\Longrightarrow\quad
+   e_2=-t^2,\quad e_M=0.
+   \]
+   Thus \(e_M\gtrsim A^M\) is invalid. Even the radius estimate loses an \(M\)-factor: with small \(e_1\) and \(e_2\asymp-m\),
+   \[
+   \sum a_\ell^2=e_1^2-2e_2
+   \quad\Longrightarrow\quad
+   A\gtrsim\sqrt{m/M}.
+   \]
+
+   **HEURISTIC:** \(e_M\sim A^M\) requires a distribution on roots, with control after conditioning on the matching constraints. Likewise, generic PTE counting suggests a density transition around \(k^2\asymp M\); it does not bound exceptional fibers or adaptive digit-matching constructions.
+
+   **PROVED:** Your reported 80-bit quartic range includes \(0.565<0.574\), COS’s median. “No variant beat COS” therefore needs a defined cost-adjusted criterion; it does not follow from the quoted \(\lambda\) medians.
+
+   **UNVERIFIED:** These finite experiments establish an asymptotic alignment-capacity barrier.
+
+6. **Overall verdict — acceptable as an assessment; false as an exhaustive classification.**
+
+   **HEURISTIC:** No complete sub-\(L[1/3]\) construction has been established here.
+
+   **UNVERIFIED:** Every split-by-identity family falls under the seven modes. Their hypotheses leave substantial gaps: nonlinear root families, exceptional near-ideal fibers, arbitrary presentations \(F\), independently wrapped residuals, and residuals already smooth by identity. The Gaussian construction above specifically defeats the asserted necessity of field-degree growth.
+
+   **KNOWN:** Normalization also matters. CMN divide split polynomial values by their known common constant \(C\), obtaining consecutive integers. CW remains valid for the original monic polynomials, but is not a blanket obstruction to normalized identities. [CMN](https://www.microsoft.com/en-us/research/publication/sieving-for-twin-smooth-integers-with-solutions-to-the-prouhet-tarry-escott-problem-2/)
+
+   **UNVERIFIED:** General output-sensitive split-lattice enumeration is equivalent to, or necessary for, every possible successful construction. It is a sufficient algorithmic primitive; a special arithmetic parametrization need not solve that general problem.
+
+   **PROVED:** Conditions (a)–(c) also need explicit setup/output costs and usable relation rank. Cardinality alone permits repetitions and dependent rows. The comment in `root_support_rank` that more members than root symbols are necessary ignores the merging of symbols after factoring pieces into primes.
+
+**HEURISTIC — cost model.** Put \(b=\log B\), \(y=\log|v|\), and let per-candidate overhead be \(e^h\). For random residuals,
+\[
+\log T_{\rm coll}\approx h+b+\frac yb\log\frac yb,
+\qquad
+\log T_{\rm LA}\approx2b.
+\]
+The required candidate count is approximately \(e^b/\rho(y/b)\), rather than merely \(e^b\).
+
+**PROVED within that model:** With cheap setup and overhead, \(y=x^{\gamma+o(1)}\) gives optimal runtime exponent \(\beta=\gamma/2\). Thus \(\gamma<2/3\) is the appropriate requirement for a **fixed \(L\)-exponent below \(1/3\)**. Merely \(y=o(x^{2/3})\) does not imply that. For an improvement within exponent \(1/3\), the boundary scale is instead
+\[
+y\asymp x^{2/3}(\log x)^{1/3}.
+\]
+None of this makes small residual size necessary when residual smoothness is supplied by an identity.
+
+**PROVED — CW’s logarithmic boundary.** The strengthened bound gives
+\[
+y\ge\frac{x}{C_0b}\log\frac xb-O(x/b).
+\]
+For \(b=x^\alpha\), this lower bound exceeds \(x^{2/3}\) at \(\alpha=1/3\) too, by a logarithm. More precisely, for
+\[
+b=x^{1/3}(\log x)^t,
+\qquad
+y\gtrsim x^{2/3}(\log x)^{1-t}.
+\]
+Thus the power boundary is \(1/3\), but the comparison with \(x^{2/3}\) depends on logs. In the random-residual model, balancing restores
+\[
+b^3\asymp x(\log x)^2,
+\]
+the usual \(L[1/3]\) scale.
+
+**KNOWN — literature corrections:** Cite Kleiman (1975) and Rees–Smyth (1990) for constants, rather than presenting CW as new. Caley’s *Mathematics of Computation* 82 (2013), 1121–1137, develops Gaussian PTE and divisibility results; his thesis §3.3 includes quadratic analogues of factorial divisibility. Add Coppersmith–Mossinghoff–Scheinerman–Vanderkam for subsequent integer and imaginary-quadratic searches. [Caley](https://arxiv.org/abs/1011.1262), [Caley thesis](https://uwspace.uwaterloo.ca/items/b24da5f2-8532-426b-ad80-3009df50bdba), [CMSV, §§2 and 5](https://arxiv.org/abs/2304.11254)
+
+**UNVERIFIED:** Priority for the exact CUN or LIN-R formulations. Their corrected elementary proofs are supportable; novelty claims require further checking.

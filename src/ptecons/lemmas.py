@@ -60,16 +60,21 @@ def ledger_holds(F: Sequence[int], roots: Sequence[int]) -> bool:
     return abs(resultant(F, r)) == abs(prod)
 
 
-def cunningham_bound(n: int, roots: Sequence[int]) -> Tuple[int, float]:
-    """Return (||P mod X^n - 1||_1, prod_{|a|>=2}|a| * (1 - 2^{-n})^{M/(n-2)}) -- Lemma CUN says
-    first >= second whenever n >= 3 (product over the nonreal n-th roots of unity)."""
+def cunningham_bound(n: int, roots: Sequence[int]) -> Tuple[int, int]:
+    """Lemma CUN (corrected after codex ptecons_2): with r = P mod (X^n - 1) and z = number of nonreal
+    n-th roots of unity (n - 2 for even n, n - 1 for odd n),
+        prod_{|a|>=2} |a|^{n-2} * (1 - 2^{-n})^M  <=  ||r||_1^z.
+    Exact integer form: returns (RHS, LHS) = (||r||_1^z * 2^{nM}, prod|a|^{n-2} * (2^n - 1)^M);
+    the lemma says RHS >= LHS for n >= 3."""
     F = [-1] + [0] * (n - 1) + [1]
     r = poly_mod(from_roots(roots), F)
+    z = n - 2 if n % 2 == 0 else n - 1
+    M = len(roots)
     big = 1
     for a in roots:
         if abs(a) >= 2:
             big *= abs(a)
-    return norm1(r), big * (1 - 2.0 ** (-n)) ** (len(roots) / (n - 2))
+    return norm1(r) ** z * 2 ** (n * M), big ** (n - 2) * (2 ** n - 1) ** M
 
 
 def galois_orbit_collapse(n: int, x: int, t: int) -> bool:
@@ -79,8 +84,9 @@ def galois_orbit_collapse(n: int, x: int, t: int) -> bool:
 
 
 def root_support_rank(family: Sequence[Sequence[int]]) -> Tuple[int, int]:
-    """(#members, #distinct roots used).  A relation matrix over the symbols {m - a} has rank
-    <= #distinct roots, so families need #members > #roots to be useful at all."""
+    """(#members, #distinct roots used).  Over a SYMBOL factor base {m - a}, rank <= #distinct roots,
+    so such a family gives no excess unless #members > #roots.  (If pieces are factored into
+    primes, columns merge and this count is only an upper bound on columns -- codex ptecons_2.)"""
     support = set()
     for f in family:
         support.update(f)
@@ -96,3 +102,30 @@ def dickson_integer_split(n: int, T: int) -> List[int]:
         if int_roots_split(c) is not None:
             good.append(t)
     return good
+
+
+def star_gaussian_check(cs: Sequence[complex]) -> Tuple[int, int, int]:
+    """Lemma STAR over Z[i]: for a conjugation-closed multiset of Gaussian integers (given as complex
+    ints), return (M', s, bound) where M' = #nonzero, s = degree of the non-leading part of
+    prod (Y - c), and bound = 6(s+1) + 2 log2 |g_low| (ceil).  STAR says M' <= bound."""
+    import math
+    # exact Gaussian-integer arithmetic on (re, im) pairs
+    cs = [(int(c.real), int(c.imag)) for c in map(complex, cs)]
+    mul = lambda a, b: (a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0])
+    coeffs = [(1, 0)]
+    for c in cs:
+        nxt = [(0, 0)] * (len(coeffs) + 1)
+        for i, a in enumerate(coeffs):
+            nxt[i + 1] = (nxt[i + 1][0] + a[0], nxt[i + 1][1] + a[1])
+            ca = mul(c, a)
+            nxt[i] = (nxt[i][0] - ca[0], nxt[i][1] - ca[1])
+        coeffs = nxt
+    M = len(cs)
+    g = coeffs[:M]   # Y^0..Y^{M-1}
+    nz = [j for j, z in enumerate(g) if z != (0, 0)]
+    Mp = sum(1 for c in cs if c != (0, 0))
+    if not nz:
+        return Mp, -1, 0
+    s = max(nz)
+    glow2 = g[min(nz)][0] ** 2 + g[min(nz)][1] ** 2       # |g_low|^2, exact
+    return Mp, s, 6 * (s + 1) + (glow2.bit_length() if glow2 > 1 else 0)
