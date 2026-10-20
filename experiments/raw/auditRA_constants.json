@@ -1,0 +1,309 @@
+{
+ "optimisation_symbolic": {
+  "f1(a*)-f2(a*)": "0",
+  "c*^2-(1+sqrt2)theta": "0",
+  "a*^2 - theta/2": "theta*(-2 + sqrt(2))/2"
+ },
+ "threshold_grid_failures": [],
+ "d_table": [
+  {
+   "d": 7,
+   "theta_inf": "3/8",
+   "c*": 0.9514883529975081,
+   "a*": 0.2786844863729507,
+   "thmA_inf": 0.9722718241315028,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.3758125,
+   "theta_min_k1e5": 0.375008125
+  },
+  {
+   "d": 9,
+   "theta_inf": "3/10",
+   "c*": 0.8510370548406976,
+   "a*": 0.2492629823218126,
+   "thmA_inf": 0.9192388155425117,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.30085,
+   "theta_min_k1e5": 0.3000085
+  },
+  {
+   "d": 11,
+   "theta_inf": "1/4",
+   "c*": 0.7768869870150187,
+   "a*": 0.22754493028111367,
+   "thmA_inf": 0.8838834764831844,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.250875,
+   "theta_min_k1e5": 0.25000875
+  },
+  {
+   "d": 13,
+   "theta_inf": "3/14",
+   "c*": 0.7192575878302414,
+   "a*": 0.2106656700555989,
+   "thmA_inf": 0.8586296628693791,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.21517857142857144,
+   "theta_min_k1e5": 0.21429464285714286
+  },
+  {
+   "d": 19,
+   "theta_inf": "3/20",
+   "c*": 0.601774072518885,
+   "a*": 0.1762555450985362,
+   "thmA_inf": 0.8131727983645296,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.150925,
+   "theta_min_k1e5": 0.15000925
+  },
+  {
+   "d": 29,
+   "theta_inf": "1/10",
+   "c*": 0.49134647270262305,
+   "a*": 0.14391204994250742,
+   "thmA_inf": 0.7778174593052023,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.10095,
+   "theta_min_k1e5": 0.1000095
+  },
+  {
+   "d": 49,
+   "theta_inf": "3/50",
+   "c*": 0.38059534119900323,
+   "a*": 0.11147379454918026,
+   "thmA_inf": 0.7495331880577404,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.06097,
+   "theta_min_k1e5": 0.0600097
+  },
+  {
+   "d": 99,
+   "theta_inf": "3/100",
+   "c*": 0.26912154664982296,
+   "a*": 0.07882387605032136,
+   "thmA_inf": 0.728319984622144,
+   "inf_over_k_matches_closed_form": true,
+   "theta_min_k1e3": 0.045196969696969694,
+   "theta_min_k1e5": 0.03000985
+  }
+ ],
+ "d9_k13": {
+  "mu": "17/156",
+  "theta": "16/39",
+  "c*": 0.9952118315672931,
+  "thmA_c": 0.9972018709041055,
+  "c*<1": true
+ },
+ "d9_k12": {
+  "theta": "23/54",
+  "c*<1": false
+ },
+ "min_k_cstar_lt_1": {
+  "7": 21,
+  "9": 13,
+  "11": 13,
+  "13": 14,
+  "19": 17
+ },
+ "iteration_d9_inf": [
+  1.0,
+  0.91924,
+  0.88077,
+  0.86365,
+  0.85631,
+  0.85323,
+  0.85195,
+  0.85141,
+  0.85119
+ ],
+ "fixed_point_d9_inf": 0.8510370548406976,
+ "g_prime_at_fixed_point": 0.41421356237309503,
+ "corP_sequence_first": [
+  {
+   "j": 1,
+   "d": 9,
+   "k": 22,
+   "mu": "6/55",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.3509820426487093,
+    "c*": 0.9205137736676872
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.3396363636363636,
+    "c*": 0.9055135092123084
+   }
+  },
+  {
+   "j": 2,
+   "d": 11,
+   "k": 33,
+   "mu": "71/792",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.2847796143250689,
+    "c*": 0.8291675386741576
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.2775151515151515,
+    "c*": 0.818523574829646
+   }
+  },
+  {
+   "j": 3,
+   "d": 13,
+   "k": 46,
+   "mu": "7/92",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.23961281193722667,
+    "c*": 0.7605764263354514
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.23469565217391306,
+    "c*": 0.7527319752131295
+   }
+  },
+  {
+   "j": 4,
+   "d": 15,
+   "k": 61,
+   "mu": "129/1952",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.20680100182149364,
+    "c*": 0.7065845903427226
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.2033565573770492,
+    "c*": 0.7006755017960701
+   }
+  },
+  {
+   "j": 5,
+   "d": 17,
+   "k": 78,
+   "mu": "41/702",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.18187901103126017,
+    "c*": 0.662642267850968
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.17941880341880342,
+    "c*": 0.6581453551901946
+   }
+  },
+  {
+   "j": 6,
+   "d": 19,
+   "k": 97,
+   "mu": "203/3880",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.16230616557671987,
+    "c*": 0.6259726401306133
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.1605360824742268,
+    "c*": 0.6225499076857406
+   }
+  },
+  {
+   "j": 7,
+   "d": 21,
+   "k": 118,
+   "mu": "123/2596",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.14652797431247794,
+    "c*": 0.5947687137469831
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.14526040061633283,
+    "c*": 0.5921905345779345
+   }
+  },
+  {
+   "j": 8,
+   "d": 23,
+   "k": 141,
+   "mu": "293/6768",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.13353929533845474,
+    "c*": 0.5677960707118742
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.13264893617021276,
+    "c*": 0.5659000448281398
+   }
+  }
+ ],
+ "corP_sequence_last": [
+  {
+   "j": 59,
+   "d": 125,
+   "k": 3966,
+   "mu": "571/71388",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.02412266532190284,
+    "c*": 0.24132398509208525
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.025058665321902842,
+    "c*": 0.2459613174365152
+   }
+  },
+  {
+   "j": 60,
+   "d": 127,
+   "k": 4093,
+   "mu": "8249/1047808",
+   "eta0=1/d^2": {
+    "admissible": true,
+    "theta": 0.023740956574036895,
+    "c*": 0.23940705784239227
+   },
+   "eta0=1/1000 fixed": {
+    "admissible": true,
+    "theta": 0.02467895645003665,
+    "c*": 0.2440907031553915
+   }
+  }
+ ],
+ "corP_all_admissible_eta0_shrinking": true,
+ "corP_cstar_floor_fixed_eta0": 0.0491346472702623,
+ "restart_sum_over_2^s0_phases_ge_s0": 5.283265121310308,
+ "restart_total_factor_incl_phases_lt_s0": 7.283265121310308,
+ "recurse_module_attrs": [
+  "Dict",
+  "Fr",
+  "List",
+  "SQ2",
+  "annotations",
+  "astar",
+  "bs_ok",
+  "c_of_a",
+  "cstar",
+  "cstar_sq",
+  "fixed_depth",
+  "la_slack",
+  "main",
+  "rec_beats_A",
+  "rec_lt_1",
+  "sp",
+  "table",
+  "tpar"
+ ]
+}
