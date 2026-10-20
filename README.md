@@ -20,6 +20,7 @@ record is L[1/2, 1] (Lenstra–Pomerance 1992).
 | **Theorem RA + Cor. P** | L_N[1/2, o(1)] (recursive shape test) | 3 blind referees: accept with fixes | [`recurse`](notes/recurse_results.md), [`auditRA`](notes/auditRA_audit.md) |
 | **Theorem U (lv5unif)** | **L_N[2/5, c]** for a finite c | 4 blind referees: accept with fixes | [`lv5unif`](notes/lv5unif_results.md), [`auditU`](notes/auditU_audit.md) |
 | **Theorem DL** | discrete logs in F_p^*: L_p[1/2, c] for every c > 1/√2 (previous record L[1/2, √2], Pomerance 1987) | GPT-6.1-sol + 2 Opus critics | [`dlog`](notes/dlog_results.md) |
+| **Theorem DL25** | discrete logs in F_p^*: **L_p[2/5, c]** (same constant as Theorem U) | GPT-6.1-sol + 2 Opus critics | [`dlog25`](notes/dlog25_results.md) |
 
 The key ideas:
 - **Dixon descent** of a random square removes NFS fruitfulness.
