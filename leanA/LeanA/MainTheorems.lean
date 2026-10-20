@@ -2,6 +2,7 @@ import LeanA.RelationSupply
 import LeanA.Recursion
 import LeanA.Exponents
 import LeanA.AsymptoticsMain
+import LeanA.Hypotheses
 
 /-!
 # (h) Cost assembly: Theorems A, RA, Corollary P, and the assembly steps of Theorems U and DL
@@ -35,19 +36,6 @@ open Classical
 namespace FactoringA
 
 open Real Finset Filter
-
-/-- PUBLISHED INPUT (Lenstra–Pomerance). H. W. Lenstra, Jr. and C. Pomerance, *A rigorous time
-bound for factoring integers*, J. Amer. Math. Soc. 5 (1992), 483–516, Theorem 1.1 ([pp] Fact
-fact:LP; the unnumbered Theorem of §1, p. 483, proved in §10): there is a probabilistic algorithm that
-factors any positive integer `n` completely and takes expected time at most `L_n[1/2, 1 + o(1)]`.
-Stated for `T n` = the maximum over inputs `≤ n` of that expected time. As a `Prop` about an arbitrary
-`T` this is only meaningful together with the MODELLING assumption that a cost model's `TLP` is that
-function. -/
-def LenstraPomerance (T : ℕ → ℝ) : Prop := LBound (1 / 2) 1 T
-
-/-- The maximum of `f` over the split inputs `n` with `N₀ ≤ n ≤ x` (`0` if there are none). -/
-def supSplit (f : ℕ → ℝ) (a N₀ x : ℝ) : ℝ :=
-  sSup (f '' {n : ℕ | N₀ ≤ n ∧ (n : ℝ) ≤ x ∧ Params.SplitInput a n})
 
 /-! ## Helpers for the cost assembly -/
 
@@ -381,71 +369,6 @@ lemma mt_TLP_sqrt (Q : ℕ → Prop) (T : ℕ → ℝ) (hT : LBound (1 / 2) 1 T)
 
 /-! ## Theorem A -/
 
-/-- Cost-accounting model of FACTOR with the Lenstra–Pomerance shape test ([pp] §sec:alg). All
-entries are functions of the input `N`. -/
-structure CostModelA (P : Params) where
-  /-- expected running time of FACTOR(N) -/
-  factorCost : ℕ → ℝ
-  /-- expected running time of SPLIT(N) -/
-  splitCost : ℕ → ℝ
-  /-- probability that one trial (SAMPLE_FIELD, then DESCEND_ONCE) ends in a row or a factor exit -/
-  pTrial : ℕ → ℝ
-  /-- the rejection event `𝓡` of [pp] Lemma lem:reject, as a set of raw fields -/
-  rej : (N : ℕ) → Finset P.Field
-  /-- uniform bound on the expected cost of one trial and of one DESCEND_ONCE call -/
-  Ctrial : ℕ → ℝ
-  /-- uniform bound on the expected cost of POSTPROCESS -/
-  Tpost : ℕ → ℝ
-  /-- the row target `M_rows` -/
-  Mrows : ℕ → ℝ
-  /-- expected cost of the shape test (two Lenstra–Pomerance runs on `|u₀|, |v₀| ≤ √(2N)` and AKS) -/
-  Tshape : ℕ → ℝ
-  /-- expected cost of one SQ_SEARCH -/
-  Tsq : ℕ → ℝ
-  /-- maximum over inputs `≤ n` of the Lenstra–Pomerance expected time -/
-  TLP : ℕ → ℝ
-
-/-- INTERNAL HYPOTHESIS (algorithmic interface for Theorem A) at smoothness exponent `a` (constants `C`,
-threshold `N₀`). Each conjunct transcribes one claim of [pp] about its algorithm (cited inline); these
-claims are internal and unrefereed and are NOT proved here. In particular the first conjunct carries
-[pp] Prop. prop:BS (the search recognises `N_ℓ(A) ≥ 1`) and the SAMPLE_FIELD rejection logic; the
-`splitCost` conjunct carries Prop. prop:select(ii) and with it Theorem thm:DD / Remark rem:T (each
-round fruitful with probability ≥ 1/2); the `Tpost` conjunct carries Prop. prop:lv6 (with its
-Lagarias–Odlyzko / Stark / Landau / Wiedemann inputs); the last conjunct carries the factor-tree and
-race accounting of §sec:uniform. Note: these inequalities constrain real numbers; they do not tie the
-model to a program, so the theorems below are conditional COST ASSEMBLY statements. -/
-structure CostInterfaceA (P : Params) (a : ℝ) (M : CostModelA P) : Prop where
-  /-- One constant and one threshold for all the bookkeeping below. -/
-  bounds : ∃ C N₀ : ℝ, 0 ≤ C ∧
-    (∀ N : ℕ, N₀ ≤ N → Params.SplitInput a N →
-      -- [pp] Prop. prop:select(i) proof / Theorem thm:K proof: a field outside `𝓡` either exits in
-      -- SAMPLE_FIELD or is returned, and on the complete-descent event DESCEND_ONCE returns a row
-      -- or exits (Prop. prop:BS); so a trial succeeds with at least this probability.
-      expect (P.fields N) (fun A => if A ∈ M.rej N then 0 else P.descentProb a N A) ≤ M.pTrial N ∧
-      -- [pp] Lemma lem:reject.
-      M.rej N ⊆ P.fields N ∧
-      prob (P.fields N) (fun A => A ∈ M.rej N) ≤
-        Real.exp (-(Real.log (P.Hb N) / (13 * P.d * Real.log (Real.log (P.Hb N))))) +
-          2 / (2 * (P.Hb N : ℝ) + 1) + 1 / (P.Wb N : ℝ) ∧
-      -- [pp] Prop. prop:select(ii).
-      M.splitCost N ≤ 3 * (M.Mrows N * M.Ctrial N + M.Tpost N) / M.pTrial N ∧
-      -- [pp] eq:Mrows: `M_rows = C_col + 12 ≤ (d+1)π(B) + O_d(log N)`.
-      1 ≤ M.Mrows N ∧ M.Mrows N ≤ (P.d + 1) * (Nat.primeCounting (Params.Bsm a N) : ℝ) + C * Real.log N ∧
-      -- [pp] Prop. prop:cost, "One trial": shape test, at most 2k searches, polylog bookkeeping.
-      0 ≤ M.Ctrial N ∧ M.Ctrial N ≤ M.Tshape N + 2 * P.k * M.Tsq N + (Real.log N) ^ C ∧
-      M.Tshape N ≤ 2 * M.TLP ⌊Real.sqrt (2 * N)⌋₊ + (Real.log N) ^ C ∧
-      -- [pp] Prop. prop:BS: `Õ(B + S² log N)`.
-      M.Tsq N ≤ (Real.log N) ^ C * ((Params.Bsm a N : ℝ) + (P.Ssz a N : ℝ) ^ 2 * Real.log N) ∧
-      0 ≤ M.Tpost N) ∧
-    -- [pp] Prop. prop:lv6: `T_post ≤ M_rows² (log N)^{O(1)} + B^{1+o(1)}`.
-    (∀ ε : ℝ, 0 < ε → ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
-      M.Tpost N ≤ M.Mrows N ^ 2 * (Real.log N) ^ C + (Params.Bsm a N : ℝ) ^ (1 + ε)) ∧
-    -- [pp] §sec:uniform (proof of Theorem thm:main): at most `log₂N` calls of SPLIT, each raced
-    -- against trial division (constant cost below `N₀`), on inputs `≤ N`, plus preprocessing
-    -- (primality, perfect powers, trial division to `B`) at every node.
-    (∀ N : ℕ, 2 ≤ N → M.factorCost N ≤ C + (Real.logb 2 N + 1) *
-      (C * (Params.Bsm a N : ℝ) * (Real.log N) ^ C + 2 * supSplit M.splitCost a N₀ N))
-
 /-- Unpacking the interface (the only place that depends on its field layout). -/
 lemma mt_unpackA {P : Params} {a : ℝ} {M : CostModelA P} (hM : CostInterfaceA P a M) :
     ∃ C N₀ : ℝ, 0 ≤ C ∧
@@ -620,54 +543,6 @@ theorem corollaryA (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (hc : 1 / Rea
     linarith
 
 /-! ## Theorem RA (recursive shape test) -/
-
-/-- Cost-accounting model of FACTOR_rec[a] ([pp] §sec:recursive). -/
-structure CostModelRA (P : Params) where
-  /-- `F(x) = sup_{2 ≤ n ≤ x} E[cost of FACTOR_rec[a](n)]` -/
-  Fsup : ℝ → ℝ
-  /-- expected number of DESCEND_ONCE calls in SPLIT^O(N) -/
-  tau : ℕ → ℝ
-  /-- expected work of SPLIT^O(N) outside the calls of the shape-test oracle `O` -/
-  nonO : ℕ → ℝ
-  /-- as in `CostModelA` -/
-  pTrial : ℕ → ℝ
-  rej : (N : ℕ) → Finset P.Field
-  Mrows : ℕ → ℝ
-  Tsq : ℕ → ℝ
-  Tpost : ℕ → ℝ
-
-/-- INTERNAL HYPOTHESIS (algorithmic interface for Theorem RA) at smoothness exponent `a`: as for
-`CostInterfaceA`, plus [pp] Lemma lem:generala (A1), (A2), and the recursion inequality of the proof of
-Theorem thm:RA, which carries Lemmas lem:OS, lem:waldrec, lem:Trec, the factor tree and the race against
-trial division. Not proved here. -/
-structure CostInterfaceRA (P : Params) (a : ℝ) (M : CostModelRA P) : Prop where
-  bounds : ∃ C N₀ : ℝ, 0 ≤ C ∧
-    (∀ N : ℕ, N₀ ≤ N → Params.SplitInput a N →
-      -- as in `CostInterfaceA`
-      expect (P.fields N) (fun A => if A ∈ M.rej N then 0 else P.descentProb a N A) ≤ M.pTrial N ∧
-      M.rej N ⊆ P.fields N ∧
-      prob (P.fields N) (fun A => A ∈ M.rej N) ≤
-        Real.exp (-(Real.log (P.Hb N) / (13 * P.d * Real.log (Real.log (P.Hb N))))) +
-          2 / (2 * (P.Hb N : ℝ) + 1) + 1 / (P.Wb N : ℝ) ∧
-      1 ≤ M.Mrows N ∧ M.Mrows N ≤ (P.d + 1) * (Nat.primeCounting (Params.Bsm a N) : ℝ) + C * Real.log N ∧
-      M.Tsq N ≤ (Real.log N) ^ C * ((Params.Bsm a N : ℝ) + (P.Ssz a N : ℝ) ^ 2 * Real.log N) ∧
-      0 ≤ M.Tsq N ∧ 0 ≤ M.Tpost N ∧ 0 ≤ M.tau N ∧
-      -- [pp] Lemma lem:generala (A1): Prop. prop:select(ii) counting DESCEND_ONCE calls.
-      M.tau N ≤ 3 * M.Mrows N / M.pTrial N ∧
-      -- [pp] Lemma lem:generala (A2): Prop. prop:select(ii) with the oracle's cost removed and at
-      -- most 2k searches charged to every DESCEND_ONCE call.
-      M.nonO N ≤ 3 * (M.Mrows N * (2 * P.k * M.Tsq N + (Real.log N) ^ C) + M.Tpost N) / M.pTrial N) ∧
-    -- [pp] Prop. prop:lv6, as in `CostInterfaceA`
-    (∀ ε : ℝ, 0 < ε → ∃ N₁ : ℝ, ∀ N : ℕ, N₁ ≤ N → Params.SplitInput a N →
-      M.Tpost N ≤ M.Mrows N ^ 2 * (Real.log N) ^ C + (Params.Bsm a N : ℝ) ^ (1 + ε)) ∧
-    -- `F` is finite, nonnegative, nondecreasing ([pp] Theorem thm:RA, "Finiteness").
-    (∀ x, 2 ≤ x → 0 ≤ M.Fsup x) ∧ MonotoneOn M.Fsup (Set.Ici 2) ∧
-    -- [pp] Theorem thm:RA, "Recursion": factor tree (< 2 log₂x splitting nodes), race against trial
-    -- division (factor 2), Lemma OS, Lemma lem:waldrec, and at most two oracle calls per
-    -- DESCEND_ONCE call on inputs `≤ √(2x)`.
-    (∀ x : ℝ, N₀ ≤ x → M.Fsup x ≤ 2 * Real.logb 2 x *
-      (C + C * (Params.Bsm a ⌊x⌋₊ : ℝ) * (Real.log x) ^ C + 2 * supSplit M.nonO a N₀ x +
-        2 * (2 * supSplit M.tau a N₀ x) * M.Fsup (Real.sqrt (2 * x))))
 
 /-- Unpacking the interface (the only place that depends on its field layout). -/
 lemma mt_unpackRA {P : Params} {a : ℝ} {M : CostModelRA P} (hM : CostInterfaceRA P a M) :

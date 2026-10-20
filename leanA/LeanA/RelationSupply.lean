@@ -2,6 +2,7 @@ import LeanA.DefsNFS
 import LeanA.SplitCounting
 import LeanA.Moments
 import LeanA.Asymptotics
+import LeanA.Hypotheses
 
 /-!
 # (d) Relation supply: Theorem D_k ([pp] Theorem thm:Dk) and field selection (i)
@@ -24,36 +25,6 @@ open Classical
 namespace FactoringA
 
 open Real Finset Filter
-
-/-- PUBLISHED INPUT (Canfield–Erdős–Pomerance). E. R. Canfield, P. Erdős and C. Pomerance, *On a
-problem of Oppenheim concerning "factorisatio numerorum"*, J. Number Theory 17 (1983), 1–28,
-Corollary on p. 15 (lower half: their Theorem 3.1; upper half: de Bruijn, Indag. Math. 28 (1966),
-Part II, Thm 2): if `ε > 0` and `3 ≤ u ≤ (1 − ε) log x / log log x`, then
-`Ψ(x, x^{1/u}) = x·exp{−u(log u + log log u − 1 + (log log u − 1)/log u + E(x, u))}` with
-`|E(x, u)| ≤ c_ε (log log u)²/(log u)²`. In particular ([pp] Fact fact:CEP)
-`Ψ(x, x^{1/u}) = x u^{−u(1+o(1))}` uniformly as `u → ∞` in that range. We state this consequence,
-for `x ≥ 16` (so that `log log x > 0`; the source tacitly assumes `x` large — without a lower bound
-on `x` the Lean statement would be false, e.g. for negative `x` or `x` just above `e`). -/
-def CEP : Prop :=
-  ∀ ε > 0, ∀ δ > 0, ∃ U₀ : ℝ, ∀ x u : ℝ, 16 ≤ x → U₀ ≤ u →
-    u ≤ (1 - ε) * Real.log x / Real.log (Real.log x) →
-    x * u ^ (-(u * (1 + δ))) ≤ (Psi x (x ^ (1 / u)) : ℝ) ∧
-      (Psi x (x ^ (1 / u)) : ℝ) ≤ x * u ^ (-(u * (1 - δ)))
-
-/-- INTERNAL HYPOTHESIS ([pp] Theorem thm:FM, first moment; with [pp] Lemma lem:generala for general
-`a`): for split inputs `N ≥ N₀`, `E_{ℓ ∈ J} E_{A ∼ 𝒜} N_ℓ(A) ≥ S² ρ_r ρ_F / (log N)^C`. -/
-def FirstMoment (P : Params) (a : ℝ) : Prop :=
-  ∃ C N₀ : ℝ, ∀ N : ℕ, N₀ ≤ N → Params.SplitInput a N →
-    (P.Ssz a N : ℝ) ^ 2 * P.rhoR a N * P.rhoF a N / (Real.log N) ^ C ≤
-      expect (P.fields N ×ˢ P.Jset N) (fun x => (P.countN a N x.1 x.2 : ℝ))
-
-/-- INTERNAL HYPOTHESIS ([pp] Theorem thm:LD, "LD*", second moment; with [pp] Lemma lem:generala):
-for split inputs `N ≥ N₀`, `E_{ℓ,A}[N_ℓ(A)(N_ℓ(A) − 1)] ≤ (log N)^C S⁴ ρ_r² ρ_F²`. -/
-def SecondMoment (P : Params) (a : ℝ) : Prop :=
-  ∃ C N₀ : ℝ, ∀ N : ℕ, N₀ ≤ N → Params.SplitInput a N →
-    expect (P.fields N ×ˢ P.Jset N)
-        (fun x => (P.countN a N x.1 x.2 : ℝ) * ((P.countN a N x.1 x.2 : ℝ) - 1)) ≤
-      (Real.log N) ^ C * (P.Ssz a N : ℝ) ^ 4 * (P.rhoR a N) ^ 2 * (P.rhoF a N) ^ 2
 
 /-! ### CEP in the range of [pp] Lemma lem:local(iv) -/
 

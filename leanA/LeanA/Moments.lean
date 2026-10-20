@@ -1,4 +1,5 @@
 import LeanA.Defs
+import LeanA.Hypotheses
 
 /-!
 # (d), (g) Reverse Markov, Paley–Zygmund, field selection, residue spreading
@@ -203,24 +204,6 @@ theorem split_cost_bookkeeping {α : Type*} (s : Finset α) (ς : α → ℝ)
   nlinarith
 
 /-! ### Published inputs used by Lemma W -/
-
-/-- PUBLISHED INPUT (Brun–Titchmarsh). H. L. Montgomery and R. C. Vaughan, *The large sieve*,
-Mathematika 20 (1973), 119–134, Theorem 2: for positive reals `x, y` and coprime positive integers
-`q, a` with `y > q`, `π(x+y; q, a) − π(x; q, a) < 2y/(φ(q) log(y/q))`. (The strict form is also
-implied by T. Yamada, arXiv:2312.16090, which has `log(y/q) + 0.8601` in the denominator.) -/
-def BrunTitchmarsh : Prop :=
-  ∀ (x y : ℝ) (q a : ℕ), 0 < x → 0 < y → 1 ≤ q → 1 ≤ a → Nat.Coprime a q → (q : ℝ) < y →
-    (primeCountAP (x + y) q a : ℝ) - primeCountAP x q a <
-      2 * y / ((Nat.totient q : ℝ) * Real.log (y / q))
-
-/-- PUBLISHED INPUT (Rosser–Schoenfeld). J. B. Rosser and L. Schoenfeld, *Approximate formulas
-for some functions of prime numbers*, Illinois J. Math. 6 (1962), 64–94, p. 69: (3.6) of Corollary 1
-after Theorem 2 (`π(z) < 1.25506 z/log z` for `1 < z`) and (3.8) of Corollary 3
-(`3z/(5 log z) < π(2z) − π(z)` for `20½ ≤ z`). -/
-def RosserSchoenfeld : Prop :=
-  (∀ z : ℝ, 1 < z → (Nat.primeCounting ⌊z⌋₊ : ℝ) < 1.25506 * z / Real.log z) ∧
-    (∀ z : ℝ, 20.5 ≤ z →
-      3 * z / (5 * Real.log z) < (Nat.primeCounting ⌊2 * z⌋₊ : ℝ) - Nat.primeCounting ⌊z⌋₊)
 
 lemma card_filter_Ioc_add_range (P : ℕ → Prop) [DecidablePred P] {a b : ℕ} (hab : a ≤ b) :
     ((Ioc a b).filter P).card + ((range (a + 1)).filter P).card =

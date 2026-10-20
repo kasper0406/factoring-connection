@@ -29,7 +29,8 @@ docker run --rm \
     mkdir -p ~/leanA && cd /src && tar --exclude=./.lake --exclude=./docker/last_check.log -cf - . | (cd ~/leanA && tar xf -)
     cd ~/leanA
     rm -rf .lake/build   # packages (Mathlib checkout) persist in a volume; our own build is always fresh
-    echo "== toolchain"; lean --version; lake --version
+    export PATH="$(dirname "$(elan which lean)")":$PATH   # bundled nanoda_bin, lean4lean, ... on PATH
+    echo "== toolchain"; lean --version; lake --version; which nanoda_bin
     echo "== mathlib cache"; lake exe cache get 2>&1 | tail -3
     echo "== build"; lake build 2>&1 | grep -v "^✔\|^⚠\|imports .Mathlib. from package\|declaration uses .sorry." | tail -20 || true
     echo "== sorry scan (proof layer)"; grep -rn "sorry" LeanA/ LeanA.lean || echo "no sorry in LeanA/"

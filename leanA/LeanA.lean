@@ -1,4 +1,6 @@
 import LeanA.Defs
+import LeanA.DefsNFS
+import LeanA.Hypotheses
 import LeanA.Exponents
 import LeanA.Fruitfulness
 import LeanA.SplitCounting

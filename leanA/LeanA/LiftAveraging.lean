@@ -1,4 +1,5 @@
 import LeanA.Defs
+import LeanA.Hypotheses
 
 /-!
 # Orthogonality and lift averaging for smooth numbers in progressions
@@ -23,37 +24,6 @@ namespace FactoringA
 open Finset
 
 /-! ## Definitions -/
-
-/-- TRUSTED. `n` is `y`-smooth: every prime factor `p` of `n` satisfies `p ≤ y`
-(used only for `n ≥ 1`). -/
-def IsYSmooth (y : ℝ) (n : ℕ) : Prop := ∀ p : ℕ, p.Prime → p ∣ n → (p : ℝ) ≤ y
-
-/-- TRUSTED. `S(z, y)`: the `y`-smooth integers `1 ≤ n ≤ z`. -/
-def smoothSet (z y : ℝ) : Finset ℕ := (Finset.Icc 1 ⌊z⌋₊).filter (IsYSmooth y)
-
-/-- TRUSTED. `Ψ(z, y; q, a) = #{n ∈ S(z, y) : n ≡ a (mod q)}`. -/
-def PsiAP (z y : ℝ) (q a : ℕ) : ℕ := ((smoothSet z y).filter (fun n => n ≡ a [MOD q])).card
-
-/-- TRUSTED. `Ψ_q(z, y) = #{n ∈ S(z, y) : gcd(n, q) = 1}`. -/
-def PsiCop (z y : ℝ) (q : ℕ) : ℕ := ((smoothSet z y).filter (fun n => Nat.Coprime n q)).card
-
-/-- TRUSTED. `E(z, y; q, a) = Ψ(z, y; q, a) − Ψ_q(z, y)/φ(q)`. -/
-def Eerr (z y : ℝ) (q a : ℕ) : ℝ := (PsiAP z y q a : ℝ) - (PsiCop z y q : ℝ) / (q.totient : ℝ)
-
-/-- TRUSTED. `Ψ(z, y; χ) = ∑_{n ∈ S(z, y)} χ(n)` for a Dirichlet character `χ` mod `q`. -/
-def PsiChi (z y : ℝ) {q : ℕ} (χ : DirichletCharacter ℂ q) : ℂ :=
-  ∑ n ∈ smoothSet z y, χ (n : ZMod q)
-
-/-- TRUSTED. `Δ_ℓ(t) = φ(t)⁻¹ ∑_{χ mod t, ℓ ∣ cond χ} |Ψ(z, y; χ)|`. -/
-def DeltaEll (z y : ℝ) (ℓ t : ℕ) : ℝ :=
-  (1 / (t.totient : ℝ)) *
-    ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ t)).filter (fun χ => ℓ ∣ χ.conductor),
-      ‖PsiChi z y χ‖
-
-/-- TRUSTED. `Δ(q) = φ(q)⁻¹ ∑_{χ mod q, χ ≠ χ₀} |Ψ(z, y; χ)|`. -/
-def DeltaAll (z y : ℝ) (q : ℕ) : ℝ :=
-  (1 / (q.totient : ℝ)) *
-    ∑ χ ∈ (univ : Finset (DirichletCharacter ℂ q)).filter (fun χ => χ ≠ 1), ‖PsiChi z y χ‖
 
 /-! ## Helper lemmas -/
 
