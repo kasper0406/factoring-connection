@@ -74,14 +74,15 @@ def backtrack_log_cost(m: Fraction, levels: int, log_inv_p: List[Fraction]) -> F
 
 # ---------------------------------------------------------------- Theorem NR: the constant
 def nr_constant(b: float, b1: float, s: float, delta: float) -> float:
-    """c_NR = max(2b, (b + 1/b1)/(1 - 2^{-1/3}), (b + 2s)/(1 - (delta*b1/2)^{1/3})); needs delta*b1/2 < 1."""
-    tau = delta * b1 / 2
+    """c_NR = max(2b, (b + 1/b1)/(1 - 2^{-1/3}), (b + 2s)/(1 - tau_F^{1/3})), tau_F = delta*b1 < 1 (reduced-basis box,
+    ||P|| <= 3 e^{sE} q; after proof critic issue 1)."""
+    tau = delta * b1
     assert 0 < tau < 1
     return max(2 * b, (b + 1 / b1) / (1 - 2 ** (-1 / 3)), (b + 2 * s) / (1 - tau ** (1 / 3)))
 
 
 def ad_heuristic_ok(b: float, s: float, delta: float, lam: float, kappa_F: float, m0: float) -> bool:
-    """Standard heuristic compatibility of Hypothesis AD (Poisson model): 2s > (1/3)[(kappa_F + m0)/(lam b)
-    + delta/(2 lam) + delta s/(lam b)] (search exponent beats the smoothness exponent u log u = E/3 per D')."""
-    rhs = ((kappa_F + m0) / (lam * b) + delta / (2 * lam) + delta * s / (lam * b)) / 3
+    """Standard heuristic compatibility of Hypothesis AD (Poisson model, reduced-basis box, worst-case sizes):
+    2s > (1/3)[(kappa_F + m0)/(lam b) + delta/lam + delta s/(lam b)]."""
+    rhs = ((kappa_F + m0) / (lam * b) + delta / lam + delta * s / (lam * b)) / 3
     return 2 * s > rhs

@@ -112,7 +112,8 @@ def test_backtracking_model():
 
 
 def test_nr_constant_example():
-    c = BR.nr_constant(4, 1, 0.5, 1)
-    assert 24 < c < 25
-    assert BR.ad_heuristic_ok(4, 0.5, 1, 0.5, 1, 1)
-    assert not BR.ad_heuristic_ok(4, 0.3, 1, 0.5, 1, 1)
+    # example of notes/nested_results.md §8: delta = 1/2, b1 = 1, lam = 1/2, b = 4, kappa_F = 4, m0 = 2, s = 3/4
+    c = BR.nr_constant(4, 1, 0.75, 0.5)
+    assert 26.5 < c < 26.8
+    assert BR.ad_heuristic_ok(4, 0.75, 0.5, 0.5, 4, 2)
+    assert not BR.ad_heuristic_ok(4, 0.6, 0.5, 0.5, 4, 2)

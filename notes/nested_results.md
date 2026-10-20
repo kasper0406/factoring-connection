@@ -3,7 +3,7 @@
 Agent `nested`, phase 12, 2026-10-20.
 
 Files:
-- This note; pre-registration `notes/nested_prereg.md` (commit `7c17ffb`, Addendum A `see git log`).
+- This note; pre-registration `notes/nested_prereg.md` (commit `7c17ffb`, Addendum A `e432e59`).
 - Code: `src/nested/toy_e1.py`, `harness_e1.py`, `analyze_e1.py` (E1, diagnostic), `src/nested/barrier.py` (exact
   helper computations for §§2, 5, 6, 8). Tests: `tests/test_nested.py`.
 - Data: `experiments/raw/nested_e1.jsonl`, `nested_e1_summary.json`, `nested_e1_calib.jsonl`; config
@@ -20,14 +20,16 @@ sources; dBPW (arXiv 2512.01588v2) was read in the original (Thms 1.1, 6.4, 7.1 
 ## Verdict
 
 **Plain language.** We did not find an ERH-conditional proof that the multi-level descent works, and so no rigorous
-L[1/3] (or any fixed exponent below 1/2) under ERH. The de Boer–Pellet-Mary–Wesolowski sampler cannot be the tool:
-it is exactly as good as "a uniformly random ideal of norm about √|Δ_K|", and in every field we can use for
-factoring that norm is a power of N. The obstruction is not ERH-shaped at all. Below L[2/5] a descent must create
-algebraic children (prime ideals of the field it works in), and these can only be descended in that same field; a
-proof then needs control of one fixed polynomial's values at more points than the field has random parameters.
-No tool for that exists, with or without ERH. Under ERH plus one clean pointwise hypothesis (AD: every target in
-range has a good box point) the whole L[1/3] algorithm *is* rigorous, with every other step (tree, costs,
-recursion, transcript invariance, linear algebra) proved here; ERH is used only for the character columns.
+L[1/3] (or any fixed exponent below 1/2) under ERH. The de Boer–Pellet-Mary–Wesolowski sampler is not a usable
+tool here: it is exactly as good as "a uniformly random ideal of norm at most about √|Δ_K|" (a rereading of their
+own identities), and for the fields we construct that norm is typically a power of N (a field-discriminant lower
+bound is not proved). The obstruction is not ERH-shaped at all. Below L[2/5] (size model) a descent must create
+algebraic children, prime ideals of the field it works in, and as far as we can see these can only be descended in
+that same field; a proof then needs control of one fixed polynomial's values at more points than the field has
+random parameters. No tool for that exists, with or without ERH. Under ERH plus one clean pointwise hypothesis (AD:
+every target in range has a good point in a reduced-basis box) and an unverified bookkeeping hypothesis (LV6′: lv6's
+remaining lemmas at growing degree), the L[1/3] algorithm is rigorous: the tree, costs, recursion, transcript
+invariance and row algebra are proved here, and ERH is used only for the character columns.
 Best α under ERH from this work: **α = 1/2** (no improvement). L[1/3] factoring, rigorous or ERH-conditional, is not
 in the literature either.
 
@@ -35,41 +37,45 @@ Precisely:
 1. **dBPW extracted (§1).** Any degree n ≥ 2; ERH for Hecke L-functions of K; LLL basis of O_K (or of an order R,
    §9.5, at discriminant [O_K:R]²Δ_K); one-sided: β ∈ 𝔞 with (β)𝔞^{−1} ∈ 𝒮·𝒮_B, probability ≥ δ_𝒮[r^n]/3 − ε for
    an *arbitrary* family 𝒮, where δ_𝒮 is the local density among *all integral ideals* of norm ≈ r^n and
-   r^n ≥ 48^n b^{2n²/b}n^{7n/2}|Δ_K|^{3/2}; one level (Thm 17.7 iterates the same step to an L_{|Δ|}(1/2)-smooth
+   r^n ≥ 48^n b^{2n²/b}n^{7n/2}|Δ_K|^{3/2} (Thm 9.5's normalisation); one level (Thm 17.7 iterates the same step to an L_{|Δ|}(1/2)-smooth
    decomposition). Worst case over the input ideal; full-dimensional; no rational side.
-2. **Theorem AF [proved, unconditional given an Arakelov-uniform input; extracted from dBPW's own identities].**
+2. **Theorem AF [proved, unconditional given an Arakelov-uniform input; it is dBPW's own (46)–(48), reread].**
    For Arakelov-uniform sampling in a box of radius ρ, the probability that the cofactor lies in 𝒮 is, up to
-   e^{±1/4}, E_v[δ̃_𝒮(ρ^n e^{−v})] with v ~ Gamma(r₁ + r₂ − 1, 1): the cofactor behaves like a uniformly random
-   ideal of norm ρ^n e^{−v} ≥ (8n²)^n|Δ_K|^{1/2}e^{−v}. No sampler of this type can see the NFS degree-one
-   elements, whose norms are far below √|Δ_K|. Corollary AF [heuristic quantitative step]: in fields with
-   log|Δ_K| ≍ log N, Arakelov-type descent steps cost L[1/2] at best (this is dBPW's own L_{|Δ|}(1/2)).
+   e^{±1/4}, E_v[δ̃_𝒮(ρ^n e^{−v})] with v ~ Gamma(r₁ + r₂ − 1, 1), δ̃ the cumulative density among ideals of norm
+   ≤ ρ^n e^{−v}, and ρ^n ≥ (8n²)^n|Δ_K|^{1/2}. No sampler of this type can exploit the NFS degree-one elements at
+   deep levels, where their norms are far below √|Δ_K| (at the top level both are N^{Θ(δ)}). Corollary AF
+   [heuristic quantitative step]: in fields with log|Δ_K| ≍ log N, Arakelov-type descent steps cost L[1/2] at best
+   (this is dBPW's own L_{|Δ|}(1/2)).
 3. **Prop SI, the sparse-image dilemma [proved].** For a fixed field the candidate values of a node are a sparse set,
    so no "arbitrary dense good set" lemma can hold (an adversarial good set of density 1 − o(1) misses all of
    them); averaging over the field restores full support but then the good set must not depend on the field.
    All three existing arbitrary-set tools (Theorem K/S″, LP92 Thm 6.1 as used in LP §10, dBPW) are "counting +
    a sampler that is uniform on a group", and the group's size sets the value size (N for Dixon, √|Δ_K| for
    Arakelov).
-4. **Fresh fields (§4) [proved / size model].** Rational children are integers and can be sent to an independent
-   field (removing their endogeneity); algebraic children cannot (Lemma FB). Designs without algebraic children
-   have floor **α ≥ 2/5** in the size model (Prop R2), so they never beat one-level descent.
+4. **Fresh fields (§4) [proved / structural / size model].** Rational children are integers and can be sent to an
+   independent field (removing their endogeneity); algebraic children are ideals of their field and we know no way
+   to move them (Lemma FB covers the tower case). Designs without algebraic children have floor **α ≥ 2/5** in the
+   size model (Prop R2, with the counting heuristic ‖f‖^{d+1}‖g‖² ≳ N), so they never beat one-level descent.
 5. **Prop OD, overdetermination [proved linear algebra + size-model count].** A field of degree d has at most d + 3
-   free parameters; below 2/5 one node already has ≫ d algebraic children, and at α = 1/3 every depth-3
-   configuration has > d + 3 nodes. Moment methods that work "by independence over the field" (FM, Kern, LD*) cannot
+   free parameters; with children ≤ q^λ a node has ≳ d/(2λ) algebraic children (size model), so for λ < 1/2 a node
+   with its children already exceeds d + 3 values, and for λ ∈ [1/2, 1) a node with children and grandchildren
+   does (and so does a pair of node-plus-children configurations, as a second moment needs). Moment methods that work "by independence over the field" (FM, Kern, LD*) cannot
    be applied to such configurations; what would be needed is an L-scale smooth-correlation estimate for
    overdetermined linear systems, which does not exist (Harper: 3-term only; Matthiesen–Wang need Ψ > N/log⁸N).
-6. **Precision (§6) [model computation].** Even a nested lemma of the form asked for in the task ("good-set density
-   ≥ (log N)^{−C} at each level") would give only exp(O(E·log log N)) = L[1/3 + o(1)] with O(log log N) levels,
-   because a failed child forces backtracking (Prop BT); L[1/3, c] needs level densities bounded below by a
-   constant on average.
+6. **Precision (§6) [model computation].** With a nested lemma of the form asked for in the task ("good-set density
+   ≥ (log N)^{−C} at each level"), the naive backtracking search costs exp(O(E·log log N)) = L[1/3 + o(1)] over
+   O(log log N) levels (Prop BT; an upper bound for that strategy, not a lower bound for every strategy); the naive
+   search reaches L[1/3, c] when level densities are bounded below by a constant on average.
 7. **What ERH buys (§7) [proved from GRH-Chebotarev].** Lemma X_ERH: LV6's character columns at growing degree d
-   with polylogarithmic character primes and no exceptional class. This closes the LV6 growing-degree gap of
-   recurse §3.5 (correction: unconditionally the Stark-threshold repair costs L[1/3, Θ(δ)] at α = 1/3, not
-   L^{o(1)}). ERH does nothing for endogenous children.
+   with character primes of poly(t) bits and no exceptional class. This closes the Lemma-X part of the LV6
+   growing-degree gap of recurse §3.5 (the rest is Hypothesis LV6′) (correction: unconditionally the Stark-threshold repair costs L[1/3, Θ(δ)] at α = 1/3, not
+   L^{o(1)}; both points were already asserted, without proof, in LV Remark 6.7). ERH does nothing for endogenous
+   children.
 8. **Theorem NR [proved conditional on ERH, Hypothesis AD and Hypothesis LV6′].** If, for at least half of the
-   fields, every rational and degree-one target of norm in (B, e^{b₁Q}] has a box point whose two cofactors are
-   e^{λ log q}-smooth (AD), then a Las Vegas algorithm factors every N in expected L_N[1/3, c_NR + o(1)] with an
+   fields, every rational and degree-one target of norm q ∈ (B, e^{b₁Q}] has a point in its reduced-basis box
+   (≈ e^{2sE} lattice points) whose two cofactors are q^λ-smooth up to B (AD), then a Las Vegas algorithm factors every N in expected L_N[1/3, c_NR + o(1)] with an
    explicit finite c_NR. FM, LD*, Theorem K and the 2^ω issue all drop out. AD is the standard NFS-DL descent
-   heuristic; it is a pointwise statement about one field, i.e. exactly the statement that items 3–5 show is out
+   heuristic (in the reduced-basis form; with a sup-norm box it would be false for irregular lattices, proof critic); it is a pointwise statement about one field, i.e. exactly the statement that items 3–5 show is out
    of reach.
 9. **E1 [experimentally supported, toy, pre-registered].** In 12 toy fields (d = 3, 44-bit N, 4800 parent nodes,
    14333 algebraic children): endogenous children are descendable at the same rate as matched uniform targets
@@ -127,9 +133,13 @@ E Pr[(α)Exp(−𝔞) ∈ 𝒮 | ray condition] ≥ (N𝔪₀/φ(𝔪₀))·[Pic
 |N(β)| ≤ N(𝔟)·B^{N}·r^n, with probability ≥ (N𝔪₀/φ(𝔪₀))[Pic⁰:G]δ_𝒮[r^n]/3 − ε, where
 r = 48ω·b^{2n/b}·n^{7/2}·|Δ_K|^{3/(2n)}·N(𝔪₀)^{1/n}; time poly(b^b, log|Δ_K|, size(𝔟), log 1/ε, log N𝔪, index,
 …). The success event is (β)𝔟^{−1} = 𝔠·∏_{i ≤ N}𝔭_i with known walk primes 𝔭_i and N𝔠 ≤ r^n.
-Thm 1.1 is the specialisation G = Pic⁰, 𝔪 = O_K; Thm 13.2 the version with success ≥ δ_𝒮[r^n]/6.
+Thm 1.1 is the specialisation G = Pic⁰, 𝔪 = O_K, except that the printed Thm 1.1 puts an extra N(𝔞)^{1/n} into r
+(and Thm 9.5 instead puts N(𝔟) into the norm bound); the two printings are not literally consistent in v2, and we
+use Thm 9.5's normalisation. Thm 13.2 is the version with success ≥ (N𝔪₀/φ(𝔪₀))δ_𝒮[r^n]/6. (For G ≠ Pic⁰ the
+walk bound B carries a factor [Pic⁰:G]² and the walk length a term −log[Pic⁰:G] + log N𝔪.)
 
-**§14.** A purely combinatorial lower bound δ_{𝒮_{A,B}}[x] ≥ (4 log B)^{1−u}u^{−u}/(ρ_K B) for ideals composed of
+**§14 (Lemma 14.1, ERH: the prime-ideal count uses Lagarias–Odlyzko; needs B ≥ C(n + log|Δ|)^{2+ε},
+A ≤ B/(4 log B), x ≥ Be^n).** A lower bound, combinatorial apart from the prime count, δ_{𝒮_{A,B}}[x] ≥ (4 log B)^{1−u}u^{−u}/(ρ_K B) for ideals composed of
 primes with norm in (A, B] (counting products, as in LP92 Thm 6.1). Codex nested_1 gives the analogous bound for the
 monoid of an *arbitrary* set of m ≥ δy/log y prime ideals of norm ≤ y: δ ≥ (δ/(u log y))^u/(ρ_K y).
 
@@ -153,8 +163,8 @@ poly(L_{|Δ|}(1/2), L_{n^n}(2/3), size, ρ_K^{cut}, …). One sampling step, rep
 
 ## 2. Theorem AF: the cofactor law of Arakelov-uniform sampling
 
-**Theorem AF [proved; it is dBPW's computation (36)–(48) read as a two-sided identity].** Let K have degree n ≥ 3,
-r* := r₁ + r₂ − 1 ≥ 1, trivial modulus. Let the Arakelov class of 𝔞 ∈ Div⁰_K be uniform on Pic⁰_K, let
+**Theorem AF [proved; it is dBPW's (46)–(48), restated as a law of the cofactor norm].** Let K have
+r* := r₁ + r₂ − 1 ≥ 1 (any field but Q and imaginary quadratic ones), trivial modulus. Let the Arakelov class of 𝔞 ∈ Div⁰_K be uniform on Pic⁰_K, let
 ρ ≥ 8n²Γ_K|Δ_K|^{1/(2n)}, and let α be uniform in Exp(𝔞) ∩ ρB_∞. For any set 𝒮 of integral ideals put
 δ̃_𝒮(x) := |𝒮(x)|/(ρ_K x), X := ρ^n. Then
 
@@ -175,9 +185,9 @@ E_𝔞 p_{𝔞,𝔠} ∈ [e^{−1/4}, e^{1/4}]·C(N𝔠)/(ρ_K X), C(N) := (log(
 Σ_{𝔠∈𝒮} C(N𝔠)/(ρ_K X) into 𝔼_v[δ̃_𝒮(Xe^{−v})1_{v≤log X}]. ∎
 
 **Remarks.**
-- dBPW use only the lower half (with δ_𝒮[X] ≤ δ̃_𝒮(t) for t ∈ [X/e^n, X], and Pr[v ≤ n] ≥ 1/2). The upper half shows
-  their bound is tight up to e^{±1/4} and the Gamma weighting: *the method succeeds exactly as often as a random ideal
-  of norm Xe^{−v} lies in 𝒮.* No cleverness in choosing 𝒮 or ρ changes the norm scale X ≥ (8n²)^n√|Δ_K|.
+- dBPW state (46) two-sided but use only the lower half (with δ_𝒮[X] ≤ δ̃_𝒮(t) for t ∈ [X/e^n, X], and
+  Pr[v ≤ n] ≥ 1/2). The upper half shows their bound is tight up to e^{±1/4} and the Gamma weighting: *the method
+  succeeds as often as the cumulative density of 𝒮 among ideals of norm ≤ Xe^{−v}, averaged over v.* No cleverness in choosing 𝒮 or ρ changes the norm scale X ≥ (8n²)^n√|Δ_K|.
 - For 𝒮 = {N𝔠 ≤ T}: Pr[N(cofactor) ≤ T] ≤ e^{1/4}(n log ρ)^{r*}·|{𝔠 : N𝔠 ≤ T}|/(r*!·ρ_K·ρ^n). Equivalently the
   log-norm of the cofactor is n log ρ − v up to the weight δ̃: cofactor norms below X·e^{−V} carry Gamma tail
   weight e^{−V}Σ_{j<r*}V^j/j! (`barrier.af_weight`).
@@ -239,7 +249,8 @@ a − bγ ∈ 𝔮O_{K₂}, then q | a and q | b. *Proof.* O_{K₂}/𝔮O_{K₂}
 independent (otherwise γ ≡ c mod 𝔮O_{K₂} for some c ∈ Z), so ā − b̄γ̄ = 0 forces ā = b̄ = 0. ∎ So degree-one
 elements of an extension cannot carry the whole extended ideal 𝔮O_{K₂}; they can contain one prime 𝔔 | 𝔮, which
 leaves the other primes above 𝔮 uncancelled (codex (23): passing to the norm q loses the conjugates). In unrelated
-fields the ideal 𝔮 of K₁ has no meaning at all. Algebraic children must therefore be descended in their own field.
+fields the ideal 𝔮 of K₁ has no meaning at all. So algebraic children have to be descended in their own field as far
+as we can see; this last sentence is structural (no transfer construction is known to us), not a theorem.
 (The hypothesis on γ fails only for 𝔮 dividing a fixed index-type quantity; it is not needed for the conclusion that
 the ideal is field-bound, only for the tower variant.)
 
@@ -252,14 +263,26 @@ target q is fixed and the field A_{j+1} is fresh, so route (ii) of Prop SI appli
 nested_1 §3(d)): all targets at one level share A_{j+1}, so a *joint* statement over the m targets of a node is still
 needed; and the bound must hold conditionally on the history that selected q.
 
-**Prop R2 (the price: floor 2/5) [size-model arithmetic].** Suppose no node may have algebraic children, so every
-algebraic value must be B-smooth, B = L[α]. A level-1 target ℓ ≥ L[1 − α] (forced by the split, recurse §3.3 (R1))
-has algebraic value |F(P)| ≥ ‖f‖·V^d with ‖f‖ ≥ N^{1/(d+1)} (a polynomial with a root mod N) and V ≥ √ℓ (lattice of
-index ℓ), so log|F| ≥ t/(d + 1) + (d/2)log ℓ ≥ (√2 − o(1))·√(t·log ℓ) ≥ (√2 − o(1)) t^{1−α/2}(log t)^{α/2}.
-B-smoothness at cost L[α] needs log|F|·log u/log B = O(t^α(log t)^{1−α}), i.e. 1 − α/2 ≤ 2α, i.e. **α ≥ 2/5**.
-That is the one-level floor; deeper rational-only levels cannot lower it. So exogenous (fresh-field) nesting is
-possible exactly where it is not needed. (The lower bound |F(P)| ≥ ‖f‖V^d/polylog holds for all but a small
-fraction of box points by the area of {|F| ≤ X}; we use it only as size-model input.)
+**Prop R2 (the price: floor 2/5) [size-model arithmetic, with the counting heuristic].** Consider any design in which
+no node has algebraic children (every algebraic value must be B-smooth), while each node may use its own field of any
+degree d and heights H_f = ‖f‖, H_g = ‖g‖. Use the *counting heuristic* (d + 1)log H_f + 2 log H_g ≳ t: pairs (f, g)
+with a common root mod N exist (and are found) only when there are ≳ N candidate pairs. (The only rigorous constraint
+is H_f·H_g^d ≥ N/(d + 1), from N | Res(F, G) = F(g₀, g₁) ≠ 0; with it alone one could take d = 2, H_f = O(1),
+H_g ≈ √N and avoid algebraic children at the top level, so the first draft's argument "‖f‖ ≥ N^{1/(d+1)}" was
+wrong; proof critic issue 4.) Write Λ := log B = bt^α(log t)^{1−α} and U := Λ/(c log t), the largest u with
+u log u ≤ Λ. At a node with target size z (box radius ≈ √q·e^{sE}) and children ≤ e^{y}, y < z:
+- rational cofactor ≈ H_g·e^{sE}/√q must split into primes ≤ e^{y}: log H_g ≲ yU < zU;
+- algebraic value ≈ H_f·(√q)^d must be B-smooth: log H_f + (d/2)z ≲ ΛU.
+With log H_f ≥ (t − 2 log H_g)/(d + 1): if 2zU ≤ t/2, then log H_f + (d/2)z ≥ t/(2(d + 1)) + (d/2)z ≳ √(tz), so the
+node is feasible only if z ≲ Λ²U²/t; if 2zU > t/2, then z > t/(4U). Hence every target size in the window
+(Λ²U²/t, t/(4U)) is infeasible, whatever the children. A feasible node *above* the window has log H_g ≳ t/4, and its
+rational cofactor (of log-size ≳ t/4) splits into at most U pieces, so it has a child of log-size ≳ t/(4U), again
+above the window. The descent starts at z₁ ≍ t^{1−α}(log t)^α (the split) and must end at targets ≤ Λ, which lie
+below the window when α > 1/3 (Λ²U²/t ≍ t^{4α−1} ≫ t^α). So every tree either contains an infeasible node in the
+window or has an infinite branch above it. The window is non-empty iff Λ²U³ ≪ t², i.e. 5α < 2 (up to log factors).
+So **α ≥ 2/5** for designs without algebraic children; deeper rational-only levels cannot lower the one-level floor,
+and exogenous (fresh-field) nesting is possible exactly where it is not needed. (|F(P)| ≳ H_f·V^d for all but a small
+fraction of box points by the area of {|F| ≤ X}; size-model input only.)
 
 ## 5. Prop OD: overdetermination of same-field configurations
 
@@ -270,17 +293,17 @@ and c ∈ Z^d. For s > d points P₁, …, P_s with G(P_i) ≠ 0 there are integ
 law is supported on a variety of positive codimension. *Proof.* s vectors in Q^d are linearly dependent; the second
 statement is a dimension count. ∎
 
-**Children count [size model].** A target of size e^z has |F(P)| ≥ e^{(d/2)z}·‖f‖ (as in Prop R2). If children are
-≤ e^{λz}, the node has m ≥ (d/2)/λ algebraic children (`barrier.min_children`). Hence:
-- below 2/5 (exponent contraction, λ → 0 in log terms) m/d → ∞: already one node with its children has more
+**Children count [size model].** A target of size e^z has |F(P)| ≳ e^{(d/2)z}·‖f‖ (as in Prop R2), ignoring the
+B-smooth part. If children are ≤ e^{λz}, the node has m ≳ (d/2)/λ algebraic children (`barrier.min_children`).
+Terminology: depth 1 = a node with its children; depth 2 = with grandchildren. Hence:
+- λ < 1/2 (in particular any design with exponent contraction, as below 2/5): m > d, so already depth 1 has more
   values than the field has parameters;
-- at α = 1/3 with fixed λ ∈ (1/2, 1) a node and its children (≈ d/(2λ) + 1 values) fit, but a pair of such
-  configurations (needed for a second moment) does not, and depth 2 (node, children, grandchildren) does not
-  (`barrier.overdetermined`).
+- λ ∈ [1/2, 1) (constant contraction at α = 1/3): depth 1 (≈ d/(2λ) + 1 values) fits, but a pair of depth-1
+  configurations (needed for a second moment) does not, and depth 2 does not (`barrier.overdetermined`).
 
 **Consequence (method barrier).** FM, Kern and LD* work by fixing the points and using that the values are
-independent-ish arithmetic progressions in c. For a depth-≥ 2 descent (below 2/5), or for the second moment of a
-depth-1 configuration (at 1/3), the values are affinely dependent in c; a proof would need an *L-scale smooth
+independent-ish arithmetic progressions in c. For depth 1 with λ < 1/2, for depth 2 at any λ, or for the second
+moment of a depth-1 configuration, the values are affinely dependent in c; a proof would need an *L-scale smooth
 correlation estimate for an overdetermined system of affine forms with huge coefficients*. The literature has
 nothing of the kind: Harper (Compositio, arXiv 1408.1662) handles a + b = c for y ≥ (log x)^K; Matthiesen–Wang (ANT
 2025) need Ψ(N, y) > N/log⁸N; Lachand needs fixed u; BBDT's binary-form results need y ≥ x^{d−2+ε} (x^{1/√e+ε}
@@ -291,7 +314,8 @@ correlated searches (codex).
 c is determined. Any later node's success is a deterministic function of (A, target). So beyond depth 1 every needed
 statement is pointwise in the field, i.e. about smooth values of one fixed binary form in special-q lattices at
 L-scale; even primes in such values are known only for special forms (Heath-Brown x³ + 2y³; Maynard's incomplete
-norm forms need ≥ 7n/8-type variable counts).
+norm forms need n ≥ 4k, i.e. at least 3n/4 of the n variables; n ≥ 22k/7 for Q(θ^{1/n})).
+Barbulescu–Lachand (Math. Comp. 86, 2017) study friable values of NFS binary forms, again at power-type y.
 
 ## 6. Precision: backtracking and union bounds
 
@@ -303,9 +327,9 @@ log(overhead) = Σ_j (log m + m log(1/p_j)).
   L[1/3]^{O(log log N)}, i.e. exp((log N)^{1/3}(log log N)^{5/3+o(1)}), not L[1/3, c] (`barrier.backtrack_log_cost`;
   codex (b): a t^{−c} loss per level becomes e^{−O(log² t)}, and raised to 2k it costs e^{O(E log t)}).
 - p_j ≥ c₀ > 0 on average: log(overhead) = O(D′ log t) = O(E), so L[1/3, O(1)].
-So the nested lemma requested in the task ("relative density ≥ (log N)^{−C}") is not sufficient for L[1/3, c] by
-itself; it would give L[1/3 + o(1)]. Either constant densities, or AD (p_j = 1), or a global selection argument is
-needed.
+So with the nested lemma requested in the task ("relative density ≥ (log N)^{−C}") the naive backtracking strategy
+gives at most L[1/3 + o(1)]; to reach L[1/3, c] by it one needs constant densities, or AD (p_j = 1). A smarter
+global selection argument is not excluded by this model computation.
 
 **Union-bound route to AD.** To get "every target is good" from field moments one needs Pr_A[τ dead] ≤ e^{−b₁Q} per
 target. Chebyshev/Paley–Zygmund give only Pr[dead] ≤ Var/E² ≥ Θ(1) here, because descendability has Θ(1) relative
@@ -318,26 +342,31 @@ uniform rates range from 0.11 to 0.61 (§9). Higher moments of order k ≤ d/2 w
 **Lemma X_ERH [proved from GRH-Chebotarev].** Assume GRH for the Dedekind zeta functions of the fields
 L_h = K(√h), h ∈ H ∖ {1} (lv6 §3.2–3.3 notation; [L_h : Q] = 2d, |Δ_{L_h}| ≤ Δ̄ with log Δ̄ = O(d·t)). Sample
 first-degree primes 𝔭 = (p, s) of K with N𝔭 ∈ (x/2, x] and p ∤ D as in lv6 (rejecting the ≤ log₂|D| primes p | D),
-with x the least integer such that √x ≥ C₀(d + log Δ̄)²(log Δ̄)² and log x ≥ b₁Q + 1. Then for every h ≠ 1, Pr_𝔭[χ_𝔭(h) = −1] ≥ 1/(5d), and with
+with x the least integer such that √x ≥ C₀(d + log Δ̄)²(log Δ̄)² and log x ≥ b₁Q + 1. Then for every h ≠ 1, Pr_𝔭[χ_𝔭(h) = −1] ≥ 1/(5d) for large N, and with
 t_χ := ⌈5d(ln|H| + 2 ln t)⌉ characters the joint kernel meets H only in {1} with probability ≥ 1 − t^{−2}. No
 exceptional class (lv6 Lemma E) occurs.
 
 *Proof.* Lagarias–Odlyzko 1977, Thm 1.1 (GRH version): for L/K Galois with group G and class C,
 |π_C(x) − (|C|/|G|)Li(x)| ≤ c₁((|C|/|G|)x^{1/2}log(d_L x^{n_L}) + log d_L), c₁ absolute. Apply to L_h/K, G = C₂,
 C = {σ}: the number of primes of K with Frobenius σ and norm in (x/2, x] is
-≥ ½(Li(x) − Li(x/2)) − 2c₁(√x(log Δ̄ + 2d log x) + log Δ̄) ≥ x/(5 log x) for the stated x. Subtract the ≤ d√x primes
-of degree ≥ 2 and the ≤ log₂Δ̄ ramified ones. Apply the same theorem to K/K (G trivial; GRH for ζ_K) for an upper
-bound: first-degree primes with norm in (x/2, x] number ≤ d(π(x) − π(x/2)) ≤ 1.1dx/log x. The ratio is ≥ 1/(5d).
+≥ ½(Li(x) − Li(x/2)) − 2c₁(√x(log Δ̄ + 2d log x) + log Δ̄) ≥ (x/(4 log x))(1 − o(1)) for the stated x (C₀ large).
+Subtract the ≤ d√x primes of degree ≥ 2 and the ≤ log₂Δ̄ ramified ones, both o(x/log x). Upper bound: first-degree
+primes with norm in (x/2, x] number ≤ d(π(x) − π(x/2)) ≤ 1.1dx/log x (prime number theorem). The ratio is
+≥ (1 − o(1))/(4.4d) ≥ 1/(5d).
 Independence and a union bound over |H| classes give the kernel statement; under GRH no h has an exceptional real
 zero, so H₀ = {1}. The condition log x ≥ b₁Q + 1 makes every character prime larger than every prime > B that divides an
 atom of a multi-level row (such primes are targets, of norm ≤ e^{b₁Q}), and the rejection of p | D keeps character
 primes away from D; primes ≤ B are below x. Sampling and evaluation cost poly(log x) = poly(t). ∎
 
-The x-threshold is polylogarithmic in N for d ≤ t, so LV6's character step works at any growing degree under ERH.
+The character primes have poly(t) bits (x ≥ e^{b₁Q} because of the atom condition; without it √x polylogarithmic in N
+would do), so LV6's character step works at any growing degree under ERH.
 **Correction to recurse §3.5:** without ERH, the Stark threshold ν₁ ≍ 1/((2d)!log Δ̄) forces log x ≳ (2d)!·log Δ̄,
 i.e. characters of (2d)!-bit size; at α = 1/3 with d = δD′ this is e^{Θ(δ)E}·poly, an L[1/3, Θ(δ)] factor (still
 finite), not L^{o(1)} as recurse §3.5 says (that statement is right for α > 1/3). LV's own §6 (unconditional,
 Stark–Brauer–Siegel with an exceptional field set) is the unconditional alternative; we did not transfer it.
+**Prior statement (literature critic):** LV Remark 6.7 (p. 31) already says that their characters cost
+L(1/3, 4δ/3 + o(1)) unconditionally and that "conditional on GRH these L_n(1/3) bounds become polynomial in log n".
+Lemma X_ERH is the proof of that remark in lv6's setting, and our Θ(δ) correction matches their 4δ/3.
 
 **Can ERH be weakened or averaged?** For Lemma X_ERH: yes in principle (LV §6, unconditional). Family-averaged
 zero-free regions (Pierce–Turnage-Butterbaugh–Wood, Invent. Math. 2020; Lemke Oliver–Thorner–Zaman 2024) are for
@@ -353,20 +382,26 @@ family 𝒮 are arbitrary functions of the history and δ_𝒮[r^n] ≥ η for e
 
 ## 8. Theorem NR: ERH + AD ⇒ L[1/3]
 
-Parameters: constants δ, λ ∈ (0, 1), b, b₁, s > 0 with τ_F := δb₁/2 < 1. d := the least odd integer ≥ δD′;
-B := ⌊e^{bE}⌋. Field law 𝔉: any Las Vegas-samplable law of fields A = (f, g₀, g₁) with f irreducible of degree d
+Parameters: constants δ, λ ∈ (0, 1), b, b₁, s > 0 with τ_F := δb₁ < 1. d := the least odd integer ≥ δD′;
+B := ⌊e^{bE}⌋. Field law 𝔉: any law samplable (with its certificates) in expected time e^{o(E)}, of fields A = (f, g₀, g₁) with f irreducible of degree d
 (with a certificate), F(g₀, g₁) ≡ 0 (mod N), gcd(g₀, g₁) = 1, and log‖f‖_∞, log max(g₀, g₁) ≤ κQ for a constant
 κ (e.g. design (a‴) with M = ⌊N^{1/(d+1)}⌋, w ≈ M, H ≈ M). D_A := N·g₁·f_d·disc(f).
 
 *Targets* 𝒯(A): rational primes q and degree-one prime ideals (q, r) (r a simple root of f mod q) with
-B < q ≤ e^{b₁Q} and q ∤ D_A. *Box* of a target of norm q = e^z: the points P = (a, b) of its lattice with
-gcd(a, b) = 1, 0 < b ≤ V, |a| ≤ V, V := ⌊√q·e^{sE}⌋, G(P)F(P) ≠ 0. *Good point:* every prime p dividing the
+B < q ≤ e^{b₁Q} and q ∤ D_A. *Box* of a target of norm q = e^z: let (u₁, u₂) be the Gauss-reduced basis of its
+lattice (deterministic); the box is {P = iu₁ + ju₂ : |i|, |j| ≤ ⌊e^{sE}⌋, P = (a, b) with gcd(a, b) = 1,
+G(P)F(P) ≠ 0}, normalised to b ≥ 0. It has ≤ (2e^{sE} + 1)² points, and since ‖u₁‖‖u₂‖ ≤ (2/√3)q,
+‖P‖_∞ ≤ e^{sE}(‖u₁‖ + ‖u₂‖) ≤ 3e^{sE}q (≈ e^{sE}√q for regular lattices). *Why not a sup-norm box (proof critic
+issue 1):* for an irregular lattice (a primitive u₁ with ‖u₁‖ < √q·e^{−sE}/√2, e.g. u₁ = (0, 1) for q | g₀) the box
+|a|, b ≤ √q·e^{sE} meets only the line Zu₁, so it has one primitive point, which is good with probability bounded
+away from 1; there are e^{Θ(E)} such targets per field, so AD would fail under its own heuristic. *Good point:* every prime p dividing the
 target's two cofactors (G(P)/q or G(P); F(P)/q or F(P)) satisfies p ≤ B, or p ≤ e^{λz} and p ∤ D_A.
 
 **Hypothesis AD(δ, λ, b, b₁, s; 𝔉).** For all large N, Pr_{A∼𝔉}[every τ ∈ 𝒯(A) has a good point] ≥ 1/2.
 
 **Hypothesis LV6′.** lv6's Lemmas C, H, SQ and IR (good primes, residual square-class group, square root in Z[β],
-irreducibility certificate) hold at degree d ≍ D′ with bounds polynomial in d and t. (UNVERIFIED bookkeeping; the
+irreducibility certificate) hold at degree d ≍ D′ with cost e^{o(E)} (polynomial bounds in d and t, except SQ's sign
+enumeration 2^{d−1} = e^{Θ(D′)} = e^{o(E)}), with SQ's Hensel prime taken as below. (UNVERIFIED bookkeeping; the
 only growing-degree gap identified in recurse §3.5 was Lemma X, which Lemma X_ERH replaces.)
 
 **Theorem NR [proved conditional on ERH, AD and LV6′].** There is a Las Vegas algorithm that outputs the complete
@@ -385,15 +420,19 @@ alternation with trial division instead of an N₀ branch, recurse §1.1 item 3 
    are (p, a·b^{−1} mod p)) and return the tree; if the box has no good point return FAIL.
 3. When M_rows := #columns + 12 rows are collected, run LV6 with Lemma X_ERH (columns: sign, v_p mod 2 for p ≤ B,
    parity column, (p, s) for p ≤ B, p ∤ D, t_χ characters), the rows being given by Lemma RW below; compute
-   X = ∏_{i∈S} r_i, Y, and gcd(X − Y, N). On a trivial gcd discard the rows and collect fresh ones (same field).
+   X = ∏_{i∈S} r_i, Y, and gcd(X − Y, N). **Hensel prime:** the least odd prime p > e^{b₁Q} with p ∤ D (lv6 takes
+   p ∈ (B, 2B], and its Lemma SQ needs Γ to be a unit at p; multi-level atoms contain target primes up to e^{b₁Q},
+   squared in Γ = ∏Z_i⁺Z_i⁻, so the lv6 choice can fail; proof critic issue 2). On a trivial gcd discard the rows and collect fresh ones (same field).
 
 **Lemma RW (row identity for multi-level trees) [proved].** Let t := f_d, β := tα, z_P := ta − bβ ∈ Z[β], so
 ψ(z_P) ≡ t·G(P)/g₁ (mod N) (thmA §3). Give each tree node v an exponent ε_v ∈ Z: a root prime ℓ gets +v_ℓ(u₀) or
 −v_ℓ(v₀); a child of v gets −ε_v times its valuation in v's *rational value* (n_v := |G(P_v)|/q for a rational
 target, |G(P_v)| for an algebraic one) or in v's *element* z_{P_v} (algebraic children). Then
   r² ≡ q_row·ψ(Z_row) (mod N),  Z_row := ∏_v z_{P_v}^{ε_v},
-with q_row ∈ Q^× supported on −1, g₁, t and primes ≤ B, and the ideal of Z_row supported on first-degree primes of
-norm ≤ B and on primes dividing D. *Proof.* Induction on the number of expanded nodes, with the invariant
+with q_row = ±(g₁/t)^{E_row}·(a B-smooth rational number), E_row := Σ_v ε_v over the expanded nodes (its parity is
+thmA's single parity column), and the ideal of Z_row supported on first-degree primes of norm ≤ B and on primes
+dividing D (the latter handled by lv6's group H). Every algebraic child is a *simple* degree-one prime: p ∤ D gives
+p ∤ [O_K : Z[α]], and with gcd(a, b) = 1, p ∤ b the only prime above p containing a − bα is (p, a·b^{−1}). *Proof.* Induction on the number of expanded nodes, with the invariant
 "r² ≡ (product of open targets and closed factors) mod N". Expanding a rational target q with exponent ε uses
 q = σn_v^{−1}G(P) ≡ σg₁t^{−1}ψ(z_P)/n_v, which removes q^ε, adds z_P^ε to Z and n_v^{−ε} to the rational side; the
 algebraic primes of z_P^ε become open with exponents ε·v_𝔭(z_P), and the rational primes of n_v^{−ε} become open.
@@ -407,7 +446,7 @@ character primes do not divide atoms (Lemma X_ERH).
 
 **Lemma TS (tree size) [proved].** In any field, a DESC tree has depth ≤ ⌈log(b₁Q/(bE))/log(1/λ)⌉ + 1 = O(log t)
 (children of a target e^z are ≤ e^{λz}, and targets are > B) and each node has ≤ 2·(log|F(P)| + log|G(P)|)/log B
-= O(t/E) children, so ≤ e^{O((log t)²)} = e^{o(E)} nodes. The box has ≤ 5e^{2sE} points. (codex (30).)
+= O(t/E) children, so ≤ e^{O((log t)²)} = e^{o(E)} nodes. The box has ≤ (2e^{sE} + 1)² points. (codex (30).)
 
 **Lemma T_multi (transcript invariance for adaptive multi-level trees) [proved].** Every exposed quantity of NEST
 (field, R_i, (u₀, v₀), canonical factorisations returned by recursive calls, all box scans, all failed and
@@ -430,9 +469,10 @@ trivial gcd fresh rows are drawn, as in lv6 §3.7.) ∎
   products of k distinct primes of 𝒫 (≤ (2Y)^k ≤ X, 2X² < N) gives Pr[accept] ≥ |𝒰|²/(2φ(N)) ≥ (|𝒫|/k)^{2k}/(2N)
   ≥ exp(−2k log(4k log Y) − O(1)) = e^{−(1/b₁ + o(1))E}, using 2k log(4k log Y) = (D′/b₁)(log t)(1 + o(1)).
   Each attempt costs two recursive calls on integers ≤ √(2N).
-- **Descent.** Per accepted row: e^{o(E)} nodes (Lemma TS), each scanning ≤ 5e^{2sE} points, each point costing two
-  recursive factorisations of integers ≤ max(|F(P)|, |G(P)|) ≤ N^{τ_F + o(1)}, since
-  log|F(P)| ≤ log(d + 1) + κQ + d log V ≤ (δD′/2)(b₁Q + 2sE) + O(Q) = τ_F·t + O(Q) and log|G(P)| = O(Q).
+- **Descent.** Per accepted row: e^{o(E)} nodes (Lemma TS), each scanning ≤ (2e^{sE} + 1)² points, each point
+  costing two recursive factorisations of integers ≤ max(|F(P)|, |G(P)|) ≤ N^{τ_F + o(1)}, since with
+  ‖P‖_∞ ≤ 3e^{sE}q: log|F(P)| ≤ log(d + 1) + κQ + d(z + sE + log 3) ≤ δD′(b₁Q + sE) + O(Q) = τ_F·t + O(Q) and
+  log|G(P)| ≤ κQ + z + sE + O(1) = O(Q).
 - **Linear algebra.** #columns ≤ (d + 2)π(B) + O(d²t) = e^{(b+o(1))E}; row weight e^{o(E)}; Wiedemann/KS
   e^{(2b+o(1))E}; Lemma SQ's Hensel lifting to e^{(b+o(1))E} digits (exponents ≤ e^{O(log² t)}): e^{(b+o(1))E}·poly.
   Expected number of LV6 rounds ≤ 2 (Lemma T_multi).
@@ -445,18 +485,21 @@ trivial gcd fresh rows are drawn, as in lv6 §3.7.) ∎
 - **What AD replaces.** FM, LD*, Lemma 8.5′, Kern, Prop PZ and Theorem K (every target is good, so no density γ is
   needed and the 2^ω loss is absent by Lemma S″). The precision problem of recurse §3.3 disappears. ERH is used only in
   Lemma X_ERH (and could be replaced by LV §6).
-- **AD is the standard heuristic.** Under the usual "values behave like random integers" model a target has
-  ≈ e^{(2s − φ/3)E} good points with φ = (κ_F + m₀)/(λb) + δ/(2λ) + δs/(λb) (recurse §3.4 / codex (29)), so failure
-  probability exp(−e^{Ω(E)}) per target beats the union bound over e^{b₁Q} targets whenever 2s > φ/3
-  (`barrier.ad_heuristic_ok`). Example: δ = b₁ = 1, λ = 1/2, b = 4, κ_F = m₀ = 1, s = 1/2 satisfies the heuristic and
-  gives c_NR ≈ 24.2 (unoptimised; `barrier.nr_constant`).
+- **AD is the standard heuristic (reduced-basis form).** Under the usual "values behave like random integers of
+  their size" model, using the worst-case sizes log|F(P)| ≤ κ_FQ + d(z + sE) and log|G(P)/q|, log|G(P)| ≤ m₀Q + sE + O(z),
+  every target (regular or not) has ≈ e^{(2s − φ/3 + o(1))E} good points with
+  φ = (κ_F + m₀)/(λb) + δ/λ + δs/(λb) (the δ/λ term is δ/(2λ) for regular lattices, recurse §3.4 / codex (29)),
+  so the failure probability exp(−e^{Ω(E)}) per target beats the union bound over e^{O(Q)} targets whenever
+  2s > φ/3 (`barrier.ad_heuristic_ok`). Example: δ = 1/2, b₁ = 1 (τ_F = 1/2), λ = 1/2, b = 4, κ_F = 4, m₀ = 2 (design
+  (a‴) with M ≈ H ≈ N^{1/(d+1)}, so log M ≈ Q/δ), s = 3/4 satisfies the heuristic and gives c_NR ≈ 26.7
+  (unoptimised; `barrier.nr_constant`).
 - **AD is exactly what §§3–5 say we cannot prove.** It is a pointwise-in-the-field statement about smooth values of
   one binary form of degree d ≍ D′ on special-q lattices at L-scale. Averaging over 𝔉 cannot certify it by moments
   (§6: Θ(1) relative variance across fields; overdetermination for joint statements).
 - AD for *every* target is stronger than needed (only targets that occur matter), but any weaker endogenous version
   runs into Prop SI(i).
 
-## 9. Experiment E1 (pre-registered `7c17ffb`, Addendum A before the main run)
+## 9. Experiment E1 (pre-registered `7c17ffb`, Addendum A `e432e59` before the main run)
 
 Toy endogeneity test: d = 3, 44-bit balanced semiprimes (seeds 1–12), M = 2^{20}, B = 2^{10}, Y = 2^{14}, S = 32,
 400 parent nodes per instance (rational ℓ ≈ 2^{22}, first box point with Y-smooth cofactors). D1 = one-step
@@ -511,13 +554,25 @@ factor 1.25); independent field A′ for rational children. 145 s total.
   not found (the literature agent suggests one may follow from Harper's Prop. 1 + GRH; unchecked, not used).
 - **Family-averaged GRH.** Pierce–Turnage-Butterbaugh–Wood (Invent. Math. 2020), Lemke Oliver–Thorner–Zaman (2024):
   fixed degree, fixed Galois group only.
-- No prior statement of Theorem AF's two-sided form, of Prop SI, or of Theorem NR was found by us; Prop SI(i) is also in
-  codex nested_1 ((19)), found independently.
+- **Theorem AF is not new as an identity:** dBPW (46) already states the two-sided bracket [e^{−1/4}, e^{1/4}], and
+  (48) writes the weight with the upper incomplete Gamma function (their Remark 7.2 notes the 1/3 can be pushed toward
+  1). What we add is reading it as an expectation over v ~ Gamma(r*, 1), i.e. as a law of the cofactor norm, and the
+  consequence for NFS fields. Earlier one-sided relatives: de Boer–Ducas–Pellet-Mary–Wesolowski (CRYPTO 2020), de
+  Boer's thesis (2022).
+- Prop SI: no prior statement found (it is elementary and may be folklore); Prop SI(i) is also in codex nested_1
+  ((19)), found independently.
+- Theorem NR: no prior statement with a descent hypothesis found. Closest analogues: LV Thm 2.3 (a hypothesis ⇒
+  L[1/3] factoring, for p ≡ q ≡ 3 mod 4 only), EGT's main theorem (Heuristics 5–6, including descent, ⇒ L(1/3) in
+  Jacobians), Buhler–Lenstra–Pomerance 1993 (L[1/3] under explicit heuristics). An ETNFS record paper (arXiv
+  2212.04999) calls termination of the descent an open problem.
+- GKZ (Trans. AMS 2018) is rigorous only for fields admitting a suitable model; the KW L(α) consequence is stated in
+  their introduction, not as a numbered corollary. de la Bretèche–Drappeau: JEMS 2020. Tenenbaum–Wu treat X² + Y²;
+  the extension to all binary quadratic forms is BBDT's remark.
 
 ## 11. Answers to the task, item by item
 
 1. dBPW: §1. Two-sided values with a shared rational side are outside its scope; its level structure is a single
-   sampling step; its cofactor scale is ≥ √|Δ_K| (Theorem AF), N^{Θ(1)} for factoring fields.
+   sampling step; its cofactor scale is ≥ √|Δ_K| (Theorem AF), typically N^{Θ(1)} for our fields (log|Δ_K| = O(t) is proved; a matching lower bound is not).
 2. Designs: (a) ideal-class descent on the algebraic side with a randomised rational side: the rational side is not
    independent of the field once ψ is fixed (g₀ ≡ mg₁ mod N; codex (20)), and the algebraic step is dBPW-type
    (Theorem AF); (b) inductive good sets: well defined (codex (17)) but their density is exactly the open statement,
