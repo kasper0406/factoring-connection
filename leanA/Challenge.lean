@@ -568,6 +568,17 @@ theorem corollaryA (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (hc : 1 / Rea
         ∃ K : ℝ, ∀ N : ℕ, 2 ≤ N → M.factorCost N ≤ K * LN (1 / 2) c N := by
   sorry
 
+/-- MAIN. [pp] Corollary cor:main, uniform-in-tuple form: for every `c` and every admissible tuple with
+`(1+θ)/√2 < c` whose hypotheses hold, FACTOR runs in expected time `O(L_N[1/2, c])` (existence of such
+tuples for every `c > 1/√2` is `exists_admissible_cA_lt`). -/
+theorem corollaryA_forall (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (P : Params)
+    (hP : P.Admissible) (hlt : P.cA < c)
+    (hFM : FirstMoment P ((P.θ : ℝ) / Real.sqrt 2)) (hLD : SecondMoment P ((P.θ : ℝ) / Real.sqrt 2))
+    (M : CostModelA P) (hM : CostInterfaceA P ((P.θ : ℝ) / Real.sqrt 2) M)
+    (hLP : LenstraPomerance M.TLP) :
+    ∃ K : ℝ, ∀ N : ℕ, 2 ≤ N → M.factorCost N ≤ K * LN (1 / 2) c N := by
+  sorry
+
 /-- MAIN. [pp] Theorem thm:RA (Theorem RA), conditional form. For admissible `(d, k, μ, η₀)` and any
 fixed `a > 0`, the expected time of FACTOR_rec[a] is `≤ L_N[1/2, c(a) + o(1)]`,
 `c(a) = max(a + θ/(2a), (2+√2)a)`. -/
@@ -590,7 +601,10 @@ theorem theoremRA_opt (P : Params) (hP : P.Admissible) (hCEP : CEP) (hRS : Rosse
 `theoremRA_opt` hold for the portfolio tuples `portfolioParams j` (`j ≥ 1`), and the restart
 schedule's expected time `T` satisfies, for each `j ≥ 1`, `T(N) ≤ K_j (log N)^{K_j} F_j(N)`
 eventually ([pp] proof of Corollary cor:P: Markov's inequality per phase). Then
-`T(N) ≤ L_N[1/2, o(1)]`. -/
+`T(N) ≤ L_N[1/2, o(1)]`. The restart-schedule/Markov argument itself is the hypothesis `hport`
+(`restart_series` checks only its series); the paper's rational `a_j ≈ a*_j` (for computability) is
+replaced by the exact `a*_j`; the second claim of cor:P (a `d = 9` schedule over `k` reaching
+`0.9192… + o(1)`) is not formalised. -/
 theorem corollaryP (hCEP : CEP) (hRS : RosserSchoenfeld)
     (hFM : ∀ j : ℕ, 1 ≤ j → FirstMoment (portfolioParams j)
       (Real.sqrt ((Real.sqrt 2 - 1) * (portfolioParams j).θ / 2)))
@@ -621,7 +635,8 @@ theorem theoremU_assembly (F Pc D : ℝ → ℝ) (a s σ : ℝ) (ha : 0 < a) (hs
   sorry
 
 /-- MAIN (ASSEMBLY STEP ONLY; Theorem DL itself is NOT formalised; its relation supply at prime modulus is not covered by `FirstMoment`/`SecondMoment`, which are restricted to split inputs). [pp] Theorem thm:DL, assembly step: with `B = L^a`, if the expected time is
-`≤ (M_rows C_trial + T_post)/p` with `M_rows ≤ L^{a+o(1)}`, `C_trial ≤ L^{max(1/√2, θ/(2a))+o(1)}`,
+`≤ K (log N)^K (M_rows C_trial + T_post)/p` with `M_rows ≤ L^{a+o(1)}`,
+`C_trial ≤ L^{max(a, 1/√2, θ/(2a))+o(1)}` (the `a` from batch smoothness, Prop. prop:BS),
 `T_post ≤ L^{3a+o(1)}` and `p ≥ L^{−o(1)}` (all INTERNAL inputs, not formalised here), then the
 expected time is `≤ L_p[1/2, max(a + 1/√2, a + θ/(2a), 3a) + o(1)]`; at the optimal `a` this is
 `c_DL(θ)` (`costExpDL_min`). -/
@@ -647,7 +662,8 @@ namespace FactoringA
 
 open Real Finset Filter Topology
 
-/-- MAIN. [pp] Lemma lem:E1 (orthogonality): for `q ≥ 1` and `(a, q) = 1`,
+/-- MAIN. [pp] Lemma lem:E1 (orthogonality; standalone — Lemma 8.5′ itself and its use in
+`FirstMoment` are not formalised): for `q ≥ 1` and `(a, q) = 1`,
 `E(z, y; q, a) = φ(q)⁻¹ ∑_{χ ≠ χ₀} χ̄(a) Ψ(z, y; χ)`, where `χ̄(a) = χ(a⁻¹)`. -/
 theorem orthogonality_E1 (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Coprime a q) :
     ((Eerr z y q a : ℝ) : ℂ) =
@@ -661,7 +677,8 @@ theorem abs_Eerr_le_DeltaAll (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Co
     |Eerr z y q a| ≤ DeltaAll z y q := by
   sorry
 
-/-- MAIN. [pp] Lemma lem:E2 (lift averaging), exact form: let `ℓ > y` be prime, `s ≥ 1`,
+/-- MAIN. [pp] Lemma lem:E2 (lift averaging; the exact identity behind Part 1 of Lemma 8.5′;
+standalone), exact form: let `ℓ > y` be prime, `s ≥ 1`,
 `ℓ ∤ s`, `t = ℓ s`, `(r, t) = 1`. Then
 `E(z, y; t, r) − E(z, y; s, r)/(ℓ − 1) = φ(t)⁻¹ ∑_{χ mod t, ℓ ∣ cond χ} χ̄(r) Ψ(z, y; χ)`. -/
 theorem lift_averaging_E2_eq (z y : ℝ) (ℓ s t r : ℕ) (hℓ : ℓ.Prime) (hyℓ : y < ℓ)

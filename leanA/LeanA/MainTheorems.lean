@@ -542,6 +542,39 @@ theorem corollaryA (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (hc : 1 / Rea
       le_mul_of_one_le_left (by linarith) (le_max_left _ _)
     linarith
 
+/-- MAIN. [pp] Corollary cor:main, uniform-in-tuple form: for every `c` and every admissible tuple with
+`(1+θ)/√2 < c` whose hypotheses hold, FACTOR runs in expected time `O(L_N[1/2, c])` (existence of such
+tuples for every `c > 1/√2` is `exists_admissible_cA_lt`). -/
+theorem corollaryA_forall (hCEP : CEP) (hRS : RosserSchoenfeld) (c : ℝ) (P : Params)
+    (hP : P.Admissible) (hlt : P.cA < c)
+    (hFM : FirstMoment P ((P.θ : ℝ) / Real.sqrt 2)) (hLD : SecondMoment P ((P.θ : ℝ) / Real.sqrt 2))
+    (M : CostModelA P) (hM : CostInterfaceA P ((P.θ : ℝ) / Real.sqrt 2) M)
+    (hLP : LenstraPomerance M.TLP) :
+    ∃ K : ℝ, ∀ N : ℕ, 2 ≤ N → M.factorCost N ≤ K * LN (1 / 2) c N := by
+  have hc0 : 0 < c := lt_trans (lt_trans (by positivity) (cA_gt_inf P hP)) hlt
+  have hA := theoremA P hP hCEP hRS hFM hLD M hM hLP (c - P.cA) (by linarith)
+  obtain ⟨N₁, hN₁⟩ := eventually_atTop.1 hA
+  set K₀ := ∑ n ∈ Finset.range N₁, |M.factorCost n| with hK₀
+  have hK₀0 : 0 ≤ K₀ := Finset.sum_nonneg (fun _ _ => abs_nonneg _)
+  refine ⟨max 1 K₀, fun N hN => ?_⟩
+  have hN1 : (1:ℝ) ≤ N := by exact_mod_cast (by omega : 1 ≤ N)
+  have hL1 : 1 ≤ LN (1 / 2) c N := one_le_LN _ _ hN1 hc0.le
+  by_cases hNN : N < N₁
+  · have h1 : M.factorCost N ≤ |M.factorCost N| := le_abs_self _
+    have h2 : |M.factorCost N| ≤ K₀ :=
+      Finset.single_le_sum (f := fun n => |M.factorCost n|) (fun _ _ => abs_nonneg _)
+        (Finset.mem_range.2 hNN)
+    have h3 : K₀ ≤ max 1 K₀ := le_max_right _ _
+    have h4 : max 1 K₀ ≤ max 1 K₀ * LN (1 / 2) c N :=
+      le_mul_of_one_le_right (le_trans zero_le_one (le_max_left _ _)) hL1
+    linarith
+  · push Not at hNN
+    have h1 := hN₁ N hNN
+    rw [show P.cA + (c - P.cA) = c by ring] at h1
+    have h4 : LN (1 / 2) c N ≤ max 1 K₀ * LN (1 / 2) c N :=
+      le_mul_of_one_le_left (by linarith) (le_max_left _ _)
+    linarith
+
 /-! ## Theorem RA (recursive shape test) -/
 
 /-- Unpacking the interface (the only place that depends on its field layout). -/
@@ -706,7 +739,10 @@ theorem theoremRA_opt (P : Params) (hP : P.Admissible) (hCEP : CEP) (hRS : Rosse
 `theoremRA_opt` hold for the portfolio tuples `portfolioParams j` (`j ≥ 1`), and the restart
 schedule's expected time `T` satisfies, for each `j ≥ 1`, `T(N) ≤ K_j (log N)^{K_j} F_j(N)`
 eventually ([pp] proof of Corollary cor:P: Markov's inequality per phase). Then
-`T(N) ≤ L_N[1/2, o(1)]`. -/
+`T(N) ≤ L_N[1/2, o(1)]`. The restart-schedule/Markov argument itself is the hypothesis `hport`
+(`restart_series` checks only its series); the paper's rational `a_j ≈ a*_j` (for computability) is
+replaced by the exact `a*_j`; the second claim of cor:P (a `d = 9` schedule over `k` reaching
+`0.9192… + o(1)`) is not formalised. -/
 theorem corollaryP (hCEP : CEP) (hRS : RosserSchoenfeld)
     (hFM : ∀ j : ℕ, 1 ≤ j → FirstMoment (portfolioParams j)
       (Real.sqrt ((Real.sqrt 2 - 1) * (portfolioParams j).θ / 2)))
@@ -760,7 +796,8 @@ theorem theoremU_assembly (F Pc D : ℝ → ℝ) (a s σ : ℝ) (ha : 0 < a) (hs
   exact mt_lbound_of_K (2 / 5) (by norm_num) (by norm_num) F _ key
 
 /-- MAIN (ASSEMBLY STEP ONLY; Theorem DL itself is NOT formalised; its relation supply at prime modulus is not covered by `FirstMoment`/`SecondMoment`, which are restricted to split inputs). [pp] Theorem thm:DL, assembly step: with `B = L^a`, if the expected time is
-`≤ (M_rows C_trial + T_post)/p` with `M_rows ≤ L^{a+o(1)}`, `C_trial ≤ L^{max(1/√2, θ/(2a))+o(1)}`,
+`≤ K (log N)^K (M_rows C_trial + T_post)/p` with `M_rows ≤ L^{a+o(1)}`,
+`C_trial ≤ L^{max(a, 1/√2, θ/(2a))+o(1)}` (the `a` from batch smoothness, Prop. prop:BS),
 `T_post ≤ L^{3a+o(1)}` and `p ≥ L^{−o(1)}` (all INTERNAL inputs, not formalised here), then the
 expected time is `≤ L_p[1/2, max(a + 1/√2, a + θ/(2a), 3a) + o(1)]`; at the optimal `a` this is
 `c_DL(θ)` (`costExpDL_min`). -/

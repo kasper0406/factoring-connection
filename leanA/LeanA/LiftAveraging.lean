@@ -176,7 +176,8 @@ lemma PsiCop_mul_prime (z y : ℝ) {ℓ s : ℕ} (hℓ : ℓ.Prime) (hyℓ : y <
 
 /-! ## Main theorems -/
 
-/-- MAIN. [pp] Lemma lem:E1 (orthogonality): for `q ≥ 1` and `(a, q) = 1`,
+/-- MAIN. [pp] Lemma lem:E1 (orthogonality; standalone — Lemma 8.5′ itself and its use in
+`FirstMoment` are not formalised): for `q ≥ 1` and `(a, q) = 1`,
 `E(z, y; q, a) = φ(q)⁻¹ ∑_{χ ≠ χ₀} χ̄(a) Ψ(z, y; χ)`, where `χ̄(a) = χ(a⁻¹)`. -/
 theorem orthogonality_E1 (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Coprime a q) :
     ((Eerr z y q a : ℝ) : ℂ) =
@@ -209,7 +210,8 @@ theorem abs_Eerr_le_DeltaAll (z y : ℝ) (q a : ℕ) (hq : 1 ≤ q) (ha : Nat.Co
   rw [norm_mul]
   exact mul_le_of_le_one_left (norm_nonneg _) (DirichletCharacter.norm_le_one _ _)
 
-/-- MAIN. [pp] Lemma lem:E2 (lift averaging), exact form: let `ℓ > y` be prime, `s ≥ 1`,
+/-- MAIN. [pp] Lemma lem:E2 (lift averaging; the exact identity behind Part 1 of Lemma 8.5′;
+standalone), exact form: let `ℓ > y` be prime, `s ≥ 1`,
 `ℓ ∤ s`, `t = ℓ s`, `(r, t) = 1`. Then
 `E(z, y; t, r) − E(z, y; s, r)/(ℓ − 1) = φ(t)⁻¹ ∑_{χ mod t, ℓ ∣ cond χ} χ̄(r) Ψ(z, y; χ)`. -/
 theorem lift_averaging_E2_eq (z y : ℝ) (ℓ s t r : ℕ) (hℓ : ℓ.Prime) (hyℓ : y < ℓ)

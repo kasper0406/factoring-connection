@@ -56,6 +56,7 @@ import LeanA
 #print axioms FactoringA.descent_supply
 #print axioms FactoringA.theoremA
 #print axioms FactoringA.corollaryA
+#print axioms FactoringA.corollaryA_forall
 #print axioms FactoringA.theoremRA
 #print axioms FactoringA.theoremRA_opt
 #print axioms FactoringA.corollaryP
