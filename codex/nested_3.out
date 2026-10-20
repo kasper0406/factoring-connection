@@ -1,0 +1,40 @@
+Read both documents in full. The principal NR implementation gaps are repaired, but “all fixes applied” overstates the revision.
+
+1. **PARTLY** — AF’s comparison and Gamma correction are present; §2’s theorem label and §10 still call it a cofactor-norm law. The “actual law” wording also needs the comparison factors.
+2. **FIXED** — Corollary AF explicitly assumes the discriminant lower bound, smooth-density upper bound, and specified uniform box sampler.
+3. **PARTLY** — Constrained resampling and freshness qualifications are acknowledged, but the compulsory single-field-component conclusion exceeds RW. FB also needs γ integral at 𝔮.
+4. **PARTLY** — R2 is properly labeled a model computation; its window proof still needs the range argument described below.
+5. **FIXED** — The false children lower bound is withdrawn; distinct-child counts are explicitly model assumptions, with multiplicity and thin-tree caveats.
+6. **PARTLY** — §6 correctly narrows backtracking and variance claims, but §8 again asserts that field moments cannot certify AD.
+7. **FIXED** — ζ_K, rejected-ideal multiplicity, Chebotarev margin, and character-prime bit lengths are corrected.
+8. **FIXED** — Uniform expected sampling cost and positive mass on factor exits or admissible AD-good fields are explicit.
+9. **FIXED** — Reduced-basis boxes remove the identified geometric defect; target cofactors and allowed prime bounds are specified.
+10. **FIXED** — RW’s exponent notation, multiplicity bound, and explicit denominator-square correction are repaired; TS and transcript invariance remain valid.
+11. **FIXED** — Reusing a character prime repairs Hensel-unit selection; the split constant and resulting cost arithmetic are corrected.
+12. **PARTLY** — Rate labels, aggregate-independence qualification, and field-cluster caveat are fixed. “So it is not endogeneity” still exceeds the descriptive evidence.
+13. **PARTLY** — The Verdict is narrower, but still overstates component necessity and universal parameter-budget consequences.
+14. **PARTLY** — The substantive sampler, Hensel, box, descent-exponent, and denominator repairs are applied; residual R2 and scope issues remain.
+
+**Theorem NR: CORRECT WITH FIXES.** The intended conditional implication now closes. Admissibility belongs to the AD event; reduced-coordinate enumeration has the claimed cost; children remain admissible targets; character primes avoid every accepted atom and the derivative’s bad primes; denominator clearing preserves rows with the stated square correction. The tree, restart, split, and recursion estimates give
+\[
+c_{\rm NR}=\max\!\left\{2b,\frac{b+1/b_1}{1-2^{-1/3}},
+\frac{b+2s}{1-(\delta b_1)^{1/3}}\right\},
+\]
+and the example gives approximately \(26.6603\).
+
+One cost statement needs precision: LV6′ should explicitly preserve SQ’s **quasi-linear dependence on the expanded input/precision**, multiplied by \(e^{o(E)}\) overhead. Literal total SQ cost \(e^{o(E)}\), as its present wording suggests, cannot describe an \(e^{(b+o(1))E}\)-bit computation. The cited lv6 SQ bound supplies the intended interpretation. I find no remaining structural NR gap under that interpretation. The heuristic justification of AD is separate from this conditional proof.
+
+**R2: CORRECT WITH FIXES at the exponent level.** Charging exceptional smooth jumps fixes the old prime-factor-counting error. However, “a feasible node above W” does not immediately have a cofactor of log-size ≥ t/8. Supply the missing argument: algebraic feasibility gives
+\[
+\log H_f+(d/2)z=O(\Lambda U),
+\]
+hence, for \(d\ge2\), \(z=O(\Lambda U)=o(t)\). For \(z\gg A\), the low-\(H_g\) alternative is impossible, so \(H_g\) has logarithmic size proportional to \(t\), and M2 then gives the required large rational cofactor. Jumping below \(A\) costs beyond every fixed \(L[\alpha]\) constant because
+\[
+\frac{t/A}{U}\asymp\frac{t^2}{\Lambda^2U^3}\longrightarrow\infty
+\quad(\alpha<2/5).
+\]
+Make contraction explicit when calling window targets infeasible, and replace exact endpoint/“iff” language by constant-adjusted asymptotic inequalities. This establishes the advertised **model** floor.
+
+**Constrained resampling:** its displayed algebra is correct. RW requires ideal cancellation within a common field for the particular product it constructs. It does **not** prove that every certificate construction must keep an entire historical component in one field or retain every evaluated point. Those conclusions require an additional restriction to that representation, excluding transfer certificates, separate field blocks, and recombination. Retaining all points is a sufficient construction with a parameter budget, not a universal necessity derived from RW.
+
+**Remaining Verdict overclaims:** remove “every argument we know” needing more points than coefficients unless expressly restricted to the typical-factorisation model. An algebraic child’s existence does not establish a wide component. Likewise, §8’s “averaging … cannot certify it by moments” contradicts §6’s correct qualification: raw relative variance defeats the stated unconditioned estimate, not conditional or higher moments. Prop SI excludes density-only arguments, not every weaker endogenous supply hypothesis. Retain the defensible conclusion: this work proves no ERH-only improvement below \(1/2\).

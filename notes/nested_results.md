@@ -28,10 +28,14 @@ can say precisely:
   the field discriminant, and special fields such as x^d − 2 show none holds in general. Under the usual
   smooth-ideal heuristic, this sampler therefore costs L[1/2] per descent step and gives no contraction.
 - The obstruction is not ERH-shaped. In the standard size model, a descent below L[2/5] has algebraic children:
-  prime ideals of the field it works in. The row algebra closes such a child only by an element of the same field, so
-  a whole "algebraic component" of the tree shares one field. Every argument we know that averages over the field
-  then needs joint control of one polynomial's values at more points than the field has free coefficients. No such
-  tool exists, with or without ERH. This is a barrier for the known methods, not an impossibility theorem.
+  prime ideals of the field it works in. In our row algebra (Lemma RW) such a child is closed by an element of the
+  same field, so a whole "algebraic component" of the tree shares one field. Other certificate constructions
+  (transfer certificates, separate field blocks, recombination) are not excluded.
+  - In the typical-factorisation model these components are wide.
+  - The independence-over-the-field moment arguments we know then need joint control of one polynomial's values at
+    more points than the field has free coefficients.
+  - No such tool exists, with or without ERH.
+  This is a barrier for the known methods, not an impossibility theorem.
 - Under ERH plus two explicit hypotheses the L[1/3] algorithm is rigorous (Theorem NR, conditional):
   - AD, a strong all-target relation-supply statement in reduced-basis boxes;
   - LV6′, lv6's remaining lemmas at growing degree with stated costs, plus an admissible-field sampler.
@@ -190,9 +194,9 @@ poly(L_{|Δ|}(1/2), L_{n^n}(2/3), size, ρ_K^{cut}, …). One sampling step, rep
   discriminant of the random fields. dBPW's certified cofactor scale is then N^{3ζ/2+o(1)} when log|Δ_K| = ζt
   (codex (14), with b = 2 the extra terms are o(t) at n ≍ D′).
 
-## 2. Theorem AF: the cofactor law of Arakelov-uniform sampling
+## 2. Theorem AF: a two-sided comparison for Arakelov-uniform sampling
 
-**Theorem AF [proved; it is dBPW's (46)–(48), restated as a law of the cofactor norm].** Let K have
+**Theorem AF [proved; it is dBPW's (46)–(48), restated as an expectation over an auxiliary Gamma variable].** Let K have
 r* := r₁ + r₂ − 1 ≥ 1 (any field but Q and imaginary quadratic ones), trivial modulus. Let the Arakelov class of 𝔞 ∈ Div⁰_K be uniform on Pic⁰_K, let
 ρ ≥ 8n²Γ_K|Δ_K|^{1/(2n)}, and let α be uniform in Exp(𝔞) ∩ ρB_∞. For any set 𝒮 of integral ideals put
 δ̃_𝒮(x) := |𝒮(x)|/(ρ_K x), X := ρ^n. Then
@@ -219,8 +223,8 @@ E_𝔞 p_{𝔞,𝔠} ∈ [e^{−1/4}, e^{1/4}]·C(N𝔠)/(ρ_K X), C(N) := (log(
   succeeds as often as the cumulative density of 𝒮 among ideals of norm ≤ Xe^{−v}, averaged over v.* No cleverness in choosing 𝒮 or ρ changes the norm scale X ≥ (8n²)^n√|Δ_K|.
 - For 𝒮 = {N𝔠 ≤ T}: Pr[N(cofactor) ≤ T] ≤ e^{1/4}(n log ρ)^{r*}·|{𝔠 : N𝔠 ≤ T}|/(r*!·ρ_K·ρ^n) (from
   C ≤ (n log ρ)^{r*}/r*!).
-- **AF is a comparison, not a law of the cofactor norm (codex nested_2, issue 1).** The actual law weights each ideal
-  𝔠 by C(N𝔠)/(ρ_K X). In the uniform ideal-count model |𝒮(u)| = ρ_K u, the log-norm deficit log(X/N𝔠) has the
+- **AF is a comparison, not a law of the cofactor norm (codex nested_2, issue 1).** Up to the same e^{±1/4} factors, the actual
+  output law gives each ideal 𝔠 the weight C(N𝔠)/(ρ_K X). In the uniform ideal-count model |𝒮(u)| = ρ_K u, the log-norm deficit log(X/N𝔠) has the
   Gamma(r* + 1, 1) density, so Pr[N𝔠 ≤ Xe^{−V}] ≈ e^{−V}Σ_{j≤r*}V^j/j! (`barrier.af_weight`). The auxiliary
   variable v ~ Gamma(r*, 1) in AF is not that deficit; the extra exponential comes from the cumulative cutoff. This
   changes nothing at L-scale.
@@ -284,7 +288,7 @@ obstruction but proves nothing two-sided.
 
 **Lemma FB (algebraic children are field-bound) [proved].** Let K₁ ⊂ K₂ with [K₂ : K₁] = e ≥ 2, K₂ = K₁(γ), and let
 𝔮 ⊂ O_{K₁} be a prime of residue field F_q such that γ − c ∉ 𝔮O_{K₂} for every c ∈ Z. If a, b ∈ Z and
-a − bγ ∈ 𝔮O_{K₂}, then q | a and q | b. *Proof.* O_{K₂}/𝔮O_{K₂} is an F_q-algebra in which 1 and γ̄ are F_q-linearly
+a − bγ ∈ 𝔮O_{K₂}, then q | a and q | b (γ is assumed integral at 𝔮). *Proof.* O_{K₂}/𝔮O_{K₂} is an F_q-algebra in which 1 and γ̄ are F_q-linearly
 independent (otherwise γ ≡ c mod 𝔮O_{K₂} for some c ∈ Z), so ā − b̄γ̄ = 0 forces ā = b̄ = 0. ∎ So degree-one
 elements of an extension cannot carry the whole extended ideal 𝔮O_{K₂}; they can contain one prime 𝔔 | 𝔮, which
 leaves the other primes above 𝔮 uncancelled (codex (23): passing to the norm q loses the conjugates). In unrelated
@@ -308,12 +312,15 @@ needed; and the bound must hold conditionally on the history that selected q.
 and put L₀(x, y) := b₀x − a₀y. For any binary form H of degree d − 2, F_H := F + G·L₀·H satisfies F_H(P₀) = F(P₀) and
 F_H(g₀, g₁) = F(g₀, g₁) ≡ 0 (mod N). So the parent's relation, its residue identity and its children's labels
 (p, a₀/b₀ mod p) survive in the new field K_H, whose remaining coefficients are fresh randomness. With k retained points
-one uses ∏L_{P_i} and H of degree d − 1 − k. This does make algebraic labels exogenous relative to H. But Lemma RW closes
-an algebraic target only by an element *of the field in which it was opened*. So all nodes linked by algebraic edges
-(an *algebraic component*: an algebraic target, the element that opened it, the elements that close it, and so on,
-down to rational targets) must live in one field, and every point of the component must be retained. The budget
-d + 1 − k therefore applies to a whole algebraic component, which is the parameter budget of Lemma OD again. Rational
-targets cut components (Prop R). This route is not excluded by our arguments for components with fewer than d points.
+one uses ∏L_{P_i} and H of degree d − 1 − k. This does make algebraic labels exogenous relative to H. In the row
+representation of Lemma RW an algebraic target is cancelled by an element *of the field in which it was opened*. So, *in
+that representation*, all nodes linked by algebraic edges (an *algebraic component*: an algebraic target, the element
+that opened it, the elements that close it, and so on, down to rational targets) live in one field. Re-randomising that
+field by resampling then means retaining every point of the component, and the budget d + 1 − k applies to the whole
+component: the parameter budget of Lemma OD again. Rational targets cut components (Prop R). This is a sufficient
+construction with a budget, not a proof that every certificate design must work this way (codex nested_3): transfer
+certificates, separate field blocks and recombination are outside it. Components with fewer than d points are not
+excluded by our arguments.
 
 **Prop R2 (no gain without algebraic children) [model computation with explicit premises].** Premises:
 - (M1) the *counting heuristic*: usable pairs (f, g) with a common root mod N satisfy (d + 1)log H_f + 2 log H_g ≳ t
@@ -327,15 +334,18 @@ targets cut components (Prop R). This route is not excluded by our arguments for
 Each node may use its own field (any d, H_f, H_g), but no node may have algebraic children (algebraic values B-smooth).
 Write Λ := log B and U for the largest u with u log u ≤ Λ (so U ≍ Λ/log t); a node costs L[α] only if each of its
 smoothness events has u ≤ U.
-- *Window.* Put A := Λ²U²/t and W := t/(8U). If log H_g ≤ t/4, (M1) gives log H_f ≥ t/(2(d + 1)), so
-  log H_f + (d/2)z ≳ √(tz), and B-smoothness within budget forces z ≲ A. If log H_g > t/4 and z ≤ t/4, the rational
-  cofactor has log-size ≥ t/8, so its child bound y satisfies y ≥ t/(8U) = W. So targets with z ∈ (A, W) are
-  infeasible.
+- *Window.* Put A := Λ²U²/t and W := t/(8U) (endpoints up to constant factors; all comparisons below are asymptotic
+  inequalities with adjusted constants). Algebraic feasibility gives log H_f + (d/2)z = O(ΛU), so z = O(ΛU) = o(t)
+  for every feasible node. If log H_g ≤ t/4, (M1) gives log H_f ≥ t/(2(d + 1)), so log H_f + (d/2)z ≳ √(tz), and
+  B-smoothness within budget forces z ≲ A. So for z ≫ A, necessarily log H_g > t/4, and by (M2) with z = o(t) the
+  rational cofactor has log-size ≥ t/4 − z/2 ≥ t/8; its child bound y then satisfies y ≥ t/(8U) = W. Hence a feasible
+  node with z ≫ A has z > y ≥ W: targets with A ≪ z < W are infeasible.
 - *No jump over the window.* For a feasible node above W, requiring *all* children below e^A means that a log-size
-  ≥ t/8 cofactor is e^A-smooth, i.e. u ≥ t/(8A) = t²/(8Λ²U²). That exceeds U exactly when the window is non-empty.
+  ≥ t/8 cofactor is e^A-smooth, i.e. u ≥ t/(8A) = t²/(8Λ²U²), and (t/A)/U ≍ t²/(Λ²U³) → ∞ for α < 2/5, so this
+  costs more than every fixed L[α] constant.
   So, within budget, every node above the window has a child of log-size ≥ A, which is either in the window
   (infeasible) or above it. Leaves are ≤ Λ < A (as α > 1/3). So a finite tree of cost L[α] cannot exist.
-- The window (A, W) is non-empty iff Λ²U³ ≪ t², i.e. 5α < 2.
+- The window is non-empty (W/A → ∞) when Λ²U³ = o(t²), i.e. for α < 2/5.
 So in this model designs without algebraic children have α ≥ 2/5, the one-level floor. Not covered: structured or rare
 polynomial selection outside (M1), atypically small values, designs that keep large columns for recombination,
 absorb bad primes in H, or change the search dimension. None of these is known to give a faster algorithm.
@@ -471,8 +481,9 @@ codex nested_2, issue 8.) AD is a *sufficient strengthening* of the visited-targ
 Cofactors are taken in absolute value and "good" means max(B, q^λ)-smooth with the large primes avoiding D_A.
 
 **Hypothesis LV6′.** lv6's Lemmas C, H, SQ and IR (good primes, residual square-class group, square root in Z[β],
-irreducibility certificate) hold at degree d ≍ D′ with cost e^{o(E)} (polynomial bounds in d and t, except SQ's sign
-enumeration 2^{d−1} = e^{Θ(D′)} = e^{o(E)}), with SQ's Hensel prime taken as below. (UNVERIFIED bookkeeping; the
+irreducibility certificate) hold at degree d ≍ D′ with overheads e^{o(E)}: polynomial bounds in d and t for C, H, IR,
+and for SQ a cost quasi-linear in the size of its expanded input (e^{(b+o(1))E} bits here) times e^{o(E)}, which absorbs
+the sign enumeration 2^{d−1} = e^{o(E)} (codex nested_3); SQ's Hensel prime is taken as below. (UNVERIFIED bookkeeping; the
 only growing-degree gap identified in recurse §3.5 was Lemma X, which Lemma X_ERH replaces.)
 
 **Theorem NR [proved conditional on ERH, AD and LV6′].** There is a Las Vegas algorithm that outputs the complete
@@ -568,11 +579,11 @@ trivial gcd fresh rows are drawn, as in lv6 §3.7.) ∎
   2s > φ/3 (`barrier.ad_heuristic_ok`). Example: δ = 1/2, b₁ = 1 (τ_F = 1/2), λ = 1/2, b = 4, κ_F = 4, m₀ = 2 (design
   (a‴) with M ≈ H ≈ N^{1/(d+1)}, so log M ≈ Q/δ), s = 3/4 satisfies the heuristic and gives c_NR ≈ 26.7
   (unoptimised; `barrier.nr_constant`).
-- **AD is exactly what §§3–5 say we cannot prove.** It is a pointwise-in-the-field statement about smooth values of
-  one binary form of degree d ≍ D′ on special-q lattices at L-scale. Averaging over 𝔉 cannot certify it by moments
-  (§6: Θ(1) relative variance across fields; overdetermination for joint statements).
-- AD for *every* target is stronger than needed (only targets that occur matter), but any weaker endogenous version
-  runs into Prop SI(i).
+- **AD is what §§3–6 say we do not know how to prove.** It is a pointwise-in-the-field statement about smooth values
+  of one binary form of degree d ≍ D′ on special-q lattices at L-scale. The unconditioned second-moment route fails
+  (§6); conditional or higher moments are not excluded but are not available at the needed precision.
+- AD for *every* target is stronger than needed (only targets that occur matter). Prop SI excludes proving a weaker
+  endogenous version from *density alone*, not every weaker supply hypothesis.
 
 ## 9. Experiment E1 (pre-registered `7c17ffb`, Addendum A `e432e59` before the main run)
 
@@ -595,7 +606,8 @@ factor 1.25); independent field A′ for rational children. 145 s total.
   independence). Between fields descendability varies by a factor ≈ 5. The parent bootstrap gives no uncertainty
   over the field law (12 field clusters).
 - **P2/P4 positive bias.** Endogenous rational children are slightly *more* descendable than matched uniform ones, in
-  the same field and in an independent field alike, so it is not endogeneity: children are skewed to the small end
+  the same field and in an independent field alike, which points to a matching effect rather than endogeneity
+  (descriptive only): children are skewed to the small end
   of the ±25% window (mean log p 8.115 vs 8.133 for their matched draws).
 - **Descriptive.** Children per node: 1: 229, 2: 903, 3: 1671, 4: 1393, 5: 529, 6: 74, 7: 1 (d = 3 has 6 field
   parameters, so the toy is too small to show overdetermination). Dead fractions fall with S (seed 1, algebraic:
@@ -633,8 +645,8 @@ factor 1.25); independent field A′ for rational children. 145 s total.
   fixed degree, fixed Galois group only.
 - **Theorem AF is not new as an identity:** dBPW (46) already states the two-sided bracket [e^{−1/4}, e^{1/4}], and
   (48) writes the weight with the upper incomplete Gamma function (their Remark 7.2 notes the 1/3 can be pushed toward
-  1). What we add is reading it as an expectation over v ~ Gamma(r*, 1), i.e. as a law of the cofactor norm, and the
-  consequence for NFS fields. Earlier one-sided relatives: de Boer–Ducas–Pellet-Mary–Wesolowski (CRYPTO 2020), de
+  1). What we add is rewriting it as an expectation over an auxiliary v ~ Gamma(r*, 1), and the consequence for NFS
+  fields (Corollary AF). Earlier one-sided relatives: de Boer–Ducas–Pellet-Mary–Wesolowski (CRYPTO 2020), de
   Boer's thesis (2022).
 - Prop SI: no prior statement found (it is elementary and may be folklore); Prop SI(i) is also in codex nested_1
   ((19)), found independently.
@@ -743,6 +755,21 @@ All valid findings were applied in the text above.
   10. Verdict and Candidate card rescoped. AD is a sufficient strengthening, not an equivalent. "ERH does nothing"
       became "ERH does not supply". There are no impossibility claims.
 - Rejected: none.
+
+**GPT-6.1-sol confirmation round `codex/nested_3`** (high).
+- Issues 2, 5, 7, 8, 9, 10 and 11 of nested_2 are FIXED. Issues 1, 3, 4, 6, 12, 13 and 14 are PARTLY fixed.
+- **Theorem NR: CORRECT WITH FIXES.** The conditional implication now closes, and c_NR ≈ 26.6603 is reproduced.
+- **R2: CORRECT WITH FIXES** at the exponent level, as a model floor.
+- The constrained-resampling algebra is correct. The component conclusion holds only within the RW representation.
+- The residual items were applied:
+  - AF wording: a comparison, not a law;
+  - FB: γ integral at 𝔮;
+  - components restricted to the RW representation;
+  - R2: the missing z = O(ΛU) = o(t) step, and asymptotic endpoints;
+  - §8 moment wording aligned with §6;
+  - E1 "matching effect" wording;
+  - Verdict component and budget language;
+  - LV6′: SQ quasi-linear in its expanded input.
 
 ## 13. Candidate card
 
