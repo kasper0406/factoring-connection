@@ -1,0 +1,397 @@
+**PROVED:** There is a uniform partial counting barrier, stated below with explicit constants. It excludes families with sufficiently small reduced height, and certain families with one common small remainder. **The full barrier \(\alpha\ge 1/3\) remains unproved.** Neither VMVT nor the determinant results checked here supply the missing bound when \(M,s\) grow in the proposed range.
+
+I use “informative” in the relative sense stipulated in the question: nonexact in the characteristic-zero presentation. This is a necessary condition; useful relation rank requires a separate argument.
+
+**1. Model — definitions.** A general algebraic framework is a finite free \(\mathbb Z\)-algebra \(A\), with a specified basis, an element \(\theta\), and a homomorphism
+\[
+\phi:A\longrightarrow \mathbb Z/N\mathbb Z.
+\]
+The data, their construction cost, and their dependence on \(N\) are part of the input. This includes:
+
+- integer evaluation: \(A=\mathbb Z,\ \theta=m\);
+- \(A=\mathbb Z[X]/(F)\), with \(F\) monic of degree \(d\), coefficient height \(H_F\), and \(F(m)\equiv0\pmod N\);
+- a number-field order with a chosen basis and multiplication table.
+
+A split object is
+\[
+P_{\mathbf a}(X)=\prod_{i=1}^{M}(X-a_i),\qquad |a_i|\le B.
+\]
+Fixing \(e_1,\ldots,e_s\), where \(s=M-k\), means
+\[
+P_{\mathbf a}=A_0+Q_{\mathbf a},\qquad \deg Q_{\mathbf a}<k,
+\]
+for one fixed high-degree part \(A_0\).
+
+Specify a set \(\mathcal V\) of allowed small sides, including their height window. In the monogenic case use canonical representatives \(V\), \(\deg V<d\), with coefficient height at most \(H_v\). A **strong presentation relation** is
+\[
+D(P,V):=\operatorname{red}_F(P-V)\in N\mathbb Z^d.
+\]
+It is informative precisely when \(D(P,V)\ne0\). The weaker condition
+\[
+P(m)\equiv V(m)\pmod N
+\]
+does not imply the strong condition and needs separate treatment.
+
+Actual factoring relations additionally require nonzero multiplicative objects, smooth integer values or smooth ideals, and enough independent exponent vectors. For a number-field order, coefficient height must be converted to norm height, with its dependence on \(d\) and the presentation retained.
+
+**PROVED:** Prescribing the first \(s\) coefficients alone does not control the small side. Indeed,
+\[
+|e_j|\le {M\choose j}B^j.
+\]
+For \(j\) near \(M\), the logarithmic bound is approximately \(M\log B\), potentially \(x\). A low-degree difference can therefore have enormous height. Any barrier relevant to factoring must include the allowed remainder window and the reduction map.
+
+**HEURISTIC — cost model.** Put
+\[
+\ell_\beta=x^\beta(\log x)^{1-\beta},\qquad \log B=b\ell_\beta.
+\]
+Assume the large side is smooth by construction and that the remaining side, of logarithmic size \(Y\), behaves like a random integer for smoothness. With \(u=Y/\log B\), relation collection requires approximately
+\[
+(B/\log B)\exp((1+o(1))u\log u)
+\]
+candidates; quadratic sparse linear algebra costs \(B^{2+o(1)}\).
+
+Thus an \(L[\beta]\) algorithm requires, in addition to affordable construction,
+\[
+u\log u=O(\ell_\beta),
+\quad\text{hence}\quad
+Y=O\!\left(\frac{\ell_\beta^2}{\log\ell_\beta}\right)
+\]
+in the growing-\(u\) regime. Consequently \(Y=o(x^{2/3})\) alone is insufficient for a specified \(\beta<1/3\).
+
+**PROVED:** If integer evaluation gives \(|m-a_i|\le CB\), while \(|V(m)|<N/2\), an informative integer congruence requires
+\[
+M\log(CB)\ge x-O(1).
+\]
+This follows from the given integer-size obstruction. Objects bounded by \(B^{O(1)}\) can be accommodated by enlarging the smoothness bound, preserving the \(L\)-exponent.
+
+---
+
+**2. HEURISTIC — generic fiber count.** Write \(q=2\lfloor B\rfloor+1\) and
+\[
+K=\frac{s(s+1)}2.
+\]
+There are
+\[
+T={q+M-1\choose M}
+\]
+multisets. If \(M^2=o(B)\), then \(T\sim q^M/M!\).
+
+Assume a local limit model for the moment map, including its real density and arithmetic restrictions. At a regular prescribed value \(c\), the expected fiber has the form
+\[
+\lambda(c)\approx
+\frac{q^M}{M!}\,B^{-K}\,\mathcal A_{M,s}(c).
+\tag{1}
+\]
+Here \(\mathcal A_{M,s}\) retains all dependence on the moment-body density and local arithmetic. Treating it as harmless while \(s\) grows is an additional assumption.
+
+Under the simplified occupancy assumption \(\mathcal A_{M,s}=\exp(o(M\log B))\), the transition is roughly
+\[
+K\approx M-\frac{\log M!}{\log B}.
+\]
+The familiar approximation \(s\approx\sqrt{2M}\) follows when the factorial correction is negligible.
+
+A prescribed window for the remaining coefficients multiplies (1) by its conditional probability \(\vartheta\). An additional independence approximation would give
+\[
+\vartheta\approx
+\prod_{j=s+1}^{M}
+\min\left(1,\frac{W_j}{{M\choose j}B^j}\right).
+\]
+The coefficients are correlated, so this product is only a surrogate.
+
+**HEURISTIC:** A fiber selected by first choosing one member has expected size approximately \(1+\lambda\), under a Poisson model. Searching over all fibers changes the relevant calculation: the expected number of distinct colliding pairs is approximately
+\[
+T^2B^{-K}\times\text{density factors},
+\]
+with a transition near \(K=2M\), rather than \(K=M\).
+
+For \(s=M-k\) with \(k\ll M\), \(K\asymp M^2\), making generic collisions extremely unlikely. This is evidence against a generic construction. An \(N\)-dependent construction may deliberately select exceptional fibers; its exclusion requires a maximum-fiber theorem.
+
+---
+
+**3. KNOWN — VMVT.** In the question’s notation, Bourgain–Demeter–Guth and Wooley give
+\[
+J_{M,s}(B)\ll_{M,s,\varepsilon}
+B^\varepsilon\left(B^M+B^{2M-K}\right).
+\tag{2}
+\]
+See [BDG, Annals 184 (2016)](https://annals.math.princeton.edu/2016/184-2/p07) and [Wooley, *Nested efficient congruencing* (2019)](https://arxiv.org/abs/1708.01220).
+
+**PROVED — consequences for fibers.** Orthogonality gives
+\[
+\sum_cR(c)=B^M,\qquad \sum_cR(c)^2=J_{M,s}(B).
+\]
+Consequently
+\[
+\#\{c:R(c)\ge T\}
+\le \min\left(\frac{B^M}{T},\frac{J_{M,s}(B)}{T^2}\right),
+\tag{3}
+\]
+and Cauchy–Schwarz gives
+\[
+\#\{c:R(c)>0\}\ge \frac{B^{2M}}{J_{M,s}(B)}.
+\tag{4}
+\]
+
+A stronger maximum bound than merely \(\sqrt J\) follows from
+\[
+R(c)=\int_{[0,1]^s}f(\alpha)^M e(-c\cdot\alpha)\,d\alpha,
+\quad
+f(\alpha)=\sum_{a\le B}e(\alpha_1a+\cdots+\alpha_sa^s).
+\]
+For even \(M\), \(\max R\le J_{M/2,s}(B)\). For odd \(M\), apply Cauchy–Schwarz between adjacent even moments. Thus
+\[
+\max_cR(c)\ll_{M,s,\varepsilon}
+B^\varepsilon\left(B^{M/2}+B^{M-K}\right).
+\tag{5}
+\]
+
+More generally, Hausdorff–Young, with \(r\ge2\), yields
+\[
+\sum_cR(c)^r
+\le
+\left(\int |f|^{Mr/(r-1)}\right)^{r-1}
+\ll_{M,s,r,\varepsilon}
+B^\varepsilon
+\left(B^{rM/2}+B^{rM-(r-1)K}\right).
+\tag{6}
+\]
+Real moments follow by Hölder below the critical moment and \(|f|\le B\) above it. Dividing (6) by \(T^r\) gives higher-moment tail bounds.
+
+**PROVED — uniformity limitation.** Equations (2), (5), and (6), as stated, cannot be applied with their constants suppressed when \(M,s\to\infty\). For example, diagonal solutions give
+\[
+J_{M,s}(B)\ge M!(B)_M\sim M!B^M
+\]
+when \(M^2=o(B)\). In the proposed range \(\beta<1/3\), \(\log M!\) already greatly exceeds \(\ell_\beta\). Parameter constants can therefore matter at the entire proposed computational scale.
+
+This does not mean explicit uniform estimates are unavailable.
+
+**KNOWN:** A classical estimate, recorded in [Wooley, *On Vinogradov’s mean value theorem II* (1993)](https://www.math.purdue.edu/~twooley/publ/1993%20VIN2.pdf), is
+\[
+J_{rs,s}(B)\le
+\exp\!\big(C\min(r,s)s^2\log s\big)
+B^{2rs-K+\frac12s^2(1-1/s)^r},
+\tag{7}
+\]
+with absolute \(C\). It is uniform, but generally too expensive here.
+
+**KNOWN:** [Ford’s explicit Theorem 3](https://arxiv.org/pdf/1910.08209) supplies, for \(s\ge200\), some integer \(t\le3.21432s^2\) such that
+\[
+J_{t,s}(B)\le s^{2.3291s^3}
+B^{2t-K+0.001s^2}.
+\]
+[Steiner’s efficient-boxing estimates](https://arxiv.org/abs/1603.02536) provide further effective bounds. Their useful many-variable ranges do not resolve \(s\approx M\).
+
+**PROVED — elementary bounds, uniform in every parameter.** Let \(F_{M,s}\) denote the maximum number of multisets in a fiber. Then
+\[
+\boxed{F_{M,s}\le {q+M-s-1\choose M-s}\le q^{M-s}.}
+\tag{8}
+\]
+Proof: retain the smallest \(M-s\) entries. Subtract their first \(s\) power sums. Newton’s identities uniquely determine the polynomial of the remaining \(s\) entries.
+
+For ordered tuples in \([1,B]^M\), the same argument gives
+\[
+R(c)\le s!B^{M-s}.
+\tag{9}
+\]
+Dividing ordered bounds by \(M!\) is valid for distinct roots; repetitions require their actual orbit sizes.
+
+For simple-root multisets, a packing improvement is
+\[
+F_{M,s}^{\rm simple}\le
+\frac{{q\choose M-s}}{{M\choose M-s}}.
+\tag{10}
+\]
+Indeed, two members cannot share an \((M-s)\)-subset, by Newton uniqueness; their collections of such subsets are disjoint.
+
+Another elementary endpoint is uniqueness when \(s\ge q-1\): include \(p_0=M\), and invert the Vandermonde matrix on the \(q\) possible entries to recover every multiplicity.
+
+**PROVED:** A universal bound
+\[
+F_{M,s}\le(CB)^{M-s}D(s),\qquad D(s)\to0,
+\]
+with absolute \(C\), is impossible across all parameters. Set \(B=1,\ M=s+1\); a nonempty fiber exists, while the proposed right side tends to zero. Restrictions on \(B,M,s\) could permit additional savings. I have no such uniform estimate strong enough for this escape.
+
+---
+
+**4. PROVED — geometry of the fiber.** Over characteristic zero,
+\[
+V_c=\{e_1=c_1,\ldots,e_s=c_s\}\subset\mathbb A^M
+\]
+has dimension \(k=M-s\). The symmetric-coefficient map is finite and surjective, so fixing its first \(s\) coordinates leaves dimension \(M-s\). The defining equations form a complete intersection. Its projective complete-intersection scheme has degree \(s!\); the reduced variety has degree at most \(s!\). Special fibers can be reducible or nonreduced.
+
+**KNOWN:** Bombieri–Pila’s affine curve bound is \(O_{D,\varepsilon}(B^{1/D+\varepsilon})\). Heath-Brown and Salberger extend determinant methods to higher dimensions, retaining parameter dependence. For example, [Browning–Heath-Brown–Salberger (2006)](https://arxiv.org/abs/math/0410117) obtain projective dimension-growth estimates uniform for fixed degree and ambient dimension.
+
+[Castryck–Cluckers–Dittmann–Nguyen (2020)](https://rcluckers.perso.math.cnrs.fr/prints/Cast-Cl-Ditt-Nguy.pdf) prove, for integral projective \(X\subset\mathbb P^n\), degree \(D\ge5\),
+\[
+N_X(B)\le c(n)D^{e(n)}B^{\dim X},
+\]
+and for integral affine curves
+\[
+N_{\rm aff}(B)\le c(n)D^3B^{1/D}(\log B+D).
+\]
+
+[ Binyamini–Cluckers–Novikov (2024)](https://arxiv.org/abs/2302.04209) improve the curve estimate to
+\[
+N_{\rm aff}(B)\le c(n)D^2B^{1/D}(\log B)^\kappa,
+\tag{11}
+\]
+with absolute \(\kappa\).
+
+**PROVED — applicability limitation.** These estimates require component analysis. The degree \(s!\) of the whole scheme cannot be placed in \(B^{1/D}\) for a component of smaller degree. Affine hypersurface dimension-growth estimates also impose hypotheses on the highest-degree homogeneous part.
+
+For \(k=1\), an integral fiber of degree \(D\) benefits strongly from (11) when \(M\) is fixed. With \(D\) potentially factorial in \(s\), its prefactor can already exceed the proposed \(L[\beta]\) budget. For general \(k\), projective dimension growth usually supplies a \(B^k\) factor.
+
+None of these quoted bounds supplies controlled dependence on growing ambient dimension \(n=M\). Thus there is no uniformly strongest determinant estimate established here for the target range. Bound (8) remains directly applicable without constants.
+
+---
+
+**5. PROVED — modular conditions and height.** Congruence conditions include exact solutions. For prescribed moments modulo \(N\),
+\[
+R_N(\bar c)=
+\sum_{\substack{c\equiv\bar c\pmod N\\ |c_j|\le MB^j}}R(c).
+\tag{12}
+\]
+There are at most
+\[
+\prod_{j=1}^{s}\left(1+\left\lfloor\frac{2MB^j}{N}\right\rfloor\right)
+\]
+possible lifts. In particular, if \(2MB^s<N\), every occurring modular moment vector has a unique exact lift. Modular Newton equivalence additionally needs invertibility of \(s!\); exact Newton equivalence does not.
+
+For strong presentation relations, EX says exactly
+\[
+D\in N\mathbb Z^d,\quad \|D\|_\infty<N
+\quad\Longrightarrow\quad D=0.
+\tag{13}
+\]
+
+**PROVED — small presentation height alone is insufficient.** Take
+\[
+F=X,\qquad P=(X+2)^M,\qquad V=1,\qquad N=2^M-1.
+\]
+For even \(M>2\), \(N\) is composite. The presentation has fixed tiny height, but
+\[
+D=P(0)-1=N\ne0.
+\]
+Thus the proposed assertion that one fixed small-height presentation forces every congruence to be exact is false without a bound on the reduced differences.
+
+**PROVED — conditions can be shared.** For \(F=X,\ N=35,\ V=1\), take
+\[
+P_1=(X+1)(X+6)^2,\qquad P_2=(X+2)^2(X+9).
+\]
+Both have \(X^2\)-coefficient \(13\), constant coefficient \(36\), and defect \(35\). Their difference is \(8X\). They share the same informative defect and the same evaluated integer relation.
+
+More generally, if \(r\) defect vectors \(D_j\) are linearly independent and \(\|D_j\|_\infty\le W_j\), a nonzero \(r\times r\) minor is divisible by \(N^r\). Hadamard gives
+\[
+N^r\le r^{r/2}\prod_{j=1}^{r}W_j.
+\tag{14}
+\]
+This is a deterministic height payment for independent defects. There is no lower bound forcing their rank to equal the number of family members. An \(N^{-d}\) probability per member requires a separate equidistribution assumption.
+
+---
+
+**6. PROVED — uniform counting theorem.** Fix \(N,B,M,s\), put \(k=M-s\), and fix the high part \(A_0\). Let \(F\) be monic of degree \(d\). Count split polynomials
+\[
+P=A_0+Q,\qquad \deg Q<k,
+\]
+with roots in \([-B,B]\), satisfying \(\gcd(P,F)=1\). Let \(\mathcal V\) be a finite set of canonical small sides of coefficient height \(H_v<N/2\).
+
+Suppose every counted pair has
+\[
+0\ne D(P,V)\in N\mathbb Z^d,\qquad
+\|D(P,V)\|_\infty\le W.
+\]
+Set
+\[
+h=\max(k-d,0),\qquad
+Z_d(W)=\left(2\left\lfloor W/N\right\rfloor+1\right)^d-1.
+\]
+Then the number \(I\) of informative pairs satisfies
+\[
+\boxed{
+I\le
+\min\left\{
+{q+k-1\choose k},\
+|\mathcal V|\,Z_d(W){q+h-1\choose h}
+\right\}.}
+\tag{15}
+\]
+The binomial for \(h=0\) is interpreted as \(1\). There are no implicit constants. The coprimality condition is automatic for irreducible \(F\) of degree at least two; for integer evaluation it excludes zero factors.
+
+*Proof.* Each \(P\) has at most one allowed \(V\): the difference of two such representatives would have every coefficient divisible by \(N\) and absolute value below \(N\). Bound (8) therefore gives the first term.
+
+There are at most \(Z_d(W)\) possible nonzero defects. Fix \(D,V\). For any two corresponding polynomials,
+\[
+F\mid P-P',\qquad \deg(P-P')<k.
+\]
+If \(k\le d\), they are equal.
+
+If \(k>d\), retain the smallest \(h=k-d\) roots of \(P\). Two polynomials with the same retained multiset have a common monic factor \(G\) of degree \(h\). Coprimality gives \(\gcd(F,G)=1\), so
+\[
+FG\mid P-P'.
+\]
+But \(\deg FG=d+h=k\), forcing equality. Hence at most
+\({q+h-1\choose h}\) polynomials occur for fixed \(D,V\). Summing proves (15). \(\square\)
+
+**PROVED — usable height bounds.** Let \(T\) be multiplication by \(X\) in the power basis of \(\mathbb Z[X]/F\), and put \(C=\|T\|_1\). Then
+\[
+C\le\max(1,dH_F),\qquad
+\|\operatorname{red}_F P\|_1
+=\left\|\prod_i(T-a_iI)e_0\right\|_1
+\le(B+C)^M.
+\]
+Thus one may always take
+\[
+W=(B+C)^M+H_v.
+\tag{16}
+\]
+Sharper cancellation estimates can replace this bound.
+
+If \(k\le d\), \(\|\operatorname{red}_F A_0\|_\infty\le H_A\), and every \(Q\) has coefficient height at most \(H_Q\), then
+\[
+W\le H_A+H_Q+H_v.
+\tag{17}
+\]
+Consequently, if the three heights are \(\exp(o(x))\), there are **zero informative relations** for sufficiently large \(N\).
+
+**PROVED — partial factoring barrier.** Since the second bound in (15) is at most
+\[
+|\mathcal V|(1+2W/N)^dq^h,
+\]
+it is \(\exp(o(\ell_\beta))\) whenever
+\[
+\log|\mathcal V|
++d\log(1+2W/N)
++h\log q=o(\ell_\beta).
+\tag{18}
+\]
+Such a family cannot supply the approximately \(B/\log B\) distinct relations required by the stated factor-base model.
+
+In particular, this excludes families with:
+
+- one common small remainder;
+- \(k\le d\);
+- \(W=O(N)\);
+- \(d=o(\ell_\beta)\).
+
+A collection of presentations is covered by summing (15) over them; their number and construction cost must be included.
+
+**PROVED — precise stopping point.** The target assumptions do not imply (17) or (18). The free low coefficients can have logarithmic height \(\asymp x\), and reductions can exceed \(N\) substantially. Even the elementary bound for \(k=1\) is \(2B+1\), sufficient in order of magnitude to contain a factor-base-sized family.
+
+The missing step is a uniform exceptional-fiber bound incorporating the presentation and the small-remainder window, strong enough when \(s\approx M\), while allowing large low coefficients and shared nonzero defects. Alternatively, a lower bound on the cost of finding useful members would address the algorithmic escape.
+
+Equation (15) is an **existence counting bound**. It supplies no finding-cost lower bound when many objects survive. Conversely, many informative objects need not give independent factoring relations.
+
+---
+
+**7. KNOWN — relevant literature and its scope.**
+
+- [Borwein–Ingalls, *The Prouhet–Tarry–Escott problem revisited*, Enseign. Math. 40 (1994), 3–27](https://www.cecm.sfu.ca/~pborwein/PAPERS/P98.pdf), and [Borwein–Lisoněk–Percival, Math. Comp. 72 (2003), 2063–2070](https://www.daemonology.net/papers/pte.pdf), treat PTE structure and computational searches.
+- [Alpers–Tijdeman, JNT 123 (2007), 403–412](https://pub.math.leidenuniv.nl/~tijdemanr/altijd.pdf), develops the multidimensional problem. [Caley, Math. Comp. 82 (2013), 1121–1137](https://arxiv.org/abs/1011.1262), treats Gaussian integers.
+- [Hua, *On Tarry’s problem* (1938)](https://doi.org/10.1093/qmath/os-9.1.315), [Wright, *On Tarry’s problem I* (1935)](https://doi.org/10.1093/qmath/os-6.1.261), and [Wooley, *Some remarks on Vinogradov’s mean value theorem and Tarry’s problem* (1996)](https://www.math.purdue.edu/~twooley/publ/1996%20PTE.pdf), concern existence thresholds. Wooley’s later nested-congruencing paper proves the multigrade existence bound \(W(s,m)\le s(s+1)/2+1\). Such existence theorems impose no factoring-sized height bound.
+- [Parsell–Prendiville–Wooley, GAFA 23 (2013), 1962–2024](https://arxiv.org/abs/1205.6331), handles multidimensional translation-dilation invariant systems.
+- [Brandes–Hughes, *On the inhomogeneous Vinogradov system*](https://arxiv.org/abs/2110.02366), and [Wooley, *Subconvexity in inhomogeneous Vinogradov systems*](https://arxiv.org/abs/2202.14003), give paucity results under nonzero inhomogeneity hypotheses. Our exact PTE fibers retain homogeneous collisions.
+- [Browning–Heath-Brown, *Simultaneous equal sums of three powers*](https://arxiv.org/abs/math/0509152), is a direct determinant-method example proving paucity for a particular diagonal system.
+
+**SPECULATIVE — literature assessment:** I found no result in these sources proving the required growing-\(M,s\), small-remainder, \(N\)-dependent maximum-fiber barrier. Claiming that standard VMVT or dimension growth already establishes it would leave essential parameter dependence and arithmetic structure untreated.
+
+**SPECULATIVE — probability:** My subjective probability is about **2%** that this particular dense-split/PTE escape produces a general-purpose classical factoring algorithm below \(L[1/3]\). The generic count is strongly discouraging. The unclosed possibility is a structured \(N\)-dependent construction with large coefficients, unusually small remainders, and enough independent relations.
