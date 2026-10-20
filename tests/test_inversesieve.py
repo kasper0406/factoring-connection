@@ -177,9 +177,9 @@ def test_theorem_L_partner_bound():
 
 
 def test_theorem_L_toy_rule_mass():
-    """Theorem L on a toy population (all prime pairs of S_20): a rule that sees only N mod M and N to
-    precision Delta >= P*M and catches every pair must have average mass >= |S_n| / (4 P) per n-bit input.
-    The extremal rule C(cell) = {p : (p,q) in cell} is computed exactly."""
+    """Theorem L (aligned cells: Delta a power of 2, 2M <= Delta <= 2^{n-1}) on the population of all prime
+    pairs of S_20: the extremal rule C(cell) = {p : (p,q) in cell} must have mass, averaged over all n-bit
+    integers N, >= (2|Q|/P^2) * min(P/8, Delta/(4M)).  Computed exactly."""
     n = 20
     P = 2 ** (n / 2)
     pairs = []
@@ -188,14 +188,18 @@ def test_theorem_L_toy_rule_mass():
             if (1 << (n - 1)) <= p * q < (1 << n):
                 pairs.append((p, q))
     for M in (1, 7, 7 * 11):
-        Delta = int(P * M) * 2
-        cells = {}
-        for p, q in pairs:
-            N = p * q
-            cells.setdefault((N % M, N // Delta), set()).add(p)
-        mass = 0
-        for (d, k), S in cells.items():
-            nN = sum(1 for N in range(max(k * Delta, 1 << (n - 1)), min((k + 1) * Delta, 1 << n)) if N % M == d)
-            mass += len(S) * nN
-        avg = mass / (1 << (n - 1))
-        assert avg >= len(pairs) / (8 * P)
+        for Delta in (1 << 12, 1 << 15, 1 << 17):
+            if Delta < 2 * M:
+                continue
+            cells = {}
+            for p, q in pairs:
+                N = p * q
+                cells.setdefault((N % M, N // Delta), set()).add(p)
+            mass = 0
+            for (d, k), S in cells.items():
+                lo, hi = k * Delta, (k + 1) * Delta
+                assert (1 << (n - 1)) <= lo and hi <= (1 << n)        # aligned: every cell interior
+                nN = sum(1 for N in range(lo, hi) if N % M == d)
+                mass += len(S) * nN
+            avg = mass / (1 << (n - 1))
+            assert avg >= (2 * len(pairs) / P ** 2) * min(P / 8, Delta / (4 * M))
