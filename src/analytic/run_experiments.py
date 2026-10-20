@@ -23,6 +23,7 @@ from src.common.instances import balanced_semiprime, prime_instance, random_prim
 from src.analytic.hiary import hiary_factor, predicted_blocks, icbrt_ceil
 from src.analytic.hull import hull_vertices
 from src.analytic.cubic import weyl_oracle, cubic_decode
+from src.analytic.ladder import ladder_factor, predicted_blocks as ladder_predicted
 
 RAW = "experiments/raw"
 ANA = "experiments/analysis"
@@ -171,6 +172,56 @@ def run_e2():
         print("e2 noise", bits, flush=True)
 
 
+# ------------------------------------------------------------------ E3
+E3_BITS = {1: (24, 28, 32, 36, 40, 44, 48), 2: (24, 28, 32, 36, 40), 3: (24, 28, 32, 36, 40)}
+E3_SEEDS = 5
+
+
+def run_e3():
+    path = f"{RAW}/analytic_e3.jsonl"
+    if os.path.exists(path):
+        os.remove(path)
+    for j, bl in E3_BITS.items():
+        for bits in bl:
+            for seed in range(E3_SEEDS):
+                for fam in ("prime", "balanced"):
+                    inst = prime_instance(bits, seed) if fam == "prime" else balanced_semiprime(bits, seed)
+                    N = inst.N
+                    st = {}
+                    t = time.perf_counter()
+                    f = ladder_factor(N, j, stats=st)
+                    wall = time.perf_counter() - t
+                    ok = (f is None) if fam == "prime" else (f is not None and 1 < f < N and N % f == 0)
+                    _append(path, {"exp": "e3", "j": j, "bits": bits, "seed": seed, "family": fam, "N": N,
+                                   "factor": f, "correct": ok, "stats": st,
+                                   "pred_blocks": ladder_predicted(N, j), "wall_s": wall})
+            print("e3", j, bits, flush=True)
+
+
+def summary_e3():
+    e3 = [json.loads(l) for l in open(f"{RAW}/analytic_e3.jsonl")]
+    out = {"e3_correct": f"{sum(r['correct'] for r in e3)}/{len(e3)}"}
+    for j in E3_BITS:
+        pr = [r for r in e3 if r["j"] == j and r["family"] == "prime"]
+        rows, xs, ys = [], [], []
+        for b in E3_BITS[j]:
+            rb = [r for r in pr if r["bits"] == b]
+            lnN = sum(math.log(r["N"]) for r in rb) / len(rb)
+            blk = sum(r["stats"]["blocks"] for r in rb) / len(rb)
+            loc = sum(r["stats"].get("located", 0) for r in rb) / len(rb)
+            calls = sum(r["stats"]["oracle_calls"] for r in rb) / len(rb)
+            ratio = [r["stats"]["blocks"] / r["pred_blocks"] for r in rb]
+            xs.append(lnN)
+            ys.append(math.log(blk / lnN))
+            rows.append({"bits": b, "mean_blocks": blk, "blocks_over_pred": [min(ratio), max(ratio)],
+                         "located_per_block": loc / blk, "calls_per_block": calls / blk})
+        out[f"e3_j{j}_rows"] = rows
+        out[f"e3_j{j}_slope"] = _fit(xs, ys)
+    with open(f"{ANA}/analytic_e3_summary.json", "w") as f:
+        json.dump(out, f, indent=1)
+    print(json.dumps(out, indent=1))
+
+
 # ------------------------------------------------------------------ summary
 def _fit(xs, ys):
     n = len(xs)
@@ -257,4 +308,4 @@ def summary():
 
 
 if __name__ == "__main__":
-    {"e1": run_e1, "e2": run_e2, "summary": summary}[sys.argv[1]]()
+    {"e1": run_e1, "e2": run_e2, "e3": run_e3, "summary": summary, "summary_e3": summary_e3}[sys.argv[1]]()

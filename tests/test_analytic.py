@@ -154,3 +154,33 @@ def test_cubic_decode_no_info_when_factor_is_2_mod_3():
     N = 1013 * 1019  # 1013 = 2 mod 3
     f = cubic_decode(N, lambda a: Fraction(weyl_oracle(a, N)), random.Random(0), attempts=2)
     assert f is None
+
+
+# ---------------------------------------------------------------- ladder (reduction L_j)
+from src.analytic.ladder import floor_sum_linear, ladder_factor
+
+
+def test_floor_sum_linear_bruteforce():
+    rng = random.Random(3)
+    for _ in range(3000):
+        n, m = rng.randrange(0, 60), rng.randrange(1, 80)
+        a, b = rng.randrange(-300, 300), rng.randrange(-300, 300)
+        assert floor_sum_linear(n, m, a, b) == sum((a * i + b) // m for i in range(n))
+
+
+@pytest.mark.parametrize("j", [1, 2, 3])
+def test_ladder_exhaustive_small(j):
+    for N in range(4, 1500):
+        f = ladder_factor(N, j)
+        if _is_prime(N):
+            assert f is None
+        else:
+            assert f is not None and 1 < f < N and N % f == 0
+
+
+@pytest.mark.parametrize("j", [1, 2, 3])
+def test_ladder_semiprimes(j):
+    for seed in range(3):
+        inst = balanced_semiprime(32, seed)
+        assert ladder_factor(inst.N, j) in inst.labels["factors"]
+        assert ladder_factor(prime_instance(32, seed).N, j) is None

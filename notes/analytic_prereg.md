@@ -84,3 +84,31 @@ fits only.
 
 E1 ≈ 10 min, E2 ≈ 10 min, single process, < 200 MB RSS. Run one at a time after checking
 `memory_pressure`.
+
+## Amendment A1 (2026-10-20, after E1 had run and while E2 was running; before E3): E3, the floor-sum ladder
+
+**Why.** GPT-6.1-sol's blind round (`codex/analytic_1.out`) and nonsmooth's table give different
+exponents for "exact degree-j floor sums in polylog time ⇒ factoring". nonsmooth gives N^{1/(2j+2)};
+codex gives N^{1/(j+1)}, demanding precision 1/(8M). My claim (reduction L_j) is
+**N^{1/(j+2)}·polylog** oracle calls. The precision is only ≈ 1/H; the few ambiguous h ("candidates",
+{P(h)} within ρ of an integer) are located by bisection with the same oracle; each is tested by one
+division. At j = 1 (Euclid floor sums, polylog, operational) this recovers N^{1/3}. E3 measures
+block, candidate and oracle-call counts at j = 1, 2, 3. For j ≥ 2 the oracle is SIMULATED by brute
+force: only call counts are model costs, and wall time is not.
+
+- Code: `src/analytic/ladder.py`, `run_experiments e3`; tests extended (25 pass).
+- Instances: prime_instance and balanced_semiprime, seeds 0..4. For j = 1, n ∈ {24, …, 48} step 4.
+  For j = 2, 3, n ∈ {24, …, 40} step 4. Parameter c = 1/2, B = ⌊N^{1/(j+2)}⌋, H = ⌊cx/B⌋.
+- **Predictions.**
+  - P3.1: correct on all 170 runs (factor found for semiprimes, None for primes).
+  - P3.2: for primes with n ≥ 32, blocks / ((B/c) ln(√N c/B)) ∈ [0.95, 1.2].
+  - P3.3: slope of ln(mean blocks / ln N) against ln N (primes): j = 1 ∈ [0.32, 0.36];
+    j = 2 ∈ [0.24, 0.28]; j = 3 ∈ [0.19, 0.23]. The windows allow the upward finite-size bias that
+    E1's P1.3 miss exposed.
+  - P3.4: located candidates per block (excluding the forced h = 0 test at odd j) lie in
+    [¼, 4]·c^{j+2}, i.e. j = 1: [1/32, 1/2]; j = 2: [1/64, 1/4]; j = 3: [1/128, 1/8]. This follows
+    from the heuristic that {P(h)} is equidistributed.
+  - P3.5 (report only): mean oracle calls per block ∈ [2, 6].
+- **Decision rule.** L_j's exponent 1/(j+2) is experimentally supported iff P3.1 and P3.3 hold for all
+  three j. A slope inside codex's 1/(j+1) or nonsmooth's 1/(2j+2) instead refutes my construction's
+  claimed count.
