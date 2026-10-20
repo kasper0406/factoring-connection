@@ -27,7 +27,9 @@ inherits every caveat of `notes/thmA_audit.md`, and adds no new external input.
   with c(a) = max(a + θ/(2a), (2 + √2)a).
   - The minimum is at a* = √((√2 − 1)θ/2).
   - The minimum value is **c\* = √((1 + √2)θ)**.
-- Constants (infimum over fixed k and η₀; exact in `src/recurse/constants.py`):
+- Constants. These are **infima** over fixed (k, η₀), exact in `src/recurse/constants.py`. No single parameter set
+  attains them. For example, at d = 9 the smallest admissible k = 13 gives c\* = 0.9952 (+η₀-slack), k = 50 gives
+  0.8748 and k = 1000 gives 0.8522. The "0.8510 at d = 9" is the infimum.
   | d | 7 | 9 | 11 | 13 | 19 | 29 | 49 | 99 |
   |---|---|---|---|---|---|---|---|---|
   | c\* | 0.9515 | **0.8510** | 0.7769 | 0.7193 | 0.6018 | 0.4914 | 0.3806 | 0.2691 |
@@ -36,8 +38,8 @@ inherits every caveat of `notes/thmA_audit.md`, and adds no new external input.
   - The threshold for c < 1 is unchanged: c\* < 1 ⟺ θ < √2 − 1 ⟺ (1 + θ)/√2 < 1. So the minimal k is the same as
     before (k ≥ 13 at d = 9, where c\* = 0.99521 instead of 0.99720).
 - **Corollary P (portfolio) [proved from Theorem A; the argument is GPT-6.1-sol's r19, checked here].** One Las Vegas
-  algorithm factors every N in expected time exp(o((log N log log N)^{1/2})) = L_N[1/2, o(1)]. The rate is not
-  effective.
+  algorithm factors every N in expected time exp(o((log N log log N)^{1/2})) = L_N[1/2, o(1)]. No effective rate
+  is supplied.
   - The same device makes Theorem A's 0.9192 at d = 9 a genuine "+o(1)" (thmA audit caveat 1).
 - **What binds.** The shape test was the only place 1/√2 entered.
   - With recursion, the recursive shape test and the special-q search T_SQ bind together.
@@ -112,6 +114,21 @@ with two changes:
 2. In DESCEND_ONCE, the line "factor |u₀| and |v₀| completely with Lenstra–Pomerance" becomes "factor |u₀| and |v₀|
    completely with FACTOR_rec[a], using fresh coins".
 
+3. **No N₀ branch (fix after auditRA).** thmA's FACTOR branches on "N′ < N₀ ⇒ trial division". N₀(d, k, μ, η₀, a)
+   collects the sources' analytic thresholds, which are asserted to be effective but not computed, and a wrong N₀ can
+   make the expectation infinite on a small cofactor. So at every node n, after preprocessing, FACTOR_rec[a] runs the
+   **core** (SPLIT, uncapped) and trial division **in alternation, step by step**, and takes the first certified
+   split (as in lem85 §7). The algorithm then contains no analytic constant.
+   - The wrapper's cost at a node is ≤ 2·min(core, trial division) + O(1).
+   - For n ≥ N₀, whose existence is all the proof needs, this is ≤ 2·E[core].
+   - For the finitely many n < N₀ it is ≤ 2·√n, a constant.
+   - Lemma OS and the bounds (A1)–(A3) are statements about the uncapped core SPLIT^O, not about the race.
+   - The race affects only which certified split of n is returned, and every recursive call is again a complete
+     factorisation, so the shape-test oracle FACTOR_rec[a] still returns the canonical factorisation, which is all
+     OS uses.
+   - The recursion inequality gains a factor 2, which Lemma F absorbs.
+   - Corollary P then needs only that j ↦ (d_j, k_j, μ_j, η₀,j, a_j) is computable, not that j ↦ N₀(j) is.
+
 FACTOR_rec[a] returns AKS-certified primes, so its output is always correct. Every other line is unchanged, including
 the AKS certification of the shape-test output, which is now redundant.
 
@@ -184,8 +201,10 @@ Hence (A1)–(A3), proved in Theorem A for O = Lenstra–Pomerance, hold for O =
 
 **The recursion inequality.** Put F(x) := sup_{2≤n≤x} E[cost of FACTOR_rec[a](n)]. F is nondecreasing.
 - **Finiteness.** F(x) < ∞ for every x, by strong induction on n.
-  - For n < N₀ the cost is O(1).
-  - For n ≥ N₀ the inequality below holds with finite P(n) and D(n), and it calls F only at √(2n) < n.
+  - With the alternation wrapper (§1.1, item 3), every node's cost is ≤ 2√n + O(1) whatever happens in the core, so
+    F(x) ≤ 2 log₂x·(2√x + O(1)) < ∞ outright.
+  - For n ≥ N₀ (a threshold that need only exist) the inequality below holds with finite P(n) and D(n), and it calls
+    F only at √(2n) < n.
 - **Accounting.** FACTOR(N) builds a factor tree with at most 2Ω(N) − 1 ≤ 2 log₂N nodes.
   - Each node n | N costs O(L_n^{a+o(1)}) for AKS, perfect-power detection and trial division to B(n), plus one
     SPLIT^O(n′) on its cofactor.
@@ -285,16 +304,19 @@ The cost ledger of `thmA_proof.md` Step 10, with exponents in units of Λ = (log
   2 − √2. The split probability is L^{o(1)} at fixed k.
 - So the next improvement must lower θ (better design floors) or the √N size of the split halves. Better linear
   algebra or a better split law would not help.
-- **The halves.** Gauss reduction makes |u₀v₀| ≍ N. Any 2-term split has halves of total size N, so the recursive
-  cost L_{√N}[1/2, c] is the minimum for 2-term splits. That is a heuristic remark, not a theorem.
+- **The halves.** The cost proof uses only |u₀|, |v₀| ≤ √(2N). For *typical* R the halves are both of size ≍ √N,
+  but not for every R: R = 1 gives (1, 1). So halves smaller than √N are not available in general from a 2-term
+  split. That is a heuristic remark, not a theorem, and nothing depends on it. The first draft's universal claim
+  "|u₀v₀| ≍ N" was false (auditRA).
 
 ### 1.6 Corollary P (portfolio) and the infimum over d
 
 **Corollary P [proved from Theorem RA; argument from r19 item 1, re-checked].**
 - The algorithm: let (A_j)_{j≥1} be the algorithms FACTOR_rec[a\*_j] for a computable sequence of admissible
-  parameter sets with c\*_j → 0. One such sequence: d_j = 2j + 7; k_j = ⌈d_j²/4⌉ + j; μ_j the exact optimum; η₀
-  small and rational; a_j rational near a\*_j. The critic checked admissibility for j ≤ 7; at j = 7, d = 21,
-  k = 118, θ = 0.144 and c\* ≈ 0.590.
+  parameter sets with c\*_j → 0. One such sequence: d_j = 2j + 7; k_j = ⌈d_j²/4⌉ + j; μ_j the exact optimum;
+  **η₀,j := 1/d_j² → 0**; a_j a computable rational near a\*_j. Then θ_j → 0, since θ_j ≤ 3/(d_j+1) + O(1/d_j²). I
+  re-checked admissibility exactly (`src/thmA/params.py`) for j ≤ 11, and θ_j < √2 − 1 there. For example, j = 1 gives
+  d = 9, k = 22, θ = 0.351, c\* = 0.921; j = 7 gives d = 21, k = 118, θ = 0.147, c\* = 0.595.
 - **Restart schedule.** This replaces the first draft's live dovetailing, after the critic: interleaving unboundedly
   many live processes has a model-dependent overhead. In phase s = 1, 2, …, run A_i for i ≤ s, each from scratch with
   fresh coins and step budget 2^{s−i}. Stop at the first certified output. Phase s costs ≤ 2^s steps up to a polylog
@@ -306,7 +328,8 @@ The cost ledger of `thmA_proof.md` Step 10, with exponents in units of Λ = (log
     ≤ polylog·(2^{s₀+1} + Σ_{m≥1} 2^{s₀+m}·2^{−m(m+1)/2}) = O(2^{j}E[T_j(N)]·polylog).
   - Hence limsup_N log E[T(N)]/Λ_N ≤ c_j for every j, so E[T(N)] = exp(o(Λ_N)). ∎
 - Remarks:
-  - No uniformity in j is needed, so the rate of o(1) is not effective.
+  - No uniformity in j is needed. The argument supplies no effective rate for the o(1); noncomputability of a rate
+    is not claimed.
   - The same dovetailing over k at fixed d = 9, without recursion, gives L[1/2, 0.9192 + o(1)]. This answers caveat 1
     of `thmA_audit.md` (the k-diagonalisation) without any uniform estimate.
   - It is **not** an L[α] bound for any α < 1/2.
@@ -640,7 +663,8 @@ credited to it.
 
 - **Mechanism.** Recursive complete factorisation of the Dixon-split halves inside the algorithm's own shape test.
 - **Model.** Theorem A's design (a‴_k; μ), with B = L^a free.
-- **Result.** Proved from Theorem A: L[1/2, √((1 + √2)θ)] at fixed d, 0.851 at d = 9, → 0 as d → ∞, and a portfolio
+- **Result.** Proved from Theorem A: L[1/2, √((1 + √2)θ)] at fixed d, infimum 0.851 at d = 9 (a single parameter set
+  gives 0.9952 at k = 13), → 0 as d → ∞, and a portfolio
   exp(o(Λ)).
 - **Failure scope.**
   - Below L[1/2], the descent geometry gives 2/5 with uniform polylog precision and 3/7 with (log N)^{O(d)} losses.
