@@ -31,7 +31,7 @@ in §14.
   - Parameters: d ≍ D^{1/5} (odd), k ≍ D^{2/5}, B = exp(aΛ), where D = log N/log log N and
     Λ = (log N)^{2/5}(log log N)^{3/5}. Special-q primes are L[3/5], norms are N^{θ}, θ ≍ D^{−1/5}.
   - For illustration (exact rational grid search, `params.optimise`): c ≤ 3.52, 4.05, 5.04 and 6.50 for
-    C_γ = 0, 1, 5 and 20. We do not compute C_γ numerically: it involves the unspecified absolute constants of
+    C_γ = 0, 1, 5 and 20 (grid upper bounds; a finer grid gives 3.51, 4.04, 5.04, 6.47). We do not compute C_γ numerically: it involves the unspecified absolute constants of
     Hildebrand–Tenenbaum's saddle-point estimates.
   - Hence also L[α, o(1)] for every α > 2/5, and in particular L[3/7].
 - **The precision exponent is τ = 0 for every ingredient** (table below). This is the decisive question of
@@ -140,8 +140,9 @@ alternation, so there is no N₀ branch) with SPLIT, SAMPLE_FIELD, DESCEND_ONCE,
 The shape test accepts iff |u₀| and |v₀| are each products of at most k distinct primes, all in J, as in [pp].
 
 *Common V in the special-q search.* In SQ_SEARCH and in [pp] Lemma `lem:reg`, V_ℓ is replaced by V and S by
-S_ℓ := V/√ℓ ∈ [S/√2·(1 − o(1)), √2·S]. Lemma `lem:reg` then reads: if λ₁ < √ℓ/(2S_ℓ) = ℓ/(2V), the lattice has no
-candidate (the line spacing ℓ/|w₀| exceeds 2V ≥ √2V, and |w₀| < ℓ/(2V) < (1 − 1/d)V < b because ℓ ≤ 2Y < V²/2);
+S_ℓ := V/√ℓ ∈ [S(1 − o(1)), √2·S]. Lemma `lem:reg` then reads: if λ₁ < √ℓ/(2S_ℓ) = ℓ/(2V), the lattice has no
+candidate (the line spacing ℓ/|w₀| exceeds 2V ≥ √2V, and |w₀| < ℓ/(2V) < (1 − 1/d)V < b because
+ℓ ≤ 2Y < 2(1 − 1/d)V², which holds for every S ≥ 1 since V² ≥ YS²(1 − o(1)) and d ≥ 3; auditU #4);
 otherwise it has ≤ (8V² + 32λ₂²)/ℓ ≤ 179V²/ℓ ≤ 400S² points in [−V, V]², since λ₂² ≤ (4/3)ℓ²/λ₁² ≤ (16/3)V² and
 V² ≤ 2YS². The pair bound of [pp] Lemma `lem:pairs` becomes q = |Δ|/ℓ ≤ 2V²/ℓ ≤ 4S².
 
@@ -158,6 +159,12 @@ compares leading terms only, and is a check of the notes' arithmetic, not an ind
 leading terms: for example, (P1) compares log Y ≍ (log N)^{3/5}(log log N)^{2/5} with log B ≍ (log N)^{2/5}(log log N)^{3/5};
 (P2) compares η₀ log N = (log N log log N)^{1/2} with Λ; (P4) compares d log d ≍ (log N)^{1/5}(log log N)^{4/5} with Λ;
 (P6) compares log Y with log N/log B ≍ (log N)^{3/5}(log log N)^{−3/5}. ∎
+
+*Where the asymptotics start (auditU #3, its A8).* The N^{η₀}-type margins in (P2), (P10), (R′4) and Lemma W-U beat
+L[2/5]-scale quantities only by a factor D^{1/10}: η₀ log N/Λ = D^{1/10}. For example N^{η₀/4} ≥ B^{C} needs
+D ≥ (4Ca)^{10}, i.e. D ≳ 3.7·10⁸ for C = 3 and D ≳ 6·10^{13} for C = 10. So N₀(a, κ, d₀) is astronomical. This affects no
+statement: **the algorithm never uses N₀** (FACTOR runs SPLIT and trial division in alternation, [pp] Algorithm
+`alg:factor`; Remark `rem:noN0`), and Theorem U is an asymptotic statement about the expected time.
 
 ---
 
@@ -292,7 +299,8 @@ r₀ := F̂_{g,w}(P) mod t is a unit. Then Pr_c[F_A(P) ∈ 𝒮_B] ≥ ρ_F/(log
 **Lemma FIB (fibres) [proved in [pp] Lemma `lem:fibres`, with V_ℓ := V].** |𝒢_P(n)| ≤ 2M/V for every n; there is an
 interval I_P of length ≥ MV/(16ℓ) − 1 on which ℓn has constant sign, MV/32 ≤ ℓ|n| ≤ 2MV and
 |𝒢_P(n)| ≥ M/(CV log log N). The Möbius error is 2^{ω(ℓ|n|)} ≤ exp(O(log N·μ/log log N)) ≤ (M/V)^{o(1)} (codex's
-corrected form), which is negligible against M/V ≥ N^{η₀/2}. ∎
+corrected form). It is compared with M/V = N^{μ−ν−o(1)} itself, not with N^{η₀/2} (2^ω can exceed N^{η₀/2}):
+log 2^{ω(ℓ|n|)} = O(μ log N/log log N) = o((μ − ν)log N) since μ − ν ≥ μ/2 (auditU #2). ∎
 
 **Theorem FM-U [proved].** For N ≥ N₀(a, κ, d₀),
   E_{ℓ∈J}E_{A∼𝒜}N_ℓ(A) ≥ S²ρ_rρ_F/(d·(log N)^{C_FM}),  C_FM = C(a, κ, d₀).
@@ -337,23 +345,75 @@ and x, Y, Q satisfy:
 and Qδ_𝒯/10 ≤ #𝒯_Q ≤ 3Qδ_𝒯 (δ_𝒯 = ϱ(Q/Y, y)/log Y), where C, c, x₀ depend only on K₀ and on absolute constants
 (Drappeau's η_D, c_D, δ_D, C_D; HT's; C_dBT, C_α).
 
-*Proof (every use of regime (R) and of λ in [lem85], replaced).*
-- (α1)/(α2) ([lem85] §2): 1 − β(z, y) ≤ (log(u log y) + C_α log log y)/log y ≤ 1/4 for 2y ≤ z ≤ x, by (R′1).
-- E7: ϱ(z, y) ≥ y^{−1}exp(−u_z log(4u_z log y)) ≥ y^{−1−K₀} for 2y ≤ z ≤ x, by (R′3) (u_z ≤ u). This replaces
-  "u log(4u log y) = (ξ/a²)(1 + o(1))log y".
-- Lemma SM (a): Drappeau's Lemme 5 at z = x/d ≥ x^{1/2} (d ≤ Q′ ≤ √x) needs (log z)^{c_D} ≤ y ≤ z and
-  R₁ = y^K ≤ z^{η_D}; the latter is K log y ≤ (η_D/2)log x, i.e. u ≥ 2K/η_D, which is (R′2). The transfer factor is
-  R₁^{1−β′} ≤ (log x)^{K(1+C_α)} by (α2). The saving exp(−δ_D(u/2)/log²(u/2 + 1)) beats (log x)^{K(1+C_α)+1}
-  because u/log²u ≥ (log log x)⁴/(16(log log log x)²) by (R′2).
-- Lemma SM (b) and Part 2: Corollary LS′ gives ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/R + y^{1/2}x^{1/2}Q₀) with R = y^K and
-  Q₀ = Q′ (resp. R = Y and Q₀ = Q). The target is Ψ(x, y)ϱ(Q′, y) (resp. Ψ(x, y)δ_𝒯), and by E7 both are
-  ≥ x·y^{−2−2K₀}/log Y. Relative to the target, the first term is ≤ C(log x)³y^{2K₀+9/2}/R ≤ y^{−1/2} because
-  K = 2K₀ + 6 and Y ≥ y^K, and the second is ≤ C(log x)³y^{2K₀+7/2}·Q₀/√x ≤ C(log x)³y^{2K₀+7/2}e^{−Γ} ≤ y^{−1/2}
-  by (R′4) (this is the uniform saving codex lv5unif_2 #1 asks for).
-- Part 1: Lemma SM applies to Q′ = Q/ℓ, since 2y ≤ e^{Γ}/2 ≤ Q/(2Y) ≤ Q′ ≤ Q ≤ √x·e^{−Γ}.
-- (i), the count of 𝒯_Q: HT Theorem 3 at z = Q/(2ℓ) ≥ e^{Γ}/4 ≥ y^{U₀−1}, so u_z ≥ U₀ − 1, and α(z, y) ≥ 0.99 by (α2)
-  and (R′1); the constants 0.8 and 4.1 of [lem85] follow.
-- E2 (lift averaging), E3, E4, E5, E6, E8, Lemma LS, Perron: regime-free. ∎
+*Proof (written out in full; auditU #6).* Throughout, x ≥ x₀(K₀) and the hypotheses (R′1)–(R′4) hold; C denotes a
+constant depending only on K₀ and on the absolute constants of the cited results. We use the published statements of
+[lem85] §2 — (D) Drappeau 2015 Lemme 5, (dBT) Drappeau 2015 Lemme 1(i), (HT) Hildebrand–Tenenbaum 1986 Theorems 2(i)
+and 3, (LS) Iwaniec–Kowalski Thm 7.13, (RS) Rosser–Schoenfeld — and the following regime-free lemmas of [lem85] §§3–4,
+whose proofs there use no hypothesis on x, y beyond those stated:
+- E1: max_{(a,q)=1}|E(z, y; q, a)| ≤ Δ(q) := φ(q)^{−1}Σ_{χ≠χ₀ (q)}|Ψ(z, y; χ)|.
+- E2 (lift averaging): for a prime ℓ > y, ℓ ∤ s, t = ℓs and (r, t) = 1,
+  E(z, y; t, r) = E(z, y; s, r)/(ℓ − 1) + Rem, |Rem| ≤ Δ_ℓ(t) := φ(t)^{−1}Σ_{χ (t), ℓ|cond χ}|Ψ(z, y; χ)|.
+- E3: for χ (mod q) induced by primitive χ* (mod r), Ψ(z, y; χ) = Σ_{d|q_y, (d,r)=1}μ(d)χ*(d)Ψ(z/d, y; χ*).
+- E6: if β, β′ ≥ 3/4 then Σ_{d sqfree} d^{1−β−β′}/φ(d) < 6.
+- E8: for 2y ≤ Q′ ≤ x and (r, d) = 1, Σ_{Q′/2<s≤Q′, P⁺(s)≤y, rd|s}1/φ(s) ≤ 10C_dBT log log(Q′+16)·ϱ(Q′, y)(rd)^{1−β(Q′,y)}/(φ(r)φ(d)).
+- Corollary LS′: if z₀ ≥ max(4, y^{3/2}), 1 ≤ R₀ ≤ Q₀ and z₀/Q₀ ≥ max(4, y^{3/2}), and 𝒳(q) is any set of characters
+  mod q with conductors in (R₀, Q₀], then Σ_{q≤Q₀}φ(q)^{−1}Σ_{χ∈𝒳(q)}|Ψ(z₀, y; χ)| ≤ 1.5·10³π(y)(log z₀)²(y^{3/2}z₀/R₀ + y^{1/2}z₀^{1/2}Q₀).
+
+**Step A (saddle point).** For 2y ≤ z ≤ x, (HT) Theorem 2(i) gives (lem85's (α2))
+1 − β(z, y) ≤ (log(u_z log y) + C_α log log y)/log y ≤ (log log x + C_α log log y)/log y ≤ 1/(4 log log x) ≤ 1/100,
+using u_z log y = log z ≤ log x and log y ≥ 4(log log x)² (R′1). In particular β(z, y) ≥ 3/4.
+
+**Step B (density floor).** For 2y ≤ z ≤ x, ϱ(z, y) ≥ y^{−1−K₀}. *Proof.* Let k := ⌊u_z⌋ and 𝒫 the primes in (y/2, y];
+#𝒫 ≥ 3y/(10 log y) ≥ k by (RS) and (R′1). Products of k distinct primes of 𝒫 are distinct, y-smooth and ≤ y^k ≤ z, so
+Ψ(z, y) ≥ C(#𝒫, k) ≥ (#𝒫/k)^k ≥ (z/y)(3/(10k log y))^k, i.e. ϱ(z, y) ≥ y^{−1}exp(−u_z log(4u_z log y)) ≥ y^{−1−K₀} by
+(R′3), since u_z ≤ u.
+
+**Step C (Lemma SM′, smooth moduli with relative saving).** Let 2y ≤ Q′ ≤ √x·y^{−(2K₀+U₀)}(log x)^{−4}, and
+𝒮 := {s ∈ (Q′/2, Q′] : P⁺(s) ≤ y}. Then Σ_{s∈𝒮} max_{(a,s)=1}|E(x, y; s, a)| ≤ C·Ψ(x, y)ϱ(Q′, y)·ε.
+*Proof.* By E1 the left side is ≤ Σ_{s∈𝒮}Δ(s). Split each Δ(s) by the conductor r of χ: (a) 1 < r ≤ R₁ := y^K; (b) r > R₁.
+- (a) By E3 (s is y-smooth, so s_y = rad s) and E8, exchanging sums (only d ≤ Q′ occur):
+  (a) ≤ 10C_dBT log log(Q′+16)·ϱ(Q′, y)·R₁^{1−β′}·Σ_{d≤Q′ sqfree}(d^{1−β′}/φ(d))·𝔇(x/d),
+  where β′ := β(Q′, y) and 𝔇(z) := Σ_{1<r≤R₁}φ(r)^{−1}Σ*_{χ (r)}|Ψ(z, y; χ)|. For d ≤ Q′ ≤ √x, z := x/d ≥ √x, so
+  (log z)^{c_D} ≤ y ≤ z by (R′1), and R₁ = y^K ≤ z^{η_D} because K log y ≤ (η_D/2)log x by (R′2). The pairs (r, χ*)
+  are among the terms of (D) with Q := R₁ and A = 1/2, so 𝔇(x/d) ≤ C_DΨ(x/d, y)(H(u_d)^{−δ_D} + y^{−δ_D}) with
+  u_d = log(x/d)/log y ≥ u/2 and H increasing. By (dBT), Ψ(x/d, y) ≤ C_dBTΨ(x, y)d^{−β}, β := β(x, y) ≥ 3/4, and by E6
+  Σ_d d^{1−β′−β}/φ(d) < 6. By Step A, R₁^{1−β′} = exp(K(1 − β′)log y) ≤ (log x)^{K(1+C_α)}. Hence
+  (a) ≤ 60C_dBT²C_D·log log x·(log x)^{K(1+C_α)}·(exp(−δ_D(u/2)/log²(u/2+1)) + y^{−δ_D})·Ψ(x, y)ϱ(Q′, y).
+  Write Π := log log x·(log x)^{K(1+C_α)} for the prefactor. By (R′2), u ≥ (log log x)⁴, so for x ≥ x₀
+  δ_D(u/2)/log²(u/2+1) ≥ δ_Du/(4log²(u+1)) + log Π, hence Π·exp(−δ_D(u/2)/log²(u/2+1)) ≤ exp(−δ_Du/(4log²(u+1))). By
+  (R′1), log y ≥ 4(log log x)² ≥ (2/δ_D)log Π for x ≥ x₀, so Π·y^{−δ_D} ≤ y^{−δ_D/2}, and by (R′3) (u log u ≤ K₀ log y)
+  y^{−δ_D/2} ≤ exp(−δ_Du log u/(2K₀)) ≤ exp(−δ_Du/(2K₀log²(u+1))). Therefore
+  (a) ≤ C·Ψ(x, y)ϱ(Q′, y)·exp(−cu/log²(u+1)) with c := δ_D/(4 + 2K₀).
+- (b) If Q′ ≤ R₁ the case is empty (every conductor divides s ≤ Q′). Otherwise apply Corollary LS′ with z₀ = x,
+  Q₀ = Q′, R₀ = R₁, 𝒳(s) = {χ (s) : cond χ > R₁} for s ∈ 𝒮 (∅ otherwise); its hypotheses hold since x/Q′ ≥ √x ≥ 4y^{3/2}
+  (u ≥ 4). By Step B (x, Q′ ≥ 2y), Ψ(x, y)ϱ(Q′, y) ≥ x·y^{−2−2K₀}, and π(y) ≤ y, so relative to Ψ(x, y)ϱ(Q′, y),
+  (b) ≤ 1.5·10³(log x)²·(y^{9/2+2K₀−K} + y^{7/2+2K₀}Q′/√x) ≤ 1.5·10³(log x)²(y^{−3/2} + y^{7/2−U₀}(log x)^{−4}) ≤ y^{−1/2},
+  using K = 2K₀ + 6, U₀ ≥ 8 and (R′1). ∎
+
+**Step D (the count of 𝒯_Q).** Since ℓ > y ≥ P⁺(s), each t ∈ 𝒯_Q determines (ℓ, s), and
+#𝒯_Q = Σ_{ℓ∈J}(Ψ(Q/ℓ, y) − Ψ(Q/(2ℓ), y)).
+- Upper: #𝒯_Q ≤ #J·Ψ(Q/Y, y) ≤ (1.256·2Y/log 2Y)(Q/Y)ϱ(Q/Y, y) ≤ 3Qδ_𝒯 by (RS) Cor. 1.
+- Lower: put z := Q/(2ℓ). Then z ≥ Q/(4Y) ≥ e^{Γ}/4 ≥ y^{U₀−1} by (R′4), so u_z ≥ U₀ − 1 and (HT) Theorem 3's error is ≤ 1/100;
+  β(z, y) ≥ 0.99 by Step A. With c = 2: Ψ(2z) − Ψ(z) ≥ (2^{0.99}·0.99 − 1)Ψ(z) ≥ 0.8Ψ(z). With c = 4 and β ≤ 1:
+  Ψ(Q/Y) ≤ Ψ(4z) ≤ 4.1Ψ(z) (as Q/Y ≤ 4z). So each ℓ contributes ≥ 0.19(Q/Y)ϱ(Q/Y, y), and #J ≥ 3Y/(5 log Y) by (RS) Cor. 3,
+  giving #𝒯_Q ≥ 0.11Qδ_𝒯 ≥ Qδ_𝒯/10.
+
+**Step E (the error sum).** By E2, for t = ℓs ∈ 𝒯_Q, max_{(r,t)=1}|E(x, y; t, r)| ≤ max_{(a,s)=1}|E(x, y; s, a)|/(ℓ − 1) + Δ_ℓ(t).
+- *Part 1 (χ_ℓ principal).* Σ_t max_a|E(x, y; s, a)|/(ℓ − 1) = Σ_{ℓ∈J}(ℓ − 1)^{−1}Σ_{s∈(Q/2ℓ, Q/ℓ], P⁺(s)≤y}max_a|E(x, y; s, a)|.
+  Step C applies with Q′ = Q/ℓ, because 2y ≤ e^{Γ}/2 ≤ Q/(2Y) ≤ Q/ℓ ≤ Q ≤ √x·e^{−Γ} ≤ √x·y^{−(2K₀+U₀)}(log x)^{−4} by
+  (R′4). So Part 1 ≤ CΨ(x, y)ε·Σ_ℓϱ(Q/ℓ, y)/(ℓ − 1). Since Ψ(·, y) is nondecreasing, ϱ(Q/ℓ, y) ≤ 2ϱ(Q/Y, y); and
+  Σ_{ℓ∈J}1/(ℓ − 1) ≤ #J/Y ≤ 2.6/log Y. Hence Part 1 ≤ 5.2C·Ψ(x, y)δ_𝒯ε.
+- *Part 2 (ℓ | conductor).* Such χ have conductor > Y. Corollary LS′ with z₀ = x, Q₀ = Q, R₀ = Y and 𝒳(t) =
+  {χ : ℓ_t | cond χ} (t ∈ 𝒯_Q) gives Part 2 ≤ 1.5·10³π(y)(log x)²(y^{3/2}x/Y + y^{1/2}x^{1/2}Q). By Step B,
+  Ψ(x, y)δ_𝒯 ≥ x·y^{−2−2K₀}/log x. Relative to it, Part 2 ≤ 1.5·10³(log x)³(y^{9/2+2K₀}/Y + y^{7/2+2K₀}Q/√x)
+  ≤ 1.5·10³(log x)³(y^{−3/2} + y^{7/2−U₀}(log x)^{−4}) ≤ y^{−1/2}, by Y ≥ y^K and √x/Q ≥ e^{Γ} (R′4).
+- The principal character of t contributes exactly Ψ_t(x, y)/φ(t), the subtracted main term.
+Adding the parts proves the bound with constant 5.2C + 2 and ε = exp(−cu/log²(u+1)) + y^{−1/2}. ∎
+
+*Where this differs from [lem85].* Only Steps A–E: Step A replaces "regime (R)" by (R′1); Step B replaces
+"u log(4u log y) = (ξ/a²)(1 + o(1))log y" by (R′3); Steps C–E replace the fixed λ (x^λY ≤ Q ≤ x^{1/2−λ}) by the gap Γ of
+(R′4), which supplies both the lower bound Q/ℓ ≥ 2y (and u_z ≥ U₀ − 1 in Step D) and the large-conductor savings. The
+regime-free lemmas E1–E8, LS, LS′ and the Perron bound are used as proved in [lem85].
 
 **In the design.** y = B, x ∈ 𝒳 (so log x = (μ + h + dν)log N(1 + o(1)) = θ_F₀D^{−1/5}log N(1 + o(1)) with
 θ_F₀ := θ₀ − 1/d₀ the algebraic part of θ₀, and u ≍ D^{2/5}), Y as in §1, Q one of the dyadic
@@ -407,7 +467,7 @@ X′₊ := 2MV/Y, 𝒩_ℓ := {n ∈ 𝒮_B : MV/32 ≤ ℓ|n| ≤ 2MV}, and R�
 - **Steps 2–3.** Unchanged: Z ≤ ½(𝔮(P) + 𝔮(P′)); 𝔮(P) ≤ 𝔔₀(t, |Δ|; r₀); all values in [−X_F, X_F] (Lemma GM-U's
   envelope).
 - **Step 4.** Lemma W-U: E_w𝔔₀ ≤ (C_W/φ(t))𝔔(tℓq).
-- **Step 5.** For fixed P, P′, n: #{g : G_g(P) = ℓn, Y_{P′}(g) = 1} ≤ U := (3M/V)ρ_r(log N)^{C}, by DS-U with
+- **Step 5.** For fixed P, P′, n: #{g : G_g(P) = ℓn, Y_{P′}(g) = 1} ≤ U := (4M/V)ρ_r(log N)^{C} (two signs of n′; auditU #5), by DS-U with
   modulus q ≤ 4S² ≤ B^{C₀} and X_rB^{−C₀}/q ≤ M/V (because X_r/(M/V) = 2V²/Y ≤ 4S²).
 - **Step 7 (assembly; the exact powers).** Since the n-sum does not depend on P,
   E[N(N−1)] ≤ (#𝒫/|𝒢|)·10·(e^{11/3}C_W/((2H+1)²V^{2d−4}))·U·Σ_{q≤4S²}τ(q)(log N)^{C_L}Ψ(X′₊)Ψ(X_F)²/(Yq(MV)²).
@@ -446,8 +506,9 @@ Q_IR = H^{1/2+o(1)}. So Pr(𝓡) ≤ exp(−log H/(13d log log H)) + 3/(2H + 1) 
 **Theorem K-U [proved].** Let A be a field returned by SAMPLE_FIELD with δ_A ≥ γ/4. Then one call of
 DESCEND_ONCE(A) returns a row or makes a factor exit with probability ≥ (δ_A/(4 log N))^{2k}/(32k²).
 *Proof.* |𝒟_A| ≥ γπ_J/4 ≥ 4k³2^{ω(N)} by (P6) and Theorem D-U. The products of k distinct primes of 𝒟_A lie in
-(Y^k, (2Y)^k] ⊂ (X2^{−2k}, X], so some window [Y′/2, Y′] of the 2k dyadic windows holds a set 𝒮 of
-≥ C(|𝒟_A|, k)/(2k) of them, with 2Y′² < N. Lemma S″ ([rec] §3.2) gives Pr_R[E] ≥ |𝒮|²/(2φ(N)) for R uniform on
+(Y^k, (2Y)^k] ⊂ (X2^{−2k}, X]. This range is covered by the k windows [Y′/2, Y′] with Y′ = 2^{i+1}Y^k, 0 ≤ i < k
+(all with Y′ ≤ (2Y)^k ≤ X), so one of them holds a set 𝒮 of
+≥ C(|𝒟_A|, k)/k ≥ C(|𝒟_A|, k)/(2k) of them (auditU #7), with 2Y′² < N. Lemma S″ ([rec] §3.2) gives Pr_R[E] ≥ |𝒮|²/(2φ(N)) for R uniform on
 Q_N, with E: the primitive vector of Λ_R is ±(u, v), u, v ∈ 𝒮 coprime. So Pr_r[E] ≥ |𝒮|²/(2N). With
 |𝒮| ≥ (|𝒟_A|/k)^k/(2k), |𝒟_A| ≥ δ_AY/(2 log Y), Y^{2k} ≥ N/(4·16^k) and 2k log Y ≤ log N, this is
 ≥ (δ_A/(4 log N))^{2k}/(32k²). On E the shape test passes (exactly k distinct primes of 𝒟_A ⊂ J on each side) and
@@ -462,9 +523,17 @@ shape test and 2k special-q searches ([rec] §3.2, codex recurse_2).
 trial or of one DESCEND_ONCE, and T_post that of POSTPROCESS. Then
 (i) p ≥ (γ/4)(γ/(16 log N))^{2k}/(32k²); (ii) E[cost of SPLIT] ≤ (2M_rows + 1)C_trial/p + 2T_post.
 *Proof.* (i): [pp] Prop `prop:select`(i) with Theorem K-U and the set 𝒢* = {A ∉ 𝓡 : δ_A ≥ γ/4} of measure ≥ γ/4.
-(ii): selection costs ≤ C_trial/p (Wald). The kept field A* has law ς_A𝒜(dA)/b, and given A* = A the expected cost
-is ≤ 2(M_rowsC_trial/ς_A + T_post) (≤ 2 expected rounds, Theorem DD). Averaging,
-(b/p)·2(M_rowsC_trial E[1/ς_{A*}] + T_post) ≤ 2M_rowsC_trial/p + 2T_post, since E[1/ς_{A*}] ≤ 1/b and b ≤ p.
+(ii) (rewritten after auditU #8). Write b for the probability that a trial returns a row, so b ≤ p.
+- *Selection.* Trials are i.i.d. until the first factor exit or row; their number is geometric with mean 1/p, so by
+  Wald selection costs ≤ C_trial/p.
+- *Kept field.* The selection ends with a row with probability b/p, and then the kept field A* has the size-biased law
+  Pr[A* ∈ dA] = ς_A𝒜(dA)/b, where ς_A is the per-call row probability of DESCEND_ONCE(A). Hence
+  E[1/ς_{A*}] = ∫(1/ς_A)(ς_A/b)𝒜(dA) = Pr_𝒜[ς_A > 0]/b ≤ 1/b.
+- *Rows and rounds.* Given A* = A, one round collects M_rows rows in M_rows/ς_A expected calls, then runs POSTPROCESS;
+  each round succeeds with conditional probability ≥ 1/2 (Theorem DD), so the expected cost is
+  ≤ 2(M_rowsC_trial/ς_A + T_post).
+- *Total.* E[cost] ≤ C_trial/p + (b/p)·2(M_rowsC_trial·E[1/ς_{A*}] + T_post) ≤ C_trial/p + 2M_rowsC_trial/p + 2(b/p)T_post
+  ≤ (2M_rows + 1)C_trial/p + 2T_post.
 ([pp] divides T_post by p too; at L[1/2] that was harmless, here it would add s to the 2a term.) ∎
 
 ---
@@ -484,6 +553,15 @@ is ≤ 2(M_rowsC_trial/ς_A + T_post) (≤ 2 expected rounds, Theorem DD). Avera
   exceptional term 2x^{1−ν₁} to be ≤ x/(40 log x), i.e. ν₁ log x ≥ log(80 log x). The old choice
   log x ≈ (log N)² fails as soon as (2d)! ≫ log N. Take
     s := log x := ⌈(2d)!·(log N + log Δ̄ + d)⁴⌉ (codex's choice; ours was 8(2d)!(log Δ̄)² + (log N)²).
+  **Citation (pinned, auditU #10).** J. C. Lagarias and A. M. Odlyzko, "Effective versions of the Chebotarev density
+  theorem", in *Algebraic Number Fields: L-functions and Galois properties* (Durham 1975), ed. A. Fröhlich, Academic
+  Press, London, 1977, pp. 409–464, **Theorem 1.3**: for L/K Galois, n_L > 1 and x ≥ exp(10 n_L(log d_L)²),
+  |π_C(x) − (|C|/|G|)Li(x)| ≤ (|C|/|G|)Li(x^{β₀}) + c₁x·exp(−c₂ n_L^{−1/2}(log x)^{1/2}), c₁, c₂ absolute and effective,
+  the β₀ term present only for a real zero β₀ ∈ [1 − (4 log d_L)^{−1}, 1) of ζ_L. This label follows lv6, [pp] Fact `fact:LO`
+  and codex auditU_1; Serre (Publ. Math. IHÉS 54 (1981), §2, Théorème 2) restates the same estimate. Pierce–Turnage-
+  Butterbaugh–Wood (arXiv 1709.09637) call it "Corollary 1.3". Neither we nor the critics read the label in the
+  printed volume (our copy of the scan was not text-extractable); the *content* is confirmed by the literature critic
+  against two restatements, and only the content is used.
   Then ν₁s ≥ (log N + log Δ̄)³/(4 log Δ̄) ≫ log(80s) = O(d log d + log log N), and LO's conditions
   s ≥ 20d(log Δ̄)² (log x ≥ 10n_L(log d_L)², n_L = 2d) and c₁x·exp(−c₂s^{1/2}/√(2d)) ≤ x/(40 log x) hold. The base-field
   sampler ([pp] "Sampler") needs ζ_K to have no zero in [1 − 1/(4·d!·log|Δ_K|), 1) beyond what s absorbs; the same s
@@ -545,12 +623,14 @@ almost-sure termination from the finite expectation. ∎
   W-U, DS-U, L2-U, Theorems FM-U, LD*-U, D-U, K-U, Prop select-U, Prop LV6-U, Lemma F_α;
 - published: Hildebrand–Tenenbaum 1986 (Thms 1, 2(i), 3), Canfield–Erdős–Pomerance 1983, Tenenbaum's Ψ_q theorem,
   Drappeau 2015 Lemme 1(i) and Lemme 5, Iwaniec–Kowalski Thm 7.13, Montgomery–Vaughan 1973 (large sieve,
-  Brun–Titchmarsh), the prime number theorem with error term, Lagarias–Odlyzko 1977, Stark 1974 Lemma 8,
+  Brun–Titchmarsh), the prime number theorem with error term, Lagarias–Odlyzko 1977 (pinned in §9), Stark 1974 Lemma 8,
   Landau's theorem, AKS, Wiedemann/Kaltofen–Saunders, Cantor–Zassenhaus, Bernstein's batch smooth parts.
 
 **Exact cost arithmetic (`params.py`, rationals only).** 1/(1 − 2^{−2/5}) ∈ [4.12981, 4.12983] (bracketed by
-checking p⁵ against 4q⁵ exactly). The optimum of (10.3) over a rational grid, by C_γ: 3.517 (C_γ = 0;
-a = 3/5, κ = 1/8, d₀ = 1), 4.047 (C_γ = 1), 5.038 (C_γ = 5), 6.498 (C_γ = 20). At each optimum the special-q term
+checking p⁵ against 4q⁵ exactly). Upper bounds for the infimum of (10.3), from `params.optimise`'s rational grid, by C_γ:
+c ≤ 3.517 (C_γ = 0; a = 3/5, κ = 1/8, d₀ = 1), ≤ 4.047 (C_γ = 1), ≤ 5.038 (C_γ = 5), ≤ 6.498 (C_γ = 20). These are grid
+values, not optima: auditU's finer grid gives 3.5095, 4.0395, 5.0350, 6.4722, and its Opus critic's 3.5103, 4.028,
+5.031, 6.493 (auditU #9). At each optimum the special-q term
 a + s + max(a, σ) and the recursion term (a + s)/(1 − 2^{−2/5}) nearly balance (for C_γ = 0: 3.5167 against 3.5103, so
 the special-q term binds; for C_γ = 5 the recursion term binds); linear algebra (2a) never binds. (Corrected after
 codex lv5unif_2 #7.) These numbers illustrate the shape of c; C_γ itself is not
@@ -647,7 +727,8 @@ bounds for factoring.
   attempts per row is ≥ (log N/C)^{2k}, and L[α] cost forces k = O(D^α).
 - (R3) [proved for the design] θ = 2μ + h + (d−1)ν with h ≥ 2ν and the window/level floors gives θ ≥ max(3/(d+1),
   (d+1)ν) − o(1), so θ² ≥ 3/(4k)(1 − o(1)); and the smoothness cost of norms N^{θ} at B = L[α] is
-  exp((1 − α)θ log N·log log N/log B·(1+o(1))) by CEP, which is L[α]^{O(1)} only if θ = O(D^{2α−1}).
+  exp(u log u(1+o(1))) with u = θ log N/log B by CEP; at θ ≍ D^{2α−1}, u ≍ D^α and log u ∼ α log log N, so the cost is
+  exp(αθ log N·log log N/log B·(1+o(1))) (coefficient α, not 1 − α; auditU #1), which is L[α]^{O(1)} only if θ = O(D^{2α−1}).
 - Together k ≳ D^{2(1−2α)} and k = O(D^α), so α ≥ 2/5. Theorem U attains it.
 - Below 2/5 one needs multi-level descent and a lower bound for smooth values over a field-dependent good set
   (endogenous children; recurse §3.4). Agent `nested` (phase 12) works on that under ERH. Nothing here helps.
