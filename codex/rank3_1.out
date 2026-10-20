@@ -1,0 +1,403 @@
+**PROVED — Linking alone does not imply a uniform \(N^{-\kappa}\) volume bound in the stated model.** A counterexample exists with distinct nonlinear fields, both projections of rank 3, and a finite positive volume independent of \(N\).
+
+There is nevertheless a useful partial theorem: **when every maximal minor of the linear factors is nonzero, the exterior resultant does give an explicit \(N\)-saving**, including at ramified primes. For rank 3 this proves a barrier under a stronger box condition. It does not settle the requested range \(E\le B^{1-o(1)}\), or configurations with vanishing maximal minors.
+
+Throughout, \(r\) denotes the number of variables and \(D=d+d'\).
+
+**KNOWN — The relevant discriminant is a product of maximal minors.** Write
+\[
+F=\prod_{i=1}^{D}L_i,\qquad \mathbf L_i=(L_{i1},\ldots,L_{ir}),
+\]
+and define
+\[
+\Delta(F)=
+ \prod_{\substack{(i_1,\ldots,i_r)\\\text{distinct}}}
+ \det(\mathbf L_{i_1},\ldots,\mathbf L_{i_r}).
+\]
+The product uses **ordered** tuples. Thus, up to sign,
+\[
+\Delta(F)=
+ \left(\prod_{|I|=r}\det(\mathbf L_i)_{i\in I}\right)^{r!}.
+\]
+It is independent of rescaling the factors while preserving their product. Its nonvanishing means that *every* \(r\) factor vectors are independent. This is a different invariant from the usual hypersurface discriminant.
+
+Bean–Thunder, *JLMS* 54 (1996), 39–49, prove, for complex decomposable forms with \(D>r\) and \(\Delta(F)\ne0\),
+\[
+\boxed{\quad V_F\le C_r|\Delta(F)|^{-(D-r)!/D!}.\quad}                 \tag{1}
+\]
+Here \(C_r\) is the volume for \(X_1\cdots X_r(X_1+\cdots+X_r)\); the bound is sharp, and
+\[
+C_r\sim (2/\pi)e^{1-\gamma}(2r)^r.
+\]
+For \(r=2\), this recovers Bean’s bound. [Bean–Thunder, publisher abstract](https://londmathsoc.onlinelibrary.wiley.com/doi/10.1112/jlms/54.1.39).
+
+**KNOWN — Thunder’s precise finiteness and counting results.** Let \(N_F(X)\) count all integral solutions of \(|F|\le X\), including zeros, and set
+\[
+\mathcal H(F)=\prod_i\|\mathbf L_i\|_2.
+\]
+For the finite-volume criterion, take independent ordered \(r\)-tuples satisfying, for each \(j<r\),
+\[
+L_{i_{j+1}}\propto\overline{L_{i_j}}
+\quad\text{or}\quad
+\overline{\mathbf L_{i_j}}\in
+ \operatorname{span}(\mathbf L_{i_1},\ldots,\mathbf L_{i_j}).
+\]
+Let \(a(F)\) be the maximum, over their initial spans of dimension \(j<r\), of
+\[
+\frac{\#\{\text{factor vectors in that span, with multiplicity}\}}j.
+\]
+His Proposition says \(V_F<\infty\) exactly when these tuples exist and \(a(F)<D/r\). Finite type requires finite volume on every nonzero rational subspace.
+
+Theorems 1–3 give:
+
+- finite volume and no nonzero rational zero imply \(V_F\ll_{r,D}1\);
+- \(N_F(X)<\infty\) for every \(X\) iff \(F\) has finite type; then \(N_F(X)\ll_{r,D}X^{r/D}\);
+- for finite type,
+  \[
+  |N_F(X)-V_FX^{r/D}|
+  \ll_{r,D}\mathcal H(F)^{c(F)}
+       X^{(r-1)/(D-a(F))}(1+\log X)^{r-2}.
+  \]
+  If \(\Delta\ne0\), \(a(F)=1\) and \(c(F)=\binom{D-1}{r-1}-1\).
+
+His Lemma 14 gives the coefficient-independent box discrepancy
+\[
+\boxed{\quad
+|\#(S_X\cap[-E,E]^r\cap\mathbb Z^r)
+-\operatorname{vol}(S_X\cap[-E,E]^r)|
+\le rD(2E+1)^{r-1}.\quad}                                         \tag{2}
+\]
+[Thunder 2001](https://arxiv.org/pdf/math/0105267).
+
+**KNOWN — Thunder’s later results improve the dependence on the form.** Define
+\[
+M(F)=\inf_{T\in GL_r(\mathbb Z)}\mathcal H(F\circ T),\qquad
+m(F)=\inf_{|\det T|=1,\ T\in GL_r(\mathbb R)}\mathcal H(F\circ T).
+\]
+For integral \(F\) of finite volume without nonzero rational zeros, his 2003 result gives
+\[
+M(F)^{-r/D}\ll_{r,D}V_F
+\ll_{r,D}M(F)^{-1/D}(1+\log M(F))^{r-1}.
+\]
+Theorems 1, 3 and 4 of the 2005 paper give
+\[
+V_F\ll_{r,D}m(F)^{-r/D}(1+|\log m(F)|)^{r-1}.
+\]
+When its arrangement parameter \(a'(F)<D/r\), the logarithm can be removed; for finite-type forms,
+\[
+N_F(X)\ll_{r,D}(X/m(F))^{r/D}+X^{(r-1)/D}.                         \tag{3}
+\]
+The condition holds if \(\gcd(r,D)=1\). In that case,
+\[
+N_F(X)=V_FX^{r/D}
++O_{r,D}\!\left(
+ X^{\,r/(D+1/(r-1)^2)}(1+\log X)^{r-2}\right).
+\]
+The \(X^{(r-1)/D}\) term in (3) accommodates concentration in proper subspaces. [Thunder 2005, including the 2003 theorem](https://arxiv.org/pdf/math/0305078).
+
+**KNOWN — Schmidt and Evertse give coefficient-uniform norm-form counts, without an \(N\)-saving.** For
+\[
+G=N_{K/\mathbb Q}(\alpha_1X_1+\cdots+\alpha_rX_r),
+\qquad V=\operatorname{span}_{\mathbb Q}\{\alpha_i\},
+\]
+nondegeneracy means that the \(\alpha_i\) are independent and \(V\) contains no nonzero subspace stable under a subfield \(J\subset K\), except \(J=\mathbb Q\) or an imaginary quadratic field. Schmidt’s finiteness criterion is that \(N_G(X)\) is finite for every \(X\) iff \(G\) is nondegenerate. [Schmidt 1972](https://annals.math.princeton.edu/1972/96-3/p06).
+
+For such an integral norm form of degree \(d\), Evertse’s Theorem 1 gives
+\[
+N_G(X)\le
+(16d)^{(r+11)^3/3}
+X^{(r+\sum_{j=2}^{r-1}1/j)/d}
+(1+\log X)^{r(r-1)/2}.                                           \tag{4}
+\]
+I use the theorem’s displayed constant; the preprint abstract has a different exponent. [Evertse 2000](https://pub.math.leidenuniv.nl/~evertsejh/98-normforms.pdf).
+
+**KNOWN — Relevant later work does not remove the missing uniformity.**
+
+Junjiang Liu’s 2015 thesis treats
+\[
+\prod_{p\in S}|F(\mathbf a)|_p\le X,\qquad
+\gcd(a_1,\ldots,a_r,\prod_{p\in S\setminus\{\infty\}}p)=1.
+\]
+Under its hypotheses \(F(\mathbf a)\ne0\) for nonzero rational \(\mathbf a\), and
+\[
+a(F|_T)<D/\dim T
+\]
+for every rational \(T\) of dimension at least two, Theorems 2.1.1, 2.1.3–4 give
+\[
+V_{F,S}(X)\ll_{r,D,S}X^{r/D},\quad
+N_{F,S}(X)\ll_{r,D,S}X^{r/D},
+\]
+and an asymptotic with error
+\[
+O_{F,S}\!\left(X^{r/(D+1/(2(r-1)^2))}\right).
+\]
+Theorem 5.0.3 improves this, when \(\gcd(r,D)=1\), to
+\[
+O_{r,D,S}\!\left(
+X^{r/(D+1/(r-1)^2)}(1+\log X)^{2D|S|}\right).
+\]
+The dependence on \(S\) matters when \(S\) grows with \(N\) or \(B\). [Liu thesis](https://www.math.u-bordeaux.fr/~ybilu/algant/documents/PhD_theses/Liu.pdf).
+
+Stewart’s 2024 preprint extends counting to **essentially finite type**. Factor
+\[
+F=C\prod_iF_i^{e_i},
+\]
+with distinct rational irreducible factors; let \(A_i\) be their rational zero subspaces. Put
+\[
+d_F=\max_{\cap_{i\in I}A_i\ne\{0\}}\sum_{i\in I}e_i\deg F_i,
+\]
+or \(0\) when all \(A_i=\{0\}\). Essential finite type requires \(\cap_iA_i=\{0\}\), finite total volume, and finite restricted volume on rational subspaces contained in none of the \(A_i\). For \(D>r\), his Theorems 1–2 give
+\[
+N_F^*(X)\ll_{r,D}X^{1/D+(r-1)/(D-d_F)}
+\]
+and
+\[
+\begin{aligned}
+|N_F^*(X)-V_FX^{r/D}|\ll_{r,D}\;&
+\mathcal H(F)^{c(F)}(\log X)^{r-2}X^{(r-1)/(D-a(F))}\\
+&+(\log X+\log\mathcal H(F))^{r-1}
+X^{1/D+(r-2)/(D-d_F)} .
+\end{aligned}
+\]
+Here \(N_F^*\) excludes zeros; \(a,c\) are Thunder’s parameters. This supplies no \(N\)-saving unless an invariant is separately controlled. [Stewart 2024](https://arxiv.org/pdf/2410.01097).
+
+The exact book locations are Evertse–Győry, *Unit Equations*, Chapter 9, and *Discriminant Equations*, §14.9, “Decomposable Forms of Given Semi-Discriminant.” The semi-discriminant uses the **nonzero** maximal minors; unlike \(\Delta\), its unnormalized product can depend on factor normalization. I did not verify a theorem in these books implying the proposed linked-module ledger. [Chapter 9](https://www.cambridge.org/core/books/abs/unit-equations-in-diophantine-number-theory/decomposable-form-equations/BC6072E8C5F11E562C6B8EA5E86D4003), [2016 book contents](https://assets.cambridge.org/97811070/97612/frontmatter/9781107097612_frontmatter.pdf).
+
+For the 2026 endpoint, Amoroso–Masser–Zannier prove effective polynomial bounds for certain parametric norm equations. Their explicit ternary quintic example
+\[
+x^5+y^5+z^5-t^4(2x^3z^2-4x^2y^2z+xy^4+yz^4)+t^8xz^4=q
+\]
+has, for \(q\ne0\) and sufficiently large integer \(t\),
+\[
+\max(|x|,|y|,|z|)\le t^C|q|^c
+\]
+with effective constants. This is a height bound for a particular pencil, not the required general volume/counting theorem. [September 2026 preprint, §2](https://arxiv.org/pdf/2609.09995).
+
+The Bennett–Dummigan–Wooley paper concerns integers represented by **binary additive forms**; the Akhtari–Saradha–Sharma work concerns **binary diagonalizable Thue inequalities**. Neither supplies the missing higher-rank theorem. I found Liu’s extension of Thunder, but no verified joint “Thunder–Liu” result closing this problem. [Bennett–Dummigan–Wooley](https://personal.math.ubc.ca/~bennett/paper12.pdf), [Akhtari–Saradha–Sharma](https://arxiv.org/abs/1603.03340).
+
+**PROVED — An exterior-resultant volume theorem when \(\Delta(F)\ne0\).** Assume \(D>r\), and put
+\[
+m_r=\lfloor r^2/4\rfloor,\qquad
+\kappa_0=\frac{r(r-1)}{m_rD(D-1)}.
+\]
+Then the stated linking hypotheses imply
+\[
+\boxed{\quad V_F\le C_rN^{-\kappa_0}.\quad}                        \tag{5}
+\]
+
+Here is a proof that includes ramified primes.
+
+Fix \(p\mid N\), extend \(v_p\) to a common splitting field, normalized by \(v_p(p)=1\), and write
+\[
+t_{\sigma\tau}
+=\min_{j<k}v_p\!\left(
+ \ell_{\sigma,j}\ell'_{\tau,k}
+-\ell_{\sigma,k}\ell'_{\tau,j}\right)\ge0.
+\]
+Consider the polynomial
+\[
+P(U,V)=\operatorname{Res}_{S,T}
+\bigl(W(SU+TV),W'(SU+TV)\bigr)
+=\pm\prod_{\sigma,\tau}
+(\ell_\sigma\wedge\ell'_\tau)(U,V).
+\]
+
+Modulo \(p\), both norm forms are divisible by the nonzero linear form
+\[
+L(\mathbf a)=\sum_jv_ja_j.
+\]
+Indeed, they vanish on its kernel; since \(p>D\), this vanishing implies polynomial divisibility. Consequently \(P\) has every coefficient divisible by \(p\). The nonarchimedean Gauss lemma gives
+\[
+\sum_{\sigma,\tau}t_{\sigma\tau}\ge1.                              \tag{6}
+\]
+
+Every \(r\times r\) determinant containing a cross pair \((\sigma,\tau)\) has valuation at least \(t_{\sigma\tau}\), by expansion using that pair’s \(2\times2\) minors. An \(r\)-subset contains at most \(m_r\) cross pairs. Summing over unordered \(r\)-subsets therefore gives
+\[
+\sum_{|I|=r}v_p(\det L_I)
+\ge \frac{\binom{D-2}{r-2}}{m_r}.
+\]
+The natural norm factorization has integral coefficients in the splitting field; its ordered determinant product is Galois invariant, hence an integer. Thus
+\[
+v_p(\Delta(F))
+\ge \frac{r!\binom{D-2}{r-2}}{m_r}.
+\]
+Multiply over \(p\mid N\), then apply (1). This proves (5).
+
+**PROVED — A stronger bound away from ramification.** Let
+\[
+N_0=\prod_{\substack{p\mid N\\p\nmid\operatorname{disc}K\,
+                                      \operatorname{disc}K'}}p.
+\]
+At each such prime, compatible embeddings give one cross pair congruent modulo \(p\). Every maximal minor containing that pair is divisible by \(p\). Hence
+\[
+\boxed{\quad
+V_F\le C_rN_0^{-\,r(r-1)/(D(D-1))}.
+\quad}                                                           \tag{7}
+\]
+For rank 3, (5) saves \(N^{-3/(D(D-1))}\); (7) saves \(N_0^{-6/(D(D-1))}\).
+
+**PROVED — The corresponding counts, including simultaneous bounds, are**
+\[
+\#\{\|\mathbf a\|_\infty\le E,\ 0<|F(\mathbf a)|\le X\}
+\le C_rN^{-\kappa_0}X^{r/D}+rD(2E+1)^{r-1},                     \tag{8}
+\]
+and
+\[
+\#\{\|\mathbf a\|_\infty\le E,\ 
+0<|W|\le X,\ 0<|W'|\le X'\}
+\le C_rN^{-\kappa_0}(XX')^{r/D}+rD(2E+1)^{r-1}.                  \tag{9}
+\]
+The stronger \(N_0\)-saving can replace the saving displayed here.
+
+Thus the exterior resultant **can** be converted into a volume/counting bound. The additional hypothesis \(\Delta\ne0\) is substantial.
+
+**PROVED — The ledger and its limitation.** If \(e^C\) candidates must come from the main term of (8), then
+\[
+\log X\ge
+\frac{r-1}{m_r(D-1)}x+\frac Dr(C-\log C_r).                        \tag{10}
+\]
+Using (7) instead gives
+\[
+\log X\ge
+\frac{r-1}{D-1}\log N_0+\frac Dr(C-\log C_r).                      \tag{11}
+\]
+
+For fixed rank, either positive \(x/D\) term gives the usual \(1/3\) balance, **provided the lattice error cannot supply the relations**. A sufficient condition is
+\[
+rD(2E+1)^{r-1}=o(B).                                              \tag{12}
+\]
+For rank 3 this requires roughly \(E\le B^{1/2-o(1)}\), substantially below the requested \(B^{1-o(1)}\).
+
+There is an explicit rank-3 consequence. Under H, \(\Delta\ne0\), and \(DE^2=o(B)\), (5) gives the model lower bound
+\[
+\boxed{\quad \text{cost}\ge L_N[1/3,(64/9)^{1/3}].\quad}           \tag{13}
+\]
+To check the units, set
+\[
+t=x^{1/3}(\log x)^{2/3},\quad
+D=\delta(x/\log x)^{1/3},\quad
+\log B=\beta t,\quad C=\gamma t.
+\]
+Equation (10) gives norm coefficient
+\[
+\eta\ge1/\delta+\delta\gamma/3.
+\]
+Condition (12) gives \(\gamma\le3\beta/2\), while H requires
+\[
+\gamma\ge\beta+\eta/(3\beta).
+\]
+Optimizing yields \(\beta^3\ge8/9\), and cost at least \(2\beta t\), proving (13). Selection among norm sizes is handled by the same dyadic yield argument as in the supplied binary note.
+
+**PROVED — A dimensional correction:** fixed rank 3 cannot produce the advertised \(1/4\) exponent from the aggregate ledger. That escape requires \(r\) to grow. Moreover, \(\kappa\asymp r/D^2\) alone gives
+\[
+\log X\gtrsim x/D+(D/r)C,
+\]
+which still permits the growing-rank aggregate escape. A saving of order \(r^2/D^2\), as in (7), is stronger. Growing-rank applications must also retain \(\log C_r\asymp r\log r\) and the box error.
+
+**PROVED — Counterexample to a uniform volume theorem under the original hypotheses.** Let
+\[
+L=\mathbb Q(\zeta_5),\quad
+K=L(\sqrt2),\quad K'=L(\sqrt3),
+\]
+with their evident orders, and take
+\[
+w_1=(1,1),\quad w_2=(\zeta_5,\zeta_5),\quad
+w_3=(\zeta_5^2,\zeta_5^2).
+\]
+Both fields have degree 8; both projections have rational rank 3. Let \(N\) be any squarefree product of primes \(p\equiv1\pmod{120}\), \(p>16\). Choose compatible maps on \(L\), extending to the two orders. Linking holds and \(v_1=1\).
+
+Put
+\[
+G(a,b,c)=N_{L/\mathbb Q}(a+b\zeta_5+c\zeta_5^2).
+\]
+Then
+\[
+W=G^2,\qquad W'=G^2,\qquad F=G^4.
+\]
+Therefore
+\[
+V_F=\operatorname{vol}\{|G|\le1\},
+\]
+independent of \(N\).
+
+This volume is finite and positive. Over \(\mathbb R\), \(G\) is a product of two positive semidefinite rank-2 quadratics with distinct kernel lines. On the unit sphere, near either kernel direction, \(G\asymp s^2\). The polar volume integrand is \(G^{-3/4}\), giving the convergent local integral
+\[
+\int_0^\epsilon s^{-3/2}s\,ds.
+\]
+
+Thus no bound \(V_F\le c(r,D)N^{-\kappa}\), \(\kappa>0\), holds as stated—even assuming finite volume, distinct fields and full-rank projections. Here \(\Delta=0\), and characteristic-zero overlap makes the binary cross-resultants identically zero. It also prevents interpreting these relations as a factoring improvement. The binary barrier likewise needs its stated nonzero-discriminant hypothesis.
+
+**PROVED — Charging only \(W'\) admits no bound from linking alone.** A separate example allows coprime norm forms. Fix
+\[
+K'=L=\mathbb Q(\zeta_5),\qquad K=L(\sqrt2),
+\]
+and define
+\[
+\theta'=a+b\zeta_5+c\zeta_5^2,\qquad
+\theta=a+b(\zeta_5+N\sqrt2)
+       +c(\zeta_5^2+N\zeta_5\sqrt2).
+\]
+For squarefree \(N\) supported on primes splitting in \(K\), compatible maps link these generators, with \(v_1=1\). Both projections have rank 3. The charged form \(W'=G\) is fixed, with finite positive volume.
+
+The norm forms are coprime for large \(N\): their factor vectors have first coordinate 1, while equality of their second coordinates would require
+\[
+\zeta_5^i\pm N\sqrt2=\zeta_5^j,
+\]
+which is impossible. All height growth has been placed on the uncharged side.
+
+This example establishes failure of a charged-side bound. It does **not** make the large first-side norms smooth by construction.
+
+**PROVED under the split-side hypothesis H′ — The correct ledger must include construction entropy.** For an enumerated split subset \(\mathcal S\), the expected relation yield is
+\[
+\sum_{\mathbf a\in\mathcal S}
+\rho\!\left(\frac{\log|W'(\mathbf a)|}{\log B}\right).
+\]
+One must account for the cost of producing \(\mathcal S\), its size at each charged norm threshold, and the rank of its relation vectors. Linking supplies no charged-side \(x/D\) term without a restriction on the free side.
+
+For the natural rank-3 split parametrization
+\[
+q(T)=(s+tT)(u+vT)
+=su+(sv+tu)T+tvT^2,
+\]
+multiplicativity gives
+\[
+W'(q)=W'(s+tT)W'(u+vT).
+\]
+If the product is \(B\)-smooth, both integer factors are \(B\)-smooth. The ideal relation vector is the sum of the two binary relation vectors. Consequently this construction generates no relation rank beyond its constituent binary relations.
+
+**PROVED / HEURISTIC — The standard quadratic-candidate design has a worse ledger.** Let monic \(f,g\) have degrees \(d,d'\), common root modulo \(N\), coefficient heights \(H_f,H_g\), and use \(q=a+bT+cT^2\). Mahler measure gives
+\[
+|\operatorname{Res}(f,q)|
+\le3^dE^dM(f)^2
+\le3^dE^d(d+1)H_f^2,
+\]
+and similarly for \(g\).
+
+Under **T**, the assumption that generic candidate sizes have this leading logarithmic order,
+\[
+\log|WW'|\approx2\log(H_fH_g)+D\log E.
+\]
+Under the supplied polynomial-selection assumption **G**, together with the resultant inequality,
+\[
+\log(H_fH_g)\ge\frac{2x}{D+1}+o(x/D).
+\]
+Writing \(C=3\log E\), the optimistic rank-3 ledger is therefore
+\[
+\log X\gtrsim4x/D+(D/3)C.
+\]
+
+Under **H+G+T**, optimization of the ledger
+\[
+\log X\gtrsim Ax/D+(D/r)C
+\]
+gives the relaxed constant \(c^3=64A/(9r)\):
+
+| Family | \(r\) | \(A\) | \(L[1/3,c]\) constant |
+|---|---:|---:|---:|
+| Rank-2 special ledger | 2 | 1 | 1.52629 |
+| Rank-2 generic ledger | 2 | 2 | 1.92300 |
+| Rank-3 quadratic candidates | 3 | 4 | 2.11653 |
+
+These are ledger optima, not existence or construction theorems. The standard rank-3 power-basis design does not improve rank 2.
+
+**CONJECTURE / unresolved target —** A barrier covering coprime norm forms with vanishing maximal minors, useful relation rank, growing \(r\), and the full range \(E\le B^{1-o(1)}\) remains unproved here. I found no explicit non-power-basis or genuinely split-side rank-3 construction whose complete counting, smoothness and relation-rank ledger beats rank 2. The results above establish a volume obstruction for a substantial nondegenerate subclass and identify why it does not yet close the general problem.
