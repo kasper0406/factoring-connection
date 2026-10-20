@@ -54,8 +54,9 @@ supply.**
      - the Hensel prime and root finding;
      - the shape test, by deterministic recursion;
      - the seed's *fruitfulness* role, by the Z route with factor-base-product seeds and exact dependencies.
-   - The two **irreducible** sources are the field law (g₀, g₁, w, c) and the seed law. Both are irreducible only
-     in their **relation-supply** role.
+   - Two sources have no known derandomization: the field law (g₀, g₁, w, c) and the seed law. In both cases only
+     the **relation-supply** role is the problem.
+   - "No known derandomization" is not a lower bound: no randomness source is proved necessary.
 5. **Field derandomization [observation; §6].**
    - FM, LD* and Paley–Zygmund certify a density L^{−o(1)} of good fields only inside families of size N^{Ω(1)}. The
      smooth-numbers-in-progressions input needs progressions with at least modulus^{1+ε} terms.
@@ -237,6 +238,14 @@ question is whether index-calculus y's are multiplicative. They are not (§3).
   - So a fruitful pair needs wrap-around modulo N: products of generators of length ≥ log N/log(2 log² N).
   - The cocycles of a section generate C ∩ Λ only when taken over all of G_B², a set of size ≈ φ(N)/2^ω. This is the
     Schreier-generator count; the proof is the computation in Proposition CD.
+- **Lemma SR (small seeds are rejected) [proved; codex detGRH_1 §2.3].** If r ≥ 2 and r⁴ + 1 < N, the shortest
+  nonzero vector of {(u, v) : u ≡ r²v (mod N)} is ±(r², 1).
+  - *Proof:* if u − r²v = kN ≠ 0, Cauchy–Schwarz gives ‖(u, v)‖ ≥ N/√(1 + r⁴) > √(1 + r⁴). If k = 0 the vector is a
+    multiple of (r², 1).
+  - So for every r ≤ 2 log² N (indeed every r ≤ L^{o(1)}), Theorem A's shape test rejects the seed, because r² is
+    neither squarefree nor composed of J-primes ≈ N^{2ν}.
+  - Accepting the trivial certificate instead gives χ(r) = 1, the tautological congruence.
+  - So the orchestrator's literal small seeds produce no rows at all. Seeds need r ≳ N^{1/4}.
 - So the dichotomy is an existence statement over an N-size set. That set is the set of residues whose descent the
   algorithm must perform. Locating a fruitful pair deterministically is the same derandomization problem as before.
   E1d measures how often the defect is nontrivial on the pairs a toy run can reach.
@@ -247,7 +256,13 @@ question is whether index-calculus y's are multiplicative. They are not (§3).
 - (b) Structural fruitlessness (Φ_full ≡ 0 on the whole lattice) is exactly case (S). In that case multiplicativity
   does hold and does force failure, both in the F₂ route and in the Z route. GRH removes (S).
 - Fruitlessness for "structural reasons of how y is built" (Lemma H type) in case (G) would mean V_c ∩ W′ = ⟨[2e_{−1}]⟩
-  for the specific relations sampled. This is a sampling statement about Λ_c, not a property of y.
+  for the specific relations sampled. This is a property of the relation *family*, not of y or of the factor base.
+  - Family-level degeneracy is real and can be total. Codex detGRH_1 §3.3: the family c_i = r_i² with stored roots r_i
+    has Φ ≡ 0 for every N.
+  - Its exact form is nfsfruit's rowspace criterion: Φ ≡ 0 iff the factor-detecting rows lie in the row space of
+    the square-class matrix.
+  - Under GRH, putting a nonresidue into the factor base removes case (S). It does not force any particular family to
+    use it in a fruitful pattern (codex detGRH_1 §3.5).
 
 ## 4. The Z route: fruitfulness for free under ERH
 
@@ -320,10 +335,10 @@ Theorem A as in `notes/thmA_proof.md`, with the recursive shape test of `recurse
 
 | # | randomness | role | derandomization | status |
 |---|---|---|---|---|
-| 1 | (g₀, g₁) uniform in [M/2, M]² | FM rational fibre count; Lemma DS in LD* | none known (§6) | **irreducible (supply)** |
-| 2 | w uniform prime in (W, 2W] | LD* via Lemma W (Brun–Titchmarsh spreading of c_P·w mod t) | none known; the w-average needs ≍ W/log W = N^{Θ(1)} values | **irreducible (supply)** |
-| 3 | c uniform in [−H, H]^d | FM progression F̂ + G·⟨c, v(P)⟩; Kern in LD* | none known; family ≥ N^{Ω(1)} (§6) | **irreducible (supply)** |
-| 4a | Dixon seed r (uniform) — supply role | Theorem S′ / K: R = r² uniform on squares hits accepted splits w.p. L^{−o(1)} | explicit seeds: no tool (§6, Observation CS) | **irreducible (supply)** |
+| 1 | (g₀, g₁) uniform in [M/2, M]² | FM rational fibre count; Lemma DS in LD* | none known (§6) | **no known derandomization (supply)** |
+| 2 | w uniform prime in (W, 2W] | LD* via Lemma W (Brun–Titchmarsh spreading of c_P·w mod t) | none known; the w-average needs ≍ W/log W = N^{Θ(1)} values | **no known derandomization (supply)** |
+| 3 | c uniform in [−H, H]^d | FM progression F̂ + G·⟨c, v(P)⟩; Kern in LD* | none known; family ≥ N^{Ω(1)} (§6) | **no known derandomization (supply)** |
+| 4a | Dixon seed r (uniform) — supply role | Theorem S′ / K: R = r² uniform on squares hits accepted splits w.p. L^{−o(1)} | explicit seeds: no tool (§6, Observation CS) | **no known derandomization (supply)** |
 | 4b | Dixon seed r — fruitfulness role (DD) | hidden root on its μ₂-fibre | **under ERH, removable**: seeds x_e ∈ ⟨FB⟩ (no squaring needed), descent rows become kernel relations, exact dependencies (dlog Prop XK, deterministic: LLL, exact elimination) give pure rational relations, then Proposition Z | proved reduction (needs full Q-rank: part of DS) |
 | 5 | special-q search | — | already deterministic in (A, ℓ) | none needed |
 | 6 | Lenstra–Pomerance shape test | factor \|u₀\|, \|v₀\| | recursion (Thm RA) is deterministic if the outer algorithm is, by strong induction on N. Non-recursive deterministic shape tests cost N^{Ω(1)} (J-primes ≈ N^{1/(2k)}; Pollard–Strassen N^{1/(4k)}) | removable given a deterministic outer algorithm |
