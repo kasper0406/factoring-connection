@@ -111,7 +111,7 @@ A **presentation** is F ∈ Z[X] \ {0} together with a ring homomorphism φ: Z[X
 - r_A ∈ Z[X] \ {0} is the small side, of degree < k and height ≤ H.
 
 The member's relation is φ(h_A)φ(P_A) = φ(r_A). It is **non-degenerate** if φ(h_A), φ(P_A), φ(r_A) are units (View B), or the integers h_A(m), P_A(m), r_A(m) are nonzero and prime to N (View A). Otherwise a gcd either reveals a factor or the member carries no relation.
-- The member is **exact** if h_A·P_A = F·Q_A + r_A holds in Z[X]. This is the systematic case, the analogue of the BGJT identity h₁P = (aX + b)(h₁X^q − h₀) + r.
+- The member is **exact** if h_A·P_A = F·Q_A + r_A holds in Z[X]. This is the "systematic" case. The word is meant in the BGJT sense, not that of the classical F_{2^n} systematic equations of Blake–Fuji-Hara–Mullin–Vanstone; BGJT's own footnote makes the same distinction. It is the analogue of the BGJT identity h₁P = (aX + b)(h₁X^q − h₀) + r.
 - It is **non-exact** if the identity holds only modulo (N, F).
 - It is **evaluated** (View A) if only P_A(m) ≡ r_A(m) (mod N) holds, with r_A small in value at m but not in height.
 
@@ -162,7 +162,7 @@ Put R(c) = #{a ∈ [1, B]^M : p_i(a) = c_i, i ≤ s}, counting *ordered* tuples,
 
 **Geometry [PROVED].** V_c = {e₁ = c₁, …, e_s = c_s} ⊂ A^M is a complete intersection of dimension k = M − s and degree ≤ s!.
 
-**Uniform bounds [KNOWN; assessment].** Castryck–Cluckers–Dittmann–Nguyen (Algebra Number Theory 14 (2020)) give N(X, B) ≤ c(n)·D^{e(n)}·B^{dim X} for projective X of degree D ≥ 5. The constants depend on the ambient dimension n = M, and D = s! ≈ e^{M log M} = L[1 − β]^{Θ(1)}. By comparison with every L[β] budget these bounds are useless for k ≥ 2. This is an assessment about known bounds, not a theorem.
+**Uniform bounds [KNOWN; assessment].** Castryck–Cluckers–Dittmann–Nguyen (Algebra Number Theory 14 (2020)) give N(X, B) ≤ c(n)·D^{e(n)}·B^{dim X} for *integral* projective X ⊂ P^n_Q of degree D ≥ 5; V_c may be reducible, so the bound is applied per component of the projective closure (≤ s! components). BCN Thm 3 extends dimension growth to D = 3, 4. The constants depend on the ambient dimension n = M, and D = s! ≈ e^{M log M} = L[1 − β]^{Θ(1)}. By comparison with every L[β] budget these bounds are useless for k ≥ 2. This is an assessment about known bounds, not a theorem.
 
 **k = 1 [PROVED from KNOWN].** The members are Q₀ − t, split over Z with roots in [−B, B], M ≥ 4.
 
@@ -175,7 +175,7 @@ Put R(c) = #{a ∈ [1, B]^M : p_i(a) = c_i, i ≤ s}, counting *ordered* tuples,
 5. **Sum.** Over components, Σe ≤ M − 1. Hence #squarefree·M(M − 2) ≤ c(M−1)²B^{1/2}(log B)^κ + (M−1)².
 6. **Total.** **≤ 2c·B^{1/2}(log B)^κ + 2 + 2 members**, uniformly in M ≥ 4.
 
-This holds for any constants, exact or not. M ≥ 3 is necessary: {X² − a²} has B + 1 members.
+This holds for any constants, exact or not. For generic Q₀ the curve C is irreducible (Davenport–Lewis–Schinzel 1961; Fried 1973), which would give B^{1/(M−1)}; the stated B^{1/2} is the uniform worst case. M ≥ 3 is necessary: {X² − a²} has B + 1 members.
 
 ## 5. Rigidity (Steps 4–5)
 
@@ -197,7 +197,7 @@ Then:
 2. **Degrees.** If deg(QU) ≠ deg(Q'U'), or the leading coefficients differ, then deg G̃ ≥ r and deg G ≥ M > K − 1. So deg Q = deg Q' =: j' and lc(Q) = lc(Q').
 3. **Height.**
    - Mahler measure is multiplicative and M(g) ≥ 1, so M(G̃) ≤ M(G) ≤ ‖G‖₂ ≤ √K·h.
-   - Each coefficient of a degree-n polynomial f satisfies |c_i| ≤ C(n, i)·M(f). So ‖G̃‖₁ ≤ 2^{K−1}√K·h, and |G̃(a)| ≤ Δ for every integer |a| ≤ B.
+   - Each coefficient of a degree-n polynomial f satisfies |c_i| ≤ C(n, i)·M(f) (Mahler 1960). So ‖G̃‖₁ ≤ 2^{K−1}√K·h, and |G̃(a)| ≤ Δ for every integer |a| ≤ B.
    - Dividing by g need not preserve coefficient height; the Mahler measure avoids that issue.
 4. **Local smallness.**
    - A root a of U is *good* if Q'(a) ≠ 0. There G̃(a) = −Q'(a)U'(a), with Q'(a) ∈ Z \ {0} and U'(a) ≠ 0 (coprimality). So 1 ≤ |U'(a)| = ∏_{a'}|a − a'| ≤ Δ.
@@ -207,7 +207,7 @@ Then:
    - QU/lc and Q'U'/lc are monic of degree r + j' and differ in degree ≤ K − 1 − deg g. So e₁..e_J of their complex root multisets agree, with J = r + j' − K + deg g = M + j' − K ≥ M − K.
    - By Newton (characteristic 0), p₁..p_J agree.
    - Let μ = Σ_{roots(QU)} δ − Σ_{roots(Q'U')} δ. Then μ ≠ 0 (equal root multisets and equal leading coefficients would give G = 0), and its moments of orders 0..J vanish.
-   - Vandermonde over C gives **|supp μ| ≥ J + 2 ≥ M − K + 2.**
+   - Vandermonde over C gives **|supp μ| ≥ J + 2 ≥ M − K + 2.** This is the classical fact that a degree-J PTE solution has size ≥ J + 1 (Borwein, *Computational Excursions*, Ch. 11), here with complex multiplier roots allowed.
 6. **Support count.** supp μ ⊆ supp U ∪ supp U' ∪ Z_C(Q) ∪ Z_C(Q'); the last two sets have ≤ j' elements each.
    - *Case 1: both U and U' have good roots.* |supp μ| ≤ 4 + 2L + 2j.
    - *Case 2: U has no good root and U' does.* Then supp U ⊆ Z(Q').
@@ -218,7 +218,7 @@ Then:
 7. **Contradiction.** M − K + 2 ≥ 2L + 4j + 5 exceeds every case bound. For j = 0 only Case 1 occurs. ∎
 
 **Remarks.**
-- **The reason is archimedean.** In F_q[X] there is no size, so the BGJT family exists. The step-4 argument uses only that Z is discrete in R.
+- **The reason is archimedean.** In F_q[X] there is no size, so the BGJT family exists (Joux 2013; Göloğlu–Granger–McGuire–Zumbrägel 2013; BGJT 2014). Compare GKZ, "Indiscreet logarithms", closing open-problems paragraph: for prime fields "fundamentally new ideas will be required". The step-4 argument uses only that Z is discrete in R.
 - **Other root sets.** For roots in Z[i] or Z[ω], the analogue should hold with lattice-specific constants: 8 resp. 12 nonzero points of modulus < 2, a revised Case 2, and |a| ≤ √2·B in step 3. This is HEURISTIC (not written out). It fails for non-discrete rings such as Z[√2].
 - **j = 0: prior and sibling results.**
   - For the ideal case K = 1, the classical result (M − 1)! | C (Kleiman; Rees–Smyth, Prop. 2.1, as attributed in Caley 2013 §5) is far sharper.
@@ -369,7 +369,7 @@ Fix N and a presentation F ∈ Z[X] \ {0} of any degree d and any height (possib
   - Large multiplier or quotient degree j ≳ M/4 in View B (proof critic #2). In View A, Prop S still bounds the *distinct roots* of each member by d + ρ, but not the number of relations.
   - Large H_Q in View B.
   - The View A corner |m| ≤ max(2H + 1, Y^{o(1)}) with ρ·log Y ≳ M. There the value target does not bound the degree: at m = 0, r = X^t + 1 has value 1 for every t.
-- **O4. Other root sets and multivariate presentations.** Roots in non-discrete rings such as Z[√2]. Roots in imaginary quadratic orders (Remark §5.1, heuristic). Multivariate presentations such as ptesplit_1's A_N in several variables.
+- **O4. Other root sets and multivariate presentations.** Roots in non-discrete rings such as Z[√2]. Roots in imaginary quadratic orders (Remark §5.1, heuristic). For prior work on PTE over such rings see Alpers–Tijdeman 2007, Caley 2013 and Croot–Mao–Yip 2026. Multivariate presentations such as ptesplit_1's A_N in several variables.
 
 ## 7. Experiments against the pre-registration
 
@@ -439,7 +439,19 @@ It named the missing step: "an exceptional-fiber bound incorporating the small-r
 - the O2 citation;
 - the §3/§4 labels.
 
-**Opus literature critic.** See the addendum below.
+**Opus literature critic: OK WITH FIXES, no overclaimed novelty.**
+- No published lower bound was found on ‖∏(X−a_i) − ∏(X−b_i)‖ for differences of degree < K with K > 1, with or without multipliers. Searched: Rees–Smyth, Caley's paper and thesis, Borwein–Ingalls, Borwein–Lisoněk–Percival, Filaseta–Markovich, Chen's 2025 survey, Croot–Mao–Yip 2026.
+- No published integer analogue of BGJT compression and no published obstruction were found.
+- Every citation checked is accurate in substance, including BCN eq. (27) and the Caley §5 attribution.
+- Fixes applied:
+  - the reference list (§10), which was the MAJOR finding;
+  - attribution of the classical ingredients of Lemma R (Mahler's coefficient bound; PTE size ≥ degree + 1);
+  - the CCDN integrality and per-component application;
+  - a disambiguation of "systematic";
+  - BGJT/Joux/GGMZ citations;
+  - Davenport–Lewis–Schinzel/Fried for k = 1;
+  - prior work for O4 (Alpers–Tijdeman, Caley, Croot–Mao–Yip);
+  - the GKZ citation form.
 
 ## 9. Reproduction
 
@@ -448,3 +460,44 @@ It named the missing step: "an exceptional-fiber bound incorporating the small-r
 .venv/bin/python -m src.ptebarrier.run_experiment E1c   # post-hoc larger-B check (~40 s)
 .venv/bin/python -m pytest -q tests/test_ptebarrier.py
 ```
+
+## 10. References
+
+**Smooth-by-construction families in finite fields (the mechanism we test).**
+- Joux, "A new index calculus algorithm with complexity L(1/4+o(1)) in small characteristic", SAC 2013 (ePrint 2013/095).
+- Göloğlu–Granger–McGuire–Zumbrägel, CRYPTO 2013.
+- Barbulescu–Gaudry–Joux–Thomé, EUROCRYPT 2014 (arXiv 1306.4244).
+- Granger–Kleinjung–Zumbrägel, "Indiscreet logarithms in finite fields of small characteristic", Adv. Math. Commun. 12 (2018) 263–286 (arXiv 1604.03837).
+- Kleinjung–Wesolowski, J. AMS 35 (2022).
+- Joux–Odlyzko–Pierrot, in *Open Problems in Math. & Comp. Sci.*, Springer 2014, 5–36.
+
+**Prouhet–Tarry–Escott problem.**
+- Kleiman, J. reine angew. Math. 278/279 (1975) 48–51.
+- Rees–Smyth, "On the constant in the Tarry–Escott problem", LNM 1415 (1990) 196–208, Prop. 2.1.
+- Caley, "The Prouhet–Tarry–Escott problem for Gaussian integers", Math. Comp. 82 (2013) 1121–1137, §5 (arXiv numbering).
+- Borwein–Ingalls, Enseign. Math. 40 (1994) 3–27.
+- Borwein–Lisoněk–Percival, Math. Comp. 72 (2003) 2063–2070.
+- Borwein, *Computational Excursions in Analysis and Number Theory*, Springer 2002, Ch. 11.
+- Alpers–Tijdeman, J. Number Theory 123 (2007) 403–412.
+- Filaseta–Markovich, J. Number Theory 174 (2017) 384–400.
+- Croot–Mao–Yip, arXiv 2609.05061 (2026).
+- Hua, "On Tarry's problem", Quart. J. Math. 9 (1938) 315–320.
+- Wooley, "Some remarks on Vinogradov's mean value theorem and Tarry's problem", Monatsh. Math. 122 (1996) 265–273.
+
+**Vinogradov's mean value theorem.**
+- Bourgain–Demeter–Guth, Ann. of Math. 184 (2016) 633–682.
+- Wooley, Adv. Math. 294 (2016) 532–561 (cubic case).
+- Wooley, "Nested efficient congruencing and relatives of Vinogradov's mean value theorem", Proc. LMS (3) 118 (2019) 942–1016.
+- Wooley, "On Vinogradov's mean value theorem, II", Michigan Math. J. (1993); the volume (believed 40) is to be confirmed.
+- Ford, Proc. LMS 85 (2002) 565–633, Thm 3 (arXiv 1910.08209).
+- Steiner, "Effective Vinogradov's mean value theorem via efficient boxing", J. Number Theory (2019), doi 10.1016/j.jnt.2019.04.010.
+
+**Counting rational points (determinant method, dimension growth).**
+- Castryck–Cluckers–Dittmann–Nguyen, "The dimension growth conjecture, polynomial in the degree and without logarithmic factors", Algebra Number Theory 14(8) (2020) 2261–2294.
+- Binyamini–Cluckers–Novikov, "Bounds for rational points on algebraic curves, optimal in the degree, and dimension growth", arXiv 2302.04209 (2023), Thm 2, eq. (27).
+- Davenport–Lewis–Schinzel, Quart. J. Math. 12 (1961).
+- Fried, Illinois J. Math. 17 (1973).
+
+**Polynomial heights.**
+- Mahler, Mathematika 7 (1960).
+
