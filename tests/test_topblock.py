@@ -51,7 +51,7 @@ def test_locate_via_oracle_and_bound():
             orc = core.WindowOracle(N, x, j, H)
             divs, calls = core.locate_divisor_via_window_oracle(N, x, j, H, orc.query)
             assert p in divs
-            assert calls <= core.weighted_neardiv_bound(N, x, j, H) + 1e-9
+            assert calls <= core.neardiv_call_bound(N, x, j, H)
 
 
 def test_window_count_via_divisor_finder():

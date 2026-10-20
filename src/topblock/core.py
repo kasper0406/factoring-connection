@@ -153,8 +153,35 @@ def locate_divisor_via_window_oracle(N: int, x: int, j: int, H: int,
     return sorted(found), calls
 
 
+def neardiv_call_bound(N: int, x: int, j: int, H: int) -> int:
+    """CORRECTED bound of notes §1.3 (post-hoc, after the pre-registered P2.2 failed):
+
+        calls <= 1 + 2 * sum_{l=0}^{Dep-1} (nu_0 + #{(h, k): 0 < |k| <= K_l, d = x+h | N - k}),
+
+    nu_0 = max(1, #{exact divisors x+h of N, 1 <= h < H}) (both p and q can lie in one block),
+
+    Dep = ceil(log2(H - 1)) (bisection of [1, H)), K_l = (j+1) rho (x+H) (ceil((H-1)/2^l) - 1) / H,
+    rho = N H^{j+1}/x^{j+2}.  Exact integers/rationals; HARNESS (brute force over near-divisors)."""
+    if H <= 2:
+        return 3
+    rho = Fraction(N * H ** (j + 1), x ** (j + 2))
+    dep = (H - 2).bit_length()          # = ceil(log2(H-1)) for H-1 >= 2
+    K0 = int((j + 1) * rho * (x + H))
+    allp = near_divisor_pairs(N, x, H, K0)
+    pairs = [abs(k) for (h, k) in allp if k != 0 and h >= 1]
+    nu0 = max(1, sum(1 for (h, k) in allp if k == 0 and h >= 1))
+    tot = 1
+    for l in range(dep):
+        L = -(-(H - 1) // (1 << l))
+        Kl = (j + 1) * rho * (x + H) * (L - 1) / H
+        tot += 2 * (nu0 + sum(1 for a in pairs if a <= Kl))
+    return tot
+
+
 def weighted_neardiv_bound(N: int, x: int, j: int, H: int) -> float:
-    """C^w of notes §1.3: 2(log2 H + 1) + 2 sum_{0<|k|<=K'} nu(k) (log2(K'/|k|) + 1), K' = 2(j+1)rho(x+H).
+    """AS PRE-REGISTERED (MIS-STATED; kept for reproducibility of P2.2):
+    2(log2 H + 1) + 2 sum_{0<|k|<=K'} nu(k) (log2(K'/|k|) + 1), K' = 2(j+1)rho(x+H).
+    It omits the ceiling/root term and caps tiny-|k| pairs; use neardiv_call_bound.
 
     HARNESS (brute force); float for reporting only."""
     import math
