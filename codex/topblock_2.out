@@ -1,0 +1,212 @@
+**Overall verdict: OVERCLAIMED.** The transfer identity survives. The universal lattice barrier, efficient oracle equivalence, and several interpretations of the experiments do not.
+
+1. **Prop T: CORRECT algebra; GAP in the range consequence; OVERCLAIMED scope.**
+
+   Write \(f=x+h\), \(I=(N,f)\), and \(\mathrm{num}_b-g_b=D_bc_b\). Then, including shifted centres,
+   \[
+   f\sigma(w_b)=-ND_b+D_bfc_b\in D_bI.
+   \]
+   Coefficientwise reduction causes no problem.
+
+   For a generator with monomial residual degree \(u\) and window degree \(t=\sum t_b\), multiply its image by \(f^T\). Its residual and window factors supply \(I^{u+t}\), the padding supplies \(f^{T-u-t}\), and \(N^\alpha f^s\) supplies \(I^{\alpha+s}\). Thus its image belongs to
+   \[
+   \prod_bD_b^{m2_b}I^{m1+T}.
+   \]
+   This assumes nonnegative exponents and \(0\le t_b\le m2_b\). Integer combinations preserve membership.
+
+   A monomial \(h^e\prod r_b^{t_b}\) maps to degree at most
+   \[
+   e+\sum_b(j_b+1)t_b+T-\sum_bt_b
+   =e+\sum_bj_bt_b+T.
+   \]
+   The degree bound is correct. The kernel statement is correct **over \(\mathbb Q(h)\)**.
+
+   The norm constant is a valid, loose bound. For example, expanding a polynomial bounded on \([0,1]\) in shifted Chebyshev polynomials gives coefficient norm at most
+   \(1+2\sum_{k=1}^dT_k(3)\le7^d<(3+3\sqrt2)^d\).
+   The factor \((1+X/x)^T\) follows as stated.
+
+   **“Every shift strategy” needs restriction to the displayed generator class.** Unreduced representatives, and arbitrary integer representatives congruent coefficientwise modulo \(D_b\), already satisfy the same algebra. Ordinary sublattices are also covered. Window-only ideal-power constructions are covered by allowing \(m1=0\); lacking a \(p\)-congruence does not itself exclude them.
+
+   Not automatically covered are rational centres before denominator accounting, residual translations with a different substitution and tighter local box, general integer-valued vanishing constructions outside these ideal powers, saturation or division that leaves the ideal, integer-point algorithms for near-divisors, and certificates other than HG shortness. Names such as Jochemsz–May do not establish coverage of every construction using those methods.
+
+   **The \(o(1)\) statement needs a growth hypothesis.** The normalized threshold discrepancy is
+   \[
+   \frac{d\log c+T\log(1+X/x)+\tfrac12\log(d+1)}
+        {M\log N},\qquad M=m1+T.
+   \]
+   For \(X\le x\), a sufficient condition is \(d=o(M\log N)\). If \(d=\Theta(\log N)\) and \(M\) is fixed, the claimed limit need not vanish. If \(d/M=O(1)\), it does.
+
+   More fundamentally, a relaxed norm threshold is **not a proved recovery-range equivalence**. In the usual regime \(d\ge M\), \(X\le x\), the existing vector \(f^M\) already satisfies
+   \[
+   \|f(hX)^M\|_1=(x+X)^M
+   \le2^Mp^M<c^dp^M.
+   \]
+   It does not vanish at the target. Dropping the transferred polynomial’s vanishing property and discussing only \(\lambda_1\) makes the necessary condition largely uninformative. Neither determinant failure nor the displayed transfer proves the asserted universal range ceiling.
+
+2. **The F-artifact: CORRECT exponent; WRONG two-row identity for the implemented basis; OVERCLAIMED explanation.**
+
+   Put \(A=N^{m1-1}D^{m2-1}\). The three scaled coefficients of \(AF\) have magnitudes
+   \[
+   A xY,\quad AXY,\quad ANX^{j+1}.
+   \]
+   With \(Y=\lceil N/x\rceil X^{j+1}\), \(X=o(x)\), its norm is of order
+   \(N^{m1}D^{m2-1}X^{j+1}\). Comparing with \(x^{m1}D^{m2}\) gives
+   \[
+   X\asymp x(x/N)^{m1/(j+1)}.
+   \]
+   Hence the stated \(N^{1/3}\) and \(N^{3/8}\) exponents are right for fixed parameters. For windows only, \(FD^{m2-1}\) gives \(X\asymp xN^{-1/(j+1)}\).
+
+   However, with reduced \(g\),
+   \[
+   fw+ND=F+Dfc,
+   \]
+   not \(F\). For \(N=77,x=8,j=2\), the extra term is
+   \(512(8+h)(9-2h)\).
+   Membership of \(AF\) can be repaired using additional univariate rows, provided the truncation contains degree \(j+1\).
+
+   The helper tests \(3\|AF\|_2^2<\text{threshold}^2\), whereas MIX tests \(n\|v\|_2^2<\text{threshold}^2\). Both are sufficient tests, but their boundaries are not identical.
+
+   “The negative contribution is exactly F” is **suggestive**, not established by a determinant contribution calculation. Kernel directions explain observed misleading shortness; that does not identify every favorable determinant contribution or prove that every vector beyond a universal boundary is trivial.
+
+3. **KB, LOC, IV, EQ, TS: mixed verdicts.**
+
+   **KB — CORRECT.** An interval of length \(H\) can be covered by constantly many dyadic prefix intervals of comparable length, with \(O(1)\) bits of alignment loss. The reverse covering is equally straightforward.
+
+   **Corrected LOC — CORRECT in the ladder regime**, with \(H\ge2\) and remainder magnitude below one. Use \(A(h)=|R(h)|\):
+   \[
+   A'(h)\le(j+1)\rho/H.
+   \]
+   A nonempty node therefore contains an exact divisor or a near-divisor with the displayed \(K_\ell\). Disjointness of nodes at one depth gives the sum bound. Counting \(\nu_0\) explicitly handles two factors in one block.
+
+   Two proof details need correction: \(R\) itself decreases for even \(j\); \(A\) increases. For odd \(j\), identity (W) initially gives \(k\) near \(d\); replace \(q\) by \(q+1\) to obtain the small representative \(k-d\).
+
+   I checked 144 small instances, including 17 containing both factors. An explicit odd-degree case \(N=1009\cdot1013,x=1000,H=32,j=3\) takes 15 calls against bound 27.
+
+   **IV — CORRECT reduction, WRONG general call bound.** The window’s position matters. Across an interval of length \(L\), even a singleton window at \(a>0\) moves its admissible \(k\)-interval by approximately \(aL\). A valid crude bound includes
+   \[
+   (b-a)(x+H)+aL+O(\rho(x+H))+O(1).
+   \]
+   The implementation includes this variation through its endpoints; the prose omits it. At degree three, \(H\asymp N^{3/10}\) while \(\rho x\asymp N^{1/5}\), so the omission is asymptotically material.
+
+   **EQ(d) — GAP.** Same-degree LOC establishes a reduction with candidate factor \(C\), not a uniform polynomial-overhead reduction. An average bound over ladder blocks is not a worst-case bound for an arbitrarily promised block. The degree-\((j+1)\) reduction removes this problem, but changes the oracle.
+
+   Extra output also does not prove **strictly** greater computational difficulty. “It can only be harder” requires an appropriately efficient reduction.
+
+   **EQ(c), the iff — OVERCLAIMED.** It is valid as arithmetic for a specified sequential scheme with uniform per-block cost \(T'\): the target requires \(T'=N^{o(1)}\). It is not proved for arbitrary primitives with candidate losses, shared preprocessing, amortization, or special behavior on ladder-generated blocks.
+
+   Furthermore, \(N^{o(1)}\) does **not** mean polynomial time in \(\log N\).
+
+   **TS — CORRECT identity, OVERCLAIMED interpretation.** Positivity of \(S_j\) proves the equivalence. Rewriting factoring as another equation does not establish that its computational structure is useless. The familiar bivariate \(N^{1/4}\) guarantee is a method guarantee, not an impossibility theorem.
+
+4. **MI and the literature: MI CORRECT; AASW applicability GAP; CHHS scope CORRECT.**
+
+   MI’s substitution is an integral polynomial-ring automorphism. In the \(z=x+h\) basis, membership means
+   \[
+   [z^i]G\in N^{\max(m-i,0)}\mathbb Z.
+   \]
+   The stated rows span exactly the truncation. Consequently, a full-rank sublattice cannot improve its determinant. This proves neither a shortest-vector lower bound nor universal algorithmic optimality.
+
+   **AASW can be identified precisely.** For polynomial degree \(\delta\), their §4.2 lattice is the span of
+   \[
+   h^{j_i}N^{m-i_i}F(h)^{i_i},\quad
+   i_i=\min(m,\lfloor i/\delta\rfloor),\quad
+   j_i=i-\delta i_i,\quad 0\le i\le d,
+   \]
+   embedded using scale \(U\). Assumption 1 is
+   \(\lambda_1(L_d)\ge\mathrm{GH}(L_d)/2\) with high probability over choices of \((F,N,U,d)\). Theorem 2’s conditional \(16N^{\beta^2/\delta}\) statement is accurately cited. For \(\delta=1\), this is the same ideal lattice. [AASW, §4.2](https://eprint.iacr.org/2012/108.pdf).
+
+   **The factoring family supplies an explicit failure of that Gaussian model.** Take \(m=d=1\), \(F=h+x\), \(x\asymp\sqrt N\), and \(1\ll U\ll\sqrt N\). Then
+   \[
+   \lambda_1\le\sqrt{x^2+U^2}\asymp\sqrt N,\qquad
+   \mathrm{GH}(L_1)\asymp\sqrt{NU},
+   \]
+   so their ratio tends to zero. This is not outside the lattice definition. A finite planted sample does not logically refute an unspecified high-probability distribution, but the assumption cannot simply be imported into this family.
+
+   The note’s explanation using the constant row \(N^m\) is also unsupported. In one 96-bit check, \(m=7,n=16,X=2^{28}\), the row \(F^m\) lies about 43 bits below GH, while \(N^m\) lies about 292 bits above it.
+
+   **CHHS does not establish the unknown-divisor threshold.** Theorem 2 treats a known modulus; §2.3 leaves extensions to other settings for future research, and the conclusion specifically discusses unknown moduli as requiring further capacity theory. The note’s narrow statement is correct. [CHHS, Theorem 2, §2.3 and conclusion](https://arxiv.org/pdf/1605.08065).
+
+   **Cohn–Heninger — CORRECT**, provided Johnson is presented as a sufficient decoding radius and analogy, not a necessity theorem. Theorem 1.1 gives the unknown-divisor bound. [Paper](https://arxiv.org/pdf/1008.1284).
+
+   **Herrmann–May — CORRECT quoted sufficient bounds**, but “more chunks need more known bits” describes their distribution-independent guarantee, not a lower bound. Their coefficients are known structured coefficients, not probabilistically independent quantities. [Original paper](https://www.iacr.org/archive/asiacrypt2008/53500412/53500412.pdf).
+
+5. **HM split: CORRECT ideal equality; GAP in adjacency argument; WRONG “functions of \(z\)” statement.**
+
+   The affine change \((u,v)\mapsto(u,v'=v+Hu+x_0)\) preserves total-degree truncations and is invertible over \(\mathbb Z\). In those coordinates, coefficients of \(u^av'^b\) must be divisible by \(N^{\max(m-b,0)}\). Thus the displayed rows span the full truncated ideal.
+
+   The integer box maps bijectively to a contiguous interval, with a clipped last block if necessary. This proves equivalence of the search problems. It does **not** prove that every bivariate norm or reduction strategy is dominated by the univariate sublattice: the inverse uses quotient and remainder, not a polynomial substitution.
+
+   Most directly, having a linear factor in \(Hu+v\) does not make the entire polynomial a function of \(Hu+v\). For example, \(u(Hu+v-c)\) is not one.
+
+   This occurs in the implemented experiment. At 64 bits, seed 0, \(m=2,E=4,X=16,H_s=U=4\), there are seven HG-good rows; three satisfy
+   \[
+   (\partial_u-4\partial_v)g\ne0.
+   \]
+   They have the tested linear factor but are not functions of \(z\). P5.2 survives; its reported interpretation does not.
+
+6. **Experiments: CORRECT recorded outcomes; OVERCLAIMED conclusions.**
+
+   Recalculation from the raw files gives:
+
+   | Experiment | Verified result |
+   |---|---|
+   | X3 | 54 cells: MIX–U_img is 0 in 51, −0.5 bit in 3 |
+   | P3.3–P3.4 | All 18 relevant cells pass; zero recorded nontrivial vectors beyond U_img+3; F endpoints agree |
+   | X4 | 24 cells: gaps 0 in 20, −0.5 in 4 |
+   | X5 | All 12 pass; 2,769/2,769 rows have the tested factor |
+   | X6 | All 30 endpoint gaps are zero |
+
+   Material limitations:
+
+   - **P3.1 is not literally tautological:** U_img is reduced independently. However, `_ucomp` inserts U_img into the table used for U_dim, and its dimension is admissible. Therefore P3.2 follows from P3.1 in these cells; likewise P4.2 follows from P4.1. They are not independent confirmations.
+   - “Best univariate” means best among the tested parameter list and accumulated comparators.
+   - Each scan point changes \(h_0\), hence \(x\) and the instance. Two consecutive failures do not establish a monotone range boundary. Half-bit endpoints are protocol measurements.
+   - **Every X6 point is below nominal \(N^{1/4}\)**; the largest \(\log_2X-\text{bits}/4\) is −0.5. “Beyond threshold” means beyond a fixed-parameter LLL endpoint.
+   - Fixed small dimensions do not establish an asymptotic lattice obstruction.
+   - F comparisons use a sparse three-term criterion while MIX uses ambient dimension; coarse-grid agreement is not an exact boundary identity.
+
+   “LLL is not the bottleneck, the lattice is” should be restricted to the tested HG certificate, parameters, samples, and scan.
+
+7. **§0 and barrier statement: OVERCLAIMED, with an arithmetic error.**
+
+   The note itself gives \(e(\theta)\le\min(\theta-1/4,1/5)\). Its composition therefore gives
+   \[
+   E_j\le\min\!\left(\frac14,\frac15+\frac1{j+2}\right).
+   \]
+   For \(j\ge19\), the second term is below \(1/4\). Thus “\(N^{1/4}\) for every \(j\ge2\)” contradicts the stated cap. These are upper bounds, not established optimal costs. [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105).
+
+   At \(j=3\), a zero-exponent block solver reaches exponent \(1/5\); it does not beat \(1/5\).
+
+   **Unexcluded mechanisms exist as research possibilities, not demonstrated algorithms:**
+
+   - Shared preprocessing or batched counting across blocks could improve total ladder cost without supplying a uniformly cheap solver for an arbitrary promised block.
+   - Near-divisor enumeration or cancellation may use integer structure outside the transfer’s generators and certificate.
+   - Kernel relations are useless as additional equations on their own rational curve, but their **integer points** retain arithmetic content. Indeed,
+     \[
+     F(h,r)=0,\quad r\in\mathbb Z
+     \implies x+h\mid N(-h)^{j+1}.
+     \]
+     If \(\gcd(x+h,x)=1\), this forces \(x+h\mid N\). No theorem here excludes faster bounded-integer-point recovery on that curve.
+
+   A local improvement would also improve partial key exposure, by KB. Problem equivalence does not rule out such an algorithm.
+
+Required fixes:
+
+1. Replace the opening verdict with:  
+   **“No tested construction improves on the tested univariate comparators. Prop T transfers the specified HG constructions into a univariate ideal with an explicit norm loss; it does not establish a universal \(N^{1/4}\) barrier.”**
+
+2. Replace “every shift strategy” with “every construction whose generators have the displayed form and whose residual bounds satisfy Prop T.”
+
+3. State the degree-growth condition for the \(o(1)\) norm loss. Remove the unproved conversion from relaxed norm existence to recovery-range optimality.
+
+4. Correct the reduced-basis F identity, its truncation requirement, and the distinction between sparse and ambient HG tests. Label the determinant explanation heuristic.
+
+5. Repair LOC’s parity details and IV’s missing window-position term. Restrict EQ’s efficient hardness direction and iff to an explicit uniform-cost model; remove “strictly stronger” and distinguish \(N^{o(1)}\) from polynomial time.
+
+6. Replace the AASW uncertainty with its exact lattice and assumption, together with the failure of that Gaussian model on the low-height linear factoring family.
+
+7. Replace “all HM vectors are functions of \(z\)” with **“all recorded good vectors have the tested linear factor in \(z\).”** Remove the claimed proof that adjacency prevents algorithmic improvement.
+
+8. Correct the all-\(j\) cost formula and scope every experimental conclusion to the tested parameters. Preserve P2.2 as a registered failure.
+
+Checks are reproducible from the scratch files [audit.py](/Volumes/git/factoring-connection/codex/scratch/topblock_2/audit.py), [hm_check.py](/Volumes/git/factoring-connection/codex/scratch/topblock_2/hm_check.py), [scan_check.py](/Volumes/git/factoring-connection/codex/scratch/topblock_2/scan_check.py), and [loc_check.py](/Volumes/git/factoring-connection/codex/scratch/topblock_2/loc_check.py).
