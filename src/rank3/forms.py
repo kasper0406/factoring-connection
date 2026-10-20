@@ -233,3 +233,28 @@ def liouville_check(f, P, g, Q, r: int, info: Dict[str, object], prec: int = 512
         return {"logM_lower": float(lo), "logRHS_upper": float(hi), "holds": bool(lo >= hi)}
     finally:
         ctx.prec = old
+
+
+def liouville_hadamard_check(f, P, g, Q, r: int, info: Dict[str, object], prec: int = 512) -> Dict[str, float]:
+    """Proposition R4, elementary (Hadamard) form, no Bean-Thunder needed (proof critic #5):
+    M := prod_i max_j |L_i(e_j)| >= r^{-D/2} |Delta_F|^{(D-r)!/(r (D-1)!)}.
+    Proof: |det| of an r-tuple <= prod of row 2-norms <= prod (sqrt r max_j |L_i(e_j)|); each index lies in
+    r (D-1)!/(D-r)! ordered tuples."""
+    old = ctx.prec
+    ctx.prec = prec
+    try:
+        rows, _ = linear_forms(f, P, g, Q)
+        D = len(rows)
+        logM = arb(0)
+        for row in rows:
+            mags = [abs(z) for z in row]
+            mx = mags[0]
+            for m_ in mags[1:]:
+                mx = mx.max(m_)
+            logM += mx.log()
+        e = arb(info["exp"] * math.factorial(D - r)) / (r * math.factorial(D - 1))
+        rhs = -arb(D) / 2 * arb(r).log() + e * arb(abs(int(info["Q2"]))).log()
+        lo, hi = logM.lower(), rhs.upper()
+        return {"logM_lower": float(lo), "logRHS_upper": float(hi), "holds": bool(lo >= hi)}
+    finally:
+        ctx.prec = old

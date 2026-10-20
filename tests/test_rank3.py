@@ -9,7 +9,7 @@ import sympy
 from sympy.ntheory.modular import crt
 
 from src.rank3 import ledger
-from src.rank3.forms import (bean_thunder_C, box_abs_values, count_bound_terms, delta_F, discriminant, kappa,
+from src.rank3.forms import (liouville_hadamard_check, bean_thunder_C, box_abs_values, count_bound_terms, delta_F, discriminant, kappa,
                              liouville_check, log_C_upper_elementary, predicted_valuation, resultant, vp)
 
 POW3 = [[1], [0, 1], [0, 0, 1]]
@@ -139,3 +139,43 @@ def test_ledger_constants():
     # rank 2 optimal: constants increase with r
     vals = [float(ledger.unscoped_constant(r)) for r in range(2, 12)]
     assert vals == sorted(vals)
+
+
+# ---- post-hoc tests (added after the proof critic, #13): small primes p <= D and index divisors -----------------
+
+
+@pytest.mark.parametrize("p", [2, 3, 5])
+def test_T1_small_prime_and_index_divisor(p):
+    """POST-HOC. N = p <= D; K side f(x) = p^3 h(x/p) with h = x^3 + x + 1 or x^3 - x - 1 (inert mod p for p = 2, 3,
+    5 respectively chosen), so Z[alpha] has index divisible by p and the linking prime lies under a residue-degree-3
+    prime of O_K. Common root m = 0 mod p with g = x^3 + 2x^2 + 3x + p c0."""
+    h = {2: [1, 1, 0, 1], 3: [-1, -1, 0, 1], 5: [1, 1, 0, 1]}[p]  # h0 + h1 x + 0 x^2 + x^3
+    f = [h[0] * p ** 3, h[1] * p ** 2, h[2] * p, 1]
+    g = [p * 7, 3, 2, 1]
+    assert resultant(f, g) % p == 0
+    info = delta_F(f, POW3, g, POW3, 3)
+    assert info["Q2"] != 0
+    assert vp(info["Q2"], p) * info["exp"] >= predicted_valuation(3, 6)
+
+
+def test_R4_hadamard_form():
+    N, (p, q), m, f, g = _linked_pair(5)
+    info = delta_F(f, POW3, g, POW3, 3)
+    assert liouville_hadamard_check(f, POW3, g, POW3, 3, info)["holds"]
+
+
+def test_rational_side_and_r_greater_than_d():
+    """r = 3 with a rational side (D = 4), and r = 3 > d = 2 (D = 5): GP holds and v_p >= P(r, D)."""
+    p, q = 1009, 1013
+    N = p * q
+    m = 123457 % N
+    f2 = [(-(m * m + 3 * m)) % N, 3, 1]
+    f2[0] -= N if f2[0] > N // 2 else 0
+    g3 = [(-(m ** 3 + 2 * m)) % N, 2, 0, 1]
+    g3[0] -= N if g3[0] > N // 2 else 0
+    lin = [-m, 1]
+    for (a, b, D) in ((g3, lin, 4), (f2, g3, 5)):
+        info = delta_F(a, POW3, b, POW3, 3)
+        assert info["Q2"] != 0
+        for pr in (p, q):
+            assert vp(info["Q2"], pr) * info["exp"] >= predicted_valuation(3, D)

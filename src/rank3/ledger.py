@@ -15,7 +15,7 @@ import sympy as sp
 
 def unscoped_constant(r: int) -> sp.Expr:
     """Floor if the lattice-point error could be ignored: c^3 = 64 (r-1)/(9 r). r = 2: (32/9)^{1/3} = 1.52629 (SNFS);
-    r = 3: (128/27)^{1/3} = 1.68031 (attained by SNFS-type 3-dim sieving in the size model); r -> oo: (64/9)^{1/3}."""
+    r = 3: (128/27)^{1/3} = 1.67989 (attained by SNFS-type 3-dim sieving in the size model); r -> oo: (64/9)^{1/3}."""
     return sp.cbrt(sp.Rational(64 * (r - 1), 9 * r))
 
 

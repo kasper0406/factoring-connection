@@ -1,0 +1,148 @@
+**Verdict: MAJOR REVISION.** The arithmetic core survives the attack. The main problems are overstatements about the aggregate family, optimality, and the split-side closure.
+
+I accept R1(ii). For a prime \(\mathfrak p_K\) above the order’s residue prime, the embeddings inducing it number \(ef\). Every such embedding sends \(u_j-\widetilde v_j\in\mathfrak p_K\) to an element of normalized valuation at least \(1/e\). Subtracting rows therefore gives
+\[
+v(\det_I)\ge (|I\cap T|-1)_+/\max(e,e').
+\]
+The counting identity is correct, with
+\[
+S(t)-S(t-1)=\binom{D-1}{r-1}-\binom{D-t}{r-1}.
+\]
+Finally, \(e+e'-1-\max(e,e')=\min(e,e')-1\ge0\). No coprimality with the order index, residue-degree-one condition in the maximal order, tameness assumption, or restriction \(p>D\) is needed.
+
+Numerical attacks also passed. For example, take
+\[
+f=X^3+4X+8,\qquad g=X^3-2,\qquad N=2,\quad r=3.
+\]
+Here \(f\) describes the order \(\mathbf Z[2\alpha]\), where \(\alpha^3+\alpha+1=0\), of index \(8\) in the maximal order. Its residue prime lies below an unramified prime of residue degree \(3\). The certified computation gives \(v_2(\Delta_F)=168\ge24\). Two Eisenstein cubics at \(2\) gave \(144\ge24\).
+
+R1(i), factorization independence, R2’s slicing argument, and R4’s cross-polytope proof are also sound. The original Bean–Thunder publisher abstract confirms complex coefficients, \(D>r\), nonzero discriminant, and the stated normalization. I could access the abstract, not the original full text; the exact Beta-product matches Stewart’s equation (19). No primitivity or real-factor hypothesis is missing. Sharpness is uniform over degrees, attained at \(D=r+1\). [Bean–Thunder](https://londmathsoc.onlinelibrary.wiley.com/doi/abs/10.1112/jlms/54.1.39), [Stewart, pp. 6–7](https://arxiv.org/pdf/2410.01097).
+
+1. **MAJOR — The aggregate exclusion omits GP.**  
+   [§5, lines 220–229](/Volumes/git/factoring-connection/notes/rank3_results.md:220) concludes that resbarrier §4.2’s family is impossible “for every \(N\).” R4 requires \(\Delta_F\ne0\), whereas §4.2 does not impose GP. Thus an essential hypothesis has been added to the mechanism being excluded.
+
+   The generator-height interpretation is reasonable, but should be explicit. A coefficient-height interpretation also need not escape: multivariate Mahler measure gives
+   \[
+   \mathcal M\le M_{\rm mult}(W)M_{\rm mult}(W')
+   \le \|W\|_2\|W'\|_2.
+   \]
+   Converting coefficient sup-heights to these norms costs only the square roots of the respective monomial counts. A premise controlling only individual generator norms, without controlling their simultaneous embedding profiles, is different.
+
+   **Fix:** State: “For every sufficiently large \(N\), no **GP** family with these parameters and this explicitly defined height bound exists.” Prove the height comparison being used. Leave non-GP families and families described only through selected small-norm candidates open.
+
+2. **MAJOR — R5 is valid, but “best possible two-norm ledger” is unsupported.**  
+   The intersection bound follows immediately from \(|WW'|\le X_1X_2\). Its asserted optimality does not.
+
+   Moreover, the cited counterexample lies outside GP. Writing \(z=\zeta_5^i\) and \(s=N\sqrt2\), its rows include
+   \[
+   R_\pm=(1,z\pm s,z^2\pm zs),\qquad R_0=(1,z,z^2),
+   \]
+   and \(R_++R_-=2R_0\). Hence \(\Delta_F=0\).
+
+   A GP replacement exists for the narrower claim that linking alone cannot force growth of the charged norm: take \(K=K'=\mathbf Q(\zeta_5)\), generators
+   \[
+   (1,\zeta_5+N,(\zeta_5+N)^2),\qquad (1,\zeta_5,\zeta_5^2),
+   \]
+   and squarefree \(N\) supported on splitting primes. The combined rows are Vandermonde rows at distinct parameters for \(N>2\), while the charged norm form remains fixed. This still does **not** make the other side split by construction.
+
+   **Fix:** Replace the example and retain only the charged-side impossibility statement. Delete the optimality claim unless a matching extremal result is proved.
+
+3. **MAJOR — The O3 closure needs an explicit smoothness-transfer hypothesis.**  
+   [§6, lines 242–246](/Volumes/git/factoring-connection/notes/rank3_results.md:242) does not establish an unconditional closure of those O3 instances. The geometric inequality is rigorous, but the factoring conclusion additionally needs the charged-side analogue of H, the appropriate factor-base model, H5, and the relevant H7 condition. Ptesplit explicitly leaves the transfer to box-linear element dictionaries unproved.
+
+   **Fix:** Label the conclusion “proved in the model under charged-side \(H'\), GP, H5, and H7.” Define \(\lambda\) using charged-side smoothness. State that the geometric result alone does not supply the missing transfer.
+
+4. **MAJOR — “Rank 2 optimal” and “G_r becomes a theorem” exceed the proved scope.**  
+   The fixed-rank optimizations are correct, apart from numerical errors below. Their lower-bound constants are minimized at \(r=2\). This does not prove that rank 2 beats every higher-rank construction for each fixed \(N\).
+
+   In particular, the formal rank-3 lower bound is below the usual GNFS constant. Comparing it with the SNFS floor does not establish that a matching rank-2 construction exists for the same modulus. Also, R4’s height floor is weaker than the stated \(G_r\) floor; neither \(G_r\)’s counting assertion nor its stronger height assertion has become a theorem.
+
+   **Fix:** Say: “The derived fixed-rank lower-bound constants are minimized at rank 2; within the stated scope, higher rank cannot beat the universal rank-2/SNFS floor.” Say that R1–R4 replace the **use of** \(G_r\) for specified barrier conclusions.
+
+5. **MINOR — Repair the yield argument’s omitted bookkeeping.**  
+   A cumulative bound \(n(Y)\le\operatorname{main}(Y)+B/4\) cannot simply discard \(B/4\) separately in every dyadic bin.
+
+   There is a clean repair: remove the \(B/4\) smallest examined candidates once. The remaining cumulative counts are bounded by the main term, and the removed candidates contribute at most \(B/4\) relations. Then perform the dyadic argument.
+
+   The claims \(\lambda\ge b/2\) and negligible binning loss also need control of \(\log\log Y_{\max}\). No coefficient-height bound supplies that here.
+
+   **Fix:** Add the removal argument and truncate the large-norm tail using the examined-set size and H. Use the lower bin endpoint for the smoothness probability. With these repairs, the growing-rank AM–GM proof under H7 works.
+
+6. **MINOR — Correct the numerical constants.**  
+   The symbolic formulas and code are correct, but
+   \[
+   (128/27)^{1/3}=1.679894733\ldots,
+   \]
+   not \(1.6803\). Consequently, the displayed numerical inequality “\(\ge1.6803\)” is false at \(r=3\).
+
+   The checked values are:
+
+   | \(r\) | Scoped | Formal unscoped |
+   |---|---:|---:|
+   | 2 | 1.526285657 | 1.526285657 |
+   | 3 | 2.422827457 | 1.679894733 |
+   | 4 | 3.174802104 | 1.747160929 |
+
+   The GNFS power-basis limit is \(2.422827457\ldots\), rounding to **2.4228**, not 2.4229.
+
+   **Fix:** Replace every 1.6803 by 1.6799, correct the limiting table entry, and distinguish fixed-rank limits from joint growing-rank assertions.
+
+7. **MINOR — Thunder’s 2005 count is missing hypotheses.**  
+   [§7(b), line 276](/Volumes/git/factoring-connection/notes/rank3_results.md:276) quotes
+   \[
+   N_F(X)\ll_{r,D}(X/m(F))^{r/D}+X^{(r-1)/D}
+   \]
+   without its finite-type and \(a'(F)<D/r\) assumptions. Coprimality \(\gcd(r,D)=1\) is a sufficient condition for the latter. GP alone should not silently replace it. Also, Thunder explicitly says bounds for the constants can be extracted; the issue is their usable growth, not absolute non-explicitness. [Thunder, Theorem 3 and following discussion](https://arxiv.org/pdf/math/0305078).
+
+   **Fix:** Restore the hypotheses and say that no bound adequate for the proposed growing-\(r,D\) application has been established here. The displayed Hadamard lower bound for \(m(F)\) is correct.
+
+8. **MINOR — The open list dismisses degeneracy too readily and underspecifies LP.**  
+   “Power bases always satisfy GP” needs the qualification already present in §2: consecutive powers of primitive generators with squarefree, coprime defining polynomials. “A design would have to be deliberately degenerate” is unjustified. Natural symmetries and subfield constructions can produce degeneracy.
+
+   Likewise, “GP is necessary for any \(N\)-saving” should mean that **linking alone admits no uniform saving without further hypotheses**. It is not a necessity theorem for every non-GP family. Non-GP does not imply uselessness.
+
+   LP cannot hold uniformly at every threshold: with \(u_1=u'_1=1\), the points \(\pm e_1\) have \(F=1\), even when the volume tends rapidly to zero. Nor do lower-rank restrictions automatically retain GP.
+
+   **Fix:** Formulate LP for bulk relation-producing counts with explicit proper-subspace exceptions. Describe it as an additional alternative assumption; no logical implication making it weaker than \(G_r\) is proved.
+
+9. **MINOR — Qualify the special-\(q\) paragraph.**  
+   The statement that every index-\(q\) lattice on which \(q\mid F\) corresponds to a degree-one prime is false for arbitrary modules. Scaling every generator by \(q\) preserves GP and makes \(q\mid F\) everywhere, so every index-\(q\) lattice qualifies.
+
+   The summed gain also concerns main terms; accumulated lattice errors need separate control. Finally, \(Q^{r/D}=L^{o(1)}\) requires an asymptotic restriction: \(Q\le B\) alone does not imply it when \(r/D\) stays positive.
+
+   **Fix:** Restrict to standard ideal-defined special-\(q\) lattices with nonzero reduction functionals, handle content/bad primes separately, control the aggregate error, and state the degree/rank regime making the gain negligible.
+
+10. **MINOR — The experiment scores reproduce, but their interpretation and deviation disclosure need tightening.**  
+    I reproduced both raw files exactly except timings. All 13 tests pass.
+
+    | Prediction | Re-score |
+    |---|---|
+    | P1 | 30/30 pass; equality at every linking prime in 29 instances |
+    | P2 | 3448/3448 grid checks pass |
+    | P3 | 30/30 pass; margins 10.383–53.517 nats |
+    | P4 | 12/12 pass; saturation 0.026807–0.176308 |
+    | P5 | All four cells pass, matching the reported medians |
+    | P6 | 9/9 instances pass |
+    | P7 | All 27 rank-3 comparisons pass |
+
+    Median best3/best2 ratios are **0.951712, 0.519141, 0.304736**. No lead signal fires.
+
+    However, **every P2 check is vacuous**: its error exceeds the entire box population. For example, \(r=3,D=6,E=6\) gives error \(3549\) versus \(2197\) box points. Thus these checks cannot detect failure of the main term. P4/P5 are finite-box diagnostics, not measurements of volume or proof of asymptotic sharpness.
+
+    Additional deviations or qualifications:
+
+    - Boxes contain **131,328** versus **135,200** points, not equal \(2^{17}\) populations.
+    - `median_log2F` records median **bit length**, not median logarithm.
+    - Base \(m\) uses the floor, while preregistration specified the ceiling.
+    - Prime generation uses seeded `nextprime`, not the preregistered `randprime`.
+    - R3-lll constructs the full integral-order fiber product modulo \(N\), rather than the preregistered diagonal polynomial image; these need not coincide.
+    - In all nine raw instances, R3-lll’s polynomial generators are identical across sides. It found common polynomial basis changes, not generators with \(P\ne Q\).
+
+    The rounded-embedding and norm/resultant distinctions are correctly disclosed.
+
+    **Fix:** Add these disclosures, label P2 vacuous, weaken the sharpness conclusion, and identify any larger-box or direct-volume check as post-hoc.
+
+11. **MINOR — Make the setting consistent.**  
+    Linking of listed generators is not equivalent to both projections being injective. Injectivity also forces \(r\le\min(d,d')\), excluding the rational-side examples cited as attaining the rank-2 floor. R1’s proof itself does not need that restriction.
+
+    **Fix:** Specify unital ring maps and linearly independent generators; state projection injectivity separately wherever needed. Treat the two sides’ factor indices as a disjoint, tagged union, including when \(K=K'\).
