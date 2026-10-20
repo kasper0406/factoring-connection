@@ -92,7 +92,9 @@ def test_gamma_tail_matches_poisson():
     # Pr[Gamma(1,1) >= V] = e^{-V};  Pr[Gamma(2,1) >= V] = e^{-V}(1+V)
     assert BR.gamma_upper_tail(1, Fr(3)) == 1
     assert BR.gamma_upper_tail(2, Fr(3)) == 4
-    assert abs(BR.af_weight(2, Fr(100), Fr(1)) - math.exp(-math.log(100)) * (1 + math.log(100))) < 1e-12
+    V = math.log(100)
+    # Gamma(r+1) tail for r = 1: e^{-V}(1 + V)
+    assert abs(BR.af_weight(1, Fr(100), Fr(1)) - math.exp(-V) * (1 + V)) < 1e-12
 
 
 def test_overdetermination_counts():

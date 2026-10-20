@@ -36,13 +36,15 @@ def gamma_upper_tail(r: int, V: Fraction) -> Fraction:
 
 
 def af_weight(r: int, X: Fraction, T: Fraction) -> float:
-    """Upper bound factor in Cor AF: Pr_v[X e^{-v} <= T] for v ~ Gamma(r,1), i.e. Pr[v >= log(X/T)]."""
+    """Uniform ideal-count model (|S(u)| = rho_K u) for Arakelov-uniform sampling with log-unit rank r: the cofactor
+    log-norm deficit log(X/Nc) has the Gamma(r+1, 1) law (codex nested_2 issue 1), so
+    Pr[Nc <= T] ~ Pr[Gamma(r+1,1) >= log(X/T)] = e^{-V} sum_{j<=r} V^j/j!,  V = log(X/T)."""
     import math
     V = math.log(float(X / T)) if X > T else 0.0
     if V <= 0:
         return 1.0
     s, term = 0.0, 1.0
-    for j in range(r):
+    for j in range(r + 1):
         if j:
             term *= V / j
         s += term
