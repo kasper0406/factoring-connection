@@ -131,14 +131,14 @@ def e3():
 
 
 # ------------------------------------------------------------------ E4
-def e4():
-    f = _out("E4")
-    rng = random.Random("sihard-E4")
+def e4(name="E4", R=1 << 20):
+    f = _out(name)
+    rng = random.Random("sihard-" + name)
     for i in range(300):
         q = rng.choice((2, 3, 4))
         m = q + rng.randint(1, 4)
         sets = random_x3c(q, m, rng, plant=rng.random() < 0.5)
-        inst = build_instance(q, sets, rng)
+        inst = build_instance(q, sets, rng, R=R)
         c_smooth = count_S_smooth_in_window(inst["primes"], inst["x"], inst["h"])
         c_cov = count_exact_covers(q, inst["sets"])
         rec = {"i": i, "q": q, "m": len(inst["sets"]), "smooth": c_smooth, "covers": c_cov,
@@ -194,12 +194,14 @@ def analyze():
         out["E3"] = rows
         out["E3 P5"] = all(r["measured"] <= r["bound"] for r in rows)
         out["E3 P6"] = all(0.9 <= r["ratio"] <= 1.0 for r in rows if r["version"] == "interval")
-    if os.path.exists(os.path.join(RAW, "sihard_E4.jsonl")):
-        rows = _load("E4")
-        out["E4 P7"] = all(r["smooth"] == r["covers"] for r in rows)
-        out["E4 n"] = len(rows)
-        out["E4 with covers"] = sum(1 for r in rows if r["covers"] > 0)
-        out["E4 max covers"] = max(r["covers"] for r in rows)
+    for nm in ("E4", "E4b"):
+        if os.path.exists(os.path.join(RAW, f"sihard_{nm}.jsonl")):
+            rows = _load(nm)
+            out[f"{nm} P7"] = all(r["smooth"] == r["covers"] for r in rows)
+            out[f"{nm} n"] = len(rows)
+            out[f"{nm} with covers"] = sum(1 for r in rows if r["covers"] > 0)
+            out[f"{nm} max covers"] = max(r["covers"] for r in rows)
+            out[f"{nm} max log2x"] = max(r["log2x"] for r in rows)
     os.makedirs("experiments/analysis", exist_ok=True)
     with open("experiments/analysis/sihard_summary.json", "w") as fh:
         json.dump(out, fh, indent=1, default=str)
@@ -208,5 +210,5 @@ def analyze():
 
 if __name__ == "__main__":
     t0 = time.time()
-    {"e1": e1, "e2": e2, "e3": e3, "e4": e4, "analyze": analyze}[sys.argv[1]]()
+    {"e1": e1, "e2": e2, "e3": e3, "e4": e4, "e4b": lambda: e4("E4b", None), "analyze": analyze}[sys.argv[1]]()
     print("elapsed", round(time.time() - t0, 1), file=sys.stderr)

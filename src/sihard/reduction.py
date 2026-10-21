@@ -17,12 +17,18 @@ from typing import List, Sequence, Tuple
 import sympy
 
 
-def build_instance(q: int, sets: Sequence[Tuple[int, int, int]], rng: random.Random, R: int = 1 << 20):
+def build_instance(q: int, sets: Sequence[Tuple[int, int, int]], rng: random.Random, R: int | None = 1 << 20):
+    """R = None: the provable choice R = K^2, K = 2^{q+2}(b^{3q}+1)^2, so Q ~ K^3 and R' ~ Q^{2/3}/(4q)
+    (primes of density ~1/log Q in [Q', Q' + R') by Huxley). R = 2^20 is the registered E4 toy choice (heuristic
+    prime supply)."""
     sets = sorted(set(tuple(sorted(s)) for s in sets))
     b = q + 1
     w = [sum(b ** e for e in s) for s in sets]
     W = sum(b ** e for e in range(3 * q))
     Bmax = b ** (3 * q)
+    if R is None:
+        K = (1 << (q + 2)) * (Bmax + 1) ** 2
+        R = K * K
     Rp = R // (4 * q)
     Amax = (Bmax + 1) * R
     Q = (1 << (q + 2)) * Amax * Amax // R + 2
