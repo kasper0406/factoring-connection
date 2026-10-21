@@ -114,6 +114,13 @@ def test_cvp_output_obeys_certificate():
         assert a["dist2"] == sum((di * ei) ** 2 for di, ei in zip(d, a["e"])) + (vec[-1] - t[-1]) ** 2
         u, v, w = a["u"], a["v"], a["w"]
         assert u - v * N == w and gcd(u, v) == 1
+        # Thm R(ii)/(iii) bound: |w| <= 2 e^{(A+L)/2} sinh(|Delta|/2), A = ln(uv) <= Q (high-precision check)
+        mp.mp.dps = 120
+        A = mp.log(u) + mp.log(v)
+        D = mp.log(u) - mp.log(v) - mp.log(N)
+        Q = sum(mp.log(p) * ei * ei for p, ei in zip(P, a["e"]))
+        assert A <= Q + mp.mpf(10) ** -60
+        assert abs(w) <= 2 * mp.e ** ((A + mp.log(N)) / 2) * mp.sinh(abs(D) / 2) * (1 + mp.mpf(10) ** -50)
 
 
 def test_exact_cvp_can_fail_codex_example():

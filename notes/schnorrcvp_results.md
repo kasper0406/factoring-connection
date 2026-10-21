@@ -34,8 +34,10 @@ Labels:
   - γ = 1 + n^{−ε} gives heuristic polynomial time;
   - γ = 1 + (log n)^{−c} gives L[1/(2+c)];
   - γ = 1 + Θ(1) gives L[1/2].
-- Every factor that lattice algorithms or lattice cryptography care about (poly(n), 2^{n^ε}, 2^{n/log n}) gives *nothing*. A γ-approximate answer can have a residual up to N^{Θ(γ²−1)} times larger.
-- Even the γ → 1 statements are weaker than what NP-hardness of CVP already gives rigorously, for any lattice. So there is **no high-profile link** between factoring and the lattice problems underlying post-quantum cryptography in either direction.
+  - These assume a polynomial-time oracle on this lattice family (heuristic; §2.4–2.5).
+- Every factor that lattice algorithms or lattice cryptography care about (poly(n), 2^{n^ε}, 2^{n/log n}) gives *nothing* through this route. A γ-approximate answer can have a residual up to N^{Θ(γ²−1)} times larger (heuristically tight, Prop A).
+- In γ, these statements are weaker than what NP-hardness of CVP already gives rigorously for *general* lattices. The only new content is that the oracle is needed only on an explicit lattice family.
+- So **no high-profile link** between factoring and the lattice problems underlying post-quantum cryptography is known in either direction, and this route heuristically cannot supply one.
 - Schnorr 2021 fails before any lattice algorithm is involved. At his parameters (n = 47 at 400 bits, n = 95 at 800 bits), heuristically **no fac-relations exist at all**: the expected total number of all sizes is 10^{−52} and 10^{−115}, and 48 or 96 are needed.
 - The dimension at which enough relations exist is n ≈ 275 at 400 bits and ≈ 775 at 800 bits. It grows like (ln N)^{3/2+o(1)}.
 - With any CVP algorithm costing 2^{Θ(n)}, the approach is asymptotically **slower than trial division**. Our concrete cost model gives ≈ 2^{187} at 400 bits and ≈ 2^{467} at 800 bits, against roughly 2^{57} and 2^{80} for QS and GNFS. At 800 bits that is above trial division (2^{400}).
@@ -52,23 +54,27 @@ Labels:
    relation lattice Λ_N in the norm Σ|a_i|ℓ_i.
 2. **Theorem P (promise reduction) [PROVED; a quantitative CVP form of Adleman 1995 §2 and Schnorr 1991 §3].**
    Suppose some squarefree relation (witness) e⁰ has |w₀| ≤ ω. Then *every* γ-CVP answer, at scale C = e^{(L+A₀)/2}/ω, satisfies
-   |w| ≤ ω·γ√(A₀+1)·exp(((γ²−1)A₀ + γ²)/2 + o(1)). For γ = 1 and ω = B/(2√(A₀+1)), every exact-CVP answer is a
-   fac-relation.
+   |w| ≤ ω·γ√(A₀+1)·exp(((γ²−1)A₀ + γ²)/2 + o(1)). For γ = 1 and ω = B·e^{−0.7}/√(A₀+1), every exact-CVP answer is a
+   fac-relation, even when A₀ is unknown and C is scanned (Corollary P1).
 3. **Lemma LA [PROVED].** Suppose the relations generate a sublattice of odd index in Λ_N and ⟨P⟩ mod N contains a
    square root of 1 other than ±1. That holds under GRH when B ≥ 2 ln²N (Bach), for N not a prime power. Then
    testing a GF(2)-kernel *basis* factors N deterministically.
-4. **Theorem H (heuristic reduction) [HEURISTIC: H_S witness existence, H_LA odd index].**
+4. **Theorem H (heuristic reduction) [HEURISTIC: H_S witness existence, H_LA odd index; GRH; N not a prime power].**
    - Setting: B = (ln N)^κ with κ > 2, n = π(B), targets k·N for primes k ∈ (B, 4B].
    - Then n + 2 relations come from O(nL) calls to an exact-CVP oracle, or to a γ-CVP oracle with
-     γ = 1 + O(ln B/L).
+     γ − 1 ≤ c_κ·ln B/L, where c_κ = (1 − 3/(2κ))/(1 + 2a) + o(1) and v ≈ N^a.
+   - Prop A says that larger constants fail.
    - Relations from distinct primes k are automatically distinct [PROVED], and they factor N.
-   - In terms of n: factoring ≤ CVP_{1+n^{−ε}} on prime lattices of dimension (log N)^{max(2,1/ε)+o(1)}.
+   - In terms of n: factoring ≤ CVP_{1+n^{−ε}} on prime lattices of dimension (log N)^{κ}, for any fixed
+     κ > max(2, 1/ε).
 5. **Theorem G (cost as a function of γ) [MODEL: H_res′ for a "benign" oracle].**
-   - γ = 1 + τ·L^{2α−1}(ln L)^{1−2α} gives L_N[α, 2√(ατ)], for 0 < α ≤ 1/2, oracle cost poly(n), n = L[α].
+   - γ = 1 + τ·L^{2α−1}(ln L)^{1−2α} gives L_N[α, 2√(ατ)] for 0 < α ≤ 1/2, with n = L[α] and a *unit-cost*
+     (n^{o(1)}) oracle.
+   - With oracle cost n^{c} the constant is 2√((1+c)ατ). The exponents α are unchanged.
    - Hence:
      - γ = 1 + n^{−ε}: polynomial;
      - γ = 1 + (log n)^{−c}: L[1/(2+c)], so α < 1/3 needs c > 1;
-     - γ − 1 = Θ(1): L[1/2, √(2(γ−1))];
+     - γ − 1 = Θ(1): L[1/2, √(γ²−1)] (unit-cost oracle), which beats QS iff γ < √2;
      - γ ≥ 2, poly(n), 2^{n^ε}, 2^{n/log n}: no gain at all.
    - **Prop A [HEURISTIC H_S].** The bound in Theorem P is tight up to O(ln L) in the exponent. So an adversarial
      oracle defeats the reduction once (γ² − 1)A₀ ≫ ln B.
@@ -79,8 +85,8 @@ Labels:
    - So Adleman's 1995 heuristic "factoring ≤_R SVP" has been a theorem since Ajtai 1998. Ajtai's proof itself used the
      Schnorr–Adleman lattice.
    - The prime-lattice route reaches only γ = 1 + o(1), deep inside the NP-hard regime.
-   - No reduction is known for γ ≥ √(n/log n), where GapCVP_γ ∈ NP ∩ coAM (Goldreich–Goldwasser 2000), and this
-     route provably cannot supply one (item 5).
+   - No reduction is known for γ ≥ √(n/log n), where GapCVP_γ ∈ NP ∩ coAM (Goldreich–Goldwasser 2000).
+     Heuristically (Prop A), this route's query strategy cannot supply one.
    - Faster factoring is not known to help any lattice problem.
 7. **Schnorr 2021 dissection.**
    - **(a) No relations exist [MODEL, H_S].** E_tot(400, 47) = 10^{−51.9}; E_tot(800, 95) = 10^{−114.8}. His
@@ -96,13 +102,15 @@ Labels:
 8. **Experiments (pre-registered; all pre-registered predictions passed).**
    - E1: exact box counts of primitive relations agree with H_S′ within ×1.63 pooled. The POST-HOC parity/CRT
      model brings this to 0.92.
-   - E2: 79,000+ CVP outputs at 20–40 bits. Relation yield vs H_res′: pooled 0.87. Schnorr-2021 scaling leaves
-     |w| ≈ N^{0.92–0.97}. Every N of 20–36 bits was factored end-to-end as a correctness check.
+   - E2: ≈ 79,000 CVP outputs (78,963) at 20–40 bits. Relation yield vs H_res′: pooled 0.87. Schnorr-2021 scaling leaves
+     |w| ≈ N^{0.92–0.96}. Every N of 20–36 bits was factored end-to-end as a correctness check.
 
 **Best open question.** Is there any family of lattices, or any norm, in which a *non-NP-hard* approximation factor
-(γ ≥ √n) controls the residual of a factoring relation? The exponential sensitivity (Theorem P/Prop A) rules out
-every lattice in which the residual's log-size is linear in the lattice norm. That covers every Schnorr/Adleman-type
-lattice we know. A positive answer would need a residual that depends only polynomially on the norm.
+(γ ≥ √n) controls the residual of a factoring relation?
+- Heuristically, the exponential sensitivity (Theorem P with Prop A) defeats the Schnorr/Adleman query strategy, in
+  which the residual's log-size is linear in the lattice norm.
+- It says nothing about reductions that query other lattices or embeddings.
+- A positive answer would need a residual that depends only polynomially on the norm.
 
 ---
 
@@ -144,17 +152,21 @@ Tested in `test_residual_identity_exact` and `test_uw_lower_bound`.
 **Relation lattice.**
 - Λ_N = {(a, s) ∈ Z^n × Z : (−1)^s ∏p_i^{a_i} ≡ 1 (mod N)}. Its index is |⟨−1, P⟩ mod N| ≤ φ(N).
 - A fac-relation is the Λ_N-vector exps(u) − exps(|w|) (with sign). Its weighted ℓ1 norm is ‖a‖_{1,ℓ} = ln(u|w|).
-- So (v) says **λ₁(Λ_N) ≥ ln(N − 1)** in this norm. Every relation, found by any method, has u|w| ≥ N − 1.
-- Minkowski (convex body {Σ|a_i|ℓ_i ≤ R}, volume 2^n R^n/(n!∏ℓ_i)) gives the upper bound
-  λ₁ ≤ (n!·∏ℓ_i·φ(N))^{1/n} [PROVED].
-  - For n ≈ L this is ≈ L·ln L. So a relation u ≡ w with u|w| ≤ N^{ln ln N + O(1)} always exists.
+- So (v) says **λ₁ ≥ ln(N − 1)** in this seminorm, over vectors with a ≠ 0. ((0, 2) ∈ Λ_N has seminorm 0, so the
+  bound is stated on the projection π(Λ_N) = {a : ∏p^a ≡ ±1}.) Every relation, found by any method, has u|w| ≥ N − 1.
+- Minkowski in R^n, applied to π(Λ_N), whose index is ≤ φ(N), with the convex body {Σ|a_i|ℓ_i ≤ R} of volume
+  2^n R^n/(n!∏ℓ_i), gives the upper bound λ₁ ≤ (n!·∏ℓ_i·φ(N))^{1/n} [PROVED].
+  - For n ≈ L this is ≈ L(ln L + lnln L − 1 + o(1)). (Critic's numerics: λ₁/L ≤ 6.20, 7.02, 8.10 at 400, 800 and
+    2000 bits.) So a relation u ≡ ±w with u|w| ≤ N^{(1+o(1)) lnln N} always exists.
   - That relation has v = (u − w)/N *arbitrary*, not smooth. So it is a relation for Adleman's form
     (u − kN^γ = w), not necessarily a vector of Schnorr's lattice.
   - These are rigorous existence statements. They do not guarantee small relations, and they do not count them.
 
-**Gaussian heuristic warning [PROVED example + MEASURED].**
-- For n ≫ L the short lattice vectors are mostly {0, ±1}-vectors. Counts of lattice points in balls then follow
-  smooth-number counts Ψ, not the volume. For B = (ln N)^κ, the count grows like X^{1−1/κ}, not like X^n (§3).
+**Gaussian heuristic warning [HEURISTIC + MODEL].**
+- For n ≫ L the short lattice vectors are mostly {0, ±1}-vectors.
+- The number of lattice vectors with ln(uv) ≤ T is a count of smooth pairs, which grows like e^{T(1−1/κ)+o(T)} for
+  B = (ln N)^κ.
+- The volume (Gaussian-heuristic) prediction grows like T^n. These differ greatly when n ≫ T (§3).
 - Ducas (RISC slides, May 2021, slide 18) makes the same warning ("Gaussian Heuristic seems invalid for certain C").
 
 ## 2. The reduction theorems
@@ -173,11 +185,15 @@ C := e^{(L+A₀)/2}/ω. Then for every γ ≥ 1, every lattice vector b(e) with 
 - Substitute C. ∎
 
 **Corollary P1 (exact oracle).**
-- With γ = 1 and ω = B·e^{−0.51}/√(A₀+1), every exact-CVP answer has 0 < |w| ≤ B. So it is a fac-relation, since every
-  integer of absolute value ≤ B is B-smooth.
+- A₀ is unknown, so scan j ∈ [⌊L⌋ − 1, A_max] (A_max = poly(L) is part of the promise).
+- For each j, put ω_j = B·e^{−0.7}/√(j+2) and C_j = e^{(L+j)/2}/ω_j.
+- At j = ⌊A₀⌋, write δ = A₀ − j ∈ [0, 1). Then C_j²Δ₀² ≤ e^{−δ}, and every exact-CVP answer has
+  |w| ≤ ω_j√(A₀+1)·e^{(δ+e^{−δ})/2} ≤ ω_j√(A₀+1)e^{0.684} < B. This is the critic's sharper accounting, replacing
+  our draft's "extra e^{1/2}", which was wrong.
+- So under the promise that a witness with |w₀| ≤ ω_{⌊A₀⌋} exists, every exact-CVP answer is a fac-relation, since
+  every integer of absolute value ≤ B is B-smooth.
 - w ≠ 0 because N has no prime factor ≤ B.
-- A₀ is unknown, so scan C over e^{(L+j)/2}/ω for integers j ∈ [L, A_max]. This costs O(A_max) calls and an extra
-  factor ≤ e^{1/2} in the bound.
+- The scan costs O(A_max) calls.
 
 **Rounding [PROVED].**
 - Use integer entries round(S√ℓ_i), round(S·C·ℓ_i) and round(S·C·L).
@@ -187,7 +203,8 @@ C := e^{(L+A₀)/2}/ω. Then for every γ ≥ 1, every lattice vector b(e) with 
 - Entries have O(L) bits.
 
 This is Adleman's §2 argument, generalised to γ and stated as a promise reduction. Adleman: B = ln^{20}(2N^{1.25}),
-residual ≤ 72 ln²(N²), exact SVP. Schnorr 1991's §3 conditions are similar (codex: c > 1, a > (2c−1)/(c−1)).
+residual ≤ 72 ln²(N²), exact SVP. Schnorr 1991's §3 conditions are similar. Codex gives them as c > 1 and Schnorr's a > (2c−1)/(c−1), where Schnorr's
+a is our κ.
 Codex's equation (2) is the same certificate.
 
 ### 2.2 Lemma LA (linear algebra) [PROVED]
@@ -222,24 +239,30 @@ The odd-index hypothesis is **H_LA**. It is unproved for relations found by latt
 - That does not change the lattice ⟨V₀, …, V_z⟩_Z: it is a unimodular basis change. So the shortest vectors, and any
   SVP oracle's output set, are unchanged.
 - `test_adleman_rerun_lattice_unchanged` checks this.
-- The fix is to delete V_i, V_j and use target ln(p_i p_j N), i.e. multipliers as above. With that fix his
-  argument goes through.
+- The repair is to delete V_i, V_j and use target ln(p_i p_j N). This restores his *heuristic* argument.
+  - Distinctness then stays heuristic, because p_i p_j ∈ ⟨P⟩. A squarefree relation with p_i p_j p_{i′} p_{j′} | v can
+    be returned for both pairs.
+  - Rigorous distinctness needs multipliers outside P, as above.
 
-### 2.4 Theorem H (the heuristic reduction) [HEURISTIC: H_S for witnesses, H_LA]
+### 2.4 Theorem H (the heuristic reduction) [HEURISTIC: H_S for witnesses, H_LA; GRH]
 
 - Take B = (ln N)^κ with κ > 2, n = π(B), and targets kN for primes k ∈ (B, 4B]. There are ≥ n + 2 of them.
 - **H_S** (u = vkN + w is smooth with the local density of smooth numbers, as tested in E1) predicts, for v ≤ N^a,
   N^{a(1−2/κ) − 1/κ − o(1)} squarefree witnesses with |w₀| ≤ ω. This → ∞ for a > 1/(κ−2).
-  This matches Schnorr 1991's condition a > (2c−1)/(c−1) with N^{c−1} = v.
+  This matches Schnorr 1991's condition κ > (2c−1)/(c−1) (his "a" is our κ) with v = N^{c−1}, i.e. our
+  a = c − 1.
 - So every target has a witness with A₀ ≤ (1 + 2a + o(1))L.
 - Corollary P1 (exact CVP, O(L) scales each) then gives n + 2 distinct relations, and Lemma LA factors N.
-- Theorem P allows the same with any γ satisfying (γ² − 1)A₀ ≤ 2 ln B − 3 ln L − O(1), i.e. γ = 1 + O(ln B/L).
+- Theorem P allows the same with any γ satisfying (γ² − 1)A₀ ≤ 2 ln B − 3 ln L − O(1).
+  - With A₀ = (1+2a)L this is γ − 1 ≤ c_κ ln B/L, with c_κ = (1 − 3/(2κ))/(1+2a) + o(1).
+  - The −3 ln L can be weakened to −ln L − O(1).
   Take ω := B·e^{−(γ²−1)A₀/2}/(γ√(A₀+1)e^{γ²/2+o(1)}) ≥ 1. The witness count is linear in ω, so witnesses with
   |w₀| ≤ ω still exist under H_S.
 - In terms of the dimension, ln B/L = κ ln L/L = n^{−1/κ+o(1)}. So:
 
 > **factoring ≤ CVP_{1+n^{−ε}} on Schnorr–Adleman prime lattices of dimension n = (log N)^{max(2, 1/ε)+o(1)},
-> with O(n log N) oracle calls; heuristic in H_S and H_LA, deterministic otherwise.**
+> for any fixed κ > max(2, 1/ε), with O(n log N) oracle calls. Heuristic in H_S and H_LA; uses GRH (Bach) and
+> N not a prime power; deterministic otherwise.**
 
 ### 2.5 Theorem G (cost as a function of γ) [MODEL under H_res′] and Prop A
 
@@ -253,23 +276,25 @@ Theorem P, subject to the forced local conditions (coprime to uv). E2 tests this
 
 Balancing gives (derivation in §2.6):
 
-| oracle factor γ(n) | factoring cost (oracle poly(n)) |
+| oracle factor γ(n) | factoring cost (unit-cost oracle; for oracle cost n^c multiply each L-constant by √(1+c)) |
 |---|---|
 | 1 + n^{−ε} | poly(log N) (Theorem H, even adversarial) |
 | 1 + τ·L^{2α−1}(ln L)^{1−2α} ≈ 1 + (log n)^{2−1/α+o(1)} | L[α, 2√(ατ)] |
 | 1 + (log n)^{−c} | L[1/(2+c)]; α < 1/3 ⇔ c > 1 |
-| 1 + η, η = Θ(1) | L[1/2, √(2θ)], θ ≈ η: beats QS only for η < 1/2 |
+| 1 + η, η = Θ(1) | L[1/2, √(2θ)] = L[1/2, √(γ²−1)], since θ → (γ²−1)/2: beats QS iff γ < √2 |
 | γ ≥ 2; poly(n); 2^{n^ε}; 2^{n/log n} | residual up to N^{Θ(γ²)}: **no factoring gain**; for γ = poly(n) and n = L^{Ω(1)}, worse than trial division |
 
-*The oracle in this table runs in poly(n) on dimensions n = L[α]. No such oracle is known: all known algorithms for
-γ = 1 + O(1) cost 2^{Θ(n)}.*
+*The table assumes an oracle costing n^{o(1)} per call on dimensions n = L[α]. With cost n^c, the oracle work is
+L[α, (1+c)b + s], and the optimum becomes L[α, 2√((1+c)ατ)] (proof critic). The exponents α are unchanged. No such
+oracle is known: all known algorithms for γ = 1 + O(1) cost 2^{Θ(n)}.*
 
 **Prop A (tightness / adversarial oracle) [HEURISTIC H_S].**
 - Apply the counting of §3 to vectors with A ≈ γ²A₀ and C|Δ| ≤ 1. These have v ≈ e^{(γ²A₀−L)/2}.
 - H_S predicts ≥ 1 such lattice vector with |w| ≥ ω·e^{(γ²−1)A₀/2 − O(ln L)}, and many once (γ² − 1)A₀ ≫ ln B.
 - They lie in the γ-ball, and their residuals are smooth with probability ρ(·) < 1. So an adversarial γ-oracle can
   return a non-relation.
-- Hence the reduction for worst-case oracles is *exactly* the regime γ − 1 = O(ln B/L) of Theorem H.
+- Hence, heuristically, this query strategy with worst-case oracles works exactly in the regime
+  γ − 1 = O(ln B/L) of Theorem H. Prop A says nothing about strategies that query other lattices or embeddings.
 
 ### 2.6 Derivation of the L[α] row [MODEL]
 
@@ -277,7 +302,8 @@ Balancing gives (derivation in §2.6):
 - Setting u ln u = sL^α(ln L)^{1−α} gives u = (s/α)L^α(ln L)^{−α}, hence θ = (sb/α)L^{2α−1}(ln L)^{1−2α}.
 - Oracle calls cost L[α, b + s] and linear algebra L[α, 2b]. The optimum is s = b, giving L[α, 2b] with θ = (b²/α)·(…).
 - So θ = τL^{2α−1}(ln L)^{1−2α} gives L[α, 2√(ατ)]. α = 1/2 gives √(2τ), α = 1/3 gives 2√(τ/3).
-- To beat GNFS 1.923 at α = 1/3 needs τ < 2.77.
+- To beat GNFS 1.923 at α = 1/3 needs τ < 2.77. That assumes a unit-cost oracle; with cost n^c, the requirement
+  is τ < 2.77/(1+c).
 
 ### 2.7 Prop NP: what is already rigorous [PROVED from known theorems]
 
@@ -292,8 +318,9 @@ Balancing gives (derivation in §2.6):
     not in P". Ajtai's 1998 theorem superseded it.
   - Ducas's slides (slide 21) note that Ajtai's and Micciancio's NP-hardness proofs reuse the Schnorr–Adleman lattice.
 - **Consequences for the high-profile question.**
-  - (i) Theorem H's γ = 1 + n^{−ε} is far inside the NP-hard range, so it adds nothing in γ. It gives only an explicit,
-    natural lattice of dimension (log N)^{2+ε}.
+  - (i) Theorem H's γ = 1 + n^{−ε} is far inside the NP-hard range, so it adds nothing in γ. Its only new content is
+    that the oracle is needed only on an explicit lattice family, of dimension (log N)^{κ} with κ > max(2, 1/ε).
+    That is incomparable with the general-lattice NP-hardness reduction.
   - (ii) For γ ≥ √(n/log n), GapCVP_γ ∈ NP ∩ coAM (Goldreich–Goldwasser 2000), and ∈ NP ∩ coNP for γ ≥ √n
     (Aharonov–Regev 2005). LWE-based cryptography lives at γ = Õ(n) to poly(n) (Regev 2005).
   - No reduction from factoring is known there. Such a reduction would not contradict anything, since factoring is
@@ -389,7 +416,8 @@ ePrint page blocked us.
    - The paper's (3.3) "‖b‖² ≥ ln uv + ẑ²" holds for diagonal √ln p_i, not for the displayed diagonal f(i). This is an
      internal inconsistency.
 4. **SVP vs CVP.**
-   - In the homogeneous (n+1)-dimensional SVP formulation the shortest vectors have last coefficient 0. They are pairs
+   - [MEASURED by Ducas; heuristic in general] In the homogeneous (n+1)-dimensional SVP formulation the shortest
+     vectors have last coefficient 0. They are pairs
      u ≈ v ("smooth near-twins": Ducas observed "a single 1 and a single −1").
    - The target enters only with coefficient ±1, which needs a BDD-type promise. That promise is the existence of a
      witness, which does not hold (item 2).
@@ -446,10 +474,14 @@ ePrint page blocked us.
 | Cost tables (Theorem G, E0b) | MODEL |
 | NP-hardness subsumption | PROVED from DKRS 2003 / Khot 2005 / Haviv–Regev 2007 |
 
-**Cleanest provable statement.** Assume (i) for each of n + 2 primes k ∈ (B, 4B] a squarefree witness exists for
-target kN, and (ii) the resulting relations generate an odd-index sublattice of Λ_N. Then an exact-CVP oracle on the
-prime lattices of dimension n = π(B), with B = 2 ln²N or larger, factors N in deterministic polynomial time
-(O(nL) oracle calls), under GRH. (i) is the whole difficulty. It is a statement about smooth integers in intervals of
+**Cleanest provable statement.** Let N not be a prime power and have no prime factor ≤ B, with B ≥ 2 ln²N. Assume:
+- (i) for each of n + 2 primes k ∈ (B, 4B] a squarefree witness exists for target kN, with A₀ ≤ poly(L) and
+  |w₀| ≤ ω_{⌊A₀⌋} (§2.1);
+- (ii) the resulting relations generate an odd-index sublattice of Λ_N.
+
+Then an exact-CVP oracle on the prime lattices of dimension n = π(B) factors N in deterministic polynomial time
+(O(n·poly(L)) oracle calls), under GRH. Under H_S, (i) needs B = (ln N)^{κ} with κ > 2. So B = 2 ln²N is the
+rigorous floor for the linear algebra, not for the witnesses. (i) is the whole difficulty. It is a statement about smooth integers in intervals of
 length B/O(√L) around smooth multiples of N, which is not known for any B = (log N)^{O(1)}.
 
 ## 6. Variants (Q5)
@@ -458,15 +490,16 @@ length B/O(√L) around smooth multiples of N, which is not known for any B = (l
 |---|---|---|---|
 | Multiplier targets ln(kN) (v free) | existence threshold κ > 1 instead of 3/2; rigorous distinctness | still exp(Θ(L lnL/lnlnL)) or more with 2^{Θ(n)} CVP | MODEL |
 | Adleman SVP form (u − kN^γ = w) | same relations | same; its distinctness step is flawed but repairable (§2.3) | PROVED / MODEL |
-| ℓ1 or other norms | log\|w\| is linear in any norm of e, so the exponential sensitivity is unchanged | none | PROVED (structure of Theorem P) |
+| ℓ1 or other norms | log\|w\| is linear in any norm of e, so the exponential sensitivity is unchanged | none | Theorem P upper bound PROVED; tightness HEURISTIC (Prop A) |
 | NFS rational side via prime lattices (list smooth a − bm near bm) | turns a poly-delay enumerator of dimension L[1/3] into the factory constant 1.6386 (smoothenum T3) | needs poly-delay listing in dim L[1/3]; known enumeration is 2^{Θ(n)} = exp(L[1/3]) | MODEL / HYPOTHETICAL |
 | Algebraic side (S-unit lattice CVP for norms of a − bα) | would approach smoothenum T6/T7 (0.763 / 0) | needs class group / S-unit computations plus principality, and dimension L[1/3] | SPECULATIVE |
-| Two lattices (u-side and w-side) | w-smoothness cannot be imposed linearly: w = u − vN is not multiplicative in e | — | PROVED obstacle |
+| Two lattices (u-side and w-side) | w-smoothness cannot be imposed linearly: w = u − vN is not multiplicative in e | — | assessment |
 | The project's devices (Prop LQ, Prop JR, Lemma C2) | the prime lattice is a "list u-smooth points" device, so resbarrier's D = 2 hyperbola applies to the *density* (\|uw\| ≥ N − 1), not to the cost | — | assessment |
 
-No variant is plausibly better. Any gain requires a sub-exponential, near-exact CVP algorithm specific to prime
-lattices. Such an algorithm would (Theorem H) already give polynomial-time factoring by itself, so it is
-precisely as hard as the target.
+No variant is plausibly better. Any gain requires a fast near-exact CVP algorithm specific to prime lattices.
+- Only a *polynomial-time* CVP_{1+n^{−ε}} algorithm on this family gives polynomial-time factoring (Theorem H).
+- A 2^{n^c} algorithm at n = L^{κ} gives exp(L^{κc}) instead.
+- No converse reduction (CVP on prime lattices ≤ factoring) is known.
 
 ## 7. Experiments
 
@@ -499,7 +532,7 @@ n = 25).
 
 Setup: 6 sizes (20–40 bits) × 3 N × n ∈ {12, 20, 30, 40} × 5 variants × 10 permutation seeds = 3600 lattices.
 Outputs per lattice: LLL-Babai, BKZ-10-Babai, and the ≤ 20 closest vectors (exact enumeration, mpfr GSO, exact
-re-sort). That is 79,000+ outputs.
+re-sort). That is 78,963 outputs.
 
 | variant | outputs | relations | Σ p_ref | obs/H_res′ | obs/naive | post-hoc H_S″ |
 |---|---|---|---|---|---|---|
@@ -554,12 +587,23 @@ Commands:
 
 ## 8. Coordination
 
-- `suffmap`: notes/suffmap_results.md did not exist when this was written. Our entry for its map: "approx-CVP on
-  prime lattices is *sufficient* for polynomial time only at γ = 1 + n^{−ε}, and for L[α < 1/3] only at
-  γ = 1 + (log n)^{−c} with c > 1, oracle poly(n). It is not sufficient at any γ bounded away from 1 for worst-case
-  oracles, and gives nothing at crypto-relevant γ."
-- `abcsunit`: relations here are S-unit solutions of u − vN = w (three terms). Evertse-type bounds cap their number by
-  2^{O(n)} for every N, and §3 counts how many have small height.
+- `suffmap` (notes/suffmap_results.md, read after our draft) lists this route as H9: "sufficiency for any
+  approximation factor not established; details: schnorrcvp". Our answer for its map:
+  - Approximate CVP on prime lattices is *sufficient* for polynomial time at γ = 1 + n^{−ε} (Theorem H, even for
+    adversarial oracles).
+  - It is sufficient for L[α < 1/3] at γ = 1 + (log n)^{−c} with c > 1 (benign oracle, cost poly(n)).
+  - It is not sufficient at any γ bounded away from 1 for worst-case oracles, and it gives nothing at crypto-relevant
+    γ.
+  - Exact or near-exact prime-lattice CVP is a concrete instance of suffmap's E3. The CVP ranges over all smooth
+    multipliers v ≤ N^{a} at once, which is a union of windows (Bohr set). So it inherits suffmap's Prop DLT: such an
+    oracle would also give prime-field discrete logarithms, as Schnorr 1991's title already suggests.
+  - **Consistency with suffmap Prop SI (1.2114).** Prop SI's constructor is one-sided with v = 1. There the residual
+    must cover the gap 1/d(kN) between smooth numbers, and that existence constraint sets the constant. In Schnorr's
+    lattice, v ranges over N^{o(1)} smooth values, so witnesses with |w| ≤ B exist (§2.4, a = o(1)). Theorem G's
+    L[α, 2√(ατ)] carries no such floor, because the floor is paid by the γ = 1 + o(1) oracle. No contradiction.
+- `abcsunit` (notes/abcsunit_results.md): relations here are S-unit solutions of u − vN = w. Evertse's bound
+  3·7^{2s+3}, as cited there, caps their number by 2^{O(n)} for every N, far above n + 1. So finiteness gives no
+  obstruction. §3 counts how many have small height, and the obstruction is that count.
 
 ## 9. Reviews
 
@@ -582,7 +626,40 @@ depending only on γ(n)" UNVERIFIED. We supply such a threshold only for the fam
 
 ### 9.3 Opus critics
 
-[pending]
+**Proof critic (read-only Opus).** No FATAL issues. It checked:
+- Theorem R, Theorem P and the rounding argument;
+- Lemma LA, including the odd-index image argument;
+- k > B distinctness;
+- the Adleman flaw, after reading his §2 (it found no reading that saves it);
+- the Theorem H exponent;
+- the §2.6 derivation;
+- the §3 thresholds and floors;
+- the Schnorr 2021 errors.
+
+Two MAJOR issues, both fixed:
+1. Overclaims in §0, §2.7 and §6:
+   - "provably cannot" became "heuristically, this query strategy cannot";
+   - "no link" became "no link known";
+   - "weaker than NP-hardness for any lattice" became "weaker in γ; the new content is the explicit family";
+   - "precisely as hard as the target" was removed.
+2. Theorem G's constants assumed a unit-cost oracle. With oracle cost n^c they gain a factor √(1+c). The exponents
+   are unchanged.
+
+MINOR fixes applied:
+- the γ = 1 + Θ(1) constant is L[1/2, √(γ²−1)], which beats QS iff γ < √2 (not η < 1/2);
+- Corollary P1's scan constants: ω_j = Be^{−0.7}/√(j+2), extra factor e^{0.184}, range from ⌊L⌋ − 1;
+- GRH added to Theorem H's labels;
+- the λ₁ seminorm and projection, and the lower-order term of the Minkowski bound;
+- the Adleman repair's distinctness is only heuristic;
+- the explicit constant c_κ;
+- the hypotheses of the cleanest provable statement;
+- the dimension statement "any fixed κ > max(2, 1/ε)";
+- the notation clash with Schnorr's "a";
+- three mislabels;
+- the certificate test now checks the bound;
+- 0.92–0.96.
+
+**Literature critic (read-only Opus).** [pending]
 
 ## 10. References (checked in primary form unless noted)
 
