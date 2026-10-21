@@ -49,13 +49,21 @@ output still beats MNFS iff τ < 0.757.
     the modulus is chosen without looking at x (or from a family fixed in advance of size L[2/3]^{o(1)}).
   - It does not cover moduli selected from x. Making that selection is the problem itself.
 - **Consequences beyond factoring (Prop DLI).** A constructor that works for every modulus would also give
-  prime-field discrete logarithms in L_p[1/3, ≤ 3^{1/3} = 1.442] (heuristic). Collecting relations costs 1.2114.
-  The constructor also handles the descent of medium-sized primes, at L[1/3, 0.99] when queried with the modulus
-  ⌊jp/q⌋. The classical ECM "booting" step, at 3^{1/3}, then dominates. Prime-field DL has been stuck at 1.902, so a
-  modulus-generic constructor would break **two** problems believed hard.
+  prime-field discrete logarithms in L_p[1/3, ≤ 1.232] (heuristic).
+  - Collecting relations costs 1.2114.
+  - The constructor also handles the descent of medium-sized primes, at L[1/3, ≈ 1], when queried with the modulus
+    ⌊jp/q⌋.
+  - The "booting" step dominates: 1.232 with early abort (Fried–Gaudry–Heninger–Thomé 2017, as reported by codex),
+    and 3^{1/3} = 1.442 with plain ECM.
+  - Prime-field DL has been stuck at 1.902, so a modulus-generic constructor would break **two** problems believed
+    hard.
   - No implication was found for class groups or for other groups.
-  - It would also give the first subexponential-time constructions of x^ε-smooth integers in [x, x + √x]. That is
-    the constructive counterpart of the Matomäki–Radziwiłł existence theorem; none is known to us.
+  - A *deterministic* constructor would also give deterministic x^{o(1)}-time constructions of x^ε-smooth integers in
+    [x, x + √x]. We know of none (randomized ones are trivial: those integers have positive density).
+- **The existence half alone is deep (Prop QNR, codex).** If every interval at Prop SI's scale contains a smooth
+  integer, then the least quadratic nonresidue mod a prime p ≡ 3 (mod 4) is ≤ L_p[2/3, ν + ε] = p^{o(1)}. That is
+  Vinogradov's conjecture for these primes, far beyond Burgess. So proving that Prop SI's promise always holds is at
+  least as hard as Vinogradov's conjecture. This is Granville's §1.2/§4.4 argument at L-scale.
 - **The converse fails in the black-box model.** A factoring oracle does not help: in that model finding a smooth
   integer in a window needs ≥ 1/δ smoothness tests, where δ is the local density (Lemma BB). The constructor's
   difficulty is *selection*, not *testing*.
@@ -79,7 +87,9 @@ output still beats MNFS iff τ < 0.757.
 | Result | Status |
 |---|---|
 | Lemma EQ: a modulus-uniform Prop SI constructor = an arbitrary-interval constructor at the same scale | PROVED (trivial) |
-| Prop DLI: modulus-generic constructor ⇒ F_p DL in L_p[1/3, max(1.2114, c_boot)], c_boot ≤ 3^{1/3}; descent 0.99 | HEURISTIC (H_S on residues, rank mod ℓ \| p−1) |
+| Prop DLI: modulus-generic constructor ⇒ F_p DL in L_p[1/3, max(1.2114, c_boot)], c_boot = 1.232 (early abort) or 3^{1/3} (ECM); descent 0.99–1.05 | HEURISTIC (H_S, H-affine, rank mod ℓ \| p−1) |
+| Prop QNR: all-interval existence at Prop SI scale ⇒ least QNR ≤ p^{o(1)} for p ≡ 3 (4) | PROVED (codex; Granville's argument) |
+| Remark FO: P^{FACT} ⊆ NP ∩ coNP | PROVED (codex) |
 | Lemma BB: black-box/factoring-oracle model needs ≥ (1−o(1))/δ tests per output | model-PROVED |
 | Theorem J: Johnson-class decoders (weighted, any P, batched) average ≤ L[2/3, −2/(3κ)+o(1)] smooth certified outputs per call; sharp | PROVED (averaged over x or N; oblivious modulus) |
 | Prop S: Prop SI-type relations in sampling model S cost ≥ L[1/2, √2] | model-PROVED (suffmap Theorem SS(a)) |
@@ -134,9 +144,19 @@ is min_κ max(κ + τ + 2/(9κ²), 2κ), below MNFS iff τ < 0.757 (`consequence
 u ∈ [kM, kM + h] in L^{o(1)} time, with y = L_M[1/3, κ] and h = L_M[2/3, ν]. It may be a promise constructor, and
 the promise must hold on the queried intervals.
 
-**Claim.** Under H_S (residues are smooth like random integers of their size), the usual index-calculus rank
-heuristic modulo every ℓ^e ∥ p − 1, and ECM's heuristic running time, discrete logarithms in F_p^* cost
-L_p[1/3, max((16/9)^{1/3} + ε, c_ind)], where c_ind ≤ 3^{1/3} = 1.4422. So the total is ≤ L_p[1/3, 1.4422].
+**Claim.** Assume:
+- H_S: residues are smooth like random integers of their size;
+- H-affine: as j and k vary, the affine residuals qu − kjp of step 2 are smooth at that same rate, despite their
+  congruence conditions modulo q (codex's name);
+- the usual index-calculus rank heuristic modulo every ℓ^e ∥ p − 1, with relations normalised by expressing a
+  generator g in the factor base;
+- ECM's heuristic running time.
+
+Then discrete logarithms in F_p^* cost L_p[1/3, max((16/9)^{1/3} + ε, c_ind)].
+- With the classical ECM booting, c_ind = 3^{1/3} = 1.4422.
+- With the early-abort booting of Fried–Gaudry–Heninger–Thomé (EUROCRYPT 2017, §5.4 and App. A.1: B_init = L[2/3, 0.811],
+  T_init = L[1/3, 1.232]; as reported by codex, not checked by us), c_ind = 1.232.
+- So the total is **≤ L_p[1/3, 1.232]**, and ≤ L_p[1/3, 1.4422] with booting constants we have checked ourselves.
 
 **Proof sketch.**
 1. *Relations.* Run Prop SI with N := p. Each u ≡ v (mod p), u, v y-smooth, is a linear relation among factor-base
@@ -154,8 +174,9 @@ L_p[1/3, max((16/9)^{1/3} + ε, c_ind)], where c_ind ≤ 3^{1/3} = 1.4422. So th
      `consequences.dl_booting_ecm`).
    - At that c the descent costs (0.693 + 1.1006)/(3·0.6057) = 0.987 < 1.442. So booting dominates:
      c_ind = 3^{1/3}.
-4. Smaller booting constants from early-abort strategies would apply unchanged. Values near 1.23 are reported for
-   NFS-DL booting (Barbulescu's thesis; UNVERIFIED). With them c_DL = max(1.2114, c_boot).
+4. *Early abort.* FGHT's booting (B = L[2/3, 0.811], T = L[1/3, 1.232]) does not use special NFS polynomials, so it
+   transfers. The descent at c = 0.811 then costs (0.811 + 1.1006)/(3·0.6057) = 1.052 < 1.232. So
+   c_DL = max(1.2114, 1.232) = 1.232. Codex computed the same 1.052. Neither 1.442 nor 1.232 is a proved bottleneck.
 5. *Can 𝒪 also boot?* Booting needs t·s ≡ w (mod p) with s, w both smooth. The interval oracle offers only additive
    control, u ∈ [t + jp, t + jp + h], so it gives u ≡ t + v, not a multiplicative relation. Multiplicative control
    would be a Bohr-set (coset) lister, suffmap E2 with Prop DLT. We found no way to make 𝒪 boot.
@@ -165,9 +186,11 @@ L_p[1/3, max((16/9)^{1/3} + ε, c_ind)], where c_ind ≤ 3^{1/3} = 1.4422. So th
   cost of booting (`consequences.dl_descent_optimum`: 0.827).
 - The I_k-only constructor also suffices, *provided* it is uniform over moduli: the descent queries modulus
   ⌊jp/q⌋, not p. It does **not** need suffmap's coset hypothesis.
-- Codex's blind round obtained the same constants independently (boot 1.4422, descent 0.987; §10.1).
+- Codex's blind round obtained the same construction (with k = 1 and M = ⌈jp/q⌉) and the same constants
+  independently: boot 1.4422, descent 0.987, and 1.052 with the early-abort boot (§10.1).
 - *Reading.* Prime-field DL has resisted any improvement on L[1/3, 1.902] (Matyukhin 2003; Commeine–Semaev 2006). A
-  modulus-generic Prop SI constructor would bring it to ≤ 1.442 and factoring to 1.2114. That is evidence against
+  modulus-generic Prop SI constructor would bring it to ≤ 1.232 (≤ 1.442 with booting we checked ourselves) and
+  factoring to 1.2114. That is evidence against
   such constructors, of the same kind as suffmap's Prop DLT (assessment).
 
 ### 2.3 Class groups, other groups [no implication found; assessment]
@@ -183,15 +206,26 @@ L_p[1/3, max((16/9)^{1/3} + ε, c_ind)], where c_ind ≤ 3^{1/3} = 1.4422. So th
 ### 2.4 Smooth numbers in intervals at other scales [PROVED, elementary]
 - *Monotonicity.* A constructor at (κ, ν) gives one at every (y′, h′) ≥ (y, h) at the same x: query a sub-interval.
   It gives nothing at smaller y or shorter h.
-- *Consequence.* It would give, in time x^{o(1)} (subexponential in log x), x^ε-smooth integers in [x, x + C√x]. That
-  is Matomäki–Radziwiłł's existence range, and also Harman's and Balog's ranges [x, x + x^{1/2+ε}].
+- *Consequence.* A deterministic constructor would give, deterministically in time x^{o(1)}, x^ε-smooth integers in
+  [x, x + C√x]. That is Matomäki–Radziwiłł's existence range, and also Harman's and Balog's ranges [x, x + x^{1/2+ε}].
+  - Randomized constructions there are trivial: the integers have positive density, so sample and factor with ECM or
+    NFS in subexponential time. The open part is determinism. Deterministic factoring is exponential (N^{1/5}), so
+    the trivial method does not derandomize.
   - The constructive results known to us are much weaker:
     - sieving (exponential);
     - Boneh (polylog y, §3);
     - Friedlander–Lagarias 1987, as reported by Granville §4.1: x^{1/2}-smooth integers in every interval of
       length x^{1/4+ε}, by explicit construction (UNVERIFIED in the primary source);
     - the trivial Lemma FP below.
-  - We found no subexponential construction in the MR range.
+  - We found no deterministic subexponential construction in the MR range.
+- **Prop QNR (PROVED; codex blind §1(a)).** Suppose Hyp E(κ, ν) holds: every [x, x + L_x[2/3, ν]] with x ≥ x₀ contains
+  an L_x[1/3, κ]-smooth integer. Then for every prime p ≡ 3 (mod 4) large enough, the least quadratic nonresidue is
+  ≤ 2H with H = L_p[2/3, ν + ε].
+  - *Proof.* Take a smooth u ∈ [p − 2H, p − H]. If every prime ≤ 2H were a residue, then u and p − u ≤ 2H would
+    both be residues. But u ≡ −(p − u) and −1 is a nonresidue. ∎
+  - Granville (2008, §1.2, §4.4) gives the x^ε version and calls Vinogradov's conjecture "intrinsically difficult".
+    So Hyp E is out of reach of current methods; only *promise* constructors are meaningful targets.
+  - The argument uses all-interval existence, not the constructor.
 - **Lemma FP (PROVED).** If h ≥ 2x/(y − 1), then z = 2^a·⌈x/2^a⌉ with 2^a ∈ [x/(y−1), 2x/(y−1)] is a y-smooth integer
   in [x, x + h], computed in polynomial time.
   - *Proof.* z − x < 2^a ≤ h, and ⌈x/2^a⌉ ≤ y − 1 + 1 = y. ∎
@@ -205,9 +239,10 @@ L_p[1/3, max((16/9)^{1/3} + ε, c_ind)], where c_ind ≤ 3^{1/3} = 1.4422. So th
 | Target | Implied by a modulus-generic Prop SI constructor? | Constant / range | Status |
 |---|---|---|---|
 | factoring | yes | L[1/3, 1.2114] | HEURISTIC (H_S, R) |
-| F_p discrete log | yes | ≤ L[1/3, 1.442] (booting); relations 1.2114; descent 0.99 | HEURISTIC (Prop DLI) |
+| F_p discrete log | yes | ≤ L[1/3, 1.232] (early-abort boot; 1.442 with plain ECM); relations 1.2114; descent 0.99–1.05 | HEURISTIC (Prop DLI) |
+| least quadratic nonresidue, p ≡ 3 (mod 4) | by the *existence* half (Hyp E), not the constructor | ≤ L_p[2/3, ν + ε] | PROVED (Prop QNR) |
 | DL mod composite N | yes | via Bach 1984 | HEURISTIC |
-| smooth-in-interval at larger (y, h) | yes, deterministic if 𝒪 is | e.g. x^ε-smooth in [x, x+√x] in time x^{o(1)} | PROVED (monotone) |
+| smooth-in-interval at larger (y, h) | yes, deterministic if 𝒪 is | e.g. x^ε-smooth in [x, x+√x] deterministically in time x^{o(1)} | PROVED (monotone) |
 | class groups (imaginary quadratic), units | no implication found | — | assessment |
 | EC / genus-g / small-char DL | no | — | assessment |
 | deterministic primes | no | — | assessment |
@@ -227,6 +262,11 @@ probability ≤ Tδ.
   the cost per examined integer by at most O(log log y) (compare polyimpl Lemma PF, where a remainder tree replaces
   factoring).
 - The model ignores arithmetic: real algorithms can *construct* smooth numbers (products). §5 treats those.
+- **Remark FO (PROVED; codex).** A full-factorisation oracle answer can be certified: the prime factorisation, with
+  AKS. So every language decidable in polynomial time with a factoring oracle lies in NP ∩ coNP.
+  - So if the *decision* version of SMOOTH-INT at some scale were NP-hard, a polynomial-time factoring algorithm could
+    not decide it unless NP = coNP.
+  - At Prop SI's scale NP-hardness is not known (§6), so this is a conditional separation only.
 
 **Known constructive results do not reach Prop SI's scale.**
 - Lemma FP needs h ≥ x/y.
@@ -268,6 +308,17 @@ probability ≤ Tδ.
   - Manders–Adleman 1978 (bounded quadratic congruences; used in floorhard Theorem SS);
   - subset sum.
   None of them has the all-primes-≤-y structure.
+- **More existence results** (from codex's blind round; statements as reported there, not re-checked by us):
+  - Hildebrand 1986 (JNT 22, Thm 3): the asymptotic for h ≥ x/y^{5/12};
+  - Croot 2007 (IJNT 3): x^{47/(190√e)+ε}-smooth integers in [x, x + C√x];
+  - Matomäki 2016 (IJNT 12, Thms 1.1, 1.3): y ≥ exp((log x)^{2/3}(log log x)^{4/3+ε}), all intervals of length
+    ≈ √x·exp(…);
+  - Younis 2024 (arXiv 2409.05761): h ≥ x^θ, θ > 17/30;
+  - Jain 2026 (QJM 77): almost all intervals at y ≥ exp(C(log X)^{2/3}(log log X)^{4/3}).
+  None reaches y = L[1/3].
+- **The computational problem is recognised.** Naccache–Shparlinski, "Divisibility, smoothness and cryptographic
+  applications" (2009, §6.2; arXiv 0810.2067), describe construction under an interval constraint as challenging,
+  with Boneh's restricted parameters (codex; UNVERIFIED by us).
 - **Existence.** See §3. Granville's "Challenge problem 2000" (x^α-smooth in [x, x + √x] for all α > 0) is
   answered up to a constant factor in the interval length by Matomäki–Radziwiłł 2016, Corollary 1 (as
   cross-checked by suffmap's literature critic).
@@ -301,6 +352,11 @@ cost per y-smooth integer found in the target window(s).
 - We grant the decoder its entire certified set at unit cost. Uncertified roots it may also return are not counted
   (pilist's convention). Dimension, shifts and multiplicities are arbitrary; only the guarantee enters.
 - *Obliviousness.* (P, w, V) are fixed independently of x, or chosen from a family 𝒫 fixed in advance.
+- *Larger regions do not help.* The threshold √(Q log V) increases with V. So for a window W ⊂ R,
+  C(R) ∩ W ⊆ C(W), and it suffices to treat regions no longer than the target window. Smooth outputs outside the
+  windows are useless to Prop SI.
+- *Adaptive call sequences.* Earlier outputs, including certified non-smooth ones, carry information about x. They
+  are covered only through (c), by a union over the possible transcripts. A general adaptive version is not proved.
 
 **Theorem J.** Fix κ, ν_max > 0. Uniformly over all oblivious (P, w) and all V ≤ L_X[2/3, ν_max]:
 
@@ -331,7 +387,7 @@ cost per y-smooth integer found in the target window(s).
    - (c) N_j ≤ e^{j+1}.
 5. *Small regions.* If t ≤ t₀ := F_{2/3}/log n, use Z ≤ Ψ(3X, y): LHS ≤ 3C₀(V+1)ρ(u₀ − O(1)) = ρ(u₀)^{1−o(1)}.
 6. *Case A: 1 ≤ c ≤ (log t)²/4.* Use (a). The exponent of (V+1)N_j e^{−j} is
-   ≤ t(1 − √c + 1.07c/log t) + O(1). As a function of a = √c ∈ [1, (log t)/2] the bracket is concave, so it is at
+   ≤ t(1 − √c + 1.07c/log t) + O(1). As a function of a = √c ∈ [1, (log t)/2] the bracket 1 − a + 1.07a²/log t is convex, so it is at
    most its larger endpoint value: 1.07/log t at a = 1, and 1 − 0.23 log t < 0 at the other end. So the factor is
    ≤ exp(1.07t/log t + O(1)) = exp(o(F_{2/3})).
    - Every d here has log d ≤ π ≤ t(log t)² = o(n/log n), so ρ((n − j − 2)/log y) ≤ ρ(u₀(1 − 1/log n)) = ρ(u₀)^{1−o(1)}.
@@ -363,6 +419,16 @@ cost per y-smooth integer found in the target window(s).
   LHS ≤ (2h/(kX))·#{z ≤ 3kX : certified, smooth}, and steps 2–7 are unchanged with V replaced by h or K(h + 1).
 - Herrmann–May's guarantee for linear bivariate polynomials (under their Assumption 1) satisfies the same inequality
   with V = |R| (pilist: g_n(μ) ≤ μ², PROVED there).
+
+**Independent proof (codex blind round, §3(b)).** Codex proved the same bound for fixed P without the dyadic
+case analysis.
+- *Tilting.* Give each smooth m weight m^{−a}/Z_y(a), with a = 1 − log u₀/log y. Then X^{a−1}Z_y(a) = ρ(u₀)^{1−o(1)},
+  and prime valuations are independent geometric variables.
+- *Markov.* Apply Markov's inequality to gcd(m, P)^s with s ≈ log σ/log π − (1 − a).
+- *Weights.* For GSS's coprime-modulus weighted certificate it uses the Kearns–Saul sub-Gaussian bound for
+  Bernoulli variables (Berend–Kontorovich 2013, eq. (1.3)).
+- Two independent proofs of Theorem J (unweighted; and weighted with coprime moduli) therefore exist. Ours also
+  covers prime-power scores J_q = min(v_q, e_q).
 
 **Reading.**
 - One Johnson-class call is worth ρ(u₀)^{1−o(1)} outputs, i.e. L[2/3]^{o(1)} random tests. So the Prop SI
@@ -450,6 +516,9 @@ all-interval ranges (KNOWN, as summarised by Granville 2008 §4.1 and suffmap §
 - Matomäki–Radziwiłł 2016, Cor. 1: h = C(ε)√x, y = x^ε;
 - Friedlander–Lagarias 1987: y = x^{1/2}, h = x^{1/4+ε}; y = x^{1/3}, h = x^{5/12+ε}.
 - Lemma FP: h ≥ 2x/(y − 1) is in FP.
+- Also in FP (codex; PROVED, elementary):
+  - fixed y, by enumerating the O(log x)^{π(y)} exponent vectors;
+  - h and y both poly(log x), by trial division of every integer in the window.
 
 **Prop SI scale.**
 - *Under Hyp E(κ, ν)*: every [x, x + L_x[2/3, ν]] with x ≥ x₀ contains an L_x[1/3, κ]-smooth integer. This is the
@@ -481,6 +550,10 @@ polynomial-time reductions.
 - *Parameters.* y ≈ Q, x ≈ y^q, h/x ≈ R/(2Q).
 - *Counting.* #S-SMOOTH-INT is #P-hard if #X3C is #P-complete under parsimonious reductions (believed standard;
   reference UNVERIFIED).
+- *Codex's blind round* considered only the composite-generator route (Subset Product with generators ∏_{i∈C_j}p_i).
+  It noted that splitting the generators into primes destroys the constraint, and that the exact-target version with
+  an explicit prime set is polynomial. Both are correct. Prop XS avoids them: it encodes the weights in the *sizes* of
+  the primes and uses an interval target, i.e. an approximate log-knapsack.
 - *Why it does not transfer to all primes ≤ y.* At these parameters the full y-smooth count in the window is about
   h·ρ(q) ≫ 1. Indeed Lemma FP applies, since h ≥ 2x/(y − 1). Hardness needs the explicit sparse S to forbid the
   generic smooth integers. With all primes allowed, smooth integers are abundant exactly where the explicit
@@ -491,7 +564,7 @@ polynomial-time reductions.
 
 | Range | Complexity status | Label |
 |---|---|---|
-| h ≥ 2x/(y−1) | FP | PROVED (Lemma FP) |
+| h ≥ 2x/(y−1); fixed y; h, y ≤ poly(log x) | FP | PROVED (Lemma FP; codex) |
 | h = x^{β}, β > 1/2, y ≥ exp((log x)^{2/3+o(1)}); h = C√x, y = x^ε | TFNP (existence theorems); NP-hard ⇒ NP = coNP | PROVED from KNOWN |
 | h ≤ poly(log x), any y | NP ∩ coNP; NP-hard ⇒ NP = coNP | PROVED |
 | Prop SI: h = L[2/3, ν], y = L[1/3, κ], ν > 2/(3κ) | in DTIME(L[2/3]); TFNP under Hyp E; ETH ⇒ any reduction blows up ≥ m^{3/2} | PROVED (conditional parts as stated) |
@@ -519,14 +592,18 @@ region (x ≤ N^{3/8}) of the same problem.
 - **NP-hardness cannot be the barrier.** At Prop SI's scale it is excluded under the existence hypothesis (TFNP) and
   constrained by ETH. The only provably hard variant has an explicit sparse prime list.
 - **The strongest evidence of implausibility is Prop DLI.** A modulus-generic constructor would also give prime-field
-  discrete logs at ≤ L[1/3, 1.442], while that problem has resisted any improvement on 1.902.
+  discrete logs at ≤ L[1/3, 1.232] (≤ 1.442 with plain ECM booting), while that problem has resisted any improvement
+  on 1.902.
+- **The existence half is itself deep.** All-interval existence at Prop SI's scale implies Vinogradov's
+  least-nonresidue conjecture for p ≡ 3 (mod 4) (Prop QNR). So only promise constructors are realistic targets, and
+  the promise cannot be proved with current methods.
 - **Where an escape would have to live.** Every model fails for one shared reason. The target window has relative
   width h/x = N^{−1+o(1)}, and every factor of u inherits that precision (siconstruct Lemma SR). Oblivious objects (a
   modulus, lists, lattice data not chosen from x) hit it only at the random rate. An escape must select, using
   ≈ (2/(3κ))F_{2/3} bits of information about x, which is exactly the selection problem.
 
 **Plausibility (assessment).** About 1% for an L[1/3, τ < 0.757] constructor, uniform or not. We put a
-modulus-generic one lower, because of Prop DLI.
+modulus-generic one lower, because of Prop DLI. Codex (blind): about 5% for a uniform promise constructor.
 
 ## 8. Experiments (pre-registered: commit 7f9e398 and addendum A1 bb7fbd0)
 
@@ -595,8 +672,45 @@ scripts are reproduced in `src/sihard/diag_e1.py`.
 - **sicheck**: no results at the time of writing.
 
 ## 10. GPT-6.1-sol rounds
-### 10.1 Blind round (`codex/sihard_1.out`)
-(pending)
+### 10.1 Blind round (`codex/sihard_1.out`; run before our analysis was shown to it)
+
+**Independent agreements.**
+- Lemma EQ.
+- The DL descent through another modulus (M = ⌈jp/q⌉, k = 1, no descent tree), with constants 0.987 (ECM boot),
+  1.4422 and 1.052 (early-abort boot).
+- The class-group and generic-group negatives (codex cites Shoup 1997 for the latter).
+- The point-query model (its "permuted-candidate model"; = Lemma BB).
+- **Theorem J for fixed P**, unweighted and GSS-weighted, with a different proof (§5.2).
+- The smooth-multiple trick as the comparison point.
+- Fixed product tables need A + B ≳ √(X/h) (= Prop MM(i)).
+- Amortisation over L[1/3] outputs subtracts only O(F_{1/3}).
+- NP membership, NP ∩ coNP for h ≤ poly, the sieve's 2^{O(n^{2/3}(log n)^{1/3})}, the ETH exponent 3/2.
+- Proven-existence ranges are TFNP (Megiddo–Papadimitriou Thm 2.1).
+- SI itself is not TFNP without Hyp E.
+- τ < 0.757.
+
+**Adopted from codex.**
+- The early-abort booting constant 1.232 (FGHT 2017) and hence DL ≤ 1.232.
+- Hypothesis H-affine and the normalisation remark in Prop DLI.
+- **Prop QNR.**
+- Remark FO.
+- The FP cases (fixed y; polynomial h and y).
+- The extra existence citations (Croot 2007, Matomäki 2016, Younis 2024, Jain 2026) and Naccache–Shparlinski 2009.
+- The explicit caveat that a decoder may find useful *uncertified* outputs.
+
+**Ours, beyond codex.**
+- Prop XS (codex found no hardness for explicit prime sets and did not consider size-encoded primes).
+- Theorem J for prime-power scores, I_k- and batched (Herrmann–May-type) regions, and families of moduli.
+- The Wagner bound √X/h. Codex's balanced template gives only log T = Ω(√n); ours uses the fact that leaf lists
+  cannot exceed their value range.
+- The Bohr-set two-list bound.
+- The lattice dimension lemma.
+- Lemma FP.
+- The E1–E4 experiments.
+
+**Differences.**
+- Codex labels the adaptive extension "model-PROVED in a fresh-divisibility model". We state only the union bound (c).
+- Codex's plausibility is 5%; ours is 1%.
 ### 10.2 Adversarial round (`codex/sihard_2.out`)
 (pending)
 

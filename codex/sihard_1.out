@@ -1,0 +1,465 @@
+**OPEN — There is no established general lower bound excluding the proposed constructor.** There are substantial barriers for specified search models, including an averaged bound for the stated decoder certificates. These do not establish hardness for unrestricted arithmetic algorithms.
+
+All logarithms below are natural. Put \(X\asymp N L[1/3,O(1)]\), \(U=\log X/\log y\), and
+\[
+d_\kappa=\frac{2}{3\kappa},\qquad
+\Delta=L[2/3,-d_\kappa].
+\]
+**KNOWN —** The density of \(y\)-smooth integers in a long interval near \(X\) is \(\Delta\): combine the uniform Dickman estimate with \(\log\rho(U)=-(1+o(1))U\log U\). See Hildebrand–Tenenbaum, *J. Théorie des Nombres de Bordeaux* **5** (1993), Theorem 1.1 and §2. Replacing this long-interval density by a probability in each particular SI interval requires an additional hypothesis. [Paper](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf)
+
+## 1. Reductions and consequences
+
+### 1(a). What a modulus-generic constructor would imply
+
+**PROVED — Arbitrary interval construction.** Set \(N=x\), \(k=1\). This gives exactly the stated short-interval problem at \(x\). For a promise constructor, the promise remains that this particular interval contains a suitable smooth integer. It does not imply existence.
+
+**HEURISTIC — Prime-field relation collection.** Assume:
+
+- **H-local:** the required intervals are nonempty sufficiently often;
+- **H-residual:** the constructed residuals have the stated smoothness probabilities;
+- **H-rank:** the collected relations generate the necessary relation lattice, or have the expected rank modulo relevant prime divisors of the group order.
+
+Replacing \(N\) by \(p\), two smooth integers \(u\equiv v\pmod p\) give
+\[
+\sum_{\ell\le y}
+\bigl(v_\ell(u)-v_\ell(v)\bigr)\log_g\ell
+\equiv0\pmod{p-1}.
+\]
+With constructor cost \(L[1/3,\tau]\), the precomputation constant is
+\[
+C_{\rm SI}(\tau)=
+\inf_{\kappa>0}
+\max\left\{
+\kappa+\tau+\frac{2}{9\kappa^2},\,2\kappa
+\right\},
+\tag{1}
+\]
+taking \(\nu\downarrow2/(3\kappa)\).
+
+**PROVED — Linear algebra needs normalization.** These homogeneous equations determine factor-base logarithms only up to the appropriate scalar ambiguity. One must express a specified generator as well as the target in the factor base. For the full group, work modulo prime powers dividing \(p-1\), then combine; Gaussian elimination directly over the composite ring is insufficient without handling nonunits. Factoring \(p-1\), when needed, can itself use the assumed Prop SI factoring algorithm.
+
+**HEURISTIC — Standard initial splitting costs \(L[1/3,3^{1/3}]\).** Randomize a target \(a\) to \(ag^r\bmod p\), and seek a
+\[
+B=L_p[2/3,\beta]
+\]
+smooth representative. Its smoothness probability is \(L_p[1/3,-1/(3\beta)]\). Under the standard ECM smoothness-testing model, testing costs \(L_p[1/3,\sqrt{4\beta/3}]\). Thus
+\[
+C_{\rm boot}(\beta)=\frac1{3\beta}+\sqrt{\frac{4\beta}{3}}.
+\]
+Differentiation gives \(\beta=3^{-1/3}\), and minimum \(3^{1/3}=1.442249\ldots\).
+
+This is an optimization **within that cost model**, not a lower bound for all initial-splitting algorithms. The checked reference is Guillevic, ASIACRYPT 2015, §3.1, Lemma 1. [Paper](https://arxiv.org/pdf/1505.07553)
+
+**PROVED — The constructor can eliminate medium primes through another modulus.** Let \(q\le B\) be a prime outside the factor base. Choose \(j\), put
+\[
+M=\left\lceil\frac{jp}{q}\right\rceil,
+\]
+and construct a smooth \(u\in[M,M+H(M)]\). Then
+\[
+v=qu-jp,\qquad 0\le v<q(H(M)+1),\qquad qu\equiv v\pmod p.
+\tag{2}
+\]
+For \(q=L_p[2/3,\beta_q]\), and \(j=L_p[1/3,O(1)]\), we have \(\log M\sim\log p\), so
+\[
+v\le L_p[2/3,\beta_q+\nu+o(1)].
+\]
+A small fixed slack in the global factor base covers the slightly different smoothness bounds at \(M\). If \(v\) is factor-base smooth,
+\[
+\log_g q=\log_g v-\log_g u.
+\]
+Thus a direct elimination to the original factor base is possible; no recursive descent tree is necessary.
+
+**HEURISTIC — Descent complexity.** This requires a stronger assumption than H-residual:
+
+**H-affine:** as \(j\) varies, the affine residuals \(qu-jp\) have the expected smoothness frequency, despite their congruence restrictions modulo \(q\).
+
+Under H-affine, eliminating every medium prime costs, up to polynomial factors,
+\[
+L_p\!\left[1/3,\,
+\tau+\frac{\beta+\nu}{3\kappa}
+\right].
+\tag{3}
+\]
+There are only polynomially many medium factors in a boot. Testing for \(y\)-smoothness by the standard ECM model costs \(L_p[1/6,O(1)]\), below the displayed scale.
+
+At \(\tau=0\),
+\[
+\kappa=0.605706864\ldots,\quad
+\nu=1.100642416\ldots,
+\]
+and (3), with the standard boot, has constant \(0.987278\ldots\). Consequently the resulting complete DLP algorithm has constant \(1.442249\ldots\), dominated by booting.
+
+**KNOWN / HEURISTIC — The \(1.442\) boot is improvable.** Fried–Gaudry–Heninger–Thomé, EUROCRYPT 2017, §5.4 and Appendix A.1, report the early-abort analysis giving approximately
+\[
+B_{\rm init}=L_p[2/3,0.811],\qquad
+T_{\rm init}=L_p[1/3,1.232].
+\]
+Their initialization does not exploit special NFS polynomials, so it transfers to this setting. The analysis retains smoothness and ECM heuristics. [Paper](https://arxiv.org/pdf/1610.02874)
+
+**HEURISTIC — Sharper resulting DLP bound.** With that boot, (3) has constant \(1.052017\ldots\) at the SI optimum. Hence
+\[
+T_{\rm DLP}
+=L_p[1/3,\max\{C_{\rm SI}(\tau),\,1.232\ldots\}]
+\tag{4}
+\]
+under the foregoing assumptions. Booting still dominates when \(\tau=0\), but only slightly. Neither \(1.442\) nor \(1.232\) is a proven unavoidable bottleneck.
+
+**OPEN — Imaginary quadratic class groups.** No corresponding \(L[1/3]\) class-group algorithm follows from the integer constructor alone. Class-group relation collection requires smooth norms of principal elements, or smooth representatives in specified ideal classes. An arbitrary smooth integer supplies neither. Even ensuring that its prime factors split would not certify the required principal-ideal relation. A constructor for suitable quadratic-form values would be a stronger hypothesis.
+
+**KNOWN — Other groups do not follow generically.** Shoup’s generic-group lower bound is \(\Omega(\sqrt{\ell})\) group operations for a prime-order component \(\ell\); arbitrary arithmetic independent of the random group encoding does not remove it. Thus the integer constructor does not automatically solve elliptic-curve or arbitrary black-box DLP. See Shoup, EUROCRYPT 1997, §2. Extension fields likewise need additional polynomial or norm structure. [Paper](https://www.shoup.net/papers/dlbounds1.pdf)
+
+**PROVED — Trivial transfers to other scales.** A total constructor immediately handles larger intervals and larger smoothness bounds, including \(h'=x^\epsilon\) at the original \(y\). It does not thereby handle \(L_x[\alpha]\)-smoothness with \(\alpha<1/3\), or interval lengths \(L_x[\alpha]\) with \(\alpha<2/3\). Multiplication by a known smooth \(d\) gives the elementary tradeoff
+\[
+h'\ge d(H(x/d)+1),\qquad
+y'\ge\max\{P^+(d),Y(x/d)\}.
+\]
+Proof: query at \(\lceil x/d\rceil\), then multiply the answer by \(d\). For a promise constructor, these transfers are valid only when the queried smaller interval satisfies its original promise.
+
+**PROVED — A total constructor has an additional analytic consequence.** For primes \(p\equiv3\pmod4\), it would imply a least quadratic nonresidue at most
+\[
+L_p[2/3,\nu+\epsilon]
+\]
+for every fixed \(\epsilon>0\). Choose \(H=L_p[2/3,\nu+\epsilon]\) and construct smooth \(u\in[p-2H,p-H]\). If every prime at most \(2H\) were a quadratic residue, both \(u\) and \(p-u\) would be residues, contradicting \(u\equiv-(p-u)\pmod p\). This argument uses total existence; a promise constructor alone gives no such conclusion. Compare Granville’s related discussion in MSRI **44** (2008), §4.4. [Survey](https://library.slmath.org/books/Book44/files/09andrew.pdf)
+
+### 1(b). Does factoring imply the constructor?
+
+**OPEN — No such implication is established.** A factoring oracle tests a proposed integer immediately, but choosing the integer remains the search problem. Structured queries to a genuine factoring oracle might help; there is no proved separation excluding that possibility.
+
+**PROVED — Factoring does not make all number-theoretic searches polynomial.** Every language decidable in deterministic polynomial time with a full-factorization oracle lies in \(\mathrm{NP}\cap\mathrm{coNP}\): certify every oracle answer by its complete prime factorization, reproduce the adaptive transcript, and verify either final outcome. Consequently, an NP-complete problem cannot be solved this way unless \(\mathrm{NP}=\mathrm{coNP}\). This observation applies to related NP-complete searches, not directly to SI, whose NP-hardness is unproved.
+
+**model-PROVED — Point-query factoring cannot improve the search density.** In the *permuted-candidate model*, \(R\) marked candidates occupy uniformly random positions among \(M\) addresses. A query reveals the candidate’s entire factorization, but information from one address reveals nothing about other addresses. Unqueried output guesses count as queries.
+
+After any transcript, the remaining marked positions are still uniform. Therefore
+\[
+\Pr(\text{success in }Q\text{ queries})\le QR/M,\qquad
+\mathbb E T=\frac{M+1}{R+1}.
+\tag{5}
+\]
+For \(R/M=\Delta\), this is \(L[2/3,d_\kappa]\). This formalizes point-testing use of factoring; it is **not** an oracle separation for actual integer arithmetic.
+
+## 2. Literature status
+
+### Sampling, sieving, and deterministic construction
+
+**PROVED — Exhaustive sieving gives a deterministic upper bound.** Generate primes through \(y\), and remove their powers from every integer in the interval. Exact arithmetic gives
+\[
+(h+y)(\log X)^{O(1)}
+\]
+bit operations. At SI this is \(L[2/3,\nu]\), and it either finds an answer or certifies absence.
+
+**HEURISTIC — Random sampling costs \(L[2/3,d_\kappa]\) tests per answer**, under local smoothness density and adequate mixing. Small-factor sieving and batch testing reduce overhead; they do not by themselves change this leading rarity exponent.
+
+**PROVED — Other elementary deterministic cases exist.** For \(h\ge x\), use a power of \(2\). For fixed \(y\), enumerate exponent vectors, each exponent being \(O(\log x)\); this is polynomial in \(\log x\). Neither observation reaches SI.
+
+### Boneh’s exact guarantee
+
+**KNOWN —** Boneh, STOC 2000; *JCSS* **64** (2002), Definition 3.1 and Theorem 3.1, pp. 776–777, uses
+\[
+P=\operatorname{lcm}(1,\ldots,s).
+\]
+For \(I=[A,B]\), \(W=B-A\), and an integer
+\[
+D\ge1+\sqrt{\frac{\log P}{\log W}},
+\]
+the algorithm finds all \(m\in I\) with \(\gcd(m,P)>T\), provided
+\[
+\log T>
+\sqrt{\log(4W)\log P}+\frac{5\log P}{4D}.
+\tag{6}
+\]
+Runtime is polynomial in \(D\) and the input length. If \(B<2T\), these are precisely the strongly \(s\)-smooth integers: each prime-power component is at most \(s\). [Paper, indexed theorem text](https://core.ac.uk/download/pdf/82341411.pdf)
+
+**PROVED — At SI, the full-base guarantee is vacuous.** Here \(\log P\sim y=\exp((\kappa+o(1))F_{1/3})\), whereas \(\log T\le(1+o(1))\log X\). Even ignoring finite-dimension losses, (6) requires
+\[
+\log W\lesssim\frac{(\log X)^2}{y}=o(1).
+\]
+Thus it cannot certify SI-width intervals. Raising prime-power caps only enlarges \(P\). Meaningful full-base guarantees instead require roughly \(y\log W\lesssim(\log X)^2\).
+
+### Coppersmith, approximate gcd, and weighted CRT decoding
+
+**KNOWN —** Coppersmith’s univariate modular small-root theorem is Theorem 1 of *Journal of Cryptology* **10** (1997), pp. 233–260. Howgrave-Graham, CaLC 2001, LNCS **2146**, §3, extends the method to partial approximate common divisors. For a hidden divisor at least \(P^\beta\), the familiar linear-polynomial error threshold is essentially \(P^{\beta^2}\). Substitution \(S=P^\beta\) gives
+\[
+\log V<\frac{(\log S)^2}{\log P}.
+\]
+These are sufficient recovery conditions, not hardness thresholds. [Coppersmith](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf), [Howgrave-Graham](https://www.researchgate.net/profile/Nick-Howgrave-Graham/publication/221143134_Approximate_Integer_Common_Divisors/links/00b7d537c8f3af23bb000000/Approximate-Integer-Common-Divisors.pdf)
+
+**KNOWN —** Guruswami–Sahai–Sudan, FOCS 2000, Theorem 4 and Corollary 4, permit nonnegative weights. For pairwise coprime coordinates \(q_i\), agreement indicators \(a_i\), message range \(V\), and weights \(b_i\), the limiting certificate is
+\[
+\sum_i a_i b_i
+\gtrsim
+\sqrt{\log V\sum_i\frac{b_i^2}{\log q_i}},
+\tag{7}
+\]
+with an explicit positive tolerance term in the theorem. Their weights improve unequal-modulus decoding; they do not guarantee that ordinary smooth integers satisfy (7). [Paper](https://people.csail.mit.edu/madhu/papers/2000/gss-conf.pdf)
+
+**KNOWN / HEURISTIC — Multivariate approximate-gcd results require more promises.** Cohn–Heninger, ANTS X, *Open Book Series* **1** (2013), Theorem 1, obtains errors of size approximately
+\[
+P^{\beta^{(m+1)/m}}
+\]
+for \(m\) near multiples of a common hidden divisor. For \(m>1\), the theorem assumes algebraic independence; it explicitly warns against manufacturing dependent samples from one sample. Consequently, batching \(kN+v\) does not automatically invoke this improvement. [Paper](https://arxiv.org/pdf/1108.2714)
+
+### Existence results and their distance from SI
+
+The following are **KNOWN**, with fixed positive \(\epsilon\) and sufficiently large parameters.
+
+| Result | Checked statement or sufficient consequence |
+|---|---|
+| Hildebrand, *JNT* **22** (1986), Theorem 3 | Expected asymptotic for \(h\ge x/y^{5/12}\), with \(y\ge\exp((\log\log x)^{5/3+\epsilon})\). Also stated as Hildebrand–Tenenbaum (1993), Theorem 5.1. [Reference](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf) |
+| Friedlander–Granville, *Phil. Trans. Roy. Soc. A* **345** (1993), “Smoothing ‘smooth’ numbers” | Expected asymptotic when \(y\ge\exp((\log x)^{5/6+\epsilon})\) and \(h\ge\sqrt{x}\,y^2\exp((\log x)^{1/6})\). Checked in Granville (2008), §4.1. [Survey](https://library.slmath.org/books/Book44/files/09andrew.pdf) |
+| Croot, *IJNT* **3** (2007), Theorem 1, linked author version | For \(h=C_\epsilon\sqrt{x}\), many \(x^{47/(190\sqrt e)+\epsilon}\)-smooth integers. [Paper](https://ecroot.math.gatech.edu/smooth6.pdf) |
+| Matomäki–Radziwiłł, *Annals* **183** (2016), Corollaries 1 and 6 | Every interval of length \(C_\epsilon\sqrt{x}\) contains \(x^\epsilon\)-smooth integers; for fixed \(u\), almost-all asymptotics hold in intervals of length tending to infinity. [Paper](https://arxiv.org/pdf/1501.04585) |
+| Matomäki, *IJNT* **12** (2016), Theorems 1.1 and 1.3 | All-interval and almost-all results for \(y\ge\exp((\log x)^{2/3}(\log\log x)^{4/3+\epsilon})\). The all-interval length is \(\sqrt{x}\exp((7/3+\epsilon)(\log\log x+4U\log U))\). [Paper](https://users.utu.fi/ksmato/papers/Smoothshorts2.pdf) |
+| Younis, arXiv:2409.05761 (2024), Theorem 1.1 | Expected asymptotic for \(h\ge x^\theta\), \(\theta>17/30\), and \(y\ge\exp(C_\theta(\log x)^{2/3}(\log\log x)^{4/3})\). [Paper](https://arxiv.org/pdf/2409.05761) |
+| Jain, *QJM* **77** (2026), Theorems 1.1–1.2 | For \(y\ge\exp(C(\log X)^{2/3}(\log\log X)^{4/3})\), almost-all existence when \(h\ge\exp((1+\epsilon)((11/8)U\log U+4\log\log X))\); an all-interval result has length \(x^{1/2+o(1)}\). [Paper](https://www.utupub.fi/server/api/core/bitstreams/7f07be5d-e209-4019-ab2e-68e38f239def/content) |
+
+**PROVED — These theorems do not establish SI existence.** SI simultaneously has much smaller smoothness bound \(L[1/3,\kappa]\) and subpower interval length \(L[2/3,\nu]\). Fixed-\(u\) results cannot be used with \(U\asymp n^{2/3}(\log n)^{-2/3}\) without uniformity.
+
+**KNOWN — The computational problem is explicitly recognized.** Granville, MSRI **44** (2008), §5.7, discusses direct sieving and Boneh’s constructive approach. Naccache–Shparlinski, *Algebraic Aspects of Digital Communications* (2009), §6.2, identifies construction with an interval constraint as challenging and describes Boneh’s restricted parameter combinations. [Granville](https://library.slmath.org/books/Book44/files/09andrew.pdf), [Naccache–Shparlinski](https://arxiv.org/pdf/0810.2067)
+
+**OPEN —** No checked result in this survey supplies the SI constructor or proves it hard. **UNVERIFIED —** I did not locate a published explicit open-problem formulation with your particular \(L\)-parameters. The older statements about open short-interval distribution problems should not be presented as computational lower bounds.
+
+## 3. Model lower bounds
+
+### 3(a). Sampling and sieving
+
+**model-PROVED — Independent-mark search.** Give each candidate an independent smoothness mark of probability \(\Delta\); charge one unit for examining a candidate, even if testing is free. Adaptive querying has success probability at most \(Q\Delta\). Thus constant success requires
+\[
+Q=\Omega(\Delta^{-1})=L[2/3,d_\kappa].
+\tag{8}
+\]
+Proof: each fresh queried mark has conditional success probability \(\Delta\); apply the union bound. When \(\nu>d_\kappa\), conditioning on a nonempty interval changes this by \(1+o(1)\), since the empty probability is at most \(\exp(-h\Delta)\).
+
+**OPEN —** Actual divisibility marks are correlated. Equation (8) is not an unconditional lower bound for sieves that exploit arithmetic structure. It does show that merely accelerating smoothness tests, including by factoring, cannot reach SI in this model.
+
+### 3(b). Gcd and weighted CRT certificates
+
+**PROVED — Fixed-parameter averaging bound.** Fix \(P\), independent of the interval center \(x\). Let \(x\) be uniform on \([X,2X]\), \(V\le h\), and count only smooth outputs satisfying
+\[
+\log\gcd(z,P)\ge\sqrt{\log V\log P}.
+\tag{9}
+\]
+Uniformly over every such \(P\),
+\[
+\mathbb E_x\#\{\text{smooth certified outputs in }[x,x+V]\}
+\le
+\exp\!\left[-d_\kappa F_{2/3}+o(F_{2/3})\right].
+\tag{10}
+\]
+
+Here is a proof, including prime powers. Write \(v=\log V\), \(A=\log P\), and choose
+\[
+a=1-\frac{\log U}{\log y}=1-o(1),\qquad
+Z_y(a)=\prod_{p\le y}(1-p^{-a})^{-1}.
+\]
+The elementary prime bound \(\pi(t)\ll t/\log t\), followed by partial summation, gives
+\[
+\log Z_y(a)=O(U/\log U+\log\log y),
+\]
+and consequently
+\[
+X^{a-1}Z_y(a)=\exp[-d_\kappa F_{2/3}+o(F_{2/3})].
+\tag{11}
+\]
+
+Give smooth integers \(m\) probability \(m^{-a}/Z_y(a)\). Their prime valuations are independent geometric variables with
+\(\Pr(E_p\ge j)=p^{-aj}\). For any certificate event \(C\),
+\[
+\frac1X\#\{m\le3X:m\text{ smooth},\,C(m)\}
+\le3^a X^{a-1}Z_y(a)\Pr_a(C).
+\tag{12}
+\]
+
+If (9) is possible, then
+\[
+v\le A\le\frac{\log^2(3X)}v.
+\tag{13}
+\]
+For \(v\le\sqrt n\), the trivial factor \(V\) is already \(\exp(o(F_{2/3}))\).
+
+Otherwise set \(t=\sqrt{vA}\) and
+\[
+s=\frac{\log t}{\log A}-(1-a)
+-\frac{10\log\log n}{\log n}.
+\]
+Then \(0<s<a\), and geometric summation yields
+\[
+\mathbb E_a\gcd(m,P)^s
+\le\prod_{p\mid P}(1-p^{s-a})^{-1}.
+\]
+Split these primes at \(A\). Below \(A\), use \(\pi(t)\ll t/\log t\); above \(A\), there are at most \(A/\log A\) primes dividing \(P\). These bounds give
+\[
+\log\mathbb E_a\gcd(m,P)^s=o(t)
+\]
+uniformly in (13). The logarithmic subtraction in \(s\) supplies the needed uniform margin.
+
+Moreover,
+\[
+\frac{t\log t}{\log A}\ge v;
+\]
+as a function of \(A\ge v\), its left side is increasing from \(v\). The same calculation with the \(o(1)\) subtraction gives \(st\ge(1-o(1))v\). Markov’s inequality therefore gives
+\[
+\Pr_a(C)\le \exp[-(1-o(1))v].
+\]
+Each integer belongs to at most \(V+O(1)\) windows. Multiplying (12) by this number and using (11) proves (10).
+
+**PROVED — The weighted analogue also obeys (10).** Let \(q_i\) be powers of distinct factor-base primes, \(B_i=1_{q_i\mid m}\), and
+\[
+E=\sum_i b_i^2/\log q_i>0.
+\]
+Under the preceding measure, \(B_i\) are independent Bernoulli variables with means \(r_i=q_i^{-a}\). A consequence of the Kearns–Saul inequality is
+\[
+\log\mathbb E e^{t b_i(B_i-r_i)}
+\le \frac{t^2b_i^2}{4a\log q_i}.
+\]
+The checked reference is Berend–Kontorovich, *Electronic Communications in Probability* **18** (2013), paper 3, equation (1.3); Theorem 4 in the linked preprint. [Paper](https://arxiv.org/pdf/1210.3248)
+
+Normalize \(E=1\). Cauchy–Schwarz gives
+\[
+\mu=\sum_i b_ir_i
+\le\left(\sum_i(\log q_i)q_i^{-2a}\right)^{1/2}=O(1).
+\]
+The last bound is uniform because the underlying primes are distinct and \(a\to1\). Chernoff optimization now gives
+\[
+\Pr_a\left(\sum_i b_iB_i\ge\sqrt v\right)
+\le e^{-a(\sqrt v-O(1))^2}
+=e^{-v+o(v)}.
+\]
+Combining with (11)–(12) proves the claim for (7), including its stronger finite-tolerance version.
+
+**PROVED — Comparison with the smooth-multiple trick.** Choose a power of \(2\), \(d\asymp h\), and examine
+\[
+z=d\lceil x/d\rceil.
+\]
+Its cofactor has size \(X/d\). On average, its smoothness probability is
+\[
+\exp[-d_\kappa F_{2/3}+o(F_{2/3})].
+\]
+This follows from the long-interval density since \(\log(X/d)\sim\log X\). Thus no fixed \(P\), or fixed GSS weighting, improves the leading \(L[2/3]\) yield over this trick by more than \(\exp(o(F_{2/3}))\).
+
+**model-PROVED — Adaptive lower bound under a named extension.** In the *fresh-divisibility certificate model*, each adaptive call obeys the conditional counterpart of (10), and promised nonemptiness has probability bounded below. Conditional expectation and the union bound imply
+\[
+\text{calls per successful output}\ge L[2/3,d_\kappa].
+\tag{14}
+\]
+This excludes every fixed \(L[1/3,\tau]\) implementation in that model.
+
+**OPEN — The adaptive arithmetic gap is substantial.** Averaging (10) does not justify choosing \(P\) after inspecting \(x\), then averaging as though it were fixed. Such a choice can correlate with nearby smooth numbers. Also, a real decoder may discover useful outputs outside its guaranteed certificate threshold; the bound counts certified outputs only.
+
+**PROVED / OPEN — Batching.** A fixed family of \(L[1/3,O(1)]\) certificates across many \(k\) changes (10) by only \(\exp(o(F_{2/3}))\), by linearity of expectation; independence between \(k\)’s is unnecessary. A genuinely different bivariate certificate is outside this theorem. No general bivariate lower bound is established here.
+
+### 3(c). Products, meet-in-the-middle, and Wagner trees
+
+**model-PROVED — Fixed product tables.** Suppose two lists, of lengths \(A,B\), are prepared independently of a uniform center \(x\in[X,2X]\). Each of their \(AB\) products covers at most \(h+O(1)\) centers. Constant success therefore requires
+\[
+AB\gtrsim X/h,\qquad
+A+B\gtrsim\sqrt{X/h}
+=\exp((1/2+o(1))n).
+\tag{15}
+\]
+This is a counting proof; no random-product assumption is needed. Lists adapted to \(x\) are outside this model.
+
+**model-PROVED — Balanced random-list Wagner template.** Let \(K=2^r\) lists each have length \(\ell\), and let the target require \(b\sim n/\log2\) bits of agreement. In the constant-list-size binary-tree model, each intermediate merge filters approximately \(\log_2\ell\) bits. The final expected solution count is \(\ell^{r+1}/2^b\); hence constant success needs
+\[
+\ell\gtrsim2^{b/(r+1)},\qquad
+T\gtrsim2^r2^{b/(r+1)}.
+\]
+Minimizing gives \(\log T=\Omega(\sqrt n)\), still larger than every fixed multiple of \(F_{1/3}\). The underlying algorithm and random-list setting are Wagner, CRYPTO 2002, §2. [Paper](https://www.enseignement.polytechnique.fr/informatique/profs/Francois.Morain/Master1/Crypto/projects/Wagner02.pdf)
+
+**PROVED — Limited amortization does not erase these exponents.** Dividing total cost by \(L[1/3,O(1)]\) outputs subtracts only \(O(F_{1/3})\) from its logarithm. Uniform residue sampling against
+\[
+\{u:u\bmod N\in[0,h]\}
+\]
+has density approximately \(h/N\); allowing more quotient values \(k\) does not increase that residue density.
+
+**OPEN —** These results do not cover arbitrary structured product algorithms, representations with cancellation, or adaptive arithmetic list generation. Wagner’s complexity is not a lower bound for every generalized-birthday algorithm.
+
+### 3(d). Schnorr’s actual log-lattice route
+
+**PROVED — The required precision is extreme, but its encoding is manageable.**
+\[
+\log(x+h)-\log x=(1+o(1))h/x
+=\exp[-n+\nu F_{2/3}+o(F_{2/3})].
+\]
+Thus logarithms need \(O(n)\) bits of precision, including polynomial accumulation margins. Precision alone is not an exponential input-size barrier.
+
+**KNOWN —** Schnorr’s prime-lattice formulation and its smooth-rational interpretation are described in Vera, arXiv:1003.5461 (2010), §2, building on Schnorr, DIMACS **13** (1993), pp. 171–182. Signed exponents in that formulation do not automatically enforce SI’s nonnegative exponents. [Paper](https://arxiv.org/pdf/1003.5461)
+
+**PROVED — Ordinary approximation guarantees do not supply SI feasibility.** For a \(3/4\)-LLL basis, Gram–Schmidt lengths satisfy
+\(\|b_i^*\|^2\le2\|b_{i+1}^*\|^2\). Nearest-plane rounding then gives approximation factor at most \(2^{D/2}\): at the last differing coordinate \(i\), the optimum distance is at least \(\|b_i^*\|/2\), while earlier squared rounding errors sum to at most \((2^i-1)\|b_i^*\|^2/4\). Later errors are shared.
+
+Here \(D\asymp\pi(y)=L[1/3,\kappa]\). Such a guarantee neither enforces nonnegativity nor places the answer inside the required one-sided slab. An approximation factor exceeding \(1\) can leave a slab whose feasible point lies near its boundary.
+
+**PROVED — Very small fixed supports do not solve average instances.** With \(D'=O(F_{1/3})\) selected primes, there are at most
+\[
+(O(n)+1)^{D'}=\exp(o(n))
+\]
+bounded exponent vectors. Their products cover an \(o(1)\) fraction of random SI centers, since each covers at most \(h\) centers.
+
+**OPEN —** Neither argument proves a positive \(\tau\) lower bound for adaptive algorithms on Schnorr’s special lattices. Generic CVP hardness cannot be transferred to them without a reduction.
+
+## 4. NP-hardness and TFNP
+
+Let \(\mathrm{SmoothInterval}\) ask whether a positive \(y\)-smooth integer lies in \([x,x+h]\), with binary inputs.
+
+### What is provable
+
+**PROVED — Membership in NP.** A witness consists of the integer and its complete prime factorization. Verify the product, interval membership, and prime bounds. Primality is polynomial-time: Agrawal–Kayal–Saxena, *Annals* **160** (2004), Theorem 4.1 and §5. [Paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v160-n2-p12.pdf)
+
+**PROVED — For \(h=\operatorname{poly}(\log x)\), the problem is in \(\mathrm{NP}\cap\mathrm{coNP}\).** A NO certificate supplies, for each integer in the interval, one prime divisor exceeding \(y\). Its total length is polynomial. Hence this range cannot be NP-hard under polynomial many-one reductions unless \(\mathrm{NP}=\mathrm{coNP}\).
+
+**PROVED — Additional polynomial-time ranges.** Fixed \(y\) permits exponent enumeration; polynomial \(h\) and polynomial \(y\) permit trial division; \(h\ge x\), \(y\ge2\), permits a power of \(2\). NP-hardness in these ranges would imply \(\mathrm P=\mathrm{NP}\).
+
+**PROVED — SI has a deterministic subexponential decision algorithm.** The sieve above gives
+\[
+2^{O(n^{2/3}(\log n)^{1/3})}.
+\tag{16}
+\]
+This does **not** exclude NP-completeness under arbitrary polynomial reductions. Such reductions may increase input length substantially. Under ETH, it excludes suitable SAT reductions with SI bit-length \(O(s^d)\), \(d<3/2\), where \(s\) is the SAT instance size: substituting in (16) would give \(2^{o(s)}\) time. No such reduction is established.
+
+### Related NP-hard problems, and the missing reductions
+
+**KNOWN — Composite-generator subset product is NP-complete.** Garey–Johnson, *Computers and Intractability*, Freeman (1979), Appendix A3, problem SP14, gives the standard reference. [Scanned entry](https://perso.limos.fr/~palafour/PAPERS/PDF/Garey-Johnson79.pdf)
+
+**PROVED — The exact-cover reduction identifies the essential distinction.** Label universe elements by distinct small primes \(p_i\). For each allowed triple \(C_j\), supply the composite generator
+\[
+a_j=\prod_{i\in C_j}p_i,\qquad T=\prod_i p_i.
+\]
+A subset of generators multiplies to \(T\) exactly when the triples form an exact cover, by unique factorization. The construction has polynomial bit-length. It also proves hardness with unrestricted nonnegative generator exponents, because squarefreeness of \(T\) prevents reuse.
+
+**PROVED — This does not prove hardness for an explicit allowed-prime set.** Replacing each composite generator by its constituent primes destroys the triple constraint: \(T\) then becomes trivially representable. For an explicit prime set \(S\), exact-target membership, even with independent exponent bounds, is polynomial-time by repeated division and checking the unique exponents.
+
+**OPEN / UNVERIFIED —** No checked reduction here establishes NP-hardness for initial-segment prime smoothness in an interval, including SI. Nor was a hardness theorem verified for the general explicit-prime interval variant with independent exponent bounds. Composite-block restrictions, arbitrary knapsack weights, and prime exponents are different problems.
+
+**KNOWN — Manders–Adleman proves a nearby, different theorem.** *JCSS* **16** (1978), §2, proves NP-completeness of nonnegative solvability of
+\[
+ax^2+by=c,
+\]
+and of bounded quadratic-congruence solvability, even with the modulus factorization supplied. The linked author draft contains Theorems 1–2 and the supplement. This is not a reduction to smooth intervals or divisor-in-interval selection. [Author draft](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1976/ERL-m-615.pdf)
+
+**UNVERIFIED —** I did not verify an NP-hardness theorem for literal divisor-in-interval selection with supplied factorization. Its resemblance to bounded knapsack is insufficient evidence.
+
+### Totality
+
+**PROVED — Proven existence ranges give TFNP search problems.** Restrict to an efficiently recognizable parameter range where every interval provably contains a smooth integer, with finite exceptions handled separately. The factorization witness is polynomially balanced and verifiable, and existence gives totality. Inputs outside the range can be assigned a trivial “outside range” output.
+
+**KNOWN —** Megiddo–Papadimitriou, *Theoretical Computer Science* **81** (1991), Theorem 2.1, shows that an FNP-complete problem can belong to TFNP exactly when \(\mathrm{NP}=\mathrm{coNP}\), for their search-reduction notion. This does not imply that TFNP problems are easy. [Paper](https://theory.stanford.edu/~megiddo/pdf/papadimX.pdf)
+
+**OPEN — SI is not presently justified as TFNP.** Its universal existence premise is unproved. A constructor promised only on nonempty intervals is a promise search problem; positive expected counts do not establish totality. Even proving totality would not supply a time lower bound.
+
+## 5. Assessment and sharpest barrier statement
+
+**PROVED — The supplied numerical threshold is consistent.** The unconstrained minimum of
+\(\kappa+2/(9\kappa^2)\) occurs at \(\kappa=(4/9)^{1/3}\), with value
+\[
+1.144714242\ldots.
+\]
+At that point \(2\kappa=1.526285656\ldots\), so beating the supplied MNFS constant requires
+\[
+\tau<1.9019-1.144714242\ldots
+=0.757185757\ldots.
+\]
+A positive constructor lower bound smaller than this would not itself invalidate the program.
+
+**CONJECTURED — My subjective probability is about 5%** that a uniform classical promise constructor meeting this threshold exists, with preprocessing charged and at parameters supporting Prop SI. This is a judgment under substantial uncertainty. The strongest negative evidence is the failure of tested search mechanisms; the strongest reason against confidence in impossibility is the absence of a reduction or arithmetic model capturing adaptive construction.
+
+**Sharpest barrier statement — model-PROVED / OPEN.** Independent point search, even with free factorization tests, needs \(L[2/3,2/(3\kappa)]\) examinations per output. Every fixed gcd-certificate modulus, and every fixed GSS weighting, has averaged smooth-output yield at most \(L[2/3,-2/(3\kappa)+o(1)]\) per call; the same lower bound follows adaptively only in the explicitly stated fresh-divisibility model. Fixed product tables and balanced random-list Wagner trees also miss the required scale. These results rule out the \(1.2114\) route within those models, but prove neither a general constructor lower bound nor a factoring lower bound of \(1.9019\). Adaptive arithmetic selection of certificates, different multivariate constructions, and algorithms exploiting the special logarithms of primes remain open possibilities; NP-hardness and generic CVP hardness currently provide no verified barrier at the SI scale.
