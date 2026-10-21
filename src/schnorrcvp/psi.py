@@ -230,3 +230,105 @@ def expected_primitive_in_box(N: int, P: Sequence[int], V: int, W: int, *, K: in
                 den *= (1 - 1.0 / q)
             E += 2 * cnt * num / den
     return {"E": E, "n_v": len(vs), "n_w": len(ws)}
+
+
+def local_factor(dfun, lx: float, P: Sequence[int], Q) -> float:
+    """POST-HOC (added after E1 data; disclosed) full CRT local-factor correction H_S''.
+
+    For the unknown member z of a primitive triple (z = u in E1, z = w for a lattice output in E2):
+      * p in Q (p divides the other two members): p does not divide z: factor (1 - f_p) / (1 - 1/p);
+      * p not in Q: z is uniform over the p - 1 residues other than one fixed nonzero class
+        (because exactly one class is excluded by the coprimality of the other two members), so
+            g_p = p/(p-1) * [ f_p + (p-2)(1-f_p)/(p-1) ]       (g_2 = 2 f_2: parity is forced),
+    where f_p = d(x/p) / (p d(x)) is the fraction of P-smooth integers near x divisible by p.
+    Independence across p (product form).  dfun(lnx) is the local smooth density."""
+    import math
+    base = dfun(lx)
+    if base == 0.0:
+        return 0.0
+    f = 1.0
+    Qs = set(Q)
+    for p in P:
+        fp = min(1.0, dfun(lx - math.log(p)) / (p * base))
+        if p in Qs:
+            f *= max(0.0, 1.0 - fp) / (1.0 - 1.0 / p)
+        else:
+            f *= p / (p - 1.0) * (fp + (p - 2.0) * (1.0 - fp) / (p - 1.0))
+    return f
+
+
+def expected_primitive_local(N: int, P: Sequence[int], V: int, W: int, *, K: int = 1000, h: float = 0.02):
+    """POST-HOC H_S'' prediction of primitive relations in the E1 box (see local_factor)."""
+    import math
+    from collections import Counter
+    from .enum_rel import smooth_upto
+    vs = smooth_upto(V, P)
+    ws = smooth_upto(W, P)
+    lnmax = float(mp.log(mp.mpf(V) * N)) + 1.0
+    pb = PsiBracket(P, K, lnmax)
+    cache = {}
+
+    def dens(lnx):
+        key = int(round(lnx * 500))
+        if key not in cache:
+            cache[key] = float(pb.density(mp.mpf(key) / 500 - h / 2, h))
+        return cache[key]
+
+    supp_w = Counter(_prime_support(w, P) for w in ws)
+    E = 0.0
+    for v in vs:
+        lx = math.log(v) + math.log(N)
+        sv = set(_prime_support(v, P))
+        base = dens(lx)
+        for sw, cnt in supp_w.items():
+            if sv.intersection(sw):
+                continue
+            E += 2 * cnt * base * local_factor(dens, lx, P, sv.union(sw))
+    return {"E": E}
+
+
+def ideal_enumeration_cost(P: Sequence[int], lnN: float, *, K: int = 50, h: float = 0.1, lnv_max: float = None):
+    """MODEL (H_S naive; added after the pre-registration, disclosed): cost of an IDEAL close-vector
+    enumerator that outputs, at unit cost each, the lattice vectors (coprime smooth u, v) in increasing order
+    of |w| = |u - vN|, until n + 1 fac-relations have appeared.
+
+    Under H_S the yield per output with |w| ~ Y is Psi(Y)/Y (decreasing in Y), so examining by increasing |w|
+    is optimal within the model.  With n_v = #smooth v per log-bin, d(.) local density:
+        R(X) = sum_v n_v * 2 Psi(min(X, vN)) d(vN)     (relations with |w| <= X)
+        V(X) = sum_v n_v * 2 min(X, vN) d(vN)          (lattice vectors with |w| <= X)
+    Returns log10 V(X*) for the least X* (on a log grid) with R(X*) >= n + 1, or None if R(inf) < n + 1."""
+    lnN = mp.mpf(lnN)
+    if lnv_max is None:
+        lnv_max = 1.5 * float(lnN) + 50
+    lnmax = float(lnv_max + lnN) + 2.0
+    pb = PsiBracket(P, K, lnmax)
+    vb = binned_counts(pb, lnv_max, h)
+    vbins = []
+    for k, nv in enumerate(vb):
+        if nv == 0:
+            continue
+        lnv = (k + mp.mpf(0.5)) * h
+        vbins.append((lnv + lnN, nv * pb.density(lnv + lnN - h / 2, h)))
+    need = len(P) + 1
+
+    def RV(lnX):
+        R = mp.mpf(0); Vv = mp.mpf(0)
+        for lnvN, wt in vbins:
+            m = min(lnX, lnvN)
+            R += wt * 2 * pb.psi_mid(m)
+            Vv += wt * 2 * mp.e ** m
+        return R, Vv
+
+    lo, hi = mp.mpf(0), mp.mpf(lnmax - 1)
+    Rhi, _ = RV(hi)
+    if Rhi < need:
+        return {"log10V": None, "lnX": None, "R_inf": float(mp.log10(Rhi)) if Rhi > 0 else None}
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        R, _ = RV(mid)
+        if R >= need:
+            hi = mid
+        else:
+            lo = mid
+    R, Vv = RV(hi)
+    return {"log10V": float(mp.log10(Vv)), "lnX": float(hi), "log2V": float(mp.log(Vv, 2))}

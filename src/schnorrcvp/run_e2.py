@@ -106,10 +106,12 @@ def main(quick: bool = False):
                             else:
                                 pn = res.naive(w)
                                 pr = res.refined(w, supp(u * v, P))
-                            recs.append({"kind": kind, "u": str(u), "v": str(v), "w": str(w), "rel": a["rel"],
-                                         "dist2": str(a["dist2"]), "nnz": a["nnz"], "p_naive": pn, "p_ref": pr,
-                                         "log2w": (math.log2(abs(w)) if w else None),
-                                         "log2v": math.log2(v)})
+                            big = max(u.bit_length(), v.bit_length(), abs(w).bit_length()) > 4000
+                            recs.append({"kind": kind, "u": None if big else str(u), "v": None if big else str(v),
+                                         "w": None if big else str(w), "huge": big, "rel": a["rel"],
+                                         "dist2": None if big else str(a["dist2"]), "nnz": a["nnz"], "p_naive": pn, "p_ref": pr,
+                                         "log2w": (w.bit_length() if big else (math.log2(abs(w)) if w else None)),
+                                         "log2v": (v.bit_length() if big else math.log2(v))})
                             if a["rel"]:
                                 lv = lambda_vector(u, w, first_primes(max(ns)))
                                 pool[(u, w)] = lv

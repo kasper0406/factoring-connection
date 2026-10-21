@@ -1,0 +1,72 @@
+20 0 12 pool 20
+20 0 20 pool 133
+20 0 30 pool 380
+20 0 40 pool 713
+20 1 12 pool 27
+20 1 20 pool 141
+20 1 30 pool 380
+20 1 40 pool 683
+20 2 12 pool 20
+20 2 20 pool 118
+20 2 30 pool 349
+20 2 40 pool 681
+24 0 12 pool 4
+24 0 20 pool 52
+24 0 30 pool 189
+24 0 40 pool 423
+24 1 12 pool 7
+24 1 20 pool 51
+24 1 30 pool 213
+24 1 40 pool 427
+24 2 12 pool 6
+24 2 20 pool 50
+24 2 30 pool 204
+24 2 40 pool 433
+28 0 12 pool 2
+28 0 20 pool 17
+28 0 30 pool 103
+28 0 40 pool 272
+28 1 12 pool 2
+28 1 20 pool 16
+28 1 30 pool 89
+28 1 40 pool 246
+28 2 12 pool 0
+28 2 20 pool 16
+28 2 30 pool 83
+28 2 40 pool 225
+32 0 12 pool 0
+32 0 20 pool 3
+32 0 30 pool 39
+32 0 40 pool 136
+32 1 12 pool 0
+32 1 20 pool 11
+32 1 30 pool 40
+32 1 40 pool 142
+32 2 12 pool 0
+32 2 20 pool 6
+32 2 30 pool 37
+32 2 40 pool 119
+36 0 12 pool 0
+36 0 20 pool 0
+36 0 30 pool 13
+36 0 40 pool 48
+36 1 12 pool 0
+36 1 20 pool 1
+36 1 30 pool 10
+36 1 40 pool 45
+36 2 12 pool 0
+36 2 20 pool 1
+36 2 30 pool 11
+36 2 40 pool 58
+40 0 12 pool 0
+40 0 20 pool 0
+40 0 30 pool 2
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Volumes/git/factoring-connection/src/schnorrcvp/run_e2.py", line 132, in <module>
+    main(quick="--quick" in sys.argv)
+  File "/Volumes/git/factoring-connection/src/schnorrcvp/run_e2.py", line 109, in main
+    recs.append({"kind": kind, "u": str(u), "v": str(v), "w": str(w), "rel": a["rel"],
+                                    ^^^^^^
+ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit
