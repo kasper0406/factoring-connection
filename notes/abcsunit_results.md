@@ -1,7 +1,7 @@
 # abcsunit: factoring relations as S-unit equations — abc, Evertse, Lagarias–Soundararajan
 
-Agent `abcsunit`, phase 19, 2026-10-21. Revised (v2) after codex round 2 (MAJOR REVISION) and the Opus proof critic (ACCEPT WITH FIXES); §7 records the
-reviews.
+Agent `abcsunit`, phase 19, 2026-10-21. Revised (v3) after codex round 2 (MAJOR REVISION), the Opus proof critic (ACCEPT WITH FIXES) and the Opus
+literature critic (OK WITH FIXES); §7 records the reviews.
 
 **Files.**
 - Code: `src/abcsunit/`.
@@ -39,7 +39,7 @@ e(u) ∈ Z^s is the exponent vector of an S-unit u. φ_N : Z^s → (Z/N)^*, e �
 - **"Solve S-unit equations with an N-congruence" is not a new target.** Listing smooth pairs u ≡ v (mod N) is,
   verbatim, the doubly-split product-listing problem Π of pilist / nonexact, i.e. listing short vectors of Λ_N
   (Prop SU). It is SUFFICIENT for heuristic polynomial-time factoring with a polylog factor base (smoothenum T8),
-  with one precise extra condition we isolate: the dependencies must reach a square root of unity other than
+  with one extra condition that we state explicitly (Lemma FR): the dependencies must reach a square root of unity other than
   ±1 — guaranteed (probability exactly 1/2) when the found relations generate Λ_N up to finite odd index; the exact
   criterion is Lemma FR(2), and maximal parity rank alone is not enough.
 - **Known S-unit algorithms have no N-dependent step that helps.** de Weger's p-adic reduction linearises the
@@ -74,7 +74,7 @@ e(u) ∈ Z^s is the exponent vector of an S-unit u. φ_N : Z^s → (Z/N)^*, e �
 |---|---|
 | Translation: doubly smooth = Λ_N points; triply smooth = fixed-coefficient S-unit equation; one-sided (Dixon/QS) = abc-type but not S-unit; NFS = mixed S-unit congruence in K × Q (§1) | PROVED (definitions) |
 | Prop ABCV: abc can only exclude relations with kN or u N^ε-powerful; fraction ≪ N^{−ε/2} + Σ_{p\|N}1/p among multipliers; abc never excludes a primitive relation of height ≤ C·N^{1+ε} | PROVED (conditional only in reading abc) |
-| Cor ABC-T: under abc, primitive triply-smooth relations have height ≤ C_ε(N·R_S)^{1+ε} (N-relative LS Prop 1.1) | PROVED assuming abc |
+| Cor ABC-T: under abc, primitive triply-smooth relations have height ≤ C_ε(N·R_S)^{1+ε} (N-relative LS 2011 Thm 1.1/2.1 = LS 2012 Prop 1.1) | PROVED assuming abc |
 | Prop EV: #primitive triply-smooth relations ≤ 3·7^{2s+3} (any height, any N); never below the ≈ s needed; doubly smooth: infinitely many | PROVED from KNOWN (Evertse 1984) |
 | Lemma SC: no set of s primes has more S-units ≤ X than the first s primes | PROVED |
 | Prop SU: S-unit congruence listing = Π doubly split = short vectors of Λ_N | PROVED (definitional) |
@@ -164,7 +164,7 @@ relation heights is the elementary one, max(u, v) > N for distinct positive cong
 "aggregate bound" of systeq §4), and abc gives only *upper* height bounds.
 
 **Comparison with the smoothness-size principle.** That principle (candidates of log-size ≍ x^{2α}(log x)^{1−2α}
-for L[α]) is a statement about the probability that a random integer is smooth (Canfield–Erdős–Pomerance), plus the
+for L[α]) is a statement about the probability that a random integer is smooth (Canfield–Erdős–Pomerance, J. Number Theory 17 (1983)), plus the
 assumption that a method samples candidates "randomly". It has no Diophantine content. abc neither implies nor
 strengthens it; a product lister would by design violate its sampling assumption (codex §2a).
 
@@ -172,7 +172,7 @@ strengthens it; a product lister would by design violate its sampling assumption
 
 **Cor ABC-T.** Assume abc. For every ε > 0 there is C_ε such that every primitive triply-y-smooth relation
 (u′, k′, v′ all y-smooth) satisfies v′ ≤ C_ε(N·R_S)^{1+ε}, i.e. log v′ ≤ (1+ε)(log N + (1+o(1))y) + O_ε(1).
-*Proof.* rad(u′v′k′N) ≤ R_S·N. ∎ (codex eq. 2.2.) This is LS 2011 Prop./Thm 1.1 (abc ⇒ κ₀ ≥ 1) with N added
+*Proof.* rad(u′v′k′N) ≤ R_S·N. ∎ (codex eq. 2.2.) This is LS 2011 Thm 1.1/2.1 = LS 2012 Prop 1.1 (abc ⇒ κ₀ ≥ 1) with N added
 to the radical.
 
 **Reading.** For y = (log N)^κ, κ > 1, the bound allows heights up to exp((log N)^κ), far beyond any polynomial
@@ -199,13 +199,15 @@ places in S including the infinite ones) gives, for Q with s finite primes (t = 
 
   #{primitive triply-smooth relations} ≤ 3·7^{2s+3},  for every N and every height.
 
-(Beukers–Schlickewei, Acta Arith. 78 (1996) 189–199: 2^{8(r+1)} for rank r subgroups — weaker here.)
+Evertse's theorem allows arbitrary fixed coefficients a, b ∈ K^* (literature critic: checked). (Beukers–Schlickewei,
+"The equation x + y = 1 in finitely generated groups", Acta Arith. 78 (1996) 189–199: 2^{8(r+1)} for subgroups
+of (K^*)² of rank r — weaker here.)
 (c) *Does it bite?* A method needs about s + O(1) relations (columns). 3·7^{2s+3} > s for every s ≥ 1, so this
 global ceiling never forbids a factor base of size s from supplying enough triply-smooth relations, in any regime
 of s (L[β], polylog, O(log N), o(log N)). It says nothing about how many lie below the height a method can use, or
-about their span (codex); and it provides no existence. The conjectured truth for the first s primes,
-exp(s^{2/3+o(1)}) (Erdős–Stewart–Tijdeman's conjectural exponent, as recalled by LS 2011 §1.5), also exceeds s (the precise form of the ES-T conjecture is as recalled by LS; we did not check ES-T's
-original wording).
+about their span (codex); and it provides no existence. Erdős–Stewart–Tijdeman (1988) conjectured an upper bound ≪ exp(s^{2/3+ε}) for
+**every** set S of s primes (as stated in Konyagin–Soundararajan 2007; literature critic). Even this conjectural
+ceiling, applied to S′ = S ∪ {p, q}, is ≫ s.
 (d) *Measured.* In every registered run the triply-smooth primitive count exceeded π(y) (min ratio 1.12; P8).
 
 **Lower bounds [KNOWN; relevance nil].** Erdős–Stewart–Tijdeman (Compositio 66 (1988) 37–56):
@@ -289,19 +291,22 @@ combinations of parity-independent kernel vectors have only unfruitful dependenc
 (QS/Dixon) relations each relation brings its own free generator t; this changes the sampling argument (Dixon's
 fruitfulness proof uses the randomness of t) but does not remove the square-root-image requirement — e.g. the
 relations (jN + 1)² ≡ 1 all give the trivial root (codex).
-*Prior statement:* this is the standard structure of index-calculus square roots; the explicit odd-index criterion
-for purely S-unit relations: no prior statement found by us. **Measured:** ρ − r = 2 ⟺ rank_Z = s in all 51 runs
+*Prior statement:* this is the standard structure of index-calculus square roots; the nearest prior art is the
+rigorous relation-lattice analyses of Schnorr–Lenstra (1984), Seysen (1987), Hafner–McCurley (1989) and
+Lenstra–Pomerance (1992) (literature critic). We state the odd-index / square-root-image criterion explicitly for
+purely S-unit relations; no prior statement in exactly this form found by us. **Measured:** ρ − r = 2 ⟺ rank_Z = s in all 51 runs
 (§6, PH2).
 
 ### 3.3 Known S-unit algorithms and the N-condition
 
 **The algorithms [KNOWN].** de Weger (CWI Tract 65, 1989; also J. Number Theory 26 (1987)); Tzanakis–de Weger;
 Smart (1995, 1998); the Sage solver of Alvarado–Koutsianas–Malmskog–Rasmussen–Vincent–West (2019/2020); von
-Känel–Matschke (arXiv 1605.06079; Memoirs AMS 2023). Pattern: (1) Baker/Matveev and Yu height bounds, exponential
+Känel–Matschke (arXiv 1605.06079; Memoirs AMS 2023). Pattern: (1) height bounds — Baker/Matveev and Yu linear forms in logarithms for de Weger, Smart and
+Alvarado et al.; Faltings/modularity-based bounds in terms of N_S = ∏_{ℓ∈S} ℓ for von Känel–Matschke — exponential
 in s; (2) LLL reduction at the real place (log ℓ_i) and at each ℓ ∈ S (ℓ-adic logarithms); (3) sieving/enumeration
-of the remaining box. None has complexity polynomial in s; even the output is exp(Ω(√s)) for some S (ES-T) and
-grows like 2^s empirically for the first s primes (VKM 2016 Thm A: 1, 4, 17, 63, 190, 545, 1433, …, 839638 for
-n = 1, …, 15; our E4 reproduces n ≤ 5).
+of the remaining box. None has complexity polynomial in s; even the output is exp(Ω(√(s/log s))) for some S (ES-T), exp(s^{2−√2−ε}) (KS), and
+grows like 2^s empirically for the first s primes (VKM 2016 Thm A, which covers n ≤ 16: |Σ(S)| = 1, 4, 17, 63, 190,
+545, 1433, …, 839638 for n = 1, …, 15, counted modulo the S₃ symmetry, total 6|Σ| − 3; our E4 reproduces n ≤ 5).
 
 **Prop DW (where the N-condition sits) [PROVED from KNOWN].**
 1. For ℓ ∈ S the ℓ-adic step encodes ℓ^m | X − Y, m large, through ℓ-adic logarithms of the ℓ-units involved
@@ -311,19 +316,25 @@ n = 1, …, 15; our E4 reproduces n ≤ 5).
 2. A factoring relation needs only the **level-one** condition N | v − u, i.e. e ∈ Λ_N. There is nothing to
    linearise: the level-one lattice is the target itself.
 3. Computing a basis of Λ_N — even only det Λ_N = |H| — factors N when S ⊇ {primes < 2 log² N}: under GRH these
-   primes generate (Z/N)^* (Bach, Math. Comp. 55 (1990): the least integer outside a proper subgroup is O(log² m), hence also the least prime; the constant 2 for this form is UNVERIFIED by us, see §7),
+   primes generate (Z/N)^* (Bach, Math. Comp. 55 (1990): the least integer outside a proper subgroup is
+   < 2 log² m, hence also the least prime; Lamzouri–Li–Soundararajan give < 3 log² m with a prime p ∤ m; with
+   P⁻(N) > y the factor-base primes are coprime to N; literature critic),
    so |H| = φ(N) = N − p − q + 1. Conversely, computing Λ_N from p, q takes 2s discrete logarithms (of each ℓ ∈ S mod p and mod q).
+   (That a multiple of φ(N), or an order computation in (Z/N)^*, factors N is classical: Miller 1976; Bach,
+   "Discrete logarithms and factoring", 1984.)
    So the step de Weger handles trivially for small ℓ is, for the composite N, at least as hard as factoring —
    in the sense of computing the complete kernel (or its determinant). This does not show that every way of
    obtaining *selected* short vectors of Λ_N is factoring-hard (that is the open primitive itself; codex).
    (Unconditionally, |H| is a multiple of the order of every element of H; Miller-type splitting from it works
    when the 2-parts of the orders differ mod p and q, which fails e.g. if |H| is odd. We do not need this.)
-4. The real-place step with an inhomogeneous target log N is Schnorr's lattice (EUROCRYPT 1991): find e with
+4. The real-place step with an inhomogeneous target log N is Schnorr's lattice (EUROCRYPT 1991; Adleman 1995
+   manuscript). Schnorr's 2021 claims of fast factoring by this route (IACR ePrint 2021/232, 2021/933) were not
+   borne out experimentally (Ducas, github.com/lducas/SchnorrGate). Find e with
    Σe_iℓ log ℓ_i ≈ log N, producing u − vN = w small, a triply-smooth relation if w is smooth (§1.2). That is the
    remit of agent `schnorrcvp`; we do not duplicate it.
-5. Modularity methods (Frey curve y² = x(x − u′)(x + k′N)) need modular forms of level ∝ rad(u′v′k′N) ≥ N: the
-   known enumeration algorithms then cost N^{Ω(1)} (an explanation of their expense, not a universal lower
-   bound).
+5. Modularity methods (Frey curve y² = x(x − u′)(x + k′N)) need modular forms of level ∝ rad(u′v′k′N) ≥ N, and
+   von Känel–Matschke's height bounds are in terms of N_S, which here would include N: the known enumeration
+   algorithms then cost N^{Ω(1)} (an explanation of their expense, not a universal lower bound).
 6. Codex adds: N is a known ℓ-adic unit for ℓ ∈ S, so ℓ-adic logarithms of N are free; substituting composite N
    for a prime place is invalid; whether *every* composite-modulus logarithmic method is factoring-hard is open.
 
@@ -349,6 +360,8 @@ remarks on the interface:
 ---
 
 ## 4. Lagarias–Soundararajan and smooth abc solutions (Task 4)
+
+*Notation in §4:* H denotes a height (LS's notation); the subgroup ⟨S⟩ ⊂ (Z/N)^* of §§1–3 is written H_S here.
 
 ### 4.1 What LS prove [KNOWN; checked against the arXiv text]
 
@@ -376,14 +389,15 @@ remarks on the interface:
 ### 4.2 Making it N-dependent
 
 **Prop EX (doubly smooth existence is free) [PROVED from KNOWN].** Let M = Ψ(X, y) (all y-smooth n ≤ X are
-units mod N). By Cauchy–Schwarz over the ≤ |H| occupied classes,
-  #{(u, v) : u ≠ v ≤ X smooth, u ≡ v (mod N)} (ordered) ≥ M²/|H| − M.
+units mod N). By Cauchy–Schwarz over the ≤ |H_S| occupied classes,
+  #{(u, v) : u ≠ v ≤ X smooth, u ≡ v (mod N)} (ordered) ≥ M²/|H_S| − M.
 For y = (log N)^κ, κ > 1, Ψ(X, (log X)^{κ′}) = X^{1−1/κ′+o(1)} (de Bruijn 1966; codex gives the binomial/Rankin
-proof), so with X = N^{κ/(κ−1)+ε} one gets M ≥ 2|H| and at least M/2 = N^{1 + ε(1−1/κ) + o(1)} unordered relations.
+proof), so with X = N^{κ/(κ−1)+ε} one gets M ≥ 2|H_S| and at least M/2 = N^{1 + ε(1−1/κ) + o(1)} unordered relations.
 A primitive pair (u′, v′) has at most Ψ(X/v′) ≤ Ψ(X/N) multiples (v′ > N), so there are at least
 (M/2)/Ψ(X/N) = N^{1 − 1/κ + o(1)} distinct primitive ones. No GRH, no circle method. (This is nonexact
-Prop AB with |H| in place of N.)
-- *GRH asymptotic (codex eq. 4.3), checked.* With smooth weights and P⁻(N) > y, LS Prop 5.1 (GRH) bounds the
+Prop AB with |H_S| in place of N.)
+- *GRH asymptotic (codex eq. 4.3), checked.* With smooth weights and P⁻(N) > y, LS Prop 5.1 (GRH; uniform in the
+  modulus q, literature critic) bounds the truncated Euler products, and codex's Perron/Mellin contour shift bounds the
   twisted smooth sums by H^{1/2+η}N^η for every nonprincipal χ mod N (an imprimitive χ has the same truncated Euler
   product as its primitive inducer, since P⁻(N) > y); character orthogonality then gives
   C_{N,w} = M_w²/φ(N) − D_w + O(H^{1+ε}N^ε), an asymptotic once H = N^A with A > κ/(κ − 2), κ > 2. (Our check:
@@ -406,7 +420,7 @@ Prop AB with |H| in place of N.)
 3. **Constructivity — this is the failure.** The circle method computes ∫S(α)²S(−α)dα; nothing in it locates a
    solution. Counting is not extraction (codex §4c): Prop EX establishes N^{1−o(1)} relations without identifying
    one. To exploit the count one must *find* collisions of the map u ↦ u mod N on smooth integers:
-   - generic (birthday) search: T ≍ √(R|H|) = N^{1/2+o(1)} smooth numbers for R relations [model-PROVED in the
+   - generic (birthday) search: T ≍ √(R|H_S|) = N^{1/2+o(1)} smooth numbers for R relations [model-PROVED in the
      independent-residue model; codex §4d];
    - Dixon-type search (test the residue for smoothness): N/Ψ(N, y) = N^{1/κ+o(1)} per relation, L[1/2, √2]
      after optimising y;
@@ -419,8 +433,8 @@ Prop AB with |H| in place of N.)
    small sizes; systeq §6), and then the N-condition would require the identity to be non-exact modulo N at a small
    point, which systeq Lemma EX turns into an N-sized height (exact identities carry no information on N).
    Pascal-type and rational-closure constructions collapse after gcd normalisation or do not add rank (codex;
-   closure lemma §3.3). Practical constructions (Lehmer's Pell method; Conrey–Holmstrom–McLaughlin) are N-free and
-   empirical.
+   closure lemma §3.3). Practical constructions are N-free: Lehmer's Pell method is exhaustive and provably complete for a fixed S
+   but exponential (2^s − 1 Pell equations); Conrey–Holmstrom–McLaughlin's closure method is heuristic.
 5. **The fruitfulness condition is an extra, independent requirement.** Even a constructive count would have to
    produce relations whose dependencies reach a nontrivial square root of unity (Lemma FR; odd index suffices);
    counting arguments say nothing about rank or index (codex §4c).
@@ -542,18 +556,22 @@ Z-relations. This led to Lemma FR before the registered run (prereg, design disc
   relations get Cor ABC-T); Σ1/p term in the table; closure lemma scope; Lemma SC label; run counts in §0; NITs
   (xyz inequality typo, Evertse place count in K, sign coordinate, finite odd index, 2s discrete logs, Miller
   criterion, prereg M0 prefactor, P3 is an inequality, sampler bias).
-- Opus literature critic: launched on v2; its report had not arrived when this version was committed. Checks we
-  made ourselves meanwhile (2026-10-21, addendum):
-  - **Harper 2016 VERIFIED** (arXiv 1408.1662 abstract; Compositio Math. 152 (2016) 1121–1158): an unconditional
-    asymptotic for the number of solutions of a + b = c in y-smooth integers below x whenever log^C x ≤ y ≤ x,
-    "previously only known assuming GRH".
-  - **Bach 1990 PARTLY VERIFIED** (Math. Comp. 55 (1990) 355–380, abstract): under ERH a nontrivial (proper)
-    subgroup of (Z/m)^* omits some number of size O(log² m); the explicit constant 2 log² m is stated in the
-    abstract for compositeness witnesses. The explicit "2 log² m" for the subgroup form remains UNVERIFIED by us;
-    Prop DW is unaffected if read with S ⊇ {primes < C·log² N} for the absolute constant C of Bach's theorem.
-  - Still UNVERIFIED (not checked against primary sources by us): the wording of the Erdős–Stewart–Tijdeman
-    conjecture, Stewart–Tijdeman 1986 / Stewart–Yu 1991, de Weger 1987, and the uniformity of LS 2012 Prop 5.1 in
-    the modulus N used in §4.2.
+- **Opus literature critic (v2): OK WITH FIXES**, no major attribution errors (report relayed by the
+  orchestrator). It confirmed the key black boxes: Evertse with arbitrary coefficients; LS theorem numbers, ranges
+  and Prop 5.1 uniformity in q (with our imprimitive-character extension); Harper's unconditional range (also
+  checked by us against arXiv 1408.1662); Bach's constant under P⁻(N) > y. Applied: ES-T lower bound
+  exp(Ω(√(s/log s))) and KS (#1); ES-T 1988 conjecture ≪ exp(s^{2/3+ε}) for every S, still ≫ s for S ∪ {p, q} (#2);
+  VKM uses Faltings/modularity height bounds in terms of N_S (#3, strengthens Prop DW 5); VKM Thm A covers n ≤ 16,
+  counts modulo S₃ (#4); LS 2011 Thm 1.1/2.1 = LS 2012 Prop 1.1 (#5); Perron/Mellin step attributed to codex, H
+  notation clash resolved (#7); Bach < 2 log² m, Lamzouri–Li–Soundararajan < 3 log² m, Miller 1976 and Bach 1984 added
+  (#13); Lehmer exhaustive but exponential (#15); Schnorr 2021 / Ducas / Adleman 1995 (#17); prior art for Lemma FR
+  and softened §0 wording (#18); dangling §7.1 reference removed (#20). With these, the earlier UNVERIFIED labels
+  are cleared.
+- **Bibliographic completions.** Stewart–Tijdeman, Monatsh. Math. 102 (1986) 251–257; Stewart–Yu, Math. Ann. 291
+  (1991) 225–230; Stewart–Yu, Duke Math. J. 108 (2001) 169–181; Drappeau, Canad. J. Math. (2015) (as cited by the literature critic) and
+  "Sommes friables d'exponentielles et applications" (Harper's major-arc input); Canfield–Erdős–Pomerance, J. Number Theory 17 (1983) 1–28; Smart's S-unit papers (mid-1990s) and "The algorithmic resolution of Diophantine
+  equations", LMS Student Texts 41 (1998); Beukers–Schlickewei 1996 (subgroups of (K^*)²); de Weger, J. Number
+  Theory 26 (1987) 325–367; Erdős–Stewart–Tijdeman, Compositio Math. 66 (1988) 37–56.
 
 ---
 
