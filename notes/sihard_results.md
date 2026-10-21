@@ -105,7 +105,7 @@ output still beats MNFS iff τ < 0.757.
 | Lemma BB: independent-label point-query model needs ≥ (1−o(1))/δ queries per output (a surrogate, not a factoring-oracle separation) | model-PROVED |
 | Theorem J: single-integer Johnson-class certificates (weighted, any P, batched over k ≤ h) average ≤ L[2/3, −2/(3κ)+o(1)] smooth certified outputs per call; sharp at leading order | PROVED (unweighted, averaged over x or N, parameters fixed in advance); weighted PROVED (sketch); codex independent proof for fixed P |
 | Prop S: Prop SI-type relations in sampling model S cost ≥ L[1/2, √2] | model-PROVED (suffmap Theorem SS(a); assumes H_S, R and no prefiltering, so it excludes MNFS-type filtering) |
-| Prop MM: fixed two-list product tables, interval and Bohr (all k at once): ≥ √(X/3)/(h+1) per output, resp. ≥ √(X/(2K))/(h(1+ln K)+K) (exponential for K = X^{o(1)}) | PROVED (averaged); siconstruct Lemma MA under H_eq |
+| Prop MM: fixed two-list product tables, interval and Bohr (all k at once): ≥ √(X/3)/(h+1) per output, resp. ≥ √(X/K)/(h(1+ln K)+K) (exponential for K = X^{o(1)}) | PROVED (averaged); siconstruct Lemma MA under H_eq |
 | Wagner/k-tree bit budget: cost ≥ √X/h | HEURISTIC sketch (simplified list model without representation multiplicities) |
 | Prop NC / TF / ETH: not NP-hard (h ≤ poly, proven-existence ranges, Prop SI scale under Hyp E); deterministic-reduction blow-up ≥ m^{3/2} under ETH | PROVED (Megiddo–Papadimitriou plus the transcript argument for Cook reductions) |
 | Prop XS: explicit-S version NP-complete (randomized reductions), parsimonious; extends the known DIVISOR hardness (Alon–Kilian; Shor 2011) to unbounded exponents | PROVED; E4, E4b 300/300 |
@@ -220,7 +220,7 @@ Then discrete logarithms in F_p^* cost L_p[1/3, max((16/9)^{1/3} + ε, c_ind)].
   at ≤ L[1/3, 1.232]" was not found by us or the literature critic.
 - *Reading.* For general primes (no special form), prime-field DL has resisted any improvement on L[1/3, 1.902]
   (Matyukhin 2003, the constant ((92 + 26√13)/27)^{1/3} per Barbulescu–Pierrot 2014; see also Commeine–Semaev 2006). A
-  modulus-generic Prop SI constructor would bring it to ≤ 1.232 (≤ 1.442 with booting we checked ourselves) and
+  modulus-generic Prop SI constructor would bring it to ≤ 1.232 (≤ 1.442 with plain ECM booting) and
   factoring to 1.2114. That is evidence against
   such constructors, of the same kind as suffmap's Prop DLT (assessment).
 
@@ -481,8 +481,8 @@ of the unweighted proof first, so t ≥ t₀; the tail estimate needs this.
    - Condition only on the divisors of the good classes (dropping a class only enlarges the count). There are
      ≤ 2^I·(n+3)^I = exp(o(F_{2/3})) choices of good set and buckets.
 5. *Per good class.* The unweighted Case A/B inequalities give −j_i + log N_i(j_i) ≤ −r_i(1 − o(1)). In Case B one
-   needs π_i^{0.7} = o(s_i). With π_i = s_i²/r_i and s_i ≤ n + 2: π_i^{0.7}/s_i ≤ s_i^{0.4}/r_i^{0.7}
-   ≤ (n+2)^{0.4}/R₀^{0.7} ≪ (log n)^{−0.7}. The extra log n in R₀ is essential (codex): r_i ≥ C s_i^{4/7} alone
+   needs π_i^{0.7} = o(s_i). With π_i = (⌊s_i⌋+1)²/r_i and s_i ≤ n + 2: π_i^{0.7}/s_i ≲ s_i^{0.4}/r_i^{0.7}
+   ≤ (n+3)^{0.4}/R₀^{0.7} ≤ C^{−0.7}(log n)^{−0.7} → 0. The extra log n in R₀ is essential (codex): r_i ≥ C s_i^{4/7} alone
    gives only O(C^{−0.7}).
    - *Large Σj (proof critic).* In Case A, π_i = (j_i + 1)√c_i ≤ (j_i + 1)(log r_i)/2 and log π_i ≥ log r_i − O(1). So
      1.07π_i/log π_i ≤ 0.54(j_i + 1), and −j_i + log N_i ≤ −0.46j_i + O(1).
@@ -517,6 +517,9 @@ case analysis.
   ≤ T·2^b·ρ(u₀)^{1−o(1)}. So it needs b + log₂T ≥ (2/(3κ) − o(1))F_{2/3}/log 2.
   - With b = o(F_{2/3}) the Prop SI constructor in this sense costs ≥ L[2/3, 2/(3κ) − o(1)] calls per output, and the
     program costs L[2/3] per relation.
+  - Equivalently (proof critic): the distinct outputs lie in the union of the repertoire's certified sets, so their
+    expected number is ≤ 2^b·ρ(u₀)^{1−o(1)} whatever T is. One output needs a repertoire of size
+    ≥ ρ(u₀)^{−1+o(1)}. A fixed schedule of T calls is the case 2^b = T.
   - This is a cardinality statement about fixed repertoires. It is not an information-theoretic or computational
     lower bound for choosing calls adaptively from x. The input has n ≫ F_{2/3} bits, so such a choice is not
     excluded, and we do not claim it is as hard as the original problem.
@@ -740,7 +743,7 @@ region (x ≤ N^{3/8}) of the same problem.
     univariate or Herrmann–May-batched over k ≤ h). Their certified outputs are counted, with call types from a
     repertoire fixed in advance of size L[2/3]^{o(1)} (Theorem J, PROVED, averaged);
   - (iii) divisor completion with the divisor fixed in advance;
-  - (iv) fixed two-list product tables, including amortisation over all k (Prop MM, exponential).
+  - (iv) fixed two-list product tables, including amortisation over all k ≤ K = X^{o(1)} (Prop MM, exponential).
   Wagner k-trees (a simplified list model) and generic lattice algorithms on the log-lattice (exp(L[1/3])) are
   estimates, not proofs.
 - **Not excluded.** These are open mechanisms, with no positive evidence for any of them:
@@ -931,6 +934,13 @@ inequality of Prop XS against the code. 17 tests pass.
 | 18 | MINOR | R unspecified in Prop XS; prime supply heuristic | R = K², Huxley; AKS; E4b rerun |
 | 19–21 | MINOR | §0/§7 overclaims: "no better than the trivial trick", lattice row unlabelled, "only a mechanism that selects" | "at leading L[2/3] order"; certified-only caveat; HEURISTIC labels; the selection statement PROVED only inside 𝒥 |
 | 3, 6–8, 10, 12, 14–17, 22–24 | NIT | weighted label "PROVED (sketch)"; t ≥ t₀ for the tail; many-window remark; primes > y WLOG; H-affine is about 𝒪's choices; Lemma BB (T+1)δ; Remark FO wording; MM(ii) constants unified; ETH "c ≥ 3/2"; NP membership needs no AKS; Hyp E ≥ Vinogradov; Boneh nits; test count | applied |
+
+### 11.1b Proof critic, confirmation round on v2 (7a19fac): ACCEPT
+- Every changed step was re-checked: Theorem J steps 2 and 7, weighted steps 2 and 5, Extensions (a)/(b), the
+  sharpness, the runtime corollary, Prop MM(i)/(ii), and Prop XS with `build_instance_theory`.
+- Five NITs, all applied: the π_i definition in weighted step 5; the explicit constant in (log n)^{−0.7}; the MM(ii)
+  constant in §0; the K = X^{o(1)} qualifier in §7; a stale 1.442 phrase. The critic also suggested the
+  repertoire-size form of the runtime corollary, now added. The reduction.py docstring was aligned.
 
 ### 11.2 Literature critic: OK WITH FIXES, all applied
 The critic read Boneh, Granville, FGHT, GSS, Barbulescu–Pierrot, Matomäki–Radziwiłł, Jain, Croot, Naccache–Shparlinski,

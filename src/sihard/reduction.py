@@ -6,7 +6,8 @@ Reduction (results note, Prop XS). Universe {0, ..., 3q-1}; sets T_1..T_m (3-sub
   p_j: a prime in [Q + w_j R, Q + w_j R + R').
   x = Q^q + Q^{q-1} R W,  h = Q^{q-1} R // 2.
 Claim: S-smooth z in [x, x+h]  <->  exact covers, bijectively (z = product of the cover's primes).
-Prime finding is randomized (seeded) with sympy.isprime: a ZPP reduction.
+Prime finding is randomized (seeded). The theorem uses AKS (zero-error); the code uses sympy.isprime (BPSW above 2^64),
+so the code itself is not a certified zero-error reduction. See build_instance_theory for the provable parameters.
 """
 from __future__ import annotations
 
