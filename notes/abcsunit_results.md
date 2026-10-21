@@ -311,7 +311,7 @@ n = 1, …, 15; our E4 reproduces n ≤ 5).
 2. A factoring relation needs only the **level-one** condition N | v − u, i.e. e ∈ Λ_N. There is nothing to
    linearise: the level-one lattice is the target itself.
 3. Computing a basis of Λ_N — even only det Λ_N = |H| — factors N when S ⊇ {primes < 2 log² N}: under GRH these
-   primes generate (Z/N)^* (Bach, Math. Comp. 55 (1990), the least prime outside a proper subgroup is < 2 log² m),
+   primes generate (Z/N)^* (Bach, Math. Comp. 55 (1990): the least integer outside a proper subgroup is O(log² m), hence also the least prime; the constant 2 for this form is UNVERIFIED by us, see §7),
    so |H| = φ(N) = N − p − q + 1. Conversely, computing Λ_N from p, q takes 2s discrete logarithms (of each ℓ ∈ S mod p and mod q).
    So the step de Weger handles trivially for small ℓ is, for the composite N, at least as hard as factoring —
    in the sense of computing the complete kernel (or its determinant). This does not show that every way of
@@ -368,7 +368,7 @@ remarks on the interface:
   of the error term H^{3/4+ε}Ψ against Ψ³/H (codex: 2 − 3/κ > 7/4 − 1/κ ⇔ κ > 8).
 - Later: Drappeau (Math. Proc. Cambridge 154 (2013), GRH, unweighted asymptotics; codex); Harper (Compositio 152
   (2016) 1121–1158) with Drappeau's major arcs: the asymptotic **unconditionally** for (log H)^C ≤ y ≤ H, C large
-  (Harper, abstract and Cor. 1; codex confirms; the major-arc input is Drappeau, "Sommes friables d'exponentielles
+  (Harper, abstract, VERIFIED by us; codex confirms; the major-arc input is Drappeau, "Sommes friables d'exponentielles
   et applications").
 - LS give no algorithm. Their explicit examples come from de Weger's exhaustive lists, Gross–Zagier singular
   moduli, Poonen–Schaefer–Stoll and the Monster.
@@ -542,10 +542,18 @@ Z-relations. This led to Lemma FR before the registered run (prereg, design disc
   relations get Cor ABC-T); Σ1/p term in the table; closure lemma scope; Lemma SC label; run counts in §0; NITs
   (xyz inequality typo, Evertse place count in K, sign coordinate, finite odd index, 2s discrete logs, Miller
   criterion, prereg M0 prefactor, P3 is an inequality, sampler bias).
-- Opus literature critic: launched on v2; its report had not arrived when this version was committed. Until it is
-  applied, the citations in §§2–4 that we did not check against primary sources ourselves (ES-T's conjecture
-  wording, Stewart–Tijdeman/Stewart–Yu 1991, de Weger 1987, Bach 1990's exact form, LS 2012 Prop 5.1's uniformity
-  in the modulus) are UNVERIFIED.
+- Opus literature critic: launched on v2; its report had not arrived when this version was committed. Checks we
+  made ourselves meanwhile (2026-10-21, addendum):
+  - **Harper 2016 VERIFIED** (arXiv 1408.1662 abstract; Compositio Math. 152 (2016) 1121–1158): an unconditional
+    asymptotic for the number of solutions of a + b = c in y-smooth integers below x whenever log^C x ≤ y ≤ x,
+    "previously only known assuming GRH".
+  - **Bach 1990 PARTLY VERIFIED** (Math. Comp. 55 (1990) 355–380, abstract): under ERH a nontrivial (proper)
+    subgroup of (Z/m)^* omits some number of size O(log² m); the explicit constant 2 log² m is stated in the
+    abstract for compositeness witnesses. The explicit "2 log² m" for the subgroup form remains UNVERIFIED by us;
+    Prop DW is unaffected if read with S ⊇ {primes < C·log² N} for the absolute constant C of Bach's theorem.
+  - Still UNVERIFIED (not checked against primary sources by us): the wording of the Erdős–Stewart–Tijdeman
+    conjecture, Stewart–Tijdeman 1986 / Stewart–Yu 1991, de Weger 1987, and the uniformity of LS 2012 Prop 5.1 in
+    the modulus N used in §4.2.
 
 ---
 
