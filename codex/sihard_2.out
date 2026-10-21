@@ -1,0 +1,236 @@
+I reviewed the initial draft and the concurrent revision `ded0b41`. Locations below refer to that revision. **All 17 tests pass.** Several original errors—including MM(i), the sharpness example, and the missing prime-supply parameter—have already been corrected.
+
+1. **MAJOR — Theorem J’s counting bound is repeatedly promoted into an algorithmic lower bound.**  
+   **Location:** §5.2, lines 364–374 and 455–466; §5.6, row J; §7.
+
+   The theorem bounds a specified **certified set for fixed parameters**. It does not bound all roots returned by an actual decoder, arbitrary adaptive calls, or arithmetic computation performed between calls. The caveat about uncertified roots is now present, but “the constructor in 𝒥 costs ≥ … calls per output” still exceeds the proved scope.
+
+   **Fix:** State the runtime corollary for algorithms whose useful outputs belong to certified sets and whose call schedule is oblivious, or whose entire repertoire of possible calls has controlled cardinality. Keep the broader decoder-hardness interpretation explicitly unproved.
+
+2. **MAJOR — The claimed information lower bound does not follow from J(c).**  
+   **Location:** §0, lines 85–87; §5.2, lines 465–466; §7, lines 638–640.
+
+   A union bound over a fixed dictionary is a **cardinality bound**, not a Shannon-information or computational lower bound. Moreover, the dictionary must contain complete call types, including weights and region parameters—not merely moduli.
+
+   For \(T\) calls selected using a \(b\)-bit index into fixed dictionaries, the relevant necessary condition is approximately
+   \[
+   b+\log_2T\ge \frac{2F_{2/3}}{3\kappa\log 2}.
+   \]
+   This does not say selecting such an index is expensive. The input already contains \(n\) bits, whereas this budget is \(o(n)\).
+
+   **Fix:** Replace “bits of information about \(x\)” with “logarithm of the size of a fixed repertoire of complete call types.” Delete the assertion that making the choice is computationally equivalent to constructing the smooth number.
+
+3. **MINOR — The unweighted proof survives, but its endpoint conventions need repair.**  
+   **Location:** §5.2, proof steps 2–8, lines 392–418.
+
+   I find no substantive failure in the revised argument:
+
+   - Averaging and divisor decomposition are valid.
+   - Hildebrand’s estimate is uniform here: treat \(Y\le y\) trivially, then apply the theorem for \(y\le Y\le3X\).
+   - The prime-relabeling injection and Rankin estimate are valid.
+   - Case A uses **convexity**, correctly.
+   - In Case B,
+     \[
+     \pi^{0.7}/\sigma
+       \ll n^{-1/15}(\log n)^{7/15}\to0.
+     \]
+   - The small-region contribution and polynomial number of buckets are harmless.
+
+   However, the displayed divisor sum should exclude \(d>3X\), and its Dickman arguments can become negative. Nicolas–Robin’s displayed formula also needs a small-\(P\) exception.
+
+   **Fix:** Restrict to \(d\le3X\), clamp the Dickman argument at zero, and handle bounded \(P\) separately. Cite the precise uniform estimate, including its error term. [Hildebrand–Tenenbaum, Theorem 1.1](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf).
+
+4. **MINOR — The weighted proof works with the actual threshold, but one stated implication is false.**  
+   **Location:** §5.2, lines 420–437.
+
+   The bad-class bookkeeping is sound:
+   \[
+   \frac{IR_0}{t}
+     \ll n^{-2/21}(\log n)^{8/3}\log\log n=o(1).
+   \]
+   Cauchy–Schwarz, tail truncation, and the revised large-\(\sum j_i\) argument also work.
+
+   But \(r_i\ge C s_i^{4/7}\) alone gives only \(\pi_i^{0.7}/s_i=O(C^{-0.7})\), not \(o(1)\). The **extra \(\log n\)** in the actual \(R_0\) is essential:
+   \[
+   \pi_i^{0.7}/s_i
+     \ll \frac{n^{0.4}}{R_0^{0.7}}
+     \ll(\log n)^{-0.7}.
+   \]
+
+   Also, the stated \(\eta=1/\log\log n\) loses \(O(F_{2/3}/\log\log n)\), so it does not establish the subsequently advertised \(O(F_{2/3}/\log n)\) remainder.
+
+   **Fix:** Display the stronger calculation, explicitly choose the tail cutoff, require \(Q>0\), and either weaken the remainder claim or use a finer weight partition.
+
+5. **MINOR — The batched extension needs its own summation, not “steps unchanged.”**  
+   **Location:** Theorem J(b), lines 381–383; extension proof, lines 439–443.
+
+   With every \(k\le h\), the extension is repairable. Sum the averaging inequality over \(k\); the prefactors combine into \(K(h+1)\), matching the threshold’s volume. One must also replace the size bound \(n+2\) by \(n+\log k_{\max}+O(1)\).
+
+   The inequality \(g_m(\mu)\le\mu^2\) is correct. Herrmann–May supplies a conditional recovery guarantee; it does not establish a ceiling on every multivariate lattice construction.
+
+   **Fix:** Write the summed inequality explicitly, require the batch parameters to be independent of \(N\), and describe this as the Herrmann–May **certification region**, under their stated assumption.
+
+6. **MINOR — Sharpness and Model D still overstate their lower-order gain.**  
+   **Location:** Theorem J(d), lines 385–387; §5.3, lines 469–471.
+
+   Setting \(V=d\) fixes the original fatal-to-the-example inequality \(d<V\). But arbitrary \(d\le h\) does not give the displayed gain with coefficient \(2\nu/(3\kappa)\). For instance, \(d=1\) gives no gain.
+
+   **Fix:** Choose \(d=2^{\lfloor\log_2h\rfloor}\), query the subwindow of length \(V=d\), and state the average as
+   \[
+   (1+o(1))\rho\!\left(u_0-\frac{\log d}{\log y}\right).
+   \]
+   The advertised gain follows because \(\log d\sim\log h\). For general \(D\le h\), write an upper bound rather than equality.
+
+7. **MINOR — Boneh’s full-smoothness completeness statement needs an additional lower-endpoint condition.**  
+   **Location:** §4, line 301.
+
+   From \(V<2T\) and \(\gcd(N,S)>T\), one concludes that a returned integer divides \(S\). That proves the returned integers are strongly smooth. To conclude that **every** strongly smooth integer in \([U,V]\) meets the threshold also requires \(U>T\), or the corresponding condition involving the decoder’s actual threshold.
+
+   This omission occurs in the cited presentation itself; reproducing it does not repair the logic. Boneh’s first, gcd-qualified guarantee does fit your enlarged class. [Boneh, Theorem 3.1](https://core.ac.uk/download/pdf/82341411.pdf).
+
+   **Fix:** State \(T<U\le V<2T\) for the completeness assertion. Keep the GSS prime-power score explicitly described as an enlarged idealized model, as the present definition already partly does. [GSS, Theorem 4](https://www.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf).
+
+8. **MINOR — Prop DLI’s algebra is sound, but normalization and linear-algebra costs need completion.**  
+   **Location:** §2.2, lines 157–189.
+
+   The floor-modulus descent works. Its residual bound and leading smoothness exponent are correct. The change from \(p\) to \(M\) is harmless with parameter slack; under canonical monotone bounds, the oracle’s smoothness bound is smaller than the global factor base. Testing a \(y\)-smooth residual by ECM is lower order.
+
+   What remains unstated is how to obtain the generator-normalization relation and implement sparse linear algebra modulo composite \(p-1\). A field algorithm cannot simply be declared to operate over that ring.
+
+   **Fix:** Boot and descend the generator symbolically as well as the target; handle signs; specify sufficiently many trials by varying \(j\), or require adequate multiplier range \(C\). Either supply the prime-power decomposition and lifting algorithm, including its acquisition cost, or give a factorization-free ring implementation. If factoring \(p-1\) uses Prop SI, include its additional heuristics.
+
+9. **MINOR — The booting constants are correct heuristic upper bounds, not bottleneck theorems.**  
+   **Location:** §2.2; §0 and §7’s DL comparisons.
+
+   The ECM conversion and optimization are correct:
+   \[
+   \min_c\left(\frac1{3c}+\sqrt{\frac{4c}{3}}\right)=3^{1/3},
+   \qquad c=3^{-1/3}.
+   \]
+   FGHT confirms the approximately \(1.232\) early-abort initialization constant and its independence from the NFS polynomials. Its rational numerator/denominator variant improves practice without changing the leading constant. [FGHT, Appendix A.1](https://arxiv.org/html/1610.02874).
+
+   **Fix:** Retain **HEURISTIC**, identify \(1.232\) as numerically optimized and rounded, and qualify “prime-field DL has been stuck” as referring to general primes without exploitable special form. “No way found to make the constructor boot” is appropriate; an impossibility claim would not be.
+
+10. **MAJOR — Lemma BB does not establish a factoring-oracle separation.**  
+    **Location:** §3, lines 265–292; §5.1; §0’s converse statement.
+
+    The Bernoulli point-query lemma is correct. A genuine factorization oracle is not an independent membership oracle: its answers obey multiplicative identities, and queries outside the interval can reveal information about many candidates. Hildebrand’s global density estimate does not justify independent labels or a uniform local density.
+
+    Likewise, Prop S imports strong candidate-selection and rank assumptions. Its conclusion is valid inside that model, which expressly excludes useful prefiltering and even MNFS.
+
+    **Fix:** Rename BB an “independent-label point-query model.” Replace “factoring provably does not imply the constructor” with “the point-query surrogate requires this many queries.” Display H_S, R, and the no-prefiltering restriction alongside Prop S and its collapse-table row.
+
+11. **MINOR — MM(ii)’s claimed transition in \(K\) is wrong.**  
+    **Location:** §5.4, lines 484–486.
+
+    The counting inequality and revised useful-pair argument are valid. But the conclusion “exponential unless \(K\gtrsim X/h^2\)” does not follow from
+    \[
+    \frac{\sqrt{X/(2K)}}{h(1+\log K)+K}.
+    \]
+    When the \(K\)-term dominates, this becomes \(\asymp\sqrt X/K^{3/2}\), already constant at \(K\asymp X^{1/3}\).
+
+    **Fix:** Restrict the conclusion to the intended \(K=X^{o(1)}\) regime, or retain both terms when stating the transition. Also charge each useful pair to its smaller factor; there need not be one entire list lying below \(\sqrt{KX}\).
+
+12. **MAJOR — The Wagner argument lacks the premise needed for its bit budget.**  
+    **Location:** §5.4, lines 493–502.
+
+    The inequality
+    \[
+    \log|A|+\log|B|\le\log X-f_A-f_B
+    \]
+    does not follow merely from bounds on the **values** of subtree products. Lists may contain multiple representations: the number of ordered pairs with product at most \(M\) is about \(M\log M\), although there are only \(M\) possible values. Deduplication changes the asserted “multiply then divide by \(2^b\)” recurrence.
+
+    The proof also needs a precise definition of the filter bits automatically inherited at the root, especially for unbalanced trees.
+
+    **Fix:** Specify leaf Cartesian-product budgets, independent filter entropy, representation multiplicities, and deduplication costs. Prove the recurrence for that model. Replace “would need discrete logarithms” by “no suitable efficiently computable filtration is supplied”; a filtration is additional structure, not literally synonymous with a DL algorithm.
+
+13. **MAJOR — The lattice row is not a lower bound, even after adding HEURISTIC labels.**  
+    **Location:** §4, lines 313–314; §5.5, lines 505–510; collapse table.
+
+    The dimension lemma is sound for a **fixed** permitted prime set. It says nothing about a prime subset selected from the input.
+
+    The cited CVP correspondence also has qualifications: squarefree witnesses, enlarged windows, possible denominator and multiplier changes, and two-sided residuals. It is not the literal equivalence printed here.
+
+    Finally, generic CVP running-time upper bounds and a BKZ/GSA estimate do not prove that this structured family requires \(2^{\Theta(d)}\) time. The geometry is particularly unsuitable for an unexplained generic-lattice estimate.
+
+    **Fix:** State the actual reductions with their slack. Describe \(\exp(L[1/3])\) as the estimated cost of specified generic approaches, not an unavoidable lattice-method cost. Supply the BKZ success model and its applicability assumptions.
+
+14. **MINOR — Prop NC is correct; Prop TF needs explicit reduction and promise conventions.**  
+    **Location:** §6, lines 532–557.
+
+    The coNP certificate really is polynomial: it contains one large prime divisor for each of polynomially many integers. Factoring-hardness does not invalidate certificate verification. Indeed, varying-\(y\) smoothness testing at \(h=0\) is polynomial-time Turing equivalent to factoring: binary-search the largest prime factor, divide it out, and repeat.
+
+    Megiddo–Papadimitriou’s stated theorem concerns FNP reductions, not an unspecified Cook oracle. The Cook extension works if the reduction must succeed for **every valid oracle response**: guess and verify the complete polynomial-length transcript. Arbitrary promise search problems do not automatically belong to TFNP. [Megiddo–Papadimitriou, §2](https://theory.stanford.edu/~megiddo/pdf/papadimX.pdf).
+
+    **Fix:** Add these conventions and the transcript proof. Distinguish total search from the trivially YES decision problem in an all-interval existence range. The ETH calculation is correct for deterministic reductions; randomized reductions require a corresponding randomized assumption.
+
+15. **MAJOR — The revised Prop XS proof is viable, but the implementation is still not a ZPP reduction.**  
+    **Location:** §6, lines 561–583; [reduction.py](/Volumes/git/factoring-connection/src/sihard/reduction.py:20).
+
+    The new \(R=K^2\) choice repairs the prime-supply gap. I find the product inequalities, no-carry argument, exclusion of other factor counts, and parsimony sound once distinct primes are supplied.
+
+    The code still:
+
+    - defaults to the heuristic fixed \(R\);
+    - aborts after 100,000 attempts;
+    - uses `sympy.isprime`, which above \(2^{64}\) uses a probable-prime test rather than a proved zero-error procedure. [SymPy documentation](https://docs.sympy.org/latest/modules/ntheory.html).
+
+    **Fix:** Separate the experimental generator from a theoretical Las Vegas reduction. The latter should use the proved parameter choice, continue until success, and certify primality. Say “bit lengths are polynomial in \(q\),” not “all sizes are polynomial.”
+
+16. **MINOR — The hardness literature misses a close antecedent; the counting claim needs its reduction type.**  
+    **Location:** §4’s hardness discussion; Prop XS and its counting remark.
+
+    The relevant missing antecedent is **Alon–Kilian’s divisor-in-an-interval hardness result**, with a randomized size-encoded-prime reduction explained by Peter Shor. It does not directly prove your unbounded-exponent explicit-\(S\) problem, but it anticipates the principal encoding mechanism. [Shor’s proof and attribution discussion](https://cstheory.stackexchange.com/questions/4769/an-np-complete-variant-of-factoring), [Sudan’s account](https://people.csail.mit.edu/dmoshkov/courses/pcp/dinur_pcp_overview.pdf).
+
+    Unbounded exponents cause no NP-membership problem: each is at most \(\log_2(x+h)\). Counting distinct integers is also in #P using canonical witnesses. But a randomized parsimonious reduction establishes hardness under **randomized** counting reductions.
+
+    **Fix:** Cite the antecedent, identify what your repetition-exclusion argument adds, and qualify the #P-hardness statement accordingly.
+
+17. **MINOR — Several existence statements need correction or fuller hypotheses.**  
+    **Location:** §2.4, lines 219–230; §3, line 289; §4, lines 323–335; §6’s range list.
+
+    The named Balog, Harman, MR, and Friedlander–Lagarias existence ranges broadly support the stated separation from Prop SI. Specific corrections:
+
+    - Granville’s Friedlander–Granville condition is \(z\ge\sqrt{x}\,y^2\exp((\log x)^{1/6})\), not \(\sqrt{xy}\exp((\log x)^{1/6})\). [Granville, §4.1](https://library.slmath.org/books/Book44/files/09andrew.pdf).
+    - Younis also requires \(y\ge\exp((\log x)^{2/3+\varepsilon})\). [Younis](https://arxiv.org/abs/2409.05761).
+    - Jain has an **all-interval Theorem 1.2**, omitted here. [Jain](https://arxiv.org/html/2502.10530).
+    - MR Corollary 1 guarantees at least \(\sqrt{x}(\log x)^{-4}\) smooth integers, not positive constant density in every such interval. Random sampling remains inexpensive. [MR](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf).
+
+    **Fix:** Correct the formulas and distinguish global density from guaranteed local density. Qualify the deterministic-construction gap as concerning arbitrarily small fixed \(\varepsilon\); Lemma FP already handles easier portions of the advertised range.
+
+18. **MAJOR — Scale invariance does not explain failure of all algebraic constructions.**  
+    **Location:** §0, lines 82–87; §7, lines 635–640.
+
+    The identity “a factor inherits relative precision when the other factors are fixed” is correct. It is not a lower bound for jointly varying, correlated factors. For example,
+    \[
+    (m-a)(m+a)=m^2-a^2
+    \]
+    cancels the first-order changes. Friedlander–Lagarias constructions exploit precisely such correlated polynomial structure. [Friedlander–Lagarias, Theorem 4](https://websites.umich.edu/~lagarias/doc/short.pdf).
+
+    Adaptive lattice or decoder selection, coupled polynomial identities, and smooth polynomial or norm values near \((kN)^{1/d}\) are not excluded by the models proved here.
+
+    **Fix:** Replace the “shared reason” and necessary-escape claims with a list of unresolved mechanisms. The valid conclusion is that the specified oblivious constructions and selected cost models fail.
+
+19. **MINOR — E1’s measurements are valid, but its statistical and causal conclusions are too strong.**  
+    **Location:** §8, lines 661–674; `diag_e1.py`.
+
+    Size heterogeneity is a plausible explanation of overdispersion. A mean binned dispersion index near one, from two moduli, does not establish a Poisson process.
+
+    The reported \(z\)-scores use independent-Poisson standard errors. Counts along a fixed progression are deterministic and arithmetically correlated; independently offsetting each control interval changes that dependence. Thus “beyond Poisson noise” and “H_S holds only on average over \(N\)” are not established.
+
+    Smooth-divisor alignment and nonuniform residue distributions are plausible mechanisms. I found no theorem quantitatively explaining this particular ±10% effect; ordinary smooth-number AP results do not cover such a short progression at these parameters. [Harper’s AP theorem](https://arxiv.org/abs/1103.2106).
+
+    **Fix:** Label the explanations as hypotheses. Compare repeated common shifts of whole progressions, use more independent moduli, and estimate uncertainty by modulus or blocks.
+
+20. **MINOR — Two helper contracts are false outside the tested cases.**  
+    **Location:** [core.py:78](/Volumes/git/factoring-connection/src/sihard/core.py:78), [core.py:169](/Volumes/git/factoring-connection/src/sihard/core.py:169).
+
+    `johnson_S` does not perform an exact correction. For \(V=P=10^{15}\), it returns \(999999999999996\), whereas the exact threshold is \(10^{15}\). Its tests reuse floating-point logarithms and therefore miss this.
+
+    `lemma_fp` rejects \(y=2\), although the stated lemma covers it. The written proof also needs a trivial branch when its proposed interval for an integer power of two lies below one.
+
+    **Fix:** Label the Johnson threshold numerical or use certified conservative rounding. Handle \(y=2\) explicitly and return \(x\) immediately when \(x\le y\).
+
+The main surviving mathematical contribution is the averaged certificate-counting theorem. I found no primary source stating exactly its full uniform weighted version, but I would not certify novelty without an explicit comparison with Boneh’s counting discussion, Coppersmith–Howgrave-Graham–Nagaraj, and Cohn–Heninger. I found no established NP-hardness theorem for the all-primes-\(\le y\) interval problem.
+
+**Overall verdict: MAJOR REVISION.**

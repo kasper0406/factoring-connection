@@ -31,6 +31,28 @@ def test_dickman_values():
     assert abs(dickman_rho(5) / 3.5472470e-4 - 1) < 1e-3
 
 
+def test_johnson_S_exact_cases():
+    assert johnson_S(10 ** 15, 10 ** 15) == 10 ** 15
+    assert johnson_S(2 ** 10, 2 ** 40) == 2 ** 20
+
+
+def test_lemma_fp_edge_cases():
+    from src.sihard.core import lemma_fp
+    assert lemma_fp(5, 0, 7) == 5
+    for x in range(3, 200):
+        z = lemma_fp(x, 2 * x, 2)
+        assert x <= z <= 3 * x and z & (z - 1) == 0
+
+
+def test_x3c_theory_reduction():
+    from src.sihard.reduction import build_instance_theory
+    rng = random.Random(11)
+    for q in (2, 3):
+        sets = random_x3c(q, q + 2, rng, plant=True)
+        inst = build_instance_theory(q, sets, rng)
+        assert count_S_smooth_in_window(inst["primes"], inst["x"], inst["h"]) == count_exact_covers(q, inst["sets"])
+
+
 def test_johnson_S_condition():
     for V, P in ((256, 256), (1024, 2 ** 40), (4096, math.prod(primes_upto(60)))):
         S = johnson_S(V, P)

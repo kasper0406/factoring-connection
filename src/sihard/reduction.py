@@ -47,6 +47,34 @@ def build_instance(q: int, sets: Sequence[Tuple[int, int, int]], rng: random.Ran
     return {"sets": sets, "primes": primes, "x": x, "h": h, "Q": Q, "R": R}
 
 
+def build_instance_theory(q: int, sets: Sequence[Tuple[int, int, int]], rng: random.Random):
+    """The Las Vegas reduction of Prop XS as analysed: R = K^2 (Huxley prime supply), unbounded retries.
+
+    Primality here is sympy.isprime (BPSW above 2^64; no known counterexample, but not a proof). The theorem uses a
+    deterministic primality test (AKS) in this step, which makes the reduction zero-error.
+    """
+    sets = sorted(set(tuple(sorted(s)) for s in sets))
+    b = q + 1
+    w = [sum(b ** e for e in s) for s in sets]
+    W = sum(b ** e for e in range(3 * q))
+    Bmax = b ** (3 * q)
+    K = (1 << (q + 2)) * (Bmax + 1) ** 2
+    R = K * K
+    Rp = R // (4 * q)
+    Amax = (Bmax + 1) * R
+    Q = (1 << (q + 2)) * Amax * Amax // R + 2
+    primes = []
+    for wj in w:
+        lo = Q + wj * R
+        while True:
+            c = lo + rng.randrange(Rp)
+            if sympy.isprime(c):
+                primes.append(c)
+                break
+    return {"sets": sets, "primes": primes, "x": Q ** q + Q ** (q - 1) * R * W, "h": Q ** (q - 1) * R // 2,
+            "Q": Q, "R": R}
+
+
 def count_S_smooth_in_window(primes: Sequence[int], x: int, h: int) -> int:
     """Exhaustive: number of integers z in [x, x+h] all of whose prime factors lie in `primes`.
 

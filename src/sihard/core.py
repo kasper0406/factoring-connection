@@ -76,14 +76,20 @@ def dickman_rho(u: float, step: float = 1e-4) -> float:
 # ---------------------------------------------------------------- Johnson-radius certificate counting (E2)
 
 def johnson_S(V: int, P: int) -> int:
-    """Smallest integer S with (log S)^2 >= log V * log P (idealised unweighted Johnson condition)."""
-    t = math.log(V)
-    pi = math.log(P)
-    s = math.sqrt(t * pi)
-    S = int(math.ceil(math.exp(s)))
-    # exact correction for floating error: ensure log S >= s (S integer)
-    while S > 1 and math.log(S - 1) >= s:
-        S -= 1
+    """Smallest integer S with (log S)^2 >= log V * log P (idealised unweighted Johnson condition).
+
+    Numerical with 80-digit mpmath (not a certified computation); exact when V == P (then S = V).
+    """
+    import mpmath
+    if V == P:
+        return V
+    with mpmath.workdps(80):
+        s = mpmath.sqrt(mpmath.log(V) * mpmath.log(P))
+        S = int(mpmath.ceil(mpmath.exp(s)))
+        while S > 1 and mpmath.log(S - 1) >= s:
+            S -= 1
+        while mpmath.log(S) < s:
+            S += 1
     return S
 
 
@@ -167,9 +173,15 @@ def smooth_in_range(lo: int, hi: int, y: int) -> List[int]:
 
 
 def lemma_fp(x: int, h: int, y: int) -> int:
-    """Lemma FP: if h >= 2x/(y-1), return a y-smooth z = 2^a * ceil(x / 2^a) in [x, x+h] (polynomial time)."""
-    if y < 3 or h * (y - 1) < 2 * x:
+    """Lemma FP: if h >= 2x/(y-1) (or x <= y), return a y-smooth z = 2^a * ceil(x / 2^a) in [x, x+h] (poly time).
+
+    y = 2 is allowed (then h >= 2x and z is a power of 2)."""
+    if x <= y:
+        return x
+    if y < 2 or h * (y - 1) < 2 * x:
         raise ValueError("needs h >= 2x/(y-1)")
+    if y == 2:
+        return 1 << (x - 1).bit_length()  # least power of 2 >= x, <= 2x - 1 <= x + h
     a = 0
     while (1 << (a + 1)) * (y - 1) <= 2 * x:  # largest 2^a with 2^a (y-1) <= 2x, so 2^a >= x/(y-1)
         a += 1
