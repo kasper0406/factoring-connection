@@ -1,0 +1,253 @@
+Throughout, \(n=\lfloor\log _2N\rfloor+1\). “RSA modulus” means \(N=pq\), with distinct odd primes \(p<q\); balance is assumed only where stated. Equivalence means polynomial-time oracle reducibility, randomized where indicated. **OPEN** denotes no polynomial algorithm or factoring reduction verified in this search; it does not assert a separation. **UNVERIFIED** flags incomplete verification, including negative literature-search conclusions.
+
+## 1. Addition in prime-exponent representation
+
+**PROVED — size convention.** Write
+\[
+\operatorname{fac}(a)=\{(r,e_r):a=\prod r^{e_r}\}.
+\]
+Use expanded size \(L=\lceil\log _2(a+1)\rceil+\lceil\log _2(b+1)\rceil\), or promise that \(L\) is polynomial in the actual input length. Equivalently, bound the **weighted exponent sum** \(\sum e_r\log r\), not merely the bit lengths of the exponents.
+
+Without this convention the claimed polynomial equivalence is unjustified: \((2,2^k)\) has \(O(k)\) bits but represents an integer with \(2^k+1\) binary digits. Unary exponents suffice to avoid this particular succinctness issue. All integer representations below have nonnegative exponents.
+
+**PROVED — successor suffices.** Read \(N=(1b_{n-2}\cdots b_0)_2\), maintaining the complete factorization of the prefix \(x\). Replace \(x\) by \(2x\) by incrementing its exponent of \(2\); if the next bit is \(1\), invoke the successor oracle. Thus the procedure uses exactly
+\[
+\operatorname{wt}_2(N)-1\le n-1=\lfloor\log _2N\rfloor
+\]
+successor calls. Every intermediate integer is at most \(N\). A full addition oracle implements successor by adding \(1\).
+
+**PROVED — windowing.** For full addition, choose \(B=2^w\), pre-factor all digits below \(B\) by sieving, and evaluate the base-\(B\) expansion by Horner’s rule. Multiplication by \(B\) is free in exponent coordinates. The exact call count is the number of nonzero digits after the leading digit, at most
+\[
+\lceil n/w\rceil-1.
+\]
+Taking \(w=\Theta(\log n)\) gives \(O(n/\log n)\) calls with polynomial preprocessing. This bound does **not** automatically apply to successor: ordinary window evaluation uses the sum of the remaining digits in successor calls.
+
+**PROVED — converse.** Expand \(a,b\), compute \(s=a+b\), and request its complete factorization: **one call**. With a proper-splitting oracle and ordinary primality testing, recursive splitting without caching or perfect-power shortcuts uses exactly
+\[
+\Omega(s)-1
+\]
+split calls: its binary recursion tree has \(\Omega(s)\) prime leaves, counted with multiplicity. This is an exact count for that procedure, not an optimality assertion.
+
+**PROVED — finite-field analogue.** Assume a conventional presentation of \(\mathbb F_q\) and a supplied primitive element \(g\). Put
+\[
+Z(t)=\log_g(1+g^t),
+\]
+with a separate zero symbol. Addition in exponent coordinates uses one Zech call:
+\[
+\log_g(g^u+g^v)=u+Z(v-u).
+\]
+A Zech value uses **one discrete-log call**, after ordinary field arithmetic.
+
+Conversely, in \(\mathbb F_p\), obtain \(\log_g2=Z(0)\) when needed, then build \(c\in\{1,\ldots,p-1\}\) by binary Horner evaluation. This costs zero calls for \(c=1\), and exactly \(\operatorname{wt}_2(c)\) calls for \(c>1\), including that preprocessing call.
+
+For \(\mathbb F_{p^k}\), convert by linear algebra to the basis \(1,g,\ldots,g^{k-1}\), writing \(y=\sum c_jg^j\). Let \(s\) count nonzero coefficients. For odd \(p\), the procedure uses exactly
+\[
+\delta+\sum_{c_j\ne0}\bigl(\operatorname{wt}_2(c_j)-1\bigr)+(s-1),
+\]
+where \(\delta=1\) if some coefficient exceeds \(1\), otherwise \(0\). Its worst-case bound is \(k\lfloor\log _2p\rfloor\). In characteristic \(2\), the exact count is \(s-1\le k-1\). Partial sums cannot vanish because the basis terms are independent. Hence Zech and discrete logarithms are polynomially equivalent in both cases.
+
+**PROVED — Zech windowing.** For \(w\ge2\), \(2^w<p\), precomputing logarithms of \(1,\ldots,2^w-1\) costs \(2^w-2\) successor calls. Afterwards each nonzero Horner digit costs one Zech call. Unlike integer digit factorizations, these digit logarithms require charged preprocessing.
+
+The following table concerns **addition services whose inputs must already be completely factored**.
+
+| Partial output or restriction | Classification |
+|---|---|
+| List of support primes | **PROVED: ≡ factoring.** Recover each exponent by division, thereby simulating full addition. |
+| Numerical radical \(\operatorname{rad}(s)\) | **OPEN** generally; on squarefree \(s\), it merely returns \(s\). |
+| Exponents modulo variable \(m>\log _2s\) | **PROVED: ≡ factoring.** No exponent wraps. |
+| Exponents modulo fixed \(m\), omitting zero residues | **OPEN / UNVERIFIED equivalence.** Primes with exponents divisible by \(m\) disappear. If support labels are also returned, equivalence follows. |
+| Largest prime factor only | **OPEN / UNVERIFIED equivalence for this addition interface.** The usual reduction for a binary-input largest-factor oracle cannot simply re-query an unfactored quotient here. |
+| \(B\)-smooth part, \(B\le L^C\) | **PROVED: easy**, by trial division of the ordinary sum. |
+| \(\omega,\ \Omega\bmod2,\ \mu,\) squarefreeness | **OPEN** without further promises. |
+| Two \(B\)-smooth summands, fixed or polynomial \(B\) | **OPEN** in general. |
+| Polynomially many smooth summands | **PROVED: ≡ factoring**, even for \(2\)-smooth summands: use \(N=\sum_{b_i=1}2^i\). |
+| Result promised \(B\)-smooth, \(B\le L^C\) | **PROVED: easy**, by trial division. |
+| Ordinary residue \((a+b)\bmod m\) | **PROVED: easy**, using modular exponentiation. |
+| Complete factorization of that residue | **PROVED: easy** for polynomially bounded \(m\); **≡ factoring** for unrestricted \(m\), by choosing \(m>N\) in the prefix reduction. |
+
+**PROVED — approximation can be very easy.** Integer error \(E<1\) forces exact addition. At the other extreme, every inverse-polynomial relative error is easy: choose \(2^j\le E<2^{j+1}\), set
+\[
+t=2^j\lfloor(a+b)/2^j\rfloor.
+\]
+Then \(|t-(a+b)|<E\), and its leading coefficient is \(O((a+b)/E)\). If that ratio is polynomial in \(L\), factor the coefficient by trial division. **OPEN:** general intermediate absolute-error guarantees, including constant \(E\ge1\).
+
+**PROVED — easy linear functionals.** Finite-support weights \(w_r\) are easy by repeated division; \(w_r=\log r\) gives \(\log(a+b)\), to requested precision. Character-valued exponent sums are easy whenever exponentiating the answer gives a known Dirichlet character, with exceptional prime valuations handled separately. Constant weights modulo \(2\) give Liouville’s function, whose unrestricted polynomial-time computation is **OPEN**.
+
+**KNOWN — automatic functions have a classification; polynomial-time functions do not have a verified analogous classification.** Konieczny–Lemańczyk–Müllner, *Multiplicative automatic sequences*, **Math. Z. 300 (2022), 1297–1318**, Theorems 1 and 5, classify automatic multiplicative sequences; away from finitely many primes they equal a Dirichlet character or vanish. This extends work including Klurman–Kurlberg, *A note on multiplicative automatic sequences*, **C. R. Math. 357 (2019), 752–755**. Schlage-Puchta’s earlier nonvanishing completely multiplicative case gives almost periodicity: *Completely Multiplicative Automatic Functions*, **Integers 11 (2011), A31**. None establishes that all polynomial-time completely multiplicative functions are essentially Hecke characters times \(n^{it}\). [Classification](https://link.springer.com/article/10.1007/s00209-021-02834-3), [Klurman–Kurlberg](https://kurlberg.github.io/eprints/automatic.pdf), [Schlage-Puchta](https://math.colgate.edu/~integers/l31/l31.pdf).
+
+## 2. What factor information is known to imply factoring?
+
+**FALSE — RSA/Rabin bit-security theorems directly concern bits of \(p\).** Their hidden variable is a message or root:
+
+- **KNOWN:** Werner Alexi, Benny Chor, Oded Goldreich, Claus-Peter Schnorr, *RSA and Rabin Functions: Certain Parts are as Hard as the Whole*, **SIAM J. Comput. 17(2), 194–209 (1988)**: inverse-polynomial advantage predicting plaintext LSB yields inversion/factoring in the appropriate setting. [Paper](https://epubs.siam.org/doi/10.1137/0217013).
+- **KNOWN:** Roger Fischlin, Claus-Peter Schnorr, *Stronger Security Proofs for RSA and Rabin Bits*, **J. Cryptology 13, 221–244 (2000)**, sharpen that reduction. [Paper](https://link.springer.com/article/10.1007/s001459910008).
+- **KNOWN:** Johan Håstad, Mats Näslund, *The Security of All RSA and Discrete Log Bits*, **JACM 51(2), 187–230 (2004)**, Theorems 8.1 and 9.1, address all RSA bits and an injective Rabin variant. The latter includes Jacobi and half-interval information. Their discrete-log Theorem 10.2 excludes the easily recoverable \(2\)-primary low bits and has qualifications on group orders. [Author manuscript](https://people.kth.se/~johanh/hnrsaacm.pdf).
+
+**OPEN:** for nonconstant fixed positions \(i\), computing \(\operatorname{bit}_i(p)\), including \(p\bmod4\), is not thereby shown equivalent to factoring. Bit \(0\) is always \(1\); positions outside the possible factor length are \(0\). I found no primary-source theorem proving the requested natural fixed-bit equivalence, and no explicit published statement isolating precisely this open problem. That negative bibliographic conclusion is **UNVERIFIED**.
+
+**PROVED — the mod-\(4\) distinction.** If \(N\equiv1\bmod4\), then \(p,q\) have the same residue modulo \(4\), and
+\[
+(-1/p)=1
+\iff -1\text{ is a square modulo }N.
+\]
+For \(N\equiv3\bmod4\), quadratic residuosity of \(-1\) is always false; bit \(1\) of the **smaller** factor instead records which residue occurs first. It remains **OPEN**.
+
+**PROVED — small totient residues can contain additional local information.** From \(\varphi(N)\bmod\ell\),
+\[
+s=p+q\equiv N+1-\varphi(N)\pmod\ell.
+\]
+The roots of \(X^2-sX+N\) recover the unordered pair \(\{p,q\}\bmod\ell\). When \((N/\ell)=1\), this determines their common Legendre symbol, hence quadratic residuosity of \(\ell^*=(-1)^{(\ell-1)/2}\ell\) modulo \(N\).
+
+Likewise, for \(N\equiv1\bmod4\),
+\[
+\varphi(N)\equiv4\bmod8\iff p,q\equiv3\bmod4;
+\]
+otherwise it is \(0\bmod8\). For \(N\equiv3\bmod4\), it is always \(0\bmod8\). These follow by adding the valuations \(v_2(p-1)+v_2(q-1)\).
+
+**CONJECTURED, not proved equivalent to factoring:** the relevant residuosity and hiding assumptions. Christian Cachin, Silvio Micali, Markus Stadler, *Computationally Private Information Retrieval with Polylogarithmic Communication*, **EUROCRYPT 1999, 402–414**, introduce distributional \(\Phi\)-hiding. Yannick Seurin, *On the Lossiness of the Rabin Trapdoor Function*, **PKC 2014**, introduces \(2\)-\(\Phi/4\)-hiding: distinguishing appropriately generated Blum and pseudo-Blum moduli. These are not claims that every \([\ell\mid\varphi(N)]\) instance is hard; \(\ell=2\), for example, is trivial here. [CMS](https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Private%20Information%20Retrieval/Computationally%20Private%20Information%20Retrieval%20with%20Polylogarithmic%20Communication.pdf), [Seurin](https://eprint.iacr.org/2013/256).
+
+**KNOWN — divisor-count results do not establish factoring equivalence.** Jeffrey Shallit and Adi Shamir, *Number-theoretic functions which are equivalent to number of divisors*, **IPL 20(3), 151–153 (1985)**, reduce \(\mu\) to one divisor-count oracle query, and efficiently computable exponent-pattern functions to at most \(\lfloor\log _2N\rfloor\) queries. The queried integer need not be \(N\). This supplies no prime identities. [Paper](https://www.sciencedirect.com/science/article/pii/0020019085900845).
+
+**KNOWN — direction matters.** Heather Woll, *Reductions among number theoretic problems*, **Information and Computation 72(3), 167–179 (1987)**, and Susan Landau, *Some remarks on computing the square parts of integers*, **ibid. 78(3), 246–253 (1988)**, give reductions involving totients and square-part functions; these are not reverse factoring reductions from squarefreeness. Eric Bach and Jeffrey Shallit’s *Algorithmic Number Theory, vol. 1: Efficient Algorithms*, **MIT Press, 1996**, Chapter 14, is the relevant reductions survey. [Landau](https://www.sciencedirect.com/science/article/pii/0890540188900284), [Woll bibliographic record](https://doi.org/10.1016/0890-5401(87)90030-7), [Book contents](https://cs.uwaterloo.ca/~shallit/antdesc.html).
+
+**KNOWN — a contrasting positive result.** Eric Bach, Gary Miller, Jeffrey Shallit, *Sums of Divisors, Perfect Numbers and Factoring*, **SIAM J. Comput. 15(4), 1143–1154 (1986)**, Theorems 1–2, prove randomized polynomial equivalence between factoring and computing \(\sigma(N)\). [Paper](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf).
+
+**PROVED — chosen-curve point counting implies factoring.** For any good elliptic curve write
+\[
+C_{\epsilon,\eta}=(p+1-\epsilon a_p)(q+1-\eta a_q).
+\]
+The sum over four sign pairs is \(4(p+1)(q+1)\), which gives \(p+q\).
+
+Here is a Las Vegas reduction with **at most six point-count calls in expectation**. Query \(E\), choose a uniform unit \(d_1\) with Jacobi symbol \(-1\), and query \(E_{d_1}\). Repeatedly choose independent such \(d_2\), querying \(E_{d_2}\) and \(E_{d_1d_2}\). Their local sign patterns differ with probability \(1/2\); then the four curves cover all sign pairs. Average the counts, obtain \(p+q\), and verify the resulting quadratic factors. Failed verification triggers another trial. Thus two initial calls plus at most two expected trials of two calls suffice. Factoring supplies the reverse direction by prime-field point counting.
+
+**KNOWN / qualification:** Noboru Kunihiro and Kenji Koyama, *Equivalence of counting the number of points on elliptic curve over the ring \(\mathbb Z_n\) and factoring \(n\)*, **EUROCRYPT 1998, 47–58**, give an earlier reduction with a distributional assumption. Luis V. Dieulefait and Jorge Urroz, *Factorization and Malleability of RSA Moduli, and Counting Points on Elliptic Curves Modulo \(N\)*, **Mathematics 8 (2020), 2126**, assert a two-count reduction. **UNVERIFIED:** its general projective proof: Lemma 1 uses the unknown \(PQ=(p+1)(q+1)\). I rely on the explicit reduction above. [Published paper, including discussion of Kunihiro–Koyama](https://mdpi-res.com/d_attachment/mathematics/mathematics-08-02126/article_deploy/mathematics-08-02126.pdf).
+
+**PROVED — two squares distinguish decision from search.** Gaussian integers are Euclidean by rounding real and imaginary parts, hence factorial. Allocating conjugate prime factors gives, for RSA moduli,
+\[
+r_2(N)=
+\begin{cases}
+16,&p,q\equiv1\bmod4,\\
+0,&\text{otherwise}.
+\end{cases}
+\]
+Thus for \(N\equiv1\bmod4\), \(r_2(N)\) is precisely the preceding fixed-base residuosity decision.
+
+Two inequivalent representations yield two square roots of \(-1\) differing by neither sign; a gcd factors \(N\). Independent uniform representations therefore factor with constant probability. **OPEN:** replacing that sampler by one arbitrary, possibly canonical representation.
+
+**UNVERIFIED — exact ANTS list:** Leonard Adleman and Kevin McCurley, *Open problems in number theoretic complexity, II*, **ANTS-I, LNCS 877 (1994), 291–322**, was not accessible in full. The accessible same-author companion, Adleman’s *Algorithmic Number Theory—The Complexity Contribution*, **FOCS 1994, 88–113**, explicitly lists squarefree part, squarefreeness, and \(\omega\) as C7–C9. I do not certify identical ANTS numbering. [ANTS record](https://link.springer.com/chapter/10.1007/3-540-58691-1_70), [Companion text](https://paperzz.com/doc/9179771/algorithmic-number-theory-the-complexity-contribution).
+
+## 3. Information floors and their limits
+
+**PROVED — exact local theorem.** Let \((P,Q)\) have any distribution, \(C=PQ\bmod m\), and \(R=f(C)\). Then
+\[
+I((P\bmod m,Q\bmod m);R\mid C)=0.
+\]
+Indeed, conditioned on \(C=c\), \(R=f(c)\) is constant. If \(P,Q\) are units modulo \(m\), the possible pairs lie in
+\[
+\mathcal F_c=\{(u,cu^{-1}):u\in(\mathbb Z/m)^*\}.
+\]
+This requires no equidistribution assumption. It establishes redundancy **beyond \(C\)**, not zero information before observing \(C\).
+
+**KNOWN + PROVED consequence.** For independently sampled primes in long comparable intervals and \(m\le(\log X)^A\), Siegel–Walfisz gives asymptotic uniformity in reduced residue classes. Consequently, conditioned on the product residue, the labeled pair approaches the uniform distribution on \(\mathcal F_c\). This follows by multiplying the two prime-count estimates and normalizing. It is an ensemble statement, not a statement conditioned on one exact \(N\). See Hugh Montgomery and Robert Vaughan, *Multiplicative Number Theory I: Classical Theory*, **Cambridge, 2007**, Corollary 11.21. [Chapter](https://personal.science.psu.edu/rcv4/personal/Publications/MNTI/15.0_pp_358_396_Primes_in_arithmetic_progressions_II.pdf).
+
+**PROVED — scope restriction.** Several residue outputs factor through the modulus \(\operatorname{lcm}(m_1,\ldots,m_t)\). Bounding each \(m_i\) separately does not bound this combined modulus; sufficiently many small moduli reconstruct \(N\).
+
+**PROVED — exact generic-ring transcript statement.** Consider constants-only straight-line programs using \(+,-,\times\), adaptive zero tests modulo \(N\), and fixed leaf labels. Constants may depend on length, coins, and supplied \(N\bmod m\), but otherwise not on \(N\). Along each path every tested register is an integer \(A\), and the observed answer is exactly \([N\mid A]\). At every test,
+\[
+[p\mid A]\ne[q\mid A]\implies1<\gcd(A,N)<N.
+\]
+Thus absent a splitting gcd, both CRT components follow the same zero-test transcript. This common transcript need not be determined by a fixed small congruence.
+
+**PROVED — bounded-height strengthening.** Suppose the formal integer-zero execution has at most \(t\) tests, every nonzero tested integer has at most \(H\) bits, and sampled primes lie in \([X,2X]\). A nonzero test integer has at most \(H/\log _2X\) prime divisors there. Comparing with prime counts shows that the transcript differs from the formal transcript with probability \(O(tH/X)\). Conditioning on a specified small product residue permits the weaker bound \(O(tH\varphi(m)/X)\). This gives negligible leakage beyond side information when \(t,H\) are polylogarithmic.
+
+**OPEN — general polynomial-size programs.** Repeated squaring makes integer bit height exponential in program length, so the preceding bound does not cover arbitrary polynomial-size programs.
+
+**KNOWN — generic-model hardness is not ordinary hardness.** Tibor Jager and Jörg Schwenk, *On the Analysis of Cryptographic Assumptions in the Generic Ring Model*, **J. Cryptology 26(2), 225–245 (2013)**, prove generic factoring equivalence for Jacobi-symbol computation, although ordinary Jacobi computation is easy. Divesh Aggarwal and Ueli Maurer, *Breaking RSA Generically Is Equivalent to Factoring*, **EUROCRYPT 2009, 36–53**, likewise concerns generic RSA algorithms. Neither supplies the desired unrestricted information floor. [Jager–Schwenk](https://eprint.iacr.org/2009/621), [Aggarwal–Maurer](https://crypto.ethz.ch/publications/AggMau09.html).
+
+**KNOWN — circuit results have narrower targets.** Ben Green, *On (not) computing the Möbius function using bounded depth circuits*, **Combinatorics, Probability and Computing 21(6), 942–951 (2012)**, proves Möbius orthogonality to AC⁰ functions over ordinary integer intervals. Anna Bernasconi and Igor Shparlinski, *Circuit Complexity of Testing Square-Free Numbers*, **STACS 1999, 47–56**, prove squarefreeness circuit lower bounds. Eric Allender, Michael Saks, Igor Shparlinski, *A Lower Bound for Primality*, **JCSS 62(2), 356–366 (2001)**, prove primality is outside AC⁰[\(r\)] for every prime \(r\), with related squarefreeness results. These do not establish independence from factor bits on RSA distributions. [Green](https://arxiv.org/abs/1103.4991), [Bernasconi–Shparlinski](https://eccc.weizmann.ac.il/eccc-reports/1998/TR98-056/index.html), [Allender–Saks–Shparlinski](https://www.sciencedirect.com/science/article/pii/S0022000000917252).
+
+**OPEN:** a general floor for arbitrary finite automata or AC⁰ summaries of RSA moduli. The multiplicative-automatic classification in §1 does give a floor for that narrower class. **UNVERIFIED:** any factor-bit lower bound in Igor Shparlinski’s *Cryptographic Applications of Analytic Number Theory*, **Birkhäuser, 2003**; I located none and do not infer one from its RSA-message/DL-bit results. [Book](https://link.springer.com/book/10.1007/978-3-0348-8037-4).
+
+**PROVED — reciprocity aggregates.** Any fixed-conductor character aggregate
+\[
+\prod_{r^e\parallel N}\chi(r)^e=\chi(N)
+\]
+depends only on \(N\) modulo the conductor, subject to handling ramified primes. The local theorem applies exactly. This covers products, not component selection or sums such as \(\chi(p)+\chi(q)\). “Reciprocity-computable” without such a definition is too broad for a theorem.
+
+## 4. Leakage, amplification, and self-reduction
+
+**KNOWN — sufficient contiguous leakage.** Don Coppersmith, *Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities*, **J. Cryptology 10, 233–260 (1997)**, Theorems 4–5, gives factoring from approximately \(n/4\) high or low bits of a factor. For balanced RSA, knowing \(\lfloor p/2^k\rfloor\) therefore suffices when \(k\lesssim n/4\). Constant-factor boundaries and \(O(\log n)\) missing bits can be handled by polynomial enumeration. This is not a theorem about arbitrary \(n/4\) positions. [Paper](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf).
+
+**KNOWN:** Ronald Rivest and Adi Shamir, *Efficient Factoring Based on Partial Information*, **EUROCRYPT ’85, LNCS 219, 31–34, published 1986**, gives the earlier roughly \(n/3\)-query result. Dan Boneh, Glenn Durfee, Yair Frankel, *An Attack on RSA Given a Small Fraction of the Private Key Bits*, **ASIACRYPT 1998, 25–34**, concerns partial exposure of the private exponent, with public-exponent restrictions—not arbitrary factor-bit predictors. [Rivest–Shamir](https://link.springer.com/chapter/10.1007/3-540-39805-8_3), [Boneh–Durfee–Frankel](https://crypto.stanford.edu/~dabo/pubs/abstracts/bits_of_d.html).
+
+**KNOWN, conditional:** Ueli Maurer, *On the Oracle Complexity of Factoring Integers*, **Computational Complexity 5, 237–247 (1995)**, gives, for every fixed \(\epsilon>0\), a polynomial-time algorithm using at most \(\epsilon n\) arbitrary yes/no queries for sufficiently large \(N\). The stated failure bound \(N^{-\epsilon/2}\) depends on a conjecture related to elliptic-curve factoring. These queries are not restricted to factor bits. The publisher dates it 1995; Maurer’s ETH bibliography says 1996. [Publisher](https://link.springer.com/article/10.1007/BF01206320).
+
+**OPEN:** a general minimal leakage threshold. These are sufficient conditions, not lower bounds.
+
+**PROVED — why message-bit reductions have leverage.** From RSA ciphertext \(c=x^e\bmod N\), one computes ciphertexts of \(ax\bmod N\) as \(a^ec\). For Rabin, multiplication by \(a^2\) transforms the squared challenge, with domain/side-information qualifications. For DL, \((g^x)^a=g^{ax}\), and multiplying by \(g^b\) gives affine changes of the exponent. These operations provide many related hidden values to decode. A fixed-bit predictor of the factor \(p\) supplies no corresponding family of known transforms.
+
+**OPEN:** amplification of an average-case weak predictor for one fixed natural factor-bit position into factoring. Repetition only amplifies a pointwise randomized prediction guarantee for that same bit; it does not manufacture other positions.
+
+**KNOWN + PROVED application — Goldreich–Levin does apply with random masks.** Oded Goldreich and Leonid Levin, *A Hard-Core Predicate for All One-Way Functions*, **STOC 1989, 25–32**, gives the random-linear-query theorem. Let \(\mathcal D_n\) be an efficiently samplable distribution of canonical prime pairs for which factoring \(N=pq\) is average-case hard. Then
+\[
+B(N,r)=\langle\operatorname{bin}(p),r\rangle\bmod2
+\]
+is hardcore for \((p,q,r)\mapsto(pq,r)\), with independent uniform \(r\).
+
+Proof: noticeable prediction advantage yields, on a noticeable fraction of moduli, noticeable correlation with the Hadamard encoding of \(p\). List decoding produces polynomially many candidates; division verifies the correct factor. This argument needs no uniform distribution on prime bitstrings. It does need access to varying random masks; it proves neither worst-case factoring nor hardness of one fixed coordinate. [Author’s statement and paper](https://www.wisdom.weizmann.ac.il/~oded/gl.html).
+
+**PROVED — polynomial-map obstruction.** Let fixed nonzero \(g,h\in\mathbb Z[X]\) satisfy
+\[
+g(p)\mid h(pq)
+\]
+for every sufficiently large prime pair. Then \(g(X)=cX^j\), and \(X^j\mid h(X)\).
+
+Write \(g=X^jG\), \(G(0)\ne0\), and \(h=\sum_{i=0}^d a_iX^i\). Choose \(d+1\) fixed distinct primes \(q_0,\ldots,q_d\). Their Vandermonde determinant \(D\ne0\). Integer linear combinations of the divisibilities imply
+\[
+g(p)\mid D a_i p^i
+\]
+for every \(i\). For large primes \(p\nmid G(0)\), \(\gcd(G(p),p)=1\), so \(G(p)\mid Da_i\) for any nonzero coefficient. Thus \(G\) is constant. Taking the least nonzero index \(i\), primes avoiding \(Da_i\) give \(j\le i\). This excludes universal fixed-polynomial transforms producing factors \(p+1\), for example. It does not exclude general randomized or \(N\)-dependent maps.
+
+**PROVED — a literal “any single bit” has artificial exceptions.** Define, on unrestricted integers,
+\[
+B(M)=\operatorname{bit}_{v_2(M)}
+ \bigl(\operatorname{spf}(M/2^{v_2(M)})\bigr).
+\]
+Queries \(M=2^iN\) recover successive bits of \(p\), with polynomial-size inputs. Thus a Boolean function of the factorization and \(M\) alone can be factoring-equivalent. This does not settle fixed-position predicates on RSA moduli.
+
+**HEURISTIC decoding results require much stronger leakage.** Wilko Henecka, Alexander May, Alexander Meurer, *Correcting Errors in RSA Private Keys*, **CRYPTO 2010, 351–369**, Theorems 3 and 7 under Heuristic 2, analyze independent bit flips across the key: error below about \(0.237\) for the redundant five-component key, or \(0.084\) for \((p,q)\). Their runtime analysis also assumes randomness of incorrect branches. Nadia Heninger and Hovav Shacham, *Reconstructing RSA Private Keys from Random Key Bits*, **CRYPTO 2009, 1–17**, similarly has a heuristic runtime analysis for roughly \(27\%\) randomly known bits across the redundant key. [HMM](https://link.springer.com/content/pdf/10.1007/978-3-642-14623-7_19.pdf), [HS](https://hovav.net/ucsd/dist/reconstruction.pdf).
+
+**KNOWN / HEURISTIC distinction:** Kenneth Paterson, Antigoni Polychroniadou, Dale Sibborn, *A Coding-Theoretic Approach to Recovering Noisy RSA Keys*, **ASIACRYPT 2012, 386–403**, studies memoryless asymmetric channels and decoding assumptions. Its capacity thresholds—approximately \(0.243\) symmetric error for five components and \(0.110\) for two—are model bounds, not unconditional factoring barriers or guarantees from marginal per-bit accuracy alone. [Paper, §§3–4](https://link.springer.com/content/pdf/10.1007/978-3-642-34961-4_24.pdf).
+
+## Final status table
+
+| Quantity | Status | Reduction / reference |
+|---|---|---|
+| Fixed nonconstant bit of smaller \(p\) | **OPEN** | No reduction verified; RSA plaintext results do not apply |
+| \(p\bmod m\), small \(m\) | **OPEN** generally; **PROVED easy** for trivial residues | §2; \(p\bmod2=1\) |
+| \((-1/p)\), \(N\equiv1\bmod4\) | **OPEN** | Equivalent to fixed-base QR of \(-1\); Seurin assumption |
+| Bit 1 of smaller \(p\), \(N\equiv3\bmod4\) | **OPEN** | Orientation information; QR of \(-1\) is constant |
+| Bits with variable index \(i\) | **PROVED ≡ factoring** | Query all possible positions |
+| \(\lfloor p/2^k\rfloor\), balanced RSA | **KNOWN sufficient** for \(k\lesssim n/4\); **OPEN** intermediate regimes | Coppersmith, Thms. 4–5; sufficiently large \(k\) gives constant zero |
+| \(\Omega(N)\bmod2,\omega(N),d(N),\mu(N)\), squarefreeness | **PROVED easy on RSA promise**; **OPEN** unrestricted | Respectively \(0,2,4,1,\mathrm{true}\); Shallit–Shamir gives reductions among exponent-pattern functions |
+| \(d(N)\bmod2\) | **PROVED easy** | Odd exactly when \(N\) is a square: pair complementary divisors |
+| Full \(\varphi(N)\) | **PROVED ≡ factoring for RSA** | \(p+q=N+1-\varphi(N)\) |
+| \(\varphi(N)\bmod m\) | **OPEN** generally; some **PROVED easy** cases | §2; residues modulo \(2,4\) are zero |
+| \([\ell\mid\varphi(N)]\) | **OPEN** generally; **CONJECTURED** hard distributions | CMS \(\Phi\)-hiding; \(\ell=2\) easy |
+| Fixed-base QR | **OPEN** in nontrivial cases | Squares and Jacobi-\(-1\) cases easy |
+| Random-base/general QR decision | **OPEN** versus factoring | Factoring decides it; no reverse reduction verified |
+| “Has a prime factor \(\le x\)?” with variable \(x\) | **PROVED ≡ factoring** | Binary-search smallest factor; fixed thresholds can be easy |
+| Smallest/largest prime factor, binary input | **PROVED ≡ factoring** | Remove returned prime powers and recurse |
+| Chosen-curve \(\#E(\mathbb Z/N)\) oracle | **PROVED ≡ factoring**, randomized | Explicit twist reduction, §2 |
+| One supplied curve’s count | **OPEN** generally | Does not provide further twist counts |
+| \(r_2(N)\) | **OPEN** generally; **PROVED easy** for RSA \(N\equiv3\bmod4\) | §2; equals zero in that case |
+| One arbitrary two-squares representation | **OPEN** factoring reduction | Two inequivalent representations factor; uniform sampling suffices |
+| \(\langle p,r\rangle\), uniform public \(r\) | **KNOWN hardcore under average-case factoring assumption** | Goldreich–Levin, §4 |
+
+The five claims I am least sure of are:
+
+1. **UNVERIFIED:** absence of a published reduction for a natural fixed factor bit.
+2. **UNVERIFIED:** absence of equivalences for largest-prime-only or fixed-\(m\) sparse-exponent addition.
+3. **UNVERIFIED:** the intermediate absolute-error approximate-addition classification.
+4. **UNVERIFIED:** absence of general factoring reductions from \(r_2\) or one canonical two-squares representation.
+5. **UNVERIFIED:** the general projective two-count claim of Dieulefait–Urroz; the explicit multi-twist reduction above avoids its apparent circular step.
