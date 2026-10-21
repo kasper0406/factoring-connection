@@ -104,6 +104,45 @@ def main():
             f.write(json.dumps(o) + "\n")
 
 
+def ph2b():
+    """PH2b (after codex sicheck_2 #4-5): every output whose reduced pair (u/g, v/g) has not occurred before among
+    ALL earlier outputs of the same constructor (smooth or not) -- an outcome-independent selection that contains
+    every fresh relation. Nulls: p_cop over rad(u/g) (as PH2) and, as a sensitivity check, over rad(u/g * k/g)."""
+    rows = [json.loads(l) for l in open(os.path.join(RAW, "sicheck_E1.jsonl"))]
+    nulls = {}
+    acc = defaultdict(lambda: [0, 0.0, 0.0, 0, 0])  # O, E_u, E_uk, n, fresh_from_nonprimitive
+    for r in rows:
+        primes = core.primes_upto(r["y"])
+        key = (r["y"], r["h"])
+        if key not in nulls:
+            nulls[key] = CoprimeNull(r["h"], primes)
+        cn = nulls[key]
+        N = r["N"]
+        seen = set()
+        a = acc[(r["cell"], r["constructor"])]
+        for k, v, vs, g in zip(r["k"], r["v"], r["vs"], r["g"]):
+            u = k * N + v
+            red = (u // g, v // g)
+            if red in seen:
+                continue
+            seen.add(red)
+            up, vp, kp = u // g, v // g, k // g
+            ru = [p for p in primes if up % p == 0]
+            ruk = [p for p in primes if up % p == 0 or kp % p == 0]
+            a[0] += vs; a[1] += cn.p_cop(vp, ru); a[2] += cn.p_cop(vp, ruk); a[3] += 1
+            a[4] += int(vs and g > 1)
+    tot = defaultdict(lambda: [0, 0.0, 0.0, 0, 0])
+    print("PH2b: first-seen reduced pairs (all outputs); O/E vs coprime null over rad(u/g) and over rad(u/g*k/g)")
+    for (cell, c), a in sorted(acc.items()):
+        for i in range(5):
+            tot[c][i] += a[i]
+        print(f"  {cell:4s} {c:8s} n={a[3]:6d} O={a[0]:5d} E_u={a[1]:8.1f} O/E_u={a[0] / a[1]:.3f} "
+              f"E_uk={a[2]:8.1f} O/E_uk={a[0] / a[2]:.3f} fresh-from-g>1={a[4]}")
+    for c, a in tot.items():
+        print(f"  ALL  {c:8s} n={a[3]:6d} O={a[0]:5d} O/E_u={a[0] / a[1]:.3f} O/E_uk={a[0] / a[2]:.3f} "
+              f"fresh-from-g>1={a[4]}")
+
+
 def _line(cell, c, a):
     O, En, Vn, Ec, Vc, npr, fresh, K = a
     zn = (O - En) / math.sqrt(Vn) if Vn else float("nan")
@@ -114,4 +153,8 @@ def _line(cell, c, a):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if sys.argv[1:] == ["ph2b"]:
+        ph2b()
+    else:
+        main()

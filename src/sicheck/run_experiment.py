@@ -117,6 +117,7 @@ class RelState:
         self.dups = 0
         self.vsmooth = 0
         self.outputs = 0
+        self.k_done = None         # per-constructor stopping k (codex sicheck_2 #17; E3 raw k_last is the shared counter)
 
     def done(self):
         return len(self.rels) >= self.need
@@ -137,6 +138,8 @@ class RelState:
         self.seen.add(r.key)
         self.rels.append(r)
         mask = self.deps.add(r.parity())
+        if self.done() and self.k_done is None:
+            self.k_done = k
         if mask is not None:
             Z, gg = core.square_root_of_unity(self.rels, mask, self.primes, N)
             self.phi_seq.append(None if gg != 1 else int(core.classify_root(Z, N)[0]))
@@ -198,7 +201,7 @@ def finish_state(st: RelState, N: int, blum: bool, seed: int) -> dict:
             "phi_basis": phi_basis, "phi_nonzero": any(x == 1 for x in phi_basis), "phi_seq": st.phi_seq,
             "random_tried": tried, "random_fruitful": fruit, "beta_checked": beta_checked,
             "beta_mismatch": beta_mism, "beta_ones": sum(beta), "dups": st.dups, "vsmooth": st.vsmooth,
-            "outputs": st.outputs, "done": st.done()}
+            "outputs": st.outputs, "done": st.done(), "k_done": st.k_done}
 
 
 def run_E3() -> None:
