@@ -1,0 +1,162 @@
+**Overall verdict: MAJOR REVISION.** PT contains a sound elementary result, but its execution model needs tightening. GLM does not establish amplification for arbitrary inverse-polynomial advantage. The fixed-\(m\) polynomial-reduction question can be resolved using the note’s own methods. The \(N^{1/4}\) trichotomy is overstated.
+
+I read the results, blind report, implementation, tests and raw data. All 48 tests pass; the data contain 681,990 executions, 75 PT checks and 15 cross checks, with the reported zero violations. Those checks omit several relevant edge cases.
+
+1. **Theorem PT and Partition lemma — CORRECT WITH FIXES.**
+
+   For a deterministic, terminating tree, distinct primes and **distinct leaf occurrences**, the induction is correct. Arbitrary integer constants cause no difficulty: primes dividing them simply take the zero branch. An identically zero integer test takes that branch everywhere and never splits.
+
+   Required model repairs:
+
+   - Define classes by complete transcripts or leaves of the **unrolled decision tree**, not output labels. Two different leaves can output the same value. Indeed, `pure.py` identifies classes by returned labels: testing \(c=3\), with both children labelled `"same"`, gives equal reported classes for \(3,5\), but splits \(15\). Arithmetic DAG reuse is harmless; merged control paths require unrolling or transcript classes.
+   - Permit only finite trees, or specify termination and divergence outcomes.
+   - Formalize modular inversion using numerator–denominator circuits. Test every denominator before inversion; a proper gcd splits, while a denominator zero in both components follows a specified failure branch. Subsequent equalities require cross multiplication. “Invertibility of \(b\), then test \(a\)” alone does not describe general rational SLP reuse. Reading an extended-Euclidean transcript or integer representative remains excluded.
+   - State whether public input length is allowed to select a tree family. Standard algorithm names otherwise conceal \(N\)-dependent cutoffs and sampling.
+
+   **Squares:** the exact splitting identity does not describe actual execution on \(p^2\). Testing \(c=3\) splits \(N=9\), although both diagonal classes coincide. The proposed convention is an artificial experiment, not the instrumented run. Write
+   \[
+   s_0=\Pr[\operatorname{class}(X)\ne\operatorname{class}(Y)]
+      =1-\sum_\ell\pi_\ell^2.
+   \]
+   Actual execution can additionally split square inputs. Its split probability \(s\) satisfies \(s\ge s_0\); the success inequality remains valid with actual \(s\), because every nonsplit execution still reaches the common diagonal leaf. Alternatively retain the virtual convention explicitly. Conditioning on \(X\ne Y\) requires recalculating the iid formulas.
+
+   **The inequalities are correct:** \(s_0\ge\eta\), and
+   \[
+   \Pr[\text{correct or split}]
+   \le \max_b\Pr[F=b]+s+\eta^2
+   \le \max_b\Pr[F=b]+2s.
+   \]
+   Thus advantage \(\delta\) implies \(s\ge\delta/2\). “Hardcore” should be qualified by the distribution, baseline and computational model.
+
+   For randomized trees, condition on the complete coin tape first. The averaged bound contains \(\mathbb E[\eta_R^2]\), not an unspecified single \(\eta^2\); \(\mathbb E[\eta_R^2]\le\mathbb E[s_R]\) preserves the loss-two corollary.
+
+   **PT2 checks out line by line** in the stated virtual-diagonal experiment:
+   \[
+   s_A=1-\tfrac12(\|\alpha\|^2+\|\beta\|^2),\qquad
+   s_B=1-\alpha\cdot\beta,
+   \]
+   hence \(\|\alpha-\beta\|^2=2s_B-2s_A\). The maximum identity, Cauchy–Schwarz step, final bound and \(\delta\)-alternative are correct. Randomized versions follow by conditioning and Jensen.
+
+   Crucially, \(s_B\) measures **\(T_1\) forcibly run on B**. It need not measure the original PT-m algorithm, which selects \(T_3\) there. Counterexample to that stronger reading: let \(T_1\) distinguish the two residue populations perfectly and let \(T_3\) immediately stop. The original algorithm then need never split either population.
+
+   The displayed two-distribution inequality is correct. Calling it a general theorem about “two fiber points” needs clarification: arbitrary points \((u,v),(u',v')\), with \(uv=u'v'\), involve four component laws and generally two cross comparisons. Also replace the unknown-\(p\) cutoff in the full product example by a fixed bound covering the prime population.
+
+   **Included algorithms:** polynomial-iterate Pollard rho, with equality/difference gcds, is pure. Fixed schedules for \(p-1,p+1\), projective ECM and Pollard–Strassen products are covered. Uniform sampling from \(\mathbb Z/N\mathbb Z\), representative-dependent heuristics and \(N\)-dependent schedules are not automatically covered by “\(N\)-independent coins.”
+
+   **Closest prior statement:** Jager–Schwenk, *J. Cryptology* **26** (2013), 225–245, Lemmas 3–4 and Theorem 1, already turn generic subset-membership advantage into factoring, with probability at least \(\mathrm{Adv}/[2(m^2+4m+3)]\). Their fixed-modulus/challenge-input setting differs from PT’s varying-modulus setting. Aggarwal–Maurer’s EUROCRYPT 2009 paper, §3.2.3, supplies closely related simulation machinery. These are closer antecedents than Shoup’s discrete-log lower bounds. [Jager–Schwenk, full text](https://link.springer.com/content/pdf/10.1007/s00145-012-9120-y.pdf), [Aggarwal–Maurer](https://crypto.ethz.ch/publications/files/AggMau09.pdf).
+
+   Lipton’s ANTS 1994 result concerns short SLPs for polynomials with many rational roots implying easy factoring; it is not PT. Boneh–Lipton’s black-box fields, Maurer–Wolf and Damgård–Koprowski’s group results likewise do not establish this exact partition theorem. Retain only “no exact prior formulation located,” not a stronger novelty claim. [Lipton, pp. 71–79](https://link.springer.com/chapter/10.1007/3-540-58691-1_45).
+
+2. **Lemma PSR — CORRECT WITH FIXES.**
+
+   The deterministic lemma and proof are correct under their exact quantifiers. Clearing denominators gives \(g(p)\mid R(p)\); the degree inequality forces \(R(p)=0\) for all sufficiently large qualifying primes. A nonzero root of \(g\) then produces infinitely many distinct roots of \(h\). One can additionally conclude \(x^j\mid h(x)\).
+
+   The hypotheses matter: these are **fixed polynomials**, with infinitely many \(p\) for each of infinitely many fixed \(q\). This does not cover arbitrary distributions of balanced prime pairs or polynomial families varying with input length.
+
+   “Randomized polynomial maps are covered coefficient-wise” is unjustified without additional quantifiers. For example,
+   \[
+   g(x)=x+1,\qquad h_a(t)=t+a.
+   \]
+   Choosing \(a=q\) makes \(g(p)\mid h_a(pq)\) for every \(p\), while each fixed \(a\) works for only one qualifying \(q\). Randomizing over an unbounded family cannot be handled by simply applying the lemma to each coefficient realization. This example does not provide an efficient successful self-reduction; it exposes the quantifier gap.
+
+   Replace the blanket assertion by: **each fixed realization satisfying PSR’s hypothesis obeys its conclusion**. Delete the broader claim that all polynomial randomized self-reductions have been excluded.
+
+3. **Prop GLM — CORRECT WITH FIXES; unrestricted weak amplification is unproved.**
+
+   For odd \(N\), multiplication by \(N^{-1}\bmod2^L\) permutes masks, so \(k\) is uniform. Because \(k<2^L\le2q\), the problematic cofactors are primes \(k>q\); \(k=q\) is actually harmless. Their probability is \(O(1/L)\). Define the \(k=0\), \(M=0\) case explicitly.
+
+   On good cofactors, the identity \(f(Nk)=\langle q,r\rangle\) is correct. Evaluating a predictor through \(r\mapsto Nk(r)\) is legitimate: GL requires correlation of this resulting Boolean oracle, not a separate self-reduction.
+
+   **The missing condition is quantitative.** Writing the embedding error as \(\gamma_L=O(1/L)\), average advantage transfers only as
+   \[
+   \mathbb E_N[\operatorname{adv}_{GL}(N)]
+   \ge\epsilon-\gamma_L.
+   \]
+   Consequently the usable parameter is \(\epsilon-\gamma_L\), not \(\epsilon\). For example, \(\epsilon=L^{-2}\) gives no positive guarantee. The asserted per-instance good fraction is harmless, but its stated advantage can be negative.
+
+   Fix the proposition by requiring a noticeable positive gap above the embedding error, and express success and query complexity using that gap. Otherwise remove “hardcore” and “amplifies inverse-polynomial advantage.” An exact or negligible-error embedding would need another argument.
+
+   Rackoff’s decoding works: nonempty subset sums \(r_J\), and therefore \(r_J\oplus e_i\), are uniform and pairwise independent. For per-instance advantage \(a>0\), \(2^\ell=O(L/a^2)\) suffices. The code includes empty \(J\), which is deterministic; discard it or account for its \(2^{-\ell}\) contribution. Unknown \(L\) can be handled by trying the possible lengths.
+
+   I located no primary source for this exact cofactor embedding. The underlying public-mask construction and decoding are standard GL; novelty should remain tentative. [Goldreich–Levin, STOC 1989, pp. 25–32](https://www.cs.bu.edu/fac/lnd/pdf/hard.pdf).
+
+4. **§1.2 call counts — CORRECT WITH FIXES.**
+
+   **Short intervals: CORRECT**, for fixed \(7/12<\theta<1\). Huxley’s result supplies
+   \[
+   \pi(X)-\pi(X-X^\theta)\sim X^\theta/\log X,
+   \]
+   not merely existence. Uniform integer sampling therefore needs \(O(\log X)\) primality tests in expectation. Certified primality testing gives a Las Vegas search; recursive bit lengths contract geometrically, yielding \(O(\log\log N)\) oracle calls. Small inputs can use a fixed fallback. [Huxley, *Invent. Math.* **15** (1972), 164–170](https://link.springer.com/article/10.1007/BF01418933); the density formulation is explicitly recorded in [Iwaniec–Jutila, introduction, equation (1)](https://archive.ymsc.tsinghua.edu.cn/pacm_download/116/7313-11512_2006_Article_BF02385465.pdf).
+
+   **GRH successor row:** its stated range can work, but “polylog” needs an exponent and the density needs justification. A standard GRH estimate is
+   \[
+   \pi(x;N,-1)=\frac{\operatorname{Li}(x)}{\varphi(N)}
+      +O(\sqrt{x}\log(xN)).
+   \]
+   Thus a safe choice is \(T=N(\log N)^C\), \(C>4\), giving \(x=NT=N^2(\log N)^C\) and success probability
+   \[
+   (1+o(1))\frac{N}{\varphi(N)\log(NT)}.
+   \]
+   For balanced semiprimes this is asymptotic to \(1/\log(NT)\). [Lee, *Q. J. Math.* **74** (2023), 1505–1533, Corollary 1.1](https://arxiv.org/pdf/2301.13457).
+
+   GRH does **not** supply the required uniform asymptotic at \(x=N^{1+o(1)}\). Taking \(x\ge N^{2+\varepsilon}\) suffices, but that power margin is unnecessary with sufficiently large logarithmic padding.
+
+   Queries now have about \(2n\) bits. Do not trial-factor the large multiplier \(t\): extract the factors of \(N\) directly from the returned factorization of \(tN\).
+
+5. **§1.5 partial forms — CORRECT WITH FIXES; one OPEN classification should be removed.**
+
+   For fixed \(m\ge2\), the stated recurrence gives a valid quasi-polynomial upper bound. But **a randomized polynomial reduction follows immediately** from the short-interval method:
+
+   Find prime \(v\in[x-x^\theta,x)\), recursively factor \(u=x-v\), and query the exponent-mod-\(m\) oracle on \((u,v)\). Strip every returned prime completely. The remaining integer is \(r^m\), with \(r\le x^{1/m}\); recursively factor \(r\).
+
+   For bit length \(b\), the oracle-call recurrence is
+   \[
+   C(b)\le C(\theta b+O(1))+C(b/m+O(1))+1.
+   \]
+   Taking \(\theta=3/5\) gives \(C(b)=O(b^2)\), since \((3/5)^2+(1/m)^2<1\). Prime searches have expected polynomial cost. Therefore fixed-\(m\) sparse-exponent ADD is **FACT-equivalent under randomized polynomial reductions**. I also checked this construction on examples with substantial hidden power parts.
+
+   **\(P^+\)-only:** the one-call semiprime heuristic is correct. Polynomial equivalence remains unestablished here. However, an unconditional randomized quasi-polynomial upper bound needs no Dickman heuristic: repeatedly obtain and strip the largest prime; each query prepares its smaller summand recursively. This gives \(C(b)\le O(b)[C(\theta b+O(1))+1]\).
+
+   **Approximate addition: CORRECT**, with rounding and endpoint qualifications. For \(1\le E<x\), factor
+   \[
+   \left\lfloor x/2^{\lfloor\log_2E\rfloor}\right\rfloor;
+   \]
+   its length is \(n-\log_2E+O(1)\). Handle \(E\ge x\) separately and retain the expanded-size convention. This is an upper reduction only.
+
+6. **§2.3 status table — CORRECT WITH FIXES.**
+
+   I verified no missing classical polynomial factoring equivalence for unrestricted squarefreeness, \(\omega,\mu\), Liouville or numerical radical. Do not reverse the cited reductions:
+
+   - Shallit–Shamir show that divisor-count queries compute exponent-pattern functions; this does not recover prime identities. [IPL **20** (1985), 151–153, author-institution record](https://weizmann.elsevierpure.com/en/publications/number-theoretic-functions-which-are-equivalent-to-number-of-divi/).
+   - Landau/Woll give reductions **to totient-type oracles**, not factoring from squarefreeness. Du–Volkovich explicitly describe this direction and still characterize computing \(\omega\) as believed hard. [FSTTCS 2021, §1.1 and Remark 2](https://drops.dagstuhl.de/storage/00lipics/lipics-vol213-fsttcs2021/LIPIcs.FSTTCS.2021.17/LIPIcs.FSTTCS.2021.17.pdf).
+
+   Fixed nontrivial factor bits and the stated \(p\bmod4\) problems may remain OPEN, qualified as literature-search conclusions. Seurin’s Blum/pseudo-Blum distinction directly supports the relevance of the \(\epsilon\) problem. [PKC 2014, pp. 380–398](https://link.springer.com/chapter/10.1007/978-3-642-54631-0_22).
+
+   Correct these statements:
+
+   - “No reduction is known in either direction” is false: factoring computes these quantities.
+   - Being constant on semiprimes does not make an **unrestricted oracle** useless on transformed inputs.
+   - Order computation means access to an oracle with a selectable base; one fixed order can be trivial, e.g. \(\operatorname{ord}_N(1)=1\).
+   - Trivial residues need exclusions: \(p\bmod2\), \(\varphi(N)\bmod4\), and \(2\mid\varphi(N)\) are easy for odd semiprimes.
+
+7. **§3.1/3.3 trichotomy — WRONG as written.**
+
+   ECM is an explicit counterexample to the claimed classification of subexponential methods: its algebraic core is pure under the stated model, while its conjectured expected balanced-semiprime cost is
+   \[
+   \exp((1+o(1))\sqrt{\log N\log\log N})=N^{o(1)}.
+   \]
+   Lenstra explicitly labels the running-time claim conjectural. The note cannot include heuristic QS/NFS comparisons while excluding ECM’s corresponding heuristic bound. [Lenstra, *Annals* **126** (1987), 649–673, abstract](https://annals.math.princeton.edu/1987/126-3/p09).
+
+   PT proves an information-versus-splitting relation, **no \(N^{1/4}\) time barrier**. Restrict any historical observation to specified deterministic worst-case algorithms.
+
+   The low-height floor also needs a distribution hypothesis: support in \([X,2X]\) alone is insufficient. Concentrating on primes dividing one small-height test defeats the claimed \(O(tH/X)\) probability estimate.
+
+**Required fixes, in priority order:**
+
+1. Formalize transcripts, termination, inversions, randomness, public length and square inputs.
+2. Separate PT2’s frozen \(T_1\) cross experiment from the original PT-m algorithm.
+3. Restrict GLM to advantage exceeding its embedding error.
+4. Replace the fixed-\(m\) OPEN entry with the polynomial reduction above.
+5. Specify the GRH range, density and enlarged query size.
+6. Remove blanket randomized PSR and \(N^{1/4}\) claims.
+7. Correct reduction directions and qualify novelty and negative literature conclusions.

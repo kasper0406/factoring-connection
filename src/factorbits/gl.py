@@ -3,9 +3,11 @@ as factoring, via Goldreich-Levin with the GL randomness embedded in a cofactor.
 
     f(M) = parity( P+(M) AND M )          (P+ = largest prime factor; AND = bitwise)
 
-For balanced N = pq (q the larger factor, L = bitlen(q)) and r in {0,1}^L, put k = r * N^{-1} mod 2^L and
-M = N k.  If P+(k) < q (all but O(1/L) of r) then P+(M) = q and f(M) = <q, r> mod 2.  A predictor for f
-with advantage eps on the distribution of M therefore gives a GL oracle for x = q.
+For balanced N = pq (q the larger factor, L = bitlen(q), so q >= 2^(L-1)) and r in {0,1}^(L-1), put
+k = r * N^{-1} mod 2^(L-1) and M = N k.  Then k < 2^(L-1) <= q, so P+(M) = q ALWAYS, M = r (mod 2^(L-1)), and
+f(M) = <q mod 2^(L-1), r> XOR bit_{L-1}(M).  A predictor for f with advantage eps on the distribution of M
+therefore gives the GL oracle B(r) = pred(M) XOR bit_{L-1}(M) for x = q mod 2^(L-1), with the same advantage
+(no loss).  q = 2^(L-1) + x.  (L = ceil(n/2) under the equal-length convention; otherwise try both values.)
 
 `reduce_factor` is OPERATIONAL given a predictor (it sees N, queries the predictor, checks candidates by
 division).  `planted_predictor` is HARNESS: it computes f from the factorisation and flips it on a
@@ -38,32 +40,37 @@ def fwht(a: np.ndarray) -> np.ndarray:
 
 def reduce_factor(N: int, L: int, pred: Callable[[int], int], l: int, seed: int = 0) -> Optional[tuple]:
     """Goldreich-Levin (Rackoff's pairwise-independent version, all guesses at once by a Walsh-Hadamard
-    transform).  Makes L * 2^l predictor queries; returns (q, queries) or None."""
+    transform; the J = 0 query r = e_i is included, which is harmless).  Decodes x = q mod 2^(L-1) with
+    (L-1) * 2^l predictor queries; returns (q, queries) or None."""
     rng = random.Random(seed)
-    mask = (1 << L) - 1
-    Ninv = pow(N, -1, 1 << L)
-    s = [rng.getrandbits(L) for _ in range(l)]
-    # r_J for all subsets J (index J as an l-bit integer)
-    rJ = np.zeros(1 << l, dtype=object)
+    L1 = L - 1
+    mask = (1 << L1) - 1
+    Ninv = pow(N, -1, 1 << L1)
+    s = [rng.getrandbits(L1) for _ in range(l)]
+    rJ = [0] * (1 << l)
     for J in range(1, 1 << l):
         low = J & -J
         rJ[J] = rJ[J ^ low] ^ s[low.bit_length() - 1]
     queries = 0
-    bits_sign = np.zeros((L, 1 << l), dtype=np.int64)
-    for i in range(L):
+    bits_sign = np.zeros((L1, 1 << l), dtype=np.int64)
+    for i in range(L1):
         vals = np.empty(1 << l, dtype=np.int64)
         for J in range(1 << l):
-            r = int(rJ[J]) ^ (1 << i)
+            r = rJ[J] ^ (1 << i)
             k = (r * Ninv) & mask
             queries += 1
-            vals[J] = pred(N * k) if k else 0
+            if k == 0:
+                vals[J] = 0
+                continue
+            M = N * k
+            vals[J] = pred(M) ^ ((M >> L1) & 1)
         bits_sign[i] = fwht(1 - 2 * vals)          # sum_J (-1)^{vals_J + <sigma, J>}
-    # candidate for guess sigma: bit i = 1 iff the transform is negative
     for sigma in range(1 << l):
-        q = 0
-        for i in range(L):
+        x = 0
+        for i in range(L1):
             if bits_sign[i, sigma] < 0:
-                q |= 1 << i
+                x |= 1 << i
+        q = x | (1 << L1)
         if 1 < q < N and N % q == 0:
             return q, queries
     return None

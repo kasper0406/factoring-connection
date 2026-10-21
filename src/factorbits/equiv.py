@@ -252,3 +252,48 @@ def zech_via_dlog(k: int, p: int, g: int, dlog: Callable[[int], int], ctr: Count
     assert t != 0
     ctr.calls += 1
     return dlog(t)
+
+
+# ----------------------------------------------------------------------------- randomized short-interval reductions
+def _random_prime_below(x: int, theta: float, rng) -> int:
+    w = max(2, 1 << int(theta * x.bit_length()))
+    while True:
+        v = rng.randrange(x - w, x)
+        if is_prime(v):
+            return v
+
+
+def factor_via_addition_shortint(N: int, add: Callable[[Vec, Vec], Vec], ctr: Counter, rng,
+                                 theta: float = 0.6, base: int = 1 << 20) -> Vec:
+    """Las Vegas (with a certified primality test): X = u + v, v a random prime in [X - X^theta, X),
+    u factored recursively; O(log log N) oracle calls (Huxley's short-interval PNT, theta > 7/12)."""
+    if N <= base:
+        return trial_vec(N, base)
+    v = _random_prime_below(N, theta, rng)
+    vu = factor_via_addition_shortint(N - v, add, ctr, rng, theta, base)
+    ctr.calls += 1
+    return add(vu, {v: 1})
+
+
+def factor_via_expmod_shortint(N: int, expmod: Callable[[Vec, Vec], Vec], m: int, ctr: Counter, rng,
+                               theta: float = 0.6, base: int = 1 << 20) -> Vec:
+    """Codex's randomized polynomial reduction for the fixed-m exponent oracle: query (u, v) as above,
+    strip the returned primes, the rest is r^m with r <= X^{1/m}; recurse on r.
+    C(b) <= C(theta b) + C(b/m) + 1 oracle calls, i.e. polynomial."""
+    if N <= base:
+        return trial_vec(N, base)
+    v = _random_prime_below(N, theta, rng)
+    vu = factor_via_expmod_shortint(N - v, expmod, m, ctr, rng, theta, base)
+    ctr.calls += 1
+    part = expmod(vu, {v: 1})
+    x, out = N, {}
+    for p in part:
+        while x % p == 0:
+            out[p] = out.get(p, 0) + 1
+            x //= p
+    if x > 1:
+        r = iroot(x, m)
+        assert r is not None
+        vr = factor_via_expmod_shortint(r, expmod, m, ctr, rng, theta, base)
+        out = vmul(out, {p: e * m for p, e in vr.items()})
+    return out

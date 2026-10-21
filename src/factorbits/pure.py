@@ -12,6 +12,7 @@ different classes.
 Tests are objects with
     .mod(m)  -> residue of c modulo m   (SLP evaluated mod m; used both mod a prime and mod N)
 Trees are nested tuples: ("leaf", label) or ("node", test, child_if_nonzero, child_if_zero).
+Classes are diagonal transcripts (leaves of the unrolled tree), never output labels.
 """
 from __future__ import annotations
 
@@ -117,29 +118,41 @@ def nonadaptive(tests: Sequence) -> tuple:
     return build(0, ())
 
 
-def run_on_prime(tree: tuple, x: int):
-    """Diagonal path of x: answers [x | c]."""
-    t = tree
+def run_on_prime(tree: tuple, x: int) -> tuple:
+    """Diagonal path of x: the transcript of answers [x | c_v] (1 = zero branch).  Classes are
+    transcripts (= leaves of the unrolled tree), not output labels: two leaves may share a label."""
+    t, tr = tree, ()
     while t[0] == "node":
         _, test, nz, z = t
-        t = z if test.mod(x) == 0 else nz
+        a = 1 if test.mod(x) == 0 else 0
+        tr += (a,)
+        t = z if a else nz
+    return tr
+
+
+def leaf_label(tree: tuple, transcript: tuple):
+    t = tree
+    for a in transcript:
+        t = t[3] if a else t[2]
     return t[1]
 
 
 def run_on_N(tree: tuple, N: int):
-    """Execute the instrumented tree mod N. Returns ("leaf", label) or ("split", divisor)."""
-    t = tree
+    """Execute the instrumented tree mod N. Returns ("leaf", transcript) or ("split", divisor)."""
+    t, tr = tree, ()
     while t[0] == "node":
         _, test, nz, z = t
         r = test.mod(N)
         g = gcd(r, N)
         if 1 < g < N:
             return ("split", g)
-        t = z if r == 0 else nz
-    return ("leaf", t[1])
+        a = 1 if r == 0 else 0
+        tr += (a,)
+        t = z if a else nz
+    return ("leaf", tr)
 
 
-def classes(tree: tuple, primes: Iterable[int]) -> Dict[int, object]:
+def classes(tree: tuple, primes: Iterable[int]) -> Dict[int, tuple]:
     return {x: run_on_prime(tree, x) for x in primes}
 
 

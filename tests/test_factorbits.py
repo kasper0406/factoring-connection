@@ -146,6 +146,25 @@ def test_partition_lemma_exhaustive():
                 assert out[0] == "split" and out[1] in (x, y)
 
 
+def test_classes_are_transcripts_not_labels():
+    """Codex counterexample: a test c = 3 whose two leaves share a label must still separate 3 from 5."""
+    tree = P.node(P.ProductTest(3, 3, "x"), P.leaf("same"), P.leaf("same"))
+    cls = P.classes(tree, [3, 5])
+    assert cls[3] != cls[5]
+    assert P.run_on_N(tree, 15) == ("split", 3)
+    assert P.leaf_label(tree, cls[3]) == P.leaf_label(tree, cls[5]) == "same"
+
+
+def test_square_inputs_never_leave_diagonal_without_split():
+    """On N = x^2 a non-split run follows the diagonal path of x (Theorem PT uses the actual split rate)."""
+    primes = P.primes_top2(12)
+    tree = _small_tree()
+    cls = P.classes(tree, primes)
+    for x in primes[:60]:
+        out = P.run_on_N(tree, x * x)
+        assert out[0] == "split" and out[1] == x or out == ("leaf", cls[x])
+
+
 def test_pt_bound_and_eps_cross_bound():
     primes = P.primes_top2(12)
     P1 = [x for x in primes if x % 4 == 1]
@@ -186,24 +205,34 @@ def test_gl_embedding_recovers_factor_from_weak_predictor(seed):
     pred = gl.planted_predictor(p, q, 0.06, f"t{seed}")
     res = gl.reduce_factor(inst.N, q.bit_length(), pred, 12, seed)
     assert res is not None and res[0] in (p, q)
-    assert res[1] == q.bit_length() * (1 << 12)
+    assert res[1] == (q.bit_length() - 1) * (1 << 12)
 
 
 def test_gl_embedding_identity():
-    """f(N k) = <q, r> whenever P+(k) < q, with k = r N^{-1} mod 2^L."""
+    """With k = r N^{-1} mod 2^(L-1): P+(N k) = q always and f(N k) = <q mod 2^(L-1), r> xor bit_{L-1}(N k)."""
     from src.factorbits import gl
     inst = balanced_semiprime(28, 9)
     p, q = sorted(inst.factors)
     N, L = inst.N, q.bit_length()
     rng = random.Random(0)
-    good = 0
     for _ in range(2000):
-        r = rng.getrandbits(L)
-        k = (r * pow(N, -1, 1 << L)) % (1 << L)
+        r = rng.getrandbits(L - 1)
+        k = (r * pow(N, -1, 1 << (L - 1))) % (1 << (L - 1))
         if k == 0:
             continue
-        Pk = max(H.fact(k)) if k > 1 else 1
-        if Pk < q:
-            good += 1
-            assert gl.f_bit(N * k, q) == bin(q & r).count("1") & 1
-    assert good > 1900
+        M = N * k
+        assert max(H.fact(M)) == q
+        assert gl.f_bit(M, q) == (bin((q % (1 << (L - 1))) & r).count("1") & 1) ^ ((M >> (L - 1)) & 1)
+
+
+def test_shortint_reductions():
+    rng = random.Random(5)
+    for N in [balanced_semiprime(96, 1).N, balanced_semiprime(128, 2).N]:
+        c = E.Counter()
+        v = E.factor_via_addition_shortint(N, H.add_oracle, c, rng)
+        assert E.value(v) == N and c.calls <= 6
+    for m in (2, 3):
+        N = (1000003 ** m) * balanced_semiprime(64, 3).N * (2 ** 31 - 1) ** (2 * m)
+        c = E.Counter()
+        v = E.factor_via_expmod_shortint(N, H.make_expmod_oracle(m), m, c, rng)
+        assert E.value(v) == N
