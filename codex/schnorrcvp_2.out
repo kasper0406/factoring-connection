@@ -1,0 +1,233 @@
+The central distance–residual certificate survives review. The claimed approximation barrier does not: Prop A is unproved, several counting statements exceed their model’s scope, and E2’s probability calculations contain a substantial numerical defect.
+
+Locations below refer to [the results note](/Volumes/git/factoring-connection/notes/schnorrcvp_results.md). **FATAL** means fatal to the identified claim, not to the entire approach.
+
+1. **Theorem P: correct core proof; MAJOR defects in Corollary P1’s implementation.**
+
+   Both sinh inequalities are correct, \(A\le Q\) is correct, and
+   \[
+   C=e^{(L+A_0)/2}/\omega
+   \]
+   gives the displayed bound for **every** admissible real-lattice \(\gamma\)-CVP answer. No randomness or favorable tie-breaking is needed.
+
+   However, scanning integer \(j\) introduces the acknowledged factor \(e^{1/2}\), which the choice \(e^{-0.51}\) does **not** absorb: its margin over \(e^{-1/2}\) is only \(e^{-0.01}\). Moreover, \(\omega\) itself depends on unknown \(A_0\). The abbreviated corollary also needs \(R/(2C)\) sufficiently small.
+
+   **Fix:** specify a conservative witness allowance, a sufficiently fine constant mesh, and explicit slack covering scanning, rounding, and the sinh correction. This preserves \(O(A_{\max})\) calls.
+
+2. **§2.1 rounding: MAJOR overextension, although \(S\ge L^2\) is sufficient in the intended bounded regime.**
+
+   For \(A_0=O(L)\), bounded \(\gamma\), and hence \(Q=O(L)\), the argument works. The last-coordinate error is \(O(L/S)\); its contribution to squared distance can be \(O(L^{3/2}/S)=o(1)\).
+
+   It does not cover arbitrary \(\gamma\), arbitrary witness heights, or arbitrary \(B\). Neither do these hypotheses imply entries have \(O(L)\) bits. A sufficient general prescription is \(S\gg R^3\), with bit lengths depending on \(L+A_{\max}+|\log\omega|+\log S\). Fixed 80-digit arithmetic in `lattice.py` is not a general correctly-rounded construction.
+
+   **Fix:** state parameter restrictions, bootstrap bounds for rounded-oracle outputs, and use certified precision that scales with entry size.
+
+3. **§1, relation-lattice \(\lambda_1\) bounds: FATAL as defined.**
+
+   The nonzero vector \((0,2)\) belongs to \(\Lambda_N\) and has the stated “norm” zero. Thus
+   \[
+   \lambda_1(\Lambda_N)\ge\log(N-1)
+   \]
+   is false. The displayed Minkowski body also ignores an entire coordinate and is not an \(n+1\)-dimensional bounded convex body.
+
+   **Fix:** quotient out \(\langle(0,2)\rangle\), or work with the projected rank-\(n\) lattice
+   \[
+   \{a:\prod p_i^{a_i}\equiv\pm1\pmod N\}.
+   \]
+   The elementary \(u|w|\ge N-1\) argument then gives the intended lower bound for nontrivial signed relations. Redo the determinant calculation there.
+
+4. **Lemma LA: the homomorphism and odd-index argument are correct; MAJOR overstatement of the assumptions.**
+
+   Binary carries change the half-sum by a relation, whose multiplicative image is 1. Consequently the kernel-basis argument works. Multiplication by an odd lattice index also preserves every order-two image, giving the claimed surjectivity.
+
+   But odd index is a strong sufficient condition, not the “standard assumption of every congruence-of-squares method.” Such methods can succeed without generating a full-rank, odd-index sublattice. GRH does not imply odd index.
+
+   Bach requires care: the \(2\log^2N\) small-integer bound must distinguish nonunits from units outside a subgroup. The note’s trial-division hypothesis rescues its intended application; do not advertise an unqualified composite-modulus generator theorem. The usual general unit bound uses \(3\log^2N\). I could not retrieve Bach’s full original PDF, so its precise theorem numbering/constants still require direct source verification.
+
+   **Fix:** separate the group-generation assumption from the odd-index assumption, and describe the latter as stronger than necessary.
+
+5. **§2.2 implementation claim: MAJOR, demonstrably false.**
+
+   [`core.py:169`](/Volumes/git/factoring-connection/src/schnorrcvp/core.py:169) tests only `deps[:max_deps]`, with default 64.
+
+   Reproduced counterexample: \(N=35,\ P=\{2\}\), relations consisting of 64 copies of \((24,0)\), followed by \((12,0),(0,2)\). They generate all of \(\Lambda_N\). The default returns no factor; allowing all dependencies returns 7.
+
+   **Fix:** remove the default truncation from the theorem-backed routine.
+
+6. **§2.3: prime-multiplier distinctness is correct; MAJOR overclaim in the proposed Adleman repair.**
+
+   Coprimality makes the ordered pair \((u,w)\) canonical. Distinct primes \(k>B\) cannot satisfy \(vk=v'k'\) with smooth \(v,v'\). This proves distinct relations, not independent or useful ones.
+
+   [Adleman’s actual continuation](https://raw.githubusercontent.com/lducas/SchnorrGate/main/LATFAC.pdf) intends to force \(p_ip_j\mid P\). Nevertheless, replacing the **whole vector** \(V_0\) by \(V_0+V_i+V_j\), while retaining \(V_i,V_j\), leaves every lattice in the parameter scan unchanged. The same shortest vector remains a valid oracle answer; changing its coefficients does not create a new primitive congruence. Thus the literal oracle argument has a real gap.
+
+   Deleting generators changes the problem and requires renewed witness and shortest-vector proofs. It does not establish that “his argument goes through.”
+
+   **Fix:** retain the basis-invariance criticism, explain Adleman’s apparent intention, and present the repair as a separately justified modification.
+
+7. **Theorem H and §5’s “cleanest statement”: MAJOR missing hypotheses and uniformity.**
+
+   Expected witness counts do not imply a witness for **every** multiplier target. E1 tests neither squarefree witnesses nor the required very short windows. Distinct outputs do not establish \(H_{\mathrm{LA}}\), especially for arbitrary oracle tie-breaking.
+
+   The headline also omits GRH, although the proof invokes Bach. The dimension \(L^{2+o(1)}\) requires \(\kappa\downarrow2\), causing the required height parameter \(a>1/(\kappa-2)\) to diverge. The stated fixed-\(\kappa\), \(A_0=O(L)\), \(O(nL)\) analysis does not uniformly establish that limit. §5 does not even impose the witness-height bound needed for its call count.
+
+   **Fix:** first state the conditional theorem for fixed \(\kappa>2\), bounded witness height, explicit group generation, uniform witness existence, and adequate output relations. Claim the limiting dimension only after a uniform analysis.
+
+8. **Theorem G, §2.6: MAJOR incorrect constants and incomplete accounting.**
+
+   The algebra yielding \(2\sqrt{\alpha\tau}\) is correct when **\(\theta\)** equals the prescribed expression and oracle calls have unit cost.
+
+   Two corrections matter:
+
+   - For constant \(\eta=\gamma-1\),
+     \[
+     \theta=(\gamma^2-1)/2=\eta+\eta^2/2,
+     \]
+     not \(\eta\). Within this model the constant is \(\sqrt{\gamma^2-1}\); beating QS requires \(\eta<\sqrt2-1\), not \(1/2\). The \(\alpha=1/2\) endpoint therefore also needs correction.
+   - “Oracle cost \(\operatorname{poly}(n)\)” cannot be suppressed in an \(L\)-constant. If one call costs \(n^d\), collection costs \(L[\alpha,(d+1)b+s]\). The corresponding simplified optimization gives \(2\sqrt{(d+1)\alpha\tau}\), not a degree-independent constant.
+
+   **Fix:** distinguish oracle-query complexity from running time, retain exact \(\theta\), and list witness, diversity, and linear-algebra assumptions alongside \(H_{\mathrm{res}}'\).
+
+9. **§§0, 2.5: MAJOR false discontinuity at \(\gamma=2\).**
+
+   The same benign-oracle model gives \(\gamma=2\) cost \(L[1/2,\sqrt3]\) under unit-cost calls: subexponential and better than trial division, although worse than QS/GNFS.
+
+   For growing \(\gamma\), a bad residual upper bound establishes failure of this certificate, not impossibility of another reduction or of favorable actual outputs.
+
+   **Fix:** replace “gives nothing” with the precise guarantee lost, and identify the benchmark being compared.
+
+10. **Prop A: FATAL to the asserted tightness and impossibility theorem.**
+
+   The construction uses a radius based on the witness upper bound. But
+   \[
+   d^2=\operatorname{dist}(t,\Lambda_C)^2\le A_0+1
+   \]
+   does not imply that a vector near radius \(\gamma\sqrt{A_0+1}\) lies within radius \(\gamma d\). A substantially better closest vector invalidates that step.
+
+   Further, \(A\approx\gamma^2A_0\) does not imply \(Q\approx A\) without squarefreeness. Section 3 counts smooth residuals; it does not establish nonsmooth answers in the required ball. Marginal smoothness probability below 1 supplies neither existence nor the simultaneous adversarial behavior needed against the complete scan.
+
+   **Fix:** withdraw Prop A and its downstream no-go conclusions. A replacement needs actual-distance bounds and a joint counting theorem inside the admissible ball.
+
+11. **Prop NP: basically correct; MINOR formal and threshold corrections.**
+
+   The divisor-threshold language is in NP. [DKRS](https://doi.org/10.1007/s00493-003-0019-y) supplies the requisite deterministic gap hardness; adaptive binary search gives a deterministic polynomial-time **Turing reduction of the factoring function**. This is not a Karp reduction of a function. Queries produced by the language reduction satisfy the gap promise.
+
+   Constant-factor GapSVP hardness likewise suffices after amplification for adaptive queries. [Haviv–Regev, Theorem 3.1](https://theoryofcomputing.org/articles/v008a023/v008a023.pdf) explicitly provides randomized reductions with two-sided error.
+
+   State coAM containment at the \(O(\sqrt{n/\log n})\) scale. [Aharonov–Regev’s Theorem 1.1](https://cims.nyu.edu/~regev/papers/cvpconp.pdf) establishes \(C\sqrt n\) for an absolute constant; their proof uses 100, not coefficient 1. “Non-NP-hard” also requires the usual complexity-collapse qualification.
+
+   **Fix:** define the function/oracle reduction notation and preserve constants hidden in the cited placements.
+
+12. **§3’s counting exponent: MAJOR misuse of a shell estimate as a cumulative count.**
+
+   The displayed exponent is the natural \(H_S\) estimate for shells of sizes \(v\asymp N^a,\ |w|\asymp N^b\), with \(u\asymp vN\), fixed parameters, and \(\kappa>1\).
+
+   It cannot generally describe all \(v\le N^a\): for \(\kappa<2\), increasing \(a\) makes the asserted count decrease. One must maximize over the permitted shells. Near \(w=-vN\), the assumption \(u\asymp vN\) also needs treatment.
+
+   The \(3/2\) and 2 thresholds are meaningful heuristic shell thresholds, not universal nonexistence results. Their boundary cases and unbounded heights are untreated. The claimed closest-vector residual \(N^{1/\kappa}\) additionally lacks a specified scale \(C\).
+
+   **Fix:** give a shell integral or maximization, state its domain, and separate existence estimates from CVP-output predictions.
+
+13. **§3’s “all sizes,” upper estimates, and \(n_{\min}\): MAJOR unsupported conclusions.**
+
+   The code truncates \(\log v\); it does not count every height. Extending the range once is not a tail bound. More fundamentally, any existing relation generates infinitely many nonprimitive triples by smooth scaling. A finite “all-size count” must explicitly concern primitive triples.
+
+   Naive \(H_S\) is not an upper-bound model merely because it exceeded primitive observations in nine toy cells. Indeed, it underestimates **all** relations in several cells. Local arithmetic can increase or decrease predictions.
+
+   Consequently \(n_{\min}\) is a grid crossover of this model, not a necessary dimension. A slope near 1.56 does not establish \(L^{3/2+o(1)}\). Nor are \(n+1\) or \(n+2\) relations necessary for factoring; they are generic dependency-count benchmarks.
+
+   **Fix:** count primitive relations, justify tails and typical-input assumptions, and call these values model crossovers.
+
+14. **`psi.py` and the \(10^{-52}/10^{-115}\) figures: MAJOR interpretation error, MINOR certification issue.**
+
+   The integer-weight DP is a sensible way to avoid invalid Dickman extrapolation. For fixed \(B\), smooth-number counts eventually grow polynomially in \(\log X\); the code accommodates that regime.
+
+   But cumulative \(\Psi\)-brackets do not tightly bracket their derivative. Recomputing the published points gives density **lower bounds zero** at both \(K=50\) and 100. At 800 bits, \(n=95\), \(K=50\), the cumulative brackets give approximately
+   \[
+   10^{62.204}\le\Psi(2^{800},499)\le10^{62.350}.
+   \]
+   Thus the marginal count is plausible; the tiny relation expectation still depends on unverified local-distribution and coprimality modeling.
+
+   Resolution agreement does not quantify that modeling error. Ordinary multiprecision plus a distance-from-integer assertion also falls short of certified interval arithmetic.
+
+   **Fix:** publish propagated numerical envelopes, use certified logarithm bounds, and distinguish numerical stability from validity of \(H_S\).
+
+15. **§4’s Schnorr criticisms: the principal algebraic criticisms are correct; MAJOR overreach elsewhere.**
+
+   In the [corrected primary text](https://eprint.iacr.org/2021/933.pdf), \(\hat z=N'\log(u/(vN))\) requires the missing multiplier \(N/N'\). The \(0.917\) full-lattice norm claim is incompatible with the displayed unscaled integer diagonal. Equation (3.3) also fails for arbitrary permutations: a coordinate with \(f(i)=1\) and \(p_i>e\) already contradicts its claimed inequality.
+
+   Those errors invalidate Schnorr’s proof without any counting heuristic.
+
+   Conversely, “no algorithm can find relations that heuristically do not exist” promotes an uncertain model to a premise. Universal claims that embedded shortest vectors have target coefficient zero are also false; sufficiently close smooth approximations provide counterexamples. Witness existence alone is not a BDD or embedding-gap promise.
+
+   **Fix:** lead with the algebraic failures and qualify the statistical and embedding claims separately.
+
+16. **§4.5 BKZ paragraph: MAJOR unjustified lower bound.**
+
+   A root-Hermite factor relative to determinant is not a CVP approximation ratio relative to the actual target distance. GSA does not supply the missing conversion. Even inserting \(\beta=n\) into the displayed \(\delta_\beta^{\Theta(n)}\) expression leaves a growing factor, exposing its unsuitable endpoint behavior.
+
+   Neither \(2^{0.292\beta}\) nor failure of a generic approximation guarantee is a lower bound on what BKZ or a specialized algorithm can achieve.
+
+   **Fix:** present this as a sensitivity scenario with explicit geometric assumptions; remove “only,” “unless,” and runtime lower-bound notation.
+
+17. **E0b: MAJOR lack of a justified optimism direction; MINOR benchmark overprecision.**
+
+   `ideal_enumeration_cost` counts noncoprime \((u,v)\), although these are not distinct lattice vectors. This can inflate both candidate counts and relation counts; their ratio has no established optimistic direction.
+
+   The sieve list size also does not automatically provide that many closest vectors to a target, and repeated batches need not be distinct. Conversely, charging fresh sieve work per batch ignores possible preprocessing and amortization.
+
+   The \(467.38>400\) comparison is arithmetically correct **inside the stipulated model**. It is not evidence of an algorithmic lower bound. Crude QS/GNFS \(L\)-values are acceptable asymptotic reference points, but not calibrated concrete operation counts. The coarse grid supplies no certified “few tens” error estimate.
+
+   **Fix:** model primitive distinct candidates and an explicit listing algorithm; report scenario costs rather than lower bounds.
+
+18. **E2/H\(_{\mathrm{res}}'\): MAJOR numerical defect.**
+
+   The raw data contain **2,066 predictions exceeding 1**, reaching **12.72**, and **66 successful relations assigned probability zero**. Narrow real-interval density estimates and multiplicative corrections are being used as Bernoulli probabilities without valid discrete normalization.
+
+   This explains substantial apparent overprediction. Merely clipping predictions at 1 changes the pooled ratio from **0.868 to 1.175**; clipping is a diagnostic, not a principled repair.
+
+   **Fix:** use normalized discrete conditional probabilities, treat guaranteed-smooth small residuals exactly, and recompute every calibration statistic.
+
+19. **§7 experimental interpretation: MAJOR unsupported validation; MINOR exactness label.**
+
+   E2 predicts smoothness from each **observed** residual. It does not test whether approximate answers saturate Theorem P’s bound or validate Prop A. Correlation changes uncertainty; by itself it does not explain biased predicted means.
+
+   In `list_cvp`, targets are converted to binary64 before MPFR processing. Exact reranking cannot certify candidates omitted during floating enumeration. Three checked outputs agreed with proved CVP, but this does not certify the whole dataset.
+
+   **Fix:** distinguish measured yields from theorem validation, report cluster-aware uncertainty, and verify `list0` against proved CVP or use certified enumeration.
+
+20. **§§0, 6, 9–10: MAJOR universal conclusions; MINOR incomplete literature positioning.**
+
+   An upper residual bound cannot rule out all norms, encodings, adaptive reductions, or structured algorithms. Also, a *subexponential* near-exact oracle does not become a *polynomial-time* factoring algorithm through Theorem H. “Precisely as hard” is unsupported by a one-way heuristic implication.
+
+   Compare explicitly with [Vera’s effective bounds and Micciancio precursor](https://arxiv.org/pdf/1003.5461), [Bright’s 2014 prime-lattice/height analysis](https://cs.curtisbright.com/reports/exceptional-abc.pdf), and [Aboumrad–Widdows–Kaushik §5](https://arxiv.org/html/2308.07804), which already studies explicit relation yields and duplication. The October 2026 literature review should also discuss the newer deterministic polynomial-factor CVP hardness result in [Chapter 7 of the August 2026 manuscript](https://cdn.openai.com/pdf/ten-proofs-oai.pdf).
+
+   **Fix:** replace universal impossibility and equivalence claims with limitations of the specific certificate and model. “No prior statement found” is search disclosure, not novelty evidence.
+
+| Issue | Severity | Fix |
+|---|---|---|
+| P1 scale scan loses its slack | MAJOR | Specify mesh and conservative allowance |
+| Rounding exceeds stated parameter regime | MAJOR | Bound heights, \(\gamma\), precision |
+| Sign-coordinate “norm” and Minkowski argument | FATAL | Quotient torsion; recompute determinant |
+| Odd index called standard/unambiguously GRH-backed | MAJOR | Separate sufficient assumptions |
+| Bach composite-modulus qualification | MINOR | Preserve roughness; verify original constants |
+| Kernel basis truncated at 64 | MAJOR | Test every basis dependency |
+| Adleman repair asserted without proof | MAJOR | Reprove modified construction |
+| H’s uniformity, GRH, limiting dimension | MAJOR | State fixed-parameter conditional theorem |
+| G’s constants and oracle cost | MAJOR | Retain \(\theta\); charge \(n^d\) |
+| Discontinuity at \(\gamma=2\) | MAJOR | State benchmark and guarantee precisely |
+| Prop A admissible-ball argument | FATAL | Withdraw pending joint geometric proof |
+| NP reduction notation/placement constants | MINOR | Specify promise Turing reductions and constants |
+| Shell exponent used cumulatively | MAJOR | Integrate/maximize over shells |
+| All-height counts and primitive upper model | MAJOR | Normalize primitive triples; control tails |
+| \(n_{\min}\) treated as necessity/asymptotic | MAJOR | Report model crossover only |
+| \(\Psi\)-stability treated as relation validation | MAJOR | Separate numerical and distribution errors |
+| Uncertified logarithm rounding | MINOR | Use interval arithmetic |
+| Schnorr critique’s statistical/embedding overreach | MAJOR | Retain algebraic refutation; qualify remainder |
+| BKZ scenario presented as lower bound | MAJOR | Supply conversion or downgrade status |
+| E0b called uniformly optimistic | MAJOR | Model distinct primitive outputs explicitly |
+| Concrete benchmark/grid accuracy | MINOR | Use calibrated costs or label scenarios |
+| E2 probabilities outside \([0,1]\) | MAJOR | Normalize and recompute |
+| E2 used to validate untested oracle assumptions | MAJOR | Restrict interpretation |
+| “Exact” list-CVP certification | MINOR | Verify against proved CVP |
+| Universal barriers and hardness equivalence | MAJOR | Restrict conclusions to established implications |
+| Novelty/literature positioning | MINOR | Add explicit comparisons and current references |

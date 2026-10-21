@@ -166,3 +166,10 @@ def test_expected_relations_monotone_in_n():
     e1 = expected_relations(first_primes(20), 30 * mp.log(2), K=50, h=0.1, lnv_max=40)["E"]
     e2 = expected_relations(first_primes(30), 30 * mp.log(2), K=50, h=0.1, lnv_max=40)["E"]
     assert e2 > e1 > 0
+
+
+def test_kernel_basis_not_truncated_codex_counterexample():
+    """codex schnorrcvp_2 #5: 64 copies of (24,0), then (12,0), (0,2) generate Lambda_35 for P = {2}; all deps must be tried."""
+    vecs = [(24, 0)] * 64 + [(12, 0), (0, 2)]
+    g, ctr = squares_dependency_factor(vecs, [2], 35)
+    assert g == 7

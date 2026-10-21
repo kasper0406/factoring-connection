@@ -135,7 +135,7 @@ def uw_lower_bound_holds(u: int, v: int, w: int, N: int) -> bool:
 
 
 def squares_dependency_factor(rel_vectors: List[Tuple[int, ...]], P: Sequence[int], N: int,
-                              max_deps: int = 64) -> Tuple[Optional[int], Dict[str, int]]:
+                              max_deps: Optional[int] = None) -> Tuple[Optional[int], Dict[str, int]]:
     """Linear algebra mod 2 over Lambda_N vectors, then square roots of 1 mod N and gcds.
 
     rel_vectors are Lambda_N vectors (a, s) with (-1)^s prod p^a = 1 mod N.  A dependency mod 2
@@ -166,7 +166,7 @@ def squares_dependency_factor(rel_vectors: List[Tuple[int, ...]], P: Sequence[in
         if bits == 0:
             deps.append(comb)
     ctr = {"relations": m, "dependencies": len(deps), "gcd_calls": 0, "trivial_roots": 0}
-    for comb in deps[:max_deps]:
+    for comb in (deps if max_deps is None else deps[:max_deps]):
         tot = [0] * dim
         for i in range(m):
             if comb >> i & 1:

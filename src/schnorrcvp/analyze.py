@@ -142,5 +142,55 @@ def posthoc_e2():
     print("POST-HOC pooled", round(to / tp, 3))
 
 
+def corrected_e2(W0: int = 200000, h: float = 0.1):
+    """POST-HOC correction of the pre-registered H_res' implementation (codex schnorrcvp_2 #18: 2066 predictions
+    exceeded 1 and 66 relations had p = 0).  For |w| <= W0: exact discrete probability
+        #{m in [|w|e^{-h/2}, |w|e^{h/2}] : gcd(m, Q) = 1, m smooth} / #{m in window : gcd(m, Q) = 1},  Q = supp(uv);
+    for |w| <= p_n it is exactly 1 (every integer <= B is B-smooth).  For |w| > W0: the pre-registered value clipped to
+    [0, 1].  Also reports the plain clipping diagnostic."""
+    import numpy as np
+    from .core import first_primes
+    from .enum_rel import smooth_mask_window
+    from .run_e2 import supp
+    rows = [json.loads(l) for l in open("experiments/raw/schnorrcvp_E2.jsonl")]
+    masks = {}
+    agg = defaultdict(lambda: [0, 0.0, 0.0, 0])
+    over1 = zero_rel = 0
+    for r in rows:
+        n = r["n"]
+        P = first_primes(n)
+        if n not in masks:
+            masks[n] = np.concatenate([[False], smooth_mask_window(1, int(W0 * 1.2) + 2, P)])
+        mask = masks[n]
+        for o in r["outputs"]:
+            if o["p_ref"] is None:
+                continue
+            over1 += o["p_ref"] > 1
+            zero_rel += (o["p_ref"] == 0 and o["rel"])
+            a = agg[r["variant"]]
+            a[0] += o["rel"]; a[2] += min(1.0, o["p_ref"]); a[3] += 1
+            if o["w"] is None:
+                a[1] += min(1.0, o["p_ref"]); continue
+            w = abs(int(o["w"]))
+            if w <= P[-1]:
+                p = 1.0
+            elif w <= W0:
+                lo = max(1, int(w * math.exp(-h / 2))); hi = int(w * math.exp(h / 2)) + 1
+                m = np.arange(lo, hi + 1)
+                cop = np.ones(len(m), dtype=bool)
+                for q in supp(int(o["u"]) * int(o["v"]), P):
+                    cop &= (m % q != 0)
+                denom = int(cop.sum())
+                p = float((cop & mask[lo:hi + 1]).sum()) / denom if denom else 0.0
+            else:
+                p = min(1.0, o["p_ref"])
+            a[1] += p
+    print("pre-registered p_ref > 1:", over1, " relations with p_ref = 0:", zero_rel)
+    for k, (o, p, pc, cnt) in sorted(agg.items()):
+        print("CORRECTED", k, o, round(p, 1), round(o / p, 3), " clipped-only", round(o / pc, 3))
+    to = sum(a[0] for a in agg.values()); tp = sum(a[1] for a in agg.values()); tc = sum(a[2] for a in agg.values())
+    print("CORRECTED pooled", round(to / tp, 3), " clipped-only pooled", round(to / tc, 3))
+
+
 if __name__ == "__main__":
-    {"e1": e1, "e2": e2, "posthoc_e1": posthoc_e1, "posthoc_e2": posthoc_e2}[sys.argv[1]]()
+    {"e1": e1, "e2": e2, "posthoc_e1": posthoc_e1, "posthoc_e2": posthoc_e2, "corrected_e2": corrected_e2}[sys.argv[1]]()
