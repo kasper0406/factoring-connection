@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import statistics
 import sys
@@ -71,6 +72,11 @@ def score(rows, exclude_design=False):
                                        "coprime_pairs_total": sum(r["coprime_pairs"] for r in rows)})
     s8 = [r for r in rows if r["M1_smoothk"] >= 100]
     bad8 = [(key(r), r["triply"], r["pi_y"]) for r in s8 if r["triply"] < r["pi_y"]]
+    # upper half (added after review): registered loose bound 3*7^(2(s+2)+3) and the proved 3*7^(2s+3)
+    up_loose = [key(r) for r in rows if math.log10(max(r["triply"], 1)) > r["evertse_bound_log10"]]
+    up_tight = [key(r) for r in rows
+                if math.log10(max(r["triply"], 1)) > math.log10(3) + (2 * r["pi_y"] + 3) * math.log10(7)]
+    bad8 = bad8 + [("upper", k) for k in up_loose + up_tight]
     out["P8"] = (not bad8, {"n_runs": len(s8), "violations": bad8,
                             "min_triply_over_pi": round(min(r["triply"] / r["pi_y"] for r in s8), 2)})
     return out

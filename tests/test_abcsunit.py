@@ -125,3 +125,31 @@ def test_pair_model_fast_matches_exact():
     a = model.pair_model(vals, N, X, H, P, vals)
     b = model.pair_model_fast(vals, N, X, H, P, vals, usample=10 ** 9)
     assert abs(a - b) / a < 1e-9
+
+
+def test_lemma_FR_critic_example_zrank_deficit_still_fruitful():
+    # Opus proof critic: N = 1147 = 31*37, S = {2,3,5,7}: Z-rank 2 < s = 4, r = 0, rho = 2 -> fruitful.
+    N, P = 1147, [2, 3, 5, 7]
+    rels = [(225 ** 2, 256 ** 2), (175 ** 2, 972 ** 2)]
+    rels = [(min(a, b), max(a, b), (max(a, b) - min(a, b)) // N) for a, b in rels]
+    rows, exps = [], []
+    for u, v, k in rels:
+        assert (v - u) % N == 0
+        b, e = core.relation_row(u, v, P)
+        rows.append(b)
+        exps.append(e)
+    rank, deps = core.f2_dependencies(rows, len(P))
+    assert rank == 0 and len(deps) == 2
+    gs = {core.square_from_dependency(m, rels, exps, P, N) for m in (deps[0], deps[1], deps[0] ^ deps[1])}
+    assert {31, 37} <= gs
+
+
+def test_closure_lemma_identity():
+    # codex closure: c = a(b+N)/(b-a), c+N = b(a+N)/(b-a); exponent vector of (c, c+N) is a Z-combination.
+    N = 1147
+    for a in range(1, 300):
+        for b in range(a + 1, 300):
+            num = a * (b + N)
+            if num % (b - a) == 0:
+                c = num // (b - a)
+                assert c + N == b * (a + N) // (b - a) and (b * (a + N)) % (b - a) == 0
