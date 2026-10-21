@@ -1,0 +1,533 @@
+**UNVERIFIED:** I cannot establish Prop SI, or a constructor with per-output cost \(L[1/3,\tau]\) for \(\tau<0.75\). The checked lattice, birthday and CRT results do not supply one. General nonexistence is also **UNVERIFIED**.
+
+**PROVED, conditional on the stated distributional assumptions:** your \(1.2114\) calculation is correct. Two qualifications matter: the constructor must produce sufficiently diverse relations, and the sanity check in Question 3 does not hold with the factor base fixed as stated.
+
+I charge all preprocessing and failed trials to the outputs actually needed. Otherwise arbitrary precomputation makes “per output” misleading. Write
+\[
+a=\frac{2}{3\kappa},\qquad b=\frac{\nu}{3\kappa}.
+\]
+I use these named assumptions below:
+
+- **HEURISTIC — local Dickman assumption:** the relevant short intervals have the predicted smooth-number density.
+- **HEURISTIC — residual assumption:** the constructor’s residuals have smoothness probability \(L[1/3,-b]\).
+- **HEURISTIC — relation-diversity assumption:** the accepted relations yield enough independent, nontrivial square congruences.
+- **HEURISTIC — flatness assumption:** the product values or residues in a specified search model have the indicated approximately uniform distribution.
+
+None of these assumptions follows merely from a large expected number of smooth integers.
+
+**1. Log-knapsack / lattice**
+
+**PROVED.** Put \(X=kN\), and define
+\[
+c=\frac{\log X+\log(X+h)}2,\qquad
+\epsilon=\frac{\log(X+h)-\log X}2.
+\]
+Then
+\[
+u=\prod_{p\le y}p^{e_p}\in[X,X+h]
+\iff
+e_p\ge0,\quad
+\left|\sum e_p\log p-c\right|\le\epsilon.
+\]
+Furthermore,
+\[
+\epsilon=(1+o(1))\frac{h}{2kN},
+\]
+so the number of required fractional precision bits is
+\[
+\frac{x-\nu F_{2/3}+\log k}{\log 2}+O(1).
+\]
+Thus the coefficients require \(O(x)\)-bit precision. Their bit length is manageable; the search is the issue.
+
+**KNOWN.** A standard Euclidean prime-number lattice has columns
+\[
+B_C=
+\begin{pmatrix}
+\operatorname{diag}(\sqrt{\log p_i})\\
+C\log p_1\;\cdots\;C\log p_d
+\end{pmatrix},
+\qquad d=\pi(y),
+\]
+and target \(t=(0,\ldots,0,Cc)\). The prime-lattice constructions and their signed-exponent interpretation are explicitly described in [Vera, §§2.1–2.3, Theorems 1–2](https://arxiv.org/pdf/1003.5461), including the relationship between the Schnorr and Adleman constructions.
+
+**PROVED.** Its distance formula is
+\[
+\|B_Ce-t\|^2
+=
+\sum e_i^2\log p_i+
+C^2\left(\sum e_i\log p_i-c\right)^2.
+\]
+For unrestricted integer \(e_i\), write
+\[
+A=\prod_{e_i>0}p_i^{e_i},\qquad
+B=\prod_{e_i<0}p_i^{-e_i}.
+\]
+The logarithmic coordinate approximates \(\log(A/B)\). It therefore describes a ratio of smooth numbers, rather than automatically giving the required nonnegative exponent vector.
+
+**PROVED.** There is **no embedding-independent numerical approximation factor \(\gamma\)**. It depends on the coordinate weights, exponent constraints and promise slack. In particular, \(kN/h\) is a precision scale, not itself the required CVP approximation factor.
+
+For example, suppose an inner-window solution satisfies
+\[
+\|De\|\le R_0,\qquad |\ell\cdot e-c|\le\epsilon/2.
+\]
+A \(\gamma\)-CVP answer guarantees the logarithmic accuracy if
+\[
+\gamma\sqrt{R_0^2+(C\epsilon/2)^2}\le C\epsilon.
+\]
+Choosing \(C\epsilon=2R_0\) makes \(\gamma\le\sqrt2\) sufficient **for that coordinate**. This calculation does not enforce nonnegative exponents.
+
+**PROVED.** One can enforce those constraints with a binary embedding, at essentially the same \(L\)-scale dimension. Expand each exponent in binary:
+\[
+e_p=\sum_j2^jz_{p,j},\qquad z_{p,j}\in\{0,1\}.
+\]
+Using enough bits to represent exponents up to \(\log(KN+h)/\log p\) gives
+\[
+m=O(\pi(y)\log x)=L[1/3,\kappa].
+\]
+Let \(w\) contain the corresponding \(2^j\log p\), and use
+\[
+\widetilde B=\begin{pmatrix}I_m\\ \epsilon^{-1}w^T\end{pmatrix},
+\qquad
+\widetilde t=(1/2,\ldots,1/2,\epsilon^{-1}c).
+\]
+For binary \(z\),
+\[
+\|\widetilde Bz-\widetilde t\|^2
+=\frac m4+\epsilon^{-2}(w\cdot z-c)^2.
+\]
+Any nonbinary integer vector has first-coordinate contribution at least \(m/4+2\). Therefore exact CVP finds a valid interval solution whenever one exists. With an inner-window promise of error at most \(\epsilon/2\), the sufficient approximation guarantee is
+\[
+\gamma^2\le\frac{m+4}{m+1}
+=1+\frac3{m+1}.
+\]
+This is a concrete \(1+O(1/m)\) guarantee for this embedding, not a universal necessity. Rational rounding can be done with \(O(x)\)-bit coefficients and final exact integer verification; integer products outside the interval are separated from its endpoints by at least one.
+
+**KNOWN.** Exact Euclidean CVP has a randomized
+\[
+2^{m+o(m)}
+\]
+time algorithm: [Aggarwal–Dadush–Stephens-Davidowitz, Corollary 6.5](https://arxiv.org/pdf/1504.01995). Applied here, this becomes
+\[
+\exp\!\left(\exp((\kappa+o(1))F_{1/3})\right).
+\]
+Dividing this cost by \(L[1/3,O(1)]\) outputs does not change its leading scale.
+
+**HEURISTIC — usual block-reduction error model.** Even granting the generous effective error allowance
+\[
+\log\gamma=O(F_{2/3}),
+\]
+the model
+\[
+\log\gamma\asymp \frac{d\log\beta}{\beta}
+\]
+requires
+\[
+\beta\gtrsim\frac{d\log d}{F_{2/3}}
+=\frac{d}{x^{O(1)}}.
+\]
+With exponential block-oracle cost, this again gives
+\[
+\exp\!\left(\exp((\kappa+o(1))F_{1/3})\right).
+\]
+Blocks small enough to cost \(L[1/3,O(1)]\) give vastly weaker errors in this model. This is an assessment of a standard reduction model, not a lower bound for every algorithm on prime lattices.
+
+**PROVED.** The comparison with Schnorr requires matching height bounds:
+
+- For fixed \(k\), requiring all exponents nonnegative restricts the signed-exponent search.
+- With \(k\) free, your admissible set contains Schnorr pairs \(A-BN\in[0,h]\) whenever the smooth denominator \(B\le K\).
+- An unrestricted signed lattice search may return denominators much larger than \(K\), which does not solve Prop SI.
+
+Under your stated global Dickman model,
+\[
+\Psi(K,y)/K\sim\rho(C/\kappa)
+\]
+for fixed \(C/\kappa\), with the ratio equal to one when \(K\le y\). Thus restricting bounded multipliers to be smooth loses only a constant proportion at this scale. Allowing arbitrary bounded \(k\) enlarges the solution set, but does not remove the precision or height constraints.
+
+**2. Meet-in-the-middle / multiplicative birthday**
+
+**PROVED.** For fixed lists \(A,B\), the exact number of representation hits is
+\[
+H=\sum_{k=1}^{K}\sum_{a\in A}
+\#\left\{b\in B:
+\left\lceil\frac{kN}{a}\right\rceil
+\le b\le
+\left\lfloor\frac{kN+h}{a}\right\rfloor
+\right\}.
+\]
+This identity needs no randomness assumption.
+
+**HEURISTIC — product flatness.** If a sampled pair has product density \(f\), then
+\[
+\mathbb EH=|A||B|\,p,\qquad
+p=\sum_{k=1}^{K}\int_{kN}^{kN+h}f(t)\,dt.
+\]
+For approximately uniform products over a region of width \(W\),
+\[
+\mathbb EH\approx |A||B|\frac{Kh}{W}.
+\]
+For logarithmic density \(g\), the corresponding expression is
+\[
+\mathbb EH\approx
+|A||B|\frac hN
+\sum_{k=1}^{K}\frac{g(\log(kN))}{k}.
+\]
+Consequently, a factor \(K\) cannot simply be added while keeping the product support and its density unchanged. If the support expands to width \(W\asymp KN\), the aggregate hit probability remains about \(h/N\).
+
+**PROVED — standard sorted-list accounting.** Write \(m=|A|\le n=|B|\). After list generation and sorting, binary searches for every \((k,a)\), followed by reporting, cost
+\[
+\widetilde O(m+n+Km+H).
+\]
+If \(D\) distinct integers are produced, the amortised cost is therefore
+\[
+\boxed{\quad
+\widetilde O\!\left(\frac{m+n+Km+H}{D}\right).
+\quad}
+\]
+This charges list reuse explicitly.
+
+**HEURISTIC — flatness and negligible duplication.** Substituting
+\(D\approx H\approx mnKh/W\) gives
+\[
+\boxed{\quad
+\widetilde O\!\left(
+1+\frac{W}{mKh}+\frac{W}{nh}
+\right).
+\quad}
+\]
+For \(T\) desired hits, optimize \(n+Km\) subject to
+\[
+mn=\frac{TW}{Kh}.
+\]
+The optimum has \(n=Km\), and gives cost per hit
+\[
+\widetilde O\!\left(1+\sqrt{\frac{W}{hT}}\right).
+\]
+With \(W\asymp KN\), this is
+\[
+\widetilde O\!\left(1+\sqrt{\frac{KN}{hT}}\right).
+\]
+For \(T\asymp K\), it remains approximately \(\sqrt{N/h}\).
+
+**PROVED within the flat explicit-list model.** Even granting free matching after list generation, \(mn\,p\gtrsim T\) and AM–GM imply
+\[
+\frac{m+n}{T}\gtrsim\frac{2}{\sqrt{Tp}}.
+\]
+For \(p\asymp h/N\) and the needed \(T=L[1/3,O(1)]\), this is
+\[
+N^{1/2+o(1)}.
+\]
+Thus amortising one explicit sorted list over the required number of outputs does not approach \(L^{o(1)}\) in this model. This argument does not cover a procedure that constructs highly target-biased lists efficiently; constructing such lists would itself be a new ingredient.
+
+**PROVED.** Representations must be distinguished from distinct outputs. The number of ordered \(r\)-factorisations of
+\(u=\prod p^{e_p}\), allowing factors equal to one, is
+\[
+R_r(u)=\prod_{p^{e_p}\parallel u}
+\binom{e_p+r-1}{r-1}.
+\]
+Proof: distribute each prime’s exponent among the \(r\) factors independently. For squarefree \(u\), this is \(r^{\omega(u)}\). If the lists contain repeated representations of a hit, \(D<H\), so the reporting bound above becomes worse per distinct integer.
+
+**PROVED — toy check.** The exact script [si_toy_checks.py](/Volumes/git/factoring-connection/codex/scratch/siconstruct_1/si_toy_checks.py) gives, for \(N=10403,\ h=512,\ K=16\), and identical lists of 409 smooth integers:
+\[
+H=4381,\qquad D=264.
+\]
+It also verifies \(R_2(43200)=84\) and \(R_3(43200)=1680\). These check identities, not asymptotic flatness.
+
+**KNOWN.** Wagner’s \(r=2^d\) tree over suitable additive groups uses lists of size approximately
+\[
+Q^{1/(d+1)}
+\]
+and time \(\widetilde O(rQ^{1/(d+1)})\). Its many-solution variant yields, in its specified range, \(T\) solutions at amortised cost approximately
+\[
+\widetilde O\!\left(
+rQ^{1/(d+1)}T^{-d/(d+1)}
+\right).
+\]
+The additive-group extensions and many-solution accounting are in [Wagner, §2, particularly “Operations other than xor” and “Finding many solutions”](https://www.enseignement.polytechnique.fr/profs/informatique/Francois.Morain/Master1/Crypto/projects/Wagner02.pdf).
+
+**PROVED — parameter substitution.** Here the effective precision space has
+\[
+\log Q=x-o(x).
+\]
+For fixed \(r\), the formal Wagner cost is still \(N^{c+o(1)}\), with \(c>0\). Even allowing \(r=x^{O(1)}\), the formal cost is at least
+\[
+\exp(\Omega(x/\log x)).
+\]
+Amortisation over \(T=L[1/3,O(1)]\) does not change that conclusion.
+
+**PROVED — an additional positive-product obstruction.** Suppose all combinations of \(r\) leaf factors must have product at most \(KN\). If every leaf list contains \(M\) distinct positive integers, its maximum is at least \(M\), so
+\[
+M^r\le KN.
+\]
+The standard Wagner requirement \(M\approx Q^{1/(d+1)}\) violates this for \(r=2^d\ge4\), since \(r/(d+1)>1\). Allowing oversized combinations introduces a further size-selection condition. The standard random-list complexity cannot be imported unchanged.
+
+**KNOWN.** Schroeppel–Shamir reduces memory without removing the \(2^{n/2}\) subset-sum time scale; its construction is reviewed in [Howgrave-Graham–Joux, §3](https://eprint.iacr.org/2010/189.pdf). The representation technique improves random dense knapsacks: the checked [BCJ Theorem 2 and §3.3](https://eprint.iacr.org/2011/474.pdf) give the \(2^{(0.291+o(1))n}\) bound for the stated random equibalanced instances.
+
+**UNVERIFIED.** Those random-knapsack guarantees do not apply directly to the sparse, correlated prime-log instance. Applying them to all binary exponent variables retains exponential dependence on \(m=L[1/3,\kappa]\). A hypothetical reduction to a random density-one instance with only \(n\asymp x/\log2\) variables would still give \(N^{0.291+o(1)}\), far above the target.
+
+**HEURISTIC — typical smooth-factor shape.** If
+\(\Omega(u)=O(x/\log y)\), then for polynomially many factors
+\[
+\log R_r(u)\le\Omega(u)\log r=O(F_{2/3})=o(x).
+\]
+Thus ordinary factorisations do not supply the exponential-in-\(x\) representation surplus needed to make the formal birthday costs small. This does not rule out a new representation system with a different structure.
+
+**3. Joint choice of \((k,u)\)**
+
+**PROVED.** In a uniform residue model, a constructed smooth integer hits the window with probability
+\[
+\frac{h+O(1)}N.
+\]
+Choosing its quotient \(k=\lfloor u/N\rfloor\) afterward does not multiply this probability by the number of possible quotients.
+
+**HEURISTIC — local Dickman and uniform smooth sampling.** Among smooth integers up to \(KN\), the desired union has approximately
+\[
+Kh\,\rho(\log N/\log y)
+\]
+elements, while the total is approximately
+\[
+KN\,\rho(\log N/\log y).
+\]
+Their ratio is again \(h/N\). A cheap global smooth-number sampler therefore has rejection cost approximately \(N/h\) per output.
+
+**PROVED.** The sanity checks proposed in the question need correction:
+
+- A per-output cost \(L[\alpha]\), \(\alpha<1/3\), does **not** imply sub-\(L[1/3]\) factoring with your fixed \(y\). The number of required outputs is still \(L[1/3,\kappa+b]\).
+- If the residual is at most \(y\), it is automatically smooth, but the stated linear-algebra cost is still \(L[1/3,2\kappa]\), rather than polynomial.
+- Polynomial factoring would require a sufficiently uniform constructor for polynomial-size factor bases, polynomial total work and adequate relation diversity.
+
+**HEURISTIC — local Dickman.** With the *same* \(y\) and \(K\), changing the window to \(h=y\) would give expected total hits
+\[
+Ky\,L[2/3,-a]
+=
+\exp\!\left((C+\kappa+o(1))F_{1/3}-(a+o(1))F_{2/3}\right)
+\longrightarrow0.
+\]
+Thus this much smaller window also loses the abundance premise.
+
+**PROVED, conditional on the residual and relation-diversity assumptions.** The arithmetic behind your factoring implication is:
+\[
+\Pr(v\text{ smooth})=L[1/3,-b],
+\qquad
+M=L[1/3,\kappa+b].
+\]
+Indeed,
+\[
+\frac{\log h}{\log y}
+=\frac{\nu}{\kappa}\left(\frac{x}{\log x}\right)^{1/3},
+\]
+and the stated Dickman estimate gives exponent \(bF_{1/3}\).
+
+If the amortised constructor cost is \(L[1/3,\tau]\), the stipulated linear algebra gives
+\[
+T_{\rm factor}
+=
+L\!\left[1/3,
+\max\left\{\kappa+\frac{\nu}{3\kappa}+\tau,\;2\kappa\right\}
+\right].
+\]
+Batch smoothness screening need not add a new leading constant: the checked smooth-part procedure is quasi-linear up to logarithmic factors in the combined factor-base and candidate input size; see [Coron et al., §5.1, Theorem 1](https://www.iacr.org/archive/crypto2009/56770423/56770423.pdf).
+
+**PROVED.** Taking \(\nu\downarrow2/(3\kappa)\), \(\tau=0\), and balancing the two terms gives
+\[
+\kappa^3=\frac29,\qquad
+T_{\rm factor}=L[1/3,(16/9)^{1/3}+\varepsilon],
+\]
+where
+\[
+\kappa=0.605706864\ldots,\qquad
+(16/9)^{1/3}=1.211413729\ldots.
+\]
+
+**PROVED.** The \(\tau\) threshold depends on whether \(\kappa\) is reoptimized. Against the supplied MNFS constant \(1.901883612\ldots\):
+
+- At fixed \(\kappa=(2/9)^{1/3}\), the threshold is \(\tau<0.690469883\ldots\).
+- Reoptimizing gives the threshold \(\tau<0.757169369\ldots\).
+
+For the latter, minimize
+\[
+\kappa+\frac{2}{9\kappa^2}.
+\]
+Its minimum occurs at \(\kappa=(4/9)^{1/3}\) and equals
+\(1.144714243\ldots\); at the resulting threshold, collection dominates linear algebra.
+
+**PROVED.** Prop SI alone still needs a diversity condition for factoring. Multiplying one relation \(u_0\equiv v_0\pmod N\) by smooth integers produces more smooth pairs, but leaves the exponent-difference vector unchanged. Such outputs do not furnish new independent relations. Also, if only one output per distinct multiplier is allowed, the multiplier budget must accommodate \(M\), requiring \(C\ge\kappa+b\) at leading order.
+
+**4. CRT / Coppersmith / Boneh decoding**
+
+**KNOWN.** Boneh’s interval construction uses *strong smoothness*. Set
+\[
+S=\prod_{p\le y}p^{\lfloor\log y/\log p\rfloor}
+=\operatorname{lcm}(1,\ldots,\lfloor y\rfloor).
+\]
+A strongly \(y\)-smooth integer divides \(S\). Boneh treats this and the more general large-smooth-factor problem in [§3, Definition 3.1 and Theorem 3.2](https://core.ac.uk/download/pdf/82341411.pdf).
+
+**KNOWN.** The decoding condition has a square-root agreement threshold, schematically
+\[
+\log T>\sqrt{\log(4h)\log S}
+\]
+with additional slack, where \(T\) is the required common-divisor size. A checked related interval theorem gives the condition
+\[
+|I|<2D^{\log D/\log S}
+\]
+for recovering integers having common divisor greater than \(D\) with \(S\); see [Sarkar–Maitra, §2.2, Theorem 2](https://citeseerx.ist.psu.edu/document?doi=2b283ed6717f4a323d5076312a6658a53de5509f&repid=rep1&type=pdf). These are conditional recovery ranges, not arbitrary-window constructors.
+
+**PROVED.** Even the generous limiting condition
+\[
+\log h\lesssim\frac{x^2}{\log S}
+\]
+fails overwhelmingly here. Elementary bounds suffice:
+\[
+\log S\asymp_{\text{within log factors}} y.
+\]
+For a lower bound, a central binomial coefficient divides the corresponding least common multiple: its \(p\)-valuation is at most \(\lfloor\log_p(2m)\rfloor\). Hence
+\[
+\log\operatorname{lcm}(1,\ldots,2m)
+\ge\log\binom{2m}{m}
+\ge2m\log2-O(\log m).
+\]
+The upper bound \(\log S\le y\log y\) is immediate. Consequently,
+\[
+\frac{x^2}{\log S}\le O(x^2/y)\longrightarrow0,
+\]
+whereas
+\[
+\log h\sim\nu F_{2/3}\longrightarrow\infty.
+\]
+
+This proves failure of the cited guarantees in this regime. It does not prove that every decoder must fail on these particular inputs.
+
+**KNOWN.** Guruswami–Sahai–Sudan improve weighted and unweighted CRT decoding; the relevant guarantees are [Theorems 4–6, §3.4](https://www.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf).
+
+**PROVED — parameter comparison.** For moduli near \(y\), their unweighted threshold compares approximately
+\[
+t\asymp\frac{x}{\log y}
+\quad\text{against}\quad
+\sqrt{\frac{y}{\log y}\frac{\log h}{\log y}}.
+\]
+The same obstruction appears:
+\[
+x^2\gtrsim y\log h
+\]
+would be needed. Here the inequality goes in the opposite direction by an enormous factor. Merely citing improved weighting does not establish recovery below its theorem’s threshold.
+
+**UNVERIFIED.** I found no justified CRT/Coppersmith per-output bound \(L[1/3,\tau]\) for this regime. The available fallback is the interval sieve, with heuristic per-output cost \(L[2/3,a]\). Making the modulus smaller restricts the smooth factors captured; choosing a small modulus that captures a desired solution remains an unresolved search step.
+
+**5. Other constructions and barriers**
+
+**PROVED — deterministic part of a cofactor barrier.** Consider methods that construct a smooth factor \(A\), then choose
+\[
+t=\left\lceil\frac{kN}{A}\right\rceil,\qquad u=At.
+\]
+If \(A\le h\), then
+\[
+0\le u-kN<A\le h,
+\qquad
+t\ge\frac Nh.
+\]
+Thus this construction guarantees placement, but leaves an unconstructed cofactor with
+\[
+\log t\ge x-\nu F_{2/3}=(1-o(1))x.
+\]
+
+**HEURISTIC — Dickman behaviour of the remaining cofactor.** Its smoothness probability is still
+\[
+L[2/3,-a].
+\]
+Therefore constructing a divisor as large as the window does not change the leading smoothness-search exponent.
+
+**PROVED, conditional arithmetic.** To make cofactor testing cost only \(L[1/3,\tau]\) through Dickman density, one would want
+\[
+t\le L[2/3,c],\qquad c\le3\kappa\tau,
+\]
+because such cofactors have smoothness probability
+\[
+L[1/3,-c/(3\kappa)].
+\]
+This forces
+\[
+A\ge N/L[2/3,c].
+\]
+
+**HEURISTIC — flat rounding remainder.** For such a large \(A\), placement succeeds with probability approximately
+\[
+\frac hA
+\le N^{-1}L[2/3,\nu+c].
+\]
+The proposed gain in cofactor smoothness is overwhelmed by the placement search. Serving \(L[1/3,C]\) multipliers cannot cancel an \(N^{1-o(1)}\) loss.
+
+This establishes a barrier for **construct-one-factor, round-and-test methods whose remainders remain unstructured**. It is not a barrier for an algorithm that efficiently engineers exceptional remainders.
+
+**PROVED.** The same issue explains the following elementary routes:
+
+- **Continued fractions / Farey methods:** rational approximation can make \(At-kN\) small, but does not force the remaining integer \(t\) to be smooth. That is the missing condition.
+- **Ratios of smooth numbers:** if the denominator divides the numerator, cancellation returns a one-sided smooth integer. Without divisibility, clearing the denominator returns a two-sided relation with a denominator-height constraint.
+- **Factorials, consecutive products and binomial coefficients:** constructions using arguments at most \(y\) can force smoothness. They do not, by their defining identities alone, force a small residue modulo \(N\).
+- **Base-\(m\) expansion:** smooth monomials do not make their sum smooth. For a monomial \(m^d\), the small-residue condition remains to be solved.
+
+**HEURISTIC — residue flatness.** A polynomial-size or \(L[1/3,O(1)]\)-size family of such explicitly generated values has too few trials to overcome probability \(h/N=N^{-1+o(1)}\). A useful family must exploit an additional correlation with \(N\).
+
+**PROVED — counting-to-search reduction.** An efficient **exact interval-counting oracle** would give a constructor. For instance, compute
+\[
+\Psi(X+h,y)-\Psi(X-1,y).
+\]
+If positive, binary search finds the first smooth integer in the interval using \(O(\log h)\) exact count queries. Factorisation can also be recovered by recursively finding a prime cutoff at which the interval count first becomes positive, dividing the interval by that prime and repeating.
+
+**PROVED — limitation of subtracting global approximations.** Under the expected local count \(h\rho\), subtracting two approximations of size \(X\rho\) requires relative error substantially below
+\[
+h/X=\exp(-x+O(F_{2/3})).
+\]
+A small relative error in a global Dickman or saddle-point estimate does not give this.
+
+**KNOWN.** Bernstein’s exact enumeration/counting construction includes a meet-in-the-middle count whose work depends on the sizes of the two generated sets; see [§3, Algorithm 3 and Lemma 3.2](https://cr.yp.to/papers/epsi-19950518-retypeset20220326.pdf). It does not establish a cheap exact interval-count oracle here.
+
+**PROVED — a separate log-grid barrier.** For a dynamic program that rounds individual logarithms with error at most \(\eta\), bounds accumulated error by \(s\eta\), and explicitly processes all bins, guaranteeing window precision requires
+\[
+s\eta\lesssim h/X.
+\]
+Its bin count up to \(\log X\) is then at least
+\[
+\frac{\log X}{\eta}\gtrsim
+s(\log X)\frac Xh=N^{1-o(1)}.
+\]
+This applies to that explicit-grid implementation class. It does not exclude compressed representations or a different error analysis.
+
+**UNVERIFIED.** I found no new construction overcoming these barriers. A general lower bound covering arbitrary adaptive lattice, representation, CRT or recursive methods would be a much stronger result than the arguments above.
+
+**6. Literature and identification with existing methods**
+
+**KNOWN.** The construction problem is explicitly studied by Boneh: [§3 of the 2002 journal version](https://core.ac.uk/download/pdf/82341411.pdf). Its applicability conditions are essential; its title alone does not imply recovery in the present \(L[1/3]\)-smoothness, \(L[2/3]\)-window regime.
+
+**KNOWN.** Fast generation of smooth integers is a distinct problem. In the checked January 2026 version, [Bach–Sorenson, Theorem 3.1 and Theorems 5.1–5.3](https://arxiv.org/pdf/2006.07445) distinguish exact generation from faster approximate-distribution generation. Their enumeration is lexicographic by prime factors, not increasing numerical value.
+
+**PROVED.** Consequently, selecting an approximate rank near \(\Psi(X,y)\) in that enumeration does not select an integer near \(X\). Even an ideal uniform global sampler retains the \(N/h\) rejection cost derived above.
+
+**KNOWN.** Recent analytic existence results remain far outside the requested smoothness range. For example, [Jain, Theorems 1.1–1.2](https://arxiv.org/pdf/2502.10530) require
+\[
+y\ge
+\exp\!\left(C(\log X)^{2/3}(\log\log X)^{4/3}\right).
+\]
+Your \(\log y\asymp(\log X)^{1/3}(\log\log X)^{2/3}\) is much smaller. These theorems therefore do not supply the needed existence statement or constructor.
+
+**UNVERIFIED — literature search conclusion.** I did not locate the specific reduction with constant \((16/9)^{1/3}\), nor a published constructor achieving the required cost in this exact regime. This is not a priority claim or an exhaustive absence result.
+
+**KNOWN.** The relation shape \(u-kN=v\), with constructed smooth factors and a tested small difference, is already central to the prime-lattice factoring framework; see [Vera, §1 and §2](https://arxiv.org/pdf/1003.5461). NFS instead constructs congruences through rational values and algebraic values, with smoothness imposed during relation collection; the base-\(m\) construction and the two sieves are described in [Buhler–Lenstra–Pomerance, §§3–5](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf).
+
+**PROVED — distinction relevant here.** The common congruence-of-squares mechanism does not supply Prop SI. Your additional requirement is to construct the large *integer itself* as smooth while placing it in a prescribed relative window of width \(N^{-1+o(1)}\). Calling the search MPQS or lattice sieving does not eliminate that requirement.
+
+The table gives costs for the named strategy, including amortised setup; a slower strategy can always be replaced by the sieve fallback.
+
+| Approach | Per distinct output in this regime | Meets \(L^{o(1)}\)? | Status |
+|---|---:|:---:|---|
+| Interval sieve | \(L[2/3,\,2/(3\kappa)]\) | No | **HEURISTIC**, local Dickman |
+| Construct factor \(A\le h\), test cofactor | Same leading \(L[2/3,\,2/(3\kappa)]\) | No | **PROVED** cofactor bound; **HEURISTIC** density |
+| Global smooth sampler + rejection | Approximately \(N/h=L[1,1+o(1)]\) times sampling cost | No | **HEURISTIC**, flatness |
+| Two explicit sorted lists, \(T=L[1/3,O(1)]\) outputs | Optimistically \(N^{1/2+o(1)}\) | No | **PROVED** accounting; **HEURISTIC** flatness |
+| Wagner \(r\)-tree | Formal \(Q^{1/(1+\log_2r)}\), with substantial input-domain restrictions | No checked bound | **KNOWN** random-list result; SI transfer **UNVERIFIED** |
+| HGJ / BCJ representations | No justified SI bound; direct full encoding remains exponential in \(m\) | No checked bound | Transfer **UNVERIFIED** |
+| Faithful binary CVP encoding | \(2^{m+o(m)}\), \(m=L[1/3,\kappa]\) | No | **PROVED** reduction; **KNOWN** CVP bound |
+| BKZ with standard error model | Near-full exponential-scale blocks needed | No in that model | **HEURISTIC**, block-reduction model |
+| Boneh / Coppersmith / CRT decoding | Recovery conditions fail; sieve fallback \(L[2/3,a]\) | No established constructor | **KNOWN** conditions; **PROVED** mismatch |
+| Exact interval-count oracle | Polynomially many oracle calls | Yes, if oracle is cheap | Reduction **PROVED**; cheap oracle **UNVERIFIED** |
+| Prop SI | \(L[1/3,o(1)]\) | Yes, by specification | **UNVERIFIED** |
+
+**Verdict — UNVERIFIED for Prop SI.** The proposed factoring constant is sound under residual randomness, charged preprocessing and adequate relation diversity. The checked methods leave a specific unresolved task: engineering a smooth product at exponentially fine relative precision while keeping its height near \(N\). Explicit-list reuse does not amortise enough, standard birthday representations lack the required admissible input domains, CRT decoding lies outside its recovery range, and constructing one large smooth factor leaves either a nearly \(N\)-sized cofactor or a severe placement search. These are concrete barriers for the stated models; they do not constitute a general impossibility theorem.

@@ -69,6 +69,8 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
 |---|---|---|---|---|---|---|
 | c(τ) | (16/9)^{1/3} = 1.2114 | 1.2819 | 1.4031 | 1.6447 | 1.9019 (= MNFS) | 6^{1/3} = 1.8171 |
 
+- The 0.757 threshold re-optimises κ (at κ = (4/9)^{1/3}). At the Prop SI optimum κ = (2/9)^{1/3} held fixed, the
+  threshold is τ < 1.9019 − (16/9)^{1/3} = 0.6905 (codex siconstruct_1).
 - So the real target is weaker than L^{o(1)}: anything below L[1/3, 0.757] per output beats MNFS, and even a
   constructor costing O(π(y)) per output would give 1.817 (MODEL, linear algebra at ω = 2).
 - None of the approaches below reaches L[1/3, anything] per output.
@@ -109,8 +111,8 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 - **Reading.**
   - A Prop SI constructor (squarefree outputs) is a promise-CVP_{1+O(1/x)} solver on this family, and conversely, up
     to an O(√x) factor in h and an O(1) factor in k.
-  - Known algorithms for CVP at γ = 1 + o(1) cost 2^{Θ(n)} (exact CVP 2^{n+o(n)}: Aggarwal–Dadush–Stephens-Davidowitz
-    FOCS 2015 — UNVERIFIED by us, cited from memory; heuristic sieving 2^{0.29n}). Here that is exp(L[1/3, κ]).
+  - Known algorithms for CVP at γ = 1 + o(1) cost 2^{Θ(n)} (exact CVP 2^{n+o(n)}: Aggarwal–Dadush–Stephens-Davidowitz,
+    FOCS 2015, arXiv 1504.01995 Cor. 6.5, checked by codex; heuristic sieving 2^{0.29n}). Here that is exp(L[1/3, κ]).
   - BKZ-β with Babai gives approximation factors ≥ 1 + Ω(1) for every β < n (SCENARIO: root-Hermite factor
     δ_β^{Θ(n)}; codex's warning in schnorrcvp that a root-Hermite factor is not a CVP ratio applies). By (d) that
     inflates the residue to N^{Θ(1)}: useless.
@@ -200,6 +202,7 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
 | 5a | 2-D aim: CF / Farey / Stern–Brocot / special k / base-m / u = s·m | L[2/3, 2/(3κ)]·L[1/3, −2ν/(3κ)] | no | L[1/2, √2] | Lemma RC; MEASURED E3 |
 | 5b | Oblivious smooth families: products of consecutive integers, binomials, factorial ratios, norm forms | hit probability (h+1)/N per member ⇒ N/h per output; with MITM as row 2 | no | exponential | HEURISTIC H_eq |
 | 5c | Square × smooth (QS-type aim, u = s²m) | aim precision ≈ √N: √N/h per output | no | QS itself is the m = 1, residue √N case | MODEL |
+| 5d | Exact interval counting + binary search; global samplers; log-grid DP | counting: O(log h) oracle calls, but no cheap exact count known (needs relative precision h/X); samplers ≈ N/h; DP ≥ N^{1−o(1)} bins | only with a new counting algorithm | — | reduction PROVED; rest MODEL (§4.6) |
 
 ## 4. Approaches in detail
 
@@ -276,12 +279,35 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
   algorithm. It would also speed up prime-field discrete-log relation collection (suffmap §4, row C1; not checked in
   detail). That is further evidence that it is hard (assessment).
 
+### 4.6 Counting, sampling and dynamic programming (codex siconstruct_1, checked by us)
+- **Counting ⇒ constructing [PROVED].** An exact oracle for Ψ(b, y) − Ψ(a − 1, y) gives a constructor by binary
+  search: O(log h) calls find the least smooth integer in I_k, and the factorisation follows by bisecting on the
+  prime cutoff. So a cheap exact interval-count would suffice.
+- **No cheap count is known.** Subtracting two global estimates of size Xρ needs relative error below
+  h/X = e^{−x+O(F_{2/3})}; saddle-point or Perron-integral estimates give nothing of the kind. Exact counting is
+  lattice-point counting in a simplex of dimension π(y) = L[1/3] (Barvinok-type algorithms are polynomial only in
+  fixed dimension); Bernstein's exact counting uses a meet-in-the-middle whose cost is governed by the two generated
+  sets (codex: Bernstein, "Enumerating and counting smooth integers", §3, Algorithm 3). For an *explicit arbitrary*
+  set of primes the existence question is NP-hard by sihard's X3C reduction (see sihard's note), so a fast counter
+  would have to use that the factor base is an initial segment of the primes.
+- **Sampling.** Uniform or approximate generators of factored smooth numbers (Bach; Kalai; Bach–Sorenson,
+  arXiv 2006.07445 Thms 3.1, 5.1–5.3) sample globally. Conditioning on I_k costs ≈ N/h trials, and their
+  enumeration order is lexicographic in the prime factors, not by size, so "select the rank near Ψ(kN, y)" does not
+  select an integer near kN.
+- **Log-grid dynamic programming.** A DP over rounded logarithms with per-item error η and s items needs sη ≲ h/X,
+  hence ≥ (ln X)/η = N^{1−o(1)} bins (codex; for that explicit-grid class only).
+- **Existence theorems** are far from this scale: the best all-interval results need y ≥ exp(C(ln X)^{2/3}(ln ln X)^{4/3})
+  (Jain, arXiv 2502.10530, Thms 1.1–1.2, as reported by codex; not checked by us), while here ln y ≍ (ln X)^{1/3}.
+
 ## 5. Total factoring cost and heuristic R
 
 - Every constructor we found has per-output cost ≥ L[2/3]; plugged into Prop SI that gives L[2/3]. Used directly as
   relation generators (u and the residue both tested, total random size N^{1−o(1)}), they are at best Dixon-like,
   L[1/2, √2] (Theorem SS), which is worse than QS.
 - MITM: total ≥ √(RN/h), exponential, on top of linear algebra L[1/3, 2κ].
+- **Diversity (codex).** Multiplying one relation u₀ ≡ v₀ by a smooth s gives su₀ ≡ sv₀, a new valid output with the
+  same exponent-difference vector: worthless. A constructor must produce L[1/3, κ] *independent* relations, and if one
+  output per multiplier is used, the multiplier range must have C ≥ κ + ν/(3κ).
 - **Fruitfulness (heuristic R).** Not tested here: no constructor reached the regime where it matters. MITM outputs
   are N-oblivious products whose residues are determined by (a·b mod N); sicheck's Prop B (Blum N: fruitfulness is a
   parity condition computable from N) applies to any constructor, and sicheck's `beta0` example shows a constructor
@@ -345,7 +371,20 @@ asymptotic statements. MITM and 2-D aim are excellent at toy sizes only because 
 - `diag_e3.py` is an unregistered diagnostic, run after E3.
 
 ## 8. Reviews
-- Codex blind round: pending.
+- **Codex blind round** (`codex/siconstruct_1.out`, GPT-6.1-sol, xhigh, run before our analysis was written down).
+  It reached the same verdict independently: interval sieve L[2/3, 2/(3κ)]; construct-one-factor-and-test has a
+  cofactor ≥ N/h (its version of Lemma RC); two explicit sorted lists cost N^{1/2+o(1)} per output for
+  L[1/3, O(1)] outputs (its version of Lemma MA, with the exact sorted-list accounting Õ(m + n + Km + H));
+  Wagner's tree violates M^r ≤ KN for r ≥ 4; Boneh's and GSS's recovery conditions fail by a huge factor; exact
+  CVP costs 2^{m+o(m)} (ADS 2015, Cor. 6.5, checked by codex), m = L[1/3, κ]. Items we adopted:
+  - a *binary* embedding e_p = Σ2^j z_{p,j} that enforces e ≥ 0, for which exact CVP solves Prop SI and
+    γ² ≤ 1 + 3/(m + 1) suffices (an alternative to Prop CV that handles non-squarefree outputs; dimension
+    m = O(π(y) ln x));
+  - the fixed-κ threshold τ < 0.6905 (§1);
+  - the diversity caveat (§5);
+  - the counting-to-search reduction, the precision obstruction for approximate counts, the log-grid DP bound and the
+    Jain and Bach–Sorenson references (§4.6).
+  Codex labels general non-existence UNVERIFIED, as we do: these are barriers for named method classes.
 
 ## 9. Reproduction
 ```
