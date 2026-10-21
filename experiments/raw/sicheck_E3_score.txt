@@ -1,0 +1,33 @@
+== E3 ==
+R1: honest runs done 144/144; Phi!=0 in 144/144; random deps fruitful 4567/9216 = 0.496 -> HELD
+   next     Phi!=0 36/36  fruitful 1111/2304  dups 14454  mean k_last 9887
+   last     Phi!=0 36/36  fruitful 1146/2304  dups 5779  mean k_last 9887
+   rand     Phi!=0 36/36  fruitful 1176/2304  dups 7632  mean k_last 9887
+   cofactor Phi!=0 36/36  fruitful 1134/2304  dups 14413  mean k_last 9887
+R2: J+ base Blum runs with deps 1 (of 7), all trivial: True; non-Blum runs with >=5 deps 1 (of 9), Phi!=0 in 1 -> Blum part: HELD; non-Blum part: HELD
+   qsfb n=40 blum=False p,q mod4=1,3 fb=26 rels=1 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=40 blum=False p,q mod4=1,1 fb=40 rels=60 deps=22 Phi!=0=True fruit=30/64 k_last=10829
+   qsfb n=40 blum=False p,q mod4=3,1 fb=39 rels=19 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=True p,q mod4=3,3 fb=65 rels=7 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=True p,q mod4=3,3 fb=63 rels=10 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=True p,q mod4=3,3 fb=69 rels=14 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=True p,q mod4=3,3 fb=68 rels=14 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=False p,q mod4=3,1 fb=65 rels=9 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=False p,q mod4=1,3 fb=61 rels=4 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=48 blum=False p,q mod4=3,1 fb=50 rels=2 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=56 blum=True p,q mod4=3,3 fb=112 rels=62 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=56 blum=True p,q mod4=3,3 fb=108 rels=2 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=56 blum=True p,q mod4=3,3 fb=127 rels=147 deps=22 Phi!=0=False fruit=0/64 k_last=7051
+   qsfb n=56 blum=False p,q mod4=1,3 fb=113 rels=105 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=56 blum=False p,q mod4=3,1 fb=102 rels=2 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+   qsfb n=56 blum=False p,q mod4=1,3 fb=105 rels=1 deps=0 Phi!=0=False fruit=0/0 k_last=15000
+R3: beta0 runs 18 (done 17), all trivial: True -> HELD
+R4: Blum: 0 mismatches in 7825 checked dependencies; non-Blum runs with mismatches 73/81 (mismatch rate 3130/6280) -> HELD
+R5: d=1: fruitless 83/144 = 0.576 vs 2^-d = 0.500 ok
+R5: d=2: fruitless 41/144 = 0.285 vs 2^-d = 0.250 ok
+R5: d=3: fruitless 21/144 = 0.146 vs 2^-d = 0.125 ok
+R5: d=4: fruitless 9/144 = 0.062 vs 2^-d = 0.062 ok
+R5 HELD
+R6: rank <= fb-2 in all runs: True; rank = fb-2 in 142/144 honest done runs -> HELD
+   qsfb: rank-fb distribution [-106, -104, -100, -58, -57, -56, -55, -54, -53, -50, -48, -25, -20, -8, -2, -2]
+   beta0: rank-fb distribution [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
