@@ -33,7 +33,7 @@ e(u) ∈ Z^s is the exponent vector of an S-unit u. φ_N : Z^s → (Z/N)^*, e �
   relation contains N in its radical, and N is squarefree, so abc never excludes a primitive relation of height
   ≤ C·N^{1+ε}, and above that it can only exclude relations whose multiplier kN or smooth side is N^ε-powerful
   (Prop ABCV). Such powerful families are genuinely constrained (e.g. 2^a + N = 3^b forces 3^b ≪ (6N)^{1+ε}; an
-  exact high-quality example is 2¹⁹ + 7153 = 3¹², quality > 1.2, codex), but no method needs them. Counting bounds (Evertse) apply only to the triply-smooth
+  exact high-quality example is 2¹⁹ + 7153 = 3¹², quality > 1.2, codex), but no known method needs them. Counting bounds (Evertse) apply only to the triply-smooth
   subfamily and allow exponentially more relations (3·7^{2s+3}) than the ≈ s a method needs; the relations factoring
   actually uses (k free) are the points of a full-rank lattice and are infinite in number (Prop EV).
 - **"Solve S-unit equations with an N-congruence" is not a new target.** Listing smooth pairs u ≡ v (mod N) is,
@@ -56,7 +56,8 @@ e(u) ∈ Z^s is the exponent vector of an S-unit u. φ_N : Z^s → (Z/N)^*, e �
     analytic content (minor arcs for a + b = c) is not needed, and adds nothing.
   - What fails is **constructivity**: LS is a circle-method count with no search procedure in it, and no
     polynomial-time construction of polylog-smooth abc triples is known even without N. A constructive
-    N-version would be exactly Π-doubly-split, i.e. the open primitive itself. LS thus re-describes the target; it
+    N-version with matching heights, output count and prefix cost would be exactly Π-doubly-split, i.e. the open
+    primitive itself. LS thus re-describes the target; it
     is not a route to it.
 - **Experiments (pre-registered; 2 of 11 registered predictions failed, both diagnosed post hoc).** The
   N-congruence count follows the LS-type singular-series model M1 within ±10% for κ ≥ 1.5 or K = 3/2 (median ratio
@@ -85,8 +86,8 @@ e(u) ∈ Z^s is the exponent vector of an S-unit u. φ_N : Z^s → (Z/N)^*, e �
 | LS constructivity: no polynomial-time construction known; constructive N-version ≡ Π | assessment / KNOWN (absence in LS) |
 
 **Assessment (subjective).** Probability that the abc/S-unit route yields L[α < 1/3]: ≤ 1% (ours; codex
-blind: ≈ 1% over twenty years). The route contributes a clean reformulation and a no-go for "Diophantine
-barriers", not a mechanism.
+blind: ≈ 1% over twenty years). The route contributes a clean reformulation and shows that the cited Diophantine
+bounds give no general barrier; it contributes no mechanism.
 
 ---
 
@@ -541,7 +542,10 @@ Z-relations. This led to Lemma FR before the registered run (prereg, design disc
   relations get Cor ABC-T); Σ1/p term in the table; closure lemma scope; Lemma SC label; run counts in §0; NITs
   (xyz inequality typo, Evertse place count in K, sign coordinate, finite odd index, 2s discrete logs, Miller
   criterion, prereg M0 prefactor, P3 is an inequality, sampler bias).
-- Opus literature critic: see §7.1.
+- Opus literature critic: launched on v2; its report had not arrived when this version was committed. Until it is
+  applied, the citations in §§2–4 that we did not check against primary sources ourselves (ES-T's conjecture
+  wording, Stewart–Tijdeman/Stewart–Yu 1991, de Weger 1987, Bach 1990's exact form, LS 2012 Prop 5.1's uniformity
+  in the modulus) are UNVERIFIED.
 
 ---
 
