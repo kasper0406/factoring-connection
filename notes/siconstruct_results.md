@@ -1,6 +1,6 @@
 # siconstruct: constructing smooth integers in short intervals near kN (attack on Prop SI)
 
-Agent `siconstruct`, phase 20, 2026-10-21. DRAFT v1 (before reviews).
+Agent `siconstruct`, phase 20, 2026-10-21. Version 2: after the Opus proof/cost critic (§8); codex adversarial round pending at the time of writing.
 
 **Files.**
 - Code: `src/siconstruct/` — `core.py` (exact sieve, N-oblivious smooth lists, Hildebrand–Tenenbaum model),
@@ -38,14 +38,17 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
   N^{1−o(1)} (Lemma RC). That is lattice sieving, and it gives L[2/3] per output.
 - **The lattice view is exact.** A squarefree Prop SI output is an approximate closest vector with factor
   1 + O(1/ln N) in Adleman's prime lattice of dimension π(y) = L[1/3], and conversely (Prop CV). The instance sits
-  at distance ≈ λ₁/√2 from the lattice. So Prop SI is near-exact CVP in dimension L[1/3]; every known CVP algorithm
-  at that quality costs 2^{Θ(n)} = exp(L[1/3]).
-- **One-sided is not easier than Schnorr's two-sided target.** It is the same lattice problem with a larger residue.
-  Prop SI's constant 1.2114 is exactly schnorrcvp's Theorem G constant at the oracle slack τ = 2/(3κ) = 1.10.
+  at distance ≈ λ₁/√2 from the lattice. So Prop SI is near-exact CVP in dimension L[1/3]; every known *generic* CVP
+  algorithm at that quality costs 2^{Θ(n)} = exp(L[1/3]). This is a reformulation, not hardness evidence: by Prop CV
+  the interval sieve is itself an L[2/3] promise-CVP solver for this family.
+- **One-sided is not easier than Schnorr's two-sided target, in oracle terms.** It is the same lattice problem with
+  a larger residue. Prop SI's constant 1.2114 is schnorrcvp's Theorem G constant at the oracle slack τ = 2/(3κ) = 1.10
+  (both are suffmap Theorem SS(b) at residue log-size 1.1006·F_{2/3}).
 - **Choosing k freely buys nothing at L-scale.** K = L[1/3] multipliers give K times more witnesses, which is
   L[2/3, o(1)]. We did not solve, or approach, the one-sided Bohr-set lister.
-- **Johnson-radius / Boneh decoding** keeps exponent 2/3: certified outputs have a known divisor d ≥ h, so the
-  untested cofactor is ≥ N/(Kh), and the gain is L[1/3, O(1)] on an L[2/3] baseline.
+- **Johnson-radius / Boneh decoding** keeps exponent 2/3: inside the decoding range a call certifies O(1)·L^{o(1)}
+  points, each with an untested cofactor ≈ N/h; sihard's Theorem J proves the averaged per-call bound
+  L[2/3, −2/(3κ) + o(1)] smooth outputs for the whole Johnson class.
 
 **Main results.**
 
@@ -53,10 +56,10 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
 |---|---|
 | Prop CV: squarefree Prop SI output ⇔ CVP_{1+O(1/x)} answer (scale C = kN/h); dist ≈ λ₁/√2; slack t costs c(t) | PROVED (inequalities); cost reading MODEL |
 | Lemma SR (scale invariance) and Lemma RC (constructed factor + tested cofactor ⇒ cofactor ≥ N/(K(h+1))) | PROVED (SR, RC(i)); RC(ii) HEURISTIC H_eq |
-| Lemma MA (two-list amortisation): hits = \|A\|\|B\|(h+1)/N for any K; per output ≥ 2√(N/(R(h+1))) | HEURISTIC H_eq; MEASURED (E1, E2) |
+| Lemma MA (two-list amortisation): hits = \|A\|\|B\|(h+1)/N for any K; per output ≥ 2√(N/(R(h+1))) | HEURISTIC H_eq (sihard Prop MM proves an averaged form without H_eq); MEASURED (E1, E2) |
 | k-lists / Wagner / representations cannot remove the exponential cost | MODEL (Prop W of smoothenum + representation count) |
 | Per-output budget: L[1/3, τ] beats MNFS iff τ < 0.757; τ = κ (linear in n) gives 6^{1/3} = 1.817 | MODEL (exact) |
-| Best toy constructors: MITM beats interval sieving at all tested sizes (32–80 bits), model crossover ≈ 310 bits | MEASURED / MODEL |
+| Best toy constructors: MITM beats interval sieving at all tested sizes (32–80 bits), model crossover ≈ 300–310 bits (R₀ = 64) | MEASURED / MODEL |
 
 ---
 
@@ -91,17 +94,20 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 - **(c) Converse.** Suppose a witness exists (dist² ≤ ln(kN) + 2) and e is a γ-CVP answer with
   γ² ≤ 1 + c/ln(kN). Then ‖b(e) − t_k‖² ≤ ln(kN) + c′ with c′ = c + 2 + o(1), and:
   - 2 ln v ≤ c′ + |Δ|, so v = O(1);
-  - |Δ| ≤ √(ln(kN) + c′)/C;
-  - w := u − v·kN = v·kN(e^Δ − 1) satisfies |w| ≤ v·h·√(ln(kN) + c′)·(1 + o(1)).
-  So u ≡ w (mod N) with u y-smooth (by construction) and |w| ≤ O(√x)·h, at multiplier vk. The factor O(√x) is
-  L^{o(1)} and is absorbed in ν. *Proof:* the three displayed inequalities follow from (a)'s chain and Q ≥ ln(uv).
-  ∎ (`test_prop_cv_converse_small_v` checks them at 80 digits on random vectors.)
+  - |Δ| ≤ (√c′ + o(1))/C (from (a)'s chain: Δ + C²Δ² ≤ c′);
+  - w := u − v·kN = v·kN(e^Δ − 1) satisfies |w| ≤ v·h·√c′·(1 + o(1)).
+  So u ≡ w (mod N) with u y-smooth (by construction) and |w| = O(h), at multiplier vk; w may be negative (a
+  two-sided window) and u need not be squarefree. *Proof:* the displayed inequalities follow from (a)'s chain
+  Q + C²Δ² ≥ ln(kN) + Δ + 2 ln v + C²Δ² and Q ≥ ln(uv). ∎ (`test_prop_cv_converse_small_v` checks the first
+  inequality and the identity for w at 80 digits on random {−1, 0, 1} vectors, which are far from closest; it is a
+  sanity check, not a test of the near-closest regime.)
 - **(d) Slack.** A CVP oracle with γ² − 1 = 2t·F_{2/3}/x returns v ≤ L[2/3, t] and |w| ≤ h·L[2/3, t]. The residue
   then has log-size (ν + t)F_{2/3}, and the factoring constant is
   c(t) = min_κ max(κ + 2/(9κ²) + t/(3κ), 2κ) (`theory.si_cost_slack`): 1.2114, 1.2481, 1.3937, 1.5702, 1.8982 at
   t = 0, 0.1, 0.5, 1, 2. In dimension terms (ln n = κF_{1/3}): F_{2/3}/x = (ln x/x)^{1/3} = κ ln x/ln n ≈
-  3κ ln ln n/ln n. So **any L[1/3] gain needs γ − 1 = O(ln ln n/ln n), and 1.2114 needs γ − 1 = O(1/x) =
-  O((ln ln n)²/(ln n)³)** in dimension n = L[1/3, κ].
+  3κ ln ln n/ln n. So **any L[1/3] gain needs γ − 1 = O(ln ln n/ln n), and 1.2114 + ε needs
+  γ − 1 ≤ δ(ε)·ln ln n/ln n, i.e. γ − 1 = o(ln ln n/ln n) as ε → 0**, in dimension n = L[1/3, κ]. (γ − 1 = O(1/x)
+  keeps |w| = O(h) exactly, which L-scale does not need.)
 - **(e) Geometry.** Every nonzero lattice vector has ‖b(e)‖² ≥ 2 ln C − ln ln C − O(1) = (2 − o(1))x.
   *Proof.* If C|Δ| ≤ √(2 ln C), then u ≠ v, |Δ| = |ln(u/v)| ≥ 1/(2M) with M = max(u, v), so M ≥ C/(2√(2 ln C)); and
   Q ≥ ln(uv) ≥ 2 ln M − |Δ|. Otherwise C²Δ² > 2 ln C. ∎ Conversely, two squarefree witnesses u₁ ≠ u₂ in I_k give
@@ -109,25 +115,30 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   (1 + o(1))λ₁/√2, with L[2/3, ν − 2/(3κ)] witnesses at that distance. The Gaussian heuristic, which predicts
   λ₁ ≈ √(n ln y/(2πe)) = L[1/3, κ/2], is off by an L[1/3] factor (as schnorrcvp §1 warned).
 - **Reading.**
-  - A Prop SI constructor (squarefree outputs) is a promise-CVP_{1+O(1/x)} solver on this family, and conversely, up
-    to an O(√x) factor in h and an O(1) factor in k.
+  - A Prop SI constructor with squarefree outputs (a bounded square part also works) is a promise-CVP_{1+O(1/x)}
+    solver on this family. Conversely, a promise-CVP_{1+c/x} solver (any constant c) returns u ≡ w (mod N) with u
+    y-smooth, |w| = O(h) (either sign), multiplier vk with v = O(1). The equivalence holds up to constants; distinct k
+    can collide through v (a diversity caveat).
   - Known algorithms for CVP at γ = 1 + o(1) cost 2^{Θ(n)} (exact CVP 2^{n+o(n)}: Aggarwal–Dadush–Stephens-Davidowitz,
     FOCS 2015, arXiv 1504.01995 Cor. 6.5, checked by codex; heuristic sieving 2^{0.29n}). Here that is exp(L[1/3, κ]).
   - BKZ-β with Babai gives approximation factors ≥ 1 + Ω(1) for every β < n (SCENARIO: root-Hermite factor
     δ_β^{Θ(n)}; codex's warning in schnorrcvp that a root-Hermite factor is not a CVP ratio applies). By (d) that
     inflates the residue to N^{Θ(1)}: useless.
-  - Even reading the basis costs n = L[1/3, κ] per call, and LLL costs ≥ n² = L[1/3, 2κ] > L[1/3, 0.757].
+  - Per-call setup is not the obstacle: in a CVP-with-preprocessing formulation one lattice with C = N/h serves all
+    k ≤ K (witnesses keep CΔ ≤ 1/k), at the price of an L[1/3] factor in the residue. The obstacle is the CVPP
+    *quality* required (critic m3).
   - **Smaller dimension does not help.** Restricting to a random 1/r of the primes keeps a witness only if
     r^{u} ≤ L[2/3, ν − 2/(3κ)], u = x/ln y, i.e. r ≤ x^{κ(ν − 2/(3κ))} = poly(x) (HEURISTIC count; uses
     F_{1/3}F_{2/3} = x ln x). So the dimension stays L[1/3, κ].
 - **One-sided versus two-sided (quantified).** schnorrcvp's Theorem G: a benign two-sided oracle at slack
   γ² − 1 = 2τF_{2/3}/x costs L[1/3, 2√(τ/3)]. Prop SI's 1.2114 is that formula at τ = 2/(3κ) = 1.1006:
-  2√(1.1006/3) = 1.2114. One-sided needs t = 0 to reach the same constant (its residue starts at h = L[2/3, 2/(3κ)]
-  instead of B). So in oracle terms one-sided is *harder*, not easier: it is the same oracle with v forced to O(1),
-  and the price is an additive 2/(3κ) in the residue exponent. And two-sided exact CVP already gives polynomial time
-  in polylog dimension (schnorrcvp Theorem H). The only sense in which one-sided is easier is that its *witnesses*
-  are standard smooth-number-in-interval objects, and that the interval sieve solves it at L[2/3] (no CVP algorithm
-  does as well).
+  2√(1.1006/3) = 1.2114 (by construction: both are suffmap Theorem SS(b) at residue log-size 1.1006·F_{2/3}).
+  One-sided needs t → 0 to reach the same constant (its residue starts at h = L[2/3, 2/(3κ)] instead of B). So in
+  oracle terms one-sided is *harder*, not easier: it is the same oracle with v forced to O(1), and the price is an
+  additive 2/(3κ) in the residue exponent. Two-sided exact CVP heuristically gives polynomial time in polylog
+  dimension (schnorrcvp Theorem H, HEURISTIC). Caveats: "harder" is a statement about the oracle quality required on
+  lattices with different scales C, not a computational comparison; and the one-sided instance has L[2/3] solutions,
+  which the interval sieve exploits at L[2/3] (no generic CVP algorithm does as well).
 
 ### 2.2 Lemma SR (scale invariance) and Lemma RC (random cofactor) [PROVED; (ii) HEURISTIC H_eq]
 
@@ -138,8 +149,10 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 - **Lemma RC.** Fix a constructed integer s (smooth, a square, anything) and K. Let
   T_s = {(k, w) : 1 ≤ k ≤ K, 0 ≤ w ≤ h, s | kN + w}.
   - (i) [PROVED] |T_s| ≤ K(⌊h/s⌋ + 1), and every (k, w) ∈ T_s has tested cofactor m = (kN + w)/s ≥ kN/s.
-  - (ii) [HEURISTIC H_eq: s chosen independently of N mod s] E|T_s| = K(h + 1)/s·(1 + o(1)). So s yields a pair
-    only if s ≲ K(h + 1), and then m ≥ N/(K(h + 1)).
+  - (ii) [HEURISTIC H_eq: s chosen independently of N mod s] E|T_s| = K(h + 1)/s·(1 + o(1)). So s yields a pair in
+    expectation only if s ≲ K(h + 1), and then m ≥ N/(K(h + 1)). Trade-off: at s = Kh·L[2/3, σ] placement costs
+    L[2/3, σ] while the cofactor gains only L[1/3], so σ = 0 is optimal (codex siconstruct_1 §5). CF/Farey choices of s
+    try to violate H_eq; they are covered because they reduce to RC with a larger multiplier range.
   - (iii) [MODEL] The cofactor has log-size x − νF_{2/3} − O(F_{1/3}) and is y-smooth with probability
     L[2/3, −2/(3κ)]·L[1/3, 2ν/(3κ)]. The gain over a random u ≍ N is L[1/3, 2ν/(3κ)] (derivative of u ln u is
     (2/3 + o(1)) ln x). Per output: **L[2/3, 2/(3κ)]·L[1/3, −2ν/(3κ)]**.
@@ -149,8 +162,9 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   special multipliers k ≡ −wN^{−1} (mod s), the base-m expansion of N, "smooth times arbitrary square" u = s²m
   (s² is the constructed part; QS is the case where the *square* is the whole of u and the residue is √N),
   and the Boneh/Coppersmith certified divisor of §4.4.
-- **Measured (E3).** Successful cofactor tests match the H-T density *at the cofactor's size* (pooled 0.95, cells
-  0.49–1.25), i.e. the aim gives exactly the smoothness gain of a smaller random cofactor and nothing more.
+- **Measured (E3, post-hoc diagnostic).** Successful cofactor tests roughly match the H-T density *at the cofactor's
+  size* (pooled 0.95, records 0.49–1.25; the 56-bit small-s cell is low, pooled 0.64). This is consistent with the aim
+  giving the smoothness gain of a smaller random cofactor and nothing more.
 
 ### 2.3 Lemma MA (amortised two-list merging) [HEURISTIC H_eq; MEASURED]
 
@@ -160,9 +174,10 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   |A||B|(h + 1)/N·(1 + o(1)), **for every product range** [N, KN] (the windows have density (h+1)/N among integers
   in any range of length ≫ N).
 - *Cost.* Generating and sorting the lists costs ≥ |A| + |B|. In the Prop SI regime (Kh ≪ √N ≈ min A) each a has at
-  most O(1) admissible b-intervals with an integer in them, findable by a 2-D lattice/continued-fraction step, so the
-  merge is O(|A| + |B| + hits) independently of K. (At toy sizes h > √N and our implementation pays per (a, k);
-  E1 records both counters.)
+  most O(1) admissible b-intervals with an integer in them *in expectation* (Kh/a ≪ 1), findable by a 2-D
+  lattice/continued-fraction step, so the merge is Õ(|A| + |B| + hits) independently of K. This K-independence
+  matters only for the upper bound, and is untested at toy size (there h > √N and our implementation pays per
+  (a, k); E1 records both counters). The lower bound 2√(RN/h) below does not depend on it.
 - *Consequence.* R outputs need |A||B| ≥ RN/(h + 1), so cost ≥ 2√(RN/(h + 1)), i.e. per output
   **≥ 2√(N/(R(h + 1)))**.
   - L^{o(1)} per output iff R(h + 1) ≥ N·L^{−o(1)}.
@@ -173,16 +188,17 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 - *Distinct outputs.* A smooth u in a window is hit once per factorisation u = ab with a ∈ A, b ∈ B, so distinct
   outputs ≤ hits (E1: 2453 distinct of 2901 hits; codex's toy run: 264 of 4381). Multiplicity only lowers the
   distinct yield.
-- sihard E3 tests the same two-list bound exactly (average over window positions) — see §8 once its note exists.
+- sihard Prop MM proves the averaged version without H_eq (interval form ≥ 2√(X/(h+1)) per output; a Bohr form for all
+  k at once), and its E3 checks the interval form exactly.
 
 ### 2.4 k lists, Wagner, Schroeppel–Shamir, representations [MODEL]
 
 - Hits among k lists are ≤ ∏|L_i|·(h + 1)/N. Generic k-list algorithms in the low-solution regime (one solution per
-  ≈ N/h of the tuple space) find a hit at ≥ (N/h)^{1/2} cost (Schroeppel–Shamir time, BCJ-type exponents are also
-  constant fractions of log(N/h)).
+  ≈ N/h of the tuple space) find a hit at (N/h)^{Ω(1)} cost (Schroeppel–Shamir (N/h)^{1/2}; best known BCJ-type
+  exponents ≥ 0.29, and their random-instance guarantees do not transfer directly).
 - Wagner's k-tree needs lists of size (N/h)^{1/(1+lg k)}, i.e. tuple space (N/h)^{k/(1+lg k)}, which exceeds the
   available ≤ N^{1+o(1)} ordered factorisations for k ≥ 3 (smoothenum Prop W, extended here to products in any range:
-  the number of k-tuples of positive integers with product ≤ KN is ≤ KN(ln KN)^{k−1}).
+  the number of k-tuples of positive integers with product ≤ X is ≤ X(1 + ln X)^{k−1}).
 - **Representations** (Howgrave-Graham–Joux, BCJ) exploit many factorisations per solution. The average number of
   ordered k-factorisations of a y-smooth u in the window is k^{u(1+o(1))}, u = x/ln y, i.e. L[2/3, o(1)] for fixed k
   and L[2/3, O(1)] for k ≤ x (ρ_k(u) ≈ ρ(u)k^u). That is N^{o(1)}: it cannot remove an N^{Θ(1)} cost.
@@ -191,15 +207,15 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 
 Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ], h = L[2/3, ν], R = L[1/3] outputs.
 
-| # | Approach | Per-output cost (heuristic) | L^{o(1)}? | Total factoring cost via this constructor | Status |
+| # | Approach | Per-output cost (heuristic) | L^{o(1)}? | Total cost (via Prop SI / as a direct relation generator) | Status |
 |---|---|---|---|---|---|
-| 0 | Interval sieve (baseline) | 1/ρ(x/ln y) = L[2/3, 2/(3κ)] | no | L[1/2, √2] (u and v both tested; Theorem SS, λ ≈ x) | MODEL; MEASURED toy |
+| 0 | Interval sieve (baseline) | 1/ρ(x/ln y) = L[2/3, 2/(3κ)] | no | L[2/3] / L[1/2, √2] (u and v both tested; Theorem SS, λ ≈ x) | MODEL; MEASURED toy |
 | 1 | Log-knapsack / CVP in Adleman's lattice | near-exact CVP_{1+O(1/x)} in dim L[1/3]: 2^{Θ(n)} = exp(L[1/3, κ]); BKZ-β, β < n: residue N^{Θ(1)} | no | worse than trial division | Prop CV PROVED; costs SCENARIO |
 | 2 | MITM, sorted logs, one list for all k | 2√(N/(R(h+1))) = N^{1/2−o(1)} | no | ≥ √(RN/h): exponential | Lemma MA; MEASURED E1/E2 |
-| 2′ | k-list / k-tree / representations | ≥ (N/h)^{1/2}/R^{O(1)} | no | exponential | MODEL |
+| 2′ | k-list / k-tree / representations | (N/h)^{Ω(1)}/R^{O(1)} | no | exponential | MODEL |
 | 3 | Free k (joint (k, u) search) | factor K = L[2/3, o(1)] more witnesses; no change in per-pair or per-test rates | no | — | MODEL |
-| 4 | CRT / Boneh / Coppersmith / GSS | certified d ≥ h ⇒ Lemma RC: L[2/3, 2/(3κ)]·L[1/3, −Θ(1)] | no | L[1/2, √2] | MODEL (pilist Lemma S≥V; Prop JR does not apply: congruence scaling) |
-| 5a | 2-D aim: CF / Farey / Stern–Brocot / special k / base-m / u = s·m | L[2/3, 2/(3κ)]·L[1/3, −2ν/(3κ)] | no | L[1/2, √2] | Lemma RC; MEASURED E3 |
+| 4 | CRT / Boneh / Coppersmith / GSS | O(1)·L^{o(1)} certified points per call, cofactor ≈ N/h: L[2/3, 2/(3κ)]·L[1/3, −Θ(1)] | no | L[2/3] / L[1/2, √2] | MODEL; sihard Theorem J (PROVED, averaged) |
+| 5a | 2-D aim: CF / Farey / Stern–Brocot / special k / base-m / u = s·m | L[2/3, 2/(3κ)]·L[1/3, −2ν/(3κ)] | no | L[2/3] / L[1/2, √2] | Lemma RC; MEASURED E3 |
 | 5b | Oblivious smooth families: products of consecutive integers, binomials, factorial ratios, norm forms | hit probability (h+1)/N per member ⇒ N/h per output; with MITM as row 2 | no | exponential | HEURISTIC H_eq |
 | 5c | Square × smooth (QS-type aim, u = s²m) | aim precision ≈ √N: √N/h per output | no | QS itself is the m = 1, residue √N case | MODEL |
 | 5d | Exact interval counting + binary search; global samplers; log-grid DP | counting: O(log h) oracle calls, but no cheap exact count known (needs relative precision h/X); samplers ≈ N/h; DP ≥ N^{1−o(1)} bins | only with a new counting algorithm | — | reduction PROVED; rest MODEL (§4.6) |
@@ -226,11 +242,13 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
   - L^{o(1)} per output ⇔ R ≥ N/(h·L^{o(1)}), i.e. exponentially many outputs (unless h = N^{1−o(1)}, where the
     residue v is no longer small and the method is Dixon-like, L[1/2, √2]);
   - Prop SI needs only R = L[1/3, κ + ν/(3κ)]: the amortisation saves a factor √R = L[1/3] on N^{1/2}.
-- **Factory variant** (lists precomputed once for all N of a size): per-N cost |A| ≥ RN/(h|B|), so per-N L^{o(1)}
-  needs a precomputed table of size |B| ≈ N/h = N^{1−o(1)}. Exponential precomputation, comparable to a factor table:
-  irrelevant (assessment).
+- **Factory variant** (lists precomputed once for all N of a size): in the scheme "precompute B, generate A per N",
+  the per-N cost is |A| ≥ RN/(h|B|). In general any N-oblivious precomputed set (or sorted product table) needs ≥ RN/h
+  elements for per-N L^{o(1)}: N^{1−o(1)} precomputation, far larger even than a √N prime table. Irrelevant
+  (assessment).
 - **Toy scale is misleading in MITM's favour.** On the toy L-path h ≈ N^{0.6–0.7}, so N/h is tiny. MITM beats the
-  interval sieve at every tested size (E2), and the o(1)-free model crossover is near 310 bits. Asymptotically the
+  interval sieve at every tested size (E2), and the o(1)-free model crossover with R₀ = 64 is near 300–310 bits
+  (310 with the cost 2√(N/(R₀h)), 300 with E2's measured cost model 5M/R₀). Asymptotically the
   per-output slope of MITM tends to 1/2 bit per bit of N, while the sieve's tends to 0.
 
 ### 4.3 Free choice of k (approach 3)
@@ -244,18 +262,23 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
 
 ### 4.4 CRT / Boneh / Coppersmith (approach 4)
 - Boneh (STOC 2000) finds all z ∈ [X, X + H] with gcd(z, P) ≥ S when ln H ≲ (ln S)²/ln P. Certified outputs have a
-  known divisor d ≥ H (pilist Lemma S≥V, PROVED there). Here H = h, so d ≥ h, and Lemma RC applies to d: the untested
-  cofactor is ≥ N/(Kh) = N^{1−o(1)}.
+  known divisor d ≥ H (pilist Lemma S≥V, PROVED there). Here H = h, so d ≥ h. That bounds the untested cofactor from
+  *above* only. A lower bound comes from the decoding range: ln P ≤ (ln S)²/ln h and d | P, so for d ≤ Kh·N^{o(1)}
+  (the regime where certified points exist, below) the cofactor is ≥ N^{1−o(1)} and Lemma RC(iii) applies.
 - **Full smoothness is impossible inside the decoding range.** For d ≈ N one needs ln P ≤ x²/ln h ≈
-  x^{4/3}(ln x)^{−1/3}/ν, so P involves only O(x/ln x) primes. The window then contains a T-smooth integer
-  (T = those primes) with probability ≈ h·L[2/3, 1/(3κ)]/N: exponentially small.
-- **Best partial use** (S ≈ h): about h·D(S)/S ≈ D(S) = L[1/3, 2ν/(3κ)] certified outputs per call (D(S) = number of
-  divisors of P near S), each with an untested cofactor ≈ N/h. Per output: L[2/3, 2/(3κ)]·L[1/3, −Θ(1)]. Larger S
-  loses L[2/3] in output count for an L[1/3] cofactor gain.
-- **Relation to Prop JR.** pilist Prop JR (L^{o(1)} batching gain) is proved in NFS scaling, and explicitly excludes
-  this congruence scaling, where one call gains g(d) = L[1/3, Θ(1)] (pilist critic M2). We confirm the L[1/3, Θ(1)]
-  gain here, and that it leaves the exponent 2/3 untouched. So Prop SI's regime differs from JR's only in the
-  lower-order gain.
+  x^{4/3}(ln x)^{−1/3}/ν. If P's primes are near y, P involves O(x/ln x) primes and the window contains a T-smooth
+  integer (T = those primes) with probability ≈ h·L[2/3, 1/(3κ)]/N; with small primes, O(x^{4/3}(ln x)^{−4/3})
+  primes and probability ≈ h·N^{−3/4+o(1)} (critic). Exponentially small either way.
+- **Best partial use** (S ≈ h^{1+δ}): the decoding range forces P ≲ h^{(1+δ)²}, and the expected number of certified
+  points per window is ≈ h^{−δ}·#{m | P : m ≤ h^δ} = O(1)·L^{o(1)} (critic M2; our draft wrongly gave L[1/3] here).
+  Each has an untested cofactor ≈ N/h, smooth with the RC(iii) gain L[1/3, 2ν/(3κ)]. Per output:
+  L[2/3, 2/(3κ)]·L[1/3, −Θ(1)].
+- **sihard Theorem J** (PROVED, averaged over the window position, any weights, batched over k) bounds the whole
+  Johnson class by L[2/3, −2/(3κ) + o(1)] smooth certified outputs per call, attained by the trivial divisor trick.
+- **Relation to Prop JR.** pilist Prop JR (L^{o(1)} batching gain) is proved in NFS scaling and explicitly excludes
+  this congruence scaling, where one call gains g(d) = L[1/3, Θ(1)] (pilist critic M2). Our analysis is consistent
+  with an L[1/3, Θ(1)] gain that leaves the exponent 2/3 untouched; sihard's Theorem J leaves the exact L[1/3] factor
+  open.
 
 ### 4.5 Own ideas (approach 5)
 - **Continued fractions / Farey / Stern–Brocot.** Convergents p/q of kN/s give s·p − kN·q small, a 2-D lattice of
@@ -268,16 +291,17 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
   probability (h + 1)/N per member).
 - **Norm forms** (u = N(α), α a product of small primes of Z[i] or Z[√r]): the norm is multiplicative, so again the
   knapsack over split primes. Units do not change the norm.
-- **Smooth-twin ladders.** Multiplying by ratios (j + 1)/j (j | u) steps ln u by ≈ 1/j ≥ 1/y. Precision e^{−x}
-  needs exponentially many combinations: a knapsack with small items, MITM-bounded.
+- **Smooth-twin ladders.** Multiplying by ratios (j + 1)/j (j | u, j and j + 1 smooth) steps ln u by ≈ 1/j. For
+  j ≤ y the step is ≥ 1/y, and precision e^{−x} needs exponentially many combinations (a knapsack with small items,
+  MITM-bounded). For large j the step is small, but finding smooth (j, j + 1) is again the target problem.
 - **Square × smooth.** u = s²m with s arbitrary is enough for the linear algebra (s² has even exponents), but it is
   Lemma RC with the constructed part s² ≤ Kh, or QS (m = 1, residue √N).
 - **NFS reading.** Prop SI is two-polynomial "NFS" with f₁ = X, f₂ = X − N and a skewed box (a ∈ [kN, kN + h],
   b = k), with the f₁ side constructed. It is the degree-1 analogue of smoothenum's algebraic-side lister
   (infimum 0.7631 there).
 - **Modulus-oblivious.** A constructor that sees only X = kN is a generic "smooth integer in [X, X + L_X[2/3]]"
-  algorithm. It would also speed up prime-field discrete-log relation collection (suffmap §4, row C1; not checked in
-  detail). That is further evidence that it is hard (assessment).
+  algorithm (sihard Lemma EQ). It would also give prime-field discrete logarithms in L_p[1/3, ≤ 1.442]
+  (sihard Prop DLI, HEURISTIC). That is further evidence that it is hard (assessment).
 
 ### 4.6 Counting, sampling and dynamic programming (codex siconstruct_1, checked by us)
 - **Counting ⇒ constructing [PROVED].** An exact oracle for Ψ(b, y) − Ψ(a − 1, y) gives a constructor by binary
@@ -311,7 +335,8 @@ Per-output cost of producing one y-smooth u ∈ I_k (any k ≤ K), y = L[1/3, κ
 - **Fruitfulness (heuristic R).** Not tested here: no constructor reached the regime where it matters. MITM outputs
   are N-oblivious products whose residues are determined by (a·b mod N); sicheck's Prop B (Blum N: fruitfulness is a
   parity condition computable from N) applies to any constructor, and sicheck's `beta0` example shows a constructor
-  can be useless while producing valid relations.
+  can be useless while producing valid relations (both as announced in sicheck's pre-registration; its results note
+  was not available when this note was written).
 
 ## 6. Experiments (pre-registered, commit 9d75362)
 
@@ -328,7 +353,7 @@ At 32/48/64/80 bits: y = 37/90/184/342, log₂h = 22.8/31.2/38.8/45.9.
   each a sees ≈ 3K nonempty b-intervals; in the Prop SI regime (Kh ≪ √N) this K-dependence disappears (§2.3).
 
 ### E2. Per-output cost along the toy path (32–80 bits, R₀ = 64)
-| bits | log₂h | M = \|A\| = \|B\| | distinct outputs | MITM cost/output | model 5M/R₀ | brute force per output: H-T at N / measured (k = 1..8) |
+| bits | log₂h | M = \|A\| = \|B\| | distinct outputs | MITM cost/output | model 5M/R₀ | brute force per output, seed 0: H-T at N / measured (k = 1..8) |
 |---|---|---|---|---|---|---|
 | 32 | 22.8 | 157, 166 | 44, 41 | 14, 15 | 12, 13 | 1.5e4 / 3.5e4 |
 | 40 | 27.1 | 600, 587 | 52, 49 | 40, 42 | 47, 46 | 1.6e5 / 3.6e5 |
@@ -342,33 +367,47 @@ At 32/48/64/80 bits: y = 37/90/184/342, log₂h = 22.8/31.2/38.8/45.9.
 - P2b: cost per distinct output / model 0.74–1.17 (factor 2 allowed): PASS.
 - **P2c: FAIL as registered.** Measured sieve density / H-T density *at N* = 0.36–0.50. Cause: the registered
   comparison evaluated the model at N, but the sieved windows sit at kN, k = 1..8, where the density is up to 4×
-  lower at toy sizes. POST-HOC, position-matched (mean of the H-T density at kN, k = 1..8): ratios 0.76–1.08.
+  lower at toy sizes. POST-HOC, position-matched (mean of the H-T density at kN, k = 1..8; `analyze.py`): ratios
+  0.76–1.08.
   The brute-force column above uses the H-T value at N for the comparison with MITM (whose products lie in [N, 4N]).
 - P2d: MITM cheaper than brute force at every size: PASS (80 bits: 6.1e4–6.7e4 vs ≈ 3e9).
 - Fitted slopes of log₂(per-output cost) per bit: MITM 0.254 (model 0.261), brute force (H-T) 0.365. At toy sizes
   h grows like N^{0.57+}, so the sieve's cost grows faster per bit. Asymptotically the slopes tend to 1/2 and 0:
-  the model crossover is ≈ 310 bits (MITM 94.2 vs sieve 93.0 log₂ per output at 320 bits).
+  the model crossover (R₀ = 64) is ≈ 310 bits with the cost 2√(N/(R₀h)) (94.2 vs 93.0 log₂ per output at 320
+  bits), ≈ 300 bits with the measured cost model 5M/R₀.
 
 ### E3. 2-D aim, constructed s and tested cofactor (40/48/56 bits, K = 16, 64 values of s, ≤ 2048 offsets per (s, k))
 - P3b (Lemma RC(i)): every tested cofactor has bit length ≥ that of N/(2S0): PASS (all 12 cells, equality).
-- **P3a: FAIL as registered for the small-s cells** (S0 = 2^{⌊lg h⌋/2}): distinct outputs / Σδ_HT(m) = 0.38–0.75.
-  PASS for the large-s cells (S0 = h/16): 0.83–1.24.
-  - Cause (design flaw): with small s, the 64 values of s scan the same short stretches [kN, kN + 2048s], and one
-    smooth u is found through several s (multiplicity 1.6–2.4 at 40–48 bits).
+- **P3a: FAIL as registered for the small-s cells** (S0 = 2^{⌊lg h⌋/2}): distinct outputs / Σδ_HT(m), pooled over
+  seeds per cell, = 0.405 (40 bits), 0.544 (48), 0.553 (56). PASS for the large-s cells (S0 = h/16): 0.879, 1.146,
+  1.083.
+  - Cause, partly (design flaw): with small s, the 64 values of s scan the same short stretches [kN, kN + 2048s],
+    and one smooth u is found through several s (multiplicity 1.6–2.4 at 40–48 bits). At 56 bits the multiplicity is
+    only 1.09–1.28, so it does not explain that cell.
   - POST-HOC diagnostic (`diag_e3.py`, same seeded lists): *successful tests with multiplicity* / Σδ_HT(m) = pooled
-    5549/5815 = 0.954, cells 0.49–1.25. So each cofactor is smooth like a random integer of its size.
-- P3c (tests per output vs brute force): large-s cells 33–140 tests per output against 6.3e5–4.9e7 for the sieve (H-T model at KN/2). At
-  toy sizes s ≈ h/16 leaves a cofactor of only 16–24 bits. That is the toy artefact h = N^{0.6+}. At Prop SI scale
-  the cofactor is ≥ N/(Kh) = N^{1−o(1)} (on this path with K = L[1/3, 1]: ≈ 67% of the bits at 1024 bits, 79% at 4096).
+    5549/5815 = 0.954, records 0.49–1.25; the 56-bit small-s cell stays low (0.82 and 0.49, pooled 0.64). Tests are
+    clustered (all s scan the same stretches near kN), so the effective sample size is much smaller than the test
+    count. Reading: roughly consistent with cofactors being smooth like random integers of their size; not a sharp
+    confirmation.
+- **P3c: FAIL as registered.** Registered: tests per output ≈ 1/δ_HT(N/S0)·(1 ± 0.6). Measured
+  tests per output × δ_HT(N/S0) = 1.64–2.49 (large s) and 2.95–5.90 (small s): all 12 records outside [0.4, 1.6].
+  Cause: the same design error as P2c (the model is evaluated at N/S0, while the cofactors are ≈ kN/s with
+  k ≤ 16, i.e. larger and less often smooth), plus the multiplicity above. The position-matched comparison is the
+  diagnostic of P3a. The registered second clause (gain = δ(N/S0)/δ(N)) was not evaluated separately.
+- Context (not a registered statistic): large-s cells need 33–140 tests per output, against 6.3e5–4.9e7 for the
+  sieve (H-T model at KN/2). At toy sizes s ≈ h/16 leaves a cofactor of only 16–24 bits. That is the toy artefact
+  h = N^{0.6+}. At Prop SI scale the cofactor is ≥ N/(Kh) = N^{1−o(1)} (on this path with K = L[1/3, 1]: ≈ 67% of
+  the bits at 1024 bits, 79% at 4096).
 
 **What the experiments show.** The laws behind the negative analysis hold at toy size: (h + 1)/N per oblivious pair
-regardless of K (E1, E2), and smoothness of the tested part exactly at its size (E3). They do not and cannot show
+regardless of K (E1, E2, sharp), and smoothness of the tested part roughly at its size (E3, post-hoc, noisy). They do not and cannot show
 asymptotic statements. MITM and 2-D aim are excellent at toy sizes only because toy h is a large power of N.
 
 ## 7. Deviations and post-hoc items
-- P2c and P3a failed as registered; both causes are design errors in the *comparison*, explained above, with
-  post-hoc corrected comparisons labelled POST-HOC.
-- `diag_e3.py` is an unregistered diagnostic, run after E3.
+- P2c, P3a (small-s cells) and P3c failed as registered. P2c and P3c are design errors in the model *comparison*
+  (wrong evaluation point); P3a is partly explained by multiplicity. Corrected comparisons are labelled POST-HOC.
+- `diag_e3.py` and `analyze.py` (position-matched P2c, P3c numbers, pooled P3a) are unregistered, written after the
+  runs.
 
 ## 8. Reviews
 - **Codex blind round** (`codex/siconstruct_1.out`, GPT-6.1-sol, xhigh, run before our analysis was written down).
@@ -385,6 +424,19 @@ asymptotic statements. MITM and 2-D aim are excellent at toy sizes only because 
   - the counting-to-search reduction, the precision obstruction for approximate counts, the log-grid DP bound and the
     Jain and Bach–Sorenson references (§4.6).
   Codex labels general non-existence UNVERIFIED, as we do: these are barriers for named method classes.
+- **Opus proof/cost critic** (read-only; recomputed all constants, proofs and data). Verdict: minor revision, no
+  FATAL. MAJOR items, all fixed:
+  - M1: P3c had no verdict and fails; now reported (§6, §7).
+  - M2: §4.4 claimed L[1/3, 2ν/(3κ)] certified outputs per call (that is the cofactor gain, not a count; the correct
+    count is O(1)·L^{o(1)}), and inferred a cofactor *lower* bound from d ≥ h; both repaired, sihard Theorem J cited.
+  - M3: "1.2114 needs γ − 1 = O(1/x)" overstated the precision; corrected to o(ln ln n/ln n).
+  Minor items adopted: converse of Prop CV holds with |w| = O(h) (the O(√x) was an artefact); quantifiers of Prop CV;
+  the lattice view is a reformulation, not hardness evidence (the sieve is an L[2/3] promise-CVP solver); CVPP
+  remark; caveats on "one-sided is harder"; RC(ii) in expectation with the σ trade-off; Lemma MA K-independence
+  untested and Õ; sihard Prop MM; factory remark; k-list exponent (N/h)^{Ω(1)} and tuple count X(1 + ln X)^{k−1};
+  twin ladders; split total-cost column; pooled P3a and the 56-bit cell; seed-0 brute column; crossover 300–310
+  bits; the weak test of the converse is now described as a sanity check.
+- **Codex adversarial round** (`codex/siconstruct_2.{md,out}`): see below.
 
 ## 9. Reproduction
 ```
@@ -393,4 +445,5 @@ asymptotic statements. MITM and 2-D aim are excellent at toy sizes only because 
 .venv/bin/python -m src.siconstruct.run_exp E2   # ~10 min, < 1 GB
 .venv/bin/python -m src.siconstruct.run_exp E3   # ~5 min
 .venv/bin/python -m src.siconstruct.diag_e3      # ~5 min (post-hoc)
+.venv/bin/python -m src.siconstruct.analyze      # registered + post-hoc statistics
 ```
