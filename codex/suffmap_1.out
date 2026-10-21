@@ -1,0 +1,569 @@
+## 1. Smoothness-size principle
+
+**Scope and labels.** PROVED means proved below; model-PROVED means proved in the explicitly stated model; KNOWN identifies a checked source; HEURISTIC names an assumption; OPEN includes “no implication is currently established here.” “Unrelated” below means **no known reduction**, not a proved separation. No other repository files were read.
+
+### 1.1 A precise sufficient theorem
+
+**PROVED: the formulation needs an extraction interface.** Small integers and a multiplicative congruence are insufficient without a way to turn exponent dependencies into computable congruent squares. For example, endlessly producing \(u=v\) supplies congruences but never factors anything.
+
+Use the following **full-factor-base sampling model**, abbreviated **FS**:
+
+- A parameter \(B=e^z\) gives \(K=B^{1+o(1)}\) columns, including any necessary ideal, sign, unit, or character information.
+- Each distinct examined candidate has smoothness log-size \((1+o(1))\lambda\).
+- Successful smoothness tests supply factorizations and relation vectors.
+- \(K^{1+o(1)}\) successful relations suffice for extraction; extraction and setup fit within the claimed running time.
+- Generation and testing cost \(\exp(o(\sqrt{\lambda\log\lambda}))\) per candidate.
+- H applies to this family, including its independence and fruitfulness assertions.
+
+**model-PROVED (FS + H).** For \(\lambda\to\infty\), the optimal expected running time is
+\[
+\boxed{T=\exp\!\left((\sqrt2+o(1))\sqrt{\lambda\log\lambda}\right).}
+\]
+The optimal parameters are
+\[
+\boxed{\log B=\left(\frac1{\sqrt2}+o(1)\right)\sqrt{\lambda\log\lambda}},
+\]
+\[
+\boxed{M=\exp\!\left((\sqrt2+o(1))\sqrt{\lambda\log\lambda}\right)}
+\]
+examined candidates, producing
+\[
+K=\exp\!\left((1/\sqrt2+o(1))\sqrt{\lambda\log\lambda}\right)
+\]
+relations.
+
+*Proof.* Write \(u=\lambda/z\). The Dickman estimate gives
+\[
+-\log p=(1+o(1))u\log u.
+\]
+For \(z\asymp\sqrt{\lambda\log\lambda}\),
+\[
+-\log p=(1+o(1))\frac{\lambda\log\lambda}{2z}.
+\]
+Consequently
+\[
+\log M=z+\frac{\lambda\log\lambda}{2z}
+       +o(\sqrt{\lambda\log\lambda}),
+\qquad
+\log T_{\rm LA}=2z+o(z).
+\]
+The first expression is minimized at
+\(z^2=\lambda\log\lambda/2\), where it equals \(2z\).
+Collecting slightly more relations absorbs probability and rank slack. H supplies constant expected repetitions for a split. ∎
+
+**model-PROVED (FS + H).** If
+\[
+\lambda=sF_{2\alpha},\qquad 0<\alpha\le \tfrac12,
+\]
+then
+\[
+\boxed{T=L[\alpha,\,2\sqrt{\alpha s}]},
+\quad
+\boxed{B=L[\alpha,\,\sqrt{\alpha s}]},
+\quad
+\boxed{M=L[\alpha,\,2\sqrt{\alpha s}]}.
+\]
+Indeed, \(\log\lambda=(2\alpha+o(1))\log x\).
+
+Here \(M\) is the necessary candidate budget **at these optimal parameters**, to leading exponential order. There is no parameter-independent minimum candidate count: changing \(B\) changes both the required relation count and the matrix cost.
+
+### 1.2 What necessity actually says
+
+**model-PROVED (FS + H).** Any FS method collecting \(K^{1+o(1)}\) successes requires \(M=K/p\), to leading exponential order. The preceding optimization therefore gives a matching lower bound within FS.
+
+**OPEN / logical limitation.** H alone does not imply that every algorithm needs approximately \(K\) relations. It specifies smoothness probabilities and fruitfulness, but not a universal rank distribution. A generator might deliberately supply relations with additional structure. Thus this is neither a factoring lower bound nor a lower bound for all methods described informally as “sampling.”
+
+**KNOWN.** A stronger necessity theorem exists for *independent uniform integers*: Balister–Bollobás–Morris, *The sharp threshold for making squares*, arXiv:1608.03857 (2016), Theorem 1.1 and Corollary 1.2, determine the first-square-product threshold. That theorem does not automatically transfer to NFS norm families. [Paper](https://arxiv.org/pdf/1608.03857)
+
+### 1.3 The size–entropy law
+
+To avoid ambiguity, let \(M\) denote the number of candidates and
+\[
+D=\log M.
+\]
+
+**model-PROVED (FS + H).** If the smallest available candidate log-size after supplying \(e^D\) candidates is \(\lambda(D)\), the optimal self-consistency equation is
+\[
+\boxed{D^2\sim2\lambda(D)\log\lambda(D).}
+\]
+This combines smallness with abundance.
+
+For
+\[
+\lambda(D)\sim\kappa x^aD^b(\log x)^c,\qquad b<2,
+\]
+write \(D\sim t x^\alpha(\log x)^\beta\). Substitution gives
+\[
+\boxed{\alpha=\frac{a}{2-b}},\qquad
+\boxed{\beta=\frac{c+1}{2-b}},\qquad
+\boxed{t^{\,2-b}=4\alpha\kappa}.
+\]
+It has precisely the requested \(L[\alpha,t]\) shape when
+\(c=1-a-b\). A mere \(\asymp\) law determines orders and exponents, not an exact leading constant.
+
+**PROVED: NFS norm ledgers.** Put \(M\asymp A^2\), so \(D\sim2\log A\). For ordinary base-\(m\) polynomial selection, with \(m\asymp N^{1/d}\),
+\[
+\log|a-bm|\le x/d+\log A+O(1),
+\]
+\[
+\log|F(a,b)|\le x/d+d\log A+O(\log d).
+\]
+Hence the leading combined ledger is
+\[
+\lambda_{\rm G}(D,d)=2x/d+dD/2.
+\]
+Optimizing \(d\) gives
+\[
+\lambda_{\rm G}(D)\sim2\sqrt{xD}.
+\]
+Thus \(a=b=1/2,\ \kappa=2\), yielding
+\[
+t^{3/2}=8/3,\qquad t^3=64/9.
+\]
+
+For an SNFS representation with negligible algebraic coefficient height,
+\[
+\lambda_{\rm S}(D,d)=x/d+dD/2,
+\qquad
+\lambda_{\rm S}(D)\sim\sqrt{2xD},
+\]
+giving \(t^3=32/9\). These reproduce GNFS and SNFS.
+
+### 1.4 Required sizes
+
+**model-PROVED (FS + H).**
+
+| Target time | Required log-size at the corresponding scale | Power \(\sigma\) |
+|---|---:|---:|
+| \(L[1/4,c]\) | \(s x^{1/2}(\log x)^{1/2}\) | \(1/2\) |
+| \(L[1/5,c]\) | \(s x^{2/5}(\log x)^{3/5}\) | \(2/5\) |
+| \(L[1/10,c]\) | \(s x^{1/5}(\log x)^{4/5}\) | \(1/5\) |
+
+Here \(c=2\sqrt{\alpha s}\). Thus \(\sigma=2\alpha\), but the displayed logarithmic factors matter: \(\lambda\asymp x^\sigma\) alone gives
+\(\exp(\Theta(x^{\sigma/2}\sqrt{\log x}))\).
+
+**model-PROVED.** For fixed \(k>1\), quasi-polynomial time
+\[
+\exp(O((\log x)^k))
+\]
+corresponds to
+\[
+\lambda\log\lambda=O((\log x)^{2k}),
+\]
+or, at the boundary,
+\[
+\lambda=O\!\left(\frac{(\log x)^{2k}}{\log\log x}\right).
+\]
+Polynomial time corresponds to
+\[
+\boxed{\lambda\log\lambda=O((\log x)^2).}
+\]
+Both have \(\sigma=0\); that label alone is insufficient. These boundary statements allow polynomial input-processing overhead and do not determine its degree.
+
+### 1.5 Listing changes the optimization
+
+**model-PROVED (H).** Suppose one side is already smooth, with known factorization, and only the other side, of log-size \(\lambda_2\), is tested. If the generator costs essentially one operation per supplied output, replace \(\lambda\) by \(\lambda_2\):
+\[
+T=\exp((\sqrt2+o(1))\sqrt{\lambda_2\log\lambda_2}).
+\]
+However, the domain containing these outputs must still be large enough.
+
+More explicitly, let a finite family have \(L[\alpha,r]\) members and side log-sizes \(s_1F_{2\alpha},s_2F_{2\alpha}\). For \(B=L[\alpha,b]\), H predicts:
+
+\[
+\begin{array}{ll}
+\text{first-side-smooth outputs:}&L[\alpha,r-\alpha s_1/b],\\
+\text{double-smooth relations:}&L[\alpha,r-\alpha(s_1+s_2)/b].
+\end{array}
+\]
+An output-sensitive first-side lister therefore has cost constant
+\[
+\max\{r-\alpha s_1/b,\;2b\},
+\]
+subject to
+\[
+r-\alpha(s_1+s_2)/b\ge b.
+\]
+
+**PROVED.** A doubly-smooth lister supplying \(K+1\) admissible, factored congruences in
+\[
+P(N,B)+K^{1+o(1)}
+\]
+time gives factoring in \(P(N,B)+K^{2+o(1)}\), under H’s fruitfulness clause. Choosing \(B=\operatorname{poly}(x)\) gives polynomial factoring if setup, output representation, and extraction are polynomial.
+
+The guarantee must cover setup and the desired output prefix, or a finite box whose *entire* output is affordable. “Polynomial time in the total eventual output” alone need not guarantee a cheap first \(K\) outputs.
+
+### 1.6 Attribution
+
+**KNOWN.** Canfield–Erdős–Pomerance, *J. Number Theory* **17** (1983), 1–28, Theorem 3.1 and its corollary, supply the smooth-number estimates underlying this optimization. Their theorem concerns integers, not arbitrary polynomial values. [Paper](https://users.renyi.hu/~p_erdos/1983-11.pdf)
+
+**KNOWN.** Pomerance’s *On the role of smooth numbers in number theoretic algorithms*, ICM Zürich 1994 proceedings (1995), §2, Lemma 2.1, states the \(L(X)^{\sqrt2+o(1)}\) random-square scale. His historical account credits Schroeppel’s unpublished late-1970s work for the earlier complexity argument. [ICM paper](https://math.dartmouth.edu/~carlp/PDF/paper104.pdf), [Pomerance, *Notices AMS* 43 (1996), “A tale of two sieves”](https://www.ams.org/notices/199612/pomerance.pdf)
+
+**UNVERIFIED priority.** I did not establish a first publication of the general size–entropy equation or abstract one-sided/double-listing principles. They are derived above, not attributed as historical discoveries.
+
+## 2. Sufficient structural properties
+
+### 2.1 Polynomial pairs and height profiles
+
+**PROVED.** Suppose integral coprime polynomials \(f,g\), of degrees \(d,e\), have a common root modulo \(N\), and heights \(H_f,H_g\). Their homogeneous values satisfy
+\[
+\lambda\le \log H_f+\log H_g+(d+e)\log A+O(\log(de)).
+\]
+Together with an efficient construction and the extraction interface of §1, this is a sufficient norm certificate.
+
+**model-PROVED (H).** For \(g=T-m,\ \log m\sim x/d\), and
+\[
+\log H_f\sim\eta x/d,\qquad \eta\ge0,
+\]
+the ledger becomes
+\[
+\lambda=(1+\eta)x/d+dD/2.
+\]
+Consequently
+\[
+\boxed{T=L[1/3,\,(32(1+\eta)/9)^{1/3}]}.
+\]
+Thus \(\eta=1,1/2,0\) give respectively \(1.922999,\ 1.747161,\ 1.526286\), provided construction and extraction fit the bound.
+
+**PROVED: heights alone have a limitation.** A nonzero resultant divisible by \(N\) satisfies the Sylvester–Hadamard bound
+\[
+x\le e\log H_f+d\log H_g+O((d+e)\log(d+e)).
+\]
+Writing \(D_0=\max(d,e)\), this forces
+\[
+\log H_f+\log H_g\gtrsim x/D_0.
+\]
+A certificate using only the usual height bound therefore retains a tradeoff of the form
+\[
+x/D_0+D_0\log A.
+\]
+Its optimization has the same \(1/3\) exponent. This is a limitation of that **height-only certificate**, not of actual values with systematic cancellation.
+
+### 2.2 Is the generic height floor a theorem?
+
+**PROVED: a coarse almost-all floor is a counting theorem.** Fix degree and height ranges for which all relevant resultants satisfy \(\log|\operatorname{Res}(f,g)|=O(x)\). If
+\[
+(d+1)\log(2H_f+1)+(e+1)\log(2H_g+1)
+\le(1-\varepsilon)x,
+\]
+only an exponentially vanishing fraction of \(N\in[e^x,2e^x]\) admit such pairs with nonzero resultant.
+
+*Proof.* There are at most \(\exp((1-\varepsilon)x)\) pairs. Each nonzero resultant has \(\exp(o(x))\) divisors: for every fixed \(\delta>0\), the elementary bound
+\(\tau(n)\le C_\delta n^\delta\) follows by bounding each prime-power divisor count \(a+1\) against \(p^{\delta a}\). Multiply the two bounds. ∎
+
+In particular, with \(d\to\infty\), \(e=1\), \(H_g=N^{1/d+o(1/d)}\), a fixed improvement \(H_f=N^{\eta/d+o(1/d)}\), \(\eta<1\), cannot hold for almost all \(N\).
+
+**HEURISTIC (Gaussian lattice model).** Precise shortest-vector distributions and attainable polynomial-selection profiles remain stronger assertions. The counting theorem does not establish the full Gaussian heuristic.
+
+**KNOWN.** Coppersmith explicitly invokes this counting obstruction in *Modifications to the Number Field Sieve*, *J. Cryptology* **6** (1993), §2; §§3–4 give multiple-field reuse and the factory. [Paper](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf)
+
+### 2.3 Kirchner’s special fields
+
+**KNOWN: conditional claims, not an established family.** Kirchner, *NFS factorization: new hopes*, *Prikl. Diskr. Mat. Suppl.* **11** (2018), 25–30, **Abstract**, proposes factoring relative discriminants of prime-degree Galois extensions by finding strongly ambiguous ideals. The stated prospective costs are
+\[
+L[1/3,(16/9)^{1/3}]
+\]
+for suitable special integers, and potentially
+\[
+L[1/3,(32/9)^{1/3}]
+\]
+for general integers if the construction can be adapted. The abstract explicitly says that no concrete family is proved to work, even heuristically, and that there is no evidence the requisite fields can be constructed. [Publisher record](https://www.mathnet.ru/eng/pdma386)
+
+**UNVERIFIED.** I could not retrieve the full text reliably. Therefore the exact degree/height/ramification/Galois-subfield hypotheses and internal section numbers remain unverified here. “Ramified at \(N\), small height, and a Galois subfield” should not be promoted into a sufficient theorem without those missing quantitative conditions.
+
+**OPEN.** This is a genuine constant-improvement program, with no established implication from a standard major conjecture and no evidence of a below-\(1/3\) exponent.
+
+### 2.4 Small-discriminant fields or orders
+
+**PROVED.** Small discriminant plus a ring map to \(\mathbb Z/N\mathbb Z\) is insufficient as a norm-size certificate. Already \(\mathbb Q\) has discriminant \(1\); choosing the generator \(m\) gives mapped expressions \(a-bm\) as large as \(N\). Discriminant does not control the height of the chosen generator or the sizes of mapped rational lifts.
+
+A sufficient strengthened statement is:
+
+> Uniformly construct a presented order, its map, and an enumerable relation family with \(K=B^{1+o(1)}\) columns, ledger \(\lambda(D)\), and efficient square extraction satisfying §1.
+
+Its consequence is exactly the size–entropy formula.
+
+**OPEN.** General small-discriminant existence conjectures do not supply this strengthened statement. If \(N\mid\Delta\), then \(|\Delta|\ge N\); “small” must consequently be quantified relative to degree and norm geometry.
+
+### 2.5 Smooth numbers close to multiples of \(N\)
+
+**model-PROVED (H).** Suppose a uniform algorithm supplies sufficiently many distinct factored integers
+\[
+u=kN+v,\qquad 0<|v|\le \exp(sF_{2\alpha}),
+\]
+with \(u\) already \(B\)-smooth, at negligible cost per output. With
+\(B=L[\alpha,\sqrt{\alpha s}]\), testing \(v\) gives
+\[
+L[\alpha,2\sqrt{\alpha s}]
+\]
+factoring. Apply §1.5 to the unconstructed side \(v\).
+
+**OPEN.** Efficiently finding enough such nearby smooth numbers is the substantive condition. Constructing arbitrary smooth numbers is easy and does not imply it.
+
+### 2.6 Rational-side, algebraic-side, and double listers
+
+**model-PROVED (H): a concrete single-\(N\) target.** A perfect output-sensitive lister of the rational-smooth pairs \(a-bm\) in an NFS box gives
+\[
+\boxed{L\!\left[1/3,\left(\frac{20+8\sqrt6}{9}\right)^{1/3}\right]}
+=L[1/3,1.638586\ldots]
+\]
+without factory precomputation.
+
+*Derivation.* Put
+\[
+d=\delta(x/\log x)^{1/3},\quad
+M=L[1/3,r],\quad B=L[1/3,b].
+\]
+The rational and algebraic norm constants are
+\[
+s_1=1/\delta,\qquad s_2=1/\delta+\delta r/2.
+\]
+Use §1.5:
+\[
+r-(s_1+s_2)/(3b)=b,\qquad
+t=\max\{r-s_1/(3b),2b\}.
+\]
+At the optimum,
+\[
+t=2b,\quad r=2b+\frac1{3b\delta},\quad
+\delta=b^{-1/2},
+\]
+and
+\[
+b^3=\frac{5+2\sqrt6}{18}.
+\]
+The corresponding box constant is \(r=2.006850\ldots\). ∎
+
+**KNOWN.** These are precisely the per-integer and precomputation scales of Coppersmith’s 1993 factory, §4. The new sufficient condition above replaces its stored rational-smooth database by an efficient lister.
+
+**model-PROVED (H).** An algebraic-smooth lister has the same optimization with \(s_1,s_2\) interchanged. A double lister removes both density penalties; its remaining requirements are affordable setup, enough outputs, and extraction. Neither algorithm is supplied by knowing the number of smooth values.
+
+### 2.7 Higher rank, multivariates, and systematic equations
+
+**model-PROVED (H).** A genuinely \(k\)-parameter family with entropy \(D=k\log A\) and certified ledger
+\[
+\lambda(D,d)=q x/d+dD/k
+\]
+would give
+\[
+\lambda(D)\sim2\sqrt{qxD/k},
+\qquad
+\boxed{t^3=64q/(9k)}.
+\]
+Fixed \(k\) changes a constant. If \(k=x^\theta\) while this ledger and all overheads remain valid, the power exponent becomes \((1-\theta)/3\), with logarithmic factors determined separately.
+
+**OPEN.** Merely introducing more variables proves none of those properties. Degree, coefficient size, redundant parametrizations, extraction, and the number of factors being tested must all be charged.
+
+**PROVED.** Over characteristic zero, \(T^q-T\) does not have all residues \(0,\ldots,q-1\) as integer roots; substitution at \(2\) already disproves that identity for \(q>2\). Finite-field systematic equations therefore require a new integer replacement.
+
+**OPEN.** Dense Prouhet–Tarry–Escott families become sufficient only if they yield an efficient, \(N\)-dependent congruence family with a ledger meeting §1. Equal power sums alone provide neither the map to \(N\) nor the required norm/entropy improvement. No equivalence with the classical PTE existence problem is established here.
+
+### 2.8 Factorials and algebraic complexity
+
+**PROVED: a uniform sufficient condition.** Suppose \(k!\bmod N\) can be computed in time polynomial in \(\log N+\log k\). Binary-search the least \(k\le\lfloor\sqrt N\rfloor\) for which
+\[
+\gcd(k!,N)>1.
+\]
+That least \(k\) is the smallest prime factor of composite \(N\). Thus this condition gives deterministic polynomial factoring. Uniformly constructible, division-free, polylogarithmic-length straight-line programs for \(k!\) suffice by modular evaluation.
+
+**KNOWN.** Bürgisser, *On Defining Integers and Proving Arithmetic Circuit Lower Bounds*, *Computational Complexity* **18** (2009), 81–103, Main Theorem 1.2, proves
+\[
+\tau(\operatorname{Per}_n)=n^{O(1)}
+\Longrightarrow
+\tau(n!)=(\log n)^{O(1)}.
+\]
+The assumption is **constant-free, division-free** circuit complexity. His introduction records Strassen’s nonuniform factoring implication and Lipton’s connection between average-case factoring hardness and a weaker \(\tau\)-hypothesis. [Author-uploaded journal text](https://www.researchgate.net/publication/226946788_On_Defining_Integers_And_Proving_Arithmetic_Circuit_Lower_Bounds)
+
+**UNVERIFIED original theorem details.** Strassen’s *Jahresbericht DMV* **78** (1976), 1–8, and Lipton’s ANTS-I, LNCS **877** (1994), 71–79, were bibliographically checked, but their original numbered reductions were not fully accessible. Lipton’s publisher abstract confirms the many-rational-roots/short-program connection. [Lipton](https://link.springer.com/chapter/10.1007/3-540-58691-1_45)
+
+**OPEN.** Nonuniform short programs do not by themselves supply the requested uniform single-input RAM algorithm. Nor does arbitrary falsity of the Shub–Smale \(\tau\)-conjecture imply polynomial factoring by a reduction established here.
+
+**HEURISTIC (standard algebraic-complexity expectations).** Short factorial programs and polynomial permanent circuits are expected not to exist. A superpolylogarithmic lower bound for \(\tau(n!)\) would, by Bürgisser’s implication, prove a major permanent lower bound.
+
+### 2.9 Complexity classes
+
+**PROVED.** The decision question “does \(N\) have a nontrivial divisor at most \(b\)?” lies in NP \(\cap\) coNP: a divisor certifies yes; a complete prime factorization certifies no. Consequently \(P=NP\), or \(P=NP\cap coNP\), gives polynomial factoring by binary search.
+
+**KNOWN.** Polynomial verification of primality is supplied by Agrawal–Kayal–Saxena, *Annals of Mathematics* **160** (2004), 781–793, main result. [Paper](https://annals.math.princeton.edu/2004/160-2/p12)
+
+**KNOWN.** Jeřábek, *Integer factoring and modular square roots*, *JCSS* **82** (2016), 380–394, Theorem 3.7, gives randomized polynomial reductions of factoring to PPA and PWPP; Theorem 3.8 derandomizes under the stated GRH assumption. Thus polynomial algorithms for all PPA or all PWPP problems suffice for randomized polynomial factoring. Membership alone supplies no speedup. [Paper](https://users.math.cas.cz/~jerabek/papers/factor.pdf)
+
+### 2.10 Group-order methods
+
+**PROVED: an explicit sufficient property.** Let a uniformly samplable group-and-point family over \(\mathbb Z/N\mathbb Z\) admit a stage costing
+\(L_p[\alpha,\beta]\). Suppose, with probability at least
+\(L_p[\alpha,\gamma]^{-1}\), its known annihilator kills the reduction at \(p\mid N\) and produces a detectable nontrivial gcd through different behavior at another prime factor. Independent repetition costs
+\[
+\boxed{L_p[\alpha,\beta+\gamma]}.
+\]
+Thus such a property with \(\alpha<1/2\) gives faster-than-ECM dependence on \(p\).
+
+**model-PROVED (random-order Dickman model).** Ordinary \(B\)-cost stages and orders of log-size \(\Lambda\) optimize to
+\[
+\exp((\sqrt2+o(1))\sqrt{\Lambda\log\Lambda}).
+\]
+For \(\Lambda\sim g\log p\), this is \(L_p[1/2,\sqrt{2g}]\). Increasing dimension alone does not improve the exponent. One needs substantially enhanced smooth-annihilator probability or cheaper annihilation.
+
+**KNOWN.** Lenstra, *Factoring integers with elliptic curves*, *Annals* **126** (1987), 649–673, Proposition 2.6 and analysis 2.7–2.9, provides the classical sufficient mechanism. [Paper](https://pages.cs.wisc.edu/~cs812-1/Lenstra1987.pdf)
+
+## 3. Classification of high-profile candidates
+
+### 3.1 Short intervals and smooth-number construction
+
+**KNOWN.** Matomäki–Radziwiłł, *Multiplicative functions in short intervals*, *Annals* **183** (2016), Corollary 1, prove many \(X^\varepsilon\)-smooth integers in
+\[
+[X,X+C(\varepsilon)\sqrt X].
+\]
+This is not the assertion with interval length \(X^\varepsilon\). [Paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v183-n3-p06-p.pdf)
+
+**KNOWN.** Harper’s *Bombieri–Vinogradov and Barban–Davenport–Halberstam type theorems for smooth numbers*, arXiv:1208.5992 (2012), Theorems 1–2, concerns distribution in progressions on average. [Paper](https://arxiv.org/pdf/1208.5992)
+
+**OPEN.** Neither result supplies an output-sensitive search algorithm. The assertion “every \([X,X+X^\varepsilon]\) contains an \(X^\varepsilon\)-smooth integer,” for every fixed \(\varepsilon>0\), is an existence target here. Attribution specifically to Harper is **UNVERIFIED**. Fixed-\(\varepsilon\) statements cannot silently be used with \(\varepsilon=\varepsilon(N)\to0\).
+
+**PROVED: search can imply listing.** A *total* interval oracle that returns a smooth integer or correctly reports none, with a uniform polynomial running-time bound for every queried subinterval, yields an output-sensitive lister by bisection. A binary tree of depth \(O(\log X)\) visits \(O((R+1)\log X)\) nodes to enumerate \(R\) outputs. A long-interval existence promise does not authorize the required shorter, possibly empty queries.
+
+**model-PROVED (H plus such an oracle in the specified regime).** A polynomial-time complete search oracle for \(B=L[1/3,b]\)-smooth integers near \(X=N\) gives
+\[
+\boxed{L[1/3,(16/9)^{1/3}]=L[1/3,1.211414\ldots]}.
+\]
+
+*Derivation.* Enumerate smooth \(u\) in \([N+1,N+H]\), writing \(v=u-N\). Choose \(H\) so the interval contains \(L[1/3,r]\) outputs under H. Since
+\[
+-\log\rho(x/\log B)\sim\frac{2}{3b}F_{2/3},
+\]
+we have \(\log H\sim sF_{2/3}\), \(s=2/(3b)\). Testing \(v\) requires
+\[
+r=b+s/(3b)=b+\frac{2}{9b^2}.
+\]
+The cost is \(\max\{r,2b\}\), minimized at \(b^3=2/9\), giving \(t^3=16/9\). Factoring returned smooth values is included in H’s usable smoothness-test interface. ∎
+
+**PROVED / model-PROVED distinction.** A constructor guaranteeing a smooth integer in *every* interval with
+\[
+X\asymp N,\quad \log h=O(F_{2\alpha}),\quad
+\log y=\Theta(F_\alpha),\quad \alpha<1/3,
+\]
+is impossible: global smooth-number upper bounds give density
+\[
+\exp(-\Theta(F_{1-\alpha})),
+\]
+where \(F_{1-\alpha}\gg F_{2\alpha}\); there are too few smooth integers to meet all disjoint intervals. A factoring-specific constructor for enough selected windows is not excluded and would satisfy §2.5.
+
+**OPEN.** The complete interval oracle above gives a concrete constant improvement. No implication from it to an exponent below \(1/3\) is established here.
+
+### 3.2 Deterministic prime construction
+
+**KNOWN.** The Polymath4 paper, D. H. J. Polymath, *Deterministic methods to find primes*, *Math. Comp.* **81** (2012), 1233–1246, §1, studies deterministic prime finding; it does not establish polynomial-time construction. [Paper](https://arxiv.org/abs/1009.3956)
+
+**OPEN: no known factoring implication.** Polynomial deterministic prime construction supplies no small congruent norms or smooth relations. Smooth-number construction without a tight location constraint is already trivial—for example, powers of \(2\) provide smooth integers at every multiplicative scale.
+
+### 3.3 Sum-product, expansion, and navigation
+
+**OPEN.** Sum-product growth, generation, small diameter, and mixing do not themselves give an algorithm finding a word representing a prescribed group element.
+
+**PROVED: constructive navigation is sufficient.** Suppose a polynomial-size set of known primes generates \((\mathbb Z/N)^*\), and a polynomial-time algorithm expresses any target as a product of these generators, with polynomial-bit exponents. This gives randomized polynomial factoring.
+
+*Proof.* Choose hidden uniform units \(a_i\), query navigation only on \(a_i^2\), and find a parity dependency among one more exponent vector than generators. It constructs a square root \(b\) of \(\prod a_i^2\). Conditional on all queried squares and the dependency, the hidden product \(\prod a_i\) is uniform among its square roots: one selected hidden preimage already supplies uniformity over the 2-torsion. For an odd integer with at least two distinct prime factors, at most half give \(b=\pm\prod a_i\). A gcd splits \(N\) with probability at least \(1/2\). Prime powers are handled separately. ∎
+
+**HEURISTIC (constructive-word-problem hardness).** Short representations may exist while finding them is hard. This is a substantive algorithmic target, substantially stronger than expansion.
+
+### 3.4 Small discriminants, \(S\)-units, and abc
+
+**OPEN.** Small-discriminant existence has the missing bridges identified in §2.4.
+
+**KNOWN.** Evertse–Schlickewei–Schmidt, *Annals* **155** (2002), 807–836, Theorem 1.1, bound nondegenerate solutions in a rank-\(r\) multiplicative group by
+\[
+\exp((6n)^{3n}(r+1)).
+\]
+This is an **upper** bound. [Paper](https://arxiv.org/pdf/math/0409604)
+
+**OPEN.** Effective abc and \(S\)-unit height bounds do not provide the required abundance or polynomial enumeration. “Effective” does not mean polynomial time. A uniform solver listing enough bounded-height solutions of
+\[
+u-v=kN
+\]
+for a supplied small-prime set, without requiring the factorization of \(N\), would supply a useful lister. Solving \(S\)-unit equations in general does not automatically establish those abundance and cost requirements.
+
+### 3.5 Prime-number lattices
+
+**OPEN.** Approximate CVP alone is not a sufficient condition established here. The required bridge is an approximation guarantee that produces enough admissible smooth relations, with controlled residual sizes and extraction cost. No equivalence between ordinary approximate CVP and faster factoring is asserted.
+
+### 3.6 Coppersmith and partial information
+
+**KNOWN.** Coppersmith, *J. Cryptology* **10** (1997), 233–260, Theorems 4–5, gives polynomial factoring from the specified high- or low-order \(\frac14\log_2N\) bits of a factor. For balanced factors this is approximately half that factor’s bits. [Paper](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf)
+
+**PROVED consequence.** If a polynomial-time algorithm supplies a list of \(R\) possibilities for the required leaked information, checking them costs \(R\,\operatorname{poly}(x)\). Subexponential list size can therefore give subexponential factoring.
+
+**OPEN.** Existing partial-information theorems supply no such list from \(N\) alone. Strengthening a root bound without specifying how the required information is obtained is not a general factoring algorithm.
+
+### 3.7 CRT codes and the 2026 RS result
+
+**KNOWN.** Goldreich–Ron–Sudan, STOC 1999, introduced CRT list decoding. Boneh, STOC 2000, 265–272; expanded *JCSS* **64** (2002), 768–784, **Abstract and stated decoding bound**, connects generalized CRT decoding to smooth integers and QS. [Author’s statement](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html)
+
+**KNOWN.** Guruswami–Sahai–Sudan, FOCS 2000, 159–168, Theorems 4–6, develop weighted CRT decoding and remove the earlier dependence on the ratio of prime sizes in their uniform-agreement bound. [Paper](https://www.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf)
+
+**OPEN.** “Beyond Johnson” alone is not sufficient. A factoring application needs an explicit reduction handling weighted divisibility, repeated prime powers, shrinking agreement fractions, output size, and the relevant \(X,h,y\).
+
+**KNOWN.** Brakensiek–Chen–Putterman–Zhang–Zheng, *Algorithmic List Decoding of Reed–Solomon Codes up to Capacity*, arXiv:2609.08005 (September 2026), Theorem 4.1 and Corollary 5.1, give deterministic decoding for ordinary RS codes over prime fields, reaching capacity for fixed rate and slack, with time polynomial in the field size. [Paper](https://arxiv.org/html/2609.08005v1)
+
+**OPEN.** That is not a CRT theorem. Its fixed-parameter and field-size dependence also require scrutiny before use in factoring. No automatic transfer, and no factoring improvement from that result, is established here.
+
+### 3.8 Sparse linear algebra
+
+**model-PROVED (FS + H).** Replacing \(K^2\) by \(K^\omega\), \(1\le\omega<2\), does **not** improve the optimized leading constant for a fixed ledger \(\lambda(D)\) independent of \(B\). Sampling alone already costs at least
+\[
+\min_z\exp\!\left(z+\frac{\lambda\log\lambda}{2z}\right),
+\]
+and quadratic linear algebra merely meets that minimum. Faster algebra can help variants with different ledgers or listing costs; it does not by itself cross \(1/3\).
+
+**KNOWN.** Peng–Vempala, SODA 2021, 504–521, Theorem 1.1 and §1.2, treat bounded-precision real systems with condition-number dependence. Their theorem is not a subquadratic solver for arbitrary sparse \(\mathbb F_2\) relation matrices. [Paper](https://arxiv.org/html/2007.10254v2)
+
+## 4. Ranking the sufficient targets
+
+**HEURISTIC ranking, using directness × plausibility × significance.**
+
+1. **Output-sensitive enumeration of one smooth NFS side.** Best initial target: precise inputs, measurable cost, a verified constant-level payoff, and a direct connection to Coppersmith’s reuse mechanism. Attack restricted families first.
+2. **Complete smooth-interval search in the NFS regime.** Stronger payoff, \(1.211414\), and a useful search-to-listing reduction. The hard issue is uniform search, including empty subintervals.
+3. **Kirchner’s quantified field construction.** High conceptual interest; first recover and formalize every construction and extraction hypothesis. Present plausibility is unsupported.
+4. **Constructive navigation over small primes.** An unusually clean polynomial-time sufficient condition. Expansion alone is much weaker; a navigation algorithm would be a major breakthrough.
+5. **A new multivariate size–entropy law.** The most promising architectural route to an exponent below \(1/3\), but currently speculative.
+6. **Uniform short factorial programs.** Very direct polynomial consequence, low expected plausibility.
+
+**PROVED / HEURISTIC assessment.** The nonuniform question \(\tau(n!)=\operatorname{polylog}(n)\) is a landmark either way: a positive answer has the recorded nonuniform factoring consequence; a negative answer proves a permanent lower bound through Bürgisser. Ordinary polynomial-height improvements for almost all \(N\) are less promising: §2.2 already rules out fixed power savings in that representation model.
+
+## 5. Numeric sanity checks and final map
+
+**PROVED calculations.** Exact rational inputs were used, with decimal evaluation only for display.
+
+| Check | Input | Output |
+|---|---|---|
+| 1. Dixon / QS in FS | \(\lambda=x\), respectively \(x/2\) | \(L[1/2,\sqrt2]\), respectively \(L[1/2,1]\) |
+| 2. GNFS / SNFS | \(t^3=64/9\), respectively \(32/9\) | \(1.9229994271\), \(1.5262856567\) |
+| 3. Height profile | \(\eta=1/2\) | \(t^3=16/3,\ t=1.7471609295\) |
+| 4. Rational lister | \(t^3=(20+8\sqrt6)/9\) | \(t=1.6385862343,\ r=2.0068500868\) |
+| 5. Interval oracle | \(b^3=2/9\) | \(b=0.6057068643,\ s=1.1006424163,\ t=1.2114137286\) |
+| 6. Exact congruence | \(81=77+4\), both \(7\)-smooth | \(9^2\equiv2^2\pmod{77}\); gcds \(7,11\) |
+
+**Status convention for the table.** Beliefs are research judgments, not theorems. Every listing condition includes affordable setup, usable factorizations, sufficient outputs, and extraction.
+
+| condition | gives | relation to known problem | believed | status of the implication |
+|---|---|---|---|---|
+| FS ledger \(\lambda=sF_{2\alpha}\) | \(L[\alpha,2\sqrt{\alpha s}]\) | Smooth relation collection | H is customary | model-PROVED |
+| Improved size–entropy law | Exponent \(a/(2-b)\) | Candidate geometry and abundance | Family-dependent | model-PROVED |
+| Fixed power saving in ordinary polynomial heights for almost all \(N\) | Hypothetical constant gain | Polynomial selection | False in §2.2’s range | PROVED obstruction |
+| SNFS representation | Constant \(1.526286\) | Special input representation | Exists for special families | model-PROVED under H |
+| Kirchner’s requisite field family | Claimed \(1.211414\), potentially \(1.526286\) general | Ambiguous ideals and relative discriminants | Unsupported | Conditional claim; exact hypotheses UNVERIFIED |
+| Small discriminant and ring map alone | No quantified speedup | Number-field existence | Insufficient certificate | PROVED limitation |
+| Nearby constructed-smooth \(u\), small \(u-kN\) | §2.5 bound | Located smooth-number construction | Strong | model-PROVED |
+| Perfect rational-side NFS lister | Constant \(1.638586\), single \(N\) | Coppersmith factory mechanism | Open, concrete | model-PROVED |
+| Complete interval search in §3.1’s regime | Constant \(1.211414\) | Smooth search and enumeration | Strong, open | model-PROVED |
+| Double-smooth congruence lister with polynomial base | Polynomial factoring | Relation finding | Generally expected hard | PROVED plus H fruitfulness |
+| Higher-rank family satisfying §2.7’s ledger | Constant or exponent gain | Multivariate norm geometry | Speculative | model-PROVED |
+| Polynomial constructive navigation | Randomized polynomial factoring | Constructive group word problem | Expected difficult | PROVED |
+| Expansion, density, or existence alone | No established speedup | Analytic/additive combinatorics | Often plausible | OPEN bridge |
+| Uniform polynomial modular factorial computation | Polynomial factoring | Short factorial programs | Expected false | PROVED |
+| Polynomial constant-free permanent circuits | Short factorial programs | Algebraic complexity | Expected false | KNOWN; uniformity still needed |
+| \(P=NP\), or suitable total-search collapse | Polynomial factoring | NP, PPA, PWPP | Generally expected false | PROVED / KNOWN reductions |
+| Enhanced group annihilation probability | \(L_p[\alpha,\beta+\gamma]\) | ECM-type methods | Family-dependent | PROVED |
+| Partial-factor bits or a short candidate list | Polynomial or list-size-scaled factoring | Coppersmith | Sufficient information is hard to obtain | KNOWN / PROVED |
+| CRT decoding meeting a quantified smooth-listing contract | Corresponding listing bound | CRT codes | Open | Conditional sufficient bridge |
+| 2026 RS capacity theorem alone | No established factoring gain | RS decoding over prime fields | Verified stated theorem | OPEN transfer |
+| Faster sparse \(\mathbb F_2\) algebra alone | No leading FS improvement | Wiedemann/Lanczos replacement | Open algorithmic target | model-PROVED limitation |

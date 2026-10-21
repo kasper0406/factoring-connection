@@ -1,0 +1,170 @@
+I read the [note](/Volumes/git/factoring-connection/notes/suffmap_results.md) and all three code files. The 12 tests pass. The fixed-size optimization and SI’s \(1.2114\) calculation check out; several claimed implications need stronger hypotheses.
+
+Locations below refer to `notes/suffmap_results.md` unless another file is named.
+
+1. **MAJOR — Prop SI’s sufficient condition has missing quantifiers and relation assumptions.**  
+   **Location:** §0, lines 47–54; §1.4, lines 262–286; H3.
+
+   A constructor for **some fixed** \((\kappa,\nu)\) satisfying \(\nu>2/(3\kappa)\) gives the displayed parameter-dependent cost, not automatically \(1.2114\). The optimized constant requires constructors near
+   \[
+   \kappa_*=(2/9)^{1/3},\qquad \nu_*=2/(3\kappa_*).
+   \]
+   Furthermore, marginal smoothness of \(v_k\) does not ensure fruitful square dependencies. Distinct \(k\) give distinct integers, not necessarily useful relation vectors. The heading names only \(H_S\) on the residue, although an analogue of R is essential.
+
+   **Fix:** State a tunable constructor hypothesis, conditional residue-smoothness estimates along the actual query history, and explicit fruitfulness assumptions. Describe \(1.2114\) as the optimized conditional constant.
+
+   There is **no double-counting** in charging smoothness of \(u\) through the interval length and then charging smoothness of \(v\): once the constructor supplies \(u\), its smoothness probability should not be charged again.
+
+2. **FATAL to the claimed SI⇒DL consequence — Modulus-genericity does not supply target cosets.**  
+   **Location:** Prop DLT, lines 392–401; ranking table, line 556.
+
+   DLT explicitly requires handling
+   \[
+   u\equiv t\,v\pmod p.
+   \]
+   SI supplies only \(u\equiv v\pmod p\). An ordinary interval constructor does not impose the multiplicative condition involving an arbitrary target \(t\). Consequently, SI does not establish the individual-log step, and line 556’s \(L_p[1/3,1.2114]\) conclusion is unsupported.
+
+   With the additional coset capability and suitable rank assumptions, DLT’s **same-\(\alpha\)** conclusion is reasonable. But “linear algebra is polynomial in the factor-base size” preserves the exponent \(\alpha\), not the constant: cubic algebra already changes \(2\kappa\) to \(3\kappa\).
+
+   **Fix:** Remove the SI⇒DL claim pending a separate coset/individual-log reduction. For DLT, specify generator normalization, rank modulo every relevant prime divisor of \(p-1\), prime-power lifting, order-factorization costs, and the linear-algebra bound before claiming any particular constant.
+
+3. **MAJOR — C3 drops the empty-row cost that Lemma SL explicitly charges.**  
+   **Location:** Lemma SL, lines 233–240; C3, lines 470–472; tier-table line 68.
+
+   For row-by-row search, the bound is \(2K+J\), not merely \(O(K)\). Searching \(E\) rows in each of \(V\) fields introduces a term \(L[1/3,e+v]\). The cited algebraic-listing infimum \(0.7631\) is approached with \(e\to\infty\), so that omitted term destroys the quoted implementation. The “doubly row search gives inf 0” assertion has the same problem.
+
+   **Fix:** Require an oracle searching the whole two-dimensional region, including across empty rows, or redo the optimization with row startup and stopping costs. For illustration, adding \(e+v\) to the quoted full-box program gives \(1.16477\), not \(0.7631\); that is not a lower bound on every possible row strategy.
+
+4. **MAJOR — SS(c)’s stated regularity does not justify its fixed-point equivalence.**  
+   **Location:** lines 142–150 and proof steps 3–4, lines 174–183.
+
+   Bounding the number of size levels does not guarantee that the feasibility threshold is stable under the allowed \(o(1)\) errors. A finite population can terminate exactly at the nominal threshold. Its actual expected yield can then be \(B\exp[-o(C^*)]\), below the required count, with no extra candidates available. Conversely, a lower-order improvement can make a nominally infeasible population feasible.
+
+   The instruction to absorb the deficit with “one more \(L^{o(1)}\) slack” assumes precisely the additional population that has not been guaranteed. Expected yield also needs a concentration or success-probability argument.
+
+   **Fix:** State upper and lower feasibility inequalities with explicit slack; require sufficient population beyond the threshold and stability under multiplicative perturbations. Regularly varying power-law profiles with \(b<2\) are a natural restricted theorem. The present generality is unjustified.
+
+5. **MAJOR — The random-squares citations do not establish R as written.**  
+   **Location:** lines 120 and 145–148.
+
+   R asserts that \(\pi(B)(1+o(1))\) relations are needed. Balister–Bollobás–Morris instead prove a threshold for the number of **raw independent uniform integers**:
+   \[
+   T(X)=(e^{-\gamma}+o(1))
+   \min_y\frac{\pi(y)X}{\Psi(X,y)}.
+   \]
+   This is not a theorem asserting R for a prescribed factor base and relation-selection process. Their model permits dependencies involving primes outside that base. See [Theorem 1.1](https://arxiv.org/pdf/1608.03857).
+
+   **Fix:** Cite the published random-squares threshold for its actual model. Keep R explicit for structured families; weaken its precision to what the leading-order lower bound actually needs.
+
+6. **MINOR — SS(a), the \(\omega\)-claim, and the power-law algebra survive, but their domains need tightening.**  
+   **Location:** §1.2(a)–(e); `principle.py`, lines 73–91 and 158–165.
+
+   The fixed-size optimum, \(\omega\le2\) independence under the stated relation model, and
+   \[
+   \alpha=\frac{a}{2-b},\qquad c^{2-b}=4\alpha A
+   \]
+   are correct. But subexponential \(L\)-notation requires \(0<\alpha<1\), hence \(a<2-b\). “\(\sigma=2\alpha\)” describes the saturated optimum; the necessary size condition is an inequality.
+
+   At the polynomial endpoint, \(L^{o(1)}\) generation/test costs cannot be treated as polynomial costs. For a fixed positive reference exponent they can still be superpolynomial in \(x\).
+
+   **Fix:** Add the domain restrictions and state the polynomial result separately, with polynomial bit costs and adequate candidate supply. The size threshold is correct under those strengthened assumptions.
+
+7. **MAJOR — Listing at every fixed \(L\)-scale does not imply polynomial-time listing.**  
+   **Location:** LS(a), lines 222–223; E3, lines 366–390; tier table.
+
+   A per-output bound \(L[\alpha,\tau]\) for fixed \(\alpha>0\) does not become polynomial by choosing a polynomial factor base. Even \(L[\alpha,0]\) can be superpolynomial. Nor does amortized output sensitivity guarantee inexpensive access to the first \(B\) outputs after potentially enormous setup.
+
+   The cited `smoothenum` T8 explicitly requires polynomial delay or prefix-output cost; this qualification has been lost.
+
+   **Fix:** Separate fixed-\(\alpha\) listers from polynomial-time listers. Require polynomial setup and polynomial cost for any requested output prefix, including factorization certificates, duplicate handling, and extraction.
+
+8. **MAJOR — “The region can be enlarged for free; any \(h_0\) works” is false without representation bounds.**  
+   **Location:** Prop PC, line 258; SI(iv), lines 276–292.
+
+   Enlarging the range changes integer bit lengths and smooth-number density. A promise length with superpolynomially many bits cannot be hidden in one oracle call. Tiling also supplies only \(H/h_0\) outputs; enlarging a region does not help if the applicable threshold grows comparably with it.
+
+   For SI(iv), existence in the whole Bohr set does not imply existence in every consecutive-\(k\) block queried by the constructor.
+
+   **Fix:** Give an explicit polynomially encoded range and block promise. For example, formulate the polynomial regime with \(y=x^K\), \(K>1\), \(U=N^A\), and \(A>K/(K-1)\), together with the required blockwise distribution, output-cost, and fruitfulness hypotheses.
+
+9. **MINOR — Prop PC proves an output-count comparison, not unconditional “\(\theta\)-equivalence.”**  
+   **Location:** lines 244–260.
+
+   The adversarial packing bound and disjoint tiling argument are sound with appropriate endpoint conventions. But “exactly one output per tile” means only within constant factors. Matching full listing’s leading output count does not match its distribution, factorization information, primitive outputs, or useful dependencies.
+
+   **Fix:** Restrict the upper bound to distinct **oracle answers**. Describe the \(\theta\) statements as count-model substitutions requiring cheap calls and the same downstream randomness assumptions as full listing.
+
+10. **MINOR — SI’s existence “iff” confuses mean density, uniform existence, and unrestricted \(k\).**  
+    **Location:** lines 265–271 and 281–288.
+
+    The expected-count calculation is correct at leading order. It does not prove all-interval existence; equality at \(\nu=2/(3\kappa)\) requires lower-order analysis. For fixed \(N,y,h\), existence for every \(k=1,2,\ldots\) is actually false: CRT can arrange a large prime divisor in every position of one such interval.
+
+    **Fix:** Restrict \(k\) to the range actually needed, \(k\le L[1/3,C]\), and distinguish mean density, a uniform existence hypothesis, and constructor output assumptions. The exponent floor \(\max(\alpha,1-2\alpha)\) is valid within that unbiased-residue density model, not for arbitrary single-interval oracles.
+
+11. **MAJOR in the tables; E4’s core implication is sound — The algebraic-complexity arrows are overstated.**  
+    **Location:** E4, lines 403–421; tier-table line 63; H13.
+
+    Bürgisser’s precise sufficient hypothesis is
+    \(\tau(\mathrm{Per}_m)=m^{O(1)}\), with constant-free, division-free circuits; membership in constant-free VP is stronger. Theorem 4.1(2) gives short circuits for a suitable power-of-two multiple of Pochhammer. This supports the dyadic advice argument and the contradiction with the τ-conjecture. See [Bürgisser, Theorem 4.1 and its application](https://eccc.weizmann.ac.il/report/2006/113/download).
+
+    However, ordinary \(VP\ne VNP\) does **not** imply E4 is false: the stated arrow runs from permanent easiness to E4. Also, H13 must not label truth of the τ-conjecture itself “sufficient” for faster factoring.
+
+    **Fix:** Draw the directional implications explicitly. A hardness claim must quantify over the permitted power-of-two scalings; hardness of the unscaled polynomial alone is insufficient for the advertised contrapositive.
+
+12. **FATAL to E6 as stated — Smooth group orders do not ensure CRT separation.**  
+    **Location:** lines 432–443.
+
+    The hypothesis supplies only marginal smooth-order probabilities. It says nothing about producing an operation that succeeds modulo one prime and fails modulo another. The trivial algebraic group has order \(1\) everywhere and satisfies the written smoothness condition, while supplying no factorization information.
+
+    Representation size, group-operation cost, and useful point sampling are also absent.
+
+    **Fix:** Require an efficiently represented family, efficient sampling, and a lower bound on the probability that the actual annihilation computation exposes a proper CRT component. Prove the complexity from that event. The current implication cannot be labelled PROVED.
+
+13. **MAJOR — E7 mislabels discrete logarithms, and the necessity paragraph contradicts E7.**  
+    **Location:** lines 445–449 and 539–544.
+
+    General DL modulo composite \(N\) is not known to be factoring-equivalent. Factoring leaves prime-field DL problems. Indeed, the cited `nonsmooth` table itself records “factoring plus prime DLP” in the reverse direction.
+
+    Conversely, genuinely factoring-equivalent invariants such as \(\varphi(N)\) *are* necessary in the algorithmic sense: fast factoring computes them with small additional cost.
+
+    **Fix:** Separate equivalences from one-way sufficient oracles. Replace “nothing on the map is known necessary” with “no independent structural hypothesis listed here is known necessary.” Replace “vectors need DL” with the weaker statement that no converse reduction to the required useful short-relation lister is known.
+
+14. **MAJOR — C6/H7 discard restrictions from the cited barrier theorem.**  
+    **Location:** lines 486–495; H7.
+
+    `resbarrier` RB2 explicitly assumes its extraction architecture, rank two, degree restrictions, \(H_5\) on the box/lattice side, smoothness heuristics, and \(B^2\) algebra. “Every rank-2 pair, every N” omits these restrictions.
+
+    Moreover, small discriminant plus a root/map modulo \(N\) is not itself sufficient for a factoring constant—the note correctly acknowledges this immediately afterwards.
+
+    **Fix:** Restore the full theorem scope in every table. State the constructive linked-family, norm-size, enumeration, and extraction conditions that would actually be sufficient. Keep height-counting exclusions separate from the open discriminant problem.
+
+15. **MAJOR — Abundance, diameter, and useful enumeration are different assertions.**  
+    **Location:** E3’s equivalent forms, lines 371–390; H6.
+
+    A collision bound such as \(S^2/N-S\) does not establish Cayley-graph diameter or connectivity. Collisions can occur entirely inside a proper subgroup. Thus H6’s “diameter = abundance, already unconditional by counting” is wrong.
+
+    Likewise, S-unit pairs and relation-lattice vectors are equivalent as individual witnesses, not automatically as useful enumeration algorithms. Standard fixed-coefficient S-unit solving also does not automatically enumerate over the variable multiplier \(k\) at the claimed cost.
+
+    **Fix:** Separate witness correspondence, abundance, generation, navigation, and fruitful relation production. The constructive-navigation proof is valid with polynomially many generators and the stated independence from hidden square roots.
+
+16. **MINOR — The literature discussion needs updating; novelty remains unverified.**  
+    **Location:** C1, lines 455–462; H1; §6.1.
+
+    [Boneh’s 2000/2002 paper](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html) already connects smooth-integer interval search with factoring, so the broad reduction idea is established. I did not locate the exact \(1.2114\) oracle optimization in the primary sources accessible here; that does not establish priority.
+
+    H1’s description of existing short-interval work as essentially \(y=X^\varepsilon\) is also outdated. [Jain’s work](https://arxiv.org/abs/2502.10530) reaches \(y\ge\exp((\log X)^{2/3+\varepsilon})\), although still far from SI’s smoothness scale and without its constructor.
+
+    **Fix:** Retain only a carefully bounded “exact constant not located” statement and update the existence literature.
+
+17. **MAJOR — The ranking and “unique landmark either way” conclusion are not supported.**  
+    **Location:** §0; §4, especially lines 568–577.
+
+    SI is a worthwhile target, but its payoff currently depends on several additional oracle-distribution assumptions. “At least as hard as one-sided Schnorr CVP” is not established by rewriting the search as logarithmic approximation; a hardness comparison requires a reduction.
+
+    E4 is not uniquely a landmark either way. An unrestricted superpolynomial lower bound for the promised SI constructor would already imply \(P\ne NP\): a valid answer has a polynomial-length prime-factorization certificate, and \(P=NP\) would permit witness search.
+
+    The map also omits useful distinctions: uniform modular-factorial evaluation versus integer SLP complexity; the broader finite-field root-density SLP condition in `slpcirc`; algorithm-specific simulation of Shor/order finding versus simulating all BQP; and RSA inversion versus factoring as a prominent unresolved reduction question.
+
+    **Fix:** Present C1’s priority as an assessment, remove unproved hardness comparisons, and qualify “landmark” by the exact model. I would not currently endorse C1 as the uniquely best initial target; C2 and sparse finite-field linear algebra have clearer interfaces.
+
+**Overall verdict: MAJOR REVISION.** The optimization formulas are useful, but the map currently transfers conclusions between different oracle interfaces, suppresses startup and output-quality requirements, and overstates several equivalences and barrier scopes.
