@@ -69,7 +69,8 @@ Notation:
   - All of these go through Coppersmith or binary search.
 
 **3. The information floor is a theorem for N-oblivious algebraic algorithms.**
-- Theorem PT (PROVED; elementary; no exact prior formulation located) covers pure generic-ring decision trees: finite
+- Theorem PT (PROVED; its partition lemma is the standard generic-ring simulation step; the quantitative iid
+  statements PT, PT-m and PT2 have no exact prior formulation located) covers pure generic-ring decision trees: finite
   trees of integer straight-line programs whose constants do not depend on N, with zero tests mod N, of any size and
   height, adaptive and randomized. With fixed schedules this covers Pollard rho, p−1, p+1, ECM and Pollard–Strassen.
   - Such a tree either splits N or ends in a leaf determined by a *partition class* of p, which is also the class
@@ -101,7 +102,7 @@ Notation:
 - Divisibility sequences (2^N − 1 ∋ 2^p − 1) do move p, but at exponential size.
 - Known sufficient leakage:
   - ≈ n/4 + O(log n) bits of p in coset shape (Coppersmith; trackE measured n/4 + n/(4d) − 2);
-  - εn arbitrary yes/no queries (Maurer 1995, conditional).
+  - εn arbitrary yes/no queries (Maurer 1995; the success bound 1 − N^{−ε/2} rests on an ECM-type conjecture).
 - O(log n) bits are worthless.
 - A single fixed bit would need a factor-moving self-reduction. We found none, and we rule out the polynomial ones.
 
@@ -136,7 +137,7 @@ the weighted exponent sum.
   semiprime outputs gives one-call factoring of N only together with a factored decomposition N = u + v. That is
   available heuristically by the prime trick.
 
-### 1.4 Prop Z (Zech ⇔ DL in F_q). PROVED (classical in substance)
+### 1.4 Prop Z (Zech ⇔ DL in F_q). PROVED (folklore; no explicit reference located; definition of Zech/Jacobi logarithms: Odlyzko, Handbook of Finite Fields §11.6)
 Z(k) = log_g(1 + g^k), with a separate zero symbol. Addition in log coordinates is log(g^u + g^v) = u + Z(v − u).
 - **DL ⇒ Zech:** 1 DL call.
 - **Zech ⇒ DL in F_p:**
@@ -192,8 +193,8 @@ unless marked.
 
 **Classifying the "easy" homomorphisms.**
 - The linear functionals with values in a group A are exactly the completely multiplicative maps to A.
-- KNOWN for automata: multiplicative automatic sequences are, away from finitely many primes, a Dirichlet character
-  or vanish (Konieczny–Lemańczyk–Müllner, Math. Z. 300 (2022) 1297–1318). This extends Klurman–Kurlberg (C. R. Math.
+- KNOWN for automata: multiplicative automatic sequences are, away from finitely many primes and small prime powers, a
+  Dirichlet character or vanish (Konieczny–Lemańczyk–Müllner, Math. Z. 300 (2022) 1297–1318, Thms 1 and 5). This extends Klurman–Kurlberg (C. R. Math.
   357 (2019) 752–755) and Schlage-Puchta (Integers 11 (2011) A31). For finite automata the addition-free homomorphisms
   are exactly characters, i.e. floor information.
 - Green (CPC 21 (2012) 942–951) shows that μ is asymptotically orthogonal to AC⁰.
@@ -250,23 +251,23 @@ amplification.
 | bit i of p, i an input | ≡ FACT | query all i |
 | ⌊p/2^k⌋, k ≤ n/4 + O(log n) | ≡ FACT | Coppersmith J. Cryptology 10 (1997) Thms 4–5, plus 2^{O(log n)} enumeration; Rivest–Shamir 1985 needed n/3 |
 | ⌊p/2^k⌋, n/4 + ω(log n) ≤ k < n/2 − O(1) | **OPEN** | topblock: lattice comparison theorem only |
-| p mod M, log₂M ≥ n/4 + O(log n) | ≡ FACT | Coppersmith/May, known modulus (trackE E1) |
+| p mod M, log₂M ≥ n/4 + O(log n) | ≡ FACT | Boneh–Durfee–Frankel ASIACRYPT 1998 Cor. 2.2 (arbitrary known modulus, generalising Coppersmith Thm 5); May, LLL+25 survey (2010); trackE E1 |
 | p mod ℓ, ℓ small odd prime | **OPEN** | = (s mod ℓ) + a 1-bit label (trackE F2) |
 | s = p+q mod ℓ, equivalently φ(N) mod ℓ | **OPEN**; decides "ℓ* is a square mod N" when (N/ℓ) = 1 | nonsmooth Prop RANK |
 | φ(N) mod 2^k, k ≥ n/4 + v₂(q−p) | ≡ FACT (2 decodes) | trackE E2 |
 | φ(N) mod 8, N ≡ 1 (4) | ⇔ ε | trackE E2′ |
 | trivial residues: p mod 2, φ(N) mod 4, [2 \| φ(N)] | easy | — |
-| ε = (−1/p), N ≡ 1 (4) | **OPEN**; = [−1 is a square mod N] = [r₂(N) = 16] | Seurin, PKC 2014 (2-Φ/4-hiding) |
+| ε = (−1/p), N ≡ 1 (4) | **OPEN**; = [−1 is a square mod N] = [r₂(N) = 16] | Seurin, PKC 2014 (2-Φ/4-hiding); deciding Blum-ness has no known reduction from factoring (van de Graaf–Peralta CRYPTO '87 prove it in zero knowledge for that reason) |
 | bit 1 of the smaller factor, N ≡ 3 (4) | **OPEN** (orientation bit) | — |
 | [ℓ \| φ(N)], ℓ odd (Φ-hiding) | **OPEN**; conjectured hard on suitable distributions | Cachin–Micali–Stadler, EUROCRYPT 1999 |
-| QR mod N, random base with Jacobi +1 | **OPEN** (classical) | — |
+| QR mod N, random base with Jacobi +1 | **OPEN** (classical) | Goldwasser–Micali JCSS 28 (1984) |
 | fixed-base QR | **OPEN** in nontrivial cases | — |
-| Ω(N) mod 2, ω, d, μ, squarefreeness, rad | trivial on the RSA promise (0, 2, 4, 1, yes, N); **OPEN** for general N | Adleman, FOCS 1994 (C7–C9: squarefree part, squarefreeness, ω), companion of Adleman–McCurley ANTS-I (LNCS 877) 1994, exact ANTS numbering UNVERIFIED; Shallit–Shamir 1985; Landau Inf. Comput. 78 (1988) and Woll Inf. Comput. 72 (1987) reduce *to* totient-type oracles, not from these (direction per codex; Du–Volkovich FSTTCS 2021 §1.1) |
+| Ω(N) mod 2, ω, d, μ, squarefreeness, rad | trivial on the RSA promise (0, 2, 4, 1, yes, N); **OPEN** for general N | Adleman, FOCS 1994 (C7–C9: squarefree part, squarefreeness, ω; numbering per codex, UNVERIFIED), companion of Adleman–McCurley ANTS-I (LNCS 877) 1994 (UNVERIFIED); Booker–Hiary–Keating Duke Math. J. 164 (2015) (squarefree detection, partial/GRH); Shallit–Shamir 1985; Landau Inf. Comput. 78 (1988) and Woll Inf. Comput. 72 (1987) reduce *to* totient-type oracles, not from these (direction per codex; Du–Volkovich FSTTCS 2021 §1.1) |
 | d(N) mod 2 | easy (square test) | — |
-| φ(N), λ(N), σ(N); ord_N(a) with a selectable base | ≡ FACT (randomized) | Miller 1976; Bach–Miller–Shallit SIAM J. Comput. 15 (1986) |
+| φ(N), λ(N), σ(N); ord_N(a) with a selectable base | ≡ FACT (randomized) | Miller 1976 (deterministic under ERH); randomized unconditional for φ, λ: folklore (Bach–Shallit 1996); σ: Bach–Miller–Shallit SIAM J. Comput. 15 (1986) |
 | "N has a factor ≤ x", x an input | ≡ FACT | binary search, ≤ n calls |
 | smallest / largest prime factor (of an arbitrary input) | ≡ FACT | strip and recurse |
-| #E(Z/N), chosen curves | ≡ FACT (randomized, ≤ 6 calls expected via twists, codex) | Kunihiro–Koyama EUROCRYPT 1998 (with a distributional assumption) |
+| #E(Z/N), chosen curves | ≡ FACT (randomized, ≤ 6 calls expected via twists, codex) | Kunihiro–Koyama EUROCRYPT 1998 (with a distributional assumption); Dieulefait–Urroz Mathematics 8 (2020); Dąbrowski–Pomykała–Shparlinski arXiv 1912.00345 (deterministic, almost all n); Martín–Morillo–Villar Appl. Math. Lett. 14 (2001) (UNVERIFIED) |
 | #E(Z/N), one given curve | OPEN | — |
 | r₂(N) | = 16·[ε = 1] on N ≡ 1 (4), **OPEN**; 0 on N ≡ 3 (4) | — |
 | one sum-of-two-squares representation | OPEN; two inequivalent ones factor N | — |
@@ -323,7 +324,11 @@ of p better than the *floor*, the best predictor from N mod m?
   - programs depending on more of N: Fermat/MR exponents N − 1, √N, x² − N, forms of discriminant −4N, CF, lattices.
 - **PT-m**: the root reads c = N mod m and picks a pure tree T_c.
 
-**Partition lemma (PROVED).** For a prime x, its *diagonal transcript* answers [x | c_v] along the tree; class(x) is
+**Partition lemma (PROVED; standard in substance).** A pure tree is exactly a generic-ring algorithm on Z_N with no
+challenge input. The lemma is the usual simulation step: a program that vanishes mod p but not mod q gives a gcd
+factor, and otherwise the run on Z_N equals the run on Z_p. See Aggarwal–Maurer EUROCRYPT 2009 (journal version
+IEEE Trans. IT 62 (2016)), Leander–Rupp ASIACRYPT 2006, Maurer IMA C&C 2005, and Jager's thesis (Vieweg+Teubner
+2012, ch. 4). For a prime x, its *diagonal transcript* answers [x | c_v] along the tree; class(x) is
 that transcript. For distinct primes x, y, the instrumented run on N = xy splits iff class(x) ≠ class(y), and
 otherwise ends with transcript class(x). On N = x² a non-split run also follows the diagonal transcript of x.
 
@@ -395,10 +400,12 @@ for any two factor laws.
 
 **Literature.**
 - The "component-separating zero ⇒ gcd factor" engine is standard in the generic-ring model.
-- The closest prior statement (codex_2) is Jager–Schwenk, J. Cryptology 26 (2013) 225–245, Lemmas 3–4 and Thm 1. In
-  a fixed-modulus, challenge-input setting, generic subset-membership advantage gives factoring with probability
-  ≥ Adv/[2(m² + 4m + 3)].
-- Also related: Aggarwal–Maurer EUROCRYPT 2009 §3.2.3.
+- The closest prior statement (codex_2) is Jager–Schwenk, J. Cryptology 26 (2013) 225–245. Their generic Jacobi and
+  QR equivalences are close cousins of PT1. In a fixed-modulus, challenge-input setting, generic subset-membership
+  advantage gives factoring with probability ≥ Adv/[2(m² + 4m + 3)]. The lemma numbers (3–4, Thm 1) and the constant
+  are per codex_2 and UNVERIFIED by the literature critic, who could not access the full text.
+- Also related: Aggarwal–Maurer EUROCRYPT 2009 (codex's "§3.2.3" refers to the conference version), Leander–Rupp
+  2006.
 - PT's input is only N, with the modulus varying over the instance law. The partition and fiber statements (PT, PT-m,
   PT2) are no exact prior formulation located by us.
 
@@ -424,8 +431,8 @@ for any two factor laws.
 ### 3.3 What is open
 - **(F) Finite automata and AC⁰ on the bits of N**, as predictors of factor bits of RSA moduli: OPEN.
   - Green (μ ⊥ AC⁰), Bernasconi–Shparlinski (STACS 1999, squarefreeness) and Allender–Saks–Shparlinski (JCSS 62
-    (2001), primality ∉ AC⁰[r]) treat other targets.
-  - By Linial–Mansour–Nisan, an AC⁰ floor for ε would follow from bounds on correlations of ε(p) with parities of
+    (2001), primality ∉ AC⁰[p] for primes p) treat other targets.
+  - By Linial–Mansour–Nisan (J. ACM 40 (1993)), an AC⁰ floor for ε would follow from bounds on correlations of ε(p) with parities of
     polylog many binary digits of pq. That is a type-II bilinear digit sum, plausibly within reach of
     Mauduit–Rivat/Bourgain methods. Not attempted.
 - **(G) Non-pure algebra**: Fermat/MR/Lucas tests with exponent N ± 1, Jacobi sums, integer representatives. OPEN.
@@ -446,10 +453,13 @@ The sharpest statement is a trichotomy:
 ### 4.1 Minimal leakage known to factor
 - **Coset-shaped bits of p** (top, low, p mod M): n/4 + O(log n). trackE measured n/4 + n/(4d) − 2 in dimension d.
   n/4 − t bits cost 2^t, so ω(log n) missing bits are not recoverable by this route.
-- **Random positions of p and q**: density > 1/2 in the low n/4 positions, about n/4 bits in total (trackE E6;
-  Heninger–Shacham CRYPTO 2009, heuristic).
-- **Arbitrary yes/no queries**: εn for every fixed ε > 0, CONDITIONAL on an ECM-type conjecture (Maurer, Computational
-  Complexity 5 (1995) 237–247). Rivest–Shamir (EUROCRYPT '85) needed n/3.
+- **Random positions of p and q**: trackE E6 measured density > 1/2 in the low n/4 positions, about n/4 bits in
+  total. 1/2 is the information-theoretic erasure limit (PPS 2012; Kunihiro–Shinohara–Izu PKC 2013).
+  Heninger–Shacham (CRYPTO 2009) analyse δ > 2 − √2 ≈ 0.59 for p and q alone, about 0.29n bits, rigorous only under
+  their Conjecture 4.3.
+- **Arbitrary yes/no queries**: εn for every fixed ε > 0 (Maurer, Computational Complexity 5 (1995) 237–247).
+  The algorithm is polynomial-time; its failure bound N^{−ε/2} is CONDITIONAL on a conjecture related to Lenstra's ECM
+  running time. Rivest–Shamir (EUROCRYPT '85) needed n/3.
 - **Noisy bits with independent errors at every position of p and q**: error < 0.084 (Henecka–May–Meurer CRYPTO 2010,
   heuristic). The capacity limit is 0.110 (Paterson–Polychroniadou–Sibborn ASIACRYPT 2012).
   - A per-bit advantage ε carries ≈ (2/ln 2)ε² bits, so ≈ n/4 bits of information need ε ≳ 0.3 per bit, under
@@ -578,4 +588,18 @@ FACTORBITS_RAW=experiments/raw/factorbits_e1_rerun.jsonl .venv/bin/python -m src
     - the §1.3 clarification;
     - the fixed-m wording;
     - the gl.py notes.
-- **Literature critic:** pending.
+- **Literature critic: OK WITH FIXES.**
+  - It verified venues, pages and theorem numbers for ACGS, Fischlin–Schnorr, Håstad–Näslund (Thms 8.1, 9.1,
+    10.2), GL, Coppersmith, Maurer, HMM/PPS thresholds, Huxley, KLM, Green, ASS, GRH and Brun–Titchmarsh.
+  - Applied:
+    - Heninger–Shacham misattribution (0.59, not 1/2);
+    - p mod M → Boneh–Durfee–Frankel Cor. 2.2;
+    - Maurer: polynomial-time algorithm, with only the failure bound conditional;
+    - partition lemma marked standard (Aggarwal–Maurer, Leander–Rupp, Jager), with novelty kept only for the
+      quantitative statements;
+    - Jager–Schwenk constants and Adleman C7–C9 marked UNVERIFIED;
+    - Miller ERH;
+    - Zech ⇔ DL marked folklore;
+    - #E(Z/N) prior work;
+    - Blum-ness context, Goldwasser–Micali, LMN and the AC⁰[p] wording.
+  - It found no natural-fixed-bit theorem and nothing closer to GLM.
