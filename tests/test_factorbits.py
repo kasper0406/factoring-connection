@@ -175,3 +175,35 @@ def test_polynomial_self_reduction_lemma_examples():
         N = p * q
         assert (N * N + N) % p == 0
         assert (pow(2, N, 2 ** p - 1) - 1) % (2 ** p - 1) == 0
+
+
+# ----------------------------------------------------------------------------- Prop GLM (Goldreich-Levin embedding)
+@pytest.mark.parametrize("seed", range(4))
+def test_gl_embedding_recovers_factor_from_weak_predictor(seed):
+    from src.factorbits import gl
+    inst = balanced_semiprime(32, 500 + seed)
+    p, q = sorted(inst.factors)
+    pred = gl.planted_predictor(p, q, 0.06, f"t{seed}")
+    res = gl.reduce_factor(inst.N, q.bit_length(), pred, 12, seed)
+    assert res is not None and res[0] in (p, q)
+    assert res[1] == q.bit_length() * (1 << 12)
+
+
+def test_gl_embedding_identity():
+    """f(N k) = <q, r> whenever P+(k) < q, with k = r N^{-1} mod 2^L."""
+    from src.factorbits import gl
+    inst = balanced_semiprime(28, 9)
+    p, q = sorted(inst.factors)
+    N, L = inst.N, q.bit_length()
+    rng = random.Random(0)
+    good = 0
+    for _ in range(2000):
+        r = rng.getrandbits(L)
+        k = (r * pow(N, -1, 1 << L)) % (1 << L)
+        if k == 0:
+            continue
+        Pk = max(H.fact(k)) if k > 1 else 1
+        if Pk < q:
+            good += 1
+            assert gl.f_bit(N * k, q) == bin(q & r).count("1") & 1
+    assert good > 1900
