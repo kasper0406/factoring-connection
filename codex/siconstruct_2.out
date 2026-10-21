@@ -1,0 +1,354 @@
+**Recommendation: major revision.** The numerical optimization and the conditional two-list lower bound survive. The advertised CVP equivalence, the pointwise reading of Lemma RC, and the Boneh deduction do not. I found no general constructor reaching the requested budget.
+
+Here **FATAL** means fatal to the particular stated result or implication, not evidence that Prop SI is achievable.
+
+I read the full note and the relevant supporting material. The eight tests pass. Counterexamples, constant calculations, and raw-data checks are recorded in [audit.py](/Volumes/git/factoring-connection/codex/scratch/siconstruct_2/audit.py) and [audit_output.txt](/Volumes/git/factoring-connection/codex/scratch/siconstruct_2/audit_output.txt). No repository files were changed.
+
+1. **FATAL — Prop CV’s converse does not solve the one-sided problem.**  
+   **Pointer:** §2.1(c), “Reading”; §0 lattice bullet; main-results table.
+
+   The conclusion proved is
+   \[
+   u=vkN+w,\qquad |w|=O(h),
+   \]
+   with \(v=O(1)\). Neither \(w\ge0\) nor membership in an interval starting at a multiple of \(N\) follows.
+
+   A concrete example is
+   \[
+   N=143,\quad y=7,\quad h=67,\quad k=1.
+   \]
+   The squarefree witness \(210\) lies in \([143,210]\), but **exact CVP returns \(105<143\)**:
+   \[
+   D^2(105)=5.088585,\qquad D^2(210)=6.019742.
+   \]
+   This is certified over all integer exponent vectors: vectors with a negative coefficient or a repeated prime have squared distance at least \(6.294259\); enumerating the 16 nonnegative squarefree vectors finishes the check. This small example illustrates the missing sign condition; the asymptotic proof contains no mechanism enforcing it either.
+
+   The elementary inequalities themselves are correct. Put \(L=\log(kN)\) and
+   \[
+   E_{\rm rep}=\sum_i(e_i^2-|e_i|)\ell_i\ge0.
+   \]
+   The useful exact identity is
+   \[
+   D^2-L
+   =2\log v+E_{\rm rep}
+    +\left(C\Delta+\frac1{2C}\right)^2-\frac1{4C^2}.
+   \]
+   Consequently:
+
+   - **(a)** The lower bound, its sign, and the \(1/(4C^2)\) term are right. Dropping \(2\log v\) uses \(v\ge1\).
+   - **(b)** The squarefree assumption is essential: only then does \(Q=\log u\). Also \(0\le C\Delta\le1\) follows from \(\log(1+\varepsilon)\le\varepsilon\).
+   - **(c)** The displayed inequalities are valid but unnecessarily weak. If \(D^2\le L+c'\), then
+     \[
+     v\le \exp\!\left(\frac{c'}2+\frac1{8C^2}\right),\qquad
+     \left|C\Delta+\frac1{2C}\right|
+        \le\sqrt{c'+\frac1{4C^2}}.
+     \]
+     Thus the conclusion improves from \(O(\sqrt{x})h\) to **\(O(h)\)** for fixed \(c'\). The multiplier enlargement remains \(O(1)\).
+
+   **Fix:** State the converse as a two-sided, bounded-denominator proximity result. Remove “⇔” for literal Prop SI.
+
+   There is also a clean **exact-CVP repair** for squarefree witnesses. Set
+   \[
+   m=\frac{\log X+\log(X+h)}2,\qquad
+   \log T=m+\frac1{2C^2}.
+   \]
+   Target \(C\log T\). Then
+   \[
+   D_T^2=m+\frac1{4C^2}+2\log v+E_{\rm rep}
+             +C^2\bigl(\log(u/v)-m\bigr)^2.
+   \]
+   With \(C=X/h\), an interval witness has excess approximately at most \(1/4\). Since any nonzero \(2\log v+E_{\rm rep}\) is at least \(2\log2\), exact CVP forces a nonnegative squarefree vector and returns an integer inside the interval. This repairs an exact reduction; it does not establish the claimed approximate converse.
+
+2. **MAJOR — The geometry proof needs a notation repair and explicit existence qualifications.**  
+   **Pointer:** §2.1(e), lines 105–110.
+
+   For a lattice vector, the logarithmic coordinate is
+   \[
+   \delta=\langle e,\ell\rangle=\log(u/v),
+   \]
+   not the previously defined target error \(\Delta=\delta-\log(kN)\).
+
+   With that correction, the lower-bound proof works. Unique factorization gives \(u\ne v\) for nonzero \(e\). Writing \(M=\max(u,v)\),
+   \[
+   |\delta|\ge\frac1{2M}
+   \]
+   is valid. The two cases yield
+   \[
+   \lambda_1^2\ge2\log C-\log\log C-O(1).
+   \]
+   The upper bound from **two distinct squarefree witnesses** is also correct.
+
+   However, one witness does not supply two, and
+   \[
+   L[2/3,\nu-2/(3\kappa)]
+   \]
+   witnesses in this particular interval is a local counting heuristic, not a proved consequence of the inequalities.
+
+   **Fix:** Rename \(\delta\), state the two-witness promise, and label the local count heuristic. Alternatively obtain the upper bound through a global squarefree-smooth counting estimate and pigeonholing logarithms; that avoids assuming local existence. Keep the Gaussian-heuristic observation separate from algorithmic hardness.
+
+3. **MAJOR — Generic CVP runtimes are being read as barriers for this structured family.**  
+   **Pointer:** §0 lattice bullet; §2.1 “Reading”; §3 row 1; §4.1.
+
+   The cited \(2^{n+o(n)}\) exact-CVP result is an **algorithmic upper bound for arbitrary lattices**, not a lower bound for these prime lattices. [Aggarwal–Dadush–Stephens-Davidowitz](https://arxiv.org/pdf/1504.01995) does not establish the latter.
+
+   Indeed, the note’s own interval sieve, followed by retaining a squarefree witness, already solves the associated promise approximate-CVP task in \(L[2/3]\), vastly faster than \(\exp(L[1/3])\). Thus “every known CVP algorithm at that quality costs \(2^{\Theta(n)}\)” needs “generic” and a careful restriction of scope.
+
+   Likewise, reading or reducing the basis need not be paid anew per target. For example, fixing **\(C=N/h\)** serves every \(k\): an interval witness has \(C\Delta\le1/k\le1\). The factor base and basis can be shared. Uniform random thinning also does not exclude an adaptive choice of a small prime support.
+
+   **Fix:** Report the cost of applying named generic lattice algorithms. Remove per-call input-reading lower bounds and retain the BKZ statement solely as the stipulated performance scenario already acknowledged in the note.
+
+4. **MAJOR — The slack calculation is sound; its necessity claims are not.**  
+   **Pointer:** §2.1(d), especially lines 103–104.
+
+   The completed-square identity verifies
+   \[
+   \gamma^2-1=\frac{2tF_{2/3}}x
+   \quad\Longrightarrow\quad
+   v\le L[2/3,t],\quad |w|\le hL[2/3,t].
+   \]
+   The dimension translation is also correct:
+   \[
+   F_{2/3}/x\sim3\kappa\frac{\log\log n}{\log n}.
+   \]
+
+   But an upper bound on residual size does not establish a **necessary** oracle quality. This is precisely the tightness issue acknowledged by schnorrcvp’s withdrawn Prop A.
+
+   Furthermore, achieving the limiting factoring constant \(1.2114\) does not require \(\gamma-1=O(1/x)\) in this cost model. It suffices that
+   \[
+   (\gamma^2-1)x=o(F_{2/3}),
+   \]
+   so that \(t=o(1)\). For example, \(\gamma^2-1=x^{-1/2}\) satisfies this while being much larger than \(1/x\). Bounded \(v\), literal Prop SI, and preservation of a leading factoring constant are different requirements.
+
+   **Fix:** Replace “needs” by “this certificate suffices when.” Distinguish those three requirements.
+
+5. **FATAL — Lemma RC turns an expectation into a pointwise impossibility.**  
+   **Pointer:** §2.2(ii)–(iv); §0 scale-invariance bullet; §3 rows 4–5a.
+
+   From
+   \[
+   \mathbb E|T_s|\simeq K(h+1)/s
+   \]
+   one cannot conclude that \(s\) yields a pair “only if” \(s\lesssim K(h+1)\).
+
+   For example,
+   \[
+   N=143,\quad K=h=1,\quad s=16
+   \]
+   gives \(143+1=16\cdot9\). Thus \(s>K(h+1)\), while
+   \[
+   m=9<143/2.
+   \]
+   This is an ordinary rare placement, fully compatible with the expectation.
+
+   **SR and RC(i) check out.** The interval transformation, integer-count bound, and \(m\ge kN/s\) are correct. SR’s subsequent wording should say “length below one, hence at most one integer,” not “fewer than one integer.”
+
+   **Fix:** Charge for rare placements. In a dyadic range of independently generated \(s\), the model gives the per-output cost
+   \[
+   \gtrsim
+   \frac{\max\{1,s/[K(h+1)]\}}
+        {\Pr(m\text{ is }y\text{-smooth})}.
+   \]
+   Above \(s\approx Kh\), the placement penalty grows much faster than the cofactor smoothness improves. This can recover the intended optimum **within that sampling model**, without asserting a false cofactor bound.
+
+   The second-order cofactor gain
+   \[
+   \frac{\rho((x-\nu F_{2/3})/\log y)}{\rho(x/\log y)}
+   =L[1/3,2\nu/(3\kappa)]
+   \]
+   is correct under the smoothness model. State it as a **ratio**: the hidden error in a standalone leading \(L[2/3]\) estimate can exceed the entire \(F_{1/3}\) term.
+
+6. **FATAL — Boneh’s certified-divisor deduction has the inequality backwards and violates RC’s independence hypothesis.**  
+   **Pointer:** §4.4, lines 246–254; §0 last bullet; §3 row 4.
+
+   From \(d\ge h\),
+   \[
+   m=\frac{kN+w}{d}\le\frac{kN+h}{h},
+   \]
+   an **upper** bound follows. The claimed lower bound \(m\ge N/(Kh)\) requires an upper bound \(d\lesssim Kh\), which has not been proved.
+
+   Moreover, Boneh’s decoder selects divisors using the target residues. Its outputs cannot be inserted into RC(ii), whose hypothesis is independent selection.
+
+   Two further claims need repair:
+
+   - \(\log P\le x^2/\log h\) does not imply only \(O(x/\log x)\) primes unless their logarithms are assumed comparable to \(\log y\). Much smaller primes permit more.
+   - \(D(S)=L[1/3,2\nu/(3\kappa)]\) is not a general divisor-count formula. That coefficient comes from the cofactor smoothness gain, not automatically from counting divisors near \(S\).
+
+   **Fix:** Replace the RC application with a certified-output count that charges empty calls, modulus construction, and target-dependent selection. For the full factor-base primorial, \(\log P\sim y\), the decoding condition already fails badly:
+   \[
+   \log h\lesssim x^2/y=o(1).
+   \]
+   Restricted moduli need a separate analysis. A first-moment/Rankin argument under an oblivious-modulus hypothesis can support a leading \(L[2/3]\) conclusion; it does not automatically prove the displayed \(L[1/3]\) gain for the whole class. Boneh’s actual construction and guarantee should be cited directly. [Boneh, JCSS 2002](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html)
+
+7. **MAJOR — Lemma MA is valid conditional on product flatness, not conditional merely on “N-oblivious.”**  
+   **Pointer:** §2.3 setting and \(H_{\rm eq}\); §4.2.
+
+   Independence from \(N\) does not make a structured multiplicative distribution uniform modulo \(N\). Nor does the density of windows among integers prove their density among products from arbitrary lists.
+
+   The appropriate general probability is
+   \[
+   p=\Pr\!\left(AB\in\bigcup_{k\le K}[kN,kN+h]\right).
+   \]
+   Under the explicit assumption \(p\simeq(h+1)/N\), the argument is correct:
+   \[
+   |A||B|\gtrsim RN/(h+1),\qquad
+   \frac{|A|+|B|}{R}\gtrsim2\sqrt{\frac{N}{R(h+1)}}.
+   \]
+   Distinct-output multiplicity only worsens this bound. No matching-time assumption is needed.
+
+   **Fix:** Make product flatness the hypothesis, specify the distribution being averaged, and distinguish it from oblivious generation. Retain the lower bound for that model.
+
+8. **MAJOR — \(Kh\ll a\) gives collinearity, not \(O(1)\) candidate merge points.**  
+   **Pointer:** §2.3 cost paragraph; §6 E1 cost interpretation.
+
+   If \(ab_i=k_iN+w_i\), then
+   \[
+   a(k_1b_2-k_2b_1)=k_1w_2-k_2w_1.
+   \]
+   When \(Kh<a\), the determinant vanishes. The candidates therefore lie on a **single rational ray**, which can contain many multiples.
+
+   For example, if \(N=ab_0-1\), then
+   \[
+   b=jb_0,\quad k=j,\quad w=j
+   \]
+   works for every \(j\le\min(K,h)\), however small \(Kh/a\) is. A concrete balanced semiprime example is
+   \[
+   N=191\cdot193=36863,\quad a=256,\quad b_0=144.
+   \]
+   Continued fractions can expose this progression; intersecting it with an arbitrary sparse \(B\) still needs accounting.
+
+   **Fix:** Use a bound involving the number of candidate integer points, prove an expected bound with nonresonance assumptions, or retain the implementation’s
+   \[
+   \widetilde O(|A|+|B|+K|A|+\text{hits})
+   \]
+   accounting. The conditional MA lower bound survives either way; the claimed matching upper bound does not presently follow.
+
+   For preprocessing, the factory calculation is sound for an explicit stored \(B\) against freshly generated/scanned entries. It is not a lower bound for every compressed data structure. Reusing a stored smooth integer also trivially serves nearby \(N\), but covers only a tiny target fraction. Under explicit-list flatness, subexponential preprocessing does not remove the exponential cost; a universal preprocessing/query lower bound remains unproved.
+
+9. **MAJOR — The k-list and representation bounds are overstated.**  
+   **Pointer:** §2.4; §3 row 2′; §4.1 density discussion.
+
+   There is no generic \(Q^{1/2}\) lower bound for low-solution knapsack. Representation algorithms already beat that exponent on their stated random subset-sum distributions. Their applicability here is unproved, but that does not turn Schroeppel–Shamir into a lower bound. [Bonnetain et al.](https://arxiv.org/abs/2002.05276)
+
+   Also,
+   \[
+   KN(\log KN)^{k-1}=N^{1+o(1)}
+   \]
+   is not uniform up to \(k\le x\). Nor is \(k^{u(1+o(1))}\) a uniform average representation count there. The exact count is
+   \[
+   d_k(z)=\prod_{p^e\parallel z}\binom{e+k-1}{k-1}.
+   \]
+   For \(z=2^{\lfloor x/\log2\rfloor}\) and \(k\approx x\), this is \(N^{1.65+o(1)}\).
+
+   **Fix:** Use the exact formula and state typical-shape assumptions. For Wagner with \(k=2^d\), the useful obstruction is simpler: if every combination of positive leaf factors must remain below \(KN\), lists of \(M\) distinct integers require
+   \[
+   M^k\le KN.
+   \]
+   This conflicts with the usual Wagner list requirement for \(k\ge4\). Otherwise oversized intermediate products require additional filtering analysis. Retain “no applicable fast construction established,” not a universal square-root bound.
+
+10. **MAJOR — Several proposed escapes remain outside RC/MA; they need explicit classification.**  
+    **Pointer:** §2.2 “Covers”; §§4.3–4.6; §5.
+
+    The strongest concrete scope escape is **adaptive partial sieving**. Partition the factor base into two fixed substantial subsets. For offsets \(w\), extract the smooth part over the first subset and select those with a divisor \(d\asymp N^{1/2}\). This constructs a large smooth divisor depending on \(N+w\), leaving \(m\asymp\sqrt N\), directly violating the advertised RC cofactor conclusion. It does not solve the original problem first.
+
+    In the usual density model, finding such a partial divisor costs
+    \[
+    L[2/3,1/(3\kappa)],
+    \]
+    and completing smoothness over the remaining primes costs another reciprocal probability of that leading size. Total cost remains \(L[2/3,2/(3\kappa)]\). Thus it escapes the lemma’s scope while reducing to a correctly charged filtering/sieving analysis.
+
+    The other routes classify as follows:
+
+    | Route | What is actually justified |
+    |---|---|
+    | Several independently constructed factors; unequal splits | Combine them into \(s\), charge placement and generation. MA’s AM–GM optimization already permits unequal list sizes. |
+    | Factors chosen jointly from target residues | Outside RC/MA. Straight sieving gives a known cost; a cheaper selector is unresolved. |
+    | Exact interval counting | Gives search by \(O(\log h)\) bisections. Factor recovery needs variable prime-cutoff queries and polynomially many additional calls. |
+    | Approximate counting | A reliable multiplicative **interval** counter that distinguishes zero also suffices. The \(h/X\) precision obstruction concerns subtracting global approximations. |
+    | Products of algebraic elements with small-prime norms | Their integer norms remain in the multiplicative smooth semigroup. Units do not move the norm. |
+    | Target-dependent norm forms or ideal selection | Not excluded by the preceding observation. No general cheap constructor established; ordinary NFS relations do not automatically satisfy SI’s height bounds. |
+    | Bivariate/whole-box Coppersmith | Must be analyzed with its actual certificate, modulus-selection and output guarantees. Univariate RC is not a reduction covering it. |
+    | Structured \(k\), including square/Pell constructions | Standard approximations give residues around \(\sqrt N\), too large here. Exceptional inputs can escape generic models. Free \(k\) is not universally bounded to a mere counting gain. |
+
+    **Fix:** Replace “covers” by these narrower reductions and mark target-dependent selection OPEN. SR is an identity, not a lower bound against recursive algorithms.
+
+11. **MAJOR — “One-sided is harder” is not a fair general oracle comparison.**  
+    **Pointer:** §2.1 final paragraph; §0 one-sided bullet.
+
+    The numerical identity
+    \[
+    2\sqrt{\nu_*/3}=1.2114,\qquad \nu_*=2/(3\kappa_*)
+    \]
+    is correct. It compares two **benign-oracle cost models**.
+
+    It does not establish a reduction ordering. The two settings use different witness promises, scales, denominator allowances and potentially dimensions. A two-sided proximity oracle can repeatedly return below the interval; a doubly-smooth oracle additionally imposes smoothness on the residue.
+
+    **Fix:** Say that the one-sided model pays a smooth-gap floor in the residue exponent and therefore needs stronger certified approximation quality to match a given constant in this comparison. Withdraw “the same oracle” and the unqualified hardness ordering.
+
+12. **MINOR — The optimization constants check out, with rounding and model qualifications.**  
+    **Pointer:** §1; §2.1(d); §3; §5.
+
+    Independently reproduced:
+    \[
+    \begin{array}{c|ccccc}
+    \tau&0&0.1&0.25&0.5&0.757\\ \hline
+    c(\tau)&1.211414&1.281883&1.403068&1.644714&1.901714
+    \end{array}
+    \]
+    The optimized threshold against \(1.9019\) is \(0.757185757\); the fixed-\(\kappa_*\) threshold is \(0.690486271\). The linear-cost value is
+    \[
+    6^{1/3}=1.817120593.
+    \]
+    The five slack constants reproduce as
+    \[
+    1.211414,\ 1.248091,\ 1.393659,\ 1.570201,\ 1.898215.
+    \]
+
+    **Fix:** Do not write literal equality to MNFS at \(\tau=0.757\); label it a rounded threshold. State that the Dixon constant in total-cost rows comes from reoptimizing the sampling program under Theorem SS, not from retaining all fixed Prop SI parameters.
+
+13. **MAJOR — There is an additional undisclosed registered failure: P3c.**  
+    **Pointer:** preregistration E3-P3c; results §6 E3; §7.
+
+    The preregistered comparison was
+    \[
+    \text{tests/output}\approx
+    1/\delta_{\rm HT}(N/S_0)\,(1\pm0.6).
+    \]
+    **All 12 raw cells fail that band**, with ratios 1.64–5.90. Pooling seeds gives:
+
+    | Bits | Small-\(s\) ratio | Large-\(s\) ratio |
+    |---|---:|---:|
+    | 40 | 5.58 | 2.35 |
+    | 48 | 4.23 | 1.75 |
+    | 56 | 4.06 | 1.89 |
+
+    These are measured tests/output divided by the registered prediction. The results paragraph reports costs but does not score this prediction.
+
+    The other principal pooled figures reproduce: E1 \(2901/2888.16\), E2 \(822/896.99\), and post-hoc E3 \(5549/5815.00\).
+
+    **Fix:** Record P3c as FAIL and explain the cofactor-position/multiplicity effects separately. The disclosed P2c and P3a corrections are transparent, but changing from distinct outputs to successful tests validates a different observable. Duplicates remain a real yield penalty.
+
+    **MINOR — Same pointer:** The toy-scale caveat is substantially honest: \(\log_2h/\text{bits}\) ranges approximately 0.71–0.57. Use that range instead of “0.6+.” Label the 310-bit crossover a model extrapolation. Also clarify that E1’s parameter \(K\) places products around \([KN,4KN]\); it does not impose the literal cutoff \(k\le K\).
+
+    **MINOR — Test pointer:** `test_prop_cv_converse_small_v` derives \(c'\) from arbitrary random vectors, so it checks global inequalities, not the bounded-\(c'\) near-CVP regime or the one-sided implication. Add targeted cases covering those promises.
+
+14. **MINOR — Literature positioning needs stronger primary references and narrower novelty language.**  
+    **Pointer:** §2.1 attribution; §4.6; §8.
+
+    - The prime lattice and related \(\lambda_1\) geometry predate this note. Schnorr’s 2014 primary report explicitly discusses the lattice and attributes a related shortest-vector bound to Lemma 2 of his 2013 chapter. This does not validate its algorithmic claims, but it is a relevant antecedent. [Schnorr, pp. 1981–1982](https://ems.press/content/serial-article-files/46524)
+    - Granville §5.7 explicitly poses constructive smooth-number search in intervals, gives the sieve cost, and discusses Boneh. It belongs in the main positioning. [Granville, 2008](https://library.slmath.org/books/Book44/files/09andrew.pdf)
+    - Bernstein’s Algorithm 3 and Lemma 3.2 are direct predecessors for multiplicative two-list counting. They do not establish the note’s all-\(K\) equidistribution hypothesis. [Bernstein, 1995](https://cr.yp.to/papers/epsi-19950518-retypeset20220326.pdf)
+    - Bach–Sorenson’s current revision confirms the global, prime-factor lexicographic sampling interpretation. [Bach–Sorenson](https://arxiv.org/html/2006.07445v2)
+    - Jain’s Theorem 1.2 requires both the much larger smoothness bound and intervals of approximately square-root length. It is not close to the requested pair of parameters. [Jain, Theorems 1.1–1.2](https://arxiv.org/html/2502.10530v1)
+
+    **Fix:** Cite these antecedents explicitly. I found no published constructor with the required guarantee at \(y=L_X[1/3]\), \(h=L_X[2/3]\), and no exact prior theorem matching the repaired interval-specific Prop CV statement. RC/MA’s elementary first-moment mechanisms should not be presented as general complexity barriers.
+
+**Required changes, most important first:**
+
+1. **FATAL:** Withdraw the literal approximate-CVP equivalence and RC’s pointwise cofactor conclusion; replace them with the corrected statements.
+2. **FATAL:** Remove the Boneh deduction and supply an independently charged certified-output analysis.
+3. **MAJOR:** Restrict negative conclusions to explicit flatness/sampling/certificate models; separate generic algorithm runtimes from lower bounds for this family.
+4. **MAJOR:** Repair the merge-cost argument, k-list claims, preprocessing accounting and oracle comparison.
+5. **MAJOR:** Disclose P3c’s failure and preserve distinct-output penalties in interpretation.
+6. **MINOR:** Correct geometry notation/promises, threshold rounding, test coverage and literature attribution.
+
+**Verdict:** The note gives credible evidence that ordinary sieving, independently placed factors, and flat explicit-list methods do not reach the desired budget. Its optimization constants are sound, and the experiments support their limited calibration claims. However, several advertised structural implications are false or exceed their hypotheses, and one registered experimental failure is omitted. These defects do not produce a fast general constructor, but they prevent accepting the present text as a comprehensive negative analysis of adaptive Prop SI construction.

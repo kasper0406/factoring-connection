@@ -113,3 +113,29 @@ def test_prop_cv_converse_small_v():
         assert mp.log(v) <= (cprime + abs(b["Delta"])) / 2 + mp.mpf(10) ** -30
         w = u - v * k * N
         assert abs(w) <= v * k * N * abs(b["Delta"]) * mp.e ** abs(b["Delta"]) + 1
+
+
+def test_prop_cv_centred_exact_cvp_returns_interval_witness():
+    """Prop CV(c*): with the centred target, exact CVP returns a squarefree y-smooth u inside [X, X+h] whenever
+    one exists (codex's counterexample N=143, y=7, h=67 included); otherwise its excess exceeds the edge value
+    (C eps/2)^2, eps = ln((X+h)/X), C = X/h."""
+    from src.siconstruct.theory import cvp_center_exact
+    P = [2, 3, 5, 7]
+    cases = [(143, 67), (143 * 3, 40), (1009, 50), (2021, 30), (4999, 120), (777, 10)]
+    for X, h in cases:
+        ex, e = cvp_center_exact(P, X, h)
+        sqf = [u for u in range(X, X + h + 1)
+               if (f := factor_over(u, P)) is not None and all(v == 1 for v in f.values())]
+        u = 1
+        v = 1
+        for ei, p in zip(e, P):
+            if ei > 0:
+                u *= p ** ei
+            elif ei < 0:
+                v *= p ** (-ei)
+        if sqf:
+            assert v == 1 and all(abs(ei) <= 1 for ei in e) and X <= u <= X + h
+            assert ex <= mp.mpf(1) / 4 + mp.mpf(10) ** -20
+        else:
+            edge = (mp.mpf(X) / h * mp.log(mp.mpf(X + h) / X) / 2) ** 2
+            assert ex > edge

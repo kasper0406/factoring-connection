@@ -84,3 +84,31 @@ def cvp_bounds(e: Sequence[int], P: Sequence[int], N: int, k: int, h: int, dps: 
         return {"Q": Q, "Delta": Delta, "dist2": Q + C * C * Delta * Delta,
                 "lower": mp.log(k * N) - 1 / (4 * C * C),
                 "witness_upper": mp.log(k * N) + mp.mpf(h) / (k * N) + 1}
+
+
+def cvp_center_excess(e: Sequence[int], P: Sequence[int], X: int, h: int, dps: int = 60) -> mp.mpf:
+    """Prop CV(c*) (repaired converse, after codex siconstruct_2): lattice with C = X/h and target C·ln T,
+    ln T = m + 1/(2C^2), m = (ln X + ln(X+h))/2.  Returns D_T^2 - (m + 1/(4C^2)), which equals the exact identity
+    2 ln v + E_rep + C^2 (ln(u/v) - m)^2 with E_rep = sum (e_i^2 - |e_i|) ln p_i >= 0."""
+    with mp.workdps(dps):
+        l = [mp.log(p) for p in P]
+        C = mp.mpf(X) / h
+        m = (mp.log(X) + mp.log(X + h)) / 2
+        lnT = m + 1 / (2 * C * C)
+        dot = mp.fsum(ei * li for ei, li in zip(e, l))
+        Q = mp.fsum(ei * ei * li for ei, li in zip(e, l))
+        return Q + C * C * (dot - lnT) ** 2 - (m + 1 / (4 * C * C))
+
+
+def cvp_center_exact(P: Sequence[int], X: int, h: int):
+    """Exact CVP for the centred target by exhaustive enumeration (tiny P only): every vector with D_T^2 <= m + 2
+    has |e_i| <= sqrt((m + 2)/ln p_i), so the box below is complete.  Returns (min excess, minimising e)."""
+    import itertools
+    m = (mp.log(X) + mp.log(X + h)) / 2
+    bounds = [int(mp.sqrt((m + 2) / mp.log(p))) for p in P]
+    best = None
+    for e in itertools.product(*[range(-b, b + 1) for b in bounds]):
+        ex = cvp_center_excess(e, P, X, h, dps=30)
+        if best is None or ex < best[0]:
+            best = (ex, e)
+    return best
