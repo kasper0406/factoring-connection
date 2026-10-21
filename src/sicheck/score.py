@@ -208,7 +208,9 @@ def score_E3():
     r2b = (sum(r["phi_nonzero"] for r in qn) >= len(qn) / 2) if qn else None
     print(f"R2: J+ base Blum runs with deps {len(qb)} (of {sum(r['blum_diag'] for r in Q)}), all trivial: {r2a}; "
           f"non-Blum runs with >=5 deps {len(qn)} (of {sum(not r['blum_diag'] for r in Q)}), Phi!=0 in "
-          f"{sum(r['phi_nonzero'] for r in qn)} -> {'HELD' if r2a and r2b else ('UNTESTABLE' if r2b is None else 'FAILED')}")
+          f"{sum(r['phi_nonzero'] for r in qn)} -> Blum part: "
+          f"{'UNTESTABLE (no Blum J+ run produced a dependency)' if not qb else ('HELD' if r2a else 'FAILED')}; "
+          f"non-Blum part: {'UNTESTABLE' if r2b is None else ('HELD' if r2b else 'FAILED')}")
     for r in Q:
         print(f"   qsfb n={r['nbits']} blum={r['blum_diag']} p,q mod4={r['p_mod4_diag']},{r['q_mod4_diag']} "
               f"fb={r['fb']} rels={r['relations']} deps={r['dim_deps']} Phi!=0={r['phi_nonzero']} "

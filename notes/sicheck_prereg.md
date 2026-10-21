@@ -109,3 +109,17 @@ One heavy job at a time, `memory_pressure` checked first, RSS logged per record 
 .venv/bin/python -m src.sicheck.score
 ```
 Raw: `experiments/raw/sicheck_E{1,3,4}.jsonl`. Any deviation will be disclosed in the results note.
+
+## Addendum A1 (2026-10-21, after E3, before E3b; committed before running E3b)
+
+E3's R2 was **vacuous** for Blum N: the J+ base (primes ≤ 2.2y with J_N = +1) gave ≤ 14 relations and no dependency
+in 15 000 intervals at 48–56 bits. A smoke run (disclosed; it measured relation yield only, on one Blum N per size)
+chose smaller instances. **E3b** (`run_experiment E3b`):
+- n = 32 (J+ primes ≤ 300, h = 300 000) and n = 36 (J+ primes ≤ 600, h = 1 000 000); the first 8 Blum and the first
+  8 non-Blum balanced semiprimes (seed order) with J_N(2) = +1, per size; constructor `next` over the J+ base until
+  |base| + 10 distinct relations or k = 20 000; 32 random dependencies. Control: the same Blum N with the full base
+  (primes ≤ the same bound), `next`, until |base| + 10 relations.
+- **R2b.** Blum, J+ base: Φ ≡ 0 in 100% of runs with ≥ 1 dependency (Cor. B(a), proved), and ≥ 10 such runs in all.
+- **R2c.** Blum, full base (control): Φ ≢ 0 in ≥ 90% of runs.
+- **R2d.** Non-Blum, J+ base: Φ ≢ 0 in ≥ 50% of the runs with ≥ 5 dependencies (no proof; the obstruction of Cor. B
+  needs p ≡ q ≡ 3 mod 4).

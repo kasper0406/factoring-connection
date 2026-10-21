@@ -239,6 +239,40 @@ def run_E3() -> None:
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+E3B_CELLS = {32: (300, 300_000), 36: (600, 1_000_000)}
+E3B_PER_TYPE = 8
+
+
+def run_E3b() -> None:
+    """Addendum A1: J+ base degeneracy on Blum N (Cor. B(a)), with full-base controls and non-Blum contrasts."""
+    for nbits, (Y, h) in E3B_CELLS.items():
+        full = core.primes_upto(Y)
+        for blum in (True, False):
+            found = 0
+            s0 = 0
+            while found < E3B_PER_TYPE:
+                (seed, N, p, q), = semiprimes_by_type_diag(nbits, 1, blum, start_seed=s0)
+                s0 = seed + 1
+                if core.jacobi(2, N) != 1:
+                    continue
+                found += 1
+                qfb = core.qs_factor_base(full, N)
+                for base_name, base in (("Jplus", qfb), ("full", full)) if blum else (("Jplus", qfb),):
+                    t0 = time.time()
+                    res = core.factor_si(N, Y, h, constructor="next", seed=seed, excess=10, factor_base=base,
+                                         k_max=20_000, n_random_deps=32)
+                    st = res["stats"]
+                    dump("E3b", {"nbits": nbits, "Y": Y, "h": h, "seed": seed, "N": N, "blum_diag": blum,
+                                 "p_mod4_diag": p % 4, "q_mod4_diag": q % 4, "base": base_name, "fb": len(base),
+                                 "relations": st["relations"], "dim_deps": st["dim_deps"],
+                                 "phi_nonzero": st["phi_nonzero"], "random_deps": st["random_deps"],
+                                 "random_fruitful": st["random_fruitful"], "intervals": st["intervals"],
+                                 "factor_ok": bool(res["factor"] and N % res["factor"] == 0 and 1 < res["factor"] < N),
+                                 "secs": round(time.time() - t0, 1)})
+                print(f"E3b {nbits} blum={blum} seed {seed} done", flush=True)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 def run_E4() -> None:
     for nbits, (y, h) in E4_CELLS.items():
         primes = core.primes_upto(y)
@@ -270,6 +304,8 @@ if __name__ == "__main__":
             run_E1_cell(cell)
     elif what == "E3":
         run_E3()
+    elif what == "E3b":
+        run_E3b()
     elif what == "E4":
         run_E4()
     else:
