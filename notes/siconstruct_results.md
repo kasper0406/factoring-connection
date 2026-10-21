@@ -1,6 +1,6 @@
 # siconstruct: constructing smooth integers in short intervals near kN (attack on Prop SI)
 
-Agent `siconstruct`, phase 20, 2026-10-21. Version 3: after the Opus proof/cost critic, the codex adversarial round and the Opus literature critic (§8).
+Agent `siconstruct`, phase 20, 2026-10-21. Version 4: after the Opus proof/cost critic, the codex adversarial round and the Opus literature critic (§8).
 
 **Files.**
 - Code: `src/siconstruct/` — `core.py` (exact sieve, N-oblivious smooth lists, Hildebrand–Tenenbaum model),
@@ -42,7 +42,8 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
   N^{1−o(1)}; larger s pay a placement penalty s/(Kh) that outgrows the cofactor gain (Lemma RC, a cost statement in
   expectation). That is lattice sieving, and it gives L[2/3] per output. Factors selected from the target (partial
   sieving) escape the lemma but, correctly charged, still cost L[2/3].
-- **The lattice view is exact.** With the target at the centre of I_k, squarefree Prop SI is equivalent (up to
+- **The lattice view is exact** (its geometry is Micciancio's 2001 locally dense prime lattice). With the target at
+  the centre of I_k, squarefree Prop SI is equivalent (up to
   constants in h) to promise CVP with factor 1 + O(1/ln N) in Adleman's prime lattice of dimension π(y) = L[1/3]
   (Prop CV(c*), repaired after codex found that the draft's left-end target returns u < kN). The instance sits at
   distance ≈ λ₁/√2 from the lattice when two witnesses exist. So Prop SI is near-exact CVP in dimension L[1/3]; every known *generic* CVP
@@ -62,7 +63,7 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
 
 | Result | Status |
 |---|---|
-| Prop CV: inequalities (a)–(e); centred-target exact identity (c*): squarefree Prop SI ⇔ promise CVP_{1+c/x} up to constants in h; dist ≈ λ₁/√2 given two witnesses; slack t certificate gives c(t) | PROVED (codex repaired (c*)); cost reading MODEL |
+| Prop CV: inequalities (a)–(e); centred-target exact identity (c*): squarefree Prop SI ⇔ promise CVP_{1+c/x} up to constants in h; dist ≈ λ₁/√2 given two witnesses; slack t certificate gives c(t) | (a), (b), (e) KNOWN in substance (Micciancio 2001 §5; Schnorr 2013); (c*) PROVED (codex), no prior statement found by us; cost reading MODEL |
 | Lemma SR (scale invariance); Lemma RC: independently placed factor s, tested cofactor ⇒ per output ≳ max(1, s/(K(h+1)))/Pr[m smooth], optimum s ≈ Kh, L[2/3] | PROVED (SR, RC(i)); RC(ii)–(iii) HEURISTIC H_eq (placement flatness) |
 | Lemma MA (two-list amortisation): flat products give \|A\|\|B\|(h+1)/N hits for any K; per output ≥ 2√(N/(R(h+1))) | HEURISTIC H_flat (sihard Prop MM proves an averaged-over-N form); MEASURED (E1, E2) |
 | k-lists / Wagner / representations: no applicable fast construction established | MODEL (positive-product obstruction M^k ≤ KN; representation counts under a typical-shape assumption) |
@@ -88,7 +89,24 @@ Target: a y-smooth u ∈ I_k at cost L^{o(1)} per output (Prop SI ⇒ L[1/3, 1.2
 
 ## 2. Structural results
 
-### 2.1 Prop CV: Prop SI is near-exact CVP in dimension π(y) [PROVED inequalities]
+### 2.1 Prop CV: Prop SI is near-exact CVP in dimension π(y) [(a), (b), (e) KNOWN in substance; (c), (c*), (d) PROVED here]
+
+**Prior work (literature critic).** The geometry is Micciancio's *locally dense* prime lattice: Micciancio, "The
+shortest vector problem is NP-hard to approximate to within some constant", FOCS 1998 / SICOMP 30(6) 2001, §5.
+His Lemma 2 (every nonzero vector has ‖·‖_p^p > 2 ln α) is our (e) lower bound; his Lemma 3 (a squarefree smooth
+g ∈ [β, β(1 + 1/α)] lies within (ln β + 2)^{1/p} of the target (0, …, α ln β)) is our (b); with α = β^{1−ε} (our
+C = X/h) he notes many lattice points within ≈ λ/2^{1/p} of the target *provided* [β, β + β^ε] contains many
+squarefree smooth numbers, and his Conjecture 1 (§6.2) is a squarefree-smooth-in-short-intervals hypothesis. The
+λ₁ bound with the prime 2 is Schnorr, "Factoring integers by CVP algorithms", LNCS 8260 (2013), Lemma 2 (restated in
+Oberwolfach Report 35/2014, pp. 1981–82). Liu–Lyubashevsky–Micciancio (APPROX-RANDOM 2006) use these lattices to
+show BDD_α NP-hard for α > 1/√2 (checked only second-hand), so Prop SI sits exactly at that threshold; their
+targets are planted (products of random prime subsets), so nothing transfers to targets ln(kN). **In Micciancio's
+terms Prop SI asks to *find* a point of his locally dense configuration for the unplanted target ln(kN); his
+reductions only need such points to exist.** Mulder–Sterner–van Woerden (arXiv 2509.17699, ANTS XVII; their
+Def. 5.1 is the same lattice) observe that shortest vectors often correspond to smooth twins (the converse half of
+(e)) and that the Gaussian-heuristic ratio is O(1/√log n) (their Prop. 6.4). New here, as far as we found: the
+centred identity (c*), the multiplier/k reading and the cost bookkeeping (no prior statement found by us).
+
 
 Lattice (Adleman weights, as in schnorrcvp §1): for e ∈ Z^n, b(e) = (√ℓ₁e₁, …, √ℓ_ne_n, C⟨e, ℓ⟩), ℓ_i = ln p_i,
 target t_k = (0, …, 0, C ln(kN)), scale **C = kN/h**. Write u = ∏_{e_i>0}p_i^{e_i}, v = ∏_{e_i<0}p_i^{−e_i},
@@ -142,13 +160,14 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   I_k, then e₁ − e₂ has ‖b(e₁ − e₂)‖² ≤ ln(u₁u₂) + 1 ≤ 2 ln(kN) + 2, so λ₁² = (2 + o(1))x. With (a)–(b): the target
   then lies at distance (1 + o(1))λ₁/√2. (The expected L[2/3, ν − 2/(3κ)] witnesses per interval is the local
   counting HEURISTIC, not a consequence of the inequalities.) The Gaussian heuristic, which predicts
-  λ₁ ≈ √(n ln y/(2πe)) = L[1/3, κ/2], is off by an L[1/3] factor (as schnorrcvp §1 warned).
+  λ₁ ≈ √(n ln y/(2πe)) = L[1/3, κ/2], is off by an L[1/3] factor (as schnorrcvp §1 warned; Mulder–Sterner–van
+  Woerden Prop. 6.4 make the same point).
 - **Reading.**
   - With the centred target (c\*), squarefree Prop SI and promise CVP_{1+c/x} on this family are equivalent up to
     constants in h. With the left-end target (b)–(c), only a two-sided bounded-denominator proximity result holds.
   - These are **reformulations, not hardness evidence.** The cited bounds are *upper* bounds for generic algorithms
     on arbitrary lattices: exact CVP in 2^{n+o(n)} (Aggarwal–Dadush–Stephens-Davidowitz, FOCS 2015, arXiv
-    1504.01995 Cor. 6.5, checked by codex), heuristic sieving 2^{0.29n}; here exp(L[1/3, κ]). They are not lower
+    1504.01995 Cor. 6.5, checked by codex), heuristic sieving 2^{0.29n} (Becker–Ducas–Gama–Laarhoven 2016 for SVP; Laarhoven 2016, Doulgerakis–Laarhoven–de Weger 2019 for CVP(P)); here exp(L[1/3, κ]). They are not lower
     bounds for this structured family, which the interval sieve already solves in L[2/3].
   - BKZ-β with Babai gives approximation factors ≥ 1 + Ω(1) for every β < n (SCENARIO: root-Hermite factor
     δ_β^{Θ(n)}; codex's warning in schnorrcvp that a root-Hermite factor is not a CVP ratio applies). By (d) that
@@ -179,7 +198,10 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   most ⌊h/j⌋ + 1 integers (at most one once j > h, since its length is then below one). ∎ Every factor of u faces
   the same relative precision ε = h/X. SR is an identity: it explains why splitting does not relax the precision; it
   is not a lower bound against recursive algorithms.
-- **Lemma RC.** Fix a constructed integer s (smooth, a square, anything) and K. Let
+- **Lemma RC** is the 1-D special-q bound: a placed factor s ≲ Kh buys only the smoothness of a cofactor smaller by
+  s (special-q in QS: Davis–Holdridge; MPQS: Silverman 1987; Pollard 1993, "The lattice sieve"). Hittmeir's
+  subset-sum and Smooth Subsum Search formulations (arXiv 2205.10074; arXiv 2301.10529, IJFCS 35(8) 2024) construct
+  divisors in the same class. Fix a constructed integer s (smooth, a square, anything) and K. Let
   T_s = {(k, w) : 1 ≤ k ≤ K, 0 ≤ w ≤ h, s | kN + w}.
   - (i) [PROVED] |T_s| ≤ K(⌊h/s⌋ + 1), and every (k, w) ∈ T_s has tested cofactor m = (kN + w)/s ≥ kN/s.
   - (ii) [HEURISTIC H_eq: s generated independently of N mod s] E|T_s| = K(h + 1)/s·(1 + o(1)). This is a statement
@@ -230,6 +252,12 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
   collinear (a(k₁b₂ − k₂b₁) = k₁w₂ − k₂w₁ = 0), and a resonant ray can carry many of them (codex: N = ab₀ − 1 gives
   b = jb₀ for all j ≤ min(K, h)). The lower bound above does not depend on this.
 - *Distinct outputs.* E1: 2453 distinct of 2901 hits; codex's toy run: 264 of 4381.
+- *Prior art.* The two-list walk itself is Bernstein's exact counting/enumeration method (1995 "epsi" draft,
+  Algorithm 3 / Lemma 3.2: a prime-power partition T ⊔ U, cost < 3(Ψ(x, T) + Ψ(x, U)), with unique factorisation and
+  no multiplicity). The flatness lower bound for windows near kN (and sihard Prop MM) is the new part. The known
+  N-dependent escapes from flat products, Schroeppel's linear sieve ((H + a)(H + b) − N small, H = ⌈√N⌉) and the
+  Coppersmith–Odlyzko–Schroeppel cubic sieve, *test* their factors and leave residues N^{1/2} or N^{1/3}: they fall
+  under RC / Theorem SS, not MA. They are analogues, not this note in disguise (suffmap §7.2).
 - *Precomputation.* For an explicitly stored list B scanned against fresh A, per-N cost |A| ≥ RN/(h|B|), so per-N
   L^{o(1)} needs |B| ≈ N/h = N^{1−o(1)} — exponential, far larger even than a √N prime table. This is not a lower
   bound for every compressed data structure; a universal preprocessing/query lower bound is unproved.
@@ -237,7 +265,7 @@ Q = Σe_i²ℓ_i, Δ = ⟨e, ℓ⟩ − ln(kN), so ‖b(e) − t_k‖² = Q + C�
 ### 2.4 k lists, Wagner, Schroeppel–Shamir, representations [MODEL]
 
 - Hits among k lists number ∏|L_i|·p. For low-solution knapsacks there is **no generic Q^{1/2} lower bound**:
-  representation algorithms (HGJ, BCJ 2^{0.291n}; Bonnetain et al., arXiv 2002.05276) beat it on their random
+  representation algorithms (HGJ, BCJ 2^{0.291n}; Bonnetain et al., ASIACRYPT 2020, arXiv 2002.05276, 2^{0.283n}) beat it on their random
   subset-sum distributions. Their transfer to this sparse, correlated prime-log instance is unproved; applied to a
   binary encoding of all π(y) exponents they stay exponential in L[1/3]. We claim only that no applicable fast
   construction is established.
@@ -313,7 +341,10 @@ direct relation generator" re-optimises the sampling program under Theorem SS (i
   oblivious pair shows the cost of every listed object grows as h shrinks, as it must.
 
 ### 4.4 CRT / Boneh / Coppersmith (approach 4)
-- Boneh (STOC 2000) finds all z ∈ [X, X + H] with gcd(z, P) ≥ S when ln H ≲ (ln S)²/ln P. Certified outputs have a
+- Boneh (JCSS 64 (2002), Thm 3.1: |I| < ¼·T^{log T/log S − 2.5/d}) finds all z ∈ [X, X + H] with gcd(z, P) ≥ S when
+  ln H ≲ (ln S)²/ln P. His own §4 remarks that "the current bounds on generalized CRT list decoding are insufficient
+  for improving the basic quadratic sieve" and that factoring needs a fully smooth integer, not a large smooth
+  factor; the bullets below are a quantitative version of that remark at the Prop SI scale. Certified outputs have a
   known divisor d ≥ H (pilist Lemma S≥V, PROVED there). Here H = h, so d ≥ h. That bounds the untested cofactor from
   *above* only, and RC(ii) does not apply (the decoder selects d from the residues). A lower bound comes instead from
   the decoding range: d | P and ln P ≤ (ln S)²/ln h, so P, hence d, is small when S is (below), and the cofactor is
@@ -348,7 +379,9 @@ direct relation generator" re-optimises the sampling program under Theorem SS (i
   knapsack over split primes. Units do not change the norm.
 - **Smooth-twin ladders.** Multiplying by ratios (j + 1)/j (j | u, j and j + 1 smooth) steps ln u by ≈ 1/j. For
   j ≤ y the step is ≥ 1/y, and precision e^{−x} needs exponentially many combinations (a knapsack with small items,
-  MITM-bounded). For large j the step is small, but finding smooth (j, j + 1) is again the target problem.
+  MITM-bounded). For large j the step is small, but finding smooth (j, j + 1) is again the target problem; it is
+  exactly the smooth-twin problem of Mulder–Sterner–van Woerden (arXiv 2509.17699), who find twins through short
+  vectors of the same lattice.
 - **Square × smooth.** u = s²m with s arbitrary is enough for the linear algebra (s² has even exponents), but it is
   Lemma RC with the constructed part s² ≤ Kh, or QS (m = 1, residue √N).
 - **NFS reading.** Prop SI is two-polynomial "NFS" with f₁ = X, f₂ = X − N and a skewed box (a ∈ [kN, kN + h],
@@ -359,9 +392,16 @@ direct relation generator" re-optimises the sampling program under Theorem SS (i
   (sihard Prop DLI, HEURISTIC). That is further evidence that it is hard (assessment).
 
 ### 4.6 Counting, sampling and dynamic programming (codex siconstruct_1, checked by us)
-- **Counting ⇒ constructing [PROVED].** An exact oracle for Ψ(b, y) − Ψ(a − 1, y) gives a constructor by binary
-  search: O(log h) calls find the least smooth integer in I_k, and the factorisation follows by bisecting on the
-  prime cutoff. So a cheap exact interval-count would suffice.
+- **Prior positioning.** Granville, "Smooth numbers: computational number theory and beyond", MSRI 44 (2008), §5.7
+  gives the interval-sieve cost ≪ z log log y + uy, conjectures that any algorithm needs ≫ π(y), and asks whether z
+  can be removed from the running time "by a more constructive approach" (citing Boneh). That is the question of this
+  note. His §5.8 calls exact Ψ(x, y) "likely impractical" and surveys approximations (Hunter–Sorenson 1997, factor
+  1 + O(1/u + log y/y); Bernstein 2002, "Arbitrarily tight bounds on the distribution of smooth integers";
+  Parsell–Sorenson 2006).
+- **Counting ⇒ constructing** (standard self-reducibility). An exact oracle for Ψ(b, y) − Ψ(a − 1, y) gives a
+  constructor by binary search: O(log h) calls find the least smooth integer in I_k, and the factorisation follows by
+  bisecting on the prime cutoff (polynomially many further calls). So a cheap exact, or zero-distinguishing
+  multiplicative, interval count would suffice.
 - **No cheap count is known.** Subtracting two global estimates of size Xρ needs relative error below
   h/X = e^{−x+O(F_{2/3})}; saddle-point or Perron-integral estimates give nothing of the kind. Exact counting is
   lattice-point counting in a simplex of dimension π(y) = L[1/3] (Barvinok-type algorithms are polynomial only in
@@ -373,10 +413,15 @@ direct relation generator" re-optimises the sampling program under Theorem SS (i
   arXiv 2006.07445 Thms 3.1, 5.1–5.3) sample globally. Conditioning on I_k costs ≈ N/h trials, and their
   enumeration order is lexicographic in the prime factors, not by size, so "select the rank near Ψ(kN, y)" does not
   select an integer near kN.
-- **Log-grid dynamic programming.** A DP over rounded logarithms with per-item error η and s items needs sη ≲ h/X,
-  hence ≥ (ln X)/η = N^{1−o(1)} bins (codex; for that explicit-grid class only).
-- **Existence theorems** are far from this scale: the best all-interval results need y ≥ exp(C(ln X)^{2/3}(ln ln X)^{4/3})
-  (Jain, arXiv 2502.10530, Thms 1.1–1.2, as reported by codex; not checked by us), while here ln y ≍ (ln X)^{1/3}.
+- **Log-grid dynamic programming.** This is Bernstein's 2002 rounding method (Granville §5.8). A DP over rounded
+  logarithms with per-item error η and s items needs sη ≲ h/X, hence ≥ (ln X)/η = N^{1−o(1)} bins (codex; for that
+  explicit-grid class only): its bounds sandwich Ψ between Ψ(x) and Ψ(x^{1+1/(M ln 2)}) for M bins, so resolving I_k
+  needs M ≳ x·kN/h.
+- **Existence theorems** are far from this scale. All-interval results (Harman 1991; Lenstra–Pila–Pomerance 1993;
+  Jain, arXiv 2502.10530, Thm 1.2) need h ≥ x^{1/2+o(1)} and y ≥ exp((log x)^{2/3+o(1)}). Jain's almost-all Thm 1.1
+  allows h = L[2/3] (h ≥ exp((1 + ε)((11/8)u log u + 4 log log X)), i.e. L[2/3, 11/(12κ)] at y = L[1/3, κ], the same
+  shape as Prop SI's window) but needs y ≥ exp(C(log X)^{2/3}(log log X)^{4/3}), versus ln y ≍ (ln X)^{1/3} here
+  (checked in arXiv 2502.10530v1 by the literature critic).
 
 ## 5. Total factoring cost and heuristic R
 
@@ -389,9 +434,11 @@ direct relation generator" re-optimises the sampling program under Theorem SS (i
   output per multiplier is used, the multiplier range must have C ≥ κ + ν/(3κ).
 - **Fruitfulness (heuristic R).** Not tested here: no constructor reached the regime where it matters. MITM outputs
   are N-oblivious products whose residues are determined by (a·b mod N); sicheck's Prop B (Blum N: fruitfulness is a
-  parity condition computable from N) applies to any constructor, and sicheck's `beta0` example shows a constructor
-  can be useless while producing valid relations (both as announced in sicheck's pre-registration; its results note
-  was not available when this note was written).
+  parity condition computable from N) and Cor. B (a constructor seeing only kN and N can make every dependency
+  trivial) apply to any constructor. sicheck's Lemma I (gcd(u_k, v_k) = gcd(u_k, k)) explains the inherited duplicate
+  relations behind our diversity caveat, and its measured fresh-relation rate (10–69% of naive H_S at 40–80 bits,
+  recovering asymptotically) applies to any constructor whose outputs look like interval-sieve outputs. sicheck also
+  notes that k ≍ N^θ changes the constant to (16(1+θ)/9)^{1/3}, so the multiplier range must stay N^{o(1)}.
 
 ## 6. Experiments (pre-registered, commit 9d75362)
 
@@ -508,7 +555,18 @@ asymptotic statements. MITM and 2-D aim are excellent at toy sizes only because 
     cost-model comparison; P3c disclosed (as the critic also found).
   - MINOR: threshold rounding; toy h range 0.57–0.71; crossover labelled extrapolation; E1's K semantics; the weak
     converse test now complemented by the exact centred test; literature additions (Schnorr's 2014 report on the
-    prime lattice and λ₁, Granville 2008 §5.7, Bernstein's Algorithm 3), see §8.1.
+    prime lattice and λ₁, Granville 2008 §5.7, Bernstein's Algorithm 3), applied in v4 after the literature critic.
+- **Opus literature critic** (read-only; checked Micciancio 2001, Schnorr's Oberwolfach report, Granville MSRI 44,
+  Boneh JCSS, Jain v1, Bernstein epsi, ADS, Mulder–Sterner–van Woerden). Verdict: no correctness change, no published
+  constructor, no prior statement of the 1.2114 reduction found. Applied:
+  - M1: Prop CV (a), (b), (e) and "target at λ₁/√2" relabelled KNOWN in substance (Micciancio 2001 Lemmas 2–3,
+    Schnorr 2013 Lemma 2, LLM 2006); Mulder–Sterner–van Woerden cited; new part = (c*), the k reading, bookkeeping.
+  - M2: the literature additions promised after codex round 2 are now in the body.
+  - M3: §4.6 positioned against Granville §5.7–5.8, Hunter–Sorenson, Bernstein 2002; counting ⇒ search called
+    standard self-reducibility.
+  - Minor: Jain's h-conditions; Boneh JCSS Thm 3.1 and his §4 remark; Bernstein's Algorithm 3 as the MA upper-bound
+    mechanism; RC as special-q/MPQS accounting (Davis–Holdridge, Silverman, Pollard); Schroeppel and COS sieves as
+    analogues; Hittmeir; lattice-sieving and knapsack citations.
 
 ## 9. Reproduction
 ```
