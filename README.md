@@ -63,6 +63,7 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - floor-sum ladder: exactly Coppersmith's known-bits barrier ([`topblock`](notes/topblock_results.md));
   - degenerate / large-box rank-r: area theorems plus one counting hypothesis ([`rankdegen`](notes/rankdegen_results.md));
   - product listing: Johnson-radius decoders gain only L^{o(1)} ([`pilist`](notes/pilist_results.md) Prop JR).
+- Phase 19, the sufficient side: every target that would give α < 1/3 directly is as strong as polynomial-time factoring in disguise ([`suffmap`](notes/suffmap_results.md); size–entropy law, Theorem SS). The best realistic target improves only the constant: constructing L[1/3]-smooth numbers in short intervals near multiples of N would give L[1/3, 1.21] (Prop SI). S-units and abc add no barrier and no new target ([`abcsunit`](notes/abcsunit_results.md)). Lattice CVP helps only at approximation factor γ → 1, and Schnorr 2021 is quantitatively refuted ([`schnorrcvp`](notes/schnorrcvp_results.md)).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
