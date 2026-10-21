@@ -64,6 +64,7 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - degenerate / large-box rank-r: area theorems plus one counting hypothesis ([`rankdegen`](notes/rankdegen_results.md));
   - product listing: Johnson-radius decoders gain only L^{o(1)} ([`pilist`](notes/pilist_results.md) Prop JR).
 - Phase 19, the sufficient side: every target that would give α < 1/3 directly is as strong as polynomial-time factoring in disguise ([`suffmap`](notes/suffmap_results.md); size–entropy law, Theorem SS). The best realistic target improves only the constant: constructing L[1/3]-smooth numbers in short intervals near multiples of N would give L[1/3, 1.21] (Prop SI). S-units and abc add no barrier and no new target ([`abcsunit`](notes/abcsunit_results.md)). Lattice CVP helps only at approximation factor γ → 1, and Schnorr 2021 is quantitatively refuted ([`schnorrcvp`](notes/schnorrcvp_results.md)).
+- Phase 20, Prop SI (constructing smooth numbers near kN). The 1.2114 implication is heuristically correct but needs explicit constructor requirements C1–C8 ([`sicheck`](notes/sicheck_results.md)). Every oblivious constructor costs L[2/3] per output: decoders gain nothing over the trivial divisor trick (Theorem J, [`sihard`](notes/sihard_results.md)), and meet-in-the-middle doesn't amortise. Prop SI is promise-CVP at factor 1+O(1/log N) in Micciancio's prime lattice ([`siconstruct`](notes/siconstruct_results.md) Prop CV).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
