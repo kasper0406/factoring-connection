@@ -33,6 +33,8 @@ def test_model_exact_constants():
     assert model.si_optimum_is_global()
     S = model.size_principle_consistency()
     assert S["b_opt_minus_kappa_star"] == 0 and S["c_ss_cubed"] == sp.Rational(16, 9)
+    assert model.si_constant_with_k_exponent(0) == sp.Rational(16, 9)
+    assert model.si_constant_with_k_exponent(1) == sp.Rational(32, 9)
     grid = [Fr(i, 60) for i in range(1, 30)]
     assert min(grid, key=model.single_interval_exponent) == Fr(1, 3)
     assert model.single_interval_exponent(Fr(1, 3)) == Fr(1, 3)

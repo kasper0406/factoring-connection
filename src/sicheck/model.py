@@ -46,6 +46,17 @@ def si_program() -> Dict[str, sp.Expr]:
             "d_trials_d_nu": sp.diff(trials, nu)}
 
 
+def si_constant_with_k_exponent(theta) -> sp.Expr:
+    """Multipliers k ~ N^theta: u has log-size (1 + theta) x, threshold 2(1 + theta)/(3 kappa), crossing
+    kappa^3 = 2(1 + theta)/9, so c^3 = 16(1 + theta)/9 (codex sicheck_1 section 2; re-derived here).
+    Returns c^3."""
+    th = sp.nsimplify(theta)
+    lev_u, c_u = smooth_penalty(1, 1 + th, sp.Rational(1, 3), kap)
+    t0 = kap + (-c_u) / (3 * kap)
+    ks = [r for r in sp.solve(sp.Eq(t0, 2 * kap), kap) if r.is_positive][0]
+    return sp.simplify((2 * ks) ** 3)
+
+
 def si_optimum_is_global() -> bool:
     """max(kappa + nu/(3 kappa), 2 kappa) over nu >= 2/(3 kappa): trials increase in nu, so nu = threshold; then
     max(t0, 2 kappa) is minimised at the crossing because t0 is decreasing there (kappa* < kappa_min) and 2 kappa is
