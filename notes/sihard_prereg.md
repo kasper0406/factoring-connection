@@ -78,3 +78,10 @@ the reduction logic. Count exact covers by brute force.
 
 ## Deviations
 Any deviation from this file will be recorded in the results note as a disclosed deviation.
+
+## Addendum A1 (committed before any experiment was run)
+- E2 at the registered size (X = 2^40, y = 2^8, M = 2^16) has only about 25 y-smooth integers in range, so A will be
+  mostly 0. P4 is unaffected (exact). Added exploratory cell **E2b**: X = 2^40, y = 2^10, M = 2^20, same V and P
+  families (with the factor base ≤ 2^10). P4 is also checked on E2b. No other change.
+- E2 divisor-sum form: computed as Σ_{z smooth in range} #{d | gcd(z, P) : d ≥ S}, which equals the registered
+  Σ_{d|P, d≥S} #{m y-smooth : dm in range} (z = dm with d | P is y-smooth iff m is). This avoids enumerating τ(P).
