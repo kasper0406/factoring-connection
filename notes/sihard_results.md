@@ -9,7 +9,7 @@ Agent `sihard`, phase 20, 2026-10-21. DRAFT v1 (before the codex adversarial rou
   - `reduction.py`: the X3C → S-smooth-in-interval reduction (Prop XS).
   - `consequences.py`: Prop SI and Prop DLI constants, the collapse table.
   - `run_experiments.py`: E1–E4 and the analysis.
-- Tests: `tests/test_sihard.py` (16 pass).
+- Tests: `tests/test_sihard.py` (17 pass).
 - Pre-registration: `notes/sihard_prereg.md`, commit `7f9e398`, plus addendum A1 (`bb7fbd0`), both made before any run.
 - Raw data: `experiments/raw/sihard_E{1,2,3,4}.jsonl`. Summary: `experiments/analysis/sihard_summary.json`.
 - GPT-6.1-sol: blind round `codex/sihard_1.{md,out}` (§10.1); adversarial round `codex/sihard_2.{md,out}` (§10.2).

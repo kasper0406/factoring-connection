@@ -116,3 +116,15 @@ def sympy_factors(n):
     if n > 1:
         out.append(n)
     return out
+
+
+def test_lemma_fp():
+    from src.sihard.core import lemma_fp
+    rng = random.Random(3)
+    for _ in range(300):
+        y = rng.randrange(3, 2000)
+        x = rng.randrange(1, 10 ** 12)
+        h = -(-2 * x // (y - 1)) + rng.randrange(0, 5)
+        z = lemma_fp(x, h, y)
+        assert x <= z <= x + h
+        assert is_smooth_int(z, y)

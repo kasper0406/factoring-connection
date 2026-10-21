@@ -164,3 +164,14 @@ def smooth_in_range(lo: int, hi: int, y: int) -> List[int]:
     """All y-smooth integers in [lo, hi) (exact)."""
     m = smooth_mask(lo, hi - lo, primes_upto(y))
     return [lo + int(i) for i in np.nonzero(m)[0]]
+
+
+def lemma_fp(x: int, h: int, y: int) -> int:
+    """Lemma FP: if h >= 2x/(y-1), return a y-smooth z = 2^a * ceil(x / 2^a) in [x, x+h] (polynomial time)."""
+    if y < 3 or h * (y - 1) < 2 * x:
+        raise ValueError("needs h >= 2x/(y-1)")
+    a = 0
+    while (1 << (a + 1)) * (y - 1) <= 2 * x:  # largest 2^a with 2^a (y-1) <= 2x, so 2^a >= x/(y-1)
+        a += 1
+    d = 1 << a
+    return d * (-(-x // d))
