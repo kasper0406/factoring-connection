@@ -1,0 +1,346 @@
+**UNVERIFIED:** The checked sources do not establish a reduction from factoring to ordinary \(\gamma\)-CVP on these lattices with a universal approximation threshold—even for \(\gamma=1\). They establish useful distance certificates and conditional algorithms requiring additional distribution and sampling assumptions.
+
+Notation: \(L=\log N\), \(B=p_n\), and
+\[
+L_N[\alpha,a]=\exp\!\big((a+o(1))L^\alpha(\log L)^{1-\alpha}\big).
+\]
+Handle \(-1\) as a sign coordinate, outside the real logarithms. First trial-divide \(N\) by the factor-base primes.
+
+*Source scope:* I checked the EUROCRYPT’91 PDF, accessible primary papers and code, and indexed primary passages of Adleman and 2021/933. Ritter–Rössner’s full PostScript and the 1993 Schnorr revision were inaccessible; their unchecked details are not used below.
+
+1. **Exact reduction. PROVED: an absolute-distance certificate.**
+
+Write
+\[
+a_i=\lceil C\log p_i\rceil,\quad a_0=\lceil CL\rceil,\quad
+\eta_i=a_i-C\log p_i,\quad \eta_0=a_0-CL.
+\]
+For an exponent vector \(e\), put
+\[
+r=\sum_i e_i a_i-a_0,\qquad
+Q=\sum_i f(i)e_i^2,\qquad A=\sum_i|e_i|\log p_i=\log(uv).
+\]
+Then the exact identities are
+\[
+\boxed{\begin{aligned}
+\|b-t\|_2^2&=Q+r^2,\\
+\Delta:=\log\frac{u}{vN}
+ &=\frac{r-\sum_i e_i\eta_i+\eta_0}{C},\\
+u-vN&=vN(e^\Delta-1)
+ =2e^{(A+L)/2}\sinh(\Delta/2).
+\end{aligned}}\tag{1}
+\]
+**Proof:** Expand the coordinates, use \(\log(u/v)=\sum e_i\log p_i\), and \(uv=e^A\). In particular, a zero rounded last-coordinate error does **not** imply \(u=vN\).
+
+**PROVED.** Define
+\[
+K^2=\sum_i\frac{\log^2p_i}{f(i)},\quad
+J^2=\sum_i\frac1{f(i)},\quad
+m=\max_i\frac{\log p_i}{f(i)}.
+\]
+If \(\|b-t\|\le R\), then
+\[
+A\le A_R:=\min(KR,mR^2),\qquad
+|\Delta|\le h_R:=\frac{R\sqrt{1+J^2}+1}{C},
+\]
+and therefore
+\[
+\boxed{|u-vN|\le E(R):=
+2e^{(L+A_R)/2}\sinh(h_R/2).}\tag{2}
+\]
+**Proof:** Cauchy–Schwarz gives \(A\le K\sqrt Q\) and
+\(\|e\|_1\le J\sqrt Q\). Integrality gives \(|e_i|\le e_i^2\), hence \(A\le mQ\). Finally,
+\(|r|+J\sqrt Q\le R\sqrt{1+J^2}\); substitute into (1).
+
+**PROVED—single-call theorem.** Let \(d_0=\operatorname{dist}(t,\Lambda)\). A \(\gamma\)-CVP oracle returns a candidate satisfying
+\[
+|u-vN|\le E(\gamma d_0).
+\]
+If a certified upper bound \(U\ge d_0\) satisfies \(E(\gamma U)\le B\), the returned candidate is a fac-relation. Every nonzero integer of absolute value at most \(B\) is \(B\)-smooth. Here \(w=0\) is excluded by the preliminary trial division. No existence, novelty, or factoring-success conclusion follows from this theorem alone.
+
+**KNOWN.** For the **unrounded \(\ell_1\) variant with diagonal \(\log p_i\)**,
+\[
+S=\|b-t\|_1=A+C|\Delta|.
+\]
+Vera’s Theorem 2 gives the convenient sufficient condition
+\[
+S\le 2\log C+2\sigma\log B-L
+\quad\Longrightarrow\quad |u-vN|\le B^\sigma.
+\]
+This is an absolute norm condition, rather than a relative CVP guarantee. [Vera, §2.3, Theorem 2](https://arxiv.org/pdf/1003.5461)
+
+**KNOWN.** Define Dickman’s function by
+\[
+\rho(z)=1\ (0\le z\le1),\qquad z\rho'(z)=-\rho(z-1)\ (z>1).
+\]
+For growing \(z=\log X/\log B\), the checked CEP corollary states, uniformly for
+\[
+3\le z\le(1-\varepsilon)\frac{\log X}{\log\log X},
+\]
+that
+\[
+\frac{\Psi(X,B)}X
+=\exp\!\left[-z\left(\log z+\log\log z-1+
+O\!\left(\frac{\log\log z}{\log z}\right)\right)\right].
+\tag{3}
+\]
+Theorem 3.1 supplies the lower bound; the corollary supplies the matching asymptotic. [CEP, §3, Theorem 3.1 and corollary, p.15](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf)
+
+**HEURISTIC—residual smoothness.** Applying \(\rho(\log X/\log B)\) to lattice-generated residuals assumes they resemble random integers of the relevant size, after local restrictions. Constant success suggests \(X=B^{O(1)}\); inverse-polynomial success in \(L\) permits
+\[
+z\log z=O(\log L).
+\]
+A small logarithmic error alone is insufficient: (1) also contains the potentially enormous multiplier \(vN\).
+
+**PROVED—counting.** The exact candidate count is
+\[
+Z_R=\sum_{e\in\mathbb Z^n}
+{\bf1}\!\left[Q(e)+(a\cdot e-a_0)^2\le R^2\right].
+\tag{4}
+\]
+The useful count inserts the additional indicator
+\({\bf1}[P^+(|u-vN|)\le B]\). Exponent vectors correspond bijectively to coprime \(B\)-smooth pairs \((u,v)\), by unique factorization. Thus (4) is also an exact smooth-pair count with geometric constraints; it does not evaluate the extra residual condition.
+
+**PROVED.** The lattice covolume and target’s distance from its real span are
+\[
+D_\Lambda=\sqrt{\prod_i f(i)}
+ \sqrt{1+\sum_i a_i^2/f(i)},\qquad
+h_\perp=\frac{a_0}{\sqrt{1+\sum_i a_i^2/f(i)}}.
+\tag{5}
+\]
+These follow respectively from the determinant lemma applied to
+\(\operatorname{diag}(f)+aa^T\), and projection onto its normal vector.
+
+**HEURISTIC—Gaussian counting plus residual smoothness.** With
+\(V_n=\pi^{n/2}/\Gamma(1+n/2)\),
+\[
+Z_R\approx
+\frac{V_n(R^2-h_\perp^2)^{n/2}}{D_\Lambda},
+\qquad
+M_R\approx Z_R\,p_R. \tag{6}
+\]
+Neither approximation is proved for this family. The radius giving \(Z_R\approx1\) supplies roughly one candidate, whose residual may be nonsmooth. A list needs enough *useful* mass, roughly \(Z_Rp_R\gtrsim n\), not merely many close vectors.
+
+**PROVED—local obstruction.** In this construction
+\[
+\gcd(uv,w)=1.
+\]
+Indeed, a prime dividing \(u\) cannot divide \(vN\), and conversely. Residuals therefore exclude primes already used in either \(u\) or \(v\). Unconditioned Dickman estimates ignore this restriction.
+
+**PROVED / HEURISTIC—relation processing and cost.** Use columns
+\(\nu(u_j)-\nu(w_j)\), including sign; the negative exponents defining \(v_j\) are not directly relation exponents. More than \(n+1\) columns guarantee a parity dependency by linear algebra. Taking its half-exponents modulo \(N\) gives \(x^2=1\); a nontrivial root factors \(N\).
+
+Under **novelty and CRT-randomness assumptions**, let \(p_\gamma\) be the probability per query of obtaining a new usable relation. Then
+\[
+T_{\rm factor}\approx
+\frac{n+O(1)}{p_\gamma}
+ (T_{\rm oracle}+T_{\rm check})+T_{\rm LA}. \tag{7}
+\]
+Dense elimination costs \(O(n^3)\) field operations. Enlarging the residual base replaces \(n\) by its prime count in relation processing. Repeating a deterministic query gives the same output; random weights supply no proved diversity or independence.
+
+2. **Rigour. PROVED: exact CVP can return no relation.**
+
+Take \(N=35,\ n=1,\ p_1=2,\ f(1)=1,\ C=35\). Then
+\[
+b_1=(1,25),\qquad t=(0,125).
+\]
+The unique closest vector is \(5b_1\), of squared distance \(25\): every other integer multiple has last-coordinate error at least \(25\). Its residual is
+\[
+2^5-35=-3,
+\]
+which is not \(2\)-smooth. This refutes an unconditional single-call claim without parameter promises; it does not refute every possible large-dimensional parameterization.
+
+**KNOWN—conditional existence, not an ordinary-CVP reduction.** Schnorr 1991 chooses \(B=L^a,\ C=N^c\), with
+\[
+c>1,\qquad a>\frac{2c-1}{c-1},
+\]
+and, under his smooth-pair distribution hypothesis, obtains
+\[
+N^{\epsilon+o(1)}\text{ suitable vectors},\qquad
+\epsilon=c-1-\frac{2c-1}{a}>0.
+\]
+Their number-theoretic requirements include
+\[
+|\Delta|\lesssim N^{-c}\log B,\qquad
+A\le(2c-1)L+o(\log B).
+\]
+His conclusion explicitly requires **random** suitable vectors and a nontrivial-square-root assumption. [Schnorr 1991, §3, Lemmas 2–3; §4, Proposition 6, Theorem 7 and Conclusion](https://link.springer.com/content/pdf/10.1007/3-540-46416-6_24.pdf)
+
+**KNOWN—Adleman’s conditional proposal.** His §2 uses
+\[
+B=\log^{20}(2N^{1.25}),\qquad M=N^4,
+\]
+modified targets and squarefree smooth pairs \(P,PN-1\). Their distribution, simultaneous smoothness, diversity, and useful final dependencies are assumptions. Section 3 leaves the required approximation quality open. This is not an unconditional polynomial-time reduction for the target in the question. [Adleman, §§2–3, pp.3–4, 8–9](https://raw.githubusercontent.com/lducas/SchnorrGate/main/LATFAC.pdf)
+
+**KNOWN—BDD qualification.** BDD with promise
+\(\operatorname{dist}(t,\Lambda)<\lambda_1/(2\gamma)\) reduces to \(\gamma\)-uSVP. The embedding introduces another coordinate and requires that promise; it does not establish it for prime lattices. An unrestricted homogeneous shortest vector may have target coefficient zero. [Lyubashevsky–Micciancio, §3, Theorem 1](https://cseweb.ucsd.edu/~daniele/papers/uSVP-BDD.pdf)
+
+**UNVERIFIED.** No checked theorem says that an exact CVP oracle on the stated lattices, in dimension \(n=L^a\), unconditionally factors every admissible \(N\) in polynomial time. Equations (1)–(2), relation verification, and dependency processing are rigorous; existence, sampling, smoothness transfer, and successful CRT mixing remain separate obligations.
+
+**KNOWN—reported experiment only.** Ritter–Rössner report complete factorization of 60-bit integers in under three hours; their accessible abstract supplies no asymptotic guarantee. [Ritter–Rössner, Abstract](https://eprint.iacr.org/1997/008)
+
+3. **Schnorr 2021. KNOWN: the claimed parameters.**
+
+The indexed 16 June 2021 text of 2021/933 uses diagonal \(f(i)\), a permutation of \(1,\ldots,n\), and scale
+\[
+C=N'=N^{1/(n+1)}.
+\]
+It claims \(n=47,95\) for 400,800 bits, using blocks of size \(24\), with factoring costs \(4.2\cdot10^9\) and \(8.4\cdot10^{10}\) arithmetic operations. These are claims, not validated timings. [Schnorr 2021/933, Abstract and §§1,3](https://eprint.iacr.org/2021/933.pdf)
+
+**PROVED—specific failure in the corrected argument.** In §3, Lemma 3.1 defines
+\(\widehat z=N'\log(u/(vN))\), but its residual bound is of order \(v|\widehat z|\). Correctly,
+\[
+w=vN(e^{\widehat z/N'}-1)
+ \sim v\,\frac{N}{N'}\,\widehat z.
+\]
+The omitted factor is \(N^{1-1/(n+1)}\). Its subsequent assumption \(v\lesssim p_n\) is also not implied by shortness.
+
+**PROVED—independent numerical inconsistency.** The same section’s 800-bit estimate asserts a nonzero output of norm below \(0.917\). In its displayed lattice, any vector with some first coefficient nonzero has a coordinate \(f(i)e_i\) of absolute value at least \(1\). A vector supported only on the target column has norm at least \(N'\log N>1\). Thus that estimate is impossible.
+
+**PROVED—why volume does not repair this.** The determinant of that full lattice is \(n!N'\log N\), by triangularity. Its homogeneous ball count includes vectors with target coefficient zero, and coefficients other than \(\pm1\). Neither determinant nor a shortest-vector bound counts useful vectors in the required target slice. Even within that slice, (6) still requires the smooth-residual factor \(p_R\).
+
+**KNOWN—experimental evidence, carefully scoped.** Ducas’s repository tests the **March 3 version**, reporting zero relations in \(1000\) trials at 400 bits and \(n=47\), with typically sparse exponent vectors. Its README does not constitute a test of every later revision. His RISC slides identify projection, norm-conversion, and local smoothness pitfalls. [SchnorrGate, “Experimental results”](https://github.com/lducas/SchnorrGate), [Ducas, slides 17–20](https://projects.cwi.nl/crypto/risc_materials/2021_05_20_ducas_slides.pdf)
+
+**PROVED—elementary product bound.** For the integers in the question,
+\[
+\boxed{|uw|\ge N-1.}\tag{8}
+\]
+Indeed,
+\[
+N\le|v|N=|u-w|\le|u|+|w|\le|uw|+1,
+\]
+the last inequality following from \((|u|-1)(|w|-1)\ge0\). The gcd assumption is unnecessary for this inequality.
+
+**HEURISTIC—joint smoothness model.** For ordinarily sampled sizes \(u,w\), (8) forces their total logarithmic size to be at least \(L+o(1)\). With \(b=\log B\), the joint smoothness penalty has leading scale
+\[
+\exp\!\left[-(1+o(1))\frac{L}{b}\log\frac{L}{b}\right].
+\]
+Balancing this with costs exponential in \(b\) produces \(L_N[1/2,O(1)]\). This is a model calculation, not a lower bound for lattice algorithms. In particular, \(u\) is already smooth in Schnorr’s construction: multiplying by its smoothness density again would double-count its generation cost.
+
+**HEURISTIC—BKZ/GSA cost model.** With
+\[
+\delta_\beta\approx
+\left(\frac{\beta}{2\pi e}\right)^{1/(2(\beta-1))},
+\qquad
+\|b_i^*\|\approx D_\Lambda^{1/n}\delta_\beta^{\,n-2i+1},
+\]
+a uniform-cell model for Babai gives
+\[
+R_\beta^2\approx h_\perp^2+
+\frac{D_\Lambda^{2/n}}{12}
+ \sum_{i=1}^n\delta_\beta^{\,2(n-2i+1)}.
+\tag{9}
+\]
+The corresponding honest estimate is
+\[
+T_{\rm factor}\approx
+\frac n{p(R_\beta)}
+\left(P(n,L)\,T_{\rm core}(\beta)+T_{\rm check}\right)
++T_{\rm LA},
+\]
+including tours and sampling overhead in \(P\). Common core models are
+\[
+T_{\rm core}=2^{0.292\beta+o(\beta)}
+\quad\text{or}\quad
+\beta^{\beta/8+o(\beta)}.
+\]
+The first is heuristic sieving; the second is an optimistic enumeration model, not a universal guarantee. A root-Hermite factor is **not** directly a CVP approximation factor. [BDGL, Abstract](https://eprint.iacr.org/2015/1128)
+
+**KNOWN.** Aono–Nguyen exhibit substantial failures of Gaussian enumeration-cost predictions when tiny-probability pruning confines searches to subspaces. This supports caution with volume estimates, not a factoring complexity theorem. [Aono–Nguyen 2025, §§3–5](https://link.springer.com/article/10.1007/s13160-025-00713-6)
+
+**UNVERIFIED.** No checked analysis establishes a general-purpose advantage over the quadratic sieve, or an optimized sub-\(L[1/2]\) complexity for this prime-lattice relation generator using present BKZ estimates. Neither is there a proved impossibility theorem.
+
+4. **Consequences and approximation thresholds.**
+
+**PROVED—what a threshold must depend on.** For a residual allowance \(B^z\), define
+\[
+R_z=\sup\{R:E(R)\le B^z\}.
+\]
+The sufficient approximation threshold is
+\[
+\boxed{\gamma d_0\le R_z.}\tag{10}
+\]
+It depends on weights, scale, rounding, and the actual closest distance. It is not a function of dimension alone.
+
+**HEURISTIC—smoothness, novelty, and CRT mixing.** Put
+\(F_\alpha=L^\alpha(\log L)^{1-\alpha}\). Equation (7) requires:
+
+- Polynomial time: \(n,T_{\rm oracle},T_{\rm check}\) polynomial in \(L\), and \(z\log z=O(\log L)\).
+- \(L_N[\alpha,O(1)]\), including \(\alpha<1/3\): total non-smoothness costs at most \(\exp(O(F_\alpha))\), and \(z\log z=O(F_\alpha)\).
+- \(L_N[1/2,O(1)]\): the preceding condition with \(F_{1/2}=\sqrt{L\log L}\).
+
+These conditions additionally require enough distinct useful outputs. They do not prove that any chosen parameters realize them.
+
+**HEURISTIC—illustrative near-optimal-distance hypothesis.** Suppose specifically
+\[
+f(i)=\log p_i,\quad C=N^c,\quad c>1,\quad
+n=L^{O(1)},\quad
+d_0^2=(2c-1)L+O(\log L).
+\tag{11}
+\]
+The last condition is an additional, unproved hypothesis. Since \(A\le Q\), (2) gives, for \(\gamma\) near \(1\),
+\[
+\log E(\gamma d_0)
+\le \frac{(2c-1)(\gamma^2-1)L}{2}+O(\log L).
+\]
+For \(B=L^{\Theta(1)}\), sufficient certificate scales are consequently
+\[
+\begin{array}{c|c}
+\text{desired heuristic time}&\text{sufficient approximation loss}\\ \hline
+\operatorname{poly}(L)&
+\gamma-1=O\!\left(\frac{(\log L)^2}{L\log\log L}\right)\\
+L_N[\alpha,O(1)]&
+\gamma-1=O(F_\alpha/L)\\
+L_N[1/2,O(1)]&
+\gamma-1=O\!\left(\sqrt{\frac{\log L}{L}}\right)
+\end{array}
+\]
+These are sufficient scales within (11), not necessary thresholds or published reductions.
+
+**UNVERIFIED—answer for the three proposed oracle factors.** Polynomial-time algorithms promising only
+\[
+\gamma(n)=\operatorname{poly}(n),\qquad
+2^{n^\varepsilon},\qquad 2^{n/\log n}
+\]
+yield no proved factoring improvement through this construction. Their guarantees do not supply (10), useful residual distributions, or diverse relations. They might return much better vectors than promised; that additional behavior would need analysis. Oracle complexity must also include input precision, and constructing enormous \(u,v,w\) can dominate postprocessing.
+
+**HEURISTIC.** A polynomial-time exact oracle plus suitable absolute-distance, diversity, and CRT hypotheses could give polynomial-time factoring. Ordinary exact CVP alone does not provide those hypotheses.
+
+**UNVERIFIED—converse direction.** Faster factoring is not known to solve general SVP, CVP, or LWE, nor the full real-logarithm prime-lattice optimization problem. A conditional reduction in one direction cannot be reversed.
+
+**KNOWN—related reverse application.** Ducas–Pierrot construct **discrete-logarithm lattices** with polynomial-time BDD, using rational reconstruction and smooth-integer factorization. Their normalized radii are \(\Theta(\sqrt n/\log n)\) in \(\ell_2\) and \(\Theta(n/\log n)\) in \(\ell_1\). This concerns a different family and a decoding promise. [Ducas–Pierrot, §3.3, Proposition 3](https://eprint.iacr.org/2018/146.pdf)
+
+5. **Variants and honest costs.**
+
+**HEURISTIC—NFS smoothness assumptions.** NFS already exploits two sides and smaller algebraic norms: the standard GNFS benchmark is
+\[
+L_N[1/3,(64/9)^{1/3}],
+\]
+versus \(L_N[1/2,1]\) for QS. Encoding logarithms of ideal norms does not itself enforce principality, compatible generators, or the required congruence modulo \(N\). No checked CVP variant improves that GNFS benchmark. [Pomerance, “A Tale of Two Sieves,” discussion on pp.1481–1482](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf)
+
+**UNVERIFIED—two lattices, restricted residuals, divisor classes.** These proposals need an explicit distribution, a useful-solution count, and extraction costs. Restricting \(w\), even to \(1\), increases the scarcity problem. Merely encoding \(u-vN-w=0\) is easy; imposing simultaneous smoothness in exponent variables is the unresolved part. No new \(L\)-exponent is justified without that analysis.
+
+**KNOWN—larger residual bases.** Sato–Auzemery–Katayama–Yasuda report a 90-bit example with lattice rank \(31\), precision parameter \(c=5\) in their \(10^c\) construction, and residual base size \(2n^2=1922\), taking \(83.3\) hours. This is a different tradeoff from \(B=p_n\). [Authors’ IWSEC 2024 slides 8,14–16](https://www.docswell.com/s/astonish/KEY6X7-iwsec2024-TrackA)
+
+**KNOWN—quantum variants’ scope.** Yan’s 372-qubit RSA-2048 estimate specifies circuit resources, while acknowledging unclear QAOA speedup. Khattar–Yosri’s exhaustive neighborhood experiments fail at their tested 80-bit-and-larger cases; their search is not exact CVP over the entire lattice. Aboumrad–Widdows–Kaushik likewise find poor scaling; their residual-distribution arguments do not prove a universal factoring lower bound. [Yan, Table 1 and Conclusion](https://arxiv.org/html/2212.12372), [Khattar–Yosri, §III, Table 1; Appendix A](https://arxiv.org/html/2307.09651), [Aboumrad–Widdows–Kaushik, §§3.3,5](https://arxiv.org/html/2308.07804)
+
+**KNOWN / PROVED—Coppersmith.** Known high bits can enable polynomial-time factoring: Coppersmith’s §11 assumes approximately \(\frac14\log_2N\) high bits of a factor. Guessing those bits generically costs \(N^{1/4+o(1)}=L_N[1,1/4]\), by counting guesses. No unconditional sub-\(L[1/3]\) method follows from an unconstrained small-root formulation. [Coppersmith, §11](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf)
+
+**KNOWN / PROVED—exact and list algorithms.** Micciancio–Voulgaris give deterministic single-exponential exact lattice algorithms; their refined bound is \(\widetilde O(2^{2n})\) time and \(\widetilde O(2^n)\) space. This solves geometric CVP, not residual smoothness. Listing \(M\) candidates necessarily costs \(\Omega(M)\) outputs. For the original \(n=L^a,\ a>2\) existence regime, single-exponential dimension costs are already far above \(L[1/2]\). [Micciancio–Voulgaris, Abstract; algorithm framework §3](https://epubs.siam.org/doi/10.1137/100811970)
+
+**PROVED—“almost \(\mathbb Z^n\)” qualification.** After diagonal whitening, the Gram matrix is \(I+xx^T\), with eigenvalues \(1,\ldots,1,1+\|x\|^2\). However, the rotation diagonalizing it does not preserve integer coefficients. This observation alone supplies no efficient decoder or factoring complexity bound.
+
+| Claim | Status | Source |
+|---|---|---|
+| Rounded distance–residual identity and certificate | **PROVED** | Equations (1)–(2), proofs above |
+| Exact CVP always returns a relation | **PROVED false** without parameter promises | \(N=35\) counterexample |
+| Uniform-integer smoothness estimate | **KNOWN** | [CEP, §3, corollary p.15](https://math.dartmouth.edu/~carlp/PDF/paper39.pdf) |
+| Polynomial-dimensional suitable-vector existence | **HEURISTIC**, smooth-pair hypothesis | [Schnorr 1991, §4, Theorem 7](https://link.springer.com/content/pdf/10.1007/3-540-46416-6_24.pdf) |
+| Adleman’s factoring-to-SVP proposal | **HEURISTIC**, stated arithmetic and independence assumptions | [Adleman, §§2–3](https://raw.githubusercontent.com/lducas/SchnorrGate/main/LATFAC.pdf) |
+| Corrected 2021 residual scaling | **PROVED erroneous** | [2021/933, §3, Lemma 3.1](https://eprint.iacr.org/2021/933.pdf); algebra above |
+| \(|uw|\ge N-1\) | **PROVED** | Equation (8) |
+| Random weights give useful independent relations | **UNVERIFIED** | No verified guarantee |
+| BKZ/GSA predicts factoring cost directly | **HEURISTIC**, requires success and sampling model | Equations (7), (9) |
+| Universal threshold depending only on \(\gamma(n)\) | **UNVERIFIED** | Required certificate is (10) |
+| QS/GNFS \(L\)-complexities | **HEURISTIC**, sieve smoothness assumptions | [Pomerance, pp.1481–1482](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf) |
+| Faster factoring solves general SVP/CVP/LWE | **UNVERIFIED** | No such implication established here |
