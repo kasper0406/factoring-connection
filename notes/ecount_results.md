@@ -100,7 +100,7 @@ Notation:
 | Lemma 1 (3), projective | "Knowing two among Ẽ, Ê, Ē and E, we know the four" | **Proof circular in both cases.** Case 1 uses Ẽ + Ē = 4PQ − L; Case 2 uses (M+1)Ê = 4PQ − L. With PQ = (p+1)(q+1) = N + p + q + 1 unknown, knowing it is already factoring. cx1 independently reports the same |
 | Thm 1 (1) | Projective \|E(Z/N)\|, \|E_d(Z/N)\| and N pairwise distinct ⇒ factor N deterministically | **Unproved as published** (it rests on Lemma 1). Repaired in §1.3: deterministic when (d/N) = −1, randomized (TW) when (d/p) = (d/q) = −1. Deterministic repair of the latter: OPEN |
 | Thm 3 (5), ERH | Factoring ≡ "counting points, affine or projective, of elliptic curves E mod N, non-supersingular for both primes" (published adds non-supersingular) | Proof: "apply Theorem 2 to the pair E, E_d for every d up to this bound". So it uses **twist counts** for d ≤ O(log²N): a multi-curve oracle. Projective inherits Lemma 1's gap; the repair needs a d with (d/N) = −1 (≤ 2log²N under ERH, Bach 1990) |
-| Thm 4 (6) + Prop. 1 | Random curve E mod N; given the **factorisation** of the projective or affine count, factor N "with probability one" | The core is correct (cx1 agrees): a divisor u = q + 1 − a_q of the count with \|u − q\| ≤ 2√q + 1, then Coppersmith. It is deterministic and polynomial whenever d(count) ≤ poly(n). But: (i) the published Prop. 1 step "E ∈ S_N ⇒ E ∈ S_p or E ∈ S_q" is false as written (cx1). d(ab) > (log N)⁴ does not force d(a) > (log p)⁴ or d(b) > (log q)⁴. Raising the threshold to (log N)⁸ fixes this step. (ii) The probability is over a random curve in the isomorphism-class model, so for a fixed curve and adversarial N nothing is claimed. (iii) The arXiv v1 "probability one" rested only on the average order of d(n). E3c measured d(M) ≤ 9216 at n = 96 |
+| Thm 4 (6) + Prop. 1 | Random curve E mod N; given the **factorisation** of the projective or affine count, factor N "with probability one" | The core is correct (cx1 agrees): a divisor u = q + 1 − a_q of the count with \|u − q\| ≤ 2√q + 1, then Coppersmith. It is deterministic and polynomial whenever d(count) ≤ poly(n). But: (i) the published Prop. 1 step "E ∈ S_N ⇒ E ∈ S_p or E ∈ S_q" is false as written (cx1). d(ab) > (log N)⁴ does not force d(a) > (log p)⁴ or d(b) > (log q)⁴. Raising the threshold to (log N)⁸ fixes this step. (ii) The probability is over a random curve in the isomorphism-class model, so for a fixed curve and adversarial N nothing is claimed. (iii) The arXiv v1 "probability one" rested only on the average order of d(n). E3c measured d(M) up to 16896 at n = 96 |
 | "Small difference" section | Heron/circumradius: arcs of xy = T of length < (N/32)^{1/3} hold ≤ 2 lattice points | **Formula error (cx1, re-checked here).** The circumradius of (x_i, T/x_i) is R = √(∏_{i<j}((x_ix_j)² + T²)) / (2Tx₀x₁x₂). The paper prints the square of this, without the root. Near x = √T, R ≍ √T, not ≍ T, so the N^{1/3} conclusion is not established |
 | Intro / Cor. 1 | "it is not known how to factor N only with the number E_N as input"; "there is no known polynomial time algorithm that can factor N using this information" | **Answered by TW / TW*** (projective count, randomized). The affine one-curve count remains OPEN |
 
@@ -368,7 +368,7 @@ cell has 40 instances with n ∈ {32, 64, 96, 128}. Each instance gets 64 trials
 |---|---|---|
 | (a) affine two-count, case (d/N) = −1 and case d QNR at both | n = 32, 64, 128 | 180/180 and 180/180 (**P8 holds**) |
 | (b) CM1, p ≡ q ≡ 3 (4): affine counts of E and E_d (d = 2, 3, 5, 6, 7) all equal N | n = 32, 64, 128 | 60/60 (**P9 holds**) |
-| (c) Thm 4/6: factorisation of M → divisors in [√N/4, 4√N] → Coppersmith (flint LLL, dim 10) | n = 48, 64, 96 | FILL |
+| (c) Thm 4/6: factorisation of M → divisors in [√N/4, 4√N] → Coppersmith (flint LLL, dim 10) | n = 48, 64, 96 | 180/180 (**P10 holds**). d(M): median 192–3072, max 16896 (C1, n = 96). In-window divisors: max 1316. Divisors tried before success: median 12–115, max 644. Total LLL calls ≈ 3·10⁵ over 1650 s |
 | (d) projective, repaired (Lemma 1/3 as written cannot run: it needs PQ) | n = 32, 64, 96 | 180/180 (**P11 holds**) |
 
 ### E4. Partial information, exact census, ordered pairs from S₁₆ (1491 primes; ≈ 1.1·10⁶ pairs per cell)
@@ -429,7 +429,7 @@ cell has 40 instances with n ∈ {32, 64, 96, 128}. Each instance gets 64 trials
 .venv/bin/python -m src.ecount.run_experiments e1                 # ~60 s
 .venv/bin/python -m src.ecount.run_experiments e2                 # ~8 s
 .venv/bin/python -m src.ecount.run_experiments e4                 # <1 s
-.venv/bin/python -m src.ecount.run_experiments e3                 # FILL (Thm 6 Coppersmith dominates)
+.venv/bin/python -m src.ecount.run_experiments e3                 # ~29 min (Thm 4/6 Coppersmith dominates)
 .venv/bin/python -m src.ecount.run_experiments posthoc            # PH1, PH2 (~2 s)
 .venv/bin/python -m src.ecount.run_experiments posthoc3           # PH3 (~1 s)
 .venv/bin/python -m src.ecount.run_experiments posthoc_xe         # PH4 (~2 s)
@@ -441,6 +441,9 @@ Deviations (disclosed):
   deterministic and the file was regenerated from scratch.
 - **D2.** The registered M + 2 null is invalid (P3). PH1 replaces it.
 - **D3.** P2's "≥", P13 and P14 were mis-formulated. They are reported REFUTED, not re-registered.
+- **D8.** E3c makes the divisor-count issue concrete. "The number of factors of an integer is of the order of the
+  logarithm of it" (arXiv) does not describe these M: d(M) reached 16896 against log M ≈ 66. The run still finished
+  because d(M) stays polynomial-sized at these n.
 - **D4.** E3d's lattice branch is never reached on registered instances. A forced unit test covers it.
 - **D5.** `du_affine_twist` follows D–U literally and does not first try gcd(E′, N).
 - **D6.** TW* (`jacobi_filter=False`) was added after cx1. It is used only in PH3. The registered E1 used TW.
