@@ -117,7 +117,7 @@ def f_eval(x: int, a: int, b: int, N: int) -> int:
 
 
 def tw_trial(N: int, a: int, b: int, M: int, rng: random.Random,
-             ctr: Optional[Counters] = None) -> Tuple[Optional[int], str]:
+             ctr: Optional[Counters] = None, jacobi_filter: bool = True) -> Tuple[Optional[int], str]:
     """One trial of algorithm TW.  Returns (factor or None, outcome label).
 
     outcome in {"delta_gcd" (f(x0) shares a factor with N), "jacobi_ne_-1", "split" (from [M]P), "killed"
@@ -132,8 +132,10 @@ def tw_trial(N: int, a: int, b: int, M: int, rng: random.Random,
         return g, "delta_gcd"
     if g == N:
         return None, "delta_zero"
-    if gmpy2.jacobi(delta, N) != -1:
+    if jacobi_filter and gmpy2.jacobi(delta, N) != -1:
         return None, "jacobi_ne_-1"
+    # (TW*: without the filter the point lies on E or E' independently at each prime; the chain's trailing
+    # doublings then also perform Miller's 2-adic descent, cf. codex/ecount_1.out.)
     # P = (delta*x0, delta^2) on E^(delta): Y^2 = X^3 + a delta^2 X + b delta^3
     ad = a * delta * delta % N
     P = (delta * x0 % N, delta * delta % N)
@@ -147,11 +149,11 @@ def tw_trial(N: int, a: int, b: int, M: int, rng: random.Random,
 
 
 def tw_factor(N: int, a: int, b: int, M: int, rng: random.Random, max_trials: int = 64,
-              ctr: Optional[Counters] = None) -> Dict:
+              ctr: Optional[Counters] = None, jacobi_filter: bool = True) -> Dict:
     """Run TW until a split or max_trials. Verifies the factor divides N (no primality test)."""
     outcomes: Dict[str, int] = {}
     for t in range(1, max_trials + 1):
-        fac, out = tw_trial(N, a, b, M, rng, ctr)
+        fac, out = tw_trial(N, a, b, M, rng, ctr, jacobi_filter)
         outcomes[out] = outcomes.get(out, 0) + 1
         if fac is not None:
             assert 1 < fac < N and N % fac == 0

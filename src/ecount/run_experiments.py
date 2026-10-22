@@ -398,5 +398,83 @@ def posthoc(bb=16, reps=200):
     f.close()
 
 
+def posthoc3(bb=16, cap=300):
+    """PH3: TW (Jacobi filter) and TW* (no filter) on members of Exc(E) from the E2 census at b = bb.
+    Codex's predicted failure set for TW*-type descent: X_E = Exc(E) with M odd."""
+    f = _out("posthoc3")
+    for curve, (a, b) in H.CURVES.items():
+        P = [p for p in H.primes_window(bb) if H.disc_part(a, b) % p]
+        D = {p: H.local_data(a, b, p) for p in P}
+        exc = []
+        for i, p in enumerate(P):
+            for q in P[i + 1:]:
+                M = D[p]["A"] * D[q]["A"]
+                if M % D[p]["twist_group"][0] == 0 and M % D[q]["twist_group"][0] == 0:
+                    exc.append((p, q))
+        rng0 = random.Random(f"ecount-ph3|{curve}")
+        sample = exc if len(exc) <= cap else rng0.sample(exc, cap)
+        stats = dict(curve=curve, b=bb, exc_total=len(exc), tested=len(sample), M_odd=0, tw_split=0, tws_split=0,
+                     tws_split_M_even=0, M_even=0, tws_fail_M_odd=0, tws_split_M_odd=0)
+        for p, q in sample:
+            N = p * q
+            M = D[p]["A"] * D[q]["A"]
+            r1 = tw_factor_h(N, a, b, M, random.Random(f"ph3a|{curve}|{p}|{q}"), True)
+            r2 = tw_factor_h(N, a, b, M, random.Random(f"ph3b|{curve}|{p}|{q}"), False)
+            odd = M % 2 == 1
+            stats["M_odd"] += odd
+            stats["M_even"] += not odd
+            stats["tw_split"] += r1 in (p, q)
+            stats["tws_split"] += r2 in (p, q)
+            if odd:
+                stats["tws_split_M_odd"] += r2 in (p, q)
+                stats["tws_fail_M_odd"] += r2 not in (p, q)
+            else:
+                stats["tws_split_M_even"] += r2 in (p, q)
+            f.write(json.dumps(dict(curve=curve, p=p, q=q, M=M, M_odd=odd, tw=r1 in (p, q), tws=r2 in (p, q))) + "\n")
+        print(json.dumps(stats), flush=True)
+        f.write(json.dumps(dict(summary=stats)) + "\n")
+    f.close()
+
+
+def tw_factor_h(N, a, b, M, rng, jf):
+    from src.ecount.zn_curve import tw_factor
+    r = tw_factor(N, a, b, M, rng, 64, None, jf)
+    # count only structural splits from [M]P (not delta-gcd accidents)
+    return r["factor"] if r["outcomes"].get("split", 0) else None
+
+
 if __name__ == "__main__" and sys.argv[1] == "posthoc":
     posthoc()
+def posthoc_xe(bbits=(12, 14, 16, 18)):
+    """PH4: size of codex's exceptional set X_E = {M odd, exp E'(F_p) | M, exp E'(F_q) | M} (vectorised)."""
+    f = _out("posthoc_xe")
+    for curve, (a, b) in H.CURVES.items():
+        for bb in bbits:
+            P = [p for p in H.primes_window(bb) if H.disc_part(a, b) % p]
+            D = [H.local_data(a, b, p) for p in P]
+            A = np.array([d["A"] for d in D], dtype=np.int64)
+            g1 = np.array([d["twist_group"][0] for d in D], dtype=np.int64)
+            k = len(P)
+            xe = exc = pairs = 0
+            ex_list = []
+            for i in range(k - 1):
+                j = slice(i + 1, k)
+                M = A[i] * A[j]
+                ex = ((M % g1[i]) == 0) & ((M % g1[j]) == 0)
+                odd = (M % 2) == 1
+                exc += int(ex.sum())
+                xe += int((ex & odd).sum())
+                pairs += k - 1 - i
+                for jj in np.nonzero(ex & odd)[0][:3]:
+                    if len(ex_list) < 5:
+                        ex_list.append((P[i], P[i + 1 + int(jj)]))
+            rec = dict(curve=curve, b=bb, pairs=pairs, exc=exc, X_E=xe, X_E_frac=xe / pairs, X_E_examples=ex_list)
+            f.write(json.dumps(rec) + "\n")
+            print(json.dumps(rec), flush=True)
+    f.close()
+
+
+if __name__ == "__main__" and sys.argv[1] == "posthoc_xe":
+    posthoc_xe()
+if __name__ == "__main__" and sys.argv[1] == "posthoc3":
+    posthoc3()
