@@ -1,6 +1,6 @@
 # sinonobliv: the non-oblivious routes to Prop SI that sihard left open
 
-Agent `sinonobliv`, phase 22, 2026-10-22. Version 2 (after the codex adversarial round and the Opus proof critic; literature critic pending).
+Agent `sinonobliv`, phase 22, 2026-10-22. Version 3 (after the codex adversarial round and both Opus critics).
 
 **Files.**
 - Code: `src/sinonobliv/` — `core.py` (exact smoothness masks, density curves, identity families, divisors of
@@ -60,7 +60,7 @@ A constructor costing L[1/3, τ] per output beats MNFS (1.9019) iff τ < 0.75717
     exist. Fixed chains and fixed adaptive trees obey Theorem J (Prop JC, Prop AT). But every bit of information
     needed is cheap: the residues of x modulo all prime powers ≤ y cost L[1/3, κ] and determine every smooth position
     in the window (Lemma IC). What remains is a computational problem: list-decoding a Chinese-remainder code far
-    below its Johnson radius (Prop RD). A decoder of cost π(y)^a per window would beat MNFS iff a < 1.1416. This is
+    below its Johnson radius (Prop RD; this is Boneh's generalized CRT decoding problem at full smoothness). A decoder of cost π(y)^a per window would beat MNFS iff a < 1.1416. This is
     the one place a constructor could hide, and it is the original problem in coding language.
 - **Uncertified lattice outputs** (sihard's fifth item; E3, pre-registered): the extra integer roots of a
   Howgrave-Graham divisor lattice are "near-certified" points whose gcd with P sits just below the provable threshold
@@ -138,7 +138,8 @@ MODEL). The next lemma shows that no real algorithm needs to respect that hypoth
 
 ### 2.2 Information is cheap
 
-**Lemma IC (PROVED, elementary).** For x ≤ 3X let e_q = ⌊log_q(3X + h)⌋ and R(x) := (x mod q^{e_q})_{q ≤ y}.
+**Lemma IC (PROVED, elementary; this is the sieve — or Bernstein's batch smooth-parts computation — seen as
+information).** For x ≤ 3X let e_q = ⌊log_q(3X + h)⌋ and R(x) := (x mod q^{e_q})_{q ≤ y}.
 - (a) R(x) determines the set S(x) = {j ∈ [0, h] : x + j is y-smooth}: j ∈ S(x) iff
   Σ_{q ≤ y} ln q·#{1 ≤ e ≤ e_q : j ≡ −x (mod q^e)} = ln(x + j).
 - (b) R(x) costs π(y) reductions of an x-bit integer, i.e. L[1/3, κ + o(1)] bit operations. For the windows I_k of
@@ -158,30 +159,40 @@ MODEL). The next lemma shows that no real algorithm needs to respect that hypoth
 
 ### 2.3 The residual problem is CRT list decoding below the Johnson radius
 
-**Prop RD (PROVED; a reformulation).** Let C_h = {c(j) = (j mod q^e)_{q ≤ y, e ≤ e_q} : 0 ≤ j ≤ h}, a
+**Prop RD (PROVED, elementary; a specialisation of Boneh's generalized CRT decoding).** Let C_h = {c(j) = (j mod q^e)_{q ≤ y, e ≤ e_q} : 0 ≤ j ≤ h}, a
 Chinese-remainder (CRT/Mandelbaum-type) code with coordinate weights ln q, and let the received word be
 w(x) = (−x mod q^e). The weighted agreement of c(j) with w(x) is A(j) = ln(y-smooth part of x + j). Hence
 **SMOOTH-INT(x, h, y) ⇔ find j ∈ [0, h] with A(j) ≥ ln(x + j)**: a weighted list-decoding problem.
+- *Prior art (literature critic).* This is Boneh's "generalized CRT list decoding" problem (finding integers in an
+  interval with a large smooth part; Boneh, STOC 2000, 265–272; JCSS 64 (2002) 768–784, §§3–4), with the threshold
+  set to full smoothness; the far-below-Johnson reading is already in pilist §2.3. The coordinates q, q², … are not
+  pairwise coprime: the code is the CRT code modulo ∏q^{e_q} with agreement ln gcd(x + j, P), Boneh's gcd form.
+  In coding terms the regime is far below the Johnson radius but far above capacity (x ≫ ln h).
 - Total weight W = Σ_q e_q ln q ≍ π(y)·x; message length ln(h + 1) = νF_{2/3}; required agreement ≈ x.
-- The Johnson radius of known decoders (Goldreich–Ron–Sudan, Boneh, Guruswami–Sahai–Sudan) is
+- The Johnson radius of known decoders (Goldreich–Ron–Sudan, IEEE Trans. IT 46 (2000), a √2 factor short; Boneh,
+  who removes the √2; Guruswami–Sahai–Sudan, FOCS 2000, weighted) is
   agreement ≥ √(ln(h + 1)·ln P) for the modulus P used (Theorem J's threshold). With P = ∏ q^{e_q}, √(νF_{2/3}·W) ≫ x
   by an L[1/3] factor: far below Johnson.
 - The list is short *on average*: averaged over x, its expected size is (h + 1)ρ(u₀)^{1+o(1)} = L[2/3, ν − 2/(3κ)],
   which is O(1) if h is chosen as c/ρ(u₀). This is an average, not a worst-case or promise bound; with leading
   constants cancelling, only exp(o(F_{2/3})) follows in general, which may exceed every power of π(y) (codex round 2).
-  So on average the combinatorial obstruction to beyond-Johnson decoding (superpolynomial lists in specified
-  Reed–Solomon regimes; Ben-Sasson–Kopparty–Radhakrishnan) does not apply; for individual received words it is not
+  So on average the combinatorial obstruction to beyond-Johnson decoding (super-polynomial lists for full-length
+  Reed–Solomon codes over F_{2^m}; Ben-Sasson–Kopparty–Radhakrishnan, IEEE Trans. IT 56 (2010) 113–120) does not apply; for individual received words it is not
   excluded.
-- Known capacity-achieving list decoders (Parvaresh–Vardy; Guruswami–Rudra folded Reed–Solomon; folded and
-  multiplicity codes in the polynomial-ideal framework of Bhandari–Harsha–Kumar–Sudan, ECCC 2021/036) change the code
-  or work over polynomial rings; the integer code here is fixed by arithmetic. Interleaved-CRT / power decoding
-  (Li–Sidorenko–Nielsen, ISIT 2013) goes beyond unique decoding under probabilistic assumptions, not to this regime. Whether some CRT analogue (folding by prime powers?) helps for *this* received
-  word is OPEN; we found no such algorithm.
+- Capacity results. Folded/multiplicity codes (Parvaresh–Vardy; Guruswami–Rudra; the polynomial-ideal framework of
+  Bhandari–Harsha–Kumar–Sudan, arXiv 2103.07930) change the code or work over polynomial rings. Plain prime-field
+  Reed–Solomon codes now have capacity list decoders at constant rate (Brakensiek–Chen–Putterman–Zhang–Zheng, arXiv
+  2609.08005, preprint; also Jeronimo, arXiv 2609.05870; cited in pilist §2.3), but their cost exponent blows up as
+  the agreement fraction tends to 0, and here it is ≍ x/W ≈ 1/π(y). Guruswami's number-field codes (IEEE Trans. IT 49
+  (2003)) are list-decoded only up to Johnson (Biasse–Quintin, arXiv 1107.2321). Interleaved-CRT/power decoding
+  (Li–Sidorenko–Nielsen, ISIT 2013) goes beyond unique decoding under probabilistic assumptions, not to this regime.
+  Cohn–Heninger call multi-input ACD the integer analogue of Parvaresh–Vardy/Guruswami–Rudra decoding; that "folding"
+  is route 3, treated in §4. No CRT or number-field decoder for this regime is known to us; OPEN.
 - *Softer target in decoder terms (PROVED, algebra).* A decoder costing L[1/3, aκ] per window (polynomial of degree
   a in π(y)) gives c = (3/2)(4/9)^{1/3}(1 + a)^{2/3} for a ≥ 1/3. It beats MNFS iff **a < 1.1416**; a = 1 (linear in
   the information size) gives 6^{1/3} = 1.8171 (siconstruct §1).
 - The explicit-prime-list version of this decoding problem is NP-hard under randomized reductions (DIVISOR,
-  Alon–Kilian/Shor; sihard Prop XS). With all primes ≤ y, nothing is known.
+  credited to Alon–Kilian in Sudan 2010, proof by Shor, cstheory.SE Q. 4769, 2011; sihard Prop XS). With all primes ≤ y, nothing is known.
 
 ### 2.4 Natural adaptive schemes, costed
 - *Prime-by-prime accumulation* (choose d₁ | z, recurse in the progression): while D ≤ h the cofactor is
@@ -198,7 +209,10 @@ w(x) = (−x mod q^e). The weighted agreement of c(j) with w(x) is A(j) = ln(y-s
 
 **Density gain (HEURISTIC H_piece; KNOWN in substance).** If a member z ≈ X factors by algebra into r pieces of
 sizes X^{c_i} (Σc_i = 1) that are smooth independently at their sizes, then
-Pr[z smooth] ≈ ∏ρ(c_iu₀) = ρ(u₀)·exp(u₀H(c) + o(u₀)), H(c) = −Σc_i ln c_i ≤ ln r (codex §2). For fixed r this gain
+Pr[z smooth] ≈ ∏ρ(c_iu₀) = ρ(u₀)·exp(u₀H(c) + o(u₀)), H(c) = −Σc_i ln c_i ≤ ln r (codex §2). Related literature: smooth polynomial values (Martin, JNT 93 (2002)); consecutive smooth
+numbers (Teräväinen, Forum Math. Sigma 2018; Conrey–Holmstrom–McLaughlin, Exp. Math. 22 (2013)); PTE
+parametrisations raising smoothness (Costello–Meyer–Naehrig, EUROCRYPT 2021); smooth twins from lattice vectors
+(Mulder–Sterner–van Woerden, arXiv 2509.17699). For fixed r this gain
 r^{u₀} = exp(Θ(x^{2/3}(ln x)^{−2/3})) is larger than every L[1/3] but is L[2/3, o(1)]: the cost stays
 L[2/3, 2/(3κ)]. With r = x^δ pieces the cost is L[2/3, (2/3 − δ)/κ]; the gain only reaches L[1/3] scale when the
 pieces have size y^{O(1)}, i.e. when the member is "smooth by construction" (codex §2).
@@ -226,7 +240,10 @@ gain 0.1–0.5 (its values avoid primes ≡ 3 mod 4).
   (m − a₁)⋯(m − a_{r−1})(m + Σa_j) with |a_j| ≪ m^{1/2^j} place X^{1/r+ε}-smooth integers in every interval
   [X, X + X^{β_r}], β_r = 1 − 2/r + 1/(r2^{r−1}) = 1/4, 5/12, 17/32 for r = 2, 3, 4. The exponent β_r *increases*
   with r: the method trades smoothness for interval length in the wrong direction for Prop SI, and no fixed r reaches
-  y = X^{o(1)}.
+  y = X^{o(1)}. FL credit the case r = 2 independently to Balog and Sárközy, and note that their set S_r has
+  O(X^{2/r − 1/(r2^{r−1})}) elements below X ("well-spaced"): (#members)·(window) ≈ X, i.e. FL's family is an
+  equality case of Lemma PL(a), the counting precedent for Lemma PL / Prop FF. The identity 4t⁴ + 1 is Sophie
+  Germain's (a⁴ + 4b⁴ with a = 1).
 
 **Prop FF (fixed families must be dense in the smooth numbers; PROVED, averaged).** Let a constructor output, for the
 window [x, x + h], only y-smooth members of a multiset 𝓕 fixed independently of x (𝓕 may depend on the size X;
@@ -262,8 +279,10 @@ e^{−143} at 512 bits and e^{−301} at 1024 bits; its per-output cost crosses 
 **The decoders.** Cohn–Heninger (ANTS X, 2013; Thms 1–2, checked by codex): *partial* ACD with one exact multiple P
 of the hidden divisor d = P^β and m approximate multiples with errors ≤ R recovers d when ln R < π·β^{(m+1)/m}, i.e.
 ln d ≥ σ_m := t^{m/(m+1)}π^{1/(m+1)} (t = ln R), under an algebraic-independence assumption and the side condition
-β²π → ∞; m = 1 is Johnson. The *general* ACD version (no exact multiple) has radius X^{C_mβ^{m/(m−1)}}. Herrmann–May
-(Thm 4) and Sarkar–Maitra (ePrint 2010/146, Thm 2: an 8× constant-factor improvement of Boneh's radius) are single-
+β²π → ∞ (their "N^{β²} ≫ 1"; for m > 1 it means "p cannot be any smaller than when m = 1"); the bound applies to the
+geometric mean of the error bounds, up to (1 + o(1)); m = 1 is Howgrave-Graham/Johnson. The *general* ACD version (no exact multiple) has radius X^{C_mβ^{m/(m−1)}}. Herrmann–May
+(ASIACRYPT 2008, LNCS 5350, 406–424, Thm 4) and Sarkar–Maitra (ePrint 2010/146, Thm 2: an 8× constant-factor improvement of Boneh's radius, checked by codex in
+SM's text, not against Boneh's) are single-
 sample or constant-factor variants.
 
 **Prop MS (independent windows; PROVED, averaged; the decoding region granted at unit cost).** Fix 2 ≤ m ≤ t and any
@@ -296,7 +315,8 @@ call.)
   Also, the full modulus P = lcm(1..y) violates Cohn–Heninger's side condition β²π → ∞ ((ln d)²/y → 0), so it gets no
   guarantee at all.
 
-**Lemma IH (same modulus: proportional offsets; PROVED; codex blind §3 found the same, with an exact count).** Let
+**Lemma IH (same modulus: proportional offsets; PROVED, elementary — the standard two-sample ACD elimination
+(Howgrave-Graham 2001); codex blind §3 found the same, with an exact count).** Let
 k_i, k_j ≤ K and d | k_iN + r_i, d | k_jN + r_j with 0 ≤ r_i, r_j ≤ h. If d > Kh then k_jr_i = k_ir_j.
 - *Proof.* d | k_j(k_iN + r_i) − k_i(k_jN + r_j) = k_jr_i − k_ir_j, and |k_jr_i − k_ir_j| ≤ Kh < d. ∎
 - *Consequence (codex).* With g = gcd(k_1..k_m), k_i = gλ_i: r_i = λ_i s and k_iN + r_i = λ_i(gN + s) for one
@@ -306,7 +326,9 @@ k_i, k_j ≤ K and d | k_iN + r_i, d | k_jN + r_j with 0 ≤ r_i, r_j ≤ h. If 
 - **Prop IH-J (yield for d > Kh; PROVED in MODEL "dependent samples carry one sample's information"; proof
   critic finding 1).** Lemma IH bounds *relations per tuple*, not *certified tuples per call*: if Cohn–Heninger's
   enlarged region σ_m were granted to this degenerate configuration, the call would certify essentially every
-  smooth gN + s in [gN, gN + T] — Prop SI for free. It cannot be granted. Proportional samples k_iN put the m − 1
+  smooth gN + s in [gN, gN + T] — Prop SI for free. It cannot be granted, by Cohn–Heninger's own restriction (Open Book Ser. 1 (2013) 271–293, §1.2.1: inputs made by
+  "taking a_i to be a small multiple of a_1 plus an additional perturbation" are excluded, and "if a_1, …, a_m are
+  related in trivial ways, then the algorithm will simply recover the corresponding relations"). Proportional samples k_iN put the m − 1
   linear forms λ_jX_i − λ_iX_j, with tiny coefficients, into the Cohn–Heninger lattice, so its algebraic-independence
   hypothesis fails; the samples carry the information of the single sample gN with error ≤ T. *Model:* such a call is
   a single-sample Johnson-class call on the window [gN, gN + ⌊h/λ_max⌋] (g ≤ K ≤ h). Theorem J(a) then gives
@@ -355,7 +377,8 @@ helper windows are route 1.
   N^{1−o(1)}, and no construction exploiting one (assessment).
 - **NFS constants (codex blind §4; MODEL).** In the size–entropy sampling model, two-sided degree-d relations give
   SNFS (32/9)^{1/3} = 1.5263, GNFS (64/9)^{1/3} = 1.9230 and, reusing rational smoothness across fields,
-  MNFS ((92 + 26√13)/27)^{1/3} = 1.9019 (all re-derived exactly by codex). Their amortised per-relation exponents
+  MNFS ((92 + 26√13)/27)^{1/3} = 1.9019 (re-derived exactly by codex; KNOWN: Coppersmith, J. Cryptology 6 (1993) 169–180; Lenstra–Lenstra (eds.),
+  LNM 1554 (1993)). Their amortised per-relation exponents
   (0.763, 0.961, 0.951) are **not** Prop SI τ's: those relations do not output a factored smooth u ∈ [kN, kN + h].
   The SNFS per-relation exponent 0.7631 = (4/9)^{1/3} sits just above the 0.7572 threshold, a numerical coincidence.
 - **Verdict.** Route 4 reproduces the known NFS constants when it abandons the Prop SI shape, and gives nothing when
@@ -363,7 +386,8 @@ helper windows are route 1.
 
 ## 6. Uncertified decoder outputs (sihard's fifth item)
 
-A Coppersmith/Howgrave-Graham lattice returns all integer roots of its reduced polynomials, not only the certified
+A Coppersmith/Howgrave-Graham lattice (Howgrave-Graham, IMA C&C 1997, LNCS 1355; CaLC 2001, LNCS 2146)
+returns all integer roots of its reduced polynomials, not only the certified
 ones. **E3 (pre-registered, Addendum A1)** ran 5000 calls in each of two configurations (§8.4). Uncertified roots
 occur 0.04 and 0.001 times per call. In U1 (198 of them) their gcd with P sits just below the certificate threshold
 (median ln gcd 18.1 vs ln T_cert 18.9; 10th percentile 16.6) and their smooth fraction (37%) is 0.70 of what their
@@ -496,9 +520,11 @@ constants not SI τ's; τ < 0.757169. Plausibility 5% (ours 1%).
 bounded-likelihood barrier (which Lemma IC then shows real algorithms violate); Friedlander–Lagarias Thm 4 exponents
 β_r, checked in the primary text; Cohn–Heninger's side condition β²π → ∞ and the general-ACD bound
 L[2/3 + 1/(3m)]; the exact count Q_d; Sarkar–Maitra's 8× constant; the exact re-derivation of SNFS/GNFS/MNFS.
-**Ours, beyond codex.** Prop JC (chains), Lemma IC and its consequence that no informational barrier exists, Prop RD
-and the decoder threshold a < 1.1416, Prop FF (dense-family dichotomy), Prop MS for the partial-ACD region with an
-arbitrary modulus P (codex treated general ACD), Prop MS′, Prop NV, Prop LC, experiments E1–E3.
+**Ours, beyond codex.** Prop JC (chains); the consequence of Lemma IC that no query/information barrier exists
+(the lemma itself is the sieve, elementary); the decoder threshold a < 1.1416 attached to Prop RD (Prop RD itself is
+Boneh's generalized CRT decoding at full smoothness); Prop FF; Prop MS for the partial-ACD region with an arbitrary
+modulus P (codex treated general ACD); Prop MS′; Prop NV; experiments E1–E3. For FF, MS, MS′ and JC: no prior
+statement found by us (literature critic). Lemma IH is the standard two-sample ACD elimination.
 
 ### 9.2 Adversarial round (`codex/sinonobliv_2.{md,out}`, on v1 04a1f52): MAJOR REVISION, all points adjudicated
 Codex reproduced all six raw/post-hoc files exactly, ran the 12 tests, re-scored P1–P9 (same results as ours after
@@ -545,7 +571,23 @@ P1–P9 and found no code bug changing a number.
 | 13 | MINOR | "none reaches L[1/3, τ]" labelled PROVED | relabelled as a finding |
 | 14–16 | NIT | JC needs gcd(P, D) = 1 and inherits the weighted "sketch"; theory.ms_case_bound used a different split; P2 rounding, bare tuple range, stray (1 + o(1)) | applied; ms_case_bound and its test aligned with the note |
 
-### 10.2 Literature critic — pending.
+### 10.2 Literature critic (read-only): OK WITH FIXES, all applied
+The critic checked Friedlander–Lagarias Thm 4 and Cohn–Heninger Thms 1–2 in the primary texts, the Sophie Germain
+identity, all NFS constants and thresholds, and uncert.py's use of Howgrave-Graham's lemma. Herrmann–May and
+Sarkar–Maitra primary texts could not be fetched (UNVERIFIED by the critic; codex had checked them).
+
+| # | Sev. | Finding | Fix |
+|---|---|---|---|
+| 1 | MAJOR (attribution) | Prop RD is Boneh's generalized CRT decoding (STOC 2000; JCSS 2002 §§3–4) at full smoothness; far-below-Johnson reading already in pilist §2.3 | credited; removed from "ours"; gcd form and "above capacity" stated |
+| 2 | MAJOR (outdated) | plain RS codes now have capacity list decoders (Brakensiek et al., arXiv 2609.08005; Jeronimo 2609.05870) | bullet replaced; cost blow-up as agreement fraction ≈ 1/π(y) → 0 noted |
+| 3 | MEDIUM | Prop IH-J's model is Cohn–Heninger's own restriction (§1.2.1) | quoted and cited |
+| 4–6 | MINOR | BKR precise statement; GRS is √2 short of Johnson; number-field codes only to Johnson (Biasse–Quintin); CH call multi-input ACD the integer Parvaresh–Vardy | applied |
+| 7 | MINOR | NFS constants credited only to codex | Coppersmith 1993; LNM 1554 |
+| 8 | MINOR | smooth consecutive/polynomial-value literature missing | Martin 2002; Teräväinen 2018; Conrey–Holmstrom–McLaughlin 2013; Costello–Meyer–Naehrig 2021; Mulder–Sterner–van Woerden |
+| 9 | MINOR | FL: r = 2 also Balog–Sárközy; FL's well-spacing remark makes their family an equality case of Lemma PL(a) | added |
+| 10–12 | MINOR | CH side condition wording, geometric mean, (1 + o(1)); HM/SM venues and provenance of SM's 8×; Howgrave-Graham citations | applied |
+| 13 | MINOR | novelty: IH is the standard ACD elimination, IC is the sieve; "no prior statement found by us" only for FF, MS, MS′, JC | applied |
+| 14 | MINOR | DIVISOR attribution | sihard's form used |
 
 ## 11. Reproduction
 ```bash
