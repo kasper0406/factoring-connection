@@ -68,3 +68,24 @@ PYTHONPATH=. .venv/bin/python -m src.zroute.harness e3 experiments/configs/zrout
 PYTHONPATH=. .venv/bin/python -m src.zroute.harness e2 experiments/configs/zroute.json experiments/raw/zroute_e2.jsonl
 PYTHONPATH=. .venv/bin/python -m src.zroute.harness e1 experiments/configs/zroute.json experiments/raw/zroute_e1.jsonl
 ```
+
+## Addendum A1 (2026-10-22, before any E4 run; E1 still running, E2/E3 finished but not yet analysed)
+
+Motivation: codex zroute_1 §5 proposed diagonal dominance to force rank deterministically (for integer smooth
+representatives of q^H). I extend it to d = 1 split rows (Lemma DD1 in the results note). Pilot: one run on
+balanced_semiprime(36, 999) (not a registered seed): all 207 primes got a row, the block was diagonally dominant.
+
+## E4: deterministic rank forcing by diagonal dominance (d = 1)
+
+- Instances: balanced semiprimes 40 bits (seeds 0–9), 48 bits (0–9), 56 bits (0–4).
+- For each FB prime q (FB = primes ≤ fb_bound(N)), targets a = q^H·w mod N for w = 1, 2, … ≤ 20 000, B-smooth w
+  only, in increasing order; H := K + bitlen(2N) + 2, K := max Ω(w) over the budget. Keep the first w whose Gauss
+  split has both halves B-smooth; row H e_q + e(w) − e(u) + e(v). Then HNF, D, deterministic Miller.
+- Predictions:
+  - **P4a** whenever every prime has a row, the prime block is strictly diagonally dominant and the rank is n: 100%
+    (a theorem: Ω(w) + Ω(u) + Ω(v) < H).
+  - **P4b** whenever every prime has a row, Miller splits N: 100% (ERH theorem; toy check).
+  - **P4c** every prime gets a row within the budget in ≥ 9/10 instances at 40 and at 48 bits and ≥ 4/5 at 56 bits.
+  - **P4d** (descriptive with a window) at 40 bits the mean number of tries per prime lies in [0.5/δ, 2/δ], where δ
+    is E3's random-target hit rate (pooled mean rand_hits/J).
+- Command: `PYTHONPATH=. .venv/bin/python -m src.zroute.harness e4 experiments/configs/zroute.json experiments/raw/zroute_e4.jsonl`

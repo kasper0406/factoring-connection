@@ -192,11 +192,37 @@ def run_e3(cfg: Dict, out) -> None:
             print(seed, orbit_hits, rand_hits, flush=True)
 
 
+# ----------------------------------------------------------------------------- E4 (addendum A1)
+
+def run_e4(cfg: Dict, out) -> None:
+    for bits, seeds in cfg["cells"]:
+        for seed in range(seeds):
+            inst = _inst("semi", bits, seed)
+            N = inst.N
+            t0 = time.time()
+            fb = FactorBase.make(N, fb_bound(N))
+            ctr: Dict = {}
+            rows, H, tries = core.dominance_rows(N, fb, cfg["w_budget"], ctr)
+            complete = len(rows) == len(fb.primes)
+            dom = core.is_diag_dominant(fb, rows) if complete else None
+            res = core.pin_and_exponent(fb, [r.rat for r in rows], grh_bound(N)) if rows else {"rank": 0, "PIN": False, "D": 0}
+            g, base = core.miller_split(N, res["D"]) if res.get("D") else (None, None)
+            tv = sorted(tries.values())
+            rec = {"exp": "e4", "bits": bits, "seed": seed, "N": N, "n": fb.n, "H": H, "K": ctr["K"],
+                   "rows": len(rows), "complete": complete, "diag_dominant": dom, "rank": res["rank"],
+                   "PIN": res["PIN"], "miller_base": base, "miller_ok": _check_factor(inst, g),
+                   "tries_median": tv[len(tv) // 2] if tv else None, "tries_max": tv[-1] if tv else None,
+                   "tries_mean": (sum(tv) / len(tv)) if tv else None, "secs": round(time.time() - t0, 1)}
+            out.write(json.dumps(rec) + "\n")
+            out.flush()
+            print(bits, seed, complete, dom, res["rank"], fb.n, rec["miller_ok"], rec["tries_max"], rec["secs"], flush=True)
+
+
 def main() -> None:
     which, cfg_path, out_path = sys.argv[1], sys.argv[2], sys.argv[3]
     cfg = json.load(open(cfg_path))[which]
     with open(out_path, "w") as out:
-        {"e1": run_e1, "e2": run_e2, "e3": run_e3}[which](cfg, out)
+        {"e1": run_e1, "e2": run_e2, "e3": run_e3, "e4": run_e4}[which](cfg, out)
 
 
 if __name__ == "__main__":

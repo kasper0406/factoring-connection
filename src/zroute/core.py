@@ -457,3 +457,45 @@ def pin_and_exponent(fb: FactorBase, rels: List[List[int]], qmax: int) -> Dict:
 def miller_split(N: int, D: int) -> Tuple[Optional[int], Optional[int]]:
     """Deterministic Miller test with bases a = 2 .. ceil(2 ln^2 N) (the ERH range)."""
     return miller(N, D, grh_bound(N))
+
+
+# ----------------------------------------------------------------------------- deterministic rank forcing (Lemma DD1)
+
+def dominance_rows(N: int, fb: FactorBase, w_budget: int, ctr: Dict) -> Tuple[List[Row], int, Dict[int, int]]:
+    """Diagonal-dominance design (notes, Lemma DD1).  For every FB prime q, try targets a = q^H * w mod N for
+    w = 1, 2, 3, ... (B-smooth w only, at most w_budget values), H := K + bitlen(2N) + 2 with K := max Omega(w) over
+    the budget; keep the first w whose Gauss split u/v has both halves B-smooth.  Row = H e_q + e(w) - e(u) + e(v).
+    Since Omega(w) + Omega(u) + Omega(v) < H, the prime block is strictly diagonally dominant, hence nonsingular:
+    full Q-rank is forced deterministically once every q has a row."""
+    ws = [w for w in range(1, w_budget + 1) if fb.vector(w) is not None]
+    K = max(sum(fb.vector(w)[1:]) for w in ws)
+    H = K + (2 * N).bit_length() + 2
+    rows: List[Row] = []
+    tries: Dict[int, int] = {}
+    for q in fb.primes:
+        base = pow(q, H, N)
+        for t, w in enumerate(ws):
+            x = [0] * fb.n
+            x[fb.index[q]] = H
+            ew = fb.vector(w)
+            x = [a + b for a, b in zip(x, ew)]
+            r = split_row(N, fb, base * w % N, x, "dom")
+            if r is not None:
+                rows.append(r)
+                tries[q] = t + 1
+                break
+    ctr["H"] = H
+    ctr["K"] = K
+    return rows, H, tries
+
+
+def is_diag_dominant(fb: FactorBase, rows: List[Row]) -> bool:
+    """Check strict row diagonal dominance of the prime block (columns 1..n-1, one row per prime, in FB order)."""
+    if len(rows) != len(fb.primes):
+        return False
+    for i, r in enumerate(rows):
+        d = abs(r.rat[i + 1])
+        off = sum(abs(v) for j, v in enumerate(r.rat[1:]) if j != i)
+        if d <= off:
+            return False
+    return True
