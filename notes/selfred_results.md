@@ -81,8 +81,11 @@ and not a classification of all maps. (v2: narrowed after codex_2 MAJOR REVISION
   factor #E(F_p) varies with p but obeys no polynomial identity.
 - CM curves can collapse. For example y² = x³ − x on p, q ≡ 3 (mod 4) has a_p = 0, so the count is (p+1)(q+1), which
   factors N (codex_2).
-- An efficient one-curve count would be a moved-divisor *map*. Turning it into a self-reduction would need a recovery
-  property as well.
+- The recovery step is reportedly known. Dieulefait–Urroz (arXiv:1911.11004 §3; preprint, not re-checked by us) factor
+  N deterministically from the *factorisation* of N′ = #E(Z/N) for a single curve, via Coppersmith on
+  #E(F_p) = p+1−a_p with |a_p| ≤ 2√p.
+- So a poly-time one-curve count would reduce factoring N to factoring one N′ ≈ N whose prime factors move with p: a
+  malleability-type reduction (Paillier–Villar 2006). The open part is computing that count without the factors.
 
 ---
 
@@ -106,17 +109,17 @@ and not a classification of all maps. (v2: narrowed after codex_2 MAJOR REVISION
 | Candidate | Status | Reason |
 |---|---|---|
 | kN, kN^j (multipliers) | **PROVED: monomial class only** | factors are p, q and those of k; GLM (factorbits §2.2) shows this suffices only for artificial predicates |
-| h(N), h ∈ Z[x] N-independent (any height, poly degree, random coefficients) | **PROVED barrier (SR1)** | moved divisors are p^a · (divisor of cont h) · (O(D/δ)-smooth) |
-| Φ_m(N) | **PROVED: SR1 applies**; p ∤ Φ_m(N) since Φ_m(0) = ±1 | bit length Θ(φ(m) n), so m ≤ poly(n) (codex_1 §2.2) |
+| h(N), h ∈ Z[x] N-independent and shared over a δ-dense set of partners q (any height, random coefficients; degree reduced via DEG) | **PROVED barrier (SR1)** | divisors are p^a · (divisor of cont h) · (O(D/δ)-smooth) |
+| Φ_m(N) | **PROVED: SR1 applies**; p ∤ Φ_m(N) since Φ_m(0) = 1 (m > 1) | bit length Θ(φ(m) n), so m ≤ poly(n) (codex_1 §2.2) |
 | Norm_{K/Q}(α), α with coordinates polynomial in N, fixed K | **PROVED: SR1 applies** | the norm is a determinant, hence a polynomial in N |
-| Norms with N-dependent algebraic data (e.g. NFS: f(m) ≡ 0 mod N) | **OPEN in general; observation** | p enters via N | Norm(θ − m) (multiplier) or via accidental gcd splits; other prime ideals are unrelated to p |
+| Norms with N-dependent algebraic data (e.g. NFS: f(m) ≡ 0 mod N) | **OPEN in general; observation** | p enters via N \| Norm(θ − m) (multiplier) or via accidental gcd splits; no moved divisor known |
 | Resultants Res(f, g) with a common root mod N | **PROVED: N \| Res** (multiplier); cofactor: OBSERVATION only | no moved divisor is exhibited; that the cofactor is unrelated to p is not proved |
 | Discriminants with p \| disc f, q ∤ disc f | **PROVED: already splits (Lemma EUC)** | Euclid on (f, f′) over Z/N meets a zero divisor because deg gcd differs mod p and mod q (tested) |
-| (p+1)(q+1), (p²+p+1)(q²+q+1), (p+r)(q+r), polynomial point counts | **PROVED: ≡ FACT (SR2)**; generalises nonsmooth §5.3 | exact algebraic identity ⇒ root-finding over Z |
-| #E(Z/N) for chosen curves/twists | **KNOWN/PROVED: ≡ FACT (randomized)** | 4 twist counts sum to 4(p+1)(q+1) with prob ≥ 3/8 (codex_1 §2.6; Kunihiro–Koyama 1998 and later) |
+| (p+1)(q+1), (p²+p+1)(q²+q+1), (p+r)(q+r), polynomial point counts | **PROVED: ≡ FACT (SR2)**; generalises nonsmooth §5.3 | exact algebraic identity ⇒ root-finding over Z. KNOWN special cases: (p+1)(q+1) = σ(N) and φ(N) give p + q. In general σ ⇒ factoring (Bach–Miller–Shallit, SIAM J. Comput. 15(4) (1986) 1143–1154) and φ ⇒ factoring (Miller 1976 under ERH; randomized unconditionally). SR2 generalises this folklore |
+| #E(Z/N) for chosen curves/twists | **KNOWN/PROVED: ≡ FACT (randomized)** | 4 twist counts sum to 4(p+1)(q+1), with all four sign patterns hit with probability 3/8 per attempt (codex_1 §2.6; = eq. (1) of Dieulefait–Urroz, arXiv:1911.11004, preprint). Kunihiro–Koyama (EUROCRYPT 1998, LNCS 1403, 47–58) use many curves and, per Dieulefait–Urroz Remark 2, an inaccurate distributional assumption. Martín–Morillo–Villar (Appl. Math. Lett. 14 (2001) 341–346): orders of points mod N ⇒ factoring. Dieulefait–Urroz claim a deterministic reduction from one curve plus one twist (not re-checked) |
 | #E(Z/N), one fixed ordinary (non-CM) curve, good-reduction promise | **OPEN** | #E(F_p) = p+1−a_p is non-algebraic; SR2's approximate form fails (error a_p·q ≈ N^{3/4} ≫ s). CM curves can collapse: y² = x³ − x with p, q ≡ 3 (4) gives (p+1)(q+1) ⇒ FACT (codex_2) |
 | Lucas / torus recurrences mod N | **PROVED: residues ≠ orders** | evaluating u_k mod N does not give the integer group order |
-| a^N − 1 ⊇ a^p − 1; Lucas u_N ⊇ u_p; EDS | **PROVED: exponential size**; reduction mod M destroys divisibility | the only natural moved divisors known |
+| a^N − 1 ⊇ a^p − 1; Lucas u_N ⊇ u_p; EDS | **PROVED: exponential size**; reduction mod M destroys divisibility | natural moved divisors, besides group orders, that we know of |
 | N′ = g(p)h(q) a balanced semiprime with algebraic g, h | **PROVED: ≡ FACT (SR2)** | exactly the "self-reduction to the same distribution" |
 
 ### 1.3 Theorem SR1 (shared-polynomial maps cannot move a large prime). PROVED
@@ -197,6 +200,8 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
     applies to these finitely many fixed moduli. That is a p₀(h); there is no uniformity for growing h_n.
   - For ℓ | c with ℓ − 1 > D, |Q| > D(y/ℓ + 1) suffices.
 - The smooth part of G is then literally the same integer for every p: the factors never move.
+- KNOWN context: U(h) is Pólya's fixed divisor restricted to units; for primitive h of degree D the fixed divisor
+  divides D!. Lemma DEG's Δ^D h = D!·lead(h) is classical. Neither is new here.
 - Codex's caveat stands: for a *subset* Q (density δ < 1), the small smooth part can carry residue information about p.
   For example, h = x − 1 with Q = {q ≡ 1 mod 4} detects p mod 4. The only proved bound on this data is SR1(b)'s bit
   length; it is small-prime data, not a moved large factor. (v1's "O(log(1/δ)·log(D/δ)) bits" had no proof and is
@@ -293,6 +298,14 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
 - **Not located:** any worst-to-average reduction that changes the modulus, including for Blum integers. Also not
   located: any result giving random self-reducibility "for smooth parts". Randomising known smooth cofactors is the
   multiplier class.
+- **Closest known notion: malleability of factoring.**
+  - Paillier–Villar (ASIACRYPT 2006, LNCS 4284, 252–266) ask whether an oracle factoring moduli N′ ≠ N (coprime to N)
+    helps to factor N. They conjecture that typical key generators are non-malleable.
+  - Dieulefait–Jiménez Urroz (*Small primitive roots and malleability of RSA moduli*, J. Comb. Number Theory 2(2) (2010)
+    171–179; arXiv:0801.0030) refute a form of the conjecture. Their N′ is explicit but exponential-size, built from
+    m^N − 1 in base m (cf. our a^N − 1 row).
+  - This is a modulus-changing reduction *to a factoring oracle*, not a worst-to-average self-reduction. The "not
+    located" statement above stands only in that narrower sense.
 - **Accurate statement:** factoring is not known (to us) to be random self-reducible over the modulus. AFK list this as
   open.
 
@@ -304,11 +317,11 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
 
 | Quantity | Value on N = pq | Status | Known reductions / references |
 |---|---|---|---|
-| ω(M) | 2 | **OPEN** | ω ≤ d (signature interpolation, ≤ log₂M calls; Shallit–Shamir IPL 20 (1985) 151–153). Adleman FOCS 1994 C9/O9 |
+| ω(M) | 2 | **OPEN** | ω ≤ d (signature interpolation, ≤ log₂M calls; Shallit–Shamir IPL 20 (1985) 151–153). C9/O9 (FOCS OCR; UNVERIFIED in ANTS) |
 | μ(M) | 1 | **OPEN** | μ ≤ d with **one** call: D = d(M^{r−1}), r > log₂M + 1 prime, is a pure r-power iff M is squarefree (Shallit–Shamir; proof codex_1 §3.3). μ = λ·SF |
 | Liouville λ(M) | 1 | **OPEN** | λ ≤ d (signature); not the factoring-equivalent Carmichael λ |
-| squarefreeness SF(M) | yes | **OPEN** (Adleman FOCS 1994 C8/O8) | SF ≤ φ deterministic (Woll, Inf. Comput. 72 (1987), per abstract); SF ≡ maximality testing of orders (Buchmann–Lenstra JTNB 6 (1994) Thm 6.12). Not in AC⁰[ℓ] for any prime ℓ (Allender–Saks–Shparlinski JCSS 62 (2001) Cor. 2); superpolynomial AC⁰ size (Bernasconi–Shparlinski STACS 1999). Booker–Hiary–Keating (Duke 164 (2015)), under GRH: Prop. 2.3 returns a square factor or a conditional squarefreeness certificate, with running time exp((log M)^{θ*+o(1)}) stated **for squarefree inputs** (θ* = 2/3 is HEURISTIC). Thm 1.1 proves RSA-210/220/230/232 *not squarefull* (not squarefree). Rigorous elementary bound M^{1/6+o(1)} |
-| rad(M) | N | **OPEN** | rad ≡ squarefree decomposition ≡ parity kernel s(M) (M = u²s), deterministic, ≤ ⌊log₂M⌋ calls (Prop RAD, PROVED; `squarefree_decomposition_via_rad`, tested). rad ≡ ring of integers (Buchmann–Lenstra Thm 1.3; Chistov 1989). rad ≤ φ, ≤ Carmichael λ (Landau Inf. Comput. 78 (1988)). Adleman FOCS 1994 C7 is the parity-kernel problem M = u²s (equivalent to rad by Prop RAD, not literally rad); O7a asks for an algorithm, O7b for a randomized reduction from factoring (exact glyph UNVERIFIED, OCR) |
+| squarefreeness SF(M) | yes | **OPEN** (C8/O8: FOCS OCR; UNVERIFIED in ANTS) | SF ≤ φ deterministic (Woll, Inf. Comput. 72 (1987), per abstract); SF ≡ maximality testing of orders (Buchmann–Lenstra JTNB 6 (1994) Thm 6.12). Not in AC⁰[ℓ] for any prime ℓ (Allender–Saks–Shparlinski JCSS 62 (2001) Cor. 2); SF ∉ AC⁰ (Bernasconi–Damm–Shparlinski 1998; Bernasconi–Shparlinski, STACS 1999, LNCS 1563, 47–56). SF ≤ the count of automorphic representations of one weight on Γ₀(N), and factoring ≤ newform counts, probabilistically (Gu–Martin, Canad. Math. Bull. 62(1) (2019) 81–97). Booker–Hiary–Keating (Duke 164 (2015)), under GRH for quadratic Dirichlet L-functions: Prop. 2.3 returns a square factor or a conditional squarefreeness certificate, with running time exp((log M)^{θ*+o(1)}) stated **for squarefree inputs** (θ* = 2/3 is HEURISTIC). Thm 1.1 proves RSA-210/220/230/232 *not squarefull* (not squarefree). Rigorous elementary bound M^{1/6+o(1)} |
+| rad(M) | N | **OPEN** | rad ≡ squarefree decomposition ≡ parity kernel s(M) (M = u²s), deterministic, ≤ ⌊log₂M⌋ calls (Prop RAD, PROVED; `squarefree_decomposition_via_rad`, tested). rad ≡ ring of integers (Buchmann–Lenstra Thm 1.3; Chistov 1989). rad ≤ φ, ≤ Carmichael λ (Landau Inf. Comput. 78 (1988)). Adleman–McCurley, ANTS-I, LNCS 877 (1994) 291–322, problem C7 (M = u²s, the parity kernel; equivalent to rad by Prop RAD, not literally rad) with O7a (algorithm?) and O7b (randomized reduction from factoring?), corroborated via the CRYPTREC ESIGN report §3.1. The same list appears in Adleman FOCS 1994 (read via OCR by codex only) |
 | p²q special case | rad = pq, s = q | these *values* factor p²q; computing them OPEN | squarefreeness on {p²q} ∪ {pqr} OPEN; nothing polynomial known for r = 2 |
 | p mod 4 (smaller factor) | — | **OPEN** | = ε on N ≡ 1 (4); orientation bit on N ≡ 3 (4) |
 | ε = (−1/p), N ≡ 1 (4) | ±1 | **OPEN** | ε = +1 ⇔ −1 is a QR mod N ⇔ φ(N) ≡ 0 mod 8 ⇔ N is a sum of two squares; Seurin PKC 2014 (2-Φ/4-hiding). h(−4N) mod 8 does **not** determine ε (Rédei; 4 counterexamples, codex_1 §3.7) |
@@ -322,7 +335,10 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
 - Allender–Saks–Shparlinski do cover squarefreeness: TC⁰ ⊆ AC⁰[Square-Free] (Thm 1) and SF ∉ AC⁰[ℓ] (Cor. 2). The
   factorbits wording "primality ∉ AC⁰[p]" undersold it.
 - The Boneh–Durfee–Frankel residue result is **Corollary 1** (p. 28) of the ASIACRYPT 1998 paper, not "Cor. 2.2"
-  (codex_1 §4.4). The factorbits row should be read accordingly.
+  (codex_1 §4.4; checked by codex in a proceedings scan, not independently re-verified). The factorbits row should be
+  read accordingly.
+- Do not cite Bach–Shallit "Chapter 14": Volume I has Chapters 1–9, and Chapter 14 belongs to the unpublished Volume
+  II (literature critic; codex_1 §3.5 was wrong). The note does not rely on it.
 
 ### 2.2 Lemma SIG (signature oracles and multiplicative queries). PROVED
 - For any nonzero X computed from N, strip copies of N while gcd(X, N) = N.
@@ -347,6 +363,13 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
 - Restricted-model "separations" are: PT (generic ring: ε-advantage ⇒ splitting), Lemma SIG (multiplicative queries)
   and SR1 (shared-polynomial queries cannot move a large prime). None is an oracle separation of the real integer
   problems.
+- KNOWN restricted-model results:
+  - In the generic ring model, breaking RSA ≡ factoring (Aggarwal–Maurer, EUROCRYPT 2009, LNCS 5479).
+  - Computing the Jacobi symbol and deciding QR are each ≡ factoring generically (Jager–Schwenk, ASIACRYPT 2009;
+    J. Cryptology 26(2) (2013) 225–245), although the Jacobi symbol is easy in the standard model. So generic-ring
+    hardness (cf. PT) is weak evidence.
+  - Boneh–Venkatesan (EUROCRYPT 1998, LNCS 1403, 59–71) separate low-exponent RSA from factoring for algebraic
+    (straight-line) reductions: the template for a restricted separation.
 
 ---
 
@@ -444,7 +467,7 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
 | Class | Status |
 |---|---|
 | multiplicative automatic sequences | floor (KLM 2022 Thm 1: on large semiprimes a(N) = f₂(N), a function of N mod a fixed period) — **PROVED**, codex_1 §4.5 |
-| sequences with Mauduit–Rivat carry + Fourier properties, linear Fourier decay | **codex claim**: Müllner's type-II bound (Duke 166 (2017), arXiv v3 Prop. 5.5, (29)) with a_u = 1_prime·χ₄, b_v = 1_prime gives o(1) correlation with ε on balanced semiprimes. **UNVERIFIED by us** (hypotheses not re-checked); not all automata satisfy them |
+| sequences with the carry and Fourier properties (Müllner Defs 4.1–4.2, generalising Mauduit–Rivat, *Prime numbers along Rudin–Shapiro sequences*, J. Eur. Math. Soc. 17(10) (2015) 2595–2642), linear Fourier decay | **codex claim**: Müllner's type-II bound (Duke 166 (2017), arXiv v3 Prop. 5.5, (29)) with a_u = 1_prime·χ₄, b_v = 1_prime gives o(1) correlation with ε on balanced semiprimes. **UNVERIFIED by us** (hypotheses not re-checked); not all automata satisfy them |
 | all finite automata | **OPEN** |
 | AC⁰ | **OPEN**. Sufficient criterion (codex_1 §4.6, PROVED): \|E_S[εF]\| ≤ √(Σ_{j≤t}C(b,j))·β_t + 2√(η/ρ), where β_t = max over parities of ≤ t bits of the ε-twisted semiprime correlation, η = LMN tail, ρ ≍ 1/log² the slice density. Needs β_t ≤ b^{−ω(t)} uniformly, a bilinear digit problem Σχ₄(p)e(b·pq/2^k) with denominators up to the full range. Not proved |
 | AC⁰[ℓ] for SF itself | KNOWN lower bound (ASS) — but SF is constant on semiprimes; no implication for ε |
@@ -461,7 +484,8 @@ So if |Q| > D(√y + 1), every such ℓ satisfies ℓ < 1 + 4Dy/(|Q| ln y). If m
   - It is a split, it is exponentially small, and it does not amplify.
   - Artefact check (codex): independent sampling, hidden label, verified factors.
 - **E1/E2** are exact censuses that read the factors by design (HARNESS). No operational code sees p.
-  - `rigidity.py` and `reductions.py` import neither sympy, flint, harness nor census (AST test).
+  - `rigidity.py` and `reductions.py` import neither sympy, flint, harness nor census (AST test). codex_2 also
+    inspected them by hand and found no factor access; the AST test alone would not establish this.
   - Their oracles are passed in from `harness.py`.
 - **No inverse-polynomial non-splitting predictor** of any open bit was found.
 
@@ -488,8 +512,11 @@ What remains open includes, but is not claimed to be limited to:
 - (a) **Non-algebraic moved divisors.** The prototype is N ↦ #E(Z/N) for one fixed ordinary (non-CM) curve E on a
   good-reduction promise. Its moved factor #E(F_p) = p+1−a_p varies with p but satisfies no polynomial identity.
   - Chosen twists make it ≡ FACT. CM curves can collapse to (p+1)(q+1).
-  - Is the one-curve count factoring-equivalent? An efficient algorithm would be a moved-divisor map. A self-reduction
-    would additionally need recovery of p-information from the moved factor.
+  - Is the one-curve count factoring-equivalent? Recovery is reportedly known: Dieulefait–Urroz (arXiv:1911.11004 §3,
+    preprint, not re-checked) factor N from the factorisation of #E(Z/N) by Coppersmith. So an efficient count would
+    give a malleability-type reduction of factoring N to factoring one N′ ≈ N. The open part is the count itself.
+  - Whether such an N′ supports bit-*amplification* (a weak predictor of a fixed bit of the smaller factor of N′
+    transferring to a varied function of p) is a further question.
 - (b) **Moved divisors inside large unknown cofactors** of polynomial size (divisibility-sequence-like).
 - (c) **N-dependent divisibility constructions and adaptive queries**, which neither SR1 (one shared polynomial) nor
   SR2 (exact identity) covers.
@@ -569,4 +596,23 @@ A barrier for (a)–(c) would need a model of "non-algebraic" maps. We have none
   - the E2 description (16 planted, content primes, ratio only);
   - the resultant row relabelled OBSERVATION.
 
-**Literature critic:** PENDING.
+**Literature critic: OK WITH FIXES.**
+- It found no wrong theorem number or venue among the references the note cites.
+- Verified from primary text: FF Thm 3.1 (complement) and Cor 3.3; AFK §6 Q1 (verbatim); ASS Thm 1 / Cor 2;
+  Buchmann–Lenstra Thms 1.3 and 6.12; Shallit–Shamir; BHK Thm 1.1 / Prop 2.3 (runtime only for squarefree inputs; 2/3
+  conjectural); MV Thm 13.7 / (13.21) / Cor 13.8; Bourgain §1 (position b − 1 allowed); Baier–Pujahari; KLM Thm 1;
+  Müllner Prop 5.5 / (29); Adleman–McCurley C7 (via CRYPTREC).
+- Unverifiable: the FOCS C8/C9 numbering (paywall/OCR) and BDF Cor. 1 (host down; codex's scan only).
+- All 10 fixes applied:
+  - malleability literature (Paillier–Villar; Dieulefait–Jiménez Urroz) in §1.6;
+  - Dieulefait–Urroz one-curve recovery in §0/§6, which changes the open question to "compute the count";
+  - Kunihiro–Koyama qualified, plus Martín–Morillo–Villar;
+  - Bach–Miller–Shallit and Miller as SR2's known special cases;
+  - generic-ring results (Aggarwal–Maurer, Jager–Schwenk) and Boneh–Venkatesan in §2.4;
+  - Gu–Martin and Bernasconi–Damm–Shparlinski in the SF row;
+  - the Müllner framework attributed to Mauduit–Rivat JEMS 2015, not Annals 2010;
+  - C7 via ANTS/CRYPTREC, with C8/C9 marked FOCS-OCR only;
+  - fixed-divisor context;
+  - BHK "quadratic Dirichlet L-functions"; BDF marked as codex-checked.
+- It found no known modulus-changing RSR, no reduction from factoring to SF/μ/ω/ε, no oracle separation, no
+  semiprime-specific automatic-sequence result, and no prior statement of Theorem L (routine; credited to codex).
