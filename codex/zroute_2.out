@@ -1,0 +1,530 @@
+Overall verdict: CORRECT WITH FIXES for the degree-one reduction ERH + DSR ⇒ deterministic complete factoring in L[1/2,O(1)]. OVERCLAIMED for the broader assertion that all designs have been reduced to the same supply-only problem. There are also false statements about parity rank, an incorrect lattice-point bound in FC(d), and material omissions in the literature discussion.
+
+The strongest correct conclusion is:
+
+For fixed positive a,c, the stated DSR(a,c), uniformly over all preprocessed composite inputs, implies deterministic complete factorisation of every integer in
+L_N[1/2, max(a+c,(ω+1)a)+o(1)].
+Its output exists under Dirichlet GRH. Constructing that output within the stipulated time remains open. This degree-one implication needs neither XK-Z nor a separate rank hypothesis.
+
+I ignore §8 and do not treat experimental checks as evidence for asymptotic claims.
+
+1. Lemma Ψ: CORRECT.
+
+Primitivity gives fQ[x] ∩ Z[x] = fZ[x], including for nonmonic f. Consequently evaluation at m factors through Z[α]. Localising at the preimage of the units permits inversion of every evaluated atom.
+
+This correctly handles composite N, repeated roots modulo its prime divisors, and nonintegral α. No squarefreeness assumption on N is needed.
+
+2. Lemma XK-Z(i): CORRECT, with a qualification about preserving W.
+
+Exact ideal cancellation, together with cancellation of the 𝔞 exponent, makes γ_x a unit. For torsion γ_x, multiplying the rational exponent vector by w_d kills its image.
+
+The constants are valid:
+φ(w) ≤ d and φ(w) ≥ sqrt(w/2) imply w ≤ 2d². Thus lcm(1,…,2d²) annihilates μ_K. Odd degree implies μ_K = {±1}.
+
+The optional sign correction gives valid relations but need not preserve the span W. For example, a rational image −e_{−1} with torsion image −1 becomes zero after adding e_{−1}. If the output is advertised as a basis of exactly W, use the universal multiplication by w_d. Alternatively append 2e_{−1} and explicitly discuss W + Qe_{−1}.
+
+Also qualify “everything that exact cancellation can give”: W concerns cancellation of the free unit part. It excludes additional modular relations coming from non-torsion units whose images happen to equal 1 modulo N.
+
+3. Lemma XK-Z(ii), rational kernel computation: CORRECT WITH FIXES.
+
+The Hadamard and prime-product argument is sound. For C = C_alg and h = max(1,‖A‖∞), every minor is bounded by
+Had = (sqrt(C) h)^C,
+with the zero-column case handled separately.
+
+A nonzero maximal minor cannot be divisible by all distinct primes whose product exceeds Had. Taking the maximum modular rank therefore determines the rational rank. Cramer’s rule gives the advertised integral kernel vectors with coordinates bounded by Had.
+
+Two implementation details need adding:
+
+- For signed CRT reconstruction of coordinates, the reconstruction modulus must exceed 2Had. The threshold Had suffices for rank detection.
+- The primes cannot remain bounded machine-word primes indefinitely. Sieving for the required primes gives the same L exponent.
+
+There is another omission: a basis of Λ₂ does not automatically project to a basis of W. Images can be dependent or zero. The written algorithm establishes a spanning set, not the claimed number dim W.
+
+An exact repair preserving the proposed asymptotic cost is available. First choose a rational basis of ker Aᵀ adapted to
+ker Aᵀ ∩ ker Rᵀ,
+using rank profiles of the small-entry matrices A and [A R]. Process that intersection first in INC. Then process a complement whose rational images are independent. Output only the torsion relations obtained from complement vectors. Their rational images are triangularly independent and form a basis of W.
+
+4. Lemma INC: CORRECT WITH FIXES.
+
+The incremental argument works. Unit-log vectors lie in a lattice, so real dependence among them is governed by an integer coordinate matrix. Independent pivots plus a dependent new vector have a bounded integer relation, necessarily involving the new vector. The resulting torsion dependencies are triangularly independent.
+
+The certification argument should be stated more carefully.
+
+Let s be the number of supplied vectors, g a valid unit-log gap, and R an infinity-norm bound for an existing relation. One may take
+R′ = 2^((s−1)/2) sqrt(s)(1+s sqrt(d))R
+and, conservatively,
+2^κ g > 8(1+s sqrt(d))R′.
+Compute certified enclosures with enough accuracy that a true relation’s final enclosure lies inside (−g/2,g/2) in every coordinate.
+
+Then:
+
+- dependence guarantees that LLL’s first vector passes;
+- independence makes passing impossible.
+
+One need not prove that every independent-case enclosure certifies a lower bound above g/2. Failure to pass suffices, because dependence would have guaranteed passage.
+
+The elementary gap δ_d is valid by the bounded-polynomial counting argument in the blind report. However, substituting it into the explicit precision ledger changes the general bound: log(1/δ_d) = O(d²) contributes O(d³) to log R. The O(dβ_x+d²+…) ledger uses the stronger Blanksby–Montgomery gap. This distinction does not change the L exponent in the intended regimes.
+
+5. Lemma XK-Z(iii): CORRECT.
+
+The formula
+dim W = rank_R([V;T]) − rank_R(V)
+is valid. The fact that V’s columns lie in a unit lattice justifies passing between rational dependencies and real ranks.
+
+The bounds with loss at most r_U are also correct. The actual loss is governed by the rank of the unit-log image, which can be strictly smaller than r_U.
+
+6. Lemma XK-Z(iv): GAP as stated; repairable.
+
+The assumptions bound A, r_i and d but do not bound:
+
+- the height of f;
+- atom-coordinate heights;
+- the number of atoms or atom occurrences;
+- the exponents y_iP;
+- the size of the supplied factorisations and local arithmetic data.
+
+Without these bounds, the claimed running time is not a theorem about the stated input.
+
+Add explicit bounds on the entire representation: polynomial-in-log-N bit lengths for defining data and atom coordinates, and at most L^{a+o(1)} times polynomially many atom occurrences. Generalise the matrix-entry condition to bit lengths rather than numerical magnitudes where needed.
+
+Under those bounds, the modular kernel stage costs L^{(ω+1)a+o(1)}, and M incremental unit computations cost L^{3a+o(1)}. Include the projected-basis procedure described above; otherwise the computation of dim W and an independent output basis is unaccounted for.
+
+“Outputs have L^{a+o(1)} bits” must mean per coordinate. A dense family can have L^{3a+o(1)} bits in total.
+
+My blind report explicitly did not establish the sharper leading constant. Its endorsement of polynomial extraction does not itself certify this sharpened ledger.
+
+7. Proposition PIN: CORRECT.
+
+The HNF argument gives De_q ∈ L_c for every pinned q. Under ERH and the preprocessing assumption, the primes below 2 ln²N generate U, hence λ(N) divides D.
+
+The subsequent algorithm must be described as Miller’s exponent-based splitting procedure using the known multiple D of λ(N), not merely the strong probable-prime test with exponent N−1.
+
+The constant 2 is justified because preprocessing makes every integer below the bound coprime to N; its prime factors then belong to Q₀.
+
+For small inputs, ensure Q₀ ⊆ FB explicitly, or dispose of a fixed finite initial range separately.
+
+Projection rank alone is indeed insufficient.
+
+8. Lemma HR: CORRECT WITH FIXES.
+
+The TV constants are conservative and valid:
+
+- m₀ = ℓ′λ(N) < 2N²;
+- truncating the exponent box changes its law by at most nm₀/X;
+- conditioning using an event of probability at least 1/N gives at most 2nm₀N/X ≤ 4nN³/X;
+- the product-law error is at most 4MnN³/X;
+- the uniform-matrix rank failure is less than 2/ℓ′ < 2/N.
+
+But the auxiliary-prime existence argument lacks a size assumption on K. The entry-bit bound alone does not prevent a K×K determinant from being divisible by every prime in (N,2N]. Add, for example, K = N^{o(1)}, as holds in the intended application.
+
+Also, conditional independence of the labels given 𝒯 does not follow unless 𝒯 includes all targets. Condition additionally on the targets, then average.
+
+A simpler repair avoids both issues and proves a stronger statement. Choose n independent combinations and normalise n pivot columns to the identity over Q. Condition on the targets, transcript and all nonpivot labels. Each pivot label remains independent. Given its target and all but one exponent coordinate, the remaining coordinate is uniform on an arithmetic progression of step at most N, with at least X/N−1 possibilities. Any proper rational affine hyperplane therefore has probability at most N/(X−N).
+
+Successive exposure gives
+Pr[rank failure | 𝒯] ≤ nN/(X−N),
+which implies the displayed bound without restrictions on K or coefficient heights.
+
+9. Proposition ZA: CORRECT WITH FIXES as a reduction from A; the sharp cost needs an additional argument.
+
+The target-law replacement is valid: independent sufficiently long exponent intervals approximate uniform sampling on U. Conditioning acceptance only through targets preserves the hidden-label argument.
+
+The composite-modulus split injection also works under the stated size bounds. However, “the halves are units because their primes exceed B” is not a valid reason. Primes exceeding B can divide N. Use the defining coprimality conditions on the accepted prime set, together with gcd checks.
+
+The claimed L^{3a} Las Vegas extraction cost is not established by the displayed deterministic full-basis algorithm. Either cite and justify a suitable full-output Las Vegas integer-linear-algebra algorithm, or change 3a to (ω+1)a.
+
+Another repair can preserve the dlog constant: retain only the polynomially many Q₀ coordinates as hidden output coordinates, force the remaining rational coordinates to cancel, and compute only polynomially many exact dependencies. Then the earlier few-right-hand-side machinery and PIN suffice.
+
+“Proved from A/from U” is an appropriate dependency label. It should not become an unconditional published theorem claim.
+
+10. Degree-one and seedless designs: CORRECT WITH FIXES.
+
+The degree-one row
+x(λ) − e(u) + e(v)
+is correct and requires no algebraic elimination. Trial division tests smoothness deterministically.
+
+Seedless two-sided NFS also supplies valid input rows without hidden roots.
+
+Two surrounding assertions need correction:
+
+- Small target residues are not intrinsically useless. The zero-row conclusion requires ordinary factorisation labels and an integer identity before reduction. A small residue with a large known exponent label can give a useful relation.
+- “Number fields are needed only below α = 1/2” is not a necessity theorem. Say that the existing faster descent designs use number fields. The literal degree-one DSR hypothesis can itself be formulated at any α.
+
+The pooling inequality is WRONG:
+dim W_j ≤ M_j − rank A_j − r_U
+does not follow. Write
+k_j = M_j − rank A_j − rank V_j,
+then dim W_j ≤ k_j. Since rank V_j ≤ r_U, the ambient unit rank gives a lower bound on k_j, not the asserted upper bound.
+
+For example, V_j = 0 and an injective rational image can give dim W_j = M_j−rank A_j even when r_U > 0.
+
+11. Lemma DD1: CORRECT.
+
+On prime coordinates,
+ρ_qq ≥ H − v_q(u),
+while the off-diagonal absolute sum is at most
+Ω(w)+Ω(u)+Ω(v)−v_q(u).
+Thus H > Ω(w)+Ω(u)+Ω(v) suffices.
+
+The stated condition H > K+U* implies this because
+Ω(u)+Ω(v) ≤ log₂|uv|.
+
+For a Gauss-shortest vector, the Hermite bound gives
+u²+v² ≤ 2N/sqrt(3),
+hence |uv| ≤ N/sqrt(3). The proposed H is more than sufficient.
+
+Adding 2e_{−1} multiplies the prime-block determinant by ±2. Under ERH, surjectivity onto U makes φ(N) divide the full determinant.
+
+12. Lemma WR: CORRECT.
+
+The degree argument survives the constant perturbations.
+
+After a constant invertible change of polynomial basis, the degrees d_l are distinct and exceed n. The Wronskian degree is
+D = Σd_l − n(n−1)/2.
+A term using constants in r rows has degree at most
+Σ_remaining d_l − (n−r)(n−r−1)/2,
+strictly below D. Thus the leading term cannot cancel.
+
+The coefficient bound
+C = n!(P+1)^n A₀^n
+is conservative: each entry has at most P+1 monomials, each coefficient bounded by A₀. Cauchy’s bound makes t=C+2 safe.
+
+The application needs explicit uniform H₀,B₀ independent of the target residues. Bounds on log H₀, rather than H₀ itself, are what matter for bit complexity.
+
+WR preserves an L[α,O(1)] scale under appropriate bounds, but it need not preserve the previously quoted leading constants. Label bit lengths can contain several powers of P and n.
+
+13. “Rank is not part of the missing lemma”: OVERCLAIMED without design restrictions.
+
+It is justified for:
+
+- DD1 representations for every prescribed factor-base prime;
+- WR targets with uniform certificate bounds and enough within-field exact torsion dependencies.
+
+It is not established for arbitrary seeded designs, orbit targets, or a union-over-fields descendability assertion.
+
+In particular, n accepted descent rows need not give n torsion dependencies. Each field has its own algebraic block. A field with an injective algebraic map contributes none, regardless of how many targets are covered across other fields.
+
+PIN remains needed for seedless designs and for seeded families to which DD1/WR have not actually been applied. Full rank can be replaced by PIN whenever one can prove PIN directly.
+
+The assertion
+“RK (GF(2) rank) ⇒ full Q-rank ⇒ PIN”
+is WRONG for the RK hypothesis in the background notes. The elementary rank inequality applies to the same integer matrix reduced modulo 2. It does not commute with replacing parity cancellation by exact cancellation and removing units.
+
+A one-row example with rational block [1] and algebraic block [2] has a rational direction after parity cancellation and zero exact kernel. Also, a parity-rank bound below full dimension does not imply full rational rank.
+
+The doubled-lattice example remains a valid demonstration that full Q-rank need not give useful parity information.
+
+14. Hypothesis DSR(a,c): CORRECT as an open algorithmic hypothesis.
+
+Specify nonzero integers u,v,w and interpret Ω on absolute values. The bounds correctly imply
+Ω(u)+Ω(v)+Ω(w) ≤ 7 log₂N < 8 ceil(log₂N)=H.
+
+The multiplier bound is sufficient even though its integer magnitude can exceed N: Ω(w) ≤ log₂N and primes ≤ B still give a polynomial-in-log-N bit length.
+
+Its uniformity over every preprocessed input is essential. An “almost all” or balanced-semiprime version would not prove the stated complete-factoring theorem.
+
+15. DSR variants: mixed verdicts.
+
+Smooth compression: CORRECT. With v=w=1 and u≤N³, the same dominance argument applies.
+
+DS-T: CORRECT WITH FIXES as a degree-one hypothesis. Specify a deterministic construction of the candidate list, its bit complexity, the WR bounds and the cost of testing every split. At least n accepted degree-one rows suffice; n+1 is harmless. For descent rows, this count must instead guarantee enough torsion dependencies within the field blocks.
+
+DSR-U: GAP as an intended special-q-descent hypothesis. “The same … obtained by special-q descent” does not specify the constructor, time bound, row distribution across fields, certificate bounds or recursive call budget.
+
+There are two distinct possible statements:
+
+- If it literally promises the same smooth u,v,w output in L_N[2/5,c], DD1 immediately gives L[2/5,O(1)] factoring. No number fields or shape-test recursion are needed in the reduction.
+- If it promises NFS descent rows, state the full bounded-row constructor and the within-field dependency requirements. The current wording does not do so.
+
+16. Theorem DZ, exponent 1/2: CORRECT WITH FIXES.
+
+The main implication is valid. Here is the complete bookkeeping.
+
+There are π(B)=L^{a+o(1)} calls, costing L^{a+c+o(1)} in total. DD1 gives a nonsingular relation matrix whose entries are O(log N). Its determinant can be computed within the claimed conservative L^{(ω+1)a+o(1)} bound.
+
+Its bit length is
+O(n(log n+log log N)) = L^{a+o(1)}.
+Miller’s modular work therefore fits within the stated total.
+
+Preprocessing must be reapplied to every recursive cofactor:
+
+- remove small prime factors, with multiplicity;
+- test primality;
+- detect perfect powers and recurse on their bases;
+- invoke DSR only on the remaining admissible inputs.
+
+There are O(log N) nontrivial splitting nodes; a convention counting every tree node may give approximately twice that. This polynomial factor is absorbed into o(1).
+
+N=p²q causes no problem. If p is small, trial division removes it with multiplicity. Otherwise N has at least two distinct prime-power CRT components, so exponent-based Miller splitting applies. Recursive factors need not be coprime; recursively factoring both and retaining multiplicities is still correct.
+
+Thus squarefreeness is unnecessary. The degree-one theorem is not invalidated by these bad cases.
+
+The appended L[2/5] descent theorem remains conditional on repairing DSR-U. For a genuinely recursive constructor, exhibit a recurrence such as
+T(N) ≤ L[α,A] + L[α,p]T(N^θ),
+with θ<1, and choose a constant exceeding
+max(A,p/(1−θ^α)).
+Merely citing determinism of the outer algorithm is insufficient.
+
+17. Proposition GX: CORRECT WITH FIXES.
+
+For nonprincipal Dirichlet characters, GRH gives the required prime-character estimate. After division by π(y),
+max |μ̂(χ)| ≤ y^(−1/2) polylog(Ny) = y^(−1/2+o(1)).
+This holds in the stated L-sized range.
+
+Take
+k = ceil((2+ε/2) log N/log y).
+Then the nonprincipal contribution is below 1/φ(N), while
+y^k ≤ N^{2+ε}
+for sufficiently large N. Include the ceiling explicitly.
+
+For ε<1, this proves existence of DSR’s u≤N³ with v=w=1, independently of H.
+
+Replace “every residue class” in the plain-language Verdict by “every invertible residue class.” Under preprocessing, the class 0 cannot contain a nonzero B-smooth integer: any such integer divisible by N would have a prime factor exceeding B.
+
+The constructivity sentence is OVERCLAIMED. The proof does not establish a search lower bound. Moreover, enumerating k-fold prime products is not an N^{1+o(1)} search: the product space has roughly N^{2+o(1)} possibilities at this mixing length. A naive search within one progression below N^{2+o(1)} has N^{1+o(1)} candidates.
+
+Say: “The existence proof supplies no subexponential constructor; straightforward exhaustive implementations are exponential.”
+
+18. GX pair variant: CORRECT WITH FIXES.
+
+Let s=|S|, with S consisting of unit residues represented injectively in [1,N/2]. Orthogonality gives the main term ψ(y)s²/φ(N), and Parseval bounds the error by
+max_nonprincipal |ψ(y,χ)| · (s−s²/φ(N)),
+hence by the displayed C sqrt(y) log²(Ny)s.
+
+At L=L_N[1/2,1],
+s = N L^{−1/(2a)+o(1)}.
+For y=L^{1/a+δ}, the error/main ratio is L^{−δ/2+o(1)}, proving the factor 1/2 eventually. The main term is N L^{δ+o(1)}.
+
+Specify
+a>1 and 0<δ<a−1/a
+to ensure y≤B.
+
+This particular parameter calculation is for α=1/2. It does not transfer unchanged to L_N[2/5]: the smooth density at polynomial-sized arguments then has a different L exponent.
+
+“Optimal bias” is correct at the exponent scale, up to logarithmic factors. It does not give prescribed-target representations.
+
+19. Proposition FC, scope: CORRECT WITH FIXES.
+
+The Fourier identity and the norm-certificate framework are valid. These are restrictions on proofs that replace the error by those norms. They do not establish a lower bound on deterministic construction, enumeration, or all character-sum methods.
+
+Define the good set precisely. The set of residues possessing some B-smooth representative below N³ is all of U under GX. A canonical short-split success set is a different object.
+
+The broad Verdict should state the quantitative norm conditions, not present “three cases” as a complete classification of all possible certificates.
+
+For subexponential candidate lists, the intended general-Hölder observation can be justified: for p≤2, norm monotonicity gives the obstruction in (b); for p≥2, it gives the necessary algebra-norm condition in (c). Write this argument if claiming coverage beyond the three displayed endpoints.
+
+20. FC(a): CORRECT under its stated restrictions, but unnecessarily weak.
+
+The constants 1/2 and 3/4 give the claimed necessary condition
+m > 3φ/(8δ).
+
+There is an exact and clearer calculation. The certificate requires
+mδ > sqrt(m(1−m/φ) δφ(1−δ)),
+equivalent to
+m > φ(1−δ).
+
+Thus it never succeeds when m≤φ/2 and δ≤1/4. The advertised φ/δ threshold is a loose, vacuous necessary condition inside that parameter range; it should not be extrapolated outside it.
+
+21. FC(b): CORRECT.
+
+The two lower bounds give
+‖Ŵ‖′₁ ≥ 1/2,
+‖Ŝ‖′∞ ≥ sqrt(3δφ/4).
+Consequently positivity requires
+m > (sqrt(3)/4)sqrt(φ/δ).
+The constant is correct.
+
+22. FC(c): CORRECT WITH FIXES.
+
+Writing A(S)=φ^{−1}Σχ|Ŝ(χ)|, the certificate requires
+A(S)−δ < mδ/max_nonprincipal|Ŵ|.
+The Parseval bound max|Ŵ|≥sqrt(m/2) gives
+A(S) < δ(1+sqrt(2m)).
+The displayed weak inequality is therefore a valid necessary condition.
+
+The random-set scale A(S)≈sqrt(δφ) is reasonable. Coset indicators have algebra norm 1; a subgroup complement has norm 2(1−1/k) for index k. These examples correctly defeat a blanket claim that character certificates always require polynomially many samples.
+
+The smooth-set heuristic needs rewriting. The sentence
+“|Ŝ(χ)|≈|S|e^{−O(u)} for many χ”
+does not, without quantifying “many,” support the claimed norm conclusion.
+
+Indeed, if R characters have magnitude at least s e^{−Cu}, Parseval forces
+R ≤ φ e^{2Cu}/s = e^{2Cu}/δ.
+In the usual smooth-density regime this permits only subexponentially many such characters, not a positive fraction of all characters.
+
+Also, twisted smooth-number sums do not automatically describe the indicator of a canonical smooth-split set.
+
+A defensible replacement is: “We conjecture that the specified smooth-split sets do not have subexponential Fourier-algebra norm. No bound or reliable spectral model establishing this is supplied.” Large norm is plausible, but currently speculative. The heuristic label is necessary and does not repair the unsupported derivation.
+
+23. FC(d): WRONG as written; an asymptotic template obstruction is repairable.
+
+For s=|S| and M_W=max_nonprincipal|Ŵ|, the exact elementary error bound is
+|E| ≤ M_W(s−s²/φ).
+Thus the norm certificate requires
+M_W < ms/(φ−s).
+The displayed ms/φ condition is stronger and sufficient, not necessary.
+
+Combining the exact condition with M_W≥sqrt(m/2) gives the necessary bound
+m > (φ−s)²/(2s²).
+The displayed φ²/(2s²) follows only for the stronger, deliberately coarsened certificate.
+
+The lattice enumeration bound is false. Area divided by determinant is not a universal point-count lower bound.
+
+A counterexample satisfying the note’s preprocessing conditions at a=1 is:
+N=1009·1013=1,022,117, Y=1011, w=1000.
+The lattice in [−Y,Y]² contains exactly
+(0,0), (1000,1), (−1000,−1),
+while 4Y²/N=4.00001565… .
+
+Even accepting the area estimate, the multiplication yields 2φ(N)²/(Nρ_Y²), not exactly 2N/ρ_Y².
+
+Repair the conclusion to an Ω(N/ρ_Y²) obstruction, with explicit density, range and exhaustive-enumeration assumptions. Here preprocessing gives φ(N)/N=1−o(1). Restrict Y<N, or account for repeated residue representatives through their collision energy.
+
+This is a limitation of this norm certificate combined with this enumeration procedure. It is not a universal cost lower bound for pair-based algorithms.
+
+24. Observation LV: OVERCLAIMED, with a vacuous large-sieve calculation.
+
+For a consecutive progression of J=L^{O(1)} terms and modulus t=N^Θ(1), the ratio
+log t/log(tJ)
+does tend to 1. This correctly explains why a direct application of existing long-progression distribution estimates fails.
+
+It does not prove that every explicit field family requires a level-1 theorem. Families can exploit structure not represented by that progression model.
+
+The literature ceiling “1/2, or 3/5” is obsolete. Pascadi proved level 66/107−ε in the published 2025 paper and subsequently level 5/8−ε for smooth numbers, with absolute values over moduli and fixed nonzero residue, in the polylogarithmic-to-small-power y range. Neither reaches the required near-1 regime. [Pascadi 2025](https://doi.org/10.1112/S0010437X2500747X), [subsequent theorem](https://arxiv.org/html/2505.00653v2)
+
+The almost-all-N calculation has a more basic defect. With λ>2Y, the map (u,v)↦u−λv is injective, and its range has length Z≈λY>2Y². Consequently |𝒜|≤Y²<Z/2. The proposed upper bound
+X(Z+4X²)/|𝒜|
+is already larger than approximately 2X. It cannot beat the trivial count for any choice of Y.
+
+Thus |𝒜|≫X² is not sufficient to make this bound useful: the Z term already prevents usefulness. Furthermore, an ordinary additive large-sieve application to arbitrary composite moduli must address repeated reduced fractions; an exact constant-1 statement needs a derivation.
+
+Retain this as a failed template calculation. Delete the claim that it establishes the necessity of level 1−ε, or level 1−o(1), for every almost-all-N method.
+
+“Beyond Elliott–Halberstam” should mean “not supplied by the usual formulation for each fixed ε>0,” rather than suggesting a general impossibility theorem.
+
+25. Checkability observation: CORRECT.
+
+Global density and moment statements can be compatible with failure on a prescribed short list. This is an information limitation of those statements.
+
+It does not imply that a short list cannot be certified using additional arithmetic structure.
+
+26. The DSR/discrete-log hardness remark: OVERCLAIMED in its premises; reasonable only as a carefully weakened analogy.
+
+Two factual problems precede the hedge:
+
+- DSR is assumed only for preprocessed non-prime-power N, so it does not apply to prime modulus p.
+- Its targets are q^H. It does not promise representations of arbitrary prescribed residues, including a discrete-log instance’s base and target.
+
+Even an extension to prime moduli would initially give an arbitrary full-rank relation sublattice. Full rank does not identify the complete relation lattice or determine logarithms.
+
+“Saturation is a Pohlig–Hellman-type step” is too casual. Factoring p−1 permits Pohlig–Hellman reduction, but leaves discrete logs in its large prime-order components.
+
+The explicit statement that no implication was proved is good. Replace “therefore plausibly at least as hard” by: “A strengthened, prime-modulus, arbitrary-target version resembles deterministic index calculus; we know no reduction between the stated DSR and general prime-field discrete logarithms.”
+
+27. §5.3, large-order elements: CORRECT WITH FIXES.
+
+Distinct orbit targets require adequate order. But the cited 2026 paper already solves the relevant order-or-factor task.
+
+For D<N−1, Harvey–Hittmeir deterministically return an element of order exceeding D or a proper factor in
+O(D^{1/2} log D log N / sqrt(log log D))
+bit operations. For D=L[α,C], this is L[α,C/2+o(1)]. Thus order acquisition is affordable at the scale under discussion. [Harvey–Hittmeir, Theorem 1.1](https://arxiv.org/html/2601.11131v2)
+
+A multibase collision is a valid relation. One collision does not establish PIN or spanning.
+
+28. §5.3, multiplicative redundancy: CORRECT WITH FIXES.
+
+The derived representation gives the identical row when
+x(qλ)=x(λ)+e_q.
+State that label condition explicitly. It need not hold for independently assigned WR labels.
+
+The observation supports avoiding trivially propagated representations. It does not prove that every multiplicatively closed target family has deficient rank.
+
+29. §5.3, deterministic heuristic L[1/3]: CORRECT WITH FIXES.
+
+For seedless NFS, deterministic enumeration, polynomial-time exact postprocessing in the relation data, PIN and Miller preserve α=1/3. A pointwise simultaneous-smoothness/yield heuristic and PIN remain unproved.
+
+For WR-labelled targets, “the usual NFS yield heuristic” is insufficient as ordinarily stated. A hypothesis must cover those prescribed targets and provide enough rows in the necessary field blocks.
+
+“No fruitfulness heuristic is used” is correct after the PIN/Miller reduction.
+
+30. The §6 table: CORRECT WITH FIXES overall.
+
+Item 1: add the input-height assumptions, independent-image extraction and per-coordinate bit-size qualification.
+
+Item 2a: replace the universal level-1/N^{Ω(1)} language by the specific failed-template statement. At growing degree, some relevant families are N^{o(1)} while still exceeding L[2/5,O(1)].
+
+Item 2b: distinguish removing random root seeds from removing prescribed targets. Qualify “must wrap around” by the ordinary-label/integer-identity setting.
+
+Item 2c: correct for degree one; conditional on a quantified recursive constructor at 2/5.
+
+Item 3: restrict rank forcing to DD1/WR hypotheses and remove the invalid RK implication.
+
+Item 4: retain “no general algorithm found” as a search conclusion; update the related-problem literature.
+
+The crux row is correct for degree-one DSR. The DSR-U claim needs a precise separate formulation.
+
+31. Literature §7: CORRECT WITH FIXES, with significant omissions.
+
+The general deterministic integer-factoring record and the quoted Harvey–Hittmeir bound are correctly reported. Gao–Feng–Hu–Pan improve logarithmic factors for balanced semiprimes, not the general exponent. Their paper also treats power-divisor and special-form problems, so “improve only log factors for balanced semiprimes” should be restricted to its general-semiprime comparison. [Harvey–Hittmeir](https://arxiv.org/abs/2105.11105), [Gao–Feng–Hu–Pan](https://arxiv.org/abs/2512.19076)
+
+The classification of de Boer–Pellet-Mary–Wesolowski as probabilistic under ERH is correct. Its arbitrary-number-field result is not a deterministic subexponential theorem. Distinguishing class number/regulator computation from full class-group structure remains essential. [Their abstract and theorem framework](https://arxiv.org/abs/2512.01588)
+
+Evdokimov is an appropriate deterministic GRH comparison. The displayed quasipolynomial bound is correct. The explanation that it works because the search space consists of “algebraic structures of size polynomial in n” is misleading: the quasipolynomial auxiliary constructions are precisely part of the difficulty. Remove that explanation.
+
+Add the established deterministic polynomial-time computation of multiplicative relations among explicitly represented algebraic numbers/Q-algebra elements, including Ge and Lenstra–Silverberg. This is relevant prior art for extraction, although it does not automatically give the claimed compressed-product complexity. [Lenstra–Silverberg](https://arxiv.org/abs/1509.08843)
+
+The smooth-number section needs substantial updating:
+
+- Harper’s quoted individual-progression range is correct as a sufficient unconditional theorem, not a necessary condition for every theorem.
+- Younis’s RH result applies to every fixed interval exponent θ>1/2 with y≥(log x)^{K(θ)}. It therefore includes y=L^{O(1)}, while leaving the interval length polynomially large. [Younis, Theorem 1.3](https://arxiv.org/html/2409.05761v1)
+- Matomäki–Radziwiłł also give almost-all short-interval results much shorter than sqrt(x) for fixed smoothness parameter. Thus the unqualified “all these concern sets of size ≥sqrt(x)” obscures an important distinction.
+- Add Jain’s 2026 almost-all interval theorem: for sufficiently large y beginning at exp(C(log X)^{2/3}(log log X)^{4/3}), lengths exp((1+ε)((11/8)u log u+4 log log X)) suffice. This is far below sqrt(X), although its y range does not cover the present L[1/2] or L[2/5] smoothness bounds. [Jain, Theorem 1.1](https://www.utupub.fi/server/api/core/bitstreams/7f07be5d-e209-4019-ab2e-68e38f239def/content)
+- Add Pascadi’s distribution results discussed above. Drappeau’s 3/5 theorem uses absolute values over moduli for fixed residue; calling this merely “special weights” is inaccurate.
+
+For optional current context, Umans–Wang give a different number-theoretic conjecture implying an N^{1/6} deterministic factoring exponent. It does not yield subexponential factoring or follow from GRH. [Umans–Wang](https://arxiv.org/abs/2511.10851)
+
+I found no established general deterministic subexponential algorithm under GRH alone for complete integer factoring, arbitrary prime-field discrete logs, or general class-group computation. Keep that as a search result.
+
+“No hardness result” should mean no known lower bound excluding deterministic subexponential algorithms for these concrete arithmetic problems. There are classical reductions and equivalences, including factoring versus totient/order-multiple information under ERH. The unrestricted relation-lattice equivalence is another such reduction, not an equivalence with DSR or restricted NFS supply.
+
+32. Plain-language Verdict: OVERCLAIMED overall; its central negative conclusion is CORRECT.
+
+The following sentences need changes:
+
+- “The Z route now has everything except relation supply”: correct for the specified degree-one dominance reduction, not all designs.
+- “Seeds, shape test, recursion … are not needed”: restrict to the direct smooth-half design. Descent retains factorisation/recursion requirements.
+- “Number fields are needed only below α=1/2”: replace the implied necessity claim by a description of the existing designs.
+- “Rank … remains a hypothesis only for seedless designs”: include unmodified seeded designs and insufficiently populated field blocks.
+- “Every residue class”: replace by “every invertible residue class.”
+- “Character-sum certificates … only in three cases”: state the actual norm conditions and their scope.
+- “Total lattice enumeration is ≥2N/ρ²”: replace by a qualified asymptotic template obstruction.
+- “Forced for every moment/large-sieve/BV template”: the note analyses particular templates, not that universal class.
+- “DSR-U ⇒ L[2/5]”: distinguish the literal direct-representation version from the underspecified descent version.
+
+The subjective probability assessment is not a mathematical claim. It should remain clearly separated from theorem verdicts.
+
+Required fixes, most important first:
+
+1. Preserve Theorem DZ at exponent 1/2, but state its uniform DSR hypothesis, repeated preprocessing, multiplicity handling and O(log N) recursion accounting explicitly. Separate and fully formulate DSR-U.
+
+2. Narrow “rank is not part of the missing lemma” to DD1 and bounded WR constructions with enough within-field torsion dependencies. Remove the RK ⇒ full-Q-rank ⇒ PIN assertion.
+
+3. Correct FC(d): use the exact nonprincipal energy, remove the false area/determinant point-count bound and the constant 2N, and limit the conclusion to the specified certificate-plus-enumeration procedure.
+
+4. Replace LV’s universal barrier claims by limitations of the analysed templates. Explain that its injective large-sieve bound is vacuous because Z>|𝒜|.
+
+5. Add complete representation-size hypotheses to XK-Z(iv), distinguish coordinate bit length from total output size, and supply the independent-image extraction needed by XK-Z(ii).
+
+6. Repair HR’s proof through conditional affine-hyperplane exposure, or add the missing K bound and condition on all targets. Make INC’s certification slack explicit and adjust its precision ledger when using the elementary gap.
+
+7. Correct the pooling dimension inequality and qualify the leading-constant claim in ZA with a valid full-output linear-algebra argument or a PIN-based implementation.
+
+8. Remove the false prime-modulus/arbitrary-target premises from the DSR hardness remark. Retain only a clearly identified index-calculus analogy.
+
+9. Keep GX’s existence theorem, add its ceiling and unit-residue qualification, restrict the pair-variant parameter calculation to α=1/2, and replace “needs a search” by a statement about naive implementations.
+
+10. Retain FC(a)–(c) as norm-template statements; give the exact Parseval threshold and replace the unsupported twisted-smooth-sum heuristic by an explicitly speculative norm conjecture.
+
+11. Update §7 with Pascadi’s 66/107 and 5/8 results, Jain’s almost-all interval theorem, the shorter-interval Matomäki–Radziwiłł distinction, and deterministic algebraic multiplicative-relation algorithms.
+
+12. Rewrite the Verdict and §6 table around the strongest established result: one precise degree-one constructive hypothesis implies deterministic complete factoring; the broader descent, rank-transfer and certificate-barrier assertions require the qualifications above.

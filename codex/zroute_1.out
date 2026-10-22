@@ -1,0 +1,691 @@
+1. XK-Z: exact elimination, its rank, and Miller’s reduction
+
+PROVED: exact elimination can be made deterministic, at composite N, with polynomial cost in the explicitly represented relation data. This resolves the algebraic extraction problem at the level needed for an L[α,O(1)] result. It does not establish relation supply.
+
+Throughout, write
+
+L_N[α,c] = exp((c+o(1))(log N)^α(log log N)^(1−α)).
+
+All logarithms without a subscript are natural.
+
+1.1. A precise extraction lemma
+
+Let f∈Z[X] be primitive and irreducible, of degree d, let K=Q(α), and suppose f(m)=0 modulo N. All rational factor-base elements and all evaluated atoms used below must be units modulo N; check this by gcd computations, which can instead reveal a factor.
+
+Let q_1,…,q_n be the rational generators retained in the output. They may include −1.
+
+Suppose the M rows have identities
+
+prod_j q_j^(R_ij) = ψ(γ_i) prod_h z_h^(D_ih) modulo N,                 (1)
+
+where:
+
+R∈Z^(M×n);
+z_h are specified units modulo N;
+γ_i are products of a specified finite collection of nonzero algebraic atoms;
+D records auxiliary factors that must cancel.
+
+Suppose a finite integer matrix A, containing D and the required ideal bookkeeping, has the property
+
+A^T x=0  ⇒  γ_x:=prod_i γ_i^(x_i) is a unit of O_K.                  (2)
+
+Additional exact auxiliary constraints can be included in A. Their inclusion restricts the answer; it does not invalidate the lemma.
+
+Define
+
+K_0 = ker_Z(A^T),
+
+K_μ = {x∈K_0 : γ_x∈μ(K)},
+
+W = span_Q{R^T x : x∈K_μ}.
+
+Then a deterministic algorithm produces integer vectors e_1,…,e_s satisfying
+
+prod_j q_j^(e_lj)=1 modulo N,
+
+whose Q-span is exactly W.
+
+Thus the algorithm recovers the full rational span obtainable by exact ideal cancellation followed by removal of the free unit part. It need not recover additional modular relations arising from non-torsion units whose images happen to be 1 modulo N.
+
+Here is the exact rank formula. Choose integer columns Z spanning ker_Q(A^T), put
+
+T=R^T Z,
+
+and let V have columns Log(γ_z), for the columns z of Z. Then
+
+dim_Q W = rank_R([V;T]) − rank_R(V).                                (3)
+
+Although V has real entries, its columns lie in the unit lattice. Their rational dependencies are exactly the dependencies of an integer coordinate matrix in any fundamental unit basis. Consequently the real ranks in (3) give the asserted rational dimension.
+
+In particular,
+
+dim R^T(ker_Q A^T) − (r_1+r_2−1)
+    ≤ dim W
+    ≤ dim R^T(ker_Q A^T).                                          (4)
+
+The loss is bounded by the unit rank, but can matter. Producing one primitive torsion dependency does not establish full projected rank.
+
+1.2. Why evaluation works at composite N
+
+PROVED: no prime-ideal reduction interpretation is needed.
+
+Because f is primitive and irreducible,
+
+ker(Z[X]→K)=(f).
+
+Therefore evaluation X↦m defines a ring homomorphism
+
+ψ: Z[α] → Z/NZ.
+
+This remains true when N is composite, f has repeated roots modulo some divisor of N, or α is not integral.
+
+Let S be generated multiplicatively by the atoms and rational denominators that occur. If every element inverted has unit image modulo N, the universal property of localization gives a homomorphism
+
+S^−1 Z[α] → Z/NZ.
+
+Thus equal products of atoms in K, expressed in this localization, have equal images modulo N. Negative exponents are legitimate because their images are invertible.
+
+For a nonmonic implementation using β=tα, t=f_d, one can instead use Z[1/t,β], after checking gcd(t,N)=1.
+
+There is no need to extend ψ to all of O_K. A torsion unit obtained as a product of atoms already belongs to the localization in which that product is represented.
+
+This is the reason the composite-modulus argument works. Treating ψ as reduction modulo one prime ideal above N would be incorrect.
+
+1.3. NFS ideal bookkeeping
+
+For primitive f with leading coefficient t, set
+
+a = O_K + α O_K,
+
+J_(a,b) = (a−bα)a^−1.
+
+For a primitive integer pair (a,b), J_(a,b) is integral and
+
+Norm(J_(a,b)) = |F(a,b)|.
+
+Integrality follows from a−bα∈a. The norm identity follows from the content identity for the primitive polynomial f, which gives Norm(a)=1/|t|, together with
+
+|Norm(a−bα)|=|F(a,b)|/|t|.
+
+Consequently, if F(a,b) is B-smooth, all prime ideals dividing J_(a,b) lie above primes at most B.
+
+If
+
+γ_x=prod_P(a_P−b_Pα)^(y_P),
+
+then
+
+(γ_x)=prod_P J_P^(y_P) a^(sum_P y_P).
+
+Exact cancellation of all J_P valuations and the column sum_P y_P therefore proves that γ_x is a unit.
+
+Bad primes dividing t disc(f) must be handled by actual local ideal arithmetic. Ordinary root columns at those primes are insufficient. Conversely, global computation of O_K and factorization of the entire discriminant are unnecessary: local orders maximal at the known relevant primes suffice. This is the setting of Buchmann–Lenstra, “Approximating rings of integers in number fields,” JTNB 6 (1994), 221–260. [Primary article record](https://www.numdam.org/item/JTNB_1994__6_2_221_0/)
+
+1.4. Deterministically computing the entire unit kernel
+
+PROVED. Here is an argument that avoids randomized rank computations, computation of fundamental units, and reliance on the numerical Blanksby–Montgomery bound quoted internally.
+
+First, an elementary effective gap suffices.
+
+For degree at most d, define
+
+T_d = d(6·2^d+1)^d+1,
+δ_d = 1/(d T_d).
+
+Every non-torsion unit u of degree at most d satisfies
+
+||Log u||_∞ > δ_d.                                                  (5)
+
+Proof. Suppose ||Log u||_∞≤δ_d. For 1≤k≤T_d, every conjugate of u^k has modulus at most exp(kδ_d). Every coefficient of its monic minimal polynomial is then bounded by
+
+2^d exp(kdδ_d) ≤ e·2^d < 3·2^d.
+
+There are at most T_d−1 monic integer polynomials of degree at most d with those coefficient bounds.
+
+However, u is a non-torsion unit, so Kronecker’s theorem gives house(u)>1. The houses house(u)^k are distinct. Hence the minimal polynomials of u,…,u^(T_d) are distinct, a contradiction.
+
+Notice that log(1/δ_d)=O(d²). This weak gap already gives polynomial precision at growing degree.
+
+Now compute an integer rational-kernel basis Z of A^T by fraction-free elimination. Suppose its entries have at most β bits. The units γ_z are kept as products of atoms; they are never expanded into enormous algebraic integers.
+
+Their logarithms can be computed by certified root isolation and logarithm approximation. An explicit bound A_0 for their Euclidean norms satisfies
+
+log A_0 = O(β + log M + log J + log H_atom),
+
+where J counts atom occurrences and H_atom bounds the absolute atom logarithms.
+
+Two facts make numerical recognition exact:
+
+First, if k unit-log vectors are independent, the lattice they generate has minimum at least δ_d. Packing balls, or cubes inside balls, gives
+
+det(Gram) ≥ (δ_d/√k)^(2k).                                         (6)
+
+Hence sufficiently accurate interval arithmetic distinguishes zero Gram determinants from nonzero ones.
+
+Second, the rational coefficients expressing one supplied log vector in terms of an independent supplied subset have bounded numerator and denominator. To see this, choose an LLL-reduced basis of the full unit lattice only for the proof. Its Gram–Schmidt lengths are at least 2^−O(d)δ_d. Back substitution bounds the integer coordinates of every supplied vector by
+
+C_0 ≤ 2^O(d) A_0/δ_d.
+
+Cramer’s rule then bounds the numerators and denominators of all dependence coefficients by
+
+d! C_0^d.                                                         (7)
+
+Approximation followed by rational reconstruction recovers these coefficients. The resulting relations are certified by checking that their log norm is below δ_d/2. By (5), this proves exact vanishing.
+
+Perform this for every nonbasis column. The resulting integer combinations span the full rational kernel of V, rather than merely supplying one dependency. This proves the extraction and rank assertions.
+
+1.5. Roots of unity and even degree
+
+PROVED: odd degree is unnecessary.
+
+If ζ∈K has order w, then φ(w)≤d. The elementary inequality φ(w)≥√(w/2) gives w≤2d².
+
+Therefore
+
+W_d=lcm(1,2,…,2d²)
+
+annihilates μ(K), and log W_d=O(d²).
+
+For every x in the computed torsion kernel, multiply its rational exponent vector by W_d. Equation (1) becomes a relation equal to 1 modulo N.
+
+This preserves Q-span. It avoids identifying ζ or its image, and handles even degree, complex embeddings, and all roots of unity.
+
+If −1 is a retained formal generator, add its trivial relation 2e_−1 when needed.
+
+1.6. Deterministic cost
+
+PROVED, with conservative constants.
+
+Let S bound the numbers of rows, columns, atoms and atom occurrences. Let b bound integer matrix-entry bit lengths, and h bound defining-polynomial and atom-coordinate bit lengths.
+
+Fraction-free elimination gives kernel entries with
+
+β=O(S(b+log S))
+
+bits. The preceding unit computation needs precision bounded by
+
+P=O(dβ+d³+d³h+d log S).
+
+All computations are polynomial in S,d,b,h and log N. For example, straightforward dense implementations fit a generous bound
+
+S^6 poly(d)(b+h+log N+log S)^3,
+
+once exact local valuation data have been assembled. Enumerating finite-field elements instead of using randomized polynomial factorization adds B^O(1), and does not change the L exponent.
+
+Thus, if S,B≤L_N[α,a], while d,b,h are polynomial in log N, a conservative extraction bound is L_N[α,6a+o(1)], after increasing a to cover the data. This applies both to fixed d and to
+
+d ≍ (log N/log log N)^(1/5).
+
+The maximum output-entry bit length is L_N[α,a+o(1)] in this regime.
+
+I do not establish the internal sharper L^((ω+1)a) bound. It is unnecessary for existence of some finite final constant. Polynomial post-processing preserves α, but does not automatically preserve the leading constant c.
+
+1.7. Miller’s ERH reduction
+
+PROVED under Dirichlet ERH.
+
+Preprocess prime inputs, even factors and perfect powers. Hence the remaining odd N has at least two distinct prime divisors.
+
+Suppose the rational factor base generates U=(Z/NZ)^× and a lattice L of valid rational relations has full Q-rank n. Choose n independent relations and let D be the absolute determinant of their exponent matrix.
+
+The corresponding lattice quotient surjects onto U. Therefore
+
+φ(N) divides D,
+
+and in particular λ(N) divides D.
+
+Write D=2^s t with t odd. No factorization of D is required.
+
+Here is why small-base Miller chains find a factor. Let k be maximal such that some b∈U satisfies
+
+b^(2^k t)=−1.
+
+Such k exists because −1∈U, and k<s. The subgroup
+
+H={a∈U : a^(2^k t)∈{1,−1}}
+
+is proper: use CRT to take b at one prime-power component and 1 at another. Every a outside H yields a nontrivial square root of 1 somewhere in its repeated-squaring chain; otherwise the final nonidentity value would be −1 at a level contradicting the definition of k or membership outside H.
+
+Under ERH, Bach’s small-subgroup bound supplies an integer outside H below 2 log²N. Testing all those bases, with gcd checks, therefore splits N.
+
+This is Miller’s exponent-based factoring reduction, not merely his primality test with exponent N−1. [Miller, JCSS 13 (1976), 300–317](https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf), [Bach, Math. Comp. 55 (1990), 355–380](https://doi.org/10.1090/S0025-5718-1990-1023756-8)
+
+The modular work is O(log²N·log D) multiplications, up to harmless implementation factors. Recursion gives complete factorization.
+
+
+2. Deterministic relation supply
+
+OPEN: I cannot prove an explicit subexponential field-and-target list supplying enough useful rows for every N. The exact elimination above does not close this gap.
+
+2.1. What pooling fields actually buys
+
+PROVED.
+
+For field j, let M_j be its row count, a_j its actual ideal/field-specific auxiliary rank, and ρ_j the unit-map rank on its ideal kernel. Its available coefficient space has dimension
+
+k_j=M_j−a_j−ρ_j.
+
+After eliminating each field’s algebraic part, its rational images span a space W_j. With independent field blocks, the pooled rational space is
+
+W_total=sum_j W_j,
+
+before elimination of any remaining shared auxiliary columns.
+
+Consequently,
+
+dim W_total ≤ sum_j k_j.                                           (8)
+
+Different fields can supply complementary rational directions. No individual field must span the whole rational factor base.
+
+But rows in field j cannot cancel an ideal coordinate belonging only to field j using rows from other fields. If its algebraic map is injective, it contributes nothing.
+
+The precise threshold concerns actual ranks, not the number of declared columns. The slogan “each field must out-produce its own algebraic columns” is a useful generic estimate, but is not a literal theorem about column counts.
+
+For degree one, the algebraic quantities are rational and can be absorbed into rational columns directly. There is then no independent number-field block to pay for.
+
+PROVED: a union statement about descendable targets is insufficient on its own. For example, suppose J fields each provide one useful row for a different target, and each row has a unique nonzero ideal coordinate. Every target is covered, but every exact algebraic kernel is zero.
+
+Thus the multi-field moment proposition in the background does not, by itself, establish the rank needed here.
+
+2.2. Explicit short families versus global moments
+
+PROVED: global first and second moments cannot certify an arbitrary prescribed short list.
+
+For a family A and a specified list E⊂A, a good subset of any density at most 1−|E|/|A| can avoid E completely. Its indicator has perfectly good first and second moments.
+
+This is an information limitation of those moment statements, not an arithmetic lower bound.
+
+OPEN: obtaining list-specific estimates, or a deterministic procedure exploiting the arithmetic structure of good fields.
+
+At fixed degree, the coefficient and multiplier ranges in the supplied design genuinely contain N^Ω(1) choices. At growing degree, some parameter regimes have N^o(1) families instead; these can still be vastly larger than L_N[2/5,O(1)]. Thus “N^Ω(1) is forced” should not be applied indiscriminately across growing-degree regimes.
+
+FALSE: every character-sum or large-sieve certificate must require N^Ω(1) samples.
+
+ERH itself gives polylogarithmic certificates for escaping proper multiplicative subgroups. There is no theorem ruling out a structured subexponential certificate for the present problem.
+
+There is, however, a concrete weakness of one natural Fourier estimate. In a group of order g, let E have m elements and S have s elements. Counting representations e=u/v gives
+
+Z = ms²/g + error.
+
+If every nonprincipal character sum on S has modulus at most U, Parseval and Cauchy–Schwarz give
+
+|error| ≤ U√(ms).
+
+Hence
+
+|error|/(ms²/g) ≤ gU/(√m s^(3/2)).                                  (9)
+
+Even granting U≈√s and s≈√g, this bound needs m approximately g to prove positivity.
+
+That proves failure of this absolute-value estimate at small m. It does not prove failure of small lists. Character cancellation over a field-dependent accepted subset also does not follow automatically from GRH.
+
+2.3. Seedless two-sided NFS
+
+PROVED: seeds and hidden square roots are not algebraically necessary.
+
+A pair (a,b) with both a−bm and F(a,b) B-smooth provides a row of type (1). Exact elimination applies directly.
+
+For a fixed explicit valid polynomial, enumerate a prescribed box, compute both values, and test B-smoothness deterministically. No factorization oracle is needed for failed candidates: trial division by the factor base determines whether a value is completely smooth.
+
+HEURISTIC: these boxes contain enough independent useful rows.
+
+For illustration, at fixed degree d, take m≈N^(1/d), polynomial coefficients of size N^(1/d), a box of side L_N[1/2,A], and B=L_N[1/2,b]. Both values have logarithmic size (1/d+o(1))log N. The independent-smoothness model predicts
+
+number of rows ≈ L_N[1/2, 2A−1/(db)].
+
+Comparing this with B-sized column sets suggests finite constants A,b suffice. Neither simultaneous smoothness for every such polynomial nor the required projected rank follows from that calculation.
+
+OPEN: the corresponding uniform theorem for growing degree. The supplied random-field moments do not establish it for a fixed base-m polynomial.
+
+2.4. Degree-one lattices
+
+PROVED: if λ=prod q^(x_q) modulo N and a lattice vector satisfies
+
+u=λv modulo N,
+
+with u and v B-smooth and coprime to N, then
+
+x−v_FB(u)+v_FB(v)
+
+is a pure rational relation, with the sign included when necessary.
+
+FALSE: an arbitrary explicit λ, or an arbitrary short-vector rule, guarantees useful relations.
+
+For λ=1, the shortest vector is (1,1), giving the zero relation. More generally, if λ=2 and |u|,|v|≤H with 3H<N, the congruence forces the integer identity u=2v. Its factor-base relation is again zero.
+
+Thus replacing random targets by small explicit targets can destroy the source completely.
+
+OPEN: proving enough short, smooth rational representations for an appropriate explicit target list.
+
+2.5. Seeded rows after fruitfulness disappears
+
+Random seeds retain two distinct potential roles.
+
+PROVED: target randomization can support a supply argument. Uniformity of the hidden root is unnecessary in the Z route, but the distribution of the target residue still matters to acceptance.
+
+PROVED: sufficiently large hidden factor-base exponents can also force rational rank, under a precise label-independence condition; see Section 3.
+
+FALSE: the original random-seed supply theorem transfers merely because a new target is a factor-base product. One must establish the new target distribution or prove a separate supply theorem.
+
+When small primes generate U, independent exponent choices in [0,H) approximate uniform sampling on U with total variation at most nN/H. Indeed, replacing each exponent by a uniform residue modulo the corresponding prime’s order changes its law by at most N/H; the product of uniform cyclic-subgroup elements is uniform on the subgroup they generate.
+
+Taking H=N³ gives excellent accuracy for a subexponential-size factor base, using only O(log N) bits per exponent.
+
+2.6. Shape tests and recursion
+
+PROVED: seedless two-sided NFS does not need Theorem A’s shape test.
+
+PROVED: the degree-one design can simply test whether its short u and v are B-smooth. It then needs neither special-q descent nor recursive factorization of the halves.
+
+The original seeded special-q design is different: it requires the halves to factor into specified large primes, each admitting a descent. Its shape test remains part of that design.
+
+PROVED conditionally: recursion can make those tests affordable once a deterministic outer algorithm has uniform supply and cost bounds at all smaller inputs. For example, a recurrence
+
+T(N) ≤ L_N[α,A] + L_N[α,p] T(N^θ),  θ<1,
+
+admits a finite L constant whenever
+
+c ≥ max(A,p/(1−θ^α)),
+
+with slack as necessary.
+
+This is a closure argument. It supplies neither deterministic outer relations nor their distribution.
+
+
+3. Rank: sufficient conditions, hidden labels, and deterministic forcing
+
+3.1. Full rank on the entire factor base is unnecessary
+
+PROVED.
+
+Let L be the found lattice and W=span_Q L. Let P_0 be the primes below 2 log²N. It suffices that
+
+e_q∈W for every q∈P_0.                                             (10)
+
+Compute integers h_q>0 with h_q e_q∈L, and let D=lcm_q h_q. Then q^D=1 modulo N for every small prime. Under ERH those primes generate U, so λ(N)|D. Miller applies.
+
+Extra factor-base coordinates must cancel in obtaining these vectors. Full rank of the projection onto the small-prime coordinates is insufficient: relations involving additional generators need not annihilate the small primes separately.
+
+PROVED: there is no single weakest numerical rank condition.
+
+A rank-one relation giving a suitable order multiple can split a particular N. Conversely, arbitrarily many independent relations supported on generators in an unhelpful subgroup need not provide the required global annihilator.
+
+Condition (10) is a clean, checkable sufficient condition for this route. Full Q-rank is necessary if the requested conclusion is finite index in the entire chosen free exponent group.
+
+3.2. Relation to GF(2) rank
+
+PROVED: the relevant rank notions differ.
+
+A full-Q-rank lattice may reduce to zero modulo 2: replace every generator by twice itself. Its determinant still annihilates U, so the Z route still works.
+
+Conversely, algebraic cancellation modulo 2 does not imply exact cancellation. A block with rational entry 1 and algebraic entry 2 has a rational direction after reduction modulo 2, but no nonzero exact algebraic kernel.
+
+The RK hypotheses concern parity spaces, square certificates and their distributions. They are not, without an additional argument, rank theorems for the exact torsion kernel in Section 1.
+
+For seedless rows, the missing rank assertion can be stated exactly:
+
+For every nonzero rational functional on the desired rational coordinate space, some integer combination of found rows has exactly cancelled algebraic and auxiliary parts, torsion algebraic product, and nonzero value under that functional.
+
+A probabilistic escape hypothesis only proves this if it excludes every additional annihilator of the actual row support. Sampling more rows cannot escape an annihilator shared by every available row.
+
+3.3. Large random labels can make Q-rank automatic
+
+PROVED, under the following hypotheses.
+
+Take accepted targets
+
+T_i=prod_j q_j^(x_ij) modulo N,
+
+where the x_ij are independent uniform integers in [0,H). Require that acceptance, descent certificates and algebraic-kernel selection depend on the labels only through T_i.
+
+Suppose the exact algebraic/unit kernel has dimension at least n, the number of retained rational prime coordinates. Then, conditional on the target/certificate transcript, the projected rational relations have full Q-rank with probability at least
+
+1 − nN/(H−N).                                                       (11)
+
+Proof. Fix a target T and all exponent coordinates except coordinate j. The remaining exponent, conditioned on T, ranges uniformly over an arithmetic progression with step ord_N(q_j)≤N. There are at least H/N−1 possibilities.
+
+A nontrivial rational affine equation in that coordinate holds for at most one possibility. Hence any proper rational affine hyperplane has conditional probability at most N/(H−N).
+
+Choose n algebraic-kernel vectors and normalize their pivot rows to the identity over Q. Condition on all nonpivot labels. The corresponding rational output vectors are then independent pivot label vectors plus fixed translations. Reveal them successively and apply the hyperplane bound. A union bound proves (11).
+
+Integer denominator clearing and torsion annihilation preserve their Q-rank.
+
+With H=N³, failure is negligible.
+
+This is a genuine hidden-label argument. Its usefulness depends on retaining the seed exponents in the rational block. Cancelling them as separate auxiliary columns removes the signal.
+
+It does not automatically prove GF(2) rank: conditioning on T can fix parity information. Nor does it derandomize relation supply.
+
+3.4. A deterministic rank construction
+
+PROVED: bounded certificates permit deterministic exponent labels that force rank whenever enough rows are accepted.
+
+Here is an explicit algebraic lemma.
+
+Fix a candidate budget P and n rational seed coordinates. Suppose an accepted subset has M rows. Let Z∈Z^(M×k), k≥n, span the exact algebraic/unit kernel, with entries bounded by H_0. Let V∈Z^(n×M), entries bounded by B_0, record the rational descent contributions.
+
+For candidate index j∈{1,…,P}, define its seed exponent in coordinate i, 0≤i<n, by
+
+x_ji = (n+j)(n+j−1)…(n+j−i+1) t^(n+j−i).                           (12)
+
+The empty product is 1. Thus these are the first n derivatives of t^(n+j).
+
+There is an explicit t, of polynomial bit length in P,n,log H_0,log B_0, such that
+
+rank_Q((X(t)−V)Z)=n                                                 (13)
+
+for every eligible accepted subset, Z and V.
+
+Proof. Choose n independent columns of Z. Associate to them independent polynomials
+
+p_l(t)=sum_j Z_jl t^(n+j).
+
+After a constant invertible column transformation, their degrees d_1,…,d_n are distinct and all exceed n.
+
+The unperturbed determinant is their Wronskian. Its leading term has degree
+
+D=sum_l d_l−n(n−1)/2
+
+and nonzero coefficient proportional to prod_(a<b)(d_b−d_a).
+
+Replacing r columns’ derivative entries by constant descent contributions gives degree at most
+
+sum_(l not replaced) d_l − (n−r)(n−r−1)/2,
+
+which is strictly smaller than D because every d_l>n. Hence the perturbed determinant remains a nonzero integer polynomial.
+
+For an explicit uniform bound, put
+
+A_0=H_0((n+P)^n+PB_0),
+
+C=n!(P+1)^n A_0^n.
+
+Every coefficient of the original determinant has absolute value at most C. Cauchy’s root bound therefore permits t=C+2.
+
+The exponents in (12) have polynomial bit length in the stated parameters.
+
+Section 1 supplies a uniform bounded-height integer kernel basis from bounded-height certificates, independently of the seed labels. Thus this construction applies to NFS descents after placing unwanted rational primes among the auxiliary columns.
+
+What remains OPEN is supply for these prescribed targets. The construction does not preserve the random target law used in existing supply analyses.
+
+This gives a useful refinement: rank need not remain a separate conjecture if one accepts structured, larger exponent labels. The unresolved proposition becomes an explicit-target supply statement.
+
+
+4. Literature and verification
+
+“Verified” below means I inspected the indicated primary statement or relevant text, not that I independently checked every proof in the paper.
+
+4.1. Integer factoring
+
+PROVED, published:
+
+Harvey’s deterministic unconditional bound is
+
+O(N^(1/5) log^(16/5)N).
+
+Harvey–Hittmeir improve this to
+
+O(N^(1/5) log^(16/5)N / (log log N)^(3/5)).
+
+I verified Theorem 1.1 in both papers. The exponent in the prompt is correct. [Harvey, “An exponent one-fifth algorithm for deterministic integer factorisation”](https://arxiv.org/pdf/2010.05450), [Harvey–Hittmeir, “A log-log speedup…”](https://arxiv.org/pdf/2105.11105)
+
+The historical GRH attribution is also correct: Shanks, “Class number, a theory of factorization, and genera,” Proc. Sympos. Pure Math. 20 (1971), 415–440; Schoof, “Quadratic fields and factorization,” Computational Methods in Number Theory (1982), 235–286. I verified Schoof’s explicit deterministic N^(1/5+ε) assertion and Section 6 algorithms. I verified the Shanks citation and attribution through Harvey, rather than inspecting Shanks’s original proof. [Schoof’s chapter](https://gkorpal.github.io/files/Schoof1982.pdf)
+
+Harvey–Hittmeir’s January 2026 paper removes the lower restriction on the target order in their large-order-or-factor algorithm. It does not give subexponential factoring. I inspected its main theorem and introduction. [2026 paper](https://arxiv.org/html/2601.11131v1)
+
+OPEN, literature status: I found no established deterministic L_N[α,O(1)] factoring algorithm for any α<1 under GRH alone.
+
+PROVED, randomized: Lenstra–Pomerance give complete factorization of every integer in expected L_N[1/2,1]. I verified the main theorem. This remains a different statement from deterministic factoring. [JAMS 5 (1992), 483–516](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf)
+
+I have not certified the supplied internal randomized L[2/5] chain. Its internal verdicts are not used as published results here.
+
+4.2. Class groups, class numbers and units
+
+PROVED under ERH, randomized: Hafner–McCurley’s imaginary-quadratic class-group algorithm has expected L_|Δ|[1/2,√2] complexity. The original paper is JAMS 2 (1989), 837–850. Its result and bibliographic details were checked against the later primary papers below; the original AMS PDF was inaccessible.
+
+PROVED under a GRH generalization, randomized: Biasse–Erukulangara improve the constant to 3/√8 for class-group computation after a mild modification. I verified their published abstract: Advances in Mathematics of Communications 17 (2023), 1388–1405; online 2021. This does not establish the same bound for finite-field discrete logarithms. [Primary article](https://www.aimsciences.org/article/doi/10.3934/amc.2021055)
+
+HEURISTIC in their original generality: Buchmann’s general number-field subexponential algorithm and the growing-degree Biasse–Fieker algorithms used smoothness/distribution assumptions beyond GRH. Buchmann’s cited work is “A subexponential algorithm for the determination of class groups and regulators of algebraic number fields,” Séminaire de Théorie des Nombres, Paris 1988–1989, published 1990, 27–41.
+
+PROVED under ERH, randomized: de Boer–Pellet-Mary–Wesolowski, arXiv:2512.01588v2, February 2026, give rigorous general class-group/unit computation. I inspected Theorem 1.3. Its input includes an LLL-reduced basis of O_K; its expected complexity is polynomial in input length, L_|Δ|[1/2], L_(d^d)[2/3], and a stated zeta-residue factor. It is not deterministic. [Primary preprint](https://arxiv.org/pdf/2512.01588)
+
+PROVED, deterministic but exponential in log |Δ|: Schoof’s “Computing Arakelov class groups,” MSRI Publications 44 (2008), Section 11, gives a square-root-discriminant-times-polylogarithmic bound at fixed degree. I inspected that section’s statement. [Schoof 2008](https://library.slmath.org/books/Book44/files/14schoof.pdf)
+
+Schoof’s 1982 real-quadratic discussion distinguishes class-number/regulator computation in |Δ|^(1/5+ε) from complete class-group structure in |Δ|^(1/4+ε). These outputs should not be conflated.
+
+Lenstra’s 1992 survey, “Algorithms in algebraic number theory,” discusses deterministic exponential bounds and the then-unresolved probabilistic subexponential approach; it is not a deterministic subexponential theorem. I inspected Section 5. [Lenstra, Bull. AMS 26 (1992), 211–244](https://arxiv.org/pdf/math/9204234)
+
+The general lesson is precise: GRH bounds generating prime ideals; that does not provide a fast deterministic generating relation lattice.
+
+4.3. Discrete logarithms in F_p^×
+
+OPEN, literature status: I found no general deterministic subexponential theorem under GRH for arbitrary prime-field discrete logarithms.
+
+The classical rigorous subexponential algorithms are randomized; NFS logarithm bounds additionally involve heuristic relation-supply assumptions in their usual formulations.
+
+Pomerance’s “Fast, rigorous factorization and discrete logarithm algorithms,” Discrete Algorithms and Complexity (1987), 119–143, is a relevant classical reference. I verified the author’s bibliographic record; its scanned PDF was not text-accessible, so I do not claim to have checked its exact constants here. [Author’s copy](https://math.dartmouth.edu/~carlp/disclog.pdf)
+
+Finding a small nonresidue or generators under GRH is not solving arbitrary discrete logarithms. Nor is finite-field polynomial factorization the same problem as integer factorization or discrete logarithms.
+
+4.4. Primality and square roots
+
+PROVED, unconditional: AKS gives deterministic polynomial-time primality testing. I verified the published theorem statement. [Agrawal–Kayal–Saxena, Annals 160 (2004), 781–793](https://annals.math.princeton.edu/2004/160-2/p12)
+
+PROVED under Dirichlet GRH: Ankeny’s small-nonresidue theorem makes Tonelli–Shanks deterministic in polynomial time. Search a≤O(log²p), test its Legendre symbol, then run Tonelli–Shanks.
+
+Ankeny’s reference is “The least quadratic non residue,” Ann. Math. 55 (1952), 65–72. The bibliographic citation and standard consequence were cross-checked; I did not inspect the original proof.
+
+Bach makes the relevant constants explicit. I verified the publication record and published abstract, but could not access the full AMS PDF.
+
+Schoof’s 1985 square-root application is an unconditional polynomial-time result for each fixed integer radicand, with dependence on that radicand. It should not be quoted as a uniform unconditional polynomial-time algorithm for arbitrary input residues. I inspected the abstract and introduction. [Math. Comp. 44 (1985), 483–494](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf)
+
+4.5. Smooth numbers: what is available
+
+PROVED: Harper’s Theorem 1 establishes individual-progression equidistribution, in the relevant limiting formulation, for
+
+q≤y^(4√e−δ),   log x/log q→∞.
+
+I inspected the theorem. It removes additional x,y restrictions from Soundararajan’s earlier result. This range does not cover q=N^Θ(1), y=L_N[α,O(1)]. [Harper, JNT 132 (2012), 182–199](https://arxiv.org/pdf/1103.2106), [Soundararajan’s earlier paper](https://arxiv.org/abs/0707.0299)
+
+PROVED under RH: Soundararajan gives smooth numbers in intervals of length
+
+O(u√x/ρ(u/2))
+
+when y≥exp(5√(log x log log x)). I inspected the theorem. [“Smooth numbers in short intervals”](https://arxiv.org/pdf/1009.1591)
+
+PROVED under RH: Younis’s Theorem 1.3 gives short-interval density information for every fixed θ>1/2 with y≥(log x)^K(θ). I inspected the theorem and its parameter range. These are square-root-scale results, not L-sized intervals at x=N^Θ(1). [“Asymptotics for smooth numbers in short intervals,” 2024](https://arxiv.org/pdf/2409.05761)
+
+A qualification to the internal discussion is necessary:
+
+PROVED under GRH: for y=L_q[α,b], 0<α<1, every invertible residue modulo q has a y-smooth positive representative below q^(2+ε), for every fixed ε>0 and sufficiently large q.
+
+Proof. Let μ be uniform on primes at most y not dividing q. GRH prime-character estimates give, uniformly over nonprincipal Dirichlet characters,
+
+|μ̂(χ)|≤y^−1/2 poly(log(qy))=y^(−1/2+o(1)).
+
+For k-fold products, character orthogonality gives
+
+μ^(*k)(a) ≥ 1/φ(q) − max_(χ≠1)|μ̂(χ)|^k.
+
+Choose
+
+k=ceil((2+ε/2)log q/log y).
+
+The error is below 1/q, so the probability is positive. The product is at most y^k≤q^(2+ε).
+
+This uses the same prime-character mechanism underlying GRH Cayley expanders; I checked the primary spectral theorem. [Jao–Miller–Venkatesan, JNT 129 (2009), 1491–1504](https://arxiv.org/pdf/0811.0647)
+
+Thus a blanket assertion that GRH supplies no smooth representative in individual progressions of polynomial-size modulus is false. What is missing is efficient deterministic construction, suitable density in the required restricted sets, and simultaneous algebraic conditions.
+
+4.6. Equivalences and stronger derandomization assumptions
+
+PROVED under ERH: factoring is polynomially equivalent to producing unrestricted full-Q-rank rational relations on the small-prime factor base.
+
+One direction is Section 1. For the other, factor N, compute λ(N), and output λ(N)e_q, together with 2e_−1.
+
+This equivalence does not prove an equivalence with restricted NFS relation supply.
+
+PROVED under the Impagliazzo–Wigderson hardness assumption: deterministic L_N[1/2,O(1)] factoring follows, without GRH.
+
+Truncate the Lenstra–Pomerance algorithm at a constant multiple of its expected-time bound. Verification gives a circuit of size S=L_N[1/2,O(1)] accepting at least half its random tapes. The IW generator has O(log S) seed length and polynomial-in-S evaluation cost. Enumerating its seeds finds an accepting tape in S^O(1) time. [Impagliazzo–Wigderson, STOC 1997, 220–229](https://www.math.ias.edu/~avi/PUBLICATIONS/MYPAPERS/IW97/proc.pdf)
+
+No implication from GRH to that circuit-hardness assumption is known. No known hardness theorem excludes deterministic subexponential factoring under GRH.
+
+
+5. Overall assessment and one precise missing lemma
+
+HEURISTIC assessment: I assign about 10% probability that adaptations of currently established techniques, without a substantial new distribution or derandomization theorem, suffice to prove deterministic L_N[1/2,O(1)] factoring under GRH. This is a subjective assessment of the research route, not a mathematical probability.
+
+The extraction problem is manageable. Rank can be forced under appropriate target/certificate conditions. Deterministic constructive supply remains the obstacle.
+
+The cleanest single target I would prioritize is the following. It avoids number fields, units, fruitfulness and a separate rank conjecture.
+
+OPEN: deterministic smooth compression of prescribed prime powers.
+
+There exist constants b,c>0 and a deterministic algorithm such that, for every sufficiently large N having no prime factor at most
+
+B=L_N[1/2,b],
+
+the algorithm outputs, for every prime q≤B, the factorization of an integer s_q satisfying
+
+1≤s_q≤N³,
+
+all prime factors of s_q are at most B,
+
+s_q=q^H modulo N,
+
+where
+
+H=ceil(4 log_2 N),
+
+and the total running time for all q is at most L_N[1/2,c].
+
+This is an algorithmic proposition with explicit inputs, targets, size bounds and outputs. It asks for considerably more structure than an arbitrary relation lattice.
+
+PROVED under GRH: the required integers s_q exist.
+
+Apply the smooth-representative theorem from Section 4 with modulus N and, for example, ε=1/2. Every target q^H has a B-smooth representative below N^(5/2), eventually below N³.
+
+PROVED: this missing algorithm would give the desired deterministic factoring result.
+
+Write
+
+s_q=prod_(p≤B) p^(v_qp).
+
+The relation matrix is
+
+E=H I−V.
+
+Every row of V has nonnegative entries and
+
+sum_p v_qp≤log_2 s_q≤3 log_2 N<H.
+
+Therefore E is strictly diagonally dominant and nonsingular. Equivalently, ||V/H||_∞<1, so I−V/H is invertible.
+
+Thus these relations have full Q-rank automatically. Their determinant is a nonzero multiple of φ(N), because the factor base contains the ERH small generators. Section 1’s Miller procedure splits N deterministically.
+
+The complete running time is L_N[1/2,C] for some finite C; with the conservative dense bounds above one can take C larger than max(c,6b). Preprocessing and recursion give complete factorization of every integer.
+
+The identical formulation with B=L_N[2/5,b] would imply deterministic L_N[2/5,O(1)] factoring. GRH still proves existence of its representatives; the faster constructive assertion remains open.
+
+This isolates the gap particularly sharply: existence of bounded smooth representatives is already available under GRH, and diagonal dominance supplies rank. What is missing is a deterministic subexponential algorithm that constructs the required representatives.
