@@ -15,7 +15,7 @@ import time
 
 import numpy as np
 
-from .core import (DensityCurve, count_members_in_window, divisors_from_factored, family_pieces,
+from .core import (DensityCurve, count_members_in_window, divisors_from_factored, family_pieces, is_smooth_int,
                    family_t_for_size, family_value, lcm_upto_factored, smooth_mask_values,
                    smooth_mask_window, value_of_factored, ch_log_threshold, johnson_log_threshold)
 from .msample import (divisor_trick_yield, inheritance_scan, joint_tuples_indep, predicted_smooth_first,
@@ -198,3 +198,68 @@ if __name__ == "__main__":
         run_e2a()
     if what in ("E2B", "all"):
         run_e2b()
+
+
+# ------------------------------------------------------------------------------------------------ E3 (Addendum A1)
+
+E3_CONFIGS = [
+    {"name": "U1", "Xb": 40, "V": 1 << 12, "B": 40, "ell": 3, "s": 3, "y": 1 << 10, "calls": 5000, "seed": 6022},
+    {"name": "U2", "Xb": 48, "V": 1 << 10, "B": 60, "ell": 4, "s": 4, "y": 1 << 12, "calls": 5000, "seed": 6023},
+]
+
+
+def run_e3():
+    from .uncert import classify_call
+    f = _out("E3")
+    for cfg in E3_CONFIGS:
+        X, V, y = 1 << cfg["Xb"], cfg["V"], cfg["y"]
+        P = value_of_factored(lcm_upto_factored(cfg["B"]))
+        curve = DensityCurve(y, 2.0, cfg["Xb"] + 1.0, width=1 << 18)
+        rng = np.random.default_rng(cfg["seed"])
+        tot = {"cert_roots": 0, "uncert_roots": 0, "cert_violations": 0, "n_cert_points": 0}
+        unc_smooth = 0
+        unc_model = 0.0
+        cert_smooth = 0
+        cert_model = 0.0
+        T_logs = []
+        t0 = time.time()
+        for _ in range(cfg["calls"]):
+            x = int(rng.integers(X, 2 * X))
+            res = classify_call(x, V, P, cfg["ell"], cfg["s"], y)
+            for k in tot:
+                tot[k] += res[k]
+            T_logs.append(res["T_cert_log"])
+            for u in res["uncert"]:
+                unc_smooth += u["smooth"]
+                c = 2.0 ** u["cof_log2"]
+                unc_model += 1.0 if c <= y else float(curve(c))
+                f.write(json.dumps({"config": cfg["name"], "x": x, **u}) + "\n")
+        # certified-root smoothness (second pass over a fresh seed-identical run is avoided: recompute here)
+        rng = np.random.default_rng(cfg["seed"])
+        from .uncert import hg_call
+        import math as _m
+        for _ in range(cfg["calls"]):
+            x = int(rng.integers(X, 2 * X))
+            hc = hg_call(x, V, P, cfg["ell"], cfg["s"])
+            for rt in hc["roots"]:
+                z = x + rt
+                g = _m.gcd(z, P)
+                if g > 1 and _m.log(g) >= hc["T_cert_log"]:
+                    cert_smooth += is_smooth_int(z, y)
+                    c = z / g
+                    cert_model += 1.0 if c <= y else float(curve(c))
+        rec = {"config": cfg["name"], "summary": True, "calls": cfg["calls"], **tot,
+               "uncert_per_call": tot["uncert_roots"] / cfg["calls"],
+               "uncert_smooth": unc_smooth, "uncert_model": unc_model,
+               "uncert_ratio": unc_smooth / unc_model if unc_model else None,
+               "cert_smooth": cert_smooth, "cert_model": cert_model,
+               "cert_ratio": cert_smooth / cert_model if cert_model else None,
+               "T_cert_log_median": float(np.median(T_logs)), "secs": round(time.time() - t0, 1)}
+        print(json.dumps(rec))
+        f.write(json.dumps(rec) + "\n")
+        f.flush()
+    f.close()
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "E3":
+    run_e3()

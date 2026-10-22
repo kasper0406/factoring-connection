@@ -55,3 +55,22 @@ Calls: C1: 20000 (m = 1, 2, 3), 2000 (bare); C2: 40000 (m = 1, 2, 3), 2000 (bare
 
 ## Deviations
 Any change after the first run will be disclosed in the results note as a deviation, with the reason.
+
+## Addendum A1 (2026-10-22, written after E1, E2A, E2B had run and before E3 was run)
+
+E1, E2A and E2B have been run (results in the results note; P1 failed in 4 cells, P4/P5 in one cell). This addendum
+registers one further experiment, motivated by codex's blind round (sinonobliv_1) listing *uncertified decoder outputs*
+as the least constrained open item. Code: `src/sinonobliv/uncert.py`; command `run_exp E3`; raw
+`experiments/raw/sinonobliv_E3.jsonl`.
+
+**E3 (uncertified roots of a Howgrave-Graham divisor lattice).** f(r) = x + r, modulus P = lcm(1..B); basis
+P^{ℓ−j}f^j (j ≤ ℓ), r^i f^ℓ (1 ≤ i ≤ s), scaled by V; python-flint LLL; integer roots in [0, V] of the first three
+reduced polynomials. Certified threshold T_cert = (√n·‖b₁‖)^{1/ℓ} (Howgrave-Graham's condition for the first vector).
+Configs: U1 = (x uniform in [2^40, 2^41), V = 2^12, B = 40, ℓ = 3, s = 3, y = 2^10); U2 = (x in [2^48, 2^49),
+V = 2^10, B = 60, ℓ = 4, s = 4, y = 2^12); 5000 calls each, seeds 6022 / 6023.
+- **P7.** Mean number of uncertified roots (gcd(x + r, P) < T_cert) per call ≤ 0.5 in both configs.
+- **P8.** If a config has ≥ 30 uncertified roots: their y-smooth fraction divided by the model mean δ(z/gcd(z, P))
+  (DensityCurve at the cofactor size; 1 if the cofactor ≤ y) lies in [0.33, 3] (no smoothness bias beyond the
+  known divisor).
+- **P9.** Zero violations: every r ∈ [0, V] with gcd(x + r, P) ≥ T_cert is a root of the first reduced polynomial.
+- D4 (descriptive): certified roots per call and their smooth fraction against the same model.

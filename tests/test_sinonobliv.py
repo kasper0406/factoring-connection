@@ -121,3 +121,12 @@ def test_prop_cd_sparse_families_vanish():
     # one-parameter, degree-2 family: hopeless; m = d: placement term is O(F_{2/3})
     assert prop_cd_log_hits(x, 1, 2, 2)["total"] < -300
     assert abs(prop_cd_log_hits(x, 3, 3, 3)["placement"]) < 200
+
+
+def test_hg_certificate_planted():
+    from src.sinonobliv.uncert import classify_call
+    P = value_of_factored(lcm_upto_factored(40))
+    for k, off in ((12345, 5), (99991, 4000), (31337, 0)):
+        x = (P // 7) * k - off
+        res = classify_call(x, 1 << 12, P, 3, 3, 1 << 10)
+        assert res["cert_violations"] == 0 and res["cert_roots"] >= 1
