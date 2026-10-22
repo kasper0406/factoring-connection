@@ -1,0 +1,267 @@
+The full numbered plain-text report is saved in [referee_report.txt](/Volumes/git/factoring-connection/codex/scratch/dsr_2/referee_report.txt). Reproducible checks are in [audit_checks.py](/Volumes/git/factoring-connection/codex/scratch/dsr_2/audit_checks.py), with [results](/Volumes/git/factoring-connection/codex/scratch/dsr_2/audit_checks.json). Repository source files were read only.
+
+1. Theorem SB: CORRECT WITH FIXES; the blanket derandomizer conclusion is OVERCLAIMED.
+
+SB(a) is correct. Hitting every subset of cardinality ceil(delta·phi) requires at least phi−ceil(delta·phi)+1 endpoints. The adaptive argument applies to membership-query access to an otherwise arbitrary set.
+
+The Bernstein proof in SB(b) is also correct. Writing v=delta·phi and l=ln(8phi), its choice s=sqrt(6vl) satisfies s≤v/2. The Bernstein exponent is at least 18l/7>2l. The union of 2(phi−1)+1 failure events has probability less than 1/(16phi). The complex error is bounded by sqrt(2)s, as claimed.
+
+Two subsequent deductions need correction.
+
+First, Parseval’s actual lower bound is
+
+  beta(S) ≥ sqrt(|S|(phi−|S|)/(phi−1)).
+
+The hypotheses allow |S| to range between delta·phi/2 and 3delta·phi/2. They do not imply |S|=delta·phi(1+o(1)). Even substituting the nominal density delta, the displayed upper bound gives a ratio sqrt(48/(1−delta))·sqrt(l), which can reach 8sqrt(l), rather than 7sqrt(l). Using the actual permitted density, 11sqrt(l) is a safe consequence of the printed estimates.
+
+This identifies a gap in the claimed constant’s justification, not a counterexample to a sharper existence theorem. The factor 7 is eventually valid in the intended DSR regime, where delta=o(1) and delta·phi/ln(phi) tends to infinity. Add those assumptions or change the comparison.
+
+Second, lines 150–151 require |S|≥delta·phi, whereas SB(b) only constructs an approximately sized set. Use a fixed-cardinality random subset with suitable concentration, or increase the Bernoulli mean and recompute constants.
+
+The assertion that every listed derandomizer’s guarantee contains every density-delta accepting set is false:
+
+- Nisan/INW/Nisan–Zuckerman permit arbitrary terminal predicates. SB(a) applies to a generator required to handle all such predicates, provided the reference walk is sufficiently mixed and the approximation error is small enough.
+- The width-independent HPV and BHPP results impose a single accepting state. Their stated classes do not contain arbitrary terminal subsets. For HPV’s PRG, summing endpoint errors requires epsilon=O(1/phi). BHPP’s HSG is not an additive-error PRG, so that summation argument cannot simply be transferred to it. [HPV](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2021.7), [BHPP](https://williamhoza.com/research/papers/BHPP/).
+- GKM fools Fourier shapes, including individual endpoint characters. An arbitrary endpoint indicator is generally a linear combination of shapes, requiring an algebra-norm/error calculation. SB(a) is not directly a lower bound for GKM’s stated class. [GKM](https://arxiv.org/abs/1506.04350).
+- KNP’s main theorem concerns a fixed finite group, equivalently constant-width permutation programs. Its group-dependent constants cannot be suppressed when G grows with N. De gives more explicit group dependence. [KNP](https://iuuk.mff.cuni.cz/~koucky/papers/bwbp.pdf), [De](https://ieeexplore.ieee.org/document/5959811/).
+- AKS/IZ amplification retains an initial seed; the direct parameter substitution fails here. That is different from the claimed universal endpoint-support impossibility theorem.
+
+The defensible conclusion is that these black-box applications do not prove DSR. “Generic derandomizers cannot work [proved]” is too strong.
+
+2. Proposition RW: CORRECT WITH FIXES.
+
+The unweighted positive-prime measure is legitimate. A bound on the symmetrized eigenvalue alone would not control the modulus of a complex character sum. However, JMV’s underlying weighted prime estimate and partial summation do give
+
+  |sum_{p≤y} chi(p)| ≪ sqrt(y)·ln(Ny),
+
+hence lambda ≪ ln(y)·ln(Ny)/sqrt(y). This includes induced characters. [JMV, proof of Theorem 1.1](https://arxiv.org/pdf/0811.0647).
+
+The deliberately loose constant 10^6 is supportable as a derived bound. It should not be attributed directly to JMV. The character-level explicit formula of Ernvall-Hytönen–Palojärvi supports a coarse psi bound of 10^4sqrt(x)ln³(Nx); allowing 2·10^4 after prime powers and partial summation still stays below 10^6. Crucially, use their character-level estimates, not their final AP theorem with x≥q, since here y=N^{o(1)}. [Explicit estimates](https://arxiv.org/html/2003.01925).
+
+The Fourier/Parseval error bound is correct. A sufficient hitting length is
+
+  t ≥ ln(4phi(1−delta)/delta)/(2ln(1/lambda)).
+
+The printed formula drops 1−delta and is safely larger. The pointwise length is correct too.
+
+Necessary qualifications:
+
+- These finite lengths require lambda<1. Small y can give lambda=1.
+- The stated hitting-length asymptotic requires delta=N^{-o(1)}, as for S_can. It is false for arbitrary S, for example delta=1/phi.
+- The product height is N^{1+o(1)} at t_hit, but N^{2+o(1)} at t_infinity. Line 114 should distinguish them.
+- Exactly log₂pi(B) fair bits per independent prime choice is not a literal fixed-bit implementation. A power-of-two prefix of the primes repairs this without changing the leading asymptotics.
+- An implementation must replace unknown phi and lambda by certified bounds.
+
+The output bounds and expected per-target cost L^{b+1/(2b)+o(1)} are correct. These are sufficient walk lengths and algorithmic upper bounds, not lower bounds on arithmetic-specific constructors.
+
+3. Proposition AA: CORRECT; “sharpness” needs qualification; §2.7 is OVERCLAIMED.
+
+The Fourier identity and normalization are correct:
+
+  sum_a |h(a)−delta m|²
+    ≤ lambda^{2k}m²phi·delta(1−delta).
+
+Dividing by (delta m)² proves the stated exceptional-set bound.
+
+The BOX lower bound must concern unit residues. After excluding nonunits, there are still (1−o(1))phi/B^k small nonsmooth residues, for fixed k and y=B. Thus the comparison with AA’s upper bound has the stated L^{1/(2b)+o(1)} gap.
+
+That is a coarse comparison of bounds. It does not establish an asymptotic for |E| or prove that the reciprocal-density loss is optimal. “Sharp” is particularly uninformative when AA’s upper bound exceeds phi.
+
+Enumeration contains pi(B)^k products, but testing/factoring every endpoint by trial division adds an L^{b+o(1)} factor unless a batching method is supplied. Distinguish enumeration size from total constructor cost.
+
+The q-moment calculation is essentially correct. With d=pi(B), e=|Ghat[H]|, it gives
+
+  sum_q |h(q^H)−delta m|²
+    ≤ lambda^{2k}m²[
+        de·delta(1−delta)
+        + Csqrt(B)log²(NB)·A′(S)²].
+
+Using only A′(S)²≤delta(1−delta)phi leads to the quoted N^{1+o(1)} enumeration scale for this template. It is a limitation of that upper-bound method, not a necessary condition for other second moments or algorithms.
+
+The exceptional-set bullet has a substantive quantifier error: |E|<|T| proves that at least one target succeeds. DSR requires T∩E to be empty. Cardinality information alone guarantees that only when |E|<1.
+
+For an orbit, J must count distinct residues or multiplicities must be retained. The global AA bound can prove one hit among sufficiently many distinct orbit points; it is not automatically a Parseval identity over a short orbit.
+
+Finally, q↦q^H need not be injective. A B/polylog(N) lower bound on distinct targets can be obtained under GRH through collision probabilities, but must be justified rather than assumed.
+
+4. BOX: CORRECT. BOX-infinity: CORRECT WITH FIXES/clarifications. Its refutation of dsr_1 §6 is CORRECT.
+
+BOX(ii)’s uniqueness argument works. The vector (rw,1) is primitive. An independent vector no longer than it would give a nonzero determinant smaller than N; a dependent integral vector must be an integral multiple. This also handles ties.
+
+The unconditional existence proof survives scrutiny:
+
+- Distinguish B_*=floor(L_{2^h}[1/2,b]) from the actual B_N. The proposed z exceeds every relevant N-dependent preprocessing cutoff. Nonsmoothness at the larger cutoff implies nonsmoothness at the smaller one.
+- For the translated interval, the divisibility errors are O(1), uniformly in its location. Bounded sieve weights at D=R^{1/2} give an O(D) remainder. Since s=ln D/ln z=u_h/2+o(1) tends to infinity, the fundamental lemma yields the required asymptotic. No distribution hypothesis at scale 2^h is being smuggled in. A suitable formulation is in [Tao’s sieve notes](https://terrytao.wordpress.com/2015/01/29/254a-supplement-5-the-linear-sieve-and-chens-theorem-optional/).
+- Brun–Titchmarsh supplies the upper bound 2R/ln R in an arbitrary interval of length R. It does not require R to be a fixed power of N.
+- There is at most one integer jth power in this interval for each j≥2, eventually, because its length is 2^{o(h)} while the relevant spacing is at least a constant times 2^{h/2}. Removing O(h) prime powers is harmless.
+- The uniform smooth-count bound Psi(R,B_*)≪Rexp(−u_h/2) is valid. The chosen u_h makes this negligible relative to R/ln B_*. A bare Rankin Euler-product estimate retaining an extra log B factor would not suffice; cite the actual uniform bound or use smooth-number asymptotics. [A precise recorded reference](https://www.pollack-math.net/lambdadist3.pdf).
+
+The remaining N is admissible, lies strictly between 2^{h−1} and 2^h, and has H=8h. Eventually r^8<N, giving the desired least residue. The canonical and Gauss multiplier ranges then follow.
+
+For every fixed k, r^8B_N^k<N eventually. Therefore the correlation sum proposed in dsr_1 §6 is zero at q=2, while its asserted lower bound is positive. This genuinely refutes that lemma, including k=k(b) fixed independently of N.
+
+It does not refute DSR. DSR permits signed representatives, nonzero lifts, |u| and |v| up to N³, and a separate w of potentially enormous height. BOX constrains the short positive combined multiplier with the specified canonical/Gauss test. A large w, or a lifted representative, escapes that argument.
+
+The particular DD1 construction in DZ asks for the q=2 row. Deterministic factoring or a weaker PIN design need not literally construct that row. Orbit wrapping after O(log N) steps is possible; wrapping itself does not prove a hit.
+
+5. Theorem FN: CORRECT WITH FIXES. Its broader certificate and novelty rhetoric is OVERCLAIMED.
+
+The Fourier identity and normalization are correct. An empty translate gives
+
+  delta ≤ lambda^k A′(S).
+
+There is a genuine gap in choosing ell as the least prime above B: ell need not be a unit. For example, at b=0.8,
+
+  N = 9250794819020799837774052793
+    = 489733·18889465931478580854821,
+
+has floor(L_N[1/2,0.8])=489711 and 3ln²N≈12439.96. The least prime above B is 489733, which divides N. The scratch checks include an exact primality certificate for the larger factor.
+
+Fix this by choosing a prime ell∈(B,2B] not dividing N. There are far more primes in that interval than distinct prime divisors of N, eventually. All subsequent estimates survive.
+
+The choices of k are otherwise valid, with an optional subtraction of one to eliminate endpoint discussion. The raised logarithmic factors do not destroy the powers of N:
+
+  ln(lambda^{-k})
+    ≥ k ln B/2 − O(k ln ln N)
+    ≥ theta ln N − O_b(sqrt(ln N ln ln N)),
+
+where theta=1/2 or 1/4. Thus the claimed N-exponents survive. The loss is generally at L scale, however, and must not be treated as L^{o(1)} in finer calculations.
+
+The canonical density is correct. The coprime smooth-pair estimate needs proof or citation. A weaker density bound sufficient for FN is elementary: construct u and v from disjoint prime intervals inside (B/2,B], using t≈ln(sqrt N)/ln B distinct primes each. Each family has N^{1/2−o(1)} products; the pairs are coprime, short, and give distinct ratios. Hence delta_Gauss≥N^{-o(1)}.
+
+The minorant extension is correct, including for real minorants that are negative outside S. On the missing translate their expectation is ≤0, so
+
+  A′(f) ≥ (delta/2)lambda^{-k}.
+
+Line 290 saying minorants remain open contradicts §2.4(i).
+
+The canonical lower bound is sharp only up to N^{o(1)}. It does not establish random-set constants or norm asymptotics. The Gauss lower bound is not shown sharp.
+
+After repair, FN does settle zroute’s stated speculative small-algebra-norm conjecture for the canonical shortest-vector set, under GRH. It excludes the specified norm-based certificate and dense minorants on those sets. It does not exclude every Bach-inspired arithmetic argument or alternative lifted test.
+
+Its mechanism is elementary empty-translate duality plus the established GRH prime bound. The exact statement’s priority is unverified; missing relevant literature is discussed in item 10.
+
+6. Lemma PT: CORRECT WITH FIXES to complexity; factoring-separation language is OVERCLAIMED. EQ-dom: CORRECT WITH FIXES to wording.
+
+The choice of r establishes admissibility. For fixed 0<alpha<1, r=p^{o(1)}<p eventually, so N=pr has two distinct prime factors and satisfies the stated cutoffs. The H′ range and p^{3+o(1)} output heights follow.
+
+Define the transferred cutoff explicitly as B_N. The argument does not promise the exact cutoff L_p[alpha,b], only constant b+o(1).
+
+The claimed L_p[alpha,c+o(1)] running time does not follow:
+
+- Finding r has an additional L-scale cost depending on b and C. A straightforward sieve up to its proposed threshold costs L_p[alpha,2^alpha max(b,C)+o(1)].
+- A single DSR call costs L_p[alpha,c+o(1)].
+- Producing outputs for all q≤B_N requires pi(B_N) calls, giving constant b+c, in addition to preprocessing.
+
+State a per-input-q transfer with preprocessing separated, or the correct all-q total.
+
+The Pollard–Strassen exponent is wrong. Searching for factors ≤X costs X^{1/2+o(1)}, up to log-size factors. Substituting X=N^epsilon gives N^{epsilon/2+o(1)}, not N^{epsilon/4+o(1)}. The familiar N^{1/4} bound results from searching to sqrt N. [Relevant discussion](https://link.springer.com/article/10.1007/s40993-022-00387-w).
+
+PT is not a separation from deterministic factoring. It shows that DSR must work on a family whose factorization is already supplied. It does not prove that factoring-based methods cannot contain additional useful arithmetic ideas.
+
+EQ-dom’s complexity-class equivalence works. For its forward direction, simply output phi(N)e_q after factoring N. The reverse follows from dominance, an affordable determinant, and ERH Miller splitting. Calling dominant rows for every factor-base prime “minimal” is inaccurate: the small-generator PIN condition is weaker.
+
+7. Proposition SC: WRONG as an exact equivalence.
+
+The forward greedy argument works. The reverse only gives u<BN³ for integer B, or the immediate bound ceil(B)N³ for real B.
+
+There is an admissible counterexample:
+
+  N=1065023=1031·1033, B=2, a=689969,
+  d=2^40=1099511627776≤N²,
+  c=2^21=2097152.
+
+The least residue of a·d^{-1} is 1032129, and c=1032129+N, so j=1<B. The right-hand condition holds.
+
+But
+
+  dc=2^61=2305843009213693952
+     > N³=1208027888215167167.
+
+Every positive 2-smooth integer ≤N³ is 2^i with i≤60, and none is congruent to a. Indeed ord_N(2)=132870 and a=2^61 mod N.
+
+This refutes the unconditional algebraic proposition as stated. It is not an asymptotic counterexample to GRH existence.
+
+Exact fix: add
+
+  d·(least_residue(a d^{-1})+jN)≤N³
+
+on the right. Alternatively admit a ceil(B) height slack, obtaining N^{3+o(1)}, which remains different from literal DSR.
+
+Also distinguish the number of smooth integer labels d≤N² from the number of distinct inverse residues, which is at most phi(N). A lifted-test density bound needs its own smooth-count estimate; “≤Bdelta” is not established as an exact inequality by the argument given.
+
+SC reformulates a search. It does not establish a complexity equivalence proving “no gain,” because the height constraint couples d and the lift, and a constructor could exploit that coupling.
+
+The distinction from Theorem J is correctly drawn: an average fixed-parameter Johnson-class result does not rule out worst-case arithmetic construction. The NP-hardness discussion needs its GRH-totality and deterministic-reduction qualifications; explicit-prime-list randomized hardness is a different statement.
+
+8. Proposition IWD: CORRECT WITH FIXES. The categorical nonimplication claim is OVERCLAIMED.
+
+One-trial success ≥delta/2 and ceil(8/delta) repetitions give failure probability ≤e^{-4}<0.02. The bounded computation has circuit size T=L^{O(1)}. Under the stated all-large-lengths E circuit-hardness hypothesis, IW supplies an O(log T)-seed generator; error <1/2 preserves positive success probability. Enumeration costs T^{O(1)}. The conditional DSR and factoring implications follow. [IW](https://www.math.ias.edu/~avi/PUBLICATIONS/MYPAPERS/IW97/proc.pdf).
+
+For implementation, use a valid explicit density lower bound in the repetition count and charge prime-table generation, trial division, and generator evaluation in T. The power-of-two prime prefix has the requisite asymptotic spectral bound.
+
+“No converse or complexity barrier is known” is defensible. “It would not imply circuit lower bounds because DSR is one explicit problem” is not a proof: one explicit problem can encode a rich family. Replace the categorical assertion by the knowledge claim.
+
+9. Overall verdict: DSR remains open here—CORRECT. “Exact weakest obstacle,” probability typography, and several experiment interpretations—OVERCLAIMED.
+
+TH-wrap is not established as equivalent to DSR or as the weakest sufficient hypothesis for factoring. EQ-dom itself supplies an alternative certificate task without the prescribed hitting format.
+
+TH-wrap also needs a precise definition:
+
+- Reduce numerator and denominator before defining multiplier height; otherwise padding by t·t^{-1} changes the alleged height without changing the residue.
+- Specify how clearing inverse multipliers preserves |u|,|v|≤N³ and w’s Omega budget.
+- Specify the budget on the combined multiplier. DSR generally only bounds Omega(vw) by 4log₂N, not the one-log bound printed for m.
+- Define the tests and require them to return legal final witnesses or affordable dominant rows.
+
+BOX only forces the stated alternative for the restricted canonical positive test. It does not force every DSR constructor into TH-wrap.
+
+The ≤3% assessment is subjective, as disclosed. Neither PT nor BOX supplies mathematical calibration for that number or proves a strict hardness comparison with factoring.
+
+E1’s P1a genuinely failed. The post-hoc observations do not establish that reduced L1 norms are merely a finite-size artifact. A lambda of 0.57 is compatible with a good expander. Mean real parts 0.33–0.86 do not mean near 1 on every prime. Simultaneous approximation needs a quantitative dimension calculation. FN permits constants below random and substantial subpower suppression.
+
+The actual E1 factor-base size range is 5–39; 8–36 describes the post-hoc subset. P1c’s directional pass does not confirm its registered small-order-character explanation: the observed characters have large order.
+
+For E2, BOX proves a lower bound from ell. It does not universally prove ell is worst. I independently recomputed ell’s first hit in all 20 uncensored cases: it equals the recorded m* in every case. That is finite-data confirmation beyond the published post-hoc lower-bound comparison. The ten censored cases do not establish the exact worst target.
+
+Censored values mean “>cap,” not infinity. P2f still fails using the available lower bounds. The seven adverse pairs are seven pairs in a seeded balanced-semiprime scan, not an asymptotic frequency for uniform admissible moduli.
+
+The raw Gauss/canonical comparison also changes b and density. Its whole factor-of-100 difference cannot be assigned to inherited vectors without matched-parameter controls.
+
+10. Literature: OVERCLAIMED and materially incomplete.
+
+Directly relevant missing prior art includes:
+
+- [Hardy–Xu, Helson’s conjecture for smooth numbers, 2025](https://arxiv.org/abs/2511.03430), concerning first absolute moments of Steinhaus sums over smooth numbers.
+- [Hardy–Xu, Character sums over smooth numbers, July 2026](https://arxiv.org/abs/2607.00592), studying precisely the first absolute character moment equal to the canonical multiplicative algebra norm.
+
+The latter’s useful saving requires a modulus sufficiently larger than the summation range. It neither proves FN’s lower bound at x=N−1 nor contradicts its coarse exponent. It does undermine the impression that smooth-character L1 behavior is unexplored or that sub-random norms must be artifacts.
+
+The references there to Harper, Drappeau–Granville–Shao, and Shparlinski also belong in the discussion. Distinguish multiplicative-character L1 norms, additive exponential-sum norms, and character sup norms.
+
+I found no verified prior statement of FN’s exact composite-modulus lower bound or the precise BOX-infinity theorem. That does not certify novelty. FN’s duality is elementary; BOX-infinity combines classical sieve estimates with an old small-offset-modulus congruence idea. [Solinas’s generalized Mersenne work](https://cacr.uwaterloo.ca/techreports/1999/corr99-39.pdf) is background for that idea, not a prior proof of BOX-infinity. PT is an elementary padding reduction.
+
+Ankeny/Bach concern subgroup escape and generation. They do not provide a general theorem that every smooth-number certificate requires small Fourier-algebra norm. [Bach–Sorenson’s random factored smooth-integer generation](https://arxiv.org/abs/2006.07445) is relevant background but does not solve prescribed residues.
+
+The prime-finding analogy is reasonable, with the task specified as uniformly finding a prime in [N,2N]. Polymath’s parity result is not a prime-finding algorithm breaking the square-root bound. Present-day best-known claims need more than a 2012 abstract. [Polymath paper](https://arxiv.org/abs/1009.3956).
+
+Finally, “deterministic subexponential relation collection in F_p* is unknown” is false without a definition: arbitrary full-Q-rank relations are trivial—output (p−1)e_q. Deterministic sieving of candidate relations is also familiar, generally without the required uniform proved yield/rank bound. The substantive unestablished task is short prescribed-target DSR witnesses or sufficiently informative/saturated index-calculus relations. An unsaturated full-rank lattice does not determine discrete logarithms.
+
+Required fixes, ordered by severity:
+
+FATAL:
+- Replace SC’s false equivalence by the height-coupled statement.
+- Withdraw the proved blanket impossibility claim for generic derandomizers.
+- Withdraw TH-wrap’s status as the exact weakest obstacle; formulate a precise restricted sufficient route.
+
+MAJOR:
+- Repair FN’s nonunit translate and Gauss-density proof; reconcile the minorant contradiction.
+- Correct SB’s density quantifier and unsupported finite-group factor 7.
+- Correct PT’s running-time accounting and Pollard–Strassen exponent; remove separation rhetoric.
+- Separate AA’s valid theorem from coarse sharpness and §2.7’s one-hit/all-target confusion.
+- Add first-moment prior art and define the intended relation-collection task.
+- Downgrade E1’s causal diagnosis and separate E2’s theorem, observations, and censoring.
+
+MINOR:
+- Separate B_* from B_N and spell out the valid sieve hypotheses in BOX-infinity.
+- State RW’s mixing/density ranges, exact sampling convention, and distinct endpoint heights.
+- Keep probability assessments and literature-search outcomes explicitly subjective or limited.
