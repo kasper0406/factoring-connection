@@ -177,11 +177,13 @@ class JohnsonOracle:
                 if certified(g, M, length):
                     out.append((off, g))
             return out
-        # general M: only the full-gcd points are needed by the tree (final certification call)
-        j0 = (-(X + lo)) % M
-        for j in range(j0, length, M):
-            if certified(M, M, length):
-                out.append((lo + j, M))
+        # General M: supported ONLY when M itself lies in the region and M >= length (the final certification
+        # call of the trees, M = X + j*). Then any other point z' of the region has gcd(z', M) | z' - M, so
+        # gcd <= length - 1 < exp(sqrt(ln|R| ln M)): only z' = M is certified. Other general-M calls raise
+        # (codex round 2, finding 19: the earlier code silently omitted partial-gcd points for them).
+        if not (X + lo <= M <= X + lo + length - 1 and M >= length):
+            raise NotImplementedError("JohnsonOracle: unsupported general-modulus call")
+        out.append((M - X, M))
         return out
 
 
@@ -287,3 +289,38 @@ def information_decode_and_certify(X: int, h: int, y: int, bits: int) -> Dict[st
             output = j
     return {"depth": orc.calls, "smooth_offsets": smooth_offsets, "output": output,
             "incidences": out["incidences"], "groups": out["groups"]}
+
+
+def crt_query_tree(X: int, h: int, y: int, bits: int) -> Dict[str, object]:
+    """POST-HOC (codex round 2, finding 20): the shallow decision tree. Query q^{a_q} on [X, X + q^{a_q} - 1]
+    for successive primes q = 2, 3, 5, ... until the product of the moduli exceeds 2^bits + h; the answers give
+    X mod M with M > X, i.e. X itself (CRT). The (free) leaf then sieves and one final call certifies the least
+    smooth point. X enters only through oracle answers."""
+    orc = JohnsonOracle(X)
+    V = h + 1
+    M, r = 1, 0
+    for q in primes_upto(y):
+        if M > (1 << bits) + h:
+            break
+        m = q
+        while m * q <= V:
+            m *= q
+        (off, g), = orc.call(m, 0, m)
+        # X + off == 0 mod m  ->  X == -off mod m; combine with X == -r mod M
+        a1, m1, a2, m2 = (-r) % M, M, (-off) % m, m
+        t = ((a2 - a1) * pow(m1, -1, m2)) % m2
+        r = (-(a1 + m1 * t)) % (m1 * m2)
+        M *= m
+    Xrec = (-r) % M
+    if M <= (1 << bits) + h:
+        return {"depth": orc.calls, "output": None, "reconstructed": False}
+    # leaf (free in the query model): find the least smooth offset by trial division
+    out = None
+    for j in range(h + 1):
+        if is_smooth(Xrec + j, y):
+            out = j
+            break
+    if out is not None:
+        ans = orc.call(Xrec + out, 0, V)
+        assert ans and ans[0][0] == out
+    return {"depth": orc.calls, "output": out, "reconstructed": Xrec == X}

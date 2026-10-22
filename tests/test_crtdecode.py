@@ -113,3 +113,23 @@ def test_no_leakage_in_operational_decoders():
     src = inspect.getsource(D)
     for bad in ("window_profile", "factorint", "sympy", "flint"):
         assert bad not in src
+
+
+def test_crt_query_tree_shallow_and_exact():
+    from src.crtdecode.decoders import crt_query_tree
+    rng = random.Random(13)
+    bits, h, y = 34, 1 << 10, 64
+    for _ in range(6):
+        X = rng.randrange(1 << (bits - 1), 1 << bits)
+        prof = window_profile(X, h, y)
+        r = crt_query_tree(X, h, y, bits)
+        assert r["reconstructed"]
+        assert r["output"] == (prof["first"] if prof["first"] >= 0 else None)
+        assert r["depth"] <= 6
+
+
+def test_oracle_rejects_unsupported_general_modulus():
+    import pytest
+    from src.crtdecode.decoders import JohnsonOracle
+    with pytest.raises(NotImplementedError):
+        JohnsonOracle(15).call(30, 0, 2)
