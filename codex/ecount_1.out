@@ -1,0 +1,516 @@
+**OPEN.** I did not verify a polynomial-time reduction from one fixed curve’s single count \(M=\#E(\mathbb Z/N)\) to factoring on **every** ordinary RSA input, even under ERH. Dieulefait–Urroz do not establish that statement: their counting reduction queries twists, while their single-curve malleability result requires the **factorization of the count**.
+
+**PROVED below.** There is nevertheless a square-root-free randomized reduction from \(M\) alone that works whenever \(M\) is even, and outside an explicit exceptional set when \(M\) is odd. That exceptional set is nonempty, including for non-CM curves with ordinary reductions, but has density zero among balanced prime pairs. No novelty claim is intended.
+
+Throughout, “polynomial” means polynomial in \(\log N\). Statements described as printed assertions are distinguished from verified mathematical conclusions.
+
+**PROVED—definitions.** Put
+\[
+n_r=r+1-a_r,\qquad t_r=r+1+a_r.
+\]
+CRT gives
+\[
+M=n_pn_q.
+\]
+The affine count is
+\[
+M_{\rm aff}=(n_p-1)(n_q-1)=(p-a_p)(q-a_q).
+\]
+Consequently
+\[
+M-M_{\rm aff}=p+q+1-a_p-a_q.
+\]
+Thus the projective scheme count is **not** “the affine solutions plus one.” It includes CRT points whose reduction is infinite at exactly one prime.
+
+---
+
+**KNOWN—what Dieulefait–Urroz actually print.** I checked both Luis V. Dieulefait and Jorge Urroz, *Factorization and malleability of RSA modules, and counting points on elliptic curves modulo \(N\)*, arXiv:1911.11004v1 (2019), and their published *Factorization and Malleability of RSA Moduli, and Counting Points on Elliptic Curves Modulo \(N\)*, **Mathematics 8(12), 2126 (2020)**, DOI 10.3390/math8122126. The numbering and hypotheses changed. [Preprint](https://arxiv.org/html/1911.11004), [published article](https://diposit.ub.edu/bitstreams/d86d6ad2-dc9c-4713-9d04-c1d9e61339bb/download).
+
+| Published result | Exact relevant input/hypotheses | Printed conclusion |
+|---|---|---|
+| Theorem 1 | \(N=pq\); projective counts \(M,M_d\); \((d,N)=1\); \(N,M,M_d\) pairwise distinct | Deterministic polynomial factoring |
+| Theorem 2 | Projective **or** affine counts for \(E,E_d\); \((d/p)=-1\) | Polynomial factoring; proof deterministic |
+| Theorem 3 | ERH; curve ordinary at both factors; counting oracle admitting twist queries | Polynomial equivalence with factoring |
+| Theorem 4 | Uniformly random curve, in the local isomorphism-class model; **factorization** of its projective or affine count | Polynomial factoring, claimed probability one |
+| Theorem 5 | Coppersmith: sufficiently many high bits of a factor supplied | Polynomial factoring |
+
+The corresponding preprint numbers are 1/4, 5, 6, and 7. Its Theorem 5 omits ordinarity; Theorem 6 omits the published random-curve qualification. Published Remark 2 excludes the doubly supersingular affine case. Neither version assumes CM or a fixed curve. Theorems 1–3 use count **values**, not their factorizations.
+
+**PROVED—proof audit of the two-count argument.** Write \(u=a_p,v=a_q\), and
+\[
+C_{\epsilon,\eta}=(P+\epsilon u)(Q+\eta v),
+\]
+where \(P=p,Q=q\) for affine counts and \(P=p+1,Q=q+1\) for projective counts. Direct multiplication proves
+\[
+\sum_{\epsilon,\eta}C_{\epsilon,\eta}=4PQ,\qquad
+C_{-,-}C_{+,+}=C_{-,+}C_{+,-}.                 \tag{1}
+\]
+
+The paper’s reconstruction lemma—published Lemma 1, preprint Lemma 3—uses \(4PQ\) to recover the missing counts. This is legitimate in the affine case, because \(PQ=N\). In the projective case,
+\[
+PQ=(p+1)(q+1)=N+p+q+1
+\]
+is precisely the unknown quantity the subsequent proof purports to recover. The displayed projective proof is therefore circular.
+
+This identifies a **gap**, not a proof that the two-projective-count assertion is false.
+
+**PROVED—affine reconstruction, with its exception.** Once the four affine values are reconstructed, try their possible labelings. For example,
+\[
+C_{-,-}+C_{-,+}=2q(p-u).
+\]
+If \(u\ne0\), then \(p\nmid u\), since \(|u|\le2\sqrt p<p\), and its gcd with \(N\) is \(q\). The analogous sum works when \(v\ne0\).
+
+If \(u=v=0\), every affine twist count equals \(N\), and this argument gives no factor. Also, flipping only a zero trace can leave the supplied count unchanged. The published distinctness condition avoids such unchanged inputs in Theorem 1; Theorem 2’s bare printed hypothesis needs its accompanying qualifications.
+
+**PROVED—what the ERH argument needs.** A supplied value \(M\) does not supply \(M_d\). Finding a small nonresidue supplies a twist parameter, not its count. Thus Theorem 3 is an **oracle reduction allowing different curves**, not a reduction using the sole value \(M_E(N)\) for one permanently fixed \(E\).
+
+There is an independent repair of the projective *oracle* conclusion. Choose units \(d,e\) and obtain counts for
+\[
+E,\ E_d,\ E_e,\ E_{de}.
+\]
+If their two Legendre-symbol vectors generate \(\{\pm1\}^2\), their sum is \(4(p+1)(q+1)\), by (1), and factoring follows from the quadratic with root sum
+\[
+p+q=\frac{M_1+M_d+M_e+M_{de}}4-N-1.
+\]
+Independent random symbol vectors generate with probability \(3/8\); verify every proposed factorization. This gives a randomized polynomial reduction using twist queries, without ERH. Under ERH, small parameters span the two-character group, so polynomial enumeration of pairs gives a deterministic reduction. A verified source for the requisite ERH least-Frobenius bound is Jean-Pierre Serre, *Quelques applications du théorème de densité de Chebotarev*, **Publ. Math. IHÉS 54 (1981), 123–201**, §2.5, Theorem 5. [Source](https://www.numdam.org/article/PMIHES_1981__54__123_0.pdf).
+
+**PROVED—malleability proof audit.** Its valid computational core is:
+
+> Given an actual divisor \(D\) of the count satisfying  
+> \(\lvert D-p\rvert=O(N^{1/4})\), recover \(p\) by Coppersmith.
+
+The relevant divisor is the entire local count \(p+1-a_p\), or \(p-a_p\) in the affine case. It need not be a prime factor of the supplied count. Recovering it by the paper’s procedure requires enumerating divisors.
+
+**FALSE—the inference that an average divisor estimate proves a probability-one polynomial divisor bound.** An average does not establish an everywhere bound or literal probability one. The published Proposition 1 attempts a stronger justification, but its proof contains the implication
+\[
+d(n_pn_q)>(\log N)^4
+\ \Longrightarrow\
+d(n_p)>(\log p)^4\ \text{or}\ d(n_q)>(\log q)^4.
+\]
+This does not follow from \(d(ab)\le d(a)d(b)\): two quantities below the stated local thresholds can have product above the global threshold. The displayed \(O(1/\log p)\)-type estimates also do not alone establish the claimed little-\(o\) conclusion. Accordingly, the printed probability-one deterministic polynomial theorem is **UNVERIFIED by this proof**.
+
+**PROVED—additional gap in “Small Difference.”** For three points \((x_i,T/x_i)\), direct calculation gives the circumradius
+\[
+R=
+\frac{\sqrt{\prod_{i<j}((x_ix_j)^2+T^2)}}
+     {2T x_0x_1x_2}.
+\]
+The paper’s expression for \(R\) is this expression **squared**. Near \(x=\sqrt T\), the radius is of order \(\sqrt T\), not \(T\). Its subsequent arc-length argument therefore does not establish the asserted \(N^{1/3}\) conclusion. Moreover, proving that an interval contains at most two divisors would not itself give a polynomial algorithm finding them from a prime factorization.
+
+**KNOWN—mechanisms and literature limits.** The paper’s two-count mechanism is algebraic reconstruction and gcds; its malleability mechanism is divisor enumeration followed by Coppersmith. It is not a Miller-style group-exponent proof. The Coppersmith result itself is valid: Don Coppersmith, *Small solutions to polynomial equations, and low exponent RSA vulnerabilities*, **Journal of Cryptology 10 (1997), 233–260**, §§10–11, especially Theorem 2 and Corollary 2. [Paper](https://citeseerx.ist.psu.edu/document?doi=e3e49df9da4ee17c8ee37e7104177331bb14af99&repid=rep1&type=pdf).
+
+**OPEN—negative literature finding.** Searches did not locate a correction resolving the projective reconstruction gap or a theorem establishing the requested everywhere single-value, fixed-curve reduction. Jorge Jiménez Urroz and Jacek Pomykała’s later *Factoring numbers with elliptic curves*, **Ramanujan Journal 64 (2024), 265–273**, Theorem 1, is a GRH randomized reduction using varying curves and twists; it does not settle this fixed-value question. [Primary preprint, §§1–3](https://arxiv.org/html/2210.04835).
+
+---
+
+**PROVED—single-count reduction without square roots.** Let
+\[
+G_r=E(\mathbb F_r),\qquad H_r=E^{\rm tw}(\mathbb F_r),
+\]
+and let \(\lambda_r,\mu_r\) be their respective exponents. Thus
+\[
+|G_r|=n_r,\quad |H_r|=t_r,\quad n_r+t_r=2r+2.
+\]
+
+Here is the reduction:
+
+1. Choose uniform \(x\bmod N\).
+2. Compute \(\gcd(f(x),N)\), where \(f(x)=x^3+ax+b\). A nontrivial gcd factors \(N\); skip a nonunit otherwise.
+3. Evaluate division-polynomial annihilation tests at \(x\), using scalars
+   \[
+   M,\ M/2,\ M/4,\ldots,M/2^{v_2(M)}.
+   \]
+4. Take gcds of the evaluated test values with \(N\).
+
+These evaluations require no square root. One can work formally in
+\[
+(\mathbb Z/N)[y]/(y^2-f(x))
+\]
+at the point \((x,y)\). Locally, a square \(f(x)\) gives points on \(G_r\); a nonsquare gives points corresponding to \(H_r\).
+
+For even indices use \(\psi_k/(2y)\), since \(2y\) is a unit after step 2. The standard division-polynomial recurrences evaluate these quantities in polynomial time in \(\log k,\log N\); the degree-\(\Theta(k^2)\) polynomial is never expanded. The underlying recurrences and annihilation criterion appear in René Schoof, *Elliptic curves over finite fields and the computation of square roots mod \(p\)*, **Mathematics of Computation 44 (1985), 483–494**, §2. [Source](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf).
+
+**PROVED—success probability.** Put
+\[
+K_r(k)=|\ker([k]:G_r\to G_r)|,\qquad
+L_r(k)=|\ker([k]:H_r\to H_r)|.
+\]
+The number of \(x\in\mathbb F_r\) whose corresponding point is killed is exactly
+\[
+\frac{K_r(k)+L_r(k)-2}{2}.                    \tag{2}
+\]
+Indeed, non-2-torsion points occur in pairs \(\{P,-P\}\); rational 2-torsion is shared by the curve and twist and is counted correctly by this formula.
+
+Consequently the local annihilation probability is
+\[
+\alpha_r(k)=\frac{K_r(k)+L_r(k)-2}{2r}.
+\]
+Conditioning on \(f(x)\ne0\) changes this by \(O(1/r)\). CRT makes the two local choices independent, so a gcd splits with probability
+\[
+\alpha_p(k)(1-\alpha_q(k))+
+(1-\alpha_p(k))\alpha_q(k).                  \tag{3}
+\]
+This is at least \(\min(\alpha_p(k),1-\alpha_p(k))\), whatever the other local probability is.
+
+Since \(n_r\mid M\), \(K_r(M)=n_r\). If \(\mu_r\nmid M\), the twist kernel is a proper subgroup, hence has size at most \(t_r/2\). Hasse’s bound and (2) give
+\[
+\frac12-O(r^{-1/2})\le\alpha_r(M)
+ \le\frac34+O(r^{-1/2}).                     \tag{4}
+\]
+Thus the initial scalar already gives constant success probability whenever at least one twist exponent does not divide \(M\).
+
+**PROVED—every even \(M\) works.** Suppose instead that both twist exponents divide \(M\). Write \(M=2^s m\), \(m\) odd. If \(M\) is even, at least one \(G_r\) has even order. For that \(r\), let \(j\ge1\) be minimal such that \(2^jm\) kills both \(G_r,H_r\).
+
+For \(k=2^{j-1}m\), both kernels have index at most four, because an elliptic curve has at most four geometric 2-torsion points. At least one kernel is proper. Therefore
+\[
+\frac14-O(r^{-1/2})\le\alpha_r(k)
+ \le\frac34+O(r^{-1/2}).
+\]
+Equations (2)–(3) again give constant success probability. All these scalars occur in the algorithm.
+
+Small primes can be removed by fixed trial division. Repeating independent trials therefore gives a Las Vegas expected-polynomial factorization for every even \(M\).
+
+**PROVED—exact exceptional set for this algorithm.** Its remaining failure set is
+\[
+\boxed{\mathcal X_E=
+\{pq:\ M\text{ odd},\quad \mu_p\mid M,\quad\mu_q\mid M\}.}       \tag{5}
+\]
+On this set there is no 2-stripping step, and \([M]\) kills both the curve and twist at both primes. Also, odd local orders imply that the cubic has no local roots. Thus neither the initial cubic gcd nor any final annihilation test separates the factors.
+
+Outside (5), expected polynomial time follows from the preceding bounds. A polynomially bounded number of trials gives exponentially small failure probability there. On (5), this particular algorithm fails for every choice of \(x\).
+
+**OPEN.** This is an obstruction to the specified algorithm, not a hardness theorem for those inputs.
+
+**PROVED—nonempty ordinary examples, including non-CM.** Take
+\[
+p=151,\quad q=181,\quad N=27331,\quad M=29925.
+\]
+For both fixed curves
+\[
+E_0:y^2=x^3+2,\qquad
+E_1:y^2=x^3+27331x+2,
+\]
+the local data are:
+
+| \(r\) | \(n_r\) | \(\lambda_r\) | \(t_r\) | \(\mu_r\) | \(a_r\) |
+|---:|---:|---:|---:|---:|---:|
+| 151 | 171 | 57 | 133 | 133 | \(-19\) |
+| 181 | 175 | 35 | 189 | 63 | \(7\) |
+
+Both twist exponents divide
+\[
+29925=3^2\,5^2\,7\,19.
+\]
+Both reductions are ordinary. \(E_0\) is CM. The second curve is non-CM because
+\[
+j(E_1)=\frac{17639257857717024}{10207903852859}\notin\mathbb Z.
+\]
+The coefficients of \(E_1\) are fixed numerical constants; this exhibits an exceptional input for one fixed non-CM curve.
+
+**KNOWN—CM integrality used here.** CM curves have potential good reduction everywhere: Jean-Pierre Serre and John Tate, *Good reduction of abelian varieties*, **Annals of Mathematics 88 (1968), 492–517**, Theorem 6(a). Good reduction makes \(j\) integral, and a negative valuation remains negative after finite extension. Hence a rational nonintegral \(j\) excludes CM. [Primary paper](https://wstein.org/papers/bib/Serre-Tate-Good_Reduction_of_Abelian_Varieties.pdf).
+
+**PROVED—size of the exceptional set.** For every fixed non-CM \(E/\mathbb Q\),
+\[
+\#\{(p,q)\in[X,2X]^2:pq\in\mathcal X_E\}
+=o\!\left(\frac{X^2}{\log^2X}\right).          \tag{6}
+\]
+Here is a proof, rather than an independence heuristic.
+
+For sufficiently large auxiliary primes \(\ell\), the adelic image permits independent full \(\mathrm{GL}_2(\mathbb F_\ell)\) factors. Consider the conjugacy-invariant event:
+
+- \(g_p\) has eigenvalues \(-1,t\), with \(t\ne\pm1\);
+- \(g_q\) has no eigenvalue \(1\).
+
+Then
+\[
+\ell\mid t_p,\qquad \ell\nmid n_pn_q,
+\]
+so \(pq\notin\mathcal X_E\). The first event has probability
+\[
+\frac{\ell-3}{(\ell-1)^2}\asymp\frac1\ell,
+\]
+and the second has probability bounded below by an absolute positive constant.
+
+For any finite collection \(S\) of sufficiently large \(\ell\), Chebotarev and the product image therefore bound the exceptional density by
+\[
+\prod_{\ell\in S}(1-c/\ell).
+\]
+Letting \(S\) grow makes this product tend to zero. Apply finite-extension Chebotarev first, then let \(S\) grow; no uniform effective independence assertion is needed.
+
+The inputs are Jean-Pierre Serre, *Propriétés galoisiennes des points d’ordre fini des courbes elliptiques*, **Inventiones Mathematicae 15 (1972), 259–331**, §4.4, Theorem 3, and Serre’s 1981 paper, §2.1, Theorem 1. [Open-image theorem](https://wstein.org/sage_summer/bsd_comp/Serre-properties_galoisiennes_des_points_dordre_fini_des_courbes_elliptiques.pdf), [Chebotarev](https://www.numdam.org/article/PMIHES_1981__54__123_0.pdf).
+
+**PROVED—CM version of (6).** Inert good primes have trace zero and even local count, hence cannot occur in (5). For split primes, use the CM adelic open-image theorem over the CM field: Serre 1972, §4.5, corollary to Theorem 5. For auxiliary \(\ell\) split in that field, the Cartan is \((\mathbb F_\ell^\times)^2\). The same event—one eigenvalue \(-1\), neither eigenvalue \(1\)—again has probability \(\asymp1/\ell\). The sum of \(1/\ell\) over these split auxiliary primes diverges, so the same finite-set argument proves density zero, including conditional on ordinary prime pairs.
+
+No quantitative rate in \(X\), or infinitude of \(\mathcal X_E\) for a specified curve, is claimed.
+
+**PROVED—useful special case.** If \(E\) has rational 2-torsion, every good odd local count is even. Therefore the one-count map for such a fixed curve is factoring-equivalent by an unconditional randomized polynomial reduction.
+
+**PROVED—if the projective count is factored, all inputs work randomly.** This also repairs part of the malleability conclusion without divisor enumeration. Test all scalars \(M/\ell^j\) obtained by stripping powers of each supplied prime divisor \(\ell\).
+
+Only the odd-\(M\) exceptional case remains to explain. At a local prime, the exponents of \(G_r,H_r\) cannot be equal. Indeed, suppose both equal an odd \(L\). Write their group structures as
+\[
+G_r\simeq C_d\times C_L,\qquad H_r\simeq C_e\times C_L,
+\]
+where \(d,e\mid L\) and \(d,e\mid r-1\). Since \(L\) divides both orders, it divides \(r+1\). Thus \(d=e=1\), giving both orders \(L=r+1\), contradicting oddness. The group-structure facts follow from rational full torsion and the Weil pairing; see also Schoof’s 1995 exposition, §3. [Source](https://www.numdam.org/article/JTNB_1995__7_1_219_0.pdf).
+
+Choose a prime where the two exponents have different valuations. At some stripping stage one group is entirely killed and the other has a proper kernel. Equation (2) gives a local annihilation probability bounded away from zero and one, hence constant splitting probability.
+
+This proves a randomized polynomial reduction from **factored projective \(M\)** for every input. It does not prove the paper’s deterministic claim, nor its corresponding everywhere affine assertion.
+
+---
+
+**KNOWN—factoring implies counting.** Factor \(N\), run Schoof at \(p,q\), multiply. This is unconditional deterministic polynomial time. Schoof 1985, §3, proves the prime-field algorithm; §2 gives the Frobenius relation and Hasse bound. [Source](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf).
+
+**OPEN—negative algorithmic finding.** I found no verified general polynomial algorithm computing the fixed-curve \(M\) before factoring, nor an established general speed advantage over factoring followed by point counting. This is a literature finding, not a lower bound. Explicit factor-free formulas exist but can require exponentially many terms.
+
+**PROVED—why directly running Schoof over \(\mathbb Z/N\) does not supply it.** Schoof needs the local operators \(z\mapsto z^p\) and \(z\mapsto z^q\). Substituting \(z\mapsto z^N\) does not supply either operator.
+
+There is also a concrete obstruction to constructing the componentwise Frobenius on a finite étale algebra. For
+\[
+B=(\mathbb Z/N)[X]/f(X),
+\]
+let \(r_p,r_q\) be the numbers of irreducible factors locally. Then
+\[
+\dim\ker(\Phi_p-I)=r_p,\qquad
+\dim\ker(\Phi_q-I)=r_q.
+\]
+If these dimensions differ, elimination on an explicit matrix \(\Phi-I\) must encounter a nonzero nonunit, yielding a factor.
+
+The discriminant detects the parity of these dimensions: Frobenius’s sign on the roots is \((-1)^{\deg f-r_r}\). For the odd division polynomial, its action on
+\[
+(\mathbb F_\ell^2\setminus\{0\})/\{\pm1\}
+\]
+has sign \((\det g/\ell)\). One proof is that odd-order elementary generators make the sign trivial on \(\mathrm{SL}_2\), while a generator of the determinant group gives sign \(-1\). Thus \((N/\ell)=-1\) forces unequal local ranks and factors \(N\). This proves the stated scope of Prop FROB.
+
+It does **not** prove that every numerical trace or count residue requires construction of that operator.
+
+**KNOWN—Hecke operators and modular symbols.** Direct Hecke formulas sum over matrices with determinant \(N\); the standard upper-triangular formula has \(\sigma_1(N)\) terms. Modular symbols give factor-free computations, but the standard algorithms are not polynomial in \(\log N\). See William A. Stein, *Modular Forms, a Computational Approach*, **AMS Graduate Studies in Mathematics 79 (2007)**, Chapter 2, Definition 2.26 and Algorithm 2.37, and the chapter on general modular symbols. [Hecke formulas](https://wstein.org/books/modform/modform/level_one.html), [modular symbols](https://wstein.org/books/modform/modform/modular_symbols.html).
+
+**KNOWN—Edixhoven–Couveignes does not remove the composite-index issue.** Jean-Marc Couveignes and Bas Edixhoven, editors, *Computational Aspects of Modular Forms and Galois Representations*, **Annals of Mathematics Studies 176, Princeton University Press (2011)**:
+
+- Theorem 15.1.1 computes \(\tau(p)\), for prime \(p\), deterministically in polynomial time.
+- Theorem 15.2.1 takes the **factorization of the index** as input.
+- Corollary 15.2.2 retains that requirement.
+
+For arbitrary congruence subgroups, the analogous GRH probabilistic theorem likewise takes a factored index: Ariyan Javanpeykar, *Polynomial bounds for Arakelov invariants of Belyi curves*, **Algebra & Number Theory 8 (2014), 89–140**, Theorem 5.0.1, attributed there to Couveignes–Edixhoven–Bruin. [Book](https://arxiv.org/pdf/math/0605244), [general-level theorem](https://msp.org/ant/2014/8-1/ant-v8-n1-p04-s.pdf).
+
+**KNOWN—\(p\)-adic methods.** They compute local Frobenius data over a specified finite field and its \(p\)-adic lift. For example, Kiran S. Kedlaya, *Counting points on hyperelliptic curves using Monsky–Washnitzer cohomology*, **Journal of the Ramanujan Mathematical Society 16 (2001), 323–338**, §§2–5, explicitly constructs a Frobenius lift; its complexity statement fixes the characteristic. Satoh’s canonical-lift approach likewise starts with the characteristic and an ordinary finite-field curve. [Kedlaya’s primary paper](https://arxiv.org/html/math/0105031).
+
+**OPEN/UNVERIFIED.** No composite-modulus shortcut through these methods was verified. I did not verify a section-level statement from Satoh’s original 2000 paper, so I do not attribute a more precise theorem to it here.
+
+**PROVED—modular coefficients are different data.** For the elliptic newform,
+\[
+a_N=a_pa_q,
+\]
+whereas
+\[
+M=N+p+q+1-(p+1)a_q-(q+1)a_p+a_pa_q.         \tag{7}
+\]
+Neither is an algebraic replacement for the other given only \(N\).
+
+For another illustration, CRT gives
+\[
+a_N=\sum_{x\bmod N}\left(\frac{f(x)}N\right).
+\]
+Each Jacobi symbol is easy; summing \(N\) terms is exponential in the input length.
+
+**KNOWN—exact Bach–Charles statement.** Eric Bach and Denis Charles, *The hardness of computing an eigenform*, **arXiv:0708.1192v2 (2007)**, Theorem 2.2: a polynomial algorithm computing coefficients at arbitrary indices of a fixed normalized non-CM eigenform of even weight yields polynomial factoring on a density-one subset of RSA moduli. The proof queries **both \(a(N)\) and \(a(N^2)\)**. Apart from finitely many fixed-form exceptional primes, failure occurs when both local coefficients vanish. Theorem 2.1 supplies the zero-prime density bounds. Corollary 2.8 gives all RSA moduli for \(\tau\), conditional on Lehmer’s conjecture. No ERH assumption is needed for the algebraic reduction. [Primary paper, §2](https://arxiv.org/html/0708.1192v2).
+
+**PROVED—fully explicit elliptic-curve version.** Given
+\[
+A=a_N=uv,\qquad
+B=a_{N^2}=(u^2-p)(v^2-q),
+\]
+compute
+\[
+S=A^2+N-B=qu^2+pv^2.
+\]
+The roots of
+\[
+Z^2-SZ+NA^2
+\]
+are \(qu^2,pv^2\). Their gcds with \(N\) factor it whenever at least one trace is nonzero, since \(|u|<p,\ |v|<q\). If exactly one trace vanishes, use the nonzero root.
+
+For ordinary reductions this always works. If both traces vanish, \(A=0,B=N\), and this reduction fails. The projective count then instead gives
+\[
+p+q=M-N-1.
+\]
+Thus these exceptional cases demonstrate a difference between the invariants.
+
+For nontrivial nebentypus, the normalization giving the same symmetric-equation argument is \(a(p)^2/(\chi(p)p^{w-1})\); the printed normalization in Bach–Charles §2 needs this adjustment. The rational weight-two proof above has no such ambiguity.
+
+**OPEN—precise oracle comparison.**
+
+| Supplied information, besides \(N,E\) | Established consequence |
+|---|---|
+| Factors \(p,q\) | Compute all quantities discussed |
+| \(M\) alone | Factor outside (5); every even \(M\) works |
+| Factorization of projective \(M\) | Randomized polynomial factoring everywhere, by the proof above |
+| \(a_N,a_{N^2}\) | Deterministic factoring when at least one trace is nonzero |
+| Just \(a_N\) at this one input | No general factoring reduction verified |
+| Just the two integers \((a_p,a_q)\), without factor labels | Their product gives \(a_N\); general equivalence with factoring or \(M\) was not verified |
+
+An oracle computing \(a(n)\) for arbitrary indices is stronger than one supplied value \(a_N\), because it permits the \(N^2\) query. In contrast, smoothness and lifting give
+\[
+\#E(\mathbb Z/N^k)=N^{k-1}M;
+\]
+counting at powers adds no analogous information. No strict complexity separation between the standalone invariants is proved.
+
+---
+
+**OPEN—the general lattice problem in the question.** For arbitrary unknown shifts,
+\[
+M=(p+B)(q+A),\qquad |A|,|B|=O(N^{1/4}),
+\]
+no verified general polynomial recovery algorithm was found.
+
+**PROVED—why a universal theorem would be substantial.** The allowed instance \(A=B=0,\ M=N\) includes ordinary integer factoring itself. Thus the bounds alone cannot presently be cited as a solved polynomial factoring problem.
+
+With \(D=M-N\), multiplication by \(p\) yields
+\[
+Ap^2+ABp+BN-Dp=0.                           \tag{8}
+\]
+The variable bounds are \(N^{1/2},N^{1/4},N^{1/4}\); the scaled height is \(O(N^{5/4})\). Equation (8) is a three-variable problem. A bivariate small-root theorem cannot simply be applied to it.
+
+**KNOWN—what Coppersmith does provide.** If a particular divisor \(p+B\) is supplied, its \(O(N^{1/4})\) proximity to \(p\) is at the familiar balanced-factor threshold, with constant-size interval subdivision handling constant factors. This is the valid inner step in Dieulefait–Urroz. Knowing only the product \(M\) does not supply that divisor.
+
+Coppersmith 1997, Theorem 2/Corollary 2, gives the bivariate integer bound \(XY\le W^{2/(3\delta)}\); §12 explains the additional difficulties in more variables. Ellen Jochemsz and Alexander May, *A Strategy for Finding Roots of Multivariate Polynomials with New Applications in Attacking RSA Variants*, **ASIACRYPT 2006, LNCS 4284, 267–282**, §§1–2, explicitly present a heuristic multivariate strategy. It is not an unconditional root-recovery theorem for (8). [Primary paper](https://www.cits.ruhr-uni-bochum.de/imperia/md/content/may/paper/jochemszmay.pdf).
+
+**KNOWN—implicit factoring bounds do not certify this regime.** The rigorous two-modulus shared-MSB theorem of Jean-Charles Faugère, Raphaël Marinier and Guénaël Renault, *Implicit Factoring with Shared Most Significant and Middle Bits*, **PKC 2010, LNCS 6056, 70–87**, Theorem 1, requires \(t\ge2\alpha+3\) shared bits when the complementary factors have \(\alpha\) bits. For balanced moduli this does not cover the roughly quarter-modulus-bit agreement suggested by the Hasse error. Furthermore, the local counts here are generally composite factors, not RSA primes. [Authors’ theorem text](https://citeseerx.ist.psu.edu/document?doi=82da597a0b6ea72150995d87732209a529a96bd6&repid=rep1&type=pdf).
+
+**OPEN—negative finding.** Neither these verified bounds nor the checked heuristic frameworks establish recovery from the proposed shift bounds. I do not claim an exhaustive classification of all recent lattice constructions.
+
+---
+
+**PROVED—partial counts depend on the curve and on the requested output.** For \(\ell\nmid N\Delta_E\), let \(g_r\) be Frobenius on \(E[\ell]\). Then
+\[
+M\bmod\ell=\det(I-g_p)\det(I-g_q).            \tag{9}
+\]
+For odd \(\ell\), the number of roots of \(\psi_\ell\) over \(\mathbb F_r\) is
+\[
+\frac{\ell^{\dim\ker(g_r-I)}
++\ell^{\dim\ker(g_r+I)}-2}{2}.               \tag{10}
+\]
+Indeed, an \(x\)-coordinate is rational exactly when Frobenius sends its point to itself or its negative. The root count modulo \(N\) is the product of these local numbers.
+
+These are functions of two Frobenius classes. Knowing their determinant product \(N\bmod\ell\), or an abelian Artin-symbol product, generally does not determine them.
+
+**PROVED—easy cases exist.** If \(E\) has rational \(\ell\)-torsion, then \(M\equiv0\bmod\ell\) at the good primes under consideration. Full rational 2-torsion makes the cubic-root count modulo \(N\) constantly \(9\), and \(|E[2](\mathbb Z/N)|\) constantly \(16\).
+
+Therefore a universal assertion that every partial elliptic count determines factor residues is **FALSE as an algebraic information statement**.
+
+**PROVED—an explicit non-CM partial-count equivalence.** Fix
+\[
+E_*:y^2=x^3+6x-7=(x-1)(x^2+x+7).
+\]
+Its \(j=2048/3\) is nonintegral, hence it is non-CM. The quadratic factor has discriminant \(-27\). At every good prime \(r>3\), its cubic-root count is
+\[
+R_r=2+\left(\frac{-3}{r}\right)
+=\begin{cases}
+3,&r\equiv1\pmod3,\\
+1,&r\equiv2\pmod3.
+\end{cases}
+\]
+Thus
+\[
+R_N=
+\begin{cases}
+9,&p,q\equiv1\pmod3,\\
+1,&p,q\equiv2\pmod3,\\
+3,&p\not\equiv q\pmod3.
+\end{cases}                                \tag{11}
+\]
+
+Given \(N\), computing this root count is polynomially equivalent to deciding **fixed-base quadratic residuosity of \(-3\)**:
+
+- If \(N\equiv2\pmod3\), the local signs are mixed and \(R_N=3\).
+- If \(N\equiv1\pmod3\), \(R_N=9\) means square at both primes; \(R_N=1\) means nonsquare at both.
+
+It is also equivalent to \(\varphi(N)\bmod3\): in the latter two cases that residue is respectively \(0,1\); in the mixed case it is \(0\).
+
+For this same curve,
+\[
+|E_*[2](\mathbb Z/N)|=
+\begin{cases}
+16,&R_N=9,\\
+4,&R_N=1,\\
+8,&R_N=3.
+\end{cases}
+\]
+Hence even the abstract 2-torsion group size can encode this open fixed-base residuosity bit. Meanwhile \(M\bmod2=0\) is trivial for this curve.
+
+**OPEN—computational status of the bit.** Factoring computes it. My searches did not verify a general polynomial algorithm without factoring, or a reduction from factoring to this single fixed-base residuosity problem. Equation (11) is an exact equivalence between the stated partial outputs; it does not establish factoring-equivalence.
+
+**PROVED—relation to Prop RANK.** For odd \(\ell\nmid N\),
+\[
+s=p+q\equiv N+1-\varphi(N)\pmod\ell.
+\]
+The roots of \(X^2-sX+N\) give \(\{p,q\}\bmod\ell\). If \((N/\ell)=1\), this determines their common Legendre sign, hence the fixed-base residuosity of
+\[
+\ell^*=(-1)^{(\ell-1)/2}\ell.
+\]
+This proves the linear-invariant implication. Formula (9), with its extra trace data, does not have that universal form.
+
+**PROVED—cubic discriminant information.** For any separable cubic, the local root count belongs to \(\{0,1,3\}\); discriminant sign is negative precisely for the one-root case. Thus, when the discriminant’s Jacobi symbol is \(+1\), a product root count equal to \(1\) detects that both local discriminant signs are negative. Computing the Jacobi symbol alone only supplies their product.
+
+**OPEN.** For an arbitrary fixed \(E,\ell\), polynomial computation of (9), (10), or the cubic-root count without factoring was not verified. Some cases are constant, some reduce to fixed-base residuosity, and some involve nonabelian Frobenius data. No universal equivalence among these tasks follows.
+
+**PROVED—consistency with PT and FROB/RANK.** These conclusions do not contradict the project’s pure-tree theorem:
+
+- PT restricts the programs and their dependence on the input. Integer reciprocity computations, count-oracle answers, and schedules depending on the supplied \(M\) are outside that model.
+- The reduction above obtains factors through actual component-separating gcds.
+- FROB concerns producing an explicit operator. A numerical partial-count oracle need not produce it.
+- The relevant rank argument concerns matrices over \(\mathbb Z/N\); \(E[2](\mathbb Z/N)\) itself is an abstract finite group, not a \(\mathbb Z/N\)-module.
+
+---
+
+**PROVED—finite computational checks and reproduction.** All files were written only in the scratch directory:
+
+- [census.py](/Volumes/git/factoring-connection/codex/scratch/ecount_1/census.py)
+- [xonly.py](/Volumes/git/factoring-connection/codex/scratch/ecount_1/xonly.py)
+- [verify.py](/Volumes/git/factoring-connection/codex/scratch/ecount_1/verify.py)
+
+Commands:
+```sh
+cd /Volumes/git/factoring-connection/codex/scratch/ecount_1
+/Volumes/git/factoring-connection/.venv/bin/python census.py
+/Volumes/git/factoring-connection/.venv/bin/python xonly.py
+/Volumes/git/factoring-connection/.venv/bin/python verify.py
+```
+
+The census used primes below 2000, excluded bad reduction, and considered distinct equal-bit-length prime pairs:
+
+| Curve | Pairs | Odd \(M\) | Both twist exponents divide \(M\) | Exceptions (5) |
+|---|---:|---:|---:|---:|
+| \(y^2=x^3+x+1\) | 12553 | 1539 | 15 | 0 |
+| \(y^2=x^3+2\) | 12557 | 1446 | 3430 | 1 |
+
+The second curve’s exceptional pair was exactly \((151,181)\) above. This finite census is not evidence that the first curve’s exceptional set is empty.
+
+For both exceptional-example curves, every unit \(x\) annihilation test at \(M=29925\) vanished: \(151/151\) values locally at 151 and \(181/181\) at 181. Stripping \(5^2\) instead gives
+\[
+k=1197,\quad x=1,\quad F_k(x)\equiv1510\pmod{27331},
+\]
+and
+\[
+\gcd(1510,27331)=151.
+\]
+Thus this exceptional input is resolved by an additional small-prime stripping step.
+
+For \(E:y^2=x^3+x+1,\ N=101\cdot127=12827\),
+\[
+M=105\cdot126=13230,\qquad
+F_M(2)\equiv9017,\qquad \gcd(9017,12827)=127.
+\]
+
+Verification produced:
+
+```text
+division-polynomial versus group-law comparisons 16380 all passed
+balanced pairs checked against kernel formula 1088
+minimum best-stage split probability 0.42639593908629436
+```
+
+These verify the implementation and finite examples; the general claims rest on the proofs above.
+
+**Verdict.** **KNOWN:** factoring gives the count by Schoof; varying-curve counting reductions and Bach–Charles coefficient-pair reductions exist, with the stated qualifications. **PROVED here:** square roots are unnecessary for annihilation tests; one projective count factors every even-\(M\) input and all inputs outside the explicit density-zero set (5); that set contains ordinary CM and non-CM examples; factored projective counts give randomized polynomial factoring everywhere; and a fixed non-CM cubic-root/2-torsion count is equivalent to fixed-base \(-3\) residuosity and \(\varphi(N)\bmod3\). **OPEN:** an everywhere reduction from one arbitrary fixed ordinary non-CM curve’s single count value, a general factor-free polynomial counting algorithm, and polynomial recovery from the two unknown Hasse-sized shifts alone. The checked Dieulefait–Urroz proofs contain material gaps and should not be cited as settling those questions.
