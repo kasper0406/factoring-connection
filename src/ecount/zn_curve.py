@@ -81,6 +81,8 @@ def ec_add(P: Point, Q: Point, a: int, N: int, ctr: Optional[Counters] = None) -
         ctr.gcds += 1
     g = gcd((x2 - x1) % N, N)
     if g == 1:
+        if ctr is not None:
+            ctr.invs += 1
         lam = (y2 - y1) * int(gmpy2.invert(x2 - x1, N)) % N
     elif g != N:
         raise Split(g, "add:x")
@@ -92,6 +94,8 @@ def ec_add(P: Point, Q: Point, a: int, N: int, ctr: Optional[Counters] = None) -
             return None
         if h != 1:
             raise Split(h, "add:y")
+        if ctr is not None:
+            ctr.invs += 1
         lam = (3 * x1 * x1 + a) * int(gmpy2.invert(2 * y1, N)) % N
     x3 = (lam * lam - x1 - x2) % N
     y3 = (lam * (x1 - x3) - y1) % N
@@ -241,7 +245,11 @@ def coppersmith_linear(N: int, u: int, X: int, m: int, t: int, ctr: Optional[Cou
 def find_divisor_near(N: int, center: int, W: int, blog: float, ctr: Optional[Counters] = None,
                       m: int = 5, force_lattice: bool = False) -> Optional[int]:
     """Find a divisor b >= 2^blog of N with |b - center| <= W, by brute force for small W and Coppersmith chunks
-    otherwise.  Deterministic.  Returns b or None."""
+    otherwise.  Deterministic.  Returns b or None.
+
+    TOY IMPLEMENTATION (codex/ecount_2.out item 5): the lattice dimension is fixed (m = t = 5 unless the bound is
+    < 2 bits), so the radius per call is X ~ 2^{(2/9) n} and covering a window of width ~N^{1/4} costs ~2^{n/36}
+    calls.  A polynomial version needs m growing with n (Howgrave-Graham/May schedule); not implemented."""
     n = N.bit_length()
     if W <= 4096 and not force_lattice:
         for x in range(-W, W + 1):

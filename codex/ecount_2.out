@@ -1,0 +1,390 @@
+**Overall verdict: MAJOR REVISION.**
+
+Full report saved to [ecount_2.out](/Volumes/git/factoring-connection/codex/scratch/ecount_2/ecount_2.out). The requested repository-level destination is read-only; this is the writable scratch copy.
+
+The central arithmetic survives: I found no counterexample to Lemma ZN, TW outside `Exc(E)`, or TW* outside `X_E`. The transcription of the blind round’s 2-stripping argument to left-to-right double-and-add is valid. However, the opening claim exceeds the proved domain; direct prior art for the fixed-curve twist mechanism was missed; the CM density argument drops an essential restriction; and §4 falsely identifies three different partial-count observables. The implemented Coppersmith fallback also lacks the claimed polynomial complexity guarantee.
+
+I read `codex/ecount__1.out`, the pre-registration, operational module, harness, driver, tests, and relevant raw records. I ignored E3(c)’s running/FILL result. All new computation was small. Reproduction scripts and results are in [audit.py](/Volumes/git/factoring-connection/codex/scratch/ecount_2/audit.py), [audit_results.json](/Volumes/git/factoring-connection/codex/scratch/ecount_2/audit_results.json), [audit_secondary.py](/Volumes/git/factoring-connection/codex/scratch/ecount_2/audit_secondary.py), and [audit_secondary_results.json](/Volumes/git/factoring-connection/codex/scratch/ecount_2/audit_secondary_results.json).
+
+**1. Theorem TW and operational arithmetic**
+
+**CORRECT — Lemma ZN, under its representation invariant.** Inputs must be genuine points on the same smooth curve, each either affine at both primes or \(O\) at both. This does not represent every element of \(E(\mathbb Z/N)\), but reaching a mixed affine/infinite result produces a factor.
+
+If \(x_1\ne x_2\) at both primes, the chord denominator is a unit and the returned pair is CRT-correct. A proper gcd of \(x_2-x_1\) already factors \(N\). If \(x_1=x_2\) everywhere, the curve equation gives \(y_2=\pm y_1\) locally. At a prime, \(y_1+y_2=0\) means an inverse pair, including \(y_1=y_2=0\); otherwise the pair is equal and \(y_1\ne0\). Therefore:
+
+- \(h=N\) gives \(O\) at both primes.
+- \(h=1\) permits the tangent formula at both primes.
+- Proper \(h\) catches the mixed inverse/tangent case.
+
+There is no omitted mixed-sign or local order-2 case. Returning a factor before an otherwise representable sum is also legitimate.
+
+The code implements this argument correctly. Independent checks covered 10,985 additions and 10,985 scalar multiplications against separate field arithmetic on three small CRT curves, including rational 2-torsion. Every returned value was correct; all 4,448 addition splits were proper factors.
+
+**CORRECT — the twist point and isomorphism.** Substitution gives
+\[
+(\delta^2)^2
+=(\delta x_0)^3+a\delta^2(\delta x_0)+b\delta^3
+=\delta^3f(x_0)=\delta^4.
+\]
+After excluding nonunits, this is a point on a smooth quadratic twist.
+
+Writing \(\delta=cs^2\) locally, the explicit isomorphism to \(cy^2=f(x)\) is
+\[
+(X,Y)\longmapsto
+\left(X/\delta,\;sY/\delta^2\right).
+\]
+It sends the constructed point to \((x_0,s)\). Changing the sign gives its negative, preserving multiplication-kernel membership. Thus the abscissa count does not require the constructed signed point to be uniform on the twist group.
+
+**GAP in notation.** \(E'(\mathbb F_r)\) must mean the nonsquare twist **locally at \(r\)**. It cannot mean one globally fixed quadratic twist whose order is \(r+1+a_r\) at every good prime: a fixed rational twisting parameter is square at some primes. The algorithm and density arguments use the local interpretation correctly.
+
+**CORRECT — the displayed \(\rho\) is a lower bound.** There are
+\[
+(A_p-1-r_p)/2
+\]
+abscissae with \(f\) a nonzero square. There are
+\[
+(A'_q-|H'_q|)/2
+\]
+nonsquare abscissae whose twist points survive multiplication by \(M\).
+
+The latter assertion needs \(O\) and all rational \(y=0\) points in \(H'_q\). The identity always belongs. If a \(y=0\) point exists, the original group has 2-torsion, so its exponent—and hence every promised \(M\)—is even. Those points therefore belong too. The two disjoint mixed-character patterns give exactly the displayed numerator divided by \(4pq\) as a guaranteed-success event. Delta gcds and intermediate splits can add success.
+
+**CORRECT — the bound outside `Exc(E)`.** If a twist exponent does not divide \(M\), its kernel is proper and has size at most half the group order. One orientation contributes at least
+\[
+\frac{((p+O(\sqrt p))/2)((q+O(\sqrt q))/4)}{pq}
+=\frac18-O(p^{-1/2}).
+\]
+Handle bounded small primes by trial division before asserting a uniform expected-polynomial reduction. I found no input outside `Exc(E)` violating the theorem.
+
+**CORRECT — TW*’s transcription of cx1, with minor probability bookkeeping.** Every \(M/2^t\) obtained by stripping trailing zero bits is a binary prefix of \(M\), so `ec_mul(M,...)` visits it. The minimal-\(j\) argument gives kernel indices at most four at \(k=2^{j-1}m\), with at least one proper kernel. Consequently the local annihilation probability lies between
+\[
+1/4-O(r^{-1/2})\quad\text{and}\quad3/4+O(r^{-1/2}),
+\]
+giving constant CRT separation probability. Earlier splits only help.
+
+The exact formula
+\[
+\alpha_r(k)=\frac{K_r(k)+L_r(k)-2}{2r}
+\]
+counts shared rational 2-torsion when \(k\) is even. Operational TW* excludes \(f(x)=0\). Its exact nonroot numerator should therefore be
+\[
+K_r(k)+L_r(k)-2-2r_r[\,2\mid k\,].
+\]
+Divide by \(2r\) for the unconditioned nonroot mass, or by \(2(r-r_r)\) after conditioning. This changes the asymptotic bounds only by \(O(1/r)\).
+
+**CORRECT — rational 2-torsion, factored-count repair, and SR2.** Rational 2-torsion specializes injectively at these good odd primes, so \(M\) is even and `X_E` is empty. For doubly supersingular inputs,
+\[
+M=(p+1)(q+1),\qquad p+q=M-N-1,
+\]
+giving deterministic quadratic recovery. These inputs belong to `Exc(E)` but are covered by TW* and SR2.
+
+The factored-count repair is correctly attributed to cx1. For a self-contained proof, restore its group-structure step: if both local exponents equalled an odd \(L\), write the groups as \(C_d\times C_L\) and \(C_e\times C_L\), where \(d,e\mid L,r-1\). The sum of the orders implies \(L\mid r+1\). Hence \(d=e=1\), giving both orders \(L=r+1\), a contradiction. Stripping a prime where the exponents have different valuations then separates kernels. This requires additional scalar tests using the supplied factorization.
+
+**CORRECT — Corollary EQ on its promised domain.** One count value and expected constantly many trials suffice outside `X_E`; Schoof supplies the deterministic reverse reduction. The \(8+o(1)\) bound is conservative. This promise must remain attached elsewhere.
+
+**GAP / WRONG — the CM density transcription.** For non-CM \(E\), the finite-set Chebotarev argument is valid using adelic open image to obtain independent sufficiently large auxiliary-prime factors. Separate mod-\(\ell\) surjectivity alone would not establish the product image. The event with eigenvalues \(-1,t\), \(t\ne\pm1\), has the stated probability
+\[
+(\ell-3)/(\ell-1)^2
+\]
+and excludes `Exc(E)`.
+
+For CM curves, unconditional density zero for `Exc(E)` is false. Inert good primes have trace zero, and every pair of inert primes lies in `Exc(E)`; these pairs have density \(1/4\). The notes’ census confirms this.
+
+The conclusion for `X_E` is repairable: odd \(M\) excludes inert primes. Restrict \(p,q\) to primes split in the CM field, then apply the Cartan/open-image argument with split auxiliary \(\ell\). This restriction appeared in cx1 and was lost in v2. Specify balanced prime-pair density in growing intervals. The references are Serre, *Inventiones Mathematicae* **15** (1972), 259–331, §§4.4–4.5, and *Publications Mathématiques de l’IHÉS* **54** (1981), 123–201. [Serre 1972](https://wstein.org/sage_summer/bsd_comp/Serre-properties_galoisiennes_des_points_dordre_fini_des_courbes_elliptiques.pdf), [Serre 1981](https://www.numdam.org/article/PMIHES_1981__54__123_0.pdf).
+
+**CORRECT — `X_E` is an exceptional set for the proof, not this code’s exact failure set.** For cx1’s example
+\[
+E:y^2=x^3+27331x+2,\quad N=151\cdot181=27331,\quad M=29925,
+\]
+exhaustive enumeration gave 4,797 structural TW splits and 9,153 structural TW* splits among all 27,331 \(x_0\).
+
+The terminal scalar annihilates everything locally, but intermediate computations split. This does not contradict cx1’s failure statement for its different terminal division-polynomial tests. Neither exceptional set should be called this affine code’s exact failure set. Explicitly record the pre-registered “fails iff” assertion as refuted.
+
+**2. Literature and novelty**
+
+**OVERCLAIM — the fixed-curve twist mechanism already has direct prior art.** Steven D. Galbraith, *Mathematics of Public Key Cryptography*, Cambridge University Press (2012), §24.2.4, Example 24.2.30, explicitly starts with one fixed \(E\) and its count \(M\), chooses random \(x\), uses a twist without computing a square root, computes \([M]\) using x-coordinate arithmetic, and extracts a factor by gcd. In the author’s extended version this is p. 520.
+
+Its unqualified success assertion does not supply the notes’ careful exceptional-set theorem. Distinguish the established algorithmic idea from a newly verified domain/probability statement. [Author’s chapter, Example 24.2.30](https://www.math.auckland.ac.nz/~sgal018/crypto-book/ch24.pdf).
+
+**WRONG — §2.5 treats Okamoto–Uchiyama as only an arbitrary-curve counting oracle.** Tatsuaki Okamoto and Shigenori Uchiyama, “Security of an identity-based cryptosystem and the related reductions,” EUROCRYPT ’98, LNCS **1403**, 546–560, DOI **10.1007/BFb0054153**.
+
+Their §6, Theorem 9/Reduction 1, treats an already supplied curve under large-prime-factor hypotheses. Its proof uses the Jacobi filter \((f(x)/n)=-1\) and mixed twists. Definition 8 uses \(\operatorname{lcm}(\#E_p,\#E_q)\), rather than the projective product. Theorem 10/Reduction 2 concerns varying distributions.
+
+An identification with the **full** TW theorem is **UNVERIFIED**: the complete sharp hypotheses and remaining proof were not fully accessible. The fixed-curve/Jacobi/twist antecedent is verified from indexed primary-text pp. 549 and 555. [Publisher](https://link.springer.com/chapter/10.1007/BFb0054153), [indexed primary paper](https://citeseerx.ist.psu.edu/document?doi=38de654b752bc270d4b77e9863c562661d552e62&repid=rep1&type=pdf).
+
+**GAP — the exact point construction also has a close antecedent.** Andrzej Dąbrowski, Jacek Pomykała and Igor E. Shparlinski, “On oracle factoring of integers,” *Journal of Complexity* **76** (2023), 101741, DOI **10.1016/j.jco.2023.101741**; arXiv:1912.00345v4.
+
+Algorithm 3.1 takes
+\[
+\alpha=f_b(x)/y^2,\qquad P=(\alpha x,\alpha^2y),
+\]
+and applies double-and-add with a multiple of the original curve count. At \(y=1\), this is exactly \((\delta x,\delta^2)\). Their theorem varies curves \(y^2=x(x^2-b)\), and their local separation lemma has special hypotheses, so it does not establish the full TW domain. It does establish prior use of the central construction. [Primary text, Lemma 2.9 and Algorithm 3.1](https://arxiv.org/html/1912.00345), [published paper](https://www.sciencedirect.com/science/article/abs/pii/S0885064X23000109).
+
+**CORRECT, with verification limits — Kunihiro–Koyama.** Noboru Kunihiro and Kenji Koyama, “Equivalence of counting the number of points on elliptic curve over the ring \(Z_n\) and factoring \(n\),” EUROCRYPT ’98, LNCS **1403**, 47–58, DOI **10.1007/BFb0054116**.
+
+The publisher verifies their count-oracle/factoring claim. Galbraith Example 24.2.28 explains the varying-curve, small-prime-stripping approach attributed to them. Their full original paper, exact distribution assumptions, and Remarks (3) remain **UNVERIFIED** here. The abstract cannot exclude all fixed-curve variants. [Publisher](https://link.springer.com/chapter/10.1007/BFb0054116).
+
+**CORRECT, with verification limits — Martín–Morillo–Villar.** S. Martín, P. Morillo and J. L. Villar, “Computing the order of points on an elliptic curve modulo \(N\) is as difficult as factoring \(N\),” *Applied Mathematics Letters* **14**(3) (2001), 341–346, DOI **10.1016/S0893-9659(00)00159-2**.
+
+The verified abstract concerns a point-order oracle, not the sole cardinality of one fixed curve. The full proof and exact success constant are **UNVERIFIED** here. [Publisher abstract](https://www.sciencedirect.com/science/article/pii/S0893965900001592).
+
+**CORRECT — the D–U and later oracle distinctions.** Dieulefait–Urroz’s value reduction uses twist queries; their malleability theorem takes a factored count. Jorge Jiménez Urroz and Jacek Pomykała, “Factoring numbers with elliptic curves,” *Ramanujan Journal* **64** (2024), 265–273, DOI **10.1007/s11139-023-00822-1**, likewise uses varying curves and twists under GRH. Neither establishes an everywhere theorem from one arbitrary fixed curve’s sole count. [Later primary preprint](https://arxiv.org/html/2210.04835).
+
+**CORRECT historical context; exact TW antecedence UNVERIFIED — Meyer–Müller and KMOV.**
+
+- Bernd Meyer and Volker Müller, “A Public Key Cryptosystem Based on Elliptic Curves over \(\mathbb Z/n\mathbb Z\) Equivalent to Factoring,” EUROCRYPT ’96, LNCS **1070**, 49–59, DOI **10.1007/3-540-68339-9_5**, proves a cryptosystem-breaking equivalence, a different oracle statement. [Publisher](https://link.springer.com/chapter/10.1007/3-540-68339-9_5).
+- Kenji Koyama, Ueli Maurer, Tatsuaki Okamoto and Scott Vanstone, “New Public-Key Schemes Based on Elliptic Curves over the Ring \(Z_n\),” CRYPTO ’91, LNCS **576**, 252–266, supplies earlier RSA/Rabin-type constructions. Its title alone does not prove a fixed-count theorem. [Author’s record and paper](https://crypto.ethz.ch/publications/KMOV91.html).
+
+**CORRECT historical context — Demytko and Bach.** N. Demytko, “A New Elliptic Curve Based Analogue of RSA,” EUROCRYPT ’93, LNCS **765** (1994), 40–49, DOI **10.1007/3-540-48285-7_4**, explicitly uses fixed curves and first-coordinate arithmetic across a multiple-group structure. An exact TW probability theorem in it is **UNVERIFIED**. [Publisher](https://link.springer.com/chapter/10.1007/3-540-48285-7_4).
+
+Eric Bach, *Discrete Logarithms and Factoring*, **UCB/CSD-84-186**, June 1984, gives reductions for discrete logarithms in multiplicative residue groups; it is not itself an elliptic point-count theorem. [Institutional report](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1984/5973.html).
+
+The defensible novelty statement is narrower: the explicit exceptional-set analysis, rigorous bounds, and even-count extension may be contributions of this round, but priority for those exact refinements remains **UNVERIFIED**. “We independently rediscovered an established twist method and proved these refinements” fits the evidence. cx1’s negative literature search did not justify priority for the mechanism.
+
+**3. Dieulefait–Urroz and the proposed repairs**
+
+**CORRECT — circularity criticism.** Their reconstruction equations determine missing counts only after supplying \(4PQ\). Affinely, \(PQ=N\) is public. Projectively, \(PQ=(p+1)(q+1)\) determines \(p+q\) and already factors \(N\). Both cases use this unknown quantity. This is a proof gap, not a counterexample to the conclusion. The arXiv Lemma 3/Theorem 4 equations agree with published Lemma 1/Theorem 2. [Dieulefait–Urroz, *Mathematics* **8**(12) (2020), 2126, DOI 10.3390/math8122126](https://diposit.ub.edu/bitstreams/d86d6ad2-dc9c-4713-9d04-c1d9e61339bb/download).
+
+**CORRECT — doubly supersingular affine obstruction and multi-curve reading.** If both traces vanish, every affine quadratic-twist count equals \(N\). Those answers contain no additional information beyond \(N\). This does not prove factoring impossible; it invalidates the asserted information-based reduction.
+
+Published Remark 2 acknowledges the obstruction, so it is not a new counterexample to the qualified published statement. The arXiv theorem omits that qualification. A least-nonresidue bound supplies a twist parameter, not its count; the ERH proof therefore requires twist-count queries. [ArXiv primary text](https://arxiv.org/html/1911.11004).
+
+**CORRECT — divisor-count criticism, but the proposed threshold repair is incomplete.** The valid inner step uses an entire local order as a divisor near a factor. Factoring \(M\) does not automatically identify that divisor.
+
+The implication
+\[
+d(AB)>(\log N)^4
+\Longrightarrow
+d(A)>(\log p)^4\ \text{or}\ d(B)>(\log q)^4
+\]
+is invalid. Global exponent 8 repairs that inclusion only. It does not convert high probability into literal probability one; nor do the displayed \(O(1/\log p)\) estimates establish the claimed little-\(o\) estimate.
+
+With suitable local estimates and balanced growing primes, local exponent 5/global exponent 10 would provide an extra logarithm. State a high-probability polynomial enumeration theorem, or a deterministic theorem promised \(d(M)\le\operatorname{poly}(\log N)\). The randomized factored-projective-count repair is separate and does not repair their deterministic affine statement.
+
+**CORRECT algebra / GAP in domain — projective fraction repair.** At the flipped prime \(r\), with nonzero trace \(a\),
+\[
+h:=\frac{S}{\gcd(S,|D|)}
+=\frac{r+1}{\gcd(r+1,a)}.
+\]
+Thus \(r=kh-1\), with \(k\le2\sqrt r\). If \(h\) is not a unit modulo \(N\), take its gcd first.
+
+Under constant-ratio balance, \(k=O(N^{1/4})\), and the monic polynomial \(y-h^{-1}\) has that root modulo a factor of size \(N^{1/2+O(1/\log N)}\). A properly parameterized univariate small-root theorem supports polynomial recovery.
+
+Add balance explicitly. For a smaller unbalanced flipped factor \(r=N^\beta\), \(\beta<1/2\), the available root bound is \(N^{\beta/2}\), exceeding the generic range \(N^{\beta^2}\). The asserted argument does not cover it. [Alexander May, dissertation (2003), §§3.2–3.3](https://digital.ub.uni-paderborn.de/hsmig/download/pdf/3235).
+
+**GAP — implemented lattice complexity.** `find_divisor_near` fixes \(m=t=5\), dimension 10, for sufficiently large inputs. Its determinant bound allows only
+\[
+\log_2X=(2/9)n-O(1),
+\]
+whereas the repair’s interval has radius of order \(2^{n/4}\). The worst-case covering budget is therefore order \(2^{n/36}\) lattice calls; no polynomial early-success bound is supplied.
+
+At 1024 bits, nominal \(N^{1/4}/X\approx2^{30.65}\); at 2048 bits, approximately \(2^{59.09}\). These are evaluations of the bound, not large lattice runs or lower bounds for a particular fixed curve.
+
+Increase dimension with \(n\) under a proved parameter schedule, or label this a toy implementation. Forced 64/96-bit branch tests do not establish asymptotic complexity. Also retain the `X_E` qualification when claiming TW* repairs the doubly nonsquare case.
+
+**CORRECT — cx1’s circumradius correction.** The correct radius is
+\[
+R=
+\frac{\sqrt{\prod_{i<j}((x_ix_j)^2+T^2)}}
+{2Tx_0x_1x_2}.
+\]
+The printed expression is \(R^2\). Near the diagonal \(R\asymp\sqrt T\); the area argument yields a \(T^{1/6}\)-scale bound, not \(T^{1/3}\).
+
+**WRONG — the short-arc assertion itself.** Here is an actual elliptic-count counterexample:
+\[
+\begin{aligned}
+p&=1080557,\quad q=1080559,\\
+N&=1167605591363,\\
+E&:y^2=x^3+583803335960x+583803335961.
+\end{aligned}
+\]
+Modulo \(p\), this is \(y^2=x^3+1\), with \(p\equiv2\bmod3\). Modulo \(q\), it is \(y^2=x^3-x\), with \(q\equiv3\bmod4\). Both reductions are good and supersingular. Hence
+\[
+T=(p+1)(q+1)=1167607752480.
+\]
+The hyperbola \(xy=T\) contains
+\[
+(1078482,1082640),\quad
+(1079520,1081599),\quad
+(1080558,1080560).
+\]
+All three x-coordinates lie below \(\sqrt T\). The intervening arc has length at most
+\[
+2076\sqrt{1+(T/1078482^2)^2}
+<2942<(N/32)^{1/3}=3316.77\ldots.
+\]
+The comparison was also certified by an exact rational inequality. Moreover, \(|p-q|=2\) satisfies the subsection’s premise. Thus the geometric assertion is false even for an actual projective elliptic count.
+
+**4. Oracle relations and §3**
+
+**CORRECT — the identities and qualified oracle diagram.** With \(u=a_p,v=a_q\),
+\[
+M=N+p+q+1-(p+1)v-(q+1)u+uv,
+\]
+\[
+a_N=uv,\qquad a_{N^2}=(u^2-p)(v^2-q).
+\]
+Therefore
+\[
+S=a_N^2+N-a_{N^2}=qu^2+pv^2,
+\]
+and the roots of \(Z^2-SZ+Na_N^2\) are \(qu^2,pv^2\). Any nonzero root yields a proper factor by gcd because \(|a_r|<r\). Failure occurs exactly when both traces vanish.
+
+Standalone reductions from \((a_p,a_q)\) or \(a_N\) remain **OPEN** on the reviewed evidence. Direct formulas requiring \(p\) are not impossibility proofs for alternative reductions.
+
+**CORRECT — Bach–Charles, with even weight understood.** Their fixed normalized non-CM eigenform result gives density-one factoring and uses both \(a(n)\) and \(a(n^2)\). It does not identify one supplied \(a_N\) with a whole coefficient oracle. The explicit rational weight-two calculation avoids the general nebentypus normalization issue flagged by cx1. Eric Bach and Denis Charles, “The hardness of computing an eigenform,” arXiv:0708.1192v2, Theorem 2.2 and Corollaries 2.7–2.8. [Primary text](https://arxiv.org/html/0708.1192v2).
+
+**CORRECT — Euler factor and lifting identities.**
+\[
+M/N=\prod_{r\mid N}L_r(E,1)^{-1},
+\]
+since \(L_r(E,1)^{-1}=1-a_r/r+1/r=A_r/r\). Also
+\[
+\#E(\mathbb Z/N^k)=N^{k-1}M.
+\]
+Neither supplies missing local data algorithmically.
+
+**OVERCLAIM — “trace-only Schoof data is factoring-hard.”** The displayed output includes \(p\bmod\ell\). This is determinant/factor-residue information, not trace-only information. Enough consistently labeled residues recover \(p\) directly by CRT without traces or TW. Even unordered factor-residue pairs give \(p+q\bmod\ell\).
+
+Conversely, trace pairs alone for enough \(\ell\) give \((a_p,a_q)\), whose factoring implication the notes leave open. Rename the proved claim to include determinant data.
+
+**CORRECT in substance / OVERCLAIM in wording — lattice discussion.** Generic Hasse-sized shifts do not constitute a solved recovery theorem: allowing zero shifts includes ordinary factoring. A supplied nearby divisor is a valid Coppersmith hint.
+
+However, TW does not make this issue moot on `X_E`, and lattices are not established as the sole remaining affine route. Replace the particular bound \(2N^{1/4}+1\) by \(O(N^{1/4})\) under constant-ratio balance: the larger prime’s Hasse bound exceeds that constant. “Factor then Schoof” is a standard general method, not a proved optimum.
+
+**5. Partial counts, Chebotarev, PT and RANK**
+
+**CORRECT window / OVERCLAIM equivalence — CRT-\(\ell\).** Under \(q/p<4/3\),
+\[
+\sqrt p+\sqrt q
+\le\big((4/3)^{1/4}+(3/4)^{1/4}\big)N^{1/4}
+<2.01N^{1/4}.
+\]
+Thus the stated Hasse window is sufficient. A CRT modulus product exceeding \(2W\) determines \(M\). A sufficient asymptotic cutoff is
+\[
+B=(3/4+o(1))\log N=(0.51986\ldots+o(1))n.
+\]
+Choose finite cutoffs from the actual product condition; \(\pi(0.52n)\) is not an exact call bound. The subsequent factoring reduction retains the `X_E` promise, except for curves with an everywhere result.
+
+**CORRECT — GL₂ advantages.** Independent exact enumeration gives:
+
+| \(\ell\) | Exact advantage | Decimal |
+|---|---:|---:|
+| 3 | \(9/128\) | 0.0703125 |
+| 5 | \(73/4608\) | 0.015842013888… |
+| 7 | \(241/41472\) | 0.005811149691… |
+
+These assume independent Haar classes, full GL₂ image, the stated observable, and conditioning. They are neither finite-prime error estimates nor hardness proofs. Rational \(\ell\)-torsion makes the count residue constant and its additional predictive information zero.
+
+**CORRECT value / GAP in identity — PAR.** Condition all probabilities on \((\Delta_f/N)=+1\). Put
+\[
+a=\Pr[M\text{ odd}],\qquad b=\Pr[\beta=-1].
+\]
+Since odd \(M\) certifies \(\beta=+1\), the general Bayes advantage is
+\[
+a+\max(b,1-a-b)-\tfrac12.
+\]
+The notes’ \(a+b-\tfrac12\) requires \(b\ge1-a-b\): negative sign must be the majority on even \(M\). This holds in the S₃ limit and reported C1/C2 populations, but not universally for arbitrary finite populations. Under S₃, \(a=2/9,b=1/2\), giving \(2/9\).
+
+**WRONG — parity, cubic-root count, and 2-torsion size are not equivalent information.** For an irreducible S₃ cubic, conditional joint masses are:
+
+| Observable | \(\beta=+1\) | \(\beta=-1\) |
+|---|---:|---:|
+| \(M\) odd | \(2/9\) | 0 |
+| \(M\) even | \(5/18\) | \(1/2\) |
+| \(r_pr_q=0\) | \(4/9\) | 0 |
+| \(r_pr_q=9\) | \(1/18\) | 0 |
+| \(r_pr_q=1\) | 0 | \(1/2\) |
+| \(\#E[2]=1\) | \(2/9\) | 0 |
+| \(\#E[2]=16\) | \(1/18\) | 0 |
+| \(\#E[2]=4\) | \(2/9\) | \(1/2\) |
+
+Their advantages are respectively
+\[
+\boxed{2/9,\quad1/2,\quad5/18}.
+\]
+Indeed, on Jacobi \(+1\), the cubic-root count determines the discriminant bit perfectly: product 1 means two transpositions, hence two negative signs; products 0 or 9 mean two positive signs. This algebraic implication holds for any separable cubic.
+
+Delete the pre-registration’s “equivalently” and §4’s “same information.” E4 measures parity only, not the promised separate root-count/2-torsion comparison.
+
+**CORRECT — cx1’s explicit curve.**
+\[
+x^3+6x-7=(x-1)(x^2+x+7),\qquad j=2048/3.
+\]
+The quadratic discriminant is \(-27\). On good primes,
+\[
+r_r=2+(-3/r).
+\]
+Thus root products \(9,3,1\), torsion sizes \(16,8,4\), fixed-base \(-3\) residuosity on \(N\equiv1\bmod3\), and \(\varphi(N)\bmod3\) have the asserted exact equivalence given \(N\). The transcription and attribution are correct. This does not establish factoring-equivalence.
+
+**CORRECT — quadratic root counting equals QR decision**, with the usual unit qualification. For unit \(d\), \(x^2-d\) has four roots if \(d\) is square at both primes and zero otherwise. Jacobi \(-1\) already handles mixed signs. Variable \(d\) gives ordinary QR decision; fixed \(d\) gives a fixed-base problem. Producing a root is stronger and is not shown equivalent to counting here.
+
+**CORRECT consistency / OVERCLAIM ordering.** PT excludes uniform sampling from \(\mathbb Z/N\), integer Jacobi computations, and \(M\)-dependent schedules. There is no contradiction.
+
+RANK concerns linear divisor formulas recovering \(p+q\bmod\ell\). Elliptic count residues depend on additional traces. “Strictly weaker” is not a proved deterministic information ordering: fixing determinants still permits different trace/count residues. State the computed prediction advantage in its model, and preserve easy constant cases. The blanket statement that all fixed-\(\ell\) outputs are open is too broad.
+
+**6. Experiments and implementation boundaries**
+
+**CORRECT overall disclosure.** Failed predictions are substantially reported honestly, and PH1–PH4 remain post hoc. Specific corrections follow.
+
+**P2 — CORRECT interpretation, one transcription error.** All twelve non-CM cells pass the three-standard-error check. But **six**, not five, fall below \(\rho\): C1 at 32/96 bits, C2 at 64/128, and C3 at 96/128. A lower bound on true probability is not a deterministic lower bound on an empirical estimate. For heterogeneous probabilities, exact variance is the sum of Bernoulli variances, not necessarily the pooled-binomial expression. The CM excess is correctly labeled a failed quantitative prediction explained by prefix splitting.
+
+**P3 — CORRECT rejection / WRONG explanation.** \(M+2\) is a poor null, but does not always share prefixes through \(\lfloor M/2\rfloor\).
+
+- If \(4\mid M\), its computation visits \([M/2]P\) as an intermediate doubling.
+- If \(M\) is odd, the final addition combines \([M+1]P\) with \(P\). At an \(M\)-annihilated component, \([M+1]P=P\), yielding an equal-x/tangent case that can differ at the other component.
+- If \(v_2(M)=1\), the asserted prefix identity has no general validity.
+
+Raw records contain 21,711 structural \(M+2\) splits: 20,480 for \(4\mid M\), 1,225 for odd \(M\), and six for \(v_2(M)=1\). Replace the explanation while retaining rejection of the control. PH1’s 0/15,360 result is a descriptive replacement, not proof that count information is the only possible source of splits.
+
+**P4 — CORRECT reporting.** Zero TW splits was false; 2-descent explains the favorable failure. SR2 has an independent proof.
+
+**P5/P7 — CORRECT partial-refutation labels.** Small exceptional fractions do not imply monotonicity in every finite window. C2/C3 monotonicity fails, and residual CM populations miss the small-window bound. Positive CM `Exc` density does not contradict the corrected `X_E` theorem.
+
+**P12–P14 — CORRECT failure disclosure, subject to the observable correction.** The two P12 misses remain misses; post-hoc bands do not retroactively satisfy the tolerance. The simulations correctly recognize reuse of only 1,491 prime observations. C1 mod 5 has zero increment from \(M\); its positive total advantage is a finite determinant-only baseline. C3 parity is constant, making S₃ predictions inapplicable.
+
+At \(\ell=7\), the increment is exactly zero for C1/C2 and approximately 0.000301 for C3. Total accuracy above \(1/2\) is not an observed count-information increment. P14’s registered formula is false; its corrected limit is \(2/9\), with the majority qualification above.
+
+**CORRECT — E2 vectorization and E4 ordered counting.** All 38,750 b=12 pairs across five curves matched scalar integer kernel/numerator computations and stored exceptional counts. At b≤18 the int64 products safely avoid overflow. PARI’s largest invariant factor correctly tests exponent divisibility; products of gcds correctly give kernel sizes.
+
+E4’s subtraction of \(c_1\) from \(c_1^2\) for identical classes removes \(p=q\) correctly while retaining ordered pairs. Direct ordered enumeration reproduced the aggregation at b=12 for \(\ell=3,5,7\). E4’s approximately 1.1 million pairs are conditioned ordered pairs; E2 uses unordered pairs. There is no factor-of-two bug.
+
+**CORRECT — no operational factor leakage found.** `zn_curve.py` neither imports the harness nor reads \(p,q\). The transitive `integer_roots` helper uses polynomial arithmetic and Sturm isolation, not integer factorization. Truth data and exceptional-set selection stay in the harness.
+
+PH3 uses factor-derived seed labels, but operational code only calls `randrange`; it does not inspect labels or RNG state. Seeded experiments corroborate rather than replace the uniform-x proof. The AST test is a guard, not a complete noninterference proof.
+
+**GAP — instrumentation and one test.** `ec_add` calls `gmpy2.invert` without incrementing `Counters.invs`, so stored inversion counts are wrong. Also,
+```text
+{r1,r2} <= others | {r1,r2}
+```
+in `test_du_projective_lemma_needs_PQ` is tautological and does not validate reconstruction against the other twist counts. Neither affects TW correctness.
+
+**7. Permissible conclusions in §0 and §6**
+
+**OVERCLAIM — “the open target is closed” and unqualified factoring-equivalence.** What is proved is:
+
+- A randomized reduction outside `X_E`.
+- Density-one coverage for every fixed curve, in the specified balanced-pair sense.
+- Everywhere coverage for fixed curves with rational 2-torsion.
+
+`X_E` is nonempty for some fixed ordinary non-CM curves. This work supplies no everywhere theorem on that set. Empirical splitting of members does not close the remaining theoretical case.
+
+An accurate opening would say:
+
+“One fixed projective count factors every even-count input and every input outside the explicit density-zero set `X_E`; for curves with rational 2-torsion this covers all good semiprimes. The method refines established twist/count reductions. An everywhere reduction for an arbitrary fixed curve remains open.”
+
+Add that remaining question to §6 and scope the moved-divisor conclusion consistently.
+
+**Required fixes**
+
+1. Restrict global fixed-count/factoring claims to their proved domain; restore the unresolved `X_E` case throughout, including the claimed two-count repair.
+2. Rewrite novelty around Galbraith Example 24.2.30, Okamoto–Uchiyama Theorem 9, and Dąbrowski–Pomykała–Shparlinski Algorithm 3.1. Retain **UNVERIFIED** labels for inaccessible exact comparisons.
+3. Restore the CM proof’s split-prime restriction; establish density zero for `X_E`, not unconditional `Exc(E)`.
+4. Separate parity, cubic-root count and 2-torsion size. Give advantages \(2/9,1/2,5/18\), qualify PAR’s finite-population identity, and disclose E4’s omitted observables.
+5. Add balance and a polynomial lattice-parameter schedule to the projective repair, or label the existing implementation a toy verification.
+6. Distinguish the divisor-threshold repair from a probability theorem. Include the corrected radius and short-arc counterexample.
+7. Rename the trace-only claim to include determinant data; remove the unsupported RANK information ordering and preserve easy partial-count cases.
+8. Correct P2’s six-cell count, the parity-dependent \(M+2\) explanation, and the unreported “fails iff” refutation.
+9. Correct inversion instrumentation, replace the tautological test assertion, clarify local-twist notation, and distinguish exact nonroot probabilities from their asymptotic versions.
+
+**Overall verdict: MAJOR REVISION.** The operational reduction is sound on its proved domain. The global conclusion, priority claims, CM transcription, partial-information equivalence, and lattice complexity claim are not acceptable as written.

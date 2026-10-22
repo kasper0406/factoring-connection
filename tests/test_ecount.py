@@ -185,8 +185,14 @@ def test_du_projective_lemma_needs_PQ():
         d1 += 1
     E, Ed = H.count(a, b, p, q), H.twist_count(a, b, d1, p, q, False)
     r1, r2 = du_projective_lemma_as_written(N, E, Ed, (p + 1) * (q + 1))
-    others = {H.twist_count(a, b, d, p, q, False) for d in range(2, 60)} - {E, Ed}
-    assert {r1, r2} <= others | {r1, r2} and r1 + r2 + E + Ed == 4 * (p + 1) * (q + 1)
+    # the two missing counts are the twists at exactly one prime: (P - a_p)(Q + a_q) and (P + a_p)(Q - a_q)
+    ap, aq = p + 1 - H.card(a, b, p), q + 1 - H.card(a, b, q)
+    P, Q = p + 1, q + 1
+    assert {r1, r2} == {(P - ap) * (Q + aq), (P + ap) * (Q - aq)}
+    dmix = 2
+    while not (gmpy2.legendre(dmix, p) == 1 and gmpy2.legendre(dmix, q) == -1):
+        dmix += 1
+    assert H.twist_count(a, b, dmix, p, q, False) in {r1, r2}
     # with the wrong PQ (e.g. N + 1) the "roots" are not the twist counts
     try:
         s1, s2 = du_projective_lemma_as_written(N, E, Ed, N + 1)
@@ -243,3 +249,16 @@ def test_du_projective_repaired_lattice_path(n):
             d += 1
         g = du_projective_twist_repaired(N, H.count(a, b, p, q), H.twist_count(a, b, d, p, q, False), d, small_k=0)
         assert g in (p, q)
+
+
+def test_cubic_root_count_decides_disc_bit():
+    """On (Delta_f/N) = +1 the root count r_p*r_q of an S3 cubic decides beta = (Delta_f/p) exactly (codex_2)."""
+    a, b = H.CURVES["C2_37a1"]
+    Df = -(4 * a ** 3 + 27 * b ** 2)
+    P = [p for p in H.primes_window(12) if H.disc_part(a, b) % p]
+    for i, p in enumerate(P[:60]):
+        for q in P[i + 1:i + 30]:
+            if gmpy2.legendre(Df, p) * gmpy2.legendre(Df, q) != 1:
+                continue
+            R = H.roots_f(a, b, p) * H.roots_f(a, b, q)
+            assert (R == 1) == (gmpy2.legendre(Df, p) == -1)
