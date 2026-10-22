@@ -1,6 +1,6 @@
 # dsr: Hypothesis DSR (deterministic smooth representation): derandomised walks, certificates, compression
 
-Agent `dsr`, phase 23, 2026-10-22. **Version 2.** It incorporates the GPT-6.1-sol adversarial round and both Opus
+Agent `dsr`, phase 23, 2026-10-22. **Version 2.1.** It incorporates the GPT-6.1-sol adversarial round and both Opus
 critics (§10). v1 is commit `3801973`.
 
 **Files.**
@@ -107,8 +107,9 @@ restricted sufficient route, not a characterisation of DSR.
 **Prop RW (the randomized constructor) [conditional (GRH); folklore-level: JMV 2009 + Fourier inversion].**
 - **Spectral bound.** Let μ be uniform on the primes ≤ y, with y ≤ B (all are units), and λ := max_{χ≠χ₀}|μ̂(χ)|.
   - JMV's proof of Thm 1.1 (arXiv:0811.0647; checked by us and the literature critic) bounds the weighted prime
-    character sums for every nonprincipal χ, induced ones included. Partial summation gives
-    |Σ_{p≤y}χ(p)| ≪ √y·ln(Ny), so λ ≪ ln y·ln(Ny)/√y.
+    character sums for every nonprincipal χ, induced ones included. Partial summation from
+    ψ(y, χ) ≪ √y·log²(Ny) gives |Σ_{p≤y}χ(p)| ≪ √y·log²(Ny)/log y, so λ ≪ log²(Ny)/√y = y^{−1/2+o(1)}. Only
+    polylog^k = N^{o(1)} factors are ever used.
   - JMV's Cor 1.3 assumes y ≥ (log N)^{B₀} with B₀ > 2, which holds for y = L^b.
   - Codex derives a loose explicit form λ ≤ min(1, 10⁶√y ln³(Ny)/π(y)) from Ernvall-Hytönen–Palojärvi's
     character-level estimates. It is not JMV's constant, and we have not audited it.
@@ -237,7 +238,8 @@ dividing r.
   - *Why the shortest vector is that.* The lattice {(u, v) : u ≡ a s t^{−1} v} contains (rs, t) and has determinant N.
     Two independent vectors of squared length < N would give 0 < |det| < N. So the primitive vector (rs, t)/g is the
     unique shortest vector up to sign.
-- **(iii)** For the canonical test, inverse multipliers escape: r·2^{−1} ≡ (r + N)/2 ≈ N/2 (proof critic).
+- **(iii)** For the canonical test, inverse multipliers can escape: for odd r, r·2^{−1} ≡ (r + N)/2 ≈ N/2 (proof critic). In
+  general use d^{−1} with d ∤ r; for d | r the residue r/d stays small and non-smooth.
 
 **Prop BOX-∞ (adversarial N in every size range) [proved, unconditional, elementary; no prior statement found by us;
 the small-offset modulus N = 2^h − r is classical background (pseudo-Mersenne / Solinas)].**
@@ -314,7 +316,7 @@ literature critic. Closest work: Hardy–Xu 2026 (upper bounds on the same first
 - **(i)** Choose a prime ℓ ∈ (B, 2B] with ℓ ∤ N. One exists for large N, since such primes outnumber ω(N); codex's
   N = 489733·18889…821 shows that the least prime > B can divide N.
   - Let T := {ℓm mod N : 1 ≤ m ≤ M, gcd(m, N) = 1}, with M := ⌊(N − 1)/ℓ⌋. These are distinct units, whose least
-    residues ℓm are divisible by ℓ > B, so T ∩ S_can = ∅. |T| ≥ N^{1−o(1)}.
+    residues ℓm are divisible by ℓ > B, so T ∩ S_can = ∅. |T| ≥ M(1 − Σ_{p|N}1/p) ≥ M/2 = N^{1−o(1)}.
   - T̂(χ) = χ(ℓ)Σ_{m≤M}χ(m). For nonprincipal χ induced by χ* mod q* > 1, Möbius over d | N gives
     |Σ_{m≤M}χ(m)| ≤ τ(N)·max|Σ χ*| ≪ τ(N)√q* log q* = N^{1/2+o(1)} (Pólya–Vinogradov).
   - δ_can = N^{−o(1)}. ∎(i)
@@ -357,7 +359,7 @@ literature critic. Closest work: Hardy–Xu 2026 (upper bounds on the same first
 - *Statement.* For a ∈ G, a B-smooth u ≡ a (mod N) with 0 < u ≤ N³ exists iff there are a B-smooth d ≤ N² and
   0 ≤ j < B such that c := (least residue of a·d^{−1}) + jN is B-smooth and d·c ≤ N³.
 - *Proof.*
-  - (⇒) If u ≤ N², take d = u and c = 1. Otherwise multiply prime factors of u into d while d ≤ N². Then d > N²/B,
+  - (⇒) If u ≤ N², take d = u and c = 1. Otherwise multiply prime factors p of u into d while d·p ≤ N². Then d > N²/B,
     c = u/d < NB, and c ≡ a d^{−1}.
   - (⇐) Take u = dc. ∎
 - *Why the coupling matters.* v1 omitted d·c ≤ N³. Codex's counterexample: N = 1031·1033, B = 2, d = 2^{40},
@@ -620,7 +622,12 @@ Structural: Prop EQ-dom (DD1 rows == deterministic factoring, ERH); Lemma PT (DS
 - **No deterministic subexponential algorithm** for prescribed-target relation collection mod p, or for a smooth
   number in a prescribed class, was found.
 
-### 10.5 Confirmation round on v2 (Opus proof critic) — pending.
+### 10.5 Confirmation round on v2 (Opus proof critic) — ACCEPT
+- All 12 first-round fixes are correctly applied.
+- The new unconditional FN(i) proof, the corrected SC (codex's counterexample re-verified) and BOX(ii) for
+  rationals are correct.
+- No new MAJOR or FATAL issue. Its four optional MINOR nits are applied in v2.1: BOX(iii) for odd r; RW partial
+  summation; SC greedy step; the |T| bound.
 
 ## 11. Reproduction
 
