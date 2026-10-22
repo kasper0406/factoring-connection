@@ -426,7 +426,7 @@ expander; GRH for Dirichlet L-functions mod N].**
   residue class mod N contains a y-smooth integer u ≤ N^{2+ε}. In particular DSR_α's output exists, with v = w = 1.
   - The class 0 contains no nonzero B-smooth integer after preprocessing.
 - *Proof (codex zroute_1 §4.5, re-derived).*
-  - Let μ be uniform on the primes ≤ y. Under GRH, |Σ_{p≤y} χ(p)| ≪ √y log²(Ny) for χ ≠ χ₀ mod N (from
+  - Let μ be uniform on the primes ≤ y not dividing N. Under GRH, |Σ_{p≤y} χ(p)| ≪ √y log²(Ny) for χ ≠ χ₀ mod N (from
     ψ(y, χ) ≪ √y log²(Ny); prime powers contribute O(√y)). So max_{χ≠χ₀}|μ̂(χ)| ≤ y^{−1/2}(log Ny)^{O(1)}
     = y^{−1/2+o(1)}, since log N = y^{o(1)}.
   - μ^{*k}(a) = φ(N)^{−1}Σ_χ χ̄(a)μ̂(χ)^k ≥ 1/φ(N) − max_{χ≠χ₀}|μ̂(χ)|^k > 0 for k := ⌈(2 + ε/2)·ln N/ln y⌉.
@@ -494,7 +494,7 @@ the comparison with smooth-split sets found by us].**
   - The (∞, 1) certificate applied to |Ŝ|² needs max_{χ≠χ₀}|Ŵ| < ms/(φ − s), hence m > (φ − s)²/(2s²).
   - If the certified family is then searched by exhaustive lattice enumeration of {u ≡ wv} ∩ [−Y, Y]² (≈ 4Y²/N
     points for generic w; area/determinant is **not** a lower bound for every w, cf. codex's N = 1009·1013, w = 1000),
-    the expected work is Ω(N/ρ_Y²).
+    the work for generic w is Ω(N/ρ_Y²).
   - This is a limitation of this certificate combined with this search. It is not a cost lower bound for pair-based
     algorithms. (Corrected from an earlier, unqualified "≥ 2N/ρ²".) ∎
 - *Not excluded.* Certificates that use the joint structure of Ŵ and Ŝ rather than norms, and non-Fourier arguments.
@@ -797,6 +797,9 @@ Pre-registration: `notes/zroute_prereg.md` (`986f17e`; addendum A1 `e66204c`). S
   general p and the (d) work bound; LV composite moduli and vacuity; the pooling inequality; WR's hypotheses
   (distinct labelled indices; H₀ bounding the actual INC output; the εe_{−1} correction folded into V); signed CRT in
   XK-Z(ii); Verdict labels.
+
+**Opus proof critic, confirmation round on v2 (`0e3efca`).** ACCEPT. Every revised item holds. Its two wording nits
+(μ restricted to primes ∤ N in GX; "work for generic w" in FC(e)) are applied.
 
 **Opus literature critic (read-only).** OK WITH FIXES, all applied.
 - Verified the four items reported only by codex: Harvey–Hittmeir's running time (adding D < N − 1), Pascadi's
