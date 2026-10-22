@@ -59,14 +59,14 @@ def prop_cd_log_hits(x: float, m: int, d: int, r: int, kappa: float = KAPPA_STAR
     return {"placement": placement, "smooth": smooth, "gain": gain, "total": placement + smooth + gain}
 
 
-def ms_case_bound(t: float, pi: float, m: int) -> Dict[str, float]:
-    """Prop MS case split. For eta := ln d / t - 1 at the CH threshold:
-    case 1 ((m-1) eta >= 1): count weight e^{t(1 - (m-1) eta)} <= 1;
-    case 2 ((m-1) eta < 1): then pi <= e^{(m+1)/(m-1)} t, so P is small (tau(P) = e^{o(t)})."""
+def ms_case_bound(t: float, pi: float, m: int, ell: float) -> Dict[str, float]:
+    """Prop MS case split, as in the note: for a certified divisor with ln d = ell (sigma_m <= ell <= pi),
+    case 1 if ell >= j1 = m t/(m-1) + 1 (geometric decay); otherwise case 2, where
+    pi/t <= (ell/t)^{m+1} < (m/(m-1) + 1/t)^{m+1} <= 8 e^2 for 2 <= m <= t."""
     sig = t ** (m / (m + 1.0)) * pi ** (1.0 / (m + 1.0))
-    eta = sig / t - 1.0
-    return {"sigma": sig, "eta": eta, "case": 1 if (m - 1) * eta >= 1 else 2,
-            "case2_pi_cap": math.exp((m + 1.0) / (m - 1.0)) * t if m >= 2 else float("inf")}
+    j1 = m * t / (m - 1.0) + 1.0
+    return {"sigma": sig, "j1": j1, "case": 1 if ell >= j1 else 2,
+            "case2_pi_cap": (m / (m - 1.0) + 1.0 / t) ** (m + 1) * t}
 
 
 def toy_path(bits: int, kappa: float = KAPPA_STAR, nu: float = 1.376) -> Tuple[int, int]:

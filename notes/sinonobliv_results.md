@@ -1,6 +1,6 @@
 # sinonobliv: the non-oblivious routes to Prop SI that sihard left open
 
-Agent `sinonobliv`, phase 22, 2026-10-22. Version 1 (before the codex adversarial round and the Opus critics).
+Agent `sinonobliv`, phase 22, 2026-10-22. Version 2 (after the codex adversarial round and the Opus proof critic; literature critic pending).
 
 **Files.**
 - Code: `src/sinonobliv/` — `core.py` (exact smoothness masks, density curves, identity families, divisors of
@@ -8,6 +8,7 @@ Agent `sinonobliv`, phase 22, 2026-10-22. Version 1 (before the codex adversaria
   (Howgrave-Graham lattice, uncertified roots), `theory.py` (cost formulas), `run_exp.py` (E1–E3), `posthoc.py`
   (disclosed post-hoc analyses).
 - Tests: `tests/test_sinonobliv.py` (12 pass).
+- GPT-6.1-sol adversarial round: `codex/sinonobliv_2.{md,out}` (§9.2).
 - Pre-registration: `notes/sinonobliv_prereg.md`, commit 424ee86 (E1, E2), addendum A1 commit 01eb40d (E3), each made
   before the runs it registers.
 - Raw data: `experiments/raw/sinonobliv_E{1,2A,2B,3}.jsonl`; post-hoc `sinonobliv_E1_posthoc.jsonl`,
@@ -28,26 +29,31 @@ A constructor costing L[1/3, τ] per output beats MNFS (1.9019) iff τ < 0.75717
 ## 0. Verdict
 
 **Plain language.**
-- **None of the five open routes gives a constructor below L[2/3] per output.** So no route reaches any finite τ,
+- **We found no constructor below L[2/3] per output on any of the five routes.** So no finite τ was obtained,
   let alone τ < 0.757. The best constructor in every route is still the known divisor trick z = d·⌈x/d⌉ (or the
   interval sieve), at L[2/3, 2/(3κ)] per output up to an L[1/3] factor.
-- **Three of the routes now have barriers in stated models; one has none.**
+- **Two routes now have barriers in stated models (narrow ones), one reduces to Prop SI itself, and one has no
+  barrier.** None of this closes a route for arbitrary algorithms.
   - *Multi-sample (Cohn–Heninger) decoders* — barrier. With independently placed windows, a joint certificate
     yields at most ρ(u₀)^{1−o(1)} smooth outputs per call, for every modulus and every 2 ≤ m ≤ ln h, even when Cohn–Heninger's
     enlarged decoding region is granted for free (Prop MS, PROVED, averaged). With the real windows near k_iN of one
     modulus, every joint certificate with a divisor d > Kh is a disguised single window: the offsets are forced to be
-    proportional and all m outputs give the same relation (Lemma IH, PROVED; codex found it too). Below d ≤ Kh the
-    untested cofactor is ≥ N/(Kh) and the yield per certified tuple is again ρ(u₀)^{1−o(1)}.
+    proportional and all m outputs give the same relation (Lemma IH, PROVED; codex found it too); its yield is
+    Theorem J's once one grants that dependent samples carry one sample's information (Prop IH-J, MODEL). Below d ≤ Kh the
+    untested cofactor is ≥ N/(Kh) and the yield per certified tuple is again ρ(u₀)^{1−o(1)}, for decoders that
+    examine all certified tuples (Prop MS′).
   - *Correlated polynomial identities* (t(t+1), products of consecutive integers, Aurifeuillian and Friedlander–
     Lagarias products, powers, PTE clusters) — barrier for families fixed in advance. Their smoothness gain is real
-    (measured 8× to 4000× at toy sizes; r^{u₀} asymptotically), but a usable fixed family must contain, with
-    multiplicity, at least an L[1/3]^{−1}·(hρ)^{−1} fraction of *all* y-smooth integers near X (Prop FF, PROVED,
-    averaged). Every correlated family has only X^{1−ε} members near X and lands in a window with probability
-    ≤ (h+1)X^{−ε}: exponentially small. A dense family is, up to that fraction, the set of all smooth integers, and
-    listing it in a window is Prop SI again.
-  - *Smooth norm and polynomial values near (kN)^{1/d}* — no gain. Norms of constructed elements form a sub-knapsack
+    (measured 8× to 1100× at toy sizes; r^{u₀} asymptotically), but a usable fixed family must contain at least a
+    p/((h+1)ρ) fraction of *all* y-smooth integers near X, p being its per-window success rate (Prop FF, PROVED,
+    averaged). Every correlated family we know (one parameter, or balanced-range forms of degree above their
+    dimension) has O(X^{1−ε}) distinct values near X and lands in a window with probability ≤ (h+1)X^{−ε}:
+    exponentially small. A dense family is a large share of the smooth integers of some shape, and listing it in a
+    window is Prop SI restricted to that shape (assessment).
+  - *Smooth norm and polynomial values near (kN)^{1/d}* — no gain; the route reduces to Prop SI (a reduction, not a barrier). Norms of constructed elements form a sub-knapsack
     of the integer one (Prop NV, PROVED); one-parameter values t^d − a are exponentially sparse (Lemma PL); a
-    degree-d analogue of the Prop SI relation still has a constructed side of norm ≈ N/h (Prop LC, MODEL). The NFS
+    degree-d analogue of the Prop SI relation must use an element of height ≥ N^{1/d} (Prop LC; in Q(i) its norm is
+    ≥ N^{1−o(1)}; the general norm scale is open). The NFS
     sampling model reproduces SNFS 1.526, GNFS 1.923 and MNFS 1.902 (codex), but those are relation generators, not
     Prop SI constructors.
   - *Adaptive choice of moduli/lattices* — no barrier, and we explain why none of the information-theoretic kind can
@@ -58,8 +64,9 @@ A constructor costing L[1/3, τ] per output beats MNFS (1.9019) iff τ < 0.75717
     the one place a constructor could hide, and it is the original problem in coding language.
 - **Uncertified lattice outputs** (sihard's fifth item; E3, pre-registered): the extra integer roots of a
   Howgrave-Graham divisor lattice are "near-certified" points whose gcd with P sits just below the provable threshold
-  (median e^{18.1} vs e^{18.9}). Their smoothness rate (37%) is what their known divisor predicts (ratio 0.70). No
-  hidden bias.
+  (median e^{18.1} vs e^{18.9}); most are even inside Theorem J's ideal Johnson class. The 42 outside it (in 5000
+  calls) are smooth at 0.60 of what their known divisor predicts. No evidence of a hidden bias, at toy size and with
+  small counts.
 - **Assessment.** Probability that any of these routes yields τ < 0.757: about 1% (ours); 5% (codex, blind),
   mostly on target-dependent adaptive constructions. We agree that route 1 is where any remaining probability sits.
 
@@ -70,8 +77,8 @@ A constructor costing L[1/3, τ] per output beats MNFS (1.9019) iff τ < 0.75717
 | 1. Adaptive moduli/lattices | divisor trick; fixed chains = Theorem J | L[2/3, 2/(3κ)]·L[1/3, −2ν/(3κ)]; **no finite τ** | Prop JC (fixed chains), Prop AT (fixed trees, M nodes: ≤ M·ρ^{1−o(1)}); no information barrier possible (Lemma IC); residual problem = CRT decoding below Johnson (Prop RD) | barrier PROVED in MODEL; unrestricted OPEN |
 | 2. Correlated identities | t(t+1), t(t+1)(t+2), 4t⁴+1, FL products, t^d | sparse families: ≥ X^{ε}/h per output (exponential); dense families: = Prop SI | Lemma PL, Prop FF (fixed families, averaged) | PROVED (placement), HEURISTIC (gain); target-dependent growing families OPEN (→ route 1) |
 | 3. Multi-sample decoders | Cohn–Heninger PACD/ACD on m windows | ≥ ρ^{−1+o(1)} calls per output (PACD region, any P, 2 ≤ m ≤ ln h); ≥ L[2/3 + 1/(3m)] (general ACD, codex) | Prop MS (independent windows), Lemma IH + Prop MS′ (same N) | PROVED (averaged, region granted); adaptive helper windows OPEN |
-| 4. Norm / polynomial values | t^d − a; Norm(α); degree-d coset analogue | exponential (placement) or = integer knapsack; constructed side ≥ N/h | Lemma PL, Prop NV (PROVED); Prop LC (MODEL) | no gain; target-dependent fields OPEN (→ route 1) |
-| 5. Softer target | — | none of the above reaches any L[1/3, τ] | threshold τ < 0.75717; decoder π(y)^a needs a < 1.1416 | PROVED (algebra of the cost model) |
+| 4. Norm / polynomial values | t^d − a; Norm(α); degree-d coset analogue | exponential (placement) or = integer knapsack; no finite τ obtained | Lemma PL (PROVED); Prop NV, Prop LC (reductions / height bound, not barriers) | no gain; target-dependent fields OPEN (→ route 1) |
+| 5. Softer target | — | none of the constructions considered reaches any L[1/3, τ] (a finding, not a theorem) | threshold τ < 0.75717; decoder π(y)^a needs a < 1.1416 | threshold PROVED (algebra of the cost model) |
 | (uncertified outputs) | Howgrave-Graham extra roots | as the divisor trick | E3: smoothness explained by the known divisor | MEASURED (toy) |
 
 ---
@@ -112,7 +119,9 @@ Depth-r chains (D = d₁⋯d_{r−1} fixed, the last call a certificate) are the
   ≤ ((V + 1)/X)·Ψ(3X/D, y) ≤ 3C₀((V + 1)/D)·ρ(u₀ − ln(D/3)/ln y), and ρ(u₀ − ln D/ln y)/ρ(u₀) = D^{o(1)}
   (same ratio bound), so the average is ≤ ρ(u₀)·(V/D)^{1−o(1)}·e^{o(F_{2/3})}. ∎
 
-The weighted Theorem J transfers the same way.
+Three caveats (proof critic). The cofactor score W(z/D) models a real Coppersmith call on f(m) = Dm + x only when
+P is coprime to D (D must be invertible mod P). The weighted case inherits sihard's "PROVED (sketch)". The uniformity
+needed is in n = ln X′ ∈ [x − νF_{2/3}, x], and Theorem J's o(1) depends only on n.
 
 **Prop AT (adaptive trees with a fixed repertoire; PROVED; codex blind §1, = sihard J(c)).** Let the call at each
 node of a decision tree be a chain call whose parameters are fixed in advance, with previous answers selecting the
@@ -133,11 +142,16 @@ MODEL). The next lemma shows that no real algorithm needs to respect that hypoth
 - (a) R(x) determines the set S(x) = {j ∈ [0, h] : x + j is y-smooth}: j ∈ S(x) iff
   Σ_{q ≤ y} ln q·#{1 ≤ e ≤ e_q : j ≡ −x (mod q^e)} = ln(x + j).
 - (b) R(x) costs π(y) reductions of an x-bit integer, i.e. L[1/3, κ + o(1)] bit operations. For the windows I_k of
-  one N, R(kN) = k·R(N) mod q^{e_q} costs O(π(y)) word operations per k after one such precomputation.
+  one N, R(kN) = k·R(N) mod q^{e_q} costs O(π(y)·x) bit operations per k after one such precomputation (the moduli
+  q^{e_q} have ≈ x bits).
 - *Proof.* (a) v_q(x + j) = #{e ≥ 1 : q^e | x + j}, all such q^e ≤ 3X + h, and x + j is y-smooth iff
   Σ_q v_q(x + j) ln q = ln(x + j). (b) is direct. ∎
-- *Consequence.* In any model that charges per residue query, or per bit of information about x, Prop SI costs at
-  most L[1/3, κ + o(1)] per window, i.e. information cost τ_info ≤ κ < 0.757. Codex's bounded-likelihood hypothesis
+- *Consequence (a statement about query models, not an algorithm).* In a model that charges per residue query (or
+  per bit learned about x) and allows unrestricted computation on the answers, the query cost of Prop SI is at most
+  L[1/3, κ + o(1)] per window. This does not output anything efficiently, and it assumes a smooth integer exists in
+  the window. Since x is public anyway, the point is negative: a query restriction cannot be what makes Prop SI
+  hard. In cost-model terms an information cost τ = κ (a = 1 in Prop RD) gives
+  c = 6^{1/3} = 1.8171 < 1.9019, after re-optimising κ. Codex's bounded-likelihood hypothesis
   fails for real algorithms: after R(x) the posterior on S(x) is a point mass. **So every barrier for route 1 must be
   computational, not informational.** Theorem J and Props JC/AT are barriers only because they restrict which
   computations are allowed (a fixed repertoire).
@@ -152,12 +166,16 @@ w(x) = (−x mod q^e). The weighted agreement of c(j) with w(x) is A(j) = ln(y-s
 - The Johnson radius of known decoders (Goldreich–Ron–Sudan, Boneh, Guruswami–Sahai–Sudan) is
   agreement ≥ √(ln(h + 1)·ln P) for the modulus P used (Theorem J's threshold). With P = ∏ q^{e_q}, √(νF_{2/3}·W) ≫ x
   by an L[1/3] factor: far below Johnson.
-- The list is short: averaged over x, its expected size is (h + 1)ρ(u₀)^{1+o(1)} = L[2/3, ν − 2/(3κ)], which tends
-  to L^{o(1)} at Prop SI's optimum. So the combinatorial obstruction to beyond-Johnson decoding (exponentially long
-  lists for some Reed–Solomon codes; Ben-Sasson–Kopparty–Radhakrishnan, UNVERIFIED by us) does not apply here. The
-  obstruction is purely algorithmic.
-- Known capacity-achieving list decoders (Parvaresh–Vardy; Guruswami–Rudra folded Reed–Solomon) change the code; the
-  code here is fixed by arithmetic. Whether some CRT analogue (folding by prime powers?) helps for *this* received
+- The list is short *on average*: averaged over x, its expected size is (h + 1)ρ(u₀)^{1+o(1)} = L[2/3, ν − 2/(3κ)],
+  which is O(1) if h is chosen as c/ρ(u₀). This is an average, not a worst-case or promise bound; with leading
+  constants cancelling, only exp(o(F_{2/3})) follows in general, which may exceed every power of π(y) (codex round 2).
+  So on average the combinatorial obstruction to beyond-Johnson decoding (superpolynomial lists in specified
+  Reed–Solomon regimes; Ben-Sasson–Kopparty–Radhakrishnan) does not apply; for individual received words it is not
+  excluded.
+- Known capacity-achieving list decoders (Parvaresh–Vardy; Guruswami–Rudra folded Reed–Solomon; folded and
+  multiplicity codes in the polynomial-ideal framework of Bhandari–Harsha–Kumar–Sudan, ECCC 2021/036) change the code
+  or work over polynomial rings; the integer code here is fixed by arithmetic. Interleaved-CRT / power decoding
+  (Li–Sidorenko–Nielsen, ISIT 2013) goes beyond unique decoding under probabilistic assumptions, not to this regime. Whether some CRT analogue (folding by prime powers?) helps for *this* received
   word is OPEN; we found no such algorithm.
 - *Softer target in decoder terms (PROVED, algebra).* A decoder costing L[1/3, aκ] per window (polynomial of degree
   a in π(y)) gives c = (3/2)(4/9)^{1/3}(1 + a)^{2/3} for a ≥ 1/3. It beats MNFS iff **a < 1.1416**; a = 1 (linear in
@@ -168,9 +186,9 @@ w(x) = (−x mod q^e). The weighted agreement of c(j) with w(x) is A(j) = ln(y-s
 ### 2.4 Natural adaptive schemes, costed
 - *Prime-by-prime accumulation* (choose d₁ | z, recurse in the progression): while D ≤ h the cofactor is
   ≥ X/h and its smoothness costs L[2/3, 2/(3κ)] (Lemma RC; codex §1); once D > h there is ≤ 1 candidate, and choosing
-  D so that it is smooth is the placement problem itself. τ = ∞.
+  D so that it is smooth is the placement problem itself. No finite τ.
 - *Residue-driven selection of P* (keep primes whose residue class hits a chosen sub-window): selecting j hit by
-  many primes is sieving the window, cost ≈ h. τ = ∞.
+  many primes is sieving the window, cost ≈ h. No finite τ.
 - *Adaptive helper windows for multi-sample decoding*: reduces to choosing shifts as functions of x; covered only by
   Prop AT. OPEN.
 
@@ -187,7 +205,7 @@ pieces have size y^{O(1)}, i.e. when the member is "smooth by construction" (cod
 
 *Measured (E1; §8.1):* forced pieces are smooth independently up to a local-residue constant (R = 0.46–1.02 raw;
 0.84–1.00 after the post-hoc local correction), and the gains over random integers of the same size are 8–22×
-(4t⁴ + 1), 16–170× (t(t + 1)) and 220–4200× (t(t + 1)(t + 2)) at 40–60 bits. The irreducible control t² + 1 has
+(4t⁴ + 1), 16–170× (t(t + 1)) and 220–1100× (t(t + 1)(t + 2); two cells with unreliable controls omitted) at 40–60 bits. The irreducible control t² + 1 has
 gain 0.1–0.5 (its values avoid primes ≡ 3 mod 4).
 
 ### 3.2 But correlated families do not land in windows
@@ -211,22 +229,24 @@ gain 0.1–0.5 (its values avoid primes ≡ 3 mod 4).
   y = X^{o(1)}.
 
 **Prop FF (fixed families must be dense in the smooth numbers; PROVED, averaged).** Let a constructor output, for the
-window [x, x + h], only y-smooth members of a family 𝓕 fixed independently of x (𝓕 may depend on the size X; members
-carry their factorisations; multiplicity M_𝓕 = max number of times an integer occurs). If its success probability
-per window is ≥ p, then
-  #{distinct y-smooth members of 𝓕 in [X, 2X + h]} ≥ p·X/((h + 1)M_𝓕) = p·Ψ(2X, y)·L[2/3, 2/(3κ) − ν]/M_𝓕·(1 + o(1)).
-- *Proof.* Lemma PL(a) applied to the smooth members, counted with multiplicity: p ≤ (h + 1)·M_𝓕·#{distinct}/X;
-  Ψ(2X, y) = Xρ(u₀)^{1+o(1)}. ∎
-- *Reading.* Prop SI needs p ≥ L[1/3, −C] per window (only L[1/3, C] multipliers exist; sicheck C1–C2). At its
-  optimum ν ↓ 2/(3κ), a fixed family must therefore contain, up to multiplicity, at least an L[1/3]^{−1} fraction of
-  *all* y-smooth integers near X. Every correlated identity family (one parameter, or m parameters with degree d > m,
-  e.g. st(s + t), PTE fibres of bounded size, Aurifeuillian and cyclotomic values) has X^{1−ε} members near X and
-  fails by an exponential factor. A family that passes contains essentially "all smooth integers of some factorisation
-  shape" (e.g. all products of r balanced factors, which covers almost all smooth integers because their divisors
-  are dense), and listing *it* in a window is Prop SI restricted to that shape.
+window [x, x + h], only y-smooth members of a multiset 𝓕 fixed independently of x (𝓕 may depend on the size X;
+members carry their factorisations). If its success probability per window is ≥ p, then
+  #{distinct y-smooth members of 𝓕 in [X, 2X + h]} ≥ p·X/(h + 1) = p·Ψ(2X, y)/((h + 1)ρ(u₀)^{1+o(1)}).
+- *Proof.* The probability that [x, x + h] meets a set S of integers is ≤ (h + 1)·#(S ∩ [X, 2X + h])/X (each element
+  lies in ≤ h + 1 windows); repeated presentations do not raise it (codex round 2). Ψ(2X, y) = Xρ(u₀)^{1+o(1)}. ∎
+- *Reading.* A constructor that spends ≥ 1 unit per window it queries and costs L[1/3, τ] per output must have
+  p ≥ L[1/3, −τ]. So a fixed family must contain at least a p/((h + 1)ρ(u₀)^{1+o(1)}) fraction of *all* y-smooth
+  integers near X. Only this exact form is claimed: (h + 1)ρ(u₀) can be exp(√(F_{1/3}F_{2/3})) or larger while
+  h = L[2/3, 2/(3κ)] still holds, so the fraction is not an L[1/3]^{−1} statement (codex round 2).
+  Every family with O(X^{1−ε}) distinct values near X fails by a factor X^{−ε}: exponential. This covers
+  one-parameter polynomials of degree ≥ 2, Aurifeuillian and cyclotomic values, PTE fibres of bounded size, and
+  coercive (balanced-range) m-parameter forms of degree d > m such as st(s + t) on a box. Degree alone does not
+  suffice: st(t + 1) with t = 1 contains every even integer (codex), i.e. unbalanced ranges are the divisor trick. A family that passes contains, up to multiplicity, a large share of all
+  smooth integers of some factorisation shape (e.g. all products of r balanced factors, which covers almost all
+  smooth integers because their divisors are dense), and listing *it* in a window is Prop SI restricted to that shape
+  (assessment).
 - *Scope.* Families chosen from x (target-dependent, growing) are not covered. They are adaptive constructions
-  (route 1). Multiplicity matters: ordered factorisations into r pieces have M_𝓕 ≤ r^{Ω} = L[2/3, o(1)], which
-  weakens the fraction to L[2/3, −o(1)] but not the conclusion.
+  (route 1).
 - *Exact split compressions* (one presentation, many members) are limited to ≤ 1 relation per presentation by
   ptebarrier's Lemma R / Theorem W; Prop FF is the complementary statement for *smoothness-based* (non-exact)
   families: their members must be numerous, hence uncorrelated.
@@ -247,13 +267,14 @@ ln d ≥ σ_m := t^{m/(m+1)}π^{1/(m+1)} (t = ln R), under an algebraic-independ
 sample or constant-factor variants.
 
 **Prop MS (independent windows; PROVED, averaged; the decoding region granted at unit cost).** Fix 2 ≤ m ≤ t and any
-y-smooth P. Place windows W_i = [x_i, x_i + h] with x_1, …, x_m independent and uniform in [X, 2X). A *certified tuple*
+y-smooth P ≥ 2 (for P = 1 the threshold is vacuous and the statement fails). Place windows W_i = [x_i, x_i + h] with x_1, …, x_m independent and uniform in [X, 2X). A *certified tuple*
 is (d, z_1, …, z_m) with d | P, ln d ≥ σ_m, d | z_i ∈ W_i. Then
   E #{certified tuples with z_1 y-smooth} ≤ C·ρ(u₀)^{1−o(1)},
 with C absolute and the o(1) uniform in P and m. (Summing over coordinates: ≤ C·m·ρ(u₀)^{1−o(1)} smooth outputs per
 call.)
 - *Proof.* Write ℓ = ln d. Every certified d has ℓ ≤ π and ℓ ≥ σ_m = t^{m/(m+1)}π^{1/(m+1)} ≥ t^{m/(m+1)}ℓ^{1/(m+1)},
-  hence ℓ ≥ t and d ≥ h + 1; so each window contains ≤ 1 multiple of d, with E #multiples = (h + 1)/d·(1 + O(d/X)),
+  hence ℓ ≥ t and d ≥ h + 1; so each window contains ≤ 1 multiple of d, with E #multiples ≤ ((h + 1)/d)(1 + (h + d)/X)
+  (for d ≤ X/m the m − 1 boundary factors multiply to ≤ e²; for d > X/m, ((h + 1)/d)^m ≤ (m(h + 1)/X)^m swamps them),
   and E #y-smooth multiples in W_1 ≤ ((h + 1)/X)·Ψ(3X/d, y) ≤ 3C₀((h + 1)/d)ρ(u₀ − ln(d/3)/ln y) (Hildebrand's
   uniform bound, as in Theorem J step 3). By independence,
   E ≤ 3C₀ Σ_{d | P, ℓ ≥ σ_m} ((h + 1)/d)^m ρ(u₀ − ln(d/3)/ln y).
@@ -267,7 +288,8 @@ call.)
     τ(P) ≤ exp(O(t/ln t)) = e^{o(F_{2/3})} (Nicolas–Robin), and each term is ≤ ρ(u₀ − 60t/ln y) = ρ(u₀)^{1−o(1)}. ∎
 - *Reading.* The factor ((h + 1)/d)^{m−1} — the price of finding the *same* d in every window — wipes out the
   enlarged region. For m = 1 the argument fails (Johnson's threshold is needed; that is Theorem J). MEASURED (E2B):
-  the per-window smooth yield of m = 2, 3 is 10–270× below the m = 1 Johnson cell, and the tuple counts match
+  the smooth yield per call (distinct smooth z₁, symmetric normalisation) of m = 2, 3 is 8–92× below the m = 1
+  Johnson cell, and the tuple counts match
   Σ_d((h + 1)/d)^m within 2% (C2).
 - *Codex (blind §3; PROVED in the same MODEL).* Granting the general-ACD radius instead (no modulus P), the averaged
   cost is ≥ L[2/3 + 1/(3m), (m − 1)(ν/C_m)^{(m−1)/m}] per output, e.g. L[5/6, √(8ν/3)] for m = 2: worse than sieving.
@@ -281,18 +303,32 @@ k_i, k_j ≤ K and d | k_iN + r_i, d | k_jN + r_j with 0 ≤ r_i, r_j ≤ h. If 
   integer s ≤ h/λ_max. All m certified integers are multiples of the single number gN + s ∈ [gN, gN + h/λ_max], and
   they give the same relation (sicheck Lemma I). The joint certificate is a single-window certificate in disguise.
   Codex's exact count: Q_d = (G/d)(⌊T/G⌋ + 1), G = gcd(g, d), T = ⌊h/λ_max⌋, instead of (h/d)^m.
+- **Prop IH-J (yield for d > Kh; PROVED in MODEL "dependent samples carry one sample's information"; proof
+  critic finding 1).** Lemma IH bounds *relations per tuple*, not *certified tuples per call*: if Cohn–Heninger's
+  enlarged region σ_m were granted to this degenerate configuration, the call would certify essentially every
+  smooth gN + s in [gN, gN + T] — Prop SI for free. It cannot be granted. Proportional samples k_iN put the m − 1
+  linear forms λ_jX_i − λ_iX_j, with tiny coefficients, into the Cohn–Heninger lattice, so its algebraic-independence
+  hypothesis fails; the samples carry the information of the single sample gN with error ≤ T. *Model:* such a call is
+  a single-sample Johnson-class call on the window [gN, gN + ⌊h/λ_max⌋] (g ≤ K ≤ h). Theorem J(a) then gives
+  ≤ ρ(u₀)^{1−o(1)} certified smooth outputs per call, averaged over N. A single-window certificate *beyond* Johnson
+  would be exactly the beyond-Johnson CRT decoder of Prop RD, i.e. route 1's open problem, not a route-3 gain.
 - MEASURED (E2A): 0 violations over 20 moduli × 28 pairs × 513² offsets; every pair with gcd > Kh was
   proportional (3516 per modulus), and no pair with h < gcd ≤ Kh was.
 
-**Prop MS′ (same modulus, d ≤ Kh; PROVED, averaged over N, output-sensitive).** If d ≤ Kh, the cofactor of the
+**Prop MS′ (same modulus, d ≤ Kh; PROVED in the examine-all-certified-tuples model, averaged over N).** If d ≤ Kh, the cofactor of the
 first coordinate is ≥ k_1N/(Kh) and, conditional on the certificate (an event depending on N mod d only), z_1/d runs
 through an arithmetic progression of difference k_1 ≤ K over a range of length ≍ X/d. So each certified tuple has
 z_1 y-smooth with probability ≤ C·K·ρ(u₀ − ln(Kh)/ln y) = ρ(u₀)^{1−o(1)}, and a decoder that pays ≥ 1 per certified
-tuple pays ≥ ρ(u₀)^{−1+o(1)} per smooth output. (The factor K bounds smooth numbers in a progression by all smooth
+tuple it examines pays ≥ ρ(u₀)^{−1+o(1)} per smooth output. *Scope (codex round 2).* The conditioning is on a fixed
+certificate event (fixed d, multipliers, offsets); it is valid for decoders that examine all certified tuples (as a
+lattice decoder that enumerates its roots does) or select among them using residues mod d only. A selector that uses
+the quotient or the full input can emit only smooth tuples (codex's example: emit only when N + 1 is a power of two);
+that is a route-1 algorithm and is not covered. (The factor K bounds smooth numbers in a progression by all smooth
 numbers; it is exp(O(F_{1/3})).)
 
 **Conclusion for route 3.** Independent windows: no gain (Prop MS). Windows of one modulus: large common divisors
-force a single window (Lemma IH); small ones leave the divisor-trick cofactor (Prop MS′). τ = ∞. Adaptively chosen
+force a single window, where only a Johnson-class (Theorem J) or a beyond-Johnson (route 1) certificate is
+available (Lemma IH, Prop IH-J, MODEL); small ones leave the divisor-trick cofactor (Prop MS′). No finite τ. Adaptively chosen
 helper windows are route 1.
 
 ## 5. Route 4: smooth norm and polynomial values near (kN)^{1/d}
@@ -307,15 +343,16 @@ helper windows are route 1.
   constructors with a restricted factor base**. Under the NFS heuristic H, a non-constructed α of norm ≍ X is smooth
   with probability ρ(u₀)^{1+o(1)}: no gain either way. E1's control t² + 1 = Norm(t + i) is even 2–10× *less* often
   smooth than random integers of its size (only primes ≡ 1 mod 4 and 2 divide it).
-- **Prop LC (a degree-d analogue of the Prop SI relation; MODEL).** Take f with f(m) ≡ 0 (mod N), θ a root,
-  φ: Z[θ] → Z/N. A degree-d Prop-SI relation is a constructed y-smooth α with φ(α) ≡ v (mod N), |v| ≤ h (tested).
-  The α with φ(α) mod N ∈ [0, h] are h + 1 cosets of a lattice of determinant N (density (h + 1)/N). By the ideal
-  counting heuristic (≈ c_K·T principal ideals of norm ≤ T, each with a generator in a given coset with probability
-  ≈ (h + 1)/N up to the unit index), the smallest constructed side has |Norm(α)| ≍ N/(h·c_K). With coefficients
-  bounded by A, |Norm| ≍ A^d‖f‖^{d−1} and A^d ≳ N/h, so ‖f‖^{d−1} ≥ N^{Θ(1)} (base-m, GNFS-type f) makes it worse and
-  only O(1)-coefficient f (SNFS-type N) reaches ≈ N/h. Either way the constructed side is N^{1−o(1)}: the gain over
-  u ≈ kN is ρ(u₀ − ln h/ln y)/ρ(u₀) = L[1/3, 2ν/(3κ)] at most, and constructing a smooth principal ideal with a
-  generator in a prescribed coset is no easier than Prop SI.
+- **Prop LC (a degree-d analogue of the Prop SI relation; height bound PROVED, norm scale OPEN).** Take f with
+  f(m) ≡ 0 (mod N), θ a root, φ: Z[θ] → Z/N. A degree-d Prop-SI relation is a constructed y-smooth α with
+  φ(α) ≡ v (mod N), 0 ≤ v ≤ h (tested). Then α − v lies in the kernel ideal, of norm N, so N | Norm(α − v); if every
+  embedding of α has absolute value ≤ A and α ≠ v, then N ≤ (A + h)^d (codex round 2). So the constructed element has
+  height ≥ N^{1/d} − h in some embedding. This is a height constraint, not a lower bound on |Norm(α)|; the v1 claim
+  that the smallest constructed side is ≍ N/(h c_K) is **withdrawn** (unit orbits and the arithmetic of generator
+  residues are not uniform). Example (codex): in Q(i) with m² + 1 ≡ 0 (mod N), every α = a + bi ≠ v with
+  a + bm ≡ v has |α − v| ≥ √N and |Norm α| ≥ (√N − h)² = N^{1−o(1)}: no smaller than Prop SI's u ≈ kN. In real fields
+  units of norm 1 leave the norm scale open. We found no field in which the constructed side is smaller than
+  N^{1−o(1)}, and no construction exploiting one (assessment).
 - **NFS constants (codex blind §4; MODEL).** In the size–entropy sampling model, two-sided degree-d relations give
   SNFS (32/9)^{1/3} = 1.5263, GNFS (64/9)^{1/3} = 1.9230 and, reusing rational smoothness across fields,
   MNFS ((92 + 26√13)/27)^{1/3} = 1.9019 (all re-derived exactly by codex). Their amortised per-relation exponents
@@ -330,15 +367,20 @@ A Coppersmith/Howgrave-Graham lattice returns all integer roots of its reduced p
 ones. **E3 (pre-registered, Addendum A1)** ran 5000 calls in each of two configurations (§8.4). Uncertified roots
 occur 0.04 and 0.001 times per call. In U1 (198 of them) their gcd with P sits just below the certificate threshold
 (median ln gcd 18.1 vs ln T_cert 18.9; 10th percentile 16.6) and their smooth fraction (37%) is 0.70 of what their
-known divisor predicts. They are near-certified points of the same class, not a new source of smooth numbers. This is
-MEASURED at toy size only; it says nothing about decoders of a different kind.
+known divisor predicts. The registered threshold is the lattice's own conservative certificate; against the *ideal*
+Johnson threshold √(ln V·ln P) used by Theorem J, 156 of U1's 198 (and all 6 of U2's) are already inside Theorem J's
+class (codex round 2). Only 42 roots in 5000 calls (0.008 per call) fall outside it; 10 of them are smooth against
+16.8 predicted by the same cofactor model (ratio 0.60). So we see no evidence of a smoothness bias beyond the known
+divisor, at toy size and with small counts; this is weaker than a demonstration of "no bias", and it says nothing
+about decoders of a different kind. (Conditioning on an exact gcd also imposes divisibility exclusions on the
+cofactor that the unconditional density curve ignores.)
 
 ## 7. Route 5: the softer target
 
 - c(τ) = min_κ max(κ + τ + 2/(9κ²), 2κ) < 1.9019 iff τ < 0.757169 (PROVED; codex gives the closed form: c(τ) ≥
   τ + (3/2)(4/9)^{1/3} with equality at κ = (4/9)^{1/3} once τ ≥ 0.381).
-- Per-route τ: **∞ for every route** (no L[1/3] constructor), see the table in §0.
-- The only quantities in this note at L[1/3] scale are *upper bounds on information* (Lemma IC: τ_info ≤ κ) and the
+- Per-route τ: **no finite τ obtained on any route** (no L[1/3] constructor found), see the table in §0.
+- The only quantities in this note at L[1/3] scale are *upper bounds on information* (Lemma IC: τ = κ, a = 1) and the
   decoder threshold a < 1.1416 (Prop RD). They describe what a constructor would have to achieve computationally.
 
 ## 8. Experiments (pre-registered: 424ee86; Addendum A1: 01eb40d)
@@ -351,10 +393,10 @@ and `posthoc e2b`. Runtimes: E1 22 s (RSS 0.69 GB), E2A 5 s, E2B 67 s, E3 12 s.
 | # | Prediction | Result |
 |---|---|---|
 | P1 | R = joint/independence ∈ [0.67, 1.5] (cp2, cp3, aur; pred ≥ 30) | **FAILED in 4 of 13 cells** (cp2 56b y=2^8: 0.57; cp3 48b, 56b, 60b y=2^8: 0.61, 0.54, 0.46); passed in 9 |
-| P2 | hit law in I_k: pooled ratio ∈ [0.95, 1.05] (pred ≥ 200) | **held**: cp2 1.0000 (40 b), 1.0008 (48 b); cp3 cells below 200 (1.02, 0.90; reported only) |
+| P2 | hit law in I_k: pooled ratio ∈ [0.95, 1.05] (pred ≥ 200) | **held**: cp2 0.9998 (40 b), 1.0008 (48 b); cp3 cells below 200 (1.02, 0.90; reported only) |
 | P3 | Lemma IH: 0 violations | **held**: 0 in 20 moduli |
 | P4 | tuple count ratio ∈ [0.85, 1.15] (pred ≥ 50) | **FAILED in 1 of 10 cells** (C1, m = 1 Johnson: 1.23); others 0.99–1.10 |
-| P5 | z₁-smooth ratio ∈ [0.6, 1.6] (≥ 30 tuples) | **FAILED in 1 of 7 eligible cells** (C1 Johnson: 1.63); others 0.74–1.11 |
+| P5 | z₁-smooth ratio ∈ [0.6, 1.6] (≥ 30 tuples) | **FAILED in 1 of 8 eligible cells** (C1 Johnson: 1.63); others 0.74–1.11 |
 | P6 | CH (m = 2, 3) per-window smooth yield below Johnson (m = 1) | **held** in both configs |
 | P7 | uncertified roots per call ≤ 0.5 | **held**: 0.040 (U1), 0.0012 (U2) |
 | P8 | uncertified smooth / known-divisor model ∈ [0.33, 3] (≥ 30 roots) | **held** (U1: 0.70); U2 not evaluated (6 roots) |
@@ -387,7 +429,8 @@ at y = 2^8 had 0–2 expected smooth members (not evaluated).
 - **P1 failure, diagnosed (POST-HOC, `posthoc.py`).** Consecutive pieces cannot share a prime, while smooth integers
   are rich in small primes. A local model (a smooth integer is ≡ 0 mod p with the measured frequency a_p, uniformly
   in the other classes; independent across p) predicts the joint/independent ratio
-  ∏_p p^{r−1}Σ_c∏_jq_p(c + j). It accounts for the deficit: R/local factor = 0.84–1.00 in all 12 cp cells. This is
+  ∏_p p^{r−1}Σ_c∏_jq_p(c + j). It accounts for most of the deficit: R/local factor = 0.84–1.00 in all 12 cp cells (residual 0–17%, largest at
+  y = 2^8). This is
   the r-piece analogue of sicheck's coprimality penalty (Lemma CP). At the Prop SI scale a_p → p^{−α} with α → 1 and
   the factor is a constant (L^{o(1)}); it does not affect the asymptotic gain.
 - The gain grows with size at fixed y, as r^{u} predicts; its size is irrelevant to the barrier, which is placement.
@@ -415,10 +458,17 @@ h < gcd ≤ Kh per modulus, none proportional.
 
 - **P4/P5 failures, diagnosed (POST-HOC, `posthoc.py e2b`; six fresh seeds of the C1 Johnson cell).** The m = 1
   counts are heavy-tailed: a single z with a huge gcd contributes all its divisors above the threshold. Fresh seeds
-  gave tuple ratios 0.94–1.13 and z₁-smooth ratios 0.96–1.40 (mean 1.18). The registered 1.23 and 1.63 are in the
-  upper tail; the smooth-model excess of ≈ 1.2 is a modest bias of the cofactor density model at small cofactors.
+  gave tuple ratios 0.94–1.13 and z₁-smooth ratios 0.96–1.40. Codex (round 2) computed the exact finite-window
+  expectations: 9277.37 tuples and 4005.03 smooth tuples per 20000 calls; the cofactor density model (3633.94)
+  underestimates the latter by 10.2%. Against the exact expectation the registered smooth ratio is 1.48 and the six
+  fresh seeds pool to 1.07; a single z = 128701918800 contributed 853 smooth tuples to the registered run. So the
+  failures are a heavy tail plus a 10% model deficit.
+- *Normalisation (proof critic).* The registered column "distinct smooth z₁ per window" divides coordinate-1 counts by
+  all m windows, understating the m ≥ 2 cells by a factor m. With the symmetric normalisation (distinct smooth z₁
+  per call) the CH-vs-Johnson gaps are 7.8× and 36× (C1, m = 2, 3) and 16× and 92× (C2), instead of the registered
+  16–276×; the bare cells become 0.38, 0.23 (C1) and 0.99, 0.59 (C2). P6 holds either way.
 - "Bare" cells grant every common divisor d > 2(h + 1) of P with no lattice guarantee: an idealised oracle that lists
-  43–103 tuples per call. Per certified tuple its smooth rate (3.6%) matches the cofactor model; per window it is the
+  13.6–103 tuples per call. Per certified tuple its smooth rate (3.6%) matches the cofactor model; per window it is the
   only cell above the divisor trick, because it is not a decoder.
 - The Johnson cell (0.021–0.032) and the divisor trick (0.022–0.024) agree, as Theorem J's sharpness predicts.
 
@@ -438,7 +488,7 @@ h < gcd ≤ Kh per modulus, none proportional.
 ## 9. GPT-6.1-sol
 
 ### 9.1 Blind round (`codex/sinonobliv_1.out`, xhigh, run before our analysis was written)
-**Independent agreements.** No constructor; τ = ∞ on every route; the fixed-tree union bound (= Prop AT); fixed
+**Independent agreements.** No constructor; no finite τ obtained on any route; the fixed-tree union bound (= Prop AT); fixed
 one-parameter families exponentially sparse (= Lemma PL); the r^{u} density gain and its L[2/3, o(1)] size;
 independent-window multi-sample counting barrier; proportional offsets for windows of one modulus (= Lemma IH); NFS
 constants not SI τ's; τ < 0.757169. Plausibility 5% (ours 1%).
@@ -450,9 +500,52 @@ L[2/3 + 1/(3m)]; the exact count Q_d; Sarkar–Maitra's 8× constant; the exact 
 and the decoder threshold a < 1.1416, Prop FF (dense-family dichotomy), Prop MS for the partial-ACD region with an
 arbitrary modulus P (codex treated general ACD), Prop MS′, Prop NV, Prop LC, experiments E1–E3.
 
-### 9.2 Adversarial round — pending.
+### 9.2 Adversarial round (`codex/sinonobliv_2.{md,out}`, on v1 04a1f52): MAJOR REVISION, all points adjudicated
+Codex reproduced all six raw/post-hoc files exactly, ran the 12 tests, re-scored P1–P9 (same results as ours after
+the P5 count fix), and confirmed Prop JC (with weights), Prop MS's inequalities, Lemma IC, the CRT agreement identity
+and a* = 1.1415601395.
 
-## 10. Opus critics — pending.
+| # | Sev. | Finding | Adjudication |
+|---|---|---|---|
+| 1 | MAJOR | Prop LC's N/(h c_K) norm scale unjustified; Q(i) counterexample (norm ≥ (√N − h)²) | accepted: scale withdrawn; LC is now a PROVED height bound N ≤ (A + h)^d plus the Q(i) example; norm scale OPEN |
+| 2 | MAJOR | Prop MS′ conditioning invalid for decoders that select outputs with more information | accepted: restricted to decoders examining all certified tuples or selecting by residues mod d; codex's selector example cited |
+| 3 | MAJOR | Prop FF reading: L[1/3] fraction does not follow from leading constants; C1 gives no window bound | accepted: exact fraction p/((h+1)ρ) only; justification of p via per-window cost ≥ 1 |
+| 4 | MAJOR | degree > dimension does not imply sparsity (st(t+1)); max multiplicity claim false | accepted: count distinct values (multiplicity removed from the proof); sparsity stated for balanced/coercive ranges |
+| 5 | MAJOR | RD list size is an average, not worst-case; "purely algorithmic" overclaims | accepted: average vs worst-case separated |
+| 6 | MINOR | MS: boundary factors raised to m − 1; P = 1 | accepted: boundary split (also proof critic #4); P ≥ 2 |
+| 7 | MINOR | IC is a query-model statement | accepted: reworded |
+| 8 | MINOR | missing CRT literature; BKR overstated | accepted: Li–Sidorenko–Nielsen, Bhandari–Harsha–Kumar–Sudan added; BKR "superpolynomial in specified regimes" |
+| 9 | MAJOR | route-wide "τ = ∞" and barrier labels exceed the models | accepted: "no finite τ obtained"; NV and LC labelled reductions/height bound; §0 says no route is closed for arbitrary algorithms |
+| 10 | MINOR | most "uncertified" E3 roots are inside Theorem J's ideal Johnson class | accepted: both classifications reported (42 outside, 10 smooth vs 16.8 predicted); "no hidden bias" weakened |
+| 11 | MINOR | P5 has 8 eligible cells; P2 0.9998 | accepted (also proof critic) |
+| 12 | MINOR | exact E2B expectation: model deficit 10.2%; registered smooth ratio vs exact 1.48, fresh seeds 1.07 | accepted: §8.3 rewritten |
+
+## 10. Opus critics
+
+### 10.1 Proof/cost critic (read-only): ACCEPT WITH FIXES, all applied
+The critic re-checked Prop JC (both cases), AT, IC, RD, the constant a* = 1.141560 and τ* = 0.7571694, Lemma PL,
+Prop FF's inequality, every inequality of Prop MS (case-2 cap 15.625·t at m = 2, ≤ 59.1t), Lemma IH (the E2A count 3516
+= Σ_pairs(⌊h/λ_max⌋ + 1)), Prop MS′'s conditioning, posthoc.py's local model, and uncert.py's certificate; it re-scored
+P1–P9 and found no code bug changing a number.
+
+| # | Sev. | Finding | Fix |
+|---|---|---|---|
+| 1 | MAJOR | same-modulus d > Kh: Lemma IH bounds relations per tuple, not certified tuples per call; granting the CH region there would give Prop SI for free | Prop IH-J added: dependent samples carry one sample's information (MODEL), so Theorem J(a) applies; a beyond-Johnson single-window certificate is route 1 |
+| 2 | MINOR | max multiplicity can be exp(Θ(x/ln x)) | multiplicity removed (count distinct) |
+| 3 | MINOR | "L[1/3]^{−1} fraction", "list tends to L^{o(1)}" overclaim | exact forms stated |
+| 4 | MINOR | MS boundary factor (1 + O(d/X))^{m−1} | split at d = X/m |
+| 5 | MINOR | P6 column divides coordinate-1 counts by m | disclosed; symmetric gaps 7.8–92× |
+| 6 | MINOR | P5: 8 eligible cells | fixed |
+| 7 | MINOR | 1.63 is above all six fresh seeds | fixed (with codex's exact expectation) |
+| 8 | MINOR | local factor explains most, not all, of the deficit | "most; residual 0–17%" |
+| 9 | MINOR | gains quoted from unreliable control cells | 8–1100× |
+| 10 | MINOR | IC(b) word-operation count | O(π(y)·x) bit operations per k |
+| 11 | MINOR | "τ_info ≤ κ < 0.757" compares constants at different optima | restated via a = 1 ⇒ 1.8171 |
+| 12 | MINOR | NV is a reduction, LC "no easier" is an assessment | relabelled |
+| 13 | MINOR | "none reaches L[1/3, τ]" labelled PROVED | relabelled as a finding |
+| 14–16 | NIT | JC needs gcd(P, D) = 1 and inherits the weighted "sketch"; theory.ms_case_bound used a different split; P2 rounding, bare tuple range, stray (1 + o(1)) | applied; ms_case_bound and its test aligned with the note |
+
+### 10.2 Literature critic — pending.
 
 ## 11. Reproduction
 ```bash

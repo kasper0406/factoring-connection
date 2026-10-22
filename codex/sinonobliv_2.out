@@ -1,0 +1,165 @@
+| # | Severity | Location | Finding | Suggested fix |
+|---|---|---|---|---|
+| 1 | MAJOR | §5, Prop LC | The ideal-counting model does not justify a first norm of ≍ N/(h c_K). Generator residues are constrained by arithmetic and unit orbits. | Withdraw this scale claim; specify heights, representatives modulo units, and a distribution hypothesis. |
+| 2 | MAJOR | §4, Prop MS′ | Conditioning on a fixed certificate is valid; conditioning on a decoder’s selected output need not depend only on N mod d. The runtime conclusion needs this extra restriction. | State a residue-only selection model, or charge all candidate tuples examined before further selection. |
+| 3 | MAJOR | §3.2, FF “Reading” | The L[1/3] density conclusion does not follow from leading L[2/3] constants. C1 also supplies no upper bound of L[1/3, C] on the multiplier domain. | Retain the exact placement bound and state the additional window-count and subleading-scale assumptions. |
+| 4 | MAJOR | §3.2, FF sparsity/multiplicity | Degree d > m alone does not imply X^{1−ε} values. The claimed maximum multiplicity L[2/3, o(1)] is false. | Require balanced/coercive parameter ranges; count distinct integers directly. |
+| 5 | MAJOR | §2.3, RD list size | An average list bound is not a worst-case bound. Cancellation of leading constants gives only exp(o(F₂)), potentially superpolynomial in π(y). | Separate average, worst-case, and promise-list statements. Remove “purely algorithmic” as an unconditional conclusion. |
+| 6 | MINOR | §4, MS proof | Boundary errors are dropped before raising probabilities to m−1. Also require P ≥ 2: P = 1 invalidates the stated proposition. | Split off divisors near X; explicitly exclude P = 1. |
+| 7 | MINOR | §2.2, IC consequence | The residue-cost calculation is correct, but it is a per-window query-cost statement with unrestricted computation, not a per-output bound or universal information-theoretic theorem. | State the query model and availability assumption explicitly. |
+| 8 | MINOR | §2.3, literature | Missing relevant CRT power/interleaved decoding and polynomial-ideal capacity results. The cited RS obstruction is stated too strongly as “exponential.” | Add the references below; use their precise guarantees and limitations. |
+| 9 | MAJOR | §0, §5 NV, §7 | The conclusions exceed the proved models. NV is an algebraic identity, not a computational lower bound; MS′ and LC do not close their routes. | Replace route-wide “τ = ∞” with “no finite τ obtained”; narrow the barrier labels. |
+| 10 | MINOR | §6, §8.4, E3 | Registered classification is correct, but most “uncertified” roots still satisfy the ideal Johnson certificate used by Theorem J. | Report both classifications and weaken “no hidden bias.” |
+| 11 | MINOR | §8 scorecard | P5 has **eight**, not seven, eligible cells. P2’s 40-bit cp2 ratio rounds to **0.9998**, not 1.0000. | Correct the scorecard and rounding. |
+| 12 | MINOR | §8.3, E2B diagnosis | Heavy tails are real. The exact cofactor calibration gives a **10.2%** model deficit, rather than identifying the fresh-seed mean excess as the model bias. | Report the exact expectation and retain seed spread as descriptive evidence. |
+
+**JC survives the audit.** The reduction for D ≤ V is valid, including weights. Uniformity is not automatic merely from “ln X′ ∼ x,” but follows from Theorem J’s proof, or by sandwiching y between fixed nearby κ-values at X′ and then letting the sandwich shrink.
+
+For D > V, restrict to D ≤ 3X; larger D contributes nothing. With Dickman arguments clamped below 1, put
+\[
+\epsilon_X=O\!\left(\frac{\log(u_0\log u_0)}{\log y}\right)=o(1).
+\]
+The proof gives
+\[
+E S_D\ll \rho(u_0)(V+1)D^{-1+\epsilon_X}
+ \ll \rho(u_0)\exp(O(F_{1/3})).
+\]
+This is the claimed \(\rho(u_0)^{1-o(1)}\), uniformly. Here one can discard the certificate entirely, so the weighted case causes no additional problem.
+
+**IC and the decoding constant are correct, with scope qualifications.** Computing the residue vector costs \(L[1/3,\kappa]\) bit operations, including polynomial factors in log X. It determines smoothness positions. Since x is already public, this principally says that a residue-query restriction cannot explain computational hardness; it does not give an output efficiently or ensure sufficiently many successful windows.
+
+RD’s agreement identity is exact:
+\[
+A(j)=\log\gcd(x+j,P)
+\]
+for the full prime-power modulus. The nested prime-power coordinates are dependent, but the weights \(\log q\) correctly count valuations without overcounting. Two different messages agree with total weight at most \(\log h\), so \(\sqrt{W\log h}\) is the appropriate Johnson agreement scale. Direct attribution to GSS should acknowledge that its stated coordinate moduli are pairwise coprime. [GSS, *Soft-decision Decoding of Chinese Remainder Codes*](https://web.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf).
+
+The cost optimization gives, for \(a\ge1/3\),
+\[
+\kappa_a=\left(\frac4{9(1+a)}\right)^{1/3},\qquad
+c(a)=\frac32(4/9)^{1/3}(1+a)^{2/3}.
+\]
+The exact threshold is **a < 1.1415601395**. This assumes the required success/output availability; a per-window runtime alone is insufficient.
+
+**FF’s elementary count is valid, but its interpretation is not.** In fact multiplicity can be removed:
+\[
+p\le \frac{h+1}{X}\,
+ \#\{\text{distinct smooth family members in }[X,2X+h]\}.
+\]
+Repeating presentations cannot increase the probability of meeting the family.
+
+Two explicit problems with the reading:
+
+- **Subleading scales matter.** Write \(F_1=F_{1/3}\), \(F_2=F_{2/3}\). Taking
+  \[
+  h=\rho(u_0)^{-1}\exp(\sqrt{F_1F_2})
+  \]
+  still gives \(h=L[2/3,2/(3\kappa)]\). Yet \(h\rho(u_0)=\exp(\sqrt{F_1F_2})\), larger than every fixed power of π(y). Neither an inverse-L[1/3] family fraction nor a polynomial-size average decoding list follows from the leading constants.
+- **Degree is insufficient.** The two-parameter, degree-three family \(F(s,t)=st(t+1)\), with t = 1, contains every even integer. Balanced parameter ranges would exclude this counterexample, but are absent from the universal statement.
+
+The maximum multiplicity assertion also fails. For squarefree primorial n ≍ X, ordered r-factorizations number
+\[
+r^{\omega(n)}
+=\exp\!\left((\log r+o(1))\frac{\log X}{\log\log X}\right),
+\]
+far larger than \(L[2/3,o(1)]\). These primorials are y-smooth at the stated scale. Deduplicating removes the issue entirely.
+
+“Only K windows” implies average success at least Ω(1/K) if constant overall success is required. It requires an actual upper bound on windows considered and the appropriate sampling distribution. C1–C2 do not establish the asserted universal upper bound on available multipliers.
+
+**MS is repairable; its principal inequalities check out.** For P ≥ 2, any nonempty certified set has π ≥ t and ℓ > 0. Thus
+\[
+\ell\ge t^{m/(m+1)}\ell^{1/(m+1)}
+\quad\Longrightarrow\quad \ell\ge t,
+\]
+so **d ≥ h+1 is correct**. For P = 1, however, d = 1 satisfies the written threshold, and the proposition fails.
+
+The choice \(j_1=mt/(m-1)+1\), the exponential identity in case 1, and
+\[
+(m/(m-1)+1/t)^{m+1}\le8e^2<60
+\]
+are valid. The Dickman ratio argument works uniformly using a global upper bound on its logarithmic derivative. Hildebrand uniformity presents no difficulty near d ≍ X: when \(3X/d\le y\), simply use \(\Psi(Y,y)\le Y\).
+
+The missing step is
+\[
+E C_d=\frac{h+1}{d}(1+O(d/X)).
+\]
+For growing m, its error cannot simply disappear. Split at \(d=X/t^2\). Below that cutoff the accumulated error is bounded uniformly; above it, summing the crude bound
+\[
+\left(C(h+1)/d\right)^m
+\]
+over all integers d ≤ 3X gives an exponentially small tail. This repairs the conclusion.
+
+The PACD threshold σ_m is the correct idealized inversion of the stated radius. Actual Cohn–Heninger recovery retains its independence assumption, side condition, and fixed-m asymptotic qualification. [Cohn–Heninger, Theorem 1](https://mathweb.ucsd.edu/~kedlaya/ants10/cohn/paper.pdf).
+
+**MS′ needs an algorithmic-model restriction.** For fixed d, multipliers, offsets, and residue-only acceptance, conditioning does leave an arithmetic progression; bounding its smooth members by all smooth integers gives the claimed factor K.
+
+A decoder can additionally select using the quotient or the full input. For example, take \(P=d=h+1\) a power of two, \(k_1=1,k_2=2\), and offsets 1,2. Emit the tuple only when \(N+1\) is a power of two. Every emitted first coordinate is smooth; emission is not determined by N mod d. This does not give a fast constructor, but invalidates the claimed conditional-probability argument for arbitrary selected outputs.
+
+Likewise, IH proves proportionality and duplicate relations. It does not turn a PACD threshold into a Johnson certificate for the remaining single unknown.
+
+**LC’s first-norm model is unsound even with finite units.** Take \(K=\mathbf Q(i)\), \(m^2+1\equiv0\pmod N\), and
+\[
+\alpha=a+bi,\qquad a+bm\equiv v\pmod N,\quad 0\le v\le h.
+\]
+For \(\alpha\ne v\),
+\[
+N\mid (a-v)^2+b^2,\qquad
+|\alpha-v|\ge\sqrt N.
+\]
+Consequently
+\[
+|\operatorname{Norm}\alpha|
+=|\alpha|^2\ge(\sqrt N-h)^2.
+\]
+When \(h=N^{o(1)}\), this is \(N(1-o(1))\), contradicting the proposed ≍ N/(h c_K) first nontrivial norm as h grows. The unit group has size four, so a large unit index cannot explain away this example.
+
+Real quadratic units expose the other problem: powers of \(3+2\sqrt2\) have norm one, and some positive power maps to 1 modulo every applicable N. Norm alone therefore does not bound generator height or count generators.
+
+For fixed K, the principal-ideal counting constant is \(\operatorname{Res}_{s=1}\zeta_K(s)/h_K\). Counting ideals does not make their generator residues independent uniform samples. Generator residues form unit orbits; for varying fields, regulator/discriminant dependence also needs control.
+
+A useful rigorous replacement is:
+\[
+N\mid\operatorname{Norm}(\alpha-v).
+\]
+If every embedding of α has absolute value ≤ A and α ≠ v, then
+\[
+N\le(A+h)^d.
+\]
+That is a height constraint. It is not the claimed lower bound on \(|\operatorname{Norm}\alpha|\). NV’s norm-product identity remains correct, but “restricted integer knapsack” supplies no complexity lower bound.
+
+**The literature discussion needs these distinctions.**
+
+- Li–Sidorenko–Nielsen study interleaved CRT and power decoding, with probabilistic assumptions and failures. Their result concerns decoding beyond unique decoding, not a demonstrated capacity decoder for this integer instance. [ISIT 2013 paper](https://backend.orbit.dtu.dk/ws/files/119987681/ISIT.ICRT.pdf).
+- Capacity-achieving CRT-type constructions do exist over **polynomial rings**, including folded and multiplicity codes in a polynomial-ideal framework. They do not automatically transfer to the fixed integer residue code. [Bhandari–Harsha–Kumar–Sudan](https://eccc.weizmann.ac.il/report/2021/036/revision/1/download).
+- The cited Ben-Sasson–Kopparty–Radhakrishnan obstruction establishes **superpolynomial** lists in specified RS regimes; use that precise statement. [Primary paper](https://www.math.toronto.edu/swastik/rsld.pdf).
+
+I found no verified capacity-achieving decoder applicable to RD’s specific integer code and received words.
+
+**The experiments reproduce; their interpretation needs tightening.** All six raw/post-hoc files reproduced exactly after excluding timing fields. All 12 tests pass. The registered scores are:
+
+- P1: **4 failures / 13 eligible cells**.
+- P2: both eligible cells pass; P3: zero violations.
+- P4: **1 failure / 10**; P5: **1 failure / 8**.
+- P6–P7 pass. P8 passes for U1; U2 is ineligible. P9 has zero violations.
+
+The E1 local-factor implementation matches its disclosed model. It reuses measured marginals from the same data and assumes independence across primes; its corrected ratios support a post-hoc explanation, not an independent validation of H_piece.
+
+For C1 Johnson, exact finite-window expectations per 20,000 calls are
+\[
+E[\text{tuples}]=9277.3686,\qquad
+E[\text{smooth tuples}]=4005.0295.
+\]
+The density model predicts 3633.94 smooth tuples: a **10.21%** underestimate. Against the exact expectation, the registered smooth ratio is **1.48064**, and the six fresh seeds pool to **1.06920**. Heavy tails are concrete: \(128701918800\) alone contributes **853** tuples, all smooth.
+
+E3’s actual first-vector certificate is conservative and correctly implemented; I found no numerical reclassification error. However:
+
+| Configuration | Registered “uncertified” roots | Still inside ideal Johnson class | Outside ideal Johnson class |
+|---|---:|---:|---:|
+| U1 | 198 | 156 | **42**, including **10 smooth** |
+| U2 | 6 | 6 | **0** |
+
+For the 42 outside-class U1 roots, the same cofactor model predicts 16.76 smooth roots: ratio **0.597**. Also, conditioning on an exact gcd imposes prime-divisibility exclusions on the cofactor, absent from the unconditional density curve. Thus “no hidden bias” is stronger than the experiment establishes.
+
+Reproduction evidence is in [reproduction.log](/Volumes/git/factoring-connection/codex/scratch/sinonobliv_2/reproduction.log); scoring and exact-count scripts are in the scratch directory.
+
+**Recommendation: major revision.** Retain JC, the repaired independent-window MS bound, IH, the arithmetic reformulation, and the reproduced measurements. Withdraw LC’s norm scale and narrow FF, MS′, and the route-wide negative verdicts to their demonstrated assumptions.

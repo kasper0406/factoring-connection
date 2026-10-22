@@ -109,11 +109,19 @@ def test_cost_model_constants():
 
 
 def test_ms_case_split():
-    # case 2 forces pi <= e^{(m+1)/(m-1)} t
-    for t, pi, m in ((10.0, 25.0, 2), (10.0, 5000.0, 2), (10.0, 1e6, 3)):
-        r = ms_case_bound(t, pi, m)
+    # case 2 (sigma_m <= ell < j1) forces pi <= (m/(m-1) + 1/t)^{m+1} t <= 8 e^2 t when m <= t
+    import random as _r
+    rng = _r.Random(3)
+    for _ in range(2000):
+        t = rng.uniform(3, 50); m = rng.randint(2, int(t)); pi = t * rng.uniform(1, 500)
+        r0 = ms_case_bound(t, pi, m, 0.0)
+        ell = rng.uniform(r0["sigma"], max(pi, r0["sigma"]))
+        if ell > pi:
+            continue
+        r = ms_case_bound(t, pi, m, ell)
+        assert ell >= t - 1e-9
         if r["case"] == 2:
-            assert pi <= r["case2_pi_cap"] + 1e-9
+            assert pi <= r["case2_pi_cap"] + 1e-6 and r["case2_pi_cap"] <= 8 * math.e ** 2 * t + 1e-6
 
 
 def test_prop_cd_sparse_families_vanish():
