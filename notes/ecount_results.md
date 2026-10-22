@@ -1,8 +1,8 @@
 # ecount: #E(Z/N) for one fixed curve, Dieulefait–Urroz, and partial counts (phase 23)
 
-Agent `ecount`, 2026-10-22. Version **v3**: after the codex adversarial round (MAJOR REVISION) and the Opus
-literature critic (MAJOR PROBLEMS: prior art). Every required fix from both is applied (§8, §9). The Opus proof
-critic's verdict is in §9.
+Agent `ecount`, 2026-10-22. Version **v4**. It follows the codex adversarial round (MAJOR REVISION), the Opus literature
+critic (MAJOR PROBLEMS: prior art) and the Opus proof critic (ACCEPT WITH FIXES). Every required fix is applied (§8,
+§9).
 
 - Pre-registration: `notes/ecount_prereg.md`, commit `d856b0b`, made before any experiment ran.
 - Code:
@@ -26,12 +26,15 @@ critic's verdict is in §9.
 
 Notation:
 - N = pq with p < q primes and gcd(N, 6Δ_E) = 1.
-- E: y² = f(x) = x³ + ax + b is a FIXED curve over Z, and E′ is its quadratic twist.
+- E: y² = f(x) = x³ + ax + b is a FIXED curve over Z. E′_r denotes the quadratic twist of E/F_r by a non-residue mod r
+  (all such twists are F_r-isomorphic). We write E′ when r is clear.
 - A_r = #E(F_r) = r + 1 − a_r and A′_r = #E′(F_r) = r + 1 + a_r. λ_r and μ_r are the exponents of E(F_r) and E′(F_r).
 - M = #E(Z/N) := A_pA_q, the projective count (CRT: E(Z/N) = E(F_p) × E(F_q)). M* = (A_p − 1)(A_q − 1) is the
   affine count.
 - r_r = #{roots of f mod r}.
-- Exc(E) = {N : μ_p | M and μ_q | M}, and X_E = Exc(E) ∩ {M odd} (cx1).
+- Exc(E) = {N : μ_p | M and μ_q | M} for M = #E(Z/N). For a general multiple M, write Exc_M for the same condition
+  with that M.
+- X_E = Exc(E) ∩ {M odd} (cx1).
 
 ---
 
@@ -87,7 +90,8 @@ already answered in the literature.** The project marked it OPEN because of a li
   operators" scope gap stays open for trace outputs.
 
 **Partial information (§4).**
-- M mod ℓ with ℓ an input ⇒ factoring off X_E. This is the fixed-curve endgame of Kunihiro–Koyama Lemma 2 / Thm 2.
+- M mod ℓ with ℓ an input ⇒ factoring off X_E, for balanced N; for general N, take W = O(N) and B ≈ (ln 2 + o(1))n.
+  This is the fixed-curve endgame of Kunihiro–Koyama Lemma 2 / Thm 2.
 - Fixed-ℓ counts are OPEN in general, though some are trivially constant: rational ℓ-torsion gives M ≡ 0.
 - Their values leak fixed-base residuosity bits. Chebotarev advantages:
   - M mod ℓ: 9/128, 73/4608 and 241/41472 for ℓ = 3, 5, 7;
@@ -134,7 +138,8 @@ already answered in the literature.** The project marked it OPEN because of a li
 - **Balance assumption (cx2).** p ≥ N^{1/2 − O(1/log N)}, e.g. q/p bounded.
   - Then f(y) = y − h^{−1} mod N has the root k = O(N^{1/4}) modulo a factor of size N^{1/2 − o(1)}.
   - A univariate small-root theorem with a dimension schedule growing with n recovers k deterministically (May 2003,
-    §3.2 Thm 7). If gcd(h, N) > 1, that already splits N.
+    §3.2 Thm 7). Here gcd(h, N) = 1 always, because h | p + 1 and h < q.
+  - This also works when the flipped prime is q, so the algorithm need not know which prime is flipped.
   - For an unbalanced smaller flipped prime r = N^β with β < ½, k = O(N^{β/2}) exceeds the N^{β²} range, so that case
     is not covered.
 - **Implementation is a toy.**
@@ -173,7 +178,7 @@ Let M be any integer with λ_p | M and λ_q | M.
 1. Pick x₀ uniform in Z/N and set δ = f(x₀). If gcd(δ, N) is proper, output it.
 2. If (δ/N) = −1, compute [M]P for P = (δx₀, δ²) on E^(δ): Y² = X³ + aδ²X + bδ³.
 
-**Claim.** One trial splits with probability ≥ ρ(p, q), where
+**Claim.** One trial splits with probability ≥ ρ(p, q) (for the given M; the exceptional set below is Exc_M), where
 
   ρ(p, q) = [(A_p − 1 − r_p)(A′_q − |H′_q|) + (A′_p − |H′_p|)(A_q − 1 − r_q)] / (4pq), with H′_r = E′(F_r)[M].
 
@@ -194,6 +199,9 @@ TW* is TW without the Jacobi filter. At each prime, P lies on E or on E′ indep
 
 **Claim.** If N ∉ X_E, one trial splits with probability ≥ 1/8 − O(p^{−1/2}).
 
+The proof critic sharpened this. Off Exc, TW* has α_r(M) = (A_r + L_r − 2)/(2r) ∈ [½ − o(1), ¾ + o(1)] at a prime with
+μ_r ∤ M, so the true bound is ≥ ¼ − O(p^{−1/2}) in both branches. That gives an expected ≤ 4 + o(1) trials.
+
 *Proof.*
 - **Twist part.** As in TW.
 - **2-adic part.** Suppose N ∈ Exc and M = 2^s m with s ≥ 1.
@@ -210,9 +218,9 @@ a fixed curve, #E(Z/N) ≡ factoring (randomized) on all N of good reduction. Ex
 
 ### 2.4 Corollary EQ, density, exceptional sets
 
-**Corollary EQ (PROVED).** Fix E (ordinary or CM). On the promise N ∉ X_E, #E(Z/N) and factoring are equivalent under
-randomized polynomial-time reductions:
-- one count and expected ≤ 8 + o(1) trials of Õ(n³) bit cost in one direction;
+**Corollary EQ (PROVED).** Fix E (CM or non-CM). On the promise N ∉ X_E, #E(Z/N) and factoring are equivalent under
+randomized polynomial-time reductions, via **TW*** (TW alone covers only N ∉ Exc):
+- one count and expected ≤ 4 + o(1) trials of Õ(n³) bit cost in one direction;
 - Schoof/SEA in the other.
 
 **Doubly supersingular N.** Here M = (p+1)(q+1), and SR2 factors N deterministically. Such N lie in Exc, and are also
@@ -232,12 +240,19 @@ uniform primes in [X, 2X], and density is taken as X → ∞.
   - X_E does have density zero. M odd excludes inert primes, since there A_r = r + 1 is even.
   - So restrict to split p and q, and run the same argument with split auxiliary ℓ, where the image is the Cartan
     subgroup (F_ℓ^×)² (Serre 1972 §4.5).
+  - Details added at the proof critic's request:
+    - Pairs involving an inert prime (inert–inert or inert–split) have M even, so they are not in X_E. Ramified primes
+      are finitely many.
+    - Chebotarev is applied to degree-one primes of K.
+    - The event is invariant under swapping the two Cartan coordinates (complex conjugation).
+    - The open image over K gives the full product ∏(F_ℓ^×)² for large split ℓ.
+    - So X_E has density zero among all balanced pairs.
 - No rate is claimed.
 
 **Census (E2, PH4).**
 - Non-CM Exc fractions at b = 18: 3.9e−6, 7.8e−7 and 1.9e−6.
-- X_E has exactly **one** member among ≈ 7.6·10⁷ pairs: 11a1 with (p, q) = (54443, 62819) and M odd. Here
-  A′_p = 3·13·19·73 and A′_q = 3²·5²·281, and the primes of each twist order divide the other count.
+- X_E has exactly **one** member among ≈ 7.6·10⁷ pairs: 11a1 with (p, q) = (54443, 62819) and M odd. Both twist
+  groups are cyclic, and μ_p = A′_p = 3·13·19·73 and μ_q = A′_q = 3²·5²·281 both divide M = 3³·5²·13·19·73·281.
 - cx1's X_E example y² = x³ + 27331x + 2 at N = 27331 is contrived: the curve reduces to a CM curve mod N.
 
 **X_E is not this code's failure set (cx2).**
@@ -394,7 +409,8 @@ is not a proved optimality statement.
 - **M mod 2: advantage 2/9.**
   - "M odd ⇒ β = +1" is a one-sided certificate (0 exceptions in E4).
   - In a finite population the advantage is Pr[M odd] + max(Pr[β = −1], Pr[M even, β = +1]) − ½.
-- **Root count r_N(f) = r_p·r_q: advantage ½, i.e. it decides β exactly (PROVED, cx2).**
+- **Root count r_N(f) = r_p·r_q: advantage ½, i.e. it decides β exactly (PROVED, cx2). This holds for any separable
+  cubic, not only S₃, by Stickelberger: (Δ_f/r) = −1 iff r_r = 1.**
   - On (Δ_f/N) = 1 the two Frobenius signs agree.
   - A product of 1 means two transpositions, so β = −1. Products 0 or 9 mean even permutations, so β = +1.
   - So **counting roots of the fixed cubic f mod N decides fixed-base quadratic residuosity of Δ_f mod N**, given
@@ -428,7 +444,7 @@ runs (< 5 s) overlapped E3.
 
 ### E1. TW (Jacobi filter): 40 instances per (curve, n), 64 trials each, inputs (N, a, b, M) only
 
-| curve | solved, n = 32, 64, 96, 128 | per-trial rate: empirical / exact ρ (z) | first split: mean / max trials |
+| curve | solved, n = 32, 64, 96, 128 | per-trial rate: empirical / exact ρ (z against ρ + bonus) | first split: mean / max trials |
 |---|---|---|---|
 | C1 = 11a1 | 40, 40, 40, 40 | .496/.498 (−0.2), .512/.500 (1.2), .498/.500 (−0.2), .501/.500 (0.1) | 1.9 / 7 |
 | C2 = 37a1 | 40, 40, 40, 40 | .495/.493 (0.2), .481/.500 (−1.9), .514/.500 (1.4), .478/.500 (−2.3) | 1.8 / 7 |
@@ -457,10 +473,10 @@ runs (< 5 s) overlapped E3.
 
 ### E2. Exact census of Exc(E) and ρ (all unordered pairs from S_b, b = 12–18)
 
-| curve | Exc fraction b = 12 / 14 / 16 / 18 | b = 18: both-ss / one-ss / ordinary | min ρ outside Exc | median ρ |
+| curve | Exc fraction b = 12 / 14 / 16 / 18 | b = 18: both-ss / one-ss / ordinary | min ρ outside Exc (all b) | median ρ |
 |---|---|---|---|---|
 | C1 | 9.0e−4 / 5.4e−5 / 1.3e−5 / 3.9e−6 | 45 / 5 / 5 | 0.124 | 0.500 |
-| C2 | 0 / 0 / 1.5e−5 / 7.8e−7 | 6 / 2 / 3 | 0.166 | 0.500 |
+| C2 | 0 / 0 / 1.5e−5 / 7.8e−7 | 6 / 2 / 3 | 0.125 (b = 16) | 0.500 |
 | C3 | 0 / 4.3e−5 / 2.8e−5 / 1.9e−6 | 10 / 14 / 3 | 0.124 | 0.500 |
 | CM1 | 0.271 / 0.247 / 0.250 / 0.251 | 3517878 / 1260 / 0 | 0.193 | 0.250 |
 | CM2 | 0.241 / 0.252 / 0.249 / 0.256 | 3584503 / 1888 / 1 | 0.184 | 0.250 |
@@ -478,7 +494,7 @@ runs (< 5 s) overlapped E3.
 |---|---|---|
 | (a) affine two-count, (d/N) = −1 and d QNR at both | n = 32, 64, 128 | 180/180 and 180/180 (**P8**) |
 | (b) CM1, p ≡ q ≡ 3 (4): affine counts of E and E_d (d ∈ {2, 3, 5, 6, 7}) all equal N | n = 32, 64, 128 | 60/60 (**P9**) |
-| (c) factorisation of M → divisors in [√N/4, 4√N] → toy Coppersmith (dim 10) | n = 48, 64, 96 | 180/180 (**P10**). d(M) median 192–3072, max 16896. In-window divisors ≤ 1316. Tried ≤ 644. ≈ 3·10⁵ LLL calls, 1650 s |
+| (c) factorisation of M → divisors in [√N/4, 4√N] → toy Coppersmith (dim 10) | n = 48, 64, 96 | 180/180 (**P10**). d(M) median 192–3072, max 16896. In-window divisors ≤ 1316. Tried ≤ 644. ≈ 2.9·10⁵ LLL calls, ≈ 1707 s |
 | (d) projective repair (the as-written Lem 1/3 cannot run without PQ) | n = 32, 64, 96 | 180/180 (**P11**); all via the k ≤ 4096 gcd scan |
 
 ### E4. Partial information: ordered pairs from S₁₆ (1491 primes), conditioned on (N/ℓ) = 1, resp. (Δ_f/N) = 1
@@ -596,4 +612,24 @@ E–C and Serre in primary text. Fixes:
 - Its "D from a curve and one twist (Thm 1)" is unproved for projective counts, because of the Lem 1 circularity.
 - We do not edit that file; this note and the STATUS line flag both.
 
-**Proof critic:** pending (see the end of this file).
+**Proof critic: ACCEPT WITH FIXES, all applied.**
+- It found that no PROVED claim is wrong.
+- Checks it ran:
+  - recomputed the GL₂ constants and the S₃ table exactly;
+  - ran an exact TW* enumeration over all x₀ for 44 small pairs, 26 of them in Exc (every TW* rate was ≥ 0.57 except
+    cx1's X_E point, at 0.335);
+  - re-verified the PH4 member and the D–U short-arc counterexample with PARI;
+  - cross-checked every reported number against the raw data.
+- Fixes applied:
+  1. Per-prime twist notation E′_r.
+  2. Exc_M for general M.
+  3. Cor. EQ is via TW*, and the domain reads "CM or non-CM".
+  4. TW* bound sharpened to ¼ − o(1), so ≤ 4 + o(1) expected trials.
+  5. CM density details: degree-one primes, swap invariance, inert and ramified pairs.
+  6. E2 C2 min ρ corrected: 0.125, not 0.166.
+  7. The X_E member sentence corrected (v3's "primes of each twist order divide the other count" was false).
+  8. E3c time ≈ 1707 s.
+  9. E1 z is computed against ρ + bonus.
+  10. CRT-ℓ balance qualifier.
+  11. This entry.
+  12. Removed the vacuous gcd(h, N) clause, and noted that the root-count decision holds for any separable cubic.
