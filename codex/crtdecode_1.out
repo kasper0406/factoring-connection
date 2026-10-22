@@ -1,0 +1,233 @@
+## 1. The exact decoding problem and its parameters
+
+**OPEN.** No construction or transferable computational lower bound identified below resolves Prop SI. There are substantial gaps between the supplied Johnson-certificate obstruction, existing decoding theorems, and an adaptive algorithm that finds one smooth integer.
+
+**PROVED — exact formulation.** Put \(B=\lfloor h\rfloor+1\), \(E_q=\lfloor\log(3X)/\log q\rfloor\), and
+\[
+P=\prod_{q\le y}q^{E_q}.
+\]
+The message set is the **integer interval** \(\{0,\ldots,B-1\}\). Its expanded encoding and received word are
+\[
+c(j)_{q,e}=j\bmod q^e,\qquad r_{q,e}=-X\bmod q^e,
+\quad 1\le e\le E_q.
+\]
+Give coordinate \((q,e)\) weight \(\log q\). Then
+\[
+A_r(j)=\sum_{q\le y}\log q\sum_{e=1}^{E_q}
+ 1_{j\equiv-X\pmod{q^e}}
+=\log\gcd(X+j,P).
+\]
+Thus the required list is exactly
+\[
+\mathcal L_X=\{j\in[0,h]\cap\mathbb Z:A_r(j)=\log(X+j)\}.
+\]
+If \(h<X\), the fixed threshold \(A_r(j)\ge\log X\) is also exact: a proper divisor of \(X+j<2X\) is smaller than \(X\). The factorisation is recovered from the agreeing prime-power prefixes.
+
+**PROVED — metric qualification.** Coordinates belonging to one prime are nested, not independent. Compressing each tower to one symbol modulo \(q^{E_q}\) gives ambient cardinality \(P\), with a **valuation agreement score**, rather than ordinary symbol equality. Treating the expanded coordinates as independent alphabet symbols gives the wrong information rate. Replacing a compressed tower by an equality test loses its partial-valuation information.
+
+**PROVED — asymptotic parameters.** Write \(n=\pi(y)\), \(b=\log B\), and \(W=\log P\). Then
+\[
+W=(1+o(1))nx,\qquad
+\#\{(q,e)\}=(1+o(1))\frac{nx}{\log y}.
+\]
+The compressed information rate and desired agreement fraction are
+\[
+R=\frac bW\sim\frac{b}{nx},\qquad
+\alpha=\frac xW\sim\frac1n.
+\]
+Distinct messages have mutual weighted agreement
+\[
+\log\gcd(j-j',P)\le\log h.
+\]
+Consequently, the relevant Johnson threshold is approximately
+\[
+A_J=\sqrt{bW},\qquad
+\frac{A_J}{x}=\sqrt{\frac{nb}{x}}=L[1/3,\kappa/2].
+\]
+Quantitatively,
+\[
+\frac{\alpha}{R}\sim\frac{x}{b}\longrightarrow\infty,
+\qquad
+\frac{\alpha}{\sqrt R}\sim\sqrt{\frac{x}{nb}}\longrightarrow0.
+\]
+The requested **agreement** lies far below Johnson; the requested error radius lies beyond the Johnson radius.
+
+**PROVED — comparison with ordinary CRT decoding.** In the squarefree version, coordinates modulo \(q\) with weights \(\log q\) suffice. Here \(W_{\rm sf}\sim y\), \(R_{\rm sf}=b/W_{\rm sf}\), and \(\alpha_{\rm sf}=x/W_{\rm sf}\); the same separation \(R_{\rm sf}\ll\alpha_{\rm sf}\ll\sqrt{R_{\rm sf}}\) holds.
+
+For classical CRT codes with message bound approximately the product of the first \(k_c\) moduli:
+
+- **PROVED:** GRS obtains agreement approximately \(\sqrt{2k_cn\,\log p_n/\log p_1}\). [GRS](https://www.wisdom.weizmann.ac.il/~oded/PSX/crt.pdf)
+- **PROVED:** Boneh removes the factor \(\sqrt2\), obtaining approximately \(\sqrt{k_cn\,\log p_n/\log p_1}\), and develops the smooth-integer application. [Boneh](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html)
+- **PROVED:** GSS handles imposed weights and obtains the uniform-agreement Johnson threshold approximately \(\sqrt{k_cn}\), without that modulus-size distortion. Its natural logarithmic weighting still gives a square-root threshold. [GSS](https://people.csail.mit.edu/madhu/papers/2000/gss-conf.pdf)
+
+**PROVED — limitation of those comparisons.** Johnson inequalities are sufficient uniform guarantees. Failure of the inequality does not prove that a particular lattice run cannot return a useful root.
+
+**PROVED — average list size.** Freeze \(y,h\) at scale \(T\), and average uniformly over integer \(X\in[T,2T)\). Double counting gives
+\[
+\mathbb E|\mathcal L_X|
+=\frac{h+1}{T}\bigl(\Psi(2T,y)-\Psi(T,y)\bigr)+O(h^2/T)
+=L[2/3,\nu-2/(3\kappa)].
+\]
+The global friable-number asymptotic used here is established in this parameter range. [Hildebrand–Tenenbaum](https://jtnb.centre-mersenne.org/item/10.5802/jtnb.101.pdf)
+
+**PROVED — output-size obstruction.** For fixed \(\nu>2/(3\kappa)\), this mean exceeds every fixed power of \(n\). Therefore explicitly listing every solution cannot cost \(n^a\) per window on average. Prop SI needs one solution, or an enumeration algorithm whose startup cost can be amortised over its outputs.
+
+**OPEN — worst case and distributions.** Always \(0\le|\mathcal L_X|\le B\), and the worst case is at least the displayed mean. A useful sharp worst-case estimate is unavailable here. The mean alone proves neither typical-window nonemptiness nor every-window existence. It also does not automatically describe the distribution \(X=kN\).
+
+**PROVED — capacity qualification.** The formal large-alphabet capacity benchmark is agreement \(R\), below the requested agreement. This is not a capacity theorem for these instances: the rate, agreement, and additive slack all vanish; the metric has nested valuations; and uniform polynomial list bounds already fail by the average-list calculation. Even for ordinary Hamming codes, replacing the exact entropy expression \(1-H_Q(1-\alpha)\) by \(\alpha\) requires uniformity checks in this regime.
+
+**PROVED — literature scope.** General capacity statements, including those treated in Guruswami’s thesis, do not supply a decoder for this prescribed integer code. Guruswami’s 2003 number-field work constructs asymptotically good codes; it is not a capacity-decoding theorem for arbitrary CRT instances. [Thesis](https://dspace.mit.edu/entities/publication/2aad3b55-4a70-4224-8fe4-c0ed0d6543f8), [number-field construction](https://doi.org/10.1109/TIT.2002.808131)
+
+**UNVERIFIED — recent theorem statements.** I checked the following statements in the 2026 manuscripts, but did not independently audit their proofs. BCPZZ Theorem 4.1 uses agreement \(\varepsilon\), multiplicative slack \(\theta\), derivative order
+\[
+d=\lceil\varepsilon^{-3/\theta}\rceil,
+\]
+requires message dimension \(k_{\rm RS}>d\), and gives time \(Q^{O(\varepsilon^{-12/\theta})}\). [BCPZZ](https://arxiv.org/html/2609.08005v1)
+
+**PROVED — parameter mismatch, conditional on that theorem.** A squarefree RS analogy would have
+\[
+k_{\rm RS}\asymp b/\log y=\operatorname{poly}(x),\qquad
+\varepsilon\asymp\frac{x}{n\log y}=L[1/3,-\kappa].
+\]
+For fixed \(\theta\), \(d=L[1/3,3\kappa/\theta]\), exceeding \(k_{\rm RS}\). The dimension hypothesis fails, and the advertised runtime bound supplies no useful complexity guarantee here.
+
+**UNVERIFIED — Jeronimo’s statement.** Jeronimo gives \(Q^{O_\gamma(1)}\) time at fixed additive capacity slack \(\gamma\). His quantitative appendix also exhibits derivative-order growth polynomial in inverse agreement for fixed multiplicative slack, with further dimension and field-size conditions. Here the necessary additive slack tends to zero. [Jeronimo](https://arxiv.org/html/2609.05870v1)
+
+**PROVED — structural mismatch.** Both approaches use polynomial messages, evaluations in one field, and identities involving Hasse derivatives. Integer CRT messages have different residue characteristics and no corresponding global differentiation variable. Nested prime-power residues are not supplied polynomial derivatives. Even a favourable runtime substitution would therefore leave an unproved transfer theorem.
+
+## 2. What a meaningful adaptive model charges
+
+**MODEL — computational adaptive decoding.** Use a uniform bit-RAM algorithm with known \(X,h,y\), and permit the residue table from Lemma IC. Charge for arithmetic, memory access, branching, generating moduli, lattice construction and reduction, root extraction, and verification. Operands exceeding one word are charged according to their bit length. Report residue-table construction separately if treating it as supplied input.
+
+The tree operations include:
+
+- **MODEL:** An arithmetic-progression query returns the compressed endpoints
+  \[
+  \left\lceil X/M\right\rceil,\quad\left\lfloor(X+h)/M\right\rfloor.
+  \]
+  Explicitly enumerating its multiples costs additionally per emitted element.
+- **MODEL:** Computing \(\lceil X/M\rceil\bmod q\) is ordinary charged arithmetic.
+- **MODEL:** A Boneh/Coppersmith call is charged for its actual dimension, coefficient sizes, reduction, and output processing.
+
+**PROVED — why query counting alone collapses.** All these answers are deterministic functions of already-known information. With unrestricted free computation, the algorithm can sieve the window before asking any query. Moreover, a modulus-selection operation can encode the answer it has already computed. Counting only the final certificate call conceals the search.
+
+**PROVED — fixed-divisor calculation.** For fixed smooth \(M\asymp h\), averaging over \(X\) makes \(\lceil X/M\rceil\) essentially a uniformly sampled cofactor near \(X/M\). Its smoothness density has leading scale
+\[
+\rho\!\left(\frac{x-\log M}{\log y}\right)
+=L[2/3,-2/(3\kappa)].
+\]
+More precisely, for \(\log M\sim\nu F_{2/3}\),
+\[
+\log\frac{\rho((x-\log M)/\log y)}{\rho(u_0)}
+=\left(\frac{2\nu}{3\kappa}+o(1)\right)F_{1/3}.
+\]
+The divisor trick gains an \(L[1/3]\) factor while retaining the \(L[2/3]\) search cost.
+
+**PROVED — fixed nesting.** A prescribed sequence of smooth divisors whose cumulative product remains at most \(h\) has the same cumulative size limitation. For \(M>h\), the frequency of windows containing a multiple incurs approximately the factor \(h/M\).
+
+**OPEN — adaptive nesting.** These calculations do not bound moduli selected from arithmetic properties of \(X\) or earlier outputs. Such selection changes the cofactor distribution. A general claim that nesting preserves the original smoothness probability would require a conditional-distribution theorem that has not been supplied or established here.
+
+**PROVED — the missing conditional step.** Theorem J bounds each fixed certificate’s unconditional average. It does not imply
+\[
+\Pr(\text{success at step }t\mid\text{transcript})\le
+\rho(u_0)^{1-o(1)}.
+\]
+That unjustified implication is exactly what an argument charging \(\rho^{-1}\) adaptive calls would need.
+
+## 3. Lower bounds, reductions, and possible constructions
+
+**PROVED — restricted adaptive lower bound, directly from J.** Consider a fixed portfolio of \(K\) certificate calls, including all moduli and parameters, chosen independently of \(X\). An algorithm may inspect \(X\) and query this portfolio in any adaptive order. Every output must possess a portfolio certificate. Writing \(p_J=\rho(u_0)^{1-o(1)}\), a union bound gives
+\[
+\mathbb E[\text{distinct certified outputs}]\le Kp_J,\qquad
+\Pr(\text{any certified output})\le Kp_J.
+\]
+Hence constant success requires \(K\ge p_J^{-1}\). In particular, a portfolio of size \(n^A\), for any fixed \(A\), has success probability at most
+\[
+\exp\{-({2}/{3\kappa}+o(1))F_{2/3}\}.
+\]
+
+**PROVED — exact scope.** This is a portfolio-size bound. It becomes an online runtime bound when the algorithm evaluates or pays for the portfolio. A large reusable portfolio plus a cheap addressing rule is not excluded by this argument.
+
+**PROVED — tree size versus executed depth.** A fixed \(b_0\)-ary tree of depth \(T\) can contain \(O(b_0^T)\) distinct calls. Theorem J therefore gives only
+\[
+T\ge\frac{\log(1/p_J)}{\log b_0}-O(1)
+\]
+for constant success. For constant branching this is polynomial in \(x\), far below the desired computational lower bound. Identifying depth with total tree size is invalid.
+
+**PROVED — promise qualification.** Conditioning on nonempty windows yields only
+\[
+\Pr(\text{success}\mid|\mathcal L_X|>0)
+\le\frac{Kp_J}{\Pr(|\mathcal L_X|>0)}.
+\]
+A mean-list estimate alone does not control the denominator.
+
+**PROVED — auxiliary-polynomial lower bounds.** Chinburg–Hemenway–Heninger–Scherr prove nonexistence of Coppersmith-type auxiliary polynomials satisfying specified integrality and boundedness conditions beyond the univariate exponent, even at arbitrary degree. Their “capacity” is adelic capacity theory. The theorem concerns that certificate family; it does not establish hardness of every root-finding algorithm or arbitrary adaptive compositions. [CHHS](https://arxiv.org/pdf/1605.08065)
+
+**PROVED — what transfers from other frameworks.**
+
+| Framework | Established result and its implication here |
+|---|---|
+| Subset product / explicit prime lists | **PROVED, supplied:** hardness permits a prescribed set \(S\). Adding every omitted prime up to \(y\) can create unwanted solutions; the reduction does not establish hardness for the full factor base. |
+| Prime-number lattice | **PROVED, supplied CV:** squarefree Prop SI is equivalent to the stated special centred near-exact CVP promise. General CVP hardness does not establish hardness for this lattice family. Generic exponential-in-\(n\) CVP methods are far too expensive. |
+| BKR list-size bounds | **PROVED:** certain RS families have superpolynomial lists beyond Johnson, using extension-field/subspace structure. This obstructs full enumeration, without establishing hardness of finding one member or transferring to integer CRT. [BKR](https://doi.org/10.1109/TIT.2009.2034780) |
+| Guruswami–Rudra limits | **PROVED:** large lists obstruct general list recovery/polynomial reconstruction; they also construct bad RS centres. These are not universal computational lower bounds for ordinary single-symbol decoding. [GR](https://cse.buffalo.edu/faculty/atri/papers/coding/rs-limits.pdf) |
+| Guruswami–Vardy | **PROVED:** maximum-likelihood RS decoding is NP-hard for constructed instances. There is no supplied reduction preserving the present CRT structure, received-word distribution, and short interval. [GV](https://www.cs.cmu.edu/~venkatg/pubs/papers/mldrs.pdf) |
+| Gandikota–Ghazi–Grigorescu | **PROVED:** hardness extends to radii \(N-K-d\), for \(d\le c\log N/\log\log N\), with dimension about \(N/2\) and exponentially large fields. This remains a different parameter regime. [GGG](https://arxiv.org/html/1611.03069v1) |
+
+**PROVED — compatibility with the 2026 claims.** Those RS hardness statements involve vanishing capacity gaps and/or enormous fields. A runtime polynomial in field size \(Q\) need not be polynomial in its representation length \(\log Q\).
+
+**OPEN — other proposed models.** No applicable generic-group or algebraic-decision-tree lower bound is identified here. Opaque group encodings would discard the known prime values, ordering, division, and interval geometry. A lower bound after discarding those operations would require an explicit transfer justification.
+
+**HEURISTIC — multivariate lattices.** Cohn–Heninger improve approximate-common-divisor bounds under an algebraic-independence heuristic; their polynomial analogues recover decoding results for augmented polynomial codes. These do not supply independent near multiples of the hidden smooth integer in Prop SI. Manufacturing powers of the single approximation \(X\) introduces algebraic dependencies. [Cohn–Heninger](https://arxiv.org/pdf/1108.2714)
+
+**PROVED — a quantitative warning.** With modulus \(P\), the hidden divisor has relative logarithmic size
+\[
+\beta\asymp x/\log P\asymp1/n,\qquad
+\beta^2\log P\asymp x/n\to0.
+\]
+The cited integer multivariate analysis also has restrictions associated with lattice approximation; increasing the number of variables does not automatically remove this obstacle.
+
+**OPEN — requested breakthrough.** Beyond the restricted portfolio/tree consequences above, I have neither a lower bound in the computational model of Section 2 nor a construction with \(a<1.1416\).
+
+**PROVED — honest exponent accounting.** Optimising the supplied factoring formula, for \(a\ge1/3\),
+\[
+\kappa_{\rm opt}=\left(\frac4{9(1+a)}\right)^{1/3},\qquad
+C(a)=\frac32\left(\frac49\right)^{1/3}(1+a)^{2/3}.
+\]
+Thus \(C(1)=6^{1/3}\), and \(C(a)<1.9019\) precisely when \(a<1.1415878\ldots\). The corresponding fixed-\(\tau\) threshold is \(0.7571858\ldots\).
+
+**HEURISTIC — factoring interpretation.** These become factoring constants only under the supplied relation-generation assumptions. Any surviving \(L[2/3,c]\) search factor with \(c>0\), including inverse success probability, prevents the claimed \(L[1/3]\) improvement.
+
+## 4. Exact toy experiments
+
+**MODEL — common protocol.** Use uniformly sampled, unplanted \(X\), paired across algorithms, with a fixed published seed:
+
+| Bit length | \(y\) | \(h\) | \(\pi(y)\) | Maximum \(h/\sqrt X\) |
+|---:|---:|---:|---:|---:|
+| 40 | \(256\) | \(1024\) | 54 | \(0.00139\) |
+| 48 | \(1024\) | \(8192\) | 172 | \(0.000691\) |
+| 64 | \(4096\) | \(65536\) | 564 | \(0.0000216\) |
+
+**PROVED — geometric check.** These ranges satisfy \(h\ll\sqrt X\); the indicated prime counts were checked exactly. Thus an apparent success cannot arise from the particular shortcut \(h\ge\sqrt X\).
+
+**MODEL — verification and cost.** An independent exact interval sieve supplies ground truth, hidden from the algorithms. Charge an instrumented implementation for arithmetic and memory operations, including multiprecision limb work, sorting, candidate generation, every failed branch, and factorisation verification. Count explicit progression elements individually. Report preprocessing both separately and amortised over a declared number of windows.
+
+The primary statistic is
+\[
+\frac{\text{distinct verified smooth outputs}}{\text{total charged work}},
+\]
+including failed windows. Also report success versus budget, fallback frequency, and the same statistics conditioned on nonempty windows.
+
+**MODEL — experiment A: adaptive divisor products.** Compare the power-of-two divisor trick, ordinary interval sieving, and a beam search of widths \(1,8,32\). Start at \(M=1\); extend by primes in canonical nondecreasing order; compute whether each child \(Mq\) has multiples in the window. Retain the largest surviving products, breaking ties deterministically. When a retained product first exceeds \(h/2\), test all its window multiples for smooth cofactors. Charge every child probe. Compare against the same product-generation budget with an order fixed independently of the residues.
+
+**MODEL — experiment B: adaptive lattice portfolio.** Run published Boneh lattices at dimensions \(2,4,8,16\). Compare prescribed smooth moduli with moduli updated using the smooth parts of failed candidate roots, for example by an lcm update. Verify every root exactly and charge reduction, root extraction, partial factorisation, and restarts. Exhausted searches fall back to the interval sieve; include that cost.
+
+**HEURISTIC — interpretation.** Modest gains are expected from smaller cofactors and better ordering. A growing, substantial advantage on held-out unplanted windows, surviving all charges and not explained by the fixed-divisor density gain, would surprise me. A fitted exponent from these toy sizes would not establish an asymptotic \(a\).
+
+## 5. Probability and the most promising mechanism
+
+**MODEL — subjective probability.** I assign approximately **10%** probability that a classical uniform algorithm achieves \(a<1.1416\) for a suitable average-case Prop SI formulation, counting preprocessing and failures. For all promised windows, my estimate is approximately **3%**. These are subjective assessments.
+
+**HEURISTIC — most promising mechanism.** A specialised algorithm for the centred prime-number lattice, sharing work across blocks of prime exponents and many partial factorizations, seems the best prospect. It would need to use global structure of the full prime segment to guide near-exact CVP search.
+
+**OPEN — decisive requirement.** The missing mechanism is a cheaply computable global constraint that identifies promising factor products without paying the inverse smoothness density. Nested divisor selection alone has not supplied it.
