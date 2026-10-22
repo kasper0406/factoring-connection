@@ -1,0 +1,265 @@
+**Verdict: MAJOR REVISION.** SR1’s support argument, SR2’s mathematical rigidity statement, and the main GRH residue theorem survive. The root-finding implementation is incorrect, the degree inference is false as stated, and several conclusions exceed the proved models.
+
+I ran the 28 tests, reproduced all 3,200 E2 records, and independently checked 12 E1 cells by residue convolution. Counterexamples and checks are in [audit_checks.py](/Volumes/git/factoring-connection/codex/scratch/selfred_2/audit_checks.py), with [output](/Volumes/git/factoring-connection/codex/scratch/selfred_2/audit_checks_output.txt). Repository files were left unchanged.
+
+1. **SR1, SR1′, DEG, and exact \(p\)-independence.**
+
+   **SR1(a): CORRECT, with a small proof repair.** The valuation hypothesis is exactly right: dividing by content gives
+   \[
+   v_\ell(G)>v_\ell(c)\implies \ell\mid h_1(pq).
+   \]
+   Since \(\ell\ne p\), multiplication of coefficient \(i\) by \(p^i\) preserves nonzeroness modulo \(\ell\). There are at most \(D\) roots.
+
+   All three cases work:
+
+   - \(\ell\ge y\): two integers in the half-open interval cannot differ by \(\ell\); hence at most \(D\) samples.
+   - \(\sqrt y\le\ell<y\): each class contains at most \(y/\ell+1\le\sqrt y+1\) integers.
+   - \(\ell<\sqrt y\): Montgomery–Vaughan’s theorem **does apply to the shifted interval** \((x_0,x_0+y]\). There is no requirement that its length be comparable to its location. The theorem assumes a reduced residue class and \(y>\ell\). Its denominator gives
+     \[
+     \log(y/\ell)>\tfrac12\log y,
+     \]
+     and therefore the constant \(4D\). [Montgomery–Vaughan, Theorem 2](https://personal.science.psu.edu/rcv4/personal/Publications/large_sieve.pdf)
+
+   The proof omits the root class \(0\bmod\ell\), to which BT cannot be applied. That class contains at most the single prime \(\ell\); the displayed bound per class exceeds one in this range, so handling it separately preserves the result. State \(x_0\ge0\), or explicitly truncate an interval crossing zero.
+
+   The conclusion \(\ell<1+4D/\delta\) is correct **with both displayed hypotheses**. The headline in §0 drops the sample-size hypothesis. That omission matters: take
+   \[
+   h(x)=L+\prod_{q\in Q}(x-pq),
+   \]
+   with \(L\) an arbitrarily large prime. Then \(h\) is primitive, \(D=|Q|\), and every sampled value equals \(L\). Restore the hypothesis, or state the conclusion asymptotically where polynomial \(D,\delta^{-1}\) make it automatic.
+
+   **SR1(b)/Theorem H: CORRECT.** The valuation-by-valuation adjugate argument and the short-window pigeonhole argument are sound.
+
+   **SR1′: NEEDS FIX.** Averaging is valid, but the quantifiers must survive it. If the conditional success rate is \(a_p\in[0,1]\) and \(\mathbb E a_p\ge\delta\), then
+   \[
+   \Pr[a_p\ge\delta/2]\ge\frac{\delta}{2-\delta}\ge\delta/2.
+   \]
+   This uses the actual marginal distribution of \(p\). It does not automatically mean a uniform fraction of primes when pairs are sampled with \(p<q\). Likewise, an equal-bit-length partner interval need not have length comparable to \(p\) near its boundary. Specify the sampling law and trim boundary regions if needed.
+
+   For randomized maps, average over \((p,r)\), or state the result separately for each seed with its own conditional success rate. Do not conclude a restriction for every \(p\) from a good subset of \(p\)’s.
+
+   Also, “content primes are independent of \(p\)” means a fixed **catalogue** of primes. It does not mean that selecting a divisor of the content cannot encode information about \(p\). The final semiprime exclusion needs a precise nontriviality/recovery condition or a restriction on \(g_r\); arbitrary public functions can select among content primes.
+
+   **DEG: the finite-difference lemma is CORRECT; its advertised inference is WRONG.** The proof needs \(D+1\) consecutive bounded evaluations. An \(n\)-bit input interval contains only \(2^{n-1}\) integers. For example,
+   \[
+   h_n(x)=1+\prod_{t=2^{n-1}}^{2^n-1}(x-t)
+   \]
+   has exponential degree but equals one on every \(n\)-bit input. The evaluator simply returns one there.
+
+   Exact repairs:
+
+   - Assume \(D+1\) bounded consecutive evaluations actually exist; or
+   - Reduce \(h_n\) modulo the monic vanishing polynomial of the entire \(n\)-bit interval, then apply DEG to the remainder. This establishes a low-degree **representative of the values**, not a bound on the original polynomial’s degree.
+
+   Delete “exponential-degree circuits must have exponential output” without further representation/evaluation hypotheses.
+
+   **Exact \(p\)-independence: NEEDS FIX, but the fixed-\(h\), sufficiently-large-\(p\) theorem is sound.** Siegel–Walfisz supplies the required unit classes for each fixed modulus \(\ell^{u_\ell+1}\). What is missing is the finite-support reduction before applying it: first use SR1(a) to bound possible excess primes, then apply progression asymptotics to that finite collection. This gives no uniform conclusion for growing \(h_n\) without a bound ensuring those moduli lie in the applicable range.
+
+   The content-prime assertion is **CORRECT**:
+   \[
+   \ell-1>D\implies u_\ell(h)=v_\ell(c).
+   \]
+   The primitive polynomial cannot vanish at every nonzero residue. The stated counting condition likewise suffices to find a sampled nonroot.
+
+   “\(\ge\) always holds” needs qualification: \(pq\) must be a unit at the relevant primes. For \(h=x^2-1\), \(U(h)=24\), but \(p=2,Q=\{3\}\) gives \(G_p=35\). This does not refute the sufficiently-large-\(p\) theorem.
+
+   Finally, remove the unexplained \(O(\log(1/\delta)\log(D/\delta))\) information bound. The support theorem does not prove it. The established general bound is the Vandermonde bit-length bound.
+
+2. **SR2, root finding, and operational isolation.**
+
+   **SR2 as a mathematical theorem: CORRECT.** Substitution, coefficient sizes, and the polynomial monomial exception work. Deterministic polynomial factorization over \(\mathbb Q\) supplies a valid root-finding route. [Lenstra–Lenstra–Lovász](https://www.math.ucdavis.edu/~deloera/MISC/LA-BIBLIO/trunk/Lovasz/LovaszLenstraLenstrafactor.pdf)
+
+   The rational cancellation exception is correct. Require denominators to be nonzero at the actual factors. For unknown cofactors, require a **publicly enumerable polynomial-size candidate set** and exclude \(K=0\). Merely having polynomially many possible values is insufficient without efficient enumeration. The approximation caveat is correct.
+
+   **`integer_roots` and `sign_change_brackets`: WRONG.** A squarefree cubic already breaks them:
+   ```python
+   integer_roots([0, 1, 3, 2], -5, 5)
+   # returns [0]; correct answer is [-1, 0]
+   ```
+   Here \(P=x(x+1)(2x+1)\). Both derivative roots lie inside \((-1,0)\). Their crossings cancel at the integer endpoints, so the recursive routine misses them. Its assertion that the remaining intervals are monotone is false.
+
+   This reaches the factoring interface:
+   ```python
+   solve_rigid(35, 6, [-324, 181, -33, 2], [1])
+   # returns None
+   ```
+   The promise holds: \(A(5)B(7)=6\). The first rigidity polynomial is
+   \[
+   (x-5)(x-6)(2x-11),
+   \]
+   but the code returns only the nonfactor root \(6\); the swapped attempt also misses the required factor.
+
+   Repeated-root removal does not fix this: powers of the cubic above produce the same failure after squarefree reduction. Linear cases, endpoint roots, and a linear root with 1,000-digit magnitude passed my checks. Those successes do not repair completeness.
+
+   **Required fix:** replace this routine with certified real-root isolation/root counting, or polynomial factorization over \(\mathbb Q\). Add the two counterexamples above and clustered critical-point cases. Re-establish bit complexity; a fixed Python recursion limit also prevents an unrestricted polynomial-degree implementation claim.
+
+   **Operational leakage: CORRECT within the stated oracle interface.** Inspection found no hidden factorization call or factor-field access in the operational modules. The harness deliberately supplies factor-derived oracle answers and map outputs. That validates a conditional reduction, not the existence of an efficient map producing those outputs. The AST import test alone would not establish this isolation.
+
+3. **RSA, SR3, and random-self-reducibility literature.**
+
+   **RSA explanation: CORRECT.** The blinded congruence is dependent on the original congruence; integer lifting introduces unknown quotients/carries. This is the relevant difference from a public nonconstant integer equation. It establishes an algebraic distinction, not the necessity of factor movement for every possible amplification strategy.
+
+   **SR3: CORRECT implication; NEEDS FIX in interpretation.** Factoring in FP would permit the moved-divisor construction and zero-query reductions. Excluding randomized reductions implies factoring outside randomized polynomial time, and hence \(P\ne NP\). However, “only restricted-model barriers are possible” does not follow. Unrestricted barriers would entail a major lower bound; SR3 does not prove that such lower bounds cannot be proved.
+
+   **Literature paragraph: NEEDS FIX.**
+
+   - **AFK:** §6 Question 1 separately asks about encryptability leaking at most input length and random self-reducibility. Delete “i.e.” between them. [AFK](https://www.cs.yale.edu/homes/jf/AFK-JCSS89.pdf)
+   - **Feigenbaum–Fortnow:** the nontrivial conclusion of Theorem 3.1 is
+     \[
+     \overline S\in AM^{\mathrm{poly}},
+     \]
+     not merely \(S\in AM^{\mathrm{poly}}\). The protocol accepts no-instances; the extracted PDF text loses the complement bar. Corollary 3.3’s third-level collapse is correctly described. **The earlier blind report also dropped this complement and must be corrected.** [FF, §3](https://www.cs.yale.edu/homes/jf/FF.pdf)
+   - The threshold factoring language is indeed in NP∩coNP. Say NP-completeness is **not known**, rather than that its hypothesis demonstrably “fails.” These results provide no obstruction to factoring RSR.
+   - **Bogdanov–Trevisan: CORRECT** as a nonadaptive NP-completeness barrier under their distributional hypotheses. [Paper](https://andrejb.net/pubs/redux-sicomp.pdf)
+   - **Beaver–Feigenbaum: CORRECT**, provided the noncommunication requirement and possible change of oracle function remain explicit. FF describes the general multioracle construction.
+   - **Rabin per-modulus statement: CORRECT** for odd distinct-prime moduli and uniform unit squares. Given a square, the sampled preimage is uniform among four roots; a returned root disagrees in exactly one CRT component with probability \(1/2\). Thus success on an \(\alpha\)-fraction gives factoring probability \(\alpha/2\). This is a square-root-oracle statement, not a quadratic-residuosity-decision factoring reduction. [Rabin](https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-212.pdf)
+
+4. **Status table, CRT reduction, SIG, and EUC.**
+
+   The OPEN labels are acceptable as explicitly qualified literature-search findings.
+
+   | Row | Ruling |
+   |---|---|
+   | \(\omega\) | **CORRECT.** Signature recovery reduces it to \(d\); no reverse factoring equivalence is established. |
+   | \(\mu\) | **CORRECT.** The one-call construction works, including recovery of the sign when squarefree. |
+   | Liouville \(\lambda\) | **CORRECT.** Preserve the distinction from Carmichael’s function. |
+   | Squarefreeness | **NEEDS FIX** only in the compressed BHK runtime statement, below. Other cited directions/lower bounds are correct. |
+   | \(\operatorname{rad}\) | **CORRECT.** Radical, parity kernel, and full squarefree decomposition have the stated deterministic Turing equivalences. |
+   | \(p^2q\) | **CORRECT.** Those numerical radical/kernel values factor the promised input; this supplies no algorithm for obtaining them. |
+   | Smaller \(p\bmod4\) | **CORRECT**, including the orientation qualification when \(N\equiv3\bmod4\). |
+   | \(\epsilon\) | **CORRECT** as equivalent predicates; distinguish the \(\pm1\) sign from a Boolean indicator. |
+   | Fixed odd-prime totient residue | **CORRECT.** Its value determines \(p+q\bmod\ell\), rather than literally equalling it. |
+   | Input-prime totient residue | **CORRECT on the balanced-semiprime promise**, with implementation qualifications below. |
+   | Totient modulo \(2,4\) | **CORRECT:** trivial for odd semiprimes. |
+   | Fixed-base QR | **CORRECT** with the stated nontrivial-base qualification and trivial gcd cases removed. |
+   | \(d(M)\) | **CORRECT.** Signature equivalence is not factoring equivalence. |
+
+   The historical claims check as follows:
+
+   **Shallit–Shamir: CORRECT.** Their author-affiliated abstract explicitly confirms the one-call Möbius reduction and at most \(\log_2M\) calls for exponent-dependent functions. The supplied interpolation proof independently establishes the latter. [Source](https://weizmann.elsevierpure.com/en/publications/number-theoretic-functions-which-are-equivalent-to-number-of-divi/)
+
+   **Woll and Landau: CORRECT reduction directions.** Woll’s abstract states deterministic SF-to-totient reduction. Landau’s abstract supports the reductions toward totient/Carmichael oracles, although its rendered mathematical definitions are incomplete; retain that source-verification qualification instead of silently claiming full-text verification. [Woll](https://www.sciencedirect.com/science/article/pii/0890540187900307), [Landau](https://www.sciencedirect.com/science/article/pii/0890540188900284)
+
+   **Buchmann–Lenstra: CORRECT.** Theorems 1.3 and 6.12 concern radical/maximal-order construction and squarefreeness/maximality recognition respectively. Neither identifies these problems with factoring. [Full paper](https://www.numdam.org/item/JTNB_1994__6_2_221_0.pdf)
+
+   **ASS and Bernasconi–Shparlinski: CORRECT.** ASS Theorem 1 and Corollary 2 explicitly cover Square-Free; these are exact circuit lower bounds, not semiprime prediction results. [ASS](https://eccc.weizmann.ac.il/report/1999/010/comment/1/download/), [Bernasconi–Shparlinski](https://researchers.mq.edu.au/en/publications/circuit-complexity-of-testing-square-free-numbers/)
+
+   **BHK: NEEDS FIX.** Proposition 2.3 states the displayed runtime **when the input is squarefree**. It does not give that uniform runtime for every nonsquarefree input. The \(2/3\) exponent requires additional conjectural reasoning. Theorem 1.1 is also conditional on GRH and proves the listed RSA numbers **not squarefull**. The \(M^{1/6+o(1)}\) elementary bound is correctly reported. [BHK](https://arxiv.org/pdf/1304.6937)
+
+   **Adleman: CORRECT numbering.** C7 is the parity-kernel decomposition \(M=u^2s\); C8 is squarefreeness; C9 is \(\omega\). The radical row reaches C7 through the proved equivalence. Do not describe C7’s literal output as the radical. Preserve the earlier OCR qualification concerning O7b’s reduction glyph. [FOCS paper reproduction](https://paperzz.com/doc/9179771/algorithmic-number-theory-the-complexity-contribution)
+
+   The Seurin and CMS references correctly identify **assumptions**, not factoring reductions. [Seurin](https://eprint.iacr.org/2013/256.pdf), [CMS](https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Private%20Information%20Retrieval/Computationally%20Private%20Information%20Retrieval%20with%20Polylogarithmic%20Communication.pdf)
+
+   **CRT and call count: CORRECT.** For balanced inputs, CRT recovers \(s=p+q\) below the stated bound. If the largest queried prime is \(B\), then
+   \[
+   B\sim\tfrac{\log2}{2}n,\qquad
+   \pi(B)\sim0.34657\,\frac n{\log n}.
+   \]
+   This is an asymptotic count, not a reliable finite-\(n\) estimate.
+
+   **Implementation fixes:** explicitly promise balanced inputs, or use \(N+1\) as the general reconstruction bound. For example, the current function returns `(None, 3)` on \(3027=3\cdot1009\) with a correct totient oracle. For a claimed deterministic implementation, replace probable-prime acceptance with a sieve or certified primality.
+
+   **SIG and EUC: CORRECT.** SIG requires nonzero polynomial-length queries and only gives the restricted multiplicative-query conclusion. EUC requires monic \(f\); unequal gcd degrees force a nonunit leading coefficient. The supplied code implements that mechanism.
+
+5. **Theorem L, Bourgain, KLM, and Müllner.**
+
+   **The main GRH Parseval/TV argument: CORRECT.** With \(k=\varphi(L)\),
+   \[
+   \operatorname{TV}(\mu,u)
+   \le\tfrac12\sqrt{k\sum_a|\mu(a)-u(a)|^2}
+   =\tfrac12\sqrt{\sum_{\chi\ne1}|\widehat\mu(\chi)|^2}.
+   \]
+   The uniform character estimate gives the claimed \(O(\sqrt{k/X}\log^2X)\) bound. The cited Montgomery–Vaughan theorem supplies the analytic input. [Theorem 13.7](https://personal.science.psu.edu/rcv4/personal/Publications/MNTI/17.0_pp_419_451_Conditional_estimates.pdf)
+
+   Conditioning on \(PQ\equiv1\bmod4\) costs a constant factor once the TV error is small. Discarding equality costs \(O(1/|S|)\). For \(\epsilon\), ordering creates no problem because the two signs agree on the conditioning event.
+
+   **General functions of the smaller factor: NEEDS FIX in the quantitative claim.** The binning argument establishes \(o(1)\), but does not establish the *same displayed error bound*. As supplied, it gives an error involving
+   \[
+   O\!\left(K\sqrt{m/X}\log^2X+1/K\right).
+   \]
+   Either retain only the qualitative \(o(1)\) assertion, or add uniform prefix-residue estimates and summation by parts to justify the stronger rate.
+
+   Also correct the literal exponent equality: \(X^{1-\eta}\asymp N^{1/2-\eta/2}\). The intended “every fixed positive gap” result survives renaming \(\eta\).
+
+   **“No secrecy threshold at \(N^{1/4}\)”: CORRECT within this experiment.** It compares a hint \(p\bmod M\) supplied alongside full \(N\) with observation of the product residue alone. Repeat the restrictions in the verdict: fixed/independent modulus, independent-prime population, and observation restricted to that residue. It is not a statement about predictors receiving all of \(N\).
+
+   **Bourgain corollary: CORRECT.** The theorem allows position \(b-1\), hence fixing the top bit. Fixing it plus the \(j-1\) nonconstant low positions uses \(r=j\); fixing two leading bits costs one additional position. With constant slack below Bourgain’s unspecified constant, the required uniform relative asymptotics imply TV \(o(1)\). State the dyadic interval formulation explicitly. [Bourgain, §1](https://arxiv.org/pdf/1307.0398)
+
+   **KLM row: CORRECT.** Outside the distinguished prime and finitely many initial exceptions, sufficiently large semiprimes see an eventually periodic function of \(N\). [KLM, Theorem 1](https://link.springer.com/article/10.1007/s00209-021-02834-3)
+
+   **Müllner row: honestly labelled, and the restricted deduction is sound.** Proposition 5.5 permits arbitrary bounded separate coefficients. Under the actual carry/Fourier hypotheses, including linear Fourier decay, it supplies a power saving that survives normalization by \(X^2/\log^2X\). Conditioning uses
+   \[
+   \chi_4(p)1_{\chi_4(p)=\chi_4(q)}
+   =\tfrac12(\chi_4(p)+\chi_4(q)).
+   \]
+   Quote Definitions 4.1–4.2 and the scalar/unitary or decomposition requirements explicitly. This does not establish the assertion for all automata. [Müllner, §5.4.2](https://arxiv.org/pdf/1602.03042v3)
+
+6. **E1/E2 inequality, verdicts, deviations, and census code.**
+
+   **The inequality is CORRECT.** Let \(P=\mu\otimes\mu\), \(Q=u\otimes u\), \(d=\operatorname{TV}(P,Q)\), and \(E=\{UV\equiv1\bmod4\}\). For any predictor let \(S\) be its success event intersected with \(E\). In the uniform model,
+   \[
+   Q(E)=\tfrac12,\qquad Q(S)=\tfrac14.
+   \]
+   Therefore, for \(d<1/2\),
+   \[
+   P(S)\le\tfrac14+d,\quad P(E)\ge\tfrac12-d,
+   \]
+   and
+   \[
+   A^*\le\frac{1/4+d}{1/2-d}-\frac12
+   =\frac{3d}{1-2d}.
+   \]
+   The subsequent TV₁ expression additionally requires \(\mathrm{TV}_1<1/4\). State that denominator condition.
+
+   **E1’s ordered-pair census and TV₂ computation: CORRECT.** Including the diagonal is intentional for the registered iid law. Summing positive deviations computes TV exactly; zero-count cells require no additional positive contribution. My independent checks agree.
+
+   **P1 reporting: NEEDS FIX.** “93/93” includes 63 cells where the code automatically sets `P1_ok=True` because the bound is undefined. Of the remaining 30 cells, only 21 have a bound below \(1/2\). Report those counts; “non-vacuous iff TV₂<1/2” is incorrect because a bound exceeding \(1/2\) is also vacuous for this advantage.
+
+   **P2: correctly reported REFUTED.** The raw failures match the explanation. The registered null assumes independent labels for two orderings that share both \(N\) and the true label. Its failure is properly disclosed.
+
+   **D2: NEEDS FIX.** The post-hoc code does not compute the exact weighted unordered-pair null. It multiplies an unweighted null by a **global mean weight**. For a class containing \(o\) off-diagonal pairs and \(d\) diagonal pairs, the correct excess is
+   \[
+   \frac12\mathbb E\left|2\sum_{i=1}^{o}Z_i+\sum_{i=1}^{d}W_i\right|,
+   \]
+   for independent fair signs. Use that weighted-binomial calculation, or explicitly label and bound the approximation.
+
+   The literal “at or below” claim also fails: reported ratios reach **1.0037729** for \(b=14\) and **1.0003533** for \(b=16\). These are small excesses, not an interesting leak, but report them accurately. Matching a random-label expectation is descriptive, not a calibrated statistical test.
+
+   **D1, D3, D4:** honestly disclosed. D3 remains a resource-guideline deviation. D4’s corrected Bourgain route is valid. D1 means the null is not wholly exact rational arithmetic.
+
+   **E2 verdicts: CORRECT for these data.** All 3,200 records reproduce; 2,880 satisfy the support hypothesis and all satisfy P2. I additionally certified the support inequalities using integer arithmetic, including excess valuations at content primes.
+
+   **`census.py` needs three repairs.**
+
+   First, `unit_fixed_valuation` has undocumented completeness caps. For example:
+   ```python
+   unit_fixed_divisor([2**20, 2**20])
+   # raises RuntimeError; correct U is 2**21
+   ```
+   Strip content first. A cap-free exact replacement for a small candidate prime \(\ell\) is to take the gcd of
+   \[
+   h(a+\ell t),\qquad 1\le a<\ell,\quad 0\le t\le D,
+   \]
+   and then its \(\ell\)-valuation. Finite differences show these evaluations determine the fixed divisor on every unit progression.
+
+   Second, E2 checks only primes not dividing content, whereas the strengthened theorem also concerns excess valuations at content primes. Check the prime support after dividing by \(\gcd(G,c)\) and removing the \(p\)-part.
+
+   Third, E2’s P1 comparison uses floating-point `log`, despite the “floats only for display” claim. Use certified logarithm bounds. The existing data are safely inside the bound, so this does not reverse their verdict.
+
+   Add an explicit input-size guard for E1’s `int64` products; the current experiment sizes are safe, arbitrary larger sizes are not.
+
+   Finally, replace “onset of fitting, not of information.” At \(j=n\), every population has \(A^*=1/2\): full \(N\) determines its factorization information-theoretically. The issue is computational usefulness and finite-population lookup, not absence of information.
+
+7. **Required narrowing of §§0 and 6.**
+
+   **The exhaustive algebraic verdict is WRONG as stated.** Replace “every algebraic way” with the two models actually covered: sufficiently supported shared-polynomial divisibility, and public explicit nonconstant algebraic equalities of bounded encoding size.
+
+   “These are the only two escapes” is unsupported. The proof does not classify every \(N\)-dependent divisibility construction, adaptive construction, implicit representation, or low-density success mechanism. A failure to meet SR1’s shared-polynomial premise or SR2’s exact-equation premise is not an exhaustive classification theorem.
+
+   The fixed-curve question needs a specified curve, good-reduction domain, and modulus promise. There are immediate special cases: for \(E:y^2=x^3-x\) and \(p,q\equiv3\bmod4\), both local traces vanish, so its single count is \((p+1)(q+1)\) and factors \(N\). Do not label every fixed-curve/promised-domain variant OPEN.
+
+   A hypothetical efficient one-curve count would provide a moved-divisor **map**. Calling it a self-reduction still requires the recovery property; calling it a reduction to the same distribution requires substantially more. Preserve §1.1’s own distinctions.
+
+   **The Fermat result is CORRECT**, including the unconditional bin-counting lower bound and the fair-mixture baseline. Keep that baseline qualification wherever claiming improvement over the best constant.
+
+   The defensible verdict is: **no new polynomial-time nonsplitting predictor or modulus-changing factoring self-reduction was found; two precisely specified algebraic mechanisms admit rigorous restrictions.** The stronger claim that those restrictions explain all failures of fixed-factor-bit amplification should be withdrawn.

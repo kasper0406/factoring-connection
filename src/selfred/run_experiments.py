@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -27,7 +28,7 @@ def run_e1(bs):
 
 
 def run_e2():
-    out = RAW / "selfred_e2.jsonl"
+    out = RAW / os.environ.get("SELFRED_E2", "selfred_e2_rerun.jsonl")
     ps = []
     for start in (10 ** 4, 10 ** 5):
         p = start
@@ -47,7 +48,7 @@ def run_e2():
 
 
 def run_e1_posthoc(bs):
-    out = RAW / "selfred_e1_posthoc.jsonl"
+    out = RAW / os.environ.get("SELFRED_POSTHOC", "selfred_e1_posthoc_v2.jsonl")
     with out.open("w") as f:
         for b in bs:
             for r in C.e1_posthoc_dedup(b):

@@ -8,8 +8,8 @@ N2 = A(p) * B(q) for the two prime factors p, q of N (in some order).  We form
 and return the nontrivial divisors of N among the integer roots of P (and of the swapped polynomial).
 P is identically zero iff A = a x^j and B = b x^j (the multiplier class); then nothing can be learned.
 
-Integer roots are found exactly by recursive sign-change bracketing (monotone pieces between the brackets of
-the derivative's sign changes) applied to the squarefree part.  No integer factoring routine is called.
+Integer roots are found exactly by Sturm-sequence bisection on the squarefree part (v1 used derivative sign-change
+bracketing, which missed roots when P' had two roots in one unit interval; found by the Opus proof critic).  No integer factoring routine is called.
 """
 from __future__ import annotations
 
@@ -115,75 +115,64 @@ def squarefree_part(P: Sequence[int]) -> Poly:
     return _to_int_poly(q)
 
 
-def _sgn(v: int) -> int:
+def _sgn(v) -> int:
     return (v > 0) - (v < 0)
 
 
-def sign_change_brackets(P: Sequence[int], lo: int, hi: int) -> List[int]:
-    """Integers c in [lo, hi-1] with sgn P(c) * sgn P(c+1) <= 0 and P(c) != 0 or c a root.
+def _scaled_int(F: List[Fraction]) -> Poly:
+    """Multiply by a POSITIVE common denominator (signs preserved, as Sturm sequences require)."""
+    den = 1
+    for c in F:
+        den = den * c.denominator // gcd(den, c.denominator)
+    out = [int(c * den) for c in F]
+    g = content(out)
+    return trim([c // g for c in out]) if g else []
 
-    Every real root of odd multiplicity of P in [lo, hi] lies in some returned [c, c+1].  Exact.
-    """
-    P = trim(P)
-    if len(P) <= 1 or lo >= hi:
-        return []
-    if len(P) == 2:  # a0 + a1 x
-        a0, a1 = P
-        # root at -a0/a1
-        num, den = -a0, a1
-        if den < 0:
-            num, den = -num, -den
-        c = num // den  # floor
-        out = []
-        for cc in (c - 1, c, c + 1):
-            if lo <= cc < hi and _sgn(peval(P, cc)) * _sgn(peval(P, cc + 1)) <= 0:
-                out.append(cc)
-        return sorted(set(out))
-    crit = sign_change_brackets(pderiv(P), lo, hi)
-    # split points: P is monotone on each [a, b] between consecutive points
-    pts = [lo]
-    for c in crit:
-        pts += [c, c + 1]
-    pts.append(hi)
-    pts = sorted(set(x for x in pts if lo <= x <= hi))
-    out = set()
-    for a, b in zip(pts, pts[1:]):
-        sa, sb = _sgn(peval(P, a)), _sgn(peval(P, b))
-        if sa == 0:
-            out.add(a if a < hi else a - 1)
-        if sb == 0:
-            out.add(b - 1 if b - 1 >= lo else b)
-        if sa * sb < 0:
-            # monotone on [a, b]: binary search for c with a sign change on [c, c+1]
-            l, r = a, b  # invariant: sgn P(l) = sa, sgn P(r) = sb
-            while r - l > 1:
-                m = (l + r) // 2
-                sm = _sgn(peval(P, m))
-                if sm == 0:
-                    l = r = m
-                    break
-                if sm == sa:
-                    l = m
-                else:
-                    r = m
-            out.add(min(l, hi - 1))
-    return sorted(c for c in out if lo <= c < hi)
+
+def sturm_sequence(P: Sequence[int]) -> List[Poly]:
+    """Sturm sequence P0 = P, P1 = P', P_{k+1} = -rem(P_{k-1}, P_k), each scaled by a positive constant."""
+    seq = [trim(P), pderiv(P)]
+    while len(seq[-1]) > 1:
+        _, r = _qdivmod([Fraction(c) for c in seq[-2]], [Fraction(c) for c in seq[-1]])
+        if not any(r):
+            break
+        seq.append(_scaled_int([-c for c in r]))
+    return seq
+
+
+def _variations(seq: List[Poly], x: int) -> int:
+    signs = [s for s in (_sgn(peval(Q, x)) for Q in seq) if s]
+    return sum(1 for a, b in zip(signs, signs[1:]) if a != b)
 
 
 def integer_roots(P: Sequence[int], lo: int, hi: int) -> List[int]:
-    """All integer roots of P in [lo, hi] (P not identically zero). Exact."""
+    """All integer roots of P in [lo, hi] (P not identically zero). Exact.
+
+    Sturm's theorem on the squarefree part S: #distinct real roots in (a, b] = V(a) - V(b).  Bisect integer
+    intervals (a, b] with positive count down to length 1; then (a, a+1] contains an integer root iff S(a+1) = 0.
+    Cost: <= deg S roots x log2(hi - lo) bisection steps x O(deg S) evaluations of the Sturm sequence.
+    """
     S = squarefree_part(P)
     if not S:
         raise ValueError("zero polynomial")
-    roots = set()
-    for c in sign_change_brackets(S, lo, hi):
-        for x in (c, c + 1):
-            if lo <= x <= hi and peval(S, x) == 0:
-                roots.add(x)
-    for x in (lo, hi):
-        if peval(S, x) == 0:
-            roots.add(x)
-    return sorted(roots)
+    if len(S) == 1:
+        return []
+    seq = sturm_sequence(S)
+    out: List[int] = []
+    stack = [(lo - 1, hi, _variations(seq, lo - 1), _variations(seq, hi))]
+    while stack:
+        a, b, va, vb = stack.pop()
+        if va - vb <= 0:
+            continue
+        if b - a == 1:
+            if peval(S, b) == 0:
+                out.append(b)
+            continue
+        m = (a + b) // 2
+        vm = _variations(seq, m)
+        stack.append((a, m, va, vm))
+        stack.append((m, b, vm, vb))
+    return sorted(out)
 
 
 # ----------------------------------------------------------------------------- Theorem SR2

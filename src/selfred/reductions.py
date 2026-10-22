@@ -53,23 +53,37 @@ def valuation_split(X: int, N: int) -> Tuple[str, int, int]:
 
 
 # ----------------------------------------------------------------------------- phi(N) mod l, l an input
+def _is_small_prime(l: int) -> bool:
+    """Deterministic trial division (l is O(n))."""
+    if l < 2:
+        return False
+    d = 2
+    while d * d <= l:
+        if l % d == 0:
+            return False
+        d += 1
+    return True
+
+
 def small_primes_product_exceeding(bound: int, N: int) -> List[int]:
     ls, M, l = [], 1, 3
     while M <= bound:
-        if gmpy2.is_prime(l) and N % l:
+        if _is_small_prime(l) and N % l:
             ls.append(l)
             M *= l
         l += 2
     return ls
 
 
-def factor_via_phi_mod_ell(N: int, phi_mod: Callable[[int, int], int]) -> Tuple[Optional[int], int]:
+def factor_via_phi_mod_ell(N: int, phi_mod: Callable[[int, int], int],
+                           balanced: bool = True) -> Tuple[Optional[int], int]:
     """phi(N) mod l for input primes l  ==>  s = p + q exactly (CRT)  ==>  p.
 
-    Balanced or not, 0 < s <= N + 1, so primes with product > N + 1 always suffice; for balanced N the bound
-    2^(ceil(n/2)+1) suffices and about 0.35 n / ln n calls are made.  Returns (factor, calls).
+    PROMISE: balanced N = pq (p, q < 2^ceil(n/2)), so s < 2^(ceil(n/2)+1); pass balanced=False to use the general
+    bound s <= N + 1.  Calls = number of odd primes up to B with theta(B) ~ (n/2) ln 2, i.e. ~ 0.347 n / ln n
+    asymptotically (finite n: 12, 26, 75, 131 calls at n = 80, 256, 1024, 2048).  Returns (factor, calls).
     """
-    bound = 1 << ((N.bit_length() + 1) // 2 + 2)   # > p + q for p, q < 2^ceil(n/2)
+    bound = (1 << ((N.bit_length() + 1) // 2 + 2)) if balanced else N + 2
     ls = small_primes_product_exceeding(bound, N)
     s, M = 0, 1
     for l in ls:

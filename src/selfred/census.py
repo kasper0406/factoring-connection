@@ -65,6 +65,7 @@ def null_excess(k: int) -> float:
 
 
 def e1_census(b: int, jmax: int = None) -> List[dict]:
+    assert 2 * b <= 62, "int64 products"
     S = prime_set(b)
     s = len(S)
     n = 2 * b
@@ -117,23 +118,16 @@ def vl(x: int, l: int) -> int:
     return v
 
 
-def unit_fixed_valuation(h: List[int], l: int, Emax: int = 12) -> int:
-    """u_l(h) = min over z with l not dividing z of v_l(h(z)) (computed mod l^E, E increasing)."""
-    for E in range(1, Emax + 1):
-        mod = l ** E
-        m = E
-        for z in range(1, mod):
-            if z % l:
-                v = min(vl(peval(h, z) % mod, l), E)
-                if v < m:
-                    m = v
-                    if m == 0:
-                        return 0
-        if m < E:
-            return m
-        if mod > 2 * 10 ** 6:
-            break
-    raise RuntimeError(f"u_l not resolved for l={l}")
+def unit_fixed_valuation(h: List[int], l: int) -> int:
+    """u_l(h) = min over z with l not dividing z of v_l(h(z)).  Exact, no caps (codex_2 fix):
+    for each unit class a mod l, g_a(t) = h(a + l t) has degree D, so gcd_t g_a(t) = gcd(g_a(0), ..., g_a(D))
+    (finite differences); u_l = v_l(gcd over a, t)."""
+    D = len(h) - 1
+    g = 0
+    for a in range(1, l):
+        for t in range(D + 1):
+            g = gcd(g, peval(h, a + l * t))
+    return vl(g, l) if g else 10 ** 9
 
 
 def unit_fixed_divisor(h: List[int]) -> int:
@@ -142,10 +136,7 @@ def unit_fixed_divisor(h: List[int]) -> int:
     cand = set(int(l) for l in sympy.primerange(2, D + 2)) | set(sympy.factorint(c).keys())
     U = 1
     for l in cand:
-        if c % l == 0 and l - 1 > D:
-            u = vl(c, l)
-        else:
-            u = unit_fixed_valuation(h, l)
+        u = unit_fixed_valuation(h, l)
         U *= l ** u
     return U
 
@@ -179,22 +170,53 @@ def e2_case(h: List[int], p: int) -> dict:
     Gr = G // p ** vp
     c = abs(content(h))
     D = len(h) - 1
-    L = 1 + Fraction(4 * D * p) / Fraction(len(Q)) / Fraction(math.log(p))  # display bound (float log)
+    L = 1 + Fraction(4 * D * p) / Fraction(len(Q)) / Fraction(math.log(p))  # display only
     big = [l for l in sympy.factorint(Gr) if c % l]
     maxl = max(big) if big else 1
+    # support of S = (G / gcd(G, c))_{p'} (covers excess valuations at content primes too; codex_2 fix)
+    Sg = G // gcd(G, c)
+    while Sg % p == 0:
+        Sg //= p
+    supp = list(sympy.factorint(Sg)) if Sg > 1 else []
+    maxS = max(supp) if supp else 1
     hyp = len(Q) > D * (math.isqrt(p) + 2)
-    return dict(p=p, D=D, Q=len(Q), vp=vp, Gr=Gr, c_bits=c.bit_length(), max_l_not_c=maxl,
-                L=float(L), hyp=hyp, P1_ok=(not hyp) or maxl < float(L))
+    # certified: l - 1 < 4 D p / (|Q| ln p) is implied by (l-1) |Q| * bitlen(p) * 6932 < 4 D p * 10^4,
+    # since ln p <= bitlen(p) * ln 2 < bitlen(p) * 0.6932
+    cert = (maxS - 1) * len(Q) * p.bit_length() * 6932 < 4 * D * p * 10 ** 4
+    return dict(p=p, D=D, Q=len(Q), vp=vp, Gr=Gr, c_bits=c.bit_length(), max_l_not_c=maxl, max_l_S=maxS,
+                L=float(L), hyp=hyp, P1_ok=(not hyp) or cert)
+
+
+def weighted_null_excess(o: int, d: int, exact_limit: int = 3000) -> float:
+    """(1/2) E|2 S_o + S_d| for S_o, S_d sums of o, d independent fair signs: the Bayes excess of a class with o
+    off-diagonal unordered pairs (weight 2) and d diagonal pairs (weight 1) under one coin per unordered pair.
+    Exact (Fraction) when o + d <= 3000, else double precision via log-binomials (D2')."""
+    from math import lgamma, exp, log
+    if o + d <= exact_limit:
+        tot = 0
+        for i in range(o + 1):
+            ci = comb(o, i)
+            for k in range(d + 1):
+                tot += ci * comb(d, k) * abs(2 * (2 * i - o) + (2 * k - d))
+        return float(Fraction(tot, 2 << (o + d)))
+    # value 2(2i - o) + (2k - d) = 4i + 2k - (2o + d): convolve the two binomial pmfs on the index lattice (FFT)
+    io, kd = np.arange(o + 1), np.arange(d + 1)
+    po = np.exp(np.array([lgamma(o + 1) - lgamma(i + 1) - lgamma(o - i + 1) for i in io]) - o * log(2))
+    pd = np.exp(np.array([lgamma(d + 1) - lgamma(k + 1) - lgamma(d - k + 1) for k in kd]) - d * log(2))
+    A = np.zeros(4 * o + 1)
+    A[4 * io] = po
+    B = np.zeros(2 * d + 1)
+    B[2 * kd] = pd
+    L = len(A) + len(B) - 1
+    nfft = 1 << (L - 1).bit_length()
+    conv = np.fft.irfft(np.fft.rfft(A, nfft) * np.fft.rfft(B, nfft), nfft)[:L]
+    vals = np.arange(L) - (2 * o + d)
+    return float(0.5 * (np.clip(conv, 0, None) * np.abs(vals)).sum())
 
 
 def e1_posthoc_dedup(b: int) -> List[dict]:
-    """POST-HOC (not pre-registered; deviation D2): random-label null with one label per UNORDERED pair.
-
-    The pre-registered null gave each ordered pair its own coin, but (X, Y) and (Y, X) give the same N and the
-    same eps, so that null is too small by up to a factor 2 at large j.  Here A* is recomputed on unordered pairs
-    (diagonal weight 1, off-diagonal weight 2; identical to the ordered A*), and the null gives one fair coin
-    per unordered pair (weight approximated by the mean weight of the class population).
-    """
+    """POST-HOC (not pre-registered; deviations D2/D2'): random-label null with one fair coin per UNORDERED pair
+    (diagonal weight 1, off-diagonal weight 2), exact per class.  A* is identical to the ordered census."""
     S = prime_set(b)
     s = len(S)
     eps = np.where(S % 4 == 1, 1, -1)
@@ -205,14 +227,21 @@ def e1_posthoc_dedup(b: int) -> List[dict]:
     N, w, e = N[E], w[E], eps[iu[0]][E]
     nE = int(w.sum())
     rows = []
+    cache: Dict[tuple, float] = {}
     for j in range(2, 2 * b + 1):
         cls = N & ((1 << j) - 1)
-        o = np.argsort(cls, kind="stable")
-        _, st, cnt = np.unique(cls[o], return_index=True, return_counts=True)
-        ww, ee = w[o], e[o]
+        o_ = np.argsort(cls, kind="stable")
+        _, st, cnt = np.unique(cls[o_], return_index=True, return_counts=True)
+        ww, ee = w[o_], e[o_]
         plus = np.add.reduceat(ww * (ee > 0), st)
         tot = np.add.reduceat(ww, st)
+        ndiag = np.add.reduceat((ww == 1).astype(np.int64), st)
         Astar = float(np.maximum(plus, tot - plus).sum()) / nE - 0.5
-        null = sum(h * null_excess(k) for k, h in Counter(cnt.tolist()).items()) * (tot.sum() / cnt.sum()) / nE
-        rows.append(dict(b=b, j=j, Astar=Astar, A_null_dedup=float(null), ratio=Astar / float(null)))
+        null = 0.0
+        for (od, dd), h in Counter(zip((cnt - ndiag).tolist(), ndiag.tolist())).items():
+            if (od, dd) not in cache:
+                cache[(od, dd)] = weighted_null_excess(od, dd)
+            null += h * cache[(od, dd)]
+        null /= nE
+        rows.append(dict(b=b, j=j, Astar=Astar, A_null_dedup=null, ratio=Astar / null))
     return rows

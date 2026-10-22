@@ -45,6 +45,44 @@ def test_integer_roots_random():
         assert G.integer_roots(P, lo, hi) == sorted(set(roots))
 
 
+def test_integer_roots_critic_regression():
+    """P = 2(x+1)(7x^2+3x-1): P' has two roots in (-1, 0); v1 bracketing missed x = -1."""
+    assert G.integer_roots([-2, 4, 20, 14], -40, 40) == [-1]
+
+
+def test_integer_roots_bruteforce_fuzz():
+    rng = random.Random(7)
+    for _ in range(3000):
+        P = G.trim([rng.randint(-30, 30) for _ in range(rng.randint(2, 6))])
+        if len(P) < 2:
+            continue
+        want = [x for x in range(-60, 61) if G.peval(P, x) == 0]
+        assert G.integer_roots(P, -60, 60) == want, P
+
+
+def test_solve_rigid_critic_case():
+    p, q = 2166859425403, 1887537611287
+    P = [-2, 4, 20, 14]
+    # A(x) = P(x - p - 1) + 2, B = 1, N2 = 2: valid promise N2 = A(p) B(q)
+    sh = [-(p + 1), 1]
+    A = [0]
+    for c in reversed(P):
+        A = G.psub(G.pmul(A, sh), [-c]) if A != [0] else [c]
+    A = G.trim(A)
+    A[0] += 2
+    assert G.peval(A, p) == 2
+    assert G.solve_rigid(p * q, 2, A, [1]) in (p, q)
+
+
+def test_codex2_counterexamples():
+    assert G.integer_roots([0, 1, 3, 2], -5, 5) == [-1, 0]          # x(x+1)(2x+1)
+    assert G.integer_roots(G.pmul([0, 1, 3, 2], [0, 1, 3, 2]), -5, 5) == [-1, 0]
+    assert G.solve_rigid(35, 6, [-324, 181, -33, 2], [1]) in (5, 7)
+    assert C.unit_fixed_divisor([2 ** 20, 2 ** 20]) == 2 ** 21
+    d, _ = R.factor_via_phi_mod_ell(3027, H.phi_mod, balanced=False)
+    assert d in (3, 1009)
+
+
 def test_integer_roots_close_roots_and_bigcoeffs():
     P = G.pmul(G.pmul([-(10 ** 30), 1], [-(10 ** 30 + 1), 1]), [-(10 ** 30 + 3), 7])
     assert G.integer_roots(P, 0, 10 ** 31) == [10 ** 30, 10 ** 30 + 1]
@@ -144,3 +182,8 @@ def test_unit_fixed_divisor_and_sr1_small():
     for p in (1009, 1013, 2003):
         r = C.e2_case(h, p)
         assert r["P1_ok"] and r["Gr"] == U
+
+
+def test_weighted_null_fft_matches_exact():
+    for o, d in [(300, 40), (57, 0), (0, 31), (5, 5)]:
+        assert abs(C.weighted_null_excess(o, d) - C.weighted_null_excess(o, d, exact_limit=0)) < 1e-9
