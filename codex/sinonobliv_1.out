@@ -1,0 +1,705 @@
+**OPEN — I found no constructor with a finite \(L[1/3,\tau]\) per-output bound for Prop SI.** The constructions examined below either retain an \(L[2/3]\) smoothness cost or lose exponentially through placement.
+
+**PROVED, within stated models —** There are useful barriers for adaptive certificate trees, independently positioned multi-sample decoders, and fixed polynomial families. These do **not** exclude unrestricted target-dependent algorithms. In particular, averaging a fixed-parameter theorem does not automatically control adaptively selected parameters.
+
+**HEURISTIC —** My subjective probability that some extension of these routes yields \(\tau<0.757169\), for the inputs and relation supply required by Prop SI, is **5%**.
+
+| Route | Best construction or analysis found here | Per-output cost | Status | Scope of barrier |
+|---|---|---:|---|---|
+| 1. Adaptive moduli | Accumulate known smooth divisors, then test cofactors; baseline remains available | \(L[2/3,2/(3\kappa)]\); no finite \(\tau\) obtained | **PROVED in MODEL; unrestricted OPEN** | Small total certificate repertoire, or an explicit conditional-distribution bound |
+| 2. Correlated identities | Friedlander–Lagarias placement; balanced products of distinct factors | Fixed-factor smoothness still \(L[2/3,2/(3\kappa)]\); fixed-family placement is exponentially sparse | **PROVED placement facts; HEURISTIC smoothness; growing families OPEN** | Fixed degree/factor count and target-independent presentations |
+| 3. Multi-sample decoders | Cohn–Heninger on independent windows; exact reduction for windows near \(k_iN\) | Independent, general ACD model: at least \(L[\,2/3+1/(3m),\,c_m\,]\), specified below; correlated windows give no quantified improvement | **PROVED count in MODEL; recovery HEURISTIC; unrestricted OPEN** | Fixed \(m\), certified radius, independent centers; separate exact analysis for common \(N\) |
+| 4. Polynomial/norm values | Direct polynomial placement; ordinary and multiple NFS sampling models | Direct SI constructions: exponential placement or \(L[2/3]\) smoothness. NFS constants reproduced, but their outputs are different relations | **PROVED elementary bounds; MODEL/HEURISTIC NFS costs; general route OPEN** | Fixed polynomial families and the stated sampling models |
+| 5. Softer target | Optimize the supplied Prop SI cost formula | Required: \(\tau<0.7571693693\) | **PROVED algebraically, conditional on Prop SI** | No route above supplies such a \(\tau\) |
+| Uncertified roots | Small-factor bias is possible; sufficient full-smoothness bias is unquantified | No established \(\tau\) | **OPEN** | Theorem J does not bound these outputs |
+
+**MODEL — Conventions.** Write
+\[
+\ell=\log x,\qquad
+F_1=x^{1/3}\ell^{2/3},\qquad
+F_2=x^{2/3}\ell^{1/3},
+\]
+and
+\[
+a=\log y=\kappa F_1,\qquad b=\log h=\nu F_2,\qquad U=x/a.
+\]
+All per-output estimates include amortized search and smoothness detection. A polynomial dependence on the bit length of a large CRT modulus is charged; such a call is not automatically \(L^{o(1)}\).
+
+**PROVED —** The Dickman asymptotic gives
+\[
+-\log\rho(U)
+=U\bigl(\log U+\log\log U-1+o(1)\bigr)
+=\left(\frac{2}{3\kappa}+o(1)\right)F_2.
+\]
+**HEURISTIC —** Applying this density to the relevant short intervals gives the supplied baseline
+\[
+p_0^{-1}
+=\exp\left(\left(\frac{2}{3\kappa}+o(1)\right)F_2\right).
+\]
+
+---
+
+**PROVED — 1. A restricted adaptive certificate-tree barrier.**
+
+Let \(A\) denote the random window position in Theorem J. For each fixed admissible parameter choice \(\theta\), let \(S_\theta(A)\) count its certified smooth outputs. Taking Theorem J as given,
+\[
+\mathbb E S_\theta(A)\le p_J,\qquad
+p_J=\exp\left(-\left(\frac{2}{3\kappa}+o(1)\right)F_2\right).
+\]
+
+**MODEL —** Consider an adaptive tree whose nodes have parameter choices fixed independently of \(A\). Previous answers select the next node. The interval translation permitted by Theorem J remains part of the call. Suppose the entire tree contains \(M\) distinct parameter choices.
+
+**PROVED —** Regardless of correlations between answers,
+\[
+Y(A)\le\sum_{\theta\text{ in the tree}}S_\theta(A),
+\]
+so
+\[
+\mathbb EY\le Mp_J,\qquad
+\Pr(Y\ge1)\le Mp_J.
+\]
+Thus \(M=\exp(o(F_2))\) gives
+\[
+\Pr(Y\ge1)
+\le
+\exp\left(-\left(\frac{2}{3\kappa}+o(1)\right)F_2\right).
+\]
+
+**PROVED —** If a truncated tree has depth at most \(B\) and at most \(J\) leaves, then it has at most \(1+BJ\) nodes. Consequently,
+\[
+\Pr(\text{success within }B\text{ calls})
+\le(1+BJ)p_J.
+\]
+For \(B=L[1/3,\tau]\), constant success probability therefore requires
+\[
+\log J
+\ge
+\left(\frac{2}{3\kappa}+o(1)\right)F_2-\tau F_1-O(1).
+\]
+
+**PROVED — This does not yield an unrestricted running-time lower bound.** A polynomial-depth binary tree may have \(\exp(\operatorname{poly}(x))\) leaves. Even \(\Theta(F_2)\) answer bits are affordable in polynomial time. Small leaf count is a sufficient restriction for a barrier, not a general measure of computational difficulty.
+
+**PROVED — A toy counterexample identifies the logical gap.** Let \(A\) be uniform on \(\{0,\ldots,M-1\}\), and let certificate \(\theta\) succeed exactly when \(A=\theta\). Every fixed certificate succeeds with probability \(1/M\). Binary queries reveal \(A\) in \(\lceil\log_2M\rceil\) steps, after which an adaptive certificate succeeds certainly. This is not a number-theoretic construction; it disproves the inference from fixed-parameter averages alone.
+
+**MODEL — A second barrier uses conditional distributions.** Suppose every reachable history \(H\) satisfies
+\[
+\Pr(A\in E\mid H)\le e^I\Pr(A\in E)
+\]
+for every measurable \(E\), with \(I=o(F_2)\).
+
+**PROVED in this MODEL —** Since \(\theta(H)\) is fixed after conditioning on \(H\),
+\[
+\mathbb E[S_{\theta(H)}(A)\mid H]\le e^Ip_J.
+\]
+Summing over an adaptive stopping time \(T\),
+\[
+\mathbb EY\le e^Ip_J\,\mathbb ET.
+\]
+Hence amortized calls per output satisfy
+\[
+\frac{\mathbb ET}{\mathbb EY}
+\ge e^{-I}p_J^{-1}
+=L[2/3,2/(3\kappa)].
+\]
+**OPEN —** No such conditional-distribution bound has been established here for unrestricted arithmetic divisibility/gcd strategies.
+
+**PROVED — Prime-by-prime accumulation reaches a placement boundary.** For a known smooth divisor \(d\),
+\[
+\#\{z\in[X,X+h]:d\mid z\}\le h/d+1.
+\]
+While \(d\le h\), every cofactor obeys
+\[
+j=z/d\ge X/h,\qquad \log j\ge x-b+o(x).
+\]
+Since \(b=o(x)\),
+\[
+-\log\rho\!\left(\frac{x-b}{a}\right)
+=\left(\frac{2}{3\kappa}+o(1)\right)F_2.
+\]
+
+**HEURISTIC —** Under conditional random-cofactor smoothness, accumulating \(d\le h\) therefore retains the leading \(L[2/3]\) cost. Once \(d>h\), there is at most one multiple in the interval. Selecting such a \(d\) with a favorable multiple is the unresolved placement problem. Adaptive selection cannot be charged as independent placement without justification.
+
+---
+
+**HEURISTIC — 2. Correlated factorization improves density, but fixed factor count does not change the \(L\)-exponent.**
+
+Suppose a structured value has distinct factors with logarithmic sizes
+\[
+\log z_i=c_i x+o(x),\qquad c_i>0,\qquad \sum_{i=1}^r c_i=1.
+\]
+Under a joint smoothness model,
+\[
+p_{\rm split}\approx\prod_{i=1}^r\rho(c_iU).
+\]
+For fixed \(r,c_i\),
+\[
+\log\frac{p_{\rm split}}{\rho(U)}
+=
+-U\sum_i c_i\log c_i+o(U).
+\]
+Because
+\[
+-\sum_i c_i\log c_i\le\log r,
+\]
+we obtain
+\[
+p_{\rm split}
+\le \rho(U)\exp(U\log r+o(U))
+\]
+within that model. Balanced factors attain the entropy maximum:
+\[
+p_{\rm split}\approx\rho(U/r)^r
+=\rho(U)\exp(U\log r+o(U)).
+\]
+But \(U=o(F_2)\), so
+\[
+p_{\rm split}^{-1}
+=L[2/3,2/(3\kappa)]
+\]
+for fixed \(r\). The density gain is substantial below the leading \(F_2\) term, but does not give finite \(\tau\).
+
+**PROVED — Repeated factors require separate treatment.** For \(z=t^r\), only \(t\) must be smooth. Its heuristic probability is \(\rho(U/r)\), not \(\rho(U/r)^r\). For fixed \(r\), this still has an \(L[2/3]\) reciprocal, with coefficient \(2/(3r\kappa)\). Its placement sparsity remains.
+
+**PROVED — A fixed one-parameter polynomial family is too sparse.** For a fixed degree-\(r\) polynomial with positive leading coefficient, on a sufficiently large monotone branch near \(F(t)\asymp X\),
+\[
+F'(t)\asymp X^{1-1/r}.
+\]
+Thus consecutive values have spacing \(\gg X^{1-1/r}\). Since
+\[
+h=\exp(O(F_2))=X^{o(1)},
+\]
+a window contains at most one such value eventually.
+
+Averaging the target over a dyadic interval, there are \(O(X^{1/r})\) relevant values, each covering at most \(h+1\) target positions. Therefore
+\[
+\Pr([A,A+h]\text{ meets the family})
+\ll(h+1)X^{1/r-1}.
+\]
+For \(M\) target-independent presentations, the union bound gives
+\[
+\Pr(\text{a hit})\ll M(h+1)X^{1/r-1}.
+\]
+Constant coverage requires
+\[
+M\gg \frac{X^{1-1/r}}{h+1},
+\]
+hence
+\[
+\log M\ge(1-1/r)x-\nu F_2-O(1).
+\]
+This is exponential in \(x\). Allowing \(k\le L[1/3,C]\) changes only lower-order terms.
+
+**PROVED — The elementary Friedlander–Lagarias square construction.** Put
+\[
+m=\lceil\sqrt X\rceil,\qquad
+\Delta=m^2-X,\qquad
+a=\lfloor\sqrt\Delta\rfloor.
+\]
+Then
+\[
+z=(m-a)(m+a)=m^2-a^2
+\]
+satisfies
+\[
+0\le z-X=\Delta-a^2<2a+1
+\le2\sqrt{2m}+1=O(X^{1/4}).
+\]
+Moreover,
+\[
+m+a=(1+o(1))\sqrt X.
+\]
+Thus it automatically gives \(X^{1/2+\epsilon}\)-smoothness for every fixed \(\epsilon>0\), with \(O(X^{1/4})\) placement. The automatic factor bound is slightly above \(\sqrt X\); an exact \(\sqrt X\) bound does not follow from this rounding argument.
+
+**PROVED — The checked general construction** uses
+\[
+(m-a_1)\cdots(m-a_{r-1})
+\left(m+\sum_{j=1}^{r-1}a_j\right),
+\qquad |a_j|\ll_r m^{1/2^j},
+\]
+and guarantees error
+\[
+O_r\!\left(m^{\,r-2+2^{-(r-1)}}\right).
+\]
+Its resulting interval exponent is
+\[
+\beta_r=1-\frac2r+\frac{1}{r2^{r-1}},
+\]
+giving \(1/4,5/12,17/32\) for \(r=2,3,4\). These are Theorem 4 and its stated consequence in [Friedlander–Lagarias](https://websites.umich.edu/~lagarias/doc/short.pdf).
+
+**OPEN —** No fixed \(r\) reaches \(y=L[1/3,\kappa]\), because
+\[
+\frac{\log y}{\log X}\longrightarrow0.
+\]
+The theorem is stated for fixed \(r\); a uniform growing-\(r\) extrapolation is unverified here. Its displayed exponent tends toward \(1\), which gives no indication of the required shrinking interval exponent.
+
+**HEURISTIC — Growing factor count can reduce the smoothness exponent.** If \(r=x^\delta\), with fixed \(0<\delta<2/3\), and independent balanced-factor smoothness remains valid, then
+\[
+-\log p_{\rm split}
+=
+\left(\frac{2/3-\delta}{\kappa}+o(1)\right)F_2.
+\]
+This still has \(L[2/3]\) cost. If \(U/r=t>1\) is fixed, then
+\[
+-\log p_{\rm split}
+=\frac{U}{t}[-\log\rho(t)]
+=\Theta(U)\gg F_1.
+\]
+An \(L[1/3]\) smoothness cost would require a much more extreme regime, together with an effective placement mechanism. Neither is supplied here.
+
+**OPEN —** Consecutive products, difference-of-squares families, and fixed Aurifeuillian presentations fit these density/placement calculations when their distinct factor sizes are controlled. A target-dependent, growing family could escape the fixed-family barrier. Its entropy, generation cost and joint smoothness law must all be accounted for.
+
+---
+
+**HEURISTIC, with checked hypotheses — 3. The Cohn–Heninger radius has two different versions.**
+
+The radius quoted in the question belongs to **partial ACD**, with a known exact multiple \(P\) of the hidden divisor. Let
+\[
+S=\log P,\qquad s=\log d,\qquad \beta=s/S.
+\]
+For equal error bounds \(h\), the radius condition becomes
+\[
+b<S\beta^{(m+1)/m}
+=\frac{s^{(m+1)/m}}{S^{1/m}},
+\]
+so
+\[
+s>(Sb^m)^{1/(m+1)}.
+\]
+Their LLL analysis additionally requires
+\[
+\beta^2S=s^2/S\longrightarrow\infty.
+\]
+Recovery for \(m>1\) assumes suitable algebraic independence. These hypotheses are explicit in [Cohn–Heninger, Theorem 1 and §2.1](https://msp.org/obs/2013/1-1/obs-v1-n1-p14-p.pdf).
+
+**PROVED — Using the full small-prime modulus fails these hypotheses.** For
+\[
+P=\operatorname{lcm}(1,\ldots,\lfloor y\rfloor),
+\]
+the prime number theorem gives \(S\sim y\). A divisor of an integer of size \(X\) has \(s\le x+o(x)\), so
+\[
+\frac{s^2}{S}
+\le \frac{(x+o(x))^2}{y}\longrightarrow0.
+\]
+For fixed \(m\), even the formal radius threshold has
+\[
+(Sb^m)^{1/(m+1)}\gg x.
+\]
+Thus this large smooth modulus gives no applicable Cohn–Heninger guarantee.
+
+**HEURISTIC, with checked hypotheses —** Without a known exact multiple, their general ACD theorem has radius
+\[
+h<X^{(C_m+o(1))\beta^{m/(m-1)}},
+\qquad
+C_m=\frac{1-1/m^2}{m^{1/(m-1)}},
+\]
+where \(d\ge X^\beta\). Polynomial time is asserted for fixed \(m\), subject to the theorem’s algebraic-independence hypothesis; \(m=2\) is a rigorous special case. See [Theorem 2](https://msp.org/obs/2013/1-1/obs-v1-n1-p14-p.pdf).
+
+**PROVED in an independent-center MODEL — A common-divisor counting barrier.**
+
+Let the \(m\) interval centers be independent uniform integers in \([X,2X]\). Set \(H=\lfloor h\rfloor+1\). For fixed offsets \(v_i\) and \(d\le 3X\),
+\[
+\Pr(d\mid A_i+v_i)\le \frac1d+\frac1X\le\frac4d.
+\]
+Consequently, the expected number of offset tuples sharing any divisor \(d\ge D\) is at most
+\[
+(4H)^m\sum_{d\ge D}d^{-m}
+\ll_m H^mD^{1-m}.
+\]
+This bound already counts all divisors, including nonsmooth ones. The expected number of smooth outputs is therefore at most
+\[
+O_m(H^mD^{1-m}).
+\]
+
+**PROVED in this MODEL —** The general ACD radius requires, to leading order,
+\[
+s_m=\log D
+\ge
+C_m^{-(m-1)/m}x^{1/m}b^{(m-1)/m}.
+\]
+Hence
+\[
+\log\mathbb E(\text{smooth outputs})
+\le mb-(m-1)s_m+O_m(1).
+\]
+For fixed \(m\),
+\[
+\frac{s_m}{b}
+\ge C_m^{-(m-1)/m}(x/b)^{1/m}\longrightarrow\infty.
+\]
+Even granting unit-cost calls, the amortized cost per output is at least
+\[
+\boxed{
+L\!\left[
+\frac23+\frac1{3m},
+\ (m-1)\left(\frac{\nu}{C_m}\right)^{(m-1)/m}
+\right].
+}
+\]
+For \(m=2\), this is
+\[
+L[5/6,\sqrt{8\nu/3}].
+\]
+It is worse than the interval-sieve baseline.
+
+**PROVED in the same MODEL —** For partial ACD with \(S\sim\sigma x\), the analogous lower bound is
+\[
+L\!\left[
+\frac23+\frac1{3(m+1)},
+\ (m-1)\sigma^{1/(m+1)}\nu^{m/(m+1)}
+\right].
+\]
+These are barriers for certified outputs at those radii, not for every possible multi-sample algorithm.
+
+**PROVED — Averaging over the same \(N\) is different.** For the actual windows \(k_iN+[0,h]\), define
+\[
+M_i(n;d)=
+\#\{0\le v\le\lfloor h\rfloor:d\mid k_in+v\}.
+\]
+Over a complete period modulo \(d\), the exact expected number of common-divisor tuples is
+\[
+Q_d=\frac1d\sum_{n\bmod d}\prod_{i=1}^m M_i(n;d).
+\]
+It generally does not equal \((H/d)^m\).
+
+**PROVED — Large common divisors force proportional offsets.** Suppose
+\[
+d\mid k_iN+v_i,\qquad 0\le v_i\le h,\qquad k_i\le K,
+\qquad d>Kh.
+\]
+Then
+\[
+d\mid k_jv_i-k_iv_j,
+\qquad
+|k_jv_i-k_iv_j|\le Kh<d,
+\]
+so
+\[
+k_jv_i=k_iv_j.
+\]
+Writing
+\[
+g=\gcd(k_1,\ldots,k_m),\qquad k_i=g\lambda_i,
+\]
+gives an integer \(t\) with
+\[
+v_i=\lambda_it,\qquad
+0\le t\le\left\lfloor\frac h{\lambda_{\max}}\right\rfloor,
+\]
+and therefore
+\[
+k_iN+v_i=\lambda_i(gN+t).
+\]
+
+**PROVED —** Put
+\[
+G=\gcd(g,d),\qquad
+T=\left\lfloor h/\lambda_{\max}\right\rfloor.
+\]
+The congruence \(gN+t\equiv0\pmod d\) has \(G\) solutions for \(N\bmod d\) when \(G\mid t\), and none otherwise. Thus
+\[
+\boxed{
+Q_d=\frac Gd\left(\left\lfloor\frac TG\right\rfloor+1\right).
+}
+\]
+This is roughly \(h/(\lambda_{\max}d)\) when the interval contains many admissible \(t\), rather than \((h/d)^m\).
+
+**PROVED —** A smooth output now requires the single integer
+\[
+gN+t\in[gN,gN+h/\lambda_{\max}]
+\]
+to be smooth. The large-divisor regime has reduced to one short-interval unknown. For fixed \(m\), the general ACD threshold above has \(s_m\gg b+\log K\), so its certified divisors fall in this proportional-offset regime eventually.
+
+**OPEN —** This exact reduction is not a universal decoder lower bound. It shows why the independent-sample radius cannot simply be applied to the dependent inputs \(k_iN\). Cohn–Heninger explicitly warn that small multiples of one sample do not supply the generic information their heuristic needs.
+
+**MODEL —** For \(d\le Kh\), a known smooth divisor leaves a cofactor of size at least
+\[
+N/(Kh),
+\]
+whose logarithm is
+\[
+x-b-O(F_1)=x-o(x).
+\]
+Under conditional random-cofactor smoothness, this again retains the leading \(L[2/3,2/(3\kappa)]\) cost.
+
+**OPEN —** Adaptively chosen shifted helper windows, growing \(m\), or more complicated common-divisor structure remain outside these barriers. Fixed-\(m\) polynomial-time statements cannot be extrapolated to growing \(m\) without charging lattice dimension and root extraction.
+
+---
+
+**PROVED — 4. Direct polynomial placement has the same sparse-value obstruction.**
+
+For \(F(t)=t^d-a\) with fixed small \(a\),
+\[
+F'(t)=dt^{d-1}\asymp dX^{1-1/d}
+\]
+near \(F(t)\asymp X\). A fixed family therefore has exponentially sparse coverage at window length \(h=X^{o(1)}\).
+
+If \(a\) ranges over \(|a|\le A\), its values lie in intervals of length \(2A\) around perfect \(d\)-th powers. Averaged target coverage is at most
+\[
+O_d\bigl((A+h)X^{1/d-1}\bigr).
+\]
+For \(A=\exp(O(F_2))\) and fixed \(d\), this tends to zero exponentially in \(x\).
+
+**OPEN —** Setting \(a=t^d-kN\) guarantees placement, but provides no bound making \(a\) a small coefficient. A norm construction that chooses its field or element from the target must pay for obtaining both this placement and its favorable factorization.
+
+**MODEL — The size–entropy law.** Suppose the total logarithmic size of a bounded number of independently tested integers is \(\lambda\), and the smoothness bound has logarithm \(B\). The smoothness penalty is
+\[
+\frac{\lambda}{B}\log(\lambda/B)
+\]
+to leading order. Obtaining about \(e^B\) relations requires log candidate count
+\[
+c\ge B+\frac{\lambda}{B}\log(\lambda/B).
+\]
+Balancing relation collection with sparse linear algebra, whose log cost is \(2B\), gives
+\[
+B^2\sim\tfrac12\lambda\log\lambda,\qquad
+c_*^2\sim2\lambda\log\lambda.
+\]
+This is a sampling model, not a lower bound for arbitrary constructive algorithms.
+
+**PROVED in this MODEL —** If the tested factors have total logarithmic size \(\lambda\asymp x\), fixing \(B=\kappa F_1\) retains an \(L[2/3]\) smoothness penalty. Optimizing \(B\) freely gives an \(L[1/2]\) scale. Ordinary NFS reaches \(L[1/3]\) because the integers tested per relation have logarithmic sizes \(O(F_2)\).
+
+**MODEL/HEURISTIC — Reproducing SNFS and GNFS.** Take
+\[
+d=\delta(x/\ell)^{1/3},\qquad
+A=L[1/3,s],
+\]
+with \(A^2\) candidate pairs and smoothness bound \(L[1/3,\kappa]\). The total logarithmic norm size is
+\[
+\lambda=\left(\frac q\delta+\delta s+o(1)\right)F_2,
+\]
+where \(q=1\) for the small-coefficient SNFS model and \(q=2\) for the elementary GNFS model. Joint smoothness has penalty
+\[
+L\!\left[1/3,\frac{q/\delta+\delta s}{3\kappa}\right].
+\]
+Enough relations require
+\[
+2s\ge\kappa+\frac{q/\delta+\delta s}{3\kappa}.
+\]
+
+**PROVED within this MODEL —** Rearranging and applying AM–GM,
+\[
+3\kappa(2s-\kappa)\ge q/\delta+\delta s\ge2\sqrt{qs},
+\]
+while
+\[
+3\kappa(2s-\kappa)
+=3s^2-3(\kappa-s)^2\le3s^2.
+\]
+Therefore
+\[
+3s^2\ge2\sqrt{qs},
+\qquad
+s^3\ge4q/9.
+\]
+Equality is attained at
+\[
+\kappa=s=(4q/9)^{1/3},\qquad \delta=\sqrt{q/s}.
+\]
+The total constants are consequently
+\[
+c_{\rm SNFS}=(32/9)^{1/3}=1.5262856567,
+\]
+\[
+c_{\rm GNFS}=(64/9)^{1/3}=1.9229994271.
+\]
+
+**MODEL/HEURISTIC — Reproducing MNFS by reusing rational smoothness.** Let the rational and algebraic factor-base exponents be \(\beta,\gamma\), and use \(L[1/3,\eta]\) fields, with \(\eta=\beta-\gamma\). Define
+\[
+r=\frac1{3\delta\beta},\qquad
+z=\frac{1/\delta+\delta s}{3\gamma}.
+\]
+Enough relations per field require
+\[
+2s-r-z\ge\gamma.
+\]
+The rational sieve, subsequent tests and linear algebra have exponents
+\[
+2s,\qquad \eta+2s-r,\qquad 2\beta.
+\]
+This accounts for reusing the rational smoothness computation, as in [Coppersmith’s construction](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf).
+
+**PROVED within this MODEL —** Set \(\beta=s\) and minimize \(\gamma+z\), giving
+\[
+\gamma=\sqrt{(1/\delta+\delta s)/3}.
+\]
+The relation condition becomes
+\[
+2s-\frac1{3\delta s}
+\ge2\sqrt{(1/\delta+\delta s)/3}.
+\]
+Put \(w=\delta s^2\). Squaring, on the branch with positive left side, gives
+\[
+\frac1{s^3}
+\le \frac3w-\frac2{w^2}+\frac1{12w^3}.
+\]
+The relevant maximum occurs at
+\[
+12w^2-16w+1=0,\qquad
+w=\frac{4+\sqrt{13}}6.
+\]
+It yields
+\[
+s^3=\frac{46+13\sqrt{13}}{108}
+\]
+and
+\[
+\boxed{
+c_{\rm MNFS}=2s
+=\left(\frac{92+26\sqrt{13}}{27}\right)^{1/3}
+=1.9018836119.
+}
+\]
+At these parameters,
+\[
+\gamma=0.8259092118,\quad
+\eta=0.1250325942,\quad
+r=2\eta,
+\]
+so the subsequent-test exponent satisfies
+\[
+\eta+2s-r=2s-\eta<2s.
+\]
+
+**MODEL — These per-relation costs are useful comparisons, not SI constructor costs.**
+
+| Sampling model | Total factoring constant | Amortized exponent per collected relation |
+|---|---:|---:|
+| SNFS | \(1.5262856567\) | \(0.7631428284\) |
+| GNFS | \(1.9229994271\) | \(0.9614997135\) |
+| MNFS | \(1.9018836119\) | \(0.9509418059\) |
+
+**PROVED —** These relations do not, by themselves, output a factored \(y\)-smooth integer in \([kN,kN+h]\). Consequently, none of the last column can be inserted as \(\tau\) in Prop SI.
+
+**OPEN —** Multiplying elements with known small norms can make a smooth norm by construction. The remaining task is to place that product within relative error \(h/X\). The norm identity alone supplies no algorithm for that approximation problem. Growing-degree, target-dependent norm families remain a possible route.
+
+---
+
+**PROVED — 5. The exact softer-target threshold.**
+
+Assume the supplied Prop SI formula and a \(\kappa\)-independent constructor exponent \(\tau\):
+\[
+c(\tau)=\min_{\kappa>0}
+\max\left(\kappa+\tau+\frac{2}{9\kappa^2},\,2\kappa\right).
+\]
+Let
+\[
+\kappa_0=(4/9)^{1/3}=0.7631428284.
+\]
+The function
+\[
+g(\kappa)=\kappa+\frac{2}{9\kappa^2}
+\]
+has
+\[
+g'(\kappa)=1-\frac4{9\kappa^3},
+\]
+and its minimum is
+\[
+g(\kappa_0)=\frac32\kappa_0.
+\]
+Thus
+\[
+c(\tau)\ge\tau+\frac32\kappa_0.
+\]
+
+Because
+\[
+2\kappa_0=1.5262856567<c_{\rm MNFS},
+\]
+choosing \(\kappa=\kappa_0\) proves the converse implication needed for beating MNFS. Therefore
+\[
+c(\tau)<c_{\rm MNFS}
+\quad\Longleftrightarrow\quad
+\boxed{\tau<0.7571693693.}
+\]
+
+**PROVED —** For \(\tau=0\), the supplied optimization gives
+\[
+\kappa_*=(2/9)^{1/3}=0.6057068643,
+\]
+\[
+\nu_*=\frac2{3\kappa_*}=1.1006424163,
+\qquad
+2\kappa_*=1.2114137286.
+\]
+**OPEN —** The construction needed to realize these constants remains missing.
+
+---
+
+**OPEN — Uncertified decoder roots can be biased toward smoothness.**
+
+Theorem J bounds its certified set. It does not imply that other roots extracted from the lattice polynomials are distributed like uniform integers.
+
+**HEURISTIC —** Conditioning on a known smooth divisor \(d=e^s\) illustrates a real source of bias:
+\[
+\Pr(z\text{ smooth}\mid d\mid z)
+\approx\rho((x-s)/a).
+\]
+For \(s=O(F_2)\), the log-density improvement is approximately
+\[
+\frac{s}{a}\bigl(\log U+\log\log U+o(1)\bigr)
+=O(F_1).
+\]
+Thus an \(L[1/3]\)-scale bias can coexist with the unchanged leading \(L[2/3]\) smoothness penalty.
+
+**HEURISTIC —** With unit work per extracted candidate, reaching per-output cost \(L[1/3,\tau]\) would require
+\[
+\Pr(\text{smooth}\mid\text{extracted})
+\ge\exp(-(\tau+o(1))F_1).
+\]
+Relative to the baseline, the required density gain has logarithm
+\[
+\left(\frac2{3\kappa}+o(1)\right)F_2-\tau F_1.
+\]
+The small-factor bias just described is insufficient to establish this.
+
+**UNVERIFIED —** I found no checked result proving that uncertified Coppersmith/Boneh/Cohn–Heninger roots have the required smoothness bias. Cohn–Heninger’s experiments show recovery beyond conservative theoretical bounds on planted ACD instances; that does not establish a short-interval smooth-number constructor.
+
+---
+
+**PROVED / HEURISTIC / UNVERIFIED — Literature audit.**
+
+- **PROVED, checked:** Friedlander–Lagarias, *On the distribution in short intervals of integers having no large prime factor*, JNT 25 (1987), Theorem 4: the product construction and exponent \(\beta_r\) displayed above. Their \(f(\alpha)\) definition permits every fixed \(\alpha_1>\alpha\); this matters when describing the \(r=2\) smoothness bound. [Primary text](https://websites.umich.edu/~lagarias/doc/short.pdf).
+
+- **HEURISTIC, checked:** Cohn–Heninger, ANTS X proceedings (2013), Theorems 1–2: the partial/general ACD bounds displayed above; fixed-\(m\) polynomial time; the \(\beta^2\log P\) restriction; and the multivariate algebraic-independence qualification. The partial \(m=1\) and general \(m=2\) cases do not require that qualification. [Published paper](https://msp.org/obs/2013/1-1/obs-v1-n1-p14-p.pdf).
+
+- **HEURISTIC, checked:** Herrmann–May, Theorem 4, for a monic linear polynomial modulo an unknown divisor \(p\ge P^\beta\), with \(|z_i|\le P^{\gamma_i}\):
+  \[
+  \sum_i\gamma_i
+  \le
+  1-(1-\beta)^{(n+1)/n}
+  -(n+1)\bigl(1-(1-\beta)^{1/n}\bigr)(1-\beta)-\epsilon.
+  \]
+  Recovery uses their Assumption 1; complexity is polynomial in \(\log P\) and \((e/\epsilon)^n\). Their known-bits consequence requires a fraction approaching \(\log2\) for balanced factors as the block count grows. [Theorems 4–5](https://link.springer.com/content/pdf/10.1007/978-3-540-89255-7_25.pdf).
+
+- **PROVED guarantee, abstract checked; precise finite constants UNVERIFIED:** Boneh’s author abstract gives the approximate agreement threshold
+  \[
+  n-e>\sqrt{kn\,\log p_n/\log p_1},
+  \qquad B=\prod_{i=1}^kp_i,
+  \]
+  improving the preceding \(\sqrt2\) factor. It confirms the smooth-integer application. I did not verify the full original theorem’s rounding/slack conventions or directly check its smooth-interval Theorem 3.1. [Author’s publication page](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html).
+
+- **PROVED theorem, indexed PDF statement and proof checked:** Sarkar–Maitra, Theorem 2, take
+  \[
+  S=\prod_{p\le B}p^{\lfloor\log B/\log p\rfloor}.
+  \]
+  They find the strongly \(B\)-smooth \(n\in[U,V]\) with \(\gcd(n,S)>d\), in \(\operatorname{poly}(\log S)\) time, when
+  \[
+  V<2d,\qquad |I|<2d^{\log d/\log S}.
+  \]
+  Their comparison reports Boneh’s radius factor \(1/4\), hence an eightfold multiplicative improvement. That comparison was checked in their text, not independently against Boneh. [ePrint 2010/146](https://eprint.iacr.org/2010/146.pdf).
+
+- **PROVED consequence of that statement:** At \(B=y\), \(\log S\sim y\), and \(d\asymp X\),
+  \[
+  d^{\log d/\log S}
+  =\exp(O(x^2/y))=1+o(1).
+  \]
+  It therefore gives no radius comparable to \(h=L[2/3,\nu]\). Its polynomial-in-\(\log S\) complexity also cannot be treated as free.
+
+- **PROVED historical results, survey statements checked:** Granville §4.1 reports positive-proportion results for fixed \(X^\alpha\)-smoothness in intervals \(X^\beta\), \(\beta>1/2\), and Harman’s existence result for fixed \(\beta>1/2\) with \(y\ge\exp((\log X)^{2/3+o(1)})\). These stated ranges do not reach the present parameters. §4.3 separates smooth polynomial-value conjectures from proved cases; §5.7 discusses sieving and Boneh’s constructor. [Survey §§4–5](https://dms.umontreal.ca/~andrew/PDF/msrire.pdf).
+
+- **HEURISTIC, checked:** Coppersmith explicitly treats the NFS smoothness estimates as heuristic. His modification reuses rational smoothness across fields and obtains the \(1.902\) constant, with precomputation included. The derivation above reproduces its exact value. [*Modifications to the Number Field Sieve*](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf).
+
+**PROVED — Computational checks.** The scratch [verification script](/Volumes/git/factoring-connection/codex/scratch/sinonobliv_1/exact_checks.py) passed the square-rounding inequalities for 99,999 targets and the correlated-window residue formula for 810 parameter choices. It also checked the numerical constants and MNFS parameter equalities.
+
+**HEURISTIC — Plausibility: 5%.** Most of that probability lies in target-dependent adaptive constructions or unexpectedly strong bias among uncertified outputs. The fixed-family placement calculations and certified independent-sample models give little support for \(\tau<0.757169\).
