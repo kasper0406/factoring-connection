@@ -70,6 +70,10 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - [`zroute`](notes/zroute_results.md): deterministic subexponential factoring under ERH reduces to one constructive lemma, DSR (Theorem DZ). Everything else is proved: XK-Z, Prop PIN, rank forced deterministically.
   - [`selfred`](notes/selfred_results.md): no modulus-changing self-reduction exists in algebraic classes (SR1, SR2).
   - [`sinonobliv`](notes/sinonobliv_results.md): the Prop SI routes give nothing; one exception stays open, adaptive CRT decoding far below the Johnson radius.
+- Phase 23, attacks on the three precise targets left open by phase 22. All three are negative:
+  - [`dsr`](notes/dsr_results.md): DSR is not proved. Derandomising the JMV walk fails for every black-box tool (Theorem SB). Bach-type certificates fail because smooth sets have a Fourier-algebra norm of at least N^{1/2−o(1)} (Theorem FN). Short multiplier lists fail for infinitely many N (Prop BOX-∞).
+  - [`ecount`](notes/ecount_results.md): #E(Z/N) for one fixed curve is NOT open. A single count factors N (Okamoto–Uchiyama 1998), and the agent made this rigorous outside a density-zero set. Dieulefait–Urroz needs either the factorisation of the count or counts on several curves.
+  - [`crtdecode`](notes/crtdecode_results.md): no adaptive CRT decoder beats the divisor trick. Counting decoder calls cannot give a barrier, because the leaf computation is the sieve (Prop DT′). Barriers hold only for restricted classes.
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
