@@ -1,0 +1,628 @@
+1. Derandomising the JMV walk
+
+OPEN. I do not obtain DSR from GRH and the unconditional derandomisation tools listed in the question. Their available guarantees do not give the required hitting set with seed length O(sqrt(log N log log N)). This is a limitation of the available arguments, not an impossibility theorem for the arithmetic problem.
+
+PROVED. The implication ERH + DSR_alpha => deterministic L_N[alpha,O(1)] factoring is valid, subject to the usual asymptotic convention for B. I give the algebraic verification in section 5. There is also a finite-size qualification to the literal formulation “every N,” discussed there.
+
+Notation. To avoid using a for two different objects, write
+
+  n = ln N,
+  s = sqrt(n ln n),
+  B = exp(b s),
+  gamma = q^H mod N,
+  G = (Z/NZ)^*, M = phi(N),
+  d = pi(B).
+
+Thus b is the smoothness constant and gamma is the target. Unless stated otherwise, the quantitative calculations below concern alpha = 1/2. GRH means GRH for the relevant Dirichlet L-functions.
+
+
+1(a). Spectrum, mixing length, randomness and endpoints
+
+PROVED, assuming GRH. Let mu be uniform on the positive primes p <= y, where y <= B. Preprocessing ensures that these primes are units. For a character chi of G,
+
+  mu_hat(chi) = (1/pi(y)) sum_{p<=y} chi(p).
+
+The positive-prime walk is a normal operator, diagonalised by the characters, although it need not be self-adjoint.
+
+JMV’s undirected graph uses both p and p^(-1). Specialising their Theorem 1.1 to Q gives
+
+  degree = 2 pi(y)
+         = 2 li(y) + O(sqrt(y) ln(Ny)),
+
+  |nontrivial adjacency eigenvalue|
+         <= C sqrt(y) ln(Ny),
+
+with an absolute implied constant. Consequently its normalised second eigenvalue satisfies
+
+  lambda_sym <= C sqrt(y) ln(Ny)/pi(y)
+             = O(ln y ln(Ny)/sqrt(y)).
+
+Their underlying character-sum argument also bounds the modulus of the complex sum, and therefore gives the same asymptotic bound for the positive-prime walk. That extra observation matters: a bound on Re(mu_hat(chi)) alone would not establish mixing for the directed walk. JMV do not print a numerical value of C. [Jao–Miller–Venkatesan, Theorem 1.1 and proof](https://arxiv.org/abs/0811.0647).
+
+PROVED, assuming GRH. Here is a deliberately loose numerical replacement, sufficient to make the calculations explicit:
+
+  lambda <= Lambda(N,y),
+
+  Lambda(N,y)
+    := min(1, 10^6 sqrt(y) [ln(Ny)]^3 / pi(y)).
+
+This is my coarse consequence of explicit character estimates, not a numerical constant claimed by JMV.
+
+For completeness, the derivation is as follows. The explicit formula estimates of Ernvall-Hytönen–Palojärvi, particularly Theorem 29 and Lemmas 17, 21 and 30, imply the loose bound
+
+  |psi(x,chi)| <= 10^4 sqrt(x) [ln(Nx)]^3,  x >= 2,
+
+for every nonprincipal character modulo N. To check this simplification, put L = ln(Nx): their truncated-formula remainder is bounded by 500 sqrt(x)L^2, the truncated zero sum by 20 sqrt(x)L^2, and the remaining zero-pole terms by 1000 sqrt(x)L^3. Passing from a primitive character to an induced character contributes at most ln N ln x/ln 2, with the endpoint convention contributing at most (ln x)/2.
+
+Removing prime powers gives
+
+  |theta(x,chi)| <= 2·10^4 sqrt(x) [ln(Nx)]^3.
+
+Partial summation then bounds the unweighted prime sum by
+
+  2·10^4 sqrt(y)[ln(Ny)]^3
+       ·(1/ln 2 + 2/(ln 2)^2),
+
+which is smaller than the displayed 10^6 bound. [Explicit estimates used](https://arxiv.org/html/2003.01925).
+
+PROVED. If lambda < 1, Fourier inversion gives, for every starting point x and endpoint z,
+
+  |Pr[X_t=z] - 1/M| <= lambda^t.
+
+Thus
+
+  t_infty = ceil(ln(2M)/ln(1/lambda))
+
+makes every endpoint probability at least 1/(2M). Replacing M by N and lambda by a certified upper bound makes this usable without factoring N.
+
+At y = B,
+
+  ln(1/lambda) >= (1/2) ln B - O(ln n),
+
+so a sufficient length is
+
+  t_infty = (2+o(1)) ln N / ln B.
+
+For any fixed epsilon > 0, length
+
+  ceil((2+epsilon/2) ln N / ln B)
+
+also proves that every invertible class has a B-smooth positive representative below N^(2+epsilon), for sufficiently large N. Indeed, its probability is positive and its unreduced prime product is at most B^t.
+
+PROVED. The plain walk’s randomness cost is
+
+  r_plain = t log_2 pi(B) + O(t)
+          = (2+o(1)) log_2 N
+
+for this pointwise mixing length. Its ordered walk space has size
+
+  d^t = N^(2+o(1)),
+
+while its set of distinct residue endpoints is exactly G, hence has size M. Commutativity reduces ordered words to at most
+
+  binomial(d+t-1,t)
+
+prime multisets, but this is still N^(2+o(1)), not L_N[1/2,O(1)].
+
+PROVED. Hitting a set of density delta needs somewhat less mixing. For any S subset G,
+
+  |Pr[X_t in S] - delta|
+      <= lambda^t sqrt(M delta(1-delta)).
+
+Therefore it suffices that
+
+  t >= ln(2 sqrt(M(1-delta)/delta)) / ln(1/lambda).
+
+When delta = exp(-O(s)), this is
+
+  t = (1+o(1)) ln N / ln B,
+
+using approximately log_2 N random bits. The factor 2 in the question is a safe pointwise-mixing choice, not the minimum leading constant for this hitting calculation.
+
+PROVED. For the canonical smooth set
+
+  S_can = {x in G : the representative 1 <= x < N is B-smooth},
+
+all B-smooth integers below N are units, and
+
+  delta_can = Psi(N-1,B)/phi(N)
+            = exp(-(1/(2b)+o(1))s).
+
+Here phi(N)/N = 1-o(1), since
+
+  sum_{p|N} 1/p <= ln N/(B ln B) = o(1).
+
+The smooth-number estimate is the usual Dickman–de Bruijn asymptotic in this range. [Hildebrand–Tenenbaum](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0/).
+
+PROVED. This gives a randomized DSR constructor. Walk from gamma using positive primes, retain the unreduced product v, and test the canonical endpoint u. A hit gives
+
+  u = gamma v mod N,
+
+with u < N, v <= N^(2+epsilon), and w = 1. The factorisation of v is already known. Trial division tests and factors u in L_N[1/2,b+o(1)] time. Expected total time per target is consequently
+
+  L_N[1/2, b + 1/(2b) + o(1)].
+
+This constructs a two-sided representation. It does not construct smooth compression with v = w = 1.
+
+OPEN. For a canonical Gauss-split test, use its actual density delta_Gauss in the same formulas. A heuristic independence model for the two halves is not, by itself, a uniform density theorem.
+
+
+1(b). The proposed derandomisation tools
+
+PROVED. The endpoint test has a natural length-t, alphabet-d permutation branching program of width M:
+
+  state x in G;
+  on symbol p, replace x by xp mod N;
+  accept precisely the states in S_can.
+
+Thus its state memory is approximately log_2 N bits, not log_2 B bits. The terminal smoothness computation can be absorbed into the accepting-state labels. An explicit implementation uses O(log N) working space and L_N[1/2,O(1)] time.
+
+For a Gauss-split test, compute the split from the endpoint and label the accepting states accordingly; the multiplication layers still have width M. Encoding the prime choices as bits gives length O(t log d) = O(log N) and width at most M·poly(d) in a straightforward implementation.
+
+OPEN. This does not prove that the particular smoothness predicate requires width M. It identifies the width of the program to which the standard theorems actually apply. A substantially smaller representation of this predicate would itself be new useful structure.
+
+1(b)(i). AKS and Impagliazzo–Zuckerman amplification
+
+PROVED. These results reduce the randomness needed to repeat an existing randomized experiment. Expander-walk amplification retains an initial seed of length comparable to the original experiment’s randomness: amplifying constant success to error 2^(-k) uses O(r+k) bits in the optimal expander-walk version. It does not replace the original r = Theta(log N) bits by O(s). [Impagliazzo–Zuckerman, FOCS 1989, 248–253](https://www.cs.utexas.edu/~diz/pubs/recycle.pdf).
+
+PROVED. One can first repeat the rare-success smoothness experiment about delta^(-1) times to get constant success. Applying amplification afterwards still leaves the initial Theta(log N)-scale randomness. Enumerating those seeds costs N^{O(1)}.
+
+The AKS deterministic simulation is likewise parameterised by the space and randomness of the test. Our residue register already has Theta(log N) bits. Its LOGSPACE formulation does not mean logarithmic space in log N. [Ajtai–Komlós–Szemerédi, STOC 1987, 132–140](https://doi.org/10.1145/28395.28410).
+
+1(b)(ii). Hitting-set generators for walks and regular programs
+
+PROVED. A construction that starts a sampler at a uniform graph vertex already spends log M bits. Enumerating initial vertices costs M. Constructions starting at a fixed vertex must instead justify their interaction with the target set.
+
+The distinction between one and many accepting states is essential. Hoza–Pyne–Vadhan obtain an unbounded-width permutation-program PRG with seed
+
+  tilde-O(log d + log t · log(1/epsilon))
+
+for one accepting state. Our smooth set has about delta M accepting states. Summing individual endpoint errors requires
+
+  epsilon = O(delta/(delta M)) = O(1/M).
+
+The error parameter therefore restores log M = Theta(log N). [Hoza–Pyne–Vadhan, ITCS 2021](https://drops.dagstuhl.de/storage/00lipics/lipics-vol185-itcs2021/LIPIcs.ITCS.2021.7/LIPIcs.ITCS.2021.7.pdf).
+
+PROVED. The corresponding width-independent HSG results for regular programs also impose a single accepting state. The general-width HSG of Bogdanov–Hoza–Prakriya–Pyne retains a log w term. Substituting w = M misses the required seed budget. Merging all smooth accepting states into one vertex destroys the permutation/regular structure needed by these theorems. [Hitting Sets for Regular Branching Programs, CCC 2022](https://williamhoza.com/research/papers/BHPP/).
+
+1(b)(iii). Nisan, INW and Nisan–Zuckerman
+
+PROVED. Standard Nisan/INW instantiations for length ell, width W and error epsilon use seed bounds of the form
+
+  O(log ell · log(W ell/epsilon)).
+
+Here ell = O(log N), log W = Theta(log N), and it suffices to take epsilon < delta_can/4. The resulting seed bound is
+
+  O(log N log log N),
+
+with enumeration cost exp(O(log N log log N)). Enumerating the original coins is cheaper, but still N^{O(1)}. [Nisan, Combinatorica 12 (1992), 449–461](https://resources.mpi-inf.mpg.de/departments/d1/teaching/ws10/EG/Nisan_PRG.pdf), [INW, STOC 1994, 356–364](https://doi.org/10.1145/195058.195190).
+
+PROVED. Nisan–Zuckerman is relevant because the experiment uses only polynomially many random bits in its O(log N) space bound. It can reduce this to O(log N) seed bits, with suitably small error. That still means N^{O(1)} seeds, not exp(O(s)). [Nisan–Zuckerman, JCSS 52 (1996), 43–52](https://www.cs.utexas.edu/~diz/pubs/space.pdf).
+
+PROVED. Even the 2026 forward-backward analysis of INW for permutation programs gives
+
+  O((log W + log(1/epsilon)) log ell).
+
+At W = M it retains the same decisive log N dependence. I verified this stated bound in the authors’ ECCC record. [Cohen–Doron–Goldgraber, ECCC TR26-123](https://eccc.weizmann.ac.il/report/2026/123/).
+
+1(b)(iv). Small-bias spaces and Fourier shapes
+
+PROVED. Ordinary Boolean small bias fools parity tests. The functions
+
+  (p_1,...,p_t) -> chi(p_1)...chi(p_t)
+
+are Fourier shapes over the prime alphabet, but generally are not parities of the binary encodings of the prime indices.
+
+Gopalan–Kane–Meka’s Theorem 1.1 fools alphabet-d, length-t Fourier shapes with seed
+
+  O(log(dt/epsilon) [log log(dt/epsilon)]^2).
+
+This controls each endpoint character. It does not automatically fool an arbitrary function of the endpoint. [Gopalan–Kane–Meka, FOCS 2015](https://arxiv.org/pdf/1506.04350).
+
+PROVED. Use normalised Fourier coefficients
+
+  f_hat(chi) = E_{x uniform G} f(x) conjugate(chi(x)),
+  A(f) = sum_chi |f_hat(chi)|.
+
+If the generator changes every endpoint character expectation by at most epsilon, its error on 1_S is at most
+
+  epsilon A(1_S).
+
+Without additional information,
+
+  A(1_S) <= sqrt(M delta)
+
+by Parseval and Cauchy–Schwarz. Thus the generic sufficient precision is
+
+  epsilon < (1/4) sqrt(delta/M).
+
+Its logarithm is Theta(log N). The GKM seed bound consequently becomes O(log N (log log N)^2).
+
+PROVED. Even assuming A(1_S) = exp(O(s)), the quoted GKM theorem gives O(s (log s)^2), not O(s). That loss cannot be hidden inside L_N[1/2,O(1)]: its leading L constant would grow without bound.
+
+PROVED. A small Fourier-algebra norm would nevertheless solve the problem without that PRG: a constant number of ordinary prime-walk steps would suffice. See 1(c).
+
+1(b)(v). Koucký–Nimbhorkar–Pudlák and group products
+
+PROVED. The logarithmic seed statement in KNP fixes the finite group. Its constants depend on the group; it is not a width-independent statement for G of order approximately N. [Koucký–Nimbhorkar–Pudlák, STOC 2011, 263–272; authors’ preliminary text](https://iuuk.mff.cuni.cz/~koucky/papers/bwbp.pdf).
+
+PROVED. Later group-product analyses improve that dependence, but still retain group-size parameters. For example, De’s stated small-bias group-product bound contains
+
+  O(log t · (log |G| + log(1/epsilon))).
+
+Here log |G| = Theta(log N). Moreover, characterwise approximation still needs conversion into an error bound for the smoothness accepting set, exactly as above. [De, CCC 2011](https://ieeexplore.ieee.org/document/5959811/).
+
+1(b)(vi). Rozenman–Vadhan derandomised squaring
+
+PROVED. Derandomised squaring can improve expansion while controlling degree growth. Its typical spectral recurrence contains both a squared old eigenvalue and an auxiliary-expander error. Driving the final error down to the approximately M^(-1/2) scale required by a generic endpoint-set argument requires much greater precision than obtaining a constant spectral gap. [Rozenman–Vadhan, RANDOM 2005, 436–447](https://people.seas.harvard.edu/~salil/research/derand_squaring.pdf).
+
+PROVED. The following support calculation quantifies the obstruction. If a distribution nu on G has support at most m, then Parseval gives
+
+  sum_{chi != 1} |E_nu chi|^2 >= M/m - 1.
+
+Hence an upper bound beta for every nontrivial character bias forces
+
+  m >= M / (1 + (M-1) beta^2).
+
+At beta^2 approximately delta/M, this requires m approximately M. Consequently a generic “make every character small enough, then apply Cauchy–Schwarz to S” implementation cannot yield an L-sized list.
+
+1(b)(vii). Reingold, zig-zag products and universal exploration
+
+PROVED. Reingold gives deterministic logarithmic-space connectivity and polynomial-length universal exploration sequences in the number of graph vertices. Here that number is M approximately N. Its time guarantee is therefore N^{O(1)}, not polynomial in log N or L_N[1/2,O(1)]. A traversal visiting every vertex necessarily has length at least M-1. [Reingold, JACM 55 (2008), article 17](https://omereingold.wordpress.com/wp-content/uploads/2014/10/sl.pdf).
+
+PROVED. Such long paths also need separate attention to DSR’s height bounds: an unreduced product along a polynomial-in-N path is far too large. A connectivity theorem alone supplies neither the required running time nor the required short smooth certificate.
+
+
+1(c). What follows from spectral bounds alone?
+
+FALSE. “A small second eigenvalue and density delta guarantee that a prescribed short deterministic endpoint list hits S.”
+
+Counterexample: take the complete Cayley graph, with loops, on any finite abelian group G. Its nontrivial normalised eigenvalues are zero. Let T be the endpoint list, |T| <= m. Whenever
+
+  m + ceil(delta M) <= M,
+
+choose S of size ceil(delta M) inside G \ T. The list misses S despite perfect one-step mixing.
+
+The same adversary works for an adaptive membership-query algorithm: answer “outside S” on every queried endpoint, then put S in the unqueried portion.
+
+PROVED. This disproves a universal theorem using only spectrum and density. It does not disprove a theorem for the particular arithmetic set S_can. A successful proof for that set must use information beyond those two parameters. GRH could have consequences beyond the spectral estimate; the counterexample does not establish logical independence from GRH.
+
+PROVED. One precise sufficient additional property is a small Fourier-algebra norm. If
+
+  A(1_S)/delta <= exp(C s),
+
+then
+
+  |Pr[gamma p_1...p_k in S] - delta|
+      <= lambda^k (A(1_S)-delta).
+
+Since lambda <= exp(-(b/2+o(1))s), any fixed integer k > 2C/b gives a hit for sufficiently large N. Exhaustively enumerating those k-fold prime products costs L_N[1/2,kb+o(1)], before the smoothness-testing factor.
+
+OPEN. No bound of this strength for the canonical smooth set or canonical smooth-Gauss-split set follows from the verified GRH estimates. I do not know such a bound. Nor do I prove that it is false.
+
+PROVED. More generally, a pointwise minorant f <= 1_S with
+
+  E_uniform f >= delta/2,
+  A(f) <= exp(C s)
+
+would suffice. This makes “near-coset structure” precise enough to be useful. Approximation only in uniform average is insufficient unless one also controls the error under the enumerated distribution.
+
+PROVED. Another sufficient property is an efficient conditional-probability estimator. Put
+
+  h_j(x) = Pr[x p_1...p_j in S].
+
+Suppose these values can be approximated to additive error delta/(8t), for every j <= t and every queried x, in L_N[1/2,C] time. At each step choose the prime maximising the estimated continuation probability. Each choice loses at most twice the approximation error. Starting with h_t(gamma) >= delta/2, the final Boolean value remains positive. The total cost is at most L_N[1/2,b+C+o(1)].
+
+OPEN. GRH mixing estimates do not supply this estimator near the end of the walk, when the remaining walk is short.
+
+PROVED. The permitted note’s principal norm-certificate calculations check out. For an unweighted list W of size m and |S| = delta M:
+
+  Parseval alone certifies a hit iff m > M(1-delta).
+
+Indeed its error bound is
+
+  sqrt(m(1-m/M) · M delta(1-delta)),
+
+and comparing this with m delta gives the stated inequality.
+
+For m <= M/2 and delta <= 1/4, the sup-on-S template requires
+
+  m > (sqrt(3)/4) sqrt(M/delta),
+
+while the sup-on-W template requires
+
+  A(1_S) < delta(1+sqrt(2m)).
+
+These follow respectively from Parseval and the bounds
+
+  M^(-1) sum_{chi!=1} |W_hat(chi)| >= 1/2,
+  max_{chi!=1}|W_hat(chi)| >= sqrt(m/2),
+
+using unnormalised transforms here. They constrain those norm certificates, not every conceivable algorithm.
+
+
+1(d). Explicit boxes, orbits and the closest distribution theorems
+
+OPEN. I know no uniform GRH theorem guaranteeing that an explicit L_N[1/2,O(1)] list of bounded-height smooth multipliers hits S_can or the efficiently tested Gauss-split set for every admissible N and every prescribed q^H.
+
+An exact sufficient missing lemma is stated in section 6.
+
+PROVED. Smooth-number progression theorems do not directly supply this assertion. Soundararajan’s theorem, clarified by Harper, gives individual-class equidistribution in ranges including
+
+  modulus <= y^(4 sqrt(e)-epsilon),
+
+with additional conditions on x,y. At y = B, its allowable modulus has logarithm O(s), whereas ln N = n. This misses our modulus by an unbounded factor on the logarithmic scale. [Soundararajan](https://arxiv.org/abs/0707.0299), [Harper](https://arxiv.org/pdf/1103.2106).
+
+PROVED. Pascadi’s Theorem 1.5 reaches exponent 5/8-epsilon for smooth numbers:
+
+  sum_{Q<=x^(5/8-epsilon)}
+    |Psi(x,y;a,Q)-Psi_Q(x,y)/phi(Q)|
+       << Psi(x,y)/(ln x)^A,
+
+for fixed nonzero a and the stated smoothness range. This is an average over moduli, not an exception-free assertion for a prescribed N and a residue depending on N. [Pascadi, Theorem 1.5](https://arxiv.org/html/2505.00653v2).
+
+PROVED. A direct search through J = exp(O(s)) progression terms has range x approximately NJ = N^(1+o(1)), hence modulus N = x^(1-o(1)). That needs distribution near exponent 1 in this particular model. Exponent 5/8 only reaches x approximately N^(8/5), corresponding to approximately N^(3/5) progression terms. Even a stronger averaged theorem would still need exceptional-modulus and residue-uniformity issues resolved.
+
+This is a quantitative failure of the direct progression model, not a necessary condition for every possible constructor.
+
+PROVED. A short orbit has an additional elementary obstruction. For an orbit g^j,
+
+  chi(g^j) = chi(g)^j.
+
+A nontrivial character trivial on <g> has bias exactly one along the entire orbit. GRH generation by all small primes does not eliminate this obstruction for one chosen generator.
+
+PROVED. Bourgain–Glibichuk–Konyagin’s subgroup theorem gives additive-character cancellation for subgroups H of F_p^* satisfying |H| >= p^epsilon, for fixed epsilon > 0. The required lists in balanced large-prime components have size p^{o(1)}. One cannot substitute epsilon tending to zero without controlling the theorem’s constants. In addition, additive equidistribution of a subgroup is not yet a smoothness-correlation estimate. Composite-modulus and incomplete-orbit versions require further hypotheses. [BGK, JLMS 73 (2006), 380–398](https://doi.org/10.1112/S0024610706022721).
+
+OPEN. The missing assertion is therefore a uniform correlation or hitting theorem for the particular smoothness predicate along the proposed short family, not merely a large-order-element theorem or an orbit equidistribution slogan.
+
+
+2. Cosets and Bach/Ankeny certificates
+
+PROVED. For a coset C = gH of subgroup index k, exactly k multiplicative Fourier coefficients are nonzero, each of magnitude 1/k. Therefore
+
+  A(1_C) = 1.
+
+For a subgroup complement,
+
+  A(1_{G\H}) = 2(1-1/k) <= 2.
+
+These identities explain why character estimates can efficiently certify subgroup escape.
+
+PROVED. Arbitrary coset hitting has an index cost. Under GRH, a coset of index k contains a prime of size O(k^2(ln N)^2), with explicit refinements. It is not uniformly a polylogarithmic-prime assertion when k is large. [Lamzouri–Li–Soundararajan, Theorem 1.4](https://arxiv.org/pdf/1309.3595).
+
+FALSE. “A height-truncated smooth set is a subgroup or automatically a union of useful nontrivial cosets.”
+
+An explicit example is
+
+  N = 1009·1013 = 1022117, B = 2.
+
+Here min p|N = 1009 > 3(ln N)^2, and the canonical smooth set is
+
+  S = {2^j mod N : 0 <= j <= 19}.
+
+The order of 2 modulo N is 11592, and
+
+  2^20 mod N = 26459,
+
+so S is not closed under multiplication.
+
+In fact S contains no coset of any nontrivial subgroup. Any such coset would lie inside <2>. In the cyclic exponent group of order 11592, a nontrivial subgroup coset has equally spaced points and cannot fit inside the exponent interval [0,19]: its complementary gap would exceed half the circle. Thus every coset contained in S is a singleton.
+
+OPEN. This finite example does not establish a lower bound against every L-sized coset decomposition in the asymptotic DSR regime. I know no theorem excluding all useful coset decompositions or pointwise approximations there. Claiming such exclusion from “smoothness looks random” would be unjustified.
+
+PROVED. There is also a definitional distinction. The set of classes having some B-smooth representative below N^3 is all of G under the asymptotic GRH existence result. It is then one coset, G itself. That decomposition supplies no representative. The relevant efficiently tested sets are canonical smooth residues or canonical smooth Gauss splits; truncation or canonical selection destroys the semigroup’s automatic closure.
+
+
+3. Does allowing u <= N^3 help smooth compression?
+
+PROVED. It helps existence substantially. The positive-prime walk argument proves a smooth representative below N^(2+epsilon) in every invertible class. It does not prove that the canonical representative below N is smooth.
+
+For a concrete admissible example, take N = 1022117 and b = 1, so B is approximately 415.55. With q = 2 and H = 160,
+
+  gamma = 96764 = 2^2·17·1423
+
+is not B-smooth. But
+
+  gamma + 8N = 8273700
+             = 2^2·3^2·5^2·29·317
+
+is B-smooth. These numerical identities were checked directly.
+
+PROVED. The extra height does not automatically give a fast constructor. Searching
+
+  gamma + kN <= N^3
+
+allows approximately N^2 values of k. A density or existence theorem for that long progression does not identify a hit among an L-sized explicitly searched subset.
+
+PROVED. The Coppersmith/Boneh connection is real but conditional on additional structure. For every small prime p,
+
+  p | gamma+kN
+    iff k = -gamma N^(-1) mod p.
+
+Thus the unknown k satisfies many possible CRT agreements. Boneh’s decoder finds integers with sufficiently many agreements; it does not assert that smoothness always meets the decoding threshold. His equal-size-modulus threshold has the form
+
+  agreements > sqrt(k_0 m · log p_max/log p_min),
+
+where the search bound is comparable to a product of k_0 moduli. [Boneh, JCSS 64 (2002), 768–784](https://crypto.stanford.edu/~dabo/pubs/abstracts/CRTdecode.html).
+
+PROVED. The full-factor-base parameter substitution illustrates the gap. For moduli p in [B/2,B],
+
+  m approximately B/ln B,
+  k_0 approximately 2 ln N/ln B
+
+when k ranges below N^2. The decoder threshold is approximately
+
+  sqrt(2B ln N)/ln B.
+
+An integer below N^3 can have at most approximately
+
+  3 ln N/ln B
+
+distinct prime divisors from that dyadic interval. The available agreement count is smaller by approximately sqrt(B/ln N). Smooth numbers concentrated on smaller primes supply no missing guarantee.
+
+This calculation concerns that CRT-decoding application; it is not a lower bound for all lattice methods.
+
+PROVED. Coppersmith’s small-root theorems require a small solution of a specified polynomial equation. The condition “gamma+kN is B-smooth” is not such an equation unless substantial information about the factors or exponents has already been supplied. Increasing the permitted height does not supply that information. [Coppersmith, Journal of Cryptology 10 (1997), 233–260](https://link.springer.com/article/10.1007/s001459900030).
+
+OPEN. A deterministic constructor for smooth numbers in these long prescribed progressions, with cost depending subexponentially on log N rather than on the progression length, would be a substantive new ingredient.
+
+
+4. Literature and possible transfers
+
+PROVED, with verification scope stated below. The established successes use more structure than an arbitrary sparse accepting set.
+
+Ankeny, “The least quadratic non residue,” Annals of Mathematics 55 (1952), 65–72, and Bach, “Explicit bounds for primality testing and related problems,” Mathematics of Computation 55 (1990), 355–380, concern subgroup escape and related character certificates. I verified their relevant bounds through the primary research paper of Lamzouri–Li–Soundararajan; the original Bach PDF was inaccessible in this session. The latter paper explicitly records Bach’s 2(ln N)^2 bound and proves refinements. [Verified source](https://arxiv.org/pdf/1309.3595).
+
+PROVED. Shoup, “Searching for Primitive Roots in Finite Fields,” Mathematics of Computation 58 (1992), 369–380, constructs small candidate sets containing primitive roots in specified settings and improves GRH least-primitive-root bounds. I verified the author’s abstract and publication information. A candidate list containing a primitive root must be distinguished from efficiently identifying one without a factorisation of the group order. Its subgroup structure does not transfer automatically to smoothness. [Author’s paper](https://www.shoup.net/papers/primroots.pdf).
+
+PROVED. Huang, “Generalized Riemann hypothesis and factoring polynomials over finite fields,” Journal of Algorithms 12 (1991), 464–481, treats integral polynomials whose roots generate an abelian extension, with the stated discriminant restriction. I verified the publisher’s theorem summary. This is not a general polynomial-factoring theorem. [Huang](https://www.sciencedirect.com/science/article/pii/019667749190014P).
+
+PROVED. Rónyai, “Galois Groups and Factoring Polynomials over Finite Fields,” SIAM Journal on Discrete Mathematics 5 (1992), 345–365, develops algorithms exploiting Galois structure. I verified the original bibliographic record and the description in Ivanyos–Karpinski–Saxena’s paper; I did not independently audit Rónyai’s full proof. [Original record](https://epubs.siam.org/doi/abs/10.1137/0405026).
+
+PROVED. Evdokimov, ANTS 1994, LNCS 877, 209–219, gives GRH deterministic finite-field polynomial factoring in
+
+  (D^(log D) log Q)^{O(1)}
+
+time for degree D over a field of size Q. I verified this bound in the original publisher abstract. Its quasipolynomial dependence is on the polynomial degree, an explicitly represented algebraic dimension. No reduction of DSR to a suitable small-dimensional instance is supplied. [Evdokimov](https://link.springer.com/chapter/10.1007/3-540-58691-1_58).
+
+PROVED. Ivanyos–Karpinski–Saxena’s m-scheme framework organises these algebraic methods and proves additional special cases. Their paper explicitly isolates the use of GRH for extracting roots/nonresidues in finite fields. I verified its introduction and stated results. These methods need an algebraic structure that can be refined or split; the canonical smooth accepting set has no corresponding established structure. [Schemes for Deterministic Polynomial Factoring](https://arxiv.org/abs/0804.1974).
+
+OPEN. General deterministic polynomial-time finite-field polynomial factoring under GRH remains outside the established results verified here. I do not treat recent unverified claims as theorems.
+
+PROVED. Expander path-finding is relevant as an analogy, not a hardness reduction. Cayley and isogeny hash constructions separate rapid random-walk mixing from finding short prescribed paths. Some graph families have specialised constructive attacks, so expansion alone supports neither hardness nor an efficient path algorithm. The cryptographic connection is explicitly discussed in the research literature. [Hashing by Walking Over Expanders](https://link.springer.com/chapter/10.1007/978-981-96-1218-5_19).
+
+PROVED, conditional on an additional complexity assumption. An Impagliazzo–Wigderson transfer does work quantitatively.
+
+Assume there is a function in E with Boolean circuit complexity at least 2^(epsilon m) at every sufficiently large input length m. IW then supplies generators with O(log T) seed for size-T computations, constructible with polynomial overhead in T. [Impagliazzo–Wigderson, STOC 1997, 220–229](https://www.math.ias.edu/~avi/PUBLICATIONS/MYPAPERS/IW97/proc.pdf).
+
+Apply this to the GRH randomized DSR experiment after enough repetitions to obtain constant success. Its total bounded running time is
+
+  T = exp(O(s)).
+
+The success predicate for a complete transcript has circuit size polynomial in T. Enumerating all IW seeds costs T^{O(1)}, and at least one transcript succeeds because the generator preserves positive acceptance probability. The output is independently checked.
+
+Thus
+
+  GRH + the IW circuit-hardness assumption
+      => DSR_(1/2)(b,c) for some finite c,
+
+with seed length O(log T) = O(s).
+
+OPEN. GRH does not presently furnish the required circuit lower bound. This is a valid stronger conditional derandomisation, not a derivation from GRH alone.
+
+
+5. DSR, deterministic factoring and the weaker relation target
+
+PROVED. The diagonal-dominance argument is correct.
+
+For each prime q <= B, define the prime-coordinate relation row
+
+  rho_q = H e_q + e(w_q) + e(v_q) - e(u_q),
+
+including signs in a separate -1 coordinate. Its correction vector has l1 norm at most
+
+  Omega(|w_q|)+Omega(|v_q|)+Omega(|u_q|)
+      <= 7 log_2 N
+      < H.
+
+Writing the prime block as H I + E, every row therefore has diagonal magnitude strictly greater than the sum of its off-diagonal magnitudes. It is nonsingular. Adding the valid relation 2 e_(-1) gives a full-rank relation lattice.
+
+PROVED. Let D be the absolute determinant. The adjugate identity implies that D times each coordinate vector belongs to the row lattice. Hence
+
+  q^D = 1 mod N
+
+for every factor-base prime q. Under ERH, the primes below 2(ln N)^2 generate G, and are contained in the factor base for sufficiently large N. Therefore
+
+  lambda(N) | D.
+
+In fact phi(N) divides the full lattice index once evaluation onto G is established, but the Carmichael multiple is sufficient.
+
+PROVED. Miller’s exponent-based splitting then works. Write D = 2^s D_odd and inspect the squaring chains of the small bases. For an odd N with at least two prime-power CRT components, the bases whose chains fail to separate components lie in a proper subgroup: compare the top 2-primary characters of two components, or use the unique component with larger 2-adic exponent. ERH supplies a small base outside that subgroup. A gcd of an intermediate value minus 1 with N gives a proper factor.
+
+This uses the known exponent D; it does not replace D by N-1.
+
+PROVED. There are pi(B) = L_N[alpha,b+o(1)] DSR calls. The supply cost is
+
+  L_N[alpha,b+c+o(1)].
+
+A conservative deterministic CRT determinant computation costs
+
+  L_N[alpha,(omega+1)b+o(1)].
+
+Preprocessing and recursive splitting add only polynomial-in-log-N factors to the overall bound. Thus the stated theorem follows:
+
+  ERH + DSR_alpha(b,c)
+    => deterministic complete factoring in
+       L_N[alpha,max(b+c,(omega+1)b)+o(1)].
+
+OPEN. The reverse implication is not established. Knowing the factorisation of N gives phi(N), lambda(N), CRT arithmetic and modular inversion. It does not immediately find short products of small primes representing a prescribed residue.
+
+Reducing H modulo ord_N(q) helps only when that order is small enough. Even knowing the group decomposition and its order leaves the prescribed short smooth-representation problem. This observation is not a proof that no reduction from deterministic factoring exists.
+
+PROVED. DZ needs less than full-rank relation supply. Let L_c consist of certified relation rows. It suffices that
+
+  e_r belongs to span_Q(L_c)
+
+for every prime r < 2(ln N)^2, with coefficients of affordable bit complexity. Clearing denominators gives a common positive D with r^D = 1 mod N for these generators. Hence lambda(N) divides D and Miller splits N.
+
+PROVED. Merely having full projection rank on the small-prime columns is insufficient: the other coordinates must cancel. Likewise, obtaining n successful unlabelled splits does not guarantee n independent relations. Repeated trivial targets yield zero rows. The specified Wronskian labels in DS-T are a substantive rank-forcing hypothesis, not decorative target names.
+
+PROVED. Consequently a weaker useful constructor would produce affordable certified relations pinning only the ERH generating coordinates. It need not produce a diagonally dominant row for every prime up to B.
+
+FALSE under one literal finite-N interpretation. If B is fixed exactly as exp(b sqrt(ln N ln ln N)) for every N, DSR need not even have outputs for sufficiently small b.
+
+Take
+
+  N = 1022117 = 1009·1013,
+  b = ln 2 / sqrt(ln N ln ln N) approximately 0.11495754,
+
+so B = 2 exactly. This N satisfies the preprocessing conditions. Here H = 160 and ord_N(2) = 11592.
+
+Any possible output has
+
+  |u| = 2^i, |v| = 2^j, |w| = 2^k,
+  0 <= i,j <= 59, 0 <= k <= 19.
+
+Its congruence would imply
+
+  2^(160+k+j-i) = ±1 mod N,
+
+where the exponent lies between 101 and 238. Squaring would make ord_N(2) divide a positive integer at most 476, a contradiction.
+
+The order certificate is directly checkable: 2^11592 = 1 mod N, while the powers with exponents 11592/r are not 1 for r = 2,3,7,23, the prime divisors of 11592.
+
+PROVED. This finite example does not refute the intended asymptotic hypothesis with an allowed finite adjustment of B. It does show that “every N” and an exact formula for B require compatible finite conventions. Extra running time cannot repair nonexistent witnesses.
+
+
+6. Assessment and the most promising missing lemma
+
+HEURISTIC. For the intended asymptotic DSR_(1/2), with suitable fixed constants and valid finite normalisation, my probability that GRH plus adaptations of presently established techniques suffices is about 10%. My probability that the listed general-purpose PRGs alone close the gap, without a new arithmetic input, is lower. These are subjective assessments, not mathematical bounds.
+
+OPEN. The single missing lemma I would prioritise is a uniform prime-product/friability correlation estimate.
+
+For every fixed b > 0, find a fixed integer k = k(b) and constant eta_b > 0 such that, for every sufficiently large admissible N and every prime q <= B,
+
+  sum_{p_1,...,p_k <= B prime}
+    1_{S_can}( q^H p_1...p_k mod N )
+
+      >= eta_b · pi(B)^k · Psi(N-1,B)/phi(N).
+
+This asks for a specified, directly enumerable family, rather than an unspecified hitting set.
+
+HEURISTIC. Its expected count has L exponent
+
+  kb - 1/(2b),
+
+so the elementary density threshold is k > 1/(2b^2). That calculation is only motivation; it does not prove the uniform lower bound.
+
+PROVED. The lemma would give DSR by exhaustive enumeration:
+
+  u = canonical representative of q^H p_1...p_k,
+  v = p_1...p_k,
+  w = 1.
+
+Then u < N and v <= B^k < N^3 for sufficiently large N. Trial division supplies the required factorisation, and total cost is
+
+  L_N[1/2,(k+1)b+o(1)].
+
+OPEN. GRH controls each prime character sum. The missing step is controlling its correlation with the canonical smoothness indicator strongly enough for this short list, uniformly in N and the prescribed target. None of the verified spectral, progression, subgroup-sum or branching-program results supplies that step.
