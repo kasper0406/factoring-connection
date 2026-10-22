@@ -74,15 +74,19 @@ everything except relation supply is now proved, and the missing piece is one ex
      discrete logarithms, and no hardness result.
    - The nearest GRH-derandomization success is Evdokimov's quasi-polynomial deterministic polynomial factoring over
      finite fields (1994).
-7. **Experiments [§8; toy sizes, correctness and mechanism only].**
-   - E1 (seedless deterministic cubic NFS + XK-Z): every output relation verified exactly. Whenever PIN was reached,
-     Miller split N.
-   - PIN often failed, by the predicted mechanism: rare primes never occur, and fixed boxes run out.
-   - E2: deterministic orbit targets need 10–19n rows for full rank, against exactly n for random labels.
-   - E3: the orbit yield equals the random yield on average but is over-dispersed (variance/mean 4.3; P3c failed).
-     Post hoc, 96% of consecutive orbit hits are the trivially derived split of the previous target, i.e. duplicate
-     rows.
-   - E4: the dominance design (DD1) forced full rank and split N in every completed instance.
+7. **Experiments [§8; toy sizes, correctness and mechanism only; 4 pre-registered predictions failed, all
+   diagnosed].**
+   - **E1** (seedless deterministic cubic NFS + XK-Z): all 50 780 output relations verified exactly. PIN ⇒ Miller
+     split N in 6/6.
+   - PIN itself was reached in only 6/20 instances (P1c failed). The cause is the predicted mechanism: rare Q₀ primes
+     never occur, and fixed boxes run out. Miller still split all 20 instances at some stage.
+   - **E2:** deterministic orbit targets need 10–19n rows for full rank, against exactly n for random labels.
+   - **E3:** the orbit yield equals the random yield on average but is over-dispersed (variance/mean 4.3; P3c
+     failed). Post hoc, 96% of consecutive orbit hits are trivially derived duplicates.
+   - **E4:** the dominance design (DD1) forced full rank and split N in 25/25 instances (40–56 bits).
+   - Tries per prime are heavy-tailed (P4d failed: mean 30.7 against a window of 3.65–14.6 at 40 bits). Post hoc, the
+     targets a·w inherit the target's own lattice structure, so pointwise cost per prescribed target is the visible
+     weak point, exactly where DSR sits.
 
 **Probability assessment (subjective, not a mathematical claim).** Proving DSR, or an equivalent constructive
 statement, with known techniques: ≲ 5% (ours); codex ≈ 10% for deterministic L[1/2, O(1)] under GRH.
@@ -674,6 +678,7 @@ Pre-registration: `notes/zroute_prereg.md` (`986f17e`; addendum A1 `e66204c`). S
 - (1) The E4 run was queued behind E1 by a waiter process that died. It was restarted by hand after E1 finished,
   with identical code and config.
 - (2) All E1 fields turned out to have signature (1, 1) (r_U = 1), so P1e tested only that case.
+- (3) E4's D computation (below).
 - No other deviations.
 
 **E1: seedless deterministic NFS Z route (base-m cubic; 20 instances: 8 × 36-bit and 8 × 40-bit semiprimes, 4 ×
@@ -681,7 +686,7 @@ Pre-registration: `notes/zroute_prereg.md` (`986f17e`; addendum A1 `e66204c`). S
 
 | prediction | result | verdict |
 |---|---|---|
-| P1a: 0 verification failures, 0 non-unit kernel vectors, 0 undecided certifications | 0 / 0 / 0 over 47 stages (tens of thousands of output relations, each checked ev = 1 exactly) | **pass** |
+| P1a: 0 verification failures, 0 non-unit kernel vectors, 0 undecided certifications | 0 / 0 / 0 over 47 stages (50 780 output relations, each checked ev = 1 exactly) | **pass** |
 | P1b: output rank = raw rational rank in ≥ 90% of stages | 46/47 | **pass** |
 | P1c: PIN reached in ≥ 16/20 | **6/20** (36-bit: 5/8; 40-bit: 1/8; 42-bit tri: 0/4) | **FAIL** |
 | P1d: PIN ⇒ Miller splits | 6/6 (largest base used: 3) | **pass** |
@@ -725,9 +730,30 @@ Pre-registration: `notes/zroute_prereg.md` (`986f17e`; addendum A1 `e66204c`). S
     give the identical row (§5.3).
   - So the orbit's hits come in runs of duplicates: same mean, inflated variance, fewer independent relations.
 
-**E4: deterministic rank forcing by dominance (Lemma DD1).**
+**E4: deterministic rank forcing by dominance (Lemma DD1; addendum A1; 10 × 40-, 10 × 48-, 5 × 56-bit semiprimes).**
 
-(results filled below)
+| prediction | result | verdict |
+|---|---|---|
+| P4a: complete ⇒ strictly dominant and rank n | 25/25 | **pass** |
+| P4b: complete ⇒ Miller splits | 25/25 | **pass** |
+| P4c: every prime gets a row (≥ 9/10 at 40, 48; ≥ 4/5 at 56) | 10/10, 10/10, 5/5 | **pass** |
+| P4d: mean tries per prime at 40 bits ∈ [0.5/δ, 2/δ] = [3.65, 14.6] (δ = 0.137 from E3) | **30.7** | **FAIL** |
+
+- Tries per prime are heavy-tailed. Medians of the per-instance medians: 17 / 47 / 153 at 40 / 48 / 56 bits. Means:
+  30.7 / 80.1 / 273.9. Maxima: 6555 / 1455 / 2949.
+- *Post hoc (`src/zroute/posthoc_e4.py`; one 40-bit instance; labelled).*
+  - Per-prime median 14 against 1/δ ≈ 7.3; 35 of 242 primes needed > 50 tries.
+  - Of 5 569 failed attempts examined, 1 674 (30%) had Gauss-reduced vector equal to the representation inherited
+    from the target's own lattice vector, (wu₀, v₀)/g or (u₀, v₀/w).
+  - So the multiplier family a·w (small w) is correlated with the target's own lattice. A bad target stays bad for many
+    w. This explains part of the tail, not all of it.
+  - Mechanistic lesson for DSR: the obvious explicit constructor "a·w for w = 1, 2, …" behaves worse than independent
+    random targets, and pointwise cost per target is heavy-tailed.
+- *Disclosed deviation (3).* The first E4 run was stopped at 48-bit seed 1 because flint's HNF in `pin_and_exponent`
+  took ≈ 20 min on the 327 × 327 dominance matrix (the relation search took 0.6 s). I added a fast path: for a square,
+  nonsingular input, D := |det|, a valid multiple of the lattice index. E4 was rerun in full.
+  - Rows, tries and completeness are identical on the overlapping instances (`experiments/raw/zroute_e4_hnf_partial.jsonl`).
+  - The predictions do not depend on the D computation.
 
 ## 9. Reviews
 

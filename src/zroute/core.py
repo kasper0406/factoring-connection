@@ -432,6 +432,14 @@ def pin_and_exponent(fb: FactorBase, rels: List[List[int]], qmax: int) -> Dict:
     q (and D is a multiple of [Z^n : L] when rk = n).  So q^D = 1 (mod N) for every pinned q (Prop PIN)."""
     n = fb.n
     rels = rels + [[2] + [0] * (n - 1)]
+    if len(rels) == n:
+        # square input (e.g. Lemma DD1): if nonsingular, D := |det| is a multiple of the index [Z^n : L]
+        # (fast path added after E4's 48-bit HNF took ~20 min; disclosed deviation)
+        Dm = int(flint.fmpz_mat(rels).det())
+        if Dm != 0:
+            small = [q for q in fb.primes if q <= qmax]
+            return {"rank": n, "n": n, "pinned": len(small), "n_small": len(small), "PIN": True, "D": abs(Dm),
+                    "full": True, "unpinned": []}
     H = flint.fmpz_mat(rels).hnf()
     Hr = [[int(x) for x in r] for r in H.tolist() if any(int(x) for x in r)]
     rk = len(Hr)
