@@ -30,8 +30,15 @@ NAMES = [f"{a}_{b}_{s}" for a, b in PAIRS for s in STATS]
 Z_TOY = 4.5
 
 
-def toy3_stats(N: int) -> Dict[str, int]:
+SHIFT = {"one": lambda N: 1, "half": lambda N: (N - 1) // 2}
+
+
+def toy3_stats(N: int, shift: str = "one") -> Dict[str, int]:
+    """shift "one" is the registered run.  POST HOC (codex_2 finding 9): with shift 1 and third argument 1 the sum
+    telescopes to classical Dedekind sums, F3(1;a,b,1) = F3(0;a,b,1) - F2(0;a,b); shift "half" = (N-1)/2 avoids the
+    short telescoping (it would need j = n c^{-1} = (N-1)/2 steps)."""
     args = arguments(N)
+    sh = SHIFT[shift](N)
     out = {}
     for a_name, b_name in PAIRS:
         a, b = args[a_name], args[b_name]
@@ -39,7 +46,7 @@ def toy3_stats(N: int) -> Dict[str, int]:
             for s in STATS:
                 out[f"{a_name}_{b_name}_{s}"] = 0
             continue
-        S3 = fd_scaled(1, [a, b, 1], N)            # N^3 s
+        S3 = fd_scaled(sh, [a, b, 1], N)            # N^3 s
         Z3 = S3 // (N * N)                         # floor(N s)
         out[f"{a_name}_{b_name}_S3mod7"] = S3 % 7
         out[f"{a_name}_{b_name}_S3bits"] = abs(S3).bit_length()
@@ -55,11 +62,11 @@ def population(n: int) -> List[tuple]:
     return [(p, q) for i, p in enumerate(ps) for q in ps[i + 1:] if (p * q) % 4 == 1]
 
 
-def _work(pq):
-    p, q = pq
+def _work(job):
+    (p, q), shift = job
     N = p * q
     t0 = time.perf_counter()
-    st = toy3_stats(N)
+    st = toy3_stats(N, shift)
     return {"N": N, "p": p, "q": q, "eps": 1 if p % 4 == 1 else -1, "tb": int(8 * p >= 7 * q),
             "x": [st[k] for k in NAMES], "t": time.perf_counter() - t0}
 
@@ -68,13 +75,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, nargs="+", default=[20, 22])
     ap.add_argument("--workers", type=int, default=3)
+    ap.add_argument("--shift", choices=sorted(SHIFT), default="one")
     a = ap.parse_args(argv)
     for n in a.n:
         pop = population(n)
         with Pool(a.workers) as pool:
-            recs = pool.map(_work, pop, chunksize=8)
+            recs = pool.map(_work, [(pq, a.shift) for pq in pop], chunksize=8)
         os.makedirs("experiments/raw", exist_ok=True)
-        with open(f"experiments/raw/classE_toy3_n{n}.jsonl", "w") as fh:
+        with open(f"experiments/raw/classE_toy3{'' if a.shift == 'one' else '_' + a.shift}_n{n}.jsonl", "w") as fh:
             for r in recs:
                 fh.write(json.dumps({k: (v if k != "t" else round(v, 4)) for k, v in r.items()}) + "\n")
         X = np.array([r["x"] for r in recs], dtype=np.float64)
@@ -93,7 +101,7 @@ def main(argv=None):
             print(n, tgt, "instances", len(recs), "max|z|", res["stats"][tgt]["max_abs_z"], "mean z2",
                   res["stats"][tgt]["mean_z2"], "hits", res["stats"][tgt]["hits"], flush=True)
         os.makedirs("experiments/analysis", exist_ok=True)
-        with open(f"experiments/analysis/classE_toy3_n{n}.json", "w") as fh:
+        with open(f"experiments/analysis/classE_toy3{'' if a.shift == 'one' else '_' + a.shift}_n{n}.json", "w") as fh:
             json.dump(res, fh, indent=1)
 
 

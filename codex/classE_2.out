@@ -1,0 +1,296 @@
+**Recommendation: MAJOR REVISION.**
+
+The elementary identities and reported main-battery z-scores largely check out. Several headline interpretations do not: the Heegner floor is false as stated, F-SQ controls less path information than advertised, and every tested “shifted three-dimensional” toy sum reduces to classical Dedekind sums.
+
+The [full referee report](classE_2_report.md) and reproducible audit programs are saved in the scratch directory. This review concerns the v1 text initially read; the notes were being edited during the audit.
+
+1. **[MAJOR] Prop SPLIT is correct; the character-exhaustion interpretation is not (§0, §1.3, §4.1).**
+
+   For proper indices \(0\le k<r\),
+   \[
+   (-1)^ks_kr_{k+1}\equiv as_k^2\pmod N,\qquad
+   \frac{N}{a_{k+1}+2}\le s_kr_{k+1}<N
+   \]
+   are correct. They prove the stated Legendre-symbol identity, not that every computable path statistic accesses the factors through only two mechanisms.
+
+   There are explicit higher-character analogues. For every integer \(d\ge2\),
+   \[
+   W_{k,d}=(-1)^ks_k^{d-1}r_{k+1}\equiv as_k^d\pmod N.
+   \]
+   Thus every local character of order dividing \(d\) satisfies
+   \(\chi(W_{k,d})=\chi(a)\) at unit steps. If \(a=x^d\bmod N\) with a known root, this supplies a publicly computable power certificate. In particular, `fermres` has a known **fourth** root throughout \(N\equiv1\bmod4\).
+
+   These certificates do not establish an efficient new factor leak. They do invalidate the unrestricted claim that no higher-character constraints exist. Evaluating a higher character at an unknown prime is a separate computational problem.
+
+   There are argument-specific quadratic identities too. For \(a=r=\lfloor\sqrt N\rfloor\), \(D=N-r^2\),
+   \[
+   r_{k+1}^2+Ds_k^2
+   =N\big((s_k-rh_k)^2+Dh_k^2\big),
+   \qquad (-D|p)=(-D|q)=1.
+   \]
+   This already appears in cx1 §1.2.
+
+   **Fix:** retain the identities; withdraw “only two exact ways,” the exhaustive character classification, and the asserted algorithmic domination by CFRAC. Square discriminant means ordinary nonsquare quadratic-order genus theory is inapplicable. It is not a computational lower bound.
+
+2. **[MAJOR] “Relations of size \(\sim N\)” needs hypotheses, and the principal-cycle comparison drops a sign (§1.3).**
+
+   The lower bound depends on the next digit. For \(a=\lfloor\sqrt N\rfloor\), the \(k=0\) product equals \(a\sim\sqrt N\), with a deterministically large first quotient. Random-numerator digit tails cannot be transferred to these structured arguments.
+
+   Magnitude alone also does not determine smoothness or relation yield: square factors, separately accessible factors \(s_k,r_{k+1}\), and correlations matter. No strict factoring-complexity comparison with CFRAC follows.
+
+   More concretely, the principal norm identity gives
+   \[
+   ((-1)^iQ_i|p)=1,\qquad (Q_i|p)=(-1|p)^i,
+   \]
+   **not** \((Q_i|p)=1\) individually. For the admissible product
+   \(N=103\cdot107=11021\), \(Q_1=205\), and
+   \((205|103)=-1\).
+
+   **Fix:** restore the sign, make relation-size claims conditional on digit bounds, and label smoothness/runtime comparisons heuristic.
+
+3. **[MAJOR] F-SQ does not cover arbitrary costs of the advertised full prefix (§2.2).**
+
+   Put \(A=r+t\). If \(u_j/v_j\) is a convergent to \(s'/r\), its corresponding full convergent is
+   \[
+   \frac{v_j}{Av_j+u_j}.
+   \]
+   F-SQ retains \(r\bmod m_0\), \(t\), and the stopped tail word. It does not retain \(A\) itself and therefore cannot evaluate arbitrary first-digit costs \(F(A,\gamma)\).
+
+   A concrete collision occurs within \(I=[192,256)\):
+   \[
+   N=193\cdot229=44197,\qquad N=197\cdot233=45901.
+   \]
+   With \(m_0=1,Q=2\), both have \(t=0\) and stopped tail word \([2]\), but first digits 210 and 214. Exact remainder residues also need additional labels such as \(N\bmod m_0\).
+
+   **Correct statement:** with \(X=P^2\), deterministic ensemble-scale parameters, and a fixed bounded function of
+   \[
+   (r\bmod m_0,\ t,\ \mathcal P_Q(s'/r)),
+   \]
+   excluding the overshooting digit, the epsilon-class difference is
+   \[
+   O(m_0Q^2X^{-1/6}\log X).
+   \]
+   For fixed \(m_0\), \(Q\le X^{1/12-\delta}\) controls this **tail word and the matrix states reconstructed using \(A\bmod m_0\)** at full denominators of order \(X^{7/12-\delta}\). It does not control arbitrary first-digit costs or unrestricted additional dependence on \(N\).
+
+   Under the draft’s weaker tb exponent, the corresponding full-denominator scale is only \(X^{13/24-\delta}\).
+
+   Moreover, the forward half of the tail fraction extends to tail denominators about \(X^{1/4}\), well beyond the useful \(X^{1/12}\) cutoff. The inverse tail is not the only uncovered portion.
+
+4. **[MINOR] The large-sieve calculation survives; its proof needs precise bookkeeping and a verified reference (§2.2).**
+
+   The comparison data form a step function with \(O(m_0Q^2)\) pieces. Farey order \(2Q\) is sufficient. The map \(\{2\delta\}\) traverses the interval twice; the displayed explicit piece count misses an inessential factor.
+
+   The perturbation \(\delta^2/r\le1/r\) creates exceptional intervals of width \(O(1/(m_0P))\) in \(y\), including wraparound and displaced \(t\)-jumps. Agreement requires distance from boundaries, not merely sufficiently large cylinder length.
+
+   With \(M=\pi(I)\), the centered double large sieve gives
+   \[
+   |S_h|^2\ll(1+hP/m_0)M^2(1+m_0/h)^2.
+   \]
+   Absorbing the centering phase into the second weight is valid. The spacing bounds correctly count close **pairs**. Normalizing after taking square roots gives
+   \[
+   |E e(h\sqrt N/m_0)|
+   \ll \log P\,P^{-1/2}
+   \left(\sqrt{h/m_0}+\sqrt{m_0/h}\right).
+   \]
+   Erdős–Turán then yields
+   \[
+   D_c\ll H^{-1}+\log P\,P^{-1/2}
+   \left(\sqrt{H/m_0}+\sqrt{m_0}\right).
+   \]
+   Taking \(H=P^{2/3}\), \(m_0\le P^{1/3}\), gives the claimed \(X^{-1/6}\log X\) discrepancy.
+
+   For epsilon classes, normalize by \(M_u(M_u-1)\), where \(M_u\sim M/2\) counts primes \(u\bmod4\). Removing the diagonal costs \(O(\log P/P)\). Thus the conditionings are harmless here, with these justifications.
+
+   **Exact reference:** Bombieri–Iwaniec, *On the order of \(\zeta(1/2+it)\)*, Ann. Scuola Norm. Sup. Pisa (4) **13** (1986), 449–472, **Lemma 2.4, pp. 452–453**. [Original paper](https://numdam.org/item/ASNSP_1986_4_13_3_449_0.pdf).
+
+   **Fix:** quote this inequality and delete “Iwaniec–Kowalski §7.?” I did not verify a matching numbered IK statement and will not supply a guessed one.
+
+5. **[MAJOR] The tb approximation is repairable but not proved by the supplied sentence (§2.2).**
+
+   For unsorted primes, the region is
+   \[
+   |\log p_1-\log p_2|\le\log(8/7).
+   \]
+   A discontinuous indicator has no uniform continuous trigonometric approximation. Lebesgue \(L^1\) error does not automatically control the discrete prime-pair average.
+
+   A valid repair uses explicit majorants/minorants or smoothing with controlled tails. A boundary strip of width \(\eta\) contains at most \(O(M(P\eta+1))\) prime pairs, giving normalized mass
+   \(O(\log P(\eta+1/P))\). Fourier terms factor into bounded prime weights. Even a crude coefficient sum \(O(T)\) recovers \(X^{-1/12+o(1)}\) with \(T=P^{1/6}\).
+
+   **Fix:** supply the approximation lemma, discrete error, coefficient norm and target-class normalization. Retain the weaker coverage from finding 3.
+
+6. **[FATAL] The Heegner floor for “every bounded shape statistic” is false (§4.2, §0).**
+
+   Weak equidistribution is not total-variation indistinguishability. At fixed discriminant, distinct genus cosets have disjoint exact supports. The stated shape coordinates recover \(a,b\), hence \(c\); an arbitrary bounded function can recognize a genus perfectly.
+
+   Coefficient residues are also not automatically genus-independent. When \(-4\) is a genus discriminant factor, for odd represented leading coefficient,
+   \[
+   \chi_{-4}([a,b,c])=(-4|a)=(-1|a).
+   \]
+   A residue modulo 4 can therefore carry the prescribed genus sign.
+
+   **Fix:** withdraw the claimed universal floor. State convergence against fixed continuous or explicitly regular geometric tests, retaining admissible local/genus conditions and test-dependent constants. It does not establish a floor for arbitrary FW statistics.
+
+7. **[MAJOR] The Heegner references mix different settings; order and level extensions need separate statements (§4.2).**
+
+   The checked references are:
+
+   - **Duke (1988), Theorem 1(i), p. 75:** fundamental negative discriminants, fixed convex regions with piecewise smooth boundary, ineffective quantitative constants. [Paper](https://www.math.ucla.edu/~wdduke/preprints/hyperbolic.pdf).
+   - **Michel (2004), Theorems 3 and 10:** supersingular reduction and definite quaternionic Gross-point sets—not directly the asserted archimedean modular-surface theorem. [Annals paper](https://annals.math.princeton.edu/wp-content/uploads/annals-v160-n1-p05.pdf).
+   - **Harcos–Michel (2006), Theorem 2, equation (1.4):** maximal-order Heegner points on \(X_0(1)\), fixed continuous tests, subgroup index \(o(|D|^{1/23042})\). The square subgroup gives a genus-coset geometric result. **Theorem 6, Remark 6.1 and §6.4** give specified Shimura/modular-level extensions under Heegner hypotheses. [Paper](https://www.renyi.hu/~gharcos/rankinselberg.pdf).
+
+   The actual FW discriminant \(-4N\) **is fundamental**. For squarefree fixed \(k\), \(k=1,5\) remain fundamental; \(k=3\) gives conductor 2 over discriminant \(-3N\).
+
+   For nonmaximal orders, write \(D=f^2D_K\), specify primitive forms/proper ideal classes, and include conductor factors. ELMV **§2.3, equations (3)–(4), pp. 8–9** explicitly separates field subconvexity from the local estimates needed for nonmaximal orders. [ELMV](https://people.math.ethz.ch/~einsiedl/ELMV3.pdf).
+
+   Neither arbitrary coefficient congruences nor \(\Gamma(m)\) follow merely by citing an \(X_0(q)\) theorem. Local orientations, ramification and admissible CM lifts matter.
+
+   **Fix:** use the fundamental level-one regular-test theorem that applies here. State extensions separately. The genus formula requires normalized squared Weyl sums and local factors; an informal Gross–Zagier/Waldspurger reference is insufficient.
+
+8. **[MAJOR] “Q-leaks are cusp excursions” conflates discriminant signs and arithmetic events (§4.2).**
+
+   For definite forms, \(\operatorname{Im}\tau=\sqrt{|D|}/(2a)\) is correct. A threshold \(a\le A\) corresponds to a cusp region of mass proportional to \(A/\sqrt{|D|}\).
+
+   The principal \(\sqrt{kN}\) paths in eps/leakmap have **positive** discriminant and correspond to closed geodesics, not these negative-discriminant Heegner points. Related cusp geometry exists, but needs the appropriate correspondence and sampling measure. Squareness and smoothness are arithmetic events, not synonyms for cusp height. Fixed-region equidistribution does not provide relative estimates in shrinking cusp regions.
+
+   **Fix:** retain a qualified geometric analogy. Do not use it as an explanation exhausting Q-leaks or as a theorem about the short initial walks \(f^j\).
+
+9. **[MAJOR] Every tested shifted d=3 toy sum is classical (§3.5, `toy3.py`).**
+
+   Since
+   \[
+   F_3(n)-F_3(n+c)=F_2(n),
+   \]
+   every chosen tuple with shift 1 and third argument 1 satisfies
+   \[
+   \boxed{
+   F_3(1;a,b,1;N)=
+   -\frac{N-1}{8N}
+   +\frac12\big[s(ab^{-1},N)-s(a,N)-s(b,N)\big].
+   }
+   \]
+   Thus all 16 toy statistics are postprocessing of ordinary Dedekind sums and public data. They do not test genuinely three-dimensional content.
+
+   Likewise,
+   \[
+   F_2(1;a,1;N)=-\frac{N-1}{4N}-s(a,N),
+   \]
+   so the main `dr1_*` features add no new shifted-sum primitive. I checked both collapses in **356 exact cases**, including even moduli and multiples of 3.
+
+   **Fix:** relabel these experiments as classical Dedekind-combination checks. Any new three-dimensional experiment needs arguments and shifts avoiding this telescoping collapse, audited before labels are examined.
+
+10. **[MAJOR] “Only the spatial local part factors” is false (§3.4).**
+
+    The weighted frequency oracle can factor too. For
+    \[
+    L_{\rm freq}=s(1,p)/q+s(1,q)/p,\qquad H=p+q,
+    \]
+    one gets
+    \[
+    X=12NL_{\rm freq}=H^2-2N-3H+4,
+    \quad
+    H=\frac{3+\sqrt{8N-7+4X}}2.
+    \]
+
+    **Fix:** say the unweighted modular decoder does not automatically decode the weighted oracle. Do not infer that the latter cannot factor. The Dedekind spatial/frequency distinction itself is already explicit in **cx1 §3.1**.
+
+11. **[MAJOR] The toy result is incomplete and suppresses two factor exposures (§0, §3.5).**
+
+    At the audited snapshot, only the n=20 toy raw file and summary existed. The advertised n=22 files were absent, and §3.5 contained `TOY3_PLACEHOLDER`.
+
+    I independently matched all **324** registered n=20 products; n=22 has **1089** products. Recomputed n=20 maxima are 1.6405445 for epsilon and 1.8023630 for tb.
+
+    Two nonunit tuples were silently zero-coded:
+
+    - \(674413=769\cdot877\), with \(\lfloor N^{2/3}\rfloor=7690=10\cdot769\);
+    - \(727393=773\cdot941\), with `hash2` \(=286783=371\cdot773\).
+
+    **Fix:** disclose these public gcd exposures and zero coding; report only completed populations. Exhaustive-population permutation scores are descriptive unless their randomization null is justified. Prime reuse alone does not establish that the error is necessarily anti-conservative.
+
+12. **[MAJOR] D1 is mathematically justified to first order, but changes the registered validity rule (§5, §9).**
+
+    Writing \(S=\sum_hS_{yy,h}\), the planted construction gives
+    \[
+    E[U]=\rho S,\qquad
+    E[V]=\frac{1-\rho^2}{4}S+
+    \rho^2\sum_h\frac{S_{yy,h}^2}{n_h-1}.
+    \]
+    Consequently \(2\rho\sqrt S\) is the correct **leading approximation**, not an exact expectation of the random ratio.
+
+    | n | Recomputed planted tb z | Corrected approximation |
+    |---:|---:|---:|
+    | 48 | 16.100760 | 18.179780 |
+    | 64 | 16.751711 | 18.209328 |
+    | 128 | 18.255111 | 18.198817 |
+
+    The original expectation 22.36068 with tolerance 3 fails at 48 and 64. The corrected expectation passes.
+
+    **Fix:** report original validity and amended validity separately. This is a defensible disclosed mathematical correction, but “Conclusion (registered rule)” is inaccurate for those two cells. A prospective fresh run can validate the amended protocol.
+
+13. **[MAJOR] The tb MDE conflates planted flip strength with residual correlation (§5).**
+
+    For pooled residual correlation \(R=U/\sqrt{Sxx\,Syy}\),
+    \[
+    z=R\sqrt{\frac{Sxx\,Syy}{V}}.
+    \]
+    Thus the feature-specific effective sample size is \(Sxx\,Syy/V\), not universally \(4Syy\).
+
+    For n=48 tb, `isqrt2_ms_mod3` has effective size about **198397**, versus \(4Syy\approx132202\). Its nominal residual-correlation MDE is approximately .01536, not .0188.
+
+    **Fix:** define the effect parameter and report feature-specific power, or label .0188 as calibration for the particular planted flip-strength model. Also, 80% detection power does not constitute a confidence exclusion or logical “refutation” of every effect at that scale.
+
+14. **[MINOR] Top-12 strata define an operational floor, not complete removal of archimedean information (§5).**
+
+    Within-bin size dependence remains possible. Top-16 checks are useful; `(top-8, N mod16)` is not a refinement of top-12 because its size resolution is coarser. Finer strata also reduce power.
+
+    My normalized-size test within top-12 strata gives z \(=-1.1235,.6899,-.6663\) at n=48,64,128: reassuring for that particular confound, not proof for every nonlinear size proxy.
+
+    **Fix:** restrict conclusions to the stated coarse floor, or supply a prespecified smooth geometry-aware baseline and joint residue adjustment.
+
+15. **[MAJOR] Several null features are structurally uninformative (§5, `battery.py`).**
+
+    - `fw_minbits` equals the starting split prime’s bit length in **199998/200000** n=48 records and **every** n=64 and n=128 record. The running minimum mostly measures the initialization.
+    - At n=128, all **99860** records starting with \(\ell=3\) have `fw_sq=16`, arising from even unreduced powers among the first 32 steps.
+    - `div3` reduces to a bounded-modulus tail after one large quotient. Several apparently nondegenerate features are fixed public-residue functions.
+    - The toy `isqrt_invsqrt_Z3sign` is \(-1\) on all 324 records.
+
+    **Fix:** separate informative tests from forced controls and algebraic redundancies. Future FW designs should inspect later windows/endpoints and account explicitly for the starting prime and unreduced powers.
+
+16. **[MAJOR] Narrow the verdict and novelty claims (§0, §6).**
+
+    The defensible conclusion is **no observed registered main-menu threshold hit**, together with the precisely scoped identities and tail theorem.
+
+    Additional fixes:
+
+    - A random-prefix reference is N-independent **at fixed \(T\)**; choosing \(T=T(N)\) changes it. Include that scale and required residue labels in the baseline.
+    - Unrestricted coefficient postprocessing retains N; this is not a proved polynomial-time completeness result.
+    - The \(N^{2/3}\) extension is an unwritten sketch, not PROVED.
+    - Coppersmith recovery needs a proper resulting gcd. Mere smallness modulo a factor does not always factor: a known global integer root can give gcd \(N\).
+    - FD3-0 is already **cx1 (37)**. Preserve that attribution.
+    - General shifted d=2 evaluation being polynomial-time does not automatically establish a fixed-state BHK representation.
+
+17. **[MINOR] Correct formal and reproducibility details.**
+
+    The unsigned set \(as\equiv\pm r\bmod N\) is a union of two lattices. Use one lattice with signed remainders.
+
+    Actual roles are **117 menu, 5 menuG, 5 NC, 3 PCs**, totaling 130. The stated 113-plus-extra-degenerates accounting is wrong.
+
+    The named congruence test explicitly excludes even moduli and multiples of 3; the proof covers them, but that particular test does not. The SPLIT test uses `fermres` and a random argument, not both exponent arguments claimed.
+
+    The AST check guards direct imports, not transitive dependencies. The n=48 raw run has 199998 distinct products, consistent with its sampler. P4’s heuristic rate predicts order eight events after multiplying by 200000 at n=48, contradicting its “approximately zero” rationale. Remove the remaining placeholders.
+
+**Verified correct**
+
+- VIS’s exact cylinder qualification, the unit square-root gcd obstruction, CF identities, SPLIT identity and product bound.
+- The epsilon F-SQ analytic core, under the restricted statement above.
+- FD3-0, cx1 Theorem 4’s cleared congruences, and the unweighted DSF decoder. Additional checks: **240 congruences and 24 DSF cases, zero failures**.
+- The floor-sum evaluator and fixed-dimension weighted-lattice reduction at their stated scope.
+- **11 supplied tests passed**, with cache and bytecode writes disabled.
+- Main raw-data z maxima independently recomputed:
+
+| n | epsilon feature | signed z | tb feature | signed z |
+|---:|---|---:|---|---:|
+| 48 | `cf3_sumbits` | −3.146240 | `isqrt2_ms_mod3` | −3.027202 |
+| 64 | `cbrt2_phimod5` | −2.273956 | `cbrt2_n_a1` | −2.782637 |
+| 128 | `isqrt_rem1mod4` | +2.616632 | `div3_midbits` | +2.745399 |
+
+Complete operational vectors recomputed from N matched **9/9 sampled records**. The main files show no nonunit arguments or rational-path exposures, and exactly three n=48 form-walk split records. These findings support the empirical non-detection statement, with the qualifications above.
