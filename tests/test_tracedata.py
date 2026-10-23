@@ -14,7 +14,7 @@ from src.tracedata import reductions as R
 from src.tracedata.xe_descent import xe_factor
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "tracedata")
-OPERATIONAL = ("reductions.py", "decode.py", "xe_descent.py", "galois.py")
+OPERATIONAL = ("reductions.py", "decode.py", "xe_descent.py", "galois.py", "ext_reduction.py")
 FORBIDDEN_MODULES = {"src.tracedata.harness", "cypari2", "sympy", "src.ecount.harness", "src.common.instances"}
 FORBIDDEN_NAMES = {"factorint", "factor", "isprime", "is_prime", "primefactors", "ellap", "ellcard"}
 

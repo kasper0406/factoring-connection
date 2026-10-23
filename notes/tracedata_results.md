@@ -1,14 +1,14 @@
 # tracedata: trace data a_p, a_q, a_N, fixed-ℓ partial counts, X_E and determinism (phase 25)
 
-Agent `tracedata`, 2026-10-23. Version **v2.1**: after the codex adversarial round (cx2: MAJOR REVISION) and the Opus
+Agent `tracedata`, 2026-10-23. Version **v2.2**: after the codex adversarial round (cx2: MAJOR REVISION) and the Opus
 proof critic (MAJOR PROBLEMS, all text-fixable); every required fix applied (§9). Opus literature critic (OK WITH FIXES) applied in v2.1; proof-critic round 2 on
-Theorem EXT and Prop CM-PAIR: §9.
+Theorem EXT and Prop CM-PAIR (ACCEPT WITH FIXES) applied in v2.2: §9.
 
 - Pre-registration: `notes/tracedata_prereg.md`, commit `f2df008`, made before any experiment.
 - Code: OPERATIONAL `src/tracedata/{reductions,decode,xe_descent,ext_reduction,galois}.py` (inputs: N and the stated
   data only; an AST test forbids harness/PARI/factorisation imports and calls; cx2 also inspected by hand);
   HARNESS `src/tracedata/{harness,run_experiments}.py`.
-- Tests: `tests/test_tracedata.py` (24 pass, < 1 s).
+- Tests: `tests/test_tracedata.py` (25 pass, < 1 s).
 - Raw data: `experiments/raw/tracedata_{e1,e2,e3a,e3b,e3c,e3d,e4,e5,posthoc,posthoc5,posthoc6}.jsonl`.
 - GPT-6.1-sol: blind round `codex/tracedata_1.{md,out}` (**cx1**), adversarial round `codex/tracedata_2.{md,out}`
   (**cx2**). Scratch scripts in `codex/scratch/tracedata_{1,2}/`.
@@ -29,8 +29,8 @@ elliptic curve E/Q, the single count M = #E(Z/N) factors every good N = pq in ra
 - The method computes [M]P for a twisted point over a random degree-5 algebra (Z/N)[z]/(F).
 - With probability → 1/20, F has a linear factor mod p and is irreducible mod q. Then M kills the F_p component
   about half the time but can never annihilate a curve over F_{q⁵}, whose exponent exceeds q^{5/2} > M.
-- PH6: 240/240 instances (four curves, n = 48–96) and both known X_E members split, in 1.2–1.9 trials on average.
-  The null control (wrong M) gave 0 splits in 2400 trials.
+- PH6: 240/240 instances (four curves, n = 48–96) split, in 1.2–1.9 trials on average, and so did the 11a1 X_E census
+  member. The null control (M′ uniform in a ±2^{3n/4} window) gave 0 splits in 2400 trials.
 - Galbraith–McKee 2005 §3 assert in one sentence, without analysis, that their §2 methods extend to (Z/N)[x]/(f) by
   twisting with random elements. The degree-5 exponent argument and the every-curve/every-N claim are not there.
   Dieulefait–Urroz (2020) state explicitly that factoring from one count was not known. No prior statement of the
@@ -58,10 +58,14 @@ precise obstacles:
 - For p, q ≡ 1 (mod 4), a_N(y² = x³ − x) together with a_N(y² = x³ − Dx), for any D that is a non-residue at p or at
   q, factor N deterministically through two representations as sums of two squares.
 - PH5: every one of 217 such N (n = 64, 128) factored with D ≤ 59. Under ERH, D ≤ 2 ln²N suffices.
-- The critic reports that sextic twists of y² = x³ + D do the same for p, q ≡ 1 (mod 3) (not re-verified).
-- So Hecke eigenvalues at N of a handful of fixed CM curves factor a positive density (7/16) of N, even though their
-  congruences see only QR bits (SC).
-- Ordered traces of two CM curves give p = (a_p(E_1)² + a_p(E_D)²)/4 directly, on density 15/16.
+- Sextic twists of y² = x³ + D appear to do the same for p, q ≡ 1 (mod 3). The proof critic factored 200/200 such N
+  with D ≤ 30 and gave a proof sketch (ERH bound (2 ln²N)⁴). This part is EMPIRICAL plus a sketch, not proved here.
+- A fixed finite list of D gives a positive density below 7/16. Growing lists under ERH reach 1/4 for the quartic
+  family, and 7/16 with the sextic family. Their congruences still see only QR bits (SC).
+- Ordered traces give p = (a_p(E_1)² + a_p(E_D)²)/4 directly.
+  - E_1 and E_2 alone: density 7/16 (p ≡ 5 mod 8 at either prime).
+  - The ERH quartic family: 3/4.
+  - Adding the sextic family: 15/16.
 - For non-CM families, ordered trace numbers of O(n² log n) fixed curves factor N under a Chebotarev-independence
   heuristic (decode p mod ℓ, then CRT): E3a matches the model in 40/40 cells; E3c 30/30 toy N.
 - So FROB's "numbers, not operators" gap closes for trace numbers of several curves: rigorously for CM pairs,
@@ -233,9 +237,21 @@ goes through.
     a_N = 0.
   - Under ERH the least D that is a non-residue at p is ≤ 2 ln²p (Bach 1990). So the first ⌈2 ln²N⌉ curves of the fixed
     sequence y² = x³ − Dx suffice for every N with p ≡ q ≡ 1 (mod 4).
-  - The proof critic reports the sextic analogue (y² = x³ + D, p ≡ q ≡ 1 mod 3; 2966/3000 recoveries). We have not
-    re-verified it. Together these give density 7/16.
-  - Ordered traces give p = (a_p(E_1)² + a_p(E_D)²)/4 directly whenever p splits in Q(i) (or Q(ζ₃)): density 15/16.
+  - **Sextic analogue (EMPIRICAL + sketch, proof critic round 2; not proved or re-run here).**
+    - At r ≡ 1 (mod 3), the six twists y² = x³ + D have traces ±x, ±y, ±z with x + y + z = 0 and
+      3r = x² + xy + y² (the same for any two of x, y, z). Which coordinate a twist gives is set by the cubic residue
+      character of D.
+    - If two twists give the same coordinate at p and different ones at q, then X² ± XY + Y² = 3q·c_p² for the right
+      sign, so gcd(N, ·) = q.
+    - Under ERH, two D ≤ 2 ln²N span (Z/3)², so products of them ≤ (2 ln²N)⁴ realise every pattern.
+    - The critic factored 200/200 N with p ≡ q ≡ 1 (mod 3) (excluding p ≡ q ≡ 1 mod 4) using D ≤ 30. (Its round-1
+      figure 2966/3000 concerned ordered single-prime traces, not a_N.)
+    - With the quartic family this would give a_N-density 7/16 (ERH, growing lists). A fixed finite list gives a
+      smaller positive density.
+  - **Ordered traces** give p = (a_p(E_1)² + a_p(E_D)²)/4 directly when D is a non-residue at p.
+    - E_1, E_2 alone: p ≡ 5 (mod 8) at either prime, density 7/16.
+    - The ERH quartic family: 3/4.
+    - With the sextic family: 15/16.
   - Consistent with SC: CM images contain the scalars, so the congruence content is QR-only. The factoring power comes
     from the archimedean identity α² + β² = r.
   - No prior statement found by us or the literature critic. Bach–Charles Rem 2.6 only notes that CM forms fail when
@@ -449,15 +465,16 @@ partitions are unaffected):
 ### 2.9 X_E and determinism
 
 **Theorem EXT (cx2 #1; PROVED; re-implemented independently in `src/tracedata/ext_reduction.py` and checked).**
-For every fixed E/Q: y² = x³ + ax + b and every good N = pq with p, q ≥ 101, M = #E(Z/N) gives an expected-polynomial
+For every fixed E/Q: y² = x³ + ax + b and every good N = pq with p, q ≥ 101 (a convenience: the bound below holds for q ≥ 11), M = #E(Z/N) gives an expected-polynomial
 factoring algorithm. No factorisation of M, no second count, and no extra automorphisms are needed. Primes < 101 are
 found by trial division.
 
 *One trial.*
 - Pick a uniform monic quintic F over Z/N and set R = (Z/N)[z]/(F).
 - Pick a uniform x ∈ R and set δ = x³ + ax + b. Take P = (δx, δ²) on Y² = X³ + aδ²X + bδ³ over R.
-- Compute [M]P with affine arithmetic over R. Every non-unit met is examined: a proper gcd of its norm (5×5 determinant)
-  or of its coefficients with N is output. Restart on an obstruction that reveals nothing.
+- Compute [M]P with affine arithmetic over R. Inversion is Gaussian elimination on the 5×5 multiplication matrix, with a
+  gcd check on every pivot candidate and every updated entry, plus a coefficient gcd when no unit pivot exists. Any
+  proper gcd is output. On the splitting event this is equivalent to testing gcd(norm, N) (proof critic round 2). Restart on an obstruction that reveals nothing.
 
 *Proof.*
 - **The event.** F ≡ (linear)(irreducible quartic) mod p and F irreducible mod q. By CRT its probability is
@@ -481,8 +498,14 @@ found by trial division.
 *Checks.*
 - PH6 (post hoc): 240/240 balanced N for 11a1, 37a1, y² = x³ + 2x + 3 and y² = x³ − x + 1 at n = 48, 64, 96, in
   1.2–1.9 trials on average. Other splitting types also split, so success is far above 1/80.
-- Both known X_E members split (11a1 census member in 2 trials; cx1's N = 27331 in 1).
+- The 11a1 X_E census member split in 2 trials.
+  - The proof critic measured 0.77 splits per trial with the true M, against 0.09 for M + 1 and 0.23 for
+    (A_p+2)(A_q+2).
+  - cx1's N = 27331 is NOT evidence: with primes this small, ECM-like accidents split it for every M tried.
 - Null control: M′ uniform in a ±2^{3n/4} window gave 0 splits in 2400 trials.
+  - Pitfall (proof critic): a null must not be a value whose double-and-add chain passes through a multiple of A_p.
+    For even M, M′ = M + 1 visits [M]P and splits about as often as M.
+- Round-2 proof critic runs also split a Blum N (32a2, 41-bit primes) and unbalanced N (p ≈ 10⁵, q ≈ 2⁷⁰).
 - cx2's own implementation split the same 11a1 member and a 60-bit N.
 
 *Literature.*
@@ -647,7 +670,8 @@ Peak RSS ≤ 245 MB; jobs ran one at a time.
 | Direct small-root equation from a_pa_q = A | no such equation (it contains no p) | DEC excludes fixed algebraic relations only; growing-degree or modular Coppersmith constructions are NOT excluded |
 | Galois congruences of one curve's traces → p mod ℓ → CRT | fails in the model | O(1) bits (GC; ≈0.3 full-Haar, ≈1 with entanglement) |
 | Congruences of a_N at many curves → s mod ℓ | fails in the model | SC: QR bits only, given scalars in the image; E3b/E3d |
-| a_N of CM quartic/sextic twist pairs | **works (PROVED)** on p, q split in the CM field | CM-PAIR; PH5 217/217 |
+| a_N of CM quartic twist pairs | **works (PROVED)** on p ≡ q ≡ 1 (mod 4) given a non-residue D in the list | CM-PAIR; PH5 217/217 |
+| a_N of CM sextic twist pairs | works EMPIRICALLY (critic 200/200) + proof sketch | §2.5 |
 | Ordered/unordered traces at many non-CM curves → CRT | works HEURISTICALLY | Needs a source of such trace numbers; E3c 30/30 |
 | Twist methods over quadratic algebras on X_E | blind (Prop QA) | — |
 | Twist over a random quintic algebra | **works (PROVED)** for every curve | Theorem EXT; PH6 240/240 |
@@ -668,7 +692,7 @@ Peak RSS ≤ 245 MB; jobs ran one at a time.
 
 ## 7. Reproduction and deviations
 ```
-.venv/bin/python -m pytest -q tests/test_tracedata.py           # 24 tests, <1 s
+.venv/bin/python -m pytest -q tests/test_tracedata.py           # 25 tests, <1 s
 .venv/bin/python -m src.tracedata.run_experiments e1            # 17 s
 .venv/bin/python -m src.tracedata.run_experiments e2            # <1 s
 .venv/bin/python -m src.tracedata.run_experiments e3a           # 67 s
@@ -731,6 +755,20 @@ primes), MIX, PROMISE, TOR, CM-QR, SC (under its hypothesis), IL, NA, QA, J0 and
 10. NA wording. → §2.7.
 11. Minor wording. → TOR, IL, randomized poly time, DEC/M phrasing, PT-J needs non-square Δ.
 12. Vacuous assert; twist duplicates. → D6, §2.8.
+
+**Opus proof critic round 2 (v2.1, on Theorem EXT and Prop CM-PAIR): ACCEPT WITH FIXES; all applied in v2.2.**
+- It confirmed EXT and its code: event probability, extraction, the group-law case analysis, the bounds, ≥ 1/80,
+  and no leakage.
+- It confirmed CM-PAIR (quartic) and PH5.
+- It confirmed that the round-1 fixes were applied correctly.
+- Fixes:
+  1. CM-PAIR densities and attribution corrected; the sextic part relabelled empirical + sketch.
+  2. Sextic sketch added, with ERH bound (2 ln²N)⁴.
+  3. `ext_reduction.py` added to the AST leakage test.
+  4. EXT extraction wording.
+  5. N = 27331 dropped as evidence.
+  6. PH6 null pitfall noted.
+  7. 101 threshold is a convenience.
 
 **Opus literature critic (v2): OK WITH FIXES; all applied in v2.1.**
 - It found no prior statement of EXT's uniform form, CM-PAIR, SC, or the multi-curve decoding.
