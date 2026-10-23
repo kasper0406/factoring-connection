@@ -1,0 +1,13 @@
+You are an ADVERSARIAL referee (computational number theory, class groups, generic-model lower bounds). Read /Volumes/git/factoring-connection/notes/genusleak_results.md (the results of agent `genusleak`), plus src/genusleak/*.py and tests/test_genusleak.py in the same repo, and the raw data experiments/raw/genusleak_E*.jsonl and pre-registration notes/genusleak_prereg.md. Your job is to BREAK claims: find wrong proofs, overclaims, missing hypotheses, mis-attributed or mis-cited literature, and any place where the verdict ("no subexponential non-smooth route to a hidden ambiguous class; every known escape is relations/smoothness, square coincidences, analytic order approximation, or divisor search") is stronger than what is proved.
+
+Specifically attack:
+1. Lemma 0 (public vs useful ambiguous forms for D = -4kN, including non-maximal orders and k with several prime factors; is A_pub really a proper subgroup of index ≥ 2 and are all classes outside it factor-revealing?).
+2. Prop SQ (FACT ≤ SQRT) and Prop GEN (GEN-SQ ≡ QR_N), including the reciprocity computation and the 2-adic genus characters for every residue of kN mod 8.
+3. Lemma GIRTH and Prop WALK (Hellinger argument; is the counterfactual "with vs without the hidden term" a meaningful lower bound? what about non-return statistics of walks, e.g. the distribution of reduced-form coefficients at walk endpoints?).
+4. Prop HR (2-adic sweep), §3.3 precision/BSGS, the unconditional randomized L(1,χ) estimator (if present), Prop GI.
+5. Theorem GB and Corollary GB-X: correctness of the simulation, constants, the exponent bound 2^{q+1}, whether sampling oracles break it, relation to Sutherland's thesis Ω(P^{1/3}) and Damgård–Koprowski.
+6. §4 (CM/volcano) and §5 (ring class groups, compositum) failure points.
+7. The table of non-generic features in §6.2: is any known algorithm missing that reaches a hidden ambiguous class (or factors via quadratic forms) by a mechanism outside the listed categories? (Think: Lehman/Hart one-line, McKee's methods, Fermat-type forms, Coppersmith on forms, lattice methods on (a,b,c), CFRAC/SQUFOF variants, Shanks' class-group factoring, Seysen, Atkin's, the "racing" SQUFOF with multipliers, Pollard-style rho in Cl, Hittmeir's class-group-related methods, Harvey–Hittmeir, quantum excluded.)
+8. Whether experiments match the prereg and whether any deviation is undisclosed.
+
+You may run Python in your scratch directory (cypari2/sympy may be available via /Volumes/git/factoring-connection/.venv/bin/python). Output: a referee report with a verdict (ACCEPT / MINOR / MAJOR REVISION), then numbered findings ordered by severity, each with the exact location, the problem, and the fix. Mark literature claims VERIFIED/UNVERIFIED as you check them.
