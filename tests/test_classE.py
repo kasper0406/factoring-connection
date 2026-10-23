@@ -184,3 +184,28 @@ def test_operational_isolation():
             if isinstance(node, ast.Import):
                 for al in node.names:
                     assert al.name not in banned, (fn, al.name)
+
+
+def test_prop_split_genus_constraint_and_product_size():
+    """Prop SPLIT: a s_k = (-1)^k r_{k+1} (mod N) gives ((-1)^k s_k r_{k+1} | l) = (a | l) for l in {p, q};
+    and s_k r_{k+1} >= N / (a_{k+1} + 2)."""
+    from src.classE.structure import arguments
+    rng = random.Random(10)
+    for _ in range(150):
+        p, q = sorted((_rp(rng, 22), _rp(rng, 22)))
+        if p == q:
+            continue
+        N = p * q
+        for a in (arguments(N)["fermres"], rng.randrange(2, N)):
+            if gcd(a, N) != 1:
+                continue
+            qs = cf(a, N)
+            H, S = convergents(qs)
+            rs = remainders(a, N) + [0]
+            for k in range(len(qs)):
+                v = (-1) ** k * S[k] * rs[k + 1]
+                for l in (p, q):
+                    if v % l:
+                        assert gmpy2.legendre(v % l, l) == gmpy2.legendre(a % l, l)
+                if k < len(qs):          # qs[k] = a_{k+1};  N = s_{k+1} r_{k+1} + s_k r_{k+2} <= (a_{k+1}+2) s_k r_{k+1}
+                    assert (qs[k] + 2) * S[k] * rs[k + 1] >= N
