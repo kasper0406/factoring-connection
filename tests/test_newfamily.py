@@ -128,3 +128,42 @@ def test_battery_menu_and_isolation():
                 assert not any(a.name in forbidden for a in node.names), fn
             if isinstance(node, ast.Attribute):
                 assert node.attr not in forbidden, (fn, node.attr)
+
+
+def test_kloosterman_square_modulus_closed_form_and_reduction():
+    import cmath
+    import math
+
+    def e(t):
+        return cmath.exp(2j * math.pi * t)
+    for N in (15, 21, 35):
+        M = N * N
+        for a, b in ((1, 1), (1, 4), (4, 9)):
+            K = sum(e((a * x + b * pow(x, -1, M)) / M) for x in range(1, M) if gcd(x, M) == 1)
+            cfm = N * sum(e(2 * v / M) for v in range(M) if (v * v - a * b) % M == 0)
+            assert abs(K - cfm) < 1e-7
+    from src.common.instances import balanced_semiprime
+    ok = 0
+    for seed in range(6):
+        inst = balanced_semiprime(40, 24_500_000_000_000 + 100 + seed)
+        p, q = inst.labels["factors"]
+        orc = diag.SalieOracle(p, q, delta=1e-4, seed=seed, square=True)
+        ok += diag.salie_factor(p * q, orc, c=5 + seed, delta=1e-4, square=True) in (p, q)
+    assert ok >= 5
+
+
+def test_prop_DSF_local_part_of_dedekind_sum_factors():
+    from src.common.instances import balanced_semiprime
+    rng = random.Random(5)
+    for seed in range(30):
+        inst = balanced_semiprime(rng.choice([32, 64, 128, 256]), 24_500_000_000_000 + 500 + seed)
+        p, q = inst.labels["factors"]
+        N = p * q
+        a = rng.randrange(2, N - 1)
+        if gcd(a, N) != 1:
+            continue
+        L = diag.dedekind_local_part(a, p, q)
+        # the full sum is computable from N alone; the local part is the factoring-hard piece
+        U = Fraction(dedekind6(a, N), 6 * N) - L
+        assert (6 * N * U).denominator == 1
+        assert diag.factor_from_local_part(N, a, L) in (p, q)

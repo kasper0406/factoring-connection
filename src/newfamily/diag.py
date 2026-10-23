@@ -56,50 +56,58 @@ def salie_exact_terms(a: int, b: int, N: int, p: int, q: int) -> List[int]:
 
 
 class SalieOracle:
-    """HARNESS oracle for T(c) := S(c^2, 1; N) / (eps_N sqrt(N)) = sum_{v^2 = c^2} e(2v/N)  (a real number:
-    2cos(4 pi c/N) + 2cos(4 pi c e/N), e the nontrivial square root of 1 that is 1 mod p, -1 mod q),
-    returned with an absolute error <= delta (deterministic pseudo-noise from `seed`).  Computed with mpmath at
-    `prec` bits; the noise is added exactly.  Knows p, q.  Counts queries."""
+    """HARNESS oracle for T(c) := sum_{v^2 = c^2 (mod M)} e(2v/M), a real number
+         = 2cos(4 pi c/M) + 2cos(4 pi c e/M),   e = the square root of 1 mod M with e = 1 mod p^k, -1 mod q^k,
+    where M = N (k = 1) or M = N^2 (k = 2).  By the closed forms
+         S(c^2, 1; N)   = eps_N sqrt(N) T(c)       (Salie, M = N)
+         K(c^2, 1; N^2) = N T(c)                   (Kloosterman at a square modulus, M = N^2)
+    (both tested in tests/test_newfamily.py) this is what a Salie oracle at N, or a Kloosterman oracle at N^2,
+    returns after dividing by the known normalisation.  Returned with absolute error <= delta (deterministic
+    pseudo-noise from `seed`), computed with mpmath at `prec` bits.  Knows p, q.  Counts queries."""
 
-    def __init__(self, p: int, q: int, delta: float, seed: int = 0, prec: int = 0):
+    def __init__(self, p: int, q: int, delta: float, seed: int = 0, square: bool = False, prec: int = 0):
         import random
-        self.p, self.q, self.N = p, q, p * q
-        self.e = (q * pow(q, -1, p) - p * pow(p, -1, q)) % self.N   # 1 mod p, -1 mod q
+        self.N = p * q
+        k = 2 if square else 1
+        P, Q = p ** k, q ** k
+        self.M = P * Q
+        self.e = (Q * pow(Q, -1, P) - P * pow(P, -1, Q)) % self.M   # 1 mod P, -1 mod Q
         self.delta = mpmath.mpf(delta)
         self.rng = random.Random(seed)
-        self.prec = prec or (3 * self.N.bit_length() + 64)
+        self.prec = prec or (3 * self.M.bit_length() + 64)
         self.queries = 0
 
     def __call__(self, c: int) -> mpmath.mpf:
         self.queries += 1
         with mpmath.workprec(self.prec):
-            N = self.N
-            val = 2 * mpmath.cos(4 * mpmath.pi * (c % N) / N) + 2 * mpmath.cos(4 * mpmath.pi * (c * self.e % N) / N)
+            M = self.M
+            val = 2 * mpmath.cos(4 * mpmath.pi * (c % M) / M) + 2 * mpmath.cos(4 * mpmath.pi * (c * self.e % M) / M)
             noise = (2 * self.rng.random() - 1) * self.delta
             return val + noise
 
 
-def salie_factor(N: int, oracle, c: int, delta: float) -> Optional[int]:
-    """OPERATIONAL decoder (sees N, the oracle, a public multiplier c): Prop SAL.  Queries T(2^k c) for
-    k = 0..K, K = bitlen(N) + 2.  From T subtract the known term 2cos(4 pi 2^k c/N) to get d_k ~ ||x_k|| where
-    x_k = 2^{k+1} c e / N mod 1, then reconstruct x_0 backwards (x_k = x_{k+1}/2 or (x_{k+1}+1)/2, chosen by
-    ||x_k|| = d_k), round to a multiple of 1/N, and take gcds.  Returns a proper factor or None."""
-    K = N.bit_length() + 2
-    prec = 3 * N.bit_length() + 64
+def salie_factor(N: int, oracle, c: int, delta: float, square: bool = False) -> Optional[int]:
+    """OPERATIONAL decoder (sees N, the oracle, a public multiplier c): Prop SAL.  M = N or N^2.  Queries T(2^k c)
+    for k = 0..K, K = bitlen(M) + 2.  Subtracting the known term 2cos(4 pi 2^k c/M) leaves 2cos(2 pi x_k) with
+    x_k = 2^{k+1} c e / M mod 1, hence d_k = ||x_k||.  Reconstruct x_0 backwards (x_k = x_{k+1}/2 or (x_{k+1}+1)/2,
+    chosen by ||x_k|| = d_k), round to a multiple of 1/M, and take gcds with N.  Returns a proper factor or None."""
+    M = N * N if square else N
+    K = M.bit_length() + 2
+    prec = 3 * M.bit_length() + 64
     with mpmath.workprec(prec):
         d = []
         for k in range(K + 1):
-            ck = (c << k) % N
-            t = oracle(ck) - 2 * mpmath.cos(4 * mpmath.pi * ck / N)
+            ck = (c << k) % M
+            t = oracle(ck) - 2 * mpmath.cos(4 * mpmath.pi * ck / M)
             t = max(min(t / 2, mpmath.mpf(1)), mpmath.mpf(-1))       # cos(2 pi x_k)
             d.append(mpmath.acos(t) / (2 * mpmath.pi))               # ||x_k|| in [0, 1/2]
         for x in (d[K], 1 - d[K]):
             for k in range(K - 1, -1, -1):
                 c0, c1 = x / 2, (x + 1) / 2
                 x = c0 if abs(min(c0, 1 - c0) - d[k]) <= abs(min(c1, 1 - c1) - d[k]) else c1
-            m = int(mpmath.nint(x * N)) % N      # m = 2 c e mod N (or its negative)
-            for mm in (m, -m % N):
-                ce = mm * pow(2, -1, N) % N      # c e mod N
+            m = int(mpmath.nint(x * M)) % M      # m = 2 c e mod M (or its negative)
+            for mm in (m, -m % M):
+                ce = mm * pow(2, -1, M) % M      # c e mod M
                 for g in (gcd(ce - c, N), gcd(ce + c, N)):
                     if 1 < g < N:
                         return g
@@ -150,3 +158,30 @@ def cubic_symbol_prime(u: int, v: int, p: int) -> int:
 
 def cubic_symbol_N(u: int, v: int, p: int, q: int) -> int:
     return (cubic_symbol_prime(u, v, p) + cubic_symbol_prime(u, v, q)) % 3
+
+
+# ------------------------------------------------------------------ Prop DSF: the Dedekind local part factors N
+
+def dedekind_local_part(a: int, p: int, q: int) -> Fraction:
+    """HARNESS: L(a, N) = s(a, p) + s(a, q) (exact, via reciprocity at p and q; needs the factors)."""
+    from src.newfamily.recip import dedekind6
+    return Fraction(dedekind6(a % p, p), 6 * p) + Fraction(dedekind6(a % q, q), 6 * q)
+
+
+def factor_from_local_part(N: int, a: int, L: Fraction) -> Optional[int]:
+    """OPERATIONAL decoder (sees N, a, and the value L = s(a,p) + s(a,q)): Prop DSF.
+    X = 6N L is an integer with 2aX = (p + q)(a^2 + 1) (mod N); since p + q < N this gives p + q exactly."""
+    import gmpy2
+    X = L * 6 * N
+    if X.denominator != 1:
+        return None
+    g = gcd(2 * a * (a * a + 1), N)
+    if 1 < g < N:
+        return g
+    s = (2 * a * X.numerator * pow(a * a + 1, -1, N)) % N
+    disc = s * s - 4 * N
+    if disc < 0 or not gmpy2.is_square(disc):
+        return None
+    r = int(gmpy2.isqrt(disc))
+    p = (s - r) // 2
+    return p if 1 < p < N and N % p == 0 else None
