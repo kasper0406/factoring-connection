@@ -4,8 +4,8 @@ GPT-6.1-sol adversarial round, phase 25; re-implemented and re-checked here).
 One trial: uniform monic quintic F over Z/N, R = (Z/N)[z]/(F), uniform x in R, delta = f(x),
 P = (delta x, delta^2) on Y^2 = X^3 + a delta^2 X + b delta^3 over R; compute [M]P with affine arithmetic over R.
 Every non-invertible element met is examined (elimination on the 5x5 multiplication matrix with gcd checks on
-every pivot candidate and updated entry, plus a coefficient gcd; on the splitting event equivalent to a norm gcd) with
-N is output.  On the event "F = (linear)(irreducible quartic) mod p and F irreducible mod q" (probability -> 1/20),
+every pivot candidate and updated entry, plus a coefficient gcd; on the splitting event equivalent to a norm gcd);
+any proper gcd with N is output.  On the event "F = (linear)(irreducible quartic) mod p and F irreducible mod q" (probability -> 1/20),
 the F_p component is killed by M with probability ~1/2 (delta a square there) while the F_{q^5} component is never
 annihilated (exponent >= q^{5/2} - 1 > M), so a split is forced with probability >= 1/80 - o(1).
 
