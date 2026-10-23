@@ -1,8 +1,7 @@
 # leakmap: where "information costs splitting" stops (phase 24)
 
-Agent `leakmap`, 2026-10-23. **Version v2**: after the codex adversarial round (`codex/leakmap_2.out`, MAJOR REVISION)
-and the Opus proof critic (ACCEPT WITH FIXES); all findings applied (§11). The Opus literature critic is pending at
-the time of writing; its outcome is recorded in §11 when available.
+Agent `leakmap`, 2026-10-23. **Version v3**: after the codex adversarial round (`codex/leakmap_2.out`, MAJOR REVISION),
+the Opus proof critic (ACCEPT WITH FIXES) and the Opus literature critic (OK WITH FIXES); all findings applied (§11).
 - Pre-registration: `notes/leakmap_prereg.md` (commit `d050db1`, before any code or experiment).
 - Code: `src/leakmap/{netrees,e1,e1_p5,e1_mrl,cfgenus,e2_summary,e2_posthoc,jacobi}.py`.
   Tests: `tests/test_leakmap.py` (20 pass).
@@ -34,7 +33,8 @@ coordinates with N is proper. s = Pr[split]; B = max_b Pr[F = b] for the target 
    E(N) ≡ t mod ord_p(y). For iid balanced primes this costs ≤ h·D·g·(|I|/L + 1)/π(I) per tree beyond a
    *pure small-order event* (a gate base of order ≤ L at p): N^{−1/4+o(1)} for random bases, N^{−1/6+o(1)} for
    fixed integer bases. With fresh random bases the both-primes rate is exactly κ_pκ_q, e.g.
-   gcd(N−1, p−1)gcd(N−1, q−1)/φ(N) for Fermat (codex; order-pattern lemma). So the conjectured statement holds for
+   gcd(N−1, p−1)gcd(N−1, q−1)/φ(N) for Fermat (Monier, TCS 12 (1980); Baillie–Wagstaff, Math. Comp. 35 (1980) for
+   Lucas; the tree-level bound NE1-R is codex's). So the conjectured statement holds for
    this model in the form of a quantitative bound. Interpreting the events: small order and common divisors of a
    group order with E(N) − t are group-order (M) events, and their extreme case exp(G_p) | E(N) − t pins the partner
    exactly (q = p + 2 for Lucas with (5|p) = −1, (5|q) = +1; q = p + k − 1 for 2^N = 2^k), an archimedean (A) event.
@@ -46,7 +46,7 @@ coordinates with N is proper. s = Pr[split]; B = max_b Pr[F = b] for the target 
 3. **Integer representatives are computationally complete**, so no PT-type theorem exists there (codex: even the
    low bits of 2^j mod N give N). What survives is an identity: every representative satisfies
    rep(x)/N ≡ (x_p − x_q)θ + x_q/N (mod 1) with one hidden phase θ ≈ j/q, and (3/4 + ε)n bits of θ suffice to
-   factor (Howgrave-Graham), the same N^{1/4} wall as Coppersmith. This is not a theorem that leaks must go
+   factor (Howgrave-Graham; May), the same N^{1/4} wall as Coppersmith. This is not a theorem that leaks must go
    through θ.
 4. **Continued fractions (class H): genus or splitting, experimentally.** The principal-cycle constraint
    ((−1)^iQ_i | p) = 1 (PROVED, classical) makes quadratic symbols leak: all four registered quadratic targets
@@ -165,6 +165,13 @@ Pr_q[τ_x ≠ κ(x) | x] ≤ Σ_{v ∈ path κ(x)} ν_v(x), and for independent 
 *Proof.* Each c_v(N) is a fixed function of N, so the first index where τ_x and κ(x) differ is a node on κ(x)'s
 path at which the answers differ; union bound with Lemma NE-C; then PT-X. ∎
 
+*Prior art.* "Output a gcd when a test is inconsistent between components" is standard in the generic ring model
+(Leander–Rupp, ASIACRYPT 2006; Aggarwal–Maurer, EUROCRYPT 2009, journal version IEEE Trans. IT 62(11) (2016)
+6251–6259); PT-X/NE1 have no counterpart there. The closest analogue of Lemma NE-C is the hidden-order generic group
+model (Damgård–Koprowski, EUROCRYPT 2002, LNCS 2332, 256–271; Rotem–Segev, CRYPTO 2020, LNCS 12172, 481–509), where
+exponent arithmetic modulo an unknown order is analysed behind a hidden input; here N itself is the exponent and
+there is no hidden input. No exact prior formulation of NE1 located.
+
 **Corollary NE1-bal (μ uniform on the primes of I).** For E = αN + β and g = gcd(α, o): q is confined to ≤ g classes
 mod o, so μ_x(o) ≤ (g|I|/o + g)/π(I) ≤ α(|I|/o + 1)/π(I). For E = ⌊(N − c)/2^j⌋: q is confined to ≤ 2^j classes
 mod 2^j·o, so μ_x(o) ≤ (|I|/o + 2^j)/π(I). With SO_L(x) := "some gate node on κ(x)'s path has all eligible
@@ -195,7 +202,10 @@ depend on x arbitrarily (codex_2 #6), so the M/A reading is sharp only for targe
     UNIVERSAL iff (p − 1) | q − k iff q = p + k − 1 in the balanced range.
   - Lucas α^{N+1} = 1 in the norm-one torus at both primes: (p+1) | N+1 ⇔ (p+1) | q − 1 and (q−1) | N+1 ⇔
     (q−1) | p + 1; together q = p + 2 (then N + 1 = (p+1)²), with (5|p) = −1, (5|q) = +1. A two-sided, non-split,
-    archimedean liar (F₃₂₄ ≡ 0 mod 323 is the classical instance); useless, since q − p = 2 factors N by Fermat.
+    archimedean liar (F₃₂₄ ≡ 0 mod 323 is the classical instance). KNOWN: twin-prime Lucas pseudoprimes are in Somer,
+    Fibonacci Quart. 46/47 (2008/09) no. 3, Thm 2.1(i); Rotkiewicz, Ann. Math. Sil. 17 (2003) 17–39 (Fibonacci case,
+    p ≡ 7 mod 10); Arnault, Math. Comp. 66 (1997) 869–881. (For the Fibonacci α of norm −1, α^{p+1} = −1 at an inert
+    p; the conclusion still holds since (p+1)² is even. Our E1 algebra x² = 3x − 1 has norm 1.) useless, since q − p = 2 factors N by Fermat.
 - **(Q) in NE1.** At p, a^{(N−1)/2} = (a|p)·a^{(q−1)/2}, so quadratic characters do enter Euler-type gates, and an
   (M)-type event can carry quadratic information (MR exhibiting √−1 certifies ε = +1, eps PC4). The theorem needs no
   separate term for them; this is not a proof that (M) and (Q) are disjoint mechanisms.
@@ -211,7 +221,10 @@ before the base is drawn. Then
 the 2/π(I) term charges p = q and disappears under the virtual-diagonal convention. *Proof:* couple with the pure
 shadow tree in which every probe answers "false"; the first disagreement is a split (pass at one prime) or a
 both-pass event of conditional probability κ_pκ_q by freshness. ∎ Per probe the both-pass probability is exactly
-κ_pκ_q (for Fermat gcd(N−1, p−1)gcd(N−1, q−1)/φ(N), the eps PC4/MR rate; primality §1 order-pattern lemma);
+κ_pκ_q. For Fermat this is gcd(N−1, p−1)gcd(N−1, q−1)/φ(N), Monier's liar count (Monier, "Evaluation and comparison
+of two efficient probabilistic primality testing algorithms", TCS 12 (1980) 97–108); Lucas analogues are in
+Baillie–Wagstaff, "Lucas pseudoprimes", Math. Comp. 35 (1980) 1391–1417 (theorem numbers UNVERIFIED); averages over N
+in Erdős–Pomerance, Math. Comp. 46 (1986) 259–279. It is the eps PC4/MR rate and primality §1's order-pattern lemma;
 R is an upper bound for the whole tree. NE1 is the deterministic-coin, arbitrary-target version.
 
 **Fiber version and ε: OPEN as stated.** By PT-X for independent laws, conditioning on N ≡ c (mod m) and
@@ -226,12 +239,14 @@ OPEN.**
 Let a node be P(y_1^{E_1(N)}, …, y_k^{E_k(N)}) with affine E_j and all y_j ∈ F_x^*. Since x ≡ 1 (mod x − 1),
 E_j(xq) ≡ α_jq + β_j (mod x − 1), so as a function of r = q mod (x − 1) the node is f(g^r) = Σ_m γ_m g^{e_m r}, a
 Laurent polynomial with T ≤ C(D + k, k) terms after merging (g a generator; identically-zero f is a formal zero).
-Kelley (LMS J. Comput. Math. 19A (2016), Thms 2.2–2.3; = slpcirc Theorem SP) gives, for zero density ≥ λ on F_x^*:
+Kelley ("Roots of sparse polynomials over a finite field", LMS J. Comput. Math. 19(A) (2016) 196–204,
+Thms 2.2–2.3; = slpcirc Theorem SP) gives, for zero density ≥ λ on F_x^*:
 every prime ℓ > (2/λ)^{T−1} dividing x − 1 satisfies ℓ^{v_ℓ(x−1)} | e_m − e_{m'} for a partner pair, so some monomial
 ratio ∏y_j^{α_j(m_j − m'_j)} has order prime to ℓ — an (M) alignment. Three cases per node:
 (i) zero density < λ: Pr_q[deviation] ≤ λ(x − 1)(|I|/(x−1) + 1)/π(I) ≤ (3 + o(1))λ ln X;
-(ii) density ≥ λ with alignment (M); (iii) x − 1 is (2/λ)^{T−1}-smooth (Kelley gives nothing; a pure (M) event of
-mass X^{−1/(2T−2)+o(1)} for λ = (ln X)^{−2} and T = O(1)). This is a per-node classification; O(1/ln X) per node does
+(ii) density ≥ λ with alignment (M). (v3, literature critic: Kelley's Thm 2.2 gives every exponent a partner
+congruent modulo the large zero-coset size C ≥ (λ/2)^{T−1}(x−1), whether or not x − 1 is smooth; v2's separate
+"smooth" case (iii) was too pessimistic and is dropped: the alignment then holds modulo C rather than prime by prime.) This is a per-node classification; O(1/ln X) per node does
 **not** make a polynomial-height tree negligible, so §3.4 is not part of the quantitative statement in §8.
 
 ### 3.5 Exponents larger than the partner's range
@@ -245,8 +260,9 @@ For (a^N + 1)^N, or nodes adding retained gate outputs of different bases, p's t
 r = q mod (p − 1) through exponential-polynomial towers r ↦ (g^r + 1)^r. A non-(M), non-(A) leak would be such a
 node whose zero set in r is large (≥ |I|^{1−o(1)}/poly among the residues the partner can take) without order
 alignment or a short-interval pin. Bounding such sets is the problem of counting solutions of exponential
-congruences (g^r ≡ r, r^r ≡ c mod p, …); single equations of this type have nontrivial upper bounds in the
-literature (UNVERIFIED here, see §11), towers do not.
+congruences (g^r ≡ r, r^r ≡ c mod p, …). Single equations of this type have nontrivial upper bounds
+(Glebsky–Shparlinski, Des. Codes Cryptogr. 56 (2010), Thm 2; Balog–Broughan–Shparlinski, Acta Arith. 148 (2011);
+Cilleruelo–Garaev, Proc. AMS 144 (2016), Thm 1 / Lemma 5); towers such as (g^r + 1)^r are not covered.
 
 ## 4. Integer representatives
 
@@ -274,9 +290,10 @@ p̄/q = 1 + 1/N − θ. The second claim is qq̄ = 1 + jp divided by N. ∎ (Che
 Consequences (sufficient conditions only):
 - θ exactly gives gcd(θN − 1, N) = p.
 - θ to k top bits gives θN = 1 + jp up to O(N2^{−k} + 1): an approximate multiple of p next to the exact multiple N,
-  so (3/4 + ε)n bits factor N by Howgrave-Graham's partial approximate common divisor algorithm (CaLC 2001, LNCS
-  2146, 51–66; error exponent β² − ε with β = ½ − o(1)). Whether 3n/4 + O(1) bits suffice depends on parameter choices
-  (UNVERIFIED endpoint). This is the same N^{1/4} error barrier as n/4 known bits of p (topblock §2.3), and it is
+  so 3n/4 + O(1) bits factor N by the partial approximate common divisor method (Howgrave-Graham, "Approximate
+  integer common divisors", CaLC 2001, LNCS 2146, 51–66; the δ = 1 form with error N^{β²} in May, "Using
+  LLL-reduction for solving RSA and factorization problems", in The LLL Algorithm, Springer 2010; theorem number
+  UNVERIFIED). Settled by the literature critic (v2 had marked the endpoint UNVERIFIED). This is the same N^{1/4} error barrier as n/4 known bits of p (topblock §2.3), and it is
   not a lower bound.
 - GAR is an exact parametrization by factor-dependent values. It is **not** a proof that useful readouts must reveal
   an approximation to θ (codex_2 #11); readouts fed back into ring arithmetic are complete (4.1).
@@ -303,8 +320,9 @@ Consequences (sufficient conditions only):
   (−ℓ|p) = +1 (E2 controls: 0 violations in 8·10⁵ instances).
 - Products of Q_i that are squares give z² = ±1 mod N: a √−1 (ε certificate) or a congruence of squares (split,
   CFRAC); square forms give SQUFOF and Lehman-type splits.
-- Random-walk models of the principal cycle are heuristic (Gower–Wagstaff, Math. Comp. 77 (2008), §4,
-  Assumptions 4.11–4.19); "subject only to genus constraints" is literally false (period, reversal symmetry; codex).
+- Statistical models of the principal cycle are heuristic: Gower–Wagstaff, "Square form factorization",
+  Math. Comp. 77 (2008) 551–588, use equidistribution assumptions (§4, Assumptions 4.8–4.23); Assumption 4.13 is the
+  genus-independence heuristic closest to H-GEN; "subject only to genus constraints" is literally false (period, reversal symmetry; codex).
 
 ### 5.2 E2 (pre-registered): genus targets leak, non-genus targets null; archimedean leak via splits
 16 CF statistics (src/eps/cf.py menu) × 7 targets, 2·10⁵ instances per size, fresh-seed replication. **v2
@@ -356,15 +374,17 @@ on the bits of N has Pr[A(N) = ε(p)] = ½ + O_{C,d}(n^{−C}) for every C.
 *Proof* (codex_1 §4, steps restored):
 1. *Character pair.* χ₄(p)·1[pq ≡ 1 (4)] = (χ₄(p) + χ₄(q))/2, so Σ_{pq≡1(4)}χ₄(p)K(pq) = Σ_{p,q}χ₄(p)K(pq) for any K.
 2. *Walsh to additive characters.* W_S(n) = (−1)^{Σ_{i∈S}bit_i(n)} on b-bit integers has additive Fourier ℓ¹-norm
-   ≤ (Cb)^{|S|} (each bit's square wave has ℓ¹-norm O(b); products convolve; Bourgain, J. Anal. Math. 119 (2013),
-   Lemma 1).
+   ≤ (Cb)^{|S|} (each bit's square wave has ℓ¹-norm O(b); products convolve; Bourgain, "Möbius–Walsh correlation bounds and an
+   estimate of Mauduit and Rivat", J. Anal. Math. 119 (2013) 147–163, Lemma 1).
 3. *Bilinear prime sum.* Uniformly in α, Σ_{p,q∈(X,2X]}χ₄(p)e(αpq) ≪ X²e^{−c(log X)^{1/4}}. Put L = log X,
    Q = e^{L^{1/4}}, choose a/r with r ≤ X²/Q, |α − a/r| ≤ Q/(rX²).
    - *Minor arcs* (Q ≤ r ≤ X²/Q): for arbitrary bounded coefficients,
      |Σ_{m,n}a_mb_ne(αmn)|² ≪ X⁴/r + X³log(2r) + X²r log(2r) (Cauchy–Schwarz, then Σ_{h≤X}min(X, ‖αh‖^{−1})).
    - *Major arcs* (r < Q): with D = lcm(4, r) and p, q > D, e(at/r) = Σ_{χ mod D}c_χχ(t), |c_χ| ≤ 1, so each
      rectangular sum Σ_{p≤u, q≤v} is a sum of c_χ(Σ_pχχ₄(p))(Σ_qχ(q)). By Landau–Page (Ford–Green–Konyagin–Maynard–Tao,
-     JAMS 31 (2018), Lemma 7.1; the prime-character estimate in Watkins, Publ. Math. Besançon 2022, §3.4.1), all
+     "Long gaps between primes", JAMS 31 (2018) 65–105, Lemma 7.1; the prime-character estimate in Watkins,
+     "Distribution of the 2-Selmer rank under twisting", Publ. Math. Besançon 2022, 59–133, §3.4.1; textbook form in
+     Davenport, Multiplicative Number Theory, ch. 20), all
      non-principal characters of conductor ≤ 4Q except possibly one real ξ have prime sums ≪ Xe^{−c√L} uniformly in
      the interval. χ and χχ₄ cannot both lie in {principal, ξ}: that would force ξ = χ₄, but L(s, χ₄) > 0 on (0, 1).
      Two-variable partial summation with H(u, v) = e(βuv), H_{uv} = (2πiβ + (2πiβ)²uv)H, costs
@@ -378,10 +398,12 @@ on the bits of N has Pr[A(N) = ε(p)] = ½ + O_{C,d}(n^{−C}) for every C.
 - Target ε. For another fixed real character χ(p) the same proof works for large X because a fixed character is not
   exceptional; the L(s, χ₄) > 0 step is specific to χ₄.
 - For general targets the statement is false (factor-size leakage from the top bits of N, §4.3).
-- Finite automata: Thue–Morse and Rudin–Shapiro follow from Mauduit–Rivat (JEMS 17 (2015), Prop. 2) and Müllner
-  (Duke 166 (2017), Prop. 5.5), which allow arbitrary bounded coefficients on balanced ranges (codex; hypotheses
+- Finite automata: Thue–Morse and Rudin–Shapiro follow from Mauduit–Rivat (JEMS 17 (2015), Prop. 2; number UNVERIFIED) and Müllner
+  ("Automatic sequences fulfill the Sarnak conjecture", Duke 166 (2017), Prop. 5.5, verified), which allow arbitrary bounded coefficients on balanced ranges (codex; hypotheses
   checked only at the level of statements). General automata, AC⁰[⊕] and AC⁰ on bits of pure residues: OPEN.
-- Prior art: Green (CPC 21 (2012)) and Bourgain (2013) treat Möbius–Walsh/AC⁰; Shparlinski's book (1999) and Kopparty
+- Prior art: Green (CPC 21 (2012)) and Bourgain (2013) treat Möbius–Walsh/AC⁰; AC⁰ lower bounds for other
+  number-theoretic targets: Allender–Saks–Shparlinski, JCSS 62 (2001); Bernasconi–Damm–Shparlinski, Inf. Comput. 168
+  (2001); Shparlinski, ECCC TR98-054; Shparlinski's book (1999) and Kopparty
   (STOC 2011) treat Boolean complexity of residuosity/powering in other settings. No exact predecessor for the hidden
   common sign of balanced semiprime factors was located (UNVERIFIED as a negative). This closes the AC⁰ entry of
   selfred §3.2 for ε.
@@ -406,7 +428,7 @@ law the masses are only approximately equal and the general form applies), m_±(
   ratio is χ₄, and Landau–Page with T = exp((log X)^{1−δ}) leaves at most one exceptional character, which cannot be
   both (§6 step 3). At most one of ±c_S is a square.
 - (b) GRH. With the standard bound ψ(x, χ) ≪ √x·log x·log(fx) (Iwaniec–Kowalski Thm 5.15 / Montgomery–Vaughan
-  (13.21)), |β(c)| ≪ X^{−1/2}log X·log(|c|X) for non-principal (c|·); so for Σ_i log|c_i| ≤ X^{1/4−δ} the leak of
+  (13.21); numbers UNVERIFIED), |β(c)| ≪ X^{−1/2}log X·log(|c|X) for non-principal (c|·); so for Σ_i log|c_i| ≤ X^{1/4−δ} the leak of
   k = O(log n) tests is ≤ 2^k X^{−1/2−2δ}·polylog (the range extends towards X^{1/2−δ}; we state the safe range).
   (v1 printed a log³ bound that did not give its own range; corrected.)
 - (c) Without restriction the criterion is met: codex's CRT-constructed c (a non-residue exactly on half of the
@@ -440,8 +462,9 @@ N-dependent primitives are exponent gates x ↦ x^{E(N)} from a fixed polynomial
 gates must be primitives: computing x^N by square-and-multiply would be an N-dependent SLP, which is vacuous,
 slpcirc Prop R.) PRIM contains the fixed-parameter forms of the standard primality tests. Our results cover its
 one-layer part and its terminal Jacobi part with moderate conductors. Relevant generic-model antecedents, none of
-which classifies PRIM: Aggarwal–Maurer (EUROCRYPT 2009; generic RSA with E an input), Jager–Schwenk (J. Cryptology 26
-(2013); generic Jacobi/QR), Boneh–Venkatesan (EUROCRYPT 1998), Maurer–Wolf (EUROCRYPT 1998). Whether some existing
+which classifies PRIM: Aggarwal–Maurer (EUROCRYPT 2009; IEEE Trans. IT 62(11) (2016) 6251–6259; generic RSA with E
+an input), Jager–Schwenk (J. Cryptology 26 (2013); generic Jacobi/QR hardness — the reverse direction of PT-J, not a
+predecessor), Boneh–Venkatesan (EUROCRYPT 1998), Maurer–Wolf (EUROCRYPT 1998). Whether some existing
 theorem settles PRIM is UNVERIFIED (we found none).
 
 **Where a breakthrough would have to live.** By PT-X, a non-splitting leak in PRIM is a deviation of one prime's
@@ -530,7 +553,20 @@ TM/RS label (#9); equal-mass caveat in PT-J (#10); PT-J1(b) range (WRONG in v1) 
 (#12); CLASS targets restricted and the size-leak counterexample added (#13); imported items labelled (#15); SMALL
 wording (#16).
 
-**Opus literature critic:** pending at v2; see the v3 line below if present.
+**Opus literature critic (OK WITH FIXES), applied in v3.** No miscitation changes a theorem.
+- MISSING PRIOR ART, now credited: Monier (TCS 12 (1980)), Baillie–Wagstaff (Math. Comp. 35 (1980)), Erdős–Pomerance
+  (Math. Comp. 46 (1986)) for the NE1-R per-probe rate; hidden-order generic groups (Damgård–Koprowski 2002;
+  Rotem–Segev 2020) as the closest analogue of NE-C (NE1's N-as-exponent setting has no hidden input); twin-prime
+  Lucas liars (Somer 2008/09; Rotkiewicz 2003; Arnault 1997) with the norm −1 remark; AC⁰ background
+  (Allender–Saks–Shparlinski; Bernasconi–Damm–Shparlinski; Shparlinski ECCC TR98-054).
+- SETTLED: the 3n/4 + O(1) endpoint in §4.2 (May 2010, δ = 1 form; Howgrave-Graham 2001); §3.6 exponential
+  congruences (Glebsky–Shparlinski 2010; Balog–Broughan–Shparlinski 2011; Cilleruelo–Garaev 2016).
+- CORRECTIONS: §3.4 case (iii) dropped (Kelley's partner congruences hold modulo C regardless of smoothness);
+  Aggarwal–Maurer journal version; Jager–Schwenk is the reverse direction of PT-J, not a predecessor; full Watkins and
+  FGKMT references, Davenport ch. 20; Bourgain Lemma 1 and Müllner Prop. 5.5 verified; Gower–Wagstaff described as
+  equidistribution assumptions (Assumptions 4.8–4.23; 4.13 for genus independence).
+- Still UNVERIFIED (numbering only): Montgomery–Vaughan (13.21), Iwaniec–Kowalski Thm 5.15, Mauduit–Rivat JEMS
+  Prop. 2, Baillie–Wagstaff theorem numbers, May (2010) theorem number.
 
 ## 12. Reproduction (project root)
 ```
