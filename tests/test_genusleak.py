@@ -139,3 +139,19 @@ def test_qr_via_principal_genus():
                 continue
             ans, m, _ = genus.qr_via_principal_genus(N, k, a, oracle, rng)
             assert ans == (gmpy2.legendre(a, p) == 1), (p, q, k, a)
+
+
+def test_operational_isolation():
+    """Operational modules import neither the harness nor PARI/sympy factoring code."""
+    import ast, pathlib
+    root = pathlib.Path(__file__).resolve().parent.parent / "src" / "genusleak"
+    for name in ("forms.py", "cf.py", "cayley.py", "sqrtred.py", "genus.py"):
+        tree = ast.parse((root / name).read_text())
+        mods = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                mods |= {a.name for a in node.names}
+            elif isinstance(node, ast.ImportFrom):
+                mods.add(node.module or "")
+        assert not any(m and (m.startswith("cypari2") or m.startswith("sympy") or "harness" in m
+                              or m.startswith("src.common")) for m in mods), (name, mods)

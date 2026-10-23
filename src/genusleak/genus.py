@@ -53,7 +53,7 @@ def qr_via_principal_genus(N: int, k: int, a: int, oracle: Callable[[Form], bool
     # m0 == a (mod N), m0 == 1 (mod 8k)
     m0 = (a + N * ((1 - a) * pow(N, -1, mod) % mod)) % (N * mod)
     for tries in range(1, max_tries + 1):
-        m = m0 + N * mod * rng.randrange(1, N)
+        m = m0 + N * mod * rng.randrange(1, N * N)  # m < 8kN^3: GRH primes-in-AP range
         if gmpy2.is_prime(m):
             # (D/m) = 1 automatically (see docstring); build the prime form of norm m
             r = sqrt_mod_prime(D, m)
