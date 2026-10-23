@@ -94,3 +94,48 @@ def test_sqrt_reduction_toy():
             assert out["split"] in (1009, 1013)
             hits += 1
     assert 8 <= hits <= 32
+
+
+def test_lemma0_ambiguous_forms():
+    """Lemma 0: for N > 12 k^2 every reduced ambiguous form of D = -4kN either has a | 4k (public) or yields
+    a factor of N by gcd; and the useful ones are at least half of Cl[2]."""
+    from src.genusleak import genus
+    pari = _pari()
+    for (p, q) in ((101, 113), (103, 131), (107, 109), (211, 307), (1009, 1013), (1019, 1031)):
+        N = p * q
+        for k in (1, 2, 3, 5, 6, 7, 10, 11):
+            D = -4 * k * N
+            amb = genus.ambiguous_reduced_forms(D)
+            useful = 0
+            for f in amb:
+                s = forms.ambiguous_split(N, f)
+                if s:
+                    assert s in (p, q)
+                    useful += 1
+                else:
+                    assert (4 * k) % f[0] == 0, (p, q, k, f)
+            # number of reduced ambiguous forms = |Cl[2]| (one per class, D < -4)
+            cyc = [int(c) for c in pari.quadclassunit(D)[1]]
+            assert len(amb) == 2 ** sum(1 for c in cyc if c % 2 == 0)
+            assert 2 * useful >= len(amb)
+
+
+def test_qr_via_principal_genus():
+    """Prop GEN (QR_N <= GEN-SQ), with a brute-force 'is a square in Cl(D)' oracle (independent of genus theory)."""
+    from src.genusleak import genus
+    import gmpy2
+    rng = random.Random(3)
+    for (p, q, k) in ((1009, 1013, 1), (1009, 1019, 3), (211, 307, 2)):
+        N = p * q
+        D = -4 * k * N
+        ells = forms.split_primes(D, 12)
+        gens = [forms.prime_form(D, l) for l in ells]
+        elems, idx, table = cayley.enumerate_subgroup(D, gens)
+        assert len(elems) == int(_pari().qfbclassno(D))
+        squares = {forms.compose(z, z) for z in elems}
+        oracle = lambda f: f in squares
+        for a in range(2, 200):
+            if gmpy2.jacobi(a, N) != 1 or gcd(a, N) != 1:
+                continue
+            ans, m, _ = genus.qr_via_principal_genus(N, k, a, oracle, rng)
+            assert ans == (gmpy2.legendre(a, p) == 1), (p, q, k, a)
