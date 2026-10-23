@@ -1,6 +1,6 @@
 # smoothbuild: constructing smooth numbers instead of searching for them
 
-Agent `smoothbuild`, phase 24, 2026-10-23. Version 1 (before the codex and Opus reviews; §9–§10 record them).
+Agent `smoothbuild`, phase 24, 2026-10-23. Version 2 (after the codex blind round and the Opus proof critic; §9–§10 record the reviews).
 
 **Files.**
 - Pre-registration: `notes/smoothbuild_prereg.md` (commit `85d70fe`, before any run).
@@ -35,28 +35,29 @@ means L[1/2].
   construction step is itself as hard as the original problem.
 - **"Known factorisation" is not a weaker currency than smoothness.** A congruence of squares needs only atoms that
   recur, not small primes. That is true, but:
-  - an atom that occurs in only one relation can never be in a dependency (Lemma KI). So large known primes are a
-    *cost* (one relation each), never a benefit;
+  - an atom that occurs in only one relation can never be in a dependency (Lemma KI). A large known prime helps only
+    if it recurs, and each non-recurring one costs at most one dimension of the kernel;
   - making a given large prime P recur is the same problem as writing P's residue class as smooth × square
-    (Lemma LP), i.e. the residue-class construction problem itself;
-  - on a side that is random-like (the residue), no set of K known-factored atoms beats the K smallest primes
-    (Lemma AT, PROVED). If atoms may be chosen after seeing the residues (all primes allowed),
+    (Lemma LP), i.e. the residue-class construction problem itself, up to random self-reduction;
+  - on a side that is uniformly random (the residue, under H_S), no set of K multiplicatively independent
+    known-factored atoms beats the K smallest primes (Lemma AT, PROVED; the consequence is MODEL). If atoms may be
+    chosen after seeing the residues (all primes allowed),
     Croot–Granville–Pemantle–Tetali 2012 prove that the gain over the best single smoothness bound is at most a
     constant factor. E3 measures it: allowing every prime reaches the first square dependency after 0.49–0.51·J₀
-    integers, against 1.30–1.37 times as many for the best fixed bound;
+    integers, against 1.30–1.37 times as many for the J₀-optimal bound y* fixed in advance;
   - structured families make large primes recur more often, but by a bounded factor. For values of an irreducible
     degree-d polynomial the pair-recurrence rate is (r_G − 1) times that of random integers, where r_G is the rank of
     the Galois group on the roots. So the gain is ≤ d − 1, reached exactly by regular groups such as cyclotomic Φ_n
     (Prop GR, PROVED for the Chebotarev average). E1 confirms the law for eight families (observed/predicted
-    0.94–1.01).
+    0.94–1.01; the two lowest are explained by ± root pairs, a toy-range effect).
 - **Pre-factored families cannot be steered.** Cyclotomic and Aurifeuillian values, Lucas/Chebyshev values,
   binomials, products of consecutive integers and norms × units either:
   - have no tie to N at all (their factorisations are exact identities over Z, which carry no information mod N);
   - or are tied to N only through a residue side that is a full-size residue (Dixon, L[1/2]);
   - or must land in a short window near kN, which sparse families cannot do (sinonobliv Lemma PL / Prop FF).
-  Steering kN onto a Cunningham-type value needs a root of a fixed polynomial mod N; for x² − c that is as hard as
-  factoring, and in general it is polynomial selection (NFS). Among one-parameter families, the square is the best
-  free side (QS).
+  Steering kN onto a Cunningham-type value needs a root of a fixed polynomial mod N. For x² − c with c random that is
+  Rabin's problem (as hard as factoring); for a fixed c no equivalence is known; in general it is polynomial selection
+  (NFS). Among one-parameter families the square gives the smallest residue (QS).
 - **Sum-product gives existence, not construction.** Bourgain–Konyagin, Bourgain–Glibichuk–Konyagin, Garaev and
   Shkredov bound how products of structured sets *distribute*. That is evidence *for* the flatness under which
   meet-in-the-middle does not amortise; E2 measures smooth × smooth products in a window mod N at 0.99–1.01 of the
@@ -68,13 +69,16 @@ means L[1/2].
   - An average-case constructor of smooth representations u ≡ t·v for random squares t (roots hidden from it)
     factors N, rigorously (EQ1, Dixon's argument).
   - With unbounded exponents the representation problem is randomized-equivalent to "factoring plus discrete logs
-    modulo each prime factor" (EQ2).
+    modulo each prime factor", given that the small primes generate (Z/N)^× (EQ2; the DL direction uses an
+    exchangeability argument from the Opus proof critic).
   - A modulus-generic constructor also does prime-field index calculus, descent included (EQ3).
-  - The *weakest* smooth construction that still factors is a hidden-root relation sampler, and that is
-    randomized-equivalent to factoring itself (EQ4). So there is no smoothness-construction target strictly between
-    "factoring" and "residue-class construction" that we can name.
+  - The *weakest* named smooth construction that still factors is a hidden-root relation sampler, and that is
+    randomized-equivalent to factoring itself (EQ4). The targets form a partial order: HRS ≡ FACT, below
+    CLASS_∞ ≡ FACT ∧ DL, below bounded CLASS. A construction is useful only if it is *cheaper* than sampling, not
+    merely possible.
 - **Descent does not transfer, and the missing ingredient is not size-halving.** In Z/N and in F_q[X]/(I) alike,
-  every non-identity relation has one side at least as large as the modulus (Lemma DSC). What BGJT and
+  every non-identity relation has one side at least as large as the modulus (Lemma DSC); F_q escapes that floor only
+  because the big side is split for free. What BGJT and
   Kleinjung–Wesolowski have is a family of identities in which that big side splits *by construction* into atoms
   from a fixed polynomial-size set (the linear polynomials), which therefore recur in every relation. Z has no such
   family: additive Frobenius is impossible (systeq Prop F), and our Lemmas KI/LP/AT show that the integer substitute,
@@ -90,28 +94,31 @@ means L[1/2].
 
 | Result | Statement (short) | Status |
 |---|---|---|
-| Lemma KI | an atom occurring in one relation lies in no dependency; large free-side atoms only shrink the kernel; a square free side is optimal | PROVED (folklore: singleton removal) |
-| Lemma LP | a second relation containing a large atom P ⟺ a representation of P's class as (square) × (smooth) | PROVED (identity) |
-| Lemma AT | K pairwise coprime atoms compose ≤ Ψ(X, p_K) integers ≤ X | PROVED, elementary; no prior statement found by us |
+| Lemma KI | an atom occurring in one relation lies in no dependency; each non-recurring large atom costs ≤ 1 kernel dimension | PROVED (pure linear algebra; folklore: singleton removal) |
+| Lemma LP | a second relation containing a large atom P ⟺ a representation of P's class as (square) × (smooth); = CLASS up to random self-reduction | PROVED (identity) |
+| Lemma AT | K multiplicatively independent atoms compose ≤ Ψ(X, p_K) integers ≤ X | PROVED, elementary; no prior statement found by us |
 | CGPT | uniform random integers: first square product at T ∈ [(π/4)e^{−γ}, e^{−γ}]·J₀, any primes allowed | KNOWN (Annals 2012) |
-| Prop GR | irreducible F of degree d: Chebotarev average of ρ_F(p)(ρ_F(p) − 1) = r_G − 1 ∈ [1, d − 1]; = d − 1 iff G regular | PROVED (Chebotarev + Burnside); pair-count law HEURISTIC, E1 within 6% |
+| Prop GR | irreducible F of degree d: Chebotarev average of ρ_F(p)(ρ_F(p) − 1) = r_G − 1 ∈ [1, d − 1]; = d − 1 iff G regular | PROVED (Chebotarev + Burnside); pair-count law HEURISTIC, E1 0.94–1.01 |
 | Prop KS | Prop SI with "known factorisation" in place of "y-smooth" needs ≳ J₀(N) = L[1/2, √2] outputs unless the outputs are y-smooth | HEURISTIC (H_S + CGPT-type counting on the y-rough parts) |
-| Prop RP | ratio splits (lattice, poly time) dominate product splits (modular hyperbola) | PROVED (domination); no fast product search known (assessment) |
-| Theorem EQ | EQ1 hidden-root class constructor ⇒ factoring; EQ2 CLASS_∞ ≡_R FACT ∧ DL(p_i); EQ3 modulus-generic ⇒ F_p index calculus; EQ4 hidden-root sampler ≡_R FACT | PROVED (EQ1, EQ4; EQ2 given generation of (Z/N)^× by small primes, e.g. GRH); EQ3 PROVED reduction, rank HEURISTIC |
+| Prop RP | in every box, ratio splits (lattice, poly-time enumeration) are at least as numerous as product splits (modular hyperbola) and cheaper to find | PROVED (counting + enumeration); no fast product search known (assessment) |
+| Theorem EQ | EQ1 hidden-root class constructor ⇒ factoring (also found by codex); EQ2 CLASS_∞ ≡_R FACT ∧ DL(p_i) (Bach 1984 in factor-base form); EQ3 modulus-generic ⇒ F_p index calculus; EQ4 hidden-root sampler ≡_R FACT | PROVED (EQ1, EQ4); EQ2 KNOWN in substance; EQ2/EQ3 given generation of (Z/N)^× by small primes (e.g. GRH), rank step by exchangeability |
 | Lemma DSC | u ≡ t·v (mod N), (u, v) ∦ (t, 1) ⇒ \|u\| + \|t\|·\|v\| ≥ N; same with degrees in F_q[X]/(I) | PROVED (trivial) |
 
 **Experiments** (pre-registered; §8).
 - **E1 (Prop GR):** all 8 families and the random control inside their bands. Observed/predicted 0.94–1.01.
   Cyclotomic Φ₅/S4 = 3.07 (law: 3), Φ₇/S6 = 5.09 and Φ₉/S6 = 5.03 (law: 5), D4/S4 = 1.91 (law: 2), A4/S4 = 0.99 (law: 1).
 - **E2 (constructed vs tested side):** 3 of 5 predictions held at every size.
-  - P2b failed at 40 bits: Gauss-split pieces were 0.73–0.82 as smooth as independent same-size integers. Post hoc,
-    a *coprime* same-size null explains it completely (1.00–1.01): the two pieces of a split are coprime.
-  - P2d failed at every size (0.78–0.79). Post hoc: 17% of multiplier-steered splits are exact rescalings of the
-    unsteered split, and only 59–64% of steered smooth hits are distinct relations. Steering by free smooth
-    multipliers mostly re-finds the same relation.
+  - P2b failed at 40 bits (0.725, band edge 0.75): Gauss-split pieces were 0.73–0.83 as smooth as independent
+    same-size integers at every size. Post hoc, a *coprime* same-size null explains the systematic deficit completely
+    (1.00–1.01): the two pieces of a split are coprime. The 40-bit failure itself is noise at the band edge (0.752 on
+    the post-hoc sample).
+  - P2d failed at every size (0.78–0.79). Post hoc: 36–41% of multiplier-steered smooth hits repeat a relation
+    already found for the same target (17% of steered splits are exact rescalings of the unsteered split). A Poisson
+    model on the number of *distinct* relations per target reproduces the per-target success to within 3%.
   - Flatness (P2e): smooth × smooth products in a window mod N, O/E 0.99–1.01.
 - **E3 (CGPT):** T/Ĵ₀ median 0.49, 0.51, 0.51 at 32/40/48 bits (P3a held).
-  - P3b failed at 32 bits: one seed's 97th integer was a perfect square.
+  - P3b failed at 32 bits: one seed's 97th integer was a perfect square. The threshold was miscalibrated: perfect
+    squares alone give ≈ 18% a-priori failure probability across 12 seeds at 32 bits.
   - P3c held, but trivially: T_best ≡ T by construction, a design flaw disclosed in §8.
   - Post hoc, the fixed-in-advance bound y* needs 1.30–1.37 × T integers.
 
@@ -120,7 +127,10 @@ means L[1/2].
 ## 1. Setting and the degrees-of-freedom ledger
 
 **What a relation is.** A congruence A² ≡ w (mod N), with A a known residue and w a nonzero rational with known
-factorisation over a set of pairwise coprime *atoms* (primes, or any integers whose divisibility we can track). An
+factorisation over a set of pairwise coprime *atoms* (primes, or any integers whose divisibility we can track). This
+merged rational form covers Dixon, CFRAC, QS/MPQS/SIQS and integer relations u ≡ v. It does not cover NFS-type
+relations (prime-ideal columns, square root in a number ring); Lemma KI is pure linear algebra and holds for any
+column set, but the free/tested ledger below is stated for the merged rational form. An
 F₂-dependency among the exponent vectors of the w_i gives X² ≡ Y² (mod N). A relation u ≡ v (mod N) between two
 integers is the case w = v/u, A = 1, or w = v when u = A² is a square.
 
@@ -172,18 +182,24 @@ full-size integer unless the construction places the free side within h of a mul
 - Let relations have exponent matrix M = [M_s | M_ℓ] over F₂, where M_ℓ holds the columns of a set 𝒜_ℓ of "large"
   atoms. Then the left kernel of M equals ker(M_s) ∩ ker(M_ℓ) ⊆ ker(M_s).
 - (a) A relation whose row has an odd entry in a column of 𝒜_ℓ in which no other row is odd lies in no dependency.
-- (b) Replacing every row's 𝒜_ℓ-part by zero (making the large part a square) can only enlarge the kernel.
+- (b) For a fixed set of rows, each large atom that occurs (oddly) in the rows lowers the kernel dimension by at most
+  one relative to ker(M_s).
 - *Proof.* Immediate from the definitions: a left-kernel vector of M annihilates both blocks; (a) is the column
-  with one odd entry. ∎
-- *Reading.* Known large primes on the free side are a cost, one relation per distinct atom, never a benefit. The
-  best free side is a square (QS, Dixon), which contributes no columns at all. A free side's factorisation helps only
-  through its small atoms, i.e. through ordinary smoothness.
+  with one odd entry; (b) adding one column lowers the rank-deficiency by at most one. ∎
+- *Reading.* A large atom contributes to a dependency only if it recurs; each one that does not costs at most one
+  relation. Rows *with* large atoms are rows one would not otherwise have (E3: allowing every prime reaches the first
+  dependency ≈ 25% sooner), so known large primes can help, but only through recurrence, and Lemma LP and CGPT bound
+  how much. KI does not say that a square free side is optimal; §2.3's preference for squares rests on residue size.
+- *Merged form.* A free-side atom P can also be matched by a tested-side P in another relation; that second relation
+  is again one containing P, which is what Lemma LP describes.
 
 **Lemma LP (recurrence = class representation) [PROVED; an identity].**
 - Let P be an atom, P > y, gcd(P, N) = 1. A relation A² ≡ P^{±1}·w (mod N) with w a y-smooth rational is the same
   thing as a representation of the class of P^{∓1} as (square) × (y-smooth rational). Hence a *second* occurrence of
-  P (the only way P can join a dependency, by KI(a)) is exactly a solution of the residue-class problem of §4 at
-  target P.
+  P (the only way P can join a dependency, by KI(a)) is a solution of the residue-class problem of §4 at target P,
+  up to random self-reduction: CLASS applied to P·q·s² (s a random unit, q a factor-base prime making Pq a square
+  class) yields such a relation, and any such relation is a relation containing P. (§4's CLASS is guaranteed only on
+  uniformly random squares, so the equivalence is via that reduction, not literal.)
 - *Chance recurrence.* If large atoms behave like independent primes with Pr[P] ≍ c/P (HEURISTIC, the large-prime
   model), R relations give ≈ R²Σ_{P∈(y,P_max]}c²/P² ≍ R²/(y ln y) coincidences, dominated by P near y. For atoms of
   size ≥ L[α] with α > 1/3 (for example a prime near kN, or a cofactor of Φ_n(a)) chance recurrence needs
@@ -191,16 +207,16 @@ full-size integer unless the construction places the free side within h of a mul
   constant, or L^{o(1)}) for atoms near y, and the residue-class problem itself for larger atoms.
 
 **Lemma AT (atom optimality) [PROVED, elementary; no prior statement found by us].**
-- *Statement.* Let a₁ < … < a_K be pairwise coprime integers > 1, and p_K the K-th prime. Then the number of integers
-  ≤ X that are products of the a_i (with repetition) is at most Ψ(X, p_K).
+- *Statement.* Let a₁ < … < a_K be multiplicatively independent integers > 1 (e.g. pairwise coprime), and p_K the
+  K-th prime. Then the number of integers ≤ X that are products of the a_i (with repetition) is at most Ψ(X, p_K).
 - *Proof.*
-  - The least prime factors ℓ(a_i) are distinct, because the a_i are pairwise coprime. Among a₁, …, a_i there are i
-    distinct primes ℓ(a_j) ≤ a_j ≤ a_i, so a_i ≥ p_i.
-  - Each a_i has a prime ℓ_i dividing no other a_j, so the exponent vector of a product is recovered from
-    v_{ℓ_i}. Distinct products therefore have distinct exponent vectors e.
+  - The prime-exponent vectors of a₁, …, a_i have rank i, so together they involve at least i distinct primes, all
+    ≤ a_i. Hence a_i ≥ p_i. (For pairwise coprime atoms: their least prime factors are distinct.)
+  - By independence, distinct exponent vectors e give distinct products.
   - The map e ↦ ∏p_i^{e_i} is injective and ∏p_i^{e_i} ≤ ∏a_i^{e_i} ≤ X. ∎
-- *Non-coprime atoms.* Linear algebra works over a coprime base (Bernstein's coprime-base refinement), and the bound
-  applies with K = the size of that base, which is the number of columns.
+- *Dependent atoms.* Linear algebra works over a coprime base (Bernstein's refinement), and the bound applies with K
+  the number of columns. The Opus critic's brute force (K = 2, 3, atoms in [2, 40), X = 10⁴, 10⁵) found no
+  violation of Ψ(X, p_K) even for dependent atom sets with K = the number of atoms.
 - *Consequence (MODEL: H_S on the residue).* If the tested side is uniform in [1, V], then for any K atoms fixed in
   advance Pr[tested side composed of them] ≤ Ψ(V, p_K)/V. Known-factored atoms (cyclotomic pieces, Cunningham
   primes, large primes) never beat the K smallest primes as columns for a random side.
@@ -221,9 +237,11 @@ full-size integer unless the construction places the free side within h of a mul
   - (i) The natural-density average of ρ_F(p)(ρ_F(p) − 1) over primes equals r_G − 1.
   - (ii) 1 ≤ r_G − 1 ≤ d − 1. The lower bound is attained iff G is 2-transitive, the upper bound iff G acts
     regularly (|G| = d; e.g. Φ_n, every abelian G).
-  - (iii) (HEURISTIC: roots equidistributed in short intervals mod p.) For a ∈ an interval of length A ≤ P₁, the
-    number of pairs a ≠ a′ with F(a), F(a′) sharing a prime p ∈ (P₁, P₂] is ≈ (r_G − 1)·C(A, 2)·Σ_p p⁻². For
-    independent uniform integers it is ≈ C(A, 2)·Σ_p p⁻².
+  - (iii) (HEURISTIC: roots equidistributed in short intervals mod p.) For a ∈ an interval [a₀, a₀ + A) with
+    A ≤ P₁, the number of pairs a ≠ a′ with F(a), F(a′) sharing a prime p ∈ (P₁, P₂] is ≈ (r_G − 1)·C(A, 2)·Σ_p p⁻².
+    For independent uniform integers it is ≈ C(A, 2)·Σ_p p⁻². The heuristic needs a₀ ≫ P₂, or no pairs of roots
+    related by an affine map with small coefficients: if r′ = −r, then a′ ≡ −a forces p | a + a′ < 2(a₀ + A), so such
+    pairs never fall in the window once p > 2(a₀ + A) (Opus critic; this is E1's deficit for D4 and V4, §8.1).
 - *Proof of (i)–(ii).*
   - For unramified p, ρ_F(p) = fix(Frob_p). By Chebotarev the density average of the class function fix(g)² − fix(g)
     is (1/|G|)Σ_g (fix(g)² − fix(g)).
@@ -234,6 +252,9 @@ full-size integer unless the construction places the free side within h of a mul
 - *Reading.*
   - Structured pre-factored families make large primes recur up to d − 1 times more often than random integers.
     Cyclotomic families attain the maximum.
+  - For Φ_n the two effects are explicit: an *eligible* prime (p ≡ 1 mod n) has φ(n) roots and a pair rate
+    φ(n)(φ(n) − 1) times that of a random prime, but only a 1/φ(n) share of primes is eligible. The net factor is
+    φ(n) − 1.
   - For families of degree d ≤ (ln N)^{O(1)} this is an L^{o(1)} factor.
   - The same families are *less* smooth at small primes (only p ≡ 1 mod n divide Φ_n(a) beyond p | n): systeq
     measured R = 0.61 and 0.25.
@@ -248,9 +269,9 @@ full-size integer unless the construction places the free side within h of a mul
   fails by X^{−ε}: cyclotomic, Aurifeuillian, binomial with k ≥ 2, Lucas, and one-parameter polynomial values.
 - **Residue floor of one-parameter families [MODEL; KNOWN in substance].** If F has degree d ≥ 2 and the free side is
   F(x) near kN, the tested residue F(x) − kN is ≈ |F′(x₀)|·θ ≈ d(kN)^{1−1/d}·θ, with θ the distance of the real root
-  x₀ of F(x) = kN to the nearest integer. Over k ≤ K the best residues are ≈ d(kN)^{1−1/d}/K. d = 2 with F = x² (zero
-  columns, by Lemma KI) is the quadratic sieve. Larger d makes the residue larger and the free side costlier. So among
-  one-parameter pre-factored families the square is optimal. Multi-parameter families with small residues are
+  x₀ of F(x) = kN to the nearest integer. Over k ≤ K the best residues are ≈ d(kN)^{1−1/d}/K. d = 2 with F = x² is
+  the quadratic sieve, and the residue size d(kN)^{1−1/d} is smallest at d = 2. So among one-parameter pre-factored
+  families the square gives the smallest residue. Multi-parameter families with small residues are
   polynomial selection (resbarrier, heurnfs).
 - **Into a residue class.** "Steer a product of family members to ≡ □ (mod N)" with the square's root known is the
   residue-class problem of §4 restricted to the family's semigroup. Lemma AT says the family's atoms are no better than
@@ -308,18 +329,20 @@ equidistribution results with no algorithm.
   relations adds lattice vectors and creates no new F₂-information. A product of two Prop SI outputs is a relation
   with residue v₁v₂ ≤ h², not a new short one.
 
-**Prop RP (ratio splits dominate product splits) [PROVED for the domination; the hardness of product search is an
-assessment].**
+**Prop RP (ratio splits dominate product splits) [PROVED for the counting and enumeration; the hardness of product
+search is an assessment].**
 - *Ratio splits.* For t ∈ (Z/N)^×, Λ_t = {(u, v) ∈ Z² : u ≡ tv (mod N)} is a lattice of determinant N. Extended Euclid
-  (Lagrange reduction) finds (u, v) ∈ Λ_t with |u| < √N and |v| ≤ 2√N in O(x²) bit operations (`gauss_split`). This
-  is the classical rational-reconstruction step of index calculus (CFRAC's residues are its cousins).
+  stopped at the first remainder below √N finds (u, v) ∈ Λ_t with |u| < √N and |v| ≤ N/r_{i−1} ≤ √N in O(x²) bit
+  operations (`gauss_split`). This is the classical rational-reconstruction step of index calculus.
 - *Product splits.* H_t = {(x, y) : xy ≡ t (mod N)} is the modular hyperbola, which is not a lattice. Points with
-  x, y ≤ H exist for H ≥ N^{1/2+ε} for almost all t (and for all t once Kloosterman bounds apply, H ≥ N^{3/4+ε}, prime
-  modulus). We know no search faster than enumerating x ≤ H and testing tx⁻¹ mod N ≤ H, which costs ≈ N/H per
-  point.
-- *Domination.* A product split xy ≡ t with x, y y-smooth gives the relation t ≡ xy. A ratio split u ≡ tv with u, v
-  y-smooth gives t ≡ u/v. Both carry one relation with two tested pieces of the same sizes, and the ratio split is
-  found in polynomial time. ∎
+  x, y ≤ H exist for H ≥ N^{1/2+ε} for almost all t, and for all t once H ≥ N^{3/4+ε} (Weil/Kloosterman; for
+  squarefree composite N via Estermann's bound). We know no search faster than enumerating x ≤ H and testing
+  tx⁻¹ mod N ≤ H, which costs ≈ N/H per point.
+- *Domination, box by box.* In the box [−H, H]², Λ_t has 4H²/N + O(H/λ₁ + 1) points, each enumerable in polynomial
+  time from a reduced basis, while H_t has ≈ H²/N points found at cost ≈ N/H each. A product split xy ≡ t with x, y
+  y-smooth gives the relation t ≡ xy; a ratio split u ≡ tv with u, v y-smooth gives t ≡ u/v. So for every box the
+  ratio splits are at least as many, carry relations of the same shape, and are found in polynomial time per point.
+  (Multiples j·b₁ of one lattice vector give the same relation, which is E2's duplicate effect.) ∎
 - *Reading.* The sum-product world (products) is a strictly worse construction than the lattice world (ratios), and
   the lattice world gives two tested pieces of total log-size x (Theorem SS: L[1/2], the constant of Dixon). Going
   below needs more pieces, i.e. a higher-dimensional lattice: Schnorr's route, refuted for this model (schnorrcvp).
@@ -350,47 +373,60 @@ of w_i. Each pair costs expected time T.
 
 **Theorem EQ.** Let N be odd with ≥ 2 distinct prime factors, none ≤ y, and K = π(y) + 1.
 - **EQ1 [PROVED; Dixon's argument].** CLASS_A(y; T, δ) ⇒ factoring N in expected time
-  O((K + 1)(T + x²)/δ + K^ω x) with success probability ≥ 1/2.
+  O((K + 1)(T + x²)/δ + K^ω x + K·A·x³) with success probability ≥ 1/2 (ω the matrix-multiplication exponent; the
+  last term computes Y from exponents of size A·x; w(N) below is the number of distinct prime factors).
   - *Proof.* Draw a uniform unit r, put t = r² mod N, and call the constructor on (N, t). Each success gives
     r² ≡ ∏p^{e_p − f_p}. The constructor sees only t, so r is uniform among t's square roots given its view. After
     K + 1 successes an F₂-dependency gives X = ∏r_i and Y = ∏p^{(Σ(e−f))/2} with X² ≡ Y². Multiplying one r_i by a
-    nontrivial square root of 1 does not change the view, so Pr[X ≡ ±Y] ≤ 2^{1−ω(N)} ≤ 1/2.
+    nontrivial square root of 1 does not change the view, so Pr[X ≡ ±Y] ≤ 2^{1−w(N)} ≤ 1/2.
     `hidden_root_class_factor` implements it with the Gauss split as the constructor: 32/40/48-bit N factor
     STRUCTURALLY in tests. ∎
-- **EQ2 [(⇐) and (⇒ FACT) PROVED, given that the primes ≤ y generate (Z/N)^×, e.g. under GRH by Bach's bound when
-  y ≥ 2 ln² N; (⇒ DL) a reduction whose rank step is HEURISTIC].**
+- **EQ2 [KNOWN in substance: Bach 1984 (DL mod N ≡ FACT ∧ DL mod primes), here in factor-base form; PROVED given
+  that the primes ≤ y generate (Z/N)^×, e.g. under GRH by Bach's bound when y ≥ 2 ln² N; the rank step of (⇒ DL) by
+  the exchangeability argument below (Opus proof critic), or codex's primitive-kernel-vector argument (§9.1)].**
   CLASS_∞ ≡_R FACT ∧ DL(p) for every p | N.
   - (⇐) Factor N and compute discrete logs of the factor-base primes and of t modulo each p^k ∥ N. A solution e of
     Σe_p log p ≡ log t modulo each group exponent exists by generation and is found by linear algebra over Z.
-  - (⇒) Factoring is EQ1. For DL modulo p | N, run CLASS_∞ on N with targets g^k mod p lifted by CRT with a random
-    square mod N/p. The relations give the logs of the factor base and of the target. This is index calculus with a
-    free relation collection and a free descent; the rank of the random relation system is the usual HEURISTIC, or
-    rigorous for uniform random relations in Pomerance's 1987 framework (UNVERIFIED by us). So (⇒ DL) is PROVED as a
-    reduction, with the rank step HEURISTIC. ∎
+  - (⇒) Factoring is EQ1. For DL of h modulo p | N (work mod p^k ∥ N if p² | N), let g generate (Z/p)^× and
+    replace h by g·h if h is a non-square. Make m queries, each t_i = g^{2k_i} mod p (k_i uniform) lifted by CRT with
+    a uniform square mod N/p, so t_i is a uniform square mod N. At one uniformly random position put the target
+    h·g^{2k} instead, which has the same distribution. Each success gives a vector v_i = e_i − f_i ∈ Z^K with
+    v_i·(log ℓ)_ℓ ≡ 2k_i (mod p − 1), plus log h at the target position.
+  - *Rank step (exchangeability).* Over Z/(p − 1), the indices i with v_i outside the span of the other vectors
+    give a strict chain of submodules of (Z/(p − 1))^K, so there are at most K·log₂ p of them. The oracle's view does
+    not reveal the target's position, so the target is one of them with probability ≤ K·log₂ p/s, s the number of
+    successes. Otherwise v_T = Σc_i v_i (coefficients from a Howell/Hermite form, without factoring p − 1), and
+    log h ≡ Σc_i·2k_i − 2k (mod p − 1). Cost O(K·x·(T + x²)/(εδ)) for error ε. ∎
+  - This replaces the rank heuristic of v1; the appeal to Pomerance 1987 is withdrawn (an adversarial oracle's
+    relations are not uniform).
   - The bounded version CLASS_A asks in addition for a *short* vector of the relation lattice in a coset. That is a
     Schnorr-type CVP and is not implied by FACT ∧ DL (OPEN).
-- **EQ3 [PROVED reduction; padding as in dsr Lemma PT].** A constructor that works for all admissible N, or only
+- **EQ3 [PROVED; padding as in dsr Lemma PT, rank step as in EQ2].** A constructor that works for all admissible N, or only
   for N = p·r with r a known prime of size p^{o(1)} above y, gives CLASS modulo every large prime p at the same cost.
   So it performs prime-field index calculus with descent at cost K·T/δ. At y = (ln N)^{O(1)} and polynomial T that is
   polynomial-time factoring *and* polynomial-time prime-field DL. At L[1/3, τ] it would undercut the 1.902 of
   prime-field DL (Matyukhin 2003) once τ is small (sihard Prop DLI).
 - **EQ4 [PROVED].** HRS(y; T) ⇒ factoring in O(K(T + x²) + K^ω x), as in EQ1. Conversely, given the factorisation,
-  an HRS with T = poly(x) exists: draw random y-smooth w (e.g. products of random factor-base primes), keep w if it is a
-  square mod every p | N (Legendre symbols; probability ≥ 2^{−ω(N)}), take square roots mod each p^k by
-  Tonelli–Shanks and Hensel, and combine them by CRT with independent random signs. So HRS ≡_R FACT. ∎
+  an HRS with T = poly(x) exists. Draw w = w₁w₂ with w₁, w₂ i.i.d. products of random factor-base primes. Then
+  Pr[w is a square mod every p | N] = Σ_g Pr[χ(w₁) = g]² ≥ 2^{−w(N)} by Cauchy–Schwarz, χ the vector of Legendre
+  symbols (a single product can fail with probability 1, e.g. if every factor-base prime is a non-residue mod p₁).
+  Take square roots mod each p by Tonelli–Shanks, lift by Hensel (p odd, w a unit), and combine by CRT with independent
+  random signs: X is uniform among the 2^{w(N)} roots. So HRS ≡_R FACT. ∎ (≡_R is equivalence of problems, not of
+  costs: HRS at cost T gives factoring at ≈ K·T.)
 
-**The hierarchy.** From strongest to weakest:
+**The hierarchy** (a partial order, not a chain; from stronger to weaker where an implication is shown):
 - CLASS_A, modulus-generic: this implies FACT and prime-field DL with descent;
 - CLASS_A for one N;
 - CLASS_∞ ≡ FACT ∧ DL;
-- doubly-smooth lister (suffmap E3): implies FACT under heuristic R; an HRS if the outputs have hidden roots;
 - HRS ≡ FACT.
+- Off this chain: the doubly-smooth lister (suffmap E3) implies FACT under heuristic R, and is an HRS if its outputs
+  have hidden roots. No implication between it and CLASS_∞ is shown.
 
 Prop SI (one-sided, intervals) is not on this chain. It supplies half-relations whose residues are tested, and it
 needs H_S and R (sicheck shows that a deterministic constructor can make R fail).
 
-**Weakest construction that still factors:** an HRS, which is no harder than factoring. So below residue-class
-construction there is no smoothness-construction target that is not already "factor N". This is why the project's
+**Weakest construction that still factors:** an HRS, the weakest named target, which is no harder than factoring.
+CLASS_∞ ≡ FACT ∧ DL sits strictly between it and bounded CLASS unless DL reduces to factoring (open). This is why the project's
 sufficient conditions take the form "construct at *cost* below sampling", not "construct at all". Dixon's algorithm
 *is* an HRS at its own cost. QS and NFS are HRS-like under heuristic R: their square roots are determined by the
 relation, and fruitfulness is heuristic.
@@ -407,7 +443,7 @@ smooth-square analogue. Both say that the minimal relation-supply target is fact
   max(|u|, |tv|) ≥ N/2.
 - The same holds in F_q[X]/(I) with deg I = k, degrees in place of logs: max(deg u, deg t + deg v) ≥ k.
 - *Reading.* A "special-q" relation for a target q of size Q has a side of size ≥ N/2 or a cofactor v of size ≥ N/(2Q).
-  A descent step from q never produces a relation of total size below N/2. Smaller targets are not easier in the
+  A descent step from q never produces a relation of total size |u|·Q·|v| below N/2. Smaller targets are not easier in the
   one-sided Z/N model: every node of a descent tree is a full-size instance of the class problem of §4 (and CLASS is
   random self-reducible by multiplying t by random squares). In F_{q^k} the same floor holds, so **size-halving is not
   the missing ingredient**.
@@ -433,17 +469,19 @@ smooth-square analogue. Both say that the minimal relation-supply target is fact
 - Polynomial selection does give an N-tied presentation, but its norm floor is N^{1/(d+1)} (RES/G), which depends on
   N: the classical integer descent (NFS-DL) is L[1/3].
 - The open escape remains systeq §6: dense split families with an N-dependent compression (a multigrade
-  Prouhet–Tarry–Escott problem). This note adds that the split pieces must also be *recurring* atoms, which rules out
+  Prouhet–Tarry–Escott problem). systeq §6(a) already asks for pieces ≤ B^{O(1)}, which implies recurrence; this note
+  makes the recurrence requirement explicit (Lemmas KI/LP/AT), which rules out
   shifted-integer pieces.
 
-**Prop SI by recursion [refuted, siconstruct Lemma SR].** To construct u ∈ [kN, kN + h] as m·u′ with m smooth, u′
+**Prop SI by recursion [no gain from SR; not a lower bound].** To construct u ∈ [kN, kN + h] as m·u′ with m smooth, u′
 must lie in [kN/m, (kN + h)/m], a window of the same relative width h/(kN) = N^{−1+o(1)}. At size X′ = kN/m the window
-has length h/m, and below X′ ≈ N/L[2/3] it is shorter than the smooth-number gap. A recursion on smaller instances
-of Prop SI therefore has no instances to recurse on.
+has length h/m. Recursion does not relax the relative precision h/X (Lemma SR is an identity, not a lower bound
+against recursive algorithms). For m ≲ L[2/3] the sub-instances exist but have a smaller ν; once m > L[2/3] the
+expected number of smooth integers in a sub-window is below one. So recursion buys nothing that we can see.
 
 **Verdict on angle 4:** the quasi-polynomial machinery does not transfer. The precise missing ingredient is an
 identity family whose big side is split into *recurring* atoms by construction (Frobenius additivity supplies it in
-F_q). Size-halving per se is available in both settings and buys nothing (DSC).
+F_q). The DSC floor holds in both settings; F_q escapes it only because the big side is split for free.
 
 ---
 
@@ -462,7 +500,9 @@ F_q). Size-halving per se is available in both settings and buys nothing (DSC).
 | W9 | Pre-split candidates into many known pieces (k ≍ u^θ pieces) | keep only as known | gains k^u = L-constant changes, but this is the listing regime (suffmap §1.1, Theorem LS); placement is still Prop SI |
 | W10 | Large-prime recurrence engineered by sharing structure (a^n − 1 over Φ_d(a)) | kill | exact on the free side; KI ⇒ at best a square |
 
-Codex's blind ideas are adjudicated in §9.1.
+Codex's blind ideas are adjudicated in §9.1 (endpoint-conditioned walks / conditional sampling over exponent
+vectors: KEEP as the open navigation problem; z ↦ z(z + 1) orbits: killed, each step introduces a new prime; finite
+field lifts: killed, the defect ℓR(M) survives evaluation).
 
 ---
 
@@ -474,9 +514,16 @@ Codex's blind ideas are adjudicated in §9.1.
 - This note narrows it in three ways.
   - "Known factorisation" does not relax it (Prop KS, Lemmas KI/LP/AT, CGPT).
   - Pre-factored families cannot supply it (§2).
-  - Residue-class versions of it are index calculus with descent (Theorem EQ), so a residue-class constructor would
-    also break prime-field DL. That makes the interval form, which has no such implication for every modulus,
-    the more plausible of the two (assessment).
+  - Residue-class versions of it are index calculus with descent (Theorem EQ). A modulus-generic residue-class
+    constructor would break prime-field DL outright (EQ3); a modulus-generic Prop SI constructor would also improve
+    prime-field DL, to L_p[1/3, 1.232] (sihard Prop DLI). Neither form escapes that implication.
+- **Codex's alternative target** (blind round §6), stated precisely: given odd N and a uniformly random square a
+  with its root withheld, output y-smooth u, v with u ≡ a·v (mod N), ln u + ln v ≤ 3 ln N, on an inverse-polynomial
+  fraction of inputs, at y = L[1/3, 0.60] and cost L[1/3, 1.20] per call. By EQ1 that factors N in L[1/3, 1.80]
+  *rigorously* (no H_S, no heuristic R), and under GRH such quotients exist (JMV). Both sides are constructed, so
+  Theorem SS does not apply. The search problem is an endpoint-conditioned walk of length O(x/ln y) on the small
+  primes. We list it as the cleanest *interface*; by EQ3 a modulus-generic solution would also give prime-field DL,
+  which we take as evidence against it (assessment).
 - For descent the target is systeq §6 plus recurrence: a dense, N-tied family of identities whose big side splits into
   atoms from a recurring set.
 - **Assessment:** ≤ 1% that any route here beats L[1/3, 1.902].
@@ -502,7 +549,11 @@ A = 2¹⁵ consecutive a, five disjoint ranges from 2¹⁶; primes p ∈ (2¹⁶
 | uniform [2⁶³, 2⁶⁴) | — | (1) | 669.6 | 0.994 | — | held |
 
 P1c held: Φ₅/S4 = 3.07, Φ₈/S4 = 2.93, D4/S4 = 1.91, Φ₇/S6 = 5.09, Φ₉/S6 = 5.03, A4/S4 = 0.99.
-- *Reading.* The recurrence boost is exactly the Galois rank minus one. A4 (2-transitive, non-symmetric) behaves like
+- *Post hoc (Opus critic).* The two lowest ratios are explained by root pairs r′ = −r, which can never both fall in
+  the window once p > 2(a₀ + A) (Prop GR (iii)). Splitting S: D4 ± pairs 594.8 observed vs 669.7 heuristic (0.888),
+  other pairs 669.2 vs 668.5 (1.001); V4 ± pairs 606.6/670.9 (0.904), other pairs 1331.2/1341.9 (0.992). Φ₅, Φ₇, Φ₉,
+  S4 and S6 have no ± root pairs. A toy-range artefact (a₀ ≪ P₂), irrelevant at L-scale.
+- *Reading.* The recurrence boost matches the Galois rank minus one, up to that artefact. A4 (2-transitive, non-symmetric) behaves like
   S4, so the law is about the rank, not about the group being small or abelian. Root sieving was cross-checked
   against flint factorisations (`test_root_sieve_matches_factorisation`).
 
@@ -510,20 +561,25 @@ P1c held: Φ₅/S4 = 3.07, Φ₈/S4 = 2.93, D4/S4 = 1.91, Φ₇/S6 = 5.09, Φ₉
 
 N balanced semiprimes, 6 per size; y = 2^{bits/4}; targets t = r² mod N.
 
-| bits | M0 rate | M0 O/E | M1 rate | M1 O/E (indep. null) | M1 O/E (coprime null, post hoc) | M2/M1 per split | M2 target / indep. pred. | M4 O/E |
+| bits | M0 rate | M0 O/E | M1 rate | M1 O/E (indep. null) | post hoc sample: indep. / coprime null | M2/M1 per split | M2 target / indep. pred. | M4 O/E |
 |---|---|---|---|---|---|---|---|---|
-| 40 | 0.0068 | 0.970 | 0.0958 | **0.725** | 1.014 | 0.994 | **0.775** | 0.992 |
-| 48 | 0.0061 | 0.972 | 0.0957 | 0.775 | 1.012 | 0.979 | **0.784** | 0.998 |
-| 56 | 0.0059 | 0.961 | 0.0951 | 0.805 | 1.006 | 1.010 | **0.794** | 0.991 |
-| 64 | 0.0061 | 1.041 | 0.0949 | 0.825 | 1.000 | 0.994 | **0.792** | 1.006 |
+| 40 | 0.0068 | 0.970 | 0.0958 | **0.725** | 0.752 / 1.014 | 0.994 | **0.775** | 0.992 |
+| 48 | 0.0061 | 0.972 | 0.0957 | 0.775 | 0.773 / 1.012 | 0.979 | **0.784** | 0.998 |
+| 56 | 0.0059 | 0.961 | 0.0951 | 0.805 | 0.804 / 1.006 | 1.010 | **0.794** | 0.991 |
+| 64 | 0.0061 | 1.041 | 0.0949 | 0.825 | 0.828 / 1.000 | 0.994 | **0.792** | 1.006 |
 
 - P2a held, P2c held, P2e held.
 - **P2b failed at 40 bits** (0.725 < 0.75); it held at 48–64. *Post hoc:* the two pieces of a Gauss split are coprime,
-  because gcd(u, v) divides N. A null drawn as coprime same-length pairs gives 1.000–1.014 at every size, so coprimality
-  explains the deficit completely. It is sicheck's Lemma CP effect, and it shrinks with size.
-- **P2d failed at every size** (0.78–0.79). *Post hoc:* 16.7–17.1% of the 16 steered splits of t·s are exact rescalings
-  (s·u, v) of t's own split, which yield the *identical* relation. Only 59–64% of steered smooth hits are distinct
-  relations. Independence of re-randomisation, assumed by P2d, is false for small smooth multipliers.
+  because gcd(u, v) divides N. On a fresh post-hoc sample the independent null gives 0.752–0.828 (0.752 would have
+  passed at 40 bits, so the failure itself is noise at the band edge), while a null drawn as coprime same-length pairs
+  gives 1.000–1.014 at every size. Coprimality explains the systematic 17–27% deficit completely. It is sicheck's
+  Lemma CP effect, and it shrinks with size.
+- **P2d failed at every size** (0.78–0.79). *Post hoc:* 16.6–17.1% of the 16 steered splits of t·s are exact
+  rescalings (s·u, v) of t's own split, which yield the *identical* relation, and 36–41% of steered smooth hits repeat
+  a relation already found for that target. The rescalings alone would predict ≈ 0.95, not 0.78. What explains P2d
+  quantitatively is the number λ of *distinct* relations per target (0.909, 0.952, 0.954, 0.970 at 40–64 bits):
+  Poisson 1 − e^{−λ} = 0.597, 0.614, 0.615, 0.621 against observed 0.614, 0.639, 0.627, 0.634 (Opus critic's check).
+  Independence of re-randomisation, assumed by P2d, is false for small smooth multipliers.
 - *Relations per smoothness test* (M0 vs M1): 0.006 vs 0.048 at every size. The ratio-split constructor beats plain
   sampling by ≈ 8 at u = 4. That is ρ(u/2)²/ρ(u) ≈ 2^u-type, an L^{o(1)} factor (Theorem SS: same total tested
   log-size x).
@@ -540,18 +596,21 @@ N balanced semiprimes, 6 per size; y = 2^{bits/4}; targets t = r² mod N.
 | 40 | 19 807 | 4 096 | 0.511 | 0.491 | 1.303 | 327 | 118 |
 | 48 | 85 486 | 11 585 | 0.508 | 0.469 | 1.318 | 896 | 266 |
 
-- P3a held: medians sit just below CGPT's conjectured e^{−γ} = 0.561. That is expected, since the √2-step grid
-  overestimates J₀.
-- **P3b failed at 32 bits.** Seed 3's 97th integer was 1 075 315 264 = (8·4099)², a single-element dependency. Its
-  probability is ≈ 100·2⁻¹⁶ ≈ 0.15% per seed. CGPT's statement is asymptotic, and this is a toy-scale tail event.
+- P3a held: the medians lie inside CGPT's proved interval [0.441, 0.561]. The shortfall from the conjectured
+  e^{−γ} = 0.561 is unexplained (finite size). It is not a grid artefact: the Opus critic re-estimated Ĵ₀ on a
+  2^{1/32}-step grid and found the √2 grid overestimates J₀ by only 0.3–0.6%.
+- **P3b failed at 32 bits.** Seed 3's 97th integer was 1 075 315 264 = (8·4099)², a single-element dependency.
+  The failure event (T/Ĵ₀ < 0.25, i.e. a perfect square among the first ≈ 1084 draws) has probability ≈ 1084·2⁻¹⁶
+  ≈ 1.65% per seed, ≈ 18% across 12 seeds. The pre-registered threshold was miscalibrated at 32 bits.
 - **P3c held trivially; design flaw disclosed.** T_y ≥ T for every y, and T_y = T once y exceeds the dependency's
   largest prime, so T_best ≡ T by construction. The informative statistic is T at the bound y* fixed in advance:
-  1.30–1.37 × T (post hoc).
+  1.30–1.37 × T (post hoc). (T_y = T held within the grid cap 2^{bits−2} in all 36 runs.)
 - *Reading.* The first dependency uses primes ≈ 200–900 × y* (the large-prime variation happens by itself), but
   it arrives only ≈ 25% sooner than at the best fixed bound. That is the constant-factor gain CGPT proves.
 
 **Deviations.**
-- (1) E3 records the largest prime and the size of the first dependency (descriptive, registered).
+- (1) E3 records the largest prime (descriptive, registered) and the size of the first dependency (descriptive, not
+  registered).
 - (2) The post-hoc statistics above are labelled as such.
 - (3) Ĵ₀'s minimum was taken over grid points y ≤ 2²⁶. Larger y have π(y)/f̂ > 3.9·10⁶ > Ĵ₀ trivially.
 
@@ -559,9 +618,41 @@ N balanced semiprimes, 6 per size; y = 2^{bits/4}; targets t = r² mod N.
 
 ## 9. GPT-6.1-sol rounds
 
-### 9.1 Blind round (`codex/smoothbuild_1.out`)
+### 9.1 Blind round (`codex/smoothbuild_1.out`, launched before our analysis; two earlier attempts died on
+"model at capacity" and were relaunched unchanged)
 
-(pending)
+**Agreement.** Codex reached the same verdict independently on every angle: pre-factored families supply identities,
+not factorisations (Φ₁₁(2) = 23·89) and no tie to N; sum-product results are distribution statements without
+navigation; integer descent needs a nonzero modular defect tA − B = kN, which forces a side of log-size x − O(1)
+(our Lemma DSC); direct recursion on smaller moduli consumes the window budget (our §5, sharper: N′ = ⌈N/D⌉ forces
+D ≤ h). Codex's research prior: ≈ 5% for beating 1.902 by a constructive route, ≈ 0.5% for exponent < 1/3.
+
+**Codex results we adopt.**
+- *Hidden-root reduction* (§3.1): identical to our EQ1, found independently, including the explicit statement that
+  the constructor may be adversarial and know the factors. Its cost bookkeeping (max(κ + τ + d, 2κ) with sparse
+  algebra) is used in §7.
+- *Prime-only Lemma AT* (§1.4): the same injection for a set of K primes. Our Lemma AT extends it to any
+  multiplicatively independent atoms.
+- *Exact cyclotomic incidence* (§1.3): Pr[p | Φ_n(a)] = φ(n)/(p − 1) for n | p − 1, else 0; pair collisions enhanced by
+  ≈ φ(n). This is the C_n case of our Prop GR, which gives the exact factor r_G − 1 = φ(n) − 1 for p > A.
+- *Shared-base recurrence* (§1.3): p occurs in a^n − 1 exactly for ord_p(a) | n; much of it is the inherited divisor
+  a^d − 1 (v_p(a^{dt} − 1) = v_p(a^d − 1) + v_p(t)). Consistent with our W10.
+- *Bach 1984* (§3.2, abstract verified by codex): DL modulo composite N is polynomial-time equivalent to factoring
+  together with DL modulo primes. Our EQ2 is therefore **KNOWN in substance** (the factor-base-representation version
+  of Bach's theorem); we keep only the representation bookkeeping.
+- *Rank-free DL from representations* (§3.3): represent g^{r_i}h^{s_i}; a primitive kernel vector c makes Σc_is_i
+  uniform, so z = log h is recovered with probability φ(M)/M. An alternative to our exchangeability argument in EQ2;
+  both avoid the rank heuristic.
+- *Covering count* (§2.2): products of r integers from [1, H] meeting every circular interval of length h + 1 need
+  r ln H ≥ x − ln(h + 1); for H ≤ y that is r ≳ x/ln y factors. Existence of enough entropy, not an algorithm.
+- *Counterexample to "smooth u with smooth residue suffices"* (§3.5): for N = 2^k − 1, 2^{2k} ≡ 1 is a valid but
+  useless relation, so fruitfulness needs hidden roots (or heuristic R): the reason EQ4 is phrased with hidden roots.
+
+**Where codex differs.** Codex names the bounded-height hidden-root quotient constructor as the strongest target
+(§7 above); we keep Prop SI as the reference target and list codex's as the cleanest interface. Codex does not use
+the Galois-rank formulation or CGPT; we do not use its formal quasi-polynomial descent axiom (§4.1), which we record
+here: a polynomial-cost elimination with ≤ x^C children each of size ≤ θz (θ < 1), valid for every target modulo N,
+would give quasi-polynomial factoring.
 
 ### 9.2 Adversarial round (`codex/smoothbuild_2.out`)
 
