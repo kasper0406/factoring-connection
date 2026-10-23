@@ -178,6 +178,8 @@ def factor_from_local_part(N: int, a: int, L: Fraction) -> Optional[int]:
     g = gcd(2 * a * (a * a + 1), N)
     if 1 < g < N:
         return g
+    if g == N:
+        return None
     s = (2 * a * X.numerator * pow(a * a + 1, -1, N)) % N
     disc = s * s - 4 * N
     if disc < 0 or not gmpy2.is_square(disc):

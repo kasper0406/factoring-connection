@@ -32,42 +32,50 @@ Notation: N = pq balanced, ε = (−1/p) on N ≡ 1 (mod 4), QR₂ = [2 square m
 Class E is the one bin that is computable, is not an aggregate, and is not known to be hard. A pre-registered battery on
 2·10⁵ semiprimes per size found no signal there.
 
-What is new here (no prior formulation found by us; the mathematics is routine):
+Results (items 2–3: no prior formulation found by us, mathematics routine; item 1 is standard class field theory, and
+the contribution there is the corollary for pure trees):
 
-1. **Theorem RA (PROVED).** Take any number field K and any abelian extension L/K, and evaluate the Artin symbol of
+1. **Theorem RA (PROVED; standard, cf. Lemmermeyer, *Reciprocity Laws* 2000).** Take any number field K and any abelian extension L/K, and evaluate the Artin symbol of
    the *rational* ideal N·O_K. The result depends only on N mod m, where m is fixed by the conductor.
    - This covers Jacobi symbols, all power-residue symbols computed by de Boer–Pagano at rational N, and Kronecker
      symbols in number fields, including extensions that are non-abelian over Q.
    - Corollary: pure trees (Theorem PT) that may also query such symbols at N-independent arguments are PT-m trees.
      Without splitting N they learn nothing beyond the fiber floor.
-   - So the Jager–Schwenk escape (Jacobi is easy by reciprocity although generically hard) never opens a new channel.
-     Reciprocity computes exactly the aggregates.
+   - So, for symbols at N-independent arguments whose conductor is at most X^{1−η}, the reciprocity shortcut behind
+     Jager–Schwenk (Jacobi is easy by reciprocity although generically hard) opens no new channel. RA does not cover
+     symbols at N-dependent arguments (Jager–Schwenk's own setting, row 15) or the additive class of item 2.
 2. **The conjecture "every reciprocity-computable invariant is an aggregate" is false as stated. The counterexample
    shows where the factors hide.**
    - The Dedekind sum s(a, N) is computable by reciprocity in O(log N) steps. It splits exactly as
      s(a, pq) = s(a, p) + s(a, q) + U(a, N), where U is a sum over units only.
    - **Prop DSF (PROVED):** the local part s(a, p) + s(a, q) for any single a factors N deterministically.
      Equivalently, 6N·U(a, N) ≡ (a²+1)·φ(N)/(2a) (mod N).
-   - What remains beyond the aggregate a + a⁻¹ mod N, (a/N) and N mod 24 is the alternating sum of the partial
-     quotients of a/N, plus the parity of their number (Barkan–Hickerson–Knuth).
+   - s(a, N) is determined by the easily computed data a + a⁻¹ mod N, (a/N) and N mod 24, together with the
+     alternating sum of the partial quotients of a/N and the parity of their number (Barkan–Hickerson–Knuth).
    - So the one non-aggregate reciprocity object we know is a continued-fraction statistic, and separating its local
      part is factoring.
 3. **Root-type exponential sums are factoring-equivalent (Prop SAL, PROVED; decoder success rate measured).**
    - Salié sums S(a, b; N), and Kloosterman sums at square moduli K(a, b; N²), have closed forms over the square
      roots of ab.
-   - An oracle for their normalised value factors N. A dyadic decoder needs only *constant* absolute precision
-     (10⁻² was enough in ≥ 19/20 trials up to n = 128) and log₂N + 3 queries.
-   - Quadratic Gauss sums are aggregates. Kloosterman sums at squarefree N have no known polylog algorithm even at a
+   - An oracle for their normalised value factors N. PROVED at precision N⁻⁴ with one query (cx 16), or with an
+     exact oracle. A dyadic decoder (HEURISTIC; success rates measured) needs precision δ = O(1/log N), i.e. about
+     log log N bits, and log₂N + 3 queries. Its success rate falls at fixed δ: at δ = 10⁻² it is 20/20 at n = 64,
+     15/20 at n = 256, and 9/20 at n = 1024 (critic run).
+   - Quadratic Gauss sums are aggregates. Kloosterman sums at squarefree N have no known classical polylog algorithm even at a
      prime modulus.
 4. **Battery (pre-registered, 84 menu statistics, n = 32, 48, 64, 128, 2·10⁵ instances each): no hit.**
    - The statistics are Jacobi symbols, Dedekind sums, continued-fraction and Euclid statistics, and level-11 modular
      symbols at six N-dependent arguments a(N).
-   - All validity checks pass. The largest |z| is 3.25 at n = 48–128 and 3.76 at n = 32.
-   - Effects with |ρ| ≥ 0.0153 (ε) and ≥ 0.0217 (QR₂) are excluded for this menu at n ∈ {48, 64, 128}.
+   - All validity checks pass.
+   - Largest menu |z|: 3.25 at n = 48–128, and 3.40 (ε) / 3.76 (QR₂) at n = 32.
+   - Overall maximum: 5.69, for the NC size statistic `nc_ded5_bits` at n = 32. This is a finite-prime-set size
+     artefact (§3).
+   - At n ∈ {48, 64, 128} the battery had 80% power to detect a *linear* association of a coded statistic with ε at
+     |ρ| ≥ 0.0153 (QR₂: 0.0217). None was found.
 
 **Most promising open candidate (§4):** class-E functionals at structured N-dependent arguments, in particular the
-Rademacher integer Φ(a(N)/N) and fixed-level modular symbols. Prop DSF shows that the local data sit inside s(a, N)
-in exactly computable form, and that separating them is factoring. Neither a mechanism nor a barrier for this class is
+Rademacher integer Φ(a(N)/N) and fixed-level modular symbols. Prop DSF shows that one natural local/global split of
+s(a, N) is exactly as hard as factoring. Neither a mechanism nor a barrier for this class is
 known.
 
 ---
@@ -104,7 +112,7 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 | 15 | Jacobi symbols of N-dependent elements (a(N)/N) | yes | local product χ_{a(N)}(p)χ_{a(N)}(q) whose conductor moves with N; not covered by RA; battery null | battery (`*_jac`) |
 | 16 | Jacobi vector ((x/N))_{x ≤ H} | yes | AGG (modulus lcm(4x)); o(1) advantage for H ≤ c·log N under GRH (Thm L + Parseval) | RA-PT + selfred Thm L |
 | 17 | Root numbers of N-twisted elliptic families (e.g. y² = x(x−1)(x−N): w_p = −(−1/p)) | when computable | AGG (local root numbers at tame primes are fixed-conductor Kronecker characters; Rohrlich 1993; Hilbert reciprocity) | HEURISTIC in general; example PROVED |
-| 18 | Rédei symbols [a, b, N] | needs an ideal of norm N, i.e. √a mod N | NC (Artin symbol of N·O_K itself is RA-trivial) | Stevenhagen 2022 |
+| 18 | Rédei symbols [a, b, N] | needs an ideal of norm N (√a mod N), or, via Rédei reciprocity [a,b,N] = [a,N,b], a solution of x² − ay² = Nz² (a conic with coefficient N; needs the factorisation in general: Simon; Cremona–Rusin) | NC (the Artin symbol of N·O_K itself is RA-trivial) | Stevenhagen, MPCPS 172 (2022) |
 
 ### Exponential sums
 
@@ -112,9 +120,9 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 |---|---|---|---|---|
 | 19 | Quadratic Gauss G(a; N), G(a, b; N); Landsberg–Schaar | yes | AGG: ε_N (a/N)√N · e(−(4a)⁻¹b²/N) | KNOWN; cx 13 |
 | 20 | Fixed-rank Gaussian / abelian Chern–Simons Z_A(N) | yes | AGG: ε_N^d (det A/N) | cx 14 |
-| 21 | Salié S(a, b; N) | iff factoring | **FACT**, constant precision | **Prop SAL**; cx 16 (precision N⁻⁴, one query) |
-| 22 | Kloosterman K(a, b; N²) | iff factoring | **FACT**, constant precision | **Prop SAL** (square case) |
-| 23 | Kloosterman K(a, b; N), N squarefree | no known algorithm, even for prime N | NC; K(a,b;pq) = K(a q̄, b q̄; p)K(a p̄, b p̄; q) | Katz 1988 (rank-2 sheaf, no bounded-genus curve); cx 15; F_{2^m}, F_{3^m} are the elliptic exceptions (Lachaud–Wolfmann 1990) |
+| 21 | Salié S(a, b; N) | iff factoring | **FACT** (precision N⁻⁴ PROVED; δ = O(1/log N) heuristic) | **Prop SAL**; cx 16 (precision N⁻⁴, one query) |
+| 22 | Kloosterman K(a, b; N²) | iff factoring | **FACT** (as row 21) | **Prop SAL** (square case) |
+| 23 | Kloosterman K(a, b; N), N squarefree | no known algorithm, even for prime N | NC; K(a,b;pq) = K(a q̄, b q̄; p)K(a p̄, b p̄; q) | rank-2 Kloosterman sheaf (Deligne, SGA 4½); "no bounded-genus curve computes it" is HEURISTIC; cx 15; elliptic exceptions F_{2^m} (Lachaud–Wolfmann 1990) and F_{3^m} (Katz–Livné 1989); classical only: Bruin (arXiv 1807.03600) has a quantum state-preparation algorithm, while a single classical value costs ≈ √q |
 | 24 | Cubic Weyl sums Σ e(ax³/N); cubic Gauss/Jacobi sums mod N | no | FACT (analytic C3); zero-test decides (−3/p) | analytic §0 item 3; cx 17 |
 | 25 | Non-quadratic characters of (Z/N)^* (and their Gauss/Jacobi sums) | no (needs a prime ideal above p) | NC; rational arguments make (·/(N))_n trivial | Thm RA remark |
 
@@ -125,7 +133,7 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 | 26 | r₂(N) = 16[ε = 1] | no | NC (open, = ε) | factorbits §2.3; cx 19 |
 | 27 | r₃(N) = 12h(−4N) etc.; Hurwitz H(N); ternary representation numbers | no (class numbers, L[1/2]) | FACT-hard direction (h(−4N) ⇒ ambiguous forms); family Q/M | Gauss; Shanks; cx 20 |
 | 28 | r₄(N) = 8(N+1+p+q) | iff factoring | FACT | Jacobi; cx 21; nonsmooth |
-| 29 | Half-integral weight cusp coefficients c(N) (Waldspurger c(N)² ∝ L(½, f⊗χ_N)) | no (≈ √N terms) | NC; not local at p | Waldspurger 1981 |
+| 29 | Half-integral weight cusp coefficients c(N) (Waldspurger c(N)² ∝ L(½, f⊗χ_N)) | no (conductor ≍ N², so ≈ N terms) | NC; not local at p | Waldspurger 1981; Kohnen–Zagier 1981 |
 | 30 | Cohen–Eisenstein H(r, N), r ≥ 2 (L(1−r, χ_D)) | no known | NC; no Euler splitting over p, q | Cohen 1975 |
 
 ### Quantum / topological
@@ -178,7 +186,11 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 
 ## 2. Theorems and propositions
 
-### 2.1 Theorem RA (reciprocity aggregate). PROVED (standard class field theory; no prior statement in this form found by us)
+### 2.1 Theorem RA (reciprocity aggregate). PROVED; a standard consequence of class field theory
+
+The Artin map is compatible with the transfer: ψ_{L/K}(𝔞O_K) = Ver(ψ_{L′/Q}(𝔞)) (Neukirch, *Algebraic Number
+Theory* VI, functoriality of the reciprocity map). We claim no novelty. The point is only its consequence for the
+fiber floor.
 
 **Statement.** Let K be a number field and L/K a finite abelian extension of conductor 𝔣 = 𝔣₀𝔣_∞. Let m > 0 generate
 𝔣₀ ∩ Z. Let ψ: I_K^{𝔣} → Gal(L/K) be the Artin map. For positive integers N coprime to m, the value ψ(N·O_K) depends
@@ -248,7 +260,8 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
   12 s(a, N) = Σ_{i=1}^{r} (−1)^{i+1} a_i + (a + ā)/N − 2 + (−1)^r (Barkan–Hickerson–Knuth; verified on 3 000 random
   pairs).
 - With the classical congruences 12N s ≡ a + ā (mod N) and 12N s ≡ N + 1 − 2(a/N) (mod 8) (N odd), and
-  12N s ≡ 0 (mod 3) when 3 ∤ N (all tested), the value 12N s mod 24N is an aggregate of a.
+  12N s ≡ 0 (mod 3) when 3 ∤ N (all tested), the value 12N s mod 24N is a function of (a + ā mod N, (a/N), N mod 24),
+  all easily computed.
 - Equivalently, the Rademacher integer Φ = (a + ā)/N − 12s(a, N) = −Σ(−1)^{i+1}a_i + 2 − (−1)^r carries everything
   else.
 
@@ -256,7 +269,7 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
 - Statement: for any a with gcd(2a(a²+1), N) = 1, the exact value L = s(a, p) + s(a, q) determines p + q, and hence
   the factors (one value; deterministic). Conversely the factors give L by reciprocity at p and q.
 - *Proof.*
-  1. k_p := 6p·s(a, p) ∈ Z, and 2k_p ≡ a + a⁻¹ (mod p) (the Rademacher congruence at the prime p > 3). Same for q.
+  1. k_p := 6p·s(a, p) ∈ Z, and 2k_p ≡ a + a⁻¹ (mod p) (the Rademacher congruence at the prime p; it holds at p = 3 too, as the critic checked). Same for q.
   2. X := 6N·L = k_p q + k_q p ∈ Z.
   3. Then 2aX ≡ q(a² + 1) (mod p) and 2aX ≡ p(a² + 1) (mod q).
   4. Hence 2aX ≡ (p + q)(a² + 1) (mod N), and p + q = 2aX(a² + 1)⁻¹ mod N, because p + q < N. ∎
@@ -280,7 +293,7 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
   and e ≡ −1 (mod q^k). Define T_M(c) = Σ_{v² ≡ c² (M)} e(2v/M).
 - Then:
   - (i) S(c², 1; N) = ε_N √N·T_N(c). This is the Salié closed form, valid for composite odd N (cx 16 gives a Fourier
-    proof; Iwaniec, *Topics in Classical Automorphic Forms* Lemma 4.10 for the prime case). Tested numerically.
+    proof; it is Iwaniec–Kowalski Lemma 12.4 for any odd modulus coprime to a). Tested numerically.
   - (ii) K(c², 1; N²) = N·T_{N²}(c). This is the evaluation of Kloosterman sums at even prime powers (Iwaniec–Kowalski
     §12.3) combined with twisted multiplicativity. Tested numerically for N = 15, 21, 35.
   - (iii) T_M(c) = 2cos(4πc/M) + 2cos(4πce/M).
@@ -291,8 +304,11 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
   3. Round to a multiple of 1/M to get ±2ce mod M.
   4. Then gcd(ce − c, N) = p, since ce ≡ c (mod p) and ce ≡ −c (mod q).
 - **Correctness when it succeeds:** PROVED (the output is gcd-verified).
-- **Success probability:** HEURISTIC. A step fails only when x_{k+1} lies within O(δ) of ½. Measured (all with
-  20/20 trials unless noted):
+- **Success probability:** HEURISTIC.
+  - A step fails only when x_{k+1} lies within O(δ) of ½. There are about log₂M steps, so success is roughly
+    exp(−cδ·log N), and δ = O(1/log N) is needed. It is not a constant.
+  - Measured (successes out of 20; the critic's runs at δ = 10⁻² gave 22/30 at n = 512 and 9/20 at n = 1024, and at
+    δ = 10⁻³ gave 18/20 at n = 1024):
 
 | n | δ = 10⁻² | 3·10⁻³ | 10⁻³ | 10⁻⁴ | 10⁻⁶ |
 |---|---|---|---|---|---|
@@ -301,7 +317,8 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
 | 256 | 15/20 | 18 | 18 | 19 | 20 |
 
   (Queries: 67, 131, 259; `newfamily_salie_sweep.json`. Kloosterman-at-N² version tested at n = 40.)
-- cx 16 gives the complementary single-query decoder at precision N⁻⁴.
+- cx 16 gives the complementary single-query decoder at precision N⁻⁴. That decoder is the basis of the PROVED FACT
+  claim: one query at precision N⁻⁴ recovers min(v, N − v) by rounding.
 - **Converse:** the factors give S and K(·; N²) to any precision in polynomial time (square roots mod p, q; Hensel;
   CRT).
 
@@ -327,13 +344,23 @@ a/N, where γ_k are the convergent matrices and m₀ is fixed. It contains:
 equal to that of G(N) = E_a[g]. G(N) is an average over a ∈ (Z/N)^*.
 - An effective equidistribution theorem for CF functionals over (Z/N)^*, uniform in the factorisation of N with error
   N^{−δ}, would give advantage O(N^{−δ}).
-- Bettin–Drappeau-type limit laws are the candidate tools. Whether their error terms are uniform in the factorisation
-  of an individual modulus is UNVERIFIED.
+- Bettin–Drappeau (arXiv 1903.00457) average over all denominators q ≤ Q, so they are not the tool for a fixed
+  modulus. Fixed-modulus results exist:
+  - Porter (Mathematika 22, 1975), improved by Ustinov (2008) and Bykovskii–Frolenkov (Mat. Sb. 2017): the mean
+    Euclid length over a ∈ (Z/N)^* is (12 ln 2/π²) ln N + C + O(N^{−1/6+ε}), uniformly in N. So the
+    factorisation-uniform statement holds for the *mean* of `len` (KNOWN).
+  - Aistleitner–Borda–Hauke (arXiv 2210.14095): concentration and tail bounds for partial-quotient sums and Dedekind
+    sums at fixed N.
+  - Mean squares of s(a, N) over units (Walum 1982; Conrey–Fransen–Klein–Scott, JNT 1996; Zhang, JTNB 1996). Their
+    main terms carry explicit ∏_{p|N} factors, i.e. the factorisation enters at relative size ≈ 1/p (exact form
+    UNVERIFIED by us). This parallels DSF and still gives only o(1) advantage.
+- Status: the random-argument floor is KNOWN-in-substance for the length mean. It is OPEN for general class-E
+  characteristic functions.
 
 **Structured arguments.** For structured a(N) (⌊√N⌋, ⌊N^{2/3}⌋, Fermat residues, 2^{(N−1)/2}) we have no theorem.
 The CF of a/N gives congruences a·q_k ≡ ±r_{k+1} (mod N) with q_k r_{k+1} ≍ N/a_{k+1}. These are never small, so the
 relation mechanism that made the CF of √N leak at n = 32 (eps §5) is absent. This is the registered prediction P1,
-and the battery confirms it.
+The battery null is consistent with it, though a null cannot confirm a mechanism.
 
 ---
 
@@ -354,7 +381,8 @@ strata N mod 2⁸; a hit needs |z| ≥ 6. Cost was 1.4–2.7 ms per instance; th
 | 128 | QR₂ | 100 211 | 15.7 (15.8) | never fire | 0.91 | 0.83 | 2.48 | 0 | 0.0216 |
 
 **Validity.**
-- All size × target cells are valid by the registered rules. V1: every |z − expected| ≤ 1.2. V2: 0 violations in
+- All size × target cells are valid by the registered rules. V1: every |z − expected| ≤ 1.2. (V1 uses one fixed flip pattern per
+  target, which is why it reads 21.2 at every n. It checks the plumbing, not sampling variability.) V2: 0 violations in
   every cell; at n ≤ 64 the PCs fire with z ≥ 19.8. V3: shuffle mean z² ∈ [0.82, 1.22].
 - `nc_N_mod8` and `nc_N_mod256` are exactly degenerate everywhere (P2).
 - Also degenerate, as anticipated in the prereg: `ferm_jac`, `euler_jac`, and the size statistics of `sqrt`/`cbrt2`
@@ -362,8 +390,12 @@ strata N mod 2⁸; a hit needs |z| ≥ 6. Cost was 1.4–2.7 ms per instance; th
   sign). Degenerate statistics detect nothing.
 
 **Conclusion (registered rule).**
-- **Refuted for this menu** at n ∈ {48, 64, 128} for both targets. No statistic correlates with ε at |ρ| ≥ 0.0153, or
-  with QR₂ at |ρ| ≥ 0.0217, beyond the N mod 2⁸ floor (80% power at |z| = 6).
+- **Refuted for this menu** at n ∈ {48, 64, 128} for both targets.
+  - No confirmed hit. The design had 80% power at |z| = 6 to detect a *linear* association of the integer-coded
+    statistic, beyond the N mod 2⁸ floor, at |ρ| ≥ 0.0153 (ε) or 0.0217 (QR₂).
+  - This is a power statement, not an exclusion.
+  - A non-monotone dependence of the categorical codes (`dmod7`, `dmod5`, `ms_mod3`, `nc_cubic7`, `rem*`) would be
+    missed by this linear test.
 - n = 32 also has no hit, but see the two footnotes.
 - P1, P2 and P3 were all met.
 
@@ -381,11 +413,11 @@ explanation; |z| < 6, so not a hit. Both are null at n ≥ 48 (|z| ≤ 2.2).
 - All 12 instances with gcd(a(N), N) > 1 are at n = 32: 6 from `cbrt2` and 6 from `hash`. The ACCIDENTAL null
   expectation Σ(1/p + 1/q) is 7.0 per argument, so both match.
 - Four arguments are structurally coprime:
-  - `sqrt`: ⌊√N⌋ ∈ (p, q) for balanced N;
+  - `sqrt`: ⌊√N⌋ ∈ (p, q) for balanced N. Twin primes give ⌊√N⌋ = p, but then N ≡ 3 (mod 4), which D_n excludes;
   - `ferm`: p | (r+1)² would need r + 1 ∈ {p, q};
   - `euler`: a unit;
   - `gold`: ⌊αN⌋ ≡ ⌊p{αq}⌋ (mod p), which vanishes only if {αq} < 1/p. Since α = (√5−1)/2 is badly approximable,
-    {αq} > 1/(√5q), so the event is rare. Observed 0.
+    ‖qα‖ ≥ c/q for some c > 0 (c < 1/√5, by Hurwitz), so the event is rare. Observed 0.
 - No STRUCTURAL splits; n ≥ 48 has none.
 
 ---
@@ -396,10 +428,13 @@ explanation; |z| < 6, so not a hit. Both are null at n ≥ 48 (|z| ≤ 2.2).
 Rademacher integer Φ(a(N)/N), or the level-11 modular symbol, at a(N) ∈ {⌊√N⌋, ⌊N^{2/3}⌋, (⌊√N⌋+1)² − N, …}.
 
 **Why this one.**
-- (1) It is the only class of poly-time, reciprocity-computed invariants that is provably **not** an aggregate
-  (Theorem RA covers all symbols; this class escapes it).
-- (2) The factors are *inside* it in exact form. s(a, N) = s(a, p) + s(a, q) + U(a, N), and U hides φ(N) mod N
-  (DSF). That is more than can be said for any other computable object in the table.
+- (1) It is the only class of poly-time, reciprocity-computed invariants that Theorem RA does not reduce to N mod m
+  plus size. RA is multiplicative and this class is additive.
+  - We have *not* proved that it is not such a function at the structured arguments. "Not an aggregate" is literally
+    true only because of the size dependence.
+- (2) DSF shows that one natural split, s(a, N) = s(a, p) + s(a, q) + U(a, N), is exactly as hard as factoring, with
+  U hiding φ(N) mod N. That is a statement about hardness of separation, not evidence that s(a, N) is closer to
+  leaking than (a/N) = (a/p)(a/q).
 - (3) No barrier is known. PT does not apply (Euclid on integer representatives is not generic-ring). RA does not
   apply (additive, not multiplicative). The relation mechanism is absent (§2.5).
 
@@ -428,7 +463,7 @@ the unit part U(a, N) have a computable component correlated with φ(N) mod smal
 | Symbols at (N) | any abelian L/K, N-independent argument | value factors through (Z/m)^* (Thm RA) ⇒ PT-m floor | refuted for this model (PROVED) |
 | Dedekind / Rademacher at fixed a | Euclid recursion | N mod a + size (RA2) | refuted (PROVED) |
 | Dedekind local part | exact L(a,N) | ≡ FACT (DSF) | FACT (PROVED) |
-| Salié / Kloosterman at N² | approximate-value oracle | ≡ FACT at constant precision (SAL) | FACT (PROVED; success measured) |
+| Salié / Kloosterman at N² | approximate-value oracle | ≡ FACT at precision N⁻⁴; dyadic decoder at δ = O(1/log N) (SAL) | FACT (PROVED at N⁻⁴; decoder heuristic, measured) |
 | Class E at N-dependent a | 84 statistics, 4 sizes | no signal at \|ρ\| ≥ 0.0153 | experimentally refuted for this menu |
 | Lattice-cone sums | fixed-dimension Barvinok | none known | not yet tested |
 
@@ -463,7 +498,55 @@ class E, which matches §4.
 
 ## 8. Opus critics
 
-PENDING.
+**Proof critic: ACCEPT WITH FIXES.** All fixes are applied above.
+
+Verified independently (scripts in `/private/tmp/claude-501/newfamily_critic/`):
+- DS1, DS2 and DSF: 2 036/2 036 cases, including p = 3.
+- The U-residue formula.
+- The Salié closed form at N, including p ≡ q ≡ 3 (mod 4), and the Kloosterman closed form at N².
+- The RA proof and the cubic test.
+- The battery implementation against the prereg, and operational isolation.
+- The n = 32 size artefact: the exact population correlation of log N with ε predicts z ≈ −4.1.
+
+Fixes applied:
+- **MAJOR 1.** "Constant precision" was false for the dyadic decoder, which needs δ = O(1/log N); the critic
+  measured 9/20 at n = 1024, δ = 10⁻². The PROVED claim is now based on cx 16's N⁻⁴ single query.
+- **MAJOR 2.** The §0 Jager–Schwenk sentence overclaimed. It is now restricted to N-independent arguments with
+  conductor ≤ X^{1−η}.
+- **MINOR.**
+  - §4's "provably not an aggregate" and "more than any other object" are softened.
+  - The n = 32 max |z| is now reported (5.69, NC).
+  - "Excluded" is replaced by a power statement, noting the linear-test limitation for categorical codes.
+  - RA is cited as a standard transfer consequence.
+  - V1 is noted to be a single flip pattern.
+- **NIT.**
+  - The golden-ratio inequality is corrected.
+  - The twin-prime remark is added.
+  - `factor_from_local_part` no longer crashes when N | a² + 1.
+  - The DSF congruence also holds at p = 3.
+  - The aggregate wording for a + ā is fixed.
+  - "Confirms" is removed.
+
+**Literature critic: ACCEPT WITH FIXES.** All fixes are applied.
+
+- **MAJOR.** §2.5 cited Bettin–Drappeau, which treat averages over all denominators. It now cites the fixed-modulus
+  literature: Porter, Ustinov and Bykovskii–Frolenkov for the uniform Euclid-length mean; Aistleitner–Borda–Hauke;
+  and the mean-square results for Dedekind sums.
+- **MINOR.**
+  - Salié (i) is now cited as Iwaniec–Kowalski Lemma 12.4.
+  - SAL is a routine composition of the closed forms with Rabin 1979 (a nontrivial square root of 1 factors N). No
+    prior formulation was found.
+  - Row 23: the sheaf is Deligne's; Katz–Livné is added for F_{3^m}; "classical" is specified and Bruin's quantum
+    algorithm noted.
+  - RA is now presented as standard (cf. Lemmermeyer). The contribution is Corollary RA-PT.
+  - Row 18 now gives both Rédei obstructions.
+- **NIT.**
+  - Waldspurger term count is corrected (≈ N terms).
+  - References: Rademacher–Grosswald, *Dedekind Sums* (Carus 1972) ch. 3 for the congruences; Barkan 1977,
+    Hickerson 1977 (Crelle 290) and Knuth 1977 (Acta Arith. 33) for BHK; Kirby–Melvin 1994 and Ghys 2007 for Φ;
+    Garoufalidis–Zagier arXiv 2111.06645; Xin–Xu arXiv 2303.01185 (Exp. Math. 2024); Johansson 2012 for p(N);
+    Miller 1976 is deterministic under ERH and randomized unconditionally.
+- **Not verified by either critic:** Garoufalidis–Zagier Prop. 10.1 (cited by cx 22).
 
 ## 9. Reproduction (project root)
 
