@@ -1,0 +1,363 @@
+1. Overall verdict: MAJOR REVISION
+
+“No construction found here beats sampling” survives this review. Several stronger exclusions do not.
+
+Prop RP is false as stated. Lemma LP does not establish its advertised general recurrence equivalence. Prop KS extrapolates a random-integer theorem beyond its hypotheses. The descent discussion confuses size conservation with the availability of recursive size reduction. The experimental arithmetic is largely sound, but E2 does not establish the flatness claimed in the verdict.
+
+I found no demonstrated constructor meeting tau < 0.757, and no demonstrated exponent below 1/3. The failures below invalidate exclusions; they do not supply a new factoring algorithm.
+
+
+2. Lemmas KI, LP and AT
+
+MINOR — KI is correct, but several summaries omit the essential parity qualification.
+
+A prime occurring only once to an odd exponent excludes that row from every dependency. A prime occurring once to an even exponent causes no obstruction: a single relation with w = P² already has zero parity vector.
+
+The matrix statement and dimension bound are correct. Neither implies that a structured free side can do “at best” what a square does. KI compares kernels for fixed rows; it does not compare the cost of obtaining those rows, their residue sizes, or their usefulness.
+
+Fix: retain the linear algebra and remove the optimization conclusions attributed to it. Say “occurs oddly in exactly one row” consistently.
+
+MAJOR — LP’s restricted identity is correct; its general interpretation is not.
+
+A relation A² ≡ P w with w y-smooth does represent P as a square times a smooth rational. But a second relation containing P need not have that form: it can contain other large primes. Large-prime graphs and hypergraphs exploit precisely this distinction.
+
+Concrete example:
+
+N = 77, y = 5, P = 13, Q = 17.
+
+12² ≡ 23² ≡ PQ ≡ 67 mod 77.
+
+The two rows cancel both large-prime columns and give
+
+gcd(12·23 − 13·17, 77) = 11.
+
+Neither individual row isolates P over the small factor base. This is recurrence of a block of large atoms, not a representation of P alone.
+
+The proposed random self-reduction also has a gap. A single factor-base prime q with Pq square modulo every prime divisor of N need not exist, even when products of factor-base primes provide the required square class.
+
+For N = 187 = 11·17, y = 5, P = 7, the Legendre-symbol vectors are:
+
+−1 and 2: (−1,+1);
+3 and 5: (+1,−1);
+7: (−1,−1).
+
+No positive factor-base prime has P’s vector. The product 6 does. Finding an appropriate product requires additional work; multiplying by random squares does not change the missing square-class information.
+
+Fix: state LP only for an isolated large atom with smooth complementary part. Treat general recurrence through the large-prime incidence matrix. State the assumptions, success probability and cost of any square-class adjustment. Do not identify generating correlated recurrence with solving arbitrary prescribed-target CLASS instances.
+
+MINOR — AT’s stated theorem is correct.
+
+The argument a_i ≥ p_i and the exponent-vector injection work for multiplicatively independent positive integer atoms.
+
+Its scope is much narrower than the verdict suggests: fixed atoms, ordinary integer products, and a uniformly distributed tested integer. It says nothing directly about target-dependent selection or navigating modular products.
+
+The dependent-atom brute force is not a theorem. Coprime refinement can increase the number of columns, so its column count must be stated explicitly.
+
+Fix: retain AT as an elementary extremal counting lemma. I did not locate a precise published statement of this exact formulation; “no prior statement found” is an appropriate novelty qualification.
+
+
+3. Prop GR
+
+MINOR — Parts (i) and (ii) are correct and known in substance.
+
+Chebotarev identifies root counts with Frobenius fixed points; Burnside gives the first and second moments. Transitivity and faithfulness give the stated rank bounds and equality cases.
+
+A precise general reference is Akbary–Wong, “On the moments of torsion points modulo primes and their applications,” International Journal of Number Theory 17 (2021), 1029–1045, Theorem 1.7. Apply it to the root set, with moments one and two. [Published paper](https://www-math.nsysu.edu.tw/~pjwong/stuff/moments.pdf).
+
+MAJOR — The Chebotarev average does not establish the short-interval pair law or its uniformity.
+
+In particular, “a₀ ≫ P₂” is not a sufficient replacement for a root-distribution hypothesis.
+
+Take F(X) = X² + 1, primes p in (P,2P], A = floor(P/10), and let a₀ be their product. Then a₀ ≫ P₂. Nevertheless, modulo every prime in the band, the interval is equivalent to [0,A).
+
+Two distinct roots in that interval would satisfy
+
+p | (a−a′)(a+a′).
+
+Both factors have absolute value below p, so this is impossible. The pair count is zero, whereas the proposed prediction grows on the order of P/log P.
+
+This example does not respect every intended application’s height restriction, but it disproves the stated sufficient condition. Effective uniformity also matters when F, its degree, or its splitting field varies with N. A natural-density theorem for each fixed F provides no such uniformity automatically.
+
+Furthermore, divisibility collisions among all polynomial values are not the conditional collision distribution among retained useful partial relations.
+
+Fix: separate the published moment identity from a precisely specified interval-distribution heuristic. Restrict the “at most d−1” algorithmic reading to that heuristic and its conditioning assumptions. E1 supports eight particular toy families, not a universal recurrence barrier.
+
+
+4. Prop RP
+
+FATAL — “Ratio splits dominate product splits in every box” is false.
+
+For N = 77, t = 6, H = 3, the positive product splits are
+
+(2,3), (3,2).
+
+The lattice u ≡ 6v mod 77 has no nonzero point in [−3,3]².
+
+Even above sqrt(N), take H = 9. There are four positive product splits:
+
+(1,6), (2,3), (3,2), (6,1).
+
+The only nonzero signed lattice points are
+
+(6,1), (−6,−1).
+
+Including the origin still gives only three lattice points against four product points.
+
+The proof compares a lattice estimate containing an error term with a heuristic hyperbola estimate. Those estimates cannot imply a pointwise inequality. Unweighted point counts would not, in any case, establish domination among smooth points or distinct useful relations.
+
+The assertion that no faster product search is known than enumeration is also too broad. Factoring auxiliary integers t+kN and looking for suitable divisor partitions is an alternative. It does not establish an improved factoring algorithm for N, but it defeats the claimed exhaustive description of known searches.
+
+Fix: delete the domination proposition and “strictly worse” verdict. Keep the valid facts: Euclid supplies a short lattice vector, lattice points can be enumerated efficiently in dimension two, and the resulting sampling ledger normally remains at total tested log-size about x.
+
+The rational-reconstruction component is classical; see Wang–Guy–Davenport, “P-adic reconstruction of rational numbers,” SIGSAM Bulletin 16(2) (1982), 2–3. [Paper](https://www.cecm.sfu.ca/personal/mmonagan/teaching/TopicsinCA13/GuyDavenWang.pdf).
+
+
+5. Prop KS and the known-factorisation relaxation
+
+MAJOR — The CGPT-type inference requires substantially more than the stated H_S.
+
+CGPT concerns an independent sequence of uniform integers. KS concerns constructed window outputs, projection onto primes above y, and selection according to smoothness of a correlated residue.
+
+These are three distinct changes of model. The H_S in suffmap supplies smoothness probabilities; it does not supply the joint large-prime incidence distribution needed for a square-dependency threshold.
+
+Even correct marginal distributions would be insufficient. Successive rough-part vectors could be paired identically while each individual vector has the desired marginal law. Conditioning on smooth residues introduces another possible dependence.
+
+Deleting the small-prime columns also requires a separate threshold argument. The theorem about the full parity matrix does not itself give the claimed first-dependency threshold for its rough-part projection.
+
+Fix: name a joint conditional incidence-model assumption and formulate the projected-matrix assertion separately. Label the resulting conclusion MODEL under that assumption. It is not an application of CGPT plus the existing H_S alone.
+
+FATAL to the unqualified verdict — Smoothness of the complete output is unnecessary.
+
+The relevant requirement is that the square class have controlled support. Outputs
+
+u = s a²,
+
+with s y-smooth and a a known unit, introduce no large odd-exponent columns, however large the prime factors of a are.
+
+For example,
+
+147 = 3·7² = 143 + 4.
+
+At y = 5, the output is not smooth, but its large prime contributes no parity column. This is not a generic constructor, but it refutes the literal assertion that only y-smooth outputs have Prop SI’s value.
+
+There is also an interface oversight: the relaxed interval allows u = kN. Its full factorisation immediately factors N. H_S excludes that behavior, but the unrestricted relaxation does not.
+
+Fix: distinguish the unrestricted oracle from the random-output model; check nonunits first; and formulate the useful relaxation in terms of the squarefree kernel or odd-exponent support. An adversarially constructed oracle cannot be dismissed by assuming its useful structure away.
+
+
+6. Theorem EQ
+
+MINOR — EQ1’s mathematical reduction survives.
+
+With genuinely uniform hidden unit roots, a dependency chosen from the constructor’s outputs leaves the CRT signs hidden. For odd N with at least two distinct prime divisors, the stated splitting probability follows. Odd prime powers do not break this argument: a unit square has exactly two roots modulo each odd prime power.
+
+This is the standard random-square/Dixon–Rabin mechanism. The note is right that random-looking exponent rows are unnecessary.
+
+The implementation samples r from 2 through N−2, excluding ±1. Consequently, its exact conditional-uniformity assertion has an exception at t = 1. Sample the complete unit range to match the proof.
+
+MAJOR — EQ2 is credible under the generation hypothesis, but its formulation and costs need repair.
+
+The generation hypothesis is sufficient. Factoring plus prime-field DL does not, without a suitable subgroup condition, manufacture representations outside the subgroup generated by the base.
+
+The exchangeability argument is valid in substance: the number of essential rows in a finite module is bounded by its composition length. Properly conditioning successful queries preserves the hidden target position. This is a sound replacement for a random-rank assumption.
+
+The prime-power instructions are incomplete. CRT must use p^a and N/p^a, not p and N/p when p² divides N. A generator and sampling must cover the appropriate prime-power square subgroup. The nonsquare-to-square adjustment must also be compensated in the recovered logarithm.
+
+There is no need to invert 2 modulo p−1. Multiplying a nonsquare target by a generator and later subtracting one handles the 2-primary issue.
+
+The displayed cost counts oracle queries while omitting module linear algebra. Moreover, polynomial overhead in K is not polynomial overhead in log N when K = L[1/3,kappa].
+
+Fix: state equivalence with overhead polynomial in K, log N and output length, and give the full algebra cost. Specify CRT and lifting explicitly.
+
+Bach’s 1984 report establishes the composite-DL/factoring/prime-DL reductions, but is not by itself a citation for every quantitative factor-base claim here. [Bach, UCB/CSD-84-186](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1984/5973.html).
+
+MAJOR — EQ3’s qualitative implication survives; its “cost K·T/delta” claim does not include all costs.
+
+Padding by a known small prime is a legitimate way to transfer an admissible modulus-generic constructor. But computing DL additionally requires linear algebra and explicit conditioning of successful queries.
+
+Descent-to-DL without a random-rank hypothesis is already explicit in GKZ, Section 2, and Kleinjung–Wesolowski, Theorem 3.1; the latter includes an additional cubic-in-factor-base algebra term. [GKZ](https://arxiv.org/pdf/1507.01495), [KW](https://arxiv.org/pdf/1906.10668).
+
+Fix: preserve the qualitative theorem, replace the quantitative bound, and distinguish oracle-call complexity from total running time.
+
+MAJOR — EQ4’s converse proof does not establish polynomial expected time.
+
+The bound 2^(−omega(N)) can be superpolynomially small. Cauchy–Schwarz proves eventual acceptance, not the asserted polynomial cost.
+
+The theorem is easily repaired: given the factorisation, take w = 1 and choose independent CRT signs for its roots. Independent calls satisfy the hidden-root condition and cost polynomial time.
+
+The Hensel argument for odd prime powers is correct. Even moduli are explicitly outside Theorem EQ; extending it would require handling the 2-power factor separately and accounting for four unit square roots modulo 2^a when a ≥ 3.
+
+Fix: use the w = 1 construction, require available exponent data, and qualify the reduction’s K-dependent overhead. Also replace “sits strictly between” by “lies between, with strictness open.”
+
+
+7. Lemma DSC and the claimed missing descent ingredient
+
+MAJOR — DSC is true; the interpretation is too strong.
+
+The nonzero-defect inequality and its polynomial-degree analogue are elementary and correct. Neither proves that useful size-halving is available in the integer setting.
+
+Rational reconstruction reduces a generic full-size target to pieces of size about sqrt(N). Applied to a much smaller target, it does not halve that target again. The procedure can simply return (t,1), an exact identity with no descent.
+
+A fixed modulus-size floor also does not imply that every descendant has the same construction difficulty. That depends on the structure and number of unresolved factors.
+
+Fix: retain size conservation and withdraw the inference of equal recursive capabilities.
+
+MAJOR — “A big side split into recurring atoms” is an incomplete description and is literally wrong for general BGJT descent.
+
+For a degree-D target P(X), BGJT’s systematic side consists of translates P(X)−a. These are degree-D polynomials in X. They form a target-dependent set; they are not all members of the single terminal linear factor base. BGJT then eliminates within this set to obtain lower-degree children. See Section 4, equation (E_m), and Proposition 2. [BGJT](https://members.loria.fr/EThome/files/quasi.pdf).
+
+GKZ’s degree-halving additionally uses extension fields, quadratic elimination, norm-back operations and avoidance of traps; see Section 3.3, Proposition 1. [GKZ](https://arxiv.org/pdf/1507.01495).
+
+KW uses an elliptic-curve presentation and controlled divisor eliminations. Its stated dependence on characteristic gives no fast prime-field algorithm. [KW](https://arxiv.org/pdf/1906.10668).
+
+The transferable package is:
+
+a target-conditioned elimination procedure;
+a decreasing complexity measure;
+controlled branching and exponent sizes;
+an efficiently available compressed presentation;
+and control of exceptional targets throughout recursion.
+
+Recurrence among terminal generators is sufficient. Literal recurrence of every intermediate atom is unnecessary.
+
+The blanket dismissal of shifted pieces is also too quick: x−a = (x+1)−(a+1), so growing shifted-product families can have extensive overlap. Their unresolved challenge is useful N-dependent compression, not a universal absence of recurrence.
+
+These distinctions are established literature, not a newly isolated obstruction. Relevant missing references include Joux–Pierrot’s ASIACRYPT 2014 precomputation paper and their elliptic-basis work, published in Advances in Mathematics of Communications 18 (2024), 1266–1302. [2014 paper](https://www.iacr.org/archive/asiacrypt2014/88730217/88730217.pdf), [elliptic bases](https://www.aimsciences.org/article/doi/10.3934/amc.2022085). Joux–Odlyzko–Pierrot already surveys the separation between presentation, relation generation and descent. [Survey](https://members.loria.fr/CPierrot/papers/DlogSurvey.pdf).
+
+
+8. Surviving construction routes and their ledger
+
+MAJOR — The sparse-family and sampling arguments do not exclude adaptive growing products.
+
+I found no completed faster constructor among the standard pre-factored families, modular hyperbolas or ordinary descent methods. But the following concrete search interface remains outside the claimed exclusions.
+
+Use signed small-prime words of length
+
+r = ceil((2+epsilon)x/log y),
+
+with height at most 3x. Seek a word whose modular endpoint is the prescribed hidden-root square t.
+
+An endpoint-conditioned counting or sampling algorithm would choose successive generators using counts of completions reaching t. Exact counts are unnecessary if sufficiently reliable zero tests or conditional sampling suffice.
+
+Its ledger is:
+
+Free parameters: r signed choices from approximately pi(y) generators.
+
+Available word entropy: r log(2 pi(y)) = (2+epsilon+o(1))x.
+
+Constraint: one modular endpoint, costing approximately x bits.
+
+Height: at most r log y ≤ 3x.
+
+Tested smoothness integers: none.
+
+Consequently, SS does not price this procedure. Under GRH, JMV’s character-sum bound and Fourier inversion establish existence at this word length; they do not provide navigation. [Jao–Miller–Venkatesan, Theorem 1.1](https://arxiv.org/pdf/0811.0647).
+
+At kappa = 0.60, a constructor costing L[1/3,1.20] on an inverse-polynomial fraction of targets gives L[1/3,1.80] factoring by EQ1, including elementary cubic algebra. This is conditional, not an algorithm I have supplied.
+
+This is essentially the blind round’s positive target, which the note does acknowledge. The problem is that its broad “refuted” language repeatedly exceeds its later qualifications.
+
+Other retained possibilities are adaptive products with controlled squarefree kernels and target-conditioned eliminations with growing numbers of children. They need a new algorithmic ingredient; they are not excluded by fixed-family placement counts, KI, AT or DSC.
+
+Fix: distinguish “standard method fails,” “excluded within a stated model,” and “open construction problem.”
+
+
+9. Literature and asymptotic ranges
+
+MAJOR — CGPT is quoted correctly, but its conjecture is presented as unresolved eight years after its proof.
+
+The 2012 interval, constants and independent uniform-integer model are correct. [CGPT](https://annals.math.princeton.edu/2012/175-3/p10).
+
+Balister–Bollobás–Morris proved
+
+T = (e^(−gamma)+o(1)) J₀
+
+with high probability, and the corresponding expectation asymptotic. See “The sharp threshold for making squares,” Annals of Mathematics 188 (2018), 49–143, Theorem 1.1 and Corollary 1.2. [Paper](https://arxiv.org/pdf/1608.03857).
+
+Fix: update KNOWN/conjectural labels throughout. The earlier suffmap note already mentions this result.
+
+MINOR — The modular-hyperbola existence exponents are broadly correct, but the attributions and generality need precision.
+
+For intervals, the standard all-target estimate is
+
+count = phi(N)XY/N² + O(N^(1/2+o(1))).
+
+This yields the quoted H ≥ N^(3/4+epsilon) range. The almost-all-target sqrt(N) range comes from mean-square estimates, not the same pointwise Kloosterman argument. See Shparlinski, “Modular hyperbolas,” Theorems 13 and 16. [Survey](https://arxiv.org/pdf/1103.2879).
+
+These results concern interval coordinates, not arbitrary smooth subsets.
+
+Garaev’s bounded-product representation of quadratic residues uses factors up to p^(1/(4e^(2/3))+epsilon). His composite-modulus product-one result has a number of factors depending on fixed epsilon. Neither can be substituted uniformly into the L-scale regime without further estimates and an algorithm. [Garaev](https://arxiv.org/pdf/1701.07119).
+
+Fix: give exact statements and references. The conclusion that these results do not currently supply the requested constructor is justified; treating them as a general constructive impossibility is not.
+
+
+10. Experiments and code
+
+MAJOR — M4 does not establish the advertised flatness.
+
+For the 64-bit seed-zero instance, I reconstructed the actual list:
+
+N = 14412924539384376673;
+min A = 1073741824;
+max A = 1073744859.
+
+Every product lies, without modular wrap, between approximately
+
+0.0799921974 N and 0.0799926496 N.
+
+Its entire support has width only 4.5221·10^(−7) N.
+
+At t = 1, the registered window has zero hits against the nominal expectation of 400.
+
+Random target dilation can make an averaged count agree with its expectation even when the original product multiset is highly concentrated. M4 therefore measures an averaged dilation statistic, not the fixed-window flatness used in the verdict.
+
+Fix: report the actual statistic. Add fixed-target distributions, variation across targets and a null model addressing the relevant conditioning.
+
+MINOR — P2b’s coprimality explanation is plausible, but its asserted exact property is false.
+
+For N = 77, the unit square target t = 67 has
+
+gauss_split(67,77) = (7,7).
+
+Thus “gcd(u,v) divides N” does not imply coprimality. Such exceptions are rare for the balanced toy instances and reveal a factor immediately.
+
+The fresh coprime-null agreement is useful evidence for the main deficit. A fresh sample passing the original band does not reverse the registered failure or prove that the boundary crossing was merely noise.
+
+Fix: say “primitive except when a nonunit exposes a factor,” and separate the failed prediction from its post hoc explanation.
+
+MINOR — The Poisson fit is overstated and is not an independent explanation.
+
+At 48 bits:
+
+observed success = 0.63925;
+lambda = 11423/12000;
+1−exp(−lambda) = 0.6139995.
+
+The discrepancy is 3.95% relative, or 2.53 percentage points. Thus “within 3%” requires an explicit percentage-point interpretation. The model underpredicts at all four sizes.
+
+Moreover, lambda is measured from the same successful relations whose success probability it is supposed to explain. A fitted mean plus a Poisson curve is descriptive, not a validated mechanism.
+
+Fix: report the discrepancy accurately and provide the distribution of distinct-hit counts, followed by an independent prediction.
+
+MINOR — Several reproducibility details need correction.
+
+The registered M2 same-bit-length null is absent from the harness and is not listed as an omission. E3 appends to its raw file, so repeating the reproduction command duplicates observations. The perfect-square explanation accounts for the observed P3b failure, but perfect squares are not the only possible early-dependency event.
+
+The P3c tautology is correctly disclosed. The failures of P2b, P2d and P3b are also disclosed honestly.
+
+I recomputed the published summary exactly from the raw files, found no duplicate observation keys in the supplied data, and ran all ten tests successfully. The principal experimental defects are interpretation and design, rather than incorrectly calculated summary ratios.
+
+
+11. Treatment of the blind round and final assessment
+
+MAJOR — “The same verdict independently on every angle” overstates the agreement.
+
+The blind report agreed that no successful fast constructor had been supplied. It explicitly preserved adaptive growing families, conditional navigation and growing-piece elimination as open. It also warned that parameter counts are not computational lower bounds.
+
+The revised note incorporates its strongest positive interface, but repeatedly returns to broader exclusions that the blind report expressly declined to make. Its 5% prior is recorded, so the numerical disagreement is not concealed; the substantive scope disagreement deserves equal prominence.
+
+Fix: describe agreement on the failure of the examined standard methods, and disagreement over the strength of the exclusions and the remaining research targets.
+
+Overall verdict: MAJOR REVISION.
+
+My subjective probability that a classical, modulus-generic route within this broad construction scope beats L[1/3,1.902] is about 5%. For an exponent below 1/3, about 0.5%. These are research priors, not consequences of the toy experiments.

@@ -116,7 +116,7 @@ def hidden_root_class_factor(N: int, y: int, seed: int,
     counters = {"targets": 0, "splits": 0, "tests": 0, "gcd": 0, "relations": 0, "dependencies": 0}
     for _ in range(max_targets):
         counters["targets"] += 1
-        r = rng.randrange(2, N - 1)
+        r = rng.randrange(1, N)  # full unit range, so r is uniform among the roots of t (codex adversarial #6)
         g = math.gcd(r, N)
         counters["gcd"] += 1
         if g != 1:

@@ -72,7 +72,7 @@ class Elim:
 
 def main(sizes=SIZES, seeds=SEEDS) -> None:
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    fh = open(OUT, "a")
+    fh = open(OUT, "w")  # v2: overwrite (v1 appended; re-running duplicated rows)
     for bits in sizes:
         X = 1 << bits
         t0 = time.time()
