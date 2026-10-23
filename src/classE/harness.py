@@ -59,25 +59,35 @@ def _work(args) -> List[Dict]:
 
 
 def run(n: int, count: int, base: int, out: str, workers: int) -> Dict:
+    """Streams records to a temporary file (bounded memory), then writes header + records."""
     t0 = time.time()
-    recs: List[Dict] = []
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    tmp = out + ".part"
+    written = 0
+    cpu = 0.0
+    last_seed = None
     nxt = 0
-    with Pool(workers) as pool:
-        while len(recs) < count:
-            nch = max(workers, int((count - len(recs)) * 2.1 / CHUNK) + 1)
+    with gzip.open(tmp, "wt") as fh, Pool(workers) as pool:
+        while written < count:
+            nch = max(workers, int((count - written) * 2.1 / CHUNK) + 1)
             jobs = [(n, base + (nxt + i) * CHUNK, base + (nxt + i + 1) * CHUNK) for i in range(nch)]
             nxt += nch
             for part in pool.imap(_work, jobs):
-                recs.extend(part)
-    recs = recs[:count]
-    header = {"header": True, "n": n, "count": count, "seed_base": base, "seed_last": recs[-1]["seed"],
-              "menu": MENU_NAMES, "wall_s": round(time.time() - t0, 1),
-              "cpu_s": round(sum(r["t"] for r in recs), 1), "workers": workers}
-    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
-    with gzip.open(out, "wt") as fh:
-        fh.write(json.dumps(header) + "\n")
-        for r in recs:
-            fh.write(json.dumps(r) + "\n")
+                for r in part:
+                    if written >= count:
+                        break
+                    fh.write(json.dumps(r) + "\n")
+                    written += 1
+                    cpu += r["t"]
+                    last_seed = r["seed"]
+    header = {"header": True, "n": n, "count": count, "seed_base": base, "seed_last": last_seed,
+              "menu": MENU_NAMES, "wall_s": round(time.time() - t0, 1), "cpu_s": round(cpu, 1),
+              "workers": workers}
+    with gzip.open(out, "wt") as fo, gzip.open(tmp, "rt") as fi:
+        fo.write(json.dumps(header) + "\n")
+        for line in fi:
+            fo.write(line)
+    os.remove(tmp)
     return header
 
 
@@ -85,15 +95,26 @@ def load(path: str) -> Dict:
     with gzip.open(path, "rt") as fh:
         header = json.loads(fh.readline())
         assert header["menu"] == MENU_NAMES, "menu mismatch"
-        recs = [json.loads(line) for line in fh]
-    n = header["n"]
-    return {"header": header, "X": np.array([r["x"] for r in recs], dtype=np.float64),
-            "Nmod": np.array([r["N"] % 256 for r in recs], dtype=np.int64),
-            "Ntop": np.array([r["N"] >> (n - 12) for r in recs], dtype=np.int64),
-            "eps": np.array([r["eps"] for r in recs], dtype=np.int64),
-            "tb": np.array([r["tb"] for r in recs], dtype=np.int64),
-            "nonunits": [r["nonunits"] for r in recs], "path_hits": [r["path_hits"] for r in recs],
-            "t": np.array([r["t"] for r in recs])}
+        n = header["n"]
+        X = np.zeros((header["count"], len(MENU_NAMES)), dtype=np.float64)
+        Nmod, Ntop, eps, tb, t = [], [], [], [], []
+        nonunits, path_hits = [], []
+        i = 0
+        for line in fh:
+            r = json.loads(line)
+            X[i] = r["x"]
+            Nmod.append(r["N"] % 256)
+            Ntop.append(r["N"] >> (n - 12))
+            eps.append(r["eps"])
+            tb.append(r["tb"])
+            t.append(r["t"])
+            nonunits.append(r["nonunits"])
+            path_hits.append(r["path_hits"])
+            i += 1
+    return {"header": header, "X": X[:i], "Nmod": np.array(Nmod, dtype=np.int64),
+            "Ntop": np.array(Ntop, dtype=np.int64), "eps": np.array(eps, dtype=np.int64),
+            "tb": np.array(tb, dtype=np.int64), "nonunits": nonunits, "path_hits": path_hits,
+            "t": np.array(t)}
 
 
 def pc_check(x: np.ndarray, y01: np.ndarray) -> Dict:
