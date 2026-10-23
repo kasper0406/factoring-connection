@@ -1,0 +1,400 @@
+**PROVED below:** arbitrary exponent selectors and even very limited representative access destroy a general PT barrier. A restricted exponent-probe model admits an explicit PT extension. For the stated balanced iid distribution, an AC⁰ floor for \(\varepsilon\) follows from a character-pair argument given in §4.
+
+Write \(B=\max_b\Pr[F=b]\), \(s=\Pr[\mathrm{split}]\), and \(M=\#\{p\in(X,2X]:p\text{ prime}\}\). Probabilities counting “correct or split” are unconditional. For \(\varepsilon=\chi_4(p)\), condition on \(pq\equiv1\pmod4\). “OPEN” below identifies an unresolved claim, not a verified assertion that nobody has proved it.
+
+## 1. \(N\)-dependent exponents
+
+**FALSE as stated:** arbitrary polynomial-time exponent selectors admit a nontrivial information barrier depending only on uniform group-kernel densities.
+
+**PROVED — exponent selectors can carry any polynomial-time predicate.** Let \(h(N)\in\{0,1\}\), and permit
+\[
+E(N)=1+h(N).
+\]
+Compute \(z=(-1)^{E(N)}\), then test \(z+1\). This is \(0\) when \(h=0\), and \(2\) when \(h=1\). For odd \(N\), the gcd is respectively \(N\) or \(1\), so the tree reads \(h\) without splitting. Meanwhile
+\[
+\frac{\gcd(E(N),r-1)}{r-1}\le \frac2{r-1}.
+\]
+Thus small uniform-base coincidence terms cannot bound arbitrary pure bases. Here the pure base \(-1\) has deliberately small order. The cost of computing \(E\) must also be charged; allowing arbitrary polynomial-time selectors already imports arbitrary polynomial-time predicates.
+
+**OPEN:** the corresponding structural classification for a fixed gate menu such as \(x\mapsto x^N,x^{N-1}\), arbitrary additions, nesting, and gcd/zero tests. The selector counterexample does not settle that narrower question.
+
+**PROVED — exact kernel formula, with its necessary sampling hypothesis.** If
+\[
+G_r\simeq\prod_i C_{d_{r,i}}
+\]
+and \(a_r\) is uniform, then
+\[
+\kappa_r(E):=\Pr[a_r^E=1]
+ =\prod_i\frac{\gcd(E,d_{r,i})}{d_{r,i}}.
+\]
+Indeed, multiplication by \(E\) on \(C_d\) has a kernel of size \(\gcd(E,d)\). Independent CRT components give
+\[
+\Pr[\mathrm{split}]
+=\kappa_p+\kappa_q-2\kappa_p\kappa_q,\qquad
+\Pr[\text{both pass}]=\kappa_p\kappa_q.
+\]
+For scalar Fermat testing, the latter is
+\[
+\frac{\gcd(N-1,p-1)\gcd(N-1,q-1)}{\varphi(N)}.
+\]
+It is the both-pass probability, not the Fermat gcd-splitting probability.
+
+**PROVED — a PT extension for terminal exponent probes.** Consider arbitrary finite adaptive pure computations interspersed with probes \(a^{E(N)}=1\). Require that:
+
+- every probe is checked for a component-separating zero;
+- its power value is discarded after its Boolean outcome;
+- the pure state receives only that outcome;
+- fresh uniform CRT group elements supply the bases.
+
+Let
+\[
+R=\mathbb E\sum_{j\text{ reached},\,p\ne q}
+       \kappa_p(E_j)\kappa_q(E_j).
+\]
+Then
+\[
+\boxed{\Pr[\mathrm{correct\ or\ split}]
+ \le B+2s+2R+\frac2M.} \tag{1}
+\]
+The last term charges literal square inputs. It disappears under the project’s virtual-diagonal convention.
+
+*Proof.* Replace every probe by “false,” obtaining a pure shadow tree \(U\). Fix its independent coins. If its prime-transcript class masses are \(\pi_\ell\), choose a largest class and put \(\eta=1-\max\pi_\ell\). A pure run splits at the first disagreement between the two prime transcripts: divisibility at exactly one prime gives a proper gcd. Hence
+\[
+s_U\ge1-\sum_\ell\pi_\ell^2\ge\eta,\qquad \eta^2\le s_U.
+\]
+Outside the largest common class, nonsplit pairs have probability at most
+\[
+\sum_{\ell\ne\ell_*}\pi_\ell^2\le\eta^2.
+\]
+
+Couple the actual and shadow runs. Their first disagreement is either an actual split or a probe passing at both primes. Let \(D\) include the latter event and \(p=q\). Then
+\[
+\Pr D\le R+1/M,\qquad s_U\le s+\Pr D.
+\]
+On a nonsplit actual run outside \(D\), both runs agree. Its correct-output probability is therefore at most \(B+\eta^2+\Pr D\). Adding actual splits gives
+\[
+B+s+s_U+\Pr D\le B+2s+2\Pr D.
+\]
+Average over coins. Freshness supplies the conditional product probabilities despite adaptivity. ∎
+
+**PROVED — scope limits.** Arbitrarily deep pure computations may choose probe parameters. With arbitrary pure bases, the same coupling works after replacing the kernel product by the actual conditional joint-pass probability; a gcd-ratio bound need not hold. Retaining power values, combining several gates through addition, or using \((a^N+1)^N\) violates the terminal-probe hypothesis. Its zero sets are not generally kernels.
+
+For finite étale algebras, use all cyclic factors of the local unit group; their orders can include \(p^d-1>q\). Nonreduced algebras can also have \(p\)-power torsion. Neither case justifies substituting a scalar \(p-1\) formula. Conditioning on \(N\bmod m\) requires PT-m/PT2, including their forced-cross-population qualification, rather than inserting \(B=1/2\) into the iid argument above.
+
+**KNOWN / PROVED consequence — sparse alignment remains valid locally.** Zander Kelley, *Roots of sparse polynomials over a finite field*, **LMS J. Comput. Math. 19(A) (2016), 196–204**, Theorems 2.2–2.3, proves
+\[
+R(f)\le2n^{1-1/(t-1)}C^{1/(t-1)},
+\]
+where \(n=|\mathbb F_Q^\times|\), and \(C\) is the largest zero coset. Every exponent has a partner congruent modulo that coset size. [Paper](https://doi.org/10.1112/S1461157016000334)
+
+Consequently, density at least \(\lambda\) implies \(n/C\le(2/\lambda)^{t-1}\). Every prime
+\(\ell>(2/\lambda)^{t-1}\) dividing \(n\) therefore divides an exponent difference. For exponents \(E_i(N)\in\mathbb Z[N]\) and \(\ell\mid p-1\),
+\[
+\ell\mid\prod_{i<j}(E_i(q)-E_j(q)),
+\]
+because \(pq\equiv q\pmod\ell\). This is a necessary alignment condition. It does not control dense nested circuits, coefficients vanishing identically modulo \(p\), or inverse-polylogarithmic average success without further estimates.
+
+**PROVED — archimedean leakage exists under the question’s broad target definition.** Take
+\[
+F(p,q)=1_{\{\min(p,q)>3X/2\}},\qquad h(N)=1_{\{N>3X^2\}}.
+\]
+The preceding selector reads \(h\) without splitting. Moreover \(h=1\Rightarrow F=1\). The prime number theorem gives asymptotically uniform scaled factors on \((1,2]\), so
+\[
+\Pr F\to\tfrac14,\quad
+\Pr h\to\int_{3/2}^{2}(2-3/u)\,du
+=1-3\log(4/3).
+\]
+Predicting \(F=h\) beats the constant floor by that positive constant. The same holds within each fixed admissible congruence stratum, by the PNT in arithmetic progressions; see Ian Petrow, *Introduction to Analytic Number Theory* (2018), Theorem 4.4. [Notes](https://metaphor.ethz.ch/x/2018/hs/401-3100-68L/IANTnotes2018.pdf)
+
+This is elementary factor-size leakage, not an \(\varepsilon\) algorithm. Thus “family A is always exponential” needs a more restrictive target definition.
+
+**PROVED / KNOWN — the hint also has a legitimate bounded-search interpretation.** For distinct factors and a unit \(a\),
+\[
+a^{N+1}=a^{p+q}\pmod N,
+\]
+since \(N+1-(p+q)=\varphi(N)\). Also \(N\equiv q\pmod{p-1}\), but this is an unknown-order congruence, not an integer approximation. Interval discrete-log searches exploit the bounded integer \(p+q\), mixing M with A. David Harvey’s paper explicitly discusses this identity and its Pollard antecedent. [Harvey, §1](https://arxiv.org/pdf/2010.05450)
+
+## 2. Integer representatives
+
+**PROVED — full representative access is computationally complete.** Reading \(\operatorname{rep}_N(-1)=N-1\) supplies \(N\). A uniform polynomial-time computation on these bits has a polynomial-size Boolean-circuit simulation. Boolean gates are implemented on residue bits by
+\[
+\neg x=1-x,\quad x\land y=xy,\quad x\lor y=x+y-xy.
+\]
+Their outputs remain \(0\) or \(1\), so gcd instrumentation introduces no proper factor.
+
+**PROVED — even LSB access to pure powers is complete.** Let \(N\) be odd, \(n=\operatorname{bitlen}(N)\), and
+\[
+b_j=\operatorname{LSB}(2^j\bmod N).
+\]
+For \(j\ge1\),
+\[
+b_j=\lfloor2^j/N\rfloor\bmod2,
+\]
+because \(2^j\bmod N=2^j-N\lfloor2^j/N\rfloor\). These are the binary digits of \(1/N\). With \(K=2n+2\),
+\[
+T=\sum_{j=1}^{K}b_j2^{K-j}=\lfloor2^K/N\rfloor.
+\]
+Furthermore
+\[
+0\le2^K/T-N<N^2/(2^K-N)<\tfrac12.
+\]
+Rounding recovers \(N\). Computing the powers requires \(O(n)\) pure doublings; they are all units, so no split occurs. ∎
+
+**OPEN:** a necessity theorem saying every leak from representative computations uses a short-vector or Diophantine event. The complete model includes every polynomial-time algorithm, and the proposed families lack operational definitions strong enough to make such a necessity theorem precise.
+
+**PROVED — useful restricted boundaries remain.** Pure trees, fixed residue observations \(N\bmod m\), and the terminal-probe extension above remain meaningful restrictions. There is no canonical “strongest” submodel: these restrictions are not linearly ordered.
+
+**KNOWN — the known-bits threshold is sufficient, not a lower-bound barrier.** Don Coppersmith, *Small solutions to polynomial equations, and low exponent RSA vulnerabilities*, **J. Cryptology 10 (1997), 233–260**, Theorems 4 and 5, gives polynomial-time factoring from approximately \(n/4\) leading or trailing factor bits. It does not prove that fewer bits cannot suffice, or classify arbitrary representative computations. [Full paper](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf)
+
+**PROVED / KNOWN — covering algorithms exhibit particular Diophantine certificates.** Their basic identity is
+\[
+(aq+bp)^2-4abN=(aq-bp)^2,
+\]
+and
+\[
+aq+bp-2\sqrt{abN}
+=\frac{(aq-bp)^2}{aq+bp+2\sqrt{abN}}.
+\]
+Thus approximating \(q/p\) by \(b/a\) places a factor-dependent integer in a short searchable interval. These identities follow by expansion and rationalization.
+
+R. Sherman Lehman, *Factoring Large Integers*, **Math. Comp. 28 (1974), 637–646**, the theorem in §2, supplies the covering behind \(N^{1/3+o(1)}\). David Harvey, *An exponent one-fifth algorithm for deterministic integer factorisation*, **Math. Comp. 90 (2021), 2937–2950**, Theorem 1.1, proves \(O(N^{1/5}\log^{16/5}N)\), combining bounded searches with multiplicative collisions. These are algorithmic upper bounds, not universality results. [Lehman](https://doi.org/10.1090/S0025-5718-1974-0340163-2), [Harvey](https://arxiv.org/pdf/2010.05450)
+
+## 3. Continued fractions, forms, and infrastructure
+
+**PROVED — exact principal-cycle norm constraint.** Use complete quotients
+\[
+\alpha_i=\frac{\sqrt N+P_i}{Q_i}
+\]
+and convergents \(A_j/B_j\), initialized by
+\[
+A_{-2}=0,\ A_{-1}=1,\quad B_{-2}=1,\ B_{-1}=0.
+\]
+Then
+\[
+\boxed{A_{i-1}^2-NB_{i-1}^2=(-1)^iQ_i.} \tag{2}
+\]
+
+*Proof.* The continued-fraction identity
+\[
+\sqrt N=\frac{A_{i-1}\alpha_i+A_{i-2}}
+ {B_{i-1}\alpha_i+B_{i-2}}
+\]
+gives, by comparing rational and irrational coefficients,
+\[
+A_{i-1}=P_iB_{i-1}+Q_iB_{i-2},\qquad
+NB_{i-1}=P_iA_{i-1}+Q_iA_{i-2}.
+\]
+Subtracting yields
+\[
+A_{i-1}^2-NB_{i-1}^2
+=Q_i(A_{i-1}B_{i-2}-A_{i-2}B_{i-1})
+=(-1)^iQ_i,
+\]
+using the convergent determinant identity. ∎
+
+**PROVED — genus certificates.** Whenever \(Q_i\) is coprime to \(N\), equation (2) implies
+\[
+\left(\frac{(-1)^iQ_i}{p}\right)
+=\left(\frac{(-1)^iQ_i}{q}\right)=1.
+\]
+In particular, odd \(i\) and square \(Q_i\) certify \(\varepsilon=+1\).
+
+More generally, if a selected product \(\prod Q_i=u^2\), with odd sum of indices and \(\gcd(u,N)=1\), multiplication of (2) gives
+\[
+z=\prod A_{i-1}/u,\qquad z^2=-1\pmod N.
+\]
+An even sum instead gives \(z^2=1\); \(z\not\equiv\pm1\pmod N\) then splits \(N\) through \(\gcd(z-1,N)\). These are explicit Q certificates or relation certificates. ∎
+
+**PROVED — analogous principal-form constraints.** A principal form of discriminant \(-4N\) represents \(x^2+Ny^2\), and one of discriminant \(4N\) represents \(x^2-Ny^2\). Every represented unit is a square modulo each factor, directly by reduction. Equivalent forms represent the same integers after an integral change of variables. This proves genus restrictions, not a distributional classification of their coefficients.
+
+**KNOWN / HEURISTIC — random-walk models exist, but their relevant assumptions are not theorems.** Jason E. Gower and Samuel S. Wagstaff Jr., *Square form factorization*, **Math. Comp. 77 (2008), 551–588**, explicitly model SQUFOF as a random walk on the principal cycle. Assumptions 4.11–4.19 govern cycle membership, square-form incidence, waiting times, and ambiguous-form destinations; Theorem 4.22’s average analysis depends on them. [Author manuscript](https://homes.cerias.purdue.edu/~ssw/squfof.pdf)
+
+**FALSE literally:** “random walk subject only to genus constraints” describes the full principal-cycle law. Continued-fraction transitions, discriminant equations, period closure, and reversal symmetry impose additional restrictions. V. I. Arnol’d, *Statistics of the periods of continued fractions for quadratic irrationals*, **Izv. Math. 72 (2008), 1–34**, discusses both mean Gauss–Kuzmin statistics and palindromic restrictions. Its averaging does not establish a balanced-semiprime, short-prefix independence theorem. [Article](https://www.mathnet.ru/eng/im2686)
+
+**CONJECTURED:** after incorporating deterministic transition rules and global cycle constraints, a suitable model predicts the rarity of square and relation certificates in short prefixes.
+
+**OPEN:** every polynomial-time \(\varepsilon\)-predictive statistic of a CF prefix or infrastructure computation reduces to those certificates. Equation (2) does not prove that numerical statistics have no additional bias. Indeed, the numerical first-step data already encode \(N\): \(P_1=\lfloor\sqrt N\rfloor\) and \(Q_1=N-P_1^2\). Restrictions on postprocessing are indispensable.
+
+## 4. AC⁰, Walsh sums, and automata
+
+**PROVED — the target is a structured type-II sum, not an arbitrary-coefficient cancellation statement.** Put
+\[
+W_S(n)=(-1)^{\sum_{i\in S}\operatorname{bit}_i(n)}.
+\]
+For any function \(K(pq)\), symmetry gives the exact identity
+\[
+\sum_{\substack{p,q\in(X,2X]\\pq\equiv1(4)}}\chi_4(p)K(pq)
+=\sum_{p,q\in(X,2X]}\chi_4(p)K(pq). \tag{3}
+\]
+Indeed, the condition contributes
+\(\chi_4(p)(1+\chi_4(p)\chi_4(q))/2
+=(\chi_4(p)+\chi_4(q))/2\).
+
+**FALSE:** all bounded coefficients admit small type-II sums for every sparse Walsh function. On odd integers, \(W_{\{1\}}(mn)=\chi_4(m)\chi_4(n)\). Choosing both coefficients to be \(\chi_4\), supported on odd integers, makes every summand \(1\). The special prime coefficients in (3) matter.
+
+**KNOWN — audit of the requested references.**
+
+- **Ben Green**, *On (not) computing the Möbius function using bounded depth circuits*, **CPC 21 (2012), 942–951**, Proposition 1, proves
+  \[
+  |\widehat\mu(S)|\ll |S|e^{-c\sqrt b/|S|};
+  \]
+  Theorem 1 proves Möbius–AC⁰ orthogonality. These statements concern \(\mu\), not the twisted balanced-semiprime measure. [Paper](https://arxiv.org/pdf/1103.4991)
+- **Jean Bourgain**, *Möbius-Walsh correlation bounds and an estimate of Mauduit and Rivat*, **J. Anal. Math. 119 (2013), 147–163**, Theorem 1, proves uniformly over all \(S\)
+  \[
+  \left|\sum_{n<2^b}\mu(n)W_S(n)\right|<2^{b-b^{1/10}}.
+  \]
+  His large-weight type-II argument and small-weight Möbius argument do not give arbitrary-coefficient sparse-Walsh cancellation. [Paper](https://arxiv.org/pdf/1109.2784)
+- **Christian Mauduit–Joël Rivat**, *Sur un problème de Gelfond : la somme des chiffres des nombres premiers*, **Ann. Math. 171 (2010), 1591–1646**, Theorem 1, gives power cancellation for \(\sum_{n\le x}\Lambda(n)e(\alpha s_k(n))\) when \((k-1)\alpha\notin\mathbb Z\). [Article](https://annals.math.princeton.edu/2010/171-3/p04)
+- Their *Prime numbers along Rudin–Shapiro sequences*, **JEMS 17 (2015), 2595–2642**, Proposition 2, equation (47), does provide arbitrary bounded coefficients in balanced ranges, under the carry and Fourier hypotheses. [Paper](https://ems.press/content/serial-article-files/32075?nt=1)
+- **Clemens Müllner**, *Automatic sequences fulfill the Sarnak conjecture*, **Duke Math. J. 166 (2017), 3219–3290**, Proposition 5.5, equation (29), gives its matrix-valued extension with carry exponent \(\eta\); the hypotheses are Definitions 4.1–4.2. His general automatic-sequence Möbius theorem does not itself state the required semiprime result. [Paper, arXiv v3](https://arxiv.org/pdf/1602.03042)
+
+**PROVED — unconditional AC⁰ floor for the stated distribution.** For every fixed-depth, polynomial-size Boolean circuit \(A\),
+\[
+\Pr[A(N)=\varepsilon\mid N\equiv1(4)]=\tfrac12+o(1). \tag{4}
+\]
+The proof uses the special character pair in (3).
+
+**KNOWN analytic inputs.** Landau–Page gives at most one exceptional primitive character in the relevant zero-free region: Kevin Ford, Ben Green, Sergei Konyagin, James Maynard, Terence Tao, *Long gaps between primes*, **JAMS 31 (2018), 65–105**, Lemma 7.1. A uniform prime-character estimate, including the possible exceptional-zero term, is stated in Mark Watkins, *Distribution of the 2-Selmer rank under twisting*, **Publ. Math. Besançon (2022), 59–133**, §3.4.1:
+\[
+\sum_{p\le U}\chi(p)
+\ll Ue^{-c\log U/(\sqrt{\log U}+9\log f)}(\log Uf)^4+U^\beta,
+\]
+with the last term omitted when absent. [Landau–Page](https://arxiv.org/pdf/1412.5029), [prime-character estimate](https://www.numdam.org/item/10.5802/pmb.46.pdf)
+
+*Proof of (4).* Set \(L=\log X\), \(Q=e^{L^{1/4}}\).
+
+First, those inputs imply: among characters with primitive conductor at most \(4Q\), all nonprincipal characters except possibly one, \(\xi\), satisfy
+\[
+\sup_{X\le u\le2X}
+\left|\sum_{X<p\le u}\chi(p)\right|
+\ll Xe^{-c\sqrt L}. \tag{5}
+\]
+To see this, apply Landau–Page with parameter \(T=e^{\sqrt L}\). Every exceptional zero other than its one possible exception has \(1-\beta\gg1/\sqrt L\), so its term is absorbed in (5). The remaining error in the displayed prime-character estimate is also absorbed. Imprimitive characters cause no problem because \(4Q<X\).
+
+Moreover \(\xi\ne\chi_4\) for large \(X\): \(L(s,\chi_4)>0\) for real \(s>0\), by grouping its alternating series into positive pairs.
+
+We claim, uniformly in real \(\alpha\),
+\[
+\left|\sum_{p,q\in(X,2X]}\chi_4(p)e(\alpha pq)\right|
+\ll X^2e^{-cL^{1/4}}. \tag{6}
+\]
+
+Choose coprime \(a,r\) by Dirichlet approximation, with
+\[
+r\le X^2/Q,\qquad |\alpha-a/r|\le Q/(rX^2).
+\]
+
+If \(r\ge Q\), arbitrary bounded coefficients satisfy
+\[
+\left|\sum_{m,n\in(X,2X]}a_mb_ne(\alpha mn)\right|^2
+\ll X^4/r+X^3\log(2r)+X^2r\log(2r). \tag{7}
+\]
+Here is the elementary bound: Cauchy–Schwarz and the geometric-sum estimate give
+\[
+\ll X^3+X^2\sum_{1\le h\le X}
+       \min(X,\|\alpha h\|^{-1}).
+\]
+Since \(|\alpha-a/r|\le r^{-2}\), points in any block of at most \(r/2\) consecutive \(h\)’s are separated modulo \(1\) by at least \(1/(2r)\). The block sum is \(O(X+r\log(2r))\). Partitioning into such blocks proves (7). Our bounds on \(r\) now imply (6).
+
+If \(r<Q\), put \(D=\operatorname{lcm}(4,r)\). Expand the function \(e(at/r)\) on \((\mathbb Z/D\mathbb Z)^\times\) in multiplicative characters:
+\[
+e(at/r)=\sum_{\chi\bmod D}c_\chi\chi(t),\qquad |c_\chi|\le1.
+\]
+Every rectangular prime sum at frequency \(a/r\) is consequently a sum of products
+\[
+c_\chi
+\left(\sum_{X<p\le u}\chi\chi_4(p)\right)
+\left(\sum_{X<q\le v}\chi(q)\right).
+\]
+At least one factor satisfies (5). Indeed, both could be large only if both characters belonged to \(\{1,\xi\}\); since their ratio is \(\chi_4\), this would require \(\xi=\chi_4\).
+
+Thus every rectangle is \(O(DX^2e^{-c\sqrt L})\). Writing \(\alpha=a/r+\beta\), two-variable partial summation introduces at most
+\[
+O((1+|\beta|X^2)^2)=O(Q^2).
+\]
+Since \(D\le4Q\), this proves (6) also in the major arcs.
+
+Next, for \(b=\lceil\log_2(4X^2+1)\rceil\), every Walsh function has an ordinary finite Fourier expansion with coefficient norm
+\[
+\|\widehat W_S\|_1\le(Cb)^{|S|}. \tag{8}
+\]
+Each individual binary square wave has Fourier \(\ell^1\)-norm \(O(b)\); multiplying them convolves their Fourier coefficients, proving (8). This is also Bourgain’s Lemma 1.
+
+Normalize (6) by \(M^2\asymp X^2/\log^2X\), and use (3). Uniformly for \(|S|\le t\),
+\[
+\beta_t:=
+\left|\mathbb E[\varepsilon W_S(N)\mid N\equiv1(4)]\right|
+\le \exp\{-c b^{1/4}+O(t\log b)\}. \tag{9}
+\]
+For \(t=\operatorname{polylog}b\), this is \(b^{-\omega(t)}\).
+
+Finally let \(U\) be uniform on the \(b\)-bit cube and \(\nu\) the conditioned semiprime law. Unique factorization bounds the multiplicity of each product by two, hence
+\[
+\|d\nu/dU\|_\infty=O(b^2).
+\]
+If the degree-\(t\) Walsh truncation \(P_tA\) has uniform squared error \(\eta\), Cauchy–Schwarz and Parseval give
+\[
+|\mathbb E_\nu[\varepsilon A]|
+\le
+\sqrt{\sum_{j\le t}\binom bj}\,\beta_t+O(b\sqrt\eta). \tag{10}
+\]
+For the first term, expand \(P_tA\) and use that its coefficient squared sum is at most \(1\). For the second, transfer its squared error using the density bound.
+
+Linial–Mansour–Nisan supplies \(\eta=b^{-C}\), for arbitrary fixed \(C\), with \(t=\operatorname{polylog}b\), for fixed-depth polynomial-size circuits. Equation (9) handles the first term and \(C>2\) handles the second. The empty Walsh coefficient also shows \(\mathbb E_\nu\varepsilon=o(1)\), so the constant floor is \(1/2+o(1)\). This proves (4). ∎
+
+**KNOWN reference for the last step:** Nathan Linial, Yishay Mansour, Noam Nisan, *Constant depth circuits, Fourier transform, and learnability*, **JACM 40 (1993), 607–620**; see also Green’s Theorem 2 for the explicit tail bound used here. [LMN](https://doi.org/10.1145/174130.174138)
+
+**PROVED — Thue–Morse and Rudin–Shapiro floors also follow directly from the cited type-II estimate.** In binary, Müllner’s bound specializes to
+\[
+|S_{II}|\ll(\mu+\nu)^{3/4}
+2^{\mu+\nu-\eta\gamma(2\lfloor\mu/15\rfloor)/20},
+\]
+where \(\frac14(\mu+\nu)\le\mu\le\nu\le\frac34(\mu+\nu)\), under the stated carry/Fourier hypotheses. Mauduit–Rivat verify these hypotheses with linear \(\gamma\) for Thue–Morse and Rudin–Shapiro (§2 and §10). Set \(M_0=N_0=2X\), \(a_m=1_{\mathbb P}(m)\chi_4(m)\), \(b_n=1_{\mathbb P}(n)\). The bound is \(O(X^{2-\delta}\operatorname{polylog}X)\); normalization and (3) prove \(o(1)\) correlation, hence no constant prediction advantage.
+
+**OPEN / UNVERIFIED literature coverage:** I have not established the corresponding result for every finite automaton. General Möbius orthogonality alone does not supply that deduction.
+
+## 5. Synthesis and pure Jacobi tests
+
+**PROVED — an operational classification is available for the terminal-probe model.** Every deviation from the pure shadow on a nonsplit run requires simultaneous annihilation in the two local groups. Equation (1) charges all predictive improvement to pure splitting and those explicit M events. This permits arbitrary finite adaptivity and arbitrary pure depth. It does not classify arithmetic performed on retained power values.
+
+**OPEN:** extending this statement even to fixed polynomial exponent gates with unrestricted nesting and addition. A natural minimal unresolved model is
+\[
++,-,\times,\quad x\mapsto x^N,\quad \gcd/\text{zero tests},
+\]
+with polynomial-size uniform programs and no representative access. A maximal classification for representative access is a classification of general polynomial-time computation. I have no verified fourth-family construction for \(\varepsilon\).
+
+**KNOWN / PROVED — pure Jacobi tests add Q information, and conductor matters.** Quadratic reciprocity and its supplements imply, for fixed nonzero integer \(c\), that
+\[
+(c\mid N)
+\]
+depends only on \(N\bmod 8|c|\), for odd \(N\). Factor \(c\) conceptually into its sign, power of \(2\), and odd prime powers; reciprocity expresses every factor through these residue classes. This proves the assertion, including zero values. The underlying identities are [DLMF §27.9, equations 27.9.1–3](https://dlmf.nist.gov/27.9).
+
+For a finite adaptive tree, take a common multiple of the finitely many such moduli attached to all its nodes. Its Jacobi tests become side information, and the remaining tree is PT-m. Fixed-conductor Jacobi-only observations have asymptotically no \(\varepsilon\) advantage: uniform prime residues make the hidden \(\chi_4(p)\) sign fair given their product residue. This is **PROVED** from the PNT in fixed progressions and the uniform-product fiber calculation.
+
+**FALSE:** PT’s splitting conclusion survives arbitrary Jacobi augmentation without a conductor restriction.
+
+**PROVED counterexample.** Partition the primes in the interval into \(A=\{\chi_4=1\}\), \(B=\{\chi_4=-1\}\), and divide \(A=A_0\sqcup A_1\) approximately equally. By CRT choose a unit \(c\) that is a quadratic nonresidue precisely at primes in \(A_0\), and a residue at every other prime in the interval.
+
+On \(pq\equiv1\pmod4\), the event \((c\mid N)=-1\) occurs precisely when one factor belongs to \(A_0\) and the other to \(A_1\); it certifies \(\varepsilon=1\). Predict \(+1\) there and \(-1\) otherwise. No gcd splits, and its accuracy is
+\[
+\frac{|B|^2+2|A_0||A_1|}{|A|^2+|B|^2}\longrightarrow\tfrac34.
+\]
+The PNT gives the limit. The CRT construction supplies no polynomial-size uniform SLP for \(c\), so this is not a polynomial-time \(\varepsilon\) predictor. It demonstrates the missing hypothesis. ∎
+
+**OPEN:** a uniform floor for polynomial-size SLP numerators of unrestricted, possibly enormous conductor. Also, \((-1\mid N)=\chi_4(p)\chi_4(q)=1\) on the conditioned population reveals neither common sign.
+
+| Model | Status | Leak family / obstruction | Reference |
+|---|---|---|---|
+| Pure adaptive trees | **PROVED** PT bound | Improvement charged to splitting | Project PT; §1 proof |
+| Pure trees + terminal uniform power probes | **PROVED** (1) | M coincidence terms | §1 |
+| Sparse exponent polynomials | **KNOWN / PROVED** necessary alignment | M; content exception | Kelley Thms. 2.2–2.3 |
+| Fixed \(x^N\), unrestricted nesting/addition | **OPEN** | Exhaustiveness of M/A/Q unresolved | §1, §5 |
+| Arbitrary polynomial-time exponent selectors | **PROVED** predicate-complete | Selector can import arbitrary computation | §1 |
+| Representatives, even LSBs of \(2^j\bmod N\) | **PROVED** computationally complete | General classification unresolved | §2 |
+| CF norm/square certificates | **PROVED** | Q or relations | Equation (2) |
+| Arbitrary CF/infrastructure statistics | **OPEN** | Q/M exhaustiveness unproved | §3 |
+| SQUFOF random-walk complexity model | **HEURISTIC** | Q, square forms | Gower–Wagstaff §4 |
+| AC⁰ on \(N\)’s bits | **PROVED** \(\varepsilon\) floor | No asymptotic advantage | §4 |
+| Thue–Morse / Rudin–Shapiro | **PROVED** \(\varepsilon\) floor | No asymptotic advantage | MR Prop. 2; Müllner Prop. 5.5 |
+| Fixed-conductor pure Jacobi tests | **KNOWN / PROVED** residue reduction | Q within corresponding fiber information | Reciprocity; §5 |
+| Growing-conductor SLP Jacobi tests | **OPEN** efficiently; unrestricted PT **FALSE** | Q | §5 |
