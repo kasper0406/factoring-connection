@@ -1,0 +1,275 @@
+**Verdict: MAJOR REVISION.**
+
+The negative search result is defensible. The broader exclusion claim is not established. I found concrete counterexamples to subsidiary assertions, missing hypotheses in the barriers, and an incorrect interpretation of some SQUFOF events. I did **not** identify a verified classical subexponential algorithm for unrestricted \(N=pq\) that defeats all the stated exclusions.
+
+All nine existing tests pass. I regenerated all **380 experimental rows**, matching every field except timings. Additional checks covered 195 Lemma-0 instances and 627 genus-reduction queries across all six admissible residues modulo 8. Reproducible checks are in [audit.py](/Volumes/git/factoring-connection/codex/scratch/genusleak_2/audit.py), with [audit results](/Volumes/git/factoring-connection/codex/scratch/genusleak_2/audit_summary.json) and [reproduction results](/Volumes/git/factoring-connection/codex/scratch/genusleak_2/reproduction_summary.json).
+
+1. **The headline verdict exceeds the proved scope.**
+
+   **Location:** [results:13](/Volumes/git/factoring-connection/notes/genusleak_results.md:13), lines 20–49, 226–233, 441–465, 485–491, and 544–545.
+
+   **Problem:** GIRTH restricts nonzero relations; WALK bounds a particular counterfactual Bernoulli experiment; GB assumes a distribution on a hidden prime and random input coordinates; GI is an incompletely specified abstraction. These do not collectively exclude arithmetic constructions using form coefficients.
+
+   In particular, “every known escape” is a literature-completeness claim, **UNVERIFIED** by the supplied argument. Calling \(h(D)\) an Euler product of public local factors also supplies no algorithmic reduction from every use of \(h\) to smooth relations. Locally evaluable factors do not make the global quantity efficiently available or devoid of hidden arithmetic information.
+
+   **Fix:** State the conclusion as a search outcome: “We found no qualifying method among those reviewed.” State each barrier separately with its observation model and distributional assumptions. Retain the explicit admission that coefficient-based methods remain unbounded by these arguments.
+
+2. **The identification of every proper SQUFOF square with a nonidentity invertible 2-torsion class is false for the stated orders.**
+
+   **Location:** [results:305](/Volumes/git/factoring-connection/notes/genusleak_results.md:305), lines 305–310; [cf.py:80](/Volumes/git/factoring-connection/src/genusleak/cf.py:80).
+
+   **Problem:** Take \(N=21,\ k=1,\ D=84\). The code produces
+   \[
+   Q=[1,5,4,3,4,5,1]
+   \]
+   and marks \(i=2\), \(Q_2=4\), as proper: the reverse cycle reveals 3. However, the alleged root form is
+   \[
+   (r,2P_{i-1},(P_{i-1}^{2}-N)/r)=(2,2,-10).
+   \]
+   Its content is 2. It represents **no proper invertible ideal class of discriminant 84**.
+
+   This is the conductor-2 obstruction to treating integer norm squareness as ideal squareness. It affects the experimental interpretation: **36/90 E2 instances contain a proper square with even \(r\)**—10, 12, and 14 instances at the three sizes.
+
+   **Fix:** Separate maximal-order ideal halving from conductor-divisible cases. Require a primitive root form before asserting membership in \(\mathrm{Cl}^{+}(D)[2]\), or explicitly describe passage to another order. Preserve the successful factor computations, but remove their blanket identification with nonidentity classes in the originally specified group.
+
+3. **GB-X’s converse needs a reachability hypothesis.**
+
+   **Location:** [results:435](/Volumes/git/factoring-connection/notes/genusleak_results.md:435), lines 435–442.
+
+   **Problem:** Let
+   \[
+   G=C_4\oplus C_2,\qquad A=\langle(2,0)\rangle,\qquad g=(1,1).
+   \]
+   Hidden involutions exist in \(G\), but the unique involution in \(\langle g\rangle\) is \((2,0)\in A\). The odd order of \(g\) is 1, whose multiple is already known. Squaring down nevertheless produces only public torsion.
+
+   The forward extraction is correct: successful construction yields \(2e\) as a nonzero relation, and in rank one \(e\) annihilates the odd component. The converse does not guarantee a **hidden** involution.
+
+   **Fix:** Require that the cyclic subgroup’s involution lies outside \(A\). Otherwise retain only the forward implication, or use the full 2-primary basis procedure already discussed in §3.3. “A relation” is also a necessary output certificate, not an equivalence with finding a useful relation.
+
+4. **WALK contains a false intermediate assertion, and its counterfactual is not a factoring lower bound.**
+
+   **Location:** [results:190](/Volumes/git/factoring-connection/notes/genusleak_results.md:190), especially lines 197–206; headline lines 20–23.
+
+   **Problem:** The assertion \(P_t\le 1/2\) for \(t\ge2\) is false for the stated generality. For \(N=15\), \(S=\{17\}\), the prime form is \((3,0,5)\), generating \(C_2\), and \(P_2=1\). With one distinct hidden character, \(G_2=1/2\) and \(b=1/2\). Then
+   \[
+   H^2(\operatorname{Ber}(1),\operatorname{Ber}(1/2))
+      =1-\frac1{\sqrt2}\approx0.292893,
+   \]
+   whereas the displayed intermediate bound gives \(1/6\).
+
+   The Hellinger calculation is repairable under \(P_t\le1/2\), for example with a hypothesis ensuring no relations of length at most 2. E1 satisfies such a restriction. But deleting selected spectral terms does not construct another valid class-group instance or a consistent alternative walk process. The resulting comparison bounds that artificial testing problem.
+
+   The headline about short walks is independently too broad. For \(N=21,\ S=\{17\}\), \(g_0=2\), yet the one-step endpoint is \((5,4,5)\), revealing
+   \[
+   \gcd(2a-b,N)=3.
+   \]
+   Its return statistic remains the free one.
+
+   **Fix:** Add the missing return-probability hypothesis. Restrict the conclusion to independent, fixed-time return bits in the specified counterfactual experiment. Replace “no information” by “no nonformal return relation”; endpoint coefficients are expressly outside that conclusion.
+
+5. **GB’s coefficient and prime-divisor bounds survive scrutiny; its application to actual class groups does not follow.**
+
+   **Location:** [results:400](/Volumes/git/factoring-connection/notes/genusleak_results.md:400), lines 400–433 and 450–465.
+
+   **Problem:** Under the intended restricted model, I find no defect in
+   \[
+   \|e\|_\infty\le2^q,\qquad
+   \|e-e'\|_\infty\le2^{q+1},
+   \]
+   or in counting at most \((q+1)/\log_2X\) possible prime divisors of a nonzero coordinate. The stated pair-count constant is conservative.
+
+   The missing application hypotheses matter:
+
+   * The simulated transcript and permitted auxiliary information must be independent of \(P,u\).
+   * Small prime forms have not been shown to have independent uniform projections onto the relevant \(P\)-quotient.
+   * A public discriminant supplies arithmetic side information absent from the model.
+   * The displayed direct product assumes a particular \(P\)-primary structure. A mere prime divisor of the odd class number does not imply that decomposition.
+   * The \(O(q^3/X)\) simplification requires the stated \(s,r=O(q)\) accounting.
+
+   **Fix:** State these conditions explicitly. A quotient-based formulation can accommodate more \(P\)-primary structures, but requires its own precise statement. Do not replace a distributional theorem by a bound for every group with a large odd prime divisor.
+
+   **Literature VERIFIED:** Sutherland’s thesis, Theorem 2.3 and Corollary 2.4, establishes an unknown-order order-computation lower bound; Chapter 4 disproves a literal square-root bound. Hhan’s Theorem 4.1 gives the uniform-prime-order \(O(T^3/2^n)\) statement. These support the proof pattern, not its automatic transfer to arithmetic class groups. [Sutherland](https://math.mit.edu/~drew/sutherland-phd.pdf), [Hhan](https://arxiv.org/html/2402.11269v1#S4.SS1).
+
+6. **Sampling-oracle accounting and the proposed sampler simulation need correction.**
+
+   **Location:** [results:446](/Volumes/git/factoring-connection/notes/genusleak_results.md:446).
+
+   **Problem:** Fresh formal variables correctly accommodate uniform samples **when sampling calls count toward the resources and handle count**. A theorem counting only subtraction queries cannot allow unlimited free sampling: sufficiently many samples, together with free label comparisons, can reveal group cardinality.
+
+   Also, a bound on \(|G/A|\) does not justify sampling uniformly as \(a g^u\). This expression stays inside \(A\langle g\rangle\), which may be proper. A size bound supplies neither cyclicity nor a generator.
+
+   **Fix:** Charge sampling calls explicitly. Require \(G=A\langle g\rangle\) for the single-generator simulation, or use a supplied generating set and prove the resulting statistical-distance bound.
+
+7. **GI is not yet a well-defined lower-bound theorem.**
+
+   **Location:** [results:330](/Volumes/git/factoring-connection/notes/genusleak_results.md:330), lines 330–342.
+
+   **Problem:** For a **fixed** nominal difference \(d\), the estimate
+   \[
+   \operatorname{meas}\{R:\ |d-mR|\le c\text{ for some }m\}=O(c)
+   \]
+   is reasonable. The missing step is proving that adaptively chosen nominal differences remain independent of \(R\) in an appropriate simulation.
+
+   Actual infrastructure operations return reduction corrections and distance information. Bounding their errors does not specify their information content. The model also lacks a precise success condition and oracle semantics. An \((f,p)\)-representation is a finite-precision representation, not an exact real-number oracle.
+
+   **Fix:** Define all oracle outputs, precision costs, permitted side information, and success events; then supply a transcript simulation. Until then label GI a heuristic abstraction or proof proposal. Its measure calculation alone does not establish the advertised infrastructure lower bound.
+
+8. **HR reaches a midpoint candidate; it does not guarantee a factor for the supplied multiplier.**
+
+   **Location:** [results:26](/Volumes/git/factoring-connection/notes/genusleak_results.md:26), [results:244](/Volumes/git/factoring-connection/notes/genusleak_results.md:244), and [results:480](/Volumes/git/factoring-connection/notes/genusleak_results.md:480).
+
+   **Problem:** The 2-adic sweep is sound in substance under the positive-norm and certified-arithmetic hypotheses. However, “any multiple … gives a factor” contradicts the report’s own \(N=731\) example, whose midpoint reflects the public divisor 2. Constant success across multipliers is explicitly only an observation.
+
+   The proof should also justify its neighbour bound and state complexity in both \(\log X\) and \(\log D\).
+
+   **Fix:** Say “a polynomial-time midpoint search, which yields a factor when that midpoint is useful.” Keep the unit-norm restriction and multiplier-success qualification in every summary.
+
+   **Literature VERIFIED:** Murru–Salvatori explicitly discuss regulator multiples and repeated halving in §5, including their connection to regulator algorithms. This closely relevant work is missing from the references. [Murru–Salvatori, §5](https://arxiv.org/html/2409.03486v2#S5).
+
+9. **The \(D^{1/5}\) optimization is an upper bound, not a proved floor.**
+
+   **Location:** [results:267](/Volumes/git/factoring-connection/notes/genusleak_results.md:267), especially lines 283–302.
+
+   **Problem:** The dyadic importance-sampling estimator is mathematically credible. With \(T\) sufficiently large, its bounded importance weights and Hoeffding give the stated \(\widetilde O(D/\Delta^2)\) approximation cost. Balancing this against \(\sqrt\Delta\) gives \(D^{1/5}\).
+
+   None of this proves optimality. An upper bound for one estimator and a heuristic Euler-tail variance do not exclude better estimators, arithmetic cancellation, different finishing procedures, or favourable discriminants.
+
+   Furthermore, “subexponential requires \(\Delta\le L[1/2]\)” is too restrictive: for a square-root search, the general requirement is \(\Delta=D^{o(1)}\). The imaginary-group finish also needs an efficient sampling hypothesis; the GRH-based sampler in §2.2 cannot silently establish an unconditional total algorithm.
+
+   Finally, finding an annihilator or period verifies that object, not that the original analytic estimate accurately approximated \(h\) or \(hR\).
+
+   **Fix:** Replace “floor” by “optimized cost of the specified architecture.” Separate the unconditional estimator, the sampling-dependent imaginary finish, and the probabilistic error guarantee.
+
+10. **GEN’s reciprocity is correct, but its parameter scope and character-oracle wording need repair.**
+
+   **Location:** [results:136](/Volumes/git/factoring-connection/notes/genusleak_results.md:136), lines 136–165; [genus.py:43](/Volumes/git/factoring-connection/src/genusleak/genus.py:43); table line 477.
+
+   **Problem:** The reciprocity calculation works with \(m\equiv1\pmod{8k}\). My 627 additional oracle checks passed, including non-maximal orders.
+
+   The complete supplementary-character table, writing \(M=kN\) squarefree, is:
+
+   | \(M\bmod8\) | Additional assigned 2-adic character |
+   |---|---|
+   | \(1,5\) | \(\chi_{-4}\) |
+   | \(3,7\) | None |
+   | \(2\) | \(\chi_{-8}\) |
+   | \(6\) | \(\chi_8\) |
+
+   Thus conductor 2 does not introduce a free \(\chi_{-4}\) character when \(M\equiv3\pmod4\).
+
+   Two hypotheses are missing from the standalone result. Evaluating the “public” characters requires a supplied or efficiently obtainable factorization of \(k\). Also,
+   \[
+   8kN^3\gg(8kN)^2\log^4N
+   \]
+   is not valid for arbitrary permitted \(k\). It is valid asymptotically for the intended small multipliers.
+
+   Finally, principal-genus **membership** is not the same oracle specification as all **labelled** genus characters. On Jacobi-\(-1\) inputs, orienting \(\chi_p\) rather than \(\chi_q\) requires an additional anchor choice.
+
+   **Fix:** Restore an explicit small, factored-multiplier hypothesis, or enlarge the progression-search range. Include the table above. State the equivalence for GEN-SQ; qualify stronger character-evaluation claims separately.
+
+11. **Lemma 0 appears repairable, but its proof omits the non-maximal case and its public-form constructor is wrong.**
+
+   **Location:** [results:78](/Volumes/git/factoring-connection/notes/genusleak_results.md:78), especially lines 101–110; [forms.py:205](/Volumes/git/factoring-connection/src/genusleak/forms.py:205); [tests:99](/Volumes/git/factoring-connection/tests/test_genusleak.py:99).
+
+   **Problem:** Numerical checking is substituted for the non-maximal proof of \([\mathfrak p]\notin A_{\rm pub}\). Nevertheless, I found no counterexample to the lemma under \(N>12k\): all 195 additional checks satisfied closure, index exactly 2, exclusion of the \(p\)-class, and factor extraction outside the public subgroup.
+
+   The code does have a counterexample:
+   ```text
+   public_ambiguous(10403)
+       = [(1,0,10403), (2,2,5202)].
+   ```
+   The second form has content 2. Despite the written correction, the constructor still admits imprimitive “public” forms. Existing tests never assert primitivity.
+
+   **Fix:** Filter by \(\gcd(a,b,c)=1\). Complete the proof in \(\mathbb Z[\sqrt{-kN}]\): in the conductor-2 case, exclude the noninvertible prime above 2; primitive public ambiguous forms then come from divisors of \(k\), and the same primitive-ideal norm contradiction applies. Explicitly handle products of several public ramified classes. The coefficient-based factor-extraction part of Lemma 0 survives.
+
+12. **SQ’s reduction is conditional as stated; the summaries erase that qualification.**
+
+   **Location:** [results:19](/Volumes/git/factoring-connection/notes/genusleak_results.md:19), [results:115](/Volumes/git/factoring-connection/notes/genusleak_results.md:115), and line 532.
+
+   **Problem:** The random-root extraction argument is correct with near-uniform class sampling and an oracle blind to the witness. The given efficient sampler uses GRH. Thus the supplied proof does not establish an unqualified unconditional equivalence.
+
+   Small primes dividing \(N\) must also trigger immediate factoring before invoking Bach generation after their exclusion. For general \(k\), the reverse direction needs the complete discriminant factorization, not just \(p,q\).
+
+   **Fix:** Put the sampling/GRH qualification in the headline. State the preliminary gcd checks and factorization requirements. “Factoring-equivalent” identifies a computational target; it does not itself rule out a new square-root algorithm.
+
+   **Literature VERIFIED:** Hühnlein–Meyer–Takagi explicitly describe randomized polynomial-time square-root extraction with the discriminant factorization supplied, and the random-square factoring argument. Their assumptions support the qualified statement. [HMT 1998](https://www.ecsec.de/fileadmin/Ecsec-files/pub/1998_ICISC.pdf).
+
+13. **CM failure points describe known costs, not construction lower bounds.**
+
+   **Location:** [results:344](/Volumes/git/factoring-connection/notes/genusleak_results.md:344), especially lines 353–370.
+
+   **Problem:** The large class-polynomial degree does not force every algorithm producing one CM curve to construct that polynomial. The report acknowledges a one-root method, yet still concludes “construction is exponential” as though necessity had been proved.
+
+   Similarly, degree \(p\) describes the ramified-prime ideal representative. The same class can potentially act through another ideal representative or a chain of small isogenies. This observation does not supply such a chain, but it invalidates “must compute the degree-\(p\) isogeny” as a general obstruction.
+
+   The module statement also needs \(\mathcal O=\operatorname{End}_{\mathbb F_\ell}(E)\), rather than merely a contained order.
+
+   **Fix:** Describe the known construction algorithms and their costs, without claiming a lower bound for producing one curve. Distinguish a ramified ideal representative from its class.
+
+   **Literature VERIFIED:** Sutherland’s stated CM complexity is an expected upper bound under GRH and size hypotheses. Lenstra’s Theorem 1 uses the actual endomorphism ring. [Sutherland 2012](https://arxiv.org/html/1009.1082v3), [Lenstra 1996](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1996c/art.pdf).
+
+14. **The ring-class and compositum algebra does not prove the “no gain” conclusions.**
+
+   **Location:** [results:376](/Volumes/git/factoring-connection/notes/genusleak_results.md:376), lines 376–396; lines 443–444 and 536–537.
+
+   **Problem:** A known kernel order does not generally kill the odd component of the quotient. That limited conclusion is sound. It does not exclude using explicit maps, correlated samples, transfer, norm, or coefficient operations absent from GB.
+
+   “Vary independently enough” has no stated theorem or quantitative hypothesis. A union bound needs probability bounds valid in the **joint adaptive experiment**; single-group bounds do not automatically survive correlated cross-group information.
+
+   The equality of the extended ramified ideals in the biquadratic compositum is sound at odd \(p\). However, extension can identify or principalize classes, and a larger class number alone does not prove a harder collision problem.
+
+   **Fix:** Restrict “no gain” to the specified powering operation. Supply a joint oracle model before applying GB to correlated orders or composita. State that computing the kernel-order formula also presumes appropriate information about the chosen conductor.
+
+15. **The algorithm survey is incomplete, although the omissions do not supply the requested general counteralgorithm.**
+
+   **Location:** [results:467](/Volumes/git/factoring-connection/notes/genusleak_results.md:467), especially the table and lines 485–491.
+
+   **Problem:** The following distinctions and additions are necessary:
+
+   | Algorithms | Mechanism and audit status |
+   |---|---|
+   | Fermat, Lehman, Hart, McKee | Difference-of-squares identities and rational approximation; these are not class-group equality queries. Hart’s general heuristic \(N^{1/3}\) claim is **VERIFIED**. [Hart 2012](https://wrap.warwick.ac.uk/id/eprint/54707/1/WRAP_Hart_S1446788712000146a.pdf) |
+   | Seysen; Lenstra–Pomerance | Smooth class-group relations. The table omits the rigorous unconditional Lenstra–Pomerance result. **VERIFIED.** [Lenstra–Pomerance 1992](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf) |
+   | SPAR, including Shanks–Pollard–Atkin–Rickert; Schnorr–Lenstra | Order-smoothness methods, distinct from collecting smooth norm relations. The SPAR attribution is **VERIFIED** in the preceding primary paper. |
+   | Pollard-style rho in class groups; primorial and multistage searches | Generic collision/order methods; generic success need not mean the entire class number was smooth. Sutherland’s treatment is **VERIFIED**. |
+   | SQUFOF with racing multipliers and fast return | Square-form methods with explicitly heuristic average-time assumptions. **VERIFIED** in Gower–Wagstaff §§5 and 7. [Gower–Wagstaff](https://homes.cerias.purdue.edu/~ssw/squfof.pdf) |
+   | **SQUFOF2** | A missing subexponential square-form algorithm: QS-style sieving constructs the square form. It fits the smooth-relation exclusion. **VERIFIED.** [Bradford–Wagstaff 2022](https://www.impan.pl/en/publishing-house/journals-and-series/bulletin-polish-acad-sci-math/all/70/1/114948/square-form-factorization-ii) |
+   | Elia; Murru–Salvatori | Regulator-based positioning, including multiples and halving. **VERIFIED** for Murru–Salvatori §5; fits the order/regulator category. |
+   | Coppersmith and lattices on forms | Need explicit small-root or auxiliary-input promises. Castagnos–Joux–Laguillaumie–Nguyen treats \(pq^2\), outside squarefree \(pq\). That applicability distinction is **VERIFIED**; a general \(pq\) escape is **UNVERIFIED**. [Original paper](https://www.math.u-bordeaux.fr/~gcastagn/publi/AC09_nice_factor.pdf) |
+   | Hittmeir; Harvey–Hittmeir | Rational approximation, short lattice vectors, modular collisions, and fast polynomial arithmetic. Their deterministic \(N^{1/5+o(1)}\) route is **VERIFIED** and is not an analytic class-number approximation. [Harvey–Hittmeir](https://arxiv.org/html/2105.11105v1) |
+
+   **Fix:** Expand the table and define the categories operationally. In particular, distinguish norm relations, order smoothness, class-group collisions, modular collisions, and small-root reconstruction. If “divisor search” includes every procedure recovering a divisor from arithmetic constraints, the proposed exhaustive taxonomy becomes nearly tautological.
+
+16. **Preregistration largely matches execution, but D1 is not the only reporting deviation.**
+
+   **Location:** [prereg:12](/Volumes/git/factoring-connection/notes/genusleak_prereg.md:12), lines 12–20, 41–54, and 56–64; [results:493](/Volumes/git/factoring-connection/notes/genusleak_results.md:493); [harness.py:145](/Volumes/git/factoring-connection/src/genusleak/harness.py:145).
+
+   **Problem:** The instance counts, seed sequence, reported aggregates, and met/not-met outcomes reproduce. Commit order is consistent with preregistration. I found no evidence of outcome-rescuing reruns.
+
+   Remaining deviations and limitations:
+
+   * **E3 omits the promised skipped-seed records** in all 20 rows.
+   * E2’s failed \(n=28,\) seed-29 instance is excluded from medians. This exclusion is disclosed for \(i_1\rho\), but the failure-handling rule was not preregistered. For median \(i_1\), exclusion gives **98**; retaining failure as \(+\infty\) gives **110**.
+   * E1 derived statistics and E2 densities use floating point despite the “exact except E5” setup. E1 also emits nonstandard JSON `Infinity`.
+   * E4’s implementation additionally checks \(P_i\); I independently checked the registered \(Q_{L/2}\)-only rule and obtained identical outcomes.
+   * E5’s minimum cost uses the true, harness-known error and retrospective grid selection. At \(n=32\), 17/20 minima occur at the smallest grid value. This is not evidence for an architectural lower bound.
+
+   **Fix:** Add a deviation log covering these points. Publish conditional and failure-inclusive E2 statistics, record skipped seeds, and label E5’s score as retrospective. These repairs do not change the currently reported prediction statuses.
+
+17. **The literature-verification apparatus remains unfinished and includes a bibliographic error.**
+
+   **Location:** [results:130](/Volumes/git/factoring-connection/notes/genusleak_results.md:130), lines 130–133, 290–295, 452–463, and [§10:547](/Volumes/git/factoring-connection/notes/genusleak_results.md:547).
+
+   **Problem:** §6 says exact statements are checked in §10, but §10 contains only a placeholder. “VERIFIED by codex_1” is not a substitute for a reviewable theorem citation.
+
+   | Claim | Status of this audit |
+   |---|---|
+   | HMT square-root algorithm and factoring argument | **VERIFIED in substance.** Give precise page/title locations; the linked preprint’s root discussion is on PDF pp. 8–9 and security argument on p. 12. |
+   | Sutherland unknown-order bound and primorial improvement | **VERIFIED**, with the target and quantifiers qualified as in finding 5. |
+   | Hhan §4 | **VERIFIED**, especially Theorem 4.1. |
+   | Damgård–Koprowski | **VERIFIED** as unknown-order generic root-extraction work requiring order-distribution hypotheses; transfer to the present torsion target is not supplied by that citation. [Original paper](https://www.iacr.org/archive/eurocrypt2002/23320252/DKea2002.pdf) |
+   | Bach, *Improved approximations for Euler products* | **Bibliographic correction VERIFIED:** CMS Conference Proceedings **15** (1995), 13–28, not *Math. Comp.* The exact displayed tail estimate remains **UNVERIFIED** here. [Bibliographic record in a primary paper](https://doi.org/10.1090/S0025-5718-02-01418-7) |
+   | Srinivasan 1998 | **Existence VERIFIED**; original detailed effectiveness/certification theorem **UNVERIFIED** here. [Author’s publication list](https://sites.google.com/site/rsrinivasananitha/home/publications) |
+   | Lagarias Theorem 6.10; exact Cox theorem labels; Kuroda constant | **UNVERIFIED original theorem text.** Do not upgrade these labels through secondary references. |
+
+   **Fix:** Complete §10 with exact theorem statements, hypotheses, source locations, and checked versions. Distinguish verified mathematical substance, verified bibliography, and unverified original theorem text.

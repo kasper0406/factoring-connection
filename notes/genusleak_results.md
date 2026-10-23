@@ -10,48 +10,59 @@ by the classes that k alone determines (Lemma 0).
 
 ## 0. Verdict (plain language)
 
-**Negative. We found no subexponential route to a hidden ambiguous class that avoids a group order, a relation, or
-a smoothness event. Every route examined either leads back to one of those or is exponential.**
+**Negative, as a search outcome. Among the routes and methods we reviewed, we found none that reaches a hidden
+ambiguous class (or a useful ambiguous/square form) in subexponential time without a group order, a relation, or a
+smoothness event.** We did not prove that no such route exists. The barriers below hold only in their stated models.
+Arithmetic uses of form coefficients remain unbounded by them.
 
-- The genus characters are not free. Deciding whether a class is a square (whether it lies in the principal genus)
-  is *equivalent* to quadratic residuosity mod N (Prop GEN). That problem is not known to be easy, nor known to be as
-  hard as factoring.
-- **Square roots in Cl(D) are factoring-equivalent** (Prop SQ, known).
-- **Random-walk statistics on the Cayley graph of small prime forms carry information only through relations.**
-  - Every closed walk is a smooth value x² + kNy² ≥ kN (Lemma GIRTH). Walks shorter than log(kN)/log ℓ_max carry no
-    information at all.
-  - The hidden genus term in the return probability needs ≥ δ²|H|/4 walks to detect (Prop WALK). Its eigenvalue is
-    the mean of (ℓ/p) over the generators, a QR-type quantity.
+What is proved or checked, route by route:
+- **Genus characters (Prop GEN).** Deciding whether a class lies in the principal genus (= Cl²) is equivalent to
+  quadratic residuosity mod N, by randomized reductions. One direction uses GRH, with a small factored multiplier k.
+  QR_N is not known to be easy, nor known to be as hard as factoring. Even full genus data does not locate the
+  involutions.
+- **Square roots (Prop SQ).** Square roots in Cl(D) yield factors, given near-uniform class sampling (GRH, via Bach's
+  generators). Known; Hühnlein–Meyer–Takagi 1998.
+- **Cayley-graph walks.**
+  - Every non-formal closed walk is a smooth value x² + kNy² ≥ kN (Lemma GIRTH, D < 0). So return and collision
+    statistics are relation statistics.
+  - For independent fixed-time return bits, the hidden genus term needs ≳ |H| walks (Prop WALK, a counterfactual
+    bound). Its eigenvalue is the mean of (ℓ/p) over the generators, a QR-type quantity.
+  - Endpoint *coefficients* are outside these statements.
 - **Infrastructure.**
-  - Any exact multiple of the regulator (hR is enough; h need not be separated from R) gives a factor in polynomial
-    time, by a 2-adic sweep (Prop HR).
-  - An analytic approximation of hR to absolute precision Δ is finished by a √Δ search (an upper bound; no better
-    use is known to us). The Euler-product route therefore stops at |D|^{1/5}: under GRH, as Lenstra and Schoof found,
-    and unconditionally with a randomized estimator (codex_1).
-  - SQUFOF's square forms are the 2-torsion classes' shadows in the principal cycle. They have density ≍ D^{−1/4}, and
-    giant steps cannot raise that density (E2).
-- **Isogeny volcanoes** fail at construction. A curve with Frobenius discriminant −4kN·f² needs either a
-  degree-h(O) ≥ N^{1/2+o(1)} class polynomial or about √(kN) random trials. Even with the curve, ambiguous classes act
-  by isogenies of the unknown degree p.
-- **Ring class groups and multiplier pencils** only add more groups whose orders are hidden. The kernels have known
-  order, but that order is useless against the hidden odd part.
-- **Barrier (Theorem GB).** In a generic model of a hidden-order group, a q-query algorithm outputs a hidden 2-torsion
-  element with probability O(q³/X) when the odd order has a prime factor P that is uniform-like in [X, 2X]. This is
-  the same Ω(X^{1/3}) shape as Sutherland's unknown-order bound (thesis, 2007). The infrastructure analogue (Prop GI)
-  gives Ω(√X), matching BSGS.
-  - Any successful generic algorithm hands you a relation (2e ∈ Λ, e ∉ Λ). In rank 1 that is a multiple of an
-    element's odd order: the route *is* a group-order problem.
-  - The non-generic features that escape the model are listed in §6. Every known escape is one of three kinds:
-    - a multiplicative coincidence of reduced-form norms: smooth (relations, i.e. (M)), square (SQUFOF, N^{1/4}), or a
-      collision;
-    - an analytic order approximation (N^{1/5}, GRH);
-    - a direct divisor search ((A)).
-  - The open class is precisely: non-generic uses of the integers of reduced forms that are none of these.
-- **Structural remark.** h(−4kN) is an Euler product of *public* local factors (D/ℓ). The hidden characters (ℓ/p)
-  never enter h individually; they enter only the group *structure*. It is the public order that unlocks the hidden
-  2-torsion. So, as far as we can see, family (Q) reaches the factors through (M)'s door.
+  - Any certified multiple of R (hR suffices; h need not be separated) leads in polynomial time to the midpoint
+    candidate at R/2 (Prop HR, N(ε) = +1). That candidate gives a factor when it is useful. Usefulness is an
+    observation: 72% at k = 1; 97% for some k ≤ 11 (E4).
+  - An approximation of hR to precision Δ is finished by an O(√Δ) search. With Euler products (GRH; Shanks,
+    Lenstra, Schoof) or random summation (unconditional, randomized; Srinivasan 1998), the specified architecture
+    costs |D|^{1/5}. That is an upper bound for this architecture, not a floor.
+  - SQUFOF's proper squares have density ≍ D^{−1/4} per cycle position. Giant steps to random positions do no
+    better (E2).
+- **CM / volcanoes.** Every known way to construct a curve with Frobenius discriminant −4kN·f² costs |D|^{1/2+o(1)}
+  or more. We prove no lower bound for that construction.
+- **Ring class groups and multiplier pencils.** Under the operations we examined, they add more hidden-order groups.
+- **Barrier (Theorem GB, generic model).** In a generic hidden-order group whose odd part has a P-component with P
+  uniform-like in [X, 2X], a q-query algorithm reaches hidden 2-torsion with probability O(q³/X).
+  - The shape is the same as Sutherland's 2007 unknown-order bound and Hhan 2024 Thm 4.1. We claim no novelty.
+  - Any generic success outputs a nonzero relation.
+  - Applying the model to real class groups needs distributional hypotheses that we do not prove (§6.1).
+- **What escapes the model (§6.2).** Each known escape we found uses one of these features:
+  - smooth norms (relations: Seysen, Hafner–McCurley, Lenstra–Pomerance, SQUFOF2), i.e. (M);
+  - order smoothness (SPAR, Schnorr–Lenstra), i.e. (M);
+  - square norms (SQUFOF, N^{1/4});
+  - collisions (rho in Cl, N^{1/4});
+  - analytic order approximation (N^{1/5});
+  - rational approximation / lattices / small roots (Lehman, Hart, McKee, Hittmeir, Harvey–Hittmeir, Coppersmith-type
+    attacks), i.e. (A).
 
-Nothing here is a claimed novelty. Labels: PROVED (proof here), KNOWN (reference), OBSERVATION, CONJECTURED.
+  This is a literature survey, not a proof of exhaustiveness. The open class is non-multiplicative, non-lattice uses
+  of the integers of reduced forms.
+- **Structural remark (OBSERVATION, not a reduction).** h(−4kN) is an Euler product of public local factors (D/ℓ).
+  The hidden characters (ℓ/p) enter the group *structure*, not the local factors of h. In every method we found, the
+  hidden 2-torsion is reached through the order (or a relation), not through the characters. This does not show that
+  h is efficiently available, nor that every use of h is relational.
+
+Nothing here is claimed as novel. Labels: PROVED (proof here), KNOWN (reference), OBSERVATION, CONJECTURED,
+HEURISTIC.
 
 ## 1. Background facts used (KNOWN)
 
@@ -62,7 +73,8 @@ Nothing here is a claimed novelty. Labels: PROVED (proof here), KNOWN (reference
   - So the reduced form of each class in Cl(D)[2] is ambiguous; there is exactly one per class.
   - The reduced ambiguous forms are enumerable from the divisors of D (tested: `genus.ambiguous_reduced_forms` against
     PARI's 2-rank).
-- **(F2) Gauss genus theory** (Cox Thm 3.15, Thm 6.1; Gauss DA §§229–287).
+- **(F2) Gauss genus theory** (Cox, *Primes of the form x² + ny²*, 1st ed. 1989: Thm 3.15, Thm 6.1 — theorem
+  numbers UNVERIFIED across editions; Gauss DA §§229–287).
   - Cl/Cl² ≅ (Z/2)^{μ−1}, cut out by the assigned characters.
   - For D = −4kN these are (·/p), (·/q), (·/ℓ) for odd ℓ | k, and the 2-adic characters among χ₋₄, χ₈, χ₋₈ (which
     ones depends on kN mod 8).
@@ -98,22 +110,32 @@ exactly.)
    - If gcd(d₁, N) = 1, then d₁ | 4k, so d₂ ≥ N > 12k ≥ 3d₁, which is impossible.
    - If N | d₁, then d₁d₂ ≥ N² > 4kN, also impossible.
    - So gcd(d₁, N) ∈ {p, q}.
-4. **[𝔭] ∉ A_pub** (proof written for the maximal order; the non-maximal case is the form version, numerically
-   checked as above). A relation [𝔭] = ∏[𝔩_i] over distinct ramified 𝔩_i above primes dividing 2k (these classes
+4. **[𝔭] ∉ A_pub.**
+   - *Non-maximal case* (kN ≡ 3 mod 4, so k is odd and the conductor is 2).
+     - The primitive public reduced ambiguous forms are exactly (d, 0, kN/d) with d | k:
+       - (2, 2, (kN+1)/2) and (2d, 2d, (kN/d + d)/2) have even c, so they are imprimitive;
+       - a = 4d gives a non-integer c;
+       - odd a with b = a forces 4 | a.
+     - The ideals 𝔡 = (d, √−kN) for odd d | k are invertible, since odd norm is prime to the conductor, and they
+       satisfy 𝔡² = (d).
+     - So A_pub = {[𝔡] : d | k}. Then [𝔭] = [𝔡] makes the primitive invertible ideal 𝔭𝔡 principal, of norm pd. That
+       gives x² + kNy² = pd, which is impossible as below with 2k replaced by k.
+   - *Maximal case.* A relation [𝔭] = ∏[𝔩_i] over distinct ramified 𝔩_i above primes dividing 2k (these classes
    have order ≤ 2) would make the primitive ideal 𝔭∏𝔩_i principal, with norm p·d, d | 2k. Its generator x + y√−kN
    satisfies x² + kNy² = pd.
    - If y ≠ 0 this forces kN ≤ 2kp, i.e. q ≤ 2.
    - If y = 0 it forces x² = pd with p ∤ d.
 
    Both are impossible.
-5. **Classes outside A_pub give p.** By F1 the reduced form of a class outside A_pub is ambiguous. If it were public
+5. **Classes outside A_pub give p** (both cases). By F1 the reduced form of a class outside A_pub is ambiguous. If it were public
    (a | 4k), the class would be that of an ideal of norm a, a product of ramified primes above 2k, hence in A_pub.
 
 ∎ (Checked for k ∈ {1, 2, 3, 5, 6, 7, 10, 11} on six semiprimes; the count of reduced ambiguous forms matches
 2^{2-rank} from PARI.)
 
 ### 2.2 Prop SQ: square roots in Cl(D) ⇔ factoring (KNOWN; precise version)
-- **FACT ≤ SQRT** (randomized; GRH used only for generation).
+- **FACT ≤ SQRT** (randomized; conditional on GRH through near-uniform sampling). First trial-divide N by the primes
+  ≤ 6 log²|D| (a hit is a factor).
   - Take D = −4kN fundamental: k = 1 if N ≡ 1 (mod 4), k = 2 otherwise. Let S be all primes ≤ 6 log²|D| not
     dividing N: the split ones and the ramified ones above 2k. The ramified classes are public, and Bach's theorem
     (F4) covers all prime ideals, not only split ones (critic fix).
@@ -125,7 +147,7 @@ exactly.)
   - Lemma 0 then gives p.
   - Experiment E3 used a deterministic oracle, blind to x: the lexicographically least root. Success rates were
     0.485 and 0.4875 per query (n = 24, 32; predicted ½), with 389/389 correct factors.
-- **SQRT ≤ FACT.** With p and q known, membership in Cl² is decided by genus characters. A square root is then
+- **SQRT ≤ FACT.** With the full factorisation of D known (p, q and the factored k), membership in Cl² is decided by genus characters. A square root is then
   computed in randomized polynomial time by Gauss's duplication/ternary-form method:
   - Hühnlein–Meyer–Takagi, ICISC 1998, §3.1 (algorithm) and §4 (factoring reduction) — VERIFIED by codex_1;
   - Lagarias, J. Algorithms 1 (1980) 142–186, Thm 6.10 (complexity) — theorem text UNVERIFIED.
@@ -155,6 +177,22 @@ QR_N be: given a with (a/N) = 1, decide whether a is a square mod N.
 
 ∎
 
+- **Hypotheses (codex_2).** k is small and given factored, which is needed to evaluate the public characters. The
+  GRH range 8kN³ ≫ (8kN)²log⁴N needs k = N^{o(1)}; otherwise enlarge the range.
+- **2-adic assigned characters**, with M = kN squarefree (codex_2 table, checked on 627 queries over all six
+  admissible residues mod 8):
+
+  | M mod 8 | 1, 5 | 3, 7 | 2 | 6 |
+  |---|---|---|---|---|
+  | extra character | χ₋₄ | none | χ₋₈ | χ₈ |
+
+  All of them equal 1 at m ≡ 1 (mod 8).
+- **Scope.** The equivalence is for *membership* (GEN-SQ). Evaluating a *labelled* character χ_p rather than χ_q on
+  Jacobi-(−1) inputs needs an extra anchor choice. That is a stronger specification, not covered here.
+- **Prior art.** The direction GEN-SQ ≤ QR_N is immediate from genus theory. Castagnos–Laguillaumie–Tucker (ASIACRYPT
+  2022, ePrint 2022/1143) state that QR on Jacobi-(+1) elements is the same as deciding the principal genus for an
+  RSA-type discriminant; the literature critic saw this only in a snippet. We regard Prop GEN as folklore, made
+  explicit.
 - **Consequence.** "Genus characters are hidden" is exactly the QR_N assumption. It is not circular in the strict
   sense: QR_N is not known to be factoring-hard (Adleman–McCurley 1994, open problem O11; see
   `notes/codex_r4_sos_classgroup.md` §1).
@@ -193,6 +231,8 @@ W_t = W_t^free below g₀ in 60/60 instances. The first excess appears at g₀ +
   aggregate.
 - Let G_t be the contribution of the hidden characters that are distinct on H from the public ones (deviation D1,
   §7). There are at most c_μ := 2^{μ−2} of them (c_μ = 2 for k = 1).
+- **Hypothesis.** g₀ > 2 (no relation of ℓ₁-length ≤ 2), so that P_t ≤ ½ for t ≥ 2. Without it the bound fails.
+  Codex_2's example is N = 15, S = {17}, P₂ = 1. E1 satisfies the hypothesis (g₀ ≥ 4).
 - For even t, every term is ≥ 0, so b := P_t − G_t ≥ 1/|H| and G_t ≤ c_μ/|H|.
 - The squared Hellinger distance between Bernoulli(P_t) and Bernoulli(b) is
   ½[(P_t − b)²/(√P_t + √b)² + (P_t − b)²/(√(1−P_t) + √(1−b))²]. For t ≥ 2 we have P_t ≤ ½, and this is
@@ -202,8 +242,11 @@ W_t = W_t^free below g₀ in 60/60 instances. The first excess appears at g₀ +
   Advantage δ needs M ≥ δ²|H|/c_μ² ≈ δ²·N^{1/2}/c_μ².
 - **Scope.** Each walk contributes one Bernoulli at a single fixed t. Whole trajectories, several t, adaptive
   strategies, and the distribution of reduced-form coefficients at walk endpoints are **not** covered. The "without"
-  hypothesis is counterfactual. The general statement is GIRTH: equality events are relations. Endpoint coefficients
-  are non-generic features (§6.2).
+  hypothesis is counterfactual: deleting spectral terms does not produce another valid class-group instance. So
+  this bounds an artificial testing problem, not factoring.
+- The general statement is GIRTH: *equality events* are relations. Endpoint coefficients are non-generic features
+  (§6.2), and they can leak at toy size. Codex_2's example is N = 21, S = {17}: the one-step endpoint (5, 4, 5) is
+  itself a hidden ambiguous form, and gcd(2a − b, N) = 3. For large N that happens with probability ≍ |Cl[2]|/h.
 - For collision counts (pairs of walks), the signal-to-noise heuristic gives M ≳ √(|H|/2). This is the birthday
   bound, consistent with Theorem GB.
 - The direct collision method (codex_1). For uniform x, y, Pr[x² = y², xy⁻¹ ∉ A] = (|Cl[2]| − |A|)/h. So birthday
@@ -228,7 +271,7 @@ Every way into Cl[2] that we found is one of three things:
 - a root (factoring-equivalent);
 - a group-order computation: a multiple of the exponent kills the odd part, then 2-Sylow linear algebra (Shanks;
   Schnorr–Lenstra; see the §3.3 correction);
-- a relation. Walks and spectra are relations by GIRTH.
+- a relation. Walk returns and collisions are relations by GIRTH.
 
 Genus characters are QR_N-hard and do not by themselves produce Cl[2] elements.
 
@@ -242,10 +285,11 @@ Genus characters are QR_N-hard and do not by themselves produce Cl[2] elements.
 - E4: at k = 1 the midpoint splits N in 72% (n = 28) and 64% (n = 32) of instances; some k ≤ 11 splits 97% / 98%.
 
 ### 3.2 Prop HR: any multiple of R suffices (PROVED, given standard infrastructure arithmetic)
-- **Statement.** Assume N(ε) = +1. This is automatic if a prime ≡ 3 (mod 4) divides kN. If N(ε) = −1 the period is
+- **Statement** (a midpoint *search*; it yields a factor when the midpoint is useful). Assume N(ε) = +1. This is automatic if a prime ≡ 3 (mod 4) divides kN. If N(ε) = −1 the period is
   odd, and the symmetry point is a form (a, b, −a) with 4kN = b² + 4a², not a divisor (critic fix). Suppose X = M·R
   is known to absolute precision 0.1, for an unknown integer M ≥ 1. Then the ambiguous ideal at R/2 is reached in
-  poly(log X) operations.
+  poly(log X, log D) operations (the neighbour check uses the bounded gap
+  between consecutive reduced principal ideals near a given distance).
 - **Proof.**
   - For j = 1, 2, …, ⌊log₂ X⌋ + 1, compute the reduced principal ideal nearest distance X/2^j. Shanks–Lenstra
     giant steps track distances to O(log X) bits: Lenstra 1982; Buchmann–Williams; Jacobson–Williams, *Solving the
@@ -262,7 +306,8 @@ Genus characters are QR_N-hard and do not by themselves produce Cl[2] elements.
   - An approximation to a large multiple is not by itself a period-membership oracle. Certified precision, e.g.
     (f, p)-representations, is assumed.
 - This is the classical "regulator ⇒ factoring" reduction (Lenstra 1982; Schoof 1982; used by Hallgren, JACM 54
-  (2007)). Our 2-adic sweep is only a convenience; no novelty claimed.
+  (2007)). Murru–Salvatori (arXiv 2409.03486, §5) explicitly discuss regulator multiples and repeated halving (codex_2,
+  VERIFIED there). No novelty claimed.
 
 ### 3.3 What a precision-Δ approximation of hR buys (PROVED as an upper bound; KNOWN in substance)
 - Given |A − hR| ≤ Δ, find a distance in [A − Δ, A + Δ] at which the principal ideal recurs. Any such distance is a
@@ -280,29 +325,39 @@ Genus characters are QR_N-hard and do not by themselves produce Cl[2] elements.
      poly(2^{μ}, log h), since the 2-rank is ≤ μ − 1.
 
   The window cost √Δ is unchanged.
-- **Unconditional randomized estimator (codex_1; reasoning checked by us).**
+- **Unconditional randomized estimator** (codex_1; reasoning checked by us). This is in substance Srinivasan's
+  "Random Summation Technique" (Math. Comp. 67 (1998) 1285–1308), so credit is hers.
   - The tail is bounded by |L(1,χ) − Σ_{n≤T}χ(n)/n| ≤ 2|D|/T.
   - Choose a dyadic block of [1, T] uniformly, then n uniformly in it. The estimator Z = χ(n)/(n·p_n) is unbiased
     and satisfies |Z| ≤ K = O(log T).
   - Hoeffding then gives absolute precision ε from Õ(ε⁻²) samples. So precision Δ for h (or hR) costs Õ(|D|/Δ²), and
     the total Õ(|D|/Δ² + √Δ) gives |D|^{1/5} with no GRH. The result is randomized and uncertified; the BSGS finish
     verifies it.
-  - Srinivasan (Math. Comp. 67 (1998)) reports a related unconditional d^{1/5+ε} method (theorem text UNVERIFIED).
+  - The imaginary finish also needs a sampling hypothesis (GRH, §2.2). A verified annihilator certifies only itself,
+    not the analytic estimate.
 - **Euler products.**
-  - Under GRH the truncated product to x has |log L(1,χ) − log L_x| ≪ x^{−1/2}log²(x|D|) (Bach, Math. Comp. 1995,
-    "Improved approximations for Euler products" — exact constant UNVERIFIED). So Δ(x) ≈ √|D|·x^{−1/2}.
+  - Under GRH the truncated product to x has |log L(1,χ) − log L_x| ≪ x^{−1/2}log²(x|D|) (Bach, "Improved
+    approximations for Euler products", Number Theory (Halifax 1994), CMS Conf. Proc. 15 (1995) 13–28 — exact constant
+    UNVERIFIED). So Δ(x) ≈ √|D|·x^{−1/2}.
   - The total cost x + |D|^{1/4}x^{−1/4} is minimised at x = |D|^{1/5}. That is the Lenstra/Schoof exponent (also
-    `notes/analytic_results.md`, `notes/below16_results.md` §5).
+    `notes/analytic_results.md`, `notes/below16_results.md` §5). The deterministic GRH N^{1/5} class-group algorithm is
+    credited to Shanks 1971 (Proc. Symp. Pure Math. 20, 415–440) by Harvey, Math. Comp. 90 (2021) §1.
   - E5 measures the fitted slope d log Δ/d log x ∈ {−0.52, −0.53, −0.56} and log C_min/log|D| ∈ {0.20, 0.18, 0.18}
     at n = 32, 40, 48.
-- **Exponent 1/5 is the floor of this architecture.**
-  - A subexponential factoring algorithm along this route needs Δ ≤ L[½] in subexponential time, i.e. relative
-    precision |D|^{−1/2+o(1)} for L(1, χ).
+- **Exponent 1/5 is the optimised cost of this architecture, not a proved floor** (codex_2). Better estimators,
+  arithmetic cancellation, or other finishes are not excluded.
+  - A subexponential algorithm along this route needs Δ = |D|^{o(1)} in subexponential time, i.e. relative precision
+    |D|^{−1/2+o(1)} for L(1, χ).
   - Euler products need x ≈ |D|^{1−o(1)} for that: tail variance ≍ 1/(x log x) (below16 §5.3; heuristic).
   - We know no other non-relational subexponential approximation of L(1, χ_D) to that precision.
 
 ### 3.4 Square forms and giant steps (OBSERVATION + E2)
-- A proper square Q_i = r² in the principal cycle is 𝔯² with N𝔯 = r ≲ D^{1/4} and [𝔯] ∈ Cl⁺[2] ∖ {1}.
+- A proper square Q_i = r² in the principal cycle with a *primitive* root form is 𝔯², with N𝔯 = r ≲ D^{1/4} and
+  [𝔯] ∈ Cl⁺[2] ∖ {1}.
+  - Correction (codex_2). When r is even, the root form can be imprimitive. For N = 21, Q₂ = 4 has root form
+    (2, 2, −10). It belongs to the maximal order of discriminant N, not to Cl⁺(4N).
+  - 36/90 E2 instances contain a proper square with even r (10, 12, 14 at n = 28, 32, 36). The factor computations
+    stand; the class-group reading applies to discriminant D/4 there.
 - So SQUFOF finds 2-torsion through a *multiplicative self-coincidence* of a reduced norm (a = r·r). The density of
   such points per cycle position is ≍ |Cl⁺[2]|·D^{−1/4} (heuristic; Gower–Wagstaff 2008).
 - Giant steps reach chosen distances. The distance of 𝔯² is 2·dist(𝔯), where dist(𝔯) is measured in the cycle of a
@@ -327,7 +382,10 @@ style):
 
 Smooth norms put them in (M).
 
-### 3.6 Prop GI: generic infrastructure barrier (PROOF SKETCH; same argument as Theorem GB)
+### 3.6 Prop GI: generic infrastructure barrier (HEURISTIC ABSTRACTION / proof proposal; downgraded after codex_2)
+
+The oracle semantics (reduction corrections, finite-precision distances) and the transcript simulation are not
+specified. Only the fixed-difference measure computation below is proved.
 - **Model.** The algorithm holds handles of reduced principal ideals with known distances, tracked exactly (e.g.
   via (f, p)-representations), so errors do not accumulate. Each handle sits within c of its nominal distance. The
   algorithm may compose handles (distances add) and compare them. The regulator R is hidden, with density ≤ 1/X on
@@ -335,7 +393,7 @@ Smooth norms put them in (M).
 - **Collisions.** A collision means some known difference d = δ₁ − δ₂ with |d| > c is within c of mR, for some
   integer m ≥ 1. Since R ∈ [X, 2X], m lies in [(|d| − c)/2X, (|d| + c)/X], a range of ratio about 2. The set of such
   R has measure ≤ Σ_m 2c/m = O(c), independent of |d|.
-- **Bound.** As in Theorem GB, Pr[success] ≤ O((q + 2)²·c/X), so q = Ω(√(X/c)). BSGS achieves this. (v1 had a
+- **Bound (conditional on a transcript simulation that is not supplied).** As in Theorem GB, Pr[success] ≤ O((q + 2)²·c/X), so q = Ω(√(X/c)). BSGS achieves this. (v1 had a
   spurious factor (1 + L ln 2) and concluded Ω(X^{1/3}); the critic's sharpening. The q³ in GB is genuine because P
   is discrete; here R is continuous.)
 - **Reading.** Without relations and without square coincidences, the infrastructure is a hidden-period problem. R
@@ -357,17 +415,21 @@ Smooth norms put them in (M).
     H_O (codex_1, VERIFIED there). It still costs |D|^{1+o(1)} under GRH and uses class-group enumeration at
     auxiliary primes.
 - We know of no method that produces any curve whose endomorphism algebra is K in time |d_K|^{o(1)}. Producing one
-  is the well-known "CM bottleneck"; see e.g. Bröker–Stevenhagen 2007 on prime-order curves, where |D| must be small.
-- **Failure point:** construction is exponential.
+  is the well-known "CM bottleneck"; see e.g. Bröker–Stevenhagen, "Constructing elliptic curves of prime order", Contemp. Math. 463 (2008) 17–28, where |D|
+  must be small.
+- **Failure point:** every *known* construction costs |D|^{1/2+o(1)} or more. A large class-polynomial degree does
+  not force an algorithm producing one curve to compute that polynomial, so this is not a lower bound (codex_2).
 
 ### 4.2 Even given the curve
 - **Crater walks.** Small split ℓ′-isogenies realise the class-group *action*: a hidden-order group action, weaker
   than a black-box group. The crater length is ord([𝔩′]), an order computation.
 - **The ambiguous classes.** On the crater (End ⊇ Z[√−kN], p ∤ f), [𝔭] acts by an isogeny of degree p with kernel
-  E[p] ∩ ker(π − t/2), since (π − t/2)² = −kNf². Computing it needs p.
+  E[p] ∩ ker(π − t/2), since (π − t/2)² = −kNf². Computing that representative needs p. The same class could act
+  through another ideal representative, e.g. a chain of small isogenies. Finding one is the class-group problem
+  again, so this is not a general obstruction by itself.
 - **Choosing t ≡ 2 (mod 2N).** This makes ker(√−kN) ∩ E[N] F_ℓ-rational: E(F_ℓ) contains Z/N. But a point of order N
   does not separate p from q.
-- **Group structure.** E(F_ℓ) ≅ O/(π − 1) as O-modules (H. W. Lenstra Jr., J. Number Theory 56 (1996)). Its order
+- **Group structure.** With O = End_{F_ℓ}(E) exactly, E(F_ℓ) ≅ O/(π − 1) as O-modules (H. W. Lenstra Jr., J. Number Theory 56 (1996)). Its order
   #E = (t/2 − 1)² + kN f² is public.
 - **No leak found.**
 
@@ -381,7 +443,8 @@ Smooth norms put them in (M).
   That is an L-bit integer divisible by P, which has probability ≤ Lρ/log₂X.
 - If K_m is odd and x already maps to an involution, then x^{K_m} is an involution upstairs with the same image
   (codex_1). This lifts a known target; it does not discover one.
-- No gain.
+- No gain *for the powering operation examined*. Explicit maps, transfer, norms, or coefficient operations are
+  outside GB and are not excluded (codex_2).
 
 ### 5.2 Multiplier pencil
 - The hidden data common to all Cl(−4kN) is the character (·/p), not a group element. The orders h(−4kN) are
@@ -393,7 +456,10 @@ Smooth norms put them in (M).
   - Finding such a pair is a cross-group collision in Cl(L). There, equality testing is a principal-ideal problem in a
     quartic field (subexponential only relationally), over a group of order ≈ h_k h_{k′}h(kk′) (Kuroda's class
     number formula; constant UNVERIFIED).
-- Many discriminants give more (M)-type chances, not a non-smooth genus character.
+- Many discriminants give more (M)-type chances, not a non-smooth genus character, as far as we found. "Vary
+  independently enough" is a heuristic. Applying GB across correlated groups would need a joint oracle model, which
+  we do not supply.
+- Extension to L can principalise classes. A larger class number alone does not prove a harder collision problem.
 
 ## 6. Route 5: the barrier, and the non-generic escapes
 
@@ -408,7 +474,8 @@ Smooth norms put them in (M).
   j ≤ r.
 - Success: output σ(t) with t ∈ G[2] ∖ A.
 
-**Theorem GB.** Any algorithm making q oracle calls succeeds with probability
+**Theorem GB.** Count sampling calls (if any) among the q calls; each sample gets a fresh formal variable. Then any
+algorithm making q oracle calls succeeds with probability
 
   ≤ ((q + s + r + 1)² + 1)·(1/X + ρ(q + 1)/log₂X) + (q + 1)|G|/|Σ|.
 
@@ -436,16 +503,20 @@ For P uniform on the primes of [X, 2X] this is O(q³/X). So q = Ω(X^{1/3}).
 - Suppose a generic algorithm outputs a known combination t = e·g + c·a ∈ G[2] ∖ A. Then e·π_odd(g) = 0 and
   e·g ≠ c·a, so 2e is a nonzero relation of G.
 - For s = 1, e is a nonzero multiple of the odd order of g.
-- Conversely, an odd multiple M′ of ord_odd(g) gives g^{M′} ∈ G₂; squaring down reaches G[2].
+- Conversely, an odd multiple M′ of ord_odd(g) gives g^{M′} ∈ G₂, and squaring down reaches the involution of ⟨g⟩.
+  That involution is hidden only if the involution of ⟨g⟩ lies outside A. Codex_2's counterexample: G = C₄ ⊕ C₂,
+  A = ⟨(2, 0)⟩, g = (1, 1).
 
-So in rank 1, "hidden 2-torsion in ⟨g⟩" and "a multiple of ord_odd(g)" are interchangeable. In general rank, success
+So in rank 1, *under that reachability hypothesis*, "hidden 2-torsion in ⟨g⟩" and "a multiple of ord_odd(g)" are
+interchangeable. In general a relation is a necessary output certificate, not an equivalence with finding a useful
+relation. In general rank, success
 hands over a relation. **In this model, family (Q) is a group-order / relation problem.** Several multipliers k give
 several groups; the union bound adds their success probabilities. A small P⁺(h_odd) for some k is exactly the
 Schnorr–Lenstra smoothness event, i.e. (M).
 
-**Sampling oracles.** A uniform-sampling oracle does not break the theorem. Give each sample a fresh formal
-variable (codex_1 Theorem C; the same proof). Alternatively, when a bound on |G/A| is public, simulate a sample by
-a·g^u with u uniform in a long interval (codex_1 Theorem B).
+**Sampling oracles.** Charged sampling calls do not break the theorem: each sample gets a fresh formal variable
+(codex_1 Theorem C). Unlimited free samples could reveal |G|. The single-generator simulation a·g^u needs G = A⟨g⟩
+(codex_2).
 
 **Scope.**
 - The bound O(q³/X) is weaker than the √X of BSGS. The q³ comes from exponents divisible by many primes in [X, 2X].
@@ -458,33 +529,59 @@ a·g^u with u uniform in a long interval (codex_1 Theorem B).
 - Related work:
   - Damgård–Koprowski, EUROCRYPT 2002: root extraction; needs order-distribution hypotheses.
   - Rotem–Segev–Shahaf, EUROCRYPT 2020: delay functions; a different target.
-  - The low-order assumption: Boneh–Bünz–Fisch, CRYPTO 2019; Belabas–Kleinjung–Sanso–Wesolowski, ePrint 2020/1310.
+  - The low-order assumption: Boneh–Bünz–Fisch, "A survey of two verifiable delay functions", ePrint 2018/712,
+    Def. 1.
+  - Belabas–Kleinjung–Sanso–Wesolowski, ePrint 2020/1310: odd low order at special discriminants, not 2-torsion.
   - Shoup 1997 and Maurer 2005 are known-order discrete-log bounds and do not apply directly.
   - Exact statements are checked in §10.
-- Real class groups are not drawn from π. Fitting the model to them is a Cohen–Lenstra-type heuristic, and the model
-  is broken by the non-generic escapes below.
+- **Application hypotheses (not proved for Cl(±4kN); codex_2):**
+  - the transcript and side information are independent of (P, u);
+  - small prime forms have independent uniform projections to the P-component;
+  - the public D carries no extra information;
+  - Cl has a direct P-component G′ ⊕ Z/P;
+  - s, r = O(q).
 
-### 6.2 Which non-generic features escape, and to where
+  Real class groups are not drawn from π. The model is a Cohen–Lenstra-type idealisation, and it is broken by the
+  non-generic escapes below.
+- **Prior art.** GB is the same as Sutherland's thesis Thm 2.3 / Cor 2.4 and Hhan's Thm 4.1, plus the extraction
+  step GB-X. Treat it as known in substance. Closest analogue: Seres–Burcsi, ePrint 2020/402 (low order ≡ factoring
+  in RSA groups).
 
-| Feature of class groups | In the generic model? | Known escape | Lands in |
+### 6.2 Which non-generic features escape, and to where (literature survey; not a proof of exhaustiveness)
+
+Categories, defined operationally:
+- **norm relations**: smooth norms factored over a base;
+- **order smoothness**: exponent = a product of small primes;
+- **collisions**: equality of group elements;
+- **square coincidence**: a norm equals r²;
+- **analytic order approximation**;
+- **approximation / lattice / small-root reconstruction**: rational approximation, short vectors, Coppersmith-type.
+
+| Feature or method | In the generic model? | Mechanism | Lands in |
 |---|---|---|---|
 | Canonical reduced forms (equality) | yes (encoding) | — | generic |
-| Integer norm a of a reduced form: smoothness test | no | relations (Seysen 1987; Hafner–McCurley 1989; Buchmann; Vollmer; Biasse); L[½] under GRH | (M) |
-| Norm a: squareness test | no | SQUFOF (2-torsion shadows, density D^{−1/4}) | (Q), N^{1/4} |
-| Norm a: equality between forms / factorisation over earlier norms | no | collisions / large-prime variation | generic / (M) |
-| gcd(a, N) on random forms | no | hits with probability ≍ 1/p | accidental |
+| Norm a of reduced forms: smoothness | no | norm relations: Seysen, Math. Comp. 48 (1987); Hafner–McCurley, JAMS 2 (1989); Lenstra–Pomerance, JAMS 5 (1992) (rigorous); Buchmann 1990; Vollmer 2000/02; Biasse–Jacobson 2010; SQUFOF2 (Bradford–Wagstaff, Bull. Pol. Acad. Sci. Math. 70 (2022), QS-style sieving builds the square form) | (M) |
+| Exponent smoothness | partly | SPAR (Shanks–Pollard–Atkin–Rickert), Schnorr–Lenstra, Math. Comp. 43 (1984) | (M) |
+| Collisions in Cl | yes | rho in Cl, BSGS, primorial steps (Sutherland 2007) | generic, N^{1/4} |
+| Norm a: squareness | no | SQUFOF and racing multipliers (Gower–Wagstaff 2008) | (Q), N^{1/4} (heuristic) |
+| gcd(a, N) on random forms | no | hits with probability ≍ 1/p (or ≍ \|Cl[2]\|/h for ambiguous endpoints) | accidental |
 | Explicit forms of prescribed prime norm | no | sampling ideals; QR_N ≤ GEN-SQ (Prop GEN) | QR_N |
-| Genus characters | no | ≡ QR_N | QR_N (open) |
-| Explicit list of ambiguous forms (= divisors of D) | no | divisor search | (A) / trial division |
-| Factorisation-dependent Gauss descent (square roots) | no | roots without h, *given* p, q | circular |
-| Distances in the infrastructure | partly (GI) | R = period; any multiple of R ⇒ factor (HR) | group order of R/RZ |
-| Analytic class number formula | no | hR to precision Δ ⇒ √Δ search; |D|^{1/5} (GRH) | order approximation |
-| CM curves / isogenies | as a group action | construction exponential | — |
-| Conductors / multipliers / composita | yes (more groups) | more lottery tickets | (M) |
+| Genus characters | no | ≡ QR_N (membership) | QR_N (open) |
+| Gauss descent (square roots) | no | roots without h, *given* the factorisation of D | circular |
+| Distances in the infrastructure | partly (GI, heuristic) | period R; multiple of R ⇒ midpoint (HR); Elia; Murru–Salvatori 2024 | order of R/RZ |
+| Analytic class number formula | no | hR to precision Δ ⇒ √Δ search; \|D\|^{1/5} (Shanks; Lenstra; Schoof; Srinivasan) | order approximation |
+| Public approximation of φ(N) | n/a (unit group) | Hittmeir; Harvey–Hittmeir N^{1/5} (deterministic): rational approximation + lattices | (A) |
+| Representations of N by forms | no | Fermat, Lehman, Hart (N^{1/3}), McKee (Euler's two representations, N^{1/4+ε}) | (A) / collisions of representations |
+| Coppersmith / lattices on form coefficients | no | Castagnos–Joux–Laguillaumie–Nguyen, ASIACRYPT 2009: factors pq² given a NICE kernel hint. Needs a hidden conductor q and auxiliary input; no squarefree-pq analogue known | (A), needs a promise |
+| CM curves / isogenies | as a group action | known constructions cost \|D\|^{1/2+o(1)} or more | — |
+| Class-field values (traces of class invariants generate the genus field ∋ √p*) | no | enumerates Cl², exponential | — |
+| Conductors / multipliers / composita | yes (more groups), under the examined operations | more lottery tickets | (M) |
 
 **Open class.** Algorithms that use the integer coefficients of reduced forms (or CF partial quotients, or
-distances) in ways that are not multiplicative coincidences (smooth, square, equal), not divisor searches, and not
-order approximations.
+distances) in ways that are none of the above. That excludes multiplicative coincidences (smooth, square, equal),
+approximation/lattice reconstruction, and order approximations. The Coppersmith-type pq² attacks show that
+non-multiplicative coefficient arithmetic can leak, given a structural promise; we know of no such promise for
+squarefree pq.
 - A pure-integer statistic of the (a_i) along the principal cycle is an example. eps_results §5 found such statistics
   correlating with ε, but only through ((−1)^iQ_i | p) admissibility, i.e. the QR_N-type genus data of Prop GEN, not
   through Cl[2] elements.
@@ -516,6 +613,20 @@ deduplicates characters as functions on S. We report both versions. The proved l
 medians also miss the P2/P3 upper predictions, so no status changes. Instances with no distinct hidden character on
 H: 1, 1, 2.
 
+**Deviation log (codex_2 finding 16; no status changes).**
+- **E3** rows omit the promised skipped-seed records (seeds failing N ≡ 1 mod 4). They are recoverable from
+  `instances()`.
+- **E2**, n = 28, seed 29: no proper square in the period. It is excluded from the medians; this failure rule was not
+  pre-registered. Failure-inclusive (as +∞) median i₁ = 110, versus 98 excluded. P5 stays not met either way.
+- **Floating point.** E1's derived sample sizes and E2's densities are computed in floating point from exact counts.
+  E1 JSON contains `Infinity` for undefined ratios.
+- **E4** also checks gcd(N, P_i). Codex_2 re-ran the registered Q_{L/2}-only rule and got identical outcomes.
+- **E5.** C_min uses the true, harness-known error and the minimum over a retrospective grid. At n = 32, 17/20
+  minima sit at the smallest grid point x = 2⁸. So P7′ is a retrospective score, not evidence of an architectural
+  floor.
+- **Code fix after the runs.** `forms.public_ambiguous` listed imprimitive (2, 2, c) (codex_2 finding 11). It is not
+  used by any experiment. It now filters for primitivity, with a test.
+
 **Reproduction.** `.venv/bin/python -m src.genusleak.harness E1` (likewise E2–E5); `.venv/bin/python -m pytest -q
 tests/test_genusleak.py`. Wall times: E1 6 s, E2 18 s, E3 9 s, E4 2 s, E5 10 s.
 
@@ -523,16 +634,18 @@ tests/test_genusleak.py`. Wall times: E1 6 s, E2 18 s, E3 9 s, E4 2 s, E5 10 s.
 - **GL-1 Cayley spectral detection.**
   - Target: λ_{χ_p} = mean (ℓ/p).
   - Missing lemma: detecting it below |H| samples.
-  - Failure: Lemma GIRTH + Prop WALK give ≥ δ²|H|/4 walks for returns, and returns are relations.
-  - Scope: refuted for this model (return/collision statistics).
+  - Failure: Lemma GIRTH (returns are relations); Prop WALK (≳ δ²|H| walks for fixed-time return bits, counterfactual).
+  - Scope: refuted for this model only. Endpoint-coefficient statistics are not covered.
 - **GL-2 Infrastructure jump to R/2.**
   - Works given any multiple of R (Prop HR).
-  - Failure: obtaining that multiple is the hidden-period problem (Prop GI), or relations, or an analytic window
-    (|D|^{1/5}).
-- **GL-3 Square roots / genus characters.** Factoring-equivalent (SQ) / QR_N-equivalent (GEN). No route.
+  - Failure: obtaining that multiple. The known ways are relations, an analytic window (|D|^{1/5}), or BSGS; GI is a
+    heuristic abstraction of the generic case. The midpoint is useful only with observed constant frequency.
+- **GL-3 Square roots / genus characters.** Square roots give factors under GRH sampling (SQ). Principal-genus
+  membership is QR_N-equivalent (GEN). No route.
 - **GL-4 CM volcano.**
-  - Failure: curve construction (√(kN) trials, or a degree N^{1/2+o(1)} class polynomial).
-  - Also: the ambiguous isogeny has the unknown degree p.
+  - Failure: curve construction. The known methods cost √(kN) trials or |D|^{1+o(1)} CM; no lower bound is claimed.
+  - Also: the ambiguous ideal representative has the unknown degree p. Other representatives are again a
+    class-group problem.
 - **GL-5 Multiplier pencil / compositum.** Only more hidden-order groups (GB union bound). Cross-group collisions
   live in Cl(L), which is larger.
 
@@ -545,4 +658,84 @@ By Prop GEN, correlation with (ℓ/p) alone buys at most QR_N information. By Th
 the class itself is a relation.
 
 ## 10. Reviews
-(See below; filled in after the codex rounds and the Opus critics.)
+
+**GPT-6.1-sol blind round (`codex/genusleak_1.md` → `.out`).**
+- Independent conclusions: the same negative verdict, with no verified qualifying method.
+- It proved independently:
+  - the generic extraction (success ⇒ relation) and the Ω(P^{1/3}) uniform-prime bound;
+  - the rank-1 equivalence with odd order multiples;
+  - the QR_N ↔ hidden-genus reduction;
+  - the √(h/|Cl[2]|) collision method;
+  - girth after cancelling formal relations;
+  - the R/2 midpoint with a 2-adic issue.
+- Merged from it:
+  - the N = 731 midpoint counterexample;
+  - the Cl(−56) ≅ C₄ example (genus data does not locate involutions);
+  - the unconditional random-summation estimator (credited to Srinivasan 1998);
+  - HMT 1998 for SQRT ≤ FACT;
+  - Sutherland's thesis and Hhan 2024;
+  - the sampling-oracle treatment;
+  - Sutherland's one-root CM method.
+- Its open question: locate a proper square form by coefficient arithmetic faster than density D^{−1/4}. It matches
+  ours.
+
+**Opus proofs critic (read-only).**
+- WRONG, fixed: the v1 imaginary finish in §3.3 ("square down one class"). Counterexample N = 2311·2671, 1/128
+  success; we re-ran the critic's script and confirmed it.
+- GAPs, fixed:
+  - N(ε) = +1 in HR;
+  - GI's spurious L factor (now √X; GI was later downgraded to heuristic by codex_2);
+  - Bach generation needs the ramified primes in S;
+  - Lemma 0 in the non-maximal order (A_pub redefined; proof now written);
+  - the Hellinger second term, the 2^{μ−2} scaling, and the WALK scope;
+  - the full D1 disclosure;
+  - the GB exponent constant;
+  - §4 nits (≤ 2 traces, crater hypothesis, GRH polylog);
+  - the E2 n = 28 median is over 29 instances.
+- Confirmed OK: Prop GEN (including even k and all 2-adic characters), GIRTH, GB, §5. All experiment numbers
+  reproduce.
+
+**GPT-6.1-sol adversarial referee (`codex/genusleak_2.md` → `.out`): MAJOR REVISION; all findings applied.**
+- The headline is restated as a search outcome.
+- SQUFOF even-r squares are imprimitive (36/90 E2 instances), and §3.4 is corrected.
+- GB-X's converse needs reachability (C₄ ⊕ C₂ counterexample).
+- WALK needs g₀ > 2 (N = 15 counterexample). Endpoint coefficients can leak at toy size (N = 21).
+- GB's application hypotheses are listed. Sampling must be charged; the a·g^u simulation needs G = A⟨g⟩.
+- GI is downgraded to a heuristic abstraction.
+- HR is a midpoint *search*.
+- 1/5 is an architecture cost, not a floor.
+- GEN: the 2-adic table and the factored-small-k hypothesis are added; membership is distinguished from labelled
+  characters.
+- Lemma 0: the code bug (imprimitive public form) is fixed and the non-maximal proof completed.
+- SQ: the GRH qualification is in the headline.
+- CM: known costs, not lower bounds; other ideal representatives.
+- Ring/pencil: "no gain" is restricted to the examined operations.
+- The §6.2 survey is expanded (SQUFOF2, Lenstra–Pomerance, SPAR, rho, Hart, McKee, Hittmeir, Harvey–Hittmeir,
+  Coppersmith-type, Murru–Salvatori).
+- The deviation log is added. It independently regenerated all 380 experiment rows.
+
+**Opus literature critic (read-only).**
+- Corrected:
+  - Bach 1995 is CMS Conf. Proc. 15, not Math. Comp.;
+  - Bröker–Stevenhagen is Contemp. Math. 463 (2008);
+  - the low-order assumption is BBF ePrint 2018/712;
+  - BKSW concerns odd low order;
+  - the 1/5 algorithm is credited to Shanks 1971;
+  - the random-summation estimator is credited to Srinivasan;
+  - Cox theorem numbers depend on the edition (marked UNVERIFIED).
+- Added: Lenstra–Pomerance; the CJLN Coppersmith-type attack; McKee's representation collisions; class-field values;
+  Pollard/Hittmeir public order approximations.
+- VERIFIED: Lenstra 1982; Hallgren 2007; Srinivasan 1998; Gower–Wagstaff 2008; Schnorr–Lenstra; Seysen;
+  Hafner–McCurley; Buchmann; Vollmer; Biasse–Jacobson; Bach 1990 (maximal orders); BBHM 2002; Adleman–McCurley 1994;
+  Enge 2009; Sutherland 2011/2012; Lenstra 1996; Sutherland thesis Thm 2.3; Hhan Thm 4.1; Damgård–Koprowski;
+  Rotem–Segev–Shahaf; Lemmermeyer 1994.
+- UNVERIFIABLE: Lagarias Thm 6.10; HMT §3.1/§4 content (codex_1/codex_2 verified it in substance); the "O11" label;
+  Schoof 1982 internals.
+- Prior art:
+  - Lemma 0 is classical (Shanks 1971; Schnorr–Lenstra; Cohen GTM 138 §8.6).
+  - Prop SQ is folklore.
+  - Prop GEN is folklore made explicit (CLT 2022 snippet).
+  - GIRTH is the Seysen/Hafner–McCurley relation source.
+  - HR is in substance Lenstra/Schoof/Hallgren; Murru–Salvatori discuss halving.
+  - GB is Sutherland/Hhan plus GB-X.
+  - No prior generic infrastructure bound was found, but GI is only heuristic here.

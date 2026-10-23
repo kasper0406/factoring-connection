@@ -216,6 +216,6 @@ def public_ambiguous(N: int, k: int = 1) -> List[Form]:
             if num % (4 * a):
                 continue
             f = (a, b, num // (4 * a))
-            if is_reduced(f):
+            if is_reduced(f) and gcd(gcd(f[0], f[1]), f[2]) == 1:  # primitive forms only (codex_2 finding 11)
                 out.append(f)
     return out

@@ -155,3 +155,14 @@ def test_operational_isolation():
                 mods.add(node.module or "")
         assert not any(m and (m.startswith("cypari2") or m.startswith("sympy") or "harness" in m
                               or m.startswith("src.common")) for m in mods), (name, mods)
+
+
+def test_public_ambiguous_primitive():
+    """codex_2 finding 11: imprimitive (2, 2, c) must not be listed as public."""
+    from math import gcd as g
+    for N in (10403, 1009 * 1013, 1019 * 1031):
+        for k in (1, 2, 3, 5, 6, 7):
+            for f in forms.public_ambiguous(N, k):
+                assert g(g(f[0], f[1]), f[2]) == 1
+                assert (4 * k) % f[0] == 0
+    assert (2, 2, 5202) not in forms.public_ambiguous(10403)
