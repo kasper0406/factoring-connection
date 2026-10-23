@@ -1,7 +1,8 @@
 # tracedata: trace data a_p, a_q, a_N, fixed-ℓ partial counts, X_E and determinism (phase 25)
 
-Agent `tracedata`, 2026-10-23. Version **v2**: after the codex adversarial round (cx2: MAJOR REVISION) and the Opus
-proof critic (MAJOR PROBLEMS, all text-fixable); every required fix applied (§9). Opus literature critic: §9.
+Agent `tracedata`, 2026-10-23. Version **v2.1**: after the codex adversarial round (cx2: MAJOR REVISION) and the Opus
+proof critic (MAJOR PROBLEMS, all text-fixable); every required fix applied (§9). Opus literature critic (OK WITH FIXES) applied in v2.1; proof-critic round 2 on
+Theorem EXT and Prop CM-PAIR: §9.
 
 - Pre-registration: `notes/tracedata_prereg.md`, commit `f2df008`, made before any experiment.
 - Code: OPERATIONAL `src/tracedata/{reductions,decode,xe_descent,ext_reduction,galois}.py` (inputs: N and the stated
@@ -30,8 +31,10 @@ elliptic curve E/Q, the single count M = #E(Z/N) factors every good N = pq in ra
   about half the time but can never annihilate a curve over F_{q⁵}, whose exponent exceeds q^{5/2} > M.
 - PH6: 240/240 instances (four curves, n = 48–96) and both known X_E members split, in 1.2–1.9 trials on average.
   The null control (wrong M) gave 0 splits in 2400 trials.
-- Galbraith–McKee 2005 §3 already twist over extension algebras. The uniform everywhere statement: priority
-  UNVERIFIED (no prior statement found by cx2 or us).
+- Galbraith–McKee 2005 §3 assert in one sentence, without analysis, that their §2 methods extend to (Z/N)[x]/(f) by
+  twisting with random elements. The degree-5 exponent argument and the every-curve/every-N claim are not there.
+  Dieulefait–Urroz (2020) state explicitly that factoring from one count was not known. No prior statement of the
+  uniform result was found by cx2, the literature critic or us; priority UNVERIFIED.
 - **A deterministic one-curve reduction remains OPEN.**
 
 **One curve's trace pair (a_p, a_q), or its Hecke eigenvalue a_N alone, is still not known to factor N.** Four
@@ -235,8 +238,17 @@ goes through.
   - Ordered traces give p = (a_p(E_1)² + a_p(E_D)²)/4 directly whenever p splits in Q(i) (or Q(ζ₃)): density 15/16.
   - Consistent with SC: CM images contain the scalars, so the congruence content is QR-only. The factoring power comes
     from the archimedean identity α² + β² = r.
-  - No prior statement found by us. The ingredients (Jacobsthal sums, two representations as sums of two squares) are
-    classical.
+  - No prior statement found by us or the literature critic. Bach–Charles Rem 2.6 only notes that CM forms fail when
+    a(p) = a(q) = 0.
+  - Closest antecedent: DPS 2023 use the same family y² = x(x² − b) with b up to a least-non-residue bound. Their
+    mechanism is different (2-adic orders from count multiples, p, q ≡ 3 mod 8), so the results are complementary.
+  - DU's Thm 5 (one curve plus quadratic twists d = O(log²N), ERH) has the same shape. Quadratic twists change a_N only
+    by (d/N), which is why quartic twists are needed.
+  - Ingredients are classical, with α odd and β even:
+    - Jacobsthal, J. Reine Angew. Math. 132 (1907) 238–245;
+    - Berndt–Evans–Williams, *Gauss and Jacobi Sums* (1998), Ch. 6;
+    - Ireland–Rosen GTM 84, Ch. 18 §4;
+    - two representations as sums of two squares factor N.
 
 ### 2.6 Theorem SC (scalar-twist symmetry of trace products). MODEL (Chebotarev); no prior statement found by us
 
@@ -373,7 +385,7 @@ density of {O = o, (λ⁻²p, λ²q) mod m ∈ B}. Hence:
 
 ### 2.8 Multi-curve Galois decoding. MODEL constants + HEURISTIC transfer + toy agreement
 
-**Model.** The Haar likelihood is P(t | d) = (ℓ + χ(t² − 4d))/(ℓ² − 1). Exact information per curve in bits
+**Model.** The Haar likelihood is P(t | d) = (ℓ + χ(t² − 4d))/(ℓ² − 1) (KNOWN: Gekeler 2003; Castryck–Hubrechts Thm 1(ii)). Exact information per curve in bits
 (PH2, E2; v1's unordered law double-counted diagonal pairs, fixed per cx2 #4, numbers regenerated; identifiability
 partitions are unaffected):
 
@@ -400,8 +412,8 @@ partitions are unaffected):
 **HEURISTIC MC (non-CM families).**
 - Assumption: for a fixed large prime p, the Frobenius classes of p in the ℓ-division fields of a fixed family of
   curves behave like independent Haar draws conditioned on det = p mod ℓ. This is a short-family version of
-  Castryck–Hubrechts equidistribution (Ramanujan J. 30 (2013) 223–242, final arXiv v3 Thm 2: random curves over F_p,
-  error C·m²·log log m/√p). That theorem does NOT cover the box 1 ≤ A, B ≤ 200.
+  Castryck–Hubrechts equidistribution (Ramanujan J. 30 (2013) 223–242, final arXiv v3 Thm 2: random curves over F_q,
+  error C·m²·ln ln m/√q for m coprime to q). That theorem does NOT cover the box 1 ≤ A, B ≤ 200.
 - Sample complexity (cx2 #7, proof critic #5).
   - Distinct single-trace laws have squared Hellinger separation Ω(ℓ⁻²) (quartic character sums, Hasse). So
     K = C·ℓ²·log(ℓ/ε) suffices for top-1 decoding with error ε.
@@ -474,8 +486,13 @@ found by trial division.
 - cx2's own implementation split the same 11a1 member and a 60-bit N.
 
 *Literature.*
-- Galbraith–McKee (LNCS 3796, 2005, §3) discuss twisting over algebras (Z/N)[z]/(F) with differing splitting types. That
-  is the antecedent.
+- Galbraith–McKee (LNCS 3796, 2005, §3) is one paragraph. It defines R_{N,f} = (Z/N)[x]/(f), notes that f may split
+  differently mod different primes, and says the §2 results "readily extend to this setting, twisting by random elements
+  of R". There is no proof, no choice of degree, and no claim about exceptional N or curves (literature critic). That is
+  the antecedent.
+- Dieulefait–Urroz (arXiv:1911.11004 v1; Mathematics 8 (2020) 2126) wrote that "it is not known how to factor N only
+  with the number E_N as input". JUP 2024 and DPS 2023 use varying curves.
+- Bach–Shallit (Math. Comp. 52 (1989)) is a methodological antecedent for extension rings of Z/N.
 - The uniform "every curve, every N" statement: no prior statement found by cx2 or us; priority UNVERIFIED.
 
 *Consequences.*
@@ -583,11 +600,17 @@ Peak RSS ≤ 245 MB; jobs ran one at a time.
 ---
 
 ## 4. Literature (cx1/cx2 checked primary texts where stated; the literature critic's verdict is in §9)
-- **Bach–Charles**, "The hardness of computing an eigenform", arXiv:0708.1192 v2, §2, Thm 2.2, Rem 2.5: oracle values
-  a(N), a(N²). This is the BC2 mechanism. A single value is not covered.
+- **Bach–Charles**, "The hardness of computing an eigenform", arXiv:0708.1192 v2; Contemp. Math. 463 (AMS 2008) 9–15
+  (published numbering UNVERIFIED).
+  - §2, Thm 2.2 (non-CM, density-1 set of RSA moduli), Rem 2.5 (balanced), Rem 2.6 (CM forms fail when
+    a(p) = a(q) = 0: the antecedent of Prop PROMISE), Cor 2.8 (τ).
+  - Oracle values a(N), a(N²). Single values, several forms and Sym² are not discussed.
+  - Restated in Edixhoven–Couveignes Rem 2.2.4.
 - **Kunihiro–Koyama**, EUROCRYPT '98, LNCS 1403, 47–58. The CRT construction (counts mod small primes ⇒ count) is
   verified in Kunihiro's thesis (U. Tokyo 2001), Ch. 4, Lemma 4.2, Thm 4.2 (cx1). Conference numbering UNVERIFIED.
-- **Okamoto–Uchiyama**, EUROCRYPT '98, LNCS 1403, 546–560, §4, Thms 9–10.
+- **Okamoto–Uchiyama**, EUROCRYPT '98, LNCS 1403, 546–560 (theorem numbers UNVERIFIED, paywall). Per secondary sources
+  their attack factors N from a curve of order N itself: the a_p = a_q = 1, M = N case of §2.3 (also Kunihiro's thesis
+  §5.5).
 - **Galbraith–McKee**, IMA C&C 2005, LNCS 3796, 392–409: §2 (one curve with known M; twist and 2-adic methods), §3
   (extension algebras with differing splitting types: the antecedent of Theorem EXT).
 - **Martín–Morillo–Villar**, Appl. Math. Lett. 14 (2001) 341–346 (point orders; full text UNVERIFIED).
@@ -597,11 +620,21 @@ Peak RSS ≤ 245 MB; jobs ran one at a time.
 - **Edixhoven–Couveignes** (Ann. Math. Studies 176, 2011), Thm 15.2.1 / Cor 15.2.2: the input includes the
   factorisation of n.
 - **Sato–Tate:** Barnet-Lamb–Geraghty–Harris–Taylor, "A family of Calabi–Yau varieties and potential automorphy II",
-  Publ. RIMS 47 (2011) 29–98, Thm B (cx2).
+  Publ. RIMS 47 (2011) 29–98, Cor 8.9 (non-CM E over totally real F); equivalently Thm B together with modularity
+  (Breuil–Conrad–Diamond–Taylor 2001).
 - **Castryck–Hubrechts**, "The distribution of the number of points modulo an integer on elliptic curves over finite
-  fields", Ramanujan J. 30 (2013) 223–242. Cite the final arXiv v3 (0902.4332), Thm 2 and §3; earlier versions had an
-  error (cx2).
-- **Bach**, Math. Comp. 55 (1990) 355–380: the ERH least-non-residue bound used in CM-PAIR.
+  fields", Ramanujan J. 30 (2013) 223–242, doi 10.1007/s11139-012-9444-0; final arXiv v3 (0902.4332), "completely
+  rewritten because of an error".
+  - Thm 2 error: C·p^e·N′²·ln ln N′/√q, over F_q-isomorphism classes.
+  - Their Thm 1(ii) with n = 1, and Gekeler (IMRN 2003, no. 37, 1999–2018), give the §2.8 likelihood
+    (ℓ + χ(t² − 4d))/(ℓ² − 1): KNOWN.
+- **Bach**, Math. Comp. 55 (1990) 355–380: under ERH the least element outside a proper subgroup of (Z/m)^× is
+  < 2 ln²m, so the least QNR mod p is < 2 ln²p (QNR corollary label UNVERIFIED). Sharper: Lamzouri–Li–Soundararajan,
+  Math. Comp. 84 (2015) 2391–2412.
+- **Kunihiro thesis** (U. Tokyo 2001) Thm 4.1 (random curves; heuristic uniformity), Lemma 4.2 (#E from #E mod d,
+  CRT over ℓ ≤ log²(n+1)), Thm 4.2: confirmed by the literature critic from scans. This is consistent with Prop IL.
+- **JUP**: Ramanujan J. 64 (2024) 265–273, doi 10.1007/s11139-023-00822-1.
+- **GM Thm 2 and Thm 4** tie count comparisons and pairings to QR; relevant to §2.7.
 - **Jacobsthal sums / Gauss:** a_p of y² = x³ − Dx in terms of p = α² + β² (classical).
 - **Negative findings (cx1, cx2 and us):** no prior statement found of a_N-alone or (a_p, a_q) ⇒ FACT, of a scalar-twist
   obstruction for trace products, of multi-curve trace decoding, of CM-PAIR, of the j = 0 sextic reduction, or of
@@ -699,4 +732,17 @@ primes), MIX, PROMISE, TOR, CM-QR, SC (under its hypothesis), IL, NA, QA, J0 and
 11. Minor wording. → TOR, IL, randomized poly time, DEC/M phrasing, PT-J needs non-square Δ.
 12. Vacuous assert; twist duplicates. → D6, §2.8.
 
-**Opus literature critic:** pending at the time of v2 (see v3).
+**Opus literature critic (v2): OK WITH FIXES; all applied in v2.1.**
+- It found no prior statement of EXT's uniform form, CM-PAIR, SC, or the multi-curve decoding.
+- Fixes:
+  - GM §3 described exactly;
+  - Dieulefait–Urroz added as the explicit "open" statement;
+  - DPS's y² = x(x² − b) family added as the CM-PAIR antecedent;
+  - Jacobsthal / Berndt–Evans–Williams / Ireland–Rosen attribution;
+  - BC published version, and Rem 2.6 as the PROMISE antecedent;
+  - OU for the M = N case;
+  - BLGHT Cor 8.9;
+  - Castryck–Hubrechts exact error term;
+  - the likelihood formula labelled KNOWN (CH Thm 1(ii), Gekeler 2003);
+  - Bach 1990 precise;
+  - Kunihiro thesis confirmed.
