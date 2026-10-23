@@ -79,13 +79,19 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - [`genusleak`](notes/genusleak_results.md): every route to an ambiguous form goes through a group order or a relation. Walk returns are smooth values (Lemma GIRTH), and a multiple of hR finds the form in poly time but costs |D|^{1/5}. Generic barrier: Theorem GB.
   - [`newfamily`](notes/newfamily_results.md): reciprocity invariants either depend only on N mod m (Theorem RA) or are factoring-equivalent. Dedekind sums (Prop DSF) and Salié sums (Prop SAL) are both factoring-equivalent. A pre-registered battery of 84 statistics found no signal.
   - [`smoothbuild`](notes/smoothbuild_results.md): constructing smooth numbers costs the same as sampling, index calculus or factoring. "Known factorisation" is no cheaper currency than smoothness (Lemmas KI/LP/AT). Open interface: hidden-root short-quotient navigation, which at L[1/3, 1.20] per call would give rigorous L[1/3, 1.80].
+- Phase 25 worked on the open ends:
+  - [`navigate`](notes/navigate_results.md): hidden-root short-quotient navigation is not a stepping stone. Without its height bound it is FACT ∧ DL (Prop H), and a solver for all N would give prime-field DL in L[1/3, 1.80] (Theorem DLB).
+  - [`prim`](notes/prim_results.md): no leak in PRIM. The classification is proved for fresh-base chains of any depth, sparse gate sums (Theorem PS), two-layer gates off exceptional primes (Theorem D2) and bounded-height Jacobi tests (Theorem J1). It stays open at deterministic depth ≥ 2.
+  - [`classE`](notes/classE_results.md): no leak. A CF convergent of a/N sees p only if a = uq ± 1 (Prop VIS), and for ⌊√N⌋/N the path is equidistributed up to denominators N^{7/12} (Theorem F-SQ).
+  - [`tracedata`](notes/tracedata_results.md): #E(Z/N) for one fixed curve factors every good N (Theorem EXT, a degree-5 twist). One curve's traces (a_p, a_q) or a_N alone are still open; a_N for two CM curves factors N.
+  - [`multidescent`](notes/multidescent_results.md): a two-level descent gives **L[3/8], conditional** on Hyp PC₃ and U′ (Theorem 2L). A union bound reduces it to three-point conditional statements (Prop UB), so a proof needs no control at d^{3/2} points. j levels would give (j+1)/(3j+2).
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
 
 ## Open problems that would push further
 
-- **Below L[2/5]:** multi-level descent with "algebraic children" ([`nested`](notes/nested_results.md), [`recurse`](notes/recurse_results.md) §3).
+- **Below L[2/5]:** prove Hyp PC₃ (a weighted ternary smooth equation with large coefficients, extending Harper 2016 / Drappeau 2013) and U′ ⇒ rigorous L[3/8] ([`multidescent`](notes/multidescent_results.md) Theorem 2L).
 - **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
 - **Human refereeing** of [`paper2/`](paper2/main.tex) §§5–6 and its Appendix A.
 
