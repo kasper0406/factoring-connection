@@ -226,8 +226,8 @@ def law(l: int, kind: str, d: int, c: int) -> np.ndarray:
     if kind == "single":
         return J.sum(1)
     if kind == "unordered":
-        U = J + J.T
-        return U[np.triu_indices(l)] / 1.0
+        U = J + J.T - np.diag(np.diag(J))   # {t, u}: J[t,u] + J[u,t] for t < u, J[t,t] on the diagonal (cx2 fix)
+        return U[np.triu_indices(l)]
     if kind == "product":
         out = np.zeros(l)
         for t in range(l):

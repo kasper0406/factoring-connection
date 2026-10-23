@@ -395,5 +395,70 @@ def posthoc():
     f.close()
 
 
+def posthoc5(n_pairs=400, bits=(32, 64)):
+    """PH5 (post hoc, after the proof critic): a_N of y^2 = x^3 - x and of quartic twists y^2 = x^3 - Dx,
+    D = 2..59, factor N when p = q = 1 mod 4 (cm_quartic_pair_factor / cm_quartic_family_factor)."""
+    f = _out("posthoc5")
+    Ds = list(range(2, 60))
+    for D in Ds:
+        H.CURVES[f"q{D}"] = [0, 0, 0, -D, 0]
+    for b in bits:
+        rng = random.Random(f"tracedata-ph5-{b}")
+        res = {}
+        done = 0
+        while done < n_pairs:
+            p, q = H.prime_list(rng, b, 2)
+            N = p * q
+            key = "/".join(map(str, sorted((p % 8, q % 8))))
+            r = res.setdefault(key, [0, 0, 0])
+            A1 = H.ap("CM1_32a2", p) * H.ap("CM1_32a2", q)
+            A2 = H.ap("q2", p) * H.ap("q2", q)
+            g2 = R.cm_quartic_pair_factor(N, A1, A2)
+            gD = R.cm_quartic_family_factor(N, A1, [H.ap(f"q{D}", p) * H.ap(f"q{D}", q) for D in Ds])
+            r[0] += 1
+            r[1] += g2 in (p, q)
+            r[2] += gD in (p, q)
+            done += 1
+        _emit(f, dict(ph="PH5", bits=b, by_class_mod8={k: dict(n=v[0], pair_D2=v[1], family_D_le_59=v[2])
+                                                          for k, v in sorted(res.items())}))
+    f.close()
+
+
+def posthoc6(seeds=range(20), sizes=(48, 64, 96)):
+    """PH6 (post hoc, after cx2 item 1): degree-5 extension reduction M => factor for several fixed curves, incl. the
+    known X_E members; null control with M' uniform in a window of width 2^{3n/4} around M."""
+    from src.tracedata.ext_reduction import ext_factor, ext_trial
+    f = _out("posthoc6")
+    pari = H.pari
+    for (lab, a, b, p, q) in [("11a1_XE", -13392, -1080432, 54443, 62819), ("cx1_XE", 27331, 2, 151, 181)]:
+        E = pari.ellinit([0, 0, 0, a, b])
+        M = int(pari.ellcard(E, p)) * int(pari.ellcard(E, q))
+        r = ext_factor(p * q, a, b, M, random.Random(f"ph6-{lab}"))
+        _emit(f, dict(ph="PH6", case=lab, ok=r["factor"] in (p, q), trials=r["trials"]))
+    curves = {"C1_11a1": (-13392, -1080432), "C2_37a1": (-1296, 11664), "C3_2_3": (2, 3), "C5_92": (-1, 1)}
+    for name, (a, b) in curves.items():
+        for n in sizes:
+            ok = trials = null_splits = null_trials = 0
+            for seed in seeds:
+                inst = balanced_semiprime(n, seed)
+                N, (p, q) = inst.N, inst.labels["factors"]
+                if gcd(N, 6 * (4 * a ** 3 + 27 * b ** 2)) != 1:
+                    continue
+                E = pari.ellinit([0, 0, 0, a, b])
+                M = int(pari.ellcard(E, p)) * int(pari.ellcard(E, q))
+                rng = random.Random(f"ph6-{name}-{n}-{seed}")
+                r = ext_factor(N, a, b, M, rng)
+                ok += r["factor"] in (p, q)
+                trials += r["trials"]
+                Mn = M + rng.randrange(-2 ** (3 * n // 4), 2 ** (3 * n // 4))
+                for _ in range(10):
+                    g, _o = ext_trial(N, a, b, Mn, rng)
+                    null_trials += 1
+                    null_splits += g is not None
+            _emit(f, dict(ph="PH6", curve=name, n=n, ok=ok, of=len(list(seeds)), mean_trials=trials / max(ok, 1),
+                          null_splits=null_splits, null_trials=null_trials))
+    f.close()
+
+
 if __name__ == "__main__":
-    {"e1": e1, "e2": e2, "e3a": e3a, "e3b": e3b, "e3c": e3c, "e3d": e3d, "e4": e4, "e5": e5, "posthoc": posthoc}[sys.argv[1]]()
+    {"e1": e1, "e2": e2, "e3a": e3a, "e3b": e3b, "e3c": e3c, "e3d": e3d, "e4": e4, "e5": e5, "posthoc": posthoc, "posthoc5": posthoc5, "posthoc6": posthoc6}[sys.argv[1]]()

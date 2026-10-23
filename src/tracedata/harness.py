@@ -115,7 +115,7 @@ def fam_ell(A: int, B: int):
 
 
 def fam_traces(p: int, K: int) -> List[int]:
-    assert p > 2 ** 25 + 2 ** 24 or True
+    # good reduction: |4A^3 + 27B^2| < 2^25 for A, B <= 200, so every odd prime p > 2^25 is good
     return [int(pari.ellap(fam_ell(A, B), p)) for (A, B) in family()[:K]]
 
 

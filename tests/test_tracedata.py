@@ -199,3 +199,46 @@ def test_scalar_twist_symmetry_products():
             for kind in ("unordered", "M"):
                 got = sorted(sorted(x) for x in G.identifiable_classes(l, kind, c))
                 assert got == sorted(want), (l, c, kind)
+
+
+def test_cm_quartic_pair_and_family():
+    H.CURVES.setdefault("q2", [0, 0, 0, -2, 0])
+    Ds = list(range(2, 40))
+    for D in Ds:
+        H.CURVES.setdefault(f"q{D}", [0, 0, 0, -D, 0])
+    n = 0
+    for (p, q) in _pairs(10 ** 5, 10 ** 6, 200, "cmpair"):
+        if p % 4 != 1 or q % 4 != 1:
+            continue
+        n += 1
+        N = p * q
+        A1 = H.ap("CM1_32a2", p) * H.ap("CM1_32a2", q)
+        if p % 8 == 5 and q % 8 == 5:
+            assert R.cm_quartic_pair_factor(N, A1, H.ap("q2", p) * H.ap("q2", q)) in (p, q)
+        A = [H.ap(f"q{D}", p) * H.ap(f"q{D}", q) for D in Ds]
+        assert R.cm_quartic_family_factor(N, A1, A) in (p, q)
+    assert n > 5
+
+
+def test_laws_normalised():
+    for l in (5, 11):
+        for kind in ("single", "ordered", "unordered", "product", "M"):
+            for d in range(1, l):
+                assert abs(G.law(l, kind, d, 3 % l).sum() - 1) < 1e-12, (l, kind, d)
+
+
+def test_mix_degenerate_case_documented():
+    # cx2: E: y^2 = x^3 - 7x - 2, p = 5, q = 7: a_p = a_q = 1, M = N; the quadratic is identically zero
+    assert R.mix_factor(35, [1, 1], 35) is None
+
+
+def test_ext_reduction_any_curve_including_XE():
+    from src.tracedata.ext_reduction import ext_factor
+    pari = H.pari
+    cases = [(-13392, -1080432, 54443, 62819), (27331, 2, 151, 181), (-1296, 11664, 1000003, 1000033),
+             (-1, 1, 999983, 1000037)]
+    for a, b, p, q in cases:
+        E = pari.ellinit([0, 0, 0, a, b])
+        M = int(pari.ellcard(E, p)) * int(pari.ellcard(E, q))
+        r = ext_factor(p * q, a, b, M, random.Random(3), max_trials=200)
+        assert r["factor"] in (p, q)

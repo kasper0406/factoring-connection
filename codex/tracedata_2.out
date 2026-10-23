@@ -1,0 +1,403 @@
+**Verdict: MAJOR REVISION.**
+
+Saved to [codex/tracedata_2.out](/Volumes/git/factoring-connection/codex/scratch/tracedata_2/codex/tracedata_2.out). All scripts and outputs are in the same scratch workspace; the repository was treated as read-only.
+
+I read the complete results v1, preregistration, `src/tracedata/*.py`, tests, every specified raw JSONL file, cx1, and the supplied background.
+
+DEC’s central proof, the conditional SC symmetry, J0, QA, and most numerical constants survive. However, several conclusions exceed their models, the unordered likelihood is wrong, deterministic reduction claims have exceptions, and the M-decoding sample estimate fails inside the stated model. Most substantially, the degree-five extension construction below removes the purported arbitrary-curve exceptional-set gap for the full projective count M.
+
+Labels below describe my claims: **PROVED** includes explicit arguments and exact finite computations; **KNOWN** has a primary citation; **HEURISTIC** denotes extrapolation; **FALSE** identifies an assertion as written; **UNVERIFIED** denotes unresolved claims or priority.
+
+1. **Required fix — CRITICAL: revisit the general-j OPEN claim. A degree-five algebra gives an everywhere randomized reduction from M.**
+
+   **PROVED.** For every fixed E/Q and every good semiprime N=pq, p<q, the supplied projective count M=#E(F_p)#E(F_q) gives an expected-polynomial-time factoring algorithm. Neither the factorization of M nor another count is required. This includes X_E and requires no extra automorphisms.
+
+   Handle prime factors below 101 by trial division. Write E as y²=x³+ax+b. Choose a uniform monic quintic F over Z/N and form
+
+   \[
+   R=(\mathbb Z/N)[z]/(F).
+   \]
+
+   Choose uniform x∈R, put δ=x³+ax+b, and use
+
+   \[
+   P=(\delta x,\delta^2)
+   \quad\text{on}\quad
+   Y^2=X^3+a\delta^2X+b\delta^3.
+   \]
+
+   Check coefficients and norms for proper gcds with N, then compute [M]P using affine arithmetic over R. Restart on an obstruction that does not reveal a proper factor. No splitting type must be recognized.
+
+   Consider the event that F has type (1,4), with irreducible quartic, modulo p, and is irreducible of degree 5 modulo q. Its exact probability is
+
+   \[
+   \frac{1-p^{-2}}4\frac{1-q^{-4}}5\longrightarrow\frac1{20}.
+   \]
+
+   Count p linear factors, (p⁴−p²)/4 irreducible monic quartics, and (q⁵−q)/5 irreducible monic quintics. CRT gives independence. On this event,
+
+   \[
+   R\simeq\mathbb F_p\times\mathbb F_{p^4}\times\mathbb F_{q^5}.
+   \]
+
+   In the F_p component, δ is a nonzero square with probability
+
+   \[
+   \alpha_p=\frac{\#E(\mathbb F_p)-1-r_p}{2p}
+   \geq\frac{p-2\sqrt p-3}{2p}.
+   \]
+
+   This is bounded below for p≥101. Then the twist is isomorphic to E, and M kills that component.
+
+   Put Q=q⁵. Every elliptic group over F_Q, including either quadratic twist, has exponent at least
+
+   \[
+   \sqrt{\#E(\mathbb F_Q)}\geq\sqrt Q-1=q^{5/2}-1.
+   \]
+
+   But
+
+   \[
+   M\leq(\sqrt p+1)^2(\sqrt q+1)^2
+   \leq(\sqrt q+1)^4<q^{5/2}-1
+   \]
+
+   for q≥101. Consequently M annihilates neither twist group over F_Q. Each kernel has index at least two. The standard x-coordinate twist count, subtracting at most six affine 2-torsion points across the two twists, gives probability at least 1/2−5/(2Q) of a nonzero-δ point not killed by M.
+
+   The two component conditions are independent. A nonunit δ in another p-component already reveals p.
+
+   Factor extraction over R also works. Represent w by five coefficients; its norm is the determinant of its 5×5 multiplication matrix. On the displayed splitting event, every nonzero zero divisor reveals an integer factor:
+
+   - If w vanishes in F_(q⁵), all its coefficients are divisible by q; their gcd with N gives q.
+   - Otherwise, vanishing in a p-component makes the norm’s gcd with N equal p.
+   - Global w=0 is handled as an ordinary equality.
+
+   Thus affine arithmetic either computes the correct sum componentwise or exposes a factor. A terminal point that is infinity in F_p and affine in F_(q⁵) forces such an obstruction.
+
+   The trial has uniform positive success probability, asymptotically at least 1/80. Constant algebra dimension and O(log M) group steps give polynomial cost. Trial division and repetition establish the everywhere expected-polynomial bound.
+
+   **PROVED, finite checks.** `extension_probe.py` implements this arithmetic. Its `trial(N,a,b,M,F,x)` receives no factors. The conditioned harness is explicitly separated. More importantly, `extension_uniform.py` samples F and x uniformly without factor-dependent conditioning:
+
+   | N | M | first successful trial | factor | extraction |
+   |---:|---:|---:|---:|---|
+   | 3420054817 | 3420029925 | 2 | 54443 | norm gcd |
+   | 1000000016000000063 | 1000035538131022080 | 1 | 1000000007 | norm gcd |
+
+   The first is the non-CM 11a1 census member of X_E. These trials check implementation; the proof supplies the guarantee. Their successful splitting types need not equal the sufficient event above.
+
+   **KNOWN antecedent / UNVERIFIED priority.** Galbraith–McKee, *Pairings on elliptic curves over finite commutative rings*, LNCS 3796 (2005), 392–409, §3, explicitly discusses differing splitting types of F and twisting over the resulting algebras. I have not verified an earlier statement of this uniform degree-five argument. Credit that antecedent; priority remains unverified. [Primary text, §§2–3](https://www.math.auckland.ac.nz/~sgal018/pair-mod-n.pdf).
+
+   Update the M equivalence, general-j OPEN claim, and candidate cards. QA remains correct for quadratic base changes.
+
+2. **Required fix — MAJOR: preserve SC, but restrict every advertised consequence to its hypotheses and limiting experiment.**
+
+   **PROVED.** The bijection τ_λ is correct. Membership of the common scalar tuple in the actual joint image permits multiplication by it. Centrality makes it compatible with conjugacy. The observation and determinant-residue constraints are conjugation-stable. Independent prime sampling and Chebotarev give product Haar measure. Excluding p=q costs o(1); ordering primes does not change the limiting residue law. Opposite λ²/λ⁻² orientations are harmless because Λ is a group.
+
+   For odd prime ℓ and full scalar subgroup, the posterior is constant on determinant square classes. When χ(N)=−1, swapping primes exchanges the classes, giving a uniform posterior. When χ(N)=1, at most the common quadratic class survives.
+
+   **FALSE as unrestricted summaries.** “For ANY number of curves,” “Galois content = quadratic residuosity bits only,” and the corresponding §6 assertion omit the scalar-image hypothesis. A rational 5-torsion curve already gives
+
+   \[
+   a_N\equiv N+1+s\pmod5.
+   \]
+
+   For N≡1, this distinguishes {p,q}={1,1} from {4,4}, although both have quadratic class +1. The scalar 2I is absent from that image, which fixes a nonzero torsion vector. This refutes the headline, not SC.
+
+   **PROVED.** SC also applies with N mod ℓ^k if the higher-level joint image contains all scalars. At odd prime powers, unit-square classes still retain only the mod-ℓ quadratic character. It also preserves products of traces of homogeneous polynomial representations:
+
+   \[
+   \operatorname{tr}(\mathrm{Sym}^j(\lambda g))
+   =\lambda^j\operatorname{tr}(\mathrm{Sym}^j g).
+   \]
+
+   Thus adjoining a_N(Sym² E) preserves this fixed-modulus symmetry.
+
+   Yet the exact integer pair (a_N,a_N(Sym² E)) factors through BC2, except at double zero. This directly illustrates why fixed-modulus posterior invariance is not a factoring barrier. Fixed-m,K Chebotarev cannot be substituted uniformly when m,K grow with N.
+
+   The sentence “λa_p is not a trace when λ≠±1” is too literal. Such a number can satisfy Hasse or occur elsewhere. The correct statement is that the finite-image transformation has no automatic lift to the original integer prime/trace instances.
+
+   **PROVED with an extra assumption.** Attaining “exactly QR” needs independent full-image copies, not scalar containment alone. Under those copies, zero-product frequencies suffice:
+
+   \[
+   P(t=0\mid d)=\frac{\ell+\chi(-d)}{\ell^2-1}.
+   \]
+
+   When χ(N)=1, the two common determinant classes give different zero-product probabilities. When χ(N)=−1, the full product laws agree. Separate this attainability statement from SC’s upper bound. No computational reduction to QR oracles has been proved.
+
+3. **Required fix — MAJOR: rewrite GC as a full-Haar estimate, not a universal one-curve obstruction.**
+
+   **PROVED, finite computation.** The ordered-pair numbers reproduce independently:
+
+   | modulus | I_ordered, bits |
+   |---:|---:|
+   | 3 | 0.09438006729506493 |
+   | 9 | 0.10729685238869291 |
+   | 5 | 0.04591643559463120 |
+   | 25 | 0.04776909626616248 |
+   | 4 | 0.05950150671971972 |
+   | 8 | 0.07156858687152472 |
+   | 16 | 0.07457807998561469 |
+   | 27 | 0.10851283377803025 |
+
+   The odd-prime subtotal is 0.2018247759701857. Adding increments 3→9 and 5→25 and the mod-8 contribution gives 0.28816280860686966. Remaining tails include 8→16, adding 0.00300949311408997, and 9→27, adding 0.00121598138933734.
+
+   **HEURISTIC / UNVERIFIED.** “≈0.3 bits” honestly summarizes this independent full-Haar model, roughly. The omitted infinite tails are not bounded in the text. Do not present the total as an exact computation or proved upper bound.
+
+   This is the ordered-pair budget. Product data alone have odd-prime subtotal 0.04785555799048238 bits.
+
+   **PROVED.** Additivity requires independence of the complete triples comprising hidden determinant, observed traces, and public determinant product. Separate full images do not establish this. Real curves can have exceptional images and adelic entanglements. For 11a1, ordered traces determine p mod 5 exactly, already giving two bits in its limiting determinant experiment. The universal 0.3-bit assertion is therefore false.
+
+   These quantities condition on N modulo selected moduli, not the integer N. For actual primes H(p|N)=0. Finite Chebotarev models do not prove an algorithmic impossibility for arbitrary congruence uses of the same integer traces. Remove “Galois congruences cannot be the route” as a theorem, or define the restricted statistical model intended.
+
+4. **Required fix — MAJOR: repair the unordered likelihood and regenerate PH2.**
+
+   **FALSE / PROVED countercomputation.** `galois.py:228–230` takes the upper triangle of J+J.T, doubling J[t,t]. Correct unordered probabilities are J[t,u]+J[u,t] for t<u and J[t,t] on the diagonal.
+
+   Current laws sum to 1.0915277777777777 at ℓ=11,c=d=1, and 1.0322894965277776 at ℓ=31. The sums depend on the hidden determinant; `_mi` normalization cannot repair this.
+
+   Independent matrix counts and the corrected pushforward give:
+
+   | scaled information | ℓ=11 | ℓ=31 |
+   |---|---:|---:|
+   | ℓ² I(single) | 0.6575252931164945 | 0.6984004722575468 |
+   | ℓ² I(ordered) | 1.3144959861612084 | 1.3967766569067170 |
+   | ℓ² I(unordered), corrected | 0.6600961099488094 | 0.6987988521156572 |
+   | ℓ³ I(product) | 0.7687819952745860 | 0.7348033245685108 |
+   | ℓ⁴ I(M) | 0.7527679095445599 | 0.7355021841566506 |
+
+   The printed unordered 0.715/0.721 values are wrong. Other requested values reproduce.
+
+   The tested unordered identifiability partitions survive: correcting the diagonal is an invertible fixed coordinate rescaling, so equality of law vectors is unaffected.
+
+   **UNVERIFIED asymptotics.** At ℓ=101, scaled product and M values are 0.7250896047975814 and 0.7259861743159886; at 47, 0.7298124438250784 and 0.7310007626542278. Arrows to limits 0.73 and 0.74 are extrapolations. Supply asymptotic calculations or label them finite numerical estimates. Add normalization and independent pushforward checks.
+
+5. **Required fix — MAJOR: correct MIX, LINK, and deterministic labels.**
+
+   **FALSE as stated.** MIX’s condition “P^kΦ(P,N/P,a,b) is nonconstant” permits Φ=1,k=1. Clear denominators in Φ minus its observed value, and require a nonzero resulting polynomial. A suitable condition is that the specialized Laurent polynomial Φ(P,N/P,a,b) is nonconstant, with controlled degree and coefficient size.
+
+   **PROVED.** The M quadratic is correct, but becomes identically zero at a=b=1,M=N. TW* is a randomized fallback, not a deterministic proof. `mix_factor` has no fallback.
+
+   Explicit good counterexample:
+
+   \[
+   E:y^2=x^3-7x-2,\quad p=5,\ q=7,\quad a_p=a_q=1,\quad M=N=35.
+   \]
+
+   `mix_factor(35,[1,1],35)` returns None. The 450 trials did not exercise this case. State deterministic off this degeneracy and randomized everywhere, and repair or explicitly restrict the operational claim.
+
+   **PROVED / FALSE omission.** LINK’s expression for S is correct, but double-zero traces yield S=0 and no factor. For Sym² on y²=x³−x with p=103,q=107, the supplied pair is (0,N), N=11021. Add BC2’s double-zero exception. The CM weight-three split–split instance survives. BC3, TOR and the registered E1 arithmetic otherwise survive.
+
+   M also belongs under randomized factoring reductions, rather than §0’s grouped deterministic algebraic recoveries.
+
+6. **Required fix — MAJOR: narrow MC’s empirical support and disclose dependence in the family.**
+
+   **PROVED by inspection.** The decoders are leakage-free in the relevant sense. Factors generate harness traces and diagnostic truth ranks, but those ranks do not steer decoding. Operational code uses supplied traces, likelihoods, CRT and divisibility verification. The AST denylist alone would not establish this; direct inspection supports it.
+
+   **PROVED.** Haar simulation fairly simulates the stated independent Haar experiment. It does not simulate the actual family. Among 40,000 curves there are only 38,588 rational j-invariants; 1,214 classes repeat, with maximum multiplicity five. For example,
+
+   \[
+   (A,B)=(1,1),(4,8),(9,27),(16,64),(25,125)
+   \]
+
+   are quadratic twists. Their traces have deterministic character relations at every ℓ. The fourth is even Q-isomorphic to the first. There are also 401 family members with rational 2-torsion. Literal independent full-Haar draws across this family are false.
+
+   **HEURISTIC.** Larger-ℓ failure from correlations, exceptional images or short-family bias is plausible. Signals shrink with ℓ; agreement through 31 does not control a growing-ℓ regime. Attributing the shortfall to non-full images is untested. Deduplicate twist/isomorphism classes or compare that control.
+
+   **PROVED limitations.** E3a reuses 200 primes across nested K and all moduli: its 40 cells are correlated checks. The reported 40/40 tolerance result is correct. E3c’s 30/30 is also correct, for one toy size and family. Even a binomial interpretation gives only about 0.905 as the one-sided 95% lower success bound. Replace “strongly supported” with “toy agreement with this decoder/model.” Retain the harness disclaimer.
+
+   **KNOWN.** Castryck–Hubrechts, *The distribution of the number of points modulo an integer on elliptic curves over finite fields*, Ramanujan J. 30 (2013), 223–242, final arXiv v3, Theorem 2 and §3, proves random finite-field curve Frobenius estimates, with error C m²log log m/√p for m prime to p. It does not cover A,B≤200. Cite the final version: earlier versions contained an error. [Primary final theorem](https://arxiv.org/html/0902.4332v3).
+
+7. **Required fix — MAJOR: separate sample complexity from exponential list search, and withdraw M’s quartic sample scaling.**
+
+   **PROVED, model order.** Ordered single-trace distributions have pairwise squared Hellinger separation Ω(ℓ⁻²). Expand the squared difference of χ(t²−4d) and χ(t²−4e); the cross-correlation is a quartic character sum bounded by O(√ℓ) through its genus-one curve and Hasse. Normalization gives the separation. Likelihood-ratio and union bounds give
+
+   \[
+   K=C\ell^2\log(\ell/\varepsilon)
+   \]
+
+   for sufficiently large C. A further union bound over CRT primes preserves O(n²log n).
+
+   **UNVERIFIED constant.** Dividing log₂ℓ by one-sample information does not establish the sufficient constant 1.4 or a high-success ML guarantee. State the success target and justify it.
+
+   **PROVED.** For n=log₂N and balanced factors, θ(L)~L gives
+
+   \[
+   L\sim \tfrac12(\ln2)n=0.34657359n,
+   \]
+
+   so ≈0.35n is correct. The N^(1/4) target gives 0.17328680n; specify Coppersmith’s bound and margin.
+
+   **FALSE if attributed to current code.** The ordered decoder searches 2^π(L) CRT combinations; products search up to 3^π(L). For L=Θ(n), these cost exp(Θ(n/log n)). They are toy implementations. A polynomial heuristic reduction needs reliable top-one residues or a separately justified polynomial list method.
+
+   Here W=2·3·5·…·29=6469693230 already exceeds the tested prime and sum bounds. D1’s extra lifts do not explain success.
+
+   **FALSE / PROVED model lower bound for M.** K=O(ℓ⁴logℓ) does not recover generic s mod ℓ. Write c=N mod ℓ, d=p mod ℓ, e=c/d and D=ℓ²−1. Restrict to c≠1, d,e≠1, d≠e, excluding only O(1/ℓ) of the population.
+
+   All such parameters have identical mass at M=0. For u≠0,
+
+   \[
+   P_d(M=u)=\frac{(\ell-1)\ell^2-4\ell+S_{d,e}(u)}{D^2},
+   \]
+
+   where
+
+   \[
+   S_{d,e}(u)=\sum_{x\ne0}\chi\!\left(
+   ((x-1-d)^2-4d)
+   ((u-(1+e)x)^2-4ex^2)\right).
+   \]
+
+   This polynomial is a square only when d=e or de=1, as follows by proportionality of the quadratics. Both were excluded. Hasse, or the lower-degree character-sum bound when roots repeat, gives S=O(√ℓ) uniformly.
+
+   Thus generic likelihoods at fixed c differ by O(ℓ⁻⁷ᐟ²) per nonzero output, whose probability is Ω(1/ℓ), and agree at zero. Pairwise KL divergence is O(ℓ⁻⁵). K independent curves provide at most O(Kℓ⁻⁵) information in this population. There are Θ(ℓ) sums, each with two determinant preimages. Fano requires
+
+   \[
+   K=\Omega(\ell^5\log\ell)
+   \]
+
+   for fixed positive recovery probability.
+
+   This is a lower bound for the advertised statistical decoding construction, not every arithmetic use of counts. Independent checks give generic I=2.7985496263806855e−9 at 47 and 6.514624525378054e−11 at 101; ℓ⁵I is 0.6418333837 and 0.6846935849.
+
+   Exceptional determinant strata dominate the manuscript’s average ℓ⁴I. Remove K~ℓ⁴ and O(n⁴log n) for M. A matching sufficient bound remains **UNVERIFIED**.
+
+   The unordered-pair sample bound also needs a separation argument using the corrected likelihood. Define a growing family for asymptotic claims; the registered box stops at 40,000 curves.
+
+8. **Required fix — MODERATE: distinguish E3b’s plateau from the Bayes ceiling; sharpen E3d/D2.**
+
+   **PROVED.** `rank_s` maximizes over determinant preimages instead of summing posterior masses. Self-pairs d²=N have one preimage; other sums have two. Ties matter.
+
+   | ℓ | limiting Bayes ceiling | current first-d tie convention |
+   |---:|---:|---:|
+   | 3 | 1 | 1 |
+   | 5 | 0.625 | 0.625 |
+   | 7 | 0.500 | 0.4444444444 |
+   | 11 | 0.300 | 0.280 |
+   | 13 | 0.250 | 0.2361111111 |
+
+   “Exactly the square-class ceiling” is inaccurate as an optimal-accuracy assertion. Observations agree with this decoder’s plateau. State its prior/ties or aggregate posterior mass. SC remains intact.
+
+   **PROVED.** D2 honestly identifies the false registered premise, and E3d is correctly called uninformative. Make this equally visible in headline/table statements.
+
+   The simulated “end-to-end” rate checks independent local top-three inclusion. It does not run the integer end-to-end algorithm. Inclusion suffices at these toy bounds, but the simulation is not a joint integer-trace model. Report 0/30 versus 6/200 as consistency of this weak check.
+
+9. **Required fix — MODERATE: retain E4’s refutation; replace the borrowed noise band and unsupported bias explanation.**
+
+   **PROVED.** Curve 92’s advantage is
+
+   \[
+   69155/370018=0.18689631315233313,
+   \]
+
+   exceeding 0.15625 by 0.03064631315233313. P4a is refuted there.
+
+   Its trace counts, for determinants 1 and 2, are (168,294,285), (390,176,178), versus (177,282,288), (353,196,195) for 37a1. Independent units number 1,491 primes, not 1,110,054 pairs. Strata have sizes 747 and 744.
+
+   **PROVED computation / HEURISTIC interpretation.** I simulated 100,000 Haar prime populations with those sizes and probabilities (1/4,3/8,3/8), (1/2,1/4,1/4), then computed the same off-diagonal statistic. Seed 2502 gives:
+
+   - Mean 0.1558670373; SD 0.0150224363.
+   - Central 95% interval [0.1262902525,0.1852621584].
+   - Upper-tail frequency at the observation: 0.01944.
+
+   A roughly two-standard-deviation fluctuation is plausible. This does not establish the cause or rescind the failure.
+
+   The ecount band concerns M mod 3, not a_N mod 3. Empirical maximization can introduce upward bias, but this statistic’s decision margins are large. Its fixed-stratum expectation under the model rule is 0.1558724846, slightly below 0.15625. Use “post-hoc finite-prime variation” rather than a demonstrated upward-bias explanation. Certificate exceptions and ψ₃ numbers reproduce.
+
+10. **Required fix — MAJOR: delete the inference that every polynomial algorithm must be non-pure.**
+
+    **PROVED.** The supplied PT gives the stated floor in its iid experiment. Independently:
+
+    | F | distribution | 1−max probability | PT split floor |
+    |---|---|---:|---:|
+    | M mod 3 | 0:175/256, 1:41/256, 2:40/256 | 81/256 | 81/512=0.158203125 |
+    | a_N mod 3 | 0:39/64, 1:25/128, 2:25/128 | 25/64 | 25/128=0.1953125 |
+    | r_N(ψ₃) | 0:39/64, 1:1/9, 2:1/6, 4:13/144, 8:1/48, 16:1/576 | 25/64 | 25/128 |
+    | r_N(S₃ cubic) | 0:5/9, 1:1/4, 3:1/6, 9:1/36 | 4/9 | 2/9 |
+
+    These constants are correct under full-image/S₃ laws. They are not universal over torsion curves.
+
+    **FALSE inference.** PT permits an efficient pure algorithm that splits with constant probability. It proves that an efficient pure predictor supplies an efficient splitting algorithm on that population. It does not exclude polynomial pure algorithms.
+
+    **PROVED with qualifications.** PT-J’s Fourier calculation transfers to any fixed nontrivial quadratic character χ_Δ:
+
+    \[
+    m_\pm(S)=\beta(c_S)\pm\beta(\Delta c_S).
+    \]
+
+    The paired characters differ by fixed χ_Δ; the Landau–Page argument transfers with the fixed conductor factor. Retain restrictions on heights/conductors, number of tests, equal priors, units and nonadaptive observations. The identity alone does not prove negligible leakage for arbitrary polynomially many compressed “small pure values.”
+
+11. **Required fix — MINOR for DEC’s proof, MODERATE for its scope.**
+
+    **PROVED.** DEC’s weighted-top-form proof is correct for each fixed nonzero G. Compactness uniformly bounds lower-weight monomials; the minimum weight drop gives C_GX⁻¹ᐟ².
+
+    The top form is nonzero: grouping by x^ky^l leaves distinct u^iv^j monomials after factoring u^(k/2)v^(l/2). Equivalently, the analytic coordinate transformation maps an open set to an open set, where a nonzero polynomial cannot vanish identically. Its zero set has measure zero.
+
+    **KNOWN input / PROVED deduction.** Barnet-Lamb–Geraghty–Harris–Taylor, *A family of Calabi–Yau varieties and potential automorphy II*, Publ. RIMS 47 (2011), 29–98, Theorem B(3), supports Sato–Tate. Subtract asymptotics at αX and βX for fixed rectangles and apply PNT: joint limiting mass is (β−α)μ_ST(J). No shrinking-window uniformity is needed. The product law is absolutely continuous. Portmanteau first at fixed η, then η→0, is valid. [Primary theorem, pp.31–32](https://ems.press/content/serial-article-files/41128?nt=1).
+
+    **PROVED.** The M comparison is honest when phrased as p being nonalgebraic over formal Q(N,M). Nonzero H(N,M,p) remains nonzero after the displayed substitution. It is not literally M that is independent over a field already containing M. The polynomial-annihilator remark is correct: K↦K(PQ,P+1,Y) is injective.
+
+    **FALSE blanket scope.** DEC excludes fixed polynomial equalities and fixed algebraic formulas. It does not exclude growing-degree equations, modular small-root relations, auxiliary variables, arithmetic branching, or every lattice construction. “a_pa_q=A contains no p” refutes that direct equation as a route; it is not a general Coppersmith impossibility theorem. Narrow the scope paragraph and candidate card. The CM atom and split-conditioned argument are correct.
+
+12. **Required fix — MINOR: sharpen IL and placement language.**
+
+    **PROVED.** IL’s simulation works for a per-input polynomial reduction with a constant answer alphabet. Run all c guesses and verify factors; this preserves the correct simulation’s success probability with constant overhead. A deterministic reduction gives deterministic simulation. Distributional success only gives distributional factoring, not worst-case BPP membership. State quantifiers.
+
+    Quadratic root-count/QR equivalence and the S₃ discriminant-QR direction survive outside fixed bad primes.
+
+    Nonabelian witnesses establish non-determination by fixed local characters/congruences. They cannot literally establish “not a function of N together with” anything: N already determines these quantities mathematically. Say “not determined by these local Frobenius character data, even after adding a fixed congruence modulus.” No computational QR separation follows.
+
+    I versus −I and M/φ incomparability need odd ℓ. At ℓ=2, φ(N) mod 2 is constant and I=−I; use a separate S₃ identity/3-cycle witness for parity. IL’s Hensel example must exclude polynomial discriminant/leading-coefficient primes.
+
+    State TOR for the size of a rational torsion subgroup to justify 16 in lcm 5040. Mazur does not supply a rational point of order 16.
+
+13. **Required fix — MINOR: retain J0, QA and SEP, with exact scope.**
+
+    **PROVED.** J0’s transcription is correct. Odd M excludes r≡2 mod 3. For r≡1, six sextic classes include the original class and exactly two with rational 2-torsion. Odd M has kernel index at least two on the latter classes. Counting affine pairs, rather than assuming uniform twist classes, yields both masses ≥1/6−O(r⁻¹ᐟ²), hence mixed probability ≥1/18−o(1). Restore cx1’s small-prime division: below 37, then a uniform 1/72 bound.
+
+    Independent group-invariant enumeration reproduces:
+
+    | r | killed affine pairs | non-killed affine pairs | singular |
+    |---:|---:|---:|---:|
+    | 151 | 12000 | 10650 | 151 |
+    | 181 | 10980 | 21600 | 181 |
+
+    Terminal mixed probability is exactly 376137000/746983561=0.5035412017587895.
+
+    **PROVED.** QA holds for E(R) over quadratic étale base algebras. From [2M]P=0 and the fixed-point-free squared Frobenius action on nonzero 2-torsion, multiplication by two is invertible, hence [M]P=0. Split algebras are immediate.
+
+    It does not cover arbitrary new twists over F_(r²), or higher-degree algebras. Restrict §0’s broader “every twist group” wording, especially in light of item 1.
+
+    **PROVED.** SEP survives. If both local groups had common odd exponent L, write them C_d×C_L and C_e×C_L. Then L|r+1, while d,e divide gcd(L,r−1)=1. Both orders would equal r+1, contradicting oddness. Existence of a separating divisor supplies no small-prime search bound.
+
+    The cubic trace-zero factor r²+r(a_r−1)+a_r²+a_r+1 is correct. Item 1 avoids needing it.
+
+    E5’s two first-trial successes do not establish universal small-prime descent. The existing disclosure that TW* already split these cases is appropriate. The Bach-bound objection is correct: x↦(f(x)/r) lacks the required multiplicativity.
+
+14. **Required fix — MINOR: distinguish priority from proofs and unresolved trace-only questions.**
+
+    **KNOWN.** Bach–Charles, *The hardness of computing an eigenform*, arXiv:0708.1192v2, §2, Theorem 2.2 and Remark 2.5, uses a(N) and a(N²). Its recurrence supplies elimination; it does not prove SC or a single-value reduction. [Primary §2](https://arxiv.org/html/0708.1192).
+
+    **PROVED antecedent / UNVERIFIED priority.** Quadratic twisting gives a_N(E^(d))=χ_d(N)a_N(E), so twists supply redundant products. This relates to SC but does not establish its complete scalar-image result. Hecke-character and Sym² constructions explain linked identities, not a universal obstruction.
+
+    Targeted searches did not locate SC’s exact formulation or the fixed short-family decoding statement. “No prior statement found by us” remains appropriate. The random-curve model is prior work, and likelihood decoding is statistically elementary once assumed. Replace the unverified Castryck–Hubrechts reference with its final theorem.
+
+    **UNVERIFIED negative finding.** I found no general reduction from a_N alone or one non-CM trace pair, nor an almost-everywhere argument resolving that question. DEC, GC and SC do not prove impossibility. The CM/Blum example is a valid conditional promise obstruction, not an unconditional lower bound. Item 1 does not supply M from a_N.
+
+**Reproduction.** The original tests pass: 20 passed in 0.39 s. They miss the unordered-law and MIX degeneracy defects.
+
+From `/Volumes/git/factoring-connection`:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 /Volumes/git/factoring-connection/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_tracedata.py
+```
+
+From `/Volumes/git/factoring-connection/codex/scratch/tracedata_2`:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 /Volumes/git/factoring-connection/.venv/bin/python audit_tracedata.py > audit_tracedata.txt
+PYTHONDONTWRITEBYTECODE=1 /Volumes/git/factoring-connection/.venv/bin/python model_extra.py > model_extra.txt
+PYTHONDONTWRITEBYTECODE=1 /Volumes/git/factoring-connection/.venv/bin/python extension_probe.py > extension_probe.txt
+PYTHONDONTWRITEBYTECODE=1 /Volumes/git/factoring-connection/.venv/bin/python extension_uniform.py > extension_uniform.txt
+```
+
+`audit_tracedata.py` independently enumerates the requested matrix models, constructs the corrected unordered pushforward, computes PT distributions and E4, simulates its null, counts family dependencies and finds the MIX counterexample. `model_extra.py` checks larger constants, generic M information, decoder ceilings and J0. The extension scripts separate conditioned testing from uniform operational trials. No repository experiment output was overwritten.

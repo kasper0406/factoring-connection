@@ -87,3 +87,30 @@ def s_mod_m_from_torsion(N: int, aN: int, m: int) -> int:
 def cm_split_bit(aN: int) -> bool:
     """CM curve, (-D/N) = 1: a_N != 0 iff both primes split (a_r != 0 at split r > D)."""
     return aN != 0
+
+
+def cm_quartic_pair_factor(N: int, A1: int, A2: int) -> Optional[int]:
+    """Hecke eigenvalues at N of two fixed CM curves with a_r(E1) = +-2 alpha_r, a_r(E2) = +-2 beta_r,
+    r = alpha_r^2 + beta_r^2 (e.g. E1: y^2 = x^3 - x, E2: y^2 = x^3 - 2x at r = 5 mod 8; proof critic, phase 25).
+    X = A1/4, Y = A2/4; u = alpha_p beta_q, v = beta_p alpha_q satisfy u^2 + v^2 = N - X^2 - Y^2, u^2 v^2 = X^2 Y^2;
+    gcd(N, X^2 + v^2) = p."""
+    if A1 % 4 or A2 % 4:
+        return None
+    X, Y = A1 // 4, A2 // 4
+    for z in _int_roots_quadratic(1, -(N - X * X - Y * Y), X * X * Y * Y):
+        for w in (X * X + z, Y * Y + z):
+            g = _proper(gcd(w, N), N)
+            if g:
+                return g
+    g = _proper(gcd(X * X + Y * Y, N), N)   # mixed case (D/p) != (D/q)
+    return g
+
+
+def cm_quartic_family_factor(N: int, A_base: int, A_twists: Iterable[int]) -> Optional[int]:
+    """A_base = a_N(y^2 = x^3 - x); A_twists = a_N(y^2 = x^3 - D x) for D in a fixed list.  Any D that is a quadratic
+    non-residue at p or at q gives a factor (pairs with A_base as in cm_quartic_pair_factor)."""
+    for A in A_twists:
+        g = cm_quartic_pair_factor(N, A_base, A)
+        if g:
+            return g
+    return None
