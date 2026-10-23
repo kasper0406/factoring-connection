@@ -1,8 +1,8 @@
 # navigate: hidden-root short-quotient navigation (smoothbuild §7, W11)
 
-Agent `navigate`, phase 25, 2026-10-23. Version 2. It applies the codex adversarial round (MAJOR REVISION, with one
+Agent `navigate`, phase 25, 2026-10-23. Version 2.1. It applies the codex adversarial round (MAJOR REVISION, with one
 FATAL point against an experiment), the Opus proof critic (ACCEPT WITH FIXES) and the Opus literature critic (§9–§10).
-v1 is commit `2642953`.
+v1 is commit `2642953`; v2 applies all three reviews.
 
 **Files.**
 - Pre-registration: `notes/navigate_prereg.md` (commit `f2e4e9c`, before any registered statistic).
@@ -56,7 +56,7 @@ statement found by us" is the strongest novelty claim made.
     - A navigator that works only on average over balanced semiprimes gives 2^{1/3}·1.80 ≈ 2.27 instead, which does
       not beat NFS.
     - A navigator for one fixed N escapes this implication.
-  - **We know no L[1/3] algorithm for bounded-height NAV, even heuristically, even for prime moduli, even with the
+  - **We know of no L[1/3] algorithm for bounded-height NAV, even heuristically, even for prime moduli, even with the
     factorisation and all discrete logarithms given.** With all logs known, NAV is a weighted-ℓ1 closest-vector
     problem in the relation lattice. Its dimension must be ≥ x^{3/2−o(1)} for solutions to exist (Prop LT). The
     methods we can price cost:
@@ -180,6 +180,10 @@ at heights. (b) EQ2's rank step works with v_i ∈ (Z/M)^K. (c) EQ2 and Bach. Th
 modulo the group exponent of each prime power, which generation makes possible. ∎
 
 **Reading.**
+- *Prior work.* Stange (arXiv:2211.06821, Thm 3.2) proves unconditionally that an oracle returning random
+  multiplicative relations of size O(log n) among b factor-base residues (target 1) yields the period, hence the
+  factorisation, with O(b) calls. Her Hypothesis 3.1 enters only the success probability, and her L[1/2]/L[1/3]
+  runtimes are heuristic. Prop H is the hidden-target analogue: any height is fine, and the output also gives DL.
 - The consequences of NAV_3 are those of NAV_∞. NAV_∞ is FACT ∧ DL. So NAV is a strong sufficient target: a
   solver *contains* rigorous L[1/3] factoring and DL modulo the prime factors of N.
 - That is not by itself an argument against pursuing it. Intermediate primitives are routinely equivalent to the
@@ -266,8 +270,8 @@ is the same proof.)
 **Reading.**
 - The bound applies to *generic* algorithms: those that only multiply, invert and compare residues (collision
   search, meet-in-the-middle, walks steered by equality tests). They need Ω(√(qδ)) operations.
-- Goldfeld (1969) shows that at least half of all primes p (in lower density) have a prime factor of p − 1 exceeding
-  p^{1/2}. For N = pq with such a p, q ≥ N^{1/4 − o(1)} and the generic cost is ≥ N^{1/8−o(1)}.
+- Goldfeld (Mathematika 16 (1969) 23–27): #{p ≤ x : P(p − 1) > x^{1/2}} ≥ (1/2 + o(1))π(x), i.e. lower relative
+  density ≥ 1/2 (Fouvry 1985: a positive proportion with exponent 0.6687). For N = pq with such a p, q ≥ N^{1/4 − o(1)} and the generic cost is ≥ N^{1/8−o(1)}.
 - The model says nothing about methods that look at integer representatives: smoothness testing, lattice
   reduction, or arithmetic steering (codex). It shows only that an L[1/3] navigator cannot be generic.
 
@@ -338,7 +342,8 @@ the K elements t·q, q ≤ y, while succeeding almost everywhere (codex).
   - Binary encodings of the prime index reduce branching to 2 at the cost of interval-restricted counts (codex).
   - The plain count C(t, B) is not closed under these restrictions. The restricted counts are what JVV needs
     (codex blind §1).
-- **(ii) Counting ⇒ search [PROVED; JVV 1986, decision-to-search].**
+- **(ii) Counting ⇒ search [PROVED; decision-to-search via self-reducibility is folklore (Schnorr, ICALP 1976); JVV
+  1986 and Sinclair–Jerrum 1989 for the sampling statements].**
   - An oracle that approximates the restricted counts within any multiplicative factor decides emptiness.
   - Walking down the tree and keeping a non-empty child finds a solution with ≤ depth × branching = poly(K, x) calls.
   - With relative error 1 + 1/poly per level, JVV gives almost-uniform sampling.
@@ -375,9 +380,11 @@ the K elements t·q, q ≤ y, while succeeding almost everywhere (codex).
     - E2 finds strong concentration in the dense toy regime (§7.2) and weaker concentration in the sparse toy regime.
     - Concentration of L² mass is not the same as pointwise counting accuracy, and it says nothing about restricted
       conditional counts. Whether "implicit-character" counters exist is OPEN (codex adversarial).
-  - *Sieves / analytic number theory:* equidistribution theorems for smooth numbers in progressions (Granville;
-    Soundararajan 2008; Harper 2012 — under GRH or on average over moduli) give the *mean* of C. They give no
-    pointwise counts at the threshold for an individual modulus of size N with y = L[1/3].
+  - *Sieves / analytic number theory:* the equidistribution theorems for smooth numbers in progressions to a single
+    modulus (Soundararajan 2008, Harper 2012) are *unconditional* but need q ≤ y^{4√e−δ}. Granville's range is
+    smaller. Here the modulus is N = y^{x^{2/3+o(1)}}, far outside, so they do not even give the mean of C (literature
+    critic). Averaged (Bombieri–Vinogradov-type) results (Harper, arXiv:1208.5992) average over moduli. The flatness
+    actually available is (iii), from the GRH character-sum bound (JMV Thm 1.1).
 
 **Verdict on Route 1.** The reduction NAV ≤ (approximate restricted counting) is real (JVV). We know of no counter
 whose cost is below that of search in the window where counting carries information. Failure point: Monte Carlo
@@ -404,30 +411,37 @@ implicit character information, annealing, or other structure (OPEN).
   - The converse fails. The distance is ≥ x − O(ln x) for most a (Lemma RT), and heuristically (1 + o(1))x, since a first
     moment count already reaches |Q| at height x + O(x^{2/3}(ln x)^{4/3}). So a NAV output may have approximation ratio
     up to ≈ 3 (proof critic). The approximation actually demanded is γ ∈ [3/(2 + ε), 3], heuristically ≈ 3.
-  - In ℓ2 with Adleman weights √ln ℓ, height equals squared norm only for squarefree signed vectors.
+  - In ℓ2 with weights √ln ℓ (Schnorr's), height equals squared norm only for squarefree signed vectors.
 - **(c) Far below the Gaussian heuristic [HEURISTIC/SCENARIO].**
   - det Λ_N = |⟨FB⟩| ≤ φ, so det^{1/K} = e^{O(x/K)} → 1, and the Euclidean Gaussian-heuristic radius is
     ≈ √(K ln y/(2πe)).
   - That is ≈ x^{3/4} at the minimal K and L[1/3, κ/2] at K = L[1/3, κ], against ≈ √(3x) for squarefree target
-    vectors. The volume heuristic fails for these sparse integer points (siconstruct Prop CV(e); Mulder–Sterner–van
-    Woerden).
+    vectors. The volume heuristic fails for these sparse integer points (siconstruct Prop CV(e)). Mulder–Sterner–van
+    Woerden (arXiv 2509.17699) find smooth twins by SVP in a prime-number lattice, but in the dense regime, where
+    they measure optimal twins at ≈ 1–1.15× the Gaussian heuristic. They are a precedent, not support for the gap.
   - This shows unusual structure. It is *not* hardness evidence against exploiting that structure (codex).
   - Known algorithm costs are scenarios, not lower bounds:
-    - Euclidean exact or constant-factor CVP costs 2^{Θ(K)}: exact 2^{K+o(K)} (Aggarwal–Dadush–Stephens-Davidowitz
-      2015, Euclidean norm), and 2^{0.29K}-type heuristic sieving. These do not transfer verbatim to weighted ℓ1
-      (codex).
+    - Known constant-factor CVP algorithms cost 2^{Θ(K)}.
+      - In ℓ2: exact 2^{K+o(K)} (Aggarwal–Dadush–Stephens-Davidowitz, FOCS 2015); heuristic CVP(P) sieving
+        (Laarhoven 2016; Doulgerakis–Laarhoven–de Weger, PQCrypto 2019). The 2^{0.29K} figure is SVP sieving
+        (Becker–Ducas–Gama–Laarhoven 2016).
+      - In any norm, including weighted ℓ1: (1+ε)-CVP in (1/ε)^{O(K)} (Dadush–Kun, SODA 2013 / ToC 2016;
+        Blömer–Naewe, TCS 2009) (literature critic).
     - BKZ-β gives approximation exp(Θ(K ln β/β)). At an L[1/3, 1.2] budget β = O(x^{1/3}(ln x)^{2/3}), so the factor
       is exp(L[1/3]) (codex blind).
   - CSI-FiSh (Beullens–Kleinjung–Vercauteren 2019) solves the analogous class-group problem by BKZ + Babai in
     dimension 74. That is the dense regime (det^{1/K} ≫ 1), where the Gaussian heuristic is accurate. It is an analogy,
     not evidence that the method transfers.
 - **(d) Schnorr's lattice does not encode the congruence [PROVED observation; codex].**
+  - Schnorr (EUROCRYPT '91, LNCS 547, 281–293) uses the prime-number lattice with weights √ln p_i, last column
+    C ln p_i and target C ln N. A "fac-relation" is u = ∏p_i^{a_i} with |u − vN| also smooth: u/v ≈ N over R, with a
+    tested residual.
   - The real-log lattice (rows √ln ℓ·e_ℓ, last coordinate C ln ℓ) has determinant ∏√ln ℓ·(1 + C²Σln ℓ)^{1/2}, not N.
   - A target C·ln a enforces u/v ≈ a over R, not u − av ∈ NZ.
   - With a lift, the residual u − Av must be tested. That is siconstruct Prop CV / schnorrcvp, whose slack certificate
     (Prop CV(d)) gives *sufficient* approximation conditions for L[1/3]; necessity was withdrawn there.
 - **(e) A bounded-height k-tree [SCENARIO; corrected].**
-  - Run Wagner's k-tree (k a power of two) on the knapsack Σe_ℓ log ℓ ≡ log a (mod M), with all logs known.
+  - Run Wagner's k-tree (CRYPTO 2002; k a power of two; Minder–Sinclair for other k) on the knapsack Σe_ℓ log ℓ ≡ log a (mod M), with all logs known.
   - It needs k lists of size ≥ M^{1/(1+lg k)}. A list of S distinct vectors has typical height ≥ (1 − o(1))ln S.
   - If the lists have disjoint supports and values behave randomly, the output height is ≈ k·x/(1 + lg k).
   - Height ≤ 3x forces k/(1 + lg k) ≤ 3 + o(1), i.e. k ≤ 8, and cost N^{1/4−o(1)}.
@@ -512,8 +526,12 @@ algorithms exploiting sparse-support structure (OPEN).
       dependency containing them, which was v1's error (proof critic, codex).
     - Dependencies made of standard rows alone, or in which every hidden root has even total coefficient, carry no
       hidden randomness.
-    - Lee–Venkatesan 2018 prove relation collection and a possibly trivial congruence at L[1/3, (64/9)^{1/3}]. Their
-      theorem does not establish this augmentation. The lifts, characters, units and square-root branches would all
+    - Lee–Venkatesan (J. Number Theory 187 (2018) 92–159; arXiv 1805.08873), Thm 2.1: the randomised NFS finds
+      x² ≡ y² (mod n), possibly trivial, in expected L_n[1/3, (64/9)^{1/3}] unconditionally for every n (1.902 for
+      Coppersmith's MNFS variant).
+    - Their non-triviality theorem (Thm 2.3) covers only n = pq with p ≡ q ≡ 3 (mod 4), under their Conjecture 7.8.
+      Their Remark 2.4 says that if the conjecture fails, all congruences found may be trivial.
+    - Their theorem does not establish this augmentation. The lifts, characters, units and square-root branches would all
       have to be redone. We label the combination CONDITIONAL.
 
 ### 5.4 Where the rigour stops, and the criterion multi-level descent must meet [OPEN; HEURISTIC bookkeeping]
@@ -522,6 +540,9 @@ algorithms exploiting sparse-support structure (OPEN).
   - Theorem U's one-level descent needs the split acceptance (ln N)^{−2k} to be affordable, which requires k ≤ D^α.
   - It also needs a small norm exponent θ ≥ c/√k, which requires k ≳ D^{2(1−2α)}.
   - Together these force α ≥ 2/5.
+- **Precedent.** The only rigorous multi-level descents we know are in fixed characteristic (Granger–Kleinjung–
+  Zumbrägel, Trans. AMS 370 (2018); Kleinjung–Wesolowski, J. AMS 2022). There an elimination step splits the big side
+  for free (smoothbuild §5). None exists for prime fields or for Z/N.
 - **Reaching 1/3 needs multi-level descent.** Second-level special-q primes are prime factors of descent values, not
   uniform primes in an interval. So Theorem U's averaged descendability (a fraction γ ≥ (ln N)^{−C_γ} of the q in a
   dyadic window) does not apply to them as stated.
@@ -690,9 +711,56 @@ primes ≤ y, the per-class counts C_β are computed on H = ⟨FB⟩ (H = G in a
 
 ---
 
-## 8. Literature (checked by the literature critic; see §10.2)
+## 8. Literature (checked by the literature critic, §10.2; V = verified in the primary source, S = secondary, U = unverified)
 
-(See §10.2 for the checked list and corrections.)
+- **JMV.** Jao–Miller–Venkatesan, J. Number Theory 129 (2009) 1491–1504, Thm 1.1 (V): under GRH, Cayley graphs of ray
+  class groups mod 𝔪 (here (Z/N)^×) with the primes ≤ x as generators have nontrivial eigenvalues O(x^{1/2} log(xN)).
+- **Counting.** Jerrum–Valiant–Vazirani, TCS 43 (1986) 169–188; Sinclair–Jerrum, Inform. Comput. 82 (1989) 93–133;
+  decision-to-search: Schnorr, ICALP 1976.
+- **Generic.** Nechaev, Math. Notes 55 (1994) 165–172; Shoup, EUROCRYPT '97, LNCS 1233, 256–266, Thm 1.
+- **Schnorr**, EUROCRYPT '91, LNCS 547, 281–293 (S). **Goldfeld**, Mathematika 16 (1969) 23–27 (S). **de Bruijn**,
+  Indag. Math. 28 (1966) 239–247 (S).
+- **Rigorous index calculus.**
+  - Pomerance 1987, in *Discrete Algorithms and Complexity*, 119–143 (S; the √2 constant U).
+  - Lenstra–Pomerance, J. AMS 5 (1992) 483–516.
+  - Enge–Gaudry, Acta Arith. 102 (2002) 83–103: rigorous L[1/2, √2] for hyperelliptic curves (U).
+  - Enge–Gaudry, EUROCRYPT 2007: heuristic L(1/3 + ε). Enge–Gaudry–Thomé, J. Cryptology 24 (2011): heuristic L(1/3).
+  - No rigorous L_p[α < 1/2] prime-field DL is published (the critic found none). Rigorous quasi-polynomial DL exists in
+    fixed characteristic (Kleinjung–Wesolowski).
+- **NFS descent.**
+  - Joux–Lercier, Math. Comp. 72 (2003).
+  - Commeine–Semaev, PKC 2006, LNCS 3958, 174–190.
+  - Barbulescu, PhD thesis (Lorraine 2013): 1.296 with one filter, 1.232 with six.
+  - Fried–Gaudry–Heninger–Thomé, EUROCRYPT 2017, arXiv 1610.02874, App. A (V): also 1.206/1.117 for later degree-1
+    descent; explicitly heuristic.
+- **Rigorous NFS.** Lee–Venkatesan, J. Number Theory 187 (2018) 92–159 (V; see §5.3).
+- **Constants.** NFS (64/9)^{1/3} ≈ 1.923. MNFS 1.902: Coppersmith, J. Cryptology 6 (1993) for factoring; Matyukhin,
+  Discrete Math. Appl. 13 (2003) and Barbulescu–Pierrot, LMS JCM 17A (2014) for DL.
+- **Bach**, UCB/CSD 84/186 (1984) (U).
+- **Relation lattices modulo composites.** Stange, arXiv:2211.06821v2 (V; see §2.1).
+- **Class-group navigation (the closest analogue of NAV).**
+  - Hafner–McCurley, J. AMS 2 (1989): rigorous under GRH, L[1/2].
+  - Childs–Jao–Soukharev, J. Math. Cryptol. 8 (2014).
+  - Biasse–Fieker–Jacobson, LMS JCM 19A (2016): heuristic L[1/2] representations of a given class.
+  - CSI-FiSh, Beullens–Kleinjung–Vercauteren, ASIACRYPT 2019, LNCS 11921, 227–247 (V): dimension 74, BKZ-40/50 + HKZ,
+    Babai in ℓ1 plus a random walk, mean ℓ1 norm ≈ 240, det^{1/74} ≈ 11.
+  - These reach L[1/2] heuristically; none reaches L[1/3].
+- **Rational-reconstruction initial split.** Blake–Fuji-Hara–Mullin–Vanstone 1984; Coppersmith–Odlyzko–Schroeppel,
+  Algorithmica 1 (1986) 1–15.
+- **Small-height representations by primes (another regime, y ≈ q^{O(1)}).** Erdős–Odlyzko–Sárközy 1987 (U);
+  Ramaré–Walker, JTNB 30 (2018) 219–225 (V).
+- **Lattices.**
+  - Aggarwal–Dadush–Stephens-Davidowitz, FOCS 2015.
+  - Dadush–Kun 2013/2016; Blömer–Naewe 2009.
+  - Becker–Ducas–Gama–Laarhoven, SODA 2016; Laarhoven 2016; Doulgerakis–Laarhoven–de Weger 2019.
+  - Wagner, CRYPTO 2002, LNCS 2442, 288–304.
+  - Mulder–Sterner–van Woerden, arXiv 2509.17699.
+- **Smooth numbers in progressions.** Soundararajan, CRM Proc. 46 (2008), arXiv 0707.0299 (V); Harper, J. Number Theory
+  132 (2012) 182–199 (V). Both are unconditional and need q ≤ y^{4√e−δ}.
+- **Fixed-characteristic rigorous descent.** Granger–Kleinjung–Zumbrägel, Trans. AMS 370 (2018) 3129–3145;
+  Kleinjung–Wesolowski, arXiv 1906.10668.
+- *Novelty.* Nothing in the literature we and the critic searched treats bounded-height path finding in Cayley graphs of (Z/N)^× with
+  small-prime generators, or rigorous multi-level descent in prime fields. "No prior statement found by us" stands.
 
 ---
 
@@ -761,9 +829,21 @@ Findings and fixes:
 - NIT: the cost of Y at A = exp(L[1/3, c]); E1 null censoring; the O(d) count in the conversion remark (now
   withdrawn).
 
-### 10.2 Literature critic (read-only)
+### 10.2 Literature critic (read-only, on v1): OK WITH FIXES; all applied in v2
 
-(pending)
+No conclusion depended on a wrong citation, and the critic found no novelty overclaim. Fixes:
+- Soundararajan and Harper are unconditional with q ≤ y^{4√e−δ}, so they do not apply to modulus N (§3(vi)).
+- Mulder–Sterner–van Woerden do not support the Gaussian-heuristic gap.
+- CVP citations matched to norms (Dadush–Kun for general norms; 2^{0.29K} is an SVP figure).
+- Stange's Thm 3.2 is unconditional, and it is the target-1 precedent for Prop H.
+- Lee–Venkatesan: theorem numbers and conditions added.
+- Missing references added: class-group navigation, rational reconstruction, fixed-characteristic rigorous descent.
+- Schnorr's relation shape and weights; Goldfeld's density phrasing; Enge–Gaudry 2007 is L(1/3 + ε).
+- Decision-to-search is folklore (Schnorr 1976), not JVV.
+- Wagner's power-of-two restriction.
+
+The critic also notes that LV's constants should be read from the JNT version (a 2015 abstract gave 2.88). The note
+quotes Thm 2.1 of arXiv 1805.08873.
 
 ## 11. Reproduction
 
