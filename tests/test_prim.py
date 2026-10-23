@@ -165,3 +165,35 @@ def test_theorem_R_exact():
     for target in (lambda p, q: int(p % 4 == 1), lambda p, q: int(p % 3 == 1), lambda p, q: int(p < q)):
         r = theorem_r_check(primes, probes, target)
         assert r["holds"], r
+
+
+def test_lemma_KS_compression_bruteforce():
+    """codex's compression form of Lemma KS, for several thresholds L."""
+    from src.prim.zerosets import ks_bound_compress
+    rng = random.Random(11)
+    for p in (101, 241, 421, 1201, 2311):
+        n = p - 1
+        for _ in range(60):
+            t = rng.randint(2, 6)
+            if rng.random() < 0.5:
+                m = rng.choice(sympy.divisors(n))
+                exps = [rng.randrange(n // m) * m + rng.randrange(2) for _ in range(t)]
+            else:
+                exps = [rng.randrange(n) for _ in range(t)]
+            coeffs = [rng.randrange(1, p) for _ in range(t)]
+            Z = _sparse_zero_set(p, coeffs, exps)
+            for L in (2, 5, n ** 0.5, n ** 0.75):
+                V = coset_union(Z, L)
+                assert (Z & ~V).sum() <= ks_bound_compress(n, t, L) + 1e-9
+
+
+def test_codex_w1_square_root_bound():
+    """codex prim_1 (5): #{r : (g^r + c)^r = 1} <= tau(n)(1 + sqrt p) for primitive g."""
+    for p in (1009, 2003, 4001):
+        g = sympy.primitive_root(p)
+        n = p - 1
+        r = np.arange(n)
+        gr = vpow(np.full(n, g), r, p)
+        for c in (1, 2, 5, p - 3):
+            z = (vpow((gr + c) % p, r, p) == 1) & ((gr + c) % p != 0)
+            assert z.sum() <= sympy.divisor_count(n) * (1 + p ** 0.5)

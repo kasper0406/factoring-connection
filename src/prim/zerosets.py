@@ -112,3 +112,9 @@ def frozen_set(ex, p: int, T: int = 64) -> np.ndarray:
             m &= o == o[tt]
         F |= m
     return F
+
+
+def ks_bound_compress(n: int, t: int, L: float) -> float:
+    """Lemma KS (codex prim_1 (12), degree compression): residual roots outside zero cosets of order >= L
+    number at most 2n / (floor(n/L) + 1)^{1/(t-1)}."""
+    return 2 * n / (int(n // L) + 1) ** (1.0 / (t - 1))

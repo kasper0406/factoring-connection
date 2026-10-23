@@ -18,13 +18,13 @@ from .prog import vpow
 
 
 def d2_bound(p: int, y: int, a: int, alpha: int) -> Tuple[float, int]:
-    """Theorem D2: |Z| <= min_{d | p-1} alpha*d*tau(d)*(n/d^2 + 2 n sqrt(p)/o) + n/o,  o = ord_p(y^a).
+    """Theorem D2: |Z| <= min_{d | p-1} gcd(alpha,d)*tau(d)*(n/d + d*(n/o)*(sqrt(p)+2)) + n/o,  o = ord_p(y^a).
     Returns (bound, best d)."""
     n = p - 1
     o = int(sympy.n_order(pow(y, a, p), p))
     best, bd = float("inf"), 1
     for d in sympy.divisors(n):
-        val = alpha * d * sympy.divisor_count(d) * (n / d ** 2 + 2 * n * sqrt(p) / o) + n / o
+        val = gcd(alpha, d) * sympy.divisor_count(d) * (n / d + d * (n / o) * (sqrt(p) + 2)) + n / o
         if val < best:
             best, bd = val, d
     return float(best), int(bd)
