@@ -73,7 +73,7 @@ def two_level_parameters() -> Dict[str, Fr]:
 # ------------------------------------------------------------------ union-bound (Prop UB) bookkeeping
 def union_bound_precision(j: int) -> List[Fr]:
     """D-exponent of the relative-variance precision eta_i needed at depth i = 1..j-1 by the union-bound route
-    (Prop UB): eta_1 <= 1/(8 m), eta_i <= 1/(8^i m^i) with m = D^{alpha_j}; returned as the exponent -i*alpha_j."""
+    (Prop UB): eta_1 = O(1/m), eta_i = O(1/m^i) with m = D^{alpha_j} (typical count); returned as the exponent -i*alpha_j."""
     a = alpha_j(j)
     return [-i * a for i in range(1, j)]
 
@@ -87,7 +87,7 @@ def local_factor_covariance_exponent(j: int) -> Fr:
 def union_bound_margin(j: int) -> List[Fr]:
     """Exponent margin (needed precision exponent) - (covariance exponent) at each depth; a NEGATIVE margin means
     the unconditional local-factor covariance alone exceeds the needed precision, so the hypothesis must be
-    stated conditionally on the fields' local data (see notes §5.3).  Zero = borderline (constants decide)."""
+    stated differently; local-data conditioning does not repair it (notes §3.5).  Zero = borderline (constants decide)."""
     c = local_factor_covariance_exponent(j)
     return [p - c for p in union_bound_precision(j)]
 

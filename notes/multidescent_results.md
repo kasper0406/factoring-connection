@@ -19,69 +19,74 @@ internal, unrefereed results (Theorem U and its chain; nested; escapeR2).
 
 ## 0. Verdict
 
-**Plain language.** We did not obtain a rigorous factoring algorithm below L[2/5]. The two-level design that would
-give L[3/8] still needs one analytic estimate that nobody has proved. But that estimate turns out to be much smaller
-and more classical than the project believed. Earlier notes (nested Lemma OD, escapeR2 Hyp LS_C) said a two-level
-proof must control one polynomial's values at ≈ d^{3/2} points at once, more points than the polynomial has
-coefficients. That is true for the "count complete certificates" proof strategy, but not necessary: a union bound over
-the children of each parent needs only **three points at a time** (the parent and a pair of points in one child's
-box), provided each child fails with probability at most ≈ 1/(number of children). That turns "joint control at
-d^{3/2} points" into "asymptotic precision (relative error ≈ (log N)^{−3/8}) for 3-point correlations". The algebraic
-part of those correlations is of Bombieri–Vinogradov type. The rational part is a ternary linear equation in smooth
-numbers, the same shape as Harper's a + b = c theorem but with large coefficients and a family average. Fresh
-randomness (new fields, multipliers, resampling) does not escape the obstruction; precision does, if it can be proved.
+**Plain language.** We did not obtain a rigorous factoring algorithm below L[2/5]. A two-level descent would give
+L[3/8], but it still needs analytic estimates that nobody has proved. The new finding is about *which* estimates.
+Earlier notes (nested Lemma OD, escapeR2 Hyp LS_C) framed the two-level proof as a joint-smoothness estimate for
+one polynomial at ≈ d^{3/2} points at once, more points than it has coefficients. We show that this joint estimate is
+not needed: a union bound over the children of each parent needs only conditional statements about **three
+geometric points at a time** (the parent and a pair of points in one child's box). The price is precision. Each
+child must fail with probability at most ≈ 1/(number of children), so the 3-point correlations must be known to
+relative error ≈ D^{−3/8} (D = log N/log log N), a polylogarithmic but demanding precision. It sits at the scale of
+the secondary terms in smooth-number asymptotics, so the estimate must be a genuine covariance bound. Its rational
+part is a ternary linear equation in smooth numbers: Harper's a + b = c, but with large coefficients, weights and a
+conditional normalisation. The algebraic part is of Bombieri–Vinogradov type for a structured, sparse family of
+moduli. The level-1 moments themselves also need a mixed-smoothness re-proof (Hyp U′), which is not routine. Fresh
+randomness (new fields, multipliers, resampling) does not escape the obstruction. The union bound replaces joint
+control by precision; it does not shrink the certificates (Prop R3 and Lemma OD stand as statements about them).
 
 Precisely:
 1. **The children's law (Q1).**
    - *Exact form* [proved; codex blind (1)]: the incidence law of children is a ratio of selection-weighted
-     divisibility counts (§2.1). Experimentally (E1) the algebraic labels follow the "weighted uniform" law
-     ∝ 1/q per available label to within ±11% in every sub-bucket, i.e. uniform-on-labels up to a factor ≤ 1.28 per
-     dyadic window [experimentally supported, toy].
-   - *Rational children transfer* [Prop RC, proved conditional on Theorem U's moment decomposition at the child scale,
-     UNVERIFIED re-check]: with a pool of (log N)^{O(1)} fresh fields, targetwise Markov upgrades of Theorem U's
-     moments plus a removal sieve that needs only an UPPER bound on the children's law give: every rational child is
-     good except on a set of density ≤ ε′ per window, at a loss of a factor 2 in the level-1 count. No joint statement
-     about the children is needed. This answers codex's objection that Theorem U "gives a polylog good fraction, not a
-     small bad fraction" (§2.3). By Props R2/R3 this alone cannot go below 2/5.
-   - *Algebraic children* [proved, structural]: goodness is not a property of the label but of (label, parent's field).
-     Conditionally on the parent's values the field law is the constrained-resampling fiber (rank d − 1 in c) times
-     the line g + Z·P₀ in the rational side (rank 1). Transfer of a *label* law is the wrong question; what matters
-     is the conditional law (§2.4).
-2. **Two-level and j-level exponents (Q2).**
-   - *Model*: α_j = (j+1)/(3j+2) (2/5, 3/8, 4/11, 5/14, …), with d = D^{j/(3j+2)} and D^{α_j} children per node at
-     every level (escapeR2 §7.2; codex blind; `model.py`). A per-child loss (log N)^{−C} costs only L[α, O(C)] at
-     fixed depth.
-   - **Prop UB (union-bound reduction) [proved].** If the level-1 moments of Theorem U hold for the two-level
-     acceptance and each child's good-point count has conditional relative variance ≤ η ≈ 1/(4·#children) given its
-     parent (Hyp PC₃, a statement about 3-point configurations), then the two-level descendable density is at least
-     a quarter of the one-level Paley–Zygmund ratio (§3.2).
-   - **Theorem 2L [proved conditional on Hyp PC₃(3/8), Hyp U′ (Theorem U's FM-U/LD*-U re-established at the 3/8
-     two-level acceptance; routine, UNVERIFIED) and the internal chain].** A Las Vegas algorithm factors every N in
-     expected L_N[3/8, c], c finite (§3.3).
-   - What PC₃ needs (§3.4): an algebraic 3-point block (three linear forms in d ≥ 3 coefficient variables, full rank,
-     AP-type; heuristically within Bombieri–Vinogradov range, whose error exp(−cu/log²u) is far below the needed
-     (log N)^{−3/8}) and a rational block (three linear forms in the two coordinates of g, tied by the Plücker
-     identity: smooth solutions of a ternary linear equation with coefficients up to x^{o(1)}). Under the random model
-     with local factors PC₃ holds with room D^{3/8} [heuristic]. **No weaker rigorous statement gives α < 2/5 that we
-     could find.** We prove no α < 2/5.
-   - j levels: (j+1)-point configurations (ancestor chain plus a pair), precision D^{−(j−1)α}; the rational block has
-     complexity j − 1. From j ≥ 4 the needed precision is below the unconditional local-factor covariance D^{−2α}, so
-     the hypothesis must be stated conditionally on the fields' local data [model/heuristic, §3.5].
-3. **Fresh randomness (Q3)** [proved for the stated constructions; §4]: a fresh field per level refreshes rational
-   children only (Prop R; R2/R3 then cap at 2/5); per-child fields are blocked by Lemma FB/Cor EX; a fiber field per
-   parent is blocked by column counting (Lemma CC: a field used by ≤ d − 1 rows has private factor-base columns,
-   model); multipliers w add one coordinate (Prop NB); constrained resampling spends the same budget. **The two-level
-   case escapes the "joint control" problem only through the union bound (precision), not through randomness.** The
-   rational side is the tightest budget: rank ≤ 2, 1 after conditioning on the parent (codex blind and §4).
+     divisibility counts (§2.1). E1: algebraic labels follow the "weighted uniform" law ∝ 1/q per available label to
+     within ±11% in every sub-bucket; against uniform-on-labels the ratio stays in [0.80, 1.28] [toy].
+   - *Rational children transfer* [Prop RC, proved conditional on Hyp U_Q (Theorem U's moment decomposition at the
+     child scale) and Lemma CL (averaged upper bound for the children's law, outline repaired after review,
+     UNVERIFIED)]: a pool of (log N)^{O(1)} fresh fields, targetwise Markov upgrades of Theorem U's moments, and a
+     removal sieve that uses only an UPPER bound on the children's law give "every rational child is pool-good
+     outside density 2ε′ per window" at a factor-2 loss in the level-1 count. No joint statement about children is
+     needed. This answers codex's blind objection (codex adversarial agrees, conditionally). By R2/R3 this alone
+     cannot go below 2/5.
+   - *Algebraic children* [proved, structural]: goodness is a property of (label, parent's field). Conditionally on
+     the parent's values the field law lives on a fibration: the line g + Z·P₀ in the rational side, and over each g
+     the constrained-resampling fiber of rank d − 1 in c, with weights given by the coefficient box (§2.4).
+2. **Exponents and what must be proved (Q2).**
+   - *Model*: α_j = (j+1)/(3j+2) (2/5, 3/8, 4/11, 5/14, …), d = D^{j/(3j+2)}, D^{α_j} children per node at every
+     level (escapeR2 §7.2; codex blind; `model.py`). A polylog per-child loss is affordable as *search work*; as a
+     loss of *root density* it would be raised to the power 2k and is not affordable (codex adversarial #7; §3.1).
+   - **Prop UB (union-bound reduction) [proved].** If the two-level count's parents satisfy Theorem-U-type level-1
+     moments and the children's good-point counts have small conditional relative variance *on average over
+     parent–child incidences* (Hyp PC₃, weighted form), then the two-level descendable density is at least a quarter
+     of the level-1 Paley–Zygmund ratio. No statement about two children at once is used (§3.2).
+   - **Theorem 2L [proved conditional on PC₃, on Hyp U′ (mixed-smoothness re-proof of FM-U/LD*-U/CS with B-smooth
+     rational and B₂-smooth algebraic sides, a hybrid restricted BV; OPEN, plausible) and on the internal chain].**
+     A Las Vegas algorithm factors every N in expected L_N[3/8, c], c finite (§3.3).
+   - What PC₃ needs (§3.4): relative precision O(μ₁/W) (≍ D^{−3/8} under the typical-factorisation count; ≥ D^{−1/2}
+     from the deterministic child cap), as a *covariance* statement, for (i) a rational block — three linear forms in
+     the two coordinates of g, a ternary equation with coefficients ≤ x^{o(1)} (Harper's Corollary 1 has relative
+     error O(log(u+1)/log y), exactly this scale), and (ii) an algebraic block — three evaluations in (w, c), whose
+     reduction to BV needs density-relative estimates for an endogenous sparse modulus family (not established).
+     The random model predicts covariance O(D^{−2α}) ≪ η [heuristic]. **We prove no α < 2/5, and found no weaker
+     provable statement that gives one.**
+   - j ≥ 3 levels: the precision needed at depth i is D^{−iα}; from j = 4 it is below the heuristic local-factor and
+     archimedean covariance D^{−2α}, and conditioning on local data cannot repair this without pinning the field
+     (§3.5). Deeper descents, and α → 1/3, remain open by this route.
+3. **Fresh randomness (Q3)** [§4]: a fresh field per level refreshes rational children only (Prop R; R2/R3 then cap at
+   2/5); per-child fields are blocked by Lemma FB/Cor EX; a fiber field per parent gives fresh randomness only to the
+   ≤ d − 1 parents it retains (other rows in it are ordinary one-field rows), and private fields fall foul of the
+   singleton-column Lemma CC; multipliers w add one coordinate (Prop NB); constrained resampling spends the same
+   budget. The rational side is the tightest budget: rank ≤ 2, and 1 after conditioning on the parent. **The
+   two-level case escapes the high-point joint estimate only through the union bound (precision), not through
+   randomness.**
 4. **Barrier (Q4)** [§5]: for the pooled design class the necessary-and-sufficient condition is escapeR2's T_q
-   (codex's pooled-coverage form, proved equivalent up to constants). Two sufficient analytic routes are now known:
-   LS_C (escapeR2: complete-certificate moments, d^{3/2} dependent forms, L^{O(1)} ratio) and PC₃ (this note: 3-point
-   asymptotics, polylog precision). Lemma MP makes the precision of PC₃ necessary for any moment-based union-bound
-   proof. PC₃'s rational block needs minor-arc (Fourier) information on smooth numbers, which no level-of-distribution
-   hypothesis (EH included) supplies; its prototype is Harper's unconditional a + b = c asymptotic (y ≥ (log x)^K),
-   whose extension to large coefficients, family averages and relative error (log x)^{−3/8} is the precise missing
-   piece [open]. We found no implication from GRH or EH to PC₃ and none from PC₃ to a named conjecture.
-5. **Experiments** (pre-registered; toy, 48-bit N; 11 predictions, 9 held): E1 children's law ≈ 1/q-weighted
+   (codex: equivalent to pooled coverage, up to constants). Two sufficient analytic routes are known for 3/8: LS_{3/2}
+   (complete-certificate moments, L^{O(1)} ratio, ≈ d^{3/2} dependent forms) and PC₃ (3-point conditional covariance,
+   precision ≍ D^{−3/8}). Neither implies the other. Lemma MP makes PC₃'s precision necessary for any moment-based
+   union-bound proof. We know no derivation of PC₃'s rational block from level-of-distribution hypotheses (EH
+   included); black-box AP statistics do not determine ternary counts for general sets. Its prototype is Harper's
+   unconditional a + b = c asymptotic; the missing piece is a conditioned, weighted, growing-coefficient covariance
+   version beating the secondary-term scale [open]. Codex's estimate that PC₃ is provable by known methods in a
+   focused effort: ≈ 15%; ours: 5–10%.
+5. **Experiments** (pre-registered; toy, 48-bit N; 10 predictions, 8 held): E1 children's law ≈ 1/q-weighted
    uniform on labels (P1a, P1b held; P1c failed at the top rational window, a finite-size edge, explained); E2 rational
    children are exactly as good as log-matched uniform primes in fresh pools, also in the lower tail (P2a, P2b held:
    +0.003 [−0.002, 0.008]); E3 conditional child goodness factorises up to field quality, including beyond the fiber
@@ -139,17 +144,26 @@ value (X/q small), where Ψ(X/q, y) collapses — the rational children of E1's 
 ≤ 2W log X/log B labels, so no polylog domination by the uniform law holds pointwise in the field. All domination
 statements below are averaged over the field (and, for rational children, the pool is independent of the field).
 
-### 2.2 Domination of the children's law by the uniform law [proved in outline; experimentally supported]
+### 2.2 Domination of the children's law by the uniform law [outline, UNVERIFIED; experimentally supported]
 
-**Lemma CL (averaged upper bound).** In Theorem U's design, for every prime q ≤ B₂ and every level-1 target scale,
-E_{ℓ,A}[#{P : Acc_ℓ(P), q | G(P)/ℓ}] ≤ (log N)^{C}·q^{−β₂}·E_{ℓ,A}[#{P : Acc_ℓ(P)}], β₂ := β(MV/Y, B₂), and the same
-for q | F(P). *Proof outline.* For the rational side: FIB (|𝒢_P(n)| ≤ 2M/V) and the count of B₂-smooth multiples of q
-in the interval I_P, ≤ Ψ(z₂/q, B₂) ≤ Cq^{−β₂}Ψ(z₂, B₂) (Hildebrand–Tenenbaum Thm 3, q ≤ B₂), against the good-mass lower
-bound cλρ of [pp] Thm FM. The algebraic probability at good moduli is bounded above by the upper half of
-Definition `def:good` (|Ψ(x; t, r) − Ψ_t(x)/φ(t)| ≤ Ψ_t(x)/(2φ(t))), layer by layer as in Lemma GM-U; bad moduli
-contribute at most the bad mass 𝔟_ℓ, which Lemma 8.5′(R′) makes negligible on average. The algebraic-side version
-uses the same steps with q | F(P) (an AP condition mod q on the c-coordinate). [Outline; constants not tracked;
-UNVERIFIED in detail.] E1 measures the domination constant at toy size: 1.28 for algebraic labels.
+*Design RC.* Theorem U's design with the level-1 rational cofactor allowed to be B₂-smooth, its prime factors in
+(B, B₂] being the rational children. (In Theorem U's own design the rational side is B-smooth and the rational
+statement below is vacuous; proof critic M1.)
+
+**Lemma CL (averaged upper bound).** In design RC, for every prime q ∈ (B, B₂],
+E_{ℓ,A}[#{P : Acc_ℓ(P), q | G(P)/ℓ}] ≤ (log N)^{C}·q^{−β₂}·E_{ℓ,A}[#{P : Acc_ℓ(P)}], β₂ := β(MV/Y, B₂).
+
+*Proof outline (repaired after the proof critic's M1 and codex adversarial #6).* The first draft bounded the
+algebraic probability at good moduli by `def:good` and discarded bad moduli by Lemma 8.5′. That is invalid for an upper
+bound: Lemma 8.5′ bounds the *number* of bad rational candidates, with relative error ε_N = exp(−cu/log²u) + y^{−1/2},
+which is far larger than ρ_F, so a bad modulus with algebraic probability up to 1 is not negligible. Repair: use the
+w-averaged bound valid at every modulus, as in LD*-U Steps 2–4. Lemma W-U gives Pr_w[w ≡ r (mod t)] ≤ C_W/φ(t), so
+Pr_{w,c}[F(P) acceptable] ≤ (log N)^{C}ρ_F for every P (DS-U/L2-U-type counting of smooth values in the layer). On the
+rational side, FIB (|𝒢_P(n)| ≤ 2M/V) and the number of B₂-smooth multiples of q in I_P, ≤ Ψ(z₂/q, B₂) ≤ Cq^{−β₂}Ψ(z₂, B₂)
+(Hildebrand–Tenenbaum Theorem 3, 1 ≤ q ≤ B₂), compared with the good-mass lower bound cλρ of [pp] Thm FM. Constants are
+not tracked; the divisor-weighted bad-mass issue codex raises is avoided because no bad-modulus subtraction occurs
+in an upper bound of this form. The algebraic analogue (q | F(P)) needs the residue mod q from c combined with W-U
+mod t by CRT; not written. E1 measures the toy domination constant: ≤ 1.28 for algebraic labels.
 
 ### 2.3 Prop RC: rational children transfer, with explicit loss [proved conditional on Hyp U_Q]
 
@@ -163,7 +177,8 @@ exactly the form of [pp] Thm FM (good mass pointwise in the target, bad mass bou
 Thm LD*. (Re-checking (P1)–(P10) at scale Q is routine but UNVERIFIED; for Q < B^{K} the factor base of the pool
 fields must be lowered to Q^{1/K}.)
 
-**Prop RC.** Assume U_Q for every window, and Lemma CL. Let ε′ ∈ (4ε_N, 1). Then:
+**Prop RC.** Work in design RC. Assume U_Q for every window with K ≥ 1 and K + 𝔤^{−2} ≤ (log N)^{O(1)}, and Lemma CL.
+Let ε′ ∈ (4ε_N, 1). Then:
 1. *(targetwise upgrade)* every q outside a set of density ≤ ε′ in its window has
    p_q := Pr_{A′}[N′_q ≥ 1] ≥ ε′/(32(K + 𝔤^{−2}));
 2. *(pool)* with J_f := ⌈32(K + 𝔤^{−2})ε′^{−1}·ln(8t/ε′)⌉ independent pool fields, with probability ≥ 1/2 every
@@ -178,7 +193,7 @@ fields must be lowered to Q^{1/K}.)
 p_q ≥ (E N′)²/(E[N′(N′−1)] + E N′); if E N′ ≤ 1 this is ≥ (𝔤²/4)/(2K𝔤²/ε′ + 1) ≥ ε′/(8(K + 𝔤^{−2})), and if E N′ ≥ 1
 it is ≥ (E N′)²/(2K𝔤²/ε′ + E N′) ≥ min(1/2, ε′/(16K)). (2) For such q, Pr[q pool-bad] ≤ (1 − p_q)^{J_f} ≤ ε′/(8t);
 the expected pool-bad fraction of good q in each window is ≤ ε′/(8t), and Markov plus a union bound over the ≤ 2t
-windows gives probability ≥ 1/2 that every window has ≤ ε′ further bad targets. (3) Every accepted parent with a
+windows gives probability ≥ 3/4 that every window has ≤ ε′ further bad targets (so ≤ 2ε′ in all). (3) Every accepted parent with a
 pool-bad rational child is counted once per such child; by the averaged domination, the expected number of
 (parent, child) incidences with the child in a set S of density ≤ 2ε′ of the window (Q, 2Q] is, by Lemma CL,
 ≤ Σ_{q∈S}(log N)^{C}q^{−β₂}E N₁ ≤ 2ε′(log N)^{C}Q^{1−β₂}(ln Q)^{−1}·2E N₁. Sum over windows. The pool is independent of
@@ -191,7 +206,8 @@ weaker than both.)
 Theorem U's γ is a joint statement, but its proof gives the good mass *pointwise in the target* and the bad mass on
 average, and the second moment is a non-negative average, so Markov makes the exceptional set as small as any
 polylog at a polylog price in p_q, which the pool then removes. Codex's statement (2) (domination gives only
-ν(Bad) ≤ K·U(Bad)) is exactly what step 3 uses.
+ν(Bad) ≤ K·U(Bad)) is exactly what step 3 uses. Codex's adversarial round agrees that this answers the blind
+objection logically, conditional on U_Q at every child scale and on Lemma CL.
 
 **Scope.** In the 3/8 chain the level-1 rational sides are B-smooth anyway (rational value exponent 1 − δ = 2α), and
 by R2/R3 rational children cannot by themselves move α. Prop RC answers Q1 for rational children; the exponent is
@@ -206,8 +222,12 @@ Fix ℓ and a level-1 point P₀ = (a₀, b₀), and condition on the parent's e
 - *Algebraic side.* For fixed (g, w), {c : F(P₀) = n_a} is an affine lattice of rank d − 1 (when nonempty), i.e. the
   constrained-resampling fiber F + G·L₀·H (nested §4; L₀ = b₀x − a₀y): every child label (q, a₀/b₀) survives and stays
   a root of every fiber polynomial (E3: 0 violations).
+- *This is a fibration, not a product* (codex adversarial #3; proof critic minor 4): F̂_{g,Nw} depends on g, the
+  c-coset over a given (g, w) is nonempty only when G(P₀) | n_a − F̂_{g,Nw}(P₀), and the conditional weight of (g, w) is
+  proportional to the number of compatible c in the coefficient box. Every analytic statement below uses the literal
+  conditional law.
 - *Consequence.* A child's goodness is a function of (label, field); its conditional probability given the parent is
-  a statement about the fiber × line law. Transferring the *label* law (§2.2) is necessary but not sufficient. The
+  a statement about this conditional law. Transferring the *label* law (§2.2) is necessary but not sufficient. The
   question is whether one can control the children's goodness *jointly* (all m of them) under this law; §3 shows that
   jointly is not needed, only per child, with precision.
 
@@ -220,9 +240,14 @@ j-level chain (escapeR2 §7.2 with r = j − 1; codex blind derived the same): l
 L[ζ′] at cost L[α] needs v − ζ′ ≤ α. Constraints: 1 − δ ≤ 2α and δ + ζ_i − ζ_{i+1} ≤ α. Summing, jδ + 1 − 2α ≤ jα,
 so **α_j = (j+1)/(3j+2)**, δ_j = j/(3j+2), ζ_i = 1 − α − i(3α − 1). Every level has D^{δ + 3α − 1} = D^{α} large algebraic
 children per node. Two levels: α = 3/8, d = D^{1/4}, ζ₁ = 1/2, level-1 algebraic value D^{7/8}, level-2 values
-D^{3/4}, m ≍ D^{3/8} = d^{3/2} children. A per-child loss (log N)^{−C} with m children and 2k = 2κD^{α} split primes
-costs exp(O((2κ + 1)C·D^α ln t)) = L[α, O(C)] (navigate's bookkeeping). The model bounds the exponent of designs of
-this shape; it proves no supply.
+D^{3/4}, m ≍ D^{3/8} = d^{3/2} children. The model bounds the exponent of designs of this shape; it proves no supply.
+
+*Per-child losses (corrected after codex adversarial #7).* A factor (log N)^{−Cm} from requiring all m children to
+succeed is affordable as **search work per target** (retry until a parent with good children is found:
+exp(O(C D^α ln t)) = L[α, O(C)]). It is **not** affordable as a loss of **root density**: the split raises the
+descendable density to the power 2k ≍ D^{α}, so (log N)^{−Cm·2k} = exp(−Θ(D^{2α} ln t)) is outside L[α]. navigate's
+bookkeeping implicitly assumes the first reading, with independent children (nested Prop BT's model). Prop UB
+avoids the issue: under PC₃ the two-level count keeps a constant fraction of the level-1 first moment.
 
 ### 3.2 Prop UB: the union-bound reduction [proved]
 
@@ -230,52 +255,79 @@ this shape; it proves no supply.
 B = e^{aΛ}, an extra child bound B₂ = e^{b₂D^{1/2}ln t}, and a child-box radius S₂). For ℓ ∈ J and a field A:
 - Acc_ℓ(P): P ∈ 𝒫 ∩ Λ_ℓ(g), G(P)/ℓ ∈ 𝒮_B, and F(P) = s·q₁⋯q_m with s B-smooth and q_i distinct primes in (B, B₂] not
   dividing b·D_A (children 𝔮_i = (q_i, ab^{−1} mod q_i)); m(P) := m.
-- Good(P′) for P′ ∈ Box(𝔮) (reduced-basis box of Λ_𝔮, radius S₂): G(P′) ∈ 𝒮_B and F(P′)/q ∈ 𝒮_B.
+- Box(𝔮): the primitive points, modulo ±1, of the reduced-basis box of Λ_𝔮 of radius S₂ (primitivity matters:
+  Good(jP′) = Good(P′) for small j would add perfectly correlated pairs; proof critic minor 1).
+- Good(P′) for P′ ∈ Box(𝔮): q ∥ F(P′), G(P′) ∈ 𝒮_B, F(P′)/q ∈ 𝒮_B, plus the gcd checks.
 - N₁(ℓ, A) := #{P : Acc_ℓ(P)}, N_𝔮(A) := #{P′ ∈ Box(𝔮) : Good(P′)},
   N₂(ℓ, A) := #{P : Acc_ℓ(P) and N_𝔮(A) ≥ 1 for every child 𝔮 of P}.
 - For a triple (ℓ, P, q) let E = E_{ℓ,P,q} := {A : Acc_ℓ(P) holds and q is a child of P} (an event in the field law,
   ℓ fixed). Probabilities are over ℓ uniform in J and A ∼ 𝒜.
 
-**Hypothesis PC₃(η, ε).** There is a set 𝔈 of triples with Σ_{(ℓ,P,q)∈𝔈} Pr[ℓ, E_{ℓ,P,q}] ≤ ε·E N₁ such that for every
-other triple with Pr[E] > 0:
-  (a) E[N_𝔮 | E] ≥ 4/η;  (b) E[N_𝔮(N_𝔮 − 1) | E] ≤ (1 + η/2)·E[N_𝔮 | E]².
-(b) is a statement about the 3-point events E ∧ Good(P′) ∧ Good(P″): E[N_𝔮(N_𝔮 − 1)|E] = Σ_{P′≠P″} Pr[Good(P′) ∧ Good(P″) | E].
+**Hypothesis PC₃ (weighted form; suggested by codex adversarial #4).**
+  Σ_{(ℓ,P,q)} Pr[ℓ, E_{ℓ,P,q}]·ϕ_{ℓ,P,q} ≤ μ₁/2,  where ϕ := Var(N_𝔮 | E)/E[N_𝔮 | E]² if E[N_𝔮 | E] > 0, and ϕ := 1 otherwise,
+and μ₁ := E N₁. Here Var(N_𝔮|E)/E[N_𝔮|E]² = 1/E[N_𝔮|E] + (E[N_𝔮(N_𝔮−1)|E] − E[N_𝔮|E]²)/E[N_𝔮|E]², and
+E[N_𝔮(N_𝔮 − 1)|E] = Σ_{P′≠P″} Pr[Good(P′) ∧ Good(P″) | E] concerns the events E ∧ Good(P′) ∧ Good(P″).
 
-**Proposition UB.** Let μ₁ := E N₁ > 0 and W := E[Σ_{P : Acc} m(P)] (expected number of parent–child incidences).
-If PC₃(η, ε) holds with ηW + εμ₁ ≤ μ₁/2, then E N₂ ≥ μ₁/2 and
+*A sufficient pointwise form, PC₃(η, ε):* outside a set 𝔈 of triples with Σ_𝔈 Pr[ℓ, E] ≤ εμ₁, (a) E[N_𝔮|E] ≥ 4/η and
+(b) E[N_𝔮(N_𝔮 − 1)|E] ≤ (1 + η/2)E[N_𝔮|E]²; then ϕ ≤ 3η/4 there, and PC₃ follows when (3η/4)W + εμ₁ ≤ μ₁/2. Codex notes
+that the pointwise form forces an exceptional incidence fraction ≍ 1/m, so the weighted form is the natural one.
+
+**Proposition UB.** Let μ₁ := E N₁ > 0 and W := E[Σ_{P : Acc} m(P)] (expected number of parent–child incidences;
+Σ_{(ℓ,P,q)} Pr[ℓ, E_{ℓ,P,q}] = W). If PC₃ holds, then E N₂ ≥ μ₁/2 and
   Pr_{ℓ,A}[N₂ ≥ 1] ≥ μ₁²/(4·E[N₁²]).
 
-*Proof.* Pointwise, N₂ ≥ N₁ − Σ_{P}Σ_{𝔮 child of P} 1[N_𝔮 = 0]. Taking expectations,
-E N₂ ≥ μ₁ − Σ_{(ℓ,P,q)} Pr[E ∧ N_𝔮 = 0]. For a triple outside 𝔈, Chebyshev in the conditional law gives
-Pr[N_𝔮 = 0 | E] ≤ Var(N_𝔮 | E)/E[N_𝔮 | E]² = (E[N_𝔮(N_𝔮−1)|E] + E[N_𝔮|E] − E[N_𝔮|E]²)/E[N_𝔮|E]² ≤ η/2 + η/4 < η.
-Hence Σ Pr[E ∧ N_𝔮 = 0] ≤ η·Σ Pr[E] + ε μ₁ = ηW + εμ₁ ≤ μ₁/2. Finally N₂ ≤ N₁, so by Paley–Zygmund
+*Proof.* Pointwise, N₂ ≥ N₁ − Σ_{P}Σ_{𝔮 child of P} 1[N_𝔮 = 0] (an accepted parent that is not counted in N₂ has at least
+one dead child). Taking expectations, E N₂ ≥ μ₁ − Σ_{(ℓ,P,q)} Pr[ℓ, E ∧ N_𝔮 = 0]. For each triple, Chebyshev in the
+conditional law gives Pr[N_𝔮 = 0 | E] ≤ ϕ_{ℓ,P,q} (trivially if the conditional mean is 0). Hence
+Σ Pr[ℓ, E ∧ N_𝔮 = 0] ≤ Σ Pr[ℓ, E]ϕ ≤ μ₁/2. Finally 0 ≤ N₂ ≤ N₁, so by Paley–Zygmund
 Pr[N₂ ≥ 1] ≥ (E N₂)²/E[N₂²] ≥ (μ₁/2)²/E[N₁²]. ∎
+
+*Well-definedness* (both reviewers): for fixed (ℓ, P, q), E_{ℓ,P,q} is an event in the field law; membership
+P ∈ Λ_ℓ(g) is part of it, and on it the child label (q, ab^{−1} mod q), hence Box(𝔮), is determined by (P, q).
 
 **Remarks.**
 - No statement about two children at once is used: their failure events are *added*, not intersected. The
-  configurations entering (b) have three points (P, P′, P″), entering (a) two. The rational part involves three linear
-  forms in the two coordinates of g; the algebraic part three linear forms in (w, c), of full rank for d ≥ 3 and
-  pairwise non-proportional points (Kern-U's kernel argument with Q₃ = L_P L_{P′} L_{P″}).
-- The price is precision: η ≤ μ₁/(4W) ≈ 1/(4m_typ) ≍ D^{−3/8}. By Lemma MP (almostall13) any moment-based proof that
-  a child fails with probability < η needs moments accurate to relative error η, so this precision is necessary for
-  the route. It is polylogarithmic, not L-scale: the union is over the m children of one parent, not over all
-  e^{Θ(Q)} targets of a field (the AD union bound of nested §6/almostall13, which needs L[2/3] precision).
+  configurations have three **geometric points** (P, P′, P″) and up to six evaluations (G and F at each), plus the
+  global acceptance conditions (discriminant, excluded primes). The rational part is three linear forms in the two
+  coordinates of g; the algebraic part three evaluations in (w, c), of full rank in c for d ≥ 3 and pairwise
+  non-proportional points (Kern-U's kernel argument with Q₃ = L_P L_{P′} L_{P″}).
+- The price is precision: the weighted average of ϕ must be ≤ μ₁/(2W). Under the typical-factorisation count
+  W/μ₁ ≍ D^{3/8} (so precision ≍ D^{−3/8}); the deterministic cap m(P) ≤ m̄ = O(D^{1/2}) only guarantees that
+  precision D^{−1/2} suffices (codex adversarial #5). By Lemma MP (almostall13) any moment-based proof that a child
+  fails with probability < η needs moments accurate to relative error η, so this precision is necessary for the
+  route. It is polylogarithmic, not L-scale: the union is over the children of one parent, not over all e^{Θ(Q)}
+  targets of a field (AD's union bound, nested §6 / almostall13, which needs L[2/3] precision).
+- *Precedent.* Removal arguments that sum bad incidences instead of intersecting good events are standard in rigorous
+  descent: GKZ's proof of their Theorem 3 removes eliminations that produce trap roots by summing bad incidences
+  (codex adversarial #11). We found no prior use of a conditional 3-point smooth-number reduction of this kind.
 - E[N₂²] ≤ E[N₁²] means the second moment needed is the *one-level* one (LD*-type, upper bound with polylog loss).
 
 ### 3.3 Theorem 2L [proved conditional on PC₃, U′ and the internal chain]
 
-**Hyp U′.** Theorem U's FM-U, LD*-U, D-U hold for the acceptance Acc_ℓ at the 3/8 parameters, giving
-μ₁ ≥ (log N)^{−C} and E[N₁²] ≤ (log N)^{C}(μ₁² + μ₁). (Same proofs: Lemma 8.5′(R′) at y = B₂ has u ≍ D^{3/8},
-u log(4u log y) = o(log y), Y = e^{Θ(D^{5/8} ln t)} ≥ y^K, level gap from the design floors; the squarefree-children
-and degree-one conditions cost O(1). Routine, UNVERIFIED.)
+**Hyp U′ [OPEN; expected but not routine — both reviewers].** Theorem U's FM-U, LD*-U, D-U hold for Acc_ℓ at the
+3/8 parameters, with computable box radii S₁, S₂, giving μ₁ ≥ (log N)^{−C}, E[N₁²] ≤ (log N)^{C}(μ₁² + μ₁), search
+sizes W₁, W₂ = L[3/8, O(1)] and E[N_𝔮|E] large enough for PC₃. What has to be re-proved:
+- *Mixed smoothness.* The rational cofactor is B-smooth, the algebraic value B₂-smooth. Lemma 8.5′(R′) uses one y for
+  the values and for the smooth parts of the restricted moduli. With y = B₂ it controls a much larger modulus family
+  whose error e^{−cD^{3/8}/log²D} does not beat ϱ(z, B₂)/ϱ(z, B) = e^{Θ(D^{3/8} log D)}; with y = B the algebraic
+  u ≍ D^{1/2} violates (R′3) (u log(4u log B)/log B ≍ D^{1/8} → ∞) (codex adversarial #1). A hybrid restricted BV —
+  B-smooth modulus cofactors, B₂-smooth values, normalised by the density of the actual modulus family — is needed;
+  GM-U, L2-U, DS-U must be redone with two smoothness parameters.
+- *Box sizes.* Lemma CS evaluates both Rankin factors at B; at the root algebraic size D^{7/8} that gives an
+  L[1/2]-scale box. A mixed (B, B₂) scan replacing CS, and an explicit child radius S₂, are needed (codex #2).
+- *Squarefree large part.* The lower bound must subtract values with p² | F(P), p ∈ (B, B₂]: either smooth counts in APs
+  mod t·p² (not given by `def:good`) or a union bound Pr_c[p² | F(P)] ≲ 1/p², usable only when 1/B ≪ ρ_F(log N)^{−C}
+  (a constraint between the constants; proof critic M3).
+- *Value factorisations* up to B₂ = L[1/2] must be recursive ([rec] Lemmas W/OS; the bounded-depth search recurrence
+  of escapeR2 §7.3), and Lemma IR must be re-checked at γ₂.
 
-**Theorem 2L.** Assume U′ and PC₃(η, 1/4) with η := μ₁/(4W) (≥ 1/(4m̄), m̄ := ⌊log X_F/log B⌋). Then FACTOR_2L —
+**Theorem 2L.** Assume U′ and PC₃. Then FACTOR_2L —
 FACTOR_U with the descendable set 𝒟_A := {ℓ : N₂(ℓ, A) ≥ 1}, DESCEND_ONCE replaced by the bounded-depth search below,
 and POSTPROCESS on two-level rows — is Las Vegas and factors every N in expected time L_N[3/8, c] for a finite c.
 
 *Search.* Scan the level-1 box of ℓ; for each P with Acc_ℓ(P), scan the box of each child; return the first P all of
-whose children have a good point, with those points. Cost ≤ W₁(1 + m̄W₂) box points, each with two recursive
-factorisations of values ≤ N^{o(1)}·… (escapeR2 §7.3's bounded-depth recurrence): L[3/8, O(1)].
+whose children have a good point, with those points. Given U′'s search sizes, the cost is ≤ W₁(1 + m̄W₂) box points
+(m̄ = O(D^{1/2})), each with recursive factorisations of values ≤ N^{o(1)} (escapeR2 §7.3's recurrence): L[3/8, O(1)].
 
 *Proof sketch.* (i) Prop UB and U′ give γ₂ := Pr[N₂ ≥ 1] ≥ (log N)^{−C}. (ii) Theorem K-U and Prop select-U hold for
 an arbitrary field-dependent target set (Lemma S″), so with δ_A := #𝒟_A/#J they apply verbatim with γ₂ in place of
@@ -283,38 +335,49 @@ an arbitrary field-dependent target set (Lemma S″), so with δ_A := #𝒟_A/#J
 cancelled by its level-2 element z_{P′}; rational sides are B-smooth; |exponents| ≤ (C log N)^3). (iv) LV6 at d ≍ D^{1/4}:
 lv5unif Prop LV6-U (factorial-bit characters, cost e^{O(d log d)} = e^{o(Λ_{3/8})}); character primes exceed B₂.
 (v) Fruitfulness: Theorem DD with nested Lemma T_multi (the search is deterministic given canonical factorisations).
-(vi) Recursion: halves ≤ √(2N) and values ≤ N^{θ+o(1)}, θ → 0, via lv5unif Lemma F_α at α = 3/8. ∎
+(vi) Recursion: halves ≤ √(2N) and values ≤ N^{θ+o(1)}, θ → 0; lv5unif Lemma F_α at α = 3/8 suffices for finiteness,
+and escapeR2 NR-q step 8's three-term recursion gives a better constant. ∎
 
 **Dependencies.** Internal: Theorem U's chain (lv5unif §10 list, including [pp] Thm FM/LD*, Lemma 8.5′, Kern-U,
-L2-U, Theorem DD, Lemma S″, Lemmas OS/W/F/T_rec), Prop LV6-U, nested Lemmas RW, TS, T_multi; this note's Prop UB.
-Hypotheses: PC₃ (open), U′ (routine, unchecked). Published: as Theorem U.
+L2-U, Theorem DD, Lemma S″, Lemmas OS/W/F/T_rec, Lemma IR), Prop LV6-U, nested Lemmas RW, TS, T_multi, escapeR2 §7.3
+(bounded-depth search recurrence); this note's Prop UB. Hypotheses: PC₃ (open), U′ (open; hybrid BV, mixed CS, S₂,
+squarefree part). Published: as Theorem U.
 
 ### 3.4 What PC₃ asks [analysis; heuristic where marked]
 
 Write the 3-point event E ∧ Good(P′) ∧ Good(P″) as a rational block and an algebraic block.
 - **Rational block** (functions of g only): G(P)/ℓ ∈ 𝒮_B, G(P′) ∈ 𝒮_B, G(P″) ∈ 𝒮_B, with the Plücker identity
-  det(P′, P″)·G(P) + det(P″, P)·G(P′) + det(P, P′)·G(P″) = 0. All three minors are divisible by q; |det(P′, P″)| ≤ 2V₂²
-  and |det(P, P′)| ≍ V₁V₂. At 3/8 the values have size e^{Θ(D^{3/4}ln t)} and the reduced coefficients
-  e^{Θ(D^{5/8}ln t)}: **a ternary linear equation in smooth numbers with coefficients x^{O(D^{−1/8})} = x^{o(1)}**,
-  counted over g in a box, averaged over the configuration family, to relative error O(η). Conditioning on G(P)
-  leaves one direction: two linear polynomials in one variable j (smooth pairs on a line); the family average
-  restores the second variable.
-  - Prototype [literature]: Harper (Compositio 2016) proves the asymptotic for a + b = c in y-smooth numbers for
-    y ≥ (log x)^K unconditionally; Lagarias–Soundararajan (2012) under GRH. Both are for coefficient 1. This block
-    needs minor-arc (Fourier) information on smooth numbers: no level-of-distribution statement determines it.
-  - **Hyp RB (rational block).** Averaged over the 2L configuration family with weights Pr[E], the count of g with
-    the three values smooth equals (1 + O(D^{−3/8−ε})) times the product of the one-form main terms. [OPEN]
+  det(P′, P″)·G(P) + det(P″, P)·G(P′) + det(P, P′)·G(P″) = 0, i.e. ℓ·det(P′, P″)·x₀ + det(P″, P)·x₁ + det(P, P′)·x₂ = 0
+  for the smooth variables x₀ = G(P)/ℓ, x₁, x₂ (codex #11). All three minors are divisible by q; |det(P′, P″)| ≤ 2V₂² and
+  |det(P, P′)| ≤ 2V₁V₂ (upper bounds; not uniform two-sided sizes). At 3/8 the values have size e^{Θ(D^{3/4}ln t)} and
+  the coefficients, after removing common factors, at most e^{O(D^{5/8}ln t)}: **a ternary linear equation in smooth
+  numbers with coefficients ≤ x^{O(D^{−1/8})} = x^{o(1)}**, counted over g in a box (together with the image lattice
+  of g ↦ (x₀, x₁) and the transformed box), with conditional weights, to covariance precision O(η). Conditioning on
+  G(P) leaves one direction: two linear polynomials in one variable (smooth pairs on a line).
+  - Prototype [literature, checked by codex adversarial]: Harper (Compositio 2016, Corollary 1) gives
+    #{a + b = c, all y-smooth ≤ x} = (Ψ(x, y)³/2x)(1 + O(log(u+1)/log y)) for (log x)^K ≤ y ≤ x. At this design's scale
+    the error O(log(u+1)/log y) is O(D^{−3/8}) — exactly the precision needed, so a covariance version beating it by
+    D^{ε} is required, not a re-use. Lagarias–Soundararajan (GRH) assume (log x)^{8+δ} ≤ y ≤ e^{(log x)^{1/2−δ}} with
+    fixed smooth weights; our B = L[3/8] lies outside that upper range; their introduction discusses general ternary
+    coefficients, without the uniformity needed here.
+  - **Hyp RB (rational block) [OPEN].** For the 2L configuration family, with the conditional weights, the 3-form count
+    divided by the product of the corresponding 1- and 2-form counts is 1 + O(D^{−3/8−ε}) on (weighted) average.
 - **Algebraic block** (given g): F(P) (q | F(P), B₂-smooth with simple children), F(P′)/q, F(P″)/q ∈ 𝒮_B. The map
-  c ↦ (R_c(P), R_c(P′), R_c(P″)) has kernel Q₃·Z[x, y]_{d−4} (Gauss's lemma, as Kern-U) and image a lattice of finite
-  index whose structure is fixed by q and the minors. Peeling one coordinate at a time turns the count into sums of
-  smooth numbers in APs with moduli G(·)·(minor factors) and residues determined by the earlier coordinates — the
-  Bombieri–Vinogradov setting with a max over residues, at level < 1/2 if the height H is raised by a constant factor
-  in the exponent (this does not change α). The error terms there are exp(−cu/log²u) + y^{−c}, far below η ≍ D^{−3/8}.
-  [heuristic: plausibly provable by Theorem-U-type arguments with lower *and* upper bounds; not done]
+  c ↦ (R_c(P), R_c(P′), R_c(P″)) has kernel Q₃·Z[x, y]_{d−4} (Gauss's lemma, as Kern-U) and an image lattice whose
+  structure is fixed by q and the minors. Peeling one coordinate at a time turns the count into sums of smooth numbers
+  in APs with moduli G(·)·(minor factors) and residues determined by the earlier coordinates, at level < 1/2 if H is
+  raised by a constant factor in the exponent. **This reduction is not established** (codex #4): full rank gives an
+  image lattice, not the needed weighted modulus distribution, reduced residues or multiplicity control. Ordinary BV
+  sums over all moduli, whereas this family is endogenous and exponentially sparse, so a density-relative estimate is
+  needed; Harper's maximal-residue BV (arXiv 1208.5992, Theorem 1) also carries a large-sieve term, not only the
+  exponential error; Pascadi's level 5/8 − ε is for a fixed residue. [open; plausibly approachable by Theorem-U-type
+  arguments with lower and upper bounds]
 - **Main terms** [heuristic]: under the random model with local factors, the pair correlation exceeds the product of
-  marginals only through (i) shared small-prime congruences of pairs (P′ ≡ λP″ mod p, frequency 1/p) and (ii) the
-  fields' local data (Murphy-α type). Each changes a smoothness probability by a factor exp(O(ξ(u)/log y)) = 1 + O(D^{−α}),
-  so the covariance is O(D^{−2α}) = O(D^{−3/4}) ≪ η ≍ D^{−3/8}.
+  marginals through (i) shared small-prime congruences of pairs (P′ ≡ λP″ mod p, frequency 1/p), (ii) the fields' local
+  data (Murphy-α type) and (iii) archimedean size fluctuations (|g|, |c|, magnitudes of the values). Each changes a
+  smoothness probability by a factor exp(O(ξ(u)/log y)) = 1 + O(D^{−α}), so if these perturbations have bounded variance
+  *uniformly under the parent conditioning*, the covariance is O(D^{−2α}) = O(D^{−3/4}) ≪ η. That uniform bounded
+  variance is itself an assertion, not a consequence of the model (codex #5).
 
 **A precision caveat [analysis].** At 3/8 the needed relative precision η ≍ D^{−3/8} is of the same order as
 1/u ≍ log u/log y, the typical size of *secondary terms* in smooth-number asymptotics (saddle-point corrections,
@@ -325,23 +388,30 @@ arc reproduces the product of the marginals, and what must be shown is that non-
 contribute o(η) relatively. (For the algebraic block the analogous statement is that the BV-type error terms, of
 size exp(−cu/log²u) + y^{−c}, are what remain once both sides are expanded around the same main term.)
 
-**Why this is not the overdetermined statement.** Lemma OD/LS_C/R3 concern *complete certificates* (the parent and one
-point per child: 1 + m ≈ d^{3/2} values of one form; plus m + 1 rational values in 2 variables). Prop UB never
-intersects two children's events. The R3/LS_C picture remains correct for the "count certificates" strategy; it is
-not a barrier for designs whose children are individually near-certain.
+**What Prop UB does and does not avoid** (both reviewers). A union-bound certificate still has 1 + m ≍ d^{3/2} points;
+R3 is a model statement about the size of the algebraic component, independent of how its existence is proved, and
+it is not affected (R3's O(d) premise is simply not met). Lemma OD's linear relations among those values remain true.
+What UB avoids is the *proof obligation* of a joint-distribution estimate at d^{3/2} points (LS_C, or a first moment
+of complete certificates): the joint event is never computed, only per-child conditional failure probabilities. In
+exchange it needs PC₃-level precision (Lemma MP).
 
-### 3.5 j levels [model + heuristic]
+### 3.5 j levels [model + heuristic; corrected after review]
 
-For j levels the same argument applies level by level: a child at depth i is good if its box has an accepted point
-all of whose children are good. With N^{full} ≤ N^{acc}, Var(N^{full})/E[N^{full}]² ≤ (1 + η′)/(1 − ε)² − 1 ≈ η′ + 2ε,
-where ε ≤ m·η_{next}. So depth i needs precision η_i ≲ 1/∏_{i′≤i} m_{i′} ≍ D^{−iα}, and its configurations are the
-ancestor chain plus a pair (i + 2 points; the rational block has i + 2 forms in 2 variables, complexity i). The
-unconditional local-factor covariance is ≍ D^{−2α} (heuristic), so the margin (`model.union_bound_margin`) is
-α, 0, −α, … at depths 1, 2, 3, …: borderline at j = 3 (4/11) and negative from j ≥ 4. There the hypothesis must be
-stated conditionally on the fields' local data (f mod primes ≤ y₀ with y₀ ≍ D^{jα}; the c-box is far larger than
-e^{y₀}), which removes the Murphy-α covariance to O(D^{−2α}/y₀) heuristically. At α = 1/3 with O(log t) levels the
-needed precision is e^{−O((log t)²)} = L^{−o(1)}: still sub-L-scale, and the route has no per-level (log N)^{−Cm}
-loss (contrast nested Prop BT's L[1/3 + o(1)]).
+The argument applies level by level: a child at depth i is good if its box has an accepted point all of whose
+children are good. With N^{full} ≤ N^{acc}, Var(N^{full})/E[N^{full}]² ≤ (1 + η′)/(1 − ε)² − 1 ≈ η′ + 2ε with ε ≤ m·η_{next},
+so depth i needs precision η_i ≲ 1/∏_{i′≤i} m_{i′} ≍ D^{−iα}, and its configurations are the ancestor chain plus a pair
+(i + 2 geometric points; the rational block has i + 2 forms in 2 variables). Against the heuristic covariance D^{−2α}
+(local data and archimedean fluctuations) the margin (`model.union_bound_margin`) is α, 0, −α, … at depths 1, 2,
+3, …: positive for j = 2 (3/8), borderline (constants decide) for j = 3 (4/11), negative from j ≥ 4.
+
+The draft proposed conditioning on the fields' local data (f mod primes ≤ y₀) to remove the Murphy-α part. Both
+reviewers showed this does not work as stated: (a) the residual D^{−2α}/y₀ ≤ D^{−(j−1)α} needs y₀ ≳ D^{(j−3)α}, not
+D^{jα}; (b) the number of residue classes fixed is e^{(d+1)θ(y₀)}, and for j ≥ 5, (d + 1)y₀ ≥ D^{δ_j + (j−3)α_j} ≥ D (since
+(j² − j − 3)/(3j + 2) ≥ 1), comparable to the log-size of the whole field space, so the conditioning pins the field
+(the pointwise OD/AD regime); (c) archimedean fluctuations are not removed by local conditioning. Conditioning on a
+low-dimensional statistic (a truncated Murphy-type sum plus size data) is the only candidate and is unexamined.
+**So depth ≥ 4, and α → 1/3, remain open for this route with unknown feasibility;** the draft's "sub-L-scale at 1/3"
+remark is withdrawn (it also ignored that the bounded-depth search cost grows with depth).
 
 ## 4. Fresh randomness (Q3)
 
@@ -349,25 +419,27 @@ loss (contrast nested Prop BT's L[1/3 + o(1)]).
 |---|---|---|---|
 | fresh field per level | rational children (integers) | algebraic children cannot be exported (Lemma FB, Cor EX); without them R2/R3 cap at 2/5 | proved (FB, EX) / model (R2, R3) |
 | fresh field per child | — | an ideal of K₁ is not an ideal of an unrelated K₂ (Cor EX: k₁ = Q) | proved |
-| fiber field per parent (F + G·L₀·H) | the d − 1 coefficients not pinned by P₀ | the parent's children must all close in that one field; a field serving ≤ d − 1 parents has too few rows (Lemma CC) | proved (CC) + model |
+| fiber field per parent (F + G·L₀·H) | the d − 1 coefficients not pinned by P₀ | fresh only relative to the ≤ d − 1 retained parents; all their children close in that one field; other rows in it are ordinary one-field rows; private per-parent fields meet Lemma CC | CC proved; consequence model |
 | multiplier w per child | one coordinate T = Nw | w is a function of the field; varying it per node changes the field (Prop NB) | proved |
 | constrained resampling per component | d + 1 − (retained points) | same budget per algebraic component (nested §4) | proved algebra |
 | Prop MF fields sharing g | algebraic side at one rational candidate | replaces the parent's algebraic side; does not export a child; rational values still share g | proved (MF), structural |
 | union bound over children (§3) | nothing | needs per-child precision η ≍ 1/m instead of joint control | proved reduction (UB); PC₃ open |
 
-**Lemma CC (column counting) [proved; model for the consequence].** In the per-field square certificate class
-(escapeR2 §1), if a factor-base prime ideal 𝔭 of a field K occurs with odd exponent in exactly one row of the
-collected matrix, that row lies in no dependency (its 𝔭-column has a single nonzero entry). *Consequence (model).* A
-fiber field F + G·L₀·H can keep at most d − 1 parents (nested §4), hence carry ≤ d − 1 rows; each row has ≍ u_B ≍ D^{α}
-odd-exponent factor-base ideals drawn from ≍ dπ(B) = L^{a+o(1)} labels, so the expected number of coincident ideals
-among a field's rows is ≤ (d − 1)²u_B²/π(B) → 0 and almost every such row has a private column. Fields must be shared
-by ≳ π(B)^{1/2} rows, far more than any per-parent refresh allows. (Codex blind §3 makes the same point via the row
-target M_rows ≥ C_col + J + 12.)
+**Lemma CC (singleton columns) [proved, trivial].** In the per-field square certificate class (escapeR2 §1), if a
+factor-base prime ideal 𝔭 of a field K occurs with odd exponent in exactly one row of the collected matrix, that row
+lies in no dependency. *Consequence (model, weakened after review).* A field used by only a few rows needs every
+odd-exponent factor-base ideal of those rows to recur among them. Restricting to ideals of norm in (B^{1/2}, B] (of
+which a typical smooth value has ≍ u_B, and which are not forced to coincide by small-prime bias), a row of a field
+used by r rows has a private such ideal unless r is comparable to the number of active columns. So per-parent
+private fields cannot be used as such; but a fiber field can of course serve further rows that are not retained,
+which then get no fresh randomness. Neither this nor the row target M_rows ≥ C_col + J + 12 is a universal obstruction
+to directed recombination (codex #10; proof critic minor 3, which also corrected the label count to ≈ π(B)).
 
 **The rational side is the tightest budget** [proved; codex blind]: rank(G(P_i))_i ≤ 2, and 1 after conditioning on
 G(P₀). So even three rational evaluations need a correlation estimate, whatever d is. In the 3/8 chain the rational
-sides of all m level-2 points are B-smooth, so complete certificates involve m + 1 ≈ d^{3/2} rational forms in two
-variables (complexity ≈ d^{3/2}), far more overdetermined than the algebraic block. Prop UB reduces this to three.
+sides of all m level-2 points are B-smooth, so a joint estimate for complete certificates involves m + 1 ≈ d^{3/2}
+rational forms in two variables, far more overdetermined than the algebraic block. Prop UB's per-child statements
+involve three.
 
 ## 5. The barrier, sharpened (Q4)
 
@@ -375,8 +447,10 @@ variables (complexity ≈ d^{3/2}), far more overdetermined than the algebraic b
 #{q ∈ J : p_q ≥ e^{−cΛ_α}} ≥ (log N)^{−C₀}#J for some constants (T_q), equivalently an independent pool of e^{O(Λ_α)}
 fields covers a polylog-dense root set with constant probability (sufficiency by amplification; necessity by
 conditioning on a good pool and a union bound over its fields, codex). For the one-field design 2L the analogue is
-γ₂ = Pr_{ℓ,A}[N₂ ≥ 1] ≥ (log N)^{−O(1)} (sufficient by Theorem 2L's proof; necessary up to constants because the split
-pays (δ_A/log N)^{2k} with k ≍ D^{3/8}).
+γ₂ = Pr_{ℓ,A}[N₂ ≥ 1] ≥ (log N)^{−O(1)}, which is sufficient (Theorem 2L's proof) but **not necessary**: if a fraction
+e^{−cΛ} of fields had δ_A = 1 and the rest δ_A = 0, finding a productive field costs L[α, c] while γ₂ = e^{−cΛ} (codex
+#9). Necessity must be phrased through field-selection and per-field success probabilities. (The necessity direction
+of T_q also rests on lv5unif's (R1), which is labelled heuristic.)
 
 **Sufficient analytic inputs now known for 3/8.**
 - LS_{3/2} (escapeR2): targetwise first and second moments of complete two-level certificates, ratio ≤ L^{O(1)}; ≈ d^{3/2}
@@ -384,19 +458,23 @@ pays (δ_A/log N)^{2k} with k ≍ D^{3/8}).
 - PC₃ (this note): 3-point conditional moments, relative precision ≍ D^{−3/8}. Rational block = Hyp RB (ternary
   smooth equation with x^{o(1)} coefficients, family-averaged); algebraic block = BV-type 3-point lattice-coset
   asymptotics.
-Neither implies the other as far as we can see. PC₃ is the smaller statement: fixed complexity (1), polylog precision,
-no growing number of forms.
+Neither implies the other as far as we can see. PC₃ has fixed geometric complexity (3 points, a complexity-1 rational
+pattern) and polylog precision; LS_C has a growing number of dependent forms but only L^{O(1)} precision and needs no
+conditional normalisation per incidence. Which is easier is a judgment, not a theorem.
 
 **Necessary for the union-bound route** [proved: Lemma MP]: relative precision ≤ η for the child-box moments.
-**Not supplied by**: level-of-distribution hypotheses of any level (EH for smooth numbers included), because the
-rational block is a ternary additive problem (minor arcs). Codex blind gives a precise AP-statistics countermodel
+**Not known to follow from**: level-of-distribution hypotheses (EH for smooth numbers included). We know no derivation;
+black-box AP statistics do not determine ternary additive counts for general sets, though the multiplicative
+structure of smooth numbers (bilinear/dispersion methods) might in principle bridge the gap (proof critic minor 7). Codex blind gives a precise AP-statistics countermodel
 for *fixed* searches (delete the ≤ W queried values: AP counts change by ≤ W, continuations vanish); for the averaged
 PC₃ the obstruction is the standard one that AP statistics do not determine additive-equation counts. We know no
 implication from GRH to RB (Lagarias–Soundararajan use GRH for a + b = c with coefficient 1; whether their method
 tolerates coefficients x^{o(1)} and a family average is UNVERIFIED).
-**Implied by**: the random model with local factors (heuristic, margin D^{3/8}); nested's AD (pointwise, much
-stronger); an extension of Harper's theorem to (i) coefficients up to x^{o(1)} (ii) weights from the algebraic block
-(iii) relative error (log x)^{−3/8−ε} on average over the family, together with the BV-type algebraic block.
+**Implied by**: the random model with local factors (heuristic, margin D^{3/8}, assuming uniformly bounded
+perturbation variance); nested's AD (pointwise, much stronger); a covariance extension of Harper's theorem to
+(i) coefficients up to x^{o(1)}, (ii) conditional weights from the algebraic block, (iii) relative covariance error
+D^{−3/8−ε} ≍ ((log log x)/log x)^{1/2+ε} for the rational value scale x (the draft's "(log x)^{−3/8}" was too weak;
+codex #5), together with a density-relative BV for the algebraic block.
 **Implies**: nothing named that we could find (it is field-averaged; it says nothing about a fixed polynomial).
 
 ## 6. Experiments (pre-registered, `notes/multidescent_prereg.md`, commit `80d25ee`)
@@ -493,9 +571,11 @@ Ratios (empirical share)/(reference share) in 4 equal-log-width sub-buckets of e
 - **Mechanism.** Two-level Dixon/NFS descent in one field (α = 3/8), children closed by a union bound with per-child
   concentration, instead of counting complete certificates.
 - **Model.** Theorem U's design with d ≍ D^{1/4}, k ≍ D^{3/8}, child bound L[1/2], B = L[3/8].
-- **Result.** Prop UB (proved); Theorem 2L: L[3/8] conditional on PC₃ (+ routine U′); Prop RC (rational children
-  transfer); Lemma CC; α_j = (j+1)/(3j+2) (model).
+- **Result.** Prop UB (proved); Theorem 2L: L[3/8] conditional on PC₃ and U′ (both open); Prop RC (rational children
+  transfer, conditional on U_Q and Lemma CL); Lemma CC (trivial); α_j = (j+1)/(3j+2) (model).
 - **Failure scope.** No unconditional α < 2/5. Fresh-randomness constructions fail for algebraic children (FB, EX,
-  CC, NB). The joint-control barrier (OD, LS_C) is a barrier for certificate counting, not for union-bound designs.
-- **Next step.** Hyp RB: Harper's a + b = c asymptotic with coefficients up to x^{o(1)}, family-averaged, relative
-  error (log x)^{−3/8−ε}; and the algebraic 3-point block by Theorem-U-type BV arguments.
+  CC, NB). The high-point joint estimate (LS_C) is not needed by union-bound proofs, which need PC₃-level precision
+  instead (Lemma MP); certificates remain large (R3, OD unaffected). Depth ≥ 4 is open for this route.
+- **Next step.** Hyp U′ (hybrid restricted BV with B-smooth moduli and B₂-smooth values; mixed box scan), then Hyp RB:
+  a covariance form of Harper's a + b = c with coefficients up to x^{o(1)} and conditional weights, beating the
+  secondary-term scale D^{−3/8}; and the algebraic 3-point block by density-relative BV.

@@ -1,0 +1,189 @@
+**MAJOR REVISION.** Proposition UB is sound as an abstract probabilistic reduction. The claimed reduction of its analytic hypothesis to a fairly routine three-point problem is not established. U′, CL, the growing-depth conditioning proposal, and several barrier claims need substantive correction. I found no fatal flaw in UB itself.
+
+All repository work was read-only; experiments were excluded.
+
+1. **MAJOR — U′ needs a mixed-smoothness theorem, not the cited substitution.**  
+   **Location:** [§3.3, Hyp U′](/Volumes/git/factoring-connection/notes/multidescent_results.md:264), especially “Same proofs: Lemma 8.5′ … at \(y=B_2\)”; compare lv5unif §§4–6.
+
+   The rational cofactor remains \(B\)-smooth, whereas the algebraic value becomes \(B_2\)-smooth. Lemma 8.5′ uses the same \(y\) for the values and the smooth parts of its restricted moduli.
+
+   Put \(z\asymp MV/Y\). At the proposed parameters,
+   \[
+   \log z\asymp D^{3/4}\log t,\qquad
+   \varrho(z,B)=e^{-\Theta(D^{3/8}\log D)},\qquad
+   \varrho(z,B_2)=e^{-\Theta(D^{1/4}\log D)}.
+   \]
+   Applying the existing theorem with \(y=B_2\) controls a much larger modulus family. Its error
+   \(e^{-cD^{3/8}/\log^2D}\) does **not** compensate for the ratio
+   \(\varrho(z,B_2)/\varrho(z,B)\).
+
+   Conversely, retaining \(y=B\) gives algebraic \(u\asymp D^{1/2}\), so regime (R′3) fails for fixed \(K_0\):
+   \[
+   \frac{u\log(4u\log B)}{\log B}\asymp D^{1/8}\to\infty.
+   \]
+
+   **Fix:** prove a hybrid restricted-BV result with \(B\)-smooth modulus cofactors and \(B_2\)-smooth values, normalized by the density of the actual modulus family. Recheck GM-U and L2-U with the two smoothness parameters separately. This may be feasible; it is not the stated application.
+
+   The large-child squarefreeness restriction is plausibly inexpensive, and degree-one support follows structurally at primitive points away from bad primes. Neither observation repairs this density mismatch.
+
+2. **MAJOR — Theorem 2L’s search parameters are not concretely specified.**  
+   **Location:** [Design 2L](/Volumes/git/factoring-connection/notes/multidescent_results.md:226), §3.3 “Search,” and lv5unif Lemma CS.
+
+   Literally retaining lv5unif §1’s definition of \(S\) evaluates both Rankin factors at smoothness \(B\). Since the root algebraic value has logarithmic size \(D^{7/8}\log t\), its \(B\)-smoothness penalty is \(L[1/2,-\Theta(1)]\). That prescription gives an \(L[1/2]\)-scale search box.
+
+   **Fix:** replace CS explicitly by a mixed-\(B,B_2\) scan, choose \(S_2\), and prove
+   \[
+   W_1,W_2=L[3/8,O(1)]
+   \]
+   together with uniform value bounds, including irregular reduced-basis lattices.
+
+   Once these bounds hold, \(W_1(1+\bar mW_2)\) is indeed \(L[3/8,O(1)]\). RW cancellation, transcript invariance, the factorial-bit character cost \(e^{O(d\log d)}=L[3/8,o(1)]\), and recursion contraction appear compatible with this reduction. I found no additional unavoidable \(2^{\omega(N)}\) loss there. The current statement remains an incomplete conditional algorithm specification.
+
+3. **MINOR — UB is correct; “three points” needs a precise qualification.**  
+   **Location:** [§3.2, definitions and proof](/Volumes/git/factoring-connection/notes/multidescent_results.md:224), and §2.4.
+
+   For fixed \((\ell,P,q)\), the event \(E_{\ell,P,q}\) is well-defined. Membership in \(\Lambda_\ell(g)\) is simply part of the event. On it, the child label is determined by \(P,q\), and its box is deterministic. Endogeneity causes no measure-theoretic problem.
+
+   PC₃ gives conditional relative variance at most \(3\eta/4\). Adding failure probabilities proves the first-moment bound; \(N_2^2\le N_1^2\) then supplies exactly the required second-moment bound. **No joint estimate for two different children is hidden here.**
+
+   There are three **geometric evaluation points**, but up to six rational/algebraic evaluations, plus global acceptance conditions involving discriminants and excluded factors.
+
+   Also, §2.4 describes the support of the conditional law, not a product of uniform line and fiber laws. Conditional weights on \((g,w)\) are proportional to the number of compatible \(c\)’s in the coefficient box. The base-expansion polynomial need not be linear in \(w\); fixed-\((g,w)\) linearity in \(c\) suffices.
+
+   **Fix:** state these qualifications and retain the literal conditional field law throughout the analytic argument.
+
+4. **MAJOR — Full rank does not establish the algebraic BV reduction or RB \(\Rightarrow\) PC₃.**  
+   **Location:** [§3.4, Hyp RB and algebraic block](/Volumes/git/factoring-connection/notes/multidescent_results.md:302).
+
+   Full rank supplies an image lattice. It does not prove that successive AP counts have the requisite weighted modulus distribution, reduced residues, controlled multiplicities, or errors relative to the conditional main term.
+
+   Ordinary BV bounds sum over all moduli; an endogenous, exponentially sparse family needs a density-relative estimate. Harper’s maximal-residue theorem also contains a large-sieve contribution, not just the displayed exponential error. Pascadi’s \(5/8-\varepsilon\) theorem is for a fixed nonzero residue, not arbitrary earlier-coordinate-dependent residues. [Harper, Theorem 1](https://arxiv.org/pdf/1208.5992), [Pascadi, Theorem 1.5](https://arxiv.org/pdf/2505.00653).
+
+   There is a separate quantifier mismatch. RB is averaged over configurations, whereas PC₃ requires a normalized conditional estimate for almost every parent–child triple. The permitted exceptional incidence fraction is only
+   \[
+   \frac{\varepsilon\mu_1}{W}\asymp \frac1m,
+   \]
+   not a fixed fraction.
+
+   **Fix:** prove the relevant weighted lattice-counting theorem, including normalization by conditional means. A simpler sufficient hypothesis would directly bound
+   \[
+   \sum_{\ell,P,q}\Pr[\ell,E_{\ell,P,q}]
+   \frac{\operatorname{Var}(N_{\mathfrak q}\mid E_{\ell,P,q})}
+        {\mathbb E[N_{\mathfrak q}\mid E_{\ell,P,q}]^2}
+   \le \mu_1/2,
+   \]
+   with zero-mean cases charged separately. This avoids unnecessary uniformity and exceptional-set conversion.
+
+5. **MAJOR — The precision and covariance claims are model-dependent.**  
+   **Location:** [§3.2 precision remark](/Volumes/git/factoring-connection/notes/multidescent_results.md:256), §3.4 “Main terms,” and §5.
+
+   The exact budget is \(\eta=O(\mu_1/W)\). The specialization \(\eta\asymp D^{-3/8}\) requires proving \(W/\mu_1\asymp D^{3/8}\). Acceptance alone gives only
+   \[
+   m(P)\le \bar m=O(D^{1/2}).
+   \]
+   Thus \(D^{-1/2}\) is a conservative precision available from the deterministic child cap; \(D^{-3/8}\) is presently a typical-factorization prediction.
+
+   The heuristic covariance \(O(D^{-2\alpha})\) is plausible under bounded-variance local-density corrections. For example, if
+   \(p_A=p_0(1+\epsilon Z_A+\cdots)\), then relative covariance is approximately \(\epsilon^2\operatorname{Var}Z_A\). But bounded variance uniformly under parent conditioning is exactly an additional assertion. Murphy-alpha fluctuations, magnitude correlations, and exceptional determinant families must all be controlled. They are not exhausted by merely identifying shared congruences.
+
+   The added precision caveat correctly recognizes that first-order asymptotic errors are too large. However, the principal singular integral need not automatically factor into the product of marginal integrals.
+
+   **Fix:** prove weighted branching control and a normalized covariance expansion, including archimedean terms and local factors. I found no demonstrated intrinsic correlation exceeding the required two-level budget, but neither is the claimed margin proved.
+
+   Finally, with rational value scale \(x\),
+   \[
+   D^{-3/8}\asymp \sqrt{\frac{\log\log x}{\log x}},
+   \]
+   not \((\log x)^{-3/8}\). The latter precision quoted in §5 is weaker.
+
+6. **MAJOR — CL’s proof does not provide the required uniform divisor-weighted bound. RC’s probabilistic improvement is valid conditionally.**  
+   **Location:** [Lemma CL](/Volumes/git/factoring-connection/notes/multidescent_results.md:141) and [Prop RC](/Volumes/git/factoring-connection/notes/multidescent_results.md:156).
+
+   CL discards bad moduli using an unweighted error and calls that contribution negligible. But its conclusion requires a factor \(q^{-\beta_2}\). Near \(q=B_2\), that factor is approximately \(e^{-\Theta(D^{1/2}\log t)}\), much smaller than the displayed bad-modulus error. Negligibility relative to total accepted mass does not imply negligibility relative to each divisor-weighted mass.
+
+   For the algebraic version, “good \(t\)” at the original grid does not immediately control smooth values divisible by \(q\). Dividing by \(q\) changes both the argument and residue; the necessary enlarged grids, coprimality conditions and weighted bad-modulus estimates are absent. The \(B/B_2\) mismatch also recurs.
+
+   **Fix:** prove CL directly with divisor-weighted bad mass, or retain additive errors and show their sum over pool-bad targets is affordable.
+
+   In contrast, RC’s targetwise Markov step and independent pooling are sound under U_Q. The revised removal envelope avoids the earlier normalization problem. Require uniformly polylogarithmic \(K+\mathfrak g^{-2}\), and clean up the harmless constant in the removal estimate.
+
+   **This does answer the blind objection logically:** the pointwise-good-mass/averaged-bad-mass decomposition contains more information than Theorem U’s displayed averaged success probability. Its applicability at every child scale and CL remain unproved.
+
+7. **MAJOR — The generic per-child loss bookkeeping can conceal a \(km\) loss.**  
+   **Location:** [§3.1, “A per-child loss”](/Volumes/git/factoring-connection/notes/multidescent_results.md:220).
+
+   If a continuation loss \(t^{-Cm}\) enters the root descendable density, raising that density to the split exponent \(2k\) costs
+   \[
+   t^{-2Ckm},
+   \]
+   not \(e^{-O((k+m)\log t)}\). With \(k,m\asymp D^\alpha\), this exceeds \(L[\alpha,O(1)]\).
+
+   Such a factor is affordable **as search work per target**, provided a separate argument preserves adequate root density. These are different assertions.
+
+   **Fix:** distinguish work inflation from density loss. Under literal PC₃, UB preserves a constant fraction of the parent first moment, so this hidden loss does not arise. The generic statement about polylogarithmic per-child losses is too broad.
+
+8. **MAJOR — The growing-depth local-data repair is arithmetically wrong.**  
+   **Location:** [§3.5](/Volumes/git/factoring-connection/notes/multidescent_results.md:330), especially “the c-box is far larger than \(e^{y_0}\).”
+
+   The variance propagation inequality is valid given its stated first- and second-moment bounds. Under the branching and covariance models, it gives the advertised precision sequence and margins \(\alpha,0,-\alpha,\ldots\).
+
+   But the proposed conditioning cutoff \(y_0\asymp D^{j\alpha_j}\) is incompatible with the coefficient heights. Already at \(j=4\),
+   \[
+   j\alpha_j=10/7>1.
+   \]
+   The primorial through \(y_0\) has logarithm \(\asymp y_0\), exceeding \(\log N\), whereas the coefficients have \(O(\log N)\) bits. Fixing all these residues determines the polynomial rather than leaving the claimed fresh coefficient randomness.
+
+   Moreover, sub-\(L\) precision does not establish finite-constant \(L[1/3]\) running time. The bounded-depth feasibility recurrence has constants growing with depth; \(O(\log t)\) levels require new search-cost analysis.
+
+   **Fix:** choose a justified smaller cutoff, retain its logarithmic tail factors and remaining conditional freedom, and prove a depth-uniform cost theorem.
+
+9. **MAJOR — R3 and the claimed necessary density condition are overstated.**  
+   **Location:** [§3.4, “Why this is not…”](/Volumes/git/factoring-connection/notes/multidescent_results.md:325), and [§5](/Volumes/git/factoring-connection/notes/multidescent_results.md:371).
+
+   R3 is a model statement about the size of the actual algebraic component, independently of how its existence is proved. A union-bound certificate still contains \(1+m\asymp d^{3/2}\) points. It falls outside R3’s \(O(d)\)-component premise.
+
+   **Fix:** say that UB avoids a high-point joint-distribution estimate. It neither reduces certificate size nor invalidates R3. OD’s linear relations remain true; they need not obstruct this proof strategy. LS_C is an alternative sufficient hypothesis, not an impossibility theorem.
+
+   Also, \(\gamma_2\ge t^{-O(1)}\) is sufficient, not necessary for the one-field architecture. Counterexample: a fraction \(e^{-c\Lambda_\alpha}\) of fields has \(\delta_A=1\), and all others have \(\delta_A=0\). Finding a productive field costs \(L[\alpha,c]\), yet \(\gamma_2=e^{-c\Lambda_\alpha}\). The split is paid after selecting that field.
+
+   **Fix:** formulate necessity through field-selection/success probabilities, not the joint mean \(\gamma_2\).
+
+10. **MAJOR — CC’s singleton-column lemma is correct; its consequence is unsupported.**  
+    **Location:** [Lemma CC](/Volumes/git/factoring-connection/notes/multidescent_results.md:355).
+
+    Retaining at most \(d-1\) parent evaluations while preserving resampling freedom does not imply that the resulting fixed field can serve at most \(d-1\) subsequently collected rows.
+
+    The collision estimate also assumes diffuse, essentially uniform labels. Smooth factorizations are strongly biased toward small primes; even the random-smooth model predicts frequent shared small-prime columns. Thus the displayed expected coincidence count tending to zero is not justified by that model.
+
+    **Fix:** keep the exact singleton-column lemma. For the model consequence, restrict to an explicit large-prime range and prove that most rows contain a private odd-exponent column under the actual selection law. Neither a birthday threshold nor the full-column row target proves a universal obstruction to directed recombination.
+
+11. **MINOR, but research-direction relevant — Literature and rational-block formulation need correction.**  
+    **Location:** §3.4 rational block, §5, §7; supporting navigate §5.4.
+
+    The Plücker identity is correct. For the actual smooth variables its first coefficient is
+    \[
+    \ell\det(P',P''),
+    \]
+    because the first variable is \(G(P)/\ell\). After removing common factors, the claimed \(x^{o(1)}\) **upper bound** is consistent with the prescribed heights. The asserted \(\asymp V_1V_2\) determinant size is not uniform. The image lattice and transformed \(g\)-box must accompany the ternary equation.
+
+    The relevant published comparisons are:
+
+    - **Harper:** Corollary 1 gives
+      \[
+      \frac{\Psi(x,y)^3}{2x}
+      \left(1+O\!\left(\frac{\log(u+1)}{\log y}\right)\right),
+      \qquad (\log x)^K\le y\le x.
+      \]
+      At this design’s scale the relative error is already \(O(D^{-3/8})\). The missing step is conditioned, weighted, growing-coefficient covariance control with adequate constants/cancellation. [Harper](https://arxiv.org/pdf/1408.1662).
+    - **Lagarias–Soundararajan:** Theorem 2.1 assumes GRH, fixed smooth compactly supported weights, and
+      \[
+      (\log x)^{8+\delta}\le y\le e^{(\log x)^{1/2-\delta}},
+      \]
+      with error \(O(\Psi^3\log\log y/(x\log y))\). The primitive theorem has error \(O(\Psi^3/(x(\log y)^{1/4}))\). Your \(B\) lies outside that upper range. Their introduction explicitly discusses arbitrary ternary coefficients, though without the growing-coefficient uniformity required here. [Lagarias–Soundararajan](https://arxiv.org/pdf/1102.4911).
+    - **General linear systems:** Lachand handles bounded \(u\); Matthiesen–Wang’s application requires \(\Psi(X,y)>X/\log_8X\), with \(\log_8\) an iterated logarithm and coefficient-dependent errors. Their wider nilsequence theorem does not itself supply the sparse correlation theorem needed here. [Lachand](https://arxiv.org/pdf/1609.08872), [Matthiesen–Wang](https://arxiv.org/pdf/2211.16892).
+    - **Union/removal precedents:** GKZ’s proof of Theorem 3 removes candidate eliminations producing any trap root by summing bad incidences. Thus avoidance of joint child control through a removal argument has clear descent precedent. I did not locate the exact conditional-three-point smooth-number reduction proposed here. [GKZ, §4.1](https://arxiv.org/pdf/1507.01495).
+    - **Outside fixed characteristic:** Kleinjung–Wesolowski give the uniform bound \((pn)^{2\log_2n+O(1)}\), explicitly deriving subexponential results for growing characteristic. “Only fixed characteristic” is too narrow. This supplies no corresponding rigorous fast descent for prime fields or \(\mathbb Z/N\). [Kleinjung–Wesolowski, Theorem 1.1](https://eprint.iacr.org/2019/751.pdf).
+
+**Probability assessment:** approximately **15%** that full PC₃ for the actual design can be proved using known methods within a focused research effort; this is a subjective research judgment.
+
+The positive evidence is substantive: fixed geometric complexity, smoothness well above polylogarithmic thresholds, and a plausible normalized local covariance smaller than the two-level budget. The obstacles are equally substantive: growing coefficients, endogenous algebraic weights, density-relative BV for structured families, conditional normalization, and first-order errors at precisely the required scale. No checked theorem supplies their combination. I see no convincing counterexample to repaired two-level PC₃, but the draft has not yet reduced its proof to a routine extension of Harper.
