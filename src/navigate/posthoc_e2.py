@@ -9,12 +9,19 @@ lattice, while NAV at L[1/3] is sparse (K >> letters).  Same code as e2_counts.r
 from __future__ import annotations
 
 import json
+import os
 import time
 
 from src.navigate import e2_counts as E
 
 CONFIGS = {512: [0.8, 0.9, 1.0, 1.1], 2048: [0.8, 0.9, 1.0]}
 OUT = "experiments/raw/navigate_E2_posthoc.jsonl"
+# v2 (after codex navigate_2 #12): at y = 2048 the factor base contained both prime factors of every 20-bit N
+# (809..1009), and the dlog table silently mapped them to log 0. The y = 2048 cells are re-run with the nonunit primes
+# excluded (K = 307 units; N is then not admissible for y, a disclosed diagnostic deviation). y = 512 (all prime
+# factors >= 809 > 512) is unaffected (its cells reproduce v1 exactly; the whole file is regenerated with the
+# memory-safe enumeration of e2_counts).
+RERUN = {2048: [0.8, 0.9, 1.0]}
 
 
 def main():
@@ -23,11 +30,11 @@ def main():
         for y, betas in CONFIGS.items():
             for seed in E.SEEDS:
                 t0 = time.time()
-                r = E.run_instance(seed, y, betas)
+                r = E.run_instance(seed, y, betas, exclude_nonunits=(y in RERUN))
                 r["posthoc"] = True
                 fh.write(json.dumps(r) + "\n")
                 fh.flush()
-                print(y, seed, r["vectors"], r["H"], r["phi"], round(time.time() - t0, 1), flush=True)
+                print(y, seed, r["K"], r["vectors"], r["H"], r["phi"], round(time.time() - t0, 1), flush=True)
 
 
 if __name__ == "__main__":

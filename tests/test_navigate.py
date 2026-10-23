@@ -121,3 +121,24 @@ def test_prop_SQ_unconditional_direction():
     assert len(sq) * 4 == len(units)
     for shift in (1, 2, 3, 5):
         assert sum(1 for t in units if t * shift % N in sq) * 4 == len(units)
+
+
+def test_e2_rejects_nonunit_factor_base(monkeypatch):
+    # codex navigate_2 #12: factor-base primes dividing N must be refused (or explicitly excluded)
+    monkeypatch.setattr(E2, "BITS", 14)
+    inst = balanced_semiprime(14, 5)
+    y = max(inst.labels["p"], inst.labels["q"]) + 1
+    with pytest.raises(AssertionError):
+        E2.run_instance(5, y, [0.6])
+    r = E2.run_instance(5, y, [0.6], exclude_nonunits=True)
+    assert r["K"] == len(primes_upto(y)) - 2
+
+
+def test_sparse_tails_match_vectorised_head():
+    lns = [math.log(l) for l in (53, 59, 61, 67)]
+    ci, cj = [3, 5, 7, 11], [2, 4, 6, 8]
+    B = 9.0
+    a = sorted((round(w, 9), i, j) for (w, i, j) in E2.tail_vectors_sparse(lns, ci, cj, 101, 103, B))
+    W, I, J = E2.signed_head(lns, ci, cj, 101, 103, B)
+    b = sorted((round(float(w), 9), int(i), int(j)) for w, i, j in zip(W, I, J))
+    assert a == b

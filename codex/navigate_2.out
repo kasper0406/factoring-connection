@@ -1,0 +1,159 @@
+1. MAJOR: Prop H is substantially correct; its interpretation is overstated.
+
+EQ1 uses exponent parities and modular exponentiation, so polynomial height in N is unnecessary. Binary exponents with L[1/3] bits remain manageable. However, “same cost” must charge the actual encoded output length. If an exponent has b bits, processing it costs at least Ω(b); the constant implicit in exp(L[1/3,c]) cannot disappear independently of T. Dense parity matrices can also change the linear-algebra cost.
+
+The equivalence needs explicit hypotheses: factor-base generation, binary exponent encoding, component DL instances with supplied generators, and a procedure or oracle budget for obtaining those generators. Factoring N alone does not supply certified primitive roots modulo its prime powers. Component DL obtained using one fixed N is priced relative to N; obtaining an L_p bound requires the modulus-generic padding reduction.
+
+Fix: state a bit-complexity theorem with these inputs and overheads. Replace “NAV is not an intermediate target” by “NAV is a strong sufficient target, including component DL.” Algorithmic intermediate primitives routinely have consequences equivalent to the original problem. The equivalence does not establish that pursuing them is misguided.
+
+2. MINOR: DLB padding has incorrect bookkeeping.
+
+The prime threshold y(p²) is L_p[1/3,2^(1/3)κ], so finding the least prime above it by sieving is not L^{o(1)}. This cost is nevertheless dominated by L_p[1/3,3κ], so the final stated constant survives.
+
+Fix: include that sieve cost, or choose any certified prime in a suitable interval using randomized primality testing. The admissibility argument and ln(pr)=(1+o(1))ln p are sound.
+
+3. MINOR: The main DLB proof survives scrutiny.
+
+The CRT queries are independent uniform squares, including the distinguished query after making h square. The distinguished position is independent of the oracle-visible transcript. It is not independent of a transcript containing the reduction’s labelled masks k_i; specify the former.
+
+The indispensable-vector bound is valid over Z/M: adding indispensable vectors gives strict submodule growth, bounded by log₂|(Z/M)^K|=K log₂M. Howell-form membership and coefficient recovery require gcd operations, not factoring M. With a suitable modular algorithm, cubic dimension cost times poly(log M) is credible.
+
+Chernoff is unnecessary. For m queries and b indispensable successful vectors,
+
+Pr[distinguished query succeeds and is dispensable] ≥ δ−b/m.
+
+Fix: use this direct argument, specify independent oracle invocations, and cite a coefficient-producing Howell algorithm. The bound poly(x,1/δ)L_p[1/3,max(κ+τ,3κ)] remains defensible.
+
+4. MAJOR: The average-case version loses the advertised constant.
+
+For balanced N=pq, ln N≈2 ln p. Therefore L_N[1/3,c]=L_p[1/3,2^(1/3)c]. The corresponding bound is approximately 2.268, not 1.80, at the target parameters.
+
+Averaging does yield a positive fraction of good primes, but “good” must quantify success averaged over q, targets, and coins. Explain amplification by resampling q while preserving the module argument within each run.
+
+Fix: state the prime distribution, success quantifiers, polynomial δ losses, and converted constants separately. The average-case result does not establish an improvement over heuristic prime-field DL constants.
+
+5. MAJOR: Prop G is valid in its model; the surrounding extrapolation is too broad. Lemma RT needs corrected corollaries.
+
+The formal-polynomial proof of G is standard. Its direct conclusion concerns T+K and random generic encodings/generators. Applying it to integer residues requires an explicitly generic algorithm model; it does not exclude arithmetic steering or prove that smoothness testing is the only possible escape. The projection to a large odd prime-order quotient should be stated.
+
+Goldfeld supplies a lower-density bound of one half for suitable primes, not a density-one assertion about “most” balanced semiprimes. Fix the quantifier. [Goldfeld’s paper](https://www.math.columbia.edu/~goldfeld/PrimeShifts.pdf)
+
+RT’s counting inequality is correct. For square targets its probability bound carries 2^ω. Conditioning on NAV success introduces another factor 1/δ. Thus the quoted x−2 ln x conclusion does not hold uniformly for all admissible N and all inverse-polynomial δ.
+
+Fix: use a lower bound of the form x−ω ln 2−ln(1/δ)−O(ln x) for typical successful outputs. This still preserves the leading smoothness-model constant.
+
+6. MAJOR: Prop SQ(b) proves an average-target reduction, not its apparent fixed-target statement.
+
+“Given t∈G” is misleading. The proof assumes t is uniform within its square coset. For fixed t, a solver can reject every t q with q≤y while succeeding on almost every square: that exceptional set has only K elements. Repeating the proposed shifts then fails completely.
+
+For uniform t, the union-of-translates argument is valid, including after averaging randomized success functions. The reverse reduction through a best coset is also valid in that average sense.
+
+GRH is genuinely used to distribute small primes among square cosets. The condition 2^ω≤y^(1/2−ε) is substantial and is not automatic for admissible N. An overhead 2^ω can exceed every L[1/3,O(1)] budget.
+
+Fix: state both directions for uniform targets, distinguish accuracy from the exponent margin, and restrict the cost-preserving interpretation to suitable ω, particularly semiprimes.
+
+7. MAJOR: Prop CF establishes useful reductions, not a barrier against counting.
+
+The vector self-reduction needs an empty-vector terminal branch. Its branch bound differs from the word encoding’s 2K. Binary prime encodings and counters supporting interval/prefix restrictions can avoid enumerating all K children; this matters at the target constants.
+
+Multiplicative approximate restricted counting decides emptiness and consequently gives search. The converse, counting from decision, is unproved. Calling counting “exactly NAV decision” confuses its zero/nonzero predicate with its numerical approximation problem.
+
+GRH flatness applies to unrestricted fixed-length word counts. It does not establish flatness for weighted vector counts or canonical restricted subproblems. Restricting the remaining alphabet to one prime immediately destroys the claimed general mixing argument.
+
+The Legendre argument is correct for reduced pairs with gcd(u,v)=1 and uv<N/2. It does not enumerate word multiplicities or unreduced pairs.
+
+Finally, the threshold problem is tighter than NAV_3. The mean number of height-3x vector witnesses is N^{2−o(1)}, although this alone proves no concentration.
+
+Fix: separate the encodings and retain only counting⇒search and the explicitly applicable flatness/enumeration results. [JVV](https://www2.stat.duke.edu/~scs/Courses/Stat376/Papers/ConvergeRates/RandomizedAlgs/JerrumValiantVaziraniTCS1986.pdf) and [Sinclair–Jerrum](https://www.math.cmu.edu/~af1p/Teaching/Markov_Chain_Mixing/Papers/approx.pdf) provide reductions, not the proposed obstruction.
+
+8. MAJOR: Prop LT(a) survives; the CVP interpretation loses essential qualifications.
+
+For fixed A>1, the de Bruijn argument gives the stated dimension floor, since |Q|=N^{1−o(1)}. Sparsity relative to the maximum number of letters follows.
+
+However, a γ<3/2 weighted-ℓ1 CVP algorithm is sufficient under the GRH distance bound. NAV_3 is not equivalent to such an approximation algorithm: if the optimum is near x, a permitted NAV output near 3x has approximation ratio near three.
+
+The Euclidean quantity Σe_i² ln ℓ equals height only for squarefree signed vectors. GRH word existence as presented does not establish that promise.
+
+ADS15 concerns Euclidean CVP; its exact bound cannot simply be quoted for weighted ℓ1. Likewise, familiar 0.29K sieving constants are not general weighted-ℓ1 CVP guarantees. [ADS15](https://arxiv.org/abs/1504.01995)
+
+Fix: preserve the exact weighted-ℓ1 formulation, label the approximation implication one-way, and keep norm-specific algorithm bounds separate. The Gaussian-heuristic discrepancy demonstrates unusual structure; it supplies no hardness evidence against exploiting that structure.
+
+9. MAJOR: Prop LT(e) contains a false counting statement.
+
+A set of vectors of logarithmic height ≤H need not have H^{1+o(1)} elements. All subsets of primes up to roughly H already give exp(Ω(H/ln H)) vectors. The relevant upper bound is exponential in H.
+
+After correcting this, the advertised Wagner estimate can be recovered only within a specified model: power-of-two list counts, sufficiently random values, and output height charged without cancellations. Without the power-of-two restriction, the displayed inequality does not imply k≤8. Overlapping supports can also cancel.
+
+Fix: present N^{1/4−o(1)} as a scenario for that particular bounded-height k-tree construction, not a lower bound for generalized birthday methods or structured navigation. [Wagner](https://people.eecs.berkeley.edu/~daw/papers/genbday.html)
+
+10. MAJOR: TD and integer descent are model statements; the NFS conversion remark is unsupported quantitatively.
+
+TD’s leading 2/(3κ) constant is consistent with ordinary smoothness statistics for x-scale tested pieces. It does not constrain deliberately constructed pieces or establish conditional smoothness laws after adaptive selection. The j≤x^{o(1)} restriction matters.
+
+The integer-descent identity is correct. The resulting leaf-window obstruction applies to that integer-relation design; it does not exclude growing intermediate primes, cross-level cancellation, or unbounded-height constructions.
+
+For NFS conversion, ideal cancellation alone does not cancel units or provide computable generators. Hadamard gives upper bounds for specified integer matrices, not a generic lower bound on conversion height. The independent-incidence model needs a precise sampling law and cancellation calculation.
+
+Fix: remove universal failure language and supply a complete conversion algorithm before assigning its output height or cost.
+
+The 1.442/1.232 initialization constants are correctly quoted as heuristic. They assume the surrounding NFS logarithm machinery and differ from complete DL costs; 1.232>1.20 excludes that quoted parameterized approach, not improved descent. [FGHT Appendix A](https://arxiv.org/pdf/1610.02874)
+
+11. MAJOR: Obs DD is conditional on obtaining the required square-root identity.
+
+Theorem DD proves fibre symmetry once there is a transcript-measurable Y satisfying Y²=∏R_i over a nonempty selected set. It does not itself construct Y from ideal rows. Standard-row-only dependencies contain no hidden-root randomness; even multiplicities of every hidden root also remove that randomness.
+
+The Lee–Venkatesan combination therefore needs explicit lifts, rational factors, units, characters, square-root branches, and a dependency containing an odd hidden-root coefficient. Their theorem about possibly trivial congruences does not establish this augmentation. [Lee–Venkatesan](https://arxiv.org/pdf/1805.08873)
+
+“Span the corank” is also insufficient: exactly d independent augmented rows can fill a corank-d quotient without yielding a dependency involving them. A d+1 argument is available once the complete column space and square-root machinery are established.
+
+Fix: label the augmentation conditional. “Multi-level descent is the only missing ingredient” is presently unproved.
+
+12. FATAL to the 309-prime experiment; MAJOR experimental revisions required.
+
+At y=2048 the factor base contains both factors of every registered 20-bit modulus. For seed 0, N=698167=809·863. In e2_counts.py, dlog_table initializes table[0]=0; the subsequent lookup treats a nonunit prime as having logarithm zero in the component it divides. Negative exponents of those primes are not unit-group objects.
+
+Fix: exclude nonunit primes and rerun, or use larger factors. Add an assertion that every factor-base element is coprime to N. Withdraw the current 309-prime table.
+
+The walk profile also differs materially from registration. Its initial target is correctly sampled with count bias, but it subsequently chooses uniformly among feasible letters, does not follow the sampled solution, and does not enforce canonical prime order. The unused wtot exposes this change. Grid truncation also changes the eligible denominator.
+
+Fix: sample canonical children with probabilities proportional to their restricted completion counts, or relabel and preregister the different diagnostic.
+
+13. MINOR statistical corrections; MAJOR interpretation correction.
+
+I reproduced the registered summary exactly. The reported prediction outcomes and failure counts are honest: E1 passes; E2 has 11, 25, and 28 failures for P2a–c, and none for P2d. All seven tests pass.
+
+R_alg correctly uses null-tested pairs; the cancellation to outputs/null_succ is legitimate. There is slight terminal-budget censoring. Mean log-size pools target means rather than individual splits, and G1 omits the repeated reconstruction of its selected candidate from the split counter.
+
+The f75 exclusion of characters trivial on H is correct. However, C(t)=C(t^{-1}), so its Fourier coefficients are real. An inversion-symmetric Gaussian noise reference has squared-normal powers and f75≈0.271, not the complex-Gaussian exponential reference ≈0.39. The registered failures persist.
+
+The dense-regime explanation is plausible but unproved. A sharply truncated weighted ℓ1 ball does not give a product Fejér kernel; sidelobes, angle normalization, and correlated character angles matter. Moreover, most sparse post-hoc budgets lie in the continued-fraction regime.
+
+Fix: retain the observed concentration as an open structural clue. Delete the asymptotic inference “fixed fraction, i.e. N^{1−o(1)}” from fixed-size data.
+
+14. MINOR: Literature and blind-round attribution need tightening.
+
+JVV, Sinclair–Jerrum, Shoup/Nechaev, de Bruijn, and the quoted descent constants are broadly appropriate subject to the corrections above. CSI-FiSh’s dimension-74 computation is a valid analogy, not evidence that its geometric accuracy transfers to NAV. [CSI-FiSh](https://eprint.iacr.org/2019/498)
+
+Pomerance’s L_p[1/2,√2] is the cited rigorous general prime-field benchmark. The approximately 1.923/1.902 NFS/MNFS constants are heuristic; cite the corrected Barbulescu–Pierrot version and distinguish Matyukhin’s contribution. [Barbulescu–Pierrot](https://eprint.iacr.org/2014/147)
+
+Stange’s relation-lattice approach is conditional on a sampling/saturation hypothesis, unlike DD’s fibre argument. It is relevant precedent, not verification of the proposed NFS augmentation. [Stange](https://arxiv.org/pdf/2211.06821)
+
+The blind round explicitly called γ<3/2 sufficient, called Gaussian-heuristic reasoning inappropriate as hardness evidence, and limited its forecast to examined routes. The note weakens these qualifications. “Same recommendation” also omits the blind round’s explicit height-potential requirement.
+
+Fix: preserve those qualifications and correct the Schnorr paragraph: siconstruct Prop CV(d) gives weaker sufficient approximation requirements for L[1/3] costs; necessity was explicitly withdrawn.
+
+15. MAJOR: Overall verdict and research recommendation.
+
+Overall verdict: MAJOR REVISION.
+
+The strong surviving result is the modulus-generic NAV⇒factoring/DL reduction, including the target constant 1.80 after repairs. The note does not establish a general obstruction to counting, structured lattice methods, or unbounded-height navigation.
+
+“No demonstrated route reaches the target” is justified. “NAV is the wrong target” and retiring it are research preferences presented too strongly.
+
+A worthwhile remaining program is restricted counting or sampling using implicit character information, annealing, or sparse-support lattice structure. Concentration of unrestricted Fourier mass alone does not give relative conditional counts or an efficient way to discover the useful characters; those are concrete research questions.
+
+Prop H also supplies a constructive relaxation: pursue bounded-bit-length exponents while dropping O(ln N) height. This permits long descent chains and cancellation and removes the short-vector requirement. Its equivalence to factoring plus DL describes its strength without making the approach circular.
+
+Multi-level Dixon descent deserves priority, conditional on resolving the augmentation requirements above.
+
+My updated subjective probability is about 5% for rigorous classical bounded-height NAV at some fixed L[1/3] constants, and about 1% at (0.60,1.20). This review provides no basis for reducing the former to ≤1%.

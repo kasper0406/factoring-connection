@@ -73,6 +73,27 @@ def tail_vectors(lns, ci, cj, P1, Q1, B):
     return out
 
 
+def tail_vectors_sparse(lns, ci, cj, P1, Q1, B):
+    """All signed vectors over the given primes with weight <= B (depth-first, primes in increasing order)."""
+    out = []
+    n = len(lns)
+
+    def rec(k, w, i, j):
+        out.append((w, i, j))
+        for kk in range(k, n):
+            l = lns[kk]
+            if w + l > B + 1e-9:
+                break  # lns increasing
+            e = 1
+            while w + e * l <= B + 1e-9:
+                for s in (1, -1):
+                    rec(kk + 1, w + e * l, (i + s * e * ci[kk]) % P1, (j + s * e * cj[kk]) % Q1)
+                e += 1
+
+    rec(0, 0.0, 0, 0)
+    return out
+
+
 def subgroup_mask(P1: int, Q1: int, gens: List[Tuple[int, int]]) -> np.ndarray:
     m = np.zeros((P1, Q1), dtype=bool)
     m[0, 0] = True
@@ -84,12 +105,15 @@ def subgroup_mask(P1: int, Q1: int, gens: List[Tuple[int, int]]) -> np.ndarray:
             return m
 
 
-def run_instance(seed: int, y: int, betas: List[float]) -> Dict[str, object]:
+def run_instance(seed: int, y: int, betas: List[float], exclude_nonunits: bool = False) -> Dict[str, object]:
     inst = balanced_semiprime(BITS, seed)
     N, p, q = inst.N, inst.labels["p"], inst.labels["q"]
     P1, Q1 = p - 1, q - 1
     lnN = math.log(N)
     fb = primes_upto(y)
+    if exclude_nonunits:  # POST HOC repair (codex navigate_2 #12): drop factor-base primes dividing N
+        fb = [l for l in fb if N % l]
+    assert all(N % l for l in fb), "factor base must consist of units mod N"
     _, tp = dlog_table(p)
     _, tq = dlog_table(q)
     ci = [int(tp[l % p]) for l in fb]
@@ -99,19 +123,23 @@ def run_instance(seed: int, y: int, betas: List[float]) -> Dict[str, object]:
     B = bmax * lnN
     nlev = int(round((bmax - LO) / STEP)) + 1
     hist = np.zeros((nlev, P1 * Q1), dtype=np.int32)  # hist[k] = vectors with weight in level k (see below)
-    nh = len(fb) - 2
+    # head = vectorised over the small primes (dense exponents); tails = Python enumeration over the large, sparse
+    # primes (memory: v1 vectorised all but two primes, which fragmented to 2.4-4.9 GB RSS at K ~ 100-300).
+    nh = max(1, min(len(fb) - 2, sum(1 for l in fb if l <= 47)))
     W, I, J = signed_head(lns[:nh], ci[:nh], cj[:nh], P1, Q1, B)
-    tails = tail_vectors(lns[nh:], ci[nh:], cj[nh:], P1, Q1, B)
+    tails = tail_vectors_sparse(lns[nh:], ci[nh:], cj[nh:], P1, Q1, B)
     total = 0
     for (tw, ti, tj) in tails:
         n = int(np.searchsorted(W, B - tw + 1e-9, side="right"))
         if n == 0:
             continue
-        w = W[:n] + tw
-        cls = ((I[:n] + ti) % P1) * Q1 + (J[:n] + tj) % Q1
-        lev = np.ceil((w / lnN - LO) / STEP - 1e-9).astype(np.int64)
-        lev = np.clip(lev, 0, nlev - 1)  # weights <= LO*lnN land in level 0 (counted at every budget >= LO)
-        np.add.at(hist, (lev, cls), 1)
+        for c0 in range(0, n, 1 << 21):  # chunked to bound memory
+            c1 = min(n, c0 + (1 << 21))
+            w = W[c0:c1] + tw
+            cls = ((I[c0:c1] + ti) % P1) * Q1 + (J[c0:c1] + tj) % Q1
+            lev = np.ceil((w / lnN - LO) / STEP - 1e-9).astype(np.int64)
+            lev = np.clip(lev, 0, nlev - 1)  # weights <= LO*lnN land in level 0 (counted at every budget >= LO)
+            np.add.at(hist, (lev, cls), 1)
         total += n
     cum = np.cumsum(hist, axis=0, dtype=np.int32)  # cum[k] = C at budget LO + k*STEP
     Hm = subgroup_mask(P1, Q1, list(zip(ci, cj))).reshape(-1)
@@ -122,7 +150,7 @@ def run_instance(seed: int, y: int, betas: List[float]) -> Dict[str, object]:
     triv = np.ones(P1 * Q1, dtype=bool)
     for (c1, c2) in zip(ci, cj):
         triv &= ((A * c1 * Q1 + Bc * c2 * P1) % (P1 * Q1)) == 0
-    res = {"seed": seed, "y": y, "N": N, "phi": P1 * Q1, "H": int(Hm.sum()), "H_has_nonsquares": bool((Hm & ~sq).any()),
+    res = {"seed": seed, "y": y, "K": len(fb), "excluded_nonunits": exclude_nonunits, "N": N, "phi": P1 * Q1, "H": int(Hm.sum()), "H_has_nonsquares": bool((Hm & ~sq).any()),
            "vectors": total, "cells": []}
     for beta in betas:
         k = int(round((beta - LO) / STEP))
@@ -144,9 +172,10 @@ def run_instance(seed: int, y: int, betas: List[float]) -> Dict[str, object]:
             cell.update({"h_sq": float((C[s1] >= 1).mean()), "h_nonsq": float((C[s0] >= 1).mean()),
                          "mu_sq": float(C[s1].mean()), "mu_nonsq": float(C[s0].mean())})
         res["cells"].append(cell)
-    # descriptive oracle-walk profile: sample solutions uniformly from all vectors (size-biased targets), walk
-    # letters in canonical order (largest prime first), record the fraction sigma of next (prime, side) choices
-    # whose remaining instance has a nonzero count (budgets rounded down to the grid: conservative).
+    # descriptive oracle-walk profile: draw a uniform vector of height <= B and keep only its class (a size-biased
+    # target); then run an oracle-guided walk that, at each step, picks uniformly among the (prime, sign) letters
+    # over ALL factor-base primes whose remaining instance has a nonzero count, recording the fraction sigma of such
+    # letters (budgets rounded down to the grid: conservative). No -1 letter (the E2 factor base has no sign).
     rng = random.Random(f"navigate-E2-walk|{seed}|{y}")
     prof: Dict[str, List[float]] = {}
     gi = dict(zip(fb, ci)), dict(zip(fb, cj))
