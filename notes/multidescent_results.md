@@ -62,8 +62,8 @@ Precisely:
      A Las Vegas algorithm factors every N in expected L_N[3/8, c], c finite (§3.3).
    - What PC₃ needs (§3.4): relative precision O(μ₁/W) (≍ D^{−3/8} under the typical-factorisation count; ≥ D^{−1/2}
      from the deterministic child cap), as a *covariance* statement, for (i) a rational block — three linear forms in
-     the two coordinates of g, a ternary equation with coefficients ≤ x^{o(1)} (Harper's Corollary 1 has relative
-     error O(log(u+1)/log y), exactly this scale), and (ii) an algebraic block — three evaluations in (w, c), whose
+     the two coordinates of g, a ternary equation with coefficients ≤ x^{o(1)} (Harper's Corollary 1, coefficient 1,
+     has relative error O(log(u+1)/log y) of exactly this scale, but from main-term bookkeeping, not minor arcs), and (ii) an algebraic block — three evaluations in (w, c), whose
      reduction to BV needs density-relative estimates for an endogenous sparse modulus family (not established).
      The random model predicts covariance O(D^{−2α}) ≪ η [heuristic]. **We prove no α < 2/5, and found no weaker
      provable statement that gives one.**
@@ -297,9 +297,10 @@ P ∈ Λ_ℓ(g) is part of it, and on it the child label (q, ab^{−1} mod q), h
   fails with probability < η needs moments accurate to relative error η, so this precision is necessary for the
   route. It is polylogarithmic, not L-scale: the union is over the children of one parent, not over all e^{Θ(Q)}
   targets of a field (AD's union bound, nested §6 / almostall13, which needs L[2/3] precision).
-- *Precedent.* Removal arguments that sum bad incidences instead of intersecting good events are standard in rigorous
-  descent: GKZ's proof of their Theorem 3 removes eliminations that produce trap roots by summing bad incidences
-  (codex adversarial #11). We found no prior use of a conditional 3-point smooth-number reduction of this kind.
+- *Precedent.* Removal arguments that sum bad incidences have precedent in rigorous descent: GKZ's proof of their
+  Theorem 3 removes the ≤ q^{kd/2+4} values producing trap roots from ≥ q^{kd−4} solutions; KW avoid a bounded-degree
+  trap subvariety (codex adversarial #11; literature critic). Those counts are deterministic and hold pointwise for every
+  good target — the AD-type property unavailable here — so the analogy is formal. We found no prior use of a conditional 3-point smooth-number reduction of this kind.
 - E[N₂²] ≤ E[N₁²] means the second moment needed is the *one-level* one (LD*-type, upper bound with polylog loss).
 
 ### 3.3 Theorem 2L [proved conditional on PC₃, U′ and the internal chain]
@@ -356,10 +357,16 @@ Write the 3-point event E ∧ Good(P′) ∧ Good(P″) as a rational block and 
   G(P) leaves one direction: two linear polynomials in one variable (smooth pairs on a line).
   - Prototype [literature, checked by codex adversarial]: Harper (Compositio 2016, Corollary 1) gives
     #{a + b = c, all y-smooth ≤ x} = (Ψ(x, y)³/2x)(1 + O(log(u+1)/log y)) for (log x)^K ≤ y ≤ x. At this design's scale
-    the error O(log(u+1)/log y) is O(D^{−3/8}) — exactly the precision needed, so a covariance version beating it by
-    D^{ε} is required, not a re-use. Lagarias–Soundararajan (GRH) assume (log x)^{8+δ} ≤ y ≤ e^{(log x)^{1/2−δ}} with
-    fixed smooth weights; our B = L[3/8] lies outside that upper range; their introduction discusses general ternary
-    coefficients, without the uniformity needed here.
+    O(log(u+1)/log y) = O(D^{−3/8}), exactly the precision needed. But (literature critic) Harper's minor arcs
+    contribute only ≪ (Ψ³/x)(log x)^{−4}; the log(u+1)/log y comes from simplifying the major-arc main term
+    (replacing V(x, y; q, δ) by (Ψ/x)V(x, x; q, δ)), i.e. it is main-term bookkeeping that a covariance statement
+    cancels. So for coefficient 1 the precision is not the obstruction; the genuinely new difficulties are coefficients
+    up to x^{o(1)} (far beyond Harper's major-arc cutoff log^{20} x, so dilations scramble the arcs), the conditional
+    weights, and the family average. Under GRH, Lagarias–Soundararajan (Proc. LMS 2012, Thm 2.1) need
+    (log x)^{8+δ} ≤ y ≤ e^{(log x)^{1/2−δ}} and fixed smooth weights (their introduction has a one-sentence remark that
+    fixed coefficients aX + bY + cZ = 0 should work); Drappeau (MPCPS 154 (2013), Thm 1.3, GRH) removes the upper
+    limit, giving relative error O(1/u) on a range that contains y = L[3/8] — again exactly our scale, again of
+    saddle-point (main-term) nature.
   - **Hyp RB (rational block) [OPEN].** For the 2L configuration family, with the conditional weights, the 3-form count
     divided by the product of the corresponding 1- and 2-form counts is 1 + O(D^{−3/8−ε}) on (weighted) average.
 - **Algebraic block** (given g): F(P) (q | F(P), B₂-smooth with simple children), F(P′)/q, F(P″)/q ∈ 𝒮_B. The map
@@ -369,8 +376,10 @@ Write the 3-point event E ∧ Good(P′) ∧ Good(P″) as a rational block and 
   raised by a constant factor in the exponent. **This reduction is not established** (codex #4): full rank gives an
   image lattice, not the needed weighted modulus distribution, reduced residues or multiplicity control. Ordinary BV
   sums over all moduli, whereas this family is endogenous and exponentially sparse, so a density-relative estimate is
-  needed; Harper's maximal-residue BV (arXiv 1208.5992, Theorem 1) also carries a large-sieve term, not only the
-  exponential error; Pascadi's level 5/8 − ε is for a fixed residue. [open; plausibly approachable by Theorem-U-type
+  needed; Harper's maximal-residue BV (arXiv 1208.5992, Theorem 1; level √Ψ(x, y)) carries a large-sieve term
+  √Ψ·Q·log^{7/2}x, not only the exponential error; Drappeau's Lemme 5 (Compositio 2015) shows that term comes only from
+  conductors > x^η, the natural split for a density-relative version (still an absolute bound); Pascadi's level
+  5/8 − ε is for a fixed residue, Drappeau's Théorème 1 reaches 3/5 − ε for residues a₁ā₂ with |a_i| ≤ x^δ. [open; plausibly approachable by Theorem-U-type
   arguments with lower and upper bounds]
 - **Main terms** [heuristic]: under the random model with local factors, the pair correlation exceeds the product of
   marginals through (i) shared small-prime congruences of pairs (P′ ≡ λP″ mod p, frequency 1/p), (ii) the fields' local
@@ -468,8 +477,8 @@ black-box AP statistics do not determine ternary additive counts for general set
 structure of smooth numbers (bilinear/dispersion methods) might in principle bridge the gap (proof critic minor 7). Codex blind gives a precise AP-statistics countermodel
 for *fixed* searches (delete the ≤ W queried values: AP counts change by ≤ W, continuations vanish); for the averaged
 PC₃ the obstruction is the standard one that AP statistics do not determine additive-equation counts. We know no
-implication from GRH to RB (Lagarias–Soundararajan use GRH for a + b = c with coefficient 1; whether their method
-tolerates coefficients x^{o(1)} and a family average is UNVERIFIED).
+implication from GRH to RB: Lagarias–Soundararajan and Drappeau 2013 (GRH, coefficient 1, the latter covering
+y = L[3/8] with relative error O(1/u)) do not address coefficients up to x^{o(1)}, conditional weights or covariance.
 **Implied by**: the random model with local factors (heuristic, margin D^{3/8}, assuming uniformly bounded
 perturbation variance); nested's AD (pointwise, much stronger); a covariance extension of Harper's theorem to
 (i) coefficients up to x^{o(1)}, (ii) conditional weights from the algebraic block, (iii) relative covariance error
@@ -547,13 +556,76 @@ Ratios (empirical share)/(reference share) in 4 equal-log-width sub-buckets of e
   concentrate are nearly Poisson. This is a toy check of the premises of both Hyp LS_C and Hyp PC₃, not evidence for
   either asymptotically.
 
-## 7. Literature
+## 7. Literature (checked by the Opus literature critic against primary sources; all attributions confirmed or corrected)
 
-[to be checked by the literature critic]
+- **Smooth solutions of a + b = c.** Harper, Compositio 152 (2016) 1121–1158, Cor. 1 (unconditional, y ≥ log^K x;
+  minor arcs (log x)^{−4}, error O(log(u+1)/log y) from the simplified main term). Lagarias–Soundararajan, Proc. LMS
+  104 (2012) 770–798 (GRH, (log x)^{8+δ} ≤ y ≤ e^{(log x)^{1/2−δ}}); also JTNB 2011 ("xyz conjecture"). Drappeau, MPCPS
+  154 (2013) 439–463, Thm 1.3 (GRH, all y ≥ (log x)^{8+ε} with a mild condition, error O(1/u)); Drappeau, Canad. J. Math.
+  67 (2015) (unconditional, y ≥ exp(c√(log x) log log x)); de la Bretèche–Granville, "Densité des friables" (Bull. SMF;
+  y ≥ exp((log x)^{2/3+ε})). All have fixed or bounded coefficients; no covariance or growing-coefficient version found.
+- **Linear patterns / binary forms.** Lachand, arXiv 1609.08872 (bounded u, bounded coefficients); Matthiesen–Wang,
+  arXiv 2211.16892 (Ψ(N, y) > N/log^8 N, bounded coefficients; inapplicable at u ≍ D^{3/8}); Balog–Blomer–Dartyge–
+  Tenenbaum, Comment. Math. Helv. 87 (2012) 639–667 (y = x^{g−2+ε}; x^{1/√e+ε} for cubics; order of magnitude).
+- **BV for smooth numbers.** Granville 1993; Fouvry–Tenenbaum 1996; Harper, arXiv 1208.5992, Thm 1 (preprint);
+  Drappeau, Compositio 151 (2015) 828–862 (Lemme 5; Théorème 1, level 3/5 − ε for residues a₁ā₂); Pascadi, arXiv
+  2505.00653, Thm 1.5 (level 5/8 − ε, fixed residue). Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Thm 3 (Ψ(cx, y) =
+  Ψ(x, y)c^{α}(1 + O(1/u + log y/y)), 1 ≤ c ≤ y; used in Lemma CL, which needs z₂/q ≥ B₂).
+- **Descent.** Granger–Kleinjung–Zumbrägel, Trans. AMS 370 (2018) 3129–3145 (Thm 3, trap removal); Kleinjung–Wesolowski,
+  J. AMS 35 (2022) 581–624 ((pn)^{2 log₂ n + O(1)} for all p, n; hence L(α) for p = L(α), α < 1/2: rigorous multi-level
+  descent exists in small and medium characteristic, not only fixed characteristic); Enge–Gaudry–Thomé (J. Math.
+  Cryptol. 2011, heuristic), Commeine–Semaev 2006, Joux–Lercier 2003, Guillevic arXiv 1505.07553 — all heuristic, with
+  implicitly independent children; none uses a per-child probabilistic union bound with a precision requirement.
+  No rigorous multi-level descent for prime fields or Z/N found.
+- **Factoring.** No rigorous or GRH-conditional factoring of arbitrary N below L[1/2] found; Lenstra–Pomerance, JAMS 5
+  (1992), L[1/2, 1 + o(1)]. Lee–Venkatesan, JNT 187 (2018): L[1/3] congruences of squares, possibly trivial.
+- This is a search result, not a novelty claim; "no prior formulation found by us" of the conditional 3-point
+  reduction (Prop UB).
 
 ## 8. Reviews
 
-[codex adversarial round, Opus proof critic, Opus literature critic]
+All valid findings are applied in the text above.
+
+**GPT-6.1-sol blind round `codex/multidescent_1`** (xhigh, launched before any analysis here). Verdict OPEN, no
+α < 2/5. Independently: α_j = (j+1)/(3j+2); the exact children's law (1); the fixed-field domination obstruction (4);
+the removal-sieve criterion (5) (it judged the needed small bad fraction unavailable — answered in §2.3); rank
+(F, G) ≤ min(s, d+1) + min(s, 2), "even three rational evaluations require a correlation estimate"; T_q ⇔ pooled
+coverage; an AP-statistics countermodel for fixed searches; Pascadi, Martin, BBDT, Harper, LS, Lachand, Matthiesen–Wang.
+It did not find the union-bound reduction.
+
+**GPT-6.1-sol adversarial round `codex/multidescent_2`** (xhigh, on v1): **MAJOR REVISION; no fatal flaw; Prop UB
+sound.** Issues and adjudication:
+
+| # | severity | finding | action |
+|---|---|---|---|
+| 1 | MAJOR | U′ needs a hybrid (B-smooth moduli, B₂-smooth values) restricted BV; the cited substitution fails both ways | accepted: U′ relabelled OPEN, requirements listed (§3.3) |
+| 2 | MAJOR | box sizes: CS at B gives an L[1/2] box; S₂ unspecified | accepted: added to U′ |
+| 3 | MINOR | "3 points" = 3 geometric points, ≤ 6 evaluations; §2.4 is a fibration with weights | accepted |
+| 4 | MAJOR | algebraic BV reduction not established (density-relative, Harper's large-sieve term, Pascadi fixed residue); quantifier mismatch of pointwise PC₃ | accepted: reduction marked open; PC₃ restated in the weighted form codex proposed |
+| 5 | MAJOR | precision D^{−3/8} is a typical-count prediction (cap gives D^{−1/2}); covariance O(D^{−2α}) needs uniform bounded variance; "(log x)^{−3/8}" wrong | accepted |
+| 6 | MAJOR | Lemma CL's bad-moduli step invalid; RC sound conditionally and answers the blind objection | accepted: CL re-outlined via W-U (§2.2), marked UNVERIFIED |
+| 7 | MAJOR | polylog per-child loss is affordable as work, not as root density (km loss) | accepted (§3.1) |
+| 8 | MAJOR | local-data conditioning for depth ≥ 4 pins the field; 1/3 extrapolation unsupported | accepted: §3.5 rewritten, claim withdrawn |
+| 9 | MAJOR | R3 not invalidated (certificates still 1 + m points); γ₂ not necessary (counterexample) | accepted (§3.4, §5) |
+| 10 | MAJOR | Lemma CC's consequence unsupported (diffuse-label assumption; fiber fields can serve other rows) | accepted: consequence weakened (§4) |
+| 11 | MINOR | Plücker coefficient ℓ·det(P′, P″); determinant sizes are upper bounds; Harper Cor. 1 error O(log(u+1)/log y) at exactly our scale; LS range excludes L[3/8]; GKZ trap removal is a union-type precedent; KW covers growing characteristic | accepted (§3.2, §3.4, §7) |
+
+Codex's subjective probability that PC₃ for the actual design is provable by known methods in a focused effort:
+≈ 15%. Ours: 5–10% (U′ and the conditional normalisation are additional hurdles).
+
+**Opus proof critic (read-only, on v1).** Prop UB ACCEPT; Theorem 2L ACCEPT WITH FIXES (U′ not routine); Prop RC
+ACCEPT WITH FIXES (constants checked); Lemma CL MAJOR REVISION (bad moduli in an upper bound; fix via W-U); Lemma CC
+ACCEPT WITH FIXES (lemma trivial and correct, consequence's count wrong); model formulas ACCEPT; §3.5 MAJOR REVISION
+(wrong cutoff y₀ ≳ D^{(j−3)α}; conditioning pins the field for j ≥ 5; archimedean fluctuations). Minor: primitive boxes
+mod ±1 (perfectly correlated multiples), q ∥ F(P′) in Good, Chebyshev constant 3η/4, K ≥ 1 in RC, density 2ε′,
+independence assumption in the per-child loss bookkeeping, necessity claims rest on (R1), EH wording, model.py
+docstrings. All applied.
+
+**Opus literature critic (read-only): OK WITH FIXES.** All attributions substantially correct. Applied: Harper's
+O(log(u+1)/log y) is main-term bookkeeping, not a minor-arc limit (so the precision caveat is about bookkeeping, and
+the real difficulties are coefficients, weights and averaging); Drappeau 2013 (GRH) covers y = L[3/8], correcting the
+draft's "outside the GRH range"; LS's coefficient remark is one sentence; Drappeau 2015 Lemme 5 and Théorème 1 added;
+GKZ precedent reworded as formal; §7 filled with the missing references.
 
 ## 9. Reproduction
 
