@@ -1,0 +1,625 @@
+1. PRE-FACTORED ALGEBRAIC FAMILIES STEERED MOD N
+
+I use x = log N, F_alpha = x^alpha(log x)^(1-alpha), and L[alpha,c] = exp((c+o(1))F_alpha). Let B be the primes at most y not dividing N, and m = |B| = L[1/3,kappa]. Finding a factor among B already solves the relevant splitting problem.
+
+SS is a sampling-model statement, including its smoothness and relation assumptions. It is not a lower bound for unrestricted construction. The parameter counts below measure available choices; they do not prove that computing an appropriate choice is difficult.
+
+The principal new positive result in this report is the random-square reduction in Section 3. It supplies a rigorous fruitfulness guarantee that arbitrary short-interval constructors do not have.
+
+1.1 What the algebraic families actually supply
+
+FALSE: cyclotomic, Aurifeuillian, Lucas, Lehmer, Chebyshev, and Cunningham values generally come with full prime factorizations.
+
+They supply identities, divisibility information, or restrictions on possible prime divisors. These are different resources. For example,
+
+Phi_11(2) = 2047 = 23·89.
+
+The cyclotomic description does not itself produce 23 and 89. Similarly, an Aurifeuillian identity generally splits an integer into smaller composite integers.
+
+If complete factorizations are supplied externally, their construction cost must either be charged or explicitly treated as preprocessing.
+
+PROVED: making a product an integer square supplies a modular square with its already-known integer square root. It supplies no second root.
+
+Suppose the factorizations reveal that product F_i = Y² in Z. Reducing this equality modulo N gives the same root Y on both sides. A useful congruence requires another independently obtained root, or another N-dependent multiplicative identity.
+
+The weaker objective “make the product a quadratic residue modulo N” also does not supply a root. Indeed, F² is always a quadratic residue. The missing resource is a useful root or representation.
+
+1.2 Degrees of freedom and the unresolved side
+
+For a product of r family members, with bases a_i ≤ A, indices n_i ≤ n0, and exponents 0 ≤ e_i ≤ E, a crude choice count is
+
+C ≤ r(log A + log n0 + log(E+1)).
+
+The size constraint separately bounds sums such as
+
+sum e_i n_i log a_i
+
+for a_i^n_i - 1, or sum e_i phi(n_i)log a_i for cyclotomic values.
+
+Choosing these parameters as functions of N does not enlarge their ranges. An adaptive algorithm may nevertheless exploit their structure; counting alone does not rule that out.
+
+PROVED: for fixed nondegenerate n and a ≥ 2,
+
+log |Phi_n(a)| = phi(n)log a + O(1).
+
+One proof uses the Möbius product and bounds the correction by sum_{d≥1}|log(1-a^(-d))|. Consequently, at matched size |Phi_n(a)| ≤ N^C, phi(n) = O(x). Thus the cyclotomic index cannot provide a subexponentially large recurrence enhancement while the value remains of N-sized logarithmic height.
+
+The family-specific counts are as follows.
+
+Cyclotomic and Aurifeuillian families: one base and one index per member, plus a bounded choice of algebraic split in the usual identities. Multiplying members adds their parameter ranges and their logarithmic sizes. Factoring an algebraic component remains an unresolved task unless its factorization is supplied.
+
+Lucas and Lehmer families: with the recurrence fixed, one index per member. Varying the recurrence adds its coefficients or algebraic parameters. Chebyshev values have the same underlying power-map structure, visible through
+
+T_n((z+z^(-1))/2) = (z^n+z^(-n))/2.
+
+These transformations do not create additional independent parameters.
+
+Binomial coefficients: if the top index n ≤ y, every binomial(n,r) is y-smooth, and its factorization is computable from factorial valuations. There are at most y² such values. This is far too few distinct N-sized values for generic placement in windows of length h; this is an application of the supplied placement results. Products of arbitrarily many such values become an exponent-vector construction problem. That growing family is not excluded by the sparse-family argument.
+
+Products of consecutive integers: their symbolic product is known, but their prime factorizations are not generally known. Restricting every constituent to be at most y gives a smooth product and returns to the same exponent-vector problem.
+
+Norms of products of small-norm generators: if
+
+alpha = product gamma_i^(e_i) · product epsilon_j^(f_j),
+
+the formal parameters are the generator exponents e_i and unit exponents f_j. The rational norm depends on the e_i and on unit signs, since |Norm(epsilon_j)| = 1. Units therefore add no positive norm-size entropy.
+
+Units can change an algebraic element’s image modulo N. To exploit that, one needs an explicit map to Z/NZ and an algorithm navigating the images of the units. This is a modular representation problem. Moreover, bounding the norm does not bound the heights of the conjugates: unit exponents are not free archimedean parameters. A growing-degree field also brings field, unit, and map-construction costs.
+
+Cunningham-type numbers: a representation N = a^n ± 1 can give immediate algebraic factors for suitable composite indices. That is a special-input advantage. Knowing that a has a prescribed order modulo both unknown factors of a primitive component does not generally split that component.
+
+OPEN: target-dependent growing families, including growing unit rank, might support a faster navigation algorithm. None of the preceding counts proves otherwise.
+
+HEURISTIC cost comparison against SS:
+
+If a fully factored family value F is constructed and its residue v = F mod N is otherwise unstructured, the unresolved side has log-size approximately x. At the prescribed y, its smoothness penalty is
+
+L[2/3, 2/(3kappa)] per accepted output.
+
+If the factor base were optimized for this unresolved size, SS instead gives exponent 1/2.
+
+If construction places F in [kN,kN+h], the unresolved side is v ≤ h, with log-size nu F_(2/3). Its smoothness penalty becomes
+
+L[1/3, nu/(3kappa)].
+
+That is the useful Prop SI regime. The missing operation is placement, not multiplication or symbolic factorization.
+
+If every side is constructed, SS does not apply. One must analyze the construction algorithm itself.
+
+1.3 Exact recurrence formulas
+
+PROVED: for p prime and a uniform in F_p^*,
+
+Pr[p divides a^n-1] = gcd(n,p-1)/(p-1).
+
+The multiplicative group is cyclic, and the numerator counts roots of X^n = 1.
+
+For independent bases a,b,
+
+Pr[p divides both a^n-1 and b^j-1]
+= gcd(n,p-1)gcd(j,p-1)/(p-1)².
+
+For a shared uniform base a,
+
+Pr[p divides both a^n-1 and a^j-1]
+= gcd(n,j,p-1)/(p-1).
+
+Thus shared-base correlations can be much stronger than independent divisibility.
+
+For cyclotomic values, excluding p dividing n,
+
+Pr[p divides Phi_n(a)] =
+phi(n)/(p-1), if n divides p-1;
+0, otherwise.
+
+This follows because Phi_n has precisely the primitive n-th roots as roots modulo p.
+
+Hence an eligible prime does recur more frequently: its conditional raw-candidate recurrence rate is about phi(n)/p rather than 1/p.
+
+HEURISTIC: averaging over primes balances the first-order incidence enhancement. Eligible primes have density approximately 1/phi(n). Pair collisions retain an enhancement of approximately phi(n), because the divisibility probability is squared before summing over primes.
+
+At matched integer size, phi(n) = O(x), so this enhancement is polynomial in x. It does not change an L exponent or leading L constant.
+
+This residue model requires care for short base ranges. For bases 1 ≤ a ≤ A, the exact probability is
+
+#{a ≤ A : p divides Phi_n(a)}/A.
+
+When A < p, replacing this by phi(n)/p is an additional distribution assumption.
+
+PROVED: for fixed a and p not dividing a, put d = ord_p(a). Then p occurs in precisely those a^n-1 with d dividing n.
+
+Among n ≤ n0 it occurs floor(n0/d) times. If d > n0/2, it occurs only once.
+
+This supplies cheap recurrence after a prime and its order are known, but it supplies no relation involving N. Furthermore, for odd p,
+
+v_p(a^(dt)-1) = v_p(a^d-1) + v_p(t).
+
+Thus much of the forced recurrence is simply a known divisor inherited from a^d-1. The remaining quotient still needs processing.
+
+PROVED, known literature: every nondegenerate Lucas or Lehmer term of index n > 30 has a primitive prime divisor. This supplies new support rather than guaranteeing reuse. Primitive divisors need not occur to odd valuation, so this theorem alone is not a parity-rank obstruction. I verified the statement and primitive-divisor definitions in the [Bilu–Hanrot–Voutier paper](https://www.researchgate.net/profile/Paul_Voutier/publication/2397582_Existence_of_Primitive_Divisors_of_Lucas_and_Lehmer_Numbers/links/559999c308ae99aa62cc6983/Existence-of-Primitive-Divisors-of-Lucas-and-Lehmer-Numbers.pdf?origin=publication_detail).
+
+PROVED by exact computation: for 2^n-1, 1 ≤ n ≤ 36, the primes exceeding 100 comprise 25 distinct primes and 33 incidences; 20 primes occur only once. For example:
+
+127 has order 7 and occurs at indices 7,14,21,28,35.
+257 has order 16 and occurs at 16,32.
+337 has order 21 and occurs only at 21.
+
+These are illustrations of the exact order formula, not asymptotic evidence.
+
+1.4 Recurrence versus usable relations: the precise accounting
+
+PROVED: suppose R actual modular relations have been obtained. Let d be the rank over F_2 of their columns corresponding to primes outside the small factor base. Eliminating these columns leaves a combination space of dimension R-d. Its image in the small-prime columns has dimension at most R-d.
+
+Thus R-d ≥ m is necessary to obtain m independent small-base rows, and R-d > m guarantees a full parity dependency. Neither condition guarantees a fruitful dependency.
+
+A fresh large prime appearing to odd valuation in only one row forces that row’s coefficient to be zero in every dependency.
+
+For the one-large-prime model, let w_p be the conditional probability that a retained partial relation carries large prime p. For R independent partials, the expected number of combinations surviving large-prime elimination is exactly
+
+R - sum_p [1-(1-w_p)^R].
+
+The expected number of equal-prime pairs is
+
+binomial(R,2) sum_p w_p²,
+
+but this overcounts the independent combinations when a prime appears repeatedly.
+
+These formulas distinguish first collisions from producing m usable relations. QS/NFS raw divisibility rates have the form “number of roots modulo p, divided by p”; conditioning on retained partial relations changes the distribution w_p.
+
+PROVED: replacing small primes by a known set of larger primes cannot improve the density of representable integers at fixed factor-base cardinality.
+
+Let P = {p_1 < ... < p_K}, and let q_i be the i-th prime. Sending the exponent vector of product p_i^(e_i) to product q_i^(e_i) is injective and never increases its value. Therefore
+
+#{P-smooth integers ≤ X} ≤ Psi(X,q_K).
+
+This is a density statement for unrestricted integers. It does not prohibit special modular correlations.
+
+OPEN: there is no precise finite cost for obtaining m useful N-linked relations merely from the assertion “all a^n-1 in this rectangle are fully factored.”
+
+The table supplies factorizations, not the necessary N-linked relations. After gcd checks, an additional mechanism must provide either:
+
+a known square root modulo N;
+a second factored side;
+a short residue;
+or a modular representation of a selected target.
+
+If there is a fixed total support of K known primes and residues behave randomly, the elementary “reduce and smooth-test” protocol needs heuristically
+
+K · L[2/3,2/(3kappa)]
+
+raw values, followed by algebra on K columns. This assumes enough fresh relations and fruitful dependencies. If new large-prime columns continue appearing, the rank accounting above replaces this estimate.
+
+There is also a stronger relaxation: primality is unnecessary. Any known unit integers b_1,...,b_K can serve as formal generators. A constructor representing random square residues as words in these generators factors N by Section 3. The difficult operation is representation; factorization of the generators is not required.
+
+
+2. MULTIPLICATIVE CLOSURE AND SUM-PRODUCT
+
+2.1 What the verified results provide
+
+PROVED, known literature: Bourgain–Konyagin prove sum-product growth and exponential-sum estimates for multiplicative subgroups. These statements concern cardinalities and cancellation. I checked Theorem 1.1 and the subgroup estimates in their [2003 paper](https://www.numdam.org/item/10.1016/S1631-073X(03)00281-4.pdf).
+
+For example, suppose a subgroup H satisfies
+
+max_{t ≠ 0} |sum_{a in H} exp(2pi i ta/p)| ≤ |H|p^(-gamma).
+
+Fourier completion gives an interval-count error O(|H|p^(-gamma)log p). Comparing this with the main term |H|h/p proves an interval hit when
+
+h is substantially larger than p^(1-gamma)log p.
+
+For fixed gamma < 1, this is much larger than h = p^o(1). More fundamentally, the subgroup’s existence and distribution do not give short words for its elements.
+
+PROVED, concrete literature examples:
+
+Garaev proves representations of quadratic residues by a bounded number of integers at most p^(1/(4e^(2/3))+epsilon). He also proves existence of nontrivial products equal to 1 modulo arbitrary large m using factors at most m^epsilon, with the number of factors depending on epsilon. These are fixed-positive-power results; substituting epsilon = log y/log N requires quantitative uniformity and algorithmic analysis not supplied by the statements. See the [paper’s abstract and theorems](https://arxiv.org/pdf/1701.07119).
+
+Murphy–Rudnev–Shkredov–Shteinikov give, for subgroups of order at least sqrt(p), a maximum coset-gap bound p^(437/480+o(1)), Theorem 6.8. This verified example remains far from subexponential interval lengths. It is not asserted here to be the latest bound. See their [2019 paper](https://www.numdam.org/article/JTNB_2019__31_3_573_0.pdf).
+
+Bourgain–Garaev–Konyagin–Shparlinski study multiplicative congruence energies and product-set cardinalities for short intervals. These are useful distribution tools, but an energy estimate is not an endpoint-navigation algorithm. I checked the definitions and introductory bounds in their [primary paper](https://arxiv.org/pdf/1203.0017).
+
+OPEN: I found no result among these approaches supplying the requested faster-than-sampling constructor.
+
+2.2 The degrees-of-freedom requirement
+
+PROVED: if products of r integers from [1,H] cover every unit residue modulo N, then
+
+H^r ≥ phi(N).
+
+Consequently,
+
+r log H ≥ log phi(N).
+
+If their residues meet every circular interval of length h+1, their distinct residue set has size at least N/(h+1), giving
+
+r log H ≥ x-log(h+1).
+
+For H ≤ y, this requires r of order at least x/log y: a growing number of factors. A theorem with a fixed number of factors bounded by N^epsilon does not automatically give the required small-factor regime.
+
+This count is compatible with construction. It says that sufficient combinatorial freedom must exist; it does not give an algorithm selecting the factors.
+
+All these factors are constructed, so there need be no unresolved smoothness integer. SS then gives no lower bound. This is precisely where a navigation breakthrough could escape the sampling law.
+
+2.3 What covering gives algorithmically
+
+PROVED: let
+
+M_I = #{(a,b) in A×B : ab mod N lies in I}.
+
+Uniform pair sampling succeeds with probability M_I/(|A||B|). A covering theorem asserting only M_I ≥ 1 gives no stronger sampling bound than |A||B| trials.
+
+An equidistribution theorem giving M_I approximately |A||B||I|/N yields approximately N/|I| pair tests per hit. At the requested scale, N/h is exponential in x.
+
+For a point target t and explicit lists, invertible elements permit a hash-based meet-in-the-middle algorithm in O(|A|+|B|) operations: seek b = t a^(-1). This improvement comes from the explicit lists and the matching operation, not from covering.
+
+For an interval target, enumerating all its point targets gives a corresponding bound such as O(h|A|+|B|), while checking every pair costs O(|A||B|). Specialized algorithms may improve these bounds for particular sets. Covering alone does not imply such an improvement.
+
+I do not infer a universal lower bound for structured algorithms from these elementary upper bounds or from the supplied Prop MM.
+
+PROVED: the full multiplicative semigroup modulo N also conceals a height constraint. Multiplication preserves smoothness, but repeatedly multiplying representatives increases their integer heights. A subgroup generated by small primes may be the entire unit group while finding a short product representing a selected element remains difficult.
+
+For composite N, prime-field growth statements additionally require appropriate control of simultaneous CRT projections. A theorem modulo an unknown prime factor does not by itself provide an algorithm modulo N.
+
+The unresolved target is therefore constructive, height-controlled navigation in a compressed product set.
+
+
+3. RESIDUE-CLASS CONSTRUCTION VERSUS INDEX CALCULUS
+
+3.1 A rigorous reduction from random-square representations
+
+PROVED: let b_1,...,b_m be known units modulo an odd N with at least two distinct prime factors. Suppose an algorithm C, given only N and
+
+a = r² mod N,
+
+where r is uniform in the unit group, succeeds with probability delta in returning integers e_1,...,e_m satisfying
+
+a = product b_j^(e_j) mod N.
+
+Negative exponents are allowed. Assume polynomial-size exponent encodings and charge their processing cost.
+
+Then N can be split using an expected O(m/delta) calls to C, plus polynomial-time linear algebra in the matrix dimensions and encoding lengths.
+
+Proof:
+
+Sample independent uniform units r_i. Send only a_i = r_i² mod N to C. Keep m+1 successful representations. Choose a nonempty subset J whose exponent vectors sum to zero modulo 2. Such a subset exists because there are m coordinates.
+
+Put
+
+R = product_{i in J} r_i mod N,
+
+Y = product_j b_j^((sum_{i in J} e_ij)/2) mod N.
+
+Then R² = Y² mod N.
+
+Conditional on all the a_i and all constructor outputs, every r_i remains uniform among the square roots of a_i. Choose J using only this conditioned information. Multiplying any one selected r_i by a uniformly chosen square root of 1 shows that R is uniform among the roots of Y².
+
+If N has s distinct odd prime factors, exactly 2^s such roots exist. Only two give R = ±Y simultaneously at every CRT component. Hence
+
+Pr[1 < gcd(R-Y,N) < N] = 1-2^(1-s) ≥ 1/2.
+
+Repeat with a fresh batch if necessary.
+
+This proof permits an adversarial constructor, including one that internally knows the factors of N. It must not receive the sampled root r or information revealing its CRT signs.
+
+For y-smooth integer representatives, take b_j to be the factor-base primes. For factored quotients u/v, use exponent differences.
+
+The construction need not produce distinct representatives, random-looking exponent rows, or full row rank. None of those assumptions enters the proof.
+
+PROVED cost: if each oracle invocation costs T and delta is its success probability on random squares, collection costs O(mT/delta). Elementary Gaussian elimination gives an additional m³ times polynomial factors. For representatives with log u+log v = O(x), each row has only O(x) nonzero entries, allowing the standard sparse-linear-algebra accounting m² times polynomial factors.
+
+Writing T = L[1/3,tau] and delta = L[1/3,-d], the resulting constants are
+
+max(kappa+tau+d, 3kappa)
+
+with elementary elimination, and
+
+max(kappa+tau+d, 2kappa)
+
+under the usual sparse accounting.
+
+Unlike a general short-interval reduction, the splitting probability here is proved.
+
+PROVED by exact computation: for N = 77, the square residues 15 and 58 admit 5-smooth representatives 15 and 135. Their product is 2025 = 45². Exhausting the four roots of each residue gives 8 splitting pairs among 16 pairs, exactly the predicted probability 1/2.
+
+3.2 Every-class construction and Bach’s reduction
+
+PROVED: an every-class representative constructor implies the random-square constructor immediately. Thus it implies factoring with the preceding costs, without GRH.
+
+The converse at matched height is OPEN. Factoring N supplies square roots and CRT coordinates, but does not supply short smooth representatives. Prime moduli already exhibit the distinction: their factorization is known.
+
+For comparison, Bach establishes polynomial-time reductions identifying composite-modulus discrete logarithms with factoring together with prime-modulus discrete logarithms. I verified these three reductions in the [official Berkeley report abstract](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1984/5973.html).
+
+Here is an independent proof sketch of the factoring direction. Choose a random unit g and a secret integer r uniform in [0,N²). Ask a discrete-log algorithm for t satisfying
+
+g^t = g^r mod N.
+
+Then r-t is a multiple of ord_N(g). Because the oracle sees only g and g^r, the probability r=t is at most N/N². A nonzero multiple of the order permits the usual repeated-squaring gcd procedure. Random CRT components of g give a constant splitting probability.
+
+This requires a genuine discrete-log solver on the promised inputs. It does not follow merely from finding some multiplicative identities.
+
+3.3 The precise representation/DLP equivalence
+
+PROVED: in a known cyclic group G = <g> of known order M, unrestricted product representation in a generating factor base and discrete logarithms are polynomial-time interreducible, with polynomial overhead in the factor-base size and output encoding lengths.
+
+The qualification “unrestricted” matters.
+
+DLP to representation: compute ell_j = log_g b_j and t = log_g a. Since the b_j generate G,
+
+gcd(M,ell_1,...,ell_m) = 1.
+
+Extended gcd supplies coefficients expressing 1 as a combination of these integers. Multiplying by t gives a representation. Exponents can be reduced modulo M.
+
+Their binary encodings are short, but the resulting integer product can have logarithmic size comparable to M, rather than log M. This reduction does not solve the matched-height construction problem.
+
+Representation to DLP: to determine z = log_g h, choose m+1 independent uniform pairs r_i,s_i modulo M and represent
+
+a_i = g^(r_i) h^(s_i)
+
+in the factor base. Let E be the resulting exponent matrix. Choose a primitive integer vector c ≠ 0 with E^T c = 0. Then
+
+sum c_i r_i + z sum c_i s_i = 0 mod M.
+
+Each a_i is uniform and independent of s_i. Consequently, conditional on E, sum c_i s_i is uniform modulo M: primitivity means gcd(c_1,...,c_(m+1)) = 1. With probability phi(M)/M it is invertible, and the displayed equation gives z. Repetition has polynomial expected overhead.
+
+This proves the qualitative equivalence without a random-rank assumption. The general descent-to-DLP implication also appears explicitly as Theorem 3.1 in [Kleinjung–Wesolowski](https://arxiv.org/pdf/1906.10668).
+
+OPEN: bounded-height smooth representation is stronger than unrestricted representation, and the converse reduction preserving height is not established here.
+
+Thus “smooth representative construction is equivalent to factoring” is too strong. The proved implications are:
+
+bounded-height construction implies factoring;
+suitable general representation implies DLP;
+factoring alone does not currently give bounded-height construction.
+
+3.4 What JMV expansion establishes
+
+PROVED assuming GRH: short smooth quotients exist in every unit class.
+
+Jao–Miller–Venkatesan’s Theorem 1.1 gives, for the normalized walk multiplying by primes at most y or their inverses, a nontrivial eigenvalue bound
+
+eta = O(y^(-1/2) log y log(Ny))
+    = exp(-(1/2+o(1))log y).
+
+For t = ceil((2+epsilon)x/log y), Fourier inversion gives
+
+P^t(1,a) ≥ 1/|G| - eta^t > 0.
+
+The corresponding word supplies u/v = a mod N with
+
+log u + log v ≤ (2+epsilon+o(1))x.
+
+This is an existence proof, not a navigation algorithm. Unconditioned walks hit a specified class with probability approximately 1/|G|. I checked the eigenvalue and mixing statements in [JMV, Theorem 1.1 and Corollary 1.3](https://arxiv.org/pdf/0811.0647).
+
+3.5 Which weaker tasks suffice?
+
+FALSE: “find some smooth u whose least residue is also smooth” suffices.
+
+For N = 15,
+
+256 = 1 mod 15.
+
+Both sides are 2-smooth, but their integer square roots are 16 and 1. The gcds are 15 and 1. Repeated powers supply arbitrarily many equally useless relations. More generally, N = 2^k-1 gives this construction with u = 2^(2k).
+
+PROVED: a perfect-square smooth representative of a random square residue suffices in one successful call. Its integer square root is a modular square root; the hidden-root argument gives splitting probability at least 1/2.
+
+PROVED: arbitrary smooth representatives of random square residues suffice in m+1 successful calls, as above.
+
+PROVED: merely specifying the size of an allowed class set D is insufficient. What matters is its mass within the square subgroup and whether the constructor works on that mass.
+
+For an odd semiprime, squares occupy one quarter of the unit group. A set occupying three quarters can omit every square. If D has unit-group density beta > 3/4, its relative density among squares is at least 4beta-3.
+
+If D contains only M square classes, random-square queries hit it with probability M/|G²|. A small set can therefore impose an exponential waiting cost even if construction inside D is easy.
+
+HEURISTIC sampling comparison: for a prescribed random square residue a, testing a+kN at N^(1+o(1)) size has smoothness penalty L[2/3,2/(3kappa)]. Multiplying a constructed smooth denominator by a and testing its residue gives the same N-sized unresolved side unless additional structure shrinks it.
+
+There is no unique weakest construction under every possible reduction. A clean sufficient interface is: represent an inverse-polynomial fraction of random square residues, with the sampled roots hidden. It avoids both arbitrary-target requirements and heuristic fruitfulness assumptions.
+
+
+4. RECURSIVE DESCENT
+
+4.1 The exact algorithmic ingredient needed
+
+PROVED: a polynomial-cost, bounded-branching elimination procedure would give a quasipolynomial factoring algorithm.
+
+Here is a sufficient axiom. For every relevant target t modulo the original N, with a size measure z, an elimination procedure returns a certified product or quotient of at most x^C child targets, each of size at most theta z, where theta < 1 is fixed. It costs x^C, preserves the modular relation, bounds exponent encodings, and avoids exceptional targets that block later elimination.
+
+If terminal targets are factorable over primes at most x^K, the depth is O(log x). The whole tree has at most
+
+(x^C)^(O(log x)) = exp(O((log x)²))
+
+nodes. Applying this to random square residues supplies the representations of Section 3 and factors N in quasipolynomial time.
+
+This formal implication shows exactly how strong an integer analogue would be.
+
+The required property is not just that some smaller integers occur. Every unresolved target must descend, the branching must remain controlled, and the congruence must remain modulo the original N.
+
+4.2 What small-characteristic descent supplies
+
+PROVED, literature: BGJT’s Proposition 2 supplies, heuristically, elimination to factors of at most half the target degree, with polynomial cost and polynomial branching. This gives logarithmic depth. I checked this proposition and its complexity discussion in [BGJT](https://arxiv.org/pdf/1306.4244).
+
+Kleinjung–Wesolowski prove fixed-characteristic DLP in expected time
+
+(pn)^(2 log_2 n + O(1)).
+
+Their elliptic-curve model supplies a low-degree realization of Frobenius and makes the required field model rigorous. I checked Theorem 1.1 and Sections 2–3 in the [primary paper](https://arxiv.org/pdf/1906.10668).
+
+The integer problem lacks the combined package:
+
+a useful small-factor measure;
+many target-conditioned eliminations;
+a small compressed side in the same presentation;
+controlled branching;
+and avoidance of later traps.
+
+Frobenius and the systematic equation implement this package in the known finite-field algorithms. I do not claim they are logically necessary for every possible fast integer construction.
+
+4.3 Why degree-halving is different from integer size-halving
+
+PROVED: an exact integer factorization of a prime t cannot express it as a product or quotient of smaller integers avoiding t. Unique factorization forbids it.
+
+Therefore a useful integer descent must exploit a nonzero modular defect, for example
+
+tA - B = kN, k ≠ 0.
+
+This entails
+
+max(log|tA|,log|B|) ≥ x-O(1).
+
+If every unresolved child has log-size at most theta log t, and both sides use only a bounded number of such children, this inequality fails once log t = o(x).
+
+Hence an integer descent must eventually do at least one of the following:
+
+use a growing number of small pieces;
+introduce a large unresolved cofactor;
+or construct a highly structured cancellation involving N.
+
+The first option is compatible with fast construction. It lies outside SS’s bounded-number-of-random-integers model. The third is the substantive missing arithmetic identity.
+
+Base extension alone does not reduce absolute norm size. Splitting an object after extending the coefficient field is useful only when combined with an elimination and norm-back operation that reduces the effective target complexity.
+
+4.4 Classical special-q descent and optimality claims
+
+HEURISTIC, within the conventional model: special-q descent forces a known target divisor into one norm. The remaining norm quotient and the companion norms still require smoothness. The special-q condition consumes lattice volume; it does not construct all the remaining factors.
+
+Its N-dependent choices are lattice coordinates and, when allowed, presentation parameters. Their entropy must be charged against the norm sizes.
+
+If an unresolved candidate has total log-size F_sigma, SS gives exponent sigma/2 within its assumptions. Thus a model retaining unresolved norm size F_(2/3) retains an L[1/3] bottleneck.
+
+OPEN: no unrestricted optimality theorem for integer descent follows. Even the usual NFS size/entropy constraints include genericity and smoothness hypotheses. They do not rule out growing structured products or a new target-dependent identity.
+
+4.5 Can a constructor for smaller moduli recurse?
+
+PROVED: the direct scaling reduction does not substantially shrink log N while preserving the requested short-window guarantee.
+
+Choose a y-smooth D and set N' = ceil(N/D). Write
+
+DN' = N+s, 0 ≤ s < D.
+
+If a smaller-modulus constructor supplies
+
+w = kN' + v', 0 ≤ v' ≤ h',
+
+then u = Dw satisfies
+
+u-kN = ks + Dv'.
+
+A guarantee for all permitted outputs requires
+
+Ks + Dh' ≤ h
+
+for multipliers k ≤ K. In particular, if h' ≥ 1, D ≤ h. Thus
+
+log N' ≥ x-log h-O(1) = (1-o(1))x.
+
+Iterating this scaling consumes the window budget through the accumulated product of the D’s. It does not reduce N to a substantially smaller logarithmic scale while retaining a nontrivial output interval.
+
+Choosing a much larger D leaves an interval of width below one for w. Engineering that exact smooth value is another form of the original construction problem.
+
+Likewise, constructing a smooth residue v ≤ h independently does not ensure that kN+v remains smooth. Recursing on v must preserve the simultaneous original-modulus condition.
+
+OPEN: a different recursion could work, but it needs a lifting or elimination theorem. A smaller-modulus SI oracle by itself supplies no such theorem.
+
+
+5. WILD CONSTRUCTIONS: KILL OR KEEP
+
+5.1 Smooth dynamical orbits
+
+FALSE: iterating z -> z(z+1) preserves a fixed smoothness bound.
+
+Starting from 2 gives
+
+2, 6, 42, 1806, ...
+
+The factor 43 already enters at the next stage after 42. More generally, gcd(z,z+1)=1, so every prime divisor introduced through z+1 is absent from z. Since later terms contain all earlier terms, each step introduces a new prime.
+
+Sylvester-type products have the same obstruction. Euclid–Mullin constructions deliberately introduce new primes and generally require factoring the next auxiliary integer.
+
+Degrees of freedom: a fixed orbit has only its initial seed and iteration count. Adding enough branches to steer it converts the problem into selecting factors or solving a modular representation problem.
+
+Cost: a specified orbit is cheap to evaluate while its bit length is controlled, but it supplies no generic N placement and no fixed-y guarantee.
+
+OPEN verdict: keep only variants with a proved, N-dependent steering rule and controlled prime support. The standard orbits provide neither.
+
+5.2 Random factored generation and derandomization
+
+PROVED: generating a smooth integer with known factorization can be inexpensive. Conditioning its value on a selected residue or short interval is a separate operation.
+
+Under uniform residue behavior, rejection costs N/h for a residue window of width h, or N for one class.
+
+OPEN, keep: conditional counting or conditional sampling over exponent vectors could change this.
+
+For example, an algorithm that counts or samples completions of a partially specified small-prime word, conditional on its endpoint, could navigate to the target. The needed information must remain useful after successive restrictions. A global equidistribution estimate does not provide it.
+
+The word has about x/log y prime choices at N-sized logarithmic height. Its entropy is sufficient. Computing conditional completions is the missing step.
+
+A pseudorandom generator alone supplies no improvement: it needs a proved hitting property for this arithmetic target class.
+
+5.3 Tropical and valuation constructions
+
+PROVED: prescribed valuations give a factored divisor D. The remaining operation is to make a multiple Dw lie in the target window.
+
+If D ≤ h, the quotient still has log-size x-log D = (1-o(1))x. If D > h, the window contains at most one multiple of D. Selecting D so that this multiple is completely smooth is the substantive target-dependent construction problem.
+
+This is not an impossibility theorem for adaptive valuation methods. It identifies why assembling local valuations is insufficient.
+
+OPEN verdict: retain adaptive methods only if they solve the final archimedean placement or modular representation problem efficiently.
+
+5.4 Factorizations of polynomials over finite fields
+
+PROVED: a factorization modulo ell does not generally become a factorization of the evaluated integer. Lifting gives
+
+F(T) = product F_i(T) + ell R(T),
+
+and evaluation retains the defect ell R(M).
+
+There is no unital ring homomorphism F_ell -> Z/NZ unless N divides ell. Thus the field identity cannot simply be transported to an unrelated composite modulus.
+
+Choosing factors first and evaluating them does construct an integer product. Its factors still need to be small or factored, and steering the evaluation modulo N remains necessary.
+
+Degrees of freedom: the roots or factor coefficients are genuine parameters, but modular compression and integer height impose additional constraints. A fixed number of random evaluated factors returns to SS; a growing number of constructed small factors returns to navigation.
+
+OPEN verdict: keep a new height-controlled lifting theorem; kill the direct transfer.
+
+5.5 Units and random multiplicative walks
+
+PROVED: small-norm generators and units can give inexpensive walks among modular images once their images are known. Their norms do not locate the walk endpoint in a desired residue class.
+
+OPEN, keep: an efficient endpoint-conditioned walk algorithm. This is the most coherent surviving version of the unit, dynamical, and multiplicative-closure ideas. It would construct representations rather than search for smooth values.
+
+
+6. STRONGEST REMAINING TARGET AND RESEARCH PROBABILITY
+
+OPEN: my strongest remaining target is the following precise short-quotient constructor.
+
+Input: an odd N and a residue a sampled uniformly from the squares in (Z/NZ)^*, with its sampled square root withheld.
+
+Parameters:
+
+y = L[1/3,0.60].
+
+Output, on at least an inverse-polynomial fraction of such inputs:
+
+positive y-smooth u,v, with complete factorizations;
+gcd(uv,N) = 1;
+u = av mod N;
+log u + log v ≤ 3 log N.
+
+Required expected invocation cost:
+
+L[1/3,1.20],
+
+with setup bounded by L[1/3,1.80].
+
+PROVED consequence: this gives randomized factoring in L[1/3,1.80]. Collection costs L[1/3,0.60+1.20]; elementary Gaussian elimination costs L[1/3,3·0.60]. The hidden-root argument proves a splitting probability at least 1/2. No smoothness-distribution or relation-fruitfulness heuristic is needed for this reduction.
+
+PROVED assuming GRH: the short quotients exist, by Section 3.4. The unresolved operation is finding them. A concrete equivalent search target is an endpoint-conditioned small-prime walk of length O(x/log y).
+
+Degrees of freedom: m prime generators, with a word containing O(x/log y) signed steps. There is enough entropy to encode the residue constraint. Both sides are constructed; there is no unresolved smoothness integer to which SS applies.
+
+A route with factor base and constructor cost L[alpha] for alpha < 1/3 would similarly improve the factoring exponent, provided setup and algebra fit that scale.
+
+HEURISTIC, subjective research prior: I assign about 5% probability that a genuinely constructive route among those discussed yields a modulus-generic classical improvement over L[1/3,1.902], and about 0.5% probability of an exponent below 1/3. These are research bets, not calibrated statistical estimates. Most of the positive weight belongs to target-dependent navigation or a new elimination theorem. The direct pre-factored-family and standard-orbit proposals receive very little.
+
+Literature verification scope:
+
+I checked primary-source statements for Bourgain–Konyagin’s growth and subgroup bounds; Garaev’s stated product representations; the Bourgain–Garaev–Konyagin–Shparlinski congruence framework; Murphy–Rudnev–Shkredov–Shteinikov’s Theorem 6.8; JMV’s Theorem 1.1 and Corollary 1.3; BGJT’s Proposition 2; Kleinjung–Wesolowski’s Theorems 1.1 and 3.1 and descent overview; and Bilu–Hanrot–Voutier’s primitive-divisor statement. For Bach I verified the official report abstract. The reductions proved here are written out independently. Repository labels were treated as internal claims with their stated model restrictions.
+
+The exact computations used plain Python; sympy and gmpy2 were unavailable.
