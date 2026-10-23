@@ -1,0 +1,131 @@
+1. Counting-guided walks
+
+Write X = ln N, H = X^(1/3)(ln X)^(2/3), J = X^(2/3)(ln X)^(1/3), and b = 0.60. Thus y = exp(bH + o(H)).
+
+PROVED: NAV has polynomial-length certificates: list the prime factors of u and v, with total logarithmic weight at most 3X. A binary encoding gives polynomially many self-reduction levels. However, the counting problem must allow prefix restrictions, remaining budgets, and restrictions on permitted factors. The unrestricted count C(t, N³) is not automatically closed under these operations. A dense exponent encoding instead has π(y) levels, which is superpolynomial in X.
+
+A relative approximation oracle for all these restricted counts gives sampling, hence finding, with polynomial overhead. This is the relevant [JVV implication](https://www2.stat.duke.edu/~scs/Courses/Stat376/Papers/ConvergeRates/RandomizedAlgs/JerrumValiantVaziraniTCS1986.pdf). It supplies no algorithm for those counts. Counting unrestricted pairs and counting ordered prime words also differ because word multiplicities vary.
+
+For rectangular bounds, character orthogonality gives
+
+C(t; U,V) = φ(N)^(-1) Σχ conjugate(χ(t)) Sχ(U) conjugate(Sχ(V)),
+
+where Sχ(U) sums χ over y-smooth integers ≤ U. The hyperbolic bound requires an additional summation or Mellin integral.
+
+Direct Fourier inversion has φ(N) = N^(1−o(1)) terms. Explicit CRT descriptions normally use factorization; evaluating arbitrary characters also presents DL problems even when N is prime. Factorization alone does not provide arbitrary character evaluations cheaply. Conversely, orthogonality does not prove that every possible character-based algorithm requires factoring.
+
+PROVED counting baseline: standard smooth-number estimates give total pair count
+
+M₃ = N³ exp(−(10/3 + o(1))J).
+
+Consequently, the mean C(t) over units is M₃/φ(N). HEURISTIC equidistribution predicts this for typical t; the mean alone proves neither concentration nor efficient navigation.
+
+For a mixed prime walk, endpoint probability is approximately 1/φ(N). The obvious Bernoulli Monte Carlo estimator therefore needs Θ(φ(N)ε^(−2)) trials for relative error ε. It encounters a witness on the same scale. Estimating every possible next-prime branch separately adds further overhead.
+
+PROVED UNDER GRH: the existence constant can actually be sharpened to 3. JMV gives normalized nonprincipal eigenvalues λ ≤ y^(−1/2+o(1)). For
+
+k = ceil((2+ε)X/ln y),
+
+Fourier inversion gives μ^k(t) ≥ 1/φ(N) − λ^k > 0. Every resulting signed word has ln u + ln v ≤ k ln y < 3X for fixed 0 < ε < 1 and sufficiently large N. This is my consequence of [JMV’s explicit bound](https://arxiv.org/pdf/0811.0647), not an algorithmic navigation theorem.
+
+OPEN: an L[1/3] algorithm for the restricted completion counts. Coarse asymptotics for unrestricted counts would not resolve this.
+
+2. Lattice/CVP formulation
+
+PROVED: the exact exponent lattice is
+
+Λ = {e ∈ Z^n : ∏p_i^(e_i) = 1 mod N},
+
+with determinant h = |〈p_i〉| ≤ φ(N). NAV asks for a vector in a prescribed coset with weighted ℓ1 norm Σ|e_i|ln p_i ≤ 3X. Producing a basis and a representative of that coset is already a substantial computational problem.
+
+Under GRH, the preceding existence argument gives minimum weighted distance d₁ ≤ (2+ε)X. Thus any fixed approximation factor γ < 3/2 would suffice, with suitable ε, if this modular lattice and coset were supplied. There is no established BDD promise: many solutions may exist, and no uniqueness radius is guaranteed.
+
+Schnorr’s real-logarithm lattice is different. With columns (ln p_i)e_i and last coordinates C ln p_i, its covolume is
+
+(∏ln p_i) sqrt(1+nC²).
+
+With Adleman’s diagonal weights sqrt(ln p_i), it becomes
+
+(∏sqrt(ln p_i)) sqrt(1+C²Σln p_i).
+
+Neither determinant is the modular index. A target C ln a enforces real approximation to a; it does not encode u−av = kN with free k.
+
+For the modular lattice in Adleman coordinates, squared Euclidean norm is Q = Σe_i²ln p_i. Since height ≤ Q, radius sqrt(3X) is sufficient, but not necessary. Squarefree signed vectors have Q equal to height.
+
+HEURISTIC: blindly applying the Gaussian heuristic gives radius approximately sqrt(n ln y/(2πe)), exceeding sqrt(3X) by L[1/3,0.30] times polynomial factors. This contradicts the sparse integer-point counting picture because the volume heuristic is inappropriate here; it is not evidence against existence. Ordinary ℓ1/ℓ2 conversion also loses sqrt(n) = L[1/3,0.30].
+
+At cost exp(1.20H), any sieve-based BKZ block size is at most O(H), even ignoring polynomial overhead. The block Gaussian heuristic plus GSA gives δβ ≈ (β/(2πe))^(1/(2β)) and an accumulated factor exp(Θ(n ln β/β)), far beyond a constant. This is a performance model, not a lower bound.
+
+Full-dimensional generic CVP/sieving costs exponentially in n, hence exp(exp((0.60+o(1))H)); even the familiar heuristic [sieving bounds](https://arxiv.org/abs/1607.04789) are vastly too expensive.
+
+Prop CV’s near-exact approximation requirement concerns its particular interval embedding. It is not a universal necessary approximation factor for NAV.
+
+3. Meet-in-the-middle and the square promise
+
+PROVED: for fixed lists independent of uniformly random a ∈ Q = G²,
+
+Pr[aS₁ intersects S₂] ≤ |S₁||S₂|/|Q|.
+
+Here |Q| = φ(N)/2^ω(N), and ω(N) ≤ X/ln y. Thus |Q| = N^(1−o(1)). Two lists of size L[1/3,1.20] have success probability at most N^(−1+o(1)). Unstructured collision search needs approximately sqrt(|Q|) = N^(1/2−o(1)) work. Target-adaptive lists escape this argument precisely by requiring additional navigation structure.
+
+The withheld root contributes no observable information beyond a. Its hidden sign choices explain EQ1’s factoring reduction, rather than a collision speedup.
+
+Restricting targets to Q can increase average counts or hit probabilities by at most [G:Q] = 2^ω(N), relative to averaging over G. This is not a pointwise bound between individual classes. Also, 2^ω(N) need not be L[1/3,o(1)], although it is N^o(1).
+
+OPEN: a bounded-height reduction from arbitrary-target NAV to square-target NAV. Squaring a and representing a² does not make numerator and denominator exponents even. For prime-field DL, by contrast, square-target logarithms suffice: logarithms of h² leave only two candidates to check.
+
+4. Rational reconstruction and descent
+
+PROVED: Gauss reconstruction gives signed representatives of size O(sqrt(N)), with logarithmic product X+O(1). Positivity is an additional issue.
+
+HEURISTIC: if the two pieces have ordinary integer smoothness statistics, their joint y-smoothness probability is
+
+exp(−(2/(3b)+o(1))J) = L[2/3,−1.111…].
+
+Thus direct reconstruction followed by smoothness testing costs L[2/3,1.111…], even granting inexpensive tests.
+
+For recursive descent, write the expected local search cost as candidate-cost divided by splitting probability. If branching is X^O(1), depth O(ln X), and every local search costs L[1/3,c], the whole tree still costs L[1/3,c+o(1)]. These hypotheses, and a separate bound on accumulated leaf exponents, require proof.
+
+The elementary obstruction is quantitative: a nonidentity relation u ≡ qv mod N satisfies |u|+q|v| ≥ N. For small q, rational reconstruction may simply return (q,1). An integer descent therefore needs a cheap way to split the large side; reconstruction itself supplies none.
+
+HEURISTIC NFS comparison: Commeine–Semaev’s basic initialization has constant 3^(1/3) = 1.442…, while Barbulescu’s early-abort analysis gives approximately 1.232. Fried–Gaudry–Heninger–Thomé’s Appendix A explicitly labels these bounds heuristic and assumes precomputed factor-base virtual logarithms. Its subsequent GNFS descent constants are below 1.232. These are individual-log costs, not complete DL costs, and 1.232 already exceeds NAV’s 1.20 budget. [Primary analysis](https://arxiv.org/pdf/1610.02874).
+
+NFS escapes the elementary smoothness price by using algebraic norms: numbers of size L[2/3,ν] have y-smoothness probability L[1/3,−ν/(3b)] under the usual distribution heuristic.
+
+But NFS descent is not literally a NAV solver under this definition. Its terminal objects include number-field ideals. Eliminating them through precomputed relations can produce rational-prime exponents, but there is no established conversion retaining total height O(X), let alone 3X. Computing a logarithm leaves a bounded modular representation problem to solve.
+
+Accepting the repository’s internal, unrefereed dependency chain, Theorem U/DL25 gives rigorous L[2/5,c] factoring/DL. Its one-level geometry requires, with D = X/ln X,
+
+k ≤ D^α and k ≳ D^(2(1−2α)).
+
+These force α ≥ 2/5. At α = 1/3 they demand simultaneously k ≤ D^(1/3) and k ≳ D^(2/3). Reaching 1/3 requires new descent geometry and control of target-dependent children, rather than improved precision bookkeeping alone.
+
+5. The DL barrier and equivalences
+
+The proposed cost-preserving implication needs correction: EQ3 does not establish DL at T·L[1/3,o(1)] for this factor base.
+
+PROVED: choose a known padding prime r > y(N), with r = p^o(1), and N = pr. A fixed small prime such as 3 is inadmissible. CRT combines any uniform square modulo p with an independent uniform square modulo r, preserving NAV’s input distribution. Reduction modulo p preserves the output relation and changes the height bound only by 1+o(1).
+
+Let n = π(y), and let δ be NAV’s success fraction. EQ3’s rigorous reduction uses O(n ln p/δ) oracle calls plus module linear algebra. The exchangeability argument handles adversarially distributed output vectors; it needs no heuristic full-rank assumption.
+
+Concretely, queries g^(2k) have known logarithms. Hide one query h g^(2k), with h square, among them. Their distributions are identical. Among sufficiently many successful relation vectors, only O(n ln p) can be indispensable to the span of all others. Expressing the hidden target vector through the remaining vectors recovers log h. Nonsquare h is handled by a known nonsquare multiplier.
+
+Consequently, a conservative proved bound is
+
+O(n poly(X) T/δ + n³ poly(X)).
+
+For y = L[1/3,0.60] and T = L[1/3,1.20], this is L[1/3,1.80]. The n overhead cannot be absorbed into L[1/3,o(1)]. With a polylogarithmic factor base, it could be.
+
+Literature check: rigorous classical L_p[1/3,c] DL for arbitrary prime fields remains an open problem for every fixed c; I found no published resolution, unconditional or under GRH. Pomerance’s rigorous general benchmark is L_p[1/2,sqrt(2)]. Small-characteristic quasipolynomial results concern a different regime. [Pomerance](https://math.dartmouth.edu/~carlp/disclog.pdf).
+
+This is evidence of the strength of NAV, not a hardness theorem. Generic-group lower bounds and the repository’s FN, J, MM and SS results constrain specified models; none excludes general NAV. GRH establishes existence, not computational hardness or efficient search.
+
+With factor-base generation, dropping the height bound gives the repository’s randomized equivalence to factoring plus component DL, with polynomial overhead in n and X. Restoring height O(X) adds a short-coset-vector problem. No converse establishing bounded NAV from factoring plus DL is known.
+
+6. Assessment and experiment
+
+My subjective estimate is about 5% that the examined routes can yield a rigorous L[1/3,O(1)] bounded-height NAV algorithm, and about 1% at the specific constants (0.60,1.20). These are research judgments.
+
+The most promising route is target-conditioned multilevel descent extending Theorem U, with an explicit height potential and conditional smoothness estimates valid for the generated children.
+
+I would first exhaustively compute completion counts for short prime words modulo small semiprimes. Compare exact conditional sampling with Monte Carlo and truncated Fourier estimates as the remaining word length shrinks. Record relative counting error, success, and final height, separately for squares and all units. The discriminating feature is whether useful conditional information survives near the end, after coarse mixing estimates cease to guide the next choice.
