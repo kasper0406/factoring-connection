@@ -1,0 +1,257 @@
+**OPEN — Verdict.** I cannot derive a rigorous exponent below \(2/5\) from the supplied internal results and the published theorems checked. The two-level exponent \(3/8\) is consistent with the size model. What remains missing is joint continuation supply under the actual children’s law. Pooling substantially weakens the required probability, but does not prove that supply.
+
+**PROVED-CONDITIONAL-ON-THE-INTERNAL-CHAIN.** Theorem U remains the established internal baseline. I treat its unrefereed chain as an input, not as an independently verified published factoring theorem.
+
+Throughout, put
+\[
+t=\log N,\qquad D=t/\log t,\qquad
+\Lambda_\alpha=D^\alpha\log t.
+\]
+
+## 1. The children’s law
+
+**PROVED — Exact description.** There is no unique children’s law until the parent-selection and child-selection rules are specified. Fix the field and prior history \(h\). Let \(b_h(P)\ge0\) encode those rules, including parent acceptance and any first-success bias. For targets in a window \(J\), let \(n_\tau(P)\) count the occurrence of target \(\tau\), and put \(m_J(P)=\sum_{\tau\in J}n_\tau(P)\). The incidence law is exactly
+\[
+\nu_h(\tau)=
+\frac{\sum_P b_h(P)n_\tau(P)}
+     {\sum_P b_h(P)m_J(P)}.                 \tag{1}
+\]
+Choosing a parent first and then a uniformly random child introduces an additional factor \(1/m_J(P)\). Counting distinct factors versus multiplicities also changes the law.
+
+**PROVED.** Away from the excluded primes, an algebraic child has the label
+\[
+\tau=(q,a_0b_0^{-1}\bmod q).
+\]
+Its root label is forced by the parent. A statement about the marginal rational prime \(q\) therefore loses information needed for algebraic continuation.
+
+**HEURISTIC.** A weight resembling \(1/q\), modified by smooth-cofactor densities and local factors, is plausible before conditioning on successful continuation. Equation (1) does not establish closeness to the unconditioned lattice-divisibility density: its weights already contain smoothness and selection biases.
+
+**PROVED-CONDITIONAL-ON-U1 — A genuine comparison, for a simpler law.** For uniform \(y\)-smooth integers \(n\le X\), the distinct-divisor incidence weight is exactly
+\[
+w(q)=\Psi(X/q,y),\qquad q\le y.
+\]
+On \(Y<q\le2Y\), Lemma U1’s doubling estimate gives
+\[
+\frac{\max w(q)}{\min w(q)}\le3
+\]
+in its stated range. Thus this incidence law and uniform primes in the window dominate each other with factor \(3\). With multiplicities, the exact weight becomes \(\sum_{e\ge1}\Psi(X/q^e,y)\); the same factor \(3\) does not automatically follow. Neither calculation establishes the law of selected polynomial values.
+
+**PROVED — Transfer requires the correct direction.** Let \(U\) be a reference target law, \(p(q)\in[0,1]\), and \(E_U p\ge\gamma\). Then
+\[
+U\{p\ge\gamma/2\}\ge\gamma/2.
+\]
+If \(\nu\ge U/K\), then
+\[
+E_\nu p\ge\gamma/K.
+\]
+An upper bound \(\nu\le KU\) gives no such lower bound: \(\nu\) may avoid the good targets entirely. It gives only
+\[
+\nu(\mathrm{Bad})\le K\,U(\mathrm{Bad}).       \tag{2}
+\]
+Consequently, Markov or Paley–Zygmund upgrades of Theorem U supply a polylog-dense good target set, not an almost-everywhere statement transferable using upper domination alone.
+
+**PROVED-CONDITIONAL-ON-LEMMA-8.5′ — Explicit weighted-error transfer.** Write its error as \(E(m)\), and let \(\mathcal T_Q\) be its restricted moduli \(\ell s\). If
+\[
+\nu(m)\le K/|\mathcal T_Q|,
+\]
+then the stated count and error estimates imply
+\[
+E_\nu |E(m)|
+ \le 10CK\,\frac{\Psi(x,y)}Q\,\varepsilon,
+\quad
+\varepsilon=e^{-cu/\log^2(u+1)}+y^{-1/2}.      \tag{3}
+\]
+The additional loss is exactly \(K\). This works for arbitrary nonnegative weights satisfying that bound. Divisor switching and large-sieve estimates do not themselves establish the required bound on the children’s weights. L2-U estimates a particular smooth-pair correlation, not the density ratio of the selected children’s law. Drappeau’s underlying character estimate likewise concerns ordinary smooth numbers, rather than recursively selected good-prime monoids. [Drappeau, Lemme 5](https://arxiv.org/pdf/1307.7554).
+
+**PROVED — Same-field density comparison can actually fail.** Fix a field, root target and a search containing \(W\) parent points, with both values bounded by \(X\). All possible children above \(B\) belong to a set of size at most
+\[
+2W\log X/\log B.
+\]
+If \(U_A\) is uniform on \(M_A\) available targets in the window, any domination \(\nu_A\le K U_A\) requires
+\[
+K\ge \frac{M_A}{2W\log X/\log B}.             \tag{4}
+\]
+Thus sparse support can prohibit polylogarithmic domination, including for the joint law of field and target. This does **not** prove that actual descendability correlates adversely with that support.
+
+**MODEL.** At \(3/8\), the intended child window has size \(L[1/2]\), whereas \(W=L[3/8,O(1)]\). Where the reference window contains the expected number of available targets, (4) is enormously larger than polylogarithmic.
+
+**PROVED-CONDITIONAL-ON-PROP-R — Rational children.** A rational child can enter a fresh field: conditional on its value \(q\), that field has the original sampling law. This removes dependence on the *new field*, but not bias in \(q\). Theorem U’s good prime set may still receive little or no mass under the old parent’s children’s law. Pooling amplifies a lower bound for each fixed \(q\); it cannot create that lower bound from a joint average.
+
+**OPEN — Algebraic children.** The same refresh is unavailable for an already opened ideal. Moreover, Theorem U’s displayed moments concern rational targets \(\ell\mid G(P)\); an averaged theorem for algebraic targets sampled uniformly among roots would itself require justification. Neither that theorem nor its transfer to endogenous ideal labels follows directly from FM-U/LD*-U.
+
+**PROVED — Removal sieve criterion.** If \(Z_\tau\) counts accepted parents containing a bad child \(\tau\), then
+\[
+Z_{\rm usable}\ge Z_{\rm all}-\sum_{\tau\ {\rm bad}}Z_\tau. \tag{5}
+\]
+With at most \(m\) children and the domination in (2), a sufficient condition for retaining half the parents is
+\[
+mK\,U(\mathrm{Bad})\le\tfrac12.
+\]
+Theorem U gives a polylogarithmic **good** fraction, not this small **bad** fraction. Thus removal is a valid potentially weaker route, but the requisite upper bounds are unproved.
+
+## 2. Intermediate exponents
+
+**MODEL — Two levels.** Write a target as \(L[\beta]\), and take \(d=D^\delta\). The chain model assigns algebraic log-size exponent
+\[
+v(\beta)=\max(1-\delta,\delta+\beta).
+\]
+Smoothness to \(L[\beta']\) within \(L[\alpha]\) requires
+\[
+v(\beta)-\beta'\le\alpha.
+\]
+Terminal smoothness forces \(\delta\ge1-2\alpha\); the split starts at \(\beta_1=1-\alpha\). Two levels therefore require
+\[
+1-2\alpha\le2(3\alpha-1),
+\]
+giving \(\alpha\ge3/8\).
+
+**MODEL.** Equality has
+\[
+\delta=\tfrac14,\qquad
+\beta_1=\tfrac58,\quad\beta_2=\tfrac12,\quad\beta_3=\tfrac38.
+\]
+The first algebraic value has exponent \(7/8\), the terminal value exponent \(3/4\). Typical first-level algebraic branching is
+\[
+m\asymp D^{7/8-1/2}=D^{3/8}=d^{3/2}.         \tag{6}
+\]
+A loss \(t^{-C}\) per child costs
+\[
+t^{Cm}=\exp(O(D^{3/8}\log t))
+       =L[3/8,O(1)].
+\]
+
+**MODEL — \(j\) levels.** The same calculation gives
+\[
+\boxed{\alpha_j=\frac{j+1}{3j+2}},\qquad
+\delta_j=\frac{j}{3j+2},\qquad
+\beta_i=1-\alpha_j-(i-1)(3\alpha_j-1).
+\]
+The first values are \(2/5,3/8,4/11,5/14\). Fixed-depth local backtracking tolerates polylogarithmic losses when
+\[
+\sum_i m_i\log(1/\gamma_i)=O(\Lambda_{\alpha_j}). \tag{7}
+\]
+This needs conditional retry bounds controlling the actual joint children, together with continuation costs. Marginal child probabilities are insufficient.
+
+**MODEL.** At \(\alpha=1/3\), taking \(m_i\asymp D^{1/3}\), \(O(\log t)\) levels and \(\gamma_i=t^{-C}\) gives
+\[
+\sum_i m_i\log(1/\gamma_i)
+ =O(D^{1/3}(\log t)^2),
+\]
+an extra \(\log t\) over \(\Lambda_{1/3}\). This establishes only \(L[1/3+o(1)]\) bookkeeping, not a finite \(L[1/3,c]\) constant.
+
+**PROVED — Why the proposed weaker statements do not presently close the proof.**
+
+- A single-child marginal lower bound does not bound simultaneous success: good events can be disjoint.
+- An average successful-child fraction under the children’s law has the same defect. A sufficiently small *failure* average could instead support (5).
+- Averaging over field and parent **for each fixed root \(q\)** would suffice if it bounded complete-certificate existence below by \(e^{-O(\Lambda_\alpha)}\). That statement is open.
+- Averaging additionally over \(q\) may concentrate on exponentially few root primes. The Dixon split needs a polylog-dense root set.
+- A first moment of certificate counts can concentrate in rare fields with huge counts. It needs an overlap bound or another existence argument.
+
+**PROVED — Parameter limitation.** For fixed points,
+\[
+\operatorname{rank}(F(P_i),G(P_i))
+ \le\min(s,d+1)+\min(s,2).
+\]
+The advertised \(d+3\) parameters do not provide independent polynomial evaluations beyond these ranks. After conditioning on \(G(P_0)\), the rational side has at most one remaining linear direction; after two independent evaluations, none. Hence even three rational evaluations require a correlation estimate, despite many algebraic coefficient directions remaining.
+
+**MODEL / OPEN.** Prop R3 places \(O(d)\)-point algebraic components at the \(2/5\) floor under its explicit size and factorisation premises. Equation (6) needs a superlinear component. Thus control of at most \(d+1\) points gives no intermediate exponent by that model. Thin components, unusually smooth mass, or another certificate architecture remain possible; dimension counting is not an impossibility theorem.
+
+## 3. Fresh randomness
+
+**PROVED-CONDITIONAL-ON-RW, FB, TI/EX.** A fresh unrelated field per level refreshes rational targets, but does not close an algebraic ideal opened in the previous field. Cor EX applies when the source field intersects the other fields’ compositum in \(\mathbb Q\), at the specified unramified, good primes. Sharing the modular root does not establish a useful common subfield. Lemma FB also blocks the proposed degree-one tower substitution under its hypotheses.
+
+**PROVED.** Fresh multipliers \(w\) do not give a fresh coordinate for every child of one polynomial. With \(F\) and \(g\) fixed,
+\[
+w=F(g_0,g_1)/N
+\]
+is fixed. Across the field family, varying \(w\) adds at most the one coefficient direction already counted by Prop NB. Changing \(w\) separately for different nodes generally changes the field and reintroduces the algebraic closing obligation.
+
+**PROVED — Constrained resampling.** Retaining \(s\) points permits
+\[
+F'=F+G\prod_{i=1}^{s}L_{P_i}H,
+\qquad \deg H=d-1-s.
+\]
+For fixed \(g,w\), this leaves \(d-s\) coefficient directions; releasing the common-root evaluation allows at most one more. In the RW representation, resampling a component requires retaining all its used points. It therefore consumes the same coefficient budget, rather than renewing it at each node.
+
+**PROVED-CONDITIONAL-ON-PROP-MF.** Many fields sharing \(g\) legitimately amplify the pointwise algebraic first moment at one rationally selected candidate. MF requires its extra height floor so rejected fields cannot absorb the smoothness mass. It replaces the parent’s algebraic side; it does not export an existing child ideal. Shared \(g\) also leaves the rational evaluations correlated.
+
+**PROVED — Column accounting within the stated scheme.** For \(J\) retained field blocks, the algorithm collects
+\[
+M_{\rm rows}\ge C_{\rm col}^{\rm pool}+J+12.
+\]
+The intended factor-base model assigns roughly \(\pi(B)\) algebraic columns per field, so each field must be reused across roughly that many rows, up to polynomial factors. A field per level-1 node adds private blocks at the rate it adds relations and supplies no proved rank surplus. This is a limitation of the full-column guarantee, not a lower bound against all possible matrix structures.
+
+**MODEL.** A fixed pool of \(L[\alpha,O(1)]\) fields can afford its enlarged matrix and enough shared rows. An indefinitely growing collection of private per-node fields cannot use that argument.
+
+## 4. The precise missing statement and its relation to conjectures
+
+**OPEN — A concrete conditional count.** Let \(D_A(\tau)\) indicate that the prescribed terminal search for target \(\tau\) finds both cofactors \(B\)-smooth. For history \(h\), let \(\Omega_h^Y\) contain parent candidates passing the contraction and exclusion tests. A sufficient children’s-law estimate is
+\[
+\sum_{P\in\Omega_h^Y}a_h(P)
+ \prod_{\tau\in\operatorname{Ch}(P)}D_A(\tau)
+\ \ge\
+t^{-Cm_h}\sum_{P\in\Omega_h^Y}a_h(P),          \tag{8}
+\]
+with an independently proved lower bound for the denominator and bounds on retry and continuation costs. This is joint smooth continuation under the actual selection weights. Sequential conditional child bounds can imply (8); marginal bounds cannot.
+
+**PROVED — Necessity needs qualification.** No pointwise version of (8) is necessary for every successful design: rare histories can be discarded, and complete certificates can be selected globally. Thus “the necessary and sufficient conditional child count” is too strong without fixing the algorithm and its restart policy.
+
+**PROVED — Exact supply criterion for the fixed pooled architecture.** Let \(Z_{A,q}\) count complete certificates found by the prescribed bounded search, and put
+\[
+p_q=\Pr_A(Z_{A,q}>0\text{ or factor exit}).
+\]
+The operational criterion is
+\[
+\boxed{
+\#\{q\in J:p_q\ge e^{-c\Lambda_\alpha}\}
+ \ge t^{-C_0}|J|.}                          \tag{9}
+\]
+This is \(T_q\). It is equivalent, up to constants, to an independent pool of \(e^{O(\Lambda_\alpha)}\) fields having constant probability of covering a polylog-dense root set. Sufficiency follows by amplification. Conversely, condition on such a good-pool event: its conditional coverage probability is polylogarithmically large on a polylog-dense set; the union bound then gives \(Jp_q\) at least that probability times the good-pool probability.
+
+**PROVED-CONDITIONAL-ON-NR-q’S-OTHER-INPUTS.** At bounded depth, (9) gives factoring at \(L[\alpha,O(1)]\). A sufficient analytic substitute is, for every \(q\) in a polylog-dense set,
+\[
+E_A Z_{A,q}>0,\qquad
+E_A Z_{A,q}^{\,2}
+ \le e^{c\Lambda_\alpha}(E_A Z_{A,q})^2.      \tag{10}
+\]
+Paley–Zygmund gives (9). Recursive feasibility search satisfies
+\[
+T_h\le W(C+mT_{h-1}),
+\]
+hence costs \(L[\alpha,O(1)]\) for fixed \(h\). The moment ratio in (10) is sufficient, not necessary: severe overcounting can spoil it while existence remains frequent.
+
+**OPEN.** Neither (8) nor (9)/(10) at \(3/8\) is supplied by the checked literature. At that exponent the algebraic configuration has about \(d^{3/2}\) forms in \(d\) coefficient variables. A product-model probability for one configuration can be
+\[
+\prod_{i\le s}\rho_i
+ =\exp(-\Theta(s\Lambda_{3/8}))
+ =\exp(-\Theta(D^{3/4}\log t)).
+\]
+Absolute errors harmless for one-form distribution can overwhelm this joint main term.
+
+**PROVED / OPEN — Published results and conjectures.**
+
+- **PROVED:** Distribution beyond \(1/2\) exists. Pascadi proves level \(5/8-\varepsilon\) for fixed nonzero residue, with density-relative errors, and refinements for smooth moduli. These are not arbitrary target-dependent residue or continuation estimates. [Pascadi, Theorems 1.5 and 7.1](https://arxiv.org/html/2505.00653v2).
+- **OPEN:** Even a strengthened smooth-number EH statement through \(X^{1-\varepsilon}\) does not presently provide the required joint counts. No implication from GRH to \(T_q\), or converse implication to GRH/EH, is established.
+- **PROVED:** Martin’s theorem under Hypothesis UH covers a restricted bounded-\(u\) range with degree-dependent constants. The Martin–Granville fixed-polynomial prediction lacks the growing-degree, growing-\(u\), coefficient and lattice uniformity required here. [Martin](https://arxiv.org/pdf/math/9909180), [Granville’s formulation and qualifications](https://dms.umontreal.ca/~andrew/PDF/msrire.pdf).
+- **PROVED:** BBDT provides power-scale smoothness bounds for fixed binary forms, including \(y=x^{g-2+\varepsilon}\) generally and \(x^{1/\sqrt e+\varepsilon}\) for cubics; this does not cover the descent regime. [BBDT](https://tenenb.perso.math.cnrs.fr/PPP/friableforms.pdf).
+- **PROVED:** Overdetermination alone is not fatal. Harper proves an unconditional smooth \(a+b=c\) asymptotic for \(y\ge(\log X)^K\); Lagarias–Soundararajan previously obtained GRH results. These handle a particular fixed system, not the growing configurations here. [Harper, Corollary 1](https://arxiv.org/pdf/1408.1662), [Lagarias–Soundararajan](https://arxiv.org/pdf/1102.4911).
+- **PROVED:** Lachand treats bounded \(u\). Matthiesen–Wang’s linear-system application has fixed complexity and requires \(\Psi(X,y)>X/\log_8X\), where \(\log_8\) is iterated logarithm. Their much wider nilsequence theorem alone does not supply the needed sparse majorant and growing-complexity estimates. [Lachand](https://arxiv.org/pdf/1609.08872), [Matthiesen–Wang](https://arxiv.org/pdf/2211.16892).
+
+**PROVED — A precise AP-statistics countermodel.** Suppose a fixed bounded-depth search queries \(W=X^{o(1)}\) possible continuation values. Remove those values from the smooth set \(S(X,y)\), obtaining \(S'\). Every AP count changes by at most \(W\), and the corresponding coprime main term changes by at most \(W/\varphi(q)\). Therefore
+\[
+\sum_{q\le X^{1-\varepsilon}}
+ \max_a|\Delta_{S'}(q,a)-\Delta_S(q,a)|
+ \le 2X^{1-\varepsilon}W
+ =o\!\left(\frac{\Psi(X,y)}{(\log X)^A}\right)
+\]
+for every fixed \(\varepsilon>0,A\), when \(\Psi(X,y)=X^{1-o(1)}\). Yet the prescribed continuations have disappeared.
+
+**PROVED — Scope.** This disproves a black-box deduction of uniform targeted continuation from AP statistics alone, at every fixed level below \(1\). It does not preserve multiplicative closure, remove every global additive configuration, or prove logical independence for actual smooth numbers. Exact statistics determining the indicator would be different. Likewise, a “single-polynomial” conjecture uniform for products of all the growing forms would already contain the joint hypothesis.
+
+**PROVED-CONDITIONAL-ON-THE-CITED-INTERNAL-RESULTS — Dependency ledger.**
+
+- Reference supply and its Markov consequence: **CS, GM-U, FM-U, Kern-U, W-U, DS-U, L2-U, LD*-U, D-U**, with their internal chain in [lv5unif]( /Volumes/git/factoring-connection/notes/lv5unif_results.md).
+- Weighted transfer (3): **Lemma 8.5′(R′)** and its restricted-modulus cardinality bound; the factor-\(3\) benchmark uses **U1**.
+- Field refresh and budget conclusions: **SI, FB, R, RW, OD**, constrained resampling in [nested](/Volumes/git/factoring-connection/notes/nested_results.md), and **NB** in [almostall13](/Volumes/git/factoring-connection/notes/almostall13_results.md).
+- Conditional factoring reduction: **NR-q**, bounded-depth search, **TI/EX**, **S″**, **OS**, **T_multi**, recursion contraction, **LV6′**, character detection via ERH or the factorial-bit repair, and the still-outline multi-field post-processing in [escapeR2](/Volumes/git/factoring-connection/notes/escapeR2_results.md).
+- Exponent calculations use the stated **chain model** and **R3’s model premises**; they are not proved smooth-value supply estimates.
