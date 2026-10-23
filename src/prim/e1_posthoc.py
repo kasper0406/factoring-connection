@@ -157,6 +157,7 @@ def run(b: int):
             if model is not None:
                 mv_q = mv[rq]
                 mv_q = np.where(VL | Fr | F1 | CLO, 0.0, mv)[rq]   # model mass on OTHER residues only
+                mv_q = np.where(pin, 0.0, mv_q)                     # v2 (codex prim_2 #20): mask PIN as in numerator
                 Mq[i] = mv_q
                 Mq[i, i] = 0.0
         two = H & H.T

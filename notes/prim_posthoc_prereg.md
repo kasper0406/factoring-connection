@@ -18,3 +18,14 @@ Predictions for b = 16 (all 1491 primes; q-world = all unordered pairs via Theor
   OTHER / model-on-OTHER-residues lies in [0.8, 1.25].
 - Q2: for each nested node whose q-world OTHER model mass is ≥ 20, q-world OTHER / model ∈ [0.6, 1.6].
 - Q3: two-sided (non-split) zeros with both sides OTHER, summed over the nested nodes, ≤ 3·(model) + 5.
+
+## Addendum (v2, after codex adversarial round prim_2): independent confirmation on an untouched range
+
+Codex (prim_2 #21) correctly notes that b = 16 was partially exposed (the registered E1 run, including FROZEN-residual
+summaries, preceded the second-stage registration). For a clean confirmation we use b = 15 (787 primes in
+[3·2^13, 2^15)), on which no E1 or post-hoc computation of any kind has been run. Code is fixed at the v2 state of
+`src/prim/e1_posthoc.py` (only change since v1: the q-world model mask now also excludes PIN residues, matching the
+numerator; codex prim_2 #20). Predictions for b = 15, identical in form to Q1–Q3:
+- Q1': full-r residual ratio ∈ [0.8, 1.25] for each of the 8 nested affine nodes.
+- Q2': q-world residual ratio ∈ [0.6, 1.6] for each nested node whose q-world residual model mass is ≥ 20.
+- Q3': two-sided OTHER/OTHER zeros summed over nested nodes ≤ 3·model + 5.
