@@ -1,0 +1,269 @@
+The arithmetic is largely sound, but several claimed consequences exceed what is proved. I recommend **MAJOR REVISION**.
+
+I read the requested manuscript, preregistration, code, tests, prior report, and contextual results. All **11 tests passed**. Independent checks covered **32,364 Dedekind identities/congruences**, **28,664 DSF instances including \(p=3\)**, and additional composite-square Kloosterman evaluations. Forty raw records recomputed exactly. The four frozen operational modules match the preregistration commit. Supporting calculations are in [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/newfamily_2/referee_checks.py) and [referee_checks.json](/Volumes/git/factoring-connection/codex/scratch/newfamily_2/referee_checks.json).
+
+1. **[MINOR] Theorem RA itself — CORRECT.**
+
+   The conductor argument works. The integer \(m\) generating \(\mathfrak f_0\cap\mathbf Z\) satisfies \(m\mathcal O_K\subseteq\mathfrak f_0\). Thus \((N,m)=1\) makes \(N\mathcal O_K\) prime to \(\mathfrak f_0\). Choosing a positive inverse \(M\) modulo \(m\) makes \(NM\) ray-congruent to \(1\), including positivity at every required real place.
+
+   **No additional coprimality with \(\operatorname{disc}(K)\) is necessary.** The Artin map concerns ramification in \(L/K\), whose finite support is contained in the conductor. Ramification in \(K/\mathbf Q\) does not independently disqualify an ideal.
+
+   “\(L/\mathbf Q\) need not be abelian” is also correct; it need not even be Galois. The observable remains an Artin symbol in the abelian extension \(L/K\), not arbitrary nonabelian Frobenius information over \(\mathbf Q\).
+
+   This is a direct consequence of standard ray-class reciprocity, rather than a new class-field theorem. [Milne, Chapter V, §3](https://www.jmilne.org/math/CourseNotes/CFT.pdf) supplies the relevant framework.
+
+   **Fix:** retain the theorem, attribute it as a standard corollary, and distinguish relative ramification from the discriminant of the base field.
+
+2. **[MAJOR] Corollary RA-PT — containment CORRECT; the appended small-conductor conclusion WRONG.**
+
+   For a fixed finite tree, symbol answers can indeed be compiled into the initial observation \(N\bmod m\). But **PT-m’s fiber floor is not the observation floor bounded by Theorem L**. The former allows information associated with the hidden fiber point \(p\bmod m\); the latter concerns predictors observing only \(N\bmod m\). For \(4\mid m\), that hidden fiber point already determines \(\varepsilon\).
+
+   There is an explicit counterexample to the claimed unrestricted nonsplitting \(o(1)\) conclusion. On a fixed prime window, let
+   \[
+   C=\prod_{\substack{r\text{ prime in the window}\\r\equiv1\pmod4}}r.
+   \]
+   On the promised population \(N=pq\equiv1\pmod4\), a pure node testing \(C\bmod N\) has:
+
+   - gcd \(N\) when both primes are \(1\bmod4\);
+   - gcd \(1\) when both are \(3\bmod4\).
+
+   It predicts \(\varepsilon\) perfectly and never splits that population. This is permitted by the unrestricted finite-tree model. It splits the mixed population, exactly as PT2 explains. Its large cost does not rescue a corollary whose model imposes no size bound.
+
+   The huge-\(c_v\) model is mathematically sensible **for residue symbols**: reducing a fixed algebraic integer modulo \(N\mathcal O_K\) preserves its symbol, even if its integer representative is enormous. The limitation is quantitative: a short straight-line program can denote an enormous integer with an enormous conductor. Taking the lcm over every possible node can enlarge the modulus further. Compilation is not a cost-preserving small-conductor theorem.
+
+   **Fix:** retain the containment and the actual PT-m inequality. Delete the inference from Theorem L to the hidden fiber floor. Apply L directly to the symbol-answer vector alone, or add appropriate split bounds, including the cross-population qualification from PT2. Define integer pullback moduli and undefined-symbol branches explicitly.
+
+3. **[MINOR] Coverage of de Boer–Pagano — CORRECT with domain qualifications.**
+
+   A fixed Kummer character evaluated at the **full rational ideal** \((N)\) is exactly within RA’s scope. This does not cover selecting individual prime ideals above unknown factors, nor arbitrary moving numerators.
+
+   There is a small distinction between the Artin map’s domain and the conventional power-residue symbol’s domain. De Boer–Pagano require the denominator ideal to be coprime to the residue exponent and the numerator. An extension can be trivial or unramified at a prime where that conventional symbol is nevertheless undefined. Their general expected-polynomial analysis is explicitly heuristic. [Their Definitions 5.2–5.3 and abstract](https://koendeboer.com/publication/prs/PRS16.pdf) make these restrictions clear.
+
+   **Fix:** state the conventional coprimality promises separately, and say “the fixed-numerator specialization at the full rational ideal” instead of suggesting that RA classifies their entire algorithmic setting.
+
+4. **[MINOR] DS1 and DS2 — identities CORRECT; “aggregate” terminology FIXABLE.**
+
+   The decomposition by multiples of \(p\), multiples of \(q\), and units is correct. The Barkan–Hickerson–Knuth formula is correct for the canonical finite expansion ending in a partial quotient at least \(2\):
+   \[
+   12s(a,N)=\sum_i(-1)^{i+1}a_i+\frac{a+\bar a}{N}-2+(-1)^r.
+   \]
+   The parity term must remain.
+
+   The stated congruences modulo \(N\), modulo \(8\) for odd \(N\), and modulo \(3\) when \(3\nmid N\) are correct. Combining them determines the residue modulo \(24N\) when \((N,6)=1\). The classical congruence literature includes [Girstmair’s treatment modulo \(24\mathbf Z\)](https://math.colgate.edu/~integers/r29/r29.pdf).
+
+   However, for moving \(a=a(N)\), \(a+\bar a\bmod N\) is not an aggregate under the manuscript’s definition “a function of \(N\bmod m\) for fixed \(m\).” It is public Euclidean data. The identity isolates an additional integer; it does not classify all other public data as fixed-conductor aggregates.
+
+   **Fix:** distinguish fixed-conductor aggregates, explicit height terms, and public inverse data. State the \((N,6)=1\) restriction at the CRT conclusion.
+
+5. **[MINOR] DSF — CORRECT under its displayed hypothesis; proof and summaries need repair.**
+
+   The decisive congruence is valid:
+   \[
+   2aX\equiv(p+q)(a^2+1)\pmod N,\qquad X=6NL.
+   \]
+   Inverting \(a^2+1\) recovers \(p+q\). For distinct odd primes,
+   \[
+   pq-p-q=(p-1)(q-1)-1>0,
+   \]
+   so \(p+q<N\), without any balance assumption.
+
+   The proof’s reference to \(p>3\) unnecessarily leaves \(p=3\) uncovered. The required congruence also holds there: \(s(1,3)=1/18\), \(s(2,3)=-1/18\). My independent DSF checks included this case.
+
+   The condition on \(a^2+1\) matters. For example,
+   \[
+   N=65,\quad a=8,\quad a^2\equiv-1\pmod N,
+   \]
+   and both local sums vanish, so \(L=0\). More generally, this congruence forces the corresponding Dedekind sums to vanish. A proper gcd of \(a^2+1\) with \(N\) already splits; gcd \(N\) is the excluded case.
+
+   The unit-part formula is also correct:
+   \[
+   6NU\equiv\frac{(a^2+1)\varphi(N)}{2a}\pmod N.
+   \]
+   It follows by subtracting the local congruence from the full-sum congruence.
+
+   **Fix:** cover \(p=3\) explicitly, preserve the hypothesis in every “one value” summary and table entry, and handle gcd \(N\) explicitly in the decoder. For priority, I verified the classical congruence basis but did not verify a prior publication of this exact local-sum reduction. “Routine consequence of classical congruences; no priority claim” is appropriate.
+
+6. **[MINOR] SAL closed forms — CORRECT; no missing \(p\equiv3\bmod4\) factor.**
+
+   The square-modulus Kloosterman identity is correct:
+   \[
+   K(a,b;N^2)=N\sum_{v^2\equiv ab\pmod{N^2}}e(2v/N^2)
+   \]
+   for odd \(N\) and unit \(ab\).
+
+   A direct proof removes the suspected sign ambiguity. Write \(x=y+Nt\). Summation over \(t\bmod N\) vanishes unless
+   \(a-by^{-2}\equiv0\pmod N\), and otherwise contributes \(N\). Each stationary class has a unique lift satisfying \(ax^2=b\pmod{N^2}\); there the phase is \(2ax\). Setting \(v=ax\) gives the formula. There is no quadratic Gauss factor in this inner linear sum.
+
+   The Salié formula is correct for the squarefree semiprime promise. For general unit \(b\), retain the factor \((b/N)\); the specialization \(b=1\) removes it. The prime evaluation is classical; [Kowalski’s derivation](https://blogs.ethz.ch/kowalski/2010/03/07/the-computation-of-salie-sums/) discusses it.
+
+   **Fix:** add the short direct proof, and specify that constant error is measured after normalization by \(\sqrt N\) or \(N\).
+
+7. **[MAJOR] SAL decoder and “constant precision” factoring — FIXABLE.**
+
+   Gcd verification proves that a returned answer is correct. It does **not** prove a factoring reduction: a reduction also requires a uniform success and running-time guarantee.
+
+   The experiments use independent pseudorandom bounded noise. They do not establish robustness against every permitted error sequence, nor a success bound for every semiprime. The backwards branch ambiguity is real. Near cosine extrema, inversion has square-root sensitivity; near an ambiguous inverse branch, propagated error matters. Moreover, there are \(O(\log M)\) opportunities for failure. A heuristic \(O(\delta)\) exceptional region per step does not establish an asymptotically constant success probability for fixed \(\delta\). The measured deterioration at 256 bits reinforces this limitation.
+
+   The scalable-precision reduction **is** sound. At \(c=1\), subtract the known cosine. Accuracy \(O(M^{-4})\) suffices, by the square-root modulus of continuity of arccos, to recover the unknown root by rounding. A gcd then factors \(N\). This proves the scalar-oracle equivalence with \(O(\log M)\) accurate bits.
+
+   **Fix:** label scalable-precision factoring equivalence **PROVED**, and the constant-normalized-precision decoder **HEURISTIC / EXPERIMENTAL** throughout §0, the table, and the candidate cards. Alternatively, supply a uniform probabilistic decoder theorem. The square-modulus query count is based on \(\operatorname{bitlen}(N^2)\), approximately twice the semiprime bit length. I did not verify a dedicated prior publication of this precise scalar-oracle reduction; the classical root formulas alone do not establish priority for it.
+
+8. **[MINOR] Class E’s formal definition — FIXABLE.**
+
+   As written, unrestricted \(F(a_k,\gamma_k\bmod m_0)\) need not have polynomial evaluation or output size: \(F(t)=2^t\), applied to \([0;N]\), already gives exponentially many output bits.
+
+   Some claimed members also require additions to the definition. The full Dedekind sum includes a rational endpoint term. Remainder residues require the initial residues of \(a,N\). Sign, bit-length, and modular reductions are postprocessing operations. General quantum-modular cocycles need not reduce to the displayed unweighted finite-state sum.
+
+   The statement that rational-CF relations are “never small” is not a theorem. Large partial quotients can make the relevant products small; terminal relations also require separate treatment. Absence of a demonstrated quadratic-relation mechanism is a defensible observation.
+
+   **Fix:** specify polynomial bit costs and output bounds, permit fixed-dimensional vector costs and stated endpoint data/postprocessing, and retain only established memberships. Replace “never small” by a qualified heuristic explanation.
+
+9. **[MAJOR] The random-argument reduction — FIXABLE, but not correct at its present generality.**
+
+   For a specified bounded prediction rule \(g(N,a)\), the identity
+   \[
+   \mathbb E[\varepsilon g(N,a)]
+   =\mathbb E[\varepsilon G(N)],\qquad
+   G(N)=\mathbb E_a[g(N,a)\mid N],
+   \]
+   is correct. This preserves the linear prediction objective of that rule. It does not preserve normalized Pearson correlation, nor justify averaging a raw feature before an arbitrary classifier processes it.
+
+   The proposed conditional floor also needs a specified baseline and norm. An adequate hypothesis would control
+   \[
+   |G(N)-B(N)|\le CN^{-\delta}
+   \]
+   uniformly, where \(B\) has an independently established factor-bit correlation bound. Uniform approximation by an arbitrary \(N\)-dependent mean is insufficient.
+
+   A limiting distribution, even uniformly in the modulus, does not control every exact postprocessing operation. Distributions supported on alternating integer residue classes can have the same normalized continuous limit while their parity distinguishes them perfectly. This matters for the manuscript’s modular features.
+
+   Finally, the frozen `hash` argument is deterministic, not a fresh uniform unit.
+
+   **Fix:** state the reduction for a particular bounded predictor, identify the controlled test-function norm and baseline, and separate genuinely random arguments from deterministic hash probes.
+
+10. **[MINOR] Individual-modulus equidistribution literature — FIXABLE; relevant uniform results already exist for restricted statistics.**
+
+   Bettin–Drappeau average over reduced rationals with denominators **up to** \(Q\). Their power-saving theorem cannot simply be read as a theorem for every individual denominator. [Their sampling space is explicit](https://arxiv.org/pdf/1903.00457).
+
+   But “uniformity for individual composite moduli is unverified” is too broad as a literature summary. **David–Kim–Mor–Shapira, 2025, Theorem 1.2**, gives polynomial-rate large-deviation bounds for normalized CF length and fixed-word frequencies for **every sufficiently large denominator**, without a prime-factorization restriction. [Primary paper](https://link.springer.com/article/10.1007/s00029-025-01026-9).
+
+   These results do not supply the desired full floor for Rademacher residues, modular-symbol coordinates, or arbitrary bounded classifiers.
+
+   **Fix:** cite the available individual-modulus results and identify precisely the stronger distributional control still missing.
+
+11. **[MINOR] Battery execution and registered validity — CORRECT.**
+
+   The saved summaries satisfy the registered V1–V3 thresholds, including the preregistered exemption for nonfiring PCs at 128 bits. The exact degeneracies are handled correctly. Nonunit argument events are recorded, and fresh recomputation of sampled records matched the stored statistics.
+
+   The absence of a six-sigma hit is reproducible. The preregistration requires the \(n=32\) clustering audit as part of a **hit-triggered** audit; its omission after no hit is therefore not itself a violation of that rule.
+
+   Passing the controls does not establish power against every alternative. In particular, the shuffle mean is calculated from one shuffle across correlated features.
+
+   **Fix:** retain the observed validity verdict and null result, while describing the controls as implementation and calibration checks.
+
+12. **[MINOR] The \(n=32\) explanation — finite-set explanation CORRECT; automatic clustering explanation FIXABLE.**
+
+   I enumerated all **555,025 unordered distinct admissible pairs** from the 1,491-prime window. The population associations imply approximate \(z\) values at 200,000 observations of:
+
+   | Statistic | Population-implied \(z\) | Reported \(z\) |
+   |---|---:|---:|
+   | `nc_lead16` | \(-4.62\) | approximately \(-4.97\) |
+   | `nc_ded5_bits` | \(-5.47\) | \(-5.69\) |
+
+   Thus the finite prime population explains the observations convincingly.
+
+   However, **prime reuse alone does not create dependence between independently sampled observations from a fixed population**. Here it makes genuine finite-population associations easier to measure. A model treating primes as random clusters is a different inferential model and needs to be stated.
+
+   **Fix:** call this a real association under the finite \(D_{32}\) distribution, attributable to arithmetic size imbalance. Use clustering only for an explicitly chosen superpopulation interpretation. “Chebyshev-type” is a reasonable analogy, not a proved explanation of the precise imbalance.
+
+13. **[MINOR] Nonunit accounting — counts CORRECT; golden-ratio structural coprimality WRONG.**
+
+   There is a counterexample within the same top-two-bits sampling convention:
+   \[
+   p=193,\quad q=233,\quad N=44969\equiv1\pmod4,
+   \]
+   \[
+   \left\lfloor \frac{\sqrt5-1}{2}N\right\rfloor=27792=193\cdot144.
+   \]
+   Hence the gcd is \(193\).
+
+   The displayed lower bound for \(\{\alpha q\}\), even in its valid one-sided form, does not exclude \(\{\alpha q\}<1/p\) for balanced primes. Bad approximability alone supplies no probabilistic rarity theorem over prime denominators.
+
+   The other three coprimality claims are defensible on the actual promise domain. For `sqrt`, use the same-mod-4 condition: it excludes twin-prime pairs for which \(\lfloor\sqrt{pq}\rfloor=p\).
+
+   The raw data confirm six `cbrt2` and six `hash` events, all at 32 bits. Their counts are compatible with the approximately \(7.04\) uniform-residue benchmark, but that benchmark is heuristic for deterministic `cbrt2`.
+
+   **Fix:** say “three structurally coprime arguments; zero observed golden-ratio events,” and label the accidental-null comparison appropriately.
+
+14. **[MAJOR] MDE and negative conclusions — FIXABLE.**
+
+   The values approximately \(0.0153\) and \(0.0217\) agree with
+   \[
+   \rho_{\rm MDE}\approx\frac{6+0.8416}{\sqrt{n_{\rm eff}}}.
+   \]
+   They are nominal **80% detection thresholds**, not confidence bounds. At the threshold, a test still misses approximately 20% of such alternatives.
+
+   Consequently “effects are excluded” and “no statistic correlates at this level” do not follow from the MDE calculation. Degenerate statistics have no such finite sensitivity. Nor does numeric linear correlation test all dependence in residues encoded as \(0,\ldots,6\): conditional distributions can differ substantially while their numeric means agree.
+
+   **Fix:** write: “No registered statistic crossed the threshold; nominal 80% power was approximately … for the specified standardized linear effects.” To claim exclusion, construct confidence bounds with stated simultaneous coverage. Restrict the conclusion to these features, arguments, targets, sizes, and linear tests.
+
+15. **[MAJOR] Candidate table and its interpretation — several verdicts FIXABLE.**
+
+   I dispute these specific summaries:
+
+   - **Row 24, cubic Weyl sums:** cited C3 proves a factoring-hard direction for selectable queries on the promise \(p,q\equiv1\pmod3\). It does not prove the table’s unrestricted **FACT equivalence**. If a prime factor is \(2\bmod3\), every unit-argument cubic sum vanishes. Nor does knowing \(p,q\) supply the asserted polynomial-time evaluator.  
+     **Fix:** “FACT-hard on the stated split-prime promise and oracle interface; general evaluation NC.” The earlier blind report did not assert the present FACT verdict.
+
+   - **“Everything else has no polynomial algorithm even with \(p,q\)” is false.** Rational quartic testing in row 4 and \(r_2(N)\) in row 26 are immediate given the factors. So is \(\lambda(N)\). Conversely, exact order computation may require factoring \(p-1,q-1\), beyond merely knowing \(p,q\).  
+     **Fix:** separate “unknown without factoring,” “still unknown with the factors,” and two-way oracle equivalence.
+
+   - **Rows 9, 15, 42, and parts of 50 contradict the exhaustive AGG/E interpretation.** Fixed-dimensional generalized Dedekind sums have polynomial algorithms; moving-argument Jacobi symbols and moving-exponent algebra are also explicitly listed as unresolved computable classes. [Beck–Robins, Theorem 5.2](https://arxiv.org/pdf/math/0112076), establishes the fixed-dimensional cotangent-sum computability claim.  
+     **Fix:** preserve these as additional open bins unless an actual reduction into E is proved.
+
+   - **Row 17’s general root-number verdict remains conditional.** Fixed-conductor tame local formulas at \(p,q\) do not classify every bad prime of an \(N\)-dependent elliptic family.  
+     **Fix:** keep the proved example separate from the general heuristic.
+
+16. **[MINOR] Candidate-table normalization and row 48 — FIXABLE, with one false formula.**
+
+   An Ehrhart count is a quasipolynomial, not generally a residue-class function. The interval \([0,1]\) already gives \(N+1\). Raw Gaussian values similarly contain height terms. Eta multipliers at moving lower-right entries involve moving Jacobi data, which RA does not turn into a fixed-conductor aggregate.
+
+   Row 48 is mathematically wrong as stated: an individual polylogarithm is not generally a Bernoulli polynomial. The identity is
+   \[
+   \operatorname{Li}_k(e^{2\pi ix})
+   +(-1)^k\operatorname{Li}_k(e^{-2\pi ix})
+   =-\frac{(2\pi i)^k}{k!}B_k(x),
+   \]
+   with the usual qualifications. For example, \(\operatorname{Li}_1(z)=-\log(1-z)\).
+
+   **Fix:** distinguish normalized periodic components from explicit height terms, specify which parameters are fixed, and replace row 48 by the symmetrized identity or a separately justified numerical-evaluation claim.
+
+17. **[MINOR] Two useful missing candidate cards — add with qualified verdicts.**
+
+   **General fixed automata on the bits of \(N\): polynomial-time, OPEN as a class for factor-bit correlations.** They need not be periodic, multiplicative, or ordinary finite-state Euclidean costs. Particular automata may admit analytic bounds; the whole class should not be classified by RA. This is already an open class in the supplied self-reduction context.
+
+   **Central binomial residue**
+   \[
+   B(N)=\binom{2N}{N}\bmod N:
+   \quad \text{NC evaluation; FACT-hard on the battery’s balance promise.}
+   \]
+   If \(p<q<3p/2\), then
+   \[
+   B(N)\equiv\binom{2p}{p}\equiv0\pmod q.
+   \]
+   Writing \(q=p+r\), the characteristic-\(p\) coefficient identity gives
+   \[
+   B(N)\equiv\binom{2q}{q}
+   \equiv2\binom{2r}{r}\not\equiv0\pmod p,
+   \]
+   since \(2r<p\). Thus \(\gcd(B(N),N)=q\). I checked this on 74 small prime pairs. This avoids an exponential-size output by asking only for the residue, but supplies no fast evaluator or new factoring mechanism.
+
+   **Fix:** add these cards as a missing computational class and a further divisor-detecting observable, respectively; make no novelty claim.
+
+18. **[MAJOR] Overall verdict — “we found no fourth family” is defensible; the exhaustive classification is WRONG.**
+
+   The **single weakest claim is “class E is the only computable non-aggregate bin.”** The manuscript’s own open rows contradict it. A narrower claim—that E is the principal experimentally investigated surviving class—is supported.
+
+   Calling structured-argument E the most promising candidate is a defensible research preference. DSF provides a natural decomposition, but the existence of hard summands inside an easy total does not itself establish a leakage mechanism. Also, predicting a real-valued local sum better than \(s(a,N)\) and predicting residues of \(\varphi(N)\) are not proved equivalent questions.
+
+   **Fix:** present the conclusion as a scoped search outcome, acknowledge the other computable open bins, and remove the unproved “equivalently” in §4.
+
+**Overall recommendation: MAJOR REVISION.** Preserve RA, the Dedekind identities, DSF with its hypotheses, the SAL closed forms, scalable-precision factoring equivalence, and the reproducible null battery. Repair the false RA-PT small-conductor inference, downgrade constant-precision SAL to its demonstrated experimental status, formulate the random-argument conditional precisely, and replace MDE-based exclusion language. The resulting paper would be a useful, carefully scoped investigation; the present version overstates both its classification and its negative conclusions.

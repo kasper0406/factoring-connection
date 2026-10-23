@@ -23,37 +23,46 @@ Notation: N = pq balanced, ε = (−1/p) on N ≡ 1 (mod 4), QR₂ = [2 square m
 
 ## 0. Verdict (plain language)
 
-**We found no fourth family.** Every candidate fell into one of four bins:
+**We found no fourth family.** This is the outcome of a scoped search, not a classification theorem. Most candidates
+fell into one of four bins:
 - an aggregate (it carries nothing beyond N mod m);
-- factoring-equivalent;
-- not computable in polynomial time even with the factors in hand;
+- factoring-equivalent or factoring-hard;
+- no polynomial algorithm known from N alone;
 - a continued-fraction statistic of a rational a/N ("class E").
 
-Class E is the one bin that is computable, is not an aggregate, and is not known to be hard. A pre-registered battery on
-2·10⁵ semiprimes per size found no signal there.
+Class E is the principal computable, non-aggregate, not-known-hard bin, and the one we tested. Other computable bins
+also remain OPEN (§1, "Reading the table"):
+- fixed-dimension lattice-cone sums;
+- Jacobi symbols at moving arguments;
+- N-dependent-exponent algebra;
+- automata on the bits of N.
+
+A pre-registered battery on 2·10⁵ semiprimes per size found no signal in class E.
 
 Results (items 2–3: no prior formulation found by us, mathematics routine; item 1 is standard class field theory, and
 the contribution there is the corollary for pure trees):
 
 1. **Theorem RA (PROVED; standard, cf. Lemmermeyer, *Reciprocity Laws* 2000).** Take any number field K and any abelian extension L/K, and evaluate the Artin symbol of
    the *rational* ideal N·O_K. The result depends only on N mod m, where m is fixed by the conductor.
-   - This covers Jacobi symbols, all power-residue symbols computed by de Boer–Pagano at rational N, and Kronecker
-     symbols in number fields, including extensions that are non-abelian over Q.
-   - Corollary: pure trees (Theorem PT) that may also query such symbols at N-independent arguments are PT-m trees.
-     Without splitting N they learn nothing beyond the fiber floor.
-   - So, for symbols at N-independent arguments whose conductor is at most X^{1−η}, the reciprocity shortcut behind
-     Jager–Schwenk (Jacobi is easy by reciprocity although generically hard) opens no new channel. RA does not cover
-     symbols at N-dependent arguments (Jager–Schwenk's own setting, row 15) or the additive class of item 2.
+   - This covers Jacobi symbols, the fixed-numerator power-residue symbols of de Boer–Pagano at the full rational
+     ideal (N), and Kronecker symbols in number fields. L/Q need not be abelian.
+   - Corollary RA-PT: pure trees (Theorem PT) that may also query such symbols at N-independent arguments are PT-m
+     trees. Without splitting they are bound by PT-m's fiber-floor inequality.
+     - The fiber floor refers to the *hidden* point p mod m. It can contain ε when 4 | m.
+     - The symbol answers themselves are functions of N mod m. By selfred Theorem L (GRH) they carry o(1) advantage on
+       ε when m ≤ X^{1−η}.
+   - RA does not cover symbols at N-dependent arguments (Jager–Schwenk's own setting, row 15), nor the additive class
+     of item 2.
 2. **The conjecture "every reciprocity-computable invariant is an aggregate" is false as stated. The counterexample
    shows where the factors hide.**
    - The Dedekind sum s(a, N) is computable by reciprocity in O(log N) steps. It splits exactly as
      s(a, pq) = s(a, p) + s(a, q) + U(a, N), where U is a sum over units only.
-   - **Prop DSF (PROVED):** the local part s(a, p) + s(a, q) for any single a factors N deterministically.
+   - **Prop DSF (PROVED):** the local part s(a, p) + s(a, q), for any single a with gcd(2a(a²+1), N) = 1, factors N deterministically.
      Equivalently, 6N·U(a, N) ≡ (a²+1)·φ(N)/(2a) (mod N).
    - s(a, N) is determined by the easily computed data a + a⁻¹ mod N, (a/N) and N mod 24, together with the
      alternating sum of the partial quotients of a/N and the parity of their number (Barkan–Hickerson–Knuth).
-   - So the one non-aggregate reciprocity object we know is a continued-fraction statistic, and separating its local
-     part is factoring.
+   - So the principal non-aggregate reciprocity object we know is a continued-fraction statistic, and separating
+     this local part is factoring.
 3. **Root-type exponential sums are factoring-equivalent (Prop SAL, PROVED; decoder success rate measured).**
    - Salié sums S(a, b; N), and Kloosterman sums at square moduli K(a, b; N²), have closed forms over the square
      roots of ab.
@@ -123,7 +132,7 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 | 21 | Salié S(a, b; N) | iff factoring | **FACT** (precision N⁻⁴ PROVED; δ = O(1/log N) heuristic) | **Prop SAL**; cx 16 (precision N⁻⁴, one query) |
 | 22 | Kloosterman K(a, b; N²) | iff factoring | **FACT** (as row 21) | **Prop SAL** (square case) |
 | 23 | Kloosterman K(a, b; N), N squarefree | no known algorithm, even for prime N | NC; K(a,b;pq) = K(a q̄, b q̄; p)K(a p̄, b p̄; q) | rank-2 Kloosterman sheaf (Deligne, SGA 4½); "no bounded-genus curve computes it" is HEURISTIC; cx 15; elliptic exceptions F_{2^m} (Lachaud–Wolfmann 1990) and F_{3^m} (Katz–Livné 1989); classical only: Bruin (arXiv 1807.03600) has a quantum state-preparation algorithm, while a single classical value costs ≈ √q |
-| 24 | Cubic Weyl sums Σ e(ax³/N); cubic Gauss/Jacobi sums mod N | no | FACT (analytic C3); zero-test decides (−3/p) | analytic §0 item 3; cx 17 |
+| 24 | Cubic Weyl sums Σ e(ax³/N); cubic Gauss/Jacobi sums mod N | no | FACT-hard on the promise p ≡ q ≡ 1 (mod 3) with selectable queries (analytic C3); NC in general; zero-test decides (−3/p) | analytic §0 item 3; cx 17 |
 | 25 | Non-quadratic characters of (Z/N)^* (and their Gauss/Jacobi sums) | no (needs a prime ideal above p) | NC; rational arguments make (·/(N))_n trivial | Thm RA remark |
 
 ### Half-integral weight / theta
@@ -167,20 +176,31 @@ The "Ref" column names the source (KNOWN) or the place where we prove the claim.
 | 45 | Necklace / Lyndon counts of length N; cyclic codes of length N | no | NC (divisor sums, ord_d(2)) | — |
 | 46 | Spanning trees of circulant graphs C_N(1, a) | exact: exponential size; mod ℓ: AGG | AGG / NC | Lehmer–Pierce divisibility |
 | 47 | QR-graph subgraph counts on Z/N (tensor product of local graphs) | no | NC (class (a) of nonsmooth) | — |
-| 48 | Bost–Connes polylogs Li_k(e(a/N)) | yes | trivial (Bernoulli polynomial of a/N) | — |
-| 49 | Barvinok counts of N-dilated fixed-normal polytopes | yes | AGG (Ehrhart quasi-polynomial in N) | Ehrhart; Barvinok 1994 |
+| 48 | Bost–Connes polylogs Li_k(e(a/N)) | yes (numerically) | only the symmetrisation is elementary: Li_k(e(x)) + (−1)^k Li_k(e(−x)) = −(2πi)^k B_k(x)/k!; a function of a/N, no factor structure | — |
+| 49 | Barvinok counts of N-dilated fixed-normal polytopes | yes | AGG + height (Ehrhart quasi-polynomial: polynomial in N with coefficients periodic in N) | Ehrhart; Barvinok 1994 |
 | 50 | Same, with variable normals | yes | E / lattice; divisor detection needs a hull with Θ(N^{1/3}) vertices | analytic §0 |
 | 51 | Rademacher symbol / ζ_C(0) on forms of discriminant t² − 4 with N \| t² − 4 (Richaud–Degert) | yes | family Q (genus characters via relations); handed to `genusleak` | Zagier 1975 |
-| 52 | Partition function p(N) | N^{1/2} | NC; no multiplicative structure | Rademacher |
+| 52 | Partition function p(N) | Õ(N^{1/2}) | NC; no multiplicative structure | Rademacher; Johansson 2012 |
+| 53 | Fixed finite automata / AC⁰ on the bits of N (cx_2) | yes | OPEN as a class (factorbits §3.3 F; leakmap's) | selfred §0 item 5 |
+| 54 | Central binomial residue binom(2N, N) mod N (cx_2) | no known fast evaluator | FACT-hard on q < 3p/2: gcd = q (Lucas-type congruences; checked by codex on 74 pairs) | codex_2 #17 |
 
 **Reading the table.**
-- Everything computable splits into AGG (rows 1–3, 5, 10, 11, 16, 17, 19, 20, 31, 32, 41, 49) or class E (rows 6,
-  8, 12–14, 33, 40, 50).
-- Rows 9 and 15 are poly-time and OPEN but fit neither pattern cleanly: 9 is a lattice-cone class, 15 is a symbol at a
-  moving argument.
-- Everything whose closed form contains a square root of a nonlinear congruence (rows 7, 21, 22, 24) is FACT.
-- Everything else (rows 4, 18, 23, 25–30, 34–37, 43–47, 52) has no polynomial algorithm known even with p, q.
-- Row 42 belongs to leakmap's N-dependent-exponent class, and row 51 to genusleak's family Q.
+- **Computable, AGG (normalised; possibly plus explicit height terms):** rows 1–3, 5, 10, 11, 16, 19, 20, 31, 32, 41,
+  49. Row 17 is AGG in the proved example and heuristic in general.
+- **Computable, class E:** rows 6, 8, 12–14, 33, 40.
+- **Computable, OPEN, outside E (not tested here):**
+  - row 9 (lattice-cone sums);
+  - row 15 (symbols at moving arguments);
+  - row 42 (N-dependent exponents; leakmap);
+  - row 50 (variable-normal polytopes);
+  - row 53 (automata on bits; leakmap).
+- **FACT-equivalent:** rows 7, 21, 22 (root-type closed forms), 28 and 37. Row 24 and row 54 are FACT-hard on a
+  promise.
+- **No polynomial algorithm known from N alone:**
+  - easy given p, q: rows 4, 18, 26, 43, 45;
+  - not known to be easy even given p, q (they need class numbers, L-values, p−1 factorisations or long sums): rows
+    23, 27, 29, 30, 34–36, 44, 46, 47, 52.
+- Row 51 belongs to genusleak's family Q.
 
 ---
 
@@ -221,8 +241,16 @@ only on N mod m. Hence N ↦ ψ(N·O_K) is a homomorphism (Z/m)^* → Gal(L/K), 
 - Let m = lcm of the conductors of all symbol nodes; the tree is finite.
 - Given N mod m, every symbol answer is fixed. The tree is therefore a PT-m tree: the root reads N mod m, and the
   symbol nodes become hard-wired branches.
-- So Theorem PT-m applies. Without splitting, the tree learns at most the fiber floor at m. For m ≤ X^{1−η} this is
-  o(1) advantage on ε under GRH (selfred Theorem L).
+- So Theorem PT-m applies, including its split bounds and the PT2 cross-population qualification.
+- Caveat (codex_2). PT-m's fiber floor is the best prediction from the *hidden* fiber point p mod m, not from N mod m.
+  - With 4 | m the fiber point determines ε.
+  - Example: a pure node testing C = ∏_{r ≡ 1 (4), r in the window} r decides ε perfectly on N ≡ 1 (mod 4) without
+    splitting, and splits the mixed population (PT2). It has exponential cost.
+  - So Theorem L applies only to the vector of *symbol answers*. Those are functions of N mod m and carry o(1)
+    advantage under GRH for m ≤ X^{1−η}.
+  - The zero-test part is governed by PT-m/PT2 as before.
+- A short straight-line program can denote an enormous c_v, and hence an enormous conductor. Compilation into PT-m is
+  not a small-conductor statement.
 - For conductors ≫ X the floor statement is vacuous. The answer is still a product χ(p)χ(q), and its correlation with
   ε is |E[εχ(p)]|·|E[χ(q)]|-type. Bounding that needs prime character sums of large conductor (Heath-Brown's
   quadratic large sieve is the natural tool); not done.
@@ -297,6 +325,11 @@ U(a, N) = Σ_{k ∈ (Z/N)^*} ((k/N))((ak/N)).
   - (ii) K(c², 1; N²) = N·T_{N²}(c). This is the evaluation of Kloosterman sums at even prime powers (Iwaniec–Kowalski
     §12.3) combined with twisted multiplicativity. Tested numerically for N = 15, 21, 35.
   - (iii) T_M(c) = 2cos(4πc/M) + 2cos(4πce/M).
+  - *Direct proof of (ii)* (codex_2):
+    1. Write x = y + Nt with t mod N. The sum over t vanishes unless a − b y⁻² ≡ 0 (mod N), and otherwise
+       contributes N.
+    2. Each stationary class has a unique lift with ax² ≡ b (mod N²), where the phase is 2ax.
+    3. Put v = ax. No Gauss factor arises, and none is needed for p ≡ 3 (mod 4).
 - **Decoder.** Query T_M(2^k c) with absolute error δ for k = 0, …, K = bitlen(M) + 2.
   1. Subtracting the known first cosine leaves d_k = ‖x_k‖ with x_k = 2^{k+1}ce/M mod 1.
   2. Reconstruct x₀ backwards: x_k ∈ {x_{k+1}/2, (x_{k+1}+1)/2}, chosen by ‖x_k‖ = d_k. The error halves at each
@@ -340,10 +373,14 @@ a/N, where γ_k are the convergent matrices and m₀ is fixed. It contains:
 - Euclid-remainder residue counts;
 - quantum-modular values computed through their cocycles.
 
-**Random arguments.** For a public random a (independent of p, q given N), every class-E statistic g has advantage
-equal to that of G(N) = E_a[g]. G(N) is an average over a ∈ (Z/N)^*.
-- An effective equidistribution theorem for CF functionals over (Z/N)^*, uniform in the factorisation of N with error
-  N^{−δ}, would give advantage O(N^{−δ}).
+**Random arguments.** Take a bounded prediction rule g(N, a), with a a fresh uniform unit independent of p, q given N.
+Then E[ε·g(N, a)] = E[ε·G(N)] with G(N) = E_a[g(N, a) | N]. This preserves the linear prediction objective of that
+rule, not Pearson correlation of a raw feature.
+- A conditional floor needs a uniform bound |G(N) − B(N)| ≤ CN^{−δ}, for a baseline B with an independently
+  established factor-bit bound (e.g. a function of N's size and N mod m).
+- A limiting distribution alone does not suffice: residue-class postprocessing (parities, `dmod7`) can distinguish
+  distributions with the same continuous limit.
+- The battery's `hash` argument is deterministic, not a fresh unit, so this reduction is a heuristic model for it.
 - Bettin–Drappeau (arXiv 1903.00457) average over all denominators q ≤ Q, so they are not the tool for a fixed
   modulus. Fixed-modulus results exist:
   - Porter (Mathematika 22, 1975), improved by Ustinov (2008) and Bykovskii–Frolenkov (Mat. Sb. 2017): the mean
@@ -354,12 +391,17 @@ equal to that of G(N) = E_a[g]. G(N) is an average over a ∈ (Z/N)^*.
   - Mean squares of s(a, N) over units (Walum 1982; Conrey–Fransen–Klein–Scott, JNT 1996; Zhang, JTNB 1996). Their
     main terms carry explicit ∏_{p|N} factors, i.e. the factorisation enters at relative size ≈ 1/p (exact form
     UNVERIFIED by us). This parallels DSF and still gives only o(1) advantage.
+- David–Kim–Mor–Shapira (2025, Thm 1.2) give polynomial-rate large-deviation bounds for normalised CF length and
+  fixed-word frequencies for every sufficiently large denominator.
 - Status: the random-argument floor is KNOWN-in-substance for the length mean. It is OPEN for general class-E
   characteristic functions.
 
 **Structured arguments.** For structured a(N) (⌊√N⌋, ⌊N^{2/3}⌋, Fermat residues, 2^{(N−1)/2}) we have no theorem.
-The CF of a/N gives congruences a·q_k ≡ ±r_{k+1} (mod N) with q_k r_{k+1} ≍ N/a_{k+1}. These are never small, so the
-relation mechanism that made the CF of √N leak at n = 32 (eps §5) is absent. This is the registered prediction P1,
+The CF of a/N gives congruences a·q_k ≡ ±r_{k+1} (mod N) with q_k r_{k+1} ≍ N/a_{k+1}.
+- These are small only at very large partial quotients, and no quadratic relation (a square times a known small
+  number) is produced.
+- So we see no analogue of the relation mechanism that made the CF of √N leak at n = 32 (eps §5). This is a heuristic
+  observation, not a theorem. This is the registered prediction P1,
 The battery null is consistent with it, though a null cannot confirm a mechanism.
 
 ---
@@ -404,20 +446,26 @@ permutation z are anti-conservative (eps §5.3). We did not rerun the cluster-ro
 conclusion does not depend on it.
 
 † **`nc_ded5_bits` (z = −5.69) and `nc_lead16` (−4.97) at n = 32, ε.** These are size statistics, NC by design. They
-reflect a finite-set artefact: among the 1 491 sixteen-bit primes with the top two bits set, the share ≡ 1 (mod 4) is
-0.504/0.503/0.515/0.477 in the four quarters by size (corr(size, [p ≡ 1 mod 4]) = −0.0073). Combined with prime reuse,
-this gives an expected |z| ≈ 4–5. It is the same kind of effect as the QR₂ finite-set offset in eps §3. Post-hoc
+reflect a real association under the finite D₃₂ law. Among the 1 491 sixteen-bit primes with the top two bits set,
+the share ≡ 1 (mod 4) is 0.504/0.503/0.515/0.477 in the four quarters by size (corr(size, [p ≡ 1 mod 4]) = −0.0073).
+- codex_2 enumerated all 555 025 admissible pairs. The population-implied z at 2·10⁵ draws are −4.62 (`nc_lead16`)
+  and −5.47 (`nc_ded5_bits`), against observed −4.97 and −5.69.
+- Prime reuse does not create dependence between independent draws from a fixed population. It only makes this
+  genuine finite-population association measurable.
+- "Chebyshev-type" is an analogy, not a proof of the precise imbalance. It is the same kind of effect as the QR₂ finite-set offset in eps §3. Post-hoc
 explanation; |z| < 6, so not a hit. Both are null at n ≥ 48 (|z| ≤ 2.2).
 
 **Nonunits (rule 3).**
 - All 12 instances with gcd(a(N), N) > 1 are at n = 32: 6 from `cbrt2` and 6 from `hash`. The ACCIDENTAL null
   expectation Σ(1/p + 1/q) is 7.0 per argument, so both match.
-- Four arguments are structurally coprime:
+- Three arguments are structurally coprime on D_n, and one is coprime by observation:
   - `sqrt`: ⌊√N⌋ ∈ (p, q) for balanced N. Twin primes give ⌊√N⌋ = p, but then N ≡ 3 (mod 4), which D_n excludes;
   - `ferm`: p | (r+1)² would need r + 1 ∈ {p, q};
   - `euler`: a unit;
-  - `gold`: ⌊αN⌋ ≡ ⌊p{αq}⌋ (mod p), which vanishes only if {αq} < 1/p. Since α = (√5−1)/2 is badly approximable,
-    ‖qα‖ ≥ c/q for some c > 0 (c < 1/√5, by Hurwitz), so the event is rare. Observed 0.
+  - `gold` (not structural): ⌊αN⌋ ≡ ⌊p{αq}⌋ (mod p), which vanishes only if {αq} < 1/p.
+    - Exact enumeration of the whole D₃₂ population (555 025 pairs) gives 0 such pairs, against a uniform-residue
+      benchmark of 7.0 per 2·10⁵. This is a finite-window effect of the golden ratio's three-distance structure.
+    - It is not a theorem: codex_2's counterexample 193·233 = 44 969 has ⌊αN⌋ = 193·144.
 - No STRUCTURAL splits; n ≥ 48 has none.
 
 ---
@@ -428,8 +476,8 @@ explanation; |z| < 6, so not a hit. Both are null at n ≥ 48 (|z| ≤ 2.2).
 Rademacher integer Φ(a(N)/N), or the level-11 modular symbol, at a(N) ∈ {⌊√N⌋, ⌊N^{2/3}⌋, (⌊√N⌋+1)² − N, …}.
 
 **Why this one.**
-- (1) It is the only class of poly-time, reciprocity-computed invariants that Theorem RA does not reduce to N mod m
-  plus size. RA is multiplicative and this class is additive.
+- (1) It is the main class of poly-time, reciprocity-computed invariants that Theorem RA does not reduce to N mod m
+  plus size (row 9's lattice-cone sums are a higher-dimensional relative). RA is multiplicative and this class is additive.
   - We have *not* proved that it is not such a function at the structured arguments. "Not an aggregate" is literally
     true only because of the size dependence.
 - (2) DSF shows that one natural split, s(a, N) = s(a, p) + s(a, q) + U(a, N), is exactly as hard as factoring, with
@@ -446,8 +494,8 @@ Rademacher integer Φ(a(N)/N), or the level-11 modular symbol, at a(N) ∈ {⌊�
   that the CF path performs by itself, and we see no mechanism for that.
 
 **Sharpest question.** Is there a polynomial-time functional of the CF path of a/N (a = a(N) public) whose correlation
-with the "local" Dedekind value s(a, p) + s(a, q) exceeds that of the trivial predictor s(a, N)? Equivalently, does
-the unit part U(a, N) have a computable component correlated with φ(N) mod small moduli?
+with the "local" Dedekind value s(a, p) + s(a, q) exceeds that of the trivial predictor s(a, N)? A related, not proved equivalent, question: does the unit part
+U(a, N) have a computable component correlated with φ(N) mod small moduli?
 
 **The next experiment.**
 - Codex's lattice-cone sums (row 9: Zagier cotangent, Fourier–Dedekind, via Barvinok/Xin–Xu) are the untested
@@ -464,7 +512,7 @@ the unit part U(a, N) have a computable component correlated with φ(N) mod smal
 | Dedekind / Rademacher at fixed a | Euclid recursion | N mod a + size (RA2) | refuted (PROVED) |
 | Dedekind local part | exact L(a,N) | ≡ FACT (DSF) | FACT (PROVED) |
 | Salié / Kloosterman at N² | approximate-value oracle | ≡ FACT at precision N⁻⁴; dyadic decoder at δ = O(1/log N) (SAL) | FACT (PROVED at N⁻⁴; decoder heuristic, measured) |
-| Class E at N-dependent a | 84 statistics, 4 sizes | no signal at \|ρ\| ≥ 0.0153 | experimentally refuted for this menu |
+| Class E at N-dependent a | 84 statistics, 4 sizes | no |z| ≥ 6; nominal 80% power for linear effects at \|ρ\| ≥ 0.0153 | refuted for this menu (registered wording; power, not exclusion) |
 | Lattice-cone sums | fixed-dimension Barvinok | none known | not yet tested |
 
 ---
@@ -494,7 +542,35 @@ with every overlapping verdict here. Its contributions:
 Its top three open candidates are Φ, fixed-level modular symbols, and shifted Dedekind–Rademacher sums. These are
 class E, which matches §4.
 
-**Adversarial round (newfamily_2).** PENDING.
+**Adversarial round (newfamily_2, xhigh): MAJOR REVISION; all items applied.**
+
+Confirmed correct:
+- RA (no extra discriminant condition needed);
+- DS1, DS2, DSF (28 664 checks including p = 3) and the U formula;
+- the SAL closed forms and the scalable-precision reduction;
+- battery execution and registered validity (40 raw records recomputed; frozen modules unchanged).
+
+Fixed:
+- **MAJOR.**
+  - (a) RA-PT wrongly chained Theorem L (an observation floor) onto PT-m's hidden fiber floor. The C = ∏ r
+    counterexample is noted; L now applies only to the symbol answers.
+  - (b) The constant-precision decoder is HEURISTIC throughout. The PROVED claim rests on precision N⁻⁴.
+  - (c) The random-argument reduction is restated for a bounded predictor, with a baseline B(N) and the limit-law
+    caveat. `hash` is noted to be deterministic.
+  - (d) MDE language is restated as power, not exclusion.
+  - (e) The table and verdict no longer claim an exhaustive AGG/E split. Rows 9, 15, 42, 50 and 53 are separate open
+    bins, and row 24 is FACT-hard only on a promise.
+- **MINOR.**
+  - The class-E definition now requires polynomial output size; "never small" is heuristic.
+  - David–Kim–Mor–Shapira 2025 is cited.
+  - The n = 32 size association is a real finite-population effect (population-implied z −4.62/−5.47); clustering is
+    not the explanation.
+  - The golden-ratio "structural coprimality" was wrong (193·233). The D₃₂ count of 0 is a finite-window fact,
+    verified by exact enumeration.
+  - Row 48 is corrected to the symmetrised Bernoulli identity.
+  - Row 49 now carries height terms.
+  - Rows 53 and 54 are added.
+  - The DSF hypothesis is kept in all summaries, and the decoder handles gcd = N.
 
 ## 8. Opus critics
 
