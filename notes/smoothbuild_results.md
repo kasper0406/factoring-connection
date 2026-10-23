@@ -1,7 +1,7 @@
 # smoothbuild: constructing smooth numbers instead of searching for them
 
 Agent `smoothbuild`, phase 24, 2026-10-23. Version 3 (after the codex blind and adversarial rounds and both Opus critics; §9–§10 record the reviews; v1
-commit `7e7037c`, v2 `bd4f4b1`).
+commit `7e7037c`, v2 `bd4f4b1`, v3 `80daf57`; v3.1 applies the proof critic's confirmation round on v3).
 
 **Files.**
 - Pre-registration: `notes/smoothbuild_prereg.md` (commit `85d70fe`, before any run).
@@ -10,7 +10,7 @@ commit `7e7037c`, v2 `bd4f4b1`).
     and exact checks (Burnside ranks, roots mod p, Lemma AT counts, GF(2) kernels).
   - `e1_recurrence.py`, `e2_class.py`, `e3_cgpt.py`: the three pre-registered experiments (harness).
   - `posthoc_e2.py`: post-hoc diagnostics for E2's two failed predictions (labelled post hoc).
-  - `posthoc_m4.py`: post-hoc fixed-window flatness test replacing the uninformative registered M4.
+  - `posthoc_m4.py`: post-hoc fixed-window sanity check replacing the uninformative registered M4.
   - `analyze.py`: the prediction table.
 - Tests: `tests/test_smoothbuild.py` (10 tests).
 - Data: `experiments/raw/smoothbuild_E{1,2,3}.jsonl`, `smoothbuild_E2_posthoc.jsonl`, `smoothbuild_E2_posthoc_m4.jsonl`; summary
@@ -62,8 +62,9 @@ means L[1/2].
   fixed-family count excludes.
 - **Sum-product gives distribution statements, not navigation.** Bourgain–Konyagin, Bourgain–Glibichuk–Konyagin,
   Garaev and Shkredov bound how products of structured sets spread; flatness is the hypothesis under which
-  meet-in-the-middle does not amortise, and a post-hoc fixed-window test finds smooth × smooth products landing near
-  multiples of N at 1.00–1.02 of the flat rate. The fast constructive primitive is the 2-dimensional lattice (rational
+  meet-in-the-middle does not amortise; a post-hoc fixed-window sanity check finds that random smooth lists do not
+  concentrate their products near multiples of N (1.00–1.02 of the flat rate), which says nothing about
+  sum-product-type structured sets. The fast constructive primitive is the 2-dimensional lattice (rational
   reconstruction; cf. Vallée 1991): ratio splits t ≡ u/v with |u|, |v| ≤ √N. Product splits xy ≡ t (x, y ≤ H) are
   exactly divisor pairs of t + kN, i.e. Dixon samples (Prop RP). Both leave total tested log-size ≈ x: L[1/2].
 - **Residue-class construction is index calculus (Theorem EQ).**
@@ -116,7 +117,8 @@ means L[1/2].
     steered smooth hits repeat a relation already found for that target (17% of steered splits are exact rescalings
     of the unsteered split).
   - P2e (M4) measured only random-target dilation: its lists' products never wrap mod N. A post-hoc fixed-window
-    replacement (random smooth lists near N^{0.55}, window [0, W] near multiples of N) gives O/E 1.00–1.02.
+    sanity check (random smooth lists near N^{0.55}, window [0, W] near multiples of N) gives O/E 1.00–1.02; any random
+    list of that size would pass it.
 - **E3 (CGPT/BBM):** T/Ĵ₀ median 0.49, 0.51, 0.51 at 32/40/48 bits (P3a held).
   - P3b failed at 32 bits (one seed hit a perfect square at its 97th integer); the threshold was miscalibrated (≈ 18%
     a-priori failure probability across 12 seeds from perfect squares alone).
@@ -203,15 +205,16 @@ full-size integer unless the construction places the free side within h of a mul
 - *Scope (codex adversarial).* A second relation containing P may also contain other large atoms; recurrence of a
   *block* is the large-prime graph/hypergraph mechanism, which LP does not cover. Example: N = 77, y = 5, P = 13,
   Q = 17: 12² ≡ 23² ≡ PQ ≡ 67, and the two rows give gcd(12·23 − 13·17, 77) = 11, although neither row isolates P.
-- *No reduction to §4's CLASS is claimed.* CLASS is guaranteed only on uniformly random squares. Turning target P into
-  such a square needs a factor-base product q with Pq a square class mod every p | N, which cannot be recognised
-  without the factors (codex's N = 187 example: no single factor-base prime works, the product 6 does). v1's
-  "up to random self-reduction" is withdrawn.
+- *Relation to §4's CLASS.* CLASS is guaranteed only on uniformly random squares, and no single factor-base prime q
+  need make Pq a square class (codex: N = 187). Recognition is not needed, though: draw random factor-base products
+  q (several i.i.d. factors), call CLASS on Pq·s² with s a uniform unit and verify the output; whenever Pq is a square
+  class the input is exactly a uniform square. So a reduction exists with overhead O(2^{w(N)}/δ) (e.g. 4/δ for
+  semiprimes; proof critic, confirmation round); none is claimed for unbounded w(N).
 - *Chance recurrence.* If large atoms behave like independent primes with Pr[P] ≍ c/P (HEURISTIC, the large-prime
   model), R relations give ≈ R²Σ_{P∈(y,P_max]}c²/P² ≍ R²/(y ln y) coincidences, dominated by P near y. For atoms of
   size ≥ L[α] with α > 1/3 (for example a prime near kN, or a cofactor of Φ_n(a)) chance recurrence needs
   R ≳ L[α]^{1/2} relations: hopeless. So the known-prime relaxation is the classical large-prime variation (a
-  constant, or L^{o(1)}) for atoms near y, and the residue-class problem itself for larger atoms.
+  constant, or L^{o(1)}) for atoms near y, and a prescribed-target representation problem for larger atoms.
 
 **Lemma AT (atom optimality) [PROVED, elementary, presumably folklore (the injection is the standard Beurling-integer
 comparison); the prime-only case was found independently by codex].**
@@ -254,13 +257,14 @@ checked by us); proof recalled here; (iii) HEURISTIC; E1].**
   - (ii) 1 ≤ r_G − 1 ≤ d − 1. The lower bound is attained iff G is 2-transitive, the upper bound iff G acts
     regularly (|G| = d; e.g. Φ_n, every abelian G).
   - (iii) (HEURISTIC RE: for p ∈ (P₁, P₂], the positions of the distinct roots of F mod p, reduced modulo p relative
-    to the interval [a₀, a₀ + A), behave like independent uniform points of Z/p.) For A ≤ P₁, the number of pairs
+    to the interval [a₀, a₀ + A), behave like pairwise independent uniform points of Z/p; full independence is
+    impossible when F splits, since the roots' sum is fixed.) For A ≤ P₁, the number of pairs
     a ≠ a′ in the interval with F(a), F(a′) sharing a prime p ∈ (P₁, P₂] is then ≈ (r_G − 1)·C(A, 2)·Σ_p p⁻²; for
     independent uniform integers it is ≈ C(A, 2)·Σ_p p⁻².
   - RE is a genuine hypothesis, not implied by Chebotarev. It fails for root pairs r′ = −r when the interval sits near
     0 modulo every p in the band: then p | a + a′ < 2(a₀ + A) is impossible for p > 2(a₀ + A) (Opus critic: E1's deficit
     for D4 and V4, §8.1). Taking a₀ ≫ P₂ does not rescue it (codex: for F = x² + 1 and a₀ the product of all primes in
-    the band, the interval is ≡ [0, A) mod every such p and the pair count is 0). Uniformity in F (degree or field
+    the band, the interval is ≡ [0, A) mod every such p and the pair count is 0 for p ≥ 2A). Uniformity in F (degree or field
     growing with N) is a further assumption. Equidistribution of roots: Hooley 1964 (all moduli, on average);
     Duke–Friedlander–Iwaniec 1995, Tóth 2000 (prime moduli, quadratic F only).
   - Collisions among *all* family values are not the collisions among *retained* partial relations; the conditional
@@ -356,7 +360,8 @@ equidistribution results with no algorithm.
   that is what Prop FF and Prop MM use.
 - A post-hoc fixed-window test (§8.2; it replaces the registered M4, which codex showed measured only target
   dilation) counts pairs of random y-smooth integers near N^{0.55} whose product mod N lies in [0, W], the Prop SI
-  window near multiples of N: O/E 1.00–1.02 at 40–64 bits.
+  window near multiples of N: O/E 1.00–1.02 at 40–64 bits. This is a sanity check (random smooth lists do not
+  concentrate their products); any random list of that size would pass, so it does not test structured sets.
 - **Closure adds nothing.** The relations form a lattice (exponent vectors of products ≡ 1). Multiplying or dividing
   relations adds lattice vectors and creates no new F₂-information. A product of two Prop SI outputs is a relation
   with residue v₁v₂ ≤ h², not a new short one.
@@ -377,7 +382,8 @@ literature critic].**
   sampling); a smooth ratio split tests two pieces of log-size ≈ x/2 each. Both have total tested log-size ≈ x, so
   both are L[1/2] (Theorem SS); the ratio split wins by the L^{o(1)} factor ρ(u/2)²/ρ(u), which E2 measures as ≈ 8
   at u = 4 (M1 vs M0). Box-by-box point counts do *not* order the two for individual t (literature critic, N =
-  1 000 003, H = 1000: t = 720720 has 24 product points vs 6 lattice points; t = 123457 has 0 vs 24); counted as
+  1 000 003, H = 1000, counting signed points with x, y ∈ [−H, H]: t = 720720 has 24 product points vs 6 lattice
+  points; t = 123457 has 0 vs 24; with 1 ≤ x, y ≤ H and v > 0 the counts are 12 vs 3 and 0 vs 12); counted as
   distinct relations, all points with one k give the same relation. ∎
 - *Reading.* The sum-product world (products) collapses to Dixon sampling of t + kN, and the lattice world gives two
   tested pieces of total log-size x (Theorem SS: L[1/2], the constant of Dixon). Known 2-D constructions do better
@@ -427,8 +433,8 @@ of w_i. Each pair costs expected time T.
   CLASS_∞ ≡_R FACT ∧ DL(p^a) for every p^a ∥ N, with overhead polynomial in K, x and the output length.
   - (⇐) Factor N and compute discrete logs of the factor-base primes and of t modulo each p^k ∥ N. A solution e of
     Σe_p log p ≡ log t modulo each group exponent exists by generation and is found by linear algebra over Z.
-  - (⇒) Factoring is EQ1. For DL of h modulo q = p^a ∥ N (p odd, so (Z/q)^× is cyclic of order M = φ(q)), let g
-    generate (Z/q)^×; if h is a non-square replace it by g·h and subtract 1 from the recovered logarithm at the end.
+  - (⇒) Factoring is EQ1. For DL of h modulo q = p^a ∥ N (p odd, so (Z/q)^× is cyclic of order M = φ(q)), let g be a
+    generator of (Z/q)^×, supplied with the DL(p^a) instance (finding one would need the factorisation of φ(q)); if h is a non-square replace it by g·h and subtract 1 from the recovered logarithm at the end.
     Make m queries, each t_i ≡ g^{2k_i} (mod q) (k_i uniform mod M) combined by CRT with a uniform square modulo N/q,
     so t_i is a uniform square mod N. At one uniformly random position put the target h·g^{2k} instead, which has the
     same distribution. Each success gives v_i = e_i − f_i ∈ Z^K with v_i·(log ℓ)_ℓ ≡ 2k_i (mod M), plus log h at the
@@ -456,7 +462,8 @@ of w_i. Each pair costs expected time T.
 - **EQ4 [KNOWN in substance; proof here].** HRS(y; T) ⇒ factoring in O(K(T + x²) + K^ω x), as in EQ1. Conversely,
   given the factorisation, an HRS with T = poly(x) exists: output w = 1 and X a uniformly random square root of 1
   (independent CRT signs mod each p^a ∥ N). Then X is uniform among the 2^{w(N)} roots of w, independently across
-  calls. (v1 sampled smooth w that are squares mod every p and took roots; the acceptance probability ≥ 2^{−w(N)}
+  calls. This is the classical equivalence between factoring and sampling square roots of 1; EQ4 has no smoothness
+  content, which is the point: the weakest named target is factoring itself. (v1 sampled smooth w that are squares mod every p and took roots; the acceptance probability ≥ 2^{−w(N)}
   is not polynomial when w(N) is large, so that construction was replaced, after codex.) So HRS ≡_R FACT. ∎
   (≡_R is equivalence of problems, not of costs: HRS at cost T gives factoring at ≈ K·T.)
 - EQ1 and EQ4 are Dixon's 1981 random-squares fruitfulness argument in oracle form; codex found EQ1 independently.
@@ -611,8 +618,9 @@ P1c held: Φ₅/S4 = 3.07, Φ₈/S4 = 2.93, D4/S4 = 1.91, Φ₇/S6 = 5.09, Φ₉
 - *Post hoc (Opus critic).* The two lowest ratios are explained by root pairs r′ = −r, which can never both fall in
   the window once p > 2(a₀ + A) (Prop GR (iii)). Splitting S: D4 ± pairs 594.8 observed vs 669.7 heuristic (0.888),
   other pairs 669.2 vs 668.5 (1.001); V4 ± pairs 606.6/670.9 (0.904), other pairs 1331.2/1341.9 (0.992). Φ₅, Φ₇, Φ₉,
-  S4 and S6 have no ± root pairs. A toy-range artefact (a₀ ≪ P₂), irrelevant at L-scale.
-- *Reading.* The recurrence boost matches the Galois rank minus one, up to that artefact. A4 (2-transitive, non-symmetric) behaves like
+  S4 and S6 have no ± root pairs. This is an RE failure (the interval sits near 0 modulo the band's primes), absent
+  when RE holds.
+- *Reading.* The recurrence boost matches the Galois rank minus one, up to that RE failure. A4 (2-transitive, non-symmetric) behaves like
   S4, so the law is about the rank, not about the group being small or abelian. Root sieving was cross-checked
   against flint factorisations (`test_root_sieve_matches_factorisation`).
 
@@ -654,8 +662,8 @@ N balanced semiprimes, 6 per size; y = 2^{bits/4}; targets t = r² mod N.
   sampling by ≈ 8 at u = 4. That is ρ(u/2)²/ρ(u) ≈ 2^u-type, an L^{o(1)} factor (Theorem SS: same total tested
   log-size x).
 - *Reading.* Free factors (multipliers, placed factors) change the target, not the tested ledger, and often not even
-  the relation. In the post-hoc fixed-window test, smooth × smooth products land near multiples of N at the flat
-  rate.
+  the relation. The post-hoc fixed-window check shows only that random smooth lists do not concentrate their
+  products near multiples of N (any random list of that size would pass); it does not test structured sets.
 
 ### 8.3 E3: all primes allowed vs a fixed smoothness bound (CGPT)
 
@@ -677,7 +685,7 @@ N balanced semiprimes, 6 per size; y = 2^{bits/4}; targets t = r² mod N.
   largest prime, so T_best ≡ T by construction. The informative statistic is T at the bound y* fixed in advance:
   1.30–1.37 × T (post hoc). (T_y = T held within the grid cap 2^{bits−2} in all 36 runs.)
 - *Reading.* The first dependency uses primes ≈ 200–900 × y* (the large-prime variation happens by itself), but
-  it arrives only ≈ 25% sooner than at the best fixed bound. That is the constant-factor gain CGPT proves.
+  it arrives only ≈ 25% sooner than at the J₀-optimal bound y* fixed in advance (the hindsight best equals T). That is the constant-factor gain CGPT/BBM prove.
 
 **Deviations.**
 - (1) E3 records the largest prime (descriptive, registered) and the size of the first dependency (descriptive, not
@@ -765,6 +773,13 @@ critic verified explain E1's D4/V4 deficits exactly; RP's original proof incompl
 size-halving; E2's "mostly re-finds" contradicted by the data (59–64% distinct), with the Poisson check supplied;
 E2 table mixed samples; E3's P3a grid explanation false (the √2 grid is within 0.3–0.6%); P3b's probability
 misquoted (≈ 18% across seeds, not 0.15%); hierarchy is a partial order.
+
+**Proof critic confirmation round (on v3): ACCEPT WITH FIXES (2 MINOR, 6 NIT), all applied in v3.1.** It checked
+the new EQ2 proof step by step, EQ3/EQ4, Prop RP's identity, the codex examples, Prop KS's MODEL label, §0/§5 and the
+P2e diagnosis. Fixes: LP's CLASS link (a reduction with overhead O(2^{w(N)}/δ) does exist); the fixed-window test is a
+sanity check only; RE needs only pairwise independence; the §8.1 post-hoc bullet is an RE failure, not a toy-range
+artefact; EQ2 needs a supplied generator; RP's example counts are signed; EQ4 is the classical roots-of-1
+equivalence; "best fixed bound" → J₀-optimal y*.
 
 **Literature critic (read-only, on v2): OK WITH FIXES; all applied in v3.** Main points: Prop RP's search claim wrong
 (product splits are divisor pairs of t + kN); CGPT's conjecture proved by Balister–Bollobás–Morris (Ann. of Math. 188
