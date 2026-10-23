@@ -197,3 +197,17 @@ def test_codex_w1_square_root_bound():
         for c in (1, 2, 5, p - 3):
             z = (vpow((gr + c) % p, r, p) == 1) & ((gr + c) % p != 0)
             assert z.sum() <= sympy.divisor_count(n) * (1 + p ** 0.5)
+
+
+def test_theorem_D2_nonvacuous():
+    """A non-vacuous instance (codex prim_2 #23): p = 65537, y = 3 (primitive), d = 8: bound < p - 1."""
+    from src.prim.theory import d2_bound_at
+    p, y = 65537, 3
+    n = p - 1
+    bnd = d2_bound_at(p, y, 1, 1, 8)
+    assert bnd < n
+    r = np.arange(n, dtype=np.int64)
+    u = (vpow(np.full(n, y), r, p) + 1) % p
+    F = vpow(u, r, p)
+    for w in (1, 2, 3, 5, 17):
+        assert ((F == w) & (u != 0)).sum() <= bnd

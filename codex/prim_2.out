@@ -1,0 +1,195 @@
+1. **WRONG — J1 is false as stated (§6).** Integer non-degeneracy does not imply non-degeneracy after reduction modulo every sampled prime.
+
+   Explicit counterexample: take equal sign priors, with \(\mu_+\) uniform on \(\{1009,1013\}\) and \(\mu_-\) uniform on \(\{1019,1031\}\), and iid draws within each population. Set
+   \[
+   P(T)=844686687854\,T^2+1073824876913,\qquad E(N)=N.
+   \]
+   The constant term is the product of those four primes. The leading coefficient has Legendre signs \(+,+,+,-\), respectively. Thus \(P\) is non-degenerate over \(\mathbb Q\), but modulo every sampled prime it becomes \(aT^2\). Guessing \(+\) from Jacobi \(+1\), and \(-\) from Jacobi \(-1\), gives
+   \[
+   \Pr[\mathrm{correct\ or\ split}]\ge0.7502434282,
+   \]
+   whereas J1’s printed right side is \(0.5089094287\).
+
+   This also works with uniform sign populations comprising **all** primes in \((1000,2000]\): a CRT construction gives \(0.7503407\) versus \(0.5069952\).
+
+   **Fix:** exclude and charge primes where the characteristic-zero square-factor structure changes, or formulate degeneration locally and supply a separate argument for the resulting prime-dependent coefficients. Remove “PROVED” pending this repair.
+
+2. **GAP — J1 also needs a consistent sampling and coin model.** Its iid formulation allows \(p=q\), where CRT independence fails:
+   \[
+   \mathbb E[\chi_p(P(U))^2]\ne \mathbb E[\chi_p(P(U))]^2.
+   \]
+   Moreover, a coin uniform in \(\mathbb F_p\) does not produce the asserted uniform subgroup law: that law holds conditional on a nonzero coin. “A value vanishes at a prime, and then gcd splits” is false when it vanishes at both primes.
+
+   **Fix:** specify distinct-pair sampling, or add diagonal mass; distinguish uniform field coins from uniform units; and track the probability of **any local zero**, including two-sided zeros, through the Fourier argument. Public parity \(\nu\) is correct for the affine menu, and clipping character bounds by \(\min(1,\cdot)\) is appropriate. Those facts do not repair the missing hypotheses or establish the printed Fourier constants.
+
+3. **OK — U’s affine reduction, adaptive reference, and constant \(8/\pi(I)\) survive (§2).** A fixed node on a fixed reference path has a well-defined expression over \(\mathbb F_p\). Choosing its reference answers using the entire prescribed partner distribution still produces a function of \(p\) alone. Adaptivity introduces no circularity.
+
+   The constant is correctly obtained from PT-X’s factor \(2\), a union over the two components, and the residue domination factor \(2/\pi(I)\).
+
+   **Fix:** explicitly distinguish this \(p\)-only reference from R’s partner-dependent mode \(m_p(p,q)\).
+
+4. **GAP — “Everything reduces to \(r\bmod(p-1)\)” overstates U’s scope.** The floor-gate statement is correct, but floor gates require \(q\bmod 2^j(p-1)\). Mixed menus require a common enlarged modulus. They are not covered by the displayed affine zero sets in \(\mathbb Z/(p-1)\). Jacobi cancellation is also outside this domination argument.
+
+   **Fix:** restrict the verdict’s statement to affine zero/gcd trees. Give a separate enlarged-modulus version for floor gates and retain the explicit warning about signed averages.
+
+5. **MINOR — U’s endpoint and sampling conventions need repair.** The assertions \(p-1\ge X\) and the literal representative equality \(r=1+\Delta\) assume an integral/dyadic endpoint. For example, \(X=6.9,p=7,q=13\) gives \(r=1\), whereas \(1+\Delta=7\). The congruence remains correct.
+
+   Conditional on a uniform distinct pair from \(M\) primes, partner mass is \(1/(M-1)\), not \(1/M\).
+
+   **Fix:** take integral \(X\), or write the Δ identities modulo the relevant group order. State the conditional partner law explicitly. The published factor \(8/M\) remains conservative after using the sharper residue count available for distinct partners.
+
+6. **OK — Lemma P is correct in the stated balanced, odd-prime setting.** Neither prime divides the other prime’s predecessor. Consequently every positive \(N\)-power map permutes the whole field, including zero.
+
+   **Fix:** state \(p<q\) without loss of generality in its proof. Distinguish the resulting distributions: a uniform field input remains uniform on the field; a uniform unit input becomes uniform on the field with one point omitted.
+
+7. **OK — R’s main decoupling argument survives shared coins and adaptivity (§3).** Pre-sample an independent sequence of uniform CRT coins. Each diagonal execution is a function of its own component sequence, even when coins are reused across nodes. The two executions therefore remain conditionally independent for distinct \(p,q\).
+
+   The differing-mode inequality \(s(p,q)\ge1/2\), including ties, is valid. The PT-X comparison also works for uniform distinct ordered pairs, using
+   \[
+   \frac{c(c-1)}{M(M-1)}\le(c/M)^2.
+   \]
+
+   **Fix:** define transcripts as complete paths with answers and fixed leaf labels. They must not include raw coin values. Exclude \(p=q\), or charge its probability explicitly. Arbitrary unequal laws conditioned on inequality need a separate justification.
+
+8. **GAP — R-chain needs explicit non-degeneracy and freshness conditions.** The modal step itself is correct:
+   \(m_p\ne\kappa_0(p)\) implies \(a_{\kappa_0}(p)\le1/2\), followed by a first-deviation union bound.
+
+   The CB application requires the tested expression to be a nonconstant function of the fresh bottom coin. As written, \(A=B=0\) already defeats the assertion that a frequent zero forces a large gcd product. Coin-dependent coefficients can create further cancellations.
+
+   **Fix:** require \(A\ne0\), coefficients and shifts fixed before the fresh coin, and polynomial maps nonconstant modulo \(p\). Route constant probes through their actual reference answers. Define \(D\) as the relevant product of degrees.
+
+9. **MINOR — R-chain’s population error must average \(\tau(p-1)\).** Its displayed right side contains a free random \(p\). Also, \(\tau(p-1)=p^{o(1)}\) alone does not justify the claimed growing-depth threshold uniformly over primes.
+
+   **Fix:** retain the expectation, or use an explicit average-divisor estimate. For example, a Brun–Titchmarsh summation gives an \(O(\log X)\) average bound sufficient to make the intended depth discussion precise. Separate fixed-depth negligibility from growing-depth usefulness.
+
+10. **OK — KS and PS’s central compression/counting argument is sound (§4).** The root bound follows from degree compression, and the compression selects one subgroup whose zero cosets suffice. Kelley's partner condition and compression machinery are correctly relevant. [Kelley, Theorems 2.2–2.3 and Lemma 4.1](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0B4BB0B58AF86C34B8D12395335A3958/S1461157016000334a.pdf/roots-of-sparse-polynomials-over-a-finite-field.pdf)
+
+    Brun–Titchmarsh yields the stated density factor for that selected subgroup. Non-reduced classes contain no prime partners once \(k<X\). The claimed sparsity range is correct for the **partner-probability bound**, which pays the extra \(\log X\).
+
+    **Fix:** normalize exponents by a monomial and mention the large-common-gcd case omitted from the sketch. Clarify that order alignment is necessary; coefficient cancellation is additionally required.
+
+11. **MINOR — The selected zero-coset union and the maximal union are different objects.** The maximal union of all large zero cosets need not consist of cosets of one subgroup.
+
+    For example, over \(\mathbb F_{31}\),
+    \[
+    f(T)=(T^6-1)(T^5-1),\qquad L=5.
+    \]
+    Its ten roots form \(H_6\cup H_5\). This set has trivial multiplicative stabilizer, so it cannot be a union of cosets of any single subgroup of order at least five.
+
+    **Fix:** use separate notation for the compression-selected union and the maximal union computed by `coset_union`. Apply PS’s single-modulus proof to the former.
+
+12. **OK — D2’s finite-field core survives (§5).** For nonzero \(y,c,A,B\) modulo \(p\), the character expansion and cell count are valid. When \(d\mid so\), the additive character descends to \(\langle y^a\rangle\). The lifted binomial has \(k=n/o\) simple nonzero roots; a nonprincipal character supplies a multiplicity not divisible by its order. The Weil estimate therefore applies. Removing \(w=0\) costs at most one. [Weil bound, Akbary–Ghioca–Wang, Theorem 2.1](https://people.math.carleton.ca/~wang/papers/distributionPP.pdf)
+
+    The estimate
+    \[
+    |S_d|\le\gcd(\alpha,d)d\tau(d)
+    \]
+    is also valid.
+
+    **Fix:** state the local unit hypotheses explicitly. The final \(+n/o\) is unnecessary when \(B\) is a unit, because \(u=0\) cannot solve the equation.
+
+13. **OK — D2 extends to \(u=M_1(M_2+c)\), but the proof changes slightly.** Writing
+    \(\operatorname{ind}M_1=\gamma_1+\lambda_1r\) moves
+    \[
+    (\alpha r+\beta)(\gamma_1+\lambda_1r)
+    \]
+    to the congruence’s right side. That side becomes quadratic in \(r\). For each fixed residue \(r\bmod d\), the number of permissible logarithm residues is still at most \(\gcd(\alpha r+\beta,d)\).
+
+    **Fix:** explain this modification and define \(o\) using the exponential slope of \(M_2\). “The proof is unchanged” conceals a real, although harmless, change.
+
+14. **GAP — D2’s density corollaries require fixed non-torsion bases.** The GRH order input is not uniform over arbitrary “pure” SLP bases. It fails for \(y=1\) or \(-1\), and the cited fixed-base results do not automatically cover bases or exponent parameters growing with \(X\).
+
+    The sieve claim is repairable: Koukoulopoulos’s shifted-prime argument supplies the relevant \(O(\log y/\log z)\) exceptional estimate. The GRH large-order statement is documented for a fixed non-torsion base. [Koukoulopoulos, Theorem 1.8 and Lemma 2.5](https://arxiv.org/pdf/0905.0163), [Kurlberg, introduction](https://people.kth.se/~kurlberg/eprints/on_grh.pdf)
+
+    **Fix:** state fixed-base hypotheses, \(0<\eta<1/2\), and \(0<\delta<1/4-\eta/2\). Replace “not negligible” by “does not establish negligibility.” For fixed \(\delta\), the exceptional bound is \(C\delta+o(1)\), not automatically \(o(1)\).
+
+15. **WRONG — The “equivalently” exponential-sum reformulation is unjustified (§5).** Substituting \(s=r^{-1}\) treats only unit exponents. Fourier inversion of the resulting equality uses particular linked coefficients; bounds for arbitrary \((\lambda,\mu)\) are stronger. Neither direction establishes the asserted equivalence for all residues.
+
+    **Fix:** call the displayed sums a *sufficient possible approach to the unit-exponent sector*. Partition nonunit residues separately.
+
+16. **GAP — FZ’s positive-exponent lemma does not justify all experimental FROZEN classes.** The lemma is valid for unit gate bases and admissible \(t\). The implementation also uses \(t\le0\), interpreted through reduced exponents. Literal rational towers at negative \(t\) require invertible denominators; zero intermediate bases need separate treatment.
+
+    With affine slopes, the exact output-freezing modulus is
+    \[
+    \operatorname{lcm}_i
+    \frac{\operatorname{ord}(b_i(t))}
+         {\gcd(\alpha_i,\operatorname{ord}(b_i(t)))}.
+    \]
+    The printed modulus is sufficient but can be larger. “Low-height” also needs a depth-dependent height bound.
+
+    **Fix:** prove the classification for the implemented equality-of-outputs rule, specify denominator exceptions, and restrict the exact pin conclusion to small representatives \(t\).
+
+17. **GAP — CL’s algebra is correct, but its global depth/classification claim is too broad.** The sign is \((-1)^E\), and negative monomial exponents require units or clearing denominators. Replacing one gate need not lower the maximum depth of a branched expression. At depth three, closure can leave a depth-two condition with D2’s unresolved exceptions.
+
+    **Fix:** claim removal of the selected gate, with strict depth reduction for chains. Keep the M/A conclusion restricted to the cases whose resulting conditions are actually covered by NE1/PS.
+
+18. **OVERCLAIM — The depth hierarchy is not established (§7).** On actual prime partners, \(r\) is a unit. Hence
+    \[
+    ((g^r+c_1)^r+c_2)^r=1
+    \iff
+    (g^r+c_1)^r=1-c_2.
+    \]
+    This is D2 again. I checked this equivalence in 2,144 numerical instances. The registered D3, with \(c_2=1\), is particularly special: its remaining condition is simply \(g^r=-c_1\).
+
+    **Fix:** describe shift depth two as the boundary of the present **general** method. State the terminal-target-one reduction explicitly. Replace “depth two mostly classified” by the precise good-prime, fixed-base density statement.
+
+19. **WRONG — The blanket P8 pass/null statements misreport the JSON (§9 and verdict).** At \(b=14\), `J7_14`, `J7_15`, and `J7_16` have undefined dyadic \(z\), and their stored `P8_pass` values are false. `J_CRT` is also undefined. At \(b=12\), two ordinary Jacobi statistics are undefined.
+
+    An iid \(z\) cannot replace the registered dyadic statistic after its estimator fails.
+
+    **Fix:** report these cells as **undefined / not established**, with the positive-control calibration failure explicit. The \(b=16\) statement is faithful: all eleven statistics are defined, with maximum \(|z|=3.05192\).
+
+20. **WRONG — The q-world OTHER denominator includes PIN observations excluded from its numerator.** In [e1_posthoc.py:159](/Volumes/git/factoring-connection/src/prim/e1_posthoc.py:159), the model masks COSET/FROZEN/F1/CLOSURE, but not PIN.
+
+    Recomputing matching denominators at \(b=16\) gives:
+
+    | Node | Published model | Corrected model | Corrected ratio |
+    |---|---:|---:|---:|
+    | D2a_2 | 38.2849 | 37.3788 | 1.28415 |
+    | D2b | 550.8763 | 543.1046 | 0.99612 |
+    | D2d | 38.2568 | 37.3514 | 0.69609 |
+    | D2e | 638.3740 | 628.6820 | 0.87644 |
+
+    **Fix:** apply the identical q-world mask to observed and model masses, including both factors in Q3. Q2 still passes for the corrected one-sided ratios; the implementation nevertheless requires correction.
+
+21. **OVERCLAIM — \(b=16\) is a partially exposed validation set, not a clean held-out dataset.** The second registration explicitly follows the original \(b=16\) E1 run. Its aggregate outcomes were already available, including frozen-residual summaries. Registering a new analysis before executing that analysis is useful, but does not restore data blindness.
+
+    **Fix:** call this a prospectively registered reanalysis of partially exposed data. Use an untouched prime range or pre-separated subset for independent confirmation. The original P5/P6/P7 failures are otherwise reported candidly.
+
+22. **GAP — The statistical model does not support the stronger “everything explained” reading.** Aggregate ratios do not establish a fresh-random residual law. Coset structure and shared primes matter for a stochastic null, while the exhaustive finite-population totals themselves have no sampling uncertainty. For the sampled \(b=16\) pairs, sampling without replacement additionally matters.
+
+    Negative dyadic variance estimates are not negative true variances. Degenerate pair statistics can defeat the estimator’s intended calibration.
+
+    **Fix:** specify the stochastic null and its covariance structure; distinguish descriptive ratio windows from calibrated tests; use a method that handles degenerate pair statistics. Describe FROZEN/CLOSURE as exact explanations of the removed classes, and the residual agreement as empirical evidence only.
+
+23. **MINOR — Most numerical summaries check out, with two reporting corrections.** I independently rechecked the **current compression bound** from the stored residuals: zero violations in \(750/2586/8946\) cases. The production code itself still checks the older recursive bound, so its recorded P4 provenance should be updated.
+
+    The verdict’s universal nested-gain bound \(0.0015\) is false: `NEST|eps|all` at \(b=12\) has gain \(0.0021863226\). All 14 repository tests pass, but D2’s registered test is vacuous and J1 has no test.
+
+    **Fix:** correct the verdict’s number and document meaningful checks. A nonvacuous D2 check is \(p=65537,y=3,d=8\): bound \(41025.06<65536\), with observed zero counts \(13,6,2,0,0\) for targets \(1,2,3,5,17\).
+
+24. **MISCITED — The Mersenne character-sum reference is wrong (§6).** The 2004 Banks–Conflitti–Friedlander–Shparlinski paper concerns additive exponential sums. The relevant multiplicative-character result is Banks–Friedlander–Garaev–Shparlinski, **2012**, Theorem 3.3. Its useful range requires a summation length substantially larger than the balanced partner range, so coupling is not the only obstacle. [Correct paper and theorem](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/CDCF83EAF881B1C6313EED1FE2762B6D/S1446788712000109a.pdf/exponential_and_character_sums_with_mersenne_numbers.pdf)
+
+    Also delete “all of these require inverting a random challenge”: Jager–Schwenk concerns generic Jacobi/QR computation, while Rotem–Segev concerns accelerating forward evaluation. [Jager–Schwenk](https://doi.org/10.1007/s00145-012-9120-y), [Rotem–Segev](https://eprint.iacr.org/2020/812)
+
+    **Fix:** correct the citations and distinguish their computational tasks. I located no verified theorem replacing D2 for the general Zech hyperbola; the cited \(x^x=\lambda\) results concern a different equation. [Cilleruelo–Garaev](https://arxiv.org/pdf/1503.02730)
+
+25. **OVERCLAIM — The verdict mixes quantitative theorems, descriptive taxonomy, and experiments.** “Every non-split leak we can analyse is M/A/Q” is defensible only as an informal summary of restricted fragments. It is not an exhaustive classification theorem: M/A/Q are descriptive, D2 has substantial uniformity qualifications, J1 is currently false, and the ε fiber problem remains open for the zero-test reductions.
+
+    My additional attack attempt used genuine two-shift towers, including
+    \[
+    ((2^N+1)^N+2)^N-3.
+    \]
+    On all 3,850 \(b=12\) pairs with \(N\equiv1\bmod4\), it had **one split and no two-sided zero**. Under equal sign priors, \(s=0.0002403846\), and its non-split gain was exactly \(s/2\): no new mechanism emerged. Four nearby variants also had no two-sided zeros. This is a failed finite search, not evidence excluding the open fragments.
+
+    **Fix:** replace the headline classification with a list of proved quantitative fragment bounds. Keep the subjective “≤1%” assessment clearly separate from mathematical conclusions.
+
+**Recommendation: MAJOR REVISION.**
+
+The three most important changes are:
+
+- Repair J1’s reduction, diagonal, coin, and zero-event hypotheses; the current theorem has a concrete counterexample.
+- Restrict D2’s density corollaries and rewrite the depth hierarchy around its actual exceptions and exact reductions.
+- Correct P8, match the post-hoc masks, and qualify the held-out/statistical claims.
+
+Reproducible numerical checks are in [audit_checks.py](/Volumes/git/factoring-connection/codex/scratch/prim_2/audit_checks.py), with [counterexamples](/Volumes/git/factoring-connection/codex/scratch/prim_2/counterexamples.json) and [corrected PIN denominators](/Volumes/git/factoring-connection/codex/scratch/prim_2/pin_correction_b16.json).

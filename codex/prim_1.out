@@ -1,0 +1,603 @@
+**OPEN overall.** I did not establish a fourth leak family or a new factor-bit predictor. There are, however, two useful positive results:
+
+- **PROVED:** the requested sparse “large zero cosets plus residual” statement follows directly from degree compression, with a stronger exponent than the suggested recursion.
+- **PROVED:** fresh-base chains admit an elementary bound at every depth. In particular, chains of \(N\)-th powers and shifts have no depth-three obstruction.
+
+The general deterministic Zech-hyperbola problem and the compressed-integer Jacobi problem remain **OPEN**.
+
+Throughout, local results concern \(\mathbb F_p\), with \(n=p-1\). They do not automatically extend to extension components or to the full model with Jacobi branching.
+
+## 1. Two-layer gates
+
+### 1.1 The hidden-exponent reduction: correct, with qualifications
+
+**PROVED.** For \(x\in\mathbb F_p^\times\),
+\[
+x^{\alpha N+\beta}=x^{\alpha q+\beta}.
+\]
+Indeed, \(pq\equiv q\pmod{p-1}\). Writing \(\Delta=q-p\),
+\[
+q\equiv1+\Delta\pmod{p-1},\qquad
+p\equiv1-\Delta\pmod{q-1}.
+\]
+These are congruences; identifying them with least nonnegative residues requires the stated endpoint restrictions.
+
+For an independent uniform partner prime in \(I\), each residue modulo \(n\) has at most two representatives in \(I\). Thus, for \(Z\subseteq\mathbb Z/n\),
+\[
+\Pr[q\bmod n\in Z]\le \frac{2|Z|}{\pi(I)}.
+\tag{1}
+\]
+For sampling without replacement, replace \(\pi(I)\) by \(\pi(I)-1\). Conditioning on \(p\) being the smaller factor changes the partner distribution and its denominator; (1) should be applied before sorting the iid pair.
+
+**PROVED qualification.** A floor gate is generally determined by
+\[
+q\bmod 2^j(p-1),
+\]
+rather than by \(q\bmod(p-1)\) alone. Consequently, the single-variable description \(f(g^r)\) applies directly to affine gates, but needs additional residue bookkeeping for floor gates.
+
+**PROVED additional restriction.** For distinct balanced odd primes,
+\[
+\gcd(N,(p-1)(q-1))=1.
+\tag{2}
+\]
+The proof appears in §4. In particular, actual partner residues for an \(N\)-th-power gate are units modulo the local group order. Uniform counting over *all* residues can therefore include substantial mass never visited by the prime partner.
+
+### 1.2 Deterministic bases: useful special cases
+
+**PROVED — small-order bases give a bounded coset union.** Let \(x\) have order \(m\mid n\), and consider
+\[
+\bigl(x^{a_1r+b_1}+c\bigr)^{a_2r+b_2}=w,
+\]
+with positive actual outer exponents.
+
+Its solution set is a union of at most \(m\) additive cosets in \(\mathbb Z/n\).
+
+*Proof.* Fix \(r\equiv a\pmod m\). Then
+\[
+b_a=x^{a_1a+b_1}+c
+\]
+is fixed. If \(b_a=0\), the entire class passes when \(w=0\), and none passes otherwise. If \(b_a\ne0\), \(w\ne0\), and \(w\in\langle b_a\rangle\), choose \(t_a\) with \(b_a^{t_a}=w\). The remaining condition is
+\[
+a_2r+b_2\equiv t_a\pmod{\operatorname{ord}(b_a)}.
+\]
+Its solutions are either empty or one congruence class modulo
+\[
+\operatorname{ord}(b_a)/\gcd(a_2,\operatorname{ord}(b_a)).
+\]
+Intersecting with \(r\equiv a\pmod m\) gives an empty set or one coset modulo a divisor of \(n\). Sum over the \(m\) choices of \(a\). ∎
+
+The same proof covers a retained factor \(y^A\): on each class modulo \(m\), it merely changes the target.
+
+Thus small-order initial bases do not produce an escape from coset structure at two layers.
+
+**PROVED — unit outer exponents peel off small-order targets.** Suppose the outer exponent is \(r\), \(\gcd(r,n)=1\), and \(w\) has order \(h\). Then
+\[
+\bigl(x^{a_1r+b_1}+c\bigr)^r=w
+\]
+forces the inner value to belong to
+\[
+\{w^s:s\in(\mathbb Z/h)^\times\}.
+\]
+Consequently,
+\[
+|Z\cap(\mathbb Z/n)^\times|
+\le
+\varphi(h)\frac{n\gcd(a_1,m)}m.
+\tag{3}
+\]
+
+*Proof.* Inverting \(r\) modulo \(n\) gives the displayed set of possible inner values. Each equation \(x^{a_1r+b_1}=v\) has either zero or \(n\gcd(a_1,m)/m\) solutions modulo \(n\). ∎
+
+For primitive \(x\), \(a_1=1\), and \(w=\pm1\), this gives at most one unit residue. In particular, for actual balanced prime partners,
+\[
+\bigl(x^N+c\bigr)^N=1\pmod p
+\iff x^N+c=1\pmod p.
+\tag{4}
+\]
+
+**PROVED — a square-root bound for the full-residue target \(w=1\).** If \(g\) is primitive and \(c\ne0\), then
+\[
+\#\{r\bmod n:(g^r+c)^r=1\}
+\le \tau(n)(1+\sqrt p).
+\tag{5}
+\]
+Here zero bases are excluded from passing.
+
+*Proof.* Partition solutions according to \(d=\gcd(r,n)\). Since \(d\mid r\), \(g^r\) lies in the subgroup \(H_{n/d}\). The equation implies \(g^r+c\in H_d\). The subgroup-intersection estimate proved below gives
+\[
+|H_{n/d}\cap(H_d-c)|\le1+\sqrt p.
+\]
+The map \(r\mapsto g^r\) is injective modulo \(n\). Sum over \(d\mid n\). ∎
+
+### 1.3 What remains open for fixed bases
+
+**PROVED reformulation.** With primitive \(g\), \(c\ne0\), and \(w\ne0\),
+\[
+(g^r+c)^r=w
+\]
+is equivalent, away from \(g^r=-c\), to
+\[
+\operatorname{ind}_g(u)\operatorname{ind}_g(u+c)
+\equiv \operatorname{ind}_g(w)\pmod n.
+\tag{6}
+\]
+The modulus in (6) is the composite integer \(p-1\). This is not a bounded-degree algebraic curve over \(\mathbb F_p\).
+
+**OPEN.** I did not obtain a uniform power-saving bound for (6) with arbitrary large-order \(w\), after suitably quantified order-alignment exceptions. Nor did I verify a literature theorem supplying that bound.
+
+The relevant verified results concern different equations:
+
+| Status | Exact reference | Verified scope |
+|---|---|---|
+| **KNOWN** | Lev Glebsky and Igor E. Shparlinski, *Short cycles in repeated exponentiation modulo a prime*, **Designs, Codes and Cryptography 56 (2010), 35–42, Theorem 2**. [Author preprint](https://arxiv.org/pdf/0908.3920) | At most \(\sqrt{2p}+1/2\) fixed points of \(u\mapsto g^u\bmod p\), for \(p>11\). |
+| **KNOWN** | Antal Balog, Kevin A. Broughan and Igor E. Shparlinski, *On the number of solutions of exponential congruences*, **Acta Arithmetica 148 (2011), 93–103**, Theorems 4 and 7, with Corollary 3 in the checked preprint. [Preprint](https://arxiv.org/pdf/1003.1997) | Bounds for \(x^x=a\), including the uniform \(p^{12/13+o(1)}\) bound. |
+| **KNOWN** | Javier Cilleruelo and Moubariz Z. Garaev, *The congruence \(x^x\equiv\lambda\pmod p\)*, **Proceedings AMS 144 (2016), 2411–2418, Theorems 1–2**. [Preprint](https://arxiv.org/pdf/1503.02730) | Theorem 1 gives \(p^{27/82+o(1)}\) for target \(1\); Theorem 2 concerns targets of prescribed order. |
+| **KNOWN** | Pär Kurlberg, Florian Luca and Igor E. Shparlinski, *On the fixed points of the map \(x\mapsto x^x\) modulo a prime*, **Mathematical Research Letters 22 (2015), 141–168, Theorem 1**. [Author copy](https://kurlberg.github.io/eprints/FixPoint_x%5Ex.pdf) | Almost all primes admit a nontrivial fixed point; this does not count (6). |
+
+**UNVERIFIED as a source for (6).** Jean Bourgain, Sergei V. Konyagin and Igor E. Shparlinski, *Product sets of rationals, multiplicative translates of subgroups in residue rings, and fixed points of the discrete logarithm*, **IMRN 2008, rnn090**, with **2009 corrigendum, 3146–3147**. I verified the publication and its average fixed-point scope, but no theorem number yielding a Zech-hyperbola bound. [Publication and corrigendum record](https://researchers.mq.edu.au/en/publications/product-sets-of-rationals-multiplicative-translates-of-subgroups-/)
+
+### 1.4 Fresh initial base: the explicit two-layer formula
+
+**KNOWN tool.** I use the multiplicative Weil bound in Amir Akbary, Dragos Ghioca and Qiang Wang, *On permutation polynomials of prescribed shape*, **Finite Fields and Their Applications 15 (2009), 195–206, Theorem 2.1**, which cites Lidl–Niederreiter, *Finite Fields*, Theorem 5.41. [Author copy](https://people.math.carleton.ca/~wang/papers/distributionPP.pdf)
+
+**PROVED — subgroup intersection.** For subgroups \(H,K\le\mathbb F_p^\times\), \(c\ne0\), and \(a\ne0\),
+\[
+\left|
+|H\cap(aK-c)|-\frac{|H||K|}{n}
+\right|\le\sqrt p.
+\tag{7}
+\]
+
+*Proof.* Put \(k_1=n/|H|\), \(k_2=n/|K|\), and extend all multiplicative characters, including the principal character, by zero at zero. Character orthogonality gives
+\[
+|H\cap(aK-c)|
+=\frac1{k_1k_2}
+\sum_{\psi\in H^\perp}\sum_{\chi\in K^\perp}
+\chi(a)^{-1}\sum_{u\in\mathbb F_p}\psi(u)\chi(u+c).
+\]
+The principal-principal inner sum is \(p-2=n-1\). Every other inner sum has magnitude at most \(\sqrt p\): these are Jacobi sums, or equivalently the two-linear-factor case of Weil. Subtracting \(n/(k_1k_2)\), the error is at most
+\[
+\frac{1+(k_1k_2-1)\sqrt p}{k_1k_2}\le\sqrt p.
+\]
+∎
+
+**PROVED — two-layer pass probability.** Fix \(N\), take \(X\) uniform in \(\mathbb F_p^\times\), and put
+\[
+Y=X^{e_1},\qquad Z=(Y+c)^{e_2},
+\quad d_i=\gcd(e_i,n),\quad |H_1|=n/d_1.
+\]
+For \(w\ne0\):
+
+- if \(w\notin(\mathbb F_p^\times)^{e_2}\), the pass probability is zero;
+- otherwise,
+\[
+\boxed{\left|\Pr[Z=w]-\frac{d_2}{n}\right|
+\le\frac{\sqrt p}{|H_1|}.}
+\tag{8}
+\]
+
+*Proof.* \(Y\) is uniform on \(H_1\). The solutions of \(v^{e_2}=w\) form a coset of a subgroup of order \(d_2\). Apply (7) and divide by \(|H_1|\). ∎
+
+For \(w=0\), the exact probability is
+\[
+\frac{\mathbf1[-c\in H_1]}{|H_1|}.
+\tag{9}
+\]
+For \(c=0\), ordinary subgroup intersections give an exact order formula instead of a Weil error.
+
+**PROVED — a retained-product variant.** If \(U\) is uniform on \(H\), \(h=|H|\), \(k=n/h\), \(B\ge1\), and
+\[
+F(U)=U^A(U+c)^B,\qquad c,w\ne0,
+\]
+put
+\[
+g_0=\gcd(n,B,Ak).
+\]
+Then
+\[
+\boxed{
+\left|\Pr[F(U)=w]
+-\frac{g_0}{n}\mathbf1[w^{n/g_0}=1]\right|
+\le\frac{\sqrt p}{h}.}
+\tag{10}
+\]
+
+*Proof.* Expand subgroup membership and equality using characters:
+\[
+\Pr[F(U)=w]
+=\frac1{hkn}\sum_{\psi\in H^\perp}\sum_\chi
+\chi(w)^{-1}
+\sum_u(\psi\chi^A)(u)\chi^B(u+c).
+\]
+An inner sum is principal-principal exactly when
+\[
+\chi^B=1,\qquad \chi^A|_H=1.
+\]
+These characters form a group of size \(g_0\). Their sum on \(w^{-1}\) is
+\(g_0\mathbf1[w^{n/g_0}=1]\). Every remaining inner sum has magnitude at most \(\sqrt p\). Replacing each exceptional sum \(n-1\) by \(n\) costs at most \(1\) per sum. Since \(hk=n\), the total normalized error is at most \(\sqrt p/h\). ∎
+
+**PROVED — both-pass rate.** Under independent fresh CRT components, local probabilities multiply exactly. If \(a_\ell=m_\ell+\epsilon_\ell\), with \(|\epsilon_\ell|\le\eta_\ell\), then
+\[
+|a_pa_q-m_pm_q|\le\eta_p+\eta_q,
+\tag{11}
+\]
+and also
+\[
+|a_pa_q-m_pm_q|
+\le m_p\eta_q+m_q\eta_p+\eta_p\eta_q.
+\]
+Here \(m_\ell\) is the order-alignment term in (8) or (10).
+
+**Verdict 1:** **PROVED** for fresh two-layer shifted powers and the retained-product form, with explicit errors. **OPEN** for general deterministic large-order Zech hyperbolas and arbitrary retained/summed nested nodes.
+
+## 2. Summed gates and sparse structure
+
+### 2.1 A residual theorem without recursion
+
+**KNOWN.** Zander Kelley, *Roots of sparse polynomials over a finite field*, **LMS Journal of Computation and Mathematics 19(A) (2016), 196–204**, Theorems **2.2–2.3** and Lemma **4.1**, supplies the partner congruences and degree-compression machinery. [Published paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0B4BB0B58AF86C34B8D12395335A3958/S1461157016000334a.pdf/roots-of-sparse-polynomials-over-a-finite-field.pdf)
+
+The predecessor is Ran Canetti, John B. Friedlander, Sergei Konyagin, Michael Larsen, Daniel Lieman and Igor E. Shparlinski, *On the statistical properties of Diffie–Hellman distributions*, **Israel Journal of Mathematics 120 (2000), 23–46, Lemma 7**, reproduced as Kelley’s Theorem 1.1. Its original full text was not independently checked here.
+
+**PROVED — thresholded sparse decomposition.** Let \(G\le\mathbb F_Q^\times\) have order \(n\), and
+\[
+f(x)=\sum_{i=1}^t c_i x^{a_i},\qquad t\ge2,
+\]
+with nonzero coefficients and distinct exponents modulo \(n\). Let \(1\le L\le n\). Remove every zero coset of subgroup order at least \(L\), and call the remaining roots \(R_L\). Then
+\[
+\boxed{
+|R_L|\le
+\frac{2n}{(\lfloor n/L\rfloor+1)^{1/(t-1)}}
+<
+2n^{1-1/(t-1)}L^{1/(t-1)}.}
+\tag{12}
+\]
+Moreover, a collection of at most \(\lfloor n/L\rfloor\) disjoint zero cosets already suffices for this bound.
+
+*Proof.*
+
+Multiply by a monomial to arrange \(a_1=0\), and put
+\[
+\delta=\gcd(n,a_2,\ldots,a_t).
+\]
+If \(\delta\ge L\), \(f\) is constant on cosets of the subgroup of order \(\delta\); hence every root is removed.
+
+Suppose \(\delta<L\), and set
+\[
+m=\lfloor n/L\rfloor+1.
+\]
+Then \(2\le m\le n/\delta\).
+
+Consider the \(m\) distinct points
+\[
+j(a_2,\ldots,a_t)\quad(0\le j<m)
+\]
+in the torus \((\mathbb R/n\mathbb Z)^{t-1}\). If their minimum sup-distance is \(d\), disjoint open cubes of side \(d\) give
+\[
+m d^{t-1}\le n^{t-1}.
+\]
+A closest pair therefore supplies \(1\le e<m\) and integers \(v_i\equiv ea_i\pmod n\), including \(v_1=0\), with
+\[
+M:=\max_i|v_i|\le n/m^{1/(t-1)}.
+\]
+
+Put \(k=\gcd(e,n)\). The map \(x\mapsto x^e\) maps \(G\) onto a subgroup \(H\) of order \(n/k\), with fibers of size \(k\). Since
+\[
+k\le e\le\lfloor n/L\rfloor,
+\]
+we have \(|H|\ge L\).
+
+For each coset \(bH\), the pullback
+\[
+f(bx^e)=\sum_i c_i b^{a_i}x^{v_i}
+\]
+is represented by a Laurent polynomial whose exponents lie in \([-M,M]\).
+
+If this Laurent polynomial is zero, \(bH\) is a zero coset and is removed. Otherwise, multiplying by \(x^M\) gives a nonzero polynomial of degree at most \(2M\). It has at most \(2M\) roots in \(G\), corresponding to at most \(2M/k\) roots on \(bH\).
+
+There are \(k\) cosets. Thus the unremoved roots number at most \(2M\), proving (12). ∎
+
+This is a direct adaptation of the compression argument; I make no novelty claim for the formulation.
+
+### 2.2 Partner congruences and thresholds
+
+**PROVED — exact coset condition.** If \(f\) vanishes on \(bH_C\), where \(|H_C|=C\), then for every residue \(a\bmod C\),
+\[
+\sum_{i:a_i\equiv a\ (C)}c_i b^{a_i}=0.
+\tag{13}
+\]
+In particular, every exponent has a distinct partner congruent modulo \(C\).
+
+*Proof.* Restrict \(f(bu)\) to \(H_C\) and group its terms by exponent modulo \(C\). Distinct characters of the cyclic group \(H_C\) are linearly independent. Thus each grouped coefficient is zero; a singleton group cannot cancel. ∎
+
+For a PRIM sparse sum, the partner condition implies that an appropriate monomial ratio has order dividing \(n/C\). This is a precise necessary order alignment. It does not assert that the congruences alone are sufficient; the coefficient cancellations in (13) are also necessary.
+
+**PROVED quantitative consequences.** Taking \(L=n^\theta\), \(0<\theta<1\),
+\[
+|R_L|<2n^{1-(1-\theta)/(t-1)}.
+\tag{14}
+\]
+Thus \(L=\sqrt n\) gives exponent saving \(1/[2(t-1)]\), stronger than \(c/(t\log t)\).
+
+The bound is strictly better than \(n\) whenever
+\[
+\lfloor n/L\rfloor+1>2^{t-1}.
+\tag{15}
+\]
+For residual density at most \((\log n)^{-A}\), it suffices that
+\[
+\frac{\log(\lfloor n/L\rfloor+1)}{t-1}
+\ge A\log\log n+\log2.
+\tag{16}
+\]
+For fixed \(\theta\), the useful threshold is therefore \(t\) of order \(\log n/\log\log n\) for inverse-polylogarithmic density, and order \(\log n\) for merely beating the trivial bound.
+
+Combining (1) and (12), a single node’s residual partner probability is at most
+\[
+\frac{4n}
+{\pi(I)(\lfloor n/L\rfloor+1)^{1/(t-1)}}.
+\tag{17}
+\]
+A tree additionally pays its reference-path union bound.
+
+**FALSE proposed justification:** zero-coset partner congruences do not generally halve the sparsity of nearby restrictions. The residual theorem needs no such assertion.
+
+### 2.3 Exponential-degree pure circuits change the geometry
+
+**PROVED.** For primitive \(g\), the node
+\[
+(g^r+1)^M-1
+\]
+has exactly
+\[
+\gcd(M,n)-1
+\tag{18}
+\]
+zeros modulo \(n\).
+
+*Proof.* Let \(d=\gcd(M,n)\). Its roots correspond bijectively to
+\[
+u=g^r=\zeta-1,\qquad \zeta\in H_d,\quad \zeta\ne1.
+\]
+There are \(d-1\) such nonzero \(u\). ∎
+
+These are logarithms of a *translated* subgroup, not generally large additive cosets in \(r\).
+
+**PROVED by finite exhaustive enumeration.** For
+\[
+p=241,\quad g=7,\quad M=\operatorname{lcm}(1,\ldots,10)=2520,
+\]
+there are \(119\) roots among \(240\) exponent residues, while the largest zero coset has order \(5\). Thus no decomposition solely into zero cosets of order at least \(6\) exists.
+
+**PROVED interpretation.** The count is nevertheless explained exactly by
+\[
+\gcd(2520,240)=120.
+\]
+This is an order-alignment example, not a fourth family. It demonstrates that “family M” cannot be identified with large cosets in the original exponent variable.
+
+An addition chain evaluates the \(M\)-th power using \(O(\log M)\) multiplications. Consequently, short pure circuits can have far more expanded terms than the sparse theorem permits.
+
+**Verdict 2:** **PROVED**, with the explicit bound (12). The limitation is expanded sparsity, rather than gate count or circuit size. Large noncoset zero sets can already arise from translated order kernels.
+
+## 3. Jacobi symbols of computed values
+
+### 3.1 Compressed pure integers
+
+**PROVED, restating PT-J’s one-test calculation.** Use the repository’s equal-prior population and assume \(c\) is a unit at every sampled prime. Put
+\[
+a_\pm=\mathbb E[\chi_p(c)\mid\varepsilon(p)=\pm1].
+\]
+Then the optimal success probability from \(J=(c\mid N)\) alone is
+\[
+\frac12+\frac14|a_+^2-a_-^2|
+=
+\frac12+|\beta(c)\beta(-c)|.
+\tag{19}
+\]
+
+*Proof.* Conditional on the common sign, independence gives \(\mathbb E[J]=a_\pm^2\). The two Bernoulli laws therefore have total variation distance \(|a_+^2-a_-^2|/2\). Equal-prior Bayes success is half plus half that distance. Finally,
+\(a_\pm=\beta(c)\pm\beta(-c)\). ∎
+
+**OPEN.** I found no verified uniform polynomial-size SLP family of pure integers producing inverse-polylogarithmic \(|\beta(c)\beta(-c)|\) in the requested range. I also found no theorem excluding all such families.
+
+The families of Fermat numbers, Lucas values, and \(a^M-1\) do not supply a verified positive answer here.
+
+**KNOWN, but insufficient.** Alina Ostafe and Igor E. Shparlinski, *Multiplicative character sums and products of sparse integers in residue classes*, **Periodica Mathematica Hungarica 64 (2012), 247–255, Theorem 1**, bounds sums over variable sparse integers modulo a fixed prime. It does not bound the prime average of the character attached to one enormous SLP-defined integer. [Publication record](https://researchers.mq.edu.au/en/publications/multiplicative-character-sums-and-products-of-sparse-integers-in-/)
+
+**UNVERIFIED claim in the existing discussion:** a specifically CRT-constructed biased integer “has no small SLP.” A counting argument proves this for most prescribed patterns, not for a particular structured pattern.
+
+**PROVED counting statement.** With initial constants \(0,1\), the number of SLPs of length at most \(s\), using \(+,-,\times\), is at most
+\[
+(s+2)[3(s+2)^2]^s.
+\tag{20}
+\]
+Each program supplies at most one Legendre-sign pattern on a fixed prime set. CRT realizes all \(2^P\) sign patterns on \(P\) odd primes. Hence most patterns require \(s\log s=\Omega(P)\).
+
+*Proof.* At each step choose one of three operations and two operands from at most \(s+2\) available values, then choose an output register. CRT permits an independently prescribed nonzero quadratic residue or nonresidue at each prime. Compare the counts. ∎
+
+This does not exclude a short circuit realizing one useful biased pattern.
+
+### 3.2 A fresh-base character theorem, with the exact exception
+
+**PROVED.** Let \(U\) be uniform on a subgroup \(H\le\mathbb F_p^\times\), \(h=|H|\), and let \(P\ne0\) have degree at most \(D\).
+
+If \(P\) has a nonzero root of odd multiplicity over \(\overline{\mathbb F}_p\), then
+\[
+\boxed{
+\left|\mathbb E_{U\in H}\chi_p(P(U))\right|
+\le\frac{D\sqrt p+1}{h}.}
+\tag{21}
+\]
+
+*Proof.* Expand the subgroup indicator using \(H^\perp\). For any \(\psi\in H^\perp\), choose a character \(\lambda\) of order \(n\) and write \(\psi=\lambda^a\). On \(\mathbb F_p^\times\),
+\[
+\psi(u)\chi_p(P(u))
+=\lambda\!\left(u^aP(u)^{n/2}\right).
+\]
+At a nonzero odd-multiplicity root of \(P\), the polynomial inside \(\lambda\) has multiplicity not divisible by \(n\). It is therefore not an \(n\)-th power. It has at most \(D+1\) distinct roots. Weil bounds the complete sum by \(D\sqrt p\); removing zero costs at most \(1\). Average over the subgroup characters and divide by \(h\). ∎
+
+**PROVED — complete exceptional form.** If the hypothesis fails, then
+\[
+P(T)=aT^kQ(T)^2,\qquad a\ne0,\quad k\in\{0,1\}.
+\tag{22}
+\]
+Outside its zeros,
+\[
+\chi_p(P(U))=\chi_p(a)\chi_p(U)^k.
+\]
+
+Thus:
+
+- \(k=0\): a constant quadratic sign, apart from zeros;
+- \(k=1\), \(H\subseteq(\mathbb F_p^\times)^2\): again a constant sign;
+- \(k=1\), \(H\not\subseteq(\mathbb F_p^\times)^2\): mean at most \(D/h\) in magnitude.
+
+*Proof.* Factor \(P\). All nonzero root multiplicities are even, leaving only the parity of the root at zero. On a subgroup, a nontrivial quadratic character sums to zero. Deleting the at most \(D\) zeros gives the last bound. ∎
+
+**FALSE literally:** “only a small image subgroup or \(P=\text{constant}\times\text{square}\) can bias the symbol.” A large subgroup of squares and \(P(T)=T\) give bias \(1\). The correct exception includes the monomial in (22), together with subgroup-character alignment.
+
+For \(U=X^{E(N)}\), that alignment is an explicit M event.
+
+### 3.3 Deterministic bases require another argument
+
+**PROVED limitation.** If \(r\) is genuinely uniform modulo \(n\), then \(y^{ar+b}\) is uniform on a multiplicative coset, and the same character argument applies.
+
+But a small signed average over all \(r\) does not imply a small average over prime-partner residues. The density domination in (1) controls rare events; it does not preserve cancellation in a signed character sum.
+
+**OPEN.** The general deterministic prime-weighted average
+\[
+\mathbb E_{q\ {\rm prime}}\chi_p(P(y^{E(pq)}))
+\]
+is not settled by (21).
+
+**Verdict 3:** compressed pure-integer bias remains **OPEN**. The fresh-base local statement is **PROVED**, with exception (22). Generic Jacobi hardness concerns the reverse direction and does not resolve either open problem.
+
+## 4. Depth hierarchy
+
+### 4.1 Fresh chains have an all-depth bound
+
+**PROVED — inverse-fiber theorem.** Fix \(N,p\). Start with \(X\) uniform on \(\mathbb F_p^\times\). Consider a chain of \(d\) positive power maps, interspersed with shifts. Put
+\[
+d_i=\gcd(E_i(N),p-1).
+\]
+For every target \(w\),
+\[
+\boxed{
+\Pr[\text{chain}(X)=w]
+\le \min\left(1,\frac{\prod_{i=1}^d d_i}{p-1}\right).}
+\tag{23}
+\]
+A terminal nonzero polynomial of degree \(D\) multiplies the numerator by \(D\). Interspersed nonconstant polynomial maps of degrees \(D_i\) multiply it by \(\prod_iD_i\).
+
+*Proof.* A shift has singleton fibers. A positive power map has at most \(d_i\) preimages of any value: \(d_i\) for an attainable nonzero value, and one for zero. A nonconstant degree-\(D_i\) polynomial has fibers of size at most \(D_i\). Maximum fiber sizes multiply under composition. Divide the resulting input count by \(p-1\). ∎
+
+Consequently, for fixed depth and bounded interspersed degrees, a pass rate at least \(\lambda\) forces
+\[
+\max_i d_i
+\ge
+\left(\frac{\lambda(p-1)}{D\prod_iD_i}\right)^{1/d}.
+\tag{24}
+\]
+This is an explicit necessary M alignment at every fixed depth.
+
+The loss is also explicit: a bound \(d_i\le L\) is useful while
+\[
+D\Bigl(\prod_iD_i\Bigr)L^d\ll p.
+\]
+It need not remain useful for depth growing proportionally to \(\log p\).
+
+### 4.2 Chains of \(N\)-th powers are permutations at every depth
+
+**PROVED.** For balanced distinct odd primes \(p<q<2p\),
+\[
+\gcd(N,p-1)=\gcd(N,q-1)=1.
+\]
+
+*Proof.* The first assertion follows from \(q>p-1\). If \(p\mid q-1\), then \(q<2p\) forces \(q-1=p\), making \(q=p+1\) even. ∎
+
+Therefore every map
+\[
+u\longmapsto(u+c)^N
+\]
+permutes \(\mathbb F_p\), and similarly \(\mathbb F_q\).
+
+**PROVED exact distribution.** For any composition \(T\) of these maps, a uniform unit input produces the uniform law on
+\[
+\mathbb F_p\setminus\{T(0)\}.
+\]
+Hence every target has probability exactly \(0\) or \(1/(p-1)\), at arbitrary depth.
+
+**FALSE as a general hierarchy claim:** fresh initial randomness necessarily becomes analytically useless at depth three.
+
+### 4.3 Where a straightforward Weil proof becomes trivial
+
+**PROVED sufficient estimate.** Let \(U\) be uniform on \(H\), and suppose the value immediately before the last power is \(R(U)\), where \(\deg R=D\) and \(R\) has a simple nonzero root. For an attainable nonzero target of the final exponent \(e\), put \(k=n/\gcd(e,n)\). Then
+\[
+\left|\Pr[R(U)^e=w]-\frac1k\right|
+\le \frac{D\sqrt p+D+1}{|H|}.
+\tag{25}
+\]
+
+*Proof.* The final preimage is a coset of a subgroup of index \(k\). Expand its indicator. For each nonprincipal character \(\chi\) in that expansion, and each subgroup character \(\psi\), the simple nonzero root of \(R\) prevents \(\psi(T)\chi(R(T))\) from being geometrically principal. Weil gives \(D\sqrt p+1\) after removing zero. The principal term differs from \(1/k\) only at zeros of \(R\), of which there are at most \(D\). Normalize by \(|H|\). ∎
+
+For three shifted power layers, the straightforward polynomial is
+\[
+R(U)=(U+c_1)^{e_2}+c_2,
+\]
+where \(e_2\) is a positive representative of the middle exponent modulo \(n\). Its degree can be comparable to \(p\), making (25) trivial.
+
+**PROVED interpretation:** this particular failure comes from growing degree and ramification. It is not a necessary multiplication of two square-root errors. The inverse-fiber bound may remain useful even when (25) is trivial.
+
+For bounded intermediate exponents, the composed degree gives a useful Weil estimate at greater depths whenever
+\[
+D\sqrt p\ll |H|.
+\]
+
+### 4.4 A tree consequence, and its limits
+
+**PROVED.** Consider fresh independent probe chains, with outputs discarded after each terminal test, together with pure tests. If their local pass probabilities are \(a_p,a_q\), the NE1-R shadow coupling gives
+\[
+\Pr[\text{correct or split}]
+\le B+2s+2R,\qquad
+R=\mathbb E\sum_{\text{probes reached}}a_pa_q,
+\tag{26}
+\]
+under the virtual-diagonal convention.
+
+*Proof.* Replace every probe answer by “false.” Before the first discrepancy, actual and shadow paths agree. On a nonsplitting run, the first discrepancy must be a both-pass event; freshness gives conditional probability \(a_pa_q\). A union bound bounds the nonsplitting deviation probability by \(R\). Apply PT-X. ∎
+
+Insert (23) to obtain an explicit depth-dependent bound.
+
+**OPEN limitations.** This does not cover arbitrary retained DAGs, reuse across probes, summed nested outputs, or Jacobi branching. It also does not repair the repository’s cross-population/fiber issue for \(\varepsilon\).
+
+Allowing exponential-degree pure postprocessing already defeats a degree-based proof at gate depth one. Thus gate depth alone does not define a universal classification hierarchy.
+
+**Verdict 4:** all-depth fresh-chain bounds are **PROVED**. The asserted universal depth-three barrier is **FALSE**. The deterministic large-order frontier appears at two layers, but an impossibility theorem for bounding it is **OPEN**.
+
+## 5. Generic-ring and hidden-order literature
+
+### 5.1 Verified scope
+
+| Status | Exact citation | Relevance and limit |
+|---|---|---|
+| **KNOWN** | Ivan Damgård and Maciej Koprowski, *Generic lower bounds for root extraction and signature schemes in general groups*, **EUROCRYPT 2002, LNCS 2332, 256–271, Theorem 1**. [Paper](https://www.iacr.org/archive/eurocrypt2002/23320252/DKea2002.pdf) | Distribution-dependent generic strong-root bounds in hidden-order groups. The group model lacks ring addition. |
+| **KNOWN** | Gregor Leander and Andy Rupp, *On the equivalence of RSA and factoring regarding generic ring algorithms*, **ASIACRYPT 2006, LNCS 4284, 241–251, Theorem 1**. [Author version](https://informatik.rub.de/veroeffentlichungenbkp/emsec/veroeffentlichungen/2006/pdfs/2006_On_the_Equivalence_of_RSA_and_Factoring_regarding_Generic_Ring_Algorithms.pdf) | Generic flexible low-exponent RSA reduces to factoring. Their §3.1 explicitly explains why exponential circuit degree defeats ordinary collision root counting. |
+| **KNOWN** | Divesh Aggarwal and Ueli Maurer, *Breaking RSA generically is equivalent to factoring*, **EUROCRYPT 2009, LNCS 5479, 36–53, Theorem 1**; journal version **IEEE Transactions on Information Theory 62(11) (2016), 6251–6259**. [Conference paper](https://crypto.ethz.ch/publications/files/AggMau09.pdf) | Generic RSA inversion, including inverse ring operations, reduces to factoring. It does not classify factor-bit outputs without a challenge input. |
+| **KNOWN**, version qualification | Tibor Jager and Jörg Schwenk, *On the analysis of cryptographic assumptions in the generic ring model*, **Journal of Cryptology 26 (2013), 225–245**. **Theorem 2 in the checked January 2012 full version**. [Full version](https://eprint.iacr.org/2009/621.pdf) | Generic Jacobi computation reduces to factoring, with success at least \(\mathrm{Adv}/[2(m^2+4m+3)]\). Printed-journal theorem numbering is **UNVERIFIED** here. |
+| **KNOWN**, theorem numbering **UNVERIFIED** | Lior Rotem and Gil Segev, *Generically speeding-up repeated squaring is equivalent to factoring: Sharp thresholds for all generic-ring delay functions*, **CRYPTO 2020, LNCS 12172, 481–509**. [Publisher](https://link.springer.com/chapter/10.1007/978-3-030-56877-1_17), [revised full-version record](https://eprint.iacr.org/2020/812) | This is a **generic-ring** delay-function paper, not merely a hidden-order generic-group result. I verified its abstract and publication, but not its full main-theorem hypotheses/numbering. |
+| **KNOWN** | Dana Dachman-Soled, Julian Loss and Adam O’Neill, *Breaking RSA generically is equivalent to factoring, with preprocessing*, **ITC 2024, LIPIcs 304, 8:1–8:24, Theorems 11–12**. [Paper](https://drops.dagstuhl.de/storage/00lipics/lipics-vol304-itc2024/LIPIcs.ITC.2024.8/LIPIcs.ITC.2024.8.pdf) | Extends generic RSA reductions to preprocessing attacks; still an RSA challenge problem. |
+| **KNOWN**, numbering **UNVERIFIED** | Ueli Maurer and Stefan Wolf, *Lower bounds on generic algorithms in groups*, **EUROCRYPT 1998, LNCS 1403, 72–84**. [Author record](https://crypto.ethz.ch/publications/MauWol98e.html) | Generic DL/DH and root-extraction bounds. No verified PRIM classification follows. |
+| **KNOWN**, numbering **UNVERIFIED** | Dan Boneh and Ramarathnam Venkatesan, *Breaking RSA may not be equivalent to factoring*, **EUROCRYPT 1998, LNCS 1403, 59–71**. [Author abstract](https://xenon.stanford.edu/~dabo/pubs/abstracts/no_rsa_red.html) | Concerns restricted algebraic reductions from factoring to low-exponent RSA, rather than PRIM leak classification. |
+
+### 5.2 Is raising to \(N\) covered anywhere?
+
+**PROVED from the standard model definition.** A generic-ring algorithm given the public integer \(N\) can evaluate \(x^N\) using \(O(\log N)\) ring multiplications. Therefore the standard generic-ring models above already permit forward powering by \(N\), with that cost. Nesting such computations is also permitted.
+
+This does not remove PRIM’s primitive-gate requirement: that requirement controls the permitted *source* of \(N\)-dependence in an otherwise \(N\)-independent program.
+
+**PROVED distinction.** The RSA theorems require successful inversion of a random challenge. A program computing a factor bit from \(N\) alone does not thereby satisfy their hypotheses. Jager–Schwenk, meanwhile, studies *implementing* Jacobi from generic operations; PRIM supplies Jacobi as an additional primitive.
+
+**UNVERIFIED negative literature claim.** I located no theorem classifying the complete PRIM model. The checked results do not establish that classification; this search is not proof that no such result exists.
+
+**Verdict 5:** powering by public \(N\) is already permitted in standard generic-ring analyses. A classification of PRIM’s nonsplitting factor-bit leaks remains **OPEN**, and cannot be inferred from the cited RSA inversion or generic Jacobi theorems.
+
+The reproducible finite checks are in [verify_prim.py](/Volumes/git/factoring-connection/codex/scratch/prim_1/verify_prim.py), with results in [verification.json](/Volumes/git/factoring-connection/codex/scratch/prim_1/verification.json): 10,720 subgroup-intersection checks, 10,760 sparse-residual checks, 4,752 retained-product checks, and 362 balanced prime pairs for the permutation formulas, all without violations. These check the stated formulas; they establish no asymptotic factor-bit leak.

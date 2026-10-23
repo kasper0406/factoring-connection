@@ -98,3 +98,11 @@ def collision_check(p: int, exps: Sequence[int], shifts: Sequence[int], w: int) 
     for e in exps:
         G *= gcd(e, p - 1)
     return pr, G / (p - 1)
+
+
+def d2_bound_at(p: int, y: int, a: int, alpha: int, d: int) -> float:
+    """Theorem D2 bound for one divisor d of p-1 (without the unnecessary + n/o when B is a unit)."""
+    n = p - 1
+    assert n % d == 0
+    o = int(sympy.n_order(pow(y, a, p), p))
+    return gcd(alpha, d) * sympy.divisor_count(d) * (n / d + d * (n / o) * (sqrt(p) + 2))
