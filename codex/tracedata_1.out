@@ -1,0 +1,410 @@
+**Verdict.** **OPEN:** I found no verified general reduction from one supplied \(a_N\), or even the two local traces, to factoring. **KNOWN:** Bach–Charles use a coefficient oracle at two indices, \(N\) and \(N^2\); their theorem does not settle the single-value question. **PROVED below:** adding \(M\) to the unordered traces factors every good semiprime probabilistically; cubic root counting decides discriminant residuosity but also contains nonquadratic splitting information; and terminal multiplication by \(M\) remains blind on \(X_E\) after quadratic extension. **PROVED below:** sextic twists close the exceptional-set gap for every fixed \(j=0\) curve. **OPEN:** the everywhere reduction for arbitrary fixed \(E\), and its deterministic/ERH version. Extra splitting information is not a computational separation from quadratic-residuosity oracles.
+
+Saved report: [codex/tracedata_1.out](/Volumes/git/factoring-connection/codex/scratch/tracedata_1/codex/tracedata_1.out). This is a scratch-relative destination; the read-only repository was not modified.
+
+Blind report, agent `tracedata`, phase 25, 23 October 2026. I read `notes/ecount_results.md` in full and the specified FROB, RANK, PT and PT-J sections. Polynomial means polynomial in \(\log N\), with the curve fixed. Supplied multiples must have polynomial bit length. Write
+\[
+a=a_p,\quad b=a_q,\quad A=ab,\quad T=a+b.
+\]
+
+**Status convention.** KNOWN identifies a checked source or an explicitly cited supplied project theorem. PROVED includes a proof here. OPEN means unresolved in this investigation, not that an exhaustive search establishes openness. UNVERIFIED flags verification limits. No unconditional factoring lower bound is claimed.
+
+**1. What one product of traces says**
+
+**PROVED — uniqueness and information.** For fixed \(N=pq\), requiring \(p'<q'\) to be primes, \(p'q'=N\), and \(a',b'\) to be the actual traces of the fixed curve leaves exactly one explanation. Without ordering there are two oriented explanations. This follows from unique prime factorization and the definition of the traces.
+
+Consequently, ordinary conditional Shannon information is unhelpful:
+\[
+H(p\mid N)=0,\qquad I(p;A\mid N)=0.
+\]
+The same observation applies to \(\varphi(N)\). It says nothing about efficient recovery.
+
+**PROVED — the Hasse-box question differs.** Put \(h_r=\lfloor2\sqrt r\rfloor\). If the fixed-curve condition is discarded, the number of bounded integer trace pairs explaining nonzero \(A\), for the uniquely determined \(p<q\), is
+\[
+\#\{u\in\mathbb Z:u\mid A,\ |u|\le h_p,\ |A/u|\le h_q\}
+\le 2\tau(|A|).
+\]
+For \(A=0\), it is \(2h_p+2h_q+1\), counting the two coordinate axes.
+
+These are explanations of bounds and a product, not alternative prime factorizations. Hasse gives \(|A|\le4\sqrt N\), hence an encoding length \(\frac12\log_2N+O(1)\). This does not measure computational usefulness. The Hasse bound and point-count interpretation are standard inputs to René Schoof, *Elliptic curves over finite fields and the computation of square roots mod p*, **Mathematics of Computation 44** (1985), 483–494, §§1–3. [Primary paper](https://pages.cs.wisc.edu/~cs812-1/Schoof85.pdf).
+
+**OPEN — negative literature finding.** Searches did not locate a verified general polynomial reduction \(A\Rightarrow\mathrm{FACT}\), including when the factorization of \(A\ne0\) is supplied. Factoring \(A\) is itself not an established polynomial operation. Its factorization supplies candidate trace pairs; it does not identify primes having those traces. Divisor enumeration has no established polynomial worst-case bound here.
+
+**PROVED — an actual restricted-input obstruction.** Fix \(E:y^2=x^3-x\). For every prime \(r\equiv3\pmod4\), the character sum vanishes: \(f(-x)=-f(x)\), while \((-1/r)=-1\). Thus \(a_r=0\).
+
+On every promised Blum semiprime \(p,q\equiv3\pmod4\), one can supply without factoring
+\[
+(a_p,a_q)=(0,0),\quad A=T=0,\quad
+a(N^{2m})=N^m,\quad a(N^{2m+1})=0.
+\]
+The last identities follow from the local recurrence
+\(c_0=1,c_1=0,c_j=-r c_{j-2}\), then multiplicativity.
+
+An everywhere trace-data reduction for this curve would therefore factor promised Blum semiprimes without additional oracle information. This is a rigorous promise reduction, not an unconditional hardness theorem or a reduction of arbitrary RSA factoring to Blum factoring.
+
+**PROVED — a factor-free formula need not be fast.** For \(f=x^3+ux+v\), CRT gives
+\[
+A=\sum_{x\bmod N}\left(\frac{f(x)}N\right).
+\]
+Indeed \(a_r=-\sum_x(f(x)/r)\), and the two signs cancel. There are \(N\) individually easy terms.
+
+**OPEN — congruences and lattices.** The congruence
+\[
+a_r\bmod\ell=\operatorname{tr}\rho_{E,\ell}(\mathrm{Frob}_r)
+\]
+concerns prime Frobenius. A representation does not supply a canonical composite Frobenius whose trace is \(a_pa_q\). Product congruences at many \(\ell\) reconstruct \(A\), not \(p\bmod\ell,q\bmod\ell\).
+
+I found no verified Coppersmith/lattice theorem converting these product congruences into factors, and no trace-specific relativized or generic-model lower bound. The supplied FROB operator obstruction does not cover numerical trace outputs.
+
+**PROVED / OPEN — several fixed curves.** Quadratic twists give redundant products:
+\[
+a_N(E^{(d)})=\chi_d(N)a_N(E)
+\]
+away from fixed bad primes. Locally the twist multiplies the trace by \(\chi_d(r)\), directly from the character sum.
+
+For a fixed finite collection of other curves, a general reduction remains OPEN here. I found no verified theorem that sufficiently many constant curves always suffice. Independence assumptions would be HEURISTIC.
+
+**KNOWN — the Bach–Charles input.** Eric Bach and Denis Charles, *The hardness of computing an eigenform*, **arXiv:0708.1192v2** (2007), §2, Theorem 2.2 and Remark 2.5, query \(a(N)\) and \(a(N^2)\). Their non-CM, even-weight theorem gives density-one factoring, including balanced moduli. A journal venue was not verified. [Primary text](https://arxiv.org/html/0708.1192).
+
+**PROVED — weight-two elimination, including zeros.** With \(B=a(N^2)\),
+\[
+B=(a^2-p)(b^2-q),\qquad
+S=A^2+N-B=qa^2+pb^2.
+\]
+Thus \(pb^2,qa^2\) are the roots of
+\[
+Z^2-SZ+NA^2=0.
+\]
+For \(ab\ne0\), their gcds with \(N\) give \(p,q\), since \(0<|a|<p,\ 0<|b|<q\). If exactly one trace vanishes, \(\gcd(S,N)\) splits. If both vanish, \(B=N,S=0\), and the elimination fails. The second coefficient supplies the missing weighted sum of squares.
+
+**OPEN / PROVED — one higher coefficient.** No general single-value \(a(N^k)\Rightarrow\mathrm{FACT}\) theorem was verified, even for \(k=2\). The zero-trace example shows that such a value need not add data.
+
+Another sufficient pair, when \(A\ne0\), follows from
+\[
+\frac{a(N^3)}A=A^2-2S+4N.
+\]
+Hence \((A,a(N^3))\) also factors. When \(A=0\), all odd-power coefficients vanish, losing the one-zero case. This calculation is not attributed to Bach–Charles.
+
+**2. Local traces and symmetric data**
+
+**PROVED — unordered traces equal their elementary symmetric data.** Recover \(a,b\) as the integer roots of \(Z^2-TZ+A\). Conversely the pair gives \(T,A\). Ordering by the unknown smaller prime creates only two possibilities; a factor-recovery algorithm can try both and verify outputs.
+
+**OPEN.** The pair alone, \(T\) alone and \(A\) alone have no general factoring reduction verified here. The zero-trace promise applies even to the pair.
+
+I found no general polynomial-bit-length computable multiple of the local curve or twist orders from \((N,a,b)\). This is a negative finding, not nonexistence. Special cases exist: if \(a=1\), \(N\) is a multiple of \(p+1-a=p\).
+
+**PROVED — \((T,A,M)\) factors every good semiprime probabilistically.** Recover \(a,b\), and set
+\[
+C=M-N-1+T-A=(1-b)p+(1-a)q. \tag{1}
+\]
+For either assignment of the traces, put \(\alpha=1-b,\ \beta=1-a\). Unless both vanish, solve
+\[
+\alpha X^2-CX+\beta N=0. \tag{2}
+\]
+For the correct assignment \(p\) is an integer root. If \(\alpha=0,\beta\ne0\), recover \(q=C/\beta\). Verify the constant number of candidates. This part is deterministic and requires no balance assumption.
+
+**PROVED — the degeneracy \(a=b=1\) also works.** Here \(M=N\), and \(N\notin X_E\). Suppose both twist exponents divided \(pq\). Their orders are \(p+2,q+2\). Since \(p\nmid p+2\), the first exponent divides \(q\); a rank-at-most-two group has order \(q\) or \(q^2\). The latter is too large, so \(q=p+2\). Similarly \(q+2=p^2\). Together these imply \(p^2=p+4\), impossible. Apply TW*.
+
+The rank bound is the standard elliptic finite-field group structure used in Schoof, *Counting points on elliptic curves over finite fields*, **Journal de Théorie des Nombres de Bordeaux 7** (1995), 219–254, §3. [Primary paper](https://www.numdam.org/article/JTNB_1995__7_1_219_0.pdf).
+
+**OPEN — “minimal” needs a convention.** There is no canonical minimum among arbitrary encodings or incomparable oracles. Within the requested trace-only list, even \((T,A)\) is unresolved. Proved sufficient extensions include \((T,A,M)\) everywhere probabilistically and \((A,S)\) unless both traces vanish. The scalar \(p+q\) factors deterministically but is not trace-only data. Equation (1) exhibits the prime-weighted information supplied by \(M\).
+
+**3. Fixed residues and fixed polynomial root counts**
+
+**PROVED — basic reductions.** For a fixed separable polynomial, outside primes dividing its discriminant or leading coefficient, let \(c_f(g)\) count fixed roots in its Galois permutation action. Then
+\[
+R_f(N)=\#\{x\bmod N:f(x)=0\}=c_f(g_p)c_f(g_q).
+\]
+Also
+\[
+M\bmod\ell=\det(1-g_p)\det(1-g_q),\qquad
+g_r=\rho_{E,\ell}(\mathrm{Frob}_r).
+\]
+These follow from CRT and the local characteristic polynomial.
+
+Factoring computes both observables deterministically in polynomial time: root counts are degrees of \(\gcd(f,X^r-X)\); elliptic counts follow from Schoof. A fixed \(\ell\mid N\) is handled by trial gcd.
+
+**OPEN — fixed \(\ell=2,3,5,7\).** No general polynomial algorithm from \(N\) alone, or general factoring-hardness theorem, was verified for any one of these residues. Rational \(\ell\)-torsion gives \(M\equiv0\pmod\ell\) at good primes different from \(\ell\), because reduction preserves prime-to-characteristic torsion. Thus uniform hardness assertions would include constant outputs.
+
+**PROVED — exact quadratic examples.** Define \(\mathrm{QR}_N(D)=1\) when the fixed unit \(D\) is square at both primes. For a separable irreducible quadratic of discriminant \(D\),
+\[
+R_f(N)=(1+\chi_p(D))(1+\chi_q(D))
+      =4\,\mathrm{QR}_N(D).
+\]
+For a rational linear factor times an irreducible quadratic, the local count is \(2+\chi_r(D)\), giving products \(9,3,1\) for \(++,+-,--\). Jacobi distinguishes the mixed case; QR distinguishes the other two. These give deterministic reductions in both directions.
+
+**PROVED — a \(\varphi\bmod3\) equivalence.** For
+\[
+f=x^3+6x-7=(x-1)(x^2+x+7),
+\]
+excluding 2 and 3,
+\[
+r_r=2+(-3/r).
+\]
+Thus \(R_f(N)\), \(\mathrm{QR}_N(-3)\) and \(\varphi(N)\bmod3\) are mutually computable using \(N\):
+
+- If \(N\equiv2\pmod3\), \(R_f(N)=3\) and \(\varphi(N)\equiv0\).
+- If \(N\equiv1\pmod3\), both primes are 1 mod 3 or both are 2 mod 3. The respective root counts are 9 and 1, and totient residues 0 and 1.
+
+Factoring-hardness of this fixed-base QR problem is OPEN; it does not follow from hardness of square-root extraction.
+
+**PROVED — the \(S_3\) cubic supplies one direction.**
+
+| Frobenius cycle type | Roots | Discriminant symbol |
+|---|---:|---:|
+| identity | 3 | \(+1\) |
+| transposition | 1 | \(-1\) |
+| 3-cycle | 0 | \(+1\) |
+
+For a proof of the sign column, set
+\(\delta=\prod_{i<j}(\alpha_i-\alpha_j)\). Frobenius multiplies \(\delta\) by its permutation sign, and \(\delta^2=\operatorname{disc}f\). The sign is therefore the discriminant’s Legendre symbol.
+
+Given \(J=(\operatorname{disc}f/N)\), QR is false if \(J=-1\). If \(J=1\), root count 1 means two transpositions and QR is false; root counts 0 or 9 mean QR is true. Therefore
+\[
+\mathrm{QR}_N(\operatorname{disc}f)\le_D R_f(N).
+\]
+
+**FALSE — direct equality of the information.** Discriminant QR does not determine an \(S_3\) root count. Identity/identity gives 9; identity/3-cycle gives 0; both have positive symbols at both primes. Exact examples appear below.
+
+**OPEN — computational converse.** This does not establish
+\(R_f\not\le_P\mathrm{QR}(\operatorname{disc}f)\). A Turing reduction can read \(N\), transform inputs and make many queries. No general converse was verified. “Equivalent to discriminant QR” is unproved computationally and false as a direct formula in those symbols.
+
+**PROVED — finitely many quadratic characters miss splitting data.** Let \(K\) be an \(S_3\) splitting field and \(L\) any finite multiquadratic field. Their intersection lies in the discriminant quadratic field, since the only nontrivial elementary-2 abelian quotient of \(S_3\) is sign. Identity and a 3-cycle therefore both pair with identity on \(L\) in the compositum’s Galois group.
+
+Chebotarev realizes both compatible classes at primes. Adding any fixed congruence modulus does not distinguish them: intersection with a cyclotomic field still factors through \(S_3^{\mathrm{ab}}=C_2\). This proves non-determination by those local characters, not a computational separation.
+
+The prime-existence input is KNOWN: Jean-Pierre Serre, *Quelques applications du théorème de densité de Chebotarev*, **Publications Mathématiques de l’IHÉS 54** (1981), 123–201, **§2.1, Theorem 1**, p.131. [Verified primary scan](https://www.college-de-france.fr/media/jean-pierre-serre/UPL7902704499476033975_UPL61373_Serre_Chebotarev.pdf).
+
+**PROVED / OPEN — \(S_4\) and division fields.** In the natural \(S_4\) action, identity and a 3-cycle have the same sign but 4 and 1 fixed points. A transposition and a 4-cycle have the same sign but 2 and 0 fixed points.
+
+Unlike the cubic case, root count need not directly recover sign-residuosity: with product sign \(+1\), zero can arise from two double transpositions, or two 4-cycles.
+
+For a full mod-3 representation, \(\psi_3\) acts on the four lines of \(\mathbb F_3^2\); its faithful projective group of order 24 is \(S_4\). For higher odd \(\ell\), roots of \(\psi_\ell\) are nonzero torsion vectors modulo \(\pm1\). Identity fixes \((\ell^2-1)/2\) classes; a nontrivial upper unipotent fixes only \((\ell-1)/2\), despite both determinants being 1.
+
+Reductions to finitely many QR oracles, and strict computational hardness separations, remain OPEN.
+
+**PROVED — elliptic residues can contain nonquadratic data.** In the full \(\mathrm{GL}_2(\mathbb F_\ell)\) case, for \(\ell=3,5,7\), identity and minus identity have determinant 1, but
+\[
+\det(1-I)=0,\qquad \det(1-(-I))=4\ne0.
+\]
+Every quadratic character factors through determinant: upper and lower unipotents are commutators with diagonal matrices and generate \(\mathrm{SL}_2\). Extra fixed quadratic fields do not distinguish these classes, by the same intersection argument.
+
+Thus no formula solely in finitely many such local quadratic characters evaluates \(M\bmod\ell\) generally. This is not a lower bound against algorithms with QR-oracle access.
+
+**PROVED — no general identification with \(\varphi(N)\bmod\ell\).** Fixing both determinants to 1 fixes prime residues and totient residue while allowing the preceding variation of \(M\bmod\ell\).
+
+Conversely \(g=\operatorname{diag}(1,d)\) has \(\det(1-g)=0\) for every nonzero \(d\). The determinant pairs \(1,1\) and \(-1,-1\) have the same \(N\bmod\ell=1\) and \(M\bmod\ell=0\), but totient residues 0 and 4. Hence neither observable generally determines the other at the level of local Frobenius data.
+
+At \(\ell=2\), \(\varphi(N)\bmod2=0\) always, while elliptic parity can vary.
+
+**PROVED — elliptic parity differs from cubic root counting.** At an odd good prime, the elliptic order is even exactly when the cubic has a root, by rational 2-torsion. Consequently, for an \(S_3\) cubic,
+\[
+M\equiv1\pmod2
+\iff g_p,g_q\text{ are both 3-cycles}.
+\]
+Root count 0 also permits identity/3-cycle, whose elliptic product is even. Elliptic parity 0 includes root counts 1 and 9, so it does not decide discriminant QR everywhere.
+
+**PROVED — varying \(\ell\) reconstructs \(M\).** Under bounded-ratio balance, Hasse gives \(M=N+O(N^{3/4})\). Residues at enough primes \(\ell=O(\log N)\), whose product exceeds twice a known Hasse window, reconstruct \(M\) by CRT. For arbitrary semiprimes, \(M=O(N)\) suffices. Then apply the relevant full-count reduction.
+
+This does not apply to one fixed \(\ell\). Conference Lemma 2/Theorem 2 numbering in Kunihiro–Koyama remains UNVERIFIED here. The CRT construction is directly verified in Noboru Kunihiro, *Security and Efficiency Analyses of Public Key Cryptosystems*, **doctoral dissertation, University of Tokyo (2001)**, Chapter 4, **Lemma 4.2 and Theorem 4.2**. [University record](https://repository.dl.itc.u-tokyo.ac.jp/records/2687), [indexed primary text](https://repository.dl.itc.u-tokyo.ac.jp/record/2687/files/K-214917.pdf).
+
+**KNOWN / OPEN — reciprocity and the project barriers.** The supplied abelian aggregate theorem, `nonsmooth_results.md` §5.4, concerns Artin of the rational ideal \((N)\), determined by \(N\) modulo the conductor. It does not evaluate products of arbitrary local functions: these need not be functions of the aggregate \(g_pg_q\), even in abelian groups.
+
+PT and PT-J restrict specified pure arithmetic trees and bounded Jacobi extensions. They do not classify arbitrary algorithms reading \(N\), using \(N\)-dependent exponents or receiving these oracle outputs.
+
+**Negative literature finding:** no general reciprocity-type polynomial algorithm for the nonabelian root counts or fixed elliptic residues was verified. Nonabelianity alone does not prove computational hardness.
+
+**4. \(X_E\), quadratic extensions and a \(j=0\) repair**
+
+**KNOWN — supplied baseline.** Theorems TW/TW* in `ecount_results.md` prove randomized factoring outside
+\[
+X_E=\{N:M\text{ odd},\ \mu_p\mid M,\ \mu_q\mid M\}.
+\]
+The supplied notes also prove density zero in their balanced prime-pair model and the everywhere result for rational 2-torsion curves. These are project results; no claim is made that their sharp forms appeared in the cited literature.
+
+**PROVED — terminal annihilation fails on \(X_E\).** There \(M\) annihilates the curve and its quadratic twist at both primes. Every point produced by the usual \(x\)-coordinate twist construction is therefore killed in both CRT components. Observing only the final \([M]P=O\) cannot separate them.
+
+Because \(M\) is odd, the cubic has no root at either prime, so the initial gcd of its value supplies no escape. Intermediate denominators, different scalars and order searches are outside this failure statement.
+
+**PROVED — quadratic extension does not repair terminal blindness.** Let \(\pi\) be local Frobenius and \(P\in E(\mathbb F_{r^2})\). Then \(P+\pi P\) is rational and \(P-\pi P\) is anti-invariant, corresponding to the quadratic twist. Hence
+\[
+[M](P+\pi P)=[M](P-\pi P)=O,
+\qquad [2M]P=O.
+\]
+Since \(E(\mathbb F_r)[2]=0\), Frobenius acts as a 3-cycle on the nonzero geometric 2-torsion. Its square also has no fixed point, so \(E(\mathbb F_{r^2})[2]=0\). Therefore \([M]P=O\).
+
+The split quadratic algebra is equally annihilated. Thus every finite étale quadratic algebra \(R\) over \(\mathbb Z/N\) has \(E(R)\) annihilated by \(M\); the corresponding Weil restriction has the same property. This proves a failure theorem for final-scalar methods, not their complete arithmetic implementations.
+
+**OPEN — arbitrary curves.** Small odd-prime stripping can help, but no proof here guarantees a separating \(\ell\) polynomially bounded in \(\log N\). Factoring \(M\) is additional information.
+
+Adjoining a cubic root makes 2-torsion available over degree 3 when \(M\) is odd; it does not supply a known annihilator for the new group. Extension orders depend on individual \(r,a_r\), not just their products. No verified everywhere arbitrary-curve reduction through cubic extensions, division-polynomial roots or abelian surfaces was found.
+
+**PROVED — the factored-count descent point.** At one local prime, \(\lambda_r\ne\mu_r\) if both divide odd \(M\). Otherwise write both exponents as odd \(L\), and the groups as
+\[
+C_d\times C_L,\qquad C_e\times C_L,
+\]
+with \(d,e\mid L\) and \(d,e\mid r-1\). Since \(L\) divides both orders, it divides \(r+1\). Thus \(\gcd(L,r-1)=1\), forcing \(d=e=1\). Both orders would equal \(L=r+1\), contradicting oddness.
+
+Some odd \(\ell\mid M\) therefore distinguishes the two local exponents. Given the factorization of \(M\), scalars \(M/\ell^j\) reach a stage killing one local twist group but not the other. A proper kernel has index at least 2, giving constant separation probability under twist sampling.
+
+The comparison is between curve and twist at the same prime; different primes can have the same odd curve exponent.
+
+**PROVED — everywhere randomized reduction for fixed \(j=0\).** Write the fixed curve as \(E_b:y^2=x^3+b\), with fixed denominators invertible at good primes. If \(M\) is even, apply TW*. If \(M\) is odd:
+
+1. Choose uniform \(x,y\bmod N\), and set \(c=y^2-x^3\bmod N\).
+2. A proper \(\gcd(c,N)\) factors \(N\); if \(c=0\bmod N\), retry.
+3. On \(E_c:y^2=x^3+c\), compute \([M](x,y)\), checking gcds during the group law.
+
+No extra count, residuosity oracle or root extraction is used.
+
+**Proof.** Odd \(M\) implies the original local groups have no 2-torsion. If \(r\equiv2\pmod3\), cubing is bijective, so \(x^3+b\) has a root—a contradiction. Thus \(r\equiv1\pmod3\).
+
+There are six sixth-power classes of nonzero \(c\), each containing \((r-1)/6\) elements. For \(c\in b(\mathbb F_r^\times)^6\), coordinate scaling identifies \(E_c\) with \(E_b\), so \(M\) kills every point. This contributes at least
+\[
+\frac{r-1}{6r^2}(r-2\sqrt r)
+=\frac16-O(r^{-1/2})
+\]
+to the probability that a uniform pair lies on a nonsingular curve and is killed.
+
+Exactly two sixth-power classes have \(-c\) a cube. Those curves have rational 2-torsion and even order. Odd \(M\) has a kernel of index at least 2 on them. All points outside that kernel are affine, contributing at least
+\[
+\frac{2(r-1)}{6r^2}\,
+\frac{r+1-2\sqrt r}{2}
+=\frac16-O(r^{-1/2})
+\]
+to the probability of a nonsingular point not killed by \(M\).
+
+These are counts of the exact fibers \(c=y^2-x^3\), so uniform twist-class sampling is not assumed. CRT independence gives terminal mixed probability at least
+\[
+2(1/6-o(1))^2=1/18-o(1).
+\]
+For \(r\ge37\), both bounds exceed \(1/12\); after trial division below 37, each trial succeeds with probability at least \(1/72\).
+
+A mixed infinity forces a group-law split. Test \(\gcd(x_2-x_1,N)\), and when it equals \(N\), test \(\gcd(y_1+y_2,N)\). A proper gcd factors \(N\); otherwise the chord, tangent or inverse case applies uniformly and produces the CRT-correct sum. Induction proves the scalar-multiplication assertion.
+
+Each trial takes polynomial time since \(M\) has \(O(\log N)\) bits. Repetition gives expected-polynomial factoring. ∎
+
+**OPEN — priority.** Targeted searches did not locate this exact everywhere sextic-twist argument. Its novelty is UNVERIFIED. The underlying six-twist classification is KNOWN, for example Schoof 1995, §3, p.225. This settles the \(j=0\) case, not arbitrary \(j\).
+
+**OPEN — determinism and ERH.** No deterministic or ERH deterministic single-count reduction for arbitrary fixed curves was verified. Scanning \(x\le(\log N)^2\) is UNVERIFIED. One needs both a suitable local square/nonsquare pattern and a point outside a twist’s \(M\)-torsion kernel.
+
+**FALSE — directly substituting \(f(x)\) into Bach’s bound.** The function \(x\mapsto(f(x)/r)\) is generally not multiplicative. For \(f=x^3-x-1\) modulo 13, both \(f(2)=5\) and \(f(4)=7\) are nonsquares, so the symbol at \(2^2\) is not the square of the symbol at 2.
+
+Eric Bach, *Explicit bounds for primality testing and related problems*, **Mathematics of Computation 55** (1990), 355–380, treats multiplicative-subgroup and related prime-ideal bounds. The precise numbered statement behind \(2\log^2N\) was UNVERIFIED here; its abstract was checked through DOI-linked metadata. That constant is not used in a proof. [Primary record](https://doi.org/10.1090/S0025-5718-1990-1023756-8).
+
+**KNOWN — more counts yield a different GRH result.** Jorge Jiménez Urroz and Jacek Pomykała, *Factoring numbers with elliptic curves*, **Ramanujan Journal 64** (2024), 265–273, Theorem 1, gives a GRH probabilistic reduction for squarefree integers using varying curves and twists. It is not a deterministic single-count theorem. [Primary preprint, Theorem 1 and §§2–3](https://arxiv.org/html/2210.04835).
+
+**5. Literature verification**
+
+**KNOWN / UNVERIFIED — Kunihiro–Koyama.** Noboru Kunihiro and Kenji Koyama, *Equivalence of counting the number of points on elliptic curve over the ring \(Z_n\) and factoring \(n\)*, **EUROCRYPT ’98, LNCS 1403** (1998), 47–58, DOI **10.1007/BFb0054116**.
+
+The publisher abstract states randomized computational equivalence. The exact conference Theorem 1/Lemma 1 hypotheses, Lemma 2/Theorem 2 numbering and Remark (3) fixed-curve variant were UNVERIFIED from the complete conference text. The title must not be treated as an everywhere arbitrary-fixed-curve theorem. The CRT construction is verified in the dissertation cited above. [Publisher](https://link.springer.com/chapter/10.1007/BFb0054116).
+
+**KNOWN / UNVERIFIED — Okamoto–Uchiyama.** Tatsuaki Okamoto and Shigenori Uchiyama, *Security of an identity-based cryptosystem and the related reductions*, **EUROCRYPT ’98, LNCS 1403** (1998), 546–560, DOI **10.1007/BFb0054153**, §4, Theorems 9–10.
+
+Their “order” is \(\operatorname{lcm}(\#E_p,\#E_q)\), explicitly defined on the primary first page. Galbraith–McKee §2 credits the twist antecedent. The supplied notes describe Theorem 9/Reduction 1 with large-prime/distribution hypotheses; their complete independent verification was unavailable here. I do not cite it as an unconditional everywhere fixed-curve theorem. [Publisher](https://link.springer.com/chapter/10.1007/BFb0054153), [indexed primary paper](https://citeseerx.ist.psu.edu/document?doi=38de654b752bc270d4b77e9863c562661d552e62&repid=rep1&type=pdf).
+
+**KNOWN / UNVERIFIED — Martín–Morillo–Villar.** S. Martín, P. Morillo and J. L. Villar, *Computing the order of points on an elliptic curve modulo \(N\) is as difficult as factoring \(N\)*, **Applied Mathematics Letters 14**(3) (2001), 341–346, DOI **10.1016/S0893-9659(00)00159-2**.
+
+The primary abstract states a randomized polynomial reduction for point orders on squarefree moduli. Full proof, numbered theorem and exact quantifiers were UNVERIFIED. A point-order oracle is not automatically one known fixed-curve cardinality. [Publisher abstract](https://www.sciencedirect.com/science/article/pii/S0893965900001592).
+
+**KNOWN — Galbraith–McKee.** Steven D. Galbraith and James F. McKee, *Pairings on elliptic curves over finite commutative rings*, **Cryptography and Coding 2005, LNCS 3796**, 392–409, §2, explicitly discusses one curve and known count \(M\). It presents quadratic twists and odd-part/doubling methods, citing the preceding work, with an expectation about typical twist orders.
+
+The mechanism is prior art; this does not prove the sharp exceptional-set theorem. Section 3 discusses extension rings without a verified escape from the obstruction above. [Primary PDF](https://www.math.auckland.ac.nz/~sgal018/pair-mod-n.pdf).
+
+**KNOWN — Dąbrowski–Pomykała–Shparlinski.** Andrzej Dąbrowski, Jacek Pomykała and Igor E. Shparlinski, *On oracle factoring of integers*, **Journal of Complexity 76** (2023), 101741, DOI **10.1016/j.jco.2023.101741**; **arXiv:1912.00345v4**, Theorems **1.2 and 1.4**, Algorithm **3.1**, §4.
+
+The checked v4 number is 1.2, not the supplied notes’ 1.1. Its oracle supplies counts/multiples for \(y^2=x(x^2-b)\) over a range of \(b\); its deterministic theorem has exceptions. Algorithm 3.1 uses \(\alpha=f_b(x)/y^2\), \(P=(\alpha x,\alpha^2y)\). It does not settle one arbitrary fixed curve’s count. [Primary paper](https://arxiv.org/pdf/1912.00345).
+
+**KNOWN — Edixhoven–Couveignes requires factored indices.** Jean-Marc Couveignes and Bas Edixhoven, editors, *Computational Aspects of Modular Forms and Galois Representations: How One Can Compute in Polynomial Time the Value of Ramanujan’s Tau at a Prime*, **Annals of Mathematics Studies 176**, Princeton University Press (2011), Chapter 15 by Bas Edixhoven, **Theorem 15.2.1 and Corollary 15.2.2**.
+
+The input explicitly includes the prime factorization of \(n\). It computes \(T_n\) in the level-one Hecke algebra, polynomially in \(\log n\) for fixed weight; GRH supplies the stated polynomial dependence on varying weight. It does not remove composite-index factorization. [Primary book](https://arxiv.org/pdf/math/0605244).
+
+**PROVED / KNOWN — Schoof at composite modulus.** Schoof 1985 §§2–3 uses characteristic-\(r\) Frobenius over a specified finite field. Substituting exponent \(N\) fails: modulo 5, a CRT component of \(\mathbb Z/35\), \(2^{35}=3\ne2\), whereas prime-field Frobenius is identity.
+
+In
+\[
+R=(\mathbb Z/N)[Y]/(Y^2-d),
+\]
+componentwise Frobenius sends \(Y\) to \(\varepsilon Y\), with
+\(\varepsilon\bmod r=(d/r)\). If \((d/N)=-1\), then \(\varepsilon\) is a nontrivial square root of 1, and \(\gcd(\varepsilon-1,N)\) factors \(N\). This proves an operator obstruction; numerical invariants need not expose that coefficient.
+
+**PROVED — caution about a later claim.** Luis V. Dieulefait and Jorge Jiménez Urroz, *Factorization and Malleability of RSA Moduli, and Counting Points on Elliptic Curves Modulo \(N\)*, **Mathematics 8**(12) (2020), 2126; arXiv:1911.11004, §2, Lemma 3 in the preprint.
+
+Its projective reconstruction uses \(4PQ\), where \(P=p+1,Q=q+1\). But \(PQ=N+p+q+1\) already factors \(N\). That reconstruction therefore does not establish the reduction from the two projective counts alone. Its ERH argument requests twist counts. This is a proof gap, not a counterexample to every two-count reduction. [Primary preprint](https://arxiv.org/html/1911.11004).
+
+**OPEN — negative findings.** The checked literature supplies no verified general answer to the single-\(a_N\), trace-pair, fixed nonabelian partial-count, arbitrary-\(E\) exceptional-set or deterministic single-count questions. No trace-specific generic lower bound was found.
+
+Generic-ring results cannot simply be transferred: Tibor Jager and Jörg Schwenk, *On the Analysis of Cryptographic Assumptions in the Generic Ring Model*, **Journal of Cryptology 26**(2) (2013), 225–245, contrasts generic hardness of Jacobi computation with its ordinary efficient algorithm. Exact journal theorem numbering was UNVERIFIED; the indexed primary conference abstract was checked. [Primary conference paper](https://www.iacr.org/archive/asiacrypt2009/59120396/59120396.pdf).
+
+**6. Exact toy computations**
+
+**PROVED by finite computation.** The standalone [script](/Volumes/git/factoring-connection/codex/scratch/tracedata_1/verify_tracedata.py) uses SymPy and PARI through `cypari2`, with explicitly known primes. These are toy checks, not asymptotic evidence. From the scratch directory, the successful command was:
+
+```sh
+/Volumes/git/factoring-connection/.venv/bin/python verify_tracedata.py > verification.txt
+```
+
+The initial run stopped because `elltwist(E,d)` expected a discriminant. I corrected it to use the short model \(A=-c_4/48,\ B=-c_6/864\), then twist coefficients by \(d^2,d^3\). Results below are from the successful rerun. [Raw stdout](/Volumes/git/factoring-connection/codex/scratch/tracedata_1/verification.txt).
+
+**PROVED by finite computation — \(S_3\) counts.** The polynomial \(x^3-x-1\) is irreducible by the rational-root test and has nonsquare discriminant \(-23\), hence group \(S_3\).
+
+| \(p,q\) | \(N\) | Local symbols | Local roots | \(R_f(N)\) | \(M\) | \(M\bmod2\) |
+|---|---:|---|---|---:|---:|---:|
+| 59,101 | 5959 | \(+,+\) | 3,3 | 9 | 6000 | 0 |
+| 13,59 | 767 | \(+,+\) | 0,3 | 0 | 1140 | 0 |
+| 13,29 | 377 | \(+,+\) | 0,0 | 0 | 703 | 1 |
+| 5,7 | 35 | \(-,-\) | 1,1 | 1 | 32 | 0 |
+
+**PROVED by finite computation — coefficient elimination.** For \(y^2=x^3+x+1\),
+\[
+(p,q,N)=(101,127,12827),\quad(a,b)=(-3,2),
+\]
+\[
+A=-6,\quad B=11316,\quad S=1547.
+\]
+The elimination roots are \(404,1143\), with gcds \(101,127\). Also \(M=13230,T=-1,C=407\), agreeing with
+\[
+(1-2)101+(1+3)127=407.
+\]
+For \(y^2=x^3-x\), primes \(103,107\) gave \(N=11021\), traces \(0,0\), \(a(N^2)=11021\), and \(M=11232\).
+
+**PROVED by finite computation — the supplied exceptional input.** For model \([0,-1,1,-10,-20]\) of 11a1,
+\[
+p=54443,\ q=62819,\ N=3420054817,\ M=3420029925.
+\]
+Local curve orders are \(54795,62415\). Twist groups are cyclic of orders \(54093,63225\); both exponents divide odd \(M\). This independently verifies membership in \(X_E\).
+
+**PROVED by finite computation — sextic repair on \(X_E\).** For \(y^2=x^3+2\),
+\[
+p=151,\ q=181,\ N=27331,\quad
+M=29925=3^2\cdot5^2\cdot7\cdot19.
+\]
+Curve orders are \(171,175\); twist invariants are \((133)\) and \((63,3)\). Their exponents \(133,63\) divide odd \(M\), so this is in \(X_E\).
+
+| \(r\) | Killed pairs | Non-killed pairs | Singular \(c=0\) | All pairs |
+|---|---:|---:|---:|---:|
+| 151 | 12000 | 10650 | 151 | 22801 |
+| 181 | 10980 | 21600 | 181 | 32761 |
+
+PARI group-invariant calculations and independent enumeration of every affine pair reproduced both rows. The terminal mixed probability is exactly
+\[
+\frac{12000\cdot21600+10650\cdot10980}{27331^2}
+=\frac{376137000}{746983561}
+=0.5035412017587895\ldots.
+\]
+With `Random(25)`, trial 2 used
+\[
+(x,y,c)=(502,7013,22891)
+\]
+and exposed factor **181** during the group law. Intermediate splits can increase the observed success rate above the terminal mixed probability.
+
+**PROVED by finite computation — fixed determinants.**
+
+| \(\ell\) | \(|\mathrm{SL}_2(\mathbb F_\ell)|\) | Values of \(\det(1-g)\) |
+|---|---:|---|
+| 3 | 24 | 0,1,2 |
+| 5 | 120 | 0,1,2,3,4 |
+| 7 | 336 | 0,1,2,3,4,5,6 |
+
+The full saved report, reproduction script and raw output are linked above.
