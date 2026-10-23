@@ -32,7 +32,7 @@ say exactly what leaks.** The map is:
      gcd(N−1, p−1) structure), whose extreme case exp(G_p) | E(N) − t is a Diophantine pin such as q = p + 2 or
      q = p + k − 1 (family A) (Theorem NE1);
    - quantitatively, for iid balanced primes the cross-coincidence term is ≤ h·D·(|I|/L + 1)/π(I) per tree of height h,
-     i.e. N^{−1/4+o(1)} with L = √X; with fresh uniform bases it is exactly the product
+     i.e. N^{−1/4+o(1)} with L = √X for random bases (N^{−1/6+o(1)} for fixed integer bases); with fresh uniform bases it is exactly the product
      gcd(E(N), p−1)gcd(E(N), q−1)/φ(N) form (codex; order-pattern lemma).
    - E1 checked every inequality on 1.9·10⁶ instrumented runs (0 violations) and found the archimedean pins
      exactly where predicted (e.g. twin primes q = p + 2 with (5|p) = −1, (5|q) = +1 are non-split Lucas liars).
@@ -166,10 +166,12 @@ Pr[D] ≤ 2 E_x[...]. ∎
 
   Pr[D] ≤ 2 Pr_x[SO_L(x)] + 2h·D·|α|·(|I|/L + 2^j)/π(I),
 
-where SO_L(x) = "some gate base on κ(x)'s path has o*_v(x) ≤ L" is a pure, one-prime event. With L = √X and bases
-whose small-order mass is negligible (coins; fixed small integers, for which #{x : ord_x(y) ≤ L} ≤ L²), the
-non-split leak is ≤ h·D·N^{−1/4+o(1)} + Pr[SO]: a polynomial-size NE1 tree learns nothing non-negligible without
-splitting unless its pure part has already put a base into a small subgroup at p.
+where SO_L(x) = "some gate base on κ(x)'s path has o*_v(x) ≤ L" is a pure, one-prime event. Examples of the
+small-order mass: for a uniform random base, Pr[ord_x(y) ≤ L] ≤ Σ_{d|x−1, d≤L} φ(d)/(x−1) ≤ L·τ(x−1)/(x−1), so
+L = √X gives a total of h·D·N^{−1/4+o(1)}; for a fixed integer base y, the primes with ord_x(y) = k divide y^k − 1,
+so #{x ∈ I : ord_x(y) ≤ L} ≤ L² log|y|/log X, and L = X^{1/3} gives h·D·N^{−1/6+o(1)}. In words: a polynomial-size
+NE1 tree learns nothing non-negligible without splitting unless its pure part has already put a gate base into a
+small subgroup at p (a pure group-order event).
 
 ### 3.3 What the deviations are (classification). PROVED (definitions + Lemma NE-C)
 A deviation at x of gate node v (base y, root w = y^t when the target is a known power of the base) is
