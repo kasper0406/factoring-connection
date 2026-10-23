@@ -352,7 +352,8 @@ def deviation_class(nd: GateNode, N: int, x: int, L: int) -> str:
     SMALL if some component order <= L, UNIVERSAL if exp(ambient) | E(N) - t (every base fooled),
     else SUBGROUP (cross gcd coincidence)."""
     comps = node_components(nd, x)
-    if min(c.order for c in comps) <= L:
+    # v2: SMALL uses the largest eligible component order o*_v(x), as in Theorem NE1 (v1 used the minimum)
+    if max(c.order for c in comps) <= L:
         return "SMALL"
     if nd.t_target is not None:
         En = nd.E(N)
@@ -423,6 +424,18 @@ def tree_repair() -> tuple:
 
 def tree_pm1() -> tuple:
     return nonadaptive([PureNode(Z1, pure_pow(Z1, (2,), M64))])
+
+
+def tree_mr_ladder(N: int, base: int = 2) -> tuple:
+    """The registered MR ladder for base 2: exponents (N-1)/2^j for j = t..0, t = v2(N-1), tests b = 1 and b = -1.
+    The node list depends on the public t (PT-m style), so this is a per-N tree (used only for the P1 check)."""
+    t = ((N - 1) & -(N - 1)).bit_length() - 1
+    nodes = []
+    for j in range(t, -1, -1):
+        E = Expo(f"(N-1)/2^{j}", lambda M, j=j: (M - 1) >> j, None)
+        nodes.append(GateNode(Z1, pure_const(Z1, base), E, pure_const(Z1, 1), t_target=0, label=f"b{j}=1"))
+        nodes.append(GateNode(Z1, pure_const(Z1, base), E, pure_const(Z1, -1), t_target=None, label=f"b{j}=-1"))
+    return nonadaptive(nodes)
 
 
 TREES: Dict[str, Callable[[], tuple]] = {

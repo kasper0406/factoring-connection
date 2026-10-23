@@ -60,6 +60,13 @@ def main(path):
     m = ~anysplit
     out["z_nonsplit_subpop"] = strat_z(x[m], y[m], s[m])
     out["zcr_nonsplit_subpop"] = cluster_z(x[m], y[m], s[m], cp[m], cq[m])
+    # v2: every CF statistic on the non-split subpopulation (not only cf64_n_sq_even)
+    from .cfgenus import STATS
+    out["nonsplit_all_stats"] = {}
+    for st in STATS:
+        xs = np.array([t[0][st] for t in rows], float)
+        out["nonsplit_all_stats"][st] = dict(z_all=round(strat_z(xs, y, s), 2), z_ns=round(strat_z(xs[m], y[m], s[m]), 2),
+                                            zcr_ns=round(cluster_z(xs[m], y[m], s[m], cp[m], cq[m]), 2))
     # q/p of the splitting instances
     ratios = [t[0]["q"] / t[0]["p"] for t in rows if t[2] > 0]
     out["median_q_over_p_splitting"] = float(np.median(ratios)) if ratios else None

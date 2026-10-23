@@ -114,9 +114,10 @@ def strat_z(x: np.ndarray, y: np.ndarray, s: np.ndarray) -> float:
     cuts = np.flatnonzero(np.diff(ss)) + 1
     for xa, ya in zip(np.split(xs, cuts), np.split(ys, cuts)):
         m = len(xa)
-        if m < 2:
-            continue
         n1 = float(ya.sum())
+        if m < 2:
+            E += float(np.dot(xa, ya))      # singleton stratum: fixed contribution, zero variance (v2 fix)
+            continue
         mu = xa.mean()
         E += n1 * mu
         V += n1 * (m - n1) / (m * (m - 1)) * float(((xa - mu) ** 2).sum())
@@ -126,7 +127,11 @@ def strat_z(x: np.ndarray, y: np.ndarray, s: np.ndarray) -> float:
 
 
 def cluster_z(x: np.ndarray, y: np.ndarray, s: np.ndarray, cp: np.ndarray, cq: np.ndarray) -> float:
-    """Two-way (p, q) cluster-robust z for the within-stratum covariance of x and y."""
+    """Dyadic-robust z for the within-stratum covariance of x and y (v2).
+
+    Observations i, j are dependent when they share at least one prime, in either role.  The variance estimate is
+    V = sum_{i,j share a prime} u_i u_j = sum_primes S_prime^2 - sum_{unordered pairs {p,q}} S_pair^2, where the
+    second term removes the double count of observations sharing both primes (incl. i = j)."""
     xt = x.astype(float).copy()
     yt = y.astype(float).copy()
     for arr in (xt, yt):
@@ -139,17 +144,29 @@ def cluster_z(x: np.ndarray, y: np.ndarray, s: np.ndarray, cp: np.ndarray, cq: n
         arr -= means
     u = xt * yt
     S = u.sum()
-
-    def csum(c):
-        d = defaultdict(float)
-        for v, k in zip(u, c):
-            d[k] += v
-        return sum(w * w for w in d.values())
-
-    V = csum(cp) + csum(cq) - float((u * u).sum())
+    byprime = defaultdict(float)
+    bypair = defaultdict(float)
+    for v, a, b in zip(u, cp, cq):
+        byprime[int(a)] += v
+        byprime[int(b)] += v
+        bypair[(int(min(a, b)), int(max(a, b)))] += v
+    V = sum(w * w for w in byprime.values()) - sum(w * w for w in bypair.values())
+    cluster_z.last_deff = float(V / max(float((u * u).sum()), 1e-300))
     if V <= 0:
         return 0.0
     return float(S / sqrt(V))
+
+
+def design_effect(u_like: np.ndarray, cp: np.ndarray, cq: np.ndarray) -> float:
+    """Ratio of the dyadic-robust variance to the iid variance for a mean-zero series (power bookkeeping)."""
+    byprime = defaultdict(float)
+    bypair = defaultdict(float)
+    for v, a, b in zip(u_like, cp, cq):
+        byprime[int(a)] += v
+        byprime[int(b)] += v
+        bypair[(int(min(a, b)), int(max(a, b)))] += v
+    V = sum(w * w for w in byprime.values()) - sum(w * w for w in bypair.values())
+    return float(V / max(float((u_like * u_like).sum()), 1e-300))
 
 
 def mde_rho(neff: int, z: float = 5.0, power_z: float = 0.84) -> float:
@@ -174,6 +191,7 @@ def analyse(path: str, cluster: bool) -> Dict:
         cp = np.array([r["p"] for r, _ in rows])
         cq = np.array([r["q"] for r, _ in rows])
         out = {"n_rows": len(rows), "mean_target": float(y.mean()), "mde_rho": mde_rho(len(rows)), "stats": {}}
+        deffs = []
         for st in STATS:
             x = np.array([r[st] for r, _ in rows], dtype=float)
             z = strat_z(x, y, s)
@@ -181,7 +199,12 @@ def analyse(path: str, cluster: bool) -> Dict:
             d = {"z": round(z, 3), "rho": round(rho, 4)}
             if cluster:
                 d["z_cr"] = round(cluster_z(x, y, s, cp, cq), 3)
+                d["deff"] = round(cluster_z.last_deff, 3)
+                deffs.append(cluster_z.last_deff)
             out["stats"][st] = d
+        if deffs:
+            out["max_design_effect"] = max(deffs)
+            out["mde_rho_eff"] = mde_rho(int(len(rows) / max(max(deffs), 1.0)))
         res["targets"][tname] = out
     # one-sided positive controls
     for l in ELLS:

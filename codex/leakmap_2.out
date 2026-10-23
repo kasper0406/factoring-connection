@@ -1,0 +1,200 @@
+I read the requested notes, blind-round output, implementation and tests. All 20 tests pass. They do not cover several issues below. References to sections and lines concern [leakmap_results.md](/Volumes/git/factoring-connection/notes/leakmap_results.md).
+
+1. **[OK] PT-X, including the disputed \(s_0\) step (§2).**  
+   The inequality is valid. Set \(H=\{\kappa(p)\ne\kappa(q)\}\). For distinct primes,
+   \[
+   H\cap\{\text{no split}\}\subseteq D,
+   \]
+   because no split forces \(\tau_p=\tau_q\). Therefore
+   \[
+   s_0=\Pr(H)\le s+\Pr(D\cap\{\text{no split}\}).
+   \]
+   The largest-class argument then gives exactly the stated bound. It also works for uniform distinct ordered pairs: the nonlargest same-class probabilities decrease, while the reference disagreement probability increases relative to independent sampling.
+
+   **Fix:** explicitly require fixed leaf outputs and that every node’s actual and diagonal evaluations use the *same* \(c_v(N)\). Under those requirements, “any procedure” computing \(c_v\) is fine. PT-X itself places no computational restriction on that procedure.
+
+2. **[WRONG] The formal reference mishandles zero bases when \(E(N)=0\) (§3.2).**  
+   Substituting \(Z_i=0\) assumes a positive exponent. The permitted floor menu can produce zero. Take \(I=(10,20]\), \(y=0\), \(P(Z)=Z\), and
+   \[
+   E(N)=\lfloor(N-1)/256\rfloor.
+   \]
+   At \(N=11\cdot19=209\), the formal answer is zero, but the actual value is \(0^0=1\), under the implementation’s convention. This is a deviation in the opposite direction from NE-C, with no eligible nonzero-base component.
+
+   **Fix:** require \(E(N)\ge1\) whenever zero components are allowed. Alternatively, handle zero exponents separately. If a zero-base component has \(P_i(0)\ne0\), an actual zero is impossible; assign deviation bound zero rather than leaving \(o_v^*\) undefined.
+
+3. **[OK] NE-C and NE1’s central argument, after that repair.**  
+   A nonzero degree-\(D\) polynomial has at most \(D\) roots; each root in \(\langle y_i\rangle\) determines one exponent class. The first differing answer necessarily occurs on \(\kappa(x)\)’s path. Selecting the largest *eligible* component order is valid because the lemma holds for every eligible component separately. It need not minimize \(\mu_x(o)\), which is not generally monotone in \(o\).
+
+   The factor \(4\) is correct: two prime sides in the union bound, followed by PT-X’s factor \(2\).
+
+   **Fix:** sum only over formally nonzero gate nodes with a possible deviation, and define the exceptional component cases explicitly.
+
+4. **[GAP] NE1-bal needs sampling and parameter qualifications (§3.2).**  
+   For affine exponents, with \(g=\gcd(\alpha,o)\), a sharper elementary bound is
+   \[
+   \mu_x(o)\le\frac{g|I|/o+1}{\pi(I)}.
+   \]
+   The printed \(|\alpha|(|I|/o+1)/\pi(I)\) is a valid relaxation. The floor-exponent bound with \(2^j\) is also valid: there are at most \(2^j\) classes modulo \(2^jo\).
+
+   However, \(E=(N-c)/2^j\) is only defined on a congruence stratum. Conditioning on that stratum changes the partner distribution and its denominator. It also destroys the unconditional iid law needed by PT-X.
+
+   **Fix:** state the floor result under the original law; formulate exact division under an explicit conditioned partner law and use the appropriate PT-m/PT2 statement. The advertised decay rates also require bounds on \(|\alpha|,2^j,h,D\), rather than merely “polynomial-size tree.”
+
+5. **[WRONG] The fixed-base small-order estimate omits essential exceptions.**  
+   For \(y=1\), every prime has order \(1\), but the displayed bound
+   \[
+   L^2\log|y|/\log X
+   \]
+   is zero. For \(y=-1\), every odd prime has order \(2\), with the same failure.
+
+   **Fix:** assume a fixed integer \(|y|\ge2\), handling \(0,\pm1\) separately. Divisibility by \(\prod_{k\le L}(y^k-1)\) then gives the asserted order of magnitude. The random-base estimate is correct for a uniform element of the relevant cyclic unit group. Neither example supplies a uniform small-order estimate for arbitrary compressed pure bases or adaptively selected bases.
+
+6. **[OVERCLAIM] SMALL/SUBGROUP/UNIVERSAL is not a substantive exhaustive classification into M/A (§3.3).**  
+   For arbitrary \(P\), the residue \(t\) is a discrete logarithm of a root and may depend arbitrarily on \(x\). Calling
+   \[
+   o\mid E(xq)-t_x
+   \]
+   a “fixed polynomial in the partner” hides that dependence. Without restrictions on \(t_x\), the M description largely restates the root condition.
+
+   One printed equivalence is explicitly false: with \(p=17,q=23,k=15\),
+   \[
+   2^{pq}\equiv2^k\equiv9\pmod{17},
+   \]
+   although \(q\ne p+k-1\). Here \(\operatorname{ord}_{17}(2)=8\).
+
+   **Fix:** replace the ARCH equivalence by \(\operatorname{ord}_p(2)\mid q-k\). Reserve the pin conclusion for the **UNIVERSAL** condition \(p-1\mid q-k\), with the stated interval restrictions. Label the general root-coset description separately from the proposed mechanism taxonomy.
+
+7. **[OVERCLAIM] “(Q) does not occur in NE1” is unsupported.**  
+   For odd primes and a unit \(a\),
+   \[
+   a^{(pq-1)/2}\equiv
+   \left(\frac ap\right)a^{(q-1)/2}\pmod p.
+   \]
+   Quadratic characters therefore enter an allowed Euler-type gate explicitly. This does not refute NE-C: the event can simultaneously receive an order-congruence description. It does refute treating M and Q as established disjoint mechanisms.
+
+   **Fix:** say that the numerical bound requires no separate quadratic-character term. Withdraw “Q is unreachable” unless the families are formalized and a nonoverlap theorem is proved.
+
+8. **[OK] NE1-R preserves the blind-round theorem (§3.3).**  
+   The fresh-base kernel product and shadow coupling are sound. Crucially, conditional on the pre-probe history, the base must remain uniform, its CRT components independent, and the exponent already specified. The base and retained power value must not enter the pure state.
+
+   **Fix:** restore the blind proof’s explicit restriction \(p\ne q\) inside \(R\), define \(M=\pi(I)\), and explain that the square-input allowance disappears under the virtual-diagonal convention. This theorem does not cover reused bases or retained power values.
+
+9. **[GAP] The several-gate reduction is correct, but its interpretation is too strong (§3.4).**  
+   Yes,
+   \[
+   E_j(xq)\equiv\alpha_jq+\beta_j\pmod{x-1}.
+   \]
+   After merging terms, the sparse-polynomial reduction is valid. Kelley’s Theorems 2.2–2.3 give the necessary alignment. For the claimed prime-to-\(\ell\) order conclusion, use the stronger statement
+   \[
+   \ell^{v_\ell(x-1)}\mid e_m-e_{m'},
+   \]
+   not merely divisibility by \(\ell\). This follows from the large zero coset. [Kelley, *LMS J. Comput. Math.* **19(A)** (2016), 196–204](https://arxiv.org/pdf/1602.00208).
+
+   **Fix:** handle identically zero functions and coefficient cancellation explicitly. Write the displayed elementary estimate as \((3+o(1))\lambda\log X\), or use a safe constant. Most importantly, \(O(1/\log X)\) **per node** does not establish negligible total leakage for arbitrary polynomial-height trees; the alignment condition may also be vacuous when its threshold exceeds every prime divisor of \(x-1\).
+
+10. **[OK] GAR’s identity and the \(3/4\) leading exponent are correct (§4.2).**  
+    CRT gives the displayed identity, and
+    \[
+    \theta N-1=jp,\qquad 0<j<q.
+    \]
+    A \(k\)-bit approximation therefore supplies an approximate multiple of \(p\) with error \(O(N2^{-k}+1)\). For \(p=N^{1/2+o(1)}\), the partial approximate-divisor exponent is \(1/4\); hence the leading precision threshold is \(3n/4\), not \(n/4\).
+
+    **Fix:** distinguish this sufficient threshold from a necessity barrier. The cited original algorithm states an error exponent \(\beta^2-\epsilon\); either justify the \(O(1)\)-bit endpoint through parameter choices or state the directly supported \((3/4+\epsilon)n\) version. [Howgrave-Graham, *Approximate Integer Common Divisors*, CaLC 2001, LNCS **2146**, 51–66, Algorithm 12](https://cr.yp.to/bib/2001/howgrave-graham.pdf). The exact endpoint as attributed here is **UNVERIFIED**.
+
+11. **[OVERCLAIM] GAR does not classify representative leakage as family A.**  
+    The formula is an exact CRT parametrization using factor-dependent component values. It supplies neither a computational reduction nor a necessity theorem showing that a useful readout must reveal an approximation to \(\theta\).
+
+    **Fix:** retain GAR as an identity and the approximate-divisor recovery as a sufficient consequence. Delete “all cross-prime information is Diophantine information: family A” as a proved mechanism classification.
+
+12. **[OK] AC0-\(\varepsilon\), including inverse-polynomial accuracy, survives the audit (§6).**  
+    The character-pair identity is exact by symmetry. The blind proof’s minor-arc estimate works with Dirichlet denominator range
+    \[
+    Q\le r\le X^2/Q.
+    \]
+    On major arcs, uniform rectangular bounds suffice. For \(H(u,v)=e(\beta uv)\),
+    \[
+    H_{uv}=(2\pi i\beta+(2\pi i\beta)^2uv)H.
+    \]
+    Two-variable partial summation consequently costs
+    \[
+    O(1+|\beta|X^2+|\beta|^2X^4)=O(Q^2).
+    \]
+    No product factorization of \(e(\beta pq)\) is needed.
+
+    The character-pair exclusion, \(O(b^2)\) density transfer, Walsh norm and LMN truncation are consistent. Taking \(t=O_{C,d}((\log b)^d)\) gives \(O_C(n^{-C})\), with constants also depending on the fixed circuit bounds.
+
+    **Fix:** restore the denominator range, rectangular estimates and partial-summation argument lost from the restatement. Cite the actual uniform analytic inputs: [Ford–Green–Konyagin–Maynard–Tao, Lemma 7.1](https://arxiv.org/pdf/1412.5029), [Watkins, §3.4.1](https://www.numdam.org/item/10.5802/pmb.46.pdf), and [Bourgain, Lemma 1](https://arxiv.org/pdf/1109.2784).
+
+13. **[MINOR] AC⁰ prior art needs a qualified comparison.**  
+    Relevant antecedents include [Green, *CPC* **21** (2012), 942–951](https://arxiv.org/pdf/1103.4991), on Möbius–AC⁰ orthogonality; [Shparlinski, *Number Theoretic Methods in Cryptography* (1999)](https://link.springer.com/book/10.1007/978-3-0348-8664-2), on character-related Boolean complexity; and [Kopparty, STOC 2011, *On the Complexity of Powering in Finite Fields*](https://www.math.ias.edu/files/Kopparty_stoc398s.pdf), on finite-field powering and residuosity.
+
+    **Fix:** distinguish their inputs and distributions from the hidden common sign of balanced semiprime factors. I located no exact predecessor for that theorem; its novelty remains **UNVERIFIED**, not established. The particular Thue–Morse/Rudin–Shapiro deductions are supported by [Mauduit–Rivat, Proposition 2](https://ems.press/content/serial-article-files/32075?nt=1); a theorem for all automata does not follow.
+
+14. **[OK] PT-J and its unconditional character-pair range are sound (§7).**  
+    The product-observation Fourier coefficients are \(m_e(S)^2\), and the Bayes bound has the correct constants. The identity \(m_\pm=\beta(c)\pm\beta(-c)\) requires exactly the equal-mass prime law specified there.
+
+    Conductors bounded by \(4|c_S|\), with \(\log|c_S|\le c_0\sqrt{\log X}\), fit a Landau–Page parameter \(\exp(C\sqrt{\log X})\). At least one character in the pair has the required cancellation.
+
+    **Fix:** track primitive conductors, distinguish the artificial equal-prior population from literal uniform-prime conditioning, and state the subset-product size requirement. Bounds on individual \(c_i\) do not automatically give the *same* bound on every \(c_S\).
+
+15. **[GAP] PT-J1(b)’s printed estimate does not imply its claimed GRH range.**  
+    Substituting \(\log|c|=X^{1/4-\delta}\) into the printed
+    \[
+    X^{-1/2}\log^3(|c|X)
+    \]
+    gives \(X^{1/4-3\delta}\), which need not decay.
+
+    The range is nevertheless repairable. The GRH estimate
+    \[
+    \sum_{p\le u}\chi(p)=O(\sqrt u\,\log^2(fu))
+    \]
+    is valid; weighted prime sums followed by partial summation give the sufficient normalized interval estimate
+    \[
+    |\beta(c)|\ll X^{-1/2}\log^2(fX).
+    \]
+    This yields \(O(X^{-2\delta})\) in the advertised range. [Vaughan, *The Bombieri–Vinogradov Theorem*, GRH estimate on p. 3](https://personal.science.psu.edu/rcv4/personal/Publications/Bombieri.pdf).
+
+    **Fix:** replace the loose \(\log^3\) deduction by that calculation, including subset-product conductors and the principal-character exception.
+
+16. **[WRONG] E2’s permutation statistic has a consequential singleton bug.**  
+    In [cfgenus.py:107](/Volumes/git/factoring-connection/src/leakmap/cfgenus.py:107), singleton strata contribute to \(T=\sum xy\), but `continue` omits their fixed contribution from \(E[T]\). Their permutation variance is zero; their expected contribution is still \(xy\).
+
+    I recomputed the main datasets. At \(n=40\):
+    - `cf1024_n_Qeven`: \(7.35220\to0.69051\);
+    - `cf1024_sumbits`: \(5.46599\to1.29981\).
+
+    The four main A1 hits therefore become **two**, before replication is reconsidered. At \(n=32\), some permutation scores shift by over four standard deviations, although that size’s stated primary statistic is clustered.
+
+    **Fix:** include singleton expectations or remove singleton contributions from both \(T\) and its expectation. Rerun main, fresh and post-hoc analyses. Correct the table and “all confirmed” narrative.
+
+17. **[GAP] The cluster calculation and power claims need statistical repair.**  
+    `cluster_z` treats smaller-factor and larger-factor identifiers as separate clustering dimensions. It misses dependence when a prime is the smaller factor in one observation and the larger factor in another. Its intersection subtraction also assumes unique prime pairs. The reported MDE uses row count rather than an estimated effective sample size.
+
+    **Fix:** use a justified variance estimator or resampling scheme for observations sharing either prime, account for repeated pairs, and recompute power. The stated normal-tail familywise-error calculation is not established merely by computing permutation means and variances.
+
+18. **[OVERCLAIM] E2 does not establish “nonquadratic characters do not leak” (§5).**  
+    NG1 tests one binary collapse of a cubic character. Its independence from quadratic information is an ideal residue-distribution statement, not exact independence from every quadratic symbol on the finite sampled population. NG2 tests quartic variation only within \((5|p)=+1\); it says nothing about the omitted population. These populations and sample sizes differ from the genus tests.
+
+    **Fix:** report null correlations for the registered statistics, populations and justified detection limits. Stratification removes effects explained by those particular public residues; it does not establish independence from all genus information.
+
+    The post-hoc A1 explanation is useful but also overstated: it examines `cf64_n_sq_even`, whereas the claimed effect spans several statistics and two prefix lengths. Failure to reject after selecting a nonsplitting subpopulation is not proof of zero residual leakage. Replace “entirely a splitting leak” by a qualified empirical statement, after fixing the statistics.
+
+19. **[WRONG] E1 does not implement all registered checks (§9).**  
+    `tree_mr2(jmax=3)` tests four fixed floor exponents rather than the registered ladder selected by \(v_2(N-1)\). `run_cell` also evaluates ε and the mod-3 target without their registered population filters. Its P3 computation checks the preregistered **sum** over components, not the results note’s selected-component bound. Classification uses the **minimum** component order, whereas the theorem uses the largest eligible order.
+
+    **Fix:** disclose these deviations, rename the deterministic MR2 battery, and rerun the intended checks. P4’s separate implementation does perform actual Miller–Rabin testing. Its expected counts should also account for bases skipped as nonunits, or sample uniformly from units.
+
+20. **[OVERCLAIM] CLASS and PRIM exceed the proved conclusions; important generic-model literature is missing (§8).**  
+    CLASS should be a list of quantitative theorems with separate targets, laws and hypotheses. NE1 leaves an uncontrolled small-order term; §3.4 supplies only a necessary alignment; “Q unreachable” is unsupported. Thus “four extensions classified exactly” is not established.
+
+    Nor is PRIM demonstrably the “strongest” natural open model. With public \(N\), \(x^N\) already has an \(O(\log N)\) ring-operation implementation. The distinction from ordinary generic algorithms is the restriction on **N-dependent control**, which must be formalized. “Contains every primality test” additionally needs restrictions concerning changing algebras, parameter selection and Jacobi-selected bases.
+
+    Cite and distinguish:
+    - [Aggarwal–Maurer, EUROCRYPT 2009, *Breaking RSA Generically Is Equivalent to Factoring*](https://crypto.ethz.ch/publications/files/AggMau09.pdf): \(N,E\) are inputs, and \(E\) may exceed \(N\);
+    - [Jager–Schwenk, *J. Cryptology* **26** (2013), 225–245](https://link.springer.com/content/pdf/10.1007/s00145-012-9120-y.pdf): generic Jacobi, quadratic-residuosity and subgroup problems;
+    - [Boneh–Venkatesan, EUROCRYPT 1998, 59–71](https://crypto.stanford.edu/~dabo/pubs/abstracts/no_rsa_red.html): a different reduction direction;
+    - [Maurer–Wolf, EUROCRYPT 1998, 72–84](https://crypto.ethz.ch/publications/files/MauWol98e.pdf): generic group bounds, not an M/A/Q classification.
+
+    These establish substantial antecedents, not the claimed PRIM classification. Whether an existing theorem settles the precisely intended PRIM model remains **UNVERIFIED**. Describe it as *an unresolved restricted model*, and retain PT-X/NE1 as quantitative lemmas rather than an exhaustive mechanism theorem.
+
+**Overall verdict: MAJOR REVISION.** PT-X, the repaired NE1 counting argument, NE1-R, PT-J and the substantive AC⁰ proof survive. The experimental statistics require correction, and the classification and exclusivity claims need substantial narrowing.
