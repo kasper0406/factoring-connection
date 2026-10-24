@@ -1,0 +1,162 @@
+**Recommendation: MAJOR REVISION.** The geometric smoothing and several DW compatibility repairs are convincing. The claimed precision budget and Theorem AB’s analytic assembly are not yet established. Several statements labelled “proved” contain false intermediate assertions.
+
+I accept the core arguments for CU, RE, the content criterion, averaged IR-DW, MM, BZ and TP. The determinant cancellation in TP-W plausibly removes the inverse-angle loss. **The all-residue LD* rebuttal is correct:** CU supplies a unit, and summing \(\mathfrak Q_0\) over all residues gives exactly \(\mathfrak Q(t|\Delta|)\). My blind report’s OPEN objection to that step should be withdrawn. Global rejection is also legitimate for select-U; it does not supply an accepted-field pointwise bound for the alternative MF argument.
+
+1. **FATAL — Lemma η loses powers of \(\log N\), then concludes powers of \(\lambda\).**  
+   **Location:** [§1.2, lines 164–180](/Volumes/git/factoring-connection/notes/c12alg_results.md:164); consequently Prop PB and §5.
+
+   The proof establishes, at best,
+   \[
+   W/\mu_1\le u_2(\log N)^C,
+   \]
+   whereas its conclusion requires
+   \[
+   W/\mu_1\le u_2\lambda^C.
+   \]
+   These are materially different: \(\log N=D\lambda\). The displayed proof therefore gives
+   \[
+   \eta\ge D^{-(3-7\alpha+C)}\lambda^{-C},
+   \]
+   which does not support PB. Even an uncancelled factor \(d\asymp D^{1-2\alpha}\) would destroy the claimed slack throughout this window.
+
+   PB’s exponent arithmetic **is correct assuming the stronger η bound**. The pointwise DW upper-bound strategy and HT prime sum are also reasonable. The missing step is eliminating the generic FM/DS polylogarithmic losses from their ratio.
+
+   **Fix:** prove matching pointwise algebraic lower and upper bounds with constant or \(\lambda^{O(1)}\) loss, then cancel the same rational mass before summation. Until then, add the stronger η estimate explicitly to Theorem 2L-DW’s hypotheses.
+
+2. **MAJOR — The stated thin-pair parameters do not give the asserted precision.**  
+   **Location:** §3.4, lines 608–621.
+
+   Substitution gives
+   \[
+   \frac{dT}{K_0}\Xi^3(\log N)^C
+   =dD^{-\alpha}\lambda^{C_T-C_K}(\log N)^C,
+   \]
+   not \(O(D^{-\alpha})\). The \(\Xi\)-powers cancel exactly. The growing factor \(d\), and potentially powers of \(\log N\), remain.
+
+   **Fix:** enlarge \(K_0\), for example by another power of \(\Xi\), and update \(K\). The stated exponential margins appear sufficient, but the present parameter choice is wrong.
+
+3. **MAJOR — Lemma FB’s non-reduced-class reduction and weighted normalization remain unproved.**  
+   **Location:** [§3.3, lines 506–527](/Volumes/git/factoring-connection/notes/c12alg_results.md:506), and lines 625–631.
+
+   Harper’s theorem has the claimed reduced-residue maximum, error and \(Q\)-range; it has no endpoint maximum. Thus the common-grid strategy is legitimate. [Harper, Theorem 1](https://arxiv.org/pdf/1208.5992)
+
+   However, passing from a non-reduced class to modulus \(\Delta'/\delta\) also changes the endpoint to \(x/\delta\), the available modulus range, and multiplicities. “\(\sum_\delta\delta^{-\beta}<\infty\)” is not a uniform justification: the unrestricted series diverges for \(\beta<1\). A restricted divisor sum needs an explicit bound; summing over determinant families requires additional bookkeeping.
+
+   Moreover, the displayed multiplicity estimate alone does not prove line 629 after taking \(\sup_g\), subdividing scales and normalizing by varying \(A_1A_2\).
+
+   **Fix:** state and prove the complete weighted grid inequality, including scaled endpoints, divisor sums, environment cells and normalization. These are substantive missing estimates.
+
+4. **MAJOR — Hildebrand removes endpoint subtraction amplification, but PP does not establish its geometric hypotheses.**  
+   **Location:** §3.3, lines 551–571.
+
+   The direct short-interval input is real: Jain’s Lemma 3.2(ii) states the quoted relative-error asymptotic and attributes it to **Hildebrand’s Theorem 3**. Thus the blind report’s \(\mathcal K^2/u\) objection is not inevitable. [Jain, Lemma 3.2](https://academic.oup.com/qjmath/article/77/2/397/8677316)
+
+   Nevertheless, a non-thin point pair does **not** make every vertical fibre of its parallelogram have relative length at least \(1/K_0\). Fibres can shrink continuously to zero at vertices. Likewise, fibre motion across a grid interval need not have relative size \(O(1/K)\) near those vertices.
+
+   **Fix:** explicitly truncate short fibres and corner regions, bound their smooth-weighted contribution, and track the resulting \(K_0/K\) errors. The theorem’s valid short-interval range does not itself perform this geometric truncation.
+
+5. **MAJOR — The parent PP argument crosses a different divisor scale and misses a potentially oversized error.**  
+   **Location:** PP, lines 559–564; parent assembly, lines 635–646.
+
+   Child determinants satisfy \(\Delta'\le L[\alpha]^{O(1)}\), but parent determinants can be \(L[1-\alpha]\). Therefore the parent argument cannot simply reuse “\(e\le L[\alpha]^{O(1)}\)” or a bounded number of HT shifts.
+
+   At parent smoothness \(B_2\),
+   \[
+   v=\frac{\log e}{\log B_2}
+   \quad\text{can reach}\quad D^{2-5\alpha}.
+   \]
+   A uniform linear saddle-point substitution then has a possible quadratic exponent error
+   \[
+   v^2/u_2=D^{1-3\alpha},
+   \]
+   which is **larger** than \(D^{7\alpha-3}\) for every \(\alpha<2/5\).
+
+   This need not survive the weighted Möbius sum, but the sketch has not shown that it disappears.
+
+   **Fix:** truncate large divisors with a quantitative weighted-tail estimate, or control the necessary logarithmic divisor moments. Include large gcd classes as well as Möbius divisors.
+
+6. **MAJOR — Lemma PU’s proof asserts a false uniform fibre-length lower bound.**  
+   **Location:** lines 573–584.
+
+   “On a fibre … length \(\ge X/\kappa\)” fails at parallelogram boundaries. The generalized DS argument also needs the gcd reduction, the lower endpoint after division, and a guarantee that \(D/B\) remains in the smooth-number range. These conditions are not stated or checked for all pairs and all components.
+
+   **Fix:** enlarge short fibres to a prescribed minimum length and bound the total enlargement, or give a covering argument with explicit area and boundary terms. Then derive the claimed \(\Xi\) from that argument. Since PU supports both thin-pair disposal and skew-label disposal, its current “proved” status is premature.
+
+7. **MAJOR — Parent pairs with the same special-\(\ell\) require separate treatment.**  
+   **Location:** §3.4(ii), especially line 636 and the reuse of line 625.
+
+   Excluding the same physical point with two different \(\ell\)’s does not address \(\ell_1=\ell_2\). For the same \(\ell\), primitive \(g\) and both divisibility conditions force
+   \[
+   \ell\mid\det(P_1,P_2).
+   \]
+   On such pairs the rational divisibility probability can have size \(1/\ell\), rather than \(1/\ell^2\). Taking a maximum rational pair weight before applying BV can therefore lose a factor of order \(Y\), beyond the stated BV saving.
+
+   **Fix:** separate equal-\(\ell\) pairs and exploit their determinant sparsity or an LD*-type bound directly. For unequal \(\ell\), record the corresponding forbidden determinant divisibilities. “The same steps” does not cover these cases.
+
+8. **MAJOR — CLB’s angular-discard assertion is false for skewed labels.**  
+   **Location:** [§4, lines 679–694](/Volumes/git/factoring-connection/notes/c12alg_results.md:679).
+
+   The fraction of physical box points close to a cell’s direction need not be \(O(D^{-A_0})\). Take \(r=-1\bmod q\), with reduced basis approximately
+   \[
+   e_1=(1,-1),\qquad e_2=(q/2,q/2).
+   \]
+   Almost all points with \(|j|\asymp S_2\) point close to \((1,1)\). A cell around that direction can therefore meet almost the entire box in the supposedly discarded angular set.
+
+   Also, fibres are not uniformly long up to the boundary of their value range.
+
+   **Fix:** integrate over \(g\) inside a specified regular cell for each physical primitive \(P'\), restrict values to an interior interval, and prove the coprime smooth-value lower bound there. The tiny filter threshold makes this plausible without discarding aligned points. CLB remains plausible, but the displayed proof does not establish every skewed label.
+
+9. **MAJOR — Cell-uniform parent supply and weight domination are additional obligations.**  
+   **Location:** Lemma VD; Lemma WD; §5, lines 727–728.
+
+   VD is a valid total-variance decomposition when all probabilities use the same raw law conditioned on \(R_{\mathfrak q}\) and the cell. For the intended cells, specify that they depend only on \(g\). If environments also reveal coefficients, the stated fixed-\(g\) smoothing laws cannot be reused unchanged.
+
+   WD is stated globally, whereas the theorem needs its environment-conditioned counterpart. The parent lower bound for \(z_{\mathfrak q,e}\) is also invoked as established, although the corresponding estimate in pc3 is labelled heuristic.
+
+   **Fix:** define the cell partition, prove WD within those cells, and prove a uniform parent-mean lower bound. RE alone supplies none of these assertions.
+
+10. **MAJOR — RAT must retain the actual algebraic convolution weights.**  
+    **Location:** §1.3, line 214; [§5, lines 708–712](/Volumes/git/factoring-connection/notes/c12alg_results.md:708).
+
+    A TV approximation can plausibly produce an explicit idealized weight depending on \(g\) only through \(n=|G_g(P)|\), with exponentially small error. It does **not** identify that weight with
+    \[
+    \varrho(nH|P|^{d-1}/q)
+    \]
+    to exponentially small relative error. The coefficient convolution’s shape changes its smoothness average; shifts by factors involving \(d\) can produce first-order corrections of size \((1-\beta)\log d\).
+
+    **Fix:** define the idealized convolution weight explicitly and formulate RAT for that weight. Treat comparison with a single density value separately.
+
+    The variance decomposition is not inherently circular. In particular, skew-label rational variance is bounded by full variance once AB(iii) is established independently. The problem is the unproved identification of the weights and missing analytic inputs.
+
+11. **MINOR — Several literal statements need correction.**  
+    **Locations:** §§2.4–2.5, Cor TP-q, LF and AR.
+
+    - W-DW is false “for every \(u\)”: take \(u=0\) and \(\Phi_0=1_{\{0\}}\). Require \((u,t)=1\); CU supplies this in LD*.
+    - The content upper-bound prime sum needs a cutoff, such as \(p\le2W_m\); as printed it diverges.
+    - The design does not imply \(2S_2(q)^2<q\) throughout the child range. For the illustrative constants, even the small-\(q\) scan has \(\log S_2^2\sim(70/27)D^\alpha\lambda\), versus \(\log B=(3/5)D^\alpha\lambda\). Thus \(q^2\mid\Delta\) is possible. The divided lattice formula survives; the claim that no mod-\(q\) relation remains does not. Retain that local factor.
+    - LF’s exact product omits primes \(p>B\) dividing \(\Delta'\). Their factor is \(p/(p-1)\), since smooth values avoid \(p\). Their contribution is negligible but nonzero.
+    - AR’s tail inequality cannot hold for all \(s\) for a discrete law having an atom at zero. Add a lattice-atom error and truncate before applying logarithmic moments.
+
+12. **MINOR — The diagnosis at \(3/8\) is stronger than the evidence.**  
+    **Location:** §3.5.
+
+    The estimates fail to imply \(o(\eta)\) at the endpoint. That does not prove that “both are genuine second-order requirements”: DC only needs sufficiently small constants in \(A+\sqrt{AB}\le\eta/2\). Nor has the sketch established that archimedean analysis is the only remaining obstacle.
+
+    **Fix:** say that the present first-order bounds do not close the endpoint. Small constants, cancellation, or stronger asymptotics are possible routes. Retain the separate borderline SQ constraint.
+
+13. **MINOR — Experiments are mostly reported accurately, with small counting and interpretation errors.**  
+    **Location:** §§0, 6; `analyze.py:p_content`.
+
+    I reran the tests read-only: **13 passed**. Recomputed summaries agree with the reported TV, factorization and correlation figures.
+
+    There are **12 registered predictions**, P1a–P1g and P2a–P2e; two fail, so the tally is **10/12**, not 9/11. `p_content` truncates a Möbius sum and is not exact. Completing the finite calculation changes the predicted count from 5399.31 to approximately **5398.59**, and \(z\) from −0.105 to −0.095; the verdict is unchanged.
+
+    E1b uses empirical gcd-class marginals from the same samples. It supports the stated toy diagnostic, but does not independently validate LF’s saddle-point model. Calling the archimedean effect “second order” also exceeds AR’s displayed \(O(1/u)\) conclusion.
+
+    The literature discussion should mention Pascadi’s published large-modulus result, while explaining that its fixed-residue formulation does not replace Harper’s maximum-over-residues input here. I found no source establishing the exact unrestricted DW mechanism earlier. [Pascadi, Compositio Mathematica 2025](https://doi.org/10.1112/S0010437X2500747X)
+
+My subjective probabilities, allowing local repairs but no new major analytic idea:
+
+- **(a) Theorem AB holds as sketched:** **40%**.
+- **(b) DW survives the chain with the stated repairs:** **93%**.
+- **(c) Theorem 2L-DW(α) is correct under its stated conditional framework:** **70%**. Its present proof still needs the strengthened η estimate and the cell-uniform supply statements.

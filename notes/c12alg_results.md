@@ -1,6 +1,6 @@
 # c12alg: the algebraic two-point blocks of C₁/C₂ under design DW — results
 
-Agent `c12alg`, phase 27, 2026-10-24. **v1** (before the adversarial round and the critics; §10 will record them).
+Agent `c12alg`, phase 27, 2026-10-24. **v2**: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
 
 Files:
 - this note; pre-registration `notes/c12alg_prereg.md` (commit `20c882b`, code frozen there);
@@ -38,8 +38,9 @@ Precisely:
    - **A ≤ D^{−α}λ^{C}** (first order at the child scale, u_child ≍ D^α), and
    - **B ≤ D^{7α−3}λ^{C}** (first order at the parent scale, u₂ ≍ D^{3−7α}).
 
-   This uses Lemma η, proved here: W/μ₁ ≤ D^{3−7α}λ^C, so η ≥ D^{−(3−7α)}λ^{−C}. Both conditions are weaker than "A, B ≤ η/4".
-   Codex reached the same budget blind.
+   This uses Lemma η, proved here in v2 by a pointwise ratio with Hildebrand's theorem at B₂: W/μ₁ ≤ 3u₂, with **no
+   polylog loss**. v1's proof lost (log N)^{2C}, which is fatal in this window (codex FATAL #1, proof critic MAJOR).
+   Both conditions are weaker than "A, B ≤ η/4". Codex reached the same budget blind.
 2. **DW compatibility (task 2) [proved].** With w uniform among *all* integers in (W_m, 2W_m], with no primality and
    no coprimality to g₁, every step of the chain survives after explicit repairs:
    - GB with the multiplier outside;
@@ -59,7 +60,7 @@ Precisely:
      the root event q | F, the bound is q·3N^{−η₀/2}, on the sublattice x₁ ≡ λ^d x₂ (mod Δ/q). The TV bound does not
      degrade for nearly parallel pairs. That rests on two elementary lemmas: a maximal-minor bound (Lemma MM) and a
      Bezoutian bound (Lemma BZ).
-   - **Theorem AB [sketch, no gap known].** In the window, the algebraic parts of C₁ and C₂ (law of total variance with
+   - **Theorem AB [sketch; no conceptual gap found by either reviewer; several bookkeeping errors of v1 corrected].** In the window, the algebraic parts of C₁ and C₂ (law of total variance with
      respect to g) satisfy
      - Σ(w/W)|ϕ^alg| ≤ D^{−α}λ^C(1 + A^rat);
      - Σ(w/W)|σ^alg| ≤ D^{7α−3}λ^C(1 + B^rat).
@@ -98,19 +99,21 @@ Precisely:
    order or super-polylogarithmically small. The archimedean comparison (Lemma AR combined with the first-order
    short-interval asymptotics) is not: it must be done to second order. That is pc3 §7 item 4 (Saias + Lemma DS), the
    same obstacle as on the rational side.
-7. **Experiments (pre-registered; toy).** 9 of 11 predictions held. P1c failed: the registered band was miscalibrated,
+7. **Experiments (pre-registered; toy).** 10 of 12 predictions held. P1c failed: the registered band was miscalibrated,
    because the TV bound is 20–50× pessimistic. P2a failed in E2b: one instance hit the field cap, and post hoc it was
    factored correctly with a larger cap.
    - E1a: TV ≤ bound in 72/72 exact cases.
    - E1b: the DW pair law matches "lattice gcd classes × archimedean sizes". Σ J/Σ J_full = 1.0001 [0.9995, 1.0006],
      with slope 0.9999.
    - E2: 31/32 factorisations, 0 violations of the row identity, the congruence, Lemma CU (5 911 atoms) or the forced
-     residue. Content rejections are 5 392 vs 5 399 predicted (z = −0.10). DD fractions are 0.46 (ω = 2) and 0.72 (ω = 3).
+     residue. Content rejections are 5 392 vs 5 398.6 predicted (z = −0.09; v1's 5 399.3 came from a truncated Möbius
+     sum). DD fractions are 0.46 (ω = 2) and 0.72 (ω = 3).
 
-**Probabilities** (ours; codex's blind numbers in brackets):
-- Theorem AB as sketched, i.e. the algebraic side of C₁/C₂ in the window, can be written out without a new idea: 70%.
-- DW is compatible with the chain: 90% [codex 85%].
-- A rigorous fixed α < 2/5, including the rational blocks: 30–40% [codex 30%].
+**Probabilities** (ours; reviewers in brackets):
+- Theorem AB as sketched can be written out without a new idea: 55–65% [codex adversarial 40%; proof critic 65%].
+- DW is compatible with the chain: 90% [codex 93%].
+- Theorem 2L-DW(α) is a correct conditional theorem after the v2 repairs: 65% [codex 70%; proof critic 65–70%].
+- A rigorous fixed α < 2/5, including the rational blocks: 25–35% [codex blind 30%].
 
 ---
 
@@ -146,9 +149,9 @@ Fix rationals α ∈ (3/8, 2/5) and a, κ, d₀, b₂ > 0.
   σ₂ = (α/a)(4/d₀ + d₀b₂). This agrees with codex.
 - Cost constant c = max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})), with s = 2κ(1 + C_γ)
   (`params.cost_constant`; for example 5.39 at α = 7/18, a = 3/5, κ = 1/8, d₀ = 1, b₂ = 2 and C_γ = 0, an illustrative
-  value).
+  value; it violates the constraint (A1) of §5, see there).
 
-**Margins [proved at leading order; `params.margins`, 25 checks].** Every comparison used in §§2–5 holds for every
+**Margins [proved at leading order; `params.margins`, 27 checks].** Every comparison used in §§2–5 holds for every
 α ∈ (3/8, 2/5). At α = 3/8, two fail (first-order budget, √(AB)) and (SQ) is borderline. At α = 2/5, one fails (the
 parent rational-pair loss e^{O(D^{1−2α}λ²)} against the B₂-saving e^{−cD^{3−7α}/λ²}) and three are borderline
 (d log V₁ vs (μ + h) log N, the μ_opt branch, the level floor). The window is open at both ends. Among
@@ -159,34 +162,47 @@ the checks:
 - the recursion on parent values costs L_{X_F}[2/5] = L[α]^{o(1)} (needs α > 4/11);
 - IR rejection is e^{−Θ(D^{4α−1})} and content rejection 2^{2−d} = e^{−Θ(D^{1−2α})}.
 
-### 1.2 Lemma η (typical number of children) [proved]
+### 1.2 Lemma η (typical number of children) [proved; rewritten in v2]
 
-**Lemma η.** In design 2L_DW(α), W/μ₁ ≤ u₂(log N)^{C}, so η = μ₁/W ≥ D^{−(3−7α)}λ^{−C}.
+v1 combined an FM-type lower bound and a DS-type upper bound. Both lose (log N)^C = D^Cλ^C, which is fatal against the
+D^{8α−3} margins (codex #1 FATAL, proof critic MAJOR). v2 bounds the ratio pointwise, with **no polylog loss**.
+
+**Lemma η.** In design 2L_DW(α), for N ≥ N₀: W/μ₁ ≤ 3u₂, so η = μ₁/W ≥ (4κb₂/(3d₀))D^{−(3−7α)}(1 + o(1)).
 
 *Proof.*
-- **Upper bound for W.** W = Σ_{q∈(B,B₂]}Σ_{ℓ,P}Pr[Acc_ℓ(P) ∧ q ∥ F(P)]. For each (ℓ, P, g) with the rational filter,
-  Lemma DW(a)⁺ (§2.6) applies: given g, the law of F(P) over (w, c) is within TV 2N^{−η₀/2} of a mixture of uniform
-  measures on Z ∩ (translates of one interval of length ℓ_P ≥ X_F/(64d)) (b-window). Under the root coset this becomes
-  qZ ∩ (…). So
-  Pr_{w,c}[q | F(P), F(P)/q ∈ 𝒮_{B₂} | g] ≤ (1/q)ϱ₂(X_F/q)(log N)^{C} + 4qN^{−η₀/2}.
-  This uses the upper bound for B₂-smooth numbers in an interval of relative length ≥ 1/(64dq) ≥ B₂^{−2} (uprime
-  DS-U′ with modulus 1, or U1₂).
-- **Lower bound for μ₁.** The one-point lower bound (FM-U′ under DW, §2.7) gives
-  μ₁ ≥ Σ_{ℓ,P}Pr_g[Rat_ℓ(P)]ϱ₂(X_F)(log N)^{−C}.
-- **The ratio.** W/μ₁ ≤ (log N)^{2C}Σ_{B<q≤B₂}q^{−1}ϱ₂(X_F/q)/ϱ₂(X_F).
-  - HT Theorem 3 gives ϱ₂(x/q)/ϱ₂(x) ≤ 2q^{1−β₂} for q ≤ B₂, with β₂ = β(X_F, B₂).
-  - So the ratio is ≤ (log N)^{2C}·2Σ_{q≤B₂}q^{−β₂} ≤ (log N)^{2C}·4B₂^{1−β₂}/((1 − β₂)log B₂).
-  - At the saddle point, (1 − β₂)log B₂ = log(u₂ log u₂) + O(1) ≥ 1, so B₂^{1−β₂} ≍ u₂ log u₂.
-- The error terms qN^{−η₀/3} are negligible because ϱ₂(X_F) = L^{−o(1)}. ∎
+- **Reduction to a pointwise ratio.** W = Σ_{ℓ,P}E[m(P)1_{Acc_ℓ(P)}] and μ₁ = Σ_{ℓ,P}E[1_{Acc_ℓ(P)}]. The rational
+  part of Acc is a function of g. A ratio of sums is at most the largest ratio of terms, so
+  W/μ₁ ≤ sup_{(ℓ,P,g) filtered} E_{w,c}[m(P)1_{𝒮_{B₂}}(F(P)) | g]/E_{w,c}[1_{Acc}(P) | g].
+- **Denominator.** E[1_Acc | g] ≥ E[1_{𝒮_{B₂}} | g](1 − L^{−a+o(1)}). This uses Lemma SQF's subtraction (log N)²/B
+  against ϱ₂ = L^{−o(1)}.
+- **The model law.** By Lemma DW(a)⁺, given g, F(P) is within TV 2N^{−η₀/2} of a mixture of uniform laws on
+  I = Z ∩ (s + [0, ℓ_P)), with ℓ_P ≥ X_F/(64d) (b-window and the parent filter). These TV terms are ≤ N^{−η₀/3}
+  relative to ϱ₂ = L^{−o(1)}. So it suffices to show, for every such interval I ⊂ [−X_F, X_F],
+  R(I) := Σ_{B<q≤B₂}Ψ(I/q, B₂)/Ψ(I, B₂) ≤ 3u₂
+  (n ∈ I with q | n is B₂-smooth iff n/q is).
+- **Splitting I.** Split I into the part with |n| < X_F/K₁, K₁ := D⁴, and at most 2·64d·K₁ pieces J of relative length
+  ≥ 1/(64dK₁) at scales x ∈ [X_F/K₁, X_F].
+- **The pieces J.** For each J and q ≤ B₂, Hildebrand's short-interval theorem at y = B₂ gives
+  Ψ(J/q, B₂) = (|J|/q)ρ(u_x − v_q)(1 + O(1/u₂)) and Ψ(J, B₂) = |J|ρ(u_x)(1 + O(1/u₂)), where v_q = log q/log B₂ ≤ 1. The
+  hypotheses hold: B₂ ≥ exp((log log x)^{5/3+ε}), and relative length 1/(64dK₁) ≥ B₂^{−5/12}.
+- **Dickman.** −ρ′/ρ is increasing, and equals ξ(u)(1 + O(1/u)) at u (de Bruijn). So
+  ρ(u − v)/ρ(u) ≤ e^{vξ(u)(1+O(1/u))} for v ≤ 1. Hence
+  Σ_q(1/q)ρ(u_x − v_q)/ρ(u_x) ≤ (1 + o(1))∫_{log B}^{log B₂}e^{(ξ/log B₂)t}dt/t + O(1) ≤ (1 + o(1))e^{ξ}/ξ + O(1)
+  ≤ (1 + o(1))u_x, using e^ξ = 1 + uξ. And u_x ≤ u₂.
+- **The part |n| < X_F/K₁.** Its Ψ-mass relative to Ψ(I) is ≤ 64dK₁·K₁^{1−β₂}/K₁·C ≤ CdK₁^{−3/4}. On it m ≤ m̄ ≍ D^{2−4α}, so
+  it contributes ≤ CdD^{−3}D^{2−4α} = o(1).
+- **Total.** R(I) ≤ (1 + o(1))u₂ + o(1) ≤ 3u₂. ∎
 
-The deterministic cap m̄ ≍ D^{2−4α} would not suffice: D^{−α} ≪ D^{−(2−4α)} fails for α < 2/5 (codex).
+The deterministic cap m̄ ≍ D^{2−4α} would not suffice: D^{−α} ≪ D^{−(2−4α)} fails for α < 2/5 (codex). The input
+"Hildebrand at B₂" is added to the dependency list.
 
 ### 1.3 Prop PB (precision budget) [proved]
 
 **Proposition PB.** Assume A := Σ_𝔮(w_𝔮/W)ϕ_𝔮 ≤ D^{−α}λ^{C_A} and B := Σ_𝔮(w_𝔮/W)σ_𝔮² ≤ D^{7α−3}λ^{C_B}, cell by cell
 (Prop DC_e). Then, for N ≥ N₀(α, C_A, C_B), the dead-incidence mass is ≤ μ₁/2.
 
-*Proof.* By Prop DC/DC_e and Cauchy–Schwarz (pc3 Cor DC), the dead mass is ≤ W(A + √(AB)). With Lemma η:
+*Proof.* By Prop DC/DC_e and Cauchy–Schwarz (pc3 Cor DC), the dead mass is ≤ W(A + √(AB)). With Lemma η
+(η ≥ cD^{−(3−7α)}, with no λ- or log-loss):
 - A/η ≤ D^{−α+(3−7α)}λ^{C} → 0, because α > 3/8;
 - √(AB)/η ≤ D^{(3−8α)/2}λ^{C} → 0, because (α + 3 − 7α)/2 − (3 − 7α) = (8α − 3)/2 > 0.
 
@@ -255,7 +271,7 @@ conclusion. E2 checked Lemma CU and the forced residue on 5 911 atoms: 0 violati
 
 ### 2.3 Lemma RE (root event is uniform in g) [proved]
 
-**Lemma RE.** For a prime q ∤ N with q ≤ B₂ and any r mod q: Pr_{w,c}[q | F(r, 1) | g] = 1/q + O(1/H + q/W_m), uniformly
+**Lemma RE.** For a prime q ∤ N with q ≤ B₂ and any r mod q: Pr_{w,c}[q | F(r, 1) | g] = 1/q + O(1/H + 1/W_m), uniformly
 in g.
 *Proof.*
 - If q ∤ G(r, 1): F(r, 1) = wF̂_N(r, 1) + G(r, 1)R_c(r, 1), and R_c(r, 1) = Σ c_ir^{d−1−i} has coefficient 1 at c_{d−1}.
@@ -272,14 +288,14 @@ If q | G(r, 1), every primitive P′ ∈ Λ_𝔮 has q | G(P′) and is not Good
 
 **Lemma CT.** For a prime p ∤ N, p divides the content of F iff p | w and p | c_i for every i. In particular the content
 e (coprime to N) divides w, and
-Pr_{w,c}[content > 1, coprime to N] ≤ Σ_p (1/p + 1/W_m)(1/p + 1/(2H + 1))^d ≤ 2^{2−d}.
+Pr_{w,c}[content > 1, coprime to N] ≤ Σ_{p≤2W_m}(1/p + 1/W_m)(1/p + 1/(2H + 1))^d ≤ 2^{2−d}. The sum is over p | w, so
+p ≤ 2W_m. For p > 2H + 1, "p | c" means c = 0, of total probability ≤ (2H + 1)^{−d}.
 *Proof.*
-- If p ∤ w: wF̂_N vanishes at (g₀ : g₁) mod p only if p | wN, so F ≢ G·(anything) ≡ 0. Hence F ≢ 0 (mod p).
+- If F ≡ 0 (mod p), then wN = F(g₀, g₁) ≡ 0, so p | w (as p ∤ N).
 - If p | w: F ≡ G·R_c, and G ≢ 0 (mod p), so F ≡ 0 iff R_c ≡ 0, i.e. iff p | c for every coordinate. ∎
 
 SAMPLE_FIELD-DW: gcd-check the content e against N (a proper divisor is a factor exit, since e ≤ |f_d| < N). If e > 1,
-reject. This replaces "content ∈ {1, w}; reject if w". E2 observed 5 392 content rejections against 5 399.3 predicted by
-the exact Möbius formula (z = −0.10). *This probability is not N^{−Ω(η₀)}* (codex). Rejection is therefore used
+reject. This replaces "content ∈ {1, w}; reject if w". E2 observed 5 392 content rejections against 5 398.6 predicted (z = −0.09). *This probability is not N^{−Ω(η₀)}* (codex). Rejection is therefore used
 **globally**, as Lemma reject is used in select-U, and all moment statements (DC, C₁, C₂, TV) are made under the raw law.
 
 **Lemma IR-DW.** Let 𝒫_IR be the primes in (r₀(d), ½ log H], and 𝒫_w := {r ∈ 𝒫_IR : r | w}.
@@ -304,8 +320,10 @@ this is e^{−Θ(D^{4α−1})} + e^{−Θ(D^{1−2α})} ≤ γ₂/4.
 
 ### 2.5 Lemma W-DW (the second moment's multiplier step) [proved]
 
-**Lemma W-DW.** For 1 ≤ t ≤ W_m and every Φ₀: Z/t → [0, ∞), E_w Φ₀(wu mod t) ≤ (2/t)Σ_{c mod t}Φ₀(c), for every u.
-*Proof.* w is uniform on W_m consecutive integers, so each class mod t has probability ≤ (⌊W_m/t⌋ + 1)/W_m ≤ 2/t. ∎
+**Lemma W-DW.** For 1 ≤ t ≤ W_m and every Φ₀: Z/t → [0, ∞), E_w Φ₀(wu mod t) ≤ (2/t)Σ_{c mod t}Φ₀(c), for every u with
+gcd(u, t) = 1. (v1 said "every u", which is false for u ≡ 0; proof critic. In LD*, u = F̂_N(P) is a unit by Lemma CU.)
+*Proof.* w ↦ wu permutes Z/t. And w is uniform on W_m consecutive integers, so each class mod t has probability
+≤ (⌊W_m/t⌋ + 1)/W_m ≤ 2/t. ∎
 
 *Use in LD*-U′ (answering codex OPEN (f)).* The steps of [pp] Thm LD / lv5unif LD*-U are:
 - Step 3: 𝔮(P) ≤ 𝔔₀(t, |Δ|; r₀) with r₀ = F(P) mod t = wu (Lemma CU).
@@ -336,6 +354,8 @@ under DW, with a better constant.
   over a complete system mod t, the classes run over Z/t, so the union is uniform on Z ∩ (translate of [0, ℓ_P)).
 - The archimedean spread of wF̂_N(P) over w ∈ (W_m, 2W_m] is ≤ 2W_m(d + 1)d2^dM|P|^d (Lemma GB-DW), which is
   ≤ 4d²2^dW_mN^{η₀/4}·ℓ_P/(2H + 1). This costs that much TV, and the w-classes cost 2t/W_m.
+- If ab = 0 (P = (±1, 0) or (0, ±1)), smooth1 does not apply, but R_c(P) = ±c₀ or ±c_{d−1} is itself uniform on an
+  interval of length 2H + 1. The same conclusion holds.
 - This is pc3's DW(a) with explicit constants. Note the layer-cake intervals of smooth1 can be short; the
   one-long-factor decomposition above avoids "small layers". The q-coset statement is the one-point case of
   Cor TP-q below. ∎
@@ -354,6 +374,12 @@ uprime's §§3–6 hold in design 2L_DW(α), with these replacements (and only t
   D^{3−7α} → ∞. The class (B)/(C) ratios are N^{−Θ(h)}B^{O(1)}.
 - **CS′, the child scans, recursion and IR.** Unchanged in form, with DW's envelopes and Lemma IR-DW. Lemma OS, W and
   T_rec are verbatim.
+- **Range restatement (proof critic).** uprime's U1₂, DS-U′ and CS′ are stated for log z/log B₂ ≥ D^{1/4}. In the window
+  u₂ ≍ D^{3−7α}, which is < D^{1/4} once α > 11/28. Their proofs use only u₂ → ∞, i.e. (log log N)⁴ ≤ u₂, together with
+  HT Theorems 1–3, CEP and Rankin. They are restated with the hypothesis log z/log B₂ ≥ u₂/2. This is a routine
+  restatement, not re-proved line by line here.
+
+"These replacements and only these" in v1 was an overclaim: the range restatement is a further, routine change.
 
 ### 2.8 POSTPROCESS and LV6-U under DW [proved]
 
@@ -488,17 +514,20 @@ nearly parallel pairs included.
 ### 3.3 Theorem AB (the algebraic blocks in the window) [sketch, no gap known]
 
 **Theorem AB.** In design 2L_DW(α), 3/8 < α < 2/5, there are constants C and N₀ such that, cell by cell:
-- (i) Σ_𝔮(w_𝔮/W)|ϕ^alg_𝔮| ≤ D^{−α}λ^C(1 + Σ_𝔮(w_𝔮/W)ϕ^rat_𝔮);
+- (i) Σ_{𝔮: s(𝔮)≤T}(w_𝔮/W)|ϕ^alg_𝔮| ≤ D^{−α}λ^C(1 + Σ_{𝔮: s(𝔮)≤T}(w_𝔮/W)ϕ^rat_𝔮);
 - (ii) Σ_𝔮(w_𝔮/W)|σ^alg_𝔮| ≤ D^{7α−3}λ^C(1 + Σ_𝔮(w_𝔮/W)σ^rat_𝔮);
 - (iii) Σ_{𝔮: s(𝔮) > T}(w_𝔮/W)ϕ_𝔮 ≤ D^{−α}, where s(𝔮) = |e₂|/|e₁| is the skewness of the reduced basis and
-  T := Ξ^{3}D^αλ^{C}.
+  T := Ξ³(log N)^{C}D^α.
 
-Here Ξ := exp(C₁(D^{3α−1} + D^{1−2α})λ²) collects every L^{o(1)} loss used below:
+Here Ξ := exp(C₁(D^{3α−1} + D^{1−2α} + D^{2α−1/2})λ²) collects every L^{o(1)} loss used below:
 - the large-modulus loss of Lemma PU, e^{O(D^{3α−1}λ)};
 - the spread of ϱ over the physical sizes |P′| in a box, e^{O(D^{1−2α}λ)}: d·log(S₂s) ≍ D^{1−α}λ, times
-  1 − β ≍ D^{−α}.
+  1 − β ≍ D^{−α};
+- **(v2, proof critic)** the spread over |G(P′)| down to the filter threshold M|P′|N^{−η₀/4}: e^{O((1−β)η₀ log N)} =
+  e^{O(D^{2α−1/2}λ)}. This is the dominant term in the window.
 
-Since 1 − 2α < α and 3α − 1 < α (α > 1/3), Ξ^{O(1)} ≤ B^{1/3} and Ξ^{O(1)} ≪ e^{cD^α/λ²}.
+Since max(3α − 1, 1 − 2α, 2α − 1/2) < α for 1/3 < α < 1/2, Ξ^{O(1)} ≤ B^{1/3} and Ξ^{O(1)} ≪ e^{cD^α/λ²}
+(`params.py` checks this).
 
 The proof assembles the lemmas below. Every input is a published theorem, an internal lemma, or a lemma proved in this
 section. It is a sketch because the grid/step bookkeeping of Lemmas FB and PP is not written to the last constant.
@@ -516,7 +545,11 @@ Then:
 - For a family of pairs with moduli Δ′ ≤ Q ≤ √Ψ and multiplicity ≤ μ_max per value of Δ′, Harper's Theorem 1
   (BV for smooth numbers, max over residues) at each grid point gives
   Σ_{pairs}#·ℰ/(#{x₁ ∈ 𝒮}) ≤ 2μ_max|𝒳_K|[Ψ(x)(e^{−cu/log²(u+1)} + B^{−c}) + Q√Ψ(x)(log x)^{7/2}].
-- Non-reduced classes reduce to modulus Δ′/δ at x/δ, as in pc3 §4.1; Σ_δ δ^{−β} < ∞.
+- Non-reduced classes reduce to modulus Δ′/δ at endpoint t/δ, with the multiplicity in Δ″ = Δ′/δ inherited from Δ′.
+  Summing Harper's Theorem 1 at (t/δ, Δ″ ≤ Q/δ) over B-smooth δ ≤ Q, with Ψ(t/δ) ≪ δ^{−β}Ψ(t) (dBT 2.4(i)) and
+  Σ_{δ≤Q}δ^{−β} ≤ Q^{1−β}(1 + log Q) = e^{O(λ)} (as (1 − β)log Q = O(λ) for Q = L[α]^{O(1)}), costs only a polylog.
+  The BV saving absorbs it. v1's "Σ_δ δ^{−β} < ∞" was false for β < 1 (codex #3, proof critic). For parents
+  Q = L[1 − α] and Q^{1−β₂} ≤ Ξ₂.
 
 *Proof.* Expand ν(both) = (1/#)Σ_{x₁∈𝒮}Ψ(I(x₁); Δ′, κ^{−1}x₁), and bound |E| at the endpoints of I(x₁) by the nearest
 grid points plus a DS term. ∎
@@ -530,6 +563,8 @@ on the coordinates, and its multiplicity in a dyadic coordinate class (|(i, j)| 
 p^{−β}, restricted to p ≤ B. Let π₀(δ) := φ(Δ′/δ)/Δ′. Then:
 - LF := Σ_δ π*₁(δ)π*₂(δ)/π₀(δ) = ∏_{p|Δ′, p≤B}(1 + (p^{1−β₁} − 1)(p^{1−β₂} − 1)/(p − 1)) for squarefree Δ′, with the
   analogous geometric factors otherwise;
+- primes p | Δ′ with p > B contribute the factor p/(p − 1), since smooth values avoid p (codex). Their product is
+  ≤ e^{ω(Δ′)/B};
 - 1 ≤ LF ≤ 1 + D^{−2α}λ^C, using Δ′ ≤ L[α]^{O(1)}: every p | Δ′ has (1 − β)log p = O(λ), and p ≤ (log N)^C has
   p^{1−β} − 1 = O(D^{−α}λ²).
 
@@ -539,13 +574,15 @@ two-variable form). ∎ (`test_local_factor_product_formula`.)
 **Lemma AR (archimedean factor) [proved].** Let ν be a mixture of the measures of Lemma TP-W (or Cor TP-q). Then:
 - each marginal satisfies ν(|X_i| ≤ e^{−s}S_i) ≤ 8de^{−s}, where S_i := max|X_i|. This is Lemma MM's column claim:
   each component's marginal density is ≤ 2/((2H + 1)|G_i||P_i|^{d−1}).
-- Put Z_i := ϱ(|X_i|), ϱ(t) := Ψ(t, B)/t. Then |E[Z₁Z₂]/(EZ₁·EZ₂) − 1| ≤ C((1 − β)²(log d)² + 1/u).
+- Put Z_i := ϱ(|X_i|), ϱ(t) := Ψ(t, B)/t. Then |E[Z₁Z₂]/(EZ₁·EZ₂) − 1| ≤ C((1 − β)²(log d)² + 1/u²). This is second
+  order: the 1/u errors of HT enter only through Var(Z_i), not linearly (proof critic). The atom at X_i = 0 has mass
+  ≤ 2/((2H + 1)|G_i||P_i|^{d−1}) and is removed first (codex).
 
 *Proof.*
 - HT Theorem 3 gives ϱ(S/c) = c^{1−β}ϱ(S)(1 + O(1/u)) for 1 ≤ c ≤ B; iterate for c ≤ B^{C}, and use
   de la Bretèche–Tenenbaum Thm 2.4(i) beyond.
 - So Z_i = ϱ(S_i)Y_i(1 + O(1/u)) with Y_i := (S_i/|X_i|)^{1−β}.
-- Cov(Y₁, Y₂) ≤ √(VarY₁VarY₂), and VarY ≤ E[(Y − 1)²] ≤ C(1 − β)²E[log²(S/|X|)e^{2(1−β)log(S/|X|)}] ≤ C(1 − β)²(log 8d)²,
+- Cov(Z₁, Z₂) ≤ √(VarZ₁·VarZ₂), and VarZ_i/(EZ_i)² ≤ C(VarY_i + 1/u²). Moreover VarY ≤ E[(Y − 1)²] ≤ C(1 − β)²E[log²(S/|X|)e^{2(1−β)log(S/|X|)}] ≤ C(1 − β)²(log 8d)²,
   by the exponential tail. ∎
 
 **Lemma PP (principal part ≈ product of marginals, first order) [sketch].** For a non-thin pair (sin∠(P₁, P₂) ≥ 8d/K₀,
@@ -561,7 +598,22 @@ K₀ ≤ B^{1/3}) and every filtered g:
   Ψ_m(I/δ) = (|I|/δ)ϱ(x/δ)∏_{p|m,p≤B}(1 − p^{−β})(1 + O(λ^C/u)).
 - The Möbius error sum is ≤ (λ^C/u) × the main term, since ∏_{p|m}(1 + p^{−β})/(1 − p^{−β}) ≤ λ^C for m ≤ L[α]^{O(1)}.
 - Summing over x₁ ∈ 𝒮 ∩ J in each gcd class gives the same structure at the x₁ scale.
-- The result factorises as (Σ_δ π*₁π*₂/π₀) × (E_ν[ϱϱ]/(E_νϱ E_νϱ)) × (1 + O(λ^C/u)). ∎
+- The result factorises as (Σ_δ π*₁π*₂/π₀) × (E_ν[ϱϱ]/(E_νϱ E_νϱ)) × (1 + O(λ^C/u)).
+- **Short fibres and corners (v2; codex #4).** Fibres of a parallelogram shrink to 0 at its vertices. Let
+  ε := D^{−α}/(Ξ(log N)^C). The x₁ whose fibre is shorter than ε × (maximal fibre) carry ν-mass ≤ 4ε. Their
+  smooth-weighted contribution is bounded by [pp] Lemma DS on fibres enlarged to length max(|I|, XB^{−C₀}) (the
+  enlargement costs ≤ κB^{−C₀}) and on the x₁-interval. This gives ≤ (4ε + κB^{−C₀})(log N)^CΞ × A₁A₂ ≤ D^{−α}A₁A₂.
+  Every remaining fibre has relative length ≥ ε/κ ≥ 1/(K₀D^α(log N)^C) ≥ B^{−5/12}, and moves by relative ≤ K₀/(εK)
+  across a grid cell; K is chosen accordingly.
+- **Parent version (v2; codex #5, proof critic).** At y = B₂ the moduli reach L[1 − α] ≫ B₂^{O(1)}, so HT cannot be
+  iterated over all divisors.
+  - Truncate gcd classes δ and Möbius divisors e at E := B₂^{1/2}, i.e. v ≤ 1/2, where
+    ρ(u − v)/ρ(u) = e^{vξ}(1 + O(1/u₂)).
+  - The tail weight is ≤ Σ_{δ|Δ, δ>E}δ^{−β₂} ≤ E^{−1/4}∏_{p|Δ}(1 + 2p^{−1/2}) ≤ B₂^{−1/8}e^{O(D^{(1−α)/2}λ^{1/2})}, which is
+    negligible since (1 − α)/2 < 4α − 1.
+  - The same bound handles e: Möbius over e | m, e > E, has weight ≤ Σ e^{−β₂}e^{O(v_e²/u₂)}, and
+    log e ≤ log Δ ≤ D^{1−α}λ ≪ u₂log²B₂.
+  - The quadratic error v²/u₂ that codex flagged arises only beyond E, where it is killed by e^{−β₂log e}. ∎
 
 *Why first order suffices and the κ-amplification disappears.* Codex (c12alg_1 §1) warned that with Saias-type
 endpoint differences the archimedean error grows like 𝒦²/u, with a 1/𝒦 thin tail, which balances only at u^{−1/3}.
@@ -570,23 +622,35 @@ length ≥ y^{−5/12}. So the per-pair relative error is O(λ^C/u) **uniformly 
 BV error terms are amplified by K₀ (Lemma FB), and those carry the super-polylog saving. This is codex's "sketch:
 Hildebrand could replace Saias", carried out.
 
-**Lemma PU (pair upper bounds with loss Ξ) [proved].** For every label, every filtered g and all P₁ ≠ P₂ in the box:
-- (alg) A₁₂(g) ≤ Ξ(log N)^C ϱ(X₁/q)ϱ(X₂/q);
+**Lemma PU (pair upper bounds with loss Ξ) [proved; v2 repairs].** For every label, every filtered g and all P₁ ≠ P₂
+in the box:
+- (alg) A₁₂(g) ≤ Ξ(log N)^C ϱ(S₁(g)/q)ϱ(S₂(g)/q), with the g-dependent scales S_i(g) := H|G_g(P_i)||P_i|^{d−1};
 - (rat) Pr_g[Rat₁ ∧ Rat₂] ≤ Ξ(log N)^C ϱ(M|P₁|)ϱ(M|P₂|).
 
-For parents the same holds with Ξ₂Ξ_r := e^{O(D^{2−5α}λ + D^{1−2α}λ)} and ϱ at B₂ and B.
+For parents the same holds with Ξ₂Ξ_r := e^{O(D^{2−5α}λ + D^{1−2α}λ²)} and ϱ at B₂ and B.
 
 *Proof.* [pp] Lemma DS, generalised to large moduli and long progressions: count n = d₁m with d₁ ∈ (D/B, D] smooth, where
-D := min(#terms, X/B^{C₀}). This gives (2A/Δ)·8log₂(2B)·ϱ(D/B), and ϱ(D/B) ≤ ϱ(X)(XB/D)^{1−β}(log N)^C by HT
-Theorem 3 iterated (the number of steps is ≤ log(X/D)/log B, each costing 1 + O(1/u)).
-- (alg) On a fibre of the Cor TP-q model: modulus Δ′, length ≥ X/κ with κ ≤ 16dqS₂⁴. So (XB/D)^{1−β} ≤ (BqS₂⁴)^{1−β} ≤ Ξ.
+D := min(#terms, X/B^{C₀}).
+- Reduce first by e = gcd(residue, modulus), as in DS. Then n/e has the lower endpoint X/(eB^{C₀}), and D/B ≥
+  X/(B₂^{C}L[α]^{C}) stays in the range of Lemma U1.
+- This gives (2A/Δ)·8log₂(2B)·ϱ(D/B), and ϱ(D/B) ≤ ϱ(X)(XB/D)^{1−β}(log N)^C by HT Theorem 3 iterated. The number of
+  steps is ≤ log(X/D)/log B, each costing 1 + O(1/u).
+- (alg) On a fibre of the Cor TP-q model with modulus Δ′:
+  - every fibre shorter than X·B₂^{−3} is first enlarged to that length. The total enlargement is ≤ κB₂^{−3} ≤ 1 relative
+    to the area, since κ ≤ 16dqS₂⁴ ≤ B₂²;
+  - then (XB/D)^{1−β} ≤ (BB₂³S₂²)^{1−β} ≤ Ξ;
+  - the x₁-count uses DS on the projection, an interval of length ≥ X₁/(4d);
+  - max fibre ≤ 2 × average fibre.
 - (rat) On the g-line through a fixed G(P₁): modulus qΔ′, M/|P₁| terms. Here (XB/D)^{1−β} ≤ (BV₂²)^{1−β} ≤ Ξ.
-- Here Ξ = exp((1 − β)log(B₂^{O(1)}L[α]^{O(1)})) and (1 − β)log B₂ ≍ (λ/(aD^αλ))b₂D^{4α−1}λ. ∎
+- Here Ξ ≥ exp((1 − β)log(B₂^{O(1)}L[α]^{O(1)})), and (1 − β)log B₂ ≍ (λ/(aD^αλ))b₂D^{4α−1}λ.
+- *Scales (proof critic).* The algebraic scale is S_i(g), not the envelope. Statements (iii) and the assembly use a
+  dyadic split in |G_i|/(M|P_i|) ≥ N^{−η₀/4}. The dyadic sum Σ_τ τ^{4(1−β)−1} converges, and the max/typical ratio is in
+  Ξ's third term. ∎
 
-**Lemma TH (thin pairs).** In a box of skewness s, the fraction of pairs with sin∠ < 8d/K₀ is ≤ 25·8d·s/K₀ + 3/S₂².
+**Lemma TH (thin pairs).** In a box of skewness s, the fraction of pairs with sin∠ < 8d/K₀ is ≤ 30·8d·s/K₀ + 3/S₂².
 *Proof.*
 - |P′||P″| ≤ (8/√3)sqS₂², so sin∠ = q|Δ′|/(|P′||P″|) ≥ √3|Δ′|/(8sS₂²).
-- The number of coordinate pairs with |Δ′| = k is ≤ Σ_{(i,j)}2(2S₂/|(i, j)|_∞ + 2) ≤ 40S₂² for each k.
+- The number of coordinate pairs with |Δ′| = k is ≤ Σ_{(i,j)}2(2S₂/|(i, j)|_∞ + 2) ≤ 48S₂² for each k.
 - Divide by ≥ S₂⁴ pairs. ∎
 
 **Lemma WD (weight domination) [proved].** For each prime q ∈ (B, B₂] and all r, s mod q: w_{(q,r)} ≤ (log N)^C w_{(q,s)}.
@@ -598,7 +662,11 @@ In particular the residues r with skewness s(q, r) > T carry a weight fraction �
   The b-window keeps X_F(P) within a factor 2^{O(d)} of X_F, which moves ϱ₂ by 1 + o(1).
 - Rational factor: by FIB and DS it is ≍_{polylog} ϱ(X_r)/ℓ.
 - Count: #{P ∈ 𝒫 : a ≡ rb (q)} = #𝒫/q·(1 + O(qd log V₁/V₁)), uniformly in r (V₁ ≫ q, b prime ≫ q).
-- The residues with λ₁(Λ_{(q,r)})² < (2/√3)q/T number ≤ (6/π)q/T + 1. ∎
+- The residues with λ₁(Λ_{(q,r)})² < (2/√3)q/T number ≤ (6/π)q/T + 1.
+- *Per cell (v2; proof critic, codex #9).* Cells are functions of g alone. Within a cell e, the parent filter holds for
+  P in a union R_e of angular sectors of size ≍ V₁. Instead of a uniform pointwise comparison over P (false for P nearly
+  parallel to the cell's direction), sum over P ∈ R_e ∩ 𝒫 with a ≡ rb (q). This count is #(R_e ∩ 𝒫)/q·(1 + O(q d log V₁/V₁)),
+  uniformly in r, because R_e is a union of sectors of radius V₁ ≫ q. So WD holds cell by cell. ∎
 
 Codex flagged weight domination as OPEN and asked for it per prime window; DW(a)⁺ supplies the pointwise algebraic upper
 bound it lacked.
@@ -606,19 +674,22 @@ bound it lacked.
 ### 3.4 Proof of Theorem AB (assembly) [sketch]
 
 Fix α and choose the auxiliary parameters:
-- T := Ξ³D^αλ^C (skewness threshold);
-- K₀ := Ξ⁶D^{2α}λ^{C} ≤ B^{1/3} (thin threshold);
-- K := K₀D^αλ^C (grid).
+- T := Ξ³(log N)^{C}D^α (skewness threshold);
+- K₀ := 240d·Ξ⁴T(log N)^{C}D^α ≤ B^{1/3} (thin threshold; v2: v1's choice left a factor d(log N)^C, codex #2, proof
+  critic);
+- K := K₀D^α(log N)^{C_DS}/ε (grid; ε as in Lemma PP).
 
 Within a box, the largest and the typical values of A₁A₂ (and of ϱϱ) differ by ≤ Ξ (Ξ's second term). Every comparison
 below is made after paying this factor.
 
-**(iii) Skewed labels.** For every label, Lemma PU gives E[N_𝔮² | R] ≤ m + Σ_{pairs}Ξ²(log N)^Cϱϱϱϱ ≤ m + Ξ²(log N)^{C}m²,
-using m ≥ Σϱϱ/(log N)^C (§4). So ϕ_𝔮 ≤ Ξ²(log N)^C. Lemma WD then gives Σ_{s>T}(w/W)ϕ ≤ Ξ²(log N)^{2C}/T ≤ D^{−α}.
+**(iii) Skewed labels.** For every label, Lemma PU gives
+E[N_𝔮² | R] ≤ m + Σ_{pairs}Ξ²(log N)^Cϱϱϱϱ ≤ m + Ξ³(log N)^{C}m²,
+using m ≥ Σϱϱ/(log N)^C (§4) and the max/typical factor. So ϕ_𝔮 ≤ Ξ³(log N)^C. Lemma WD (per cell) then gives
+Σ_{s>T}(w/W)ϕ ≤ Ξ³(log N)^{2C}/T ≤ D^{−α}.
 
 **(i) Labels with s ≤ T.** For each g, split the pairs:
-- *Thin pairs (Lemma TH).* Fraction ≤ 200dT/K₀ + 3/S₂². With Lemma PU and the max/typical factor, their contribution to
-  |ϕ^alg| is ≤ (200dT/K₀)Ξ³(log N)^C ≤ D^{−α}.
+- *Thin pairs (Lemma TH).* Fraction ≤ 240dT/K₀ + 3/S₂². With Lemma PU and the max/typical factor, their contribution to
+  |ϕ^alg| is ≤ (240dT/K₀)Ξ³(log N)^C ≤ D^{−α}/Ξ.
 - *Non-thin pairs.* A₁₂ − A₁A₂ = (𝔐 − A₁A₂) + (A₁₂ − 𝔐), up to TV errors 7qN^{−η₀/2}.
   - Lemma PP: |𝔐 − A₁A₂| ≤ (λ^C/u)A₁A₂ + O(ℰ).
   - Summed against Rat₁Rat₂ and divided by m², the first term gives ≤ (λ^C/u)E[m(g)²]/m² = (λ^C/u)(1 + ϕ^rat_𝔮).
@@ -634,6 +705,12 @@ using m ≥ Σϱϱ/(log N)^C (§4). So ϕ_𝔮 ≤ Ξ²(log N)^C. Lemma WD then 
 
 **(ii) Parents.** The same steps, with these differences:
 - the pairs are (ℓ₁, P₁), (ℓ₂, P₂), P_i ∈ 𝒫 ∩ Λ_𝔮, and P₁ ≠ P₂ automatically (G(P)/ℓ₁ smooth excludes a second ℓ₂ > B);
+- **same-ℓ pairs (v2; codex #7).** If ℓ₁ = ℓ₂ = ℓ, then ℓ | det(P₁, P₂), and the rational weight is ≍ 1/ℓ rather than
+  1/ℓ². These pairs are not averaged by BV. Their total contribution to E[Z²] is bounded by Lemma PU: per ℓ, there are
+  ≤ #(𝒫 ∩ Λ_𝔮)²/ℓ·(1 + o(1)) pairs of weight ≤ Ξ₂Ξ_r(log N)^C ϱ⁴/ℓ. Summed over ℓ ∈ J this is ≤ Ξ₂Ξ_r(log N)^C z²/π_J.
+  That is negligible, since π_J = L[1 − α]^{1−o(1)};
+- for ℓ₁ ≠ ℓ₂, a pair with ℓ₁ | det has P₂ ∈ Λ_{ℓ₁}(g), hence ℓ₁ | G(P₂) = ℓ₂·(B-smooth), which is impossible. So
+  the rational weight of the different-ℓ class is ≍ 1/(ℓ₁ℓ₂) uniformly, and BV is applied within that class;
 - the modulus is Δ₁₂/q ≤ 2V₁²/q = L[1 − α] ≤ √Ψ(X_F/q, B₂), with multiplicity ≤ 8#(𝒫 ∩ Λ_𝔮) per value (b-window: ≤ 4
   partners per line);
 - smoothness is over B₂ with u₂ ≍ D^{3−7α};
@@ -657,10 +734,14 @@ At α = 3/8:
   - (b) a cancellation between the first-order terms of 𝔐 and A₁A₂. Both are expanded around the same saddle point, so
     the leading 1/u terms of Hildebrand's error may cancel in the ratio. We did not prove this. It is pc3 §4.3(ii) and
     §7 item 4.
-- **√(AB) ≪ η fails.** At 3/8 one needs B ≲ η²/A. Both are then genuine second-order requirements.
+- **√(AB) ≪ η fails** with the present first-order bounds. At 3/8, Prop DC needs A + √(AB) ≤ η/2, a statement
+  about constants.
 
-So the algebraic side toward 3/8 reduces to the same archimedean second-order estimate as the rational side, and to
-nothing else we can see.
+So **the present first-order bounds do not close the endpoint** (codex #12). Possible routes are small constants,
+cancellation between the first-order terms of 𝔐 and A₁A₂, or second-order (Saias-type) archimedean asymptotics.
+Lemma AR is itself second order (v2), so the obstruction on the algebraic side is the first-order error of the
+Hildebrand/HT counting step in Lemma PP. That is the same kind of estimate as pc3 §7 item 4. We have not shown it is
+the only obstacle at 3/8. (SQ) is also borderline there, as in uprime.
 
 ---
 
@@ -679,8 +760,15 @@ X_{F2} = (2d + 1)MHV₂^d/Q₂, H = H_DW.
 2. **Rational factor.** Fix a primitive P′ ∈ Λ_𝔮. As in [pp] lem:fibres, g ↦ G_g(P′) has fibres g* + jP′ of length
    ≥ M/(8|P′|) ≥ N^{η₀/2} inside the cell (|P′| ≤ V₂ ≪ MN^{−η₀}D^{−A₀}).
    - Möbius over e | G(P′) gives the primitive points with loss φ(n)/n ≥ 1/(C log log N).
-   - The filter |G(P′)| ≥ M|P′|N^{−η₀/4} removes ≤ N^{−η₀/4} of the mass, except for P′ within angle D^{−A₀} of the
-     cell's direction. That is a fraction ≤ CD^{−A₀} of the box, and those points are discarded.
+   - (v2; codex #8, proof critic) **No angular discard.** v1 discarded points within angle D^{−A₀} of the cell's
+     direction. That set can be almost the whole box for skewed labels (codex's example r = −1).
+     - For each fixed P′, G_g(P′) over g in the cell ranges over an interval J(P′, e) of length ≍ M|P′|D^{−A₀}, possibly
+       around 0. The filter removes only the part with |G| < M|P′|N^{−η₀/4}, a fraction ≤ N^{−η₀/4}D^{A₀}.
+     - Restrict to an interior interval of the remaining values, of relative length ≥ 1/4, at scale between
+       M|P′|N^{−η₀/4} and M|P′|. On it the fibres have length ≥ M D^{−A₀}/(8|P′|) ≥ N^{η₀/2}, and the B-smooth values
+       have density ≥ ϱ(M|P′|)(log N)^{−C}, since ϱ is nonincreasing.
+     - Smaller values only help the lower bound. On the algebraic side the scale |G|H|P′|^{d−1}/q is also smaller, so
+       ϱ is again larger.
    - By Lemma U1 at B, Pr_g[Rat(P′; g) | e] ≥ ϱ(M|P′|)(log N)^{−C} ≥ ϱ(X_{r2})(log N)^{−C}, since ϱ is nonincreasing and
      M|P′| ≤ X_{r2}.
 3. **Algebraic factor.** For g with Rat(P′; g), Lemma DW(a)⁺ with the root coset applies (q ∤ G(P′) since G(P′) is
@@ -693,7 +781,7 @@ X_{F2} = (2d + 1)MHV₂^d/Q₂, H = H_DW.
 4. **Sum.** m_{𝔮,e} ≥ Σ_{P′}Pr[Rat | e]·inf_gA ≥ cS₂²ϱ(X_{r2})ϱ(X_{F2})(log N)^{−2C−1}. The scan threshold
    4(log N)^{2C_R}e^{λ²} absorbs every fixed polylog (uprime §4.2). ∎
 
-*Comparison with uprime's "routine".* The claim is confirmed, with two necessary corrections:
+*Comparison with uprime's "routine".* (Step 1's "this holds for skewed labels too" is now true without the discard.) The claim is confirmed, with two necessary corrections:
 - (a) The child filter must be part of Good(P′), otherwise DW(a) fails at points with tiny |G(P′)| (codex pc3 #2). Its
   pass fraction is 1 − O(N^{−η₀/4}), so it introduces no O(1) environment term (unlike the parent filter, pc3 M1).
 - (b) S₂ must be rescanned with DW's larger height (codex). Keeping uprime's S₂ would lose an L[α]-scale factor.
@@ -707,8 +795,13 @@ m_𝔮 by a factor 1 − O(1/q). Hence (A's one-point term) Σ(w/W)/m_𝔮 ≤ e
 
 **Hyp RAT(α) (the rational blocks, first order).** In design 2L_DW(α), cell by cell:
 - (R1) Σ_{𝔮: s(𝔮)≤T}(w_𝔮/W)ϕ^rat_𝔮 ≤ D^{−α}λ^{C}, where ϕ^rat_𝔮 = Var_g(Σ_{P′∈Box(𝔮)}Rat(P′; g)a_{P′}(|G_g(P′)|))/m_𝔮².
-  Here a_{P′}(n) := A_{P′}(g) is the explicit smooth algebraic weight of Lemma DW(a)⁺. It is ≍ ϱ(n·H|P′|^{d−1}/q) up to
-  1 + O(N^{−η₀/3}), so it depends on g only through n = |G_g(P′)|.
+  Here a_{P′}(n) is the **idealised** weight: the probability that a variable with law (the DW(a)⁺ mixture for
+  t = n, restricted to qZ) divided by q is B-smooth. It is explicit and depends only on (P′, n, q). It differs from
+  A_{P′}(g) by ≤ 4qN^{−η₀/2} in absolute terms (TV), uniformly in g with |G_g(P′)| = n.
+  - It is ≍_{polylog} ϱ(nH|P′|^{d−1}/q).
+  - v1 claimed an identification with a single density value to relative error N^{−η₀/3}. That is false: the shape of
+    the convolution changes its smoothness average at first order (1 − β)log d (codex #10).
+  - RAT must be stated with the idealised weight.
 - (R2) Σ_𝔮(w_𝔮/W)σ^rat_𝔮 ≤ D^{7α−3}λ^{C}, the same for the label's parent count, with weights a_P(|G_g(P)|) at B₂.
 
 These are pc3 §7 items 1 and 4 at **first order** in the window, for rational values with smooth weights. Skewed labels
@@ -725,8 +818,11 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
 
 *Proof.*
 1. Lemma VD gives A ≤ Σ(w/W)/m + A^alg + A^rat and B ≤ Σ(w/W)/z + B^alg + B^rat.
-   - The one-point terms are ≤ e^{−λ²}(log N)^C (Prop CLB) and ≤ L[1 − α]^{−1/2} (z_𝔮 ≍ (Y/q)m₁/(d log²N)).
-   - Theorem AB(i), (iii) and RAT(R1) give A ≤ D^{−α}λ^{C}.
+   - The one-point terms are ≤ e^{−λ²}(log N)^C (Prop CLB) and, for parents, use the exact identity
+     w_𝔮/z_𝔮 = Pr(R_𝔮)/#J (v2, proof critic): Σ_𝔮(w_𝔮/W)/z_𝔮 = Σ_𝔮Pr(R_𝔮)/(#J·W) ≤ dπ(B₂)/(#J·μ₁) =
+     L[4α − 1 − (1 − α) + o(1)] → 0. This uses Σ_r Pr(R_{(q,r)}) = E[#roots of F mod q] ≤ d. No lower bound on z_𝔮 is
+     needed.
+   - Theorem AB(i), (iii) and RAT(R1) give A ≤ D^{−α}λ^{C}. RAT(R1) is restricted to s ≤ T, matching AB(i).
    - Theorem AB(ii) and RAT(R2) give B ≤ D^{7α−3}λ^{C}.
 2. Prop PB: E N₂ ≥ μ₁/2.
 3. U′-DW(α) (§2.7) gives E[N₁²] ≤ (log N)^C(μ₁² + μ₁) and μ₁ ≥ (log N)^{−C}, so γ₂ ≥ (log N)^{−C} by Paley–Zygmund
@@ -736,9 +832,15 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
    in multidescent Theorem 2L. ∎
 
 **Complete dependency list of Theorem 2L-DW(α).**
-- *Hypothesis:* Hyp RAT(α) (open; c12rat).
+- *Hypothesis:* Hyp RAT(α) (open; c12rat), with the idealised weights.
+- *Design constraint for c12rat (optional for us).* (A1) a > σ₂(q) for q near B, i.e. a² > 4α/d₀·(1 + o(1)), which
+  makes Δ′ < q in every child box. pc3 LAT(d) and the rational mod-q ratio need it. The algebraic block does not:
+  pairs with q | Δ′ are covered by Cor TP-q, since L_q/q = {y₁ ≡ λ^dy₂ (mod Δ/q)} holds even when q² | Δ. They are
+  included in the BV averaging. v1's illustrative parameters (a = 3/5) violate (A1). With (A1), e.g. α = 7/18, a = 2,
+  κ = 1/8, d₀ = 1, b₂ = 2, C_γ = 0 gives c ≈ 9.5. A rational grid search under (A1) gives c ≈ 3.91 at
+  (a, κ, d₀, b₂) = (4/5, 1/16, 5/2, 1/2) (`params.cost_constant`; illustrative, C_γ not computable).
 - *Sketch:* Theorem AB (this note; the bookkeeping in Lemmas FB and PP is not written to the last constant).
-- *Proved here:* Lemma η, Prop PB, Lemma VD, Lemmas GB-DW, CU, RE, CT, IR-DW, reject-DW, W-DW, DW(a)⁺, MM, BZ, TP,
+- *Proved here:* Lemma η (v2 rewrite), Prop PB, Lemma VD, Lemmas GB-DW, CU, RE, CT, IR-DW, reject-DW, W-DW, DW(a)⁺, MM, BZ, TP,
   TP-W, Cor TP-q, LF, AR, PU, TH, WD, Prop CLB, §2.7 (U′-DW), §2.8 (POSTPROCESS-DW), and the margins (`params.py`).
 - *Internal (unrefereed):*
   - pc3: Prop DC, DC_e, Cor DC, Lemma DW-L, Lemma LAT;
@@ -751,7 +853,9 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
 - *Published:*
   - Harper arXiv 1208.5992 Theorems 1–2 (BV/BDH for smooth numbers; **unrefereed preprint**);
   - Hildebrand, J. Number Theory 22 (1986) 289–307 (Ψ = xρ(u)(1 + O(log(u + 1)/log y)) and the short-interval form for
-    x y^{−5/12} ≤ z ≤ x; theorem number UNVERIFIED, range confirmed by codex via Jain's Lemma 3.2(ii));
+    x y^{−5/12} ≤ z ≤ x; Jain, QJM, Lemma 3.2(ii), attributes it to Hildebrand's Theorem 3, per codex). It is used at
+    y = B (Lemma PP, child) and at y = B₂ (Lemma η, parent PP);
+  - de Bruijn: the monotonicity of −ρ′/ρ and ρ(u − 1)/ρ(u) = uξ(u)(1 + O(1/u)), for Lemma η;
   - Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Theorems 1, 2, 3;
   - de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i);
   - Canfield–Erdős–Pomerance;
@@ -804,7 +908,8 @@ Descriptive:
 - the gcd-only slope is 1.095.
 
 Reading, fixed in advance: at toy scale the DW pair law shows no correlation beyond "lattice gcd classes ×
-archimedean sizes", the structure of Lemmas LF, AR and PP. Both factors are large at u ≈ 3: (1 − β)² is not small at
+archimedean sizes", the structure of Lemmas LF, AR and PP. J_gcd uses empirical gcd-class marginals from the same
+samples. So E1b does not independently validate LF's saddle-point model (codex). Both factors are large at u ≈ 3: (1 − β)² is not small at
 toy scale. Asymptotically they are second order. The toy does not test precision.
 
 ### 6.3 E2: the thmA toy pipeline with DW fields (composite w, W = 64M)
@@ -816,7 +921,8 @@ toy scale. Asymptotically they are second order. The toy does not test precision
   negligible.
 - **P2b held.** 0 row-identity, 0 congruence, 0 CU (5 911 atoms checked), 0 forced-residue, 0 IR-DW violations.
 - **P2c held.** 120/120 tested kernel vectors were squares.
-- **P2d held.** 5 392 content rejections among 54 915 fields, against 5 399.3 predicted (z = −0.10).
+- **P2d held.** 5 392 content rejections among 54 915 fields, against 5 398.6 predicted (z = −0.09). The exact
+  computation replaced a truncated Möbius sum after codex #13; the verdict is unchanged.
 - **P2e held.** DD fruitfulness ω = 2: 26/56 = 0.46 (z = −0.53); ω = 3: 23/32 = 0.72 (z = −0.41).
 
 ---
@@ -845,6 +951,8 @@ Inputs as in §5's dependency list. Specific notes:
   theorem number is UNVERIFIED.
 - **Rigorous-NFS precedent for an integer multiplier.** None found by pc3 or by us; this is a search result. The
   Knuth–Schroeppel multiplier kN is the heuristic analogue.
+- **Pascadi** (Compositio 2025): smooth numbers in APs to large moduli, for a fixed residue (codex). It does not replace
+  Harper's maximum over residues, which Lemma FB needs.
 - **Lee–Venkatesan.** Their randomisation f̂ + G·R_c (JNT 187 (2018)) is the source of the c-part. Their stochastic
   deepening (Lemma 5.6) avoids second moments in a different way.
 
@@ -861,7 +969,49 @@ Inputs as in §5's dependency list. Specific notes:
 
 ## 10. Reviews
 
-(To be filled: codex adversarial `c12alg_2`, Opus proof critic, Opus literature critic.)
+**Codex blind `c12alg_1`** (xhigh, launched before any analysis here). Verdict OPEN. Points it found independently:
+- the TV lemma with the interpolation/determinant cancellation;
+- the window budget A ≪ D^{−α}, B ≪ D^{−s};
+- η₀ ≍ D^{4α−2} and σ₂ = (α/a)(4/d₀ + d₀b);
+- unrestricted w as the clean design;
+- the IR averaging;
+- the warning that first-order slack does not by itself remove Saias (𝒦²/u amplification).
+
+It listed weight domination and LD* as OPEN. Probabilities: TV lemma 95%, DW compatible 85%, α < 2/5 30%.
+
+**Codex adversarial `c12alg_2`** (xhigh, on v1): **MAJOR REVISION.**
+
+| # | sev. | finding | action |
+|---|---|---|---|
+| 1 | FATAL | Lemma η loses (log N)^C, not λ^C | accepted; Lemma η rewritten (pointwise ratio, Hildebrand at B₂, W/μ₁ ≤ 3u₂) |
+| 2 | MAJOR | thin-pair parameters leave d(log N)^C | accepted; T, K₀, K re-chosen |
+| 3 | MAJOR | non-reduced classes: Σδ^{−β} diverges; weighted grid inequality | accepted; δ ≤ Q sum = polylog; per-subclass statement in §3.4 |
+| 4 | MAJOR | fibres shrink at vertices | accepted; short-fibre truncation with DS enlargement (Lemma PP) |
+| 5 | MAJOR | parent divisors up to L[1−α]: v²/u₂ error | accepted; truncation at B₂^{1/2} with divisor-moment tail |
+| 6 | MAJOR | PU's uniform fibre length false | accepted; fibre enlargement and gcd reduction (Lemma PU) |
+| 7 | MAJOR | same-ℓ parent pairs (weight 1/ℓ) | accepted; separated, contribution ≤ z²/π_J |
+| 8 | MAJOR | CLB angular discard false for skewed labels | accepted; no discard, per-point interior intervals |
+| 9 | MAJOR | cells, WD per cell, parent mean lower bound | accepted; WD per cell; exact identity w/z = Pr(R)/#J replaces the z lower bound |
+| 10 | MAJOR | RAT weight is not a single ϱ value | accepted; idealised weight defined |
+| 11 | MINOR | W-DW needs (u,t) = 1; content cutoff; q² \| Δ possible (S₂² > B for a = 3/5); LF p > B; AR atom | all accepted; constraint (A1) stated |
+| 12 | MINOR | 3/8 diagnosis overstated | accepted; §3.5 softened |
+| 13 | MINOR | 10/12 not 9/11; p_content truncated (5 398.6, z = −0.09) | accepted; analysis fixed |
+
+Codex withdrew its blind OPEN on LD* (the all-residue rebuttal is correct). Probabilities: AB as sketched 40%, DW 93%,
+conditional theorem 70%.
+
+**Opus proof critic** (read-only, on v1).
+- §2 lemmas, MM, BZ, TP, TP-W, Cor TP-q and Lemma VD: ACCEPT.
+- Lemma η: MAJOR (same as codex #1; its suggested fix is the one adopted).
+- W-DW, DW(a)⁺ edge case ab = 0, §2.7 range restatement (uprime's D^{1/4} hypotheses fail for α > 11/28), PU
+  (g-dependent scales), WD (per cell), CLB (skew remark): ACCEPT WITH FIXES, all applied.
+- Ξ was missing the dominant filter-threshold spread e^{O(D^{2α−1/2}λ)}: added to Ξ and to `params.py`.
+- Lemma AR is second order: restated.
+- Theorem AB(i)'s right side must be restricted to s ≤ T: done.
+- No hidden first-order term and no circularity.
+- Probabilities: AB writable 65%; conditional theorem 15% as v1, 65–70% after repairs.
+
+**Opus literature critic:** see v2.1 below.
 
 ## 11. Candidate card
 

@@ -113,21 +113,34 @@ def _mobius(n):
     return res
 
 
-def p_content(W: int, H: int, d: int) -> float:
-    """Pr[gcd(w, c_0..c_{d-1}) > 1], w uniform in (W, 2W], c uniform in [-H, H]^d (exact Moebius sum)."""
-    tot = Fraction(0)
-    for e in range(2, 2 * H + 2):
-        mu = _mobius(e)
-        if mu == 0:
-            continue
-        pw = Fraction((2 * W) // e - W // e, W)
-        pc = Fraction(sum(1 for c in range(-H, H + 1) if c % e == 0), 2 * H + 1) ** d
-        tot += mu * pw * pc
-    # Pr[gcd = 1] = sum_e mu(e) Pr[e | all]; e = 1 term is 1.  So Pr[gcd > 1] = -sum_{e >= 2} mu(e) ...
-    # (e > 2H + 1 can divide all c_i only if all c_i = 0; that term is included via e | w with c = 0:)
-    p0 = Fraction(1, 2 * H + 1) ** d
-    # correct for e > 2H+1 (only c = 0): Pr[c = 0 and w has a prime factor > 2H+1] is bounded by p0
-    return float(-tot), float(p0)
+def p_content(W: int, H: int, d: int):
+    """Pr[gcd(w, c_0..c_{d-1}) > 1], w uniform in (W, 2W], c uniform in [-H, H]^d.  Exact: enumerate c, and for
+    g = gcd(c) (g = 0 when c = 0, then gcd(w, 0) = w > 1) count w in (W, 2W] with gcd(w, g) > 1 by Moebius over the
+    squarefree divisors of g.  (v1 truncated the Moebius sum at e <= 2H + 1; corrected after codex c12alg_2 #13.)"""
+    import itertools
+    from functools import lru_cache
+
+    @lru_cache(maxsize=None)
+    def frac_coprime(g: int) -> Fraction:
+        ps = [p for p in range(2, g + 1) if g % p == 0 and all(p % r for r in range(2, int(p ** 0.5) + 1))]
+        tot = Fraction(0)
+        for mask in range(1 << len(ps)):
+            e = 1
+            for i, p in enumerate(ps):
+                if mask >> i & 1:
+                    e *= p
+            sign = -1 if bin(mask).count("1") % 2 else 1
+            tot += sign * Fraction((2 * W) // e - W // e, W)
+        return tot
+    num = Fraction(0)
+    n = 0
+    for c in itertools.product(range(-H, H + 1), repeat=d):
+        g = 0
+        for ci in c:
+            g = gcd(g, ci)
+        n += 1
+        num += 1 if g == 0 else (1 - frac_coprime(g))
+    return float(num / n), float(Fraction(1, (2 * H + 1) ** d))
 
 
 def e2(path):

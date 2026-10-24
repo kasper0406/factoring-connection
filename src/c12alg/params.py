@@ -40,6 +40,8 @@ def comparisons(al: Fr) -> List[Tuple[str, Term, Term]]:
         ("parent rational pair loss Xi_r = D^(1-2a) << BDH saving at B2", (1 - 2 * al, Fr(2)), (s, Fr(-2))),
         ("parent rational pair loss Xi_r inside Hildebrand range at B2", (1 - 2 * al, Fr(2)), (4 * al - 1, one)),
         ("box size-spread loss D^(1-2a) << BV saving at B (child)", (1 - 2 * al, Fr(2)), (al, Fr(-2))),
+        ("filter-threshold spread D^(2a-1/2) << BV saving at B (child)", (2 * al - Fr(1, 2), Fr(2)), (al, Fr(-2))),
+        ("eta independent of polylog: W/mu1 <= 3 u2 (pointwise ratio; structural, recorded)", (Fr(0), Fr(0)), (Fr(0), Fr(1))),
         ("first-order child error D^-alpha << eta = D^-(3-7alpha)", (-al, Fr(9)), (-s, Fr(-9))),
         ("sqrt(A B) << eta: (3-6a)/2 > 3-7a", (-(3 - 6 * al) / 2, Fr(9)), (-s, Fr(-9))),
         ("recursion: FACTOR_U on parent values is L^o(1)", (Fr(2, 5) * (2 - 3 * al), one), (al, one)),
@@ -85,3 +87,8 @@ def cost_constant(al: Fr, a: Fr, kappa: Fr, d0: Fr, b2: Fr, C_gamma: Fr) -> floa
     sig1 = al / (a * d0)
     sig2 = al / a * (4 / d0 + d0 * b2)
     return max(float(2 * a), float(a + s + max(a, sig1 + sig2)), float(a + s) / (1 - 2 ** (-float(al))))
+
+
+def constraint_A1(al: Fr, a: Fr, d0: Fr) -> bool:
+    """(A1) a > sigma_2(q) for q near B (b(q) -> 0): a^2 > 4 alpha / d0.  Makes Delta' < q in every child box."""
+    return a * a > 4 * al / d0
