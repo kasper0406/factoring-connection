@@ -1,6 +1,6 @@
 # geometry: geometric constructions from N, and where the factors hide (phase 26)
 
-Agent `geometry`, 2026-10-24. **Version v1 (draft, before the codex adversarial round and the Opus critics).**
+Agent `geometry`, 2026-10-24. **Version v1.1 (codex blind round integrated; before the codex adversarial round and the Opus critics).**
 - Pre-registration: `notes/geometry_prereg.md` (commit `5ae824e`, before any code ran; amendment A1 for E4 committed
   before E4 code was written).
 - Code: `src/geometry/{modcurve,curves,harness,decoders,run_experiments}.py`. Tests: `tests/test_geometry.py`.
@@ -20,8 +20,11 @@ residuosity modulo N for small arguments, which is not known to be easy and not 
 
 ## 0. Verdict (plain language)
 
-**Yes, there are many genuine connections between geometry and factorisation, and several are beautiful. But none
-of them gives a faster way to factor, and we can say exactly why in each case.**
+**Yes, there are many genuine connections between geometry and factorisation, and several are beautiful. One of
+them is a real algorithm, already known: Lenstra's elliptic-curve method (ECM, 1987) factors by doing geometry
+(the group law of an elliptic curve) modulo N, and elliptic curves also prove primality (Goldwasser–Kilian,
+Atkin–Morain). The number field sieve is geometry of numbers. Beyond these known methods, no geometric
+construction we examined gives a faster way to factor, and we can say exactly why in each case.**
 
 The key point first. Primality itself is already easy: it can be decided in polynomial time (AKS 2002). So a
 geometric picture of primality only helps with *factoring* if three things hold at once:
@@ -49,7 +52,8 @@ Every construction we examined fails one of the three, in one of four recurring 
   t² − 4ℓ modulo N, so it reveals Legendre symbols (D/p) for |D| ≤ 4ℓ and nothing else. Its *cone points* do the same:
   X_0(N) has 4 cone points of angle π if −1 is a square mod N and none otherwise.
 
-**The sharpest new observation (PROVED from classical formulas; verified 800/800).** For X_0(N) the line between
+**The sharpest observation (PROVED from classical formulas; verified 800/800; the F_4 case was found first and
+independently by GPT-6.1-sol from the moduli interpretation).** For X_0(N) the line between
 "quadratic symbols only" and "as hard as factoring" falls exactly between F_ℓ and F_{ℓ²}:
 - #X_0(N)(F_ℓ) is QR-type: it is a function of 2^{ω(N)} and the symbols ((t² − 4ℓ)/p), ((t² − 4ℓ)/q).
 - #X_0(N)(F_{ℓ²}) is factoring-equivalent: it equals (ℓ − 1)ψ(N)/12 plus bounded QR-type terms. A single number,
@@ -64,8 +68,8 @@ Every construction we examined fails one of the three, in one of four recurring 
 **The ladder of lattice points on spheres** shows the same three tiers (cross-referencing `analytic`):
 - the circle x² + y² = N: r₂(N) ∈ {0, 16} is one QR bit; two essentially different points factor N; finding one
   point is equivalent to finding √−1 mod N (OPEN);
-- the 2-sphere x² + y² + z² = N: r₃(N) = 12h(−4N) (Gauss), a class number, and a known class number factors N
-  (randomized; Schoof 1982);
+- the 2-sphere x² + y² + z² = N: r₃(N) = 12h(−4N) (Gauss), a class number. A known class number usually leads to
+  an ambiguous form and a factor, though one value is not known to factor every N;
 - the 3-sphere: r₄(N) = 8σ(N) = 8(N + p + q + 1) (Jacobi) factors N at once.
 
 **General principle (a proved statement in each model, not a theorem about all geometry).** Invariants of a compressed
@@ -98,7 +102,9 @@ A construction is a map N ↦ X_N (a polygon, surface, 3-manifold, variety, grou
 description computable from N in poly(log N) time, plus a feature F(X_N). If F(X_N) is computable from the
 description in time T, then T bounds the cost of F as a function of N. So "a geometric feature that encodes the
 factors and is fast to compute" is *literally* "a fast factoring algorithm"; the geometry contributes only if it
-suggests one. The useful questions are therefore (a) which tier F lies in, and (b) where exactly a geometric
+suggests one (codex calls this the composition principle; it rules out nothing unconditionally). Conversely,
+artificial positive examples are trivial: run AKS and output S¹ × S² if N is prime and S³ otherwise. The useful
+questions are therefore (a) which tier F lies in, and (b) where exactly a geometric
 computation of F pays size N^{Ω(1)} or needs the factors.
 
 Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap_results.md` §0,
@@ -126,13 +132,13 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 2 | Lattice points under xy = N in a strip, D_N(X) = Σ_{d≤X}⌊N/d⌋ | yes | D_N(X) − D_{N−1}(X) = #{d ≤ X : d \| N}; bisection | Õ(N^{1/3}) (convex-hull walk, Θ(N^{1/3}) hull vertices) | FACT, EXP (`analytic` §2; `newfamily` row 50) |
 | 3 | Full Dirichlet count D(N) = Σ_{m≤N} d(m) | yes | first difference d(N) | Õ(N^{1/3}) | ω (useless for semiprimes) |
 | 4 | Circle x² + y² = N | yes | r₂(pq) ∈ {0, 16} decides ε when N ≡ 1 (4); two inequivalent points factor N (Euler) | one point ⇔ √−1 mod N (Cornacchia) | QR (count); OPEN (one point); FACT (two) |
-| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) (N ≡ 1, 2 mod 4, squarefree; Gauss) | h(−4N): N^{1/5+o(1)} under ERH | FACT (randomized: known h ⇒ ambiguous forms; Schoof 1982) |
+| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) (N ≡ 1, 2 mod 4, squarefree; Gauss) | h(−4N): N^{1/5+o(1)} under ERH | class number: a known h(−4N) yields an ambiguous form with constant probability on typical N, but the reachable order-2 class can be the non-splitting (2, 2, ·) class for some 2-Sylow shapes, so one value is not known to factor every N (codex). FACT-likely, HEURISTIC |
 | 6 | 3-sphere in Z⁴ | yes | r₄(N) = 8σ(N) = 8(N + s + 1), N odd (Jacobi) | ≍ N samples via theta extraction | FACT (`analytic` table) |
 | 7 | Conic x² + y² ≡ 1 (mod N) (points over Z/N) | yes | # = (p − χ₄(p))(q − χ₄(q)) = N − χ₄(p)s + 1 or N ± (q − p) − 1 | count over Z/N | FACT (§4.1, Prop MF′) |
 | 8 | Lattice polygons with poly(log N)-bit vertices (Pick); Barvinok counts in fixed dimension | yes | Pick: A = I + B/2 − 1, B = Σ gcd(edge) | poly time (Barvinok 1994) | AGG / E (`newfamily` rows 9, 49) |
 | 9 | Polytopes with N-dependent normals, Θ(N^{1/3}) vertices | yes | can detect divisors | size of the hull | EXP (`newfamily` row 50) |
 | 10 | Sublattices of Z² of index N (N-sheeted covers of the torus) | yes | number = σ(N) | — | FACT (§4.1) |
-| 11 | Reduced lattices / flat tori of discriminant −4N (CM points on X(1)) | yes | number = h(−4N); 2^{ω−1} genera | O(√N) enumeration; N^{1/5} (ERH) | FACT (as #5) |
+| 11 | Reduced lattices / flat tori of discriminant −4N (CM points on X(1)); cusps of the Bianchi orbifold of Q(√−N) | yes | number = h(−4N); 2^{ω−1} genera | O(√N) enumeration; N^{1/5} (ERH) | as #5 |
 
 ### 2.2 Modular curves and hyperbolic surfaces (§3)
 
@@ -145,7 +151,8 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 16 | Points over F_ℓ: #X_0(N)(F_ℓ) = 2^{ω} + ½Σ_{t²<4ℓ}Σ_f h_w((t²−4ℓ)/f²)∏_{r\|N}(1 + ((t²−4ℓ)/r)) | Legendre symbols at \|D\| ≤ 4ℓ | E3: the counts for ℓ ≤ 13 determine ε and all ≈ 7 unknown symbols, 4000/4000 | QR (Prop X0-2) |
 | 17 | Points over F_{ℓ²}: (ℓ − 1)ψ/12 + bounded QR terms | ψ | E4: 800/800 split from one count | FACT (Prop X0-3) |
 | 18 | Points of X_1(N) over F_ℓ, N > (√ℓ+1)²: φ(N)/2 rational cusps, no other points | φ | — | FACT (Prop X1) |
-| 19 | Lefschetz number of the Fricke involution w_N: #fix = class numbers h(−4N) (+ h(−N) if N ≡ 3 mod 4) (Ogg 1974; Fricke) | h | as #5 | FACT (randomized, as #5) |
+| 19 | Lefschetz number of the Fricke involution w_N: #fix = class numbers h(−4N) (+ h(−N) if N ≡ 3 mod 4) (Ogg 1974; Fricke) | h | as #5 | as #5 |
+| 19a | Genus of X_1(N); dimensions dim S_k(Γ_0(N)) | g₁ = 1 + J₂(N)/24 − ¼Σ_{d\|N}φ(d)φ(N/d) (N ≥ 5); dim S_{k+12} − dim S_k = ψ(N) | Θ(N²) cosets for Γ_1 | FACT (codex; Gu–Martin 2019 for dimension counts) |
 | 20 | Spectrum of the Laplacian / Selberg zeta / random walks on Γ_0(N)\H or its coset graph | Weyl law: area; return counts of one word W: fixed points of W on P¹(Z/N) = ∏(1 + ((tr²W − 4)/r)) | discretisation of size ψ(N) | Weyl term FACT+EXP; return counts QR; cycle structure of W = orders, FACT (Shor-type) |
 | 21 | Bianchi orbifolds Γ_0(N·O_K)\H³ | covolume × ∏_{r\|N}(r² + 1 or (r + 1)²) | Swan/Riley domains have size ∝ index | FACT, EXP |
 
@@ -227,6 +234,14 @@ For N = pq (odd), each part of the signature lands in a different tier:
 *Proof.* ν∞ = 4 and ν₂, ν₃ ∈ {0, 4}, so ψ = 12(g + 1) + 3ν₂ + 4ν₃ takes one of four values. For each, set
 s = ψ − N − 1 and test whether s² − 4N is a square with root of the right parity; the correct ψ passes and gives
 p, q = (s ∓ √(s² − 4N))/2. A wrong candidate either fails or gives the same s. ∎ (E2: 400/400.)
+
+*General N (codex, PROVED from the same formulas).* For N coprime to 11·23, multiplying the level by 11 or 23 kills
+both elliptic terms ((−1/11) = (−3/11) = −1, likewise for 23) and doubles the cusps, so
+g(23N) − g(11N) = ψ(N); a known ψ(N) splits N in randomized polynomial time because r + 1 | ψ(N) for every r | N
+(Lucas-type exponent splitting in (Z/N)[X]/(X² − D)). For X_1: J₂(N) = 2g₁(7N) − 3g₁(5N) + 1 (gcd(N, 35) = 1).
+Prior art on factoring from modular-form dimension counts: M. Gu and G. Martin, *Factorization tests and algorithms
+arising from counting modular forms and automorphic representations*, Canad. Math. Bull. 62 (2019) 81–97 (codex:
+their Thm 10 uses two automorphic-representation counts and a newform count; it is not a one-value theorem).
 
 **Where a geometric computation pays.** Each geometric route to g or μ needs either the formula (the factors) or an
 object of size ≥ cN:
@@ -457,7 +472,22 @@ Ours (each with a quick kill or keep):
 - **Tilings with divisibility constraints.** They encode factoring (so they are NP-type), but the reduction goes the
   wrong way. Kill.
 
-GPT-6.1-sol blind list: see §9 (to be filled from `codex/geometry_1.out`).
+GPT-6.1-sol's blind list (`codex/geometry_1.out`, 30 candidates) agrees with ours on every shared item. Items it
+added or sharpened, now in §2:
+- the explicit F_4 count #X_0(N)(F_4) = 2^r + (ψ(N) + 3R_{−4} + 8R_{−3})/12 + R_{−7} + 2R_{−15}, gcd(N, 210) = 1,
+  R_D = ∏_{r|N}(1 + (D/r)), derived from the moduli problem (the supersingular curve over F_4 with Frobenius
+  [−2], Aut/±1 = A_4, Burnside) and found blind. It agrees with our trace-formula computation on 50 semiprimes and
+  4 composite levels (0 mismatches). Codex flagged it as "the most interesting candidate" but did not note that the
+  F_ℓ counts are only QR-type;
+- the general-N genus reductions g(23N) − g(11N) = ψ(N), J₂(N) = 2g₁(7N) − 3g₁(5N) + 1, and the Gu–Martin
+  reference;
+- Gaussian Bianchi covers: index I(pq) = ((p+1)(q+1))² (both primes split in Z[i]) or (N − 1)² + s² (both inert);
+- Brieskorn spheres S³_{1/N}(trefoil) = Σ(2, 3, 6N − 1) with Casson invariant N; lens-space Heegaard Floer rank N
+  and d-invariants: AGG;
+- Spec(Z/N): b₀ = ω(N), Pic(P¹_{Z/N}) = Z^{ω(N)}; codex's C2 asks for a compressed chain complex with a Betti
+  number equal to ω(N) (OPEN; quick kill: every known construction builds the idempotents);
+- a caution that a class number alone is not known to factor every N (applied to rows 5, 11, 19);
+- ECM and ECPP as the genuine geometric algorithms (now in §0).
 
 ---
 
