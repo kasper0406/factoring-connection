@@ -85,13 +85,17 @@ Weakest link: the relation-supply chain, i.e. LD*, L2_fam and Lemma 8.5′. Lemm
   - [`classE`](notes/classE_results.md): no leak. A CF convergent of a/N sees p only if a = uq ± 1 (Prop VIS), and for ⌊√N⌋/N the path is equidistributed up to denominators N^{7/12} (Theorem F-SQ).
   - [`tracedata`](notes/tracedata_results.md): #E(Z/N) for one fixed curve factors every good N (Theorem EXT, a degree-5 twist). One curve's traces (a_p, a_q) or a_N alone are still open; a_N for two CM curves factors N.
   - [`multidescent`](notes/multidescent_results.md): a two-level descent gives **L[3/8], conditional** on Hyp PC₃ and U′ (Theorem 2L). A union bound reduces it to three-point conditional statements (Prop UB), so a proof needs no control at d^{3/2} points. j levels would give (j+1)/(3j+2).
+- Phase 26:
+  - [`uprime`](notes/uprime_results.md): Hyp U′ is proved at 3/8 via a hybrid restricted BV (Lemma 8.5H; moduli B-smooth, values B₂-smooth), two-parameter level-1 moments and a mixed box scan.
+  - [`pc3`](notes/pc3_results.md): PC₃ is stronger than needed. Decoupling (Prop DC) replaces it by two pair-only variance hypotheses C₁, C₂ (Theorem 2L-DC); both are still open.
+  - [`geometry`](notes/geometry_results.md): no geometric shortcut. The area and genus of X_0(N) encode p+q, but every explicit model has size Θ(N); #X_0(N)(F_{ℓ²}) and #X_1(N)(F_ℓ) factor N, while #X_0(N)(F_ℓ) carries only QR bits.
 - Fast factoring has no free consequences elsewhere in mathematics.
 
 All of these are in [`APPROACHES.md`](APPROACHES.md).
 
 ## Open problems that would push further
 
-- **Below L[2/5]:** prove Hyp PC₃ (a weighted ternary smooth equation with large coefficients, extending Harper 2016 / Drappeau 2013) and U′ ⇒ rigorous L[3/8] ([`multidescent`](notes/multidescent_results.md) Theorem 2L).
+- **Below L[2/5]:** prove the pair-only variance hypotheses C₁, C₂ ([`pc3`](notes/pc3_results.md) Theorem 2L-DC; U′ is done in [`uprime`](notes/uprime_results.md)) ⇒ rigorous L[3/8]. The main missing piece is a weighted BDH (Harper) + large sieve under the incidence measure.
 - **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
 - **Human refereeing** of [`paper2/`](paper2/main.tex) §§5–6 and its Appendix A.
 
