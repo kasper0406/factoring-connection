@@ -1,7 +1,8 @@
 # pc3: Hyp PC₃ (multidescent §3.2–3.4) — results
 
-Agent `pc3`, phase 26, 2026-10-24. **v2.** It applies the codex adversarial round (MAJOR REVISION), the Opus proof
-critic and uprime's results; the Opus literature critic is in §11.
+Agent `pc3`, phase 26, 2026-10-24. **v2.1.** It applies the codex adversarial round (MAJOR REVISION), the Opus proof
+critic, uprime's results and the Opus literature critics (§11). Anything resting on Harper arXiv 1208.5992 rests on an
+unrefereed, though widely used, preprint. No item labelled proved here depends on it.
 
 Files:
 - this note;
@@ -206,9 +207,9 @@ uniformly in Δ. There is no divisor function: a τ(Δ) weight would have been e
 **4.1 BDH for smooth numbers [cited; codex adversarial confirmed the statement].** Harper, arXiv 1208.5992, Thm 2: for
 (log x)^K ≤ y ≤ x and Q ≤ Ψ(x, y),
   Σ_{Δ≤Q} Σ_{(a,Δ)=1} |Ψ(x, y; Δ, a) − Ψ_Δ(x, y)/φ(Δ)|² ≪ Ψ(x, y)²ε_y + QΨ(x, y),  ε_y := e^{−cu/log²(u+1)} + y^{−c}.
-In the range Q = x^{o(1)} this can also be derived from Drappeau's Lemme 5 (conductors ≤ R := (log x)^C/(ε_yρ), using
-log(1/ρ) = o(log x)) together with the multiplicative large sieve. That derivation is not independent of Harper:
-Lemme 5 rests on Harper's calculations (codex #10).
+For Q ≤ x^η it also follows directly from Drappeau's Lemme 5, an L¹ bound over all non-principal χ of conductor ≤ x^η,
+using |Ψ(χ)|² ≤ Ψ·|Ψ(χ)|. The large sieve is needed only for conductors > x^η. This is not independent of Harper:
+Lemme 5 follows from Harper's §3.3 computations.
 - Non-reduced classes reduce to reduced classes mod Δ/δ at x/δ, and contribute nothing unless δ is y-smooth.
 - Intervals and twists require normalisation and variation bounds (codex #10).
 - At the design's scales u ≍ D^{3/8}, so ε_y ≤ D^{−A} for every A.
@@ -233,9 +234,12 @@ principal part as Σ over joint gcd classes (δ₁, δ₂) of the products of cl
   - Primitivity of g adds −Σ_{p∤K}p^{−2}(…). E1 sees this term.
   - Total, on average over the family: O(((1−β) + 1/u)²).
 - **(ii) Archimedean term.** v1 claimed a κ¹ loss; the method gives κ² (proof critic M3). Repair:
-  - Use Saias's smooth approximation Ψ(x, y) = Λ(x, y)(1 + O(exp(−(log y)^{3/5−ε}))), valid for
-    y ≥ exp((log log x)^{5/3+ε}), which holds here [UNVERIFIED range]. The smooth part of the archimedean covariance then
-    has no κ-loss, and the residual costs ε_S·κ², harmless for κ ≤ exp((log y)^{1/2}).
+  - Use Saias's approximation Ψ(x, y) = Λ(x, y)(1 + O_ε(exp(−(log y)^{3/5−ε}))), valid for
+    exp((log log x)^{5/3+ε}) ≤ y ≤ x (J. Number Theory 32 (1989) 78–99; range confirmed by both literature critics).
+  - The residual costs ε_S·κ². This is harmless for κ ≤ exp((log y)^{1/2}) only if 3/5 − ε > 1/2, i.e. ε < 1/10.
+  - Λ is not pointwise smooth: it has O(1) jumps at integers, and ρ is only finitely differentiable. The "no κ-loss"
+    claim must therefore be argued for a regularised Λ (or the main term xλ_y(u)), with derivative bounds from ρ and
+    Hildebrand–Tenenbaum Thm 3. This is the same "weights differentiable enough" worry as codex #4.
   - Thin pairs (κ up to B^{C₀}) are bounded above with polylog loss by [pp] Lemma DS (smooth numbers in short
     progressions, internal). Their weight is ≍ 1/κ.
 - **(iii) Skewed labels (codex #4; uprime §7.3 item 3).** For labels whose reduced basis is very anisotropic (e.g.
@@ -264,6 +268,9 @@ Separate control of Σ_t|e_t| and of the average of the weights r_t does not con
 stating the exact measure, its multiplicity and domination bounds, and the maximal (over scales) versions of BDH it
 needs is the main missing piece. Harper's BDH has no supremum over x inside the Δ-sum, so scales must be discretised
 (proof critic m9).
+- Harper (arXiv 2412.19644, footnote 1) remarks that his BV, not BDH, admits the inner maximum at cost log^{9/2}.
+- Nearest prior art for weighted moduli: Drappeau's remark after Corollaire 1 (Compositio 2015) on weights
+  λ(q) = q^{o(1)}, and Drappeau, Colloq. Math. 137 (2014). Neither covers incidence or label weights.
 
 ## 6. Algebraic blocks and design DW
 
@@ -273,9 +280,15 @@ over the moduli G(P′), G(P″). These moduli are the rational values themselve
 - dropping the partner's indicator costs 1/ρ ≫ ε^{−1};
 - uprime's CM plan meets the same family as {s·k} with τ-weights (uprime §7.3, items 6–7).
 
-We know no density-relative BV, and no Brun–Titchmarsh bound for smooth numbers to these moduli.
+Density-relative BV over *all* smooth moduli exists: Lee–Venkatesan Lemma 8.5, Theorem U's Lemma 8.5′ and uprime's
+Lemma 8.5H. A Brun–Titchmarsh bound also exists (Friedlander; Harper, Compositio 2016, SNR3), but it loses
+(Xq/Z)^{1−α} ≈ 1/ρ for q ≈ x. What we know no estimate for is the endogenous, partner-weighted family (and the
+τ-weighted products {s·k}) with relative error below ρ.
 
-**6.2 Design DW.** Set F_A := w·F̂_{g,N} + G·R_c, with w uniform among integers in (W_m, 2W_m] coprime to g₁. The
+**6.2 Design DW.** The G·R_c randomisation is Lee–Venkatesan's (JNT 187 (2018) 92–159; arXiv 1805.08873):
+f = f̂ + Σc_i(x − my)y^ix^{d−1−i}. Their "stochastic deepening" (Lemma 5.6) is the closest prior device for avoiding
+second-moment bounds. What DW adds is the integer multiplier w of N, an analogue of the Knuth–Schroeppel kN. We found
+no rigorous-NFS precedent for it; novelty is UNVERIFIED. Set F_A := w·F̂_{g,N} + G·R_c, with w uniform among integers in (W_m, 2W_m] coprime to g₁. The
 multiplier range W_m is renamed so as not to clash with the incidence count W. Take W_m ≥ (2MV₁)²N^{η₀} and
 H ≥ W_mN^{η₀}, i.e. h ≥ 2μ + 2ν + 2η₀ (proof critic m4: H ≥ W_mN^{η₀} suffices for the archimedean shift).
 - F_A(g₀, g₁) = wN, and the resultant is ±wN.
@@ -304,7 +317,8 @@ the root event R_𝔮 one also needs smoothing over a coset mod q (H ≫ qdV) an
 
 **6.3 Consequences [sketch].** Given DW(b), the algebraic pair for fixed g is a det-modulus lattice smooth-pair problem.
 It is handled by the same tools as §5:
-- Lemme 5 at y = B for children and y = B₂ for parents, both with u ≍ D^{3/8};
+- Harper's Thm 2 (BDH, any moduli Q ≤ Ψ) at y = B for children and y = B₂ for parents, both with u ≍ D^{3/8}.
+  Drappeau's Lemme 5 alone covers only |det| ≤ x^η;
 - no mod-q ratio arises for F/q;
 - the moduli are |det|, not G(P′), so the endogenous family of 6.1 disappears.
 
@@ -403,23 +417,41 @@ Reading (fixed in advance):
 
 - **BDH for smooth numbers.**
   - Harper, arXiv 1208.5992, Theorems 1–2 (preprint; Thm 2 confirmed by codex).
-  - Harper, J. London Math. Soc. (2025), doi:10.1112/jlms.70293: BDH variance asymptotics for general sequences and
-    smooth numbers, at large moduli (codex adversarial; we have not read it; it does not directly address the
-    small-modulus weighted problem).
+  - Harper, "Simple Barban–Davenport–Halberstam type asymptotics for general sequences", J. London Math. Soc. 112(4)
+    (2025) e70293 = arXiv 2412.19644.
+    - Its smooth-number asymptotic (Cor. 1) is for x^{0.51} ≤ Q ≤ x, i.e. large moduli.
+    - It does not address our problem.
   - Drappeau, Compositio 151 (2015), Lemme 5.
 - **Large sieve.** Iwaniec–Kowalski Thm 7.13.
 - **Local behaviour of Ψ.**
   - Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Thm 3.
-  - de la Bretèche–Tenenbaum, Ramanujan J. (2005).
+  - de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005) 139–202:
+    - Thm 2.4(i): Ψ(x/d, y) ≪ d^{−α}Ψ;
+    - Thm 2.4(ii): Ψ(x/d, y) = d^{−α}Ψ(1 + O(log(u+1)/log y + log(d+1)/log x));
+    - Ψ_m = g_m(α)Ψ(1 + O(E_m(1+E_m)/u)) (via Drappeau Lemme 1(ii)).
   - Saias, J. Number Theory 32 (1989): smooth approximation Λ(x, y) (UNVERIFIED range).
-  - Short intervals: Hildebrand, J. Number Theory (1986), Thm 3, range x/y^{5/12} (codex; v1 cited the wrong paper).
+  - Short intervals: Hildebrand, J. Number Theory 22 (1986) 289–307.
+    - It gives Ψ(x+z, y) − Ψ(x, y) = zρ(u)(1 + O_ε(log(u+1)/log y)) for xy^{−5/12} ≤ z ≤ x and
+      y ≥ exp((log log x)^{5/3+ε}).
+    - The theorem number ("Thm 3", as Harper cites it) is UNVERIFIED against the original.
+    - QJM 1985 (v1's citation) is the upper bound ≪ Ψ(z, y), not this result.
   - Internal: [pp] Lemma DS.
 - **Ternary smooth equations.** As multidescent §7: Harper, Compositio 152 (2016); Lagarias–Soundararajan; Drappeau,
   MPCPS 2013.
-- **Correction.** Matthiesen–Wang Thm 1.3 assumes Ψ(X, y) > X/log₈X with log₈ the eighth iterated logarithm (codex
-  blind).
-- **Decoupling via the parent count of a label.** No prior use found by us. This is a search result, not a novelty
-  claim.
+- **Correction.** Matthiesen–Wang (Algebra Number Theory 19 (2025) 1881–1946), Thm 1.3, assumes Ψ(N, y) > N/log₈N,
+  where log₈ is the eighth iterated logarithm.
+  - This forces u ≪ log₉N/log₁₀N.
+  - So it is inapplicable at y = L[3/8].
+- **Decoupling via the parent count of a label.** No prior use found by us or by the literature critics in
+  descent/index-calculus analyses.
+  - The inequality itself is standard second-moment (Chebyshev/Cauchy–Schwarz, Paley–Zygmund-type, akin to Janson's
+    codegree term).
+  - This is a search result, not a novelty claim.
+- **Also checked.**
+  - Lagarias–Soundararajan, Proc. LMS 104 (2012) 770–798, and JTNB 23 (2011) 209–234.
+  - Drappeau MPCPS 154 (2013), Thm 1.3: GRH, weighted, error O(1/u).
+  - de la Bretèche–Drappeau, arXiv 1703.03197 (JEMS), Théorème 2.1: hybrid, x^ε ≤ Q ≤ x^{3/5−ε}, τ_k weights, saving
+    only (log x)^{−A} against e^{O(u₂)}, so useless here.
 
 ## 11. Reviews
 
@@ -463,7 +495,20 @@ survives the internal chain.
   multiplicities, which is a real trap; fixed in §3), m7, m8, m9 (supremum over scales; rational pair upper bound via
   Lemma DS), m10 (overclaims), m11 (α/β notation), m12. All applied.
 
-**Opus literature critic:** [pending at the time of this draft; see §11 addendum].
+**Opus literature critics (two read-only instances, on v2): both OK WITH FIXES.**
+- Every checked analytic statement is correct: Harper Thms 1–2, Drappeau Lemme 5, HT86 Thm 3, Saias's range, Hildebrand
+  JNT 1986, IK 7.13, the Matthiesen–Wang log₈.
+- Fixes applied:
+  - Saias: ε < 1/10, Λ not smooth;
+  - Lee–Venkatesan as the source of G·R_c;
+  - §6.1 corrected: density-relative BV over all smooth moduli exists (LV Lemma 8.5, Lemma 8.5′/8.5H), and so does a
+    lossy Brun–Titchmarsh bound (Harper 2016 SNR3);
+  - §6.3 cites Harper Thm 2 rather than Lemme 5;
+  - the Lemme 5 derivation simplified;
+  - dlBT05 theorem numbers; JLMS 2025 content; Harper 2412.19644 footnote 1; Drappeau's weighted-λ remark;
+  - Hildebrand theorem number UNVERIFIED;
+  - journal references.
+- No verdict changed.
 
 **Coordination with `uprime`** (coordinator's message).
 - U′ is proved at 3/8 except the bullet "E[N_𝔮 | E] large enough for PC₃", which uprime moved into PC₃ as Hyp CM.
