@@ -1,0 +1,161 @@
+**Recommendation: MAJOR REVISION.** The level-1 mixed-smoothness argument largely survives this audit, conditional on the stipulated internal chain. The CM proof plan contains false intermediate claims and an unaccounted loss potentially as large as \(B_2\). There is also direct missing prior art.
+
+**FATAL:** I found no demonstrated counterexample to Hyp CM or to the conditional level-1 moment theorem. The issues below block the proposed CM argument; they do not establish that CM is false. Repository left unchanged.
+
+1. **MAJOR — CM2’s average multiplicity uses the wrong child geometry.**  
+   Location: [§7.2, lines 386–389](/Volumes/git/factoring-connection/notes/uprime_results.md:386).
+
+   The upper bound \(O(V_1V_2)\) counts pairs using the entire physical square \(|P'|\le V_2\). But the default reduced-basis box contains only \(\asymp S_2^2\) primitive points, with \(V_2\asymp qS_2\).
+
+   For fixed \(q\), averaging its actual pairs over \(k\le K\asymp V_1V_2/q\) gives
+   \[
+   \frac{\#\mathcal P\,S_2^2}{K}
+   \asymp \frac{V_1S_2}{d\log V_1},
+   \]
+   rather than the asserted \(V_1V_2/(d\log V_1)\). The asserted average is too large by \(q\).
+
+   Thus the displayed upper bound gives a multiplicity ratio \(O(q\,d\log V_1)\), not polylogarithmic. For \(q\asymp B_2\), this overwhelms \(\exp(-cD^{3/8}/\lambda^2)\). This is an identified obstruction to the argument as written, contrary to lines 437–438.
+
+   **Fix:** stratify by actual lattice minima and physical radii, prove sharper multiplicities for reduced-basis boxes, or remove skew labels with a proved incidence-weighted bound. The current calculation supplies none of these.
+
+2. **MAJOR — the fixed-\(q\) large-sieve argument loses the sparse-family density.**  
+   Location: [lines 378–385](/Volumes/git/factoring-connection/notes/uprime_results.md:378).
+
+   Applying Corollary LS with \(Q_0=qK\), \(R_0=q\) bounds the conductor-divisible-by-\(q\) contribution by
+   \[
+   \ll \pi(B)(\log x)^2
+   \left(B^{3/2}x/q+B^{1/2}\sqrt{x}\,qK\right).
+   \]
+   For the family \(\{qk:k\le K\}\), the required density-relative scale is \(\Psi(x,B)/q\). Dividing the first term by that scale leaves
+   \[
+   \pi(B)(\log x)^2 B^{3/2}/\rho_B(x),
+   \]
+   which provides no saving, however large \(q\) is.
+
+   Drappeau’s Lemme 5 really does permit all moduli \(Q\le x\); that citation is correct. Its absolute normalization does not resolve this fixed-\(q\) problem. [Drappeau, Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf)
+
+   **Fix:** average large children over prime windows too, with the correct incidence weights, or prove a stronger estimate specifically for moduli divisible by a fixed prime. Also exclude or separately treat \(q\mid k\): E2 requires coprime factors.
+
+3. **MAJOR — the claimed transverse proportion is false for conservative boxes.**  
+   Location: [lines 374–375](/Volumes/git/factoring-connection/notes/uprime_results.md:374).
+
+   Take child label \(r=1\). For odd \(q\), a reduced basis is
+   \[
+   e_1=(1,1),\qquad e_2=((q-1)/2,-(q+1)/2).
+   \]
+   Choose a prime \(b\) satisfying \(2b\equiv1\pmod q\), and parent \(P=(1-b,b)\). Then \(P\) has label \(1\), is primitive, and satisfies the parent coordinate-window geometry.
+
+   When \(q\gg S_2\), almost every child point is nearly parallel to \(P\). The asserted positive transverse proportion disappears. An exact diagnostic with \(q=1009\), \(S_2=24\), \(P=(-1015558,1015559)\) leaves **one transverse point among 719** primitive children modulo sign.
+
+   **Fix:** prove these configurations have negligible incidence weight, or use geometry adapted to the actual angle. Dropping them without such a bound can lose an entire \(S_2^2\) factor.
+
+4. **MAJOR — the proposed two-point smoothing statement has impossible scales and insufficient slice control.**  
+   Location: [lines 392–399](/Volumes/git/factoring-connection/notes/uprime_results.md:392).
+
+   Here \(V_2=qS_2\) is only a worst-case envelope. For a regular child lattice, all box points can have norm \(O(\sqrt q\,S_2)\). Their evaluation support is then at most
+   \[
+   O\!\left(dH(\sqrt q\,S_2)^{d-1}\right),
+   \]
+   far smaller than the proposed second-coordinate width \(HV_2^{d-1}/\varpi\). A smoothing mixture with substantial mass on boxes of that width cannot approximate this marginal support.
+
+   Furthermore, a convex set containing a large rectangle need not have long vertical slices **for every** admissible \(z_1\). Slices near its boundary can be arbitrarily short. The subsequent assertion for every acceptable parent value therefore does not follow even from the proposed lemma.
+
+   **Fix:** formulate smoothing using \(|P|\), \(|P'|\), angle and image-lattice geometry; quantify small-layer and boundary mass in the parent acceptance measure. Retaining enough acceptable parent mass in central slices is an additional lower-bound obligation.
+
+5. **MAJOR — “good modulus” does not yet give the rational fibre count claimed.**  
+   Location: [lines 373–377](/Volumes/git/factoring-connection/notes/uprime_results.md:373).
+
+   Three conditions are missing:
+
+   - The admissible \(j\)’s must satisfy \(\gcd(g_0,g_1)=1\); their cardinality alone does not make them a complete AP.
+   - Since \(P'\equiv\kappa P\pmod\Delta\),
+     \[
+     G(P')\equiv\kappa\ell n\pmod\Delta.
+     \]
+     This residue need not be reduced: \(n\) can share small primes with \(\Delta\). The definition of goodness controls reduced classes.
+   - Half-relative-error estimates for cumulative counts do not automatically give lower bounds in arbitrary translated intervals, especially with polylogarithmically shortened ranges.
+
+   **Fix:** prove a weighted AP lower bound incorporating primitivity and smooth gcd factors, and use sufficiently accurate interval goodness. Stronger grids and smaller error thresholds are affordable analytically, but the arithmetic restrictions still require proof.
+
+6. **MAJOR — the product-family BV and §7.3’s conditioning answer remain substantive missing theorems.**  
+   Location: [lines 405–433](/Volumes/git/factoring-connection/notes/uprime_results.md:405).
+
+   The schematic E8 replacement does not specify the Möbius-variable dependence needed for the convergent E6 sum. It also introduces conductor divisor weights such as \(\tau(r)\), which the quoted unweighted Fact D does not control automatically.
+
+   Bounding those weights by their maximum is inadequate: for \(R=B^C\),
+   \[
+   \log\max_{r\le R}\tau(r)\asymp D^{3/8},
+   \]
+   exceeding the proposed saving exponent \(D^{3/8}/\lambda^2\). A suitable weighted character-sum theorem may exist or be provable, but it must be supplied.
+
+   The claimed \(\exp(O(D^{1/4}\lambda))\) divisor-switching loss **would** be absorbed by the stated saving. That numerical comparison is correct. It does not absorb issue 1’s \(q\)-loss.
+
+   **Fix:** state and prove the full product-family estimate with divisor weights, smooth gcd reductions, endpoints and incidence multiplicities. Counting badness in the incidence measure is a valid strategy; saying bad moduli are deterministic does not establish the required weighted bound. Consequently §7.3 has not yet answered the earlier conditioning objection.
+
+7. **MAJOR — direct hybrid prior art was missed.**  
+   Location: [§10, lines 498–500](/Volumes/git/factoring-connection/notes/uprime_results.md:498).
+
+   De la Bretèche–Drappeau, *JEMS* **22** (2020), **Theorem 2.1**, explicitly treats \(y_{\rm value}\)-smooth values averaged over \(y_{\rm modulus}\)-smooth moduli, with separate parameters, modulus-density normalization and divisor weights. Its equation (2.2) includes a maximum over reduced residues below \(x^{1/2-\varepsilon}\). [Theorem 2.1](https://arxiv.org/pdf/1703.03197)
+
+   This is direct prior art for the hybrid concept. It does **not** immediately replace 8.5H: its stated range includes \(Q\ge x^\varepsilon\), and its bound carries \(\exp(O(u_{\rm modulus}))\). Those distinctions matter here.
+
+   Pascadi also explicitly identifies smooth-modulus variants following that work. His beyond-\(1/2\) distribution theorem should not be confused with unrestricted maximal-residue BV. [Pascadi, Remark 1.8](https://doi.org/10.1112/S0010437X2500747X)
+
+   **Fix:** replace “no prior hybrid statement found” with a precise comparison of range, saving, normalization, residues and the distinguished large prime. Keep Granville 1993, Fouvry–Tenenbaum 1996, Harper and Drappeau distinguished by their actual error scales and residue uniformity. Harper’s maximal-residue theorem retains its \(Q\sqrt{\Psi}\log^{7/2}x\) term. [Harper, Theorem 1](https://arxiv.org/pdf/1208.5992)
+
+8. **MAJOR for experimental interpretation — E2 does not sample CM’s incidence measure.**  
+   Location: [§9.2, lines 483–488](/Volumes/git/factoring-connection/notes/uprime_results.md:483), [experiments.py:48](/Volumes/git/factoring-connection/src/uprime/experiments.py:48).
+
+   The experiment selects the **first accepted parent** in each box. CM weights **all** parent–child incidences by \(\nu(\ell,P,q)\). These distributions differ, and neither a mean ratio nor its confidence interval controls CM’s exceptional incidence mass \(\le\mu_1/\log N\).
+
+   The same-field null is a useful exploratory control for field quality. It conditions on the entire realized field, however, so shared depletion of all its child labels can disappear from the comparison. The ratio \(1.005\) supports little additional within-field label bias under this sampling rule; it does not establish “the behaviour CM asserts.”
+
+   **Fix:** sample all accepted incidences or use appropriate sampling weights; report lower-tail behavior and repeated-label dependence; retain the same-field comparison as a separate diagnostic.
+
+9. **MINOR — the null-label sampler is not exactly uniform as documented.**  
+   Location: [toy.py:373–383](/Volumes/git/factoring-connection/src/uprime/toy.py:373).
+
+   Randomly permuting primes, accepting each with probability \(\#\mathrm{roots}/d\), and stopping at the first success does not sample labels uniformly without replacement. For two primes with respectively one and three roots at \(d=3\), the one-root prime is selected with probability \(1/6\), rather than the uniform-label probability \(1/4\).
+
+   **Fix:** rejection-sample primes with replacement, or explicitly sample the available labels. This matters when interpreting a ratio only \(0.5\%\) from one.
+
+10. **MINOR — 8.5H needs local statement repairs, but its central hybrid step works.**  
+    Location: [lines 128–159](/Volumes/git/factoring-connection/notes/uprime_results.md:128).
+
+    Step A’s displayed \(1/(4\log\log x)\) bound drops the \(1+C_\alpha\) factor. The weaker bound still gives \(\alpha\ge0.99\) eventually. Step C must include \(Q'\le Q\), since its density floor was proved only through \(Q\). Empty conductor ranges should be treated before invoking Corollary LS.
+
+    Crucially, E3 at \(y_2\) produces divisors of \(\operatorname{rad}(s)\), hence \(y_1\)-smooth divisors. **E8 at \(y_1\) is applicable.** The separate floors (B′), strengthened bound (A′), and treatment of \(y_2^{-\delta_D}\) close as stated after these repairs.
+
+    Step D needs the distinguished prime above \(y_1\); Step E needs it above \(y_2\). H5 supplies both. The normalization by \(\rho_1(Q/Y)/\log Y\) is correct up to the stated absolute comparison constants. H4 is the principal new transfer constraint; the additional mixed density-floor hypothesis in H3 should also be acknowledged.
+
+11. **MINOR — SQF’s proof omits its \(q\mid g_1\) construction.**  
+    Location: [lines 215–226](/Volumes/git/factoring-connection/notes/uprime_results.md:215).
+
+    The expression \(g_0/g_1\) is undefined in this case. The lemma survives: \(g_0\ne0\), and one may choose distinct finite roots arbitrarily and scale the product to obtain the required nonzero value at \((g_0,0)\).
+
+    The box-law domination by \(e\), binary discriminant argument, Schwartz–Zippel degree, and bounds in (a)–(c) otherwise check out. The \(p^2\) estimate itself does not require \(p^2\le2H+1\).
+
+12. **MINOR — CS′ is analytically sound but its computational certification is incomplete.**  
+    Location: [lines 275–281](/Volumes/git/factoring-connection/notes/uprime_results.md:275).
+
+    The PNT error estimate is small enough near the saddle point. A concrete source is Trudgian’s Theorem 1:
+    \[
+    |\theta(t)-t|\le t\sqrt{8/(17\pi)}\,X^{1/2}e^{-X},
+    \qquad X=\sqrt{\log t/6.455},\quad t\ge149.
+    \]
+    Weakening its exponential gives the requested shape. [Trudgian](https://arxiv.org/pdf/1401.2689)
+
+    What remains to write is certified quadrature and an approximate-root bisection argument. The approximating saddle sum is decreasing; uniform control near the true root locates its root, and the Rankin logarithm has zero first derivative there. Thus factor-two accuracy is achievable without enumerating to \(B_2\). Platt–Trudgian provides stronger alternatives; no stronger PNT is needed. [Platt–Trudgian](https://arxiv.org/pdf/1809.03134)
+
+13. **MINOR — search-count and logical qualifications.**  
+    Locations: [line 313](/Volumes/git/factoring-connection/notes/uprime_results.md:313), [lines 340–349](/Volumes/git/factoring-connection/notes/uprime_results.md:340), [lines 359–364](/Volumes/git/factoring-connection/notes/uprime_results.md:359).
+
+    The bound on the **entire** root lattice square needs the regularity precheck; irregular lattices can contain many nonprimitive points although they contain no parent candidates. Define \(W_1\) operationally after that precheck.
+
+    Candidate examinations are bounded by \(W_1(1+\bar mW_2)\). Arithmetic cost also includes the \(B^{1+o(1)}\) batch/scan term, as the final cost formula correctly recognizes.
+
+    CM is a sufficient first-moment condition for the weighted PC₃ route, rather than a logically necessary “part” of PC₃: negative factorial covariance can cancel its displayed \(1/\mathbb EN\) term.
+
+The remaining checks support the conditional level-1 result. GM-U′ and the strict (SQ) subtraction close; DS-U′ and L2-U′ preserve separate value and multiplicity smoothness without an identified \(L[1/2]\) loss. Add the inherited upper range \(X,z\le N\) to their stand-alone statements. The height increase preserves valuesizes, Kern-U, W-U, the window margins and LV6’s polynomial bounds. The stated \(\sigma_1,\sigma_2\), super-polylogarithmic child threshold, \(L_N[7/20]\) auxiliary factorization cost, canonical-output OS/W argument and global IR rejection estimate check out. The final cost formula remains conditional on the required child-supply and covariance hypotheses. The 27 parameter checks pass, but verify leading-order bookkeeping only.
+
+**My probability that CM is provable by a focused effort along a repaired version of this plan: 25%.** The level inequalities are encouraging. The missing incidence-relative distribution estimates, geometry and parent-mass retention make 50–70% too optimistic. The most decisive next step is repairing CM2’s multiplicity normalization before developing the product-family BV.
