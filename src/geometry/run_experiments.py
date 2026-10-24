@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import time
+from math import isqrt
 
 from src.common.instances import balanced_semiprime
 from src.geometry import modcurve as mc
@@ -114,6 +115,7 @@ def e3(out):
     for n in (32, 64):
         tot = det = correct = consistent_true = 0
         nunk = []
+        ncons_hist = {}
         seed = 0
         while tot < 2000:
             inst = balanced_semiprime(n, seed)
@@ -124,6 +126,7 @@ def e3(out):
             p, q = inst.labels["factors"]
             counts = {l: H.x0_count_oracle(p, q, l) for l in L}
             eps, ncons, unk = D.decode_eps_from_x0_counts(N, counts)
+            ncons_hist[ncons] = ncons_hist.get(ncons, 0) + 1
             # check the true pattern is consistent (recompute)
             true = {D0: D.kron(D0, p) for D0 in unk}
             ok_true = True
@@ -141,7 +144,7 @@ def e3(out):
                 correct += eps == D.kron(-4, p)
         rec = {"exp": "E3", "n": n, "instances": tot, "eps_determined": det, "eps_correct": correct,
                "true_pattern_consistent": consistent_true, "mean_unknowns": sum(nunk) / len(nunk),
-               "seeds_scanned": seed}
+               "seeds_scanned": seed, "consistent_patterns_hist": ncons_hist}
         out.write(json.dumps(rec) + "\n")
         print(rec)
 
@@ -197,9 +200,40 @@ def e4(out):
             print(rec)
 
 
+
+def explore(out):
+    """Exploratory runs (not pre-registered; added after the proof critic asked for them to be archived)."""
+    ok = mq = 0
+    for seed in range(300, 340):
+        inst = balanced_semiprime(64, seed)
+        N = inst.N
+        p, q = inst.labels["factors"]
+        r, qq = D.from_catmap(N, lambda t, rr: H.catmap_oracle(p, q, t, rr), ts=(3,))
+        ok += r == (p, q)
+        mq = max(mq, qq)
+    rec = {"exp": "explore_catmap_t3", "n": 64, "seeds": [300, 339], "splits": ok, "max_queries": mq}
+    out.write(json.dumps(rec) + "\n")
+    print(rec)
+    okN = okC = 0
+    for seed in range(300, 320):
+        inst = balanced_semiprime(64, seed)
+        N = inst.N
+        p, q = inst.labels["factors"]
+        R = 4 * N * N + 1
+        M = R * R
+        neck = (pow(1 + R, N, M) + (p - 1) * pow(1 + R, q, M) + (q - 1) * pow(1 + R, p, M)
+                + (p - 1) * (q - 1) * (1 + R)) % M          # oracle K at k = 1 + R, modulus R^2
+        okN += D.from_pillai(N, ((neck - N) % M) // R) == (p, q)
+        J2 = H.catmap_oracle(p, q, 2 + R, M) // R             # oracle C at trace 2 + R, modulus R^2
+        okC += D.split_from_s(N, isqrt(N * N + 1 - J2 + 2 * N)) == (p, q)
+    rec = {"exp": "explore_one_query", "n": 64, "seeds": [300, 319], "neck_splits": okN, "cat_splits": okC}
+    out.write(json.dumps(rec) + "\n")
+    print(rec)
+
+
 if __name__ == "__main__":
     which = sys.argv[1:] or ["e1", "e2", "e3"]
     os.makedirs(RAW, exist_ok=True)
     for w in which:
         with open(os.path.join(RAW, f"geometry_{w}.jsonl"), "w") as out:
-            {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[w](out)
+            {"e1": e1, "e2": e2, "e3": e3, "e4": e4, "explore": explore}[w](out)

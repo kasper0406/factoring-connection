@@ -248,6 +248,10 @@ def decode_eps_from_x0_counts(N: int, counts: Dict[int, int]):
     For N = pq: prod_{r|N}(1 + chi(r)) = 0 if chi(N) = -1, else 2(1 + chi(p)); chi(N) is a Jacobi symbol."""
     eqs = []
     unknown: Set[int] = set()
+    for l in counts:
+        for D0, _ in x0_count_terms(l):
+            if gcd(D0, N) > 1:  # rule 3: a small discriminant shares a factor with N (needs p <= 4l)
+                raise ValueError(("nonunit", gcd(D0, N)))
     for l, cnt in counts.items():
         terms = x0_count_terms(l)
         sig = l + 1
@@ -297,6 +301,10 @@ def from_x0_count_sq(N: int, l: int, count: int):
     sig = 1 + l + l * l
     lam = l + 2
     D0s = sorted({D0 for D0, _ in terms} | {-4, -3})
+    for D0 in D0s:
+        if gcd(D0, N) > 1:  # rule 3; the formula below assumes p, q > 4 l^2
+            g = gcd(D0, N)
+            return (g, N // g), 0
     unk = [D0 for D0 in D0s if kron(D0, N) == 1]
     tried = 0
     for pat in product((-1, 1), repeat=len(unk)):

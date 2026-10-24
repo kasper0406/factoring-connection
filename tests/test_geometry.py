@@ -81,3 +81,12 @@ def test_x0_fl_counts_give_quadratic_symbols_only():
         eps, ncons, unk = D.decode_eps_from_x0_counts(inst.N, counts)
         assert eps == D.kron(-4, p)
         done += 1
+
+
+def test_trace_formula_brute_vs_product_branch():
+    for N in (5 * 7, 7 * 11, 11 * 13, 13 * 17, 7 * 11 * 13, 17 * 19):
+        f = mc.factor_small(N)
+        for n in (2, 3, 4, 9):
+            if N % n == 0 or min(f) ** 2 <= 4 * n:
+                continue
+            assert mc.trace_formula_n(f, n, brute=True) == mc.trace_formula_n(f, n, brute=False)

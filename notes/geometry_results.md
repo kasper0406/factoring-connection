@@ -1,6 +1,6 @@
 # geometry: geometric constructions from N, and where the factors hide (phase 26)
 
-Agent `geometry`, 2026-10-24. **Version v1.1 (codex blind round integrated; before the codex adversarial round and the Opus critics).**
+Agent `geometry`, 2026-10-24. **Version v2 (codex blind round and Opus proof critic applied; before the codex adversarial round and the literature critic).**
 - Pre-registration: `notes/geometry_prereg.md` (commit `5ae824e`, before any code ran; amendment A1 for E4 committed
   before E4 code was written).
 - Code: `src/geometry/{modcurve,curves,harness,decoders,run_experiments}.py`. Tests: `tests/test_geometry.py`.
@@ -40,7 +40,7 @@ Every construction we examined fails one of the three, in one of four recurring 
 - **The feature encodes the factors, so computing it is as hard as factoring.** The cleanest example: the
   **modular curve X_0(N)**. It is defined from N alone. Its hyperbolic area is (π/3)·ψ(N), and for N = pq,
   ψ(N) = (p + 1)(q + 1) = N + (p + q) + 1. So the area gives p + q, and p + q with pq = N gives p and q. The genus
-  of X_0(N) does the same (up to four candidates). But every way to compute the area or genus either uses the
+  of X_0(N) does the same (up to four candidates). But every known way to compute the area or genus either uses the
   formula (which needs the factors) or builds the surface explicitly. An explicit surface has at least about
   N/3 triangles, because a surface of genus g needs ≥ 4g − 4 triangles and g ≈ N/12. That is exponential in the
   number of digits of N.
@@ -62,8 +62,8 @@ independently by GPT-6.1-sol from the moduli interpretation).** For X_0(N) the l
   one of the ψ(N) cyclic subgroups of order N is then rational, so the whole fibre of X_0(N) → X(1) above each
   supersingular point is counted. Over F_ℓ, Frobenius is never scalar (4ℓ is not a square), and only the subgroups
   fixed by a non-scalar Frobenius count, i.e. square roots of t² − 4ℓ mod N.
-- The same split holds for X_1(N): it has exactly φ(N)/2 points over F_ℓ once N > (√ℓ + 1)², all of them cusps, so
-  #X_1(N)(F_2) alone factors N.
+- For X_1(N) there is no QR tier at all: once N > (√ℓ + 1)² and every prime factor of N exceeds ℓ + 1, X_1(N) has
+  exactly φ(N)/2 points over F_ℓ, all of them cusps. So #X_1(N)(F_2) alone factors N.
 
 **The ladder of lattice points on spheres** shows the same three tiers (cross-referencing `analytic`):
 - the circle x² + y² = N: r₂(N) ∈ {0, 16} is one QR bit; two essentially different points factor N; finding one
@@ -72,15 +72,18 @@ independently by GPT-6.1-sol from the moduli interpretation).** For X_0(N) the l
   an ambiguous form and a factor, though one value is not known to factor every N;
 - the 3-sphere: r₄(N) = 8σ(N) = 8(N + p + q + 1) (Jacobi) factors N at once.
 
-**General principle (a proved statement in each model, not a theorem about all geometry).** Invariants of a compressed
-object built from N fall into exactly the tiers the project already knows:
+**Pattern (HEURISTIC; only the first and third bullets are proved, and only in their stated models).** Invariants of a
+compressed object built from N fell into the tiers the project already knows:
 - invariants computed through a fixed finite target (homomorphisms to a fixed group, homology with F_ℓ
-  coefficients, covers of bounded degree) depend only on N mod m (Prop AGG-H below);
-- local fixed-point counts give quadratic symbols (Lefschetz-type data → QR);
+  coefficients, covers of bounded degree) depend only on N mod m (Prop AGG-H, Prop CYC; PROVED);
+- fixed-point counts of a single *non-scalar* transformation (Frobenius over a prime field on X_0(N), one hyperbolic
+  word acting on P¹(Z/N)) give quadratic symbols. Fixed-point counts of scalar or near-identity transformations
+  (Frobenius over F_{ℓ²} on X_0, Frobenius on X_1, the identity word) count a whole size-N set and are FACT;
 - global counts of a size-N set (area, Euler characteristic, number of points of P¹(Z/N), Burnside counts,
-  primitive periodic orbits) are multiplicative or Möbius sums over the divisors of N and are factoring-equivalent
-  (Props MF, NECK, CAT);
-- cycle structures and periods are orders, hence factoring-equivalent by Miller/Shor-type reductions.
+  primitive periodic orbits) are multiplicative or Möbius sums over the divisors of N. With non-monomial weights
+  they are factoring-equivalent (Props MF, NECK, CAT; PROVED);
+- cycle structures and periods are orders of elements, which we expect to be factoring-hard (Shor-type), though
+  for a single fixed matrix this is not Miller's random-element reduction and is not proved here.
 
 **What remains OPEN** (§8): (i) whether the counts #X_0(N)(F_ℓ), ℓ ≤ L, for a growing L ≈ (log N)^{O(1)} — that is,
 the Legendre symbols of p at all small discriminants — let one find p in subexponential time. No method is known;
@@ -132,7 +135,7 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 2 | Lattice points under xy = N in a strip, D_N(X) = Σ_{d≤X}⌊N/d⌋ | yes | D_N(X) − D_{N−1}(X) = #{d ≤ X : d \| N}; bisection | Õ(N^{1/3}) (convex-hull walk, Θ(N^{1/3}) hull vertices) | FACT, EXP (`analytic` §2; `newfamily` row 50) |
 | 3 | Full Dirichlet count D(N) = Σ_{m≤N} d(m) | yes | first difference d(N) | Õ(N^{1/3}) | ω (useless for semiprimes) |
 | 4 | Circle x² + y² = N | yes | r₂(pq) ∈ {0, 16} decides ε when N ≡ 1 (4); two inequivalent points factor N (Euler) | one point ⇔ √−1 mod N (Cornacchia) | QR (count); OPEN (one point); FACT (two) |
-| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) (N ≡ 1, 2 mod 4, squarefree; Gauss) | h(−4N): N^{1/5+o(1)} under ERH | class number: a known h(−4N) yields an ambiguous form with constant probability on typical N, but the reachable order-2 class can be the non-splitting (2, 2, ·) class for some 2-Sylow shapes, so one value is not known to factor every N (codex). FACT-likely, HEURISTIC |
+| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) for N ≡ 1, 2 (mod 4), 24h(−N) for N ≡ 3 (mod 8), 0 for N ≡ 7 (mod 8) (N squarefree > 3; Gauss) | h(−4N): L[1/2] under GRH (Hafner–McCurley 1989) | class number: a known h(−4N) yields an ambiguous form with constant probability on typical N, but the reachable order-2 class can be the non-splitting (2, 2, ·) class for some 2-Sylow shapes, so one value is not known to factor every N (codex). FACT-likely, HEURISTIC |
 | 6 | 3-sphere in Z⁴ | yes | r₄(N) = 8σ(N) = 8(N + s + 1), N odd (Jacobi) | ≍ N samples via theta extraction | FACT (`analytic` table) |
 | 7 | Conic x² + y² ≡ 1 (mod N) (points over Z/N) | yes | # = (p − χ₄(p))(q − χ₄(q)) = N − χ₄(p)s + 1 or N ± (q − p) − 1 | count over Z/N | FACT (§4.1, Prop MF′) |
 | 8 | Lattice polygons with poly(log N)-bit vertices (Pick); Barvinok counts in fixed dimension | yes | Pick: A = I + B/2 − 1, B = Σ gcd(edge) | poly time (Barvinok 1994) | AGG / E (`newfamily` rows 9, 49) |
@@ -144,17 +147,17 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 
 | # | Feature of X_0(N) / X_1(N) | (ii) | (iii) | (iv) |
 |---|---|---|---|---|
-| 12 | Hyperbolic area (π/3)ψ(N) = index [SL₂(Z):Γ_0(N)] = \|P¹(Z/N)\| = degree of X_0(N) → X(1) = degree of the modular polynomial Φ_N | ψ(pq) = N + s + 1 | any explicit cell structure has ≥ ψ/6 − O(1) faces; Φ_N has degree ψ(N) | FACT (Prop X0-1), EXP |
+| 12 | Hyperbolic area (π/3)ψ(N) = index [SL₂(Z):Γ_0(N)] = \|P¹(Z/N)\| = degree of X_0(N) → X(1) = degree of the modular polynomial Φ_N | ψ(pq) = N + s + 1 | any explicit CW structure has ≥ ψ/6 − 7 edges; Φ_N has degree ψ(N) | FACT (Prop X0-1), EXP |
 | 13 | Genus g(X_0(N)) = 1 + ψ/12 − ν₂/4 − ν₃/3 − ν∞/2 | 4 candidates for ψ | triangulation ≥ 4g − 4 triangles; Farey symbol (Kulkarni) Θ(g + cusps); modular-symbol space dimension 2g + ν∞ − 1 | FACT, EXP |
 | 14 | Cusps ν∞ = Σ_{d\|N} φ(gcd(d, N/d)) = 2^{ω(N)} (squarefree) | ω | — | ω |
 | 15 | Cone points ν₂ = ∏(1 + (−1/r)), ν₃ = ∏(1 + (−3/r)) | ν₂ ∈ {0, 4} decides ε on N ≡ 1 (4) | — | QR |
-| 16 | Points over F_ℓ: #X_0(N)(F_ℓ) = 2^{ω} + ½Σ_{t²<4ℓ}Σ_f h_w((t²−4ℓ)/f²)∏_{r\|N}(1 + ((t²−4ℓ)/r)) | Legendre symbols at \|D\| ≤ 4ℓ | E3: the counts for ℓ ≤ 13 determine ε and all ≈ 7 unknown symbols, 4000/4000 | QR (Prop X0-2) |
+| 16 | Points over F_ℓ: #X_0(N)(F_ℓ) = 2^{ω} + ½Σ_{t²<4ℓ}Σ_f h_w((t²−4ℓ)/f²)∏_{r\|N}(1 + ((t²−4ℓ)/r)) | Legendre symbols at \|D\| ≤ 4ℓ | E3: the counts for ℓ ≤ 13 determine ε in 4000/4000; the full ≈ 7-symbol pattern in 3461/4000 (otherwise 2 patterns) | QR (Prop X0-2) |
 | 17 | Points over F_{ℓ²}: (ℓ − 1)ψ/12 + bounded QR terms | ψ | E4: 800/800 split from one count | FACT (Prop X0-3) |
-| 18 | Points of X_1(N) over F_ℓ, N > (√ℓ+1)²: φ(N)/2 rational cusps, no other points | φ | — | FACT (Prop X1) |
+| 18 | Points of X_1(N) over F_ℓ, N squarefree, N > (√ℓ+1)², all r \| N > ℓ + 1: φ(N)/2 rational cusps, no other points | φ | — | FACT (Prop X1) |
 | 19 | Lefschetz number of the Fricke involution w_N: #fix = class numbers h(−4N) (+ h(−N) if N ≡ 3 mod 4) (Ogg 1974; Fricke) | h | as #5 | as #5 |
-| 19a | Genus of X_1(N); dimensions dim S_k(Γ_0(N)) | g₁ = 1 + J₂(N)/24 − ¼Σ_{d\|N}φ(d)φ(N/d) (N ≥ 5); dim S_{k+12} − dim S_k = ψ(N) | Θ(N²) cosets for Γ_1 | FACT (codex; Gu–Martin 2019 for dimension counts) |
-| 20 | Spectrum of the Laplacian / Selberg zeta / random walks on Γ_0(N)\H or its coset graph | Weyl law: area; return counts of one word W: fixed points of W on P¹(Z/N) = ∏(1 + ((tr²W − 4)/r)) | discretisation of size ψ(N) | Weyl term FACT+EXP; return counts QR; cycle structure of W = orders, FACT (Shor-type) |
-| 21 | Bianchi orbifolds Γ_0(N·O_K)\H³ | covolume × ∏_{r\|N}(r² + 1 or (r + 1)²) | Swan/Riley domains have size ∝ index | FACT, EXP |
+| 19a | Genus of X_1(N); dimensions dim S_k(Γ_0(N)) | g₁ = 1 + J₂(N)/24 − ¼Σ_{d\|N}φ(d)φ(N/d) (N ≥ 5); dim S_{k+12} − dim S_k = ψ(N) for even k ≥ 4 (ψ − 1 at k = 2) | Θ(N²) cosets for Γ_1 | FACT (codex; Gu–Martin 2019 for dimension counts) |
+| 20 | Spectrum of the Laplacian / Selberg zeta / random walks on Γ_0(N)\H or its coset graph | Weyl law: area; return counts of one word W: fixed points of W on P¹(Z/N) = ∏(1 + ((tr²W − 4)/r)) | discretisation of size ψ(N) | Weyl term FACT+EXP; fixed points of one word W ≢ ±I mod every r \| N: QR; total return counts include words ≡ ±I mod p (or trivial) and, by mixing, tend to 1/ψ(N): FACT+EXP (proof critic); cycle structure of W = orders (expected FACT, not proved) |
+| 21 | Bianchi orbifolds Γ_0(N·O_K)\H³ | covolume × ∏_{r\|N}(r² + 1 inert, (r + 1)² split, r(r + 1) ramified) | Swan/Riley domains have size ∝ index | FACT, EXP |
 
 ### 2.3 Topology and arithmetic topology (§5)
 
@@ -164,7 +167,7 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 23 | Invariants of L(N, q): H₁ = Z/N, Reidemeister torsion, Casson–Walker, d-invariants, WRT, spectrum | Dedekind sums, Gauss sums, lattice counts | Euclid recursions | AGG / E (`newfamily` rows 13, 31; Prop DSF: the local part of s(a, N) is FACT) |
 | 24 | Groups/manifolds with N in exponents or surgery coefficients (L(N,q), M(N,1) on a fixed knot, mapping tori of φ^N): #Hom(π₁, G) for fixed finite G; covers of degree ≤ k; Fox colourings; Dijkgraaf–Witten with fixed gauge group | divisors appear only for target size ≥ p | poly(log N) | AGG (Prop AGG-H) |
 | 25 | N-fold cyclic (branched) covers Σ_N(K) of a fixed knot K | \|H₁\| = ∏_{d\|N, d>1}\|Res(Δ_K, Φ_d)\|; dim H₁(Σ_N; F_ℓ) | the integer has ≍ N·m(Δ_K) digits; mod-M reductions | AGG with fixed coefficients (Prop CYC); EXP as integers |
-| 26 | Primitive part Σ_{d\|N} μ(N/d)\|H₁(X_d)_tors\| for fibred K (= primitive periodic points of the monodromy) | Möbius over divisors | — | FACT (Prop CAT) |
+| 26 | Primitive part Σ_{d\|N} μ(N/d)\|H₁(X_d)_tors\| for fibred K (= primitive periodic points of the monodromy) | Möbius over divisors | — | for the figure-eight knot (t = 3): small-modulus decoder 40/40 (exploratory, multi-query; experimentally supported). Prop CAT's one-query trace 2 + R is not a knot monodromy (Δ(1) = 2 − t ≠ ±1) |
 | 27 | Torus knot T(p, q), Brieskorn spheres Σ(p, q, r) | Δ_{T(p,q)} = Φ_{pq} when p, q prime; genus φ(N)/2 | need p, q to build | (i) no |
 | 28 | Torus knot T(2, N), 2-bridge knots b(N, q) | Δ_{T(2,N)} = (t^N + 1)/(t + 1) factors over Q as ∏_{d\|N, d>1}Φ_{2d}; b(N,q) is Fox m-colourable iff gcd(m, N) > 1 | polynomial factorisation of degree N − 1; gcd | R / EXP |
 | 29 | Mazur–Morishita: Spec Z[1/N] as the complement of the "link" of N | components ↔ primes; H¹_et(Spec Z[1/(2N)], μ₂) = (Z/2)^{2+ω}; basis of Z[1/N]^× = the primes | Kummer theory | dimension 2 + ω; basis FACT (Prop KUM) |
@@ -231,14 +234,17 @@ For N = pq (odd), each part of the signature lands in a different tier:
 | cusps | 4 | ω |
 
 **Prop X0-1 (PROVED, elementary).** From N = pq and g = g(X_0(N)) one recovers p, q in polynomial time.
-*Proof.* ν∞ = 4 and ν₂, ν₃ ∈ {0, 4}, so ψ = 12(g + 1) + 3ν₂ + 4ν₃ takes one of four values. For each, set
+*Proof (p ≥ 5; for p = 3, ν₃ ∈ {0, 2} and two more candidates are needed).* ν∞ = 4 and ν₂, ν₃ ∈ {0, 4}, so
+ψ = 12(g + 1) + 3ν₂ + 4ν₃ takes one of four values. For each, set
 s = ψ − N − 1 and test whether s² − 4N is a square with root of the right parity; the correct ψ passes and gives
-p, q = (s ∓ √(s² − 4N))/2. A wrong candidate either fails or gives the same s. ∎ (E2: 400/400.)
+p, q = (s ∓ √(s² − 4N))/2; a wrong candidate fails the test. ∎ (E2: 400/400.)
 
 *General N (codex, PROVED from the same formulas).* For N coprime to 11·23, multiplying the level by 11 or 23 kills
 both elliptic terms ((−1/11) = (−3/11) = −1, likewise for 23) and doubles the cusps, so
-g(23N) − g(11N) = ψ(N); a known ψ(N) splits N in randomized polynomial time because r + 1 | ψ(N) for every r | N
-(Lucas-type exponent splitting in (Z/N)[X]/(X² − D)). For X_1: J₂(N) = 2g₁(7N) − 3g₁(5N) + 1 (gcd(N, 35) = 1).
+g(23N) − g(11N) = ψ(N) (proof critic: 0 failures for admissible N < 600). For squarefree N, ψ(N) = σ(N), and
+Bach–Miller–Shallit (SIAM J. Comput. 15 (1986)) factor N from σ(N) in randomized polynomial time; for non-squarefree
+N one needs their argument, or Miller's 2-adic step, written out (the naive "r + 1 | ψ" Lucas argument fails when
+also r − 1 | ψ for every r, e.g. N = 15, ψ = 24). For X_1: J₂(N) = 2g₁(7N) − 3g₁(5N) + 1 (gcd(N, 35) = 1).
 Prior art on factoring from modular-form dimension counts: M. Gu and G. Martin, *Factorization tests and algorithms
 arising from counting modular forms and automorphic representations*, Canad. Math. Bull. 62 (2019) 81–97 (codex:
 their Thm 10 uses two automorphic-representation counts and a newform count; it is not a one-value theorem).
@@ -281,7 +287,9 @@ Tr(T_n | S_2(Γ_0(N))) = A1 + A2 + A3 + A4, where
 
 E1/E4 verified this implementation against: level 1 (trace 0, 50 values); nine Cremona curves at levels 11–33
 including old forms (399 values of a_ℓ, plus a_{ℓ²} and brute-force #E(F_{ℓ²})); and an independent Manin-symbol
-computation of T_ℓ and T_{ℓ²} for every squarefree N with ψ(N) ≤ 400 (1501 + 387 traces). 0 mismatches.
+computation of T_ℓ and T_{ℓ²} for every squarefree N with ψ(N) ≤ 400 (1501 + 451 traces). 0 mismatches. These runs
+used the brute-force root-count branch; the product branch used by the E3/E4 oracles was compared with it by the
+proof critic on 6524 (N, n) cases and in `tests/test_geometry.py` (0 mismatches).
 
 **Prop X0-2 (PROVED from the trace formula; formula for squarefree N, r > 2√ℓ for r | N).**
 
@@ -292,21 +300,24 @@ computation of T_ℓ and T_{ℓ²} for every squarefree N with ψ(N) ≤ 400 (15
 μ = #{x mod N : x² − tx + ℓ ≡ 0} = ∏_r (1 + ((t² − 4ℓ)/r)) by CRT. ∎
 - *Moduli reading:* 2^ω rational cusps, plus, for each isogeny class over F_ℓ with trace t, the number of
   Frobenius-stable cyclic subgroups of order N, i.e. the number of roots of x² − tx + ℓ mod N.
-- *For N = pq:* ∏ = 1 + χ(N) + χ(p)(1 + χ(N)) with χ = ((t² − 4ℓ)/·). Given N it is 0 when χ(N) = −1 and
-  2(1 + χ(p)) otherwise. So the count is an explicit integer combination of the indicators [t² − 4ℓ is a square mod
+- *For N = pq with p, q > 4ℓ* (so that p, q ∤ t² − 4ℓ; e.g. N = 17·101, ℓ = 13, D = −51 violates this):
+  ∏ = 1 + χ(N) + χ(p)(1 + χ(N)) with χ = ((t² − 4ℓ)/·). Given N it is 0 when χ(N) = −1 and 2(1 + χ(p)) otherwise.
+  (If χ(N) = 0 then gcd(t² − 4ℓ, N) is a factor; the decoders now check this.) So the count is an explicit integer combination of the indicators [t² − 4ℓ is a square mod
   N]. Computing it is no harder than quadratic residuosity mod N at these small arguments. Conversely, E3 decoded
-  ε, and every unknown symbol, from the counts at ℓ ≤ 13 in 4000/4000 instances (experimentally supported; no general
-  uniqueness proof).
+  ε from the counts at ℓ ≤ 13 in 4000/4000 instances. The full pattern of the ≈ 7 unknown symbols was unique in
+  1745/2000 (n = 32) and 1716/2000 (n = 64) instances, with exactly 2 consistent patterns otherwise (recorded
+  after the proof critic found that v1's "every unknown symbol" was not supported; experimentally supported, no
+  general uniqueness proof).
 - *Verdict:* QR. The point counts of X_0(N) over prime fields see Legendre symbols of p at discriminants of size
   ≤ 4ℓ and nothing else.
 
-**Prop X0-3 (PROVED from the trace formula; E4 800/800).** For ℓ prime, N squarefree and odd with all r | N > 2ℓ:
+**Prop X0-3 (PROVED from the trace formula; E4 800/800).** For ℓ prime, N squarefree and odd with all r | N > 4ℓ²:
 
   #X_0(N)(F_{ℓ²}) = ℓ² + 1 − Tr T_{ℓ²} + ℓ·g(N) = (ℓ − 1)ψ(N)/12 + (bounded QR-type terms).
 
 Precisely, for N = pq: #X_0(N)(F_{ℓ²}) = (ℓ − 1)ψ/12 + ℓ² + 1 − σ(ℓ²) + 2(ℓ + 2) + ½ Σ_{t² < 4ℓ²} Σ_f h_w(·)
-∏_r(1 + χ_t(r)) − ℓ(1 + ν₂/4 + ν₃/3). Hence one count over F_{ℓ²} determines ψ(N) up to the 2^{≤ 6} sign patterns
-of the symbols involved (at most 61 patterns in E4), and so factors N.
+∏_r(1 + χ_t(r)) − ℓ(1 + ν₂/4 + ν₃/3). Hence one count over F_{ℓ²} determines ψ(N) up to 2^{O(ℓ²)} sign patterns of the symbols involved (≤ 2⁶ for
+ℓ ≤ 3; at most 61 patterns tried in E4), and so factors N.
 
 *Proof.* Let α, ᾱ be the Frobenius eigenvalues on H¹, paired with a Hecke eigenbasis of S_2(Γ_0(N)) (T_ℓ is
 semisimple there for ℓ ∤ N). Then Σ α² = Σ_f (a_f(ℓ)² − 2ℓ) = Tr(T_ℓ²) − 2ℓg, and T_ℓ² = T_{ℓ²} + ℓ for ℓ ∤ N.
@@ -321,32 +332,37 @@ supersingular E, so these fibres contribute ≈ (ℓ − 1)ψ/12 points. Over F_
 
 *Odd extensions (PROVED).* Over F_{ℓ^k} with k odd, Σα^k is an integer combination of Tr T_{ℓ^j} for odd j
 (Newton's identities plus T_ℓ T_{ℓ^j} = T_{ℓ^{j+1}} + ℓT_{ℓ^{j−1}}). None of these n = ℓ^j is a square, so A1 never
-appears, the g term never appears, and #X_0(N)(F_{ℓ^k}) is QR-type. For even k the ψ term appears. The general
-even-k coefficient is (ℓ − 1)/12 by the same supersingular count (sketch; only k = 2 is checked).
+appears, the g term never appears, and #X_0(N)(F_{ℓ^k}) is QR-type. *Even extensions (PROVED; proof critic).*
+#X_0(N)(F_{ℓ^k}) = ℓ^k + 1 − Tr T_{ℓ^k} + ℓ·Tr T_{ℓ^{k−2}}; both traces have A1 = ψ/12, so the ψ coefficient is
+(ℓ − 1)/12 for every even k. The critic checked k = 3 (Manin, 160 levels) and k = 4 (#E(F_16)).
 
-**Prop X1 (PROVED modulo the standard description of the cusps; not machine-checked).** If N is squarefree,
+**Prop X1 (PROVED modulo the standard description of the cusps; checked by the proof critic with Γ_1(N) Manin
+symbols at (N, ℓ) = (15,2), (21,2), (21,5), (35,2), (35,3), (39,2), (39,5), (55,3), (65,3)).** If N is squarefree,
 ℓ ∤ N, every prime factor of N exceeds ℓ + 1, and N > (√ℓ + 1)², then #X_1(N)(F_ℓ) = φ(N)/2.
 *Proof.* For N ≥ 4, X_1(N) is a fine moduli space over Z[1/N]. A non-cuspidal F_ℓ-point is a pair (E/F_ℓ, P) with
 P ∈ E(F_ℓ) of order N, impossible since #E(F_ℓ) ≤ (√ℓ + 1)² < N (Hasse). Cusps: on the Tate curve G_m/q^Z the
 points of order N are ζ^a q^{b/N}. Those with gcd(b, N) = 1 give φ(N)/2 cusps (up to ±) defined over Q. Those with
-gcd(b, N) = d > 1 are defined over a field containing Q(ζ_m)^+ with m ∈ {p, q, N}. For ℓ < m − 1, ℓ ≢ ±1 mod m,
-so they are not F_ℓ-rational. (Diamond–Shurman §9.3 and Ogg's description of the rational cusps give the fields of
+gcd(b, N) = d > 1 are defined over Q(ζ_r) when d = r is a prime factor of N, and over Q(ζ_N)^+ when d = N. Since
+every r | N exceeds ℓ + 1, ℓ ≢ 1 mod r and ℓ ≢ ±1 mod N, so they are not F_ℓ-rational. (The hypothesis is needed:
+#X_1(15)(F_7) = 8 ≠ 4 and #X_1(33)(F_7) = 20 ≠ 10 (proof critic). For ω = 2 it can be weakened to ℓ ≢ 1 mod each
+r | N and ℓ ≢ ±1 mod N.) (Diamond–Shurman §9.3 and Ogg's description of the rational cusps give the fields of
 definition; which half is rational depends on the model, but the count φ(N)/2 does not.) ∎ So #X_1(N)(F_2) = φ(N)/2 for
-N = pq with p, q ≥ 5, and Miller's φ-reduction factors N. The same moduli argument is classical in torsion bounds
+N = pq with p, q ≥ 3, N ≥ 9, and for N = pq, φ gives s = N + 1 − φ directly. The same moduli argument is classical in torsion bounds
 ("Y_1(N)(F_ℓ) = ∅ for N > (√ℓ + 1)²").
 
 **Fricke involution (KNOWN, Ogg 1974, Fricke).** The fixed points of w_N on X_0(N) (N > 4) number
-h(−4N) + h(−N)·[N ≡ 3 mod 4] up to the classical corrections. This is a Lefschetz number; it is a class number,
-hence FACT (randomized, as row 5). Exact form UNVERIFIED in detail.
+h(−4N) + h(−N)·[N ≡ 3 mod 4] up to the classical corrections. This is a Lefschetz number and a class number:
+FACT-likely, HEURISTIC, as row 5. Exact form UNVERIFIED in detail.
 
 ### 3.3 Summary of where X_0(N) needs the factors
 
 - Area / genus / degree: either the formula or an object of size Θ(N).
-- Cone points / F_ℓ points / return counts of random walks: Legendre symbols of small discriminants (QR).
-- F_{ℓ²} points / X_1 points / Fricke fixed points: factoring-equivalent, so no geometric shortcut can exist unless
-  factoring itself is easy.
+- Cone points / F_ℓ points / fixed points of one non-scalar word: Legendre symbols of small discriminants (QR).
+- F_{ℓ²} points / X_1 points: factoring-equivalent, so no geometric shortcut can exist unless factoring itself is
+  easy. Fricke fixed points: a class number (FACT-likely). Total random-walk return counts: FACT (they include the
+  ψ(N) fixed points of words that are ±I mod p).
 - Cycle structure of a hyperbolic element acting on P¹(Z/N) (the periods): orders of eigenvalues mod p, i.e. order
-  finding, FACT (Shor-type).
+  finding (expected FACT, Shor-type; not proved for a fixed element).
 
 ---
 
@@ -363,7 +379,7 @@ F(p)F(q) = Σ_i a_i² N^i + Σ_{i<j} a_i a_j N^i (p^{j−i} + q^{j−i}). Each p
 degree k in s with coefficients in Z[N]. So G(s) := F(p)F(q) is a polynomial in s of degree max I − min I ≥ 1
 with leading coefficient a_{max I}a_{min I}N^{min I} ≠ 0. Find the integer roots of G(s) − #X(Z/N) (polynomial time) and test
 each as in Prop X0-1. ∎
-- Examples: P¹ (ψ), G_m (φ), A¹ ∖ {0, 1} ((p − 2)(q − 2)), SL₂ (N(p² − 1)(q² − 1)), tori, Grassmannians.
+- Examples: P¹ (ψ), G_m (φ), A¹ ∖ {0, 1} ((p − 2)(q − 2)), SL₂ (N(p² − 1)(q² − 1)), split tori, Grassmannians.
 - **Prop MF′ (PROVED).** The conic x² + y² = 1 has (r − χ₄(r)) points over F_r, so
   #(Z/N) = N − χ₄(q)p − χ₄(p)q + χ₄(N). If χ₄(p) = χ₄(q) this is N ∓ s + 1; otherwise it is N ± (q − p) − 1.
   Either way one of four candidates for s (or for q − p, with q + p = √((q − p)² + 4N)) works.
@@ -392,7 +408,8 @@ constant term 2 and linear coefficient d², i.e. V_d(2 + c) ≡ 2 + d²c (mod c�
 and read J₂(N) = Prim/R mod R exactly, as R > J₂(N). ∎
 - For the *fixed* figure-eight monodromy (t = 3) the small-modulus decoder split 40/40 at n = 64 (exploratory,
   not pre-registered). With t ∈ {3, 4, 5, 6} it split 400/400 (E2, oracle C).
-- Topological reading: for a fibred knot with monodromy A on H₁(fibre) = Z², |H₁(X_d)_tors| = |det(A^d − I)|,
+- Topological reading (genus-one fibred knots only have t = 3, the figure-eight; trace 2 + R is not a knot monodromy,
+  so for knots only the multi-query small-modulus result applies): |H₁(X_d)_tors| = |det(A^d − I)|,
   where X_d is the d-fold cyclic cover of the complement. So the Möbius primitive part of the cover homology
   orders is factoring-equivalent, while each single order |H₁(X_N)_tors| mod M is an aggregate (row 38).
 
@@ -413,9 +430,11 @@ S³, and the least degree of a nontrivial non-universal cover is the least prime
 exponent (relators x^N, or words whose exponents are SLP-computed from N). Examples: L(N, q) (π₁ = Z/N), Dehn
 fillings M(N, 1) of a fixed knot (relator μ^N λ), and mapping tori of φ^N. For every fixed finite group G,
 #Hom(Π_N, G), and hence the number of connected covers of degree ≤ k, Fox colourings, and Dijkgraaf–Witten
-invariants with gauge group G, depend only on N mod exp(G) (mod lcm(1, …, k) for covers).
+invariants with gauge group G, depend only on N mod exp(G) (mod lcm(1, …, k) for covers) when N enters as an
+exponent of group elements. For mapping tori of φ^N, the dependence is on N modulo the order of φ* acting on the
+finite set Hom(π₁(F), G) (e.g. period 3 for the cat map and G = Z/2): still an aggregate.
 *Proof.* g^N = g^{N mod exp G} in G, so the set of solutions of the relators in G^{gens} depends only on N mod exp
-G. ∎ To see a prime p | N one needs targets of size ≥ p, which the description does not supply. Targets over Z/N
+G; for mapping tori, Hom(Π_N, G) is determined by the fixed points of (φ*)^N twisted by G, which is periodic in N. ∎ To see a prime p | N one needs targets of size ≥ p, which the description does not supply. Targets over Z/N
 (e.g. SL₂(Z/N)) put the computation in the generic-ring model of Theorem PT (`factorbits` §3.2), where every bit
 learned without splitting is paid for by a deviation (`leakmap` Theorem PT-X).
 
@@ -432,7 +451,7 @@ divisor-indexed factors are exactly the Möbius parts of Prop CAT.
 to be étale; codex). The Kummer sequence gives H¹_et(X, μ₂) ≅ O(X)^×/(O(X)^×)² ⊕ Pic(X)[2] = (Z/2)^{2+ω(N)}, with
 basis {−1, 2} ∪ {primes r | N}. In the Mazur–Morishita dictionary (Morishita,
 *Knots and Primes*, Universitext 2012, Ch. 2–4) this is H¹ of the complement of the "link" of N. Its dimension is
-ω(N) (ω tier) and a basis *is* the factorisation.
+2 + ω(N) (ω tier) and a basis *is* the factorisation.
 
 **Linking numbers and Rédei symbols (KNOWN; Morishita Ch. 4, 8).** For the two "knots" p, q of N the linking
 number is the Legendre symbol (p/q) (as lk mod 2), and the triple Milnor invariants are Rédei symbols. For
@@ -465,9 +484,11 @@ Ours (each with a quick kill or keep):
   is EXP. Kill.
 - **Weyl law on X_0(N).** The leading eigenvalue-counting term is area/4π, i.e. ψ(N). It is FACT, and spectra need
   discretisations of size ψ(N). Kill.
-- **Random walks on the coset graph of P¹(Z/N).** The t-step return count is Σ_{|W|=t} #fix(W). For a hyperbolic
-  word W the fixed points are the roots of c x² + (d − a)x − b mod N, ∏_r(1 + ((tr²W − 4)/r)): QR-type. A walk
-  of poly(log N) steps sees only these. Kill (QR tier).
+- **Random walks on the coset graph of P¹(Z/N).** For one word W ≢ ±I mod every r | N the fixed points are the roots
+  of c x² + (d − a)x − b mod N, ∏_r(1 + ((tr²W − 4)/r)): QR-type. But the total t-step return count Σ_{|W|=t}
+  #fix(W) includes trivial words (each contributes ψ(N)) and words ≡ ±I mod p only (length O(log p) exists), and by
+  expander mixing the return probability tends to 1/ψ(N): FACT, and computing it needs the ψ(N)-vertex graph.
+  (v1 labelled this QR; corrected after the proof critic.) Kill (FACT + EXP).
 - **Deninger/Connes dynamical systems with closed orbits of length log p.** No constructible object; the counting
   functions reproduce the explicit formula, i.e. sieving. Kill.
 - **Tilings with divisibility constraints.** They encode factoring (so they are NP-type), but the reduction goes the
@@ -496,8 +517,9 @@ added or sharpened, now in §2:
 
 **OPEN-1 (X_0 point counts = small-discriminant QR).** Let L = L(n) → ∞. Given N = pq and the counts
 #X_0(N)(F_ℓ) for all primes ℓ ≤ L, find p in time subexponential in n. By Prop X0-2 the input is equivalent to the
-Legendre symbols (D/p) for the fundamental D with |D| ≤ 4L and (D/N) = 1 (decoding is unique in all 4000 E3
-instances at L = 13). Information-theoretically, L ≈ n² log n should pin p down. No algorithm is known that uses
+Legendre symbols (D/p) for the fundamental D with |D| ≤ 4L and (D/N) = 1, in the sense that the counts are
+computed from the symbols; at L = 13 the counts determined ε in all 4000 E3 instances and the full symbol pattern
+in 87%. Information-theoretically, L ≈ n² log n should pin p down. No algorithm is known that uses
 quadratic-residue patterns of a hidden divisor (Lenstra's divisors-in-residue-classes needs a modulus > N^{1/4} with
 a single class, not a half-density pattern). This is the project's QR/genus question (`genusleak` Prop GEN) in
 geometric dress, not a new route.
@@ -519,20 +541,48 @@ new algorithm for a problem no geometric construction makes easier.
 | E1b | trace formula vs independent Manin-symbol traces, 1501 (N, ℓ) pairs, ψ(N) ≤ 400; dim = 2g + 2^ω − 1 | 0 mismatches (31 s) |
 | E1c | orbifold signature from explicit S, ST, T on P¹(Z/N), 1448 levels (all N ≤ 600, squarefree ≤ 2000) | 0 mismatches |
 | E2 | decoders G, A, P, L, K, C, 200 instances each at n = 32, 64 | 200/200 for all; K ≤ 24 queries, C ≤ 52 |
-| E3 | ε and the symbol pattern from #X_0(N)(F_ℓ), ℓ ≤ 13, N ≡ 1 (4), 2000 instances each at n = 32, 64 | ε determined and correct 2000/2000 at both sizes; ≈ 7 unknown symbols |
+| E3 | ε and the symbol pattern from #X_0(N)(F_ℓ), ℓ ≤ 13, N ≡ 1 (4), 2000 instances each at n = 32, 64 | ε determined and correct 2000/2000 at both sizes; ≈ 7 unknown symbols; pattern unique 1745 / 1716, else 2 patterns (re-run with the pattern count recorded) |
 | E4a (A1) | T_{ℓ²} trace formula: level 1, curves (incl. brute-force #E(F_{ℓ²})), Manin T_{ℓ²}; 491 checks | 0 mismatches |
 | E4b (A1) | factor from #X_0(N)(F_4) alone, and from #X_0(N)(F_9) alone; 200 instances each at n = 32, 64 | 200/200 in all four cells; ≤ 61 sign patterns |
 
-Deviations: smoke tests on seeds 0–5 before the frozen runs (disclosed in prereg A1); the t = 3-only cat-map
-decoder (40/40) and the one-query linearised NECK/CAT checks (20/20) are exploratory, not pre-registered.
+Deviations (disclosed):
+- smoke tests on seeds 0–5 before the frozen runs (prereg A1);
+- oracle C was registered with trace 3 only but ran with t ∈ {3, 4, 5, 6} per small prime; oracle K was registered with
+  k a primitive root mod r but ran with k ∈ {2, 3, 5, 7};
+- E3 was re-run unchanged (same seeds, same results) after v1 to record the number of consistent symbol patterns,
+  which the frozen code discarded;
+- exploratory, not pre-registered, archived as `run_experiments explore` → `experiments/raw/geometry_explore.jsonl`:
+  the t = 3-only cat-map decoder (40/40, ≤ 13 queries, n = 64) and the one-query linearised NECK/CAT checks (20/20 each).
 
 These are correctness checks. All oracles are computed from p and q; nothing here is a factoring algorithm.
 
 ---
 
-## 10. Reproduction (project root)
+## 10. Reviews
+
+**Opus proof critic (read-only): ACCEPT WITH FIXES.** It independently re-checked the genus identities (N < 600), the
+product vs brute branches of the trace formula (6524 cases), codex's F_4 formula (883 levels), odd and even extensions
+(k = 3 by Manin symbols at 160 levels, k = 4 against #E(F_16)) and Prop X1 (Γ_1 Manin symbols at 9 levels).
+All 20 findings are applied above. The three MAJOR ones:
+1. v1's "the counts determine every unknown symbol" was false: 13–14% of instances have two consistent patterns. Only
+   ε is always determined. E3 was re-run with the pattern count recorded.
+2. Total random-walk return counts are FACT, not QR.
+3. The §0 "general principle" was overclaimed. It is now a HEURISTIC pattern, with the scalar-Frobenius exceptions
+   stated.
+
+MINOR fixes: the X_1 hypotheses and cusp fields, edges vs faces, the knot-monodromy caveat for Prop CAT, the
+AGG-H modulus for mapping tori, the p, q > 4ℓ condition, p = 3 in X0-1, Fricke consistency, k ≥ 4 for dimension
+differences, provable even extensions, the KUM dimension, the check counts, the disclosure of deviations, the r₃
+cases and the L[1/2] cost, "every known way", the ramified Bianchi factor, split tori, and σ = ψ with
+Bach–Miller–Shallit.
+
+**GPT-6.1-sol adversarial round:** §10.2 (pending). **Opus literature critic:** §10.3 (pending).
+
+---
+
+## 11. Reproduction (project root)
 
 ```
-.venv/bin/python -m src.geometry.run_experiments e1 e2 e3 e4
+.venv/bin/python -m src.geometry.run_experiments e1 e2 e3 e4 explore
 .venv/bin/python -m pytest -q tests/test_geometry.py
 ```
