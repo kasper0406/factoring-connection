@@ -1,0 +1,438 @@
+Candidate table
+
+I worked blind: I did not read repository files. Small computations were performed only in the scratch directory.
+
+Conventions:
+n = ceil(log2 N); R = Z/NZ; omega(N) counts distinct prime divisors.
+psi(N) = N product_{p|N}(1+1/p).
+L_N(alpha,c) = exp((c+o(1))(log N)^alpha(log log N)^(1-alpha)).
+
+“Compact” below includes explicitly identified implicit descriptions, such as a congruence condition or a moduli problem. Such a description is not necessarily an input accepted by an existing geometric algorithm.
+
+FACTORING-EQUIVALENT means randomized polynomial-time Turing equivalence unless a stronger, restricted reduction is stated. EXPONENTIAL describes the available direct geometric computation, not a proved lower bound. Factoring first is frequently faster. AGGREGATE includes statistics already cheaply obtainable from N, as well as residue and Jacobi-symbol information.
+
+Subexponential time alone is not a new factoring breakthrough: ECM and number-field-sieve methods already provide it.
+
+1. Integer points on xy = N.
+Construction: YES, O(n) bits, one quadratic equation.
+Feature: positive integer points are precisely (d,N/d), d|N; their number is tau(N). A point with 1<x<N supplies a factor.
+Computation: search through x<=sqrt(N), using divisibility tests; O(sqrt(N) poly(n)) bit operations. Merely computing tau(N) is weaker than listing divisors; tau(pq)=4 supplies no separation of p and q.
+Verdict: TRIVIAL RESTATEMENT for the factor witness. I do not assert that a tau oracle is factoring-equivalent.
+
+2. Points under the hyperbola: the Dirichlet divisor problem.
+Construction: YES, O(n) bits: x,y>=1, xy<=N.
+Feature: D(N)=sum_{m<=N}tau(m)=sum_{x<=N}floor(N/x); D(N)-D(N-1)=tau(N).
+Computation: the hyperbola identity gives O(sqrt(N)) arithmetic operations. Sladkey gives a geometric successive-approximation algorithm using O(N^(1/3)) arithmetic operations and O(log N) storage; bit costs add logarithmic factors.
+Verdict: EXPONENTIAL in n for this exact counting route. The asymptotic main term N log N+(2gamma-1)N does not isolate factors. [Sladkey’s preprint](https://arxiv.org/abs/1206.3369).
+
+3. Integer points on x²+y²=N.
+Construction: YES, O(n) bits.
+Feature: r2(N)=4 sum_{d|N}chi_4(d). Equivalently, it is zero if some prime 3 mod 4 has odd exponent; otherwise it equals 4 product_{p=1 mod 4}(v_p(N)+1).
+Computation: scanning x costs O(sqrt(N) poly(n)); factoring first evaluates the formula quickly. For a split semiprime, two representations inequivalent under signs and interchange yield factors through gcds of cross-products.
+Verdict: EXPONENTIAL for direct counting; representation extraction has factoring content on the split-semiprime promise. The count alone is particularly uninformative on many semiprimes.
+
+4. Integer points on the four-square sphere.
+Construction: YES, O(n) bits: x1²+x2²+x3²+x4²=N.
+Feature: r4(N)=8 sum_{d|N,4∤d}d. Thus r4(N)=8sigma(N) for odd N, and 24sigma(N_odd) for even N.
+Computation: the arithmetic formula is efficient after factoring. Direct lattice enumeration or divisor scanning takes N^{Omega(1)} work; no polynomial-in-n geometric evaluation is known.
+Verdict: FACTORING-EQUIVALENT. For odd pq, p+q=r4(N)/8-N-1; general randomized equivalence follows from Bach–Miller–Shallit. [Jacobi formulas](https://dlmf.nist.gov/27.13), [hardness theorem](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf).
+
+5. Ordinary Pick/Ehrhart counting.
+Construction: YES. Example: P_N=conv((0,0),(N,0),(0,1)), with O(n)-bit coordinates.
+Feature: L_{P_N}(t)=Nt²/2+(N+2)t/2+1. Pick’s boundary contributions are gcds of edge coordinates.
+Computation: polynomial in the binary description in dimension two; Barvinok extends polynomial-time lattice-point counting to every fixed dimension.
+Verdict: AGGREGATE for this construction. A new uniformly constructed fixed-dimensional rational polytope with count sigma(N) would immediately give polynomial-time factoring; Barvinok supplies the counting algorithm, not that construction. [Barvinok’s theorem](https://pubsonline.informs.org/doi/10.1287/moor.19.4.769).
+
+6. Primitive lattice points on a segment.
+Construction: YES, O(n) bits: points (N,a), 1<=a<=N.
+Feature: the number primitive relative to the origin is #{a:gcd(a,N)=1}=phi(N).
+Computation: testing one point is polynomial; enumerating the segment costs O(N poly(n)). Möbius inversion introduces the divisors of N.
+Verdict: FACTORING-EQUIVALENT. For pq, p+q=N+1-phi(N). Generally, phi(N) gives a multiple of the unit-group exponent, enabling randomized splitting.
+
+7. Genus, cusps and Euler characteristic of X_0(N).
+Construction: YES, O(n) as Gamma_0(N)={matrices with c=0 mod N}; an explicit model or triangulation is a different matter.
+Feature:
+g0=1+psi(N)/12-e2/4-e3/3-c0/2,
+c0=sum_{d|N}phi(gcd(d,N/d)),
+e2=#{x mod N:x²+1=0},
+e3=#{x mod N:x²+x+1=0}.
+For distinct p,q>3, writing s=p+q:
+12g0=N+s-11-3e2-4e3.
+Computation: factor-based formulas, or a Farey/coset computation of size Theta(psi(N)); this is Theta(N) for semiprimes.
+Verdict: FACTORING-EQUIVALENT. A single semiprime genus gives four candidate sums; general oracle reduction appears in A.
+
+8. Genus and cusps of X_1(N).
+Construction: YES, O(n), implicitly through its level condition.
+Feature, for N>=5:
+g1=1+J2(N)/24-(1/4)sum_{d|N}phi(d)phi(N/d),
+where J2(N)=N² product_{p|N}(1-p^-2).
+For distinct p,q>3:
+g1=((N+1)²-(p+q)²)/24-N+p+q.
+Computation: factor-based formulas; explicit coset or homology computations have Theta(N²) ambient size.
+Verdict: FACTORING-EQUIVALENT. On semiprimes,
+p+q=12+sqrt(N²-22N+145-24g1).
+General oracle reduction is also available.
+
+9. Modular symbols and cusp-form dimensions.
+Construction: YES, O(n+log k) as an implicit space.
+Feature: dim S_2(Gamma_0(N))=g0. For even k>=4,
+dim S_k=(k-1)(g0-1)+(k/2-1)c0+floor(k/4)e2+floor(k/3)e3.
+Consequently dim S_{k+12}-dim S_k=psi(N).
+Computation: standard Manin-symbol presentations have about (k-1)psi(N) generators before relations; rank computations are polynomial in that expanded size. Newform dimension formulas use local factors and old/new decompositions.
+Verdict: FACTORING-EQUIVALENT for full dimensions as an oracle function. Gu–Martin prove additional reductions using two automorphic-representation counts and one newform count; these should not be conflated with a single arbitrary dimension value.
+
+10. Point counts of X_0(N) over a fixed small field.
+Construction: YES as an O(n)-bit moduli specification; no polynomial-size conventional equation model is known uniformly.
+Feature: #X_0(N)(F_l)=l+1-tr(T_l|S_2) when l∤N. More strongly, A gives an explicit F4 formula recovering psi(N) from polynomially many candidates.
+Computation: Eichler–Selberg formulas involve class numbers for discriminants t²-4l and local level factors; modular-symbol implementations expand a space of size about N. For fixed l the small class numbers do not remove the difficult level dependence.
+Verdict: FACTORING-EQUIVALENT for the F4 counting function, by the reduction in A. A small field does not imply a small computation.
+
+11. Mazur–Morishita arithmetic topology.
+Construction: YES for X=Spec Z[1/(2N)], O(n) bits. NO known uniform recipe produces an ordinary finite link diagram representing the prime components without first identifying them.
+Feature, for odd N: dim_F2 H¹_et(X,F2)=omega(N)+2, by Kummer theory: the unit squareclasses are generated by -1, 2 and the primes dividing N.
+Computation: a factorization supplies a basis. No standard polynomial-size cellular complex computing this global arithmetic cohomology is known.
+Verdict: OPEN for computing the dimension quickly. Computing omega(N) must not automatically be called factoring-equivalent.
+
+12. Lens spaces L(N,q).
+Construction: YES, O(n+log q) as binary surgery data, gcd(N,q)=1.
+Feature: H1=Z/NZ; the linking form is qab/N up to convention. Also rank HF-hat=N. For L(N,1), one convention gives d(i)=((2i-N)²-N)/(4N).
+Computation: surgery-matrix homology is polynomial; an individual correction term is easy. Listing all N Spin-c structures or Floer generators costs Omega(N). Standard layered triangulations can likewise be large.
+Verdict: AGGREGATE. Torsion order N and Floer rank N reproduce the input; prime decomposition of that torsion group remains the original arithmetic problem.
+
+13. Seifert manifolds and Brieskorn spheres.
+Construction: YES: M_N=S³_{1/N}(right-handed trefoil), an O(n)-bit surgery description, is a Brieskorn sphere Sigma(2,3,6N-1) up to orientation.
+Feature: H1(M_N)=0 and Casson’s surgery formula gives lambda(M_N)=N, with surgery orientation. General Seifert H1 orders are determinants of their presentation matrices.
+Computation: polynomial in binary surgery data for these formulas.
+Verdict: AGGREGATE. Choosing exceptional-fibre orders p,q from N=pq would instead require the factors in the construction.
+
+14. Cyclic and branched covers; Alexander polynomials.
+Construction: YES, O(n) for the N-fold cyclic branched cover of a fixed knot K.
+Feature, when finite:
+|H1|=product_{j=1}^{N-1}|Delta_K(exp(2pi i j/N))|.
+For the trefoil this equals |det(A^N-I)| for an order-six matrix A; its values are 1,3,4,3,1,0 according to N mod 6, with zero indicating positive first Betti number.
+Computation: fixed-degree resultants or matrix powers; general exact outputs can have Theta(N) bits. An expanded covering triangulation has Theta(N) copies.
+Verdict: AGGREGATE for the trefoil; EXPONENTIAL output/work for many non-cyclotomic Alexander polynomials. An unbranched degree-N cover of a fixed hyperbolic knot complement has volume exactly N times the base volume.
+
+15. Reidemeister torsion, Chern–Simons and quantum invariants.
+Construction: YES, O(n), using L(N,1).
+Feature: torsion at a character zeta is, up to the usual units, (zeta-1)^-2. Its primitive-character norm involves Phi_N(1), which is p for N=p^a and 1 otherwise. For odd N and gcd(a,N)=1:
+sum_x exp(2pi i a x²/N)=epsilon_N (a/N)sqrt(N).
+Computation: the Gauss sum uses a Jacobi symbol; prime-power recognition is polynomial. Fixed-level quantum surgery formulas use fixed-size matrices; levels growing with N lose that advantage.
+Verdict: AGGREGATE for these accessible quantities. Enumerating all characters or Chern–Simons values costs Omega(N); selecting a character of unknown proper order already asks for divisor information.
+
+16. Regular polygons and star-polygon symmetry.
+Construction: YES, O(n) implicitly; NO polynomial-size explicit vertex list.
+Feature: {N/k} has gcd(N,k) components. The number of connected steps k is phi(N), also the number of primitive Nth roots of unity.
+Computation: one connectivity query is a gcd; counting all primitive steps by expansion takes O(N poly(n)). The cyclotomic polynomial has degree phi(N).
+Verdict: TRIVIAL RESTATEMENT for individual connectivity; FACTORING-EQUIVALENT for the total primitive-step count, by the phi reduction.
+
+17. Necklaces and Burnside counting.
+Construction: YES, O(n+log a), implicitly as a-colourings of an N-cycle.
+Feature:
+neck_a(N)=(1/N)sum_{d|N}phi(d)a^(N/d);
+primitive necklaces=(1/N)sum_{d|N}mu(d)a^(N/d).
+Periods expose divisors.
+Computation: divisor-based formulas or orbit enumeration. For fixed a>=2, the exact answer already has Theta(N) bits.
+Verdict: EXPONENTIAL for exact ordinary output. Working modulo a small integer can remove most of the desired information; Burnside’s lemma alone does not provide a compressed divisor-free evaluation.
+
+18. Connected components and idempotents of Spec R.
+Construction: YES, O(n) bits.
+Feature: b0=omega(N), and #{e in R:e²=e}=2^omega(N). Spec R is a single reduced point exactly when N is prime.
+Computation: CRT decomposition uses the prime powers. Enumeration of residues costs O(N poly(n)); no polynomial-time general component-count algorithm is known.
+Verdict: OPEN for the count. FACTORING-EQUIVALENT for finding a nontrivial idempotent when one exists: gcd(e,N) splits N. Prime powers are handled separately.
+
+19. Unit groups, Picard groups and Hilbert schemes over R.
+Construction: YES, O(n), with fixed auxiliary dimensions.
+Feature: #G_m(R)=phi(N). In contrast, Pic(R)=0, while Pic(P¹_R)=Z^omega(N). Relative Hilb^m(A¹_R) is A^m_R, so this simple Hilbert scheme adds no new component information.
+Computation: unit-group cardinality normally uses factoring; Pic(R)=0 is immediate. Extracting the rank of Pic(P¹_R) inherits the component-count question.
+Verdict: FACTORING-EQUIVALENT for the unit count; AGGREGATE for Pic(R); OPEN for the rank-only component statistic.
+
+20. Elliptic curves over R.
+Construction: YES, O(n), e.g. y²=x³-x for odd N; twists also have O(n)-bit descriptions.
+Feature, for good reduction:
+#E(R)=product_{p^a||N}p^(a-1)(p+1-a_p).
+For distinct p,q=3 mod 4, the displayed curve has count (p+1)(q+1), immediately revealing p+q.
+Computation: factor N, then apply finite-field point counting and the lifting formula. Direct residue computations are N^{O(1)}.
+Verdict: FACTORING-EQUIVALENT for the RSA counting-oracle problem, with an unconditional twist reduction in A. A single arbitrary curve count requires more carefully stated claims.
+
+21. Bianchi orbifolds with varying quadratic field.
+Construction: YES, O(n) as K=Q(sqrt(-N)) and PSL2(O_K)\H³; computing an explicit maximal-order domain is additional work.
+Feature:
+volume=|D_K|^(3/2) zeta_K(2)/(4pi²);
+the number of cusps is h(K). Quadratic genus theory gives 2-rank Cl(K)=t(D_K)-1.
+Computation: reduced-form enumeration has |D_K|^{1/2+o(1)} cost; class-group algorithms can be subexponential, with hypotheses depending on the algorithm. Standard analytic zeta evaluation also involves discriminant-dependent work.
+Verdict: OPEN as a factor extractor from volume or cusp count alone. An explicit ambiguous class can expose divisors, but the class number by itself should not be declared factoring-equivalent. [Volume formula](https://www.math.uni-bonn.de/people/mueller/papers/towers.pdf).
+
+22. Congruence covers of a fixed Bianchi orbifold.
+Construction: YES, O(n), using Gamma_0((N)) inside PSL2(Z[i]), for odd N.
+Feature:
+I(N)=N² product_{prime ideals P|(N)}(1+1/Norm(P)),
+and volume=I(N)V_base.
+For squarefree pq with both primes 1 mod 4, I=((p+1)(q+1))². If both are 3 mod 4, I=(N-1)²+(p+q)².
+Computation: local index formulas after factoring, or expansion of the congruence action/domain with about I cells.
+Verdict: FACTORING-EQUIVALENT on these semiprime promises; explicit geometric enumeration has size about N².
+
+23. Selberg zeta and length spectra.
+Construction: YES, O(n), as the congruence orbifold Gamma_0(N)\H.
+Feature: area=pi psi(N)/3; equivalently, the leading spectral Weyl coefficient is area/(4pi)=psi(N)/12. Trace and zeta formulas encode the same covolume information.
+Computation: explicit transfer, coset or spectral representations retain the index-sized space; trace formulas retain local arithmetic factors. An asymptotic limit is not a finite algorithm with a polynomial precision guarantee.
+Verdict: FACTORING-EQUIVALENT for exact covolume recovery. No general polynomial-in-n extraction from a compressed length-spectrum specification is known.
+
+24. Lattice tilings and finite covers of the flat torus.
+Construction: YES, O(n) implicitly: index-N sublattices of Z².
+Feature: Hermite forms with ad=N and 0<=b<a give exactly sum_{a|N}a=sigma(N) marked covers or periodic grid quotients.
+Computation: enumerate the Hermite forms, costing at least sigma(N), or evaluate the divisor formula after factoring.
+Verdict: FACTORING-EQUIVALENT by Bach–Miller–Shallit; for pq the count is N+p+q+1. The condition ad=N is bilinear, so ordinary Barvinok counting does not apply.
+
+25. Quasicrystals and cut-and-project sets.
+Construction: YES, O(n), e.g. the length-N prefix of the Sturmian coding with slope alpha=(sqrt(5)-1)/2.
+Feature: the number of 1s is floor(N alpha); its factor complexity is P(N)=N+1.
+Computation: polynomial in n for these compressed statistics, using algebraic-number comparison; writing the patch costs Omega(N).
+Verdict: AGGREGATE. These quantities reflect the chosen slope and patch length. No factor-sensitive statistic with a faster extraction algorithm emerges from this construction.
+
+26. Toral dynamics and periodic points.
+Construction: YES, O(n), with fixed A=[[2,1],[1,1]] and time N.
+Feature:
+#Fix(A^N)=|det(A^N-I)|=tr(A^N)-2;
+primitive N-orbits=(1/N)sum_{d|N}mu(d)#Fix(A^(N/d)).
+Entropy is the constant log((3+sqrt(5))/2).
+Computation: binary matrix powering uses O(n) matrix multiplications, but the exact entries and count have Theta(N) bits. Modulo a fixed integer, powering is polynomial in n and periodic.
+Verdict: EXPONENTIAL for exact output; AGGREGATE for fixed-modulus traces and entropy.
+
+27. Sparse varieties over small finite fields.
+Construction: YES, O(n), e.g. x^N=1 over F_l.
+Feature:
+#mu_N(F_{l^r})=gcd(N,l^r-1).
+For gcd(N,l)=1, the number of irreducible factors of x^N-1 is sum_{d|N}phi(d)/ord_d(l).
+Computation: the rational-point count is a gcd, polynomial in n+r. Dense polynomial factorization and the geometric component representation have degree N.
+Verdict: AGGREGATE for small-field point counts; EXPONENTIAL for the expanded factor/orbit description. Sparse exponent encoding does not make standard algorithms polynomial in log degree.
+
+28. Lattice geometry and Coppersmith’s method.
+Construction: YES, polynomial-size lattices from N and a prescribed small-root problem.
+Feature: short vectors produce integer polynomials vanishing at a sufficiently small unknown root. For balanced pq, knowing roughly the upper half of p’s bits suffices to recover p.
+Computation: LLL gives polynomial-time recovery for the proved small-root ranges; it does not search the entire range of an arbitrary unknown factor in polynomial time.
+Verdict: FACTORING-EQUIVALENT when used as unrestricted factor recovery; genuine polynomial-time geometric content under partial-information promises. The missing ingredient is a general way to obtain the required approximation. [Coppersmith’s paper](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf).
+
+29. Elliptic-curve primality certificates.
+Construction: YES, O(n) per curve/point; finding a complete certificate is an additional search.
+Feature: if a verified point-order certificate forces every prime divisor p|N to satisfy #E(F_p)> (N^(1/4)+1)², Hasse’s bound excludes p<=sqrt(N), proving N prime.
+Computation: certificate verification uses polynomial-size arithmetic. Goldwasser–Kilian prove expected polynomial generation for almost all primes; Atkin–Morain provide practical ECPP.
+Verdict: OPEN as a general fast factor extractor; this is an established geometric primality method. Polynomial certificate verification must not be confused with polynomial worst-case certificate generation.
+
+30. Lenstra’s elliptic-curve factoring method.
+Construction: YES, O(n) per random curve and point.
+Feature: choose a smooth exponent M. If [M]P becomes the identity modulo one unknown prime factor but not another, an attempted inversion or projective coordinate supplies a nontrivial gcd with N.
+Computation: the standard heuristic expected cost is L_p(1/2,sqrt(2)) poly(n), where p is the smallest prime factor; for balanced semiprimes this becomes L_N(1/2,1).
+Verdict: FACTORING-EQUIVALENT, with genuine algorithmic content. It is an actual geometric factoring algorithm, particularly effective for finding smaller factors. [Lenstra’s paper](https://annals.math.princeton.edu/1987/126-3/p09).
+
+
+A
+
+The strongest candidates are modular genera, fixed-field modular-curve counts, four-square counts, elliptic curves over composite rings, and congruence volumes.
+
+A1. Modular genera: explicit reductions and the size barrier.
+
+For N=pq with distinct p,q>3, e2 and e3 each belong to {0,4}. Therefore
+
+p+q = 12g0-N+11+3e2+4e3.
+
+Try the four possibilities, test whether s²-4N is a square, and verify the resulting factors. This is deterministic polynomial time.
+
+There is also a general oracle reduction, not merely a semiprime observation. First remove factors 11 and 23. Their residue classes kill both elliptic-point terms, and cusp counts multiply by two. Consequently,
+
+g0(11N)=1+psi(N)-c0(N),
+g0(23N)=1+2psi(N)-c0(N),
+
+so
+
+psi(N)=g0(23N)-g0(11N).
+
+Knowing psi(N) permits randomized polynomial-time factoring. Here is a useful elementary justification. Put M=psi(N); every p|N satisfies p+1|M.
+
+If p-1|M for some prime divisor, the standard repeated-squaring splitting algorithm with exponent MN succeeds with constant probability. Otherwise choose random D and a+bX in R[X]/(X²-D), and raise it to M. When D is nonsquare modulo p, the result lies in F_p because p+1 divides M. When D is square modulo another divisor q, its two coordinates need not agree because q-1 does not divide M. With constant probability the X coefficient vanishes modulo p but not q; its gcd with N splits N. Prime powers and even inputs are handled separately. No factorization of M is required.
+
+Likewise, after removing factors 5 and 7,
+
+J2(N)=2g1(7N)-3g1(5N)+1.
+
+Since J2(N) is divisible by p-1 for every p|N, ordinary randomized exponent splitting applies. For full cusp-form dimensions at any fixed even weight k>=4,
+
+dim S_k(Gamma_0(23N))-dim S_k(Gamma_0(11N))
+  = (k-1)psi(N).
+
+These establish oracle-function equivalences. They do not assert that one genus value at an arbitrary composite level always suffices.
+
+The geometric obstruction is concrete. X_0(N) has genus of order psi(N), so any explicit cellular complex computing its full first homology needs Omega(N) cells. X_1(N) has the corresponding N² scale. Farey symbols and modular symbols encounter this before linear algebra begins. Replacing a triangulation by another ordinary triangulation cannot compress a first Betti number of order N into polynomially many cells.
+
+The genus identities were checked exactly for small inputs; the semiprime recovery formulas were checked on 253 prime pairs below 100.
+
+A2. An explicit point-count formula over F4.
+
+This is the most interesting additional candidate from my independent analysis.
+
+Assume gcd(N,210)=1. Write r=omega(N), and define
+
+R_D(N)=product_{p|N}(1+(D/p)).
+
+For D=-4,-3,-7,-15, each R_D is either zero or 2^r. Then
+
+#X_0(N)(F4)
+ = 2^r
+   + (psi(N)+3R_-4(N)+8R_-3(N))/12
+   + R_-7(N)+2R_-15(N).
+
+The derivation is short:
+
+The unique supersingular j-invariant in characteristic two has a representative E/F4 with Frobenius [-2]. Thus every cyclic subgroup of order N is Frobenius-stable. There are psi(N) such subgroups. Aut(E)/{±1}=A4, with three elements of order two and eight of order three. Their fixed-subgroup counts are respectively R_-4 and R_-3; Burnside gives the middle fraction.
+
+The three ordinary j-invariants over F4 have Frobenius discriminants -7,-15,-15, giving the last two terms.
+
+A cusp with denominator d has cyclotomic parameter of order gcd(d,N/d). F4-rationality requires that order to divide 3. Under the coprimality assumption only the unitary divisors contribute, giving 2^r cusps.
+
+Hence, writing K for the point count,
+
+psi(N)=12K-2^r(12+3a+8b+12c+24d),
+
+with a,b,c,d in {0,1}. Enumerating r<=n gives only O(n) candidates. Apply the splitting procedure above to each candidate and verify its output. The correct candidate yields randomized polynomial-time factoring. Small excluded primes can first be removed by division.
+
+For pq, this is just a constant-size candidate list followed by p+q=psi(N)-N-1.
+
+I derived this formula here from the moduli interpretation; I am not claiming its novelty. Exact computations checked the three ordinary F4 discriminants and the supersingular A4 orbit formula on 21 prime pairs.
+
+Where computation stalls: describing “cyclic order-N subgroups” is short, but enumerating them costs psi(N). Division-polynomial descriptions have degree growing polynomially in N; explicit modular equations have degree psi(N). Known point-counting algorithms are polynomial in those expanded parameters, not in their binary exponent encodings. The formula above evaluates the orbit count only by reintroducing psi(N).
+
+A3. Four squares: fixed dimension does not make arithmetic counting easy.
+
+The sphere has four variables, degree two and an O(n)-bit coefficient. Nevertheless its exact integer-point count gives sigma(N), hence factors.
+
+The underlying real sphere has constant topology; its Betti numbers do not see the factors. The information lies in its position relative to the integer lattice.
+
+Barvinok’s theorem concerns rational polyhedra. It does not cover quadratic equalities or variable divisibility conditions. Turning the sphere into many linear pieces generally creates N-dependent size. Theta-series identities replace lattice enumeration by divisor arithmetic; they do not provide a new fast evaluation of the isolated coefficient.
+
+Thus this is an especially clean target for an algorithmic breakthrough, but not a presently available one.
+
+A4. Composite-ring elliptic counts: an unconditional RSA reduction.
+
+For N=pq, choose any smooth E/R. Its quadratic twists have four possible counts, with multiplicity:
+
+C_{epsilon,eta}
+ = (p+1-epsilon a_p)(q+1-eta a_q),
+
+and
+
+sum_{epsilon,eta=±1} C_{epsilon,eta}
+ = 4(p+1)(q+1).
+
+Random unit twists sample the four sign patterns uniformly. Collect their distinct counts, enumerate the finitely many possible multiplicities summing to four, and test the resulting candidate for (p+1)(q+1). Repeated constant-size batches give an expected polynomial-time reduction; every proposed factorization is verified. Zero traces or coincident counts merely change the multiplicities.
+
+Conversely, factoring N allows each count through Schoof’s finite-field algorithm. This proves the RSA oracle equivalence without assuming a uniform distribution of elliptic-curve orders.
+
+A particularly transparent single-count case is E:y²=x³-x when p,q are both 3 mod 4: a_p=a_q=0.
+
+The missing geometric computation is counting over the unknown CRT components. Schoof works over a known field and uses its Frobenius. Over R, raising to N is generally not a ring endomorphism. One cannot simply substitute N for the unknown characteristics.
+
+Also, projective counting over R is not “affine count plus one”: CRT produces mixed affine/infinite components. Small exact examples confirmed this distinction.
+
+A5. Hyperbolic volume: normalization and precision matter.
+
+For Gamma_0(N)\H,
+
+area/pi=psi(N)/3.
+
+For the Gaussian congruence covers in candidate 22, the volume ratio is the integer index I(N). These are already sufficient for the displayed semiprime reductions.
+
+The available computations either enumerate the cover or use arithmetic covolume formulas containing the local factors. Numerical volume does not avoid the issue: recovering an integer index of size about N² requires sufficiently small absolute error, hence about O(n) significant bits. A relative approximation of fixed accuracy cannot recover p+q.
+
+There is no general theorem saying hyperbolic volume is polynomial-time computable from a binary congruence specification or a binary Dehn-filling description.
+
+A6. Answer to the compressed-object question.
+
+For ordinary explicit chain complexes, rational homology is polynomial-time linear algebra. Integral homology is also polynomial-time computable in binary matrix size through Smith normal form. Crucially, Smith form returns invariant factors, not their prime decompositions: the matrix [N] yields Z/NZ, not the unknown primes.
+
+For fixed-dimensional rational polytopes, lattice counting is polynomial in the explicit binary description. Therefore a uniformly constructed such polytope whose count recovers p+q would indeed give polynomial-time factoring.
+
+For small-field varieties, a fixed number of variables and bounded degree permit easy enumeration over a fixed field, but generally retain only the reduced coefficients. Binary exponents can preserve more information while making the degree enormous. Allowing many variables also removes the general polynomial-time counting guarantee.
+
+I know no natural construction satisfying all three requirements and providing a known classical polynomial-time extraction of otherwise inaccessible factor data.
+
+The literal question has artificial positive examples. Run AKS and output a fixed triangulation of S¹×S² when N is prime, and S³ otherwise. Its first Betti number is a non-residue-based primality statistic, computable immediately. The work was performed by the constructor.
+
+The proposed universal “Jacobi/aggregate or factoring-hard” obstruction is not a theorem and is false without restrictive definitions. Arbitrary polynomial-time computations can be encoded into constructions. Moreover, omega(N), tau(N), or a squarefreeness bit are not known automatically to yield full factoring.
+
+The valid general statement is only the composition principle:
+
+If C(N) is uniformly constructible in polynomial time, I is polynomial-time computable from C(N), and factoring reduces in randomized polynomial time to I(C(N)), then factoring is in randomized polynomial time.
+
+This is a theorem. It rules out nothing unconditionally because classical polynomial-time factoring has not been disproved.
+
+
+B
+
+Verification labels: T means the relevant theorem statement or algorithm text was inspected; M means bibliographic information or the publisher’s abstract was verified. Neither label claims a complete proof audit.
+
+1. H. W. Lenstra Jr., “Factoring integers with elliptic curves,” Annals of Mathematics 126(3), 649–673, 1987. T. The principal positive answer: geometric group operations give a practical factoring algorithm. The familiar subexponential running-time estimate is heuristic. [Publisher](https://annals.math.princeton.edu/1987/126-3/p09).
+
+2. Shafi Goldwasser and Joe Kilian, “Almost All Primes Can Be Quickly Certified,” STOC 1986, 316–329; expanded as “Primality Testing Using Elliptic Curves,” Journal of the ACM 46(4), 450–472, 1999. T for the stated complexity scope. Expected polynomial generation is proved for almost all primes, with an additional hypothesis for all primes. [Paper](https://www.mat.uniroma2.it/~geo2/goldwasserkilian.pdf).
+
+3. A. O. L. Atkin and François Morain, “Elliptic curves and primality proving,” Mathematics of Computation 61(203), 29–68, 1993. M. ECPP is genuine geometric primality proving, not a general polynomial-time factoring theorem. [Author’s publication record](https://www.lix.polytechnique.fr/Labo/Francois.Morain/Articles/OldHTML/articles.english.html).
+
+4. Eric Bach, Gary L. Miller and Jeffrey Shallit, “Sums of divisors, perfect numbers and factoring,” SIAM Journal on Computing 15(4), 1143–1154, 1986. T. Given N and sigma(N), randomized polynomial-time complete factorization is possible; the paper also treats fixed nonzero divisor-power sums. This supports candidates 4 and 24. [Paper](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf).
+
+5. Gary L. Miller, “Riemann’s hypothesis and tests for primality,” Journal of Computer and System Sciences 13, 300–317, 1976; D. L. Long, “Random equivalence of factorization and computation of orders,” Princeton technical report 284, 1981. M; the relevant randomized splitting argument is also presented in Bach–Miller–Shallit. Deterministic reductions under ERH and unconditional randomized reductions must be distinguished. [Verified references](https://link.springer.com/chapter/10.1007/BFb0054116).
+
+6. Miao Gu and Greg Martin, “Factorization tests and algorithms arising from counting modular forms and automorphic representations,” Canadian Mathematical Bulletin 62(1), 81–97, 2019. T. Their Theorem 10 uses A(k1,N), A(k2,N) and B(k,N); Theorem 5 recovers the squarefull part using the two A-values. Their primality characterization has explicit small exceptions. This is not a theorem that any one modular-form dimension value factors every N. [Full text](https://arxiv.org/html/1709.02411v2).
+
+7. William Stein, Modular Forms, a Computational Approach, Graduate Studies in Mathematics 79, American Mathematical Society, 2007, Chapters 6 and 8. T for the dimension formulas and presentation framework. The genus-function oracle reductions in A are my deductions from these standard formulas, not a claimed theorem of Gu–Martin. [Dimension formulas](https://wstein.org/books/modform/modform/dimension_formulas.html).
+
+8. Noboru Kunihiro and Kenji Koyama, “Equivalence of counting the number of points on elliptic curve over the ring Z_n and factoring n,” EUROCRYPT ’98, LNCS 1403, 47–58, 1998. M. The publisher advertises randomized equivalence; later papers identify an order-distribution assumption in the argument. I would not cite the abstract as an unqualified modern theorem for every input. [Publisher](https://link.springer.com/chapter/10.1007/BFb0054116).
+
+9. S. Martín, P. Morillo and J. L. Villar, “Computing the order of points on an elliptic curve modulo N is as difficult as factoring N,” Applied Mathematics Letters 14(3), 341–346, 2001. M. The abstract specifies squarefree N and randomized polynomial reduction. Point order, group cardinality and group exponent are distinct oracle problems. [Publisher](https://www.sciencedirect.com/science/article/pii/S0893965900001592).
+
+10. Luis V. Dieulefait and Jorge Urroz, “Factorization and Malleability of RSA Moduli, and Counting Points on Elliptic Curves Modulo N,” Mathematics 8(12), 2126, 2020. T, with a qualification. The paper claims a deterministic two-twist-count reduction. In its projective argument, Lemma 1’s reconstruction formulas already contain the unknown PQ=(p+1)(q+1). I therefore do not rely on that step; the four-pattern argument in A avoids it. [Published text](https://mdpi-res.com/d_attachment/mathematics/mathematics-08-02126/article_deploy/mathematics-08-02126.pdf).
+
+11. Jorge Jiménez Urroz and Jacek Pomykała, “Factoring numbers with elliptic curves,” The Ramanujan Journal 64, 265–273, 2024. M for the published record; T for the accessible preprint. Preprint Theorem 1 explicitly assumes GRH for its all-squarefree-input reduction, despite the broader abstract wording. I have not verified that the paywalled final theorem removes that assumption. [Publisher](https://link.springer.com/article/10.1007/s11139-023-00822-1), [preprint theorem](https://arxiv.org/html/2210.04835v2).
+
+12. Ravi S. Kulkarni, “An arithmetic-geometric method in the study of the subgroups of the modular group,” American Journal of Mathematics 113(6), 1053–1133, 1991. M for the original record; its Farey-symbol results were checked through Kurth–Long. [Publication record](https://www.jstor.org/stable/2374900).
+
+13. Antonio Lascurain Orive, “Some presentations for overline{Gamma}_0(N),” Conformal Geometry and Dynamics 6, 33–60, 2002, DOI 10.1090/S1088-4173-02-00073-5. M; full text was not successfully retrieved. It corrects and simplifies a Reidemeister–Schreier presentation. I found no verified polynomial-in-log-N complexity result attributable to it. [Bibliographic reference in a primary research article](https://www.aimsciences.org/article/doi/10.3934/amc.2014.8.223).
+
+14. Chris A. Kurth and Ling Long, “Computations with finite index subgroups of PSL_2(Z) using Farey Symbols,” Advances in Algebra and Combinatorics, World Scientific, 225–242, 2008; preprint 2007. T. Their formula index=3m+e3, with m the symbol’s length parameter, makes the size dependence explicit. Thus a Gamma_0(N) Farey symbol has Theta(psi(N)) entries. This is an output-size lower bound; it is not a claim that every implementation runs in exactly linear time. [Algorithm text](https://arxiv.org/html/0710.1835v1).
+
+15. Barry Mazur, “Remarks on the Alexander Polynomial,” unpublished notes, 1963 or 1964. M: the date and unpublished status were checked against Mazur’s own account; the scanned manuscript was not retrieved. There is no journal venue to supply. [Mazur’s account](https://sites.harvard.edu/barry-mazur/older-material/).
+
+16. Masanori Morishita, Knots and Primes: An Introduction to Arithmetic Topology, Universitext, Springer, 2012; also “On certain analogies between knots and primes,” Journal für die reine und angewandte Mathematik 550, 141–167, 2002. M. These supply the arithmetic-topology dictionary, not a compact-manifold factoring algorithm. [Book](https://link.springer.com/book/10.1007/978-1-4471-2158-9), [article record](https://kyushu-u.elsevierpure.com/en/publications/on-certain-analogies-between-knots-and-primes/).
+
+17. Alexander I. Barvinok, “A Polynomial Time Algorithm for Counting Integral Points in Polyhedra When the Dimension is Fixed,” Mathematics of Operations Research 19(4), 769–779, 1994. T for the theorem statement. Binary input size and fixed dimension are essential. [Publisher](https://pubsonline.informs.org/doi/10.1287/moor.19.4.769).
+
+18. Ravindran Kannan and Achim Bachem, “Polynomial Algorithms for Computing the Smith and Hermite Normal Forms of an Integer Matrix,” SIAM Journal on Computing 8(4), 499–507, 1979. T for the polynomial bit-complexity statement. It does not include prime decomposition of the resulting invariant factors. [Publisher](https://epubs.siam.org/doi/abs/10.1137/0208040?journalCode=smjcat).
+
+19. Richard Sladkey, “A Successive Approximation Algorithm for Computing the Divisor Summatory Function,” arXiv:1206.3369, 2012. T for the stated O(N^(1/3)) time and O(log N) storage bounds; this is a preprint, not a verified journal publication. [Preprint](https://arxiv.org/abs/1206.3369).
+
+20. Don Coppersmith, “Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities,” Journal of Cryptology 10(4), 233–260, 1997. T for the small-root and partial-factor-information statements. The smallness hypothesis is the source of the algorithm’s power and its limitation. [Paper](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf).
+
+
+C
+
+1. Compressed supersingular orbit counting.
+
+Precise question: Can #X_0(N)(F4), or its supersingular orbit contribution, be computed from a binary level specification in polynomial time, without factoring and without enumerating the order-N subgroup schemes? Even an exp(n^alpha) algorithm with alpha<1/3 would be interesting against the usual number-field-sieve benchmark.
+
+There is a concrete reason to investigate it: the underlying elliptic curve and automorphism group are constant, multiplication by N has a short arithmetic circuit, and only one integer count is required. A supplies an explicit reduction from that count to factoring.
+
+Quick kill attempt: the torsion scheme has degree N², the cyclic-subgroup set has size psi(N), and Burnside reduces the problem to precisely that unknown cardinality. Existing division-polynomial, modular-equation and cohomological algorithms expand those degrees. A short multiplication circuit is not yet a short counting algorithm. This remains a target, not an algorithm.
+
+2. Recover only omega(N) through a genuinely compressed cohomology model.
+
+Precise question: Is there a uniform polynomial-time construction of an explicit polynomial-size chain complex C_N with a Betti number equal to omega(N), obtained from the arithmetic scheme Spec(Z/NZ) without producing its CRT components?
+
+This weaker target deserves separate attention because no general polynomial-time reduction from omega(N) to full factoring is established here.
+
+Quick kill attempt: every standard conversion constructs the prime-power components or their idempotents, which already supplies factors. Conversely, asking merely for an arbitrary graph with omega(N) components is equivalent to asking for an omega algorithm and then drawing isolated vertices. Progress would require a direct arithmetic-to-topological construction whose cheap boundary matrices arise independently of knowing omega. No such construction is known to me, but no general obstruction excludes it.
+
+5-line plain-language answer
+
+Yes: numbers can be represented geometrically, with primality or factors reflected in their structure.
+Some examples are pictures of divisibility; others involve sophisticated curves, spaces and lattice counts.
+Several exact geometric quantities would reveal the factors, but computing them is currently the difficult part.
+Elliptic curves already give useful factoring algorithms and practical ways to certify primes.
+No known classical geometric construction makes general prime factorization polynomial-time.

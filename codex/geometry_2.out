@@ -1,0 +1,407 @@
+Verdict
+
+MAJOR REVISION.
+
+The central point-count formulas survive: Prop X0-2 is correct under its stated hypotheses; the F_{ℓ²} identity and coefficient (ℓ−1)/12 are correct; Prop X1 is also correct with all its hypotheses retained.
+
+However, the draft contains a false experimental claim, an already-solved “OPEN” problem, false versions of Prop AGG-H, unjustified extensions of Prop CAT, inconsistent class-number tiers, and several incorrect summaries. The supersingular explanation also needs substantial prior-art attribution.
+
+Locations below refer to geometry_results.md v1.1.
+
+Issues
+
+1. MAJOR — E3 did not recover every unknown symbol.
+
+Location: row 16; §3.2, lines 297–299; OPEN-1.
+
+A counterexample occurs inside the registered sample:
+N = 3,321,346,453 = 52,489 × 63,277, the 32-bit seed 6.
+
+The counts at ℓ = 2,3,5,7,11,13 are respectively:
+6, 8, 16, 20, 16, 40.
+
+decode_eps_from_x0_counts returns ε = 1 and ncons = 2. The two consistent patterns differ at precisely these entries:
+
+    (χ_{−40}(p), χ_{−35}(p)) = (−1,+1)
+    (χ_{−40}(p), χ_{−35}(p)) = (+1,−1).
+
+Thus the claim “every unknown symbol … 4000/4000” is false. The code computes ncons but never checks or records uniqueness: run_experiments.py, lines 126–144.
+
+Fix: report recovery of ε and consistency of the true pattern, which are what E3 actually measures. Record the distribution of ncons before making any stronger claim.
+
+2. MAJOR — OPEN-1 is already solved as stated.
+
+Location: §8, lines 500 onward; §0, lines 85–87.
+
+The stated task is to factor in time subexponential in n = log N, given N and some point counts. Ignore the point counts and use an existing subexponential factoring algorithm. This is unconditional in expected time; it does not require the NFS heuristic. [Lenstra–Pomerance’s theorem](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf) supplies such an algorithm.
+
+The asserted equivalence with all small fundamental-discriminant symbols is also unproved and stronger than the trace formula. At L = 13, the discriminants actually appearing are:
+
+    −3, −4, −7, −8, −11, −19, −20, −24,
+    −35, −40, −43, −51, −52.
+
+For example, −23, −31 and −47 do not appear. Moreover, issue 1 disproves the claimed experimental uniqueness even for the symbols that do appear.
+
+Fix: ask for polynomial time, or specify an improvement over a precise existing factoring bound. Replace “equivalent” by the proved reduction from counts to a specified collection of residue indicators. Label the information-theoretic reconstruction discussion heuristic.
+
+3. MAJOR — Prop AGG-H gives the wrong period for mapping tori.
+
+Location: §5, lines 412–418; row 24.
+
+Let A = [[2,1],[1,1]], and take the torus mapping torus of A^N. For G = C₂,
+
+    #Hom(π₁(M_{A^N}), C₂)
+      = 2 · |ker(A^N−I on F₂²)|.
+
+A mod 2 has order 3. Consequently the count is 8 when 3 divides N and 2 otherwise. In particular:
+
+    N = 15: count 8;
+    N = 35: count 2.
+
+Both levels are odd semiprimes and congruent modulo exp(C₂) = 2.
+
+Fix: distinguish literal exponent relators from iterated automorphisms. For a fixed mapping torus and fixed target, use the order of the induced permutation on the finite representation set. The aggregate conclusion survives, but the asserted modulus and proof do not.
+
+4. MAJOR — Twisted Dijkgraaf–Witten invariants do not follow “hence” from homomorphism counts.
+
+Location: the same proposition, lines 415–417.
+
+The cocycle weights contain information about the fundamental class that is absent from the presentation’s solution set.
+
+For the nontrivial cyclic C₃ theory on L(N,1), when 3 divides N, the standard normalization gives
+
+    Z(L(N,1)) = (1/3) Σ_{a=0}² exp(2πi N a²/9).
+
+The values at N = 15 and N = 21 differ, although both are 0 modulo exp(C₃) = 3. Orientation conventions can conjugate both values without removing the counterexample. The cyclic cocycles and lens-space evaluation are given in [de Wild Propitius, §2.3 and §2.9](https://staff.science.uva.nl/f.a.bais/scripties/mdwp1995.pdf).
+
+Fix: restrict the homomorphism-count argument to untwisted DW theory. Prove any twisted periodicity statement separately, allowing a larger period.
+
+5. MAJOR — Prop CAT does not prove factoring equivalence for a fixed knot.
+
+Location: row 26; §4.2, lines 393–397.
+
+The proved reduction changes the trace to t = 2+R as a function of N. It proves a result about a variable toral automorphism.
+
+This cannot simply be interpreted as a family of genus-one fibred knots in S³. Their Alexander polynomial satisfies Δ(1) = ±1. For characteristic polynomial x²−tx+1, this requires 2−t = ±1; with t ≥ 3, only t = 3 remains.
+
+The fixed figure-eight experiment is not a proof of factoring equivalence.
+
+Fix: retain the theorem for the variable-trace toral family. Label the fixed figure-eight and fixed-knot claims OPEN or experimentally supported.
+
+6. MAJOR — Additive and multiplicative Möbius inversion are confused.
+
+Location: §5, lines 427–429.
+
+The cyclotomic factor
+
+    |Res(Δ, Φ_N)|
+
+is obtained multiplicatively from the cover-homology orders. Prop CAT instead takes an additive Möbius sum.
+
+For the figure-eight monodromy, write F_d = |det(A^d−I)|. Direct computation gives
+
+    F₁ = 1, F₃ = 16, F₅ = 121, F₁₅ = 1,860,496.
+
+At N = 15:
+
+    additive primitive-point count = 1,860,360;
+    multiplicative cyclotomic factor = 961.
+
+They are not “exactly” the same parts.
+
+Fix: write the two inversion formulas separately and remove the asserted identification.
+
+7. MAJOR — The integer homology-size claim needs hypotheses.
+
+Location: row 25; §5, lines 427–429.
+
+H₁ of a cyclic branched cover need not be finite. For the trefoil, Δ(t)=t²−t+1 vanishes at sixth roots of unity, and the sixfold branched cover has positive first Betti number.
+
+Nor are the finite orders always exponentially long. The trefoil has Mahler measure 1; its finite homology orders are periodic.
+
+Fix: distinguish |H₁| from |H₁,tors|, state the resultant’s nonvanishing condition, and require positive logarithmic Mahler measure for exponential digit growth. [Silver–Williams](https://doi.org/10.1016/S0040-9383(01)00014-3) explicitly distinguish these cases.
+
+8. MAJOR — The class-number FACT claims contradict the draft’s own caveat.
+
+Location: rows 5, 11, 19; §3.2, lines 338–340; §3.3, lines 346–347.
+
+Row 5 cautiously calls extraction from one class number heuristic. The Fricke paragraph then says “hence FACT,” and §3.3 repeats unconditional factoring equivalence.
+
+A class number, an explicitly supplied class-group structure, and a splitting ambiguous form are different outputs. A failed simple powering argument neither establishes nor disproves a more sophisticated reduction.
+
+The reverse direction also needs attention: knowing the factorization of N does not provide a known polynomial-time computation of h(−4N). Thus “equivalent” requires more than a proposed factor extractor.
+
+Fix: use a separate class-number status consistently, specifying conditional reductions and sampling/generation assumptions. Do not infer FACT merely from the occurrence of a class number.
+
+9. MAJOR — The random-walk QR classification omits identity and scalar reductions.
+
+Location: row 20; §7, random walks.
+
+The formula
+
+    #Fix(W on P¹(F_r)) = 1 + (disc(W)/r)
+
+requires W mod r to be nonscalar.
+
+Take W = [[5,3],[3,2]], the square of the trace-3 cat map. It is hyperbolic, but W mod 3 = −I. At N = 15, explicit enumeration gives four fixed points; the displayed product formula gives one.
+
+In addition, unrestricted return-word sums include identity words, whose fixed-point contribution is ψ(N). Words of growing length can also have discriminants far beyond “small fixed D.”
+
+Fix: handle scalar reductions and identity words explicitly. State precisely which words, discriminant sizes and exceptional level primes the QR conclusion permits.
+
+10. MAJOR — Several “general principles” exceed the propositions proved.
+
+Location: §0, lines 75–83; §4, lines 399–401.
+
+“Divisor sums of non-monomial weights are factoring-equivalent” is false without substantial restrictions. The classical identity Σ_{d|N} φ(d)=N is an immediate counterexample to the broad wording.
+
+“Periods are orders, hence factoring-equivalent” also needs the relevant oracle and randomization assumptions; the usual reduction is not a theorem about every fixed-base period.
+
+Fix: replace these assertions by the actual quantified statements of MF, NECK and CAT. Make the distinction between structural classification and a proved complexity reduction explicit.
+
+11. MINOR — The supersingular reading identifies the wrong trace-formula term.
+
+Location: §3.2, lines 314–320.
+
+A1 = ψ/12 is the square-index identity term. It is not itself the supersingular locus.
+
+For example, N = 221 and ℓ = 2 give A1 = 21, whereas the supersingular contribution over F₄ is 22. The latter includes automorphism-orbit corrections.
+
+The coefficient (ℓ−1)/12 in the final point count is correct; the attribution of the entire locus to A1 is not.
+
+Fix: call A1 the identity contribution. Derive the supersingular count separately using the mass formula and automorphism orbits.
+
+12. MINOR — The “at most six symbols” bound is not uniform in ℓ.
+
+Location: §3.2, lines 307–309.
+
+The code’s discriminant lists, including −4 and −3, have sizes:
+
+    ℓ = 2,3,5,7,11: 4,6,8,11,22.
+
+The six-symbol bound concerns the tested F₄/F₉ decoders. Also, “bounded QR terms” means bounded in N for fixed ℓ and a fixed semiprime promise; it is not a uniform bound over arbitrary squarefree N and growing ℓ.
+
+Fix: state those parameter dependencies explicitly.
+
+13. MINOR — Prop X0-1 and its decoder omit the prime 3.
+
+Location: §3.1, lines 231–235; decoders.py, lines 64–70.
+
+For N = 39 = 3×13:
+
+    ν₂ = 0, ν₃ = 2, ψ = 56, genus = 3.
+
+The assertion ν₃ ∈ {0,4} is false, and from_genus(39,3) returns None.
+
+Fix: remove the factor 3 first or include the exceptional elliptic-point value. In the preceding “any N” formulas, use the appropriate Kronecker symbol at 2; the code’s −4 is safer than the text’s −1.
+
+14. MINOR — The CW face bound is false, although the size obstruction survives.
+
+Location: row 12, versus §3.1.
+
+A closed genus-g surface has a CW structure with one vertex, 2g edges and one face. Therefore arbitrary CW structures do not require ψ/6−O(1) faces.
+
+The lower bound on edges in §3.1 is correct. The triangulation bound is also correct.
+
+Fix: change “faces” to “edges” or “total cells,” retaining “triangles” for triangulations.
+
+15. MINOR — Prop X1’s hypotheses disappear in the summaries.
+
+Location: §0, lines 65–66; row 18; §3.2, lines 327–336.
+
+The full proposition survives. The statement using only N>(√ℓ+1)² does not.
+
+For N = 15 and ℓ = 7, the Hasse inequality excludes noncuspidal points, but there are eight rational cusps, not φ(15)/2 = 4. This also agrees with the genus-one point count.
+
+The proof should refer to Y₁(N) for the fine moduli argument. Its use of m∈{p,q,N} also needs generalization if the theorem is genuinely stated for arbitrary squarefree N.
+
+Fix: retain the prime-factor condition everywhere and give the cusp Galois action explicitly.
+
+16. MINOR — KUM’s displayed dimension is correct; its concluding sentence is not.
+
+Location: §5, lines 431–435.
+
+The reviewed version actually uses Spec Z[1/(2N)]. For that scheme,
+
+    dim H¹_et(−, μ₂) = ω(N)+2,
+
+with the stated unit classes.
+
+The next sentence says the dimension is ω(N), contradicting the display. It is the dimension minus two that recovers ω(N).
+
+For Spec Z[1/N] with N odd, the fppf Kummer calculation gives ω(N)+1. The étale Kummer argument cannot simply be carried over without inverting 2.
+
+Fix: preserve the distinction between schemes and topologies; require explicit unit representatives when discussing a basis as factoring data.
+
+17. MINOR — Pairwise linking is not a Rédei triple symbol.
+
+Location: §0, lines 87–89; row 30; OPEN-2.
+
+The pairwise datum is the Legendre symbol. Rédei triple symbols belong to the higher-order story.
+
+For p,q ≡1 mod 4, the narrow-class-group statement is correctly expressed as
+
+    r₄(Cl⁺(Q(√pq))) = 1 if (p/q)=+1,
+                       0 if (p/q)=−1.
+
+OPEN-2 should also specify its reduction model. A polynomial-time extractor using only a single unknown bit at the same N can be simulated by trying both bit values and verifying the resulting factors. A meaningful oracle reduction must permit suitably specified changed inputs.
+
+Fix: separate pairwise linking, the Rédei matrix, and triple symbols. Say “no polynomial-time algorithm known,” not “no algorithm from N alone.”
+
+18. MINOR — Row 11 conflates an order class number, a field class number and genus counts.
+
+Location: row 11.
+
+The Bianchi cusp count uses the maximal-order class number of Q(√−N). At N = 35,
+
+    h(−35)=2, whereas h(−140)=6.
+
+Thus h(−4N) is not universally the Bianchi cusp count.
+
+The assertion “2^{ω−1} genera” also misses the ramified factor 2. For N = 65, discriminant −260 has four genera, not two.
+
+Fix: distinguish the order of discriminant −4N from the maximal order, and count prime discriminants in the genus formula.
+
+19. MINOR — The class-number cost column is not the best known randomized bound.
+
+Location: rows 5 and 11.
+
+N^{1/5+o(1)} under ERH is a classical bound, not the best asymptotic randomized bound under that assumption. Subexponential class-group algorithms also compute the class number.
+
+Fix: distinguish deterministic bounds from randomized bounds and include Hafner–McCurley and subsequent improvements. A modern primary reference is [Biasse–Erukulangara](https://doi.org/10.3934/amc.2021055).
+
+20. MINOR — Normalization and ramification are conflated with listing prime factors.
+
+Location: row 44; §6.
+
+For squarefree d, the maximal order of Q(√d) is given by the familiar basis determined by d modulo 4. Computing that basis does not factor d. Likewise, returning a discriminant integer or a closed ramification subscheme differs from listing its constituent primes.
+
+Fix: state Buchmann–Lenstra as a reduction between general computational problems. Separately identify which requested output lists ramified primes.
+
+21. MAJOR — The plain-language verdict contains false statements and an incorrect tier assignment.
+
+Location: §0; row 31.
+
+Concrete repairs are needed:
+
+- r₃(N)=12h(−4N) needs its congruence hypotheses. At N=15, r₃(15)=0 but 12h(−60)=24.
+- “The same split holds for X₁(N)” is wrong: the prime-field count is already factoring-equivalent in Prop X1.
+- N·vol(M_φ) is not AGG under the draft’s definition “a function of N modulo a fixed m.” It has infinitely many distinct values.
+- The trace formulas establish dependence on specified residue data, not a theorem that growing collections of such data cannot factor.
+- The explicit-complex size bounds do not rule out future compressed algorithms.
+- “We can say exactly why in each case” and “none … is a live lead” are stronger than the results and remaining open questions justify.
+
+Fix: state that no faster algorithm was obtained, with proved obstructions confined to the specified representations and models.
+
+Checks
+
+1. Prop X0-2 — PASS for the formula; FAIL for the accompanying recovery/separation claims.
+
+The sign, outer factor 1/2, and exceptional weights h_w(−4)=1/2 and h_w(−3)=1/3 are correct. Define the f-sum explicitly by f²|D and D/f²≡0,1 mod 4.
+
+For squarefree N, all X₀ cusps are rational. The prime-factor bound makes gcd(f,N)=1, so using D rather than D/f² in the Legendre factors is correct.
+
+The formula proves a QR upper bound. I found no verified polynomial-time factoring method using the growing prime-field data, but the formula does not exclude one. E3’s stronger decoding assertion fails as above.
+
+2. Prop X0-3 and extensions — PASS for the identities; FAIL for parts of their interpretation and scope.
+
+A cleaner exact identity, for k≥2, is
+
+    #X₀(N)(F_{ℓ^k})
+      = ℓ^k+1 − Tr T_{ℓ^k} + ℓ Tr T_{ℓ^{k−2}}.
+
+Here T₁=I. It follows directly from the two Frobenius roots and the Hecke recurrence.
+
+For k=2 this gives the stated +ℓg. For odd k both Hecke indices are nonsquares. For even k both identity terms occur, giving coefficient (ℓ−1)/12. Retain the relevant level-prime bounds and discriminant-size dependence.
+
+I independently enumerated 46 extension-field elliptic-curve counts, including degrees 3,4,5; all agreed. Eight additional Manin-symbol trace checks agreed. The supersingular interpretation needs issue 11’s correction.
+
+3. Prop X1 — PASS with its complete hypotheses.
+
+I counted cusps using their Frobenius action in 426 admissible cases with N<300. All gave φ(N)/2.
+
+Independent curve checks gave:
+
+    #X₁(11)(F₂), #X₁(11)(F₃), #X₁(11)(F₅) = 5,5,5;
+    #X₁(13)(F₂), #X₁(13)(F₃), #X₁(13)(F₅) = 6,6,6.
+
+For X₁(13), I enumerated the model
+y²+(x³−x²−1)y=x²−x, including its two points at infinity. The [PARI documentation](https://pari.math.u-bordeaux.fr/pub/pari/manuals/2.17.1/users.pdf) identifies this model and its good reduction at 2.
+
+4. Other propositions — FAIL overall.
+
+NECK, CAT’s variable-trace arithmetic reduction, MF, MF′ and COV pass. The NECK/CAT linearizations were checked at four semiprimes; conic counts were directly enumerated at four levels.
+
+AGG-H fails as stated.
+
+CYC’s module quotient and fixed-coefficient periodicity pass. For knots, t−1 is invertible on the Alexander module, so A/ν_NA agrees with A/(t^N−1)A; in fact period m already suffices modulo ℓ. Its integer-growth and Möbius interpretations fail without the repairs above.
+
+KUM’s ω+2 display passes for the scheme currently written.
+
+The triangulation, edge-count and Farey-size bounds pass; the table’s arbitrary-CW face bound fails.
+
+5. Class numbers, Fricke, Rédei and QR — FAIL overall.
+
+The Fricke formula is correct for N>4 when h denotes primitive-form/order class numbers:
+
+    #Fix(w_N)=h(−4N)+[N≡3 mod 4]h(−N).
+
+The vague “classical corrections” are unnecessary in this stated range. Its FACT inference fails.
+
+The Legendre/4-rank relation passes; the triple-symbol identification fails. Fixed small nonsquare-D residuosity remains an appropriate unresolved decision problem, distinct from producing square roots. Do not apply that unresolved-status wording to trivial square D or instances already decided by the Jacobi symbol.
+
+6. OPEN-1 and OPEN-2 — FAIL as a pair of precise open problems.
+
+OPEN-1 is solved literally and needs reformulation. OPEN-2 describes a legitimate unresolved polynomial-time question, but needs the symbol terminology and oracle model clarified. I found no verified new factor-extraction algorithm from these data.
+
+7. Literature — FAIL for completeness and attribution.
+
+Most named references are real and relevant. The major omission is prior art for the supersingular mechanism; verification details follow.
+
+8. Plain-language verdict — FAIL.
+
+The cautious conclusion “no faster algorithm obtained” is supported. The stronger exhaustive explanation, tier separation and dismissal of all leads are not.
+
+The repository’s existing geometry tests passed: 7/7. They do not cover the counterexamples above. Reproducible scratch computations are in [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/geometry_2/referee_checks.py), with [output](/Volumes/git/factoring-connection/codex/scratch/geometry_2/referee_checks.json).
+
+Literature
+
+“Verified statement” below means I inspected the relevant accessible statement or formula, not every proof.
+
+- Cohen 1977: bibliographic citation confirmed: “Trace des opérateurs de Hecke sur Γ₀(N),” Bordeaux seminar 1976–1977, Exp. 4, nine pages. I did not retrieve the original text. Cohen–Strömberg 2017, Thm 12.4.11 is the correct theorem number; its formula is reproduced explicitly in [Child, §4](https://arxiv.org/html/2101.05663v2). Verified through that reproduction.
+
+- Merel 1994: verified the matrix formula, specifically Proposition 20 in [Universal Fourier expansions of modular forms](https://wstein.org/edu/Fall2003/252/references/merel-universal/Merel_Universal_Fourier_expansions_of_modular_forms.pdf), LNM 1585, pp. 59–94. The earlier [1991 Γ₀(N) paper](https://numdam.org/articles/10.5802/aif.1264/) is also relevant; these are separate references.
+
+- Kulkarni 1991: bibliographic record verified, American Journal of Mathematics 113(6), 1053–1133. I checked the applicable Farey results through Kurth–Long, not the entire original paper.
+
+- Kurth–Long: verified §3.4, including μ=3n+e₃, in [the paper](https://arxiv.org/html/0710.1835v1). The preprint is 2007; publication is Advances in Algebra and Combinatorics, 2008, pp. 225–242.
+
+- Ogg 1974: verified §2’s Fricke formula and §3, Theorem 3’s supersingular argument in [Hyperelliptic modular curves](https://www.numdam.org/item/10.24033/bsmf.1789.pdf). Ogg explicitly uses E:y²+y=x³, scalar Frobenius −2 over F₄, all cyclic subgroups being rational, and the ψ(N)/12 contribution. The geometric mechanism is established prior art. I did not locate an earlier statement of the draft’s exact factoring reduction.
+
+- Eichler mass/class-number formulas are additional prior art for the supersingular count. [Voight’s mass-formula chapter](https://link.springer.com/chapter/10.1007/978-3-030-56694-4_25) gives mass φ(D)ψ(M)/12 for definite Eichler orders over Q; the class-number formula adds embedding corrections. This is the appropriate framework for separating mass from unweighted point counts.
+
+- X₁ cusp-only counts: I verified standard cusp descriptions and small explicit models, including the cusp discussion in [Derickx’s thesis](https://www.maartenderickx.nl/articles/Proefschrift.pdf). The Hasse-bound exclusion of Y₁ points is classical. I did not locate a published theorem with exactly the draft’s general hypotheses and factoring conclusion; that negative search is not a novelty certificate.
+
+- Rédei 1934: bibliography confirmed for the 4-rank papers, including Rédei–Reichardt, J. reine angew. Math. 170, 69–74, and Rédei, volume 171, 55–60. The triple symbol belongs to Rédei’s 1939 work. [Stevenhagen 2022](https://doi.org/10.1017/S0305004121000335) explains its corrected definition and its role in 8-ranks.
+
+- Morishita 2012: [book and chapter subjects verified](https://link.springer.com/book/10.1007/978-1-4471-2158-9). Chapter 4 concerns linking numbers and Legendre symbols; chapter 8 concerns Milnor invariants and multiple residue symbols. These support the distinctions above.
+
+- Neumann–Zagier 1985: bibliography verified: [Volumes of hyperbolic three-manifolds](https://www.sciencedirect.com/science/article/pii/0040938385900047), Topology 24(3), 307–332. I did not complete a full-text deformation-theorem audit. The draft should restrict its analytic statement to the appropriate neighborhood of the complete structure and sufficiently long hyperbolic fillings.
+
+- Silver–Williams 2002: verified the growth statement and its qualifications in [Mahler measure, links and homology growth](https://doi.org/10.1016/S0040-9383(01)00014-3), Topology 41(5), 979–991.
+
+- Buchmann–Lenstra 1994: verified Theorem 1.3 in [Approximatting rings of integers in number fields](https://www.numdam.org/item/JTNB_1994__6_2_221_0.pdf), JTNB 6(2), 221–260. It concerns the general maximal-order problem and the largest squarefree divisor, not listing factors of a known squarefree quadratic discriminant.
+
+- Bach–Miller–Shallit 1986: verified the divisor-sum factoring result in [Sums of divisors, perfect numbers and factoring](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf), SIAM J. Comput. 15(4), 1143–1154.
+
+- Gu–Martin 2019: verified Theorem 10 in [the authors’ text](https://personal.math.ubc.ca/~gerg/papers/downloads/FTAACMFAR.pdf). It uses two automorphic-representation counts and a newform count. The draft’s qualification of this theorem is correct.
+
+- Shallit–Shamir 1985: verified metadata and the authors’ abstract for [Number-theoretic functions which are equivalent to number of divisors](https://weizmann.elsevierpure.com/en/publications/number-theoretic-functions-which-are-equivalent-to-number-of-divi/), IPL 20(3), 151–153. This is about divisor-count oracles; it is not a general factoring-equivalence theorem.
+
+- Necklace/periodic-orbit factoring prior art: I did not locate a published equivalence for these exact variable-parameter modular oracles. The underlying Burnside and Möbius identities are classical. Nothing verified in this search supplies the missing fixed-trace theorem.
+
+Anything missed
+
+The taxonomy omits ordinary inexpensive non-aggregate features: N·vol(M_φ) is already one example in the draft. Such features need not reveal unavailable factor information, but their existence defeats an exhaustive “aggregate/QR/FACT” classification without further definitions.
+
+The worthwhile distinction is between a known algorithm, an oracle reduction, an output-size obstruction for a specified representation, and an unresolved computational problem. The draft repeatedly moves between these. Keeping those distinctions explicit would preserve its useful core without claiming a general barrier to geometric factoring methods.
