@@ -52,3 +52,8 @@ def catmap_oracle(p: int, q: int, t: int, r: int) -> int:
 def x0_count_oracle(p: int, q: int, l: int) -> int:
     """#X_0(N)(F_l) = l + 1 - Tr(T_l | S_2(Gamma_0(N)))  (Eichler-Shimura; trace formula with the factors)."""
     return l + 1 - mc.trace_formula({p: 1, q: 1}, l, brute=False)
+
+
+def x0_count_sq_oracle(p: int, q: int, l: int) -> int:
+    """#X_0(N)(F_{l^2}) from the factors (amendment A1)."""
+    return mc.x0_count_sq({p: 1, q: 1}, l, brute=False)

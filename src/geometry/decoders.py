@@ -269,3 +269,46 @@ def decode_eps_from_x0_counts(N: int, counts: Dict[int, int]):
     eps_vals = {c.get(-4) for c in consistent}
     eps = eps_vals.pop() if len(eps_vals) == 1 and None not in eps_vals else None
     return eps, len(consistent), unk
+
+
+# -- amendment A1: point counts over F_{l^2} ------------------------------------------------------------------------
+
+def _terms_n(n: int) -> List[Tuple[int, Fraction]]:
+    out: Dict[int, Fraction] = {}
+    tmax = isqrt(4 * n - 1)
+    for t in range(-tmax, tmax + 1):
+        D = t * t - 4 * n
+        f = 1
+        while f * f <= -D:
+            if D % (f * f) == 0 and (D // (f * f)) % 4 in (0, 1):
+                D0 = fundamental(D)
+                out[D0] = out.get(D0, Fraction(0)) + _hw(D // (f * f))
+            f += 1
+    return sorted(out.items())
+
+
+def from_x0_count_sq(N: int, l: int, count: int):
+    """count = #X_0(N)(F_{l^2}), N = pq odd with p, q > 2l. Returns (p, q) or None, and the number of candidates.
+
+    count = (l-1) psi/12 + l^2 + 1 - sigma(l^2) + 2 lambda(l^2) + (1/2) sum_D0 w_D0 prod_D0 - l (1 + nu2/4 + nu3/3),
+    prod_D0 = prod_{r|N}(1 + chi_D0(r)) = 0 if (D0/N) = -1 else 2 (1 + chi_D0(p)); nu2 = prod_{-4}, nu3 = prod_{-3}."""
+    n = l * l
+    terms = _terms_n(n)
+    sig = 1 + l + l * l
+    lam = l + 2
+    D0s = sorted({D0 for D0, _ in terms} | {-4, -3})
+    unk = [D0 for D0 in D0s if kron(D0, N) == 1]
+    tried = 0
+    for pat in product((-1, 1), repeat=len(unk)):
+        chi = dict(zip(unk, pat))
+        prod_ = lambda D0: 0 if kron(D0, N) != 1 else 2 * (1 + chi[D0])
+        rest = (Fraction(l * l + 1 - sig + 2 * lam) + Fraction(1, 2) * sum(w * prod_(D0) for D0, w in terms)
+                - l * (1 + Fraction(prod_(-4), 4) + Fraction(prod_(-3), 3)))
+        psi12 = (count - rest) * 12 / (l - 1)
+        tried += 1
+        if psi12.denominator != 1:
+            continue
+        res = from_index(N, int(psi12))
+        if res:
+            return res, tried
+    return None, tried

@@ -151,4 +151,55 @@ if __name__ == "__main__":
     os.makedirs(RAW, exist_ok=True)
     for w in which:
         with open(os.path.join(RAW, f"geometry_{w}.jsonl"), "w") as out:
-            {"e1": e1, "e2": e2, "e3": e3}[w](out)
+            {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[w](out)
+
+
+def e4(out):
+    bad = []
+    nchk = 0
+    for l in (2, 3, 5, 7):
+        nchk += 1
+        if mc.trace_formula_n({}, l * l) != 0:
+            bad.append(("N1", l))
+    for N, lab in ((11, "11a1"), (14, "14a1"), (15, "15a1"), (17, "17a1"), (19, "19a1"), (21, "21a1")):
+        f = mc.factor_small(N)
+        for l in (2, 3, 5, 7):
+            if N % l == 0:
+                continue
+            a = cv.ap(cv.CREMONA[lab], l)
+            nchk += 2
+            if mc.trace_formula_n(f, l * l) != a * a - l:
+                bad.append((lab, l, "T"))
+            if mc.x0_count_sq(f, l) != cv.count_points_fl2(cv.CREMONA[lab], l):
+                bad.append((lab, l, "F"))
+    for N in range(2, 400):
+        f = mc.factor_small(N)
+        if not mc.squarefree(f) or mc.psi(f) > 400:
+            continue
+        w = len(f)
+        for l in (2, 3, 5):
+            if N % l == 0:
+                continue
+            ms = mc.manin_trace(N, l * l)
+            # Eisenstein part: T_n acts by sigma(n) on each of the 2^w - 1 boundary dimensions
+            pred = 2 * mc.trace_formula_n(f, l * l) + mc.sigma1(l * l) * (2 ** w - 1)
+            nchk += 1
+            if ms["trace"] != pred:
+                bad.append(("manin", N, l, ms, pred))
+    rec = {"exp": "E4a", "checks": nchk, "mismatches": len(bad), "bad": bad[:20]}
+    out.write(json.dumps(rec) + "\n")
+    print(rec)
+    for n in (32, 64):
+        for l in (2, 3):
+            ok = 0
+            maxc = 0
+            for seed in range(200):
+                inst = balanced_semiprime(n, seed)
+                N = inst.N
+                p, q = inst.labels["factors"]
+                r, c = D.from_x0_count_sq(N, l, H.x0_count_sq_oracle(p, q, l))
+                ok += r is not None and r[0] * r[1] == N
+                maxc = max(maxc, c)
+            rec = {"exp": "E4b", "n": n, "field": l * l, "instances": 200, "splits": ok, "max_patterns": maxc}
+            out.write(json.dumps(rec) + "\n")
+            print(rec)

@@ -375,3 +375,50 @@ def manin_trace(N: int, l: int) -> Dict[str, int]:
     if tr > P_MOD // 2:
         tr -= P_MOD
     return {"dim": len(free), "trace": tr}
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# general n coprime to N (amendment A1): needed for T_{l^2} and point counts over F_{l^2}
+# ---------------------------------------------------------------------------------------------------------------
+
+def trace_formula_n(fN: Fact, n: int, brute: bool = None) -> int:
+    """Tr(T_n | S_2(Gamma_0(N))), N squarefree, gcd(n, N) = 1 (Cohen's form, k = 2, trivial character).
+
+    A1 = psi(N)/12 if n is a square; A2 = -(1/2) sum_{t^2<4n} sum_f h_w((t^2-4n)/f^2) mu(t,f,n);
+    A3 = -(1/2) sum_{d|n} min(d, n/d) * 2^omega(N); A4 = sigma(n)."""
+    assert squarefree(fN)
+    N = nval(fN)
+    assert gcd(n, N) == 1
+    if brute is None:
+        brute = N <= 5000
+    psiN = psi(fN)
+    total = Fraction(0)
+    r = isqrt(n)
+    if r * r == n:
+        total += Fraction(psiN, 12)
+    tmax = isqrt(4 * n - 1)
+    for t in range(-tmax, tmax + 1):
+        D = t * t - 4 * n
+        for (f, hw) in hurwitz_sum(D):
+            Nf = gcd(N, f)
+            if brute:
+                K = N * Nf
+                M = sum(1 for x in range(N) if (x * x - t * x + n) % K == 0)
+            else:
+                assert Nf == 1
+                M = 1
+                for rr in fN:
+                    assert rr * rr > 4 * n
+                    M *= 1 + kronecker(D, rr)
+            fq = {q: e for q, e in fN.items() if Nf % q}
+            total -= Fraction(1, 2) * hw * Fraction(psiN, psi(fq)) * M
+    lam = sum(min(d, n // d) for d in divisors_of(factor_small(n)))
+    total -= Fraction(1, 2) * lam * (2 ** len(fN))
+    total += sigma1(n)
+    assert total.denominator == 1
+    return int(total)
+
+
+def x0_count_sq(fN: Fact, l: int, brute: bool = None) -> int:
+    """#X_0(N)(F_{l^2}) = l^2 + 1 - Tr T_{l^2} + l * g   (Weil + Eichler-Shimura + T_l^2 = T_{l^2} + l)."""
+    return l * l + 1 - trace_formula_n(fN, l * l, brute) + l * genus(fN)
