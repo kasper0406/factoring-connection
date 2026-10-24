@@ -1,0 +1,167 @@
+**Recommendation: MAJOR REVISION.** The covariance device is plausible and could remove the need for second-order smooth-number asymptotics. The present sketch does not establish AB₂, and 2L-DW₂’s endpoint cost needs correction. I find no demonstrated **FATAL obstruction to the qualitative conditional \(L[3/8]\) conclusion**.
+
+I worked read-only and checked the cited short-interval and BDH statements online.
+
+The §10 repair table is too categorical:
+
+| Previous issue | Assessment of v2.1 |
+|---|---|
+| 1: Lemma η | Substantially repaired. The pointwise Hildebrand argument avoids the fatal polylogarithmic loss. One displayed small-value estimate needs correction below. |
+| 2: thin-pair parameters | Repaired at first order. Second-order parent parameters still need attention. |
+| 3: non-reduced BV and weighted normalization | The divergent-series mistake is repaired; the complete weighted application remains unproved. |
+| 4: short fibres | The correct obstruction is addressed. The old truncation bound cannot simply be reused at second order. |
+| 5: parent divisor scale | The \(B_2^{1/2}\) truncation is a credible repair. Include short-interval amplification in the tail estimate. |
+| 6: PU | Enlargement and gcd reduction address the previous objections; the complete covering estimate is still sketched. |
+| 7: same-\(\ell\) parents | Correct strategy: determinant sparsity cancels the extra \(\ell\). Supply the counting estimate, allowing polylogarithmic losses. |
+| 8: CLB angular discard | Repaired in substance by per-point interior intervals, for specified regular cells. |
+| 9: cells, WD, parent supply | The identity \(w/z=\Pr(R)/\#J\) is exact and removes the parent-mean lower-bound obligation. Some subsequent estimates need corrections below. |
+| 10: rational weights | Repaired: retain the actual idealized convolution weights. |
+| 11: literal errors | Mostly repaired, but the false \(q^2\nmid\Delta\) assertion survives in Cor TP-q. |
+| 12: endpoint diagnosis | §3.5 is appropriately softened; §3.6 now overstates what supersedes it. |
+| 13: experiments | The tally and finite content calculation are repaired. |
+
+1. **MAJOR — Step 1’s asserted exact identity has a missing remainder.**  
+   **Location:** [§3.6, lines 775–781](/Volumes/git/factoring-connection/notes/c12alg_results.md:775).
+
+   Put \(r=\phi(\Delta'/\delta)\), let \(S_i\) be the smooth count in the class, and \(U_i\) the unrestricted class count. The exact residue identity is
+   \[
+   J=\frac{S_1S_2}{r}+\sum_a E_1(\kappa a)E_2(a).
+   \]
+   Its principal term is **not exactly** \(N(c)d_1d_2\). There is also
+   \[
+   R_{\rm count}
+   =d_1d_2\left(\frac{U_1U_2}{r}-N(c)\right).
+   \]
+   Thus the displayed bound \(|\mathrm{Err}(c)|\le\sqrt{V_1V_2}\) does not cover the entire error.
+
+   A finite counterexample: \(\Delta'=3,\kappa=1,\delta=1\), \(I_1=I_2=(1,5]\), smoothness bound \(2\). The two residue counts are \((1,2)\), their smooth counts \((1,1)\). Hence \(V_1=V_2=0\), but \(J=2\) whereas \(N(c)d_1d_2=20/9\).
+
+   Singles likewise have a counting remainder. They need no analytic character estimate, but they are not literal exact identities.
+
+   **Fix:** retain these remainders explicitly. After a near-zero cutoff, \(\Delta'/|I_i|\) should be negligible. The common-\(\delta\) assertion is correct because \(\kappa\) is a unit.
+
+2. **MAJOR — The covariance identity is sound, but the required moment lemma is missing.**  
+   **Location:** [Steps 2–3](/Volumes/git/factoring-connection/notes/c12alg_results.md:783).
+
+   With exact cell densities and all remainders retained, the covariance decomposition is valid. However, the stated variance estimate does not by itself justify the boundary argument. One needs uniform normalized fourth moments, including:
+
+   - large gcd classes and prime powers;
+   - rectangles near coordinate zero;
+   - the enlarged region covering boundary rectangles;
+   - the mixture components \(y\).
+
+   Assigning \(d_i(\ast)=0\) also adds a contribution of order \(h\) to the normalized variance. This is harmless with the proposed parameters, but should appear.
+
+   Approximate independence of \(\delta\) and the rectangle is justified by lattice counting on sufficiently long intervals; it is not an unconditional independence statement for every cell.
+
+   **Fix:** prove one lemma on the joint probability space \((y,c)\), giving both the normalized \(L^2\) deviation and bounded relative fourth moments. This automatically includes
+   \[
+   \operatorname{Cov}_y(A_1(y),A_2(y))
+   \]
+   through total covariance. If \(w\) is kept as another mixture variable, include it in that same space.
+
+   Under this completed lemma, the central claim is correct: a uniformly first-order error in each exact one-point density enters covariance quadratically. Normalization by the **exact** \(m_{\mathfrak q}^2\) introduces no new linear error.
+
+3. **MAJOR — Step 4 does not yet provide the weighted BDH application.**  
+   **Location:** [lines 808–810](/Volumes/git/factoring-connection/notes/c12alg_results.md:808), together with Lemma FB and §3.4.
+
+   Harper’s actual Theorem 2 bounds the reduced-residue energy by
+   \[
+   \Psi(x,y)^2\!\left(e^{-cu/\log^2(u+1)}+y^{-c}\right)+Q\Psi(x,y).
+   \]
+   It supplies neither an endpoint maximum nor an automatic theorem for the present weighted family. [Harper, Theorem 2](https://arxiv.org/pdf/1208.5992)
+
+   The missing application must track the common grid, endpoints divided by \(\delta\), reduced moduli \(\Delta'/\delta\), determinant multiplicities, rational pair weights, and normalization. “Inherited multiplicity” does not discharge these obligations.
+
+   Moreover, the statement \(\Delta'\le L[\alpha]^{O(1)}\) in Step 4 describes children; parent determinants reach \(L[1-\alpha]\). Those moduli are still \(x^{o(1)}\), so this is potentially repairable, but requires a separate calculation.
+
+   **Fix:** state a complete weighted energy inequality. The Drappeau alternative also needs the explicit \(L^1\)-to-\(L^2\) and weight-domination argument.
+
+4. **MAJOR — The shared \(K_0,K\) choice fails the parent saving on part of the claimed interval.**  
+   **Location:** [§3.4 parameter choice](/Volumes/git/factoring-connection/notes/c12alg_results.md:686), [§3.6 Step 4](/Volumes/git/factoring-connection/notes/c12alg_results.md:808), and [comparisons2](/Volumes/git/factoring-connection/src/c12alg/params.py:97).
+
+   With the stated child \(\Xi\), throughout this range
+   \[
+   \log K_0\asymp D^{2\alpha-1/2}\lambda^2
+   \]
+   at the level of the prescribed upper bounds. The parent saving has logarithm
+   \[
+   -cD^{3-7\alpha}/\lambda^2.
+   \]
+   Absorption requires \(\alpha<7/18\); it already fails at equality because of the \(\lambda\)-powers. Nevertheless, `margins2` reports all checks successful at \(7/18\) and \(79/200\).
+
+   **Fix:** introduce separate parent thresholds and grids, using parent losses rather than the child filter-spread loss. Their exponent \(1-2\alpha\) remains below \(3-7\alpha\) throughout \(\alpha<2/5\).
+
+   For children, the proposed \(K=K_0^4D^{8\alpha}(\log N)^C\) does give
+   \[
+   h^{1/4}\ll D^{-2\alpha},
+   \]
+   and \(\log K=o(\log B)\). Hildebrand’s range therefore survives. The direct short-interval theorem really applies for relative lengths at least \(y^{-5/12}\). [Hildebrand–Tenenbaum, Theorem 5.1](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf)
+
+   Separately, PP’s old discarded-mass bound is only first order. Reduce its cutoff, prove the sharper quadratic corner-mass estimate, or replace that truncation entirely with the rectangle-cover argument.
+
+5. **MAJOR — Parent acceptability is a potentially linear error outside the covariance device.**  
+   **Location:** [§3.4(ii), line 732](/Volumes/git/factoring-connection/notes/c12alg_results.md:732), and Step 3’s “all first-order errors” claim.
+
+   Squarefreeness and exclusion of primes dividing \(f_d\operatorname{disc}(f)\) are coefficient events. They are not automatically functions of the separate value coordinates.
+
+   At \(3/8\), write
+   \[
+   \rho_2=\exp(-(c_2+o(1))D^{3/8}\lambda),
+   \qquad c_2=\frac{3d_0}{32\kappa b_2}.
+   \]
+   A crude absolute SQF subtraction \(\varepsilon=(\log N)^C/B\), divided by a pair main term, costs \(\varepsilon/\rho_2^2\). The stated constraint \(a>c_2\) does **not** control that; the crude argument requires \(a>2c_2\).
+
+   The weaker constraint can suffice if one proves a mixed estimate retaining the partner’s smooth density, schematically
+   \[
+   \Pr(\text{bad}_1,\text{smooth}_2\mid g,R)
+   \ll \Xi\,\varepsilon A_2.
+   \]
+   No such proof is supplied.
+
+   **Fix:** prove the mixed two-point SQF estimate, or impose a sufficient stronger constant constraint. A one-point SQ subtraction cannot simply be declared second order.
+
+6. **MAJOR — The endpoint scan contributes a missing leading cost term.**  
+   **Location:** [§1.1, line 158](/Volumes/git/factoring-connection/notes/c12alg_results.md:158), [2L-DW₂](/Volumes/git/factoring-connection/notes/c12alg_results.md:923).
+
+   For fixed \(\alpha>3/8\), the parent algebraic smoothness cost is \(L[\alpha]^{o(1)}\). At equality it becomes leading. Upr ime’s actual scan gives
+   \[
+   \sigma_1(3/8)
+   =\frac{3}{8ad_0}+\frac{3d_0}{32\kappa b_2},
+   \]
+   rather than \(3/(8ad_0)\). See [uprime §4.1](/Volumes/git/factoring-connection/notes/uprime_results.md:307).
+
+   **Fix:** use this endpoint \(\sigma_1\) in the scan, search cost and \(c(3/8)\). The qualitative exponent remains \(3/8\); the printed constant is unsupported.
+
+7. **MINOR — The budget closes, but the proof states the wrong parent bound.**  
+   **Location:** [line 929](/Volumes/git/factoring-connection/notes/c12alg_results.md:929).
+
+   AB₂ and RAT₂ imply, with \(s=3-7\alpha\),
+   \[
+   A\ll D^{-2\alpha}\lambda^C,\qquad
+   B\ll(D^{-2\alpha}+D^{-2s})\lambda^C.
+   \]
+   They do not imply \(B\ll D^{-2\alpha}\lambda^C\) away from \(3/8\).
+
+   Nevertheless, since \(s\le\alpha\),
+   \[
+   A/\eta\ll D^{3-9\alpha}\lambda^C,\qquad
+   \sqrt{AB}/\eta\ll D^{-\alpha}\lambda^C,
+   \]
+   so the budget genuinely closes on the entire stated range.
+
+   **Fix:** retain the two-term bound. The endpoint height margin is also sound: \(\eta_0\asymp D^{-3/8}\), with \(\eta_0\log N\asymp D^{5/8}\lambda\).
+
+8. **MINOR — Remaining literal errors and overclaims.**
+
+   - [Lemma η, line 202](/Volumes/git/factoring-connection/notes/c12alg_results.md:202): the printed expression does not yield the claimed decay. Use \(CdK_1^{-\beta_2}\); this still makes the capped contribution negligible.
+   - [Cor TP-q, line 519](/Volumes/git/factoring-connection/notes/c12alg_results.md:519): delete the false \(q^2\nmid\Delta\) assertion. The divided lattice remains valid; \(q\mid\Delta'\) is covered by retaining its gcd-class factor.
+   - [Parent diagonal term, lines 911–912](/Volumes/git/factoring-connection/notes/c12alg_results.md:911): the identity is correct. Add \(W\ge(1-o(1))\mu_1\), obtained by bounding childless parents. Under the raw law, the pointwise root bound fails for the zero polynomial modulo \(q\); RE supplies the required averaged bound instead. Also replace the invalid subtraction of \(L\)-exponents by the actual exponential ratio.
+   - [§0](/Volumes/git/factoring-connection/notes/c12alg_results.md:30) and [§3.6’s consequence](/Volumes/git/factoring-connection/notes/c12alg_results.md:832): “precision holds” and “obstacle removed” should remain conditional on the missing estimates.
+
+The \(1/m\) term, root-conditioning errors, \(q\mid G(r,1)\) environments, and TV errors introduce no evident polynomial first-order obstruction. TV estimates must retain rational incidence weights before parent normalization. Environment cells must depend only on \(g\), with the required parent-filter variation included in RAT₂.
+
+My subjective probabilities, allowing local repairs but no new major analytic idea:
+
+- **(a) AB₂ survives as the proposed covariance argument: 45%.**
+- **(b) The intended conditional \(L[3/8]\) theorem is correct: 65%.** This does not endorse the printed endpoint cost constant.

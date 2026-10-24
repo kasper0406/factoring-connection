@@ -104,8 +104,17 @@ def comparisons2(al: Fr) -> List[Tuple[str, Term, Term]]:
         ("second-order child error D^-2a << eta", (-2 * al, Fr(9)), (-s, Fr(-9))),
         ("sqrt(A B) << eta with A, B second order", (-al - min(al, s), Fr(9)), (-s, Fr(-9))),
         ("parent truncation tail: (1-a)/2 < 4a-1", ((1 - al) / 2, one), (4 * al - 1, one)),
-        ("Xi exponents < alpha", (max(3 * al - 1, 1 - 2 * al, 2 * al - Fr(1, 2)), Fr(2)), (al, Fr(-2))),
+        ("Xi exponents < alpha (child thresholds)", (max(3 * al - 1, 1 - 2 * al, 2 * al - Fr(1, 2)), Fr(2)),
+         (al, Fr(-2))),
+        ("parent thresholds (built from parent losses only) << parent BV saving", (max(1 - 2 * al, 2 - 5 * al), Fr(2)),
+         (s, Fr(-2))),
     ]
+
+
+def shared_threshold_ok(al: Fr) -> bool:
+    """v2.1 used one K0 (child Xi, incl. the filter spread D^(2a-1/2)) for parents too; codex round 3: that fails the
+    parent saving D^(3-7a) for alpha >= 7/18.  Kept as a diagnostic: thresholds must be separate (obligation O3)."""
+    return (2 * al - Fr(1, 2), Fr(2)) < (3 - 7 * al, Fr(-2))
 
 
 def margins2(al: Fr) -> Dict[str, str]:

@@ -1,6 +1,6 @@
 # c12alg: the algebraic two-point blocks of C₁/C₂ under design DW — results
 
-Agent `c12alg`, phase 27, 2026-10-24. **v2.1** (v2 + §3.6 Theorem AB₂). v2: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
+Agent `c12alg`, phase 27, 2026-10-24. **v2.2** (v2 + §3.6 Theorem AB₂ in v2.1; v2.2 applies codex round 3 and the Opus literature critic). v2: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
 
 Files:
 - this note; pre-registration `notes/c12alg_prereg.md` (commit `20c882b`, code frozen there);
@@ -35,7 +35,8 @@ What we have:
   - at **first order** on the window 3/8 < α < 2/5, where first order is enough (Theorem AB);
   - at **second order** on [3/8, 2/5), including α = 3/8 (Theorem AB₂, added in v2.1), by a cell-covariance device
     (the covariance of two one-point functions is at most the product of their first-order standard deviations).
-    The device was suggested in c12rat's uncommitted v1 note.
+    The device was suggested in c12rat's uncommitted v1 note. AB₂ has four open bookkeeping obligations (O1–O4,
+    §3.6), so it is weaker than AB.
 
 If both sketches survive, the two-level algorithm runs in L[3/8]. If only the first-order versions survive, it runs in
 L[α] for every α > 3/8.
@@ -123,6 +124,8 @@ Precisely:
 - Theorem AB as sketched can be written out without a new idea: 55–65% [codex adversarial 40%; proof critic 65%].
 - DW is compatible with the chain: 90% [codex 93%].
 - Theorem 2L-DW(α) is a correct conditional theorem after the v2 repairs: 65% [codex 70%; proof critic 65–70%].
+- Theorem AB₂ (second order, §3.6) can be completed: 40% [codex round 3: 45%]. The conditional L[3/8] (2L-DW₂) is
+  correct as a conditional theorem: 55% [codex 65%].
 - A rigorous fixed α < 2/5, including the rational blocks: 25–35% [codex blind 30%].
 
 ---
@@ -193,13 +196,16 @@ D^{8α−3} margins (codex #1 FATAL, proof critic MAJOR). v2 bounds the ratio po
 - **Splitting I.** Split I into the part with |n| < X_F/K₁, K₁ := D⁴, and at most 2·64d·K₁ pieces J of relative length
   ≥ 1/(64dK₁) at scales x ∈ [X_F/K₁, X_F].
 - **The pieces J.** For each J and q ≤ B₂, Hildebrand's short-interval theorem at y = B₂ gives
-  Ψ(J/q, B₂) = (|J|/q)ρ(u_x − v_q)(1 + O(1/u₂)) and Ψ(J, B₂) = |J|ρ(u_x)(1 + O(1/u₂)), where v_q = log q/log B₂ ≤ 1. The
+  Ψ(J/q, B₂) = (|J|/q)ρ(u_x − v_q)(1 + O(1/u₂)) and Ψ(J, B₂) = |J|ρ(u_x)(1 + O(1/u₂)), where v_q = log q/log B₂ ≤ 1.
+  Hildebrand's error is log(u + 1)/log y. It is ≪ 1/u₂ because u₂ log u₂ ≪ log B₂, which holds for α > 4/11. The
   hypotheses hold: B₂ ≥ exp((log log x)^{5/3+ε}), and relative length 1/(64dK₁) ≥ B₂^{−5/12}.
-- **Dickman.** −ρ′/ρ is increasing, and equals ξ(u)(1 + O(1/u)) at u (de Bruijn). So
+- **Dickman.** −ρ′/ρ = ρ(u − 1)/(uρ(u)) is increasing (log-concavity of ρ, Alladi) and equals ξ(u)(1 + O(1/u))
+  (Hildebrand–Tenenbaum survey, JTNB 1993, Cor 2.4: ρ(u − v) = ρ(u)exp{vξ(u) + O((1 + v²)/u)}, |v| ≤ u/2). So
   ρ(u − v)/ρ(u) ≤ e^{vξ(u)(1+O(1/u))} for v ≤ 1. Hence
   Σ_q(1/q)ρ(u_x − v_q)/ρ(u_x) ≤ (1 + o(1))∫_{log B}^{log B₂}e^{(ξ/log B₂)t}dt/t + O(1) ≤ (1 + o(1))e^{ξ}/ξ + O(1)
   ≤ (1 + o(1))u_x, using e^ξ = 1 + uξ. And u_x ≤ u₂.
-- **The part |n| < X_F/K₁.** Its Ψ-mass relative to Ψ(I) is ≤ 64dK₁·K₁^{1−β₂}/K₁·C ≤ CdK₁^{−3/4}. On it m ≤ m̄ ≍ D^{2−4α}, so
+- **The part |n| < X_F/K₁.** Its Ψ-mass relative to Ψ(I) is ≤ CdK₁^{−β₂} ≤ CdK₁^{−3/4} (v2.2: v1's display was
+  garbled; codex). On it m ≤ m̄ ≍ D^{2−4α}, so
   it contributes ≤ CdD^{−3}D^{2−4α} = o(1).
 - **Total.** R(I) ≤ (1 + o(1))u₂ + o(1) ≤ 3u₂. ∎
 
@@ -516,7 +522,9 @@ pc3's DW-L, with [L : 𝔇Γ] = T. Then
 - Under the model, the probability of q | X₁ is (1/q)(1 + O(q/H)) in every translate. Each translate contains
   ⌊(2H + 1)/q⌋² fundamental domains of q𝔇Γ_{jk} ⊂ L ∩ (qZ)² = L_q, and [L : L_q] = q.
 - Conditioning multiplies the TV by ≤ 2/Pr(event).
-- q² ∤ Δ in the child box (Δ = qΔ′ with Δ′ < q), so no mod-q ratio remains (codex). ∎
+- (v2.2) q² | Δ is possible unless constraint (A1) of §5 holds. The divided lattice L_q/q = {x₁ ≡ λ^dx₂
+  (mod Δ/q)} is valid regardless, and q | Δ′ is then covered by retaining its gcd-class factor. v2's "q² ∤ Δ" was
+  false without (A1) (codex round 3). ∎
 
 So the **DW(b) TV statement is proved**. The proof critic's M4 and pc3 §7 item 3 asked for this, and it holds uniformly,
 nearly parallel pairs included.
@@ -773,11 +781,14 @@ cell densities
   d_i(I, δ) := Ψ(I; gcd(n, Δ′) = δ)/#{n ∈ I : gcd(n, Δ′) = δ}  (B-smooth n; for parents B₂).
 
 **Step 1 (exact factorisation in a cell).** For a cell inside Π_y:
-- #{x ∈ L′ ∩ c : x₁, x₂ ∈ 𝒮} = N(c)d₁(I₁, δ)d₂(I₂, δ) + Err(c), where N(c) := #(L′ ∩ c), |Err(c)| ≤ √(V(I₁)V(I₂)),
+- #{x ∈ L′ ∩ c : x₁, x₂ ∈ 𝒮} = N(c)d₁(I₁, δ)d₂(I₂, δ) + R_count(c) + Err(c). Here
+  R_count := d₁d₂(U₁U₂/φ(Δ′/δ) − N(c)), where U_i counts the class-δ integers in I_i, so
+  |R_count| ≤ N(c)d₁d₂·O(Δ′/|I|). This counting remainder was missing in v2.1; codex round 3 gave a counterexample
+  with Δ′ = 3. It is negligible after the near-zero cutoff. N(c) := #(L′ ∩ c), and |Err(c)| ≤ √(V(I₁)V(I₂)),
   V(I) := Σ_{a mod Δ′, gcd(a,Δ′)=δ}|E(I; a)|². This is the pair-sum identity: cross terms vanish exactly
   (`test_pair_sum_identity_PS`). The class-δ principal term is φ(Δ′/δ)m₁m₂ = N(c)d₁d₂(1 + O(Δ′/|I|)), with
   m_i := Ψ(I_i; δ)/φ(Δ′/δ).
-- The singles are exact, with **no** character error: #{x ∈ L′ ∩ c : x₁ ∈ 𝒮} = N(c)d₁(I₁, δ)(1 + O(Δ′/|I₂|)). Each
+- The singles have **no** character error, only a counting remainder: #{x ∈ L′ ∩ c : x₁ ∈ 𝒮} = N(c)d₁(I₁, δ)(1 + O(Δ′/|I₂|)). Each
   x₁ has |I₂|/Δ′ + O(1) partners.
 
 **Step 2 (covariance identity).**
@@ -818,8 +829,26 @@ treatment as Theorem AB:
 At α = 3/8 the design is 2L_DW(3/8). This is uprime's 2L′ with DW, η₀ ≍ D^{5/8−1}, and uprime's (SQ) constraint
 ab₂ > 3d₀/(32κ), which is now needed, since (SQ) is borderline-automatic only for α > 3/8.
 
-*Sketch status.*
-- Steps 1, 2 (interior), 3 and 4 use only lemmas proved here or published inputs.
+*Sketch status (v2.2, after codex round 3: MAJOR REVISION, no FATAL obstruction to the conditional L[3/8]).* Steps 1–4
+use only lemmas proved here or published inputs. Four estimates are **not written**, and they are the obligations of
+AB₂:
+- **(O1) A joint moment lemma** on the probability space (y, c), and w if kept as a mixture variable. It must give the
+  normalised L²-deviation and bounded relative fourth moments of d₁, d₂, uniformly over large gcd classes and prime
+  powers, rectangles near zero, the enlarged boundary region and the mixture components. Step 2's boundary argument and
+  the total-covariance form of Cov_y need it. The atom ∗ adds O(h) to the normalised variance.
+- **(O2) The complete weighted energy inequality** for Step 4. It must track the common grid, endpoints divided by δ,
+  reduced moduli Δ′/δ, determinant multiplicities, the rational pair weights and the normalisation, separately for
+  parents (moduli up to L[1 − α] = x^{o(1)}).
+- **(O3) Separate parent thresholds.** K₀^par and K^par must be built from the parent losses e^{O(D^{1−2α}λ²)}, not from
+  Ξ's child filter-spread term e^{O(D^{2α−1/2}λ²)}. That term would exceed the parent BV saving e^{−cD^{3−7α}/λ²}
+  for α ≥ 7/18. `params.margins2` now checks the parent exponent 1 − 2α < 3 − 7α only, and v2.1 wrongly reported all
+  checks as fine with a shared K₀. The PP corner truncation must use the rectangle-cover argument, not v2's first-order
+  discarded-mass bound.
+- **(O4) Parent acceptability.** Squarefree large part and children ∤ f_d disc(f) are coefficient events, not
+  functions of the value coordinates. At α = 3/8, where ϱ₂ = e^{−(c₂+o(1))D^{3/8}λ} with c₂ = 3d₀/(32κb₂), the crude
+  subtraction (log N)^C/B divided by a pair main term needs **a > 2c₂**. That is stronger than uprime's (SQ) a > c₂.
+  Otherwise one needs a mixed estimate Pr(bad₁, smooth₂ | g, R) ≪ Ξ·(log N)^C/B·A₂, not supplied. In the window,
+  ϱ₂ = L^{−o(1)} and the crude bound suffices.
 - Step 2's boundary bookkeeping is c12rat's Prop PD argument transposed. It is not re-derived line by line here, and
   c12rat's note is itself unreviewed at the time of writing.
 - The margins at 3/8: max(3α − 1, 1 − 2α, 2α − 1/2) = 1/4 < 3/8 = α. (1 − α)/2 = 5/16 < 4α − 1 = 1/2. 2 − 5α = 1/8 and
@@ -829,8 +858,10 @@ ab₂ > 3d₀/(32κ), which is now needed, since (SQ) is borderline-automatic on
 - A ≤ D^{−2α}λ^C ≪ η ≍ D^{−(3−7α)}, which holds iff α > 1/3;
 - √(AB) ≤ D^{−α−min(α, 3−7α)}λ^C ≪ η, which holds for all α ≥ 3/8.
 
-So Prop PB's conclusion holds on the closed range [3/8, 2/5). §3.5's diagnosis is superseded: the first-order obstacle
-at 3/8 is removed by the covariance device, not by second-order asymptotics.
+So Prop PB's conclusion would hold on the closed range [3/8, 2/5), **given (O1)–(O4)**. This is
+B ≪ (D^{−2α} + D^{−2(3−7α)})λ^C, two terms (codex round 3), and A/η ≪ D^{3−9α}λ^C, √(AB)/η ≪ D^{−α}λ^C. If the
+device is completed, it removes §3.5's first-order obstacle at 3/8 without second-order asymptotics. Until then, §3.5
+stands.
 
 ---
 
@@ -921,12 +952,14 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
    in multidescent Theorem 2L. ∎
 
 **Theorem 2L-DW₂ [proved, conditional; v2.1].** For every fixed α ∈ [3/8, 2/5), FACTOR_2L in design 2L_DW(α) (at 3/8
-with uprime's (SQ) constraint ab₂ > 3d₀/(32κ)) factors every N in expected time L_N[α, c(α)]. It assumes:
+with the constraint a > 2·3d₀/(32κb₂) of (O4)) factors every N in expected time L_N[α, c(α)]. At α = 3/8, c includes
+σ₁(3/8) = 3/(8ad₀) + 3d₀/(32κb₂), since the parent B₂-smoothness cost is leading at the endpoint (codex round 3; uprime
+§4.1). No numerical c(3/8) is claimed. It assumes:
 - (i) the internal chain;
 - (ii) **Hyp RAT₂(α)**: (R1), (R2) with D^{−2α}λ^C on both right-hand sides (c12rat's Theorem RAT, unreviewed v1);
-- (iii) **Theorem AB₂** (§3.6, sketch).
+- (iii) **Theorem AB₂** (§3.6, sketch with the open obligations (O1)–(O4)).
 
-*Proof.* As Theorem 2L-DW(α), with A, B ≤ D^{−2α}λ^C. The budget (§3.6, "Consequence") holds on [3/8, 2/5), and the
+*Proof.* As Theorem 2L-DW(α), with A ≪ D^{−2α}λ^C and B ≪ (D^{−2α} + D^{−2(3−7α)})λ^C. The budget (§3.6, "Consequence") holds on [3/8, 2/5), and the
 remaining margins hold at 3/8 (`params.margins2`). The other inputs at 3/8 are uprime's U′ at 3/8 with the §2.7 DW
 replacements, Lemma η (any α), Prop CLB and Lemma reject-DW. ∎
 
@@ -957,7 +990,8 @@ In particular, conditionally on (ii) and (iii), **L[3/8]**.
   - Hildebrand, J. Number Theory 22 (1986) 289–307 (Ψ = xρ(u)(1 + O(log(u + 1)/log y)) and the short-interval form for
     x y^{−5/12} ≤ z ≤ x; Jain, QJM, Lemma 3.2(ii), attributes it to Hildebrand's Theorem 3, per codex). It is used at
     y = B (Lemma PP, child) and at y = B₂ (Lemma η, parent PP);
-  - de Bruijn: the monotonicity of −ρ′/ρ and ρ(u − 1)/ρ(u) = uξ(u)(1 + O(1/u)), for Lemma η;
+  - Dickman-function facts for Lemma η: log-concavity of ρ (Alladi) and the Hildebrand–Tenenbaum survey (JTNB 5 (1993)
+    411–484), Cor 2.4 and Thm 5.1;
   - Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Theorems 1, 2, 3;
   - de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i);
   - Canfield–Erdős–Pomerance;
@@ -968,7 +1002,8 @@ In particular, conditionally on (ii) and (iii), **L[3/8]**.
   - AKS, Wiedemann/Kaltofen–Saunders, Cantor–Zassenhaus, Bernstein;
   - Trudgian 2016 (CS′).
 
-  Not needed: Drappeau's Lemme 5 and Lemma 8.5′/8.5H, which are replaced by DW(a). Theorem U itself still uses them, for
+  Not needed: Lemma 8.5′/8.5H, which are replaced by DW(a). Drappeau's Lemme 5, if used as §3.6's alternative to
+  Harper's Thm 2, carries the [H] dependence: its proof uses Harper 1208.5992 §3.3. Theorem U itself still uses them, for
   the recursive value factorisations (FACTOR_U).
 
 **Achieved α:**
@@ -1050,11 +1085,22 @@ toy scale. Asymptotically they are second order. The toy does not test precision
 Inputs as in §5's dependency list. Specific notes:
 - **Harper 1208.5992.** Thm 1 is BV with max over residues, Q ≤ √Ψ, error Ψ(e^{−cu/log²(u+1)} + y^{−c}) +
   Q√Ψ(log x)^{7/2}. Thm 2 is BDH. Neither has an inner maximum over x (hence the grid). Statement forms as in pc3 §4.1
-  and codex; the Thm 1 form is UNVERIFIED by us against the preprint.
-- **Hildebrand 1986 (JNT 22).** The direct short-interval asymptotic is what removes the κ-amplification (§3.3). The
-  theorem number is UNVERIFIED.
-- **Rigorous-NFS precedent for an integer multiplier.** None found by pc3 or by us; this is a search result. The
-  Knuth–Schroeppel multiplier kN is the heuristic analogue.
+  and codex. Both forms were **verified against the preprint** by the literature critic. It is still unpublished (v1,
+  2012) and still cited as a preprint in Compositio 2015/2025.
+- **Hildebrand 1986 (JNT 22).** Theorem 1 is Ψ = xρ(u)(1 + O(log(u + 1)/log y)). The direct short-interval asymptotic
+  for x y^{−5/12} ≤ z ≤ x is what removes the κ-amplification (§3.3). It is Hildebrand's Theorem 3 per S. Jain, arXiv
+  2502.10530, Lemma 3.2(ii) (QJM 2026, doi 10.1093/qmath/haag010), and HT survey Thm 5.1. That is a secondary
+  verification: the primary was not accessible.
+- **HT Theorem 3** is stated in the original as Ψ(cx, y) = c^{α(x,y)}Ψ(x, y)(1 + O(1/u + log y/y)) for 1 ≤ c ≤ y. The x/c form
+  used here follows from it, given x/c ≥ y and ∂α/∂log x ≪ 1/(u log²y).
+- **dBT Thm 2.4(i)** is an upper bound only. Where an asymptotic beyond c = B^C would be needed, use 2.4(ii). We use (i)
+  only for upper bounds.
+- **Multiplier precedent.** We found no rigorous-NFS or index-calculus analysis with a large, uniformly random composite
+  multiplier, and no lattice-parallelogram two-point smoothing law. This is a search result. Lenstra–Pomerance (JAMS
+  1992) use a *bounded* random multiplier rigorously in the class-group method: discriminants −dn with d from a fixed
+  four-element set (literature critic). The Knuth–Schroeppel kN is the heuristic analogue.
+- **Lee–Venkatesan's L[1/3]** (Thm 2.1) is a rigorous congruence of squares, possibly trivial. Non-triviality is proved
+  only under their Conjecture 7.1 (Thm 2.3).
 - **Pascadi** (Compositio 2025): smooth numbers in APs to large moduli, for a fixed residue (codex). It does not replace
   Harper's maximum over residues, which Lemma FB needs.
 - **Lee–Venkatesan.** Their randomisation f̂ + G·R_c (JNT 187 (2018)) is the source of the c-part. Their stochastic
@@ -1115,7 +1161,32 @@ conditional theorem 70%.
 - No hidden first-order term and no circularity.
 - Probabilities: AB writable 65%; conditional theorem 15% as v1, 65–70% after repairs.
 
-**Opus literature critic:** see v2.1 below.
+**Codex adversarial round 3 `c12alg_3`** (on v2.1): **MAJOR REVISION**, no FATAL obstruction to the conditional
+L[3/8].
+- It confirms the repairs of round 2: Lemma η "substantially repaired", CLB, the w/z identity, the RAT weights.
+- It flags the v2.1 issues:
+  - the missing counting remainder in §3.6 Step 1;
+  - the missing joint moment lemma;
+  - the weighted energy inequality;
+  - the shared K₀ failing the parent saving for α ≥ 7/18;
+  - parent acceptability at 3/8 (a > 2c₂);
+  - the endpoint σ₁;
+  - the two-term B;
+  - the false q² ∤ Δ.
+- All are applied (as fixes or as the listed obligations O1–O4). Probabilities: AB₂ 45%, conditional L[3/8] 65%.
+
+**Opus literature critic** (read-only, on v2): **OK WITH FIXES.**
+- Confirmed: Harper Thms 1–2 (against the preprint), Hildebrand's two estimates, HT Thm 3, dBT 2.4(i), the Dickman
+  facts, Pascadi and Lee–Venkatesan (randomisation, Lemma 5.6, Lemma 8.5's x^ε ≤ Q).
+- Fixes, all applied in §8:
+  - Lenstra–Pomerance's bounded multiplier as prior art;
+  - Alladi (not de Bruijn) for log-concavity;
+  - Drappeau's Lemme 5 carries [H];
+  - dBT 2.4(i) is an upper bound only;
+  - one-line justifications for HT Thm 3's x/c form and for Hildebrand's O(1/u₂) at B₂ (α > 4/11);
+  - Jain's precise reference;
+  - the LV L[1/3] caveat.
+- UNVERIFIABLE: HT Thms 1–2 content, and Hildebrand's theorem number from the primary.
 
 ## 11. Candidate card
 
