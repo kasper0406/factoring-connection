@@ -1,6 +1,6 @@
 # geometry: geometric constructions from N, and where the factors hide (phase 26)
 
-Agent `geometry`, 2026-10-24. **Version v3 (codex blind round, Opus proof critic and Opus literature critic applied; before the codex adversarial round).**
+Agent `geometry`, 2026-10-24. **Version v4 (final: codex blind and adversarial rounds, Opus proof critic and Opus literature critic all applied).**
 - Pre-registration: `notes/geometry_prereg.md` (commit `5ae824e`, before any code ran; amendment A1 for E4 committed
   before E4 code was written).
 - Code: `src/geometry/{modcurve,curves,harness,decoders,run_experiments}.py`. Tests: `tests/test_geometry.py`.
@@ -24,7 +24,9 @@ residuosity modulo N for small arguments, which is not known to be easy and not 
 them is a real algorithm, already known: Lenstra's elliptic-curve method (ECM, 1987) factors by doing geometry
 (the group law of an elliptic curve) modulo N, and elliptic curves also prove primality (Goldwasser–Kilian,
 Atkin–Morain). The number field sieve works in number fields and uses lattices in places. Beyond these known methods, no geometric
-construction we examined gives a faster way to factor, and we can say exactly why in each case.**
+construction we examined gave us a faster way to factor. For each one we can point to the specific place where it
+needs the factors or size-N work, in the representations we considered. That is not a proof that no geometric
+algorithm exists.**
 
 The key point first. Primality itself is already easy: it can be decided in polynomial time (AKS 2002). So a
 geometric picture of primality only helps with *factoring* if three things hold at once:
@@ -33,7 +35,7 @@ geometric picture of primality only helps with *factoring* if three things hold 
 3. that feature can be computed geometrically (by counting, linear algebra on a triangulation, volume, fixed-point
    formulas, …) faster than factoring.
 
-Every construction we examined fails one of the three, in one of four recurring ways:
+Almost every construction we examined fails one of the three, in one of the following recurring ways (class numbers, row 5, form a separate tier):
 - **Trivial restatement.** "N is prime iff the only integer rectangle of area N is 1 × N", "iff every star polygon
   {N/k} is connected", "iff the lens space L(N, 1) has no connected covers except the 3-sphere". These are
   definitions in disguise; the geometry adds no algorithm.
@@ -49,7 +51,7 @@ Every construction we examined fails one of the three, in one of four recurring 
   covers of bounded degree, quantum invariants at fixed level and polytope counts with fixed shape are of this kind.
 - **The feature sees a little more, but only quadratic-residue information.** Again X_0(N) gives the sharpest
   example. Its number of points over a small finite field F_ℓ is a weighted count of square roots of the numbers
-  t² − 4ℓ modulo N, so it reveals Legendre symbols (D/p) for |D| ≤ 4ℓ and nothing else. Its *cone points* do the same:
+  t² − 4ℓ modulo N, so it is computed from Legendre symbols (D/p) of the discriminants t² − 4ℓ (|t| < 2√ℓ) and nothing else (for p, q > 4ℓ). Its *cone points* do the same:
   X_0(N) has 4 cone points of angle π if −1 is a square mod N and none otherwise.
 
 **The sharpest observation (the ingredients are KNOWN; the framing as a factoring statement is ours, and no prior
@@ -85,22 +87,23 @@ compressed object built from N fell into the tiers the project already knows:
   word acting on P¹(Z/N)) give quadratic symbols. Fixed-point counts of scalar or near-identity transformations
   (Frobenius over F_{ℓ²} on X_0, Frobenius on X_1, the identity word) count a whole size-N set and are FACT;
 - global counts of a size-N set (area, Euler characteristic, number of points of P¹(Z/N), Burnside counts,
-  primitive periodic orbits) are multiplicative or Möbius sums over the divisors of N. With non-monomial weights
-  they are factoring-equivalent (Props MF, NECK, CAT; PROVED);
+  primitive periodic orbits) are multiplicative or Möbius sums over the divisors of N. The ones in Props MF, NECK and
+  CAT are factoring-equivalent (PROVED). Not every divisor sum is: Σ_{d|N} φ(d) = N;
 - cycle structures and periods are orders of elements, which we expect to be factoring-hard (Shor-type), though
   for a single fixed matrix this is not Miller's random-element reduction and is not proved here.
 
-**What remains OPEN** (§8): (i) whether the counts #X_0(N)(F_ℓ), ℓ ≤ L, for a growing L ≈ (log N)^{O(1)} — that is,
-the Legendre symbols of p at all small discriminants — let one find p in subexponential time. No method is known;
-this is the project's QR/genus question in geometric dress. (ii) the "linking number" of the two primes of N in
-the arithmetic-topology dictionary, which is a Rédei symbol (4-rank of the class group of Q(√N)); no algorithm from
-N alone is known.
+**What remains OPEN** (§8): (i) whether the counts #X_0(N)(F_ℓ), ℓ ≤ L, for a growing L ≈ (log N)^{O(1)}, which are
+computed from Legendre symbols of p at small discriminants, let one find p in polynomial time, or faster than
+existing factoring algorithms. No method is known; this is the project's QR/genus question in geometric dress.
+(ii) the "linking number" of the two primes of N in the arithmetic-topology dictionary, which is the Legendre symbol
+(p/q) and governs the 4-rank of the class group of Q(√N); no polynomial-time algorithm is known.
 
 **Bottom line for the user.** Geometry is an excellent *language* for factorisation: divisors are rectangles,
 sublattices, covers and fixed points; primes are the "knots" of arithmetic topology; ECM is geometry of elliptic
 curves. But in every construction we know, the geometric feature that sees the factors is either
-defined through them or costs as much as the arithmetic it re-expresses. We found no route to faster factoring, and
-none of the candidates below is a live lead.
+defined through them or, in every representation we know, costs as much as the arithmetic it re-expresses. We
+obtained no faster factoring algorithm. The two OPEN items are genuine unresolved questions, but neither is a
+promising lead.
 
 ---
 
@@ -122,6 +125,7 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 - **QR** quadratic-residue type;
 - **E** class E (continued-fraction / Dedekind-sum statistics of a/N; computable, non-aggregate, OPEN);
 - **ω** depends on ω(N) or d(N) only (OPEN in general, trivial for semiprimes under the promise);
+- **CLASS** a class number of discriminant ≍ N (computable in L[1/2] under GRH; factor extraction from one value heuristic);
 - **FACT** factoring-equivalent;
 - **EXP** computable geometrically only with size N^{Ω(1)} objects.
 
@@ -140,13 +144,13 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 2 | Lattice points under xy = N in a strip, D_N(X) = Σ_{d≤X}⌊N/d⌋ | yes | D_N(X) − D_{N−1}(X) = #{d ≤ X : d \| N}; bisection | Õ(N^{1/3}) (convex-hull walk, Θ(N^{1/3}) hull vertices) | FACT, EXP (`analytic` §2; `newfamily` row 50) |
 | 3 | Full Dirichlet count D(N) = Σ_{m≤N} d(m) | yes | first difference d(N) | Õ(N^{1/3}) | ω (useless for semiprimes) |
 | 4 | Circle x² + y² = N | yes | r₂(pq) ∈ {0, 16} decides ε when N ≡ 1 (4); two inequivalent points factor N (Euler) | one point ⇔ √−1 mod N (Cornacchia) | QR (count); OPEN (one point); FACT (two) |
-| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) for N ≡ 1, 2 (mod 4), 24h(−N) for N ≡ 3 (mod 8), 0 for N ≡ 7 (mod 8) (N squarefree > 3; Gauss) | h(−4N): L[1/2] under GRH (Hafner–McCurley 1989) | class number: a known h(−4N) yields an ambiguous form with constant probability on typical N, but the reachable order-2 class can be the non-splitting (2, 2, ·) class for some 2-Sylow shapes, so one value is not known to factor every N (codex). FACT-likely, HEURISTIC |
+| 5 | Sphere x² + y² + z² = N | yes | r₃(N) = 12h(−4N) for N ≡ 1, 2 (mod 4), 24h(−N) for N ≡ 3 (mod 8), 0 for N ≡ 7 (mod 8) (N squarefree > 3; Gauss) | h(−4N): L[1/2] under GRH (Hafner–McCurley 1989) | class number: a known h(−4N) yields an ambiguous form with constant probability on typical N, but the reachable order-2 class can be the non-splitting (2, 2, ·) class for some 2-Sylow shapes, so one value is not known to factor every N (codex). CLASS: a separate tier. Extraction of a factor from one value is HEURISTIC, and the reverse direction (h from the factors) is not known to be polynomial either, so this is not an equivalence |
 | 6 | 3-sphere in Z⁴ | yes | r₄(N) = 8σ(N) = 8(N + s + 1), N odd (Jacobi) | ≍ N samples via theta extraction | FACT (`analytic` table) |
 | 7 | Conic x² + y² ≡ 1 (mod N) (points over Z/N) | yes | # = (p − χ₄(p))(q − χ₄(q)) = N − χ₄(p)s + 1 or N ± (q − p) − 1 | count over Z/N | FACT (§4.1, Prop MF′) |
 | 8 | Lattice polygons with poly(log N)-bit vertices (Pick); Barvinok counts in fixed dimension | yes | Pick: A = I + B/2 − 1, B = Σ gcd(edge) | poly time (Barvinok 1994) | AGG / E (`newfamily` rows 9, 49) |
 | 9 | Polytopes with N-dependent normals, Θ(N^{1/3}) vertices | yes | can detect divisors | size of the hull | EXP (`newfamily` row 50) |
 | 10 | Sublattices of Z² of index N (N-sheeted covers of the torus) | yes | number = σ(N) | — | FACT (§4.1) |
-| 11 | Reduced lattices / flat tori of discriminant −4N (CM points on X(1)); cusps of the Bianchi orbifold of Q(√−N) | yes | number = h(−4N); 2^{ω−1} genera | O(√N) enumeration; N^{1/5} (ERH) | as #5 |
+| 11 | Reduced lattices / flat tori of discriminant −4N (CM points on X(1)); cusps of the Bianchi orbifold of Q(√−N) | yes | number = h(−4N) (order class number); the Bianchi cusp count is the maximal-order h(d_K) instead (h(−35) = 2 vs h(−140) = 6); 2^{t−1} genera, t = number of prime discriminants dividing the discriminant | O(√N) enumeration; N^{1/5} deterministic (ERH; Lenstra 1982, Schoof); L[1/2] randomized (Hafner–McCurley 1989; Biasse–Erukulangara 2021) | CLASS (see #5) |
 
 ### 2.2 Modular curves and hyperbolic surfaces (§3)
 
@@ -170,14 +174,14 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 |---|---|---|---|---|
 | 22 | Lens space L(N, q) (Heegaard genus 1, O(log N) description) | connected d-fold covers exist iff d \| N; N prime iff the only nontrivial connected cover is S³ | — | R |
 | 23 | Invariants of L(N, q): H₁ = Z/N, Reidemeister torsion, Casson–Walker, d-invariants, WRT, spectrum | Dedekind sums, Gauss sums, lattice counts | Euclid recursions | AGG / E (`newfamily` rows 13, 31; Prop DSF: the local part of s(a, N) is FACT) |
-| 24 | Groups/manifolds with N in exponents or surgery coefficients (L(N,q), M(N,1) on a fixed knot, mapping tori of φ^N): #Hom(π₁, G) for fixed finite G; covers of degree ≤ k; Fox colourings; Dijkgraaf–Witten with fixed gauge group | divisors appear only for target size ≥ p | poly(log N) | AGG (Prop AGG-H) |
-| 25 | N-fold cyclic (branched) covers Σ_N(K) of a fixed knot K | \|H₁\| = ∏_{d\|N, d>1}\|Res(Δ_K, Φ_d)\|; dim H₁(Σ_N; F_ℓ) | the integer has ≍ N·m(Δ_K) digits; mod-M reductions | AGG with fixed coefficients (Prop CYC); EXP as integers |
+| 24 | Groups/manifolds with N in exponents or surgery coefficients (L(N,q), M(N,1) on a fixed knot, mapping tori of φ^N): #Hom(π₁, G) for fixed finite G; covers of degree ≤ k; Fox colourings; untwisted Dijkgraaf–Witten with fixed gauge group | divisors appear only for target size ≥ p | poly(log N) | AGG (Prop AGG-H; twisted DW needs a separate periodicity argument, codex: the C₃ theory differs at L(15,1), L(21,1)) |
+| 25 | N-fold cyclic (branched) covers Σ_N(K) of a fixed knot K | when finite (Res ≠ 0), \|H₁\| = ∏_{d\|N, d>1}\|Res(Δ_K, Φ_d)\|; dim H₁(Σ_N; F_ℓ) | the integer has ≍ N·log M(Δ_K) digits if M(Δ_K) > 1 (periodic if M = 1, e.g. trefoil); mod-M reductions | AGG with fixed coefficients (Prop CYC); EXP as integers |
 | 26 | Primitive part Σ_{d\|N} μ(N/d)\|H₁(X_d)_tors\| for fibred K (= primitive periodic points of the monodromy) | Möbius over divisors | — | for the figure-eight knot (t = 3): small-modulus decoder 40/40 (exploratory, multi-query; experimentally supported). Prop CAT's one-query trace 2 + R is not a knot monodromy (Δ(1) = 2 − t ≠ ±1) |
 | 27 | Torus knot T(p, q), Brieskorn spheres Σ(p, q, r) | Δ_{T(p,q)} = Φ_{pq} when p, q prime; genus φ(N)/2 | need p, q to build | (i) no |
 | 28 | Torus knot T(2, N), 2-bridge knots b(N, q) | Δ_{T(2,N)} = (t^N + 1)/(t + 1) factors over Q as ∏_{d\|N, d>1}Φ_{2d}; b(N,q) is Fox m-colourable iff gcd(m, N) > 1 | polynomial factorisation of degree N − 1; gcd | R / EXP |
 | 29 | Mazur–Morishita: Spec Z[1/N] as the complement of the "link" of N | components ↔ primes; H¹_et(Spec Z[1/(2N)], μ₂) = (Z/2)^{2+ω}; basis of Z[1/N]^× = the primes | Kummer theory | dimension 2 + ω; basis FACT (Prop KUM) |
-| 30 | Linking numbers of the two "knots" of N = pq (Legendre (p/q)); Milnor triple invariants (Rédei symbols) | 4-rank of Cl⁺(Q(√N)) (Rédei) | needs the class group | OPEN (§8) |
-| 31 | Hyperbolic Dehn fillings M(N, 1), mapping tori of φ^N: volume | vol(M) − c/N² + … analytic in 1/N (Neumann–Zagier 1985); N·vol(M_φ) | — | AGG (no arithmetic) |
+| 30 | Linking numbers of the two "knots" of N = pq (Legendre (p/q)) | 4-rank of Cl⁺(Q(√N)) (Rédei–Reichardt); triple Milnor invariants (Rédei triple symbols) belong to three primes / 8-ranks | no polynomial algorithm known | OPEN (§8) |
+| 31 | Hyperbolic Dehn fillings M(N, 1), mapping tori of φ^N: volume | vol(M) − c/N² + … analytic in 1/N (Neumann–Zagier 1985); N·vol(M_φ) | — | no arithmetic: smooth (fillings) or linear (N·vol) in N; not AGG in the N mod m sense, but carries no factor information |
 | 32 | Kashaev / colored Jones at e(1/N) | — | O(N) recurrences | EXP (`newfamily` row 34) |
 
 ### 2.4 Symmetry, combinatorics, dynamics (§4)
@@ -200,7 +204,7 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 41 | Point counts #X(Z/N) of a scheme with polynomial count F(r) | F(p)F(q) is a nonconstant polynomial in s unless F is a monomial | count over Z/N | FACT (Prop MF) |
 | 42 | #E(Z/N) for one fixed curve | — | — | FACT (`ecount`, `tracedata`) |
 | 43 | Frobenius operators on étale Z/N-algebras | — | — | FACT (`nonsmooth` Prop FROB) |
-| 44 | Normalisation / ramification locus of Spec Z[x]/(x² − d) | primes dividing the discriminant | ⇔ squarefree kernel (Buchmann–Lenstra 1994; Chistov 1989) | FACT-like (rad) |
+| 44 | Normalisation / ramification of Spec Z[x]/(x² − d) and general orders | listing the ramified primes is factoring the discriminant; for squarefree d the maximal order is explicit (d mod 4) and does not factor d | general maximal orders ⇔ squarefree kernel (Buchmann–Lenstra 1994, Thm 1.3; Chistov 1989) | R (listing) / rad-equivalent (general maximal orders) |
 | 45 | NFS: geometry of numbers in number fields; toric supports; tropicalisation | — | L[1/3] | covered (`resbarrier`, `heurnfs` §5, `smoothbuild` W3) |
 | 46 | Lattices / Coppersmith / Lehman | — | N^{1/4}, N^{1/3} | covered (`coverage38`, `resbarrier`) |
 | 47 | Class groups of discriminant −4N (geometry of forms) | ambiguous forms | — | covered (`genusleak`) |
@@ -334,10 +338,14 @@ So #X_0(N)(F_{ℓ²}) = ℓ² + 1 − Tr T_{ℓ²} + ℓg. In Tr T_{ℓ²}: A1 =
 A2 is QR-type as in X0-2 (the term t = ±2ℓ, i.e. D = 0, is excluded from A2 and is exactly A1). Substitute
 g = ψ/12 + 1 − ν₂/4 − ν₃/3 − ν∞/2. The coefficient of ψ is ℓ/12 − 1/12 = (ℓ − 1)/12 > 0. ∎
 
-*Geometric reading.* The term A1 = ψ/12 is the supersingular locus. Over F_{ℓ²} (with the model in which every
-supersingular curve has Frobenius ±ℓ) Frobenius is a scalar on E[N], all ψ(N) cyclic subgroups are rational, and the
-whole fibre over each supersingular j counts. By the Eichler mass formula (Deuring/Eichler; Gross 1987), Σ 1/|Aut E| = (ℓ − 1)/24 over
-supersingular E, so these fibres contribute ≈ (ℓ − 1)ψ/12 points. Over F_ℓ no Frobenius is scalar.
+*Geometric reading (KNOWN mechanism: Ogg, Bull. SMF 102 (1974), §3 Thm 3 uses exactly y² + y = x³ over F_4 with
+Frobenius −2, all cyclic subgroups rational, and the ψ(N)/12 contribution; codex).* A1 = ψ/12 is the identity term
+of the trace formula, and its ψ-dependence comes from the supersingular points. It is not literally the supersingular
+count: at N = 221, ℓ = 2, A1 = 21 while the supersingular contribution over F_4 is 22, the difference being
+automorphism-orbit corrections (codex). Over F_{ℓ²} (with the model in which every supersingular curve has
+Frobenius ±ℓ) Frobenius is a scalar on E[N], all ψ(N) cyclic subgroups are rational, and the whole fibre over each
+supersingular j counts. By the Eichler mass formula (Deuring/Eichler; Gross 1987), Σ 1/|Aut E| = (ℓ − 1)/24 over
+supersingular E, so these fibres contribute (ℓ − 1)ψ/12 + O(1) points. Over F_ℓ no Frobenius is scalar.
 
 *Odd extensions (PROVED).* Over F_{ℓ^k} with k odd, Σα^k is an integer combination of Tr T_{ℓ^j} for odd j
 (Newton's identities plus T_ℓ T_{ℓ^j} = T_{ℓ^{j+1}} + ℓT_{ℓ^{j−1}}). None of these n = ℓ^j is a square, so A1 never
@@ -364,14 +372,14 @@ count as a factoring statement: no prior formulation found by us. The same modul
 
 **Fricke involution (KNOWN, Ogg 1974, Fricke).** The fixed points of w_N on X_0(N) (N > 4) number
 h(−4N) + h(−N)·[N ≡ 3 mod 4] (A. Ogg, Hyperelliptic modular curves, Bull. SMF 102 (1974) 449–462, Prop 3). This is a Lefschetz number and a class number:
-FACT-likely, HEURISTIC, as row 5. Exact form checked by the literature critic via secondary sources.
+CLASS tier (as row 5; extraction HEURISTIC). Exact form checked by the literature critic via secondary sources.
 
 ### 3.3 Summary of where X_0(N) needs the factors
 
 - Area / genus / degree: either the formula or an object of size Θ(N).
 - Cone points / F_ℓ points / fixed points of one non-scalar word: Legendre symbols of small discriminants (QR).
 - F_{ℓ²} points / X_1 points: factoring-equivalent, so no geometric shortcut can exist unless factoring itself is
-  easy. Fricke fixed points: a class number (FACT-likely). Total random-walk return counts: FACT (they include the
+  easy. Fricke fixed points: a class number (CLASS tier). Total random-walk return counts: FACT (they include the
   ψ(N) fixed points of words that are ±I mod p).
 - Cycle structure of a hyperbolic element acting on P¹(Z/N) (the periods): orders of eigenvalues mod p, i.e. order
   finding (expected FACT, Shor-type; not proved for a fixed element).
@@ -425,9 +433,11 @@ and read J₂(N) = Prim/R mod R exactly, as R > J₂(N). ∎
   where X_d is the d-fold cyclic cover of the complement. So the Möbius primitive part of the cover homology
   orders is factoring-equivalent, while each single order |H₁(X_N)_tors| mod M is an aggregate (row 38).
 
-**Moral of §4.** Global counts over Z/N or over the symmetry group Z/N (orbits, Burnside, primitive orbits,
-cycles) are divisor sums. Divisor sums of non-monomial weights are factoring-equivalent. The only cheap counts are
-those that do not sum over divisors: the full fixed-point count Fix(A^N), a single gcd, a Jacobi symbol.
+**Moral of §4 (a summary, not a theorem).** Global counts over Z/N or over the symmetry group Z/N (orbits,
+Burnside, primitive orbits, cycles) are divisor sums. The specific ones in Props MF, NECK and CAT are
+factoring-equivalent. Divisor sums in general need not be: Σ_{d|N} φ(d) = N (codex). The cheap counts we met are
+the ones that collapse like that, or that do not sum over divisors at all: the full fixed-point count Fix(A^N), a
+single gcd, a Jacobi symbol.
 
 ---
 
@@ -457,7 +467,9 @@ H₁(Σ_N; F_ℓ) = H₁(Σ_N) ⊗ F_ℓ by universal coefficients), H₁(Σ_N; 
 A_K ⊗ F_ℓ, t has finite order m. Then ν_{N+ℓm} = ν_N + t^N ν_{ℓm} and ν_{ℓm} = ν_m·(1 + t^m + … + t^{(ℓ−1)m}) = ℓν_m = 0
 there. ∎ The integer |H₁(Σ_N)| = ∏_{d|N, d>1}|Res(Δ_K, Φ_d)| does "see" the
 divisors of N, but it has ≍ N·log M(Δ_K) digits (M the Mahler measure, when M(Δ_K) > 1; for M = 1, e.g. torus knots, the orders are periodic (Gordon); Riley 1990; González-Acuña–Short 1991; Silver–Williams, Topology 41 (2002) 979–991), and its
-divisor-indexed factors are exactly the Möbius parts of Prop CAT.
+divisor-indexed factors Res(Δ_K, Φ_d) come from *multiplicative* Möbius inversion of the orders. Prop CAT's primitive
+count is the *additive* Möbius sum. These are different numbers: for the figure-eight at N = 15 the additive count is
+1,860,360 and the multiplicative cyclotomic factor is 961 (codex).
 
 **Prop KUM (PROVED, Kummer theory).** For N odd and squarefree, put X = Spec Z[1/(2N)] (2 must be inverted for μ₂
 to be étale; codex). The Kummer sequence gives H¹_et(X, μ₂) ≅ O(X)^×/(O(X)^×)² ⊕ Pic(X)[2] = (Z/2)^{2+ω(N)}, with
@@ -472,8 +484,8 @@ primes or the 8-rank. For p ≡ q ≡ 1 (mod 4), (p/q) = (q/p) controls the 4-ra
 Morishita's 1st edition. So "the
 linking number of the primes of N" is a class-group 4-rank datum: OPEN from N alone (§8).
 
-**Hyperbolic volumes.** Volumes of manifolds built from N by Dehn filling are real-analytic in the filling slope
-(Neumann–Zagier, Topology 24 (1985)). Volumes of mapping tori of φ^N are N·vol(M_φ). Neither carries arithmetic.
+**Hyperbolic volumes.** Volumes of long hyperbolic Dehn fillings built from N have an asymptotic expansion in the
+filling slope near the complete structure (Neumann–Zagier, Topology 24 (1985). Volumes of mapping tori of φ^N are N·vol(M_φ). Neither carries arithmetic.
 Volumes that *do* carry the factors are covolumes of congruence subgroups (rows 12, 21), and those are indices.
 
 ---
@@ -484,8 +496,9 @@ Volumes that *do* carry the factors are covolumes of congruence subgroups (rows 
   gcd(e, N). Here geometry *is* the definition of factoring (row 40).
 - Point counts: Prop MF (polynomial counts), ecount/tracedata (elliptic curves), FROB (Frobenius operators). All
   FACT.
-- Normalisation and ramification: the ramified primes of Q(√d) are the primes of the discriminant; computing a
-  maximal order is equivalent to computing the squarefree kernel of the discriminant (Chistov 1989; Buchmann–Lenstra,
+- Normalisation and ramification: *listing* the ramified primes of Q(√d) is factoring the discriminant. For
+  squarefree d the maximal order is explicit and does not factor d. For general orders, computing the maximal order
+  is equivalent to computing the largest squarefree divisor of the discriminant (Chistov 1989; Buchmann–Lenstra,
   JTNB 6 (1994), Thm 1.3, already cited in `polyimpl`).
 - NFS / toric / tropical: covered by `resbarrier`, `heurnfs` §5, `smoothbuild` W3; not redone.
 
@@ -529,18 +542,23 @@ added or sharpened, now in §2:
 
 ## 8. OPEN items, stated precisely
 
-**OPEN-1 (X_0 point counts = small-discriminant QR).** Let L = L(n) → ∞. Given N = pq and the counts
-#X_0(N)(F_ℓ) for all primes ℓ ≤ L, find p in time subexponential in n. By Prop X0-2 the input is equivalent to the
-Legendre symbols (D/p) for the fundamental D with |D| ≤ 4L and (D/N) = 1, in the sense that the counts are
-computed from the symbols; at L = 13 the counts determined ε in all 4000 E3 instances and the full symbol pattern
-in 87%. Information-theoretically, L ≈ n² log n should pin p down. No algorithm is known that uses
+**OPEN-1 (X_0 point counts = small-discriminant QR).** Let L = L(n) → ∞ with L ≤ n^{O(1)}. Given N = pq and the counts
+#X_0(N)(F_ℓ) for all primes ℓ ≤ L, find p in polynomial time, or in time below the best known factoring bounds
+(heuristic L[1/3, 1.923]; rigorous L[1/2, 1 + o(1)], Lenstra–Pomerance 1992). "Subexponential" alone would be
+trivial (codex). Proved: by Prop X0-2 the counts are computable from N, 2^ω and the symbols (D/p) for the fundamental
+discriminants D of the orders of discriminant t² − 4ℓ (t² < 4ℓ, ℓ ≤ L) with (D/N) = 1. This is not every |D| ≤ 4L:
+at L = 13 the set is {−3, −4, −7, −8, −11, −19, −20, −24, −35, −40, −43, −51, −52}, which omits −23, −31, −47. At
+L = 13 the counts determined ε in all 4000 E3 instances and the full pattern in 87%. HEURISTIC: L ≈ n² log n should
+pin p down information-theoretically. No algorithm is known that uses
 quadratic-residue patterns of a hidden divisor (Lenstra's divisors-in-residue-classes, Math. Comp. 42 (1984), needs a modulus > N^{1/3}, and Coppersmith–Howgrave-Graham–Nagaraj, Math. Comp. 77 (2008), > N^{1/4}, with
 a single class, not a half-density pattern). This is the project's QR/genus question (`genusleak` Prop GEN) in
 geometric dress, not a new route.
 
 **OPEN-2 (linking numbers of N).** Given N = pq with p ≡ q ≡ 1 (mod 4), decide (p/q) (the mod-2 linking number of
-the two "primes" in the arithmetic-topology dictionary, equivalently the 4-rank of Cl⁺(Q(√N))) in polynomial time,
-or reduce factoring or QR_N to it. Neither direction is known to us.
+the two "primes" in the arithmetic-topology dictionary, equivalently whether the 4-rank of Cl⁺(Q(√N)) is 1) in
+polynomial time. Or give a reduction from factoring or from QR_N to an oracle answering this for *arbitrary* such
+inputs N′. A reduction that only uses the bit at the same N is trivial: try both values. No polynomial-time algorithm
+and no such reduction is known to us.
 
 Neither OPEN item is a route to faster factoring: even a positive answer to OPEN-2 is one bit, and OPEN-1 asks for a
 new algorithm for a problem no geometric construction makes easier.
@@ -601,7 +619,37 @@ softened; r₃ cases; Mahler measure M = 1; Rédei details; full Farey reference
 that Pillai or necklace counts are FACT, and no reduction for √−1 mod N (an UNVERIFIED negative).
 Shallit–Shamir (IPL 20 (1985)) covers only d, μ, Ω and exponent-multiset functions.
 
-**GPT-6.1-sol adversarial round:** §10.3 (pending).
+**GPT-6.1-sol adversarial round (`codex/geometry_2.out`, reviewing v1.1): MAJOR REVISION.** It confirmed the central
+formulas independently:
+- X0-2;
+- the F_{ℓ^k} identity #X_0(N)(F_{ℓ^k}) = ℓ^k + 1 − Tr T_{ℓ^k} + ℓ·Tr T_{ℓ^{k−2}} (46 extension-field curve counts for
+  k ≤ 5, plus Manin checks);
+- X1, counting cusps by their Frobenius action in 426 admissible cases with N < 300, all φ(N)/2;
+- NECK, CAT, MF, MF′, COV and CYC.
+
+Of its 21 issues, about half had already been fixed after the proof critic: E3 uniqueness, random walks and scalar
+words, X_1 hypotheses, CW faces, KUM wording, p = 3, the r₃ cases, and the general-principle overclaim. Applied in
+v4:
+- OPEN-1 as first stated ("subexponential") was trivially solved by existing algorithms. It is now restated with a
+  polynomial-time or beat-the-record target and the exact discriminant set.
+- AGG-H's modulus is fixed for mapping tori, and twisted DW is excluded (C₃ counterexample).
+- Prop CAT applies only to the variable-trace family, not to a fixed knot.
+- Additive and multiplicative Möbius inversion are now separated.
+- H₁ finiteness and Mahler-measure hypotheses are added.
+- Class numbers are a separate CLASS tier, not FACT, because neither direction is a proven reduction.
+- A1 is the identity term, not literally the supersingular count. Ogg 1974 §3 is cited as prior art for the
+  F_4 mechanism.
+- Row 11 (order vs maximal-order class number; genus count), the cost column (L[1/2] randomized), and the
+  normalisation row are corrected.
+- N·vol is "no arithmetic", not AGG.
+- OPEN-2 now states its oracle model.
+- §0 is softened: "we point to where each construction needs the factors in the representations considered", not
+  "we can say exactly why"; no "no live lead" dismissal.
+
+Codex's closing remark is adopted as the reading guide. This note distinguishes four kinds of statement: (a) known
+algorithms (ECM, ECPP); (b) oracle reductions (X0-1, X0-3, X1, MF, NECK, CAT); (c) output-size obstructions for
+specified representations (§3.1); (d) unresolved problems (OPEN-1, OPEN-2). None of (c) is a lower bound for
+factoring.
 
 ---
 
