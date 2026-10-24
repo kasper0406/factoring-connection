@@ -1,7 +1,7 @@
 # Approaches catalog
 
-A catalog of everything tried in this project, from the Phase 1 tracks (2026-10-17) to Theorem D′
-and the Phase 5 threads (2026-10-18). Each entry gives a one-line idea, a verdict with its
+A catalog of everything tried in this project. Phases 1–5 (2026-10-17/18) are catalogued entry by entry
+below; phases 6–27 (to 2026-10-24) are indexed in §0 and summarised in the README and [`BARRIERS.md`](BARRIERS.md). Each entry gives a one-line idea, a verdict with its
 status label, the key numbers, and pointers to notes, code and commits.
 
 **Conventions.**
@@ -15,8 +15,9 @@ status label, the key numbers, and pointers to notes, code and commits.
   `codex/`; curated copies are in `notes/codex_*.md`.
 - Paths are relative to the repository root.
 
-**Headline.** No polynomial-time or subexponential factorizer was found. The main positive
-results concern balanced semiprimes (p < q ≤ 2p):
+**Headline (phases 1–5; see the README for the later rigorous subexponential results, Theorems A, RA, U, DL, DL25
+and the conditional L[3/8]).** No polynomial-time factorizer was found. The main positive results of phases 1–5
+concern balanced semiprimes (p < q ≤ 2p):
 - **Theorem AV** (P-13): a complete deterministic algorithm. Its worst case is
   Harvey–Hittmeir's N^{1/5}, and its **average cost** over uniform balanced semiprimes is
   **N^{1/6}·polylog**.
@@ -72,6 +73,37 @@ All of these are AI-reviewed only. A paper draft is in [`paper/`](paper/).
 | 5 | Randomized NFS fruitfulness (nfsfruit) | W-24 | `notes/nfsfruit_*.md` |
 | 5 | Unbalanced ratios (unbalanced) | P-16, W-25, O-9 | `notes/unbalanced_*.md` |
 | 5 | Paper, Lean | O-11 | `paper/`, `lean/` |
+
+### Phases 6–27 (index)
+
+Entries W-/R-/P-/O- below cover phases 1–5 in detail. For phases 6–27 each agent's results note leads with
+its verdict; [`BARRIERS.md`](BARRIERS.md) summarises the negative results and the README the positive ones. Agent ownership and
+one-line outcomes are in [`STATUS.md`](STATUS.md).
+
+| Phase | Date | Theme | Agents (results notes) |
+|---|---|---|---|
+| 6 | 2026-10-18 | open problems + combination ideas | [`coverage38`](notes/coverage38_results.md), [`lemmaM`](notes/lemmaM_results.md), [`genus2rh`](notes/genus2rh_results.md) |
+| 7 | 2026-10-19 | special families + Hypothesis D | [`specialfam`](notes/specialfam_results.md), [`polyimpl`](notes/polyimpl_results.md), [`hypD`](notes/hypD_results.md) |
+| 8 | 2026-10-19 | close Hypothesis D routes + deterministic QS | [`pcest`](notes/pcest_results.md), [`rkrank`](notes/rkrank_results.md), [`detqs`](notes/detqs_results.md) |
+| 9 | 2026-10-19 | close Theorem A (rigorous L[1/2, 0.919] for all N) | [`ldbound`](notes/ldbound_results.md), [`lv6`](notes/lv6_results.md) |
+| 10 | 2026-10-19 | end-to-end audit of Theorem A | `thmA` |
+| 11 | 2026-10-20 | harden Theorem A, preprint, transfer the new devices | [`lem85`](notes/lem85_results.md), `preprint`, [`recurse`](notes/recurse_results.md), [`dlog`](notes/dlog_results.md) |
+| 12 | 2026-10-20 | below L[1/2] | [`lv5unif`](notes/lv5unif_results.md), [`nested`](notes/nested_results.md), `auditU`, [`leanA`](notes/leanA_results.md) |
+| 13 | 2026-10-20 | wild directions | [`detGRH`](notes/detGRH_results.md), [`escapeR2`](notes/escapeR2_results.md), [`dlog25`](notes/dlog25_results.md), [`inversesieve`](notes/inversesieve_results.md) |
+| 14 | 2026-10-20 | untried randomized corners | [`almostall13`](notes/almostall13_results.md), [`snfsrig`](notes/snfsrig_results.md), [`heurnfs`](notes/heurnfs_results.md) |
+| 15 | 2026-10-20 | actual algorithmic speedups | [`smoothenum`](notes/smoothenum_results.md), [`cadobench`](notes/cadobench_results.md) |
+| 16 | 2026-10-20 | breaking the exponent (beyond L[1/3]) | [`systeq`](notes/systeq_results.md), [`resbarrier`](notes/resbarrier_results.md), [`ptesplit`](notes/ptesplit_results.md), [`ptebarrier`](notes/ptebarrier_results.md), [`ptecons`](notes/ptecons_results.md), [`nonsmooth`](notes/nonsmooth_results.md) |
+| 17 | 2026-10-20 | the sharp open remainders | [`nonexact`](notes/nonexact_results.md), [`rank3`](notes/rank3_results.md), [`analytic`](notes/analytic_results.md), [`slpcirc`](notes/slpcirc_results.md), [`floorsum`](notes/floorsum_results.md), [`floorhard`](notes/floorhard_results.md), [`periodfind`](notes/periodfind_results.md) |
+| 18 | 2026-10-21 | pushing the open remainders to find where the limit bites | [`pilist`](notes/pilist_results.md), [`prepread`](notes/prepread_results.md), [`rankdegen`](notes/rankdegen_results.md), [`topblock`](notes/topblock_results.md) |
+| 19 | 2026-10-21 | sufficient conditions and high-profile targets | [`suffmap`](notes/suffmap_results.md), [`schnorrcvp`](notes/schnorrcvp_results.md), [`abcsunit`](notes/abcsunit_results.md) |
+| 20 | 2026-10-21 | attack Prop SI (smooth numbers in short intervals near kN ⇒ L[1/3, 1.2114]) | [`siconstruct`](notes/siconstruct_results.md), [`sihard`](notes/sihard_results.md), [`sicheck`](notes/sicheck_results.md) |
+| 21 | 2026-10-21 | representations and factor-bit extraction | [`factorbits`](notes/factorbits_results.md) |
+| 22 | 2026-10-22 | pursuing the open possibilities | [`selfred`](notes/selfred_results.md), [`zroute`](notes/zroute_results.md), [`sinonobliv`](notes/sinonobliv_results.md) |
+| 23 | 2026-10-22 | the three precise targets | [`dsr`](notes/dsr_results.md), [`ecount`](notes/ecount_results.md), [`crtdecode`](notes/crtdecode_results.md) |
+| 24 | 2026-10-23 | a leak that is not splitting (option 1) | [`leakmap`](notes/leakmap_results.md), [`genusleak`](notes/genusleak_results.md), [`newfamily`](notes/newfamily_results.md), [`smoothbuild`](notes/smoothbuild_results.md) |
+| 25 | 2026-10-23 | chasing the open ends of phases 23–24 | [`navigate`](notes/navigate_results.md), [`prim`](notes/prim_results.md), [`classE`](notes/classE_results.md), [`tracedata`](notes/tracedata_results.md), [`multidescent`](notes/multidescent_results.md) |
+| 26 | 2026-10-24 | conditional L[3/8] → unconditional; geometry | [`pc3`](notes/pc3_results.md), [`uprime`](notes/uprime_results.md), [`geometry`](notes/geometry_results.md) |
+| 27 | 2026-10-24 | push rigorous L[2/5] down (C₁/C₂ of pc3 Theorem 2L-DC) | [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md) |
 
 ---
 

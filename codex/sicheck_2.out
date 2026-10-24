@@ -1,0 +1,286 @@
+**MAJOR REVISION.** The constant \(1.211414\ldots\) survives as a conditional optimization. The stronger claim that the constructor assumptions have been validated does not.
+
+Locations below refer to [sicheck_results.md](/Volumes/git/factoring-connection/notes/sicheck_results.md) as **R**, and [sicheck_prereg.md](/Volumes/git/factoring-connection/notes/sicheck_prereg.md) as **P**.
+
+1. **MAJOR — Lemma D does not follow from its stated assumptions.**  
+   **Location:** R:223–228; repeated at R:435–450.  
+   **Status:** claimed PROVED; actually HEURISTIC under additional joint-distribution assumptions.
+
+   Uniform \(k\), together with the marginal statement
+   \[
+   \Pr(\ell\mid u)\approx \ell^{-\alpha_u},
+   \]
+   does not imply
+   \[
+   \Pr(\gcd(u,k)=1)\approx\prod_\ell(1-\ell^{-1-\alpha_u}).
+   \]
+   This needs control of the dependence between the *selected* \(u\) and \(k\), and between the different prime-divisibility events. Marginals alone cannot supply that product. For example, coupling the indicators \([\ell\mid u]\) to \([\ell\mid k]\) preserves marginal probabilities approximately \(1/\ell\), while making primitivity tend to zero.
+
+   Nor does a global saddle-point divisibility law automatically describe `next`, `last`, interval-uniform `rand`, or divisor-selected `cofactor`. Their selection laws differ from uniform sampling among smooth integers below \(N\).
+
+   **Fix:** explicitly assume the required joint law, or retain C4 directly as an independent yield hypothesis. Querying distinct prime \(k>y\) proves primitivity without Lemma D, but H_S still needs justification on that domain. The advertised **\(0.6\rho\) lower bound is not currently proved**.
+
+2. **MINOR — Lemma CP’s main estimate works, but its uniform range is overstated.**  
+   **Location:** R:200–218.  
+   **Status:** PROVED within the stated product model at \(z\asymp h\); the full “\(z\le h\)” equality is false.
+
+   At \(z\asymp h\), the saddle-point calculation is sound:
+   \[
+   U=\frac{\log z}{\log y}
+     =\Theta\!\left(x^{1/3}(\log x)^{-1/3}\right),\qquad
+   y^\delta=x^{1/3+o(1)}.
+   \]
+   The split at \(p\le x^2\) works. Its small-prime contribution is
+   \(O(\delta\log x\log\log x)=o(1)\). There are at most
+   \[
+   \frac{\log(N^2)}{\log(x^2)}=\frac{x}{\log x}
+   \]
+   large prime factors, so the looser bound “at most \(x\)” is valid.
+
+   A cleaner justification of step 2 is
+   \[
+   f_p=1-t_p,\qquad t_p=\frac{p^\delta-1}{p-1},
+   \]
+   followed by \(-\log(1-t_p)=t_p(1+o(1))\) uniformly.
+
+   The problem is small \(z\): \(U\) need not tend to infinity, \(\xi(U)\sim\log(U\log U)\) cannot be used, and \(\alpha\) can exceed 1. For fixed \(z=2\), even \(f_2\) need not tend to 1.
+
+   **Fix:** prove the equality at \(z\asymp h\), and state the **uniform lower bound** actually needed. Since \(\alpha(z,y)\ge\alpha(h,y)\), the product is no smaller than its value at \(h\); handle \(v=1\) directly.
+
+3. **MINOR — The coprimality citation gap is repairable, but does not prove the constructor model.**  
+   **Location:** R:201–205.  
+   **Status:** KNOWN for the global counting estimate; HEURISTIC for selected residues.
+
+   A suitable reference is de la Bretèche–Tenenbaum, *Propriétés statistiques des entiers friables*, Theorem 2.1 and Corollary 2.2. They give the required global approximation involving
+   \(g_q(\alpha)=\prod_{p\mid q}(1-p^{-\alpha})\), with explicit errors. Here \(q=\operatorname{rad}(u)\), \(u\le N^2\), has \(\omega(q)=O(\log N)\); at \(z\asymp h\), this lies well inside their relevant range and the error tends to zero. [Primary paper](https://tenenb.perso.math.cnrs.fr/PPP/PropStatFriables.pdf)
+
+   **Fix:** replace “[UNVERIFIED range]” with the theorem and parameter substitution. Separately retain the assumption that this counting law models constructor-selected residues. A theorem about uniform smooth-number counts does not establish that selection law.
+
+4. **MAJOR — PH2 is a useful diagnostic, not a calibrated validation null.**  
+   **Location:** R:274–307; [posthoc.py](/Volumes/git/factoring-connection/src/sicheck/posthoc.py:35).  
+   **Status:** PROVED exact benchmark counts; HEURISTIC interpretation.
+
+   Conditioning on \(\operatorname{rad}(u)\) is not automatically circular: the benchmark does not explicitly condition on whether \(v\) is smooth. But the actual output obeys \(v=u-kN\). Once \(u,k,N\) are fixed, \(v\) is fixed. The proposed comparison therefore needs a joint sampling model explaining why nearby coprime integers represent that selected output.
+
+   It also does not encode all per-output local restrictions. On primitive outputs, \(\gcd(v,k)=1\) as well as \(\gcd(v,u)=1\). As a sensitivity check, I recomputed cell A excluding the factor-base primes of \(k\) too. For `next`, the expected count changes from **30.85 to 22.71**, against 43 successes: O/E changes from **1.394 to 1.894**. This alternative benchmark is not itself a complete generative null; it demonstrates that the apparent fit depends on the conditioning choice.
+
+   **Fix:** preregister a joint selection model and test it on new instances. Describe the current result as “a post-hoc benchmark with close pooled agreement.” The Bernoulli z-scores do not have established calibration under these dependent, selected observations.
+
+5. **MAJOR — PH2 does not test the refined H_S claimed for all fresh relations.**  
+   **Location:** R:275–276, 299–308, 446–452; `posthoc.py`:74–82.  
+   **Status:** PROVED scope mismatch.
+
+   PH2 discards every output with \(g>1\). C4 concerns distinct reduced pairs \((u/g,v/g)\), including those first encountered through nonprimitive outputs.
+
+   The raw counts give:
+
+   | constructor | fresh relations | fresh relations from \(g>1\) outputs |
+   |---|---:|---:|
+   | next | 2,317 | 0 |
+   | last | 2,981 | 1,331 |
+   | rand | 2,953 | 1,034 |
+   | cofactor | 2,308 | 10 |
+
+   Thus PH2 omits approximately **45% of fresh `last` relations** and **35% of fresh `rand` relations**.
+
+   Lemma I proves that reduction gives the same relation vector; it does not prove that the constructor previously emitted that reduced pair. For consecutive `next`, a scaling argument supplies that stronger conclusion. It does not hold generally for `last` or `rand`.
+
+   **Fix:** evaluate the refined null on every first-seen reduced pair, using \(u/g,v/g\), and distinguish “primitive output” from “fresh reduced relation.”
+
+6. **MAJOR — The trend is confounded; the PH3 arithmetic itself is correct.**  
+   **Location:** R:42–43, 305–308, 451–452; P:28–35.  
+   **Status:** PROVED descriptive ratios; UNVERIFIED asymptotic inference.
+
+   I reproduced PH3’s calculation:
+   \[
+   \frac{\#\{\text{smooth outputs with a new primitive pair}\}}
+        {\sum_{\text{all outputs}}p_{\rm null}(v)}.
+   \]
+   Its range is **0.0981–0.6901**, so “10–69%” is correctly rounded. It compares against the size-matched expectation over observed outputs, rather than directly against \(K\rho(\log h/\log y)\).
+
+   However, bit size, \(y\), \(h\), and \(K\) change together. \(K\) directly affects cumulative duplication. At the same 48-bit size, changing B to B10 changes `rand` efficiency from **0.250 to 0.438**. Moreover, the general monotonicity claim is false when B10 is included: B10 `rand` gives 0.438 versus C’s 0.337; `last` gives 0.498 versus 0.388.
+
+   **Fix:** retain the descriptive `next` trend, remove the asymptotic inference, and use controlled parameter sweeps or a fixed asymptotic scaling path.
+
+7. **MINOR — P1’s failure count is wrong.**  
+   **Location:** R:70 and 256.  
+   **Status:** PROVED from the raw data and score output.
+
+   There are **10**, not 14, failing cell×constructor cells: `next` 3, `last` 2, `rand` 2, `cofactor` 3. Fourteen passed. All relevant expectations exceed 50.
+
+   **Fix:** replace “14 of 24 outside” with “10 of 24 outside.” P1 still fails.
+
+8. **MAJOR — The universal rank bound and odd-index sufficiency omit factor-base subgroup hypotheses.**  
+   **Location:** R:319–323, 398, 465–467.  
+   **Status:** PROVED false as stated.
+
+   Orthogonality to two character vectors gives
+   \[
+   r\le s-\operatorname{rank}_{\mathbb F_2}\{c_p,c_q\},
+   \qquad s=\pi(y),
+   \]
+   not automatically \(r\le s-2\). Those restricted vectors can vanish or coincide.
+
+   A positive, primitive Blum counterexample is
+   \[
+   N=7\cdot23=161,\quad y=3,\quad 162-1=N.
+   \]
+   Since \(162=2\cdot3^4\), the parity row is \((1,0)\), of rank **1**, whereas \(s-2=0\).
+
+   Likewise, generating \(\Lambda_N\) up to odd index only reaches the 2-torsion of the subgroup generated by the factor base. That subgroup need not contain a mixed root. For example, \(2\) has order 33 modulo 161, so the base \(\{2\}\) generates an odd-order subgroup.
+
+   C6 also reverses an inequality: \(r\le s-2\) implies \(r+1\le s-1\).
+
+   **Fix:** state the restricted-character rank bound and the needed subgroup condition. A fruitful dependency is the actual requirement; maximal parity rank is unnecessary.
+
+9. **MAJOR — Corollary B is correct, but the QS explanation is wrong.**  
+   **Location:** R:349–350; related overstatement at R:459–460.  
+   **Status:** PROVED counterexample.
+
+   Reciprocity does give
+   \[
+   (N/\ell)=J_N(\ell)
+   \]
+   for odd \(\ell\nmid N\), since Blum \(N\equiv1\pmod4\). The claim that including 2 explains why Corollary B does not obstruct QS is false.
+
+   For \(N=161\), \(J_N(2)=+1\), yet the single QS relation
+   \[
+   15^2-161=64
+   \]
+   gives \(Z=15/8\equiv22\pmod{161}\), and \(\gcd(22-1,161)=7\).
+
+   QS retains the known square root \(15\). Its prime factors need not belong to the residue factor base. That information supplies fruitfulness even when all residue-base primes have Jacobi symbol \(+1\).
+
+   **Fix:** explain the square-side root information. Restrict Cor. B(a)’s obstruction to its Blum, two-smooth-side setting. Also remove C5’s blanket prohibition on using Jacobi data: such data can help impose a fruitful dependency.
+
+10. **MINOR — `beta0` is legitimate, but its yield and cost claims remain conditional.**  
+    **Location:** R:351–357; [run_experiment.py](/Volumes/git/factoring-connection/src/sicheck/run_experiment.py:145).  
+    **Status:** PROVED public-input degeneracy; HEURISTIC yield.
+
+    Testing candidate \(v\)’s for smoothness uses public information, so it does not invalidate “sees only \(kN,N\).” The code correctly excludes smooth relations with \(\beta=1\).
+
+    What is not proved is its asymptotic constant-factor yield or availability. The implemented rule also examines an interval’s candidate list, obtained by an expensive sieve; it does not demonstrate a fast adversarial constructor satisfying C2.
+
+    **Fix:** separate the exact degeneracy construction from the fair-mark yield model and computational cost. A partial wrapper that rejects a fast oracle’s \(\beta=1\) relations is another possible construction, but its retained yield must still be assumed or established.
+
+11. **MAJOR — The hidden-root impossibility is an argument, not a theorem.**  
+    **Location:** R:58–60, 362–370, 462–463.  
+    **Status:** OPEN as a general impossibility claim; HEURISTIC cost estimate.
+
+    Showing that the ordinary relation contains no freely sampled root does not rule out every randomized reduction using the interface. No formal impossibility argument is supplied.
+
+    The displayed generic cost is consistent with the stated heuristic: two reconstructed integers of size \(N^{1/2}\) each have smoothness penalty \(L[2/3,-1/(3\kappa)]\), giving combined search cost
+    \[
+    L[2/3,2/(3\kappa)].
+    \]
+    Reconstruction supplies size bounds; typical balanced sizes and the smoothness law remain heuristic.
+
+    **Fix:** write “No hidden-root construction or Dixon-style guarantee is supplied for this interface.” Keep the cost as a heuristic benchmark, not a lower bound.
+
+12. **MAJOR — Prop R′ needs the actual retained sampling law.**  
+    **Location:** R:371–379, 455–458.  
+    **Status:** PROVED probability inequality under its sampling assumptions; HEURISTIC application to the constructors.
+
+    The union bound
+    \[
+    \Pr(\text{degenerate})\le2^s(1-\delta_X)^M
+    \]
+    is correct for i.i.d. samples under the law defining \(\delta_X\). But uniform random \(k\), uniform choice within each interval, rejection of nonsmooth residues, and deduplication do not generally produce uniform sampling over the union of obtainable relations.
+
+    The \(2^{\pi(y)}\) count is appropriate for the positive SI parity vector. Signs or additional dependency restrictions would need extra coordinates in \(x\).
+
+    The assertion “the pool must have at least \(M\) distinct relations” is not required for i.i.d. sampling with replacement. Nor does a large pool alone imply the claimed bound on \(K'\).
+
+    **Fix:** define \(X\), its weights after acceptance, the deduplication procedure, and \(\delta_X\) under that exact law. The bound also holds for uniform sampling without replacement, but that must match the implemented sampler.
+
+13. **MAJOR — C1–C7 need quantitative uniformity; they are not experimentally established requirements.**  
+    **Location:** R:424–474.  
+    **Status:** conditional implication remains valid; availability and yield are HEURISTIC hypotheses.
+
+    C1 correctly identifies the \(k\)-size issue, and C7 correctly requests slow slack. The remaining specification should make explicit:
+
+    - uniformity over the intended semiprimes and queried multipliers;
+    - an efficiently enumerable or samplable domain;
+    - the availability fraction, failure response, and cost of failed calls;
+    - joint control of availability, fresh yield, and fruitfulness under the same sampling law.
+
+    “All but an \(L^{-o(1)}\)-fraction” is an unnecessarily ambiguous availability formulation. A successful-query fraction at least \(L[1/3,-o(1)]\) can suffice, provided its cost and joint yield are controlled.
+
+    A global smooth-number density does not prove availability on the thin union of intervals near \(kN\). The finite-domain promise must remain explicit.
+
+    **Fix:** present C2/C4/C5 as independent quantified assumptions. Replace “hold at toy scale” and “asymptotically sound” with the narrower observational and conditional statements actually established.
+
+14. **MAJOR — E3’s half-fruitful statistic is largely an algebraic consequence.**  
+    **Location:** R:393, 397, 411–415; [score.py](/Volumes/git/factoring-connection/src/sicheck/score.py:184).  
+    **Status:** PROVED observations; HEURISTIC extrapolation.
+
+    Once \(\Phi\ne0\) is established, exactly half of the complete dependency space is fruitful. For uniformly sampled **nonzero** dependencies of dimension \(d\), the fraction is \(2^{d-1}/(2^d-1)\). Thus 49.6% is chiefly a check of sampling and algebra, not independent evidence for constructor neutrality.
+
+    The 144 runs also share only **36 moduli**, with four constructors using related candidate pools. They are not 144 independent instance tests. Similar dependence affects E1’s Bernoulli z-scores.
+
+    **Fix:** emphasize the observed nonzero dependency spaces. Treat R5 as a descriptive test of an additional fair-functional model, with inference grouped by modulus. The R5 prefix implementation itself matches the registration.
+
+15. **MINOR — Large-prime accounting is overbroad; smoothness testing can be justified.**  
+    **Location:** R:94–95, 103.  
+    **Status:** KNOWN batch-testing capability; UNVERIFIED blanket large-prime extension.
+
+    Arbitrarily accepting nonsmooth residues can create almost one new column per relation and destroy useful dependency yield. The sentence about only \(L^{o(1)}\) changes requires specified large-prime bounds, multiplicity limits, and recombination costs.
+
+    Conversely, the strict-smoothness program need not lose its constant to testing: Bernstein’s batch algorithms find smooth parts and factor-base factors in nearly linear time in the total input size. [Primary reference](https://cr.yp.to/factorization/smoothparts-20040510.pdf)
+
+    **Fix:** keep the analyzed program strictly smooth, or analyze a precisely bounded large-prime variant. Cite batch testing rather than treating an unspecified ECM cutoff as an exact test.
+
+16. **MINOR — The \(0.757\) threshold requires parameter reoptimization.**  
+    **Location:** R:441–443.  
+    **Status:** PROVED within the cost model.
+
+    The threshold is correct for beating the stated MNFS constant after optimizing
+    \[
+    \min_\kappa\max\!\left\{\kappa+\frac{2}{9\kappa^2}+\tau,\;2\kappa\right\}.
+    \]
+    It does not preserve the \(1.2114\) constant. At fixed \(\kappa=\kappa_*\), the corresponding MNFS threshold is approximately \(0.6905\), rather than \(0.7572\).
+
+    **Fix:** state that \(0.757\) assumes retuning the constructor’s parameters and concerns only the MNFS comparison.
+
+17. **MINOR — E3’s reported `k_last` is not the constructor’s stopping time.**  
+    **Location:** `run_experiment.py`:216–236; `score.py`:199–203.  
+    **Status:** PROVED code/reporting bug.
+
+    Each record receives the final shared loop counter after all constructors finish or hit the cap. An honest constructor that finished much earlier inherits a slower constructor’s counter. This explains the identical reported mean 9,887 for all four honest constructors.
+
+    **Fix:** record each state’s actual stopping \(k\). This changes the reported effort statistic, not its collected relations or fruitfulness results.
+
+18. **MAJOR — §0 turns benchmark costs and conditional arguments into stronger conclusions.**  
+    **Location:** R:26–46, 157–162, 424–427, 472–474.  
+    **Status:** conditional algebra PROVED; generic lower-bound and asymptotic-validation claims UNVERIFIED.
+
+    “Every generic method” paying \(L[2/3]\) is not established as a lower bound. It describes the analyzed search benchmarks. Likewise, CP plus the defective D argument does not establish that H_S “recovers asymptotically” for these constructors.
+
+    **Fix:** say that the conditional cost optimization is correct, the tested generic implementations pay an \(L[2/3]\) search cost, and constructor availability, fresh yield, and fruitfulness remain separate assumptions.
+
+The central arithmetic checks passed. **Lemma I and Prop B are PROVED under the positive, unit-valued SI setting.** The prime 2 causes no exception in Prop B. Here \(v>0\) and \(\gcd(V,N)=1\) follow from the interface and \(p,q>y\); outside that setting, signs require a coordinate and nonunits require gcd handling. Integer lifts of dependencies do not change the resulting root class. In the general-character formulation, changing character lifts changes the per-relation \(\beta\) vector by a parity-row combination, so its restriction to dependencies is invariant.
+
+All seven existing tests passed. Additional exact checks covered 250 elimination matrices against exhaustive kernels, 600 cofactor choices against their defining scan, and 955 smooth pairs for inheritance and deduplication; root calculations and Prop B agreed on 176 dependency basis vectors. I found no reported-number-changing bug in the sieve threshold, primitive-pair deduplication, \(Z=W/V\), elimination, truncated-exponential KS calculation, or registered P2 computation. P2’s use of an unconditional measured \(\pi_0\) is a modeling approximation; conditioning it by \(k\)-parity slightly changes the ratios but preserves the registered pass. Section 4 remains **UNVERIFIED**, as its placeholder explicitly indicates.
+
+| finding | severity | fix |
+|---|---|---|
+| 1. Lemma D lacks a joint law | MAJOR | Add the joint assumption or assume fresh yield directly |
+| 2. CP overstates its range | MINOR | Prove the needed lower bound; handle small residues separately |
+| 3. Coprimality citation | MINOR | Cite the precise counting theorem and distinguish selection |
+| 4. PH2 null lacks calibration | MAJOR | Specify and test a joint sampling model |
+| 5. PH2 omits many fresh relations | MAJOR | Test all first-seen reduced pairs |
+| 6. Confounded asymptotic trend | MAJOR | Use controlled sweeps; retain PH3 as descriptive |
+| 7. P1 failure count | MINOR | Change 14 failures to 10 |
+| 8. Rank/subgroup hypotheses | MAJOR | Use restricted-character rank and subgroup conditions |
+| 9. QS explanation | MAJOR | Include the known square-side root information |
+| 10. `beta0` yield/cost scope | MINOR | Separate exact degeneracy from heuristic yield |
+| 11. Hidden-root impossibility | MAJOR | Relabel as an unresolved construction question |
+| 12. R′ sampling law | MAJOR | Define the retained weighted law and deduplication |
+| 13. C1–C7 quantifiers | MAJOR | Quantify availability, cost, yield, and uniformity jointly |
+| 14. E3 evidential strength | MAJOR | Separate algebraic consequences from statistical evidence |
+| 15. Large-prime extension | MINOR | Bound and analyze it, or retain strict smoothness |
+| 16. Oracle-cost threshold | MINOR | Explain parameter retuning and the MNFS comparison |
+| 17. E3 stopping counters | MINOR | Store per-constructor stopping times |
+| 18. Verdict overclaims | MAJOR | Restrict it to the conditional cost implication |
+
+Overall, Prop SI’s optimized cost is a credible **conditional heuristic implication**, with no fatal arithmetic error found in that optimization or in Prop B. The document does not validate the required constructor behavior: Lemma D is incomplete, the post-hoc null tests a narrower population than claimed, the experimental trend is confounded, and the rank and hidden-root statements overreach. Retain the constant calculation and exact degeneracy results, but revise the verdict to make availability, fresh yield, and fruitfulness explicit independent hypotheses.

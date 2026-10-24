@@ -1,0 +1,396 @@
+## 1. Independent derivation
+
+**HEURISTIC verdict.** The constant \(1.2114\) is correct under quantitative versions of \(H_S\) and \(R\). The constructor promise alone does not establish either assumption. In particular, plentiful relations and maximal attainable parity rank can coexist with exclusively trivial dependencies.
+
+Throughout, assume \(N=pq\) with distinct odd primes exceeding \(y\). Discovering a factor through a gcd ends the algorithm immediately. Interpret the constructor’s \(L^{o(1)}\) cost as \(\exp(o(F_{1/3}))\), including its factorization output.
+
+### Relations and square roots
+
+**PROVED.** Write
+\[
+u_i=\prod_{\ell\le y}\ell^{a_{i\ell}},\qquad
+v_i=\prod_{\ell\le y}\ell^{b_{i\ell}},\qquad e_i=a_i-b_i.
+\]
+Then
+\[
+\prod_{\ell\le y}\ell^{e_{i\ell}}\equiv1\pmod N.
+\]
+For any binary selection \(c\) satisfying \(Ec\equiv0\pmod2\), where \(E\) has columns \(e_i\),
+\[
+z(c)=\prod_{\ell\le y}\ell^{(Ec)_\ell/2}\pmod N
+\]
+satisfies \(z(c)^2=1\). Negative exponents use modular inverses. A factor results precisely when \(z(c)\not\equiv\pm1\).
+
+Thus only \(\pi(y)\) parity coordinates are needed. Requiring both products separately to be integer squares would use \(2\pi(y)\) coordinates, but that stronger condition is unnecessary.
+
+**PROVED.** Smoothness of \(v_i\) is required by this particular factor-base representation: otherwise its unknown prime exponents cannot be included in \(e_i\). It is not an absolute necessity. Known square cofactors, additional prime columns, or large-prime variants can also work, but require their own accounting.
+
+**PROVED.** These are *multiplicative relations between smooth rational numbers modulo \(N\)*. They differ from Dixon relations
+\[
+r_i^2\equiv s_i\pmod N,
+\]
+where \(r_i\) is freely sampled and retained as a known square root. Here neither side supplies that hidden random root. The distinction is central to fruitfulness; see §3.
+
+### Smoothness probabilities and work
+
+**KNOWN.** The relevant long-interval estimates give
+\[
+\log\rho(t)=-(1+o(1))t\log t,
+\]
+and \(\Psi(Z,y)/Z\sim\rho(\log Z/\log y)\) in the ranges used here. These statements concern long intervals; they do not automatically transfer to the queried intervals. See Hildebrand–Tenenbaum, *Integers without large prime factors*, JTNB **5** (1993), Theorems 1.1–1.2 and §2. [Source](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf)
+
+**PROVED, using that asymptotic.** Uniformly for \(\log k=o(x)\),
+\[
+\frac{\log(kN)}{\log y}
+=(1+o(1))\frac{x^{2/3}}{\kappa(\log x)^{2/3}},
+\]
+so the global smoothness density near \(kN\) has logarithm
+\[
+-\left(\frac{2}{3\kappa}+o(1)\right)F_{2/3}.
+\]
+Consequently the proposed interval count is
+\[
+h\rho\!\left(\frac{\log(kN)}{\log y}\right)
+=L[2/3,\nu-2/(3\kappa)].
+\]
+
+**HEURISTIC — short-interval occupancy assumption.** Interpreting this expression as the actual count, or even as a useful probabilistic mean on the selected \(k\), requires an additional distribution model. The condition \(\nu>2/(3\kappa)\) is the usual typical-interval threshold in that model. It is neither an unconditional necessity for specially selected intervals nor a sufficient theorem guaranteeing every queried interval is nonempty.
+
+**PROVED, using the Dickman asymptotic.** For a uniformly sampled integer up to \(h\),
+\[
+P_v=\frac{\Psi(h,y)}h
+=L[1/3,-\nu/(3\kappa)],
+\]
+because
+\[
+\frac{\log h}{\log y}
+=\frac{\nu}{\kappa}x^{1/3}(\log x)^{-1/3}.
+\]
+
+**HEURISTIC — quantitative \(H_S\).** If constructor outputs have this success rate, with sufficient independence or concentration on fresh queries, the calls per relation are
+\[
+L[1/3,\nu/(3\kappa)].
+\]
+Collecting \(m=L[1/3,\kappa]\) useful relations therefore takes
+\[
+T=L[1/3,\kappa+\nu/(3\kappa)]
+\]
+calls. A marginal probability alone does not imply this collection bound: the successes could be strongly correlated.
+
+**KNOWN.** Smoothness testing need not add a factor \(y\) to every call. Bernstein’s batch algorithm finds smooth parts in essentially linear time in the total input length, up to polylogarithmic factors. [Bernstein, *How to find smooth parts of integers*, 10 May 2004, abstract](https://cr.yp.to/factorization/smoothparts-20040510.pdf)
+
+**PROVED.** There is also a direct accounting argument. Put
+\[
+P=\prod_{\ell\le y}\ell^{\lfloor\log h/\log\ell\rfloor}.
+\]
+Then \(v\le h\) is smooth exactly when \(\gcd(v,P)=v\). Product/remainder trees test batches at total cost \((T+\pi(y))\operatorname{poly}(x)\), using fast integer arithmetic. Trial division of only the accepted \(m=O(\pi(y))\) values costs at most \(\pi(y)^2\operatorname{poly}(x)\).
+
+**KNOWN.** Sparse finite-field linear algebra has essentially quadratic cost when the matrix has polynomially many nonzeros per column. Relevant methods include Wiedemann and block Wiedemann; see Coppersmith, *Mathematics of Computation* **62** (1994), 333–350. [Author’s publication page](https://research.ibm.com/publications/solving-homogeneous-linear-equations-over-gf2-via-block-wiedemann-algorithm)
+
+**PROVED.** Here a column has \(O(x)\) nonzeros when \(\log k=O(x)\), since the total number of prime factors of \(u_iv_i\), with multiplicity, is \(O(x)\). Thus linear algebra, successful-value factorization, and square-root extraction fit within
+\[
+L[1/3,2\kappa].
+\]
+
+**model-PROVED — SI sampling model.** Assuming the stated constructor cost, quantitative \(H_S\), \(m=L[1/3,\kappa]\) sufficient relations, and efficient fruitful dependency extraction, the resulting cost is
+\[
+L\!\left[1/3,\max\left\{\kappa+\frac{\nu}{3\kappa},\,2\kappa\right\}\right].
+\]
+
+### Exact optimization
+
+**PROVED.** At the occupancy boundary, minimize
+\[
+\max\left\{\kappa+\frac{2}{9\kappa^2},\,2\kappa\right\}.
+\]
+The branches meet at
+\[
+\kappa^3=\frac29.
+\]
+Before that point, the first branch dominates and has derivative
+\[
+1-\frac4{9\kappa^3}\le-1.
+\]
+After that point, the maximum is at least \(2\kappa\), which increases. Hence
+\[
+C_* =2(2/9)^{1/3}=(16/9)^{1/3}
+=1.21141372855\ldots.
+\]
+Numerically,
+\[
+\kappa_*=0.60570686428\ldots,\qquad
+\nu_*=1.10064241630\ldots.
+\]
+
+This is an **infimum** with strict occupancy slack. Claiming the exact limiting constant requires parameter sequences approaching the boundary slowly enough, with uniform control of error terms and failure probabilities.
+
+### The exponent \(1/3\) barrier
+
+**model-PROVED — typical single-interval model.** Let
+\[
+y=L[\alpha,\kappa],\qquad h=L[\beta,\nu],
+\]
+and assume:
+
+1. intervals near \(N^{1+o(1)}\) require their predicted smooth count to be at least order one;
+2. residuals have the smoothness penalty of numbers of scale \(h\);
+3. the algorithm collects factor-base-scale many relations.
+
+The first condition forces \(\beta\ge1-\alpha\). The residual penalty has exponent \((\beta-\alpha)_+\), while the factor base has exponent \(\alpha\). Therefore
+\[
+\gamma\ge\max\{\alpha,1-2\alpha\}\ge\frac13.
+\]
+
+**OPEN outside that model.** This is not a lower bound for every constructor operating on single intervals. A constructor could bias residuals toward smaller values, enforce additional smooth structure, select exceptional \(k\), or expose a factor directly. Those possibilities violate the model premises.
+
+### Size principle and what is free
+
+**PROVED.** The calculation agrees with the size principle: the only remaining chance-smooth part has logarithmic size \(\nu F_{2/3}\). Its smoothness penalty is therefore of \(L[1/3]\) scale. The \(N\)-sized part is supplied already smooth.
+
+**KNOWN.** The quoted NFS constants are literature estimates of heuristic complexities, not lower bounds: GNFS \((64/9)^{1/3}\), SNFS \((32/9)^{1/3}\), and Coppersmith’s multiple-field variant approximately \(1.9019\). [Pomerance, *A Tale of Two Sieves*, Notices AMS **43** (1996), p. 1482](https://math.dartmouth.edu/~carlp/PDF/paper109.pdf)
+
+**KNOWN.** The factory estimate \(1.6386\) requires precomputation of cost approximately \(L[1/3,2.0069]\) and permanent storage of comparable scale to its per-target work. [Lenstra, *General purpose integer factoring*, §5.5.4](https://eprint.iacr.org/2017/1087.pdf)
+
+**HEURISTIC — ordinary scanning/sieving model.** Finding one smooth integer near \(N\) by scanning costs approximately the reciprocal density,
+\[
+L[2/3,2/(3\kappa)],
+\]
+candidate positions. Sieving the entire interval costs approximately \(L[2/3,\nu]\), up to polynomial factors. The oracle gives away that search, its factorization, and reliable placement within an extremely short prescribed interval. Implementing it this way destroys the claimed \(L[1/3]\) running time. This is an implementation estimate, not a lower bound against every possible constructor.
+
+## 2. \(H_S\) for deterministic constructors
+
+**PROVED.** For fixed \(N\), a deterministic constructor produces a fixed sequence. A probability statement requires a specified random choice of \(k\), constructor randomness, or an ensemble of inputs. Determinism alone neither establishes nor disproves pseudorandom behavior.
+
+### Selection rules
+
+| Rule | Assessment |
+|---|---|
+| Smallest smooth \(u\ge kN\) | **PROVED:** \(v\) is a forward gap, not a uniform offset. **HEURISTIC — Poisson gap model:** its scale is approximately \(L[2/3,2/(3\kappa)]\), potentially much smaller than \(h\) when there is fixed slack. This changes the leading residual-size constant. |
+| Largest smooth \(u\le kN+h\) | **PROVED:** \(h-v\) is a backward gap. **HEURISTIC — Poisson gap model:** with fixed occupancy slack, \(v\) lies close to \(h\), so the stated size penalty remains plausible. |
+| Uniform smooth \(u\in I_k\) | **PROVED:** this samples the smooth offsets in that particular interval. **OPEN:** it does not imply that their offsets have the smoothness frequency of uniform integers. That requires a joint smooth-pair estimate. |
+| Cofactor scan | **PROVED:** for scanned \(s\), \(v=s\lceil kN/s\rceil-kN=(-kN\bmod s)\), with \(0\le v<s\). Its size and divisibility depend on the first successful \(s\). **OPEN:** the stated \(H_S\) does not follow. |
+
+**HEURISTIC — independent cofactor trials.** The cofactor scan itself needs approximately \(L[2/3,2/(3\kappa)]\) candidate cofactors before success. It is not an implementation of the proposed negligible-cost constructor under that model.
+
+### Exact correlations
+
+**PROVED.** With \(A=kN\),
+\[
+\gcd(u,v)=\gcd(u,A).
+\]
+Since \(u\) is coprime to \(N\),
+\[
+\gcd(u,v)=\gcd(u,k).
+\]
+Thus the smooth part of \(k\) controls possible common factors and scaling duplicates.
+
+**PROVED.** For every prime power \(\ell^a\mid kN\),
+\[
+u\equiv v\pmod{\ell^a}.
+\]
+In particular,
+\[
+\min\{v_\ell(u),a\}=\min\{v_\ell(v),a\}.
+\]
+If \(\ell\nmid kN\), \(u\) and \(v\) cannot both be divisible by \(\ell\).
+
+**PROVED.** The identity also couples higher power residues and multiplicative characters. In particular,
+\[
+(u/N)=(v/N)
+\]
+for the Jacobi symbol, and both individual Legendre-symbol equalities hold modulo the unknown factors. These constraints restrict parity rank and higher information relevant to fruitfulness.
+
+**HEURISTIC — local-density model.** Fixed-modulus restrictions such as parity usually affect smoothness probabilities by constant or subleading factors, hence by \(L^{o(1)}\). They cannot simply be ignored collectively over growing moduli. Moreover, even a restriction costing only a constant factor in relation density can eliminate *all* fruitful dependencies.
+
+**PROVED.** When \(k\le L[1/3,C]\), cancellation of a common divisor changes \(\log v\) by at most \(O(F_{1/3})\), below its \(F_{2/3}\) scale. This does not eliminate the potentially severe effect on duplicates or relation diversity.
+
+**OPEN.** Smooth-number gaps, selection bias, and correlations between outputs at different \(k\) remain substantive assumptions here. Existing general results checked do not supply the required uniform existence and joint distribution at these parameters. For example, Jain’s 2026 almost-all existence theorem requires much larger \(y\), while its all-interval theorem uses lengths exceeding \(\sqrt X\). [Jain, *Quarterly Journal of Mathematics* **77** (2026), Theorems 1.1–1.2](https://doi.org/10.1093/qmath/haag010)
+
+### Restrictions on \(k\)
+
+**PROVED.** If \(N\) and \(k\) are odd, \(u,v\) have opposite parity. Restricting \(k\) to primes larger than \(y\) additionally forces \(\gcd(u,v)=1\). Neither restriction alone proves failure; both require \(H_S\) and \(R\) to be assessed on the restricted domain.
+
+**PROVED.** The density calculation requires control of \(\log k/\log N\). If \(k\asymp N^\theta\), the large-side penalty becomes
+\[
+L[2/3,-2(1+\theta)/(3\kappa)].
+\]
+Under the same model, optimization gives
+\[
+C_*(\theta)=\left(\frac{16(1+\theta)}9\right)^{1/3}.
+\]
+Uniform sampling up to \(N\) has typical \(\theta=1\), giving
+\[
+C_*=(32/9)^{1/3}=1.526285\ldots.
+\]
+Thus allowing \(k\) up to \(N\) without tracking its distribution can invalidate the claimed constant.
+
+## 3. \(R\): fruitfulness and rank
+
+### Exact criterion
+
+**PROVED.** Let
+\[
+\phi:\mathbb Z^b\longrightarrow G=(\mathbb Z/N\mathbb Z)^*,
+\qquad
+\phi(e)=\prod_{\ell\le y}\ell^{e_\ell},
+\]
+and let \(\Lambda_N=\ker\phi\). Define
+\[
+D=\ker(E\bmod2).
+\]
+The map
+\[
+D\longrightarrow G[2],\qquad c\longmapsto\phi(Ec/2)
+\]
+is a homomorphism. Indeed, replacing \(c+d\) by binary addition changes the halved exponent vector by an integer combination of relation columns, whose image under \(\phi\) is \(1\).
+
+For a semiprime, \(G[2]/\{1,-1\}\cong\mathbb F_2\). Therefore the precise fruitfulness functional is
+\[
+\lambda:D\longrightarrow G[2]/\{1,-1\}.
+\]
+A fruitful dependency exists **if and only if \(\lambda\ne0\)**. If it is nonzero, exactly half of uniformly sampled elements of \(D\) are fruitful.
+
+**PROVED.** Equivalently, for \(M=\sum_i\mathbb Z e_i\), the criterion is
+\[
+\exists e\in M\cap2\mathbb Z^b:
+\quad \phi(e/2)\notin\{1,-1\}.
+\]
+Reducing the coefficients of any such integer combination modulo two preserves its resulting root.
+
+**PROVED.** Let \(H=\phi(\mathbb Z^b)\). A necessary condition is that \(H\) contain a mixed-sign involution. If the collected relations generate the entire lattice \(\Lambda_N\), this condition is also sufficient: represent such an involution by \(\phi(w)\); then \(2w\in\Lambda_N=M\). Parity rank alone does not establish this lattice-generation property.
+
+**PROVED.** Literal full row rank is generally impossible. The Legendre-symbol vectors of the factor-base primes modulo \(p\) and \(q\) annihilate every relation column modulo two. When these vectors are independent, rank is at most \(b-2\). Lower rank supplies more dependencies; it does not establish fruitfulness.
+
+### Blum semiprimes: an explicit computable functional
+
+**PROVED.** Suppose \(p,q\equiv3\pmod4\). Set
+\[
+j_\ell=\frac{1-(\ell/N)}2\in\{0,1\}.
+\]
+For each relation, \(j^Te_i\) is even. Define
+\[
+t_i=\frac{j^Te_i}{2}\pmod2.
+\]
+For \(c\in D\),
+\[
+(z(c)/N)=(-1)^{t^Tc}.
+\]
+Among the four roots of \(1\), the two diagonal roots have Jacobi symbol \(+1\), and the two mixed roots have symbol \(-1\). Hence
+\[
+\boxed{\lambda(c)=t^Tc.}
+\]
+
+This uses \(N\) and the factored relations, without knowing \(p,q\).
+
+**PROVED.** Fruitfulness is therefore equivalent to
+\[
+t\notin\operatorname{rowspan}_{\mathbb F_2}(E\bmod2).
+\]
+If this holds, solve
+\[
+Ec=0,\qquad t^Tc=1.
+\]
+Appending this one row preserves the quadratic sparse-algebra cost. It detects available fruitfulness; it cannot create missing fruitfulness.
+
+### Explicit degeneracy
+
+**PROVED.** All dependencies can be trivial, even at maximal attainable parity rank and without duplicate relations. Take \(N=77\), \(y=5\), \(h=5\):
+\[
+\begin{aligned}
+27648-5&=359N,&e_1&=(10,3,-1),\\
+37500-1&=487N,&e_2&=(2,1,5).
+\end{aligned}
+\]
+Both \(k\) are distinct primes exceeding \(y\). Their parity columns coincide, and their only nonzero dependency gives
+\[
+z=2^6\,3^2\,5^2=14400\equiv1\pmod{77}.
+\]
+The two Legendre constraints are independent, so rank one is maximal for this three-prime base.
+
+**PROVED — explicit selection rule.** On a promised Blum input, enumerate smooth candidates \(u\) in the interval. Accept any candidate with nonsmooth \(v\). For a successful relation, accept it only when
+\[
+j^T(a-b)\equiv0\pmod4.
+\]
+Return the first accepted candidate. This rule uses only \(kN,N,h,y\), and makes every dependency among returned successful relations trivial, because every \(t_i=0\).
+
+**OPEN — totality and running time.** This does not construct an unconditional fast oracle satisfying the original promise. An interval might contain only forbidden candidates, and enumeration is expensive. Indeed, for \(N=77,y=3,h=4,k=1\), the only smooth candidate is \(u=81\), whose \(v=4\) gives the fruitful root \(9/2\equiv43\). Thus no universal filtering transformation can always preserve totality for arbitrary parameters.
+
+**model-PROVED — independent marked-candidate model.** Suppose candidate offsets independently produce successful relations with probability \(P_v\), and successful relations have independent fair \(t\)-bits. The preceding filter retains a successful relation with probability
+\[
+\frac{P_v/2}{1-P_v/2}
+=P_vL^{o(1)},
+\]
+yet forces every dependency to be trivial. With many candidates per interval, exhaustion is negligible in this model. Thus the \(L\)-scale smoothness rate does not imply \(R\).
+
+### Which randomizations help?
+
+**HEURISTIC — distribution of relation lifts.** Random \(k\) or random choice among smooth candidates may help, but neither has a general fruitfulness guarantee. Both must establish that the selected relation source reaches the relevant nontrivial lattice classes. An adversarial selection rule can defeat random \(k\).
+
+**PROVED.** Multiplying both sides by the same known smooth integer leaves \(e_i\) unchanged. Simultaneously rescaling the final square roots leaves their quotient unchanged. These operations do not repair degeneracy.
+
+**OPEN.** Other random multipliers may change the source, but generally also change smoothness, interval width, or residual size. Their distribution and cost require a new analysis.
+
+**model-PROVED — uniform lattice-lift model.** Suppose relations are independently uniform in
+\[
+\Lambda_N/2\Lambda_N.
+\]
+The kernel of reduction to coordinate parities is naturally isomorphic to \(H[2]\), through \(e\mapsto\phi(e/2)\). If \(H\) contains a mixed involution, then, conditional on parity columns, each nonzero dependency has a fair fruitfulness bit. This provides a precise sufficient model for \(R\). It is not established for the proposed constructors.
+
+**KNOWN.** Dixon’s guarantee instead conditions on the squared residues: independent uniform roots remain uniformly distributed among their CRT sign choices. A dependency selected without those root choices therefore yields a factor with probability at least \(1/2\). See Dixon, *Asymptotically fast factorization of integers*, Math. Comp. **36** (1981), 255–260, Lemma 3. [Paper](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf)
+
+**PROVED.** That argument is unavailable from this interface alone. Its relation is always \(\phi(e)=1\); no freely sampled hidden root occurs in the identity. Choosing \(k\) as a function of a random square does not insert its root into the resulting relation.
+
+**PROVED.** For a uniform random unit \(r\), the chance that \(r^2\bmod N\) lies below \(h\) is at most
+\[
+4h/\varphi(N)=N^{-1+o(1)}
+\]
+for balanced semiprimes. Choosing a small integer \(r\) instead does not retain uniform CRT root choices. A constructor representing a prescribed random square by smooth factors could support a hidden-root argument, but that is an additional oracle capability.
+
+## 4. Duplicates and the domain of \(k\)
+
+**PROVED.** The intervals are disjoint once \(h<N\), so distinct \(k\) cannot return the same \(u\). They can nevertheless return the same primitive relation.
+
+Let \(g_i=\gcd(u_i,v_i)\), and write
+\[
+u_i=g_iA,\qquad v_i=g_iB,\qquad \gcd(A,B)=1.
+\]
+Since \(g_i\) is coprime to \(N\),
+\[
+A-B=dN,\qquad k_i=g_id.
+\]
+Thus scaling a primitive pair by different smooth \(g_i\) generates identical exponent differences. The prompt permits this behavior.
+
+**PROVED.** Distinct prime values \(k>y\), coprime to \(N\), eliminate these exact duplicates. Since \(g\mid k\) is smooth, \(g=1\); the primitive difference then determines \(k\).
+
+**PROVED.** A suitable domain is distinct primes in \([K,2K]\), with
+\[
+K\gg T\log T,\qquad \log K=O(F_{1/3}).
+\]
+There are enough such primes by the prime number theorem, prime generation costs only polynomial overhead per query, and \(\log k=o(x)\). Sampling without replacement also eliminates repeated queries.
+
+**HEURISTIC requirement.** Both \(H_S\) and \(R\) must hold on this actual prime domain. Restricting to primes is a duplicate-control device, not a proof of either assumption. General linear dependencies and lattice degeneracy remain possible.
+
+## 5. Verdict
+
+**model-PROVED.** The expression
+\[
+\max\{\kappa+\nu/(3\kappa),2\kappa\}
+\]
+and its infimum \((16/9)^{1/3}\) are correct consequences of an explicit SI model incorporating fast construction, quantitative residual smoothness, sufficient distinct relations, and fruitful dependency extraction.
+
+**HEURISTIC.** It is reasonable to state this as a conditional factoring implication once those assumptions are made precise.
+
+**OPEN.** The proposed deterministic examples do not currently justify those assumptions. Uniform existence in the queried intervals, negligible construction cost, residual smoothness frequency, and relation-lattice fruitfulness are separate obligations. Maximal parity rank does not resolve the last one.
+
+**model-PROVED.** The exponent-\(1/3\) barrier applies to the typical-interval/random-residual model derived in §1. It is not a general lower bound for arbitrary single-interval constructors.
+
+**Requirements the constructor must satisfy for the claim to hold**
+
+1. **Correctness:** return a verified smooth \(u_k\in[kN,kN+h]\), with its factorization; handle nonunits through gcds.
+2. **Uniform cost:** total construction cost over the required queries must be \(T\exp(o(F_{1/3}))\), including preprocessing, retries, and output.
+3. **Availability:** succeed on sufficiently many queried intervals, with quantified failure bounds. A predicted mean is insufficient.
+4. **Controlled domain:** supply enough distinct \(k\) with \(\log k=o(\log N)\), and justify assumptions on that exact domain.
+5. **Residual frequency:** produce smooth \(v_k\) at aggregate rate \(L[1/3,-\nu/(3\kappa)]\), or better, with enough concentration for the claimed collection bound.
+6. **Diversity:** avoid excessive primitive duplicates and concentration in a useless relation sublattice.
+7. **Fruitfulness:** after \(L[1/3,\kappa]\) relations, make the functional \(\lambda\) nonzero with adequate probability and permit efficient extraction. For Blum inputs, this is the explicit augmented-row criterion above.
+8. **Boundary control:** justify uniform error terms and occupancy slack when approaching the optimized constant.
