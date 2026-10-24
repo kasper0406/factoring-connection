@@ -146,14 +146,6 @@ def e3(out):
         print(rec)
 
 
-if __name__ == "__main__":
-    which = sys.argv[1:] or ["e1", "e2", "e3"]
-    os.makedirs(RAW, exist_ok=True)
-    for w in which:
-        with open(os.path.join(RAW, f"geometry_{w}.jsonl"), "w") as out:
-            {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[w](out)
-
-
 def e4(out):
     bad = []
     nchk = 0
@@ -203,3 +195,11 @@ def e4(out):
             rec = {"exp": "E4b", "n": n, "field": l * l, "instances": 200, "splits": ok, "max_patterns": maxc}
             out.write(json.dumps(rec) + "\n")
             print(rec)
+
+
+if __name__ == "__main__":
+    which = sys.argv[1:] or ["e1", "e2", "e3"]
+    os.makedirs(RAW, exist_ok=True)
+    for w in which:
+        with open(os.path.join(RAW, f"geometry_{w}.jsonl"), "w") as out:
+            {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[w](out)
