@@ -1,0 +1,304 @@
+**Verdict — OPEN.** I do not obtain PC₃, its rational block at \(3/8\), or a provable replacement giving any \(\alpha<2/5\). The available distribution theorems do not directly control the required conditional covariance. Averaging offers a credible alternative reduction through parent multiplicities, but its quantitative hypotheses remain unproved.
+
+**Proved correction:** the principal major arc does **not** reproduce the product of the conditional marginals exactly. Its residual covariance must also be estimated. This does not contradict PC₃: the expected residual is smaller than the required precision.
+
+Here “proved” includes the elementary reductions below; it does not certify the project’s entire internal factoring chain.
+
+1. **Averaging and the actual moduli**
+
+**Proved geometry.** Write \(P_0=P,P_1=P',P_2=P''\), and
+\[
+m_{ij}=\frac{\det(P_i,P_j)}q.
+\]
+All three integers exist because the points belong to the same projective lattice modulo \(q\).
+
+If \(P_i=U_qv_i\), where \(|\det U_q|=q\) and the child coordinates satisfy \(\|v_i\|_\infty\le S_2\), then
+\[
+|m_{12}|\le 2S_2^2.
+\]
+Thus the reduced basis gives a substantially better description than the crude Euclidean determinant bound.
+
+| Quantity | Bound/range in the intended \(3/8\) design | Role |
+|---|---|---|
+| \(m_{12}\) | \(O(S_2^2)=L[3/8,O(1)]\) | Child-pair determinant quotient |
+| \(q\) | \(B<q\le B_2=L[1/2]\) | Common ratio condition |
+| \(m_{01},m_{02}\) | \(O(S_2\|U_q^{-1}P\|)\), at most \(L[5/8,O(1)]\) | Conditional-line steps after removing \(q\) |
+| \(qm_{12}\) | \(L[1/2,O(1)]\) | Index of the two-child evaluation lattice |
+| \(\ell m_{12}\) | \(L[5/8,O(1)]\) | Parent coefficient in the ternary equation |
+
+The sizes assume the intended \(S_1,S_2=L[3/8,O(1)]\), whose construction belongs to U′. They are upper bounds, not typical-size assertions.
+
+**Proved ratio condition.** Writing \(P_i=(a_i,b_i)\), with \(a_i\equiv rb_i\pmod q\),
+\[
+G(P_i)\equiv \kappa b_i\pmod q,\qquad \kappa=rg_1-g_0.
+\]
+Consequently, division of the Plücker equation by \(q\) does **not** remove the image-lattice constraint. Since \(q>B\), a nonzero \(B\)-smooth value cannot be divisible by \(q\); the permitted values lie in correlated nonzero residue classes.
+
+**Proved literature comparison.** Put \(\Psi=\Psi(x,B)\) and
+\[
+\epsilon_x=e^{-cu/\log^2(u+1)}+B^{-c}.
+\]
+Harper’s **Theorems 1–2** give, respectively,
+\[
+\sum_{m\le R}\max_a|E(x,B;m,a)|
+ \ll \Psi\epsilon_x+\sqrt{\Psi}\,R\log^{7/2}x,
+\]
+and
+\[
+\sum_{m\le R}\sum_{(a,m)=1}|E(x,B;m,a)|^2
+ \ll\Psi^2\epsilon_x+\Psi R,
+\]
+in their stated ranges \(R\le\sqrt\Psi\) and \(R\le\Psi\). [Harper, arXiv:1208.5992](https://arxiv.org/pdf/1208.5992)
+
+Here every displayed rational modulus is \(x^{o(1)}\), whereas \(\Psi=x^{1-o(1)}\). **There is no ordinary level-of-distribution obstruction.**
+
+**Open — distribution of the family weights.** The unweighted \(m_{12}\)-family has dense geometric support; the primes \(q\) have density \(1/\log Q\) in a dyadic window. For a fixed parent, however, \(m_{01}\) ranges through only \(O(S_2^2)\) values in a potentially much longer interval. Averaging over all parents can fill that interval, but acceptance supplies highly nonuniform weights. Neither density nor bounded multiplicity under those weights has been established.
+
+For perspective, a modulus subfamily of density \(\delta\) has expected total AP main term approximately \(\delta\Psi\). Restricting an absolute BV bound therefore gives relative error approximately
+\[
+\frac{\epsilon_x}{\delta}
++\frac{R\log^{7/2}x}{\delta\sqrt\Psi}.
+\]
+A large number of configurations is insufficient unless its multiplicities and weights are controlled.
+
+**Proved limitation of the proposed tools.** Drappeau’s **Lemme 5** removes the large-sieve term for characters of conductor at most \(x^{\eta_D}\), but retains an absolute error. It does not provide density-relative control for arbitrary endogenous weights. [Drappeau, Compositio 2015](https://arxiv.org/pdf/1307.7554)
+
+For child primes, the multiplicative large sieve gives
+\[
+\sum_{\substack{Q<q\le2Q\\q\ {\rm prime}}}
+ \sum_{\chi\ne\chi_0}
+ \left|\sum_{\substack{n\le x\\P^+(n)\le B}}a_n\chi(n)\right|^2
+ \ll (x+Q^2)\sum_{n\le x}|a_n|^2.
+\]
+This controls modular ratio statistics. It does not, by itself, control the additional exact additive relation and parent-selection weight.
+
+**Assessment — OPEN:** I see no direct LS/BDH/dispersion deduction of RB at precision \(D^{-3/8-\varepsilon}\). This is a missing application theorem, not a proof that dispersion cannot work.
+
+2. **Conditioning and the circle method**
+
+**Proved setup.** Fix \(G(P)=\ell n\). Primitivity of \(P\) parametrizes the rational fibre by one integer \(s\):
+\[
+G(P_i)=c_i+q\,m_{0i}s.
+\]
+Eliminating \(s\) gives
+\[
+m_{02}x_1-m_{01}x_2=\ell m_{12}n.
+\]
+Thus the fixed-parent-value problem is genuinely binary. Averaging over smooth \(n\) restores a ternary problem.
+
+On sign-separated rectangular pieces, define
+\[
+S_i(\theta)=\sum_{\substack{n\in I_i\\P^+(n)\le B}}
+ w_i(n)e(n\theta).
+\]
+Ignoring only for this displayed formula the additional image-lattice congruences,
+\[
+C_n=\int_0^1
+ S_1(m_{02}\theta)S_2(-m_{01}\theta)
+ e(-\ell m_{12}n\theta)\,d\theta.
+\]
+Averaging over \(n\) introduces \(S_0(-\ell m_{12}\theta)\). The exact count must also retain the congruence lattice, transformed coefficient box, and conditional coefficient-fibre weights. A general weight depending jointly on the three values cannot simply be replaced by three independent \(w_i\).
+
+**Proved correction to the principal-arc claim.** Let \(f_i(g)\) denote the archimedean smooth-density proxies, and let \(\nu\) be the probability measure obtained after applying the parent proxy and the other conditional weights. Then the principal-arc pair term is
+\[
+\int f_1f_2\,d\nu,
+\]
+whereas the product of principal-arc marginals is
+\[
+\left(\int f_1\,d\nu\right)\left(\int f_2\,d\nu\right).
+\]
+Their difference is \(\operatorname{Cov}_\nu(f_1,f_2)\), generally nonzero.
+
+**Heuristic, with an elementary conditional justification.** If
+\[
+f_i=\rho_i(1+\varepsilon_i h_i+\cdots),\qquad
+\varepsilon_i\asymp\frac{\log u}{\log B}\asymp D^{-3/8},
+\]
+and the relevant perturbations have uniformly bounded second moments under \(\nu\), their relative covariance is \(O(D^{-3/4})\). First-order terms cancel in the covariance. The bounded-moment assertion under the actual parent conditioning remains **open**.
+
+**Proved applicable estimates.** In Harper’s checked arXiv text:
+
+- **Theorem 1** applies to a reduced approximation \(\phi=a/r+\beta\) when
+  \[
+  \log^3X\le B\le X^{1/3},\qquad
+  r^2B^3(1+|\beta|X)^2\le X/4.
+  \]
+- **Theorem 2** gives, for fixed \(p>2\) and \(B\ge\log^{C\max(1,1/(p-2))}X\),
+  \[
+  \int_0^1|S(\theta)|^p\,d\theta\ll_p\Psi(X,B)^p/X
+  \]
+  for arbitrary coefficients bounded by one.
+- **Proposition 5** and the proof of **Corollary 1** use cutoff \(R=\log^{20}X\); the coefficient-one minor-arc integral is \(O(\Psi^3X^{-1}\log^{-4}X)\). [Harper, Compositio 2016](https://arxiv.org/pdf/1408.1662)
+
+**Proved — dilations alone are not fatal.**
+\[
+\int_0^1|S(A\theta+\gamma)|^p\,d\theta
+=\int_0^1|S(\theta)|^p\,d\theta
+\]
+for every nonzero integer \(A\). Pointwise estimates likewise apply to the *reduced approximation of the dilated phase*.
+
+**Open — the required uniform assembly.** For coefficients \(|A_i|\le H=L[5/8,O(1)]\), the correct major sets are inverse images
+\[
+A_i\theta+\gamma_i\in\mathfrak M,
+\]
+including shifts with denominator \(q\). Even when each effective denominator is at most \(R\), the corresponding \(\theta\)-denominators can reach \(HR\), or \(qHR\) after congruence expansion. These are \(x^{o(1)}\), but exceed every fixed power of \(B\).
+
+The direct major-arc asymptotic in Harper’s **§2.2, Major Arc Estimate 1** requires effective denominator \(r\le B^{c_2}\). Its error contains \(1+|\beta|X\). Hence an enlarged cutoff also needs quantitative control of that factor. [Same primary text](https://arxiv.org/pdf/1408.1662)
+
+Restriction plus a small supremum bounds suitable minor-arc pieces on the ambient scale \(\Psi_0\Psi_1\Psi_2/x\). The actual lattice/geometry main term can be smaller by an \(x^{o(1)}\) factor. A logarithmic saving does not automatically survive that normalization. Recovering the lattice factors through pruning, character averaging, or dispersion is precisely additional work.
+
+**Open — nonprincipal major arcs.** Their singular factors must be compared with those in the conditional marginals, retaining coefficient divisibility and the ratio condition. One cannot declare all nonprincipal arcs negligible before that comparison. The required *family-averaged centered estimate* has not been supplied by the cited results.
+
+**Proved precision comparison.** At this scale, Harper’s Corollary 1 error \(\log(u+1)/\log B\) and Drappeau’s GRH error \(1/u\), **Théorème 1.3**, are both of order \(D^{-3/8}\). The latter theorem covers the present smoothness range, but has coefficient one and fixed smooth weights. Neither result compares the needed conditional main terms. [Drappeau 2013](https://drappeau.perso.math.cnrs.fr/documents/friable_abc.pdf)
+
+3. **Decoupling through parent multiplicity**
+
+**Proved alternative sufficient reduction.** Fix a label, condition on its root event \(R_{\mathfrak q}\), and set
+\[
+Z=Z_{\mathfrak q},\quad z=\mathbb E Z,\quad
+D_0=\{N_{\mathfrak q}=0\},\quad p=\Pr(D_0).
+\]
+All expectations here are under that root-conditioned law. The incidence-weighted dead probability is
+\[
+\frac{\mathbb E[Z1_{D_0}]}z.
+\]
+Writing \(v=\operatorname{Var}(Z)/z^2\), Cauchy–Schwarz gives
+\[
+\frac{\mathbb E[Z1_{D_0}]}z
+\le p+\sqrt{vp(1-p)}.
+\]
+Therefore \(p=O(\eta)\) and \(v=O(\eta)\), with sufficiently small constants, suffice for the removal argument. The statements need only hold in the corresponding \(z\Pr(R_{\mathfrak q})\)-weighted average.
+
+This can bypass PC₃ as a sufficient route to Prop UB’s conclusion. It does **not** prove the individually normalized conditional variances in PC₃.
+
+**Open:** both required concentration statements. The prediction \(z\approx Y/q\gg1\) does not imply \(v\ll1\): a common random environment can multiply an arbitrarily large count by a nonconcentrated factor. The existing level-one second-moment upper bounds are not asymptotics with relative error \(O(\eta)\).
+
+**Proved tradeoffs involving higher-point upper bounds.** If merely
+\[
+\mathbb EZ^2\le Kz^2,
+\]
+then
+\[
+\mathbb E[Z1_{D_0}]/z\le\sqrt{Kp};
+\]
+one needs \(p\ll\eta^2/K\). More generally, if
+\[
+\|Z/z\|_r\le K_r,
+\]
+Hölder requires
+\[
+p\ll(\eta/K_r)^{r/(r-1)}.
+\]
+A bound \(\mathbb EZ^r\le C^rz^r\) for \(r\asymp\log D\) would allow \(p=c\eta\), with a suitable constant \(c\).
+
+**Open availability:** no cited result supplies those growing-order, product-density upper bounds for the accepted-parent family. Although \(r\ll d\), its rational evaluations still have rank two.
+
+Another sufficient route uses
+\[
+\mathbb E[(N-\mu)^4]\ll\eta^2\mu^4
+\]
+with a bounded parent second moment. An upper bound for \(\mathbb EN^4\) alone does not establish this centered estimate; the lower-order cancellations matter.
+
+**Proved limitation of local conditioning.**
+\[
+\operatorname{Var}(N\mid E)
+=\mathbb E[\operatorname{Var}(N\mid E,\mathcal H)\mid E]
++\operatorname{Var}(\mathbb E[N\mid E,\mathcal H]\mid E).
+\]
+Conditioning can simplify the first term while leaving the second. Both need control. Lemma MP correctly excludes obtaining arbitrarily small dead probability from insufficiently accurate moment data alone.
+
+4. **Exponents and weaker variants**
+
+**Proved bookkeeping under the size model.** For \(j\) levels,
+\[
+1-\delta\le2\alpha,\qquad
+\delta+\zeta_i-\zeta_{i+1}\le\alpha,
+\quad \zeta_0=1-\alpha,\quad\zeta_j=\alpha.
+\]
+Summation yields
+\[
+\alpha_j=\frac{j+1}{3j+2},\qquad
+\delta_j=\frac{j}{3j+2}.
+\]
+Thus \(2/5,3/8,4/11,5/14,\ldots\). These are feasibility exponents, not supply theorems.
+
+There is useful slack above \(3/8\). For
+\[
+3/8\le\alpha<2/5,
+\]
+choose
+\[
+\delta=1-2\alpha,\qquad
+\zeta_1=4\alpha-1.
+\]
+The root algebraic-value exponent is \(2-3\alpha\), and the typical number of children is
+\[
+m\asymp D^\beta,\qquad \beta=3-7\alpha.
+\]
+Required precision becomes \(D^{-\beta}\), rather than \(D^{-\alpha}\).
+
+| \(\alpha\) | \(\delta\) | Child-bound exponent | \(\beta\) |
+|---|---:|---:|---:|
+| \(3/8\) | \(1/4\) | \(1/2\) | \(3/8\) |
+| \(7/18\) | \(2/9\) | \(5/9\) | \(5/18\) |
+| \(0.39\) | \(0.22\) | \(0.56\) | \(0.27\) |
+
+**Proved consequence within this bookkeeping:** for every fixed \(\alpha>3/8\), an \(O(D^{-\alpha})\) error is smaller than the required \(D^{-\beta}\). Thus separate secondary-term accuracy would no longer be the immediate precision bottleneck. Growing coefficients, conditional weights, and algebraic density-relative errors remain.
+
+**Open answer:** I can justify no provable variant below \(2/5\). There is no established “largest \(\alpha<2/5\)” to report. Enlarging child boxes suppresses \(1/\mathbb EN\), but does not suppress off-diagonal covariance; allowing more children tightens the union-bound requirement.
+
+For deeper optimal chains, the deepest requirement is approximately \(D^{-(j-1)\alpha_j}\). Against the heuristic covariance \(D^{-2\alpha_j}\), three levels are borderline and four or more need another mechanism.
+
+5. **The algebraic block**
+
+**Proved structural reduction.** Fix \(g,w\), impose the root congruence, and push the coefficient-box measure forward under
+\[
+c\longmapsto(R_c(P_0),R_c(P_1),R_c(P_2)).
+\]
+For distinct projective points and \(d\ge3\), this map has rank three. Its kernel consists of forms divisible by
+\[
+L_{P_0}L_{P_1}L_{P_2}.
+\]
+The pushforward is a weighted affine lattice measure, not a product measure.
+
+**Clean open statement.** Let \(\mathcal A_0,\mathcal A_{01},\mathcal A_{02},\mathcal A_{012}\) be the exact coefficient-fibre masses with parent acceptance and the indicated child smoothness conditions. Establish the appropriately normalized, incidence-weighted upper bound
+\[
+\mathcal A_{012}\mathcal A_0-
+\mathcal A_{01}\mathcal A_{02}
+\le o(\eta)\,\mathcal A_{01}\mathcal A_{02}
+\]
+after summing over child pairs and configurations, including the archimedean/local main-term covariance.
+
+A sufficient AP input, after a rigorously established triangular parametrization, would have the form
+\[
+\sum_m\lambda_m\max_{(a,m)=1}
+\left|\Psi(X,y;m,a)-\frac{\Psi_m(X,y)}{\varphi(m)}\right|
+\le o(\eta)\sum_m\lambda_m\frac{\Psi_m(X,y)}{\varphi(m)},
+\]
+for the **actual induced weights**, with parent smoothness \(B_2\), child smoothness \(B\), and all nonreduced residue classes treated separately.
+
+**Open obstacles.** The moduli contain rational evaluations and determinant factors; their weights depend on earlier evaluations. Full rank supplies neither reduced residues nor a distribution theorem for these moduli. Increasing \(H\) can improve the numerical level margin, but cannot manufacture density-relative cancellation.
+
+For smooth-modulus density
+\[
+\delta\approx e^{-\Theta(D^{3/8}\log D)},
+\]
+the absolute small-conductor saving \(e^{-cD^{3/8}/\log^2D}\) is insufficient after division by \(\delta\). The special lifting argument in Lemma 8.5′ must be extended to this weighted, coupled family. U′ also retains its separate mixed-smoothness difficulty.
+
+**Proved literature comparison:** Drappeau’s **Théorème 1** permits residues \(a_1\overline{a_2}\), with bounded-power-sized \(a_i\), but fixes them across the modulus sum. Pascadi’s **Theorem 1.5**, arXiv:2505.00653v2, reaches \(5/8-\varepsilon\) for a fixed nonzero residue. Neither statement supplies the endogenous varying-residue estimate above. [Drappeau](https://arxiv.org/pdf/1307.7554), [Pascadi](https://arxiv.org/pdf/2505.00653)
+
+6. **The single missing estimate and its relation to open problems**
+
+**Open — the decisive rational estimate:** for exact weighted masses \(T_0,T_{01},T_{02},T_{012}\), prove that
+\[
+T_{012}T_0-T_{01}T_{02}
+\]
+has incidence-weighted, conditionally normalized aggregate upper bound \(o(D^{-3/8})\) times the corresponding product mass, uniformly over the prescribed growing-coefficient family. The diagonal term additionally requires sufficiently large conditional means.
+
+This is a centered smooth-number correlation theorem. Ordinary BV controls one smooth variable in APs; BDH controls quadratic modular discrepancies. Neither directly supplies this expression.
+
+**Assessment — OPEN:** fixing the parent resembles difficult binary smooth-pair problems; averaging the parent connects it to the solved coefficient-one ternary problem. That comparison is not a reduction proving RB as hard as a fixed-shift conjecture.
+
+One literature correction matters: Matthiesen–Wang’s **Theorem 1.3** assumes \(\Psi(X,y)>X/\log_8X\), where \(\log_8\) is the **eighth iterated logarithm**, not \((\log X)^8\). It remains far outside this density regime and has coefficient-dependent errors. [Primary text, notation and Theorem 1.3](https://arxiv.org/pdf/2211.16892)
+
+**Subjective probabilities for proof with known methods in a focused effort:** rational block **10%**; algebraic block **20%**. These concern the actual weighted blocks, not completion of Theorem 2L.
