@@ -1,0 +1,54 @@
+# Barrier map (detailed)
+
+Model theorems and negative results, not factoring lower bounds. Summarised in the README; listed here phase by phase. Every entry links to its results note; [`APPROACHES.md`](APPROACHES.md) has the full catalogue.
+
+- T1/T2: local designs need N^{1/6}.
+- Coverage cost ≥ N^{1/5}(λ⁴/J)^{1/5}.
+- Ratio gap peaking at 1/5.
+- Below 2/5, unconditionally, every route tried is blocked (the conditional L[3/8] of phases 25–26 is the exception):
+  - nested descent (Prop R2);
+  - exporting algebraic children ([`escapeR2`](notes/escapeR2_results.md) Cor EX);
+  - averaging over N, which adds no parameters ([`almostall13`](notes/almostall13_results.md) Prop NB);
+  - special forms ([`snfsrig`](notes/snfsrig_results.md)).
+- Heuristic NFS: nothing beats MNFS 1.902 or exponent 1/3 ([`heurnfs`](notes/heurnfs_results.md)).
+- Deterministic under GRH: fruitfulness is not the obstruction, deterministic relation supply is ([`detGRH`](notes/detGRH_results.md)).
+- Inverse-sieve containers for the deterministic worst case fail: the information is spread too thin ([`inversesieve`](notes/inversesieve_results.md)).
+- Below L[1/3]: no mechanism was found on any of the three routes tried:
+  - integer "systematic equations" ([`systeq`](notes/systeq_results.md)); the exact PTE version is refuted by [`ptebarrier`](notes/ptebarrier_results.md) Lemma R / Theorem W, and the joint verdict is in [`ptesplit`](notes/ptesplit_results.md);
+  - beating the resultant bound ([`resbarrier`](notes/resbarrier_results.md): N² | disc, area theorem);
+  - non-smoothness invariants ([`nonsmooth`](notes/nonsmooth_results.md): FROB, OA). Open remainders, none with a candidate: non-exact compressions; pencils of several presentations; parameter corners; and resbarrier's rank ≥ 3 / no-rational-side case, closed only heuristically (floor L[1/4] even if that heuristic fails).
+- Output-sensitive smooth-pair enumeration: no gain, MNFS stays at 1.902 ([`smoothenum`](notes/smoothenum_results.md)). The heuristic model was validated on real CADO-NFS runs ([`cadobench`](notes/cadobench_results.md)).
+- Non-relational paradigms tried: analytic sums ([`analytic`](notes/analytic_results.md)), short circuits ([`slpcirc`](notes/slpcirc_results.md), Theorem SP), and the floor-sum ladder ([`floorsum`](notes/floorsum_results.md), [`floorhard`](notes/floorhard_results.md)). The ladder at degree j ≥ 3 would require factoring from fewer of p's top bits than Coppersmith needs, a known barrier. The general oracle is NP/#P-hard; top blocks stay open.
+- Classical "Fourier side" ([`periodfind`](notes/periodfind_results.md)): for an observable g, g(a^x) has period-concentrated Fourier mass only if g predicts a large-order multiplicative character (Theorem T). Additive, ring-op and computable-character observables are provably flat. Smoothness observables are the only class with real peaks, which leads back to relation methods.
+- Phase 18, where the limit bites for each open remainder:
+  - algebraic preprocessing + readout: it would also solve prime-field discrete logs ([`prepread`](notes/prepread_results.md));
+  - floor-sum ladder: exactly Coppersmith's known-bits barrier ([`topblock`](notes/topblock_results.md));
+  - degenerate / large-box rank-r: area theorems plus one counting hypothesis ([`rankdegen`](notes/rankdegen_results.md));
+  - product listing: Johnson-radius decoders gain only L^{o(1)} ([`pilist`](notes/pilist_results.md) Prop JR).
+- Phase 19, the sufficient side: every target that would give α < 1/3 directly is as strong as polynomial-time factoring in disguise ([`suffmap`](notes/suffmap_results.md); size–entropy law, Theorem SS). The best realistic target improves only the constant: constructing L[1/3]-smooth numbers in short intervals near multiples of N would give L[1/3, 1.21] (Prop SI). S-units and abc add no barrier and no new target ([`abcsunit`](notes/abcsunit_results.md)). Lattice CVP helps only at approximation factor γ → 1, and Schnorr 2021 is quantitatively refuted ([`schnorrcvp`](notes/schnorrcvp_results.md)).
+- Phase 20, Prop SI (constructing smooth numbers near kN). The 1.2114 implication is heuristically correct but needs explicit constructor requirements C1–C8 ([`sicheck`](notes/sicheck_results.md)). Every oblivious constructor costs L[2/3] per output: decoders gain nothing over the trivial divisor trick (Theorem J, [`sihard`](notes/sihard_results.md)), and meet-in-the-middle doesn't amortise. Prop SI is promise-CVP at factor 1+O(1/log N) in Micciancio's prime lattice ([`siconstruct`](notes/siconstruct_results.md) Prop CV).
+- Representations ([`factorbits`](notes/factorbits_results.md)): addition in the prime-exponent representation is equivalent to factoring (a successor oracle factors N in popcount(N)−1 calls), mirroring Zech logarithms ⇔ discrete log. No natural single bit of a factor is known to be factoring-hard, because no computable map moves the secret factor. Theorem PT: methods that use N only as a modulus learn nothing about the factors except by splitting N.
+- Phase 22:
+  - [`zroute`](notes/zroute_results.md): deterministic subexponential factoring under ERH reduces to one constructive lemma, DSR (Theorem DZ). Everything else is proved: XK-Z, Prop PIN, rank forced deterministically.
+  - [`selfred`](notes/selfred_results.md): no modulus-changing self-reduction exists in algebraic classes (SR1, SR2).
+  - [`sinonobliv`](notes/sinonobliv_results.md): the Prop SI routes give nothing; one exception stays open, adaptive CRT decoding far below the Johnson radius.
+- Phase 23, attacks on the three precise targets left open by phase 22. All three are negative:
+  - [`dsr`](notes/dsr_results.md): DSR is not proved. Derandomising the JMV walk fails for every black-box tool (Theorem SB). Bach-type certificates fail because smooth sets have a Fourier-algebra norm of at least N^{1/2−o(1)} (Theorem FN). Short multiplier lists fail for infinitely many N (Prop BOX-∞).
+  - [`ecount`](notes/ecount_results.md): #E(Z/N) for one fixed curve is NOT open. A single count factors N (Okamoto–Uchiyama 1998), and the agent made this rigorous outside a density-zero set. Dieulefait–Urroz needs either the factorisation of the count or counts on several curves.
+  - [`crtdecode`](notes/crtdecode_results.md): no adaptive CRT decoder beats the divisor trick. Counting decoder calls cannot give a barrier, because the leaf computation is the sieve (Prop DT′). Barriers hold only for restricted classes.
+- Phase 24 asked for a leak that is not splitting. Every known leak is one of three families: group order/smoothness, archimedean, or quadratic genus. All four agents found no fourth family and no cheaper smooth construction:
+  - [`leakmap`](notes/leakmap_results.md): the three-family classification is proved for N-dependent exponent tests (NE1, matching Monier's liar rate), for AC⁰ on the bits of N (ε is unpredictable, unconditionally), and for pure trees plus Jacobi symbols. Integer representatives are too powerful a model for any such theorem. The strongest open model is "PRIM": retained, nested x^{E(N)} gates.
+  - [`genusleak`](notes/genusleak_results.md): every route to an ambiguous form goes through a group order or a relation. Walk returns are smooth values (Lemma GIRTH), and a multiple of hR finds the form in poly time but costs |D|^{1/5}. Generic barrier: Theorem GB.
+  - [`newfamily`](notes/newfamily_results.md): reciprocity invariants either depend only on N mod m (Theorem RA) or are factoring-equivalent. Dedekind sums (Prop DSF) and Salié sums (Prop SAL) are both factoring-equivalent. A pre-registered battery of 84 statistics found no signal.
+  - [`smoothbuild`](notes/smoothbuild_results.md): constructing smooth numbers costs the same as sampling, index calculus or factoring. "Known factorisation" is no cheaper currency than smoothness (Lemmas KI/LP/AT). Open interface: hidden-root short-quotient navigation, which at L[1/3, 1.20] per call would give rigorous L[1/3, 1.80].
+- Phase 25 worked on the open ends:
+  - [`navigate`](notes/navigate_results.md): hidden-root short-quotient navigation is not a stepping stone. Without its height bound it is FACT ∧ DL (Prop H), and a solver for all N would give prime-field DL in L[1/3, 1.80] (Theorem DLB).
+  - [`prim`](notes/prim_results.md): no leak in PRIM. The classification is proved for fresh-base chains of any depth, sparse gate sums (Theorem PS), two-layer gates off exceptional primes (Theorem D2) and bounded-height Jacobi tests (Theorem J1). It stays open at deterministic depth ≥ 2.
+  - [`classE`](notes/classE_results.md): no leak. A CF convergent of a/N sees p only if a = uq ± 1 (Prop VIS), and for ⌊√N⌋/N the path is equidistributed up to denominators N^{7/12} (Theorem F-SQ).
+  - [`tracedata`](notes/tracedata_results.md): #E(Z/N) for one fixed curve factors every good N (Theorem EXT, a degree-5 twist). One curve's traces (a_p, a_q) or a_N alone are still open; a_N for two CM curves factors N.
+  - [`multidescent`](notes/multidescent_results.md): a two-level descent gives **L[3/8], conditional** on Hyp PC₃ and U′ (Theorem 2L). A union bound reduces it to three-point conditional statements (Prop UB), so a proof needs no control at d^{3/2} points. j levels would give (j+1)/(3j+2).
+- Phase 26:
+  - [`uprime`](notes/uprime_results.md): Hyp U′ is proved at 3/8 via a hybrid restricted BV (Lemma 8.5H; moduli B-smooth, values B₂-smooth), two-parameter level-1 moments and a mixed box scan.
+  - [`pc3`](notes/pc3_results.md): PC₃ is stronger than needed. Decoupling (Prop DC) replaces it by two pair-only variance hypotheses C₁, C₂ (Theorem 2L-DC); both are still open.
+  - [`geometry`](notes/geometry_results.md): no geometric shortcut. The area and genus of X_0(N) encode p+q, but every explicit model has size Θ(N); #X_0(N)(F_{ℓ²}) and #X_1(N)(F_ℓ) factor N, while #X_0(N)(F_ℓ) carries only QR bits.
+- Fast factoring has no free consequences elsewhere in mathematics.
