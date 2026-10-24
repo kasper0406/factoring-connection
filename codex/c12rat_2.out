@@ -1,0 +1,207 @@
+**MAJOR REVISION**
+
+The note does not prove Theorem RAT in its stated generality. The interior coupling construction substantially closes the blind round’s finite-algebra gap, and WA is a valid transfer theorem. The remaining problems concern the claimed weight regularity, one-point moments, boundary normalization, parent filters, and composition. Several displayed assertions are false.
+
+I found no counterexample to the intended DW-specific RAT inequalities with RAT-2’s displayed error term. The findings below are proof failures and overstatements, rather than an established FATAL counterexample to that intended theorem.
+
+Locations refer to [c12rat_results.md](/Volumes/git/factoring-connection/notes/c12rat_results.md).
+
+| # | Severity | Location | Finding | Suggested fix |
+|---|---|---|---|---|
+| 1 | MAJOR | §1.4, ADM | A fixed-exponent scaling law over the entire child filter range neglects accumulated saddle-point drift. The proof establishes substantially less than (Adm). | State local scaling and a separate global upper bound; retain the varying saddle point where needed. |
+| 2 | MAJOR | §5.6, OPV | The mid-prime Euler factor is wrong; its stated sign is reversed. The fourth-moment argument also uses an invalid inequality. | Recompute the saturated and unsaturated prime-power cases and prove the required moments directly. |
+| 3 | MAJOR | §5.3, FO; EXC | The Rankin argument applies \(p^\sigma\le e\) to mid primes, where it is false. EXC’s written tail argument also describes only the small-prime part although \(s_i\) contains mid primes. | Separate the two prime ranges throughout the tail estimates. |
+| 4 | MAJOR | §5.6; §8.1 | \(S'=E_\nu\psi'\) is not exact for the stated measure with its zero boundary atom. The proof itself introduces a nonzero correction \(B'\). | Carry boundary and exceptional corrections through centering and OPV. |
+| 5 | MAJOR | CELL(ii); PD boundary argument | Rectangle counts use target block lengths instead of actual lengths. The union of rectangles meeting a parallelogram need not be convex, contrary to the fourth-moment argument. | Use actual rectangle areas and control moments in an explicitly enlarged convex region. |
+| 6 | MAJOR | PUB; FAM; RAT-2 assembly | Parent one-point densities are not uniformly comparable within a cell: some are zero because of the hard filter. The proof’s \(S_{\min}\) argument therefore fails. | Use an active-sector lower bound for the aggregate parent mean and separate straddling points. |
+| 7 | MAJOR | FAM, WA′; theorem scope | FAM assumes pointwise density-spread bounds that OPV’s moment statement does not supply. Moreover, (Adm) alone places no restriction on relative amplitudes across points. | Prove the required bounds for the actual DW weights and state them as hypotheses for any generalization. |
+| 8 | MAJOR | §8.2–8.3, PRIM | The proved error contains \((\log y)^2/P_0\); assembly silently replaces this by \(\lambda^2/P_0\). The former does not imply the advertised precision. | Evaluate the weighted prime sum instead of replacing every \(\log p\) by \(\log y\). Specify the dilated WA families. |
+| 9 | MAJOR | Corollary RAT; §9.1 | RAT’s \(T_0=\exp(CD^\theta\lambda)\) cannot dominate c12alg’s stated threshold, whose exponent contains \(\lambda^2\). | Enlarge the threshold and redo the accounting, or explicitly handle the intervening labels through SK(ii). |
+| 10 | MAJOR | §9.2; §14 | The claimed common \(D^{-2\alpha}\) bound and precision-loss exponent contradict RAT-2 itself. | Retain \(D^{14\alpha-6}\); recompute the precision margin. |
+| 11 | MINOR | OPV quantitative conclusion | The asserted extra \(D^{-0.2}\) saving in \(\mathcal V_{\rm mid}\) does not follow from the stated modulus bounds. | Use the correct positive margin, or simply absorb this term into the main variance bound. |
+| 12 | MINOR | LS | The displayed numerical implication ending in \(2q/T+3\) is false. | Give a separate primitive-vector count or replace the constants. |
+
+**1. TYPE, CP and CPW: the interior construction mostly works.**
+
+For realized types, I found no defect in the extra congruence exclusion enforcing \(P_0\)-primitivity at \(p\mid K\). In particular, the condition is stronger than merely prohibiting both valuations from exceeding \(v_p(K)\), and the note correctly includes that extra condition.
+
+I checked the stated congruence/primitivity rule on **59,624 cases**, including mid primes and prime powers. Another **60,000 class-sum checks** found no violation of CPW. These are checks, not proofs, but they support the finite algebra.
+
+CP is a correct regular-bipartite-coupling estimate. CPW’s positivity argument is also a legitimate way to make small relative weight oscillations enter quadratically.
+
+The one-coordinate dependence is defensible: the small-prime additions to \(M_\tau\) do not change \(U(I,t)\), because its elements are already \(P_0\)-free. Whether a mid prime remains in \(M_\tau\) is determined by that coordinate’s truncated valuation. Thus the interior \(\psi'\) can indeed depend only on \((I_1,t_1)\).
+
+However, the entire pair count does not factorize exactly: its **principal contribution** factorizes, with a character remainder. More importantly, the exact interior marginal identity does not extend automatically across clipped boundary rectangles.
+
+The blind round’s “common normalized model” objection is substantially answered for interior rectangles. Its global boundary and exceptional-set components remain unfinished.
+
+**2. ADM is stronger than the available scaling theorem.**
+
+HT Theorem 3 permits a factor \(c\le y\); finitely many iterations permit \(y^{O(1)}\). That does not give a single fixed power over the entire child filter range. The published theorem has precisely the local range stated in Fact HT3. [Hildebrand–Tenenbaum, Theorem 3](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+Already for the prototype weight
+\[
+a(t)=\widehat\rho(Ct),
+\]
+the saddle-point expansion contains curvature of size
+\[
+\frac{(\log(t'/t))^2}{\log(Ct)\log y}.
+\]
+At the child scales, take
+\[
+\log(t'/t)\asymp\eta_0\log N
+       \asymp D^{3\alpha-1/2}\lambda.
+\]
+The curvature is then of order \(D^{3\alpha-1}\), which grows throughout the window. It cannot be hidden in the vanishing error asserted by (Adm), or removed by choosing one constant \(\gamma_P\) across the whole range.
+
+The sentence saying ratios beyond \(y^2\) occur on a small set concerns an averaged application with a reference point near the maximum. It does not prove (Adm)’s universal assertion for every \(t,t'\).
+
+The likely repair is adequate for OPV: local scaling near typical values, together with a global density upper bound for the tail. That repair must replace ADM and every use of its global ratio formula.
+
+The unrestricted “any admissible weights” extension also needs narrowing. Multiplying each \(a_P\) by an arbitrary positive constant preserves (Adm), while destroying the cross-point spread estimate used by FAM.
+
+**3. OPV contains explicit arithmetic errors.**
+
+For a mid prime \(p\mid K\), write \(k=v_p(K)\).
+
+- If the truncated valuation \(j<k\), the cofactor remains coprime to \(p\), so the factor \((1-p^{-\beta})/(1-1/p)\) remains.
+- If \(j=k\), that coprimality restriction disappears, so the correcting factor is
+  \[
+  \frac{1-1/p}{1-p^{-\beta}}>1.
+  \]
+
+The note removes the factor for every \(p\mid\delta\), and claims that the resulting \(Z(\delta)\le1\). Both assertions are wrong. For example, \(p=7,\beta=0.9\) gives a correcting factor approximately **1.03713**.
+
+The fourth-moment step is also invalid. With \(A=\omega(K)/P_0\), the displayed estimate has size
+\[
+\gamma^4(\log P_0)^4 A.
+\]
+It is then bounded by \(\mathcal V_{\rm mid}^2\), of size
+\[
+\gamma^4(\log P_0)^4 A^2.
+\]
+Here \(A\to0\), so the inequality goes in the wrong direction. This is not a constant adjustment.
+
+These errors may leave the coarser OPV conclusion repairable: one can potentially absorb the fourth moment into the generic \(O(\gamma^4\lambda^C)\) bound. They do invalidate the supplied proof.
+
+The numerical refinement is separately wrong. The stated parent bound gives
+\[
+\omega(K)/P_0\le D^{\,1-\alpha-7/10+o(1)}.
+\]
+At \(\alpha=3/8\), the exponent is \(-3/40=-0.075\), not \(-0.2\). For window children near \(2/5\), the stated exponent approaches \(-0.1\).
+
+FO’s mid-prime Rankin error is repairable. With \(\sigma=1/\log P_0\), one should use
+\[
+\sum_{\substack{p\mid K\\p>P_0}}p^{-\beta+\sigma}
+ \le e\,\omega(K)P_0^{-\beta},
+\]
+rather than incorrectly asserting \(p^\sigma\le e\) for these primes.
+
+Small-block and tail control also needs a complete argument. A small unweighted mass does not itself control a density-relative pair contribution. CPW’s small-oscillation hypothesis fails on a block crossing a hard cutoff; the note cannot simply assign such blocks a bounded oscillation without proving it.
+
+**4. Boundary normalization is not yet closed.**
+
+The identity
+\[
+S'=E_\nu\psi'+B'+O(\text{tiny})
+\]
+is compatible with the interior construction. The later assertion that \(S'=E_\nu\psi'\) holds exactly is not. Exceptional singles also need inclusion in the correction: the stated bound for them is relative \(e^{-\lambda}\), not “tiny.”
+
+This matters because OPV uses exact centering before the boundary argument has established the needed correction bound.
+
+CELL’s lattice count is false as printed. Blocks have lengths in \([z_i,2z_i]\), so the leading count must involve \(|I_1||I_2|/K\). For \(K=1\) and \(I_i=(0,2z_i]\), the count is asymptotic to \(4z_1z_2\), not \(z_1z_2\). Short blocks require their actual lengths in the error estimate too.
+
+The geometric scale comparisons \(z_i\gg K\) are otherwise credible. The displayed area calculation gives \(16h+32h^2\), hence \(20h\) for sufficiently small \(h\).
+
+The fourth-moment justification is false: a union of grid rectangles meeting a parallelogram is generally a staircase region, not a convex set. One possible repair is to enclose its inverse image in a slightly enlarged square and prove uniform moment bounds there. Area comparison alone is insufficient.
+
+**5. Parent filters invalidate the stated density-spread argument.**
+
+There is an explicit counterexample at the design scales.
+
+Take a cell around \(g=(3M/4,3M/4)\), a parent-window prime \(b\), and
+\[
+a=q\lfloor b/q\rfloor,\qquad P=(a,b).
+\]
+Then \(P\) is primitive, lies in \(\Lambda_{q,0}\), and \(a\) is within \(q\) of \(b\). For sufficiently small \(\delta_e\) and \(q/V_1\),
+\[
+|G_g(P)|<MV_1/32
+\]
+throughout the cell. Therefore \(S_P=0\).
+
+The point \(Q=(-a,b)\) belongs to the same label and passes the filter throughout that cell. Its one-point density is positive.
+
+Thus the assertion that parent one-point densities are within a polylogarithmic factor of one another is false. The \(nS_{\min}\) lower bound used in FAM cannot establish the parent normalization.
+
+The correct route is an aggregate lower bound from a uniformly positive active sector, plus a weighted estimate for straddling points. c12alg’s WD discussion already recognizes the need for sectors. RAT-2 needs that argument explicitly, uniformly after restricting to \(\mathcal P\cap\Lambda_{\mathfrak q}\).
+
+PUB’s parent proof similarly cannot use \(S''\gg a''_{\min}\widehat\rho(X'')\) uniformly across a hard filter. A relative pair bound must account for pass fractions or be replaced by an absolute bound suitable for summing over points.
+
+**6. WA and EN are valid; their application needs repaired hypotheses.**
+
+WA’s \(\mathfrak D\) formula is correct. EN’s \(L^1\to L^2\) conversion is valid at the indicated scales.
+
+The basic library really can be independent of the modulus. Coprimality with \(M_c\) is supplied by the vanishing of characters on nonunits; it need not be incorporated into the base sequence. The endpoint reduction also has the right general form.
+
+For the unscaled child family, the determinant accounting has the right structure: extracting \(\delta\), retaining \(q\mid M_c\), and using \(O(S_2^2)\) multiplicity avoids an uncompensated factor \(q\).
+
+Nevertheless, FAM uses pointwise bounds for \(\psi'\psi''/m^2\), whereas OPV states moment bounds. Those pointwise bounds need a separate proof, including box-size dependence and cutoffs. The parent version requires the active-sector repair above. The Bonferroni dilations must also be included explicitly in the accounting; summability of their coefficients alone does not document the required uniform family bound.
+
+Comparison against \(\sum\widehat w\), rather than \(W\), is legitimate **if DOM(ii) and FAM hold**: the exponential character saving absorbs a polynomial loss relative to \(\mu_1\), and \(W\gg\mu_1\). That particular objection from the blind round is answered.
+
+**7. PRIM has the right cancellation idea but the wrong final estimate.**
+
+The signed-weight covariance identity is correct. Positivity is not required for that algebraic identity.
+
+The displayed bound, however, gives
+\[
+\gamma^2(\log y)^2/P_0
+   \asymp D^{-7/10}\lambda^2,
+\]
+which is larger than \(D^{-2\alpha}\lambda^C\) throughout this window, regardless of the fixed logarithmic power.
+
+A repair is available:
+\[
+\sum_{p>P_0}p^{-2+2\gamma}\log^2p
+ \ll \frac{\log^2P_0}{P_0},
+\]
+using \(\gamma\log P_0=o(1)\). This produces the \(\lambda^2\) factor needed in assembly. The note must actually prove and use this estimate.
+
+The normalization calculation for \(F=1\) also needs the primes \(p>y\), even though their contribution is negligible. The parent \(J\mathcal S_B\) case requires its allowed large-prime exceptions separately.
+
+**8. Composition and exponent claims.**
+
+SK(ii) explicitly invokes c12alg’s AB(ii). It is therefore conditional on the algebraic sketch; the dependency is not hidden in its formula, but its unconditional “[proved]” label is misleading.
+
+There is a concrete threshold mismatch. c12alg defines
+\[
+\Xi_{\rm alg}
+ =\exp\!\left(C(D^{3\alpha-1}+D^{1-2\alpha}
+                   +D^{2\alpha-1/2})\lambda^2\right),
+\]
+and \(T_{\rm alg}=\Xi_{\rm alg}^3\) times polynomial factors. No fixed constant in RAT’s \(\exp(C_TD^\theta\lambda)\) dominates this. Enlarging RAT’s threshold looks affordable because \(\theta<\alpha\), but that enlarged application is not the theorem printed here.
+
+The basic exponent margins in `params.py` pass the checked rational values and are consistent with the conductor and primorial comparisons. They do not verify the missing moment estimates, logarithmic factors, or threshold compatibility.
+
+RAT-2 itself states
+\[
+B_{\rm rat}\ll
+ (D^{-2\alpha}+D^{-2(3-7\alpha)})\lambda^C.
+\]
+For every \(\alpha>3/8\), the second term dominates. At \(\alpha=7/18\), it is \(D^{-5/9}\), rather than \(D^{-7/9}\).
+
+Consequently, §9.2 and the candidate card overstate the parent result. If a common precision factor multiplies both rational errors, the displayed estimates allow approximately \(D^{\alpha-\varepsilon}\), not \(D^{9\alpha-3-\varepsilon}\).
+
+The actual RAT-2 rate would still beat c12alg’s first-order parent budget. Diagonal terms can also be handled using c12alg’s summed identity for \(w/z\); no uniform positive lower bound for every parent mean is necessary.
+
+The honest present status is: **conditional on completing both RAT and AB, plus the internal chain**. Calling only AB unfinished is premature.
+
+**9. Literature check.**
+
+Hildebrand’s short-interval statement and the range \(xy^{-5/12}\le z\le x\), with \(y\ge\exp((\log\log x)^{5/3+\varepsilon})\), are confirmed by the authors’ survey, Theorem 5.1. The design’s ordinary cell lengths fit that range. [Hildebrand–Tenenbaum survey](https://numdam.org/item/JTNB_1993__5_2_411_0.pdf).
+
+Drappeau’s Lemme 5 has exactly the \(1/\varphi(q)\) weight, \(Q\le x\), and conductor cutoff \(x^\eta\) used here. Its proof explicitly refers to Harper’s unpublished computations. Lemme 1(i) confirms the dBT upper bound throughout \(2\le y\le x,\ 1\le d\le x\). These statements support EN; they do not supply FAM’s normalized incidence accounting. [Drappeau, Lemmes 1 and 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf). I did not independently inspect the original dBT Theorem 2.4(i).
+
+I found no published theorem implying the full RAT statement. Lachand’s linear-forms theorem has bounded smoothness parameter and bounded coefficients. [Lachand, Theorem 1.1](https://www.impan.pl/shop/en/publication/transaction/download/product/111290). Matthiesen–Wang’s published linear-systems application has a much denser smoothness range than this task and does not provide this growing-coefficient, incidence-normalized estimate. [Matthiesen–Wang, Theorem 1.3](https://arxiv.org/pdf/2211.16892).
+
+My probabilities are **60%** that DW-specific Theorem RAT survives repairs with its displayed RAT-2 rate, and **55%** that Theorem 2L-RAT is correct given c12alg’s AB and the stated internal chain.
