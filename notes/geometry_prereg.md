@@ -68,3 +68,26 @@ those ≈ 16 Legendre symbols. (iii) is a proved consequence of the formula; the
   live in `src/geometry/harness.py` and are labelled diagnostic.
 * Raw output: `experiments/raw/geometry_e{1,2,3}.jsonl`. Memory ≤ 2 GB; one job at a time.
 * Deviations from this note are disclosed in the results note.
+
+## Amendment A1 (2026-10-24, after E1–E3 ran and before any E4 code was written)
+
+Disclosures first:
+* Before the freeze-time runs, the decoders were smoke-tested on seeds 0–5 (n = 32, 64), which lie inside the
+  E2/E3 seed ranges. The smoke tests only checked that the code ran; one bug (trial division of N inside the
+  trace formula) was fixed. Outputs were not used.
+* E1–E3 ran exactly as registered: E1 0 mismatches; E2 200/200 for every oracle at n = 32 and 64; E3 ε determined
+  and correct in 2000/2000 at both sizes.
+* While E1–E3 ran, the codex blind round's *log* (not its report) showed it verifying an orbit count of supersingular
+  points on X_0(pq) in characteristic 2 that involves (p+1)(q+1). That prompted E4.
+
+**E4. Point counts over F_{l²} are factoring-equivalent.** Claim to be checked (derivation in the results note):
+#X_0(N)(F_{l²}) = l² + 1 − Tr T_{l²} + l·g(N), and Tr(T_{l²} | S_2(Γ_0(N))) contains the term ψ(N)/12, so
+#X_0(N)(F_{l²}) = (l−1)ψ(N)/12 + (bounded quadratic-symbol terms).
+* (a) Validate the trace formula for n = l² (l ∈ {2, 3, 5, 7}; A1 term ψ/12, parabolic term
+  −(1/2)·Σ_{d|n} min(d, n/d)·2^ω, A4 = σ(n)) against: N = 1 (trace 0); the curves of E1 (a_{l²} = a_l² − l, and
+  #E(F_{l²}) by brute force over F_{l²} for l ≤ 7); and Manin-symbol traces of T_{l²} for squarefree N with
+  ψ(N) ≤ 400.
+* (b) Decoder: from N and #X_0(N)(F_4) alone (and, separately, #X_0(N)(F_9) alone), enumerate the patterns of the
+  ≤ 6 unknown quadratic symbols, solve the resulting linear equation for ψ(N), and test each candidate s = ψ − N − 1.
+  n ∈ {32, 64}, seeds 0..199.
+* **Prediction P4:** (a) 0 mismatches; (b) 200/200 splits at both sizes for both fields.
