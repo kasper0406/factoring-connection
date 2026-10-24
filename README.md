@@ -27,7 +27,7 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 | **Theorem A** | L_N[1/2, c] for every c > 1/√2 (0.919 at degree 9) | 5 blind referees: accept with fixes | [`paper2/`](paper2/main.tex), [`thmA_proof`](notes/thmA_proof.md), [`thmA_audit`](notes/thmA_audit.md) |
 | **Theorem RA + Cor. P** | L_N[1/2, o(1)] (recursive shape test) | 3 blind referees: accept with fixes | [`recurse`](notes/recurse_results.md), [`auditRA`](notes/auditRA_audit.md) |
 | **Theorem U** | **L_N[2/5, c]** for a finite c | 4 blind referees: accept with fixes | [`lv5unif`](notes/lv5unif_results.md), [`auditU`](notes/auditU_audit.md) |
-| **Theorem 2L-DC** (conditional) | **L_N[3/8]**, assuming the two pair-variance hypotheses C₁, C₂ | GPT-6.1-sol + 2 Opus critics | [`multidescent`](notes/multidescent_results.md), [`uprime`](notes/uprime_results.md), [`pc3`](notes/pc3_results.md) |
+| **Theorem 2L-DC** (conditional) | **L_N[α] for every α > 3/8**, assuming the algebraic block Theorem AB (written as a sketch); **L_N[3/8]** assuming AB₂. The rational blocks are proved (Theorem RAT) | GPT-6.1-sol + 2 Opus critics | [`multidescent`](notes/multidescent_results.md), [`uprime`](notes/uprime_results.md), [`pc3`](notes/pc3_results.md), [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md) |
 | **Theorem DL** | discrete logs in F_p^*: L_p[1/2, c] for every c > 1/√2 (previous record L[1/2, √2], Pomerance 1987) | GPT-6.1-sol + 2 Opus critics | [`dlog`](notes/dlog_results.md) |
 | **Theorem DL25** | discrete logs in F_p^*: **L_p[2/5, c]** | GPT-6.1-sol + 2 Opus critics | [`dlog25`](notes/dlog25_results.md) |
 
@@ -69,7 +69,7 @@ Lemme 5, whose proof cites Harper's unpublished preprint.
 
 Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorems, not lower bounds.
 
-- **Rigorous below 2/5.** One-level designs stop at 2/5 (Prop R2). The two-level route needs C₁/C₂.
+- **Rigorous below 2/5.** One-level designs stop at 2/5 (Prop R2). The two-level route now lacks only the algebraic block AB.
   Depth ≥ 4 fails because the required precision falls below the natural covariance. Rigorous L[1/3]
   needs ERH plus a far stronger all-target supply (`nested` Theorem NR).
 - **Heuristic below L[1/3] or MNFS 1.902.**
@@ -88,8 +88,10 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
 
 ## Open problems, ranked
 
-1. **Prove C₁ and C₂ ⇒ rigorous L[3/8].** The missing piece is a weighted Barban–Davenport–Halberstam
-   estimate (Harper) plus the large sieve over the parent-weighted modulus family ([`pc3`](notes/pc3_results.md) §7 lists the gaps, ranked).
+1. **Write out Theorem AB ⇒ rigorous L[α] for every α > 3/8.** Everything else in the two-level chain is proved
+   internally: U′ ([`uprime`](notes/uprime_results.md)), decoupling ([`pc3`](notes/pc3_results.md)), the rational
+   blocks RAT ([`c12rat`](notes/c12rat_results.md)), and the DW design, two-point smoothing and child bound
+   ([`c12alg`](notes/c12alg_results.md)). AB₂, with its obligations O1–O3 and O5, would give L[3/8] itself.
 2. **Three-level descent (4/11),** which is borderline by the same route ([`pc3`](notes/pc3_results.md), [`multidescent`](notes/multidescent_results.md) §3.5).
 3. **Human refereeing** of the relation-supply chain: [`paper2/`](paper2/main.tex) §§5–6, Appendix A, and [`lv5unif`](notes/lv5unif_results.md).
 4. **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
