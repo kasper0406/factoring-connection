@@ -429,7 +429,7 @@ Reading (fixed in advance):
     - Thm 2.4(i): Ψ(x/d, y) ≪ d^{−α}Ψ;
     - Thm 2.4(ii): Ψ(x/d, y) = d^{−α}Ψ(1 + O(log(u+1)/log y + log(d+1)/log x));
     - Ψ_m = g_m(α)Ψ(1 + O(E_m(1+E_m)/u)) (via Drappeau Lemme 1(ii)).
-  - Saias, J. Number Theory 32 (1989): smooth approximation Λ(x, y) (UNVERIFIED range).
+  - Saias, J. Number Theory 32 (1989) 78–99: Ψ = Λ(1 + O(exp(−(log y)^{3/5−ε}))) for y ≥ exp((log log x)^{5/3+ε}) (range confirmed; Λ not C^∞).
   - Short intervals: Hildebrand, J. Number Theory 22 (1986) 289–307.
     - It gives Ψ(x+z, y) − Ψ(x, y) = zρ(u)(1 + O_ε(log(u+1)/log y)) for xy^{−5/12} ≤ z ≤ x and
       y ≥ exp((log log x)^{5/3+ε}).
