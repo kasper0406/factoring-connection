@@ -1,0 +1,245 @@
+{
+ "note": "c12alg E2 (DW fields in the thmA toy pipeline) and E2b (diagnostic DD statistics). Settings as thmA_e1 except W_mult=64 (composite integer w).",
+ "pipeline": {
+  "d": 3,
+  "mu": "1/3",
+  "hbits": 2,
+  "W_mult": 64,
+  "k_large": 2,
+  "min_large": 1,
+  "n_chars": 40,
+  "char_bits": 62,
+  "extra_rows": 20,
+  "n_deps": 8,
+  "stats_all_deps": true,
+  "max_rounds": 6,
+  "max_fields": 20000,
+  "max_rtrials": 5000000,
+  "irr_primes": [
+   5,
+   7,
+   11,
+   13,
+   17,
+   19,
+   23,
+   29,
+   31,
+   37,
+   41,
+   43,
+   47,
+   53,
+   59,
+   61,
+   67,
+   71,
+   73,
+   79,
+   83,
+   89,
+   97
+  ],
+  "N0": 1048576,
+  "continue_on_accidental": false,
+  "tiers": [
+   {
+    "bits_max": 36,
+    "Bbits": 10,
+    "B1_mult": 4,
+    "S": 12
+   },
+   {
+    "bits_max": 44,
+    "Bbits": 11,
+    "B1_mult": 4,
+    "S": 12
+   },
+   {
+    "bits_max": 60,
+    "Bbits": 12,
+    "B1_mult": 4,
+    "S": 12
+   }
+  ]
+ },
+ "blocks": [
+  {
+   "name": "E2",
+   "instances": [
+    {
+     "family": "semi",
+     "bits": 30,
+     "seed": 7000
+    },
+    {
+     "family": "semi",
+     "bits": 30,
+     "seed": 7001
+    },
+    {
+     "family": "semi",
+     "bits": 30,
+     "seed": 7002
+    },
+    {
+     "family": "semi",
+     "bits": 34,
+     "seed": 7003
+    },
+    {
+     "family": "semi",
+     "bits": 34,
+     "seed": 7004
+    },
+    {
+     "family": "semi",
+     "bits": 34,
+     "seed": 7005
+    },
+    {
+     "family": "semi",
+     "bits": 38,
+     "seed": 7006
+    },
+    {
+     "family": "semi",
+     "bits": 38,
+     "seed": 7007
+    },
+    {
+     "family": "semi",
+     "bits": 38,
+     "seed": 7008
+    },
+    {
+     "family": "semi",
+     "bits": 42,
+     "seed": 7009
+    },
+    {
+     "family": "semi",
+     "bits": 42,
+     "seed": 7010
+    },
+    {
+     "family": "semi",
+     "bits": 42,
+     "seed": 7011
+    },
+    {
+     "family": "tri",
+     "bits": 40,
+     "seed": 7012
+    },
+    {
+     "family": "tri",
+     "bits": 40,
+     "seed": 7013
+    },
+    {
+     "family": "tri",
+     "bits": 44,
+     "seed": 7014
+    },
+    {
+     "family": "tri",
+     "bits": 44,
+     "seed": 7015
+    },
+    {
+     "family": "unbal",
+     "bits": 40,
+     "small_bits": 12,
+     "seed": 7016
+    },
+    {
+     "family": "unbal",
+     "bits": 40,
+     "small_bits": 12,
+     "seed": 7017
+    },
+    {
+     "family": "p2q",
+     "bits": 36,
+     "seed": 7018
+    },
+    {
+     "family": "p2q",
+     "bits": 36,
+     "seed": 7019
+    },
+    {
+     "family": "small_x_semi",
+     "bits": 40,
+     "small_bits": 9,
+     "seed": 7020
+    },
+    {
+     "family": "small_x_semi",
+     "bits": 40,
+     "small_bits": 9,
+     "seed": 7021
+    },
+    {
+     "family": "prime",
+     "bits": 36,
+     "seed": 7022
+    },
+    {
+     "family": "prime",
+     "bits": 36,
+     "seed": 7023
+    }
+   ]
+  },
+  {
+   "name": "E2b",
+   "pipeline_override": {
+    "continue_on_accidental": true
+   },
+   "instances": [
+    {
+     "family": "semi",
+     "bits": 44,
+     "seed": 7024
+    },
+    {
+     "family": "semi",
+     "bits": 44,
+     "seed": 7025
+    },
+    {
+     "family": "semi",
+     "bits": 44,
+     "seed": 7026
+    },
+    {
+     "family": "semi",
+     "bits": 44,
+     "seed": 7027
+    },
+    {
+     "family": "tri",
+     "bits": 46,
+     "seed": 7028
+    },
+    {
+     "family": "tri",
+     "bits": 46,
+     "seed": 7029
+    },
+    {
+     "family": "tri",
+     "bits": 46,
+     "seed": 7030
+    },
+    {
+     "family": "tri",
+     "bits": 46,
+     "seed": 7031
+    }
+   ]
+  }
+ ]
+}
