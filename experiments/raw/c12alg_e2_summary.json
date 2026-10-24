@@ -1,0 +1,74 @@
+{
+ "blocks": {
+  "E2": {
+   "n": 24,
+   "ok": 24,
+   "errors": []
+  },
+  "E2b": {
+   "n": 8,
+   "ok": 7,
+   "errors": [
+    [
+     {
+      "family": "semi",
+      "bits": 44,
+      "seed": 7024
+     },
+     "RuntimeError('field selection cap reached')"
+    ]
+   ]
+  }
+ },
+ "P2a": {
+  "E2": [
+   24,
+   24
+  ],
+  "E2b": [
+   7,
+   8
+  ]
+ },
+ "P2b_violations": {
+  "ROW_IDENTITY_VIOLATION": 0,
+  "CONGRUENCE_VIOLATION": 0,
+  "CU_VIOLATION": 0,
+  "FORCED_RESIDUE_VIOLATION": 0,
+  "IR_DW_CLAIM_VIOLATION": 0,
+  "cu_checked": 5911
+ },
+ "P2c_squares": [
+  120,
+  120
+ ],
+ "P2d_content": {
+  "observed": 5392,
+  "fields": 54915,
+  "predicted": 5399.311026563435,
+  "z": -0.10478117634562818
+ },
+ "P2e_DD": {
+  "2": {
+   "tested": 56,
+   "fruitful": 26,
+   "frac": 0.4642857142857143,
+   "pred": 0.5,
+   "z": -0.5345224838248488
+  },
+  "3": {
+   "tested": 32,
+   "fruitful": 23,
+   "frac": 0.71875,
+   "pred": 0.75,
+   "z": -0.4082482904638631
+  }
+ },
+ "verdicts": {
+  "P2a": false,
+  "P2b": true,
+  "P2c": true,
+  "P2d": true,
+  "P2e": true
+ }
+}

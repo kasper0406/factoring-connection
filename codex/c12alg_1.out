@@ -1,0 +1,291 @@
+**Verdict — OPEN.** A corrected DW(b) total-variation lemma admits an elementary proof, including nearly parallel pairs. DW also appears compatible with post-processing after explicit repairs. Neither result proves the required weighted smooth-pair estimates. Moving strictly above \(3/8\) creates useful first-order precision slack, but does not by itself resolve the geometry and weighting problems.
+
+Here “proved” refers to the statements proved below; conclusions using the repository’s factoring chain remain conditional on that internal, unrefereed chain.
+
+1. **Two-point smoothing and the remaining analytic estimate**
+
+**Proved: the stated support needs a qualification.** DW-L describes the image with unrestricted integral \(w\). Restricting \(w\) to \((w,g_1)=1\) can change it.
+
+For example, take \(g=(1,2)\), odd \(N\), and \(P_1=(1,0),P_2=(0,1)\). Their determinant is \(1\), so the displayed lattice is \(\mathbb Z^2\). Nevertheless, \(F(P_1)\) is always odd: the base expansion’s leading coefficient and \(w\) are odd. Broad uniform measures on the full lattice therefore cannot approximate this law.
+
+The following sufficient correction covers the intended filtered points.
+
+**Proved: constructive TV lemma.** Let \(d\ge3\), \(P_i=(a_i,b_i)\) be primitive and non-proportional, \(G_i=G(P_i)\ne0\), and assume
+\[
+(N,G_1G_2)=1,\qquad (b_1b_2,g_1)=1.
+\]
+Put
+\[
+V_i=\|P_i\|_\infty,\quad T=|G_1G_2|,\quad
+h_0=\operatorname{rad}(g_1),\quad \theta_0=\varphi(h_0)/h_0.
+\]
+Let \(A:\mathbb Z^d\to\mathbb Z^2\) have columns
+\[
+u_j=(G_1a_1^{d-1-j}b_1^j,\ G_2a_2^{d-1-j}b_2^j),
+\]
+and put \(v=(\widehat F_N(P_1),\widehat F_N(P_2))\).
+Choose two independent columns, forming \(B\), and write
+\[
+K_B=\|B^{-1}v\|_\infty.
+\]
+Assume \(W_m\ge T\) and \(\theta_0W_m\ge2\tau(h_0)\).
+
+There is an explicit probability measure \(\nu\), a mixture of uniform measures on full-lattice parallelograms, satisfying
+\[
+\boxed{\quad
+\|\operatorname{Law}(wv+Ac)-\nu\|_{\rm TV}
+\ll
+\frac{T\tau(h_0)}{\theta_0W_m}
++\frac{d(1+V_1V_2+W_mK_B)}{H}.
+\quad}                                                     \tag{TV}
+\]
+Specifically, freeze the other \(d-2\) coefficients and use
+\[
+\nu=\mathbb E_{c_{\rm rest}}
+ \operatorname{Unif}\!\left(
+ L\cap\bigl(A_{\rm rest}c_{\rm rest}
+             +B[-H,H+1)^2\bigr)\right).
+\]
+
+**Proof.** The \(c\)-image \(\Lambda_c=A\mathbb Z^d\) has index \(T\) in \(L\), and \(v\) generates \(L/\Lambda_c\), by the unrestricted DW-L identity.
+
+The kernel of \(A\) has the integral basis given by the monomial multiples of
+\[
+(b_1x-a_1y)(b_2x-a_2y).
+\]
+A fundamental cell of this kernel has coordinate radius at most \(4V_1V_2\): each coordinate receives at most three contributions. Consequently, any integral image point having a real coefficient lift of radius \(R\) has an integral lift of radius at most \(R+4V_1V_2\).
+
+Write \(w=j+kT\), \(0\le j<T\). Replacing \(wv\) by \(jv\) can therefore be absorbed into an integral coefficient shift of radius \(O(W_mK_B+V_1V_2)\). Translating a coefficient cube costs at most the shift’s \(\ell^1\)-norm divided by \(2H+1\) in TV.
+
+Because \((T,h_0)=1\), elementary inclusion–exclusion gives
+\[
+\operatorname{TV}(w\bmod T,\operatorname{Unif}(\mathbb Z/T))
+\ll T\tau(h_0)/(\theta_0W_m).
+\]
+Finally, dither over representatives of \(\Lambda_c/B\mathbb Z^2\), then combine them with \(jv\). Folding these representatives into \(B[0,1)^2\) produces representatives of \(L/B\mathbb Z^2\). Their lifts cost \(O(V_1V_2+TK_B+1)\). The two selected uniform coefficient intervals now tile the displayed parallelogram exactly. This proves (TV).
+
+**Proved: nearly parallel pairs need not enlarge this TV error.** Suppose
+\[
+|G_i|\ge MV_i\delta,\qquad
+A_0=\|\widehat F_N\|_\infty.
+\]
+One can choose \(B\) with
+\[
+K_B\ll d^2\,4^d\,\frac{A_0}{M\delta^2}.                    \tag{1}
+\]
+In a common coordinate chart, solve the two interpolation equations for the last two monomials. The divided difference of \(\widehat F_N/G\) has denominator \(G(P_1)G(P_2)\); its numerator contains the point determinant, which cancels the interpolation determinant. In opposite charts, the two endpoint monomials give a uniformly invertible normalized matrix. This proves (1), without an inverse-angle factor.
+
+The resulting parallelograms can still be extremely thin. Thus this removes anisotropy from **TV smoothing**, not from the subsequent smooth-number count.
+
+**Proved: sufficient design hypotheses.** With \(V_i\le V_1^{\rm parent}\), take
+\[
+W_m\ge (2MV_1^{\rm parent})^2N^{\eta_0}
+        \frac{\tau(h_0)}{\theta_0},\qquad
+H\ge W_mN^{\eta_0},
+\]
+and assume
+\[
+\log(d^3 4^d A_0/M)=o(\eta_0\log N),\qquad
+\delta=N^{-\eta_0/4}.
+\]
+Then (TV) is \(O(N^{-\eta_0/3})\), for sufficiently large \(N\). A common multiplier interval can use the maximum of \(\tau(h_0)/\theta_0\) over admissible \(g_1\).
+
+This is \(N^{-\Omega(\eta_0)}\), not a fixed power \(N^{-c}\) when \(\eta_0\to0\). It nevertheless suffices at these subexponential scales. Literal \(N^{-c}\) follows by requiring the two terms in (TV) to be \(O(N^{-c})\).
+
+**Proved: root conditioning.** For \(q\nmid N\),
+\[
+\Pr(R_{\mathfrak q}\mid g)
+=\frac1q+
+ O\!\left(H^{-1}+\frac{\tau(h_0)}{\theta_0W_m}\right),       \tag{2}
+\]
+uniformly in \(g\). If \(q\nmid G(r,1)\), one coefficient of \(c\) supplies the uniform residue. If \(q\mid G(r,1)\), then \(q\nmid g_1\), and the root condition is \(q\mid w\).
+
+Conditioning TV costs at most \(O(q\varepsilon)\). Each parallelogram component is intersected with the root coset, and its mixture weight must be reweighted by that intersection’s mass.
+
+If \(K=|\det(P_1,P_2)|\) and \(q\mid K\), division by \(q\) gives
+\[
+z_1\equiv\lambda^dz_2\pmod{K/q}.
+\]
+When \(q^2\mid K\), a congruence modulo \(q\) remains. The assertion “no mod-\(q\) ratio remains” is therefore conditional on \(q^2\nmid K\). In the default child box, \(K=q\Delta\), \(0<\Delta\le2S_2^2<q\), so this exceptional case is absent.
+
+**OPEN: smoothing is not independence.** What remains is a density-relative estimate for these lattice regions, averaged with the **actual rational, incidence, environment and first-moment normalization weights**:
+\[
+\mathbb E_\omega[p_{12}-p_1p_2]
+=o(\eta)\,\mathbb E_\omega[p_1p_2].                        \tag{3}
+\]
+It must include non-reduced determinant classes, local factors, thin regions and varying endpoints.
+
+**Proved—literature checked.** Harper’s Theorem 2 supplies
+\[
+\sum_{k\le Q}\sum_{(a,k)=1}|E(X,y;k,a)|^2
+\ll \Psi(X,y)^2
+ \bigl(e^{-cu/\log^2(u+1)}+y^{-c}\bigr)+Q\Psi(X,y),
+\]
+for \((\log X)^K\le y\le X\), \(Q\le\Psi(X,y)\). It has no inner endpoint maximum. [Harper, Theorem 2](https://arxiv.org/pdf/1208.5992)
+
+**Proved—literature checked.** Lee–Venkatesan’s Lemma 8.5 is density-relative over smooth moduli, but assumes \(X^\epsilon\le Q\) and retains a \(Q\sqrt{\Psi}\log^{7/2}X\) term. It does not directly cover our \(Q=X^{o(1)}\) regime. Uprime’s 8.5H is the relevant internal adaptation; neither result supplies (3) with its weights. [Lee–Venkatesan, Lemma 8.5](https://arxiv.org/pdf/1805.08873)
+
+**Proved: precision slack above \(3/8\).** Put \(s=3-7\alpha\). Given \(W/\mu_1\asymp D^s\), the required precision is \(\eta\asymp D^{-s}\). For \(\alpha>3/8\),
+\[
+D^{-\alpha}=o(D^{-s}).
+\]
+An integrated first-order child error \(O(1/u)=O(D^{-\alpha})\) is affordable. Parent algebraic values have \(u_2\asymp D^s\), but DC itself permits
+\[
+A\ll D^{-\alpha}\log^C D,\quad B\ll D^{-s}\log^C D,
+\]
+because \(A+\sqrt{AB}=o(D^{-s})\).
+
+**OPEN: this does not automatically remove Saias.** With the existing \(\mathcal K^2/u\) geometric amplification and a \(1/\mathcal K\) thin-pair tail, truncation gives only \(u^{-1/3}\). That misses the required precision throughout this window. One needs an estimate preserving first-order relative error after geometric integration.
+
+**Sketch:** Hildebrand’s direct short-interval asymptotic could replace Saias in such a proof; it avoids subtracting two coarse endpoint asymptotics. Its stated range and error are confirmed in Jain’s Lemma 3.2(ii). The necessary weighted geometric application remains unwritten. The original Hildebrand theorem numbering is **UNVERIFIED** here. [Jain, Lemma 3.2](https://academic.oup.com/qjmath/article/77/2/397/8677316)
+
+2. **Compatibility repairs**
+
+**Proved (a): GB with the multiplier outside.** Construct \(\widehat F_N\) using \(T_d=N\). Its leading coefficient satisfies
+\[
+a_dg_0^d\equiv N\pmod{g_1},
+\]
+so \(a_d\) is a unit modulo \(g_1\). For DW,
+\[
+f_d=wa_d+g_1c_0\equiv wa_d\pmod{g_1},
+\]
+again a unit when \((w,g_1)=1\). Bounds apply to \(w\widehat F_N\); they must not reuse digit bounds for the expansion of \(Nw\).
+
+**Proved (b): the precise coprimality statement.** For primitive \(g,P\),
+\[
+(t,N)=1\quad\Longrightarrow\quad(\widehat F_N(P),t)=1.
+\]
+Indeed, modulo every \(p\mid t\), the two primitive vectors are nonzero and proportional by a unit; evaluation gives \(\widehat F_N(P)\not\equiv0\pmod p\). No \((b,g_1)=1\) hypothesis is needed for this fact.
+
+Also,
+\[
+(t,g_1)=(b,g_1).
+\]
+Thus the latter filter ensures the coprime-\(g_1\) multiplier is uniform over **all** residues modulo \(t\). Finally,
+\[
+(F(P),t)=(w,t).
+\]
+Requiring \((w,t)=1\) recovers reduced residues but changes the distribution. It is unnecessary for the row identity, and imposing it simultaneously for all searched points would defeat the simple DW law.
+
+**Proved (c): content.** After the content gcd-check passes, its content \(e\) satisfies \(e\mid w\), with arbitrary divisors possible. Reject every \(e>1\), rather than only \(e=w\).
+
+**Sketch: rejection cost.** For \(p\nmid N\), content divisible by \(p\) requires \(p\mid w\) and all \(d\) coefficients of \(R_c\) divisible by \(p\). Averaging over \(w,c\) gives total content-rejection probability \(O(2^{-d})\), plus negligible interval errors. This is negligible against a polylogarithmic field-success probability, but is not \(N^{-\Omega(\eta_0)}\). Consequently, (TV) must be stated for the raw field law, not silently transferred to accepted fields.
+
+**Proved (d): certificate primes.** If \(r\mid w\), \(r\nmid g_1\), then \(f\bmod r\) has the rational root \(g_0/g_1\); it cannot certify irreducibility. Exclude these primes. If \(r\mid g_1\), then \(r\nmid wN\), and the fixed leading coefficient is nonzero; the original fixed-leading-coefficient argument works.
+
+**Sketch: repair of IR’s probability bound.** The old bound cannot hold for every composite \(w\): one can choose \(w\) divisible by every certificate prime. Average over the sampled integers \(w\). A divisor-moment estimate shows that losing a positive fraction of the certificate primes has probability \(\exp(-c\log H/\log\log H)\). On the complement, the CRT argument gives \(\exp(-c\log H/(d\log\log H))\). This requires \(\log W_m\asymp\log H\), as in the minimal DW parametrization.
+
+**Proved (e): algebraic post-processing identities survive.** For an accepted primitive irreducible field:
+
+- \(f(m)\equiv0\pmod N\), hence \(\psi(\beta)=f_dm\) is well-defined.
+- \(\operatorname{Norm}(f_da-b\beta)=f_d^{d-1}F(P)\) and \(\psi(f_da-b\beta)=f_dG(P)/g_1\).
+- Lemma C depends on \(r\nmid f_d\operatorname{disc}(f)\), not on primality of \(w\).
+- Lemmas H and X use degree and discriminant bounds; the larger height is included in those bounds.
+- SQ’s inclusion \(g'(\beta)\mathcal O_K\subset\mathbb Z[\beta]\) and its exact verification are unchanged.
+- The row identity contains no prime-factorization assumption on \(w\).
+- The resultant remains \(\pm wN\).
+
+For two-level rows, these statements apply after the degree-one child ideals have been cancelled, as required by the internal nested-row lemma.
+
+**Proved: factor exits and transcript invariance.** Gcd-check \(w,g_1,f_d\), the content, rational denominators, child primes and the derivative denominator against \(N\). Proper gcds are successful exits; zero/full gcd cases follow the existing rejection rules. Factoring composite \(w\) is unnecessary. Canonical value factorizations and deterministic searches preserve transcript invariance; no hidden square root is exposed.
+
+**OPEN (f): the old moment proof is not verbatim valid.** Lemma W’s reduced-residue conclusion fails. Its integer replacement averages over all residue classes. DW(a) replaces the algebraic first-moment good-modulus step, but does not replace LD*. One must reprove its upper bound using an all-residue gcd-class decomposition or the new two-point law.
+
+**Proved: an alternative preserving the unrestricted DW-L lattice** is to sample all integers \(w\), omitting \((w,g_1)=1\). Then the sieve factor in (TV) disappears. Permit degree-drop rejection and exclude certificate primes dividing \(wN\). Post-processing only needs the existing invertibility checks modulo \(N\), not \((w,g_1)=1\). This is analytically cleaner, although its rejection estimates still require rewriting.
+
+3. **The one-point child mean**
+
+**Proved: the quoted nominal \(m_2\) is insufficient unless recomputed.** DW raises the leading height from \(h\sim\mu\) to \(h\sim2\mu\). Keeping uprime’s old child radius can lose an entire \(L[\alpha]\)-scale smoothness factor. Re-run the Rankin scan with the actual DW envelope.
+
+**Proved: root conditioning itself is manageable.** Equation (2) gives near-uniform \(1/q\) probability under the raw law, including \(q\mid G(r,1)\). Moreover, within a label, either all primitive child points have \(q\mid G(P')\), or none do. In the former case no nonzero \(G(P')\) is \(B\)-smooth because \(q>B\). Such \((g,\mathfrak q)\) have zero parent-incidence weight: a parent has \(G(P)=\ell n\), with \(n\) \(B\)-smooth and \(q\ne\ell\).
+
+**Sketch: a sufficient raw-law child lower bound.** After multiplier padding and rescanning, the following two estimates yield
+\[
+m_{\mathfrak q}\gg m_2(q)(\log N)^{-C}\ge8/\eta:
+\]
+\[
+\Pr\!\left(F(P')/q\in\mathcal S_B\mid R_{\mathfrak q},g\right)
+ \gg \rho_B(X_{F2})(\log N)^{-C},                         \tag{4}
+\]
+for filtered rationally admissible points, and
+\[
+\mathbb E_g\#\{P'\in\operatorname{Box}(\mathfrak q):
+ G(P')\in\mathcal S_B,\ \text{filters}\}
+ \gg S_2^2\rho_B(X_{r2})(\log N)^{-C}.                    \tag{5}
+\]
+
+For (4), use the scalar version of the dither argument, then condition on \(q\mid F(P')\). Its TV error costs \(q\), which the enlarged margin absorbs. Since \(q>B\), nonzero \(B\)-smooth \(F(P')/q\) automatically implies \(q\parallel F(P')\).
+
+For (5), run the primitive-\(g\) fibre count separately for each physical primitive \(P'\). Use its actual norm, bounded by the conservative envelope \(4Q_2S_2\). Coprimality with \(b'\) contributes an Euler-product loss bounded by a polylogarithm; the fibre Möbius errors are absorbed by \(M/\|P'\|\). A constant-width interior strip supplies values away from zero, hence passes the stated \(G\)-filter. The conservative box has \(\gg S_2^2\) physical primitive points even for skew labels.
+
+This supports a raw-law lower bound uniformly over admissible conservative labels. I label it **sketch**, because the uniform coprime smooth-interval and environment-cell bookkeeping has not been completed here. The implication from (4)–(5) is elementary: \(e^{(\log\log N)^2}\) beats every fixed polylogarithmic loss.
+
+**OPEN: weight domination is separate.** The needed statement is, for example, within each prime window,
+\[
+w_{q,r}\ll(\log N)^C\,\frac1q\sum_{s\bmod q}w_{q,s},
+\]
+with the analogous environment-conditioned normalization. DW(a) provides a promising pointwise algebraic upper bound, but DW-L and nominal \(m_2\) do not prove this inequality. Uniform comparison with one global average across all \(q\le B_2\) is inappropriate because the \(q\)-weights vary substantially. This remains relevant to discarding skew labels and exceptional environments.
+
+4. **The window \(3/8<\alpha<2/5\)**
+
+**Proved: exponent bookkeeping.** Write \(B_2=L[\beta]\), \(d\asymp D^{1-2\alpha}\), \(k\asymp D^\alpha\). Then
+\[
+\log X_{r1}\asymp D^{2\alpha}\log\log N,\qquad
+\log X_{F1}\asymp D^{2-3\alpha}\log\log N.
+\]
+The two smoothness-cost constraints are
+\[
+2-4\alpha\le\beta\le4\alpha-1.
+\]
+Their interval opens precisely at \(3/8\). Taking its upper endpoint gives
+\[
+\beta=4\alpha-1,\qquad
+u_{F1,B_2}\asymp D^{3-7\alpha}=D^s,
+\]
+while both child \(B\)-smoothness parameters are \(\asymp D^\alpha\).
+
+**Sketch: child-count normalization.** The saddle-point model gives \(m\asymp D^s\). This must be proved under the acceptance weights, or enforced by a cap retaining a constant fraction of parent mass. The deterministic cap is \(D^{2-4\alpha}\), which does **not** permit the first-order shortcut below \(2/5\). Thus the typical-count estimate cannot be silently assumed.
+
+**Proved: 8.5H margins with this choice.**
+
+| Condition | Comparison |
+|---|---|
+| H1–H2 | Hold since \(\log B\gg(\log\log X)^2\), \(D^s\gg(\log\log X)^4\). |
+| H3, values | \(s<\beta\), requiring \(\alpha>4/11\). |
+| H3, modulus density | \(\alpha<\beta\), requiring \(\alpha>1/3\). |
+| H4 | Loss \(D^{3\alpha-1}\log\log N\), saving \(D^s/(\log\log N)^2\). |
+| H5 | \(\beta<1-\alpha\), and \(2-3\alpha>2\alpha\). |
+
+H4 has margin
+\[
+D^{4-10\alpha}/(\log\log N)^3,
+\]
+positive for every fixed \(\alpha<2/5\). The strict H5 margins also close at \(2/5\).
+
+**Proved: SQ improves.** For \(\alpha>3/8\),
+\[
+\log(1/\rho_{F1,B_2})\asymp D^s\log D=o(\log B).
+\]
+Thus the elementary \(B^{-1}\operatorname{polylog}N\) subtraction is affordable without the boundary constraint on \(ab_2\).
+
+**Proved: reparametrize the margins.** The old \(\eta_0=D^{-1/2}\) does not dominate \(B_2=L[4\alpha-1]\). Take
+\[
+\eta_0=C_\eta D^{4\alpha-2},
+\]
+with a sufficiently large constant for the required powers of \(B_2\), and the multiplier sieve padding above. This remains lower order than \(\mu\), \(\nu\), and the leading parent norm exponent.
+
+With minimal DW height, conservative child envelopes give
+\[
+\log X_{F2}\sim(3/d_0+d_0b)\,D^{2\alpha}\log\log N.
+\]
+Consequently the rescanned child-box coefficient is
+\[
+\sigma_2=\frac{\alpha}{a}(4/d_0+d_0b),
+\]
+rather than uprime’s \(3/d_0+d_0b\) expression.
+
+**Proved: remaining cost margins survive.** The IR exponent is of order \(D^{4\alpha-1}\); factorial-bit character and SQ costs remain \(L[\alpha]^{o(1)}\). Factoring parent values with the internal \(2/5\) algorithm costs exponent \((4-6\alpha)/5<\alpha\) for \(\alpha>4/11\).
+
+**OPEN: no \(\alpha<2/5\) is established here for full algebraic C₁/C₂.** TV smoothing, scalar supply and parameter margins are substantially more accessible than the original endogenous-modulus problem. The remaining algebraic obligation is still (3), under the actual weights. On the rational side, pc3’s items **1, 2 and 4** remain: the weighted BDH/large-sieve application, incidence control of skew labels, and a justified archimedean/thin-region estimate. First-order slack offers a different route through item 4; it does not constitute its proof.
+
+**Heuristic probabilities:** (i) corrected TV lemma as stated: **95%**; (ii) DW compatible with the internal chain after these repairs: **85%**; (iii) a rigorous fixed \(\alpha<2/5\), including the rational blocks, obtainable in a focused effort: **30%**.
