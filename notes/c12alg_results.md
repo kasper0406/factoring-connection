@@ -1,6 +1,6 @@
 # c12alg: the algebraic two-point blocks of C₁/C₂ under design DW — results
 
-Agent `c12alg`, phase 27, 2026-10-24. **v2.2** (v2 + §3.6 Theorem AB₂ in v2.1; v2.2 applies codex round 3 and the Opus literature critic). v2: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
+Agent `c12alg`, phase 27, 2026-10-24. **v2.3** (v2 + §3.6 Theorem AB₂ in v2.1; v2.2 applies codex round 3 and the Opus literature critic; v2.3 applies a second Opus proof critic on §3.6/§5). v2: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
 
 Files:
 - this note; pre-registration `notes/c12alg_prereg.md` (commit `20c882b`, code frozen there);
@@ -31,7 +31,7 @@ What we have:
 - DW is compatible with the whole chain (proved).
 - Its two-point law is an explicit lattice-parallelogram mixture (proved).
 - The child boxes are never empty on average (proved).
-- The algebraic two-point blocks of C₁/C₂ hold to the precision the descent needs (sketch):
+- The algebraic two-point blocks of C₁/C₂ (sketch; conditional on the obligations listed in §3.3/§3.6):
   - at **first order** on the window 3/8 < α < 2/5, where first order is enough (Theorem AB);
   - at **second order** on [3/8, 2/5), including α = 3/8 (Theorem AB₂, added in v2.1), by a cell-covariance device
     (the covariance of two one-point functions is at most the product of their first-order standard deviations).
@@ -102,7 +102,7 @@ Precisely:
      - (iii) Theorem AB (sketch).
    - Hyp RAT(α) is c12rat's object, pc3 §7 items 1 and 4, at first order only.
    - If c12rat proves RAT(α) and Theorem AB survives review, a rigorous (internal) L[α] for every α > 3/8 follows.
-6. **Toward 3/8 [analysis; superseded in v2.1 by §3.6].** The window argument needs α > 3/8 in exactly two places:
+6. **Toward 3/8 [analysis; would be superseded by §3.6 if AB₂'s obligations are completed].** The window argument needs α > 3/8 in exactly two places:
    - the first-order budget D^{−α} ≪ η;
    - √(AB) ≪ η.
 
@@ -202,7 +202,7 @@ D^{8α−3} margins (codex #1 FATAL, proof critic MAJOR). v2 bounds the ratio po
 - **Dickman.** −ρ′/ρ = ρ(u − 1)/(uρ(u)) is increasing (log-concavity of ρ, Alladi) and equals ξ(u)(1 + O(1/u))
   (Hildebrand–Tenenbaum survey, JTNB 1993, Cor 2.4: ρ(u − v) = ρ(u)exp{vξ(u) + O((1 + v²)/u)}, |v| ≤ u/2). So
   ρ(u − v)/ρ(u) ≤ e^{vξ(u)(1+O(1/u))} for v ≤ 1. Hence
-  Σ_q(1/q)ρ(u_x − v_q)/ρ(u_x) ≤ (1 + o(1))∫_{log B}^{log B₂}e^{(ξ/log B₂)t}dt/t + O(1) ≤ (1 + o(1))e^{ξ}/ξ + O(1)
+  Σ_q(1/q)ρ(u_x − v_q)/ρ(u_x) ≤ (1 + o(1))∫_{log B}^{log B₂}e^{(ξ/log B₂)t}dt/t + O(λ) ≤ (1 + o(1))e^{ξ}/ξ + O(λ)
   ≤ (1 + o(1))u_x, using e^ξ = 1 + uξ. And u_x ≤ u₂.
 - **The part |n| < X_F/K₁.** Its Ψ-mass relative to Ψ(I) is ≤ CdK₁^{−β₂} ≤ CdK₁^{−3/4} (v2.2: v1's display was
   garbled; codex). On it m ≤ m̄ ≍ D^{2−4α}, so
@@ -844,7 +844,11 @@ AB₂:
   for α ≥ 7/18. `params.margins2` now checks the parent exponent 1 − 2α < 3 − 7α only, and v2.1 wrongly reported all
   checks as fine with a shared K₀. The PP corner truncation must use the rectangle-cover argument, not v2's first-order
   discarded-mass bound.
-- **(O4) Parent acceptability.** Squarefree large part and children ∤ f_d disc(f) are coefficient events, not
+- **(O5) The boundary transposition (critic 2).** Step 2's boundary argument transposes c12rat's Prop PD, which is
+  unreviewed. It needs the enlarged region Π̃ to have a convex-type marginal, which holds since Π_y is convex.
+- O1 is a genuine lemma, not bookkeeping. The parent local factor and the large gcd classes (δ > B₂^{1/2}, weight tail
+  Σδ^{2γ₂−1}) belong in O1.
+- **(O4) Parent acceptability; discharged by the constraint a > 2c₂.** Squarefree large part and children ∤ f_d disc(f) are coefficient events, not
   functions of the value coordinates. At α = 3/8, where ϱ₂ = e^{−(c₂+o(1))D^{3/8}λ} with c₂ = 3d₀/(32κb₂), the crude
   subtraction (log N)^C/B divided by a pair main term needs **a > 2c₂**. That is stronger than uprime's (SQ) a > c₂.
   Otherwise one needs a mixed estimate Pr(bad₁, smooth₂ | g, R) ≪ Ξ·(log N)^C/B·A₂, not supplied. In the window,
@@ -939,9 +943,14 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
 *Proof.*
 1. Lemma VD gives A ≤ Σ(w/W)/m + A^alg + A^rat and B ≤ Σ(w/W)/z + B^alg + B^rat.
    - The one-point terms are ≤ e^{−λ²}(log N)^C (Prop CLB) and, for parents, use the exact identity
-     w_𝔮/z_𝔮 = Pr(R_𝔮)/#J (v2, proof critic): Σ_𝔮(w_𝔮/W)/z_𝔮 = Σ_𝔮Pr(R_𝔮)/(#J·W) ≤ dπ(B₂)/(#J·μ₁) =
-     L[4α − 1 − (1 − α) + o(1)] → 0. This uses Σ_r Pr(R_{(q,r)}) = E[#roots of F mod q] ≤ d. No lower bound on z_𝔮 is
-     needed.
+     w_𝔮/z_𝔮 = Pr(R_𝔮)/#J (v2, proof critic). Then Σ_𝔮(w_𝔮/W)/z_𝔮 = Σ_𝔮Pr(R_𝔮)/(#J·W).
+     - Σ_r Pr(R_{(q,r)}) ≤ d + 1 + q·Pr(F ≡ 0 mod q) ≤ d + 2, averaged under the raw law. F ≡ 0 mod q is possible but
+       has probability ≤ (1/q)(1/q + 1/H)^d, by Lemmas RE and CT.
+     - W ≥ (1 − o(1))μ₁: an accepted parent with no child has F(P) B-smooth, a negligible fraction (cf. c12rat Lemma
+       DOM(iii)).
+     - So the sum is ≤ (d + 2)π(B₂)/((1 − o(1))#J·μ₁) ≤ e^{b₂D^{4α−1}λ}(log N)^C/L[1 − α] → 0.
+
+     No lower bound on z_𝔮 is needed. (v2.3: codex round 3 and critic 2.)
    - Theorem AB(i), (iii) and RAT(R1) give A ≤ D^{−α}λ^{C}. RAT(R1) is restricted to s ≤ T, matching AB(i).
    - Theorem AB(ii) and RAT(R2) give B ≤ D^{7α−3}λ^{C}.
 2. Prop PB: E N₂ ≥ μ₁/2.
@@ -956,8 +965,14 @@ with the constraint a > 2·3d₀/(32κb₂) of (O4)) factors every N in expected
 σ₁(3/8) = 3/(8ad₀) + 3d₀/(32κb₂), since the parent B₂-smoothness cost is leading at the endpoint (codex round 3; uprime
 §4.1). No numerical c(3/8) is claimed. It assumes:
 - (i) the internal chain;
-- (ii) **Hyp RAT₂(α)**: (R1), (R2) with D^{−2α}λ^C on both right-hand sides (c12rat's Theorem RAT, unreviewed v1);
-- (iii) **Theorem AB₂** (§3.6, sketch with the open obligations (O1)–(O4)).
+- (ii) **Hyp RAT₂(α)**: (R1) with D^{−2α}λ^C, and (R2) with (D^{−2α} + D^{−2(3−7α)})λ^C on the right-hand side. This is the
+  form c12rat's Theorem RAT/Corollary claims, unreviewed v1;
+- (iii) **the statement of Theorem AB₂(i)–(iii)** (§3.6). Its proof is a sketch with the open obligations (O1)–(O3)
+  and (O5); O4 is discharged by the constraint a > 2c₂.
+
+*Admissible parameters at α = 3/8:* (SQ) a·b₂ > 3d₀/(32κ); a > 2c₂ with c₂ = 3d₀/(32κb₂), which implies (SQ); and (A1)
+a² > 4α/d₀ if c12rat's rational block uses pc3 LAT(d). At 3/8, §2.7's FM-U′ line ("ϱ₂ = L^{−o(1)}") and Lemma η's
+denominator step need (SQ) explicitly, because ϱ₂ = L^{−Θ(1)} at the endpoint.
 
 *Proof.* As Theorem 2L-DW(α), with A ≪ D^{−2α}λ^C and B ≪ (D^{−2α} + D^{−2(3−7α)})λ^C. The budget (§3.6, "Consequence") holds on [3/8, 2/5), and the
 remaining margins hold at 3/8 (`params.margins2`). The other inputs at 3/8 are uprime's U′ at 3/8 with the §2.7 DW
@@ -1174,6 +1189,20 @@ L[3/8].
   - the two-term B;
   - the false q² ∤ Δ.
 - All are applied (as fixes or as the listed obligations O1–O4). Probabilities: AB₂ 45%, conditional L[3/8] 65%.
+
+**Opus proof critic 2** (read-only, on v2.2 §3.6, §5, §1.2): no MAJOR problem.
+- Covariance identity ACCEPT WITH FIXES: verified from scratch. First-order errors enter only quadratically, because
+  |e| ≤ λ^C/u pointwise. The only linear term is parent acceptability, closed by a > 2c₂.
+- O-list ACCEPT WITH FIXES: add O5 (the Prop PD transposition); O4 is discharged; O1 is a genuine lemma.
+- 2L-DW₂ ACCEPT WITH FIXES:
+  - RAT₂(R2) must carry the two-term bound;
+  - the parent one-point term (W ≥ (1 − o(1))μ₁, roots ≤ d + 2, the explicit ratio) was not fixed in v2.2 and is fixed
+    now;
+  - the admissible-parameter list at 3/8;
+  - (SQ) needed at 3/8 in §2.7 and Lemma η;
+  - softened §0.
+- Lemma η ACCEPT, with the O(λ) Mertens slip fixed.
+- Probabilities: AB₂ completable ≈ 55%; 2L-DW₂ as a conditional theorem 65–70% after these fixes.
 
 **Opus literature critic** (read-only, on v2): **OK WITH FIXES.**
 - Confirmed: Harper Thms 1–2 (against the preprint), Hildebrand's two estimates, HT Thm 3, dBT 2.4(i), the Dickman
