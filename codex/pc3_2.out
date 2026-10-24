@@ -1,0 +1,188 @@
+**Recommendation: MAJOR REVISION.** The decoupling idea is sound and useful. It replaces the stated three-point hypothesis by potentially easier concentration estimates. But the draft does not establish those estimates: its assembly still lacks essential weighted distribution arguments, and Lemma DW contains a false pointwise assertion.
+
+“FATAL” below means fatal to the present proof, not a disproof of Prop UB’s conclusion. I worked read-only and checked the cited literature online.
+
+1. **FATAL — The weighted application theorem needed for RB2 + AB2 is missing.**  
+   **Location:** [§5](/Volumes/git/factoring-connection/notes/pc3_results.md:266), especially lines 278–286; [§6.3](/Volumes/git/factoring-connection/notes/pc3_results.md:351), especially lines 360–363.
+
+   BDH controls discrepancies summed over moduli and classes. LSQ controls character sums for common input sequences. Neither automatically supplies the claimed estimates with the actual joint weights from:
+   - the reduced basis and transformed region;
+   - the label and root conditioning;
+   - rational smoothness;
+   - the algebraic pushforward density;
+   - normalization by the label’s own first moment.
+
+   In particular, knowing separately that \(\sum_t |e_t|\) is small and that rational pair probabilities \(r_t\) have a good average does **not** control \(\sum_t |e_t|r_t\). The errors and weights can concentrate together. Taking a supremum over scales also requires a maximal estimate; it does not follow from fixed-scale BDH.
+
+   The determinant multiplicity estimate quoted in §5 is an unweighted geometric assertion. The proof needs its appropriately weighted counterpart, including primitive points, prime \(b\), irregular lattices, and the conditional means appearing in the denominators.
+
+   **Fix:** State and prove one explicit application theorem with the exact measure and normalization. Give every multiplicity and domination bound before applying BDH/LSQ. This is substantial missing mathematics, not merely unchecked constants.
+
+2. **FATAL — Lemma DW(a)’s pointwise TV claim is false with its stated hypotheses.**  
+   **Location:** [§6.2, lines 319–338](/Volumes/git/factoring-connection/notes/pc3_results.md:319).
+
+   The actual one-point smoothing scale is
+   \[
+   |G(P)|H\,|P|^{d-1},
+   \]
+   whereas the argument bounds the displacement \(w\widehat F_N(P)\) against the global envelope \(X_F\). Small displacement relative to an envelope does not imply small TV displacement relative to the actual distribution.
+
+   This matters when \(G(P)=1\), which the lemma permits. Such primitive \(g,P\), with \(b\asymp V\), exist. Polynomial division gives
+   \[
+   \widehat F_N(P)
+   =N(b/g_1)^d+
+     O(d2^{O(d)}|G(P)|V^{d-1}).
+   \]
+   At the inherited root parameters \(\mu=(1-\nu)/d\), the leading term can have size \(N^\nu V^d\). With the stated minimum \(H\asymp WN^{\eta_0}dV\), its displacement relative to the support scale of \(\vartheta\) grows like
+   \[
+   N^{\nu-\eta_0}/\operatorname{poly}(d),
+   \]
+   which diverges. The proposed laws can have essentially disjoint supports.
+
+   The parent filter \(|G(P)|\gg MV\) removes this example from the parent first moment. It is absent from the universal lemma statement, and its availability for every child contribution has not been established.
+
+   **Fix:** Restrict the lemma to appropriately filtered points, or impose a height bound using the actual scale, including the \(N/g_1^d\) contribution. The claimed pointwise FM simplification is plausible for the filtered parent count after this repair.
+
+3. **MAJOR — The local density ratio in PCV is misnormalized.**  
+   **Location:** [§4.3, lines 238–243](/Volumes/git/factoring-connection/notes/pc3_results.md:238).
+
+   Take \(K=p\), \(\delta=p\), with \(p\le y\) fixed. The stated ratio is approximately
+   \[
+   \tau(p)=\frac{p^{1-\alpha}}{1-p^{-\alpha}},
+   \]
+   which tends to \(p/(p-1)\), not \(1\), as \(\alpha\to1\). Therefore the asserted bound for \(\tau(\delta)-1\) is false.
+
+   For an unrestricted uniform residue baseline, the correctly normalized density in a gcd class is
+   \[
+   \frac{K\,\Psi_{K/\delta}(x/\delta,y)}
+        {\varphi(K/\delta)\Psi(x,y)}.
+   \]
+   Primitive \(g\) requires its corresponding baseline as well.
+
+   A second-order local covariance remains plausible. For example, at a shared prime its natural contribution involves
+   \((p^{-\alpha}-p^{-1})^2\). But that is a calculation with correctly centered local probabilities, not the displayed argument.
+
+   **Fix:** Rebuild the local principal term with exact class cardinalities and marginal normalizations. Treat prime powers and large smooth divisors; HT’s quoted \(\delta\le y\) estimate alone does not cover every gcd class.
+
+4. **MAJOR — The condition-number tail is not uniform over the child lattices.**  
+   **Location:** [PCV(iii), lines 245–262](/Volumes/git/factoring-connection/notes/pc3_results.md:245).
+
+   The assertion that a box has \(\Pr(\kappa>T)\asymp T^{-1}\) assumes controlled shape in Euclidean coordinates. A box in reduced-basis coordinates can be highly anisotropic.
+
+   For example, \(\Lambda_{(q,0)}=q\mathbb Z\times\mathbb Z\). Typical points \((qi,j)\) in its coefficient box have \(\kappa\asymp q\). Thus almost all pairs can exceed a polynomial cutoff \(K_0\); their proportion is not \(O(1/K_0)\).
+
+   Averaging over labels might repair this, since very distorted lattices are sparse. That requires a **label-weighted lattice-shape estimate**, currently absent.
+
+   The short-interval estimate itself is available in the required smoothness range: the \(xy^{-5/12}\) result is Hildebrand’s **1986 JNT Theorem 3**, not the cited 1985 QJM result. [Primary-paper restatement and attribution, Jain, Lemma 3.2](https://arxiv.org/pdf/2502.10530).
+
+   Its application must still handle short sections after congruence restrictions and the correct conditional scales.
+
+   Fourier tails are another unresolved step: the proposed crude smooth-pair upper bound depends on the machinery being assembled. Moreover, uniformly randomized thresholds give piecewise smooth weights, not arbitrary differentiability supporting every claimed \(k\).
+
+   **Fix:** Separate lattice-shape and pair-angle tails, prove the weighted estimates, and specify a sufficiently differentiable smoothing law.
+
+5. **MAJOR — DW’s quotient-group argument is wrong, although its lattice support admits a stronger repair.**  
+   **Location:** [§6.2, lines 326–346](/Volumes/git/factoring-connection/notes/pc3_results.md:326).
+
+   The order of \(v\) modulo \(L=\operatorname{diag}(G(P_1),G(P_2))I\) does not divide \([\mathbb Z^2:\Omega]\). It equals \([\Omega:L]\). For example, \(g=(2,3)\), \(N=7\), \(d=3\), \(P_1=(1,2)\), \(P_2=(2,1)\) give index \([\mathbb Z^2:\Omega]=3\), but order \(4\).
+
+   There is a useful exact repair. Under the stated coprimality hypotheses, with **signed** \(G(P_i)\),
+   \[
+   \Omega=\{(F_1,F_2):F_1\equiv\lambda^dF_2
+                         \pmod{|\det(P_1,P_2)|}\}.
+   \]
+   Indeed, forms with prescribed evaluations differ by
+   \(L_{P_1}L_{P_2}R\). Their evaluations at \(g\) differ by
+   \(G(P_1)G(P_2)\mathbb Z\). Coprimality with \(N\) lets one impose \(F(g)\in N\mathbb Z\), after which Gauss’s lemma gives \(F=w\widehat F_N+GR_c\).
+
+   Thus the index is exactly the determinant, without the unexplained \(\gamma\), and the multiplier order is \(|G(P_1)G(P_2)|\). I also checked this identity on 1,624 small configurations.
+
+   This establishes support, **not** the asserted weighted TV law. Kern-U supplies a fibre upper bound, not that TV theorem.
+
+   **Fix:** Insert the exact lattice proof, correct the order and signs, then prove two-point smoothing with explicit uniform errors.
+
+6. **MAJOR — LSQ is correct; its weighted extensions are not established.**  
+   **Location:** [§4.2](/Volumes/git/factoring-connection/notes/pc3_results.md:204), [§6.3, lines 358–363](/Volumes/git/factoring-connection/notes/pc3_results.md:358).
+
+   The lemma and ratio-class corollary follow from the multiplicative large sieve and the maximal argument. The relative-error formula additionally assumes a sufficiently dense prime family.
+
+   Restricting both variables modulo \(\Delta\), summing over its classes, and allowing regions depending on \(q,r\) requires a hybrid estimate. Applying the displayed sieve independently to each residue class can introduce a \(\Delta\)-loss. Partial summation does not remove that loss.
+
+   Nor does DW make the label weights “explicit” in the asserted sense. The displayed proportionality omits geometry, acceptance exclusions, and normalization. A smooth heuristic dependence on \(q\) is not a proved maximum-to-average bound.
+
+   **The large-\(a\) lever is legitimate** for an unspecified \(L[3/8,c]\) constant: \(a\) increases factor-base and linear-algebra costs and changes box constants, but I found no incompatibility preventing a sufficiently large fixed choice. All resulting inequalities must be checked together. The claim that LSQ is the *only* place requiring large \(a\) contradicts the later tail condition.
+
+7. **MAJOR — Composite \(w\) requires explicit changes to the internal chain.**  
+   **Location:** [§6.4](/Volumes/git/factoring-connection/notes/pc3_results.md:365); [paper2 field sampling](/Volumes/git/factoring-connection/paper2/main.tex:746), [coprimality](/Volumes/git/factoring-connection/paper2/main.tex:695), [IR](/Volumes/git/factoring-connection/paper2/main.tex:1654).
+
+   The resultant remains \(\pm wN\), and the homogeneity/Gauss identities survive. Primality was nevertheless doing real work:
+
+   - \(w>t\) prime guaranteed \(\gcd(w,t)=1\) and reduced forced residues. Integer \(w\) permits common factors of \(F(P)\) and \(G(P)\).
+   - SAMPLE_FIELD’s conclusion that the content is either \(1\) or \(w\) fails. It can be any divisor of \(w\).
+   - IR uses \(r\nmid Nw\) for every certificate prime. When \(r\mid w\) and \(G\bmod r\) is linear, the reduction is forced reducible.
+
+   These look repairable: reject nonprimitive forms, skip unsuitable certificate primes, and prove an averaged rejection bound over \(w\). LV6 and row algebra appear compatible once an accepted primitive irreducible field is obtained, but the existing statements cannot simply be reused.
+
+   The height arithmetic also needs correction: \(H\ge WN^{\eta_0}dV\) contributes the exponent of \(V\), omitted from the displayed replacement floor. The bound on \(\widehat F_N\)’s constant coefficient needs an explicit parameter check.
+
+8. **MAJOR, readily fixable — Separate average variances do not imply the margin-table product.**  
+   **Location:** [§7.1–7.2](/Volumes/git/factoring-connection/notes/pc3_results.md:395).
+
+   Bounds for \(\mathbb E_w\phi\) and \(\mathbb E_w\sigma^2\) do not imply the stated bound for \(\mathbb E_w(\sigma^2\phi)\).
+
+   Fortunately Prop DC directly gives a better assembly. Normalize the label weights to sum to one and put
+   \(A=\mathbb E_w\phi\), \(B=\mathbb E_w\sigma^2\). Then
+   \[
+   \frac{\text{dead-incidence mass}}W
+   \le A+\sqrt{AB}.
+   \]
+   Consequently separate bounds \(A,B=O(D^{-3/4}\log D)\) suffice, without controlling their product label by label.
+
+   **Fix:** Use this corollary and rewrite the table. Also distinguish the heuristic \(W/\mu_1\asymp D^{3/8}\) from the deterministic child cap \(O(D^{1/2})\). The latter still leaves room for the proposed covariance size, but changes the advertised margin.
+
+9. **MAJOR — The exclusion of three levels is an arithmetic error.**  
+   **Location:** [§7.3](/Volumes/git/factoring-connection/notes/pc3_results.md:431), also the verdict and candidate card.
+
+   With the draft’s own model,
+   \[
+   \phi_i\asymp\sigma_i^2\asymp D^{-2\alpha},
+   \qquad \eta_i\asymp D^{-i\alpha},
+   \]
+   both conditions are borderline at \(i=2\). In particular,
+   \[
+   \sigma_i^2\phi_i\asymp D^{-4\alpha}=\eta_i^2.
+   \]
+   The required \(\sigma_i\) is \(O(D^{-\alpha})\), not \(O(D^{-2\alpha})\).
+
+   Thus three levels remain borderline in this bookkeeping, consistent with multidescent §3.5. Failure follows from the displayed exponents only for \(i>2\). Extending DC to descendant-success counts would still require new estimates.
+
+10. **MINOR — BDH-S is correctly quoted; qualify the extensions and the “independent” derivation.**  
+    **Location:** [§4.1](/Volumes/git/factoring-connection/notes/pc3_results.md:183).
+
+    Harper’s Theorem 2 has exactly the displayed effective bound and range \(Q\le\Psi(x,y)\). [Harper, Theorem 2](https://arxiv.org/pdf/1208.5992).
+
+    The proposed conductor split is viable in the stated \(x^{o(1)}\) regime: \(\log(1/(\epsilon\rho))=o(\log x)\), so the chosen \(R\) fits below a fixed power of \(x\). Drappeau’s Lemme 5 already includes induced characters. It explicitly derives from Harper’s calculations, so this is an alternative derivation, not literature-independent verification. [Drappeau, Lemme 5](https://arxiv.org/pdf/1307.7554).
+
+    Nonreduced classes contribute zero unless \(\delta\) is \(y\)-smooth. Differencing gives an absolute interval bound; relative short-interval bounds require further normalization. Twists require stated variation bounds. None of these qualifications invalidates the basic cited theorem.
+
+11. **MINOR — LAT and exact cross-term cancellation largely survive scrutiny.**  
+    **Location:** [§3](/Volumes/git/factoring-connection/notes/pc3_results.md:145), [§4.3](/Volumes/git/factoring-connection/notes/pc3_results.md:227).
+
+    LAT(a–c) are correct. For any subgroup of \((\mathbb Z/K)^2\), two second coordinates with the same gcd with \(K\) differ by multiplication by a unit. Simultaneous multiplication gives a fibre bijection preserving first-coordinate gcds. The claimed fibre-multiset property is therefore correct.
+
+    Consequently the mixed \(ME\) terms vanish at each fixed Fourier frequency, provided the same weight is separated correctly and the sums/integrals converge. This does **not** identify the principal term with a product measure or establish PCV.
+
+    LAT(d)’s basis-independence modulo the determinant quotient needs the stated coprimality assumption; the exceptional prime-power case deserves an actual argument.
+
+12. **MINOR — Correct the verdict and update prior art.**  
+    **Location:** [§0](/Volumes/git/factoring-connection/notes/pc3_results.md:15), [§10](/Volumes/git/factoring-connection/notes/pc3_results.md:516).
+
+    Prop DC and its corollary are valid: incidence labels are unique, \(N_{\mathfrak q}\) is independent of \(\ell\), and the factor \(1/\#J\) is correct. Lemma 0 justifies root conditioning without losing incidences. Zero-mean or zero-weight labels should be handled explicitly.
+
+    The first-order cancellation identity for a covariance under a common baseline is also valid. What remains unproved is the required bound on the centered local and archimedean perturbations under the actual weighted law. I found no demonstrated unavoidable first-order term, but the draft has not excluded environment or conditioning contributions.
+
+    “DW proved,” “clean reduction,” and “U′ alone” overstate the present result. The elementary reduction is proved; the analytic route remains open.
+
+    Add Harper’s published **2025** BDH variance asymptotics for general sequences and smooth numbers. Its large-modulus application does not directly solve this small-modulus weighted problem, but it belongs in the literature discussion. [Harper, JLMS 2025](https://doi.org/10.1112/jlms.70293).
+
+My subjective probabilities are **35%** that Prop UB’s conclusion in design \(2L'\) can be justified along the outlined route after these repairs, and **80%** that the integer-multiplier design DW can survive the internal chain with explicit sampling, rejection, and height/filter corrections. These assess the proposed mechanisms; the literal universal statement of Lemma DW(a) is false.

@@ -77,3 +77,76 @@ def test_prop_dc_inequality_random():
         for K in (1.5, 2.0, 5.0, 40.0):
             assert lhs <= dc.dc_bound(p, Z, N, K) * (1 + 1e-9) + 1e-12
         assert lhs <= dc.dc_bound_opt(p, Z, N) * (1 + 1e-9) + 1e-12
+
+
+def _gb(N, g0, g1, d):
+    # [pp] Lemma GB base expansion for T = N (coefficients a_0..a_d, F(x,y) = sum a_i x^i y^(d-i))
+    T = N
+    a = [0] * (d + 1)
+    for i in range(d, 0, -1):
+        ai = (T * pow(g0, -i, g1)) % g1
+        if ai > g1 // 2:
+            ai -= g1
+        a[i] = ai
+        T = (T - ai * g0 ** i) // g1
+    a[0] = T
+    return a
+
+
+def _form(a, P):
+    x, y = P
+    d = len(a) - 1
+    return sum(a[i] * x ** i * y ** (d - i) for i in range(d + 1))
+
+
+def test_design_dw_linear_multiplier():
+    # Lemma DW: F = w*Fhat_{g,N} + G*R_c.  (a) F(g0,g1) = wN; (b) F(P) mod t uniform over w;
+    # (c) (F(P1), F(P2)) satisfies F1 = lam^d F2 mod det (homogeneity, Lemma LAT(c)).
+    from math import gcd
+    N, g0, g1, d = 10007 * 10009, 211, 197, 3
+    a = _gb(N, g0, g1, d)
+    assert _form(a, (g0, g1)) == N
+    rng = np.random.default_rng(3)
+    P1, P2 = (5, 7), (3, -4)
+    D = abs(P1[0] * P2[1] - P1[1] * P2[0])
+    lam = [l for l in range(D) if gcd(l, D) == 1 and (P1[0] - l * P2[0]) % D == 0 and (P1[1] - l * P2[1]) % D == 0][0]
+    t1 = abs(g1 * P1[0] - g0 * P1[1])
+    res = np.zeros(t1, dtype=int)
+    for w in range(5000, 5000 + 40 * t1):
+        if gcd(w, g1) != 1:
+            continue
+        c = rng.integers(-50, 51, d)
+
+        def F(P):
+            x, y = P
+            R = sum(int(c[i]) * x ** (d - 1 - i) * y ** i for i in range(d))
+            return w * _form(a, P) + (g1 * x - g0 * y) * R
+
+        assert F((g0, g1)) == w * N
+        res[F(P1) % t1] += 1
+        assert (F(P1) - pow(lam, d) * F(P2)) % D == 0
+    # uniform residues mod t1 (up to the gcd(w, g1) = 1 restriction, which is invisible mod t1 here)
+    assert res.min() > 0.6 * res.mean() and res.max() < 1.4 * res.mean()
+
+
+def test_scaling_invariance_cross_terms():
+    # §4.3: for a sublattice Omega >= K Z^2, the gcd multiset of the fibre over a2 depends only on gcd(a2, K)
+    from math import gcd
+    rng = np.random.default_rng(4)
+    for _ in range(40):
+        K = int(rng.integers(2, 60))
+        gens = [tuple(int(v) for v in rng.integers(0, K, 2)) for _ in range(2)]
+        Om = set()
+        for s in range(K):
+            for t in range(K):
+                Om.add(((s * gens[0][0] + t * gens[1][0]) % K, (s * gens[0][1] + t * gens[1][1]) % K))
+        fib = {}
+        for a1, a2 in Om:
+            fib.setdefault(a2, []).append(gcd(a1, K))
+        byclass = {}
+        for a2, lst in fib.items():
+            key = gcd(a2, K)
+            ms = tuple(sorted(lst))
+            byclass.setdefault(key, set()).add(ms)
+        for key, s in byclass.items():
+            assert len(s) == 1
