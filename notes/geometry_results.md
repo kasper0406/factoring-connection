@@ -167,7 +167,7 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 26 | Primitive part Σ_{d\|N} μ(N/d)\|H₁(X_d)_tors\| for fibred K (= primitive periodic points of the monodromy) | Möbius over divisors | — | FACT (Prop CAT) |
 | 27 | Torus knot T(p, q), Brieskorn spheres Σ(p, q, r) | Δ_{T(p,q)} = Φ_{pq} when p, q prime; genus φ(N)/2 | need p, q to build | (i) no |
 | 28 | Torus knot T(2, N), 2-bridge knots b(N, q) | Δ_{T(2,N)} = (t^N + 1)/(t + 1) factors over Q as ∏_{d\|N, d>1}Φ_{2d}; b(N,q) is Fox m-colourable iff gcd(m, N) > 1 | polynomial factorisation of degree N − 1; gcd | R / EXP |
-| 29 | Mazur–Morishita: Spec Z[1/N] as the complement of the "link" of N | components ↔ primes; H¹_et(Spec Z[1/N], μ₂) = (Z/2)^{1+ω}; basis of Z[1/N]^× = the primes | Kummer theory | dimension ω; basis FACT (Prop KUM) |
+| 29 | Mazur–Morishita: Spec Z[1/N] as the complement of the "link" of N | components ↔ primes; H¹_et(Spec Z[1/(2N)], μ₂) = (Z/2)^{2+ω}; basis of Z[1/N]^× = the primes | Kummer theory | dimension 2 + ω; basis FACT (Prop KUM) |
 | 30 | Linking numbers of the two "knots" of N = pq (Legendre (p/q)); Milnor triple invariants (Rédei symbols) | 4-rank of Cl⁺(Q(√N)) (Rédei) | needs the class group | OPEN (§8) |
 | 31 | Hyperbolic Dehn fillings M(N, 1), mapping tori of φ^N: volume | vol(M) − c/N² + … analytic in 1/N (Neumann–Zagier 1985); N·vol(M_φ) | — | AGG (no arithmetic) |
 | 32 | Kashaev / colored Jones at e(1/N) | — | O(N) recurrences | EXP (`newfamily` row 34) |
@@ -428,8 +428,9 @@ there. ∎ The integer |H₁(Σ_N)| = ∏_{d|N, d>1}|Res(Δ_K, Φ_d)| does "see"
 divisors of N, but it has ≍ N·log M(Δ_K) digits (M the Mahler measure; Silver–Williams 2002), and its
 divisor-indexed factors are exactly the Möbius parts of Prop CAT.
 
-**Prop KUM (PROVED, Kummer theory).** For N odd and squarefree, H¹_et(Spec Z[1/N], μ₂) ≅ Z[1/N]^×/(Z[1/N]^×)² ⊕
-Pic(Z[1/N])[2] = (Z/2)^{1+ω(N)}, with basis {−1} ∪ {primes r | N}. In the Mazur–Morishita dictionary (Morishita,
+**Prop KUM (PROVED, Kummer theory).** For N odd and squarefree, put X = Spec Z[1/(2N)] (2 must be inverted for μ₂
+to be étale; codex). The Kummer sequence gives H¹_et(X, μ₂) ≅ O(X)^×/(O(X)^×)² ⊕ Pic(X)[2] = (Z/2)^{2+ω(N)}, with
+basis {−1, 2} ∪ {primes r | N}. In the Mazur–Morishita dictionary (Morishita,
 *Knots and Primes*, Universitext 2012, Ch. 2–4) this is H¹ of the complement of the "link" of N. Its dimension is
 ω(N) (ω tier) and a basis *is* the factorisation.
 
