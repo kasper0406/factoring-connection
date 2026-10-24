@@ -1,6 +1,6 @@
 # c12alg: the algebraic two-point blocks of C₁/C₂ under design DW — results
 
-Agent `c12alg`, phase 27, 2026-10-24. **v2**: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
+Agent `c12alg`, phase 27, 2026-10-24. **v2.1** (v2 + §3.6 Theorem AB₂). v2: the codex adversarial round (MAJOR REVISION) and the Opus proof critic (Lemma η MAJOR; the rest ACCEPT or ACCEPT WITH FIXES) are applied (§10). The Opus literature critic is recorded in §10 v2.1.
 
 Files:
 - this note; pre-registration `notes/c12alg_prereg.md` (commit `20c882b`, code frozen there);
@@ -23,14 +23,22 @@ Hildebrand–Tenenbaum saddle point is written β (α is the L-exponent).
 
 ## 0. Verdict
 
-**Plain language.** On the algebraic side, design DW works as hoped, and on the window 3/8 < α < 2/5 it delivers what
-C₁ and C₂ need. It does **not** by itself give a rigorous algorithm below L[2/5]: the rational two-point blocks (sister
-agent c12rat) are still needed. The window helps for a simple reason: there, both concentration statements are needed
-only to *first order* (relative errors of size 1/u). For first-order errors we have enough tools: the
-Barban–Davenport–Halberstam/Bombieri–Vinogradov estimates for smooth numbers, Hildebrand's short-interval asymptotic,
-and the de Bruijn/Hildebrand–Tenenbaum local estimates. The second-order (Saias-type) archimedean analysis is then
-unnecessary. At α = 3/8 itself, the algebraic block fails exactly where the rational one does: the archimedean term
-would have to be computed to second order.
+**Plain language.** On the algebraic side, design DW works as hoped. It does **not** by itself give a rigorous
+algorithm below L[2/5]: the result is conditional on two unreviewed sketches, ours (Theorem AB/AB₂) and sister agent
+c12rat's rational blocks.
+
+What we have:
+- DW is compatible with the whole chain (proved).
+- Its two-point law is an explicit lattice-parallelogram mixture (proved).
+- The child boxes are never empty on average (proved).
+- The algebraic two-point blocks of C₁/C₂ hold to the precision the descent needs (sketch):
+  - at **first order** on the window 3/8 < α < 2/5, where first order is enough (Theorem AB);
+  - at **second order** on [3/8, 2/5), including α = 3/8 (Theorem AB₂, added in v2.1), by a cell-covariance device
+    (the covariance of two one-point functions is at most the product of their first-order standard deviations).
+    The device was suggested in c12rat's uncommitted v1 note.
+
+If both sketches survive, the two-level algorithm runs in L[3/8]. If only the first-order versions survive, it runs in
+L[α] for every α > 3/8.
 
 Precisely:
 1. **Window precision budget [proved].** In the design 2L_DW(α) (§1), 3/8 < α < 2/5, Prop DC_e's dead mass is
@@ -82,7 +90,9 @@ Precisely:
    - The rational side uses a per-point fibre count.
    - uprime's "routine" is confirmed, with two corrections: the child filter |G(P′)| ≥ M|P′|N^{−η₀/4} must be added to
      Good(P′), and the scan must use DW's height.
-5. **Achieved α.** **No rigorous α < 2/5.**
+5. **Achieved α.** **No rigorous α < 2/5.** v2.1: conditionally on Theorem AB₂ (sketch, §3.6) and Hyp RAT₂ (the
+   rational blocks at second order, which c12rat's unreviewed v1 claims), the same assembly gives **L[3/8]**
+   (Theorem 2L-DW₂, §5).
    - **Theorem 2L-DW(α) [proved conditional; §5].** For every fixed α ∈ (3/8, 2/5), FACTOR_2L in design 2L_DW(α)
      factors every N in expected time L_N[α, c(α)]. It is conditional on:
      - (i) the internal chain;
@@ -91,7 +101,7 @@ Precisely:
      - (iii) Theorem AB (sketch).
    - Hyp RAT(α) is c12rat's object, pc3 §7 items 1 and 4, at first order only.
    - If c12rat proves RAT(α) and Theorem AB survives review, a rigorous (internal) L[α] for every α > 3/8 follows.
-6. **Toward 3/8 [analysis].** The window argument needs α > 3/8 in exactly two places:
+6. **Toward 3/8 [analysis; superseded in v2.1 by §3.6].** The window argument needs α > 3/8 in exactly two places:
    - the first-order budget D^{−α} ≪ η;
    - √(AB) ≪ η.
 
@@ -743,6 +753,85 @@ Lemma AR is itself second order (v2), so the obstruction on the algebraic side i
 Hildebrand/HT counting step in Lemma PP. That is the same kind of estimate as pc3 §7 item 4. We have not shown it is
 the only obstacle at 3/8. (SQ) is also borderline there, as in uprime.
 
+### 3.6 Theorem AB₂: the algebraic blocks at second order, via cell covariances [sketch; added in v2.1]
+
+*Source of the device.* c12rat's v1 note (`notes/c12rat_results.md` §8.1 Prop PD, read in the working tree, not yet
+committed or reviewed when this was written) bounds the rational pair covariance with a cell/Cauchy–Schwarz identity.
+In its §9.3 it suggests that the same device applies to the algebraic pair. We carry this out here. Under DW the
+algebraic pair is simpler than the rational one: it is exactly a mixture of uniform measures on a lattice intersected
+with parallelograms (Lemma TP-W), and there is no primitivity constraint. The point is that **no second-order asymptotic
+is needed**:
+- the covariance of two functions of *separate* coordinates is bounded by the product of their one-point standard
+  deviations;
+- each standard deviation is first order;
+- so the covariance is second order.
+
+**Setting.** One mixture component ν_y = Unif(L′ ∩ Π_y), L′ = {x₁ ≡ κx₂ (mod Δ′)}, of Cor TP-q. Cells are
+c = (I₁ × I₂, δ), where I_i run over a common grid of intervals of relative length 1/K and δ | Δ′ is the gcd class
+gcd(x₁, Δ′) = gcd(x₂, Δ′). This class is common to both coordinates, since κ is a unit. Define the **exact** one-point
+cell densities
+  d_i(I, δ) := Ψ(I; gcd(n, Δ′) = δ)/#{n ∈ I : gcd(n, Δ′) = δ}  (B-smooth n; for parents B₂).
+
+**Step 1 (exact factorisation in a cell).** For a cell inside Π_y:
+- #{x ∈ L′ ∩ c : x₁, x₂ ∈ 𝒮} = N(c)d₁(I₁, δ)d₂(I₂, δ) + Err(c), where N(c) := #(L′ ∩ c), |Err(c)| ≤ √(V(I₁)V(I₂)),
+  V(I) := Σ_{a mod Δ′, gcd(a,Δ′)=δ}|E(I; a)|². This is the pair-sum identity: cross terms vanish exactly
+  (`test_pair_sum_identity_PS`). The class-δ principal term is φ(Δ′/δ)m₁m₂ = N(c)d₁d₂(1 + O(Δ′/|I|)), with
+  m_i := Ψ(I_i; δ)/φ(Δ′/δ).
+- The singles are exact, with **no** character error: #{x ∈ L′ ∩ c : x₁ ∈ 𝒮} = N(c)d₁(I₁, δ)(1 + O(Δ′/|I₂|)). Each
+  x₁ has |I₂|/Δ′ + O(1) partners.
+
+**Step 2 (covariance identity).**
+- Let ν̂ be the probability on cells with ν̂(c) = N(c)/#(L′ ∩ Π_y) for interior cells, plus an atom ∗ (boundary cells)
+  where d_i := 0.
+- Then A₁₂(y) − A₁(y)A₂(y) = Cov_ν̂(d₁, d₂) + (interior Err) + (boundary terms) + tiny.
+- Under ν̂, δ is π₀-distributed independently of the rectangle, up to O(Δ′/|I|): the residue pair of a uniform point
+  of L′ is uniform on {(κa, a)}.
+- Cauchy–Schwarz gives |Cov_ν̂(d₁, d₂)| ≤ (Var d₁·Var d₂)^{1/2}.
+- The boundary terms are handled exactly as in c12rat's Prop PD, by Cauchy–Schwarz against fourth moments of d_i over
+  the one-point marginal. That gives ≤ C h^{1/4}A₁A₂, where h ≍ K₀/K is the boundary-cell mass. With the short-fibre
+  truncation of Lemma PP: K := K₀⁴D^{8α}(log N)^C.
+- The mixture over y adds Cov_y(A₁(y), A₂(y)) ≤ sd_y(A₁(y))sd_y(A₂(y)), again a product of one-point deviations.
+
+**Step 3 (one-point deviations are first order) [proved from first-order inputs].** Under the one-point marginal
+(and over y),
+  Var(d_i)/(E d_i)² ≤ C(D^{−2α}λ^C + λ^C/u²)  (child; for parents, u₂ and B₂).
+- d_i(I, δ) = ϱ(x_I)τ*(δ)(1 + e(I, δ)) with |e| ≤ λ^C/u. This uses Hildebrand's short-interval theorem and Möbius
+  over e | Δ′ (Lemma PP), or for parents the truncation at B₂^{1/2}.
+- log ϱ(x_I) varies by (1 − β)·log(scale ratio). Its variance under the marginal is ≤ C(1 − β)²log²d, by the
+  exponential tail of Lemma AR.
+- Var_{π₀}τ* ≤ LF − 1 ≤ D^{−2α}λ^C (Lemma LF).
+- Var(e) ≤ λ^C/u².
+- So Var(d_i)/(Ed_i)² ≤ C(D^{−2α}λ^C + λ^C/u²).
+
+The first-order errors e enter only through variances. That is why no second-order asymptotic is needed.
+
+**Step 4 (character errors).** Σ_c|Err(c)| over all cells of all non-thin pairs of a dyadic coordinate class is
+controlled by Harper's Theorem 2 (BDH), or by Drappeau's Lemme 5 since Δ′ ≤ L[α]^{O(1)} = x^{o(1)}. This is summed over
+the K² grid cells with the multiplicities of Lemma FB. The relative error is ≤ K^{O(1)}e^{−cD^α/λ²}, as before.
+
+**Theorem AB₂.** In design 2L_DW(α) for every fixed α ∈ [3/8, 2/5), and with the same thin-pair, skew and TV
+treatment as Theorem AB:
+- (i) Σ_{s≤T}(w/W)|ϕ^alg| ≤ D^{−2α}λ^C(1 + Σ_{s≤T}(w/W)ϕ^rat);
+- (ii) Σ(w/W)|σ^alg| ≤ (D^{−2α} + D^{−2(3−7α)})λ^C(1 + Σ(w/W)σ^rat);
+- (iii) as in Theorem AB, with T and K₀ enlarged by D^{α}.
+
+At α = 3/8 the design is 2L_DW(3/8). This is uprime's 2L′ with DW, η₀ ≍ D^{5/8−1}, and uprime's (SQ) constraint
+ab₂ > 3d₀/(32κ), which is now needed, since (SQ) is borderline-automatic only for α > 3/8.
+
+*Sketch status.*
+- Steps 1, 2 (interior), 3 and 4 use only lemmas proved here or published inputs.
+- Step 2's boundary bookkeeping is c12rat's Prop PD argument transposed. It is not re-derived line by line here, and
+  c12rat's note is itself unreviewed at the time of writing.
+- The margins at 3/8: max(3α − 1, 1 − 2α, 2α − 1/2) = 1/4 < 3/8 = α. (1 − α)/2 = 5/16 < 4α − 1 = 1/2. 2 − 5α = 1/8 and
+  1 − 2α = 1/4 < 3 − 7α = 3/8. `params.margins2` encodes them.
+
+**Consequence for the budget.** With A and B both second order:
+- A ≤ D^{−2α}λ^C ≪ η ≍ D^{−(3−7α)}, which holds iff α > 1/3;
+- √(AB) ≤ D^{−α−min(α, 3−7α)}λ^C ≪ η, which holds for all α ≥ 3/8.
+
+So Prop PB's conclusion holds on the closed range [3/8, 2/5). §3.5's diagnosis is superseded: the first-order obstacle
+at 3/8 is removed by the covariance device, not by second-order asymptotics.
+
 ---
 
 ## 4. The one-point child lower bound (task 3) [proved]
@@ -831,6 +920,18 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
 5. Rows (nested Lemma RW), POSTPROCESS-DW (§2.8), Theorem DD with Lemma T_multi, and Lemma F_α at α finish the proof, as
    in multidescent Theorem 2L. ∎
 
+**Theorem 2L-DW₂ [proved, conditional; v2.1].** For every fixed α ∈ [3/8, 2/5), FACTOR_2L in design 2L_DW(α) (at 3/8
+with uprime's (SQ) constraint ab₂ > 3d₀/(32κ)) factors every N in expected time L_N[α, c(α)]. It assumes:
+- (i) the internal chain;
+- (ii) **Hyp RAT₂(α)**: (R1), (R2) with D^{−2α}λ^C on both right-hand sides (c12rat's Theorem RAT, unreviewed v1);
+- (iii) **Theorem AB₂** (§3.6, sketch).
+
+*Proof.* As Theorem 2L-DW(α), with A, B ≤ D^{−2α}λ^C. The budget (§3.6, "Consequence") holds on [3/8, 2/5), and the
+remaining margins hold at 3/8 (`params.margins2`). The other inputs at 3/8 are uprime's U′ at 3/8 with the §2.7 DW
+replacements, Lemma η (any α), Prop CLB and Lemma reject-DW. ∎
+
+In particular, conditionally on (ii) and (iii), **L[3/8]**.
+
 **Complete dependency list of Theorem 2L-DW(α).**
 - *Hypothesis:* Hyp RAT(α) (open; c12rat), with the idealised weights.
 - *Design constraint for c12rat (optional for us).* (A1) a > σ₂(q) for q near B, i.e. a² > 4α/d₀·(1 + o(1)), which
@@ -839,7 +940,8 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
   included in the BV averaging. v1's illustrative parameters (a = 3/5) violate (A1). With (A1), e.g. α = 7/18, a = 2,
   κ = 1/8, d₀ = 1, b₂ = 2, C_γ = 0 gives c ≈ 9.5. A rational grid search under (A1) gives c ≈ 3.91 at
   (a, κ, d₀, b₂) = (4/5, 1/16, 5/2, 1/2) (`params.cost_constant`; illustrative, C_γ not computable).
-- *Sketch:* Theorem AB (this note; the bookkeeping in Lemmas FB and PP is not written to the last constant).
+- *Sketch:* Theorem AB (this note; the bookkeeping in Lemmas FB and PP is not written to the last constant). For
+  2L-DW₂, also Theorem AB₂ (§3.6), whose boundary bookkeeping transposes c12rat's Prop PD (unreviewed v1).
 - *Proved here:* Lemma η (v2 rewrite), Prop PB, Lemma VD, Lemmas GB-DW, CU, RE, CT, IR-DW, reject-DW, W-DW, DW(a)⁺, MM, BZ, TP,
   TP-W, Cor TP-q, LF, AR, PU, TH, WD, Prop CLB, §2.7 (U′-DW), §2.8 (POSTPROCESS-DW), and the margins (`params.py`).
 - *Internal (unrefereed):*
@@ -869,8 +971,10 @@ max(2a, a + s + max(a, σ₁ + σ₂), (a + s)/(1 − 2^{−α})) for any admiss
   Not needed: Drappeau's Lemme 5 and Lemma 8.5′/8.5H, which are replaced by DW(a). Theorem U itself still uses them, for
   the recursive value factorisations (FACTOR_U).
 
-**Achieved α:** none unconditionally. Conditionally on RAT(α) and Theorem AB: every α > 3/8, i.e. L[3/8 + ε] for every
-ε > 0. This is not L[3/8].
+**Achieved α:**
+- none unconditionally;
+- conditionally on RAT(α) and Theorem AB: every α > 3/8;
+- conditionally on RAT₂ and Theorem AB₂: α = 3/8.
 
 ---
 
@@ -1022,5 +1126,8 @@ conditional theorem 70%.
     C₁.
   - Sketch: the algebraic blocks of C₁ and C₂ in the window (Theorem AB).
   - Conditional: L[α] for every α > 3/8, given Hyp RAT(α).
-- **Failure scope.** At 3/8: the second-order archimedean term. No rigorous α < 2/5 without the rational blocks.
-- **Next step.** Hyp RAT(α) (c12rat); writing Lemmas FB and PP to the last constant.
+- **Failure scope.** No rigorous α < 2/5 until Theorem AB/AB₂ are written out and reviewed and the rational blocks
+  (c12rat) are reviewed. Below 3/8 the two-level design is infeasible (multidescent §3.1). Three levels are borderline
+  (pc3 §7.5).
+- **Next step.** Write Lemmas FB/PP and §3.6's boundary terms to the last constant; an independent review of AB₂
+  together with c12rat's Prop PD.

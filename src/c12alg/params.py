@@ -92,3 +92,21 @@ def cost_constant(al: Fr, a: Fr, kappa: Fr, d0: Fr, b2: Fr, C_gamma: Fr) -> floa
 def constraint_A1(al: Fr, a: Fr, d0: Fr) -> bool:
     """(A1) a > sigma_2(q) for q near B (b(q) -> 0): a^2 > 4 alpha / d0.  Makes Delta' < q in every child box."""
     return a * a > 4 * al / d0
+
+
+def comparisons2(al: Fr) -> List[Tuple[str, Term, Term]]:
+    """Second-order budget (Theorem AB2, notes §3.6): replaces the two first-order checks; valid on [3/8, 2/5)."""
+    one = Fr(1)
+    s = 3 - 7 * al
+    base = [c for c in comparisons(al) if not c[0].startswith(("first-order child error", "sqrt(A B)",
+                                                                "(SQ) automatic"))]
+    return base + [
+        ("second-order child error D^-2a << eta", (-2 * al, Fr(9)), (-s, Fr(-9))),
+        ("sqrt(A B) << eta with A, B second order", (-al - min(al, s), Fr(9)), (-s, Fr(-9))),
+        ("parent truncation tail: (1-a)/2 < 4a-1", ((1 - al) / 2, one), (4 * al - 1, one)),
+        ("Xi exponents < alpha", (max(3 * al - 1, 1 - 2 * al, 2 * al - Fr(1, 2)), Fr(2)), (al, Fr(-2))),
+    ]
+
+
+def margins2(al: Fr) -> Dict[str, str]:
+    return {name: ("ok" if a < b else ("borderline" if a == b else "FAIL")) for name, a, b in comparisons2(al)}

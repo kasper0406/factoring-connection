@@ -254,3 +254,8 @@ def test_dw_pipeline_smoke():
     N = 1000003 * 999983
     r = dp.factor_dw(N, cfg, 12345)
     assert r["factors"] == [999983, 1000003]
+
+
+def test_params_second_order_closes_three_eighths():
+    assert all(v == "ok" for v in params.margins2(Fr(3, 8)).values())
+    assert all(v == "ok" for v in params.margins2(Fr(7, 18)).values())
