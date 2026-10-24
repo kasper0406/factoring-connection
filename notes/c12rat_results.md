@@ -1,6 +1,6 @@
 # c12rat: the rational two-point blocks of C₁/C₂ (pc3 §7 items 1, 2, 4) — results
 
-Agent `c12rat`, phase 27, 2026-10-24. **v2**: codex adversarial round (MAJOR REVISION) and Opus proof critic (W: ACCEPT
+Agent `c12rat`, phase 27, 2026-10-24. **v2.1** (literature critic applied, §12.1). **v2**: codex adversarial round (MAJOR REVISION) and Opus proof critic (W: ACCEPT
 WITH FIXES) applied, §12. The v2 repairs have not been re-reviewed.
 
 Files:
@@ -39,7 +39,8 @@ How it works:
   Hildebrand–Tenenbaum). So first-order one-point asymptotics give a second-order two-point bound, with no Fourier tails,
   no pair main term ever computed, and no transversality assumption.
 - **Character errors.** These are controlled on average over the whole incidence-weighted family by Drappeau's published
-  Lemme 5 alone, through a weighted application theorem whose only inputs are a pointwise upper bound for the incidence
+  Lemme 5 alone (which Drappeau states without proof, as a consequence of §3.3 of Harper's unrefereed preprint
+  arXiv:1208.5992), through a weighted application theorem whose only inputs are a pointwise upper bound for the incidence
   weights and lattice multiplicities.
 - **Skew and thin pairs.** Skewed labels are negligible by weight. Nearly parallel pairs are bounded by an elementary
   smooth-numbers-in-progressions estimate, whose loss e^{O(D^θλ)} (θ < α) is beaten by the BDH-type saving e^{−cD^α/λ²}.
@@ -355,21 +356,26 @@ fibre has (|C_τ|/φ²)U₂(1 + O(t)) points, independent of m₁.
 
 ### 5.1 Cited results (published; statements as used)
 
-- **Fact D** (Drappeau, Compositio 151 (2015), Lemme 5; Pascadi, Compositio 161 (2025), Lemma 3.2; = paper2 Fact `fact:D`).
+- **Fact D** (Drappeau, Compositio 151 (2015), Lemme 5; restated as Pascadi's Lemma 3.2 — paper2/uprime cite it as Compositio
+  161 (2025), Jain cites it as a 2025 preprint; publication details UNVERIFIED by us; = paper2 Fact `fact:D`).
   There are η_D, c_D, δ_D > 0 such that for (log x)^{c_D} ≤ y ≤ x and Q ≤ x,
   Σ_{k≤Q}φ(k)^{−1}Σ_{χ mod k, 1<cond χ≤x^{η_D}}|Ψ(x, y; χ)| ≪ Ψ(x, y){H(u)^{−δ_D} + y^{−δ_D}} (with A = 1/2 and the
-  factor (log x)^{−A} discarded), H(u) = e^{u/log²(u+1)}. Its published proof refers to §3.3 of Harper's unpublished
-  arXiv 1208.5992 (paper2 discusses this). We use **only** this statement: no BDH theorem of Harper is used.
-- **Fact dBT1** (de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i); Drappeau Lemme 1(i)). For 2 ≤ y ≤ x and
+  factor (log x)^{−A} discarded; the implicit constant is effective for A < 1, and we take A = 1/2), H(u) = e^{u/log²(u+1)}.
+  **Drappeau states Lemme 5 without proof**, as a consequence of §3.3 of Harper's preprint arXiv:1208.5992 ([Har12b],
+  pré-publication), which is unrefereed; so Fact D's justification rests on that preprint (paper2 discusses this). We use
+  **only** this statement: no BDH theorem of Harper is used.
+- **Fact dBT1** (de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i), restated as Drappeau Lemme 1(i)). For 2 ≤ y ≤ x and
   1 ≤ d ≤ x, Ψ(x/d, y) ≤ C Ψ(x, y)d^{−β(x,y)}; equivalently ρ̂(x/d) ≤ C d^{γ(x)}ρ̂(x), ρ̂(x) := Ψ(x, y)/x.
 - **Fact HT3** (Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Thm 3). Ψ(cx, y) = c^{β(x,y)}Ψ(x, y)(1 + O(1/u + log y/y))
   for x ≥ y ≥ 2, 1 ≤ c ≤ y. Iterating at most k times (with HT Thm 2's control of the drift of β, as in lv5unif Lemma
   U1): Ψ(x/d, y) = d^{−β(x,y)}Ψ(x, y)(1 + O_k(1/u)) for 1 ≤ d ≤ y^k, x/d ≥ x^{1/2}.
-- **Fact HT(α2)** (HT Thm 2, as paper2 (α2)): (1 − β(z, y)) log y ≤ log(u_z log y) + C_α log log y; in our ranges
+- **Fact HT(α2)** (a consequence of HT Thm 2, as paper2 (α2)): (1 − β(z, y)) log y ≤ log(u_z log y) + C_α log log y; in our ranges
   γ = 1 − β ≤ C₁/(aD^α), and y^{γ} = e^{O(λ)}.
-- **Fact H1, H2** (Hildebrand, J. Number Theory 22 (1986) 289–307; restated as Theorem 5.1 of the Hildebrand–Tenenbaum
-  survey, JTNB 5 (1993); theorem numbers in the original UNVERIFIED). For y ≥ exp((log log x)^{5/3+ε}):
-  Ψ(x, y) = xρ(u)(1 + O_ε(E_H)) and, for xy^{−5/12} ≤ z ≤ x, Ψ(x + z, y) − Ψ(x, y) = zρ(u)(1 + O_ε(E_H)),
+- **Fact H1, H2** (Hildebrand, J. Number Theory 22 (1986) 289–307, Theorem 1 (H1) and Theorem 3 (H2); restated with
+  these ranges and this error term in Jain, arXiv:2502.10530, Lemma 3.2(i)–(ii), and in the Hildebrand–Tenenbaum survey,
+  JTNB 5 (1993) §5 (Thm 5.1); the original paper was not opened by us or our critics). For y ≥ exp((log log x)^{5/3+ε}):
+  Ψ(x, y) = xρ(u)(1 + O_ε(E_H)) and, **uniformly** for xy^{−5/12} ≤ z ≤ x, Ψ(x + z, y) − Ψ(x, y) = zρ(u)(1 + O_ε(E_H)),
+  the implied constant depending only on ε,
   E_H := log(u + 1)/log y. **Consequence used:** (Ψ(x + z) − Ψ(x))/z = ρ̂(x)(1 + O(E_H)) on that range ("the
   short-interval density equals the global density to first order"). In our ranges E_H ≍ λ/(aD^αλ) = O(D^{−α}).
 - Iwaniec–Kowalski Thm 7.13 is **not** needed (all moduli are small conductors, §1.3).
@@ -783,10 +789,11 @@ D^{−2α} only at 3/8, but c12alg's proof of 2L-DW₂ already uses the B-bound 
 - *uprime, multidescent, nested, escapeR2, Theorem U's chain:* as listed in c12alg §5 (FM/LD*/D-U′, CS′, SQF, child
   scan, recursion and IR at γ₂; Prop UB, Theorem 2L's proof; Lemmas RW, T_multi; §7.3; [pp] §§3, 5–9, Kern-U, L2-U,
   Lemma S″, Lemmas OS, W, F, T_rec, Theorem DD, LV6-U).
-- *Published, used here:* Drappeau, Compositio 151 (2015), Lemme 5 (Fact D; its proof refers to Harper's unpublished
-  computations) and Lemme 1(i); de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i); Hildebrand–Tenenbaum,
-  Trans. AMS 296 (1986), Thms 2 and 3; Hildebrand, J. Number Theory 22 (1986) (Ψ = xρ(1 + O(E_H)) and the short-interval
-  form for z ≥ xy^{−5/12}); elementary: Brunn–Minkowski in dimension 2, Gauss reduction, inclusion–exclusion.
+- *Published, used here:* Drappeau, Compositio 151 (2015), Lemme 5 (Fact D; stated there without proof, as a
+  consequence of §3.3 of Harper's unrefereed preprint arXiv:1208.5992, so its justification rests on that preprint) and
+  Lemme 1(i); de la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Thm 2.4(i); Hildebrand–Tenenbaum,
+  Trans. AMS 296 (1986), Thms 2 and 3; Hildebrand, J. Number Theory 22 (1986), Thms 1 and 3 (Ψ = xρ(1 + O(E_H)) and the
+  short-interval form, uniform for xy^{−5/12} ≤ z ≤ x; restated in Jain, arXiv:2502.10530, Lemma 3.2); elementary: Brunn–Minkowski in dimension 2, Gauss reduction, inclusion–exclusion.
   Not used: Harper arXiv 1208.5992's BV/BDH theorems, Saias, the large sieve (IK 7.13), de la Bretèche–Drappeau.
 - *Published, used by the rest of the chain:* as Theorem U (lv5unif §10) and c12alg §5.
 
@@ -880,21 +887,24 @@ Reading:
 
 ## 11. Literature
 
-- **Inputs:** §5.1 and §9.1. Fact D's statement was checked by codex (c12rat_1) against Drappeau's paper (the 1/φ(q)
-  weight, Q ≤ x, effectivity for A < 1); Hildebrand's short-interval theorem is confirmed through the HT survey
-  Theorem 5.1 (codex), original numbering UNVERIFIED; dBT Thm 2.4(i) and HT Thm 3 as in paper2/uprime.
+- **Inputs:** §5.1 and §9.1, checked by the Opus literature critic (OK WITH FIXES; §12.1). Fact D: Drappeau's Lemme 5
+  has the 1/φ(q) weight, Q ≤ x, conductors ≤ x^η and effectivity for A < 1, and is stated without proof as a consequence
+  of Harper's preprint. Hildebrand's two theorems, with the rate O(log(u + 1)/log y) uniform for xy^{−5/12} ≤ z ≤ x: Jain,
+  arXiv:2502.10530, Lemma 3.2(i)–(ii), and the HT survey §5. dBT Thm 2.4(i) via Drappeau Lemme 1(i); HT Thm 3 as in
+  paper2/uprime.
 - **Coupled pairs / covariance by one-point norms.** The inequality |∫(τ₁ − 1)(τ₂ − 1)dγ| ≤ ‖τ₁ − 1‖‖τ₂ − 1‖ for any
   coupling γ is Cauchy–Schwarz; codex found it blind (c12rat_1 (13)). Its use to get a *second-order* covariance from
   *first-order* one-point asymptotics, with exact cell factorisation through diagonal-invariant coupling sets (Lemma CP),
   is not something we found in the smooth-number literature (search result, not a novelty claim). The nearest relatives
-  are the local-global factorisations in linear-forms problems (Balog–Blomer–Dartyge–Tenenbaum, Lachand,
-  Matthiesen–Wang) and the W-trick of additive combinatorics, which need bounded u or bounded coefficients.
+  give first-order counts: de la Bretèche–Drappeau, JEMS 22 (2020), Cor. 4.2 (a first-order pair upper bound, small
+  coefficients; Jain Lemma 3.3); Harper, Compositio 2016 (linear equations in smooth numbers, unbounded u);
+  Balog–Blomer–Dartyge–Tenenbaum 2012, Lachand 2017 and Matthiesen–Wang 2025 (linear forms). None gives covariance-level
+  control on families of large-modulus lattices.
 - **BDH-type averages.** The L¹ → L² use of Drappeau's Lemme 5 is pc3 §4.1's; Harper's BDH (1208.5992 Thm 2) would give
-  the same with an extra QΨ term and an unrefereed source. Density-relative BV/BT bounds exist (Lee–Venkatesan Lemma
-  8.5; Harper 2016 SNR3); the parent-weighted family is handled here by pointwise domination (Lemma DOM; c12alg's
-  Lemma WD is the two-sided version).
-- **Short progressions of large modulus.** Lemma BTS is the divisor-switching argument (Friedlander; [pp] Lemma DS;
-  Harper 2016's SNR3 has the same (Xq/Z)^{1−α} shape); codex (11) and c12alg's Lemma PU have the same statement.
+  the same with an extra QΨ term and an unrefereed source. The parent-weighted family is handled here by pointwise
+  domination (Lemma DOM; c12alg's Lemma WD is the two-sided version).
+- **Short progressions of large modulus.** Lemma BTS is the standard divisor-switching argument (elementary; proof given),
+  the large-modulus case of [pp] Lemma DS; codex (11) and c12alg's Lemma PU have the same statement.
 - **Skewed lattices.** Lemma LS is the elementary count of short vectors; the label-shape law 3/π is visible in E1.
 
 ---
@@ -953,7 +963,16 @@ positivity), found no place where Ξ multiplies a polylog-small quantity, and es
 | m12 | minor | headline vs RAT-2; SK(ii) conditional; Hildebrand's rate essential | fixed; flagged for the literature critic |
 | m13 | — | exponent bookkeeping checks out (θ = 2α − 1/2) | — |
 
-**Opus literature critic:** see §12.1 (added after its report).
+### 12.1 Opus literature critic (read-only, on v2): OK WITH FIXES
+
+Every published input of §5.1/§9.1 holds in the form used, **including Hildebrand's rate O(log(u + 1)/log y), uniform
+for xy^{−5/12} ≤ z ≤ x with a constant depending only on ε** (Hildebrand JNT 1986 Thms 1, 3, via Jain arXiv:2502.10530
+Lemma 3.2 and the HT survey §5). No range violation was found; **Theorem RAT survives; no verdict changed.** Fixes
+applied in v2.1: Drappeau states Lemme 5 without proof, as a consequence of §3.3 of Harper's preprint (caveat added in
+§§0, 5.1, 9.1); effectivity for A < 1 (A = 1/2); Pascadi citation flagged; Hildebrand theorem numbers and uniformity;
+dBT via Drappeau Lemme 1(i); HT(α2) labelled a consequence of HT Thm 2; nearest relatives rewritten (dlB–D Cor. 4.2,
+Harper 2016; first-order only); unreferenced "Friedlander", "Harper 2016 SNR3" and "Lee–Venkatesan Lemma 8.5" removed
+from §11; Jain cited directly instead of codex for Hildebrand.
 
 ---
 
