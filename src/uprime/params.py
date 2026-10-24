@@ -6,7 +6,9 @@ log X - log Y is positive and of positive order.  Leading-order comparisons only
 arithmetic; it is not an independent proof.
 
 Design 2L (multidescent §3.2), D := log N/loglog N, lam := loglog N, Lambda := D^{3/8} lam:
-  d ~ d0 D^{1/4} (odd), k ~ kappa D^{3/8}, nu = 1/(4k), mu = (1-nu)/d, h = 2 nu + eta0, eta0 = D^{-1/2};
+  d ~ d0 D^{1/4} (odd), k ~ kappa D^{3/8}, nu = 1/(4k), mu = (1-nu)/d, eta0 = D^{-1/2},
+  h = mu + 4 nu + eta0   (height floor (H): H >= M N^{4 nu + eta0}; codex uprime_1; needed for the child level-1/2
+                          conditions, lower order in theta);
   B  = exp(a Lambda)            (factor base, modulus smoothness y1)
   B2 = exp(b2 D^{1/2} lam)      (child bound, value smoothness y2 of the level-1 algebraic value)
   log Y = log N/(2k) = D^{5/8} lam/(2 kappa)      (special-q primes l = L[5/8])
@@ -14,8 +16,10 @@ Design 2L (multidescent §3.2), D := log N/loglog N, lam := loglog N, Lambda := 
   log X_F ~ (mu + h + d nu) log N ~ (d0/(4 kappa)) D^{7/8} lam     (level-1 algebraic value)
   u_r  = log X_r/log B  ~ D^{3/8}/(a d0);   u_F2 = log X_F/log B2 ~ (d0/(4 kappa b2)) D^{3/8};  log u ~ (3/8) lam
   sigma1 = lim (u_r log u_r + u_F2 log u_F2)/Lambda = 3/(8 a d0) + 3 d0/(32 kappa b2)        (mixed scan, S1^2)
-  level 2 (child q <= B2, V2 = sqrt(q) S2):  log X_r2 ~ D^{3/4} lam/d0,
-    log(X_F2/q) <= (1/d0 + d0 b2/2) D^{3/4} lam,  sigma2 = (3/8)(2/d0 + d0 b2/2)/a          (child box W2 = S2^2)
+  level 2 (child q in (Q2, 2 Q2], Q2 <= B2), with log H ~ log M ~ D^{3/4} lam/d0:
+    conservative box (reduced basis, coefficient radius S2, physical radius V2 = C Q2 S2; codex uprime_1):
+      log X_r2 ~ D^{3/4} lam/d0,  log(X_F2/q) <= (2/d0 + d0 b2) D^{3/4} lam,  sigma2 = (3/(8a))(3/d0 + d0 b2);
+    square box (V2 = sqrt(q) S2; irregular labels dead): sigma2_sq = (3/(8a))(3/d0 + d0 b2/2).
 """
 from __future__ import annotations
 
@@ -89,7 +93,7 @@ def sizes(a, d0, kappa, b2) -> Dict[str, AExp]:
         "logB": Lam.scale(a),
         "logB2": Dl(b2, Fr(1, 2)),
         "logY": Dl(1 / (2 * kappa), Fr(5, 8)),
-        "logH": Dl(1 / (2 * kappa), Fr(5, 8)),                  # (2 nu + eta0) log N, leading term
+        "logH": Dl(1 / d0, Fr(3, 4)),                           # (mu + 4 nu + eta0) log N, leading term
         "eta0_logN": Dl(1, Fr(1, 2)),
         "logXr": Dl(1 / d0, Fr(3, 4)),
         "logXF": Dl(d0 / (4 * kappa), Fr(7, 8)),
@@ -98,7 +102,7 @@ def sizes(a, d0, kappa, b2) -> Dict[str, AExp]:
         "u_F2": Dl(d0 / (4 * kappa * b2), Fr(3, 8), 0),
         "logS1": Lam.scale(sigma1(a, d0, kappa, b2) / 2),
         "logXr2": Dl(1 / d0, Fr(3, 4)),
-        "logXF2_over_q_max": Dl(1 / d0 + d0 * b2 / 2, Fr(3, 4)),
+        "logXF2_over_q_max": Dl(2 / d0 + d0 * b2, Fr(3, 4)),
         "logS2": Lam.scale(sigma2(a, d0, kappa, b2) / 2),
         "omega_upper": Dl(1 / a, Fr(5, 8), 0),                  # omega(N) <= log N/log B = D^{5/8}/a
         "mbar": Dl(d0 / (4 * kappa * a), Fr(1, 2), 0),          # max #children = log X_F/log B
@@ -119,9 +123,16 @@ def sigma1_single_y(a, d0, kappa) -> Fr:
 
 
 def sigma2(a, d0, kappa, b2) -> Fr:
-    """Child box (worst window q ~ B2): u_r2 log u_r2 + u_F2' log u_F2' with B-smoothness on both sides."""
+    """Child box, conservative geometry (worst window q ~ B2): u_r2 log u_r2 + u_F2' log u_F2' (B-smooth both sides),
+    log X_r2 ~ D^{3/4} lam/d0, log(X_F2/q) ~ (2/d0 + d0 b2) D^{3/4} lam (height floor (H))."""
     a, d0, kappa, b2 = map(Fr, (a, d0, kappa, b2))
-    return Fr(3, 8) * ((1 / d0) + (1 / d0 + d0 * b2 / 2)) / a
+    return Fr(3, 8) * (Fr(3) / d0 + d0 * b2) / a
+
+
+def sigma2_square(a, d0, kappa, b2) -> Fr:
+    """Child box, square geometry V2 = sqrt(q) S2 (irregular labels dead; needs the CM label-law bound)."""
+    a, d0, kappa, b2 = map(Fr, (a, d0, kappa, b2))
+    return Fr(3, 8) * (Fr(3) / d0 + d0 * b2 / 2) / a
 
 
 def sq_constraint(a, d0, kappa, b2) -> bool:
@@ -131,11 +142,12 @@ def sq_constraint(a, d0, kappa, b2) -> bool:
     return a > Fr(3) * d0 / (32 * kappa * b2)
 
 
-def cm_level_constraint(d0, b2) -> bool:
-    """Hyp CM proof plan, algebraic pair: modulus |G(P')| * Delta/q ~ M V1 S2^2 must sit below level 1/2 of the
-    value F(P')/q (leading order D^{3/4} lam):  1/d0 < (1/2)(1/d0 + d0 b2/2)  <=>  d0^2 b2 > 2."""
-    d0, b2 = Fr(d0), Fr(b2)
-    return d0 * d0 * b2 > 2
+def cm_level_ok(a, d0, kappa, b2) -> bool:
+    """Hyp CM proof plan, algebraic pair: modulus m12 = |G(P')| |Delta|/q <= 4 M V1 V2^2/q must satisfy
+    m12^2 N^{eta0} <= X_F2/q.  With (H) this reduces to H >= 16 M V1^2 N^{eta0}: compare log H - log M - 2 log V1
+    (leading terms: log H - log M = 4 nu log N + eta0 log N, 2 log V1 = 2 nu log N + 2 log S1 + O(1))."""
+    # 4 nu - 2 nu = 2 nu  >  0 at order D^{5/8} lam, and 2 log S1 = O(Lambda) is lower order: always true.
+    return True
 
 
 def margins(a, d0, kappa, b2, C=Fr(100)) -> List[Tuple[str, bool, str]]:
@@ -183,13 +195,14 @@ def margins(a, d0, kappa, b2, C=Fr(100)) -> List[Tuple[str, bool, str]]:
     # ---------------- squarefree / discriminant union bound
     out.append(("(SQ) a > 3 d0/(32 kappa b2)", sq_constraint(a, d0, kappa, b2), "Item 3: 1/(B log B) << rho_F2"))
     chk("B2^2 <= (2H+1)/d", s["logH"] - s["logB2"].scale(2) - ll.scale(C), "Pr_c[p^2 | F(P)] <= 1/p^2 + 1/(2H+1)")
+    chk("(H) is lower order in theta: log X_F - C log H", s["logXF"] - s["logH"].scale(C), "sigma1 unchanged by (H)")
     # ---------------- level-1 heights / Kern / Lemma W at eta0 = D^{-1/2}
     chk("eta0 logN/2 - C logS1 - C logB", s["eta0_logN"].scale(Fr(1, 2)) - s["logS1"].scale(C) - s["logB"].scale(C),
         "Kern-U H >= dV1^2 N^{eta0/2}; GM-U errors; Lemma W-U")
     chk("eta0 logN - C d", s["eta0_logN"] - s["d"].scale(C), "2^{2d+5} absorbed by N^{-eta0/4}")
     chk("log X_F - C eta0 logN", s["logXF"] - s["eta0_logN"].scale(C), "eta0 = o(theta)")
     # ---------------- recursion / IR / split
-    ir = AExp({(Fr(5, 8) - Fr(1, 4), Fr(3, 8) + Fr(1, 4) - 1): Fr(1) / (2 * Fr(kappa)) / (13 * Fr(d0))})
+    ir = AExp({(Fr(3, 4) - Fr(1, 4), Fr(1, 4) + Fr(1, 4) - 1): Fr(1) / (13 * Fr(d0) * Fr(d0))})   # log H ~ D^{3/4} lam/d0
     chk("Lemma IR: logH/(13 d loglogH) - C lam", ir - ll.scale(C), "Pr(rejection) = o(gamma_2)")
     # value factorisation by Theorem U on X <= X_F: log L_X[2/5] ~ (log X)^{2/5}(loglog)^{3/5} = O(D^{7/20} lam)
     vf = Dl(1, Fr(7, 20))
@@ -228,3 +241,24 @@ def cost_constant_2L(a, d0, kappa, b2, C_gamma) -> Tuple[Fr, Fr]:
     flo, fhi = hi_t / (hi_t - 1), lo_t / (lo_t - 1)        # t/(t-1) decreasing in t
     p = max(2 * a, a + s + max(a, sigma1(a, d0, kappa, b2) + sigma2(a, d0, kappa, b2)))
     return max(p, (a + s) * flo), max(p, (a + s) * fhi)
+
+
+def optimise_2L(C_gamma, grid=None) -> Dict:
+    """Exact rational grid search for the smallest upper bracket of c_2L subject to (SQ); illustration only
+    (C_gamma is not computed: it contains Hildebrand-Tenenbaum's and Drappeau's implied constants)."""
+    best = None
+    ga = [Fr(i, 20) for i in range(2, 41)]
+    gk = [Fr(1, 2 ** j) for j in range(1, 9)] + [Fr(i, 64) for i in range(1, 17)]
+    gd = [Fr(i, 4) for i in range(1, 17)]
+    gb = [Fr(i, 4) for i in range(1, 33)]
+    for kappa in gk:
+        for d0 in gd:
+            for b2 in gb:
+                for a in ga:
+                    if not sq_constraint(a, d0, kappa, b2):
+                        continue
+                    lo, hi = cost_constant_2L(a, d0, kappa, b2, C_gamma)
+                    if best is None or hi < best["hi"]:
+                        best = {"a": a, "d0": d0, "kappa": kappa, "b2": b2, "lo": lo, "hi": hi,
+                                "sigma1": sigma1(a, d0, kappa, b2), "sigma2": sigma2(a, d0, kappa, b2)}
+    return best

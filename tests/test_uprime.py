@@ -22,14 +22,14 @@ def test_sq_constraint_is_the_only_constant_constraint():
 
 def test_sigma_formulas():
     assert params.sigma1(Fr(3, 5), 1, Fr(1, 8), 2) == Fr(3, 8) * (Fr(5, 3) + Fr(1, 1))
-    assert params.sigma2(1, 2, Fr(1, 4), 2) == Fr(3, 8) * (Fr(1, 2) + Fr(1, 2) + 2)
+    assert params.sigma2(1, 2, Fr(1, 4), 2) == Fr(3, 8) * (Fr(3, 2) + 4)
+    assert params.sigma2_square(1, 2, Fr(1, 4), 2) == Fr(3, 8) * (Fr(3, 2) + 2)
     # single-y Lemma CS would put the algebraic factor at L[1/2] scale: positive coefficient of D^{1/2} lam
     assert params.sigma1_single_y(Fr(3, 5), 1, Fr(1, 8)) > 0
 
 
-def test_cm_level_constraint():
-    assert not params.cm_level_constraint(1, 2) and params.cm_level_constraint(1, 3)
-    assert params.cm_level_constraint(2, Fr(3, 4))
+def test_cm_level_with_height_floor():
+    assert params.cm_level_ok(Fr(3, 5), 1, Fr(1, 8), 2)
 
 
 def test_two_pow_3_8_bracket():

@@ -1,0 +1,351 @@
+**PROVED EXCEPT the conditional child first moment.** More precisely: conditional on the stipulated internal chain, the hybrid BV estimate and the **root** FM/LD*/D estimates extend to \(3/8\). The scans and recursive costs also work. A sufficient condition for the elementary local exclusions is
+\[
+\boxed{ab_2>\frac{3d_0}{32\kappa}}.
+\]
+However, the listed results do **not** establish a polylogarithmic lower bound for \(\mathbb E[N_{\mathfrak q}\mid E]\). That requires a new, weighted **two-point lower bound**. Thus U′, as presently worded, remains unproved; PC₃ additionally requires a conditional three-point covariance estimate.
+
+Write \(\lambda=\log\log N\), \(\Lambda=D^{3/8}\lambda\), and \(\rho_i(z)=\Psi(z,y_i)/z\), where \(y_1=B\), \(y_2=B_2\).
+
+**1. The hybrid restricted BV estimate closes.**
+
+Here is a useful quantitative formulation. Put
+\[
+\mathcal T=\{\ell s\in(Q/2,Q]:Y<\ell\le2Y,\ \ell\text{ prime},\ P^+(s)\le y_1\},
+\qquad
+\delta_1=\frac{\rho_1(Q/Y)}{\log Y}.
+\]
+Assume \(y_1\le y_2<Y\), the usual HT local estimates, and saddle points at least \(3/4\). Choose a conductor cutoff \(R\), with
+\[
+R\le(x/Q)^{\eta_D},\qquad x/Q\ge\max(4,y_2^{3/2}).
+\]
+Let
+\[
+\beta_*=\inf_{Q/(2Y)\le z\le Q/Y}\alpha(z,y_1),\qquad
+u_2=\frac{\log x}{\log y_2}.
+\]
+Under the local size conditions needed to count \(\mathcal T\), Appendix A gives
+\[
+\#\mathcal T\asymp Q\delta_1,\qquad
+\sum_{t\in\mathcal T}\max_{(r,t)=1}|E(x,y_2;t,r)|
+ \ll \Psi(x,y_2)\delta_1\,\varepsilon_H,
+\]
+where, for an absolute fixed \(C\),
+\[
+\begin{aligned}
+\varepsilon_H\ll {}&
+(\log x)^C R^{1-\beta_*}
+ \left\{H(u_2/2)^{-\delta_D}+y_2^{-\delta_D}\right\}\\
+&+\frac{\pi(y_2)(\log x)^C}{\rho_2(x)\rho_1(Q/Y)}
+\left\{
+y_2^{3/2}(R^{-1}+Y^{-1})
++y_2^{1/2}\frac Q{\sqrt x}
+\right\}.
+\tag{HBV}
+\end{aligned}
+\]
+This is normalized by the **actual modulus density** \(\delta_1\).
+
+The essential new small-conductor condition is
+\[
+\boxed{(1-\beta_*)\log R+O(\log\log x)
+       =o\!\left(\frac{u_2}{\log^2(u_2+1)}\right).}
+\tag{T}
+\]
+The large-conductor condition is exactly that the second line of (HBV) tends to zero with the desired saving.
+
+The Appendix A changes are as follows.
+
+- **E1:** unchanged, with value smoothness \(y_2\).
+- **E2:** unchanged because \(\ell>y_2\). This inequality is essential.
+- **E3:** use \(q_{y_2}\). For \(q=s\) or \(\ell s\), this equals \(\operatorname{rad}(s)\), since \(s\) is \(y_1\)-smooth and \(\ell>y_2\). Thus the Möbius variables remain \(y_1\)-smooth.
+- **E4–E6:** unchanged; E4 uses \(y_2\) when applied to the values.
+- **E7:** replace the common density floor by separate bounds for \(\rho_2(x)\) and \(\rho_1(Q/Y)\).
+- **E8:** use \(y_1\), giving the weight
+  \[
+  \rho_1(Q')\frac{(rd)^{1-\beta_1}}{\varphi(r)\varphi(d)}.
+  \]
+- **Fact D:** apply Drappeau’s Lemme 5 with value bound \(y_2\), argument \(x/d\), and conductor cutoff \(R\). This is precisely its published small-conductor statement. [Drappeau, Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf)
+- **dBT:** use \(y_2\):
+  \(\Psi(x/d,y_2)\ll\Psi(x,y_2)d^{-\beta_2}\).
+- **SM(a):** consequently
+  \[
+  \frac{\mathrm{SM}(a)}{\Psi(x,y_2)\rho_1(Q')}
+  \ll \log\log x\;R^{1-\beta_1}
+  \{H(u_2/2)^{-\delta_D}+y_2^{-\delta_D}\}.
+  \]
+  The \(d\)-sum converges by E6 because \(\beta_1+\beta_2\ge3/2\). **Condition (T) replaces the old polylogarithmic transfer bound.**
+- **LS and cor:LS:** unchanged with \(y=y_2\), including their powers of \(y_2\). Their absolute bounds must now be divided by the mixed density product.
+- **SM(b):** cor:LS with cutoff \(R\) gives the corresponding terms in (HBV).
+- **Step D:** count \(\ell s\) using \(y_1\), including uniqueness of \((\ell,s)\).
+- **Step E:** principal-at-\(\ell\) characters use mixed SM and \(\sum_\ell(\ell-1)^{-1}\ll1/\log Y\); nonprincipal-at-\(\ell\) characters use cor:LS with cutoff \(Y\).
+
+At the root,
+\[
+\log x\sim\frac{d_0}{4\kappa}D^{7/8}\lambda,\quad
+\log(Q/Y)\sim\frac1{d_0}D^{3/4}\lambda,\quad
+\log Y\sim\frac1{2\kappa}D^{5/8}\lambda.
+\]
+Take \(R=y_2^{10}\). Both density floors \(\rho_2(x),\rho_1(Q/Y)\ge y_2^{-2}\) hold eventually. Moreover,
+\[
+(1-\beta_*)\log R=O(D^{1/8}\lambda),
+\qquad
+u_2\asymp D^{3/8}.
+\]
+Hence (T) holds, while \(Y/R\) and the level gap absorb every large-sieve term. Uniformly over the root grids,
+\[
+\varepsilon_H\ll
+e^{-cD^{3/8}/\log^2D}+B_2^{-1/2}.
+\]
+There is no surviving hybrid-BV gap at these parameters.
+
+The downstream **root** chain transfers as follows:
+
+| Ingredient | Exact change |
+|---|---|
+| GM-U | Define good moduli using \(B_2\)-smooth values; use local estimates for \(\rho_2\). |
+| FM-U, good mass | Rational fibres remain \(B\)-smooth; multiply by the \(B_2\)-algebraic lower bound. |
+| FM-U, bad mass | Apply HBV with density \(\rho_1(Q/Y)/\log Y\). |
+| DS-U | Use separate rational and algebraic versions, with \(B\) and \(B_2\), respectively. |
+| L2-U | Define \(f(m')\) from \(B_2\)-smooth values; retain \(B\)-smooth multiplicities \(n\). |
+| LD*-U | Kernel, multiplier averaging, partner count and power cancellation are unchanged. |
+| D-U | Paley–Zygmund is unchanged after the mixed scan and local exclusions. |
+
+In L2-U take \(R_0=B^{C_0}\), with fixed \(C_0\), since \(S_1^2/(\rho_r\rho_F)=B^{O(1)}\). Algebraic DS shifts its density argument by at most \(B^{O(C_0)}B_2\), which still costs only a fixed polylogarithm. Classes B/C retain their power savings. None of this proves a conditional child moment.
+
+**2. Mixed root scan and an explicit child radius.**
+
+Since \(k\ll d^2\), the optimum has
+\[
+\mu=(1-\nu)/d,\qquad h=2\nu+\eta_0
+\]
+before any additional child height floor. Therefore
+\[
+\log X_r\sim d_0^{-1}D^{3/4}\lambda,\qquad
+\log X_F\sim\frac{d_0}{4\kappa}D^{7/8}\lambda.
+\]
+CEP gives
+\[
+-\log\rho_r\sim\frac{3}{8ad_0}\Lambda,\qquad
+-\log\rho_F\sim\frac{3d_0}{32\kappa b_2}\Lambda.
+\]
+Thus, defining \(\sigma_1\) as the exponent of \(S_1^2\),
+\[
+\boxed{\sigma_1=\frac{3}{8ad_0}+\frac{3d_0}{32\kappa b_2}},
+\qquad
+S_1=L[3/8,\sigma_1/2+o(1)].
+\]
+
+Use the first dyadic \(S\) satisfying
+\[
+S^2R_B(X_r(S))R_{B_2}(X_F(S))\ge1,
+\]
+with the **actual** envelopes, including \(S^d\). The CS argument then yields
+\[
+\frac1{4(\log N)^{2C_R}}\le m_1:=S_1^2\rho_r\rho_F\le64.
+\]
+Existence follows uniformly on \(S^2\le e^{2\sigma_1\Lambda}\), because \(d\log S=o(\log X_F)\). Doubling \(S\) shifts \(X_F\) by \(2^d\le B\), so the overshoot argument remains valid.
+
+Enumerating all primes to \(B_2\) would cost too much. This can be avoided: enumerate primes only to
+\[
+Z=\exp((\log\log N)^4),
+\]
+and approximate the remaining real Euler-product logarithm and its derivatives by prime-density integrals. The PNT error is \(o(1)\) in the logarithm, uniformly near the saddle point; numerical integration requires polynomially many operations in \(\log N\). Thus a factor-two Rankin approximation costs \(B^{1+o(1)}\), not \(B_2^{1+o(1)}\).
+
+For children, one must specify geometry. A reduced-basis box does **not** automatically have physical radius \(\sqrt q\,S_2\): skew lattices can have second minimum \(\asymp q\).
+
+Here is a conservative choice covering all labels. In a window \(q\in(Q_2,2Q_2]\), a reduced basis has vectors of length \(O(Q_2)\). Set
+\[
+V_2=CQ_2S_2,\quad
+X_{r,2}=2MV_2,\quad
+X_{F,2}=(2d+1)MHV_2^d/Q_2.
+\]
+There are \(O(S_2^2)\) points to examine.
+
+At the literal original height, small \(q\) does not automatically satisfy the child level-\(1/2\) condition. A convenient permissible repair is
+\[
+\boxed{H\ge M N^{4\nu+\eta_0}}.
+\tag{H}
+\]
+This leaves \(\sigma_1\) unchanged and supplies ample height and level margins.
+
+Put \(b(Q_2)=\log(2Q_2)/(D^{1/2}\lambda)\le b_2+o(1)\). Under (H), the conservative child scan has
+\[
+\boxed{\sigma_2(Q_2)=\frac{3}{8a}
+       \left(\frac3{d_0}+d_0b(Q_2)\right)}.
+\]
+Choose its first dyadic success with threshold
+\[
+S_2^2R_B(X_{r,2})R_B(X_{F,2})
+ \ge4(\log N)^{C_2+2C_R}.
+\]
+Then
+\[
+S_2^2=e^{(\sigma_2(Q_2)+o(1))\Lambda},\qquad
+m_2:=S_2^2\rho_B(X_{r,2})\rho_B(X_{F,2})
+ \ge(\log N)^{C_2}.
+\]
+For lattices with second minimum \(\sqrt q\) times a polylogarithm, replace \(d_0b(Q_2)\) by \(d_0b(Q_2)/2\).
+
+**Qualification:** this proves a computable, sufficiently large **nominal main term** and the search bound. Identifying it with the actual conditional child mean is precisely item 5’s missing estimate.
+
+**3. Squarefree large part and discriminant exclusions.**
+
+Fix rationally accepted root data. For \(B<p\le B_2\), \(p\nmid G(P)\), because \(G(P)=\pm\ell s\), \(s\) is \(B\)-smooth, and \(\ell>B_2\). Primitivity supplies a coordinate of \(v(P)\) invertible modulo \(p^2\). With \(T=2H+1\),
+\[
+\Pr_c[p^2\mid F(P)]\le p^{-2}+T^{-1}.
+\]
+Consequently,
+\[
+\Pr_c[\exists B<p\le B_2:p^2\mid F(P)]
+ \le\frac1{B-1}+\frac{\pi(B_2)}T.
+\tag{SQ}
+\]
+
+For \(D_A=f_d\operatorname{disc}(f)\), assume the usual field gcd checks, with factor exits counted as success. Conditional on \(F(P)=0\bmod q\), the polynomial \(D_A\), of degree \(2d-1\) in \(c\), is not identically zero. To see this, construct a squarefree degree-\(d\) polynomial with the prescribed root and prescribed evaluation at \(g\). The two projective points are distinct because \(q\nmid G(P)\).
+
+Schwartz–Zippel therefore gives, under uniform reduction modulo \(q\),
+\[
+\Pr_c[q\mid F(P),\ q\mid D_A]\le\frac{2d-1}{q^2}.
+\]
+The actual coefficient box introduces at most \((1+q/T)^d\le e\). Hence
+\[
+\Pr_c[\exists B<q\le B_2:q\mid F(P),\ q\mid D_A]
+ \le\frac{e(2d-1)}{B-1}.
+\tag{DISC}
+\]
+At the root, \(b\) is prime and \(b>B_2\), so \(q\nmid b\) is automatic.
+
+Combining (SQ) and (DISC),
+\[
+\Pr_c[\text{excluded}]
+ \le\frac{1+e(2d-1)}{B-1}+\frac{\pi(B_2)}T.
+\]
+The second term is negligible. Subtracting this from GM-U’s
+\(\rho_F/(\log N)^{C_g}\) is justified by
+\[
+a>\frac{3d_0}{32\kappa b_2}.
+\]
+If the inequality is reversed strictly, this subtraction fails by
+\[
+\exp\!\left[
+\left(\frac{3d_0}{32\kappa b_2}-a+o(1)\right)\Lambda
+\right].
+\]
+This is failure of the elementary estimate, not a proof that acceptable values are scarce. I make no claim at equality. Removing the constraint requires a smoothness-weighted exclusion argument; `def:good` alone does not supply AP estimates modulo \(tp^2\).
+
+**4. Recursive factorisations, failed searches and IR.**
+
+Do not trial-divide or sieve to \(B_2\). Recursively factor each tested value, then check its canonical factorisation against the acceptance conditions.
+
+The deterministic child cap is
+\[
+\bar m\le\frac{\log X_F}{\log B}=O(D^{1/2}).
+\]
+A complete two-level feasibility search, including failed branches, costs at most
+\[
+W_1(1+\bar m W_2)
+\]
+candidate examinations, where \(W_i=L[3/8,O(1)]\).
+
+All value-factorisation inputs satisfy
+\[
+|v|\le N^{\tau_N},\qquad \tau_N=O(D^{-1/8})\to0.
+\]
+Lemma OS applies to canonical outputs; Lemma W applies to adaptive fresh-coin calls. The resulting recurrence is
+\[
+F(x)\le L_x^{p+o(1)}
+ +L_x^{\delta_0+o(1)}F(x^{1/2+o(1)})
+ +L_x^{\delta_1+o(1)}F(x^{\tau_x}),
+\]
+with finite constants. Strong induction closes for
+\[
+c>\max\!\left(p,\frac{\delta_0}{1-2^{-3/8}},\delta_1\right).
+\]
+Thus value factorisations introduce no new exponent obstruction.
+
+At the original height, IR’s exponent is
+\[
+\frac{\log H}{13d\log\log H}
+ \sim\frac4{65\kappa d_0}D^{3/8}.
+\]
+It therefore beats every inverse polylogarithm; (H) improves it. Once Prop UB yields \(\gamma_2\ge(\log N)^{-C}\), field rejection is \(o(\gamma_2)\).
+
+IR alone does **not** imply negligible rejection conditional on every rare incidence \(E\). The valid argument removes rejected fields globally after obtaining \(\gamma_2\).
+
+**5. The conditional child mean is the unresolved two-point lower bound.**
+
+Exactly,
+\[
+\mathbb E[N_{\mathfrak q}\mid E]
+=\frac{\sum_{P'\in\mathrm{Box}(\mathfrak q)}
+          \Pr[E\cap\mathrm{Good}(P')]}{\Pr(E)}.
+\tag{CM}
+\]
+The root GM/FM estimates do not lower-bound its numerator.
+
+The needed additional statement is, outside an appropriately small **incidence-weighted** exceptional set,
+\[
+\boxed{
+\sum_{P'}\Pr[E\cap\mathrm{Good}(P')]
+ \ge(\log N)^{-C}m_2(P,q)\Pr(E).
+}
+\tag{2PL}
+\]
+With \(C_2>C+1\), this would make the mean larger than a constant multiple of \(\bar m\), enough for the diagonal contribution in PC₃.
+
+There are two exact obstacles.
+
+First, fixing \(G(P)=\ell n\) leaves \(g=g^*+jP\), and
+\[
+G(P')=G_{g^*}(P')-j\Delta,\qquad \Delta=\det(P,P').
+\]
+A lower bound requires smooth values in this progression, with parent-acceptance weights. DS-U is an **upper** bound. Moreover, \(\Delta/q\) is unrestricted; it is not a \(B\)-smooth cofactor of the HBV family.
+
+Second, fixing \(R_c(P)=z\), the image-lattice identity gives
+\[
+R_c(P')\equiv\kappa^{d-1}z\pmod\Delta.
+\]
+After dividing the forced factor \(q\), the child algebraic values lie in a progression with modulus
+\[
+|G(P')|\,|\Delta|/q.
+\]
+The required residues, gcd factors, fibre weights and modulus distribution are endogenous. Full rank does not establish their lower bound.
+
+Discarding bad moduli before conditioning is insufficient: an unconditional error
+\[
+\varepsilon=e^{-cD^{3/8}/\log^2D}
+\]
+can become \(\varepsilon/\Pr(E)\). Even after cancelling the forced \(q\)-divisibility, the remaining parent smoothness density is \(e^{-\Theta(\Lambda)}\), so this ratio is exponentially large.
+
+Thus **no nontrivial polylog-loss conditional lower bound follows from the supplied chain**. This is an unproved estimate, not a demonstrated counterexample.
+
+As U′ is written, (2PL) belongs to its unresolved clause. For cleaner bookkeeping, I would package it with PC₃ as its conditional first-moment input. The additional PC₃ task is the three-point estimate for
+\[
+\Pr[E\cap\mathrm{Good}(P')\cap\mathrm{Good}(P'')],
+\]
+accurate as a covariance statement to \(O(1/\bar m)\).
+
+**6. Moving above \(3/8\) does not remove the identified gap.**
+
+The proved analytic and size estimates extend throughout \(3/8<\alpha<2/5\). One convenient choice is
+\[
+d\asymp D^{1-2\alpha},\quad k\asymp D^\alpha,\quad
+\log B_2=b_2D^{\,2-4\alpha}\lambda.
+\]
+Then \(u_r,u_F\asymp D^\alpha\), and the new transfer loss satisfies
+\[
+(1-\beta_*)\log R=O(D^{2-5\alpha}\lambda)
+=o(D^\alpha/\log^2D)
+\]
+because \(\alpha>1/3\). The root scan exponent becomes
+\[
+\sigma_1(\alpha)=\frac{\alpha}{ad_0}
+ +\frac{\alpha d_0}{4\kappa b_2},
+\]
+with sufficient exclusion condition
+\[
+ab_2>\frac{\alpha d_0}{4\kappa}.
+\]
+Child geometry has strict size slack when \(\alpha>3/8\).
+
+But the weighted two-point lower bound remains unproved throughout that interval. **The supplied results therefore establish full U′ at no exponent in \((3/8,2/5)\).** They establish its root analytic and algorithmic components there; they do not establish the conditional child mean or PC₃.
