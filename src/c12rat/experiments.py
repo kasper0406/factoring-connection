@@ -69,13 +69,18 @@ def run_E2(out):
     smooth, _ = pc3toy.build_tables(X, y, y + 1)
     cs = None
     for _ in range(P["E2_n"]):
-        D = int(rng.integers(10, 10_001))
+        # DEVIATION (disclosed in notes/c12rat_results.md §10.2): the frozen code drew infeasible Z > X - 10^6 and
+        # crashed after 5 instances; (D, Z/D) are now redrawn until the instance fits in the table.
+        while True:
+            D = int(rng.integers(10, 10_001))
+            Zterms = int(np.exp(rng.uniform(np.log(100), np.log(10_000))))
+            Z = Zterms * D
+            if Z < X - 1_000_002:
+                break
         while True:
             a = int(rng.integers(1, D))
             if gcd(a, D) == 1:
                 break
-        Zterms = int(np.exp(rng.uniform(np.log(100), np.log(10_000))))
-        Z = Zterms * D
         X0 = int(rng.integers(1_000_000, X - Z - 1))
         W = max(1, Z // D)
         if W > X0:

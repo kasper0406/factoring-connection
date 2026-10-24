@@ -1,0 +1,325 @@
+**Verdict — OPEN.** I cannot prove the rational blocks of C₁ and C₂ under the true incidence measure. The missing weighted application is substantive: determinant multiplicities alone do not control weights containing inverse label means.
+
+There are useful partial results. **Proved:** Drappeau’s published Lemme 5 covers all rational determinant conductors at these scales; a separate child-prime large sieve is therefore optional. **Proved below:** divisor switching gives a non-circular upper bound for nearly parallel smooth pairs, with an affordable loss. **Proof sketch:** a common, exactly normalized density model could yield second-order covariance from first-order one-point estimates, avoiding Fourier tails. Its construction under the actual weights remains open.
+
+I write \(K=|\det(P_1,P_2)|\), reserving \(D=\log N/\log\log N\).
+
+**1. The weighted application theorem**
+
+**OPEN — the required statement.** Put \(h=(\mathfrak q,e)\), \(\pi_h=w_h/W\), and let \(T_h(g)=\sum_P f_{h,P}(G_g(P))\) be the rational count with the algebraic one-point probabilities included as weights. Write \(\mu_h=E_hT_h\), using the actual root- and cell-conditioned law. The required estimate has the form
+\[
+ \sum_h\frac{\pi_h}{\mu_h^2}
+ \sum_{P\ne P'}
+ \operatorname{Cov}_h\!\left(f_{h,P}(G(P)),f_{h,P'}(G(P'))\right)
+ \le o(\eta),
+ \tag{1}
+\]
+apart from an explicitly budgeted principal contribution. The diagonal costs at most \(\sum_h\pi_h/\mu_h\) when \(0\le f\le1\).
+
+The non-principal part of (1) should be \(O_A(D^{-A})\) for every fixed \(A\). This must include geometry, primitive \(g\), non-reduced classes, environment cells, algebraic weights, and each label’s own normalization.
+
+**PROVED — a precise sufficient transfer lemma.** Suppose the normalized non-principal expression has a finite expansion
+\[
+ \mathcal E=\sum_t\frac{c_t}{\varphi(K_t)}
+ \sum_{\chi\ne\chi_0\bmod K_t}
+ \zeta_{t,\chi}S_{j(t),1}(\chi)
+                  \overline{S_{j(t),2}(\chi)},
+ \qquad |\zeta_{t,\chi}|\le1.
+\]
+Here \(c_t\) includes \(\pi_h/\mu_h^2\), the probability normalization, subdivision coefficients and Möbius factors. Each \(j\) denotes a pair from a **common library of sequences**, independent of the modulus. Define
+\[
+ H_j(k)=\sum_{\substack{t:j(t)=j\\K_t=k}}|c_t|,
+ \qquad
+ \mathfrak D=\sum_j\|H_j\|_\infty U_{j,1}U_{j,2}.
+\]
+If
+\[
+ \sum_{k\le R}\frac1{\varphi(k)}
+       \sum_{\chi\ne\chi_0}|S_{j,i}(\chi)|^2
+ \le \varepsilon U_{j,i}^2,
+ \tag{2}
+\]
+then
+\[
+ |\mathcal E|\le\varepsilon\mathfrak D.
+ \tag{3}
+\]
+
+*Proof.* Apply Cauchy–Schwarz to the character sum for each \(k\), replace \(H_j(k)\) by its supremum, and apply Cauchy–Schwarz again over \(k\). Sum over \(j\). This also permits signed subdivision and Möbius coefficients.
+
+Thus a sufficient application theorem is
+\[
+ \log \mathfrak D=o\!\left(\frac{u}{\log^2u}\right),
+ \tag{4}
+\]
+together with a normalized bound \(o(\eta)\) for approximation and truncation errors. **OPEN:** I have not established (4) for the repository’s actual family.
+
+**PROVED — the published analytic input is sufficient for (2).** Drappeau’s Lemme 5 has exactly the \(1/\varphi(k)\) weight:
+\[
+ \sum_{k\le R}\frac1{\varphi(k)}
+ \sum_{\substack{\chi\bmod k\\1<\operatorname{cond}\chi\le x^{\eta_D}}}
+ |\Psi(x,y;\chi)|
+ \ll \Psi(x,y)\left\{
+ e^{-c u/\log^2(u+1)}+y^{-c}\right\}.
+ \tag{5}
+\]
+I checked the statement, including \(R\le x\) and effectivity for \(A<1\), against [Drappeau, Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf). Its proof explicitly refers to Harper’s unpublished computations.
+
+For \(R\le x^{\eta_D}\), every non-principal character is covered. The trivial bound \(|\Psi(\chi)|\le\Psi\) turns (5) into (2).
+
+**PROVED — scale comparison.** For children,
+\[
+ \log K\ll D^{1/2}\log D,\qquad
+ \log x\asymp D^{3/4}\log D.
+\]
+For parents, \(K\le2V_1^2\), so
+\[
+ \log K\ll D^{5/8}\log D
+       =o(\log(x/Y)).
+\]
+Consequently the full moduli \(q\Delta\), including those for parent smooth cofactors, are below the small-conductor cutoff for sufficiently large \(N\). Extracting gcd classes changes these logarithms only by lower-order quantities.
+
+For the parent sequence,
+\[
+ T_x(\chi)=\sum_{\ell\in J}\chi(\ell)\Psi(x/\ell,B;\chi).
+\]
+Triangle inequality in (5), followed by the trivial bound for \(|T_x(\chi)|\), gives the analogous energy bound with mass \(\sum_{\ell\in J}\Psi(x/\ell,B)\). Summing over \(\ell\) does not require paying \(\#J\) after normalization.
+
+Harper’s Theorem 2 supplies the alternative bound
+\[
+ \sum_{k\le R}\frac1{\varphi(k)}
+       \sum_{\chi\ne\chi_0}|\Psi(x,y;\chi)|^2
+ \ll \Psi(x,y)^2\varepsilon+R\Psi(x,y),
+\]
+which I checked in the [original preprint](https://arxiv.org/pdf/1208.5992). It is sufficient analytically, but does not prove (4). LSQ likewise needs a common sequence and a domination bound; arbitrary modulus-dependent weights cannot simply be inserted.
+
+**PROVED — available geometric multiplicities are insufficient by themselves.** The bound \(O(S_2^2)\) for child pairs of each determinant quotient is valid. When full determinants are grouped, the number of possible child primes dividing a fixed \(K\) is at most \(\log K/\log B\), hence polynomial in \(D\). Neither statement controls inverse means or weighted subdivision coefficients.
+
+A universally valid pointwise incidence bound is
+\[
+ w_{q,r}\le
+ \frac{\#(\mathcal P\cap\Lambda_{q,r})}{\#J}
+ \ll\frac{V_1^2}{q\,d\log V_1\,\#J}.
+ \tag{6}
+\]
+Indeed an accepted parent has at most one rational special prime \(\ell\), and counting admissible \(a\) for each prime \(b\) proves the last inequality since \(V_1\gg q\).
+
+**OPEN:** (6) loses the smoothness probabilities. Such losses can be
+\[
+ \exp(\Theta(D^{3/8}\log D)),
+\]
+which exceed the character saving. A useful stronger bound would be, for example,
+\[
+ w_{q,r,e}\le \frac{L_eW}{q^2},
+ \qquad \sum_eL_e\le D^C.
+ \tag{7}
+\]
+A root-conditioned one-point upper bound under DW makes (7) plausible, but requires retaining both rational and algebraic densities. Equidistribution of unweighted parent points modulo \(q\) does not prove it.
+
+Moreover, even (7) does not control \(w_h/\mu_h^2\). In C₂,
+\[
+ \frac{w_h}{z_h^2}
+ =\frac{\Pr(R_{\mathfrak q},e)}{\#J\,z_h},
+\]
+so small label means remain dangerous.
+
+**PROVED — handling intervals and maxima requires an explicit budget.** An interval sum is a difference of two endpoint sums; bounded-variation weights admit Stieltjes decompositions. A finite endpoint library is therefore legitimate, with its total cost included in \(\mathfrak D\). A grid of size \(\exp(o(u/\log^2u))\) is affordable. Boundary strips need independent upper bounds. Neither Harper’s stated BDH theorem nor the phrase “slowly varying” supplies an inner supremum for free.
+
+**2. Skewed labels and nearly parallel pairs**
+
+**PROVED — unweighted shape distribution.** Set
+\[
+ T(q,r)=\frac{\sqrt q}{\lambda_1(\Lambda_{q,r})}.
+\]
+For \(1\le T\le\sqrt q\),
+\[
+ \#\{r\bmod q:T(q,r)>T\}\ll q/T^2.
+ \tag{8}
+\]
+A shortest vector of length \(<\sqrt q/T\) is primitive and determines its label \(r=a\bar b\bmod q\). Counting such integer vectors proves (8).
+
+For a Gauss-reduced basis, \(|e_2|\asymp\sqrt q\,T(q,r)\). On labels with \(T(q,r)\le T\),
+\[
+ \kappa(P,P')\ll \frac{T^2S_2^2}{\Delta}.
+\]
+The determinant multiplicity bound therefore gives
+\[
+ \frac{\#\{(P,P'):\kappa>R\}}{S_2^4}
+ \ll T^2/R.
+ \tag{9}
+\]
+This explicitly accommodates the failure of transversality on highly skew labels.
+
+**OPEN — incidence-weighted version.** Under (7), (8) yields
+\[
+ \sum_{\substack{q,r,e\\T(q,r)>T}}\pi_{q,r,e}
+ \ll D^C\log D/T^2.
+ \tag{10}
+\]
+Without a bound such as (7), (10) has not been proved. Bounding discarded incidence mass alone also does not suffice: its relative second moment must be bounded.
+
+Here is a useful estimate for that purpose.
+
+**PROVED — short progressions with an explicit large-modulus loss.** Let
+\[
+ \varrho_X=\Psi(X,y)/X,\qquad
+ \delta_X=1-\beta(X,y)\ge0.
+\]
+For any interval \(I\subset[1,X]\) of length \(A\), any residue \(a\bmod k\), and \(A/k\ge2y\),
+\[
+ \#\{n\in I:n\equiv a\bmod k,\ P^+(n)\le y\}
+ \ll \frac Ak\,\varrho_X\log(2y)
+          \left(\frac{Xyk}{A}\right)^{\delta_X}.
+ \tag{11}
+\]
+This uses the published bound
+\[
+ \Psi(X/d,y)\ll d^{-\beta(X,y)}\Psi(X,y),
+\]
+checked in [Drappeau, Lemme 1(i)](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf).
+
+*Proof.* Put \(e=(a,k)\). If \(e\) is not smooth, the count vanishes. Otherwise write \(n=en_1\), with reduced congruence modulo \(k/e\), and set \(D_*=A/k\). Values \(n_1<D_*\) contribute at most \(\Psi(D_*,y)\). Every remaining smooth \(n_1\) has a divisor
+\[
+ D_*/y<d\le D_*.
+\]
+For each such \(d\), the complementary factor has at most
+\[
+ A/(kd)+1\le2A/(kd)
+\]
+choices. Split the harmonic divisor sum into \(O(\log(2y))\) dyadic blocks and apply the displayed published bound relative to \(X\). This proves (11). Negative intervals are handled by splitting signs.
+
+There is no smooth-pair input in this proof.
+
+**PROVED — uniform unweighted child-pair upper bound.** Let \(g\) range over primitive vectors in a square of scale \(M\), and put \(X_i=CM|P_i|\). Suppose \(M/|P_1|\gg y\). Then
+\[
+ \Pr(G(P_1),G(P_2)\text{ both }y\text{-smooth})
+ \ll \varrho_{X_1}\varrho_{X_2}\log(2y)
+       (Cy|P_1||P_2|)^{\delta_{X_2}}.
+ \tag{12}
+\]
+
+*Proof.* Drop primitivity in the numerator; primitive vectors have positive density in the square. For each \(n_1\), the image parallelogram has an \(n_2\)-slice of length at most
+\[
+ A\ll MK/|P_1|,
+\]
+in one residue class modulo \(K\). Apply (11), then sum over at most \(2\Psi(X_1,y)\) nonzero smooth \(n_1\). The factors \(M|P_1|\) and \(A/K\) cancel against the \(M^2\) normalization. Enlarging slices only increases this upper bound.
+
+**PROVED — losses at the design scales.** In (12), the child loss is at most
+\[
+ \exp(O(D^{1/8}\log D)).
+\]
+The analogous parent loss is at most \(\exp(O(D^{1/4}\log D))\). Cells of polynomially smaller side introduce polynomial factors.
+
+**PROOF SKETCH — parent \(J\mathcal S_B\) variant.** Expand over the two special primes and apply (11) to the cofactors. If \(\ell\mid K\), smoothness forces the other rational value to have the same special prime. Since \(K\le2V_1^2<Y^2\) eventually, there is at most one such \(\ell\). Its relative contribution has the extra factor
+\[
+ O((\log Y)^2/Y).
+\]
+Thus this exceptional case does not introduce a factor \(Y\).
+
+**PROOF SKETCH — an affordable complete split.** If incidence domination and comparisons with each label’s own mean cost at most \(\exp(O(D^{1/4}\log D))\), choose
+\[
+ T=\exp(D^{1/3}),\qquad R=\exp(3D^{1/3}).
+\]
+Equations (10), (9) and (12) then make discarded contributions negligible. The retained geometric subdivision costs \(\exp(O(D^{1/3}))\). All these losses are smaller than
+\[
+ \exp(cD^{3/8}/\log^2D).
+\]
+**OPEN:** the required domination and mean comparisons have not been established. The large-modulus smooth-pair upper bound itself is no longer the obstruction.
+
+**3. Archimedean and local second-order terms**
+
+**PROVED — an elementary cancellation principle.** Let \(\gamma\) be any probability coupling with marginals \(\nu_1,\nu_2\), and suppose \(\int\tau_i\,d\nu_i=1\). Then
+\[
+ \int\tau_1\tau_2\,d\gamma-1
+ =\int(\tau_1-1)(\tau_2-1)\,d\gamma,
+\]
+and hence
+\[
+ \left|\int\tau_1\tau_2\,d\gamma-1\right|
+ \le
+ \|\tau_1-1\|_{L^2(\nu_1)}
+ \|\tau_2-1\|_{L^2(\nu_2)}.
+ \tag{13}
+\]
+No transversality or Fourier decay is required.
+
+This applies exactly to the ideal gcd-class principal term. With
+\[
+ p_\delta=\varphi(K/\delta)/K,\qquad
+ \tau_i(\delta)=
+ \frac{K\Psi_{K/\delta}(X_i/\delta,y)}
+      {\varphi(K/\delta)\Psi(X_i,y)},
+\]
+one has \(\sum_{\delta\mid K}p_\delta\tau_i(\delta)=1\). Therefore its covariance is bounded by the product of the two one-point \(L^2\) deviations.
+
+**PROOF SKETCH — attainable precision in that model.** Put
+\[
+ \epsilon_1=(1-\beta)+1/u\asymp D^{-3/8}.
+\]
+First-order local estimates, properly normalized, should give
+\[
+ \|\tau_i-1\|_2\ll\epsilon_1(\log D)^C.
+\]
+Equation (13) would then give
+\[
+ O(D^{-3/4}(\log D)^{2C}).
+ \tag{14}
+\]
+The large-gcd tail can be bounded using divisor moments and the same saddle-point upper bound used in (11). Primitivity of \(g\) changes the reference measure and must be included before normalizing.
+
+**PROOF SKETCH — avoiding Fourier tails archimedeanly.** On retained configurations, use a common fine partition of the value axes and retain the **exact smooth counts in its bins** as one-point density functions. Hildebrand’s short-interval estimate controls their deviation from Dickman density to first order. For a linear projection of a square, normalized logarithmic magnitudes have bounded second moments, uniformly in the projection’s direction. Thus the normalized density functions can plausibly satisfy
+\[
+ \|\tau_i-1\|_2\ll\epsilon_1(\log D)^C.
+\]
+Their geometric coupling may be extremely thin; (13) introduces no \(\kappa\)-loss. Boundary bins can be charged using (11), rather than Fourier tails.
+
+**OPEN — the exact missing step.** One must show that the actual principal term and both actual marginals are represented by this same normalized model, with error \(o(\eta)\), simultaneously incorporating primitive vectors, gcd classes, DW weights and filters. A different one-point approximation for every partner does not suffice.
+
+Hard interval filters also have their own geometric covariance. Their aggregate baseline count must be stable within the environment cell; smoothness estimates alone do not establish this.
+
+**PROVED — what separate asymptotics give.** Independently estimating the pair and its two marginals with relative error \(O(\epsilon_1)\) gives only
+\[
+ O(D^{-3/8})
+\]
+covariance precision. Squaring that error is unjustified. Second-order precision follows from (13) only after the common-model identity is proved. Thus first-order literature *can* support second-order covariance, but does not automatically supply it.
+
+**4. Achievable \(\alpha\), composition, and assessment**
+
+**PROVED — precision arithmetic.** If a rational estimate gives relative variance
+\[
+ O(D^{-\beta}(\log D)^C),
+\]
+it comfortably meets the stated two-level requirement when
+\[
+ \beta>3-7\alpha.
+\]
+A first-order estimate with \(\beta=\alpha\) therefore suffices for every fixed
+\[
+ 3/8<\alpha<2/5.
+\]
+It does not settle \(\alpha=3/8\), where constants matter. A second-order estimate with \(\beta=2\alpha\) has ample margin at \(3/8\).
+
+**OPEN — actual exponent verdict.** This round proves neither rational block under the true weights, so it certifies no \(\alpha<2/5\). Conditional on the weighted transfer and principal-model steps, \(3/8\) remains attainable. A completed first-order version would already give every fixed exponent strictly between \(3/8\) and \(2/5\).
+
+**PROVED — exact algebraic input needed for composition.** Let \(X_h\) denote the full child or parent count and set
+\[
+ T_h(g)=E[X_h\mid g,R_{\mathfrak q},e].
+\]
+Then
+\[
+ \operatorname{Var}(X_h\mid R_{\mathfrak q},e)
+ =
+ \operatorname{Var}_gT_h(g)
+ +E_g\operatorname{Var}(X_h\mid g,R_{\mathfrak q},e).
+ \tag{15}
+\]
+The rational theorem must bound the incidence-weighted first term, normalized by the actual \((EX_h)^2\). The algebraic input must bound the weighted second term within the remaining \(\eta/4\) budget, and provide the one-point weights with the variation bounds required in §1. An equivalent sufficient input is a density-relative, rational-partner-weighted bound for algebraic off-diagonal covariances, plus negligible diagonals. DW(a) alone supplies neither assertion.
+
+**Literature status.** **Confirmed statements:** Harper 1208.5992, Theorem 2; Drappeau, Lemmas 1(i), 5 and 6; Hildebrand–Tenenbaum, Theorem 3, giving the \(c^{\beta}\) scaling law ([author’s paper](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf)). Drappeau’s Lemma 6 explicitly identifies the multiplicative large sieve as Iwaniec–Kowalski Theorem 7.13. The Saias approximation and range were checked in Drappeau §2.1; **UNVERIFIED:** its original theorem number. Hildebrand’s short-interval formula is confirmed in the [Hildebrand–Tenenbaum survey, Theorem 5.1](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf); **UNVERIFIED:** the numbering in Hildebrand’s original paper. None of these sources states the incidence-weighted theorem required here.
+
+**Heuristic probabilities**, meaning successful proof with known methods after focused work, conditional on the specified one-point DW setup:
+
+- Rational blocks of both C₁ and C₂ at \(\alpha=3/8\): **40%**.
+- Rational blocks of both at some \(\alpha<2/5\): **70%**.
+
+The higher second probability reflects the strict precision margin above \(3/8\); it does not reflect an established weighted application theorem.

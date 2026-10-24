@@ -196,3 +196,13 @@ def test_local_ratio_formula():
             single = sum(w(x) for x, z in pts) / len(pts)
             ratio = (p + 1) * (2 * A * B + (p - 1) * B * B) / (A + p * B) ** 2
             assert abs(pair / single ** 2 - ratio) < 1e-12
+
+
+def test_params_margins_hold_on_window():
+    from fractions import Fraction as F
+    from src.c12rat import params
+    assert params.all_hold(F(3, 8), "P")
+    for a in (F(3, 8), F(19, 50), F(7, 18), F(79, 200)):
+        assert params.all_hold(a, "W"), a
+    # the window closes at 2/5 (V1 >> B2 becomes borderline)
+    assert not params.all_hold(F(2, 5), "W")
