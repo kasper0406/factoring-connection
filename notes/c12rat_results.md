@@ -628,9 +628,10 @@ conclusion for the whole ϕ via its Lemmas PU and WD; the two arguments are inde
 ### 8.1 Prop PD (one non-thin pair) [proved]
 
 Let Ω be a square of side ≥ δ_eM/y² (cells and their dilates Ω/e, e ≤ y², for Lemma PRIM), 𝒢 its P₀-primitive points,
-P′ ≠ P″ child (or parent) points with κ ≤ κ₀, f′, f″ the DW-weighted indicators of §1.2, S′ := E_𝒢f′(G′), Pair := E_𝒢f′(G′)f″(G″). Then
-  |Pair − S′S″| ≤ (V′V″)^{1/2} + 𝔈 + C(h^{1/4} + L^{−c})S′S″,
-where V′ := E_{ν₁}[(ψ′ − S′)²] + C h S′² ≤ (𝒱₀ + 𝒱_mid(K))S′² (Lemma OPV) and likewise V″, and
+P′ ≠ P″ child (or parent) points with κ ≤ κ₀, f′, f″ the DW-weighted indicators of §1.2, S′ := E_𝒢f′(G′), Pair := E_𝒢f′(G′)f″(G″). Then (for parents, where S′ may
+vanish, read every S′ on the right as the OPV constant c′, and centre at π′c′; §8.3)
+  |Pair − S′S″| ≤ (V′V″)^{1/2} + 𝔈 + C(h^{1/4} + e^{−λ} + κ₀^{−1/2})S′S″,
+where V′ := Var_ν(ψ′) ≤ 4(𝒱₀ + 20h + e^{−λ})S′² (Lemma OPV; 𝒱₀ includes the mid-prime term of K) and likewise V″, and
 𝔈 := Z^{−1}Σ_c N(c)ψ′(c)ψ″(c)·3(Ẽ′(c) + Ẽ″(c)) (sum over interior and boundary rectangles c, Cor CPW).
 *Proof.* Let Z := #𝒢 and use the cells c = (R, τ) of Lemma CELL × Lemma TYPE (admissible types; the n with
 gcd(n₁n₂, K_large) > 1, with ℓ | n for a prime ℓ ∈ J dividing K (parents), or with s_i > S₀, form an exceptional set
@@ -647,7 +648,7 @@ gcd(n₁n₂, K_large) > 1, with ℓ | n for a prime ℓ ∈ J dividing K (paren
   0 ≤ B′ ≤ b′ := Z^{−1}Σ_{∂}N(c)ψ′(c) (boundary part), and similarly S″. Then
   Pair − S′S″ = Cov_ν(ψ′, ψ″) + Z^{−1}Σ_{int}Err(c) + P_∂ + P_ℰ − (E_νψ′)B″ − B′(E_νψ″) − B′B″ + tiny,
   where B′ now includes the exceptional singles (≤ e^{−λ}S′) and P_ℰ ≤ e^{−λ}S′S″ + κ₀^{−1/2}S′S″ (Lemma EXC),
-  with 0 ≤ P_∂ ≤ Z^{−1}Σ_∂(N(c)ψ′ψ″ + |Err(c)|). And |Cov_ν(ψ′, ψ″)| ≤ (Var_νψ′·Var_νψ″)^{1/2}, Var_νψ′ ≤ E_ν[(ψ′ − S′)²]
+  with 0 ≤ P_∂ ≤ Z^{−1}Σ_∂(N(c)ψ′ψ″ + |Err(c)|). And |Cov_ν(ψ′, ψ″)| ≤ (Var_νψ′·Var_νψ″)^{1/2}, Var_νψ′
   ≤ E_ν[(ψ′ − c)²] ≤ E_{ν₁}[(ψ′ − c)²] + ν(∗)c² ≤ (𝒱₀ + 20h + e^{−λ})c² (ν's first marginal is dominated by the one-point
   law ν₁ of Lemma OPV; Var ≤ E(· − c)² for any constant), and c ≤ 2S′ (Lemma OPV).
 - *Boundary terms.* By Cauchy–Schwarz, b′ ≤ (Z^{−1}Σ_∂N)^{1/2}(Z^{−1}Σ_∂Nψ′²)^{1/2} and Z^{−1}Σ_∂Nψ′ψ″ ≤
