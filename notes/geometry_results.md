@@ -1,6 +1,6 @@
 # geometry: geometric constructions from N, and where the factors hide (phase 26)
 
-Agent `geometry`, 2026-10-24. **Version v2 (codex blind round and Opus proof critic applied; before the codex adversarial round and the literature critic).**
+Agent `geometry`, 2026-10-24. **Version v3 (codex blind round, Opus proof critic and Opus literature critic applied; before the codex adversarial round).**
 - Pre-registration: `notes/geometry_prereg.md` (commit `5ae824e`, before any code ran; amendment A1 for E4 committed
   before E4 code was written).
 - Code: `src/geometry/{modcurve,curves,harness,decoders,run_experiments}.py`. Tests: `tests/test_geometry.py`.
@@ -23,7 +23,7 @@ residuosity modulo N for small arguments, which is not known to be easy and not 
 **Yes, there are many genuine connections between geometry and factorisation, and several are beautiful. One of
 them is a real algorithm, already known: Lenstra's elliptic-curve method (ECM, 1987) factors by doing geometry
 (the group law of an elliptic curve) modulo N, and elliptic curves also prove primality (Goldwasser–Kilian,
-Atkin–Morain). The number field sieve is geometry of numbers. Beyond these known methods, no geometric
+Atkin–Morain). The number field sieve works in number fields and uses lattices in places. Beyond these known methods, no geometric
 construction we examined gives a faster way to factor, and we can say exactly why in each case.**
 
 The key point first. Primality itself is already easy: it can be decided in polynomial time (AKS 2002). So a
@@ -52,8 +52,13 @@ Every construction we examined fails one of the three, in one of four recurring 
   t² − 4ℓ modulo N, so it reveals Legendre symbols (D/p) for |D| ≤ 4ℓ and nothing else. Its *cone points* do the same:
   X_0(N) has 4 cone points of angle π if −1 is a square mod N and none otherwise.
 
-**The sharpest observation (PROVED from classical formulas; verified 800/800; the F_4 case was found first and
-independently by GPT-6.1-sol from the moduli interpretation).** For X_0(N) the line between
+**The sharpest observation (the ingredients are KNOWN; the framing as a factoring statement is ours, and no prior
+formulation of that framing was found by us; verified 800/800; the F_4 case was found first and independently by
+GPT-6.1-sol from the moduli interpretation).** The closest prior art: Kirschmer–Voight (SIAM J. Comput. 39 (2010),
+Prop 5.8) reduce factoring to computing class numbers of definite quaternion orders. The class number of an Eichler
+order of level N is the number of supersingular points of X_0(N) mod ℓ (Deuring; Ribet 1990; Gross 1987), and its
+main term is ψ(N)(ℓ − 1)/12. The supersingular contribution to #X_0(N)(F_{ℓ²}) is classical (Ihara 1981;
+Tsfasman–Vlăduţ–Zink 1982). For X_0(N) the line between
 "quadratic symbols only" and "as hard as factoring" falls exactly between F_ℓ and F_{ℓ²}:
 - #X_0(N)(F_ℓ) is QR-type: it is a function of 2^{ω(N)} and the symbols ((t² − 4ℓ)/p), ((t² − 4ℓ)/q).
 - #X_0(N)(F_{ℓ²}) is factoring-equivalent: it equals (ℓ − 1)ψ(N)/12 plus bounded QR-type terms. A single number,
@@ -68,7 +73,7 @@ independently by GPT-6.1-sol from the moduli interpretation).** For X_0(N) the l
 **The ladder of lattice points on spheres** shows the same three tiers (cross-referencing `analytic`):
 - the circle x² + y² = N: r₂(N) ∈ {0, 16} is one QR bit; two essentially different points factor N; finding one
   point is equivalent to finding √−1 mod N (OPEN);
-- the 2-sphere x² + y² + z² = N: r₃(N) = 12h(−4N) (Gauss), a class number. A known class number usually leads to
+- the 2-sphere x² + y² + z² = N: for N ≡ 1, 2 (mod 4), r₃(N) = 12h(−4N) (Gauss), a class number. A known class number usually leads to
   an ambiguous form and a factor, though one value is not known to factor every N;
 - the 3-sphere: r₄(N) = 8σ(N) = 8(N + p + q + 1) (Jacobi) factors N at once.
 
@@ -92,8 +97,8 @@ the arithmetic-topology dictionary, which is a Rédei symbol (4-rank of the clas
 N alone is known.
 
 **Bottom line for the user.** Geometry is an excellent *language* for factorisation: divisors are rectangles,
-sublattices, covers and fixed points; primes are the "knots" of arithmetic topology; the number field sieve is
-geometry of numbers. But in every construction we know, the geometric feature that sees the factors is either
+sublattices, covers and fixed points; primes are the "knots" of arithmetic topology; ECM is geometry of elliptic
+curves. But in every construction we know, the geometric feature that sees the factors is either
 defined through them or costs as much as the arithmetic it re-expresses. We found no route to faster factoring, and
 none of the candidates below is a live lead.
 
@@ -152,10 +157,10 @@ Tiers (the project's taxonomy: `notes/factorbits_results.md` §3, `notes/leakmap
 | 14 | Cusps ν∞ = Σ_{d\|N} φ(gcd(d, N/d)) = 2^{ω(N)} (squarefree) | ω | — | ω |
 | 15 | Cone points ν₂ = ∏(1 + (−1/r)), ν₃ = ∏(1 + (−3/r)) | ν₂ ∈ {0, 4} decides ε on N ≡ 1 (4) | — | QR |
 | 16 | Points over F_ℓ: #X_0(N)(F_ℓ) = 2^{ω} + ½Σ_{t²<4ℓ}Σ_f h_w((t²−4ℓ)/f²)∏_{r\|N}(1 + ((t²−4ℓ)/r)) | Legendre symbols at \|D\| ≤ 4ℓ | E3: the counts for ℓ ≤ 13 determine ε in 4000/4000; the full ≈ 7-symbol pattern in 3461/4000 (otherwise 2 patterns) | QR (Prop X0-2) |
-| 17 | Points over F_{ℓ²}: (ℓ − 1)ψ/12 + bounded QR terms | ψ | E4: 800/800 split from one count | FACT (Prop X0-3) |
+| 17 | Points over F_{ℓ²}: (ℓ − 1)ψ/12 + bounded QR terms | ψ | E4: 800/800 split from one count | FACT (Prop X0-3; closest prior art Kirschmer–Voight 2010 Prop 5.8 via supersingular counts) |
 | 18 | Points of X_1(N) over F_ℓ, N squarefree, N > (√ℓ+1)², all r \| N > ℓ + 1: φ(N)/2 rational cusps, no other points | φ | — | FACT (Prop X1) |
 | 19 | Lefschetz number of the Fricke involution w_N: #fix = class numbers h(−4N) (+ h(−N) if N ≡ 3 mod 4) (Ogg 1974; Fricke) | h | as #5 | as #5 |
-| 19a | Genus of X_1(N); dimensions dim S_k(Γ_0(N)) | g₁ = 1 + J₂(N)/24 − ¼Σ_{d\|N}φ(d)φ(N/d) (N ≥ 5); dim S_{k+12} − dim S_k = ψ(N) for even k ≥ 4 (ψ − 1 at k = 2) | Θ(N²) cosets for Γ_1 | FACT (codex; Gu–Martin 2019 for dimension counts) |
+| 19a | Genus of X_1(N); dimensions dim S_k(Γ_0(N)) | g₁ = 1 + J₂(N)/24 − ¼Σ_{d\|N}φ(d)φ(N/d) (N ≥ 5); dim S_{k+12} − dim S_k = ψ(N) for even k ≥ 4 (ψ − 1 at k = 2) | Θ(N²) cosets for Γ_1 | FACT (codex; the identity is elementary from the dimension formula, cf. G. Martin, J. Number Theory 112 (2005), UNVERIFIED). Related prior art: Gu–Martin 2019 (newform / automorphic-representation counts) |
 | 20 | Spectrum of the Laplacian / Selberg zeta / random walks on Γ_0(N)\H or its coset graph | Weyl law: area; return counts of one word W: fixed points of W on P¹(Z/N) = ∏(1 + ((tr²W − 4)/r)) | discretisation of size ψ(N) | Weyl term FACT+EXP; fixed points of one word W ≢ ±I mod every r \| N: QR; total return counts include words ≡ ±I mod p (or trivial) and, by mixing, tend to 1/ψ(N): FACT+EXP (proof critic); cycle structure of W = orders (expected FACT, not proved) |
 | 21 | Bianchi orbifolds Γ_0(N·O_K)\H³ | covolume × ∏_{r\|N}(r² + 1 inert, (r + 1)² split, r(r + 1) ramified) | Swan/Riley domains have size ∝ index | FACT, EXP |
 
@@ -242,12 +247,16 @@ p, q = (s ∓ √(s² − 4N))/2; a wrong candidate fails the test. ∎ (E2: 400
 *General N (codex, PROVED from the same formulas).* For N coprime to 11·23, multiplying the level by 11 or 23 kills
 both elliptic terms ((−1/11) = (−3/11) = −1, likewise for 23) and doubles the cusps, so
 g(23N) − g(11N) = ψ(N) (proof critic: 0 failures for admissible N < 600). For squarefree N, ψ(N) = σ(N), and
-Bach–Miller–Shallit (SIAM J. Comput. 15 (1986)) factor N from σ(N) in randomized polynomial time; for non-squarefree
-N one needs their argument, or Miller's 2-adic step, written out (the naive "r + 1 | ψ" Lucas argument fails when
-also r − 1 | ψ for every r, e.g. N = 15, ψ = 24). For X_1: J₂(N) = 2g₁(7N) − 3g₁(5N) + 1 (gcd(N, 35) = 1).
-Prior art on factoring from modular-form dimension counts: M. Gu and G. Martin, *Factorization tests and algorithms
-arising from counting modular forms and automorphic representations*, Canad. Math. Bull. 62 (2019) 81–97 (codex:
-their Thm 10 uses two automorphic-representation counts and a newform count; it is not a one-value theorem).
+Bach–Miller–Shallit (SIAM J. Comput. 15 (1986)) factor N from σ(N) in randomized polynomial time. For non-squarefree N
+we have not written the ψ → factors reduction out (the naive "r + 1 | ψ" Lucas argument fails when also r − 1 | ψ for
+every r, e.g. N = 15, ψ = 24). For X_1: J₂(N) = 2g₁(7N) − 3g₁(5N) + 1 (gcd(N, 35) = 1).
+Related prior art: M. Gu and G. Martin, *Factorization tests and algorithms arising from counting modular forms and
+automorphic representations*, Canad. Math. Bull. 62 (2019) 81–97. Their counts are A(k, N) (automorphic
+representations, i.e. newforms of level dividing N) and newform counts, not dim S_k(Γ_0(N)). By Gekeler's theorem
+A(k, N) is computable without factoring for squarefree N, so the newform count is what factors there (literature
+critic). Closest prior art for "a class-number-type count with main term ψ(N) factors N": Kirschmer–Voight, SIAM J.
+Comput. 39 (2010) 1714–1747, Prop 5.8, which also kills the elliptic terms with an auxiliary prime (13), as the
+11N/23N trick does here.
 
 **Where a geometric computation pays.** Each geometric route to g or μ needs either the formula (the factors) or an
 object of size ≥ cN:
@@ -259,7 +268,7 @@ object of size ≥ cN:
   Compressed descriptions (the implicit permutation action of S, T on P¹(Z/N), which has size O(log N)) do exist.
   But reading g off them by Riemann–Hurwitz needs the cycle counts c(S), c(ST), c(T) *and* μ = |P¹(Z/N)|, and
   counting P¹(Z/N) is computing ψ(N).
-- *Farey symbols* (Kulkarni, Amer. J. Math. 113 (1991); Lascurain Orive 2002; Kurth–Long 2007). The image of
+- *Farey symbols* (Kulkarni, Amer. J. Math. 113 (1991) 1053–1133; Lascurain Orive, Conform. Geom. Dyn. 6 (2002) 33–60; Kurth–Long, Advances in Algebra and Combinatorics, World Sci. 2008, 225–242, arXiv 0710.1835). The image of
   Γ_0(N) in PSL₂(Z) is a free product of 2g + ν∞ − 1 copies of Z, ν₂ of Z/2 and ν₃ of Z/3 (Kulkarni), and a Farey
   symbol yields one independent generator per side pairing, so it has ≥ 2g + ν∞ − 1 paired sides: size Θ(N). The
   algorithms enumerate cosets, so their cost is Θ(μ) = Θ(N) or more.
@@ -277,16 +286,16 @@ Let N be squarefree, ℓ a prime not dividing N, and every prime r | N larger th
 
 **The trace formula (KNOWN).** Eichler–Selberg, in Cohen's form (H. Cohen, *Trace des opérateurs de Hecke sur
 Γ_0(N)*, Sém. Théorie des Nombres Bordeaux 1976–77; Cohen–Strömberg, *Modular Forms: A Classical Approach*, AMS GSM
-179 (2017), Thm 12.4.11). For k = 2, trivial character and gcd(n, N) = 1:
+179 (2017), Thm 12.4.11 (theorem number UNVERIFIED); restated in K. Popa, arXiv:1706.02691, Thm 3). For k = 2, trivial character and gcd(n, N) = 1:
 Tr(T_n | S_2(Γ_0(N))) = A1 + A2 + A3 + A4, where
 - A1 = ψ(N)/12 if n is a square, else 0;
 - A2 = −½ Σ_{t² < 4n} Σ_f h_w((t² − 4n)/f²) μ(t, f, n), with μ = ψ(N)/ψ(N/N_f) · #{x mod N : x² − tx + n ≡ 0
   (mod N·N_f)}, N_f = gcd(N, f);
-- A3 = −½ Σ_{d|n} min(d, n/d) · Σ_{τ|N} φ(gcd(τ, N/τ));
+- A3 = −½ Σ_{d|n} min(d, n/d) · Σ_{τ|N, gcd(τ, N/τ) | (n/d − d)} φ(gcd(τ, N/τ)) (the divisibility condition is vacuous for squarefree N, the only case used here);
 - A4 = σ(n).
 
 E1/E4 verified this implementation against: level 1 (trace 0, 50 values); nine Cremona curves at levels 11–33
-including old forms (399 values of a_ℓ, plus a_{ℓ²} and brute-force #E(F_{ℓ²})); and an independent Manin-symbol
+including old forms (399 values of a_ℓ, plus a_{ℓ²} and brute-force #E(F_{ℓ²})); and an independent Manin-symbol (Merel's Heilbronn matrices: L. Merel, *Universal Fourier expansions of modular forms*, LNM 1585 (1994) 59–94)
 computation of T_ℓ and T_{ℓ²} for every squarefree N with ψ(N) ≤ 400 (1501 + 451 traces). 0 mismatches. These runs
 used the brute-force root-count branch; the product branch used by the E3/E4 oracles was compared with it by the
 proof critic on 6524 (N, n) cases and in `tests/test_geometry.py` (0 mismatches).
@@ -327,7 +336,7 @@ g = ψ/12 + 1 − ν₂/4 − ν₃/3 − ν∞/2. The coefficient of ψ is ℓ/
 
 *Geometric reading.* The term A1 = ψ/12 is the supersingular locus. Over F_{ℓ²} (with the model in which every
 supersingular curve has Frobenius ±ℓ) Frobenius is a scalar on E[N], all ψ(N) cyclic subgroups are rational, and the
-whole fibre over each supersingular j counts. By the Eichler mass formula, Σ 1/|Aut E| = (ℓ − 1)/24 over
+whole fibre over each supersingular j counts. By the Eichler mass formula (Deuring/Eichler; Gross 1987), Σ 1/|Aut E| = (ℓ − 1)/24 over
 supersingular E, so these fibres contribute ≈ (ℓ − 1)ψ/12 points. Over F_ℓ no Frobenius is scalar.
 
 *Odd extensions (PROVED).* Over F_{ℓ^k} with k odd, Σα^k is an integer combination of Tr T_{ℓ^j} for odd j
@@ -347,12 +356,15 @@ every r | N exceeds ℓ + 1, ℓ ≢ 1 mod r and ℓ ≢ ±1 mod N, so they are 
 #X_1(15)(F_7) = 8 ≠ 4 and #X_1(33)(F_7) = 20 ≠ 10 (proof critic). For ω = 2 it can be weakened to ℓ ≢ 1 mod each
 r | N and ℓ ≢ ±1 mod N.) (Diamond–Shurman §9.3 and Ogg's description of the rational cusps give the fields of
 definition; which half is rational depends on the model, but the count φ(N)/2 does not.) ∎ So #X_1(N)(F_2) = φ(N)/2 for
-N = pq with p, q ≥ 3, N ≥ 9, and for N = pq, φ gives s = N + 1 − φ directly. The same moduli argument is classical in torsion bounds
+N = pq with p, q ≥ 5 (p = 3 is covered by the weakened ω = 2 condition, 2 ≢ 1 mod 3, if one accepts it), and φ gives
+s = N + 1 − φ directly. Ingredients KNOWN: Y_1(N)(F_ℓ) = ∅ by Hasse is standard in torsion bounds (Kamienny, Invent.
+Math. 109 (1992); Merel, Invent. Math. 124 (1996)); rational cusps: Ogg, Proc. Symp. Pure Math. 24 (1973). The
+count as a factoring statement: no prior formulation found by us. The same moduli argument is classical in torsion bounds
 ("Y_1(N)(F_ℓ) = ∅ for N > (√ℓ + 1)²").
 
 **Fricke involution (KNOWN, Ogg 1974, Fricke).** The fixed points of w_N on X_0(N) (N > 4) number
-h(−4N) + h(−N)·[N ≡ 3 mod 4] up to the classical corrections. This is a Lefschetz number and a class number:
-FACT-likely, HEURISTIC, as row 5. Exact form UNVERIFIED in detail.
+h(−4N) + h(−N)·[N ≡ 3 mod 4] (A. Ogg, Hyperelliptic modular curves, Bull. SMF 102 (1974) 449–462, Prop 3). This is a Lefschetz number and a class number:
+FACT-likely, HEURISTIC, as row 5. Exact form checked by the literature critic via secondary sources.
 
 ### 3.3 Summary of where X_0(N) needs the factors
 
@@ -370,7 +382,7 @@ FACT-likely, HEURISTIC, as row 5. Exact form UNVERIFIED in detail.
 
 ### 4.1 Point counts over Z/N
 
-**Prop MF (PROVED, elementary; the φ and σ cases are KNOWN: Miller 1976, Bach–Miller–Shallit 1986).** Let X be
+**Prop MF (PROVED, elementary; the φ and σ cases are KNOWN: Miller, JCSS 13 (1976) (deterministic under ERH; the randomized unconditional version is folklore), Bach–Miller–Shallit 1986; cf. Woll, Inform. Comput. 72 (1987)).** Let X be
 a scheme of finite type over Z with #X(F_r) = F(r) for all primes r ∤ c, F ∈ Z[x]. Write F = Σ_{i∈I} a_i x^i
 with a_i ≠ 0. If |I| ≥ 2, then from N = pq (p, q ∤ c) and #X(Z/N) one recovers p, q in time poly(log N, deg F, log
 max|a_i|).
@@ -444,7 +456,7 @@ learned without splitting is paid for by a deviation (`leakmap` Theorem PT-X).
 H₁(Σ_N; F_ℓ) = H₁(Σ_N) ⊗ F_ℓ by universal coefficients), H₁(Σ_N; F_ℓ) ≅ (A_K ⊗ F_ℓ)/ν_N. On the finite module
 A_K ⊗ F_ℓ, t has finite order m. Then ν_{N+ℓm} = ν_N + t^N ν_{ℓm} and ν_{ℓm} = ν_m·(1 + t^m + … + t^{(ℓ−1)m}) = ℓν_m = 0
 there. ∎ The integer |H₁(Σ_N)| = ∏_{d|N, d>1}|Res(Δ_K, Φ_d)| does "see" the
-divisors of N, but it has ≍ N·log M(Δ_K) digits (M the Mahler measure; Silver–Williams 2002), and its
+divisors of N, but it has ≍ N·log M(Δ_K) digits (M the Mahler measure, when M(Δ_K) > 1; for M = 1, e.g. torus knots, the orders are periodic (Gordon); Riley 1990; González-Acuña–Short 1991; Silver–Williams, Topology 41 (2002) 979–991), and its
 divisor-indexed factors are exactly the Möbius parts of Prop CAT.
 
 **Prop KUM (PROVED, Kummer theory).** For N odd and squarefree, put X = Spec Z[1/(2N)] (2 must be inverted for μ₂
@@ -454,8 +466,10 @@ basis {−1, 2} ∪ {primes r | N}. In the Mazur–Morishita dictionary (Morishi
 2 + ω(N) (ω tier) and a basis *is* the factorisation.
 
 **Linking numbers and Rédei symbols (KNOWN; Morishita Ch. 4, 8).** For the two "knots" p, q of N the linking
-number is the Legendre symbol (p/q) (as lk mod 2), and the triple Milnor invariants are Rédei symbols. For
-p ≡ q ≡ 1 (mod 4), (p/q) = (q/p) controls the 4-rank of the narrow class group of Q(√pq) (Rédei 1934). So "the
+number is the Legendre symbol (p/q) (as lk mod 2); triple Milnor invariants are Rédei symbols, relevant for three
+primes or the 8-rank. For p ≡ q ≡ 1 (mod 4), (p/q) = (q/p) controls the 4-rank of the narrow class group of Q(√pq)
+(Rédei, J. Reine Angew. Math. 171 (1934); Rédei–Reichardt, ibid. 170 (1934); UNVERIFIED). Chapter numbers refer to
+Morishita's 1st edition. So "the
 linking number of the primes of N" is a class-group 4-rank datum: OPEN from N alone (§8).
 
 **Hyperbolic volumes.** Volumes of manifolds built from N by Dehn filling are real-analytic in the filling slope
@@ -520,7 +534,7 @@ added or sharpened, now in §2:
 Legendre symbols (D/p) for the fundamental D with |D| ≤ 4L and (D/N) = 1, in the sense that the counts are
 computed from the symbols; at L = 13 the counts determined ε in all 4000 E3 instances and the full symbol pattern
 in 87%. Information-theoretically, L ≈ n² log n should pin p down. No algorithm is known that uses
-quadratic-residue patterns of a hidden divisor (Lenstra's divisors-in-residue-classes needs a modulus > N^{1/4} with
+quadratic-residue patterns of a hidden divisor (Lenstra's divisors-in-residue-classes, Math. Comp. 42 (1984), needs a modulus > N^{1/3}, and Coppersmith–Howgrave-Graham–Nagaraj, Math. Comp. 77 (2008), > N^{1/4}, with
 a single class, not a half-density pattern). This is the project's QR/genus question (`genusleak` Prop GEN) in
 geometric dress, not a new route.
 
@@ -576,7 +590,18 @@ differences, provable even extensions, the KUM dimension, the check counts, the 
 cases and the L[1/2] cost, "every known way", the ramified Bianchi factor, split tori, and σ = ψ with
 Bach–Miller–Shallit.
 
-**GPT-6.1-sol adversarial round:** §10.2 (pending). **Opus literature critic:** §10.3 (pending).
+**Opus literature critic (read-only, web access): OK WITH FIXES.** All 16 findings are applied. The main one is
+prior art for the F_{ℓ²} statement. Kirschmer–Voight (2010) Prop 5.8 reduces factoring to class numbers of definite
+quaternion orders, which by Deuring are supersingular counts on X_0(N) mod ℓ, with main term ψ(N)(ℓ − 1)/12. The
+supersingular contribution to #X_0(N)(F_{ℓ²}) is classical (Ihara; Tsfasman–Vlăduţ–Zink). Prop X0-3 is therefore
+labelled as a derivation of known ingredients, and only the F_ℓ / F_{ℓ²} factoring framing is claimed, as "no prior
+formulation found by us". Other fixes: the A3 divisibility condition; Gu–Martin describes newform and representation
+counts, not dim S_k; Merel cited; X_1 ingredients KNOWN; Lenstra's N^{1/3}; Ogg Prop 3; "NFS is geometry of numbers"
+softened; r₃ cases; Mahler measure M = 1; Rédei details; full Farey references. The critic found no prior statement
+that Pillai or necklace counts are FACT, and no reduction for √−1 mod N (an UNVERIFIED negative).
+Shallit–Shamir (IPL 20 (1985)) covers only d, μ, Ω and exponent-multiset functions.
+
+**GPT-6.1-sol adversarial round:** §10.3 (pending).
 
 ---
 
