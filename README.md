@@ -83,6 +83,9 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
     reciprocity invariants.
   - Searched without success: class groups, continued fractions, geometry, elliptic-curve traces.
   - Open only in narrow corners: deterministic depth-≥2 exponent gates; single-curve traces a_N.
+- **Unexpected connections (phase 28).** A survey of about 300 connections across 40 fields (Langlands, K-theory,
+  harmonic analysis, random matrices, knots, homotopy theory, tilings, operator algebras, ML, …) found none that gives
+  faster factoring. They fail by seven recurring mechanisms ([`connections_results`](notes/connections_results.md)).
 - **Deterministic.** Subexponential under ERH reduces to one constructive lemma, DSR, and every black-box
   derandomiser fails on it. The worst case below N^{1/5} needs coverage with λ < J^{1/4}.
 
@@ -92,9 +95,12 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
    internally: U′ ([`uprime`](notes/uprime_results.md)), decoupling ([`pc3`](notes/pc3_results.md)), the rational
    blocks RAT ([`c12rat`](notes/c12rat_results.md)), and the DW design, two-point smoothing and child bound
    ([`c12alg`](notes/c12alg_results.md)). AB₂, with its obligations O1–O3 and O5, would give L[3/8] itself.
-2. **Three-level descent (4/11),** which is borderline by the same route ([`pc3`](notes/pc3_results.md), [`multidescent`](notes/multidescent_results.md) §3.5).
-3. **Human refereeing** of the relation-supply chain: [`paper2/`](paper2/main.tex) §§5–6, Appendix A, and [`lv5unif`](notes/lv5unif_results.md).
-4. **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
+2. **NFS fruitfulness ⇒ rigorous L[1/3, 1.923].** Prove Lemma M or Conjecture F ([`lemmaM`](notes/lemmaM_results.md),
+   [`nfsfruit`](notes/nfsfruit_results.md)): Lee–Venkatesan's randomized NFS congruences are non-trivial with probability
+   L[1/3, −o(1)]. Two phase-28 surveys independently ranked it first; feasibility with current tools is low.
+3. **Three-level descent (4/11),** which is borderline by the same route ([`pc3`](notes/pc3_results.md), [`multidescent`](notes/multidescent_results.md) §3.5).
+4. **Human refereeing** of the relation-supply chain: [`paper2/`](paper2/main.tex) §§5–6, Appendix A, and [`lv5unif`](notes/lv5unif_results.md).
+5. **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
 
 ## Repository map
 

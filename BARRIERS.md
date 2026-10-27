@@ -52,3 +52,4 @@ Model theorems and negative results, not factoring lower bounds. Summarised in t
   - [`pc3`](notes/pc3_results.md): PC₃ is stronger than needed. Decoupling (Prop DC) replaces it by two pair-only variance hypotheses C₁, C₂ (Theorem 2L-DC); both are still open.
   - [`geometry`](notes/geometry_results.md): no geometric shortcut. The area and genus of X_0(N) encode p+q, but every explicit model has size Θ(N); #X_0(N)(F_{ℓ²}) and #X_1(N)(F_ℓ) factor N, while #X_0(N)(F_ℓ) carries only QR bits.
 - Fast factoring has no free consequences elsewhere in mathematics.
+- Phase 28, a survey of unexpected connections: about 300 connections in 40 fields, none a route; seven failure mechanisms ([`connections_results`](notes/connections_results.md); [`conn_alg`](notes/conn_alg.md), [`conn_ana`](notes/conn_ana.md), [`conn_top`](notes/conn_top.md), [`conn_cmp`](notes/conn_cmp.md)).
