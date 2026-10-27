@@ -23,7 +23,25 @@ class Split(Exception):
         self.where = where
 
 
-def _mulmod_poly(a: Sequence[int], b: Sequence[int], g: Sequence[int], N: int) -> List[int]:
+class Checker:
+    """Rule 3 (v1.1, after cx2): gcd-check every coefficient of every computed element of A and every Z/N value.
+    Counts the checked values so that the harness can compute the null (accidental) split expectation."""
+
+    def __init__(self, N: int):
+        self.N = N
+        self.count = 0
+
+    def __call__(self, vals: Sequence[int], where: str) -> None:
+        N = self.N
+        for v in vals:
+            self.count += 1
+            if v:
+                d = gcd(v, N)
+                if d != 1:
+                    raise Split(d, where)
+
+
+def _mulmod_poly(a: Sequence[int], b: Sequence[int], g: Sequence[int], N: int, chk=None) -> List[int]:
     """(a*b) mod (g, N); g monic of degree D given low->high with g[D] = 1."""
     D = len(g) - 1
     prod = [0] * (2 * D - 1)
@@ -37,20 +55,23 @@ def _mulmod_poly(a: Sequence[int], b: Sequence[int], g: Sequence[int], N: int) -
             for i in range(D):
                 prod[k - D + i] -= c * g[i]
         prod[k] = 0
-    return [x % N for x in prod[:D]]
+    out = [x % N for x in prod[:D]]
+    if chk is not None:
+        chk(out, "mul")
+    return out
 
 
-def powmod_x(e: int, g: Sequence[int], N: int) -> List[int]:
+def powmod_x(e: int, g: Sequence[int], N: int, chk=None) -> List[int]:
     D = len(g) - 1
     result = [1] + [0] * (D - 1)
     base = [0, 1] + [0] * (D - 2) if D >= 2 else [0]
     if D == 1:
         base = [(-g[0]) % N]
     for bit in bin(e)[2:]:
-        result = _mulmod_poly(result, result, g, N)
+        result = _mulmod_poly(result, result, g, N, chk)
         if bit == "1":
             # multiply by x: shift
-            result = _mulmod_poly(result, base, g, N)
+            result = _mulmod_poly(result, base, g, N, chk)
     return result
 
 
@@ -86,24 +107,32 @@ def _checked_jacobi(v: int, N: int, where: str) -> int:
     return int(gmpy2.jacobi(v, N))
 
 
-def statistics(N: int, g: Sequence[int], s: Optional[Sequence[int]] = None) -> Dict[str, int]:
+def statistics(N: int, g: Sequence[int], s: Optional[Sequence[int]] = None, check_all: bool = False,
+               checker: Optional[Checker] = None) -> Dict[str, int]:
     """Read-outs of y = x^N in A = (Z/N)[x]/(g): S1 = (Tr y | N), S2 = (Tr xy | N), S3 = (Tr y^2 | N),
     S4 = [g(y) = 0 in A].  Raises Split on any proper gcd."""
     D = len(g) - 1
     gN = [c % N for c in g]
     if s is None:
         s = power_sums(gN, D, N)
-    y = powmod_x(N, gN, N)
+    chk = None
+    if check_all:
+        chk = checker if checker is not None else Checker(N)
+        chk(gN, "g")
+        chk(s, "powersums")
+    y = powmod_x(N, gN, N, chk)
     x = [0, 1] + [0] * (D - 2)
     out = {}
     out["S1"] = _checked_jacobi(trace(y, s, N), N, "S1")
-    out["S2"] = _checked_jacobi(trace(_mulmod_poly(x, y, gN, N), s, N), N, "S2")
-    out["S3"] = _checked_jacobi(trace(_mulmod_poly(y, y, gN, N), s, N), N, "S3")
+    out["S2"] = _checked_jacobi(trace(_mulmod_poly(x, y, gN, N, chk), s, N), N, "S2")
+    out["S3"] = _checked_jacobi(trace(_mulmod_poly(y, y, gN, N, chk), s, N), N, "S3")
     # S4: g(y) via Horner in A
     acc = [0] * D
     for c in reversed(gN):
-        acc = _mulmod_poly(acc, y, gN, N)
+        acc = _mulmod_poly(acc, y, gN, N, chk)
         acc[0] = (acc[0] + c) % N
+        if chk is not None:
+            chk([acc[0]], "horner")
     nz = [a for a in acc if a]
     if not nz:
         out["S4"] = 1

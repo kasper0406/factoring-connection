@@ -244,8 +244,8 @@ def cluster_z(S, T, strata, P, Q):
     return num / math.sqrt(var_cl) if var_cl > 0 else float("nan")
 
 
-def e3(quick=False):
-    f = _out("e3")
+def e3(quick=False, check_all=False):
+    f = _out("e3c" if check_all else "e3")
     curve = "37a1"
     summ = {}
     nper = 2000 if quick else 20000
@@ -256,6 +256,7 @@ def e3(quick=False):
             rows = []
             excluded = 0
             splits = []
+            null_exp = 0.0
             for seed in range(nper):
                 inst = balanced_semiprime(n, seed)
                 N = inst.N
@@ -263,12 +264,18 @@ def e3(quick=False):
                 if gcd(N, 6 * 37 * l * disc) != 1:
                     excluded += 1
                     continue
+                chk = ecalg.Checker(N) if check_all else None
                 try:
                     g = ecalg.monic_division_poly(psi, l, N)
-                    st = ecalg.statistics(N, g)
+                    st = ecalg.statistics(N, g, check_all=check_all, checker=chk)
                 except ecalg.Split as e:
-                    splits.append({"seed": seed, "d": e.d, "where": e.where})
+                    # classification: a coefficient vanishing at exactly one prime with no stated mechanism
+                    splits.append({"seed": seed, "d": e.d, "where": e.where, "class": "ACCIDENTAL"})
+                    if chk is not None:
+                        null_exp += chk.count * (1 / p + 1 / q)
                     continue
+                if chk is not None:
+                    null_exp += chk.count * (1 / p + 1 / q)
                 ap, aq = H.ap(curve, p), H.ap(curve, q)
                 rows.append({"seed": seed, "N": N, "p": p, "q": q, "S1": st["S1"], "S2": st["S2"],
                              "S3": st["S3"], "S4": st["S4"], "aN": (ap * aq) % l,
@@ -277,7 +284,8 @@ def e3(quick=False):
             strata = [r["N"] % (4 * l) for r in rows]
             P = [r["p"] for r in rows]
             Q = [r["q"] for r in rows]
-            res = {"n_used": len(rows), "excluded": excluded, "splits": splits,
+            res = {"n_used": len(rows), "excluded": excluded, "splits": splits, "n_splits": len(splits),
+                   "null_expected_splits": round(null_exp, 1),
                    "S4_rate": sum(r["S4"] for r in rows) / max(1, len(rows))}
             targets = {}
             for c in range(l):
@@ -317,7 +325,7 @@ def e3(quick=False):
             res["max_abs_z_cluster"] = max(abs(v[1]) for v in zs.values() if v[1] == v[1])
             summ[f"l={l},n={n}"] = res
             f.write(json.dumps({"cell": f"l={l},n={n}", **{k: v for k, v in res.items()}}) + "\n")
-            print(f"l={l} n={n}: used {len(rows)} excl {excluded} splits {len(splits)} S4 {res['S4_rate']:.4f} "
+            print(f"l={l} n={n}: used {len(rows)} excl {excluded} splits {len(splits)} (null {null_exp:.1f}) S4 {res['S4_rate']:.4f} "
                   f"max|z| {res['max_abs_z_registered']:.2f} (cluster {res['max_abs_z_cluster']:.2f}) "
                   f"pc {res.get('positive_control_z')}", flush=True)
     f.write(json.dumps({"summary": {k: {kk: vv for kk, vv in v.items() if kk != 'z'} for k, v in summ.items()}},
@@ -358,4 +366,7 @@ def posthoc(quick=False):
 if __name__ == "__main__":
     which = sys.argv[1]
     quick = "--quick" in sys.argv
-    {"e1": e1, "e2": e2, "e3": e3, "posthoc": posthoc}[which](quick)
+    if which == "e3c":
+        e3(quick, check_all=True)
+    else:
+        {"e1": e1, "e2": e2, "e3": e3, "posthoc": posthoc}[which](quick)

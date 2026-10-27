@@ -169,3 +169,36 @@ def test_power_sums_newton():
     roots = np.roots([1, 0, -2, 3])
     for k in range(6):
         assert abs(sum(r ** k for r in roots).real - s[k]) < 1e-6
+
+
+def test_crt_trace_equal_traces_exception():
+    # cx2 / proof critic: a_p = a_q != 0 gives t = a_p, and gcd(t - a_q, N) = N: no split (exception set {a_p = a_q})
+    for curve, p, q in (("37a1", 1013, 1097), ("11a1", 1009, 1019)):
+        ap, aq = H.ap(curve, p), H.ap(curve, q)
+        assert ap == aq != 0
+        t = (ap * q * pow(q, -1, p) + aq * p * pow(p, -1, q)) % (p * q)
+        assert t == ap % (p * q)
+        assert R.crt_trace_factor(p * q, t) is None
+
+
+def test_full_gcd_checker_catches_coefficient_split():
+    # cx2: N = 67*103 had an unchecked coefficient gcd in v1; the v1.1 checker raises Split on it or earlier
+    psi = H.divpoly("37a1", 3)
+    N = 67 * 103
+    g = ecalg.monic_division_poly(psi, 3, N)
+    with pytest.raises(ecalg.Split):
+        ecalg.statistics(N, g, check_all=True)
+
+
+def test_sigma_mod_N_is_rsa_type():
+    # sigma_{k-1}(N) mod N = 1 + s^{k-1} (mod N): cross terms of (p+q)^{k-1} are multiples of pq
+    for p, q in [(101, 103), (1009, 1013)]:
+        N = p * q
+        for k in (2, 4, 6):
+            assert H.sigma(N, k - 1) % N == (1 + pow(p + q, k - 1, N)) % N
+
+
+def test_mod5_leak_11a1():
+    # proof critic: 11a1 has rational 5-torsion, so a(N) = (1+p)(1+q) (mod 5)
+    for p, q in [(13, 17), (101, 103), (1009, 1013)]:
+        assert (H.ap("11a1", p) * H.ap("11a1", q) - (1 + p) * (1 + q)) % 5 == 0

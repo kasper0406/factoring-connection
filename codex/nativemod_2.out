@@ -1,0 +1,193 @@
+**Overall verdict: MAJOR REVISION.**
+
+The central open question remains credible, but several claimed reductions and barriers are overstated. CRT-T has an unhandled nonzero-trace collision; CLS and CONV need mathematical repairs; E3 omits promised gcd checks. I read the complete draft, preregistration and blind report, examined the code and raw results, independently checked the lattices through \(n=500\), and checked the principal literature claims online.
+
+1. **POW — OK, with minor qualifications.**
+
+   \(\operatorname{Pow}_N=\operatorname{Frob}_p\circ\operatorname{Pow}_q\) and the exponent congruence are correct. The algebra trace means the trace of **multiplication by \(x^N\)**. Frobenius fixes \(\mathbf F_p\), proving \(s_{pq}\equiv s_q\pmod p\).
+
+   However, \(s_q\) need not be integral for \(\psi_\ell/\ell\). For 37a1,
+   \[
+   \psi_3/3=x^4-2x^2+x-\tfrac13,\qquad s_7=-91/3.
+   \]
+   Localization at \(\ell\) suffices for the congruence.
+
+   The literal Hasse-coefficient identity is correct for \(y^2=F(x)\), \(F\) cubic, \(p\) odd: the degree bound forces \(i=p-1,j=q-1\). State these hypotheses. “Does not permute roots” should read “need not.”
+
+   NE1 supplies a conditional deviation bound, not unconditional negligibility for every deterministic base or growing algebra family. Likewise, the displayed FROB(b) test requires discriminant Jacobi symbol \(-1\); one fixed algebra alone does not establish uniform factoring hardness.
+
+2. **CONV — OK identity; GAP in application, major.**
+
+   Schur averaging proves the compact complex representation identity. An abstract isomorphism \(\overline{\mathbf Q}_\ell\simeq\mathbf C\) is not continuous and does not turn an infinite compact \(\ell\)-adic image into a continuous compact complex representation. The displayed integral over that image is unjustified.
+
+   Repair by averaging arbitrary matrices \(X,Y\) over \(U(2)\):
+   \[
+   \int_{U(2)}\operatorname{tr}(XkYk^{-1})\,dk
+   =\operatorname{tr}(X)\operatorname{tr}(Y)/2.
+   \]
+   Alternatively use a maximal compact subgroup of the complex algebraic monodromy group. Distinguish characteristic-zero and residual representations. Absolute irreducibility applies to the cuspidal newforms under discussion, not Eisenstein representations.
+
+3. **CLS — WRONG proof; repairable conclusion for \(k\ge2\), major.**
+
+   The determinant is \(\chi(p)p^{k-1}\), but \(\chi(p)\) is not separately supplied. For \(k=2,\chi=(\cdot/5),\ell=7\), the pairs
+   \[
+   (3,17),\quad(11,151)
+   \]
+   have identical determinant pairs \(\{4,4\}\) and identical \(N\bmod35=16\), but sums modulo 7 equal 6 and 1. Thus the asserted direct decoding fails.
+
+   For odd \(k\ge3\), \(\gcd(k-1,\ell-1)=1\) excludes every odd \(\ell\). Dirichlet’s theorem alone also does not give the stated quantitative CRT supply.
+
+   A uniform repair exists: put \(h=\operatorname{ord}\chi\), \(e=h(k-1)>0\). Raising determinants to \(h\) gives \(\{p^e,q^e\}\bmod\ell\). CRT their sum with modulus exceeding \(N^e+1\), solve the quadratic with product \(N^e\), and take exact \(e\)-th roots. The prime number theorem supplies primes \(O(\log N)\). Treat the actual residue fields explicitly. This repair does not apply in weight one.
+
+4. **CRT-T — WRONG as stated, critical.**
+
+   Recovering \(a_q\) does not guarantee a proper gcd:
+   \[
+   \gcd(t-a_q,N)=N\quad\text{whenever }p\mid(a_q-a_p).
+   \]
+   Equal **nonzero** traces are an omitted exception:
+
+   | Curve | \(p,q\) | \(a_p=a_q\) | Decoder |
+   |---|---|---:|---|
+   | 37a1 | 1013, 1097 | 36 | `None` |
+   | 11a1 | 1009, 1019 | −10 | `None` |
+
+   For sufficiently large balanced factors, unequal traces give the desired proper gcd. Equal traces require another argument; double zero is only one collision case. These examples refute the proposed decoder and exception list, not every conceivable reduction on that promise.
+
+   Unknown \(\beta\) is repairable using \(O(\log N)\) dyadic bins \(Q\le q<2Q\), taking \(\beta=\log Q/\log N\) and constant-factor windows. The implementation instead assumes \(q/p<4/3\). Fixed \(d=9,m=4\) is only a toy; both dimension and multiplicity must scale appropriately for a polynomial-time proof. The small-root theorem is standard. [May’s survey](https://voidma.in/assets/2019/09/happy/lll_survey.pdf)
+
+   I found no earlier exact statement of this particular CRT-trace application. That is a negative search finding, not evidence of novelty. Componentwise Hasse–Witt must remain distinct from the literal coefficient in item 1.
+
+5. **EIS-k — OK for the specified eigen-Eisenstein coefficients; OVERCLAIM for arbitrary Eisenstein forms, moderate.**
+
+   The quadratic works for all four real sign patterns. Fixed complex characters also work: enumerate their finite root-of-unity patterns and solve over the fixed cyclotomic field.
+
+   In weight one, real-character coefficients at distinct semiprimes actually lie in \(\{0,\pm4\}\); the stated larger set is a valid bound. For \((1,\chi_{-4})\), the nontrivial information on \(N\equiv1\pmod4\) distinguishes both primes split from both inert.
+
+   Do not generalize to every Eisenstein linear combination or oldform. A nonzero difference \(E-E\otimes\eta\) vanishes whenever \(\eta(N)=1\). Also \(E_2(1,1)\) itself is quasimodular; use its standard higher-level modification when claiming holomorphic modularity.
+
+6. **LRS — OK (i),(ii); GAP in (iii), major, with a stronger repair.**
+
+   The finite-matrix argument and Dirichlet construction are correct.
+
+   For \(G\subseteq GL_2(\mathbf F_\ell)\), containing \(SL_2(\mathbf F_\ell)\), \(\ell\ge5\), gives the stated commutator group. Containment inside a larger residue field does not: \(G=\mathbf F_{25}^{\times}GL_2(\mathbf F_5)\) has commutator \(SL_2(\mathbf F_5)\), while its determinant kernel is twice as large. Inner twists require care. [Loeffler, §2.2](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/006C04982163C5E37639F019AC268534/S0017089516000367a.pdf/images_of_adelic_galois_representations_for_modular_forms.pdf)
+
+   The intended Chebotarev argument survives: the perfect \(SL_2\) subgroup maps trivially to every abelian quotient, so its trace-1 and trace-2 elements have the same cyclotomic compatibility condition.
+
+   **Stronger:** residual absolute irreducibility in odd characteristic suffices. If every element of \(G'\) had trace 2, determinant 1 would make them all unipotent. Then \(G'\) would be a normal \(\ell\)-group, acting trivially on an irreducible module; \(G\) would be abelian, contradicting absolute irreducibility. Compare an element of \(G'\) having trace different from 2 with the identity using Chebotarev. This also covers suitable CM and weight-one representations.
+
+   Ribet–Momose’s large-image assertion requires weight at least two. The exclusions for digit recursion and arithmetic modulo \(N\) are appropriate. The additional “any entry of \(T_N\)” assertion needs a precise hypothesis and separate proof.
+
+7. **CROSS — OK identity; OVERCLAIM as an exhaustive taxonomy, moderate.**
+
+   Multiplying local traces proves the squarefree-index direct-sum identity. The Bach–Charles specialization needs nebentypus factors unless \(\chi=1\).
+
+   An unrestricted modular-form taxonomy has a scope counterexample: the single coefficient \(r_3(N)\) of \(\theta^3\) gives \(24h(-N)\) for squarefree \(N\equiv3\pmod8\). [Gauss’s formula](https://archive.mpim-bonn.mpg.de/1851/1/preprint_2017_17.pdf) Given this class number, class-group powering finds an ambiguous class and factors a semiprime; under GRH, small prime ideals provide a polynomial-time generating search. [Bach’s construction](https://pages.cs.wisc.edu/~cs812-1/lec40.pdf)
+
+   This uses genus and 2-primary class-group structure, without an infinite-order one-dimensional summand of the stated kind. It is **half-integral weight**. Within an explicitly restricted integral-weight compatible-system taxonomy, I found no verified counterexample. Exhaustiveness remains unproved.
+
+8. **Not P-recursive — OK conclusion; incomplete proof sketch, minor.**
+
+   A D-finite analytic germ has finitely many possible finite singularities. At a rational cusp, a positive-weight modular form either has pole-type growth or, when the constant term vanishes, exponential flatness times a power of the height. Holomorphic continuation in the latter case forces every Taylor coefficient to vanish, hence the form to vanish identically. Dense cusps therefore give the natural boundary, including for cusp forms.
+
+   The draft’s appeal to growth alone misses this cusp-form argument. The result excludes linear polynomial-coefficient recurrences, not nonlinear differential identities or arbitrary isolated-coefficient algorithms.
+
+9. **Lattices/counting — OK identities; GAP/OVERCLAIM in consequences, major.**
+
+   Independent integer-vector enumeration and the eta product
+   \[
+   q\prod_{j\ge1}(1-q^j)^2(1-q^{11j})^2
+   \]
+   agree through \(n=500\). Automorphism orders \(32,24,72\), all decompositions, the difference, Siegel weights and the 3:2 relation pass. Level-11 theta modularity and Sturm bound 2 can promote the identities to proofs. Completeness of the three-class genus needs a mass/classification argument.
+
+   Brandt unit weights concern the two right-order classes, not the displayed lattice automorphism groups: \(r_{L2}(1)=0\), so \(L2\) is not the norm lattice of a unital order.
+
+   I found no general **balanced** reduction from one mixed count. There is a missing partial reduction:
+   \[
+   (5/12)r_L(N)-(N+1)=s+O(\sqrt N).
+   \]
+   This approximates \(q\) within \(O(\sqrt N)\); Coppersmith therefore factors sufficiently unbalanced instances \(q\ge N^{1/\sqrt2+\varepsilon}\). The balanced case remains open. One lattice count does not generally compute \(\sigma\), contrary to repeated summary claims.
+
+   The general \(\widetilde O(N)\) and special \(\widetilde O(\sqrt N)\) counting bounds are valid upper bounds. General ternary slices need not be single class numbers: their theta series can have cusp parts. The integer-hull exponent \(R^{12/5}=N^{6/5}\) is correct, but obstructs the proposed polytope route, not all curved-body algorithms. [Bárány–Larman](https://www.math.ucdavis.edu/~deloera/MISC/LA-BIBLIO/trunk/Barany/Baranyrpdcg.pdf) Replace algorithmic “\(\ge\)” entries by costs of specified implementations or proved upper bounds.
+
+10. **Classification/hardness — GAP/OVERCLAIM, major.**
+
+    The level-11 first question is well posed. Its prohibition on computing a count is a target constraint, not a theorem: computing that count could itself constitute a factoring breakthrough. Restrict “any two lattices” to demonstrated independent decompositions. Full Hecke matrices require a nonzero Eisenstein component; \(M_2(SL_2(\mathbf Z))=0\).
+
+    E–C Theorem 15.2.1 is **deterministic**, unconditional for fixed weight, and polynomial uniformly in weight under GRH. [E–C, §15.2](https://arxiv.org/pdf/math/0605244) Bruin 2011 is Las Vegas under GRH, but permits varying level \(n_0n_1\) with \(n_0\) fixed and \(n_1\) squarefree. [Bruin, Theorem 1.1](https://pub.math.leidenuniv.nl/~pbruin/coefficients.pdf) General levels are covered by Javanpeykar’s 2014 Theorem 5.0.1. [Javanpeykar](https://msp.org/ant/2014/8-1/ant-v8-n1-p04-s.pdf) With the explicit input encoding, the GRH-conditional \(\mathrm{ZPP}^{FACT}\) conclusion can be retained using that reference.
+
+    “Not NP-hard” is unjustified. The consequence is conditional: NP-hardness would imply \(\mathrm{NP}\subseteq\mathrm{ZPP}^{FACT}\). Factoring’s membership in NP∩coNP does not prove this impossible. Charles’s #P-completeness under polynomial-time Turing reductions is correctly quoted for a lattice basis supplied as input. [Charles, Theorem 3.1](https://research.cs.wisc.edu/techreports/2004/TR1498.pdf)
+
+11. **Experiments/code — WRONG stated gcd coverage; limited null result survives, major.**
+
+    E3 tests three specific deterministic trace/Jacobi readouts in the open extension-component fragment. It does not test that entire fragment, growing \(\ell\), or arbitrary combinations. The two \(\ell\) cells reuse moduli; 80,000 evaluations are not 80,000 independent inputs. All 24 existing tests pass, but miss the CRT collision.
+
+    `ecalg.py` checks the three trace values and the common coefficient gcd of \(g(y)\). It does not check every computed residue/coordinate. Auditing returned polynomial-arithmetic coefficients on the original \(n=32\) seeds found proper gcds in **111/20,000** instances for \(\ell=3\) and **417/20,000** for \(\ell=5\), while the original endpoints still report zero splits. These require classification and a corrected rerun; they do not suggest a new factoring mechanism.
+
+    At \(n=32\), there are 1,491 distinct primes and 19,802 distinct semiprimes. Shared primes alone do **not** invalidate CMH when independently sampled pairs with fixed arithmetic labels are the sampling units. A prime-random-effects interpretation needs further assumptions; the supplied dyadic correction also overcounts duplicated dyads. The positive control constructs \(S=T\), so \(z\approx\sqrt{20000}\) does not validate null calibration.
+
+12. **Merel cardinalities — OK prime constant; literature correction needed, moderate.**
+
+    The prime asymptotic can be proved. Substitute \(a=b+x,d=c+y\):
+    \[
+    p=xy+by+cx.
+    \]
+    Necessarily \((x,y)=1\). For each \(xy\le p\), the number of nonnegative \((b,c)\) is \(p/(xy)-1+O(1)\). Consequently,
+    \[
+    \#X_p
+    =p\!\sum_{\substack{xy\le p\\(x,y)=1}}\frac1{xy}+O(p\log p)
+    =\frac3{\pi^2}p\log^2p+O(p\log p).
+    \]
+
+    Stein §8.3.3 explicitly says “another family.” Merel §3.1, Proposition 18 uses \(S_n\): matrices \(\left(\begin{smallmatrix}x&-y\\y'&x'\end{smallmatrix}\right)\) with \(xx'+yy'=n\), \(x>|y|,x'>|y'|,yy'>0\), plus centered triangular cases and half-weighted boundary cases. Its cardinality has the \((12\log2/\pi^2)\sigma(n)\log n\) asymptotic. \(X_n\) is separately Proposition 20, §3.3. [Merel](https://wstein.org/edu/Fall2003/252/references/merel-universal/Merel_Universal_Fourier_expansions_of_modular_forms.pdf)
+
+    The blind report’s quotation was correct; the draft counted a different set. Include the smaller family in the algorithm table.
+
+13. **Missing native routes — GAP in coverage, major; no verified breakthrough found.**
+
+    Jacobi forms, theta decomposition/lifts and Shimura correspondence deserve explicit assessment. Shimura coefficients involve divisors and half-integral coefficients at \(tN^2/d^2\); Waldspurger concerns twist \(L\)-values, not directly \(a_f(N)\). These transfer problems without proving barriers.
+
+    CM-value traces require growing-discriminant class data. Borcherds products and Rankin–Cohen constructions produce divisor transforms or additive convolutions. I found no verified isolated-coefficient shortcut. Class-number methods include item 7 and Eichler–Selberg.
+
+    Fixed auxiliary-prime \(p\)-adic/overconvergent methods control \(U_\ell\) or prime-power indices; no established binary-index recurrence for \(N\) coprime to \(\ell\) follows.
+
+    A fixed supersingular set or Brandt module, including reduction modulo an auxiliary prime, still carries an **\(N\)-dependent Hecke correspondence**. Projection to its cuspidal component can discard the Eisenstein row sum. LRS excludes a fixed matrix raised to \(N\); it does not exclude another computation of that correspondence. Faster direct evaluation of the projected theta difference remains a legitimate open route.
+
+**Appendix — computations.**
+
+Scripts: [referee_checks.py](/Volumes/git/factoring-connection/codex/scratch/nativemod_2/referee_checks.py), [e3_audit.py](/Volumes/git/factoring-connection/codex/scratch/nativemod_2/e3_audit.py), [merel_check.py](/Volumes/git/factoring-connection/codex/scratch/nativemod_2/merel_check.py). Project sources/data were not modified.
+
+Commands, from the scratch directory:
+
+```sh
+export PYTHONPATH=/Volumes/git/factoring-connection
+export PYTHONDONTWRITEBYTECODE=1
+P=/Volumes/git/factoring-connection/.venv/bin/python
+"$P" -m pytest -q -p no:cacheprovider \
+  /Volumes/git/factoring-connection/tests/test_nativemod.py
+"$P" referee_checks.py
+"$P" e3_audit.py
+"$P" merel_check.py
+```
+
+Selected outputs:
+
+```text
+24 passed in 0.36s
+
+theta n<=500: aut=[32,24,72], decomposition mismatches=[0,0,0]
+difference mismatches=0; Siegel/Brandt mismatches=0,0
+independent flint power/partner-trace checks: 69 passed
+unchecked coordinate: N=67*103, gcd(2948,N)=67; no Split raised
+CRT-T: 37a1 (1013,1097), traces=(36,36), decoder=None
+CRT-T: 11a1 (1009,1019), traces=(-10,-10), decoder=None
+theta3(35)=48; h(-35)=2
+ambiguous form (3,1,3): (2a-b,2a+b)=(5,7)
+
+l=3: original splits=0; unchecked coefficient-gcd instances=111
+l=5: original splits=0; unchecked coefficient-gcd instances=417
+
+p=8009:   #X=259245;  #X/(p log²p)=0.400659
+p=100003: #X=5008819; #X/(p log²p)=0.377875
+3/pi²=0.303964
+```
