@@ -192,7 +192,7 @@ class DecodeResult:
 
 
 def decode(N: int, V: int, F: QuasiPoly) -> DecodeResult:
-    """Recover {p, q} from N and V = F(p)F(q) whenever the true residue pair is FACT-tier (Prop TRI(c))."""
+    """Recover {p, q} from N and V = F(p)F(q) whenever the true residue pair is FACT-tier (Prop TRI(a))."""
     res = DecodeResult(None)
     U = F.units()
     w = N % F.m if F.m > 1 else 0
