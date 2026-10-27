@@ -1,6 +1,6 @@
 # nativeinv: native computation cost of factoring-equivalent invariants (phase 29)
 
-Agent `nativeinv`, 2026-10-27. **Version v0 (draft; codex blind round, critics and codex adversarial round pending).**
+Agent `nativeinv`, 2026-10-27. **Version v1 (codex blind round merged; Opus proof critic and Opus literature critic applied; codex adversarial round pending).**
 - Pre-registration: `notes/nativeinv_prereg.md` (commit `9b8c88e`, before any code ran).
 - Code: OPERATIONAL `src/nativeinv/trichotomy.py` (sees N, an invariant value and the public description of the local
   data; exact arithmetic, Sturm root isolation, no factorisation calls; an AST test checks this). HARNESS
@@ -18,7 +18,37 @@ the way (it may of course factor as a by-product, as class-group algorithms do).
 
 ## 0. Verdict (plain language)
 
-(written last; see end of file)
+**No factoring-equivalent invariant in the repository has a known native algorithm that beats factoring, and the
+"new views" collapse into very few distinct questions.** The inventory has 55 rows (many rows merge several notes'
+items). Sorted by what a native algorithm would actually have to compute:
+
+1. **About 40% are one question: p + q.** For every invariant of the form f(N) = F(p)F(q) with polynomial (or
+   character-twisted polynomial) local data F — φ, σ, ψ, Pillai, the K-group orders #K_{2j−1}(Z/N), the class counts of
+   GL₂, SL₂, the Heisenberg group, the lens-space count, the necklace count mod 2^{n+1}, areas, genera, point counts —
+   Prop TRI (proved) shows the value factors N outright unless F is a single monomial. So K-theory, representation
+   theory, topology and Burnside counting here are p + q in different clothes. Their best native algorithm is a
+   summatory difference, Õ(N^{1/2}) (codex's algorithm S), trial division's cost.
+2. **Four are divisor sums that need a p-th power** (cat-map primitive orbits, necklaces with fixed colours,
+   cyclic-cover homology). Only N-th powers are available natively, and those leak only group orders (leakmap).
+3. **Fifteen are search problems whose answer is a factor** (idempotents, square roots, tiles, zero divisors).
+4. **Two are quadratic-residue bits, not factoring** (lens-space homotopy type, ε): Prop TRI's fiber tier.
+5. **The genuine remainder is small:** Frobenius traces at composite index (a_N; for `nativemod`), class numbers
+   (for `nativeana`; the only cluster with a native subexponential algorithm, L[1/2], which is itself an index
+   calculus), and root-type exponential sums (Salié).
+
+**Why the native algorithms all cost ≥ N^c.** Every definition is a sum over a set of size N^{Θ(1)}, and the five
+known compressions (CRT; N-exponent gates; ring algebra mod N; reciprocity along a/N; smoothness relations) are each
+covered by a project barrier, need the factors, or are index calculus. In the precise model "evaluate f from its local
+data and N as an integer", Prop LOC (proved) shows a generic multiplicative function cannot be evaluated without
+querying p or q. A true N^c lower bound in any model containing Theorem PT would imply constant-free permanent lower
+bounds, so none is in reach. Prop AUT (known in substance: Schlage-Puchta 2003, Coons 2010): no digit automaton
+computes φ, σ, Pillai, J₂ or k(SL₂) on all integers.
+
+**Shortlist (§4), none a route:** S1 exact summatory functions (Σ d⌊x/d⌋, Φ, the twisted totient giving the ring class
+number h(−7N²)): the only native recursions that are not CRT; S2 digit automata correct on semiprimes only, for a
+fiber function such as φ(N) mod 3; S3 Euclid-computable homotopy invariants of lens spaces (QR through class E).
+Deprioritised by the brief's NP-hardness rule: tilings, matroid realisability, presentation-level group homology,
+unitary-Cayley chromatic number, witness counting.
 
 ---
 
@@ -57,16 +87,16 @@ factorbits, analytic, nonsmooth, selfred, genusleak, navigate, smoothbuild)
 
 | # | Invariant | Where | Reduction | Native cost (definition) | Best native | Gen. | Barrier |
 |---|---|---|---|---|---|---|---|
-| I1 | φ(N) = #(Z/N)^* = #K₁(Z/N); Res_{s=1}L(s,χ₀) = φ/N; [Q(ζ_N):Q]; degree / top eigenvalue of the unitary Cayley graph; rank of the Artin motive of Q(ζ_N); Knauf spin-chain degeneracy | factorbits §2; conn_alg K6, H7; conn_ana R3, R6, M5; conn_top C5 | s = N + 1 − φ (deterministic) | N (gcd per residue) | **S** (Õ(N^{1/2}), §1.4); Φ(N) − Φ(N−1) with the summatory totient Φ in Õ(N^{2/3}) (Pawlewicz–Pătraşcu 2009); Smith: det G_N/det G_{N−1} = φ(N) for G_m = (gcd(i,j)) | ≤F | PT, TRI, P1 |
-| I2 | σ(N) = #index-N sublattices of Z²; r₄(N) = 8σ(N); σ₃(N) = r₈(N)/16 = [q^N]E₄/240; ψ(N) = #P¹(Z/N) = [SL₂(Z):Γ₀(N)] = 3·area(X₀(N))/π = deg Φ_N = #T_N-orbit; dim S_{k+12} − dim S_k(Γ₀(N)) (= ψ for even k ≥ 4) | geometry #10, #12, #19a; newfamily 28; conn_alg L3, E1; conn_ana S1, S7, E1; conn_top D7, D11 | s = σ − N − 1 | N (divisor sum; modular symbols; any triangulation has ≥ ψ/6 − 7 edges) | **S**: σ_k(N) = H_k(N) − H_k(N−1), hyperbola method, Õ(N^{1/2}) (codex, §1.4); r₄, r₈ by theta-series multiplication Õ(N) | ≤F | TRI, PW, EXP |
+| I1 | φ(N) = #(Z/N)^* = #K₁(Z/N); Res_{s=1}L(s,χ₀) = φ/N; [Q(ζ_N):Q]; degree / top eigenvalue of the unitary Cayley graph; rank of the Artin motive of Q(ζ_N); Knauf spin-chain degeneracy | factorbits §2; conn_alg K6, H7; conn_ana R3, R6, M5; conn_top C5 | s = N + 1 − φ (deterministic; general N: Miller 1976, folklore) | N (gcd per residue) | **S** (Õ(N^{1/2}), §1.4); Φ(N) − Φ(N−1) with the summatory totient Φ in Õ(N^{2/3}) (Pawlewicz–Pătraşcu 2009); Smith: det G_N/det G_{N−1} = φ(N) for G_m = (gcd(i,j)) | ≤F | PT, TRI, P1 |
+| I2 | σ(N) = #index-N sublattices of Z²; r₄(N) = 8σ(N); σ₃(N) = r₈(N)/16 = [q^N]E₄/240; ψ(N) = #P¹(Z/N) = [SL₂(Z):Γ₀(N)] = 3·area(X₀(N))/π = deg Φ_N = #T_N-orbit; dim S_{k+12} − dim S_k(Γ₀(N)) (= ψ for even k ≥ 4) | geometry #10, #12, #19a; newfamily 28; conn_alg L3, E1; conn_ana S1, S7, E1; conn_top D7, D11 | s = σ − N − 1 (general N: Bach–Miller–Shallit 1986, σ_k and r₄, r₈) | N (divisor sum; modular symbols; any triangulation has ≥ ψ/6 − 7 edges) | **S**: σ_k(N) = H_k(N) − H_k(N−1), hyperbola method, Õ(N^{1/2}) (codex, §1.4); r₄, r₈ by theta-series multiplication Õ(N) | ≤F | TRI, PW, EXP |
 | I3 | genus g(X₀(N)); dim S_k(Γ₀(N)); TMF₀(N) ranks; Farey-symbol size | geometry #13; conn_top H3 | four candidates for ψ | Θ(g) cells | S (via ψ) | ≤F | TRI, EXP |
 | I4 | J₂(N) = (p²−1)(q²−1) = k(GL₂(Z/N)) = #K₃(Z/N) = \|SL₂(Z/N)\|/N; irreducible-degree set of GL₂(Z/N) (contains ψ, φ, N); g(X(N)), g(X₁(N)) | conn_alg R1, R6, K6; conn_top H5; geometry #19a | p² + q² = N² + 1 − J₂ | k(GL₂): Σ_{t∈Z/N, d∈(Z/N)^*} 2^{ω(gcd(t²−4d,N))} (Nφ(N) terms; E1) or N⁸ commuting pairs | S (via s) | ≤F; k(G) for black-box matrix groups: no hardness result known to us (UNVERIFIED) | TRI, P1 |
 | I5 | #K_{2j−1}(Z/N) = (p^j−1)(q^j−1), j ≥ 1; #K₂(Z[1/N]) = 2φ(N) | conn_alg K3, K6; conn_top H5 | p^j + q^j, then s | plus construction: homology of GL_m(Z/N), size N^{m²} | S (via s); no K-theoretic shortcut (§2.1) | ≤F | TRI, PRIM (ψ^p vs ψ^N), FROB |
 | I6 | Pillai P(N) = Σ_g gcd(g,N) = #{xy ≡ 0 mod N} = (2p−1)(2q−1); star-polygon census; cycles of the shear (x, y) ↦ (x + y, y) on (Z/N)² (codex row 22); necklace count at k = 1 + R mod R² (Prop NECK, one query) | geometry #34, #36 | s | N | S | ≤F | TRI, P1 |
 | I7 | Two-colour necklace count Neck(N, 2) mod 2^{n+1}: N·Neck ≡ 2φ(N) (mod 2^{p}) | codex nativeinv_1 (blind); proof critic | φ exactly when p > n + 1 (deterministic); with only 2^{n/4+O(log n)}: Coppersmith/BDF needs k ≥ n/4 + v₂(q−p) | N terms; the integer has ≈ N bits | S (via φ) | ≤F | TRI, SE |
-| I8 | k(SL₂(Z/N)) = (p+4)(q+4) = Σ_{t∈Z/N} 3^{ω(gcd(t²−4,N))} | this note (E1, N ≤ 35) | s | N | none | ≤F | TRI, P1 |
+| I8 | k(SL₂(Z/N)) = (p+4)(q+4) = Σ_{t∈Z/N} 3^{ω(gcd(t²−4,N))} (N odd squarefree) | KNOWN field count + CRT; gcd-sum form here; E1 checks N ≤ 35 | s | N | S | ≤F | TRI, P1 |
 | I9 | Aff(Z/N): irreducible-degree multiset {1^{φ}, (p−1)^{q−1}, (q−1)^{p−1}, φ^{1}} (k(Aff) = N carries nothing) | conn_cmp 2.5; E1 | max degree = φ | Clifford theory: orbits of (Z/N)^* on the dual group = divisors of N | none | ≤F | TRI (CRT idempotent) |
-| I10 | k(Heis(Z/N)) = (p²+p−1)(q²+q−1); k(U_n(Z/N)) wherever k(U_n(F_r)) is a non-monomial polynomial in r (n ≤ 13: Vera-López–Arregi) | this note (E1) | s | N³ enumeration | none | ≤F for fixed n; pattern groups with n in the input: Pak–Soffer universality (UNVERIFIED) | TRI |
+| I10 | k(Heis(Z/N)) = (p²+p−1)(q²+q−1); k(U_n(Z/N)) wherever k(U_n(F_r)) is a non-monomial polynomial in r (Higman's conjecture; verified n ≤ 13 by Vera-López–Arregi 2003, n ≤ 16 by Pak–Soffer, arXiv:1507.00411) | KNOWN field count + CRT; E1 check | s | N³ enumeration | none | ≤F for fixed n; pattern groups: class counts can be non-polynomial (Halasi–Pálfy 2011); no complexity result known to us | TRI |
 | I11 | #subgroups of (Z/N)² = (p+3)(q+3); Σ over subgroups of C_N of their orders = σ(N) | conn_top C7; E1 (N = 15) | s | HNF enumeration over divisors | none | ≤F | TRI |
 | I12 | #V(Z/N) for V with quasi-polynomial counts: G_m, A¹∖{0,1}, SL₂, Grassmannians, split tori (Prop MF); the conic x²+y² = 1 (Prop MF′); Markoff X*(Z/N) = ∏(r² ± 3r); #P²(Z/N) = (p²+p+1)(q²+q+1) (definable sets in general are only μr^d + O(r^{d−1/2}), Chatzidakis–van den Dries–Macintyre: not in this row) | geometry §4.1; conn_alg M2; conn_ana D3; nonsmooth §5.3; selfred SR2 | Prop TRI | N^{dim V} | none | fixed quasi-polynomial-count V: ≤F; V in the input: #P-hard (counting solutions of polynomial systems over F_2) | TRI, PT |
 | I13 | #X₀(N)(F_{ℓ²}) = (ℓ−1)ψ/12 + bounded QR terms; class number of an Eichler order of level N; Brandt-matrix size; tr B(ℓ^{2k}) | geometry Prop X0-3; Kirschmer–Voight 2010 Prop 5.8; conn_top G5; conn_ana R7 | ψ | Brandt matrices of size ≍ N/12 | none | ≤F | TRI, EXP |
@@ -75,7 +105,7 @@ factorbits, analytic, nonsmooth, selfred, genusleak, navigate, smoothbuild)
 | I16 | Bost–Connes Galois sum (p^{1−β}−1)(q^{1−β}−1); main terms of moments of L(½,χ), χ mod N; φ*(N) = (p−2)(q−2) primitive characters | conn_cmp 2.1; conn_ana R1, R2 | s (archimedean decode or exact) | N L-functions | none | ≤F | TRI, PW |
 | I17 | Number of lens spaces with π₁ = Z/N up to homeomorphism = (φ(N) + 4 + 4[−1 ∈ (Z/N)^{*2}])/4 (Burnside for a ↦ ±a^{±1}) | this note, §2.3 (PROVED, elementary) | φ (two candidates) | φ(N) residues | none | ≤F | TRI |
 | I18 | Faltings height of J₀(N), ω² (Abbes–Ullmo); heat-trace / Weyl / Selberg-zeta leading terms on X₀(N) | conn_alg H5; conn_ana S6, S7 | Σ_{r\|N} log r-type terms, or the area | genus-≍N/12 models | none | ≤F (real precision) | TRI, EXP, PW |
-| I19 | Ring class number h(−7N²) = #{x² + 7y² = 1 over Z/N} = (p − χ(p))(q − χ(q)), χ = (−7/·); generally #{x² − Dy² = 1}(Z/N), fixed D | codex nativeinv_1 rows 30–31 (blind; Cox Thm 7.24) | one scalar gives s or \|p − q\| (Prop TRI(a); the sign pattern is a fiber point) | reduced forms of disc −7N²: ≈ N^{1+o(1)} | twisted summatory recursion F_χ(N) − F_χ(N−1), Õ(N^{2/3}) (codex) | ≤F | TRI, PW |
+| I19 | Ring class number h(−7N²) = #{x² + 7y² = 1 over Z/N} (needs h(−7) = 1, unit index 1, 7 ∤ N) = (p − χ(p))(q − χ(q)), χ = (−7/·); generally #{x² − Dy² = 1}(Z/N), fixed D | codex nativeinv_1 rows 30–31 (blind; Cox Thm 7.24) | one scalar gives s or \|p − q\| (Prop TRI(a); the sign pattern is a fiber point) | reduced forms of disc −7N²: ≈ N^{1+o(1)} | twisted summatory recursion F_χ(N) − F_χ(N−1), Õ(N^{2/3}) (codex) | ≤F | TRI, PW |
 | I20 | Smith's gcd determinant ratio det G_N / det G_{N−1} = φ(N), G_m = (gcd(i,j))_{i,j≤m}; G_N = E·diag(φ(1..N))·E^T | codex row 36; Smith 1875 | φ | N×N matrices | as I1 | ≤F (explicit determinants are in P; succinct dimension N is the obstacle) | TRI |
 | I21 | Counts that are φ or J_k in topological dress: faithful 2-dim irreps of D_{2N} (φ/2); faithful rank-1 local systems on L(N,1) (φ); surjective labelled Fox N-colourings of T(2,N) (Nφ); generators of the torsion of H₁ of the mapping torus of [[1,N],[0,1]] (φ); epimorphisms H₁(S_N) → C_N for the Euler-number-N circle bundle over T² (J₃) | codex rows 16–20 | φ / J₃ | N^{O(1)} | S | ≤F | TRI (homology is C_N, easy; the primitive/surjective filter is the hard part) |
 
@@ -127,13 +157,13 @@ factorbits, analytic, nonsmooth, selfred, genusleak, navigate, smoothbuild)
 
 | # | Invariant | Where | Reduction | Native cost | Best native | Gen. | Barrier |
 |---|---|---|---|---|---|---|---|
-| VII1 | Nontrivial idempotent of Z/N; splitting the unit of Perf(Z/N); the formula ∃e (e² = e ∉ {0,1}); nontrivial automorphism of a ring such as Z/N[Y]/(Y² − 1) given in basis form (Kayal–Saxena; Z/N itself has none) | conn_alg M5; conn_cmp 1.4; conn_top C7 | witness = factor | — | — | ring isomorphism: GI-hard, in NP ∩ coAM; finding an automorphism ≡ FACT (Kayal–Saxena 2005) | PT |
+| VII1 | Nontrivial idempotent of Z/N; splitting the unit of Perf(Z/N); the formula ∃e (e² = e ∉ {0,1}); nontrivial automorphism of a ring (Z/N)[x]/(f), f a random monic cubic, given in basis form (Kayal–Saxena Thm 8.1: finding ≡_ZPP FACT; Z/N itself has none) | conn_alg M5; conn_cmp 1.4; conn_top C7 | witness = factor | — | — | ring isomorphism: GI-hard, in NP ∩ coAM; deciding existence of an automorphism is in P; finding one ≡_ZPP FACT (Kayal–Saxena, Comput. Complexity 15 (2006)) | PT |
 | VII2 | Square roots mod N (Rabin); Weil-representation isotypic projectors of SL₂(Z/N); explicit lens-space homotopy equivalences | conn_alg R2; conn_top K1 | Rabin 1979 | — | — | ≤F | PT |
 | VII3 | Two inequivalent representations N = x² + y² (or by any norm form); Thue points F(x,y) = N | conn_alg A3 | Euler; McKee 1996 | Cornacchia needs √−D mod N | — | ≤F | Q / SQRT |
 | VII4 | Zero divisors in quaternion algebras over Q; Wedderburn decomposition of Q-algebras; points on ax² + by² = Nz² | conn_alg R4, G1 | Rónyai 1987/88 (randomized) | — | poly-time given factoring (Ivanyos–Rónyai–Schicho 2012) | ≤F | — |
 | VII5 | Frobenius operator on étale Z/N-algebras (Schoof's (Z/N)[x]/ψ_ℓ); Frobenius lifts / δ-structures at N | nonsmooth Prop FROB; conn_alg P2 | FROB(a–d) | — | — | ≤F | FROB |
-| VII6 | Matroid M_N with characteristic set {p, q} (von Staudt / Mnëv) | conn_top X1 | restatement | — | — | realisability is ∃R-complete (Mnëv 1988; Shor 1991) | DEPRIORITISE |
-| VII7 | Tilings of Z_N (a tile's size is a divisor); counting tilings; Coven–Meyerowitz cyclotomic data | conn_top (tilings) | restatement | counts have ≍ N-bit size | — | tiling a finite region with given tiles: NP-complete; single-tile tiling of Z^d undecidable (Greenfeld–Tao) | DEPRIORITISE |
+| VII6 | Matroid M_N with characteristic set {p, q} (every finite set of primes is a characteristic set: Kahn 1982) | conn_top X1 | restatement | — | — | realisability over R is ∃R-complete (Mnëv 1988; Shor 1991; Schaefer 2009); over C / finite characteristic it is Nullstellensatz-type (NP-hard, in PSPACE; AM under GRH, Koiran 1996) | DEPRIORITISE |
+| VII7 | Tilings of Z_N (a tile's size is a divisor); counting tilings; Coven–Meyerowitz cyclotomic data | conn_top (tilings) | restatement | counts have ≍ N-bit size | — | tiling a finite region with given tiles: NP-complete (Garey–Johnson; Moore–Robson 2001); whether one tile tiles a given periodic subset of Z^d is undecidable (Greenfeld–Tao, JEMS 2025) | DEPRIORITISE |
 | VII8 | Addition / successor in the prime-exponent representation | factorbits Props E1, E2 | ≡ FACT | — | — | ≤F | — |
 | VII9 | Partial factor information: p mod M with log M ≥ n/4; φ mod 2^k; top n/4 bits of p; "N has a factor ≤ x"; smallest prime factor | factorbits table | Coppersmith; Boneh–Durfee–Frankel | — | — | ≤F | SE |
 | VII10 | Hidden-order groups: a multiple of λ(N); a generic speed-up of repeated squaring (Rotem–Segev 2020) | conn_cmp 4.5 | Miller | — | — | ≤F | PT (generic) |
@@ -155,10 +185,11 @@ divisibility test. Hence s = σ(N) − N − 1, and by Prop TRI every cluster-I 
   cost is trial division's. It is the honest "definition-level" baseline for cluster I, and it shows that the
   question for cluster I is the *summatory* question: can H_k(x) (or Φ(x), or a twisted F_χ(x)) be evaluated
   exactly much faster than x^{1/2}? Known: Φ(x) in Õ(x^{2/3}) (Pawlewicz–Pătraşcu 2009); the divisor summatory
-  function in Õ(x^{1/3}) by lattice-hull methods (Sladkey 2012; Li 2026: x^{9/28}, conn_ana). Whether a hull method
+  function in Õ(x^{1/3}) by lattice-hull methods (Sladkey, arXiv:1206.3369, unrefereed; D. Li, arXiv:2609.29949,
+  x^{9/28}, randomized, preprint; conn_ana). No published Õ(x^{1/3}) algorithm for Σ_{n≤x}σ(n) was found. Whether a hull method
   reaches H₁(x) in Õ(x^{1/3}) we did not settle (UNVERIFIED); that would give a native N^{1/3} method, the same level
   as Hiary/Lehman. This is `nativeana`'s precision wall, and shortlist item S1.
-- codex also proved that the coefficient sequence of E₄ (σ₃) is not D-finite (E₄ blows up at every rational cusp,
+- The coefficient sequence of E₄ (σ₃) is not D-finite (folklore; codex's argument) (E₄ blows up at every rational cusp,
   so its q-series has infinitely many singular roots of unity). So no fixed-order polynomial-coefficient
   recurrence gives σ₃(N); in particular the Chudnovsky/BGS Õ(N^{1/2}) route for P-recursive sequences is closed.
 
@@ -189,13 +220,13 @@ size N or the factors, or OPEN.
 - **Compression attempts.**
   1. *Adams operations.* Quillen: K(F_r) is the homotopy fibre of ψ^r − 1 on BU. The only operation available from
      N alone is ψ^N, and hofib(ψ^N − 1) has π_{2j−1} = Z/(N^j − 1): the "generic" answer, an aggregate. The true
-     answer needs ψ^p and ψ^q separately. This is the same split as Deligne–Lusztig's generic class number
+     answer needs ψ^p and ψ^q separately. This is the same split as the generic class number (Green 1955; Steinberg)
      (k(GL₂(F_x)) = x² − 1 evaluated at x = N is wrong by p² + q² − 2) and as V_N versus V_p + V_q in Prop CAT.
      **Forcing step: a p-exponent (PRIM).**
   2. *Small complexes.* SL₃(Z/N) has a presentation of size O(log N) computable from N (VII14): by the congruence
      subgroup property for SL₃(Z) (Mennicke 1965; Bass–Milnor–Serre 1967), Γ(N) is the normal closure of x₁₂(N), so
      SL₃(Z/N) = SL₃(Z)/⟨⟨x₁₂^N⟩⟩. SL₃(Z) has the Steinberg presentation plus (x₁₂x₂₁^{−1}x₁₂)⁴ = 1 (Milnor,
-     *Introduction to Algebraic K-theory* §10), and x₁₂^N costs O(log N) auxiliary generators y_{k+1} = y_k². So a
+     *Introduction to Algebraic K-theory*, Cor. 10.3, number UNVERIFIED), and x₁₂^N costs O(log N) auxiliary generators y_{k+1} = y_k². So a
      poly(log N)-size 2-complex X_N with π₁ = SL₃(Z/N) is computable from N alone (KNOWN ingredients; the assembly
      is routine). From X_N, H₁ (Smith normal form) is free to compute, and it is trivial. The order of the group,
      and H₃ (which carries K₃), are not.
@@ -205,9 +236,9 @@ size N or the factors, or OPEN.
        ZG, needs those orders (family M). Coset enumeration (Todd–Coxeter) on the stabiliser of a vector materialises
        J₃(N) ≍ N³ cosets.
      - The natural generalisation (order or homology of a finitely presented group) is undecidable (Adian–Rabin;
-       Gordon 1995 for H₂ (UNVERIFIED)), so as a *presentation* problem this is deprioritised. The black-box
-       matrix-group version is ≤F (+DL): Babai–Beals–Seress (2009) compute orders of matrix groups over F_q given
-       DL and factoring oracles (UNVERIFIED exact hypotheses).
+       Gordon 1995 for H₂ = 0, LMS Lecture Note Ser. 204), so as a *presentation* problem this is deprioritised. The black-box
+       matrix-group version is ≤F (+DL): Babai–Beals–Seress (STOC 2009) compute orders of matrix groups over F_q of odd
+       characteristic in randomized polynomial time given factoring and DL oracles (over Z/N one first splits by CRT).
   3. *Automata / generating functions.* §3.3 (Prop AUT): no weighted automaton over base-k digits computes φ (or any
      cluster-I invariant) for all n.
 - **Verdict.** Forced by the p-exponent (Adams) or by orders (identities among relations). Collapses to s. Not OPEN
@@ -215,7 +246,7 @@ size N or the factors, or OPEN.
 
 ### 2.2 Conjugacy-class counts and irreducible degrees of GL₂(Z/N), SL₂(Z/N), Aff(Z/N)
 
-- **Facts (E1, brute force).** k(SL₂(Z/N)) = (p+4)(q+4) (N ∈ {15, 21, 33, 35}); k(GL₂(Z/N)) = (p²−1)(q²−1)
+- **Facts (KNOWN field counts + CRT; E1 brute-force checks).** k(SL₂(Z/N)) = (p+4)(q+4) (N ∈ {15, 21, 33, 35}); k(GL₂(Z/N)) = (p²−1)(q²−1)
   (N ∈ {15, 21}); k(Aff(Z/N)) = N; k(Heis(Z/N)) = (p²+p−1)(q²+q−1). All checks held, as pre-registered.
 - **Native formula (PROVED, elementary; N odd and squarefree).** Classes of SL₂ over a field split by the characteristic polynomial
   x² − tx + 1: one class when t² ≠ 4, three when t = ±2 (central plus two unipotent). Over Z/N, by CRT,
@@ -237,16 +268,17 @@ size N or the factors, or OPEN.
   3. *Generic class polynomials.* For GL_n and SL_n, k(G(F_r)) is a polynomial (quasi-polynomial for SL_n) in r
      (Green; Deligne–Lusztig; Lehrer). Evaluating it at N gives the AGG value; the truth is P(p)P(q). Prop TRI.
   4. *Sampling.* The summand 3^{ω(gcd(t²−4,N))} differs from 1 with probability ≈ 2/p + 2/q: P1 floor.
-- **Generalisation.** k(G) for G given by generators: polynomial for permutation groups? We do not know a hardness
-  result or a polynomial algorithm for permutation groups given by generators (UNVERIFIED either way; literature
-  critic asked). Pattern groups U_n(F_q) with n in the input: Pak–Soffer relate class counts to point counts of
-  arbitrary varieties (UNVERIFIED), which would make that generalisation #P-hard-type: deprioritise that direction.
+- **Generalisation.** k(G) for a permutation group given by generators: neither a polynomial-time count nor a
+  hardness result was found (literature critic; listing class representatives is not a count, since k(G) can be
+  exponential, Garonzi–Maróti 2015). Pattern groups U_P(F_q): class counts can be non-polynomial in q
+  (Halasi–Pálfy, J. Group Theory 14 (2011)); no complexity result is known to us. (v0 attributed a universality
+  theorem to Pak–Soffer; the critic checked: they prove none. Removed.)
 - **Verdict.** Forced by CRT idempotents / divisor-indexed bases. Collapses to s.
 
 ### 2.3 Lens-space invariants
 
 - **Facts.**
-  - H₁(L(N,a)) = Z/N and the linking form λ(g, g) = a/N mod 1 are computable from any triangulation in poly time
+  - H₁(L(N,a)) = Z/N and the linking form λ(g, g) = ±a^{±1}/N mod 1 (up to convention) are computable from any triangulation in poly time
     (Smith normal form plus one intersection computation).
   - Oriented homotopy type: L(N,a) ≃⁺ L(N,b) ⇔ ab^{−1} ∈ (Z/N)^{*2}; unoriented: ⇔ ab^{−1} ∈ ±(Z/N)^{*2} (Whitehead;
     Olum). So the complete homotopy invariant is the isometry class of a rank-1 linking form, i.e. the pair of
@@ -318,14 +350,14 @@ size N or the factors, or OPEN.
   ≍ q^{p−1} (complete residue systems), so EXP. Coven–Meyerowitz's conditions (T1, T2) are stated through the
   cyclotomic divisors Φ_d, d \| N, of the tile's mask polynomial: they need divisors (conn_top: sparse probe sets are
   blind to cyclotomic divisors, Lam–Leung).
-- Generalisation: tiling a finite region by given tiles is NP-complete; tiling Z^d by translates of one tile is
-  undecidable (Greenfeld–Tao 2024, UNVERIFIED exact statement). **Deprioritised** per the brief.
+- Generalisation: tiling a finite region by given tiles is NP-complete; deciding whether one finite tile tiles a given
+  periodic subset of Z^d (d in the input) is undecidable (Greenfeld–Tao, JEMS 2025; monotiling of Z^d itself is open). **Deprioritised** per the brief.
 
 ---
 
 ## 3. Meta-question: a common reason, a model, and the escapees
 
-### 3.1 Prop TRI (quasi-polynomial local data: AGG / FIBER / FACT). PROVED (routine extension of nonsmooth §5.3)
+### 3.1 Prop TRI (quasi-polynomial local data: AGG / FIBER / FACT). PROVED (routine extension of nonsmooth §5.3 and of Bach–Miller–Shallit, SIAM J. Comput. 15 (1986), which prove σ_k (k ≠ 0) and r₄ factoring-equivalent for all N)
 
 *Setting.* m ≥ 1. For each unit u mod m a polynomial c_u(x) = Σ_i c_{u,i} x^i ∈ Q[x] (clear denominators when needed). F(r) := c_{r mod m}(r) for
 primes r ∤ m, and f(pq) := F(p)F(q). For a nonzero c_u let d(u) ≤ D(u) be its lowest and highest degree.
@@ -386,14 +418,14 @@ N^c lower bound unless factoring itself has one: it allows every factoring algor
 *structure* in F. Prop TRI says which polynomial structures help (only c·χ·r^k), and the escapees (§3.4) are the
 structures outside its scope.
 
-### 3.3 Prop AUT (no digit automaton for cluster I on all integers). PROVED, from KNOWN theorems
+### 3.3 Prop AUT (no digit automaton for cluster I on all integers). KNOWN in substance (Schlage-Puchta, J. Integer Seq. 6 (2003) Cor. 3, with Allouche–Shallit, TCS 98 (1992) Cor. 2.4); our Wirsing/Berstel proof is an alternative
 
 *Statement.* Let f be multiplicative, integer-valued, with f(r) = F(r) at all but finitely many primes for a polynomial F ∈ Z[x], and
 suppose some prime ℓ has 0 < #{u ∈ (Z/ℓ)^*: F(u) ≡ 0} < ℓ − 1. Then f is not k-regular for any k ≥ 2 (no Z-weighted
 automaton over the base-k digits computes f(n) for all n). Examples: φ (ℓ = 3), σ (ℓ = 3), Pillai (ℓ = 3),
 J₂ (ℓ = 5), k(SL₂) (ℓ = 3).
 
-*Proof.* If f were k-regular, f mod ℓ would be k-automatic (Allouche–Shallit 1992), so A = {n: ℓ ∤ f(n)} would be
+*Proof.* If f were k-regular, f mod ℓ would be k-automatic (Allouche–Shallit 1992, Cor. 2.4), so A = {n: ℓ ∤ f(n)} would be
 k-automatic. Its indicator is multiplicative and equals 1 on a set of primes of relative density 1 − c with
 c = #roots/(ℓ − 1) ∈ (0, 1) (Dirichlet). By Wirsing's theorem #A ∩ [1, x] ~ C x(log x)^{−c} with C > 0 (the indicator is 0/1 multiplicative, mean 1 − c > 0 on primes), so the number of
 members with exactly n digits is ~ C′ k^n n^{−c}. For a regular language the number of words of length n is, on each residue class of
@@ -402,8 +434,9 @@ nonnegative coefficients; Berstel's theorem on dominant poles). λ = k with expo
 λ < k is too small. ∎
 
 *Scope.* This rules out automata that are correct on *all* n. Automata correct only on semiprimes are not
-excluded; that question is newfamily row 53 / leakmap's automaton class, OPEN. The φ and σ cases are likely KNOWN
-(Coons, JTNB 22 (2010), "(Non)automaticity of number theoretic functions"; UNVERIFIED). J₂ needs ℓ = 5 (at ℓ = 3 both units are roots); k(SL₂) = r + 4 fails only at r = 2, hence "all but finitely many primes".
+excluded; that question is newfamily row 53 / leakmap's automaton class, OPEN. Prior art: φ is not k-regular (Coons, JTNB 22 (2010) Thm 3.3); σ_m, φ, μ mod v are not automatic (Yazdani, JTNB
+13 (2001)); the general multiplicative criterion is Schlage-Puchta 2003. Regular-language asymptotics: Berstel–
+Reutenauer, *Noncommutative Rational Series with Applications* (2011); Flajolet–Sedgewick Thm V.3 (numbers UNVERIFIED). J₂ needs ℓ = 5 (at ℓ = 3 both units are roots); k(SL₂) = r + 4 fails only at r = 2, hence "all but finitely many primes".
 
 ### 3.4 The common reason, stated carefully
 
@@ -471,8 +504,8 @@ sharper. Ranked by how cleanly the first question can be attacked.
   Prop AUT rules out automata correct on *all* integers; nothing we know rules out semiprime-only correctness
   (leakmap's AC⁰ theorem does not cover automata: parity is regular).
 - First question: is there a k-automatic g with g(pq) = (p − 1)(q − 1) mod 3 for all primes 3 < p < q? A natural
-  route to a NO: Müllner-type prime number theorems for automatic sequences (Müllner 2017), extended to the
-  bilinear set of semiprimes.
+  route to a NO: Möbius disjointness for all automatic sequences (Müllner, Duke 166 (2017)) and prime number theorems for
+  automatic sequences (Mauduit–Rivat; Adamczewski–Drmota–Müllner), extended to the bilinear set of semiprimes.
 - Strongest reason to fail: it is the fiber-bit problem (Φ-hiding-type) restricted to a weak model; a NO would be a
   new barrier, not an algorithm; a YES would be astonishing.
 
