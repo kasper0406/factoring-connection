@@ -161,6 +161,9 @@ Every number is produced by `src/heurnfs/models.py::table()` (run: `.venv/bin/py
 | 19 | MNFS + output-sensitive rational-smooth enumeration | **1.6386** | HYPOTHETICAL; KNOWN in substance (this is the factory cost model, Bernstein–Lange §2.5); new only: extra fields add nothing | §4.4 (a) |
 | 20 | Sparse LA exponent ω = 1.5 / 1.7 / 2 / 2.373 | MNFS 1.8597 / 1.8604 / 1.9019 / 1.9553; GNFS 1.9230 / 1.9230 / 1.9230 / 1.9553 (MNFS ≤ GNFS enforced; the earlier 1.9555 was a minimiser artifact) | HYPOTHETICAL (ω < 2); GNFS-vs-LA-exponent models KNOWN (Bernstein 2001; Lenstra–Shamir–Tomlinson–Tromer 2002); the MNFS curve is new here | §4.4 (b) |
 
+> *Attribution (orchestrator, 2026-10-27, from conn_cmp):* the MNFS-vs-ω curve for ω ≥ 1.78 is already in Lenstra–Shamir–Tomlinson–Tromer, ASIACRYPT 2002, §2.7. The 1.8595 floor below that is this note's computation. LSTT's 1.8689 is one point on their constrained curve.
+
+
 ## 3. The devices, one by one (Step 2)
 
 ### 3.1 Dixon descent / descent-style relation generation
