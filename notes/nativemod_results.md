@@ -1,8 +1,8 @@
 # nativemod: coefficients and Hecke traces of FIXED-level modular forms at a composite index (phase 29)
 
-Agent `nativemod`, 2026-10-27. **Version v2.1** (second Opus proof critic applied, §8). v2: after the codex adversarial round (cx2, MAJOR REVISION) and the Opus
-proof critic (ACCEPT WITH FIXES), with every required fix applied (§8). The Opus literature critic's fixes are in
-v2.1 (§8).
+Agent `nativemod`, 2026-10-27. **Version v2.2**: the Opus literature critic (OK WITH FIXES) is applied in v2.2; the second Opus proof critic in
+v2.1; the codex adversarial round (cx2, MAJOR REVISION) and the first Opus proof critic (ACCEPT WITH FIXES) in v2.
+All are recorded in §8.
 - Pre-registration: `notes/nativemod_prereg.md` (commit `9acb3cc`, before any experiment).
 - Code: OPERATIONAL `src/nativemod/{reductions,ecalg}.py`. These take N and the stated datum only; an AST test
   forbids PARI, harness and factorisation imports and calls. HARNESS `src/nativemod/{harness,run_experiments}.py`.
@@ -125,7 +125,8 @@ Notation:
        σ(N). This is a target, not a theorem.
    - **Hardness of the generalisation.** With level and weight in unary, the problem is polynomial-time given a
      factoring oracle (E–C Thm 15.2.1, level 1, deterministic; Bruin and Javanpeykar for general level, GRH, Las
-     Vegas). So NP-hardness would imply NP ⊆ ZPP^{FACT} (under GRH). That is not believed, but it is not proved
+     Vegas). For FIXED level and weight no GRH is needed (Bruin Rem 1.3); GRH enters only in the unary-level
+     generalisation. So NP-hardness would imply NP ⊆ ZPP^{FACT} (under GRH). That is not believed, but it is not proved
      impossible either. The lattice-as-input version is #P-complete (Charles 2007), but it leaves the fixed-level
      family.
 
@@ -143,7 +144,12 @@ question about a(N), not a speed route.
   as a polynomial P_ℓ ∈ Q[x]. Its roots correspond to the nonzero points of V_ℓ ⊂ J₁(ℓ)[ℓ]; in weight 2 they
   correspond to E[ℓ], which is Schoof's ψ_ℓ.
 - Read the conjugacy class of Frob_p from F_p[x]/(P_ℓ), then CRT the traces.
-- Bruin, Zeng, Tian, Derickx–van Hoeij–Zeng and Mascot change how P_ℓ is computed, not the last step.
+- Bruin, Zeng, Tian, Derickx–van Hoeij–Zeng and Mascot change how P_ℓ is computed, not the last step:
+  P. Bruin, Publ. Math. Besançon (2011) 19–36; J. Zeng, Math. Comp. 84 (2015); P. Tian, arXiv:1311.0577;
+  M. Derickx, M. van Hoeij, J. Zeng, arXiv:1312.6819; N. Mascot, Rend. Circ. Mat. Palermo 62 (2013) (Zeng and Mascot
+  details per the literature critic).
+- E–C Remark 2.2.4 already states that computing σ_{k−1}(n) at composite n is equivalent to factoring, citing
+  Bach–Charles. This is the closest prior statement of the prime-versus-composite theme.
 
 | step | at a prime p | at N = pq | status |
 |---|---|---|---|
@@ -253,7 +259,9 @@ question about a(N), not a speed route.
   - cx2 and the critic produced nonzero collisions: 37a1 (1013, 1097), a = 36; 11a1 (1009, 1019), a = −10; three more
     for 37a1 at 20 bits. All give None, as now stated. Unit test added.
 - The toy uses fixed d = 9, m = 4 and the balance q/p < 4/3, with ≤ 38 windows at n = 128 (rule 8: toy).
-- No earlier exact statement found by cx2 or us.
+- No earlier exact statement found by cx2, the literature critic or us. Closest mechanism: Dieulefait–Jiménez Urroz,
+  *Mathematics* 8 (2020) 2126, Thm 6 (Coppersmith plus Hasse); also Kunihiro–Koyama, EUROCRYPT '98. No prior art
+  shows that one a_E(N) of a fixed non-CM form factors N, so the OPEN verdict stands.
 
 ### 1.4 Placement (the question as posed)
 
@@ -273,7 +281,8 @@ For growing ℓ the algebras form a family rather than one fixed algebra (cx1).
 
 ## 2. Q2 — Eisenstein coefficients
 
-**Prop EIS-k (PROVED; routine generalisation of Bach–Miller–Shallit for σ and nonsmooth Prop MF′).**
+**Prop EIS-k (PROVED; routine generalisation of Bach–Miller–Shallit for σ and nonsmooth Prop MF′).** Prior
+remarks: E–C Rem 2.2.4; Bruin Rem 1.4 (dropping "m in factored form" would factor RSA moduli via E_k).
 - Setting: E_k(χ, χ′) has a(n) = Σ_{d|n} χ(n/d)χ′(d)d^{k−1}, with k ≥ 2 and real characters of conductor dividing c.
   N = pq is coprime to c. For k = 2, χ = χ′ = 1, use the holomorphic level-2 modification, since E₂ is quasimodular
   (cx2).
@@ -294,12 +303,12 @@ For growing ℓ the algebras form a family rather than one fixed algebra (cx1).
 | route | cost | status |
 |---|---|---|
 | σ(N) = S(N) − S(N−1), S(X) = Σ_{d≤X} d⌊X/d⌋, hyperbola blocks | Õ(N^{1/2}) | PROVED (cx1) |
-| same, Polymath affine-progression decomposition (Math. Comp. 81 (2012), Prop 2.2) | N^{0.49+o(1)} | KNOWN (cx1) |
+| same, Polymath affine-progression decomposition (Math. Comp. 81 (2012) 1233–1246, Prop 2.2: O(x^{0.49+o(1)}) progressions) | N^{0.49+o(1)} | routine extension of Prop 2.2 to Σσ (cx1) |
 | same, convex-hull walk (Sladkey, arXiv 1206.3369, for Σd(n)) plus polynomial floor sums | Õ(N^{1/3}) expected | UNVERIFIED (extension to the weighted sum not checked) |
 | r₄(N) by enumeration; r₄ = Σ_t r₃(N − t²) | Θ(N); ≈ 2√N class numbers | KNOWN |
 | q-expansion of θ⁴ or E₂ up to index N | Θ(N) | output size |
-| Hecke action, Merel's family S_n (Merel 1994, §3.1 Prop 18; the set used by Stein GSM 79 §8.3.3) | ≍ (12 log 2/π²)σ(n)log n matrices | KNOWN (cx1, cx2) |
-| Hecke action, Merel's X_n = {ad − bc = n, a > b ≥ 0, d > c ≥ 0} (Merel Prop 20) | (3/π²)p log²p + O(p log p) at primes (cx2's proof; measured 0.40 → 0.378 for p ≤ 10⁵) | PROVED (cx2) / experimentally supported |
+| Hecke action, Merel's family S_n (Merel 1994; Stein GSM 79 §8.3.3, confirmed; Merel's Prop 18 numbering UNVERIFIED) | ≍ (12 log 2/π²)σ(n)log n matrices | KNOWN (cx1, cx2) |
+| Hecke action, Merel's X_n = {ad − bc = n, a > b ≥ 0, d > c ≥ 0} (Stein GSM 79 Prop 8.8; Merel's Prop 20 numbering UNVERIFIED) | (3/π²)p log²p + O(p log p) at primes (cx2's proof; measured 0.40 → 0.378 for p ≤ 10⁵) | PROVED (cx2) / experimentally supported |
 | Fourier extraction a(N) = ∫ f(x + iy)e(−N(x+iy))dx | Ω(N) samples for the trapezoid rule (aliasing), or precision e^{−2πNy} | → `nativeana` |
 | Ramanujan series σ_{k−1}(N) = N^{k−1}ζ(k)Σ_c c_c(N)/c^k | the terms with c < p coincide with those of a number with no small prime factors: moduli ≥ p are needed | PROVED for k = 2 (nonsmooth §4.1); same argument for all k |
 | fixed linear recurrence in n for a(n) | impossible: not P-recursive | PROVED below |
@@ -395,7 +404,7 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 | data | decomposition | cross term X |
 |---|---|---|
 | σ_{k−1}(N) (Eisenstein) | 1 ⊕ ε^{k−1} | p^{k−1} + q^{k−1} |
-| Bach–Charles a(N²) = a_N(Sym²f), χ = 1 | ρ ⊗ ρ = Sym²ρ ⊕ det | q^{k−1}(a_p² − p^{k−1}) + p^{k−1}(a_q² − q^{k−1}); so a(N²) = a(N)² + N^{k−1} − S, S = q^{k−1}a_p² + p^{k−1}a_q² (E1b(iii): 100/100) |
+| Bach–Charles a(N²) = a_N(Sym²f) (shown for χ = 1; any χ with χ(p) factors) | ρ ⊗ ρ = Sym²ρ ⊕ det | q^{k−1}(a_p² − p^{k−1}) + p^{k−1}(a_q² − q^{k−1}); so a(N²) = a(N)² + N^{k−1} − S, S = q^{k−1}a_p² + p^{k−1}a_q² (E1b(iii): 100/100) |
 | CM pairs (tracedata CM-PAIR) | ρ_f restricted to G_K = ψ ⊕ ψ̄, ψ(𝔭)ψ̄(𝔭) = p | ψ(𝔭)ψ̄(𝔮) + ψ̄(𝔭)ψ(𝔮), via sums of two squares |
 | Brandt row sums, genus averages (§4) | Brandt module = Eisenstein ⊕ cusp | Eisenstein eigenvalue σ(N) |
 | Eichler–Selberg divisor term | hyperbolic (Eisenstein-type) term | −½Σ_{dd′=N} min(d, d′)^{k−1} = −(1 + p^{k−1}) |
@@ -414,12 +423,17 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 - A single non-CM coefficient has no such summand on any open subgroup. tracedata Prop DEC shows that (N, a_p, a_q)
   satisfy no fixed algebraic relation with p. This is where the open case sits.
 
-**Comparison with Bach–Charles (KNOWN, arXiv:0708.1192 §2, Thm 2.2).**
+**Comparison with Bach–Charles (KNOWN; Contemp. Math. 463 (AMS 2008), DOI 10.1090/conm/463/09042; arXiv:0708.1192;
+Thm 2.2, per the literature critic).**
+- Scope: a non-CM normalised eigenform of EVEN weight and ANY character χ. A poly-time a(n) algorithm gives a
+  DETERMINISTIC poly-time factorer for a density-1 set of RSA moduli. Odd weight is heuristic there.
 - Ingredients:
-  - the two oracle values a(N) and a(N²);
-  - the Hecke relation at p², which is where det = χ(p)p^{k−1} enters (the Sym² ⊕ det cross term above);
-  - non-vanishing of a(p) for density-one primes (Serre; Lehmer for τ);
-  - Deligne's bound, for the integrality step (cx1).
+  - the two oracle values a(N) and a(N²), plus a minimal-polynomial / complex-embedding oracle;
+  - the Hecke relation a(p²) = a(p)² − χ(p)p^{k−1}, which is where det enters;
+  - reading p off a denominator, which works because √p ∉ K_f (even weight);
+  - the exception a(p) = a(q) = 0 has density 0 (Serre 1981); Lehmer enters only as a conjecture (Cor 2.8).
+- Our identity a(N²) = a(N)² + N^{k−1} − S (the Sym² ⊕ det cross term; checked by the critics) repackages their
+  steps (1)–(3).
 - An oracle for Tr T_{rN} and Tr T_{rN²} at several fixed r on a fixed nonzero S_k(1) also suffices. Invert a fixed
   system to get a_i(N) and a_i(N²), then apply BC (cx1). This is a multi-index oracle.
 - One value a(N), or one trace Tr T_N: OPEN.
@@ -427,8 +441,8 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 ### 3.4 Eichler–Selberg at level 1 (KNOWN identity; E1a verified)
 
 **The identity.**
-- C_k(N) := Σ_{t²<4N} P_k(t, N)H(4N − t²), with P_k = [z^{k−2}](1 − tz + Nz²)⁻¹ (Zagier, *Modular forms of one
-  variable*, §6.3; Cohen 1975).
+- C_k(N) := Σ_{t²<4N} P_k(t, N)H(4N − t²), with P_k = [z^{k−2}](1 − tz + Nz²)⁻¹ (Zagier's appendix to Lang,
+  *Introduction to Modular Forms* (1976); Popa–Zagier; Cohen 1975).
 - Then Tr(T_N | S_k(1)) = −½C_k(N) − ½Σ_{dd′=N} min(d, d′)^{k−1} for k ≥ 4. For N = pq the divisor term is
   −(1 + p^{k−1}).
 
@@ -444,14 +458,14 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 
 **Charles 2006** (Ramanujan J. 11, 221–224).
 - It computes τ(N) through this formula after factoring N.
-- Bounds: N^{1/2+ε} randomized under GRH, and N^{3/4+ε} unconditional (cx1).
+- Bounds: N^{1/2+ε} randomized under GRH, and N^{3/4+ε} unconditional (per cx1; unverified).
 - It is not a native composite-index algorithm.
 
 ---
 
 ## 4. Q4 — Brandt matrices and quaternary theta series
 
-**Structure (KNOWN: Siegel–Weil, Eichler's basis problem, Pizer's Brandt matrices).**
+**Structure (KNOWN: Siegel–Weil, Eichler's basis problem, Pizer's Brandt matrices, J. Algebra 64 (1980)).**
 - For a positive quaternary lattice L of level M and N coprime to M, r_L(N) = E_L(N) + C_L(N). Here E_L is a
   combination of σ-type divisor sums, and C_L is a cusp form.
 - The genus average, with weights 1/|O(L)|, is E_L.
@@ -465,13 +479,15 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
     r_{L2}(1) = 0, so it is not an order (cx2).
   - L3 = [[2,−1,−1,−1],[−1,2,0,0],[−1,0,8,−3],[−1,0,−3,8]], |O| = 72: the norm form of the order with 6 units.
 - They are pairwise non-isometric. All three have the same anisotropic discriminant form on (Z/11)², so they lie in
-  one genus (Nikulin; critic). We do not claim the genus is complete.
+  one genus (Nikulin; critic). The genus is complete: Nipp's tables (Springer 1991), discriminant 121, list one
+  genus of 3 classes with |O| = 32, 72, 24 and mass 25/288 (literature critic).
 - Identities, for 11 ∤ n where needed:
   - (i) a_{11a1}(n) = (r_{L1}(n) − r_{L2}(n))/4;
   - (ii) the Siegel average over {L1, L2, L3} equals (12/5)σ(n);
   - (iii) r_{L1} = (12/5)σ + (8/5)a, r_{L2} = (12/5)σ − (12/5)a, r_{L3} = (12/5)σ + (18/5)a;
   - (iv) the Brandt rows 3r_{L1} + 2r_{L2} = 12σ(n) and 3r_{L2} + 2r_{L3} = 12σ(n) (critic).
-- (iii) and (iv) are **PROVED for all n**: θ_L lies in M₂(Γ₀(11)), which is 2-dimensional with Sturm bound 2, and
+- (iii) is classical (Hecke; Eichler basis problem; Brandt/Gross example (θ_{O₂} − θ_{O₁})/2 = η(z)²η(11z)²);
+  re-proved here. (iii) and (iv) are **PROVED for all n**: θ_L lies in M₂(Γ₀(11)), which is 2-dimensional with Sturm bound 2, and
   each identity has been checked to n = 3000.
 - Registered E1c(ii) used only L1 and L2, with weights 1/|O(L)|: **REFUTED as registered** (2312/2727 failures). L3
   was found post hoc by a wider search.
@@ -485,6 +501,8 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
     - For balanced N it is not known to factor N (OPEN, like tracedata's mixed data). For L1 it also gives a(N) mod 3,
       since 5r_{L1} ≡ 8a (mod 3).
   - The non-CM coefficient is the theta difference.
+- Prior art: Charles, TR1498 (2004) Thm 7.1, randomly reduces factoring to counting vectors in the FIXED E₈
+  lattice (θ = 240σ₃, via BMS86).
 - Class-number-one lattices: r_{Z⁴} = 8σ (odd n), r_{D4} = 24σ (odd n; the Hurwitz order, level 2) and
   r_{A2⊕A2} = 12σ (3 ∤ n). E1c(iii): 0 failures for n ≤ 3000. Each single count is FACT.
 
@@ -493,7 +511,8 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 - Class-number-one forms: via σ, Õ(N^{1/2}) or N^{0.49} (§2).
 - Slicing to ternary: r_L(N) = Σ_t r_{L′}(N − Q(t)) is ≈ 2√N ternary counts. Each is a class number only when the
   ternary genus has no cusp part (cx2).
-- Gauss-circle-type exact counting is Õ(R^{2/3}) for planar curves (Hensley, Pacific J. Math. 166 (1994), per cx1).
+- Gauss-circle-type exact counting is Õ(R^{2/3}) for planar curves (Hensley, Pacific J. Math. 166 (1994); only a
+  closing remark there, "can be adapted").
   It does not lift to dimension 4: slices cost ≈ N^{4/3} (cx1).
 - **Barvinok** (fixed dimension, polynomial in the facet description) applies to polytopes.
   - The natural polytope with the same lattice points, the integer hull of the 4-ball of radius √N, has
@@ -551,9 +570,10 @@ a_N(ρ₁ ⊕ ρ₂) = a_N(ρ₁) + a_N(ρ₂) + X, with X = a_p(ρ₁)a_q(ρ₂
 - With the level and weight in unary and the form given by Hecke data, coefficients are computable in polynomial time
   given the factorisation of the index:
   - E–C Thm 15.2.1: level 1, deterministic; unconditional for fixed weight, and uniform in the weight under GRH.
-  - Bruin, Publ. Math. Besançon 2011, Thm 1.1: levels n₀n₁ with n₁ squarefree; GRH, Las Vegas.
+  - Bruin, Publ. Math. Besançon 2011, 19–36, Thm 1.1: levels n₀n₁ with n₁ squarefree; GRH, Las Vegas. Rem 1.3:
+    for fixed n₀, n₁, k it is unconditional.
   - Javanpeykar, ANT 8 (2014), Thm 5.0.1: general levels.
-- So the problem lies in ZPP^{FACT} (under GRH). NP-hardness would imply NP ⊆ ZPP^{FACT}. That is not believed, but
+- Fixed level and weight need no GRH. The unary-level generalisation lies in ZPP^{FACT} (under GRH). NP-hardness would imply NP ⊆ ZPP^{FACT}. That is not believed, but
   it is not proved impossible.
 - The lattice-as-input variant is #P-complete under polynomial-time Turing reductions (D. X. Charles, "Counting
   lattice vectors", JCSS 73 (2007) 962–972, Thm 3.1). Its level grows with the input, so it is outside this family.
@@ -626,6 +646,18 @@ for 37a1, ℓ ∈ {3, 5}, show no association with a_N mod ℓ, ε or (p/ℓ), b
 | 11 E3 gcd coverage (111 / 417 unchecked coefficient splits); positive control degenerate; scope | E3c rerun with full gcd checks; P3c reported as REFUTED; scope stated (§6) |
 | 12 Merel: X_n vs S_n (Prop 18 vs Prop 20); (3/π²)p log²p proved | §2 and §3.1 corrected |
 | 13 missing native routes (Jacobi forms, theta lifts, Shimura, CM values, Borcherds, p-adic, Brandt mod ℓ) | §8.1 |
+
+**Opus literature critic (run by the orchestrator on v2.1; OK WITH FIXES; no theorem, proof or verdict changes).
+All applied in v2.2.**
+- Bach–Charles: published citation; Thm 2.2 scope (even weight, any χ, deterministic, density 1); the integrality
+  step is √p ∉ K_f, not Deligne; "χ = 1" removed; our Sym² ⊕ det identity repackages their steps.
+- E–C Rem 2.2.4 cited as the closest prior statement. Bruin Rem 1.3 (fixed level and weight are unconditional) and
+  Rem 1.4 (next to EIS-k). Full references for Bruin, Zeng, Tian, Derickx–van Hoeij–Zeng and Mascot.
+- Charles TR1498 Thm 7.1 (E₈ counts ⇒ FACT) cited in §4. Charles 2006 bounds marked "per cx1".
+- Stein Prop 8.8 for X_n; Merel numbering UNVERIFIED. Zagier's appendix to Lang / Popa–Zagier; Pizer J. Algebra 64.
+- Nipp: the level-11 genus is complete (3 classes, mass 25/288). (iii) is classical.
+- Polymath relabelled; Hensley's remark qualified.
+- CRT-T: Dieulefait–Jiménez Urroz Thm 6 and Kunihiro–Koyama as the closest mechanisms. The OPEN verdict stands.
 
 **Second Opus proof critic (run by the orchestrator on v2; CLS, LRS(iii), CONV, CRT-T). All applied in v2.1.**
 - Verdicts: CLS ACCEPT WITH FIXES; LRS(iii) ACCEPT WITH FIXES; CONV ACCEPT WITH FIXES; CRT-T MAJOR as stated. It
