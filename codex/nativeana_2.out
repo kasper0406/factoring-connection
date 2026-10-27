@@ -1,0 +1,238 @@
+Saved as [nativeana_2_report.md](/Volumes/git/factoring-connection/codex/scratch/nativeana_2/nativeana_2_report.md).
+
+# Adversarial referee report
+
+**LIN’s core argument survives; the advertised factoring optimality does not follow.** I found a false HW corollary, a logarithmic error in LIN′’s proposed proof, and material literature and scope errors. “FATAL” below concerns the advertised conclusion, not a counterexample to LIN itself.
+
+## 1. Theorem LIN
+
+**1. MINOR — Lemma 1 is essentially correct, with a missing phase.**
+
+For every odd positive \(n\), including nonsquarefree \(n\),
+\[
+\chi_{-4m}(n)=(-4m/n)=(-m/n).
+\]
+
+For odd nonsquare \(r\), the Jacobi character modulo \(r\) is nonprincipal: some prime exponent is odd, and CRT supplies a unit with character \(-1\). Restricting \(m\equiv1\pmod4\) does not change this because \((4,r)=1\). Square \(r=s^2\) gives the stated coprimality indicator and density.
+
+Poisson needs the translation phase \(e(\pm hQ/(4r))\), possibly absorbed into \(\tau_h\). Its omission does not affect the bounds. Arbitrarily strong power savings follow by increasing the Fourier-decay exponent, absorbing polynomial \(B\).
+
+**Fix:** insert or explicitly absorb the phase, and distinguish the requested saving exponent from the Fourier-decay exponent.
+
+**2. MINOR — The test-set explanation is wrong; its conclusion is repairable.**
+
+Removing the \(K\) smallest classes need not minimize the weighted sum: \(\varphi(k)/k^3\) is not monotone. A positive mean alone also does not establish that the constant \(8\) suffices.
+
+Instead use
+\[
+\sum_{\substack{k\le x\\k\text{ odd squarefree}}}\frac{\varphi(k)}k
+\sim ax,\qquad
+a=\frac12\prod_{\ell>2}(1-2/\ell^2+1/\ell^3)>\frac14.
+\]
+Deleting \(K\) terms removes at most \(K\) from this sum. Multiplying the remainder by \((8K)^{-2}\) proves the required \(c/K\). Handle bounded \(K\) separately.
+
+**Fix:** replace the deletion argument by this calculation.
+
+**3. MINOR — Lemma 2 needs explicit bookkeeping, but its bound is valid.**
+
+Heath–Brown’s Theorem 1 is quoted correctly: **both variables are positive odd squarefree**, and the bound contains
+\[
+(MN)^\eta(M+N)\sum|a_n|^2.
+\]
+[Original paper, pp. 237–238](https://matwbn.icm.edu.pl/ksiazki/aa/aa72/aa7234.pdf).
+
+The square-part identity is correct. For fixed \(s,t\), put \(1_{(n_1,t)=1}\) into the coefficients, retain \(1_{(t,s)=1}\), and discard the **outer** restriction \((m_1,s)=1\) only after taking absolute squares. Since \(m_1\equiv1\pmod4\), reciprocity leaves the coefficient twist \((-1/n_1)\). Factor \(s^{-2}\) outside before applying HB.
+
+The resulting block norm satisfies
+\[
+\|B_Y\|_2
+\ll Q^{o(1)}
+\sum_{s\le\sqrt{2Y}}s^{-2}(Qs^2/Y+\sqrt Q)^{1/2}
+\ll Q^{o(1)}
+\left(\sqrt{Q/Y}\log(2Y)+Q^{1/4}\right).
+\]
+Squaring and summing blocks yields the claimed bound, choosing HB’s exponent sufficiently small. The \(\sqrt Q\) comes from summing the \(N\)-term over \(t\). The far tail is negligible.
+
+**Fix:** write this derivation explicitly.
+
+**4. MINOR — The frame and final balance check out.**
+
+Distinct squarefree tests have nonsquare product; their normalized Gram matrix has operator norm \(1+o(1)\). The product bounds fit Lemma 1 for sufficiently large \(Q\).
+
+The tail correlation is \(O(Q^{3/4+\varepsilon/4})\), while the retained diagonal is
+\[
+\gg Q^{3/4+\varepsilon}/\log\log Q.
+\]
+Thus the mean-square bound and existence of an \(m\) with error \(\gg K^{-1/2}\) follow. The order class-number formula also holds for nonfundamental \(-4m<-4\).
+
+**Fix:** retain LIN after these proof repairs; do not extend its range to the AFE length.
+
+**5. MAJOR — The model is meaningful but substantially narrower than the verdict.**
+
+It requires common, nonadaptive support \(S\), \(PK\le Q^{1-\varepsilon}\), and uniform smoothness at scale \(Q\).
+
+Fixed-cutoff partial sums, smooth truncations, and short AFE sub-selections fit. Euler products do not fit LIN at their prime-operation cost. Booker’s complete algorithm includes algebraic work outside the model.
+
+The implemented random sampler has \(P\asymp Q\) and is excluded. Shorter random samplers can fit: PV permits cutoff roughly \(\sqrt{QK}\) times logarithms at accuracy \(K^{-1/2}\).
+
+**Fix:** describe a restricted quadrature theorem, with coverage stated algorithm by algorithm. It is neither vacuous nor a general analytic-computation lower bound.
+
+## 2. LIN′, semiprimes, and ARCH
+
+**6. MAJOR — LIN′’s prime-test calculation loses an extra logarithm.**
+
+After excluding the first \(K\) primes, tests reach \(x\asymp K\log K\), and
+\[
+\sum_{\ell>x}\ell^{-2}
+\asymp\frac1{x\log x}
+\asymp\frac1{K(\log K)^2}.
+\]
+The proposed frame argument therefore gives
+\[
+\frac1{\sqrt K\log K},
+\]
+not \(1/\sqrt{K\log K}\). The exact odd-power coefficient is \(\operatorname{atanh}(1/\ell)\), with the same scale.
+
+The stronger **existential** claim might have another proof, but this argument does not establish it.
+
+**Fix:** weaken the rate, prove the logarithmic tail estimate, state support restrictions, and include the GRH \(1/\log\log Q\) loss when converting to absolute \(L\)-error. This correction does not change the power \(1/5\).
+
+**7. MAJOR — The semiprime sketch is plausible, not established.**
+
+GRH prime-character bounds plausibly give \(Q^{1/2+o(1)}\) after separation. But the family has mass \(\asymp Q/(\log Q)^2\), not \(Q\).
+
+Missing details include the balanced region, congruence condition, ordering and diagonal removal, imprimitive characters, smooth-weight norms, and uniform conductor dependence. Both Gram bounds and target correlations need the correct normalization.
+
+Restricting HB’s nonnegative outer sum to squarefree semiprimes is legitimate; this does not automatically establish the other estimates.
+
+**Fix:** provide the complete GRH proof with logarithmic margins in \(BK^2\ll\sqrt Q\).
+
+**8. FATAL — ARCH does not establish factoring optimality as advertised.**
+
+LIN produces a difficult integer \(m\), potentially nonsquarefree, rather than a balanced semiprime. Its factoring application depends on finding 7.
+
+ARCH also drops the position hypothesis: small \(K\) does not imply \(PK\le Q^{1-\varepsilon}\). Finally, BSGS’s \(O(\sqrt\Delta)\) upper bound is not an \(\Omega(\sqrt\Delta)\) lower bound for every finishing algorithm.
+
+The optimization
+\[
+\min_K\{K+(Q/K)^{1/4}\}\asymp Q^{1/5}
+\]
+is correct **if that finishing cost is imposed**.
+
+For randomized algorithms, seedwise mean-square error additionally does not imply expected finishing cost or bounded-error complexity; rare large errors can dominate the second moment.
+
+**Fix:** state a deterministic, uniform certified-window tradeoff on the proved family, explicitly charging \(\Theta(\sqrt\Delta)\). Separate semiprime and randomized extensions.
+
+**9. MAJOR — The generic \(\Delta^{1/3}\) assertion is only an analogy.**
+
+A hidden prime component with a prescribed distribution and bounded transcript coefficients is not arbitrary group-order recovery in an analytic window. Actual class-number distributions supply none of these hypotheses automatically.
+
+**Fix:** call this a candidate lower-bound model. Conditional on a \(\Delta^{1/3}\) finish, the balance \(Q^{1/7}\) is correct; it is neither an achieved algorithm nor an established universal lower bound.
+
+## 3. HW and amortisation
+
+**10. MAJOR — HW’s inequality is correct; its real-coefficient corollary is false.**
+
+The Hankel-rank and singular-value proof works, including properly counted jets. But complex moment errors paired with real coefficient intervals do not have dual norm \(\sum|e_n|\).
+
+Take \(N=W=T=1\), all outside coefficients zero, and
+\[
+f(z)=a_0+a_1z+a_2z^2,\qquad a_j\in[-A,A].
+\]
+The one-value rule
+\[
+\widehat a_1=-\frac{8i}{29}f(i/2)
+\]
+has worst error
+\[
+5A/\sqrt{29}<A,
+\]
+contradicting the claimed requirement \(T\ge2\). Its moment \(\ell^1\)-error is \(35/29>1\), consistent with the true theorem.
+
+**Fix:** use complex coefficient disks, require real moment errors, or weaken the real-cube error threshold by an absolute constant. Count two real measurements in a complex sample explicitly.
+
+**11. MAJOR — HW is not a lower bound for modular coefficients.**
+
+Independent coefficient variations are absent for theta series and modular forms. Contour integration is not itself a finite point-value rule. The theorem does not account for precision or modular relations.
+
+This is an elementary finite Hankel-rank/singular-value consequence, closely related to classical Prony/Kronecker and AAK approximation theory. [Peller, §6](https://library.slmath.org/books/Book33/files/peller.pdf).
+
+**Fix:** restrict the conclusion to the corrected black-box linear information model. Do not infer a lower bound for structured modular coefficient algorithms.
+
+**12. MAJOR — AM proves a density identity, not trial-division complexity.**
+
+The determinant density is correct, including at \(2\). But the identification of complete Hurwitz local mass with that density needs proof. The displayed raw \(L\)-moment factor depends on \((N/\ell)\) even when \(v_\ell(N)=0\).
+
+“Any weight” is too broad. Selecting \(t\equiv0\pmod3\) gives respectively \(6\) and \(12\) trace-zero matrices modulo \(3\) with determinants \(1\) and \(2\), despite equal valuations.
+
+Even a valid Euler-factor identity does not require an aggregate algorithm to evaluate every factor separately.
+
+**Fix:** specify smooth macroscopic averaging and conclude only that *termwise local-factor evaluation performs divisibility tests*.
+
+**13. MAJOR — The Chebyshev algebra is correct, but the residual interpretation omits a term.**
+
+The generating function and sign \(-2pJ_w(\sqrt{p/q})\) are correct. The full formula is
+\[
+\begin{aligned}
+S_w={}&2c_0\sigma(N)-2J_w(N^{-1/2})
+-2pJ_w(\sqrt{p/q})\\
+&-2\sum_{m\text{ even}}c_mN^{-m/2}
+\operatorname{Tr}(T_N|S_{m+2}).
+\end{aligned}
+\]
+
+Thus E3’s residual after subtracting the \(p\)-term is **not solely cuspidal**. For \(w=1\), it is exactly \(-2\), although no cusp terms occur. For the registered bump, the missing term tends to approximately \(-0.51561658\).
+
+Choosing \(w=U_{10}\) gives the cusp term \(-2N^{-5}\tau(p)\tau(q)\), on the same \(\sqrt N\) scale as the hyperbolic term. “Smaller” is weight-dependent, not a power saving.
+
+**Fix:** retain both divisor terms. Describe \(J_w\) as a transform, not literal evaluation of the bump outside its support. [Trace formula normalization](https://www.cambridge.org/core/journals/forum-of-mathematics-sigma/article/eichlerselberg-relations-for-singular-moduli/7085064B69DD32BD5B3DE5293ED43EF7).
+
+## 4. Literature, wall table, and verdict
+
+**14. MAJOR — de Haan–Jacobson–Williams is misdescribed.**
+
+Their algorithm **computes** the regulator with unconditional correctness and expected \(D^{1/6+\varepsilon}\) time under GRH. It combines a relation-based producer of a regulator multiple with rigorous verification; §4.3 analyzes the combination.
+
+**Fix:** list this hybrid computation and explain why it lies outside the linear architecture. It is a real sub-\(1/5\) regulator computation. [Author-uploaded paper](https://www.researchgate.net/publication/220577622_A_fast_rigorous_technique_for_computing_the_regulator_of_a_real_quadratic_field).
+
+**15. MAJOR — Correct the speedup qualifications.**
+
+Hiary 2014’s ceiling-product bound is correct; “\(q^{1/3}\) for power-full \(q\)” is not: \(q=p^2\) gives \(q^{1/2}\). Include preprocessing. The paper explicitly permits factoring within its overall bound. [Theorem 1.1](https://arxiv.org/html/1205.4687).
+
+Vishe needs a useful divisor, not necessarily complete factorization, and treats a degree-two twist of conductor roughly \(q^2\). [Theorem 1](https://maths.dur.ac.uk/users/pankaj.vishe/q-aspect.pdf).
+
+Hiary 2018’s preprocessing/divisor costs and use of sieved factorizations are accurately summarized. [Original paper](https://arxiv.org/html/1608.06614).
+
+**Fix:** distinguish these requirements instead of grouping them as algorithms that “secretly factor.”
+
+**16. MAJOR — Two wall-table hypotheses are missing.**
+
+Squarefree \(N\) alone does not make \(-4N\) fundamental: \(N=15\) gives primitive conductor \(15\), not \(60\). Require \(N\equiv1\pmod4\), or handle the public \(2\)-part.
+
+The cited genusleak Prop HR requires a useful midpoint and addresses the norm-\(-1\) exception. Its own counterexample \(N=731=17\cdot43\) has norm-\(+1\) unit \(730+27\sqrt{731}\), but its midpoint reflects the public factor \(2\).
+
+**Fix:** restore these qualifications. Replace the termwise “\(\ge\sqrt N\,N^{1/5}\)” by the cost of a specified algorithm, not a lower bound.
+
+**17. MINOR — Several reference checks pass; Srinivasan remains incompletely verified.**
+
+BHK’s certificates require GRH; Proposition 2.3 and conjectural exponent \(2/3\) are correctly reported, with the subexponential bound applying to squarefree inputs. [Original paper](https://arxiv.org/html/1304.6937).
+
+Booker’s abstract supports unconditional termination and GRH \(D^{1/4+\varepsilon}\) complexity, combining algebraic methods and Burgess. [Institutional abstract](https://research-information.bris.ac.uk/en/publications/quadratic-class-numbers-and-character-sums/).
+
+Platt’s CRT/FFT description is accurate. [§4](https://arxiv.org/html/1305.3087). Odlyzko–Schönhage is height amortisation after preprocessing. [Original abstract](https://www.ams.org/tran/1988-309-02/S0002-9947-1988-0961614-2/S0002-9947-1988-0961614-2.pdf).
+
+Lagarias–Odlyzko’s \(x^{1/2+\varepsilon}\) time uses \(x^{1/4+\varepsilon}\) space; the small-space version takes \(x^{3/5+\varepsilon}\). [Original paper](https://www-users.cse.umn.edu/~odlyzko/doc/arch/analytic.pi.of.x.pdf).
+
+Srinivasan’s cited paper concerns **real** quadratic fields. I verified its bibliography but could not retrieve the primary paper to verify theorem numbers or certification. [Author bibliography](https://sites.google.com/site/rsrinivasananitha/home/publications).
+
+**Fix:** preserve this limitation; provide a separate imaginary-class-number/factoring reduction.
+
+**18. MAJOR — The verdict overclaims exhaustiveness.**
+
+Neither theorem classifies every analytic invariant, conductor construction, nonlinear/adaptive estimator, or structured modular coefficient algorithm. Public BHK certificate output does not rule out useful extensions of its twisted-prime-sum machinery.
+
+LIN does not establish a \(K^{-1/2}\) wall throughout the interval up to the AFE length. Finite AFE truncations have tails; the experimental “cliff” is rapid decay and eventual rounding. Correlated class-number errors also need not require separate \(O(1)\) accuracy in every summand.
+
+**Fix:** conclude that LIN supports a restricted linear-estimation barrier. Relational hybrids already escape it; faster finishes and nonlinear or structured methods remain unexcluded. This audit establishes no new faster factoring algorithm.
+
+Validation: **8 tests passed, 1 skipped**. Independent short computations verified the character identity, HW counterexample, and E2/E3 diagnostics. Each computation stayed well below the resource limits.

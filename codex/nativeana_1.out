@@ -1,0 +1,189 @@
+# Native analytic factoring: precision, algorithms, and limited barriers
+
+[Saved Markdown report](/Volumes/git/factoring-connection/codex/scratch/nativeana_1/nativeana_1_report.md)
+
+**PROVED** includes a proof below; **KNOWN** cites an established result, retaining its hypotheses; **HEURISTIC**, **CONJECTURED**, and **UNVERIFIED** indicate weaker evidence. Write
+\[
+L_N[\alpha,c]=\exp((c+o(1))(\log N)^\alpha(\log\log N)^{1-\alpha}).
+\]
+“Native” excludes factoring \(N\) as a subroutine; eventual factor recovery is separate. Bounds below are verified upper bounds, with gaps explicitly marked.
+
+## 1. Precision wall and algorithms
+
+**KNOWN.** The order class-number formulas are
+\[
+h(-4N)=\frac{2\sqrt N}{\pi}L(1,\chi_{-4N}),\qquad
+h(4N)R(4N)=\sqrt N L(1,\chi_{4N}).
+\]
+In particular, \(hR\) is real, not an integer. Reference: R. J. Schoof, *Quadratic fields and factorization*, Computational Methods in Number Theory, MC Tracts 155 (1982), §§4–6, [opened scan](https://reneschoof.github.io/mcpaper.pdf).
+
+**PROVED.** These particular orders hide no unknown order conductor. The promised squarefreeness gives imaginary field discriminant \(-4N\) when \(N\equiv1\pmod4\), otherwise \(-N\), with order conductor 2. The real alternatives are \(4N\) and \(N\), respectively. This follows from the quadratic integral-basis criterion. Kronecker symbols require no factorization.
+
+**KNOWN, with an UNVERIFIED extension in the question.** Coppersmith recovers a balanced factor approximated to error \(N^{1/4-\varepsilon}\), for fixed \(\varepsilon>0\), in polynomial time. Reference: D. Coppersmith, *Finding a small root of a bivariate integer equation; factoring with high bits known*, EUROCRYPT ’96, LNCS 1070 (1996), 178–189, [opened paper](https://static.aminer.org/pdf/PDF/000/192/858/finding_a_small_root_of_a_bivariate_integer_equation_factoring.pdf). I did **not** verify the uniform polynomial-time extension from error \(N^{1/4}\) on \(p+q\) for every balanced pair.
+
+**PROVED.** Put \(s=p+q\), \(g=q-p\). Since
+\[
+q=\frac{s+\sqrt{s^2-4N}}2,\qquad \frac{dq}{ds}=\frac qg,
+\]
+sum error \(E\), away from the double root, gives factor error \(O(E\sqrt N/g)\). A safe threshold is
+\[
+E\ll gN^{-1/4-\varepsilon}.
+\]
+This becomes \(N^{1/4-\varepsilon}\) when \(g\asymp\sqrt N\); balance alone does not guarantee that separation. Exact rounding of \(s\) always works.
+
+**PROVED, weaker finishing.** A factor interval of width \(U\) needs \(O(1+U/N^{1/4-\varepsilon})\) Coppersmith calls. Uniformly, sum error \(1\le E\le\sqrt N\) gives a factor interval of width \(O(N^{1/4}\sqrt E)\): apply
+\[
+|\sqrt u-\sqrt v|\le\sqrt{|u-v|},\qquad |s^2-s_0^2|=O(\sqrt N E),
+\]
+clipping negative discriminants to zero. Thus error \(N^{1/4}\) on the sum has a proved \(N^{1/8+\varepsilon}\) finishing step without separation. It is the **polynomial-in-\(\log N\)** conclusion that remains unverified.
+
+Write \(\Delta\) for absolute error and \(P=hR\).
+
+| Invariant | Precision and finishing | Native unconditional cost | Under GRH; factorization audit |
+|---|---|---|---|
+| \(h(-4N)\) | **PROVED:** \(\Delta<1/2\) rounds \(h\). **KNOWN:** width-\(\Delta\) order-multiple searches cost \(\widetilde O(\sqrt\Delta+1)\) per class; factoring also needs suitable classes. | **KNOWN:** certified AFE \(N^{1/2+o(1)}\). **UNVERIFIED:** optimality among unconditional algorithms. | **KNOWN:** Shanks–Lenstra–Schoof \(N^{1/5+o(1)}\); Hafner–McCurley expected \(L_N[1/2,\sqrt2]\), relational. Neither requires factors of \(N\). |
+| \(L(1,\chi_{-4N})\) | **PROVED:** error \(<\pi/(4\sqrt N)\) rounds \(h\); error \(O(\Delta/\sqrt N)\) gives the preceding row. | **KNOWN:** AFE \(N^{1/2+o(1)}\) for inverse-polynomial error. | **KNOWN:** recover through class-number algorithms. Short Euler products alone give coarse precision. |
+| Individual \(H(4N-t^2)\) | **PROVED:** error \(<1/12\) recovers \(6H\). **UNVERIFIED:** a general reduction from one arbitrary value to factoring \(N\). | **KNOWN:** safe \(N^{1/2+o(1)}\), including square-part discovery by exhaustive square-divisibility tests. | **KNOWN:** class algorithms accelerate established orders. **UNVERIFIED:** uniform subexponential implementation without discovering square parts. Software often factors these discriminants. |
+| \(R(4N)\), \(P\) | **KNOWN:** a \(\Delta\)-window around a regulator multiple can be searched in \(\widetilde O(\sqrt\Delta+1)\). **UNVERIFIED:** this alone always recovers the fundamental regulator or factors this fixed \(N\). | **KNOWN:** conservative certified bounds \(N^{1/2+o(1)}\), using AFE for \(P\), continued fractions for \(R\). Best unconditional runtime audit incomplete. | **KNOWN:** classical \(N^{1/5+o(1)}\); expected \(L_N[1/2,O(1)]\) class/unit computation now has an ERH proof. Relations factor norms, not \(N\). |
+| Ordinary theta values | **UNVERIFIED:** no evaluation point or factor-recovery map specified, hence no universal precision threshold. | **PROVED:** positive-imaginary-axis evaluation to \(O(\log N)\) bits is \(\operatorname{polylog}N\) for polynomial-size arguments; see §5. | Same; coefficient extraction is additional work. |
+| \(r_2(N)\) | **PROVED:** only 0 or 16; error \(<8\) distinguishes them. No complete factoring reduction follows. | **PROVED:** \(N^{1/3+o(1)}\) via residue-weighted hyperbola counting; alternatively \(O(\sqrt N)\) square tests. | Same verified bound. Factored-input formulas are inadmissible. |
+| \(r_3(N)\) | **KNOWN:** \(12h(-4N)\) if \(N\equiv1\pmod4\); \(24h(-N)\) if \(N\equiv3\pmod8\); zero if \(N\equiv7\pmod8\). Constant error recovers the relevant class number when nonzero. | Same certified AFE bound as \(h\). | Same imaginary-class algorithms. Zero cases give no new information. |
+| \(r_4(N)=8\sigma(N)\) | **PROVED:** error \(<4\) recovers \(\sigma\); weaker error \(8E\) recovers \(s\) to \(E\), subject to the separation qualification. | **PROVED:** weighted hyperbola \(N^{1/3+o(1)}\). | Same verified bound; no factorization input. |
+| \(\sigma(N)=S(N)-S(N-1)\) | **PROVED:** \(s=\sigma(N)-N-1\). Error \(E/2\) in each \(S\) gives error \(E\) in \(s\). Exact \(s\) gives the quadratic roots. | **PROVED:** weighted lattice counting \(N^{1/3+o(1)}\). | Same; no verified GRH improvement. |
+| \(A=\sum_tH(4N-t^2)\) | **PROVED:** \(q=A/2-N\); error \(2N^{1/4-\varepsilon}\) suffices uniformly. | **PROVED:** direct weighted counting \(N^{1/3+o(1)}\), §3. | Same verified bound; no factorization input. |
+
+**PROVED.** Hurwitz weights are \(1,1/2,1/3\), so \(6H\) is integral. Gaussian unique factorization proves the \(r_2\) assertion: an odd-exponent prime \(3\bmod4\) forbids representation; two distinct primes \(1\bmod4\) give \(4(1+1)^2=16\).
+
+**KNOWN.** The \(r_3\) identities are Gauss’s theorem; a modern explicit statement is P. Humphries, *Small Scale Equidistribution of Lattice Points on the Sphere*, CIRM slides (2019), “Sums of Three Squares,” [located statement](https://www.cirm-math.fr/RepOrga/2062/Slides/Humphries.pdf). Opening that PDF timed out.
+
+**KNOWN.** Under GRH, Euler cutoff \(X\) gives
+\[
+\Delta\le N^{1/2+o(1)}X^{-1/2}
+\]
+on \(h\) or \(P\). Balancing \(X\) against \(\sqrt\Delta\) yields \(X=N^{1/5+o(1)}\), \(\Delta=N^{2/5+o(1)}\). Schoof §§5–6 account for small generators and regulator-multiplier verification. An integer class number alone is not an unconditional deterministic polynomial-time finishing theorem.
+
+**PROVED.** At error \(N^{1/4}\), quantities \(A,r_4,\sigma\) of size \(N\) need approximately \(\frac34\log_2N\) significant bits; separate \(S\)-values of size \(N^2\) need \(\frac74\log_2N\). The expensive issue is certified truncation/localization, not an enormous bit count.
+
+**KNOWN.** J. L. Hafner–K. S. McCurley, *A rigorous subexponential algorithm for computation of class groups*, JAMS 2 (1989), 837–850, gives the imaginary relational algorithm under ERH; [opened record](https://geodesic.mathdoc.fr/articles/10.1090/S0894-0347-1989-1002631-0/). K. de Boer–A. Pellet-Mary–B. Wesolowski, *Rigorous Methods for Computational Number Theory*, preprint (2025), Theorem 1.3, proves expected \(L_N[1/2,O(1)]\) for fixed-degree class/unit computation under ERH, given an integral basis—explicit here. [Opened full paper](https://koendeboer.com/publication/rigorousmethods/RigorousMethods.pdf).
+
+**KNOWN; not a deterministic breakthrough.** R. de Haan–M. J. Jacobson Jr.–H. C. Williams, *A fast, rigorous technique for computing the regulator of a real quadratic field*, Math. Comp. 76 (2007), 2139–2160, gives unconditional correctness with expected \(N^{1/6+\varepsilon}\) time **under GRH**. It verifies a relation-generated multiple. [Opened author-uploaded text](https://www.researchgate.net/publication/220577622_A_fast_rigorous_technique_for_computing_the_regulator_of_a_real_quadratic_field).
+
+## 2. Literature audit
+
+**KNOWN unless qualified.** These are statements about the cited algorithms, not impossibility of modifying them.
+
+| Reference | Cost and factorization requirements |
+|---|---|
+| G. A. Hiary, *Computing Dirichlet character sums to a power-full modulus*, JNT 140 (2014), 122–146, Theorem 1.1 | \(\widetilde O(\prod_{\ell^a\parallel m}\ell^{\lceil a/3\rceil}(1+|s|)^{1/3})\), plus \(\widetilde O(\sum_{\ell\mid m}\ell)\) preprocessing. **Explicitly assumes factored \(m\)** and local character data. Squarefree odd part \(pq\) contributes \(N\), not \(N^{1/3}\). Factoring within its total cost violates native evaluation. [Opened](https://arxiv.org/pdf/1205.4687). |
+| Hiary, *Fast methods to compute the Riemann zeta function*, Annals 174 (2011), 891–946 | \(t^{1/3+o(1)}\), or \(t^{4/13+o(1)}\), to \(t^{-\lambda}\), fixed \(\lambda\). Polynomial phases in the height aspect; no unknown modulus. No transfer theorem to squarefree conductor \(N\). [Opened](https://arxiv.org/pdf/0711.5005). |
+| A. R. Booker, *Artin’s conjecture, Turing’s method and the Riemann hypothesis*, Experimental Mathematics 15 (2006), 385–407, §5.2 | FFT over heights of one L-function; roughly square-root analytic conductor many supplied coefficients. Factored conductor is not intrinsic for a quadratic Kronecker oracle. [Opened](https://arxiv.org/pdf/math/0507502). |
+| Booker, *Quadratic class numbers and character sums*, Math. Comp. 75 (2006), 1481–1492 | **Exists.** Unconditionally correct termination; \(O_\varepsilon(|d|^{1/4+\varepsilon})\) under GRH. Explicit Burgess application uses prime discriminants, not unknown semiprimes. [Opened institutional abstract](https://research-information.bris.ac.uk/en/publications/quadratic-class-numbers-and-character-sums/); full theorem/input audit **UNVERIFIED**. |
+| D. J. Platt, *Numerical computations concerning the GRH*, Math. Comp. 85 (2016), 3009–3027, Lemma 4.1 | All-character transform: \(O(\varphi(m)\log m)\) time, \(O(\varphi(m))\) space, given its input vector. Proof uses prime-power decomposition and primitive roots. Cheap average cost is not cheap single-character cost. [Opened](https://arxiv.org/pdf/1305.3087). |
+| M. O. Rubinstein, *Computational methods and experiments in analytic number theory*, Recent Perspectives in Random Matrix Theory and Number Theory, CUP (2005), 425–510, §3, Theorem 1 | Smoothed AFE needs coefficients and functional-equation data; no factored conductor intrinsically. Degree-one bounded-height evaluation to inverse-polynomial error costs \(N^{1/2+o(1)}\). [Opened](https://arxiv.org/pdf/math/0412181). |
+| P. Vishe, *A fast algorithm to compute \(L(1/2,f\times\chi_q)\)*, JNT 133 (2013), 1502–1524, Theorem 1 | Given \(q=uv,\ u\le v\), cost \(O(\min\{u^5+v,q\}^{1+\varepsilon})\); best \(q^{5/6+o(1)}\) at \(u\approx q^{1/6}\). Needs a useful divisor, not necessarily complete factorization. Balanced semiprimes provide none. Twist conductor is roughly \(q^2\); theorem uses real arithmetic. [Opened](https://arxiv.org/pdf/1202.6303). |
+| A. M. Odlyzko–A. Schönhage, *Fast algorithms for multiple evaluations of the Riemann zeta function*, Trans. AMS 309 (1988), 797–809, Theorem 1.1 | \(T^{1/2+\varepsilon}\) preprocessing/storage, then \(T^\varepsilon\) per value in a height window of length \(\sqrt T\), fixed polynomial accuracy. No modulus factorization; changing discriminants is a different family. [Opened](https://www-users.cse.umn.edu/~odlyzko/doc/arch/fast.zeta.eval.pdf). |
+| J. C. Lagarias–A. M. Odlyzko, *Computing \(\pi(x)\): an analytic method*, Journal of Algorithms 8 (1987), 173–191 | Unconditional \(x^{1/2+\varepsilon}\) time, \(x^{1/4+\varepsilon}\) space; alternatively \(x^{3/5+\varepsilon}\) time, \(x^\varepsilon\) space. Smoothing requires local prime-power corrections. No factorization of \(x\). [Opened](https://websites.umich.edu/~lagarias/doc/compute.pdf). |
+
+**KNOWN / CONJECTURED.** A. R. Booker–G. A. Hiary–J. P. Keating, *Detecting squarefree numbers*, Duke Math. J. 164 (2015), 235–275: GRH makes positive explicit-formula tests certify lower bounds on primitive conductor \(|d_0|\), where \(d=d_0f^2\), without factoring. **Conjecture 3.1**, combined with Proposition 2.3, predicts
+\[
+\exp((\log N)^{2/3+o(1)})
+\]
+squarefree certification, not a GRH-only runtime theorem or \(L[2/5]\). At conductor \(\asymp N\), it reads coarse conductor information, not \(L(1,\chi)\) to \(N^{-1/2}\). Demonstrated RSA results establish “not squarefull,” weaker than squarefree. **UNVERIFIED:** extracting a factor when squarefreeness is already promised. [Opened](https://arxiv.org/pdf/1304.6937).
+
+**KNOWN bibliographically; numerical theorem audit UNVERIFIED.** A. Srinivasan, *Computations of class numbers of real quadratic fields*, Math. Comp. 67 (1998), 1285–1308, DOI 10.1090/S0025-5718-98-00965-X, exists: [opened author bibliography](https://sites.google.com/site/rsrinivasananitha/home/publications). Its reported result is unconditional randomized expected \(d^{1/5+\varepsilon}\), with an ineffective class-number runtime constant, using random summation and algebraic finishing. The primary paper remained inaccessible; theorem numbers, certification details, and complete factorization audit remain unverified. I do not promote this to a deterministic bound.
+
+## 3. Amortization and moments
+
+**KNOWN.** Popa–Zagier, *A combinatorial refinement of the Kronecker–Hurwitz class number relation*, Proc. AMS 145 (2017), 1003–1008, Theorem 1, gives
+\[
+A=\sum_{ab=N}\max(a,b)=2N+2q.
+\]
+The main term is \(2N\); the factor-sensitive secondary term is \(2q\asymp\sqrt N\). [Opened proof](https://people.mpim-bonn.mpg.de/zagier/files/preprints/kronhur-submitted.pdf).
+
+**PROVED.** There are \(4\sqrt N+O(1)\) terms. Uniform individual error \(\eta\) gives aggregate error at most \((4\sqrt N+O(1))\eta\), requiring \(\eta=O(N^{-1/4})\) for the proposed target. Producing every term already costs \(\Omega(\sqrt N)\).
+
+**PROVED, a native aggregate algorithm.** Define
+\[
+F(x)=\sum_{ab\le x,\ a\ge b}a.
+\]
+Then \(A=2(F(N)-F(N-1))\), since \(N\) is nonsquare. Transfer the supplied hyperbola-hull bound to coordinate sums: affine unimodular substitutions preserve affine weights, and integer-triangle coordinate sums have closed polynomial formulas. The decomposition and boundary-operation count remain unchanged. This yields \(N^{1/3+o(1)}\), also for \(S(x)\). The unweighted algorithm is R. Sladkey, *A Successive Approximation Algorithm for Computing the Divisor Summatory Function*, arXiv:1206.3369 (2012), [opened draft](https://arxiv.org/pdf/1206.3369). This beats termwise AFE cost \(N^{1+o(1)}\), but not \(N^{1/5}\).
+
+**PROVED.** Similarly,
+\[
+r_2(N)=4\sum_{d\mid N}\chi_4(d),
+\]
+by Gaussian unique factorization prime-power by prime-power. Compute successive \(\sum_{ab\le x}\chi_4(a)\). Track the 16 coordinate-residue pairs modulo 4 through the triangle decomposition; substitutions permute them, and scaling by 4 gives closed triangle-count formulas. Only a constant-factor overhead results.
+
+**KNOWN.** Hiary, *A fast amortized algorithm for computing quadratic Dirichlet L-functions*, QJM 69 (2018), 1–12, Theorem 1.1, has \(\widetilde O(Q)\) preprocessing and \(\widetilde O(d(q))\) recovery per conductor. Section 6 explicitly uses conductor factorization, cheaply supplied by sieving the whole window. It also applies at \(s=1\). Our sparse \(\sqrt N\)-element family spans conductor scale \(N\), giving no sub-\(N^{1/5}\) aggregate algorithm. [Opened](https://arxiv.org/pdf/1608.06614).
+
+**PROVED, local moment calculation.** For odd prime \(\ell\),
+\[
+\sum_{t\bmod\ell}\left(\frac{t^2-4N}{\ell}\right)
+=\begin{cases}-1&\ell\nmid N,\\ \ell-1&\ell\mid N.\end{cases}
+\]
+Counting \((t-y)(t+y)=4N\) gives \(\ell-1\) solutions when nonzero, \(2\ell-1\) when zero; subtract \(\ell\). CRT combines these at squarefree summation moduli. Factors enter already at modulus \(p\) or \(q\asymp\sqrt N\), not necessarily modulus \(N\).
+
+**HEURISTIC, not a precision theorem.** Swap absolutely convergent L-series at \(s>1\), then replace incomplete periods by complete averages. The raw weighted moment has scale
+\[
+\pi^{-1}\int_{-2\sqrt N}^{2\sqrt N}\sqrt{4N-t^2}\,dt=2N,
+\]
+times local densities. Separating odd/even character powers gives raw \(s=1\) odd-prime factors
+\[
+1-\frac{1+(N/\ell)}{\ell(\ell^2-1)}\quad(\ell\nmid N),\qquad
+1+\ell^{-1}\quad(\ell\mid N).
+\]
+Parity and square-divisor corrections are essential for Hurwitz numbers. Only the corrected moment has the exact main/secondary terms above. Swapping alone supplies no uniform \(o(N^{1/4})\) remainder.
+
+**KNOWN / UNVERIFIED.** The coefficient \([q^{4N}]\theta\mathcal H\) equals \(A\). Completion and holomorphic projection produce divisor-sum identities, including the \(\sum_{d\mid N}\min(d,N/d)\) correction: M. H. Mertens, *Eichler–Selberg type identities for mixed mock modular forms*, Advances in Mathematics 301 (2016), 359–382, [opened](https://arxiv.org/pdf/1404.5491). This supplies no fast coefficient oracle. No faster native extraction was verified; calling every possible projection algorithm circular would be unjustified.
+
+## 4. Precisely scoped barriers
+
+**PROVED: sampling-oracle bound.** Let independent random signs define \(Z=\sum_{n\ge1}\xi_n/n\) in \(L^2\). After \(K\) adaptive coordinate queries, every estimator has mean-square error at least
+\[
+\sum_{n>K}n^{-2}\ge\frac1{K+1}.
+\]
+Conditioned on the transcript, unqueried signs remain independent. Their variance is the sum of squared weights, minimized by querying the \(K\) largest weights. Scaling by \(\sqrt N\) proves \(K+1\ge N/\Delta^2\) for RMS error \(\Delta\).
+
+**UNVERIFIED for characters.** Multiplicativity and functional equations invalidate that independent-coordinate adversary. No worst-case bound in every discriminant window is established. “Smooth weights” alone impose no computational restriction: they can encode an interpolated answer.
+
+**PROVED: coefficient-query theorem.** For arbitrary complex \(|a_j|\le1\), let \(f(z)=\sum a_jz^j\). Queries give complete jets through order \(m_i-1\) at \(|z_i|<1\), charged \(m_i\) observations. Exact recovery of \(a_N\) requires \(T=\sum m_i>N\). Otherwise
+\[
+g(z)=z^{N-T}\prod_i(z-z_i)^{m_i}
+\]
+annihilates all observations and has \([z^N]g=1\). Normalize its coefficients and compare \(g,-g\). Adaptive rules are handled along their zero transcript.
+
+**PROVED, limitations.** Normalization loses at most \(\prod_i(1+|z_i|)^{m_i}\le2^T\), proving approximation error only \(\ge2^{-T}\), not a power-of-\(N\) constant-error barrier. Free arbitrary derivatives destroy the theorem: \(a_N=f^{(N)}(0)/N!\). For nonzero point-value nodes and support window \([A,A+W-1]\), exact recovery at offset \(r\) requires \(T>\max(r,W-1-r)\): multiply the node polynomial by \(z^{A+r-T}\) or \(z^{A+r}\).
+
+**PROVED: conditioning.** If \(|z_i|\le\rho<1\), an exact linear rule satisfies \(\sum|w_i|\ge\rho^{-N}\), by testing \(z^N\). Adversarial value error \(\eta\) can amplify to \(\eta\rho^{-N}\).
+
+**UNVERIFIED as an arithmetic barrier.** AFE/random summation resemble sampling, but actual characters lie outside its proved input class. Euler products, BSGS, and relations are nonlinear. Theta transformations exploit identities excluded by arbitrary-coefficient adversaries. None proves an \(N^{1/5}\) lower bound.
+
+**KNOWN / HEURISTIC comparison.** Fourier uncertainty exchanges localization width and transform length; Lagarias–Odlyzko pays through its correction interval. Odlyzko–te Riele, *Disproof of the Mertens conjecture*, J. reine angew. Math. 357 (1985), 138–160, uses zero phases and lattice approximation for extremal existence, not exact \(M(x)\) at prescribed \(x\). [Opened scan](https://www-users.cse.umn.edu/~odlyzko/doc/arch/mertens.disproof.pdf). Transferring that success to integer extraction is heuristic.
+
+## 5. Escapes and finishing thresholds
+
+**KNOWN / PROVED.** Fixed-level expressions include \([q^N]\theta^k=r_k(N)\), the Lambert series for \(\sigma(N)\), and \([q^{4N}]\theta\mathcal H=A\), by multiplication. Theta has level 4; the divisor series is \((1-E_2)/24\), quasimodular of level 1; see Mertens. Poisson summation gives \(\Theta(y)=y^{-1/2}\Theta(1/y)\), reducing positive \(y\) to \(y\ge1\). Gaussian tails \(O(e^{-\pi M^2})\) give \(B\)-bit evaluation with \(O(\sqrt B)\) terms, plus scaling precision \(O(|\log y|)\). This does not extract coefficients.
+
+**PROVED.** Error \(\Delta=N^{1/2-\delta}\), \(0<\delta<1/2\), on \(h\) permits order-multiple finishing in \(N^{1/4-\delta/2+o(1)}\) per class; corresponding L-error is \(N^{-\delta}\). The same search exponent locates a regulator multiple, subject to prior caveats.
+
+**PROVED.** For \(A\), \(\delta>1/4\) suffices for polynomial-time finishing. More generally, interval covering costs \(N^{\max(0,1/4-\delta)+\varepsilon}\). These bounds also hold for \(\sigma,r_4\) with separated factors; without separation their safe finishing bound is \(N^{1/4-\delta/2+\varepsilon}\). These are sufficient bounds, not optimality claims. No analogous general finishing theorem was verified for arbitrary individual \(H\), theta values, or \(r_2\).
+
+**PROVED.** Fixed level and weaker precision therefore combine for \(A\), and qualifiedly for \(\sigma,r_4\); verified native aggregate cost remains \(N^{1/3+o(1)}\).
+
+**PROVED.** The CRT identity follows by writing \(x=x_q+qk\), \(k\equiv(x_p-x_q)q^{-1}\pmod p\). Recovering \(\theta=a/p\) by rational reconstruction needs error \(O(N^{-1})\): distinct rationals of denominator at most \(C\sqrt N\) are separated by at least \(1/(C^2N)\). The identity supplies neither CRT components nor a native estimator.
+
+## 6. Verdict, ranking, and hardness
+
+**UNVERIFIED breakthrough claim: none established.** No investigated route is verified to beat \(N^{1/5}\) deterministically. The alleged rigorous \(L[2/5]\) factoring benchmark was not verified. The unconditional randomized benchmark checked here is H. W. Lenstra Jr.–C. Pomerance, *A rigorous time bound for factoring integers*, JAMS 5 (1992), 483–516, main theorem: expected \(L_N[1/2,1]\), [opened](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf). Harvey–Hittmeir, *A log-log speedup for exponent one-fifth deterministic integer factorisation*, Math. Comp. 91 (2022), 1367–1379, proves the deterministic one-fifth bound, [opened](https://arxiv.org/pdf/2105.11105).
+
+**HEURISTIC ranking:** (1) sparse aggregate evaluation of \(\theta\mathcal H\), targeting \(N^{1/4-\varepsilon}\) error; (2) correlated moments with a uniform secondary-term calculation; (3) structure-aware character algorithms escaping independent-sign bounds without local factorizations. Relational class algorithms remain the established conditional subexponential option.
+
+**KNOWN.** E. Bach–G. Miller–J. Shallit, *Sums of Divisors, Perfect Numbers and Factoring*, SIAM J. Comput. 15 (1986), 1143–1154, Theorems 1–2, proves randomized polynomial-time equivalence of general \(\sigma\)-evaluation and factoring. [Opened](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf). K. Manders–L. Adleman, *NP-Complete Decision Problems for Binary Quadratics*, JCSS 16 (1978), 168–184, proves NP-completeness of natural-number solvability of \(ax^2+by=c\); [publisher abstract verified; full text blocked](https://www.sciencedirect.com/science/article/pii/0022000078900442). Neither establishes hardness of fixed \(r_3,r_4\) or quadratic class numbers.
+
+**PROVED.** A bounded variable-dimensional theta generalization is #P-complete:
+\[
+[z^B]\prod_i(1+z^{a_i})
+\]
+counts Boolean solutions of \(\sum a_ix_i^2=B\). A parsimonious #3SAT reduction uses variable/clause digits: target variable digits 1, clause digits 4; true/false numbers and clause slack digits 1 and 2. Base 10 prevents carries. Every satisfying assignment has one slack completion; an unsatisfied clause requires unavailable slack 4. Membership in #P is immediate. Bounds and variable dimension are essential.
+
+**Verification record.** Linked full texts were opened unless explicitly qualified. Booker’s class-number result was checked through its institutional abstract; Srinivasan through bibliographic evidence. [Local checks](/Volumes/git/factoring-connection/codex/scratch/nativeana_1/nativeana_1_checks.py) verified nine Kronecker–Hurwitz identities, nine \(r_2\) and \(r_3\) normalizations, and 63 local-character sums in 0.003 seconds, using approximately 15.2 MiB peak RAM. These validate normalizations, not complexity claims.
