@@ -3,6 +3,9 @@
 Agent `floorhard`, 2026-10-20. This is the revised version after the codex adversarial round and two
 Opus critics (§9).
 
+> **Erratum (2026-10-27): ETH.** OpenAI, "The Exponential Time Hypothesis is False" (preprint, 17 Oct 2026, rev. 25 Oct 2026), https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf gives a deterministic #k-SAT algorithm in time 2^{O(n log log n/√log n)}. This refutes ETH, randomized ETH, #ETH and Gap-ETH (unrefereed; Theorem 1.1 there). Every ETH-conditional statement below is therefore restated under **ETH⁻**: *for every ε > 0, 3-SAT on n variables with O(n) clauses has no 2^{O(n^{1−ε})}-time algorithm* (randomized ETH⁻ for randomized reductions). On such instances the paper's bound is 2^{O(n/√log n)} = 2^{n^{1−o(1)}}, so it is consistent with ETH⁻. ETH⁻ is stated for O(n)-clause instances because sparsification costs 2^{εn}, which no power-saving hypothesis can absorb. Conclusions here lose an ε in the exponent. Exact degree-2 floor sums have no deterministic 2^{L^{1/2−ε}} algorithm, for any ε > 0, unless ETH⁻ fails; the earlier statement was no 2^{o(√L)} under ETH. The same applies to the Jansen–Klein–Lassota variant and to the uniform-oracle consequence in §4.3. The P = NP and FP = #P consequences are unaffected.
+
+
 **Files.**
 - Pre-registration: `notes/floorhard_prereg.md`, commit `6b3a37e`, made before any code existed.
 - Code: `src/floorhard/{core,run_experiments}.py`. Tests: `tests/test_floorhard.py` (10 pass).
@@ -109,15 +112,16 @@ T_j = N^{o(1)}, at some fixed j ≥ 4, at about 3–5%. Codex estimates about 5%
     #3SAT is #P-complete (Valiant 1979).
   - Exact degree-2 floor sums are therefore #P-hard under constant-query (subtractive) Turing
     reductions. Deterministic polynomial time would give FP = #P, hence P = NP.
-- **(ii) ETH (PROVED from KNOWN).** ETH implies that Subset Sum with k items and weights 2^{O(k)} has no
-  2^{o(k)} algorithm (Etscheid–Kratsch–Mnich–Röglin, JCSS 2017, Lemma 3; Jansen–Land–Land, SIAM J.
+- **(ii) ETH⁻ (PROVED from KNOWN; v1 used ETH, which is refuted — see the erratum).** ETH implies that Subset Sum with k items and weights 2^{O(k)} has no
+  2^{o(k)} algorithm. The standard reduction from 3SAT with O(n) clauses gives Subset Sum with k = O(n) items, with no
+  sparsification step, so ETH⁻ ⇒ no 2^{k^{1−ε}} algorithm (Etscheid–Kratsch–Mnich–Röglin, JCSS 2017, Lemma 3; Jansen–Land–Land, SIAM J.
   Discrete Math. 30 (2016)).
-  - Here L = O(k²). So exact degree-2 floor sums have no deterministic 2^{o(√L)} algorithm unless ETH
-    fails.
+  - Here L = O(k²). So exact degree-2 floor sums have no deterministic 2^{L^{1/2−ε}} algorithm (any ε > 0) unless
+    ETH⁻ fails. (v1: no 2^{o(√L)} unless ETH fails.)
 - **Prior work (KNOWN).** NP-completeness of bounded quadratic congruences is Manders–Adleman (JCSS 16
   (1978) 168–184; Garey–Johnson AN1), including with the factorisation of b given.
   - Jansen–Klein–Lassota (Math. Program. 197 (2023), arXiv 2008.12928) give a squarefree known-modulus
-    version with O((n+m)² log(n+m)) bits. That yields ETH ⇒ no 2^{o(√(L/log L))}.
+    version with O((n+m)² log(n+m)) bits. That yields ETH⁻ ⇒ no 2^{L^{1/2−ε}} (v1: ETH ⇒ no 2^{o(√(L/log L))}).
   - New here: the parsimonious/#P form, the interval-count form through floor sums, and the dropped log
     factor. Manders–Adleman's own reduction has log b = Θ(n² log n) or more (codex, lit critic). **No
     2^{Ω(L)} bound follows from any known construction.**
@@ -206,7 +210,7 @@ t > 8Ac′³/b and t ≥ (4/c)⁴Ac′⁴/b². Put N = Ab²t³ and x = bt. Then:
     (2001)) give ≫ E/log N primes in the range. Random e plus AKS find one in expected O(log N) trials.
     In this case x ≈ N^{4/11}.
   - Prime-only polylog evaluation gives zero-error randomized consequences: NP ⊆ ZPP, and randomized
-    exact counting. It does not give deterministic FP = #P. The ETH conclusion needs randomized ETH.
+    exact counting. It does not give deterministic FP = #P. The ETH⁻ conclusion needs randomized ETH⁻.
 - **Codex's one-call embedding (PROVED in codex/floorhard_1.out (7)–(11); critic re-checked 852
   cases).** Take x = 16m⁴ (use x = 16m⁴⌈c^{−4}⌉ for small c) and N = (ax³ − bx²)/m + 1. Then
   gcd(N, x) = 1, and one query computes any Σ_{h<m}⌊(ah² + bh + c)/m⌋.
@@ -340,10 +344,10 @@ For fixed j ≥ 2:
 
 1. **Uniform 𝒪_j (PROVED):**
    - in deterministic poly(log N) time: FP = #P and P = NP;
-   - in deterministic 2^{o(√log N)} time: ETH fails;
+   - in deterministic 2^{(log N)^{1/2−ε}} time, for some ε > 0: ETH⁻ fails (v1: 2^{o(√log N)} ⇒ ETH fails; erratum);
    - in deterministic per-query time T(H): every m is factored in O(log² m · T(m)), which strictly beats
      the ladder iff T = H^δ with δ < 2/(j+4);
-   - correct only for prime N: the randomized analogues (NP ⊆ ZPP; randomized ETH).
+   - correct only for prime N: the randomized analogues (NP ⊆ ZPP; randomized ETH⁻).
 2. **The constructed hard instances (PROVED for these constructions):**
    - they lie at x ≤ N^{3/8+o(1)};
    - the NP/#P/ETH families are solvable in H^{o(1)}, so they exclude no T_j = N^δ.

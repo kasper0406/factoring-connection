@@ -2,6 +2,9 @@
 
 Agent `sihard`, phase 20, 2026-10-21. Version 2: after the codex blind and adversarial rounds and both Opus critics (§10, §11).
 
+> **Erratum (2026-10-27): ETH.** OpenAI, "The Exponential Time Hypothesis is False" (preprint, 17 Oct 2026, rev. 25 Oct 2026), https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf gives a deterministic #k-SAT algorithm in time 2^{O(n log log n/√log n)}. This refutes ETH, randomized ETH, #ETH and Gap-ETH (unrefereed; Theorem 1.1 there). Every ETH-conditional statement below is therefore restated under **ETH⁻**: *for every ε > 0, 3-SAT on n variables with O(n) clauses has no 2^{O(n^{1−ε})}-time algorithm* (randomized ETH⁻ for randomized reductions). On such instances the paper's bound is 2^{O(n/√log n)} = 2^{n^{1−o(1)}}, so it is consistent with ETH⁻. ETH⁻ is stated for O(n)-clause instances because sparsification costs 2^{εn}, which no power-saving hypothesis can absorb. Conclusion here: the blow-up exponent 3/2 is unchanged. A reduction with c < 3/2 would give 3SAT in 2^{O(m^{2c/3}(log m)^{1/3})} = 2^{O(m^{1−δ})}, which contradicts ETH⁻ as well as ETH.
+
+
 **Files.**
 - Code: `src/sihard/`.
   - `core.py`: exact uint64 smoothness sieve, Dickman ρ (design only), Johnson-certificate counts, two-list merge
@@ -87,7 +90,7 @@ output still beats MNFS iff τ < 0.757.
     - where every interval provably contains a smooth integer;
     - at Prop SI's scale, if its existence half (itself Vinogradov-hard) holds.
   - Unconditionally the sieve solves Prop SI's scale in L[2/3]. So a deterministic reduction from 3SAT must blow up
-    instance size by a power ≥ 3/2 unless ETH fails.
+    instance size by a power ≥ 3/2 unless ETH⁻ fails (stated under ETH in v2; ETH itself is refuted, see the erratum).
 - **Assessment.** Probability that an L[1/3, τ] constructor with τ < 0.757 exists: about 1% (ours), about 5%
   (codex).
   - The oblivious models fail for a shared reason (siconstruct's Lemma SR): with the other factors fixed, every factor
@@ -107,7 +110,7 @@ output still beats MNFS iff τ < 0.757.
 | Prop S: Prop SI-type relations in sampling model S cost ≥ L[1/2, √2] | model-PROVED (suffmap Theorem SS(a); assumes H_S, R and no prefiltering, so it excludes MNFS-type filtering) |
 | Prop MM: fixed two-list product tables, interval and Bohr (all k at once): ≥ √(X/3)/(h+1) per output, resp. ≥ √(X/K)/(h(1+ln K)+K) (exponential for K = X^{o(1)}) | PROVED (averaged); siconstruct Lemma MA under H_eq |
 | Wagner/k-tree bit budget: cost ≥ √X/h | HEURISTIC sketch (simplified list model without representation multiplicities) |
-| Prop NC / TF / ETH: not NP-hard (h ≤ poly, proven-existence ranges, Prop SI scale under Hyp E); deterministic-reduction blow-up ≥ m^{3/2} under ETH | PROVED (Megiddo–Papadimitriou plus the transcript argument for Cook reductions) |
+| Prop NC / TF / ETH: not NP-hard (h ≤ poly, proven-existence ranges, Prop SI scale under Hyp E); deterministic-reduction blow-up ≥ m^{3/2} under ETH⁻ (was ETH; erratum) | PROVED (Megiddo–Papadimitriou plus the transcript argument for Cook reductions) |
 | Prop XS: explicit-S version NP-complete (randomized reductions), parsimonious; extends the known DIVISOR hardness (Alon–Kilian; Shor 2011) to unbounded exponents | PROVED; E4, E4b 300/300 |
 | Lemma FP: h ≥ 2x/(y−1) is in FP | PROVED (trivial) |
 
@@ -661,8 +664,8 @@ all-interval ranges (KNOWN, as summarised by Granville 2008 §4.1 and suffmap §
   NP = coNP.
 - *Unconditionally*: the sieve decides and searches in time L_x[2/3, ν]·poly(n) = 2^{O(n^{2/3}(log n)^{1/3})}.
   Suppose a deterministic Karp or Cook reduction maps 3SAT instances with m variables to instances with
-  n = O(m^c) bits. Then 3SAT runs in 2^{O(m^{2c/3}(log m)^{1/3})}, so ETH forces c ≥ 3/2 (PROVED, routine; c is a
-  constant). Randomized reductions need the randomized form of ETH.
+  n = O(m^c) bits. Then 3SAT runs in 2^{O(m^{2c/3}(log m)^{1/3})}, so ETH⁻ forces c ≥ 3/2, since c < 3/2 makes the exponent O(m^{1−δ}) (PROVED, routine; c is a
+  constant). Randomized reductions need randomized ETH⁻. (v2 said ETH; see the erratum.)
 - The NP-hardness of the real problem is OPEN in every range (to our knowledge). For the ranges just listed, and
   for h ≤ poly, it is implausible.
 
@@ -721,7 +724,7 @@ polynomial-time reductions.
 | h ≥ 2x/(y−1); fixed y; h, y ≤ poly(log x) | FP | PROVED (Lemma FP; codex) |
 | h = x^{β}, β > 1/2, y ≥ exp((log x)^{2/3+o(1)}); h = C√x, y = x^ε | search in TFNP (existence theorems), so NP-hard ⇒ NP = coNP; decision trivial | PROVED from KNOWN |
 | h ≤ poly(log x), any y | NP ∩ coNP; NP-hard ⇒ NP = coNP | PROVED |
-| Prop SI: h = L[2/3, ν], y = L[1/3, κ], ν > 2/(3κ) | in DTIME(L[2/3]); TFNP under Hyp E (which is Vinogradov-hard); ETH ⇒ deterministic reductions blow up ≥ m^{3/2} | PROVED (conditional parts as stated) |
+| Prop SI: h = L[2/3, ν], y = L[1/3, κ], ν > 2/(3κ) | in DTIME(L[2/3]); TFNP under Hyp E (which is Vinogradov-hard); ETH⁻ ⇒ deterministic reductions blow up ≥ m^{3/2} (was ETH; erratum) | PROVED (conditional parts as stated) |
 | Boneh's range y = polylog x, h = x^{o(1)} | open; solutions rare (typically none in a random interval) | OPEN |
 | explicit S (sparse prime list) | NP-complete (randomized reductions): DIVISOR (Alon–Kilian; Shor), extended in Prop XS | KNOWN / PROVED |
 
@@ -754,7 +757,7 @@ region (x ≤ N^{3/8}) of the same problem.
   - smooth values of polynomials or norm forms near (kN)^{1/d};
   - uncertified decoder outputs.
 - **NP-hardness cannot be the barrier.**
-  - At Prop SI's scale it is excluded under the existence hypothesis (TFNP), and limited by ETH for deterministic
+  - At Prop SI's scale it is excluded under the existence hypothesis (TFNP), and limited by ETH⁻ (was ETH; erratum) for deterministic
     reductions.
   - The only provably hard variant has an explicit sparse prime list (DIVISOR / Prop XS).
 - **The strongest evidence of implausibility is Prop DLI.**
@@ -854,7 +857,7 @@ scripts are reproduced in `src/sihard/diag_e1.py`.
 - The smooth-multiple trick as the comparison point.
 - Fixed product tables need A + B ≳ √(X/h) (= Prop MM(i)).
 - Amortisation over L[1/3] outputs subtracts only O(F_{1/3}).
-- NP membership, NP ∩ coNP for h ≤ poly, the sieve's 2^{O(n^{2/3}(log n)^{1/3})}, the ETH exponent 3/2.
+- NP membership, NP ∩ coNP for h ≤ poly, the sieve's 2^{O(n^{2/3}(log n)^{1/3})}, the ETH⁻ exponent 3/2 (was ETH; erratum).
 - Proven-existence ranges are TFNP (Megiddo–Papadimitriou Thm 2.1).
 - SI itself is not TFNP without Hyp E.
 - τ < 0.757.
