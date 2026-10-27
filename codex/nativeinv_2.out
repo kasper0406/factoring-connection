@@ -1,0 +1,307 @@
+**MAJOR REVISION**
+
+The algebraic reduction behind TRI is sound after fixing its complexity statement. LOC is correct, and AUT follows from known results. The principal problems are unsupported exclusion claims, incorrect inventory entries, and an inadequately specified shortlist. The blind report’s formulas were mostly represented fairly; its qualifications about optimality and small complexes were weakened substantially.
+
+Labels below distinguish **PROVED**, **KNOWN** (referenced), **CONJECTURED**, and **HEURISTIC**. Computations were limited to examples with \(N\le65\).
+
+1. **FATAL — The claimed explanation for an \(N^c\) native cost is not established (§0, §3.4).**
+
+   TRI proves a reduction to factoring. LOC proves an oracle-query statement. PT proves a relation between information and splitting in a restricted model. None proves a runtime lower bound for structured invariant evaluation.
+
+   The statement also conflicts with the permitted class-group algorithms: \(L_N[1/2]=N^{o(1)}\), which is eventually smaller than every \(N^c\). Calling these algorithms index calculus does not change that inequality.
+
+   The “five compressions” list is **HEURISTIC and incomplete**. Weighted lattice-point summation, compressed linear algebra, and integer quotient recursions are examples that require separate analysis. The note’s own algorithm S already falls outside the asserted coverage.
+
+   “Native” is also inconsistent: “without computing \(p,q\) along the way” differs from “does not start by factoring,” while permitting factoring as a by-product further changes the class.
+
+   **Concrete fix:** Replace the lower-bound language with: “These are reductions and limitations of specified implementations; no general native-time lower bound is proved.” Define native operationally for each audited algorithm, and describe the taxonomy as non-exhaustive.
+
+2. **MAJOR — TRI needs an input-size hypothesis; its full literature priority remains unverified (§3.1).**
+
+   **PROVED:** The extremal-exponent argument works, including unequal monomials. For the true residue pair, the Laurent polynomial cannot become constant unless both local polynomials are monomials of the same degree. Exact integer-root extraction then recovers a divisor. Part (c)’s Zariski-density and rational-character argument is also correct.
+
+   The runtime, however, omits the residue table. The proof enumerates \(\varphi(m)\) pairs, and the implementation enumerates units using `range(m)`. The statement must assume fixed \(m\), or count the complete public coefficient table in the input size. A succinct description with binary-encoded, variable \(m\) is a different problem.
+
+   **KNOWN special cases:** [Bach–Miller–Shallit, Theorem 6](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf) proves randomized equivalence for \(\sigma_k\), \(k\ne0\), on general integers. [Bach–Shallit’s cyclotomic factoring paper](https://doi.org/10.1090/S0025-5718-1989-0947467-1) addresses cyclotomic local multiples. [Kunihiro–Koyama](https://doi.org/10.1007/BFb0054116) and [Dieulefait–Urroz](https://arxiv.org/abs/1911.11004) concern elliptic point counts, not this complete quasi-polynomial classification.
+
+   I did not verify a published theorem containing all of TRI(a–c). Bach–Shallit’s 1984 technical report, *A Class of Functions Equivalent to Factoring*, needs examination before making even a qualified priority claim.
+
+   **Concrete fix:** State polynomial time in the total explicit description length, degree, and \(\log N\). Present TRI as a routine synthesis extending classical reductions. For the code’s polynomial-time claim, cite a polynomial-bit root-isolation algorithm; exact rational Sturm arithmetic and passing tests alone do not establish that bound.
+
+3. **MINOR — LOC is correct, but its interpretation must remain oracle-specific (§3.2).**
+
+   **PROVED:** Deferred decisions justify independence even for adaptive queries. Conditional on never querying either factor, the two target oracle values remain independent and uniform.
+
+   In fact, with \(h=\Pr[\text{query }p\text{ or }q]\),
+   \[
+   \Pr[\text{success}]
+   \le h+(1-h)\frac{2M-1}{M^2}.
+   \]
+   The displayed weaker bound is valid. The primality requirement on \(M\) is correctly identified.
+
+   This does not cover structured arithmetic functions evaluated through identities, generating functions, or summatory recursions.
+
+   **Concrete fix:** Keep LOC, optionally strengthen its bound, and replace “native evaluation of a generic multiplicative function is factoring” with “successful evaluation in this point-query oracle model exposes a factor query.”
+
+4. **MINOR — AUT is sound, but the main obstruction is already known (§3.3).**
+
+   **PROVED:** The support-count argument works. For the multiplicative indicator
+   \[
+   a(n)=1_{\ell\nmid f(n)},
+   \]
+   the prime-root hypothesis gives the stated logarithmic exponent. Its regular-language counting asymptotic is incompatible with automaticity.
+
+   **KNOWN:** Coons explicitly proves that \(\varphi\) is not \(k\)-regular: [Coons 2010, Theorem 3.3](https://arxiv.org/pdf/0810.3709). The reduction from regularity to automaticity modulo an integer is Allouche–Shallit’s theorem, reproduced there as Theorem 3.6.
+
+   More generally, [Konieczny’s Theorem 1.1](https://arxiv.org/pdf/1905.11981) says a multiplicative automatic sequence agrees, on integers avoiding finitely many primes, with a Dirichlet character or with zero. Applied to \(a(n)\), this directly contradicts its positive-density mixture of zero and nonzero prime values. Thus AUT’s stated general obstruction is a consequence of existing classification results. Bell–Coons–Hare’s minimal-growth theorem is not the relevant theorem.
+
+   **Concrete fix:** Label AUT a corollary of known results, retaining the alternative proof if useful. Restrict every application to the stated all-integer multiplicative sequence; do not say it excludes automata for every cluster-I interpretation or for semiprime-only extensions.
+
+5. **MAJOR — The weighted \(x^{1/3}\) summation question has a positive answer (§1.3, S1).**
+
+   **KNOWN method; PROVED weighted extension:** Use Sladkey’s unimodular geometric decomposition, [*A Successive Approximation Algorithm for Computing the Divisor Summatory Function*, §§2–7](https://arxiv.org/pdf/1206.3369). Its printed theorem concerns \(\sum\tau(n)\); the weighted extension should be explained, rather than inferred from the title.
+
+   Carry count and first coordinate moments through the same decomposition. Under its affine coordinate changes, the weight \(d\) remains affine. On
+   \[
+   T_t=\{(u,v)\in\mathbb Z_{\ge0}^2:u+v\le t\},
+   \quad
+   |T_t|=\frac{(t+1)(t+2)}2,\qquad
+   \sum_{T_t}u=\sum_{T_t}v=\frac{t(t+1)(t+2)}6.
+   \]
+   Triangle, strip, and terminal-column contributions therefore still take constant-many arithmetic operations per piece. The geometric work is unchanged.
+
+   Consequently,
+   \[
+   H_1(x)=\sum_{ab\le x}a
+   \quad\text{and}\quad
+   \sigma(N)=H_1(N)-H_1(N-1)
+   \]
+   admit a native \(\widetilde O(N^{1/3})\) bit bound. Fixed polynomial weights work similarly.
+
+   This improves the audited baseline for \(\sigma,\varphi\) on semiprimes, and polynomial expressions in \(N,p+q\). It remains much slower asymptotically than factoring first.
+
+   **Concrete fix:** Replace the open weighted-hull question with this construction and bound. Retain faster exact evaluation of \(\Phi\) and \(F_\chi\) as open targets; their Möbius weights do not receive this extension automatically. Do not assert an \(x^{1/3}\) lower bound.
+
+6. **MAJOR — The SL₃ presentation is a compression, not a proved forcing argument (§2.1).**
+
+   The presentation construction is credible, but the exact assertion
+   \[
+   \Gamma(N)=\langle\!\langle x_{12}(N)\rangle\!\rangle
+   \]
+   needs a precise relative elementary-generation reference. The congruence subgroup property alone is not that assertion.
+
+   Three distinctions matter:
+
+   - The presentation complex is two-dimensional, so its ordinary \(H_3\) is zero. The intended object is \(H_3(G;\mathbb Z)\), after the relevant stability comparison with \(K_3\).
+   - A finite group cannot have a finite-dimensional \(K(G,1)\); thus the presentation complex does require higher resolution data.
+   - This does not prove that a compressed resolution must reveal the factors.
+
+   **PROVED:** Norm sums themselves can compress:
+   \[
+   S_{2r}(g)=S_r(g)+g^rS_r(g),\qquad S_r(g)=\sum_{i<r}g^i.
+   \]
+   In particular, known global orders such as the order \(N\) of an elementary unipotent support logarithmic-size group-ring circuits. Unknown local orders obstruct particular constructions, not all constructions.
+
+   **Concrete fix:** Retain the short presentation as a useful positive observation. Label the identities-among-relations discussion **HEURISTIC**, and replace “forced” with “the constructions examined require local order data.” Distinguish group homology from homology of the presentation complex.
+
+7. **MAJOR — Small-complex homology remains possible; there is a precise equivalence and a restricted obstruction (§2.1).**
+
+   **PROVED:** The following are equivalent on the semiprime promise:
+
+   - deterministic polynomial-time factoring;
+   - a deterministic polynomial-time construction of an explicit integer chain complex, of polynomial total bit size, whose specified homology torsion order is \(\varphi(N)\).
+
+   The reverse direction uses Smith normal form and
+   \(p+q=N+1-\varphi(N)\). For the forward direction, compute \(\varphi(N)\) and use a boundary map \([\varphi(N)]\). Even a genuine small CW complex is possible conditionally: binary-power auxiliary generators give a short presentation of \(C_{\varphi(N)}\).
+
+   Thus a general impossibility theorem here would imply factoring is not in FP. There is no known such obstruction.
+
+   **PROVED restricted obstruction:** Fixed-size boundary matrices with entries in \(\mathbb Z[N]\) cannot produce \(\varphi(N)\) as torsion order for all semiprimes. Outside finitely many rank exceptions, that order is a gcd of maximal minors. Write those minors as \(h(N)q_i(N)\), with the \(q_i\) coprime over \(\mathbb Q[N]\). A Bézout identity gives
+   \[
+   \gcd_i q_i(N)\mid C
+   \]
+   for a fixed nonzero integer \(C\); this gcd depends only on \(N\bmod C\). The torsion order is consequently polynomial times periodic, contradicting TRI(c) for \(F(r)=r-1\).
+
+   This obstruction does not cover growing matrices, digit-dependent constructions, floors, or Euclidean recursions.
+
+   **Concrete fix:** Restore the blind report’s “nothing known rules it out,” supplemented by this restricted theorem. An explicit universal cover may be enormous; that does not prohibit a small ordinary complex constructed another way.
+
+8. **MAJOR — The Schur-ring claim is false as stated (§2.2).**
+
+   **PROVED counterexample:** The function
+   \[
+   t\longmapsto3^{\omega(\gcd(t^2-4,N))}
+   \]
+   is not invariant under multiplying \(t\) by units. At \(N=15\), the units \(t=1,2\) give discriminant gcds \(3,15\), respectively.
+
+   The rational Schur ring describes functions depending on \(\gcd(t,N)\). A nonlinear pullback \(w(\gcd(P(t),N))\) need not belong to it. One can instead push forward the counting measure under \(P\), but then its distribution must be computed.
+
+   Even for a radial function, a divisor-indexed basis does not force an algorithm to construct that basis. Here its dimension is only four.
+
+   **Concrete fix:** Restrict the Schur-ring statement to radial functions, distinguish nonlinear pushforwards, and delete the necessity claim. The displayed class-count identities are useful reductions; they do not establish a compression lower bound.
+
+9. **MAJOR — Lens-space classification is mostly right, but the assertions about invariants are not (§2.3, VI1).**
+
+   **KNOWN/PROVED:** For odd \(pq\), oriented homotopy classes are square classes, hence there are **four**. Unoriented classes are modulo \(\pm\)squares, giving
+   \[
+   2+2[-1\in U_N^2].
+   \]
+   The stated unoriented homeomorphism count is correct:
+   \[
+   \frac{\varphi(N)+4+4[-1\in U_N^2]}4.
+   \]
+   The special claim that unoriented homotopy is Jacobi-decidable when both primes are \(3\bmod4\) is also correct.
+
+   The following claims need correction:
+
+   - The **full Witt class** retains primary local information. It is not just the Jacobi symbol. A single normalized quadratic Gauss sum gives the Jacobi symbol.
+   - Reidemeister torsion, Casson–Walker invariants, and general WRT data need not see only the product of local symbols. They are generally finer than homotopy invariants.
+   - An equivalence’s degree is \(\pm1\). The square-root parameter describes its induced map on \(H_1\), not its degree.
+   - An explicit equivalence for arbitrary supplied spaces is not uniformly factoring-hard: the identity case is immediate. A suitably quantified square-root search oracle has the usual randomized factoring reduction.
+
+   A tiny example exposes the distinction:
+   \[
+   s(1,15)=91/90,\qquad s(4,15)=19/90.
+   \]
+   Since \(4\) is a square modulo \(15\), these spaces are oriented homotopy equivalent, yet their Dedekind sums differ.
+
+   **Concrete fix:** Separate full linking-form/Witt data, normalized Gauss sums, and invariants of homeomorphism or simple-homotopy type.
+
+10. **MAJOR — S3’s conjecture is false without excluding level primes; Dedekind sums give only a limited positive result.**
+
+   **PROVED counterexample:** Define
+   \[
+   H(N,a)=
+   \begin{cases}
+   (a/5),&5\mid N,\\
+   0,&5\nmid N.
+   \end{cases}
+   \]
+   This is square-invariant. It belongs to the stated class E through a bounded coboundary: choose a function \(h\) of the continued-fraction matrix modulo \(5\) that reads this terminal datum, and telescope
+   \[
+   \sum_i\bigl(h(\gamma_i)-h(\gamma_{i-1})\bigr).
+   \]
+   At \(N=35\), \(a=1,3\) both have Jacobi symbol \(+1\), while \(H\) takes opposite values. No function of the Jacobi symbol and \(N\bmod m\) can explain that difference at the same \(N\).
+
+   This is easy information from a fixed small factor. It supplies no general QR algorithm.
+
+   The claimed consequence also needs uniform quantifiers. A function that separates a Jacobi fibre for occasional denominators does not decide QR on all semiprimes. If it separates at least one Jacobi fibre for **every** admissible \(N\), the reduction can be repaired: for Jacobi-\(+1\) input \(a\), compare its values at \(a,1\), and at \(ab,b\), where \((b/N)=-1\).
+
+   For classical Dedekind sums:
+
+   - **PROVED:** The raw sum is not square-invariant. Cauchy–Schwarz gives \(s(a,N)\le s(1,N)\), with equality only at \(a=1\); a nontrivial square violates invariance.
+   - **KNOWN:** The standard square-invariant phase reduces to Jacobi through
+     \[
+     12Ns(a,N)\equiv N+1-2(a/N)\pmod8.
+     \]
+     Related formulas are treated by [Li–Li](https://doi.org/10.1142/9789814578097_0012).
+   - **CONJECTURED/UNRESOLVED:** A classification of all allowed combinations or postprocessings of Dedekind sums does not follow from these observations.
+
+   **Concrete fix:** Require \(\gcd(N,m_0)=1\), exclude finite exceptional denominators, define class E precisely—including terminal terms and allowed postprocessing—and quantify the separation required for a QR reduction.
+
+11. **MAJOR — Several inventory reductions are false or missing essential promises (§1).**
+
+   **PROVED counterexamples or required corrections:**
+
+   | Entry | Problem | Concrete fix |
+   |---|---|---|
+   | III4: \(\operatorname{Tr}T_N\) | On \(S_4(1)=0\), the full trace is identically zero. The class-number moment is a different quantity. | Name the elliptic contribution separately. The displayed special moments are \(\le F\) through their divisor formulas; the individual class numbers do not change that. |
+   | IV2: \(\sum_{a<N/2}(a/N)\) | For \(N\equiv1\bmod4\), this is zero: pair \(a\) with \(N-a\). | Restrict to the appropriate odd character/discriminant. For \(N\equiv3\bmod4\), use \((2-\chi_N(2))h(-N)\). |
+   | IV1: \(r_3(N)\) | It is zero for \(N\equiv7\bmod8\), so is not everywhere factoring-hard. | State the congruence promise for this scalar. |
+   | IV3: Rédei rank, \((p/q)\) | These are not established factoring-equivalent scalars. | Separate them from explicit genus-field or class-group structure. |
+   | VII1: “a nontrivial automorphism” | \(y\mapsto-y\) is an immediate nontrivial automorphism of \(R[y]/(y^2-1)\). | Require an automorphism outside the known global symmetries, with the actual reduction specified. |
+   | VII1: \(\exists e\) | The decision statement is always true on the \(pq\) promise. | Specify finding the idempotent. |
+   | V3: local Dedekind sum | DSF requires \(\gcd(2a(a^2+1),N)=1\). For \(N=65,a=8\), the local sum is zero. | Restore the hypothesis and treatment of gcd exceptions. |
+   | I19 | The stated ring-class formula omits \((N,7)=1\). | Restore it; gcd with \(7\) handles the exception. |
+   | I16 | At \(\beta=1\), the displayed Bost–Connes expression is zero. | Specify a parameter range and a precision/recovery theorem. |
+   | I18 | An exact reduction from Faltings height or \(\omega^2\) has not been supplied. Local logarithmic terms in a formula do not suffice. | Mark these reductions **UNVERIFIED**, apart from the separately justified area terms. |
+   | III3 | Bach–Charles and the \(a_{N^3}\) variant have different zero-trace exceptions. | Restore the precise exceptions from `tracedata`. |
+   | II2–II4 | Fixed-modulus necklace values, an unspecified code-module count, and a fixed dynamical period do not inherit all the selectable-oracle reductions. | Split proved oracle equivalences from fixed-value questions. |
+   | VII3 | Two norm representations may not exist; arbitrary Thue solving is not justified as FP\(^{FACT}\). | Specify the form, existence promise, representation equivalence, and upper reduction. |
+
+   In addition, “producing Frobenius on an étale algebra factors” requires the separation hypotheses of FROB. On \(B=R\), and on a split étale algebra with its evident presentation, Frobenius can simply be the identity.
+
+12. **MAJOR — Complexity and “best native” columns need reconstruction, not isolated edits.**
+
+   **PROVED:** Several `none` entries contradict the note’s own common algorithm S. For polynomial local data, symmetric-polynomial evaluation through \(p+q\) supplies a common upper bound; finding 5 improves that baseline to \(\widetilde O(N^{1/3})\). TRI’s inverse reduction alone does not establish that every quasi-polynomial interpretation preserves the chosen native restriction.
+
+   Other corrections:
+
+   - A plus construction is not, by itself, a finite \(N^{m^2}\)-time K-theory algorithm.
+   - Explicit irreducible-degree multisets and Hilbert class fields need output encodings. Their full outputs can prohibit the quoted compact-output runtime.
+   - EXP can bound a specified triangulation or Brandt matrix; it does not bound every representation.
+   - PW must specify the signal, normalization, and tail bound. To round \(H_1(N)\asymp N^2\) individually, constant absolute error means relative precision \(O(N^{-2})\), not a universal \(1/N\) rule.
+
+   **KNOWN literature corrections:** Pak–Soffer prove polynomiality for \(U_n\) through \(n=16\), and non-polynomial examples for pattern groups. Their paper does not itself furnish the claimed complexity reduction from arbitrary variety counting: [Pak–Soffer, Theorems 1.2–1.5](https://arxiv.org/pdf/1507.00411).
+
+   Greenfeld–Tao’s cited undecidability theorem uses varying dimension and periodic target subsets. It must not be restated as undecidability of a single tile tiling all of a fixed \(\mathbb Z^d\). The distinction remains explicit in [Greenfeld’s 2026 ICM survey, §6.5](https://doi.org/10.1137/25M1801694).
+
+   **Concrete fix:** Give separately: an audited upper bound, a literature-optimality status, output encoding, and exact generalization. General presentation undecidability does not obstruct the promised \(\mathrm{SL}_3(\mathbb Z/N)\) family, whose order is easy given factoring.
+
+13. **MAJOR — The remaining deep-dive “forcing steps” identify current formulas, not necessities (§2.4–2.6).**
+
+   **PROVED:** The binary-necklace congruence and the large-colour linearization are valid. The primitive cat-map identity is valid. Their standard Möbius formulas expose unknown divisor arguments.
+
+   They do not prove that another recursion must expose those arguments. Specific corrections:
+
+   - “A D-finite formula would give only \(\widetilde O(\sqrt N)\)” confuses a generic upper bound with a lower bound. Some D-finite sequences admit much faster isolated evaluation.
+   - The fixed-modulus necklace formula using \(\operatorname{ord}_M(k)\) assumes \((k,M)=1\); otherwise use eventual periodicity with a transient.
+   - The cat-map finite-torus orbit formula needs irreducibility at **both** primes, as well as avoidance of the discriminant. The rational zeta function controls total fixed points, not efficient primitive extraction.
+   - Writing a nontrivial tile exhibits a divisor, but counting tiles, deciding existence, and producing a tile are different tasks.
+   - A count of size \(q^{p-1}\) has \(\Theta(p\log q)\) bits. Neither that count nor the full tiling count has been shown here to have \(\Theta(N)\) bits.
+
+   **Concrete fix:** Retain the valid formulas and explicit-model size bounds. Replace “forcing step” by “obstruction encountered by this implementation” unless a restricted-model theorem is stated.
+
+14. **MAJOR — The permanent barrier loses essential quantifiers (§3.4).**
+
+   The cited internal report states the narrower result correctly.
+
+   **PROVED restricted implication:** A superpolynomial lower bound against **all nonuniform, modulus-independent, constant-free SLP splitters**, measured in arithmetic operations and requiring constant success on the specified balanced prime distributions, would imply factorial \(\tau\)-hardness. A short SLP for a factorial cutoff near the median candidate prime would otherwise split with constant probability.
+
+   **KNOWN:** Factorial \(\tau\)-hardness implies superpolynomial **constant-free, division-free permanent** circuit complexity: [Bürgisser, ECCC 2006 Theorem 1.1](https://eccc.weizmann.ac.il/report/2006/113/download), journal Main Theorem 1.2.
+
+   This implication does not follow merely because a model “contains Theorem PT.” Uniform-only bounds need not exclude nonuniform factorial circuits; bit-cost bounds need not be arithmetic-operation bounds; worst-case guarantees are not automatically the constant-success distributional guarantee used in the argument.
+
+   **Concrete fix:** Copy the quantifiers from [the internal report, §3](/Volumes/git/factoring-connection/notes/codex_r2_generic_ring.md:354). Attribute the factorial/permanent implication to Bürgisser and the intervening splitter argument to the report.
+
+15. **MAJOR — S2’s exact semiprime assertion remains unresolved in this review; two restricted negatives are proved.**
+
+   On the promise,
+   \[
+   \varphi(pq)\bmod3=
+   \begin{cases}
+   1,&p\equiv q\equiv2\pmod3,\\
+   0,&\text{otherwise}.
+   \end{cases}
+   \]
+   I have neither proved nor refuted the existence of an arbitrary \(k\)-automatic extension agreeing on all these semiprimes. AUT and multiplicative-automatic classification do not apply to an extension whose values elsewhere are unrestricted.
+
+   **PROVED: no eventually periodic extension.** Given any period \(M\), choose distinct large primes both \(1\bmod\operatorname{lcm}(3,M)\), and another pair both \(-1\bmod\operatorname{lcm}(3,M)\). Both products are \(1\bmod M\), while their target values are \(0,1\).
+
+   **PROVED: no multiplicative automatic extension.** Konieczny’s rough-integer character/zero classification contradicts the required values on sufficiently large prime pairs.
+
+   [Adamczewski–Drmota–Müllner](https://arxiv.org/pdf/2009.14773) establish computable logarithmic densities along primes. Their theorem alone is not the required separation theorem on semiprimes. A proposed use must verify the necessary multiplier-uniform or bilinear statement.
+
+   **Concrete fix:** Keep the arbitrary-extension question **CONJECTURED**, with these partial results. Preserve uniform construction time and state-size bounds in the growing-\(\ell\) algorithmic proposal. A solution for one fixed modulus would not by itself give a factoring algorithm.
+
+16. **MINOR — Deduplication, shortlist screening, and the blind report need explicit qualifications.**
+
+   The table is not literally deduplicated: I20 repeats I1’s gcd determinant; I4’s \(K_3\) repeats I5; I19’s conic overlaps I12; I21’s \(J_3\) repeats I5’s \(K_5\). These may be useful interpretations, but percentages of rows are not percentages of independent targets.
+
+   I recommend no additional independent row from this round. Tempting additions such as the number of square residues, \(\sigma(N)/4\), or the unitary-Cayley positive inertia, \(\varphi(N)+1\), are aliases of existing targets. Adding them would inflate the inventory.
+
+   **PROVED screening correction:** FP\(^{FACT}\) justifies the stated conditional non-NP-hardness screen where an actual upper reduction exists. “Summatory function of a multiplicative function” does not establish that membership. Factoring \(x\) does not give a polynomial-time evaluation of \(\Phi(x)\) or \(F_\chi(x)\).
+
+   My revised assessment is:
+
+   | Candidate | Assessment |
+   |---|---|
+   | S1 | The \(H_1\) extension is settled positively. Faster \(\Phi,F_\chi\) recursions remain useful questions; their claimed non-NP-hard generalization is unproved. |
+   | S2 | Precise and worth retaining, with the scope in finding 15. |
+   | S3 | False as written; after excluding level primes, it needs a formal class and uniform separation hypothesis. |
+
+   **HEURISTIC ranking:** I would put a specified compressed determinant or homology construction above the current S3. Ordinary explicit linear algebra is in P, and a proposed construction has an immediately checkable target. The fixed non-CM \(a_N\) question also deserves attention, but its factoring equivalence remains open.
+
+   The blind report fairly contributed S, the necklace residue, the twisted recursion, and the non-D-finiteness argument. It expressly supplied audited upper bounds rather than fastest-known records, and expressly left small homology unexcluded. Promoting those observations to “best native” and “forced” conclusions is not a fair preservation of its qualifications.
+
+   **Concrete fix:** Group aliases under computational targets, distinguish “no hardness result known” from a proved non-hardness screen, restore the blind report’s qualifications, and rewrite the shortlist around the corrected questions.
