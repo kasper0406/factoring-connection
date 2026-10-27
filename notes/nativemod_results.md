@@ -196,7 +196,7 @@ question about a(N), not a speed route.
 | T1 | a(N) = a_pa_q | trace of g_p ⊗ g_q on ρ ⊠ ρ (cx1); = N^{(k−1)/2}·2∫_{SU(2)} tr(θ_p kθ_q k⁻¹)dk (Prop CONV) | OPEN (tracedata) |
 | T2 | {tr g_p, tr g_q} mod λ, all λ up to O(log N) | gives the integers {a_p, a_q} by CRT of symmetric functions | OPEN (tracedata) |
 | T3 | class pair {C_p, C_q}, all λ up to O(log N) | contains det C_r = χ(r)r^{k−1} | **yes** for k ≥ 2, deterministic (Prop CLS) |
-| T4 | t_N = CRT(a_p mod p, a_q mod q) ∈ Z/N | componentwise Frobenius on H¹(E_{Z/N}, O) (Hasse–Witt over Z/N) | **yes** unless a_p = a_q (Prop CRT-T) |
+| T4 | t_N = CRT(a_p mod p, a_q mod q) ∈ Z/N | componentwise Frobenius on H¹(E_{Z/N}, O) (Hasse–Witt over Z/N) | **yes** for balanced N unless a_p = a_q; unbalanced: unless s divides a_r − a_s (Prop CRT-T) |
 | T5 | Tr_A(x^N) = s_N(P_ℓ) mod N | §1.2 | no mechanism known; E3 null |
 
 **Prop CONV (PROVED; Schur).**
