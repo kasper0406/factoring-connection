@@ -1,0 +1,96 @@
+I read no repository files. I take your barriers and benchmarks as premises. Below, \(N=pq\) denotes a balanced semiprime unless stated otherwise.
+
+The connections that survive concern **faster existing primitives or stronger distribution theorems**. I found no credible fourth family of factor information. Citations establish the underlying mathematics; proposed applications and failure diagnoses are my extrapolations. “FACTORING-EQUIVALENT” refers to the particular oracle specified, not every approximation to its output.
+
+1. **Harmonic analysis**
+
+   - **H1 — Restriction estimates for simultaneous smoothness. OPEN-WORTH-A-LOOK.** Construct NFS forms \(a-bm\) and \(F(a,b)\) from \(N\), then study correlations of their smoothness indicators using [Harper, *Minor arcs, mean values, and restriction theory…* (2016)](https://arxiv.org/abs/1408.1662). The missing step is a lower bound for simultaneous smoothness at the growing degrees and smoothness parameters used by NFS; upper moment estimates alone do not supply it. This could improve rigorous analysis, but locating relations still requires an algorithm and adequate rank.
+
+   - **H2 — Decoupling to coordinate many small norm values. REDUCES-TO-A.** Regard polynomial-selection candidates as points on moment varieties and use [Bourgain–Demeter–Guth’s Vinogradov mean-value theorem (2016)](https://annals.math.princeton.edu/2016/184-2/p07) to control clustering. Its bounds count additive coincidences; they do not find unusually small algebraic norms or certify smoothness. Smallness remains an archimedean approximation problem, and saving a counting estimate need not save relation-search work.
+
+   - **H3 — Kakeya intersections over composite rings. KNOWN.** For lines \(y=ax\) and \(y=bx\) over \(\mathbb Z/N\), their intersection has \(\gcd(a-b,N)\) points: incidence degeneracy exposes a factor. [Dvir’s finite-field Kakeya theorem (2009)](https://arxiv.org/abs/0803.2336) does not select slopes whose difference is a nonunit; that selection is already gcd collision search. The [October 26 OpenAI announcement](https://openai.com/index/building-scientific-understanding-with-academic-communities/) claims all-dimensional local smoothing and Kakeya, but I mark its mathematical correctness **UNVERIFIED** here; even granting it supplies no composite-ring selection algorithm.
+
+2. **Random matrix theory**
+
+   - **R1 — Missing Euler factors as a spectral fingerprint. FACTORING-EQUIVALENT.** The principal-character function satisfies \(L(s,\chi_0)=\zeta(s)(1-p^{-s})(1-q^{-s})\), whose residue at \(1\) is \(\varphi(N)/N\). Exact residue recovery therefore gives \(p+q=N+1-\varphi(N)\), immediately factoring \(N\). [Montgomery’s pair-correlation work (1973)](https://www-personal.umich.edu/~hlm/paircor1.pdf) concerns universal zero statistics; it provides no cheap evaluation of this arithmetic residue.
+
+   - **R2 — Spectral outliers of a unitary Cayley graph. FACTORING-EQUIVALENT.** Build the graph joining \(x,y\) when \(\gcd(x-y,N)=1\); its top adjacency eigenvalue is \(\varphi(N)\), and other eigenvalues are Ramanujan sums. [Klotz–Sander (2007)](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v14i1r45) give the spectral description, but an adjacency oracle is not an exact eigenvalue oracle. Explicit construction has \(N\) vertices, while estimating the degree accurately enough to recover its exact integer value offers no known saving.
+
+   - **R3 — Random projections to shorten relation-matrix computations. KNOWN.** Apply finite-field random-matrix ideas to the NFS parity matrix through projected Krylov sequences. This is already embodied in [Coppersmith’s block Wiedemann algorithm (1994)](https://doi.org/10.1090/S0025-5718-1994-1192970-7) and [Brent–Gao–Lauder, *Random Krylov spaces* (2003)](https://maths-people.anu.edu.au/~brent/pub/pub201.html). Real GUE spacing laws do not control finite-field minimal polynomials; ordinary blocking improves throughput without automatically reducing the total asymptotic arithmetic.
+
+3. **Spectral theory, trace formulas, quantum chaos**
+
+   - **S1 — Hear \(p+q\) in a modular surface. FACTORING-EQUIVALENT.** The area coefficient in the regularized trace formula for \(\Gamma_0(N)\) determines its index, \(N+p+q+1\). [Hejhal’s congruence-subgroup trace formula (1975)](https://doi.org/10.1090/S0002-9904-1975-13859-6) relates spectral and geometric expressions, but neither side is thereby cheap. Direct coset enumeration costs order \(N\), and obtaining the exact coefficient is already a factoring oracle.
+
+   - **S2 — Cat-map resonances. REDUCES-TO-M.** For fixed hyperbolic \(A\in SL_2(\mathbb Z)\), inspect \(\ker(A^t-I\bmod N)\); a rank drop in only one CRT component can split \(N\). The relevant times involve eigenvalue orders over \(\mathbb F_p\) or its quadratic extension, returning to order structure. [Kurlberg–Rudnick’s cat-map theory (2000)](https://arxiv.org/abs/chao-dyn/9901031) explains arithmetic degeneracies, but does not locate a favorable \(t\) below existing order-search costs.
+
+   - **S3 — QUE as a hidden tensor-factor detector. RESTATEMENT.** Quantization gives an \(N\)-dimensional space abstractly decomposing into \(p\)- and \(q\)-parts; one might seek an observable localized to one part. Writing that observable through a CRT projector requires a nontrivial idempotent \(e^2=e\bmod N\), which already yields a factor through \(\gcd(e,N)\). [Arithmetic equidistribution results](https://arxiv.org/abs/chao-dyn/9901031) concern expectation values after observables are specified, not recovery of this hidden projector.
+
+4. **Probability**
+
+   - **P1 — Read factors from a mixing plateau. FACTORING-EQUIVALENT.** Walk on \(G=SL_2(\mathbb Z/N)\), whose order is \(N(N^2-p^2-q^2+1)\); exact stationary return probability would determine the factors. [Bourgain–Varjú (2012)](https://arxiv.org/abs/1006.3365) provide uniform expansion, not an oracle for exact stationary probabilities or cutoff profiles. Rapid sampling does not cheaply resolve probabilities of order \(N^{-3}\), and generic mixing bounds erase rather than identify the CRT components.
+
+   - **P2 — Coupling from the past with unequal local coalescence. REDUCES-TO-M.** Couple unit-group trajectories using common random maps and detect coalescence modulo one prime by gcd. Random multiplications are permutations, so they never coalesce distinct starting states; replacing them by power maps makes contraction depend on local group exponents. [Propp–Wilson (1996)](https://www.stat.berkeley.edu/~aldous/206-RWG/RWGpapers/propp_wilson.pdf) removes sampling bias when coupling is tractable, but does not remove this order obstruction.
+
+   - **P3 — Percolation of relation dependencies. OPEN-WORTH-A-LOOK.** Interpret the parity matrix as a hypergraph and deliberately collect relations whose degree profiles permit extensive exact peeling. [Cooper–Frieze–Pegden (2019)](https://arxiv.org/abs/1806.04988) connect sparse random-matrix rank to the hypergraph core. Two-large-prime cycles are already exploited; the unresolved opportunity is shrinking the full matrix’s core without paying more for selected relations than linear algebra saves. Rank predictions alone do not construct dependencies.
+
+5. **Statistical mechanics and integrable systems**
+
+   - **T1 — Factoring as a frustrated ground state. FACTORING-EQUIVALENT.** Encode multiplication bits and carries in an energy whose nontrivial zero-energy states give factors. [Henelius–Girvin (2011)](https://arxiv.org/abs/1102.1296) study such a mapping and find serious frustration and annealing difficulties. Compactly writing the Hamiltonian does not establish fast cooling or mixing; the desired ground-state sampler is precisely the missing factoring algorithm.
+
+   - **T2 — Yang–Baxter transfer matrices with arithmetic resonance. REDUCES-TO-M.** Build a small transfer matrix \(T\bmod N\), then search for \(t\) such that \(\det(T^t-I)\) vanishes modulo only one factor. [Baxter’s eight-vertex solution (1972)](https://doi.org/10.1016/0003-4916(72)90335-1) supplies integrability machinery, but arithmetic resonance here is matrix-order information over finite fields. A period of length \(N\) is cheaply exponentiable only when matrix width stays small; integrability does not supply the favorable unknown order.
+
+   - **T3 — Lee–Yang zeros of a multiplication partition function. FACTORING-EQUIVALENT.** Set \(Z_N(z,\beta)=\sum_{2\le x,y<N}z^x e^{-\beta(xy-N)^2}\); its zero-temperature limit is \(z^p+z^q\). Computing that limiting polynomial exposes the factors, while direct representation has degree order \(N\). The [Lee–Yang circle theorem (1952)](https://journals.aps.org/pr/abstract/10.1103/PhysRev.87.410) does not apply to arbitrary frustrated multiplication energies, and zero-location constraints would not themselves evaluate \(Z_N\).
+
+6. **QFT, mirror symmetry, topological recursion**
+
+   - **Q1 — Chern–Simons phases at composite level. REDUCES-TO-Q.** Abelian examples lead to quadratic Gauss sums \(G(a,N)\); for odd \(N\) and unit \(a\), the phase dependence is the Jacobi symbol. Thus the cheaply evaluable sector gives your quadratic aggregate, while nonunit parameters reveal factors by gcd. [Jeffrey’s lens-space calculations (1992)](https://doi.org/10.1007/BF02097243) illustrate how sophisticated topological formulas can collapse to these arithmetic sums.
+
+   - **Q2 — Habiro completion and hidden cyclotomic sectors. RESTATEMENT.** Evaluate a unified quantum invariant at \(\zeta_N\), hoping its expansion separates contributions from proper divisors. In [Habiro’s construction](https://arxiv.org/abs/math/0605314), factors \(1-\zeta_N^j\) first vanish at \(j=N\), not \(p\) or \(q\). Selecting proper-divisor sectors requires those divisors; the finite expansion itself does not truncate early because \(N\) is composite.
+
+   - **Q3 — Mirror modularity through finite-field periods. AGGREGATE.** Specialize a fixed mirror family at parameter \(t=N\bmod\ell\), then compute Frobenius traces or modular coefficients. [Lian–Yau’s mirror-map identities](https://arxiv.org/abs/hep-th/9507151) motivate the connection, but these particular quantities depend only on the known residue \(N\bmod\ell\). Using many public primes changes the amount of computation, not the source of factor information; using characteristic \(p\) requires finding \(p\).
+
+   - **Q4 — Topological recursion on the factor hyperbola. REDUCES-TO-A.** Apply [Eynard–Orantin recursion (2007)](https://arxiv.org/abs/math-ph/0702045) to a spectral curve such as \(y^2=x^2-4N\), hoping branch points or periods locate factors. Its branch points are already \(\pm2\sqrt N\), and the complex curve supplies no preferred integer lattice points. Recovering factors requires imposing the Diophantine condition, restoring the archimedean search.
+
+7. **Convex geometry and optimisation**
+
+   - **C1 — SOS moments of the multiplication circuit. FACTORING-EQUIVALENT, for an exact extracting relaxation.** Build Boolean multiplication-and-carry equations and apply the [Lasserre hierarchy (2001)](https://doi.org/10.1137/S1052623400366802). Degree \(t\) produces matrices of size \(n^{O(t)}\), where \(n=\log N\); no useful universal exactness-and-extraction bound is supplied by the hierarchy’s general convergence theorem. Low-degree pseudoexpectations can satisfy constraints without revealing actual factor bits; this is a missing theorem, not a proved factoring lower bound.
+
+   - **C2 — A small extended formulation for the factor polytope. RESTATEMENT.** Take the convex hull of nontrivial Boolean multiplication witnesses and optimize a linear objective selecting one witness. Listing its vertices requires the factors; replacing the list by a small, efficiently constructible extended formulation is the entire proposed breakthrough. [Yannakakis (1991)](https://doi.org/10.1016/0022-0000(91)90024-Y) supplies the framework, but general extension-complexity results do not establish either small formulations or lower bounds for these particular polytopes.
+
+   - **C3 — Interior-point methods inside Coppersmith lattices. REDUCES-TO-A.** Construct the usual small-root lattice from \(N\), then seek better short vectors through convex optimisation. [Coppersmith (1997)](https://research.ibm.com/publications/small-solutions-to-polynomial-equations-and-low-exponent-rsa-vulnerabilities) requires quantitative smallness that converts modular vanishing into integer vanishing. Efficient optimisation over a real relaxation does not improve the needed integer-vector guarantee or supply missing factor bits.
+
+8. **Information and coding theory**
+
+   - **I1 — Decode a factor as a CRT codeword. RESTATEMENT.** At public primes \(r_i\), multiplication gives allowed pairs \((u,N/u)\), suggesting [Guruswami–Sahai–Sudan soft CRT decoding (2000)](https://www.cs.ucla.edu/~sahai/work/web/2000%20Publications/GSS00.pdf). But every nonzero \(u\bmod r_i\) is allowed: there is no received word biased toward \(p\). Supplying enough reliable residues to cross a decoding threshold supplies the missing factor information.
+
+   - **I2 — CRT decoding as a smooth-relation constructor. KNOWN.** [Boneh, *Finding smooth integers in short intervals using CRT decoding* (2002)](https://doi.org/10.1006/jcss.2002.1827) is an unusually direct connection between coding and factoring. Its decoding guarantees require sufficient agreement with small-prime divisibility constraints; they do not make arbitrary prescribed neighborhoods rich in efficiently recoverable smooth values. Under your constructor premise, this does not escape the \(L[2/3]\) cost.
+
+   - **I3 — Compress the uncertainty in a factor. REDUCES-TO-A.** Seek a short description of an approximation \(p_0\) satisfying \(|p-p_0|<N^{1/4}\), then invoke [Coppersmith’s recovery machinery](https://research.ibm.com/publications/small-solutions-to-polynomial-equations-and-low-exponent-rsa-vulnerabilities). A short description is not an efficiently decodable description, and naming the first divisor of \(N\) already demonstrates that distinction. Searching descriptions or predicting the requisite bits retains the missing archimedean information cost.
+
+9. **Dynamical systems and fractals**
+
+   - **D1 — Engineer unusually rapid orbit collisions. KNOWN.** Iterate \(f(x)=x^2+c\bmod N\), seeking equality modulo one factor before equality modulo \(N\). This is [Pollard rho (1975)](https://doi.org/10.1007/BF01933667), with heuristic birthday cost about \(\sqrt p\). Chaotic-looking trajectories do not imply better collisions; a new map needs a proved exploitable bias and an efficient detector, not merely stronger mixing.
+
+   - **D2 — Lattès maps and exceptional Julia dynamics. REDUCES-TO-M.** Project elliptic-curve multiplication through the \(x\)-coordinate to obtain rational dynamics over \(\mathbb Z/N\). Exceptional periods or denominator failures reflect elliptic-group orders, reproducing the mechanism of [Lenstra’s ECM (1987)](https://annals.math.princeton.edu/1987/126-3/p09). The dynamical presentation supplies no new source of favorable order distributions.
+
+   - **D3 — Local Julia sets at bad primes. RESTATEMENT.** Start with \(f_N(x)=x^2+1/N\) and seek different local escape rates at primes dividing its denominator. [Call–Silverman’s canonical-height theory (1993)](https://numdam.org/item/CM_1993__89_2_163_0/) gives a natural local/global language, but specifying the relevant \(p\)-adic fields already requires the prime places. Computing global rational iterates avoids that naming problem only by returning to denominator gcds or growing integer arithmetic.
+
+10. **PDE and numerical-analysis analogies**
+
+   - **E1 — Extract a divisor through a heat or Lambert coefficient. FACTORING-EQUIVALENT.** The generating function \(\sum_{d\ge1}d z^d/(1-z^d)\) has coefficient \(\sigma_1(N)=N+p+q+1\), linking divisor recovery to [Ramanujan’s Eisenstein-series work (1916)](https://ramanujan.sirinudi.org/Volumes/published/ram18.html). Fast evaluation at a point does not imply fast extraction of one high coefficient. Direct truncation costs order \(N\); smoothing averages coefficients and must subsequently undo that averaging accurately enough.
+
+   - **E2 — Exact finite-field multigrid. OPEN-WORTH-A-LOOK.** Seek a multilevel decomposition of the parity matrix that preserves its kernel while reducing expensive global iterations. [Spielman–Teng’s nearly linear solvers](https://arxiv.org/abs/cs/0607105) exploit positive real energies, which have no direct counterpart over \(\mathbb F_2\); lifting the matrix to \(\mathbb R\) changes its kernel. An exact algebraic substitute could matter, but ordinary spectral sparsification is insufficient, and elimination can create dense cores.
+
+   - **E3 — Holonomic products instead of sieving intervals. OPEN-WORTH-A-LOOK.** Compute long products such as \(K!\bmod N\) without materializing the intermediate polynomial evaluations used by [Bostan–Gaudry–Schost (2007)](https://doi.org/10.1137/S0097539704443793). Existing square-root blocking encounters intermediate degrees about \(\sqrt K\); a further blocking level does not automatically reduce their total cost. [Tal’s 2026 prime-modulus preprint](https://eccc.weizmann.ac.il/report/2026/211/) offers a related Jacobi-sum shortcut, but its finite-field characters do not directly provide an algorithm over unknown CRT components.
+
+My ranked three research bets follow. Probabilities are subjective chances that developing the connection produces a strict improvement to **one stated benchmark within ten years**, excluding logarithmic savings.
+
+1. **H1: simultaneous smoothness — 3%.**  
+   **First question:** For randomized admissible NFS polynomials \(f=f_0+(x-m)g\), can one bound the second moment of the simultaneous-smooth relation count by a constant times its squared mean in a fixed-degree toy regime? Start with degree two and fixed smoothness parameter, explicitly separating shared local roots and repeated values. The eventual target is stronger rigorous complexity; a relation-count theorem alone would still leave rank and extraction.
+
+2. **P3/E2: percolation-informed exact parity solving — 1%.**  
+   **First question:** In a configuration model with smooth-number-derived degree weights, can degree-targeted relation selection make the residual core \(B^{1-\delta}\), while charging inverse sampling probabilities and using only \(B^{1+o(1)}\) relations? Derive the density-evolution equations before implementing a solver. A positive result could reduce the linear-algebra exponent and, after reoptimisation, the heuristic \(L[1/3]\) constant.
+
+3. **E3: implicit arithmetic-progression products — 0.3%.**  
+   **First question:** Can the resultant encoding \(\prod_{i=0}^{b-1}\prod_{j=1}^{b}(ib+j)=(b^2)!\) exploit its two implicit progressions without constructing degree-\(b\) coefficient arrays? Audit a two-level decomposition and every intermediate degree. Reaching deterministic \(K^{2/5-\varepsilon}\operatorname{polylog}N\) evaluation of \(K!\bmod N\), uniformly for \(K\le\sqrt N\), would beat the \(N^{1/5}\) benchmark through gcd extraction; ordinary FFT acceleration does not reach that target.
