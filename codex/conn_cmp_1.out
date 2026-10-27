@@ -1,0 +1,166 @@
+I read no repository files. **I found no credible fourth leak family, and no supported route to an exponent below \(1/3\).** Three narrower directions remain worth investigating: proving NFS congruences split \(N\), accelerating its exact linear algebra, and improving joint-smoothness sampling.
+
+Below, \(N=pq\) denotes a squarefree semiprime unless stated otherwise; ★ marks a surprising connection. Verdicts are my assessment, distinguished from the cited results.
+
+1. **Algebraic complexity**
+
+   - **Short products and modular factorials.** Build \(F_t=\prod_{j\le t}j\bmod N\); for \(p<q\), \(\gcd(F_{\lfloor\sqrt N\rfloor},N)=p\). **KNOWN:** Strassen and Bostan–Gaudry–Schost exploit this through fast polynomial products and evaluation; a hypothetical \(\widetilde O(t^\alpha)\) algorithm would beat \(N^{1/5}\) through this reduction only when \(\alpha<2/5\), so merely crossing the factorial square-root barrier is insufficient. [Bostan–Gaudry–Schost](https://mathexp.eu/bostan/publications/BoGaSc04.pdf)
+
+   - **★ The 2026 modular-factorial result exists.** Tal’s September preprint states
+     \[
+     n!\bmod p:\qquad \widetilde O\!\left(r^c+\sqrt p/r^{1/4}\right),
+     \quad r\mid p^2+p+1,
+     \]
+     with related cyclotomic constructions and positive exponent savings for a large proportion of primes. **REDUCES-TO-M / RESTATEMENT for componentwise CRT application:** its supplied prime modulus, finite-field characters and local reduction maps do not provide these data for unknown \(p,q\); §1.4 explicitly discusses composite-modulus evaluation *given its factorization*. [ECCC TR26-211](https://eccc.weizmann.ac.il/report/2026/211/)
+
+   - **VP/VNP and GCT through factor-witness polynomials.** Arithmetize multiplication and sum over Boolean witnesses satisfying \(xy=N\), optionally fixing a prefix of \(x\); efficient exact evaluation would recover the smaller factor by successive prefix queries. **FACTORING-EQUIVALENT for this witness-counting family:** GCT supplies a framework for circuit lower bounds, while nonuniform circuit existence alone supplies neither a uniform construction nor controlled bit complexity. [Mulmuley–Sohoni](https://epubs.siam.org/doi/10.1137/S009753970038715X)
+
+   - **PIT as a detector of unequal reductions.** Build a circuit polynomial \(P_N(X)\), hoping its identity or vanishing behavior differs modulo \(p\) and \(q\). **REDUCES-TO-PT:** PIT tests a supplied polynomial; it does not construct one with the required asymmetry, and extracting unequal behavior still requires a gcd, while Frobenius/order identities return to M. [Schwartz](https://pages.cs.wisc.edu/~cs787-1/Schwartz1980.pdf)
+
+   - **Tensor rank and multiplication complexity.** Use faster matrix multiplication inside product evaluation or dependency finding; alternatively study multiplication in \(R=\mathbb Z/N\mathbb Z\). **REDUCES-TO-PT / KNOWN arithmetic acceleration:** multiplication \(R\times R\to R\) has bilinear rank one over \(R\), whereas a factor-sensitive CRT decomposition already requires its idempotents; moreover, even dense matrix multiplication exponent \(2\) would not itself give a kernel algorithm below \(n^2\). [Strassen](https://www.mathnet.ru/eng/mat552)
+
+   - **★ “Ultimate” factorial complexity.** Seek a short straight-line program for an unspecified nonzero multiple \(m_t t!\), rather than \(t!\) itself; Cheng gives a conditional subexponential construction connected to Shub–Smale complexity. **REDUCES-TO-the multiplier-contamination barrier:** \(m_t\) may contain the other prime, making the decisive gcd equal to \(N\), so this weaker compression is not automatically a fast modular-factorial algorithm. [Cheng](https://www.sciencedirect.com/science/article/pii/S0304397504004062)
+
+2. **Operator algebras and noncommutative geometry**
+
+   - **Bost–Connes Gibbs sampling.** Use the Hamiltonian \(H|k\rangle=\log k\,|k\rangle\), partition function \(\zeta(\beta)\), and test sampled integers with \(\gcd(k,N)\). **REDUCES-TO-rare-event sampling:** at \(\beta>1\), the probability of sampling a multiple of either factor is \(p^{-\beta}+q^{-\beta}-N^{-\beta}\); KMS symmetry breaking supplies no efficient conditioning on the unknown factors. [Connes–Consani](https://ems.press/journals/emss/articles/12949497)
+
+   - **Connes’ trace formula and prime orbit lengths.** Insert an \(N\)-dependent test function into the adelic scaling trace formula and try to locate an orbit of length \(\log p\). **RESTATEMENT / REDUCES-TO-A:** the trace identity does not supply fast access to an individually selected unknown prime orbit; resolving that contribution requires a separate localization/inversion algorithm, and RH alone would not provide one. [Connes](https://arxiv.org/abs/math/9811068)
+
+   - **★ Finite crossed products can erase the desired center.** From \(R=\mathbb Z/N\mathbb Z\), the translation crossed product \(C(R)\rtimes(R,+)\) is \(M_N(\mathbb C)\), whose center is trivial; adding affine symmetries does not automatically expose CRT coordinates. **REDUCES-TO-PT / RESTATEMENT:** finding a nontrivial idempotent in the original arithmetic ring factors \(N\), whereas abstract matrix-algebra structure does not identify one. [Li’s ring \(C^*\)-algebra framework](https://arxiv.org/abs/0905.4861)
+
+3. **Quantum information, classical side**
+
+   - **Tensor networks and low entanglement.** Build Shor’s modular-exponentiation state from \(N,a\); across the exponent/output-register cut its Schmidt rank is the order \(r\), with approximately flat weights when the exponent range greatly exceeds \(r\). **REDUCES-TO-the entanglement barrier:** a small-rank truncation retains only roughly its rank divided by \(r\) of the weight; this obstructs that simulation strategy, although it is not a lower bound against every tensor contraction. [Vidal](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.91.147902)
+
+   - **★ Semiclassical and classically simulable QFT.** Replace the final QFT by adaptive single-qubit measurements, or exploit efficient simulation of an approximate QFT on suitable inputs. **KNOWN, with the bottleneck elsewhere:** the arithmetic state and its correlations remain necessary; Yoran–Short show that an appropriate simulation of modular exponentiation would already simulate Shor’s factoring algorithm. [Griffiths–Niu](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.76.3228), [Yoran–Short](https://arxiv.org/abs/0706.0872)
+
+   - **Clifford/stabilizer and matchgate reductions.** Compile modular arithmetic into a simulable circuit family, hoping its useful output statistics survive. **REDUCES-TO-the non-Clifford/interacting-resource barrier:** ordinary modular exponentiation is outside the established simulable families, and no applicable small-resource approximation preserving factoring success is known; modest extensions of matchgates can already become universal. [Jozsa–Miyake](https://arxiv.org/abs/0804.4050)
+
+   - **Tang-style sample/query access.** Represent the modular-exponentiation state or its Fourier transform through classical sampling data structures. **REDUCES-TO-the access-model and Fourier barriers:** computational-basis samples \((x,a^x)\) are easy but discard interference, while useful Fourier sampling is precisely the missing primitive; Tang’s low-rank sampling theorem does not manufacture that access. [Tang](https://arxiv.org/abs/1807.04271)
+
+4. **Cryptographic constructions**
+
+   - **Isogeny-neighbor search over \(N\).** Build \(E/\mathbb Z_N\) and \(\Phi_\ell(j(E),Y)\); unequal local roots, multiplicities or walk behavior could reveal a factor. **REDUCES-TO-PT/M:** known composite-modulus isogeny problems explicitly confront this gcd interface, while independently finding the required neighbors can itself be hard; defining the graph does not provide its navigation oracle. [Altuğ–Chen](https://eprint.iacr.org/2018/926)
+
+   - **CM/class-group actions and CSIDH-like walks.** Start with an explicitly available CM curve, such as \(j=1728\), and apply small-degree isogenies, seeking different local orbit structure. **REDUCES-TO-M:** a prescribed CSIDH setting over the total modulus does not force both unknown reductions into the required supersingular/order configuration, and small-CM examples return to familiar order-based factoring opportunities. [CSIDH](https://csidh.isogeny.org/), [composite-modulus setting](https://eprint.iacr.org/2018/926)
+
+   - **★ Zeroizing attacks on multilinear maps.** Build matrices from public CLT encodings; their correlated CRT residues allow eigenvalue and gcd attacks recovering secret components. **REDUCES-TO-A / RESTATEMENT from \(N\) alone:** these attacks use auxiliary encodings with special smallness relations, not merely the modulus; iO similarly does not supply a factor-bearing program whose construction already needs the witness. [Cheon–Han–Lee–Ryu–Stehlé](https://snu.elsevierpure.com/en/publications/cryptanalysis-of-the-multilinear-map-over-the-integers/)
+
+   - **Hidden-order groups and VDF assumptions.** Build \(\mathbb Z_N^\times\), or a quadratic class group of discriminant derived from \(N\), and seek an order, annihilating exponent or root-extraction shortcut. **FACTORING-EQUIVALENT for RSA order / REDUCES-TO-M otherwise:** a polynomial-length nonzero multiple of \(\lambda(N)\) suffices for factoring, but general RSA inversion, strong RSA, class-group order and DL problems must not all be declared equivalent; known reductions have specific models and hypotheses. [Hidden-order reductions](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITC.2022.13)
+
+5. **Machine learning**
+
+   - **Learning factor bits or linear predicates.** Train on generated semiprimes and predict a factor, a sufficiently accurate prefix, or queried parities of its bits. **FACTORING-EQUIVALENT for a scalable random-parity predictor, REDUCES-TO-A for sufficient prefix information:** Goldreich–Levin permits recovery from inverse-polynomial advantage on random linear queries, but an advantage on one particular factor bit has no such automatic implication; training, weights and inference must all be charged. [Goldreich–Levin](https://www.wisdom.weizmann.ac.il/~/oded/gl.html)
+
+   - **Learned polynomial selection and sieving policies.** From \(N\), generate ordinary NFS polynomials and learn to predict norm size, root properties, Murphy \(E\), or profitable sieve regions. **KNOWN underlying optimization; no established ML asymptotic gain:** a fixed multiplicative improvement in yield does not change the \(L\)-constant, although there is no theorem restricting every conceivable learned construction to such improvements. [Murphy](https://maths-people.anu.edu.au/brent/pd/Murphy-thesis.pdf), [Prest–Zimmermann](https://www.sciencedirect.com/science/article/pii/S0747717111001398)
+
+   - **Transformers learning arithmetic algorithms.** Feed \(N\)’s digits to a transformer with scratchpad computation, hoping multiplication inversion generalizes with length. **REDUCES-TO-the uniform-algorithm/scaling barrier:** addition and multiplication length-generalization results establish useful arithmetic behavior, but not factorization; bounded-size accuracy supplies neither a growing-input success bound nor a better total complexity. [Arithmetic transformers, ICLR 2025](https://proceedings.iclr.cc/paper_files/paper/2025/hash/c6c29e590e3c62e37e6b39cdd6baf2e8-Abstract-Conference.html)
+
+6. **Optimal transport**
+
+   - **★ Coupling prime factors to Poisson–Dirichlet distributions.** Couple the logarithmic prime-factor profile of a uniform random integer to a tractable continuous process; Haddad–Koukoulopoulos obtain expected total logarithmic discrepancy \(O(1)\). **FACTORING-EQUIVALENT if converted into a conditional factor-list sampler for prescribed \(N\):** their distributional coupling is substantial, but it does not compute the factor profile of the supplied integer. [Haddad–Koukoulopoulos, 2025](https://jep.centre-mersenne.org/item/10.5802/jep.317.pdf)
+
+   - **Wasserstein control of relation supply.** Apply transport estimates to the event that the largest prime factor lies below the smoothness bound. **REDUCES-TO-the rare-event-accuracy barrier:** smoothness is a discontinuous tail event of probability \(L_N[1/3,-c]\), and an \(O(1)\) expected transport error supplies no corresponding relative-error estimate; boundary concentration and much sharper conditional control are missing. [Coupling theorem](https://dms.umontreal.ca/~koukoulo/documents/publications/coupling.pdf)
+
+   - **Transport between the two NFS norm distributions.** Build a computable map on candidate pairs \((a,b)\) that increases simultaneous smoothness while preserving the required arithmetic relation. **OPEN-WORTH-A-LOOK:** the relevant target is a net \(L_N[1/3,\eta]\) gain after charging transport, rejection and preprocessing, rather than a coupling that exists abstractly; Coppersmith’s reuse of rational-side smoothness is an existing, successful instance of exploiting this dependence. [Coppersmith](https://research.ibm.com/publications/modifications-to-the-number-field-sieve)
+
+7. **Numerical analysis**
+
+   - **FFT, FMM and hierarchical sieving.** Express sieve scores as sums of arithmetic-progression indicators and seek convolution or low-rank block structure. **KNOWN for fast arithmetic; REDUCES-TO-the exact-indicator/structure barrier for FMM:** divisibility kernels have no demonstrated analogue of the smooth far-field compression used by FMM, and faster score evaluation alone does not increase relation density. [Greengard–Rokhlin](https://www.sciencedirect.com/science/article/pii/0021999187901409)
+
+   - **Batch smoothness through product/remainder trees.** Build the product of factor-base primes and reduce it simultaneously modulo many candidate norms, extracting their smooth parts by gcds. **KNOWN:** Bernstein already supplies this replacement for repeated individual testing; it reduces arithmetic work but does not remove the scarcity of jointly smooth candidates. [Bernstein](https://cr.yp.to/factorization/smoothparts-20040510.pdf)
+
+   - **Exact structured Krylov methods for the NFS matrix.** Build the sparse parity matrix and exploit block Hankel/Krylov representations, especially MNFS’s shared rational block and separate number-field blocks. **OPEN-WORTH-A-LOOK:** one dependency has only \(O(n)\) output bits, so there is no \(n^2\) output lower bound, but standard iteration costs remain approximately \(n^2\); published sparse finite-field inversion/rank improvements below dense multiplication still do not establish a general \(n^{2-\epsilon}\) dependency algorithm. [Casacuberta–Kyng](https://drops.dagstuhl.de/storage/00lipics/lipics-vol215-itcs2022/LIPIcs.ITCS.2022.33/LIPIcs.ITCS.2022.33.pdf)
+
+   - **Real-valued sparse solvers and preconditioners.** Lift the parity matrix to integers/reals and apply numerical Krylov, hierarchical inversion or spectral sparsification. **REDUCES-TO-the characteristic/exactness barrier:** an approximate real null vector need not encode any mod-2 dependency, and Peng–Vempala’s numerical sparse-solver improvement is neither a subquadratic bound nor a solver for this finite-field kernel problem. [Peng–Vempala](https://arxiv.org/abs/2007.10254)
+
+8. **Compressed sensing, sparse recovery and inverse problems**
+
+   - **Recovering sparse exponent vectors.** Regard a norm’s factorization as a sparse vector, or seek a sparse vector in the relation matrix’s kernel. **REDUCES-TO-the measurement/coding barrier:** obtaining informative measurements already requires divisibility work, while a sparse matrix need not have a sparse useful dependency; demanding low-weight dependencies introduces a decoding-type problem, whose generic versions are NP-hard, although that is not a hardness theorem for NFS matrices. [Berlekamp–McEliece–van Tilborg](https://authors.library.caltech.edu/records/aw9vs-ann16)
+
+   - **Group testing with products of primes.** Test groups of candidate divisors through \(\gcd(x,\prod_{\ell\in S}\ell)\), recursively locating those dividing \(x\). **KNOWN batch factoring / smoothness:** counting these as unit-cost tests hides the product’s bit length and construction, and covering unknown primes near \(\sqrt N\) recreates the large-product problem handled by classical fast-product methods. [Bernstein](https://cr.yp.to/factorization/smoothparts-20040510.pdf)
+
+   - **Sparse FFT of modular-power observables.** Query \(g(a^x)\) and recover heavy Fourier coefficients using sparse-FFT algorithms. **REDUCES-TO-your Fourier barrier:** the sparse-FFT theorem requires actual spectral concentration; a period-\(r\) comb generally has \(r\) harmonics, while a useful single character tone requires the unavailable large-order character information. [Hassanieh–Indyk–Katabi–Price](https://people.csail.mit.edu/haitham/Papers/SFFT_STOC12.pdf)
+
+9. **Game theory and interactive proofs**
+
+   - **★ Factoring through parity and pigeonhole search.** Construct succinct search instances from \(N\), then use an endpoint or collision to recover arithmetic information. **KNOWN:** Jeřábek gives randomized polynomial reductions of general factoring to PPA and WEAKPIGEON, derandomizable under GRH; this creates a real connection to total search, but PPA is not PPAD and no fast equilibrium algorithm thereby solves these succinct instances. [Jeřábek](https://users.math.cas.cz/~jerabek/papers/factor.pdf)
+
+   - **Zero-knowledge certification of the modulus’s structure.** Build a verifier for claims such as “\(N\) is a product of two safe primes,” using commitments and responses supplied by a prover knowing the factors. **RESTATEMENT for generating the prover / no factor leakage from the certificate:** zero knowledge permits transcript simulation, whereas proof-of-knowledge extraction requires access to a successful prover under the protocol’s extraction conditions. [Camenisch–Michels](https://doi.org/10.1007/3-540-48910-X_8)
+
+   - **Sum-check, IP and PCP for factor witnesses.** Arithmetize the multiplier circuit and verify a claimed count of factor witnesses, including prefix-restricted counts. **FACTORING-EQUIVALENT for independently computing those counts:** small verifier cost does not bound prover cost, and replacing the prover by an algorithm still requires the hard witness/counting computation; PCP query savings likewise assume the proof has been constructed. [Lund–Fortnow–Karloff–Nisan](https://lance.fortnow.com/papers/files/ip.pdf)
+
+10. **Arithmetic statistics**
+
+    - **Cohen–Lenstra versus ambiguous classes.** Build the quadratic order of discriminant \(\Delta=-N\) or \(-4N\), then compose reduced forms looking for factor-revealing 2-torsion. **KNOWN / REDUCES-TO-M,Q:** genus theory determines the special 2-part rather than ordinary odd-part Cohen–Lenstra randomness, and directly sampling a useful ambiguous class essentially constructs a factorization; class-group factoring already exploits this connection. [Schnorr–Lenstra](https://pub.math.leidenuniv.nl/~lenstrahw/PUBLICATIONS/1984c/artc.pdf)
+
+    - **Binary cubic forms and quadratic 3-torsion.** Search for irreducible cubic forms of fundamental discriminant \(\Delta\), corresponding to unramified cubic-extension data over the quadratic field. **REDUCES-TO-M if used for class-group relations:** 3-torsion supplies neither an ambiguous class nor a CRT separator, may be absent, and average counting theorems do not construct an object in the prescribed discriminant fibre. [Bhargava–Shankar–Tsimerman](https://arxiv.org/abs/1005.0672)
+
+    - **★ Bhargava cubes and quartic parametrizations.** Build discriminant-\(\Delta\) cubes encoding triples of quadratic ideal classes, or pairs of ternary quadratic forms encoding quartic rings and cubic resolvents. **KNOWN composition / RESTATEMENT when constrained to ambiguous output:** cubes reorganize Gauss composition without automatically finding special classes; importantly, the familiar quartic-resolvent connection concerns 2-torsion in **cubic** class groups, not automatically \(\mathrm{Cl}(\mathbb Q(\sqrt{-N}))[2]\). [Higher composition laws I](https://annals.math.princeton.edu/wp-content/uploads/annals-v159-n1-p03.pdf), [II](https://annals.math.princeton.edu/wp-content/uploads/annals-v159-n2-p09.pdf)
+
+    - **Malle counting and prescribed ramification.** Count fields with bounded discriminant, hoping local masses identify a field whose ramification separates \(p,q\). **AGGREGATE for fixed-modulus local conditions; REDUCES-TO-M/Q for the desired special object:** bounded-discriminant asymptotics do not isolate or sample the exact discriminant \(N\), and prescribing ramification at an unknown factor merely relocates the search. [Alberts–Lemke Oliver–Wang–Wood](https://www.degruyterbrill.com/document/doi/10.1515/crelle-2025-0074/html)
+
+    - **★ Statistical nontriviality of NFS congruences.** Build randomized NFS relations and study the distribution of the resulting square-root ratios modulo \(N\). **OPEN-WORTH-A-LOOK:** Lee–Venkatesan rigorously obtain square congruences at NFS/MNFS complexities, but their factoring conclusion remains conditional on character decorrelation; proving sufficient nontriviality could improve the rigorous factoring exponent without discovering a fourth leak. [Lee–Venkatesan, especially §7](https://arxiv.org/html/1805.08873)
+
+The quantitative linear-algebra answer is **different for GNFS and MNFS**. Write \(L(c)=L_N[1/3,c]\), assume a complete dependency step costs \(n^{\omega'+o(1)}\), and retain the usual heuristic smoothness model.
+
+For ordinary GNFS, with search rectangle side \(L(a)\), factor base \(L(b)\), and degree coefficient \(\delta\), relation supply requires
+\[
+2a-b\ \ge\ \frac{a\delta+2/\delta}{3b}.
+\]
+Minimizing relation collection already gives \(2a=2b=(64/9)^{1/3}\). Therefore, for \(1\le\omega'\le2\),
+\[
+\boxed{C_{\rm GNFS}(\omega')=(64/9)^{1/3}\approx1.92300.}
+\]
+Forcing the two stages to balance after lowering \(\omega'\) would give a suboptimal parameter choice.
+
+MNFS can benefit. Let rational and algebraic bounds be \(L(b),L(c)\), with \(L(b-c)\) fields. Its work exponent is
+\[
+\max\left\{
+2a,\;
+2a+b-c-\frac1{3b\delta},\;
+\omega'b
+\right\},
+\]
+subject to
+\[
+2a-\frac1{3b\delta}
+-\frac{a\delta+1/\delta}{3c}\ge c,\qquad b\ge c.
+\]
+These are the initial sieve, subsequent smoothness tests, and linear algebra, respectively. [Coppersmith’s construction and analysis](https://link.springer.com/content/pdf/10.1007/BF00198464.pdf)
+
+Optimizing gives, for \(1\le\omega'\le2\),
+\[
+\rho=\max\left\{\omega',\frac{3+\sqrt{17}}4\right\},
+\qquad
+x=\frac{\rho-4+\sqrt{\rho^2+16\rho+16}}6,
+\]
+\[
+\boxed{
+C_{\rm MNFS}(\omega')
+=\left(\frac{2\rho^4(1+x)}
+{9x^2(\rho-x)^2}\right)^{1/3}.
+}
+\]
+
+| Kernel exponent \(\omega'\) | GNFS constant | MNFS constant |
+|---:|---:|---:|
+| \(2\) | \(1.92300\) | \(1.90188\) |
+| \(1.9\) | \(1.92300\) | \(1.88702\) |
+| \(1.8\) | \(1.92300\) | \(1.87188\) |
+| \(\le1.7807764\) | \(1.92300\) | \(1.86893\) |
+
+**This tradeoff is known:** Lenstra–Shamir–Tomlinson–Tromer explicitly identify the GNFS plateau, MNFS threshold \((3+\sqrt{17})/4\), and relation-collection floor \(1.8689328\). It changes the constant, not the \(1/3\) exponent, and presupposes an actual operation-count improvement rather than additional hardware parallelism. [Their §§2.6–2.7](https://cs-people.bu.edu/tromer/papers/meshc/node2.html)
+
+My ranked three research questions are:
+
+1. **NFS congruence nontriviality — strongest route to a rigorous exponent improvement.** For Blum \(N\), let \(K\) be the collected relation kernel and
+   \[
+   \nu(v)=\left(\frac{X_vY_v^{-1}}N\right).
+   \]
+   On unit outputs this is a sign-independent character of \(K\); prove that randomized polynomial selection makes \(\nu\) nontrivial with probability at least \((\log N)^{-C}\). Uniform sampling in \(K\) would then split \(N\) with probability \(1/2\) on those instances; extending beyond Blum integers remains necessary.
+
+2. **Exact MNFS block linear algebra — clearest route below the heuristic \(1.90188\) constant.** For the matrix with one shared rational block and separate field blocks, can the projected block-Krylov sequence \(U^TM^jV\), \(j<2n/k\), be generated in \(O(n^{2-\epsilon})\) total bit operations, with equally cheap reconstruction? The first issue is whether shared rational-side arithmetic creates exploitable exact structure after field-block elimination; ordinary sparsity alone does not.
+
+3. **Constructive joint-smoothness transport — speculative relation improvement.** For admissible NFS polynomial pairs, exhibit a sampler on \((a,b)\) whose simultaneous-smoothness probability, divided by its amortized cost, improves by \(L_N[1/3,\eta]\) for some fixed \(\eta>0\). An existence coupling, small Wasserstein distance, or uncharged conditioning would not establish this lemma.
