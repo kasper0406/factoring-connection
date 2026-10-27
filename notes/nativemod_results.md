@@ -1,6 +1,6 @@
 # nativemod: coefficients and Hecke traces of FIXED-level modular forms at a composite index (phase 29)
 
-Agent `nativemod`, 2026-10-27. **Version v2.2**: the Opus literature critic (OK WITH FIXES) is applied in v2.2; the second Opus proof critic in
+Agent `nativemod`, 2026-10-27. **Version v2.3** (own literature critic additions); v2.2: the Opus literature critic (OK WITH FIXES) is applied in v2.2; the second Opus proof critic in
 v2.1; the codex adversarial round (cx2, MAJOR REVISION) and the first Opus proof critic (ACCEPT WITH FIXES) in v2.
 All are recorded in §8.
 - Pre-registration: `notes/nativemod_prereg.md` (commit `9acb3cc`, before any experiment).
@@ -646,6 +646,23 @@ for 37a1, ℓ ∈ {3, 5}, show no association with a_N mod ℓ, ε or (p/ℓ), b
 | 11 E3 gcd coverage (111 / 417 unchecked coefficient splits); positive control degenerate; scope | E3c rerun with full gcd checks; P3c reported as REFUTED; scope stated (§6) |
 | 12 Merel: X_n vs S_n (Prop 18 vs Prop 20); (3/π²)p log²p proved | §2 and §3.1 corrected |
 | 13 missing native routes (Jacobi forms, theta lifts, Shimura, CM values, Borcherds, p-adic, Brandt mod ℓ) | §8.1 |
+
+**Own Opus literature critic (returned after v2.2; OK WITH FIXES; no status changes). Additions in v2.3:**
+- Native N^{1/3} route: Polymath §2.1 sketches Σ_{n≤x}τ(n) in x^{1/3+o(1)}; Sladkey Thm 1 states O(n^{1/3}). The weighted
+  extension to Σσ is routine (not written out). D. Li, arXiv:2609.29949 (2026) claims Σd(n) in N^{9/28+o(1)}
+  (UNVERIFIED; not for σ). Balog–Bárány, arXiv:2602.06897: the hull of {xy ≥ N} has ≍ N^{1/3}log N vertices.
+- Multi-index prior art: A. Chow, PhD thesis (Toronto 2015), Thms 3.3–3.4: a_f(n^r) oracles factor squarefree n
+  (Deligne-based integrality, Ex. 3.1). Preobrazhenskii, arXiv:1008.5035: heuristic native approximation of c_n, c_{n²}
+  for elliptic curves (unproved). Neither touches the single-coefficient OPEN item.
+- E–C Introduction (pp. 2–3) already states that all known methods for T_n at fixed level and weight are at least
+  linear in n: the prior statement of "native routes cost N^{Ω(1)}".
+- Hardness: since factoring is Turing-equivalent to an NP ∩ coNP language and ZPP^{NP∩coNP} = NP ∩ coNP, NP-hardness
+  of the unary-level generalisation would imply NP = coNP (under GRH); citation of the closure step UNVERIFIED.
+- Bruin Thm 1.1 needs n₀ fixed; Javanpeykar is needed for unary level. LRS context: Bézivin; Bell–Bruin–Coons,
+  Trans. AMS 364 (2012) (multiplicative functions with rational generating series), which does not cover semiprime
+  restrictions. Ribet, Glasgow Math. J. 27 (1985). CRT-T step is Howgrave-Graham's partial approximate common divisor
+  (CaLC 2001); May theorem number UNVERIFIED.
+- r₃ row: Bach 1990 (GRH class-group generators), Hafner–McCurley 1989, Schoof 1982.
 
 **Opus literature critic (run by the orchestrator on v2.1; OK WITH FIXES; no theorem, proof or verdict changes).
 All applied in v2.2.**
