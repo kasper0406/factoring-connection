@@ -1,0 +1,288 @@
+**OPEN — negative literature finding, completeness UNVERIFIED.** I found no native classical algorithm meeting your “interesting” threshold for the nontrivial composite coefficients considered here. There are native algorithms taking \(N^c\) time. No general model barrier rules out a faster one. Two premises need correction: \(z\mapsto z^N\) generally is **not additive**, and some succinctly encoded families of modular forms **do have \(\#P\)-hard coefficients**.
+
+Throughout, the form has fixed algebraic coefficients with an effective exact representation; \(N=pq\) is coprime to its level. Costs are bit costs, with logarithmic factors suppressed by \(\widetilde O\).
+
+**1. Composite “Frobenius.”**
+
+**KNOWN.** Couveignes–Edixhoven’s unconditional prime-index result for \(\tau(p)\) is Theorem 15.1.1 of *Computational Aspects of Modular Forms and Galois Representations*, Annals of Mathematics Studies 176, Princeton, 2011. Their factored-index Hecke algorithm is Theorem 15.2.1, under GRH. Bruin’s higher-level result explicitly accepts the index **in factored form**: Peter Bruin, *Computing coefficients of modular forms*, Publications mathématiques de Besançon (2011), 19–36, Theorems 1.1 and 3.1; its coefficient complexity statement assumes RH for number-field zeta functions. [Couveignes–Edixhoven](https://arxiv.org/pdf/math/0605244), [Bruin](https://pub.math.leidenuniv.nl/~pbruin/coefficients.pdf).
+
+**PROVED.** Fix a suitable defining polynomial \(P=P_\ell\). Its construction over \(\mathbb Q\) is independent of the target prime, so this preprocessing survives unchanged. After clearing allowable denominators, assume
+\[
+\gcd(N,\operatorname{disc}P)=1.
+\]
+Then
+\[
+A=(\mathbb Z/N)[X]/P
+ \cong A_p\times A_q,\qquad
+A_p=\prod_i\mathbb F_{p^{d_i}}.
+\]
+A proper gcd encountered while reducing denominators or discriminants already factors \(N\).
+
+**FALSE, with counterexample.** The assertion that \(z\mapsto z^N\) is a ring endomorphism on each component is false. Precisely,
+\[
+\operatorname{Pow}_N|_{A_p}
+ =\operatorname{Frob}_p\circ\operatorname{Pow}_q,
+\qquad
+\operatorname{Pow}_N|_{A_q}
+ =\operatorname{Frob}_q\circ\operatorname{Pow}_p.
+\]
+For \(N=35\), already in \(\mathbb F_5\),
+\[
+(1+1)^{35}=3,\qquad 1^{35}+1^{35}=2.
+\]
+Also \(\operatorname{Frob}_p^q(z)=z^{p^q}\), whereas the proposed map is \(z^{pq}\).
+
+**PROVED.** On \(\mathbb F_{p^d}\), the power map equals \(\operatorname{Frob}_p^r\) exactly when
+\[
+pq\equiv p^r\pmod{p^d-1}.
+\]
+Indeed, equality on the cyclic multiplicative group gives this congruence, and both maps fix zero. An additive unital power map must be a field automorphism, hence a Frobenius power. There is no generally applicable exponent \(r\).
+
+**PROVED.** Two different operations must also be distinguished:
+
+- Computing \(y=X^N\bmod P\) is always possible.
+- Substitution \(X\mapsto y\) defines an algebra endomorphism only if \(P(y)=0\).
+
+For \(A=(\mathbb Z/35)[X]/(X^2-2)\),
+\[
+X^{35}=32X,\qquad P(X^{35})=16,
+\]
+and \(\gcd(16,35)=1\). Thus even failure of the substitution test need not split \(N\).
+
+**PROVED.** Ordinary traces that remain available do not repair this:
+
+- The algebra trace \(\operatorname{Tr}_{A/R}(z)\) means the trace of **multiplication by \(z\)**.
+- Extending \(X^i\mapsto X^{iN}\) linearly gives a computable matrix, but generally no algebra endomorphism or Galois character.
+- For genuine Frobenius on \(A_p\), its linear trace equals the number of degree-one factors of \(P\bmod p\), interpreted in \(\mathbb F_p\). A normal basis makes Frobenius on each \(\mathbb F_{p^d}\) a cyclic permutation, proving this assertion.
+
+These traces differ from the two-dimensional trace attached to the modular form.
+
+**PROVED.** Write \(g_p=\rho_\ell(\mathrm{Frob}_p)\), \(g_q=\rho_\ell(\mathrm{Frob}_q)\). Multiplicativity gives
+\[
+a_N\bmod\ell=\operatorname{tr}(g_p)\operatorname{tr}(g_q)
+           =\operatorname{tr}(g_p\otimes g_q).
+\]
+This is the character of an **external tensor product evaluated at a pair**. Hypothetically,
+\[
+\operatorname{tr}(g_p^q\otimes g_q^p)
+ =\operatorname{tr}(g_p^q)\operatorname{tr}(g_q^p),
+\]
+which is a different quantity. Neither describes the generally nonadditive power map above.
+
+**KNOWN.** A projective polynomial alone also loses scalar information; even with determinant known, a sign ambiguity can remain. Tian explicitly reports huge-prime tau values “up to a sign”: Peng Tian, *Computations of Galois Representations Associated to Modular Forms of Level One*, arXiv:1311.0577v3 (2014), §1. The numerical/algebraic implementation distinction is described by Maarten Derickx, Mark van Hoeij and Jinxiang Zeng, *Computing Galois representations and equations for modular curves \(X_H(\ell)\)*, arXiv:1312.6819v2 (2014), §1. [Tian](https://arxiv.org/pdf/1311.0577), [Derickx–van Hoeij–Zeng](https://arxiv.org/pdf/1312.6819).
+
+**PROVED.** Computing \(z^N\) costs \(O(\log N)\) algebra multiplications. For algebra degree and coefficient size polynomial in \(\log N\), this is polynomial time. Per fixed \(\ell\), it belongs to the stated PRIM framework. The entire growing-\(\ell\) computation uses a family of algebras, rather than literally one fixed algebra.
+
+**PROVED.** Producing **componentwise Frobenius** is a stronger operation. For
+\[
+B=R[Y]/(Y^2-d),\qquad (d/N)=-1,
+\]
+it sends \(Y\mapsto\epsilon Y\), where
+\[
+\epsilon\bmod p=(d/p),\qquad \epsilon\bmod q=(d/q).
+\]
+The signs differ, so \(\gcd(\epsilon-1,N)\) factors \(N\). This proves hardness for an oracle supporting such algebras; it does not make every individual étale algebra hard—the rank-one algebra has identity Frobenius.
+
+**OPEN.** Ordinary powering supplies no established general factoring reduction beyond the power computations already available. Replacing local Frobenius by \(N\)-th powering therefore neither extends the prime algorithm nor proves a general PRIM barrier.
+
+**2. Eisenstein coefficients: native algorithms exist, at exponential cost.**
+
+**KNOWN.** Computing \(\sigma(N)\) is randomized polynomial-time equivalent to factoring for general integers: Eric Bach, Gary Miller and Jeffrey Shallit, *Sums of Divisors, Perfect Numbers and Factoring*, SIAM J. Comput. **15** (1986), 1143–1154, Theorems 1–2. Jacobi’s formula is
+\[
+r_4(N)=8\sum_{\substack{d\mid N\\4\nmid d}}d,
+\]
+hence \(r_4(N)=8\sigma(N)\) for odd \(N\). [Bach–Miller–Shallit](https://www.cs.cmu.edu/~glmiller/Publications/Papers/BMS86.pdf), [Barvinok, concluding remarks](https://sites.lsa.umich.edu/barvinok/wp-content/uploads/sites/1434/2025/05/lectures.pdf).
+
+**PROVED.** For semiprimes, the reduction is deterministic:
+\[
+s=\sigma(N)-N-1=p+q,\qquad
+\{p,q\}=\left\{\frac{s\pm\sqrt{s^2-4N}}2\right\}.
+\]
+This establishes an equivalence of computational tasks, not a prohibition on native evaluation.
+
+**PROVED.** Here is a native algorithm requiring no factorization or divisor list. Put
+\[
+S(X)=\sum_{m\le X}\sigma(m)
+    =\sum_{d\le X}d\lfloor X/d\rfloor.
+\]
+Group consecutive \(d\)'s having equal quotient \(v=\lfloor X/d\rfloor\). A block \([a,b]\) contributes
+\[
+v(a+b)(b-a+1)/2.
+\]
+There are \(O(\sqrt X)\) blocks. Thus
+\[
+\sigma(N)=S(N)-S(N-1)
+\]
+is computable natively in \(\widetilde O(\sqrt N)\).
+
+**KNOWN + PROVED corollary.** A verified improvement follows from D.H.J. Polymath, *Deterministic methods to find primes*, Math. Comp. **81** (2012), 1233–1246, Proposition 2.2. It constructs \(X^{0.49+o(1)}\) arithmetic progressions on which \(f_i=\lfloor X/i\rfloor\), \(1\le i\le m=\lfloor\sqrt X\rfloor\), is affine. Use
+\[
+S(X)=\sum_{i=1}^{m}
+ \left(i f_i+\frac{f_i(f_i+1)}2\right)
+ -\frac{m^2(m+1)}2.
+\]
+This is the hyperbola decomposition of \(\sum_{ab\le X}a\). Each progression contributes a quadratic polynomial sum, evaluable in polynomial logarithmic time. Consequently \(\sigma(N)\) has a native \(N^{0.49+o(1)}\) algorithm. This is a verified upper bound, not an optimality claim. [Polymath, §2](https://arxiv.org/pdf/1009.3956).
+
+**KNOWN.** Fixed-level Eisenstein coefficients are finite combinations of twisted divisor sums
+\[
+\sum_{d\mid N}\chi_1(N/d)\chi_2(d)d^{k-1};
+\]
+see Bruin, cited above, §2.3, equation (7).
+
+**PROVED.** Fixed powers and fixed periodic character weights can likewise be handled by weighted hyperbola sums, refining progressions by their fixed periods. Some particular Eisenstein forms or residue classes have trivial coefficients, so hardness cannot be asserted for every fixed Eisenstein series.
+
+**PROVED / scoped assessment.** The proposed alternatives have the following direct costs or limitations:
+
+| Route | What it accomplishes |
+|---|---|
+| Modular symbols / explicit Hecke sums | Approximately \(N\) terms at this semiprime index |
+| Full \(q\)-expansion | Produces \(N+1\) coefficients; writing them already takes \(\Omega(N)\) time |
+| Recurrences / modular equations | Supply identities, without an established logarithmic-cost extraction of this isolated coefficient |
+| Numerical theta evaluation | Evaluating a function value does not itself extract an exact distant coefficient; elementary digit extraction needs precision proportional to its position |
+| Four-ball counting | Gives the native bounds below |
+
+**OPEN — negative search finding, completeness UNVERIFIED.** I located no native evaluation of these nontrivial Eisenstein coefficients below your factoring benchmark. The displayed \(N^c\) algorithms remain exponential in \(n=\log_2N\).
+
+**3. Fixed-dimensional Hecke action and traces.**
+
+**KNOWN.** Merel’s relevant matrix family has
+\[
+\#\mathcal S_N\sim\frac{12\log2}{\pi^2}\sigma(N)\log N.
+\]
+Thus fixed-space evaluation takes \(O(\sigma(N)\log N)\) arithmetic operations. The precise reference is William Stein, *Modular Forms: A Computational Approach*, AMS GSM 79 (2007), §8.3.3, reporting Merel’s construction. [Author’s text, “Remarks on Complexity”](https://wstein.org/books/modform/modform/modular_symbols.html#remarks-on-complexity).
+
+**FALSE.** “Every known route uses factorisation” is literally false: explicit sums and expansions are native routes. The accurate negative finding concerns **fast** routes.
+
+**PROVED.** Fixed dimension bounds the size of the answer, not the work required to compute its entries. Continued fractions shorten reduction of each modular symbol, while leaving the outer sum. Hecke multiplicativity provides recurrences in prime-power exponents; it supplies no recurrence for \(T_{2m+1}\) from binary-prefix data. Knowing generators of the fixed Hecke algebra leaves their \(N\)-dependent coordinates to be evaluated.
+
+**KNOWN.** Bach–Charles proves a density-one RSA factoring reduction for a fixed normalized, non-CM eigenform of even weight, including weight two. It queries **both**
+\[
+a(N),\qquad a(N^2).
+\]
+It is not specific to \(\Delta\). See Eric Bach and Denis Charles, *The hardness of computing an eigenform*, Contemporary Mathematics **463** (2008), 9–15, §2, Theorems 2.1–2.2 and Remark 2.5. The reduction handles one zero local coefficient; its exceptional case has both zero. Their Corollary 2.8 strengthens the tau conclusion assuming Lehmer’s conjecture. [Bach–Charles](https://arxiv.org/pdf/0708.1192).
+
+**PROVED, including the bound’s role.** Set
+\[
+A=a(N),\quad B=a(N^2),\quad D=\chi(N)N^{k-1}.
+\]
+The unordered numbers
+\[
+u=\frac{a(p)^2}{\chi(p)p^{k-1}},\qquad
+v=\frac{a(q)^2}{\chi(q)q^{k-1}}
+\]
+satisfy
+\[
+u+v=\frac{A^2-B+D}{D},\qquad uv=\frac{A^2}{D}.
+\]
+Thus exact quadratic solving recovers them.
+
+For a nonzero \(u\), its denominator is supported only at \(p\). Here is a rigorous justification that it is nonintegral, outside finitely many fixed exceptional primes. Let \(K\) contain the coefficients and character values, and suppose \(p\) is unramified in \(K\). Integrality of \(u\) forces
+\[
+a(p)\in p^{k/2}\mathcal O_K
+\]
+because \(k-1\) is odd. Deligne’s bound at every embedding then bounds every conjugate of \(a(p)/p^{k/2}\) by \(2/\sqrt p<1\). Its nonzero integral norm cannot have absolute value below one. Contradiction. A denominator gcd therefore recovers \(p\).
+
+The quadratic identities use multiplicativity and the prime-square recurrence; the bound validates this denominator argument. The arXiv §2 shortcut claiming integrality itself forces \(\sqrt p\in K\) is insufficient as written. Deligne’s bound is stated precisely in Couveignes–Edixhoven, Theorem 2.4.18.
+
+**OPEN — negative search finding, completeness UNVERIFIED.** Neither this proof nor the searched literature establishes a general factoring reduction from the **single supplied value** \(a(N)\), including \(a_N(E)=a_p(E)a_q(E)\) for one fixed elliptic curve. A coefficient algorithm accepting arbitrary indices is stronger: it can also be called at \(N^2\).
+
+**KNOWN.** Define
+\[
+C_k(N)=\sum_{t^2<4N}P_k(t,N)H(4N-t^2),\qquad
+P_k=[z^{k-2}](1-tz+Nz^2)^{-1},
+\]
+with \(H(3)=1/3\), \(H(4)=1/2\). For nonsquare \(N\), Eichler–Selberg gives, for even \(k\ge4\),
+\[
+\operatorname{Tr}(T_N|S_k(1))
+=-\tfrac12C_k(N)
+-\tfrac12\sum_{d\mid N}\min(d,N/d)^{k-1}.
+\]
+Weight two requires an additional \(\sigma(N)\) term. Reference: Don Zagier, *Modular Forms of One Variable*, Utrecht course notes (1991), §6.3, unnumbered Eichler–Selberg theorem. [Zagier](https://people.mpim-bonn.mpg.de/zagier/files/tex/UtrechtLectures/UtBook.pdf).
+
+**PROVED, by substitution and polynomial expansion.** For \(N=pq\),
+\[
+\frac12\sum_{d\mid N}\min(d,N/d)^{k-1}=1+p^{k-1}.
+\]
+The zero-dimensional cases therefore give
+\[
+C_2(N)=2\sigma(N)-2(1+p)=2(N+q),
+\]
+and
+\[
+C_k(N)=-2(1+p^{k-1}),\qquad k=4,6,8,10,14.
+\]
+Their explicit weights are:
+
+| \(k\) | \(P_k(t,N)\) |
+|---|---|
+| 2 | \(1\) |
+| 4 | \(t^2-N\) |
+| 6 | \(t^4-3Nt^2+N^2\) |
+| 8 | \(t^6-5Nt^4+6N^2t^2-N^3\) |
+| 10 | \(t^8-7Nt^6+15N^2t^4-10N^3t^2+N^4\) |
+| 14 | \(t^{12}-11Nt^{10}+45N^2t^8-84N^3t^6+70N^4t^4-21N^5t^2+N^6\) |
+
+**PROVED.** Evaluating these aggregates factors \(N\): \(C_2/2-N=q\), while the others determine \(p^{k-1}\). The zero trace itself supplies no information. In a nonzero space, knowing the trace alone leaves the class-number aggregate unknown.
+
+**PROVED.** Nevertheless, an oracle for the **entire trace function** on any fixed nonzero \(S_k(1)\) permits eigenvalue extraction. Choose eigenforms \(f_i\) and fixed indices \(r_j\) making \((a_i(r_j))\) invertible. Outside fixed small-prime exceptions,
+\[
+\operatorname{Tr}T_{r_jN}=\sum_i a_i(r_j)a_i(N).
+\]
+Invert this fixed system; repeat at \(N^2\); apply Bach–Charles. This is an oracle reduction using several indices, not a reduction from one trace value.
+
+**KNOWN, correction to the background.** Denis Xavier Charles, *Computing the Ramanujan tau function*, Ramanujan J. **11** (2006), 221–224, §2, explicitly factors the input before treating prime indices. Its advertised randomized \(N^{1/2+\varepsilon}\) bound assumes GRH; the deterministic \(N^{3/4+\varepsilon}\) bound is unconditional. It is not, as published, a native composite-index algorithm. [Revised author manuscript, abstract and §2](https://pages.cs.wisc.edu/~cdx/CompTau-rev.pdf).
+
+**4. Brandt matrices and four-dimensional counting.**
+
+**PROVED.** Every fixed positive rational quaternary form admits a native \(\widetilde O(N)\) counting algorithm. Rationally diagonalize it once. The transformed lattice is a finite union of cosets of a fixed rectangular sublattice. In each coset, enumerate the \(O(N)\) possible contributions from each pair of coordinates. Sorting and matching complementary contributions counts the shell; sorted prefix counts handle the ball. All preprocessing depends only on the fixed form.
+
+**PROVED.** The standard four-ball is faster. Let \(B_4(X)\) include the origin. Jacobi gives
+\[
+B_4(X)=1+8S(X)-32S(\lfloor X/4\rfloor).
+\]
+Therefore its exact ball and shell counts have the native \(\widetilde O(\sqrt N)\), and the proved \(N^{0.49+o(1)}\), bounds above.
+
+**KNOWN.** The planar \(X^{1/3}\)-type exact-counting assertion has literature support: Douglas Austin Hensley, *The number of lattice points within a contour and visible from the origin*, Pacific J. Math. **166** (1994), 295–305, final Remarks, p.304, describes \(O(X^{1/3}\log X)\) square-root-floor evaluations for the circle count. [Hensley](https://msp.org/pjm/1994/166-2/pjm-v166-n2-p04-p.pdf).
+
+**PROVED.** Differencing two ball counts preserves their asymptotic cost. Dimension matters: the planar algorithm supplies no automatic four-dimensional \(N^{1/3}\) bound. Enumerating two coordinates and applying a planar routine to each slice would cost roughly \(N^{4/3}\).
+
+**KNOWN.** Barvinok’s polynomial-time theory concerns rational polyhedra. He explicitly discusses the four-ball/factoring obstruction in *Lattice Points, Polyhedra, and Complexity*, Geometric Combinatorics, IAS/Park City Math. Ser. **13** (2007), 19–62, concluding remarks, “Something curvilinear?” [Author’s notes](https://sites.lsa.umich.edu/barvinok/wp-content/uploads/sites/1434/2025/05/lectures.pdf).
+
+**PROVED.** A full Brandt matrix contains an especially direct obstruction. Away from the fixed quaternion discriminant, its row sum at \(pq\) is \((p+1)(q+1)=\sigma(N)\): locally, norm-\(p\) ideals correspond to the \(p+1\) lines in \(\mathbb F_p^2\), independently at \(q\). Thus the full matrix factors \(N\). One individual quaternary representation number need not expose that row sum.
+
+**OPEN — negative search finding, completeness UNVERIFIED.** I located no native subexponential-in-\(n\) algorithm of the requested strength for general fixed quaternary shell counts. The bounds above establish possibilities, not optimality.
+
+**5. Verdict and the sharpest question.**
+
+**PROVED.** Every \(N^c\), \(c>0\), bound discussed above is \(2^{\Theta(n)}\), asymptotically exceeding \(L_N[1/3]\). These methods therefore miss your threshold.
+
+**OPEN.** There is no verified general native-model impossibility theorem. For Eisenstein examples the task is factoring-equivalent; for non-CM eigenform evaluation at arbitrary indices, Bach–Charles supplies a density-one factoring implication. Isolated values and isolated traces have weaker established reductions.
+
+**OPEN — proposed first question.** *For one explicitly fixed non-CM elliptic curve \(E/\mathbb Q\), can \(a_{pq}(E)\) be computed classically from an unfactored balanced semiprime in time below \(L_N[1/3]\)?* Weight two already contains the unresolved native-computation issue, while prime coefficients are accessible.
+
+**KNOWN.** The varying-input answer depends on representation. With a lattice basis as a succinct specification of its theta series, coefficient evaluation is \(\#P\)-complete under polynomial-time Turing reductions: Denis Xavier Charles, *Counting lattice vectors*, J. Comput. System Sci. **73** (2007), 962–972, Theorem 3.1; §8.1 handles odd rank. Thus general modular-form coefficient evaluation is \(\#P\)-hard for this natural succinct encoding. [Author’s manuscript](https://research.cs.wisc.edu/techreports/2004/TR1498.pdf).
+
+**OPEN / UNVERIFIED negative finding.** This does not establish the same hardness for normalized eigenforms supplied through explicit initial coefficients, or for Hecke traces specified only by level, weight and index. I found no verified such theorem. Converting a succinct theta description into a dense modular-form description can itself require exponential output.
+
+**Appendix — exact checks.** The reproducible script is [checks.py](/Volumes/git/factoring-connection/codex/scratch/nativemod_1/checks.py). Command:
+
+```text
+/Volumes/git/factoring-connection/.venv/bin/python checks.py
+```
+
+Selected output:
+
+```text
+pow35 on F5: pow(2,35,5) = 3 ; pow(1,35,5)+pow(1,35,5) = 2
+A=(Z/35)[x]/(x^2-2): x^35 = 32 * x; (x^35)^2-2 = 16
+gcd(relation failure,35) = 1
+true componentwise Frobenius: x -> 29 * x; gcd(epsilon-1,35) = 7
+N=35 moments: [(2, '84'), (4, '-252'), (6, '-6252'),
+ (8, '-156252'), (10, '-3906252'), (14, '-2441406252')]
+class-number identities: passed on 55 odd semiprimes
+floor sums and four-square shells: passed for 1 <= N <= 200
+N=35: sigma = 48 ; B4(35),B4(34),r4(35) = 6265 5881 384
+N=35: tau(N),tau(N^2) = -80873520 43271297630464575
+Bach-Charles denominator gcds = 5 7
+weight-12 trace identity at N=35: passed
+```
