@@ -1,6 +1,6 @@
 # nativeinv: native computation cost of factoring-equivalent invariants (phase 29)
 
-Agent `nativeinv`, 2026-10-27. **Version v2 (codex blind round merged; Opus proof critic, Opus literature critic and codex adversarial round (MAJOR REVISION) applied; §5 lists the changes).**
+Agent `nativeinv`, 2026-10-27. **Version v2.1 (final: codex blind round merged; Opus proof critic ×2, Opus literature critic and codex adversarial round (MAJOR REVISION) applied; §5 lists the changes).**
 - Pre-registration: `notes/nativeinv_prereg.md` (commit `9b8c88e`, before any code ran).
 - Code: OPERATIONAL `src/nativeinv/trichotomy.py` (sees N, an invariant value and the public description of the local
   data; exact arithmetic, Sturm root isolation, no factorisation calls; an AST test checks this). HARNESS
@@ -30,7 +30,7 @@ items). Sorted by what a native algorithm would actually have to compute:
    Prop TRI (proved) shows the value factors N outright unless F is a single monomial. So K-theory, representation
    theory, topology and Burnside counting here are p + q in different clothes. Their best native algorithm is a
    summatory difference: Õ(N^{1/2}) by the hyperbola method (codex's algorithm S), Õ(N^{1/3}) by codex's weighted
-   extension of Sladkey's lattice-hull method (sketch, §1.3) — the level of Hiary/Lehman, far above factoring.
+   extension of Sladkey's lattice-hull method (SKETCH, §1.3) — the level of Hiary/Lehman, far above factoring.
 2. **Four are divisor sums that need a p-th power** (cat-map primitive orbits, necklaces with fixed colours,
    cyclic-cover homology). Only N-th powers are available natively, and those leak only group orders (leakmap).
 3. **Fifteen are search problems whose answer is a factor** (idempotents, square roots, tiles, zero divisors).
@@ -203,8 +203,10 @@ divisibility test. Hence s = σ(N) − N − 1, and by Prop TRI every cluster-I 
   the extension**: run Sladkey's unimodular decomposition carrying the count and the first-coordinate moment; under
   its affine coordinate changes the weight d stays affine, and on a triangle T_t = {u, v ≥ 0, u + v ≤ t} the moments
   are closed forms (Σu = t(t+1)(t+2)/6), so each piece still costs O(1) operations. Hence H₁(x) = Σ_{ab≤x} a, and
-  σ(N) = H₁(N) − H₁(N−1), in Õ(N^{1/3}) natively (PROVED by codex as a sketch; not implemented or independently
-  checked by us). That is the Hiary/Lehman level, far slower than factoring. Möbius-weighted sums (Φ, F_χ) do not
+  σ(N) = H₁(N) − H₁(N−1), in Õ(N^{1/3}) natively. **SKETCH (codex), judged credible by the round-2 proof critic; not
+  implemented or checked by us.** Both linear moments (Σa and Σb) and the weighted versions of every piece
+  (rectangles, shared boundary lines, the brute-force strip) are needed; all are closed forms. Weighted hull walks
+  for Σ f(i)⌊n/i⌋ are probably folklore in competitive programming; no novelty is claimed. That is the Hiary/Lehman level, far slower than factoring. Möbius-weighted sums (Φ, F_χ) do not
   get this extension automatically: shortlist S1.
 - The coefficient sequence of E₄ (σ₃) is not D-finite (folklore; codex's argument) (E₄ blows up at every rational cusp,
   so its q-series has infinitely many singular roots of unity). So no fixed-order polynomial-coefficient
@@ -262,10 +264,14 @@ proved outside the restricted theorems named), or OPEN.
      - **Small homology in general (codex, adversarial round; PROVED).** On the semiprime promise, deterministic
        poly-time factoring ⇔ a deterministic poly-time construction of an explicit poly-size integer chain complex
        whose specified torsion order is φ(N) (⇐: Smith normal form; ⇒: boundary map [φ(N)]). So no general
-       obstruction can be proved without separating factoring from FP. **Restricted obstruction:** a fixed-size
-       boundary matrix with entries in Z[N] cannot have torsion order φ(N) on all semiprimes: the order is a gcd of
-       maximal minors h(N)·gcd_i q_i(N), and by Bézout gcd_i q_i(N) divides a fixed integer C, so the order is a
-       polynomial times a function of N mod C — contradicting Prop TRI(c) for F(r) = r − 1. Growing matrices, digit-
+       obstruction can be proved without separating factoring from FP. (The torsion of H_i is the torsion of
+       coker ∂_{i+1}, so one matrix suffices.) **Restricted obstruction (codex; round-2 critic fixes):** a fixed-size
+       matrix A(N) with entries in Z[N] cannot have |tors coker A(N)| = φ(N) even on all but finitely many semiprimes.
+       Let ρ be the rank of A over Q(N). Outside the finitely many roots of one nonzero ρ×ρ minor, rank A(N) = ρ and
+       the torsion order is the gcd d_ρ of the ρ×ρ minors. Write those minors as h(N)q_i(N) with h their gcd in Z[N]
+       (Gauss's lemma: q_i ∈ Z[N], coprime over Q[N]); Bézout gives Σ b_i q_i = C ≠ 0 with b_i ∈ Z[N], so
+       g(N) = gcd_i q_i(N) depends only on N mod C, and the order is |h(N)|·g(N mod C): a quasi-polynomial in N. By
+       Prop TRI(c) (with the finite-exception remark there) F(r) = r − 1 is not of that form. Growing matrices, digit-
        or floor-dependent entries and Euclidean recursions are not covered (shortlist S3).
      - The natural generalisation (order or homology of a finitely presented group) is undecidable (Adian–Rabin;
        Gordon 1995 for H₂ = 0, LMS Lecture Note Ser. 204), so as a *presentation* problem this is deprioritised. The black-box
@@ -432,7 +438,8 @@ Q_{uv}(xy) in Q[x, y]. Only diagonal monomials x^i y^i can occur, so supp c_u = 
 units. Zero is all-or-nothing: if a_u := c_{u,k} = 0 then Q_{uv} = 0 for every v, so a_v² = 0 for all v. Otherwise
 g(u) = a_u/a_1 satisfies g(u)g(v) = g(uv) (compare (u, v) with (uv, 1)), so g is a homomorphism (Z/m)^* → Q^*; its
 image is a finite subgroup of Q^*, i.e. ⊆ {±1}: a real character. (iii)⇒(i): c·χ(r)r^k gives c²χ(N)N^k. (ii) is (iii)
-restated pairwise. ∎
+restated pairwise. The proof of (i)⇒(iii) survives removing finitely many prime pairs (if P vanishes on S×T∖E,
+multiply P by a polynomial vanishing on the finite set E), so (i) may be weakened to "all but finitely many". ∎
 
 *Experiment E2 (pre-registered, all predictions held).* 15 local-data families × 120 seeded semiprimes (n = 32, 64,
 128): every FACT-tier family split 120/120 (φ, ψ = σ, Pillai, k(SL₂), J₂ = k(GL₂) = #K₃, k(Heis), subgroups of Z_r²,
@@ -451,10 +458,11 @@ most the fiber floor. Prop TRI says nothing about routes other than evaluating F
 *Model.* The algorithm gets N = pq and oracle access to local data F: {primes} → Z/M (M prime), drawn uniformly
 at random; it may do arbitrary computation on N. Target: f(N) = F(p)F(q).
 
-*Statement.* With h = Pr[the algorithm queries p or q], Pr[output = F(p)F(q)] ≤ h + (1 − h)(2M − 1)/M²
-(codex's sharpening of v1's h + (2M − 1)/M²).
+*Statement.* With h = Pr[the algorithm queries p or q] (event Q), Pr[output = F(p)F(q)] ≤ h + (1 − h)(2M − 1)/M²
+(codex's sharpening of v1's h + (2M − 1)/M²). Hence h ≥ (Pr[success] − β)/(1 − β), β = (2M − 1)/M².
 
-*Proof.* If neither p nor q is queried, (F(p), F(q)) is uniform on (Z/M)² and independent of the view; the most likely
+*Proof.* On ¬Q the run, and the event ¬Q itself, are functions of the coins and of F away from {p, q}, so they are
+independent of (F(p), F(q)). If neither p nor q is queried, (F(p), F(q)) is uniform on (Z/M)² and independent of the view; the most likely
 product is 0, with probability (2M − 1)/M². ∎
 
 *Reading.* (M must be prime: for M = 4, Pr[ab ≡ 0] = 1/2 > 7/16.) Equivalently the algorithm queries p or q
@@ -502,7 +510,7 @@ bound is proved anywhere in this note):
    - smoothness relations in a global group (class groups): subexponential, L[1/2] = N^{o(1)}, so *below* every N^c;
      it is an index calculus, i.e. a factoring algorithm of the familiar kind, slower than NFS;
    - weighted lattice-point summation and quotient recursions (S, its hull refinement, Φ, F_χ): no barrier; they stop
-     at N^{1/3} (unweighted/polynomial weights) or N^{2/3} (Möbius weights) as far as known (S1);
+     at N^{1/3} (unweighted; polynomial weights by the SKETCH of §1.3) or N^{2/3} (Möbius weights) as far as known (S1);
    - compressed integer linear algebra (Smith's determinant, small chain complexes): no barrier beyond the fixed-size
      obstruction of §2.1 (S3).
 3. **A dichotomy that organises the escapes (HEURISTIC principle).** Fourier coefficients at index N of Hecke
@@ -513,7 +521,7 @@ bound is proved anywhere in this note):
    c ≥ p (nonsmooth §4.1, proved for the Ramanujan expansion of σ). This is the precision wall in another form.
 4. **Lower bounds of the PT kind are out of reach.** Precisely (codex_r2_generic_ring §3, [proved] there): a
    superpolynomial lower bound, in arithmetic operations, against **all nonuniform, modulus-independent,
-   constant-free SLP splitters** with constant success on balanced prime distributions would imply that τ(m!) is
+   constant-free, division-free SLPs followed by one gcd with N** with constant success on balanced prime distributions would imply that τ(m!) is
    not polylogarithmic (a short SLP for a factorial cutoff near the median prime would split with probability
    ≈ 1/2), and hence, by Bürgisser (ECCC 2006 Thm 1.1; Comput. Complexity 18 (2009) Main Thm 1.2), superpolynomial
    constant-free, division-free permanent complexity. Uniform-only, bit-cost or worst-case bounds do not
@@ -533,7 +541,7 @@ bound is proved anywhere in this note):
   better than N terms is known. Not covered by PT or PRIM (family A).
 - **E4. Reciprocity-class functions** (class E): computable, but no FACT member is known (classE: no leak).
 - **E5. Weighted lattice-point summation and compressed linear algebra** (algorithm S and its hull refinement;
-  Smith's determinant): outside PT and outside CRT; the best known is N^{1/3}.
+  Smith's determinant): outside PT and outside CRT; the best known is N^{1/3} (SKETCH for σ).
 
 ---
 
@@ -549,7 +557,7 @@ new route; each is a precise sub-question that the views in this note make sharp
   conductor (codex); φ(N) = Φ(N) − Φ(N−1). These are native recursions on the quotient states ⌊x/j⌋, not CRT
   evaluations, so neither Prop LOC nor Theorem PT applies. Best known Õ(x^{2/3}). For the unweighted and
   polynomial-weight analogues (D(x), H₁(x)) the lattice-hull method already gives Õ(x^{1/3}) (Sladkey; codex's
-  weighted extension, §1.3), so native σ(N) costs Õ(N^{1/3}).
+  weighted extension, §1.3, SKETCH), so native σ(N) should cost Õ(N^{1/3}).
 - First question: do Φ(x) and F_χ(x) admit a hull/Euclid-type evaluation in Õ(x^{1/3}) (closing the gap to σ), and
   which quotient states survive the difference F(N) − F(N−1)? Any exponent below 1/4 would beat Pollard–Strassen;
   below 1/5, Harvey–Hittmeir.
@@ -564,8 +572,10 @@ new route; each is a precise sub-question that the views in this note make sharp
   leakmap's AC⁰ theorem does not cover automata (parity is regular).
 - First question: is there a k-automatic g with g(pq) = (p − 1)(q − 1) mod 3 for all primes 3 < p < q? On the
   promise this is [p ≡ q ≡ 2 (mod 3)] — for N ≡ 1 (mod 3), the bit "N is not of the form p·q with p ≡ q ≡ 1 mod 3",
-  i.e. the (−3/p) fiber bit. **Partial negatives (codex, PROVED):** no eventually periodic g works (take large prime
-  pairs ≡ 1 and ≡ −1 mod lcm(3, M)); no multiplicative automatic g works (Konieczny's classification). The arbitrary
+  i.e. the (−3/p) fiber bit. **Partial negatives (codex, PROVED; checked by the round-2 critic):** no eventually
+  periodic g works (take large prime pairs ≡ 1 and ≡ −1 mod lcm(3, M)); no multiplicative automatic g works
+  (Konieczny's classification, applied to g viewed in {0, ±1} ⊂ C; checked against the abstract only). Konieczny
+  is genuinely needed: g(n) = [every prime factor of n is ≡ 2 mod 3] is multiplicative and matches on all semiprimes. The arbitrary
   extension is CONJECTURED impossible. Route: Möbius disjointness for automatic sequences (Müllner, Duke 166 (2017))
   and prime number theorems for automatic sequences (Mauduit–Rivat; Adamczewski–Drmota–Müllner), extended to a
   bilinear (semiprime) statement — not available off the shelf.
@@ -590,7 +600,9 @@ CF matrix mod 5), and separates a = 1, 3 at N = 35. Corrected question: with gcd
 m₀ and finitely many exceptional N excluded, is there a precisely defined class-E function (terminal terms and
 postprocessing specified) that separates a Jacobi fibre for **every** admissible N? (Then QR follows by comparing
 a, 1 and ab, b with (b/N) = −1.) Known: raw Dedekind sums are not square-invariant (s(a,N) ≤ s(1,N) with equality
-only at a = 1, codex); the standard square-invariant phase 12N·s(a,N) ≡ N + 1 − 2(a/N) (mod 8) is Jacobi.
+only at a ≡ 1 mod N, by the rearrangement inequality; so not square-invariant once N ∤ 24); the standard
+square-invariant phase 12N·s(a,N) ≡ N + 1 − 2(a/N) (mod 8) (N odd, gcd(a, N) = 1; Rademacher–Grosswald; verified
+for all odd N < 80) is Jacobi.
 
 Cross-reference (not mine): the single most natural open native question in the whole inventory is a_N for one
 fixed non-CM curve (cluster III), which `nativemod` owns.
@@ -625,4 +637,8 @@ fixed non-CM curve (cluster III), which `nativemod` owns.
   quantifiers restored; aliases flagged (row counts are not target counts). We re-checked numerically: the
   mod-8 Dedekind formula (8 values of N), s(1,15), s(4,15), and Σ_{a<N/2}(a/N) = (2 − (2/N))h(−N) for 9 values of
   N ≡ 3 (mod 4).
-- **Opus proof critic, round 2** on the codex-supplied claims: see below.
+- **Opus proof critic, round 2** on the codex-supplied claims (no FATAL): weighted hull relabelled SKETCH; small-
+  homology obstruction repaired (ρ×ρ minors for generic rank ρ, finitely many exceptions, h the Z[N]-gcd via Gauss's
+  lemma, TRI(c) finite-exception remark added); S2 negatives and the runner-up counterexample confirmed; mod-8 and
+  rearrangement facts verified for odd N < 80; LOC independence step written out; permanent-barrier model
+  description aligned with codex_r2 ("division-free, followed by one gcd"). All applied.
