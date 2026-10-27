@@ -1,6 +1,6 @@
 # nativemod: coefficients and Hecke traces of FIXED-level modular forms at a composite index (phase 29)
 
-Agent `nativemod`, 2026-10-27. **Version v2**: after the codex adversarial round (cx2, MAJOR REVISION) and the Opus
+Agent `nativemod`, 2026-10-27. **Version v2.1** (second Opus proof critic applied, §8). v2: after the codex adversarial round (cx2, MAJOR REVISION) and the Opus
 proof critic (ACCEPT WITH FIXES), with every required fix applied (§8). The Opus literature critic's fixes are in
 v2.1 (§8).
 - Pre-registration: `notes/nativemod_prereg.md` (commit `9acb3cc`, before any experiment).
@@ -45,7 +45,9 @@ Notation:
        H¹(E, O) over Z/N: each **factors N**.
        - Prop FROB (from `nonsmooth`; applies when (det-character/ℓ) can be made −1).
        - Prop CLS: the determinants of the two classes.
-       - Prop CRT-T: the CRT trace gives a_q mod q and Coppersmith finishes. It fails exactly when a_p = a_q.
+       - Prop CRT-T: the CRT trace gives a_r mod r for the larger prime r and Coppersmith finishes, under the
+         balance hypothesis 2√p + 2√q < min(p, q). Under that hypothesis it fails exactly when a_p = a_q; without
+         it the exception set is {s | a_r − a_s} (v2.1, second proof critic).
      - **The literal power map x ↦ x^N** is not a ring map and need not permute roots. Its read-outs are **PRIM
        programs** in extension components.
        - Element tests fall under leakmap's NE1.
@@ -71,7 +73,7 @@ Notation:
 
 3. **Fixed-level Hecke action (Q3).**
    - **No "fast exponentiation" exists in the literal sense (Prop LRS, PROVED).** Powering a fixed element of a fixed
-     finite-rank algebra over a number field gives a sequence that is eventually periodic modulo every prime, i.e. an
+     finite-rank algebra over a number field gives a sequence that is eventually periodic modulo every prime λ ∤ S, i.e. an
      aggregate. σ(N) mod ℓ and a_f(N) mod λ are not aggregates.
    - The integer Hecke matrix of T_N on a space with an Eisenstein part has σ_{k−1}(N) as an eigenvalue, so it is
      factoring-equivalent.
@@ -203,7 +205,8 @@ question about a(N), not a speed route.
 - *Proof:* ∫ρ(kyk⁻¹)dk commutes with ρ(G), so it is the scalar χ(y)/d by Schur. Multiply by ρ(x) and take traces. ∎
 - It is applied to complex compact groups only. An ℓ-adic image carries no usable Haar integral, and v1's "fix
   Q̄_ℓ ≅ C" is withdrawn (cx2, critic).
-  - *Sato–Tate form.* Write a_r = r^{(k−1)/2}·tr θ_r with θ_r ∈ SU(2) a conjugacy class (Deligne). Then
+  - *Sato–Tate form* (p ≠ q, p, q ∤ M). For trivial χ write a_r = r^{(k−1)/2}·tr θ_r with θ_r ∈ SU(2) a conjugacy
+    class (Deligne). With nebentypus, θ_r ∈ U(2) with det θ_r = χ(r), and the U(2) form below applies. Then
     **a(N) = N^{(k−1)/2}·2∫_{SU(2)} tr(θ_p·kθ_qk⁻¹) dk.** Equivalently, ∫_{U(2)} tr(XkYk⁻¹)dk = tr X·tr Y/2 (cx2).
   - *Artin form.* For an irreducible Artin representation of a finite group, the same identity holds with the average
     over G.
@@ -213,11 +216,12 @@ question about a(N), not a speed route.
   §5.4).
 
 **Prop CLS (PROVED, elementary; repaired after cx2 and the critic, using cx2's version).**
-- Setting: weight k ≥ 2, χ of order h, e := h(k − 1) > 0. From the class pair at λ, take e₁ := det(C_p)^h +
-  det(C_q)^h ≡ p^e + q^e (mod λ).
+- Setting: weight k ≥ 2, χ of order h, e := h(k − 1) > 0; p, q ∤ level, and p, q larger than every ℓ used (small
+  factors fall to trial division). From the class pair at λ, take e₁ := det(C_p)^h + det(C_q)^h ≡ p^e + q^e (mod λ).
 - Decoding:
-  - p^e + q^e < 2N^e. CRT over primes λ with ∏ Nλ > 2N^e + 1 recovers it exactly. That takes O(e log N) primes of
-    norm O(e log N), by the prime number theorem in the coefficient field.
+  - e₁ = p^e + q^e is a rational integer < 2N^e, so its residues at several λ over the same ℓ are redundant. CRT over
+    DISTINCT rational primes ℓ (one λ | ℓ each) with ∏ ℓ > 2N^e + 1 recovers it exactly: O(e log N) primes of size
+    O(e log N), by the prime number theorem.
   - p^e and q^e are the roots of X² − e₁X + N^e. Exact e-th roots give p.
 - So a composite-index E–C that output Frobenius classes would be a polynomial-time factoring algorithm.
 - Weight 1 (e = 0) is excluded: there det C_p = χ(p) carries only character values.
@@ -226,15 +230,21 @@ question about a(N), not a speed route.
 - The code (`class_pair_factor`) covers χ = 1, k = 2, the case tested.
 
 **Prop CRT-T (PROVED; standard Coppersmith; corrected exception set after cx2 and the critic).**
-- Setting: E/Q fixed, N = pq of good reduction, and t ≡ a_p (mod p), t ≡ a_q (mod q).
-- If **a_p = a_q**, then t is the small integer a_p and carries only the common value. No split is possible from t.
+- Setting: E/Q fixed, N = pq of good reduction, t ≡ a_p (mod p), t ≡ a_q (mod q). Write s < r for the smaller and
+  larger prime factor (s here is not p + q). Use the centred representative of t: if a_p < 0 then t = N + a_p.
+- Coppersmith is run modulo the LARGER factor r, with root x₀ = a_r, |x₀| ≤ 2√r. A split then needs
+  gcd(t − a_r, N) = r, i.e. s ∤ (a_r − a_s).
+- **Balance hypothesis:** 2√s + 2√r < s (roughly s > (4N)^{1/3}). Then |a_r − a_s| < s, so the exception set is
+  exactly **{a_p = a_q}**: there t is the small integer a_p and carries only the common value.
   - This includes the CM Blum case a_p = a_q = 0 (tracedata PROMISE).
-  - For non-CM E the set has density zero. A heuristic O(p^{−1/2}) mass, from Sato–Tate collision probability.
-- If a_p ≠ a_q, then gcd(t − a_q, N) = q, since |a_p − a_q| < p for p ≥ 17. The root x₀ = a_q of x − t ≡ 0 (mod q)
-  has |x₀| ≤ 2√q.
-  - Apply May's theorem (May 2010, Thm 6: divisor b ≥ N^β, monic degree δ, |x₀| ≤ c_N N^{β²/δ}).
-  - β is an input to that theorem. Try β₀ = log₂Q/log₂N over the O(n) dyadic bins Q ≤ q < 2Q (cx2). This gives
-    N^{β₀²} ≥ (Q)^{1/2}/O(1), so O(1) windows per bin.
+  - For non-CM E it has density zero (heuristically O(p^{−1/2})).
+- **Without balance** the exception set is {s | a_r − a_s}. Counterexample (second proof critic, 37a1): s = 1009,
+  a_s = −47, r = 254899, a_r = 962, a_r − a_s = 1009 = s, N = 257193091, t = 962 and gcd(t − a_r, N) = N. v2's
+  "fails exactly when a_p = a_q" was false for unbalanced N.
+- Under balance and a_p ≠ a_q:
+  - Apply May's theorem (May 2010, Thm 6: divisor b ≥ N^β, monic degree δ, |x₀| ≤ c_N N^{β²/δ}) with b = r.
+  - β is an input to that theorem. Try β₀ = log₂R/log₂N over the O(n) dyadic bins R ≤ r < 2R (cx2). This gives
+    N^{β₀²} ≥ R^{1/2}/O(1), so O(1) windows per bin.
   - Lattice dimension Θ(log N) for the polynomial-time statement.
 - E2b:
   - 37a1: 80/80; 11a1: 80/80.
@@ -339,7 +349,8 @@ gⁿ for g in a fixed finite-rank O_{K,S}-algebra, since sums and products of LR
   for all but finitely many λ (Ribet), and also for weight 1. Then on semiprimes a_f(N) mod λ is not eventually a
   function of N mod m.
 
-Hence no LRS satisfies u(N) = σ(N), or u(N) = a_f(N), for all sufficiently large semiprimes.
+Hence no LRS satisfies u(N) = σ(N), or u(N) = a_f(N), for all sufficiently large semiprimes. (For a_f, u lives in
+O_{K,S} and a_f in K_f: pass to the compositum K·K_f and choose a prime Λ | λ with Λ ∤ S; v2.1.)
 
 *Proof.*
 - **(i)** A mod λ lies in a finite set, so its powers are eventually periodic.
@@ -354,9 +365,9 @@ Hence no LRS satisfies u(N) = σ(N), or u(N) = a_f(N), for all sufficiently larg
     abelian group has no absolutely irreducible 2-dimensional representation.
   - Pick h ∈ G′ with tr h ≠ 2 = tr 1. Every abelian quotient of G, in particular the one cut out by
     K_λ ∩ Q(ζ_m), kills G′.
-  - So Chebotarev in K_λ(ζ_m) gives primes p ≡ p′ (mod m) with g_p = h and g_{p′} = 1, up to conjugacy, and a prime q
-    with tr g_q ≠ 0, which exists by Chebotarev since ρ̄ is not supported on trace zero.
-  - Then N = pq ≡ p′q = N′ (mod m), and a(N) − a(N′) ≡ (tr h − 2)·tr g_q ≢ 0 (mod λ). ∎
+  - So Chebotarev in K_λ(ζ_m) gives distinct primes p, p′, q, all coprime to Mℓ, with p ≡ p′ (mod m), g_p = h and
+    g_{p′} = 1 up to conjugacy, and g_q = 1. Then tr g_q = 2 ≠ 0, because ℓ is odd; this is where "ℓ odd" is used.
+  - Then N = pq ≡ p′q = N′ (mod m), and a(N) − a(N′) ≡ (tr h − 2)·2 ≢ 0 (mod λ). ∎
 
 **Scope.**
 - It rules out "N as an exponent in a fixed global algebra": square-and-multiply on a fixed matrix, exponential
@@ -615,6 +626,17 @@ for 37a1, ℓ ∈ {3, 5}, show no association with a_N mod ℓ, ε or (p/ℓ), b
 | 11 E3 gcd coverage (111 / 417 unchecked coefficient splits); positive control degenerate; scope | E3c rerun with full gcd checks; P3c reported as REFUTED; scope stated (§6) |
 | 12 Merel: X_n vs S_n (Prop 18 vs Prop 20); (3/π²)p log²p proved | §2 and §3.1 corrected |
 | 13 missing native routes (Jacobi forms, theta lifts, Shimura, CM values, Borcherds, p-adic, Brandt mod ℓ) | §8.1 |
+
+**Second Opus proof critic (run by the orchestrator on v2; CLS, LRS(iii), CONV, CRT-T). All applied in v2.1.**
+- Verdicts: CLS ACCEPT WITH FIXES; LRS(iii) ACCEPT WITH FIXES; CONV ACCEPT WITH FIXES; CRT-T MAJOR as stated. It
+  found no counterexample to CLS, LRS(iii) or the CONV identity.
+- (1) MAJOR, CRT-T: the exception set {a_p = a_q} is complete only under balance (2√s + 2√r < s), with Coppersmith
+  run modulo the larger factor. Unbalanced counterexample on 37a1, s = 1009, r = 254899 → §1.3 rewritten, §0 updated.
+- (2) CLS: CRT over distinct rational ℓ, not ∏ Nλ. (3) CLS: p, q ∤ level and > every ℓ used.
+- (4) LRS: compositum K·K_f with Λ ∤ S; "λ ∤ S" in §0. (5) LRS(iii): g_q = 1; p, p′, q distinct and coprime to Mℓ.
+- (6) CONV: SU(2) only for trivial χ; U(2) with det θ_r = χ(r) otherwise; p ≠ q, p, q ∤ M.
+- (7) CRT-T: centred representative of t.
+- The code's toy decoder assumes q/p < 4/3, which lies inside the balance hypothesis; E2b is unaffected.
 
 **Opus proof critic (ACCEPT WITH FIXES; 15 findings). All applied in v2.**
 - It independently verified POW, the Hasse identity, the GL₂ sign (ℓ = 3, 5, 7), EIS-k, LRS (i)–(ii), CROSS, the
