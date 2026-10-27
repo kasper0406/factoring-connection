@@ -1,0 +1,391 @@
+**Blind report: factoring-hard invariants and the cost of computing them natively**
+
+I did not read the repository notes.
+
+The main finding is that there are many valid factoring-hard invariants, but substantially fewer distinct computational targets. Most examples below recover one of
+\[
+\varphi(N),\qquad p+q,\qquad (p^2-1)(q^2-1),
+\]
+or an exponent that permits randomized splitting. Changing the mathematical interpretation can still expose a useful algorithm, but the interpretations should not be counted as independent evidence of tractability.
+
+I found no verified native algorithm among these candidates that beats the stated factoring benchmarks. I also found no theorem excluding such an algorithm in an unrestricted classical model.
+
+There is an important limitation to the algorithm survey: **“never factors \(N\)” is not a standard complexity class with a published record table.** Below, I distinguish audited factor-avoiding upper bounds from claims about the fastest published algorithm. Where I could not verify a best-known native bound, I say so; “none verified” is not a lower bound.
+
+**Conventions and scope.** Let \(n=\lceil\log_2N\rceil\), \(R=\mathbb Z/N\mathbb Z\), and \(U=R^\times\). Unless stated otherwise, the promise is
+\[
+N=pq,\qquad 3\le p<q,
+\]
+with distinct primes. Perfect powers and small exceptional primes can be handled separately. The costs in the tables are bit costs up to polylogarithmic factors, written \(\widetilde O\).
+
+Labels used throughout:
+
+- **[P]** proved here.
+- **[K]** established result, with reference.
+- **[C]** conditional result, with its assumption stated.
+- **[H]** heuristic research judgment.
+- **[O]** open or not verified in this survey.
+
+“Native” means that the algorithm does not obtain and use a factorization or CRT decomposition of \(N\). Trial division that discovers \(p\), even if it subsequently returns only an invariant, does not qualify. Merely requiring that no register ever equal \(p\) would be an unstable, syntactic restriction: enumeration itself visits the integer \(p\).
+
+**Two reusable native algorithms.**
+
+First, there is a simple factor-avoiding algorithm for fixed-power divisor sums. Put
+\[
+H_k(x)=\sum_{m\le x}\sigma_k(m),\qquad P_k(t)=\sum_{j\le t}j^k,\qquad h=\lfloor\sqrt x\rfloor.
+\]
+The hyperbola decomposition gives
+\[
+H_k(x)=
+\sum_{d\le h}d^k\Big\lfloor\frac xd\Big\rfloor+
+\sum_{j\le h}P_k\!\left(\Big\lfloor\frac xj\Big\rfloor\right)
+-hP_k(h).
+\]
+Thus
+\[
+\sigma_k(N)=H_k(N)-H_k(N-1)
+\]
+costs \(\widetilde O(\sqrt N)\) for fixed \(k\). **[P]** Computing the two sums separately avoids identifying divisors of \(N\).
+
+Call this algorithm **S**. Under the semiprime promise it also computes
+\[
+s=p+q=\sigma_1(N)-N-1
+\]
+without computing \(p,q\). Consequently it evaluates every fixed polynomial in \(N,s\) in \(\widetilde O(\sqrt N)\). This is a useful native upper bound, not a claim that the weighted hyperbola literature has no improvements.
+
+Second, summatory totients admit native recursions:
+\[
+\Phi(x)=\frac{x(x+1)}2-\sum_{j=2}^{x}\Phi(\lfloor x/j\rfloor).
+\]
+Grouping equal quotients and using a cutoff gives \(\widetilde O(x^{2/3})\), so
+\(\varphi(N)=\Phi(N)-\Phi(N-1)\) has that bound without a semiprime promise. **[K]** See Pawlewicz–Pătraşcu, *Algorithmica* 55 (2009), DOI [10.1007/s00453-008-9221-z](https://doi.org/10.1007/s00453-008-9221-z), and Brown’s 2025 time/space treatment, [arXiv:2506.07386](https://arxiv.org/abs/2506.07386).
+
+These are exponential-time algorithms in \(n\), considerably slower than factoring first.
+
+For reductions, the following two devices will recur:
+
+1. **Sum recovery.** Once \(s=p+q\) is known, solve
+   \[
+   T^2-sT+N=0.
+   \]
+   This is deterministic polynomial time. **[P]**
+
+2. **Exponent recovery.** A polynomial-bit positive multiple \(M\) of \(\lambda(N)\) permits randomized polynomial-time factoring, using odd-part exponentiation and successive squaring. No factorization of \(M\) is needed. **[K]** Miller’s original deterministic reduction assumed ERH; the randomized version is unconditional. See [Miller, 1976, DOI 10.1016/S0022-0000(76)80043-8](https://doi.org/10.1016/S0022-0000(76)80043-8) and [Shoup, §10.6](https://shoup.net/ntb/ntb-b1.pdf).
+
+**How to read the generalization and barrier columns.**
+
+The generalization codes are defined after the tables. Barrier labels mean:
+
+- **R:** a purely modular implementation lies within the intended scope of PT.
+- **M:** local group orders, exponents, or smoothness are the relevant mechanism.
+- **Q:** quadratic characters occur; knowing their product does not supply the missing local information.
+- **I:** ordinary integer arithmetic, floor sums, coefficient extraction, or combinatorics; PT does not automatically cover it.
+- **A:** an analytic implementation requires a quantitative precision/convergence analysis.
+
+These labels classify approaches. They are not runtime lower bounds.
+
+The native bounds below apply on the stated promise. “S” means the audited \(\widetilde O(\sqrt N)\) algorithm above. For most rows, I could not certify a literature-wide fastest algorithm satisfying the exact native restriction.
+
+| # | Invariant \(X(N)\) | Reduction to factoring | Definition-level computation | Audited native algorithm / status | Generalization; barriers |
+|---|---|---|---|---|---|
+| 1 | Euler totient \(\varphi(N)\) | \(s=N+1-\varphi(N)\). Deterministic for \(pq\); randomized for general \(N\). **[P/K]** | \(N\) coprimality tests; gcd enumeration can expose factors | **S** on \(pq\); summatory-totient difference \(\widetilde O(N^{2/3})\) generally | Arith; R/M, while S uses I |
+| 2 | Carmichael exponent \(\lambda(N)\) | Exponent recovery, general \(N\). **[K]** | Enumerate unit orders and take their lcm, at most \(\widetilde O(N^2)\) by elementary iteration | Generic order computations and random sampling give a Monte Carlo \(\widetilde O(\sqrt N)\) bound; no faster general native bound verified | Arith/Order; R/M |
+| 3 | \(\sigma_1(N)\) | \(s=\sigma_1-N-1\). **[P]** General randomized equivalence is known | Scan divisors: \(O(N)\), but this computes factors | **S** | Arith; I |
+| 4 | \(\sigma_2(N)\) | \(p^2+q^2=\sigma_2-N^2-1\), hence \(s^2=p^2+q^2+2N\). **[P]** | Divisor scan, factoring-exposing | **S** | Arith; I |
+| 5 | Jordan totient \(J_2(N)\) | \(J_2=(N+1)^2-s^2\). **[P]** | Count \(N^2\) unimodular pairs | **S**; summatory Jordan recursions also avoid factoring | Arith; R or I |
+| 6 | Dedekind \(\psi(N)=N\prod_{\ell\mid N}(1+1/\ell)\) | \(\psi=N+s+1\). **[P]** | Projective-line or divisor-based enumeration | **S** | Arith; I |
+| 7 | \(\lvert K_1(R)\rvert\) | \(K_1(R)\cong U\), so this is \(\varphi(N)\). **[K]** | Stable definition is infinite; the determinant theorem reduces it to unit enumeration | Same native algorithms as row 1 | K; R/M or I |
+| 8 | \(\lvert K_3(R)\rvert\), squarefree \(N\) | Quillen gives \(\lvert K_3(R)\rvert=(p^2-1)(q^2-1)=J_2(N)\). **[K]** | The plus-construction definition supplies no finite enumeration bound by itself | **S** through the identity; no superior direct \(K\)-theoretic algorithm verified | K; R/M or I |
+| 9 | \(\lvert H^1(\mathbb Z,U)\rvert\), trivial action | \(H^1(\mathbb Z,U)=\operatorname{Hom}(\mathbb Z,U)\cong U\). **[P]** | Choose the image of one generator: \(N\) possible residues | Row 1 algorithms | Coh; R/M or I |
+
+The general randomized equivalence of factoring and computing \(\sigma_k\), for fixed positive \(k\), is due to Bach–Miller–Shallit, *SIAM J. Comput.* 15 (1986), 1143–1154, DOI [10.1137/0215083](https://doi.org/10.1137/0215083). The \(K\)-theory input is Quillen’s theorem
+\(K_{2j-1}(\mathbb F_q)\cong\mathbb Z/(q^j-1)\), \(K_{2j}(\mathbb F_q)=0\), together with preservation of finite products: [Quillen, 1972, DOI 10.2307/1970825](https://doi.org/10.2307/1970825); see also [Weibel, IV.1.13](https://sites.math.rutgers.edu/~weibel/Kbook/Kbook.pdf).
+
+| # | Invariant \(X(N)\) | Reduction to factoring | Definition-level computation | Audited native algorithm / status | Generalization; barriers |
+|---|---|---|---|---|---|
+| 10 | \(\lvert\mathrm{GL}_2(R)\rvert\) | Equals \(N\varphi(N)J_2(N)\). Alternatively, \(U\) embeds, so its order is a multiple of \(\lambda(N)\), giving randomized factoring for general \(N\). **[P]** | Test \(N^4\) matrices | **S** on \(pq\) | Grp/Arith; R/M or I |
+| 11 | \(\lvert\mathrm{SL}_2(R)\rvert\) | Equals \(NJ_2(N)\); also contains \(u\mapsto\mathrm{diag}(u,u^{-1})\). **[P]** | Test \(N^4\) matrices | **S** | Grp/Arith; R/M or I |
+| 12 | \(\lvert\operatorname{Aff}(R)\rvert\), \(x\mapsto ax+b\), \(a\in U\) | Divide by \(N\) to obtain \(\varphi(N)\). **[P]** | Enumerate \(N^2\) parameter pairs | **S** | Grp/Arith; R/M or I |
+| 13 | Number \(k(\mathrm{GL}_2(R))\) of conjugacy classes, equivalently complex irreducible characters | \(k(\mathrm{GL}_2(\mathbb F_t))=t^2-1\); hence \(X=J_2(N)\). **[K/P]** | Enumerate group elements and conjugation orbits; a safe bound is \(\widetilde O(N^8)\) | **S**; no faster direct class-counting algorithm verified | Grp; R or I |
+| 14 | \(k(\mathrm{SL}_2(R))\), odd squarefree \(N\) | Local count is \(t+4\); thus \(X=N+4s+16\). **[K/P]** | Conjugation-orbit enumeration, polynomial in the explicit group size | **S** | Grp; R or I |
+| 15 | \(k(H(R))\), \(H\) the \(3\times3\) upper-unitriangular Heisenberg group | Local count \(t^2+t-1\); globally \(X=N^2+3N+1+(N-1)s-s^2\). Solve the quadratic and verify candidates. **[P]** | \(N^3\) elements; \(O(N^6)\) conjugation pairs | **S** | Grp; R or I |
+| 16 | Number of faithful complex irreducible representations of \(D_{2N}\), \(N\) odd | The two-dimensional representations are indexed by \(a\sim-a\); faithful iff \((a,N)=1\). Count \(=\varphi(N)/2\). **[P]** | \(O(N)\) character parameters | **S** | Rep; I/M |
+
+For row 13, the four rational canonical-form types give
+\[
+(t-1)+(t-1)+\frac{(t-1)(t-2)}2+\frac{t^2-t}2=t^2-1;
+\]
+see [Bump’s \(\mathrm{GL}_2\) classification](https://sporadic.stanford.edu/bump/group/gr1_9.html). For row 14, the odd-characteristic conjugacy-class table gives \(t+4\); see [Böhmler–Farrell–Lassueur, 2022](https://www.sciencedirect.com/science/article/abs/pii/S0021869322000400).
+
+For row 15, the center contributes \(t\) singleton classes, and each nonzero pair of noncentral coordinates contributes one class, giving \(t+(t^2-1)\). Its polynomial in \(s\) has at most two candidate roots; checking both against \(T^2-sT+N\) handles any ambiguity. No monotonicity assumption is needed.
+
+| # | Invariant \(X(N)\) | Reduction to factoring | Definition-level computation | Audited native algorithm / status | Generalization; barriers |
+|---|---|---|---|---|---|
+| 17 | Number of faithful rank-one complex local systems on \(L(N,1)\) | \(\pi_1L(N,1)=C_N\); faithful characters are primitive \(N\)-th roots. Count \(=\varphi(N)\). **[P]** | Enumerate \(N\) characters | **S** | Top; I |
+| 18 | Number of surjective Fox \(N\)-colourings of \(T(2,N)\), with labelled colours | Two initial colours determine the colouring. The image is all of \(D_{2N}\) iff their difference is a unit. Count \(=N\varphi(N)\). **[P]** | \(N^2\) initial pairs; braid power can be processed in \(O(\log N)\) matrix operations | **S** | Top; I |
+| 19 | Number of generators of the torsion subgroup of \(H_1(M_N;\mathbb Z)\), where \(M_N\) is the torus mapping torus of \(\begin{pmatrix}1&N\\0&1\end{pmatrix}\) | \(H_1(M_N)=\mathbb Z^2\oplus C_N\); count \(=\varphi(N)\). **[P]** | Compute a tiny Smith form, then count primitive torsion elements | **S**; the Smith form itself is already polynomial time | Top; I |
+| 20 | Number of epimorphisms \(H_1(S_N;\mathbb Z)\twoheadrightarrow C_N\), where \(S_N\) is the circle bundle over \(T^2\) of Euler number \(N\) | \(H_1=\mathbb Z^2\oplus C_N\). Epimorphisms correspond to unimodular triples, so \(X=J_3(N)\); \(N^3+1-X=s^3-3Ns\) determines \(s\). **[P]** | Enumerate \(N^3\) triples | **S** | Top/Arith; I |
+
+Rows 19 and 20 even use the same underlying Nil-manifold family in two descriptions. Their hard operation is the primitive/surjective filter, not ordinary homology. They are included to make that distinction explicit, rather than to suggest two independent topological mechanisms.
+
+For row 18, the closed two-strand braid has arbitrary initial colours modulo \(N\); the rotations generated by two meridian reflections have step twice their colour difference. Since \(N\) is odd, surjectivity is exactly the unit condition. This also specifies the multiplicity convention: labelled colourings, not colourings modulo conjugation.
+
+| # | Invariant \(X(N)\) | Reduction to factoring | Definition-level computation | Audited native algorithm / status | Generalization; barriers |
+|---|---|---|---|---|---|
+| 21 | Binary necklace count \(B_N\), reduced modulo \(2^k\), \(k=n+2\), with \(p,q\ge k\) | Burnside gives \(NB_N=2^N+(p-1)2^q+(q-1)2^p+2\varphi(N)\). Thus \(NB_N\bmod2^k=2\varphi(N)\). **[P]** | Enumerate \(2^N\) words and rotation orbits | **S** on the promise, using the proved residue identity; direct Burnside/series computation is polynomial in \(N\) | Neck; I; full count has an output-size obstruction |
+| 22 | Number of cycles of the shear permutation \((x,y)\mapsto(x+y,y)\) on \(R^2\) | Count \(=\sum_{y\bmod N}\gcd(y,N)=(2p-1)(2q-1)=4N-2s+1\). **[P]** | Construct its \(N^2\)-vertex functional graph | **S**; the gcd-sum formula also takes \(O(N)\) terms but exposes divisors | Dyn; R or I |
+| 23 | Number of edges of the unitary Cayley graph \(\Gamma_N\), \(x\sim y\iff(x-y,N)=1\) | \(\lvert E\rvert=N\varphi(N)/2\). **[P]** | \(N^2\) adjacency tests | **S** | Graph-count; R or I |
+| 24 | Chromatic number, equivalently clique number, of \(\Gamma_N\) | Both equal the least prime divisor of \(N\). **[K]** | General graph-colouring search is exponential in \(N\) | The answer itself is a factor: incompatible with the strict “never computes a factor” requirement. Deprioritize | Graph-opt; generalization NP-hard |
+| 25 | Number of periodic points of \(x\mapsto x^2\) **on \(U\)** | A unit is periodic iff its order is odd. Count \(=\operatorname{oddpart}(\varphi(N))\). Multiplying by \(2^n\) gives a multiple of \(\lambda(N)\). Randomized reduction, general \(N\). **[P]** | Functional-graph cycle detection, polynomial in \(N\) | **S** on \(pq\), followed by removing powers of two; no faster dynamical method verified | Dyn/Arith; R/M or I |
+| 26 | Oracle \(X(N,a)=\operatorname{ord}_N(a)\), promised \(a\in U\) | Random order queries and the standard even-order split factor \(N\). **[K]** | Iterate powers, at most \(N\) steps | Baby-step/giant-step: \(\widetilde O(\sqrt N)\); refined generic order algorithms improve some distributions | Order; R/M |
+
+The necklace oracle in row 21 has only \(O(n)\) output bits. The **full** necklace integer has \(\Theta(N)\) bits and is unsuitable for a polylogarithmic-output target. Small prime factors below \(k\) can be checked separately in polynomial time.
+
+The graph formulas, including row 24, are established by Klotz–Sander, *Electronic J. Combinatorics* 14 (2007), R45, DOI [10.37236/963](https://doi.org/10.37236/963). The generic order-computation bounds and their limitations are treated in [Sutherland’s 2007 thesis](https://math.mit.edu/~drew/sutherland-phd.pdf).
+
+| # | Invariant \(X(N)\) | Reduction to factoring | Definition-level computation | Audited native algorithm / status | Generalization; barriers |
+|---|---|---|---|---|---|
+| 27 | Composite coefficient \([q^N]E_4(q)=240\sigma_3(N)\) | Recover \(p^3+q^3=\sigma_3-N^3-1=s^3-3Ns\), strictly increasing for \(s\ge2\sqrt N\). **[P]** | Expand through index \(N\), \(\widetilde O(N)\) via series arithmetic | **S**; no polylogarithmic isolated composite-index algorithm verified | Mod; I/A |
+| 28 | Ordered signed four-square representation count \(r_4(N)\), \(N\) odd | Jacobi: \(r_4(N)=8\sigma_1(N)\). **[K]** | Enumerate three coordinates and test whether the remainder is a square: \(O(N^{3/2})\) | **S**; theta-series multiplication gives another factor-free \(\widetilde O(N)\) route | Quad/Mod; I/A |
+| 29 | Ordered signed eight-square representation count \(r_8(N)\), \(N\) odd | \(r_8(N)=16\sigma_3(N)\). **[K]** | Seven coordinates plus a square test: \(O(N^{7/2})\) | **S**; theta-series multiplication \(\widetilde O(N)\) | Quad/Mod; I/A |
+| 30 | Ring class number \(h(-7N^2)\), \((N,7)=1\) | Equals \((p-\chi(p))(q-\chi(q))\), \(\chi=(\frac{-7}{\cdot})\). The conic reduction below factors from it. **[K/P]** | Enumerate primitive reduced forms; naive \(O(N^2)\), standard sieving approaches roughly \(N^{1+o(1)}\) | An audited twisted summatory recursion gives \(\widetilde O(N^{2/3})\). A precise best native bound under the strict conductor-unfactored restriction was not verified | Class; M/Q/I/A |
+| 31 | Conic count \(C_D(N)=\#\{(x,y)\in R^2:x^2-Dy^2=1\}\), fixed \(D\), \((2D,N)=1\) | Local count is \(t-(D/t)\). A scalar count determines \(s\) or \(\lvert p-q\rvert\); proof below. **[P]** | \(N^2\) pairs | For \(D=-7\), row 30’s \(\widetilde O(N^{2/3})\) recursion; analogous periodic-character recursions for fixed \(D\) | AG/Class; R/M/Q or I |
+| 32 | \(\#\mathbb P^1(R)\) | \(X=(p+1)(q+1)=N+s+1\). **[P]** | Enumerate unimodular pairs modulo unit scaling | **S** | AG/Arith; R or I |
+| 33 | \(\#\mathbb P^2(R)\) | \(X=(p^2+p+1)(q^2+q+1)=s^2+(N+1)s+N^2-N+1\). This determines positive \(s\). **[P]** | Enumerate unimodular triples modulo unit scaling | **S** | AG/Arith; R or I |
+| 34 | Point-count oracle \(X(N,d)=\#E_d(R)\) for quadratic twists of a fixed elliptic curve of good reduction | Four twist queries give randomized polynomial-time factoring; proof below. **[P]** | Projective-point enumeration, polynomial in \(N\) | None faster than polynomial-in-\(N\) enumeration verified here without splitting \(N\). A pure equation-enumeration bound is \(\widetilde O(N^6)\) | EC; R/M; I is the desired escape |
+| 35 | Ramanujan packet \((\tau(N),\tau(N^2))\) | Determines factors unless both \(\tau(p)\) and \(\tau(q)\) vanish; hence a proved density-one RSA reduction, not unconditional all-input equivalence. **[K]** | Expand \(\Delta\) through \(N^2\): \(\widetilde O(N^2)\) | Factor-free series computation has that bound. Faster published spot-coefficient algorithms must be audited for initial factorization | Mod; I/A; exceptional-set qualification |
+| 36 | Smith gcd-determinant ratio \(\det G_N/\det G_{N-1}\), \(G_m=(\gcd(i,j))_{1\le i,j\le m}\) | Smith’s identity makes the ratio exactly \(\varphi(N)\). **[K]** | Build \(N^2\) entries and compute two determinants; standard exact elimination gives a polynomial-in-\(N\) bound | **S**, or the general summatory-totient algorithm; no superior compressed elimination verified | Lin/Arith; I |
+
+The classical square-sum formulas count all signs and orders; for four squares see [Hirschhorn, DOI 10.1017/S144678870002440X](https://doi.org/10.1017/S144678870002440X). The ring class number formula is Cox’s Theorem 7.24; a contemporary use, explicitly discussing the known-conductor-factorization assumption, appears in [Allombert et al., PKC 2025](https://cspages.ucalgary.ca/~rscheidl/Papers/PEARL-SCALLOP.pdf). Smith’s determinant identity is [Smith, 1875, DOI 10.1112/plms/s1-7.1.208](https://doi.org/10.1112/plms/s1-7.1.208).
+
+**Details of the less immediate reductions.**
+
+**Conic count and ring class number. [P]** Write
+\[
+e=\left(\frac Dp\right),\quad f=\left(\frac Dq\right),\quad
+J=\left(\frac DN\right)=ef.
+\]
+The finite-field conic count is \(p-e\), so
+\[
+C_D(N)=N+J-(pf+qe).
+\]
+Set \(t=N+J-C_D(N)\).
+
+- If \(J=1\), then \(e=f\), so \(t=\pm(p+q)\).
+- If \(J=-1\), then \(e=-f\), so \(t=\pm(p-q)\), and \(s=\sqrt{t^2+4N}\).
+
+Thus **one scalar conic count factors every promised semiprime**, regardless of the unknown local signs.
+
+Since \(\mathbb Q(\sqrt{-7})\) has class number one and only units \(\{\pm1\}\), the ring class number formula gives
+\[
+h(-7N^2)=N\prod_{\ell\mid N}\left(1-\frac{\chi(\ell)}{\ell}\right)
+=C_{-7}(N)
+\]
+for squarefree \(N\) coprime to \(7\).
+
+This does **not** establish that a single ordinary imaginary-quadratic field class number \(h(-N)\) always factors \(N\). The special nonmaximal order and known base field are essential.
+
+A fully factor-avoiding recursion for this special class number is available. Define
+\[
+f_\chi(m)=m\prod_{\ell\mid m}(1-\chi(\ell)/\ell)
+       =(\operatorname{id}*(\mu\chi))(m).
+\]
+Because \(f_\chi*\chi=\operatorname{id}\), its summatory function satisfies
+\[
+F_\chi(x)=\frac{x(x+1)}2-\sum_{d=2}^{x}\chi(d)F_\chi(\lfloor x/d\rfloor).
+\]
+The character has fixed period \(7\), so block sums of \(\chi\) cost \(O(1)\). A cutoff \(y\), divisor-convolution precomputation below \(y\), and quotient memoization cost
+\[
+\widetilde O\!\left(y+\frac{x}{\sqrt y}\right).
+\]
+Taking \(y=x^{2/3}\) and differencing adjacent summatory values proves row 30’s bound. **[P]**
+
+Conditional subexponential class-group relation algorithms are important background, beginning with Hafner–McCurley, 1989, DOI [10.1090/S0894-0347-1989-1002631-0](https://doi.org/10.1090/S0894-0347-1989-1002631-0). I have not verified a never-splitting implementation and precise bound for the nonfundamental discriminants in row 30, so I do not silently transfer that literature’s bounds to this stricter task.
+
+**Elliptic twist oracle. [P]** Let
+\[
+\#E(\mathbb F_p)=p+1-a,\qquad \#E(\mathbb F_q)=q+1-b.
+\]
+For a quadratic twist \(E_d\), with local signs \((\epsilon,\eta)\),
+\[
+K_d:=\#E_d(R)=(p+1-\epsilon a)(q+1-\eta b).
+\]
+Choose independent uniform units \(d,e\) with Jacobi symbol \(-1\). Their sign vectors are independently uniform on
+\(\{(+,-),(-,+)\}\). With probability \(1/2\), the twists \(1,d,e,de\) realize all four sign vectors. Then
+\[
+\frac{K_1+K_d+K_e+K_{de}}4=(p+1)(q+1).
+\]
+Recover \(s\), attempt the quadratic split, and verify it. Repetition gives an unconditional randomized polynomial-time reduction. A gcd encountered while sampling can itself finish the factoring reduction.
+
+This uses **scheme-theoretic projective \(R\)-points**. Counting only affine solutions and adding one is incorrect over a product ring: mixed affine/infinity components exist. Related stronger pair-of-twists results are in [Dieulefait–Urroz, 2020, DOI 10.3390/math8122126](https://doi.org/10.3390/math8122126), [arXiv:1911.11004](https://arxiv.org/abs/1911.11004).
+
+**Ramanujan packet. [K/P]** Put \(A=\tau(N)\), \(B=\tau(N^2)\). The Hecke relations recover the unordered pair
+\[
+\left\{\tau(p)^2q^{11},\ \tau(q)^2p^{11}\right\}
+\]
+as roots of
+\[
+Z^2-(A^2+N^{11}-B)Z+A^2N^{11}.
+\]
+After division by \(N^{11}\), any nonzero member has reduced denominator a positive power of one prime factor, for \(p,q\ge5\); Deligne’s bound excludes complete denominator cancellation. If both local coefficients vanish, this argument fails. Bach–Charles prove the resulting density-one RSA statement: [arXiv:0708.1192](https://arxiv.org/abs/0708.1192).
+
+A relevant audit trap: Charles’s advertised \(\widetilde O(N^{1/2})\), GRH-conditional algorithm for \(\tau(N)\) explicitly begins by factoring \(N\). It is not a native algorithm under this task’s definition. See [Charles, *Computing the Ramanujan Tau Function*, §2](https://pages.cs.wisc.edu/~cdx/CompTau-rev.pdf).
+
+**Complexity of the natural generalizations.**
+
+Encoding matters enough that a blanket “the generalization is hard” is often misleading.
+
+| Code | Relevant generalization and classification |
+|---|---|
+| **Arith** | The fixed functions displayed have polynomial-time evaluation from a certified prime factorization. Their threshold languages therefore lie in \(\mathrm{NP}\cap\mathrm{coNP}\): a complete certified factorization verifies either answer. **[P]** NP-hardness under polynomial many-one reductions would imply \(\mathrm{NP}=\mathrm{coNP}\). This does not make their evaluation known to be in FP. |
+| **Grp** | For a group supplied by its complete multiplication table, order and conjugacy-class count are polynomial time by enumeration. **[P]** A compact ring description changes the input size exponentially. Arbitrary finite presentations introduce undecidability issues and are not the relevant comparison. |
+| **Rep** | The dihedral family has an explicit character parametrization. I am not claiming a general polynomial-time algorithm for every representation-theoretic statistic of compactly presented groups. **[O]** |
+| **K** | The specified finite-ring families collapse to the stated arithmetic functions. No general P/NP/#P classification of higher \(K\)-theory for arbitrary ring presentations is asserted. **[O]** |
+| **Coh** | Fixed-degree cohomology of an explicitly supplied finite group/module can be computed from finite cochain matrices, polynomially in their explicit sizes for fixed degree. **[P]** Here the implicit coefficient group \(R^\times\) already contains the hard cardinality. |
+| **Top** | Homology of an explicitly supplied finite integer chain complex is polynomial time via Smith normal form. **[K]** Counting primitive elements or surjections is an additional arithmetic task. Unrestricted Fox-colouring counts are linear-algebraic; imposing surjectivity changes the problem. |
+| **Neck** | Ordinary fixed-alphabet necklaces have Burnside/divisor formulas. Full binary-length counts have exponentially long output; modular counts avoid that. No relevant NP-hardness of this rotation family is established here. **[O]** |
+| **Graph-count** | Edge count and degree are in P for explicit graphs. Succinct adjacency descriptions can make counting hard; that fact does not establish hardness of this particular arithmetic family. |
+| **Graph-opt** | Chromatic number and clique number are NP-hard on arbitrary explicit graphs. **[K]** Row 24 should be deprioritized under the requested criterion. |
+| **Dyn** | Cycle and periodic-vertex counts are in P for an explicit functional graph. For a Boolean circuit defining the map, periodic-point counting is #P-hard: make satisfying assignments fixed points and send all other states to one sink. **[P]** This does not transfer automatically to modular squaring. |
+| **Order** | Generic element-order computation has exponential-in-bitlength algorithms and restricted-model lower bounds. Concrete residue representations can support non-generic algorithms. |
+| **Mod** | Fixed-weight, fixed-level coefficient tables are polynomial in the unary index bound. No relevant NP-hardness of these fixed modular-form families is known here. Arbitrary arithmetic-circuit coefficient extraction is #P-hard, but is much broader. |
+| **Quad** | Fixed-dimensional theta series provide structured counting problems. Arbitrary quadratic systems or variable-dimensional polynomial systems admit #P-hard counting problems; that is a different generalization. |
+| **Class** | No relevant NP-hardness result for imaginary-quadratic class-number computation is supplied here. The fixed-base conductor family in row 30 has threshold certificates from factoring \(N\). Arbitrary degree number fields are a broader problem. |
+| **AG** | General systems of polynomial equations over \(\mathbb F_2\) have #P-complete point counting: Boolean gates can be encoded with uniquely determined auxiliary variables. **[P]** Fixed projective spaces and conics are much narrower families. |
+| **EC** | Elliptic-curve point counting over finite fields is in deterministic polynomial time by Schoof. **[K]** For smooth elliptic curves over \(R\), a factorization of \(N\) allows polynomial-time counting by local counts and lifting, so threshold languages again have factorization certificates. |
+| **Lin** | Determinants and Smith normal forms of explicit integer matrices are in P. **[K]** Succinct dimension \(N\) is the obstacle in row 36. |
+
+The Smith-form reference is Kannan–Bachem, 1979, DOI [10.1137/0208040](https://doi.org/10.1137/0208040). Graph NP-hardness is classical: [Karp, 1972, DOI 10.1007/978-1-4684-2001-2_9](https://doi.org/10.1007/978-1-4684-2001-2_9).
+
+For a literal reading of “the generalization is not NP-hard,” there is a logical qualification: proving non-hardness usually requires separating complexity classes. The defensible screening criterion is **a relevant P algorithm, an NP∩coNP threshold formulation, or absence of a relevant hardness result**, stated separately.
+
+**Which views offer a genuinely different native computational handle?**
+
+The strongest distinctions are computational representations, not the number of equivalent formulas.
+
+| Native handle | Candidates | What is available | What remains missing |
+|---|---|---|---|
+| Small chain complex / homology | 17–20 | Tiny presentations and Smith forms | The difficult primitive or surjective count is added after homology |
+| Determinant / Schur complement | 36 | Exact determinant identity; general determinant algorithms in P | Compression from dimension \(N\) to \(\operatorname{poly}(n)\) work |
+| Generating function / modular transformation | 27–29, 35 | Theta products, modular forms, coefficient recurrences | Isolated composite-index extraction without factoring |
+| Euclidean or quotient recursion | 1, 5, 30–31 | Summatory recursions and floor-sum grouping | Avoiding polynomially many quotient states |
+| Burnside / cycle index | 21–22 | Exact orbit formulas, with compact modular output in row 21 | Fast evaluation of the arithmetic weights |
+| Finite-field geometry | 34 | Polynomial-time prime-field point counting | Access to the two local Frobenius actions without splitting \(N\) |
+
+**Small homology is not currently a hidden factoring algorithm. [P/K]** If one constructed, in polynomial time, a polynomial-size integer chain complex whose ordinary homology cardinality yielded \(\varphi(N)\), Smith normal form would give polynomial-time factoring. Nothing known rules that construction out, but the examples above do not supply it: their homology is simply \(C_N\), and their hard operation is counting its generators.
+
+**A determinant can conceal exactly the original task. [P]** Let \(E_{ij}=1_{j\mid i}\). Then
+\[
+G_N=E\,\operatorname{diag}(\varphi(1),\ldots,\varphi(N))\,E^T,
+\qquad \det E=1.
+\]
+Thus the last Schur complement is precisely \(\varphi(N)\). This identifies the possible compression target, but does not evaluate it.
+
+**Reciprocity is not ruled out by multiplicativity.** Dedekind reciprocity genuinely converts a residue-class sum into a Euclidean algorithm:
+\[
+s(a,b)+s(b,a)=
+-\frac14+\frac1{12}\left(\frac ab+\frac ba+\frac1{ab}\right).
+\]
+See [Beck, 1999](https://citeseerx.ist.psu.edu/document?doi=b2719d21021c869349a63b0ade4cde60fdab4c96&repid=rep1&type=pdf). **[K]**
+
+A similar integer recursion for \(\varphi\), \(f_\chi\), or a theta coefficient would be outside a model restricted to generic ring operations. Multiplicativity alone does not put it back inside PT.
+
+There is, however, a precise negative result for one restricted kind of recursion.
+
+**The \(E_4\) coefficient sequence has no fixed-order linear recurrence with polynomial coefficients. [P]** Equivalently, its generating function is not D-finite over characteristic zero. At every rational cusp \(\tau=a/c+it\), modularity gives
+\[
+E_4(\tau)\asymp (ict)^{-4}\quad(t\downarrow0).
+\]
+Hence its \(q\)-series has singularities at infinitely many roots of unity. A D-finite function can have finite-plane singularities only among the finitely many zeros of its differential equation’s leading polynomial. Therefore a fixed-order polynomial-coefficient linear recurrence cannot be the desired shortcut. This excludes that representation, not digit algorithms, nonlinear recursions, or modular coefficient algorithms.
+
+**Fixed-width transfer matrices require an output-size check. [P]** Powers \(A^N\bmod m\), for fixed-size matrices and polynomial-bit \(m\), are computable in polynomial time in \(n\). If a candidate’s compact answer could be represented this way with a uniformly constructible matrix, it would yield polynomial-time factoring. Exact counts such as full necklaces often instead have \(\Theta(N)\) output bits.
+
+**Candidates that should not be promoted without a new reduction.**
+
+| Tempting candidate | Reason for rejection or qualification |
+|---|---|
+| \(\lvert H(R)\rvert\) | Exactly \(N^3\), easy. Its conjugacy-class count is the hard statistic. **[P]** |
+| \(K_{2j}(R)\), squarefree \(N\) | Zero for \(j>0\). **[K]** |
+| \(k(\operatorname{Aff}(R))\), squarefree \(N\) | Local class count is \(p\), so the product is \(N\). **[P]** |
+| Ordinary homology of \(L(N,1)\) | Already explicitly \(C_N\); does not reveal prime factors. |
+| Ordinary Fox-colouring count of \(T(2,N)\) modulo \(N\) | \(N^2\), easy. Surjectivity is essential. **[P]** |
+| \(k(D_{2N})\), odd \(N\) | \((N+3)/2\), easy. **[P]** |
+| \(\tau_{\rm divisors}(pq)\), \(\omega(pq)\), idempotent count | Respectively \(4,2,4\); counts alone do not recover the primes. |
+| One fixed elliptic curve’s count | No universal all-semiprime reduction was established here; use a twist oracle or prove a special-case theorem. |
+| Order or orbit count of one fixed cat map | No general factoring reduction verified. A unipotent shear has the explicit reduction above; a hyperbolic cat map needs separate analysis. |
+| Standard torus-knot genus or Alexander-polynomial degree | Often an explicit polynomial in the supplied knot parameters. |
+| Permanent, unrestricted tiling count | Relevant generalizations are #P-hard; do not inherit the tractability of determinants. |
+| Planar domino tilings | Pfaffian methods make explicit planar instances tractable, but I have no valid factoring-hard compact family here. |
+
+**Testing the three proposed barriers.**
+
+The barriers need more precise hypotheses before they can support exclusions.
+
+**PT.** Generic-ring results can show that success on a specified task can be converted into splitting \(N\). They do not automatically prove that every native computation requires \(N^c\) operations. Aggarwal–Maurer’s result is a particularly relevant *relative reduction* for generic RSA inversion: [EUROCRYPT 2009, “Breaking RSA Generically is Equivalent to Factoring”](https://crypto.ethz.ch/publications/AggMau09.html). **[K]**
+
+A literal assertion that a ring algorithm cannot obtain factoring information before explicitly splitting is too strong. For example,
+\[
+\varphi(N)=\#\{(a,b)\in R^2:ab=1\}
+\]
+is a ring-operation enumeration that returns factoring-hard information without first performing a gcd split. **[P]** It is slow, and its transcript may permit splitting; that is different from an impossibility of counting.
+
+Moreover, floor sums, integer continued fractions, and ordinary-bit coefficient algorithms are outside a purely generic-ring model unless a further theorem brings them inside it.
+
+**PRIM / exponent gates.** For squarefree \(N\),
+\[
+\#\{x\in U:x^E=1\}
+=\prod_{\ell\mid N}\gcd(E,\ell-1).
+\]
+**[P]** This explains why a test can be cheap while its exact acceptance count is factoring-hard. Monier’s results classify important Fermat/strong-test liar counts, not all conceivable integer recursions: [Monier, 1980, DOI 10.1016/0304-3975(80)90007-9](https://doi.org/10.1016/0304-3975(80)90007-9). **[K]**
+
+The M/A/Q taxonomy is useful as an inventory of mechanisms. I cannot treat it, or the depth-\(\ge2\) gate statement, as a universal theorem without definitions and hypotheses. In the conic example, the Jacobi symbol gives only \(ef\); the hard count additionally contains \(pf+qe\). Neither fact supplies a native counting algorithm.
+
+**Size–entropy.** A polynomial-time reduction transfers an algorithm’s runtime; it does not improve that runtime to polynomial time. In particular,
+\[
+X(N)\text{ in }L_N[\alpha,c]
+\quad\Longrightarrow\quad
+\text{factoring in comparable }L_N[\alpha,c']
+\]
+under an appropriately sized reduction. It does **not** imply polynomial-time factoring when \(\alpha<1/3\). **[P]**
+
+Likewise, \(O(n)\) output bits may determine \(p,q\), but their information content does not bound the time required to compute them. Exponential precision is a valid obstruction only when a particular analytic signal is exponentially small; it is not automatic for every archimedean formulation.
+
+**A precise lower-bound model—and why it does not cover all native algorithms.**
+
+There cannot be a theorem for *every multiplicative function*: \(f(N)=1\) and \(f(N)=N\) are immediate counterexamples. Restricting to factoring-equivalent functions leaves the central open problem.
+
+A natural restricted theorem is available for **unstructured exact counting**:
+
+> **[P] Oracle-counting model.** An algorithm accesses an unknown Boolean table of length \(m\) only through entry queries and must return its exact sum. Even distinguishing an all-zero table from a table with one uniformly hidden \(1\), with bounded error, requires \(\Omega(m)\) queries.
+
+After \(t\) queries, the hidden entry is seen with probability at most \(t/m\). Taking \(m=N^c\) gives an \(N^c\) lower bound.
+
+This models an algorithm that treats an invariant as an unstructured sum. It does **not** model the structured unit predicate, conic equation, or modular form. Replacing those predicates by arbitrary tables discards exactly the structure a reciprocity algorithm would exploit.
+
+A more algebraic example is Sutherland’s generic-group model: there are worst-case \(\Omega(r^{1/3})\) lower bounds for computing an unknown element order \(r\). **[K]** This is an order-parameter result for that model, not a bound for all computations on the ordinary binary integer \(N\).
+
+A model giving a universal \(N^c\) lower bound here must therefore prohibit at least some of:
+
+- ordinary inspection and arithmetic on the bits of \(N\);
+- identities relating different integer arguments;
+- non-generic representations and analytic transformations.
+
+Those prohibitions exclude the proposed Euclid/reciprocity escape. If unrestricted computation on the known integer \(N\) remains free, an oracle-query lower bound says nothing: the controller could run a factoring algorithm without querying the oracle.
+
+The candidates with the clearest escape from an enumeration/generic-ring model are the modular/theta coefficients, twisted summatory recursions, and compressed determinant formulation. That is a statement about model scope, not evidence that they admit fast algorithms.
+
+**Top three research priorities. [H]**
+
+These rankings concern distinct native handles. None has a demonstrated sub-\(L[1/3]\) algorithm.
+
+| Rank | Target and why it passes the screen | Precise first research question | Strongest reason it may fail |
+|---|---|---|---|
+| **1** | **\(\sigma_3(N)\), viewed as \(r_8(N)/16\) or an \(E_4\) coefficient.** Deterministic semiprime equivalence; fixed modular/theta family; threshold certificates from factoring. | For primes \(\ell\nmid240\), analyze the binary kernel of \(a_N=\sigma_3(N)\bmod\ell\). Can a uniformly constructible digit algorithm evaluate it in \(\operatorname{poly}(\ell,\log N)\) time, or can its finite-state versions be ruled out? Enough small-prime residues would reconstruct \(\sigma_3(N)<2N^3\) by CRT. | Modularity relates analytic arguments, not binary digits of coefficient indices. The Hecke structure places the unknown prime divisors directly in the coefficient. Fixed-order polynomial-coefficient recurrences are already excluded above. |
+| **2** | **\(h(-7N^2)=C_{-7}(N)\).** Deterministic scalar reduction; fixed quadratic field; a genuine quotient recursion rather than only CRT evaluation. | Can cancellation between \(F_\chi(N)\) and \(F_\chi(N-1)\) be organized into a Euclidean floor-sum reciprocity with only \(\operatorname{poly}(\log N)\) states—or any sub-\(L[1/3]\) number of states? First characterize exactly which quotient states survive differencing. | The base field already has class number one. All remaining difficulty lies in conductor coprimality, equivalently the twisted totient. The current recursion compresses summation but retains polynomially many states. |
+| **3** | **Elliptic twist point-count oracle.** Unconditional randomized factoring equivalence; finite-field genus-one point counting is in P, and the composite-modulus family has factorization certificates. | For fixed smooth \(E\), compute \(\#E_d(R)\bmod\ell\) for small \(\ell\) without factoring \(N\). Can division-polynomial or resultant computations recover the required symmetric local information using ordinary integer structure beyond the generic-ring model? | Schoof uses the local Frobenius \(x\mapsto x^p\). The available map \(x\mapsto x^N\) is generally not a field Frobenius on either component. Direct attempts tend to require the missing local characteristic or produce a CRT split. |
+
+The first target has the cleanest coefficient-extraction problem. The second has the closest existing analogue of a reciprocity recursion. The third has the strongest relevant positive algorithmic precedent, namely prime-field point counting, but also the clearest missing operation.
+
+The gcd-determinant Schur complement is a worthwhile fourth target: its general linear-algebra problem is in P, but no useful compression of the \(N\)-dimensional last pivot is currently supplied.
+
+**Small checks performed.** I checked the conic/ring-class identity by direct conic enumeration and reduced-form enumeration for \(N=15,33,55\); the common values were \(24,40,60\). I also checked the Heisenberg polynomial, shear cycle count, and periodic-unit formula on those inputs, and the necklace residue identity for \(N=143,221,323\). These checks support the formulas only; the reductions above do not rely on experimental extrapolation.
