@@ -86,6 +86,10 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
 - **Unexpected connections (phase 28).** A survey of about 300 connections across 40 fields (Langlands, K-theory,
   harmonic analysis, random matrices, knots, homotopy theory, tilings, operator algebras, ML, …) found none that gives
   faster factoring. They fail by seven recurring mechanisms ([`connections_results`](notes/connections_results.md)).
+- **Factoring-equivalent invariants as new views (phase 29).** 55 invariants (φ, σ, class counts, K-groups, modular
+  coefficients, class numbers, …): no native algorithm beats factoring. Native costs are N^{1/3}–N^{1/2} for divisor
+  types and N^{1/5} for analytic ones; proved barriers hold only in restricted models (Prop TRI, LOC, Theorem LIN).
+  The cleanest open view: one coefficient a_f(N) of a fixed non-CM cusp form ([`native_results`](notes/native_results.md)).
 - **Deterministic.** Subexponential under ERH reduces to one constructive lemma, DSR, and every black-box
   derandomiser fails on it. The worst case below N^{1/5} needs coverage with λ < J^{1/4}.
 
