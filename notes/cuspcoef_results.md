@@ -256,7 +256,7 @@ uses the factorisations reaches ≥ 0.975 at every ℓ ≤ 23.
   - The split is computable in poly(n) only if every prime factor of a_N, except one, is ≤ n^{O(1)}. That requires
     one of a_p, a_q (≈ N^{1/4} each) to be n^{O(1)}-smooth. This has probability ρ(u) with u ≈ (n/4)ln2/(c ln n),
     which is super-polynomially small.
-  - E2: real/simulated acceptance rates (B = n²) are 0.94/0.91 (n = 64) and 0.40/0.33 (n = 128). [n = 192, 256: TBD]
+  - E2: real/simulated acceptance rates (B = n²) are 0.94/0.91 (n = 64), 0.40/0.33 (n = 128), 0.045/0.053 (n = 192), 0.005/0.006 (n = 256).
 - **Without factorisations**, the products' congruences carry only QR bits (SC, SCX). A partially factored product
   with an unsplit composite part loses the ordering at every ℓ whenever the composite can straddle x and y.
 - **Few curves.** K = O(1) curves give ≤ K·log₂C bits (DFB), so no reduction exists in the model. The tension between
@@ -315,8 +315,8 @@ Peak RSS ≤ 726 MB (E1, n = 48 sieve). Jobs ran one at a time. E1 ≈ 3 min, E3
 | E1 P1f (A1) | median `tried` ≤ 5 at K = 32000 | 1, 1, 1; **holds** |
 | E1 P1g (A1) | median `tried` of C1, C2 ≥ 100 | C1: 1472, > 3000, > 3000; C2: 184.5, 764.5, > 3000; **holds** |
 | E1 P1h (A1) | top-1: main ≥ 10/20; C1, C2 ≤ 1/20 | main 19, 18, 19; C1 0, 0, 0; C2 0, 0, 0; **holds** |
-| E2 P2a | real within ×2 of simulator where sim ≥ 0.02 | TBD |
-| E2 P2b | simulator decreasing, ≤ 0.02 at n = 256 | TBD |
+| E2 P2a | real within ×2 of simulator where sim ≥ 0.02 | real/sim 0.943/0.913 (n=64), 0.400/0.335 (128), 0.045/0.053 (192); **holds** |
+| E2 P2b | simulator decreasing, ≤ 0.02 at n = 256 | sim 0.913, 0.335, 0.053, 0.0059 (real 0.005 at n=256); **holds** |
 
 **E1 details (K = 2000 / 8000 / 32000; main decoder).**
 - Success: n = 32: 20/20/20; n = 40: 20/20/20; n = 48: 18/20/20.
