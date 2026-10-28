@@ -1,0 +1,92 @@
+1. **OVERCLAIM — DFB does not establish factoring hardness.** Its pointwise likelihood-ratio proof is correct under the assumed joint spread bound. LT(B) is coherent as an artificial sampling model; it is not a theorem about actual deterministic coefficients. A nontrivial computational conclusion needs a resource bound and a distributional hardness assumption. For one fixed \(N\), an algorithm can hardcode its factors, so the stated pointwise baseline “every algorithm succeeds with probability \(\le\varepsilon_0\)” cannot hold.
+
+   “Determinant-free” also needs an operational definition. An unrestricted \(\Phi(N,\tau_p,\tau_q)\) can factor \(N\) internally and compute the purported non-examples. Receiving \(N\), but not receiving \(p,q\), does not prohibit using them computationally. Ordered trace pairs are legitimate inputs to the abstract theorem.
+
+2. **OVERCLAIM — RM’s asymptotic sample and cost claims are unsupported.** Independence of Frobenius classes does not establish that summing over false integer splits preserves the \(\Omega(\ell^{-2})\) separation available for actual trace pairs. “The others are noise” needs a quantitative argument as their number grows.
+
+   Moreover, complete factorisation does not make enumeration polynomial: a coefficient can have \(\exp(\Theta(n/\log n))\) divisors. The claimed “factorisations plus poly(n)” needs an average-case divisor bound or a different decoder. The implemented family contains exactly **49,413 curves**, so an infinite family and uniform complexity assumptions must be specified. Removing the known isogenous pairs is necessary, but does not establish uniform independence or control exceptional images.
+
+   The \(2^{-1/3}\) scaling is algebraically correct **conditional on those missing assumptions and standard heuristic GNFS costs**. See [Buhler–Lenstra–Pomerance, *Factoring integers with the number field sieve* (1993), §11](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf).
+
+3. **WRONG — E2 does not exclude polynomial-time selection generally.** The assertion “the split is computable in polynomial time only if all but one prime factor are small” is false. For example,
+   \[
+   A=1000003\cdot1000033=1000018^2-15^2
+   \]
+   factors in one Fermat step, although both primes exceed \(80^2\). Perfect powers and other structured products give further counterexamples.
+
+   E2 correctly measures its registered smoothness filter. Within the random-integer heuristic, that filter becomes super-polynomially rare. Neither four experimental sizes nor Dickman estimates prove that **all** efficiently splittable trace products are super-polynomially rare.
+
+4. **OVERCLAIM — the native-algorithm headline remains misleading after k3.** I reran both scratch trace checks successfully. The cancellation identities are valid for their stated semiprime setting. The proposed correction that the same sums reveal the factors is right: independently,
+   \[
+   \sum_tH(4N-t^2)=2(N+q)
+   \]
+   recovered \(q=103,151,1009\) in the checked examples.
+
+   However, \(O(\sqrt N)\) class-number calls is not itself a certified bit-complexity implementation. The scratch routines explicitly disclaim native certification; their discriminants include multiples of \(N\), whose factorisation reveals \(N\)’s factors. A complete implementation must specify its square-part and class-number algorithms. [Hafner–McCurley, JAMS **2** (1989), 837–850](https://doi.org/10.1090/S0894-0347-1989-1002631-0) supplies the relevant conditional subexponential class-group machinery.
+
+   “Native” remains meaningful only as an explicitly restricted algorithm class. It does not describe the best way to compute the coefficient: factoring first already gives a deterministic \(N^{1/5+o(1)}\) route. [Harvey, *An exponent one-fifth algorithm*](https://arxiv.org/abs/2010.05450).
+
+5. **CORRECT WITH FIXES — k1’s sampler repair works; its time corollary needs qualification.** [Kalai, *Generating Random Factored Numbers, Easily*, J. Cryptology **16** (2003), 287–289](https://www.microsoft.com/en-us/research/publication/generating-random-factored-numbers-easily/) permits exact uniform magnitudes with known factorisations; add the correct zero mass and independent signs. Thus simulated product factorisations can indeed be generated efficiently.
+
+   Probability domination does **not** directly compare expected runtimes of the unchanged algorithm: simulated inputs may trigger arbitrarily long unsuccessful runs. With efficient verification and a known expected-time bound \(T\), truncation and independent restarts instead give an \(O(C^K(T+\text{sampling cost}))\) simulation.
+
+   Also retain the exact finite-box constant. \(2^{k+3}B^2\) is asymptotic: for weight 2, \(X=32768,p=32771,q=32779\), the exact \(C/B^2\) is **32.05568**, exceeding 32.
+
+6. **WRONG / CORRECT WITH FIXES — weight-12 remarks.** The displayed modulus does not determine \(\tau(p)\) from ordinary determinant congruences as asserted. Modulo 23 the distinction is nonabelian: \(13\equiv59\pmod{23}\), but
+   \[
+   \tau(13)\equiv22,\qquad\tau(59)\equiv2\pmod{23}.
+   \]
+   This is precisely the representability distinction in [Wilton, *Congruence Properties of Ramanujan’s Function \(\tau(n)\)*, Proc. LMS **31** (1930), opening theorem](https://gaetan.chenevier.perso.math.cnrs.fr/GT/wilton.pdf).
+
+   The **691 leak is correct**: recover the unordered eleventh powers from their sum and product, then invert exponent 11 using \(11^{-1}\equiv251\pmod{690}\). However, exceptional congruences alone do not prove a quantitative spread bound for \(\Delta\). “No lattice attack exists” also exceeds DEC’s explicitly limited scope.
+
+7. **CORRECT WITH FIXES — Gekeler and adelic spread bounds.** The class-number argument works for non-maximal orders when \(\chi_{-\Delta}\) is the **imprimitive Kronecker character**, retaining its conductor Euler factors. \(L(1,\chi)\le3+\log\Delta\) is safe. Robin’s inequality supports the stated order of growth; handle \(m=1,2\) separately and justify the substitution in the non-monotone small range. The GRH \(O((\log\log p)^2)\) conclusion is a valid loose bound. Specify the automorphism-weighted random-curve measure. See [Gekeler, IMRN **2003**, 1999–2018, Theorem 4.6](https://www.math.uni-sb.de/preprints/preprint71.pdf).
+
+   The determinant-fibre density ratio \(\le[\mathrm{GL}_2:G]\) is correct within the density model. **37a1 is verified**, not merely unverified: [LMFDB records level 74 and index 2](https://www.lmfdb.org/EllipticCurve/Q/37/a/1). Conversely, 11a1’s index is **1200**, not bounded above by 24. Thus the inferred “≤9 extra bits” is unsupported; that index bound gives \(2\log_2(1200)=20.458\) bits. [LMFDB, Cremona 11a1](https://www.lmfdb.org/EllipticCurve/Q/11/a/2).
+
+8. **CORRECT WITH FIXES — SCX.** Openness of \(\Lambda\), the quotient-index inequality, and the scalar calculation for a Serre curve are correct in the Chebotarev model. For a joint family, write \(O_{\mathcal F}(1)\); openness alone gives no uniform \(O(K)\) information bound as the family grows. A joint-image argument is required, with geometric isogenies treated appropriately. [Lombardo, JNT **168** (2016), 386–412, Theorem 1.1](https://arxiv.org/pdf/1501.04600) provides the relevant product theorem.
+
+   E4’s trace/determinant coverage does **not** prove surjectivity at every claimed prime: the proper nonsplit-Cartan normalizer in \(\mathrm{GL}_2(\mathbf F_3)\), of order 16, contains all six trace/determinant pairs. The database verification repairs the conclusion for 37a1; the stated E4 proof does not.
+
+9. **CORRECT WITH FIXES — DFB(m), coupling, and the reduction table.** The conditional likelihood-ratio argument works if *all* additional randomness is independent of the lifts conditional on the supplied classes. Its unambiguous constant is
+   \[
+   \prod_i\frac{B^2m^2\,|B_{p,i}(c_p)|\,|B_{q,i}(c_q)|}
+   {N^{(k_i-1)/2}},
+   \]
+   with the residue boxes defined explicitly. The note mixes \(C_m\), \(C_m^K\), and product notation.
+
+   Holding the true classes is an additional oracle assumption, not something justified by “probing torsion algebras.” The quadratic-extension identity is correct; DEC excludes the specified polynomial annihilators, not arbitrary group algorithms. I found no verified polynomial reduction from \(a_N\) plus ordinary group operations; [Galbraith–McKee (2005), §§2–3](https://www.math.auckland.ac.nz/~sgal018/pair-mod-n.pdf) uses stronger point-count inputs.
+
+   Table audit: BC, group order, CRT-T, and CLS correctly violate the **intended** interface; CM violates small spread; MC violates none and is heuristic. The universal “every known reduction violates them” wording must therefore be qualified.
+
+10. **CORRECT WITH FIXES — k4’s information proof survives, and sharpens.** The passage from chi-square to mutual information is valid:
+    \[
+    I(D;Y\mid C)\le \mathbb E_D D_{\rm KL}(P_{Y|D,C}\|U).
+    \]
+    Conditional independence justifies the \(K\)-curve extension. The theorem must retain conditioning on exposed \(C_\ell=N\bmod\ell\), rather than on the actual integer \(N\).
+
+    Independence across primes is a model assumption, not automatic for every fixed curve. However, 37a1’s \(2\)–\(37\) entanglement does **not** refute its odd-only Haar version: projecting away 2 gives the full odd adelic image. General curves need exceptions; 11a1 at \(\ell=5,C=1\) already gives **1.5 bits**.
+
+    A sharper calculation gives
+    \[
+    \chi^2(P_d\|U)\le(\ell^2-1)^{-1},
+    \quad
+    I<2K\log_2(4/\pi)<0.698K.
+    \]
+    This improves 1.187K under exactly the independent full-GL₂ hypotheses.
+
+11. **CORRECT WITH FIXES — BC-native and JS.** [Bach–Charles, Contemp. Math. **463** (2008), 9–15, Theorem 2.2](https://arxiv.org/pdf/0708.1192) supports the even-weight, non-CM, density-one conclusion. Cost means \(T(2n)\), not \(T(n)\); “same cost” obscures this distinction. The auxiliary-index semiprime cancellation also needs a separate extension before claiming applicability at all indices.
+
+    JS’s counting identity and factoring quadratic are correct; I checked them directly. Both root counts zero give \(V=N\) and no information. The \(1/9\) exception probability is asymptotic for good independently sampled primes and an \(S_3\) cubic.
+
+12. **CORRECT WITH FIXES — numerical reconciliation.** Aggregating the raw files reproduces the main numerical claims:
+
+    E1 successes are \(20/20/20\), \(20/20/20\), \(18/20/20\) across increasing \(K\); maximum-\(K\) top-1 counts are \(19,18,19\), hence **56/60**. Reported medians, candidate means, accidental counts \(27,2,0\), and pooled accuracies agree. The DFB toy values recompute to **3.64994**, **2.10653**, **0.50304** bits. Independently recomputing all E3 class-number results and E4 traces reproduces their stored counts. E2 rates reproduce exactly from \(566,240,27,3\) real acceptances and \(91292,33480,5321,590\) simulated acceptances.
+
+    One mismatch: **24–39** describes the *registered* E3 bound; the displayed *proved* formula gives **22.194–35.697** on those primes. E2’s recorded total is **612.29 seconds**, so “TBD” is stale. The JSONL files do not establish the quoted peak RSS or complete wall times.
+
+13. **CORRECT WITH FIXES — preregistration and control interpretation.** P1c/P1d are correctly reported as refuted; the added predictions pass. But the search-space explanation is quantitatively wrong. At 48 bits, actual residue-space sizes have median **365,310**; after retaining exactly the available QR information, the median is **26,400**, not approximately 4,000. Swapping \(p,q\) erases the square-class distinction whenever \(N\) is nonsquare modulo \(\ell\).
+
+    Disclose D4 and the simulator endpoint deviation \(2\lfloor\sqrt p\rfloor\) versus \(\lfloor2\sqrt p\rfloor\). The supplemental E2 files repeat samples and must not be pooled as independent data. Operational inspection found no hidden \(p,q\) input; all **9 tests pass**.
+
+**Overall verdict: MAJOR REVISION.** The likelihood-ratio lemma, scalar symmetry, toy computations, and corrected trace identities are useful. The note nevertheless overstates their computational consequences, lacks the quantitative argument needed for RM’s asymptotics, and mistakes one smoothness filter for a general selection barrier. The single-coefficient reduction remains open; I found no verified new polynomial reduction.
