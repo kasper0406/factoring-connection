@@ -1,7 +1,8 @@
 # thmAB: Theorem AB written out in full (algebraic two-point blocks under DW) — results
 
-Agent `thmAB`, phase 30, 2026-10-28. **v2**: v1 + the repairs from codex adversarial round `thmAB_2` (MAJOR REVISION,
-no FATAL) and the Opus proof critic (ACCEPT WITH MINOR REVISIONS); §15 records the reviews.
+Agent `thmAB`, phase 30, 2026-10-28. **v3**: v1 + the repairs from codex adversarial round `thmAB_2` (MAJOR REVISION,
+no FATAL) and the Opus proof critic (ACCEPT WITH MINOR REVISIONS) (= v2), + the repairs from codex round `thmAB_3`
+(MAJOR REVISION, no FATAL, all items repairable, no exponent changed); §15 records the reviews.
 
 Files:
 - this note;
@@ -42,8 +43,8 @@ Combined with the proved pieces (U′ under DW, Prop DC, Theorem RAT, the DW lem
 
 Status: **proved, internal and unrefereed**, like everything in this project. It rests on the project's whole
 internal chain, on c12rat's Theorem RAT, and on published inputs, of which the essential one is Drappeau's Lemme 5,
-which itself rests on Harper's unrefereed preprint. The v2 repairs have been checked by one further codex round
-(§15).
+which itself rests on Harper's unrefereed preprint. The proof has had three codex rounds (blind, adversarial,
+re-check) and an Opus proof critic; v3 applies the round-3 repairs, which have not themselves been re-reviewed (§15).
 
 How the proof works:
 - **The pair law is explicit.** Given the rational data g and the root event, (F(P₁), F(P₂))/q is within total
@@ -67,7 +68,7 @@ What remains, honestly:
 - the review of this note (§15);
 - the v2 repairs of c12rat's Theorem RAT, which have not been re-reviewed;
 - the internal chain, which no outside referee has read;
-- C_γ (hence c(α)) is not computable, as for Theorem U.
+- C_γ (hence c(α)) is not quantified here, as for Theorem U.
 
 **Probabilities (ours, after the v2 repairs; reviewers' in §15).**
 - Theorem AB as proved here is correct: 75%. [codex round 2: 80% after repairs; proof critic: 80%]
@@ -110,8 +111,9 @@ Write E_e[·] := E[· | R_𝔮, g ∈ Ω_e] for expectations over g. By c12alg L
 has density 1 + O(q/H + q/W_m) with respect to the uniform law on the primitive points of Ω_e for g with
 q ∤ G_g(r, 1). The set of g with q | G_g(r, 1) keeps its mass ≈ 1/q (on it the root event is q | w). On that set every
 point of Λ_𝔮 has q | G(P′), so Rat(P′; g) = 0 (q > B) and R(P; g) = 0 (q ∉ J, q > B). Such g contribute zero to every
-sum below; they enter only through the normalisation, identically in numerators and denominators, so all ratios are
-unaffected and absolute terms change by a factor 1 + O(1/q) (codex thmAB_2 #7).
+sum below. If the surviving component has conditional mass t = 1 − O(1/q), then ϕ^alg_full = ϕ^alg_good/t and
+ϕ^rat_full = ϕ^rat_good/t + (1 − t)/t (codex thmAB_2 #7, thmAB_3). We work with the surviving component; the
+corrections are a factor 1 + O(1/q) and an additive O(1/q) ≤ O(1/B), negligible against every budget.
 
 *Children.* For P′ ∈ Box(𝔮):
 - Rat(P′; g) := 1[G_g(P′) ∈ 𝒮_B, |G_g(P′)| ≥ 𝔐|P′|_∞N^{−η₀/4}];
@@ -423,7 +425,9 @@ children and ≍ (D^{1−4α} + D^{7α−3})λ^C for parents.
      (Lemma BL(i)) gives Ψ₁ = ρ̂(|ξ|)·τ(δ)·(1 + O(E_FO)) with τ evaluated at β(ξ, y).
    - **β-drift.** Replacing β(ξ, y) by β(X₁, y) in δ^γ and in g_𝔪 costs a factor
      1 + O(|β(ξ) − β(X₁)|·(log S₀ + Σ_{p|Δ′, p≤y}p^{−β}log p)). By HT Thm 2, |β(ξ) − β(X₁)| ≪ log(X₁/|ξ|)/(log X₁ log y)
-     ≤ C_X/log X₁ (as |ξ| ≥ X₁y^{−C_X}), and Σ_{p|Δ′}p^{−β}log p ≤ Cλ. So the factor is 1 + O(D^{−2α}) (critic 4a).
+     ≤ C_X/log X₁ (as |ξ| ≥ X₁y^{−C_X}), and Σ_{p|Δ′}p^{−β}log p ≤ Cλ. So the factor is 1 + O(D^{ζ−2α}/λ) for
+     children and 1 + O(D^{4α−2}/λ) for parents (v3; codex thmAB_3: v2's O(D^{−2α}) was overstated). These are absorbed
+     into e (step 4); their squares, D^{−α−1/2} and D^{8α−4}, are ≤ D^{−2α} on [3/8, 2/5) (critic 4a).
    - For δ not y-smooth, Ψ₁ = 0 = c₁τ(δ) exactly.
 2. **Archimedean factor.** Put Y(x₁) := ρ̂(|ξ|)/ρ̂(X₁).
    - Fact HT3 iterated ≤ C_X + 1 times (|ξ| ≥ X₁y^{−C_X}), with the drift of β controlled by HT Thm 2, gives
@@ -436,7 +440,7 @@ children and ≍ (D^{1−4α} + D^{7α−3})λ^C for parents.
    the x₁-marginal of ν (or ν⁺). No conditioning on the block is needed: the archimedean and local factors are
    combined by Cauchy–Schwarz and Hölder.
 4. **Assembly.** On every non-exceptional x₁, Ψ₁/c₁ − 1 = (Y − 1)τ(1 + e) + (τ − 1)(1 + e) + e, with
-   |e| ≤ CE_FO + Cγh^{1/2} + CD^{−2α}. Cauchy–Schwarz with the fourth moments gives E[(Ψ₁/c₁ − 1)²1_{non-exc}]
+   |e| ≤ CE_FO + Cγh^{1/2} + C(D^{ζ−2α} + D^{4α−2}). Cauchy–Schwarz with the fourth moments gives E[(Ψ₁/c₁ − 1)²1_{non-exc}]
    ≤ C(γ²(log Cd)² + γ²λ² + E_FO² + u^{−2}). Hölder gives E[(Ψ₁/c₁)⁸1_{non-exc}] ≤ C(EY^{16}Eτ^{16})^{1/2} ≤ C.
    (v1 used an e^{O(λ)} pointwise bound on a set it believed to have mass Cdh^{1/2}; that step is gone.)
 5. **Pointwise upper bound** (every block, every δ, used only on exceptional sets and in §9). Ψ₁ ≤ e^{O(λ)}δ^{γ}(X₁/|ξ|)^γc₁.
@@ -447,9 +451,14 @@ children and ≍ (D^{1−4α} + D^{7α−3})λ^C for parents.
    - h_*^{−γ} = e^{o(1)}.
 6. **p₁ versus c₁** (critic item 5; codex thmAB_2 #6 — this breaks the v1 loop OPV/EXC/PU).
    - *Upper:* p₁ ≤ max fibre mass × #{x₁ ∈ 𝒮_y : |x₁| ≤ X₁} ≤ (3/W₁)·2Ψ(X₁, y) ≤ 12(d + 1)c₁, by PG(d).
-   - *Lower:* p₁ ≥ ν(x₁ ∈ 𝒮_y, x₁ non-exceptional) = c₁E[Yτ(1 + e)1_{non-exc}]. Now E[Yτ] ≥ (1 − O(1/u))Eτ,
-     E[τ1_{non-exc}] ≥ 1 − o(1) − E[τ1_{exc}], and E[τ1_{exc}] ≤ (ν(exc))^{1/2}(Eτ²)^{1/2} = o(1) by EXC-A's mass bound
-     (which uses only PG(d) and the gcd tails). Hence p₁ ≥ c₁/2.
+   - *Lower* (v3; codex thmAB_3: v2 identified the marginal smooth mass with a block density, which is false — the
+     marginal weights integers by fibre length, the cell density counts coprime integers uniformly; finite
+     counterexample (2,0) + [0,2)(1,0) + [0,2)(1,1)). Use the interior cells of §8 and Lemma CF(ii) instead:
+     p₁ ≥ (1 − tiny)E_ν̂Ψ₁ and, since Ψ₁(∗) = 0,
+     E_ν̂[Ψ₁/c₁] ≥ ν̂(interior) − E_ν̂[|Ψ₁/c₁ − 1|1_{int}] ≥ 1 − ν̂(∗) − 𝒱^{1/2} ≥ 1 − Ch − e^{−λ} − 𝒱^{1/2}.
+     Here ν̂(∗) ≤ Ch + e^{−λ} uses only Lemma BL(ii) and EXC-A's mass bound ν(ℰ) ≤ e^{−λ} (PG(d) and the gcd tails),
+     and 𝒱 is the moment bound of steps 1–4, an expectation of a function of the cell of x₁ under ν (no identity
+     between masses and densities is needed). Hence p₁ ≥ c₁/2; this uses neither PU-A nor boundary smoothness.
    - For parents the same, with γ₂ log d ≍ D^{1−4α}λ → 0.
 
 **Exponents.**
@@ -486,11 +495,12 @@ The same holds for ν⁺.
   - Given x₁, the partners x₂ form an AP of difference Δ′ on a fibre, an interval of length ℓ(x₁). **First** split
     the fibre into its intersections with the dyadic ranges ±[2^kX₂⁻, 2^{k+1}X₂⁻) (O(log X₂) pieces; the part
     |x₂| < X₂⁻ is covered by the near-zero bound). **Then** cover each nonempty piece by an interval J of length
-    max(|piece|, λ_min), λ_min := X₂y^{−C_X}/ϑ ≤ X₂⁻, inside ±[2^{k−1}X₂⁻, 2^{k+2}X₂⁻) (codex thmAB_2 #4, critic 5).
-    On J, c12rat **Lemma BTS** applies: modulus Δ′, W = |J|/Δ′ ≥ λ_min/Δ′ ≥ 2y (λ_min ≥ N^{h}/(V₂²S₂²y^{C_X})), and
-    gcd(a, Δ′)W ≤ |J| ≤ 2^{k}X₂⁻ ≤ (left end of J)·2. It bounds the smooth partners in the piece by
-    e^{O(λ)}(|J|/Δ′)(2^{k+2}X₂⁻Δ′/|J|)^{γ}ρ̂(2^{k+2}X₂⁻) ≤ e^{O(λ)}(y^{C_X}ϑΔ′)^γ(|J|/Δ′)c₂, using
-    ρ̂(2^{k+2}X₂⁻) ≤ C(X₂/X₂⁻)^γρ̂(X₂) ≤ e^{O(λ)}c₂.
+    max(|piece|, λ_min), λ_min := X₂y^{−C_X}/ϑ ≤ X₂⁻, placed **inside the piece's own dyadic range** [t, 2t]
+    (t = 2^kX₂⁻; reflect negative pieces) (codex thmAB_2 #4, thmAB_3; critic 5). On J, c12rat **Lemma BTS** applies:
+    modulus Δ′, W = |J|/Δ′ ≥ λ_min/Δ′ ≥ 2y, log W ≥ log X₂ − C_X log y − log ϑ − log Δ′ = (1 − o(1))log X₂, and
+    gcd(a, Δ′)W ≤ |J| ≤ t ≤ inf J. It bounds the smooth partners in the piece by
+    e^{O(λ)}(|J|/Δ′)(2tΔ′/|J|)^{γ}ρ̂(2t) ≤ e^{O(λ)}(y^{C_X}ϑΔ′)^γ(|J|/Δ′)c₂, using
+    ρ̂(2t) ≤ C(X₂/X₂⁻)^γρ̂(X₂) ≤ e^{O(λ)}c₂. Parent fibres use the parent size bounds.
     For children, (B^{C_X}Δ′)^γ = e^{O(λ)} (Δ′ ≤ 2S₂² = L[α]^{O(1)}, γ ≍ D^{−α}λ), and ϑ^γ ≤ ϑ₀^γ = e^{o(1)} for
     non-thin pairs.
   - So ν(δ | x, both smooth) ≤ e^{O(λ)}δ^{−1+γ}c₁c₂ for non-thin child pairs. For parents the factor is
@@ -828,7 +838,17 @@ and C_γ = C_γ(a, κ, d₀, b₂) is the polylog exponent of the level-2 relati
    **Weight bridge to RAT** (critic item 1). c12rat states RAT with the idealised weights a_{P′}(|G_g(P′)|) (c12alg
    §5), while Lemma VD's ϕ^rat uses the true A_{P′}(g). By DW(a)⁺, |A_{P′}(g) − a_{P′}(|G_g(P′)|)| ≤ 4qN^{−η₀/2} for
    every g, which is ≤ N^{−η₀/3}a_{P′}. Hence m(g) = m̃(g)(1 + O(N^{−η₀/3})) pointwise, and
-   ϕ^rat_true ≤ (1 + N^{−η₀/4})ϕ^rat_ideal + N^{−η₀/4}; likewise for σ^rat.
+   ϕ^rat_true ≤ (1 + N^{−η₀/4})ϕ^rat_ideal + N^{−η₀/4}.
+
+   *Parents* (v3; codex thmAB_3: "likewise" was unjustified, since acceptability depends on the coefficients through
+   f_d disc f, not only on F(P)/q). RAT's idealised parent weight is a_P^{id}(t) := the B₂-smoothness probability of
+   the DW(a)⁺ model law at |G| = t, restricted to qZ and divided by q, i.e. the value-only weight; c12rat §1.2's
+   a_P(t) := Pr[F(P) acceptable, q child | g, R_𝔮] is read in this value-only form, as c12alg §5 (R2) requires. The
+   true weight a_P(g) satisfies |a_P(g) − a_P^{id}(|G_g(P)|)| ≤ |a_P − s_P| + |s_P − a_P^{id}| ≤ D^C/B + 4qN^{−η₀/2}
+   (§11's root-conditioned subtraction, and the TV of DW(a)⁺ with the root coset). Relative to a_P^{id} ≥ ρ_a(q)D^{−C}
+   (Lemma W-P, P3) this is ε_p ≤ D^C/(Bρ_a(q)) + N^{−η₀/3}. The elementary perturbation estimate gives
+   σ^rat_true ≤ (1 + O(ε_p))σ^rat_ideal + O(ε_p). In the open window ε_p = L^{−a+o(1)}; at α = 3/8,
+   ε_p ≤ L[3/8, −(a − c₂) + o(1)] ≤ D^{−1}, by a > 2c₂.
 
    **(A1) is not needed** (critic item 9). c12alg §5 made a² > 4α/d₀ conditional on c12rat using pc3 LAT(d). c12rat's
    Theorem RAT does not: Lemma MULT uses K = qΔ only, which holds without (A1), and Lemma TYPE treats q as a "large"
@@ -1000,7 +1020,30 @@ Probabilities: AB 80%, AB₂ 72%, 2L-final(α) 65%, 2L-final(3/8) 52%; residual 
 c12alg §2.7/§5) and, at 3/8, U′-DW at η₀ = D^{−3/8} and the exact ties θ = 1 − 2α, 3 − 7α = α closed only by
 constants.
 
-**Codex round 3 `thmAB_3`** (on v2): *(pending)*
+**Codex round 3 `thmAB_3`** (xhigh, on v2): **MAJOR REVISION, no FATAL**; "the predicted modulus/divisor/library-size
+obstruction does not materialize … both [remaining problems] appear repairable without changing the claimed exponents."
+- Part A (v2 repairs): #2 (parent normalisation, Lemma W-P), #3 (root-conditioned subtraction), #5 (boundary Hölder),
+  #8 (cutoff) correctly fixed; #1, #4, #6, #7, #9 partly fixed.
+- Part B (the orchestrator's triage points): **T1 YES** (gcd classes via Lemma CL, endpoints at ξ/δ, actual incidence
+  weights; define Ẽ := 0 when A_i = 0); **T2 YES** (children log Q = O(D^αλ) vs log(ξ/δ) ≍ D^{2α}λ; parents
+  O(D^{1−α}λ) vs D^{2−3α}λ; full BV/BDH unnecessary); **T3 NO unpaid factor**, with a ledger: modulus × multiplicity
+  ≪ 1/δ (parents d log V₁/δ); class mass D^C/δ; densities e^{O(λ)}δ^{2γ}; rational integral Ξ^C/n²; endpoint
+  normalisation λ^Ch_*^{−2}; grid count D^Ch_*^{−1}; Σ_δδ^{−2+2γ} = O(1); "for fixed (δ, 𝔨), Δ′ is determined, so no
+  τ(Δ′)"; net gaps α − θ = 1/2 − α and (3 − 7α) − θ_p = 2 − 5α, both 1/8 at 3/8; **T4 YES** ("FO on every retained
+  block, LF-A's centered second moment, the archimedean fourth moment, and Hölder … a genuine proof mechanism").
+- (A1) removal and the U′-DW re-check at η₀ = D^{−3/8} pass at the exponent level.
+
+| # | sev. | finding | action (v3) |
+|---|---|---|---|
+| 1 | MAJOR | OPV-A step 6: the marginal smooth mass was identified with a block density (finite counterexample) | lower bound via interior cells and CF(ii): p₁ ≥ c₁(1 − Ch − e^{−λ} − 𝒱^{1/2}) (§6 step 6) |
+| 2 | MAJOR | parent RAT weight bridge "likewise" unjustified (acceptability depends on coefficients) | value-only idealised parent weight; ε_p ≤ D^C/(Bρ_a(q)) + N^{−η₀/3} via §11 (§13) |
+| 3 | MINOR | β-drift overstated (D^{ζ−2α}/λ and D^{4α−2}/λ, not D^{−2α}) | absorbed into e; squares fit the budgets (§6 step 1) |
+| 4 | MINOR | BTS needs gcd·W ≤ X₀, v2 gave ≤ 2X₀ | covering interval inside the piece's own dyadic range; log W verified (§7) |
+| 5 | MINOR | zero-component normalisation not exact | explicit 1/t and (1 − t)/t corrections, O(1/q) (§1.2) |
+| 6 | MINOR | §0 wording ("not computable", review status) | fixed |
+
+Probabilities: AB 80%, AB₂ 70%, 2L-final(α) 65%, 2L-final(3/8) 55%. **The v3 repairs have not been re-reviewed**;
+they are the reviewer's own proposed fixes, applied as stated.
 
 **Opus literature critic**: *(pending)*
 

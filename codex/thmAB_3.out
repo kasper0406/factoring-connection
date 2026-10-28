@@ -1,0 +1,227 @@
+**Recommendation: MAJOR REVISION.** I read v2 in full and cross-checked the relevant interfaces in c12rat, c12alg, uprime, and Drappeau’s Lemme 5. The predicted modulus/divisor/library-size obstruction does **not** materialize. The main remaining problems are an invalid marginal identity and an unjustified parent RAT weight bridge. Both appear repairable without changing the claimed exponents.
+
+Repository files were kept read-only.
+
+**Part A — repair audit**
+
+| Issue | Verdict | Verification and remaining fix |
+|---|---|---|
+| **#1 OPV-A** | **Partly fixed** | [Steps 1–4](/Volumes/git/factoring-connection/notes/thmAB_results.md:414) correctly apply FO throughout and obtain the eighth moment by Hölder. The upper bound \(p_1\le12(d+1)c_1\) is independent and correct. The lower-bound argument has escaped the old dependency loop, but [step 6](/Volumes/git/factoring-connection/notes/thmAB_results.md:450) substitutes a block density for the actual marginal through an invalid identity. See below. |
+| **#2 Parent normalization** | **Correctly fixed** | [W-P](/Volumes/git/factoring-connection/notes/thmAB_results.md:659) now uses a purely rational \(R_{\rm typ}\). P1’s exceptional same-\(\ell\) lines have the required rational normalization; P2 gives \(c_i\ll\rho_a(q)\); P3 uses an aggregate active-point lower bound. Thus the displayed normalized inequality follows with no missing \(\rho_a^{-2}\). |
+| **#3 Root-conditioned subtraction** | **Correctly fixed** | [§11](/Volumes/git/factoring-connection/notes/thmAB_results.md:746) separates \(p=q\), includes both discriminant events for \(q'\ne q\), and treats \(q'=q\) separately. Use the **DW extension** of SQF, including averaging over \(w\), rather than fixed-\(w\) SQF(b) alone. The resulting \(D^C/B\) subtraction and endpoint condition remain valid. |
+| **#4 Fibre covers/BTS** | **Partly fixed** | [Split first, then cover](/Volumes/git/factoring-connection/notes/thmAB_results.md:486) fixes the original short-piece problem. However, the printed verification establishes \(\gcd(a,\Delta')W\le2X_0\), whereas BTS requires \(\le X_0\). Specify the tighter placement below. The thinness cancellation at [line 518](/Volumes/git/factoring-connection/notes/thmAB_results.md:518) is correct. |
+| **#5 Boundary Hölder** | **Correctly fixed** | [PD-A step 4](/Volumes/git/factoring-connection/notes/thmAB_results.md:562) uses the joint \((y,x)\) space and averaged moments. Keeping \(Z_y\), then comparing with \(Z_y^+\), is legitimate. |
+| **#6 Marginal comparison/circularity** | **Partly fixed** | The independent upper bound breaks the OPV/EXC/PU loop. The lower comparison still needs the interior-cell argument given below; the equality currently printed is false. |
+| **#7 Conditioned \(g\)-law** | **Partly fixed** | [§1.2](/Volumes/git/factoring-connection/notes/thmAB_results.md:108) correctly retains the zero-contribution component. “All ratios are unaffected” remains false for squared normalizations. The correction is \(1+O(1/q)\), with an additional \(O(1/q)\) rational variance term. |
+| **#8 Cutoff** | **Correctly fixed** | [§1.3](/Volumes/git/factoring-connection/notes/thmAB_results.md:146) now imposes the two algebraic-density conditions actually needed. They imply the weaker near-zero estimate used in EXC-A, including the polynomial factors. |
+| **#9 Wording/status** | **Partly fixed** | [§13](/Volumes/git/factoring-connection/notes/thmAB_results.md:875) correctly says “not quantified.” But [§0](/Volumes/git/factoring-connection/notes/thmAB_results.md:70) still says “not computable,” and [lines 45–46](/Volumes/git/factoring-connection/notes/thmAB_results.md:45) announce a completed further review while §15 marks it pending. |
+
+For **W-P**, the three substantive checks pass:
+
+- **P1:** \(R_{\rm typ}\asymp_{D^C}\widehat\rho_B(\mathfrak MV_1/Y)/\log Y\). If \(\ell\mid K\), first-point lines carrying that \(\ell\) cost \(D^C\log Y/\ell\), while their second-point density costs at most \(\Xi_pD^C R_{\rm typ}\log Y\). Hence the exceptional contribution is
+  \[
+  \ll\Xi_pD^C R_{\rm typ}^2(\log Y)^2/Y.
+  \]
+  There is at most one such \(\ell\), since \(K<Y^2\). Short corner lines must be discarded as in PUB before the linewise BTS application.
+- **P2:** The filter and the \(b\)-window keep \(X_i(g)/(X_F/q)\) within a polynomial factor whose \(\gamma_2\)-power is bounded.
+- **P3:** Active points provide both the rational one-point lower bound and the algebraic lower bound. For the latter, apply Hildebrand **after division by \(q\)**: the model intervals have relative length \(\gg1/d\) at scale \(X_F/q\). The weaker printed statement “relative length \(\ge1/(2dq)\)” alone would not verify Hildebrand’s interval hypothesis.
+
+Consequently,
+\[
+\frac{E_e[R_1R_2c_1c_2]}{z_{\mathfrak q,e}^2}
+\ll\frac{\Xi_pD^C}{n_p^2}.
+\]
+
+For **#3**, the complete subtraction ledger is:
+
+\[
+\begin{array}{c|c}
+\text{exclusion}&\text{conditional upper bound}\\ \hline
+p^2\mid F(P),\ p\ne q & p^{-2}+\text{negligible}\\
+q^2\mid F(P)&O(q^{-1})\\
+q'\mid F(P),\ q'\mid f_d\operatorname{disc}f,\ q'\ne q&O(d/q'^2)\\
+q\mid f_d\operatorname{disc}f&O(d/q)\\
+p\mid N,\ p\mid F(P)&\sum_{p\mid N}O(1/p)\ll\log N/B
+\end{array}
+\]
+
+Also \(b>B_2\), so the parent’s \(b\)-exclusion contributes nothing. CRT endpoint errors remain negligible after summation. This gives \(D^C/B\); comparing with \(s_1s_2\) gives the stated \(a>2c_2\) condition at \(3/8\).
+
+**Part B — explicit triage answers**
+
+**T1 — YES, for the weighted transfer.**
+
+CL correctly converts every gcd class, including full prime-power classes, into units modulo \(\mathfrak k=\Delta'/\delta\). For retained classes, \(\delta\le S_0<y\) eventually, so \(\delta\) is automatically \(y\)-smooth. Thus, on nonprincipal characters,
+\[
+\widehat a_i(\chi)
+=\widehat u_{\xi_{\rm hi},\delta}(\chi)
+-\widehat u_{\xi_{\rm lo},\delta}(\chi),
+\]
+using consistent half-open intervals. Characters themselves impose the coprimality condition.
+
+The library scale is genuinely \(\xi/\delta\). The coefficients retain the actual factors
+\[
+(w_{\mathfrak q,e}/W)m_{\mathfrak q,e}^{-2}
+E_e[\mathrm{Rat}_1\mathrm{Rat}_2\,\cdots],
+\]
+and their parent analogues. The proof bounds the \(g\)-integral and the label’s normalization; it does not require independence of the endpoints, geometry, or rational indicators.
+
+For CF’s unrestricted statement, define normalized energies to be zero when \(A_i=0\).
+
+**T2 — YES.**
+
+Uniformly over the retained library,
+\[
+\begin{aligned}
+\text{children: }&
+\log Q=O(D^\alpha\lambda),&
+\log(\xi/\delta)&\asymp D^{2\alpha}\lambda;\\
+\text{parents: }&
+\log Q=O(D^{1-\alpha}\lambda),&
+\log(\xi/\delta)&\asymp D^{2-3\alpha}\lambda.
+\end{aligned}
+\]
+
+The cutoff and division by \(\delta\) remove only \(o(\log x)\). Therefore \(Q\le(\xi/\delta)^{\eta_D}\) for sufficiently large \(N\), uniformly. Every nonprincipal character has conductor between \(2\) and \(Q\). Also \((\log x)^{c_D}\le y\le x\).
+
+This matches the conductor-restricted, \(1/\varphi(k)\)-weighted statement of [Drappeau’s Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf). Full BV/BDH is unnecessary.
+
+**T3 — NO: there is no unpaid modulus, divisor-multiplicity, or library-size factor.**
+
+Here is the quantitative ledger, with \(\bar\gamma=\max(\gamma_1,\gamma_2)\).
+
+| Source | Children | Parents |
+|---|---:|---:|
+| Modulus weight times determinant multiplicity | \(\varphi(\mathfrak k)M(\mathfrak k\delta)/n^2\ll1/\delta\) | \(\ll d\log V_1/\delta\) |
+| Mass of class \(\delta\) in blocks adjacent to an endpoint | \(D^C/\delta\) | \(D^C/\delta\) |
+| Two cell densities relative to centers | \(e^{O(\lambda)}\delta^{2\bar\gamma}\) | Same |
+| Rational-weight integral divided by squared mean | \(\Xi^C/n^2\), before multiplicity | \(\Xi_pD^C/n_p^2\), before multiplicity |
+| Interval-to-endpoint energy normalization | \(\lambda^Ch_*^{-2}\) | \(\lambda^C(h_*^p)^{-2}\) |
+| Endpoint grid count per label | \(D^Ch_*^{-1}\) | \(D^C(h_*^p)^{-1}\) |
+| Sum over gcd classes | \(\sum_{\delta\ge1}\delta^{-2+2\bar\gamma}=O(1)\) | Same |
+
+For fixed \((\delta,\mathfrak k)\), \(\Delta'=\delta\mathfrak k\) is determined. Hence no additional \(\tau(\Delta')\), determinant count, or number-of-divisors factor appears.
+
+The **label-wide** child grid range has logarithmic length
+\[
+O\!\left(d\log(S_2T_0)+\eta_0\log N+C_X\log B\right),
+\]
+which is polynomial in \(D,\lambda\). The parent range has logarithmic length \(O(C_X\log B_2+\log d)\).
+
+One must interchange the nonnegative sums label by label, as v2 now does. This pays the range for each label against its own weight; it introduces neither the number of labels nor a global maximum range.
+
+Thus the final costs are
+\[
+\mathfrak D_c\le D^C\Xi^Ch_*^{-3},
+\qquad
+\mathfrak D_p\le D^C\Xi_p^C(h_*^p)^{-3}.
+\]
+The net bounds are
+\[
+\exp\{-cD^\alpha/\lambda^2+O(D^\theta\lambda^2)\},
+\]
+and
+\[
+\exp\{-cD^{3-7\alpha}/\lambda^2+O(D^{\theta_p}\lambda^2)\}.
+\]
+Their exponent gaps are
+\[
+\alpha-\theta=\tfrac12-\alpha>0,\qquad
+(3-7\alpha)-\theta_p=2-5\alpha>0.
+\]
+Both gaps equal \(1/8\) at \(3/8\).
+
+**T4 — YES, for the joint cell-moment estimate O1.**
+
+FO on every retained block, LF-A’s centered second moment, the archimedean fourth moment, and Hölder using sixteenth moments provide a genuine proof mechanism. No independence assumption or slogan about covariance substitutes for these estimates.
+
+There is an overstated intermediate drift bound, corrected below. The separate conversion from cell moments to \(p_i\ge c_i/2\) also needs repair. Neither defect reveals a first-order covariance term.
+
+**Part C — ranked remaining and new issues**
+
+**MAJOR — Invalid marginal identity.**  
+At [OPV-A step 6](/Volumes/git/factoring-connection/notes/thmAB_results.md:450),
+\[
+\nu(x_1\text{ smooth},\text{ non-exceptional})
+=c_1E[Y\tau(1+e)1_{\rm non-exc}]
+\]
+does not follow from a smooth count on each block. The marginal weights integers by their fibre lengths; the block density uses uniform coprime counting.
+
+A finite counterexample to that identification is the half-open parallelogram
+\[
+(2,0)+[0,2)(1,0)+[0,2)(1,1).
+\]
+Its lattice points are \((2,0),(3,0),(3,1),(4,1)\). On the block \([2,4)\), the \(2\)-smooth density is \(1/2\). Multiplying by block mass gives \(3/8\), while the actual smooth mass there is \(1/4\).
+
+**Fix:** Use interior cells and CF(ii):
+\[
+p_i\ge(1-\text{tiny})E_{\widehat\nu}\Psi_i
+\ge c_i\{1-Ch-e^{-\lambda}-\sqrt{\mathcal V}-\text{tiny}\}
+\ge c_i/2.
+\]
+This uses BL, EXC’s mass bound, and OPV’s moment estimate, without PU or boundary smoothness estimates. It closes the dependency cleanly.
+
+**MAJOR — The parent RAT bridge is not supplied by value-law TV.**  
+The child argument at [§13, lines 828–831](/Volumes/git/factoring-connection/notes/thmAB_results.md:828) is valid. Its “likewise for \(\sigma^{\rm rat}\)” is unjustified: parent acceptability depends on coefficients through \(f_d\operatorname{disc}f\), not only on \(F(P)/q\). Identical value laws can have different acceptability probabilities.
+
+**Fix:** Specify RAT’s ideal parent weight precisely and prove the comparison using §11’s subtraction. The available absolute error is
+\[
+O(D^C/B+qN^{-\eta_0/2}),
+\]
+not merely the TV term. Relative to the parent smooth weight, it is at most
+\[
+\varepsilon_p
+\ll \frac{D^C}{B\rho_a(q)}+N^{-\eta_0/3}.
+\]
+Then the elementary perturbation estimate gives
+\[
+\sigma_{\rm true}^{\rm rat}
+\le(1+O(\varepsilon_p))\sigma_{\rm ideal}^{\rm rat}
++O(\varepsilon_p).
+\]
+This error is negligible in the open window and under \(a>2c_2\) at the endpoint. The repair is affordable, but must be incorporated into the stated RAT interface.
+
+**MINOR — Overstated uniform \(\beta\)-drift.**  
+At [line 426](/Volumes/git/factoring-connection/notes/thmAB_results.md:424), the displayed preceding bounds yield approximately
+\[
+O(D^{\zeta-2\alpha}/\lambda)
+\quad\text{and}\quad
+O(D^{4\alpha-2}/\lambda),
+\]
+for children and parents respectively, rather than \(O(D^{-2\alpha})\). At \(3/8\), these are \(D^{-7/16}/\lambda\) and \(D^{-1/2}/\lambda\), versus the claimed \(D^{-3/4}\).
+
+**Fix:** Absorb these uniform errors into \(E_{\rm FO}\); their squares fit the stated variance budgets.
+
+**MINOR — Complete BTS hypotheses.**  
+At [lines 489–491](/Volumes/git/factoring-connection/notes/thmAB_results.md:489), choose the covering interval **inside the original positive dyadic range** \([t,2t]\), of length \(\max(|\text{piece}|,\lambda_{\min})\le t\). Then
+\[
+\gcd(a,\Delta')W\le |J|\le t\le\inf J.
+\]
+Moreover,
+\[
+\log W\ge\log X_2-C_X\log y-\log\vartheta-\log\Delta'
+=(1-o(1))\log X_2,
+\]
+which verifies BTS’s second hypothesis too. Reflect negative pieces. Use the parent size bounds for parent fibres.
+
+**MINOR — Zero-component normalization and status wording.**  
+If the surviving \(g\)-component has mass \(t\), then
+\[
+\varphi_{\rm full}^{\rm alg}=\varphi_{\rm good}^{\rm alg}/t,\qquad
+\varphi_{\rm full}^{\rm rat}
+=\varphi_{\rm good}^{\rm rat}/t+(1-t)/t.
+\]
+These are harmless \(O(1/q)\) corrections, not exact cancellation. Also reconcile §0’s remaining “not computable” and completed-review claims with §§13 and 15.
+
+The **(A1) removal passes**: only \(K=q\Delta\) is needed; \(q\)-power classes are handled without requiring \(\Delta<q\). The algebraic divided lattice also permits \(q\mid\Delta'\).
+
+The **endpoint U′-DW re-check passes the listed exponent comparisons**: \(D^{5/8}\lambda\) absorbs the smoothness/TV costs, W-DW is unchanged, the L2 error ratios retain strict margins, and Kern-U’s height condition holds. I found no additional endpoint obstruction in §§12–14. This conclusion accepts the stipulated internal chain; the note itself correctly describes that re-check as less than a line-by-line proof.
+
+Correctness probabilities for the stated claims, conditional on the internal chain and c12rat’s Theorem RAT:
+
+| Claim | Probability |
+|---|---:|
+| (a) Theorem AB | **80%** |
+| (b) Theorem AB₂ | **70%** |
+| (c) Theorem 2L-final(\(\alpha\)), \(3/8<\alpha<2/5\) | **65%** |
+| (d) Theorem 2L-final(\(3/8\)), under \(a>2c_2\) | **55%** |
