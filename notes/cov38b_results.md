@@ -24,16 +24,15 @@ Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now 
 - **Every phase-discarding (term-by-term) certificate fails, with an exact threshold (Theorem B, proved).**
   Take a pointwise bound max_{h≠0}|Σ_ℓ e(hℓ̄/q)| ≤ J q^{−δ}, used through an Erdős–Turán-type certificate that bounds
   the error term by term in the frequency h. Then:
-  - for the natural (nonnegative, positive-mass) certificates it certifies the target **iff** δ > δ*(c) = (1+2c)/(7−2c),
-    up to q^{o(1)}. At c = 3/8, δ* = 7/25 = 0.28.
-  - No phase-discarding certificate of any shape (signed, sparse support) works below (1/2+3c)/(7−2c) = 13/50.
+  - it certifies the target **iff** δ > δ*(c) = (1+2c)/(7−2c), up to q^{o(1)}, for every certificate shape (signed,
+    any support, any mass). At c = 3/8, δ* = 7/25 = 0.28.
   - but Parseval caps every such bound at δ ≤ 1/(7−2c) = 4/25 = 0.16 (square-root cancellation).
   - **The gap is 3/25 in the exponent of q, beyond square-root cancellation.** Known results at length q^{0.32}
     give δ = 0 for primes (all prime-variable Kloosterman bounds start at q^{1/2+ε}) and a log saving for integers.
   - New ingredient: the Fourier ℓ¹ norm of a Farey-arc set with H′ denominators is ≥ H′/polylog
-    (Lemma F, via an exact Freiman isomorphism to rationals and an lcm-sum energy bound). For nonnegative
-    certificates of positive mass fraction, the union over the H′ dilates therefore buys nothing: one arc does as
-    well. For signed or sparse certificates a gain of at most H^{1/2} (1/50 in δ) is not excluded.
+    (Lemma F, via an exact Freiman isomorphism to rationals and an lcm-sum energy bound). Every nonzero Fourier
+    coefficient of the set is ≤ K q^{o(1)} (Lemma F2, from GPT-6.1-sol's blind round). So the union over the H′ dilates
+    buys nothing in any phase-discarding argument: one arc does as well.
   - Multiplicative characters (GRH included), joint phase discarding over (B, ℓ), and a-adaptive magnitudes with a
     fixed weight fail in the same way (Lemma M, Remark B2, Prop. B′).
   - **Not excluded:** estimates that keep the phases across h or B, e.g. a bilinear bound for
@@ -103,16 +102,25 @@ H = ⌊Y^{1/2}J^{−c}⌋. Write q for the larger prime of a pair (p, q) ∈ S_n
   ≥ cN^{1/5}. Consistently, Theorem W's (achievable) exponent is min(1/5, (1−c)/(7/2−c)), which equals 1/5 for all c ≤ 3/8.
   - So a weaker positivity statement (c ≤ 3/8) gives **no** N^{1/5−δ} through Theorem R.
   - Log gains: λ = J^{1/4}(log N)^{−a} buys at most (log N)^{4a/5} (U4), and it is still a power-strength statement.
-- (c) **No averaged form suffices by itself.** Theorem R guarantees success only on covered pairs. An almost-all
-  statement (all but E pairs) needs a second algorithm for E.
+- (c) **Averaged forms help only if they make the exceptional set empty.** Theorem R guarantees success only on
+  covered pairs. An almost-all statement (all but E pairs, E ≥ 1) needs a second algorithm for E.
   - If that algorithm is in the family, Theorem U applies to the union design (§4), and the union must cover every
     pair at combined λ < J^{1/4}.
   - Outside the family, nothing is known that recognises or factors the uncovered set. inversesieve shows it carries
     no usable local structure, and forgetful containers fail.
-  - Moments: the j-th centred moment of a count with mean λ is ≍ C_jλ^{j/2} even under Poisson behaviour, so
-    Chebyshev gives an exceptional count |S_n|·C_jλ^{−j/2}. Making it < 1 needs j > 2(7−2c)/(1−2c), which is 50 at
-    c = 3/8. (Truncated inclusion–exclusion is worse: depth ≳ λ.) The pair box supports level ≤ |S_n| ≈ Y^{7−2c},
-    i.e. moments of order ≤ 6; sieve2d's error analysis stops at 4–5. (Corrected from "25" after the proof critic.)
+  - **An averaged estimate strong enough to force E = ∅ does suffice.** GPT-6.1-sol's blind round corrected our
+    draft's "no averaged form helps".
+    - Per q, a centred-moment bound Σ_{a≠0}|C_q(a) − Λ_q|^{2r} ≪ q^{1+o(1)}Λ_q^r over the dilates a would imply
+      positivity for every a once Λ_q^r > q^{1+ε}. A single zero contributes Λ_q^{2r}.
+    - At c = 3/8, Λ_q = q^{2/25}, so r = 13 (a **26th** moment) suffices. In general r > (7−2c)/(2(1−2c)).
+    - Over the pair population instead (sieve-style), Chebyshev with |S_n| ≈ q² pairs needs moment order
+      > 2(7−2c)/(1−2c) = 50. (This corrects "25" in v1, after the proof critic.)
+  - **None of these moment bounds is known, even at order 4.** The 2r-th moment over a counts r-tuples of points
+    u_i = B_iℓ̄_i with Σm_iu_i ≡ 0 for small m_i (|m_i| ≲ q/k₀ = Y/H). After clearing denominators these are
+    congruences mod q between integers of size ≈ Y^{2r}. They exceed q already at r = 2, so they are not exact integer
+    identities, and controlling them is again a Kloosterman-type problem at length q^{0.32}.
+  - The pair-box level (≤ |S_n| ≈ Y^{7−2c}) supports sieve moments of order ≤ 6 at best. sieve2d's error analysis
+    stops at 4–5. Truncated inclusion–exclusion needs depth ≳ λ.
 
 ## 2. Tool exponents (Task 2)
 
@@ -180,26 +188,46 @@ The same k₀√H′ ratio bound holds for indicators g = 1_A of an arbitrary A 
   c₂, c₃, c₄ (c_i ≤ H′² ≤ 2k₀ + 1), the density of the coset is B_i/lcm(B₂, B₃, B₄).
 - So r₃ ≤ 4(2k₀+1)²Σ_{B₂,B₃,B₄} B_min/lcm(B₂, B₃, B₄) ≪ k₀²H′(log H′)^8. The critic verified this bound numerically.
 
-**Theorem B (exact threshold for phase-discarding certificates; proved).** Let c ∈ (1/4, 1/2], Y ≥ Y₀, and κ = Jq^{−δ}.
+**Lemma F2 (the largest nonzero Fourier coefficient of a Farey-arc set; proved).** This is GPT-6.1-sol's blind-round
+argument, re-derived and checked here. Let 2hK < q and S = S(h, K). Then
+
+  max_{t≠0} |1̂_S(t)| ≤ (K + h log q)·q^{o(1)}.
+
+*Proof.*
+- **Möbius decomposition.** S is the disjoint union over d ≤ h of S*_d = {k/d : gcd(k, d) = 1, |k| ≤ K}. The
+  reduced fractions are distinct mod q since 2hK < q. By Möbius inversion,
+  1_{S*_d} = Σ_{e|d} μ(e)·1[(d/e)^{−1}·[−K/e, K/e]].
+- **Each piece.** A dilated interval m̄·[−L, L] has |transform at t| ≤ min(2L+1, q/(2|v_m|)), where v_m := t m̄ mods q.
+  For fixed m = d/e the pieces satisfy Σ_{e≤h/m} min(K/e, A) ≤ min((h/m)A, K(1 + log h)).
+- **Counting small v_m (divisor bound).** m·v_m ≡ t (mod q) and |m v_m| ≤ UT for m ≤ U, |v_m| ≤ T. So m divides one of
+  O(1 + UT/q) nonzero integers t + nq of size ≤ hq. Hence #{m ≤ U : |v_m| ≤ T} ≤ (1 + UT/q)q^{o(1)}.
+- **Assembly.** Sum dyadically over U and T. The q^{o(1)} of small v_m's contribute ≤ K log h each; the rest contribute
+  Σ_T((h/U)(q/T) + h)q^{o(1)} per dyadic U. The total is (K + h log q)q^{o(1)}. ∎
+- Numerically (q ≈ 10⁶, 10⁷; 4 ≤ h ≤ 64): max_{t≠0}|1̂_S|/(K + h ln q) = 2.7–11, consistent with the q^{o(1)} factor.
+
+**Theorem B (exact threshold for phase-discarding certificates; proved).** Let c ∈ (0, 1/2], Y ≥ Y₀, and κ = Jq^{−δ}.
 - **(i) Sufficiency.** If max_{h≠0}|K(h)| < J(k₀+1)/q with k₀ = ⌊qH/(4Y)⌋, then Pos∀(c) holds. In exponents, this
   holds as soon as δ > δ*(c) := (1+2c)/(7−2c) + o(1).
   - *Proof.* Take G = Σ_{B≤H/4} Fej_B, with Fej_B(B̄k) = 1 − |k|/(k₀+1) the Fejér triangle on the arc B̄[−k₀, k₀].
   - Ĝ ≥ 0, so W(G) ≤ G(0) = H/4. Also ΣG = (H/4)(k₀+1), and supp G ⊆ S₀. Apply (★) and Prop. T(i).
-  - Note that **H′ cancels**: the single arc B = 1 does exactly as well. By (ii), nonnegative certificates of
-    positive mass cannot use the union over dilates. Signed or sparse certificates could in principle gain up to
-    H^{1/2} (the window [13/50, 7/25] at c = 3/8 is open), which is still far short.
-- **(ii) Necessity, nonnegative certificates of positive mass.** Normalise 0 ≤ g ≤ 1_{S_out} (equivalently
-  sup g = 1). If Σg ≥ θ|S_out| for a fixed θ > 0, then (★) forces δ ≥ δ*(c) − o(1).
-  - *Proof.* By Lemma F(a), W(g) ≥ cθ³H/polylog − Σg/q. So (★) needs κ ≤ J|S_out|/(qW) ≲ J k₀′/q·polylog, with
-    k₀′ = 2qH/Y.
-- **(iii) Necessity, any certificate.** (★) with any real g ≤ 0 off S_out forces
-  δ ≥ δ*(c) − (1−2c)/(2(7−2c)) − o(1) = (1/2 + 3c)/(7−2c) − o(1).
-  - *Proof.* Lemma F(b) with H′ = H, k₀ = 2qH/Y.
-- **(iv) Impossibility.** Throughout the proved range c ∈ (1/4, 1/2], all of (ii) and (iii) exceed the Parseval cap
-  1/(7−2c) (Lemma P). The algebraic crossover of (iii) with the cap is c = 1/6, but Theorem B is proved only for
-  c > 1/4, because the Freiman condition fails on S_out below that. At the
-  target c = 3/8 the numbers are: sufficiency/necessity δ* = 7/25 = 0.28; any certificate ≥ 13/50 = 0.26; Parseval
-  cap 4/25 = 0.16. **No pointwise bound of any quality, known or conjectural, certifies the target through (★).** ∎
+  - Note that **H′ cancels**: the single arc B = 1 does exactly as well. By (ii), no phase-discarding certificate
+    can use the union over dilates to lower the threshold by a power of q.
+- **(ii) Necessity, every certificate.** Let g be any real function with g ≤ 0 off S_out = S(H, K′), K′ = 2qH/Y. Any
+  scaling, sign or mass is allowed. Then Σg·(1 − |S_out|/q) ≤ W(g)·max_{t≠0}|1̂_{S_out}(t)|.
+  - So (★) forces κ < J·Σg/(qW(g)) ≤ J·K′q^{o(1)}/q = J(2H/Y)q^{o(1)}, i.e. **δ ≥ δ*(c) − o(1)**.
+  - *Proof.* g ≤ 0 off S_out gives Σ_x g·1_{S_out} ≥ Σg. Write the left side as
+    (1/q)Σ_t ĝ(t)·conj(1̂_{S_out}(t)). The t = 0 term is Σg·|S_out|/q, and the rest is ≤ W(g)·max_{t≠0}|1̂_{S_out}|.
+    Then apply Lemma F2 with h = H, K = K′ ≥ H log q.
+  - No Freiman condition is needed, so (ii) holds for every c ∈ (0, 1/2].
+  - (This supersedes the draft's weaker "any certificate ≥ (1/2+3c)/(7−2c) = 13/50", which came from the energy
+    route of Lemma F(b). GPT-6.1-sol's eq. (17)–(18) closes the window.)
+- **(iii) Impossibility.** δ*(c) = (1+2c)/(7−2c) exceeds the Parseval cap 1/(7−2c) (Lemma P) **for every c > 0**; they
+  coincide at c = 0, i.e. the Thue level. At the target c = 3/8: required δ* = 7/25 = 0.28, cap 4/25 = 0.16,
+  gap 2c/(7−2c) = 3/25. **No pointwise bound of any quality, known or conjectural, certifies any fixed c > 0
+  through (★), whatever certificate is used.** ∎
+- Lemma F (energy route) remains as an independent check. It shows the Fourier ℓ¹ norm of full-mass nonnegative
+  minorants is ≥ H/polylog, with an explicit polylog. Lemma F2 gives the same conclusion up to q^{o(1)} for all
+  certificates. GPT-6.1-sol (its eq. (15)) gives the matching upper bound A(1_S) ≪ h log h log q.
 
 **Remark B2 (joint phase discarding over (B, ℓ); proved; critic's suggestion).** The JH′ points Bℓ̄ (B ≤ H′, ℓ ∈ 𝒫)
 are distinct mod q: Bℓ′ ≡ B′ℓ with both sides < q forces Bℓ′ = B′ℓ, and then ℓ = ℓ′ since ℓ ∤ B.
@@ -208,8 +236,8 @@ are distinct mod q: Bℓ′ ≡ B′ℓ with both sides < q forces Bℓ′ = B�
 - So phase discarding needs λ ≳ √(JH′), i.e. J^{2−4c} ≳ J^{3/2−c}, i.e. c ≤ 1/6. It fails at c > 3/8.
 
 *Remarks.*
-- coverage38 Prop. L(b) obtained "c ≤ 1/4" from W ≥ 1/2 − μ. Theorem B identifies the true price: W ≍ H′ for
-  full-mass shapes, so the required pointwise saving is exactly δ*(c).
+- coverage38 Prop. L(b) obtained "c ≤ 1/4" from W ≥ 1/2 − μ. Theorem B identifies the true price: the mass-to-norm
+  ratio of any certificate is ≤ K′q^{o(1)}, so the required pointwise saving is exactly δ*(c).
 - E2 measures W(g_tri)/H′ = 0.41–0.65 and slope 0.81–0.85 in H′ (P2b).
 
 **Proposition B′ (adaptive phase discarding with exact magnitudes; proved).** Suppose 16Y³ < q. Then
@@ -258,13 +286,13 @@ and is the baseline.
 | Prime-variable Kloosterman sums mod a prime: Bourgain 2005; Garaev 2010; Fouvry–Shparlinski 2011 (q^{3/4} for general moduli); Baker 2012; Korolev 2019 | **no**: nontrivial only from q^{1/2+ε}, and Lemma S puts the moduli below q^{2/5} | 0 | none (nothing beyond Thue) | no |
 | Irving (averaged over moduli q) | no: one fixed q here | — | none | no |
 | Integer-variable incomplete Kloosterman: Karatsuba; Bourgain–Garaev 2014 Thm 16; Korolev 2016 (composite moduli are allowed in Theorem R) | yes | log saving | none (δ = o(1) < δ*) | no |
-| Bourgain's multilinear Kloosterman sums (moduli = products of k primes each ≥ q^ε) | yes | tiny power δ(ε, k) | none (δ ≪ δ* = 0.28) | no |
+| Bourgain's multilinear Kloosterman sums; Bourgain–Garaev 2014 Thm 8 (moduli = products of primes; per GPT-6.1-sol, two primes of size q^{4/25} give δ ≈ 1/800 at total length q^{8/25}; UNVERIFIED by us) | yes | small power, e.g. 1/800 | none (δ ≪ δ* = 0.28) | no |
 | Heath-Brown identity + Weil/Deligne completion | Type I sums of length < q^{1/2}: completion costs √q·log q > trivial | 0 | none | no |
-| Bilinear Kloosterman fractions (Bourgain–Garaev; Shkredov; Kerr–Shparlinski et al.) as Type II input | possibly a small δ (UNVERIFIED ranges) | < Parseval cap 0.16 | none (Theorem B) | no |
+| Bilinear Kloosterman fractions: Kerr–Shparlinski–Wu–Xi, JLMS 108 (2023), Thm 2.4, Σα_mγ_n e_q(am n̄), nontrivial for all M, D ≥ q^ε (per GPT-6.1-sol); Bourgain–Garaev 2014 Thms 7–8; Shkredov | yes (phases kept in the (m, n) form) | power saving | none. Applied to the hit count with m = tB (GPT-6.1-sol), the error is ≪ HY^{3/4}q^{o(1)} = q^{7/25} against the main term λ = q^{2/25}; it needs H > Y^{3/4} | no |
 | Hooley R* / square-root cancellation (conjectural) | — | 4/25 (the Parseval cap) | **none** (Theorem B: needs 7/25) | no |
 | GRH, multiplicative characters | yes | Parseval level | ≤ 1/4 with arbitrary weights, ≤ 0 with the natural one (Lemma M) | no |
 | Bourgain–Garaev additive energy / sum-product for {ℓ̄} | yes | energy exactly minimal (Prop. B′) | none (B′) | no |
-| Large sieve / k-th moments (D′, sieve2d) | yes | almost-all only | worst case needs moment order > 50; box allows ≤ 6 | no |
+| Large sieve / k-th moments (D′, sieve2d); centred moments over a | yes | almost-all only (proved orders ≤ 4) | worst case needs order ≥ 26 over a (per q) or > 50 over pairs; nothing known beyond order 4 | no |
 
 **The exact gap (Task 3, "isolate").**
 - *Phase-discarding route.* Positivity needs δ > (1+2c)/(7−2c) = 7/25. The most any bound can give is 1/(7−2c) = 4/25.
@@ -469,7 +497,7 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
 | payoff if true | deterministic worst case N^{(1−c)/(7/2−c)} < N^{1/5} for c > 3/8 |
 | status | **refuted for every phase-discarding (term-by-term in h) certificate, with the exact threshold δ*(c) = (1+2c)/(7−2c) against the Parseval cap 1/(7−2c) (Theorem B, proved)**; no averaged/intermediate form helps (Prop. 0); two-pronged designs face the same threshold (Theorem TP) |
 | experimentally supported | the target is true at toy sizes with the Poisson extreme (E1); Wiener norm ≍ H′ (E2); Lehman prong ≍ G^{−5/4} (E3) |
-| sharpest obstruction | a positivity statement at λ = J^{1/4} is below the fluctuation scale √J of every phase-discarding certificate; for nonnegative positive-mass certificates the union over dilates is invisible (H′ cancels in Theorem B(i)) |
+| sharpest obstruction | a positivity statement at λ = J^{1/4} is below the fluctuation scale √J of every phase-discarding certificate; for every phase-discarding certificate the union over dilates is invisible (H′ cancels in Theorem B(i)) |
 | what would revive it | a non-linear positivity mechanism for unions of lattices Λ_ℓ = Z(p, q) + ℓZ² (joint geometry of numbers), even a log-factor union gain over Thue as a first test |
 
 ## 8. Reviews
