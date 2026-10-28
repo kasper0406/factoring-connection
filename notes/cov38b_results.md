@@ -28,7 +28,7 @@ Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now 
     any support, any mass). At c = 3/8, δ* = 7/25 = 0.28.
   - but Parseval caps every such bound at δ ≤ 1/(7−2c) = 4/25 = 0.16 (square-root cancellation).
   - **The gap is 3/25 in the exponent of q, beyond square-root cancellation.** Known results at length q^{0.32}
-    give δ = 0 for primes (all prime-variable Kloosterman bounds start at q^{1/2+ε}) and a log saving for integers.
+    give δ = 0 for primes (all prime-variable Kloosterman bounds start at q^{1/2+ε}) and only a (log q)^{1/2−o(1)} saving for integers (Bourgain–Garaev 2014 Thm 16).
   - New ingredient: the Fourier ℓ¹ norm of a Farey-arc set with H′ denominators is ≥ H′/polylog
     (Lemma F, via an exact Freiman isomorphism to rationals and an lcm-sum energy bound). Every nonzero Fourier
     coefficient of the set is ≤ K q^{o(1)} (Lemma F2, from GPT-6.1-sol's blind round). So the union over the H′ dilates
@@ -41,8 +41,9 @@ Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now 
 - **Bourgain–Garaev specifically (§2).** Their exponential-sum bounds fall under Theorem B whatever their strength.
   Their additive-energy input is already optimal here: whenever 16Y³ < q (true at c = 3/8), the inverses of band primes have the minimal
   possible additive energy 2J² − J (an exact identity). It still gives nothing, because the obstruction is pointwise
-  in the dilate p, not a lack of energy control. Their covering theorems (sums of reciprocals) concern sumsets, while
-  the target is a covering by multiplicative dilates.
+  in the dilate p, not a lack of energy control. The covering theorems for sums of reciprocals (Shparlinski 2002;
+  Glibichuk 2006; not Bourgain–Garaev) concern additive sumsets, while the target is a covering by multiplicative
+  dilates. Bourgain–Garaev 2014 contains no positivity statement for product sets or dilates.
 - **Two-pronged algorithms (§4, Theorem TP, proved in the model).** "DCL coverage OR Lehman/Harvey windows" is itself a
   design of Theorem U's family. At budget N^{1/5−η}, the Lehman prong covers at most a fraction ≍ N^{−5η/4} of pairs
   (E3 measures the predicted G^{−5/4} law: slopes −1.27 to −1.31). So the DCL prong must still cover every
@@ -226,6 +227,8 @@ argument, re-derived and checked here. Let 2hK < q and S = S(h, K). Then
   coincide at c = 0, i.e. the Thue level. At the target c = 3/8: required δ* = 7/25 = 0.28, cap 4/25 = 0.16,
   gap 2c/(7−2c) = 3/25. **No pointwise bound of any quality, known or conjectural, certifies any fixed c > 0
   through (★), whatever certificate is used.** ∎
+- Novelty: the literature critic found no prior bound on Wiener (Fourier ℓ¹) norms of Farey-arc or major-arc sets;
+  the nearest are Littlewood-type polylog bounds (Green–Konyagin 2009; Sanders). "No prior formulation found by us."
 - Lemma F (energy route) remains as an independent check. It shows the Fourier ℓ¹ norm of full-mass nonnegative
   minorants is ≥ H/polylog, with an explicit polylog. Lemma F2 gives the same conclusion up to q^{o(1)} for all
   certificates. GPT-6.1-sol (its eq. (15)) gives the matching upper bound A(1_S) ≪ h log h log q.
@@ -255,7 +258,8 @@ fractions determine the pair. So the inverses of band primes have additive energ
 - For the prime-only Pos, the averaging covers a positive proportion of residues but cannot by itself say where the
   primes p ∈ (q/2, q) fall.
 - This is where Bourgain–Garaev-type energy information enters, and it is already optimal: the energy is exactly
-  minimal.
+  minimal. Precedent: Bourgain–Garaev 2014 Thm 6 bounds the 2k-fold energy of inverses of primes ≤ N by
+  (2k)^k(N^{2k−1}/p + 1)N^k; for k = 2 this is J₄ < 16(N³/p + 1)N². Our exact identity is the elementary sharp form.
 
 **Lemma M (multiplicative characters, GRH included; proved).** Expand the hit count with characters mod q:
 N(a) = (1/(q−1))Σ_χ χ̄(a)S_𝒫(χ)F̂(χ), where F̂(χ) = Σ_{|k|≤k₀}Σ_{B≤H′}χ(k)χ̄(B).
@@ -284,12 +288,12 @@ and is the baseline.
 | tool (references in §6) | applies at length q^{0.32}? | δ it gives | certified c | reaches c > 3/8? |
 |---|---|---|---|---|
 | Thue / Dirichlet / Minkowski, one modulus (geometry, no analysis) | yes | — | **0** (exponent 1/5; Harvey's) | no |
-| Prime-variable Kloosterman sums mod a prime: Bourgain 2005; Garaev 2010; Fouvry–Shparlinski 2011 (q^{3/4} for general moduli); Baker 2012; Korolev 2019 | **no**: nontrivial only from q^{1/2+ε}, and Lemma S puts the moduli below q^{2/5} | 0 | none (nothing beyond Thue) | no |
+| Prime-variable Kloosterman sums: Bourgain 2005 (prime q, q^{1/2+ε} ≤ N ≤ q, saving ≍ ε⁴); Garaev 2010 (prime q, nontrivial from q^{3/4+ε}); Fouvry–Shparlinski 2011 (any q, q^{3/4+ε} ≤ N ≤ q^{4/3−ε}); Baker 2012 (squarefull part ≤ q^{1/4}, q^{1/2+ε} ≤ N ≤ q); Korolev 2018 (elementary, q^{1/2+ε}) and 2019; Korolev's composite-modulus results (from q^{5/8+ε}) | **no**: nontrivial only from q^{1/2+ε}, and Lemma S puts the moduli below q^{2/5} | 0 | none (nothing beyond Thue) | no |
 | Irving (averaged over moduli q) | no: one fixed q here | — | none | no |
-| Integer-variable incomplete Kloosterman: Karatsuba; Bourgain–Garaev 2014 Thm 16; Korolev 2016 (composite moduli are allowed in Theorem R) | yes | log saving | none (δ = o(1) < δ*) | no |
-| Bourgain's multilinear Kloosterman sums; Bourgain–Garaev 2014 Thm 8 (moduli = products of primes; per GPT-6.1-sol, two primes of size q^{4/25} give δ ≈ 1/800 at total length q^{8/25}; UNVERIFIED by us) | yes | small power, e.g. 1/800 | none (δ ≪ δ* = 0.28) | no |
+| Integer-variable incomplete Kloosterman: Karatsuba; Bourgain–Garaev 2014 Thm 16 (prime q: N(log log q)³log q/(log N)^{3/2}, i.e. (log q)^{1/2−o(1)} at N = q^{0.32}); Bourgain–Garaev, Acta Arith. 164 (2014) Thm 5 (any m, saving (log m)^{1/2}/(log log m)^{O(1)}); Korolev 2016 (prime q, integer variable, short ranges) | yes | log saving | none (δ = o(1) < δ*) | no |
+| Bourgain's multilinear Kloosterman sums; Bourgain–Garaev 2014 Thms 8, 11–13 and Cor. 2; prime-variable version Bourgain–Garaev, Acta Arith. 164 (2014) Cor. 3 (moduli = products of primes: two primes of size q^{4/25} give δ ≈ 1/800 at total length q^{8/25}; GPT-6.1-sol and the literature critic agree) | yes | small power, e.g. 1/800 | none (δ ≪ δ* = 0.28) | no |
 | Heath-Brown identity + Weil/Deligne completion | Type I sums of length < q^{1/2}: completion costs √q·log q > trivial | 0 | none | no |
-| Bilinear Kloosterman fractions: Kerr–Shparlinski–Wu–Xi, JLMS 108 (2023), Thm 2.4, Σα_mγ_n e_q(am n̄), nontrivial for all M, D ≥ q^ε (per GPT-6.1-sol); Bourgain–Garaev 2014 Thms 7–8; Shkredov | yes (phases kept in the (m, n) form) | power saving | none. Applied to the hit count with m = tB (GPT-6.1-sol), the error is ≪ HY^{3/4}q^{o(1)} = q^{7/25} against the main term λ = q^{2/25}; it needs H > Y^{3/4} | no |
+| Bilinear sums with phases e_q(am n̄): Kerr–Shparlinski–Wu–Xi, JLMS 108 (2023), Thm 2.4 (r = q case), nontrivial for all M, D ≥ q^ε (cited by GPT-6.1-sol; the literature critic reads that paper as mainly about complete sums, so this entry is UNVERIFIED by us); Bourgain–Garaev 2014 Thms 7–8 | yes (phases kept in the (m, n) form) | power saving | none. Applied to the hit count with m = tB (GPT-6.1-sol), the error is ≪ HY^{3/4}q^{o(1)} = q^{7/25} against the main term λ = q^{2/25}; it needs H > Y^{3/4} | no |
 | Hooley R* / square-root cancellation (conjectural) | — | 4/25 (the Parseval cap) | **none** (Theorem B: needs 7/25) | no |
 | GRH, multiplicative characters | yes | Parseval level | ≤ 1/4 with arbitrary weights, ≤ 0 with the natural one (Lemma M) | no |
 | Bourgain–Garaev additive energy / sum-product for {ℓ̄} | yes | energy exactly minimal (Prop. B′) | none (B′) | no |
@@ -299,7 +303,9 @@ and is the baseline.
 - *Phase-discarding route.* Positivity needs δ > (1+2c)/(7−2c) = 7/25. The most any bound can give is 1/(7−2c) = 4/25.
   The deficit is 2c/(7−2c) = 3/25 in the exponent of q. Equivalently, the hit count needs an error o(λ) = o(J^{1/4})
   on a sum of J terms: a saving of J^{3/4} over trivial, J^{1/4} beyond square root.
-- *Known.* The saving is 0 for primes at q^{0.32}, and (log q)^{1−o(1)} for integers.
+- *Known.* The saving is 0 for a single band of primes at q^{0.32}. For integers it is (log q)^{1/2−o(1)}. For products of two
+  band-scale primes (composite moduli) it is δ ≈ 10⁻³ (Bourgain–Garaev bilinear bounds). All of these are far below
+  4/25.
 - *What would suffice instead.* A positivity mechanism that does not discard phases term by term. Either a
   phase-retaining multilinear estimate (none is known at q^{0.32}) or a non-analytic one. The only one we know is
   single-modulus geometry (Thue/Minkowski), and B2 shows it stops at c = 0. No joint-geometry statement for unions
@@ -316,8 +322,9 @@ q^{1/2+ε} to q^{0.32} for positivity in a union of arcs?" Three separate inputs
 - **Energy / sum-product bounds** for reciprocals. At our scale the energy of {ℓ̄} is already exactly minimal
   (Prop. B′), so better energy bounds cannot help. Prop. B′ also shows that energy information, used through
   averaging over a, controls only a positive proportion of dilates. The worst case asks for all of them.
-- **Covering theorems** ("every residue is a sum of k reciprocals of integers ≤ q^ε"; Bourgain–Garaev,
-  Shparlinski). These cover F_q by additive k-fold sumsets of {x̄}. The target asks to cover F_q^* by the
+- **Covering theorems** ("every residue is a sum of k reciprocals of integers ≤ q^ε": Shparlinski, Arch. Math. 78
+  (2002), k ≪ ε^{−3}; Glibichuk, Math. Notes 79 (2006), k ≪ ε^{−2}). Bourgain–Garaev 2014 gives sumset *sizes*
+  (Cor. 1) and counting lemmas for products (Lemmas 10 and 12), not covering. These cover F_q by additive k-fold sumsets of {x̄}. The target asks to cover F_q^* by the
   multiplicative dilates ℓ·S₀, i.e. by the product set 𝒫·[−k₀, k₀]·[1, H′]^{−1}.
   - For product sets the known all-classes ranges are the modular-hyperbola ones: xy ≡ a is known to be solvable for
     all a once XY ≫ q^{3/2+o(1)} (Weil). This is a sufficient range, not a barrier. The trivial character bound needs |A||B| > q².
@@ -338,7 +345,7 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
 | geometry, one modulus | Thue / Dirichlet / Minkowski | positivity for **every** a, but only at λ ≍ J (c = 0) | yes, at c = 0 only (exponent 1/5) |
 | average over a (second or higher moments) | large sieve, Montgomery–Vaughan; sieve2d fourth moment; energy of {ℓ̄} (Bourgain–Garaev type, here exactly minimal) | uncovered fraction ≤ C/λ, C/λ² | **no**: average-type. A worst case needs a centred moment of order ≥ 26 over a, which is unknown (Prop. 0(c)) |
 | pointwise exponential and character sums, used by phase discarding | prime/integer/multilinear Kloosterman, Heath-Brown + Weil, R*, GRH | positivity iff δ > δ*(c) = 7/25; any bound has δ ≤ 4/25 (Parseval); known δ = 0 for primes | **no** (Theorem B): the only tools that are pointwise in a are capped below the threshold |
-| covering theorems for sets in F_q | sums of k reciprocals (Bourgain–Garaev, Shparlinski); xy ≡ a in boxes (Weil, XY ≫ q^{3/2}); Erdős–Odlyzko–Sárközy | positivity, but for additive k-fold sumsets, or for product sets of size ≥ q^{3/2} | **no**: the target is a multiplicative covering of size q^{1+2/25} |
+| covering theorems for sets in F_q | sums of k reciprocals (Shparlinski 2002, Glibichuk 2006); xy ≡ a in boxes (Garaev 2006: |x|, |y| ≤ Cq^{3/4} for all a); Erdős–Odlyzko–Sárközy | positivity, but for additive k-fold sumsets, or for product sets of size ≥ q^{3/2} | **no**: the target is a multiplicative covering of size q^{1+2/25} |
 
 - The triage claim is confirmed and made quantitative.
 - Positivity results exist only in two regimes: single-modulus geometry (c = 0), and harmonic analysis at product
@@ -402,7 +409,8 @@ per group, and WIN holds.
     interval.
   - Prime-pair-only proofs are not obstructed this way.
 - (vii) **Other second prongs.**
-  - p − 1 (Ward–Maestro's positive proportion below 1/6), Hittmeir/Harvey, and class-group methods: none has a
+  - p − 1 (Ward–Maestro Prop. 35.3: a positive relative proportion of pairs in (x^{1−ε}, x], not S_n, and not a
+    worst-case result), Hittmeir/Harvey, and class-group methods: none has a
     proved easy set containing the uncovered pairs.
   - Uncoveredness is a condition on (pq̄ mod ℓ)_ℓ that carries no local structure (inversesieve Prop. D, Theorem L).
     p − 1 smoothness and orders are unrelated data (coverage38 §4(f)).
@@ -483,10 +491,15 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
 - Garaev, "Estimation of Kloosterman sums with primes and its application", Math. Notes 88 (2010).
 - Fouvry–Shparlinski, "On a ternary quadratic form over primes", Acta Arith. 150 (2011): q^{3/4+ε} ≤ N ≤ q^{4/3}.
 - Baker, "Kloosterman sums with prime variable", Acta Arith. 156 (2012).
-- Korolev, Math. Notes 100 (2016) and 106 (2019).
+- Korolev, Math. Notes 100 (2016) (integer variable, prime modulus); Math. Notes 103 (2018) (elementary, primes,
+  q^{1/2+ε}); Math. Notes 106 (2019) (primes, q^{1/2+ε}).
+- Bourgain–Garaev, "Kloosterman sums in residue rings", Acta Arith. 164 (2014) 43–64 (Thm 5; Cor. 3 for primes).
+- Shparlinski, Arch. Math. 78 (2002); Glibichuk, Math. Notes 79 (2006): sums of reciprocals cover F_p.
+- Garaev, Acta Arith. 124 (2006): xy ≡ a for all a with |x|, |y| ≤ Cp^{3/4}. Shparlinski's survey "Modular
+  hyperbolas" (Jpn. J. Math. 2012) calls going below p^{3/2} out of reach.
 - Irving, "Average bounds for Kloosterman sums over primes", Forum Math. 27 (2015), arXiv 1301.6372.
-- Karatsuba's method; Shkredov, "Modular hyperbolas and bilinear forms of Kloosterman sums" (2019/2021);
-  Kerr–Shkredov–Shparlinski–Zaharescu, "Energy bounds for modular roots and their applications" (2020s).
+- Karatsuba's method. (Removed after the literature critic: Shkredov 2021 concerns complete Kloosterman sums, and
+  Kerr–Shkredov–Shparlinski–Zaharescu concerns modular square roots. Neither is a Kloosterman-fraction result.)
 - Heath-Brown's identity (Canad. J. Math. 34, 1982); Weil/Deligne.
 - Modular hyperbolas: Shparlinski's survey; XY ≫ q^{3/2+o(1)} for all classes.
 - Prior project notes: coverage38 (Theorem U, Prop. L, §3), dchworst (Theorems R, W; B1–B4), inversesieve, sieve2d,
@@ -505,7 +518,70 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
 
 ## 8. Reviews
 
-(to be filled)
+**Opus proof critic (read-only; scripts in the session scratchpad): ACCEPT WITH FIXES.**
+- *Verified:*
+  - Prop. T(i)–(ii), exhaustively on 6096 reciprocal hits and 79 497 coverage events;
+  - Lemmas F0, F1 (index counting, divisor sums, exact energies for H′ ≤ 6), F(a), F(b) (with random signed tests);
+  - Theorem B(i) (Ĝ ≥ 0 numerically);
+  - all exponent arithmetic (7/25, 13/50, 4/25, 3/25), the Freiman condition 8H⁴ < Y for c > 1/4;
+  - Prop. B′ (exact energy, Hölder, Paley–Zygmund), Lemma M;
+  - Theorem TP(iii), (v), (vi) (L*/P^{2/5} ∈ [0.64, 0.77] for α = golden ratio up to x = 10²⁴); Prop. 0(b).
+- *Fixes applied:*
+  - **(major)** "every linear tool fails" rescoped to *phase-discarding* certificates, with phase-retaining estimates
+    and ℓ- or a-dependent weights stated as not excluded;
+  - the moment count corrected;
+  - Theorem B(ii) normalisation and k₀′;
+  - the "H′ cancels" scope (later made unconditional by Lemma F2);
+  - B(iv) range;
+  - the F1 sharpness argument (disjoint A*_B);
+  - the indicator remark's proof;
+  - Prop. T(iii) hypotheses;
+  - Prop. B′ wording ((1 − o(1))/8; fixed g only; 16Y³ < q);
+  - Lemma S (Brun–Titchmarsh source, C/log P, the leftover pairs);
+  - the validity definition of S;
+  - ⊆ instead of =;
+  - the modular-hyperbola range stated as sufficient;
+  - "consistently" for Theorem W;
+  - assessments labelled as such.
+- It suggested Remark B2, which was added.
+
+**GPT-6.1-sol blind round (`codex/cov38b_1.out`).** It reached the same verdict independently.
+- *Integrated, with attribution:*
+  - δ* = (1+2c)/(7−2c) and the 7/25 vs 4/25 comparison, found independently;
+  - the signed-minorant argument of Lemma F(b);
+  - **Lemma F2** (max_{t≠0}|1̂_S| ≪ Kq^{o(1)}), which upgrades Theorem B(ii) to every certificate and every c > 0;
+  - the upper bound A(1_S) ≪ h log h log q;
+  - the correction that a sufficiently strong averaged (26th centred moment) estimate *would* give the worst case;
+  - the Bourgain–Garaev Thm 8 computation (δ ≈ 1/800 for products of two primes);
+  - the bilinear (m = tB) computation giving error HY^{3/4};
+  - the multiplicative-character threshold δ > 1/2 + αc;
+  - the J_L^{1/4} factor for multi-modulus Lehman prongs;
+  - the table of failed non-linear attempts (sum-product growth, reciprocal sums with the height loss
+    B ≪ Y^{1−1/r}, joint geometry, pigeonhole on shortest vectors, sieve over p, polynomial method).
+- *Its corrections to our framing:*
+  - Theorem B's obstruction concerns c > 0, not the recovery of Thue at c = 0 (S = F_q once hK ≥ q);
+  - R* is an integer-variable hypothesis.
+
+**Opus literature critic (read-only): no conclusion changes.**
+- *Fixes applied:*
+  - Shkredov 2021 (complete sums) and Kerr–Shkredov–Shparlinski–Zaharescu (modular roots) removed as Kloosterman-
+    fraction sources;
+  - the covering theorems for sums of reciprocals credited to Shparlinski 2002 and Glibichuk 2006, not to
+    Bourgain–Garaev;
+  - the integer saving corrected to (log q)^{1/2−o(1)};
+  - Baker's range corrected (any modulus with squarefull part ≤ q^{1/4}, up to N ≤ q);
+  - Korolev 2016/2018/2019 attributions;
+  - Bourgain–Garaev Acta Arith. 164 (Thm 5, Cor. 3) added;
+  - Bourgain–Garaev Izv. Thm 6 cited as the precedent for Prop. B′;
+  - Garaev 2006 (xy ≡ a with |x|, |y| ≤ Cp^{3/4}) added;
+  - the Ward–Maestro caveat added.
+- *Not found by it:*
+  - any all-residue positivity result for prime × small × inverse-small at total size q^{1+ε};
+  - any all-a modular-hyperbola result below p^{3/2}, even with x prime;
+  - any prior bound on Wiener norms of Farey-arc sets.
+- *Unresolved:* the Kerr–Shparlinski–Wu–Xi Thm 2.4 reading (marked UNVERIFIED; it does not affect any conclusion).
+
+**GPT-6.1-sol adversarial round (`codex/cov38b_2.out`).** See below.
 
 ## 9. Reproduction
 
