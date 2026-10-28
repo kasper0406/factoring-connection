@@ -54,3 +54,7 @@ Model theorems and negative results, not factoring lower bounds. Summarised in t
 - Fast factoring has no free consequences elsewhere in mathematics.
 - Phase 28, a survey of unexpected connections: about 300 connections in 40 fields, none a route; seven failure mechanisms ([`connections_results`](notes/connections_results.md); [`conn_alg`](notes/conn_alg.md), [`conn_ana`](notes/conn_ana.md), [`conn_top`](notes/conn_top.md), [`conn_cmp`](notes/conn_cmp.md)).
 - Phase 29, native cost of factoring-equivalent invariants: none beats factoring natively. Prop TRI (multiplicative local data factors N unless monomial), Theorem LIN (linear analytic estimators ≥ N^{1/5}), Prop LRS (no fast T_N exponentiation). Open: a single a_f(N) of a fixed non-CM form ([`native_results`](notes/native_results.md); [`nativeinv`](notes/nativeinv_results.md), [`nativemod`](notes/nativemod_results.md), [`nativeana`](notes/nativeana_results.md)).
+- Phase 30:
+  - [`fruit`](notes/fruit_results.md): hybrid rows give fruitfulness, but one row costs an L[1/3] descent (Theorem HYB); randomised square roots and involutions are refuted.
+  - [`cov38b`](notes/cov38b_results.md): deterministic below N^{1/5} needs a saving of 7/25, while phase-discarding methods cap at 4/25 (Theorem B); there is no intermediate prize (Prop 0).
+  - [`cuspcoef`](notes/cuspcoef_results.md): one a_f(N) is OPEN; Theorem DFB is a model barrier; native cost ≥ N^{1/2}.

@@ -99,16 +99,19 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
 
 ## Open problems, ranked
 
-1. **Audit Theorem 2L-final (L[3/8]).** Theorem AB is now written ([`thmAB`](notes/thmAB_results.md)). Next: re-review RAT v2
-   and the round-3 repairs, then a blind multi-referee audit of the whole two-level chain, as was done for Theorem U.
-2. **NFS fruitfulness ⇒ rigorous L[1/3, 1.923].** Prove Lemma M or Conjecture F ([`lemmaM`](notes/lemmaM_results.md),
-   [`nfsfruit`](notes/nfsfruit_results.md)): Lee–Venkatesan's randomized NFS congruences are non-trivial with probability
-   L[1/3, −o(1)]. Two phase-28 surveys independently ranked it first; feasibility with current tools is low.
-2a. **Check Theorem U-MF** ([`mfU_theorem`](notes/mfU_theorem.md)): the cleanest
-   candidate for human refereeing. Can its integer-multiplier trick also remove Drappeau's Lemme 5 from Theorem 2L-final?
-3. **Three-level descent (4/11),** which is borderline by the same route ([`pc3`](notes/pc3_results.md), [`multidescent`](notes/multidescent_results.md) §3.5).
-4. **Human refereeing** of the relation-supply chain: [`paper2/`](paper2/main.tex) §§5–6, Appendix A, and [`lv5unif`](notes/lv5unif_results.md).
-5. **Deterministic worst case below N^{1/5}:** coverage with λ < J^{1/4} ([`coverage38`](notes/coverage38_results.md)).
+1. **Audit Theorem 2L-final (L[3/8]).** Theorem AB is written ([`thmAB`](notes/thmAB_results.md)). Next: re-review the
+   RAT v2 repairs and thmAB's round-3 repairs, then run a blind multi-referee audit of the whole two-level chain, as was
+   done for Theorem U.
+2. **Transfer U-MF's integer-multiplier trick to the two-level chain.** It removed every BV-type input, and Harper's
+   preprint with them, from L[2/5] ([`mfU_theorem`](notes/mfU_theorem.md)). If it also works for Theorem 2L-final,
+   L[3/8] would rest only on published theorems.
+3. **Human refereeing of [`mfU_theorem`](notes/mfU_theorem.md).** It is the cleanest, self-contained candidate.
+4. **NFS fruitfulness ⇒ rigorous L[1/3, 1.923].** Mixing descended rows into the matrix gives fruitfulness, but one such
+   row costs as much as an L[1/3] descent ([`fruit`](notes/fruit_results.md), Theorem HYB). Sufficient: Conjecture F, or
+   a rigorous L[1/3] single descent plus multi-row absorption.
+5. **Three-level descent (4/11),** which is borderline by the same route ([`pc3`](notes/pc3_results.md) §7.5).
+6. **Deterministic worst case below N^{1/5}.** Phase-discarding estimates provably miss by a saving of 7/25 vs 4/25
+   ([`cov38b`](notes/cov38b_results.md) Theorem B). This needs phase-retaining multilinear estimates.
 
 ## Repository map
 
