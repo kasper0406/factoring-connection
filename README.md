@@ -27,7 +27,7 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 | **Theorem A** | L_N[1/2, c] for every c > 1/√2 (0.919 at degree 9) | 5 blind referees: accept with fixes | [`paper2/`](paper2/main.tex), [`thmA_proof`](notes/thmA_proof.md), [`thmA_audit`](notes/thmA_audit.md) |
 | **Theorem RA + Cor. P** | L_N[1/2, o(1)] (recursive shape test) | 3 blind referees: accept with fixes | [`recurse`](notes/recurse_results.md), [`auditRA`](notes/auditRA_audit.md) |
 | **Theorem U** | **L_N[2/5, c]** for a finite c | 4 blind referees: accept with fixes | [`lv5unif`](notes/lv5unif_results.md), [`auditU`](notes/auditU_audit.md) |
-| **Theorem 2L-DC** (conditional) | **L_N[α] for every α > 3/8**, assuming the algebraic block Theorem AB (written as a sketch); **L_N[3/8]** assuming AB₂. The rational blocks are proved (Theorem RAT) | GPT-6.1-sol + 2 Opus critics | [`multidescent`](notes/multidescent_results.md), [`uprime`](notes/uprime_results.md), [`pc3`](notes/pc3_results.md), [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md) |
+| **Theorem 2L-final** (new; audit pending) | **L_N[α] for every α ∈ (3/8, 2/5)**, and **L_N[3/8]** under a design constraint (two-level descent; Theorems AB/AB₂ written in full, RAT, U′, DC) | GPT-6.1-sol 3 rounds + 1 Opus proof critic; RAT v2 repairs and the round-3 repairs not yet re-reviewed; no blind audit yet | [`thmAB`](notes/thmAB_results.md), [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md), [`pc3`](notes/pc3_results.md), [`uprime`](notes/uprime_results.md), [`multidescent`](notes/multidescent_results.md) |
 | **Theorem DL** | discrete logs in F_p^*: L_p[1/2, c] for every c > 1/√2 (previous record L[1/2, √2], Pomerance 1987) | GPT-6.1-sol + 2 Opus critics | [`dlog`](notes/dlog_results.md) |
 | **Theorem DL25** | discrete logs in F_p^*: **L_p[2/5, c]** | GPT-6.1-sol + 2 Opus critics | [`dlog25`](notes/dlog25_results.md) |
 
@@ -69,7 +69,7 @@ Lemme 5, whose proof cites Harper's unpublished preprint.
 
 Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorems, not lower bounds.
 
-- **Rigorous below 2/5.** One-level designs stop at 2/5 (Prop R2). The two-level route now lacks only the algebraic block AB.
+- **Rigorous below 2/5.** One-level designs stop at 2/5 (Prop R2). The two-level route reaches 3/8 (Theorem 2L-final, audit pending); 4/11 is borderline.
   Depth ≥ 4 fails because the required precision falls below the natural covariance. Rigorous L[1/3]
   needs ERH plus a far stronger all-target supply (`nested` Theorem NR).
 - **Heuristic below L[1/3] or MNFS 1.902.**
@@ -95,10 +95,8 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
 
 ## Open problems, ranked
 
-1. **Write out Theorem AB ⇒ rigorous L[α] for every α > 3/8.** Everything else in the two-level chain is proved
-   internally: U′ ([`uprime`](notes/uprime_results.md)), decoupling ([`pc3`](notes/pc3_results.md)), the rational
-   blocks RAT ([`c12rat`](notes/c12rat_results.md)), and the DW design, two-point smoothing and child bound
-   ([`c12alg`](notes/c12alg_results.md)). AB₂, with its obligations O1–O3 and O5, would give L[3/8] itself.
+1. **Audit Theorem 2L-final (L[3/8]).** Theorem AB is now written ([`thmAB`](notes/thmAB_results.md)). Next: re-review RAT v2
+   and the round-3 repairs, then a blind multi-referee audit of the whole two-level chain, as was done for Theorem U.
 2. **NFS fruitfulness ⇒ rigorous L[1/3, 1.923].** Prove Lemma M or Conjecture F ([`lemmaM`](notes/lemmaM_results.md),
    [`nfsfruit`](notes/nfsfruit_results.md)): Lee–Venkatesan's randomized NFS congruences are non-trivial with probability
    L[1/3, −o(1)]. Two phase-28 surveys independently ranked it first; feasibility with current tools is low.
