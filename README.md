@@ -28,7 +28,7 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 | **Theorem RA + Cor. P** | L_N[1/2, o(1)] (recursive shape test) | 3 blind referees: accept with fixes | [`recurse`](notes/recurse_results.md), [`auditRA`](notes/auditRA_audit.md) |
 | **Theorem U** | **L_N[2/5, c]** for a finite c | 4 blind referees: accept with fixes | [`lv5unif`](notes/lv5unif_results.md), [`auditU`](notes/auditU_audit.md) |
 | **Theorem U-MF** (new) | **L_N[2/5, c]**, c ≈ 9.45 at C_γ = 0; self-contained, and **no unpublished input** (integer multiplier plus Design MF remove every BV-type estimate, Drappeau Lemme 5 and Harper's preprint) | GPT-6.1-sol adversarial: accept with minor fixes; Opus proof critic: accept with fixes (~80% each); literature critic applied (extends Lee–Venkatesan 2018 §6) | [`mfU_theorem`](notes/mfU_theorem.md), [`mfU`](notes/mfU_results.md) |
-| **Theorem 2L-final** | **L_N[α] for every α ∈ (3/8, 2/5)**, and **L_N[3/8]** under a design constraint (two-level descent; Theorems AB/AB₂, RAT, U′, DC) | Blind audit [`audit2L`](notes/audit2L_audit.md): **accept with fixes** (window ~70%, 3/8 ~55%). The audit found and repaired a fatal-if-unfixed gap (RAT-2 parent filter, Lemma SPR-P′); one write-up gap is open (U′ under DW asserted) | [`thmAB`](notes/thmAB_results.md), [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md), [`pc3`](notes/pc3_results.md), [`uprime`](notes/uprime_results.md) |
+| **Theorem 2L-final** | **L_N[α] for every α ∈ (3/8, 2/5)**, and **L_N[3/8]** under a design constraint (two-level descent; Theorems AB/AB₂, RAT, U′, DC) | Blind audit [`audit2L`](notes/audit2L_audit.md): **accept with fixes** (window ~70%, 3/8 ~55%). The audit found and repaired a fatal-if-unfixed gap (RAT-2 parent filter, Lemma SPR-P′); one write-up gap is open (U′ under DW asserted). **Theorem 2L-MF** ([`mf2L`](notes/mf2L_results.md)) removes Drappeau Lemme 5 / Harper's preprint, using Harper Compositio 2016 Prop 2 and Drappeau CJM 2015 Props 2.9/2.13 (codex re-check 92%, relative to the internal chain) | [`thmAB`](notes/thmAB_results.md), [`c12rat`](notes/c12rat_results.md), [`c12alg`](notes/c12alg_results.md), [`pc3`](notes/pc3_results.md), [`uprime`](notes/uprime_results.md) |
 | **Theorem DL** | discrete logs in F_p^*: L_p[1/2, c] for every c > 1/√2 (previous record L[1/2, √2], Pomerance 1987) | GPT-6.1-sol + 2 Opus critics | [`dlog`](notes/dlog_results.md) |
 | **Theorem DL25** | discrete logs in F_p^*: **L_p[2/5, c]** | GPT-6.1-sol + 2 Opus critics | [`dlog25`](notes/dlog25_results.md) |
 
@@ -67,7 +67,8 @@ Weakest link: the relation-supply chain (LD*, L2_fam, Lemma 8.5′). Lemma 8.5�
 Lemme 5, whose proof cites Harper's unpublished preprint. **Theorem U-MF avoids all of this for L[2/5].** With an
 integer multiplier, F(P₀) mod G(P₀) is uniform, so smoothness is an interval density (Lemma OP). Its external inputs
 are all published, numbered theorems ([`mfU_theorem`](notes/mfU_theorem.md) is written for a human referee).
-Theorems A/RA and 2L-final still use the old chain.
+Theorem 2L-MF does the same for L[3/8], but through different published inputs. Only Theorems A/RA still use
+Lemme 5.
 
 ## What blocks further progress (summary)
 
@@ -101,9 +102,8 @@ Full list, phase by phase: [`BARRIERS.md`](BARRIERS.md). These are model theorem
 
 1. **Close the audit's open item for 2L-final:** write out Hyp U′ under design DW; its leading-order checks pass
    ([`audit2L`](notes/audit2L_audit.md)).
-2. **Transfer U-MF's integer-multiplier trick to the two-level chain.** It removed every BV-type input, and Harper's
-   preprint with them, from L[2/5] ([`mfU_theorem`](notes/mfU_theorem.md)). If it also works for Theorem 2L-final,
-   L[3/8] would rest only on published theorems.
+2. **Merge the audit repair into one clean write-up:** 2L-final + audit2L's Lemma SPR-P′ + mf2L's published-input route,
+   as a referee-ready note like [`mfU_theorem`](notes/mfU_theorem.md).
 3. **Human refereeing of [`mfU_theorem`](notes/mfU_theorem.md).** It is the cleanest, self-contained candidate.
 4. **NFS fruitfulness ⇒ rigorous L[1/3, 1.923].** Mixing descended rows into the matrix gives fruitfulness, but one such
    row costs as much as an L[1/3] descent ([`fruit`](notes/fruit_results.md), Theorem HYB). Sufficient: Conjecture F, or
