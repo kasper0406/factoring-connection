@@ -27,7 +27,8 @@ stays at Harvey–Hittmeir's N^{1/5}. No new deterministic record.** For the sta
   the error term by term in the frequency h. Then:
   - it certifies the uniform target for δ > δ*(c) + ε, and needs δ ≥ δ*(c) − o(1), with δ*(c) = (1+2c)/(7−2c): a
     sharp leading-exponent threshold. This holds for every certificate function that is ≤ 0 off the outer Farey set
-    (any sign, scale or mass there). At c = 3/8, δ* = 7/25 = 0.28.
+    (any sign, scale or mass there). At c = 3/8, δ* = 7/25 = 0.28. The statement is asymptotic, for every fixed
+    c > 0: the hidden loss is exp(O(log q/log log q)), and log-scale improvements over Thue are not excluded.
   - but Parseval caps every such bound at δ ≤ 1/(7−2c) = 4/25 = 0.16 (square-root cancellation).
   - **The gap is 3/25 in the exponent of q, beyond square-root cancellation.** Known results at length q^{0.32}
     give δ = 0 for primes (all prime-variable Kloosterman bounds start at q^{1/2+ε}) and only a (log q)^{1/2−o(1)} saving for integers (Bourgain–Garaev 2014 Thm 16).
