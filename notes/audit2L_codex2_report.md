@@ -1,0 +1,85 @@
+# audit2L: GPT-6.1-sol follow-up on the RAT-2 repair (verbatim)
+
+Prompt: `codex/audit2L_2.md`. It gives codex its own round-1 report and the auditor's Lemma SPR-P′, and asks it to
+verify them. Run: `codex/run.sh audit2L_2 xhigh`, 11:25–11:33 CET, 2026-10-28. The raw output is `codex/audit2L_2.out`;
+it is reproduced below unchanged.
+
+---
+
+**CORRECT WITH FIXES** — the comparison lemma is valid for the idealised parent weights, and it closes the normalization gap at the claimed rate. The supplied proof needs the corrections below.
+
+| Item | Finding and required correction | Effect |
+|---|---|---|
+| SPR-P′(ii) | ADM compares scales for a **fixed** \(P\). Comparison across different model laws requires DW’s long uniform factor. Use the root-conditioned scale \(tL_P/q\), correcting ADM’s parent-scale convention. | Absolute constants suffice. |
+| The \(Z\)-moment | The bound holds for the **full smoothed sum** \(Z_P+U\), with a lattice cutoff. It need not hold for ADM’s shift \(Z_P\) alone. | Proof correction; no exponent change. |
+| SPR-P′(iii) | The small-prime product contributes \(O(\gamma\log P_0)\), omitted from the displayed estimate. Also make the comparison uniform over the pair-dependent \(K\). | Still \(1+o(1)\). |
+| Straddlers and active parents | Valid uniformly in labels, using arithmetic-progression counts for each prime \(b\). Include the discretization error \(O(q/V_1)\). | \(O(\delta_e+q/V_1)=O(\delta_e)\); skew causes no loss. |
+| Remaining RAT/AB normalization | No further unbudgeted power of \(D\) multiplying \(\mathcal V_0\) was found. Keep primitivity dilation weights summable, and retain the exact squared mean in AB’s main term. | Claimed rate survives. |
+| EXC(c), mid primes | Add the mid-prime Euler product to the Rankin bound. | No exponent change. |
+| PRIM, parent \(J\)-content | Add common content primes in \(J\); EXC(b) does not cover them all. | Exponentially negligible. |
+| W-P(P3) citation | Replace the aggregate citation by the pointwise one-point smoothness lower bound, followed by acceptability subtraction. | No exponent change. |
+
+For **(ii)**, put
+\[
+A_P(t)=\frac{t(2H+1)|P|_\infty^{d-1}}q.
+\]
+DW(a)⁺ supplies translates of intervals of length \(A_P(t)\), contained in
+\([-CdA_P(t),CdA_P(t)]\). Uniformly over their translations, splitting at zero when necessary, their \(B_2\)-smoothness probabilities are comparable to \(\widehat\rho_{B_2}(A_P(t))\) with absolute constants. The required relative interval lengths are \(\gg1/d\), comfortably inside [Hildebrand’s short-interval range, HT survey Theorem 5.1](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf#page=38).
+
+Averaging therefore preserves these bounds **regardless of the remaining segments’ shapes**. Moreover,
+\[
+A_P(t)/A_{P'}(t')\in[(64e)^{-1},64e].
+\]
+HT comparison then proves the desired uniform bound. The shared \(q\) cancels.
+
+Equivalently, after continuous interpolation the full normalized sum \(W_P=Z_P+U\) has density at most \(1\) and support in \([-Cd,Cd]\), giving
+\[
+(Cd)^{-\gamma_2}
+\le E|W_P|^{-\gamma_2}
+\le \frac{2^{\gamma_2}}{1-\gamma_2}.
+\]
+Both endpoints tend to \(1\). **The shift \(Z_P\) alone can concentrate near zero** when \(|a|/b\) is small; the discrete negative moment also needs a cutoff at zero. Using interval counts avoids both qualifications.
+
+For **(iii)**, the corrected estimate is
+\[
+\Lambda_P(K)=
+\exp O\!\left(\gamma\log P_0+\frac{\omega(K)}{P_0}
+                         +\frac{\omega(K)}y\right)=1+o(1).
+\]
+Thus partner dependence in \(c_P\) is harmless, provided the comparison explicitly ranges over all relevant \(K\).
+
+For the **lattice count**, fix a prime \(b\) in the parent window. Straddling confines \(a\) to at most two intervals of total length \(O(\delta_eV_1)\). Intersecting with \(a\equiv rb\pmod q\) gives
+\[
+O(\delta_eV_1/q+1)
+\]
+points, against \(2V_1/q+O(1)\) parent points for that \(b\). Summing proves the stated fraction. The same elementary count proves that at least half the parents pass throughout the cell. Angular equidistribution is unnecessary. Interpret the \(\pi_P=0\) assertion on the admissible averaging support.
+
+With these corrections, your normalization chain gives
+\[
+\frac{\sum_{P\ne P'}|\operatorname{Cov}(f_P,f_{P'})|}
+     {(m^{\rm par})^2}
+\le C(\delta_e+\mathcal V_0^{\rm par})+\text{controlled remainders}.
+\]
+The other polynomial errors—\(e^{-\lambda}\), \(h^{1/4}\), and \(P_0^{-2}\)—fit the budget. Primitivity dilations contribute a bounded sum \(\sum_e e^{-2+2\gamma}\); taking a maximum instead would be unjustified.
+
+In **AB §§9–11**, coarse \(D^C\) normalization enters character errors or rare-pair estimates. The principal covariance contribution remains
+\[
+C\mathcal V_p^*\,E[z(g)^2]/z^2
+=C\mathcal V_p^*(1+\sigma^{\rm rat}).
+\]
+Polynomial factors also occur in auxiliary mesh and acceptability errors, but their stated margins absorb them. Hence
+\[
+\mathrm{RAT\!-\!2}\ll
+\bigl(D^{-2\alpha}+D^{-2(3-7\alpha)}\bigr)\lambda^C
+\]
+follows, taking the other supplied lemmas as premises.
+
+The three earlier MINOR items remain repairable: EXC(c)’s added Euler product is \(1+o(1)\); the missing \(J\)-content term is bounded by
+\[
+\Xi_pD^C(\log Y)^2\sum_{\ell\in J}\ell^{-2}
+\ll \Xi_pD^C\frac{\log Y}{Y};
+\]
+and the weight-bridge citation has the stated pointwise replacement. Beyond the proof corrections above, I found no additional exponent obstruction in this focused chain.
+
+- **\(3/8<\alpha<2/5\): ACCEPT WITH FIXES.**
+- **\(\alpha=3/8\): ACCEPT WITH FIXES**, retaining \(a>2c_2\) and the stated internal-chain assumptions.
