@@ -59,3 +59,11 @@ included. μ_ℓ(t) = least height of a weight with A ≡ tB (mod ℓ). For a �
   Erdős–Turán certificates do not reach the Thue height at these sizes".
 - E3: P3a–P3b pass ⇒ "the Lehman prong at budget P^{2/5}/G covers a fraction ≍ G^{−5/4}, as Theorem U predicts".
 - Deviations will be disclosed as such; no prediction will be edited after a run.
+
+## Addendum A (2026-10-28, before any registered run; disclosed amendment)
+
+The E2 Wiener-scan rule k₀ = ⌊q/(50·H′⁴)⌋ gives k₀ = 0 at H′ = 32 for every listed q (and violates nothing else,
+but makes the statistic meaningless). Replaced by **k₀ = ⌊q/(8·H′³)⌋**, keeping only the H′ with k₀ ≥ 16
+(q = 10^5: H′ ≤ 8; q = 10^6: H′ ≤ 16; q = 10^7: H′ ≤ 32). P2b's slope is fitted over the available H′ ≥ 4
+(at least two points); all other E2 predictions are unchanged. The certificate scan stops, for each shape, at the
+first certified H (H_ET), and also stops at H = 2Y if none is certified (then H_ET > 2Y is recorded).
