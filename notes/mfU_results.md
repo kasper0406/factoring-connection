@@ -68,6 +68,8 @@ In plain terms:
      algorithm uses no threshold.
 - **Not below 2/5.** The design changes the proof, not the one-level descent geometry (theorem §11.4).
 
+**Prior work.** The closest is Lee–Venkatesan, JNT 187 (2018). Their c-randomisation of f and their §6 Stark–Landau analysis are used here (theorem §0, Lemma 8.2). Their Thm 2.1 gives rigorous L[1/3] for possibly trivial congruences; their Thm 2.3 gives fruitfulness only for p ≡ q ≡ 3 (mod 4) semiprimes under Conj. 7.1.
+
 **Novelty.** We found no prior rigorous L[α] with α < 1/2 for factoring arbitrary N (search results of lv5unif §14 and auditU
 §6, plus codex/mfU_1's literature table). This is a search result, not a novelty claim.
 
@@ -125,10 +127,10 @@ lemmas, the dependency graph (§11.1) and the list of unrefereed entry points (�
   here, so recorded as plausible only).
 - For the prime-w route, codex/mfU_1 checked the published candidates (statements read in primary texts or author copies;
   "verified" = statement inspected, not proof re-done). None replaces the input:
-  - Fouvry–Tenenbaum, Proc. LMS 63 (1991), Thm 6: absolute error x(log x)^{−A}, useless against the sparse smooth main term.
+  - Fouvry–Tenenbaum, Proc. LMS 63 (1991), Thm 6 (UNVERIFIED): absolute error x(log x)^{−A}, useless against the sparse smooth main term.
   - Fouvry–Tenenbaum, Proc. LMS 72 (1996), Thm 1 / Cor 1: relative error, but only for y > exp((log x)^{2/3+ε}), while here
     y = L_x[1/2].
-  - Granville, Acta Math. 170 (1993), Thm 2: Q only x^{o(1)} at this y.
+  - Granville, Acta Math. 170 (1993), Thm 2 (number UNVERIFIED): Q only x^{o(1)} at this y, and capped at √x/log^{B(A)}x.
   - Harper, JNT 132 (2012): individual moduli ≤ y^{4√e−δ}, not y^{Θ(u)}.
   - Harper, Compositio 152 (2016): exponential sums, upper bounds only — no lower bound in a prescribed residue class.
   - de la Bretèche–Drappeau, JEMS 22 (2020), Thm 2.1: its proof returns to Harper §3.3.
@@ -222,4 +224,18 @@ all applied:
 
 Because round 2 was not MAJOR REVISION, no third codex round was run.
 
-**Opus literature critic:** launched on v0.1. It did not report before this run ended, so its result is **not recorded**. Pending items it was asked to check: the exact printed forms of Stark Lemma 8 (non-normal case), LO Thm 1.3, CEP's corollary number, Rosser–Schoenfeld's constants, and a novelty search for the integer-multiplier and norm-class devices. codex/mfU_2 independently confirmed Stark p. 148, LO Thm 1.3 and HT Thm 3 against primary texts.
+**Opus literature critic (read-only, on v0.1; relayed by the orchestrator): citations essentially sound, no proof breaks, one
+important citation missing.** All fixes applied:
+
+| # | Finding | Action |
+|---|---|---|
+| 1 | **Missing prior work: Lee–Venkatesan JNT 187 (2018).** Their (3.1)/§4 already randomise f by a large random multiple of (x − my), which is our SM1/OP c-randomisation. Their §6 (Lemma 6.10, Claim 6.25, Facts 6.22/6.24, Rem. 6.27) has the core of Lemma 8.2. | Cited prominently (theorem §0, Def. 4.1, Lemma 8.2). Lemma 8.2 is presented as an extension of LV §6. New: |𝖤| ≤ 1, and the rationality of the class (Kummer). LV instead bound the classes by (4/3) log log n and remove them by brute force. No prior use was found of the integer multiplier w or of norm columns detecting the rational exceptional class (BLP §5: a square norm is "necessary … but very far from sufficient"). |
+| 2 | Record statement should contrast with LV Thm 2.1 (unconditional L[1/3, (64/9)^{1/3}], possibly trivial congruences) and Thm 2.3 (semiprimes p ≡ q ≡ 3 (mod 4), conditional on Conj. 7.1) | added to theorem §0; the claim "no rigorous L[α < 1/2] for arbitrary N" stands |
+| 3 | CEP has no "Corollary 3.1": it is the unnumbered Corollary after Thm 3.1, with an explicit error term | label and statement corrected; §11.2 updated |
+| 4 | Labels UNVERIFIED against print: LO "Thm 1.3" (content confirmed), HT Thm 2 "(i)", Stanley "Prop. 2", Granville Thm 2 (whose range also caps Q at √x/log^{B(A)}x), FT 1991 Thm 6 | marked UNVERIFIED |
+| 5 | Kaltofen–Saunders Thm 3 (rank) is Monte Carlo | Las Vegas behaviour comes from our exact verification, and F₂-kernel uniformity from our own projection argument; stated |
+| 6 | Landau: Davenport ch. 14 is fair; Montgomery–Vaughan MNT I ch. 11 states the multiplicity | added |
+
+Confirmed: HT Thms 1, 3 (via the HT 1993 survey), Rosser–Schoenfeld Cor. 3, Stark Lemma 8 verbatim (including F ⊂ L in the
+non-normal case), the Kummer and subfield arguments, AKS, Cantor–Zassenhaus, and the Harper/Drappeau dependency description.
+Harper arXiv:1208.5992 is still unpublished as far as can be checked.

@@ -29,6 +29,18 @@ Notation: λ := log log N, D := log N/λ, Λ := D^{2/5}λ = (log N)^{2/5}(log lo
 The best rigorous bound for factoring arbitrary N that we found in the literature is Lenstra–Pomerance, J. Amer. Math.
 Soc. 5 (1992), 483–516: L_N[1/2, 1 + o(1)]. This is a search result, not a novelty claim.
 
+**Closest prior work: Lee–Venkatesan**, *Rigorous analysis of a randomised number field sieve*, J. Number Theory 187 (2018),
+92–159 (arXiv:1805.08873). Their Thm 2.1 is an unconditional rigorous L[1/3, (64/9)^{1/3}] bound for finding a congruence of
+squares, which may be trivial. Their Thm 2.3 gives fruitfulness only for semiprimes with both primes ≡ 3 (mod 4), and it is
+conditional on their Conjecture 7.1 (a character-independence hypothesis). Theorem U-MF obtains fruitfulness for every N
+without any such hypothesis (Dixon descent, Theorem DD), at the cost of exponent 2/5. We use two ingredients from LV:
+1. their randomised polynomial f = f̂ + (a large random multiple of x − my), with uniform coefficients ((3.1), §4), which
+   is the c-randomisation of our Lemmas SM1/OP;
+2. the Stark–Landau analysis of exceptional square classes (§6), which our Lemma 8.2 extends.
+As far as our literature critic checked, neither the integer multiplier w (resultant N·w) used to make the forced residue
+uniform, nor norm-parity columns detecting the rational exceptional class, appears in prior work. Buhler–Lenstra–Pomerance
+§5 calls a square norm "necessary … but very far from sufficient".
+
 **Ideas.**
 1. *Dixon descent* (§7). Draw a random square R = r² mod N. Reduce the lattice {(u, v) : u ≡ Rv (mod N)} to a shortest
    vector (u₀, v₀), and ask that |u₀| and |v₀| be products of at most k distinct primes from J = (Y, 2Y], with
@@ -85,22 +97,22 @@ this geometry. Remark 11.4 has the arithmetic. Nothing here goes below 2/5.
 | Label | Statement used | Source (verified as stated in §6) |
 |---|---|---|
 | **HT1** | Ψ(x, y) = x^{α}ζ(α, y)/(α√(2πφ₂(α, y)))·(1 + O(1/u + log y/y)) uniformly for x ≥ y ≥ 2, at the saddle point α = α(x, y) (root of Σ_{p≤y} log p/(p^α − 1) = log x), with φ₂(α, y) = Σ_{p≤y}p^α(log p)²/(p^α − 1)². | A. Hildebrand, G. Tenenbaum, *On integers free of large prime factors*, Trans. Amer. Math. Soc. 296 (1986), 265–290, Theorem 1 |
-| **HT2** | α(x, y) = log(1 + y/log x)/log y·(1 + O(log log(1 + y)/log y)) uniformly for x ≥ y ≥ 2. | ibid., Theorem 2(i) |
+| **HT2** | α(x, y) = log(1 + y/log x)/log y·(1 + O(log log(1 + y)/log y)) uniformly for x ≥ y ≥ 2. | ibid., Theorem 2 (part "(i)" UNVERIFIED against print) |
 | **HT3** | Ψ(cx, y) = c^{α(x,y)}Ψ(x, y)(1 + O(1/u + log y/y)) uniformly for x ≥ y ≥ 2, 1 ≤ c ≤ y. | ibid., Theorem 3 |
-| **CEP** | For fixed ε > 0, Ψ(x, x^{1/u}) = x·u^{−u(1+o(1))} uniformly for u → ∞, u ≤ (1 − ε)log x/log log x. | E. R. Canfield, P. Erdős, C. Pomerance, *On a problem of Oppenheim concerning "factorisatio numerorum"*, J. Number Theory 17 (1983), 1–28, Corollary 3.1 |
+| **CEP** | For fixed ε > 0, Ψ(x, x^{1/u}) = x·u^{−u(1+o(1))} uniformly for u → ∞, u ≤ (1 − ε)log x/log log x. | E. R. Canfield, P. Erdős, C. Pomerance, *On a problem of Oppenheim concerning "factorisatio numerorum"*, J. Number Theory 17 (1983), 1–28, the unnumbered Corollary after Theorem 3.1 (§3): for ε > 0, 3 < u < (1 − ε)log x/log₂x, Ψ(x, x^{1/u}) = x·exp{−u(log u + log₂u − 1 + (log₂u − 1)/log u + E)}, |E| ≤ c_ε(log₂u/log u)² |
 | **PNT** | π(x) > x/log x (x ≥ 17); π(x) < 1.25506x/log x (x > 1); π(x) − π(x/2) > 3x/(10 log x) (x ≥ 41); and π(x) − π(x/2) ≤ 0.6x/log x for x ≥ x₀. | J. B. Rosser, L. Schoenfeld, *Approximate formulas for some functions of prime numbers*, Illinois J. Math. 6 (1962), 64–94, Theorem 1 and Corollaries 1–3 |
 | **Stark** | If a number field L of degree n has ζ_L(β₀) = 0 with β₀ real, 1 − (c(L) log|Δ_L|)^{−1} ≤ β₀ < 1, where c(L) = 4·n! in general, then ζ_F(β₀) = 0 for some quadratic subfield F ⊂ L. | H. M. Stark, *Some effective cases of the Brauer–Siegel theorem*, Invent. Math. 23 (1974), 135–152, Lemma 8 |
-| **Landau** | There is an effective absolute c_L > 0 such that for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at most one real zero, counted with multiplicity, in (1 − c_L/log(q₁q₂), 1) (so χ₁, χ₂ cannot both vanish at one β there). | H. Davenport, *Multiplicative Number Theory*, 3rd ed., GTM 74, Ch. 14 |
-| **LO** | For L/K Galois with group G, conjugacy class 𝒞, n_L = [L : Q], d_L = |Δ_L| and x ≥ exp(10n_L(log d_L)²): |π_𝒞(x) − (|𝒞|/|G|)Li(x)| ≤ (|𝒞|/|G|)Li(x^{β₀}) + c₁x·exp(−c₂n_L^{−1/2}(log x)^{1/2}), c₁, c₂ absolute and effective; the β₀-term only if ζ_L has a real zero β₀ ∈ [1 − (4 log d_L)^{−1}, 1). | J. C. Lagarias, A. M. Odlyzko, *Effective versions of the Chebotarev density theorem*, in: Algebraic Number Fields (Durham 1975), Academic Press 1977, 409–464, Theorem 1.3 (numbered "Corollary 1.3" in some restatements; content confirmed, §6) |
+| **Landau** | There is an effective absolute c_L > 0 such that for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at most one real zero, counted with multiplicity, in (1 − c_L/log(q₁q₂), 1) (so χ₁, χ₂ cannot both vanish at one β there). | H. Davenport, *Multiplicative Number Theory*, 3rd ed., GTM 74, Ch. 14; stated with multiplicity in H. L. Montgomery, R. C. Vaughan, *Multiplicative Number Theory I*, CUP 2007, Ch. 11 |
+| **LO** | For L/K Galois with group G, conjugacy class 𝒞, n_L = [L : Q], d_L = |Δ_L| and x ≥ exp(10n_L(log d_L)²): |π_𝒞(x) − (|𝒞|/|G|)Li(x)| ≤ (|𝒞|/|G|)Li(x^{β₀}) + c₁x·exp(−c₂n_L^{−1/2}(log x)^{1/2}), c₁, c₂ absolute and effective; the β₀-term only if ζ_L has a real zero β₀ ∈ [1 − (4 log d_L)^{−1}, 1). | J. C. Lagarias, A. M. Odlyzko, *Effective versions of the Chebotarev density theorem*, in: Algebraic Number Fields (Durham 1975), Academic Press 1977, 409–464, Theorem 1.3 (number UNVERIFIED against print; Pierce–Turnage-Butterbaugh–Wood call it Corollary 1.3; content confirmed) |
 | **AKS** | Primality is decidable deterministically in time (log n)^{O(1)}. | M. Agrawal, N. Kayal, N. Saxena, Ann. of Math. 160 (2004), 781–793 |
 | **CZ** | Factoring a degree-d polynomial over F_r: Las Vegas, expected (d log r)^{O(1)}. | D. G. Cantor, H. Zassenhaus, Math. Comp. 36 (1981), 587–592 |
-| **KS** | A uniformly random element of the kernel of a sparse M × M matrix over F_q (q ≥ M⁴) is found Las Vegas in expected Õ(M·nnz + M²) field operations. | E. Kaltofen, B. D. Saunders, *On Wiedemann's method of solving sparse linear systems*, AAECC-9, LNCS 539 (1991), 29–38, Theorems 2–4 |
+| **KS** | A uniformly random element of the kernel of a sparse M × M matrix over F_q (q ≥ M⁴) is found Las Vegas in expected Õ(M·nnz + M²) field operations. | E. Kaltofen, B. D. Saunders, *On Wiedemann's method of solving sparse linear systems*, AAECC-9, LNCS 539 (1991), 29–38, Theorems 2–4. Their rank computation (Thm 3) is Monte Carlo; Las Vegas behaviour here comes from the exact verification in §8.3, and uniformity on the F₂-kernel from our own coset/projection argument (§8.3 step 2), not from KS Thm 4 |
 | **Gauss** | Gauss's lemma (products of primitive integral polynomials are primitive); Dedekind–Kummer; Kummer theory of quadratic extensions; Minkowski's bound; Gauss reduction of rank-2 lattices. | standard |
 
 Standard algebraic and elementary inputs (textbook; used in Lemmas FIB, 8.1, 8.4, 8.5): Dirichlet's unit theorem
 (|𝒪_K^×/𝒪_K^{×2}| = 2^{r₁+r₂}), the trace-dual identity Z[β]^∨ = g′(β)^{−1}Z[β] for a monogenic order (Euler), φ(t)/t ≫ 1/log log t,
 ω(t) ≪ log t/log log t, and the Mahler-measure and discriminant bounds |disc f| ≤ d^{2d−1}‖f‖_∞^{2d−2}. Lower-order inputs, all standard: Stanley's log-concavity of convolutions (R. P. Stanley, Ann. NY Acad. Sci. 576
-(1989), 500–535, Prop. 2 and §2), the remainder-tree and product-tree algorithms (J. von zur Gathen, J. Gerhard,
+(1989), 500–535, Prop. 2 and §2; proposition number UNVERIFIED), the remainder-tree and product-tree algorithms (J. von zur Gathen, J. Gerhard,
 *Modern Computer Algebra*, §§10.1–10.3), and Tonelli–Shanks.
 
 **Not used** (in contrast with the project's Theorem U): Drappeau's Lemme 5 and therefore Harper's arXiv:1208.5992; any
@@ -217,7 +229,7 @@ Lemma 7.3.
 
 ## 4. Elementary lemmas: field law, sizes, regularity
 
-**Definition 4.1 (base expansion; cf. Buhler–Lenstra–Pomerance 1993 §3).** Let g₀, g₁ ∈ [M/2, M] with gcd(g₀, g₁) = 1, and
+**Definition 4.1 (base expansion; cf. Buhler–Lenstra–Pomerance 1993 §3; the random multiple G·R_c with uniform c is Lee–Venkatesan's randomised polynomial, JNT 187 (2018), (3.1) and §4).** Let g₀, g₁ ∈ [M/2, M] with gcd(g₀, g₁) = 1, and
 let w ≥ 1 be an integer. Put T_d := Nw and, for i = d, d − 1, …, 1: a_i is the integer in (−g₁/2, g₁/2] with
 a_i ≡ T_ig₀^{−i} (mod g₁), and T_{i−1} := (T_i − a_ig₀^i)/g₁. Put a₀ := T₀ and F̂_{g,w}(x, y) := Σ_{i=0}^{d} a_ix^iy^{d−i}.
 For c ∈ Z^d put R_c(x, y) := Σ_{i<d}c_ix^{d−1−i}y^i and F := F̂_{g,w} + G·R_c.
@@ -611,7 +623,7 @@ d(μ + h) = O(1); log|disc g| = (d − 1)(d − 2)log|f̃_d| + log|disc f̃| = O
 
 Put ν₁ := min(1/(4(2d)! log Δ̄), c_L/(2 log Δ̄)) and 𝖤 := {0 ≠ 𝔮 ∈ ℋ : ζ_{L_𝔮} has a real zero in [1 − ν₁, 1)}.
 
-**Lemma 8.2 (the exceptional classes are rational) [proved].** |𝖤| ≤ 1, and every 𝔮 ∈ 𝖤 is the class of a rational number:
+**Lemma 8.2 (the exceptional classes are rational) [proved; an extension of Lee–Venkatesan 2018 §6].** The argument (Stark's Lemma 8; d odd, so K has no quadratic subfield; F the unique quadratic subfield of L_𝔮; L_𝔮 = KF; injectivity; Landau) is that of Lee–Venkatesan, JNT 187 (2018), §6 (Lemma 6.10, Claim 6.25, Facts 6.22, 6.24, Remark 6.27), who bound the exceptional classes by (4/3) log log n and remove them by brute force. New here: |𝖤| ≤ 1 at the factorial threshold, and the observation that each exceptional class is *rational* (Kummer: 𝔮 ≡ δ_F), which lets the norm-parity columns clear it. |𝖤| ≤ 1, and every 𝔮 ∈ 𝖤 is the class of a rational number:
 𝔮 = [δ] with δ ∈ Q^×.
 *Proof.* Let 𝔮 ∈ 𝖤 with zero β₀. Since 1 − ν₁ ≥ 1 − 1/(4(2d)! log|Δ_{L_𝔮}|), Stark (c(L) = 4·(2d)!) gives a quadratic F ⊂ L_𝔮
 with ζ_F(β₀) = 0, so L(β₀, χ_F) = 0. As [L_𝔮 : Q] = 2d with d odd, L_𝔮 has at most one quadratic subfield (two would generate
@@ -841,7 +853,7 @@ Proposition select + Prop PP + Lemmas OS, W, F_α + AKS ─→ Theorem U-MF
    proof as a consequence of §3.3 of Harper's unpublished arXiv:1208.5992, is **not used**. Neither is any other
    Bombieri–Vinogradov-type estimate.
 3. **External published inputs whose labels we could not check against the printed source:** Lagarias–Odlyzko's theorem
-   number (content checked against two restatements; §6 of the results note). All others were checked as stated.
+   number (content checked against two restatements; §6 of the results note). CEP's label (unnumbered Corollary after Thm 3.1), HT Thm 2 "(i)", Stanley's Prop. 2 are likewise UNVERIFIED as labels. The rest were checked as stated (HT Thms 1, 3 via the HT 1993 survey; Rosser–Schoenfeld; Stark Lemma 8 verbatim including F ⊂ L in the non-normal case; AKS; CZ).
 4. **Effectivity.** All cited constants are effective (HT, CEP, Stark, Landau, LO); no Siegel-type ineffective bound is used. The
    algorithm uses no analytic constant at all (alternation with trial division; J_f uses the slack factor (log N)^{λ₃}).
 
