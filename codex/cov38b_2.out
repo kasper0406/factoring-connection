@@ -1,0 +1,181 @@
+**ACCEPT WITH FIXES.** The central obstruction for a **common uniform Fourier bound**, at every fixed \(c>0\), survives. The claims about arbitrary certificates, the entire literature toolbox, and experimental confirmation need narrowing.
+
+1. **MAJOR — The experiments do not verify the stated target.**  
+   [§5.1, lines 443–446](/Volumes/git/factoring-connection/notes/cov38b_results.md:443), also line 502.
+
+   “The data say the target is true with room to spare” contradicts the recorded histograms. Using the prescribed
+   \[
+   H=\left\lfloor\sqrt Y\,J^{-3/8}\right\rfloor
+   \]
+   gives:
+
+   | \(q\) | Prescribed \(H\) | Recorded \(h^*\) | Prime pairs uncovered at \(H\) |
+   |---:|---:|---:|---:|
+   | \(10\,000\,019\) | 4 | 11 | 81,869 |
+   | \(100\,000\,007\) | 5 | 13 | 299,426 |
+   | \(1\,000\,000\,007\) | 6 | 17 | 2,584,494 |
+
+   All fifteen registered prime runs fail literal finite-size \(\mathrm{Cov}(3/8)\) at that height. Their \(c_{\rm emp}\) values are below \(3/8\).
+
+   **Fix:** say that the observed worst heights fit the registered independent model and improve on Thue, while remaining above the prescribed target height. This does not refute an eventual asymptotic coverage conjecture. Also distinguish the experimental \(Y(q)\) from the public \(Y(n)\) required by the algorithm.
+
+2. **MAJOR — The definition of “valid” excludes the proposed sufficient certificate.**  
+   [Lines 130–139](/Volumes/git/factoring-connection/notes/cov38b_results.md:130), compared with lines 212–213.
+
+   Validity requires coverage via that particular \(\ell\), for **every** nonzero residue \(a\). But \(S_0\) contains \(1\). Taking
+   \[
+   q=1\,000\,003,\quad Y=83,\quad H=4,\quad \ell=a=103
+   \]
+   gives \(a\bar\ell=1\in S_0\). Nevertheless,
+   \[
+   \ell\mid Ba-Aq\quad\Longrightarrow\quad \ell\mid A,
+   \]
+   so no permitted nonzero \(A\) exists with \(|A|\le4\). The reciprocal hit produces \(A=0\).
+
+   Restricting validity to the required prime inputs fixes this example, but then \(S\subseteq S_{\rm out}\) no longer follows automatically: points never attained by those inputs may be added freely.
+
+   **Fix:** formulate Theorem B explicitly for functions nonpositive outside \(S_{\rm out}\). Treat positivity of the reciprocal count over every residue separately from arithmetic coverage of prime pairs. Do not claim that this captures every conceivable certificate valid only on prime inputs without another argument.
+
+3. **MINOR — Lemma F2 is repairable, but its displayed proof omits a term.**  
+   [Lines 192–206](/Volumes/git/factoring-connection/notes/cov38b_results.md:192).
+
+   The Möbius decomposition is correct, including when \(K<h\). The displayed per-\(m\) inequality is also correct **for the displayed sum**, but that sum does not bound all interval transforms: \(2\lfloor K/e\rfloor+1\) contains a zero-term contribution. For \(e>K\), the interval is \(\{0\}\), with transform \(1\).
+
+   One repair is to use, with \(E=\lfloor h/m\rfloor\),
+   \[
+   \sum_{e\le E}|\widehat{1_{m^{-1}[-K/e,K/e]}}(t)|
+   \ll E+\min\!\left(EA,K(1+\log h)\right).
+   \]
+   The added terms total \(O(h\log h)\). Alternatively, remove zero before applying Möbius inversion and restore its single final contribution.
+
+   The assembly should retain the minimum. On a dyadic cell \(m\asymp U,\ |v_m|\asymp T\), its contribution is bounded by
+   \[
+   D_q(1+UT/q)
+   \min\!\left(\frac{hq}{UT},K\log(2h)\right)
+   \ll D_q\bigl(K\log(2h)+h\bigr),
+   \]
+   where \(D_q=\max_{n\le q^2}\tau(n)=q^{o(1)}\). Summing the logarithmically many cells proves the claimed result.
+
+   **Conclusion:** for prime \(q\) and positive integer \(h,K\), \(2hK<q\) is enough. No Freiman condition or \(K\ge h\) assumption is needed. The \(q^{o(1)}\) is honest, but this proof does **not** make it a fixed polylogarithm. Attribution to blind-round equations (16)–(18) is correct.
+
+4. **MINOR — Theorem B is sharp in its leading exponent, not a literal strict “iff.”**  
+   [Lines 209–231](/Volumes/git/factoring-connection/notes/cov38b_results.md:209), and the summary at line 27.
+
+   With \(h=\lfloor H/4\rfloor\), the Fejér construction is sound:
+   \[
+   \operatorname{supp}G\subseteq S_0,\qquad
+   \sum G=h(k_0+1),\qquad
+   W(G)=h\left(1-\frac{k_0+1}{q}\right)\le h.
+   \]
+   Thus sufficiency works. The necessity pairing is also correct for every real \(g\le0\) off \(S_{\rm out}\); its zero-frequency term is exactly
+   \[
+   (\sum g)|S_{\rm out}|/q.
+   \]
+
+   What follows is sufficiency for \(\delta>\delta_*+\varepsilon\), and necessity \(\delta\ge\delta_*-o(1)\). Equality and logarithmic boundary behavior remain undecided.
+
+   For \(J\asymp Y/\log Y\), the ratio between the Parseval floor and the required \(\kappa\)-scale is
+   \[
+   \frac{\sqrt J}{JH/Y}
+   \asymp Y^c(\log Y)^{1/2-c}.
+   \]
+   This proves impossibility for every **fixed** \(c>0\), but does not exclude every logarithmic improvement with \(c=c(q)\to0\).
+
+   **Fix:** replace strict “iff” with “sharp leading-exponent threshold.” In line 139, either normalize \(\sup g=1\), or retain that factor in the mass bound.
+
+5. **MAJOR — The literature conclusions exceed the theorem proved.**  
+   [Lines 303–305](/Volumes/git/factoring-connection/notes/cov38b_results.md:303), 312–318, and 334–351.
+
+   The statement that every uniform tool is a pointwise exponential- or character-sum bound is contradicted by the correctly integrated Kerr–Shparlinski–Wu–Xi row. Their Theorem 2.4 gives a bilinear estimate uniform in \(a\), retaining the relevant phases. The application yielding
+   \[
+   |E|\ll HY^{3/4}q^{o(1)}
+   \]
+   is correctly reproduced and still misses positivity. [Kerr–Shparlinski–Wu–Xi, Theorem 2.4](https://arxiv.org/pdf/2204.05038).
+
+   Similarly, “no phase-retaining multilinear estimate is known” must mean **none strong enough for this target**. Such estimates certainly exist.
+
+   Minimal additive energy also does not establish that every argument using energy or sum-product information must fail. Proposition B′ establishes a particular obstruction for fixed-weight phase discarding.
+
+   **Fix:** replace “every tool,” “no tool gives it,” and the exhaustive “only two regimes” classification with “none of the estimates checked here proves the target.” Keep the common-\(\kappa\) impossibility theorem distinct from this literature assessment.
+
+6. **MINOR — References and attribution need corrections.**  
+   [Line 184](/Volumes/git/factoring-connection/notes/cov38b_results.md:184), table lines 287–302, and §6.
+
+   - Irving’s paper is *Functiones et Approximatio Commentarii Mathematici* **51** (2014), 221–235, not *Forum Math.* 27 (2015). The correct metadata already appears in the blind report. [Primary-paper bibliography](https://www.mathnet.ru/php/getFT.phtml?jrnid=tm&paperid=3949&what=fullt).
+   - Add Kerr–Shparlinski–Wu–Xi to §6; the modular-roots paper is a different reference.
+   - The \(1/800\) composite-product saving is verifiable: Bourgain–Garaev Theorem 8 with \(k_1=k_2=4\), \(N_i=q^{4/25+o(1)}\), gives two \(q^{-1/50+o(1)}\) factors, each raised to \(1/32\). “UNVERIFIED by us” can now be removed. [Theorem 8](https://arxiv.org/pdf/1211.4184).
+   - Separate Hooley’s integer-variable \(R^*\) from a hypothetical prime-variable square-root bound.
+   - Restriction to primes \(3\bmod4\) is not automatic. Baker’s general-modulus theorem can handle the \(\chi_4\) twist via modulus \(4q\). [Baker, Theorem 1](https://www.impan.pl/shop/en/publication/transaction/download/product/82065).
+   - I cannot substantiate line 184’s specific “signed Hölder step” attribution from `cov38b_1.out`: that output supplies the different F2/Fourier-pairing proof. Cite the actual source or mark the Hölder derivation as independently obtained.
+
+7. **MINOR — The moment numbers are correct; the surrounding description is not precise enough.**  
+   [Proposition 0(c), lines 112–124](/Volumes/git/factoring-connection/notes/cov38b_results.md:112), and table lines 296, 339, 353–355.
+
+   The integrated correction is correct:
+   \[
+   r>\frac{7-2c}{2(1-2c)}.
+   \]
+   At \(c=3/8\), \(r>12.5\), so the **26th** moment suffices. Over \(q^{2+o(1)}\) pairs, the required even moment order is **strictly greater than 50**, hence at least **52**.
+
+   Define the count and its exact nonzero-residue mean:
+   \[
+   C_q(a)=\sum_\ell1_{S_0}(a\bar\ell),\qquad
+   \Lambda_q=\frac{J(|S_0|-1)}{q-1}.
+   \]
+
+   The claimed moment expansion needs qualification. It involves \(2r\) terms and centering corrections; the sharp Farey indicator has no exact small-frequency cutoff. Frequencies \(\ll Y/H\) describe a suitably smoothed interval formulation. Numerators exceeding \(q\) show that a simple rational lift fails, not that no suitable fourth-moment theorem exists.
+
+   **Fix:** label the absence of a Poisson-quality fourth-moment bound as a literature-status finding. Distinguish it from the different fourth moments proved in the earlier sieve model. Exclude \(c=1/2\) from the displayed finite-\(r\) formula.
+
+8. **MINOR — Theorem TP needs distinct-union accounting and a one-modulus qualification.**  
+   [Lines 380–419](/Volumes/git/factoring-connection/notes/cov38b_results.md:380).
+
+   \(J_{\mathcal D\cup\mathcal L}=J_{\mathcal D}+J_{\mathcal L}\) requires disjoint modulus sets. Likewise, merging duplicate \((v,M)\) groups changes \(\lambda\); coverage probabilities do not add exactly. Merging preserves the needed estimates up to constants for two prongs, with WIN checked for the merged windows.
+
+   The bound
+   \[
+   \sigma_{\mathcal L}\le\lambda_{\mathcal L}
+   \ll (X/P^{2/5})^{5/4}J_{\mathcal L}^{1/4}
+   \]
+   is correct in the model. The unqualified \(N^{-5\eta/4}\) fraction in lines 417–418 requires \(J_{\mathcal L}=1\). Derive the \(J_{\mathcal D}\)-dependent bound in part (iv) by applying U to \(\mathcal D\) itself.
+
+   Linear families are indeed easy. The badly approximable survivor argument is sound; explicitly restrict its sparse-value assertion to coprime members. The “no easier” assessment is appropriately identified as an assessment.
+
+9. **MINOR — Several auxiliary conclusions need narrower wording.**  
+   [Remark B2 through Lemma S](/Volumes/git/factoring-connection/notes/cov38b_results.md:233).
+
+   - **B2:** distinctness and the leading-exponent \(c\le1/6\) calculation are correct. A sharp interval has Wiener norm of logarithmic size; use a Fejér triangle for \(W\asymp1\).
+   - **B′:** the exact energy \(2J^2-J\), mean-magnitude bound, and Paley–Zygmund proportion \(1/8-o(1)\) check out. Replace “gains only a constant” with the precise conclusion: the worst-case discarded error cannot fall below a constant multiple of \(\sqrt J\,W(g)\). This does not compare it within a constant factor to the actual uniform maximum \(\kappa\). “Theorem B(iv)” should be “B(iii).”
+   - **M:** the natural-weight lower bound is correct. Specify common uniform character bounds and the support restriction on arbitrary replacement weights; exact character-dependent magnitudes are a different question.
+   - **S:** state the modulus range needed for \(\pi_g\ll\log P/M\). A global population average \(\lambda_{>Z}<1\) excludes coverage of that entire population by the large-modulus prong alone. It does not automatically give the corresponding fixed-\(q\) statement or exclude covering a residual exceptional set.
+
+10. **MINOR — Registered calculations check out, but the reporting overstates their scope.**  
+    [§5](/Volumes/git/factoring-connection/notes/cov38b_results.md:422), [pre-registration](/Volumes/git/factoring-connection/notes/cov38b_prereg.md:63), and `analyze.py`.
+
+    I recomputed the summary JSON identically from the 24 E1, 260 E2, and 3 E3 records. Independent calculations reproduced both complete E1 histograms at \(q=100003,1000003\), and
+    \[
+    \kappa(100003)=4.983420064498153,\qquad
+    W(g_{\rm tri})/8=0.4856519937679377.
+    \]
+    The recorded grids and stopping rules match addendum A. I found no registered-data deviation from the amended protocol; repository chronology is consistent with the amendment preceding the runs.
+
+    Required reporting fixes:
+
+    - There are **10 named predictions**, not 12.
+    - The current suite has **13 passing tests**, not 11.
+    - E2’s fitted slopes range from **0.8034 to 0.8459**.
+    - Several Wiener-scan points violate \(k_0\ge H'^3\), including \(q=10000019,H'=32,k_0=38\). Their unconditional Hölder statistics remain valid, but they do not test Lemma F’s stated length regime.
+    - The analyzer does not enforce every E2 grid: missing Wiener records can be silently accepted. Add exact expected-grid assertions.
+    - Label the additional F2 numerical spot checks as unregistered proof checks.
+
+**Additional findings**
+
+- **PROVED — Proposition T’s constants survive.** Its prime-pair implication correctly excludes \(A=0\), primitive reduction preserves divisibility, and the converse follows with a height enlargement by a factor of \(8\). The Farey-set constant \(12/\pi^2\) is correct under the stated limiting hypotheses.
+
+- **PROVED — The energy route survives independently.** F1’s lattice count and divisor sum justify the \((\log 2H')^{16}\) loss. Both parts of F, including the signed Hölder calculation, are valid. These supply a check on the repaired F2 argument.
+
+- **PROVED — The survivor has infinitely many coprime members.** For infinitely many lower continued-fraction convergents \(u/v<\alpha\), \(\lfloor\alpha v\rfloor=u\) and \(\gcd(u,v)=1\). For these members and \(2H<x\), the map \((A,B)\mapsto Bx-A\lfloor\alpha x\rfloor\) is injective, justifying the \(\asymp H^2\) distinct-value count.
+
+- **UNVERIFIED — No missing theorem proving the intended positivity was located.** I found no applicable every-residue result for the polynomial prime band and restricted factors here, nor at total product size \(q^{1+o(1)}\) in that intended short-factor regime. Recent ternary prime-product coverage does not supply it. [Matomäki–Teräväinen](https://www.utupub.fi/bitstream/handle/10024/186034/Matomaki-Primes-2024.pdf?isAllowed=y&sequence=1). A scale-free assertion would be false: a prime \(\ell\asymp\log q\) times the full interval \([1,q-1]\) trivially covers every nonzero residue with product bound \(q^{1+o(1)}\).
+
+Calculations and reproducible checks: [script](/Volumes/git/factoring-connection/codex/scratch/cov38b_2/referee_checks.py), [results](/Volumes/git/factoring-connection/codex/scratch/cov38b_2/referee_checks.json).

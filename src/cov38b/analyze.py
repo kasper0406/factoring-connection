@@ -43,6 +43,10 @@ def e2():
     out["P2a"] = all(0.5 <= r["kappa_over_sqrtJlnq"] <= 2 for r in kap.values())
     out["kappa_ratio"] = {q: r["kappa_over_sqrtJlnq"] for q, r in kap.items()}
     W = [r for r in R if r["part"] == "wiener"]
+    # exact expected Wiener grid (addendum A: k0 = q // (8 Hp^3) >= 16), both shapes
+    exp_grid = {(q, Hp, sh) for q in kap for Hp in (1, 2, 4, 8, 16, 32) if q // (8 * Hp ** 3) >= 16
+                for sh in ("sharp", "tri")}
+    assert {(r["q"], r["Hp"], r["shape"]) for r in W} == exp_grid and len(W) == len(exp_grid), "E2 grid incomplete"
     ok_ratio, slopes, ok_lb, lb_ratio = True, {}, True, {}
     for q in kap:
         for sh in ("sharp", "tri"):
