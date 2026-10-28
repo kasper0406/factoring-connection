@@ -1,0 +1,101 @@
+**Recommendation: MAJOR REVISION.**
+
+I read all 911 lines of v1 and cross-checked the requested interfaces. I found no FATAL obstruction to the proposed method. However, BL contains a false mass estimate, the parent acceptability calculation contains false root-conditioned inequalities, and the parent FAM argument does not establish its normalization with the cited definitions. O1 and O2 should remain open pending repairs.
+
+The six supplied tests pass. They do not test these failures.
+
+| Rank | Exact location | Issue and proposed fix |
+|---|---|---|
+| **MAJOR 1** | [BL, definition of ordinary blocks](/Volumes/git/factoring-connection/notes/thmAB_results.md:275), conclusion at line 288; [OPV-A, steps 5–6](/Volumes/git/factoring-connection/notes/thmAB_results.md:418) | **The ordinary/non-ordinary mass claim is reversed.** Ordinary blocks necessarily lie near zero; non-ordinary blocks can carry almost all the mass. Consequently, OPV-A’s treatment of the complement fails. Apply FO on **every retained block**, which already satisfies its interval-length hypothesis, and remove this split. Details below. |
+| **MAJOR 2** | [FAM-A, parent normalization](/Volumes/git/factoring-connection/notes/thmAB_results.md:628) | \(S_{\rm typ}\) is undefined here. The cited SPR definition includes the algebraic density, whereas these bullets use it as a rational-only density and subsequently multiply by another algebraic density. With the cited definition, the rational pair bound is false at its claimed scale. Define a separate rational \(R_{\rm typ}\) and prove the three inequalities displayed below. |
+| **MAJOR 3** | [ML, parent assertion](/Volumes/git/factoring-connection/notes/thmAB_results.md:209); [§11, root-conditioned SQF](/Volumes/git/factoring-connection/notes/thmAB_results.md:687) | **The displayed square-divisibility bound fails for \(p=q\).** Its left side is approximately \(q^{-2}\); its right side is approximately \(q^{-3}\). The discriminant inequality also omits the event \(q'\mid F(P)\), and requires separate treatment when \(q'=q\). State ML for the smooth probabilities \(s_i,s_{12}\), then transfer to acceptability using the corrected subtraction. |
+| **MAJOR 4** | [EXC-A, dyadic fibres](/Volumes/git/factoring-connection/notes/thmAB_results.md:463); [PU-A](/Volumes/git/factoring-connection/notes/thmAB_results.md:487) | Enlarging a fibre **before** splitting it dyadically does not ensure that every resulting piece has length at least \(\lambda_{\min}\), or that \(W\ge2y\). A dyadic endpoint can leave a piece of length \(1\). Thus neither the cited BTS hypothesis nor the displayed \(\lambda_{\min}\)-based bound follows. Enlarge or cover pieces **after splitting**, and account for all added lengths. |
+| **MINOR 5** | [PD-A, boundary fourth moments](/Volumes/git/factoring-connection/notes/thmAB_results.md:536) | Line 542 bounds a fixed component’s fourth moment by the fourth moment of the mixture \(\nu^+\). This implication is invalid. Apply Hölder after summing over mixture components, or prove the moment bound uniformly for each component. Keep \(Z_y\) throughout; its approximate constancy justifies an error estimate, not an exact identity. |
+| **MINOR 6** | [OPV-A, comparison with \(p_i\)](/Volumes/git/factoring-connection/notes/thmAB_results.md:426); [PU-A’s marginal bound](/Volumes/git/factoring-connection/notes/thmAB_results.md:494) | The full marginal expectation \(E_\nu\Psi_i\) already includes boundary blocks, so the stated formula with an additional positive “boundary part” is not the interior-cell identity subsequently used in PD-A. Establish the comparison through \(\widehat\nu\), CF(ii), and boundary moments. Break the OPV/EXC/PU dependency loop using the independent bound \(p_i\ll d\,c_i\) from PG(d). This also suffices for thin pairs. |
+| **MINOR 7** | [§1.2, conditioned \(g\)-law](/Volumes/git/factoring-connection/notes/thmAB_results.md:100) | Conditioning on \(R_{\mathfrak q}\) does **not** remove \(q\mid G(r,1)\): that set still has mass approximately \(1/q\). Uniformity on \(\mathcal G_e\) describes the additional conditioning on its complement. Retain the omitted mass and its normalization factor. The resulting \(O(1/q)\) corrections are negligible here. |
+| **MINOR 8** | [Cutoff definition](/Volumes/git/factoring-connection/notes/thmAB_results.md:133); [EXC-A near-zero bound](/Volumes/git/factoring-connection/notes/thmAB_results.md:459) | The cutoff conditions do not imply the stronger displayed bound \(B^{-1}(c_1c_2)^8\). They involve a rational–algebraic density product, whereas \(c_1c_2\) contains two algebraic densities. The conditions have ample slack for the **needed** \(o(c_1c_2)\) estimate. Prove that weaker estimate directly, including the polynomial factors, or enlarge \(C_X\). |
+| **MINOR 9** | [§0](/Volumes/git/factoring-connection/notes/thmAB_results.md:25); [obligation table](/Volumes/git/factoring-connection/notes/thmAB_results.md:725); [constant discussion](/Volumes/git/factoring-connection/notes/thmAB_results.md:785) | “Written out completely,” “discharged,” and “proved” overstate the present argument. Exact arithmetic on finitely many examples does not establish the universal geometric assertions. Also, unspecified implied constants establish that \(C_\gamma\) is **unquantified here**, not that it is mathematically noncomputable. Revise these descriptions until the repairs are supplied. |
+
+The first issue has a direct contradiction, independently of any smooth-number estimate. Let \(\xi\) be the endpoint nearer zero of an ordinary block. Its defining inequalities give
+\[
+ \tfrac12\sqrt h\,|\xi|\le |I|\le2z,
+ \qquad |\xi|\le4z/\sqrt h.
+\]
+Thus every ordinary block lies in \(|x|\le6z/\sqrt h\). Since \(z=h\ell\le hW\), PG(d) gives
+\[
+ \nu(\text{ordinary blocks})
+ \le \frac{3}{W}\left(\frac{12z}{\sqrt h}+1\right)
+ \le36\sqrt h+\frac3W.
+\]
+Outside the negligible cutoff region, the **non-ordinary** mass therefore tends to one. BL instead bounds it by \(Cd\sqrt h\to0\).
+
+There is a clean repair: every retained block has
+\[
+ h_*|\xi|\le |I|\le\sqrt h\,|\xi|,
+ \qquad h_*\ge y^{-5/12}.
+\]
+FO therefore applies throughout, including blocks labelled non-ordinary. Obtain
+\[
+ \Psi_i/c_i=Y_i\tau_i(1+O(E_{\rm FO}+\text{drift}))
+\]
+on all retained blocks. The sixteenth moments of \(Y_i,\tau_i\) then give the eighth moment by Hölder. This removes the unsupported step that turns an \(e^{O(\lambda)}\) pointwise bound into a constant eighth moment. With this repair, I see no necessary linear first-order term in the principal covariance.
+
+For the parent FAM repair, write
+\[
+ R_{\rm typ}:=\widehat\rho_J(\mathfrak M V_1),
+ \qquad \rho_a(q):=\widehat\rho_{B_2}(X_F/q).
+\]
+What is needed is the explicit package
+\[
+ E_e[R_1R_2]\le\Xi_pD^C R_{\rm typ}^2,\qquad
+ c_i(g)\le C\rho_a(q),\qquad
+ z_{\mathfrak q,e}\ge
+ n_pR_{\rm typ}\rho_a(q)D^{-C}.
+\]
+These yield
+\[
+ \frac{E_e[R_1R_2c_1c_2]}{z_{\mathfrak q,e}^2}
+ \le\frac{\Xi_pD^C}{n_p^2}.
+\]
+The cited SPR’s \(S_{\rm typ}\) already contains an algebraic factor. Importing that definition into the first inequality loses \(\rho_a(q)^2\). Its inverse has logarithm of order \(D^{3-7\alpha}\lambda\), exceeding the allowed parent loss \(D^{\theta_p}\lambda^2\).
+
+Rerun absolute PUB with rational weights only. Prove the aggregate lower bound using active points; no individual lower bound is available for inactive points. The same-\(\ell\) contribution must likewise be stated against \(R_{\rm typ}^2\). Its proposed \((\log Y)^2/Y\) loss is plausible and sufficient, but EXC(b), as cited, is not itself the required pointwise rational lemma. Also allow ten partners for an **absolute** determinant: MULT’s five is for a signed determinant. This only changes constants.
+
+For the root-conditioned subtraction, because \(q\nmid G(P)b\), variation of one coefficient makes \(F(P)\) equidistributed modulo \(q^2\), up to negligible endpoint errors. Hence
+\[
+ \Pr(q\mid F(P),q^2\mid F(P))\sim q^{-2},
+ \qquad
+ \Pr(q^2\mid F(P)\mid R_{\mathfrak q})\sim q^{-1}.
+\]
+Separate \(p=q\) from \(p\ne q\). For discriminant exclusions at \(p\ne q\), include **both** \(p\mid F(P)\) and \(p\mid f_d\operatorname{disc}f\). For \(p=q\), use the root-conditioned degeneracy estimate \(O(d/q)\). These corrections still give a total conditional subtraction \(D^C/B\). Thus the sufficient endpoint condition remains \(a>2c_2\); the erroneous inequalities do not justify weakening it.
+
+The fibre repair also appears affordable. Cover each dyadic piece by an interval of length at least \(\lambda_{\min}\), at a comparable positive scale. There are \(O(\log X_2)\) pieces per fibre. The added normalized contribution is bounded by
+\[
+ D^C(d+1)^2y^{-C_X}c_1,
+\]
+using the area lower bound; the thinness cancels against the \(1/\vartheta\) in \(\lambda_{\min}\). Choose \(C_X\) explicitly to make this negligible relative to \(c_1c_2\). Then verify \(\lambda_{\min}/\Delta'\gg2y\) and the BTS gcd condition on each covering interval. These comparisons have sufficient margins even for thin child pairs.
+
+The following parts survive the audit:
+
+- **ML for smoothness events.** TP-q’s hypotheses hold: primitivity and non-proportionality, \(q\nmid b_iG_iN\), the filters, and the multiplier bound. Dividing the lattice gives modulus \(\Delta/q\), including when \(q\mid\Delta'\). The mixture and the \(21qN^{-\eta_0/2}\) covariance comparison are valid. Parents require the smoothness/acceptability distinction above.
+- **PG and the main boundary geometry.** The width and chord estimates are consistent with MM. Euclidean versus maximum norms have the correct inequality direction. The extent/width factor \(O(d)\) is retained in anti-concentration. The core is convex, and an \(O(h)|\Pi|\) boundary cover and controlled convex enlargement are available. Thinness does not invalidate PG’s lattice remainders.
+- **CL and CF.** The bijection is exact, including full prime-power classes. The counting remainders are negligible at the retained lengths. Singles carry no character discrepancy. Define normalized energies as zero when their numerator sequence vanishes, and discard non-\(y\)-smooth \(\delta\) before identifying sequences with library differences.
+- **FO and LF-A.** The coprimality set is appropriate. The mid-prime sum tends to zero; the parent extension has \(S_0^p=y^{o(1)}\), and its Rankin tails have strict margins. The \(\beta\)-drift is sufficiently small. The local factor has exactly mean one, including prime powers and primes \(>y\), and its stated second and fixed higher moments are credible. Hildebrand’s interval range used here agrees with the authors’ [survey, Theorem 5.1](https://jtnb.centre-mersenne.org/item/JTNB_1993__5_2_411_0.pdf).
+- **EN-A.** The L¹-to-L² argument matches [Drappeau’s Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf): \(Q\le x\), permitted conductors, and \((\log x)^{c_D}\le y\le x\). Both applications have \(Q=x^{o(1)}\). The paper explicitly attributes the lemma to Harper §3.3.
+- **Child FAM-A.** After the moment/library repairs, the integrated rational bound, filter spread, per-point CLB normalization, and determinant multiplicity give the required domination. The decisive summation is \(\sum_\delta\delta^{-2+2\gamma}=O(1)\). The inequality \(\max_k\sum_{\mathfrak q}\le\sum_{\mathfrak q}\max_k\) is legitimate here because the normalized domination is available label by label. Merely observing that \(k\) does not contain \(q\) would not establish it.
+- **Thin pairs, skew labels, and thresholds.** The per-point envelope avoids the false max/typical comparison for skew labels. DOM and LS then suffice. Separate parent thresholds are essential and correctly chosen: \(\theta_p<3-7\alpha\), including at \(3/8\).
+
+For PD-A, the atom construction and interior marginal domination are correct. Issue 5 is repaired by performing the boundary Hölder estimates on the joint space \((y,x)\), using the averaged fourth moments there. No independence between the mixture, gcd class, and archimedean factor is needed.
+
+The assembly has no additional exponent obstruction that I found. The common \(T_0\) agrees with c12rat’s stated RAT range. At \(3/8\), both budget ratios are \(D^{-3/8}\lambda^C\); \(a>2c_2\) implies (SQ); the U′ range, Lemma η, and parent-value recursion have the listed margins. The parent one-point identity \(w/z=\Pr(R,e)/\#J\) is the correct normalization.
+
+For the active proof route, I found no direct use of Harper’s Theorems 1–2 beyond Drappeau’s stated input. The dependency claim is reasonable relative to the accepted internal chain. The numerical \(C_\gamma=0\) examples remain illustrations, not certified running-time constants.
+
+My probabilities concern correctness **after the repairs above are actually proved and incorporated**:
+
+| Claim | Probability |
+|---|---:|
+| (a) Theorem AB | **80%** |
+| (b) Theorem AB₂ | **70%** |
+| (c) Theorem 2L-final(\(\alpha\)), \(3/8<\alpha<2/5\), relative to the internal chain and Theorem RAT | **70%** |
+| (d) Theorem 2L-final(\(3/8\)), under \(a>2c_2\), on the same basis | **60%** |

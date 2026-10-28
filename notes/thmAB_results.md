@@ -1,6 +1,7 @@
 # thmAB: Theorem AB written out in full (algebraic two-point blocks under DW) — results
 
-Agent `thmAB`, phase 30, 2026-10-28. **v1** (pre-review; §15 records the reviews).
+Agent `thmAB`, phase 30, 2026-10-28. **v2**: v1 + the repairs from codex adversarial round `thmAB_2` (MAJOR REVISION,
+no FATAL) and the Opus proof critic (ACCEPT WITH MINOR REVISIONS); §15 records the reviews.
 
 Files:
 - this note;
@@ -27,7 +28,9 @@ is the Hildebrand–Tenenbaum saddle point and γ := 1 − β. To avoid the clas
 
 ## 0. Verdict
 
-**Plain language.** Theorem AB is now written out completely, and the proof gives more than was asked. On the
+**Plain language.** Theorem AB is now written out in full, and the proof gives more than was asked. "In full" means
+every step cites a lemma proved in the project or a published theorem; it has had one adversarial round and one proof
+critic, whose repairs are applied (v2), and it is not refereed. On the
 algebraic side, the covariance of two child points (or two parents) is bounded by the **product** of two one-point
 standard deviations, each of first order. So the algebraic blocks are of **second order**, on the whole range
 3/8 ≤ α < 2/5. That is c12alg's Theorem AB₂, and its four open obligations O1, O2, O3, O5 are discharged here.
@@ -39,7 +42,8 @@ Combined with the proved pieces (U′ under DW, Prop DC, Theorem RAT, the DW lem
 
 Status: **proved, internal and unrefereed**, like everything in this project. It rests on the project's whole
 internal chain, on c12rat's Theorem RAT, and on published inputs, of which the essential one is Drappeau's Lemme 5,
-which itself rests on Harper's unrefereed preprint. This note's proof has not yet been reviewed (§15).
+which itself rests on Harper's unrefereed preprint. The v2 repairs have been checked by one further codex round
+(§15).
 
 How the proof works:
 - **The pair law is explicit.** Given the rational data g and the root event, (F(P₁), F(P₂))/q is within total
@@ -65,11 +69,15 @@ What remains, honestly:
 - the internal chain, which no outside referee has read;
 - C_γ (hence c(α)) is not computable, as for Theorem U.
 
-**Probabilities (ours, before review; reviewers' in §15).**
-- Theorem AB as proved here is correct: 75%.
-- Theorem AB₂ (second order on [3/8, 2/5)) as proved here: 65%.
-- Theorem 2L-final(α), α ∈ (3/8, 2/5), is correct given the internal chain and Theorem RAT: 65%.
-- Theorem 2L-final(3/8), likewise: 55%.
+**Probabilities (ours, after the v2 repairs; reviewers' in §15).**
+- Theorem AB as proved here is correct: 75%. [codex round 2: 80% after repairs; proof critic: 80%]
+- Theorem AB₂ (second order on [3/8, 2/5)): 68%. [codex 70%; critic 72%]
+- Theorem 2L-final(α), α ∈ (3/8, 2/5), correct relative to the internal chain and Theorem RAT: 65%. [codex 70%;
+  critic 65%]
+- Theorem 2L-final(3/8), likewise: 52%. [codex 60%; critic 52%]
+
+The residual risk is mostly in the glue (c12rat's unreviewed v2 repairs, c12alg §2.7/§5 bookkeeping, U′ under DW at
+η₀ = D^{−3/8}), not in the new algebraic estimates.
 
 ---
 
@@ -99,8 +107,11 @@ gcd(N, G(P)) = 1 for every B-smooth G(P) and every G(P) ∈ J·𝒮_B.
 
 Fix a label 𝔮 and an environment cell e (a square Ω_e of side δ_e𝔐, δ_e = D^{−A₀}, A₀ ≥ 1; pc3 Prop DC_e).
 Write E_e[·] := E[· | R_𝔮, g ∈ Ω_e] for expectations over g. By c12alg Lemma RE, the law of g under this conditioning
-is uniform on 𝒢_e := {g ∈ Ω_e primitive : q ∤ G_g(r, 1)}, up to a density factor 1 + O(q/H + q/W_m). On g with
-q | G_g(r, 1), every point of Λ_𝔮 has q | G(P′), so nothing below is counted there.
+has density 1 + O(q/H + q/W_m) with respect to the uniform law on the primitive points of Ω_e for g with
+q ∤ G_g(r, 1). The set of g with q | G_g(r, 1) keeps its mass ≈ 1/q (on it the root event is q | w). On that set every
+point of Λ_𝔮 has q | G(P′), so Rat(P′; g) = 0 (q > B) and R(P; g) = 0 (q ∉ J, q > B). Such g contribute zero to every
+sum below; they enter only through the normalisation, identically in numerators and denominators, so all ratios are
+unaffected and absolute terms change by a factor 1 + O(1/q) (codex thmAB_2 #7).
 
 *Children.* For P′ ∈ Box(𝔮):
 - Rat(P′; g) := 1[G_g(P′) ∈ 𝒮_B, |G_g(P′)| ≥ 𝔐|P′|_∞N^{−η₀/4}];
@@ -130,9 +141,10 @@ exponent and c12rat's θ. Fix a large constant C_T (chosen after all the constan
 - **parent thresholds** (separate, obligation O3): ϑ₀^p := e^{C_TD^{θ_p}λ²};
 - **cell parameters:** h := D^{−10}; h_* := h/(64(d + 1)ϑ₀) for children and h_*^p := h/(64(d + 1)ϑ₀^p) for parents;
   universal grids 𝒳 := {±(1 + h_*)^j : j ≥ 0} and 𝒳^p likewise;
-- **cutoffs:** C_X := a fixed integer with B^{C_X} ≥ (ρ̂_B(X_{F2})ρ̂_B(X_{r2}))^{−8}B and
-  B₂^{C_X} ≥ (ρ̂_{B₂}(X_F)ρ̂_B(X_r))^{−8}B₂ (possible since log(1/ρ̂) = O(log y) for every density used; c12alg
-  §1.1 sizes);
+- **cutoffs:** C_X := a fixed integer with B^{C_X − 1} ≥ D^{20}ρ̂_B(8dX_{F2})^{−2} and
+  B₂^{C_X − 1} ≥ D^{20}ρ̂_{B₂}(8dX_F)^{−2}. This is possible since log(1/ρ̂) = O(log y) for both densities (c12alg §1.1
+  sizes). Every centering constant c_i below is ≥ ρ̂_B(8dX_{F2}) (children) or ≥ ρ̂_{B₂}(8dX_F) (parents), so
+  D^{10}(d + 1)²y^{−C_X} ≤ y^{−1}c₁c₂ (codex thmAB_2 #8);
 - **gcd-class thresholds:** P₀ := ⌈D^{7/10}⌉; S₀ := e^{D^{ζ}} with ζ := (θ + α)/2 (c12rat's S₀) for children, and
   S₀^p := e^{D^{ζ_p}} with ζ_p := (θ_p + 4α − 1)/2 for parents.
 
@@ -206,7 +218,9 @@ Define ν := Σ_yπ(y)Unif(L′ ∩ Π_y). Then:
 - (a) the law of (F(P₁), F(P₂))/q given (g, R_𝔮) is within TV 7qN^{−η₀/2} of ν;
 - (b) with p_i := ν(x_i ∈ 𝒮_B) and p₁₂ := ν(x₁, x₂ ∈ 𝒮_B), |(A₁₂ − A₁A₂) − (p₁₂ − p₁p₂)| ≤ 21qN^{−η₀/2}.
 
-The same holds for parents P₁ ≠ P₂ ∈ 𝒫 ∩ Λ_𝔮 with R(P₁; g) = R(P₂; g) = 1, with 𝒮_{B₂} in (b) and Δ′ = Δ/q ≤ 2V₁²/q.
+The same holds for parents P₁ ≠ P₂ ∈ 𝒫 ∩ Λ_𝔮 with R(P₁; g) = R(P₂; g) = 1, with Δ′ = Δ/q ≤ 2V₁²/q, **for the
+smoothness events** s_P(g) := Pr[F(P)/q ∈ 𝒮_{B₂} | g, R_𝔮] and s₁₂ (in (b), A is replaced by s and 𝒮_B by 𝒮_{B₂}).
+The acceptability events a_P are not value events; §11 transfers from s to a.
 
 *Proof.*
 - (a) is c12alg Cor TP-q. Its hypotheses hold:
@@ -239,7 +253,7 @@ Fix (g, pair) as in Lemma ML and put s_i := (2H + 1)|G_i||P_i|_∞^{d−1}/q and
 - (d) **Fibre masses and anti-concentration.** Every x₁-fibre of every Unif(L′ ∩ Π_y) has mass ≤ 3/W₁. Hence
   ν(|x₁| ≤ tX₁) ≤ 6(d + 1)(2t + 1/X₁) for all t > 0, and likewise for x₂.
 - (e) **Local law.** For every residue r mod Δ′, ν(x₁ ≡ r mod Δ′) ≤ (1 + N^{−Ω(μ)})/Δ′ + N^{−Ω(μ)}. Hence
-  ν(gcd(x₁, Δ′) = δ) ≤ (1 + N^{−Ω(μ)})π₀(δ) + N^{−Ω(μ)}, with π₀(δ) := φ(Δ′/δ)/Δ′. Also, for every interval I,
+  ν(gcd(x₁, Δ′) = δ) ≤ (1 + N^{−Ω(μ)})π₀(δ) + φ(Δ′/δ)N^{−Ω(μ)}, with π₀(δ) := φ(Δ′/δ)/Δ′ (Δ′ ≤ V₁² = 𝔐^{o(1)}). Also, for every interval I,
   ν(x₁ ∈ I, δ | x₁) ≤ (|I|/δ + 1)·3/W₁ (by (d)).
 - (f) The same statements hold for the enlarged parallelograms Π_y⁺ of Lemma BL, with X_i replaced by (1 + 2h)X_i.
 
@@ -272,9 +286,13 @@ Fix (g, pair) as in Lemma ML and put s_i := (2H + 1)|G_i||P_i|_∞^{d−1}/q and
 
 **Lemma BL (blocks, cells, boundary).** Fix (g, pair), non-thin: ϑ ≤ ϑ₀ (children) or ϑ ≤ ϑ₀^p (parents). Put
 z₁ := hℓ_r, z₂ := hℓ_c, X_i⁻ := X_iB^{−C_X} (children) or X_iB₂^{−C_X} (parents).
-- *Blocks.* A block of coordinate i is a union of consecutive intervals of the universal grid 𝒳 (resp. 𝒳^p), of
-  relative width ≤ min(h^{1/2}, 1/8) and length ≤ 2z_i. The blocks partition {X_i⁻ ≤ |x_i| ≤ 2X_i}, and this
-  partition depends only on (g, pair), not on y. A block is *ordinary* if its relative width is ≥ h^{1/2}/2.
+- *Blocks.* Round X_i⁻ down and 2X_i up to points of the grid 𝒳 (resp. 𝒳^p), so every block endpoint is a grid
+  point and hence a library endpoint (critic item 2). A block of coordinate i is a union of consecutive grid intervals,
+  of relative width ≤ min(h^{1/2}, 1/8) and length ≤ 2z_i. The blocks partition the rounded range
+  {X_i⁻ ≤ |x_i| ≤ 2X_i}, and this partition depends only on (g, pair), not on y. Every block contains a whole grid
+  interval, so its relative width lies in [h_*/2, h^{1/2}]. (v1 also split blocks into "ordinary" and "non-ordinary";
+  that split was stated backwards — away from 0 the length cap binds — and is removed in v2: codex thmAB_2 #1,
+  critic 4b.)
 - *Rectangles* are products R = I₁ × I₂ of blocks. *Cells* are pairs (R, δ) with δ | Δ′.
 - *Core.* Π_y^∘ := {x ∈ Π_y : the x₂-chord through x has length ≥ hℓ_c and the x₁-chord has length ≥ hℓ_r}. It is
   convex: it is an intersection of Π_y with a vertical and a horizontal strip, since the chord functions are concave.
@@ -283,21 +301,21 @@ z₁ := hℓ_r, z₂ := hℓ_c, X_i⁻ := X_iB^{−C_X} (children) or X_iB₂^{�
 Then:
 - (i) The grid resolves the blocks. The spacing of 𝒳 at |x| ≤ 2X_i is ≤ 2h_*X_i, and
   z_i ≥ hs_i/(8ϑ) = hX_i/(8(d + 1)ϑ) ≥ hX_i/(8(d + 1)ϑ₀) = 8h_*X_i (Lemma PG(c)), so the spacing is ≤ z_i/4.
-  Every block contains at least one grid interval, so it has length ≥ h_*X_i⁻ ≫ N^{μ/2}Δ′S₀B² (resp. with S₀^p, B₂²),
-  because X_i ≥ N^{h}.
-  Non-ordinary blocks occur only at |x_i| ≤ 128h^{−1/2}z_i ≤ 128h^{1/2}X_i, so their ν-mass is ≤ Cdh^{1/2}
-  (Lemma PG(d)).
-- (ii) The boundary rectangles for y cover area ≤ (20h + 32h²)|Π₀| + 4h|Π₀| ≤ 25h|Π₀|, so their ν_y-mass is
-  ≤ 25h(1 + N^{−Ω(μ)}). All of them lie in the convex set Π_y⁺ := Π_y + [−2z₁, 2z₁] × [−2z₂, 2z₂], and
-  |Π_y⁺| ≤ (1 + 40h)|Π₀|.
+  Every block contains at least one grid interval, so it has length ≥ h_*X_i⁻/2 ≫ N^{μ/2}Δ′S₀B² (resp. with S₀^p,
+  B₂²), because X_i ≥ N^{h}.
+- (ii) The boundary rectangles for y cover area ≤ Ch|Π₀|, so their ν_y-mass is ≤ Ch(1 + N^{−Ω(μ)}). All of them lie
+  in the convex set Π_y⁺ := Π_y + [−2z₁, 2z₁] × [−2z₂, 2z₂], and |Π_y⁺| ≤ (1 + 40h)|Π₀|.
 - (iii) For every rectangle R with sides ≥ Δ′, #(L′ ∩ R) = |I₁||I₂|/Δ′ + O(|I₁| + |I₂|). Each Δ′ × Δ′ square contains
   exactly Δ′ points of L′ ⊇ Δ′Z².
 
-*Proof.* (i) is c12rat Lemma CELL(i), with Lemma PG(c) in place of the chord bound there. For (ii):
-- the set Π∖Π^∘ has area ≤ hℓ_cW₁ + hℓ_rW₂ ≤ 4h|Π|, by PG(c);
+*Proof.* (i) is c12rat Lemma CELL(i), with Lemma PG(c) in place of the chord bound there. For (ii), a boundary
+rectangle either meets ∂Π^∘ or lies inside Π∖Π^∘ ∪ (Π∖Π^∘ + box):
+- the set Π∖Π^∘ has area ≤ hℓ_cW₁ + hℓ_rW₂ ≤ 4h|Π|, by PG(c), and it is the union of ≤ 4 caps at the ends of the
+  chord functions; its (2z₁, 2z₂)-box neighbourhood has area ≤ 4h|Π| + 4z₁W₂ + 4z₂W₁ + 16z₁z₂;
 - the rectangles meeting ∂Π^∘ lie within box-distance (2z₁, 2z₂) of it, an area ≤ 4z₁W₂ + 4z₂W₁ + 16z₁z₂
   ≤ (16h + 32h²)|Π|. This is c12rat Lemma CELL(ii)'s convexity argument, which uses only convexity and
   |Π| ≥ ℓ_rW₂/2, |Π| ≥ ℓ_cW₁/2;
+- in total ≤ (40h + 64h²)|Π|;
 - |Π⁺| ≤ |Π| + 2z₁·2W₂ + 2z₂·2W₁ + 16z₁z₂.
 
 (iii) is elementary. ∎ (`test_boundary_area_BL` checks the bound (16h + 32h²)|Π| exactly on DW parallelograms for
@@ -377,67 +395,71 @@ For the moments write E τ^r = ∏_pEτ_p^r ≤ exp(Σ_p(Eτ_p^r − 1)).
 
 The variance is Eτ² − 1. ∎
 
-**Lemma OPV-A (one-point moments).** Let x₁ have the first marginal of ν (resp. of ν⁺ := Σ_yπ(y)Unif(L′ ∩ Π_y⁺)).
-Call x₁ *exceptional* if |x₁| < X₁⁻ or gcd(x₁, Δ′) > S₀ (resp. S₀^p). For non-exceptional x₁ let
-Ψ₁(x₁) := d₁(I(x₁), δ(x₁)) be the density of its cell, I(x₁) its block and δ(x₁) its class. Then
-  E[(Ψ₁/c₁ − 1)²·1_{non-exc}] ≤ 𝒱,  E[(Ψ₁/c₁)⁸·1_{non-exc}] ≤ C,  and c₁/2 ≤ p₁ ≤ 2c₁,
+**Lemma OPV-A (one-point moments).** Let x₁ have the first marginal of ν (resp. of ν⁺ := Σ_yπ(y)Z_y⁺^{−1}·counting
+measure on L′ ∩ Π_y⁺, the mixture of the uniform laws on the enlarged parallelograms). Call x₁ *exceptional* if
+|x₁| < X₁⁻ or gcd(x₁, Δ′) > S₀ (resp. S₀^p). For non-exceptional x₁ let Ψ₁(x₁) := d₁(I(x₁), δ(x₁)) be the density of
+its cell, I(x₁) its block and δ(x₁) its class. Then
+  E[(Ψ₁/c₁ − 1)²·1_{non-exc}] ≤ 𝒱,  E[(Ψ₁/c₁)⁸·1_{non-exc}] ≤ C,
 where
-- 𝒱 := C[γ²(log Cd)² + γ²λ² + E_FO² + d^{1/2}h^{1/4}] ≤ CD^{−2α}λ^C (children);
+- 𝒱 := C[γ²(log Cd)² + γ²λ² + E_FO² + u^{−2}] ≤ CD^{−2α}λ^C (children);
 - 𝒱 ≤ C(D^{2−8α} + D^{−2(3−7α)})λ^C ≤ C(D^{−2α} + D^{−2(3−7α)})λ^C (parents).
+
+Moreover, independently of the above, p₁ ≤ 12(d + 1)c₁ (from PG(d) alone), and c₁/2 ≤ p₁ (step 6 below, which uses
+only steps 1–5 and Lemma EXC-A's near-zero and large-class bounds for singles, which do not use p₁).
 
 Here E_FO = C(log P₀)³(log(u + 1)/log y + 1/u) is c12rat's first-order error at the value scale: ≍ D^{−α}λ^C for
 children and ≍ (D^{1−4α} + D^{7α−3})λ^C for parents.
 
 *Proof.*
-1. **Ordinary blocks, non-exceptional classes.** Let ξ be the end of I nearer 0, so X₁⁻ ≤ |ξ| ≤ 2X₁, and let δ ≤ S₀
-   be y-smooth.
-   - Apply c12rat **Lemma FO** with x = |ξ|, z = |I| ∈ [h_*|ξ|, h^{1/2}|ξ|] ⊂ [y^{−5/12}x, x], s = δ, and
-     𝔪 := rad(Δ_δ)_{≤y}. Its hypotheses hold:
+1. **Every block, non-exceptional classes.** Let ξ be the end of I nearer 0, so X₁⁻ ≤ |ξ| ≤ 2X₁, and let δ ≤ S₀
+   be y-smooth. Every block has |I| ∈ [h_*|ξ|/2, h^{1/2}|ξ|] ⊂ [y^{−5/12}|ξ|, |ξ|] (Lemma BL; h_* ≥ y^{−5/12}).
+   - Apply c12rat **Lemma FO** with x = |ξ|, z = |I|, s = δ, and 𝔪 := rad(Δ_δ)_{≤y}. Its hypotheses hold:
      - log x ≥ (1/2)log X₁;
      - s ≤ S₀;
-     - 𝔪 | P₀#·𝔪₁ with 𝔪₁ the primes of Δ_δ in (P₀, y], and Σ_{p|𝔪₁}p^{−β} ≤ ω(Δ′)P₀^{−1}e = o(1), since p^γ ≤ e for
-       p ≤ e^{1/γ}, and larger p contribute ≤ e^{−1/(2γ)}ω.
+     - 𝔪 | P₀#·𝔪₁ with 𝔪₁ the primes of Δ_δ in (P₀, y], and Σ_{p|𝔪₁}p^{−β} ≤ eω(Δ′)/P₀ + ω(Δ′)e^{−1/(2γ)} = o(1),
+       since p^γ ≤ e for p ≤ e^{1/γ}.
    - FO gives #{m ∈ I/δ : P⁺(|m|) ≤ y, (m, 𝔪) = 1} = (|I|/δ)δ^{γ(ξ)}ρ̂(|ξ|)g_𝔪(β(ξ))(1 + O(E_FO)).
    - Primes p > y dividing Δ_δ need no condition for y-smooth m. Dividing by U = (|I|/δ)φ(Δ_δ)/Δ_δ·(1 + N^{−Ω(μ)})
-     (Lemma BL(i)) gives Ψ₁ = ρ̂(|ξ|)·τ(δ)·(1 + O(E_FO)).
-   - Replacing β(ξ, y) by β(X₁, y) inside τ costs a factor 1 + O(log S₀·C_X log y/(log X₁ log y)) = 1 + o(D^{−α}),
-     by HT Thm 2 (the drift of β; c12rat OPV, last line of the first bullet).
+     (Lemma BL(i)) gives Ψ₁ = ρ̂(|ξ|)·τ(δ)·(1 + O(E_FO)) with τ evaluated at β(ξ, y).
+   - **β-drift.** Replacing β(ξ, y) by β(X₁, y) in δ^γ and in g_𝔪 costs a factor
+     1 + O(|β(ξ) − β(X₁)|·(log S₀ + Σ_{p|Δ′, p≤y}p^{−β}log p)). By HT Thm 2, |β(ξ) − β(X₁)| ≪ log(X₁/|ξ|)/(log X₁ log y)
+     ≤ C_X/log X₁ (as |ξ| ≥ X₁y^{−C_X}), and Σ_{p|Δ′}p^{−β}log p ≤ Cλ. So the factor is 1 + O(D^{−2α}) (critic 4a).
    - For δ not y-smooth, Ψ₁ = 0 = c₁τ(δ) exactly.
 2. **Archimedean factor.** Put Y(x₁) := ρ̂(|ξ|)/ρ̂(X₁).
-   - Fact HT3 iterated ≤ C_X + 1 times (|ξ| ≥ X₁B^{−C_X}), with the drift of β controlled by HT Thm 2, gives
-     Y = (X₁/|ξ|)^γ(1 + O(1/u)). The block-to-point replacement |ξ| ↔ |x₁| costs (1 + h^{1/2})^γ.
+   - Fact HT3 iterated ≤ C_X + 1 times (|ξ| ≥ X₁y^{−C_X}), with the drift of β controlled by HT Thm 2, gives
+     Y = (X₁/|ξ|)^γ(1 + O(1/u)). The block-to-point replacement |ξ| ↔ |x₁| costs (1 + h^{1/2})^γ = 1 + O(γh^{1/2}).
    - By Lemma PG(d), Pr[X₁/|x₁| > s] ≤ 6(d + 1)(2/s + 1/X₁). Integrating,
      E[log^r(X₁/|x₁|)(X₁/|x₁|)^{σ}·1_{|x₁|≥X₁⁻}] ≤ C_r(log Cd)^r for r ≤ 16 and σ ≤ 16γ, since (Cd)^{16γ} ≤ 2.
    - Hence E(Y − 1)⁴ ≤ Cγ⁴(log Cd)⁴ + Cu^{−4} and EY^{16} ≤ C.
-3. **Local factor.** By Lemma PG(e), E_ν[f(δ(x₁))] ≤ (1 + N^{−Ω(μ)})E_{π₀}f + N^{−Ω(μ)}Δ′max f for every
-   f ≥ 0 (max f ≤ e^{O(λ)}Δ′^{16γ} for the f used). Lemma LF-A then gives E(τ − 1)² ≤ Cγ²λ² + Cω/y and Eτ^{16} ≤ C
-   under the x₁-marginal of ν (or ν⁺). No conditioning on the block is needed: the archimedean and local factors are
-   combined by Cauchy–Schwarz in step 4.
-4. **Assembly on ordinary non-exceptional x₁.** Ψ₁/c₁ − 1 = (Y − 1)τ(1 + e) + (τ − 1)(1 + e) + e, with
-   |e| ≤ CE_FO + Cγh^{1/2}. Cauchy–Schwarz with the fourth moments gives ≤ C(γ²(log Cd)² + γ²λ² + E_FO²).
-5. **Non-ordinary blocks** (mass ≤ Cdh^{1/2}, Lemma BL(i)). The pointwise bound below gives
-   E[(Ψ₁/c₁ − 1)²1_{non-ord}] ≤ (Cdh^{1/2})^{1/2}E[(Ψ₁/c₁ + 1)⁴]^{1/2} ≤ Cd^{1/2}h^{1/4}.
-6. **Pointwise upper bound** (every block, every δ). Ψ₁ ≤ e^{O(λ)}δ^{γ}(X₁/|ξ|)^γc₁. Indeed:
+3. **Local factor.** By Lemma PG(e), E[f(δ(x₁))] ≤ (1 + N^{−Ω(μ)})E_{π₀}f + Δ′N^{−Ω(μ)}max f for every f ≥ 0
+   (max f ≤ e^{O(λ)}Δ′^{16γ} for the f used). Lemma LF-A then gives E(τ − 1)² ≤ Cγ²λ² + Cω/y and Eτ^{16} ≤ C under
+   the x₁-marginal of ν (or ν⁺). No conditioning on the block is needed: the archimedean and local factors are
+   combined by Cauchy–Schwarz and Hölder.
+4. **Assembly.** On every non-exceptional x₁, Ψ₁/c₁ − 1 = (Y − 1)τ(1 + e) + (τ − 1)(1 + e) + e, with
+   |e| ≤ CE_FO + Cγh^{1/2} + CD^{−2α}. Cauchy–Schwarz with the fourth moments gives E[(Ψ₁/c₁ − 1)²1_{non-exc}]
+   ≤ C(γ²(log Cd)² + γ²λ² + E_FO² + u^{−2}). Hölder gives E[(Ψ₁/c₁)⁸1_{non-exc}] ≤ C(EY^{16}Eτ^{16})^{1/2} ≤ C.
+   (v1 used an e^{O(λ)} pointwise bound on a set it believed to have mass Cdh^{1/2}; that step is gone.)
+5. **Pointwise upper bound** (every block, every δ, used only on exceptional sets and in §9). Ψ₁ ≤ e^{O(λ)}δ^{γ}(X₁/|ξ|)^γc₁.
+   Indeed:
    - c12rat **Lemma BTS** with modulus 1, applied to I/δ (length ≥ 2y), gives #smooth ≤ e^{O(λ)}(|I|/δ)·(…)^γρ̂;
    - Fact dBT1 gives ρ̂(x/δ) ≤ Cδ^γρ̂(x);
    - U ≥ (|I|/δ)/(Cλ);
    - h_*^{−γ} = e^{o(1)}.
-   Hence E[(Ψ₁/c₁)⁸] ≤ C, using step 4 on ordinary blocks and the masses above elsewhere.
-7. **c₁/2 ≤ p₁ ≤ 2c₁.** p₁ = E[Ψ₁·1_{non-exc}] + (exceptional part) + (boundary part).
-   - The main term is c₁E[Yτ(1 + e)] = c₁(1 + O(γ log Cd + E_FO + d^{1/2}h^{1/4})), since Eτ = 1 up to 1 + o(1),
-     Y ≥ 1 − O(1/u) and EY ≤ 1 + Cγ log Cd.
-   - The exceptional part is ≤ e^{−λ}c₁ (Lemma EXC-A).
-   - The parent order of magnitude: γ₂ log d ≍ D^{1−4α}λ → 0.
+6. **p₁ versus c₁** (critic item 5; codex thmAB_2 #6 — this breaks the v1 loop OPV/EXC/PU).
+   - *Upper:* p₁ ≤ max fibre mass × #{x₁ ∈ 𝒮_y : |x₁| ≤ X₁} ≤ (3/W₁)·2Ψ(X₁, y) ≤ 12(d + 1)c₁, by PG(d).
+   - *Lower:* p₁ ≥ ν(x₁ ∈ 𝒮_y, x₁ non-exceptional) = c₁E[Yτ(1 + e)1_{non-exc}]. Now E[Yτ] ≥ (1 − O(1/u))Eτ,
+     E[τ1_{non-exc}] ≥ 1 − o(1) − E[τ1_{exc}], and E[τ1_{exc}] ≤ (ν(exc))^{1/2}(Eτ²)^{1/2} = o(1) by EXC-A's mass bound
+     (which uses only PG(d) and the gcd tails). Hence p₁ ≥ c₁/2.
+   - For parents the same, with γ₂ log d ≍ D^{1−4α}λ → 0.
 
 **Exponents.**
-- *Children:* γ ≤ C₁/(aD^α)·λ (Fact HT(α2): γ log y = O(λ)), E_FO ≍ D^{−α}λ^C, and d^{1/2}h^{1/4} = D^{(1−2α)/2−5/2}
-  ≤ D^{−2α}.
+- *Children:* γ ≤ C₁/(aD^α)·λ (Fact HT(α2): γ log y = O(λ)), E_FO ≍ D^{−α}λ^C, 1/u ≍ D^{−α}.
 - *Parents:* γ₂ = O(λ/log B₂) = O(D^{1−4α}), and E_FO ≍ (log(u₂ + 1)/log B₂ + 1/u₂)λ^C = (D^{1−4α} + D^{7α−3})λ^C.
   D^{2−8α} ≤ D^{−2α} since α ≥ 1/3. ∎
 
 This is the **joint moment lemma O1**. It is uniform over:
 - large gcd classes and prime powers (Lemma CL makes them exact; Lemma LF-A carries prime powers);
-- rectangles near zero (the cutoff X₁⁻ and the non-ordinary mass);
+- rectangles near zero (the cutoff X₁⁻, and FO on every block down to X₁⁻);
 - the enlarged boundary region (the ν⁺ version, PG(f));
 - the mixture components (c₁ does not depend on y, and the statement is about the full mixture marginal).
 
@@ -456,15 +478,19 @@ Lemma EXC-A.
 The same holds for ν⁺.
 
 *Proof.*
-- **Near zero.** ν(|x_i| < X_i⁻) ≤ 6(d + 1)(2B^{−C_X} + 1/X_i) (Lemma PG(d)). By the choice of C_X this is
-  ≤ B^{−1}(c₁c₂)⁸ ≤ e^{−λ}c₁c₂ (children; B₂ for parents).
+- **Near zero.** ν(|x_i| < X_i⁻) ≤ 6(d + 1)(2y^{−C_X} + 1/X_i) (Lemma PG(d)). By the choice of C_X (§1.3) this is
+  ≤ y^{−1}c₁c₂ ≤ e^{−λ}c₁c₂ (y = B for children, B₂ for parents; codex thmAB_2 #8: v1's (c₁c₂)⁸ was unjustified and
+  is not needed).
 - **Large classes.** δ | x₁ forces δ | x₂ (Lemma CL). For fixed δ | Δ′:
   - ν(δ | x₁, x₁ ∈ 𝒮_y) ≤ (3/W₁)·2Ψ(X₁/δ, y) ≤ Cdδ^{−1+γ}c₁, by PG(d) and Fact dBT1.
-  - Given x₁, the partners x₂ form an AP of difference Δ′ on a fibre, an interval of length ℓ(x₁). Enlarge every
-    fibre shorter than λ_min := X₂B^{−C_X}/ϑ to that length (see Lemma PU-A for the accounting). Split the fibre
-    dyadically away from 0; the part |x₂| < X₂⁻ is covered by the near-zero bound. On each dyadic piece, c12rat
-    **Lemma BTS** (modulus Δ′, W ≥ 2y, and its hypothesis gcd(a, Δ′)W ≤ X₀ holds on dyadic pieces) bounds the smooth
-    partners by e^{O(λ)}(len/Δ′)(X₂Δ′/len)^{γ}ρ̂(X₂) ≤ e^{O(λ)}(B^{C_X}ϑΔ′)^γ(len/Δ′)c₂.
+  - Given x₁, the partners x₂ form an AP of difference Δ′ on a fibre, an interval of length ℓ(x₁). **First** split
+    the fibre into its intersections with the dyadic ranges ±[2^kX₂⁻, 2^{k+1}X₂⁻) (O(log X₂) pieces; the part
+    |x₂| < X₂⁻ is covered by the near-zero bound). **Then** cover each nonempty piece by an interval J of length
+    max(|piece|, λ_min), λ_min := X₂y^{−C_X}/ϑ ≤ X₂⁻, inside ±[2^{k−1}X₂⁻, 2^{k+2}X₂⁻) (codex thmAB_2 #4, critic 5).
+    On J, c12rat **Lemma BTS** applies: modulus Δ′, W = |J|/Δ′ ≥ λ_min/Δ′ ≥ 2y (λ_min ≥ N^{h}/(V₂²S₂²y^{C_X})), and
+    gcd(a, Δ′)W ≤ |J| ≤ 2^{k}X₂⁻ ≤ (left end of J)·2. It bounds the smooth partners in the piece by
+    e^{O(λ)}(|J|/Δ′)(2^{k+2}X₂⁻Δ′/|J|)^{γ}ρ̂(2^{k+2}X₂⁻) ≤ e^{O(λ)}(y^{C_X}ϑΔ′)^γ(|J|/Δ′)c₂, using
+    ρ̂(2^{k+2}X₂⁻) ≤ C(X₂/X₂⁻)^γρ̂(X₂) ≤ e^{O(λ)}c₂.
     For children, (B^{C_X}Δ′)^γ = e^{O(λ)} (Δ′ ≤ 2S₂² = L[α]^{O(1)}, γ ≍ D^{−α}λ), and ϑ^γ ≤ ϑ₀^γ = e^{o(1)} for
     non-thin pairs.
   - So ν(δ | x, both smooth) ≤ e^{O(λ)}δ^{−1+γ}c₁c₂ for non-thin child pairs. For parents the factor is
@@ -484,16 +510,16 @@ the "large-modulus" term of c12alg's Ξ. In particular:
 - p₁₂ ≤ Ξ_pc₁c₂ (parents);
 - consequently A₁₂ ≤ p₁₂ + 7qN^{−η₀/2}.
 
-*Proof.* p₁₂ = Σ_yπ(y)Z^{−1}Σ_{x₁∈𝒮_y}#{smooth partners on the fibre of x₁}. Bound the partners as in the
-large-classes bullet with δ = 1, after enlarging each fibre to len′ := max(ℓ(x₁), λ_min), λ_min = X₂B^{−C_X}/ϑ. The
-x₁-sum is then Σ_{x₁∈𝒮_y}len′/(Δ′Z) ≤ Σ_{x₁∈𝒮_y}ℓ(x₁)/(Δ′Z) + #{x₁ ∈ 𝒮_y : |x₁| ≤ X₁}·λ_min/(Δ′Z).
+*Proof.* p₁₂ = Σ_yπ(y)Z_y^{−1}Σ_{x₁∈𝒮_y}#{smooth partners on the fibre of x₁}. Bound the partners piece by piece as
+in the large-classes bullet with δ = 1. The total covering length of a fibre is ≤ ℓ(x₁) + O(log X₂)λ_min. The
+x₁-sum is then ≤ Σ_{x₁∈𝒮_y}ℓ(x₁)/(Δ′Z) + #{x₁ ∈ 𝒮_y : |x₁| ≤ X₁}·O(log X₂)λ_min/(Δ′Z).
 - The first term is ≤ p₁(1 + o(1)) + #{x₁}/Z, and #{x₁}/Z ≤ 2X₁Δ′/|Π₀| = N^{−Ω(μ)}.
-- For the second, #{x₁ ∈ 𝒮_y, |x₁| ≤ X₁} ≤ e^{O(λ)}X₁c₁ (BTS with modulus 1), and Δ′Z ≥ |Π₀|/2 ≥ s₁s₂/(64ϑ)
-  (Lemma PG(c)). So the second term is ≤ e^{O(λ)}X₁c₁·X₂B^{−C_X}ϑ^{−1}·64ϑ/(s₁s₂) = e^{O(λ)}(d + 1)²B^{−C_X}c₁
-  ≤ B^{−1}c₁c₂, by the choice of C_X.
-- p₁ ≤ e^{O(λ)}c₁ by OPV-A step 6.
+- For the second, #{x₁ ∈ 𝒮_y, |x₁| ≤ X₁} ≤ 2Ψ(X₁, y) = 2X₁c₁, and Δ′Z ≥ |Π₀|/2 ≥ s₁s₂/(64ϑ) (Lemma PG(c)). So the
+  second term is ≤ O(log X₂)·2X₁c₁·X₂y^{−C_X}ϑ^{−1}·64ϑ/(s₁s₂) ≤ D^{2}(d + 1)²y^{−C_X}c₁ ≤ y^{−1}c₁c₂, by the choice of
+  C_X. The thinness cancels against the 1/ϑ in λ_min.
+- p₁ ≤ 12(d + 1)c₁ by OPV-A step 6 (from PG(d) alone).
 
-The partner bound carries the factor e^{O(λ)}(B^{C_X}ϑΔ′)^γ. ∎
+The partner bound carries the factor e^{O(λ)}(y^{C_X}ϑΔ′)^γ. ∎
 
 ---
 
@@ -504,10 +530,10 @@ Fix (g, pair) non-thin, and the blocks and cells of Lemma BL. Define the probabi
 - ν̂(∗) := 1 − Σν̂(R, δ);
 - Ψ_i(R, δ) := d_i(I_i, δ) (Lemma CF), and Ψ_i(∗) := 0.
 
-Here Z := #(L′ ∩ Π_y), which is independent of y up to a factor 1 + O(q/H) (c12alg TP-W, step 5: translates contain
-equally many fundamental domains).
+Here Z = Z_y := #(L′ ∩ Π_y), kept with its index y throughout; Z_y/Z_{y′} = 1 + O(q/H) (c12alg TP-W, step 5:
+translates contain equally many fundamental domains) is used only in error estimates.
 
-**Prop PD-A.** With 𝒱 as in Lemma OPV-A and 𝒱* := 𝒱 + Cdh^{1/4} + e^{−λ}:
+**Prop PD-A.** With 𝒱 as in Lemma OPV-A and 𝒱* := 𝒱 + Ch^{1/2} + e^{−λ}:
   |p₁₂ − p₁p₂| ≤ C𝒱*c₁c₂ + 𝔈,  where  𝔈 := Σ_yπ(y)Z^{−1}Σ_{R meets Π_y}Σ_{δ≤S₀}|Err(R, δ)|.
 
 *Proof.*
@@ -531,18 +557,20 @@ equally many fundamental domains).
    This is c12rat Prop PD's identity, with the atom ∗ carrying boundary and exceptional mass.
 3. **Covariance.** |Cov_ν̂(Ψ₁, Ψ₂)| ≤ (Var_ν̂Ψ₁·Var_ν̂Ψ₂)^{1/2}, and Var_ν̂Ψ₁ ≤ E_ν̂(Ψ₁ − c₁)². The first marginal of
    ν̂ restricted to interior cells is dominated by the law of (I(x₁), δ(x₁)) under ν: an interior cell's ν̂-mass is
-   the ν-mass of its points. So E_ν̂(Ψ₁ − c₁)² ≤ E_ν[(Ψ₁/c₁ − 1)²1_{non-exc}]c₁² + ν̂(∗)c₁² ≤ (𝒱 + 25h + e^{−λ})c₁²,
+   the ν-mass of its points. So E_ν̂(Ψ₁ − c₁)² ≤ E_ν[(Ψ₁/c₁ − 1)²1_{non-exc}]c₁² + ν̂(∗)c₁² ≤ (𝒱 + Ch + e^{−λ})c₁²,
    by Lemma OPV-A, Lemma BL(ii) and Lemma EXC-A.
-4. **Boundary terms** (Cauchy–Schwarz against fourth moments; this is the transposition O5). Write b_y := Z^{−1}Σ_{∂}n.
-   Then b_y ≤ 25h(1 + tiny) (Lemma BL(ii)), and
-   - B₁ ≤ Σ_yπ(y)b_y^{1/2}(Z^{−1}Σ_∂nΨ₁²)^{1/2};
-   - Z^{−1}Σ_∂nΨ₁Ψ₂ ≤ (Z^{−1}Σ_∂nΨ₁²)^{1/2}(Z^{−1}Σ_∂nΨ₂²)^{1/2};
-   - Z^{−1}Σ_∂nΨ₁² ≤ b_y^{1/2}(Z^{−1}Σ_{R⊂Π_y⁺}nΨ₁⁴)^{1/2}.
-
-   Every boundary rectangle lies in the convex Π_y⁺ (Lemma BL(ii)), so the last sum is ≤ (1 + 40h)E_{ν⁺}[Ψ₁⁴] ≤ Cc₁⁴,
-   by Lemma OPV-A for ν⁺ (PG(f)). Moments, not maxima: no spread factor enters. So B_i ≤ Ch^{1/4}c_i and
-   P_∂ ≤ Ch^{1/4}c₁c₂ + (boundary part of 𝔈).
-5. **Total.** Collect, using c_i ≤ 2p_i and E_ν̂Ψ_i ≤ 2c_i. ∎
+4. **Boundary terms** (Hölder against fourth moments on the joint space (y, x); this is the transposition O5).
+   Let ∂ denote the boundary rectangles (for the relevant y), and write the joint measure
+   μ_∂(y, R, δ) := π(y)Z_y^{−1}n(R, δ)1[R boundary for y]. Its total mass is b := Σ_yπ(y)Z_y^{−1}Σ_∂n ≤ Ch(1 + tiny)
+   (Lemma BL(ii)). Then, by Hölder on the joint space (codex thmAB_2 #5: not per component):
+   - B₁ ≤ Σμ_∂Ψ₁(1 + tiny) ≤ b^{3/4}(Σμ_∂Ψ₁⁴)^{1/4};
+   - Σμ_∂Ψ₁Ψ₂ ≤ b^{1/2}(Σμ_∂Ψ₁⁴)^{1/4}(Σμ_∂Ψ₂⁴)^{1/4}.
+   Every boundary rectangle for y lies in the convex Π_y⁺ (Lemma BL(ii)), so
+   Σμ_∂Ψ₁⁴ ≤ Σ_yπ(y)Z_y^{−1}Σ_{R⊂Π_y⁺}n(R, δ)Ψ₁⁴ ≤ (1 + 40h)(1 + tiny)E_{ν⁺}[Ψ₁⁴1_{non-exc}] ≤ Cc₁⁴,
+   by Lemma OPV-A for the mixture ν⁺ (PG(f)); the moment is the averaged one over (y, x), which is what OPV-A bounds.
+   Moments, not maxima: no spread factor enters. So B_i ≤ Ch^{3/4}c_i and P_∂ ≤ Ch^{1/2}c₁c₂ + (boundary part of 𝔈).
+5. **Total.** Collect, using c_i ≤ 2p_i (OPV-A step 6) and E_ν̂Ψ_i ≤ p_i ≤ 12(d + 1)c_i; in the products with B_i the
+   factor d is absorbed by h^{3/4} = D^{−15/2}. ∎
 
 **Corollary PD-A.** Under the hypotheses of Lemma ML, for non-thin pairs,
   |A₁₂ − A₁A₂| ≤ 16C𝒱*A₁A₂ + 𝔈 + 60qN^{−η₀/2}.
@@ -550,7 +578,7 @@ equally many fundamental domains).
 L[α]^{−O(1)} ≫ N^{−η₀/4}. ∎
 
 The only first-order quantities are γ log d, γλ (local) and E_FO. They enter only through 𝒱, i.e. squared. The
-boundary costs h^{1/4} = D^{−5/2}, the non-ordinary blocks d^{1/2}h^{1/4} ≤ D^{−2}, and the exceptional sets e^{−λ}.
+boundary costs h^{1/2} = D^{−5} (Hölder, step 4), and the exceptional sets e^{−λ}.
 No pair main term is computed and no transversality is used. The thinness enters only through h_* (the grid) in §9.
 
 ---
@@ -599,8 +627,10 @@ Consequently, by c12rat **Theorem WA** with ε = ε_lib, the left side of (a) is
   = O(D^{3α−1/2}λ).
 - Step 2: **the g-integral.** E_e[Rat₁Rat₂c₁(g)c₂(g)] ≤ Ξ^Cϖ_{P₁}ϖ_{P₂}, with the per-point weight
   ϖ_P := ϱ_B(𝔐|P|)ρ̂_B((2d + 1)H𝔐|P|^d/q). This uses:
-  - c_i(g) = ρ̂(X_i(g)) ≤ C(N^{η₀/4})^γρ̂(X_i,max) ≤ Ξρ̂_B((2d + 1)H𝔐|P_i|^d/q) (Fact dBT1; X_i ≤ (2d + 1)H𝔐|P_i|^d/q);
-  - Pr_e[Rat₁Rat₂] ≤ ΞPr_e[Rat₁]Pr_e[Rat₂] (c12rat **Lemma PUB** with weights ≡ 1);
+  - c_i(g) = ρ̂(X_i(g)) ≤ C(N^{η₀/4})^γρ̂(X_i,max) ≤ Ξρ̂_B((2d + 1)H𝔐|P_i|^d/q) (Fact dBT1; X_i ≤ 4(d + 1)H𝔐|P_i|^d/q,
+    and a factor ≤ 2 in the argument of ρ̂ is absorbed);
+  - Pr_e[Rat₁Rat₂] ≤ ΞPr_e[Rat₁]Pr_e[Rat₂] (c12rat **Lemma PUB** with weights ≡ 1; its proof is the line/BTS argument
+    and holds verbatim for unit weights);
   - Pr_e[Rat_i] ≤ Ξϱ_B(𝔐|P_i|).
 
   There is no pointwise claim about Rat₁Rat₂ in g; only its integral is used (codex blind §5 makes the same point).
@@ -610,29 +640,56 @@ Consequently, by c12rat **Theorem WA** with ε = ε_lib, the left side of (a) is
   by ϱ(𝔐|P′|)ϱ(X_{F2}(P′))(log N)^{−C}), gives m_{𝔮,e} ≥ Σ_Pϖ_P(log N)^{−C}. Hence ϖ_{P₁}ϖ_{P₂}/m² ≤ Ξ³/n², with n = #Box(𝔮) ≥ S₂².
 - Step 4: **multiplicity.** For each Δ′ ≥ 1 the box has ≤ 10S₂² + 2S₂ ordered pairs with coordinate determinant Δ′
   (c12rat **Lemma MULT**), and 𝔨 ≤ Δ′/δ ≤ 2S₂²/δ. So φ(𝔨)·#{pairs : Δ′ = 𝔨δ}/n² ≤ 24/δ.
-- Step 5: **sum.** Since max_𝔨 Σ_{(𝔮,e)} ≤ Σ_{(𝔮,e)} max_𝔨,
-  𝔇 ≤ Σ_{(𝔮,e)}(w/W)Ξ^Ce^{O(λ)}dh^{1/2}λ^Ch_*^{−2}·Σ_δ24δ^{−2+2γ}·#(𝒳 ∩ [X⁻_min/2, 4X_max]).
-  Here Σ_δδ^{−2+2γ} ≤ 2 and #(𝒳 ∩ range) ≤ CD^{3α−1/2}λ/h_*. Also Σ_{(𝔮,e)}w/W = 1. So
-  𝔇 ≤ Ξ^Ch_*^{−3}D^{C} = e^{O(D^θλ²)}, since h_*^{−1} = 16(d + 1)ϑ₀D^{10} = e^{O(D^θλ²)}. ∎
+- Step 5: **sum.** Since max_𝔨 Σ_{(𝔮,e)} ≤ Σ_{(𝔮,e)} max_𝔨 (legitimate because steps 1–4 give the domination label by
+  label; codex thmAB_2),
+  𝔇 ≤ Σ_{(𝔮,e)}(w/W)Ξ^Ce^{O(λ)}dh^{1/2}λ^Ch_*^{−2}·Σ_δ24δ^{−2+2γ}·#(𝒳 ∩ ℛ_{𝔮,e}),
+  where ℛ_{𝔮,e} is the **label-wide** scale range: the union over the label's pairs and over g ∈ Ω_e of
+  [X⁻_min/2, 4X_max] (critic item 7). Its logarithmic length is O(d log(S₂T₀) + η₀ log N + C_X log B) = D^{O(1)}λ^{O(1)}
+  (|P|^{d−1} varies over a box with s(𝔮) ≤ T₀ by (4S₂T₀)^{d}). Here Σ_δδ^{−2+2γ} ≤ 2 and
+  #(𝒳 ∩ ℛ) ≤ D^{O(1)}/h_*. Also Σ_{(𝔮,e)}w/W = 1. So 𝔇 ≤ Ξ^Ch_*^{−3}D^{C} = e^{O(D^θλ²)}, since
+  h_*^{−1} = 64(d + 1)ϑ₀D^{10} = e^{O(D^θλ²)}. ∎
 
 Why this is simpler than c12rat's Lemma FAM: the modulus 𝔨 = Δ′/δ is a **coordinate** quantity (≤ 2S₂²) that does
 not contain q. So for fixed 𝔨 every label can contribute, and the crude bound max_𝔨 Σ_𝔮 ≤ Σ_𝔮 max_𝔨 already
 suffices. No comparison of label weights across residues r or primes q is needed (Lemma DOM is not used here), and
 the g-dependence of the windows costs only the logarithmic length of the scale range (step 1).
 
-**Parents.** The same, with:
-- y = B₂, the grid 𝒳^p and h_*^p;
-- 𝔨 ≤ 2V₁²/(qδ);
-- c12rat Lemma MULT (parent): ≤ 5 partners P₂ of each P₁ with a given det, so φ(𝔨)·#{pairs : Δ′ = 𝔨δ}/n_p²
-  ≤ 10V₁²/(qδn_p) ≤ 40d log V₁/δ, as n_p ≥ V₁²/(4dq log V₁);
-- the per-point weights: E_e[R₁R₂] ≤ Ξ_pS_typ², by c12rat's absolute PUB for parents and Lemma SPR (parents:
-  ψ_P ≤ S_typ·polylog for every P). The same-ℓ term (ℓ | det(P₁, P₂), both G(P_i) ∈ ℓ𝒮_B) adds
-  ≤ ϱ_B(X_r)²/ℓ·Ξ_p ≤ Ξ_pS_typ²·(log Y)²/Y (c12rat Lemma EXC(b));
-- c_i(g) ≤ Cρ̂_{B₂}(X_F/q): the parent scale varies only by 64·e over the window (|G| ∈ [𝔐V₁/32, 2𝔐V₁], b-window),
-  costing (64ed)^{γ₂} = 1 + o(1);
-- z_{𝔮,e} ≥ n_pS_typρ̂_{B₂}(X_F/q)/polylog (c12rat Lemma SPR (parents), active points, with the one-point algebraic
-  lower bound of c12alg Lemma η's denominator step);
-- the scale range has log-length O(log B₂ + log d).
+**Parents.** The same, with y = B₂, the grid 𝒳^p and h_*^p, 𝔨 ≤ 2V₁²/(qδ), and the following normalisation package
+(v2; codex thmAB_2 #2: v1 used c12rat's S_typ, which already contains an algebraic factor, and would lose ρ_a(q)²).
+Put R_typ := #{n ≤ 𝔐V₁ : n ∈ J·𝒮_B}/(𝔐V₁) (a purely rational density) and ρ_a(q) := ρ̂_{B₂}(X_F/q).
+
+**Lemma W-P (parent weights).** For every label and cell, and parents P, P₁ ≠ P₂ ∈ 𝒫 ∩ Λ_𝔮, n_p := #(𝒫 ∩ Λ_𝔮):
+- (P1) E_e[R(P₁; g)R(P₂; g)] ≤ Ξ_pD^CR_typ²;
+- (P2) c_i(g) ≤ Cρ_a(q) for every admissible g;
+- (P3) z_{𝔮,e} ≥ n_pR_typρ_a(q)D^{−C}.
+Hence E_e[R₁R₂c₁c₂]/z²_{𝔮,e} ≤ Ξ_pD^C/n_p².
+
+*Proof.*
+- (P1) c12rat Lemma PUB's line argument with **unit (rational-only) weights** and target set J·𝒮_B ∩ [𝔐V₁/32, 2𝔐V₁].
+  Along a line g* + jP₁ (G(P₁) = n₁ fixed), G(P₂) runs over an AP of difference K = |det(P₁, P₂)| ≤ 2V₁² with
+  ≍ δ_e𝔐/|P₁| terms. For ℓ ∈ J with ℓ ∤ K, the n = ℓm in the AP have m in an AP of difference K, and BTS bounds the
+  B-smooth m by e^{O(λ)}(K·L^{O(1)})^γ times the expected count; summing over ℓ gives Ξ_p·R_typ per unit length.
+  At most one ℓ ∈ J divides K (K ≤ 2V₁² < Y² — since V₁² ≍ YS₁² and S₁² = L[α] < Y). For that ℓ, either ℓ ∤ G(P₂)
+  on the whole line (contribution 0), or ℓ | G(P₂) throughout. In the latter case ℓ | n₁ as well (n₁ ≡ ιG(P₂) mod K).
+  Since R_typ ≍_{D^C} ϱ_B(𝔐V₁/Y)/log Y, the lines with ℓ | n₁ carry a fraction ≤ D^C(log Y)/ℓ of the first-point
+  mass R_typ, and on them the density of ℓ𝒮_B in the AP is ≤ Ξ_pϱ_B(𝔐V₁/Y) ≤ Ξ_pD^CR_typ log Y (BTS). So the same-ℓ
+  total is ≤ Ξ_pD^CR_typ²(log Y)²/Y.
+  Integrating n₁ against the line lengths (Hölder, as in PUB) gives (P1).
+- (P2) c_i(g) = ρ̂_{B₂}(X_i(g)) with X_i(g) = (d + 1)(2H + 1)|G_g(P_i)||P_i|_∞^{d−1}/q. Here |G| ∈ [𝔐V₁/32, 2𝔐V₁] and
+  |P_i|_∞ ∈ ((1 − 1/d)V₁, V₁] (b-window), so X_i(g) is within a factor 64e(d + 1) of X_F/q, which costs
+  (64ed)^{γ₂} = 1 + o(1) (Fact HT3).
+- (P3) At least half the points of 𝒫 ∩ Λ_𝔮 are *active*: |G_g(P)| ≥ 𝔐V₁/16 on all of Ω_e (c12rat Lemma SPR (parents),
+  angle argument). For active P:
+  - Pr_e[R(P)] ≥ R_typD^{−C}: G_g(P) over Ω_e ranges over an interval of relative length ≍ δ_e ≥ B^{−5/12} inside
+    [𝔐V₁/16, 2𝔐V₁]. Hildebrand's short-interval theorem on each slice ℓ·(interval/ℓ) and Lemma FIB (Möbius for the
+    primitivity of g, factor ≥ 1/(C log log N)) give a J·𝒮_B-density ≥ R_typD^{−C}.
+  - a_P(g) ≥ ρ_a(q)D^{−C}: DW(a)⁺ with the root coset, Hildebrand at B₂ on intervals of relative length ≥ 1/(2dq), and
+    the root-conditioned acceptability subtraction of §11 (≤ D^C/B ≪ ρ_a(q); at α = 3/8 this uses (SQ)).
+  Sum over active P. Inactive points are only bounded above; no individual lower bound is claimed for them. ∎
+
+Multiplicity: c12rat Lemma MULT (parent) gives ≤ 5 partners P₂ of each P₁ with a given **signed** det, so ≤ 10 for a
+given |det| (codex thmAB_2), and φ(𝔨)·#{pairs : Δ′ = 𝔨δ}/n_p² ≤ 20V₁²/(qδn_p) ≤ 80d log V₁/δ, as
+n_p ≥ V₁²/(4dq log V₁). The scale range has log-length O(C_X log B₂ + log d).
 
 So 𝔇_p ≤ Ξ_p^C(h_*^p)^{−3}D^C = e^{O(D^{θ_p}λ²)}, and the parent character total is ≤ ε^p_lib𝔇_p ≤ e^{−cD^{3−7α}/λ²}.
 This is where the **separate parent thresholds** (O3) matter. With the child h_* the grid count would be
@@ -644,7 +701,8 @@ e^{O(D^{2α−1/2}λ²)}, which exceeds the parent saving for α ≥ 7/18 (`para
 
 **Thin child pairs** (ϑ > ϑ₀) in a label with s(𝔮) ≤ T₀ form a fraction ≤ 60s(𝔮)/ϑ₀ ≤ 60T₀^{−2} of the ordered
 pairs (c12rat **Lemma TF**). For them,
-|A₁₂ − A₁A₂| ≤ A₁₂ + A₁A₂ ≤ Ξc₁c₂ + 4c₁c₂ + tiny (Lemma PU-A for all ϑ; A_i ≤ 2c_i). So their contribution to
+|A₁₂ − A₁A₂| ≤ A₁₂ + A₁A₂ ≤ Ξc₁c₂ + C(d + 1)²c₁c₂ + tiny (Lemma PU-A for all ϑ; A_i ≤ p_i + tiny ≤ 12(d + 1)c_i
+by OPV-A step 6, which needs no non-thin partner). So their contribution to
 |ϕ^alg_{𝔮,e}| is ≤ m^{−2}Σ_{thin}E_e[Rat₁Rat₂·2Ξc₁c₂] ≤ 60T₀^{−2}·Ξ^C ≤ T₀^{−1}, by steps 2–3 of Lemma FAM-A.
 
 **Thin parent pairs** (ϑ > ϑ₀^p). For every P, the fraction of thin partners in 𝒫 ∩ Λ_𝔮 is ≤ 3/ϑ₀^p + O(q/V₁)
@@ -677,7 +735,8 @@ The parent block (ii) is §§3–10 with:
   - the k ≤ 3 HT3 steps at ratios ≤ y²;
   - BTS (any y);
   - the Rankin tails y^{−0.9/log P₀}(log P₀)^C and y^{−1/2}e^{ω(Δ′)P₀^{−0.49}}. These are smaller than every power of
-    D at y = B₂, because (1 − α) − 0.49 < 4α − 1 (`params`: "parent FO tail").
+    D at y = B₂, because ω(Δ′)P₀^{−0.49} ≤ D^{(1−α) − 0.343} and (1 − α) − 0.343 < 4α − 1 (`params`: "parent FO tail";
+    v1's params used P₀^{0.49} = D^{0.49} instead of D^{0.343}, corrected; critic 4a).
 - **Moduli** Δ′ = |det(P₁, P₂)|/q ≤ 2V₁²/q = L[1 − α]^{O(1)}, which is ≫ B₂^{O(1)} but x^{o(1)}. Nothing in §§5–9 iterates
   HT3 over divisors of Δ′: classes δ ≤ S₀^p use Lemma FO, larger ones use Lemma EXC-A. So c12alg's truncation at
   B₂^{1/2} is not needed.
@@ -685,14 +744,27 @@ The parent block (ii) is §§3–10 with:
   e^{O(D^{2α−1/2}λ²)} never occurs: the parent filter fixes |G(P)| to within a factor 64.
 - **No skew:** parent sets are Euclidean squares.
 - **Acceptability (O4).** acc(P) is not a function of the value x alone. Put s_P(g) := Pr[F(P)/q ∈ 𝒮_{B₂} | g, R_𝔮]
-  and s₁₂ likewise. Lemma SQF (uprime) in its root-conditioned form (c12alg Lemma WD, second bullet: per prime
-  p ∈ (B, B₂], Pr[q | F(P), p² | F(P)] ≤ (1/q)(1/p² + 1/(2H + 1)), and Pr[q | F(P), q′ | f_d disc f] ≤ (1/q)·2e(d − 1)/q′²
-  by CRT on c mod qq′) gives Pr[s_P ∧ ¬acc(P) | g, R] ≤ C(log N)²/B. Hence
-  |(a₁₂ − a₁a₂) − (s₁₂ − s₁s₂)| ≤ 6C(log N)²/B.
-  Relative to s₁s₂ ≥ ρ̂_{B₂}(X_F)²(log N)^{−C}, this is
-  ≤ (log N)^C/(Bρ̂_{B₂}(X_F)²) = exp(−aD^αλ + 2c₂D^{3−7α}λ(1 + o(1))).
+  and s₁₂ likewise. **Root-conditioned subtraction** (v2; codex thmAB_2 #3 found v1's displayed bound false for p = q).
+  Conditionally on (g, R_𝔮), with c uniform (c12alg Lemma RE; uprime Lemma SQF's proof):
+  - p ∈ (B, B₂], p ≠ q: Pr[p² | F(P) | g, R] ≤ p^{−2}(1 + o(1)). Since p ≠ q and q ∤ b^{d−1}G(P), the coefficient
+    c_{d−1} varies F(P) through all classes mod p²q with tiny endpoint error, so the events mod p² and mod q are
+    independent up to (1 + p²q/(2H + 1)).
+  - p = q: Pr[q² | F(P) | g, R] ≤ 2/q (F(P) is equidistributed mod q² by the same coefficient; conditioning on q | F(P)
+    leaves q classes mod q²).
+  - q′ ∈ (B, B₂], q′ ≠ q, discriminant/leading coefficient: Pr[q′ | F(P) and q′ | f_d disc f | g, R] ≤ 2e(d − 1)/q′²
+    (uprime SQF(b), applied mod q′, with CRT on c mod qq′; **both** q′ | F(P) and q′ | f_d disc f are required for q′
+    to be an excluded child).
+  - q′ = q: Pr[q | f_d disc f | g, R] ≤ 2e(d − 1)/q. This is SQF(b)'s inner computation: given F(P) ≡ 0 (mod q),
+    F = L_P·H with H uniform on an affine hyperplane, and the event lies in {H(1, 0) = 0} ∪ {H(P) = 0} ∪ {Disc H = 0}.
+  - primes of N in (B, B₂] dividing F(P): ≤ Σ_{q′|N}(1/q′ + 1/(2H + 1)) ≤ log N/B.
+
+  Total: Pr[s_P ∧ ¬acc(P) | g, R] ≤ Σ_{p>B}(1 + 2ed)p^{−2} + (2 + 2ed)/q + log N/B ≤ D^C/B. Hence
+  |(a₁₂ − a₁a₂) − (s₁₂ − s₁s₂)| ≤ 6D^C/B.
+  Relative to s₁s₂ ≥ ρ̂_{B₂}(X_F)²D^{−C} (OPV-A step 6 lower bound, and Hildebrand at B₂), this is
+  ≤ D^C/(Bρ̂_{B₂}(X_F)²) = exp(−aD^αλ + 2c₂D^{3−7α}λ(1 + o(1))).
   That is L^{−a+o(1)} for α > 3/8. At α = 3/8 it is ≤ D^{−3/4} iff **a > 2c₂**, the endpoint constraint. Then
-  Prop PD-A is applied to (s₁₂, s₁, s₂). The relative bound transfers via a_i ≥ s_i/2.
+  Prop PD-A is applied to (s₁₂, s₁, s₂). The relative bound transfers via a_i ≥ s_i − D^C/B ≥ s_i/2. Summed against
+  ΣR₁R₂a₁a₂ ≤ z(g)², this involves no Ξ_p (critic item 8).
 
 Everything else is word for word. The output is
 |σ^alg_{𝔮,e}| ≤ C𝒱*_p(1 + σ^rat_{𝔮,e}) + (thin) + (character)/z² + tiny, with 𝒱*_p ≤ C(D^{−2α} + D^{−2(3−7α)})λ^C.
@@ -720,13 +792,13 @@ with 𝒱* ≤ CD^{−2α}λ^C. Absorb the last two terms into T₀^{−1} (α >
 
 **Status of c12alg's obligations.**
 
-| obligation | where | status |
+| obligation | where | status (v2) |
 |---|---|---|
-| O1 joint moment lemma | Lemmas LF-A, OPV-A, EXC-A (incl. ν⁺, mixture, prime powers, large classes, near zero) | discharged |
-| O2 weighted energy inequality | Lemma EN-A, Lemma FAM-A + c12rat Theorem WA (children and parents) | discharged |
-| O3 separate parent thresholds | §1.3 (ϑ₀^p, h_*^p from Ξ_p), §9 parents, §11 | discharged |
-| O4 parent acceptability at 3/8 | §11 (a > 2c₂) | discharged by the constraint (as in c12alg) |
-| O5 boundary transposition | Lemma BL(ii) (convex Π^∘, Π⁺), Prop PD-A step 4 | discharged |
+| O1 joint moment lemma | Lemmas LF-A, OPV-A (v2: FO on every block), EXC-A (incl. ν⁺, mixture, prime powers, large classes, near zero) | proved here; critic: "genuinely proved" after fix 4b (applied); codex round 2 kept it open pending the same fix |
+| O2 weighted energy inequality | Lemma EN-A, Lemma FAM-A + c12rat Theorem WA; parents via Lemma W-P (v2) | proved here; parent normalisation rewritten in v2 (codex #2) |
+| O3 separate parent thresholds | §1.3 (ϑ₀^p, h_*^p from Ξ_p), §9 parents, §11 | proved; both reviewers agree |
+| O4 parent acceptability at 3/8 | §11 (a > 2c₂; v2 root-conditioned subtraction) | discharged by the constraint |
+| O5 boundary transposition | Lemma BL(ii) (convex Π^∘, Π⁺), Prop PD-A step 4 (v2: Hölder on the joint (y, x) space) | proved; both reviewers accept |
 
 **What Theorem AB needed that the sketch did not have.** c12alg's route (Lemma FB with Harper's BV on fibres, and
 Lemma PP computing the pair main term to first order) is **not** used. Its grid/step bookkeeping, the short-fibre
@@ -753,6 +825,17 @@ and C_γ = C_γ(a, κ, d₀, b₂) is the polylog exponent of the level-2 relati
      Σ_{s≤T₀}(w/W)ϕ^rat ≤ CD^{−2α}λ^C + Σ(w/W)/m and Σ(w/W)σ^rat ≤ C(D^{−2α} + D^{−2(3−7α)})λ^C + Σ(w/W)/z;
    - **Theorem AB** (§2) gives the algebraic parts and (iii).
 
+   **Weight bridge to RAT** (critic item 1). c12rat states RAT with the idealised weights a_{P′}(|G_g(P′)|) (c12alg
+   §5), while Lemma VD's ϕ^rat uses the true A_{P′}(g). By DW(a)⁺, |A_{P′}(g) − a_{P′}(|G_g(P′)|)| ≤ 4qN^{−η₀/2} for
+   every g, which is ≤ N^{−η₀/3}a_{P′}. Hence m(g) = m̃(g)(1 + O(N^{−η₀/3})) pointwise, and
+   ϕ^rat_true ≤ (1 + N^{−η₀/4})ϕ^rat_ideal + N^{−η₀/4}; likewise for σ^rat.
+
+   **(A1) is not needed** (critic item 9). c12alg §5 made a² > 4α/d₀ conditional on c12rat using pc3 LAT(d). c12rat's
+   Theorem RAT does not: Lemma MULT uses K = qΔ only, which holds without (A1), and Lemma TYPE treats q as a "large"
+   prime of K (classes with q | n₁n₂ are in the exceptional set of Lemma EXC(a) and contribute 0), so v_q(K) ≥ 2 is
+   covered. On the algebraic side q is divided out (Cor TP-q). So the illustrative parameters below, which violate
+   (A1), are admissible.
+
    So A ≤ D^{−α}λ^C and B ≤ D^{7α−3}λ^C. (In fact A ≤ D^{−2α}λ^C and B ≤ (D^{−2α} + D^{−2(3−7α)})λ^C.)
 2. c12alg Prop PB (with Lemma η, W/μ₁ ≤ 3u₂) gives a dead-incidence mass ≤ μ₁/2, so E N₂ ≥ μ₁/2 (pc3 Prop DC_e,
    multidescent Prop UB).
@@ -775,15 +858,23 @@ uprime §4.1).
 
 The endpoint-specific inputs are:
 - uprime's U′ at 3/8 (proved there in 2L′; its hypotheses log z/log B₂ ≥ D^{1/4} hold at 3/8 since u₂ ≍ D^{3/8}),
-  with the §2.7 DW replacements;
+  with the §2.7 DW replacements. **Re-check at DW's η₀ = D^{−3/8}** (uprime used η₀ = D^{−1/2}; critic item 9),
+  leading order only (`params`: "TV N^{−η₀/2} << every L[α]^C"): under DW, level 1 uses DW(a)⁺ instead of GM-U′,
+  so no good-modulus/level-gap condition is needed. The η₀-dependent quantities are (1) the TV terms 2N^{−η₀/2} of
+  DW(a)⁺/TP-W against ρ̂_{B₂}(X_F) = L[3/8, −c₂] and ρ̂_B(X_r) = L[3/8]^{−O(1)}: η₀ log N = D^{5/8}λ ≫ D^{3/8}λ;
+  (2) Lemma W-DW (C_W = 2, no η₀); (3) the classes (B), (C) of L2-U′, whose ratios are N^{−Θ(h)}B^{O(1)} with
+  h ≥ 2μ + 2ν + 2η₀; (4) Kern-U's bb′ ≤ V₁² ≤ (2H + 1)/d. All hold. FM-U′'s subtraction (log N)²/B against ρ̂_{B₂}
+  needs (SQ), implied by a > 2c₂. This is a leading-order re-check, not a line-by-line re-proof of uprime §3 at the
+  new η₀;
 - (SQ) for FM-U′'s subtraction and for Lemma η's denominator (c12alg §5, 2L-DW₂);
 - Lemma η (needs α > 4/11);
 - the recursion on parent values L_{X_F}[2/5] = L^{o(1)} (needs α > 4/11);
 - Lemma reject-DW;
 - a > 2c₂ for §11. ∎
 
-**c(α).** C_γ is not computable: it contains the implied constants of Hildebrand–Tenenbaum's saddle-point estimates,
-as for Theorem U. Illustrations with C_γ = 0 (`src/c12alg/params.cost_constant`):
+**c(α).** C_γ is not quantified here: it contains the unspecified implied constants of Hildebrand–Tenenbaum's
+saddle-point estimates and of Drappeau's Lemme 5, as for Theorem U (codex thmAB_2 #9: "not quantified", not
+"not computable"). Illustrations with C_γ = 0 (`src/c12alg/params.cost_constant`):
 - c ≈ 5.39 at α = 7/18, (a, κ, d₀, b₂) = (3/5, 1/8, 1, 2);
 - at α = 3/8 a small grid under a > 2c₂ gives c ≈ 4.71 at (4/5, 1/8, 1, 2).
 
@@ -868,7 +959,50 @@ uprime §10, lv5unif §14); new ones here are flagged.
 
 ## 15. Reviews
 
-*(to be filled: codex adversarial `thmAB_2`, Opus proof critic, Opus literature critic)*
+**Codex adversarial `thmAB_2`** (xhigh, on v1): **MAJOR REVISION, no FATAL.** "I found no FATAL obstruction to the
+proposed method." It confirmed ML (for smoothness events), PG, the boundary geometry, CL, CF, FO and LF-A (incl. prime
+powers and primes > y), EN-A against Drappeau's Lemme 5, child FAM-A ("the decisive summation is
+Σ_δδ^{−2+2γ} = O(1)"), thin pairs, skew, the separate parent thresholds, and the assembly exponents at 3/8.
+
+| # | sev. | finding | action (v2) |
+|---|---|---|---|
+| 1 | MAJOR | ordinary/non-ordinary mass claim reversed; OPV-A steps 5–6 fail | split removed; FO on every block; 8th moment by Hölder (§6) |
+| 2 | MAJOR | parent FAM normalisation: S_typ already contains an algebraic factor (loses ρ_a(q)²) | Lemma W-P with rational R_typ and ρ_a(q), (P1)–(P3) proved (§9) |
+| 3 | MAJOR | root-conditioned SQF false for p = q; discriminant event needs q′ \| F(P) too | subtraction rewritten case by case, total D^C/B; ML stated for smoothness events (§§3, 11) |
+| 4 | MAJOR | fibre enlarged before dyadic splitting: pieces may be too short for BTS | split first, then cover pieces; thinness cancels (§7) |
+| 5 | MINOR | boundary fourth moments per component vs mixture | Hölder on the joint (y, x) space; Z_y kept (§8) |
+| 6 | MINOR | p_i comparison and the OPV/EXC/PU loop | p_i ≤ 12(d + 1)c_i from PG(d) alone; lower bound via non-exceptional mass (§6 step 6) |
+| 7 | MINOR | R_𝔮 does not remove q \| G(r, 1) | wording; zero contribution, normalisation 1 + O(1/q) (§1.2) |
+| 8 | MINOR | cutoff C_X vs the (c₁c₂)⁸ claim | C_X redefined for the needed y^{−1}c₁c₂ (§1.3, §7) |
+| 9 | MINOR | "written out completely", "discharged", "not computable" overstate | wording (§§0, 12, 13) |
+
+Probabilities (after the repairs): AB 80%, AB₂ 70%, 2L-final(α) 70%, 2L-final(3/8) 60%.
+
+**Opus proof critic** (read-only, on v1; also asked the triage points T1–T4): **ACCEPT WITH MINOR REVISIONS**, no
+FATAL, no MAJOR in the argument itself. "Transposing the device to the algebraic side is sound … simpler than in
+c12rat." Required fixes, all applied:
+1. the ordinary/non-ordinary step (its 4b, = codex #1): the only place where a polylog multiplied something merely
+   D-polynomially small;
+2. snap the cutoffs to grid points (§4 Lemma BL);
+3. label-wide grid range in FAM-A step 5 (§9);
+4. PG(e) needs + φ(Δ′/δ)N^{−Ω(μ)};
+5. BL(ii) area accounting ("Ch");
+6. enlarge dyadic pieces, not fibres (= codex #4);
+7. the idealised-to-true weight bridge to RAT (§13);
+8. settle (A1) (not needed; §13) and the P₀^{0.49} exponent in `params` (fixed).
+Its triage answers: **(T1)** covered — non-reduced classes exactly via Lemma CL, endpoints divided by δ are the library
+u_{ξ,δ}, the actual incidence weights are used with upper bounds and g-integrals only; **(T2)** yes — every modulus is
+x^{o(1)} (children D^{α}λ vs D^{2α}λ; parents D^{1−α}λ vs D^{2−3α}λ), so Lemme 5 alone suffices; **(T3)** no unpaid
+loss — modulus φ(𝔨) paid by MULT (net 24/δ), no τ(Δ′) since (δ, 𝔨) determines Δ′, Σδ^{−2+2γ} ≤ 2, grid count
+e^{O(D^θλ²)} (understated in v1, fixed); **(T4)** O1 is genuinely proved by LF-A/OPV-A/EXC-A after fix 4b. It
+disagreed with codex on the parent normalisation (it accepted c12rat's S_typ); v2 follows codex's stricter form.
+Probabilities: AB 80%, AB₂ 72%, 2L-final(α) 65%, 2L-final(3/8) 52%; residual risk in the glue (RAT interface, (A1),
+c12alg §2.7/§5) and, at 3/8, U′-DW at η₀ = D^{−3/8} and the exact ties θ = 1 − 2α, 3 − 7α = α closed only by
+constants.
+
+**Codex round 3 `thmAB_3`** (on v2): *(pending)*
+
+**Opus literature critic**: *(pending)*
 
 **Codex blind `thmAB_1`** (xhigh, launched before anything here was written). It chose the same route (b) for the
 same two reasons: no primitivity, and modulus Δ′ instead of qΔ′. It reached the same structure:

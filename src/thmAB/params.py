@@ -67,7 +67,7 @@ def comparisons(al: F) -> List[Tuple[str, Term, Term]]:
         ("parent moduli Delta' <= x_F^{o(1)} (Fact D level)", (1 - al, one), (2 - 3 * al, one)),
         ("u2 -> infinity faster than lam^4", (zero, F(4)), (s, zero)),
         ("Hildebrand's range at B2: B2 >= exp((log log x)^{5/3+eps})", (zero, F(2)), (4 * al - 1, one)),
-        ("parent FO tail: B2^{-1/2} beats exp(omega P0^{-0.49})", (1 - al - F(49, 100), zero), (4 * al - 1, one)),
+        ("parent FO tail: B2^{-1/2} beats exp(omega P0^{-0.49}), P0^{0.49} = D^{0.343}", (1 - al - P0_EXP * F(49, 100), zero), (4 * al - 1, one)),
         # --- outputs vs budgets
         ("AB(i): second-order child D^{-2a} << first-order need D^{-a}", (-2 * al, F(20)), (-al, F(-20))),
         ("AB(ii): parent D^{2-8a} << need D^{7a-3}", (2 - 8 * al, F(20)), (7 * al - 3, F(-20))),
