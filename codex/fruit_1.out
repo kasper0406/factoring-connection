@@ -1,0 +1,287 @@
+**1. [proved; scope] The hybrid fixes fruitfulness once it supplies a usable descended row. It does not, by itself, establish a faster descent algorithm.** I obtain exact linear-algebra and symmetry statements below, but no unconditional resolution of LV’s Conjecture 7.1.
+
+Write \(L[\alpha,c]=\exp((c+o(1))(\log N)^\alpha(\log\log N)^{1-\alpha})\). Assume \(N\) is odd with \(\omega=\omega(N)\ge2\); handle prime powers separately. Every square-class vector below includes signs, normalization factors, and imposed parity restrictions.
+
+I treat the supplied fixed-degree project theorem as an input. Its growing-degree \(L[2/5]\) extension retains the stated dependence on the internal chain.
+
+**2. [proved; hybrid threshold] One descended row can suffice; the sharp worst-case guarantee is “rank deficit plus one.”**
+
+Let the ordinary and descended relation vectors be the columns of
+\[
+A:\mathbf F_2^m\to V,\qquad D:\mathbf F_2^h\to V.
+\]
+Put \(W=\operatorname{im}A\), \(c=\dim(V/W)\), and
+\[
+s=\operatorname{rank}(\overline D:\mathbf F_2^h\to V/W).
+\]
+The descended-coordinate projection of the full dependency space is exactly
+\[
+U=\ker\overline D,\qquad \dim U=t=h-s.
+\]
+Indeed, a descended mask \(v\) extends to a dependency precisely when \(Dv\in W\).
+
+Consequently:
+
+- A dependency using a descended row exists iff \(h>s\).
+- One row suffices iff its vector lies in \(W\).
+- \(h=c+1\) always suffices, and this is sharp without further information: \(c\) independent quotient vectors give no such dependency.
+- A specified descended row \(j\) is usable iff \(D_j\in W+\operatorname{span}(D_i:i\ne j)\).
+
+Use the effective ambient space, removing known redundancies. The number of ordinary dependencies \(m-\operatorname{rank}A\) does **not** determine this deficit.
+
+**3. [proved; success probability and forcing] A dependency must use hidden-root randomness to obtain the DD guarantee. One independently descended row appearing with odd multiplicity is enough.**
+
+Condition on a transcript containing the squares \(R_i\), certificates, ordinary relations, independent coins, dependency selection, and computed certificate square root—but excluding the hidden roots and their sign-dependent functions. DD gives
+\[
+p_\omega=1-2^{1-\omega}.
+\]
+
+The algorithm may choose any nonzero \(v\in U\), then solve \(Au=Dv\). This depends only on certificates and preserves transcript invariance. Equivalently, impose a feasible affine constraint selecting a descended coordinate. Uniform dependency sampling is unnecessary.
+
+For comparison, a uniform sample from the whole kernel, including zero, uses descent with probability \(1-2^{-t}\). If all ordinary dependencies are fruitless, its success probability is exactly
+\[
+(1-2^{-t})p_\omega.
+\]
+For semiprimes this is below \(1/2\) for every finite \(t\). Conditioning on nonzero descended support gives exactly \(1/2\). Reusing one hidden root in several rows requires tracking its **net parity**.
+
+**4. [proved; implementation qualification] The deficit must refer to the final square-dependency space, not merely the valuation matrix.**
+
+LV’s finite-character matrix can leave an exceptional square-class obstruction. Forcing descent into a preliminary kernel vector does not ensure its survival when two vectors are subsequently combined.
+
+Carry descended masks through that stage. On LV’s good event, if preliminary kernel classes lie in an exceptional set of cardinality \(e\), choose \(e+1\) vectors with independent descended projections. Two classes coincide, and their sum has nonzero descended projection. Testing candidate square roots uses no hidden roots.
+
+Thus the sharp algebraic count is \(c+1\) for the exact space; an implementation using LV’s intermediate matrix needs an allowance for its residual obstruction. This allowance does not alter the \(L[1/3]\) exponent. Root-dependent acceptance, Jacobi tests on stored roots, or adaptive conditioning on earlier gcd outcomes would invalidate the stated DD argument.
+
+**5. [UNVERIFIED; rigorous descent cost] The missing arithmetic input is descent into the same LV field and factor base.**
+
+Gauss reconstruction is polynomial-time. Completely factoring the two \(O(\sqrt N)\)-size integers with Lenstra–Pomerance costs at most
+\[
+L[1/2,1/\sqrt2+o(1)]
+\]
+per reconstruction trial. This does not eliminate their primes into LV’s base, nor bound the number of accepted trials.
+
+LV proves supply of ordinary smooth relations, averaged over its polynomial parameters. It does not thereby prove:
+
+1. supply in prescribed special-\(q\) lattices;
+2. supply for adaptively generated algebraic prime ideals;
+3. completion of an entire descent in the field selected by its search.
+
+The supplied project construction uses a different field law and additional averaging mechanisms. Its fixed-degree cost and conditional \(2/5\) bound cannot simply be imported into LV’s degree-\((\log N/\log\log N)^{1/3}\) field.
+
+Hence I have no checked, noncircular rigorous \(L[1/3]\) cost for even one such descended row. Factoring \(N\) first is an upper bound on solving the problem, not a descent result.
+
+**6. [heuristic; descent model] There is no universal “\(k\)-level exponent” without specifying the initial target and smoothness-testing model.**
+
+Here is an explicit ledger for generic two-dimensional special-\(q\) descent in LV’s field. Assume random-integer smoothness for selected norms, sufficiently regular lattices, and negligible tree overhead.
+
+A target \(q=L[a]\) typically requires coordinates of scale \(\sqrt q\). Multiplication by degree \(d\asymp(\log N/\log\log N)^{1/3}\) gives a norm of exponent
+\[
+n=\max(2/3,a+1/3).
+\]
+Dividing out the special \(q\) does not change this exponent.
+
+For children bounded by \(L[b]\), inverse smoothness probability has exponent \(n-b\); HECM testing has exponent \(b/2\). Thus a budget \(L[\gamma]\) requires
+\[
+b\ge a+1/3-\gamma,\qquad b\le2\gamma.
+\]
+Search-region enlargement also affects norm constants; the ledger assumes its constant inequality is feasible.
+
+With \(k\) elimination levels ending at exponent \(1/3\), this model yields
+\[
+\gamma_k(a)=
+\max\left\{
+\frac13+\frac{a-1/3}{k},
+\frac{a+1/3}{3}
+\right\},
+\qquad a\ge1/3.
+\]
+This is a model calculation, not a theorem about exceptional small norms or arbitrary descent algorithms.
+
+**7. [refuted-in-model / heuristic; consequences of the ledger] Raw and presmoothed targets behave differently.**
+
+For a polynomial-size prime, \(a=1\):
+\[
+\gamma_k(1)=\max\left(\frac13+\frac{2}{3k},\frac49\right).
+\]
+The \(4/9\) floor follows already at the first norm:
+\[
+\min_b\max(4/3-b,b/2)=4/9.
+\]
+Therefore merely adding levels after a raw polynomial-size target does not reach \(L[1/3]\) in this model.
+
+After an initial split into \(L[2/3]\)-smooth integers, the elimination exponents are instead
+\[
+\gamma_k(2/3)=\frac13+\frac{1}{3k}.
+\]
+Optimizing the initial smoothness exponent \(a\), including reconstruction acceptance and HECM, gives
+\[
+\min_a\max\{1-a,\ a/2,\ \gamma_k(a)\}
+=\frac{k+2}{3(k+1)}.
+\]
+For \(k=1,2,3,4\), these are \(1/2,4/9,5/12,2/5\).
+
+The usual growing-depth, geometrically shrinking descent is heuristically compatible with a finite \(L[1/3]\) constant. Taking the limit of fixed-\(k\) exponents alone does not prove that endpoint.
+
+**8. [proved within the cost model; hybrid comparison] Partial descent can improve constants, but does not improve the exponent over pure descent using the same row-generation method.**
+
+If one row costs \(L[\gamma]\), \(\gamma>1/3\), generating \(L[1/3]\) such rows still costs \(L[\gamma]\). Thus replacing most descended rows by LV sieve rows does not lower that exponent. At the \(1/3\) endpoint, both methods have exponent \(1/3\), and constants matter.
+
+A small deficit may make \(h=O(1)\) and save a factor-base-sized multiplicative cost; a large deficit can erase that saving. This comparison assumes the same uniform descent model for both algorithms. It is not an unconditional lower bound.
+
+**9. [proved; algebraic square-root randomness] For a fixed valid dependency, square-root implementation randomness cannot change fruitfulness.**
+
+If \(g^2=\Gamma\ne0\) in the number field \(K\), every other root \(g'\in K\) satisfies
+\[
+(g'-g)(g'+g)=0,
+\]
+so \(g'=\pm g\). The rational square root likewise has only two choices. Their comparison in
+\(\mu_2(\mathbf Z/N)/\{\pm1\}\) is unchanged.
+
+A different embedding, represented consistently with the evaluation map, changes no comparison. Independently assigning signs to embeddings generally produces no element of \(K\).
+
+**10. [proved; twists and local algorithms] Units, auxiliary primes, and local signs provide no additional valid global roots.**
+
+Multiplying a root by a unit preserves its square only when the unit squares to \(1\), hence is \(\pm1\).
+
+More generally, replacing certificates by
+\[
+q'=s^2q,\qquad \Gamma'=t^2\Gamma
+\]
+changes the comparison by \(s/\phi(t)\). Compatibility forces its square to be \(1\) modulo \(N\). If this is a nontrivial root, the explicit twist already gives a factor.
+
+Couveignes/Montgomery computations and choices of inert or other auxiliary primes may randomize the computation. Successful reconstruction of the same global square still returns only \(\pm g\). Inconsistent local signs fail global verification.
+
+Producing a non-\(\pm\) modular root from a known root factors \(N\) by a gcd. None of this excludes randomness selecting **different dependencies**; their success remains governed by \(\Phi\).
+
+**11. [proved; structural obstruction to an involution] Preserving the exact vector forces simultaneous square twists.**
+
+For ordinary certificates \((q_i,\Gamma_i)\), \(x_i=x_j\) implies
+\[
+q_j/q_i=s^2,\qquad \Gamma_j/\Gamma_i=t^2
+\]
+for \(s\in\mathbf Q^\times\), \(t\in K^\times\). Evaluation gives
+\[
+(s/\phi(t))^2=1\pmod N.
+\]
+Moreover, \(\beta_i+\beta_j\) is the fruitfulness label of this two-relation dependency.
+
+Thus a \(\beta\)-flipping pair, together with its square-twist witnesses, directly yields a factor. An efficiently constructible involution with efficiently recoverable witnesses would itself be a factoring algorithm on its flipping support. This is an obstruction to obtaining free symmetry; it is not a proof that such an involution cannot exist.
+
+**12. [proved for the specified mechanisms; candidate audit] The proposed elementary maps do not establish the criterion.**
+
+- **Integer scaling:** \((a,b)\mapsto c(a,b)\) multiplies both certificates by \(c\). Exact rational square-class preservation requires \(c\) square; both roots then acquire the same multiplier, preserving \(\beta\). Primitivity further restricts this map.
+- **Sign maps:** simultaneous negation changes the rational sign class. Changing only \(a\) or \(b\) does not generally preserve either square class.
+- **Galois involutions:** an odd-degree field has no order-two automorphism, since its fixed field would have index two. Automorphisms can also permute ideal coordinates rather than preserve \(x\). If an automorphism commutes with evaluation, consistent root comparison is preserved.
+- **Adding \(Nw\):** rational values in LV’s box have magnitude \(L[2/3]<N/2\). Two such values congruent modulo \(N\) are equal. Since \(m\) greatly exceeds the box width, equality of \(a-bm\) forces equality of the pairs.
+- **Changing resultant to \(Nw\):** this changes the polynomial and usually the field. It supplies no action on one fixed \(X\), and no canonical identification of exact square classes across those fields.
+
+No flipping mass \(L[1/3,-o(1)]\) is established by these candidates.
+
+**13. [proved; involution strength] The involution condition is stronger than necessary.**
+
+For a uniform finite \(X\), put
+\[
+\eta_*=\sum_z\min\{\Pr(x=z,\beta=0),\Pr(x=z,\beta=1)\}.
+\]
+The maximum mass that can be paired within fibres with opposite labels is \(2\eta_*\). Every linear predictor has error at least \(\eta_*\).
+
+But fruitfulness can occur with \(\eta_*=0\). Take
+\[
+x\in\{(1,0,0),(1,1,0),(1,0,1),(1,1,1)\},
+\quad \beta=(0,0,0,1).
+\]
+All fibres are singletons, while the sum of all four vectors is zero and its label is one. Thus failure to find an involution cannot refute fruitfulness.
+
+**14. [proved; a sufficient product law] The useful product comparison has a nondegenerate label and holds within individual fields.**
+
+Let \(P\) be the kept-pair law and \(U_2\) the uniform bit. Then
+\[
+\|P_{x,\beta}-P_x\otimes U_2\|_{\rm TV}
+=\frac12-\eta_*.
+\]
+Consequently TV distance at most \(1/2-\varepsilon\) implies
+\[
+\delta:=\min_w\Pr[\beta\ne w\cdot x]\ge\varepsilon.
+\]
+
+A weaker sufficient statement controls all twisted correlations:
+\[
+\sup_w\left|\mathbf E(-1)^{\beta+w\cdot x}\right|
+\le1-2\varepsilon.
+\]
+Independence from a deterministic label, such as \(\beta\equiv0\), would be useless.
+
+**15. [UNVERIFIED; exact analytic failure point] Existing decoupling and BV inputs do not supply this uniform twisted estimate.**
+
+The missing quantity is a correlation weighted by **simultaneous smoothness**, incorporating algebraic square-class coordinates and the lifted label \(\beta\). Norm smoothness probabilities and auxiliary quadratic-character distribution do not control it.
+
+There are two separate obstacles:
+
+- \(\beta\) contains information beyond parity: in the supplied formula it is a divided \(2\)-adic character lift; S-unit coordinates modulo \(4\) already arise in the Blum case.
+- The predictor \(w\) may depend on \(N\), the field, and the smooth set. Bounds for each fixed \(w\), averaged over parameters, cannot automatically control the minimum over \(2^C\) predictors.
+
+The QS specialization illustrates the range problem: a Jacobi character with conductor comparable to \(N\), restricted to a shifted subpolynomial interval and conditioned on smooth polynomial values. Standard Burgess or smooth-number BV estimates do not directly bound that sum.
+
+Pascadi’s stronger AP distribution results improve the analytic supply machinery, but do not state this joint estimate. See *Smooth numbers in arithmetic progressions to large moduli*, Compositio **161** (2025), 1923–1974, and [arXiv:2505.00653](https://arxiv.org/abs/2505.00653). Their relevance here is limited to the statements checked, not a proof audit.
+
+**16. [refuted-in-model; sharp information barrier] Even averaged joint product distribution can coexist with universal fruitlessness.**
+
+Choose a hidden \(\theta\in\mathbf F_2^C\). Within each instance take \(x\) uniform on nonzero vectors and set
+\[
+\beta=\theta\cdot x.
+\]
+For every instance, every dependency has label zero. Nevertheless, averaging over uniform \(\theta\) makes \(\beta\) an exactly uniform bit independent of \(x\).
+
+Thus excellent marginal statistics, plentiful dependencies, and even an averaged product law do not imply fruitfulness in a fixed instance. This is a countermodel to that inference, **not** an arithmetic counterexample to LV’s conjecture.
+
+**17. [conjectured; minimal sufficient hypothesis] The weakest useful hypothesis is at the actual batch level.**
+
+Under the law of fields and batches produced by LV’s search, require
+\[
+\Pr\!\left[\Phi|_{K_0(\mathrm{batch})}\ne0\right]
+\ge L[1/3,-o(1)].
+\tag{F}
+\]
+Here \(K_0\) includes every restriction of final post-processing.
+
+**[proved conditional implication]** Given (F) and uniform sampling from that certified dependency space, Lemma H gives conditional success at least \(1/2\). Independent restarts preserve the expected bound
+\[
+L\!\left[1/3,(64/9)^{1/3}+o(1)\right].
+\]
+No Blum assumption is needed for this formulation. To cover arbitrary composites, impose it after preprocessing for every odd non-prime-power cofactor, not only semiprimes.
+
+This retains LV’s constant, approximately \(1.923\); the hybrid supplies no proved smaller constant.
+
+**18. [proved; stronger static hypothesis] A quantitative distance from linear prediction suffices, but mere nonlinearity on the full smooth set need not suffice for a small batch.**
+
+For \(M\) independent kept relations in \(C\) exact coordinates,
+\[
+\Pr[\Phi|_{K_0}=0]\le2^C(1-\delta)^M.
+\]
+Indeed, degeneracy is equivalent to the sampled label vector belonging to the matrix row space; union-bound over its linear predictors.
+
+Hence
+\[
+M\ge\frac{C\log2+\log(1/\epsilon)}{\delta}
+\]
+makes degeneracy probability at most \(\epsilon\). A lower bound \(\delta\ge L[1/3,-o(1)]\) on sufficiently many fields under the **search-output law** gives (F), subject to relation availability.
+
+The measure qualification matters: stochastic deepening favours relation-rich fields. A statement only about uniformly sampled fields can miss them. Likewise, LV’s conjecture about all smooth products does not automatically establish nondegeneracy of the batches actually sampled.
+
+**19. [proved statements checked / conjectured hypothesis; literature] LV and Stange do not furnish an unconditional replacement for (F).**
+
+Lee–Venkatesan, *Rigorous analysis of a randomised number field sieve*, JNT **187** (2018), 92–159, prove the congruence bound; their Theorem 2.3 assumes Conjecture 7.1 and Blum semiprimality. [Paper](https://arxiv.org/pdf/1805.08873)
+
+Stange, *Factoring using multiplicative relations modulo \(n\)*, arXiv:2211.06821, revised 2023, studies a different order-finding mechanism. Its success analysis uses Hypothesis 3.1 on sublattice generation; the suggested NFS adaptation is not a proved fruitfulness theorem for LV/QS. [Paper, §§3–4](https://arxiv.org/html/2211.06821)
+
+**20. [heuristic / proved / UNVERIFIED; descent literature] The distinction between norm bounds and rigorous descent completion remains essential.**
+
+- **[heuristic; checked]** Guillevic, *Faster individual discrete logarithms in finite fields of composite extension degree*, Math. Comp. **88** (2019), 1273–1301, explicitly assumes pseudonorms behave like random integers for its asymptotic smoothing analysis (§§5–6). [Manuscript](https://eprint.iacr.org/2016/684.pdf)
+- **[UNVERIFIED as a rigorous completion theorem]** Al Aswad–Pierrot, *Individual Discrete Logarithm with Sublattice Reduction*, arXiv:2309.13048 (2023), improves initial splitting and analyzes norm bounds. I found no checked uniform descent-completion theorem there applicable to LV’s field. [Paper](https://arxiv.org/html/2309.13048)
+- **[proved; theorem statement checked]** Kleinjung–Wesolowski, arXiv:1906.10668, Theorem 1.1, prove expected time \((pn)^{2\log_2 n+O(1)}\) for DLP in \(\mathbf F_{p^n}^\times\). This gives rigorous quasipolynomial algorithms in fixed characteristic, using a different descent geometry. It does not establish individual descent in LV’s number field. [Paper](https://arxiv.org/pdf/1906.10668)
+
+**[UNVERIFIED; completeness]** My search through 28 October 2026 found no later proof closing LV/QS fruitfulness or providing the required rigorous \(L[1/3]\) number-field descent. This is a search result, not a theorem of absence.
+
+**21. [proved by exact computation; limited scope]** I ran [exact_checks.py](/Volumes/git/factoring-connection/codex/scratch/fruit_1/exact_checks.py), using Python integers and rational arithmetic. It exhaustively checked the projection dimension, support probability, and deficit guarantee for **44,494 matrices**, and the DD fibre probability for every unit-square fibre modulo \(15,21,45,105\), including repeated prime factors. It also checked the rational arithmetic in the model exponent formulas. [Results](/Volumes/git/factoring-connection/codex/scratch/fruit_1/exact_checks.json)
+
+These checks validate the finite identities tested; they provide no evidence for the missing smoothness or equidistribution hypotheses.
