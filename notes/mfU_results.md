@@ -222,4 +222,4 @@ all applied:
 
 Because round 2 was not MAJOR REVISION, no third codex round was run.
 
-(Literature critic below.)
+**Opus literature critic:** launched on v0.1. It did not report before this run ended, so its result is **not recorded**. Pending items it was asked to check: the exact printed forms of Stark Lemma 8 (non-normal case), LO Thm 1.3, CEP's corollary number, Rosser–Schoenfeld's constants, and a novelty search for the integer-multiplier and norm-class devices. codex/mfU_2 independently confirmed Stark p. 148, LO Thm 1.3 and HT Thm 3 against primary texts.
