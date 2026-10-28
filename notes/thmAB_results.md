@@ -1045,7 +1045,7 @@ obstruction does not materialize … both [remaining problems] appear repairable
 Probabilities: AB 80%, AB₂ 70%, 2L-final(α) 65%, 2L-final(3/8) 55%. **The v3 repairs have not been re-reviewed**;
 they are the reviewer's own proposed fixes, applied as stated.
 
-**Opus literature critic**: *(pending)*
+**Opus literature critic**: launched on v2; it had not reported when this agent handed back. Not yet applied; the literature checks of the inputs this note shares with c12alg (§10) and c12rat (§12.1) stand.
 
 **Codex blind `thmAB_1`** (xhigh, launched before anything here was written). It chose the same route (b) for the
 same two reasons: no primitivity, and modulus Δ′ instead of qΔ′. It reached the same structure:
