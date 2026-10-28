@@ -1,0 +1,107 @@
+== Part A: sizes re-derived from the design definitions ==
+alpha=3/8: lead logXF=(d0/(4*kappa), Fraction(7, 8), Fraction(1, 1)) (next exponent (Fraction(3, 4), Fraction(1, 1))), lead logXr=(1/d0, Fraction(3, 4), Fraction(1, 1)), lead logH=(2/d0, Fraction(3, 4), Fraction(1, 1))
+   lead logXF2=(b2*d0 + 3/d0, Fraction(3, 4), Fraction(1, 1)), lead logXr2=(1/d0, Fraction(3, 4), Fraction(1, 1))
+   u2 log u2 = 3*d0/(32*b2*kappa) * D^3/8 lambda
+   sigma1 = 3*d0/(32*b2*kappa) + 3/(8*a*d0),  sigma2 = 3*(b2*d0**2 + 4)/(8*a*d0)
+   match claimed sigma1, sigma2: True True
+alpha=7/18: lead logXF=(d0/(4*kappa), Fraction(5, 6), Fraction(1, 1)) (next exponent (Fraction(7, 9), Fraction(1, 1))), lead logXr=(1/d0, Fraction(7, 9), Fraction(1, 1)), lead logH=(2/d0, Fraction(7, 9), Fraction(1, 1))
+   lead logXF2=(b2*d0 + 3/d0, Fraction(7, 9), Fraction(1, 1)), lead logXr2=(1/d0, Fraction(7, 9), Fraction(1, 1))
+   u2 log u2 = 5*d0/(72*b2*kappa) * D^5/18 lambda
+   sigma1 = 7/(18*a*d0),  sigma2 = 7*(b2*d0**2 + 4)/(18*a*d0)
+   match claimed sigma1, sigma2: True True
+alpha=79/200: lead logXF=(d0/(4*kappa), Fraction(163, 200), Fraction(1, 1)) (next exponent (Fraction(79, 100), Fraction(1, 1))), lead logXr=(1/d0, Fraction(79, 100), Fraction(1, 1)), lead logH=(2/d0, Fraction(79, 100), Fraction(1, 1))
+   lead logXF2=(b2*d0 + 3/d0, Fraction(79, 100), Fraction(1, 1)), lead logXr2=(1/d0, Fraction(79, 100), Fraction(1, 1))
+   u2 log u2 = 47*d0/(800*b2*kappa) * D^47/200 lambda
+   sigma1 = 79/(200*a*d0),  sigma2 = 79*(b2*d0**2 + 4)/(200*a*d0)
+   match claimed sigma1, sigma2: True True
+
+== Part B: exponent comparisons f(alpha) > 0 (exact) ==
+check                                                          3/8    7/18     2/5  open-window  thresholds
+theta < alpha (child loss vs child BDH saving)                  ok      ok      ok   True  []
+theta_p < 3-7a (parent loss vs B2 saving)                       ok      ok     TIE   True  []
+theta < 1-... child gap 1/2-alpha                               ok      ok      ok   True  [1/2]
+theta_p gap 2-5a                                                ok      ok     TIE   True  [2/5]
+h_* >= B^{-5/12}: theta < alpha                                 ok      ok      ok   True  []
+h_*^p >= B2^{-5/12}: theta_p < 4a-1                             ok      ok      ok   True  []
+zeta < alpha                                                    ok      ok      ok   True  []
+theta < zeta                                                    ok      ok      ok   True  []
+zeta_p < 4a-1                                                   ok      ok      ok   True  []
+theta_p < zeta_p                                                ok      ok      ok   True  []
+zeta > a - 7/20                                                 ok      ok      ok   True  []
+zeta_p > 1-a-7/20                                               ok      ok      ok   True  []
+omega(parent Delta') = o(P0=D^{7/10}): 1-a < 7/10               ok      ok      ok   True  []
+omega(child modulus 4Q2 S2^2) = o(P0): 4a-1 < 7/10              ok      ok      ok   True  [17/40]
+Rankin parent tail: (1-a)-0.343 < 4a-1                          ok      ok      ok   True  []
+child modulus x^o(1): 4a-1 < 2a                                 ok      ok      ok   True  [1/2]
+parent alg modulus x^o(1): 1-a < 2-3a                           ok      ok      ok   True  [1/2]
+parent rat modulus x^o(1): 1-a < 2a                             ok      ok      ok   True  [1/3]
+N^eta0 >> L[a]: 3a-1/2 > a                                      ok      ok      ok   True  []
+N^eta0 >> B2: 3a-1/2 > 4a-1                                     ok      ok      ok   True  [1/2]
+eta0 = o(mu): 3a-1/2 < 2a                                       ok      ok      ok   True  [1/2]
+d log2 << eta0 log N: 1-2a < 3a-1/2                             ok      ok      ok   True  []
+filter spread (N^eta0)^gamma: 2a-1/2 < a                        ok      ok      ok   True  [1/2]
+child |P'|^gamma: 3a-1 < a                                      ok      ok      ok   True  [1/2]
+PB with AB (first order): A/eta, -a+(3-7a) < 0                 TIE      ok      ok   True  [3/8]
+PB with AB: sqrt(AB)/eta: (3-8a)/2 < 0                         TIE      ok      ok   True  [3/8]
+PB with AB2: A/eta: 3-9a < 0                                    ok      ok      ok   True  [1/3]
+PB with AB2: sqrt(AB)/eta: max(3-9a,-a) < 0                     ok      ok      ok   True  []
+AB2 -> AB: D^{-2a} <= D^{7a-3}                                  ok      ok      ok   True  [1/3]
+AB2 -> AB: D^{-2(3-7a)} <= D^{7a-3}                             ok      ok      ok   True  [3/7]
+(SQ)/subtraction/sigma1: u2 log u2 (3-7a) vs log B (a)         TIE      ok      ok   True  [3/8]
+B2 << V1: 4a-1 < 1-a                                            ok      ok     TIE   True  [2/5]
+one-point parent term B2/#J: 4a-1 < 1-a                         ok      ok     TIE   True  [2/5]
+u2 log u2 << log B2: 3-7a < 4a-1 (a>4/11)                       ok      ok      ok   True  [4/11]
+recursion L_{XF}[2/5]: (2/5)(2-3a) < a (a>4/11)                 ok      ok      ok   True  [4/11]
+LV6 e^{O(d log d)}: 1-2a < a                                    ok      ok      ok   True  [1/3]
+2^d <= B: 1-2a < a                                              ok      ok      ok   True  [1/3]
+d nu -> 0: 1-2a < a                                             ok      ok      ok   True  [1/3]
+d eta0 -> 0: 1-2a < 3/2-3a                                      ok      ok      ok   True  [1/2]
+d log V1 dominates log MH: 2-3a > 2a                            ok      ok     TIE   True  [2/5]
+mu_opt branch k < d^2/4: a < 2-4a                               ok      ok     TIE   True  [2/5]
+mu-(d-2)nu < 0 (h_* = 2nu): 2a-1 < 1-3a                         ok      ok     TIE   True  [2/5]
+N/M^d <= M: 1-a < 2a                                            ok      ok      ok   True  [1/3]
+Xr leading 2a > 1-a                                             ok      ok      ok   True  [1/3]
+children above B: a < 4a-1                                      ok      ok      ok   True  [1/3]
+DOM(iii) u_B >> u2: 2-4a > 3-7a                                 ok      ok      ok   True  [1/3]
+V2 << M: 4a-1 < 2a                                              ok      ok      ok   True  [1/2]
+B2^3 << H: 4a-1 < 2a                                            ok      ok      ok   True  [1/2]
+parent cell length >> Delta': 1-a < 2a                          ok      ok      ok   True  [1/3]
+rejections e^{-D^{4a-1}}, e^{-D^{1-2a}} << polylog              ok      ok      ok   True  []
+u2 -> infinity: 3-7a > 0                                        ok      ok      ok   True  [3/7]
+U1_2 shifts (1-a2)log w^2 -> 0: 1-3a < 0                        ok      ok      ok   True  [1/3]
+CS' d log S = o(log XF): 1-a < 2-3a                             ok      ok      ok   True  [1/2]
+CS' XF-shift in u2: 2-5a < 3-7a                                 ok      ok      ok   True  [1/2]
+eta small part: (1-2a)-3+(2-4a) < 0                             ok      ok      ok   True  []
+skew spread (S2 T0)^{d gamma}: 1/2-a < theta                    ok      ok      ok   True  [1/3]
+beta-drift child: zeta < 2a                                     ok      ok      ok   True  []
+beta-drift parent: zeta_p < 2-3a                                ok      ok      ok   True  []
+D^{2-8a} <= D^{-2a}                                             ok      ok      ok   True  [1/3]
+D^{14a-6} << D^{7a-3}                                           ok      ok      ok   True  [3/7]
+range restatement needed iff 3-7a < 1/4                       FAIL    FAIL      ok  False  [11/28]
+open-window failures (should be none): []
+
+== Part B': endpoint 3/8, parent acceptability subtraction ==
+D^C/(B rho2^2) = exp((-a + 2 c2) D^{3/8} lambda (1+o(1))) -> needs a > 2 c2; weight bridge / FM-U' / Lemma eta denominator need only a > c2 (SQ).
+
+== Part C: cost constant ==
+alpha=7/18, (a,kappa,d0,b2)=(Fraction(3, 5), Fraction(1, 8), 1, 2), C_gamma=0: sigma1=35/54=0.64815, sigma2=35/9=3.88889, c2=3/8
+   2a=1.20000, a+s+max(a,s1+s2)=2909/540=5.38704, rec in [3.59739,3.59739]  => c in [5.38704,5.38704]
+alpha=3/8, (a,kappa,d0,b2)=(Fraction(4, 5), Fraction(1, 8), 1, 2), C_gamma=0: sigma1=27/32=0.84375, sigma2=45/16=2.81250, c2=3/8
+   2a=1.60000, a+s+max(a,s1+s2)=753/160=4.70625, rec in [4.58726,4.58726]  => c in [4.70625,4.70625]
+   a > 2c2 ? True
+1/(1-2^(-3/8)) in [4.368823, 4.368823]
+1/(1-2^(-7/18)) in [4.232223, 4.232223]
+alpha=7/18 standard point, C_gamma=0: c_hi=5.3870
+alpha=7/18 standard point, C_gamma=1: c_hi=5.6370
+alpha=7/18 standard point, C_gamma=5: c_hi=8.8877
+3/8 grid (C_gamma=0) under a > 2c2: c <= 4.7062 at (Fraction(4, 5), Fraction(1, 8), Fraction(1, 1), Fraction(2, 1))
+3/8 grid (C_gamma=0) under a >  c2 (SQ only): c <= 4.5625 at (Fraction(3, 4), Fraction(1, 8), Fraction(5, 4), Fraction(3, 2))
+
+== Part D: degeneracy in the open window ==
+t=1: (a,kappa,d0,b2)=(1,1/8,4,1/64) -> c_hi(C_gamma=0)=5.2903
+t=2: (a,kappa,d0,b2)=(1/2,1/16,16,1/2048) -> c_hi(C_gamma=0)=2.6451
+t=4: (a,kappa,d0,b2)=(1/4,1/32,64,1/65536) -> c_hi(C_gamma=0)=1.3226
+t=8: (a,kappa,d0,b2)=(1/8,1/64,256,1/2097152) -> c_hi(C_gamma=0)=0.6613
+t=16: (a,kappa,d0,b2)=(1/16,1/128,1024,1/67108864) -> c_hi(C_gamma=0)=0.3306
+Also: for alpha' < alpha both in the window, L[alpha', c'] = o(L[alpha, eps]) for every eps>0,
+so the open-window theorem already implies time L_N[alpha, o(1)]; c(alpha) is cosmetic there.

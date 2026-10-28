@@ -88,3 +88,124 @@ The external weakest link is Fact D: Drappeau's Lemme 5 is stated without proof 
 ## Probability
 
 I put **0.6** on the analytic core (RAT + AB₂) being correct as a proof once fix 1 is made, taking Fact D as given. Most of the remaining doubt is in internal lemmas I did not re-derive (Cor TP-q, DW(a)⁺, TYPE's casework, PUB) and in unwritten details such as per-point CLB. If you also discount for Fact D resting on an unproved, unrefereed source, I would put it at about 0.5.
+
+---
+
+## Opus critic 2: the assembly and the parameters (DC, U′, multidescent, cost ledger, window, a > 2c₂, gaps, c(α))
+
+Agent id ad4f5b675b9dbeb75. Run time about 19 min. Code: `src/audit2L/critic2_params.py`, written from scratch; run it
+with `.venv/bin/python -m src.audit2L.critic2_params`.
+
+**Verdict (my scope only, the assembly and the parameters): (i) α ∈ (3/8, 2/5): ACCEPT WITH FIXES. (ii) α = 3/8: ACCEPT WITH FIXES.** I found no fatal or exponent-changing gap in the reduction chain or the cost ledger. The one MAJOR item is a write-up gap: Hyp U′ is carried over to design DW by assertion, not by proof. My leading-order audit of that transfer passes.
+
+I formed this verdict without reading any Reviews, Verdict or probability sections. One disclosure: a `grep -n polylog notes/c12rat_results.md` printed a single line from c12rat's Reviews section (line 945). I did not use it.
+
+## Issue table
+
+| # | Sev | Location | Issue | Changes exponent or constant? | Fix |
+|---|---|---|---|---|---|
+| 1 | MAJOR (write-up) | c12alg §2.7 ("only these replacements", "range restatement … not re-proved line by line"); thmAB §13, the 3/8 bullet ("a leading-order re-check, not a line-by-line re-proof of uprime §3 at the new η₀") | Hyp U′ (μ₁, E N₁², hence γ₂) is the base of the whole chain. Its proofs were written for design 2L′: d ≍ D^{1/4}, η₀ = D^{−1/2}, height floor h = μ + 4ν + η₀, and w coprime to t. For DW they are transferred by assertion: for α ∈ (11/28, 2/5), where u₂ < D^{1/4} and U1₂/DS-U′/CS′ are out of their stated range, and at 3/8 with η₀ = D^{−3/8}. I re-checked every η₀- and range-sensitive inequality I could identify and all hold strictly (see item 1). | Neither, if true | Write U′-DW(α) as a lemma that lists each changed inequality. |
+| 2 | MINOR | §13: c(α), the "degenerate" paragraph, the 5.39 illustration | In the open window c(α) carries no information. For a rational α′ ∈ (3/8, α), L[α′, c′] = o(L[α, ε]) for every ε > 0, so the window theorem already gives time L_N[α, o(1)] for every α ∈ (3/8, 2/5). The infimum 0 is a consequence of monotonicity in α, not of C_γ behaviour. Also, the C_γ = 0 illustrations are lower bounds on the formula (C_γ > 0), not achieved values. | Presentation | State "L_N[α, o(1)] for every α > 3/8"; keep an explicit c only at 3/8. |
+| 3 | MINOR | thmAB §11, §14 (endpoint constraint O4) | a > 2c₂ is an artifact of the crude absolute subtraction \|(a₁₂−a₁a₂)−(s₁₂−s₁s₂)\| ≤ 6D^C/B measured against s₁s₂ ≍ ρ̂_{B₂}². It is sufficient: relative error exp(−(a−2c₂)D^{3/8}λ), far below the D^{−3/4} budget. It is satisfiable, since nothing else constrains (a, κ, d₀, b₂) at 3/8 now that (A1) is dropped. Every other 3/8 use (FM-U′, Lemma η's denominator, the weight bridge ε_p) needs only (SQ) a > c₂. The text's "iff" should be "if". | Constant only. On my rational grid with C_γ = 0, the best c(3/8) is 4.7062 under a > 2c₂ (exactly the claimed (4/5, 1/8, 1, 2)) versus 4.5625 under a > c₂. | Prove the mixed bound Pr(bad₁ ∧ smooth₂) ≪ D^C B^{−1}s₂, or keep the constraint. |
+| 4 | MINOR | §13 step 5; multidescent (vi) | The (a+s)/(1−2^{−α}) term assumes the shape test of DESCEND_ONCE calls FACTOR_2L itself. "FACTOR_U with … replaced", read literally, keeps FACTOR_U's self-call, which would cost L_{√N}[2/5] ≫ L[α]. The calls on parent cofactors may use FACTOR_U (this needs α > 4/11). | Exponent, if misread | Say explicitly which routine each call uses. |
+| 5 | MINOR | Theorem statement | Says "every fixed α", but the design (c12alg §1.1) is defined for rational α. | None (item 2 covers irrational α) | Say "rational", or cite monotonicity. |
+| 6 | MINOR | Lemma η | "Hildebrand's error ≪ 1/u₂ because u₂ log u₂ ≪ log B₂ (α > 4/11)" is more than needed. With slack factor 3, an o(1) relative error suffices. The real requirements are: R(I) = u(1+O(1/log u)) + O(λ), so u₂ ≫ λ (true, since 3−7α ≥ 1/5), and the small-|n| part d·D^{−3}·D^{2−4α} = D^{−6α} → 0. | None | Optional. |
+| 7 | MINOR | uprime §4.1 (CS′) | The certified quadrature that computes R_{B₂} (needed by the algorithm's S₁ scan) is "routine, not written out". | None | Write it out. |
+| 8 | MINOR | uprime §6 vs DW | uprime's σ₂ = (3/(8a))(3/d₀ + d₀b₂) and "c ≤ 4.23" belong to 2L′. Under DW, h ≈ 2μ + 2ν + 2η₀ adds 1/d₀ to the child envelope, giving σ₂ = (α/a)(4/d₀ + d₀b₂). §13's 4.71 correctly uses 4/d₀. | Constant | Do not cite 4.23 for 2L-final(3/8). |
+| — | Outside my scope (flag only) | c12rat RAT-2, hard-filter step: "(m^par)²·polylog·(δ_e + 𝒱₀)", where "polylog" is defined as e^{O(λ)} = (log N)^{O(1)} | The result is then reported with only a λ^C loss. A genuine (log N)^C = D^Cλ^C factor would wipe out B's budget at every α in [3/8, 2/5). Lemma SPR's own proof gives an active-point spread of (64d)^{γ+γ₂} = 1 + o(1), so this is almost certainly a slip (it should read O(1)). It matters because the assembly tolerates no (log N)^{O(1)} loss in A or B; this is why Lemma η is loss-free. | Exponent, if real | Fix the wording in c12rat. |
+
+## Single weakest link in my scope
+Hyp U′ under DW, i.e. issue 1. It is the only input to γ₂ that is transferred by assertion rather than by proof, at two places: the window (11/28, 2/5) and the 3/8 endpoint at η₀ = D^{−3/8}. Structurally, the most fragile point is Prop PB's margin, D^{−3/8} at 3/8 (D^{3−8α} in the window with the first-order AB forms). It has no room for any (log N)^{O(1)} loss anywhere in A, B or W/μ₁.
+
+## 1. Reduction chain
+
+- **Lemma 0 / Prop DC / DC_e / Cor DC.** Correct.
+  - Lemma 0: a primitive P′ ∈ Λ_𝔮 has q ∤ b′, so F(P′) ≡ b′^dF(r,1) mod q. Both Good and child-hood force q ∥ F.
+  - Prop DC: E[Z1{N=0}] ≤ zp + sd(Z)√p by Cauchy–Schwarz, and p ≤ ϕ by Chebyshev.
+  - The second Cauchy–Schwarz over (𝔮, e) gives W(A + √(AB)).
+  - Cells are functions of g only, so DC_e's hypotheses hold. W = Σ_{𝔮,e} w_{𝔮,e} is the same W as in Lemma η.
+- **Prop UB.** E N₂ ≥ μ₁ − dead mass. N₂ ≤ N₁ gives E N₂² ≤ E N₁². With μ₁ ≥ (log N)^{−C}, both branches (μ₁ ≥ 1 and μ₁ < 1) give γ₂ ≥ (log N)^{−C_γ}. Matches.
+- **Lemma VD.** Law of total variance in g. E[N | g, R] = m(g) exactly, and the diagonal Σ Rat·A(1−A) ≤ m(g) gives the 1/m term. Parents likewise. The P₁ = P₂ ⇒ ℓ₁ = ℓ₂ reduction is fine.
+- **Root-event corrections.** ϕ_full = ϕ_good/t + (1−t)/t is correct (I checked the mixture identity), with t = 1 − O(1/q).
+- **One-point terms.**
+  - w/z = Pr(R)/#J is exact. Σ_r Pr(R_{(q,r)}) ≤ d + 2.
+  - The parent one-point term is ≤ B₂(log N)^C/#J = exp(b₂D^{4α−1}λ − D^{1−α}λ/(2κ)) → 0. This needs 4α−1 < 1−α, i.e. α < 2/5 (a tie at 2/5).
+  - The child one-point term is ≤ e^{−λ²}(log N)^C via Prop CLB.
+  - CLB's conservative envelope V₂ ≈ S₂q covers skewed labels; its fibre condition needs V₂ ≪ M, i.e. 4α−1 < 2α.
+- **Lemma η.**
+  - The ratio-of-sums reduction is valid: the rational part of Acc is a function of g.
+  - The mixture-over-intervals ratio is ≤ the maximum over components. The denominator subtraction needs (SQ).
+  - Dickman sum: ∫_{v₀}^1 e^{ξv}dv/v = e^ξ/ξ(1+O(1/ξ)) + O(λ), with v₀ = log B/log B₂ → 0 since α > 1/3. This gives W/μ₁ ≤ 3u₂ with no (log N)^C loss.
+- **Prop PB.** With the AB forms: A/η = D^{3−8α}λ^C and √(AB)/η = D^{(3−8α)/2}λ^C, both → 0 iff α > 3/8. With the AB₂ forms: max(D^{3−9α}, D^{−α})λ^C → 0 on [1/3, 2/5). At 3/8 both equal D^{−3/8}λ^C. Correct.
+- **Interfaces.**
+  - The AB₂(i)/(iii) and RAT thresholds are unified at T₀, with the same θ = 2α − 1/2.
+  - The RAT-to-true weight bridge holds: (1+5ε)ϕ̃ + 5ε, with ε = N^{−η₀/3} for children. For parents ε_p = L^{−(a−c₂)} at 3/8, which needs only (SQ).
+  - RAT is divided by W ≥ (1 − L^{−c})μ₁ (DOM(iii), since u_B ≍ D^{2−4α} ≫ u₂).
+- **Field rejections (reject-DW).** e^{−Θ(D^{4α−1})} + 2^{2−d} = e^{−Θ(D^{1−2α})} ≪ (log N)^{−C}. Rejection is applied globally, so select-U goes through (𝒢* has measure ≥ γ₂/4).
+- **Split acceptance.** (γ₂/(16 log N))^{2k}/(32k²) = L[α, −2κ(1+C_γ)]. (P6) holds: log Y ≍ D^{1−α}λ/(2κ) ≫ ω(N) ≤ D^{1−α}/a.
+- **Rows / POSTPROCESS-DW / LV6.** e^{O(d log d)} = e^{O(D^{1−2α}λ)} = L^{o(1)}. d(μ + h) = O(1), since dν → 0 and dη₀ = D^{α−1/2} → 0. ‖f‖ ≤ 3MH < N.
+- **Fruitfulness and recursion.** Fruitfulness rests on the deterministic search plus Lemma OS. The parent-value recursion costs L_{X_F}[2/5] = exp(O(D^{(4−6α)/5}λ)), which is L^{o(1)} iff α > 4/11.
+- **Assumed rather than proved.** Only the items in rows 1 and 7 of the table.
+
+## 2. Cost ledger
+From the design definitions alone I re-derived:
+
+- log M ~ D^{2α}λ/d₀
+- log H ~ 2D^{2α}λ/d₀
+- log X_F ~ (d₀/(4κ))D^{2−3α}λ, from the d·log V₁ term; this needs 2−3α > 2α, i.e. α < 2/5
+- log X_r ~ D^{2α}λ/d₀
+- log X_{F2} ~ (3/d₀ + d₀b₂)D^{2α}λ and log X_{r2} ~ D^{2α}λ/d₀ (conservative box)
+- u₂ log u₂ = (d₀(3−7α)/(4κb₂))D^{3−7α}λ, which equals c₂ = 3d₀/(32κb₂) at 3/8
+
+These give σ₁ = α/(ad₀) (+ c₂ at 3/8) and σ₂ = (α/a)(4/d₀ + d₀b₂); sympy confirms both match the claimed forms exactly. The cost terms follow from lv5unif (10.1):
+
+- M_rows = L^a
+- 1/p = L^s, with s = 2κ(1 + C_γ)
+- T_SQ = W₁(1 + m̄W₂)·L^{o(1)} = L^{max(a, σ₁+σ₂)}
+- T_post = L^{2a}
+
+Lemma F_α then gives c(α) as claimed.
+
+- **Illustrative values.** Reproduced exactly. α = 7/18 gives c = 2909/540 ≈ 5.3870, with the special-q term binding; the recursion term is 3.5974. α = 3/8 gives c = 753/160 ≈ 4.7063, with the recursion term at 4.5873 and a > 2c₂ satisfied (0.8 > 0.75).
+- **Finiteness and C_γ.** c is finite for every admissible choice. Leaving C_γ unquantified is legitimate for an "L_N[α, O(1)]" claim; it is moot in the window (row 2). At 3/8, c(3/8) is a real but unknown constant, and 4.71 is only its C_γ = 0 floor.
+
+## 3. Window
+I computed every leading-order comparison in the excerpt as an exact linear inequality; there are 61, all strict on the open window.
+
+- **Lower end, 3/8.** Two ties occur there:
+  - 3 − 7α = α. This is (SQ), the level-1 algebraic B₂-smoothness cost entering σ₁, and the §11 subtraction. It is the j = 2 size-model wall (2 − 4α ≤ ζ₁ = 4α − 1).
+  - The first-order PB budget (8α − 3). It is not binding, because AB₂ moves PB's threshold down to 1/3.
+- **Upper end, 2/5.** Ties for: θ_p vs 3−7α (gap 2−5α), B₂ vs V₁, the one-point parent term, d log V₁ vs log MH, the μ_opt branch, and μ − (d−2)ν < 0. Beyond 2/5 Theorem U applies instead.
+- **The two named gaps.** The child gap is ½ − α > 0 and the parent gap is 2 − 5α > 0, with the other parent loss component 2−5α below 3−7α by 1−2α.
+- **Other comparisons, all strict on [3/8, 2/5):**
+  - h_* ≥ B^{−5/12} and h_*^p ≥ B₂^{−5/12}
+  - ζ, ζ_p and the Rankin tail
+  - ω(Δ′) = o(D^{7/10}), using 1−α < 7/10 and 4α−1 < 7/10
+  - Δ′ = x^{o(1)}
+  - N^{η₀} ≫ L[α] and ≫ B₂, using 3α − ½ > max(α, 4α − 1)
+  - u₂ log u₂ ≪ log B₂ and the recursion, both needing α > 4/11
+  - LV6, and the rejection probabilities vs γ₂
+- **The range restatement** is genuinely needed only for α > 11/28.
+
+**Command:** `cd /Volumes/git/factoring-connection && .venv/bin/python -m src.audit2L.critic2_params`
+
+**Key output:**
+```
+match claimed sigma1, sigma2: True True        (alpha = 3/8, 7/18, 79/200)
+u2 log u2 = 3*d0/(32*b2*kappa) * D^3/8 lambda  (alpha = 3/8)
+open-window failures (should be none): []
+3/8 TIE: PB-with-AB (A/eta, sqrt(AB)/eta), (SQ)/subtraction/sigma1 ; everything else ok
+2/5 TIE: theta_p vs 3-7a, B2<<V1, one-point parent, d log V1 vs log MH, mu_opt, h_* branch
+alpha=7/18 (3/5,1/8,1,2): c = 2909/540 = 5.38704 ; alpha=3/8 (4/5,1/8,1,2): c = 753/160 = 4.70625
+1/(1-2^(-3/8)) = 4.368823 ; 3/8 grid C_gamma=0: a>2c2 -> 4.7062 ; a>c2 -> 4.5625
+degenerate sequence at 7/18 (C_gamma=0): c = 5.29, 2.65, 1.32, 0.66, 0.33
+```
+
+## Probability
+Given the analytic core (RAT, AB/AB₂ as stated) and Theorem U's chain, I put the probability that the assembly is correct at **0.80**. The main residual risks are:
+
+- the unwritten U′-DW transfer: about 0.08
+- an interface mismatch not visible in the excerpt: about 0.07
+- the DW design lemmas (CT, IR-DW, DW(a)⁺) used at level 1: about 0.05
+
+The file I created is `/Volumes/git/factoring-connection/src/audit2L/critic2_params.py`; nothing else was edited or committed.
