@@ -71,3 +71,15 @@ def test_norm_class_odd_degree():
                 continue
             delta = rng.choice([-1, 2, -3, 5, 6, -7, 10, 30, -105])
             assert toy.norm_class_ok(f, xi, delta)
+
+
+def test_recursion_term_dominates():
+    # codex/mfU_2: c_MF = (a + sigma_F + s)/(1 - 2^{-2/5}) always
+    flo, _ = params.recursion_factor_bracket()
+    for a in (Fr(1, 5), Fr(3, 5), Fr(2), Fr(5)):
+        for d0 in (Fr(1, 4), Fr(1), Fr(4)):
+            for kappa in (Fr(1, 100), Fr(1, 8), Fr(2)):
+                for Cg in (Fr(0), Fr(5)):
+                    lo, hi = params.cost_constant(a, d0, kappa, Cg)
+                    rec = (a + params.sigma_F(a, d0, kappa) + 2 * kappa * (1 + Cg)) * flo
+                    assert lo == rec

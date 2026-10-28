@@ -1,0 +1,82 @@
+ACCEPT WITH MINOR FIXES
+
+| Severity | Location | Precise problem | Fix |
+|---|---|---|---|
+| MINOR | [Lemma P, (P4)](/Volumes/git/factoring-connection/notes/mfU_theorem.md:135) | The assertion “\(d\log S+\log J_f=o(\Lambda D^{1/5})\)” is false. Lemma CS implies \(\log S=(\sigma_r/2+o(1))\Lambda\), so the quotient tends to \(d_0\sigma_r/2=1/(5a)>0\). | Replace \(o\) by \(O\). The estimate actually needed for norm sizes is \(d\log S=o(D^{4/5}\lambda)\), which holds. |
+| MINOR | [Lemma 4.4 proof](/Volumes/git/factoring-connection/notes/mfU_theorem.md:239) | “\(g_1\le M<\ell\)” reverses the relevant size comparison: \(\log M/\log\ell\sim(2\kappa/d_0)D^{1/5}\to\infty\). | Obtain \(g\not\equiv0\pmod\ell\) directly from \(\gcd(g_0,g_1)=1\). This also makes the later application with \(g=(a,b)\) explicit. |
+| MINOR | [Proposition R2, covering](/Volumes/git/factoring-connection/notes/mfU_theorem.md:348) | The displayed \(w\le X_r/(28S^2)\) is false: exactly \(w/X_r=Y/(4V^2)=(1+o(1))/(8S^2)\). | Use this correct expression. Since \(S\to\infty\), \(w\le X_r/256\) still holds eventually. The covering argument and its exponents survive. |
+| MINOR | [Lemma DS](/Volumes/git/factoring-connection/notes/mfU_theorem.md:303) | Its proof applies U1 at \(\Delta_0/B\ge XB^{-(2C_0+1)}\), which need not be “in range” when \(X=B^{D^{1/3}}\). U1’s proof also unnecessarily asserts that intermediate points remain in range when its upper endpoint can exceed \(N\). | Enlarge U1’s working range slightly, or require \(X\ge B^{D^{1/3}+2C_0+1}\) in DS. Every actual DS application at \(X_r\) has ample margin. |
+| MINOR | [POSTPROCESS step 2](/Volumes/git/factoring-connection/notes/mfU_theorem.md:581) | “The coordinate … at a fixed basis element” is insufficient for the stated coset argument. With binary \(x\), an arbitrary coordinate projection need not preserve its uniform distribution. For example, a base-field solution \(y\) gives zero in every other coordinate. | Specify an \(\mathbb F_2\)-linear projection \(\pi:\mathbb F_{2^e}\to\mathbb F_2\) with \(\pi(1)=1\), and return \(x-\pi(y)\). The solver must receive only the right-hand side and independent coins, as the proof intends. |
+| MINOR | [§1.2; FIB; Lemmas 8.1 and 8.4](/Volumes/git/factoring-connection/notes/mfU_theorem.md:98) | The literal external-input list omits ingredients used subsequently: the unit-group square-class bound, the power-order trace-dual identity, and the elementary totient and \(\omega\) estimates in FIB. | List these standard inputs explicitly, or supply their short proofs. No new analytic estimate is required. |
+| MINOR | [§11.4](/Volumes/git/factoring-connection/notes/mfU_theorem.md:850) | The norm exponent used in this explanation does not match the actual leading size of \(X_F\). Its leading terms are \(1/d+d/(4k)\), rather than \(2/d+d/(4k)\). | Use the actual exponent. Its minimum remains \(\asymp k^{-1/2}\), so the \(2/5\) calculation is unchanged. |
+| MINOR | [Theorem statement and conclusion](/Volumes/git/factoring-connection/notes/mfU_theorem.md:20) | “Expected running time is” suggests an asymptotic equality; §10 proves an upper bound. Also, trial-division primes are returned without an explicit AKS call, despite the certification wording. | State “at most \(L_N[2/5,c_{\rm MF}+o(1)]\)” and explicitly certify the final distinct primes by AKS. That adds polynomial cost. |
+
+I found no FATAL or MAJOR defect in the main argument. The false estimates above admit local repairs; none requires changing the leading cost constants.
+
+**The single weakest link is Proposition R2, through Lemma DS.** It is the essential source of a rational supply probability bounded below by a fixed inverse power of \(\log N\). An unnoticed degree-dependent loss here would destroy the theorem.
+
+After correcting the covering estimate, its central cancellation checks out. For an admissible pair \(P,P'\), put \(q=|\det(P,P')|/\ell\). The image lattice has index \(q\), while the image parallelogram needs \(O(qS^2)\) covering squares. DS bounds the number of smooth image points in each square by
+\[
+\frac{w^2}{q}\rho_r^2(\log N)^C.
+\]
+Thus
+\[
+\#\{g:Y_P(g)=Y_{P'}(g)=1\}
+ \ll qS^2\frac{w^2}{q}\rho_r^2(\log N)^C
+ \ll \frac{M^2}{\ell}\rho_r^2(\log N)^C.
+\]
+There are \(O(S^2)\) partners per \(P\). Summing and dividing by \(\#\mathcal G\asymp M^2\) gives the claimed
+\[
+\mathbb E[N_r(N_r-1)]
+ \ll S^4\rho_r^2(\log N)^{C_2}.
+\]
+The constants depend on the fixed parameters through \(C_0\), but introduce neither \(2^{O(d)}\) nor \((\log N)^{O(d)}\) into the supply probability.
+
+The other critical interfaces survived the audit:
+
+- **OP and its layer averaging.** The distribution \(\vartheta_P\), its layers, and their weights are independent of \(w\). The bound on \(\widehat F_w(P)\) holds for every \(w\), so each layer supplies a common target interval. The forced-residue coefficient is a unit: primality of \(b\), \(B<b<\ell\), smoothness of \(n\), and \(\gcd(g_0,g_1)=1\) supply exactly the needed coprimality conditions. Averaging over integer \(w\) therefore legitimately replaces progression equidistribution. The \(2^d\) comparison between \(V\) and \(V'\) is absorbed inside a \(B^2\) scale comparison, rather than becoming a \(2^{-d}\) success loss. The quoted HT3 formula agrees with the author’s corrected text. [Hildebrand–Tenenbaum, Theorem 3](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+- **REJ and MF.** For each fixed admissible \(g\), all rejection paths are covered asymptotically. A gcd equal to \(N\) cannot arise from nonzero \(w\), leading coefficient, or content because these are smaller than \(N\). Leading-coefficient zero and derivative rejection have the stated one-coordinate bounds. The irreducibility calculation averages over \(w\) and is uniform in \(g\); OP also averages over \(w\), so no stronger conditional-on-\(w\) rejection bound is needed. Content normalization preserves every raw smooth success. Crucially, \(P_0\) uses only \((g,\ell)\), and the side events are independent under the raw product law, with factor exits included as successes.
+
+- **CS and computability.** The Rankin approximation is sufficient; neither \(\rho_F\) nor an analytic implied constant must be computed. The growing slack exponent \(\lambda_3\) eventually dominates the fixed Rankin-density loss. The resulting \(J_f\ge244/\rho_F\) is valid. The apparent ordering of the parameter arguments can be made explicit by first bounding the scan uniformly over \(S^2\le e^{2\sigma_r\Lambda}\), then proving the remaining margins.
+
+- **Stark, Landau, and growing degree.** The factorial threshold is legitimate for general fields; normality over \(\mathbb Q\) is not required at that threshold. Odd \(d\) excludes quadratic subfields of \(K\), and \(4\nmid2d\) permits at most one quadratic subfield of \(K(\sqrt{\mathfrak q})\). Consequently that extension is \(KF\), giving a rational square class by Kummer theory. Landau’s uniqueness then applies with the stated conductor bound. [Stark, p. 148](https://gdz.sub.uni-goettingen.de/download/pdf/PPN356556735_0023/PPN356556735_0023.pdf).
+
+- **Lemma 8.3.** The primary Lagarias–Odlyzko statement has the range and absolute error constants used here, including for the trivial extension \(K/K\). The chosen \(s\) makes both the exceptional-zero contribution and the ordinary error negligible, uniformly in the growing degree. Its cost is \(s^{O(1)}=e^{O(d\log d)}(\log N)^{O(1)}=L_N[2/5,o(1)]\). This factorial cost occurs in certification, outside the per-prime supply probability. [Lagarias–Odlyzko, Theorem 1.3](https://aareyanmanzoor.github.io/assets/articles/lagarias-odlyzko.pdf).
+
+- **Lemma 8.5 and PP.** The norm argument handles negative signs, negative exponents, and negative leading coefficients. Even \(E_j(S)\) removes the leading-coefficient square class. A rational norm product has a signed integral squarefree representative even when some exponents are negative. For rational residual class \(\delta\),
+  \[
+  [\operatorname{Norm}(\gamma)]=[\delta^d]=[\delta],
+  \]
+  so \(\delta_j(S)\gamma\) is a square. The shared norm columns ensure that \(\prod_j\delta_j(S)\) is a positive rational square; they need not make each \(\delta_j(S)\) trivial. This is precisely sufficient for PP’s correction formula. Its congruence and unit checks are sound, and I found no missing column family.
+
+- **Selection, transcripts, and recursion.** The retained-field calculation correctly includes the size bias:
+  \[
+  \Pr(A^*\in dA)=\frac{\varsigma_A\,\Pr(A\in dA)}{b},
+  \qquad
+  \mathbb E[1/\varsigma_{A^*}]\le1/b.
+  \]
+  Multiplication by the probability \(b/p\) of retaining a field cancels the dangerous denominator. Factor exits shorten the process. The recursive shape test returns canonical factorizations, so its logical outputs preserve the hidden-root symmetry. Discarding rows after a failed final gcd is necessary and is prescribed. Lemmas OS, W, and \(F_\alpha\) then support (10.1).
+
+**The exponent and constant follow as upper bounds.** The actual norm sizes give
+\[
+\sigma_r=\frac{2}{5ad_0},\qquad
+\sigma_F=\frac{2}{5a}\left(\frac1{d_0}+\frac{d_0}{4\kappa}\right).
+\]
+The height floor changes their logarithmic costs by \(O(D^{1/5}\lambda^2)=o(\Lambda)\). With
+\[
+t_q=\max(a,\sigma_r,\sigma_F),\qquad s=2\kappa(1+C_r),
+\]
+the ledger yields
+\[
+p_{\rm work}=\max\{2(a+\sigma_F),\,a+\sigma_F+s+t_q\},
+\qquad
+\delta_{\rm rec}=a+\sigma_F+s.
+\]
+Lemma \(F_\alpha\) gives exactly the displayed \(c_{\rm MF}\). In fact, its third term always dominates the other two, so it simplifies to
+\[
+c_{\rm MF}=\frac{a+\sigma_F+s}{1-2^{-2/5}}.
+\]
+The corrected geometric explanation also gives \(\alpha\ge2/5\) for this design. I found no uncomputable constant used by the algorithm: \(C_r\), the analytic thresholds, and \(N_0\) enter the analysis only.
+
+**My probability that the theorem’s expected-time upper bound is correct after these minor fixes: 80%.** The remaining uncertainty is principally an overlooked uniformity or counting error in R2, rather than an identified failure in MF amplification or simultaneous certification.

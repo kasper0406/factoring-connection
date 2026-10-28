@@ -1,0 +1,892 @@
+Multi-field post-processing works: after successful character filtering, there are at most \(J_f\) obstruction bits.  
+The row target grows to \(L_N[2/5,a+\sigma_F+o(1)]\); the single-field cost constant does not carry over.  
+The extra height floor repairs rejection absorption, provided its bound is conditional on the fixed rational data.  
+The prime-multiplier design still depends on Lemma 8.5′; the published alternatives checked below do not directly replace it.  
+An integer-multiplier variant admits an elementary residue-averaging argument that removes that dependency.
+
+## 1. Complete multi-field post-processing
+
+Write
+\[
+D=\frac{\log N}{\log\log N},\qquad
+\lambda=\log\log N,\qquad
+\Lambda=D^{2/5}\lambda.
+\]
+All \(L\)-exponents below mean exponents relative to \(e^\Lambda\).
+
+The post-processing result is independent of the relation-supply argument. Its hypotheses are explicit, verifiable row certificates and accepted odd-degree fields. I use the notation of [pp], but distinguish the shared rational form \(G\) from the monic defining polynomials.
+
+### Lemma 1 — Multi-field row identity and matrix
+
+Let \(N\) be odd, with no prime factor at most \(B\). Fix \(J\) accepted fields
+\[
+f_j\in\mathbb Z[x],\qquad \deg f_j=d\text{ odd},\qquad f_j(m)\equiv0\pmod N,
+\]
+where
+\[
+m=g_0g_1^{-1}\pmod N.
+\]
+Put
+\[
+t_j=\operatorname{lc}(f_j),\quad
+K_j=\mathbb Q(\alpha_j),\quad
+\beta_j=t_j\alpha_j,\quad
+h_j(T)=t_j^{d-1}f_j(T/t_j).
+\]
+Assume that \(f_j\) is primitive and irreducible and that
+\[
+\gcd\!\left(g_1t_jf_j'(m),N\right)=1.
+\]
+
+There is a homomorphism
+\[
+\psi_j:\mathbb Z[\beta_j]\longrightarrow\mathbb Z/N\mathbb Z,
+\qquad \beta_j\longmapsto t_jm.
+\]
+These are separate homomorphisms with the same rational specialization \(\alpha_j\mapsto m\).
+
+An atom assigned to field \(j\) consists of \(P=(a,b)\), a special prime \(\ell\), and verified factorizations satisfying
+\[
+G(P)=g_1a-g_0b=\sigma_P\ell n_P,\qquad \sigma_P\in\{\pm1\},
+\]
+where \(n_P>0\) and \(F_j(P)\ne0\) are \(B\)-smooth. Define
+\[
+z_{j,P}=t_ja-b\beta_j.
+\]
+Then
+\[
+\operatorname{Norm}(z_{j,P})=t_j^{d-1}F_j(P),
+\qquad
+\psi_j(z_{j,P})=\frac{t_jG(P)}{g_1}.
+\]
+
+For a Dixon row \(i\), let \(e_{i,j,P}\in\mathbb Z\) be its signed atom multiplicities. There are at most \(2k\) atoms, counted with multiplicity. Put
+\[
+E_{ij}=\sum_Pe_{i,j,P},\qquad E_i=\sum_jE_{ij},
+\]
+and
+\[
+q_i=\operatorname{sgn}(u_iv_i)
+       \prod_{j,P}\left(\frac{\sigma_Pg_1}{n_P}\right)^{e_{i,j,P}}.
+\]
+Its verified row identity is
+\[
+R_i\equiv
+q_i\prod_jt_j^{-E_{ij}}
+       \prod_{j,P}\psi_j(z_{j,P})^{e_{i,j,P}}\pmod N. \tag{1}
+\]
+
+The binary relation matrix has these columns:
+
+| Columns | Entry in row \(i\) |
+|---|---|
+| Shared rational sign | Sign bit of \(q_i\) |
+| Shared rational prime \(p\le B\) | \(\sum_{j,P}e_{i,j,P}v_p(n_P)\pmod2\) |
+| Field \(j\), parity | \(E_{ij}\pmod2\) |
+| Field \(j\), good prime ideal \((r,s)\) | \(\sum_Pe_{i,j,P}[a_P\equiv b_Ps\pmod r]v_r(F_j(P))\pmod2\) |
+| Field \(j\), quadratic character \(\chi\) | \(\sum_Pe_{i,j,P}(1-\chi(a_P-b_P\alpha_j))/2\pmod2\) |
+
+Here the ideal columns range over
+\[
+r\le B,\quad r\nmid \mathcal D_j:=t_j\operatorname{disc}(f_j),
+\quad f_j(s)\equiv0\pmod r.
+\]
+
+**Proof.** Homogeneity gives \(f_j(m)\equiv0\), hence \(h_j(t_jm)\equiv0\), proving that \(\psi_j\) is well-defined. The norm and specialization formulas follow immediately. Substitution of
+\[
+\ell\equiv \sigma_Pg_1t_j^{-1}\psi_j(z_{j,P})/n_P\pmod N
+\]
+into \(R_i\equiv u_i/v_i\) proves (1). This argument allows different atoms of the same row to use different fields. ∎
+
+For a binary row selection \(s\), define the **integer** sums
+\[
+e_{j,P}(s)=\sum_{i:s_i=1}e_{i,j,P},\qquad
+E_j(s)=\sum_Pe_{j,P}(s).
+\]
+They must be recomputed after taking XORs of selections; adding their integer exponent vectors is generally incorrect.
+
+### Lemma 2 — The obstruction map and its correct dimension
+
+Let \(K_{\mathrm{pre}}\) be the left kernel before character columns are added. For each field let \(S_j\) be the primes of \(\mathcal O_{K_j}\) above rational primes dividing \(\mathcal D_j\), and put
+\[
+V_j=\{x\in K_j^\times:
+          v_{\mathfrak p}(x)\text{ is even whenever }\mathfrak p\notin S_j\},
+\qquad
+H_j=V_j/K_j^{\times2}.
+\]
+For \(s\in K_{\mathrm{pre}}\), set
+\[
+\theta_j(s)=\prod_P(a_P-b_P\alpha_j)^{e_{j,P}(s)}.
+\]
+Then
+\[
+\phi_j:K_{\mathrm{pre}}\longrightarrow H_j,\qquad
+s\longmapsto[\theta_j(s)]
+\]
+is an \(\mathbb F_2\)-linear map.
+
+After adding the characters, let \(K\) be the resulting relation kernel and
+\[
+H_{j,0}=\bigcap_\chi\ker(\chi:H_j\to\{\pm1\}).
+\]
+The exact number of independent remaining obstructions is
+\[
+r_{\mathrm{obs}}
+ =\dim_{\mathbb F_2}\operatorname{im}
+   \left(K\longrightarrow\bigoplus_jH_{j,0}\right). \tag{2}
+\]
+In particular,
+\[
+r_{\mathrm{obs}}\le\sum_j\dim_{\mathbb F_2}H_{j,0}.
+\]
+If every \(|H_{j,0}|\le2\), then \(r_{\mathrm{obs}}\le J\).
+
+**Proof.** At \(r\nmid\mathcal D_j\), Dedekind–Kummer applies to the order localized at \(r\). A primitive linear element \(a-b\alpha_j\) can have a nonzero valuation only at the degree-one prime corresponding to \(a/b\pmod r\); its valuation equals \(v_r(F_j(P))\). If \(r\mid b\), it is a unit at every prime over \(r\). Thus the ideal columns enforce even valuations outside \(S_j\).
+
+For two selections \(s,s'\),
+\[
+\theta_j(s+s')
+=\theta_j(s)\theta_j(s')
+ \left(\prod_{i:s_i=s_i'=1}\prod_P
+       (a_P-b_P\alpha_j)^{e_{i,j,P}}\right)^{-2}.
+\]
+Therefore square classes add linearly. Character columns restrict their images to \(H_{j,0}\), proving (2).
+
+When \(|H_{j,0}|=2\), its identification with \(\mathbb F_2\), sending the trivial class to zero, is unique. Consequently
+\[
+b_j(s):=[\,\theta_j(s)\notin K_j^{\times2}\,]
+\]
+is linear on \(K\). When \(H_{j,0}\) is larger, this square/nonsquare indicator need not be linear.
+
+The same exceptional quadratic field can occur in several \(K_j(\sqrt{x})\). That does not identify the \(J\) coordinate functionals on the relation kernel. ∎
+
+### Lemma 3 — Simultaneous character filtering
+
+There are computable bounds \(H_{j,\mathrm{bd}}\ge |H_j|\) with
+\[
+\log H_{j,\mathrm{bd}}=O(d\log N).
+\]
+For each field, take independently
+\[
+t_{\chi,j}
+=\left\lceil
+5d\bigl(\log H_{j,\mathrm{bd}}
+       +2\log\log N+\log(4J)\bigr)
+\right\rceil. \tag{3}
+\]
+With the character-prime size described below,
+\[
+\Pr[\exists j:\ |H_{j,0}|>2]
+ \le \frac1{4(\log N)^2}<\frac14. \tag{4}
+\]
+
+**Proof.** The standard valuation–unit–class-group sequence gives
+\[
+|H_j|\le 2^{|S_j|+d}h_{K_j}
+       \le2^{d\omega(\mathcal D_j)+d}h_{K_j}.
+\]
+The discriminant and elementary ideal-counting bounds in [pp], Lemma H, give the asserted computable logarithmic bound.
+
+For completeness, the reason only one class per odd-degree field can escape the character-detection estimate is as follows. For nontrivial \(h\in H_j\), the extension
+\[
+L_h=K_j(\sqrt h)
+\]
+has degree \(2d\) and bounded discriminant \(\overline\Delta_j\). Stark's exceptional-zero result, at the factorial threshold, puts any sufficiently close real zero in a quadratic subfield \(F_h\). Since \(d\) is odd, \(K_j\) has no quadratic subfield and \(L_h\) has at most one. Thus \(L_h=K_jF_h\). Distinct square classes give distinct \(F_h\), whereas Landau's exceptional-zero uniqueness permits at most one such quadratic field in the required zero-free region.
+
+For every other class, effective Chebotarev applied to \(L_h/K_j\), followed by removal of prime ideals of degree at least two, gives
+\[
+\Pr_{\mathfrak p}[\chi_{\mathfrak p}(h)=-1]\ge\frac1{5d}.
+\]
+The sampler choosing a rational prime \(r\), then accepting its roots with total probability \(\#Z_r/d\), is uniform on degree-one prime ideals in its interval.
+
+Hence the probability that some nonexceptional class of field \(j\) survives is at most
+\[
+|H_j|\exp(-t_{\chi,j}/(5d))
+ \le \frac1{4J(\log N)^2}.
+\]
+A union bound proves (4). A surviving subgroup contained in the identity plus one exceptional class has order at most two. ∎
+
+Use character primes with
+\[
+s_\chi=
+\left\lceil(2d)!\,
+ \bigl(\log N+\max_j\log\overline\Delta_j+d\bigr)^4\right\rceil
+\]
+bits, increasing a fixed numerical multiplier if necessary. This makes both the Chebotarev error and the nonexceptional real-zero term negligible. In particular,
+\[
+s_\chi^{O(1)}
+=\exp(O(d\log d))(\log N)^{O(1)}
+=\exp(o(\Lambda)). \tag{5}
+\]
+
+This is a per-character bit cost, not a claim that the character primes themselves have polynomial size.
+
+### Lemma 4 — An exact square-membership oracle
+
+For a selection \(s\in K\), put
+\[
+\gamma^-_{j,s}
+ =\prod_{e_{j,P}(s)<0}z_{j,P}^{|e_{j,P}(s)|},
+\]
+and
+\[
+\Gamma_{j,s}
+ =h_j'(\beta_j)^2
+   \prod_Pz_{j,P}^{|e_{j,P}(s)|}
+ \in\mathbb Z[\beta_j]. \tag{6}
+\]
+Then
+\[
+\Gamma_{j,s}\in K_j^{\times2}
+\quad\Longleftrightarrow\quad
+\theta_j(s)\in K_j^{\times2}. \tag{7}
+\]
+There is a Las Vegas algorithm that either returns an exactly verified
+\(\eta_j^2=\Gamma_{j,s}\), or correctly reports NONSQUARE.
+
+**Proof.** The parity column makes \(E_j(s)\) even, and
+\[
+\prod_Pz_{j,P}^{e_{j,P}(s)}
+=t_j^{E_j(s)}\theta_j(s).
+\]
+Changing signed exponents to absolute exponents multiplies this by
+\((\gamma^-_{j,s})^2\). This proves (7).
+
+Here is the complete square test. Write \(A_j=\mathbb Z[\beta_j]\). Choose a prime
+\[
+p_j\in(B,2B],\qquad p_j\nmid\mathcal D_j,
+\]
+and factor \(h_j\bmod p_j\). All components of \(\Gamma_{j,s}\) are units: its norm has prime divisors only at primes at most \(B\) or dividing \(\mathcal D_j\).
+
+Test squareness in each residue field. If a component is nonsquare, return NONSQUARE. Otherwise enumerate the \(2^{\tau_j-1}\) local sign choices, where \(\tau_j\le d\) is the number of irreducible factors of \(h_j\bmod p_j\). For each choice, lift an inverse square root by
+\[
+z\longmapsto z+z(1-\Gamma_{j,s}z^2)/2,
+\]
+and reconstruct \(\eta=\Gamma_{j,s}z\) with centered coefficients.
+
+The following explicit coefficient bound makes the test complete. Set
+\[
+M_h=\lfloor\|h_j\|_2\rfloor+1,\qquad
+h_* =d\|h_j\|_1M_h^{d-1},
+\]
+\[
+U=h_*^2\prod_P
+   \bigl(\|z_{j,P}\|_1M_h^{d-1}\bigr)^{|e_{j,P}(s)|},
+\]
+\[
+A_{\mathrm{sq}}
+=d\lceil\sqrt U\rceil\,2^{d-1}M_hh_*^{d-1}. \tag{8}
+\]
+Lift until \(p_j^e>2A_{\mathrm{sq}}\), and test \(\eta^2=\Gamma_{j,s}\) exactly.
+
+If \(\Gamma_{j,s}=\delta^2\) in \(K_j\), then
+\[
+(\delta/h_j'(\beta_j))^2\in A_j,
+\]
+so \(\delta/h_j'(\beta_j)\in\mathcal O_{K_j}\). The trace-dual identity
+\[
+A_j^\vee=h_j'(\beta_j)^{-1}A_j
+\]
+implies \(h_j'(\beta_j)\mathcal O_{K_j}\subset A_j\), hence \(\delta\in A_j\).
+
+Every conjugate of \(\delta\) has absolute value at most \(\sqrt U\). Inverting the Vandermonde matrix gives (8): its numerators are bounded by \(2^{d-1}M_h\), and
+\[
+\prod_\sigma |h_j'(\sigma\beta_j)|
+=|\operatorname{disc}(h_j)|\ge1
+\]
+bounds each denominator from below by \(h_*^{-(d-1)}\). One enumerated local sign choice therefore reconstructs \(\pm\delta\). If none passes exact verification, the element is nonsquare. ∎
+
+No factorization of the field discriminant or computation of its class group is required.
+
+### Lemma 5 — Elimination of all remaining obstructions
+
+Let \(C_{\mathrm{MF}}\) be the number of columns specified in Lemma 1, including (3). Collect
+\[
+M_{\mathrm{rel}}\ge C_{\mathrm{MF}}+J+12 \tag{9}
+\]
+rows. There is a Las Vegas algorithm returning a nonempty selection \(S\) such that every \(\theta_j(S)\) is a square, together with exact square-root certificates.
+
+**Algorithm.**
+
+1. Sample the characters and construct the matrix.
+2. Compute \(J+1\) linearly independent vectors \(s_1,\dots,s_{J+1}\) of its left kernel.
+3. Using Lemma 4, compute
+   \[
+   b_{ji}=[\,\Gamma_{j,s_i}\text{ is nonsquare}\,].
+   \]
+4. Find a nonzero
+   \[
+   x\in\ker\bigl((b_{ji})_{j,i}\bigr),
+   \qquad S=\sum_i x_is_i.
+   \]
+5. Recompute all integer exponents for \(S\), and run Lemma 4 in every field. Return only if all square roots verify exactly; otherwise restart with fresh characters.
+
+**Proof.** By (9), the relation kernel has dimension at least \(J+12\), so step 2 is always possible. It can be performed deterministically by Gaussian elimination; uniform kernel sampling is unnecessary.
+
+On the event of Lemma 3, every \(b_j\) is linear. Therefore step 4 annihilates every \(\phi_j\). Independence of the \(s_i\) ensures \(S\ne0\). Lemma 4 then succeeds in every field.
+
+If character filtering failed, step 5 prevents an incorrect output. A fresh character set is good with probability at least \(3/4\), for every fixed collection of rows and fields. Thus the expected number of repetitions is at most \(4/3\). ∎
+
+This replaces an exponential search through \(2^J\) combinations by a \(J\times(J+1)\) binary system.
+
+### Lemma 6 — Reconstruction of the congruence
+
+For the selection \(S\) returned by Lemma 5, define
+\[
+Q_S=g_1^{\frac12\sum_jE_j(S)}
+       \prod_{p\le B}
+       p^{-\frac12\sum_{j,P}e_{j,P}(S)v_p(n_P)}.
+\]
+The rational sign column makes \(\prod_{i\in S}q_i\) positive, and the other rational columns give
+\[
+Q_S^2=\prod_{i\in S}q_i.
+\]
+Put
+\[
+Y_S=
+Q_S\prod_j
+\left[
+t_j^{-E_j(S)/2}
+\frac{\psi_j(\eta_j)}
+{\psi_j(\gamma^-_{j,S})\,\psi_j(h_j'(\beta_j))}
+\right]\pmod N. \tag{10}
+\]
+Then
+\[
+Y_S^2\equiv\prod_{i\in S}R_i\pmod N. \tag{11}
+\]
+
+**Proof.** From (6),
+\[
+\frac{\psi_j(\eta_j)^2}
+     {\psi_j(\gamma^-_{j,S})^2\psi_j(h_j'(\beta_j))^2}
+=\prod_P\psi_j(z_{j,P})^{e_{j,P}(S)}.
+\]
+Multiplying these identities and using (1) proves (11).
+
+Every inverse in (10) exists. Indeed,
+\[
+\psi_j(z_{j,P})=t_jG(P)/g_1
+\]
+is a unit, and
+\[
+\psi_j(h_j'(\beta_j))
+=t_j^{d-2}f_j'(m)
+\]
+is a unit by the field check. The rational factors involve only \(g_1\) and primes at most \(B\). ∎
+
+Finally set \(X_S=\prod_{i\in S}r_i\pmod N\). Exact verification of \(X_S^2\equiv Y_S^2\pmod N\) is inexpensive.
+
+### Lemma 7 — Transcript invariance and fruitfulness
+
+Suppose:
+
+- each \(r_i\) is uniform on \([1,N-1]\);
+- field generation, recursive factorization, atom selection, characters, linear algebra and square-root algorithms use coins independent of the hidden roots;
+- these procedures receive \(R_i=r_i^2\), not \(r_i\);
+- after a trivial final gcd, all rows are discarded before another fruitfulness trial.
+
+Then \(S,Y_S\) are measurable functions of the squares \(R_i\) and independent coins. If \(\omega(N)\ge2\),
+\[
+\Pr[1<\gcd(X_S-Y_S,N)<N]\ge\frac12.
+\]
+
+**Proof.** All operations in Lemmas 1–6 use certificates derived from \(R_i\) and independent coins. This includes choosing the field of an atom, exact square/nonsquare decisions, and choosing \(S\). Recursive shape tests return the canonical prime factorization of inputs determined by \(R_i\); fresh recursion coins preserve the assertion.
+
+Conditional on all \(R_i\) and these coins, each unit root has the form
+\[
+r_i=\epsilon_i\rho(R_i),
+\]
+where the \(\epsilon_i\) are independent uniform elements of
+\[
+\mu_2(\mathbb Z/N\mathbb Z),\qquad |\mu_2|=2^{\omega(N)}.
+\]
+Since \(S\ne\varnothing\), \(X_S/Y_S\) is uniform on this group. Only its two elements \(\pm1\) give a trivial gcd. The success probability is
+\[
+1-2^{1-\omega(N)}\ge\frac12.
+\]
+
+Character retries may reuse the rows: their outcomes are transcript-measurable. A previous **final gcd** is different; it reveals information about hidden root signs. Fresh rows are required after a trivial final gcd. ∎
+
+### Costs and an explicit MF constant
+
+For the parameters in the question, write
+\[
+\theta_0=
+\begin{cases}
+3/d_0,&\kappa\ge d_0^2/4,\\[2mm]
+2/d_0+d_0/(4\kappa),&\kappa<d_0^2/4.
+\end{cases}
+\]
+Since \(\mu D^{1/5}\to1/d_0\), the rational and algebraic smoothness exponents are
+\[
+\sigma_r=\frac{2}{5ad_0},\qquad
+\sigma_F=\frac{2}{5a}\left(\theta_0-\frac1{d_0}\right),\qquad
+\sigma=\sigma_r+\sigma_F. \tag{12}
+\]
+Thus
+\[
+\rho_r=e^{-(\sigma_r+o(1))\Lambda},\qquad
+\rho_F=e^{-(\sigma_F+o(1))\Lambda},
+\qquad J=e^{(\sigma_F+o(1))\Lambda}.
+\]
+
+Use the rational-only box promised in §11:
+\[
+S_r^2\rho_r=(\log N)^{O(1)},\qquad
+\log S_r^2=(\sigma_r+o(1))\Lambda.
+\]
+A Rankin scan, as in Lemma CS, supplies a computable choice with a polylogarithmic lower bound on \(S_r^2\rho_r\). Using a sufficiently large fixed polylogarithmic multiplier and the Rankin approximation also makes \(J\) computable.
+
+The columns and rows satisfy
+\[
+C_{\mathrm{MF}}
+\le1+\pi(B)+J\bigl(1+d\pi(B)+\max_jt_{\chi,j}\bigr),
+\]
+\[
+M_{\mathrm{rel}}=e^{(b+o(1))\Lambda},
+\qquad b:=a+\sigma_F. \tag{13}
+\]
+
+Here is a conservative ledger. It charges a worst-case special-\(q\) search uniformly over retained bundles, avoiding assumptions about the number of rationally smooth candidates in a biased retained bundle.
+
+| Operation | Cost or size | \(L[2/5]\)-exponent |
+|---|---:|---:|
+| Sieve to \(B\), Rankin scan | \(B(\log N)^{O(1)}\) | \(a\) |
+| Generate and certify \(J\) raw fields | \(J(\log N)^{O(1)}\) | \(\sigma_F\) |
+| Factor-base roots, all fields | \(J B\,\operatorname{poly}(d,\log N)\) | \(b\) |
+| Total characters | \(J\,\operatorname{poly}(d,\log N,\log J)\) | \(\sigma_F\) |
+| Character-prime bit operations | preceding quantity times \(\exp(O(d\log d))\) | \(\sigma_F\) |
+| Rows and sparse matrix entries | \(M_{\mathrm{rel}}(\log N)^{O(1)}\) | \(b\) |
+| Rational enumeration per special \(q\) | \(O(S_r^2)\) values | \(\sigma_r\) |
+| All algebraic values per special \(q\), worst case | \(O(JS_r^2)\) values | \(\sigma\) |
+| Batch smoothness and chosen-value factorization | \(\widetilde O(B+JS_r^2)\operatorname{polylog}N\) | \(\max(a,\sigma)\) |
+| Hensel-prime setup, all fields | at most \(\widetilde O(JB)\) | \(b\) |
+| One exact SQ call | \(M_{\mathrm{rel}}\exp(o(\Lambda))\), conservatively | \(b\) |
+| At most \(J(J+2)\) SQ calls | \(J^2M_{\mathrm{rel}}\exp(o(\Lambda))\) | \(a+3\sigma_F\) |
+| Obstruction-bit elimination | \(O(J^3)\) | \(3\sigma_F\) |
+| Deterministic full kernel basis | \(O(M_{\mathrm{rel}}^3)\) | \(3b\) |
+| Alternatively, \(J+1\) sparse kernel samples | \((J+1)M_{\mathrm{rel}}^2\exp(o(\Lambda))\) | \(2a+3\sigma_F\) |
+
+The SQ bound uses
+\[
+\log A_{\mathrm{sq}}
+\le \operatorname{poly}(d,\log N)
+       \left(1+\sum_P|e_{j,P}|\right),
+\]
+and \(2^d=\exp(o(\Lambda))\). Its aggregate cost can be sharpened by summing atom multiplicities across fields; the displayed conservative bound already suffices.
+
+**Height ledger.** The additional floor contributes
+\[
+\Delta\log H=13(\sigma+1)d\Lambda\lambda
+           =O(D^{3/5}\lambda^2)
+           =o(D^{4/5}\lambda).
+\]
+It increases \(\log X_F\) by the same amount and changes
+\[
+\log(1/\rho_F)
+\quad\text{by}\quad
+O(d\lambda^2)=o(\Lambda).
+\]
+Coefficient arithmetic and finite-field irreducibility certification remain polynomial in \(\log N,d\). Thus the floor changes no leading exponent in the table.
+
+Suppose the established supply is
+\[
+\gamma_{\mathrm{MF}}\ge(\log N)^{-C_\gamma}.
+\]
+The split-counting and size-biased bundle-retention argument give
+\[
+p^{-1}=e^{(s+o(1))\Lambda},
+\qquad s=2\kappa(1+C_\gamma).
+\]
+The argument depends on a fixed bundle and its row probability; it does not require a single field.
+
+For the deterministic Gaussian-elimination implementation just proved, a valid constant is
+\[
+\boxed{
+c_{\mathrm{MF,dense}}
+=
+\max\left\{
+3(a+\sigma_F),\
+a+\sigma_F+s+\max(a,\sigma),\
+\frac{a+\sigma_F+s}{1-2^{-2/5}}
+\right\}. }\tag{14}
+\]
+Using the sparse kernel sampler with its usual verified solve bound gives
+\[
+\boxed{
+c_{\mathrm{MF,sparse}}
+=
+\max\left\{
+2a+3\sigma_F,\
+a+\sigma_F+s+\max(a,\sigma),\
+\frac{a+\sigma_F+s}{1-2^{-2/5}}
+\right\}. }\tag{15}
+\]
+
+Indeed, the recursion has the form
+\[
+T(N)\le
+L_N[2/5,\max(P_{\rm post},b+s+\max(a,\sigma))+o(1)]
++
+L_N[2/5,b+s+o(1)]\,T(\sqrt{2N}),
+\]
+and scaling the recursive argument multiplies its exponent by \(2^{-2/5}+o(1)\). Alternation with trial division ensures finite running time below all analytic thresholds.
+
+If §1's original box is retained, so \(\log S^2\sim\sigma\Lambda\), replace the search exponent \(\max(a,\sigma)\) by \(\max(a,\sigma+\sigma_F)\).
+
+**Therefore \(J=(\log N)^C/\rho_F\) is affordable, but the row target and constant grow substantially.** The bound \((JdB)^2\) in the outline does not, by itself, account for producing \(J+1\) independent kernel vectors.
+
+## 2. Probability audit and failure modes
+
+### Accepted-field mass
+
+Fix \(g,\ell,P_0,w\), with \(P_0\) selected using rational data alone. Write
+\[
+p_1=\rho_F(\log N)^{-C_g}.
+\]
+A raw lower bound \(\Pr_c[F(P_0)\text{ smooth}]\ge p_1\) implies an accepted-field lower bound only after bounding
+\[
+\Pr_c[\text{rejected}\mid g,w].
+\]
+
+For the prime-multiplier law, the supplied proofs give, uniformly in fixed \(g,w\),
+\[
+\varepsilon_{\rm rej}
+\le
+\exp\!\left(-\frac{\log H}{13d\log\log H}\right)
++\frac3{2H+1}+\frac1W.
+\]
+Since \(H<N\), the extra floor gives
+\[
+\frac{\log H}{13d\log\log H}\ge(\sigma+1)\Lambda.
+\]
+Consequently
+\[
+\varepsilon_{\rm rej}=o(p_1).
+\]
+Thus
+\[
+\Pr[\text{smooth at }P_0
+       \text{ and accepted, or a factor exit}\mid g,\ell,w]
+\ge p_1/2.
+\]
+
+The old rejection estimate without the floor is inadequate: an event of probability \(e^{-\Theta(D^{2/5})}\) can contain all the mass \(p_1=e^{-\Theta(D^{2/5}\lambda)}\). A bound such as \(2^{-d}\) is still less useful here.
+
+Content \(w\) is a special case: because \(w>B\), a nonzero raw \(B\)-smooth value cannot occur in that rejection event. Nevertheless, the uniform subtraction bound above is sufficient.
+
+For \(J\ge4/p_1\), conditional independence of the raw draws gives
+\[
+\Pr[\text{no accepted success at }P_0\mid g,\ell]\le e^{-2}.
+\]
+No independence between the fields' **accepted success indicators and their rejection events** is asserted or needed.
+
+### Rational supply
+
+The rational supply follows from Proposition R after making its common-box geometry explicit. It does not follow merely from the rational first moment.
+
+Let \(N_r\) count filtered rationally smooth candidates and put \(A=S_r^2\rho_r\). Uniformly at growing degree,
+\[
+\mathbb E N_r\ge A(\log N)^{-A_1},\qquad
+\mathbb E[N_r(N_r-1)]
+ \le A^2(\log N)^{A_2}. \tag{16}
+\]
+
+Here is the essential second-moment check. For a fixed pair \(P,P'\), write
+\[
+|\det(P,P')|=\ell q,\qquad 1\le q\le4S_r^2.
+\]
+The image of the \(g\)-box under
+\[
+g\longmapsto(G(P)/\ell,G(P')/\ell)
+\]
+lies in a lattice of index \(q\), inside a parallelogram coverable by
+\(O(qS_r^2)\) squares of side \(M/V\). Proposition R's smooth-progression bound gives at most
+\[
+\frac{(M/V)^2}{q}\rho_r^2(\log N)^C
+\]
+smooth lattice points per square. Thus the pair admits at most
+\[
+\frac{M^2}{\ell}\rho_r^2(\log N)^C
+\]
+rational sides. Each \(P\) has \(O(S_r^2)\) partners. Summation and division by \(|\mathcal G|\asymp M^2\) prove (16).
+
+The progression bound used here is elementary divisor switching plus local smooth-density comparisons. For an interval of length \(A'\), modulus \(q\le B^{C_0}\), first remove \(\gcd(r,q)\); then every smooth remaining integer has a smooth divisor
+\[
+D'/B<d'\le D',\qquad
+D'=\min(A'/q,X/(eB^{C_0})).
+\]
+Counting its complementary factor gives
+\[
+\frac{2A'}q\sum_{\substack{D'/B<d'\le D'\\P^+(d')\le B}}\frac1{d'}.
+\]
+Since \(D'\ge XB^{-2C_0}\), local density comparisons bound this by
+\[
+(A'/q)\rho(X)(\log N)^{O(C_0)}.
+\]
+All losses are polylogarithmic because \(C_0\) is fixed. The narrow \(b\)-window costs a polynomial factor in \(d\), also polylogarithmic.
+
+For the prime-multiplier design, excluding bad \(t=|G(P)|\) requires Lemma 8.5′ and its rational bad-mass argument. Given that input,
+\[
+\mathbb E N_r^{\rm good}\ge \tfrac12\mathbb E N_r.
+\]
+If \(A\ge(\log N)^{-C_0}\), Paley–Zygmund yields
+\[
+\gamma_r
+\ge
+\frac1{(\log N)^{2A_1+A_2}
+       +(\log N)^{A_1+C_0}},
+\]
+after absorbing fixed constants. One may take
+\[
+C_\gamma=
+1+\max(2A_1+A_2,A_1+C_0)
+\]
+and enlarge it for the fixed amplification factors.
+
+Thus the rational argument is repairable and sufficient. Its “good modulus” qualification remains an analytic dependency.
+
+| Severity | Failure mode | Finding and fix |
+|---|---|---|
+| **FATAL to the inference without repair** | Rejected fields absorb raw smoothness mass | Small unconditional rejection probability is insufficient. Use the stated extra height floor and a bound uniform in fixed \(g,w\). |
+| **MAJOR** | \(P_0\) is selected using accepted fields or algebraic successes | Then the advertised conditioning is circular. Choose the first rationally eligible good \(P\) using only \(g,\ell\). |
+| **MAJOR** | Independence asserted after arbitrary joint conditioning | Work with independent raw draws and subtract rejection inside each draw. Rejected slots can be omitted. |
+| **MAJOR** | Single-field row target retained | Use \(C_{\rm MF}+J+12\), not \(C_{\rm single}+12\). |
+| **MAJOR** | Square/nonsquare treated as linear unconditionally | It is linear only when the surviving group has order at most two. Final exact verification is mandatory. |
+| **MAJOR** | Character failure probability bounded per field only | Add \(\log J\) in (3) and take a union bound. |
+| **MAJOR** | Kernel production charged once | Dense elimination costs \(M_{\rm rel}^3\); the stated sparse sampler used \(J+1\) times costs \((J+1)M_{\rm rel}^2\). |
+| **MAJOR** | Expected rational-candidate count used after field retention | Retention biases the bundle. Use the uniform \(JS_r^2\) bound unless an appropriate weighted expectation is proved. |
+| **MAJOR** | Rational supply inferred from its first moment | Supply needs Proposition R's second moment and a lower bound on \(S_r^2\rho_r\). |
+| **MAJOR** | Reusing rows after a trivial final gcd | This conditions hidden root signs. Discard those rows. |
+| **MAJOR** | Replacing prime \(w\) by integer \(w\) but retaining the old content-rejection rule | That discards useful mass. Normalize by content, as below. |
+| **MINOR** | One common Hensel prime required to avoid every discriminant | Unnecessary and potentially costly. Choose a suitable prime separately in each field. |
+| **MINOR** | Certification over \(J\) fields omitted | It costs \(J\operatorname{polylog}N\); factor-base setup costs \(JB\operatorname{polylog}N\). Both are in the ledger. |
+| **MINOR** | XOR selections implemented by adding integer exponents | Recompute the selected-row integer sums before square-root reconstruction. |
+
+## 3. The analytic input and ways around it
+
+### Where Drappeau's Lemme 5 enters
+
+Put
+\[
+\mathcal H(u)=\exp\{u/\log^2(u+1)\}.
+\]
+The input used in Lemma 8.5′ is a small-conductor estimate of the form
+\[
+\sum_{q\le Q}\frac1{\varphi(q)}
+ \sum_{\substack{\chi\bmod q\\1<\operatorname{cond}\chi\le x^\eta}}
+ |\Psi(x,y;\chi)|
+\ll_A
+\Psi(x,y)\{\mathcal H(u)^{-\delta}(\log x)^{-A}+y^{-\delta}\}. \tag{17}
+\]
+
+In Lemma 8.5′ it enters the **small-conductor part for smooth moduli**. Möbius removal of imprimitive coprimality conditions and averaging over smooth multiples extract the density of the smooth modulus family. The large-conductor terms, including those whose conductor contains \(\ell\), are handled separately by the large sieve.
+
+The resulting restricted estimate is
+\[
+\sum_{t\in\mathcal T_Q}\max_{(a,t)=1}|E(x,y;t,a)|
+\ll
+\Psi(x,y)\frac{\rho(Q/Y,y)}{\log Y}\,\varepsilon. \tag{18}
+\]
+The density factor is essential. Markov's inequality then makes most \(t=\ell n\) good **relative to this sparse family**. GM-U uses their progression lower bounds, which enter the accepted-field amplification.
+
+I verified the statement and provenance paragraph of **Drappeau, Compositio Mathematica 151 (2015), 828–862, Lemme 5**, in the author/arXiv text. Its proof is referred to Harper §3.3. Harper's **arXiv:1208.5992, §3.3, equation (3.1)** explicitly supplies the effective estimate without the extra logarithmic saving; that weaker effective version is sufficient for this application. I checked that display and its surrounding argument, but did not independently reprove every zero-density and exceptional-character estimate. [Drappeau, Lemme 5](https://arxiv.org/pdf/1307.7554), [Harper, §3.3](https://arxiv.org/pdf/1208.5992).
+
+A published lemma may legitimately be cited as a theorem. Its dependence on an unpublished proof does not disprove it. It does prevent describing the resulting argument as self-contained without reproducing or independently checking that proof.
+
+### A field-law replacement avoiding progression equidistribution
+
+There is a concrete alternative to (17)–(18).
+
+**Integer-multiplier law.** Draw
+\[
+w\ \text{uniformly from }\{W+1,\dots,2W\},
+\]
+without requiring primality. Construct the same base expansion and raw polynomial
+\[
+\widetilde F=\widehat F_{g,w}+GR_c.
+\]
+Gcd-check \(w\), the nonzero leading coefficient and the content against \(N\). A proper gcd is a successful factor exit. Replace the polynomial by its primitive part, rather than rejecting nontrivial content. Require a degree-\(d\) irreducibility certificate and the derivative-unit check.
+
+The base-expansion construction and its coefficient bounds remain valid for integer \(w\). The prime hypothesis was needed for some rejection and residue arguments, not for constructing the expansion.
+
+#### Lemma 8 — Pointwise smoothness by integer-multiplier averaging
+
+Fix any filtered rationally eligible \(g,\ell,P\), with \(\ell\nmid N\), and put \(t=|G(P)|\). Assume the same coefficient-smoothing and size margins as GM-U, and \(W/t\to\infty\). Then
+\[
+\Pr_{w,c}[\widetilde F(P)\ne0
+               \text{ and }\widetilde F(P)\text{ is }B\text{-smooth}]
+\ge \rho_F(\log N)^{-C}. \tag{19}
+\]
+No good-modulus hypothesis is needed.
+
+**Proof.** Rational eligibility implies
+\[
+\gcd(t,Nbg_1)=1.
+\]
+Homogeneity gives
+\[
+\widehat F_{g,w}(P)\equiv c_Pw\pmod t,
+\qquad c_P=Nb^dg_1^{-d}\in(\mathbb Z/t\mathbb Z)^\times. \tag{20}
+\]
+
+Apply one-point smoothing to \(Z=\langle c,v(P)\rangle\). Its comparison law is independent of \(w\) and is a mixture of uniform integer intervals centered at \(M_0\). Apart from mass \(O(1/\varpi)\), their radii \(y\) satisfy
+\[
+y\ge(2H+1)V'^{d-1}/\varpi,\qquad |M_0|\le y/2.
+\]
+Put \(y'=\lfloor y/2\rfloor\). Choose the sign of the half-interval so that \(GZ\) increases positively.
+
+There is a bound \(A\), uniform in \(w\), such that
+\[
+|\widehat F_{g,w}(P)|\le A,\qquad A\ll ty'/4.
+\]
+Choose a common \(x\in[ty'/4,ty'/2]\), independent of \(w\). The values in the layer include every integer
+\[
+A<n\le x,\qquad n\equiv c_Pw\pmod t.
+\]
+Therefore their smooth count is at least
+\[
+\Psi(x,B;t,c_Pw)-(A/t+1). \tag{21}
+\]
+
+Every residue class modulo \(t\) occurs at least \(\lfloor W/t\rfloor\) times among the \(w\)'s. Since multiplication by \(c_P\) permutes all residue classes,
+\[
+\frac1W\sum_{w=W+1}^{2W}\Psi(x,B;t,c_Pw)
+\ge
+\frac{\lfloor W/t\rfloor}{W}\Psi(x,B)
+\ge
+(1-t/W)\frac{\Psi(x,B)}t. \tag{22}
+\]
+This is an exact finite counting inequality; it uses no smooth-number distribution theorem.
+
+Divide (21)–(22) by the layer length \(O(y)\). Since \(x/t\asymp y\), and \(x\) differs from \(X_F\) by at most a fixed power of \(B\), the local smooth-density estimates give
+\[
+\Pr[\text{smooth}\mid\text{layer}]
+\ge
+\rho_F(\log N)^{-C}
+-O((A/t+1)/y).
+\]
+The latter error, the small-layer loss and the total-variation error are absorbed by the existing \(N^{\eta_0}\) margins. This proves (19). ∎
+
+#### Lemma 9 — Rejections for the integer-multiplier law
+
+Uniformly in fixed admissible \(g\), for large \(N\),
+\[
+\Pr_{w,c}[\text{rejected without a factor exit}]
+\le
+\exp\!\left(-\frac{\log H}{30d\log\log H}\right)
++O(H^{-1}). \tag{23}
+\]
+Thus the sufficient replacement height floor
+\[
+\log H\ge30(\sigma+1)d\Lambda\lambda \tag{24}
+\]
+preserves at least half the mass in (19).
+
+**Proof.** Let
+\[
+Q_{\rm IR}=\prod_{16<r\le\frac12\log H}r=H^{1/2+o(1)}.
+\]
+The stated parameters satisfy \(Q_{\rm IR}/W=o(1)\) and
+\(dQ_{\rm IR}/H=o(1)\).
+
+For fixed \(w\) and a certificate prime \(r\nmid w\), the affine coefficient family modulo \(r\) has irreducible fraction at least \(1/(4d)\), exactly as in Lemma IR. This remains true when \(r\mid g_1\): the prescribed leading coefficient is then nonzero because \(r\nmid Nw\).
+
+CRT independence for uniform \(c\bmod Q_{\rm IR}\), and its bounded comparison with the coefficient box, give
+\[
+\Pr_c[\text{no raw certificate}\mid w]
+\le e\prod_{\substack{r\mid Q_{\rm IR}\\r\nmid w}}
+                (1-1/(4d)).
+\]
+Averaging the nearly uniform residues of integer \(w\bmod Q_{\rm IR}\) bounds this by
+\[
+2e\prod_{r\mid Q_{\rm IR}}
+ \left(1-\frac{1-1/r}{4d}\right)
+\le
+\exp\!\left(-\frac{\log H}{30d\log\log H}\right).
+\]
+The deliberately loose constant \(30\) absorbs the comparison factors.
+
+A zero leading coefficient and \(N\mid\widetilde f'(m)\) each have probability \(O(H^{-1})\), by fixing the other coefficients. Proper nonunit gcds are factor exits.
+
+Finally, let \(e\) be the content. If its gcd with \(N\) passes, \(e\) is invertible modulo \(N\); moreover \(e\mid Nw\) implies \(e\mid w\). The primitive part still vanishes at \(m\). A nonzero smooth raw value remains smooth after division by \(e\). A raw irreducibility certificate certifies the primitive part as well. Thus content normalization loses no mass used in (19). ∎
+
+Both (19) and (23) are conditional on fixed \(g,P\), which is the conditioning required by MF. Independent field draws remain independent after taking their primitive parts.
+
+Consequently this variant needs only the **unqualified** rational supply in (16). It removes Lemma 8.5′, GM-U's good-modulus condition, and the associated bad-mass argument. Its leading costs remain (12)–(15); replacing \(13\) by \(30\) changes no leading exponent.
+
+These lemmas constitute a new argument in this answer, not a published result. They need independent checking, particularly the common-layer interval and the joint CRT rejection estimate.
+
+### Published alternatives checked
+
+“Verified” below means that I inspected the relevant statement in a primary text or author copy. It does not mean that I re-proved the whole paper.
+
+| Source and exact result | What it supplies | Does it replace the needed input? Verification |
+|---|---|---|
+| **Fouvry–Tenenbaum**, *Proc. London Math. Soc.* (3) **63** (1991), 449–494, **Théorème 6**, (1.30) | BV with an absolute \(x(\log x)^{-A}\) error, uniformly in the smoothness bound, at essentially square-root level. The text notes that §7 proves a slightly weaker variant of the stated result. | **No.** The absolute error overwhelms the sparse smooth-number main term here. Statement/provenance checked in the author-uploaded scan; the formula's OCR is imperfect. [Author copy](https://www.researchgate.net/publication/243090669_Entiers_Sans_Grand_Facteur_Premier_En_Progressions_Arithmetiques). |
+| **Fouvry–Tenenbaum**, *Proc. London Math. Soc.* (3) **72** (1996), 481–514, **Théorème 1 and Corollaire 1** | For \(y>\exp((\log x)^{2/3+\varepsilon})\), Corollary 1 gives a \(\Psi(x,y)\mathcal H(u)^{-c}(\log x)^{-A}\) error up to \(Q=\sqrt x\,e^{-(\log x)^{1/3}}\). | **No in the present range.** Here \(y=L_x[1/2,\Theta(1)]\). Checked in the author's corrected copy, which explicitly differs from the printed version. [Author copy](https://www.researchgate.net/publication/286726767_Repartition_statistique_des_entiers_sans_grand_facteur_premier_dans_les_progressions_arithmetiques). |
+| **Granville**, *Acta Math.* **170** (1993), 255–273, **Theorem 2**, (1.6)–(1.7) | A \(\Psi(x,y)/\log^A y\) BV bound, with \(Q\le\exp(C\log y\log\log y/\log\log\log y)\) and \(x\ge Q^2\log^B Q\). | **No.** At \(y=L_x[1/2]\), this permits only \(Q=x^{o(1)}\), whereas the relevant moduli are a fixed positive power of \(x\). Numbered statement checked in the indexed primary PDF text. [Published paper](https://archive.ymsc.tsinghua.edu.cn/pacm_download/117/6484-11511_2006_Article_BF02392787.pdf). |
+| **Granville**, same paper, **Theorems 1 and 3**; also *Philos. Trans. R. Soc. A* **345** (1993), 349–362, main result | Individual progression comparisons for moduli bounded by suitable fixed powers of \(y\); the second paper gives asymptotic equidistribution for \(q\le y^{1-\varepsilon}\) when \(\log x/\log q\to\infty\). | **No.** Here \(\log t/\log B\to\infty\). The first paper's numbered statements were checked; the second paper's theorem numbering was **not verified**, owing to an unreadable text layer. [Author's publication descriptions](https://intra.dms.umontreal.ca/~andrew/1993.php). |
+| **Harper**, *J. Number Theory* **132** (2012), 182–199, **Theorems 1–2** | Theorem 1 gives individual equidistribution for \(q\le y^{4\sqrt e-\delta}\), as \(\log x/\log q\to\infty\); Theorem 2 gives a bounded-index coset statement for \(q\le y^A\). | **No.** Neither reaches \(t=y^{\Theta(u)}\). Both statements verified. [Author preprint](https://arxiv.org/pdf/1103.2106). |
+| **Harper**, **arXiv:1208.5992 (2012), Theorem 1; §3.3, (3.1)** | BV for \((\log x)^K\le y\), and the small-conductor saving underlying (17). | **Yes as the existing input**, followed by the restricted-modulus transfer. It is the unpublished dependency under examination. Relevant displays verified; complete proof not independently reproduced. [Preprint](https://arxiv.org/pdf/1208.5992). |
+| **Harper**, *Compositio Math.* **152** (2016), 1121–1158, **Theorems 1–2** | Minor-arc estimates and sharp \(p>2\) moment/restriction bounds for exponential sums over smooth numbers, down to polylogarithmic \(y\). | **No direct replacement.** These are upper bounds, not the required lower bound in a prescribed large residue class or the relative sparse-modulus BV estimate. Statements checked in the accepted author version. [Author version](https://wrap.warwick.ac.uk/id/eprint/107457/7/WRAP-minor-arcs-mean-values-restriction-theory-exponential-sums-over-smooth-numbers-Harper-2018.pdf). |
+| **de la Bretèche–Drappeau**, *JEMS* **22** (2020), 1577–1624, **Théorème 2.1**, especially (2.2) | BV restricted to smooth moduli, including a maximum over residues below \(x^{1/2-\varepsilon}\), with error \(\Psi(x,y_1)\Psi(Q,y_2)Q^{-1}e^{O_k(u_2)}(\log x)^{-A}\), with the stated interval and auxiliary-modulus factors. | **Not a clean replacement.** The displayed bound need not be relatively small when \(y_1=y_2=L_x[1/2]\). Its proof explicitly returns to Harper §3.3 and (3.1). Statement and that dependency verified in the author version. [Author version](https://arxiv.org/pdf/1703.03197). |
+| **Pascadi**, *Compositio Math.* **161** (2025), 1923–1974, **Theorem 1.1; Lemma 3.2** | Theorem 1.1 reaches moduli \(x^{66/107-\varepsilon}\) for a fixed nonzero residue. Lemma 3.2 reproduces the small-conductor estimate (17). | **No independent replacement.** Fixed residue is insufficient for the original forced residues; Lemma 3.2 explicitly cites Drappeau Lemme 5 and Harper §3.3. Both verified in the published text. [Published article](https://www.cambridge.org/core/journals/compositio-mathematica/article/smooth-numbers-in-arithmetic-progressions-to-large-moduli/D8E4EE07BDAA6D41CCD8C5455D81CD7A). |
+
+Two qualifications matter when comparing these results.
+
+First, an unrestricted bound
+\[
+\sum_{q\le Q}\max_a|E(x,y;q,a)|
+\ll \Psi(x,y)(\log x)^{-A}
+\]
+does not automatically imply (18). The restricted family's density is subexponentially small, and fixed logarithmic savings cannot recover it.
+
+Second, stronger levels beyond \(1/2\) for a fixed residue do not address an arbitrary forced residue \(c_Pw\bmod t\).
+
+### What exponent follows from weaker inputs?
+
+There are separate issues of smoothness range and precision.
+
+If an input requires
+\[
+\log y\gtrsim(\log x)^\beta,
+\]
+write \(d=D^\delta\), so \(\log x\asymp D^{1-\delta}\lambda\). The one-level geometry and split budget require
+\[
+\delta\le\alpha/2,
+\]
+while the input range requires
+\[
+\delta\ge1-\alpha/\beta.
+\]
+A necessary exponent is therefore
+\[
+\alpha\ge\frac{2\beta}{2+\beta}. \tag{25}
+\]
+For \(\beta=2/3+\varepsilon\), this is strictly above \(1/2\), approaching \(1/2\) as \(\varepsilon\downarrow0\). This is only a necessary range calculation: it does not establish the missing relative sparse-family estimate.
+
+Separately, if relation supply loses
+\[
+\log(1/\gamma)=O(d^\tau\log\log N),
+\]
+the stated geometry gives
+\[
+\alpha\ge\frac{2+\tau}{5+2\tau};
+\]
+thus \(\tau=1\) gives \(3/7\). A BV estimate too weak to show any relatively large good set does not automatically give \(3/7\).
+
+Without a sufficient replacement, the established arbitrary-integer fallback remains Lenstra–Pomerance, *JAMS* **5** (1992), 483–516, the unnumbered main theorem in §1: expected \(L_N[1/2,1+o(1)]\). I checked that statement. [Published paper](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/rigorous.pdf).
+
+## 4. Assessment
+
+**The multi-field square-root step is realistic and can be made fully checkable.** Lemmas 1–7 give a complete implementation with exact verification and an explicit conservative constant. It requires more rows, simultaneous character filtering, and more linear algebra than the single-field construction.
+
+For the **original prime-multiplier Design MF**, the single weakest link is the accepted-field pointwise smoothness lower bound: GM-U depends on the relative restricted BV estimate in Lemma 8.5′. MF removes the algebraic second moment; it does not remove that analytic dependency. The extra height floor correctly addresses rejection absorption.
+
+The **integer-multiplier variant** offers a more direct route to a self-contained proof. Lemmas 8–9 replace the progression-distribution input by exact residue averaging, coefficient smoothing, and CRT counting. The rational second moment then uses only divisor switching and local smooth-density estimates. This is a concrete mathematical modification, requiring content normalization and the larger rejection floor (24).
+
+I would not certify the repository's complete factoring theorem solely from this audit. The remaining work is to integrate that modified sampler, the uniform rational moment bounds, and the bundle-retention recursion into one specification with all constants controlled. The new argument most deserving an independent adversarial check is Lemmas 8–9, especially preservation of smoothness mass through field acceptance.
+
+As finite sanity checks, I verified 3,685 homogeneity/forced-residue identities, 24 nontrivial content normalizations, and 891 exact residue-averaging inequalities. These check identities, not asymptotic probabilities. The independent script and results are in [sanity_checks.py](/Volumes/git/factoring-connection/codex/scratch/mfU_1/sanity_checks.py) and [sanity_checks.json](/Volumes/git/factoring-connection/codex/scratch/mfU_1/sanity_checks.json).

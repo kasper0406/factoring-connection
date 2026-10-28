@@ -50,7 +50,7 @@ In plain terms:
 - **The price is the constant, not the exponent.**
   c_MF = max(2(a + σ_F), a + σ_F + s + max(a, σ_r, σ_F), (a + σ_F + s)/(1 − 2^{−2/5})), with
   σ_r = 2/(5ad₀), σ_F = (2/(5a))(1/d₀ + d₀/(4κ)), s = 2κ(1 + C_γ).
-  Grid optima: c_MF ≤ 9.45 / 10.85 / 13.52 / 17.41 for C_γ = 0 / 1 / 5 / 20, against Theorem U's 3.51 / 4.04 / 5.04 / 6.47.
+  Since the recursion term always dominates, c_MF = (a + σ_F + s)/(1 − 2^{−2/5}) (codex/mfU_2). Grid optima: c_MF ≤ 9.45 / 10.85 / 13.52 / 17.41 for C_γ = 0 / 1 / 5 / 20, against Theorem U's 3.51 / 4.04 / 5.04 / 6.47.
   C_γ is not computed: it contains unspecified implied constants of Hildebrand–Tenenbaum. It is a different constant from
   Theorem U's C_γ.
 - **Audit of the shared rational supply** (task 3, §3): no gap. The rational supply of MF is Proposition R1 (first moment),
@@ -201,4 +201,25 @@ Weakest link: the exact general (non-normal) form of Stark's Lemma 8 behind Lemm
 | 8 | MINOR | exact forms of Stark Lemma 8, LO Thm 1.3, HT Thm 3 not checked against print | sent to the literature critic |
 | 9 | MINOR | φ(N)/N should be φ(N)/(N − 1); loose 8 in D(x) | fixed / cosmetic |
 
-(Further reviews below.)
+**GPT-6.1-sol adversarial round `codex/mfU_2` (xhigh, on theorem v0.1, blind to this note): ACCEPT WITH MINOR FIXES; no
+FATAL or MAJOR.** Probability correct after the fixes: 80%. Weakest link: Proposition R2 through Lemma DS (the rational
+supply). It re-checked OP's layer averaging, REJ/MF conditioning, CS computability, Stark (p. 148; the factorial
+threshold needs no normality), Landau, LO Thm 1.3 (primary text), Lemma 8.5's signs, negative exponents and leading
+coefficients, PP, the size-biased selection, transcripts and recursion. It also observed that the third term of c_MF
+always dominates, so **c_MF = (a + σ_F + s)/(1 − 2^{−2/5})** (now in the theorem; test added). Its findings, all MINOR and
+all applied:
+
+| # | Finding | Action |
+|---|---|---|
+| 1 | (P4) "d log S = o(ΛD^{1/5})" false (it is O) | corrected; the needed o(D^{4/5}λ) holds |
+| 2 | Lemma 4.4 "g₁ ≤ M < ℓ" (same as proof critic #1) | fixed |
+| 3 | Prop R2 w ≤ X_r/(28S²) (same as proof critic #3) | fixed |
+| 4 | Lemma DS applies U1 slightly below the "in range" floor; U1's intermediate points can exceed N | DS requires X ≥ B^{D^{1/3}+2C₀+1}; range extended to N² |
+| 5 | KS projection "coordinate at a fixed basis element" does not justify uniformity | F₂-linear π with π(1) = 1, solver sees only A^⊤x; argument written |
+| 6 | standard algebraic inputs (units, trace dual, φ, ω bounds) not listed | listed in §1.2 |
+| 7 | §11.4 norm exponent: algebraic part is 1/d + dν, total 2/d + dν | clarified |
+| 8 | "expected running time is" should be "at most"; trial-division primes not AKS-certified | fixed |
+
+Because round 2 was not MAJOR REVISION, no third codex round was run.
+
+(Literature critic below.)

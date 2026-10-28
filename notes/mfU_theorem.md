@@ -16,10 +16,10 @@ established result.
 Notation: λ := log log N, D := log N/λ, Λ := D^{2/5}λ = (log N)^{2/5}(log log N)^{3/5}, and L_N[2/5, c] := e^{cΛ}.
 
 > **Theorem U-MF.** Fix rationals a, κ, d₀ > 0. The algorithm FACTOR_MF = FACTOR_MF[a, κ, d₀] of §3 is Las Vegas.
-> On every input N ≥ 2 it returns the complete prime factorisation of N, every prime certified by AKS. Its
-> expected running time is L_N[2/5, c_MF + o(1)], where
+> On every input N ≥ 2 it returns the complete prime factorisation of N (every prime is either a sieved prime ≤ B or
+> AKS-certified). Its expected running time is **at most** L_N[2/5, c_MF + o(1)], where
 >
->   c_MF = max( 2(a + σ_F),  a + σ_F + s + max(a, σ_r, σ_F),  (a + σ_F + s)/(1 − 2^{−2/5}) ),
+>   c_MF = max( 2(a + σ_F),  a + σ_F + s + max(a, σ_r, σ_F),  (a + σ_F + s)/(1 − 2^{−2/5}) ) = (a + σ_F + s)/(1 − 2^{−2/5}),
 >
 >   σ_r = 2/(5a d₀),  σ_F = (2/(5a))(1/d₀ + d₀/(4κ)),  s = 2κ(1 + C_γ),
 >
@@ -77,7 +77,7 @@ this geometry. Remark 11.4 has the arithmetic. Nothing here goes below 2/5.
   statement below tolerates this slack; we suppress it.
 - C, c denote positive constants depending only on (a, κ, d₀) and on the absolute constants of §1.2; they may change from
   line to line. They **never** depend on d, k or N. "For N ≥ N₀" means: for N larger than such a constant.
-- z is **in range** if B^{D^{1/3}} ≤ z ≤ N. Then u_z := log z/log B satisfies D^{1/3} ≤ u_z ≤ D^{3/5}/a, and
+- z is **in range** if B^{D^{1/3}} ≤ z ≤ N². Then u_z := log z/log B satisfies D^{1/3} ≤ u_z ≤ D^{3/5}/a, and
   u_z ≤ log z/(2 log log z) for N ≥ N₀.
 
 ### 1.2 Published inputs (used only through these statements)
@@ -97,7 +97,9 @@ this geometry. Remark 11.4 has the arithmetic. Nothing here goes below 2/5.
 | **KS** | A uniformly random element of the kernel of a sparse M × M matrix over F_q (q ≥ M⁴) is found Las Vegas in expected Õ(M·nnz + M²) field operations. | E. Kaltofen, B. D. Saunders, *On Wiedemann's method of solving sparse linear systems*, AAECC-9, LNCS 539 (1991), 29–38, Theorems 2–4 |
 | **Gauss** | Gauss's lemma (products of primitive integral polynomials are primitive); Dedekind–Kummer; Kummer theory of quadratic extensions; Minkowski's bound; Gauss reduction of rank-2 lattices. | standard |
 
-Lower-order inputs, all standard: Stanley's log-concavity of convolutions (R. P. Stanley, Ann. NY Acad. Sci. 576
+Standard algebraic and elementary inputs (textbook; used in Lemmas FIB, 8.1, 8.4, 8.5): Dirichlet's unit theorem
+(|𝒪_K^×/𝒪_K^{×2}| = 2^{r₁+r₂}), the trace-dual identity Z[β]^∨ = g′(β)^{−1}Z[β] for a monogenic order (Euler), φ(t)/t ≫ 1/log log t,
+ω(t) ≪ log t/log log t, and the Mahler-measure and discriminant bounds |disc f| ≤ d^{2d−1}‖f‖_∞^{2d−2}. Lower-order inputs, all standard: Stanley's log-concavity of convolutions (R. P. Stanley, Ann. NY Acad. Sci. 576
 (1989), 500–535, Prop. 2 and §2), the remainder-tree and product-tree algorithms (J. von zur Gathen, J. Gerhard,
 *Modern Computer Algebra*, §§10.1–10.3), and Tonelli–Shanks.
 
@@ -132,7 +134,7 @@ Sizes (leading order; D^{1/5}θ → θ₀ below): with θ := 2μ + h + (d − 1)
 - (P1) B^{C} ≤ Y, 32S² < Y (so b > V/2 > 4S²), B < V/2, V < ℓ for ℓ ∈ J; and V² ≥ 7Y.
 - (P2) N^{η₀/4} ≥ max(B^{C}, S^{C}, 2^{Cd}); explicitly used: 2^{d+12}dB ≤ B², 2^{d+9}B ≤ N^{η₀/4}, 2^{d+5} ≤ N^{η₀/4}, N^{η₀/2} ≥ 10⁵d²/ρ_F.
 - (P3) 2MV·N^{η₀/3} ≤ W and 2W < N; M/V ≥ N^{η₀/2}; H/V ≥ N^{η₀/2}; M(H + 1) < N; 2H + 1 < N; 2X² < N.
-- (P4) d log d ≤ Λ/C; d log S + log J_f = o(Λ·D^{1/5}); (log N)^{λ₃} = e^{o(Λ)}.
+- (P4) d log d ≤ Λ/C; d log S + log J_f = O(Λ·D^{1/5}) = o(D^{4/5}λ) (lower order than log X_F); (log N)^{λ₃} = e^{o(Λ)}.
 - (P5) log Y ≥ ω(N) log 2 + C log log N (using ω(N) ≤ log N/log B).
 - (P6) log H/(24 d log log H) ≥ 1.25(σ̄ + 1)Λ, and 2^{(log H)/2} ≤ W·N^{−1/(2d)}.
 - (P7) X_r^{1/2} and X_F are in range, and u_{X_F} ≤ log X_F/(2 log log X_F).
@@ -292,7 +294,7 @@ m_r < 16. If S = 2, m_r = 4ρ_r < 16. *J_f:* R(X_F) ≤ 2R*(X_F) ≤ 2(log N)^{C
 once (log N)^{λ₃−C_R} ≥ 488; and R(X_F) ≥ R*/2 ≥ ρ_F/2 gives J_f ≤ 2(log N)^{λ₃}/ρ_F + 1. *Cost:* each R costs
 π(B)(log N)^{O(1)}; the scan makes O(Λ) evaluations. ∎
 
-**Lemma DS (smooth numbers in short progressions) [proved].** Fix C₀ ≥ 1. Let X be in range, 1 ≤ q ≤ B^{C₀}, and
+**Lemma DS (smooth numbers in short progressions) [proved].** Fix C₀ ≥ 1. Let X ≥ B^{D^{1/3}+2C₀+1} be in range (true for X = X_r, X_F with a large margin), 1 ≤ q ≤ B^{C₀}, and
 I ⊂ [XB^{−C₀}, X] an interval of length A ≥ XB^{−C₀} (so A/q ≥ XB^{−2C₀} ≥ 1, X being in range). Then for every r,
 #{n ∈ I : n ≡ r (mod q), P⁺(n) ≤ B} ≤ (A/q)ϱ(X)(log N)^{C_U(2C₀+2)+2}.
 *Proof.* Let e := gcd(r, q). If e has a prime factor > B the count is 0. Otherwise n = en₁ with n₁ ∈ I/e,
@@ -578,8 +580,11 @@ The kernel 𝒦 of all columns has dimension ≥ 12.
 ### 8.3 POSTPROCESS_MF(A, rows)
 
 1. For each j ∈ 𝒥 touched by some row, sample character primes 𝔭^{(j)}_1, …, 𝔭^{(j)}_{t_χ^{(j)}} (§8.4); build the matrix.
-2. Sample a uniform element S of 𝒦 (KS over F_{2^e}, 2^e ≥ M_rows⁴; draw x uniform in F₂^{M_rows}, solve A^⊤y = A^⊤x, return
-   the coordinate of x − y at a fixed basis element; verify). If S = 0, repeat step 2.
+2. Sample a uniform element S of 𝒦 (KS over F_{2^e}, 2^e ≥ M_rows⁴: draw x uniform in F₂^{M_rows}, give the solver only the
+   right-hand side A^⊤x and independent coins, obtain y ∈ F_{2^e}^{M_rows} with A^⊤y = A^⊤x, and return S := x − π(y), where
+   π: F_{2^e} → F₂ is a fixed F₂-linear map with π(1) = 1, applied coordinatewise; since A^⊤ has entries in F₂,
+   A^⊤π(y) = π(A^⊤y) = A^⊤x, and given A^⊤x, x is uniform on a coset of 𝒦 independent of π(y), so S is uniform on 𝒦;
+   verify). If S = 0, repeat step 2.
 3. For each field j touched by S: compute δ_j(S) := the squarefree kernel, with sign, of ∏_{P in field j}F̃_j(P)^{e_P(S)}
    (from the stored factorisations), and run SQ_j on Γ′_{j,S} := δ_j(S)·g_j′(β_j)²∏_{P in field j}z_P^{|e_P(S)|} (§8.5). If
    some SQ_j returns NONSQUARE, go back to step 1 with fresh character primes.
@@ -792,6 +797,10 @@ is almost sure because the expectation is finite. *Las Vegas:* no output is ever
 
 ### 10.3 The constant
 
+The third term always dominates (codex/mfU_2): max(a, σ_r, σ_F) ≤ a + σ_F, so the first two terms are ≤ 2(a + σ_F) + s
+< (a + σ_F + s)/(1 − 2^{−2/5}), as 1/(1 − 2^{−2/5}) > 4.1. Hence c_MF = (a + σ_F + s)/(1 − 2^{−2/5}).
+
+
 C_γ = C_r is assembled in Theorem R0 from C_R (Lemma CS, from HT1), the constant C_U of Lemma U1 (from HT2, HT3), C₀ = ⌈σ̄/a⌉ + 2
 in Lemma DS, and the constant of Lemma FIB; it depends only on (a, κ, d₀) and absolute constants. These come from published
 theorems with effective but unspecified implied constants, so c_MF is finite but not numerically known. With 2^{−2/5} bracketed by
@@ -847,6 +856,6 @@ Proposition select + Prop PP + Lemmas OS, W, F_α + AKS ─→ Theorem U-MF
 
 ### 11.4 Why the exponent is 2/5 [heuristic arithmetic for this design; not a lower bound for factoring]
 
-The split needs (log N)^{−2k}-scale acceptance, so cost L[α] forces k = O(D^{α}); the norm exponent θ ≥ 2/d + dν ≥ c/√k (at the
-optimum d ≍ √k) and smoothness of N^{θ}-size values at B = L[α] costs exp(u log u) with u = θ log N/log B, which is L[α]^{O(1)}
+The split needs (log N)^{−2k}-scale acceptance, so cost L[α] forces k = O(D^{α}); the total norm exponent (rational plus
+algebraic, θ = 2/d + dν + o(·); the algebraic part alone is 1/d + dν) is ≥ c/√k at the optimum d ≍ √k and smoothness of N^{θ}-size values at B = L[α] costs exp(u log u) with u = θ log N/log B, which is L[α]^{O(1)}
 only if θ = O(D^{2α−1}). Together k ≳ D^{2(1−2α)} and k = O(D^{α}), so α ≥ 2/5. Theorem U-MF attains it.
