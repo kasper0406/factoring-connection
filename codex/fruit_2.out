@@ -1,0 +1,183 @@
+**Major revision required.** The hidden-root probability argument survives. The strongest failures concern its algorithmic implementation, the identification of the primitive box with LV’s published box, and the claimed exclusion of other proof strategies.
+
+1. **MINOR — Lemma HY: CORRECT. Lemma DD′: CORRECT.**
+
+   The projection-rank calculation and all three consequences of HY are valid. Uniformity includes the zero kernel vector.
+
+   DD′ is valid provided the modified theorem retains the premise
+   \[
+   G^2\prod_{i\in S}R_i=Y^2
+   \]
+   and both \(G,Y\) are units. Multiplication by the measurable cofactor does not change the uniform root-fibre argument. No substantive repair is needed.
+
+2. **MAJOR — Theorem HYB: CORRECT WITH FIXES.**
+
+   The theorem needs **transcript invariance as an explicit hypothesis**, rather than an assertion inside its proof. Merely including “ordinary relations” and “square-root data” among the generators of \(\mathcal F\) does not establish independence from hidden branches.
+
+   A properly implemented LV-type algorithm can satisfy invariance: characters, exceptional-class tests, rejection of \(\pi(T)=0\), and exact algebraic square-root computations can all inspect certificates and independent coins exclusively.
+
+   Write out the non-monic normalization. With \(t=f_d\), use \(\theta=t\alpha\), its monic polynomial
+   \[
+   g(Z)=t^{d-1}f(Z/t),
+   \]
+   and \(g'(\theta)\), whose evaluation is \(t^{d-2}f'(m)\). Include the necessary leading-coefficient/parity columns. Gcd-check every denominator and evaluated multiplier; reject objects whose gcd is \(N\), and return proper factors.
+
+   The conditional probability is indeed \(1-2^{1-\omega(N)}\) for **every odd \(N\) with at least two distinct prime divisors**, including \(p^2q\). Prime powers are excluded by \(\omega\ge2\). Non-unit \(R\) requires a factor exit, not application of HYB. Sample roots uniformly from all units, or from \([1,N-1]\) followed by gcd checks.
+
+   Reusing roots after root-dependent gcd feedback requires a fresh invariance argument; fresh batches avoid this issue.
+
+3. **MAJOR — “Choosing S”: WRONG as an algorithmic assertion; its linear algebra is correct.**
+
+   Let \(e=\dim(K/K_0)\). Then
+   \[
+   r_0\ge r-e
+   \]
+   and the stated probability for uniform \(T\in K_0\) are correct.
+
+   Two independent uniform samples from **one fixed \(K\)**, conditioned to have equal obstruction classes, have uniform difference in \(K_0\). This does not justify the assertion about LV’s actual procedure: LV uses fresh relation batches, then tests singleton/pair products. Those samples do not belong to one fixed kernel with the claimed distribution. See [LV, pseudocode and §6](https://arxiv.org/pdf/1805.08873).
+
+   Moreover, \(e\) is not generally known from the public matrix. The cited fixed-degree post-processing establishes residual square-class group size at most two on its character-success event, **not \(K=K_0\)**.
+
+   Fix: retain a fixed augmented batch; prove a sampler or verified combination procedure producing a true dependency with nonzero descent projection; charge its cost. Use a computable upper bound for \(e\).
+
+   The threshold using \(C_{\rm act}\) requires a fixed ambient coordinate budget. If every new row introduces another column, the displayed bound does not guarantee eventual success.
+
+4. **MAJOR — ABS-dom: CORRECT; the subsequent absorption reduction is WRONG as stated.**
+
+   The missing-mass and domination bounds hold under the stated independence assumptions, with coordinates and \(\mu\) fixed before sampling.
+
+   But support compatibility plus deficit \(e=O(\log N)\) does **not** imply single-row ABS. For example, take
+   \[
+   V=\langle(1,1)\rangle,\qquad d=(1,0)
+   \]
+   deterministically. Both coordinates are charged, yet \(d\notin V\) always.
+
+   What \(e+1\) compatible rows guarantee is a dependency **among their quotient classes**, not absorption of any individual row. Repair by using a multi-row hypothesis and allowing residual obstruction dimension, or retain single-row ABS as an independent hypothesis.
+
+   Also, rank/generation is a higher-order property of \(x\); calling it “first-order” because it excludes \(\beta\) is misleading.
+
+5. **FATAL to the literal LV application — IV-LV: CORRECT WITH FIXES for its primitive box; WRONG for LV’s published box.**
+
+   The counting proof itself works for non-proportional pairs. The common signed squarefree part divides \(\Delta\), each \((d,u)\) determines at most one \(m\), and the divisor and union bounds give the claimed leading exponent. Integer endpoints require only harmless rounding adjustments.
+
+   However, LV Definition 4.1 does **not** impose \(\gcd(a,b)=1\). Consequently,
+   \[
+   (9-18m)(16-32m)=144(1-2m)^2
+   \]
+   for every \(m\). Both pairs belong to the \(E=32\) box. The construction scales to arbitrarily large boxes. Thus the literal-box rare-collision event has probability one.
+
+   LV’s pseudocode uses \(m\in[(N/2)^{1/d},N^{1/d}]\); use \(L=N^{1/d}\) for exact endpoint bookkeeping. Its matrix records rational prime parities and a constant column, without an explicit rational-sign column. [LV, Definition 4.1 and pseudocode](https://arxiv.org/pdf/1805.08873).
+
+   Fix: either prove relation supply for a primitive restriction, or handle proportional pairs separately. For a matrix without sign, count \(\lvert(a-bm)(a'-b'm)\rvert\) square; essentially the same divisor argument applies.
+
+6. **MAJOR — IV-LV consequences: CORRECT WITH FIXES, with a narrower scope.**
+
+   On the primitive box, off the exceptional event, injectivity follows from complete rational square-class information. Hence exact \(x\)-preserving maps are identities, criterion (I) fails, and \(\eta^*=0\).
+
+   Raw LV relations have square-scaling collisions, so injectivity and “only the identity” are false. Nevertheless, proportional pairs with equal **exact** square classes give trivial dependencies: their rational and algebraic square multipliers cancel. A revised proof can therefore establish that \(\beta\) is constant on fibres, and hence \(\eta^*=0\), without injectivity.
+
+   This excludes only the stated **single-relation, exactly \(x\)-preserving** criterion. It does not exclude involutions on batches, on \((\text{field},\text{relations})\) jointly, coordinate-permuting actions, or actions preserving \(x\) modulo a subspace. Such alternatives still need proofs of compatibility and label change, but this proposition does not refute them.
+
+7. **MINOR — Prop IV: CORRECT WITH FIXES.**
+
+   Require \(x\) to be the **exact** square-class map, so equal vectors really imply membership in \(K_0\). Finite ideal/character columns can leave residual obstructions.
+
+   The count \(\delta'|X|/2\) requires uniform measure. For arbitrary measure, replace it by half the cardinality of the flipping set, or state a weighted conclusion. With these repairs, the two-term dependency and fruitfulness assertions are valid.
+
+   Throughout the note, distinguish \(x_{\rm exact}\) from the algorithmic parity/character vector.
+
+8. **MAJOR — Prop T: CORRECT WITH FIXES formally; WRONG as the claimed exhaustive dichotomy.**
+
+   The formal observation is a tautology: a \(\tau\)-measurable output cannot change under a \(\tau\)-preserving transformation. Specify \(\epsilon\in\mu_2\setminus\{\pm1\}\).
+
+   It is not a representation-independent necessity theorem. Exposing every coin makes this obstruction hold for any randomized algorithm. A useful proof may preserve a coarser transcript, transform whole batches, or transform field parameters while preserving dependency structure.
+
+   Hidden entropy could also enter a modular root computed on the other side; Prop SR then gives a factoring reduction, not a necessity for an NFS descended row.
+
+   Delete “So a symmetry proof needs … a Dixon or descended row” and the universal two-way classification in §5. Retain the obstruction for the precisely defined transcript-preserving proof class.
+
+9. **MINOR — Prop SR(a)–(d): essentially CORRECT, with normalization and cost fixes.**
+
+   **(a): CORRECT WITH FIXES.** State monicity/integrality assumptions, or use the non-monic normalization above. Roots of a nonzero square in any characteristic-zero field are exactly \(\pm v\); odd degree is unnecessary for this uniqueness.
+
+   **(b): CORRECT.** Every exact field-root algorithm returns those roots. Inconsistent auxiliary-prime signs do not create additional exact field roots.
+
+   **(c): CORRECT** for fixed certificates and evaluation map. Changing fields/maps or the relation construction is outside that conclusion.
+
+   **(d): CORRECT.** Given a known comparison root \(Y_0=\phi(v)\), any valid \(Y\not\equiv\pm Y_0\pmod N\) gives a proper gcd. Squarefreeness is unnecessary. Indeed, if \(\gcd(Y-Y_0,N)=1\), the equality of squares forces \(Y=-Y_0\).
+
+   Charge computation of \(Y_0\); the reduction’s cost is the proposed procedure plus the comparison-root computation. This is the classical [Rabin reduction, MIT/LCS/TR-212 (1979)](https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-212.pdf).
+
+10. **MINOR — Cor IV-TV: CORRECT WITH FIXES; the Fourier equivalence needs a hypothesis.**
+
+   The TV identity is correct whenever \(\beta\) is a function of \(x\); injectivity is sufficient but unnecessary. A nontrivial obstruction requires \(p\) bounded away from zero and one.
+
+   The absolute-value Fourier condition equals Lemma M only when the test code is closed under complementation, for example because \(x\) includes the constant feature. Otherwise use
+   \[
+   \delta=\frac{1-\max_w\mathbb E(-1)^{\beta+\langle w,x\rangle}}2
+   \]
+   without absolute values.
+
+   The random-\(\theta\) product-law counterexample also needs \(x\ne0\), or an independent random intercept. It refutes inference from averaged product marginals, not all averaging arguments: averaging a suitable nonlinear kernel-success quantity over fields can suffice.
+
+11. **MINOR — Both descent ladders: CORRECT within the stated model.**
+
+   Write the complete constraints:
+   \[
+   1-\beta_1\le\alpha,\quad
+   \gamma+\beta_i-\beta_{i+1}\le\alpha,\quad
+   1-\gamma-\phi\le\alpha,\quad \beta_{k+1}=\phi.
+   \]
+   The rational-side size floor, omitted from the prose summary, is present in `chain_feasible`.
+
+   For hybrid descent, \(\gamma=\phi=1/3\); summing gives
+   \[
+   (k+1)\alpha\ge(k+2)/3.
+   \]
+   For pure descent, \(\phi=\alpha\) and the optimum is \(\gamma=1-2\alpha\); summing gives
+   \[
+   (3k+2)\alpha\ge k+1.
+   \]
+   Both thresholds are attained in this constraint system.
+
+   These are model optima, not algorithmic lower bounds. They assume the specified two-dimensional special-\(q\) geometry and manageable branching and recognition costs. Taking \(k\to\infty\) does not establish a uniform algorithm or a finite \(L[1/3,c]\) constant.
+
+12. **MAJOR — “The descended row must live in LV’s field”: WRONG as a general claim.**
+
+   It is true for directly appending one row to an otherwise unchanged single-field matrix. It is not forced for hybrid algorithms generally.
+
+   A second field can supply a complete certificate, an eliminated block, or several jointly combined rows. Its ideal columns need cancellation internally, but no argument here proves that this requires its own LV-sized relation supply or degree \(D^{1/3}\). MNFS and shared rational columns remain possible architectures; the repository itself discusses multi-field post-processing.
+
+   Fix the claim to the direct-append architecture. Any broader lower bound must model and charge cross-field elimination explicitly.
+
+13. **MAJOR — HX(i), HX(ii), and SD₁: CORRECT WITH FIXES as conditional reductions; the advertised constants are not established.**
+
+   Producing sufficiently many independent hidden-root rows in a common admissible field would remove the need for LV fruitfulness. That qualitative observation is sound.
+
+   But “\(C+1\) rows, then LV post-processing” omits residual square classes. SD₁ also does not explicitly guarantee the sparsity, certificate-height bounds, and product square-root costs required for the displayed constant. Dense rows alone invalidate an automatic \(L[1/3,2\beta]\) sparse-linear-algebra charge.
+
+   SD₁ is averaged over LV’s search-output field law. Supply a retained-field selection/restart lemma, with caps on runtime and repeated independent descents. If obtaining that field requires LV’s relation search, charge it even when those relations are subsequently discarded.
+
+   Strengthen the hypothesis to specify admissible certificates, bit lengths, sparsity or actual matrix cost, repeatability, and verified post-processing. Use enough rows for the residual obstruction dimension. Then prove the claimed constants. For HX(ii), ABS must concern the actual successful-descent/batch joint law.
+
+   Thus no additional **fruitfulness conjecture** is inherently needed for pure descent; additional algorithmic guarantees and proofs are.
+
+14. **MINOR — Prior art: substantial parts are classical; novelty claims need restraint.**
+
+   The root-fibre mechanism is already in [Dixon, *Math. Comp.* 36 (1981), 255–260](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), and the random-squares lineage includes [Pomerance, “Fast, rigorous factorization and discrete logarithm algorithms” (1987), 119–143](https://math.dartmouth.edu/~carlp/disclog.pdf). HY is elementary linear algebra; DD′ is an immediate extension of the same fibre argument.
+
+   BLP, “Factoring integers with the number field sieve,” LNM 1554 (1993), 50–94, contains obstruction groups, character square detection, and non-monic bookkeeping; Lemma 8.2 is the elementary random-spanning estimate. Couveignes’s adjacent chapter, 95–102, treats odd-degree square roots. See the [original volume](https://www.cs.umd.edu/~gasarch/TOPICS/factoring/1993_Book_TheDevelopmentOfTheNumberField.pdf). Montgomery’s “Square roots of products of algebraic numbers,” PSAPM 48 (1994), 567–571, is established prior art; detailed implementation claims were **UNVERIFIED** here.
+
+   Seysen’s 1987 paper is verified bibliographically; the specific p. 777 subgroup attribution is **UNVERIFIED** in this audit.
+
+   Descent precedents include [Gordon, SIAM J. Discrete Math. 6 (1993), 124–138](https://epubs.siam.org/doi/abs/10.1137/0406010?journalCode=sjdmec), Joux–Lercier, *Math. Comp.* 72 (2003), 953–967, and [Commeine–Semaev, PKC 2006, 174–190](https://link.springer.com/chapter/10.1007/11745853_12). The latter explicitly gives the individual-log constant \(3^{1/3}\). Attribution of this note’s exact one-level \(2/5\) optimization to Gordon is **UNVERIFIED**.
+
+   Barbulescu’s early-abort improvements already appear in his 2011 master’s report; transferring their constants to SD₁ is **UNVERIFIED**. [Guillevic, *Math. Comp.* 88 (2019), 1273–1301](https://arxiv.org/abs/1809.06135), exploits proper subfields of nonprime finite fields, not automatically available here. No cited descent result establishes SD₁ for the stated composite-modulus law. Prior publication of the precise IV-LV counting bound is **UNVERIFIED**.
+
+15. **MAJOR — Verdict: CORRECT WITH FIXES.**
+
+   Keep “no rigorous \(L[1/3]\) factoring algorithm was proved.” Replace “the only way,” “must,” “exactly as hard,” and blanket “refuted” conclusions by their demonstrated architectural restrictions.
+
+   The surviving contribution is a conditional hidden-root reduction, elementary rank bookkeeping, and a useful collision bound for non-proportional relations. It neither closes fruitfulness nor proves an exhaustive barrier to other approaches.
+
+   Independent checks confirmed 2,324 primitive-pair bounds and both model thresholds through depth 100. The monic cubic experiments support their implemented identities; they do not verify LV’s non-monic, growing-degree adaptation.

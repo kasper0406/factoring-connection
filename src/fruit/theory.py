@@ -77,3 +77,25 @@ def count_rational_square_m(a, b, a2, b2, L1, L2) -> int:
         if P > 0 and isqrt(P) ** 2 == P:
             cnt += 1
     return cnt
+
+
+# ---------------------------------------------------------------------------------------------
+# Degree-t special-q sieving (proof critic, v2): sieving degree-t polynomials in the special-q
+# lattice balances both sides at log-size D^{(1+beta)/2} (for beta > 1/3), independent of the field
+# degree exponent, so a step from L[beta_i] to children L[beta_{i+1}] costs L[(1+beta_i)/2 - beta_{i+1}].
+def exponent_hybrid_t(k: int) -> Fr:
+    return Fr(2 ** (k + 1), 3 * (2 ** (k + 1) - 1))
+
+
+def exponent_pure_t(k: int) -> Fr:
+    return Fr(2 ** k, 3 * 2 ** k - 1)
+
+
+def chain_feasible_t(alpha: Fr, k: int, mode: str) -> bool:
+    """Degree-t model: beta_1 >= 1 - alpha; beta_{i+1} >= (1 + beta_i)/2 - alpha;
+    last children smooth over L[phi]: (1 + beta_k)/2 - phi <= alpha, phi = 1/3 (hybrid) or alpha (pure)."""
+    phi = Fr(1, 3) if mode == "hybrid" else alpha
+    b = 1 - alpha
+    for _ in range(k - 1):
+        b = max((1 + b) / 2 - alpha, phi)
+    return (1 + b) / 2 - phi <= alpha

@@ -158,3 +158,17 @@ def test_chain_feasibility_matches_formulas():
             a = f(k)
             assert chain_feasible(a, k, mode)
             assert not chain_feasible(a - Fr(1, 10 ** 6), k, mode)
+
+
+def test_degree_t_ladders():
+    from fractions import Fraction as Fr
+    from src.fruit.theory import chain_feasible_t, exponent_hybrid_t, exponent_pure_t
+    assert [exponent_hybrid_t(k) for k in (1, 2, 3)] == [Fr(4, 9), Fr(8, 21), Fr(16, 45)]
+    assert [exponent_pure_t(k) for k in (1, 2, 3)] == [Fr(2, 5), Fr(4, 11), Fr(8, 23)]
+    for k in range(1, 12):
+        for mode, f in (("hybrid", exponent_hybrid_t), ("pure", exponent_pure_t)):
+            a = f(k)
+            assert chain_feasible_t(a, k, mode)
+            assert not chain_feasible_t(a - Fr(1, 10 ** 9), k, mode)
+        assert exponent_hybrid_t(k) > exponent_pure_t(k) > Fr(1, 3)
+        assert exponent_hybrid_t(k) <= exponent_hybrid(k) and exponent_pure_t(k) <= exponent_pure(k)
