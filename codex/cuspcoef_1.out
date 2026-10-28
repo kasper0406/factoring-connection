@@ -1,0 +1,176 @@
+**OPEN:** I found no verified polynomial-time reduction for Q1(a), (b), or (c), including an almost-all reduction for the specified non-CM forms. This is a literature-search conclusion, not an impossibility theorem.
+
+**MODEL:** A rigorous result available here is a constant-information bound for independent Frobenius congruences: \(K\) curves supply **less than \(1.187K\) bits** about the hidden determinant residues, even allowing arbitrarily many distinct odd auxiliary primes. Its restrictions are essential; it does not bound algorithms using the exact integer coefficients.
+
+## 1. Q1 — Reductions and proposed attacks
+
+**KNOWN.** Eric Bach and Denis Charles, “The hardness of computing an eigenform,” *Contemporary Mathematics* **463** (2008), 9–15, arXiv v2 Theorem 2.2 and Remark 2.5, give a density-one reduction, including balanced moduli. Their algorithm queries **both \(N\) and \(N^2\)**. An algorithm callable at arbitrary indices is therefore stronger than the single supplied value in this question. [Paper](https://arxiv.org/pdf/0708.1192)
+
+**PROVED — the missing equation.** For trivial character, put \(w=k-1\), \(u=a_f(p)\), \(v=a_f(q)\), \(A=a_f(N)\), and \(B=a_f(N^2)\). Then
+\[
+A=uv,\qquad
+B=A^2+N^w-u^2q^w-v^2p^w.
+\]
+Consequently \(u^2/p^w\) and \(v^2/q^w\) are roots of
+\[
+Z^2-\frac{A^2+N^w-B}{N^w}Z+\frac{A^2}{N^w}=0.
+\]
+Their reduced denominators reveal factors of \(N\). For nonzero traces and sufficiently large primes, those denominators are nontrivial: \(w\) is odd, and \(p^w\mid u^2\) would imply \(p^{w+1}\mid u^2\), contradicting \(u^2\le4p^w\). The analogous cross term is absent from \(A\) alone.
+
+**PROVED — information counting does not establish hardness.** Writing \(n=\log_2N\),
+\[
+|A|\le4N^{(k-1)/2}.
+\]
+Thus a weight-2 datum has at most \(n/2+O(1)\) bits, comparable with the size of one factor; \(\tau(N)\) has at most \(11n/2+O(1)\) bits. Neither count proves insufficient information. These bounds follow from the prime coefficient bound in Edixhoven–Couveignes, *Computational Aspects of Modular Forms and Galois Representations*, Annals of Mathematics Studies **176** (2011), Theorem 2.4.18. [Book](https://arxiv.org/pdf/math/0605244)
+
+**PROVED — what the elementary equations leave free.** For \(K\) coefficients, the equations
+\[
+pq=N,\qquad u_iv_i=A_i\quad(1\le i\le K)
+\]
+have \(K+1\) continuous degrees of freedom: choose \(p,u_1,\ldots,u_K\), then set \(q=N/p\), \(v_i=A_i/u_i\). Strict Hasse inequalities preserve an open region. This concerns these equations only, not the additional arithmetic constraints of actual Fourier coefficients.
+
+**KNOWN / OPEN — Coppersmith.** Don Coppersmith, “Small solutions to polynomial equations, and low exponent RSA vulnerabilities,” *Journal of Cryptology* **10** (1997), 233–260, §11, Theorems 4–5, factors balanced \(N\) from roughly half of one factor’s bits. Hasse bounds provide neither such bits nor a known approximation to \(p\) within \(O(N^{1/4})\). Applying a lattice to \(uv=A\) addresses splitting \(A\); it supplies no equation coupling that split to \(p\). No successful general multivariate attack was verified. [Paper](https://link.springer.com/content/pdf/10.1007/s001459900030.pdf)
+
+**PROVED / OPEN — factoring the coefficient.** For \(A\ne0\), its factorization permits enumeration of at most \(2d(|A|)\) ordered signed trace pairs. This is not a worst-case polynomial bound, and recovering the correct traces still does not furnish a verified general factoring reduction. For weight 2, \(A\) has approximately half as many bits as \(N\), but factoring it remains a non-polynomial step. I found neither a proved implementation of Q1(c) after factoring all \(A_i\), nor a proved way around that step.
+
+**PROVED — dependent curves add nothing.** Quadratic twists satisfy
+\[
+a_{E^{(d)}}(N)=\left(\frac dN\right)a_E(N).
+\]
+This follows by changing the prime character sums and multiplying. Hence arbitrarily many such twists can be simulated from one coefficient using Jacobi symbols. Isogenous curves likewise have identical good-prime traces.
+
+**PROVED — exceptional congruences can help.** Rational \(m\)-torsion gives \(a_r\equiv r+1\pmod m\), hence
+\[
+A\equiv N+1+p+q\pmod m.
+\]
+For 11a1, \(m=5\): on its usual model, successive multiples of \((5,5)\) are
+\[
+(16,-61),(16,60),(5,-6),O.
+\]
+Reduction at good primes preserves this order away from 5. This yields \(p+q\bmod5\), not a growing modulus.
+
+**OPEN.** Adding \(\tau(N)\), unrelated curves, or a polynomial-length prefix of a fixed enumeration has no verified general reduction. Assuming independence for such growing families is **HEURISTIC**, not a consequence of fixed-field Chebotarev.
+
+## 2. Q2 — Native computation
+
+Here \(\widetilde O\) suppresses logarithmic factors; these are upper bounds for specified implementations, not lower bounds.
+
+| Route | Status and cost |
+|---|---|
+| Modular symbols / Merel matrices | **KNOWN:** \(O(\sigma_1(N)\log N)\) arithmetic operations; balanced semiprimes give \(\widetilde O(N)\). |
+| Complete Jacobi sum | **PROVED:** \(N\) Jacobi evaluations, hence \(\widetilde O(N)\) bit operations and polynomial-logarithmic space. |
+| Fixed quaternary theta coefficient | **PROVED:** meet-in-the-middle gives \(\widetilde O(N)\) time and \(O(N)\) stored entries. |
+| Binary-theta convolution | **PROVED:** sieve binary representation counts and evaluate the length-\(N\) convolution in \(\widetilde O(N)\) time. |
+| Standard \(q\)-expansions | **KNOWN:** approximately linear precision-dependent work for the examples; no verified isolated-index shortcut here. |
+| Trace formulas | **KNOWN:** \(O(\sqrt N)\) class-number terms, plus divisor terms; this is not by itself a native sublinear algorithm. |
+
+The modular-symbol bound is stated explicitly in William Stein, *Modular Forms: A Computational Approach*, GSM **79**, AMS (2007), §8.3.3, using Merel’s matrix families. [Complexity discussion](https://www.wstein.org/books/modform/modform/modular_symbols.html#remarks-on-complexity)
+
+**PROVED — counting details.** A fixed rational diagonalization reduces a positive quaternary form to diagonal coordinates with finitely many congruence conditions. Enumerate the \(O(N)\) possibilities for each coordinate pair and match their values and residue conditions.
+
+For the stated binary form \(B\), its class-number-one norm interpretation gives, for \(m>0\),
+\[
+r_B(m)=2\sum_{d\mid m}\chi_{-11}(d).
+\]
+Sieving these sums costs \(O(N\log N)\); the final convolution costs \(O(N)\). Expanding it into divisor variables does not automatically shorten the computation: a direct double-hyperbola treatment still has approximately \(N\) divisor pairs.
+
+**KNOWN — a relevant additional paper.** Denis Xavier Charles, “Computing the Ramanujan tau function,” *Ramanujan Journal* **11** (2006), 221–224, §2, gives \(O(n^{3/4+\varepsilon})\) deterministic computation and \(O(n^{1/2+\varepsilon})\) randomized computation under GRH. However, §2 explicitly begins by factoring \(n\), then computes prime-index coefficients. These are therefore not native bounds under the question’s restriction. [Published article](https://link.springer.com/article/10.1007/s11139-006-6509-y), [author-text search result](https://pages.cs.wisc.edu/~cdx/CompTau-rev.pdf)
+
+**PROVED — trace-formula caution.** For nonsquare \(N=pq\), the level-one divisor term includes
+\[
+\frac12\sum_{dd'=N}\min(d,d')^{k-1}=1+p^{k-1}.
+\]
+Replacing its direct evaluation by class-number identities can merely conceal a factoring step. Any claimed native improvement must specify how it handles both this term and the class-number subroutines.
+
+**OPEN / UNVERIFIED literature completeness.** I found no verified published \(N^{1-\delta}\) native bound for the specified non-CM cusp coefficients. This does not exclude one.
+
+**OPEN — analytic routes.** Fourier extraction, theta transformations, and trace formulas provide reorganizations, but I verified no exact sublinear algorithm under the native restriction. Cancellation or faster exact shifted-convolution evaluation could conceivably improve the power of \(N\). No construction approaching \(L_N[1/3]\) emerged, and no theorem rules one out.
+
+## 3. Q3 — Two explicit model barriers
+
+### A. A constant-bit bound
+
+**MODEL — definition.** For each auxiliary odd prime \(\ell\), choose a hidden uniform \(D_\ell\in\mathbf F_\ell^\times\), and expose \(C_\ell\in\mathbf F_\ell^\times\). Independently for each of \(K\) curves, sample uniform matrices \(g_i,h_i\) with determinants \(D_\ell,C_\ell/D_\ell\). Observe
+\[
+A_{i,\ell}=\operatorname{tr}(g_i)\operatorname{tr}(h_i).
+\]
+Different auxiliary primes are independent. Unlimited postprocessing is allowed.
+
+This model exposes residue data, not an actual integer \(N\), exact bounded traces, elliptic-curve group operations, or torsion-algebra computations.
+
+**MODEL — theorem and proof.** For every finite set \(S\) of odd primes,
+\[
+I\bigl((D_\ell)_{\ell\in S};(A_{i,\ell})_{i,\ell}\mid(C_\ell)_{\ell\in S}\bigr)
+<1.187K\quad\text{bits}.
+\]
+
+For determinant \(d\), elementary matrix counting gives
+\[
+P_d(t)=\frac{\ell+\chi(t^2-4d)}{\ell^2-1}.
+\]
+Indeed, write a matrix as \(\begin{pmatrix}a&b\\c&t-a\end{pmatrix}\) and count solutions of \(bc=a(t-a)-d\).
+
+Against the uniform distribution \(U\) on \(\mathbf F_\ell\),
+\[
+|\ell P_d(t)-1|\le(\ell-1)^{-1},
+\qquad
+\chi^2(P_d\Vert U)\le(\ell-1)^{-2}.
+\]
+Two ordered traces therefore convey at most
+\[
+2\log_2\!\left(1+(\ell-1)^{-2}\right)
+\]
+bits about \(d\): bound relative entropy against the fixed uniform reference distribution. Taking their product cannot increase information. Conditional independence and entropy subadditivity extend the bound to \(K\) curves. Finally,
+\[
+\sum_{\ell\ {\rm odd\ prime}}
+2\log_2(1+(\ell-1)^{-2})
+\le\frac{2}{\ln2}\sum_{j\ge1}(2j)^{-2}
+=\frac{\pi^2}{12\ln2}<1.187.
+\]
+This proves the assertion.
+
+### B. Scalar symmetry, including arbitrarily many curves
+
+**MODEL — theorem and proof.** Suppose a joint image \(G\subseteq\prod_i\mathrm{GL}_2(\mathbf F_\ell)\) contains every common scalar \((\lambda I)_i\). Uniform pairs in \(G^2\) are invariant under
+\[
+(g,h)\longmapsto(\lambda g,\lambda^{-1}h).
+\]
+Every trace product and determinant product is preserved, while the first determinant changes by \(\lambda^2\). Thus the posterior determinant is uniform within square classes, whatever \(K\) is. Swapping \(g,h\) shows that when \(C\) is nonsquare, even those two classes are indistinguishable.
+
+**MODEL — mixed weights.** The same proof works in a weighted joint image containing scalars \((\lambda^{k_i-1}I)_i\). Therefore adding weight 12 to weight 2 does not automatically remove this local symmetry.
+
+**PROVED — limits.** Neither result is an integer-factoring barrier. Actual traces satisfy simultaneous integrality and size constraints discarded by the models. For actual integers, \(H(p\mid N)=0\); ordinary Shannon information conditional on \(N\) cannot establish computational hardness.
+
+Algorithms using the group law on \(E(\mathbf Z/N)\), gcds, Jacobi symbols of constructed values, or \((\mathbf Z/N)[x]/(\psi_\ell)\) are **outside these barriers**. No impossibility result covering all those operations is proved here.
+
+**PROVED — compatibility with the known reductions.**
+
+- Bach–Charles uses exact rational denominators. Even its additional symmetric-square observation retains a local scalar symmetry; exact integer structure defeats that local ambiguity.
+- The CM pair uses a norm identity. Write \(p=a^2+b^2\), \(q=c^2+d^2\), with \(a,c\) odd. If \(D\) is nonsquare at both primes, the two supplied products give \(X=\pm ac\), \(Y=\pm bd\). Then \(a^2d^2,b^2c^2\) are roots of
+  \[
+  Z^2-(N-X^2-Y^2)Z+X^2Y^2.
+  \]
+  A gcd with \(X^2+Z\) yields a factor. If \(D\) is nonsquare at exactly one prime, \(\gcd(N,X^2+Y^2)\) suffices.
+
+The classical trace formulas used here are in Kenneth Ireland and Michael Rosen, *A Classical Introduction to Modern Number Theory*, second edition, GTM **84**, Springer (1990), Chapter 18, §4. [Text](https://gaetan.chenevier.perso.math.cnrs.fr/GT/ireland_rosen.pdf)
+
+## 4. Q4 — Additional literature and exact checks
+
+**KNOWN.** A particularly relevant additional statement is Peter Bruin, “Computing coefficients of modular forms,” *Publications mathématiques de Besançon* (2011), 19–36, **Theorem 1.1 and Remark 1.3**. The theorem takes the index in factored form; the remark explains why removing that requirement would imply polynomial-time factoring, using an Eisenstein series. It does not prove hardness from one non-CM cusp coefficient. [Published source](https://pmb.centre-mersenne.org/articles/10.5802/pmb.a-133/)
+
+**KNOWN.** Steven D. Galbraith and James F. McKee, “Pairings on elliptic curves over finite commutative rings,” *Cryptography and Coding*, LNCS **3796** (2005), 392–409, §§2–3, discusses known point-count inputs and extension rings. Its input is different from \(a_pa_q\). [Paper](https://www.math.auckland.ac.nz/~sgal018/pair-mod-n.pdf)
+
+**OPEN / UNVERIFIED completeness.** Beyond the works named in the question and those above, I found no verified positive or negative theorem resolving the single-coefficient problem.
+
+**PROVED — finite exact checks.** The [scratch harness]( /Volumes/git/factoring-connection/codex/scratch/cuspcoef_1/phase30_blind_check.py) runs with
+```sh
+/Volumes/git/factoring-connection/.venv/bin/python phase30_blind_check.py
+```
+
+It gives:
+
+- \(N=101\cdot113=11413\), 37a1: \((a_p,a_q,A,B)=(3,-18,-54,-19412)\); the complete Jacobi sum is \(-54\), and the quadratic above yields \(9/101,324/113\).
+- CM example \(N=101\cdot109=11009\): products \(-12,400\); cross squares \(900,100\); recovered factors \(101,109\).
+- Exhaustion of all \(2016\) matrices in \(\mathrm{GL}_2(\mathbf F_7)\) verifies the scalar symmetry exactly.
+
+The checks took approximately \(0.04\) seconds and 38 MiB peak resident memory. Known primes were harness inputs; these checks do not constitute a non-CM factoring algorithm. All processes exited.

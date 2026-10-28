@@ -58,9 +58,14 @@ not.**
    - Galois congruences: Theorem SC's scalar hypothesis holds at every level for Serre curves (Prop SCX). For a general
      non-CM curve, non-scalar images add at most log₂[Ẑ^× : Λ_E] = O(1) bits, where Λ_E is the group of scalars in the
      adelic image (11a1: s mod 5).
-3. **(A) Native algorithm.** The best native cost found is **N^{1/2+o(1)}**, by cx1's Eichler–Selberg cancellation:
-   trace formulas at 3N and 5N cancel the divisor term, leaving O(√N) Hurwitz class numbers. Next is Õ(N), from the
-   theta-difference shifted convolution, the complete Jacobi sum Σ_x ((x³+ax+b)/N), or Merel's Heilbronn sets.
+3. **(A) Native algorithm.** The best native route found is **N^{1/2+o(1)}**: Eichler–Selberg trace formulas at the
+   auxiliary indices 3N, 5N (and 11N at level 37) cancel the divisor term, leaving O(√N) Hurwitz class numbers. This
+   comes from cx1's scratch checks (`codex/scratch/cuspcoef_1/elliptic_trace_check.py`); cx1's final answer omits it
+   and cautions that trace formulas can hide a factoring step.
+   - The same class-number sums also output s = p + q, so this route is a native N^{1/2+o(1)} *factoring* method.
+     It is not a coefficient-specific speedup.
+   - Next is Õ(N): the theta-difference shifted convolution, the complete Jacobi sum Σ_x ((x³+ax+b)/N), or Merel's
+     Heilbronn sets.
    - Nothing below N^{1/2} is known. Nothing subexponential is known.
    - **Any native algorithm that also works at the index N² factors N with the same cost** (Bach–Charles, even
      weight). So a native sub-L[1/3] algorithm for a_f(n) would be a sub-L[1/3] factoring algorithm, whatever the
@@ -272,7 +277,7 @@ uses the factorisations reaches ≥ 0.975 at every ℓ ≤ 23.
 | route | cost (best known; upper bounds) | native? | status |
 |---|---|---|---|
 | definition / Hecke multiplicativity, E–C at p and q | poly(n) after factoring | no | KNOWN |
-| **Eichler–Selberg at auxiliary indices ℓN, ℓ ∈ {3, 5} (cx1)**: the hyperbolic terms of Tr T_{3N}, Tr T_{5N} differ only by known constants when q < 3p; τ(3N) − τ(5N) = (252 − 4830)τ(N) isolates τ(N); level 11/37 analogues | O(√N) Hurwitz class numbers H(D), D ≤ 20N; each H(D) needs h of the orders above disc −D (L_D[1/2] under GRH, Hafner–McCurley) and the square part of D | yes (GRH; square-part caveat) | cx1, exact checks; **N^{1/2+o(1)}** |
+| **Eichler–Selberg at auxiliary indices ℓN, ℓ ∈ {3, 5} (cx1 scratch; the same sums give s = p + q)**: the hyperbolic terms of Tr T_{3N}, Tr T_{5N} differ only by known constants when q < 3p; τ(3N) − τ(5N) = (252 − 4830)τ(N) isolates τ(N); level 11/37 analogues | O(√N) Hurwitz class numbers H(D), D ≤ 20N; each H(D) needs h of the orders above disc −D (L_D[1/2] under GRH, Hafner–McCurley) and the square part of D | yes (GRH; square-part caveat) | cx1, exact checks; **N^{1/2+o(1)}** |
 | theta difference: r_{L1}(N) = Σ_{m≤N} r_B(m)r_B(N−m), B = x² + xy + 3y² (h = 1, r_B = 2·(1 ∗ χ₋₁₁)), then a(N) = (5/8)(r_{L1}(N) − (12/5)σ(N)) | Õ(N) (segmented sieve) + Õ(N^{1/2}) for σ(N) | yes | PROVED (from nativemod (iii)) |
 | complete Jacobi sum a_N = Σ_{x mod N} ((x³ + ax + b)/N) (squarefree N) | Θ(N) Jacobi symbols | yes | KNOWN identity (cx1 in tracedata) |
 | Merel/Heilbronn sets for T_N on modular symbols | ≍ σ(N)log N or ≍ N log²N matrices | yes | KNOWN (nativemod §3.1) |
@@ -346,7 +351,23 @@ Peak RSS ≤ 726 MB (E1, n = 48 sieve). Jobs ran one at a time. E1 ≈ 3 min, E3
 
 ## 8. Reviews
 
-(to be filled: cx1, cx2, Opus proof critic, Opus literature critic)
+**cx1 (GPT-6.1-sol blind round, `codex/cuspcoef_1.out`).**
+- It found no reduction for one, O(1) or polylog-many forms: the question is OPEN. It is a literature conclusion,
+  not an impossibility theorem.
+- Its own MODEL barrier is congruence-only, and complementary to DFB: K curves give < 1.187K bits about the hidden
+  determinant residues, summed over all odd auxiliary ℓ. The proof bounds χ²(P_d‖U) ≤ (ℓ−1)^{−2} and sums
+  Σ_ℓ 2log₂(1 + (ℓ−1)^{−2}) < π²/(12 ln 2).
+- It confirms the scalar symmetry for any number of curves, and for mixed weights with scalars (λ^{k_i−1}I)_i.
+- It confirms the twist identity a_{E^{(d)}}(N) = (d/N)a_E(N), the 11a1 s mod 5 leak, and the Bach–Charles
+  denominator mechanism.
+- It adds Bruin, Publ. Math. Besançon (2011), Thm 1.1 and Rem 1.3.
+- Native routes: Õ(N) for Merel, the Jacobi sum, theta meet-in-the-middle and the binary convolution. Charles 2006
+  factors n first.
+- Its scratch trace-formula checks are the source of the N^{1/2+o(1)} row in §5. Its own caution applies: the
+  class-number sums reveal s.
+
+**Not yet done at handback:** cx2 (prompt `codex/cuspcoef_2.md`), the Opus proof critic report, and the Opus
+literature critic. Every MODEL/PROVED claim here is therefore unreviewed.
 
 ## 9. Reproduction and deviations
 ```
