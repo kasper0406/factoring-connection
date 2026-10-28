@@ -235,6 +235,9 @@ argument, re-derived and checked here. Let 2hK < q and S = S(h, K). Then
   - With Wigert's constant, the proved loss at q ≈ 2^512 is ≈ q^{0.12}, about the size of the 3/25 gap. So the threshold
     statements below are asymptotic (fixed c > 0, q → ∞).
 - Only 2hK < q is needed (no Freiman condition, no K ≥ h).
+- Status: standard. It is an elementary consequence of the divisor bound for xy ≡ t (mod q) in a box at the origin
+  (cf. Cilleruelo–Garaev, GAFA 2011; Shparlinski's survey). The literature critic found no published statement in
+  exactly this form.
 - Unregistered numerical proof check (q ≈ 10⁶, 10⁷; 4 ≤ h ≤ 64): max_{t≠0}|1̂_S|/(K + h ln q) = 2.7–11.
 
 **Theorem B (sharp leading-exponent threshold for phase-discarding certificates; proved).** Let c ∈ (0, 1/2] be fixed,
@@ -334,7 +337,7 @@ and is the baseline.
 | Integer-variable incomplete Kloosterman: Karatsuba; Bourgain–Garaev 2014 Thm 16 (prime q: N(log log q)³log q/(log N)^{3/2}, i.e. (log q)^{1/2−o(1)} at N = q^{0.32}); Bourgain–Garaev, Acta Arith. 164 (2014) Thm 5 (any m, saving (log m)^{1/2}/(log log m)^{O(1)}); Korolev 2016 (prime q, integer variable, short ranges) | yes | log saving | none (δ = o(1) < δ*) | no |
 | Bourgain's multilinear Kloosterman sums; Bourgain–Garaev 2014 Thms 8, 11–13 and Cor. 2; prime-variable version Bourgain–Garaev, Acta Arith. 164 (2014) Cor. 3 (moduli = products of primes: two primes of size q^{4/25} give δ ≈ 1/800 at total length q^{8/25}; GPT-6.1-sol and the literature critic agree) | yes | small power, e.g. 1/800 | none (δ ≪ δ* = 0.28) | no |
 | Heath-Brown identity + Weil/Deligne completion | Type I sums of length < q^{1/2}: completion costs √q·log q > trivial | 0 | none | no |
-| Bilinear sums with phases e_q(am n̄): Kerr–Shparlinski–Wu–Xi, JLMS 108 (2023), Thm 2.4 (r = q case), nontrivial for all M, D ≥ q^ε (cited by GPT-6.1-sol; the literature critic reads that paper as mainly about complete sums, so this entry is UNVERIFIED by us); Bourgain–Garaev 2014 Thms 7–8 | yes (phases kept in the (m, n) form) | power saving | none. Applied to the hit count with m = tB (GPT-6.1-sol), the error is ≪ HY^{3/4}q^{o(1)} = q^{7/25} against the main term λ = q^{2/25}; it needs H > Y^{3/4} | no |
+| Bilinear sums with phases e_q(am n̄): Kerr–Shparlinski–Wu–Xi, JLMS 108 (2023), Thm 2.4 (r = q case), nontrivial for all M, D ≥ q^ε (confirmed by the literature critic: Thm 2.4 with r = q, c = 1 is exactly Σ_{m∈I}Σ_{k≤K}α_mγ_k e_q(amk̄), nontrivial essentially for M, K ≥ q^ε); Bourgain–Garaev 2014 Thms 7–8 | yes (phases kept in the (m, n) form) | power saving | none. Applied to the hit count with m = tB (GPT-6.1-sol), the error is ≪ HY^{3/4}q^{o(1)} = q^{7/25} against the main term λ = q^{2/25}; it needs H > Y^{3/4} | no |
 | Hooley R* / square-root cancellation (conjectural) | — | 4/25 (the Parseval cap) | **none** (Theorem B: needs 7/25) | no |
 | GRH, multiplicative characters | yes | Parseval level | ≤ 1/4 with arbitrary weights, ≤ 0 with the natural one (Lemma M) | no |
 | Bourgain–Garaev additive energy / sum-product for {ℓ̄} | yes | energy exactly minimal (Prop. B′) | none (B′) | no |
@@ -553,7 +556,8 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
   hyperbolas" (Jpn. J. Math. 2012) calls going below p^{3/2} out of reach.
 - Irving, "Average bounds for Kloosterman sums over primes", Funct. Approx. Comment. Math. 51 (2014) 221–235,
   arXiv 1301.6372.
-- Kerr–Shparlinski–Wu–Xi, J. London Math. Soc. 108 (2023) 578–621, Thm 2.4 (as cited by GPT-6.1-sol; UNVERIFIED by us).
+- Kerr–Shparlinski–Wu–Xi, J. London Math. Soc. (2023), DOI 10.1112/jlms.12753, arXiv 2204.05038, Thm 2.4 (confirmed by the
+  literature critic). Note: arXiv 2601.00292 (Dong–Robles–Zeindler) is withdrawn and not cited.
 - Matomäki–Teräväinen (ternary prime products covering residue classes): checked by GPT-6.1-sol; not applicable.
 - Karatsuba's method. (Removed after the literature critic: Shkredov 2021 concerns complete Kloosterman sums, and
   Kerr–Shkredov–Shparlinski–Zaharescu concerns modular square roots. Neither is a Kloosterman-fraction result.)
@@ -636,7 +640,9 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
   - any all-residue positivity result for prime × small × inverse-small at total size q^{1+ε};
   - any all-a modular-hyperbola result below p^{3/2}, even with x prime;
   - any prior bound on Wiener norms of Farey-arc sets.
-- *Unresolved:* the Kerr–Shparlinski–Wu–Xi Thm 2.4 reading (marked UNVERIFIED; it does not affect any conclusion).
+- *Follow-up round:* the Kerr–Shparlinski–Wu–Xi Thm 2.4 reading is confirmed (GPT-6.1-sol was right). Irving's journal
+  is Funct. Approx. 51 (2014); the critic had earlier repeated our wrong citation. Lemma F2 is folklore-standard.
+  Its own re-derivation of the KSWX application gives error ≈ q^{7/25} against λ ≈ q^{2/25}, as in §2.2.
 
 **Opus proof critic, round 2 (Lemma F2 and the rewritten Theorem B): ACCEPT WITH FIXES.**
 - *Verified:* the Möbius decomposition (exact formula against the FFT), the per-m bound, the divisor count,
