@@ -617,7 +617,55 @@ scratch, not committed).
   - Prop T, "injecting is descent" and the §5 dichotomy relabelled as assessment.
 - The critic hand-verified the nfs_hybrid algebra (X_j, Z_j, Π_j, final X, Y) and found it correct.
 
-[Opus literature critic: §7.1]
+### 7.1 Opus literature critic (orchestrator-run, 2026-10-28): OK WITH FIXES
+
+No theorem (HY, DD′, HYB, SEL, SR, IV-LV, IV-TV) and no verdict changes.
+
+**Sources read:**
+- LV arXiv 1805.08873v1 source, so the numbering is arXiv v1;
+- LNM 1554 (BLP; Couveignes);
+- Guillevic arXiv 1505.07553;
+- EGT arXiv 0905.2177;
+- Stange arXiv 2211.06821;
+- the MIT record of Rabin's TR-212.
+
+The Dixon PDF was blocked, so Dixon is checked only via secondary sources.
+
+**Lee–Venkatesan.**
+- Thm 2.1 gives a congruence x² ≡ y² (mod n), possibly trivial, in L_n[1/3, (64/9)^{1/3} + o(1)].
+- **Thm 2.3 gives fruitfulness only for semiprimes with both factors ≡ 3 (mod 4), conditional on their Conjecture 7.1.** This note's results do not need either restriction.
+- Thm 2.5 is relation supply. Thm 2.6 is the character reduction, valid for all but an L(2/3, ·)^{−1} fraction of f.
+- Def 4.1 matches §1's box: 0 ≤ a < |b| ∈ [E/2, E], with no coprimality.
+
+**e₀.** LV §6 bounds the kernel of Ψ by (4/3) log log n. So dim(K/K₀) ≤ log₂(1 + (4/3) log log N). That is tighter than e₀ = O(log log N), and Lemma SEL then needs only O(log log N) square tests.
+
+**Prop SR(a) has precedent** in LV §7 and BLP §9.
+- LV §7: "since χ_n(−1) = 1, the definition of χ_P is not dependent on which square roots are taken". They add that if Conj 7.1 fails, NFS "can never find a non-trivial congruence of squares".
+- BLP §9: the Hensel root is unique up to sign.
+- Parts (d) and the barrier framing are this note's own.
+
+**Attributions.**
+- *Rabin.* That two square roots not related by ± split N is elementary (Fermat/Legendre/Kraitchik; BLP §2). Rabin's MIT/LCS/TR-212 (1979) is the reduction form.
+- *Square root.*
+  - Couveignes, LNM 1554, pp. 95–102, is confirmed (odd degree; the sign is fixed by the norm).
+  - Add Montgomery, Proc. Sympos. Appl. Math. 48 (1994) 567–571, and Nguyen, ANTS-III, LNCS 1423 (1998) 151–168, for the lattice method.
+  - f′(α)O_K ⊆ Z[α] is correct; LV cite Lang, Ch. III, Prop. 2.
+- *Dixon.* Read the fruitfulness bound as "Dixon (≥ 1/2); the exact 1 − 2^{1−ω} follows from the same count over μ₂ ≅ {±1}^ω", conditional on a uniform root.
+- *BLP.*
+  - Lemma 8.2 is confirmed: k + r uniform vectors span a k-dimensional space with probability ≥ 1 − 2^{−r}. The obstruction analysis is §6 and Thm 6.7.
+  - BLP propose the random-character version that LV made rigorous.
+- *Descent ladders.*
+  - Commeine–Semaev's L_p[1/3, 3^{1/3}] is confirmed.
+  - Barbulescu's thesis gives booting at L_p[1/3, 1.23] and descent at L_p[1/3, 1.21] (via Guillevic, Asiacrypt 2015 §1); applying these to factoring is a transfer we have not checked.
+  - Gordon 1993's individual-log cost is L_p[1/3, 9^{1/3}]. No source was found for a "Gordon 2/5"; it stays UNVERIFIED.
+  - The halving recurrence β_{i+1} − 1/3 = (β_i − 1/3)/2 is the special-Q descent of EGT (and Coppersmith 1984).
+  - The fixed-depth closed forms (k+2)/(3k+3), (k+1)/(3k+2), 2^{k+1}/(3(2^{k+1}−1)) and 2^k/(3·2^k−1) were found in no source.
+  - **Scope:** the ladders assume this note's no-ECM recognition model. The heuristic literature boots in L[1/3] using ECM, and rigorous HECM costs L_p[2/3] per prime, which is where the L[4/9] objection comes from.
+- *Novelty.*
+  - No prior work appends hidden-root (Dixon-descended) rows to an NFS matrix to get provable non-triviality.
+  - Nearest precedents: Dixon/Rabin fibre symmetry, BLP §9, LV §7, and Stange (arXiv 2211.06821, order-finding index calculus with an NFS variant, Hyp. 3.1).
+- *Fixed degree.* Suggested, still unchecked: Bhargava–Varma, Duke 164 (2015), for cubic fields; Ho–Shankar–Varma, Duke 167 (2018), for odd degree.
+
 
 ## 8. Candidate cards
 
