@@ -180,4 +180,25 @@ linear algebra 2(a + σ_F).
 
 ## 6. Reviews
 
-(Filled in below as the reviews complete.)
+**Opus proof critic (read-only, blind to this note; on theorem v0): ACCEPT WITH FIXES, no FATAL or MAJOR.** It checked
+every internal proof: Lemma OP (uniform |F̂_w| ≤ x₁; averaging over w commutes with the layer cake; all residues
+reachable, no n–t coprimality needed; constants), Lemma REJ (both r ∤ g₁ and r | g₁ cases; brute-force irreducible
+fractions over F₁₇, F₁₉ ≈ 1/d against the claimed 1/(4d); no forgotten rejection path; no loss in d), Prop MF, R1, R2,
+CS, §8 (Stark + Kummer with 4 ∤ 2d; δ_j is the norm class; the sign and leading-coefficient bookkeeping of 𝖸²; units;
+column sufficiency), Theorem K, S″, DD, Lemma 7.3, Prop select, the ledger and F_α. It found no exponential-in-d loss
+inside γ, and all margins pass for three parameter triples. Its probability of correctness after the fixes: ≈ 0.8.
+Weakest link: the exact general (non-normal) form of Stark's Lemma 8 behind Lemma 8.2.
+
+| # | Sev. | Finding | Action |
+|---|---|---|---|
+| 1 | MINOR | Lemma 4.4: "g₁ ≤ M < ℓ" is false (M ≫ ℓ) | justified by gcd(g₀, g₁) = 1 |
+| 2 | MINOR | Prop R2 needs Y > 32S², not 2S² < Y | (P1) strengthened; params check covers it |
+| 3 | MINOR | Prop R2: "w ≤ X_r/(28S²)" wrong | w ≤ X_r(1 + o(1))/(8S²) ≤ X_r/256 |
+| 4 | MINOR | Lemma DS needs Δ₀ ≥ 1 | stated (A/q ≥ XB^{−2C₀} ≥ 1) |
+| 5 | MINOR | Landau needed with multiplicity | stated in §1.2 |
+| 6 | MINOR | "one step each" alternation undefined with nested calls | one bit operation of the whole nested computation |
+| 7 | MINOR | Lemma P constants implicit | explicit inequalities listed in (P2) |
+| 8 | MINOR | exact forms of Stark Lemma 8, LO Thm 1.3, HT Thm 3 not checked against print | sent to the literature critic |
+| 9 | MINOR | φ(N)/N should be φ(N)/(N − 1); loose 8 in D(x) | fixed / cosmetic |
+
+(Further reviews below.)

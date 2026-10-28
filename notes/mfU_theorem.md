@@ -90,7 +90,7 @@ this geometry. Remark 11.4 has the arithmetic. Nothing here goes below 2/5.
 | **CEP** | For fixed ε > 0, Ψ(x, x^{1/u}) = x·u^{−u(1+o(1))} uniformly for u → ∞, u ≤ (1 − ε)log x/log log x. | E. R. Canfield, P. Erdős, C. Pomerance, *On a problem of Oppenheim concerning "factorisatio numerorum"*, J. Number Theory 17 (1983), 1–28, Corollary 3.1 |
 | **PNT** | π(x) > x/log x (x ≥ 17); π(x) < 1.25506x/log x (x > 1); π(x) − π(x/2) > 3x/(10 log x) (x ≥ 41); and π(x) − π(x/2) ≤ 0.6x/log x for x ≥ x₀. | J. B. Rosser, L. Schoenfeld, *Approximate formulas for some functions of prime numbers*, Illinois J. Math. 6 (1962), 64–94, Theorem 1 and Corollaries 1–3 |
 | **Stark** | If a number field L of degree n has ζ_L(β₀) = 0 with β₀ real, 1 − (c(L) log|Δ_L|)^{−1} ≤ β₀ < 1, where c(L) = 4·n! in general, then ζ_F(β₀) = 0 for some quadratic subfield F ⊂ L. | H. M. Stark, *Some effective cases of the Brauer–Siegel theorem*, Invent. Math. 23 (1974), 135–152, Lemma 8 |
-| **Landau** | There is an effective absolute c_L > 0 such that for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at most one real zero in (1 − c_L/log(q₁q₂), 1). | H. Davenport, *Multiplicative Number Theory*, 3rd ed., GTM 74, Ch. 14 |
+| **Landau** | There is an effective absolute c_L > 0 such that for distinct real primitive characters χ₁, χ₂ of conductors q₁, q₂, L(s, χ₁)L(s, χ₂) has at most one real zero, counted with multiplicity, in (1 − c_L/log(q₁q₂), 1) (so χ₁, χ₂ cannot both vanish at one β there). | H. Davenport, *Multiplicative Number Theory*, 3rd ed., GTM 74, Ch. 14 |
 | **LO** | For L/K Galois with group G, conjugacy class 𝒞, n_L = [L : Q], d_L = |Δ_L| and x ≥ exp(10n_L(log d_L)²): |π_𝒞(x) − (|𝒞|/|G|)Li(x)| ≤ (|𝒞|/|G|)Li(x^{β₀}) + c₁x·exp(−c₂n_L^{−1/2}(log x)^{1/2}), c₁, c₂ absolute and effective; the β₀-term only if ζ_L has a real zero β₀ ∈ [1 − (4 log d_L)^{−1}, 1). | J. C. Lagarias, A. M. Odlyzko, *Effective versions of the Chebotarev density theorem*, in: Algebraic Number Fields (Durham 1975), Academic Press 1977, 409–464, Theorem 1.3 (numbered "Corollary 1.3" in some restatements; content confirmed, §6) |
 | **AKS** | Primality is decidable deterministically in time (log n)^{O(1)}. | M. Agrawal, N. Kayal, N. Saxena, Ann. of Math. 160 (2004), 781–793 |
 | **CZ** | Factoring a degree-d polynomial over F_r: Las Vegas, expected (d log r)^{O(1)}. | D. G. Cantor, H. Zassenhaus, Math. Comp. 36 (1981), 587–592 |
@@ -129,8 +129,8 @@ Sizes (leading order; D^{1/5}θ → θ₀ below): with θ := 2μ + h + (d − 1)
 - the MF height floor contributes 30(σ̄ + 1)dΛλ ≍ D^{3/5}λ² to log H, and d log S ≍ D^{3/5}λ to log X_F; both are o(D^{4/5}λ).
 
 **Lemma P (margins) [proved; leading-order comparisons, encoded in `src/mfU/params.py::margins`].** For N ≥ N₀:
-- (P1) B^{C} ≤ Y, 2S² < Y, B < V/2, V < ℓ for ℓ ∈ J; and V² ≥ 7Y.
-- (P2) N^{η₀/4} ≥ max(B^{C}, S^{C}, 2^{Cd}).
+- (P1) B^{C} ≤ Y, 32S² < Y (so b > V/2 > 4S²), B < V/2, V < ℓ for ℓ ∈ J; and V² ≥ 7Y.
+- (P2) N^{η₀/4} ≥ max(B^{C}, S^{C}, 2^{Cd}); explicitly used: 2^{d+12}dB ≤ B², 2^{d+9}B ≤ N^{η₀/4}, 2^{d+5} ≤ N^{η₀/4}, N^{η₀/2} ≥ 10⁵d²/ρ_F.
 - (P3) 2MV·N^{η₀/3} ≤ W and 2W < N; M/V ≥ N^{η₀/2}; H/V ≥ N^{η₀/2}; M(H + 1) < N; 2H + 1 < N; 2X² < N.
 - (P4) d log d ≤ Λ/C; d log S + log J_f = o(Λ·D^{1/5}); (log N)^{λ₃} = e^{o(Λ)}.
 - (P5) log Y ≥ ω(N) log 2 + C log log N (using ω(N) ≤ log N/log B).
@@ -158,7 +158,7 @@ and trial division in alternation (§3), so the theorem is a statement about the
    FACTOR_MF(m) with multiplicities times e.
 2. Trial-divide by all primes ≤ B(N). Let N′ be the cofactor. If N′ = 1 return; if N′ is prime or a perfect power,
    treat it as in step 1.
-3. Run SPLIT(N′) and trial division of N′ **in alternation, one step each**, until one returns a proper factor g.
+3. Run SPLIT(N′) and trial division of N′ **in alternation, one bit operation each** (a bit operation of SPLIT's whole nested computation, recursive shape tests included), until one returns a proper factor g.
 4. Return the sorted merge of FACTOR_MF(g), FACTOR_MF(N′/g) and the primes of step 2.
 
 **SPLIT(N)** (N odd, all prime factors > B, not a prime power).
@@ -236,7 +236,7 @@ The coefficients of G·R_c are ≤ 2MH, and |a₀| ≤ 2^{d+3}N^{μ+ν+η₀/2} 
 
 **Lemma 4.4 (regularity, with one box for all ℓ) [proved; cf. Pollard 1993].** Let ℓ ∈ J and gcd(g₀, g₁) = 1. If
 λ₁(Λ_ℓ(g)) < ℓ/(2V), then Λ_ℓ(g) ∩ 𝒫 = ∅. Otherwise #(Λ_ℓ(g) ∩ [−V, V]²) ≤ 400S².
-*Proof.* Λ_ℓ(g) has index ℓ (g ≢ 0 mod ℓ, since g₁ ≤ M < ℓ). A shortest vector w₀ is primitive in the lattice (its content is
+*Proof.* Λ_ℓ(g) has index ℓ (g ≢ 0 mod ℓ, since gcd(g₀, g₁) = 1). A shortest vector w₀ is primitive in the lattice (its content is
 < ℓ, hence a unit mod ℓ, and w₀/content would be shorter). The lattice is the union of lines parallel to w₀ at spacing
 ℓ/|w₀| > 2V; every point of [−V, V]² has norm ≤ √2V < 2V, so the box meets only the line Zw₀, whose primitive points are ±w₀,
 and |w₀| < ℓ/(2V) ≤ Y/V ≤ V/7 < V/2 < b for (a, b) ∈ 𝒫 (P1). In the regular case take a reduced basis λ₁ ≤ λ₂,
@@ -293,7 +293,7 @@ once (log N)^{λ₃−C_R} ≥ 488; and R(X_F) ≥ R*/2 ≥ ρ_F/2 gives J_f ≤
 π(B)(log N)^{O(1)}; the scan makes O(Λ) evaluations. ∎
 
 **Lemma DS (smooth numbers in short progressions) [proved].** Fix C₀ ≥ 1. Let X be in range, 1 ≤ q ≤ B^{C₀}, and
-I ⊂ [XB^{−C₀}, X] an interval of length A ≥ XB^{−C₀}. Then for every r,
+I ⊂ [XB^{−C₀}, X] an interval of length A ≥ XB^{−C₀} (so A/q ≥ XB^{−2C₀} ≥ 1, X being in range). Then for every r,
 #{n ∈ I : n ≡ r (mod q), P⁺(n) ≤ B} ≤ (A/q)ϱ(X)(log N)^{C_U(2C₀+2)+2}.
 *Proof.* Let e := gcd(r, q). If e has a prime factor > B the count is 0. Otherwise n = en₁ with n₁ ∈ I/e,
 n₁ ≡ r/e (mod q′), q′ := q/e, gcd(n₁, q′) = 1. Put Δ₀ := min(A/q, X/(eB^{C₀})) ≤ min(I/e). Every smooth n₁ ≥ Δ₀ has a divisor
@@ -345,7 +345,7 @@ two points are annihilated mod ℓ by the nonzero form g₁x − g₀y). Then q 
   Admissible points have |n|, |n′| ∈ [X_r/128, X_r] (filter: |G| ≥ MV/32 ⇒ |n| ≥ MV/(64Y) = X_r/128).
 - *Covering.* Cover Π by axis-parallel squares of side w := M/(2V). Their number is ≤ area/w² + 4·perimeter/w + 4 ≤
   qV²/ℓ + 16√2V²/ℓ + 4 ≤ CqS². For each square I₁ × I₂ meeting the admissible set, replace I_i by an interval I_i′ of
-  length w with I_i ∩ ±[X_r/128, X_r] ⊂ I_i′ ⊂ ±[X_r/256, X_r] (possible as w = X_rY/(4V²) ≤ X_r/(28S²) ≤ X_r/256).
+  length w with I_i ∩ ±[X_r/128, X_r] ⊂ I_i′ ⊂ ±[X_r/256, X_r] (possible as w = X_rY/(4V²) ≤ X_r(1 + o(1))/(8S²) ≤ X_r/256, since S² ≥ 33 for N ≥ N₀ by Lemma CS).
   Apply Lemma DS with X = X_r, modulus q ≤ 4S² ≤ B^{C₀} and length w ≥ X_rB^{−C₀}, where C₀ := ⌈σ̄/a⌉ + 2
   (X_r/w ≤ 8S² ≤ B^{C₀}); for negative intervals apply it to −n. The number of points of Γ_q ∩ (I₁′ × I₂′) with both
   coordinates smooth is ≤ Σ_{ρ mod q}#{n ∈ I₁′ smooth, n ≡ ρ}·#{n′ ∈ I₂′ smooth, n′ ≡ λρ} ≤ q·((w/q)ρ_r(log N)^{C})² =
@@ -495,7 +495,7 @@ since (u, v) is primitive. (6) Pr[E] ≥ (|𝒮|²/(2h₂))/|Q_N| = |𝒮|²/(2�
 *Proof.* |𝒟_A| ≥ δ_Aπ_J ≥ 4k³2^{ω(N)} by (P5) and Theorem R0. Products of k distinct primes of 𝒟_A lie in
 (Y^k, (2Y)^k], covered by the k windows [Y′/2, Y′], Y′ = 2^{i+1}Y^k (0 ≤ i < k), all with Y′ ≤ (2Y)^k ≤ X and so 2Y′² < N;
 one holds a set 𝒮 of ≥ C(|𝒟_A|, k)/k of them. Given that r is a unit, R is uniform on Q_N, so by Lemma S″
-Pr_r[E] ≥ (φ(N)/N)|𝒮|²/(2φ(N)) = |𝒮|²/(2N). With |𝒮| ≥ (|𝒟_A|/k)^k/k, |𝒟_A| ≥ δ_AY/(2 log Y), Y^{2k} ≥ X²/16^k ≥ N/(4·16^k)
+Pr_r[E] ≥ (φ(N)/(N − 1))|𝒮|²/(2φ(N)) ≥ |𝒮|²/(2N). With |𝒮| ≥ (|𝒟_A|/k)^k/k, |𝒟_A| ≥ δ_AY/(2 log Y), Y^{2k} ≥ X²/16^k ≥ N/(4·16^k)
 and 2k log Y ≤ log N, this is ≥ (δ_A/(4 log N))^{2k}/(32k²). On E, unless a gcd check exits, |u₀| and |v₀| are products of k
 distinct primes of 𝒟_A ⊂ J, so the shape test passes (FACTOR_MF returns the exact factorisation), and for each ℓ, SQ_SEARCH_MF
 returns an atom (Proposition 9.2), because ℓ ∈ 𝒟_A. ∎
