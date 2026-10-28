@@ -65,3 +65,15 @@ def test_gauss_transfer_exact():
         a = {n: rng.randint(-2, 3) for n in rng.sample(range(1, 60), 12)}
         out = checks.gauss_transfer(k, a)
         assert out["primitive_identity"] and out["orthogonality"]
+
+
+def test_fixed_iota_phase_is_conjugate():
+    # codex mf2L_2's counterexample to v1's chi(iota): k = 5, iota = 2, a = delta_2, b = delta_1
+    assert checks.fixed_iota_formula(5, 2, {2: 1}, {1: 1})
+    rng = random.Random(4)
+    for k in (5, 7, 9):
+        for _ in range(3):
+            iota = rng.choice([i for i in range(1, k) if gcd(i, k) == 1])
+            a = {rng.randint(1, 80): rng.randint(0, 3) for _ in range(10)}
+            b = {rng.randint(1, 80): rng.randint(0, 3) for _ in range(10)}
+            assert checks.fixed_iota_formula(k, iota, a, b)

@@ -203,3 +203,29 @@ def gauss_transfer(k: int, a: Dict[int, int]) -> Dict[str, bool]:
         if gcd(b, k) == 1:
             rhs = K.add(rhs, K.mul(Sb[b], K.conj(Sb[b])))
     return {"primitive_identity": ok_prim, "orthogonality": lhs_total == K.scal(Fr(ph), rhs)}
+
+
+def fixed_iota_formula(k: int, iota: int, a: Dict[int, int], b: Dict[int, int]) -> bool:
+    """Prop AVG, fixed iota (v2 phase): sum_{x1 == iota x2 (k), units} a(x1) b(x2)
+    == phi(k)^{-1} sum_chi conj(chi(iota)) a^(chi) conj(b^(chi)), exactly in Q(zeta_m), k an odd prime power."""
+    ph, log, chars = _characters(k)
+    m = ph
+    K = Cyc(m)
+
+    def chi_val(j, n, inv=False):
+        if gcd(n, k) != 1:
+            return K.zero()
+        e = j * log[n % k]
+        return K.zeta(-e if inv else e)
+
+    count = sum(w1 * w2 for x1, w1 in a.items() for x2, w2 in b.items()
+                if gcd(x2, k) == 1 and (x1 - iota * x2) % k == 0)
+    total = K.zero()
+    for j, _ in chars:
+        ah, bh = K.zero(), K.zero()
+        for n, w in a.items():
+            ah = K.add(ah, K.scal(Fr(w), chi_val(j, n)))
+        for n, w in b.items():
+            bh = K.add(bh, K.scal(Fr(w), chi_val(j, n)))
+        total = K.add(total, K.mul(chi_val(j, iota, inv=True), K.mul(ah, K.conj(bh))))
+    return K.scal(Fr(ph), [Fr(count)] + [Fr(0)] * (K.n - 1)) == total

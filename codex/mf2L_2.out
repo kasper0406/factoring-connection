@@ -1,0 +1,150 @@
+**Verdict: MAJOR REVISION; I found no fatal obstruction to the intended substitution.**  
+Drappeau’s published proofs supply the required small-conductor estimates, including the exceptional character.  
+The principal gaps are the scope of Hyp SC, the J-library treatment, and the quantitative interface with the existing chain.  
+After the repairs below, the substitution works for every fixed \(3/8\le\alpha<2/5\), with the original endpoint constraint.  
+My probability that the repaired substitution is correct, relative to the internal chain, is **85%**.
+
+| Severity | Location | Finding | Fix |
+|---|---|---|---|
+| **MAJOR** | §4.2 Hyp SC; §4.4; §5 | **SC-D does not prove Hyp SC as defined.** Hyp SC allows \(\log y\ge(\log x)^{1/3}\); SC-D assumes \(\log y\ge\sqrt{\log x}\) and \(u\ge(\log_2x)^5\). The assertion “Hyp SC is a consequence…” drops these restrictions. | Define the hypothesis only on the four required families, or impose SC-D’s stronger domain. Every required family satisfies it, including all subsidiary endpoints. |
+| **MAJOR** | §4.2, remark following Hyp SC | The implication \(\log y\ge(\log x)^{1/3}\Rightarrow\log y\ge u\) is false. At \(\log y=(\log x)^{1/3}\), \(u=(\log x)^{2/3}\). Consequently the displayed argument does not absorb the \(y^{-\delta_D}\) term for the stated conductor range. The assertion that \(e^{u^\kappa}=y^{o(1)}\) also fails on that full domain when \(\kappa>1/2\). | Restrict to \(\log y\ge\sqrt{\log x}\), as above. Do not claim the broader implication from Lemme 5 on this argument. |
+| **MAJOR** | §4.2 Lemma IND; §4 Prop SUB | **The J-library is not supported on \(B\)-smooth integers.** Its elements are \(\ell m\), with \(\ell>B\). For it, “if \(e\) is not \(y\)-smooth, \(V_e=0\)” and “\(V_e\) is the same kind of sequence” are false. | Apply IND to each smooth **cofactor** sequence first, then sum the fibres using the energy norm. This also handles moduli divisible by \(\ell\), since \(|\chi(\ell)|\le1\). The paragraph after IND suggests the correct repair but must precede its application to the J-library. |
+| **MAJOR** | §4.2 IND; Prop SUB | The normalisers and uniformity requirements are insufficiently explicit. Harper bounds the energy against \(\Psi(v,y)^2\), not automatically against the square of a rough-number count. The Möbius endpoints and the \(\ell\)-divided endpoints must all lie in the same admissible domain. | Use the original EN normalisers: \(\Psi(v,B)\), and \(\sum_{\ell\in J}\Psi(v/\ell,B)\). Record the endpoint and rough-count comparisons given below. Only powers of \(\lambda\) are lost. |
+| **MAJOR** | §5, downstream substitution | This is **not a literal replacement of the old numerical energy bounds**. In general \(e^{-CD^\theta\lambda^2}\) is much larger than \(e^{-cD^\alpha/\lambda^2}\); similarly for algebraic parents. “Into the additive character term” is not an inequality proving the old term. | Replace the intermediate character-error bounds, then absorb them into the polynomial main terms of RAT/AB₂. The final statements can retain their form after increasing \(C\). The required inequalities are verified below. |
+| **MAJOR** | §§2–3; §0 verdict | INV and NID do not prove that every MF-style design must use BV, or that characters enter every successful proof “unavoidably”. INV proves a congruence constraint for one homogeneous form. NID proves that interval-density information alone is insufficient for arbitrary weights. Neither excludes phase averaging, other joint estimates, or redesigned sampling. | State an obstruction to the **present proof architecture and proposed MF2 construction**. Keep the general impossibility claim out of the verdict. |
+| **MAJOR** | §2 “Necessity”; §3 MF2 | The universal assertions \(m\asymp D^\alpha\) and necessary precision \(\eta\asymp D^{-\alpha}\) are inaccurate throughout the open window. The averaged incidence budget is governed by \(u_2\asymp D^{3-7\alpha}\); the deterministic child cap has exponent \(2-4\alpha\). These coincide with neither assertion in general. | Distinguish the cap, the averaged child count, and the sufficient variance bounds. The rank obstruction still survives: \(3-7\alpha>1-2\alpha\) for \(\alpha<2/5\). A union-bound/Chebyshev requirement is not a theorem about every moment-based proof. |
+| **MINOR** | §2 Prop AVG | With the later convention \(\widehat a(\chi)=\sum a(n)\chi(n)\), the fixed-\(\iota\) formula needs **\(\overline{\chi(\iota)}\)**. Counterexample: \(k=5,\ \iota=2,\ a=\delta_2,\ b=\delta_1\). The actual count is \(1\); the displayed formula gives \(0\). | Conjugate the phase, or reverse the transform convention consistently. The averaging identity remains correct. |
+| **MINOR** | §2 after AVG; d-th-power remark | “Vanishes exactly if” is false: uniform phase distribution is sufficient, not necessary. For example, uniform residue masses make the error vanish for every phase distribution. Also, the character-existence criterion needs the word **nontrivial**; the principal character always exists. | Replace “exactly if” by “if”; add “nontrivial”. Other characters of order not dividing \(d\), not only quadratic characters, can potentially benefit from phase averaging. |
+| **MINOR** | §§4.1–4.2 | LV should explicitly inherit H4.1’s domain. Its \(\log\log R\) factor is negative at \(R=2\). Also \(Q\le z^{1/2001}\) does not quite imply \(8Q^2\le(z/Q)^{1/1000}\): equality leaves out the factor \(8\). | Use \(\log\log(3R)\), state the analytic domain at every reduced endpoint, and take \(Q\le z^{1/2002}\) for sufficiently large \(z\). All actual families satisfy these strengthened conditions. |
+| **MINOR** | §4.4 SC-D | The quoted Prop. 2.13 estimate is a valid **specialisation**, not its literal statement: the proposition bounds \(W\). The exceptional-character identification also requires compatible zero-free-region constants. | Show the cancellation of the Gauss-sum prefactor explicitly; choose the Landau–Page constant no larger than Drappeau’s \(b\). See (b). |
+| **MINOR** | §4.5 | Fixed-\(\kappa\) SC-D does not itself reach \(R_*=\exp(cu/\log^2u)\). The alternative route also suppresses the large-sieve term \(Q/\Psi\) and, in the earlier energy lemma, the induced-character prefactor. | Quantify the stronger small-conductor consequence of the same proof, retain the complete energy bound, and choose constants in order. The earlier energy argument is viable; these omitted terms are harmless in the stated families. |
+
+Reviewed [mf2L_results.md, v1](/Volumes/git/factoring-connection/notes/mf2L_results.md). All six supplied tests pass. They do not test LV, IND, SC-D, or the fixed-phase formula in AVG.
+
+**(b) Primary-source verification**
+
+**Drappeau: verified against the published CJM PDF.** Proposition 2.9 has a written contour-shift proof on p. 618. Its supporting Lemmas 2.6–2.8 are proved on pp. 609–617. In particular, Lemma 2.6 reproduces the argument attributed to Harper. Proposition 2.13 has a written proof on pp. 626–628. These are not proof-by-reference dependencies on arXiv:1208.5992. The ordinary character estimate follows from the \(W\)-estimate by setting \(q=q_1=r,\eta=0\):
+\[
+W(v,y;r,0)=\frac{\tau(\chi_1)}{\varphi(r)}\Psi(v,y;\chi_1).
+\]
+The matching \(\sqrt r/\varphi(r)\) prefactor cancels. [Published paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/BDEFED19FB24C02C644F8DA57C5B8B64/S0008414X0000287Xa.pdf/sommes_friables_dexponentielles_et_applications.pdf).
+
+The definition on p. 599 explicitly uses the Landau–Page region at arbitrary height \(T\). Thus the character exceptional at \(T=y^{c_T}\) is covered. At smaller heights the region widens, so that exceptional real zero remains covered. Use compatible constants.
+
+**Harper: verified in the author’s accepted journal manuscript**, rather than merely arXiv v1; I could not inspect the publisher’s typeset full text. Proposition 2 has exactly the quoted (4.1). Its proof proceeds through Propositions 3–4 and ends before the separate proof of (4.2). The latter invokes Major Arc Estimates 1–2. The former does not. [Accepted manuscript, §4](https://wrap.warwick.ac.uk/107457/7/WRAP-minor-arcs-mean-values-restriction-theory-exponential-sums-over-smooth-numbers-Harper-2018.pdf).
+
+**LV’s derivation is sound.** With \(\gamma\le1/40\) and the quoted \(\varepsilon=1/4\),
+\[
+\sum_{\theta\in\Theta}|S(\theta)|^3
+ \ll(\log z)^{4.05}\Psi^3,\qquad
+\sum_{\theta\in\Theta}|S(\theta)|^2
+ \ll R^{2/3}(\log z)^{2.7}\Psi^2.
+\]
+The discarded small values contribute \(O(R^2z^{-3/1000}\Psi^3)=O(\Psi^3)\). GS and \(1/\varphi(k)\ll\log\log(3R)/R\) give LV. There is no hidden \(1/\rho\) loss.
+
+**IND’s smooth-sequence argument is also sound after making its hypotheses explicit.** The weighted Cauchy step, reciprocal-totient sum, and convergent divisor sum are legitimate. For rough sequences, either retain the unfiltered EN normaliser or supply the usual rough-count comparison. For J, the clean repair is Minkowski:
+\[
+\mathcal E_Q(A^J)^{1/2}
+ \le\sum_{\ell\in J}\mathcal E_Q(A_{v/\ell})^{1/2}
+ \le\sqrt\varepsilon\sum_{\ell\in J}\Psi(v/\ell,B).
+\]
+No factor \(\#J\), or assumption about \((\ell,k)\), is needed.
+
+**(c) Ranges, downstream budgets, and theorem status**
+
+Here is my independent parameter check. Fixed positive constants are suppressed; each logarithm column carries an additional factor \(\lambda\). Put
+\[
+s=3-7\alpha,\qquad \theta=2\alpha-\tfrac12,\qquad
+\theta_p=\max(1-2\alpha,2-5\alpha)=1-2\alpha.
+\]
+
+| Family | \(\log x/\lambda\) | \(\log y/\lambda\) | \(u\) | Upper bound for \(\log Q/\lambda\) | Loss exponent |
+|---|---:|---:|---:|---:|---:|
+| Rational children | \(D^{2\alpha}\) | \(D^\alpha\) | \(D^\alpha\) | \(D^{4\alpha-1}\) | \(\theta\) |
+| Algebraic children | \(D^{2\alpha}\) | \(D^\alpha\) | \(D^\alpha\) | \(D^\alpha\) | \(\theta\) |
+| Rational parents, after dividing by \(\ell\) | \(D^{2\alpha}\) | \(D^\alpha\) | \(D^\alpha\) | \(D^{1-\alpha}\) | \(\theta\) |
+| Algebraic parents | \(D^{2-3\alpha}\) | \(D^{4\alpha-1}\) | \(D^s\) | \(D^{1-\alpha}\) | \(\theta_p\) |
+
+The following checks resolve the potentially dangerous ranges.
+
+- **SC-D domain.** For children and rational parents,
+  \[
+  \frac{\log y}{\sqrt{\log x}}\asymp\sqrt\lambda\longrightarrow\infty.
+  \]
+  For algebraic parents the ratio is
+  \[
+  \asymp D^{(11\alpha-4)/2}\sqrt\lambda\longrightarrow\infty.
+  \]
+  The exponent is already \(1/16\) at \(\alpha=3/8\). All four have \(u\gg(\log_2x)^5\).
+
+- **Subsidiary endpoints.** Here \(\log Q=o(\log x)\), \(\log\ell=o(\log x)\), and
+  \(\log P_0^\#=O(D^{7/10})=o(\log x)\). Starting from a library endpoint at least \(x^{1/2}\), every endpoint after induction, rough-number Möbius inversion, and J-fibre division remains at least \(x^{1/3}\). Harper’s domain and saddle-point bounds hold uniformly there.
+
+- **Exceptional-character range.** Uniformly at these endpoints,
+  \[
+  u^\kappa=o\!\left(\frac{\log y}{\log_3x}\right).
+  \]
+  Hence \(e^{u^\kappa}\le y^{c/\log_3x}\) eventually. The additional upper bound on \(y\) in Proposition 2.13 follows from \(u\gg(\log_2x)^5\). There is no algebraic-parent exception to this check.
+
+- **Required conductor threshold.** One must choose
+  \[
+  \boxed{\quad
+  \frac{1-2\alpha}{3-7\alpha}
+   =\max\!\left(\frac{\theta}{\alpha},
+                \frac{\theta_p}{s}\right)
+   <\kappa<1.\quad}
+  \]
+  Equality at the lower endpoint is insufficient because of \(\lambda^2\). Then
+  \(CD^t\lambda^2=o(u^\kappa)\), for each family’s loss exponent \(t\).
+  The separate parent threshold is essential. Using the child threshold for algebraic parents fails from \(\alpha=7/18\), as the note says.
+
+The small-conductor proof then works: choose fixed sufficiently small \(c_T>0\), use Landau–Page at \(T=y^{c_T}\), and apply Proposition 2.9 with a zero-free width comparable to \(1/\log y\). Its polynomial losses are absorbed by \(e^{-cu}\). The exceptional estimate’s four terms are likewise \(o(e^{-u^\kappa})\). This proves precisely the restricted SC statement needed here.
+
+For the downstream audit, write \(E_t=D^t\lambda^2\). Choosing, for example,
+\[
+C_R>3(C_{\mathfrak D}+C_T+2)
+\]
+leaves room for all polynomial factors and yields normalised character totals
+\[
+O(e^{-(C_T+1)E_\theta})
+\quad\text{or}\quad
+O(e^{-(C_T+1)E_{\theta_p}}).
+\]
+The note’s \(6(C_{\mathfrak D}+C_T)\) suffices when their sum is chosen sufficiently large.
+
+These totals suffice at **every identified later use**:
+
+- thmAB §12(i): the child total is \(o(T_0^{-1})\);
+- thmAB §12(ii): the parent total is smaller than every power of \(D^{-1}\), and is absorbed into the polynomial parent main term;
+- c12rat §8.3: summing dominating weights costs only a polynomial factor times \(\mu_1\); using \(W\ge(1-o(1))\mu_1\), both rational character totals are absorbed into the polynomial RAT terms.
+
+Thus one retains
+\[
+A\ll D^{-2\alpha}\lambda^C,\qquad
+B\ll(D^{-2\alpha}+D^{-2s})\lambda^C.
+\]
+Since \(s\le\alpha\),
+\[
+D^s(A+\sqrt{AB})
+ \ll \lambda^C\bigl(D^{s-2\alpha}+D^{-\alpha}\bigr)=o(1).
+\]
+This explicitly checks the final incidence budget, including \(3/8\). No downstream step needs the original stronger exponential character saving.
+
+The FACTOR_MF replacement also has the claimed negligible cost:
+\[
+\tfrac25(2-3\alpha)<\alpha
+\quad\Longleftrightarrow\quad \alpha>4/11,
+\]
+which covers the entire requested interval.
+
+**Conclusion:** v1 is not a complete proof as written. After the specified repairs, **Theorem 2L-MF follows relative to the stipulated internal chain for every fixed \(3/8\le\alpha<2/5\)**.
+
+For Route A, no additional lower bound on \(a\) is needed, and the original cost constant can be retained. At \(3/8\), retain
+\[
+a>2c_2=\frac{3d_0}{16\kappa_{\rm des}b_2}.
+\]
+Route B independently preserves the exponent if \(a\) is sufficiently large, with the cost constant evaluated at that choice. Its full energy bound, including the omitted terms, has sufficient margins. Neither argument here reaches \(\alpha=2/5\), or gives uniformity as \(\alpha\) approaches that endpoint with \(N\).
+
+**(d) Probability**
+
+**85%** that the intended §4–§5 substitution is correct after these repairs. The main analytic mechanism checks out; the remaining uncertainty concerns uniform bookkeeping and the exact interfaces with the internal chain. This is not an 85% assessment of the entire factoring theorem.
