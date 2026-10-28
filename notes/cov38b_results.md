@@ -263,6 +263,30 @@ q^{1/2+ε} to q^{0.32} for positivity in a union of arcs?" Three separate inputs
 - **Answer: no.** The obstruction is not a lack of distribution information. It is that positivity at
   λ < J^{1/4} is a statement below the fluctuation scale of any linear statistic (Theorem B), uniformly in the dilate.
 
+### 2.4 Direct answer to the triage claim: does any tool give *positivity* (not an average) at length q^{0.32}?
+
+GPT-6.1-sol's triage (codex/r29_triage.out, lead D, ≈ 1%) says that positivity in the tiny Farey-arc unions needs
+arithmetic information beyond generic cancellation in sums of inverses. We tested this directly; the answer is
+**no tool gives it**. The known tools fall into four kinds:
+
+| kind of statement | tools | what it gives at q^{0.32} | positivity for every a (every pair)? |
+|---|---|---|---|
+| geometry, one modulus | Thue / Dirichlet / Minkowski | positivity for **every** a, but only at λ ≍ J (c = 0) | yes, at c = 0 only (exponent 1/5) |
+| average over a (second or higher moments) | large sieve, Montgomery–Vaughan; sieve2d fourth moment; energy of {ℓ̄} (Bourgain–Garaev type, here exactly minimal) | uncovered fraction ≤ C/λ, C/λ² | **no**: average-type. A worst case needs moment order > 25 (Prop. 0(c)) |
+| pointwise linear statistics (exponential and character sums) | prime/integer/multilinear Kloosterman, Heath-Brown + Weil, R*, GRH | positivity iff δ > δ*(c) = 7/25; any bound has δ ≤ 4/25 (Parseval); known δ = 0 for primes | **no** (Theorem B): the only tools that are pointwise in a are capped below the threshold |
+| covering theorems for sets in F_q | sums of k reciprocals (Bourgain–Garaev, Shparlinski); xy ≡ a in boxes (Weil, XY ≫ q^{3/2}); Erdős–Odlyzko–Sárközy | positivity, but for additive k-fold sumsets, or for product sets of size ≥ q^{3/2} | **no**: the target is a multiplicative covering of size q^{1+2/25} |
+
+- The triage claim is confirmed and made quantitative.
+- Positivity results exist only in two regimes: single-modulus geometry (c = 0), and harmonic analysis at product
+  size ≥ q^{3/2} (or ≥ q² with characters).
+- At length q^{0.32}, every tool that is uniform in the dilate a is a linear statistic. By Theorem B such a tool needs
+  a saving δ > (1+2c)/(7−2c) = 7/25 in max_h|Σ_ℓ e(hℓ̄/q)|.
+- No bound can exceed δ = 1/(7−2c) = 4/25, and the known value at this length is δ = 0.
+- **The exact gap is 2c/(7−2c) = 3/25 in the exponent of q, beyond square-root cancellation.** In counting terms: an
+  error o(J^{1/4}) is needed on a sum of J terms, against the J^{1/2} floor of every linear statistic.
+- Average-type tools fail for a different reason. They bound the measure of the uncovered a's by λ^{−j}, which can
+  never reach < 1/q with the available moment order (j ≤ 6 against 25 needed).
+
 ## 3. Prove or isolate (Task 3)
 
 - **Nothing is proved toward c > 3/8**, nor toward any c > 0 for all pairs, nor toward a log-factor union gain over
