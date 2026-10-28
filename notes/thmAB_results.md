@@ -693,8 +693,10 @@ Hence E_e[R₁R₂c₁c₂]/z²_{𝔮,e} ≤ Ξ_pD^C/n_p².
   - Pr_e[R(P)] ≥ R_typD^{−C}: G_g(P) over Ω_e ranges over an interval of relative length ≍ δ_e ≥ B^{−5/12} inside
     [𝔐V₁/16, 2𝔐V₁]. Hildebrand's short-interval theorem on each slice ℓ·(interval/ℓ) and Lemma FIB (Möbius for the
     primitivity of g, factor ≥ 1/(C log log N)) give a J·𝒮_B-density ≥ R_typD^{−C}.
-  - a_P(g) ≥ ρ_a(q)D^{−C}: DW(a)⁺ with the root coset, Hildebrand at B₂ on intervals of relative length ≥ 1/(2dq), and
-    the root-conditioned acceptability subtraction of §11 (≤ D^C/B ≪ ρ_a(q); at α = 3/8 this uses (SQ)).
+  - a_P(g) ≥ ρ_a(q)D^{−C}: DW(a)⁺ with the root coset, Hildebrand at B₂ (relative length ≫ 1/d at scale X_F/q), and
+    the root-conditioned acceptability subtraction of §11 (≤ D^C/B ≪ ρ_a(q); at α = 3/8 this uses (SQ)). Hildebrand
+    is applied **after division by q**: at the scale X_F/q the DW(a)⁺ intervals have relative length ≥ 1/(64d(d + 1))
+    ≫ B₂^{−5/12} (literature critic; codex thmAB_3).
   Sum over active P. Inactive points are only bounded above; no individual lower bound is claimed for them. ∎
 
 Multiplicity: c12rat Lemma MULT (parent) gives ≤ 5 partners P₂ of each P₁ with a given **signed** det, so ≤ 10 for a
@@ -934,23 +936,30 @@ recursive value factorisations).
 
 **nested:** Lemmas RW, T_multi. **escapeR2:** §7.3 (bounded-depth search recurrence).
 
-**Theorem U's chain** (lv5unif §10 list): [pp] §§3, 5–9 (hypD, pcest, ldbound, lv6, thmA), Lemma 8.5′(R′) (lem85),
+**Theorem U's chain** (lv5unif §10 list): [pp] = paper2/main.tex §§3, 5–9 (the older Harper-based FM proofs in
+pcest §2, hypD and thmA_proof §7 are superseded by paper2 + lem85 and not used), Lemma 8.5′(R′) (lem85),
 Lemma S″, Lemmas OS, W, F, T_rec (recurse), Theorem DD (lemmaM), and lv5unif's Lemmas P, U1, CS, Kern-U, GM-U, W-U,
 DS-U, L2-U, Theorems FM-U, LD*-U, D-U, K-U, Prop select-U, Prop LV6-U, Lemma F_α.
 
 **Published inputs.** Theorem numbers are as checked by the project's literature critics (c12alg §10, c12rat §12.1,
 uprime §10, lv5unif §14); new ones here are flagged.
-- **Drappeau**, Compositio Math. 151 (2015) 828–862, **Lemme 5** (Fact D; A = 1/2, effective for A < 1). It is stated
+- **Drappeau**, Compositio Math. 151 (2015) 828–862, doi 10.1112/S0010437X14007933, **Lemme 5** (Fact D; A = 1/2,
+  effective for A < 1; checked verbatim in arXiv 1307.7554v3; also restated as Pascadi, Compos. Math. 161 (2025),
+  Lemma 3.2). It is stated
   without proof as a consequence of §3.3 of **Harper's unrefereed preprint arXiv:1208.5992**. **This is the one
   input whose justification rests on an unrefereed source.** Also **Lemme 1(i)**.
-- **de la Bretèche–Tenenbaum**, Ramanujan J. 9 (2005) 139–202, **Thm 2.4(i)** (Fact dBT1; upper bound only).
+- **de la Bretèche–Tenenbaum**, Ramanujan J. 9 (2005) 139–202, Thms 2.4, 2.1 and (4.1), via **Drappeau Lemme 1(i)**
+  (Fact dBT1; upper bound only; primary not re-opened).
 - **Hildebrand**, J. Number Theory 22 (1986) 289–307, **Theorems 1 and 3**: Ψ = xρ(u)(1 + O(log(u + 1)/log y)), and
   the short-interval form uniformly for xy^{−5/12} ≤ z ≤ x, y ≥ exp((log log x)^{5/3+ε}). These are restated in
   S. Jain, arXiv:2502.10530 (QJM 2026), Lemma 3.2, and in the HT survey JTNB 5 (1993) Thm 5.1. The primary was not
   opened by the project's critics; the statement is verified against both restatements.
-- **Hildebrand–Tenenbaum**, Trans. AMS 296 (1986) 265–290, **Thms 1, 2(i), 2(ii), 3**.
+- **Hildebrand–Tenenbaum**, Trans. AMS 296 (1986) 265–290, **Thms 1, 2(ii), 3** (checked via the survey's Cor 1.7 and
+  Drappeau's quotations; the label "2(i)" for the α asymptotic is unconfirmed: survey (1.26)). The β-drift uses the
+  defining equation of α plus Thm 2(ii).
 - **Hildebrand–Tenenbaum survey**, JTNB 5 (1993) 411–484, **Cor 2.4** and **Thm 5.1** (Lemma η).
-- **Alladi** (log-concavity of ρ; Lemma η).
+- **Alladi** (log-concavity of ρ; Lemma η), attribution per the Encyclopedia of Mathematics ("Dickman function");
+  likely J. reine angew. Math. 335 (1982) 180–196, page not pinned.
 - **Canfield–Erdős–Pomerance** 1983.
 - **Tenenbaum**'s Ψ_q theorem (Phil. Trans. R. Soc. A 345 (1993)).
 - **Iwaniec–Kowalski Thm 7.13**, **Montgomery–Vaughan** (large sieve, Brun–Titchmarsh), **Rosser–Schoenfeld**, the
@@ -1045,7 +1054,27 @@ obstruction does not materialize … both [remaining problems] appear repairable
 Probabilities: AB 80%, AB₂ 70%, 2L-final(α) 65%, 2L-final(3/8) 55%. **The v3 repairs have not been re-reviewed**;
 they are the reviewer's own proposed fixes, applied as stated.
 
-**Opus literature critic**: launched on v2; it had not reported when this agent handed back. Not yet applied; the literature checks of the inputs this note shares with c12alg (§10) and c12rat (§12.1) stand.
+**Opus literature critic** (read-only, on v2): **OK WITH FIXES**; no proof step affected.
+- **Drappeau Lemme 5:** VERIFIED verbatim (arXiv 1307.7554v3, p. 9), including imprimitive characters with
+  conductor in (1, x^η], A = 1/2, and effectivity of the implied constant for A < 1. It is stated as following from
+  §3.3 of Harper 1208.5992, which is still v1 on arXiv with no journal reference.
+- **Lemme 1(i):** VERIFIED; Drappeau derives it from dBT Thms 2.4, 2.1 and (4.1).
+- **Hildebrand Thms 1, 3:** consistent across the HT survey Thm 1.1/5.1, Jain Lemma 3.2 and Lee–Venkatesan Fact 3.13;
+  the primary was not opened.
+- **HT86:** Thms 1, 2(ii) and 3 VERIFIED via secondaries (survey Cor 1.7); the label "2(i)" is unconfirmed. The
+  β-drift follows from the definition of α plus Thm 2(ii).
+- **Others:** survey Cor 2.4 VERIFIED; Alladi's log-concavity VERIFIED via the Encyclopedia of Mathematics, reference
+  not pinned. IK 7.13, Lagarias–Odlyzko (numbering varies: Thm/Cor 1.3) and Tenenbaum's Ψ_q theorem VERIFIED with
+  caveats.
+- **Prior art (search result only):** no rigorous L[α < 1/2] factoring for arbitrary N (Lenstra–Pomerance L[1/2]
+  remains best; Lee–Venkatesan L[1/3] is possibly trivial). No published two-point smoothness covariance device for
+  lattice binary-form values; nearest is de la Bretèche–Drappeau JEMS 2020 Cor 4.2 (first-order pair upper bounds).
+  No random composite multiplier in rigorous NFS analysis.
+- **Harper only via Lemme 5:** consistent for paper2 + lem85, but the older FM proofs (pcest §2, hypD, thmA_proof §7)
+  cite Harper directly; they are superseded. Applied below.
+- **Also flagged:** the P3 wording "relative length ≥ 1/(2dq)" is ambiguous; fixed.
+
+The citation fixes are applied in §13.1 (v3).
 
 **Codex blind `thmAB_1`** (xhigh, launched before anything here was written). It chose the same route (b) for the
 same two reasons: no primitivity, and modulus Δ′ instead of qΔ′. It reached the same structure:
