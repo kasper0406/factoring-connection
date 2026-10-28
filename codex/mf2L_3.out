@@ -1,0 +1,22 @@
+**ACCEPT WITH MINOR FIXES.**  
+Route A supports Theorem 2L-MF(α) relative to the internal chain; Route B remains incomplete.  
+Updated probability of correctness relative to that chain: **92%**.
+
+| Severity | Location / previous finding | Finding | Fix |
+|---|---|---|---|
+| PASS | §4.2, #1 | Hyp SC’s restricted domain now matches SC-D and covers the required endpoints. | None. |
+| PASS | §4.2 Remark, #2 | Lemme 5 ⇒ SC now correctly uses \(\log y\ge u\); both error terms absorb the conductor factor. | None. |
+| PASS | J-library, #3 | Applying IND to smooth cofactors, then Minkowski, is correct, including moduli divisible by \(\ell\). | None. |
+| PASS | IND, #4 | Unfiltered EN normalisers and subsidiary endpoint ranges resolve the previous gap. | None. |
+| PASS | SUB/downstream, #5 | Absorption into polynomial terms is valid. The displayed incidence budget tends to zero, including at \(3/8\). | None. |
+| PASS | §§0/2/3, #6 | The main impossibility claims are now appropriately scoped to the present architecture. | None beyond #7. |
+| **MINOR** | §§0/2/3, #7 | The sufficient precision budget is correct. But \(W/\mu_1\le3u_2\) does **not** establish “typically \(m\asymp u_2\)” or \(\eta\asymp u_2^{-1}\). | Retain the upper bound and sufficient precision; mark typical-count/rank claims as heuristic or conditional. |
+| PASS | AVG, #8 | Conjugated phase is correct; regression test passes. | None. |
+| PASS | After AVG, #9 | “If” and “nontrivial” correctly repair both statements. | None. |
+| PASS | LV/IND, #10 | \(\log\log(3R)\), inherited domain, and \(Q\le z^{1/2002}\) resolve the issues. | None. |
+| PASS | §4.4, #11 | Gauss-prefactor cancellation and compatible exceptional-character identification are correct. | None. |
+| **MINOR; incomplete** | §§4.5/5, #12 | Caveats acknowledge the omissions but do not repair them. The exceptional term supplies \(e^{-cu/\log^2u}\), not the claimed uniform \(e^{-cu/\log_3x}\). | Quantify \(R_*=\exp(cu/\log^2u)\) with sufficiently small \(c\), retain the complete energy bound, or label §5’s variant unproved. |
+| PASS | Rewritten SC-D | Single \(T′\), height \(2T′\), both side conditions, the \(\beta_1\) split, HT normalisation, and every error-term bound check against published Props 2.9/2.13 and (1.2). [Published paper](https://doi.org/10.4153/CJM-2014-036-5). | None substantively. |
+| **MINOR; new** | SC-D, condition (i) | The displayed minimum need not tend to infinity: take \(Y=\sqrt L\). The parenthetical reasoning nevertheless establishes the needed conclusion. | Write \(Y/\log T′=\max\{\log_3z′/c_2,\;Y/\sqrt L\}\). |
+
+All seven supplied tests pass. No new obstruction to Route A found.

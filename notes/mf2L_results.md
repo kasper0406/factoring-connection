@@ -1,8 +1,8 @@
 # mf2L: transferring the U-MF trick to the two-level chain — results
 
-Agent `mf2L`, phase 31, 2026-10-28. **v2**: v0 + proof-critic fixes (v1) + codex blind round's Drappeau CJM route
+Agent `mf2L`, phase 31, 2026-10-28. **v2.1**: v0 + proof-critic fixes (v1) + codex blind round's Drappeau CJM route
 (§4.4–4.5) + the repairs from the literature critic and codex adversarial round mf2L_2 (MAJOR REVISION, no FATAL);
-§8 records the reviews. The v2 repairs have not been re-reviewed.
+§8 records the reviews; codex round 3 (ACCEPT WITH MINOR FIXES) re-checked v2.
 
 Files:
 - this note;
@@ -11,7 +11,7 @@ Files:
   kernel, Lemma GS in exact cyclotomic arithmetic);
 - tests: `tests/test_mf2L.py` (7 tests, exact arithmetic);
 - codex: `codex/mf2L_1.{md,out}` (blind round, launched before anything here was written), `codex/mf2L_2.*`
-  (adversarial round on v0).
+  (adversarial round on v1), `codex/mf2L_3.*` (re-check of v2).
 - No experiments were run (every finite claim is an exact identity, checked by the tests), so there is no
   pre-registration.
 
@@ -67,13 +67,13 @@ has refereed. Drappeau's Lemme 5 and Harper's unpublished preprint are no longer
   the rest.
 - Harper's (4.1) was read in the accepted manuscript, not the typeset journal version. Iwaniec–Kowalski theorem numbers
   are taken from secondary citations.
-- The v2 repairs (SC-D domain and proof, J-library via Minkowski, explicit downstream absorption) have not been
-  re-reviewed.
+- The v2 repairs were re-checked by codex round 3 (ACCEPT WITH MINOR FIXES, applied in v2.1). No Opus critic re-read v2.
 
 **Probabilities (ours, after review; reviewers' in §8).**
 - Dependency map complete and correct: 88%. [proof critic 90%]
 - Props INV, AVG (corrected phase) and NID: 97%.
-- The substitution (GS, LV, IND, SUB, SC-D) after the v2 repairs: 85%. [codex mf2L_2: 85%; proof critic: 85–90%]
+- The substitution (GS, LV, IND, SUB, SC-D) after the v2 repairs: 88%. [codex mf2L_3: 92% for 2L-MF relative to the
+  chain; proof critic: 85–90% on v0/v1]
 - The literature facts (Drappeau CJM full proofs; (4.1) independent of the preprint): 90%. [literature critic: FULL
   PROOF for both]
 - Theorem 2L-MF(α) correct relative to 2L-final's internal chain: ≈ 0.8. Unconditionally, including the chain:
@@ -152,8 +152,8 @@ answer is therefore **no**. What *can* be proved from interval densities is the 
 what Lemmas CF/CP and OPV-A already do.
 
 **Precision required by this architecture (pc3 Prop DC, c12alg Prop PB, multidescent Lemma MP).** The dead-incidence
-bound is W(A + √(AB)) with η := μ₁/W ≳ u₂^{−1} ≍ D^{−(3−7α)} (c12alg Lemma η: the *averaged* number of children per
-accepted parent is ≤ 3u₂, while the deterministic cap is D^{2−4α}). Chebyshev-type union bounds therefore need A ≪ η and
+bound is W(A + √(AB)) with η := μ₁/W ≥ (3u₂)^{−1} ≍ D^{−(3−7α)} (c12alg Lemma η: the *averaged* number of children per
+accepted parent is ≤ 3u₂, while the deterministic cap is D^{2−4α}; that η is not much larger is heuristic). Chebyshev-type union bounds therefore need A ≪ η and
 √(AB) ≪ η, i.e. relative variances to precision D^{−(3−7α)}·λ^{−C} or better (at 3/8: D^{−3/8}). Upper bounds with polylog
 loss (Lemma DS-type, the U-MF rational device) give only Paley–Zygmund success (log N)^{−C} per child and cannot make
 the dead mass small. This is a statement about the union-bound/Chebyshev architecture, not about every conceivable
@@ -163,11 +163,12 @@ proof (codex mf2L_2).
 
 *MF at level 2.* Design MF2: shared g, J_f independent (w_j, c_j), first rationally good parent P₀(g, ℓ). Fields are
 independent given g, so a per-field success probability p(g, ℓ) ≥ ρ₂·L^{−O(1)} would suffice, and losses
-(log N)^{O(m)} from m children would be search work, not root density (m ≤ the cap D^{2−4α}; m ≍ u₂ ≍ D^{3−7α} on
-incidence average). But:
+(log N)^{O(m)} from m children would be search work, not root density (m ≤ the cap D^{2−4α}; on incidence average
+m ≤ 3u₂ ≍ D^{3−7α}, proved, and ≍ u₂ heuristically). But:
 - algebraic children of field j must be descended in field j (Cor EX), so per field the event is the **joint** event
-  "F_j(P₀) accepted and all m children of P₀ in field j good". Typically m ≍ u₂ ≍ D^{3−7α} > d ≍ D^{1−2α} (as
-  3 − 7α > 1 − 2α for α < 2/5), so it concerns more than d + 1 points of one form, and no rank argument makes the
+  "F_j(P₀) accepted and all m children of P₀ in field j good". Heuristically m ≍ u₂ ≍ D^{3−7α} > d ≍ D^{1−2α} (as
+  3 − 7α > 1 − 2α for α < 2/5; c12alg Lemma η proves only the upper bound W/μ₁ ≤ 3u₂, so this typical count is
+  [heuristic], codex mf2L_3), so it concerns more than d + 1 points of one form, and no rank argument makes the
   children independent (Lemma OD / Prop R3). Codex's countermodel: making exactly one uniformly chosen child dead per
   accepted parent gives per-child failure 1/m and joint success 0, so per-child information cannot bound the joint
   event.
@@ -308,7 +309,7 @@ For the algebraic parents, θ is replaced by θ_p, u by u₂ ≍ D^{3−7α} and
 threshold) and θ_p = max(1 − 2α, 2 − 5α) (algebraic parents). Values: κ(3/8) = 2/3; κ(19/50) = 12/17; κ(7/18) = 4/5;
 κ(39/100) = 22/27; κ → 1 as α → 2/5. Hyp SC(κ) is needed for some fixed κ ∈ (κ(α), 1). The families' (x, y):
 children x = e^{Θ(D^{2α}λ)}, y = B; algebraic parents x = e^{Θ(D^{2−3α}λ)}, y = B₂; rational parents x = e^{Θ(D^{2α}λ)},
-y = B. In every case log y ≥ (log x)^{1/3} and y ≤ x^{1/100}.
+y = B. In every case log y ≥ (log x)^{1/2} (strictly, at leading order), y ≤ x^{1/100} and u ≥ (log log x)⁵.
 
 **What Hyp SC is.** The conductors exp(u^κ) are y^{o(1)} but far beyond the Siegel–Walfisz range exp(c√log y)
 (`params.informational`; exception: the algebraic parents inside the open window). The saving e^{−u^κ} is far weaker
@@ -354,10 +355,12 @@ fixed κ < 1 (on its domain: (log x)^{1/2} ≤ log y, y ≤ x^{1/100}, u ≥ (lo
 Y ≥ (log x)^{1/2} ≥ √L, so u′ ≤ √L and u′ ≤ Y; and Y = o(L) because u′ → ∞. Put
   Q := R₁ := e^{u^κ},  T′ := min{y^{c₂/log₃z′}, e^{√L}},  so log T′ = min(c₂Y/log₃z′, √L) ≥ c₂u′/log₃z′.
 Hence log Q ≤ (3u′)^κ = o(log T′), so log(2QT′) ≤ 2 log T′, Q ≤ y^{c₂/log₃z′} ≤ y^{c₂} and T′ ≤ y^{c₂}. Use (1.2) at
-height 2T′ (Lemma 2.7 needs the region up to |τ| ≤ 2T) with Drappeau's b. Let χ be primitive with 1 < cond χ ≤ Q.
+height 2T′ (Lemma 2.7 needs the region up to |τ| ≤ 2T) with Drappeau's b. If χ₁ is exceptional for (Q, 2T′), its zero
+β₁ ≥ 1 − b/log(2QT′) > 1 − b/log(QT′) also lies in the height-T′ region, so by uniqueness χ₁ is also the Q-exceptional
+character for height T′ in Prop 2.13's convention. Let χ be primitive with 1 < cond χ ≤ Q.
 - *χ is not Q-exceptional, or χ = χ₁ with β₁ ≤ 1 − √c₂/log(2QT′).* Then L(s, χ) ≠ 0 on σ > 1 − ε, |τ| ≤ 2T′, with
   ε := min(b, √c₂)/log(2QT′) ≍ 1/log T′. Lemma 2.7's side conditions:
-  (i) ε log y ≍ Y/log T′ ≥ min(log₃z′/c₂, Y/√L) → ∞ (if log T′ = √L then √L ≤ c₂Y/log₃z′);
+  (i) ε log y ≍ Y/log T′ = max{log₃z′/c₂, Y/√L} ≥ log₃z′/c₂ → ∞ (codex mf2L_3);
   (ii) T′ ≥ y^{c₁ε}(log x)²: c₁εY ≍ Y/log T′, and Y = o((log T′)²) because (log T′)² = min(c₂²Y²/(log₃z′)², L) and both
   Y²/(log₃)² and L are ≫ Y; so c₁εY + 2 log log x = o(log T′).
   Prop 2.9 (γ = 0) gives |Ψ(z′, y; χ)| ≪ z′^αζ(α, y)((log T′)z′^{−c₂ε} + T′^{−c₂}), where z′^{−c₂ε} = e^{−cL/log T′} ≤ e^{−c√L}
@@ -382,7 +385,7 @@ factor 1/(ρR). This needs the density restriction ρ ≥ y^{−c₀/2}, i.e. u 
 holds once the constant a in B = L[α, a] is large (child scales: log(1/ρ)/log B = O(1/a²); algebraic parents:
 u₂ log u₂/log B₂ = O(D^{4−11α}) → 0). Enlarging a changes c(α), not α. Caveats (codex mf2L_2): Lemma SC-D at *fixed*
 κ does not reach R_*, so route B needs the quantitative small-conductor consequence of the same proof (available: the
-proof above gives e^{−cu/log₃x}-quality savings up to conductor e^{c u/log₃x}-ish, which must be matched against the
+exceptional term only gives e^{−cu/log²u}, so R_* = e^{cu/log²u} with c small, which must be matched against the
 zero-density range); and the full energy bound must keep the large-sieve term Q/(xρ) and the induced-character
 prefactor. Codex judges these harmless in our families. Route A needs no condition on a; route B needs no Harper.
 
@@ -406,8 +409,9 @@ L_{X_F}[2/5, c_MF + o(1)] = e^{O(D^{(2−3α)·2/5}λ)} = L_N[α]^{o(1)} on valu
 removed, the same conclusion holds, with only published external inputs (§6).
 *Proof.* Lemma SC-D gives Hyp SC(κ) for every κ < 1 on its domain, which contains every endpoint of all four
 families (`params`, SC-D regime; codex mf2L_2 checked the subsidiary endpoints after induction, Möbius and J-division). ∎
-*Variant.* Using §4.5's route in place of Fact H4.1 gives the same, provided a ≥ a₀(α, d₀, κ, b₂). Then c(α) is
-the constant of 2L-final evaluated at that a.
+*Variant [not proved; sketch].* §4.5's route B in place of Fact H4.1 should give the same for a ≥ a₀(α, d₀, κ, b₂),
+with c(α) evaluated at that a. It needs the quantitative small-conductor range R_* = e^{cu/log²u} (the exceptional term
+gives e^{−cu/log²u}, not e^{−cu/log₃x}) and the complete energy bound; codex mf2L_3 judges it incomplete as written.
 
 ## 6. Published inputs of Theorem 2L-MF(α)
 
@@ -432,7 +436,7 @@ Landau (LV6); AKS, Kaltofen–Saunders, Cantor–Zassenhaus, Bernstein.
 
 ## 7. Open routes and remaining risk
 
-0. **Re-review of the v2 repairs** (a third codex round, or a human). Not done in this run.
+0. **Route B** (§4.5) is incomplete. It is not needed, since route A suffices.
 1. **The internal chain.** Theorem 2L-MF is only as good as thmAB, c12rat (v2 repairs), c12alg, uprime, pc3 and
    multidescent. The parallel agent `audit2L` audits that.
 2. **Reduce the losses 𝔇 to polylogarithmic (proof critic).** This would make the needed small-conductor range
@@ -510,8 +514,13 @@ correct; "after the specified repairs, Theorem 2L-MF follows relative to the sti
 | 11 | MINOR | Prop 2.13 is a W-bound; constants must be compatible | specialisation written out; Drappeau's b used |
 | 12 | MINOR | route B needs the quantitative small-conductor range and the omitted terms | §4.5 marked sketch with these caveats |
 
-Because the repairs are substantive (though none changes the exponent or a statement's scope beyond the domain
-restriction), a third codex round would be appropriate; see §7.
+**Codex round 3 `codex/mf2L_3` (high, on v2): ACCEPT WITH MINOR FIXES; 92% that Theorem 2L-MF(α) is correct relative
+to the internal chain; "route A supports Theorem 2L-MF(α) … route B remains incomplete".** Ten of the twelve round-2
+findings PASS, including the rewritten Lemma SC-D, which it checked against the published Props 2.9 and 2.13 and (1.2).
+Three minor findings, applied in v2.1:
+- the typical child count m ≍ u₂ is heuristic (Lemma η gives only W/μ₁ ≤ 3u₂);
+- route B is incomplete, so the §5 variant is now labelled a sketch;
+- SC-D condition (i) should read Y/log T′ = max{log₃z′/c₂, Y/√L}.
 
 ## 9. Reproduction
 
