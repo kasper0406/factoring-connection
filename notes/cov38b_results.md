@@ -13,34 +13,42 @@ Agent `cov38b`, phase 30, 2026-10-28 (conn_alg shortlist #2).
 **No. Nothing in the Bourgain–Garaev / Kloosterman-sum toolbox reaches the needed exponent, and the worst case stays at
 Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now be stated as exact exponents.
 
-- **There is no intermediate prize.** Inside the design family of Theorem U, any coverage exponent c ≤ 3/8 gives
+- **There is no intermediate prize.** Inside the design family of Theorem U (cost model with WIN), any coverage exponent c ≤ 3/8 gives
   exactly N^{1/5} (Theorem W: min(1/5, (1−c)/(7/2−c))), and even a logarithmic gain needs the full power statement
   λ < J^{1/4}. So "some c < 3/8 with an explicit δ" does not exist in this framework (Prop. 0).
 - **The target (§1, Prop. T).** For every prime q ≍ P and every prime p ∈ (q/2, q), some prime ℓ ≡ 3 (mod 4) in
   (Y, 2Y], Y = q^{2/(7−2c)}, and some B ≤ H/4 satisfy ‖pBℓ̄‖_q ≤ qH/(4Y), with H = Y^{1/2}J^{−c}, c > 3/8. At
   c = 3/8: Y = q^{8/25}, H = q^{1/25}, the arcs have length q^{18/25}, and the expected number of hits is
-  λ = J^{1/4} ≈ q^{0.08}. Uniform form: the J dilates ℓ·S₀ of one Farey-arc set S₀ of measure ≈ q^{−6/25} cover F_q^*.
-- **Every "linear" tool fails, with an exact threshold (Theorem B, proved).** A pointwise bound
-  max_{h≠0}|Σ_ℓ e(hℓ̄/q)| ≤ J q^{−δ}, used through any Erdős–Turán-type (phase-discarding) certificate:
-  - certifies the target **iff** δ > δ*(c) = (1+2c)/(7−2c) (up to q^{o(1)}), for the natural certificates; at c = 3/8,
-    δ* = 7/25 = 0.28. No certificate of any shape (signed, any support) works below (1/2+3c)/(7−2c) = 13/50;
+  λ = J^{1/4} ≈ q^{0.08}. Uniform form: the J dilates ℓ·S₀ of one Farey-arc set S₀ of measure ≈ q^{−6/25} cover F_q^*
+  (i.e. F_q^* ⊆ ∪ℓ·S₀).
+- **Every phase-discarding (term-by-term) certificate fails, with an exact threshold (Theorem B, proved).**
+  Take a pointwise bound max_{h≠0}|Σ_ℓ e(hℓ̄/q)| ≤ J q^{−δ}, used through an Erdős–Turán-type certificate that bounds
+  the error term by term in the frequency h. Then:
+  - for the natural (nonnegative, positive-mass) certificates it certifies the target **iff** δ > δ*(c) = (1+2c)/(7−2c),
+    up to q^{o(1)}. At c = 3/8, δ* = 7/25 = 0.28.
+  - No phase-discarding certificate of any shape (signed, sparse support) works below (1/2+3c)/(7−2c) = 13/50.
   - but Parseval caps every such bound at δ ≤ 1/(7−2c) = 4/25 = 0.16 (square-root cancellation).
   - **The gap is 3/25 in the exponent of q, beyond square-root cancellation.** Known results at length q^{0.32}
     give δ = 0 for primes (all prime-variable Kloosterman bounds start at q^{1/2+ε}) and a log saving for integers.
   - New ingredient: the Fourier ℓ¹ norm of a Farey-arc set with H′ denominators is ≥ H′/polylog
-    (Lemma F, via an exact Freiman isomorphism to rationals and an lcm-sum energy bound). This means the union over
-    the H′ dilates buys nothing in a phase-discarding argument: one arc does as well as all of them.
-  - Multiplicative characters (GRH included) and a-adaptive phase discarding fail the same way (Lemma M, Prop. B′).
+    (Lemma F, via an exact Freiman isomorphism to rationals and an lcm-sum energy bound). For nonnegative
+    certificates of positive mass fraction, the union over the H′ dilates therefore buys nothing: one arc does as
+    well. For signed or sparse certificates a gain of at most H^{1/2} (1/50 in δ) is not excluded.
+  - Multiplicative characters (GRH included), joint phase discarding over (B, ℓ), and a-adaptive magnitudes with a
+    fixed weight fail in the same way (Lemma M, Remark B2, Prop. B′).
+  - **Not excluded:** estimates that keep the phases across h or B, e.g. a bilinear bound for
+    Σ_h c_h Σ_B Σ_ℓ e(hBaℓ̄/q) with the prescribed Farey-arc coefficients (coverage38 §3.4), and weights depending
+    on ℓ or on a. No such estimate is known at this length.
 - **Bourgain–Garaev specifically (§2).** Their exponential-sum bounds fall under Theorem B whatever their strength.
-  Their additive-energy input is already optimal here: for Y large, the inverses of band primes have the minimal
+  Their additive-energy input is already optimal here: whenever 16Y³ < q (true at c = 3/8), the inverses of band primes have the minimal
   possible additive energy 2J² − J (an exact identity). It still gives nothing, because the obstruction is pointwise
   in the dilate p, not a lack of energy control. Their covering theorems (sums of reciprocals) concern sumsets, while
   the target is a covering by multiplicative dilates.
 - **Two-pronged algorithms (§4, Theorem TP, proved in the model).** "DCL coverage OR Lehman/Harvey windows" is itself a
   design of Theorem U's family. At budget N^{1/5−η}, the Lehman prong covers at most a fraction ≍ N^{−5η/4} of pairs
   (E3 measures the predicted G^{−5/4} law: slopes −1.27 to −1.31). So the DCL prong must still cover every
-  Lehman-hard pair at λ < J^{1/4}. Barrier B3 is genuinely escaped (linear families are Lehman-easy), but the residual
-  statement is just as strong, and for coprime-pair proofs it still contains a sparse survivor (x, ⌊αx⌋).
+  Lehman-hard pair at λ < J^{1/4}. Barrier B3 is genuinely escaped (linear families are Lehman-easy). In our assessment the residual
+  statement is no easier: it has the same λ-threshold, and for coprime-pair proofs it still contains a sparse survivor (x, ⌊αx⌋).
 - **Experiments (pre-registered; all 12 predictions pass).**
   - E1: exhaustive worst case over all primes p ∈ (q/2, q) for 15 primes q up to 1.7·10⁹ (up to 40.6M pairs per q) at the c = 3/8
     scaling. The worst height h* lies in the independent-model band in 15/15 cases, and below the Thue height for
@@ -48,8 +56,8 @@ Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now 
     (the model's limit is 1/2).
   - E2: the Fourier ℓ¹ norm of Farey-arc minorants grows like H′^{0.81–0.85} (Lemma F's H′/polylog), and
     phase-discarding certificates appear only at H ≈ 9–14·√Y, against a true worst case at or below √Y.
-- **Bottom line.** A sub-1/5 proof by this route needs a positivity mechanism for unions over moduli that is not a linear
-  statistic: some joint geometry-of-numbers or arithmetic argument. None is known, even for a log-factor gain over
+- **Bottom line.** A sub-1/5 proof by this route needs a positivity mechanism for unions over moduli that does not
+  discard phases: a phase-retaining multilinear estimate, or some joint geometry-of-numbers or arithmetic argument. None is known, even for a log-factor gain over
   Thue/Minkowski. Our assessment is that it is out of reach with current technology. This is an assessment, not a
   theorem: it is not a lower bound for factoring.
 
@@ -63,14 +71,15 @@ H = ⌊Y^{1/2}J^{−c}⌋. Write q for the larger prime of a pair (p, q) ∈ S_n
   (A, B), 1 ≤ |A|, B ≤ H, with ℓ | Bp − Aq.
 - **Pos(c)** (reciprocal form). For every pair: ∃ ℓ ∈ 𝒫, 1 ≤ B ≤ H/4 with ‖pBℓ̄‖_q ≤ k₀ := ⌊qH/(4Y)⌋.
 - **Pos∀(c)** (uniform form). For every prime q in range and every a ∈ F_q^*: ∃ ℓ, B as above with ‖aBℓ̄‖_q ≤ k₀.
-  Equivalently **F_q^* = ∪_{ℓ∈𝒫} ℓ·S₀**, where S₀ = S(H/4, k₀) and S(H′, k₀) := {B̄k : 1 ≤ B ≤ H′, |k| ≤ k₀} is the
+  Equivalently **F_q^* ⊆ ∪_{ℓ∈𝒫} ℓ·S₀**, where S₀ = S(H/4, k₀) and S(H′, k₀) := {B̄k : 1 ≤ B ≤ H′, |k| ≤ k₀} is the
   Farey-arc set. Equivalently F_q^* ⊆ 𝒫·[−k₀, k₀]·[1, H/4]^{−1}.
 
 **Proposition T (proved).**
 - (i) Pos(c) ⇒ Cov(c), and Pos∀(c) ⇒ Pos(c).
 - (ii) Cov(c) at height H ⇒ the reciprocal statement with (H, 2qH/Y) in place of (H/4, qH/(4Y)). So Cov and Pos are
   equivalent up to a constant factor in H, which changes c by o(1).
-- (iii) **Size.** |S(H′, k₀)| = (12/π² + o(1))H′k₀ when k₀ ≥ H′³. The expected number of hits is
+- (iii) **Size.** |S(H′, k₀)| = (12/π² + o(1))H′k₀ when 2H′k₀ < q (injectivity), H′ → ∞ and k₀/H′ → ∞
+  (for H′ = 1 it is 2k₀ + 1). The expected number of hits is
   λ = J|S₀|/q ≍ JH²/Y ≍ J^{1−2c}. At c = 3/8: Y = q^{8/25}, H = q^{1/25}, k₀ = q^{18/25}, the measure of S₀ is
   ≈ q^{−6/25}, and λ ≈ J^{1/4} ≈ q^{2/25}.
 - (iv) Cov(c), c > 3/8 ⇒ deterministic worst case N^{(1−c)/(7/2−c)+o(1)} < N^{1/5} on S_n (Theorems R, W).
@@ -91,7 +100,7 @@ H = ⌊Y^{1/2}J^{−c}⌋. Write q for the larger prime of a pair (p, q) ∈ S_n
   form, not a necessity.
 - (b) **No intermediate exponent.** For every design of the coverage38 family (N-uniform groups, per-group charge,
   WIN), X ≥ cN^{1/5}(λ⁴/J)^{1/5} (Theorem U). Coverage of every pair at λ = J^θ with θ ≥ 1/4 therefore costs
-  ≥ cN^{1/5}. Equivalently, Theorem W's exponent is min(1/5, (1−c)/(7/2−c)), which equals 1/5 for all c ≤ 3/8.
+  ≥ cN^{1/5}. Consistently, Theorem W's (achievable) exponent is min(1/5, (1−c)/(7/2−c)), which equals 1/5 for all c ≤ 3/8.
   - So a weaker positivity statement (c ≤ 3/8) gives **no** N^{1/5−δ} through Theorem R.
   - Log gains: λ = J^{1/4}(log N)^{−a} buys at most (log N)^{4a/5} (U4), and it is still a power-strength statement.
 - (c) **No averaged form suffices by itself.** Theorem R guarantees success only on covered pairs. An almost-all
@@ -100,21 +109,25 @@ H = ⌊Y^{1/2}J^{−c}⌋. Write q for the larger prime of a pair (p, q) ∈ S_n
     pair at combined λ < J^{1/4}.
   - Outside the family, nothing is known that recognises or factors the uncovered set. inversesieve shows it carries
     no usable local structure, and forgetful containers fail.
-  - Moments: an exceptional count |S_n|·λ^{−j} < 1 needs j > (7−2c)/(1−2c), which is 25 at c = 3/8. The pair box
-    supports level ≤ |S_n| ≈ Y^{7−2c}, i.e. moments of order ≤ 6 (sieve2d's error analysis stops at 4–5).
+  - Moments: the j-th centred moment of a count with mean λ is ≍ C_jλ^{j/2} even under Poisson behaviour, so
+    Chebyshev gives an exceptional count |S_n|·C_jλ^{−j/2}. Making it < 1 needs j > 2(7−2c)/(1−2c), which is 50 at
+    c = 3/8. (Truncated inclusion–exclusion is worse: depth ≳ λ.) The pair box supports level ≤ |S_n| ≈ Y^{7−2c},
+    i.e. moments of order ≤ 6; sieve2d's error analysis stops at 4–5. (Corrected from "25" after the proof critic.)
 
 ## 2. Tool exponents (Task 2)
 
 ### 2.1 The phase-discarding (Erdős–Turán) certificate and its exact threshold
 
-Fix q, the band 𝒫, J = |𝒫|, and K(h) = Σ_{ℓ∈𝒫} e(hℓ̄/q). A **certificate** is a real g on Z/q with g ≤ 0 off a set S
-all of whose hits imply coverage, plus a number κ ≥ max_{h≠0}|K(h)|. Since
+Fix q, the band 𝒫, J = |𝒫|, and K(h) = Σ_{ℓ∈𝒫} e(hℓ̄/q). A **certificate** is a real g on Z/q with g ≤ 0 off a set S, plus a number κ ≥ max_{h≠0}|K(h)|. S must be
+*valid*: for every a and ℓ, a hit aℓ̄ ∈ S implies that (a, q) is covered *via that ℓ*. (Without "via that ℓ" the
+definition is circular, since if the target is true every x is valid.) By Prop. T(ii) a valid S lies in
+∩_ℓ S_ℓ ⊆ S_out. Since
 Σ_ℓ g(aℓ̄) = (J/q)ĝ(0) + (1/q)Σ_{h≠0} ĝ(h)K(ah), it certifies coverage of every a once
 
   J·Σg/q > κ·W(g),   W(g) := (1/q)Σ_{h≠0}|ĝ(h)|.     (★)
 
-By Prop. T(ii), any valid S lies in the outer set S_out := S(H, 2qH/Y). For c > 1/4 and Y large, 8H⁴ < Y, which
-is the Freiman condition below.
+Here S_out := S(H, 2qH/Y). For c > 1/4 and Y large, 8H⁴ < Y, which is the Freiman condition below. Lemma F bounds
+the full ℓ¹ norm W_full = W + Σg/q; since Σg/q ≤ |S_out|/q = o(1) and W_full ≥ sup g, we have W ≥ W_full/2.
 
 **Lemma P (Parseval; proved).** For J distinct points, max_{h≠0}|K(h)| ≥ √(J(q−J)/(q−1)). So in (★)
 κ ≥ √(J/2) for J ≤ q/2. Writing κ = J q^{−δ} with J = q^{α}, α = 2/(7−2c): **δ ≤ α/2 = 1/(7−2c)** for every valid κ.
@@ -140,7 +153,9 @@ Also |S| ≥ k₀H′/2 for H′ ≥ H₀.
   - #{(B₂, B₃, B₄) : lcm = M} ≤ τ(M)³.
   - So the sum is ≤ H′Σ_{M≤H′³}τ(M)⁴/M ≪ H′(log H′)^{16}.
 - `test_lemma_F1_energy_bound` and `test_lcm_sum_divisor_bound` check both inequalities. ∎
-- The lower bound E ≥ (2/3)H′(2k₀)³ (the H′ single-denominator progressions) shows that F1 is sharp up to the polylog.
+- F1 is sharp up to the polylog. The sets A*_B = {k/B : gcd(k, B) = 1, |k| ≤ k₀} are disjoint, and Cauchy–Schwarz
+  gives E(A*_B) ≥ |A*_B|⁴/(4k₀+1) ≍ k₀³(φ(B)/B)⁴. Summing over B gives E(S) ≥ ck₀³H′. (Corrected after the
+  critic: the earlier "single-denominator progressions" argument over-counted the shared integers.)
 
 **Lemma F (Fourier ℓ¹ norm of Farey-arc minorants; proved).** Let S = S(H′, k₀) with 4H′³k₀ < q and k₀ ≥ H′³.
 - **(a) Nonnegative, θ-mass.** If 0 ≤ g ≤ 1_S and Σg ≥ θ|S|, then (1/q)Σ_h|ĝ(h)| ≥ cθ³H′/(log 2H′)^8.
@@ -159,25 +174,38 @@ Also |S| ≥ k₀H′/2 for H′ ≥ H₀.
   - The ratio bound follows by maximising θ|S|/max(1, cθ^{4/3}H′^{2/3}/L) over θ; the maximum is at θ ≍ H′^{−1/2}L^{3/4}.
 - (The signed Hölder step is GPT-6.1-sol's, from the blind round; we re-derived it.) ∎
 
-The same argument with g = 1_A for an arbitrary A ⊆ S, and the 3-term representation count
-max_x #{r₃ + r₄ − r₂ = x} ≤ C k₀²H′(log)^8, gives the same k₀√H′ ratio bound for indicators.
+The same k₀√H′ ratio bound holds for indicators g = 1_A of an arbitrary A ⊆ S, by a direct route:
+- E(1_A) ≤ |A|·max_{x∈S} r₃(x), where r₃(x) = #{(r₂, r₃, r₄) ∈ R³ : r₃ + r₄ − r₂ = x}. The Freiman lift needs x ∈ S.
+- For fixed denominators the solutions in (k₂, k₃, k₄) lie in a coset of a sublattice. With c_i the largest of
+  c₂, c₃, c₄ (c_i ≤ H′² ≤ 2k₀ + 1), the density of the coset is B_i/lcm(B₂, B₃, B₄).
+- So r₃ ≤ 4(2k₀+1)²Σ_{B₂,B₃,B₄} B_min/lcm(B₂, B₃, B₄) ≪ k₀²H′(log H′)^8. The critic verified this bound numerically.
 
 **Theorem B (exact threshold for phase-discarding certificates; proved).** Let c ∈ (1/4, 1/2], Y ≥ Y₀, and κ = Jq^{−δ}.
 - **(i) Sufficiency.** If max_{h≠0}|K(h)| < J(k₀+1)/q with k₀ = ⌊qH/(4Y)⌋, then Pos∀(c) holds. In exponents, this
   holds as soon as δ > δ*(c) := (1+2c)/(7−2c) + o(1).
   - *Proof.* Take G = Σ_{B≤H/4} Fej_B, with Fej_B(B̄k) = 1 − |k|/(k₀+1) the Fejér triangle on the arc B̄[−k₀, k₀].
   - Ĝ ≥ 0, so W(G) ≤ G(0) = H/4. Also ΣG = (H/4)(k₀+1), and supp G ⊆ S₀. Apply (★) and Prop. T(i).
-  - Note that **H′ cancels**: the single arc B = 1 does exactly as well. Phase discarding cannot use the union over
-    dilates.
-- **(ii) Necessity, nonnegative certificates of positive mass.** If g ≥ 0 is supported in S_out with Σg ≥ θ|S_out|
-  for a fixed θ > 0, then (★) forces δ ≥ δ*(c) − o(1).
-  - *Proof.* By Lemma F(a), W(g) ≥ cθ³H/polylog − Σg/q. So (★) needs κ ≤ J|S_out|/(qW) ≲ J k₀/q·polylog.
+  - Note that **H′ cancels**: the single arc B = 1 does exactly as well. By (ii), nonnegative certificates of
+    positive mass cannot use the union over dilates. Signed or sparse certificates could in principle gain up to
+    H^{1/2} (the window [13/50, 7/25] at c = 3/8 is open), which is still far short.
+- **(ii) Necessity, nonnegative certificates of positive mass.** Normalise 0 ≤ g ≤ 1_{S_out} (equivalently
+  sup g = 1). If Σg ≥ θ|S_out| for a fixed θ > 0, then (★) forces δ ≥ δ*(c) − o(1).
+  - *Proof.* By Lemma F(a), W(g) ≥ cθ³H/polylog − Σg/q. So (★) needs κ ≤ J|S_out|/(qW) ≲ J k₀′/q·polylog, with
+    k₀′ = 2qH/Y.
 - **(iii) Necessity, any certificate.** (★) with any real g ≤ 0 off S_out forces
   δ ≥ δ*(c) − (1−2c)/(2(7−2c)) − o(1) = (1/2 + 3c)/(7−2c) − o(1).
   - *Proof.* Lemma F(b) with H′ = H, k₀ = 2qH/Y.
-- **(iv) Impossibility.** All of (ii) and (iii) exceed the Parseval cap 1/(7−2c) (Lemma P) as soon as c > 1/6. At the
+- **(iv) Impossibility.** Throughout the proved range c ∈ (1/4, 1/2], all of (ii) and (iii) exceed the Parseval cap
+  1/(7−2c) (Lemma P). The algebraic crossover of (iii) with the cap is c = 1/6, but Theorem B is proved only for
+  c > 1/4, because the Freiman condition fails on S_out below that. At the
   target c = 3/8 the numbers are: sufficiency/necessity δ* = 7/25 = 0.28; any certificate ≥ 13/50 = 0.26; Parseval
   cap 4/25 = 0.16. **No pointwise bound of any quality, known or conjectural, certifies the target through (★).** ∎
+
+**Remark B2 (joint phase discarding over (B, ℓ); proved; critic's suggestion).** The JH′ points Bℓ̄ (B ≤ H′, ℓ ∈ 𝒫)
+are distinct mod q: Bℓ′ ≡ B′ℓ with both sides < q forces Bℓ′ = B′ℓ, and then ℓ = ℓ′ since ℓ ∤ B.
+- The hit count is Σ_{B,ℓ} 1_I(aBℓ̄), which is a single-arc certificate over JH′ points.
+- Parseval forces max_m|Σ_{B,ℓ} e(maBℓ̄/q)| ≥ √(JH′/2), and the single arc has W ≍ 1.
+- So phase discarding needs λ ≳ √(JH′), i.e. J^{2−4c} ≳ J^{3/2−c}, i.e. c ≤ 1/6. It fails at c > 3/8.
 
 *Remarks.*
 - coverage38 Prop. L(b) obtained "c ≤ 1/4" from W ≥ 1/2 − μ. Theorem B identifies the true price: W ≍ H′ for
@@ -190,9 +218,11 @@ fractions determine the pair. So the inverses of band primes have additive energ
 - This gives Σ_x|K(x)|⁴ = q(2J² − J) and Σ_x|K(x)|² = qJ.
 - Hölder then gives mean_{x≠0}|K(x)| ≥ (1 − o(1))√(J/2).
 - For any fixed g, averaging over a gives E_a Σ_{h≠0}|ĝ(h)||K(ah)| = q·W(g)·mean|K|. Paley–Zygmund applied to
-  Z(a) = Σ|ĝ(h)||K(ah)|, with E[Z²] ≤ (qW)²·mean|K|², gives: **for at least 1/8 of all a ∈ F_q^***, the
+  Z(a) = Σ|ĝ(h)||K(ah)|, with E[Z²] ≤ (qW)²·mean|K|², gives: **for at least (1 − o(1))/8 of all a ∈ F_q^***, the
   a-specific phase-discarded error is ≥ (1/2)(1 − o(1))√(J/2)·W(g).
-- So even using the exact values |K(ah)| for each a, the uniform statement Pos∀ needs the same δ*(c).
+- So for a fixed weight g (independent of a), using the exact magnitudes |K(ah)| instead of a uniform κ gains only
+  a constant: the effective κ is ≥ √J/(2√2), the Parseval level, which fails by Theorem B(iv). Weights g_a that
+  depend on a are not covered.
 - For the prime-only Pos, the averaging covers a positive proportion of residues but cannot by itself say where the
   primes p ∈ (q/2, q) fall.
 - This is where Bourgain–Garaev-type energy information enters, and it is already optimal: the energy is exactly
@@ -207,12 +237,14 @@ N(a) = (1/(q−1))Σ_χ χ̄(a)S_𝒫(χ)F̂(χ), where F̂(χ) = Σ_{|k|≤k₀
 - With arbitrary nonnegative weights in place of F, it still needs λ ≳ √J, i.e. c ≤ 1/4.
 - GRH gives |S_𝒫(χ)| ≪ √Y log²(qY), at the Parseval level, so GRH used this way gives c ≤ 1/4 at best.
 
-**Lemma S (scale; proved in the model).** Under WIN, a group with modulus M has π_g ≤ C(log P)/M (coverage38 §1).
+**Lemma S (scale; proved in the model).** By Brun–Titchmarsh (coverage38 §1), a group with modulus M has
+π_g ≤ C(log P)/M.
 - A design of cost X has ≤ X groups.
-- So the groups with M > Z carry λ_{>Z} ≤ C(log P)X/Z ≤ 1/log P for Z = X(log P)².
-- Hence all but a fraction 1/log P of the pairs must be covered by moduli ≤ X·polylog ≤ q^{2/5+o(1)}.
-- **The moduli that carry the coverage are always below q^{1/2}**, where every known prime-variable Kloosterman
-  bound mod a prime is trivial.
+- So the groups with M > Z carry λ_{>Z} ≤ C(log P)X/Z ≤ C/log P for Z = X(log P)².
+- Hence all but a fraction C/log P of the pairs must be covered by moduli ≤ X·polylog ≤ q^{2/5+o(1)}. There every
+  known prime-variable Kloosterman bound mod a prime is trivial.
+- The leftover pairs could be exactly the hard ones, covered by large moduli. But λ_{>Z} < 1 there, so no
+  certificate uniform in a can work for the large moduli either.
 
 ### 2.2 The table (Task 2's question: "the exact exponent each tool gives")
 
@@ -232,14 +264,15 @@ and is the baseline.
 | Hooley R* / square-root cancellation (conjectural) | — | 4/25 (the Parseval cap) | **none** (Theorem B: needs 7/25) | no |
 | GRH, multiplicative characters | yes | Parseval level | ≤ 1/4 with arbitrary weights, ≤ 0 with the natural one (Lemma M) | no |
 | Bourgain–Garaev additive energy / sum-product for {ℓ̄} | yes | energy exactly minimal (Prop. B′) | none (B′) | no |
-| Large sieve / k-th moments (D′, sieve2d) | yes | almost-all only | worst case needs moment order > 25; box allows ≤ 6 | no |
+| Large sieve / k-th moments (D′, sieve2d) | yes | almost-all only | worst case needs moment order > 50; box allows ≤ 6 | no |
 
 **The exact gap (Task 3, "isolate").**
-- *Linear-statistic route.* Positivity needs δ > (1+2c)/(7−2c) = 7/25. The most any bound can give is 1/(7−2c) = 4/25.
+- *Phase-discarding route.* Positivity needs δ > (1+2c)/(7−2c) = 7/25. The most any bound can give is 1/(7−2c) = 4/25.
   The deficit is 2c/(7−2c) = 3/25 in the exponent of q. Equivalently, the hit count needs an error o(λ) = o(J^{1/4})
   on a sum of J terms: a saving of J^{3/4} over trivial, J^{1/4} beyond square root.
 - *Known.* The saving is 0 for primes at q^{0.32}, and (log q)^{1−o(1)} for integers.
-- *What would suffice instead.* A positivity mechanism that is not a linear statistic. The only one we know is
+- *What would suffice instead.* A positivity mechanism that does not discard phases term by term. Either a
+  phase-retaining multilinear estimate (none is known at q^{0.32}) or a non-analytic one. The only one we know is
   single-modulus geometry (Thue/Minkowski), and B2 shows it stops at c = 0. No joint-geometry statement for unions
   over ℓ is known, even with a log-factor gain over Thue.
 
@@ -248,7 +281,8 @@ and is the baseline.
 conn_alg asks: "Do Bourgain–Garaev-type multiplicative-energy bounds for {ℓ̄ : ℓ prime in a band} extend from length
 q^{1/2+ε} to q^{0.32} for positivity in a union of arcs?" Three separate inputs answer it.
 - **Exponential-sum bounds** (Bourgain 2005; Bourgain–Garaev 2014, multilinear Kloosterman with x_i ≤ q^ε). Every such
-  bound is a pointwise linear statistic, so Theorem B applies whatever its strength. Even square-root cancellation
+  bound is pointwise in the frequency, so used through a phase-discarding certificate Theorem B applies whatever its
+  strength. Even square-root cancellation
   (δ = 4/25) falls short of δ* = 7/25.
 - **Energy / sum-product bounds** for reciprocals. At our scale the energy of {ℓ̄} is already exactly minimal
   (Prop. B′), so better energy bounds cannot help. Prop. B′ also shows that energy information, used through
@@ -256,12 +290,13 @@ q^{1/2+ε} to q^{0.32} for positivity in a union of arcs?" Three separate inputs
 - **Covering theorems** ("every residue is a sum of k reciprocals of integers ≤ q^ε"; Bourgain–Garaev,
   Shparlinski). These cover F_q by additive k-fold sumsets of {x̄}. The target asks to cover F_q^* by the
   multiplicative dilates ℓ·S₀, i.e. by the product set 𝒫·[−k₀, k₀]·[1, H′]^{−1}.
-  - For product sets the known all-classes ranges are the modular-hyperbola ones: xy ≡ a needs XY ≫ q^{3/2+o(1)}
-    (Weil). The trivial character bound needs |A||B| > q².
+  - For product sets the known all-classes ranges are the modular-hyperbola ones: xy ≡ a is known to be solvable for
+    all a once XY ≫ q^{3/2+o(1)} (Weil). This is a sufficient range, not a barrier. The trivial character bound needs |A||B| > q².
   - The target's product has size λq = q^{1+2/25}, far below both.
   - Thue reaches product size q only because one factor, [1, H′]^{−1}·[−k₀, k₀] with H′k₀ ≥ q, is a full Dirichlet box.
 - **Answer: no.** The obstruction is not a lack of distribution information. It is that positivity at
-  λ < J^{1/4} is a statement below the fluctuation scale of any linear statistic (Theorem B), uniformly in the dilate.
+  λ < J^{1/4} is a statement below the fluctuation scale of every phase-discarding certificate (Theorem B), uniformly in
+  the dilate. Phase-retaining multilinear estimates are not excluded, but none is known at this length.
 
 ### 2.4 Direct answer to the triage claim: does any tool give *positivity* (not an average) at length q^{0.32}?
 
@@ -273,19 +308,20 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
 |---|---|---|---|
 | geometry, one modulus | Thue / Dirichlet / Minkowski | positivity for **every** a, but only at λ ≍ J (c = 0) | yes, at c = 0 only (exponent 1/5) |
 | average over a (second or higher moments) | large sieve, Montgomery–Vaughan; sieve2d fourth moment; energy of {ℓ̄} (Bourgain–Garaev type, here exactly minimal) | uncovered fraction ≤ C/λ, C/λ² | **no**: average-type. A worst case needs moment order > 25 (Prop. 0(c)) |
-| pointwise linear statistics (exponential and character sums) | prime/integer/multilinear Kloosterman, Heath-Brown + Weil, R*, GRH | positivity iff δ > δ*(c) = 7/25; any bound has δ ≤ 4/25 (Parseval); known δ = 0 for primes | **no** (Theorem B): the only tools that are pointwise in a are capped below the threshold |
+| pointwise exponential and character sums, used by phase discarding | prime/integer/multilinear Kloosterman, Heath-Brown + Weil, R*, GRH | positivity iff δ > δ*(c) = 7/25; any bound has δ ≤ 4/25 (Parseval); known δ = 0 for primes | **no** (Theorem B): the only tools that are pointwise in a are capped below the threshold |
 | covering theorems for sets in F_q | sums of k reciprocals (Bourgain–Garaev, Shparlinski); xy ≡ a in boxes (Weil, XY ≫ q^{3/2}); Erdős–Odlyzko–Sárközy | positivity, but for additive k-fold sumsets, or for product sets of size ≥ q^{3/2} | **no**: the target is a multiplicative covering of size q^{1+2/25} |
 
 - The triage claim is confirmed and made quantitative.
 - Positivity results exist only in two regimes: single-modulus geometry (c = 0), and harmonic analysis at product
   size ≥ q^{3/2} (or ≥ q² with characters).
-- At length q^{0.32}, every tool that is uniform in the dilate a is a linear statistic. By Theorem B such a tool needs
+- At length q^{0.32}, every known tool that is uniform in the dilate a is a pointwise exponential- or character-sum
+  bound. Used by phase discarding (Theorem B), such a tool needs
   a saving δ > (1+2c)/(7−2c) = 7/25 in max_h|Σ_ℓ e(hℓ̄/q)|.
 - No bound can exceed δ = 1/(7−2c) = 4/25, and the known value at this length is δ = 0.
 - **The exact gap is 2c/(7−2c) = 3/25 in the exponent of q, beyond square-root cancellation.** In counting terms: an
-  error o(J^{1/4}) is needed on a sum of J terms, against the J^{1/2} floor of every linear statistic.
+  error o(J^{1/4}) is needed on a sum of J terms, against the J^{1/2} floor of every phase-discarding argument.
 - Average-type tools fail for a different reason. They bound the measure of the uncovered a's by λ^{−j}, which can
-  never reach < 1/q with the available moment order (j ≤ 6 against 25 needed).
+  never reach < 1/q with the available moment order (j ≤ 6 against 50 needed).
 
 ## 3. Prove or isolate (Task 3)
 
@@ -294,7 +330,8 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
 - What is proved:
   - Prop. T, the precise target and its equivalent forms;
   - Prop. 0, no intermediate regime and no usable averaged form in the model;
-  - Theorem B, Lemmas F0, F1, F, P, M and S, and Prop. B′: the exact exponents and gap of all linear-statistic tools.
+  - Theorem B, Remark B2, Lemmas F0, F1, F, P, M and S, and Prop. B′: the exact exponents and gap of all
+    phase-discarding uses of the known tools.
 - **Dependency list for Theorem B.**
   - Lemma F0 (elementary).
   - Lemma F1 (elementary divisor sums: Σ_{M≤x}τ(M)⁴/M ≪ (log x)^{16}).
@@ -303,8 +340,9 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
   - Fejér's kernel (Ĝ ≥ 0).
   - The size relations of Theorem W (Y = q^{2/(7−2c)+o(1)}, J ≍ Y/log Y by PNT in progressions mod 4).
   - Nothing else; in particular no unproved hypothesis.
-- **Isolated gap.** See §2.2: 7/25 needed against at most 4/25 possible for linear statistics, and 0 known at
-  q^{0.32}. A proof must be a non-linear positivity argument for unions over moduli.
+- **Isolated gap.** See §2.2: 7/25 needed against at most 4/25 possible for phase-discarding arguments, and 0 known
+  at q^{0.32}. A proof must retain phases (a multilinear estimate with the Farey coefficients), or be a non-analytic
+  positivity argument for unions over moduli.
 
 ## 4. Two-pronged algorithms (Task 4)
 
@@ -347,7 +385,8 @@ per group, and WIN holds.
 
 **Answer to Task 4.** A two-pronged worst-case algorithm handles every pair iff (for coverage-based proofs) Res(η)
 holds. Res(η) has the same λ < J^{1/4} threshold, applies to all but an N^{−5η/4} fraction of pairs, and for coprime
-pairs retains B3's sparse survivor. The dichotomy changes the quantifier, not the difficulty.
+pairs retains B3's sparse survivor. Our assessment, which Theorem U does not rank: the dichotomy changes the
+quantifier, not the difficulty.
 
 ## 5. Experiments (pre-registered; `notes/cov38b_prereg.md`, addendum A)
 
@@ -428,9 +467,9 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
 |---|---|
 | mechanism | Pos(c): positivity of inverses of band primes in unions of Farey arcs, via Bourgain–Garaev / Kloosterman / character tools |
 | payoff if true | deterministic worst case N^{(1−c)/(7/2−c)} < N^{1/5} for c > 3/8 |
-| status | **refuted for every linear-statistic (phase-discarding) certificate, with the exact threshold δ*(c) = (1+2c)/(7−2c) against the Parseval cap 1/(7−2c) (Theorem B, proved)**; no averaged/intermediate form helps (Prop. 0); two-pronged designs face the same threshold (Theorem TP) |
+| status | **refuted for every phase-discarding (term-by-term in h) certificate, with the exact threshold δ*(c) = (1+2c)/(7−2c) against the Parseval cap 1/(7−2c) (Theorem B, proved)**; no averaged/intermediate form helps (Prop. 0); two-pronged designs face the same threshold (Theorem TP) |
 | experimentally supported | the target is true at toy sizes with the Poisson extreme (E1); Wiener norm ≍ H′ (E2); Lehman prong ≍ G^{−5/4} (E3) |
-| sharpest obstruction | a positivity statement at λ = J^{1/4} is below the fluctuation scale √J of every linear statistic; the union over dilates is invisible to phase discarding (H′ cancels in Theorem B(i)) |
+| sharpest obstruction | a positivity statement at λ = J^{1/4} is below the fluctuation scale √J of every phase-discarding certificate; for nonnegative positive-mass certificates the union over dilates is invisible (H′ cancels in Theorem B(i)) |
 | what would revive it | a non-linear positivity mechanism for unions of lattices Λ_ℓ = Z(p, q) + ℓZ² (joint geometry of numbers), even a log-factor union gain over Thue as a first test |
 
 ## 8. Reviews
