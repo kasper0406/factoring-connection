@@ -75,3 +75,17 @@ only by (d/N)); drop the 13 CM j-invariants. F_K = first K curves.
   (0 violations; the Serre-curve entanglement Q(√37) ⊂ Q(E[2])), and the converse fails for some p.
 
 Order: E4, E3, E1, E2. Code changes after this commit that affect outcomes will be disclosed.
+
+## Addendum A1 (2026-10-28, after a smoke run, BEFORE the registered E1 run)
+- Smoke run: `run_experiments e1 --quick` (n = 32 only, 3 instances, K ∈ {500, 2000}; output
+  `experiments/raw/cuspcoef_e1_quick.jsonl`). It showed a design flaw: at n = 32 the list decoder's budget of 3000
+  combinations is about 1/3 of the whole space of s mod 2·3·5·…·17 (∏ (ℓ+1)/2 ≈ 9·10^3 residue combinations), and every
+  combination is verified exactly, so the controls C1 and C2 can succeed by exhaustive search (they did, with 460–2134
+  combinations against 1–29 for the real data).
+- The registered predictions P1a–P1e stay as written and will be evaluated as written (P1c/P1d are expected to fail at
+  n = 32 for this reason).
+- Added metrics, registered now: `tried` (number of combinations until success; this is the rank of the truth in the
+  best-first order) and the size of the search space S_n = ∏_ℓ #{s mod ℓ}.
+  - P1f: at K = 32000, the median `tried` of the main decoder is ≤ 5 at each n.
+  - P1g: the median `tried` of C1 and of C2 (counting failures as > 3000) is ≥ 100 at each n.
+  - P1h: top-1 successes (`tried` = 1): main decoder at K = 32000 ≥ 10/20 at each n; C1 and C2 ≤ 1/20 at each n.
