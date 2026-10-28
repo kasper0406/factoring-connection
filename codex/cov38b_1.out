@@ -1,0 +1,662 @@
+**UNVERIFIED — verdict:** I found no theorem proving the required worst-case coverage, or even a logarithmic union gain over Thue, at the relevant scales. **PROVED:** the uniform pointwise Fourier route has a sharper obstruction than \(\lambda\gtrsim\sqrt J\): even signed minorants require Fourier norm \(Hq^{-o(1)}\), leaving a factor \(J^c\) gap against square-root cancellation. **REFUTED:** “no averaged statement can yield a worst-case result” is too strong; sufficiently high centered moments would exclude every exception. **PROVED, within Theorem U’s model:** adding an ordinary Lehman prong preserves the coverage threshold, with qualifications about its number of moduli. None of these conclusions is a lower bound for general factoring algorithms.
+
+## 1. Exact target and quantifiers
+
+**PROVED — notation and balancing.** Put
+\[
+h=\lfloor H/4\rfloor,\qquad K=\left\lfloor\frac{qH}{4Y}\right\rfloor,
+\]
+\[
+\mathcal L_Y=\{\ell\in(Y,2Y]:\ell\text{ prime},\ \ell\equiv3\pmod4\},
+\]
+and
+\[
+S_{q,h,K}=\bigcup_{1\le B\le h}
+ \{x\in\mathbb F_q:|Bx\bmod q|\le K\}.
+\]
+Write \(C_q(a)=\sum_{\ell\in\mathcal L_Y}1_S(a\bar\ell)\).
+
+On the dense-band branch, balancing the two terms of the stated cost gives
+\[
+Y=q^{\alpha+o(1)},\quad H=q^{\beta+o(1)},\qquad
+\alpha=\frac2{7-2c},\quad
+\beta=\frac{1-2c}{7-2c}.
+\]
+Indeed,
+\[
+JH^2=Y^{2-2c+o(1)},\qquad
+\sqrt{\frac{HP}{Y^2}JH^2}
+=P^{1/2}Y^{1/4-3c/2+o(1)}.
+\]
+Thus the dense-band cost exponent in \(N\) is
+\[
+E(c)=\frac{1-c}{7/2-c}.
+\]
+For \(c\le3/8\), the separate \(1/5\) fallback remains better.
+
+**CONJECTURED — a sufficient positivity statement.** For any fixed
+\[
+\frac38<c<\frac12,
+\]
+the clean target is
+\[
+\boxed{\operatorname{Pos}_{\rm prime}(c):
+\quad C_q(a)\ge1
+\quad\text{for every sufficiently large prime }q
+\text{ and every prime }q/2<a<q,}
+\]
+at the above scales, uniformly under the constant-factor changes in \(Y\) needed to select parameters from \(N\), rather than the hidden \(q\).
+
+The stronger version \(\operatorname{Pos}_{\rm all}(c)\) replaces those prime \(a\) by every \(a\in\mathbb F_q^\times\).
+
+**PROVED — implication to coverage.** A hit gives
+\[
+Bp\equiv \ell k\pmod q,\qquad B\le H/4,\quad |k|\le qH/(4Y).
+\]
+Therefore
+\[
+A=\frac{Bp-\ell k}{q}\in\mathbb Z,\qquad
+|A|\le H/4+H/2=3H/4.
+\]
+Here \(A\ne0\): otherwise \(\ell\mid Bp\), impossible for \(\ell\ne p\) and \(B<\ell\). Dividing \((A,B)\) by its gcd preserves divisibility by \(\ell\). Theorem R consequently applies.
+
+**PROVED — permissible weakenings.**
+
+| Quantifier | What Theorem R actually needs |
+|---|---|
+| Every nonzero residue \(a\) | Stronger than necessary; prime \(a=p\in(q/2,q)\) suffices. |
+| Every integer modulus \(q\) | Unnecessary; only prime larger factors are needed. |
+| Every scale \(Y\) | Unnecessary; one public parameter schedule, or a budgeted collection of bands, suffices. |
+| Every prime \(q\) | For inputs of size \(P^2\), only \(P<q\le\sqrt2P\) is relevant; the assertion must hold uniformly as \(P\) varies. |
+| Almost every pair | Insufficient by itself: exceptional balanced semiprimes can determine worst-case time. |
+| Almost every pair plus a fast exceptional-case algorithm | Sufficient if the exceptional-case guarantee and its cost are uniform. |
+
+**REFUTED — the absolute claim about averaging.** An average that forces the exceptional set to be empty *does* give a worst-case theorem.
+
+For example, let
+\[
+\Lambda_q=\frac{J\,|S\setminus\{0\}|}{q-1},
+\]
+the exact average of \(C_q(a)\) over \(a\ne0\). If
+\[
+\sum_{a\ne0}|C_q(a)-\Lambda_q|^{2r}<\Lambda_q^{2r},
+\tag{1}
+\]
+then there is no zero count: one zero alone contributes \(\Lambda_q^{2r}\).
+
+**PROVED — a concrete high-moment threshold.** A hypothetical estimate
+\[
+\sum_{a\ne0}|C_q(a)-\Lambda_q|^{2r}
+ \ll_r q^{1+o(1)}\Lambda_q^r
+\tag{2}
+\]
+implies positivity whenever
+\[
+\Lambda_q^r>q^{1+\varepsilon}.
+\]
+At \(c=3/8\),
+\[
+\Lambda_q=q^{2/25+o(1)},
+\]
+so \(r=13\), a **26th centered moment**, suffices:
+\[
+q\Lambda_q^{-13}=q^{-1/25+o(1)}\longrightarrow0.
+\]
+Moreover, the same moment order suffices throughout
+\[
+\frac38<c<\frac{19}{50},
+\]
+because
+\[
+13\frac{2-4c}{7-2c}>1.
+\]
+This would yield an exponent strictly below \(1/5\).
+
+**UNVERIFIED — missing input.** I do not know an estimate such as (2) for these arithmetic configurations. Bourgain–Garaev reciprocal-energy estimates are not estimates for these centered coverage moments. Ordinary almost-all results, whose exceptional upper bound still exceeds one, do not resolve the worst case.
+
+## 2. Tool exponents and the minorant problem
+
+**PROVED — conversion from an additive saving.** Suppose
+\[
+T_q(t)=\sum_{\ell\in\mathcal L_Y}e_q(t\bar\ell),
+\qquad
+\max_{t\ne0}|T_q(t)|\le\kappa=Jq^{-\delta}.
+\]
+The minorant estimates proved below show that the best Fourier norm has exponent \(H\). Consequently, the uniform-bound argument needs
+\[
+\kappa H<\lambda q^{-o(1)}.
+\]
+Equivalently,
+\[
+\boxed{\delta>\alpha-\beta
+=\frac{1+2c}{7-2c}.}
+\tag{3}
+\]
+If the saving is written \(\kappa=J^{1-\rho+o(1)}\), this becomes
+\[
+\boxed{c<\rho-\frac12.}
+\tag{4}
+\]
+At the balanced scale, a fixed \(q\)-saving \(\delta\) formally permits only
+\[
+c<\frac{7\delta-1}{2(1+\delta)}.
+\]
+
+**PROVED — Parseval restriction.**
+\[
+\sum_{t\ne0}|T_q(t)|^2=J(q-J),
+\]
+so
+\[
+\kappa\ge\sqrt{\frac{J(q-J)}{q-1}}
+=J^{1/2+o(1)}.
+\tag{5}
+\]
+Thus \(\rho\le1/2\). Equations (3)–(5) exclude **every fixed \(c>0\)** through this common-bound, absolute-value argument. This does not exclude frequency-dependent estimates or cancellation with the prescribed Fourier coefficients.
+
+### (a) Bourgain–Garaev and composite moduli
+
+**PROVED — reference correction.** Bourgain’s *More on the sum-product phenomenon in prime fields and its applications* is **International Journal of Number Theory 1 (2005), 1–32**, not GAFA. Its prime-variable consequence is **Theorem A.9**, giving a power saving for \(q^{1/2+\varepsilon}\le L\le q\), as explicitly recorded by Fouvry–Shparlinski on p. 297 of their published paper. **UNVERIFIED here:** direct inspection of Bourgain’s original Appendix A.1; the short bilinear range \(N_1N_2>q^{1/2+\varepsilon}\) is also recorded in Bourgain–Garaev’s introduction. [Bourgain’s publication](https://doi.org/10.1142/S1793042105000108), [Fouvry–Shparlinski, p. 297](https://www.impan.pl/shop/publication/transaction/download/product/82801).
+
+**PROVED — relevant Bourgain–Garaev statements.** The reference is **Izvestiya: Mathematics 78 (2014), 656–707**. I checked the following statements and theorem numbers in **arXiv:1211.4184v1**; Theorem 8 also agrees with the indexed journal text. [Paper and statements](https://arxiv.org/pdf/1211.4184), [journal record](https://www.mathnet.ru/eng/im8070).
+
+| Status | Result | Range/bound |
+|---|---|---|
+| PROVED | Theorem 1 | \(E_{2r}(I^{-1})\ll_r (|I|^{2r^2/(r+1)}+|I|^{2r}/q)|I|^{o(1)}\). |
+| PROVED | Theorem 4, Remark 1 | \(E_{2r}(I^{-1})<|I|^{r+o(1)}\) for \(|I|<q^{1/(4r^2)}\). |
+| PROVED | Theorem 7 | Weighted bilinear saving for \(|I_1|>q^{1/18}\), \(|I_2|>q^{5/12+\varepsilon}\). |
+| PROVED | Theorem 8 | Explicit weighted bilinear bound for initial intervals; see the computation below. |
+| PROVED | Theorem 11 | Equal lengths \(L\), \(n\ge7\), \(L^n>q^{1/3+\varepsilon}\). |
+| PROVED | Theorem 12 | Equal lengths \(L>q^{C/n^2}\), with absolute \(C\), giving a power saving depending on \(n\). |
+| PROVED | Theorem 16 | Integer-variable bound \(L(\log\log q)^3\log q/(\log L)^{3/2}\). |
+
+**PROVED — composites really do supply cancellation at total length \(q^{0.32}\).** They must not be dismissed merely because no prime-variable estimate is known there.
+
+Take two disjoint prime intervals of lengths \(q^{4/25+o(1)}\), restrict both variables to primes \(3\bmod4\), and form \(M=\ell_1\ell_2\). Their factors exceed \(H=q^{1/25+o(1)}\), and \(M=q^{8/25+o(1)}\).
+
+In Theorem 8 take \(k_1=k_2=4\). Each factor inside its bound is
+\[
+\frac{L^3}{q^{1/2}}+\frac{q^{1/2}}{L^4}
+=q^{-1/50+o(1)}+q^{-7/50+o(1)}.
+\]
+The two factors are each raised to \(1/32\). Hence
+\[
+\sum_{\ell_1,\ell_2}e_q(t\overline{\ell_1\ell_2})
+\ll q^{-1/800+o(1)}L^2.
+\tag{6}
+\]
+Prime restrictions cost only logarithms through the allowed bounded coefficients. Disjoint intervals ensure squarefreeness and unique products.
+
+**PROVED — coverage conclusion from these bounds:** no positive \(c\) through the uniform Fourier argument. Even replacing \(1/800\) by ideal square-root cancellation cannot overcome (3)–(5). Root multiplicities and duplicate product representations must still be charged; \(J\) counts distinct moduli.
+
+**PROVED — Theorem 16’s length threshold.** Its displayed bound tends to \(o(L)\) when
+\[
+\log L\gg(\log q)^{2/3}(\log\log q)^2.
+\]
+The paper states the convenient stronger sufficient range with \((\log\log q)^3\). At \(L=q^\varepsilon\), its saving is logarithmic, not a fixed power.
+
+### (b) Prime inverses, average results, and bilinear fractions
+
+**PROVED — pointwise prime-variable ranges.** Here \(L\) denotes an initial or dyadic length, not an arbitrary translated interval of length \(L\).
+
+| Status | Precise reference | Bound and admissible range | First nontrivial power range |
+|---|---|---|---|
+| PROVED | Garaev, *Math. Notes* **88** (2010), 330–337, **Theorem 1.1** | \(L^{15/16}+q^{1/4}L^{2/3}\), times \(q^{o(1)}\), \(2\le L<q\), \(q\) prime | \(L>q^{3/4+\varepsilon}\) |
+| PROVED | Fouvry–Shparlinski, *Acta Arith.* **150** (2011), 285–314, **Theorem 3.1** | Same bound, arbitrary modulus; \(q^{3/4}\le L\le q^{4/3}\) | \(L>q^{3/4+\varepsilon}\) |
+| PROVED | Baker, *Acta Arith.* **156** (2012), 351–372, **Theorem 1** | \(L^{1-\varepsilon^4/2000}\); \(v q^{1/2+\varepsilon}\le L\le q^{3/4+\varepsilon}\), \(v\le L^{1/4}\), \(0<\varepsilon\le1/24\); \(v\) is the squarefull part of the modulus | \(q^{1/2+\varepsilon}\) for prime modulus |
+| PROVED | Korolev, *Math. Notes* **106** (2019), 89–97, **Theorem 1** | \(\sum_{n\le L}\Lambda(n)e_q(t\bar n)\ll Lq^{-\varepsilon^2(1-7\varepsilon)}\); \(q^{1/2+\varepsilon}\le L\le q^{3/4}\), \(0<\varepsilon\le1/53\) | \(q^{1/2+\varepsilon}\) |
+
+Sources: [Garaev, full Theorem 1.1](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=rus&paperid=7829&what=fullt), [Fouvry–Shparlinski](https://www.impan.pl/shop/publication/transaction/download/product/82801), [Baker](https://www.impan.pl/shop/en/publication/transaction/download/product/82065), [Korolev, full Theorem 1](https://www.mathnet.ru/php/getFT.phtml?jrnid=mzm&option_lang=eng&paperid=12339&what=fullt).
+
+**PROVED — explicit savings.** Writing \(L=q^\alpha\), the Garaev/Fouvry–Shparlinski saving is
+\[
+\delta=\min\left(\frac{\alpha}{16},
+                 \frac{\alpha}{3}-\frac14\right)-o(1).
+\]
+Baker gives \(\delta=\alpha\varepsilon^4/2000-o(1)\); Korolev gives \(\delta=\varepsilon^2(1-7\varepsilon)\) for the weighted sum. None applies at \(\alpha=8/25\), and none supplies positivity with \(c>0\) via (3).
+
+**PROVED — the \(3\bmod4\) restriction needs attention.** A bound over all primes cannot automatically be restricted to this subset. Baker’s general-modulus theorem handles the twist: for odd \(\ell\),
+\[
+\chi_4(\ell)e_q(t\bar\ell)
+=-i\,e_{4q}\bigl((4t+q)\bar\ell\bigr).
+\]
+The new modulus has bounded squarefull part. **UNVERIFIED here:** an identical transfer of Korolev’s precise prime-modulus saving; its stated length already excludes the target.
+
+**PROVED — averaged results have different thresholds.** Their comparison is against the trivial total \(QL\), for \(q\sim Q\).
+
+| Status | Reference | Average bound, suppressing \(Q^\varepsilon\) | Nontrivial range |
+|---|---|---|---|
+| PROVED | Fouvry–Shparlinski, **Theorem 3.3** | \(Q^{13/10}L^{3/5}+Q^{13/12}L^{5/6}\) | \(L>Q^{3/4+\varepsilon}\); stated for \(1\le L\le Q^{3/2}\) |
+| PROVED | Baker, **Theorem 2** | \(Q^{11/10}L^{4/5}+QL^{11/12}\) | \(L>Q^{1/2+\varepsilon}\); stated for \(Q^{1/2}\le L\le2Q\) |
+| PROVED | Irving, **Theorem 1.1** | \(Q^{5/4}L^{5/8}+QL^{9/10}+Q^{7/6}L^{13/18}\), maximum over \(a\) | \(L>Q^{2/3+\varepsilon}\); stated up to \(Q^{3/2}\) |
+| PROVED | Irving, **Theorem 1.3** | \((1+a/(LQ))^{1/2}(Q^{1/2}L^{11/8}+Q^{7/6}L^{2/3})(aQ)^\varepsilon\), fixed \(a>0\) | \(Q^{1/2+\varepsilon}<L<Q^{4/3-\varepsilon}\), with the displayed \(a\)-factor |
+
+Irving’s paper is *Functiones et Approximatio Commentarii Mathematici* **51** (2014), 221–235; theorem numbers above were checked in **arXiv:1301.6372v2**. These estimates do not apply at \(L=Q^{0.32}\), even before the worst-case quantifier issue. [Irving, Theorems 1.1 and 1.3](https://arxiv.org/pdf/1301.6372).
+
+**PROVED — relevant modern bilinear estimate.** Kerr–Shparlinski–Wu–Xi, *J. London Math. Soc.* **108** (2023), 578–621, **Theorem 2.4**, gives, in its \(r=q,c=1\) case,
+\[
+W=\sum_{m\in I}\sum_{n\le D}\alpha_m\gamma_n e_q(am\bar n)
+\ll \|\alpha\|_2\|\gamma\|_\infty M^{1/2}Dq^{o(1)}
+\left(M^{-1/4}+M^{-1/2}+D^{-1/2}\right).
+\tag{7}
+\]
+It is nontrivial for bounded coefficients throughout \(M,D\ge q^\varepsilon\). There is therefore **no single \(q^{1/2}\) threshold for bilinear inverse fractions**. [Theorem 2.4, checked version v5](https://arxiv.org/pdf/2204.05038).
+
+**PROVED — applying (7) still misses positivity.** Use an interval minorant with Fourier length
+\[
+F\asymp q/K\asymp Y/H
+\]
+and coefficients \(O(K/q)\). Combining its frequency \(t\) with \(B\le h\) gives a numerator variable \(m=tB\ll Y\), with
+\[
+\|\alpha\|_2\ll q^{o(1)}(K/q)\sqrt{Fh}
+\asymp q^{o(1)}H/\sqrt Y.
+\]
+Equation (7) then gives
+\[
+|E|\ll H Y^{3/4}q^{o(1)}.
+\]
+At the threshold this is \(q^{7/25+o(1)}\), whereas the main term is \(q^{2/25+o(1)}\). Its sufficient condition \(H>Y^{3/4+o(1)}\) lies outside the desired range.
+
+**PROVED — the roots/inverses distinction.** Kerr–Shkredov–Shparlinski–Zaharescu, *J. Inst. Math. Jussieu* **24** (2025), 1765–1806, studies **modular roots**. For example, **Theorem 1.1** bounds the additive energy of modular square roots by
+\[
+\left(N^{3/2}q^{-1/2}+1\right)N^{2+o(1)}.
+\]
+It is not a short prime-inverse sum theorem; a “smallest prime-inverse length” cannot be assigned to it. [Published paper, Theorems 1.1–1.4](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/7781F2066CF922D2B609F39EDF98AF0F/S1474748023000397a.pdf/energy_bounds_for_modular_roots_and_their_applications.pdf).
+
+### (c) Heath-Brown identity plus Weil/Deligne
+
+**PROVED — failure of the usual Type I/II estimates at \(q^{0.32}\).** Completion bounds an unweighted incomplete inverse sum by \(q^{1/2+o(1)}\), already larger than the entire length.
+
+For a Type II block,
+\[
+V=\sum_{m\sim M}\alpha_m\sum_{n\sim L}\beta_n e_q(a\overline{mn}),
+\]
+Cauchy–Schwarz and completion give
+\[
+\frac{|V|}{ML}
+\ll q^{o(1)}
+\left(L^{-1/2}+q^{1/4}M^{-1/2}\right).
+\tag{8}
+\]
+If \(ML\le q^{8/25}\), then \(M\le q^{8/25}\), and the second term can be as large as
+\[
+q^{1/4-4/25}=q^{9/100}.
+\]
+Decomposing into more factors does not, by itself, create a long complete sum.
+
+**PROVED — scope of that conclusion.** These elementary completion estimates give no positivity. This is not an impossibility theorem for every future argument using Deligne. Heath-Brown’s identity itself is **Lemma 1**, §2, of *Canad. J. Math.* **34** (1982), 1365–1377; it supplies the decomposition, not the missing cancellation. [Original paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/D6C21FF61C1489E5856AA5ED276CB0A9/S0008414X00033307a.pdf/prime-numbers-in-short-intervals-and-a-generalized-vaughan-identity.pdf).
+
+### (d) Multiplicative characters and GRH
+
+**PROVED, conditional on the stated character bound.** Count representations
+\[
+aB\equiv\ell k\pmod q,\qquad
+B\le h,\quad 0<|k|\le K.
+\]
+Multiplicative orthogonality gives
+\[
+R(a)=\frac{J(2K)h}{q-1}
++\frac1{q-1}\sum_{\chi\ne\chi_0}
+ \overline{\chi}(a)L(\chi)K(\chi)\overline{B(\chi)}.
+\]
+If \(|L(\chi)|\le\kappa_\chi\), Cauchy–Schwarz and orthogonality give
+\[
+|E_\chi|\ll\kappa_\chi\sqrt{Kh}.
+\tag{9}
+\]
+For \(\kappa_\chi=Jq^{-\delta}\), positivity requires
+\[
+\boxed{\delta>\frac12+\alpha c.}
+\tag{10}
+\]
+
+**PROVED, assuming GRH.** Square-root prime character sums give
+\[
+\kappa_\chi\ll Y^{1/2}q^{o(1)}.
+\]
+At \(c=3/8\), (10) asks for \(\delta>31/50\), while GRH gives only \(4/25\). Equivalently,
+\[
+E_\chi\ll H\sqrt q\,q^{o(1)}
+=q^{27/50+o(1)}
+\]
+against a main term \(q^{2/25+o(1)}\). The generic sufficient condition is \(JKh>q^{2+o(1)}\); here \(JKh=q^{27/25+o(1)}\).
+
+**UNVERIFIED — stronger logical implication.** This calculation establishes failure of this application of GRH. It does not prove that GRH could have no other relevant consequences. The square-root input follows from the Dirichlet explicit formula; see §11.8, equation (11.8.3), in [Granville’s treatment](https://dms.umontreal.ca/~andrew/Courses/Chapter11.pdf).
+
+### (e) Hooley \(R^*\), nonnegative minorants, and signed minorants
+
+**CONJECTURED — \(R^*\) and its prime analogue are different inputs.** Hooley’s \(R^*\) concerns integer-variable incomplete Kloosterman–Ramanujan sums:
+\[
+\sum_{n\in I,(n,q)=1}e_q(a\bar n)
+\ll_\varepsilon |I|^{1/2}(a,q)^{1/2}q^\varepsilon,
+\qquad 1<|I|<q.
+\]
+It is stated under the label **Hypothesis \(R^*\)** on p. 110 of Iwaniec, *J. Math. Soc. Japan* **34** (1982), 95–123. It does not automatically give the analogous prime sum. Even granting that stronger analogue will be insufficient below. [Iwaniec, p. 110](https://www.jstage.jst.go.jp/article/jmath1948/34/1/34_1_95/_pdf/-char/en).
+
+**PROVED — normalization.** Define
+\[
+\widehat g(t)=\sum_xg(x)e_q(-tx),\qquad
+A(g)=\frac1q\sum_t|\widehat g(t)|,\qquad
+A_0(g)=\frac1q\sum_{t\ne0}|\widehat g(t)|.
+\]
+For a real minorant \(g\le1_S\),
+\[
+C_q(a)\ge
+\frac Jq\sum_xg(x)-\kappa A_0(g).
+\tag{11}
+\]
+
+**PROVED — nonnegative minorants have norm \(H\), up to logarithms, in the target range.** Assume
+\[
+K\ge h^3,\qquad 4Kh^3<q.
+\tag{12}
+\]
+These conditions hold at the target scales for every fixed \(c>3/8\), and more generally on this branch for \(c>1/4\).
+
+The second condition identifies modular additive quadruples with rational ones. For fixed denominators \(b_1,\dots,b_4\le h\), let \(L=\operatorname{lcm}(b_1,\dots,b_4)\). The numerator equation has at most
+\[
+O\!\left(K^3\frac{\min b_i}{L}\right)
+\]
+solutions: reduce modulo \(L/\min b_i\le h^3\), then use \(K\ge h^3\).
+
+Furthermore,
+\[
+\sum_{b_1,\dots,b_4\le h}\frac1{\operatorname{lcm}(b_1,\dots,b_4)}
+\ll(\log(2h))^{15},
+\]
+because its Euler factors are \(1+15/p+O(p^{-2})\). Hence
+\[
+E(S)\ll K^3h(\log(2h))^{15},\qquad |S|\asymp Kh.
+\tag{13}
+\]
+
+If \(0\le g\le1_S\) and \(\sum g\ge|S|/2\), then
+\[
+\sum g^2\ge |S|/4,\qquad E(g)\le E(S).
+\]
+The proposed Hölder inequality therefore proves
+\[
+\boxed{A(g)\gg\frac{h}{(\log(2h))^{15/2}}.}
+\tag{14}
+\]
+
+**PROVED — a matching upper bound up to logarithms.** When \(2Kh<q\), distinct reduced fractions \(k/b\), \(|k|\le K,b\le h\), remain distinct modulo \(q\). Möbius inversion expresses \(1_S\) as \(O(h\log(2h))\) signed dilates of interval indicators. Consequently,
+\[
+A(1_S)\ll h\log(2h)\log q.
+\tag{15}
+\]
+Thus (14) answers the nonnegative-minorant question to within polylogarithmic factors in the relevant range.
+
+**PROVED — signed minorants cannot improve the power of \(H\).** The energy argument alone does not establish this, but a different elementary argument does.
+
+For \(t\ne0\), let \(v_b=t\bar b\bmod q\) be the centered residue. Divisor counting gives
+\[
+\#\{b\le U:|v_b|\le T\}
+\ll (1+UT/q)q^{o(1)}.
+\tag{16}
+\]
+Indeed, \(bv_b=t_0+nq\), with \(|n|\ll1+UT/q\), and each nonzero integer on the right has \(q^{o(1)}\) divisors.
+
+Using
+\[
+\left|\sum_{|r|\le L}e_q(tr\bar b)\right|
+\ll\min(L,q/|v_b|)
+\]
+and dyadic summation in (16), followed by the same Möbius inversion, proves
+\[
+\max_{t\ne0}|\widehat{1_S}(t)|
+\ll (K+h)q^{o(1)}=Kq^{o(1)}.
+\tag{17}
+\]
+
+Now let \(g\le1_S\) be signed, and \(m=\sum g\ge|S|/2\). Outside \(S\), \(g\le0\), so
+\[
+\sum g1_S\ge m.
+\]
+Removing the zero Fourier coefficient gives
+\[
+m(1-|S|/q)
+\le A_0(g)\max_{t\ne0}|\widehat{1_S}(t)|.
+\]
+For \(Kh=o(q)\), equation (17) yields
+\[
+\boxed{A_0(g)\ge hq^{-o(1)}.}
+\tag{18}
+\]
+Together with (15), this determines the optimal signed-minorant **exponent**:
+\[
+\inf_{\substack{g\le1_S\\ \sum g\ge|S|/2}}A(g)
+=Hq^{o(1)}.
+\]
+
+**UNVERIFIED — remaining norm precision.** I have not proved that the \(q^{o(1)}\) loss in the signed lower bound can be replaced by a fixed polylogarithm. The divisor estimate used in (16) does not justify that replacement.
+
+**PROVED — consequence for square-root cancellation.** Equations (5), (11), and (18) impose the exponent condition
+\[
+\lambda\gg H\sqrt J\,q^{-o(1)}.
+\]
+But
+\[
+\lambda=J^{1-2c+o(1)},\qquad
+H\sqrt J=J^{1-c+o(1)}.
+\]
+The error budget exceeds the main term by \(J^{c-o(1)}\). This applies to signed as well as nonnegative minorants.
+
+**REFUTED — the unqualified extension to \(c=0\).** The rational-energy transfer requires \(H^4\ll Y\); it cannot simply be used at \(H\asymp\sqrt Y\). More decisively, if \(hK\ge q\), Dirichlet gives \(S=\mathbb F_q\), and \(g=1\) has \(A(g)=1\), \(A_0(g)=0\). Suitable constant multiples of \(\sqrt Y\) reach this situation. The rigorous obstruction above concerns fixed positive power gains \(c>0\), not an impossibility of recovering Thue.
+
+## 3. Attempts beyond linear statistics
+
+**UNVERIFIED — outcome of the blind attempts.** I did not prove coverage with any fixed \(c>0\), or with \(H=\sqrt Y/f(Y)\), \(f(Y)\to\infty\), at the relevant polynomial relation between \(q\) and \(Y\). The following identifies the actual failures; it does not prove that these approaches can never work.
+
+| Attempt | Status and failure |
+|---|---|
+| Sum-product growth | **PROVED:** growth or density below one does not imply that the specific product set contains every residue. Turning a dense set into a full field by addition changes the permitted representation. |
+| Reciprocal sumsets | **PROVED:** Bourgain–Garaev Corollary 1 gives a cardinality bound, not full coverage. Even a full reciprocal-sum representation does not preserve the needed coefficient height. |
+| Joint geometry of numbers | **PROVED:** intersecting the lattices replaces a determinant of size \(\ell\) by a product of moduli. Minkowski then gives a larger height. A union improvement requires information about the dependence of their first minima. |
+| Pigeonhole/Ramsey on shortest vectors | **PROVED:** vectors of height \(O(\sqrt Y)\) have \(O(Y)\) possible directions, while \(J\asymp Y/\log Y\). Repetition is not forced. Coarsening directions supplies approximate parallelism, not a short vector in a required lattice. |
+| Sieve over candidate \(p\) | **PROVED for the elementary implementation:** congruence correlations are controllable by direct interval counting only while the product of selected band primes is below the available level. With \(q=Y^{25/8}\), only about three factors fit below level \(q\). This does not control the enormous zero-hit tail. |
+| Polynomial method | **PROVED:** at each \(\ell\), the product \(\prod_{(A,B)}(BX-AY)\) has many nonzero projective directions when \(H^2\ll\ell\). Its degree alone does not force a zero at the specified pair. CRT combines the restrictions at a modulus exponentially larger than \(q\). |
+
+**PROVED — the reciprocal-sum height loss explicitly.** Suppose a covering theorem supplied
+\[
+p^{-1}=\frac1{\ell_1}+\cdots+\frac1{\ell_r}\pmod q.
+\]
+Clearing denominators gives
+\[
+pB\equiv M\pmod q,\qquad
+M=\prod_i\ell_i,\quad
+B=\sum_i\prod_{j\ne i}\ell_j.
+\]
+For comparable factors and \(M\asymp Y\), this only bounds
+\[
+B\ll_r Y^{1-1/r}.
+\]
+Already \(r=2\) gives the Thue exponent \(1/2\); it does not give \(B\le Y^{1/2-c}\). Additional cancellation or factorization of this numerator would itself require a new theorem.
+
+**PROVED — why repeated shortest vectors also do not finish the argument.** If a particular nonzero \(v=(A,B)\) works at several primes, those primes divide \(Bp-Aq\). Its size bounds their number, but this supplies an upper bound on repetitions. It does not force any vector into the smaller box.
+
+**CONJECTURED — a viable nonlinear target.** The centered-moment estimate (2) is one genuine route beyond bounded linear statistics. Its required moment order is
+\[
+r>\frac{7-2c}{2-4c}.
+\]
+Unlike a pointwise exponential-sum estimate at the random level, such a moment bound would control the zero-hit tail sufficiently strongly. **UNVERIFIED:** no cited reciprocal-energy or sieve theorem supplies it.
+
+## 4. DCL plus Lehman, and other second prongs
+
+**PROVED — union of designs, with the model hypotheses retained.** If both prongs are fixed enumerated designs satisfying the charging convention and WIN, their union is another such design. Writing \(J_{\rm tot}\) for its distinct moduli,
+\[
+X\ge P^{2/5-o(1)}
+ \lambda_{\rm tot}^{4/5}J_{\rm tot}^{-1/5}.
+\]
+Thus a cost \(X=N^{1/5-\eta+o(1)}\) requires
+\[
+\boxed{\lambda_{\rm tot}
+\le J_{\rm tot}^{1/4}N^{-5\eta/4+o(1)}.}
+\tag{19}
+\]
+For an ordinary modulus-one Lehman prong, \(J_{\rm tot}=J_{\rm DCL}+1\).
+
+**PROVED — the proposed Lehman fraction bound for one modulus.** Apply Theorem U with \(J_L=1\). If \(\sigma_L\) is its covered fraction, then \(\sigma_L\le\lambda_L\), and
+\[
+\boxed{\sigma_L\le
+P^{o(1)}\frac{X^{5/4}}{P^{1/2}}
+=P^{o(1)}
+ \left(\frac{X}{P^{2/5}}\right)^{5/4}.}
+\tag{20}
+\]
+At \(X=N^{1/5-\eta}\), this is \(N^{-5\eta/4+o(1)}\).
+
+**PROVED — direct check using the corrected Lehman score.** The condition
+\[
+L^*(p,q)=\min_v\max\left(h(v)^2,
+ |\delta_v|\sqrt{h(v)/P}\right)\le X
+\]
+allows
+\[
+h\le\sqrt X,\qquad
+|\delta_v|\le X\sqrt{P/h}.
+\]
+There are \(O(h)\) weights at height \(h\), each covering a ratio interval of width
+\[
+O\!\left(\frac{X}{\sqrt P\,h^{3/2}}\right).
+\]
+Summing gives
+\[
+\frac X{\sqrt P}\sum_{h\le\sqrt X}h^{-1/2}
+\ll\frac{X^{5/4}}{\sqrt P},
+\]
+with logarithmic losses when passing to the prime-pair population.
+
+**REFUTED — unrestricted use of (20).** A stationary-window prong using \(J_L\) moduli has instead
+\[
+\sigma_L\le
+P^{o(1)}X^{5/4}J_L^{1/4}/P^{1/2}.
+\tag{21}
+\]
+Nor does Theorem U automatically encompass adaptive weights, arbitrary window rules without WIN, class groups, or every implementation called “Harvey-style.” The required statement is about the explicitly specified model.
+
+**PROVED — residual obligation.** With the ordinary Lehman prong, the DCL prong must cover every Lehman-hard pair, with \(\lambda_{\rm DCL}\) measured over the original population and satisfying the threshold inherited from (19). The small easy-set fraction does not prove that any hard pair is covered.
+
+**PROVED — linear families are easy.** For
+\[
+p=ax+b,\qquad q=cx+d,\qquad g=\gcd(a,c),
+\]
+choose \((A,B)=(a/g,c/g)\). Then
+\[
+Bp-Aq=(cb-ad)/g
+\]
+is constant. For fixed coefficients, the corresponding stationary square test is inexpensive. Therefore the \((x,x+1)\) barrier does not obstruct a “covered or Lehman-easy” theorem.
+
+**PROVED — the badly approximable survivor.** Let \(\alpha\in(1,2)\) be badly approximable and take
+\[
+(p,q)=(x,\lfloor\alpha x\rfloor).
+\]
+For weights of height \(h\),
+\[
+|Bp-Aq|
+\ge x|B-A\alpha|-|A|
+\ge c_\alpha x/h-h.
+\]
+Throughout \(h\ll P^{1/5}\), this gives
+\[
+L^*(p,q)\gg
+\max\left(h^2,\sqrt{P/h}\right).
+\]
+Minimizing the right side gives \(P^{2/5}\). Larger \(h\) already costs \(h^2\ge P^{2/5}\).
+
+Thus a coverage-or-Lehman theorem valid for all coprime pairs must cover a sparse set
+\[
+\{Bx-A\lfloor\alpha x\rfloor: |A|,B\le H\}
+\]
+for the coprime members of this family. Such members occur infinitely often using lower continued-fraction convergents. This does not supply a prime-pair obstruction.
+
+**UNVERIFIED — other second prongs.** I found no theorem putting every uncovered pair at \(\lambda=J^{1/4-\delta}\) inside a deterministic \(p-1\), class-group, order-based, or Hittmeir easy set below \(N^{1/5}\). Those methods have structural success conditions, but no established implication from this uncoveredness condition was located. This is a literature-status finding, not a proof of nonexistence.
+
+**PROVED — general benchmark.** Harvey–Hittmeir, *Math. Comp.* **91** (2022), 1367–1379, **Theorem 1.1**, gives
+\[
+O\!\left(
+N^{1/5}\log^{16/5}N/(\log\log N)^{3/5}
+\right).
+\]
+It supplies no smaller fixed exponent for the remaining pairs. [Theorem 1.1](https://arxiv.org/pdf/2105.11105), [published reference](https://doi.org/10.1090/mcom/3708).
+
+## 5. Sharpest gap and computations
+
+**PROVED — the single sharpest exponent comparison for the pointwise route.**
+\[
+\boxed{
+\kappa_{\rm needed}
+\ll \frac{\lambda}{H}
+=J^{1/2-c+o(1)},
+\qquad
+\kappa_{\rm uniform}\ge J^{1/2+o(1)}.
+}
+\tag{22}
+\]
+The gap is \(J^{c-o(1)}\). At \(c=3/8\),
+\[
+\begin{array}{c|c}
+Y,J&q^{8/25+o(1)}\\
+H&q^{1/25+o(1)}\\
+K&q^{18/25+o(1)}\\
+\lambda&q^{2/25+o(1)}\\
+\kappa_{\rm needed}&q^{1/25-o(1)}\\
+\text{square-root scale}&q^{4/25+o(1)}
+\end{array}
+\]
+Equivalently, the required relative saving is
+\[
+\delta>\frac7{25},
+\]
+whereas square-root cancellation gives only \(4/25\). The discrepancy bound obtained after paying the minorant norm is \(q^{1/5+o(1)}\), versus the required \(o(q^{2/25})\): a factor \(q^{3/25}\).
+
+**CONJECTURED — an estimate that would bypass this gap.** Cancellation in the *prescribed weighted count error*, for example
+\[
+C_q(a)=\Lambda_q+O\!\left(\sqrt{\Lambda_q}\,q^{o(1)}\right)
+\]
+uniformly in the required \(a,q\), would suffice. This is a substantially different input from a common bound for individual Fourier coefficients. **UNVERIFIED:** no standard hypothesis or theorem checked here supplies this estimate.
+
+**PROVED — computations actually run.** I recorded the blind calculations before reading the optional notes or searching the literature. The scripts use exact rational arithmetic for exponents and rational energies, and NumPy FFT for finite-field Fourier norms:
+
+```text
+python3 blind_checks.py
+/Volumes/git/factoring-connection/.venv/bin/python fourier_checks.py
+```
+
+The files are [blind calculation record](/Volumes/git/factoring-connection/codex/scratch/cov38b_1/blind_calculations.md), [exact checks](/Volumes/git/factoring-connection/codex/scratch/cov38b_1/blind_checks.py), [Fourier checks](/Volumes/git/factoring-connection/codex/scratch/cov38b_1/fourier_checks.py), and [additional signed-minorant proof](/Volumes/git/factoring-connection/codex/scratch/cov38b_1/minorant_argument.md).
+
+**PROVED — exact exponent output.**
+
+| \(c\) | \(\alpha\) | \(\beta\) | \(K\)-exponent | \(\lambda\)-exponent | Required additive \(\delta\) | Square-root \(\delta\) |
+|---|---:|---:|---:|---:|---:|---:|
+| \(0\) | \(2/7\) | \(1/7\) | \(6/7\) | \(2/7\) | \(1/7\) | \(1/7\) |
+| \(1/4\) | \(4/13\) | \(1/13\) | \(10/13\) | \(2/13\) | \(3/13\) | \(2/13\) |
+| \(3/8\) | \(8/25\) | \(1/25\) | \(18/25\) | \(2/25\) | \(7/25\) | \(4/25\) |
+| \(2/5\) | \(10/31\) | \(1/31\) | \(22/31\) | \(2/31\) | \(9/31\) | \(5/31\) |
+| \(9/20\) | \(20/61\) | \(1/61\) | \(42/61\) | \(2/61\) | \(19/61\) | \(10/61\) |
+
+**PROVED — exact rational-energy checks.** For \(K=24\), direct enumeration of reduced fractions and all pair sums gave:
+
+| \(h\) | \(|S_{\mathbb Q}|\) | \(E(S_{\mathbb Q})\) |
+|---:|---:|---:|
+| 1 | 49 | 78,449 |
+| 2 | 73 | 229,417 |
+| 3 | 105 | 470,217 |
+| 4 | 129 | 716,369 |
+| 6 | 185 | 1,451,369 |
+| 8 | 251 | 2,157,123 |
+
+**PROVED — numerical Fourier output, rounded to six decimals.** The Möbius reconstruction agreed exactly with the set indicator in all eight cases.
+
+| \(q\) | \(K\) | \(h\) | \(|S|\) | \(A(1_S)\) |
+|---:|---:|---:|---:|---:|
+| 200003 | 100 | 1 | 201 | 3.138780 |
+| 200003 | 100 | 4 | 535 | 6.037448 |
+| 200003 | 100 | 16 | 1973 | 16.110109 |
+| 200003 | 100 | 32 | 3973 | 27.913543 |
+| 1000003 | 512 | 4 | 2733 | 7.524224 |
+| 1000003 | 512 | 8 | 5285 | 12.620030 |
+| 1000003 | 512 | 16 | 10097 | 21.026914 |
+| 1000003 | 512 | 32 | 20341 | 37.289502 |
+
+**PROVED — interpretation of the computations.** These finite calculations check the formulas and illustrate the Fourier complexity. The exponent obstruction follows from the proofs above; the experiments do not establish coverage, a logarithmic gain, or a factoring lower bound.

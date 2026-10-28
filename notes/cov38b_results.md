@@ -56,7 +56,8 @@ Harvey–Hittmeir's N^{1/5}. No new deterministic record.** The reasons can now 
   - E2: the Fourier ℓ¹ norm of Farey-arc minorants grows like H′^{0.81–0.85} (Lemma F's H′/polylog), and
     phase-discarding certificates appear only at H ≈ 9–14·√Y, against a true worst case at or below √Y.
 - **Bottom line.** A sub-1/5 proof by this route needs a positivity mechanism for unions over moduli that does not
-  discard phases: a phase-retaining multilinear estimate, or some joint geometry-of-numbers or arithmetic argument. None is known, even for a log-factor gain over
+  discard phases. The candidates are: a phase-retaining multilinear estimate; a Poisson-quality centred moment over
+  the dilates of order ≥ 26; or some joint geometry-of-numbers or arithmetic argument. None is known, even for a log-factor gain over
   Thue/Minkowski. Our assessment is that it is out of reach with current technology. This is an assessment, not a
   theorem: it is not a lower bound for factoring.
 
@@ -335,7 +336,7 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
 | kind of statement | tools | what it gives at q^{0.32} | positivity for every a (every pair)? |
 |---|---|---|---|
 | geometry, one modulus | Thue / Dirichlet / Minkowski | positivity for **every** a, but only at λ ≍ J (c = 0) | yes, at c = 0 only (exponent 1/5) |
-| average over a (second or higher moments) | large sieve, Montgomery–Vaughan; sieve2d fourth moment; energy of {ℓ̄} (Bourgain–Garaev type, here exactly minimal) | uncovered fraction ≤ C/λ, C/λ² | **no**: average-type. A worst case needs moment order > 25 (Prop. 0(c)) |
+| average over a (second or higher moments) | large sieve, Montgomery–Vaughan; sieve2d fourth moment; energy of {ℓ̄} (Bourgain–Garaev type, here exactly minimal) | uncovered fraction ≤ C/λ, C/λ² | **no**: average-type. A worst case needs a centred moment of order ≥ 26 over a, which is unknown (Prop. 0(c)) |
 | pointwise exponential and character sums, used by phase discarding | prime/integer/multilinear Kloosterman, Heath-Brown + Weil, R*, GRH | positivity iff δ > δ*(c) = 7/25; any bound has δ ≤ 4/25 (Parseval); known δ = 0 for primes | **no** (Theorem B): the only tools that are pointwise in a are capped below the threshold |
 | covering theorems for sets in F_q | sums of k reciprocals (Bourgain–Garaev, Shparlinski); xy ≡ a in boxes (Weil, XY ≫ q^{3/2}); Erdős–Odlyzko–Sárközy | positivity, but for additive k-fold sumsets, or for product sets of size ≥ q^{3/2} | **no**: the target is a multiplicative covering of size q^{1+2/25} |
 
@@ -348,8 +349,10 @@ arithmetic information beyond generic cancellation in sums of inverses. We teste
 - No bound can exceed δ = 1/(7−2c) = 4/25, and the known value at this length is δ = 0.
 - **The exact gap is 2c/(7−2c) = 3/25 in the exponent of q, beyond square-root cancellation.** In counting terms: an
   error o(J^{1/4}) is needed on a sum of J terms, against the J^{1/2} floor of every phase-discarding argument.
-- Average-type tools fail for a different reason. They bound the measure of the uncovered a's by λ^{−j}, which can
-  never reach < 1/q with the available moment order (j ≤ 6 against 50 needed).
+- Average-type tools fail for a different reason. They bound the number of uncovered a's by about qλ^{−r}, and this
+  drops below 1 only at moment order 2r ≥ 26 (per q). Nothing beyond order 4 is known, and the 4th moment is already
+  a Kloosterman-type problem at this length. A Poisson-quality 26th-moment estimate is the one averaged route not
+  excluded (GPT-6.1-sol).
 
 ## 3. Prove or isolate (Task 3)
 
