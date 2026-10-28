@@ -667,6 +667,41 @@ The Dixon PDF was blocked, so Dixon is checked only via secondary sources.
 - *Fixed degree.* Suggested, still unchecked: Bhargava–Varma, Duke 164 (2015), for cubic fields; Ho–Shankar–Varma, Duke 167 (2018), for odd degree.
 
 
+### 7.2 Agent's own Opus literature critic (arrived after hand-back; merged by orchestrator)
+
+No proved claim is subsumed by published work. Items beyond §7.1:
+
+**Lee–Venkatesan gaps** (record them; neither affects this note's theorems):
+- LV's parity columns use BLP's prime-ideal correspondence. LV cite it as "[BLP, Lemma 5.5]", but it is BLP **Corollary 5.5**, p. 61, which assumes a, b coprime. So LV's column bookkeeping is correct only on the primitive sub-box, which supports §1's restriction to that sub-box.
+- LV's matrix row ⟨E₁, E₂, E₃, 1⟩ has a constant column but no sign column. BLP Alg. 12.1 Step 5 has both. Since LV allow b < 0, their square root can be the root of a negative number.
+- The proof of LV's Thm 2.3 assumes a uniform kernel sample, which the pseudocode does not deliver.
+
+**Corrections to this note:**
+- e₀ ≤ dim(ker Ψ|_H) + 1, to include the rational sign; alternatively restrict to b > 0. So e₀ = O(log log log N), and Lemma SEL costs O(log log N). Prop IV-LV is unaffected, since it uses |·|.
+- §1.4(a): LV Lemma 6.1 bounds the obstruction group by (δκ + o(1)) log₂ n + (δ²κ/(2 log 2)) log^{4/3}n/(log log n)^{1/3}. So "rank A ≤ #parity + O(d + log N)" should read **O(log N + d² log f_d)**. The conclusion e ≥ #chars − dim H still holds, because #chars ≍ 4d times that bound.
+- §1.5: there is **no L[2/5] in Gordon 1993**, whose individual log is L_p[1/3, 9^{1/3}]. The attribution is wrong and is dropped.
+- §1.5: Commeine–Semaev's 3^{1/3} is the **booting** step; their descent is below 1.44. Degree-t special-q sieving is due to Joux–Lercier–Naccache–Thomé 2009, App. B–C. Rephrase "usual individual-log practice" as "the usual device in asymptotic analyses (JLNT09; cf. EGT)". Practical descents mostly use 2-D linear special-q.
+- Seysen (Math. Comp. 48 (1987) 757–780) and Hafner–McCurley (J. AMS 2 (1989) 837–850): add "under ERH, for imaginary quadratic fields only".
+
+**New prior art:** de Boer–Pellet-Mary–Wesolowski, arXiv 2512.01588.
+- Under ERH they give rigorous sampling of smooth ideals, the T-unit lattice, and one-shot factor-base decomposition in arbitrary number fields of varying degree.
+- For LV fields this costs L_N[1/2] under ERH. It does not reach SD₁ at L[1/3].
+- Cite it in §1.4(b) and §5 in place of "we know no proof" for generation by sampled relations.
+
+**Other prior art:**
+- Stange (arXiv 2211.06821) faces the same generation issue over Z; cite it in §1.4(b).
+- van Leeuwen (arXiv 2007.02689), an exposition of LV, makes no factoring claim.
+- No 2018–2026 work gives rigorous L[1/3] factoring or proves NFS/QS fruitfulness.
+
+**2-torsion.**
+- Ho–Shankar–Varma, Duke 167 (2018) 995–1047: fixed odd degree, binary n-ic forms ordered by height; mean of |Cl[2]| − 2^{1−r₁−r₂}|I[2]| = 1.
+- Bhargava–Varma (cubic); Siad, arXiv 2011.08834/08842.
+- The gap to this note: their degree is fixed while LV's grows, and they treat class groups, not the S-unit kernel character.
+
+**Labels.**
+- Prop IV-LV's counting: "elementary", with no prior formulation found.
+- Dixon's exact 1 − 2^{1−ω} (odd N, including non-squarefree): classical folklore.
+
 ## 8. Candidate cards
 
 ```text
