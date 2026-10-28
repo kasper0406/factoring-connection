@@ -1,0 +1,71 @@
+**A is the strongest new-theorem lead.** I would also prioritize consolidating the existing \(L[2/5]\) claim before extending its dependency chain. B has the largest payoff, but the later tools do not yet supply its missing ingredient.
+
+These are subjective odds for roughly two months of specialist effort, counting a complete positive result rather than another conditional sketch. They are correlated because several leads share the same analytic foundation.
+
+| Rank | Lead | Probability | Justification |
+|---|---|---:|---|
+| 1 | **A: AB above \(3/8\)** | **30%** | An explicit two-point distribution and a positive precision margin make this a credible proof-completion project; AB₂ is substantially harder. |
+| 2 | **G: consolidate Theorem U, preferably through MF** | **50%** | A self-contained \(L[2/5]\) theorem would already be major; the shared-rational-side multi-field route removes the hardest algebraic second moment. |
+| 3 | **B: rigorous \(L[1/3,1.923]\)** | **3%** | Exceptional significance, but neither ordinary NFS fruitfulness nor cheap hidden-root closure follows from the current estimates. |
+| 4 | **E: three-level \(4/11\)** | **4%** | The depth-two precision margin is zero; logarithmic losses and constants become decisive. |
+| 5 | **F: constant improvements** | **15%** | Relation selection could yield a useful practical improvement; a general subquadratic sparse solver is a much lower-probability target. |
+| 6 | **D: deterministic below \(N^{1/5}\)** | **1%** | Positivity in the required tiny Farey-arc unions needs arithmetic information beyond generic inverse-sum cancellation. |
+| 7 | **C: single supplied coefficient** | **3%** | A substantive reduction is conceivable, but there is no identified extraction mechanism or fast native computation. |
+
+For the top three, I would proceed as follows.
+
+1. **A — close first-order AB before AB₂.**  
+   **First lemma:** a weighted fibre-transfer lemma for DW parallelograms, including nonreduced residue classes, endpoints divided by their gcd class, and the actual incidence weights. Reuse c12rat’s common-library/weight-domination framework.
+
+   There is a useful simplification: the determinant moduli are \(x^{o(1)}\), so eventually **every character involved lies within Drappeau’s small-conductor range**. First try deriving FB directly from **Drappeau, “Théorèmes de type Fouvry–Iwaniec pour les entiers friables,” Compositio 151 (2015), 828–862, Lemme 5**, rather than importing the full BV theorem. Then establish PP using **Hildebrand, JNT 22 (1986), 289–307, Theorem 3**, and **Hildebrand–Tenenbaum, Trans. AMS 296 (1986), 265–290, Theorem 3**. [Drappeau](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf), [Hildebrand](https://www.sciencedirect.com/science/article/pii/0022314X86900132), [HT](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+
+   **Likely failure:** the weighted transfer loses a modulus, divisor-multiplicity, or library-size factor when endpoints depend on the pair and field. AB₂ additionally needs the genuine joint-moment estimate O1; “covariance is second order” does not discharge that obligation.
+
+2. **G — finish the MF alternative and audit the shared supply estimates.**  
+   **First lemma:** write the simultaneous square-certification step for \(J_f\) fields completely. After character filtering, prove that the remaining square obstructions define at most \(J_f\) linear functionals on the relation kernel; retain enough kernel dimension to annihilate them, compute the certified roots, and verify DD transcript invariance with explicit costs.
+
+   The published inputs are **Lee–Venkatesan, JNT 187 (2018), 92–159, Theorem 2.6 and §6**, the HT estimates above, and **Iwaniec–Kowalski, Analytic Number Theory (2004), Theorem 7.13**, also restated as Drappeau’s Lemme 6. [Lee–Venkatesan](https://arxiv.org/abs/1805.08873).
+
+   **Likely failure:** rejected fields absorb the pointwise smoothness mass, or simultaneous certification introduces an unaccounted cost. The extra MF height floor must enter the cost ledger explicitly. MF still shares the rational supply argument; it supplies a simpler proof route, not an independent validation of every foundation.
+
+3. **B — target one hidden-root relation absorbed by ordinary relations.**  
+   **First lemma:** under the actual successful-search law, prove that a bounded-cost hidden-root construction produces a square-class vector \(v_R\) satisfying
+   \[
+   \Pr[v_R\in V]\ge L_N[1/3,-o(1)],
+   \]
+   where \(V\) is the span of the ordinary relations’ **exact** square-class vectors. Construction, certification and absorption must fit the desired time budget.
+
+   Use **Lee–Venkatesan Theorems 2.5–2.6** for ordinary relations and certification, and **Dixon, “Asymptotically Fast Factorization of Integers,” Math. Comp. 36 (1981), 255–260**, for the root-fibre argument. Gordon’s **SIAM J. Discrete Math. 6 (1993), 124–138** supplies a descent template, whose complexity analysis is heuristic. [Dixon](https://pages.cs.wisc.edu/~cs812-1/dixon.pdf), [Gordon](https://epubs.siam.org/doi/abs/10.1137/0406010).
+
+   **Likely failure:** ordinary relations have many dependencies while their span still misses \(v_R\). Nullity alone gives no absorption theorem.
+
+On **B specifically**, that mixed construction is the angle I would investigate. DD already permits mixed batches, so the underlying symmetry was not missed; the sharper research objective is to make **one** hidden-root relation close cheaply.
+
+The later tools help with supply, but they do not complete this proposal:
+
+- **Partial descent:** every residual prime or prime-ideal coordinate must eventually cancel. Ordinary fully smooth LV relations cannot cancel coordinates outside their factor bases. Adding partial relations therefore requires a new closure theorem.
+- **DC, hybrid BV and DW:** these improve control of child supply and two-point distributions. They do not establish the Bockstein transversality required by Lemma M.
+- **Increasing depth:** the model exponent \((j+1)/(3j+2)\) approaches \(1/3\), but every fixed depth remains above it. The required precision \(D^{-i\alpha}\) eventually exceeds what the present \(D^{-2\alpha}\)-scale covariance estimates provide.
+- **Randomizing the square-root step:** a genuine square in the number field has only the two roots \(\pm\gamma\); choosing between them changes only the global sign. Known square multipliers cancel likewise. Producing an independently branched modular root would itself supply the factoring power being sought.
+
+The old HECM \(L[4/9]\) objection should **not** be reused as a general barrier: the later recursive/batch machinery changes that argument. The surviving obstacle is certified closure at sufficient precision. Even an \(L[1/3,c]\) hybrid would need a separate constant optimization to obtain **1.923**.
+
+On **C**, distinguish a supplied value from an evaluation oracle.
+
+**For the single datum \((N,a_f(N))\), with \(N=pq\), I found no known general factoring reduction for a fixed non-CM eigenform.** Nor is there a general impossibility theorem.
+
+**An algorithm evaluating the coefficient at arbitrary indices does have a known hardness reduction.** Bach–Charles, *The hardness of computing an eigenform*, Contemp. Math. **463** (2008), 9–15, Theorem 2.2, use **both \(a_f(N)\) and \(a_f(N^2)\)** to factor a density-one subset of RSA moduli for fixed non-CM eigenforms of even weight. [Paper](https://arxiv.org/pdf/0708.1192).
+
+For weight two and trivial character, put
+\[
+A=a_f(N),\qquad B=a_f(N^2),\qquad S=A^2+N-B.
+\]
+Then
+\[
+T^2-ST+NA^2
+\]
+has roots \(q\,a_f(p)^2\) and \(p\,a_f(q)^2\), from which gcds recover the factors outside the simultaneous-zero exception. The second coefficient supplies the missing determinant information.
+
+Native algorithms exist through expansions, modular symbols and theta counts, but no fast native algorithm meeting the proposed target is known. Conversely, with the index factored, fixed-form coefficients are computable in polynomial time in \(\log N\); see **Bruin (2011), Theorem 1.1 and Remark 1.3**. [Bruin](https://pub.math.leidenuniv.nl/~pbruin/coefficients.pdf).
+
+Thus C remains an interesting **single-value hardness question**. A fast evaluator restricted to balanced squarefree indices would also be new; Bach–Charles’s two-query reduction would not immediately apply.
