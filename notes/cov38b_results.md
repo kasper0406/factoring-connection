@@ -2,7 +2,7 @@
 
 Agent `cov38b`, phase 30, 2026-10-28 (conn_alg shortlist #2).
 - Pre-registration: `notes/cov38b_prereg.md` (commit ed36d22; addendum A in ed46052, both before any run).
-- Code: `src/cov38b/{design,fourier,experiments,analyze}.py` (harness). Tests: `tests/test_cov38b.py` (11 pass).
+- Code: `src/cov38b/{design,fourier,experiments,analyze}.py` (harness). Tests: `tests/test_cov38b.py` (13 pass).
 - Raw data: `experiments/raw/cov38b_e{1,2,3}.jsonl`; verdicts: `experiments/analysis/cov38b_summary.json`.
 - GPT-6.1-sol: blind round `codex/cov38b_1.{md,out}`; adversarial round `codex/cov38b_2.{md,out}` (§8).
 - Opus critics (read-only): one on proofs, one on literature (§8).
@@ -510,7 +510,7 @@ Exhaustive over every prime p ∈ (q/2, q). Band: primes ≡ 3 (mod 4) in (Y, 2Y
 ## 9. Reproduction
 
 ```
-PYTHONPATH=. .venv/bin/python -m pytest -q tests/test_cov38b.py           # 11 tests, ~2 s
+PYTHONPATH=. .venv/bin/python -m pytest -q tests/test_cov38b.py           # 13 tests, ~2 s
 PYTHONPATH=. .venv/bin/python -m src.cov38b.experiments e1                 # ~2 min, < 1 GB
 PYTHONPATH=. .venv/bin/python -m src.cov38b.experiments e2                 # ~25 min, < 1 GB (FFT length 1e7)
 PYTHONPATH=. .venv/bin/python -m src.cov38b.experiments e3                 # ~3 min (8 processes)

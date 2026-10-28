@@ -124,3 +124,33 @@ def test_holder_lower_bound_le_wiener():
     for Hp, k0 in ((1, 300), (4, 40)):
         st = fo.stats(fo.farey(q, Hp, k0, "tri"))
         assert st["LB"] <= st["W"] + 1 + 1e-9
+
+
+def test_mobius_decomposition_of_farey_set():
+    # Lemma F2: 1_S = sum_{d<=h} sum_{e|d} mu(e) 1[(d/e)^{-1} [-K/e, K/e]]  (2hK < q)
+    q, h, K = 10007, 6, 300
+    assert 2 * h * K < q
+    S = fo.farey(q, h, K, "sharp")
+    acc = np.zeros(q)
+    for d in range(1, h + 1):
+        for e in sympy.divisors(d):
+            mu = sympy.mobius(e)
+            if mu == 0:
+                continue
+            m = d // e
+            j = np.arange(-(K // e), K // e + 1, dtype=np.int64)
+            np.add.at(acc, (pow(m, -1, q) * j) % q, mu)
+    assert np.array_equal(acc, S)
+
+
+def test_inverse_prime_energy_minimal():
+    # Prop B': E({lbar}) = 2J^2 - J when 16 Y^3 < q
+    q = 10000019
+    Y = 20
+    L = [l for l in sympy.primerange(Y + 1, 2 * Y + 1)]
+    assert 16 * Y ** 3 < q
+    inv = [pow(l, -1, q) for l in L]
+    from collections import Counter
+    c = Counter((a + b) % q for a in inv for b in inv)
+    J = len(L)
+    assert sum(v * v for v in c.values()) == 2 * J * J - J
