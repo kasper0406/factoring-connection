@@ -1,0 +1,326 @@
+I favour route (b). The algebraic problem has two advantages over RAT: no primitivity condition, and modulus Δ′ rather than qΔ′. These simplify both the moment lemma and the weighted character estimate.
+
+My proof attempt gives AB and, with the endpoint acceptability constraint a > 2c₂, also AB₂. The principal new step is the weighted estimate in Lemma 5 below. I would regard this as an internal proof attempt requiring adversarial review, not as a certified completion of the project.
+
+I worked read-only on the project.
+
+**1. Parameters and published inputs.**
+
+Put b := 3 − 7α, so u_child ≍ D^α and u_parent ≍ D^b. Use separate loss parameters
+\[
+ \Lambda_c=\exp(CD^{\,2\alpha-1/2}\lambda^2),\qquad
+ \Lambda_p=\exp(CD^{\,1-2\alpha}\lambda^2).
+\]
+Choose C sufficiently large to dominate the respective PU, rational-pair, filter-spread and within-box comparison losses. Factors (\log N)^C below are harmless only in exceptional/error estimates; the final covariance coefficient has only λ^C.
+
+For second-order bounds take, with a sufficiently large fixed C₀,
+\[
+\begin{split}
+ T&=\Lambda_c^4D^{2\alpha}(\log N)^{C_0},\\
+ K_0^c&=d^{10}\Lambda_c^8TD^{2\alpha}(\log N)^{C_0},\\
+ K_0^p&=d^{10}\Lambda_p^8D^{2b}(\log N)^{C_0},\\
+ K_j&=d^{20}(K_0^j)^4D^{16}\quad(j=c,p).
+\end{split}
+\]
+Increase fixed powers of Λ if necessary. For AB alone, replace the precision powers 2α, 2b by α, b. This gives its stated form of T after enlarging the constant defining Ξ.
+
+Use the universal signed geometric grid ±(1+1/K_j)^n. It contains L_j = O(K_j log X_max) relevant endpoints. All thresholds are rounded to existing grid endpoints.
+
+The analytic inputs are:
+
+- Hildebrand, JNT 22 (1986), Theorems 1 and 3: global and short-interval Dickman asymptotics, the latter uniformly for xy^−5/12 ≤ z ≤ x, with relative error O(log(u+1)/log y). The short-interval statement is explicitly recorded as Theorem 5.1 of the [Hildebrand–Tenenbaum survey](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf); [Jain, Lemma 3.2](https://arxiv.org/pdf/2502.10530), identifies the original theorem numbers.
+- Hildebrand–Tenenbaum, Trans. AMS 296 (1986), Theorems 2–3: saddle-point control and Ψ(cx,y)/Ψ(x,y) = c^β(1+O(1/u+log y/y)), for 1 ≤ c ≤ y. See the [authors’ copy](https://tenenb.perso.math.cnrs.fr/PPP/Psi%2B.pdf).
+- De la Bretèche–Tenenbaum, Ramanujan J. 9 (2005), Theorem 2.4(i): Ψ(x/d,y) ≪ d^−β Ψ(x,y), also stated as Drappeau’s Lemme 1(i).
+- [Drappeau, Compositio 151 (2015), Lemme 5](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf): the small-conductor, 1/φ(k)-weighted L¹ character estimate. Take A = 1/2. Drappeau derives this statement from Harper’s §3.3 computations.
+
+Harper’s Theorems 1–2 are unnecessary for this route. Thus the proof does not require transposing a fibrewise maximum over g into Harper’s BV theorem.
+
+**2. Lemma: geometric control, including mixture components.**
+
+Fix g and a non-thin pair, and write m := Δ′. Denote the mixture variable by z. Set
+\[
+ S_i=10dH|G_g(P_i)|\,|P_i|_\infty^{d-1}/q.
+\]
+For parents the same expression describes F(P_i)/q.
+
+Every Π_z lies in {|x_i| ≤ S_i}. Lemma MM gives each coordinate projection length at least S_i/(Cd), and
+\[
+ \frac{S_1S_2}{|\Pi_z|}\ll d^2K_0.
+\]
+These estimates are uniform in g and z: the factors G_g(P_i) cancel in the area ratio. Uniform measure on Π_z therefore satisfies
+\[
+ \Pr(|x_i|\le e^{-t}S_i)\ll d e^{-t}.
+\]
+The lattice version has an additional negligible counting error.
+
+Grid rectangles meeting ∂Π_z have total relative mass
+\[
+ h\ll d^2K_0/K.
+\]
+They lie in the convex enlargement
+\[
+ \Pi_z^+=\Pi_z+
+ [-2S_1/K,2S_1/K]\times[-2S_2/K,2S_2/K],
+\]
+whose area is (1+O(h))|\Pi_z| and whose coordinate marginals satisfy the same bounds. Our choices give h^1/4 ≪ D^−4.
+
+Consequently corners and fibres shrinking to zero require no short-fibre asymptotic. Count full covering rectangles and charge their contribution through moments on Π_z^+.
+
+Choose a fixed A sufficiently large that y^−A is negligible relative to the eighth power of every relevant smoothness density. Such A exists because log(1/ϱ(S_i)) = O(log y) in these designs. Remove |x_i| < S_i y^−A, rounding outwards to the grid. Its raw mass is O(dy^−A), sufficient even after the required normalization. The atom x_i = 0 has mass O(d/S_i) plus counting error and is smaller still.
+
+**3. Lemma: exact cell coupling.**
+
+For a full rectangle R = I₁ × I₂ and δ | m, put k = m/δ and
+\[
+ U_i=\#\{n\in I_i:\gcd(n,m)=\delta\},\quad
+ V_i=\#\{n\in I_i:\gcd(n,m)=\delta,\ P^+(|n|)\le y\},
+ \quad d_i=V_i/U_i.
+\]
+If δ is not y-smooth, V_i = 0.
+
+After n_i = δa_i, the coupling is
+\[
+ a_1\equiv\kappa a_2\pmod k,\qquad (a_1a_2,k)=1.
+\]
+Character orthogonality gives
+\[
+ \#\{\text{smooth pair in }R,\delta\}
+ =V_1V_2/\phi(k)+E_R,
+\]
+where
+\[
+ |E_R|\le\phi(k)^{-1}
+ \Big(\sum_{\chi\ne\chi_0}|S_1(\chi)|^2
+      \sum_{\chi\ne\chi_0}|S_2(\chi)|^2\Big)^{1/2}.
+\]
+This is CP for a unit graph.
+
+The nonsmooth pair count is
+\[
+ N(R,\delta)=U_1U_2/\phi(k)
+ \{1+O(m/\min|I_i|)\}.
+\]
+Singles have only this counting remainder: every allowed first-coordinate residue has the same number of partners to that accuracy.
+
+All these counting errors, including their total over cells and gcd classes, are exponentially smaller than the requested precision. The smallest retained intervals are much longer than m, even for parents.
+
+**4. Lemma: joint one-point moments — O1.**
+
+For the joint space (z, rectangle, δ), including the analogous space for Π_z^+, let
+\[
+ c_i=\Psi(S_i,y)/S_i,\quad
+ \gamma_i=1-\beta(S_i,y),\quad
+ e_i=\log(u_i+1)/\log y+1/u_i.
+\]
+Then
+\[
+ \mathbb E(d_i-c_i)^2
+ \ll c_i^2\lambda^C(\gamma_i^2+u_i^{-2}),\qquad
+ \mathbb E(d_i/c_i)^4\ll1.
+ \tag{M}
+\]
+The constants c_i depend on g and P_i, but not on z or the partner’s mixture component.
+
+Here are the arithmetic details needed for uniformity. Under uniform lattice measure the gcd distribution is
+\[
+ \pi_0(\delta)=\phi(m/\delta)/m,
+\]
+independent of the rectangle, up to the preceding counting errors. For p^a ∥ m, its normalized smooth-density factor is
+\[
+ \tau_p(j)=
+ \begin{cases}
+ p^{j\gamma}(1-p^{-\beta})/(1-p^{-1}),&j<a,\ p\le y,\\
+ p^{a\gamma},&j=a,\ p\le y,\\
+ (1-p^{-1})^{-1},&j=0,\ p>y,\\
+ 0,&j>0,\ p>y.
+ \end{cases}
+\]
+Thus prime powers are retained exactly. These factors have π₀-mean one. Their finite Euler products give
+\[
+ \mathbb E(\tau-1)^2\ll\gamma^2\lambda^C+\omega(m)/y,
+ \qquad \mathbb E\tau^8\ll1.
+\]
+
+For δ ≤ y^1/4, expand coprimality by Möbius inversion and retain divisors e ≤ y^1/4. Hildebrand and HT3 then give
+\[
+ d_i=c_i(S_i/|\xi_i|)^{\gamma_i}\tau_i(\delta)
+       \{1+O(\lambda^C e_i)\}.
+\]
+The grid intervals satisfy Hildebrand’s length condition because log K = o(log y).
+
+Both discarded divisor tails and the contribution of δ > y^1/4 to moments through order eight are bounded, by Rankin and the elementary progression upper bound BTS, by
+\[
+ D^C y^{-c}\exp(C\sqrt{\log(2m)}).
+\]
+This is smaller than every power of D: for parents
+\[
+ \tfrac12(1-\alpha)<4\alpha-1,
+\]
+and the child comparison is stronger. This argument does not iterate HT3 over divisors as large as m.
+
+Finally the geometric tail gives moments of log(S_i/|x_i|) of size O((log d)^r). Combining these with the local moments proves (M). The near-zero deletion was chosen small enough to preserve these bounds.
+
+Apply covariance Cauchy–Schwarz on the **joint** space:
+\[
+ |\operatorname{Cov}(d_1,d_2)|
+ \ll c_1c_2\lambda^C
+ \sqrt{(\gamma_1^2+u_1^{-2})(\gamma_2^2+u_2^{-2})}.
+\]
+This includes covariance between mixture components. There is no separate linear error from comparing their means.
+
+Boundary terms are O(h^1/4 c₁c₂), using the fourth moments on Π_z^+. This proves the required boundary transposition, O5.
+
+**5. Lemma: weighted algebraic energy — O2.**
+
+This is the crucial replacement for “apply FAM verbatim.”
+
+Let
+\[
+ U_{\xi,\delta}=\Psi(\xi/\delta,y),\qquad
+ B_{\xi,\delta}(k)=
+ U_{\xi,\delta}^{-2}
+ \sum_{\chi\ne\chi_0(k)}|\Psi(\xi/\delta,y;\chi)|^2.
+\]
+Drappeau Lemme 5 and |Ψ(χ)|² ≤ Ψ·|Ψ(χ)| give
+\[
+ \sum_{k\le Q}\frac{B_{\xi,\delta}(k)}{\phi(k)}
+ \ll\epsilon_y,
+\]
+where
+\[
+ \epsilon_y=e^{-cD^\alpha/\lambda^2}\quad\text{or}\quad
+ e^{-cD^b/\lambda^2}.
+\]
+All endpoints divided by δ remain at x^{1−o(1)}, and Q = x^{o(1)}. Hence every nonprincipal character involved has permitted conductor.
+
+Fix one label and environment cell. Let n be its number of geometric points, Q its maximum Δ′, and M its maximum ordered-pair multiplicity at a specified Δ′. Then
+\[
+ MQ/n^2\ll1\quad\text{for children},\qquad
+ MQ/n^2\ll(\log N)^C\quad\text{for parents}.
+ \tag{G}
+\]
+
+After splitting interval character sums into endpoint sums and using 2ab ≤ a²+b², let c_t be the actual nonnegative coefficients of B_{\xi,\delta}(k). These coefficients include
+\[
+ \frac{w_{\mathfrak q}}{Wm_{\mathfrak q}^2}
+ \mathbb E_g[\mathrm{Rat}_1\mathrm{Rat}_2\,(\cdots)]
+\]
+and the full mixture weights. Put
+\[
+ H_{\xi,\delta}(k)=\sum_{t:\,(\xi,\delta,k)}c_t.
+\]
+For some common β_* > 3/4,
+\[
+ \phi(k)H_{\xi,\delta}(k)
+ \ll \frac{w_{\mathfrak q}}W
+ \Lambda^C d^2K_0L\,\frac M{n^2}\,
+ k\delta^{1-2\beta_*}.
+ \tag{W}
+\]
+Indeed, the absolute rectangle error has coefficient
+\[
+ \frac{\Delta'}{|\Pi_z|\phi(k)}
+ U_{\xi_1,\delta}U_{\xi_2,\delta}.
+\]
+De la Bretèche–Tenenbaum bounds the product by
+\[
+ C\delta^{-2\beta_*}S_1S_2c_1c_2.
+\]
+Use Lemma 2 for the area ratio, determinant multiplicity M, and at most O(L) partner endpoints.
+
+The remaining normalized rational weight is bounded **after integrating g**, by
+\[
+ \mathbb E_g[\mathrm{Rat}_1\mathrm{Rat}_2c_1c_2]/
+ m_{\mathfrak q}^2\ll\Lambda^C/n^2.
+\]
+For children this follows from PU’s rational bound, the pointwise one-point lower-bound argument of CLB, and within-box spread for s ≤ T. For parents use the aggregate active-point lower bound, rather than a lower bound for every parent.
+
+There is no pointwise bound Rat₁Rat₂ ≪ “typical rational density squared” in g. Such a claim is false. Inequality (W) uses integrated rational pair bounds and deterministic envelopes for the g-dependent geometry; it never assumes independence of Π_z and Rat₁Rat₂.
+
+Since k ≤ Q/δ, summing (W) gives
+\[
+ \sum_{\xi,\delta}\max_k\phi(k)H_{\xi,\delta}(k)
+ \ll \frac{w_{\mathfrak q}}W
+ \Lambda^C d^2K_0L^2\,\frac{MQ}{n^2}
+ \sum_{\delta\ge1}\delta^{-2\beta_*}.
+\]
+The last sum converges. Apply WA’s elementary transfer inequality and then sum labels. The total normalized character error is
+\[
+ \ll\epsilon_y\Lambda^CK_0L^2D^C=o(D^{-100}).
+\]
+No domination of label weights across residues is needed for this step.
+
+**6. Assembly, thin pairs and parents.**
+
+For each fixed g, Lemmas 2–4 and the exact marginal identities give
+\[
+ |A_{12}-A_1A_2|
+ \ll r_y A_1A_2+\mathcal E_{12}+\text{negligible},
+\]
+where
+\[
+ r_B=D^{-2\alpha}\lambda^C,\qquad
+ r_{B_2}=(D^{-2\alpha}+D^{-2b})\lambda^C.
+\]
+Summing its principal term against Rat₁Rat₂ gives exactly the required normalization:
+\[
+ \mathbb E_g m(g)^2/m_{\mathfrak q}^2
+ =1+\phi_{\mathfrak q}^{rat},
+\]
+and similarly for parents.
+
+TH and PU make thin child pairs contribute at most
+\[
+ \Lambda_c^C(\log N)^C dT/K_0^c,
+\]
+and thin parent pairs at most
+\[
+ \Lambda_p^C(\log N)^C/K_0^p.
+\]
+Our thresholds put these below the respective second-order targets.
+
+The separate thresholds discharge O3:
+\[
+ 2\alpha-\tfrac12<\alpha,\qquad
+ 1-2\alpha<b.
+\]
+Thus each grid/threshold loss is absorbed by its own character saving. Using Λ_c for parents would fail in part of the window.
+
+For parents:
+
+- Aggregate the distinct-ℓ rational weights before applying (W). If ℓ₁ divides the determinant, the different-ℓ rational event is impossible.
+- Same-ℓ pairs are exceptional. Determinant-line counting bounds their total normalized contribution by
+  \[
+  \Lambda_p^C(\log N)^C/\#J.
+  \]
+  When the determinant range is below ℓ there are no such nonproportional pairs; no spurious additive O(n) term is needed.
+- The moduli Δ₁₂/q may greatly exceed B₂^{O(1)}. They remain x^{o(1)}; Lemmas 4–5 were formulated for precisely this range.
+- Remove acceptability by the internal SQF subtraction. Its normalized cost is at most
+  \[
+  \Lambda_p^C(\log N)^C/(B\,\varrho_2^2).
+  \]
+  This is negligible throughout the open window. At 3/8 it requires a > 2c₂, c₂ = 3d₀/(32κb₂). Without that constraint the missing estimate is exactly the mixed bad-event/smooth-partner bound identified in O4.
+
+TP-q’s TV errors remain negligible after normalization, because η₀ log N dominates log B₂ and the inverse-density losses.
+
+For skewed labels, use PU and the one-point lower bounds **point by point**, then sum their separable density envelopes. This gives φ_q ≪ Λ_c^C(\log N)^C without comparing the largest density with a typical density in an arbitrarily skew box. WD, or DOM plus label-shape counting, then gives
+\[
+ \sum_{s>T}(w/W)\phi\ll D^{-2\alpha}
+\]
+with the second-order T, and D^−α with the first-order T.
+
+This proves the asserted AB bounds, and the stronger AB₂ bounds under the endpoint constraint just stated.
+
+**7. Verdict and probabilities.**
+
+The cell argument discharges O1, O2, O3 and O5 in this proof attempt. Its useful distinction from the sketch is the absolute weighted-energy estimate (W): it handles g-dependent windows and large gcd classes without an uncontrolled supremum or a divisor-count loss.
+
+First-order quantities enter intermediate one-point approximations linearly. In the final principal covariance they enter through products of L² deviations; boundary, TV, thin-pair and acceptability errors are separately negligible. Route (a) instead retains the linear 1/u error in PP.
+
+My subjective probabilities, conditional where requested:
+
+- AB is provable with the known analytic inputs and the stated internal lemmas: **80%**.
+- AB₂ likewise, including a > 2c₂ at 3/8: **65%**.
+- The end-to-end L[α] statement for fixed α > 3/8 is correct, given RAT and the internal chain: **70%**.
+
+The estimate I would review most aggressively is (W), especially its parent normalization after aggregating distinct-ℓ rational weights.
