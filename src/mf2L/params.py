@@ -50,6 +50,8 @@ def comparisons(al: F) -> List[Tuple[str, Term, Term]]:
             (f"{name}: Farey points 4Q^2 <= x^(1/1000) (moduli are small conductors)", f["Q"], f["x"]),
             (f"{name}: R1 = e^(C D^loss lam^2) is y^o(1)", f["loss"], f["y"]),
             (f"{name}: Hyp SC exponent kappa < 1 (loss << u)", (f["loss"][0], F(0)), (f["u"][0], F(0))),
+            # Lemma SC-D regime: (log x)^{1/2} <= log y (strictly, at leading order), so u <= log y
+            (f"{name}: SC-D regime (log x)^(1/2) << log y", (f["x"][0] / 2, f["x"][1] / 2), f["y"]),
         ]
     return out
 

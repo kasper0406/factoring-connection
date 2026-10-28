@@ -1,0 +1,597 @@
+Integer multipliers remove the hybrid BV input from the one-point means, but preserve the determinant congruences governing pairs.  
+Randomising a shared form does not make those pair residues independent; averaging over a fixed determinant does not make its slope uniform.  
+The remaining analytic requirement is an incidence-weighted \(L^2\) residue-class estimate, weaker than full maximal-residue BV.  
+I obtain a replacement from published proofs: Drappeau, *Canadian J. Math.* **67** (2015), Propositions **2.9 and 2.13**, together with the classical large sieve, provided the constant in \(B\) is sufficiently large.  
+Thus a published-input result below \(2/5\) is realistic through this analytic repair; MF alone does not supply it, and this audit does not certify the entire internal factoring chain.
+
+I respected the blindness restrictions. Below, “verified” means that I checked the statement and relevant proof dependencies against a primary source; it does not mean that I independently refereed every argument in that paper. Internal labels such as “proved” are not treated as evidence.
+
+Write
+\[
+\mathcal L=\log\log N,\qquad D=\frac{\log N}{\mathcal L},\qquad
+H(u)=\exp\!\left(\frac{u}{\log^2(u+1)}\right).
+\]
+I reserve \(\lambda\) for the projective ratio of two points.
+
+## 1. Dependency map
+
+The distinction between **coarse second moments** and **small covariances** is essential.
+
+| Location and purpose | Existing analytic input | Required strength | Integer-multiplier replacement |
+|---|---|---|---|
+| Original level-1 algebraic good mass, hence FM-U′ | `uprime_results.md` §2, Lemma 8.5H: Fact D for small conductors, large sieve for larger conductors, and lifting over the special prime \(\ell\) | First-moment lower bound, with exceptional-modulus mass controlled relative to the sparse rational family | **Yes.** DW makes the algebraic probability pointwise in the rational value. This is the replacement in `c12alg_results.md` §§2.6–2.7. |
+| Original U′ bad-modulus subtraction | Corollary bad\(_2\), using 8.5H | Density-relative first-moment error | **Deleted under DW**, rather than reproved by OP. |
+| Child mean \(m_{\mathfrak q,e}\) | `c12alg_results.md` §4, Proposition CLB | Root-conditioned first-moment lower bound | **Yes, already structurally OP-type.** Rational fibres give interval densities; DW gives an algebraic interval mixture after conditioning on \(q\mid F\). |
+| A child mean conditioned on a particular accepted parent | Earlier PC\(_3\)/three-point proposals | A substantially stronger conditional statement | **Not directly.** Parent acceptance restricts the same field randomness. The current DC argument avoids needing this statement. |
+| Coarse rational second moment for parent counts \(N_1\) | DS-U′/fibre bounds | Upper bound with polylogarithmic loss | **DS-type arguments are appropriate.** No near-independence is required. |
+| Coarse algebraic second moment for \(N_1\) | LD*-U′/L2-U′; the DW replacement retains large-sieve steps | Upper bound with polylogarithmic loss | OP alone does not prove it. MF can potentially remove this particular algebraic second moment; the existing published large sieve can also be retained. |
+| Rational child covariance, RAT-1 | `c12rat_results.md` §§5.2, 6: EN, FAM, DOM, WA/WA′ | Small relative covariance, ultimately \(D^{-2\alpha}\mathcal L^C\) | **No OP replacement.** The modulus contains \(q\). Replace EN by an \(L^2\) residue estimate, as in §5 below. |
+| Rational parent-incidence covariance, RAT-2 | Same machinery, with library \(J\cdot\mathcal S_B\) | Small covariance of \(Z_{\mathfrak q,e}\), distinct from the coarse \(N_1\) moment | **No OP replacement.** Same \(L^2\) replacement works. |
+| Algebraic child covariance, AB\(_2\)(i) | `thmAB_results.md` §9: EN-A, FAM-A, WA | Second-order precision | DW supplies the lattice-uniform pair law, **not** smoothness independence on that lattice. EN-A still needs residue cancellation. |
+| Algebraic parent covariance, AB\(_2\)(ii) | Parent version of EN-A/FAM-A and Lemma W-P | Second-order precision, with \(y=B_2\) | Same obstruction and replacement. |
+| Earlier algebraic fibre argument | `c12alg_results.md` §3, Lemma FB and associated parent argument | Maximal-residue BV on fibres | Superseded by the EN-A/WA formulation. It need not remain an additional dependency. |
+| Earlier rational decomposition | `pc3_results.md` §4: smooth BDH and LSQ over child primes | Weighted covariance estimate | Superseded by current EN/WA. LSQ is not an extra requirement of the current proof. |
+| Recursive factorisation of parent norms | The inherited FACTOR_U still invokes Lemma 8.5′ and its Fact D/large-sieve machinery | A factoring subroutine | Replace FACTOR_U by the self-contained U-MF algorithm, subject to checking its interfaces. The exponent fits; see §6. |
+
+Theorem WA itself is elementary. Its analytic hypothesis is the library energy bound; its other substantive hypothesis is the multiplicity estimate supplied by FAM/FAM-A. Calling WA a “BV input” would obscure this separation.
+
+For clarity, 8.5H asks for substantially more than an ordinary all-moduli error:
+\[
+\sum_{t\in\mathcal T_Q}\max_{(a,t)=1}
+\left|\Psi(x,y_2;t,a)-\frac{\Psi_t(x,y_2)}{\phi(t)}\right|
+\ll
+\Psi(x,y_2)\delta_{\mathcal T}
+\left(H(u_2)^{-c}+y_2^{-1/2}\right),
+\]
+where \(t=\ell s\), \(s\) is \(y_1\)-smooth, and
+\(\delta_{\mathcal T}\asymp\rho_{y_1}(Q/Y)/\log Y\).
+An all-moduli BV theorem does not automatically retain this sparse-family density. DW makes this entire requirement unnecessary at level 1.
+
+### What precision does the descent actually require?
+
+The current argument uses an incidence average, not a uniform assertion for every endogenous child.
+
+Let \(N\) count good child points and \(Z\) count accepted parents incident to a label. Conditional on its root event and environment, put
+\[
+\varphi=\frac{\operatorname{Var}N}{(\mathbb EN)^2},
+\qquad
+\sigma^2=\frac{\operatorname{Var}Z}{(\mathbb EZ)^2}.
+\]
+Chebyshev and Cauchy–Schwarz give
+\[
+\mathbb E[Z\,1_{N=0}]
+\le \mathbb EZ\left(\varphi+\sigma\sqrt{\varphi}\right).
+\]
+Consequently, with the normalized incidence weights,
+\[
+\text{expected dead incidence}
+\le W\left(A+\sqrt{AB_{\rm var}}\right).                 \tag{1}
+\]
+
+The relevant parent-to-incidence ratio is
+\[
+\eta=\mu_1/W\gg u_2^{-1},\qquad u_2\asymp D^\tau,\quad \tau=3-7\alpha.
+\]
+Thus first-order bounds \(A\ll D^{-\alpha}\mathcal L^C\),
+\(B_{\rm var}\ll D^{-\tau}\mathcal L^C\) suffice when
+\(\alpha>\tau\), exactly \(\alpha>3/8\). At the endpoint their polylogarithms cannot be ignored. The second-order bounds remove that problem.
+
+A bound of the form
+\[
+\mathbb E N^2\le(\log N)^C(\mathbb EN)^2
+\]
+only gives inverse-polylogarithmic success by Paley–Zygmund. It does not make the failure probability in (1) small.
+
+## 2. Rational side: the congruence survives the proposed randomness
+
+Let \(P_1,P_2\) be primitive, nonparallel integer vectors and
+\(\Delta=|\det(P_1,P_2)|\). There is a unique
+\(\lambda\in(\mathbb Z/\Delta\mathbb Z)^\times\) such that
+\[
+P_1\equiv\lambda P_2\pmod\Delta.
+\]
+For every integral homogeneous binary form \(H\) of degree \(e\),
+\[
+H(P_1)\equiv\lambda^eH(P_2)\pmod\Delta.                 \tag{2}
+\]
+This follows by substituting the coordinate congruences into each monomial.
+
+In particular, randomising both coefficients of \(g\) already samples its full available linear randomness, but the map
+\[
+g\longmapsto (G(P_1),G(P_2))
+\]
+has image an index-\(\Delta\) lattice. Further common multipliers, homogeneous perturbations, or additional random homogeneous forms preserve (2). They cannot make the pair uniform on the full product of residues modulo a divisor of \(\Delta\).
+
+Modulo a modulus coprime to \(\Delta\), the coefficient map can be invertible. That observation does not address the moduli responsible for the covariance.
+
+There is a separate obstruction to changing a small rational form while retaining a fixed common root. If primitive \(g,g'\), of height at most \(M\), have the same root modulo \(N\), with their denominator coefficients invertible modulo \(N\), then
+\[
+N\mid\det(g,g').
+\]
+When \(2M^2<N\), the determinant is zero, so the primitive forms agree up to sign. Adding multiples of \(N\) preserves the root but changes the height scale. Allowing the root to change avoids this uniqueness observation, but still does not avoid (2).
+
+Independent noise attached separately to \(P_1\) and \(P_2\) could destroy the congruence. It would no longer arise from one shared rational form and the existing norm/row identity.
+
+### Averaging over pairs with fixed \(\Delta\)
+
+Fix \(v=P_2\), and choose \(u\in\mathbb Z^2\) with \(\det(u,v)=1\). Every solution of
+\(\det(P_1,v)=\Delta\) has the form
+\[
+P_1=\Delta u+kv.
+\]
+It is primitive exactly when \((k,\Delta)=1\), and
+\[
+\lambda\equiv k\pmod\Delta.
+\]
+The box restriction cuts \(k\) into an interval depending on \(v\). There is no reason for that interval to contain complete residue systems.
+
+This failure occurs in very small exact examples. Among primitive vectors in \([-5,5]^2\), the ordered pairs of determinant \(41\) have slope distribution
+\[
+\#\{\lambda=9\}=4,\qquad \#\{\lambda=32\}=4,
+\]
+and no other slopes occur. I checked this by exhaustive integer enumeration. Incidence weights and filters introduce further biases.
+
+If one could arrange a uniform slope, independently of the intervals and weights, then averaging the unit-class pair count over \(\lambda\) would give its product main term exactly. That is an additional sampling theorem, not a consequence of fixed-determinant averaging.
+
+For algebraic values there is another issue: \(\iota=\lambda^d\). Uniform \(\lambda\) makes \(\iota\) uniform only on the subgroup of \(d\)-th powers. Characters satisfying \(\chi^d=1\) survive. Taking \(d\) odd does not make the power map bijective on every unit group.
+
+## 3. Algebraic side: the exact residue statement left after DW
+
+DW removes uncertainty about the pair sampling law. It does not remove the arithmetic restriction on its support.
+
+After rectangle and gcd decomposition, write \(k=\Delta'/\delta\), and let
+\[
+A_i(k,a)=\#\{n\in I_i:P^+(n)\le y,\ n\equiv a\pmod k\},
+\quad (a,k)=1.
+\]
+Put
+\[
+T_i=\sum_{(a,k)=1}A_i(k,a),\qquad
+E_i(k,a)=A_i(k,a)-\frac{T_i}{\phi(k)}.
+\]
+The exact pair count on the unit part of the lattice is
+\[
+\sum_{(a,k)=1}A_1(k,\iota a)A_2(k,a)
+=
+\frac{T_1T_2}{\phi(k)}
++\sum_{(a,k)=1}E_1(k,\iota a)E_2(k,a).                 \tag{3}
+\]
+Define
+\[
+V_i(k)=\sum_{(a,k)=1}|E_i(k,a)|^2.
+\]
+The relative error in (3) is at most
+\[
+\frac{\phi(k)\sqrt{V_1(k)V_2(k)}}{T_1T_2}.            \tag{4}
+\]
+
+Equation (3) can be written without characters. Nevertheless, its remainder is a residue-class problem.
+
+Interval asymptotics alone do not control it. For example, a periodic set supported on a proper subgroup of the units has excellent density estimates on intervals much longer than its period, while its pair count for \(\iota=1\) has a constant relative bias. This is an information obstruction: the interval estimates do not imply the desired residue estimate. It is not a claim that smooth numbers exhibit that bias.
+
+Hildebrand–Tenenbaum estimates do control the varying interval densities and local gcd factors. Centering at actual means and taking a covariance can square their first-order variations. That mechanism does not bound the final sum in (3).
+
+### A sufficient minimal interface
+
+For each modulus-independent library sequence \(u_j\), with normalization \(U_j\), it is enough to prove
+\[
+\sum_{k\le Q}V_j(k)\le\varepsilon U_j^2.              \tag{5}
+\]
+Parseval identifies this with
+\[
+\sum_{k\le Q}\frac1{\phi(k)}
+ \sum_{\chi\ne\chi_0\;(\mathrm{mod}\ k)}
+ |\widehat u_j(\chi)|^2
+\le\varepsilon U_j^2.                               \tag{6}
+\]
+
+Here is the complete WA transfer. If \(c_t\ge0\), and
+\[
+H_j(k)=\sum_{\substack{t:j(t)=j\\k(t)=k}}c_t,
+\qquad
+\mathfrak D=\sum_j\max_{k\le Q}\phi(k)H_j(k),
+\]
+then (6) implies
+\[
+\sum_t c_t\,
+ \frac{\sum_{\chi\ne\chi_0}|\widehat u_{j(t)}(\chi)|^2}
+      {U_{j(t)}^2}
+\le \varepsilon\mathfrak D.                         \tag{7}
+\]
+Indeed, group the sum by \(j,k\), take out \(\max_k\phi(k)H_j(k)\), and apply (6).
+
+The truly minimal hypothesis is the corresponding weighted bound on the cross remainder in (3), for the actual slopes. Equations (5)–(6) are a convenient stronger substitute. They require neither maximal-residue BV nor pointwise equidistribution for every child modulus.
+
+The notes’ recorded transfer losses are
+\[
+\mathfrak D_{\rm child}\le e^{O(D^\theta\mathcal L^2)},
+\quad \theta=2\alpha-\tfrac12,
+\]
+and
+\[
+\mathfrak D_{\rm parent}\le e^{O(D^{\theta_p}\mathcal L^2)},
+\quad \theta_p=\max(1-2\alpha,\,2-5\alpha).
+\]
+These include the short-interval endpoint and grid losses. Thus an unspecified \(o(1)\), or an arbitrary fixed power of \(1/\log x\), cannot simply be substituted into the current transfer.
+
+### Modulus ranges
+
+The following are leading logarithmic scales; fixed constants are suppressed.
+
+| Family | Smoothness bound \(y\) | \(\log x\) | Largest relevant \(\log Q\) |
+|---|---:|---:|---:|
+| Algebraic children | \(B\) | \(D^{2\alpha}\mathcal L\) | \(D^\alpha\mathcal L\): \(Q\le2S_2^2=B^{O(1)}\) |
+| Rational children | \(B\) | \(D^{2\alpha}\mathcal L\) | \(D^{4\alpha-1}\mathcal L\): \(Q\ll B_2S_2^2\) |
+| Rational parents, after removing \(\ell\) | \(B\) | \(D^{2\alpha}\mathcal L\) | \(D^{1-\alpha}\mathcal L\): \(Q\ll V_1^2\) |
+| Algebraic parents | \(B_2\) | \(D^{2-3\alpha}\mathcal L\) | \(D^{1-\alpha}\mathcal L\): \(Q\ll V_1^2/q\) |
+
+All four have \(Q=x^{o(1)}\). Only algebraic children automatically have \(Q=y^{O(1)}\). In particular, a theorem limited to moduli below a fixed power of \(y\) does not cover the rational child family.
+
+## 4. MF designs and the per-field joint event
+
+Fix rational data and a prospective parent. For one field \(j\), the relevant probability is
+\[
+p_{\rm joint}
+=
+\Pr_j\!\left(
+ A_j\ \text{and every child of that parent is descendible in field }j
+\right).                                           \tag{8}
+\]
+OP gives information about \(\Pr_j(A_j)\). It does not give a lower bound for (8).
+
+A sharp elementary countermodel illustrates the problem. Conditional on acceptance, choose uniformly one of \(m\) child labels and make precisely that child dead. Every child has failure probability \(1/m\), but
+\[
+\Pr(\text{all children good}\mid A_j)=0.
+\]
+Independent fields amplify a positive \(p_{\rm joint}\); they do not prove that it is positive.
+
+The restriction “children of field \(j\) must be descended in field \(j\)” therefore matters. Replacing the field separately for each child changes the relation being descended. Resampling points within a fixed child lattice cannot repair a lattice with no good point.
+
+There is a possible search-work alternative, but it needs a new joint estimate. If one established
+\[
+p_{\rm joint}\ge \Pr(A_j)\exp(-Cm\mathcal L),          \tag{9}
+\]
+then for the stipulated \(m\asymp D^\alpha\), an
+\(\exp(O(m\mathcal L))=L_N[\alpha,O(1)]\) field search could be affordable. This search must occur at a stage where its probability is not subsequently raised to a power \(2k\asymp D^\alpha\). Feeding the loss directly into the existing split-success parameter would produce an \(L_N[2\alpha]\)-scale penalty.
+
+There is also no available “one fresh coefficient per child” argument:
+\[
+d\asymp D^{1-2\alpha},
+\qquad \frac{m}{d}\asymp D^{3\alpha-1}\longrightarrow\infty
+\]
+for \(m\asymp D^\alpha\). Even the effective mean-incidence child count \(u_2\asymp D^{3-7\alpha}\) exceeds \(d\), by a factor \(D^{2-5\alpha}\).
+
+These observations do not rule out a new design. They show exactly what MF has not proved: a lower bound for the accepted-parent/all-children event. The existing covariance argument supplies that lower bound through (1).
+
+## 5. Published inputs and a sufficient replacement
+
+### 5.1 A published-proof route to the required \(L^2\) estimate
+
+The useful source is Sary Drappeau, **“Sommes friables d’exponentielles et applications,” Canadian Journal of Mathematics 67 (2015), 597–638**, DOI 10.4153/CJM-2014-036-5.
+
+**Verified against the published PDF:** Propositions **2.9**, **2.13**, and their written proofs. Their numbers differ from the arXiv version.
+
+Put \(S_\chi(x,y)=\sum_{n\le x,\;P^+(n)\le y}\chi(n)\), and let \(\beta\) be the saddle point.
+
+* Proposition **2.9**: for \(q,T\le y^c\), \(T\ge4\), a nonprincipal character whose \(L\)-function is zero-free in \(\Re s>1-\epsilon,\ |\Im s|\le T\) satisfies
+  \[
+  |S_\chi(x,y)|
+  \ll x^\beta\zeta(\beta,y)
+      \bigl((\log T)x^{-c\epsilon}+T^{-c}\bigr),
+  \]
+  when \((\log x)^C\le y\le x\).
+* Proposition **2.13**, specialized to a primitive \(R\)-exceptional character of conductor at most \(R\), gives
+  \[
+  |S_\chi(x,y)|\ll\Psi(x,y)\bigl(H(u)^{-c}+\mathcal R\bigr),
+  \]
+  for \(y\le\exp(\log x/(\log\log x)^4)\), \(R\le y^{c/\log_3x}\), where
+  \[
+  \mathcal R=
+  y^{-c/\log_3x}+e^{-c\sqrt{\log x}}
+       +(\log x)^{3/2}x^{-c/\log R}.
+  \]
+
+Unlike Compositio Lemme 5, these proofs are supplied in the paper. Its equation **(2.16)** supplies the log-free zero-density estimate used below. [Published primary source](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/BDEFED19FB24C02C644F8DA57C5B8B64/S0008414X0000287Xa.pdf/div-class-title-sommes-friables-d-exponentielles-et-applications-div.pdf).
+
+Here is a new consequence sufficient for the present application.
+
+**Energy lemma.** There are absolute positive constants \(c_0,c,\epsilon_0\) such that, in an asymptotic family satisfying
+\[
+u\ge(\log\log x)^5,\qquad
+u\log(u+1)\le\epsilon_0\log y,\qquad Q=x^{o(1)},
+                                                               \tag{10}
+\]
+one has, with \(\rho=\Psi(x,y)/x\),
+\[
+\begin{split}
+\mathcal E(x,y,Q)
+&:=\sum_{k\le Q}\frac1{\phi(k)}
+       \sum_{\chi\ne\chi_0\;(\mathrm{mod}\ k)}
+                   |S_\chi(x,y)|^2\\
+&\ll e^{C(\log(2Q))^{1/4}}(\log x)^C\Psi(x,y)^2
+ \left[
+ H(u)^{-c}+\frac{y^{-c_0}}{\rho}+\frac{Q}{x\rho}
+ \right].                                             \tag{11}
+\end{split}
+\]
+Choose \(\epsilon_0\) sufficiently small relative to \(c_0\). Then
+\(\rho\ge y^{-c_0/2}\), so the second term is at most \(y^{-c_0/2}\).
+
+This is an \(L^2\) statement under a density restriction. It is not the full Lemme 5.
+
+**Proof.**
+
+First consider primitive characters, weighted by \(1/\phi(r)\). Set
+\[
+R_*=\exp\!\left(c_*\frac{u}{\log^2(u+1)}\right),
+\qquad R_0=y^{c_0},
+\]
+where the fixed constants are sufficiently small.
+
+1. **Conductors \(r\le R_*\).**  
+   Use the classical zero-free region with height \(T=y^{c_T}\). Apart from at most one primitive real character, Proposition 2.9 gives
+   \[
+   |S_\chi(x,y)|\ll\Psi(x,y)(\log x)^C e^{-c u}.
+   \]
+   The total character weight is \(O(R_*)\), which this saving absorbs.
+
+   For the possible exceptional character, Proposition 2.13 applies with \(R=R_*\). Conditions (10) imply
+   \[
+   R_*\le y^{c/\log_3x},\qquad \mathcal R\ll H(u)^{-c'}.
+   \]
+   Its weighted square is therefore also \(\ll\Psi(x,y)^2H(u)^{-c'}\).
+
+2. **Conductors \(R_*<r\le R_0\).**  
+   Choose a large fixed \(A\), and then a small fixed \(\epsilon>0\). Characters zero-free in
+   \(\Re s>1-\epsilon,\ |t|\le r^A\) satisfy, by Proposition 2.9,
+   \[
+   |S_\chi(x,y)|\ll
+       \Psi(x,y)(\log x)^C(x^{-c'}+r^{-3}).
+   \]
+   Make \(c_0\) small enough that \(r^A\le y^c\).
+
+   The published log-free zero-density estimate, equation (2.16), shows that the number of remaining primitive characters with conductor at most \(R\) is \(O(R^{1/10})\), after decreasing \(\epsilon\). On \(r\asymp R\), their trivial square bound, multiplied by \(1/\phi(r)\), contributes
+   \[
+   \ll\Psi(x,y)^2R^{-9/10}(\log R)^C.
+   \]
+   Summing dyadically gives \(O(\Psi(x,y)^2H(u)^{-c})\).
+
+3. **Conductors \(r>R_0\).**  
+   For any \(Z\) at the scales in question, the classical multiplicative large sieve gives
+   \[
+   \sum_{R_0<r\le T}\frac1{\phi(r)}
+       \sum_{\chi\ {\rm primitive}}|S_\chi(Z,y)|^2
+   \ll(\log x)^C\left(\frac Z{R_0}+T\right)\Psi(Z,y).
+                                                               \tag{12}
+   \]
+   This follows by dyadic decomposition from the usual
+   \((Z+R^2)\sum|a_n|^2\) inequality.
+
+It remains to handle induced characters without a damaging divisor factor. If \(\chi\bmod k\) is induced by primitive \(\chi^*\bmod r\), then
+\[
+S_\chi(x,y)
+=\sum_{\substack{d\mid k\\P^+(d)\le y}}
+       \mu(d)\chi^*(d)S_{\chi^*}(x/d,y).                \tag{13}
+\]
+Take \(\sigma=3/4\). Weighted Cauchy gives
+\[
+|S_\chi|^2
+\le A_\sigma(k)\sum_{\substack{d\mid k\\P^+(d)\le y}}
+                 d^\sigma|S_{\chi^*}(x/d,y)|^2,
+\quad
+A_\sigma(k)=\sum_{d\mid k}d^{-\sigma}.
+\]
+Uniformly for \(k\le Q\),
+\[
+A_\sigma(k)\le
+\exp\!\bigl(C(\log(2Q))^{1/4}\bigr).                  \tag{14}
+\]
+For example, bound its Euler product by splitting the prime divisors at \(\log(2Q)\).
+
+Write \(k=rs\). Nonzero terms of (13) have \((d,r)=1\), hence \(d\mid s\). The elementary inequalities
+\[
+\phi(rs)\ge\phi(r)\phi(s),\qquad
+\sum_{\substack{s\le T\\d\mid s}}\frac1{\phi(s)}
+ \ll\frac{\log(2T)}{\phi(d)}
+\]
+reduce the whole energy to
+\[
+A_{\sigma,\max}(\log x)^C
+\sum_{d\le Q}\frac{d^\sigma}{\phi(d)}
+ \sum_{1<r\le Q/d}\frac1{\phi(r)}
+       \sum_{\chi^*\ {\rm primitive}}
+                     |S_{\chi^*}(x/d,y)|^2.           \tag{15}
+\]
+
+All \(x/d\) are \(x^{1-o(1)}\), so the previous conductor estimates apply uniformly. Rankin’s bound and the published saddle-point estimate give
+\[
+\Psi(x/d,y)\ll(\log x)d^{-\beta}\Psi(x,y),
+\qquad \beta\ge7/8.
+\]
+The two divisor sums needed in (15) converge:
+\[
+\sum_{d\ge1}\frac{d^{\sigma-2\beta}}{\phi(d)}<\infty,
+\qquad
+\sum_{d\ge1}\frac{d^{\sigma-1-\beta}}{\phi(d)}<\infty.
+\]
+The first handles the small-conductor square bound; the second handles (12). Substitution proves (11). ∎
+
+The large-sieve statement is Iwaniec–Kowalski, *Analytic Number Theory* (2004), **Theorem 7.13**. I checked its exact published restatement in Pascadi, Compositio **161** (2025), **Lemma 3.4**. [Primary source](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/D8E4EE07BDAA6D41CCD8C5455D81CD7A/S0010437X2500747Xa.pdf/smooth_numbers_in_arithmetic_progressions_to_large_moduli.pdf).
+
+### Applying the lemma to the libraries
+
+There are three extensions, none requiring a new residue theorem.
+
+* **Short intervals:** take the difference of two endpoint sums. Normalizing by the interval’s principal mass costs the recorded \(h_*^{-2}\).
+* **\(P_0\)-free smooth numbers:** apply Möbius inversion and Minkowski’s inequality to the energy norm. Since \(P_0^\#=x^{o(1)}\),
+  \[
+  \sum_{e\mid P_0^\#}\Psi(x/e,y)
+  \ll\Psi(x,y)(\log P_0)^C.
+  \]
+  This adds only polylogarithmic loss.
+* **\(J\cdot\mathcal S_B\):** Minkowski gives normalization
+  \(\sum_{\ell\in J}\Psi(x/\ell,B)\), with no factor \(\#J\). The factors \(\chi(\ell)\) have absolute value at most one.
+
+The density restriction is achievable by enlarging the fixed constant \(a\) in \(B=L_N[\alpha,a]\). At child scales,
+\[
+\frac{\log(1/\rho)}{\log B}=O(a^{-2})
+\]
+for fixed \(d_0,b_2,\kappa\). For algebraic parents,
+\[
+\frac{u_2\log u_2}{\log B_2}
+=O\!\left(D^{4-11\alpha}\right)\longrightarrow0
+\]
+throughout the requested window.
+
+The additional loss in (11) is harmless. Its largest parent exponent is \((1-\alpha)/4\), and
+\[
+\frac{1-\alpha}{4}<3-7\alpha
+\qquad(\alpha<2/5).
+\]
+The corresponding child losses are smaller than \(D^\alpha\). Thus (11) supplies
+\[
+\varepsilon_{\rm child}\le e^{-cD^\alpha/\mathcal L^2},
+\qquad
+\varepsilon_{\rm parent,alg}\le e^{-cD^{3-7\alpha}/\mathcal L^2},
+\]
+after shrinking \(c\). These beat the recorded FAM losses and every power of \(D\), including the required \(D^{-2\alpha}\).
+
+### 5.2 What the other published sources do and do not supply
+
+**Harper, Compositio Mathematica 152 (2016), 1121–1158.**  
+“Smooth Numbers Result 3” gives, for \(\log X\le y\le X\), \(qy\le Z\le X\),
+\[
+\#\{n\in[X,X+Z]:n\equiv a\pmod q,\ P^+(n)\le y\}
+\ll
+\frac{Z\Psi(X,y)}{qX}
+ \left(\frac{Xq}{Z}\right)^{1-\beta}\log X.
+\]
+Its elementary proof is suitable for coarse DS-type upper bounds. It is not a small-covariance estimate. The major-arc argument in Appendix A.1 explicitly invokes the exceptional-character argument in §3.3 of the unpublished 2012 preprint, so citing the 2016 paper does not itself remove that proof dependency. **Verified in the accepted author manuscript.** [Primary source](https://wrap.warwick.ac.uk/id/eprint/107457/7/WRAP-minor-arcs-mean-values-restriction-theory-exponential-sums-over-smooth-numbers-Harper-2018.pdf).
+
+**Harper, Journal of Number Theory 132 (2012), 182–199, Theorems 1–2.**  
+Theorem 1 proves AP equidistribution for
+\(q\le y^{4\sqrt e-\delta}\), as \(\log x/\log q\to\infty\). For a fixed smooth weight, the stated relative error is
+\[
+O_\Phi\!\left(
+ \min\!\left\{\frac{q\sqrt y}{(\log\log x)^{1/3}},\frac1{\log y}\right\}
+ +\frac{\log q}{u^c\log y}
+ +\frac{\log w}{(c\delta w^{\delta/2})^{c\log(2+(\log x)/y)}}
+\right),
+\quad w=\min\{\log x/\log q,y\}.
+\]
+Theorem 2 gives bounded-index coset equidistribution for \(q\le y^A\), not full residue equidistribution. These do not cover the rational modulus ranges, and their quoted errors do not supply the current weighted energy saving. **Verified in the author’s primary version; journal typesetting not checked.** [Primary source](https://arxiv.org/html/1103.2106v1).
+
+**Soundararajan, Anatomy of Integers, CRM Proceedings and Lecture Notes 46 (2008), 115–128, Theorems 1–2.**  
+Theorem 1 has \(q\le y^{4\sqrt e-\epsilon}\) and
+\[
+y^{(\log\log y)^4}\le x\le \exp(y^{1-\epsilon}),
+\]
+with relative \(o(1)\). Its fixed-weight proof gives \(O_\Phi(u^{-c\epsilon})\). Theorem 2 allows a bounded-index subgroup obstruction for arbitrary fixed powers of \(y\). Neither is the required family estimate. **Verified in the author’s manuscript, including the proof’s quantitative weighted conclusion.** [Primary source](https://arxiv.org/pdf/0707.0299).
+
+**Granville, Acta Mathematica 170 (1993), 255–273, Theorems 1–2.**  
+Theorem 1 has relative error \(O_A(\log q/\log y)\) for \(q\le\min(x,y^A)\). Theorem 2 gives
+\[
+\sum_{q\le Q}\max_{z\le x}\max_{(a,q)=1}|E(z,y;q,a)|
+\ll_A\Psi(x,y)(\log y)^{-A}
+\]
+when
+\[
+Q\le\exp(C\log y\log_2y/\log_3y),\qquad
+x\ge Q^2\log^B Q.
+\]
+The larger rational and parent moduli exceed this range. Even where it applies, its fixed-logarithmic saving cannot absorb the present exponential FAM loss. **Statements verified against indexed text of the primary scan; the complete scan was not successfully rendered for proof inspection.** [Primary source](https://archive.ymsc.tsinghua.edu.cn/pacm_download/117/6484-11511_2006_Article_BF02392787.pdf).
+
+**Granville, Philosophical Transactions A 345 (1993), 349–362, Part II.**  
+The relevant individual-progression estimate, for \(q\le y^{1-\epsilon}\), has relative error
+\[
+O_\epsilon\!\left(\frac{\log q}{u^c\log y}+\frac1{\log y}\right).
+\]
+This is not the required weighted variance statement. **Original theorem numbering and proof not successfully verified:** the author PDF has broken text encoding. The formula is verified in Hildebrand–Tenenbaum’s published survey, **Theorem 6.2**; I do not invent an original theorem number. [Author PDF](https://dms.umontreal.ca/~andrew/PDF/psinaps2.pdf), [published survey](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf).
+
+**Fouvry–Tenenbaum, Proceedings LMS 63 (1991), 449–494, Theorem 6.**  
+The BV error is \(O_A(x(\log x)^{-A})\), for
+\(Q\le\sqrt x(\log x)^{-B(A)}\), uniformly in \(2\le y\le x\). This absolute error is too large relative to
+\(\Psi(x,y)=x\exp(-\Theta(u\log u))\). **Statement checked against the author-uploaded scan and its explicit use in Granville’s primary proof; the full proof was not independently checked.** [Primary scan](https://www.researchgate.net/publication/243090669_Entiers_Sans_Grand_Facteur_Premier_En_Progressions_Arithmetiques).
+
+**Fouvry–Tenenbaum, Proceedings LMS 72 (1996), 481–514, Theorem 1 and Corollary 1.**  
+For \(y>\exp((\log x)^{2/3+\epsilon})\), Corollary 1 gives
+\[
+\sum_{q\le\sqrt x\,e^{-(\log x)^{1/3}}}
+       \max_{(a,q)=1}|E(x,y;q,a)|
+\ll_{A,\epsilon}\Psi(x,y)H(u)^{-c}(\log x)^{-A}.
+\]
+This has sufficient error strength where applicable. It misses both child scales and rational parents. It can cover algebraic parents for \(\alpha>7/18\). Theorems 2–3 give levels \(3/5-\epsilon\) and \(6/11-\epsilon\), respectively, but with absolute \(x(\log x)^{-A}\) errors. **Verified in the author version.** [Primary source](https://tenenb.perso.math.cnrs.fr/PPP/RepStatS%28x%2Cy%29.pdf).
+
+**Drappeau, Compositio Mathematica 151 (2015), 828–862, Theorem 1 and Lemme 5.**  
+Lemme 5 bounds the \(1/\phi(q)\)-weighted \(L^1\) character sum over conductors at most \(x^\eta\), for \((\log x)^C\le y\le x\), \(Q\le x\), by
+\[
+\Psi(x,y)\bigl(H(u)^{-\delta}(\log x)^{-A}+y^{-\delta}\bigr).
+\]
+It suffices for EN/EN-A. Its justification points to Harper §3.3. Theorem 1 gives level \(3/5-\epsilon\) for fixed ratios \(a_1\bar a_2\), with the same error shape, but uses Lemme 5. **Statement and dependency verified.** [Primary source](https://drappeau.perso.math.cnrs.fr/documents/bffi-friable.pdf).
+
+**Pascadi, Compositio Mathematica 161 (2025), 1923–1974, Theorem 1.1 and Lemma 3.2.**  
+Theorem 1.1 gives fixed-residue level \(66/107-\epsilon\), with error
+\(\Psi(x,y)(\log x)^{-A}\), for
+\((\log x)^C\le y\le x^{1/C}\). Lemma 3.2 repeats Fact D and explicitly refers to Harper §3.3. It is not an independent full-proof replacement. **Verified in the published PDF.** [Primary source](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/D8E4EE07BDAA6D41CCD8C5455D81CD7A/S0010437X2500747Xa.pdf/smooth_numbers_in_arithmetic_progressions_to_large_moduli.pdf).
+
+**de la Bretèche–Drappeau, JEMS 22 (2020), 1577–1624, Theorem 2.1.**  
+For \(x^\epsilon\le Q\le x^{3/5-\epsilon}\), it treats \(y_1\)-smooth values and \(y_2\)-smooth moduli, with interval length \(\eta x\), \(\eta\ge e^{-\delta\sqrt{\log y}}\). Its error is
+\[
+\ll
+\eta\Psi(x,y_1)
+ \frac{\Psi(Q,y_2)}{\phi(q_0)Q}
+ \frac{e^{O_k(u_2)}}{(\log x)^A},
+\qquad u_2=\frac{\log x}{\log y_2},
+\]
+with a maximal-residue version below \(x^{1/2-\epsilon}\). Our \(Q=x^{o(1)}\) lies outside its stated lower range. Its proof also explicitly imports Harper’s §3.3 calculations. **Verified in the authors’ corrected primary version.** [Primary source](https://drappeau.perso.math.cnrs.fr/documents/friable-consec-jems-prefinal-fix1.pdf).
+
+**Hildebrand and Hildebrand–Tenenbaum.**  
+Hildebrand, JNT **22** (1986), **Theorems 1 and 3**, supplies
+\[
+\Psi(x,y)=x\rho(u)\left(1+O\!\left(\frac{\log(u+1)}{\log y}\right)\right)
+\]
+and the corresponding interval estimate for lengths at least \(xy^{-5/12}\), in the usual Hildebrand range. These are first-order density estimates. HT, Trans. AMS **296** (1986), **Theorems 1–3**, supplies the saddle-point and scaling estimates. Neither alone controls (3). **The original Hildebrand paper was not opened; its attribution and statement were checked in the published restatements. HT estimates were checked against primary restatements and the coauthored survey.** [Published survey](https://www.numdam.org/item/JTNB_1993__5_2_411_0.pdf), [Jain’s published restatement, Lemma 3.2](https://academic.oup.com/qjmath/article/77/2/397/8677316).
+
+**Harper, Journal LMS 112 (2025), e70293, Corollary 1.**  
+This newer published BDH asymptotic concerns \(x^{0.51}\le Q\le x\), with errors containing
+\[
+\Psi(x,y)^2\bigl(H(u)^{-c}(\log x)^{-A}+y^{-c}\bigr).
+\]
+It does not directly specialize to our small \(Q\). More decisively for the requested provenance, its smooth-number application in §5 explicitly invokes Theorem 1 of the unpublished 2012 preprint. **Verified in the published article.** [Primary source](https://londmathsoc.onlinelibrary.wiley.com/doi/full/10.1112/jlms.70293).
+
+## 6. Assessment
+
+**A published-input analytic repair below \(2/5\) is realistic, and (11) supplies one. An OP-only or MF-only repair has not been established.**
+
+A concrete choice is \(\alpha=19/50\). Keep fixed positive \(d_0,b_2,\kappa\), take \(a\) sufficiently large to satisfy (10) at every library scale, and rerun the box scans with the resulting DW height. This changes \(L[\alpha]\) constants, not the exponent.
+
+The replacement argument is:
+
+1. Use DW/OP for parent and root-conditioned child means, deleting 8.5H and its sparse-modulus requirements.
+2. Replace EN and EN-A by (11), including the rough and \(J\)-weighted extensions.
+3. Use the elementary WA inequality and the actual family multiplicity bounds. The exponential saving absorbs their losses, leaving errors smaller than every power of \(D\).
+4. Retain the covariance-of-cell-densities argument for the local and archimedean terms. Its purpose is precisely to square first-order density variations.
+5. Apply DC and the parent-survival argument.
+6. Replace the inherited FACTOR_U calls by U-MF. For a parent norm \(X_F\),
+   \[
+   L_{X_F}[2/5]
+   =L_N\!\left[\frac25(2-3\alpha),O(1)\right],
+   \]
+   and
+   \[
+   \frac25(2-3\alpha)<\alpha
+   \quad\Longleftrightarrow\quad \alpha>\frac4{11}.
+   \]
+   Thus this substitution fits throughout the requested window.
+
+For this example,
+\[
+\tau=\frac{17}{50},\qquad
+\theta=\frac{13}{50},\qquad
+\theta_p=\frac6{25},
+\]
+so both transfer margins are strict. The additional divisor loss in (11) also has a strict margin. The same analytic comparisons hold throughout \(3/8<\alpha<2/5\).
+
+What remains unverified is the complete internal geometric and algorithmic assembly: particularly the precise FAM/FAM-A domination statements, the acceptance subtractions, field selection, recursive interfaces, and extraction guarantees. Therefore I do **not** label the full factoring theorem proved by this audit.
+
+The unavoidable residue-class step in this architecture is the remainder in (3), and its rational analogue modulo \(q\Delta'\). Integer multipliers do not eliminate it. What can be eliminated is reliance on Harper’s unpublished BV theorem: for sufficiently generous smoothness constants, the weaker \(L^2\) estimate needed there follows by the published-input argument above.
