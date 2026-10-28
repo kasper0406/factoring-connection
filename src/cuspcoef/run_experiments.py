@@ -152,12 +152,18 @@ def accept(A: int, primorial: int) -> bool:
     return c == 1 or H.is_prime(c)
 
 
-def e2(quick=False):
-    f = out("e2" if not quick else "e2_quick")
+def e2(quick=False, only=None):
+    # `only` (deviation D4, cuspcoef2): restrict to the listed sizes; output goes to cuspcoef_e2_n<sizes>.jsonl so the
+    # completed lines in cuspcoef_e2.jsonl are not overwritten. Per-size seeds depend on nbits only, so a restricted run
+    # draws exactly the samples that the full run would draw at that size. No other logic changed.
+    f = out("e2" if not quick else "e2_quick") if only is None else out("e2_n" + "_".join(map(str, only)))
     F = family()[:32000]
     nsamp = 600 if not quick else 40
     nsim = 100000 if not quick else 2000
-    for nbits in (64, 128, 192, 256) if not quick else (64, 128):
+    sizes = (64, 128, 192, 256) if not quick else (64, 128)
+    if only is not None:
+        sizes = tuple(only)
+    for nbits in sizes:
         B = nbits * nbits
         primorial = 1
         for r in primes_upto(B):
@@ -192,4 +198,8 @@ def e2(quick=False):
 if __name__ == "__main__":
     exp = sys.argv[1]
     quick = "--quick" in sys.argv
-    {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[exp](quick)
+    if exp == "e2" and "--only" in sys.argv:
+        only = [int(x) for x in sys.argv[sys.argv.index("--only") + 1].split(",")]
+        e2(quick, only)
+    else:
+        {"e1": e1, "e2": e2, "e3": e3, "e4": e4}[exp](quick)
