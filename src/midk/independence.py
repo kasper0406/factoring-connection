@@ -34,20 +34,25 @@ def gauss_kernel_or_factor(A: List[List[int]], N: int) -> Tuple[str, object]:
     piv_cols: List[int] = []
     rr = 0
     for cclmn in range(n):
-        # find a pivot in column cclmn at or below row rr
+        # find a pivot in column cclmn at or below row rr: PREFER a unit entry (a factor is reported
+        # only when the column has a nonzero entry but NO unit one -- a genuine rank obstruction, not
+        # an accidental non-unit entry that a unit pivot elsewhere in the column would bypass).
         piv = None
+        nonunit = None
         for i in range(rr, m):
-            g = gcd(M[i][cclmn] % N, N)
-            if M[i][cclmn] % N == 0:
+            v = M[i][cclmn] % N
+            if v == 0:
                 continue
+            g = gcd(v, N)
             if g == 1:
                 piv = i
                 break
-            else:
-                # nonzero non-unit -> nontrivial factor
-                return ("factor", g)
+            elif nonunit is None:
+                nonunit = g
         if piv is None:
-            # column has only zeros or we already returned; it is a free column
+            if nonunit is not None:
+                return ("factor", nonunit)
+            # column is all zero at/below rr: free column
             continue
         M[rr], M[piv] = M[piv], M[rr]
         inv = pow(M[rr][cclmn], -1, N)
@@ -73,9 +78,12 @@ def gauss_kernel_or_factor(A: List[List[int]], N: int) -> Tuple[str, object]:
 
 
 def split_from_intertwiner(N: int, T: List[List[int]], lam: int) -> Optional[int]:
-    """DIAGNOSTIC-free operational core: given a claimed Z/N eigenvalue lam of T, attempt the
-    eigen-computation.  Returns a nontrivial factor of N if the elimination exposes a zero divisor,
-    else None (a consistent global Z/N eigenvector, no split).  Uses only N and T (no p, q)."""
+    """Operational core (uses only N and T, no p, q): given a claimed Z/N eigenvalue lam of T, run the
+    eigen-elimination of (T - lam I) over Z/N.  Returns a nontrivial factor of N iff the elimination
+    meets a nonzero non-unit pivot (a *rank discrepancy* across the prime factors), else None
+    (a consistent global Z/N eigenvector / injectivity).  Correct sufficient condition for a split:
+    rank_p(T-lam I) != rank_q(T-lam I) for some p, q | N (Opus critic); a non-scalar T alone does NOT
+    suffice (e.g. [[lam,1],[0,mu]] returns a kernel, no split)."""
     m = len(T)
     A = [[(T[i][j] - (lam if i == j else 0)) % N for j in range(m)] for i in range(m)]
     tag, val = gauss_kernel_or_factor(A, N)
@@ -100,26 +108,53 @@ def scalar_intertwiner(N: int, m: int, lam: int) -> List[List[int]]:
     return [[(lam if i == j else 0) % N for j in range(m)] for i in range(m)]
 
 
-def modp_only_symmetry(p: int, q: int, m: int, lam_p: int, seed: int = 0) -> Tuple[List[List[int]], int]:
-    """DIAGNOSTIC construction of a 'structured mod p only' intertwiner: T acts as the scalar lam_p
-    mod p (a symmetry visible at the prime p, e.g. a root of unity / CM action realised mod p) but as
-    a generic non-scalar matrix mod q.  Returns (T mod N, lam) with lam ≡ lam_p mod p chosen so that
-    det(T-lam I) ≡ 0 mod N.  This is exactly the family a favourable G_r failure would need."""
-    N = p * q
-    rng = sp.Integer  # exact
+def _randmat(rng, m, mod, rank=None):
+    """A random m x m matrix over Z/mod (mod prime) of exactly the given rank (default full).
+    Constructed directly as an outer product B(m x k) * C(k x m), k = rank, which has rank k
+    generically; verified, resampled on the rare degenerate draw."""
+    k = m if rank is None else rank
+    for _ in range(200):
+        B = [[rng.randrange(mod) for _ in range(k)] for _ in range(m)]
+        C = [[rng.randrange(mod) for _ in range(m)] for _ in range(k)]
+        A = [[sum(B[i][t] * C[t][j] for t in range(k)) % mod for j in range(m)] for i in range(m)]
+        if _rank_modp(A, mod) == k:
+            return A
+    raise RuntimeError("could not sample matrix of requested rank")
+
+
+def _rank_modp(M0, p):
+    M = [[int(v) % p for v in row] for row in M0]
+    rows, cols = len(M), len(M[0])
+    rk = 0
+    for c in range(cols):
+        piv = next((i for i in range(rk, rows) if M[i][c] % p), None)
+        if piv is None:
+            continue
+        M[rk], M[piv] = M[piv], M[rk]
+        inv = pow(M[rk][c], -1, p)
+        M[rk] = [(v * inv) % p for v in M[rk]]
+        for i in range(rows):
+            if i != rk and M[i][c] % p:
+                f = M[i][c]
+                M[i] = [(M[i][k] - f * M[rk][k]) % p for k in range(cols)]
+        rk += 1
+    return rk
+
+
+def rank_discrepant_intertwiner(p: int, q: int, m: int, seed: int = 0) -> Tuple[List[List[int]], int]:
+    """DIAGNOSTIC construction of the matrix a favourable G_r failure would need: an intertwiner
+    A = T - lam I whose rank differs across the prime factors of N -- rank m-1 mod p (a one-dim
+    'symmetry' visible at p, e.g. a CM/root-of-unity action realised mod p) but full rank m mod q.
+    A is NOT identically 0 mod p (it is a generic rank-(m-1) matrix there), so a split requires the
+    genuine non-unit pivot of Lemma SPL-INT, not a trivial entry gcd.  Returns (A mod N, 0): we test
+    split_from_intertwiner(N, A, 0) directly (A already plays the role of T - lam I)."""
     import random
-    r = random.Random(seed)
-    # mod q: a generic matrix with a chosen eigenvalue lam_q so (T-lam I) is singular mod q too
-    lam_q = r.randrange(q)
-    # build T mod q with eigenvalue lam_q but non-scalar: companion-like
-    Tq = [[r.randrange(q) for _ in range(m)] for _ in range(m)]
-    # force an eigenvector e1: set first column so that T e1 = lam_q e1 -> make T upper-triangular-ish
-    for i in range(m):
-        Tq[i][0] = (lam_q if i == 0 else 0)
-    Tp = [[(lam_p if i == j else 0) for j in range(m)] for i in range(m)]  # scalar mod p
-    lam = crt(lam_p, lam_q, p, q)
-    T = [[crt(Tp[i][j] % p, Tq[i][j] % q, p, q) for j in range(m)] for i in range(m)]
-    return T, lam
+    N = p * q
+    rng = random.Random(seed)
+    Ap = _randmat(rng, m, p, rank=m - 1)     # singular mod p
+    Aq = _randmat(rng, m, q, rank=m)         # invertible mod q
+    A = [[crt(Ap[i][j] % p, Aq[i][j] % q, p, q) for j in range(m)] for i in range(m)]
+    return A, 0
 
 
 # ---------------------------------------------------------------------------
@@ -160,6 +195,34 @@ def ring_power_height(d: int, base_height: int, r: int) -> dict:
     target = sp.Rational(1, d)            # in units of x = log N
     return {"d": d, "r": r, "family_log_height_over_logH0": r - 1,
             "note": "geometric in r; aggregate needs O(1)*x/d independent of r"}
+
+
+def automorphism_graph_witness(m: int, p: int, q: int, r: int) -> dict:
+    """The sharp concrete favourable-failure of the counting hypothesis (codex midk_1 §4).
+    K = Q(zeta_m); phi: zeta -> t with Phi_m(t) = 0 mod N; sigma: zeta -> zeta^g a Galois element;
+    phi_1 = phi, phi_2 = phi o sigma^{-1}; w_{1j} = zeta^{j}, w_{2j} = sigma(zeta^{j}) = zeta^{gj}.
+    Then phi_1(w_{1j}) = phi_2(w_{2j}) = t^j for ALL j, at height 1 (roots of unity): the r-1 linking
+    conditions are completely DEPENDENT with no height growth -> the counting half of G_r is false.
+    But candidate u_2 = sigma(u_1), so the two norms coincide and any modular square root on side 2 is
+    sigma(s) with phi_2(sigma(s)) = phi_1(s): the gcd is trivial.  Useless (no new relations).
+    Returns the exact checks.  DIAGNOSTIC (uses p, q only to build a root of Phi_m mod N)."""
+    import sympy as sp
+    N = p * q
+    g = next(a for a in range(2, m) if gcd(a, m) == 1)        # a nontrivial Galois element zeta->zeta^g
+    Phi = sp.Poly(sp.cyclotomic_poly(m, sp.Symbol("t")), sp.Symbol("t"))
+    # roots of Phi_m mod p and mod q, CRT to a root t mod N (needs p,q = 1 mod m)
+    rp = [a for a in range(p) if Phi.eval(a) % p == 0]
+    rq = [a for a in range(q) if Phi.eval(a) % q == 0]
+    if not rp or not rq:
+        return {"m": m, "ok": False, "reason": "Phi_m has no root mod p or q"}
+    t = crt(rp[0], rq[0], p, q)
+    ginv = pow(g, -1, m)
+    # link check: phi_1(w_1j) = t^j ; phi_2(w_2j) = phi(sigma^{-1}(zeta^{gj})) = phi(zeta^{j}) = t^j
+    links = all(pow(t, j, N) == pow(t, (ginv * (g * j)) % m, N) for j in range(1, r + 1))
+    # the two sides carry identical norms (diagonal relation) -> useless:
+    diagonal = (ginv * g) % m == 1
+    return {"m": m, "r": r, "N_bits": N.bit_length(), "links_dependent_height1": links,
+            "diagonal_useless": diagonal, "g": g}
 
 
 def nnorm_fullrank_minima(f_coeffs: List[int], N: int) -> dict:

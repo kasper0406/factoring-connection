@@ -55,14 +55,29 @@ def test_floorsum_deterministic_metric():
 
 # ---- Lemma SPL-INT: dependence that lives only mod N splits N; global does not. ----
 
-def test_modN_only_symmetry_splits_N():
+def test_rank_discrepant_intertwiner_splits_N():
+    # a genuine rank discrepancy across primes (not an entrywise-zero matrix) forces a non-unit pivot
     p, q = 1000003, 1000033
     N = p * q
     for m in (2, 3, 4):
-        T, lam = I.modp_only_symmetry(p, q, m, lam_p=7, seed=m)
-        fac = I.split_from_intertwiner(N, T, lam)
+        A, lam = I.rank_discrepant_intertwiner(p, q, m, seed=m)
+        fac = I.split_from_intertwiner(N, A, lam)
         assert fac is not None and 1 < fac < N and N % fac == 0
         assert fac in (p, q)
+
+
+def test_nonscalar_eigenvector_does_not_split():
+    # non-scalar is NOT sufficient: [[lam,1],[0,mu]] has a kernel for lam, no split (Opus critic)
+    p, q = 99991, 99989
+    N = p * q
+    T = [[7, 1], [0, 11]]
+    assert I.split_from_intertwiner(N, T, lam=7) is None
+
+
+def test_outcome0_lambda_not_eigenvalue_no_split():
+    # codex midk_2: N=21, T=[[0,-1],[1,0]], det(T-lam I)=lam^2+1 is a unit for all lam -> no split
+    for lam in range(21):
+        assert I.split_from_intertwiner(21, [[0, -1], [1, 0]], lam) is None
 
 
 def test_global_scalar_symmetry_does_not_split():
@@ -83,6 +98,13 @@ def test_gauss_kernel_or_factor_dichotomy():
     B = [[3, 0], [0, 1]]  # pivot 3 shares gcd with 15
     tag2, val2 = I.gauss_kernel_or_factor(B, N)
     assert tag2 == "factor" and val2 == 3
+
+
+def test_automorphism_graph_dependent_but_useless():
+    # dependent links at height 1 (favourable failure of the counting half of G_r) but diagonal/useless
+    w = I.automorphism_graph_witness(5, 31, 41, r=3)
+    assert w["links_dependent_height1"] is True
+    assert w["diagonal_useless"] is True
 
 
 def test_independence_baseline_poisson_band():

@@ -75,9 +75,9 @@ def run_E2(path: Path):
     for (p, q) in primes:
         N = p * q
         for m in (2, 3, 4):
-            # structured mod-p-only symmetry -> should split N
-            T, lam = I.modp_only_symmetry(p, q, m, lam_p=7 % p, seed=p + m)
-            fac = I.split_from_intertwiner(N, T, lam)
+            # rank-discrepant intertwiner (genuine non-unit pivot; not an entrywise-zero mod p) -> split
+            A, lam = I.rank_discrepant_intertwiner(p, q, m, seed=p + m)
+            fac = I.split_from_intertwiner(N, A, lam)
             split_ok = fac is not None and 1 < fac < N and N % fac == 0
             recs.append({"exp": "E2", "item": "P2b_modN_dependence_splits", "N_bits": N.bit_length(),
                          "m": m, "split": split_ok, "factor_is_pq": split_ok and fac in (p, q)})
@@ -86,6 +86,11 @@ def run_E2(path: Path):
             facs = I.split_from_intertwiner(N, Ts, lam=7)
             recs.append({"exp": "E2", "item": "P2b_global_scalar_no_split", "N_bits": N.bit_length(),
                          "m": m, "split": facs is not None})
+    # P2b: cyclotomic automorphism-graph witness (dependent links at height 1, but useless)
+    for (m, p, q) in [(5, 31, 41), (7, 29, 43), (11, 23, 67)]:
+        w = I.automorphism_graph_witness(m, p, q, r=3)
+        w["exp"] = "E2"; w["item"] = "P2b_automorphism_graph"
+        recs.append(w)
     # P2b(I) structured constructions pay height / are useless
     for d in (6, 10):
         for r in (3, 4, 5):

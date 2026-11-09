@@ -1,0 +1,254 @@
+**The claims do not establish the advertised barrier.** SPL-INT is false as stated. MAP overlooks parameters growing with \(N\). LEDGER proves an optimization bound inside a particular cost model, not a rigorous factoring lower bound. The minor-product argument has a valid deterministic core, but its conversion into a uniform relation-count or runtime bound is incomplete.
+
+**(1) MAP: the trichotomy is not established, and the ladder conclusions need uniformity hypotheses.**
+
+For B, the exact identity is
+\[
+\frac{j+1}{3j+2}=\frac13+\frac1{9j+6}.
+\]
+Thus every **fixed** finite \(j\) gives an exponent strictly above \(1/3\). However, putting \(x=\log N\),
+\[
+\frac{x^{\alpha_j}(\log x)^{1-\alpha_j}}
+{x^{1/3}(\log x)^{2/3}}
+=
+\exp\!\left(\frac{\log x-\log\log x}{9j+6}\right).
+\]
+For \(j=\lceil\log x\rceil\), this ratio tends to \(e^{1/9}\); for \(j/\log x\to\infty\), it tends to \(1\).
+
+Consequently, the displayed exponent formula permits \(L[1/3]\) when \(j\) grows. Whether the actual algorithm permits this depends on uniform bounds for its constants, preprocessing, branching and correlation estimates. The fixed-\(j\) calculation does not settle that question.
+
+C has the same quantifier problem:
+\[
+\log\bigl(N^{1/(j+2)}\bigr)=\frac{x}{j+2}.
+\]
+Its displayed metric reaches the \(L[1/3]\) scale when
+\[
+j+2\asymp \frac{x^{2/3}}{(\log x)^{2/3}}.
+\]
+Taking \(j=\lceil x\rceil\) even makes that component less than \(e\). This is a diagnostic of missing uniform costs, not a factoring algorithm.
+
+“Exactly three” additionally needs a formal class of algorithms and an exhaustive reduction theorem. For example, the number of polynomials/fields is an independent parameter in [Coppersmith’s multiple-polynomial NFS modification](https://research.ibm.com/publications/modifications-to-the-number-field-sieve). Its known analysis improves constants; it does not supply the requested fourth family beating \(1/3\). But MAP must explain whether such constructions are included, excluded or reducible to A.
+
+I cannot exhibit a verified fourth family with the stated favourable performance. **That does not certify completeness.** Moreover, C is described as having a deterministic obstruction, so it does not satisfy MAP’s own “blocked only by counting/independence” criterion.
+
+**(2) LEDGER: the \(1/4\) floor is valid for the displayed proxy, with additional assumptions needed for factoring.**
+
+Write
+\[
+s(d)=\frac{\kappa x}{d}+dc.
+\]
+Exactly,
+\[
+s(d)-2\sqrt{\kappa cx}
+=
+\left(\sqrt{\frac{\kappa x}{d}}-\sqrt{dc}\right)^2.
+\]
+Therefore, assuming this ledger and \(\kappa,c\ge1\),
+\[
+s(d)\ge2\sqrt{x}.
+\]
+No choice of \(d,r\) defeats that inequality.
+
+The passage to \(\alpha\ge1/4\), however, uses a smoothness-and-search model. With \(y=\log B\), the usual random-integer estimate assigns inverse smoothness probability a logarithm approximately
+\[
+\frac{s}{y}\log\frac{s}{y}.
+\]
+Balancing this against factor-base and relation costs gives the familiar half-exponent conversion \(s=x^{\beta+o(1)}\mapsto \alpha\ge\beta/2\). This is not a rigorous lower bound for structured norm values or arbitrary relation-generation algorithms.
+
+There are three further gaps.
+
+* **A norm envelope is not a pointwise norm lower bound.** Coefficient-height calculations generally bound norms from above. Large coefficients can produce small norms:
+  \[
+  \operatorname{Norm}_{\mathbf Q(\sqrt2)/\mathbf Q}(3+2\sqrt2)=9-8=1.
+  \]
+  Its powers give arbitrarily large coefficients with norm \(1\). A barrier must control how many *useful* exceptional candidates exist.
+* **An optimized ledger is not an attained algorithm.** Your proposed parameters are consistent with the proxy. For fixed \(E\),
+  \[
+  r\asymp x^{1/4}(\log x)^{3/4}
+  \quad\Longrightarrow\quad c\sim\tfrac18\log x,
+  \]
+  and minimizing over \(d\) gives
+  \[
+  d\sim\sqrt{\frac{8x}{\log x}},\qquad s\asymp\sqrt{x\log x}.
+  \]
+  This supports the conditional \(L[1/4]\) calculation. It does not construct the required modules or independent relations.
+* **Counting does not give a universal height floor.** If “Schmidt 1993” means *Northcott’s theorem on heights I*, its bound is
+  \[
+  \#\{P:\deg P\le d,\ H(P)\le H\}
+  \le C(d,n)H^{d(d+n)}
+  \]
+  for absolute multiplicative height. It supplies neither modular equidistribution nor independence, and its dimension dependence must be retained. [Schmidt’s paper](https://doi.org/10.1007/BF01311215)
+
+Under the usual balanced model with \(\kappa=r-1\), fixed ranks \(r=2,3,\ldots\) can all give exponent \(1/3\). “\(r=2\) optimal” concerns constants and the remaining ledger, not uniqueness of the exponent. Monotonicity at fixed \(d,c\) does not automatically survive optimization over rank-dependent profiles.
+
+For unequal degrees, the elementary rigorous starting point is weighted. If \(f,g\in\mathbf Z[t]\), of degrees \(m,n\), share a root modulo \(N\), and their resultant is nonzero, then
+\[
+N\mid\operatorname{Res}(f,g),\qquad
+N\le|\operatorname{Res}(f,g)|
+\le\|f\|_2^{\,n}\|g\|_2^{\,m}.
+\]
+Thus
+\[
+x\le n\log\|f\|_2+m\log\|g\|_2.
+\]
+Replacing this by a symmetric \(x/d\) expression requires justification.
+
+Special-\(q\) methods require charging both the reduced residual norm and the changed lattice density; several fields require a new linking ledger; unequal boxes require counting their actual volume. **None automatically defeats \(1/4\), but your calculation does not exclude all of them.**
+
+Likewise, [Coppersmith’s small-root theorem](https://research.ibm.com/publications/small-solutions-to-polynomial-equations-and-low-exponent-rsa-vulnerabilities) supplies sufficient recovery conditions. Its familiar radius is not a universal impossibility theorem beyond that radius.
+
+**(3) SPL-INT: the lemma omits a third outcome, and the factoring-equivalence conclusion fails independently.**
+
+Take
+\[
+N=21,\qquad
+T=\begin{pmatrix}0&-1\\1&0\end{pmatrix}.
+\]
+For every \(\lambda\in\mathbf Z/21\mathbf Z\),
+\[
+\det(T-\lambda I)=\lambda^2+1.
+\]
+Since \(-1\) is a nonsquare modulo both \(3\) and \(7\),
+\[
+\gcd(\lambda^2+1,21)=1
+\]
+for every \(\lambda\). Hence \(T-\lambda I\) is always invertible: there is **no nonzero global eigenvector for any \(\lambda\)**.
+
+Elimination can use the off-diagonal unit \(1\) or \(-1\), followed by a unit proportional to \(\lambda^2+1\). It returns full rank and no factor. These assertions also check by exhaustive exact arithmetic over all \(21\) residues.
+
+The corrected elimination statement has three outcomes:
+
+1. full rank, hence no eigenvector for the supplied \(\lambda\);
+2. a kernel vector;
+3. a nonzero non-unit pivot, yielding a proper gcd.
+
+If an additional hypothesis guarantees that the supplied \(\lambda\) is an eigenvalue, it excludes outcome 1. That hypothesis must be stated and proved for the intended intertwiner.
+
+But outcome 2 still gives no factor. For every composite \(N\),
+\[
+T=\begin{pmatrix}1&1\\0&1\end{pmatrix},
+\qquad Te_1=e_1.
+\]
+A known non-scalar matrix and a known unimodular eigenvector need not reveal a divisor. Thus even the corrected conditional lemma does not prove that exhibiting an exploitable dependence is factoring-equivalent.
+
+The proposed classification of dependence sources also needs a theorem:
+
+* A relation on a linear module does not imply closure under multiplication, a ring-power construction or containment in a scaled subfield.
+* A nonlinear correspondence need not induce an intertwining linear endomorphism of the original module.
+* Linearizing a nonlinear map introduces dimension and degree costs that must be bounded.
+* Excess low-height points or favourable smoothness correlations do not logically require dependent modular equations.
+
+The cyclotomic graph example can establish that **that construction** produces identical square roots under compatible maps. It does not establish an exhaustive dichotomy.
+
+**(4) 2ND-ORDER: the height inequality survives growing rank; the claimed runtime barrier needs more work.**
+
+Here is a precise version of the valid argument. Let \(A\) be a \(D\times r\) matrix whose entries are algebraic integers and whose rows are permuted by Galois. Suppose:
+
+* every \(r\)-row minor \(M_I\) is nonzero;
+* for each \(p^a\parallel N\), at every relevant prime above \(p\), two distinct rows become proportional modulo \(p^a\), with the required valuation normalization.
+
+Then
+\[
+\Delta=\prod_{|I|=r}M_I^2
+\]
+is a nonzero rational algebraic integer, hence an integer. There are exactly
+\[
+\binom{D-2}{r-2}
+\]
+minors containing any specified pair of rows, giving the stated divisibility.
+
+Put
+\[
+H_2(A)=\prod_{i=1}^D\|A_i\|_2.
+\]
+Hadamard gives
+\[
+|\Delta|
+\le H_2(A)^{\,2\binom{D-1}{r-1}}.
+\]
+Consequently,
+\[
+\log H_2(A)
+\ge
+\frac{\binom{D-2}{r-2}}{\binom{D-1}{r-1}}x
+=
+\frac{r-1}{D-1}x.
+\]
+
+**This is exact and uniform in \(D,r\).** No fixed-dimension asymptotic is used. The normalization matters: if \(h_2\) means \(D^{-1}\log H_2\), the right-hand side must also be divided by \(D\). Nonintegral generators require denominator corrections.
+
+There is also a genuine volume consequence. For
+\[
+F(z)=\prod_{i=1}^D(A_i z),\qquad
+V_F=\operatorname{vol}\{z:|F(z)|\le1\},
+\]
+the ordered-minor discriminant has absolute value
+\[
+|\mathcal D_F|=|\Delta|^{r!/2}.
+\]
+[Bean–Thunder (1996)](https://doi.org/10.1112/jlms/54.1.39) therefore yields, for \(D>r\),
+\[
+V_F
+\le C_r|\Delta|^{-1/(2\binom Dr)}
+\le C_rN^{-r(r-1)/(D(D-1))}.
+\]
+This supports a deterministic geometric obstruction in the nonsingular stratum.
+
+**The unresolved step is replacing volume by a sufficiently uniform count of usable relations.**
+
+A large frame height does not force each candidate norm to be large:
+\[
+|F(z)|\le H_2(A)\|z\|_2^D
+\]
+is an upper bound.
+
+Nor may one replace lattice-point counts by volume alone. [Davenport’s principle](https://people.math.sc.edu/thornef/math788g/davenport-lemma.pdf) retains lower-dimensional projection terms precisely because thin regions can contain many lattice points.
+
+[Thunder (2001), Theorem 3](https://arxiv.org/pdf/math/0105267), assuming finite type, gives in the nonsingular case an error of the shape
+\[
+\left|N_F(m)-V_Fm^{r/D}\right|
+\ll_{D,r}
+H(F)^{\binom{D-1}{r-1}-1}
+(1+\log m)^{r-2}
+m^{(r-1)/(D-1)}.
+\]
+The exponent gap is exactly
+\[
+\frac rD-\frac{r-1}{D-1}
+=\frac{D-r}{D(D-1)}.
+\]
+At growing dimension this gap can be small while the height exponent is enormous. Quoting the fixed-form asymptotic does not establish main-term domination in your parameter range. Finite type also requires checking rational subspaces.
+
+Finally, **a zero maximal minor does not mean deficient rank.** An explicit embedding example is
+\[
+K=\mathbf Q(\sqrt2,\sqrt3,\sqrt5),\qquad
+V=\operatorname{span}_{\mathbf Q}(1,\sqrt2,\sqrt3,\sqrt5).
+\]
+Its eight embedding rows are
+\[
+(1,\pm\sqrt2,\pm\sqrt3,\pm\sqrt5).
+\]
+The four rows with positive final coordinate have determinant zero, since their first and fourth columns are proportional. Yet the rows with sign patterns
+\[
++++,\quad +--,\quad -+-,\quad --+
+\]
+have determinant
+\[
+-16\sqrt{30}\ne0.
+\]
+Thus the frame has rank \(4\) and vanishing maximal minors.
+
+Moreover, \(V\) lies in no scaled proper subfield: \(1\in V\subseteq\gamma J\) would imply \(\gamma\in J\), hence \(V\subseteq J\), forcing \(J=K\). Also \(\sqrt2\sqrt3=\sqrt6\notin V\), so \(V\) is not a ring.
+
+Deleting zero minors does not preserve the proof automatically. For the remaining bases \(\mathcal B\), Hadamard gives
+\[
+\prod_{I\in\mathcal B}|M_I|^2
+\le\prod_i\|A_i\|_2^{2b_i},
+\qquad
+b_i=\#\{I\in\mathcal B:i\in I\}.
+\]
+The \(b_i\) need not agree. The number of remaining minors containing the locally linked pair also varies and can vanish. The clean binomial cancellation has disappeared.
+
+A union bound requires a uniform estimate for every exceptional stratum; it supplies no such estimate itself. Passing to lower ranks may recover a weaker penalty, but does not automatically recover the factor \(r-1\).
+
+[Evertse–Győry’s families theorem](https://pub.math.leidenuniv.nl/~evertsejh/96-families.pdf) is relevant here: finitely many families can contain infinitely many unit-related solutions. Bounding families neither eliminates these strata nor counts independent factoring relations. Singular frames certainly exist; what remains unprovided is a singular construction delivering the claimed improved factoring complexity.

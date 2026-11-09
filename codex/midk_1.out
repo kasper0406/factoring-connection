@@ -1,0 +1,427 @@
+**The proposed rank-\(r\) ledger has a genuine interior \(1/4\) optimum. It does not, by itself, prove a factoring algorithm with that exponent.** Moreover, a generalized-discriminant argument excludes that optimum when all maximal embedding minors are nonzero. The remaining issue is a useful, low-height **singular** family—not merely dependence of congruences.
+
+I cannot give an exhaustive catalogue of published conditional barriers matching your description: there is no standard hypothesis \(G_r\) with a universally agreed definition, and a number of descent levels \(j\) does not determine a cost ledger. I will specify the hypotheses needed for each calculation rather than attribute unstated results to the literature.
+
+There is also a necessary distinction: an unconditional lower bound on sizes or volumes becomes a running-time barrier only within a specified relation-generation and smoothness model. It is not an unconditional lower bound for classical factoring.
+
+**1. The common exponent calculation**
+
+Put
+\[
+x=\log N,\qquad b=\log B,\qquad z=\log X,
+\]
+where \(X\) measures the product of the norms that must be smooth. Under the usual random-integer smoothness heuristic,
+\[
+-\log P_{\rm sm}\sim \frac zb\log\frac zb.
+\]
+Obtaining approximately \(B\) relations therefore requires candidate entropy
+\[
+C\gtrsim b+\frac zb\log\frac zb.
+\tag{1}
+\]
+
+At the level of powers of \(x\), a balanced \(L_N[\alpha,O(1)]\) calculation has
+\[
+b=x^{\alpha+o(1)},\quad C=x^{\alpha+o(1)},\quad
+z\le x^{2\alpha+o(1)}.
+\tag{2}
+\]
+A fixed power of \(B\) for linear algebra changes constants, not \(\alpha\).
+
+In your displayed formula, **\(C\) must mean the logarithm of the total number of candidates**, not the logarithm of one side length. A balanced rank-\(r\) box then has coefficient size approximately \(\exp(C/r)\).
+
+Here is what I can identify concretely.
+
+| Parameter/family | Relevant hypothesis or obstruction | Size ledger and consequence |
+|---|---|---|
+| Aggregate linked rank, \(1\ll r\ll d\) | A uniform height count, together with a loss \(N^{-(r-1)}\) for simultaneous links | If these force height contribution \(\asymp rx/d\), then \(z\asymp rx/d+dC/r\), giving \(\alpha\ge1/3\). If the penalty collapses to \(x/d\), the formal optimum is \(1/4\). |
+| Higher-dimensional **power-basis** sieving, \(r=k+1\) | Links are automatically dependent, but powers increase height | The ordinary ledger is \(z\asymp kx/d+dC/(k+1)\), up to other height terms. It still gives \(1/3\). This is not an example of free intermediate rank. |
+| Polynomial selection across many families | Counts of polynomial pairs, root distributions, and the cost of locating unusually good pairs | No unique failed-hypothesis exponent exists without specifying the family and search cost. A constant-factor height improvement changes the \(L\)-constant, not \(\alpha\). |
+| Multilevel descent, parameter \(j\) | Requires a recurrence for sizes, branching, and search costs at every level | \(j\) alone determines no exponent. I know no general theorem saying that every intermediate \(j\) is obstructed only by one standard independence hypothesis. |
+| General lattice regions or unions of boxes | Requires actual lattice-point counts and control of concentrations in subspaces | A determinant or volume alone does not determine the number of useful candidates. This overlaps the rank problem rather than defining an independent universal barrier. |
+
+The power-basis calculation is explicit. For
+\[
+P(T)=\sum_{i=0}^{k}a_iT^i,\qquad m\approx N^{1/d},
+\]
+the rational side contributes approximately \(kx/d\), while the coefficient contribution to the algebraic norm is approximately \(dC/(k+1)\). Thus
+\[
+\min_d\left(\frac{kx}{d}+\frac{dC}{k+1}\right)
+=2\sqrt{\frac{k}{k+1}xC}.
+\]
+For every \(k\ge1\), the factor \(k/(k+1)\) is bounded below by \(1/2\). Consequently
+\[
+\frac{1+\alpha}{2}\le2\alpha
+\quad\Longrightarrow\quad
+\alpha\ge\frac13.
+\]
+These are standard typical-size estimates; they are not a universal lower bound excluding exceptional cancellations.
+
+For ordinary polynomial selection, a genuine unconditional statement is
+\[
+N\le
+\|f_1\|_{2,s}^{\deg f_2}
+\|f_2\|_{2,s}^{\deg f_1},
+\]
+for coprime integer polynomials sharing a root modulo \(N\). This follows from resultant divisibility and a determinant bound; see [Coxon, §2.1.2](https://arxiv.org/pdf/1109.6398). It does not supply every stronger counting assertion one might want about families of such pairs.
+
+For descent, the missing data cannot be suppressed. If level \(\ell\) has \(n_\ell\) tasks, norm logarithm \(z_\ell\), and smoothness logarithm \(b_\ell\), even an idealized cost includes
+\[
+\max_\ell\left\{
+\log n_\ell+
+\frac{z_\ell}{b_\ell}\log\frac{z_\ell}{b_\ell}
+\right\},
+\]
+plus construction costs and dependencies between levels. There is no exact function \(\alpha(j)\) without specifying these quantities.
+
+**2. Optimizing the dependent-link aggregate ledger**
+
+Assume your favorable ledger
+\[
+z\asymp \frac{x}{d}+\frac{D}{r}C,
+\qquad D\asymp d,
+\tag{3}
+\]
+and assume that the family can be constructed within the claimed running time.
+
+Write
+\[
+d=x^{\delta+o(1)},\qquad r=x^{\rho+o(1)},\qquad
+C=x^{\alpha+o(1)}.
+\]
+Equations (2) and (3) require
+\[
+1-\delta\le2\alpha,\qquad
+\delta+\alpha-\rho\le2\alpha.
+\tag{4}
+\]
+
+There is an additional integer-box constraint. Each active coefficient direction must offer at least two choices, so
+\[
+C\ge r\log2,\qquad \rho\le\alpha.
+\tag{5}
+\]
+Combining,
+\[
+1-2\alpha\le\delta\le\alpha+\rho\le2\alpha.
+\]
+Therefore
+\[
+\boxed{\alpha\ge\frac14}.
+\]
+Equality is attained formally at
+\[
+\boxed{\delta=\frac12,\qquad \rho=\frac14}.
+\]
+Thus
+\[
+d=x^{1/2+o(1)},\qquad
+r=x^{1/4+o(1)},\qquad
+z=x^{1/2+o(1)}.
+\]
+
+**Yes: this intermediate rank beats \(1/3\) in the stipulated ledger.**
+
+The endpoint comparison can also be made exactly. Impose \(r=d^\theta\), with \(0\le\theta\le1\). Then
+\[
+\alpha\ge
+\max\left\{
+\frac{1-\delta}{2},\,
+(1-\theta)\delta,\,
+\theta\delta
+\right\}.
+\]
+Putting \(m=\max(\theta,1-\theta)\), optimization gives
+\[
+\boxed{
+\delta=\frac1{1+2m},\qquad
+\alpha=\frac{m}{1+2m}.
+}
+\tag{6}
+\]
+
+| \(\theta\) | Degree exponent \(\delta\) | Rank exponent \(\rho\) | Optimal \(\alpha\) |
+|---:|---:|---:|---:|
+| \(0\): fixed rank | \(1/3\) | \(0\) | \(1/3\) |
+| \(1/4\) | \(2/5\) | \(1/10\) | \(3/10\) |
+| \(1/3\) | \(3/7\) | \(1/7\) | \(2/7\) |
+| \(1/2\) | \(1/2\) | \(1/4\) | **\(1/4\)** |
+| \(2/3\) | \(3/7\) | \(2/7\) | \(2/7\) |
+| \(3/4\) | \(2/5\) | \(3/10\) | \(3/10\) |
+| \(1\): \(r\asymp d\) | \(1/3\) | \(1/3\) | \(1/3\) |
+
+A fixed intermediate integer rank, such as \(r=7\), changes constants only. An exponent improvement requires rank growing as a positive power of \(\log N\).
+
+The \(1/4\) floor comes from **integer candidate entropy**. Omitting (5) would allow the continuous ledger to claim arbitrarily small positive \(\alpha\), by assigning many coordinates less than one bit of choice.
+
+The logarithmic factors also fit an \(L[1/4]\) upper-scale calculation. Let \(\ell=\log x\), and allow the usual coefficient-aggregation term \(O(D\log r)\). Choose
+\[
+d\asymp (x/\ell)^{1/2},\qquad
+r\asymp C\asymp b\asymp x^{1/4}\ell^{3/4}.
+\]
+Then
+\[
+\frac xd\asymp x^{1/2}\ell^{1/2},\qquad
+\frac Dr C=O((x/\ell)^{1/2}),\qquad
+D\log r=O(x^{1/2}\ell^{1/2}).
+\]
+Hence
+\[
+\frac zb\log\frac zb=O(x^{1/4}\ell^{3/4}),
+\]
+as required. Constants remain unspecified because the family height, embedding estimates, and construction algorithm remain unspecified.
+
+An unavoidable construction cost \(\exp(d^{1+o(1)})\) would restore \(1/3\): it imposes \(\delta\le\alpha\), whereas the height term imposes \(\delta\ge1-2\alpha\). But such a cost is an **additional assumption**, not a consequence of having degree \(d\).
+
+**3. What a precise \(G_r\) would have to assert**
+
+One possible operational formulation is as follows. Let \(\mathcal F_{d,r}(H)\) be a specified set of nondegenerate structured families, with a specified height \(H\). Suppose
+\[
+\#\mathcal F_{d,r}(H)
+\le \exp\bigl(\kappa d\log H+o(rx)\bigr),
+\tag{7}
+\]
+where \(\kappa>0\) is fixed, and suppose that, after normalization, the \(r-1\) linking congruences impose density
+\[
+N^{-(r-1)}\exp(o(rx)).
+\tag{8}
+\]
+
+The first-moment threshold would then be
+\[
+\log H\gtrsim\frac{(r-1)x}{\kappa d}.
+\tag{9}
+\]
+Suppressing fixed constants, the resulting ledger is
+\[
+z\asymp\frac{rx}{d}+\frac{dC}{r}.
+\]
+Its minimum over \(d\) is
+\[
+2\sqrt{xC},
+\]
+so
+\[
+\boxed{\alpha\ge1/3}.
+\]
+
+Equations (7)–(8) are a **proposed hypothesis**, not a theorem about all linked modules. In particular:
+
+- The height in (7) must actually control the height contribution in the norm ledger.
+- The count must handle varying fields and orders, not just subspaces in one fixed lattice.
+- Uniformity is needed as \(d,r,N\) grow together.
+- An average density statement gives, at most, a statement about typical inputs. It does not exclude every exceptional modulus or algebraically selected family.
+- A bound with an uncontrolled \(+O(1)\) error cannot establish absence in the range where the predicted main term is below one.
+
+Schmidt’s theorem supplies a real counting ingredient. For fixed ambient dimension \(n\), the number of primitive rank-\(r\) sublattices of \(\mathbb Z^n\) of determinant at most \(H\) is
+\[
+a(n,r)H^n+
+O_n\!\left(H^{n-\max(1/r,\,1/(n-r))}\right).
+\]
+But determinant height here is not automatically your aggregate embedding height, and this theorem does not assert the modular independence in (8). See [Schmidt’s theorem as stated and extended by Kim](https://arxiv.org/pdf/1908.01245).
+
+Also, **failure of \(G_r\) does not automatically mean \(1/4\)**. Suppose the effective congruence penalty is \(N^{-q(r)}\), yielding
+\[
+z\asymp \frac{q(r)x}{d}+\frac{dC}{r}.
+\tag{10}
+\]
+If \(q(r)=r^{\gamma+o(1)}\), \(0\le\gamma\le1\), the same optimization gives
+\[
+\boxed{\alpha_{\min}=\frac1{4-\gamma}}.
+\tag{11}
+\]
+Indeed,
+\[
+1+\gamma\rho-\delta\le2\alpha,\qquad
+\delta\le\alpha+\rho,\qquad \rho\le\alpha
+\]
+imply
+\[
+1\le3\alpha+(1-\gamma)\rho\le(4-\gamma)\alpha.
+\]
+Equality is feasible at
+\[
+\rho=\alpha,\qquad \delta=2\alpha.
+\]
+
+Thus reducing \(r-1\) conditions to approximately \(r/2\) changes no exponent. Reducing them to \(r^{1/2}\) gives \(2/7\). Reducing them to \(O(1)\) gives \(1/4\).
+
+**4. Explicit dependent links: easy constructions, but no useful breakthrough**
+
+There is an explicit construction with completely dependent links and no power-height growth.
+
+Take
+\[
+K_1=K_2=K=\mathbb Q(\zeta_m),
+\]
+and a residue homomorphism
+\[
+\phi:\mathbb Z[\zeta_m]\longrightarrow\mathbb Z/N\mathbb Z.
+\]
+For example, such a map is specified by a known \(t\) satisfying \(\Phi_m(t)\equiv0\pmod N\).
+
+Choose \(\sigma\in\operatorname{Gal}(K/\mathbb Q)\), and set
+\[
+\phi_1=\phi,\qquad \phi_2=\phi\circ\sigma^{-1},
+\]
+\[
+w_{1j}=\zeta_m^{j-1},\qquad
+w_{2j}=\sigma(\zeta_m^{j-1}).
+\]
+Then
+\[
+\phi_1(w_{1j})=\phi_2(w_{2j})
+\]
+for every \(j\), and every conjugate of every generator has absolute value one. For \(r\le\varphi(m)\), these powers can be chosen linearly independent.
+
+But every candidate satisfies
+\[
+u_2=\sigma(u_1),\qquad
+\operatorname{Norm}(u_2)=\operatorname{Norm}(u_1).
+\]
+If a product of candidates has square root \(s\) on the first side, the corresponding root on the second side is \(\sigma(s)\), and
+\[
+\phi_2(\sigma(s))=\phi_1(s).
+\]
+The modular square roots agree. This produces no nontrivial gcd.
+
+This example establishes two points:
+
+1. An unrestricted independence hypothesis for *all* linked families is false.
+2. Algebraically distinct, useful relations must be part of the hypothesis. Counting linked vectors alone is insufficient.
+
+Distinct fields sharing a subfield give related degeneracies: generators confined to that subfield can link automatically, but their norms are powers of subfield norms. This is not a demonstrated realization of the favorable aggregate model with useful new relations.
+
+For the other proposed sources of structure:
+
+- Ring powers provide dependence but normally pay the height growth calculated above.
+- Cyclotomic or Galois symmetry can provide bounded embeddings, but the graph construction shows how this can merely duplicate the same algebraic information.
+- “\(N\) is a norm” does not by itself supply a short rank-\(r\) linked basis, suitable residue maps, and an efficient construction.
+- Units or torsion may yield many algebraic elements without yielding sufficiently many independent ideal relations.
+
+**I do not have a nontrivial construction satisfying all the favorable requirements. Nor do I have a proof of (7)–(8) for the remaining general structured families.**
+
+Evertse–Győry finiteness and solution-count theorems for decomposable-form and unit equations do not automatically provide that missing modular equidistribution statement, especially with degree and the set of allowed primes growing. Their hypotheses and parameter dependence must be retained; see [Evertse–Győry’s survey](https://ir.cwi.nl/pub/1720/1720D.pdf).
+
+**5. A genuine second-order obstruction: maximal embedding minors**
+
+There is more geometry available than just a binary endpoint theorem.
+
+Assume, explicitly:
+
+- the \(w_{ij}\) are algebraic integers;
+- \(N\) is squarefree;
+- its prime factors are unramified in a common normal closure;
+- the linking maps exist as stated.
+
+Let \(D=d_1+d_2\). Form the \(D\times r\) embedding matrix whose rows are
+\[
+v_{i,\tau}
+=\bigl(\tau(w_{i1}),\ldots,\tau(w_{ir})\bigr).
+\]
+For every \(r\)-element set \(I\) of rows, write
+\[
+M_I=\det(v_s)_{s\in I}.
+\]
+Suppose **every \(M_I\ne0\)**, and define
+\[
+\Delta=\prod_{|I|=r}M_I^2.
+\]
+Galois invariance and integrality give
+\[
+\Delta\in\mathbb Z\setminus\{0\}.
+\]
+
+For each \(p\mid N\), the linking maps identify one row from each field modulo a prime above \(p\). Every maximal minor containing these two rows therefore vanishes modulo that prime. There are exactly
+\[
+\binom{D-2}{r-2}
+\]
+such minors. Unramifiedness consequently gives
+\[
+\boxed{N^{\,2\binom{D-2}{r-2}}\mid\Delta.}
+\tag{12}
+\]
+
+Now put
+\[
+h_2=\sum_{s=1}^{D}\log\|v_s\|_2.
+\]
+Hadamard’s inequality, with each row occurring in exactly
+\(\binom{D-1}{r-1}\) minors, gives
+\[
+\log|\Delta|
+\le2\binom{D-1}{r-1}h_2.
+\]
+Combining with (12),
+\[
+\boxed{
+h_2\ge\frac{r-1}{D-1}\,x.
+}
+\tag{13}
+\]
+
+**This is a deterministic height penalty. It uses no independence heuristic.**
+
+To compare it with the proposed ledger, define
+\[
+h_\infty=\sum_s\log\max_j |v_{sj}|.
+\]
+Then
+\[
+h_2\le h_\infty+\frac D2\log r.
+\tag{14}
+\]
+If the stipulated balanced profile means
+\[
+h_\infty=O(x/d),
+\]
+as needed for (3), equations (13)–(14) impose
+\[
+\frac{(r-1)x}{D-1}
+\le O(x/d)+\frac D2\log r.
+\tag{15}
+\]
+
+At the proposed \(1/4\) optimum, the left side has \(x\)-exponent \(3/4\), while the right side has exponent \(1/2\). It is impossible.
+
+More generally, suppose \(\alpha<1/3\) were feasible in the favorable box ledger. Its necessary conditions give
+\[
+1-\delta\le2\alpha,\qquad
+\delta\le\alpha+\rho,\qquad
+\rho\le\alpha.
+\]
+Thus the right side of (15) is at most \(x^{2\alpha+o(1)}\). For growing rank, the left side has exponent
+\[
+1+\rho-\delta\ge1-\alpha>2\alpha,
+\]
+a contradiction. Fixed rank already has the \(1/3\) barrier from (4).
+
+So, under these explicit nonsingularity and arithmetic assumptions, **there is no intermediate prize**.
+
+This determinant product is also the invariant underlying the higher-dimensional Bean–Thunder volume inequality. In the above normalization it gives
+\[
+\operatorname{vol}\{|F|\le1\}
+\le K_r|\Delta|^{-1/(2\binom Dr)},
+\]
+for the degree-\(D\) decomposable norm-product form \(F\). The theorem requires nonzero discriminant; it is not restricted to rank two. See [Bean–Thunder, 1996](https://doi.org/10.1112/jlms/54.1.39). Bean’s [1994 binary theorem](https://www.numdam.org/article/CM_1994__92_2_115_0.pdf) is the two-dimensional predecessor.
+
+**6. What remains after this obstruction**
+
+The argument above fails when some maximal minors vanish, because then \(\Delta=0\). Balanced embedding sizes do not exclude that possibility. The automorphism-graph example is singular in precisely this sense.
+
+Deleting zero minors does not automatically preserve the penalty. Among the remaining nonzero minors, one must control the proportion containing the linked pair of rows. If that proportion becomes much smaller than
+\[
+\frac{\binom{D-2}{r-2}}{\binom Dr}
+=\frac{r(r-1)}{D(D-1)},
+\]
+the preceding arithmetic amplification weakens or disappears.
+
+That identifies a concrete remaining problem: classify the singular embedding configurations, or prove that their nonzero minors still carry enough linking divisibility, while separating useful configurations from common-subfield and graph degeneracies.
+
+A union bound over sub-ranks does not itself do this. It needs bounds on the number and heights of the exceptional subspaces. Otherwise it reinstates the missing counting assertion.
+
+Nor does volume alone suffice for the lattice step. Davenport’s theorem includes contributions from projections of every lower dimension, precisely because thin regions can contain many lattice points despite small volume; see [Davenport, *On a Principle of Lipschitz*](https://people.math.sc.edu/thornef/math788g/davenport-lemma.pdf). Thunder’s theorem supplies strong integral-point bounds for **finite-type** decomposable forms, but that condition and the dependence on dimension and degree cannot be dropped. See [Thunder, 2001](https://annals.math.princeton.edu/2001/153-3/p07).
+
+Finally, Coppersmith’s small-root theorem is a positive algorithmic theorem within specified size ranges. Failure to meet its sufficient conditions is not an impossibility theorem for larger roots or multilevel factoring constructions. See [Coppersmith, 1997](https://research.ibm.com/publications/small-solutions-to-polynomial-equations-and-low-exponent-rsa-vulnerabilities).
+
+The defensible unresolved possibility is therefore narrow but real in the stated broad model: **a constructible singular linked family with unusually small height and enough useful independent relations**. The bare ledger assigns it an interior optimum of \(1/4\); the nonsingular determinant argument excludes it; the cited results do not, without further hypotheses and work, classify away every singular case.
