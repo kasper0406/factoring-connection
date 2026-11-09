@@ -68,9 +68,9 @@ def test_D1_small_norms_only_on_sublattice():
     assert gen_over_N[1] > gen_over_N[0]          # scales up with N
 
 
-def test_D1_coincidence_sublattice_is_rank2_gp():
-    # the small-norm sublattice a3=a4=0 is where the two sides COINCIDE (type-A on that plane):
-    # there W'=W, so it is a rank-2 general-position sub-family (a linear exception, rankdegen LP_exc(ii)).
+def test_D1_coincidence_sublattice_is_subfield_restriction():
+    # the small-norm sublattice a3=a4=0 is where the two sides COINCIDE (W'=W): a subfield restriction to
+    # Q(sqrt2) with W=16(a1^2-2 a2^2)^2 (repeated factors, NOT general position) -- a linear exception (LP_exc(ii)).
     mod = C.weil_restriction_q2q3(10007 * 10009)
     for a in RF.box_points(4, 3):
         if a[2] == 0 and a[3] == 0 and (a[0] or a[1]):
@@ -134,3 +134,15 @@ def test_rr_escape_family_height_not_construction():
     out = R.rr_quadratic(1 - N, 1 - 2 * N, 2, N)
     assert out["R_relative_resultant"] == N * N
     assert out["N_divides_Norm"] is True
+
+
+def test_rr_genuine_Qi_example_Ok_does_work():
+    # critic's genuine O_k example: R not rational, O_k does real work. k=Q(i), psi(i)=8 mod 65, common root v=2.
+    import sympy as sp
+    from src.grdeg import relres as R
+    x = sp.symbols("x"); I = sp.I
+    f = sp.Poly(x ** 2 + I * x + (2 * I - 36), x)
+    g = sp.Poly(x ** 2 + (1 + I) * x + (-I - 14), x)
+    out = R.rr_over_Qi(f, g, 8, 2, 65)
+    assert out["R"] == (436, -152) and out["Norm_k/Q(R)"] == 213200
+    assert out["N_divides_Norm"] and out["psi(R)=0_consistent"]

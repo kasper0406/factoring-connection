@@ -1,0 +1,341 @@
+The unqualified G_r assumption can fail. Explicit frame-less modules exist, including ones whose linking maps can be constructed without factoring N. I did not obtain a factoring algorithm below L[1/3]: the examples either produce duplicate relations, incur a compensating norm-height cost, or leave an unproved counting problem.
+
+Crucially, the cited literature does not close the entire frame-less case.
+
+1. What G_r must assert
+
+There are two different counting problems here: counting linked modules of bounded height, and counting small-norm candidates inside a particular module. They should not be conflated.
+
+Write
+
+    x = log N,  b = log B,  y = log X,
+    C = log(number of examined candidates).
+
+Under H, for candidates of size X, the relation-collection ledger is
+
+    u = y/b,
+    C ≥ b + (1+o(1))u log u,
+    log time ≥ max(C, 2b),
+
+assuming approximately B independent, useful relations are required. Finding or enumerating the candidates must also fit within this time.
+
+For time L_N[α,O(1)], put
+
+    Sα = x^α (log x)^(1−α).
+
+Then b,C = O(Sα), and the smoothness ledger requires
+
+    y = O(Yα),    Yα = x^(2α)(log x)^(1−2α).
+
+These equations identify the required norm scale independently of G_r.
+
+For the module-counting version, normalize the generator tuples projectively:
+
+    P  = [u₁:…:u_r],
+    P' = [u'₁:…:u'_r].
+
+Use absolute multiplicative height H and set
+
+    h₁ = d log H(P),    h₂ = d' log H(P').
+
+Here d must be replaced by the actual degree of P if its coordinate ratios generate a proper subfield.
+
+Schmidt’s theorem gives the unrestricted bound
+
+    #{P : degree(P) ≤ d, H(P) ≤ H}
+        ≤ c(d,r−1) H^[d(d+r−1)].
+
+It contains no congruence condition and no N-dependent saving. This is [Schmidt, “Northcott’s theorem on heights I,” Monatsh. Math. 115 (1993), 169–181](https://link.springer.com/article/10.1007/BF01311215).
+
+A precise additional independence hypothesis would be:
+
+    # linked pairs of these heights
+      ≤ A(d,d',r,N)
+        exp((d+r−1)h₁ + (d'+r−1)h₂ − (r−1)x).          (G-height)
+
+The pairs must include their chosen reduction maps. One must specify valid projective reductions, account for map multiplicities, and identify exceptional algebraic strata. For growing degrees, the size of A matters.
+
+The saving N^(−(r−1)) asserts that equality of the two reductions in projective (r−1)-space imposes r−1 independent conditions. Algebraic independence of coordinate functions alone is insufficient: this is a quantitative assertion about reductions of bounded-height algebraic points.
+
+For d=d', nonemptiness would require
+
+    h₁+h₂ ≥ ((r−1)x − log A)/(d+r−1).                  (1)
+
+For d≫r, this is approximately (r−1)x/d.
+
+Thus the failure needed for an improvement is indeed **too many linked pairs**, relative to the congruence-adjusted prediction. It cannot mean exceeding Schmidt’s unrestricted bound: a subset cannot exceed that bound.
+
+To retain h₁+h₂≈x/d when d≫r, the excess over the independence prediction must be approximately
+
+    exp((r−2)x) = N^(r−2),
+
+up to lower-order terms and constants. A modest correlation is insufficient.
+
+There is a further gap: (1) bounds module height, not every norm value in its box. Archimedean cancellation can produce small values in a large-height module. A sufficient candidate-counting version would instead bound
+
+    M_F(X,E) = #{a in the box : 0 < |F(a)| ≤ X}
+
+by a uniform estimate of the form
+
+    log M_F(X,E)
+       ≤ (r/D)y − r(r−1)x/[D(D−1)] + controlled errors.   (G-count)
+
+If C candidates are available at that scale, its ledger is
+
+    y ≥ (D/r)C + (r−1)x/(D−1) − controlled errors.       (2)
+
+That is the conclusion needed to recover the barrier. G-height does not automatically imply G-count.
+
+Ignoring controlled errors, put t=D/r. Equation (2) gives
+
+    y ≳ x/t + tC ≳ √(xC).
+
+Combining this with y=O(C²/log x) yields
+
+    C³ ≳ x(log x)²,
+
+hence α≥1/3.
+
+The proposed escape replaces the growing linking penalty by approximately x/d:
+
+    y ≈ x/d + (D/r)C.                                 (3)
+
+For a genuine coefficient-box estimate, one should also allow the summation term D log r. For integral generators, the exact elementary upper envelope is
+
+    log |F(a)| ≤ h_arch + D log(rE),
+
+where
+
+    h_arch = Σσ log max_j |σ(u_j)|
+           + Σσ' log max_j |σ'(u'_j)|.
+
+This correction changes constants at α=1/4, but does not eliminate the formal exponent.
+
+A regime realizing the formal escape for every 1/4≤α<1/3 is
+
+    E = 1,                     box side = 3,
+    r ≍ Sα,                    C = r log 3,
+    d ≍ d' ≍ x^(1−2α)(log x)^(2α−1),
+    D ≍ 2d.
+
+Then x/d≍Yα and D log r=O(Yα). At α=1/4 this becomes exactly
+
+    d ≍ √(x/log x),
+    r ≍ x^(1/4)(log x)^(3/4),
+    y ≍ √(x log x).
+
+What remains missing is a constructible, useful module attaining this ledger.
+
+2. Explicit constructions
+
+First, a rank-three example that breaks an unqualified counting assumption but gives no factoring gain.
+
+Let
+
+    k = Q(t),       t³−t−1 = 0,
+    K = k(√2),      K' = k(√106),
+    N = 119.
+
+Both fields have degree six and are distinct. Use the orders generated by the displayed elements and the maps
+
+    φ(t)=φ'(t)=5,
+    φ(√2)=11,
+    φ'(√106)=15               modulo 119.
+
+Verification requires only
+
+    5³−5−1 = 119,
+    11²−2 = 119,
+    15²−106 = 119.
+
+Take the three generator pairs
+
+    (1,1), (t,t), (t²,t²).
+
+They are linked, with common residues (1,5,25). If
+
+    G(a,b,c) = Norm_k/Q(a+bt+ct²),
+
+then
+
+    W=G²,    W'=G²,    F=G⁴.
+
+There are only three distinct linear-factor directions. Consequently Δ_F=0 and there is no four-row frame: this is genuinely frame-less.
+
+Moreover, t is a non-torsion unit of norm one. Its powers give infinitely many integer coefficient vectors with F=1 as the box grows. The first six coefficient vectors already lie in the ternary box:
+
+    (1,0,0), (0,1,0), (0,0,1),
+    (1,1,0), (0,1,1), (1,1,1).
+
+This is a real obstruction to applying an unqualified finite small-value count.
+
+It is not a counterexample to a correctly stated nonzero rank-two resultant bound. The two sides descend to the same form; the corresponding resultant vanishes.
+
+There is also a concrete explanation for the failure to factor. Every product of candidates lies in k. The square classes in k that become squares in K are {1,2}; those becoming squares in K' are {1,106}. Their intersection is {1}. Thus a product that is an actual square on both sides is already a square in k. Its square roots have the same image under the common map, up to sign, and yield a trivial congruence of squares.
+
+This example satisfies:
+
+- Frame-less: yes.
+- Excess raw small-norm points: yes, against an unqualified generic count.
+- Violation of a nonzero-resultant theorem: no.
+- Link maps available without factoring: yes, for this displayed instance.
+- Useful factoring improvement: no.
+
+Second, a frame-less example with distinct norm forms and no repeated linear factors.
+
+Take
+
+    N = 65,
+    k = Q(i),
+    K = Q(i,√14),
+    K' = Q(i,√79).
+
+Use
+
+    i ↦ 8,       √14 ↦ 53,       √79 ↦ 53   modulo 65,
+
+since
+
+    8² ≡ −1,      53² ≡ 14 ≡ 79   modulo 65.
+
+The generator pairs are
+
+    (1,1),
+    (i,i),
+    (√14,√79),
+    (i√14,i√79).
+
+Their common residues are (1,8,53,34).
+
+Writing A=a+bi and B=c+di gives
+
+    W  = |A²−14B²|²,
+    W' = |A²−79B²|².
+
+Explicitly,
+
+    W_q = [a²−b²−q(c²−d²)]² + [2ab−2qcd]²,
+    W=W_14, W'=W_79.
+
+Here r=4, d=d'=4 and D=8.
+
+Group the eight factor rows according to i↦i and i↦−i. Each group consists of four rows lying in a two-dimensional complex space. Any five rows contain three from one group, so they cannot form a five-row frame. The complete row set nevertheless has rank four. All eight linear factors are distinct.
+
+This is a genuine Weil-restriction degeneracy, rather than the repeated-form example above. However, its correlated linking does not establish an excess of useful small-norm points over an appropriately stated relative resultant bound.
+
+The compensating cost can be seen more generally. Let [k:Q]=e, and let the relative degrees be n,n', so d=en and d'=en'. Suppose the two monic relative defining polynomials f,g share an image under
+
+    ψ: O_k → Z/N.
+
+Their relative resultant R lies in ker ψ. If R≠0, then
+
+    N divides |Norm_k/Q(R)|.                            (4)
+
+Indeed, ker ψ has index N and contains the principal ideal (R).
+
+If h₁,h₂ are the archimedean projective-height logs of the relative generators, the product formula for the resultant gives
+
+    log |Norm_k/Q(R)|
+       ≤ n'h₁ + nh₂ + enn' log 2.
+
+For n=n', therefore,
+
+    h₁+h₂ ≥ x/n − en log 2
+           = e x/d − O(d).                             (5)
+
+A relative binary module has r=2e. Thus (5) restores a linking penalty proportional to r x/D, rather than x/d. In the usual norm-height box ledger, this restores the √(xC) obstruction.
+
+The scope of this argument matters: it treats nonzero relative resultants and the height ledger. It is not a proof of a uniform small-value counting theorem for every exceptional subspace or every frame-less module.
+
+3. Construction cost: roots are sometimes hard, but not invariably
+
+For a prescribed quadratic subfield Q(√D₀), a map from Z[√D₀] requires
+
+    s² ≡ D₀ modulo N.
+
+For a prescribed monogenic higher-degree order, a map similarly requires a root of its defining polynomial, plus any additional order constraints.
+
+Rabin’s reduction concerns a root-finding algorithm for arbitrary, or suitably distributed, quadratic residues. Choose a random unit z, submit z² modulo N to the algorithm, and obtain s. Conditional on z², z is uniformly distributed among its four roots. With probability 1/2,
+
+    s ≠ ±z modulo N,
+
+and gcd(s−z,N) reveals a proper factor. See [Rabin, MIT/LCS/TR-212 (1979)](https://dspace.mit.edu/entities/publication/15016449-ca26-4d45-82ea-7c200d82d777).
+
+That reduction does **not** show that supplying one root of one fixed D₀ factors N. Nor does it apply when the construction deliberately plants a known root.
+
+Here is an explicit escape from root-extraction hardness, valid for every odd squarefree semiprime N:
+
+    k = Q(t),          t² = −N,
+    K = k(s),          s² = 1−N,
+    K' = k(s'),        s'² = 1−2N.
+
+Use the generated orders and maps
+
+    t ↦ 0,
+    s ↦ 1,
+    s' ↦ 1             modulo N.
+
+Both fields are quartic and distinct. For distinctness, the relevant positive rational square-class ratio is
+
+    (2N−1)/(N−1).
+
+It cannot be a rational square: gcd(N−1,2N−1)=1 would force both integers to be squares, whereas for odd N an even square N−1 would make 2N−1 congruent to 7 modulo 8.
+
+The linked basis pairs are
+
+    (1,1), (t,t), (s,s'), (ts,ts'),
+
+with residues (1,0,1,0). The same two-block argument proves that this module is frame-less.
+
+Writing down the fields and maps takes polynomial time in log N. No unknown modular root is extracted.
+
+But the norms are large. For q=1,2, put
+
+    P_q = a²−Nb² +(qN−1)(c²−Nd²),
+    Q_q = 2ab +2(qN−1)cd.
+
+Then the corresponding norm is
+
+    W_q = P_q² + NQ_q².
+
+For bounded coefficients, typical values with d≠0 have W_q of order N⁴, giving product scale N⁸. There are cancellations—for example,
+
+    W_1(0,1,1,0)=1,
+    W_2(0,1,1,0)=(N−1)²—
+
+but this is nowhere near the desired exp(O(√(x log x))) norm scale.
+
+This family disproves the blanket obstruction “constructing a frame-less linked module already requires factoring.” Its obstruction is height, not construction time.
+
+The other suggested structures face related distinctions:
+
+- Cyclotomic or torsion structure: a root of unity with mixed CRT behavior can reveal a factor through a gcd. A primitive root having the same order at both primes does not automatically do so. Planting roots may be easy, but must be charged through coefficient size or restrictions on N.
+- CM: ordinary CM construction requires roots of class polynomials; see [Sutherland, “Accelerating the CM method”](https://arxiv.org/abs/1009.1082). There is no general reduction making every such prescribed-root problem equivalent to factoring. Conversely, a rational CM invariant such as j=1728 does not supply i modulo N: writing the curve is different from realizing its geometric endomorphisms over Z/N.
+- Pryms, Jacobians and towers: these can produce endomorphism decompositions and correlated conditions. They must still yield the specified linked linear module, enough useful relations, and the required norm scale. I found no construction accomplishing all three. It would be unjustified to assert that every possible degeneracy reduces to the subfield examples above.
+
+4. Verdict and limits of the claimed barrier
+
+My verdict is:
+
+- An unrestricted independence hypothesis is false.
+- Frame-less modules with inexpensive maps exist.
+- The explicit constructions above do not beat L[1/3].
+- The general frame-less case is not excluded by the supplied results and cited literature alone.
+
+The clean obstruction for the nontrivial subfield construction is the relative resultant: reducing the number of independent linking conditions also reduces the relative field degree, restoring the missing factor in the height penalty. Repeated norms can avoid a nonzero resultant entirely, but the explicit example then produces trivial square congruences.
+
+Three qualifications are essential when interpreting the “already proved” statements.
+
+First, [Bean–Thunder, JLMS 54 (1996), 39–49](https://doi.org/10.1112/jlms/54.1.39) supplies a volume inequality under its discriminant hypothesis. Passing to finite-box lattice counts requires additional estimates, especially for exceptional subspaces and growing r,D. Accepting your stated finite-box result as a premise is stronger than citing that volume theorem alone.
+
+Second, [Thunder, Annals 153 (2001), 767–804](https://arxiv.org/pdf/math/0105267) gives the uniform-in-F bound N_F(X)≪_{r,D}X^(r/D) for forms of finite type. Finite type is a substantive hypothesis, and this bound does not supply the required N-dependent saving. Its degree-dependent constants also need control in the proposed asymptotic regime.
+
+Third, merely containing r+1 rows in general position is not, for arbitrary decomposable forms, sufficient for a global volume bound. For example,
+
+    F = X^M Y Z(X+Y+Z),   M≥2,
+
+contains four row directions in general position but has infinite sublevel volume. Thus “frame-coverable” needs an actual covering or balancing hypothesis; existence of a single frame is insufficient by itself. This example is a warning about the geometric implication, not a counterexample within your restricted two-field setting.
+
+[Evertse–Győry’s finiteness criteria](https://www.impan.pl/en/publishing-house/journals-and-series/acta-arithmetica/all/50/4/105659/finiteness-criteria-for-decomposable-form-equations) help identify exceptional families, but do not furnish the missing uniform congruence-adjusted estimate.
+
+The unresolved research target is therefore precise: a constructible frame-less family with approximately exp(C) enumerable small-norm candidates at y=O(Yα), α<1/3, whose excess survives descent, duplicate removal and square reconstruction. None of the constructions here meets that target.

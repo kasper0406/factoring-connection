@@ -15,10 +15,17 @@ so  h1 + h2 >= x/n - O(d) = e*x/d - O(d).  For a rank r = 2e module this is the 
 restores alpha >= 1/3 (ledger.py).  If instead R = 0, the two sides descend to the SAME relative form (repeated
 norms): products are squares already in k, giving trivial congruences of squares (useless; rankdegen Lemma CC).
 
-This module only needs the special case where the relative polynomials are f = x^2 - A, g = x^2 - B with A, B in Q
-(covers codex's N=65 and the N-dependent escape), where Res_k(f,g) = (A-B)^2 in Q and Norm_{k/Q}((A-B)^2) = (A-B)^{2e}.
-It also verifies psi(R) = 0 mod N directly from the integer resultant of the reduced polynomials, which needs no field
-arithmetic and holds for any relative polynomials.
+SCOPE (Opus critic). RR is rigorous for the HEIGHT/divisibility statement (RR1, RR2) for a relative BINARY module
+(relative rank 2, r = 2e) or a relative power basis. The passage from a height bound to a box small-value count (RR3 =>
+alpha >= 1/3) is model/heuristic (G-height does NOT imply G-count), and only the relative-binary / power-basis case is
+covered: a type-D module over a FIXED small k with relative rank m >= 3 and non-power generators gets only
+kappa_gen ~ (r/m)*x/d = c=0 (L[1/4]) from RR, and closing it needs an unproved "relative R1" over k. See the note.
+
+rr_quadratic handles f = x^2 - A, g = x^2 - B with A, B in Q (codex's N=65 and the N-dependent escape), where
+Res_k(f,g) = (A-B)^2 in Q and Norm_{k/Q}((A-B)^2) = (A-B)^{2e}. rr_over_Qi handles a GENUINE k=Q(i) example (R not
+rational, O_k does real work). psi_resultant_is_zero verifies psi(R)=0 mod N via the integer resultant of the reduced
+polynomials (the adjugate identity R = Af + Bg maps under psi and is evaluated at v, so it holds for any relative
+polynomials; the reduced resultant being 0 mod N is the computable witness).
 """
 from __future__ import annotations
 
@@ -57,6 +64,24 @@ def psi_resultant_is_zero(f_coeffs: List[int], g_coeffs: List[int], v: int, N: i
         "Res(f,g) mod N": res % N,
         "psi(R)=0": (res % N == 0),
     }
+
+
+def rr_over_Qi(f_gauss, g_gauss, psi_i: int, v: int, N: int) -> Dict[str, object]:
+    """Genuine O_k example with k=Q(i) (O_k does real work: R is not rational). f_gauss, g_gauss are sympy Polys over
+    Z[i]; psi: i -> psi_i mod N; v the shared linking root mod N. Verifies ψ(R)=0 and N | Norm_{Q(i)/Q}(R)."""
+    import sympy as sp
+    R = sp.expand(sp.resultant(f_gauss, g_gauss))
+    a, b = int(sp.re(R)), int(sp.im(R))
+    norm = a * a + b * b
+    # reduce f,g mod (N, i - psi_i) and check common root v
+    def red_coeffs(poly):
+        cs = poly.all_coeffs()[::-1]  # low->high
+        return [(int(sp.re(sp.expand(c))) + int(sp.im(sp.expand(c))) * psi_i) % N for c in cs]
+    def ev(c):
+        return sum(ci * pow(v, i, N) for i, ci in enumerate(c)) % N
+    fr, gr = red_coeffs(f_gauss), red_coeffs(g_gauss)
+    return {"R": (a, b), "Norm_k/Q(R)": norm, "N_divides_Norm": norm % N == 0,
+            "psi_f(v)": ev(fr), "psi_g(v)": ev(gr), "psi(R)=0_consistent": (ev(fr) == 0 and ev(gr) == 0)}
 
 
 def height_penalty_report(name: str, A: int, B: int, e: int, N: int) -> Dict[str, object]:

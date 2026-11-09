@@ -1,0 +1,264 @@
+RR1 is correct. The note does not establish its advertised closure of all subfield frame-less modules. The main gaps are the restriction to relative binary modules, the passage from generator height to useful small-value counts, and RR4’s missing order-index hypotheses.
+
+I read the note, the earlier blind round, and src/grdeg/, and ran the ledger, relative-resultant diagnostics, and tests. All 13 tests pass. They verify specific arithmetic and geometry examples, not the general closure claims.
+
+1. Ledger: CORRECT-WITH-FIXES.
+
+The exponent calculation is correct under the stated size model. More precisely, it is κ_gen·x, not κ_gen itself, that has x-exponent 1+cρ−δ.
+
+Writing E for the exponent of log X gives
+
+    E = max(1+cρ−δ, δ).
+
+Balancing the terms gives δ=(1+cρ)/2. With ρ=α, the smoothness requirement E≤2α becomes
+
+    1+cα ≤ 4α,
+    α ≥ 1/(4−c).
+
+Thus the formal optimum is 1/4 at c=0 and 1/3 at c=1. The intermediate values printed by ledger.py are correct.
+
+Two qualifications matter.
+
+First, the time budget initially gives ρ≤α. Equality is the optimal choice in this interpolation model, rather than a consequence of the time budget alone. The complete relation-yield inequality is C≥log B+u log u, with suitable lower-order terms; suppressing log B does not change this exponent calculation.
+
+Second, “achievable factoring exponent” is too strong. This is the optimum of a conditional ledger. It neither constructs suitable modules nor proves that their candidates have the assumed sizes or supply independent relations.
+
+The note’s §1 disclosure about H5_r is substantially honest. Indeed, if the ternary box supplies at least B candidates, then 3^r≥B, whereas its boundary-error allowance is at least
+
+    r(D+1)3^(r−1) ≥ r(D+1)B/3.
+
+So H5_r fails decisively. The typical-size assumption is doing essential work.
+
+The code has not incorporated the note’s corrections. ledger.py:109–115 still prints that exceeding “Schmidt’s generic bound” is required and that Δ_F=0 is the only escape. Both statements are wrong. Schmidt’s unrestricted bound cannot be exceeded by its linked subset; the conjectural congruence saving can fail. Also, Δ_F=0 does not mean frame-less, and failure of the lattice-counting hypotheses remains another escape. Schmidt’s actual theorem is an unrestricted height count with degree- and dimension-dependent constants: [Schmidt, 1993](https://link.springer.com/article/10.1007/BF01311215).
+
+2. Proposition RR: WRONG as an unrestricted proposition; several components survive with precise repairs.
+
+RR1: CORRECT.
+
+Let I=ker ψ. Since ψ is unital, its image contains every integer residue, so it is automatically surjective and
+
+    [O_k:I] = N.
+
+A common root v over Z/N gives a common monic factor T−v. Hence the resultant vanishes even though Z/N is not a field. Equivalently, use the resultant’s Bézout identity. Resultant specialization is valid here because the relative minimal polynomials are monic.
+
+For R≠0,
+
+    (R) ⊆ I ⊆ O_k,
+
+and therefore
+
+    |Norm(R)| = [O_k:(R)]
+              = [O_k:I][I:(R)]
+              = N[I:(R)].
+
+This proves divisibility by the entire N, including prime powers. No factoring assumption or equidistribution hypothesis is involved. The same index argument works in a full-rank order containing R.
+
+I found no counterexample to this statement under its actual hypotheses.
+
+RR2: CORRECT-WITH-FIXES.
+
+The heights need an explicit definition. For monic relative polynomials, a suitable choice is
+
+    h₁ = Στ Σα:τf(α)=0 log max(1,|α|),
+
+and similarly for h₂, counting all embeddings τ:k→C.
+
+The elementary root-product estimate is
+
+    log |Norm(R)|
+        ≤ n′h₁ + nh₂ + enn′ log 2.
+
+For n=n′ it yields exactly
+
+    h₁+h₂ ≥ x/n − en log 2
+           = e x/d − d log 2.
+
+Thus the final height inequality in the note is valid with these definitions.
+
+However, the preceding displayed estimate with “+O(d)” in log |Norm(R)| is not the general root-product estimate. Its error is O(enn′), becoming O(d) only after division by n in the equal-degree case.
+
+This distinction is real. For odd prime n, take
+
+    f(T)=(T−1)^n−2,
+    g(T)=(T+1)^n−2.
+
+Over Q, their root-height sums satisfy
+
+    n(h₁+h₂) = (0.64613…+o(1))n²,
+
+whereas
+
+    log |Res(f,g)| = (log 2+o(1))n².
+
+The difference is quadratic, not O(n). Passing to k=Q(i) doubles both quantities; these polynomials remain irreducible there.
+
+Alternatively, Hadamard gives a clean estimate using coefficient 2-norm heights, but those are different heights. The distinction between coefficient norms and generator heights must be retained. Compare the precise coefficient-norm resultant inequality in [Coxon, Lemma 3.1](https://arxiv.org/pdf/1412.6011).
+
+There is also a numerical typo: for the N=65 quadratic example,
+
+    R=65²,
+    Norm(R)=65⁴=17,850,625.
+
+The note’s expression “65²·274625” equals 65⁵. The code computes the correct value.
+
+RR3: CORRECT-WITH-FIXES for relative binary modules; WRONG as a closure of all subfield modules.
+
+For r=2e and D=2d,
+
+    e x/d = r x/D.
+
+Thus the height floor has the desired r-dependence. The occurrences of “κ_gen ~ r·x/(2D)” mix a dimensionless coefficient with a logarithmic size and introduce an unnecessary factor two. The appropriate coefficient scale is e/d=r/D.
+
+Under the additional typical-size ledger, the corrected height bound does restore α≥1/3. The −O(d) term cannot simply be dropped, but it can be retained alongside the ledger’s degree cost. If log X controls both h₁+h₂ and d, then
+
+    x/n ≤ h₁+h₂+O(d) = O(log X).
+
+With e comparable to r, this supplies the required exponent obstruction.
+
+That remains a conditional size argument. H5_r controls a particular lattice-versus-volume error; it does not turn generator height into a small-value counting theorem. In particular, subfield unit actions can give infinite sublevel volume. RR does not supply the missing replacement count.
+
+RR4: WRONG as written.
+
+Even with perfectly aligned binary modules, “a product square on both sides is already a square in k” is false.
+
+For example, let
+
+    k=Q(i),  K=K′=k(s),  s²=14,
+    f=g=T²−14.
+
+The element 14 is a square in both ambient fields and is not a square in k. Also, (1+s)²=15+2s is a common square outside k.
+
+The correct argument under good-order assumptions is different: f=g identifies the coordinate fields; aligned modules give the same algebraic element; agreeing reduction maps send its two square roots to equal values up to one global sign. That proves triviality without descent to k.
+
+Without the order-index conditions, even “only trivial congruences” is false. Here is an exact example satisfying RR’s displayed polynomial hypotheses:
+
+    N=65,
+    k=Q(i),
+    K=K′=Q(i,√14),
+    s=s′=65√14,
+    f=g=T²−59150.
+
+Use two reduction maps with
+
+    i ↦ 8 on both sides,
+    √14 ↦ 53 on side 1,
+    √14 ↦ 27 on side 2.
+
+Both square-root residues square to 14 modulo 65, and both send s to zero. Thus the relative polynomials share v=0 and R=0. Nevertheless, the common candidate 14 has square-root images yielding
+
+    gcd(53−27,65)=13.
+
+The maps agree on O_k[s] but differ on the larger order containing √14. The relevant index is divisible by N.
+
+This is not a factoring improvement: the two supplied maps already reveal 13, before collecting relations. It illustrates the weaker conclusion of Lemma CC—precomputable splits—and why its order-index hypotheses cannot be omitted.
+
+Finally, f and g must be adapted to the actual paired module generators. In D1, choosing √3 as a field generator on both sides gives f=g, although the module generators differ by N. Choosing the paired generators correctly gives
+
+    f=T²−3,
+    g=(T−N)²−3,
+    Res(f,g)=N²(N²−12).
+
+An arbitrary presentation of the fields cannot support RR4.
+
+“RR subsumes SL”: CORRECT-WITH-FIXES.
+
+RR replaces the construction-hardness argument for the aligned, nonzero-resultant height obstruction. It is stronger and avoids the unsupported fixed-root hardness claim.
+
+But “N^{o(1)} generators make R too small” is not sufficient when degrees grow. The actual contradiction requires
+
+    n′h₁+nh₂+enn′ log 2 < x.
+
+Subpolynomial individual heights can still produce a resultant norm exceeding N after multiplication over growing numbers of embeddings.
+
+3. Scope honesty: WRONG as an exhaustive open list.
+
+The most important omission is growing relative module rank.
+
+Write
+
+    r=em,
+
+where m is the module’s rank over k. RR’s argument supplies e x/d. It supplies a penalty proportional to r x/d when m is bounded, including m=2. If e is fixed and m grows, that deduction fails.
+
+For e=x^ε, the RR term has exponent
+
+    1+ε−δ,
+
+whereas the proposed closure needs 1+ρ−δ. Identifying ε with ρ silently assumes bounded relative rank.
+
+Here is a concrete nonbinary subfield frame-less example:
+
+    N=65,  k=Q(i),
+    K=k(s),    s³=14,
+    K′=k(s′),  s′³=79.
+
+Use
+
+    i ↦ 8,
+    s,s′ ↦ 14,
+
+since 8²≡−1 and 14³≡14≡79 modulo 65.
+
+Take the six paired generators
+
+    (1,i,s,is,s²,is²),
+    (1,i,s′,is′,s′²,is′²).
+
+They have common residues
+
+    (1,8,14,47,1,8).
+
+This has r=6 and D=12. Its twelve factor rows lie in two complementary three-dimensional blocks, according to the two embeddings of k. A seven-row frame is impossible: either it already overfills a block, or deleting a row from the other block leaves too many rows in the first block. All twelve factor directions are distinct.
+
+For A,B,C∈k the relative norm is
+
+    A³+14B³+14²C³−42ABC,
+
+with 79 replacing 14 on the other side. These are distinct forms, not repeated norms.
+
+RR remains true:
+
+    R=−65³,  Norm(R)=65⁶.
+
+The point is not that this example violates RR1. It shows that frame-less subfield modules need not be relative binary. For general relative rank m, a two-generator resultant does not manufacture the missing factor m.
+
+The displayed power-basis construction pays additional height and gives no improved algorithm. Excluding all alternative growing-rank modules requires another argument, such as a relative small-value theorem. RR alone does not provide it.
+
+The open list should therefore include:
+
+(a) Non-subfield frame-less configurations and decoupled fibre products, as stated.
+
+(b) Subfield configurations of growing relative rank, and the missing height-to-count passage even for relative binary configurations.
+
+(c) Boxes outside H5_r and the exceptional families addressed conjecturally by LP_exc.
+
+(d) Any growing-rank constant window excluded only by H7_r or other uniformity assumptions. rank3 itself lists such a window inside H5_r.
+
+N-dependent subfields require a separate construction and size ledger, but are not intrinsically outside RR1. Neither its statement nor its proof requires k to be fixed independently of N. If the hypotheses hold for k=k_N, divisibility still follows. What must additionally be charged is the base-field presentation, basis, and associated heights.
+
+Also, ordinary tower-NFS literature is principally about finite-field discrete logarithms. It does not itself prove an integer-factoring lower bound for every analogous tower construction; see [Sarkar–Singh’s polynomial-selection treatment](https://www.aimsciences.org/article/doi/10.3934/amc.2019028).
+
+The available counting literature does not fill these gaps automatically. [Bean–Thunder, 1996](https://doi.org/10.1112/jlms/54.1.39) gives a volume inequality under nonzero discriminant. [Thunder, 2001](https://annals.math.princeton.edu/2001/153-3/p07) requires finite type for its uniform integral-point bound. [Stewart, 2024](https://arxiv.org/abs/2410.01097) extends counting to essentially finite type, but does not directly provide the required congruence saving with controlled constants in the proposed growing-degree regime.
+
+4. Verdict: the categorical “No” is WRONG as a theorem; “no successful construction was found” is CORRECT.
+
+I found no sub-L[1/3] factoring algorithm and no counterexample to RR1. The corrected relative-resultant argument is a useful obstruction for aligned relative binary modules under a stated size model.
+
+The most concrete additional crack is a fixed-degree subfield with growing relative module rank. RR then charges e rather than r. A construction would still need inexpensive linking, roughly exp(C) enumerable candidates at log X=O(x^{2α+o(1)}) for α<1/3, and useful square dependencies after removing unit or duplicate relations. The six-generator example above establishes the geometry, not those algorithmic properties.
+
+The remaining labels should be changed accordingly:
+
+“Proposition RR [proved]” should distinguish rigorous divisibility, the corrected height estimate, conditional ledger consequences, and the repaired coincidence statement.
+
+“Subfield frame-less case re-closed at 1/3” and “all degenerate types except non-subfield and large boxes” should be withdrawn.
+
+D1’s coincidence sublattice should not be called “rank-2 general position.” Exactly,
+
+    W=W′=16(a₁²−2a₂²)²,
+    F=256(a₁²−2a₂²)^4.
+
+Its factor directions repeat. The test named rank2_gp only checks W=W′.
+
+The experimental confinement claim should remain specific to the sampled boxes and family. It is not a theorem about all subfield modules.
+
+The defensible conclusion is: RR1 is rigorous; the relative binary height obstruction is sound after repairs; the general G_r case remains open, including more subfield configurations than the note currently admits.

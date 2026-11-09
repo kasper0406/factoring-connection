@@ -7,8 +7,11 @@ the minimal polynomial mu_k of a generator of k modulo N. This module demonstrat
 
  - link_requirement(N, mu_k): operational code (sees only N and the public field k) can realise the linking only by
    solving  mu_k(s) == 0 (mod N)  -- a root-finding-mod-N call, which it must treat as an external charged routine.
- - For e = 2 (mu_k = x^2 - D0), root-finding is square-root mod N, which is factoring-equivalent (Rabin 1979):
-   rabin_split demonstrates that two CRT-inequivalent roots give a proper factor by gcd.
+ - For e = 2 (mu_k = x^2 - D0), root-finding is square-root mod N. CORRECTION (Opus critic + codex): producing ONE
+   root of a FIXED D0 is NOT known factoring-equivalent -- Rabin 1979 needs RANDOM squares. rabin_split only shows the
+   weaker fact that two CRT-INEQUIVALENT roots give a proper factor by gcd. This whole module is a DEMOTED remark: the
+   operative obstruction is the relative-resultant height penalty (relres.py, Proposition RR), not construction
+   hardness.
 
 OPERATIONAL/constructive functions receive only (N, public field data, seed): link_requirement, naive_link_attempt.
 HARNESS/diagnostic functions (named *_harness) are factor-aware and used only to exhibit the Rabin behaviour and to
