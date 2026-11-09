@@ -1,0 +1,48 @@
+Assuming **classical computation**, I find an exact missed closure and a real defect in the hybrid demotion. I do **not** find a defensible sub-\(L[1/3]\) algorithm.
+
+1. **The hybrid claim confuses total leakage with leakage per query. A restricted hybrid closes; the general composition hole remains.**
+
+   Suppose the leak stage communicates only \(t\) bits **in total**, and everything the relation stage receives is determined by \(N\) and that transcript. Enumerate all \(2^t\) transcripts, run the continuation for each, and verify any factors produced. For \(t=O(\log\log N)\), the overhead is polynomial in the input length. **If every fixed-transcript continuation satisfies the relation barrier’s hypotheses uniformly**, this closes that hybrid. The audit missed this standard bounded-advice argument.
+
+   But \(O(1)\) bits **per query** gives no such closure when queries accumulate or adapt to candidates. Moreover, Coppersmith’s \(n/4\)-bit condition is a sufficient recovery condition for a particular kind of partial information—not a necessary information threshold for factoring. Maurer’s oracle-complexity work explicitly studies more effective uses of yes/no answers; its stronger success guarantee has a conjectural qualification. It supplies no cheap leak implementation, but illustrates why counting contiguous factor bits is inadequate. [Maurer](https://crypto.ethz.ch/publications/Maurer96.html)
+
+   There is also a limited filtering closure: for a candidate distribution, useful-relation event \(S\), and filter event \(E\),
+   \[
+   \Pr(S\mid E)\leq \Pr(S)/\Pr(E).
+   \]
+   A constant-density filter gives at most constant enrichment. A rare filter can give much more, but rejection sampling pays for its rarity. **An efficient constructor that generates conditioned candidates directly is precisely what this argument does not bound.**
+
+   Thus the union of the stated barriers does **not** imply a general hybrid barrier. It needs a theorem preserving the relation assumptions after adaptive conditioning, or a simulation into one common model. Neither follows from separate family bounds. The “illusory because one-bit” demotion is unjustified; that does not establish a successful hybrid.
+
+2. **The displayed PRIM example is exactly redundant for gcd extraction.**
+
+   For odd balanced primes \(p<q\leq2p\),
+   \[
+   \gcd\!\bigl(N,(p-1)(q-1)\bigr)=1.
+   \]
+   Indeed, \(q\nmid p-1\), and \(p\mid q-1\) would force \(q=p+1\), impossible for odd primes. Consequently, \(x\mapsto x^N\) permutes both residue fields, giving
+   \[
+   \gcd(x^N-y^N,N)=\gcd(x-y,N).
+   \]
+   Since \(N\) is odd,
+   \[
+   \boxed{\gcd\!\left((a^N+1)^N,N\right)=\gcd(a+1,N).}
+   \]
+
+   So **this particular proposed leak is closed by an identity**, without an \(N^{1/4}\) recovery argument. This does not close arbitrary circuits containing nested powers and additions: the power map is not additive.
+
+   Conversely, do not casually close #5 using Bach–Charles. Their standard reduction uses **both** \(a_f(N)\) and \(a_f(N^2)\), under eigenform hypotheses; it does not establish the stated single-coefficient claim. [Bach–Charles, §2](https://arxiv.org/html/0708.1192)
+
+3. **Constructive relation search deserves its own coverage analysis; a constant improvement for one constructor does not bound the family.**
+
+   A concrete mechanism is Schnorr–Adleman prime-log lattice search: construct \(B\)-smooth \(U,V\) with \(U/V\) extremely close to \(N\), seeking
+   \[
+   U-VN=W,\qquad W\ \text{\(B\)-smooth}.
+   \]
+   This generates candidates through simultaneous approximation rather than ordinary independent sampling. The family exists; it has no established asymptotic advantage over NFS. [Ducas](https://iacr.org/archive/pkc2021/127110258/127110258.pdf)
+
+   A sub-\(L[1/3]\) proposal must actually bound the cost of obtaining enough independent, useful triples—including lattice solving, integer sizes, residual smoothness, and final extraction. **That cost lemma is missing.** Neither an oblivious sampling floor nor the \(1.2114\) constant for a particular endpoint supplies it. This is a concrete research mechanism, not evidence that its missing lemma is true.
+
+   Likewise, an auxiliary object larger than \(N\) is not automatically fatal: its representation and construction cost matter. Small-characteristic DL already admits a provably quasipolynomial algorithm; the missing ingredient would be a sufficiently cheap, factor-revealing reduction to an appropriate field. “DL-equivalent” alone is therefore not an exponent lower bound. [Lido](https://arxiv.org/abs/2206.10327)
+
+   **The family I would require as an explicit matrix row is structured lattice/Diophantine constructors, including adaptive constructions.** The twelve rows were not supplied, so I cannot certify that the full matrix omitted it. What the supplied claims support is an uncovered construction problem—not a verified breakthrough, and not the numerical probability “below 1%.”

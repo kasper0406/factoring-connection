@@ -1,0 +1,189 @@
+**The catalogue does not establish a general factoring lower bound.** It establishes restrictions on particular ways of obtaining a factor. Its largest gaps concern adaptive construction, transfer of intermediate information between models, and native computation of factoring-hard quantities.
+
+I take the stated theorems as premises. However, “surveyed without finding an algorithm,” “factoring-equivalent,” and “would contradict the τ-conjecture” are not unconditional lower bounds. Nor does a classification of leaks into M/A/Q establish a cost bound for every algorithm using those leaks.
+
+Below, “sub-\(1/3\)” means a smaller \(L\)-exponent, not a smaller constant. Where no defensible exponent estimate exists, I give the missing quantitative requirement rather than invent an estimate. No finite list can enumerate every future algorithm; these are the concrete uncovered directions exposed by your stated hypotheses.
+
+1. **Complete a rigorous randomized NFS analysis instead of improving Dixon descent.**
+
+   The mechanism is ordinary NFS-style relation generation followed by a proof that the resulting square congruences split \(N\) sufficiently often. This need not escape SS: **SS permits exponent \(1/3\)**. It escapes the claimed rigorous \(2/5\) or \(3/8\) obstruction because those obstructions concern a particular descent construction.
+
+   There is a sharper target than “prove all-target relation supply.” Lee–Venkatesan’s randomized NFS analysis claims \(L_N[1/3,(64/9)^{1/3}]\) generation of square congruences. Its factoring conclusion remains conditional on a character nondegeneracy conjecture and is stated for semiprimes with both primes \(3\bmod4\). Thus relation supply and *fruitfulness of the dependencies* are distinct proof problems. [Their results and Section 7](https://arxiv.org/html/1805.08873v1).
+
+   **Exponent:** potentially rigorous \(1/3\), beating both \(2/5\) and \(3/8\), without beating heuristic NFS. This is an unfinished proof route, not a new heuristic factoring algorithm. The endpoint is proving nontrivial splitting for general balanced semiprimes, with adequate probability over the actual algorithm’s choices.
+
+   Also audit your internal wording: if “two-level ⇒ \(3/8\)” asserts an unconditional general factoring algorithm, the advertised rigorous \(2/5\) floor is already false. If it is conditional, say which condition remains.
+
+2. **Non-oblivious construction of certified relations.**
+
+   A concrete target is to construct factored \(u,v\) while steering
+   \[
+   r=u-vN
+   \]
+   toward a certified smooth value, using residuals, lattice reductions, and earlier partial relations to choose subsequent moves. The substantive departure is constructing the certificate jointly with the candidate, with reusable computational state.
+
+   **Escape:** J is stated for oblivious constructors. SS concerns sampling followed by full smoothness tests. Neither, as summarized, bounds the amortized cost of an adaptive certificate-producing search. LS charges per output but does not establish a lower bound on producing an output. DLT establishes the power of a sufficiently strong lister; it does not prove that such a lister is expensive.
+
+   **Adaptivity alone is insufficient.** If the procedure merely chooses another ordinary sampler and pays for all rejected candidates, SS may still apply. The missing theorem must bound conditional success after the actual transcript and charge the work that created that transcript.
+
+   **Exponent requirement:** for \(B=L_N[\gamma,c]\), construct enough usable relations over \(B^{O(1)}\) columns in total time \(B^{O(1)}\), including setup and square-root extraction. Then the exponent is \(\gamma\); sub-\(1/3\) requires \(\gamma<1/3\). A lattice implementation would need a sufficiently productive search in dimension roughly below the \(1/3\) scale, with reduction cost included.
+
+   **Verdict:** a real model gap, with no established sub-\(1/3\) estimate. Your SI constructor gives only a constant improvement at exponent \(1/3\). Calling another CVP formulation a new route is insufficient: existing lattice approaches already face precisely the relation-yield problem. [Ducas’s discussion](https://iacr.org/archive/pkc2021/127110258/127110258.pdf).
+
+3. **Adaptive networks of factor bases, fields, and partial relations.**
+
+   Instead of requiring completed relations from each family, retain partial relations as edges or hyperedges. Introduce bases or fields in response to observed residuals, and seek combinations that cancel the unresolved labels. A family that cannot factor \(N\) independently may still provide useful intermediate constraints.
+
+   **Escape:** SS’s fixed shared base and completed-candidate accounting do not automatically cover this changing relation system. The relevant object is the combined system’s rank and elimination cost. The MNFS exception already demonstrates that the single-family model is not closed under every useful composition.
+
+   **Exponent requirement:** count the total columns, relation incidences, field construction, residual identification, elimination, and extraction. All must fit below the \(1/3\) scale. Counting only the surviving relations hides the expensive part.
+
+   **Illusory cases:**
+
+   - Several ordinary integer bases can often be replaced by their union. SS may then apply again.
+   - Algebraic prime ideals from different fields require appropriate field labels; forgetting those labels understates the matrix.
+   - Unstructured matching of large residuals can remain endpoint-dominated. If residuals range over a space of size \(L_N[\delta]\), birthday matching still has exponent \(\delta\), although its constant improves.
+
+   **Verdict:** ordinary large-prime variants and more fields are not themselves an uncovered asymptotic improvement. Adaptive cancellation with demonstrably cheaper global rank production remains uncovered.
+
+4. **Super-constant arity and exact elimination identities.**
+
+   Allow a relation to involve \(k(N)\to\infty\) objects, with correlated divisibility or algebraically forced cancellation. More radically, construct identities that yield squares without making each participating integer smooth.
+
+   **Escape:** SS explicitly assumes \(O(1)\) smoothness integers. An arity-dependent theorem needs new accounting for joint distributions, object sizes, certificate lengths, and relation rank. A descent built from exact algebraic identities also need not satisfy the recurrence or covariance assumptions of Dixon descent.
+
+   **Exponent:** unknown. A genuine recursive alternative must bound its entire computation graph: branching, depth, intermediate heights, and verification. “More levels” alone does not establish an improvement.
+
+   There are two immediate traps:
+
+   - Requiring all \(k\) integers to be \(B\)-smooth is equivalent to requiring their product to be \(B\)-smooth. Without useful correlation, this merely increases the size burden.
+   - Your unchanged descent formula satisfies
+     \[
+     \frac{j+1}{3j+2}=\frac13+\frac1{9j+6}.
+     \]
+     It never crosses \(1/3\). At \(j=3\), its threshold is \(4/11<3/8\), but achievability still requires the relevant supply and precision hypotheses. Failure at depth four does not dispose of depth three.
+
+   Small-characteristic discrete logarithms show that structured elimination can outperform ordinary smoothness heuristics in another setting. They supply no automatic integer-factoring reduction: the useful Frobenius structure must actually be transferred. [Kleinjung–Wesolowski](https://arxiv.org/abs/1906.10668).
+
+5. **Use \(N\) through a larger auxiliary object with a succinct representation.**
+
+   Concrete possibilities include an adaptively selected multiple \(M=kN\), a growing-degree algebra, a large finite-field presentation, or a geometric object whose computable invariant determines a factor.
+
+   **Escape:** SR1/SR2 exclude transformations in their specified algebraic classes. PRIM concerns fixed algebras. Neither statement, as given, covers arbitrary uniform transformations into growing or differently represented objects.
+
+   Numerical size \(>N\) is not an objection: \(N^d\) still has only \(O(\log N)\) bits for fixed \(d\). The relevant costs are representation length, degree, height, precision, and native operations.
+
+   **Exponent accounting:** if
+   \[
+   \log M=(\log N)^{r+o(1)},
+   \]
+   an \(L_M[\alpha]\) algorithm has \(N\)-exponent \(r\alpha\). Merely enlarging the integer therefore worsens the exponent. A benefit needs additional structure, with construction and extraction charged.
+
+   **Illusory cases:** finding an ordinary SNFS presentation of a multiple may simply be polynomial selection in another form. A finite-field embedding that requires an extension degree comparable to an unknown order may be prohibitively large. A favorable presentation selected using \(p\) is circular.
+
+   **Verdict:** genuinely outside the stated universal coverage, but not yet a concrete fast algorithm. The decisive deliverable is a transformation plus an independent complexity bound—not just an auxiliary invariant.
+
+6. **Retained, nested exponent gates with feedback—the explicit PRIM opening.**
+
+   Consider programs retaining several values, combining powers by addition, and allowing Jacobi or gcd outcomes to affect later gates. Schematically,
+   \[
+   x_{t+1}=x_t^{E_1(N)}+y_t,\qquad
+   y_{t+1}=(x_t+1)^{E_2(N)}+c_t,
+   \]
+   using permitted exponents and transcript-dependent control.
+
+   **Escape:** NE1 covers one layer; terminal-Jacobi results do not cover Jacobi feedback; pure-tree results need not cover retained sharing. This is precisely the open portion you identify.
+
+   The additions matter. A nested expression such as \((x^E)^F\) simply collapses to \(x^{EF}\) and supplies no new mechanism.
+
+   **Exponent requirement:** a program of cost \(L_N[\gamma]\) must create a useful splitting event with probability at least \(L_N[\eta]^{-1}\), with \(\max(\gamma,\eta)<1/3\). Exponentiation costs depend on the bit lengths of the exponents; a short expression describing an enormous exponent is not a free gate.
+
+   **Verdict:** a sharply specified missing theorem, but no justified favorable exponent. Nor must success produce a fourth leak family: it could exploit M or Q faster. A leak classification alone would not exclude that.
+
+7. **Construct favorable group orders instead of sampling them.**
+
+   The mechanism is adaptive selection of curves, twists, isogenies, or other algebraic groups to make a large known portion of the order annihilable, leaving a much smaller unknown cofactor.
+
+   **Escape:** calling the mechanism M does not establish its cost. SS does not automatically cover construction of group orders that are never explicitly computed or fully smoothness-tested. Fixed-algebra results also require a separate argument before they cover varying geometric objects.
+
+   **Exponent estimate:** ordinary ECM heuristics give exponent \(1/2\) for balanced factors. Under the same smoothness optimization, reducing the unknown order cofactor to log-size roughly \((\log N)^s\) suggests exponent roughly \(s/2\). Sub-\(1/3\) would require \(s<2/3\), with matching logarithmic factors and cheap construction.
+
+   **Endpoint:** obtaining such an enormous known order component uniformly without knowing \(p\). Small prescribed torsion or constant smoothness biases do not change the exponent.
+
+   **Verdict:** the catalogue does not state the necessary lower bound on adaptive order engineering. It also offers no evidence that the required engineering is feasible.
+
+8. **Transfer partial information between individually barred families.**
+
+   Here is a precise hybrid target: an M/Q/analytic stage constructs a list of \(K\) intervals, each shorter than the applicable Coppersmith recovery threshold, one containing \(p\). Run the recovery algorithm on every interval.
+
+   **Escape:** a theorem about obtaining the interval from a particular floor sum does not prohibit obtaining it from a mixed transcript. A theorem about factoring by group operations alone does not prohibit group operations providing useful auxiliary information to a lattice algorithm.
+
+   For balanced factors, the familiar approximate-divisor scale is about \(N^{1/4}\), with the precise theorem’s margin and hypotheses respected.
+
+   **Exponent requirement:**
+   \[
+   T_{\rm total}=T_{\rm list}+K\,\operatorname{poly}(\log N).
+   \]
+   If both list construction and \(K\) have exponent below \(1/3\), so does factoring.
+
+   **Endpoint:** producing the list is the hard new algorithm. Simply assuming a suitable approximate divisor restates a factoring-hard primitive.
+
+   This is the missing composition issue:
+   \[
+   \forall i,\ \forall A\in\mathcal M_i,\quad T(A)\ge B
+   \]
+   proves a bound on \(\bigcup_i\mathcal M_i\). It says nothing about a hybrid outside that union. The missing result must permit intermediate outputs from one family as inputs to another, while preserving its lower bound.
+
+9. **Native coefficient extraction or modular evaluation of a factoring-hard quantity.**
+
+   Two concrete targets deserve separate attention.
+
+   **Composite-index coefficient extraction.** Compute the proposed \(a_f(N)\) directly through identities or congruences, without first factoring the index. The gap is a native algorithm for one coefficient; the size of the full expansion is irrelevant unless expansion is necessary. Standard fast modular-form coefficient methods do not resolve this automatically: their input conditions can include the factorization of the index. [Bruin’s formulation](https://pub.math.leidenuniv.nl/~bruinpj/luminy.pdf).
+
+   **Modulus-dependent factorial evaluation.** Put \(m=\lfloor\sqrt N\rfloor\). Then
+   \[
+   \gcd(m!\bmod N,N)=p.
+   \]
+   An algorithm for this one modular value need not construct a short integer-polynomial circuit for the entire Pochhammer polynomial.
+
+   **Escape:** a lower bound for full polynomial SLPs does not automatically apply to evaluation at one modulus-dependent point. A τ-conjecture implication also remains conditional on that conjecture.
+
+   **Exponent:** a native \(L_N[\gamma]\) algorithm with \(\gamma<1/3\), followed by cheap extraction, suffices. No such bound follows from these descriptions.
+
+   **Verdict:** these are factoring-hard targets. That is not a disproof; a fast native algorithm would be a factoring breakthrough. Without an independently useful computational identity, however, renaming factoring as coefficient extraction or a factorial gcd is only a restatement.
+
+10. **Global, phase-retaining coverage and nonlocal collision computation.**
+
+   A concrete departure from local designs is to preserve signed or complex weights through global transforms, or choose later moduli using earlier arithmetic results, instead of reducing every stage to local collision coverage or phase-discarded mass.
+
+   **Escape:** the stated \(4/25\) cap applies to phase-discarding methods. Local collision floors require local collision hypotheses. Neither automatically extends to arbitrary global arithmetic combinations. Whether a particular proposal falls under SP requires SP’s full formal statement; “analytic” is not itself a model-membership proof.
+
+   **Exponent:** within a multimod local model with an \(N^{1/6}\) floor, the interval
+   \[
+   N^{1/6}\ \text{through}\ N^{1/5}
+   \]
+   is not excluded by that floor alone. Such a method still cannot become subexponential while retaining the floor’s hypotheses. A sub-\(L[1/3]\) proposal needs a more fundamental departure.
+
+   **Endpoint:** retaining phases is not a saving until the transform’s precision, evaluation cost, and factor extraction are bounded.
+
+11. **Arithmetic, input-dependent derandomization rather than black-box derandomization.**
+
+   The mechanism is an explicitly constructed set of witnesses for the particular arithmetic success event, using the structure of \(N\) and the algorithm—not a generic hitting set for every black box.
+
+   **Escape:** black-box derandomization failures do not establish the impossibility of such a construction. DSR remains an open constructive lemma unless its negation is proved.
+
+   **Exponent requirement:** if witness construction, witness count, and per-witness processing are respectively \(L_N[\delta]\), \(L_N[\eta]\), and \(L_N[\beta]\), a suitable construction gives deterministic exponent \(\max(\delta,\eta,\beta)\). Any fixed exponent below \(1\) would beat \(N^{1/5}\) asymptotically.
+
+   **Endpoint:** the witness set must be constructed without factoring \(N\), and its success guarantee must hold for every required input. An existential or factorization-dependent set gives no algorithm.
+
+Beyond these, unrestricted computations on integer representatives remain outside the proved syntactic models by your own admission. Multivariate integer solving or representation-sensitive classical computation therefore remains logically possible. Naming SAT, tensor networks, or machine learning adds no substance without a costed mechanism, so I would not count those as additional research candidates.
+
+My three best candidates, across the targets you allowed, are:
+
+1. **Prove fruitfulness for a randomized NFS variant.** This is the most credible route to beating the *rigorous* \(2/5\) and \(3/8\) claims. Cheapest check: audit the precise remaining character condition and whether a weaker, average-over-polynomials nondegeneracy statement suffices for all balanced semiprimes. Factored test instances can diagnose degeneration, but cannot prove the required uniform guarantee.
+
+2. **Adaptive construction of certified relations.** This is my strongest strictly sub-\(1/3\) direction. Cheapest check: implement one specified construction and measure independent usable relations per total operation, including lattice reduction, failed searches, and preprocessing. Compare against a sampler with the same resources. An improvement only in the smoothness rate after expensive conditioning is not progress.
+
+3. **Depth-two retained PRIM programs with additions and feedback.** This has the cleanest small missing model. Cheapest check: first symbolically eliminate programs that collapse to known exponent/order mechanisms; then test the remaining programs on factored balanced semiprimes while controlling known order-smoothness and quadratic effects. A surviving effect would justify studying its scaling.
+
+**None of the strict sub-\(1/3\) candidates presently earns a favorable numerical exponent from the evidence here.** The strongest referee finding is that the catalogue lacks the conditional, amortized, and compositional theorems needed to turn its individual barriers into the claimed universal prohibition.

@@ -1,0 +1,36 @@
+{
+  "Q1_wall": {
+    "Dixon": "1/2",
+    "QS": "1/2",
+    "GNFS": "1/3",
+    "SNFS": "1/3",
+    "GNFS t=3": "1/3",
+    "aggregate rank-r (stylised, A=1)": "1/4"
+  },
+  "Q2_outside_S": {
+    "exponent": "1/3",
+    "gnfs_c": 1.9229994270765445,
+    "mnfs_c": 1.9018836118648395,
+    "factory_c": 1.6386,
+    "mnfs_below_gnfs": true,
+    "all_exponent_one_third": true
+  },
+  "Q3_prop_si": {
+    "c": "2*6**(1/3)/3",
+    "c_float": 1.2114137285547597,
+    "matches_suffmap": true,
+    "exponent": "1/3",
+    "below_mnfs": true
+  },
+  "Q4_leak_floor": {
+    "n": 2048,
+    "bits_needed": 512,
+    "fraction": "1/4",
+    "single_bit_leak_events_order": "N^{1/4} (exponential)"
+  },
+  "Q5_cross_family": {
+    "status": "UNPROVEN EXTRAPOLATION",
+    "reason": "leak model and relation model are disjoint; their union is not covered by any single theorem",
+    "mitigation": "every concrete hybrid is endpoint-dominated (Q4) or factoring/DL-equivalent (navigate, DLT)"
+  }
+}
