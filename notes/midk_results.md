@@ -221,7 +221,7 @@ NFS links mod N without factoring — case (i), not a split, and no height savin
 restrictions over a non-imaginary-quadratic subfield, the finite-volume frame-less example); (3)
 nonlinear / ring-map dependence. So the dichotomy is NOT exhaustive; it covers the matrix-intertwiner
 case only, and formalises `resbarrier` §4.2's "cyclotomic needs roots of unity mod p" / "N-is-a-norm
-is useless" for that case. E2: rank-discrepant intertwiners split N 18/18 (recovering p or q); global
+is useless" for that case. E2: rank-discrepant intertwiners split N 9/9 (recovering p or q); global
 scalars and the [[λ,1],[0,μ]] non-scalar do not; the automorphism-graph witness links at height 1 but
 is diagonal/useless.
 
@@ -299,7 +299,7 @@ rather than re-run; `rankdegen` E3 already measured it. Disclosed deviation.)
    heuristic).
 3. **Both ways on G_r:** construction — a height-free dependence is either a rank-discrepant mod-N
    intertwiner, which
-   splits N (Lemma SPL-INT, proved; E2 18/18); proof — G_r not proved (Schmidt-at-growing-d +
+   splits N (Lemma SPL-INT, proved; E2 9/9); proof — G_r not proved (Schmidt-at-growing-d +
    independence remain assumptions), independence holds at small scale.
 4. **Second order:** the minor-product height penalty (= frame–Hölder) closes the whole NONSINGULAR
    range (α ≥ 1/3, no heuristic); LP_exc would close large boxes; the singular/frame-less corner is a
