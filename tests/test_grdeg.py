@@ -83,8 +83,18 @@ def test_D1_coincidence_sublattice_is_rank2_gp():
 def test_link_requirement_is_sqrt_for_quadratic():
     req = O.link_requirement(7 * 11, [-2, 0, 1])
     assert req["subfield_degree_e"] == 2
-    assert "factoring" in req["hardness"].lower()
+    assert "conjectured" in req["hardness"].lower()   # corrected: NOT claimed factoring-equivalent
     assert req["charged_subroutine"] == "root_mod_N(mu_k, N)"
+
+
+def test_eigenvector_lemma_forces_root():
+    # SL0 non-circular form: C v = s v (mod N) and mu_k(s)=0, no assumed O_k-structure on Z/N.
+    p, q = 7, 17                                # 2 is a QR mod both
+    N = p * q
+    sp, sq = O._sqrt_mod_p(2, p), O._sqrt_mod_p(2, q)
+    s = (sp * q * pow(q, -1, p) + sq * p * pow(p, -1, q)) % N
+    out = O.eigenvector_lemma([[0, 1], [2, 0]], [1, s], [-2, 0, 1], N)
+    assert out["ok"] and out["C v == s v (mod N)"] and out["root_forced"]
 
 
 def test_rabin_split_structural():
@@ -105,3 +115,22 @@ def test_naive_root_search_fails_for_semiprime():
     p, q = 1000033, 2000039
     out = O.naive_link_attempt(p * q, [-2, 0, 1], search_bound=10 ** 4)
     assert out["found"] is False
+
+
+# --- relative resultant (Proposition RR) --------------------------------------
+
+def test_rr_divides_norm_codex_n65():
+    from src.grdeg import relres as R
+    out = R.rr_quadratic(14, 79, 2, 65)
+    assert out["N_divides_Norm"] is True
+    chk = R.psi_resultant_is_zero([-14, 0, 1], [-79, 0, 1], 53, 65)
+    assert chk["psi(R)=0"] and chk["f(v) mod N"] == 0 and chk["g(v) mod N"] == 0
+
+
+def test_rr_escape_family_height_not_construction():
+    # cheap-linking escape: R = N^2, Norm = N^4, N | Norm; obstruction is height (generators ~ sqrt N), not time.
+    from src.grdeg import relres as R
+    N = 101 * 103
+    out = R.rr_quadratic(1 - N, 1 - 2 * N, 2, N)
+    assert out["R_relative_resultant"] == N * N
+    assert out["N_divides_Norm"] is True

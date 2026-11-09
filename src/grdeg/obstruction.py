@@ -25,6 +25,27 @@ from sympy import isprime
 
 # ----------------------------------------------------------------- operational (sees only N, public k)
 
+def eigenvector_lemma(C_matrix: List[List[int]], v: List[int], mu_k: List[int], N: int) -> Dict[str, object]:
+    """Non-circular form of SL0 (Opus critic's rewrite). theta_k = a generator of k acts on the module M=span(u_j);
+    C is the integer matrix with (C v)_i = phi(theta_k * u_i) in linking coordinates v_j = phi(u_j). Let phi be a ring
+    map with some v_{j0} a unit mod N. Multiplicativity phi(theta_k u_i) = phi(theta_k) phi(u_i) forces C v = s v
+    (mod N) with s = phi(theta_k), and the Cayley-Hamilton relation mu_k(C) = 0 gives mu_k(s) v = 0, hence
+    mu_k(s) = 0 (mod N) at the unit coordinate. This verifies, for given C, v, that C v = s*v (mod N) and
+    mu_k(s) = 0 (mod N): a genuine root of mu_k mod N is forced, with NO assumed O_k-structure on Z/N (not circular)."""
+    rr = len(v)
+    Cv = [sum(C_matrix[i][j] * v[j] for j in range(rr)) % N for i in range(rr)]
+    # find a unit coordinate j0
+    j0 = next((j for j in range(rr) if math.gcd(v[j], N) == 1), None)
+    if j0 is None:
+        return {"ok": False, "reason": "no unit coordinate (phi(u_j0) must be a unit mod N)"}
+    s = (Cv[j0] * pow(v[j0], -1, N)) % N
+    is_eigen = all((Cv[i] - s * v[i]) % N == 0 for i in range(rr))
+    mu_s = 0
+    for c in reversed(mu_k):
+        mu_s = (mu_s * s + c) % N
+    return {"ok": True, "s": s, "C v == s v (mod N)": is_eigen, "mu_k(s) mod N": mu_s, "root_forced": (mu_s == 0)}
+
+
 def link_requirement(N: int, mu_k: List[int]) -> Dict[str, object]:
     """Given only N and the minimal polynomial mu_k (low->high) of a generator of the common subfield k,
     state what the linking of a type-D family over k requires. e = deg mu_k.
@@ -35,8 +56,9 @@ def link_requirement(N: int, mu_k: List[int]) -> Dict[str, object]:
     e = len(mu_k) - 1
     assert e >= 2, "type-D obstruction is for a nontrivial subfield e>=2"
     hardness = {
-        2: "square-root mod N  ==  factoring (Rabin 1979), worst-case equivalent",
-    }.get(e, f"root of degree-{e} polynomial mod N (conjectured factoring-hard; >= sqrt case)")
+        2: "square-root mod N (CONJECTURED hard for a single fixed D0; Rabin 1979 only shows that TWO "
+           "CRT-inequivalent roots split N -- not that producing one fixed root is factoring-equivalent)",
+    }.get(e, f"root of degree-{e} polynomial mod N (conjectured hard; RSA-type, not known >= factoring)")
     return {
         "subfield_degree_e": e,
         "required_congruence": f"find s in Z/N with mu_k(s) == 0 (mod N)",
