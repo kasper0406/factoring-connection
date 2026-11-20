@@ -1,0 +1,60 @@
+**Verdict.** I found no extension of Masullo’s counting that bounds \(N_{\mathrm{ind}}\) strongly enough to force \(\alpha\ge 1/3\), and no growing-degree counterexample to that bound. Two parts of the proposed bridges do work. The prime cutoff in B2 has mild degree dependence, and parity independence gives a genuine counting inequality for B3. Both lose the information that a candidate belongs to the low-rank module. A scratch experiment found one smooth row that survives a natural attempt to recover that information.
+
+**The ledger.** Write \(d=en,\ D=2d,\ r=em\), and take \(\log B\asymp r\). At the specified balance, \(u=\log Y/\log B\asymp(x/\log x)^{1/4}\). The **heuristic** smoothness ledger needs
+\[
+\log N_{\mathrm{ind}}\ \gtrsim\ \log\pi(B)-\log\rho(u)=\Theta(r).
+\]
+Thus \(\log(1+N_{\mathrm{ind}})=o(r)\) would close this balance. Closing every \(\alpha<1/3\) would require the corresponding bound across the other balances. **Proved in the project**, ideal-relative KH gives \(T\widetilde H\ge x-O_k(D\log D)\), with \(T\asymp d/r\). Its height floor is \(\asymp x^{3/4}(\log x)^{5/4}\), while \(\log Y\asymp\sqrt{x\log x}\). The cubic-base example with norms \(1\) and \(8\) rules out applying that floor to each candidate. I interpret the proper-subspace quotient as charging specified lower-rank families. Quotienting by the rows from *every* proper subspace would kill every candidate via its own \(k\)-line. [Ideal-relative KH and the counting target](/Volumes/git/factoring-connection/notes/subthird_results.md:83) · [Norms \(1\) and \(8\)](/Volumes/git/factoring-connection/codex/subthird_2_codex.out:8)
+
+### B1. Harmonic analysis on the torus
+
+**Proved.** Batyrev–Tschinkel obtain an asymptotic \(c_X H(\log H)^{\operatorname{rkPic}(X)-1}\) for torus points of bounded anticanonical height on a fixed smooth projective toric compactification. Here the two-sided torus has dimension \(2n\) over \(k\). Membership in the generator span imposes \(2n-m\) additive linear equations. Its intersection with the torus has ambient Haar measure zero. Also, the absolute norm product stays constant along unit orbits of unbounded height. Substitution of \(Y\) for the toric height cutoff is therefore unjustified. [Batyrev–Tschinkel](https://arxiv.org/abs/alg-geom/9510014)
+
+There is an exact way to impose the section. For each equation \(\ell(y)=0\), insert \(\int_{\mathbb A_k/k}\psi(t\ell(y))\,dt\), with probability Haar measure and a nontrivial standard additive character. The resulting toric Fourier transforms carry \(2n-m\) additive parameters. The missing lemma is a uniform bound on their *total* contribution that retains the linking saving and controls exceptional lattice points.
+
+The closest direct inequality I found is Thunder’s Theorem 3. Under finite-type and stability hypotheses its bound includes \(Y^{(r-1)/D}\), already of logarithmic size \(\Theta(r\log x)\) before the dimension-dependent constant. Moreover, the absolute form here has infinitely many integral representatives of a single nonzero value under base units, so the finite-type theorem cannot be applied before taking the quotient. Finite-rank multiplicative-group intersection theorems require a prescribed group, whose rank can itself grow with the number of independent parity rows. **Verdict:** the section has an exact analytic formulation, but neither theory supplies the needed estimate. [Thunder, Theorem 3](https://arxiv.org/pdf/math/0305078) · [Evertse–Schlickewei–Schmidt](https://annals.math.princeton.edu/2002/155-3/p04)
+
+### B2. One prime at a time
+
+**Proved for the local period sum.** With local unit mass normalized to one, Masullo’s orbital expression at \(p\) sums \(\log q_v\sum_j\phi(\pi_v^j)\) over \(v\mid p\). For norm support in \((1,P]\), it vanishes identically for \(p>P\). For \(\|\phi\|_\infty\le1\), its absolute size is at most \(d\log P\) per rational prime on one side. The cutoff is degree-independent, and the local factor is only linear in \(d\). [Masullo, §§1.3 and 11.3](</Volumes/git/factoring-connection/codex/scratch/masullo/music.txt:24594>)
+
+**Ledger and verdict.** At \(P=Y\), summing this bound gives \(O(dY)\), whose logarithm is \(\asymp\log Y\gg r\). At \(P=B\), the trace sees potential factor-base primes but does not say which primes occur together in the ideal row of a single \(a\). What is missing is a positive upper bound for those joint occurrences **on \(M\)**. The vanishing trace controls a convolution operator. It gives no discrepancy estimate for that incidence count, even if one grants the draft’s global trace formula.
+
+### B3. Full-rank ray-class sandwich
+
+**Proved.** If \(R\) candidate rows are independent in the quotient, their products over distinct \(T\)-element subsets have distinct two-sided ideal parities. Hence
+\[
+\binom RT\le
+\#\{(\mathfrak a,\mathfrak a'):\mathrm N\mathfrak a\,\mathrm N\mathfrak a'\le Z\},
+\qquad Z=Y^T.
+\]
+The products belong to the lattice generated by **all** degree-\(T\) monomials. KH puts that additive lattice in an evaluation kernel of index divisible by \(N\). This does not give its principal ideal pairs density \(1/N\). For example, for invertible residues, changing generators allows their residue ratio to vary by the product of the two unit images in \((\mathbb Z/N)^\times\). Distinct base-unit orbits can also give the same ideal pair. Parity independence is precisely what makes the displayed inequality valid. [KH product-span argument](/Volumes/git/factoring-connection/experiments/subthird/codex/consultant_c.txt:23)
+
+**Optimistic benchmark.** Grant density \(1/N\), harmless field factors, and even a square-root error for the ideal-pair count. The main term would have scale \(Z(1+\log Z)/N\), from convolution of two ideal counts, and the error scale would be \(Z^{1/2+o(1)}\). Here
+\[
+\log Z\asymp x^{3/4}(\log x)^{-3/4}=o(x).
+\]
+The main term is exponentially small. The error still gives only \(\log R\le(\tfrac12+o(1))\log Y+\log T\), weaker than the elementary ternary-box bound \(r\log3\). Already at \(T=1\), \(\sqrt Y\) exceeds the entire box population. The square-root estimate is a favorable assumption for this comparison, not a uniform sharp-cutoff ideal-counting consequence established by Masullo. Actual explicit ray-class bounds track the regulator, unit images, modulus and degree. **Verdict:** even repairing the density step would leave an error much too large. A successful estimate must exploit the additive section inside the count. [Gun–Ramaré–Sivaraman, Theorem 1](https://arxiv.org/pdf/2208.06602)
+
+### B4. Periodic orbits, shells and units
+
+**Proved.** Chapter 8 identifies finite-place periodic orbits of period \(\log q_v\). Chapter 11 organizes kernels by those places. Theorem 2.4.2.1 and Appendix A.4 bound a sum over the translates of **one** \(S\)-unit orbit by \(O_{F,S,\mathcal B}(1+|\log|g||^{|S|-1})\). Uniformity is over a bounded test-function set for fixed \(F,S\). With \(F=K,\ S=S_\infty\) and log-radius \(\asymp\log Y\), even the displayed power has logarithm \(\Theta(d\log\log Y)\gg r\). [Chapter 8](</Volumes/git/factoring-connection/codex/scratch/masullo/music.txt:19214>) · [Theorem 2.4.2.1](</Volumes/git/factoring-connection/codex/scratch/masullo/music.txt:5406>) · [Appendix A.4](</Volumes/git/factoring-connection/codex/scratch/masullo/music.txt:27973>)
+
+For the actual ternary box, one nonzero coefficient determines the common unit once its image is chosen. An orbit therefore has at most \(3^e-1\) representatives, uniformly in \(m,n\). **Verdict:** base-unit deduplication changes the log count by only \(O_k(1)\). The missing count is how many different principal ideal parities the section meets.
+
+### Most promising line — use the embeddings to identify the exceptional subspaces
+
+For each tagged embedding \(i\), let \(t_i\) be the smallest threshold for which box vectors with \(|L_i(a)|\le t_i\) span \(k^m\). The vectors strictly below \(t_i\) span a specified proper subspace \(W_i\). **Proved:** if \(Y<\prod_i t_i\), every capped candidate belongs to one of these \(D\) subspaces. Cramer’s rule gives a starting estimate. For box radius \(E\), put \(A=C_kE\sqrt m\) and \(M_i=\max_j|L_i(w_j)|\), reading \(L_i(w_j)\) as the embedded generator. Then \(t_i\ge M_i/(mA^{em-1})\). Indeed, a nonzero coefficient determinant has absolute norm at least one, its other conjugates are bounded by \(A^m\), and its cofactors by \(A^{m-1}\). For fixed \(E\) the summed log loss is \(O_k(Dm\log m)\), exactly the order of the KH floor at this balance.
+
+**Pre-registered computation.** I tested these subspaces over \(\mathbb Q(\sqrt2)\), with \(n=8,m=3,E=2\), on two split semiprimes. The last column is the exact smooth ideal-parity rank gained over the covered smooth rows.
+
+| Module | Bits | Capped base-unit classes | Outside \(\bigcup W_i\) | Rank gained |
+|---|---:|---:|---:|---:|
+| Divided differences | 72 | 139 | 11 | 1 |
+| Divided differences | 96 | 71 | 0 | 0 |
+| Matched powers | 72 | 489 | 288 | 14 |
+| Matched powers | 96 | 121 | 27 | 3 |
+
+The 72-bit divided-difference witness has norms \(108241\) and \(3175924591\). In a separately registered follow-up, its row raised rank from 47 to 48 even after including **every strictly smaller-product-norm row in the box**, including nonsmooth rows, and all covered smooth rows. This defeats the proposed cover on that fixture. One surviving row supplies no asymptotic yield. [Preregistration](./prereg.txt) · [Four results](./cover.jsonl) · [Witness check](./witness.json)
+
+**Speculative next lemma.** For bounded \(E\) at the stated balance, try to prove \(\sum_i\log t_i\ge c_k x/T-O_k(Dm)\) on reduced linked modules. This targets the extra \(\log m\) in the determinant loss and would send every capped candidate into at most \(D\) explicitly defined lower-rank families. Their total contribution would still need to be charged through the lower-rank ledger. The 72-bit witness gives a concrete test for any proposed constants.

@@ -1,0 +1,14 @@
+**Partial obstruction proved.** At \(D\asymp\sqrt{x}\), \(r\asymp x^{1/4}\), and bounded projective coefficient height, a candidate reaching \(\log |F|=o(mx/n)\) must either lie in one of at most \(D\) specified proper \(k\)-subspaces or exhibit substantial cancellation at \(\Omega(\sqrt{x}/\log x)\) individual embeddings. The proof uses a determinant bound and the ideal-relative KH height floor. It applies to every common-unit representative. [Statement and proof](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/report.txt:9)
+
+The published bounds do **not** prove general \(\mathrm{LP}_{\rm exc}^{\rm rel}\). Evertse’s subspace-cover prefactor alone has logarithm \(\Theta(r^2\log D)=x^{1/2+o(1)}\), already above the subthird budget, and its hypotheses exclude the type-D base-field action. Evertse–Ferretti give a much smaller bound for one weighted system, but the norm cap does not supply that system’s independent forms and height surplus. The determinant argument restores the model’s \(\alpha\ge1/3\) ledger for cancellation concentrated at few embeddings **if the induced lower-rank families can be charged**. Their parity rank and diffuse cancellation remain open. [Exponent ledger](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/report.txt:20) · [Evertse, Theorems 1–2](https://publi.math.unideb.hu/paper/592/download/10_5486_PMD_2000_2325.pdf) · [Evertse–Ferretti, Theorem 3.1](https://annals.math.princeton.edu/wp-content/uploads/annals-v177-n2-p04-p.pdf)
+
+**Measured.** Neither multiplicative S-unit steering nor exact linked products produced a full-support norm below \(N^2\).
+
+| Fixtures | Full-support hits / distinct tested, including control | Coordinate-deletion hits | Coordinate-deletion parity rank | Incremental full rank |
+|---|---:|---:|---:|---:|
+| Six 44-bit, \((e,n,m)=(3,4,3)\) | 0 / 60,340 | 1,160 | 860 | 0 |
+| Two 60-bit, \((3,5,3)\) | 0 / 20,019 | 402 | 302 | 0 |
+
+Ranks are sums of within-fixture ranks over all prime ideals. At smoothness bound 97, both groups had rank zero. The fixtures granted the cubic base map and used fresh linked polynomials. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/prereg.txt:2) · [Results](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/report.txt:40)
+
+A separately registered audit then exhausted **all 237,608 fixture–tuple pairs** in the S-unit coefficient grid. The best \(\log|F|/\log N\) was **3.469** at 44 bits and **3.012** at 60 bits. Reweighting the cones cannot recover a hit from that grid. The remaining construction target is a family that induces simultaneous cancellation across many conjugates and still contributes fresh ideal-parity rank. [Audit registration](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/audit_prereg.txt:1) · [Exact audit results](/Volumes/git/factoring-connection/codex/scratch/hatch_h2c/audit.jsonl:1)

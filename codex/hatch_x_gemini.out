@@ -1,0 +1,61 @@
+CROSS-REVIEW OF ROUND-1 HATCH OUTPUTS (GEMINI)
+
+Scope: Adversarial review of C-H1 (codex/hatch1_codex.out, codex/scratch/hatch_h1c/report.md, experiment.py) and C-H2 (codex/hatch2_codex.out, codex/scratch/hatch_h2c/report.txt, steer.py, audit.py), plus cross-checks on G-H3 and G-H1 for repository acceptance.
+
+1. REVIEW OF C-H2 (HATCH 2: DETERMINANT + KH OBSTRUCTION & S-UNIT AUDIT)
+
+1A. Subspace + Determinant Bound with Height Cutoff (codex/scratch/hatch_h2c/report.txt:7-24, codex/hatch2_codex.out:1-5)
+Verdict: CORRECT (with one FIXABLE equal-degree restriction and a sharp cliff at unbounded unit height).
+
+Priority (3) step-by-step check:
+- Cancellation identity (report.txt:9-12): For integral a in O_k^m\{0} with nonvanishing sides, content ideal I=(a_1,...,a_m), projective height h(a)=(sum_sigma log A_sigma - log Norm I)/e, and d_i(a)=log(M_i A_sigma / |L_i(a)|), direct multiplication gives sum_{i=1}^D d_i(a) = H_tilde + D*h(a) - log F_0, where F_0 = |F(a)|/[J*(Norm I)^{2n}] and J=Norm(c)*Norm(c') is the product of the two generator-ideal norms. Note d_i(a) >= -log m can be negative (e.g. omega_{i,j}=1, a=(1,...,1) gives d_i=-log m), which does not affect report.txt:18 or 21 because non-selected places only use upper bounds d_i <= G/(2D) or d_i <= gamma. Also, report.txt:11 silently repairs a typo in notes/subthird_results.md:135 (which subtracted log N(c) instead of log[N(c)N(c')]); in Theorem KH, [c^T x c'^T : S] >= N puts both c^T and c'^T into the ambient covolume, so J=N(c)N(c') is exact.
+- "At most D proper k-subspaces" (report.txt:14-16): CORRECT. Fix i in {1,...,D} and cutoff u>=0. If m k-independent vectors a^{(1)},...,a^{(m)} with h<=u satisfy d_i > tau(u) = r*(u + (1/2)*log m), their determinant Delta in I_1...I_m\{0} satisfies prod_sigma |sigma(Delta)| >= exp(-e*m*u) * prod_{sigma,l} A_sigma(a^{(l)}). At sigma=i|_k (promoting sigma(a^{(l)}_j) to C^{m x m} when i is complex over a real place sigma of k), replacing a column attaining M_i=max_j|omega_{i,j}|>0 by L_i/omega_{i,j*} preserves det while bounding that normalized column's l_2-norm by sqrt(m)*exp(-tau(u)) and the remaining m-1 columns by sqrt(m), giving Hadamard product < (sqrt(m))^{m-1}*(sqrt(m)*exp(-tau))*m^{(e-1)m/2} = m^{em/2}*exp(-tau) = exp(-e*m*u), contradiction. Even when one side has projection rank s_1<m (allowed by KH since max(s_1,s_2)>=m/2), M_i>0 holds since neither side vanishes identically. The Plucker height bound t*u + (t/2)*log t (report.txt:16) is also exact via minor ideal inclusion I(p) subseteq I_1...I_t => Norm I(p) >= prod Norm I_l.
+- Embedding count Omega(sqrt(x)/log x) (report.txt:18, hatch2_codex.out:1): CORRECT at bounded projective height h(a)<=u=O(1). Outside the <=D spaces, S_+={i: d_i > G/(2D)} for G=H_tilde-log Y>0 satisfies G <= |S_+_*tau(u) + (D-|S_+|)*G/(2D), hence |S_+| >= G/(2*tau(u)). At D~sqrt(x), r=em~x^{1/4}, u=O(1), and log Y=o(mx/n), KH gives G=Theta(mx/n)=Theta(x^{3/4}) while tau(u)=Theta(r*log m)=Theta(x^{1/4}*log x), giving |S_+|=Omega(sqrt(x)/log x). At the exact L[1/4] balance n~sqrt(x/log x), m=x^{1/4+o(1)}, m cancels in (mx/n)/(m*log x), forcing Theta(D) embeddings to cancel (unless G>D*tau(u), where the <=D spaces cover every point).
+- Fixable restriction and unbounded-height cliff:
+  (i) FIXABLE (report.txt:5,11): Equal relative degrees n=[K:k]=[K':k] are assumed in (Norm I)^{2n}. Rescued Theorem KH (notes/subthird_results.md:128) covers unequal degrees (n_1,n_2); replace 2n by n_1+n_2 in F_0 and D=e*(n_1+n_2), with n=max(n_1,n_2) in KH.
+  (ii) Unbounded-height cliff (report.txt:20-21): Common-unit scaling a|->eta*a (eta in O_k^x) preserves h(a), but independent coordinate units a=(1,eps_1^{t_1},eps_2^{t_2}) or multi-cone weighted LLL vectors have h(a)~x^{1/4}. There dyadic partitioning only bounds log F_0 when q<=D/(2r) embeddings exceed gamma. At L[1/4] parameters D~(x/log x)^{1/2}, r~x^{1/4}(log x)^{3/4}, D/(2r)~x^{1/4}(log x)^{-5/4} << sqrt(x)/log x, because (D-2qr)*h turns negative as soon as q>D/(2r). Parity rank inside the proper subspaces also remains uncharged (report.txt:24).
+
+1B. Evertse / Evertse-Gyory / Evertse-Ferretti Audit (report.txt:26-35)
+Verdict: CORRECT. Prefactors and hypotheses match the published theorems; EF Theorem 3.1 gives log(cover)=O(m+log log D) per fixed weighted frame (B^{o(1)} when m=o(log B)), but choosing which subset of embeddings cancels introduces up to binom(2n,m)^e frames.
+
+1C. Cubic Unit-Orbit Cover Lemma (report.txt:36)
+Verdict: CORRECT. Because u=4*cos^2(2*pi/7) has three distinct positive conjugates, Descartes' rule forbids any <=3-term Q-relation among three powers of u; pigeonhole on 0<=j<=2t places k*a inside one of t proper Q-subspaces, whose k-core is proper.
+
+1D. S-Unit Steering & Exhaustive Audit (report.txt:38-51, steer.py, audit.py)
+Verdict: CORRECT exact arithmetic, narrow parameter regime. On (1,T,T^3) (steer.py:133), T^3 sets a baseline Mahler log-norm of (18/n)*log N (4.50*log N at n=4; 3.60*log N at n=5), whereas coordinate deletion (1,T,0) has (6/n)*log N < 2*log N. Exhausting 29,701 tuples (ln 29701=10.3 nats) only shaves ~0.6-1.0*log N in bulk, landing at 3.469*log N (n=4) and 3.012*log N (n=5) > 2*log N; thus 0 hits below N^2 was expected without extreme non-generic clustering.
+
+2. REVIEW OF C-H1 (HATCH 1: WEIGHTED THEOREM J, FOLDING & M2 RECOVERY)
+
+2A. Per-Depth Weighted Theorem J (codex/scratch/hatch_h1c/report.md:9-27)
+Verdict: CORRECT.
+Priority (5) check: Rescaling E=t=log V and setting theta=1-(log u - 2*log log x)/log B, Rankin on z<=3*X_0 (valid for large x since V<=exp(O(F_{1-beta}))=o(X_0) for beta>0) and Markov exp(2*theta*(S(z)-t)) give log-mean <= -(1-theta)*x + (1-2*theta)*t + sum_{q<=B} log M_q + O(1) (weights at q>B zeroed WLOG on B-smooth z). Bounding q<=Z=log x or D_q>=1/16 via Cauchy-Schwarz (2*sum_{k<=j} h_{qk}-j <= D_q, and <=-j/2 for j>=16*D_q) and Taylor-expanding -log(1-q^{-theta*(1-2*sqrt(D_q))}) elsewhere gives sum log M_q <= theta*t + o(F_{1-beta}). Both B^{1-theta}=u/(log x)^2=O(F_{1-beta}/(log x)^2) and (1-theta)*t=O(x^{1-2*beta}*(log x)^{2*beta})=o(F_{1-beta}) hold for all 0<beta<1, cancelling window entropy +t even when V>>1/rho(u). Cleaner and stronger than notes/sihard_results.md:474.
+
+2B. Taylor Divisibility Lattice (report.md:28, experiment.py:76-115)
+Verdict: CORRECT. With v_q(d_i)=sum_{k>=1}(h_{qk}-i)_+, at v_q(T+C)=j row i supplies >=sum_{k=1}^j max(h_{qk},i) >= sum_{k=1}^j h_{qk} powers (not even requiring nonincreasing h_{qk}), with diagonal log-det (1/2)*sum(h_{qk}^2+h_{qk})*log q for d>=max h_{qk}.
+
+2C. Split-Prime Folding Obstruction & Two-Branch Johnson Bound J_2 (report.md:32-38)
+Verdict: CORRECT (fixable minor omission at report.md:36: state explicitly that every prime in the ideal product satisfies q > max(deg_U P, deg_V P)+1; e.g. U^2-1 vanishes on F_3^x without UV|P, implicitly covered by "such primes"). In report.md:38, l^2*A^2 <= 2W*(l*W + l*(l-1)*t_0) is exact on [1,K]^2 because primitive Q(u,v) matches at most one root per good split prime (sum n_{q,k,b}*log q <= l*W) and |u_1*v_2 - u_2*v_1| < K^2.
+
+2D. M2 Rational Reconstruction & 96-Bit Timing Claim (experiment.py:205,226; report.md:44-55; codex/hatch1_codex.out:7)
+Verdict: Traversal lower bound binom(n,m) (report.md:55) is CORRECT (since B^m <= 2*K^2 < 4*K^2); search implementation and 96-bit timing comparison ("5.96 ms vs 10.27 ms") are FIXABLE / FLAWED AS BENCHMARKED.
+- Specific bug & counterexample (experiment.py:205): forced_moduli hardcodes limit=4*K*K (16384 for K=64) instead of Lemma W's 2*K*K*B, breaking whenever modulus*q > 4*K^2. In C-H1's own runs.jsonl:22 (96 bits, rep 3), witness (u,v)=(41,30) gives 4093-smooth Q=2*29*31*127*601*1031*2203*2879 with good-prime part M_good=448696531115627231; its largest divisor <=8192 is 31*127=3937 and smallest >8192 is 29*601=17429>16384, so forced_moduli drops it. Across all 24 runs, 15/15 missed witnesses (80-65=15) have M_good>2*K^2 and a divisor in (2*K^2,2*K^2*B], but none in (2*K^2,4*K^2]. Asymptotically at B=L[beta], (2*K^2,4*K^2] misses 1-o(1) of smooth witnesses; restoring limit=2*K^2*B at 96 bits inflates branches from 12,478 to 7,082,790 (567x), making reconstruction >300x slower than sieving.
+
+3. CROSS-CHECKS ON PRIORITIES (1), (2), AND (4)
+
+- Priority (1), G-H3 Theorem DAG-POOL (codex/scratch/hatch_h3g/hatch3_full_notes.md:100-116): Parts (1)-(2) CORRECT as stated for squarefree Q_j; Part (3) FIXABLE with two explicit scope clauses. Disc scaling Q_j^{(D-1)(D-2)}, Minkowski skew bound ||(u,v)||_inf<2E on Gauss-reduced bases, and pooled error O(D*ln D + (D*ln D/mu_0)*ln s + ln s)=o(x^{2/3}(ln x)^{1/3}) are exact, and p>B_0>D forces <=D projective roots mod p, giving <=D^{omega(Q)} sublattices for squarefree Q (and unramified prime powers by Hensel). Counterexample if squarefreeness is dropped at ramified primes: for W(X,Y)=X^3*(X+Y)+p^3*Y^4 (D=4, p=17, p^6|disc W) and Q=p^3, all p^2=289 cyclic index-p^3 sublattices {a==p*t*b mod p^3} satisfy p^3|W(Lambda_t) (289 >> D^{omega(Q)}=4). Required fixes for (3): (a) index sublattices by their squarefree radical (or unramified part); (b) price unforced hits on primes in (B_0,B_*] (B_*=W^2*(ln N)^C) at block smoothness threshold <=B_*, applying DAG-POOL specifically to forced primes >B_* where SM2 forbids unforced repeats and s<=h_0/(8*C_FT*D*ln(4E)) absorbs all <h_0/4 cusps without Assumption T or H_cusp.
+- Priority (2), G-H3 Theorem TIED-PARITY & C-RM (hatch3_full_notes.md:143-165): TIED-PARITY is CORRECT (rank p_0^r over Q and odd p_0 over F_2; RM(1,r) rank r+1 at p_0=2 over F_2). C-RM is NOT a new route: ML-RM reduces directly to Hatch 2's LP_exc^rel plus H_L unit control.
+- Priority (4), G-H1 Theorem 2a & Theorems 1c-1d (codex/scratch/hatch_h1g/hatch1_buium_crt_report.md:78-120): Theorem 2a is CORRECT, NOT NOVEL in mechanism: beyond Guruswami (2003) / Biasse-Quintin (2011)'s sqrt(R) bound, it is a routine number-field LLL transcription of Guruswami-Wang (2013) / Guruswami-Xing (2013) folded linear-algebraic decoding (and BHKS's operator-Wronskian template). Theorems 1c (Buium-Lin) and 1d (Int-J) are CORRECT, with 1d scoped explicitly to Minkowski determinant root-forcing on Int(Z)_{<=L}.
+
+4. PROVED RESULTS TO ACCEPT INTO THE REPO
+
+1. C-H1 per-depth weighted Theorem J and Taylor lattice basis (report.md:9-28).
+2. C-H1 + G-H1 split-prime Galois-folding obstruction (C-H1 report.md:36 with q>deg+1 explicit; G-H1 Thm 2b) and projective two-branch Johnson bound J_2=sqrt(2*W*t_0) (report.md:38).
+3. G-H1 Buium p-derivation and Polya-ring obstructions: Props 1a, 1b, 1e, Thm 1c (Buium-Lin), Thm 1d (Int-J, scoped to Minkowski root-forcing), plus Thm 2a attributed as a number-field transcription of Guruswami-Wang/Xing.
+4. C-H2 determinant + KH subspace/cancellation bound and Plucker height bound (report.txt:9-24, generalized to unequal degrees n_1,n_2), published-bounds audit (report.txt:26-35), and cubic Descartes cover lemma (report.txt:36).
+5. G-H3 Lemma PIN-1, Prop THIN-LEDGER (with Lemmas CHAR-TRAP, PLANT, SNFS-MULT), Theorem SINGLE-N-REUSE, Theorem TIED-PARITY, and Theorem DAG-POOL (with squarefree-radical indexing and forced >B_* scope explicit).
+
+5. SINGLE BEST NEXT ATTACK ON ANY HATCH
+
+Attack Hatch 2 (LP_exc^rel, to which C-RM also reduces) right at C-H2's q=D/(2r) cliff for large-height unit combinations:
+- Lower-bound side: Lift C-H2's 1-column replacement on k^m to simultaneous multi-place replacement on exterior powers Lambda^p(k^m) across q>D/(2r) cancelling embeddings, bounding Grassmannian rank without Evertse-Ferretti's binom(2n,m)^e frame blowup.
+- Constructive/falsification side: Replace C-H2's 100-point fixed S-unit grid at n=4,5 (blocked a priori by (18/n)*log N > 2*log N) with continuous multi-cone LLL over O_k^m at n>=10 (18/n<2) and unit height h(a)~H_tilde/D, measuring incremental ideal-parity rank modulo proper k-subspaces.

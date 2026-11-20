@@ -1,0 +1,81 @@
+0. TESTING THE ORCHESTRATOR'S INITIAL VIEW (CORRECTIONS 1-3)
+
+Verdict upfront: Masullo's orbital / adelic-theta machinery CANNOT be extended to prove the uniform low-rank distinct-orbit bound LP_exc^rel needs at the L[1/4] balance [proved for direct extensions B2-B4; assessment for B1]. However, testing the orchestrator's initial view uncovers three corrections, one of which yields a new unconditional theorem (Theorem Rel-BT below) closing grdeg Door (i) inside the H5_r box scope.
+
+Correction 1 (What Masullo actually counts) [proved, from text]:
+In §2.4 (Thm 2.4.2.1, p. 111) and App. A.4 (Thm A.4.1.1, pp. 562-565), Masullo bounds S-local theta values Phi_{F,S}(f)(g) = sum_{xi in O_{F,S}^*} f(xi*g) by O_{F,S}(|log|g|_{F,S}|^{|S|-1}) via Davenport-Schmidt lattice counting on a single S-unit orbit (absorbing h_F coset shifts in Claim A.4.1.2, p. 564, into ineffective constants). By contrast, §2.2 (Lemma 2.2.1.1, pp. 75-76) sums over a full-rank fractional-ideal lattice in R^{[F:Q]} (hitting distinct O_F^*-orbits, but with unit multiplicity inside one archimedean box), and Chs. 3 and 10-13 integrate Phi_F(f)(g)*chi(g)*|g|_F^s over the idele class group C_F = GL_1(A_F)/F^*. Folding that C_F^1-integral collapses each F^*-orbit to weight 1 and produces Hecke L-functions L(s, chi), which DO count distinct full-rank O_F^*-orbits (integral ideals in ray classes). Thus the obstruction is not "Masullo never counts distinct orbits," but that C_F^1-integration only counts full-rank multiplicative ideals of K, whereas LP_exc^rel restricts to an additive rank-m O_k-submodule M subset O_K x O_{K'} with m << n.
+
+Correction 2 (Fixed-base k vs growing-degree K in A.2/A.4) [proved]:
+Applying Masullo's App. A.2/A.4 fundamental domain to K incurs growing unit rank Theta(d) and ineffective constants. Applying it instead to the FIXED base field k ([k:Q] = e constant, unit rank r_k = r_1(k)+r_2(k)-1 <= e-1) slices the infinite-volume Type-D region {|F| <= Y} into only poly(x, log E) = L_N^{o(1)} unit cones, each of FINITE volume controlled by a relative Bean-Thunder invariant Delta_rel in O_k. This kills the V_F = infinity obstruction of grdeg Door (i); what blocks L[1/4] is purely the low-rank box-boundary / cusp error (H5_r failing on {-1,0,1}^r), identical to the Q-case.
+
+Correction 3 (O_k^*-orbits vs parity-row orbits) [proved]:
+Two-sided prime-ideal parity rows depend only on the principal-ideal pair (u(a)O_K, u'(a)O_{K'}), i.e. (O_K^* x O_{K'}^*)-orbits, not merely O_k^*-orbits. In Consultant C's Q(cbrt(3)) example (f = T^2 - (N+5)T/2 + 1, g = T^2 - (N+3)T + 2, linking at T = 2), the root pair w_2 = (s, s') has norms 1 and 8 because s in O_K^* is a relative unit whose conjugates (~ N/2 and ~ 2/N) cancel in norm while keeping generator height ~ x.
+
+
+1. NEW EXTRACT FROM B1 + A.2: THEOREM REL-BT [proved]
+
+Setting: Fix a number field k of degree e with ring of integers O_k and unit rank r_k. Let K, K' have relative degrees n_1, n_2 over k with D_rel := n_1 + n_2 = 2n > m >= 2, d = en, D = 2en, r = em. Let M = sum_{j=1}^m O_k w_j subset O_K x O_{K'} be a linked O_k-module whose unital reductions phi, phi' to Z/N (N squarefree) agree on M and restrict to psi: O_k -> Z/N with kernel ideal n_0 = ker(psi) of norm N. Write F_rel(X_1,...,X_m) = N_{K/k}(sum X_j u_j) N_{K'/k}(sum X_j u'_j) in O_k[X_1,...,X_m], factoring over k-bar into 2n linear forms L_1,...,L_{2n}, and define the relative Bean-Thunder invariant
+  Delta_rel := prod_{(i_1,...,i_m) distinct} det(L_{i_1},...,L_{i_m}).
+
+Theorem Rel-BT [proved; volume constant explicit for totally real k via Bean-Thunder 1996, general k via Thunder 2001 Thm 1]:
+Assume Delta_rel != 0 (relative general position over k). Then:
+(i) Delta_rel in O_k \ {0}, and for every prime p | N and p_k = ker(psi mod p) | n_0, v_{p_k}(Delta_rel) >= P(m, 2n) := m(m-1)(2n-2)!/(2n-m)!. Hence |N_{k/Q}(Delta_rel)| >= N^{P(m, 2n)}.
+(ii) (Prop Rel-R4, all k) For any m k-independent candidates alpha^(1),...,alpha^(m) in O_k^m, prod_{i=1}^D max_b |L_i(alpha^(b))| >= m^{-en} N^{(m-1)/(2n-1)}.
+(iii) Fix a Z-basis of O_k identifying M with Z^r, let H be the generator log-envelope, and set R_unit := (H + log Y)/(2n) + e*log(rE) + C_k. Then
+  #{a in [-E,E]^r : 0 < |N_{k/Q}(F_rel(a))| <= Y}
+    <= N_units * (V_rel * Y^{m/(2n)} + r * D * (2E+1)^{r-1}),
+where N_units = O_k((1 + R_unit)^{r_k}) and V_rel <= C_{m,k} * e^{r C_k} * N^{-m(m-1)/(2n(2n-1))} (with C_{m,k} = C_m^e for totally real k).
+
+Proof:
+(i) Gal(L/k) permutes the Relative embeddings within each side, leaving Delta_rel invariant and integral over O_k. For p | N, O_k/p_k = F_p, so the shared residue phi(w_j) = phi'(w'_j) mod p lifts to v_j in O_k, which is fixed by every k-embedding into L. Fixing P_L | p_k in L with v(p_k) = 1, the sets T_K, T_{K'} of k-embeddings inducing P_L on ker(phi mod p), ker(phi' mod p) have sizes >= e_K, e_{K'} and rows congruent to (v_j) mod P_L^{1/e_K}, P_L^{1/e_{K'}}. Subtracting one row of T_K union T_{K'} in each m-minor gives v_{p_k}(Delta_rel) >= m!(e_K + e_{K'} - 1) C(2n-2, m-2) / max(e_K, e_{K'}) >= P(m, 2n). Multiplying over p | N yields n_0^{P(m,2n)} | (Delta_rel).
+(ii) Apply complex Hadamard to each m-minor of F_rel o A (det A in O_k \ {0} => |N_{k/Q}(det A)| >= 1) across all e embeddings of k.
+(iii) By Masullo App. A.2 (Prop. A.2.4.4 for F = k, S = S_infty(k)), for every a in [-E,E]^r with 0 < |N_{k/Q}(F_rel(a))| = t <= Y there is a unique unit coset eps in O_k^*/mu_k placing ((2n)^{-1} log|F_rel(eps*a)|_v - (N_v/(2ne)) log t)_{v|infty} inside the fundamental parallelotope P_k of diameter C_k = O_k(1). Since (2n)^{-1} log|F_rel(a)|_v <= N_v log(rE) + H_v/(2n) and sum_{v|infty} log|F_rel(a)|_v = log t >= 0, each |log|eps|_v| <= R_unit; by Masullo Thm A.4.1.1 / Lemma 2.2.1.1 on O_k^*, at most O_k((1+R_unit)^{r_k}) units occur. For each fixed eps, C_eps(Y) := {x in prod_{v|infty} k_v^m : |F_{rel,v}(x_v)|_v <= |eps|_v^{-2n} Y^{N_v/e} e^{2n C_k}} is a product of local regions; since prod_{v|infty} |eps|_v^{-m} = 1, Bean-Thunder (totally real k) / Thunder 2001 Thm 1 (general k) plus (i) bounds vol(C_eps(Y)) by V_rel * Y^{m/(2n)}. Along any coordinate line s in [-E,E], {|F_{rel,v}(x_v(s))|_v <= T_v} has <= 2n*N_v real intervals, so their intersection over v|infty has <= sum 2n*N_v = 2en = D intervals; one-coordinate-at-a-time slicing (rank3 Lemma R2) gives boundary error <= r*D*(2E+1)^{r-1}. QED.
+
+Notice Theorem Rel-BT answers grdeg's open question v_p(Delta_rel) >= P(m, 2n) affirmatively and closes grdeg Door (i) (Delta_rel != 0, m >= 3) at alpha >= 1/3 inside the box scope N_units * r * D * (2E+1)^{r-1} <= B/4.
+
+
+2. CONCRETE EVALUATION OF BRIDGES B1-B4 AT THE L[1/4] BALANCE
+
+L[1/4] balance parameters: x = log N, F_{1/4} = x^{1/4}(log x)^{3/4}, d = en ~ sqrt(x/log x), r = em ~ F_{1/4}, E = 1 (|Omega| = 3^r = exp(r log 3)), log B ~ F_{1/4}, log Y ~ sqrt(x log x) (so Y = L_N[1/2]). To block alpha < 1/3 we need log N_ind(M, Omega; Y) < log B + u log u — in particular strictly below r log 3 = Theta(F_{1/4}).
+
+Bridge B1: Toric harmonic analysis (Batyrev-Tschinkel / Peyre) and norm-form geometry over k.
+- Precise statement available: No toric height-zeta bound applies; geometry of numbers over k gives Theorem Rel-BT above [proved], while quantitative Subspace Theorem bounds (Evertse 1995/2000) give <= (2^{33}(2n)^2)^{e m^3} O_k^*-orbits per principal O_k-ideal of norm <= Y [proved].
+- Geometric obstruction to Batyrev-Tschinkel [proved]: Projectively, M_k cap T inside P(M_k) = P^{m-1}_k is the complement U = P^{m-1}_k \ D of 2n hyperplanes. Since 2n >> m, K_{P^{m-1}} + D = O(2n - m) is ample: U is log-general-type, NOT a toric or log-Fano variety, and |N_{k/Q}(F_rel(alpha))| <= Y bounds only archimedean proximity to D without bounding projective height. In Poisson summation on T(A_k)/T(k), U has codimension 2n - m ~ 2*sqrt(x/log x), requiring integration over a (2n-m)-dimensional dual character group whose contour shifts blow up as C^{2n}.
+- Ledger at L[1/4] [proved]:
+  * Theorem Rel-BT gives N_units = poly(x) = L_N^{o(1)} and main term N_units * V_rel * Y^{m/(2n)} = exp(-Theta(x^{1/2}(log x)^{5/2}) + O(x^{1/4}(log x)^{7/4})) << 1 (c = 1!), BUT boundary error N_units * r * D * 3^{r-1} = poly(x) * 3^{r-1} >= Omega(|Omega|), which is vacuous at E = 1.
+  * Box-free cusp chopping (Thunder 2001/2005) incurs Zaslavsky's chamber count C(2n, m-1) = exp(Theta(m log(n/m))) = exp(Theta(x^{1/4}(log x)^{7/4})) = |Omega|^{Theta(log x)} >> 3^r.
+  * Evertse's Subspace Theorem gives (2n)^{2 e m^3} * Y = exp(Theta(x^{3/4}(log x)^{13/4})) >> 3^r.
+- Missing lemma: A primitive, proper-k-subspace-filtered boundary bound on C_eps(Y) cap [-1,1]^r of size o(3^r) avoiding the C(2n, m-1) real-cusp factor (a rank-m analogue of binary Lemma FT, valid even when Delta_rel = 0).
+- Verdict: Partial win inside H5_r (Theorem Rel-BT); FAILS at the L[1/4] tiny-box regime.
+
+Bridge B2: Masullo's one-prime-at-a-time orbital chopping (§1.2-1.4, Ch. 11).
+- Precise statement it gives [claimed-in-paper]: For phi in D(C_F) supported on |g|_F in (1, Lambda), chopping K_{geom,I,phi} along GL_1(A_F)_{P_k} gives p-orbital traces sum_{v|p} log(q_v) sum_{k>=1} phi(pi_v^{-k}) vanishing identically for q_v > Lambda (Thm 11.3.2.1, p. 495), leaving an S-local trace reproducing Weil's Explicit Formula truncated to |Re(rho)-1/2| < a (Thm 12.5.1.1, p. 519).
+- Why it gives NO new degree control or low-rank chop [proved]: First, once assembled, the geometric side IS Weil's 1952 Explicit Formula (`(8.4.0.12)`, p. 392), which was already exact without C^d errors (Odlyzko bounds); meanwhile Masullo's intermediate Hilbert spaces require Sobolev order s >= 2[F:Q] = 2d (`(11.1.2.2)`, p. 480; `(11.2.2.2)`, p. 490) and Pic(O_{F,S}) = 1. Second, local chopping rests on Weil's multiplicative identity 1_{O_{F_v}^*} = 1_{O_{F_v}} - 1_{O_{F_v}}(pi_v^{-1} * .) (`p. 492`), which requires F^* (or an ideal) to be stable under pi_v-scaling. A rank-m O_k-module M (m << n) is not multiplicatively closed; pi_v^{-1} M leaves M.
+- Ledger at L[1/4]: Inapplicable to M; on full K it merely supplies Dedekind/Hecke GRH (evaluated in B3).
+- Missing lemma: An orbital basis for additive congruences M cap p_v M across > m primes (blocked by classical higher-codimension sieve parity).
+- Verdict: NO.
+
+Bridge B3: Full-rank ray-class / intermediate-lattice sandwich (Hecke/Landau + Masullo GRH, via K x K' or Theorem KH's degree-T span).
+- Precise statement it would give [proved modulo Masullo GRH]: Map candidates a in M (|F(a)| <= Y) either at T = 1 to (u(a), u'(a)) in O_K x O_{K'} with phi(u) == phi'(u') (mod N), or at Theorem KH's degree T = 2*ceil(2n/s) + 1 ~ 4n/m to (u(a)^T, u'(a)^T) inside the monomial O_k-lattice Gamma subset O_K x O_{K'} of index >= N and norm <= Y^T, then upper-bound by Hecke/Landau ray-class counts with GRH square-root error.
+- Ledger at L[1/4] [proved]: Here T ~ 4d/r ~ x^{1/4}(log x)^{-5/4} and log(Y^T) = T log Y ~ x^{3/4}(log x)^{-3/4} << x = log N. The formal main-term ratio is Y^T / N = exp(Theta(x^{3/4}(log x)^{-3/4}) - x) << 1 (indeed Y^T ~ N recovers log Y ~ mx/n, KH's c = 1 floor!). However, three obstructions destroy the upper bound:
+  1. Algebraic unit erasure [proved]: Passing to principal ideals (O_K^* x O_{K'}^*)-orbits quotients mod-N linking by phi(O_K^*) * phi'(O_{K'}^*) subset (Z/N)^*; since rank(O_K^*) ~ d ~ sqrt(x/log x), full-field units generically erase the mod-N ray condition, leaving I_{K x K'}(Y) >= exp(Theta(sqrt(x/log x) log log x)) >> 3^r (and up to Y = L_N[1/2]).
+  2. Sub-conductor GRH floor [proved]: Even if phi(O_K^*) = {1}, Masullo's GRH puts zeros on Re(s) = 1/2, giving contour error Omega(Y^{1/2}) = exp((1/2)sqrt(x log x)) = L_N[1/2] at T = 1, and Omega(Y^{T/2}) = exp(Theta(x^{3/4}(log x)^{-3/4})) = L_N[3/4] at degree T — both exponentially larger than |Omega| = 3^r = L_N[1/4].
+  3. Non-ideal additive Gamma [proved]: Gamma is an O_k-module, not an (O_K x O_{K'})-ideal; modulo O_k^* alone, {|N(z)N(z')| <= Y^T}/O_k^* has an uncompactified 2e(n-1)-dimensional relative-norm-1 torus of infinite volume in R^D.
+- Missing lemma: Sub-square-root cancellation over short ray-class sums Y << N^{o(1)} restricted to an O_k-sublattice (false in general: C's Q(cbrt(3)) element gives (s^T, s'^T) in Gamma of norm 8^T << Y^T).
+- Verdict: NO — both T = 1 and degree-T sandwiches exceed 3^r by L_N[1/2] to L_N[3/4].
+
+Bridge B4: Ch. 8 periodic orbits, Ch. 11 shell structure, and App. A.2/A.4.
+- Precise content [proved, from text]: Ch. 8's stack-theoretic periodic orbits `[H_{S,v}^* / GL_1(A_{F,S})^1]` (Thm 8.3.0.1, p. 388) have coarse space `R_{>0} / N(p_v)^Z` — literally one loop per prime ideal p_v of K, encoding the Euler-factor poles behind Weil's prime-power sum (`(8.4.0.12)`, p. 392). Ch. 11's shell structure (Thms 11.1.2.1, 11.2.1.2) is spatial/Paley-Wiener nuclear operator approximation on W^{s,2}(C_F). Neither counts element orbits. Only App. A.2/A.4 over fixed k transfers, giving Theorem Rel-BT and exact orbit deduplication.
+- Verdict: NO beyond Theorem Rel-BT.
+
+
+3. MOST PROMISING LINE AND PRE-REGISTERED TOY VERIFICATION
+
+Most promising line: Abandon Masullo's spectral/ray-class machinery for LP_exc^rel and work directly on the unit-cone / proper-subspace filtration over k (Theorem Rel-BT + Theorem KH). Theorem Rel-BT reduces Type-D modules (Delta_rel != 0) to the exact same finite-volume cusp/subspace-excess problem as Q-modules; any real barrier progress must bound how many proper k-subspaces can contribute independent parity rows, while any constructive attack must hunt for multi-subspace relative-unit cancellation.
+
+Pre-registered toy check (`codex/scratch/mext_g/{prereg.txt,run_toy.py,results.json}`, 10 s runtime; two implementation fixes disclosed: keeping deg(Q-P) <= n-1 so Q stays degree-n monic, and centering A.2 fundamental domains at (-u_log/2, u_log/2] to avoid arb ball-endpoint overlap):
+- P1 (Theorem Rel-BT divisibility): PASSED 15/15 across non-power divided-difference Type-D modules with certified Delta_F = 0 over k = Q(sqrt(2)) at (n,m) in {(3,3),(4,3),(4,4)}, complex k = Q(i) at (3,3), and mixed cubic k = Q(cbrt(3)) at (2,3) on C's norms-1-and-8 pair (exact v_p = 24, 36, 360 matching P(m,2n), and v_p = 36 >= P(3,4) = 12 on Q(cbrt(3))).
+- P2 (Masullo A.2 cone bound & deduplication): PASSED 12/12 (`max |t|*u_log = 1.76 <= R_unit`; at E = 2, A.2 reduction collapsed Z-primitive hits `[203->114, 376->261, 165->90]`).
+- P3 (Subspace confinement vs B3 gap): PASSED. On 60-bit Q(sqrt(2)) (4,3) boxes (E = 1), all survivors under Y_0 spanned k-rank 1 (0 involving the 3rd generator), while B3's GRH floor Y_0^{1/2} ~ 8.5e4 exceeded 3^6 = 729 by 117x. On Q(cbrt(3)) (E = 2, Y <= 64), 7 hits collapsed to 4 O_k^*-orbits `{w_1, (-1+theta)w_1, w_2=(s,s'), 2w_1+w_3=(s,2)}` — 0 with full 3-coordinate support (all in proper k-subspaces, so N_ind = 0), yet their union spans k-rank 3 via relative-unit cancellation in K/k.
+
+Concrete next step: Prove a rank-3 "two-hyperplane intersection" relative Liouville lemma over k (the m = 3 extension of Lemma FT): bound the number of proper rank-2 k-subspaces of a reduced m = 3 module M that can simultaneously harbor relative-unit-cancelled elements like `(s, s')` and `(s, 2)` with independent prime-ideal parities outside {2}.

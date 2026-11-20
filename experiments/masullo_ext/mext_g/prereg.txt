@@ -1,0 +1,22 @@
+Pre-registration for masullo_ext (mext_g) toy verification
+Date: 2026-11-20
+
+Goal: Test the concrete mathematical extract from Bridge B1 + Masullo App. A.2/A.4 (Theorem Rel-R1 / unit-cone reduction over fixed base field k) alongside the failure mode at the L[1/4] tiny-box regime and the Bridge B3 sandwich gap.
+
+Pre-registered predictions (scored before running run_toy.py):
+
+P1 (Exact Relative R1 divisibility on Type-D frame-less modules, 15/15 instances):
+  Across:
+  - Cell A (9 instances): Non-power divided-difference modules [1, T, P//(T^2+1), P//(T-1)][:m] over k = Q(sqrt(2)) (e=2) at (n, m) in {(3,3), (4,3), (4,4)} on 3 balanced squarefree split semiprimes N per cell (24-28 bits);
+  - Cell B (3 instances): Non-power divided-difference modules over complex base k = Q(i) (e=2) at (n, m) = (3,3) on 3 squarefree split semiprimes N (p, q = 1 mod 4);
+  - Cell C (3 instances): Mixed-signature cubic base k = Q(cbrt(3)) (e=3, unit rank 1, fundamental unit theta^2 - 2) rank m=3, relative degree n=2 (2n=4 > m=3) module w_1=(1,1), w_2=(s,s'), w_3=(s-2,0) built on Consultant C's norms-1-and-8 pair f(T)=T^2-(N+5)T/2+1, g(T)=T^2-(N+3)T+2 for 3 squarefree odd semiprimes N = 3 mod 4 admitting cbrt(3) mod N.
+  Prediction P1: In all 15/15 instances, certified absolute Bean-Thunder invariant Delta_F == 0 (V_F = infinity), certified integer Q2 = N_{k/Q}(delta_rel) != 0, and for every prime factor p | N, v_p(N_{k/Q}(Delta_rel)) = (m!/2)*v_p(Q2) >= P(m, 2n) = m*(m-1)*(2n-2)!/(2n-m)!.
+
+P2 (Masullo App. A.2 unit-cone bound and intra-box unit deduplication):
+  On the 9 Q(sqrt(2)) instances (with box E=2 at (3,3) and E=1 at (4,3), (4,4)) plus 3 larger 60-bit N at (n,m)=(4,3), E=1, under the aggregate L[1/4]-scale cap Y_0 = (2E+1)^D * ceil(N^(1/d)):
+  Map every candidate a in [-E,E]^(2m) with 0 < |F(a)| <= Y_0 to its unique Masullo A.2 balancing unit exponent t(a) in Z (for fundamental unit eps_0 = 1 + sqrt(2)).
+  Prediction P2: In 12/12 instances, max |t(a)| * log(1+sqrt(2)) <= H/(2n) + 2*log(r*E) + log(Y_0)/(2n) + log(1+sqrt(2)) (analytic R_unit bound holds 100%), and at E=2 raw primitive small-norm candidates contain non-trivial intra-box unit multiples collapsed by Masullo A.2 orbit reduction.
+
+P3 (Subspace confinement vs Bridge B3 GRH/ray-class sandwich gap):
+  - In Cell C (Q(cbrt(3)), E=2, cap Y=64): multiple lattice points in [-2,2]^9 achieve |F(a)| = 8 via unit multiples +/- (theta^2 - 2)^k * w_2, collapsing under A.2 unit reduction to 1 O_k^*-orbit inside a proper rank-1 k-subspace, with 0 full-k-rank (rank 3) orbits.
+  - In the 60-bit Q(sqrt(2)) (n,m)=(4,3), E=1 divided-difference instances under Y_0: full-k-rank (rank 3, outside proper coordinate/2D k-subspaces) O_k^*-orbit count is 0, whereas the Bridge B3 GRH square-root sandwich floor Y_0^(1/2) exceeds the entire ternary box 3^r = 729 by > 100x.

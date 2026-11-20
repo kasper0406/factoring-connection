@@ -1,0 +1,111 @@
+HATCH 3 REPORT: R / THIN DEPENDENCIES, SHARED DESCENT DAGS, AND RELATED-INPUT REUSE
+
+Full proofs, code, pre-registration, and raw JSON outputs are written in:
+- /Volumes/git/factoring-connection/codex/scratch/hatch_h3g/hatch3_full_notes.md
+- /Volumes/git/factoring-connection/codex/scratch/hatch_h3g/prereg.md
+- /Volumes/git/factoring-connection/codex/scratch/hatch_h3g/run_hatch3_experiments.py
+- /Volumes/git/factoring-connection/codex/scratch/hatch_h3g/posthoc_e2.py
+- /Volumes/git/factoring-connection/codex/scratch/hatch_h3g/hatch3_results.json
+
+Notation: x = ln N, F_a = x^a (ln x)^(1-a), F = F_{1/3}, L_N[a, c] = exp((c + o(1)) F_a). Labels: [proved], [model-proved] (exact deduction inside the stated probe/Dickman model), [heuristic], [speculative], [measured].
+
+
+1. PRECISE STATEMENTS ATTACKED
+
+In the priced valuation-probe lower bound (notes/lowerbound_results.md:27-59; codex/lowerbound_1_codex_proof.md:11-56; codex/lowerbound_2_codex_merged.md:23-33), Escape Hatch 3 (notes/lowerbound_results.md:117) comprises three structural assumptions:
+(i) Quota R (notes/lowerbound_results.md:36): factor extraction needs h distinct fresh probe successes in an opened block at smoothness bound B = e^mu with ln h >= (1 - o(1)) mu.
+(ii) Tree Incidence T (notes/lowerbound_results.md:53, 87-92; notes/heurnfs_results.md:184-216): descent assumes each prime > B^{O(1)} has degree <= 2; dropping T in Round 2 gave only the single-witness floor (kappa/18)^{1/3} under an extra non-cusp assumption H_cusp (codex/lowerbound_2_codex_merged.md:28; codex/lowerbound_2_gemini.out:15).
+(iii) Limited Reuse (notes/lowerbound_results.md:40; codex/lowerbound_1_codex_proof.md:54, 110): target-credited probes satisfy sum_{i=1}^K Q_i <= e^{o(F)} W.
+
+We test whether any of (a), (b), or (c) yields a sub-L_N[1/3] factoring algorithm for a single general N, or admits a sharp new obstruction closing part of Hatch 3.
+
+
+2. QUESTION (a): THIN DEPENDENCIES AND MINIMAL ROW COUNT
+
+A. True minimal row count (Lemma MIN-ROW and Lemma PIN-1) [proved].
+"Rows > pi(B)" is NOT a linear-algebra necessity. Algebraically, the minimal certified row count is h_min = 1 in both routes:
+- F_2 route: h_min = 1 (one relation already square on all sides, U^2 = psi(V)^2 mod N, e.g. Fermat x^2 - N = y^2). With active external columns E, rank-nullity requires h >= rank_{F_2}(R_E) + 1.
+- Randomized Z-route (Lemma PIN-1, [proved]; sharpens Prop PIN in notes/zroute_results.md:211-226 from |Q_0| ~ 2 ln^2 N / ln ln N coordinates to 1 coordinate): Let N = prod_{i=1}^w p_i^{a_i} be odd with w >= 2.
+  (1) If v_2(phi(p_1^{a_1})) = ... = v_2(phi(p_w^{a_w})) (in particular every Blum semiprime) with odd a_i, pick ANY single q_0 with Jacobi symbol (q_0 / N) = -1. Then for EVERY D > 0 satisfying q_0^D = +-1 (mod N) (doubling D -> 2D clears -1 without changing the odd part t of D = 2^s t), Miller's power chain on base q_0 alone splits N with probability 1.
+  (2) For arbitrary odd N (w >= 2) and uniform b in (Z/N)^x, with probability >= 1 - 2^{1-w} >= 1/2 over b, EVERY D > 0 with b^D = 1 (mod N) (even chosen adversarially) splits N via Miller's chain on b alone.
+  Proof sketch: ord_{p_i^{a_i}}(b^t) = 2^{v_2(ord_{p_i^{a_i}}(b))} depends only on b, not on which multiple D of ord_N(b) is found; unequal 2-valuations across factors occur w.p. >= 1 - 2^{1-w} by CRT (and w.p. 1 for Jacobi -1 when factor 2-valuations match).
+
+B. Cost of a thin-dependency algorithm under H (Prop THIN-LEDGER) [model-proved].
+Suppose an algorithm extracts a factor from h = L_N[eta, c_h] (0 <= eta < 1/3) relations on a rank-2 GNFS profile lambda(r) ~ A sqrt(x ln r):
+- Case 1 (Fixed-column thinness): If rows are restricted to a fixed set S of |S| < h primes/atoms (e.g. pure Q_0-PIN with |Q_0| <= 2 x^2), Lemma AT (notes/smoothbuild_results.md:219) bounds S-smooth integers <= e^s by Psi(e^s, p_{|S|}). Under subset-H, probe success is <= rho(s / ln p_h)^{1-o(1)}, identical to mu_eff = (1 + o(1)) ln h. This automatically restores R and alpha >= 1/3; for h = poly(x) (pure Q_0-PIN, mu_eff ~ 2 ln x), balancing ln W >= (2 sqrt(x ln W) / (2 ln x)) ln x forces ln W = Omega(x), i.e. N^{Omega(1)} exponential time.
+- Case 2 (Unrestricted B-smoothness with thin cycle h << pi(B)): R IS genuinely load-bearing here!
+  * Pure probe model (probe cost = 1 regardless of B, notes/lowerbound_results.md:30): setting mu = s gives rho(1) = 1 and probe count O(h) = L_N[eta].
+  * Real RAM time (charging ECM cofactoring exp((1+o(1)) sqrt(2 mu ln mu)) per probe + LA h^omega):
+    - For 0 <= eta <= 1/5 (including h = 1 or O(x^2)): set k = exp(c_1 F_{1/5}), d ~ (x/ln x)^{2/5}, s = A sqrt(c_1) x^{3/5}(ln x)^{2/5}, and B = L_N[2/5, c_2]. Both ECM per probe (sqrt(4 c_2 / 5) F_{1/5}) and -ln rho(s/mu) ((A sqrt(c_1) / (5 c_2)) F_{1/5}) live at F_{1/5}! Minimizing c_1 + sqrt(4 c_2 / 5) subject to c_1 > A sqrt(c_1)/(5 c_2) gives c_1 = (A/100)^{2/5} and RAM time L_N[1/5, (sqrt(5) A / 4)^{2/5}] (L_N[1/5, 1.0456] at GNFS A = 2).
+    - For 1/5 < eta < 1/3: set k = h L_N[eta, o(1)] and B = L_N[(1 - eta)/2 + eps]; then -ln rho(s/mu) = o(F_eta) and ECM costs L_N[(1 - eta)/4 + eps/2] = o(L_N[eta]), giving RAM time L_N[eta].
+    - Combined thin-dependency RAM ledger: L_N[max(1/5, eta)] (< L_N[1/3] for every eta < 1/3). Indeed, standard GNFS + ECM already produces L_N[1/4] completely factored L_N[1/2]-smooth relations in L_N[1/4] RAM time today; it fails to split N solely because those L_N[1/4] rows are linearly independent in L_N[1/2] columns.
+
+C. Why candidate mechanisms fail to give Case 2:
+- Z-route PIN (Lemma PIN-STRIP, [model-proved]): PIN demands vectors supported ONLY on {-1} union Q_0, not mere projection rank (notes/zroute_results.md:223); all active primes in (2 x^2, B] must cancel over Q (dim W_{Q_0} <= h - rank_Q(R_{>Q_0})). By Rankin's bound at saddle alpha = 11/12, sum_{m >= e^sigma, P^+(m) <= 2 x^2} 1/m <= exp(-(11/12) sigma + O(x^{1/6}/ln x)). Under partial-divisibility H, across t = e^{c F} probes w.h.p. EVERY cofactor has Q_0-smooth part <= exp(2 c F) = exp(o(x^{2/3})). Stripping Q_0 changes lambda(r) by o(lambda(r)) and leaves exact Z-cancellation on (2 x^2, B] intact (strictly harder than F_2 because prime squares p^2 do not self-cancel over Z).
+- Large-prime cycles [known/heuristic]: Under conditional prime-incidence (CGPT/BBM, notes/smoothbuild_results.md:236), arbitrary k-LP hypergraphs (even B = infinity) have empty 2-core below (e^{-gamma} - o(1)) min_mu pi(e^mu)/rho(s/mu), shifting row count by at most e^{-gamma} = L_N^{o(1)}; Galois root-pair correlations (Prop GR, notes/smoothbuild_results.md:251) add at most factor d - 1 = L_N^{o(1)}.
+- Characters / Schirokauer maps (Lemma CHAR-TRAP, [proved]): Only cut out the O_d(log N)-rank unit/Selmer quotient H_{K,ell} AFTER all prime ideals have valuation 0 mod ell (notes/rkrank_results.md:125; notes/zroute_results.md:207); local power residues at polylog primes do not lift to global powers in K^x (notes/fruit_results.md:350).
+- Planted dependencies (Lemma PLANT, [proved/model-proved]): Writing prod_{i=1}^h gamma_i(X) - Gamma(X)^2 = Q(X) f(X) gives either Q = 0 (fruitless integer identity, notes/detGRH_results.md:201; notes/smoothbuild_results.md:180), Q != 0 single-row reduction to MPQS Gamma(m)^2 - N (alpha = 1/2), or one-sided algebraic planting whose remaining rational side a - bm still needs pi(B_rat) rows and costs >= L_N[1/3, (4/9)^{1/3} = 0.7631] (notes/smoothenum_results.md:126).
+
+
+3. QUESTION (b): SHARED DESCENT DAGS (THEOREM DAG-POOL)
+
+Can one eliminator serving m >> 2 parents beat per-leaf pricing (notes/heurnfs_results.md:189)?
+- First [proved], in a 1-level star where eliminator e_q and m parents p_1..p_m each carry only q above B_0, every parent p_i is itself a 1-LP bottom relation (R_1 = m + 1 > m = net_rows), so #bottom >= #net_rows holds without Assumption T.
+- Second, for arbitrary multi-level / multi-prime shared DAGs, codex/lowerbound_1_codex_proof.md:73 lost -(D/2) ln s when pooling s sublattices, which collapses at s = L_N[1/3]. We prove sublattice discriminant growth cancels that loss:
+
+Theorem DAG-POOL [proved algebra; model-proved bound]. Let W(X, Y) in Z[X, Y] be primitive squarefree of degree D >= 4 with |disc(W)| >= N^k (k in {1, 2}), and let B_0 = e^{mu_0} with mu_0 >= beta_0 F_{1/3}. For ANY s <= W_work <= e^{c F} distinct primitive-containing sublattices Lambda_1..Lambda_s of squarefree indices Q_j with P^-(Q_j) > B_0 and Q_j | W(Lambda_j), let G_j = (W o M_j) / Q_j (det M_j = Q_j).
+(1) [proved] |disc(G_j)| = Q_j^{(D-1)(D-2)} |disc(W)| >= N^k Q_j^{(D-1)(D-2)}.
+(2) [proved] Because W mod p != 0 vanishes on <= D projective lines, at most D^{omega(Q)} <= Q^{(ln D)/mu_0} sublattices have index Q. Splitting at Q_j <= s^2 vs Q_j > s^2 bounds sum_{j=1}^s |disc(G_j)|^{-1/(D(D-1))} <= N^{-k/(D(D-1))} (1 + (D/2) s^{2 (ln D)/mu_0 + 4/D}). Hence, outside <= (s + 1) C_FT D ln(2E) Farey-cusp points, the pooled sorted profile across ALL s sublattices satisfies:
+  lambda_pool(r) >= kx/(2(D-1)) + (D/2) ln r - O(D ln D + (D ln D / mu_0) ln s + ln s) = (1 - o(1)) [kx/(2(D-1)) + (D/2) ln r],
+because D ln D and ln s are O(F_{1/3}) = o(x^{2/3}(ln x)^{1/3}).
+(3) [model-proved] Consequently, HEAVY SHARING (s <= h_0 / (8 C_FT D ln(2E)), few sublattices serving h_0 >= B_0^{1-o(1)} probes) needs NEITHER Assumption T NOR H_cusp and obeys the full L_N[1/3, (16k/9)^{1/3}] floor (1.2114 / 1.5263). Unshared DAGs (s >= h_0 / (8 C_FT D ln(2E))) obey the same 1.2114 / 1.5263 floor under H_cusp (upgrading Round 2's 0.3816 / 0.4807 whenever a B_0-quota is used; without a B_0-quota, Round 2's H_cusp single-witness floor already gives alpha >= 1/3).
+
+
+4. QUESTION (c): REUSE ACROSS RELATED INPUTS FOR A SINGLE N
+
+A. Single-target conservation (Theorem SINGLE-N-REUSE) [model-proved].
+Dense-batch Adversary A1 beats L_N[1/3] per target only by dividing W ~ N across K ~ N/polylog distinct input targets (notes/lowerbound_results.md:93-98; codex/lowerbound_2_gemini.out:24-29). For a SINGLE given N (K_input = 1), manufacturing K auxiliary instances M_1..M_K never divides W by K: every probe is charged once to N (Q_N <= W, reuse S = 1), and auxiliary blocks simply enter N's adaptive block menu.
+
+B. Ledger of related-input / reuse candidates for one N:
+1. kN in QS/MPQS (shared rational FB): residue >= 2 E sqrt(kN) -> L_N[1/2, 1] [known/model-proved, notes/heurnfs_results.md:75].
+2. kN in NFS, shared base m (f_k(m) = kN): shares rational sieve & rational FB, but algebraic FBs are disjoint by Lemma TI (notes/escapeR2_results.md:183) -> Coppersmith MNFS L_N[1/3, 1.9019] (1.8595 at omega=0) [model-proved, notes/smoothenum_results.md:329].
+3. Shifted m_0 + k or universal factory m_0 = 2^t: <= 75% shear overlap, or chargeable 2.0069 table -> >= L_N[1/3, 1.9019] [model-proved, notes/smoothenum_results.md:322-345].
+4. Multiplier search 1 <= k <= K for SNFS-like small height H_k (Lemma SNFS-MULT, [proved under G]): pigeonhole ln K + d ln H >= x inflates ln m_k ~ (x + ln K)/d, conserving (ln(kN))/d + ln H_k >= 2x/d -> >= L_N[1/3, 1.9230] (Bean floor 1.5263 since N | kN | Res).
+5. Powers N^j (j >= 2) / lifts mod N^j: N^j | Res inflates norm by j -> L_N[1/3, j^{1/3} c] (worse); kernel (Z/N^j)^x -> (Z/N)^x has rough order N^{j-1} [model-proved].
+6. Bundled product M = M_1..M_K (S = K reuse): W(M)/K = L_N[1/3, K^{1/3} c] / K -> blows up since K^{1/3} sits inside exp(.) [model-proved].
+7. Dense-batch A1 on {kN : k <= K}: multiples of N in [1, KN] have invariant density K/(KN) = 1/N -> birthday floor N^{1/2+o(1)} [proved].
+8. Polynomial maps h_k(N) (Phi_m(N), N +- 1): divisors depend only on pq = N, moving no large prime of p -> 0 split information [proved, Theorem SR1 in notes/selfred_results.md:127].
+9. Exact algebraic M_k = A_k(p) B_k(q): non-monomial construction already factors N in poly-time via Sturm/LLL [proved, Theorem SR2 in notes/selfred_results.md:226].
+10. Best Candidate (Candidate C-RM, tied abelian tower over base-m field): settles the open tied-field column-sharing question (notes/escapeR2_results.md:231; notes/completeness_audit_results.md:125).
+
+C. Theorem TIED-PARITY [proved], Best Candidate C-RM, and Missing Lemma ML-RM.
+Theorem TIED-PARITY [proved]: Let Gal(L/F) = (Z/p_0 Z)^r (p_0 prime, r >= 2), with V = (p_0^r - 1)/(p_0 - 1) degree-p_0 subfields K_w. Above any prime of F splitting completely in L:
+(1) Over Q (all primes p_0) and over F_2 for EVERY odd prime p_0 >= 3: sum_{H ni x_0} 1_H = p_0^{r-1} delta_{x_0} + V' 1, and p_0^{r-1} = 1 (mod 2), so subfield prime ideals span ALL p_0^r dimensions (tau = 0, ZERO column sharing across subfields!).
+(2) Over F_2 at p_0 = 2 (L = F(sqrt(delta_1), ..., sqrt(delta_r)), V = 2^r - 1): subfield ideal parities form the Reed-Muller code RM(1, r) of dimension r + 1 (exponential 2^r / (r + 1) column compression, tau = 2^r - r - 1).
+
+Best Candidate (C-RM): Fix base-m degree-d field F = Q(theta) (f_0(m) = N, psi_0(theta) = m mod N) and r elements delta_i in Z[theta] with known modular square roots psi_0(delta_i) = u_i^2 (mod N). All V = 2^r - 1 quadratic extensions K_w = F(sqrt(Delta_w)) share m AND compress ideal parities to (r + 1) pi_F(B_a) columns (plus <= 2^r d unit/Selmer columns).
+Unconditional instantiation: u_i = isqrt(m) + i, delta_i = (u_i^2 - m) + theta gives psi_0(delta_i) = u_i^2 in O(1) time, but |N_{F/Q}(delta_i)| = |f_0(-a_i)| ~ N^{1/2 + 1/(2d)} (or N^{1/3 + 1/d} for optimal linear b_i theta + a_i), so norms grow as N^{Theta(|w|)} (alpha >= 1/2).
+Missing Lemma (ML-RM, [open; conjectured false]): Construct F and r <= O(F_alpha) F^x/F^{x2}-independent delta_i in O_F with psi_0(delta_i) = u_i^2 (mod N) admitting L_N[alpha] elements gamma_w in K_w whose rational lifts and algebraic norms both have log-size o(x^{2/3}(ln x)^{1/3}). This reduces directly to Hatch 2's LP_exc^rel (notes/subthird_results.md:83).
+
+
+5. PRE-REGISTERED TOY EXPERIMENTS [measured]
+
+Pre-registered in prereg.md (SHA-256 ddaa0200c8c4f20095f79c8f2862169b1c15a13d70c1c984dabe6de03ab651e5) before writing run_hatch3_experiments.py; exact integer/Fraction/GF(2) arithmetic, zero factor leakage in operational code (63.2 s). 7/8 predictions PASSED; 1/8 FAILED and is diagnosed post-hoc.
+- P1a (PASS): Operational 1-coordinate Z-route PIN-1 split 10/10 40-bit Blum semiprimes using single Jacobi-(-1) q_0, and 55/100 random-unit trials on general semiprimes (registered [45, 85]).
+- P1b (PASS): Rows h_Z1 to pin 1 coordinate q_0 (B = 600, pi(B) = 109) satisfied min h_Z1 = 101 > 54 in 20/20 instances and h_Z1 / h_F2 >= 1.019 in 20/20 (median 106 vs 100: PIN-1 saves zero rows over F_2).
+- P2a (PASS): Exact quartic discriminant disc(G_j) == q_j^6 * disc(W) held in 40/40 60-bit NFS sublattices.
+- P2b (FAIL, diagnosed post-hoc in posthoc_e2.py): Raw lambda_pool(200; s=64) - lambda(200; s=1) was -15.09 to -11.17 (mean -12.28 vs registered >= -2.50). Post-hoc diagnosis: (i) our s=1 baseline used q_1 ~ 503 instead of unforced Q=1, giving s=1 a +ln(503) = +6.22 nat bonus above Q=1; (ii) rank 200 across s=64 lattices is 3.1 points/lattice, sitting inside the Farey-cusp overflow regime r < s D ln(2E) (~3.9 nats). Comparing 8-cusp-stripped s=64 against Q=1 gives -2.16 to -2.73 nats (beating naive -8.32 by ~5.8 nats), and raw s=64 at r=1000 stays +4.69 to +6.03 nats strictly above Theorem DAG-POOL's Bean floor x/3 + 2 ln(1000) in all instances.
+- P2c (PASS): 30/30 non-tree shared stars and 2-level diamonds obeyed net_B0 <= fresh and (under SM2) B0_cofactor >= net_B0.
+- P3a (PASS): Theorem TIED-PARITY exact incidence ranks matched r + 1 at p_0 = 2 (3, 4, 5, 6 vs 4, 8, 16, 32; tau = 1, 4, 11, 26) and full p_0^r (tau = 0) at odd p_0 in {3, 5} and over Q (7/7).
+- P3b (PASS): Candidate C-RM verified 150/150 modular square identities on 48-bit N; norm slopes vs |w| were 0.571..0.639 (mean 0.610, inside [0.45, 0.75], matching asymptotic 2/3).
+- P3c (PASS): Across 10,240 (N, k) pairs (k <= 1024), min (ln m_k + ln H_k) / ((2/3) ln N) = 0.9007 >= 0.85.
+
+
+6. VERDICT
+
+- Sub-1/3 algorithm found? No.
+- Dent made? Yes — strong negative/closing dents across all three parts of Hatch 3:
+  1. Closed Z-route PIN as a thin-row escape (Lemma PIN-1 + Lemma PIN-STRIP), while proving R is genuinely load-bearing via the exact thin-dependency RAM ledger L_N[max(1/5, eta)] (Prop THIN-LEDGER).
+  2. Closed heavily shared descent DAGs without Assumption T or H_cusp (Theorem DAG-POOL).
+  3. Closed single-target auxiliary reuse and odd-prime tied towers (Theorem SINGLE-N-REUSE, Lemma SNFS-MULT, Theorem TIED-PARITY), reducing 2-elementary RM(1, r) sharing (Candidate C-RM) to Hatch 2's LP_exc^rel.
+- Next step: Attack the two remaining micro-cracks inside Hatch 3: (1) prove 2-core emptiness below pi(B) for structured polynomial sequences (justifying R without invoking CGPT heuristics), or (2) bound simultaneous Farey-cusp hits across s >= h_0/(D ln E) prime sublattices of one degree-D form to drop H_cusp in the unshared DAG regime.

@@ -1,0 +1,36 @@
+**Rel-BT’s divisibility, Rel-R4, and boundary error are correct. Its individual-unit bound is false, and its citation for complex-place volume does not prove the claim. Both gaps in the counting argument can be repaired.** The result gives a relative-general-position volume bound and a conditional factoring ledger inside the box-error budget. The \(L[1/4]\) ternary box remains open.
+
+### R1. What survives
+
+**(i) Divisibility — proved.** Write \(q=2n\). Every ordered minor is integral, and \(\mathrm{Gal}(L/k)\) permutes the ordered tuples in their original row order. Thus \(\Delta_{\rm rel}\in O_k\). Fix one prime of the normal closure over \(\mathfrak p_k\), with valuation normalized by \(v(\mathfrak p_k)=1\). A selected prime of \(K\) gives \(e_1f_1\) embeddings there. Their rows differ from a common lift of the residue vector by entries of valuation at least \(1/e_1\). The other side gives \(e_2f_2\) rows with the same lift. These are **relative** ramification indices, so ramification of \(k/\mathbb Q\) costs nothing.
+
+An \(m\)-subset containing \(j\) selected rows contributes at least \((j-1)_+/\max(e_1,e_2)\) by row subtraction. For \(t\ge e_1+e_2\) selected rows, summing \((j-1)_+\) over subsets gives at least \((t-1)\binom{q-2}{m-2}\): each selected row after the first adds at least the subsets containing it and the first row. Multiplying by \(m!\) proves the stated \(P\). Since \(\mathrm N\mathfrak p_k=p\), squarefree \(N\) gives \(|\mathrm N\Delta_{\rm rel}|\ge N^P\). Gemini’s P1 measures rational norm valuations. The argument proves the stronger valuation at the specified prime. [Original R1 proof](/Volumes/git/factoring-connection/notes/rank3_results.md:133)
+
+**(ii) Rel-R4 — proved.** Under a candidate basis matrix \(A\), the ordered product gains \((\det A)^{q!/(q-m)!}\), with \(|\mathrm N\det A|\ge1\). Hadamard across all embeddings gives exactly \(m^{-eq/2}N^{(m-1)/(q-1)}\), counting complex conjugates separately. This bounds the envelope of \(m\) independent vectors. [Original R4](/Volumes/git/factoring-connection/notes/rank3_results.md:263)
+
+**(iii) Unit cones — corrected.** Multiply every generator by \(\eta^h\) for a nontorsion base unit \(\eta\). Linking, \(H\), and every candidate’s absolute norm product stay fixed. Its balancing unit shifts by \(\eta^{-h}\). Thus Gemini’s origin-centered \(R_{\rm unit}\) fails arbitrarily badly.
+
+The **number** of cones survives. Put \(t=|\mathrm NF(a)|\) and \(y_v=q^{-1}(\log|F(a)|_v-[k_v:\mathbb R]\log(t)/e)\). Then \(\sum y_v=0\). The local generator envelopes give upper bounds \(y_v\le b_v\) with \(\sum b_v=S=H/q+e\log(C_kmE)\), since \(t\ge1\). Thus \(b-y\) lies in a simplex of diameter \(O_k(S)\). A translate meets \(O_k((1+S)^{r_k})\) unit-lattice cells uniformly in its center. Calling this polynomial in \(x\) requires a height and box-size budget.
+
+**Volume — repairable for all signatures.** Bean–Thunder integrates over \(\mathbb R^m\), and Thunder 2001 does not supply the claimed \(\mathbb C^m\) estimate. At a complex place, apply spherical Hölder uniformly over the \((m+1)\)-row subsets. For each such subset, a complex change of variables gives the canonical form \(z_1\cdots z_m\sum z_j\), with volume multiplier \(\prod_I|\det L_I|^{-2/(m+1)}\) over its \(m\)-row minors. Partition by the largest of the \(m+1\) forms and use the others as coordinates. Radial integration bounds the canonical volume by \((m+1)\operatorname{vol}\{\max|z_j|\prod|z_j|\le1\}=[\pi(m+1)]^m\). Averaging the minor exponents gives the required squared complex absolute value. Multiplying local bounds, including the fixed-base lattice Jacobian, gives per-cone volume
+\[
+\exp(O_k(m\log m))\,N^{-m(m-1)/(q(q-1))}Y^{m/q}.
+\]
+[Bean–Thunder](https://doi.org/10.1112/jlms/54.1.39) · [Thunder 2001](https://annals.math.princeton.edu/2001/153-3/p07)
+
+**(iv) Boundary and scope.** A coordinate-line slice of the intersection has at most \(D\) intervals by the summed local degrees. Successive slicing gives \(rD(2E+1)^{r-1}\) per cone. The factoring conclusion also needs the smoothness model and control of the main-term prefactor as in H7. At \(E=1\), even one cone’s error exceeds the entire \(3^r\) box once \(rD>3\). H5 therefore excludes the yield-relevant ternary regime. [Scoped ledger](/Volumes/git/factoring-connection/notes/rank3_results.md:197)
+
+### R2. What is new
+
+The relative discriminant and corrected cone-volume count answer grdeg’s relative R1 question **under \(\Delta_{\rm rel}\ne0\)**, including non-power generators. This advances RR and proves the volume behavior anticipated in rankdegen. The divisibility and Hadamard arguments transfer directly from R1/R4. KH covers reduced modules even when relative minors vanish and gives an ideal-relative height floor. The cone count adds information about volume. Standard Dirichlet unit theory over fixed \(k\) suffices throughout. [RR](/Volumes/git/factoring-connection/notes/grdeg_results.md:128) · [Earlier prediction](/Volumes/git/factoring-connection/notes/rankdegen_results.md:448) · [Ideal-relative KH](/Volumes/git/factoring-connection/notes/subthird_results.md:132)
+
+### R3. Which lemma to attempt
+
+Gemini’s cubic hits lie in coordinate-deletion planes, span \(k^3\) together, and have parity supported entirely above \(2\). My 72-bit witness has full coordinate support, escapes every registered embedding plane, and raises parity rank from 47 to 48 after including all smaller-norm rows in its box and the covered smooth rows. These are different fixtures and different covers. [P3 data](/Volumes/git/factoring-connection/codex/scratch/mext_g/results.json:528) · [Witness](/Volumes/git/factoring-connection/codex/scratch/mext_c/witness.json)
+
+**Attempt the growing-rank threshold lemma.** For each tagged embedding let \(t_i\) be the least threshold at which ternary vectors with \(|L_i(a)|\le t_i\) span \(k^m\). For reduced linked modules at the stated balance, seek
+\[
+\sum_i\log t_i-\log(\mathrm N\mathfrak c\,\mathrm N\mathfrak c')
+\ge c_k x/T-C_kDm
+\]
+with uniform positive constants and KH’s \(T\). This would place every capped candidate in one of \(D\) specified proper subspaces, since \(Dm=o(x/T)\). **It would settle confinement, but would not alone close \(L[1/4]\).** The remaining obligation is to bound the total fresh parity rank contributed by those subspaces. Uncontrolled recursion can produce \(D^{O(m)}\) families.

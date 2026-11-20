@@ -1,0 +1,19 @@
+Before enumeration. Test a one-embedding subspace cover on the repository's
+Q(sqrt(2)) fixtures, 72 and 96 bits, seed 19, relative degree 8, rank 3.
+Use divided differences and matched powers, coefficient box [-2,2]^6,
+and the existing cap 3^32 * 2^ceil(bits/16). Use the entire box, retaining
+nonzero pairs with common residue invertible mod N. Include both signs and
+all base multiples. The generators include 1, so both common ideals are 1.
+
+At each distinct archimedean embedding on each side, sort box points by
+absolute value of that evaluated element. Use the span of the strict prefix
+before the first level giving full relative rank 3. Ties at the boundary
+must be excluded. A smaller certified prefix is allowed if evaluations
+overlap at finite precision. This prescription uses no norm cap or rows.
+Count capped vectors, their exact common-base-unit classes, and the classes
+outside the union of these proper subspaces. On smooth capped candidates,
+report rank gained over the covered rows. Use the repository's B rule and
+two-sided ideal valuations. A positive gain on either divided-difference
+fixture rejects this proposed cover as an explanation of all fresh smooth
+rows in this test. Zero gain is a finite diagnostic. The power controls
+get the same treatment. Do not tune the cap or the cover after seeing results.
