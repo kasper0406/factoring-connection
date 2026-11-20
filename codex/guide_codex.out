@@ -1,0 +1,16 @@
+**Geometry and search history produced no replicated improvement in predicting NFS smoothness beyond cofactor sizes and small-prime valuations.** The experiment labeled 3,610,064 candidates across 104 balanced semiprimes, with 48 moduli and separate spatial regions held out for testing.
+
+| Smoothness bound | Held-out candidates | Doubly smooth | Relations found at the 20% confirmation budget, model / baseline |
+|---:|---:|---:|---:|
+| 4,093 | 559,248 | 203 | 136 / 137 |
+| 262,139 | 1,118,496 | 27,927 | 11,536 / 11,536 |
+
+At \(B=4{,}093\), the selected model’s log-loss gain was **+0.00000106** per cubic candidate and **−0.00000782** per quartic candidate. This sparse cohort also missed planted odds ratios of 2.01 and 4.06.
+
+I preregistered the higher-bound cohort on fresh moduli to test sensitivity at higher relation prevalence. There, the pipeline **detected the planted 2.01 odds ratio in both families**, at 3.89 and 5.42 cluster standard errors. It recovered 7.02% more planted positives at the same confirmation budget. On real labels, calibration assigned zero weight to every added joint predictor.
+
+The arithmetic checks agreed on every side label. I expanded the higher-bound reference pool before fitting to retain every target under the residue exclusion. The audit verified all 57,761,024 history links across both cohorts. A shuffle preserving each modulus and region’s event rate produced an apparent quartic gain that failed replication. A global shuffle gave zero gain in both families.
+
+Real yield showed no increasing advantage with \(u\), so the measurements provide no evidence for an exponent change. The run took 15.9 minutes from first preregistration through final checks.
+
+[Full report, confidence intervals, and work ledger](/Volumes/git/factoring-connection/codex/scratch/guide_c/REPORT.md) · [Reproduction instructions and data dictionary](/Volumes/git/factoring-connection/codex/scratch/guide_c/README.md)

@@ -1,0 +1,29 @@
+**Smooth parents did not produce detectably smoother children beyond size and local divisibility.** Across 320 matched special-\(q\) lattice pairs on 20 fresh held-out moduli, the adjusted child smoothness difference was close to zero at both cutoffs.
+
+| Cutoff \(y\) | Smooth-parent joint hits | Rough-parent joint hits | Raw difference | B1-adjusted difference [99% CI] |
+|---:|---:|---:|---:|---:|
+| 2,000 | 236 / 93,603 | 250 / 93,609 | −0.0243 pp | −0.0169 [−0.1006, +0.0621] pp |
+| 32,768 | 15 / 47,177 | 11 / 46,718 | +0.0286 pp | +0.0294 [−0.0294, +0.1096] pp |
+
+The differences are in percentage points and give equal weight to matched pairs and moduli. A planted fourfold parent effect passed the held-out joint-gain test at both cutoffs. A twofold effect passed on algebraic-side smoothness at both cutoffs and missed on joint smoothness. [Descent results](</Volumes/git/factoring-connection/codex/scratch/guide_c/round2/results/A_parents.csv>)
+
+### Held-out results by family
+
+The preregistered run covered **1,077,330 distinct candidates** at \(B=262{,}139\). Gains are reductions in joint log-loss, in units of **\(10^{-5}\) nats per candidate**, with 99% clustered intervals. Positive favors the feature family. The power columns give the percentage of 100 synthetic test-label draws detecting a twofold odds effect on that family’s feature, with the fitted model fixed. Each pair lists \(y=2{,}000\) then \(32{,}768\).
+
+| Feature family | Gain at 2,000 [99% CI] | Gain at 32,768 [99% CI] | Joint plant power | Algebraic plant power |
+|---|---:|---:|---:|---:|
+| G1 Coordinate S-units | −2.1 [−7.6, +2.6] | +2.0 [−1.4, +5.6] | 0% / 4% | 98% / 45% |
+| G2 Continued fractions and roots | −7.9 [−18.7, −0.3] | +0.2 [−9.2, +11.5] | 0% / 0% | 100% / 97% |
+| G3 Embeddings, chambers, covariants | −4.1 [−19.6, +6.0] | +3.8 [−2.3, +12.3] | 0% / 0% | 0% / 0% |
+| G4 Shifts and Farey neighbours | −7.0 [−18.5, +1.6] | +1.5 [−11.0, +18.2] | 0% / 0% | 0% / 0% |
+| G5 Multiplicative and bilinear relations | −5.9 [−19.1, +4.7] | +1.7 [−1.4, +9.4] | 0% / 0% | 8% / 0% |
+| **G6 Parent seed** | **−1.6 [−4.6, +0.8]** | **+1.7 [−2.4, +6.5]** | **25% / 1%** | **100% / 95%** |
+| G7 History, cosets, donor digits | −2.2 [−6.3, +1.3] | −1.0 [−14.6, +11.9] | 0% / 1% | 100% / 0% |
+| G8 Raw bits, carries, MLP | −21.6 [−44.9, −6.5] | +0.8 [−21.0, +19.4] | 0% / 0% | 100% / 49% |
+
+**None of the 108 comparisons passed the adjusted discovery rule**, including both continuous \(W_s\) targets and cross-side residual covariance. The smallest held-out Holm \(p\) was 0.416. Refitting against a comparator that offered every local valuation and projective prime-power column gave the same verdict. L1 rejected 211 of 432 proposed polynomial/shift combinations. [All estimates and adjusted tests](</Volumes/git/factoring-connection/codex/scratch/guide_c/round2/results/A_families.csv>)
+
+**Sensitivity limits the conclusion.** Restricting evaluation to uncertain cofactors left 758 joint hits at \(y=2{,}000\) and 40 at \(y=32{,}768\). Only four and zero narrow size cells, respectively, contained differing joint outcomes. The Gaussian plant missed its overall recovery requirement. In a supplementary arithmetic control on 24 additional fresh moduli, forced norm splitting raised algebraic smoothness from 1.36% to 5.14% at \(y=2{,}000\). G8 detected it after multiplicity correction (\(p=0.000676\)). G2 and G3 missed it. The experiment gives no evidence of gain growing with \(u\), while leaving meaningful joint effects unresolved, especially for G3–G5.
+
+[Full report](</Volumes/git/factoring-connection/codex/scratch/guide_c/round2/REPORT.md>) · [Preregistration](</Volumes/git/factoring-connection/codex/scratch/guide_c/round2/PREREGISTRATION.md>) · [Reproduction instructions and data dictionary](</Volumes/git/factoring-connection/codex/scratch/guide_c/round2/README.md>)

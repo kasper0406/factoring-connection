@@ -1,0 +1,3 @@
+# Additional sensitivity control, before held-out scoring
+
+The originally registered odds-ratio 2.01 control and its verdict will always be reported. If it misses the full decision rule, also run the identical locked procedure with one stronger injected effect, +/-0.70 in log odds (conditional odds ratio 4.06). This secondary control changes only the plant amplitude. It measures sensitivity to a larger operational effect and cannot rescue a failure of the original sensitivity check. Both controls use the same seeded uniform variates. No final modulus scores had been computed when this supplement was written.

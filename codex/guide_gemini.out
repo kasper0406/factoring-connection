@@ -1,0 +1,66 @@
+INDEPENDENT SPECIFICATION: GLOBAL SMOOTHNESS GUIDANCE BEYOND SIZE AND LOCAL SIEVING
+Role: DESIGNER + ADVERSARY (no heavy compute). Full specification and audit script: /Volumes/git/factoring-connection/codex/scratch/guide_g/guide_spec.md and /Volumes/git/factoring-connection/codex/scratch/guide_g/verify_spec_numbers.py.
+
+CONTEXT
+In the priced valuation-probe theorem (notes/lowerbound_results.md:27-60), adaptive factoring costs L_N[1/3] under Assumption H: given prior probes and internal state, a fresh cofactor of log-size s is B-smooth with probability <= rho(s/log B)^{1-o(1)}. Small-prime divisibility trades 1-for-1 (Theorem J, weighted J; notes/hatch_results.md:29-31, notes/chase_results.md:14-29) and norm size is governed by lattice geometry (Theorem KH). This experiment tests H's lone empirical loophole: y-rough cofactor smoothness predictable from global, algebraic, or history-dependent features beyond size and local divisibility <=y.
+
+1. EXACT TARGET, BASELINE, AND CANDIDATE GLOBAL FEATURES
+
+1A. Domain and Targets
+- Candidates: primitive (a,b) in Z^2 with gcd(a,b)=1, b>0, globally deduplicated before splitting.
+- Regimes: (Regime U) skewed box [-A,A]x[1,H], norms N_0=|G(a,b)|, N_1=|F(a,b)|; (Regime Q) special-q sublattice Lambda_{q,rho} strictly with prime q>B_1, norms N_0=|G(a,b)|, N_1=|F(a,b)|/q. [AUDIT: CADO qmin<B_1 in 6/6 cadobench testbeds c60-c110; exclude all q<=B_1.]
+- Cofactors (exact gmpy2 remainder trees, src/cadobench/smoothcount.py): fix B_s=2^{lpb_s} and two cutoffs y in {2000, 32768} (y<min B_s). Set S_{s,y}=prod_{p<=y} p^{v_p(N_s)} and y-rough cofactor C_{s,y}=N_s/S_{s,y}.
+- Deterministic strata [PROVED]: with p_next(y) least prime >y, C_{s,y}<=B_s forces Y_s=1, while B_s<C_{s,y}<p_next(y)^2 forces Y_s=0. Primary metrics restrict to uncertain stratum U={C_{0,y}>=max(B_0+1,p_next(y)^2)} intersect {C_{1,y}>=max(B_1+1,p_next(y)^2)} (and U_s per side), reporting full-box metrics alongside.
+- Primary targets: joint Y_joint=Y_0*Y_1, plus single-side Y_0=1[C_{0,y} B_0-smooth], Y_1=1[C_{1,y} B_1-smooth] (10^2-10^3x more hits).
+- Secondary high-power targets: continuous (y,B_s] log-valuation share W_s=log(smooth_part_{B_s}(C_{s,y}))/log(C_{s,y}) in [0,1] (O(1) variance) and cross-side residual covariance Cov(Y_0-p0_hat, Y_1-p1_hat).
+
+1B. Two-Tier Baseline
+- Baseline B0 (Analytic Rough-Smooth Saddle-Point): exact conditional probability for a y-rough integer of log-size s_s=log C_{s,y} to factor completely in (y,B_s] (Buchstab-Dickman saddle point, NOT plain rho(s_s/log B_s)), shifted by polynomial constant alpha_{s,(y,B]}(F_s) computed purely from F_s coefficients.
+- Baseline B1 (Saturated Size + Local-y Comparator, mandatory): cross-fitted 30-knot monotone/cubic B-spline GAM + isotonic calibration + depth-4 GBDT using strictly: (i) s_0=log C_{0,y}, s_1=log C_{1,y}, log N_0, log N_1, log S_{0,y}, log S_{1,y}, s_0*s_1, boundary flags; (ii) exact local-y vector (v_p(N_0),v_p(N_1))_{p<=y}, projective classes (a:b) mod p^{e_p} (p^{e_p}<=y), signs (sgn G, sgn F) (fixing |F| mod 4 from F mod 4); (iii) polynomial-level alpha_{s,(y,B]}(F_s) (or per-N centering) removing cross-N polynomial variance.
+
+1C. Candidate Global Feature Families (Sanitized per Section 2)
+- G1 (y-Truncated Coordinate Arithmetic & S-Units): log S_y(|a|)/log|a|, log S_y(|b|)/log|b|, 1[|a| y-smooth], 1[|b| y-smooth], log S_y(|a+-b|)/log|a+-b|, log rad_y(ab)/log S_y(|ab|). Tests abc / S-unit smoothness coupling.
+- G2 (Continued Fractions & Root Approximation): CF depth L(a/b)/log b, log(max a_k)/log b, Khinchin mean, Gauss-Kuzmin KL, shared CF prefix and size-residualized Liouville exponent -log|a/b-theta_j|/log b to real roots theta_j of F(x,1)=0 and -g_0/g_1, Farey depth to low-height rationals.
+- G3 (Minkowski Conjugate Balance, Real Chambers & Covariants): trace-zero vector ell_j(a,b)=log|a-theta_j b|-(1/d)sum_i log|a-theta_i b| (orthogonal to log|F|): ||ell||_2, min/max ell_j, embedding entropy, real-root sign chamber sigma(a,b)=(sgn(a-theta_j b))_{j=1}^{r_1} (tests narrow-class / Artin reciprocity parity), |b F_a|/|F|, Hessian log|H_F|-(2(d-2)/d)log|F|.
+- G4 (Sanitized Shifts, Bezout/Farey Neighbours & Galois/SL_2 Relatives): residualized outcomes at (i) shifts (a+u,b+v) with gcd(G(u,v)F(u,v),P_{(y,B]})=1; (ii) Bezout/Farey neighbours a*b'-a'*b=+-1 (penultimate CF convergent of a/b: Euclidean-far yet deterministically avoiding all (y,B] projective collisions!), or Regime-Q steps i*j'-i'*j=+-1 with gcd(Res_x(F,F o M),P_{(y,B]})=1; (iii) Galois/subfield/SL_2(Z) involutions when symmetric.
+- G5 (Multiplicative Candidate Relations): on composite points (a_1 a_2, b_1 b_2) or bilinear maps (a_1 b_2+-a_2 b_1, b_1 b_2), residualized smoothness of factors (a_r,b_r) filtered for gcd(a*b_r-a_r*b,P_{(y,B]})=1.
+- G6 (Descent / Parent-Seed Smoothness Inheritance): in Regime Q (q>B_1), compare Seeded-q lattices spawned as large prime q|F(a_par,b_par) of a B-smooth parent vs Control-q lattices matched on (log q, reduced-basis skewness/norm envelope, <=y roots) from rough parents, deleting gcd(a*b_par-a_par*b,P_{(y,B]})>1. Report before and after B1 residualization.
+- G7 (Search History, Ultra-B+ Cosets & Other-Candidate Cofactor Digits): (i) EWMA of (Y-p_base) along walks across disjoint prior q'>B_1 lattices; (ii) coset hashes / Legendre symbols mod primes q*>max(N_0,N_1) (q*|N_s impossible); (iii) popcount, run-length entropy, Benford mantissa stats of OTHER sanitized candidates' cofactors C_{s,y}(a',b').
+- G8 (Raw (a,b) Bits & Carry Cascades): binary/ternary/NAF popcount, LZ complexity, carry counts in a+b and g_1 a+g_0 b, plus MLP/CNN/GBDT on raw (a,b) bits (strictly Split A held-out N without mod-p polynomial inputs).
+
+2. ADVERSARIAL LEAKAGE CHECKLIST, RESIDUALIZATION, SPLITTING, MULTIPLE TESTING
+
+2A. Seven Leakage Pathways (Audited on cadobench_testbed_c60..c110)
+- L1 (Parallel-Root-Line Shift Leak, LIVE IN 5/6 TESTBEDS): Blocking (u,v)==(0,0) mod p is insufficient. Since G(a+u,b+v)=G(a,b)+G(u,v), EVERY prime p in (y,B_0] dividing G(u,v) leaks 100% identically; on side 1, every p in (y,B_1] dividing F(u,v) leaks along root line a==(u/v)b mod p. For a+-1 at y=2000, Kleinjung's Y_1=G(1,0) has prime divisors in (2000,B_0] in 5/6 testbeds: c70 (2843), c80 (13267,15083), c90 (10459,12073), c100 (11383,12457), c110 (13219,14867). Fix: enforce gcd(G(u,v),P_{(y,B_0]})=gcd(F(u,v),P_{(y,B_1]})=1 and test y=32768.
+- L2 (Projective Collision in Distant Points): Large ||(a-a',b-b')||>>B does NOT stop p-lattice sharing; (a:b)==(a':b') mod p iff p|(a*b'-a'*b) (=+-q(i*j'-i'*j) in Lambda_{q,rho}). Also B>>I,J in c60-c110 so box averages alias p-lattices. Fix: enforce gcd(a*b'-a'*b,P_{(y,max B_s]})=1 on all reference points.
+- L3 (Nonlinear / Buchstab-Cusp Size Smuggling): y-rough cofactors have step cutoffs and Buchstab kinks, letting nonlinear (a,b) proxies beat parametric rho(u). Fix: evaluate on U against nonparametric B1 plus 0.02x0.02-nat (s_0,s_1) micro-cell permutation.
+- L4 (Coordinate-Divisor & Infinity-Root Leak): p|ab for p in (y,B] forces p|FG if p|c_0 c_d g_0 g_1, else excludes affine roots (-O((log p)/p) bias). Fix: G1 touches primes <=y only.
+- L5 (q<=B_1 & B+-Coset Roughness Leak, LIVE IN 6/6 TESTBEDS): qmin<B_1 in 6/6 testbeds with 13-25% cross-q duplicates; membership in another q_2<=B_1 coset reveals q_2|C_{1,y}, while root cosets mod q* in (B_s,C_{s,y}] reveal q*|C_{s,y} (Y_s=0). Fix: require q>B_1 and q*>max N_s.
+- L6 (Cunningham Raw-Bit Memorization & Self-Cofactor Digits): Chunk/alternating sums of C_{s,y} expose C_{s,y} mod (2^k+-1). On raw (a,b) bits, 11 primes dividing 2^m+-1 (m<=24) lie in (2000,2^21] (2113,2731,5419,8191,43691,61681,65537,131071,...), letting within-N ML learn fixed roots of F,G mod p from raw bits. Fix: ban self-cofactor features beyond log C_{s,y}; restrict G8 to Split A.
+- L7 (Cross-N Alpha Confounding & Duplicates): Deduplicate (a,b) globally; include alpha_{(y,B]}(F_N) in B1 and score mean within-N log-loss gain and within-N size-stratified AUC.
+
+2B. Residualization, Splits, and Multiple Testing
+- Residualization: cross-fit B1 on train for frozen offset eta_base(x_i); spline-residualize continuous features against (s_0,s_1,log S_{0,y},log S_{1,y}) on train; fit logit P(Y_i=1)=eta_base(x_i)+f_theta(z_perp_i); require survival under 0.02-nat (s_0,s_1) cell permutation.
+- Split A (Held-out N, primary): K>=16 independent semiprimes across >=3 digit tiers (8 Train-N, 4 Val-N, 4 locked Test-N).
+- Split B (Held-out Region within N, secondary): disjoint q>B_1 strata plus buffered angular wedges in arctan(a/(skew*b)) (>=5% gap), paired with synthetic Bernoulli(P_{B0}(s_i)) null control.
+- Multiple testing: 8 family omnibus + 1 global omnibus + <=32 single-feature tests; screen on Val-N via Westfall-Young step-down min-P permutation (FWER<=0.05); test survivors once on Test-N under Holm-Bonferroni FWER alpha=0.01 with 99% (N,q)-block bootstrap CIs.
+
+3. PLANTED-SIGNAL POSITIVE CONTROLS AND u log u SCALING
+
+Let u_s=log C_{s,y}/log B_s and U=sum_s u_s log u_s (p_0~exp(-(1+o(1))U)). For p_0<<1, expected per-candidate log-loss gain is Delta_LL=p_0*KL(P(G|Y=1)||P(G))+O(p_0^2) [PROVED]. Define information per hit I_hit:=Delta_LL/p_0~E[log(p_1/p_0)|Y=1] (nats/relation). Rejection filtering cancels 1-for-1 by Bayes' rule; even granting FREE O(1) constructive navigation into a set with log-enrichment Lambda(U)~I_hit(U), size-entropy balance (notes/lowerbound_results.md:57) gives:
+- Lambda(U)=O(1): constant-factor speedup; alpha=1/3 and L[1/3,c] constant c unchanged.
+- Lambda(U)=o(U) (e.g. Theta(log u) or Theta(u) from 2-way norm splitting): absorbed into o(1); alpha=1/3 and c unchanged.
+- Lambda(U)=theta*U for fixed theta in (0,1): scales smoothness as rho(u)^{1-theta}, REFUTING H and lowering c_0 to c_0*(1-theta)^{2/3} in L_N[1/3,c].
+- Full complexity exponent drop below 1/3 (alpha<1/3 at standard norm profiles): requires theta(U)->1, i.e. Lambda(U)=(1-o(1))U.
+
+Positive Controls & Power (verify_spec_numbers.py, 99% power, Holm FWER 0.01, 20 tests):
+- PC1 (Gaussian-Tilted Oracle): on real labels Y, draw G_theta|(Y=0)~N(0,1) and G_theta|(Y=1)~N(sqrt(2*theta*U),1) plus warps/noise (exact KL=theta*U nats/hit). At c60-c70 joint scale (u_0=3.2, u_1=4.4, U=10.24, p_0=5e-4), 99% power needs 100 hits (2.0e5 cands) at theta=0.10 (I_hit=1.02), 167 hits (3.3e5 cands) at theta=0.05 (I_hit=0.51), 366 hits (7.3e5 cands) at theta=0.02 (I_hit=0.205), 698 hits (1.4e6 cands) at theta=0.01 (I_hit=0.102); single-side reaches theta<=0.002 on 1.4e6 cands. Gate: recover theta_hat/theta in [0.80,1.15] at theta>=0.02; real H-breaking lead requires Holm-p<0.01 AND I_hit(U)/U>=0.02 non-decreasing across >=3 U-bins.
+- PC2a (Arithmetic O(1) Leak): withhold primes in (y,2y] from B1, feed coupled shift/bit feature; verify I_hit=O(1) (theta(U)~1/U->0).
+- PC2b (Algebraic Norm-Splitting): mix reducible degree-4 Sophie-Germain forms F=Q_1 Q_2 with size/alpha-matched irreducible forms; verify G2/G3/G8 detect +u_1 log 2 on Split A.
+
+4. THEORETICAL PRIOR: LITERATURE AND PREDICTIONS
+
+- Progressions, characters & digits (Hildebrand-Tenenbaum 1986; Fouvry-Tenenbaum 1991/1996; Soundararajan 2008; Harper 2012; Drappeau 2015 Elliott-Halberstam bounds to X^{3/5-eps}; Mauduit-Rivat 2010): predicts G7 (walk history, q*>N_max cosets) and G8 (raw bits on Split A) are EXACT NULL (theta=0).
+- Pretentious independence & shifts (Granville-Soundararajan 2001/2007; Hildebrand 1985/1989; Matomaki-Radziwill 2016): multiplicative correlations require archimedean n^{it} (in B1) or low-conductor characters. Predicts G4 (safe shifts, Bezout neighbours) and cross-side Y_0<->Y_1 have theta=0, with tiny NEGATIVE finite-y residual I_hit~-O(u^2/(y log y)) (~-10^{-3} nats/hit) from coprime (y,B] singular-series exclusion (p|G(a',b') => p nmid G(a,b)).
+- Smooth tuples & S-units (Balog-Wooley 1998; La Breteche-Tenenbaum 2005; Lagarias-Soundararajan 2011): Balog-Wooley tuples sit on density-O(X^{-1+1/m}) factorizations n^m-1, showing Omega(u) gains require polynomial splitting; La Breteche-Tenenbaum show S-unit sums a+b=c follow local singular-series saddle points. Predicts G1 has theta=0 with tiny positive O((log y)/y)<=4e-3 nats/hit avoiding non-roots (1:0),(0:1) mod p>y; G5 is NULL for d>=3.
+- Polynomial friability & descent (Murphy 1999; Martin 2002): predicts G2 and G3a are NULL on irreducible F (NON-NULL Theta(u) on PC2b split loci); G3b (sign chambers) has tiny O(e^{-cu}) parity bias at u in (1,2) from narrow-class / Artin genus characters ramified at q|disc(F), q>y, vanishing as u->infinity; G6 (smooth-parent descent q>B_1) is POSITIVE before B1 (short-basis size selection) and EXACT NULL after B1 since Lambda_{q,rho}=q_ideal intersect Z[theta] is memoryless of which parent exposed q_ideal.
