@@ -1,0 +1,13 @@
+Supplement before computing any norm-pencil coefficients, roots or scores. The initial
+test uses archived local losses and three affine norms; this supplement uses new data.
+On every one of the 195 archived pairs test two fixed full-support rows: all coordinates +1,
+and alternating signs starting with +1. Include all, flag nonunit linked evaluations. For
+each a form C(Z)=the norm on the side P+Z(Q-P), as an integer polynomial, by interpolation
+and certify its degree bound 2(p+1), value at an extra point, and exact endpoints.
+Record degree, leading height log|lc C|, endpoint product, and the certified lower bound
+from primitive Z-irreducible factors avoiding the endpoint disks: log|content(C) lc(C)|
+-deg(C)log 2 minus the sum over factors of the smaller total log^+(1/(2 distance)) to
+0 or 1, with multiplicities. Report counts where this bound >= X, and where the leading
+height >= X but the bound falls short; report separately any nonunit rows. A cell passes
+the two-row pilot only if both rows eligible there are certified (report empty panels).
+This is a test of the norm-side hypothesis for two prescribed rows, not a box enumeration.

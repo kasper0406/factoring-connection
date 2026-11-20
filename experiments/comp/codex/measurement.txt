@@ -1,0 +1,58 @@
+Measured. All input comes from experiments/dd/codex. The first registration was made
+before computing new cell statistics. The norm-polynomial supplement was registered
+separately after developing the polynomial argument and before computing its observables.
+The archived local-loss distribution was public for both registrations.
+
+The archived loss intervals have endpoints in billionths. Re-isolate each polynomial root
+at 384-bit precision and match its index, rounded coordinates, and sign of sqrt(2).
+Compute log M by complex balls, recover log t by subtracting the loss, and add all absolute
+embeddings. In the simultaneous-box search a complex conjugate pair imposes one constraint
+because the coefficient alphabet is real. All comparison flags were decided by disjoint balls.
+The reported floor comparator is X=(log N)/T; the KH lower-order correction matters on toys.
+
+For each of the 2m expanded coordinates of L_i/M_i use an integer real and imaginary part
+at scale 2^48. Verify the error per component is less than one grid unit. Inner and outer
+radii round 2^48 exp(w-loss_i) down and up with a margin of 2m sqrt(2). Clipping very
+large radii at 2^56 is exact for membership because every possible grid sum fits inside it.
+Split the box into two m-digit halves. At the tightest retained tag sort the right halves
+by one projected coordinate, and for each left half examine all right halves within the
+outer-radius strip. Every outer-feasible row is in the strip. Test every surviving pair
+at all retained tags using exact signed 128-bit squared magnitudes. Drop one of the two
+global signs. The search may finish once the inner span has full rank. Check each returned
+inner basis against all inner radii using Python integers.
+
+For speed the incremental ranks use the prime 2^61-1 and sqrt(2) maps to 2^31.
+Every s-by-s box minor has absolute norm <=((1+sqrt(2))^2 s)^s < 2^61-1 for s<=8
+by Hadamard at both real places. A nonzero minor therefore survives this fixed reduction.
+Conversely a surviving minor was nonzero in k. Verify the reported bases and inclusion
+of the directions 1,T by exact rational rank of the doubled integer-coordinate matrices.
+The inner and outer ranks agree in all 585 cell/width combinations. Since the spans nest
+they agree exactly, even if some boundary points were individually undecided. Direct
+enumeration without pruning cross-checks all six ranks on the 60-bit (3,3) and (4,4) cells.
+
+For each supplementary row interpolate its integer norm polynomial from 2(p+1)+1 exact
+resultants, check integrality and direct evaluation at -1,0,1 and 2(p+1)+1, and factor
+over Z. Compute the two disk costs by ball evaluation on each primitive irreducible factor.
+The test uses the weaker bound that omits the nonnegative contribution from distant roots.
+All 390 inequalities against X were certified. This probes exactly two full-support rows
+per cell. The three affine witnesses in the main test have separately computed exact norms.
+At w=2m every archived local loss is already <2m, so the coordinate basis supplies the
+full-rank result at that width.
+
+Reproduce in this directory, using the repository Python with -B on each Python script.
+  clang++ -O3 -std=c++17 -shared -fPIC rank.cpp -o rank.so
+  python -B test_comp.py
+  python -B pencils.py
+  python -B audit_comp.py
+  python -B summary.py
+Raw per-cell ranks, intervals and affine norms are in cells_comp.jsonl. Exact norm
+polynomial coefficients and bounds on each row are in pencils.jsonl. All real endpoints
+stored as pairs of integers (including H, Q and Gamma) are in billionths.
+
+
+The final supplement in pole_prereg.txt tested the cross-pair bound on the same grid.
+Its protocol preceded those geometry calculations. For integer defining polynomials
+the cross-side norm of the relative resultant is exactly |Res(P^2-2,Q-P)|.
+All 195 integers were nonzero multiples of N. The two-side denominator log Z was
+checked both by absolute resultants and by summing ball evaluations at the roots.
+Run python -B pole_test.py for the results in pole_results.jsonl and pole_summary.txt.

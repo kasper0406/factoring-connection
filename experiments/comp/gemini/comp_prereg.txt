@@ -1,0 +1,47 @@
+PRE-REGISTRATION: Compensation Lemma Adversary Test (comp_g)
+Timestamp (UTC): 2026-11-20T21:59:56.294386+00:00
+Role: ADVERSARY
+
+1. TARGET & HYPOTHESES PRE-REGISTERED BEFORE RUNNING 60-112 BIT BENCHMARKS
+Target (codex/comp_common.md:11-18): Try to construct a reduced linked O_k-module (k = Q(sqrt(2)), e = 2)
+in the height range H = O(x / T) that simultaneously achieves:
+  (G1) Near-maximal conditioning loss lambda_i = log(M_i / t_i) ~ c * m log m at u ~ D embeddings;
+  (G2) Unconfined global threshold sum Q = sum_i log t_i - log(N(c) N(c')) < c_k x / T;
+  (G3) Non-scalar capped candidates (0 < |F| <= cap) with log|F| well below the Theorem KH floor whose
+       two-sided prime-ideal parity rows are F_2-independent modulo proper k-subspaces and products of
+       strictly lower-norm candidates (N_ind > 0, growing).
+
+2. PRE-REGISTERED FIXTURES & PARAMETERS
+- Bit sizes and growing (n, m) schedule: (60, 7, 3), (72, 8, 3), (84, 9, 4), (96, 10, 4), (112, 12, 4),
+  plus (112, 12, 5); seeds = 19 and 0 via experiment.fixture(bits, seed).
+- Scaling sweep at H = O(x/T): bits = 96, n = 12, seed = 19 across m in {3, 4, 5, 6}.
+- Ternary box E = 1 (Omega = [-1, 1]^{2m}), cap = 3^(4n) * 2^ceil(bits/(2n)),
+  B = 2^ceil((bits * bit_length(bits-1)^3)^(1/4)).
+
+3. FIVE PRE-REGISTERED ADVERSARIAL CONSTRUCTIONS IN H = O(x / T)
+- M1_cluster (Multi-cluster pole splitting): Linear poles split into small clusters r in {-2,-1,1,2,3}
+  with graded small integer remainders S(r_j) via P = S + R U, Q = P + j_0(T - b)R, testing whether
+  splitting across clusters avoids Q-inflation while building loss.
+- M2_mix (Mixed linear + quadratic cyclotomic unit-circle poles): Poles [T - 1, T^2 + 1, T^2 + T + 1]
+  of total degree p = 2m - 5 (roots on |z| = 1) with unit remainder S = 1 (P = 1 + R U), keeping
+  |U(zeta)| <= n b so pole-adjacent roots suffer zero |r_j|^n inflation.
+- M3_adjZ (Alon-Vu adjugate twist w = C* v_tilde on KH-floor divided differences): Applies primitive
+  C* = g_0^-1 adj(B_0) in Z^{m x m} of an invertible ternary Z-matrix B_0 to boosted KH-floor generators
+  v_tilde = (c_1, alpha, (P//R_1)(alpha), ...), achieving H = O(x/T) AND lambda_i ~ (1/2) m log m at
+  (1 - (m-2)/n) D embeddings simultaneously.
+- M4_uniOk (Unimodular O_k-staircase + base-unit conjugate-absorption twist w = eps_K B_{Ok}^{-1} v_tilde):
+  Applies unimodular B_{Ok}^{-1} in GL_m(O_k) (det B_{Ok} = (-1 + sqrt(2))^m in O_k^*, so J_w = J_v)
+  and Pell unit eps_K so M_i ~ O(1), t_i << 1 at sigma_1 (D/2 embeddings), testing whether compensating
+  sigma_2 conjugates absorb Q.
+- M5_sideunit (Per-side large-field unit-scaled Newton module + twist): Uses exact linked large-field
+  units (alpha - r_l, alpha' - r_l) in O_K^* x O_{K'}^* (from P(r_l) = Q(r_l) = 1), rescaling generators
+  by linked large-field unit powers (P // R_1)(alpha) and twisting by B_{Ok}^{-1}.
+
+4. PRE-REGISTERED PREDICTIONS & FALSIFICATION CRITERIA
+- P1: M3_adjZ and M4_uniOk WILL stay inside H = O(x/T) (unlike dd round's C3 where H = Omega(D m^2 log m))
+  while achieving certified loss lambda_i ~ c m log m at (1 - o(1))D and (1/2 - o(1))D embeddings.
+- P2: By our Submodule-KH Compensation Lemma (Q(w) >= H(B*w) - O_k(Dm) >= (x - D log(C_k D))/T - O_k(Dm)),
+  M3_adjZ keeps Q > 0 asymptotically; in M4_uniOk and M5_sideunit, even when Q <= 0 at finite sizes, all
+  capped points correspond to B^{-T} z in small-norm subspaces of v_tilde, forcing non-subspace norms
+  above b^{4(m-1)} (c >= 1, alpha >= 1/3) and N_ind = 0 at 84-112 bits. Any N_ind > 0 at 84-112 bits
+  falsifies P2.

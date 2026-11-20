@@ -1,0 +1,36 @@
+CROSS-CHECK OF CODEX (C) BY GEMINI (G)
+
+1. HARD AUDIT OF C'S THEOREMS
+
+(a) Split-pole compensation theorem (codex/scratch/dd_c/compensation/split_poles.txt:3-60, eq. (S)) — CORRECT [proved], with a nontrivial degree-constant restriction inside L[1/4]:
+- Step 1 (lines 20-35): Exact. For monic R_j in Z[T] of degree d_j and constant remainder c_j in Z, Res_T(P - sqrt(2), R_j) = (+-delta_j)^{d_j} (delta_j = sqrt(2) - c_j) holds even with repeated roots, giving |N_{K/Q} R_j(alpha)| = |c_j^2 - 2|^{d_j} and |N_{K/Q} w_{j+2}| = |c_j^2 - 2|^{n - d_j}. Because V(z) = sum_j log^-|R_j(z)| sums over whole polynomials R_j rather than linear factors, at most one R_{j_0} has an integer root within < 1/2 of z, where log^-|R_{j_0}(z)| <= log M(z) + log(1 + sqrt(2)) since M(z) >= 1 and |sigma(delta_{j_0})| >= sqrt(2) - 1; all other poles contribute <= p log 2.
+- Step 2 (lines 36-51): Exact. By the triangle inequality (2 <= |r_3 - r_1| < 1 + 1), an open unit disk in C contains at most two integers, so discarding poles meeting unit disks around z and w removes <= 4 poles. On k_0 = m - 6 retained poles, min(|z - r_j|, |w - r_j|) <= t holds for <= 4t + 2 integers, giving k_0 log k_0 - O(k_0), and summing over n^2 cross-pairs per base place with |N_{k/Q} Res(f, g)| >= N (surjective unital map O_k -> Z/N) yields sum_i P_+(alpha_i) >= ((m - 6)/n) x + 2 n m log m - O(Dm).
+- Step 3 & H-removal (lines 15-18, 52-55): Subtracting D L_m = 4 n m log m + O(Dm) gives (S): Q >= ((m - 6)/n) x - 2 n m log m - p H / (n - d_*) - O(Dm). Substituting H <= Q + D L_m incurs only (p/(n - d_*)) D L_m = O(m^2 log m) = o(x/T), validly removing H = O(x/T).
+- Scope limitation on the L[1/4] constant kappa: Write n = kappa sqrt(x / log x) and m ~ x^{1/4}(log x)^{3/4} (any fixed kappa > 0 still gives L_N[1/4] work). Since log m ~ (1/4) log x, we have 2 n^2 log m ~ (kappa^2 / 2) x. For kappa < sqrt(2) (including kappa = 1 and consultant_c.txt:11's kappa = 1/sqrt(2)), (S) gives Q >= (2(1 - kappa^2/2) - o(1)) x/T > 0. For kappa >= sqrt(2), however, -2 n m log m swamps ((m - 6)/n) x and (S) becomes vacuous (negative), because 1D integer packing recovers only half (+2 n m log m) of e = 2's Cramer loss (-4 n m log m). C flags 2 n^2 log m <= (1 - delta) x at line 18, so the statement is accurate as scoped, though not uniform over all L[1/4] degree constants. Note also that C's archived grid had 0/195 cells in H <= 4 x/T (results.txt:4), which G's M1-M5 directly populate (codex/scratch/dd_g/comp_results.json:1-3065).
+
+(b) Norm polynomial and endpoint bound (proof.txt:3-58, eq. (1)) — CORRECT [proved]:
+Monicity of f_z and R_j makes Res_T(U, G) = +-Res_T(f, U) prod_{j in I} a_{2+j}^{deg R_j} prod_{j!=k} Res(R_j, R_k) exact even for nonconstant S_j and repeated roots, giving |lc C_a| >= |N_{k/Q} G(b)| when Res(E, G) != 0. In eq. (1), the extra content factor |c lc C| is valid because |C(0)C(1)| = |c|^2 prod |h_r(0)h_r(1)|^{v_r} supplies two powers of |c|.
+
+(c) Compensating-pole formula and construction checks (proof.txt:59-95) — CORRECT [proved]:
+Lines 64-66 match G's general-pole divided-difference identity (codex/scratch/dd_g/comp_proofs.txt:106) identically. Lines 89-94 independently confirm G's M2_mix finding: non-scalar units of norm 1 exist, so "non-scalar" in codex/comp_common.md:13 must read "outside proper k-subspaces and lower-norm products".
+
+(d) Common-rank certificate and multiplication determinant (proof.txt:96-168, eq. (2)) — CORRECT [proved]:
+In §4 eq. (2), Cauchy-Binet validates proper subfields n_* < n because all D rescale factors exp(T_W H_side / d) >= 1, and the normalizer w need not obey the archimedean budget because Gamma_W uses only witness monomials while (w_1^{T_W}, 0) in Lambda_W certifies surjectivity mod N. In §5, S = O + N^k O_K (for k >= v_p([O_K : O]) at p | N), identity-block padding (first row of B - A vanishes mod N on all d columns), and Zariski avoidance on Gamma(N) subset SL_d(Z) all hold.
+
+
+2. ARE THE TWO OPEN REGIMES THE SAME?
+
+NO — they are orthogonal obstructions at different levels:
+- Pole overlap / nonconstant remainders WITH shared bases (closed by G, open in C's split-pole theorem): G's M3_adjZ (or Pell-clustered/cyclotomic poles twisted by C*) violates integer-splitting or has clustered small pole factors, yet shares one basis B_0 across D - o(D) embeddings; G's Submodule-KH (comp_proofs.txt:59) closes it for ALL kappa > 0.
+- Zero pole overlap WITH distinct unshared bases (closed by C for kappa < sqrt(2), open in G's Submodule-KH): Distinct integer poles T - r_j with integer remainders c_j have <= 4 close poles per pair; even if an adversary varied local bases A^(i) across all D embeddings with zero sharing, C's (S) closes it for kappa < sqrt(2) because (S) bounds H globally and subtracts pointwise Cramer D L_m without basis sharing.
+
+
+3. COMBINING C AND G CLOSES A STRICTLY LARGER CLASS
+
+1. Merged Partial-Rank Submodule-KH Lemma [proved]: Combine C's §4 eq. (2) (proof.txt:106, requiring only a rank-r reduced subspace W with r >= delta m, T_W <= (2/delta + o(1)) T) with G's Cramer cap on bad places (comp_proofs.txt:59-65). Whenever r >= delta m reduced ternary rows satisfy |L_i(a)| <= e^{kappa_i} t_i on D - u_bad embeddings with sum kappa_i = o(x/T) and u_bad = o(D), bounding the remaining u_bad places by b_j <= lambda_j + log(C_k m) <= (e/2) m log m + O_k(m) gives sum_{j bad} b_j = o(x/T), proving Q >= (delta/2 - o(1)) x/T across ALL kappa > 0 without needing a full m x m shared basis!
+2. Collinear imaginary poles [proved]: C's (S) extends verbatim to R_j = T^2 + r_j^2 (r_j in Z_{>=1}, P mod R_j = c_j in Z), since roots +-i r_j lie on the 1D lattice i Z (<= 4t + 2 points within t). By contrast, 2D Gaussian poles halve the packing gain to +n m log m (requiring kappa < sqrt(2/3)), and nonconstant S_j(T) permits partial-fraction cancellation near poles.
+
+
+4. PRECISE SINGLE REMAINING STATEMENT
+
+Let M subset K x K' be a reduced linked O_k-module over fixed k ([k:Q] = e, [K:k] = [K':k] = n, D = 2en, rank m, KH degree T = 2 ceil(2n/s) + 1) at the L[1/4] balance with H = sum_i log M_i - log J = O_k(x/T), such that NO reduced subspace W subset M of k-rank >= delta m (for any fixed delta > 0) is generated by ternary vectors satisfying sum_{i in U} log^+(|L_i(a)|/t_i) = o(x/T) on a subset U of D - o(D) embeddings. Prove that EITHER Q = sum_i log t_i - log J >= c_k x/T - O_k(Dm), OR the candidates with 0 < |F|/J <= Y (log Y = o(x/T)) have parity rank N_ind(M; Y) = B^{o(1)} modulo proper k-subspaces and lower-norm candidate products. (For divided-difference modules p = O(m), only non-collinear/complex poles, nonconstant remainders, or kappa >= sqrt(2) in this unshared-basis regime remain open.)

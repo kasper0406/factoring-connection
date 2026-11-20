@@ -1,0 +1,59 @@
+**Verdict — proved for a divided-difference class containing both constructions; partial for general reduced linked modules.** Over \(k=\mathbf Q(\sqrt2)\), if the poles split over the integers and \(P\bmod R_j\) is a rational integer for every pole, then at the balance in the brief,
+\[
+Q\ \ge\ \bigl(\tfrac12-o(1)\bigr)\frac{m\log N}{n}
+   \ =\ (2-o(1))\,\frac{x}{T}.
+\]
+Thus the **threshold branch** holds throughout this class, even when a positive fraction of embeddings have order-\(m\log m\) loss. The proof also removes the assumption \(H=O(x/T)\) for this class. [Theorem and balance constants](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/split_poles.txt:3)
+
+### Proved for integer-split poles
+
+Write \(d_j=\deg R_j\), \(d_*=\max_j d_j\), and \(c_j=P\bmod R_j\). The quantitative bound is
+\[
+Q\ \ge\ \frac{m-6}{n}x-2nm\log m-\frac{pH}{n-d_*}-O(Dm).
+\]
+The constant in the headline uses \(n\sim\sqrt{x/\log x}\). If the balance is specified only up to constant factors, the displayed bound gives positive compensation whenever \(2n^2\log m\le(1-\delta)x\) for fixed \(\delta>0\). [Quantitative bound](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/split_poles.txt:10)
+
+Two product estimates supply the gain. First, the resultant of \(P-\sqrt2\) against \(R_j\) gives the one-side norm of the quotient generator exactly:
+\[
+|N_{K/\mathbf Q}w_{j+2}|=|c_j^2-2|^{\,n-d_j}.
+\]
+Consequently the total denominator-norm charge is at most \(pH/(n-d_*)\). Near any embedding, at most one distinct integer pole root is within distance \(1/2\). Its quotient therefore captures the large negative denominator log, up to \(O(m)\). [Pole-norm calculation](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/split_poles.txt:20)
+
+Second, pair a root \(z\) from one side with a root \(w\) from the other over the **same** base embedding. Discard the at most four poles meeting the unit disks around them. Each remaining pole supplies a distinct integer \(r\). The larger of \(|z-r|,|w-r|\) is at least \(|z-w|/2\), and the product of the smaller distances supplies a factorial lower bound because the integers are distinct. Summing over cross-side pairs captures both this factorial term and the log of the linked resultant, whose absolute norm is a nonzero multiple of \(N\). Together they pay the Cramer loss and leave the stated positive remainder. [Cross-side estimate](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/split_poles.txt:36)
+
+### Checks against the constructions
+
+- **The half-embedding construction.** Its quadratic poles \(T^2-r_j^2\) and constant remainders satisfy the theorem. Its stronger candidate count also survives inspection. For each nonconstant active numerator, the parameter roots of its norm polynomial go to infinity as the construction parameter grows. Both endpoint norms then grow. Only the six scalar units, and possibly \(\pm\sqrt2\), survive the prescribed cap. [Norm calculation](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:79)
+- **Gemini’s annular construction.** The pole-adjacent embeddings alone contribute order \((1-m/n)Dm^2\log m\). The other embeddings can contribute negatively to \(Q\), but their combined negative contribution is at most \(O_k(Dm\log m)\). Thus \(Q\gg x/T\), and \(H\ge Q\) also exceeds the low-height range. [Compensating-place calculation](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:70)
+- **Gemini’s low-\(H\) family C1b.** Every single-pole generator is a **nonscalar unit** because \(P(j)=Q(j)=1\). Its two-sided absolute norm is exactly one. The reported full-support norm floor therefore cannot cover every nonscalar row. The split-pole theorem establishes the threshold branch asymptotically for this family despite its negative \(Q\) on the 112-bit fixture. [Unit calculation](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:89)
+
+### What transfers beyond split poles
+
+For arbitrary divided differences, retain the active denominator \(U\) and write the common numerator \(G_a=V_a+\sqrt2W_a\). Interpolating between the defining polynomials gives an integer polynomial
+\[
+C_a(z)=N_{k/\mathbf Q}
+\frac{\operatorname{Res}(P-\sqrt2+z(Q_{\rm poly}-P),G_a)}
+     {\operatorname{Res}(P-\sqrt2,U)},
+\qquad |C_a(0)C_a(1)|=|F(a)|.
+\]
+Its degree is at most \(2(p+1)\). When the numerator is coprime to \(Q_{\rm poly}-P\), its leading coefficient has magnitude at least \(|N_{k/\mathbf Q}G_a(b)|\). A large leading coefficient can fail to force a norm floor when **one irreducible factor has roots close to both endpoints**. I obtained an explicit bound charging those distances factor by factor. Integrality alone permits the obstruction: \(Kz(z-1)+1\) has both endpoint values equal to one for arbitrarily large \(K\). [Resultant identity](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:3) · [Endpoint bound](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:34)
+
+For **general reduced linked modules**, a sufficient extra hypothesis is that the local threshold sets contain a common reduced subspace of rank \(\Omega(m)\) after enlargements \(t_i\mapsto t_i e^{b_i}\) with \(\sum_i b_i=o(x/T)\). For specified witnesses \(S\), the least nonnegative enlargement at each place is exactly
+\[
+b_i=\log^+\!\left(\frac{\max_{a\in S}|L_i(a)|}{t_i}\right).
+\]
+Applying KH to their span in the original ideals gives \(Q\ge c\,x/T\). What remains unproved is that low height and widespread local loss force this common rank or the alternative norm floor. A general multiplication-matrix determinant also detects roots close to both endpoints, but its compatible bases can introduce that behavior even for scalars. [Common-rank proof](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:96) · [General determinant and limitation](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/proof.txt:131) · [Field-growth theorem used by KH](https://arxiv.org/abs/1510.01354)
+
+### Measured on the archived fixtures
+
+All 195 cells and 9,096 embeddings were included. **None met the registered finite cutoff \(H\le4x/T\)**. The minimum was \(11.51x/T\). The grid therefore tests the extra hypotheses but supplies no observation in that particular low-height panel. [Pre-registration](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/prereg.txt:1) · [Certified results](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/results.txt:1)
+
+| Common enlargement at every embedding | Cells certifying reduced rank at least \(m/2\) | Among the 134 cells meeting the local-loss cutoff |
+|---|---:|---:|
+| \(e^{m/2}\) | 28/195 | 2/134 |
+| \(e^m\) | 60/195 | 23/134 |
+| \(e^{2m}\) | 195/195 | 134/134 |
+
+The last line follows already from the coordinate basis on this finite grid. The norm-polynomial bound certified \(\log|F|\ge x/T\) for **390/390** separately registered full-support rows. Conversely, 21 cells had \(Q\le0\) and an eligible tested affine row below both the cap and \(x/T\) on the log scale. None of the archived pairs satisfies the integer-split, constant-remainder hypothesis. [Rank and norm counts](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/results.txt:12) · [Norm-test registration](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/pencil_prereg.txt:1) · [Pole-geometry check](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/pole_summary.txt:1)
+
+**Exponent ledger and next step.** The proved class pays \(x^{3/4+o(1)}\) in \(Q\), above the proposed \(x^{1/2+o(1)}\) log-norm cap. This confines capped rows to the specified proper subspaces. Fresh parity rank inside them still requires the chase hypotheses. For general poles, the next target is to bound how much several small pole factors can overlap at one embedding when the remainders vary. The proof isolates that loss as a measurable term in the cross-side inequality. [Remaining geometric term](/Volumes/git/factoring-connection/codex/scratch/dd_c/compensation/split_poles.txt:70)

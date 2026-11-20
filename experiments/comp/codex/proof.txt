@@ -1,0 +1,168 @@
+Compensation under a condition on numerator roots or on simultaneous rank
+
+1. Divided differences. A norm polynomial for each row [proved]
+Write s=sqrt(2), f=P-s, E=Q-P and f_z=f+zE. The sides are monic of the same
+degree n, so deg E<n. For a ternary row a, keep just its active pole indices I,
+write U=prod_{j in I} R_j and S_j=P mod R_j. Its fixed reduced-denominator numerator is
+  G=(a_1+a_2 T)U + sum_{j in I} a_{2+j}(s-S_j)U/R_j = V+sW.
+Both integer coordinate polynomials have degree at most p+1 for the archived poles.
+More generally G has integral k-coefficients. Put d=deg G and exclude rows zero on a side.
+With X_z=P+zE, the remainder of X_z modulo each pole R_j is S_j, and X_z div R_j
+is its integral quotient representative. At a root of f_z the row is G/U. In particular
+  C_a(z)=N_{k/Q}( Res_T(f_z,G) / Res_T(f_z,U) ) is in Z[z].
+Here the norm multiplies the polynomials over all base embeddings and fixes z. The
+denominator is constant since E is divisible by U. Integrality follows by taking the
+resultant of the monic f_z with the row in its integral quotient representatives over
+O_k[z]. The product over the roots of G shows deg C_a <= e d even with shared roots
+of G and E. Its endpoints give exactly |C_a(0)C_a(1)|=|F(a)|. Both ideals are trivial.
+
+When Res(E,G) is nonzero, the leading coefficient has an arithmetic lower bound.
+Writing g=lc G and l=deg E, the relative leading coefficient is, up to sign,
+  g^(n-l) Res(E,G) / Res(f,U).
+Indeed each root beta of G contributes the factor f(beta)+z E(beta). Factor
+E=(T-b)U E_0. Res(T-b,G)=G(b). Modulo R_j the only surviving term of G is
+a_{2+j}(s-S_j) U/R_j, including for multiple roots of R_j. Hence Res(U,G) equals,
+up to sign, Res(f,U) times prod a_{2+j}^deg(R_j) times prod_{j!=k in I} Res(R_j,R_k).
+After cancellation every additional factor, including Res(E_0,G), is a nonzero
+algebraic integer. Consequently |lc C_a| >= |N_{k/Q} G(b)|. If Res(E,G)=0 one
+must use the actual degree and leading coefficient, not the vanished nominal one.
+For integer b large and nonconstant G of degree d, one concrete sufficient height test is
+sum_{j<d}|sigma(G_j)| <= |sigma(g)b|/2 at each base embedding. It gives
+log|lc C_a| >= ed log|b|-e log 2 in the nonvanishing case. This quantity can reach
+the KH floor for d proportional to m. Small support can leave d small or even zero.
+
+2. A bound using roots near both endpoints [proved]
+For any integer polynomial C with nonzero endpoints write C=c prod h^v over primitive
+irreducible integer factors. For h, let b_j(h)=sum_{h(zeta)=0} log^+(1/(2|zeta-j|))
+for j=0,1, counting complex roots separately. Put Gamma=sum v min(b_0(h),b_1(h)).
+Also put A_far=sum_{all roots of C} log^+(2 min(|zeta|,|zeta-1|)), with multiplicity.
+Then, with D_C=deg C,
+  log|C(0)C(1)| >= log|c lc C| - D_C log 2 + A_far - Gamma.                    (1)
+For each factor use the endpoint with smaller b_j. Expand log|h(j)| root by root.
+Its positive terms after extracting 2^(-deg h) dominate that factor's A_far.
+The value of h at the other endpoint is a nonzero integer of modulus at least one.
+Multiplication proves (1), including constant polynomials. The fixture test dropped
+A_far, which is nonnegative. Thus large leading height carries through provided the
+loss at both endpoints within individual irreducible factors stays within budget.
+The integral polynomial Kz(z-1)+1 for K>=5 is irreducible (K(K-4) lies strictly
+between consecutive squares). Its leading height tends to infinity while both
+endpoint values are 1. This is a counterexample to inference from integrality alone.
+
+At X=x/T the explicit sufficient norm hypothesis is log|c lc C|+A_far-Gamma
+>= (1-o(1))X for each eligible nonscalar row when the threshold branch fails.
+The degree cost is O(m)=o(X) for DD. A simpler test is log|lc C|>=(1-o(1))X
+and Gamma=o(X). All roots and inputs concern the deformation between the linked
+sides. A large loss in (1) requires the same rational irreducible factor to have
+roots near BOTH endpoints if the leading height by itself should have forced a floor.
+The conditioned local bases do not supply any bound of this strength for Gamma.
+
+3. Compensating pole places [proved]
+For a root alpha_i of f and a monic pole R of degree v, the quotient generator at
+alpha_i is the coefficient of T^(v-1) in the remainder of f(T)/(T-alpha_i) modulo R.
+To see this write f(T)/(T-alpha_i)=R A+B with deg B<v. Multiplying back, division
+by R has quotient (T-alpha_i)A+lc_{v-1}(B), which gives the identity on evaluation.
+For squarefree R this coefficient equals
+  sum_{R(r)=0} prod_{l!=i}(r-alpha_l)/R'(r)
+by Lagrange interpolation. The remainder formula includes repeated roots. The sum
+can cancel, whereas a single linear pole has one term. A dominant generator of size
+M_i still forces t_i >= c_min M_i/2 whenever all the others are <=c_min M_i/(2Cm).
+
+For the annular Gemini construction, at the pole-adjacent root the omitted-root
+product is >=(0.7 rho)^(n-m+2) 0.9^(m-3). Its generator dominates there. The other
+places can contribute negatively to Q. Since M_i>=1, the general local Cramer bound
+charges at most O_k(Dm log m) for those negative terms. At n/m -> infinity and
+log rho >= (1/2-o(1))m log m, the pole tags alone therefore give
+  Q >= 4(m-2)(n-m+2) log(0.7 rho) - O_k(Dm log m).
+This is Omega((1-m/n) Dm^2 log m), so H>=Q lies outside H=O(X) at balance. This
+uses the archived root packet and dominance estimates, not a generic separation claim.
+
+For the half-embedding construction, the deformation between sides is E=2(T-1)U_all.
+Its independent large parameter B adds B T^(n/2) E to f. At a root beta of a fixed,
+nonconstant active numerator, the parameter root of the norm polynomial is
+ -B beta^(n/2) - (P_0(beta)-s)/E(beta).
+The exclusions in the construction make beta E(beta) nonzero. Thus the roots go
+to infinity, Gamma vanishes and the A_far term of (1) diverges. Single-pole constants
+and the affine directions at 0 and 1 are handled by their explicit norms in the
+archived proof. Only the six scalar units and possibly +/-sqrt(2) survive the cap.
+Here B can also send H outside the low-height range.
+
+For Gemini C1b each R=T-j has P(j)=Q(j)=1. The generator (s-1)/(alpha-j)
+has one-side absolute norm |N_k(s-1)|^(n-1)=1 by the denominator resultant.
+It is nonscalar, and its linked evaluation is a unit. Thus even one such direction
+prevents an inference from the reported full-support floor to every nonscalar row.
+The 112-bit negative Q is a finite observation. No asymptotic low-H counterexample
+follows. The norm polynomial for this direction is constant of absolute value 1.
+
+4. Common rows give a threshold certificate [proved for general reduced modules]
+For nonnegative budgets b_i, take the common set of ternary rows with
+  |L_i(a)| <= t_i exp(b_i) for every i.
+Let integral witnesses from this set span a subspace W of paired elements. Suppose W
+contains an integral point w of unit common evaluation, and W/w generates the product
+of its two projected fields over k. Here w need not itself satisfy the archimedean
+budget if it is an integral combination or a point of the original ideal lattice in W.
+Require w in the original generator ideals. Write s_W for the larger projection
+dimension, n_* for the larger generated relative field degree (at most n), and put
+T_W=2 ceil(2 n_*/s_W)+1. Then
+  Q >= (x-D log(C_k D))/T_W - sum_i b_i.                                     (2)
+For the growth step let V=W/w, label the larger projection 1, and set
+l=ceil(2 n_*/s_W). By the field part of KH, l powers fill the first projected field.
+If projection 2 on V has a kernel, a nonzero (z,0) in V multiplied by V^l supplies
+the full first side. Otherwise its dimension is dim W, so both projections have the
+same dimension s_W=dim W and both are filled by V^l. Write n_1 for the first field
+degree. If V^l lacks a one-sided vector, projection 1 is injective there, and
+dim V^l=n_1. It grows at the next power since a stable space containing 1 would
+already be the product. Thus V^(l+1) has a one-sided vector. In each case multiplying
+a one-sided vector by V^l fills its side by degree at most 2l+1. This also handles
+unequal field degrees, as in codex/subthird_2_gemini.out, lines 5 and 7.
+
+Use the integral homogeneous products of witnesses in W in the KH index argument.
+The corresponding component of w^T_W is an integral unit-evaluation witness after
+undoing normalization. KH's rescaled covolume proof in the original ideals gives (2)
+using the envelope t_i exp(b_i). Each envelope side-product is at least its ideal norm
+by the norm of any witness nonzero on that side. For fixed W and specified witnesses,
+the least nonnegative b_i is log^+(max_witness |L_i|/t_i). Only their total enters.
+A reduced common rank r>=delta m gives s_W>=r/2, T_W=O_delta(T). A total budget
+o(X) suffices, in particular b_i=O(m) at the stated balance. In the DD test both
+projections are injective. If the simultaneous span contains 1 and T, it generates
+the product since the side minimal polynomials are distinct. Full rank suffices too.
+This is one structural extra hypothesis for the first branch. Its budget is minimal
+for the specified witnesses and nonnegative dilations. No global necessity is claimed.
+
+5. A general multiplication determinant [proved]
+Work with linked integral orders and generator ideals coprime to N. At each side use
+a full domain lattice S and a range lattice I=S intersect c so that [S:I]=N(c)
+and both evaluations are onto Z/N. These lattices are available even for nonmaximal
+linked orders O. Enlarge to S=O+N^k O_K for k sufficiently large that S_p=O_p at
+p|N. At all other primes S_p is maximal. Thus S/NS agrees with O/NO, the evaluation
+extends, and [S:I]=N(c) by localization. Coprimality makes the restricted evaluation
+onto. Multiplication by the corresponding row element maps S to I. Its integer
+matrix has determinant of absolute value |N(a)|/N(c).
+
+Choose bases on both sides so that the domain evaluations and the range evaluations
+each have the same row (1,0,...,0) modulo N. This is possible for any surjective
+row of length at least 2. Elementary determinant-one operations over Z/N take a
+unimodular row to e_1 and lift to integer elementary operations. Equivalently use
+CRT over prime powers. If needed pad the smaller side by an identity block with
+zero evaluation on the extra coordinates. Call the two integer matrices A,B of size d.
+Equality of the linked images forces the first row of B-A to vanish modulo N.
+
+The integer polynomial C(z)=det(A+z(B-A)) has endpoint product |F|/J. If
+det(B-A) is nonzero it is divisible by N and is lc C. There is a common choice
+of range bases for which this holds simultaneously for every eligible row in
+the finite box. Multiply all second-side matrices on the left by one unimodular
+V congruent to the identity mod N. For each pair of nonsingular A,B the locus
+det(VB-A)=0 is proper on SL_d. Take V=A Z B^(-1) with det Z=det B/det A and
+choose diagonal Z with no diagonal entry 1. The principal congruence subgroup is
+Zariski dense since its closure contains every one-parameter elementary unipotent
+subgroup (it contains the parameter values N times all integers). These generate SL_d.
+A finite union of such proper closed subsets can be avoided simultaneously.
+
+For a capped row |F|/J<=Y, (1) now implies Gamma >= x-log Y-d log 2. Some single
+irreducible factor has b_j(h)/deg h >= (x-log Y-d log 2)/d at BOTH endpoints.
+In particular it has a root within (1/2)exp(-(x-log Y-d log 2)/d) of each endpoint
+when the exponent is positive. This is an unconditional necessary condition.
+The compatible bases can themselves be large and introduce these pairs even for
+scalars. The height of the original generators does not bound the size of this
+coordinate change. A useful general argument must control the root distances in a
+specified compatible choice or find common rows for (2). A bound on the number of
+proper covering spaces alone does not control the independent parity inside them.

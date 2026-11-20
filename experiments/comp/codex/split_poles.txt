@@ -1,0 +1,79 @@
+Compensation for integer-split poles with constant remainders [proved]
+
+Let k=Q(sqrt(2)), e=2, D=2en=4n, f=P-sqrt(2), g=Q_poly-sqrt(2). Assume the
+linked sides are distinct and relatively irreducible, of the same degree n>p+1. There
+are q=m-2 pairwise coprime monic poles R_j in Z[T], total degree p=O(m).
+Assume each R_j is a product of linear factors with integer roots and that
+P mod R_j = Q_poly mod R_j = c_j is a rational integer. No bound on the pole
+locations or on |c_j| is needed. Repeated roots within one pole are allowed.
+Both of the analytic ill-conditioning constructions have this form.
+Write d_j=deg R_j, d_*=max d_j, X=x/T, and use natural logs. Uniformly for m>=8,
+  Q >= ((m-6)/n)x - 2nm log m - pH/(n-d_*) - O(Dm).                         (S)
+Constants in O(Dm) depend on the fixed constant in p=O(m). Consequently, at
+n~sqrt(x/log x), m~x^(1/4)(log x)^(3/4), H=O(X),
+  Q >= (1/2-o(1))mx/n = (2-o(1)) X.
+The order-m-log-m local loss assumption is unnecessary. The same asymptotic lower
+bound holds without the height premise by substituting H<=Q+D L_m into (S), where
+L_m=m log m+(2m-1)log(1+sqrt(2)). If balance denotes comparability with unspecified
+constants, use (S) itself. A fixed margin 2n^2 log m <= (1-delta)x is sufficient.
+
+1. Global charge from a pole. Put delta_j=sqrt(2)-c_j. At either base embedding
+|sigma delta_j|>=sqrt(2)-1, and |N_k(delta_j)|>=1. On each relative side,
+  |N_{K/Q} R_j(alpha)|=|N_k(delta_j)|^d_j,
+  |N_{K/Q} w_{j+2}|=|N_k(delta_j)|^(n-d_j).
+These are the resultant of f against R_j and the norm of delta_j/R_j. The
+denominator formula uses the constant remainder, including root multiplicities.
+Let V(z)=sum_j log^-|R_j(z)|, Pplus(z)=sum_j log^+|R_j(z)|, with
+log^-(t)=max(0,-log t). Since M_i bounds every generator and J=1,
+  H >= 2(n-d_j) log|N_k(delta_j)|.
+Consequently sum_i V(alpha_i) = sum_i Pplus(alpha_i) - 2 sum_j d_j log|N_k(delta_j)|
+is >= sum_i Pplus(alpha_i) - pH/(n-d_*).
+At most one distinct integer can be at distance <1/2 from z. Outside the pole
+containing it, all the negative logs for all factors are at most p log 2 in total.
+That one pole's negative log is <=log M(z)+O(1) by the numerator lower bound and
+M>=1. Hence H >= sum_i Pplus(alpha_i) - pH/(n-d_*) - O(Dm).
+
+2. Global charge from the link. Take roots z of f and w of g at the SAME base
+embedding. Discard poles having any root within distance <1 of z or w. This
+discards at most four poles, since each disk contains at most two distinct
+integers. Keep exactly k_0=q-4 of the remaining poles. Choose one integer r_j
+from each. The selected integers are distinct and the other linear factors of
+these poles have modulus >=1 at both z and w. Write t_j=min(|z-r_j|,|w-r_j|).
+The larger distance is >=|z-w|/2. At most 4t+2 distinct integers have t_j<=t.
+Ordering the t_j and multiplying this bound (or using the factorial lower bound)
+gives sum_j log t_j >= k_0 log k_0-O(k_0), since all retained t_j>=1. Therefore
+  Pplus(z)+Pplus(w) >= k_0 log|z-w| + k_0 log k_0 - O(k_0).
+Sum over the n^2 cross pairs per base embedding and divide by n. The cross-distance
+logs become log|N_k Res(f,g)|. The nonzero resultant belongs to the kernel of
+O_k -> Z/N since the polynomials share the linked evaluation root. The kernel
+has norm N, so the absolute resultant norm is at least N. Thus
+  sum_i Pplus(alpha_i) >= (k_0/n)x + en k_0 log k_0 - O(Dm).
+
+3. Subtract the Cramer cost only once. The local Cramer inequality in
+experiments/chase/ch_L2c/proof.txt, lines 8-15, gives Q>=H-D L_m. Combining with
+the preceding charges and en k_0 log k_0=2nm log m+O(D log m) proves (S).
+At the indicated balance, 2n^2 log m/x -> 1/2, p/(n-d_*) -> 0, and Dm=o(X).
+Independence on each side follows by evaluation at a root of each R_j after
+clearing denominators, using coprimality and nonzero residues, or by partial
+fractions for repeated roots (reduce modulo R_j). The numerator degree p+1<n
+makes an identity on the field an identity of polynomials. Thus s=m and T~4n/m.
+
+4. Scope. The absolute norm charge only needs constant remainders and a uniform
+lower bound at all base embeddings for the nonzero residues. The geometric step
+only needs bounded total overlap of small pole factors at a single root and the
+stated two-center lower bound for Pplus. Integer splitting gives both. General
+complex poles and nonconstant remainders do not automatically satisfy them. In
+particular, partial fractions at higher-degree poles can cancel. The archived
+grid always starts with T^d+1 for d>=2, so it is outside the integer-split class.
+
+
+5. Numerical extension beyond split poles. Put a=m-2, let Z be the sum of the
+denominator resultant logs on both sides, and B=sum_i max(0,V(alpha_i)-log M_i).
+Take g_sigma to be the minimum of Pplus(z)+Pplus(w)-a log|z-w| over cross pairs
+at one base embedding. With no root-location or residue assumptions the same
+summation proves
+  Q >= (a/n) log|N_k Res(f,g)| + n sum_sigma g_sigma - Z - B - D L_m.
+This depends on pole values, cross distances and the envelope without using the
+measured thresholds. The registered finite test gives zero certificates at X/4,
+as does using H-D L_m directly. The fixtures have neither all poles split over
+Z nor all remainders constant. The finite grid checks the formula's scope only.

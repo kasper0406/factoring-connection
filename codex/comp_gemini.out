@@ -1,0 +1,101 @@
+COMPENSATION ROUND ADVERSARY REPORT FOR LP_exc^rel
+
+0. UPFRONT VERDICT
+
+Verdict: PARTIAL.
+1. Adversary breakthroughs inside H = O(x / T) [proved + measured]:
+   - Unlike the dd round — where Codex's quadratic-pole family sent H -> infinity (experiments/dd/codex/proof.txt:105) and Gemini's C3 paid H >= Omega(D m^2 log m) (experiments/dd/gemini/proofs.txt:83) — twisting a boosted KH-floor divided-difference module by an Alon-Vu adjugate C* = g_0^{-1} adj(B_0) (Family M3_adjZ) or a unimodular O_k-staircase inverse B_{Ok}^{-1} (Family M4_uniOk) stays strictly inside H = O(x / T) while achieving certified loss lambda_i = log(M_i / t_i) >= (m/2) log m - O(m) at u = (1 - o(1)) D (resp. >= c m log m at D/2) embeddings (codex/scratch/dd_g/comp_proofs.txt:3-37). At 96 bits (n = 12, m = 3..6), H stays at 230..560 (6x below dd's 1150..3155) while median loss climbs 2.72 -> 4.24 -> 6.44 -> 7.43 (M3_adjZ) and 4.23 -> 4.92 -> 6.95 -> 8.36 (M4_uniOk) (codex/scratch/dd_g/comp_results.json:2190-3065).
+   - Mixing linear and cyclotomic poles with unit remainders (Family M2_mix) produces up to 35 non-scalar capped candidates of exact norm |F| = 1 (log|F| = 0, far below the KH floor) whose union spans full k-rank m/m [proved + measured], refuting the literal wording "every non-scalar capped candidate has log|F| >= (1 - o(1))*(KH floor)" in codex/comp_common.md:13-14 unless "non-scalar" is replaced by "outside proper k-subspaces and unit products".
+2. Failure to break LP_exc^rel and proved Compensation Obstructions [proved + measured]:
+   - Across ALL 55 pre-registered main runs from 60 to 112 bits (five constructions, seeds 19 and 0, m = 3..5), parity-independent yield modulo proper k-subspaces and lower-norm products is N_ind = 0 in every single box (55/55 zeros, even at 60 and 72 bits!) (comp_results.json:1-2189).
+   - Every one of the four prompt mechanisms hits a proved obstruction (Section 4): the Submodule-KH Compensation Lemma forces Q >= (1 - o(1)) x/T - O_k(Dm) whenever u = D - o(D) embeddings share a ternary basis; a two-place covolume bound forbids conjugate absorption over O_k; a Cramer Support-Width Lemma proves >= (gamma/e - o(1)) m poles must carry amplitude >= e^{lambda/2} (killing small-cluster pole splitting); and an exact general-pole divided-difference identity extends rho-inflation to arbitrary mixed/quadratic/cyclotomic poles.
+
+All scratch files (comp_prereg.txt, run_comp_adversary.py, comp_proofs.txt, comp_results.json) are in /Volumes/git/factoring-connection/codex/scratch/dd_g; repository files are untouched.
+
+
+1. PRE-REGISTERED ADVERSARIAL CONSTRUCTIONS IN H = O(x / T)
+
+All five families were pre-registered in codex/scratch/dd_g/comp_prereg.txt:1-47 before running 60-112 bit benchmarks, over k = Q(sqrt(2)) (e = 2) on N = a^2 - 2 fixtures (experiments/subthird/codex/experiment.py:28-43, seeds 19 and 0), ternary box Omega = [-1, 1]^{2m}, ideal-relative cap |F|/J <= 3^{4n} 2^{ceil(bits/(2n))}, and B = 2^{ceil((bits * bit_length(bits-1)^3)^{1/4})} (codex/scratch/dd_g/run_comp_adversary.py:185-278):
+
+1. M1_clust (Split pole clusters): Linear poles split across small clusters in {-2, -1, 1, 2, 3} with small graded integer remainders S(r_j) in P = S + R U, Q = P + j_0(T - b)R (centered base-b U of degree n - m + 2), testing whether distributing residues across clusters avoids Q-inflation.
+2. M2_mix (Mixed linear + quadratic cyclotomic unit-circle poles): Poles [T - 1, T^2 + 1, T^2 + T + 1, T^2 - T + 1][:m-2] with roots on |z| = 1 and unit remainder S = 1 (P = 1 + R U). Because |zeta| = 1, |U(zeta)| <= n b avoids |r_j|^n pole blow-up while generating exact non-scalar units (alpha - 1), (P // (T-1))(alpha), and (P // (T^2+1))(alpha) of two-sided norm 1.
+3. M3_adjZ (Alon-Vu adjugate twist w = C* v_tilde): Takes KH-floor poles R_j = T - (4 + j) (outside |z| <= 2) with S = 1, boosts generator 1 to c_1 = nextprime(4m + 2) coprime to N so v_tilde_1 dominates on |alpha_i| <= 2, and applies primitive C* = g_0^{-1} adj(B_0) in Z^{m x m} of an invertible ternary Z-matrix B_0 maximizing ||B_0^{-1}||_max (heavy column on c_1). Since ||adj(B_0)||_max <= (m-1)^{(m-1)/2}, achieving ||B_0^{-1}||_max = exp((m/2) log m - O(m)) tautologically forces |det B_0| <= exp(O(m)) [proved] (comp_proofs.txt:12-19), keeping H(w) = O(x / T) while B_0 w = +-Delta* v_tilde forces lambda_i >= (m/2) log m - O(m) at (1 - o(1)) D embeddings!
+4. M4_uniOk (Unimodular O_k-staircase + Pell conjugate-absorption twist): Applies exact unimodular B_{Ok}^{-1} in GL_m(O_k) (where B_{Ok} has diagonal -1+sqrt(2) and subdiagonal -(1+sqrt(2)), det B_{Ok} = (-1+sqrt(2))^m in O_k^*, so J_w = J_v has zero determinant loss) multiplied by (-1+sqrt(2))^{2m-1} so M_i ~ O(m), t_i << 1 at sigma_1 (D/2 embeddings), testing whether compensating sigma_2 conjugates absorb Q.
+5. M5_sunit (Per-side large-field unit-scaled Newton module + twist): Uses m - 1 unit-remainder poles P(r_l) = Q(r_l) = 1 so every (alpha - r_l, alpha' - r_l) and ((P // R_1)(alpha), (Q // R_1)(alpha')) is an exact linked unit in O_K^* x O_{K'}^*, forming unit basis (c_1 (P // R_1)(alpha), alpha - r_1, ..., prod_{l=1}^{m-1}(alpha - r_l)) twisted by B_{Ok}^{-1}.
+
+
+2. CERTIFIED MEASUREMENTS AT 60-112 BITS
+
+Generator ideal norms J = N(c)N(c') are computed exactly via PARI nfinit/idealadd/idealnorm; all thresholds M_i, t_i, H = sum log M_i - log J, and Q = sum log t_i - log J are certified with 512-bit flint arb/acb ball arithmetic; all norms and ideal parities use exact flint resultants and PARI idealprimedec (run_comp_adversary.py:283-501). Every box verified slow growth s_h <= h(p + 1) + 1.
+
+Table A — H = O(x/T) conditioning-loss scaling across m = 3..6 at 96 bits, n = 12, D = 48, seed = 19 [measured] (comp_results.json:2190-3065):
+
+  m | m log m | Mode     |   H   |   Q   | Loss q25 / med / q75 / max | Frac >= 0.50 / 0.75 m log m
+  3 |   3.30  | M2_mix   |  57.1 | -47.1 | 1.60 / 1.94 / 2.73 /  4.20 | 0.67 / 0.25
+  3 |   3.30  | M3_adjZ  | 230.5 |  91.7 | 2.58 / 2.72 / 3.68 /  4.21 | 0.92 / 0.92
+  3 |   3.30  | M4_uniOk | 275.4 | 116.9 | 2.44 / 4.23 / 4.42 /  4.52 | 0.92 / 0.71
+  4 |   5.54  | M3_adjZ  | 312.3 | 118.7 | 4.17 / 4.24 / 4.81 /  5.67 | 0.83 / 0.75
+  4 |   5.54  | M4_uniOk | 372.3 | 174.2 | 2.56 / 4.92 / 6.17 /  6.20 | 0.58 / 0.50
+  5 |   8.05  | M3_adjZ  | 443.9 | 168.8 | 5.87 / 6.44 / 7.02 /  7.93 | 0.83 / 0.58
+  5 |   8.05  | M4_uniOk | 477.5 | 225.0 | 2.67 / 6.95 / 7.94 /  8.05 | 0.58 / 0.50
+  6 |  10.75  | M3_adjZ  | 506.0 | 182.0 | 5.83 / 7.43 / 8.27 / 10.41 | 0.75 / 0.27
+  6 |  10.75  | M4_uniOk | 560.4 | 251.9 | 2.65 / 8.36 / 9.70 / 10.48 | 0.58 / 0.50
+  6 |  10.75  | M5_sunit | 594.2 | 337.5 | 2.11 / 3.10 / 9.71 / 10.79 | 0.44 / 0.38
+
+Table B — 60-112 bit candidate and parity audit (seed 19 shown; seed 0 has N_ind = 0/0 on every run as well, comp_results.json:1-2189) [measured]. Columns: H, Q (vs x/T), loss med/max, capped orbits (non-scalar capped, k-span rank of capped set / m), N_ind (modulo prefix subspaces / coordinate subspaces after span check), and min log(|F|/J)/log N for candidates escaping the D prefix hyperplanes:
+
+  Bits (n,m) | Mode     |   H   |   Q   | x/T | Loss med/max | Cap(NonSc,kRk) | N_ind | Esc min ln(|F|/J)/lnN
+  60  (7,3)  | M1_clust |  71.2 |   7.8 | 3.8 | 2.20 / 4.45  | 16 (14, 3/3)   | 0 / 0 |  --
+  60  (7,3)  | M2_mix   |  58.9 |  10.8 | 3.8 | 1.54 / 3.12  | 20 (18, 3/3)   | 0 / 0 |  --
+  72  (8,3)  | M2_mix   |  61.9 |   5.3 | 3.8 | 1.53 / 3.80  | 29 (27, 3/3)   | 0 / 0 |  --
+  72  (8,3)  | M4_uniOk | 190.6 |  89.1 | 3.8 | 4.04 / 4.58  |  2  (2, 2/3)   | 0 / 0 |  --
+  84  (9,4)  | M1_clust | 135.4 |  69.2 | 5.3 | 1.21 / 5.29  | 29 (27, 3/4)   | 0 / 0 |  --
+  84  (9,4)  | M2_mix   | 167.6 |  85.6 | 5.3 | 1.41 / 5.79  | 11  (9, 4/4)   | 0 / 0 | 2.6962
+  84  (9,4)  | M3_adjZ  | 263.7 | 126.8 | 5.3 | 4.55 / 5.32  |  4  (4, 2/4)   | 0 / 0 | 3.6921
+  84  (9,4)  | M4_uniOk | 290.0 | 137.8 | 5.3 | 5.53 / 6.32  |  2  (2, 2/4)   | 0 / 0 | 4.1082
+  96 (10,4)  | M2_mix   | 165.4 |  75.6 | 6.0 | 2.34 / 6.12  | 15 (13, 4/4)   | 0 / 0 | 2.3892
+  96 (10,4)  | M3_adjZ  | 298.9 | 144.5 | 6.0 | 4.05 / 5.22  |  5  (5, 3/4)   | 0 / 0 | 3.7661
+  96 (10,4)  | M4_uniOk | 337.7 | 175.0 | 6.0 | 4.67 / 6.19  |  3  (3, 3/4)   | 0 / 0 | 4.2278
+  112 (12,4) | M1_clust | 157.3 |  22.7 | 6.0 | 2.94 / 5.91  | 38 (36, 3/4)   | 0 / 0 |  --
+  112 (12,4) | M2_mix   | 147.0 |  22.7 | 6.0 | 2.43 / 6.09  | 37 (35, 4/4)   | 0 / 0 | 1.7878
+  112 (12,4) | M3_adjZ  | 352.9 | 161.1 | 6.0 | 4.35 / 5.62  |  5  (5, 3/4)   | 0 / 0 | 3.7067
+  112 (12,4) | M4_uniOk | 397.0 | 195.3 | 6.0 | 5.65 / 6.29  |  3  (3, 3/4)   | 0 / 0 | 4.2067
+  112 (12,5) | M2_mix   | 276.2 | 150.1 | 7.0 | 2.86 / 7.86  | 22 (20, 5/5)   | 0 / 0 |  --
+  112 (12,5) | M3_adjZ  | 450.7 | 172.6 | 7.0 | 6.29 / 8.01  |  7  (7, 4/5)   | 0 / 0 |  --
+  112 (12,5) | M4_uniOk | 495.3 | 230.8 | 7.0 | 7.10 / 8.01  |  6  (6, 4/5)   | 0 / 0 |  --
+  112 (12,5) | M5_sunit | 501.9 | 295.2 | 7.0 | 3.18 / 8.44  |  4  (4, 4/5)   | 0 / 0 |  --
+
+Why M2_mix had kRk = 4/4 yet N_ind = 0: Inspecting all 37 capped orbits at (112, 12, 4) shows every single capped vector has coordinate support in {(0,), (1,), (2,), (3,), (0,1), (0,2)} (proper k-subspaces of dimension <= 2 containing exact units 1, alpha-1, (P//(T-1))(alpha), (P//(T^2+1))(alpha) of norm 1 or 2^{24}); ZERO capped vectors have support size >= 3. In M1_clust, M3_adjZ, M4_uniOk, and M5_sunit, the entire capped set has k-rank <= m - 1 at 84-112 bits.
+
+
+3. EXPONENT LEDGER
+
+In src/grdeg/ledger.py:37-101 (d = x^delta, r = x^rho, log B = x^alpha, rho = alpha, alpha = 1/(4 - c) for N-saving exponent 1 + c*rho - delta) [proved arithmetic; heuristic endpoints]:
+- M1_clust, M2_mix (untwisted small/unit remainders, p = Theta(m)): Outside proper k-subspaces, deg N_a = p + 1 >= m - 1 roots of modulus O(1) miss R = 0 and pay |F(a)| ~ b^{4(p+1)} >= N^{4(m-1)/(n-p)} => log|F| ~ (r/d) x, so c = 1, delta = 2/3, alpha = 1/3 (matching measured escaping ratios 1.79..2.70 at 84-112 bits).
+- M3_adjZ, M4_uniOk, M5_sunit (basis-twisted modules w = C* v_tilde): Any ternary z in [-1,1]^{2m} outside ker_small(C*^T) maps to z_tilde = C*^T z of height exp(Theta(m log m)), paying log(|F|/J) >= (r/d) x + Theta(D m log m) (c >= 1, alpha >= 1/3; measured escaping ratios 3.69..4.23); vectors landing inside small-height subspaces of v_tilde inherit c = 1 above.
+
+
+4. SHARPEST PROVED OBSTRUCTIONS (PARTIAL COMPENSATION LEMMA)
+
+Complete proofs are in codex/scratch/dd_g/comp_proofs.txt:40-114:
+
+1. Submodule-KH Compensation Lemma [proved] (comp_proofs.txt:42-69):
+   For ANY reduced linked O_k-module M of rank m and ANY invertible ternary matrix B in A^{m x m}, the submodule M_B := B * M has k * M_B = k * M (hence identical KH degree T) and c_B subseteq c, so J_B = N(c_B)N(c'_B) >= J (log(J_B / J) >= 0 HELPS the bound). Applying Ideal-Relative Theorem KH (notes/subthird_results.md:136) to M_B gives sum_i log M_{B,i} - log J >= (x - D log(C_k D))/T. If B witnesses M_{B,i} <= e^{kappa_i} t_i on a set U_B of u embeddings while M_{B,j} <= C_k m e^{lambda_j} t_j on U_B^c, then
+     Q >= (x - D log(C_k D)) / T - sum_{i in U_B} kappa_i - sum_{j notin U_B} lambda_j - (D - u) log(C_k m).
+   In particular, whenever u = D - o(D) embeddings share B with kappa_i = O_k(m) (as in M3_adjZ), Cramer's bound lambda_j <= (e/2) m log m + O_k(m) on the o(D) exceptions gives Q >= (1 - o(1)) x/T - O_k(Dm) unconditionally! And when B in GL_m(O_k) is unimodular on u = D/2 embeddings (M4_uniOk), z |-> B^{-T} z preserves all proper k-subspaces and norms identically.
+
+2. Two-Place Covolume Obstruction Against Conjugate Absorption [proved] (comp_proofs.txt:71-83):
+   For any m k-independent vectors u^(1), ..., u^(m) in O_k^m (k = Q(sqrt(2))) and any two invertible ternary matrices B_1, B_2 in A^{m x m} with ||sigma_r(B_r) sigma_r(u^(l))||_inf <= tau_r (r = 1, 2), combining 1 <= |N_{k/Q}(det U)| with Hadamard |sigma_r(det B_r)| >= (C_k sqrt(m))^{-m} proves log tau_1 + log tau_2 >= -2 log(C_k m). Thus -m log m log-thresholds at sigma_1 MUST be paid back +m log m - O(log m) at sigma_2; conjugate absorption fails.
+
+3. Support-Width Lemma & General-Pole Divided-Difference Identity [proved] (comp_proofs.txt:88-114):
+   - Support-Width: Any y in C^m \ {0} with log(||y||_inf / ||sigma(A)y||_inf) = lambda >= gamma m log m has s_big := #{j : |y_j| >= e^{-lambda/2} ||y||_inf} >= (gamma/e - o(1)) m (by Cramer on an invertible s_big x s_big minor of sigma(A)_{J_big}), forbidding small-cluster localization of loss to o(m) poles.
+   - General-Pole Identity: For ANY monic squarefree pole polynomial R_j(T) of degree d_j >= 1 with roots beta_{j,1..d_j} under sigma, Lagrange remainder interpolation yields identically
+       w_{2+j}(alpha_i) = f_sigma[alpha_i, beta_{j,1}, ..., beta_{j,d_j}]
+                        = sum_{nu=1}^{d_j} [ prod_{l != i} (beta_{j,nu} - alpha_l) ] / R'_{j,sigma}(beta_{j,nu}),
+     unifying linear-pole rho-inflation (Gemini C3) and quadratic-pole B-inflation (Codex R_j = T^2 - r_j^2, dd/codex/proof.txt:49) across all Theta(m) heavy poles.
+
+
+5. WHAT REMAINS AND NEXT STEP
+
+What remains open in the Compensation Lemma: ONLY the fully non-aligned regime where u ~ D embeddings attain lambda_i ~ m log m using pairwise distinct, unshared ternary bases A^(i) (with max_B |U_B| = o(D)) inside H = O(x/T).
+Concrete next step: Prove that on any degree-(p + 1) divided-difference numerator curve alpha |-> [G(alpha)] in P^{m-1}(C) with H = O(D m log m), at most O_{k,gamma}(m) non-clustered roots can land in distinct singular subspaces E_{A^(i)} (from dd/gemini/proofs.txt:101), forcing a single basis B to be shared by u = D - O(m + log b) = D - o(D) embeddings if u ~ D, where Theorem 4.1 (Submodule-KH) immediately closes Q >= (1 - o(1)) x/T.
