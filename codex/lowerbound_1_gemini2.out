@@ -1,0 +1,98 @@
+2. INDEPENDENT MODEL M_G, THEOREM G, AND PROOF SKETCH
+
+Notation: x = ln N, F_a = x^a (ln x)^(1-a), L_N[a, c] = exp((c + o(1)) F_a).
+
+Definitions (The Filtered CRT-Blind Linked-Valuation Model M_G)
+
+An instance is a batch of K distinct odd composite integers N_1, ..., N_K in [N, 2N) with 1 <= K <= N^(1/2 - eps) (fixing eps > 0). An algorithm A in M_G is an adaptive randomized decision-DAG / RAM computation with step filtration F_0 subset F_1 subset ... subset F_T of total cost T, interacting with N_1, ..., N_K through four priced operations:
+
+(D1) Linked Presentations and Checkable N-Publicity [MODEL-ASSUMPTION NP].
+At cost >= 1, A may register for a target N_j a linked presentation P_m = (A_m, M_m, psi_m), where A_m = K_{m,1} x ... x K_{m,s} is an etale Q-algebra of degree D_m = sum_l [K_{m,l} : Q] >= 2 (each K_{m,l} irreducible over Q; reducible polynomials must be split into their Q-irreducible factors), M_m = Z w_{m,1} + ... + Z w_{m,r} subset O_{A_m} is a rank-r_m >= 2 lattice, and extraction uses either:
+  (i) Ring-map linking (k_m = 2): unital ring maps psi_l : R_{m,l} -> Z/N_j Z on orders R_{m,l} containing pr_l(M_m) that agree on M_m; or
+  (ii) Ramified linking (k_m = 1): ambiguous-ideal / 2-torsion genus extraction in K_{m,1} with N_j | disc(O_{K_{m,1}}).
+Checkable N-Publicity (Axiom NP): Registering P_m does not split N_j outright: evaluating psi_l on Q-idempotents of A_m, order-index scalars away from Res, and generator denominators/leading coefficients gives gcd(., N_j) in {1, N_j}. Furthermore, any non-splitting side-channel computation on the bits of N_j outside P_m passes at most O(log log N) total advice bits to the relation engine.
+[PROVED Consequence, Lemma ND/CC]: Any P_m satisfying NP that can produce a nontrivial square-root split of N_j is non-coincident (not type A) and satisfies N_j^(k_m) | disc(W_m) for the product norm form W_m(a) = prod_l N_{K_{m,l}}(sum_i a_i w_{m,i,l}), with k_m = 2 for ring-map and k_m = 1 for ramified linking; moreover, for s >= 2 distinct degree-d fields sharing a root mod N_j, pairwise resultants satisfy N_j | Res(f_u, f_v).
+
+(D2) Candidate Selection, Two-Stage Sharing, and Lattice Filtering.
+At step t, inside a registered P_m for target N_{j_t} (target j_t fixed before testing), A may optionally set up a sublattice Lambda_{M_t} subset Z^(r_m) forcing divisibility by an ideal modulus M_t = prod q^(e_q) built from already-discovered prime ideals (cost >= 1 per setup), pick a new primitive vector a_t in Lambda_{M_t} intersect [-E_t, E_t]^(r_m) with log E_t <= B_t / (16 D_m) (for rank 2, i.e. doubly-subexponential boxes allowed), and test individual component cofactors C_{t,l} = |N_{K_{m,l}}(theta(a_t)_l)| / N(M_{t,l}) at cost >= 1 per component tested. Crucially, A may test one shared component first (e.g. a rational side) and test V partner fields only on smooth survivors, paying 1 + V * 1_{survivor} rather than V.
+
+(D3) Conditional Smoothness and Prime-Incidence Martingale [HEURISTIC / MODEL-ASSUMPTION SM].
+Conditional on F_{t-1}, for each newly tested component cofactor C_{t,l} >= 1:
+  (SM1) Pr[C_{t,l} is B-smooth | F_{t-1}] <= rho(log C_{t,l} / log B) * L_N^(o(1)), and joint smoothness across non-isomorphic components of a_t multiplies up to L_N^(o(1)).
+  (SM2) For any prime p > B not dividing N(M_t), Pr[v_p(C_t) is odd | F_{t-1}] <= D_m (log N)^(O(1)) / p and Pr[p^2 | C_t | F_{t-1}] <= D_m (log N)^(O(1)) / p^2.
+  (H_sel) For forced moduli with Q = N(M_t) > (2 E_t)^(r_m), E[#new primitive box points in Lambda_{M_t} | F_{t-1}] <= O((2 E_t)^(r_m) / Q), and sublevel counts on Lambda_{M_t} inherit discriminant scaling disc(W_m o M_t / Q) = disc(W_m) * Q^((D_m - 1)(D_m - 2)) at r_m = 2.
+
+(D4) Higher-Rank Sublevel Regularity and Dependency Rank [MODEL-ASSUMPTIONS LP_exc^rel, R].
+  (LP_exc^rel) For r_m >= 3, the count of unit-inequivalent primitive candidates in [-E, E]^(r_m) with 0 < |W_m(a)| <= X whose parity rows are independent modulo proper subspaces and lower-norm products is <= C_{r_m} N_j^(-r_m(r_m-1)/(D_m(D_m-1))) X^(r_m/D_m) + L_N^(o(1)) B. (This is PROVED without assumption at r_m = 2 up to E <= 2^(B/(16 D_m)) via Bean's area theorem + Farey-trapezoid Lemma FT, and PROVED for general-position / frame-coverable r_m >= 3 when (2E)^(r_m-1) <= B / (4 r_m D_m).)
+  (Axiom R) A target N_j splits only via a nonempty F_2-dependency D_j of its ideal-valuation rows (including Z-kernel / Z-route dependencies, which reduce mod 2 to F_2-dependencies). If D_j uses only primes below scale B_v on each active non-isomorphic field K_v, every active field satisfies R_v >= B_v^(1 - o(1)), and if V_+ active fields link through a shared base K_0 at scale B_0, sum_{v=1}^(V_+) R_v >= B_0^(1 - o(1)). Sparse F_2 linear algebra on S active columns costs S^omega (we state bounds for both omega = 2 and free LA omega = 0).
+
+Theorem G (Unified Compositional, Adaptive, and Amortized L_N[1/3] Lower Bound) [MODEL-PROVED in M_G]
+
+Let A be any algorithm in M_G succeeding with probability >= 1/2.
+1. Universal Exponent and All-N Floor (including special N, arbitrary DAG descent without Assumption T, and free LA omega = 0):
+   For K = 1 and EVERY odd composite N, T >= L_N[1/3, c_univ] with c_univ = (1/18)^(1/3) = 0.3816 if D_1 touches primes > T^2 (log N)^C, and if all active primes are <= T^2 (log N)^C (or under tree-incidence T), T >= L_N[1/3, (16/9)^(1/3)] = L_N[1/3, 1.2114] (ramified k = 1) and T >= L_N[1/3, (32/9)^(1/3)] = L_N[1/3, 1.5263] (ring-map k = 2, matched by SNFS).
+2. Generic Single-N Floor (MNFS tightness):
+   For 1 - o(1) of N in [N_0, 2 N_0), under full-box / typical-coefficient norm profile (Theorem GAE), T >= L_N[1/3, c_M] with c_M = ((92 + 26 sqrt(13))/27)^(1/3) = 1.9019 at omega = 2, and T >= L_N[1/3, 1.8595] even at omega = 0 (free linear algebra).
+3. Batch / Factory Floor:
+   For 1 <= K <= N^(1/2 - eps) independent random semiprimes in [N_0, 2 N_0) under the same generic profile, total cost satisfies T >= max(L_N[1/3, c_M], K * L_N[1/3, c_fact]), where c_fact = 2((2 + sqrt(6))/6)^(2/3) = 1.6386 at omega = 2 (and 1.6363 at omega = 0).
+
+Proof Sketch (with Proved vs Heuristic/Gap Steps Marked)
+
+Step 1: Reduction of advice, batching, and Z-route [PROVED].
+By bounded-advice enumeration, O(log log N) non-splitting side-channel bits multiply success probability by at most poly(log N) = L_N^(o(1)). For batch size K <= N^(1/2 - eps), any nonzero integer norm W != 0 of log-size <= N^(o(1)) generated independently of N_j is divisible by at most tau(W) values, hitting a random N_j with probability <= N^(-1 + o(1)); union-bounding over T * K <= N^(1 - eps) pairs shows zero cross-target lucky relations w.h.p., so each N_j must acquire its own N_j-linked dependency D_j (sharing only N_j-independent rational tables). By Lemma XK-Z, any Z-route exact cancellation over Z + unit lattices projects mod 2 to a nonempty F_2-dependency D_j.
+
+Step 2: Closing arbitrary large-prime hypergraphs and non-tree descent DAGs without Assumption T [MODEL-PROVED from SM1, SM2, H_sel, FT].
+Suppose T = L_N[a, c]. Set the analyst cutoff B_* = T^2 (log N)^C (so log B_* = (2 + o(1)) log T). Let L_+ be the set of prime ideals of norm > B_* occurring with odd valuation in D_j.
+Case 2a (L_+ != empty): Every q in L_+ has even total valuation in D_j, so it occurs >= 2 times; let t_max(q) be its last chronological step in D_j. By (SM2), the expected number of pairs t_1 < t_2 <= T with an unforced odd hit or unforced square hit of ANY prime > B_* across the entire run is <= O(T^2 D (log N)^(O(1)) / B_*) = o(1). Hence w.h.p., EVERY q in L_+ divides the forced lattice modulus M_{t_max(q)}. Now let t_last = max_{q in L_+} t_max(q). Any odd-valuation prime p > B_* of W(a_{t_last}) lies in L_+, forcing t_max(p) = t_last and thus p | M_{t_last}. Hence the unforced cofactor C_{t_last} = |W(a_{t_last})| / Q (with Q = N(M_{t_last}) > B_*) is 100% B_*-smooth! At rank 2, G = (W o M_{t_last}) / Q has |disc G| >= N^k Q^((D-1)(D-2)), so Bean + Lemma FT give area A_G <= 16 N^(-k/(D(D-1))) Q^(-(D-2)/D). Outside the O(D log E) Farey-cusp points (controlled by H_sel), |G| <= Y has zero primitive points until log Y >= k x / (2(D-1)) + ((D-2)/2) log B_* >= sqrt(k x log B_*). At log T = c F_a, log Y >= sqrt(2 c k) x^((1+a)/2) (ln x)^((1-a)/2), so T * rho(log Y / log B_*) >= Omega(1) forces F_a >= F_((1-a)/2), i.e. a >= 1/3, and at a = 1/3 gives c >= (k/18)^(1/3). (Gap 1: at rank r >= 3 on sublattices, replacing H_sel + FT needs the sublattice form of LP_exc^rel.)
+
+Step 3: Compositional multi-family yield and MNFS / Factory tightness when L_+ = empty [MODEL-PROVED from FT, LP_exc^rel, SM1, Axiom R].
+When L_+ = empty, all primes in D_j have norm <= B_*. Partition the candidates tested for target N_j by presentation P_m, dyadic norm level Y, and component smoothness scale B_v <= B_* (losing only poly(log N) = L_N^(o(1)) over levels).
+  - Disjoint-algebra composition: Distinct non-isomorphic fields K_v have disjoint prime-ideal column blocks. By Axiom R, every active field K_v in D_j needs R_v >= B_v^(1 - o(1)) smooth relations of its own. Thus taking a union of M unlinked polynomial pairs requires sum_{m=1}^M B_m relations, so M cancels out and gives zero advantage over the best single pair!
+  - Star / MNFS composition: Suppose V_+ = L_N[a, v] active fields f_1, ..., f_{V_+} share one base component g (tested N_0 = e^(C_0) times at scale B_0, yielding S_0 survivors, each tested across the V_+ fields at cost V_+ S_0). For single-pair or k-ramified rank-2 (v = 0), dyadic sublevel summation with Lemma FT gives R_1 <= min(N_0, D N^(-k/(D(D-1))) Y^(2/D)) * rho(log Y / log B_1) >= B_1; even at omega = 0, maximizing 3 b (2e - b) <= 3 e^2 at b = e yields (2e)^3 >= (16 k / 9), giving a >= 1/3 and c >= (16/9)^(1/3) (k = 1) or (32/9)^(1/3) (k = 2). Higher rank r >= 3 under LP_exc^rel gives norm floor (r-1)x/(D-1) + (D/r)C, strictly worse than r = 2.
+  - Under Theorem GAE (1 - o(1) of N), coprime pairs with N | Res obey the height lower bound, givingeta_0 = eta_v = 1/d for linear g + degree-d f_v (while multiple linear sides fail by N | a_1 b_2 - a_2 b_1 => H_g >= sqrt(N)). Enforcing T >= max(N_0, V_+ S_0, (max(B_0, V_+ B_v))^omega) and V_+ R_v >= max(B_0, V_+ B_v) reproduces Coppersmith's exact MNFS program (c_M = 1.9019 at omega = 2; 1.8595 at omega = 0). Dropping N_0 from the per-N charge (shared across K <= N^(1/2-eps) targets, while each N_j still needs >= max(B_0, B_v) relations of its own) reproduces the Factory program (c_fact = 1.6386 at omega = 2; 1.6363 at omega = 0). QED.
+
+Inclusion Table (Algorithms Inside M_G; Tightness at a = 1/3)
+
+- Dixon / CFRAC / QS / MPQS / SIQS / Class-group: Inside M_G (D = 2; |W| >= N^(1/2+o(1)) gives L_N[1/2]).
+- GNFS (base-m, Kleinjung, skewed, Joux-Lercier 2-nonlinear): Inside M_G; tight at L_N[1/3, 1.9230] (single pair, GAE).
+- MNFS (Coppersmith V = L[0.125] fields): Inside M_G via two-stage survivor pricing; tight at L_N[1/3, 1.9019].
+- SNFS and Kirchner ramified fields: Inside M_G; tight at L_N[1/3, 1.5263] (k = 2) and L_N[1/3, 1.2114] (k = 1).
+- TNFS / tower rings / t-dim sieving / rank-r GP modules: Inside M_G; tower degree cancels or worsens, r = 2 optimal.
+- Line / special-q lattice sieving & bounded large primes: Inside M_G (H_sel + C2(c) gain u^(O(1)) = L_N^(o(1))).
+- Multi-level descent trees AND non-tree hypergraph DAGs: Inside M_G (Step 2 closes a >= 1/3 without Assumption T).
+- Factorization Factory (K <= N^(1/2 - eps)): Inside M_G; tight at L_N[1/3, 1.6386] per N after L_N[1/3, 2.0069] precomp.
+- Z-route (XK-Z) and adaptive family switching / O(log log N)-bit leak hybrids: Inside M_G.
+
+
+3. ADVERSARY: NATURAL ALGORITHMS VIOLATING THE ASSUMPTIONS (AND VERDICTS)
+
+A1. Dense-Batch Doubly-Smooth Difference Factory (violates Preamble's unqualified batch desideratum & M_G's K <= N^(1/2-eps) / target-preassignment).
+Construction: Given K distinct semiprimes N_1, ..., N_K in [N, 2N) in a hash set, fix B = (log N)^3. Since Psi(x, (log N)^3) = x^(2/3 - o(1)) >> x^(1/2), enumerate bottom-up a set U_0 of 8 N^(1/2) (log N)^4 B-smooth integers in [2N, 5N/2] and a set V_0 of 8 N^(1/2) B-smooth integers in [N/2, N]. For all (u, v) in U_0 x V_0, look up whether m := u - v in [N, 2N] belongs to the batch; if m = N_j, record the certified doubly-B-smooth congruence u = v (mod N_j). Solve each N_j's F_2-matrix in O(B^3) = (log N)^9 time. Total work is O(N (log N)^4 + K (log N)^9). For K = Theta(N log log N / log N), amortized cost is (log N)^(O(1)) per target (a = 0 < 1/3!), using 100% pure relation collection and zero gcd splits or trial division! (With gcd splits, Bernstein remainder-tree trial division already gets poly(log N) per target at K = sqrt(N).)
+Verdict: Shows the preamble's unqualified batch desideratum is TOO STRONG (literally false at large K). M_G's batch cap K <= N^(1/2 - eps) and target-preassigned query rule are mathematically necessary, not a fudge.
+
+A2. Class-Group Quadratic 2D-CRT List Decoder Beyond Johnson ("M2", violates H_sel / priced point-testing).
+Construction: Set beta = 1/4, B = L_N[1/4, k], K_box = L_N[3/4, 3/(16k) + eps]. For pi(B) random known-exponent ideals in Q(sqrt(-4N)) with reduced norm forms Q_m(x, y) = A_m x^2 + B_m x y + C_m y^2 (A_m, C_m ~ sqrt(N)), compute (A_m, B_m, C_m) mod q^(e_q) for all q <= B (size L_N[1/4, k], completely N-public, and information-theoretically fixing all smooth witnesses in [1, K_box]^2). Feed this syndrome to a hypothetical poly(B)-time CRT list-decoder operating above Shannon/counting capacity (agreement/entropy ~ (x/ln x)^(1/4) -> infinity) but far below the Johnson radius sqrt(k_msg * pi(B)). Every output is a complete single-norm relation, giving L_N[1/4].
+Verdict: Shows M_G (and the preamble) is TOO STRONG. The input is purely N-public, positive-definite disc -4N forms evade known F_p-DL reductions, and RS codes recently achieved capacity list-decoding beyond Johnson. Excluding M2 via H_sel / point-pricing is an unproved computational hardness assumption (a genuine model restriction, though no fast CRT decoder at vanishing rate is known).
+
+A3. Multi-Cone Unit-Cancelled Rank-r >= 3 Module (violates LP_exc^rel while obeying NP, SM, H_sel, and Theorem KH).
+Construction: Over a fixed totally real subfield k of degree e >= 3 (unit rank >= 2, e.g. Q(zeta_7)^+) splitting mod N, build a relative-rank m >= 3 linked O_k-module (d ~ sqrt(x), r ~ x^(1/4)). Although Theorem KH forces generator height >= Omega(x^(3/4)), enumerate short vectors via LLL/BKZ across L_N[1/4] distinct archimedean conjugate-weighting cones generated by O_k^x (where sublevel volume V_F = infinity), seeking sparse vectors where multi-generator cancellation drops |W(a)| to exp(O(sqrt(x log x))), giving L_N[1/4].
+Verdict: Shows M_G's arithmetic primitive at degenerate/large-box rank >= 3 is SLIGHTLY TOO STRONG (a plausible Diophantine counting conjecture LP_exc^rel, not a proved theorem, unlike r = 2 where FT is proved).
+
+A4. Growing-k Split / PTE Identities and Adaptive Interval/Bohr Constructors (Prop SI / E2 / E3; violates SM1 on constructed side).
+Construction: (i) Build u_k in [kN, kN + h] (h = L[2/3], y = L[1/3]) bottom-up as a y-smooth product steered by modular residues, testing v_k = u_k - kN: achieves L_N[1/3, 1.2114] (< c_M = 1.9019, still a = 1/3). (ii) Extend to 2D Bohr windows |u - kN| <= y (or non-exact split polynomial pencils prod_{i=1}^u (m - a_i)) to get sub-L[1/3].
+Verdict: (i) Shows any single-N constant floor > 1.2114 is TOO STRONG for constructive one-sided methods, while confirming a >= 1/3 holds. (ii) Sub-1/3 Bohr/doubly-smooth constructors should be EXCLUDED from a factoring-specific relation model as "F_p-DL / navigation in disguise" (modulus-generic solvers give L_p[a] prime-field DL by Prop DLT; coset navigation is FACT ^ DL).
+
+A5. Twisted-Root / Non-Blind Presentation Oracle (violates NP or SM2).
+Construction: Register Q[X]/(X^2 - 1) with X -> x_0 mod N where x_0^2 = 1 (x_0 != +-1), OR in Dixon pick random x_1, set w = x_1^2 mod N, and query the nontrivial partner root x_2 of w mod N (2 relations, zero smoothness!).
+Verdict: EXCLUDE (pure factoring in disguise; cleanly caught by checkable Axiom NP and SM2 without ad hoc rules).
+
+A6. Nested Retained N-Exponent Gates (PRIM) or Pochhammer Factorial SLPs Feeding Coppersmith (violates O(log log N) non-splitting advice).
+Construction: Run a poly(log N)-step constant-free SLP for k! mod N (binary-searching p) or a deep additive-nested x -> (x^N + c)^N program extracting n/4 bits of p without splitting, then build f(x) = x - p_0 mod N of height N^(1/4) to finish trivially.
+Verdict: EXCLUDE (non-relational factoring paradigm; natural boundary of a relation-collection theorem, contradicted by the tau-conjecture / Coppersmith barrier).
+
+
+4. THE THREE WEAKEST POINTS OF THE ARGUMENT
+
+1. Pricing smoothness via point/lattice queries (H_sel / SM1) rather than computational complexity of public syndromes: The prime-power residues of a polynomial mod q^(e_q) (q <= B) take only O~(B) bits yet uniquely fix all smooth box points; ruling out beyond-Johnson CRT decoders (Adversary A2) and constructive interval/Bohr listers (Adversary A4) is a method-class restriction, not an arithmetic theorem.
+2. Unproved sublevel exception counting at rank r >= 3 (LP_exc^rel): While rank 2 is proved up to doubly-subexponential boxes (Bean + FT) and generator heights at r >= 3 are proved (Theorem KH), ruling out multi-cone unit cancellation in frame-less type-D modules (Adversary A3) still rests on LP_exc^rel.
+3. Heuristic R and conditional Dickman independence (SM1-SM2) on structured algebraic sequences: Even CGPT/BBM prove the random-squares threshold only for uniform integers, whereas polynomial norms have Galois-group root correlations (changing local densities by O(1)) and deterministic/adaptive selectors can create subtle coprimality or Blum-character dependencies unless Axiom R holds.
