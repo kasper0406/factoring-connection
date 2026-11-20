@@ -139,3 +139,35 @@ classical, not Masullo-specific.
 3. **R, rank-to-fresh-residual lemma for shared descent (both).** A row introducing an unseen odd large-prime column
    gives a pivot. Bound the remaining rank from rows supported on already-exposed primes or carrying large even
    powers, charging their actual stripped divisors. This is exactly what DAG-POOL needs to remove Assumption T.
+
+## Addendum: Opus critic (read-only) on Rel-BT and the determinant obstruction
+
+**Rel-BT: ACCEPT WITH FIXES.**
+- (i), (ii), the corrected (iii) and (iv) were re-derived and are correct. The per-cone volume product is exactly
+  N^{−m(m−1)/(q(q−1))}.
+- **MAJOR, scope.** "Closes door (i)" holds only under all of:
+  - Δ_rel ≠ 0 (relatively frame-less modules stay open);
+  - the R3 model ledger (smoothness heuristic, H7 prefactor);
+  - the box condition N_units·rD(2E+1)^{r−1} ≤ B/4;
+  - a height budget S = poly(x).
+- **MAJOR, proof gap.** The complex-place volume lemma (codex's spherical-Hölder sketch) must be written out. C^m as
+  R^{2m} is not in Bean–Thunder general position. Only exp(O(m log m)) is needed.
+- **MINOR.**
+  - (i) is at 𝔭_k = ker(ψ mod p) only.
+  - The cones remove O_k^× duplicates, not O_K^×·O_K′^×.
+- **Novelty: modest.** (i) and (ii) transfer R1/R4. The new content is the finite-volume unit-cone count over fixed
+  k. It is vacuous at E = 1.
+
+**Determinant obstruction: ACCEPT WITH FIXES.**
+- All steps verified: the identity, F₀ ≥ 1, the column-replacement/Hadamard contradiction, unit invariance,
+  |S₊| ≥ G/(2τ), and the dyadic version with q ≤ D/(2r).
+- At the exact balance the count is Θ(D) with constant ≈ 1/(4e²).
+- **MAJOR.** It is a structural constraint, not a bound on N_ind or yield. Accurate wording: "few-embedding steering is
+  ruled out outside a priori, unit-invariant spaces". The ≤ D subspaces (V_i = V_ī) can have dimension m−1, and their
+  parity rank is uncharged.
+- **MAJOR.** It holds at bounded projective height only.
+- **MINOR.**
+  - State KH's hypotheses and log Y ≤ (1−c)H̃.
+  - Replace 2n by n₁+n₂.
+  - Record the J = N𝔠·N𝔠′ typo fix at subthird_results.md:135.
+- **Novelty: incremental.** A Liouville/Schmidt gap principle that quantifies KH's envelope corollary.
