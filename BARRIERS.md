@@ -58,3 +58,10 @@ Model theorems and negative results, not factoring lower bounds. Summarised in t
   - [`fruit`](notes/fruit_results.md): hybrid rows give fruitfulness, but one row costs an L[1/3] descent (Theorem HYB); randomised square roots and involutions are refuted.
   - [`cov38b`](notes/cov38b_results.md): deterministic below N^{1/5} needs a saving of 7/25, while phase-discarding methods cap at 4/25 (Theorem B); there is no intermediate prize (Prop 0).
   - [`cuspcoef`](notes/cuspcoef_results.md): one a_f(N) is OPEN; Theorem DFB is a model barrier; native cost ≥ N^{1/2}.
+- Phase 33 (2026-11-20), α ≥ 1/3 model theorem and its escape hatches:
+  - [`lowerbound`](notes/lowerbound_results.md): unified MODEL theorem. In a priced valuation-probe model (assumptions H, R, credit), any relation-certified extraction with credited residual profile λ(k) ≥ A√(x log k) costs ≥ L[1/3, (4A/3)^{2/3}]. All-N rank-2 floors are 1.2114 and 1.5263.
+  - The three escape hatches: [`hatch`](notes/hatch_results.md), [`chase`](notes/chase_results.md), [`dd`](notes/dd_results.md), [`comp`](notes/comp_results.md). None opened.
+    - **H** reduces to the original witness search.
+    - **Profile (LP_exc^rel)** is closed for fast product growth, few deep embeddings, rank 3, split poles with κ < √2, and shared near-threshold subspaces. Open: the unshared-basis regime.
+    - **R** needs a certificate-accounting amendment.
+  - Side checks, both negative: RH/GRH claims ([`grhremark`](notes/grhremark_results.md), [`multcopp`](notes/multcopp_results.md), [`masullo`](notes/masullo_results.md)) give no exponent change; "≡ FACT/DL" targets ([`equivtarget`](notes/equivtarget_results.md)); [`subthird`](notes/subthird_results.md) (Theorem KH).
