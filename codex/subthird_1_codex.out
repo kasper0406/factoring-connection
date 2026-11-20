@@ -1,0 +1,22 @@
+**The small-height route to \(L_N[1/4]\) is ruled out for the reduced type-D pair.** I found a deterministic generator-height bound that applies to non-power generators and survives the infinite unit group. The remaining opening is sparse selection of exceptionally small norms inside a high-height module. [Proof and experiment report](/Volumes/git/factoring-connection/codex/scratch/subthird_c/consultant_c.txt)
+
+Fix \(k\) of degree \(e\), let both extensions have relative degree \(n\), and take a linked \(\mathcal O_k\)-module of relative rank \(m\ge3\), after removing coincident sides and repeated subfield norms. Write \(x=\log N\), \(d=en\), and \(r=em\). If \(H\) is the sum over embeddings of the log of the largest generator magnitude, then
+\[
+H\ \ge\ \frac{x}{2\lceil2n/s\rceil+1}-O_k(m\log n),
+\]
+where \(s\ge m/2\) is the larger projection rank. Products of linked generators still agree modulo \(N\). Linear Kneser shows that products of degree \(O(n/m)\) span an entire field on one side, forcing a lattice index divisible by \(N\). At the proposed balance the main term is \(x^{3/4+o(1)}\), against the required \(H=x^{1/2+o(1)}\). [Linear Kneser theorem](https://upcommons.upc.edu/server/api/core/bitstreams/f813e05f-971a-41dc-9ade-72ffa6f1b0ba/content)
+
+The ternary box supplies \(3^r\) candidates. With \(B=L[\alpha]\), the ledger balances a height charge \(r^c x/d\) against the degree term and gives \(\alpha=1/(4-c)\). Favourable failure of \(G_r\) requires \(c<1\), with \(c=0\) giving \(1/4\). The bound restores \(c=1\) for generator height. Turning that into a factoring floor still requires typical norm sizes. H5_r fails in this box, and exceptional points can occupy many different proper subspaces. [Grdeg ledger](/Volumes/git/factoring-connection/notes/grdeg_results.md:84)
+
+**Exact experiments** covered 437,920 nonzero coefficient evaluations on 24 balanced semiprimes of 60–96 bits. Sixteen special inputs supplied the subfield root from \(N\) alone. Eight additional inputs supplied it as advice. After removing projective duplicates and quotienting by coordinate-deletion rows, incremental prime-ideal parity ranks were:
+
+| Construction | Boxes | Aggregate norm cap | Uncapped |
+|---|---:|---:|---:|
+| Divided differences | 24 | 0 | 1 |
+| Full linked-lattice LLL | 32 | 0 | 0 |
+| Common sparse polynomials | 24 | 4 | 53 |
+| Power controls matched to the sparse family | 24 | 84 | 123 |
+
+Every tested non-power construction had **zero incremental rank under the aggregate cap at 84 and 96 bits**, including the held-out growing-degree tests. These are finite yields. \(G_r\) supplies no exact finite-rank prediction, and the data do not estimate an asymptotic factoring exponent. [Per-box yields and measured exponents](/Volumes/git/factoring-connection/codex/scratch/subthird_c/yield.csv)
+
+No construction survived. I put the residual type-D sparse-selection route below **0.5%** for general \(N\). No separate mechanism clears that threshold in my assessment.

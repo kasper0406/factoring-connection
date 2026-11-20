@@ -1,0 +1,67 @@
+A1 (continued from item 2: multiplicity mechanism and Lean statements).
+
+2. Local p-adic jet divisibility at inert primes [PROVED in Lean, assuming formalization soundness; classical in substance via Dwork/Cartier]:
+   In Formalism/GaussJetBounds/Statement.lean (OneLetterRadius, OneLetterR, LemmaR), Formalism/SharpRestriction/Divisibility/CartierLocalBounds.lean (rho, gam, ThmP), and Formalism/FormalGroupLog/Statement.lean (ltLog, IsFunEqType):
+   - OneLetterRadius states gam(p) - 1/(p + 1) = rho(p), where gam(p) = p/(p^2 - 1) = 1/p + 1/p^3 + 1/p^5 + ... and rho(p) = 1/(p^2 - 1) = 1/p^2 + 1/p^4 + ...
+   - On a CM curve or unitary Shimura variety at a prime p inert in K = Q(sqrt(-d)), reduction mod p is supersingular (formal group height 2), so the invariant derivation satisfies D^p = 0 (mod p). Its formal logarithm (ltLog, letterLog, jetLogG in Formalism/LocalRingCardinality/DataJet.lean) only acquires p^e denominators at degrees p^(2e).
+   - Differentiating a normalized theta/elliptic function a times brings in a! (Legendre valuation a/(p - 1) - O(log_p a)) while formal-group inversion/quadratic exponential only consumes rho(p)*a = a/(p^2 - 1) (the even prime powers). What remains is p-adic divisibility of D^a theta(0) * Omega^a by p^(a/p + a/p^3 + ... - O(log_p a)).
+   - Setting a = X * b and cutting off by Hodge/Fock weight w_j ~ b gives Formalism/LocalRingCardinality/DataParams₂.lean (vonMangoldtClassSum) and Formalism/ProductFormula/StatementOCCM.lean (gainCM): at each inert p, lift j wins valuation sum_{i odd} max(0, a/p^i - w_j). Multiplying by log p gives b * (X/p^i - 1)_+ * log p, encoding the Cesaro von Mangoldt sum over inert primes p <= X.
+
+3. Chaining m ~ sqrt(X) iterated theta lifts [PROVED in Lean relative to its literature structures]:
+   - A single lift (m = 1) has smoothing/cutoff slack O(X). Averaging G_z(X) across m Chebyshev nodes (Formalism/ZetaNonvanishingChebyshevWeights.lean: chebyshevWeightedAverage; Formalism/HalfLinks/Statement.lean: HalfLinksCore.lift) reduces discretization error to O(X/m), forcing m >= X^(1 - theta) = sqrt(X) at theta = 1/2 (RH).
+   - To sum m independent valuation gains in one object while paying the auxiliary evaluation degree only once, they chain m theta lifts U(X_0) -> U(X_1) -> ... -> U(X_m) between totally definite unitary groups of ranks N_j = k + j*(t + 1), sending pi |-> pi (+) mu_j[t] (Formalism/LocalRingCardinality/DataSpaces.lean: Spaces.X; DataKernels.lean: ColumnChain.col; Formalism/ThetaLiftIndependence/Statement.lean: chainOpM).
+   - By Rallis inner-product and seesaw identities (ThetaLiftIndependence/Statement.lean: LatSeeSaw, RallisAdj, ChainScalar, DetChain; Formalism/QuotientMetricDivisors/Statement.lean: SpecDet, StepB; Formalism/HermitianLattices/StatementMass.lean: SiegelMassRatio), the Gram determinant of the m-fold lift factors into m single-lift determinants. Taking logs, p-adic lattice-index gains add over j = 1..m (StepB), while evaluation at one Bessel/CM period of prime level T ~ (b*v/pi)^m (GlobalTheoremInputs.lean: BesselId; DataParams₂.lean: MAIN) pays -a * log T once.
+
+4. Stepanov-to-Z dictionary:
+   - "Points counted": all primes p <= X inert in K (DataHost.lean: InertK), weighted by log p.
+   - "Auxiliary polynomial": the evaluation/period map PtL between Hermitian O_K-lattices of algebraic modular forms on definite U(X_m) (DataForms.lean: MemberForms; Stepanov/Gram determinant in StatementOCCM.lean: ProductFormula, DetGain).
+   - "Degree bound": Bost's slope inequality (Formalism/LatticeSlopes/Statement.lean: SlopeInequality; Formalism/MeanHeightDescent/StatementJ.lean: DivisionInequalityWithCovolume), balancing finite-place p-adic valuations against archimedean Cauchy/Fock height m*(a*log a - a - a*log Omega), where log Omega = gamma + log(pi/v) - (L'/L)(1, chi_K) via Chowla-Selberg (GroundTheory/HeightsAndTheta/Heights/ChowlaSelberg/Statements.lean: ClassMean.Statement).
+
+A2. Mapping onto Coppersmith.
+
+- Nature of multiplicity [PROVED from Lean]: Spectrally isobaric (m summands mu_j[t]), converted via Rallis/Gram determinants into genuine p-adic divisibility at inert primes p <= X, and bounded against archimedean Fock/Bergman norms by the product formula.
+- Can it vanish at a hidden p | N without knowing p?
+  1. Partial yes at m = 1 [PROVED, elementary]: Choose d with Jacobi symbol (-d/N) = -1 in poly(log N) time. Without knowing p or q, one factor p is inert in K = Q(sqrt(-d)) (supersingular: D^p = 0 mod p) and the other factor q is split (ordinary: D^q = A_q * D mod q with A_q != 0 mod q). Hence integer CM jets E_a = D^a s(0) mod N satisfy p | E_a for ALL a >= p while remaining generically nonzero mod q, so gcd(E_a mod N, N) = p splits N without knowing p.
+  2. Fatal mismatch with Coppersmith [PROVED]: Coppersmith achieves p^m | H(x_0) at small degree d = O(m) because N and the shifted linear polynomial f(x) = x + p_0 are built into the ideal (N, f)^m. The remark's p-adic valuation is floor(a/p) + floor(a/p^3) + ... at z = 0: for EVERY a < p, floor(a/p) = 0, so vonMangoldtClassSum = max(0, a/p^i - w_j) = 0 in every lift, and m * 0 = 0. Zero systematic multiplicity occurs until jet order a >= p ~ sqrt(N).
+
+A3. Barrier check, height/determinant ledger, and "2/3 a priori".
+
+- Coppersmith / Howgrave-Graham ledger [KNOWN / PROVED, notes/topblock_results.md §2.3, notes/codex_r8_copp_bridge.md]:
+  For H in (N, x + p_0)^m intersect Z[x]_{<d}, |x_0| <= X = N^xi, p = N^beta (beta = 1/2):
+  - p-adic gain (LHS): m * beta * log N at the single hidden root x_0.
+  - Archimedean/det cost (RHS): (1/d) * log det L = (m(m+1)/(2d) + (d-1)*xi/2) * log N.
+  With theta = m/d, forcing H(x_0) = 0 requires xi < 2*beta*theta - theta^2 <= beta^2 = 1/4 (n/4 known bits). Rewriting Minkowski as Bost's SlopeInequality (deg L = -log covol L, mu(L) = deg L / rk L) is an exact algebraic identity; the theta^2/2 penalty comes inevitably from the unknown cofactor q^(m-j) inside N^(m-j).
+
+- Remark's Bost-slope ledger [PROVED from StatementOCCM.lean: TypeParams and QuotientMetricDivisors/StatementK.lean: TheoremDivIneq]:
+  - p-adic gain (LHS): sums over ALL ~X/(2 log X) inert primes p <= X, giving sum_{p <= X} 2*m*b*(X/p - 1)_+ * log p ~ m*b*X*log X, matching the archimedean jet height m*(a*log a - a - a*log Omega) - a*log T ~ m*b*X*log X.
+  - Restricted to ONE hidden prime p | N: a single prime contributes at most 2*m*b*(X/p)*log p, so LHS/RHS ~ (2 log p)/(p log X) << N^(-1/2) << 1. Because CM jets at 0 are modulus-blind (independent of N), their archimedean height pays for valuations at all inert primes <= a simultaneously; one prime never exceeds archimedean height. Injecting N as level into U(X) blows up the automorphic space dimension to N^(Theta(rk)) (notes/geometry_results.md; DataKernels.lean: ColumnsAtT).
+
+- Explaining "stop at 2/3 a priori" [PROVED from Lean]:
+  In Formalism/SizeWindowBrackets/GrowthBracketBoundOfSizeWindows.lean (bracketSizeWindowBrackets, lines 104-107) and SChain.lean (SizesTextAt, lines 207-225), the normalized upper bound on G_z(X) is (up to X^(O(eps))):
+    Err(X) ~ X/m  +  X*m/k  +  m  +  k/n^2
+  (node discretization X/m, Weyl/kernel rank shift X*m/k, covolume slope m, and initial rank k divided by an n-character Iwasawa twist family via RTF/Poincare orthogonality LinkS + BNBounds).
+  A priori — over a fixed CM field with no twist-family "division" (n = O(1)) — balancing X/m = X*m/k = k forces k = X/m and m^2 = X/m, so m = X^(1/3), k = X^(2/3), and Err(X) ~ X^(2/3), stopping at the zero-free strip Re(s) > 2/3. Introducing an Iwasawa tower of size n ~ X^2 (with Behrend sets, Formalism/BehrendSets/Statement.lean) divides k by n^2, allowing m ~ X^(1/2) and k ~ X^(9/2) so all four terms become O(X^(1/2+eps)). Note this 2/3 is a polynomial exponent X^(2/3) (i.e. L_X[1]), not subexponential L_N[2/3] or L_N[1/3].
+
+A4. Computational cost and finite-dimensional shadows mod N.
+
+- Chain cost [PROVED from Lean]: Purely an existence proof device. In Development/AutomorphicArithmetic/CharacterBoxes/EventuallyRankLeRpowOfLtOneDivFiftytwo.lean and SChain.lean, at scale X: m ~ X^(1/2), k ~ X^(9/2), CM degree 2f ~ X^2, Arthur parameter t <= X^400, final unitary rank N_m ~ X^400.5, level prime T >= exp((1/2)*X^(1/2+eps)), and definite Hermitian genus size >> exp(X^402) by SiegelMassRatio. Worse, getting nonzero valuation at p ~ sqrt(N) requires X >= p ~ N^(1/2) (already exponential); setting X = L_N[beta] only touches L_N[beta]-smooth primes and misses p completely.
+- Finite-dimensional shadows mod N [KNOWN / PROVED in repo models]:
+  1. Theta coefficients r_L(N): Eisenstein part is sigma_{k-1,chi}(N) (factoring-equivalent, notes/native_results.md Prop TRI); non-CM cusp part is open with native cost >= N^(1/2) (cuspcoef); CM cusp coefficients at (-d/N) = -1 vanish identically.
+  2. CM values / class polynomials H_D mod N: split N only when h(-D) is smooth (ECM/class-group family M, >= L_N[1/2], genusleak Thm GB).
+  3. Gauss/Jacobi sums: require known modulus; mod N they give Jacobi symbols or land in FROB/OA/NE1 (BARRIERS.md).
+  4. CM derivatives D^a theta(0) mod N: computable mod N via division-free polynomial recurrences, and genuinely split N for a >= p when (-d/N) = -1, but require a >= p ~ sqrt(N). Because D^ell = A_ell * D (mod ell) uses binomial(ell, k) = 0 (mod ell) — false mod composite N — D^a cannot be fast-forwarded mod N in poly(log a) steps (Theorem PT / FROB barrier); truncated series evaluation costs Theta~(a) = Theta~(N^(1/2)), worse than Pollard-Strassen N^(1/4). Replacing theta by a D-finite G-function destroys the height-1/height-2 formal-group asymmetry and collapses to a! mod N.
+
+A5. Verdict, P(alpha < 1/3), and pre-registered toy test.
+
+- Verdict [CLEAN KILL — PROVED in models, HEURISTIC overall]: No algorithm below L_N[1/3] (or even below N^(1/4)). Every specialization lands in a proved repo barrier:
+  1. Bost-slope + (N, x + p_0)^m ideal = Howgrave-Graham (notes/topblock_results.md Prop T / Lemma MI; notes/completeness_audit_results.md §7 Q4, n/4-bit barrier).
+  2. Mod-N CM derivations D^a mod N = valuation threshold a >= p ~ sqrt(N) + Theorem PT / FROB non-fast-forwardability (cost >= N^(1/2), or N^(1/4) if reduced to holonomic factorials).
+  3. Subexponential X = L_N[beta] = smoothness only, governed by size-entropy law Theorem SS (notes/suffmap_results.md, alpha >= 1/3).
+- P(alpha < 1/3, heuristic): < 0.1% (subjective; 0% from this mechanism directly).
+
+- Pre-registered toy test (codex/scratch/multcopp_g/prereg.md frozen before writing/running toy_test.py):
+  Curve w^2 = 1 - s^4 (CM by Z[i]), invariant derivation s'' = -2*s^3, exact integers E_a = D^a s(0) for a = 1 (mod 4) <= 401, and pure division-free mod-N recurrence on 30 balanced 14-20 bit semiprimes N = p*q with (-1/N) = -1 (p = 3 mod 4 inert, q = 1 mod 4 split):
+  - P1 (inert p in {7,11,19,23,31}) PASSED: p | E_a in 481/481 cases with a >= p; v_p(E_a) >= sum_{j>=0} floor(a/p^(2j+1)) - floor(log_p a) - 1 in 505/505 cases. At a = 401, p = 7: v_7(E_401) = 58 = floor(401/7) + floor(401/343) < v_7(401!) = 66 (theory 401*7/48 = 58.48), confirming exact cancellation of even-p-power formal-log denominators.
+  - P2 (split q in {5,13,17,29,37}) PASSED: A_q = E_q mod q matched Gauss's binomial mod q and was nonzero in 5/5; E_{r+k(q-1)} = A_q^k * E_r (mod q) held in 505/505; q nmid E_{1+k(q-1)} in 188/188.
+  - P3 (archimedean ledger) FAILED narrow pre-registered constants, CONFIRMED post-hoc: (log|E_401| - (401 log 401 - 401))/401 = -0.6057 vs pre-registered -log(varpi) = -0.2708 because sl(u)'s nearest pole is at (1+i)*varpi of modulus sqrt(2)*varpi (-log(sqrt(2)*varpi) = -0.6174, diff 0.012); max single-prime ratio v_p(E_a)*log(p)/log|E_a| was 0.3136 (vs < 0.15) at small a, still << 1 everywhere and decaying as O(1/log a).
+  - P4 (mod-N factoring) PASSED: at Coppersmith scale a_low ~ N^(1/4) < p, gcd(E_{a_low} mod N, N) = p succeeded in 0/30 (<= 2/30); at a_high > sqrt(2N), p | E_{a_high} in 30/30 and exact gcd = p in 30/30 (>= 25/30), confirming both split/inert separation and the hard a >= p ~ sqrt(N) wall.

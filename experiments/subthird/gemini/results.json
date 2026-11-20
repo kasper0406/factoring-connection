@@ -1,0 +1,249 @@
+{
+  "ledgers": {
+    "cg_crt": {
+      "beta": "1/4",
+      "log_X": "(1/2) * x",
+      "log_K": "(3/(16*kappa) + eps) * x^(3/4) * (log x)^(1/4)",
+      "agreement_over_entropy": "((1/2)*x) / (2 * log K) ~ (4*kappa/3) * (x / log x)^(1/4) -> infinity",
+      "alpha": "1/4 (for any fixed polynomial decoder exponent a >= 1)"
+    },
+    "door1": {
+      "c_eq_0_alpha": "1/4",
+      "relative_R1_c_eq_1_alpha": "1/3",
+      "relative_R1_predicted_slope_r6_D12_e2": "4/5"
+    }
+  },
+  "E1": {
+    "32": {
+      "B": 256,
+      "beam_hits": 24,
+      "rand_hits": 40,
+      "beam_over_rand": 0.6,
+      "sq_kernel_hits": 169,
+      "gauss_ctrl_hits": 185,
+      "sq_over_gauss": 0.9135,
+      "min_sv_over_N": 3.5e-05
+    },
+    "40": {
+      "B": 1024,
+      "beam_hits": 20,
+      "rand_hits": 28,
+      "beam_over_rand": 0.7143,
+      "sq_kernel_hits": 158,
+      "gauss_ctrl_hits": 155,
+      "sq_over_gauss": 1.0194,
+      "min_sv_over_N": 2.1e-05
+    },
+    "48": {
+      "B": 4096,
+      "beam_hits": 27,
+      "rand_hits": 35,
+      "beam_over_rand": 0.7714,
+      "sq_kernel_hits": 173,
+      "gauss_ctrl_hits": 152,
+      "sq_over_gauss": 1.1382,
+      "min_sv_over_N": 2.7e-05
+    }
+  },
+  "E2": {
+    "E": 256,
+    "num_instances": 12,
+    "total_grid_checks": 667,
+    "violations": 0,
+    "cusp_pass": "12/12",
+    "sample_rows": [
+      {
+        "name": "GNFS_b28_D4",
+        "D": 4,
+        "log2_disc": 78.3,
+        "cnt_at_xmin": 2,
+        "ft_err": 160,
+        "davenport_err_2sided": 10260,
+        "dav_over_ft_err": 64.12,
+        "max_cnt_over_ft_bound": 0.0013
+      },
+      {
+        "name": "SKEW_b28_D4",
+        "D": 4,
+        "log2_disc": 78.3,
+        "cnt_at_xmin": 2,
+        "ft_err": 160,
+        "davenport_err_2sided": 10260,
+        "dav_over_ft_err": 64.12,
+        "max_cnt_over_ft_bound": 0.0013
+      },
+      {
+        "name": "SNFS_b28_D4",
+        "D": 4,
+        "log2_disc": 63.9,
+        "cnt_at_xmin": 2,
+        "ft_err": 160,
+        "davenport_err_2sided": 10260,
+        "dav_over_ft_err": 64.12,
+        "max_cnt_over_ft_bound": 0.0006
+      },
+      {
+        "name": "GNFS_b28_D5",
+        "D": 5,
+        "log2_disc": 82.6,
+        "cnt_at_xmin": 2,
+        "ft_err": 200,
+        "davenport_err_2sided": 12312,
+        "dav_over_ft_err": 61.56,
+        "max_cnt_over_ft_bound": 0.00019
+      },
+      {
+        "name": "SKEW_b28_D5",
+        "D": 5,
+        "log2_disc": 82.6,
+        "cnt_at_xmin": 2,
+        "ft_err": 200,
+        "davenport_err_2sided": 12312,
+        "dav_over_ft_err": 61.56,
+        "max_cnt_over_ft_bound": 0.00019
+      },
+      {
+        "name": "SNFS_b28_D5",
+        "D": 5,
+        "log2_disc": 68.8,
+        "cnt_at_xmin": 2,
+        "ft_err": 200,
+        "davenport_err_2sided": 12312,
+        "dav_over_ft_err": 61.56,
+        "max_cnt_over_ft_bound": 0.00012
+      }
+    ]
+  },
+  "E3": {
+    "door2": [
+      {
+        "bits": 22,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 2.123
+      },
+      {
+        "bits": 22,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.9488
+      },
+      {
+        "bits": 21,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.466
+      },
+      {
+        "bits": 32,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.8336
+      },
+      {
+        "bits": 31,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.8938
+      },
+      {
+        "bits": 32,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.9226
+      },
+      {
+        "bits": 42,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 1.9323
+      },
+      {
+        "bits": 42,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 2.043
+      },
+      {
+        "bits": 41,
+        "rr_divides": true,
+        "coincide_when_a2_0": true,
+        "min_logF_over_logN": 2.0284
+      }
+    ],
+    "door1": [
+      {
+        "bits": 22,
+        "d1_norm_bits": 17.78,
+        "d2_norm_bits": 21.19,
+        "min_logF_pow_over_logN": 1.806,
+        "min_logF_nonpow_over_logN": 1.806,
+        "med_logF_over_logN": 3.6145
+      },
+      {
+        "bits": 22,
+        "d1_norm_bits": 17.11,
+        "d2_norm_bits": 21.83,
+        "min_logF_pow_over_logN": 1.8328,
+        "min_logF_nonpow_over_logN": 1.8328,
+        "med_logF_over_logN": 3.6698
+      },
+      {
+        "bits": 21,
+        "d1_norm_bits": 16.79,
+        "d2_norm_bits": 20.72,
+        "min_logF_pow_over_logN": 1.8541,
+        "min_logF_nonpow_over_logN": 1.8541,
+        "med_logF_over_logN": 3.7123
+      },
+      {
+        "bits": 32,
+        "d1_norm_bits": 29.46,
+        "d2_norm_bits": 30.3,
+        "min_logF_pow_over_logN": 1.8728,
+        "min_logF_nonpow_over_logN": 1.8728,
+        "med_logF_over_logN": 3.7455
+      },
+      {
+        "bits": 31,
+        "d1_norm_bits": 26.8,
+        "d2_norm_bits": 31.46,
+        "min_logF_pow_over_logN": 1.8896,
+        "min_logF_nonpow_over_logN": 1.8896,
+        "med_logF_over_logN": 3.7794
+      },
+      {
+        "bits": 32,
+        "d1_norm_bits": 28.3,
+        "d2_norm_bits": 31.19,
+        "min_logF_pow_over_logN": 1.9179,
+        "min_logF_nonpow_over_logN": 1.9179,
+        "med_logF_over_logN": 3.8359
+      },
+      {
+        "bits": 42,
+        "d1_norm_bits": 38.89,
+        "d2_norm_bits": 40.74,
+        "min_logF_pow_over_logN": 1.9061,
+        "min_logF_nonpow_over_logN": 1.9061,
+        "med_logF_over_logN": 3.8123
+      },
+      {
+        "bits": 42,
+        "d1_norm_bits": 38.45,
+        "d2_norm_bits": 40.17,
+        "min_logF_pow_over_logN": 1.9017,
+        "min_logF_nonpow_over_logN": 1.9017,
+        "med_logF_over_logN": 3.8033
+      },
+      {
+        "bits": 41,
+        "d1_norm_bits": 38.61,
+        "d2_norm_bits": 38.73,
+        "min_logF_pow_over_logN": 1.9024,
+        "min_logF_nonpow_over_logN": 1.9024,
+        "med_logF_over_logN": 3.8048
+      }
+    ]
+  }
+}

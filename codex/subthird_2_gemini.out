@@ -1,0 +1,49 @@
+X1. Audit of Consultant C's and Consultant G's Strongest Positive Claims
+
+Consultant C's linear-Kneser generator-height bound (H >= x / (2*ceil(2n/s) + 1) - O_k(m log n)): SUBSTANTIVELY CORRECT AND DECISIVE, with two genuine gaps in the reduction steps that can both be rescued cleanly.
+- Gap 1 (unequal degrees after subfield reduction): Removing repeated subfield norms (notes/rankdegen_results.md:218-229, Lemma SUB) reduces the two sides independently to subfields K_0, K'_0 of degrees n_1, n_2 <= n over k that need NOT be equal. C assumes n_1 = n_2 = n (codex/scratch/subthird_c/consultant_c.txt:7,25). When n_1 < n_2 and s_1 = s_2 = m (e.g., V = span_k{(1,1), (a_1, beta), (a_2, beta^2)} with [K_0:k] = 6, [K'_0:k] = 100, m = 3, t_1 = 4), C's Step 2 ("V^(t+1) contains a nonzero (z, 0)") FAILS: dim_k pi_2(V^5) = 11 = dim_k V^5 can have ker(pi_2|_{V^5}) = {0}, producing a nonzero (0, w) on Side 2 rather than (z, 0) on Side 1.
+  Rescue 1: Let n_1, n_2 <= n be the reduced relative degrees. If s_2 < m, then ker(pi_2|_V) != {0} already puts (z, 0) != 0 in V^1, so K_0 x {0} subseteq V^(t_1+1) at T = ceil(2*n_1/s_1) + 1 <= ceil(4n/m) + 1. If s_2 = m and ker(pi_2|_{V^(t_1+1)}) = {0}, then dim_k V^(t_1+1) >= n_1 + 1 forces ker(pi_1|_{V^(t_1+1)}) != {0}, giving (0, w) != 0 in V^(t_1+1); since s_2 = m, U_2^(t_2) = K'_0 in t_2 = ceil(2*n_2/m) steps, so {0} x K'_0 subseteq V^T with T = t_1 + 1 + t_2 <= 2*ceil(2n/s) + 1.
+- Gap 2 (denominator clearing and projective linking in Lemma SUB): Passing literally to (c*v_j, c'*v'_j) in O_{K_0} x O_{K'_0} twists the mod-N agreement by a unit scalar and, when 1 is not in span_k(u_j), clearing denominators by N_{K_0}(u_1) inflates the reduced height by (e*n_1 - 1)*log|N_{K_0}(u_1)| (losing up to a factor d_0 ~ x^(1/2)).
+  Rescue 2: Never pass to (c*v_j, c'*v'_j). Pick w = (z_1, z_2) in the O_k-span of the ORIGINAL integral generators with phi(z_1) = phi'(z_2) in (Z/N)^* (if none exists, either a nonunit gcd splits N or phi == 0 gives |W|*|W'| >= N^2). Apply Kneser on V = w^(-1)*span_k(w_j) subseteq K_0 x K'_0 to obtain (1, 0) in V^T (or (0, 1)), then multiply back by w^T: S = w^T * V^T contains (z_1^T, 0) in Lambda = S cap (O x O'), whose evaluation difference phi(z_1)^T - 0 is a unit mod N. Thus N | [Lambda : Gamma] directly on the unreduced integral generators with zero height inflation.
+- Kneser generality and L[1/4] coverage: Hou-Leung-Xiang (2002) holds for all separable field extensions (automatic in characteristic 0; Bachoc-Serra-Zemor 2017 unconditionally), with no power-basis assumption. The subtractive term D*log(C_k*D)/T ~ (2*e*n*log n)/(4n/m) = O_k(m log n) = o(x^(3/4)) at (n ~ x^(1/2), m ~ x^(1/4)), genuinely ruling out H = x^(1/2+o(1)) for m >= 3. Bonus: setting k = Q (e = 1) in C's theorem simultaneously rules out cheap generators for ALL non-subfield frame-less modules (grdeg Door (ii)).
+
+Consultant G's Lemma FT and Kills K2b-K2d:
+- Lemma FT is CORRECT (Chart 1 trapezoids stay inside {|x| <= y}, disjoint from Chart 2), but NOT a new Diophantine technique: it is a folkloric Farey-packing + Bean-Thunder hybrid. Classical Thue-inequality bounds (Bombieri-Schmidt 1987, Stewart 1991) are stronger in E (box-free, E = infinity), but require irreducible F or carry Thunder's height factor H(F)^(D-2) (notes/resbarrier_results.md:234-235). Lemma FT's genuine contribution here is handling REDUCIBLE squarefree NFS forms F = F_1*F_2 with no H(F) factor and explicit L^(o(1)) constants at growing D ~ x^(1/3).
+- K2b-K2d hold with two minor refinements: in K2b, N_{K/Q}(P_j) = Q_j^(l_j) can be a power if P_j lives over a proper subfield of K, though <= e distinct irreducibles Q_j still holds; in K2c, if F o psi has repeated factors (disc = 0), apply Lemma FT to its squarefree radical rad(F o psi), giving N^2 | disc(rad(F o psi)) (unless deg rad <= 2, which forces L[1/2]). K2d is exact andsharper (x/2 vs x/7) on (1, s, t, t^2), while C's theorem at k = Q subsumes all of Door (ii) for generator heights.
+
+---
+
+X2. Impact of C's Bound on G's M1 and the Exact Surviving Counting Statement
+
+Yes: C's rescued height bound KILLS G's M1 as a small-generator-height (c = 0) mechanism. Because C's theorem forces H >= Omega(m*x/n) ~ x^(3/4), the only surviving escape in linked modules is sparse/anomalous small-norm excess inside a high-height module (where H5_r fails in {-1, 0, 1}^r and V_F = infinity). Furthermore, C's envelope remark (consultant_c.txt:31) kills single-cluster cancellation: if m k-independent candidates had |F(a^(j))| <= Y and shared one O_k^*-rescaled log-conjugate profile box of total width sum_i w_i <= x^(1/2+o(1)), treating those m candidates as generators would violate C's theorem. Any survivor must therefore scatter across many proper k-subspaces or wildly incomparable archimedean profiles.
+
+Precise barrier statement (LP_exc^rel) whose failure is required for alpha < 1/3:
+For a reduced linked O_k-module M of relative rank m and degree D = 2*e*n with candidate set Omega subseteq Z^r (|Omega| = e^C), let N_ind(M, Omega; Y) be the maximum number of O_k^*-inequivalent candidates a in Omega with 0 < |F(a)| <= Y whose two-sided prime-ideal parity rows are F_2-independent modulo the span of all candidates lying in proper k-subspaces of M and all multiplicative products of lower-norm candidates. Sub-L[1/3] via linked modules requires LP_exc^rel to FAIL: there must exist an L_N[alpha]-time constructible sequence (M_N, Omega_N) (alpha < 1/3, C <= O(F_alpha)) and Y with log Y <= c_0 * F_{2*alpha} such that N_ind(M_N, Omega_N; Y) * rho(log Y / log B) >= pi(B) for B = L_N[alpha, beta] — i.e., N_ind(M_N, Omega_N; Y) >= exp(Omega(F_alpha)) at log Y = o(x^(2/3)), despite generator envelope H >= Omega(m*x/n).
+
+---
+
+X3. Audit of G's M2 (CG-2D-CRT) and M3 (Mod-N Split Pencils)
+
+Both M2 and M3 assume unconstructed decoding/algebraic primitives and MUST BE DEMOTED from "surviving mechanisms" to restatements of known open repo targets:
+- M3 is literally the repo's open problem nonexact O1/O2 subseteq Pi_beta (notes/nonexact_results.md:130-131; notes/pilist_results.md:131-137), supplying no algorithm beyond naming the target; in modulus-generic coset form it is F_p-DL-equivalent (notes/suffmap_results.md:473-484).
+- M2 is the 2D imaginary-quadratic norm specialization of beyond-Johnson CRT list decoding (notes/pilist_results.md:106-109, 369-371; notes/crtdecode_results.md:402-410, violating H_sel^gain), and any fixed-repertoire Johnson-radius variant is dead by sihard Theorem J (notes/sihard_results.md:428-436).
+- Does restricting M2 to positive-definite forms of disc -4N < 0 block navigate DLB / suffmap DLT?
+  * Against F_p^*-DL: YES. Even if a prime-field DL solver embeds target t in F_p^* into the Gauss-reduced positive-definite form Q(v, k) = t*v^2 + p*k^2 (disc = -4*p*t < 0), a B-smooth output u = t*v^2 + p*k^2 == t*v^2 (mod p) leaves 2*log_g(v) mod (p - 1) unknown because v <= K = L[1 - beta] is NOT B-smooth; waiting for v to be B-smooth costs L[1 - 2*beta], hitting max(beta, 1 - 2*beta) >= 1/3.
+  * Against deeper hardness equivalences: NO! M2 directly solves imaginary quadratic class-group DL and structure in Cl(-4D) in L_D[beta], breaking a longstanding L_D[1/2] barrier (strictly harder than F_p's L_p[1/3]!), and at B = (log N)^c it is polynomial-time factoring in disguise (suffmap Theorem SS(e)).
+
+---
+
+X4. Spot-Check of G's 2024–2026 Literature Items
+
+All 11 arXiv identifiers cited by G were spot-checked via web search and verified to exist with matching authors, titles, and mathematical content: arXiv:2610.28338 (Zhang-Xuan, mk! circuits), 2609.08005 (Brakensiek et al., capacity RS), 2609.05870 (Jeronimo, capacity RS), 2509.17699 (Mulder-Sterner-van Woerden, smooth twins), 2410.16355 (Tesoro et al., tensor-network Schnorr), 2510.19390 (Al-Hasso & von der Leyen, p-bit CVP), 2411.16632 (Sanchez Cano et al., VQE Schnorr), 2409.08784 (Huang et al., double index calculus), 2610.06733 (Van Kirk-Gidney, streaming Regev), 2409.03486 (Murru-Salvatori, SQUFOF/CFRAC), and 2504.21168 (Friedlander, base-sum). Two minor date/detail flags on non-arXiv-numbered mentions: Lido's provable quasi-polynomial small-char DLP paper originated in 2022 (arXiv:2206.10327, published later in FFA), and McGuire-Robinson's published TNFS lattice-sieving paper is 3D (J. Math. Cryptol., with 4D orthotope extensions in follow-up implementations).
+
+---
+
+X5. Final Surviving List and Single Best Next Experiment
+
+Surviving concrete sub-L[1/3] candidate algorithms: EMPTY (0 algorithms survive).
+Surviving unclosed theoretical loopholes (open barriers/targets only):
+1. Failure of LP_exc^rel (multi-subspace / incomparable-profile small-norm clustering inside high-height rank-r >= 3 or Type-D linked modules): P(alpha < 1/3) = 0.2%.
+2. Beyond-Johnson 2D quadratic-CRT / non-exact Pi_beta listing without brute-force sieving (requires breaking L[1/2] Cl(-4D)-DL or F_p-DL): P(alpha < 1/3) = 0.1%.
+
+Single best next experiment: Test LP_exc^rel directly where C's single-profile envelope corollary stops — on 64-to-112-bit split N at (n, m) in {(8,3), (10,4), (12,4)} over Q(sqrt(2)), use lattice enumeration in distinct conjugate-weighting cones (rather than exhaustive {-1,0,1}^r) inside larger boxes E > 1 to target multi-profile archimedean cancellation |F(a)| <= X_0 = 3^D * N^(1/d), measuring whether proper-submodule-independent rank stays 0 as in C's 84/96-bit ternary runs.
