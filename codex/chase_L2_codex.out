@@ -1,0 +1,37 @@
+**The 72-bit witness escapes the archived cover, but its ternary representative is covered.** The archived box was \([-2,2]^6\). At each of 32 tagged embeddings, the cover used the plane spanned by vectors strictly below the first threshold \(t_i\) giving full \(k\)-rank. These produced 14 distinct planes. Adding the witness \((-2+\sqrt2,-1+\sqrt2,-1)\) to each plane raised its rank from 2 to 3. Its local ratios \(|L_i(a)|/t_i\) ranged from 3.9001 to 62.712, while \(\prod_i t_i\) was only \(3.166\times10^{-21}\). Its norm product \(108241\cdot3175924591=343765253654431\) passed the cap, and its parity row raised rank from 47 to 48 after all lower-product rows and covered smooth rows were included. [Certified thresholds](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/archived_details.json:772) · [Parity replay](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/parity_replay.json:1)
+
+Multiplication by the base unit \(-1-\sqrt2\) gives the ternary representative \((\sqrt2,-1,1+\sqrt2)\). Rebuilding the cover on the ternary box puts it in **exactly one** prefix plane, at the second tagged embedding on the first side. There its magnitude is \(0.0251960\), below the ternary threshold \(0.0441841\). The plane is spanned by that representative and \((1,1,-1+\sqrt2)\). Thus the archived example establishes a finite escape for the wider box. [Exact plane and certified comparison](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/ternary_witness.txt:1)
+
+### Measured — escapes disappeared at 84–112 bits
+
+I preregistered three seeds per bit size and exhausted 42 distinct boxes on 15 split semiprimes of the fixture form \(N=A^2-2\). Each table entry gives **capped escaping unit classes / smooth escaping classes / fresh parity rank**, summed over the three separately ranked fixtures. The growing ternary arm used \((n,m)=(7,3),(8,3),(9,4),(10,4),(12,4)\). [Preregistration](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/prereg.txt:1) · [Counts and denominators](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/sweep_summary.tsv:1)
+
+| Bits | Archived box, fixed \((8,3)\) | Ternary, fixed \((8,3)\) | Ternary, growing \((n,m)\) |
+|---:|---:|---:|---:|
+| 60 | 140 / 20 / 10 | 19 / 0 / 0 | 41 / 3 / 2 |
+| 72 | 11 / 1 / 1 | 8 / 0 / 0 | 8 / 0 / 0 |
+| 84 | 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 |
+| 96 | 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 |
+| 112 | 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 |
+
+The two fresh ternary rows at 60 bits survived the stronger comparison against **all** strictly smaller norm products, including nonsmooth ones. There is also an exact lower-rank charge at the upper three sizes. In a post-sweep check of all 18 ternary boxes there, every capped point already had coordinates three onward zero. The first two generators supplied the entire capped parity rank. These fixtures give no growing yield or factoring exponent. [Stronger parity comparison](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/stronger.jsonl:1) · [Binary-subspace audit](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/inside.jsonl:1)
+
+### Proved — the threshold inequality holds when generator products grow fast
+
+Write \(Q=\sum_i\log t_i-\log(N\mathfrak c\,N\mathfrak c')\). Normalize the generator span as in KH to obtain \(V\) containing 1. Let \(s_h\) be the larger projection dimension of the span of its \(h\)-fold products, and set \(g_h=h(2\lceil2n/s_h\rceil+1)\). For every positive integer \(h\),
+\[
+Q\ \ge\ \frac{x-D\log(C_kD)}{g_h}
+       -\frac{[k:\mathbf Q]}2 Dm\log m-O_k(Dm).
+\]
+
+The proof uses the full-rank ternary basis at each \(t_i\). Cramer’s rule and the product formula bound the loss from the largest generator coefficient \(M_i\) to \(t_i\) by \(\tfrac{[k:\mathbf Q]}2m\log m+O_k(m)\). Applying KH’s algebra step to \(V^h\) puts a full side in degree \(g_h\). Multiplying back by the normalizing element preserves the index argument in the original ideals. The order \(m\log m\) of the single-embedding loss is attainable for unrestricted linear forms by the Alon–Vũ inverse-matrix construction. [Proof](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:7) · [Alon–Vũ, Main Theorem](https://web.math.princeton.edu/~nalon/PDFS/av1.pdf)
+
+At the stated balance, \(Dm\log m\asymp_k x/T\). Therefore **\(g_h=o(T)\) implies \(Q\ge x/T\)** eventually. In particular, \(s_2/m\to\infty\) suffices. Conversely, any example with \(Q<x/(2T)\) must satisfy **both** \(s_h=O_k(hm)\) through \(h\le c_kT\) and \(\log(M_i/t_i)\ge c'_k m\log m\) at a positive fraction of all embeddings. This narrows the unresolved threshold claim to simultaneous poor conditioning in modules with slow product growth. [Derivation](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:42)
+
+### Proved — a fresh-rank bound without recursive branching
+
+Call an embedding deep for \(a\) when \(|L_i(a)|<C_kmM_i e^{-m}\), with \(C_k\) bounding the ternary coefficient alphabet. For \(\log Y=o(x/T)\), capped candidates with at most \(o(m/\log x)\) deep embeddings contribute **\(B^{o(1)}\) total fresh parity rank** across all confining spaces, provided the normalized spans in the count have noncoincident sides. The bound includes coincident spans when the largest pair of \(k\)-isomorphic subfields of \(K,K'\) has relative degree \(o(m)\). [Rank bound and hypotheses](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:78)
+
+The count works in the original ternary box. At one embedding, increasing the magnitude cutoff produces at most \(m\) distinct positive span ranks. Within each rank, Cramer’s rule bounds the logarithmic spread by \(O_k(m\log m)\), independently of generator height. Recording the deep embeddings and their magnitude intervals therefore costs only \(\exp(o(m))\) choices. Each resulting group has ideal-relative log envelope at most \(\log Y+Dm=o(x/T)\). KH forces its noncoincident span to have rank \(q=o(m)\), and projection onto \(q\) coordinates bounds its entire ternary population by \(3^{[k:\mathbf Q]q}\). This charges the rows directly. [Interval count](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:59) · [Ternary rank charge](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:97)
+
+**Verdict — partial.** The general threshold inequality remains open for slow-growing product spaces. The general fresh-rank bound remains open for candidates with many deep embeddings and for large coincident restrictions. The next proof target is the divided-difference family with total pole degree \(p=O(m)\). Clearing its common denominator gives \(s_h\le h(p+1)+1\), so it lies precisely in the surviving slow-growth regime. The concrete question is whether its shared denominator permits near-maximal conditioning loss at a positive fraction of the embeddings. [Divided-difference calculation](/Volumes/git/factoring-connection/codex/scratch/ch_L2c/proof.txt:127)

@@ -1,0 +1,48 @@
+1. C2. Write C(T)=sum c_j Q_m(T)/(T-r_j). Since n>=m, equality after evaluation
+also gives polynomial equality for these degrees. For C=prod_{i in S}(T-r_i),
+c_j=0 on S, and for j in J=S^c the coefficient is 1/prod_{l in J-{j}}(r_j-r_l).
+A rational number integral over Z is an integer. If |J|>=3, the smallest node
+of J has a denominator of magnitude at least two. For |J|=2 both coefficients
+are integral exactly at adjacent integer nodes. For |J|=1 the sole coefficient
+is one. Multiplication by a base unit preserves integrality in both directions.
+Thus at most 2m-1 of the proposed subset products have an orbit in the module.
+Their valuation masks, considered in the ambient fields, sum the m seed masks.
+The larger power-basis lattice used in S2 has determinant ratio (over k,
+as an integral change of basis) of magnitude prod_{j<l}|r_j-r_l|=12 on
+the four test nodes. Even its E=2 box omits T(T-1)(T-2)=T^3-3T^2+2T.
+
+2. C1. Fix a Pisot root s of the stated degree. Write s^h in its reduced
+power basis. As h tends to infinity its n-1 small conjugates stay bounded,
+yet its coefficients cannot all remain bounded, since its large conjugate
+tends to infinity. Thus the displayed coefficient bound using only n-1
+values fails even over Z. A general full-support pointwise norm bound also
+fails under a unimodular rebase. Start with paired powers 1,s,...,s^(m-1),
+and subtract all preceding generators from the last one. Their all-ones
+sum is the original paired power s^(m-1), unit on each side. This point is
+ternary and has invertible evaluation when b is invertible.
+
+3. C3 and C4. The corrected C3 generators on each side are a common scalar
+times 1,T,...,T^(m-1). Their common ideal on that side is principal, generated
+by the scalar, because 1 belongs to the power basis. Cancelling the common
+ideal cancels the scalar's whole norm from every product, and its local
+absolute values cancel identically from the normalized threshold product.
+For C4b at a fixed nonzero polynomial C of degree j and the displayed constant
+perturbation g=Phi_15+(T-b)(1+sqrt(2)), Res(C,g) is of degree j in b:
+its leading coefficient is the leading coefficient of C to the power 8
+times (-(1+sqrt(2)))^j. This gives the side exponent for that fixed family.
+The CM supplement checks irreducibility only. Its b=600 modulus fails even
+the base map, as certified in review_checks.txt:9. For C4a, if the b_i are
+distinct primes, the reduced denominators of the rational leading slopes
+a_i/b_i are those primes. Clearing denominators of any exact cancellation
+forces b_i to divide each participating coefficient in O_k. Nonzero ternary
+coefficients in an integral basis cannot meet this condition.
+
+4. Tree-blindness. For Q(u,v)=13u^2+4uv+45v^2, N=581=7*83. The primes 3,5
+are good and 5 is a simple slope root mod 15. With K=4,B=5,d_k=3 the
+extension has d=15<=K^2. The only nonzero vectors in the symmetric box
+are (0,+3),(0,-3). More generally, a slope r=t modulo 5t with t>K
+coprime to 5 forces u=0 and 5|v; one can take 3-power t between K and
+K^2/B for K sufficiently larger than B and impose the simple root by CRT.
+At any fixed index d slope, ambient primitive density per unit area is
+(1/zeta(2))/d times prod_{p|d}(1+1/p)^(-1), by prime-wise densities.
+On p^a||d, primitivity in the slope lattice means p does not divide v.

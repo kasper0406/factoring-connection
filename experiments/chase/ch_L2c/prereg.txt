@@ -1,0 +1,25 @@
+Registered before any new fixture evaluation, 2026-11-20. Hypothesis: the
+archived smooth escaping class is a sporadic divided-difference hit. Test
+bits 60,72,84,96,112, seeds 19,41,83 from experiment.fixture. Existing
+seed-19 data at 72 and 96, n=8,m=3,E=2, are replays. Each other observation
+is descriptive, not an independent random sample of general semiprimes.
+Arm A uses the archived [-2,2] box, fixed n=8,m=3. Arm B uses ternary
+coefficients, same n,m. Arm C uses ternary coefficients and respectively
+(n,m)=(7,3),(8,3),(9,4),(10,4),(12,4). All arms use the divided basis
+and first successful relative pair in the existing selector. Reuse
+identical cells. No tuning, dropping fixtures, or replacing failed cells.
+Cap 3^(4n) * 2^ceil(bits/(2n)); B=2^ceil((bits*ceil(log2(bits))^3)^(1/4)).
+Exhaust the box modulo sign, discarding common residues noninvertible mod N.
+At each tagged embedding build the strict prefix span before full k-rank,
+using ball enclosures and exact k-rank. Certify the exact span when the
+inner prefix has rank m-1; otherwise certify missing boundary ties or
+report only inner-cover escape as inconclusive. Test membership over k.
+Report per cell unit-inequivalent capped escapes, B-smooth capped escapes
+and two-sided prime-ideal parity rank gained over all covered smooth
+capped rows. Report total capped classes as denominator. Positive
+endpoint smooth incremental rank at 112 on >=2 seeds and larger pooled
+rank at 112 than 60 in an arm is descriptive evidence for growth. Zero
+rank at both 96 and 112 on all seeds in an arm is endpoint disappearance
+of fresh escapes there; report all intermediate and nonsmooth escapes.
+For the archived 72-bit representative record certified ranges of |L_i|/t_i
+and the product thresholds, and check whether its unit orbit meets E=1.

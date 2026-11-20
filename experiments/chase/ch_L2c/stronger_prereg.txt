@@ -1,0 +1,8 @@
+After the cover sweep, before factoring any additional rows: for every cell
+with positive incremental rank (60/41/n8/m3/E2, 60/19/n7/m3/E1, and the
+archived replay), process uncovered smooth rows by increasing exact norm
+product. At each product start with all covered smooth capped rows AND all
+unit classes of strictly lower product, smooth or rough, in the same box.
+Compute the rank of the uncovered smooth group modulo that baseline. Then
+insert all rows of that product before processing the next product. Sum the
+group gains and report them by cell. No tie ordering and no cross-box rank.

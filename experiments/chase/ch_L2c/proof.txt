@@ -1,0 +1,144 @@
+Lemma 2. Partial threshold and fresh-rank bounds
+
+1. A necessary small-product-space condition for threshold failure (proved).
+
+Use absolute embeddings with conjugates counted separately. Write e=[k:Q],
+J=N(c)N(c'), M_i=max_j |u_ij|, H=sum log M_i-log J and Q=sum log t_i-log J.
+Let C>=1 bound the house of each letter in the fixed ternary O_k alphabet.
+For any i choose m independent coefficient rows attaining its threshold.
+Their determinant d is a nonzero algebraic integer. Its absolute value at
+every base embedding is <=(C sqrt m)^m. The product formula therefore gives
+|sigma d| >= (C sqrt m)^(-(e-1)m) at sigma=i|k. Replace column j by the
+evaluations of those rows. The new determinant is u_ij times sigma d, and
+Hadamard bounds its modulus by sqrt(m) t_i (C sqrt m)^(m-1). Consequently
+
+  log(M_i/t_i) <= (em/2) log m + O_k(m).                         (1)
+
+The single-form loss can really have order m log m. Take an invertible
+zero-one matrix A with an inverse entry of size exp((m/2)log m-O(m)).
+The form with coefficient column A^(-1)e_j for the appropriate j has
+t<=1, since its values on the rows of A are 0 or 1. An arbitrarily small
+generic perturbation makes all nonzero box evaluations nonzero and keeps
+t<=2. This tests the local estimate only. Alon and Vu, Main Theorem,
+https://web.math.princeton.edu/~nalon/PDFS/av1.pdf
+
+Normalize the generator span by a pair w with unit common evaluation as
+in KH, giving a space V containing 1. Powers are k-spans of homogeneous
+products. Let s_h=max_b dim_k pi_b(V^h) and g_h=h(2 ceil(2n/s_h)+1).
+For every positive integer h,
+
+  Q >= (x-D log(C_k D))/g_h - (e/2) Dm log m - O_k(Dm).         (2)
+
+Indeed V is contained in V^h and both generate the reduced product algebra.
+The algebra step of KH applied to V^h puts a full side in its power
+g_h/h. Undo normalization by w^g_h. The original integral degree-g_h
+monomials have equal evaluations, and their k-span contains a one-sided
+element with unit evaluation, the corresponding component of w^g_h.
+The KH index and covolume proof in the original ideals c^g_h and c'^g_h
+gives g_h H >= x-D log(C_k D). Equation (1) gives (2). This uses no
+height bound for the normalization. See notes/subthird_results.md:128 and
+experiments/subthird/codex/consultant_c.txt:25 in the parent repository.
+
+At the specified balance, T is comparable to n/m, x/T is comparable to
+Dm log m, and D log(C_k D)=o(x). If g_h=o(T), (2) gives Q>=x/T for
+all sufficiently large x. In particular s_2/m tending to infinity suffices.
+More generally, suppose even Q<x/(2T). Then (1) gives H=O_k(x/T), hence
+g_h >= a_k T for some a_k>0, for every h. Since g_h <= h(4n/s_h+3),
+one has s_h <= C'_k h m for all h <= a_k T/6. Balance constants are fixed
+here. Also H-Q >= (1/2-o(1))x/T by KH at h=1. By (1), a positive
+fraction of all D embeddings must have log(M_i/t_i) >= b_k m log m,
+for some b_k>0. This is a necessary combination of slow growth and many
+poorly conditioned local systems. It does not construct a linked example.
+
+2. A direct rank charge for points with few deep cancellations (proved).
+
+Let A_i=Cm M_i be an upper bound in the ternary box, and consider eligible
+points (nonzero on both sides, unit common evaluation) with norm product
+divided by J at most Y. Fix a width w>=1. Say i is deep for a if
+log(A_i/|L_i(a)|)>w. The following count is uniform in the heights.
+
+At a single embedding sort the positive values in the eligible box. As the
+cutoff moves, its k-span runs through at most m different positive ranks.
+For one attained rank r, write v for the first value giving that rank.
+Choose r independent rows at or below v. Every point at a later value with
+the same rank is in their span. Use an invertible r-coordinate minor to
+solve for its coefficients. Numerator determinants have house <=(C sqrt r)^r.
+The bound on the conjugate denominator determinants from (1) gives local
+coefficient sizes <=(C sqrt r)^(er). Thus all values in this rank band
+are in [v, r(C sqrt r)^(er)v]. Ties and jumps of several ranks cause no
+problem. Each band needs O_k(1+m log(2m)/w) intervals of log-width w.
+Including all ranks, there are P=O_k(m(1+m log(2m)/w)) choices at a tag.
+
+Among points with at most l deep tags, partition by their deep set and
+their interval on each deep tag. All other tags already have width w.
+The number of cells is at most sum_{j<=l} binom(D,j) P^j. A cell has
+envelope <= log Y + Dw after subtracting log J. To see this, compare
+the maximum at each tag with the value at any one point of that cell.
+
+Let q be the k-rank of a cell. Take a basis of eligible points in it.
+Divide their paired span by one such point. The two projections generate
+fields over k. Their joint algebra is the product of those fields or the
+graph of a k-isomorphism. In the product case apply the KH argument with
+effective degrees <=n and larger projection dimension >=q/2. After
+multiplying back, the one-sided power of the normalizing point belongs to
+the ambient ideal lattice and has unit evaluation. This proves the index
+bound in the original fields even if the projection fields are smaller.
+The ambient KH packing proof uses c,c' and the actual cell envelopes.
+For q>=3 and Z=log Y+Dw it gives
+
+  x-D log(C_k D) <= (8n/q+3) Z.                                  (3)
+
+For the unequal-degree algebra step and the integral one-sided witness,
+see codex/subthird_2_gemini.out:5 and :7. No extraction reduction is used.
+In the graph case, q is at most the degree b of the largest subfield of
+either ambient field k-isomorphic to a subfield of the other (over k).
+This follows by projecting the normalized graph injectively to that field.
+
+A q-plane meets the ambient ternary box in at most 3^(eq) points by
+projection to q independent coordinates. Thus the union of the non-graph
+cells contributes fresh binary parity rank at most
+
+  [sum_{j<=l} binom(D,j)P^j] 3^(e max(2,8nZ/(x-D log(C_k D)-3Z))),
+
+when the denominator is positive. For all cells include b in the maximum.
+This counts candidates before any parity quotient, so products, units and
+previously exposed rows can only reduce the bound. It applies inside the
+confining spaces collectively, without enumerating their intersections.
+
+For the L[1/4] cap log Y=o(x/T) take w=m and l=o(m/log x). Then
+Z=o(x/T), q=o(m) in the product case, and the log cell count is o(m).
+Their total fresh rank is exp(o(m))=B^o(1) when log B is comparable to m.
+This includes the graph cells when b=o(m). For the sharper cap
+log Y=O(sqrt(x log x)), w=O(log m) instead gives q=O_k(1) for product
+cells. Widths w with 1<=w=o(m log m) likewise give the subpower bound.
+
+3. Remaining obstruction.
+
+The hypothesis on deep tags has not been proved for the capped box. High
+rank graph restrictions can occur inside a reduced module. A bound on the
+number of hyperplanes alone cannot supply a summable rank induction. Even
+the fixed 2(m-1) hyperplanes a_j=+a_1 or a_j=-a_1 for j=2,...,m have
+2^(m-1) distinct intersections obtained by choosing one sign for every j,
+all different lines with ternary representatives. This is an incidence
+example only. A full rank charge needs arithmetic input on these leaves
+or their profiles. Corrected Rel-BT has a boundary error exceeding the
+ternary box, as recorded in notes/hatch_results.md:64.
+
+4. Where the divided differences sit (proved).
+
+On a side with P(alpha)=sqrt(2), the quotient generator for a monic R is
+(sqrt(2)-(P mod R)(alpha))/R(alpha), provided R(alpha) is nonzero. For
+the archived rank-three family the common denominator is T^2+1. After
+clearing it, the three generator numerators have degrees at most three.
+At rank four the additional pole is T-1 and the numerator degrees are at
+most four. Consequently the projected h-fold product span has dimension
+at most 3h+1 or 4h+1, respectively, and at most the projection field
+degree. Multiplying by a fixed nonzero scalar does not change dimension.
+More generally take pairwise coprime monic pole polynomials with total
+degree p, using 1,T and the corresponding quotients. Making Q-P divisible
+by (T-b) times their product preserves the linked evaluation at b for
+each quotient. Clearing the common denominator bounds s_h by h(p+1)+1.
+Thus p=O(m) gives an explicit growing-rank test class in the slow-growth
+regime, whenever the chosen fields and generators satisfy the original
+irreducibility, independence and reduction conditions. This dimension
+calculation supplies no lower bound for its number of escaping rows.

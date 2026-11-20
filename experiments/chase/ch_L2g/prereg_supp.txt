@@ -1,0 +1,10 @@
+SUPPLEMENTARY PRE-REGISTRATION — ch_L2g (after inspecting run_adversary.py output)
+
+Disclosed finding from T3:
+In T3 (P = (T^2 + 1)A, gens = [1, A, T*A, ..., T^{m-2}*A]), on K = k[T]/(P - sqrt(2)) the identity (s^2 + 1)A(s) = sqrt(2)*1 creates an exact O_k-linear syzygy w_3 + w_1 - sqrt(2)*w_0 = 0 at m >= 4, dropping true k-rank from m to m - 1. Replacing the redundant generator 1 by T^{m-1}*A (so gens = [A, T*A, ..., T^{m-1}*A], which still contains sqrt(2)*1 = A + T^2*A in its O_k-span while having certified true k-rank m) restores deg(C_alpha) = m - 1 on full support.
+
+Supplementary checks to run (no post-hoc tuning):
+S1. Complete Two-Hyperplane Prefix Cover table on all four cover.py fixtures (72/96 bits x divided/power), comparing 1-hyperplane uncovered classes & smooth incremental rank against 2-hyperplane pair-product cover W^{(2)}_{sigma; i, j}.
+S2. T2 at (n, m) = (8, 4) with box E = 3 (or Lagrange-cleared generators) to verify all >= 14 = 2^4 - 2 subset-product O_k^*-orbits appear with tiny norm while collapsing to ideal-parity rank <= 4.
+S3. T3_rank_fixed with certified true k-rank m (gens = [A, T*A, ..., T^{m-1}*A], verified dim_k == m) at (n, m) in {(6, 3), (8, 4)} on 60/72-bit split semiprimes, measuring diffuse small-embedding count, min full-support log|F|/log N vs 4*(m-1)*log(b)/log(N), and full-support points under X_0.
+S4. T5 CM/cyclotomic K = Q(sqrt(2), zeta_15) at larger b (bits ~ 68-80, b ~ 400-1200) so b^{2(m-1)} exceeds the constant-degree 3^32 archimedean factor in X_0, testing whether full_support_under_X0 drops to 0.

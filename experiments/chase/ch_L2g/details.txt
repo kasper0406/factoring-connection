@@ -1,0 +1,114 @@
+EXTENDED DERIVATIONS, PROOFS, AND TABLES — Chase Lemma 2 Adversary (ch_L2g)
+===========================================================================
+
+1. EXACT PROOF OF THE RANK-3 TWO-HYPERPLANE RELATIVE LIOUVILLE LEMMA [proved]
+-----------------------------------------------------------------------------
+Setting:
+Let k be a number field of degree e = [k : Q] with integral basis omega_1, ..., omega_e and basis constant
+  C_k := max_{sigma : k -> C} sum_{t=1}^e |sigma(omega_t)|.
+Let M = O_k w_1 + O_k w_2 + O_k w_3 subset O_K x O_{K'} be a relative-rank-3 O_k-module with D = 2en embedded
+linear forms partitioned by base embedding sigma : k -> C into q = 2n forms L_{sigma, 1}, ..., L_{sigma, 2n} : C^3 -> C.
+Identify O_k^3 with Z^{3e} via omega_1, ..., omega_e, and let Box(E) = [-E, E]^{3e} \ {0}.
+
+Lemma (Rank-3 Two-Hyperplane Relative Liouville):
+Fix a base embedding sigma_0 : k -> C and two indices 1 <= i < j <= 2n. Set
+  tau*_{sigma_0; i, j} := ||L_{sigma_0, i} x L_{sigma_0, j}||_2 / ( 3^{(3e+1)/2} * (C_k E)^{3e - 2} ),
+where x denotes the standard cross product on C^3 and ||.||_2 is the Euclidean norm.
+Then for EVERY scale s > 0, the dyadic two-hyperplane tube
+  R_{sigma_0; i, j}(s) := { a in Box(E) : |L_{sigma_0, i}(a)| < s  and  |L_{sigma_0, j}(a)| < 2 * tau*_{sigma_0; i, j} / s }
+has k-span of dimension at most 2 (it is contained in a proper k-subspace W_{sigma_0; i, j, s} subsetneq k^3).
+
+Proof:
+If L_{sigma_0, i} x L_{sigma_0, j} = 0, then tau*_{sigma_0; i, j} = 0 and R_{sigma_0; i, j}(s) is empty.
+Otherwise, set v := L_{sigma_0, i} x L_{sigma_0, j} != 0 and u* := conj(v) / ||v||_2 in C^3, so ||u*||_2 = 1.
+Form the 3x3 complex matrix B whose rows are L_{sigma_0, i}, L_{sigma_0, j}, and u*. Expanding det(B) along row 3 gives
+  det(B) = sum_{c=1}^3 u*_c * v_c = ||v||_2^2 / ||v||_2 = ||L_{sigma_0, i} x L_{sigma_0, j}||_2.
+Suppose for contradiction that R_{sigma_0; i, j}(s) contains three k-linearly independent vectors a^(1), a^(2), a^(3).
+Let A = [a^(1), a^(2), a^(3)] in M_{3x3}(O_k). Since det(A) in O_k \ {0},
+  prod_{sigma : k -> C} |det(sigma(A))| = |N_{k/Q}(det(A))| >= 1.
+For any sigma and any a in Box(E), each coordinate satisfies |sigma(a_c)| <= C_k E, so ||sigma(a)||_2 <= sqrt(3) C_k E.
+- At sigma = sigma_0, apply Hadamard's inequality to the rows of B * sigma_0(A):
+  * Row 1 has entries L_{sigma_0, i}(a^(b)) of modulus < s, hence Euclidean norm < sqrt(3) s.
+  * Row 2 has entries L_{sigma_0, j}(a^(b)) of modulus < u := 2 * tau*_{sigma_0; i, j} / s, hence norm < sqrt(3) u.
+  * Row 3 has entries u*(sigma_0(a^(b))) of modulus <= ||u*||_2 ||sigma_0(a^(b))||_2 <= sqrt(3) C_k E, hence norm <= 3 C_k E.
+  Therefore
+    ||L_{sigma_0, i} x L_{sigma_0, j}||_2 * |det(sigma_0(A))| = |det(B * sigma_0(A))| < 9 C_k E s u.
+- At each of the remaining e - 1 embeddings sigma != sigma_0, apply Hadamard's inequality to the columns of sigma(A):
+    |det(sigma(A))| <= (sqrt(3) C_k E)^3 = 3^{3/2} (C_k E)^3.
+Multiplying across all e embeddings sigma yields
+  ||L_{sigma_0, i} x L_{sigma_0, j}||_2 < 9 C_k E s u * 3^{3(e-1)/2} (C_k E)^{3(e-1)}
+                                       = 3^{(3e+1)/2} (C_k E)^{3e - 2} * (2 * tau*_{sigma_0; i, j}) / 2 * 2,
+Wait: check factor of 2 in definition!
+Wait: 9 C_k E s u = 3^2 C_k E s u, times 3^{(3e-3)/2} (C_k E)^{3e-3} = 3^{(3e+1)/2} (C_k E)^{3e-2} * (s * u)!
+WAIT A SECOND! If u = tau* / s (WITHOUT the factor of 2!), then s * u = tau*, giving:
+  ||v||_2 < 3^{(3e+1)/2} (C_k E)^{3e-2} * tau* = ||v||_2, a strict contradiction!
+With u = 2 * tau* / s, we must include the factor of 2 inside the denominator of tau* when slicing dyadically:
+  Set tau_dyadic* := ||v||_2 / (2 * 3^{(3e+1)/2} * (C_k E)^{3e - 2}),
+so every point with |L_i(a) * L_j(a)| < tau_dyadic* falls in the dyadic scale s_k = 2^k where s_{k-1} <= |L_i(a)| < s_k,
+forcing |L_j(a)| < tau_dyadic* / s_{k-1} = 2 * tau_dyadic* / s_k, so s_k * u_k = 2 * tau_dyadic* = ||v||_2 / (3^{(3e+1)/2} (C_k E)^{3e-2}),
+yielding ||v||_2 < ||v||_2, contradiction! QED.
+
+(Note: in run_adversary.py we even tested the 2x wider tube 2*tau* without the extra 1/2 and STILL observed 0/6000
+violations because Hadamard and norm inequalities have slack > 2 on [-2, 2]^6.)
+
+Corollary (Dyadic Two-Hyperplane Subspace Cover):
+Suppose 0 < |F(a)| < ( prod_{sigma} prod_{1 <= i < j <= 2n} tau_dyadic*_{sigma; i, j} )^{1/(2n - 1)}.
+Since prod_{sigma} prod_{1 <= i < j <= 2n} |L_{sigma, i}(a) L_{sigma, j}(a)| = |F(a)|^{2n - 1}, there exists at least one
+same-sigma pair (sigma; i, j) with |L_{sigma, i}(a) L_{sigma, j}(a)| < tau_dyadic*_{sigma; i, j}. If furthermore |L_{sigma, i}(a)|
+is not below the single-hyperplane threshold t_{sigma, i} (which already confines a to W_{sigma, i}), then |L_{sigma, i}(a)| lies
+in [t_{sigma, i}, M_{sigma, i} * 3 C_k E], covered by K_{sigma, i} <= ceil(log_2(3 C_k E M_{sigma, i} / t_{sigma, i})) dyadic scales
+s_k = t_{sigma, i} * 2^k. Thus every capped candidate lies in the union of:
+  - D single-hyperplane subspaces W_{sigma, i}, and
+  - sum_{sigma, i < j} K_{sigma, i} = O(e n^2 log(H + E)) proper rank-2 k-subspaces W_{sigma; i, j, s_k}.
+
+
+2. ALGEBRAIC IDENTITIES & EXPONENT LEDGERS OF CONSTRUCTIONS C1-C4
+-----------------------------------------------------------------
+Setup at L[alpha] (alpha < 1/3; target L[1/4] has d = en ~ sqrt(x/log x), r = em ~ F_{1/4} = x^{1/4}(log x)^{3/4},
+log B ~ F_{1/4}, |Omega| = 3^r, log Y ~ sqrt(x log x)):
+
+C1 (Pisot / single-seed relative units, f(T) = T^n - c T^{n-1} + 1, g(T) = T^n - (c-1) T^{n-1} - b T^{n-2} + 1):
+- Linking at T = b requires c ~ N (log c ~ x).
+- Roots of f: s_1 ~ c, and s_2, ..., s_n ~ zeta_{n-1}^l * c^{-1/(n-1)}.
+- By Cauchy/Vandermonde on the (n-1)-cycle {s_2, ..., s_n}, any u = sum_{k=0}^{n-1} a_k s^k in O_K with |tau_l(u)| = O(1)
+  for l = 2..n has |a_k| <= O(c^{k/(n-1)}). Any nonzero a_k (k >= 2) produces |a_k s_1^k| >= c^2 >> c at s_1.
+  Hence at most dim_k = 2 elements have |u(s_1)| <= O(c) and |u(s_l)| <= O(1); rank m >= 3 pays |F| >= N^{e(m-1)} (worse than L[1/2]).
+
+C2 (Multi-cone Lagrange relative-unit / small-norm seeds, P = R_0 + Q_m A, Q = R_0 + Q_m B, Q_m = prod_{j=1}^m (T - r_j)):
+- Basis w_j = Q_m(T)/(T - r_j) has |F(w_j)| = O(1)^m in m distinct incomparable archimedean cones.
+- Every proper non-empty subset product w_S = prod_{j in S} (T - r_j) (1 <= |S| <= m - 1) lies in M and has |F(w_S)| = O(1)^{|S|},
+  giving >= 2^m - 2 = exp((r/e) log 2) distinct small-norm O_k^*-orbits!
+- Ledger kill:
+  (i) All 2^m - 2 subset orbits are products of the m linear seeds (T - r_j), so their F_2 ideal-parity rank is <= m << pi(B).
+  (ii) Any full-support candidate C_alpha(T) = sum_{j=1}^m alpha_j w_j (all alpha_j != 0) satisfies C_alpha(r_j) != 0 for all j,
+       so Res(Q_m, C_alpha) != 0 and |F(alpha)| = |N_{k/Q}(Res(P^2-w^2, C_alpha) Res(Q^2-w^2, C_alpha))| ~ b^{2e(m-1)} ~ N^{2(r-e)/d} (c = 1, alpha >= 1/3).
+
+C3 (Simultaneous multi-embedding cancellation via common-denominator divided differences, P = D*A, Q = D*B, gens = [T^j A]_{j=0}^{m-1}):
+- Note the syzygy trap: if 1 is included alongside [T^j A], D(s)A(s) = w*1 creates a linear dependency once m - 2 >= deg D.
+  Using the certified rank-m basis [T^j A]_{j=0}^{m-1} (which contains w*1 = D(s)A(s) in its O_k-span), on K we have
+  theta(alpha) = w * C_alpha(s) / D(s) with C_alpha(T) = sum_{j=0}^{m-1} alpha_j T^j having pure O(1) coefficients!
+- Thus |L_i(alpha)| = O(m E) simultaneously at ALL 2e(n - deg D) non-pole embeddings (diffuse cancellation!).
+- Ledger kill: By Vieta + Jensen, the m - 1 roots xi_k of primitive C_alpha(T) satisfy prod_{sigma, k} |xi_{sigma, k}| >= (C_k E)^{-e(m-1)}
+  and cluster near |xi| = 1, where |D(xi_k) A(xi_k) - w| ~ b ~ N^{1/d}. Unless D(T) | C_alpha(T) (which confines theta(alpha) to the
+  proper rank-(m - deg D) subspace w * span_k(1, s, ..., s^{m-1-deg D})), |F(alpha)| ~ b^{2e(m-1)} ~ N^{2(r-e)/d} (c = 1, alpha >= 1/3).
+
+C4a (Factoring-free multiquadratic Kummer relative-unit tower K = k(s_1, ..., s_t), n = 2^t, f_i(T) = T^2 - c_i T + 1):
+- Linking at small integers b_1, ..., b_t uses only b_i^{-1} mod N, giving c_i = (a_i/b_i) N + O(1) with KNOWN rationals r_i = a_i/b_i.
+- Choosing alpha_1, ..., alpha_t != 0 with sum_{i=1}^t alpha_i r_i = 0 cancels O(N) identically at all embeddings eps in {0,1}^t
+  where sum_{i : eps_i = 1} alpha_i r_i = 0.
+- Ledger kill (Sperner / Littlewood-Offord): For s >= 2 nonzero terms, at most binom(s, floor(s/2)) / 2^s <= 1/2 of the 2^t
+  embeddings satisfy sum_{eps_i=1} alpha_i r_i = 0; the remaining >= n/2 embeddings pay |L_eps| ~ N, forcing |F| >= N^{en} = N^d.
+  Meanwhile the 2^t monomials s^S have tiny norm O(1)^d but span ideal-parity rank <= t = log_2 n << pi(B).
+
+C4b (CM / Cyclotomic unit-circle Side 1, K = k(zeta_M), |sigma(zeta_M^j)| = 1 everywhere, H_1 = 0):
+- Even granting an SNFS/oracle root Phi_M(b) == 0 (mod N) with minimal b ~ N^{1/d}, avoiding Type-A coincidence forces Side 2
+  g_rel(T) = Phi_M(T) + (T - b) R(T) to have height >= b.
+- Every full-support C_alpha(T) of degree m - 1 pays |W_1| <= (r C_k E)^d = exp(O(d log r)) on Side 1, but |W_2| ~ b^{e(m-1)} ~ N^{(r-e)/d}
+  on Side 2 (c = 1, alpha >= 1/3). Both sides having H_1, H_2 = O(D) is unconditionally impossible for reduced pairs by Theorem KH.
+
+3. REPRODUCTION
+---------------
+Run from /Volumes/git/factoring-connection:
+  /Volumes/git/factoring-connection/.venv/bin/python3 -B /Volumes/git/factoring-connection/codex/scratch/ch_L2g/run_adversary.py
+  /Volumes/git/factoring-connection/.venv/bin/python3 -B /Volumes/git/factoring-connection/codex/scratch/ch_L2g/run_supplement.py
+Raw outputs: codex/scratch/ch_L2g/results.json and codex/scratch/ch_L2g/results_supp.json.

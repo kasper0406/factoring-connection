@@ -1,0 +1,46 @@
+Lemma 3. Shared descent and fresh residuals
+
+Verdict — refuted for unrestricted rank-to-credit. The proposed factoring floors for arbitrary DAGs remain open. H prices a fresh smoothness test. Modular equalities can also supply independent relations. The table below prices that second source, and a primitive binary-form example shows how cheaply valuation rank alone can be planted.
+
+1. Proved. The exact rank that needs a charge
+
+Order the certified input rows by revelation. Write V_t for their span in base and large columns together, and L_t for its projection to the large columns. Use F₂ for parity or Q for integer rank. The extracted space is the kernel of this projection, so
+
+    r_t = dim V_t − dim L_t,
+    r_t − r_(t−1) = 1 exactly when the full rank rises and the large rank stays fixed.
+
+Clearing denominators proves the integer-rank statement for the actual integer relation lattice. Every DAG output is a combination of input rows. Each large pivot costs one dimension. Thus r_t is at most the number of rows whose large part lies in the earlier large span. A previously unseen odd coordinate gives a pivot over F₂. Any previously unseen nonzero coordinate does so over Q. A row on old coordinates can also pivot. Reuse of a computed row adds zero. See notes/smoothbuild_results.md:186 and codex/lowerbound_1_codex_proof.md:66.
+
+More generally, let U span the rows obtained by other means. If adjoining at most one generating row per distinct fresh success spans V, then r(V)≤r(U)+#successes. This follows by adjoining these rows after U in the rank identity. The term r(U) includes combinations of individually nonsmooth rows. The rearrangement is for the algebra only. The credits retain their original revelation order.
+
+Use separate side and ideal labels where required, and cancel common factors for a signed rational row. On a closing row strip the full valuations at exposed large labels. Over Q the remaining large support is empty. Over F₂ its exponents are even, so an integer residual has shape b z² with b base-smooth and every prime of z large. Stripping z² gives b arithmetically. The discovery of z from the answer cannot retroactively register a probe of b. Even when all divisors are predictable, b can already be known. Credits count first revelations, with joint target-dependent tests charged at first touch. See notes/lowerbound_results.md:30 and codex/lowerbound_2_codex_merged.md:5.
+
+2. Proved. A priced DAG of actual modular relations
+
+Take an odd N, distinct unit primes b_1,...,b_m ≤ B and a unit prime q>B. Put g_i=q³b_i. Let G be the subgroup they generate together with q modulo N, and d the order of q. Enumerate the powers of q up to their first repeat. For each coset of <q> reached from 1, store a representative w_C as a word in the g_i, and enter every w_C q^k in a residue dictionary for 0≤k<d. For each generator, look up w_C g_i. On a miss install it as the next coset representative. Every edge certifies
+
+    w_C g_i = w_C' q^k mod N.         The shared eliminator is q^d = 1 mod N.
+
+The stored equations form a depth-one elimination problem with the single external column q. The dictionary is built from earlier entries. Cycles in the coset graph certify equalities of words and introduce no cyclic proof dependencies. Substitution along any word reduces it to its final representative times a power of q. A word equal to 1 ends at the identity coset and that power is a multiple of d. Hence the equations generate the entire signed relation lattice on q,g_i, equivalently on q,b_i by the invertible substitution g_i=q³b_i. Over F₂ any row odd at q can serve as the shared pivot. If none exists, the column is already zero.
+
+Write H_b=<b_1,...,b_m>. The exact base sublattice K is the kernel of Z^m → H_b, so it has rank m. Reducing its vectors mod 2 gives the kernel of F₂^m → H_b/H_b². Indeed a word which is a square of another base word becomes an exact relation by subtracting twice that word's exponent vector. The quotient has size |H_b[2]|≤2^ω(N) by CRT for odd N. These reductions supply at least m−ω(N) binary dimensions. Every exponent in every input word was known at construction. After stripping known factors the cofactor is 1 on both sides. Each new modular equality is paid work and reveals zero fresh smoothness answers. A convention that bills a test of 1 at each new address gives residual log-size zero at every such address.
+
+For s=|G|/d, the construction installs |G| residues and examines ms edges. Explicit exponent words give a bit cost bounded by (|G|+m²s) poly(log N,log q,log m), using a balanced search tree. For B=L_N[η,c], 0<η<1, take all unit base primes and q of order of magnitude B. For semiprimes, m=B^{1−o(1)}. With j=floor(log(N−1)/log B), the binomial(m,j) distinct squarefree products are below N and in G. Their logarithmic count is at least j log(m/j)=(1−o(1))log N. The implemented enumeration therefore costs N^{1+o(1)}, exponent 1, already to install the table. This prices this DAG only. Moreover, if b=2 has coset cycle length t then 2^(td)=1 follows from the cycle and the shared eliminator. On Blum semiprimes N≡5 mod 8 the Jacobi symbol of 2 is −1, its local orders have different 2-parts, and Miller's chain certifies a split. See notes/hatch_results.md:86.
+
+3. Proved. The repeated-q example inside a primitive two-map form
+
+Choose a_0=q and a_i=q³b_i. Set S(X)=product_i(X−a_i), including i=0, pick t=S(0)^(−1) mod N, and put g=1+(X−t)S. The monic polynomials X and g share 0 mod N and g(0) is a nonzero multiple of N. For m≥1 a smaller monic factor of g would have degree <m+1 and take values ±1 at all m+1 nodes. Those signs agree modulo q>2, hence agree as integers, forcing the factor to be constant. Thus g is irreducible, and disc(Xg)=g(0)² disc(g) is nonzero and divisible by N².
+
+At every primitive point (a_i,1) the algebraic norm is 1. The rational value is q at the eliminator and q³b_i at a parent. Subtracting three eliminators gives e_i over Z in the valuation matrix, and adding one gives e_i over F₂. The actual large divisor is q³ in the parent. The remaining b_i was specified before evaluating the form. Stripping all known divisors gives 1. These m independent rational projections leave zero square dependencies among the m+1 planted rows. Algebraic units still matter to extraction.
+
+The one-field degree of g is m+2 and direct coefficient construction costs poly(m,log N,log q). Alternatively use one cubic 1+(X−t_i)(X−q)(X−a_i) per parent, choosing t_i by the same congruence. All fields use the same rational q column, and one eliminator suffices for valuation rank. At q of order B, sieving the base and writing all fields costs B poly(log N,log B). This gives m=B^{1−o(1)} valuation rank at exponent η for B=L_N[η,c], with zero dependencies in the planted set. The single form has a degree-sized exception allowance, and the cubic family draws one exceptional point per field. Neither meets the pooled error-budget argument. See experiments/hatch/hatch_h1c/cross_review.md:9 and codex/lowerbound_1_codex_proof.md:56.
+
+Even stripping only large primes can give the same numerical residual at every address. Take N=2773, p=11≤B=29, q=101, a_i=q^(2i+1) for 0≤i≤4, and g=p+(X−t)S with t=0 mod p and t S(0)=p mod N. The factor argument works with values ±1,±p since q>2p. Modulo p the five nodes and t are distinct simple roots. Each a_i−α, with g(α)=0, generates the known norm-p prime ideal (p,α−a_i). Thus the actual residual is always 11, and its ideal address is known before evaluation. The five distinct ideal columns and one common large column leave four independent base rows over either coefficient system. Equal norms alone would not establish reuse across ideal addresses.
+
+4. Proved restricted extension and remaining question
+
+At simple projective roots, DAG-POOL's arithmetic count extends to actual prime powers. A root modulo p has one lift at each depth since its nonzero derivative determines the next digit. Thus at most D^ω(d) branches occur for an actual strip d made from such roots. Each branch gives an index-d lattice, and dividing the transformed degree-D form by d multiplies its discriminant by d^((D−1)(D−2)). The same pool sum applies to distinct such lattices with the same box, degree and exception conditions. At general index Q and integral strip d the multiplier is Q^(D(D−1)) d^(−2(D−1)). See experiments/hatch/hatch_h3g/hatch3_full_notes.md:109.
+
+Next step. In the work range exp(c F_1/3), bound the rank closed by modular equalities, cached cofactors and newly recognized squares on the actual norm families, or bound their contribution to a fruitful certificate after quotienting the known rows. The remaining closures need predictable fresh tests with the actual-divisor profile and one pooled exception allowance. Under the stipulated base-rank quota this would let the stopped supermartingale apply. H alone supplies no bound on those other closures. The 1.2114 and 1.5263 constants keep their existing scope. See notes/lowerbound_results.md:61 and codex/lowerbound_2_codex_merged.md:25.
+
+Measured. The preregistered exact checks are in prereg.txt and check.py. At N=2773 the modular DAG gave ranks 10 and 8 and the certified gcd was 47. The primitive form gave ranks 5 and 5 and binary nullity zero. See measured.txt:1.

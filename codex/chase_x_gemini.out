@@ -1,0 +1,60 @@
+CHASE CROSS-REVIEW — GEMINI (G) REVIEWING C-L2 AND C-L3
+
+1. REVIEW OF C-L2 (codex/chase_L2_codex.out, codex/scratch/ch_L2c/proof.txt)
+
+Summary of verdicts on C-L2 claims:
+- 72-bit witness ternary-representative audit and 60–112-bit sweep (chase_L2_codex.out:1-17): CORRECT [measured].
+- Growing-product threshold inequality (proof.txt:3-51, eqs. (1)-(2)): CORRECT [proved]; genuine novelty in combining KH on V^h with Alon-Vu local sharpness.
+- Non-recursive fresh-rank bound for few deep embeddings (proof.txt:53-114, eq. (3)): CORRECT under stated hypotheses [proved]; important scope restriction on b = o(m) flagged below.
+- Divided-difference slow-growth dimension bound s_h <= h(p + 1) + 1 (proof.txt:127-144): CORRECT [proved].
+
+Detailed audit of Priority (1):
+
+(a) Single-embedding Cramer / product-formula loss (proof.txt:8-23, eq. (1)) — CORRECT.
+For m k-independent ternary O_k-vectors attaining threshold t_i, their m x m matrix A has entries of house <= C in every base embedding sigma : k -> C, so Hadamard gives |tau(det A)| <= (C sqrt(m))^m at all e - 1 embeddings tau != sigma := i|_k. Since det A in O_k \ {0}, the product formula gives |sigma(det A)| >= (C sqrt(m))^{-(e-1)m}. Replacing column j (chosen with |u_{ij}| = M_i > 0; note M_i > 0 at every embedding because the KH normalizer w has unit evaluation mod N > 1 and is therefore nonzero on both sides) by L_i(A) yields determinant u_{ij} sigma(det A) and column-Hadamard bound sqrt(m) t_i (C sqrt(m))^{m-1}. Hence M_i / t_i <= C^{em-1} m^{em/2}, giving log(M_i / t_i) <= (em/2) log m + O_k(m). Note this holds even if dim_k pi_b(M) < m on one side: since M_i > 0, ker(L_i) has k-dimension <= m - 1, so t_i > 0 strictly. Citing Alon-Vu to show (m/2) log m is best possible for unrestricted real linear forms is valid and sharp; whether embedded algebraic power/divided-difference forms can simultaneously achieve Omega(m log m) conditioning loss at Theta(D) places remains open.
+
+(b) KH on V^h and threshold inequality Q >= (x - D log(C_k D))/g_h - (e/2) D m log m - O_k(D m) (proof.txt:25-51, eq. (2)) — CORRECT.
+Because 1 in V, we have 1 in V^h and V subseteq V^h, so k[V^h] = k[V] = K x K' remains reduced. Applying the unequal-degree linear-Kneser step to V^h reaches a full side in degree g'_h = 2 ceil(2n / s_h) + 1 in V^h, i.e., degree g_h = h g'_h in V. Undoing normalization by w^{g_h} places a unit-evaluation one-sided element inside S cap (c^{g_h} x c'^{g_h}), so ideal-relative KH gives g_h H >= x - D log(C_k D) with zero dependence on the height of w. Subtracting D copies of (1) proves (2). At the L[1/4] balance, x/T ~ x^{3/4}(log x)^{5/4} ~_k D m log m, so g_h = o(T) (in particular s_2 / m -> infinity) genuinely forces Q >= x/T.
+
+(c) Deep-embedding interval count and cell KH bound (proof.txt:53-114, eq. (3)) — CORRECT, with a sharp scope caveat on b = o(m).
+- Eligible points are nonzero on both sides, so |L_i(a)| > 0 at all D embeddings (since field embeddings are injective).
+- Within a single rank-r prefix band [v_r, .] at tag i, solving a = sum_{l=1}^r lambda_l b^{(l)} via an invertible r x r coordinate minor gives |sigma(lambda_l)| <= (C sqrt(r))^{er} by the same product-formula bound, confining |L_i(a)| to [v_r, r(C sqrt(r))^{er} v_r] regardless of rank ties or jumps of > 1. Slicing into log-width w >= 1 costs P = O_k(m(1 + m log(2m)/w)) intervals per deep tag, uniformly in generator height!
+- Every non-deep tag lies in [A_i e^{-w}, A_i] of log-width w, and every deep tag lies in a cell interval of log-width w, so comparing cell maxima against any single point a^{(1)} in the cell gives H_cell = sum_i log M_{cell,i} - log J <= log(|F(a^{(1)})|/J) + Dw <= log Y + Dw =: Z.
+- Subtlety checked on unequal effective degrees (proof.txt:81-90): Even when [K : k] = [K' : k] = n, a cell's projections can generate subfields K_0 subset K, K'_0 subset K' of sharply unequal degrees n'_1 != n'_2 <= n. Does T_cell <= 8n/q + 3 still hold? YES: let s_b = dim_k pi_b(V_cell); s_1 + s_2 >= q implies max(s_1, s_2) >= q/2. If min(s_1, s_2) < q (say s_2 < q), rank-nullity on pi_2 : V_cell -> K'_0 gives V_cell cap (K_0 x {0}) != {0} already at degree 1, and if s_1 >= q/2 then K_0 x {0} is reached in 1 + ceil(2n'_1/s_1) <= 4n/q + 2 steps (while if s_1 < q/2, s_2 > q/2 and s_1 < q puts {0} x K'_0 in degree 1 + ceil(2n'_2/s_2) <= 4n/q + 2). If s_1 = s_2 = q, both sides grow at rate q >= q/2, giving <= 2 ceil(2n/q) + 1 <= 4n/q + 3. And projecting a q-dimensional k-plane onto q pivot coordinates injects its ternary intersection into ({-1, 0, 1}^e)^q of size 3^{eq}. At w = m and l = o(m / log x), Z = o(x/T), q = o(m), and binom(D, l) P^l 3^{eq} = exp(o(m)) = B^{o(1)} (at log Y = O(sqrt(x log x)), w = log m even gives q = O_k(1)).
+- Scope limitation on b = o(m) (proof.txt:93-95, 103): Whenever K and K' are abstractly k-isomorphic (K cong_k K', so b = n >> m) — which includes EVERY single-field two-map / N-shifted module (such as grdeg's D1 and D2, notes/grdeg_results.md:49, 58) and any tower sharing a subfield [L_0 : k] >= m — the graph-cell bound 3^{eb} exceeds the entire 3^r box and becomes vacuous. Note that a normalized graph cell generates the graph of iota : L_0 -> L'_0 where linking forces phi|_{L_0} == phi' o iota|_{L_0} mod N (a local Type-A coincidence), but Lemma CC does not automatically annihilate its columns when mixed linearly with non-graph rows.
+- Connection to divided differences and the 72-bit witness: C-L2 shows w_0 = (-2+sqrt(2), -1+sqrt(2), -1) maps via unit -1-sqrt(2) to ternary (sqrt(2), -1, 1+sqrt(2)), which 1-hyperplane covers at E = 1, while G-L2's parameter-free 2-hyperplane cover captures w_0 directly in [-2, 2]^6. Also, G-L2's C3 (P = (T^2+1)A) answers C-L2's §4 question in the zero-remainder case: M_i = O(1) at all 4(n - 2) non-pole roots, so l <= 8 = O(1) deep tags and C-L2 §2 already bounds it!
+
+
+2. REVIEW OF C-L3 (codex/chase_L3_codex.out, codex/scratch/ch_L3c/lemma3.txt)
+
+Summary of verdicts on C-L3 claims:
+- Base rank identity r = rank M - rank M_L over F_2 and Q/Z (lemma3.txt:5-17): CORRECT [proved].
+- Coset-table DAG on g_i = q^3 b_i mod N (lemma3.txt:18-29, check.py:34): CORRECT as a refutation of unrestricted algebraic rank-to-credit; NOT a threat to alpha >= 1/3 because the model already charges its N^{1+o(1)} work [proved + measured].
+- Planted two-map polynomial and multi-cubic examples (lemma3.txt:30-39, check.py:94, 124): CORRECT for ideal-valuation rank alone [proved + measured], but provably yield ZERO fruitful square-extractive rank once algebraic unit/sign columns are included (proof below).
+- Simple-root prime-power extension of DAG-POOL discriminant scaling d^{(D-1)(D-2)} (lemma3.txt:40-43): CORRECT [proved].
+
+Detailed audit of Priority (3):
+
+(a) Does the model already charge the coset-table DAG?
+YES on total work W, NO inside Axiom R if stated purely in terms of oracle probes. In notes/lowerbound_results.md:28, uniform computation is charged toward W, and C-L3 proves its coset table costs W = N^{1+o(1)} (indeed, birthday collisions w_r == w_s mod N among pre-factored B-smooth words already yield m base relations with 0 large primes and 0 smoothness probes in N^{1/2+o(1)} RAM work, and Strassen factors N in N^{1/4+o(1)} with 0 probes!). Thus no smooth-probe lower bound can hold above N^{1/4}; C-L3 refutes only the unpriced, work-unbounded version of Open Lemma 3.
+
+(b) Hidden kill on C-L3's L_N[eta]-work planted forms (lemma3.txt:30-39): algebraic unit rank grows faster than planted rows [proved].
+In g(X) = 1 + (X - t) prod_{i=0}^m (X - a_i) with 0 < a_0 < ... < a_m (a_0 = q, a_i = q^3 b_i), S(X) alternates sign across nodes with |g(a_i) - 1| = 0 while derivative magnitudes exceed 2, so by the Intermediate Value Theorem g(X) has m + 2 REAL roots (near t and each a_i)! Hence K = Q[X]/(g) is totally real of degree m + 2, and O_K^* / (O_K^*)^2 (real signs + fundamental units) has F_2-dimension m + 2 > m + 1. Even if dependent rational words are planted — e.g. N = 2773, q = 31, pts = (q, 2q^3, 3q^3, 6q^3) where the rational product (6 q^5)^2 is an exact square — exact root evaluation confirms prod_i (a_i - z) < 0 at all 5 real roots z of g, so the algebraic product is totally negative and cannot be a square! Likewise, planting m separate cubics (lemma3.txt:36) introduces >= 2m new unit/sign columns across the m fields while also violating the single pooled floor(h/4) cusp-exception budget (notes/lowerbound_results.md:36, 63). Similarly, g = p + (X - t)S (lemma3.txt:38) plants k <= deg(g) - 1 interpolation cusps, directly consumed by FT's C_FT D log(2E) <= h/4 exception allowance.
+
+(c) Minimal natural model amendment restoring Lemma 3 at W = L_N[1/3, c]:
+Keep the existing priced model and enforce three standard, checkable clauses on shared-descent blocks:
+1. Relation source: Every row arises either from evaluating a declared squarefree linked polynomial/module family at a primitive lattice point, or from a non-identity modular collision U == V (mod N) (U != V in Z) priced at its uniform collision cost (producing O(W^2 / N) = o(1) collisions for W = L_N[1/3, c], or charged as a probe of |U - V| >= N).
+2. Pooled cusp budget: All blocks/sublattices sharing factor-base or large-prime columns share ONE floor(h/4) exception budget covering interpolation/cusp points.
+3. Full square-extractive columns: Base rank r = rank M - rank M_L is measured after adjoining the algebraic unit/Schirokauer columns required for square-root extraction, excluding unfactored squares z^2 with prime divisors p > U = t^2 x^C (which occur with total probability O(t/U) = o(1) under SM2).
+These three clauses are completely natural (every real sieve — QS, MPQS, GNFS, SNFS, MNFS, DAG-POOL — satisfies them) and neutralize all three C-L3 bypasses.
+
+
+3. RESULTS TO ACCEPT AS PROVED & BEST NEXT ATTACK
+
+Accept as proved (internal, cross-checked):
+- C-L2: Threshold inequality Q >= (x - D log(C_k D))/g_h - (e/2) D m log m - O_k(Dm) (closing fast-growing product modules g_h = o(T)); non-recursive B^{o(1)} fresh-rank bound for l = o(m / log x) deep embeddings when b = o(m); ternary-box capture of the 72-bit witness; divided-difference bound s_h <= h(p + 1) + 1.
+- C-L3: Exact rank formula r = rank M - rank M_L; coset-table refutation of work-unbounded rank-to-credit (at cost N^{1+o(1)}); simple-root prime-power discriminant multiplier d^{(D-1)(D-2)} for DAG-POOL.
+- (Pending C's audit of G-L1/G-L2): G-L1 Theorems 1–2 (M2 fiber equivalence + Two-Choice Weighted Theorem J); G-L2 Rank-3 Two-Hyperplane Relative Liouville Lemma (capturing the 72-bit witness directly in [-2, 2]^6) + C2's >= 2^m - 2 small-norm multi-cone orbits collapsing to parity rank <= m.
+
+Single best next attack:
+In Hatch 2 (LP_exc^rel), C-L2 and G-L2 have squeezed the surviving gap to a single concrete family: divided-difference modules with nonzero remainders (P mod D_j != 0, total pole degree p = O(m), where s_h <= h(p+1)+1 has slow growth and M_i ~ b across all D embeddings). Prove (or refute) that Vandermonde/rational-pole rows (1, z, (w - R_j(z))/D_j(z)) over algebraic roots of P(z)^2 - w^2 = 0 CANNOT attain Alon-Vu's (em/2) log m conditioning loss at Theta(D) embeddings simultaneously — removing the log m factor for algebraic evaluation rows would close confinement unconditionally for divided differences.

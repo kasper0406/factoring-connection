@@ -1,0 +1,24 @@
+Exact toy checks, registered before running either construction.
+
+Use the public modulus 2773, the primes up to 29 as base, and q = 31. Build
+the subgroup table by adjoining the generators q^3 b to <q>. Record the
+signed relation for every coset edge and the period row for q. Expect every
+row to verify modulo N, extracted integer rank 10, and extracted binary rank
+at least 8. Predict a proper factor from the order multiple for 2 certified
+by its coset cycle and the shared period row. Count smoothness tests as zero:
+the only membership tests in the algorithm are residue equalities.
+
+For the binary-form check set b0=1 and use the first five base primes for
+parents. Interpolate the monic polynomial 1+(X-t) product(X-a_i), with
+a_0=q, a_i=q^3 b_i and t the least positive inverse of product(-a_i) modulo
+N. Expect g(0)=0 modulo N, every g(a_i)=1, large divisors q or q^3 exactly,
+and extracted base rank five over both coefficient systems for the valuation
+rows. The rational columns predict zero square dependencies on these rows.
+
+Additional check registered after the first two results and before its run.
+Use N=2773, p=11, q=101, a_i=q^(2i+1) for i=0,...,4. Set S=product(X-a_i)
+and g=p+(X-t)S with t=0 modulo p and t S(0)=p modulo N. Predict five
+distinct nonzero simple roots a_i modulo p, with g(a_i)=11 in every case.
+After stripping the full q power, every numerical residual must equal 11.
+Give each distinct linear root its ideal column. Expect base rank four over
+Q and F2 and no dependency among the five rows.
