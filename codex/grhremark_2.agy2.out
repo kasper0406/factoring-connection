@@ -1,0 +1,25 @@
+R2. Adjudication of the Three Proposals
+
+(a) Pooled Lee-Venkatesan fields + XK-Z + Prop PIN for Las Vegas L[1/3]
+- Verdict: Orchestrator is right; demote [proved reduction, speculative hypothesis]. By detGRH Prop Z (detGRH_results.md:324-329), once lambda(N) | D, H = {a : a^(2^k t) = +-1} has index >= 2, so random Miller bases split N w.p. >= 1/2 without GRH. Dirichlet GRH only ensures Q_0 = {p < 2 ln^2 N} generates (Z/N)^* (Burgess fails at B = L_N[1/3], detGRH_results.md:145, 254). The real obstacle is zroute section 3.2 seedless PIN (zroute_results.md:223, 308-316): avoiding rational hyperplanes on conditioned smooth vectors after unit elimination (detGRH_results.md:358-364), the Q-span twin of Conjecture F (nfsfruit_results.md:32-40). Remark irrelevant.
+- Corrected probability: 3-5%.
+- Precise missing lemma (Hyp PIN-LV): For J = L_N[1/3, c'] i.i.d. LV fields with XK-Z torsion spaces W_j in Q^(FB), Pr[Q_0 subset sum_(j<=J) W_j + Q*e_(-1)] >= 1/2 (cancelling all FB \ Q_0 coordinates over Q, zroute_results.md:223).
+
+(b) Bost / Arakelov slope inequality for grdeg door (i) (barrier direction)
+- Verdict: Plausible for G-height (fixing max_j to tuple height), NOT implied by Prop RR, barrier-only [speculative]. Prop RR (grdeg_results.md:133-151, 264-268) charges one congruence (kappa_gen ~ e/d, model L[1/4] when m = r/e ~ x^(1/4) << n = d/e ~ x^(1/2)). Relativizing rank3 Prop R4 (rank3_results.md:72-75) over O_k via Bost's slope inequality charges all m - 1 congruences mod ker(psi: O_k -> Z/N) while filtering degenerate subbundles. G's max_j h_k(w_j) missed disjoint-place peaks; tuple height is required, and G-count stays heuristic (V_F = inf, H5_r fails, grdeg_results.md:95-99).
+- Corrected probability: ~35% for G-height (<1% for a sub-1/3 algorithm).
+- Precise missing lemma (Relative R4): For m O_k-independent u^(t) in a rank-m linked O_k-submodule of O_K x O_K' ([K:k] = [K':k] = n, non-sublattice-confined), sum_(i<=2ne) max_(t<=m) log|L_i(u^(t))| >= ((m-1)/(2n-1)) log N - O(dn).
+
+(c) Variance positivity for the 4/11 three-level target
+- Verdict: G is right; remark.pdf misses principal-character drift [proved in model]. Variance positivity gives >= 0 while Prop DC needs phi_2 <= eta_2/4 (pc3_results.md:138-140), and non-principal character errors already decay as exp(-c D^theta lambda^2) unconditionally (mf2L_results.md:48-55). At alpha = 4/11 (i = 2), eta_2 ~ D^(-8/11) hits principal-character gcd and beta-drift variance ~ gamma^2 lambda^2 ~ D^(-8/11) lambda^C from s = beta (thmAB_results.md:379-413; pc3_results.md:348-354; multidescent_results.md:70-72), untouched by L-function zeros.
+- Corrected probability: <1% via remark.pdf; 10-15% via classical DC_e conditioning.
+- Precise missing lemma: Coarse gcd/archimedean cells e(A) giving E_w[phi_(2,e)], E_w[sigma_(2,e)^2] <= eta_2/4 at alpha = 4/11 (pc3_results.md:142-154, 348-354).
+
+R3. Joint Final Verdict and Merged Top-3 Threads
+
+Joint verdict: No — both consultants agree there is no credible path below L_N[1/3] (P < 1-2%) from either RH/GRH/ERH or the theta-lift positivity methods in remark.pdf [heuristic]. Every sub-L[1/3] bottleneck in the repository is Diophantine or constructive (resultant height floors, size-entropy laws, and smooth-constructor costs, completeness_audit_results.md:62-69), which L-function zero locations leave untouched [proved in models]. The lone open sub-L[1/3] model crack (grdeg door (i)) lacks any candidate construction and is expected to close back to alpha >= 1/3 [speculative].
+
+Merged top-3 threads:
+1. Consolidate unconditional rigorous L_N[3/8]: prove Hyp U' under DW and merge 2L-MF + SPR-P' (audit2L_audit.md:76-78; mf2L_results.md:56-60; remark irrelevant). Probability: 65-70%. Cost: 2-4 weeks.
+2. Close grdeg door (i) (G-height) via Bost slope / Relative R4 over O_k, plus witness search on k = Q(i), r = 6 (grdeg_results.md:66-80, 264-268). Probability: ~35% barrier (<1% algorithm). Cost: 1-2 weeks.
+3. Test borderline rigorous L_N[4/11] via classical Prop DC_e gcd/archimedean conditioning (pc3_results.md:142-157, 348-354; remark irrelevant). Probability: 10-15%. Cost: 4-8 weeks.
