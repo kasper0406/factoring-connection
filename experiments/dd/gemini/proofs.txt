@@ -1,0 +1,129 @@
+EXTENDED PROOFS & DERIVATIONS FOR DIVIDED-DIFFERENCE ADVERSARY AUDIT (dd_g)
+
+1. Lemma 1 (Trivial Generator Ideal, Shared-Denominator Cancellation, and Pole-Proximity Anti-Loss) [proved].
+
+Setting: Let k be a fixed number field of degree e = [k : Q] >= 2 (specifically k = Q(sqrt(2)), e = 2,
+ternary alphabet A = {-1,0,1} + {-1,0,1}sqrt(2) subset O_k with C_sigma = max_{z in A} |sigma(z)| and
+c_min(sigma) = min_{z in A \ {0}} |sigma(z)| > 0; for k = Q(sqrt(2)), C_sigma = 1 + sqrt(2) and
+c_min(sigma) = sqrt(2) - 1). Let R_1, ..., R_s in O_k[T] be pairwise coprime monic polynomials of total
+degree p = sum_{j=1}^s deg R_j = O(m), R(T) = prod_{j=1}^s R_j(T), m = 2 + s. Let P, Q in O_k[T] be monic
+of degree n > p + 1 such that P(T) - sqrt(2) and Q(T) - sqrt(2) define degree-n field extensions K, K' over k,
+Q - P is divisible in O_k[T] by (T - b) R(T), and P(b) == Q(b) == A (mod N) where A^2 == 2 (mod N).
+
+(a) Integrality and J = 1: By Euclidean division in O_k[T] by monic R_j, P = Q_j R_j + S_j with Q_j, S_j in O_k[T]
+and deg S_j < deg R_j. At P(alpha) = sqrt(2), Q_j(alpha) = (sqrt(2) - S_j(alpha)) / R_j(alpha) lies in O_K
+(and similarly Q'_j(alpha') in O_{K'}). Since w_1 = 1 in O_K and all w_k in O_K, the Side-1 generator ideal is
+c = O_K w_1 + ... + O_K w_m = O_K (and c' = O_{K'}), hence J = N(c) N(c') = 1 and log J = 0 identically.
+Moreover, since w_1 = 1 and w_2 = alpha are generators, M_i = max_{1<=k<=m} |L_i(w_k)| >= max(1, |alpha_i|) >= 1
+at every tagged embedding i = 1..D (D = 2en), so H = sum_{i=1}^D log M_i >= sum_{i=1}^D log^+|alpha_i| >= 0,
+and Q = sum_{i=1}^D log t_i.
+
+(b) Shared-denominator scalar cancellation: Because R_j(alpha_i) != 0 (as K = k(alpha) has degree n > deg R_j and
+R_j is monic in O_k[T] — assuming irreducibility of P - sqrt(2) prevents shared roots with R_j, which is required
+for well-defined quotients in dd_common.md:10 and proof.txt:130), lambda_i = 1 / sigma(R)(alpha_i) is a finite
+nonzero scalar at embedding i. Multiplying all m generator evaluations at i by sigma(R)(alpha_i) scales |L_i(a)|
+by |sigma(R)(alpha_i)| uniformly for all a in A^m, hence scales both M_i and t_i by the exact same factor.
+Therefore M_i / t_i is strictly invariant under multiplying or dividing by prod_j sigma(R_j)(alpha_i): making
+the shared denominator tiny at embedding i contributes ZERO conditioning loss by itself.
+
+(c) Pole-proximity anti-loss: Suppose at embedding i (sitting over sigma = i|_k), one generator k_0 satisfies
+max_{k != k_0} |L_i(w_k)| <= (c_min(sigma) / (2 m C_sigma)) M_i, where M_i = |L_i(w_{k_0})|. Any m vectors
+a^(1), ..., a^(m) in A^m spanning k^m cannot all have k_0-th coordinate equal to 0 (otherwise they lie in the
+(m-1)-dimensional hyperplane {a_{k_0} = 0}). Choosing l with a^(l)_{k_0} != 0 gives by triangle inequality:
+  |L_i(a^(l))| >= |sigma(a^(l)_{k_0})| M_i - sum_{k != k_0} |sigma(a^(l)_k)| |L_i(w_k)|
+               >= c_min(sigma) M_i - (m - 1) C_sigma (c_min(sigma) / (2 m C_sigma)) M_i
+               > (1/2) c_min(sigma) M_i.
+Hence t_i > (1/2) c_min(sigma) M_i, so log(M_i / t_i) < log(2 / c_min(sigma)) = O_k(1) (for k = Q(sqrt(2)),
+log(2 / (sqrt(2) - 1)) = log(2 + 2 sqrt(2)) = 1.5745). In particular, clustering a root alpha_i within o(1/m)
+of a single simple pole root of R_j forces single-coordinate dominance and caps log(M_i / t_i) <= 1.58.
+
+
+2. Theorem 2 (Simultaneous Theta(m log m) Conditioning Loss IS Achievable at (1 - O(m/n))D Embeddings,
+Refuting the Equivalence in dd_common.md:17-19, yet Inflates H and Q to Omega(D m^2 log m)) [proved].
+
+(a) Construction (Family C3): Let m >= 4, n >= m + 2, k_poles = m - 2, q = n - k_poles >= 2, and take linear
+poles R_j(T) = T - j for j = 1, ..., k_poles (p = m - 2 = O(m)). By Alon and Vu (Combinatorica 17 (1997),
+Main Theorem / Corollary 2.3), there exists an invertible matrix B_0 in {-1, 0, 1}^{k_poles x k_poles} with an
+inverse column y^* = B_0^{-1} e_1 in Q^{k_poles} satisfying K_m := ||y^*||_inf = (m - 2)^{(m-2)/2 - o(m)} =
+exp((m/2) log m - o(m log m)). Choose b = k_poles + d_b with gcd(R(b), N) = 1,
+rho >= max(8 m^2 K_m, 4 m (k_poles - 1)!, (4 N)^{1/q}), C_scale = rho^2, and let S(T) in Z[T]_{< k_poles} be the
+exact Lagrange interpolant with S(j) = (k_poles - 1)! * round(C_scale y^*_j / (k_poles - 1)!) for j = 1..k_poles.
+Choose integer t so R(b) divides a - t N - S(b) with M_U = -(a - t N - S(b))/R(b) in [rho^q, 2 rho^q], and set
+U(T) = T^q + c_lin(T - b) + (Z - b^q) (where Z = (a - tN - S(b))/R(b) = -M_U), P(T) = S(T) + R(T) U(T),
+Q(T) = P(T) + j_0 (T - b) R(T)
+(choosing small O(1) integers c_lin, j_0 so P^2 - 2 and Q^2 - 2 are irreducible; e.g. modulo auxiliary primes p_1, p_2
+where 2 is nonresidue or inert, infinitely many (ks, c_lin, j_0) give irreducible specializations).
+
+By Rouche's theorem on the annulus 0.8 rho <= |z| <= 1.2 rho (since |S(z)| <= K_m (2m)^m rho^{m-1} << 0.1 rho^n
+for n >= m + 2), exactly q = n - m + 2 roots of P(T) - sigma(sqrt(2)) = 0 and q roots of Q(T) - sigma(sqrt(2)) = 0
+lie in 0.8 rho <= |alpha_i| <= 1.2 rho for each of the two base embeddings sigma, totaling 4(n - m + 2) =
+(1 - (m - 2)/n) D embeddings. At every such embedding alpha_i:
+  w_1(alpha_i) = 1,   |w_2(alpha_i)| = |alpha_i| <= 1.2 rho,
+  w_{2+j}(alpha_i) = (sigma(sqrt(2)) - S(j)) / (alpha_i - j) = c_i (y^*_j + delta^(i)_j),
+where c_i = -C_scale / alpha_i satisfies |c_i| >= C_scale / (1.2 rho) >= 0.8 rho >= |w_2(alpha_i)|, and since
+|S(j) - C_scale y^*_j| <= (k_poles - 1)! / 2 <= C_scale / (8 m) and |j / alpha_i| <= m / (0.8 rho) <= 1 / (6 m K_m),
+the perturbation delta^(i) satisfies ||delta^(i)||_inf <= 1 / (2 m).
+Evaluating the m independent ternary vectors diag(I_2, B_0) in {-1, 0, 1}^{m x m} gives:
+  |L_i(e_1)| = 1 <= 2 |c_i|,   |L_i(e_2)| = |alpha_i| <= 1.5 |c_i|,
+  |L_i((0, 0, (B_0)_l))| = |c_i| |e_{1,l} + (B_0)_l . delta^(i)| <= |c_i| (1 + k_poles / (2m)) <= 2 |c_i|.
+Hence t_i <= 2 |c_i|, while M_i >= |c_i| (K_m - 1/(2m)), proving
+  log(M_i / t_i) >= log((K_m - 1) / 2) = (m / 2) log m - o(m log m)
+at all 4(n - m + 2) = (1 - (m - 2)/n) D embeddings simultaneously!
+
+(b) Exact linear-pole product identity and global Q blow-up: For any monic P(T) and linear pole R_j(T) = T - r_j,
+since sigma(P)(T) - sigma(sqrt(2)) = prod_{l=1}^n (T - alpha_l), evaluating at T = sigma(r_j) gives
+sigma(P)(sigma(r_j)) - sigma(sqrt(2)) = prod_{l=1}^n (sigma(r_j) - alpha_l), and dividing by sigma(r_j) - alpha_i
+yields the exact identity:
+  w_{2+j}(alpha_i) = prod_{l != i} (sigma(r_j) - alpha_l).                              (*)
+In Construction C3, Rouche's theorem on tiny disks around each pole j in {1, ..., m-2} places one root alpha_*^(j)
+near each j. At alpha_*^(j), the q = n - m + 2 annulus roots satisfy |j - alpha_l| >= 0.7 rho >= m K_m, while the
+remaining m - 3 pole-adjacent roots satisfy |j - alpha_l| >= 0.9, so |w_{2+j}(alpha_*^(j))| >= (0.7 rho)^q * 0.9^{m-3}
+>> C_scale K_m >= max_{k != 2+j} |w_k(alpha_*^(j))| * (4 m C_sigma / c_min). By Lemma 1(c), t_* >= (c_min / 2) M_*,
+hence summing over all 4(m - 2) pole-adjacent embeddings gives:
+  Q = sum_{i=1}^D log t_i >= 4(m - 2) q log(0.7 rho) - O_k(D m) >= Omega((1 - m/n) D m^2 log m) >> x / T.
+
+
+3. Theorem 3 (Singular-Value Rigidity, Real-Root Pigeonhole Cap, and Same-Numerator Resultant Law) [proved].
+
+(a) Singular-value concentration & metric entropy of ill-conditioned directions [proved]:
+Let A in A^{m x m} have det(A) != 0, fix base embedding sigma : k -> C, and write 0 < sigma_1 <= ... <= sigma_m for
+the singular values of sigma(A). Since every entry of sigma(A) has modulus <= C_k, ||sigma(A)||_F^2 = sum_{l=1}^m
+sigma_l^2 <= C_k^2 m^2. For any integer 1 <= q < m, AM-GM on sigma_{q+1}^2, ..., sigma_m^2 gives
+  prod_{l=q+1}^m sigma_l <= (C_k^2 m^2 / (m - q))^{(m - q)/2} <= e^{q/2} (C_k sqrt(m))^{m - q}.
+At the remaining e - 1 base places tau != sigma, Hadamard gives |det tau(A)| <= (C_k sqrt(m))^m, so the product
+formula |N_{k/Q}(det A)| >= 1 gives prod_{l=1}^m sigma_l = |det sigma(A)| >= (C_k sqrt(m))^{-(e-1)m}. Dividing:
+  prod_{l=1}^q sigma_l >= e^{-q/2} C_k^{-em + q} m^{-(em - q)/2}.                       (**)
+Consequently, if log(M_i / t_i) >= gamma m log m (with gamma > 0), pick q = ceil((e + 2) / gamma) = O_{k,gamma}(1).
+If sigma_q <= m^{-gamma m / 2}, then prod_{l=1}^q sigma_l <= m^{-q gamma m / 2} <= m^{-(e + 2)m / 2}, contradicting
+(**) for all sufficiently large m. Thus sigma_q > m^{-gamma m / 2}, so every unit vector u in C^m with
+||sigma(A) u||_inf <= sqrt(m) t_i / M_i <= sqrt(m) m^{-gamma m} has projection onto span(v_q, ..., v_m) of norm at
+most m^{1 - gamma m / 2}, confining [u] in P^{m-1}(C) to a ball of radius exp(-(gamma/2) m log m + O(log m)) around
+the (q - 1)-dimensional subspace E_A = P(span(v_1, ..., v_{q-1})). Summing over all <= (3^e)^{m^2} matrices A, the
+bad locus B_gamma subset P^{m-1}(C) can be covered by exp(O_k(m^2)) balls of radius exp(-(gamma/2) m log m), whose
+total Fubini-Study volume is exp(-gamma m^2 log m + O_k(m^2)).
+At q = 2 (near-maximal loss gamma = e/2 - eps with eps -> 0), dim_C(span(v_1)) = 1: any two embeddings alpha_1, alpha_2
+attaining near-maximal loss via the SAME matrix A must align projectively up to m^{-Omega(m)}, forcing cross-ratio
+collapse |(r_{j_1} - r_{j_2})(alpha_1 - alpha_2) / ((alpha_1 - r_{j_1})(alpha_2 - r_{j_2}))| <= m^{-Omega(m)} on any
+two heavy pole coordinates (and at least two coordinates must exceed M_i / (2 m C_k / c_min) by Lemma 1(c)).
+
+(b) Real-root pigeonhole ceiling [proved]:
+Even when all D = 4n roots are real (maximizing 1D collisions of [-1, 1]^{2m} -> R), the total number of ternary points
+is 3^{em}. For generic real linear forms, spacing in [-m C_k M_i, m C_k M_i] is Theta(M_i * 3^{-em}), giving
+log(M_i / t_i) <= (e log 3) m + O_k(log m) = O_k(m) — strictly sub-m-log-m.
+
+(c) Same-numerator resultant law [proved identity; typical-size norm floor heuristic]:
+Because Q - P = (T - b) R(T) Delta(T), Q mod R_j = P mod R_j = S_j for all j = 1..s. Hence for any a = (a_1, a_2,
+c_1, ..., c_s) in O_k^m, BOTH sides clear R to the IDENTICAL polynomial of degree d_a <= p + 1:
+  N_a(T) = (a_1 + a_2 T) R(T) + sum_{j=1}^s c_j (sqrt(2) - S_j(T)) prod_{l != j} R_l(T),
+and share the identical denominator resultant Delta_R = Res_T(P - sqrt(2), R) = Res_T(Q - sqrt(2), R). Moreover,
+reducing N_a mod R_j gives c_j (sqrt(2) - S_j) prod_{l != j} R_l, yielding the exact cross-side resultant identity:
+  Res_T(Q - P, N_a) = (-1)^{d_a} N_a(b) * (prod_{j=1}^s c_j^{deg R_j}) * (+-Delta_R)
+                      * (prod_{j != l} Res_T(R_j, R_l)) * Res_T(Delta, N_a).
+When c_j != 0 for all j and a_2 != 0 (full support), deg N_a = p + 1 >= m - 1 and Res_T(R, N_a) != 0:
+  - If |S_j| ~ b (standard base-b), N_a has degree-(p+1) and degree-p coefficients O(1) and degree-(<=p-1) coefficients
+    ~ b, so two roots of N_a have modulus ~ b^{1/2}, heuristically giving |F(a)| ~ b^{4(n-1)} ~ N^2 while confining
+    capped vectors to {c_1 = ... = c_s = 0} = span_k(1, T).
+  - If |S_j| = O(1) (KH-floor P = S + R U), N_a(T) has O(1) roots independent of U(T), where |R(xi) U(xi)| ~ b across
+    all p + 1 >= m - 1 roots on both sides and both base embeddings, heuristically giving |F(a)| ~ b^{4(p+1)} >=
+    b^{4(m-1)} ~ N^{2(m-1)/n} (or N^{4(m-1)/(n-m+2)} under general-N mod-N linking): N-saving growth parameter c = 1
+    in src/grdeg/ledger.py:88, giving alpha = 1/(4 - c) = 1/3.

@@ -1,0 +1,59 @@
+PRE-REGISTRATION: Divided-Difference Adversary Test for LP_exc^rel (dd_g)
+Timestamp (UTC): 2026-11-20T21:23:47.884482+00:00
+Role: ADVERSARY
+
+1. HYPOTHESES & GOALS PRE-REGISTERED BEFORE RUNNING 60-112 BIT BENCHMARKS
+We test whether choosing pairwise coprime monic pole polynomials R_j (total degree p = O(m)),
+base b, and linked polynomials (P, Q) with Q - P divisible by (T - b) * prod_j R_j(T),
+P(b) == Q(b) == A (mod N) (A^2 == 2 mod N), P^2 - 2 and Q^2 - 2 irreducible over Q, and
+full k-rank m (k = Q(sqrt(2)), e = 2) with slow product growth s_h <= h(p + 1) + 1 can:
+  (H1) Achieve near-maximal local conditioning loss log(M_i / t_i) ~ c * m log m at a positive
+       fraction of the D = 4n embeddings simultaneously;
+  (H2) Drive Q = sum_{i=1}^D log t_i - log(N(c) N(c')) below c_k x / T - C_k D m;
+  (H3) Produce a growing count N_ind of O_k^*-inequivalent, B-smooth, capped candidates
+       (0 < |F| <= cap) whose two-sided prime-ideal parity rows are F_2-independent modulo
+       (a) proper k-subspaces and (b) products of strictly lower-norm candidates.
+
+2. PRE-REGISTERED FIXTURES & PARAMETERS (NO POST-HOC CHERRY-PICKING)
+- Bit sizes and growing (n, m) schedule (matching experiments/chase/ch_L2c/sweep.py:131):
+    (60, 7, 3), (72, 8, 3), (84, 9, 4), (96, 10, 4), (112, 12, 4), plus (112, 12, 5).
+- Seeds: seed = 19 (archived witness seed, cover.py:74 & sweep.py:76) and seed = 0
+  (primary diagnostic seed, experiment.py:275) via experiment.fixture(bits, seed).
+- Dedicated conditioning-scaling sweep across rank m in {3, 4, 5, 6} at bits = 96, n = 12, seed = 19.
+- Ternary box: E = 1, Omega = [-1, 1]^{2m} (|Omega| = 3^{2m}).
+- Cap and smoothness bound (exact sweep.py:89-91 formulas):
+    cap = 3^(4n) * 2^ceil(bits / (2n)),
+    B   = 2^ceil((bits * bit_length(bits - 1)^3)^(1/4)).
+
+3. PRE-REGISTERED ADVERSARIAL CONSTRUCTIONS
+- B0 (Control): Standard centered base-b selection (experiment.py:55), poles [T^2+1, T-1, T+1][:m-2].
+- C1a (Base-b Near-Pole Divisor Alignment, exact P(b) = a): Linear poles R_j = T - (b - d_j)
+  chosen so prod_j d_j divides (a - c_0) with minimal |c_0| (preferring c_0 = +-1 where c_0^2 - 2 = -1
+  is an exact unit in O_k^*), minimizing |P mod R_j| and clustering poles near b.
+- C1b (Unit-Remainder Small-Pole KH-Floor Family, P(b) = a + t*N): Linear poles R_j = T - j
+  (j = 1..m-2) with S(T) = 1 (so P(r_j)^2 - 2 = -1, exact relative unit remainder at every pole,
+  making prod_j R_j(alpha_i) ~ b^-1 at 4(m-2) pole-clustered roots and pushing H to the KH floor).
+- C2 (Totally-Real Scaled Chebyshev Fields + Root-Clustered Chebyshev Poles):
+  P(T) = C_{n,L}(T - sh) + sum_{k<n} d_k C_{k,L}(T - sh) with P(b) = a and certified oscillation
+  amplitude > sqrt(2) across all n+1 extrema in [sh - 2L, sh + 2L] on BOTH sides, forcing all D = 4n
+  embeddings real, paired with Chebyshev poles [X^2 - 2L^2, X - L, X + L][:m-2] (X = T - sh) inside
+  the real root cluster.
+- C3_Z & C3_Ok (Alon-Vu / O_k-Ill-Conditioned Residue-Planted Numerators):
+  Linear poles R_j = T - j (j = 1..m-2), small base b, P(T) = S(T) + R(T) U(T) where S(j) plants
+  a scaled inverse column y* = B^{-1} e_1 of an invertible ternary Z-matrix (C3_Z) or O_k-matrix
+  (C3_Ok), and U(T) = T^{n-m+2} + d_1(T - b) - M_U has circle radius rho >= 2 m^2 ||y*||_inf.
+
+4. PRE-REGISTERED METRICS & FALSIFICATION PREDICTIONS
+- All real/complex thresholds M_i, t_i, log(M_i / t_i), H = sum log M_i, Q = sum log t_i certified
+  with 256-bit python-flint ball arithmetic (arb/acb). All norms and ideal-parity rows exact via
+  flint resultants and PARI nfinit/idealprimedec.
+- Predictions:
+  * P1: C3_Z and C3_Ok WILL achieve near-maximal conditioning loss log(M_i / t_i) ~ c m log m at a
+    positive fraction (1 - (m-2)/n and 1/2 - (m-2)/(2n)) of the D embeddings, refuting the equivalence
+    between local loss forbidding and global Q >= c_k x/T confinement; YET pole-adjacent embeddings
+    will force H >= Omega(D m^2 log m) and Q >> x/T.
+  * P2: C2 (totally real Chebyshev) WILL double average conditioning loss over complex embeddings
+    and keep Q < 0 up to 84-96+ bits, but its loss per embedding scales only as O(m) (<= 2m log 3).
+  * P3: Across ALL adversarial constructions at 84-112 bits, N_ind (modulo proper k-subspaces and
+    strictly lower-norm candidate products) will equal 0, with full-support norms obeying c >= 1
+    (restoring alpha >= 1/3). Any nonzero growing N_ind at 84-112 bits falsifies P3.

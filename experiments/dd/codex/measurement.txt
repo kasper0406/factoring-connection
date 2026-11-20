@@ -1,0 +1,40 @@
+Measured. The registered grid contains 195 linked pairs and 9,096 tagged absolute embeddings.
+The fixture facts and all polynomials are in fixtures.json and cells.jsonl, respectively.
+In embeddings.csv both endpoints of each natural-log loss and each normalized loss are
+integer multiples of 10^-9. Divide the indicated integers by 10^9. Root coordinates are
+stored separately as the lower endpoint rounded down at scale 10^12. Each root is also
+identified by its isolated-root index, side, and sign of sqrt(2). summary.csv uses the same
+10^-9 scale for order statistics and plain integers for the three tail counts.
+The largest enclosure width was 3e-9. audit.log records 12 independent direct checks.
+
+Certificate. Normalize the m generator values by their true maximum and multiply each
+expanded real or imaginary coordinate by 2^56. Evaluate with 384-bit Arb enclosures.
+Check each rounded coordinate differs from the true scaled value by less than 1.
+The normalized magnitude of every box evaluation then changes by at most 2m sqrt(2)/2^56.
+The basis min-max defining the threshold obeys the same additive error bound.
+
+On the rounded grid maintain independent original coefficient rows over k. At each step
+choose a nonzero k-linear functional vanishing on their span. Minimize the grid magnitude
+over all ternary rows on which this functional is nonzero. Every spanning set contains
+such a row, so the minimum lower-bounds the grid threshold. Append one minimizing row,
+which increases the rank. At rank m the largest selected magnitude is also an upper bound.
+The two bounds therefore agree, even if the minima come from different functionals.
+
+Split the row into halves, enumerate both lists, and for each left half search a tree
+of right sums for the closest pair with nonzero combined functional. Store both integer
+components of the functional value. Skip a node when its minimum squared distance cannot
+improve the best value, or all its functional values exactly cancel the left half.
+All distances are integer squares with signed 128-bit accumulators. Since there are at
+most 16 digits each coordinate below 2^57 in modulus, the squared sum is below 2^123.
+Add the error enclosure before taking logs. Complex conjugate balls give identical thresholds
+because the coefficient field is real. The CSV retains both roots and counts both separately.
+
+Reproduce from this directory with the following commands.
+  clang++ -std=c++17 -O3 -shared -fPIC nearest.cpp -o nearest.so
+  /Volumes/git/factoring-connection/.venv/bin/python -B measure.py --workers 4
+  /Volumes/git/factoring-connection/.venv/bin/python -B summarize.py
+  /Volumes/git/factoring-connection/.venv/bin/python -B audit.py
+The independent audit sorts explicit Arb magnitude intervals and uses rational-field
+rank tests on the full box modulo sign. It checks one real and one nonreal root per side
+on the 60-bit (m,p)=(3,3),(4,4),(5,5) cells. The summary checks every expected root ID,
+rank and pole-degree cell, interval width, and classification against every registered cut.

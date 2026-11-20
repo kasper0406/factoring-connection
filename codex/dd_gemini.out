@@ -1,0 +1,102 @@
+DIVIDED-DIFFERENCE ADVERSARY REPORT FOR LP_exc^rel
+
+0. UPFRONT VERDICT
+
+Verdict: PARTIAL (local conditioning question REFUTED in the adversary's favor [proved + measured]; global confinement failure and sub-L[1/3] candidate yield NOT achieved, with N_ind = 0 across all 61 adversarial boxes at 84-112 bits [measured] and exponent c >= 1, alpha >= 1/3 [heuristic]).
+
+Specifically, codex/dd_common.md:17-20 treats two statements for divided-difference modules of total pole degree p = O(m) as equivalent:
+  (S1) forbidding conditioning loss log(M_i / t_i) ~ m log m at a positive fraction of the D embeddings;
+  (S2) global threshold confinement Q := sum_{i=1}^D log t_i - log(N(c) N(c')) >= c_k x / T - C_k D m.
+They are NOT equivalent [proved] (codex/scratch/dd_g/proofs.txt:41-84):
+- Adversary win on (S1) [proved + measured]: Choosing linear poles R_j(T) = T - j (j = 1..m-2, p = m - 2), small base b, and P(T) = S(T) + R(T) U(T) with S(j) interpolating a scaled Alon-Vu / O_k-staircase inverse column y* = B^{-1} e_1 produces certified loss log(M_i / t_i) >= (m/2) log m - o(m log m) simultaneously at 4(n - m + 2) = (1 - (m - 2)/n) D embeddings while keeping irreducibility, linking, full k-rank m, and slow product growth s_h <= h(m - 1) + 1. At n = 12, m = 3..6, certified losses reach >= 0.75 m log m on 92%, 83%, 75%, and 67% of all D = 48 embeddings (codex/scratch/dd_g/results.json:3800-4660).
+- Obstruction on (S2) and yield [proved + measured]: Achieving that simultaneous alignment forces root-pole scale separation rho >= exp(Omega(m log m)), which via the exact identity w_{2+j}(alpha_i) = prod_{l != i} (sigma(r_j) - alpha_l) inflates the 4(m - 2) pole-adjacent thresholds to Q >= Omega((1 - m/n) D m^2 log m) >> x / T [proved]. Conversely, minimizing pole remainders (P = 1 + R U, Family C1b) keeps H near the Theorem KH floor and drives Q = -10.3 < 0 even at 112 bits [measured], yet every full-support candidate still pays log|F| >= 1.24 log N (c = 1, alpha = 1/3) and yields N_ind = 0.
+
+Environment and reproducibility: Repository .venv/bin/python3 provides mpmath, sympy, numpy, gmpy2, cypari2, and python-flint. All scratch files (prereg.txt, run_dd_adversary.py, proofs.txt, results.json, cyclotomic_supp.json, pell_poles_supp.json) reside in /Volumes/git/factoring-connection/codex/scratch/dd_g; repository files are untouched.
+
+
+1. ADVERSARIAL CONSTRUCTIONS AND PRE-REGISTRATION
+
+All experiments were pre-registered in codex/scratch/dd_g/prereg.txt:1-59 before running on 60-112 bit fixtures, using exact sweep.py parameters (experiments/chase/ch_L2c/sweep.py:89-91, 131): k = Q(sqrt(2)) (e = 2), N = a^2 - 2 from experiments/subthird/codex/experiment.py:28-43 (seeds 19 and 0), ternary box Omega = [-1, 1]^{2m}, cap = 3^{4n} 2^{ceil(bits/(2n))}, and B = 2^{ceil((bits * bit_length(bits-1)^3)^{1/4})}. Generators are w_1 = 1, w_2 = alpha, and w_{2+j} = (P // R_j)(alpha) = (sqrt(2) - (P mod R_j)(alpha)) / R_j(alpha) for pairwise coprime monic R_j of total degree p = O(m), with Q - P divisible by (T - b) prod_j R_j(T) so Q // R_j and P // R_j share identical evaluations mod N at T = b (experiments/chase/ch_L2c/proof.txt:129-141).
+
+Six main families plus two supplementary pole families were tested (codex/scratch/dd_g/run_dd_adversary.py:157-395):
+1. B0 (Control): Centered base-b P(b) = a with poles [T^2 + 1, T - 1, T + 1][:m-2] (experiment.py:55-83).
+2. C1a (Base-b near-pole divisor alignment, exact P(b) = a): Linear poles R_j = T - (b - d_j) with d_j in {+-1, +-2} chosen so prod_j d_j > 0 divides a - c_0 for c_0 = +-1 (so P(r_j)^2 - 2 = -1 is a relative unit in O_k^*) and base-b U(T) in P = c_0 + R U.
+3. C1b (Small-pole KH-floor unit-remainder family): Linear poles R_j = T - j (j = 1..m-2) with S(T) = 1 (P(j)^2 - 2 = -1) and P(b) = a + t N via centered base-b U(T) of degree n - m + 2, making prod_j R_j(alpha_i) ~ b^{-1} tiny at 4(m - 2) pole-clustered roots while minimizing H toward the Theorem KH floor (notes/subthird_results.md:27-36).
+4. C2 (Totally-real scaled Chebyshev fields + root-clustered Chebyshev poles): P(T) = C_{n,L}(T - sh) + sum_{k<n} d_k C_{k,L}(T - sh) (where C_{n,L}(x) = 2 L^n T_n(x/(2L)) is monic in Z[x]) and Q = P + j_0(T - b) R, certified by Sturm counts to have all D = 4n roots real inside [sh - 2L, sh + 2L], paired with Chebyshev poles [X^2 - 2L^2, X - L, X + L][:m-2] (X = T - sh) inside the real root cluster.
+5. C3_Z and C3_Ok (Alon-Vu and O_k-staircase residue-planted numerators): Linear poles R_j = T - j (j = 1..m-2), coupling m - 1 coordinates (w_2, ..., w_m) to an ill-conditioned ternary inverse column y* = B^{-1} e_1 over Z (C3_Z) or Z[sqrt(2)] (C3_Ok, where diag(-1+sqrt(2)) - subdiag(1+sqrt(2)) gives geometric ratio (1+sqrt(2))^2 = 5.828 per step plus ternary search) via S(j) approx -(x_0 - j) x_0 y*_{j+1} and U(T) = (T - x_0)^{n-m+2} + c_lin(T - b) - M_2 with b = x_0 + d_b and x_0 >= 8 m^2 ||y*||_inf M_2^{1/(n-m+2)}.
+6. Supplementary C_cyc and C_pell (codex/scratch/dd_g/cyclotomic_supp.json:1-77, pell_poles_supp.json:1-26): Cyclotomic unit-circle poles [Phi_3, Phi_6] = [T^2+T+1, T^2-T+1] with S = 1 (achieving min |prod R_j(alpha_i)| = 3e-6 and |prod R_j| < 0.1 at 16/36 = 44% of embeddings), and quadratic Z[T] minimal polynomials of Pell-unit multiples j(sqrt(2) - 1)^K.
+
+Disclosed execution adjustments: Strict prefix spaces use dim_k < m (matching experiments/masullo_ext/mext_c/cover.py:69 when ternary vectors tie at t_i); C3 couples m - 1 generators around real center x_0 with adaptive 512/1024-bit ball precision; pre-registered sub-prediction P2 that C2 would keep Q < 0 was falsified because matching P(b) = a with 2n real roots forces Chebyshev scale L ~ b/2, inflating H (whereas C1b achieved Q < 0 up to 112 bits).
+
+
+2. MEASURED CONDITIONING LOSS AND CANDIDATE COUNTS (60-112 BITS)
+
+All thresholds M_i, t_i, H, and Q are certified with 512- to 1024-bit flint arb/acb ball arithmetic; all norms F and prime-ideal valuation parities use exact flint resultants and PARI nfinit/idealprimedec (codex/scratch/dd_g/run_dd_adversary.py:398-695). Every run verified slow product growth s_h = h(p + 1) + 1 up to 2n.
+
+Table A — Conditioning-loss scaling across rank m = 3..6 at 96 bits, n = 12, D = 48, seed = 19 [measured] (codex/scratch/dd_g/results.json:3800-4660):
+
+  m | m log m | B0 med/max | C2 med/max | C3_Z med/max (frac>=.5) | C3_Ok med/max (frac>=.75) | C3_Ok H / Q
+  3 |   3.30  | 1.60 / 4.25| 0.88 / 0.88| 0.94 / 0.98  (0.00)     | 2.64 / 2.65   (0.92=44/48)| 1149.6 / 1029.7
+  4 |   5.55  | 2.09 / 5.95| 1.92 / 2.59| 2.51 / 2.57  (0.00)     | 4.63 / 4.64   (0.83=40/48)| 1793.9 / 1601.6
+  5 |   8.05  | 3.47 / 8.17| 3.58 / 4.19| 4.05 / 4.11  (0.75)     | 6.17 / 6.17   (0.75=36/48)| 2798.5 / 2565.8
+  6 |  10.75  | 1.06 / 2.20| 5.47 / 6.10| 5.85 / 5.88  (0.67)     | 8.12 / 8.13   (0.67=32/48)| 3155.4 / 2881.4
+
+In C3_Ok (and C3_Z at m >= 5), the fraction of embeddings achieving near-maximal loss equals 4(n - m + 2)/(4n) = 1 - (m - 2)/n to the exact embedding (44, 40, 36, 32 of 48), while all 4(m - 2) pole-adjacent embeddings drop to loss 0.88.
+
+Table B — 60-112 bit candidate audit (seed 19 shown; seed 0 in results.json:353-3790 has N_ind = 0/0/0 on every family from 60 to 112 bits) [measured]. Columns: H, Q, loss med/max, capped O_k^*-orbits (full-support capped), N_ind = coord / strong / prefix (independent smooth full-support rows modulo coordinate subspaces + smooth lower-norm products / all lower-norm products / 1-hyperplane prefix spaces), and min full-support log|F|/log N:
+
+  Bits (n,m) | Mode  |    H   |    Q   | Loss med/max | Cap(Full) | N_ind     | minFull/lnN
+  60  (7,3)  | B0    |   31.3 |  -25.9 |  1.89 / 3.83 |  106 (49) | 3 / 3 / 0 |   0.6176
+  60  (7,3)  | C1b   |   58.9 |   10.8 |  1.54 / 3.12 |   20  (0) | 0 / 0 / 0 |   1.2318
+  60  (7,3)  | C3_Ok |  672.0 |  605.1 |  2.64 / 2.65 |    2  (0) | 0 / 0 / 0 |  14.6883
+  72  (8,3)  | B0    |   37.9 |  -19.4 |  1.83 / 3.51 |   70 (20) | 1 / 1 / 0 |   0.6617
+  72  (8,3)  | C1b   |   61.9 |    5.3 |  1.53 / 3.80 |   29  (0) | 0 / 0 / 0 |   1.0527
+  72  (8,3)  | C3_Ok |  793.2 |  715.6 |  2.65 / 2.65 |    2  (0) | 0 / 0 / 0 |  14.4735
+  84  (9,4)  | B0    |   97.5 |    8.8 |  2.61 / 5.83 |   28  (0) | 0 / 0 / 0 |   1.4253
+  84  (9,4)  | C1b   |  107.9 |   21.0 |  2.22 / 5.97 |   45  (0) | 0 / 0 / 0 |   1.7215
+  84  (9,4)  | C2    |  474.5 |  416.9 |  1.56 / 2.24 |    2  (0) | 0 / 0 / 0 |   7.9354
+  84  (9,4)  | C3_Ok | 1398.3 | 1261.6 |  4.63 / 4.64 |    2  (0) | 0 / 0 / 0 |  23.7184
+  96 (10,4)  | B0    |  135.6 |    8.3 |  2.75 / 6.37 |   28  (0) | 0 / 0 / 0 |   1.6993
+  96 (10,4)  | C1b   |  118.7 |   30.4 |  2.48 / 5.93 |   62  (0) | 0 / 0 / 0 |   1.5190
+  96 (10,4)  | C3_Ok | 1595.8 | 1440.6 |  4.63 / 4.64 |    2  (0) | 0 / 0 / 0 |  23.6948
+  112 (12,4) | B0    |  142.5 |   34.9 |  1.63 / 5.85 |   28  (0) | 0 / 0 / 0 |   1.5020
+  112 (12,4) | C1b*  |  113.8 |  -10.3 |  2.44 / 6.28 |   78  (0) | 0 / 0 / 0 |   1.2355
+  112 (12,5) | B0    |  163.0 |   13.1 |  3.49 / 7.80 |   28  (0) | 0 / 0 / 0 |   1.9059
+  112 (12,5) | C1b   |  193.9 |   61.3 |  3.29 / 8.16 |   84  (0) | 0 / 0 / 0 |   2.2398
+  112 (12,5) | C3_Ok | 2975.9 | 2743.2 |  6.17 / 6.17 |    2  (0) | 0 / 0 / 0 |  37.6871
+  (*112b C1b row shows seed 0 where Q = -10.3 < 0; seed 19 has H = 118.4, Q = 12.2, cap = 71(0), N_ind = 0/0/0.)
+
+Across all 54 main boxes at 84, 96, and 112 bits plus 7 cyclotomic/Pell boxes, full-support capped candidates equal 0 and N_ind = 0 under every quotient definition. Even at 60 and 72 bits (B0 seed 19), the 3 and 1 coordinate-full rows lie inside a single non-coordinate prefix hyperplane (N_ind_prefix = 0, matching chase_L2_codex.out:3). In C1b, capped orbits triple to 78-84, yet all lie in proper k-subspaces of rank <= m - 1.
+
+
+3. EXPONENT LEDGER IF SCALED
+
+Using the repository ledger d = x^delta, r = e m = x^rho, log B = x^alpha, cost L[alpha] => rho = alpha, and log X = x^{1 + c*rho - delta} + 2 d log 3, smoothness feasibility u log u <= C yields alpha = 1 / (4 - c) [proved arithmetic; heuristic endpoints] (src/grdeg/ledger.py:37-101, notes/grdeg_results.md:34-42):
+- Hypothetical sub-1/3 target (c = 0): log|F| ~ x/d + O(d), delta = 1/2, alpha = 1/4 (requires N_ind >= pi(B)/rho(u) outside proper k-subspaces).
+- C1a, C1b, C_cyc (KH-floor small pole remainders |S_j| = O(1)) [heuristic]: Full-support candidates have deg N_a = p + 1 >= m - 1 roots of O(1) modulus away from R = 0 where |P(xi) - sqrt(2)|, |Q(xi) - sqrt(2)| ~ b, giving |F(a)| ~ b^{4(p+1)} >= N^{2(m-1)/n} (exact-a) or N^{4(m-1)/(n-m+2)} (general-N linking). Here log|F| ~ (r/d) x => c = 1, delta = 2/3, alpha = 1/3 (confirmed by measured minFull/lnN = 1.24 at (12,4) vs 4*3/10 = 1.20, and 2.24 at (12,5) vs 4*4/9 = 1.78).
+- B0 (standard base-b remainders |S_j| ~ b) [heuristic]: Newton polygon of N_a gives two roots of modulus ~ b^{1/2}, yielding full-support |F(a)| ~ b^{4(n-1)} ~ N^2 (general N: N^4), i.e., log|F| = Theta(x), giving L[1/2].
+- C2 (totally-real Chebyshev, L ~ b/2), C3 (Alon-Vu planted numerators), C_pell [proved + heuristic]: log|F| = Theta(r x) >> x, worse than L[1/2].
+
+
+4. STRONGEST OBSTRUCTIONS PROVED
+
+Full proofs are in codex/scratch/dd_g/proofs.txt:3-129:
+
+1. Trivial generator ideal, shared-denominator cancellation, and pole-proximity anti-loss [proved] (proofs.txt:13-39):
+   (a) Monic R_j in O_k[T] forces w_{2+j} = (P // R_j)(alpha) in O_K; with w_1 = 1, c = O_K, c' = O_{K'}, so J = N(c)N(c') = 1, H = sum log M_i >= sum log^+|alpha_i| >= 0, and Q = sum log t_i.
+   (b) Multiplying w(alpha_i) by sigma(R)(alpha_i) scales M_i and t_i by the exact same factor |sigma(R)(alpha_i)|, so a tiny shared denominator prod_j R_j(alpha_i) cancels identically out of M_i / t_i.
+   (c) Whenever one generator dominates at embedding i (max_{k != k_0} |L_i(w_k)| <= (c_min / (2 m C_sigma)) M_i, as near any simple pole root), every full-rank ternary basis contains a row with a_{k_0} != 0, forcing t_i > (c_min / 2) M_i and log(M_i / t_i) < log(2 / (sqrt(2) - 1)) = 1.575 (observed in C_cyc and C3's 0.88 floor).
+
+2. Linear-pole product identity vs Alon-Vu alignment [proved] (proofs.txt:41-84):
+   For R_j = T - r_j, dividing sigma(P)(sigma(r_j)) - sigma(sqrt(2)) = prod_{l=1}^n (sigma(r_j) - alpha_l) by sigma(r_j) - alpha_i yields the exact identity
+     w_{2+j}(alpha_i) = prod_{l != i} (sigma(r_j) - alpha_l).
+   Any construction (such as C3 or O_k-unit-clustered poles) separating Theta(n) roots from m - 2 poles by scale K_m = exp(Omega(m log m)) at some base place sigma forces the pole-adjacent embeddings to pay |w_{2+j}(alpha_*)| >= (c K_m)^{Theta(n)} with single-coordinate dominance (Lemma 1c), driving Q >= Omega(D m^2 log m) >> x / T.
+
+3. Singular-value concentration, real-root pigeonhole cap, and same-numerator resultant law [proved + heuristic] (proofs.txt:86-129):
+   (a) [proved] For any invertible A in A^{m x m}, ||sigma(A)||_F <= C_k m and |det sigma(A)| >= (C_k sqrt(m))^{-(e-1)m} imply prod_{l=1}^q sigma_l(sigma(A)) >= e^{-q/2} C_k^{-em+q} m^{-(em-q)/2}. Taking q = ceil((e + 2)/gamma) = O_{k,gamma}(1) gives sigma_q > m^{-gamma m / 2}, confining gamma-ill-conditioned unit vectors to radius m^{-gamma m / 2 + 1/2} around a (q - 1)-dimensional subspace E_A (covering number exp(O_k(m^2)) across all <= 3^{em^2} matrices). At near-maximal loss gamma = e/2 - o(1) (q = 2), dim E_A = 1, so any two embeddings sharing A suffer cross-ratio collapse |(r_{j_1}-r_{j_2})(alpha_1-alpha_2)/((alpha_1-r_{j_1})(alpha_2-r_{j_2}))| <= m^{-Omega(m)}, triggering Obstruction 2. Meanwhile, generic real embeddings only pack 3^{em} points into R^1, capping generic real loss at (e log 3) m + O_k(log m) = O_k(m) [proved].
+   (b) [proved identity] Because Q - P = (T - b) R(T) Delta(T), BOTH sides share the identical cleared numerator polynomial N_a(T) of degree d_a <= p + 1 and identical pole resultant Delta_R = Res_T(P - sqrt(2), R), satisfying Res_T(Q - P, N_a) = (-1)^{d_a} N_a(b) (prod_j c_j^{deg R_j}) (+-Delta_R) (prod_{j!=l} Res_T(R_j, R_l)) Res_T(Delta, N_a). Full-support vectors have c_j != 0 and d_a = p + 1 >= m - 1, preventing pole cancellation and forcing c >= 1 [heuristic].
+
+
+5. NEXT STEP
+
+Switch to the prover side on the sole remaining gap in codex/dd_common.md:18: C3 proves (S1) is false

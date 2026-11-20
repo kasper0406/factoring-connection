@@ -1,0 +1,114 @@
+Divided differences, small values and a family with large conditioning loss
+
+1. Proved. The product bound and the quantifiers.
+Write s = sqrt(2), k = Q(s), U = product R_j, f = P-s, n = deg f, d = p+1.
+Take the monic irreducible side first. Clearing U gives the polynomials
+G_1 = U, G_2 = TU, G_{j+2} = (s - (P mod R_j)) U/R_j, where the remainder is taken before subtraction.
+They lie in O_k[T], with degree at most d. For a box row a write G_a = sum a_j G_j.
+At each absolute embedding i above sigma of k, let B_i = max_j |G_j^sigma(alpha_i)|.
+Then |L_i(a)|/M_i = |G_a^sigma(alpha_i)|/B_i. In particular t_i/M_i is the minimum,
+over all k-bases of box rows, of the largest of these normalized evaluations in the basis.
+The two integer coordinate polynomials in G_a = V_a + s W_a each have degree at most d.
+Replacing s by P produces one integer polynomial but can raise the degree to n+d.
+
+For each fixed row nonzero on this side, the product of |G_a^sigma(alpha_i)| over the 2n
+absolute embeddings equals |N_{k/Q} Res_T(P-s,G_a)|, a positive integer. Equivalently
+take the absolute resultant of P^2-2 with V_a+P W_a. For an irreducible factor use the
+corresponding monic minimal polynomial and its coefficient embeddings. Let H_a be the maximum
+coefficient l1-norm of the two conjugates of G_a. Bounding each other factor by
+H_a max(1,|alpha_l|)^d gives the explicit uniform small-value estimate
+  |G_a^sigma(alpha_i)| >= max(1,|alpha_i|)^d / [H_a^(2n-1) Mahler(P^2-2)^d].
+Division by B_i gives the local normalized estimate. It still charges the coefficient and root heights.
+
+There is also a denominator-aware counting bound. Divide the resultant by the matching norm
+of U. This gives |N L(a)|, with the factor N(c) recovered if c is the integral generator ideal.
+On the two sides together let J=N(c)N(c'), H=sum_i log M_i-log J and C=1+sqrt(2).
+For a fixed row nonzero on both sides, sum_i log(M_i/|L_i(a)|) <= H, and each summand
+is at least -log(Cm). If the row has loss >= lambda at u places, then
+  u (lambda + log(Cm)) <= H + D log(Cm).
+The basis attaining t_i may depend on i. Even with the same rows at many i, the resultant
+permits payment at the other conjugates and through H. At the proposed balance H can be
+of order Dm log m even in the height range of interest. This estimate allows u comparable to D.
+
+2. Proved. Ill-conditioning at half the embeddings with p in the requested range.
+For m>=4 put q=m-2, choose distinct integers r_j>=7, R_j=T^2-r_j^2, U=product R_j, p=2q.
+Fix any odd A giving a supplied split semiprime N=A^2-2. Set b=1. Choose any even
+n>=4q+4, h=n/2. Let C_0 be an invertible q by q zero-one matrix and v=C_0^{-1}e_l
+with log ||v||_infinity >= (q/2) log q - O(q) (Alon and Vu, Main Theorem, part 2,
+https://web.math.princeton.edu/~nalon/PDFS/av1.pdf, PDF p. 4).
+Take a large positive integer S. Choose integer c_j with |c_j/r_j^2-S v_j| < S/(8q).
+We will choose them in the following full-rank coset, with further finite exclusions below.
+
+Set P_0=T^n+A-1+2L(T^2) with L in Z[X], deg L<=q+1 and L(1)=0. The residues
+c_j=P_0 mod R_j and the constant P_0(0) vary independently in a rectangular lattice
+translate by interpolation at 0,1,r_1^2,...,r_q^2 followed by clearing a fixed denominator.
+Explicitly, multiples of the Lagrange cardinal polynomials with a common denominator
+cleared give independent integer steps at all nodes other than 1. Each target interval for
+c_j grows linearly with S. Thus it admits arbitrarily many choices in this lattice.
+Define E=T^h(T-1)U and
+  P_B=P_0+2B E,     Q_B=P_B+2(T-1)U,      B a large positive integer.
+Both polynomials are monic of degree n, have value A at 1, and have the same c_j.
+Subtract s from either side. Eisenstein at (s) applies since all the lower coefficients
+before subtraction are even and the constant after subtraction has valuation exactly one.
+The absolute minimal polynomials have degree 2n since s belongs to the field of a root.
+They are distinct. The two maps alpha -> 1, s -> A modulo N link all the generators
+because their integral quotient representatives differ by 2(T-1)U/R_j. Each side is generated
+by T. The distinct relative minimal polynomials give the full product algebra by CRT.
+The generators are k-independent on each side. A relation after clearing U has degree
+<=p+1<n, so vanishes identically. Evaluation at r_j kills every term except the
+j-th pole term, which has nonzero residue. This leaves only an affine linear relation.
+The ideals are both the unit ideal and s_l<=l(p+1)+1 for each product order l.
+
+At zero the rational generator functions have values (1,0,(c_j-sigma(s))/r_j^2).
+For either sign these last q coordinates are within S/(4q) of S v_j for large S.
+Thus the independent ternary rows diag(I_2,C_0) all have absolute values below 2S
+throughout a small disk about zero, and the largest coordinate exceeds S||v||_infinity/2
+there for large q. Choose its radius less than 1 and use the same disk on both sides.
+On its boundary 2B E eventually dominates the remaining terms of either equation
+P_B-sigma(s)=0, Q_B-sigma(s)=0. Rouche's theorem puts exactly h zeros of each equation
+in the disk. With both signs and sides this gives D/2 absolute embeddings with
+  log(M_i/t_i) >= log ||v||_infinity - log 4 >= (m/2) log m - O(m).
+The general Cramer estimate supplies the upper bound O(m log m). No selection of
+different local bases or conjecture on the infinitude of these semiprimes is required.
+
+3. Proved. At a prescribed cap 1<=Y<N^2 this family can have only scalar candidates.
+Here parameters are chosen for each finite m,n,A,Y. For a box row with active pole
+indices H (nonzero coefficients d_j), put U_H=product_{H} R_j. The reduced numerator is
+  F=(a_1+a_2 T)U_H + sum_{j in H} d_j(s-c_j) U_H/R_j.
+When H is nonempty, choose the c_j so that F(xi) is nonzero at every zero xi of E.
+At active poles this holds automatically. At every other such xi it excludes a proper
+affine hyperplane in the c_j, since the coefficient of each active c_j is nonzero.
+If a_1=a_2=0 and |H|>=2, also require sum d_j(s-c_j) nonzero, making deg F=2|H|-2.
+For fixed m there are finitely many exclusions. A union of finitely many proper
+hyperplanes cannot cover products of lattice intervals whose minimum cardinality tends
+to infinity (fix all but one coordinate for each hyperplane with a nonzero coefficient).
+We may simultaneously make all |c_j| large enough for the single-pole case below.
+
+For nonconstant F its resultant with P_B-s has degree exactly deg F in B. In the product
+over the roots of F, every leading factor is a nonzero multiple of E at that root.
+The resultant with U_H is constant and nonzero in B by the fixed pole residues.
+Their ratio is the relative norm of the box element. Both signs and sides have the same
+growth conclusion, so its two-sided absolute norm eventually exceeds Y. The remaining
+case with an active pole is F constant, a single pole times a scalar d. Its one-sided
+absolute norm is |N_k(d)|^n |c_j^2-2|^(n-2), which also exceeds Y by choice of c_j.
+
+For affine rows with a_2 nonzero the same resultant argument applies unless -a_1/a_2
+is a zero of E. Its absolute value is <=(1+sqrt(2))/(sqrt(2)-1)<7, excluding the poles.
+Root 1 gives two-sided norm |N_k(a_2)|^(2n) N^2. Root 0 gives the analogous product
+using |P_0(0)^2-2| and |Q_0(0)^2-2|, both arbitrarily large by the independent choice
+of P_0(0). Take B sufficiently large for every box row and the disk argument together.
+Exactly the six scalar unit letters, and the two letters +/-sqrt(2) if 2^(2n)<=Y,
+are then nonzero capped candidates. Their common evaluations are units modulo N.
+All lie on one proper k-line, so incremental higher-rank parity is zero.
+
+4. Partial. Ledger and next step.
+For fixed m,n,N, the coefficient height tends to infinity with B. Some roots are
+unbounded by Vieta, M_i>=max(1,|alpha_i|), and J=1. The general Cramer inequality
+then also sends sum log t_i to infinity. The construction refutes a height-uniform
+exclusion of the positive-fraction loss. The ideal-relative threshold inequality
+at the factoring balance remains open. There x/T and Dm log m both have size
+x^(3/4+o(1)), whereas the proposed L[1/4] norm budget is x^(1/2+o(1)).
+KH gives the generator-height exponent c=1 (model alpha>=1/3); the fresh yield
+needed for c=0, alpha=1/4 remains unestablished. Restrict the next resultant
+argument to H=O(x/T), necessary for failure by chase/ch_L2c/proof.txt lines 42-51,
+and charge the conjugates compensating the local cancellations to sum log t_i.

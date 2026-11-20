@@ -1,0 +1,22 @@
+Divided-difference threshold sweep, registered before fixture generation and root evaluation.
+Use the repository's split-semiprime fixture(bits,19) at bits = 60,72,84,96,112.
+Cross all six m = 3,...,8 with every integer p = m,...,2m. One linked pair per cell.
+Take n = max(p+2, archived relative degree for that bit size: 7,8,9,10,12).
+Distribute p as evenly as possible over m-2 poles (larger degrees first). In that order,
+choose R=T^d+c with the first c in +1,-1,+2,-2,... coprime as a polynomial to each earlier R.
+Construct monic P with P(b)=A by the archived balanced digits, starting at floor(A^(1/n)) and
+decreasing b down to 2. At each b try P then P+u(T-b) in order u=1,-1,2,-2,... up to 16.
+For each irreducible P^2-2 try Q=P+j(T-b)prod R for j=1,-1,...,8,-8 until Q^2-2 is irreducible.
+Require m independent generators on each side, linked integer quotients at b, and distinct
+minimal polynomials on the two sides. Retain the first valid pair. Report every failed cell.
+Take all coefficients a_j=u_j+sqrt(2)v_j for u_j,v_j independently in {-1,0,1}. Use the
+threshold in the common brief, on the full box, with rank over Q(sqrt(2)). M is the maximum
+over the m unexpanded generators. Count both sides and all absolute embeddings, including
+each complex conjugate separately. Natural logs. Compute certified intervals for log(M/t)
+and log(M/t)/(m log m), since e=2. Target width < 0.000001 for each reported embedding.
+Pool by embedding and report by m, with nearest-rank median, p90, max and fractions at or
+above 0.25, 0.5 and 1 times the benchmark. Report real/complex and bit-size splits in files.
+Descriptive diagnostic only: a broadly growing upper tail would motivate an asymptotic
+construction; shrinking or bounded tails on this grid do not prove a uniform statement.
+Use exact polynomial and rank arithmetic plus isolated complex balls. Acceleration may use
+conjugation, fixed-point enclosures and pruning only with a check covering all box rows.
