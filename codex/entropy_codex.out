@@ -1,0 +1,19 @@
+**No test met the preregistered lead criterion.** All 482 discovery survivors came from 24-bit semiprimes. None cleared the corrected threshold in either validation or confirmation at 80 or 96 bits. None passed the registered polynomial-versus-exponential fit criterion.
+
+The search evaluated 12,000 bit-valued tests on 1.6 million primary semiprimes, with 200,000 draws at each requested size and an independent size-matched reference for every draw. The tests produced 10,981 distinct prediction vectors on discovery data. The discovery correction covered 3,456,000 comparisons. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/ent_c/PREREGISTRATION.md)
+
+**The 24-bit signals were genuine finite-population effects.** Sampling required replacement because only 19,546 distinct products qualify. A supplementary census verified positive advantage for all 482 survivors in their frozen directions, ranging from 0.391 to 3.672 percentage points. Every admissible product also split within the 256-step Fermat budget, leaving no unflagged 24-bit rows.
+
+One of the strongest discovery tests predicted bit 3 of the smaller factor using the complemented parity of \(N\bmod16\). Its confirmation results show how the signal changed with size.
+
+| Product size | Matched confirmation sample | Advantage, percentage points | Exact 95% CI |
+|---|---|---:|---:|
+| 24 bits | Including flagged rows | +3.068 | [+2.446, +3.689] |
+| 80 bits | Both members unflagged | −0.026 | [−0.650, +0.598] |
+| 96 bits | Both members unflagged | +0.108 | [−0.513, +0.728] |
+
+**Power limits the conclusion.** The planted \(1/n\) leak cleared the discovery cutoff at every size on unfiltered rows. At 96 bits, the clean matched analysis had 15.3% power for \(1/n\) and \(9.53\times10^{-9}\) power for \(1/n^2\). An inverse-square leak remains unresolved. [Power results](/Volumes/git/factoring-connection/codex/scratch/ent_c/results/planted.tsv) · [Confirmation and power figure](/Volumes/git/factoring-connection/codex/scratch/ent_c/results/confirmation_and_power.png)
+
+The shuffle screen produced zero corrected discoveries. One of 216 planned low-bit sanity comparisons rejected at 48 bits on discovery, with Holm-adjusted \(p=0.0350\). Both holdout intervals crossed zero. [Low-bit controls](/Volumes/git/factoring-connection/codex/scratch/ent_c/results/low_bit_controls.tsv)
+
+The replay matched all 194 recorded checksums. The result archives contain contingency counts, signed advantages, mutual information and finite-sample intervals with and without flagged rows. [Full report](/Volumes/git/factoring-connection/codex/scratch/ent_c/RESULTS.txt) · [Survivor measurements](/Volumes/git/factoring-connection/codex/scratch/ent_c/results/survivor_measurements.tsv.gz) · [Scaling fits](/Volumes/git/factoring-connection/codex/scratch/ent_c/results/scaling.tsv) · [Reproduction guide](/Volumes/git/factoring-connection/codex/scratch/ent_c/RUNBOOK.txt)

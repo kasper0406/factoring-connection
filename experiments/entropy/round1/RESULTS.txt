@@ -1,0 +1,26 @@
+No test met the preregistered lead criterion.
+
+The search covered 12,000 bit-valued tests, 18 target definitions and eight product sizes from 24 to 96 bits. Each size had 100,000 discovery, 50,000 validation and 50,000 confirmation draws, plus an independent reference matched on the top eight bits of the product for every primary. On 800,000 discovery semiprimes, the grammar produced 10,981 different prediction vectors. All 12,000 expressions were distinct on the independent N-only witness panel. Grammar depths 1 through 4 contributed 10, 625, 5,710 and 5,655 tests. The registered ratio target bit 2 of floor(8p/q) is constant for balanced factors, so it has no eligible matched rows. Two other ratio bits varied.
+
+Discovery and confirmation
+
+The two-sided discovery cutoff was 1.44676 × 10⁻⁸ across 3,456,000 comparisons. All 482 surviving test–target pairs came from the 24-bit matched sample with flagged products included. Every 24-bit product split inside the 256-step Fermat budget. The clean analysis therefore starts at 32 bits, and it produced zero discovery hits. The flagged fractions among the 200,000 primaries per size were 100%, 85.873%, 37.685%, 11.5265%, 3.003%, 0.704%, 0.031% and 0.0005%, in increasing size order.
+
+All 482 survivors were tested in both holdouts at all eight sizes. None reached the corrected one-sided cutoff of 2.59336 × 10⁻⁵ in even one of the four clean 80- and 96-bit holdout cells. None met the registered polynomial fit and separation criteria against an exponential. No asymptotic rate can be inferred from this result.
+
+A strongest 24-bit hit predicted bit 3 of p with the complemented parity of N mod 16. Exact enumeration of all 19,546 admissible products gives a size-matched advantage of 2.598 percentage points and mutual information of 0.001948 bits. Its confirmation estimates were:
+
+Product bits    Matched view       Advantage, percentage points    Exact 95% interval
+24              Including flags    +3.068                         [+2.446, +3.689]
+80              Both unflagged     −0.026                         [−0.650, +0.598]
+96              Both unflagged     +0.108                         [−0.513, +0.728]
+
+Independent sampling used replacement. At 24 bits, 49,681 of the 50,000 confirmation draws also occurred in discovery. A supplementary census of every test and target verified that all 482 survivors have positive population advantage in their frozen directions at 24 bits, ranging from 0.391 to 3.672 percentage points. At 96 bits there was no primary-product overlap across splits. Every 24-bit hit therefore lies in the budget-factorable population. Test 386 uses only the residue modulo 16.
+
+Controls and sensitivity
+
+The planted 1/n control cleared the discovery cutoff on all eight unfiltered discovery samples. Matching and split filtering reduced power. At 96 bits, the clean matched middle-bit view retained 49,725 discovery rows. Exact positive-direction discovery power was 15.32% for 1/n and 9.53 × 10⁻⁹ for 1/n². The observed 1/n advantage was +1.139 percentage points, with a pointwise exact 95% interval of [+0.699, +1.580]. A separate power calculation gives 80% power for a 96-bit 1/n² leak at about 900 million eligible rows under the same discovery cutoff. This experiment leaves effects on that scale unresolved.
+
+The shuffled-label screen had zero corrected discoveries. One low-bit sanity comparison failed Holm correction across 216 planned checks. At 48 bits on clean matched discovery rows, bit 1 of N versus bit 1 of p had advantage −0.954 percentage points and adjusted p = 0.03496. For odd primes, the two bits agree exactly when q ≡ 1 mod 4. The inclusive matched estimate was −0.364 points. Clean validation and confirmation gave −0.463 and −0.561 points, respectively, with both pointwise intervals crossing zero. A supplementary calibration used independent uniform odd residues modulo 16, paired with the unique complementary residue that preserves each product. None of its 432 low-bit comparisons rejected after Holm correction.
+
+The archives include four views of every measured pair, binary contingency counts, exact binomial advantage intervals and conservative finite-sample MI intervals. Matching controls product size to an eight-bit prefix, which leaves within-bin size variation. Independent checks reproduced 1,342 arithmetic and split-audit cases and 3,072 contingency and interval comparisons. RUNBOOK.txt gives the data layout and replay command.
