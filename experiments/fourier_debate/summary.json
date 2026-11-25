@@ -1,0 +1,745 @@
+{
+  "64": {
+    "forms": 192,
+    "generation_errors": 0,
+    "B": 384,
+    "successes": 99,
+    "empty": 93,
+    "exactly_one": 70,
+    "eligible_total": 141,
+    "unrestricted_total": 148,
+    "matched_mean": [
+      0.734375,
+      0.609375,
+      0.875
+    ],
+    "arms": {
+      "pairs": {
+        "per_hit": {
+          "cpu_ms": [
+            6.669080808080809,
+            5.725865178571429,
+            7.928809124734231
+          ],
+          "wall_ms": [
+            6.6702537272727245,
+            5.726897353124998,
+            7.930183959808644
+          ],
+          "branches": [
+            654.959595959596,
+            533.9265625,
+            817.0225705329152
+          ],
+          "tested": [
+            3195.626262626263,
+            2599.681113701012,
+            3995.0133457419015
+          ],
+          "failed": [
+            324.26262626262627,
+            263.59238305941847,
+            405.50857963875205
+          ]
+        },
+        "total_cpu_s": 0.660239,
+        "total_wall_s": 0.660355119,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 14143,
+          "pair_mask_intersections": 126277,
+          "nonempty_pair_masks": 61462,
+          "good_primes": 7015,
+          "prime_rows": 448960,
+          "v_multiple_skips": 5157,
+          "root_progressions": 887606,
+          "incidence_gcd_mask_reads": 902759,
+          "rejected_nonprimitive_incidence": 337512,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 315713,
+          "nodes": 64841,
+          "children_scored": 65280,
+          "leaves": 32201,
+          "leaf_gcd_mask_reads": 514367,
+          "norm_tests": 316367,
+          "dead_leaves": 32102,
+          "score_ties": 514,
+          "full_factorizations": 102,
+          "divisor_searches": 102
+        }
+      },
+      "incidence": {
+        "per_hit": {
+          "cpu_ms": [
+            5.37007070707071,
+            4.568283185840707,
+            6.440362513842747
+          ],
+          "wall_ms": [
+            5.37132831313131,
+            4.569377395575224,
+            6.441762866798167
+          ],
+          "branches": [
+            654.959595959596,
+            533.9265625,
+            817.0225705329152
+          ],
+          "tested": [
+            3195.626262626263,
+            2599.681113701012,
+            3995.0133457419015
+          ],
+          "failed": [
+            324.26262626262627,
+            263.59238305941847,
+            405.50857963875205
+          ]
+        },
+        "total_cpu_s": 0.5316369999999999,
+        "total_wall_s": 0.5317615029999999,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 14143,
+          "good_primes": 7015,
+          "prime_rows": 448960,
+          "v_multiple_skips": 5157,
+          "root_progressions": 887606,
+          "incidence_gcd_mask_reads": 902759,
+          "rejected_nonprimitive_incidence": 337512,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 315713,
+          "nodes": 64841,
+          "children_scored": 65280,
+          "leaves": 32201,
+          "leaf_gcd_mask_reads": 514367,
+          "norm_tests": 316367,
+          "dead_leaves": 32102,
+          "score_ties": 514,
+          "full_factorizations": 102,
+          "divisor_searches": 102
+        }
+      },
+      "blind": {
+        "per_hit": {
+          "cpu_ms": [
+            2.432616161616161,
+            2.006690077805078,
+            2.993865024630541
+          ],
+          "wall_ms": [
+            2.4335463535353536,
+            2.0075001970925475,
+            2.994726227616995
+          ],
+          "branches": [
+            695.6464646464647,
+            573.5853264769194,
+            856.5354946524063
+          ],
+          "tested": [
+            3405.7272727272725,
+            2803.150286195286,
+            4199.187563502673
+          ],
+          "failed": [
+            345.62626262626264,
+            284.404954954955,
+            426.2855180481283
+          ]
+        },
+        "total_cpu_s": 0.24082900000000002,
+        "total_wall_s": 0.240921089,
+        "counters": {
+          "nodes": 68869,
+          "leaves": 34316,
+          "leaf_gcds": 548209,
+          "norm_tests": 337167,
+          "dead_leaves": 34217,
+          "full_factorizations": 101,
+          "divisor_searches": 101
+        }
+      },
+      "matched": {
+        "per_hit": {
+          "cpu_ms": [
+            3.731292929292928,
+            3.0073188058589873,
+            4.649258468992247
+          ],
+          "wall_ms": [
+            3.732451151515155,
+            3.0082425795431984,
+            4.650700256828167
+          ],
+          "branches": [
+            1349.2525252525252,
+            1071.945771908272,
+            1700.372975590856
+          ],
+          "tested": [
+            182.15151515151516,
+            147.76294258373207,
+            226.71205169515267
+          ],
+          "failed": [
+            1348.2525252525252,
+            1070.945771908272,
+            1699.372975590856
+          ]
+        },
+        "total_cpu_s": 0.369398,
+        "total_wall_s": 0.36951266400000005,
+        "counters": {
+          "moduli": 23423,
+          "generated_slopes_in_yielded_moduli": 133886,
+          "norm_tests": 18033,
+          "full_factorizations": 99,
+          "branches": 133576,
+          "failed_slopes": 133477,
+          "lattice_v_scans": 8544884,
+          "candidate_gcds": 45016,
+          "primitive_incidences": 23065
+        }
+      }
+    },
+    "ratios": {
+      "nodes_guided_over_blind": [
+        0.941512146248675,
+        0.89145948951965,
+        0.9910685173443973
+      ],
+      "tests_guided_over_blind": [
+        0.938309502412751,
+        0.8878751348932385,
+        0.9880486682114157
+      ],
+      "cpu_incidence_over_matched": [
+        1.439198371404286,
+        1.2954340666916069,
+        1.6075470590197294
+      ],
+      "cpu_pairs_over_matched": [
+        1.7873377765986829,
+        1.618759973715452,
+        1.987696828259346
+      ],
+      "cpu_incidence_over_blind": [
+        2.207528993601271,
+        2.1060153491399003,
+        2.324493685147308
+      ],
+      "wall_incidence_over_matched": [
+        1.4390887100962777,
+        1.295362334320634,
+        1.6074559655727478
+      ]
+    }
+  },
+  "80": {
+    "forms": 192,
+    "generation_errors": 0,
+    "B": 2048,
+    "successes": 136,
+    "empty": 56,
+    "exactly_one": 57,
+    "eligible_total": 266,
+    "unrestricted_total": 321,
+    "matched_mean": [
+      1.3854166666666667,
+      1.2134114583333335,
+      1.5677083333333333
+    ],
+    "arms": {
+      "pairs": {
+        "per_hit": {
+          "cpu_ms": [
+            8.82718382352941,
+            7.971093572011601,
+            9.873817943548381
+          ],
+          "wall_ms": [
+            8.828282441176473,
+            7.972056348750678,
+            9.875377312903229
+          ],
+          "branches": [
+            345.68382352941177,
+            281.73617777260023,
+            421.89798387096766
+          ],
+          "tested": [
+            1670.7279411764705,
+            1354.5471388888889,
+            2046.8250381000762
+          ],
+          "failed": [
+            169.2941176470588,
+            137.21206896551723,
+            207.53346774193545
+          ]
+        },
+        "total_cpu_s": 1.2004970000000001,
+        "total_wall_s": 1.200646412,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 58834,
+          "pair_mask_intersections": 2225226,
+          "nonempty_pair_masks": 174132,
+          "good_primes": 29289,
+          "prime_rows": 1874496,
+          "v_multiple_skips": 5065,
+          "root_progressions": 3738862,
+          "incidence_gcd_mask_reads": 1084045,
+          "rejected_nonprimitive_incidence": 408841,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 453103,
+          "nodes": 47013,
+          "children_scored": 47706,
+          "leaves": 23160,
+          "leaf_gcd_mask_reads": 369397,
+          "norm_tests": 227219,
+          "dead_leaves": 23024,
+          "score_ties": 242,
+          "full_factorizations": 163,
+          "divisor_searches": 163
+        }
+      },
+      "incidence": {
+        "per_hit": {
+          "cpu_ms": [
+            6.230507352941178,
+            5.573799493243242,
+            7.033307664595449
+          ],
+          "wall_ms": [
+            6.231983198529412,
+            5.575362088238093,
+            7.035473449062042
+          ],
+          "branches": [
+            345.68382352941177,
+            281.73617777260023,
+            421.89798387096766
+          ],
+          "tested": [
+            1670.7279411764705,
+            1354.5471388888889,
+            2046.8250381000762
+          ],
+          "failed": [
+            169.2941176470588,
+            137.21206896551723,
+            207.53346774193545
+          ]
+        },
+        "total_cpu_s": 0.847349,
+        "total_wall_s": 0.847549715,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 58834,
+          "good_primes": 29289,
+          "prime_rows": 1874496,
+          "v_multiple_skips": 5065,
+          "root_progressions": 3738862,
+          "incidence_gcd_mask_reads": 1084045,
+          "rejected_nonprimitive_incidence": 408841,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 453103,
+          "nodes": 47013,
+          "children_scored": 47706,
+          "leaves": 23160,
+          "leaf_gcd_mask_reads": 369397,
+          "norm_tests": 227219,
+          "dead_leaves": 23024,
+          "score_ties": 242,
+          "full_factorizations": 163,
+          "divisor_searches": 163
+        }
+      },
+      "blind": {
+        "per_hit": {
+          "cpu_ms": [
+            1.4802941176470594,
+            1.2405503355704701,
+            1.7721704695414562
+          ],
+          "wall_ms": [
+            1.4810297647058817,
+            1.2411715639961771,
+            1.7728430154121857
+          ],
+          "branches": [
+            392.5735294117647,
+            328.80341578995103,
+            470.2727988546886
+          ],
+          "tested": [
+            1912.4117647058824,
+            1597.9693619516772,
+            2296.0285433070867
+          ],
+          "failed": [
+            193.86764705882354,
+            161.9386169332598,
+            232.8505905511811
+          ]
+        },
+        "total_cpu_s": 0.20132,
+        "total_wall_s": 0.20142004800000002,
+        "counters": {
+          "nodes": 53390,
+          "leaves": 26502,
+          "leaf_gcds": 422874,
+          "norm_tests": 260088,
+          "dead_leaves": 26366,
+          "full_factorizations": 168,
+          "divisor_searches": 168
+        }
+      },
+      "matched": {
+        "per_hit": {
+          "cpu_ms": [
+            4.029698529411764,
+            3.407171373784414,
+            4.801911306928295
+          ],
+          "wall_ms": [
+            4.030590110294119,
+            3.408002133848103,
+            4.80295497091812
+          ],
+          "branches": [
+            1159.1029411764705,
+            936.4228896103896,
+            1432.6939244186046
+          ],
+          "tested": [
+            163.0441176470588,
+            134.30752079591645,
+            198.17381567058214
+          ],
+          "failed": [
+            1158.1029411764705,
+            935.4228896103896,
+            1431.6939244186046
+          ]
+        },
+        "total_cpu_s": 0.5480389999999999,
+        "total_wall_s": 0.548160255,
+        "counters": {
+          "moduli": 30196,
+          "generated_slopes_in_yielded_moduli": 158014,
+          "norm_tests": 22174,
+          "branches": 157638,
+          "failed_slopes": 157502,
+          "lattice_v_scans": 10083665,
+          "candidate_gcds": 53838,
+          "primitive_incidences": 27906,
+          "full_factorizations": 136
+        }
+      }
+    },
+    "ratios": {
+      "nodes_guided_over_blind": [
+        0.8805581569582319,
+        0.8076666764014531,
+        0.9548226115028814
+      ],
+      "tests_guided_over_blind": [
+        0.873623542800898,
+        0.8000064671534691,
+        0.9490127698359169
+      ],
+      "cpu_incidence_over_matched": [
+        1.546147263242215,
+        1.4018306894263248,
+        1.7119600070108814
+      ],
+      "cpu_pairs_over_matched": [
+        2.190532060674514,
+        1.9885275853288977,
+        2.4240841879783606
+      ],
+      "cpu_incidence_over_blind": [
+        4.208965825551361,
+        3.9001304906619163,
+        4.581049968286232
+      ],
+      "wall_incidence_over_matched": [
+        1.5461714111323153,
+        1.4018745774424866,
+        1.7119261549121656
+      ]
+    }
+  },
+  "96": {
+    "forms": 192,
+    "generation_errors": 0,
+    "B": 8192,
+    "successes": 141,
+    "empty": 51,
+    "exactly_one": 72,
+    "eligible_total": 268,
+    "unrestricted_total": 408,
+    "matched_mean": [
+      1.3958333333333333,
+      1.2135416666666667,
+      1.5885416666666667
+    ],
+    "arms": {
+      "pairs": {
+        "per_hit": {
+          "cpu_ms": [
+            26.577418439716308,
+            24.42522446895425,
+            29.118095155038752
+          ],
+          "wall_ms": [
+            26.579673191489366,
+            24.427135917550302,
+            29.12032934748062
+          ],
+          "branches": [
+            342.97872340425533,
+            285.14373280013757,
+            409.5802642395772
+          ],
+          "tested": [
+            1656.2836879432625,
+            1370.5200331125827,
+            1984.9686699941276
+          ],
+          "failed": [
+            167.98581560283688,
+            138.96613808834496,
+            201.3590399295361
+          ]
+        },
+        "total_cpu_s": 3.7474160000000003,
+        "total_wall_s": 3.7477339199999995,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 196850,
+          "pair_mask_intersections": 25089527,
+          "nonempty_pair_masks": 282052,
+          "good_primes": 98204,
+          "prime_rows": 6285056,
+          "v_multiple_skips": 4744,
+          "root_progressions": 12560624,
+          "incidence_gcd_mask_reads": 1187577,
+          "rejected_nonprimitive_incidence": 452118,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 537582,
+          "nodes": 48360,
+          "children_scored": 49066,
+          "leaves": 23827,
+          "leaf_gcd_mask_reads": 379950,
+          "norm_tests": 233536,
+          "full_factorizations": 209,
+          "divisor_searches": 209,
+          "dead_leaves": 23686,
+          "score_ties": 200
+        }
+      },
+      "incidence": {
+        "per_hit": {
+          "cpu_ms": [
+            15.22258865248227,
+            13.91956535947712,
+            16.75617480620155
+          ],
+          "wall_ms": [
+            15.223577730496455,
+            13.920699949019605,
+            16.757173291666668
+          ],
+          "branches": [
+            342.97872340425533,
+            285.14373280013757,
+            409.5802642395772
+          ],
+          "tested": [
+            1656.2836879432625,
+            1370.5200331125827,
+            1984.9686699941276
+          ],
+          "failed": [
+            167.98581560283688,
+            138.96613808834496,
+            201.3590399295361
+          ]
+        },
+        "total_cpu_s": 2.1463850000000004,
+        "total_wall_s": 2.14652446,
+        "counters": {
+          "setup_gcds": 786432,
+          "root_calls": 196850,
+          "good_primes": 98204,
+          "prime_rows": 6285056,
+          "v_multiple_skips": 4744,
+          "root_progressions": 12560624,
+          "incidence_gcd_mask_reads": 1187577,
+          "rejected_nonprimitive_incidence": 452118,
+          "prefix_cells": 1572864,
+          "primitive_pair_incidences": 537582,
+          "nodes": 48360,
+          "children_scored": 49066,
+          "leaves": 23827,
+          "leaf_gcd_mask_reads": 379950,
+          "norm_tests": 233536,
+          "full_factorizations": 209,
+          "divisor_searches": 209,
+          "dead_leaves": 23686,
+          "score_ties": 200
+        }
+      },
+      "blind": {
+        "per_hit": {
+          "cpu_ms": [
+            1.8394255319148942,
+            1.5835291073048996,
+            2.1353577122973917
+          ],
+          "wall_ms": [
+            1.8402641631205676,
+            1.5843775305932397,
+            2.1362775097163507
+          ],
+          "branches": [
+            399.0354609929078,
+            339.86733087174264,
+            467.29346153846154
+          ],
+          "tested": [
+            1944.723404255319,
+            1652.5162828947368,
+            2280.4945155038754
+          ],
+          "failed": [
+            197.09929078014184,
+            167.40596774193548,
+            231.27755813953488
+          ]
+        },
+        "total_cpu_s": 0.259359,
+        "total_wall_s": 0.259477247,
+        "counters": {
+          "nodes": 56264,
+          "leaves": 27932,
+          "leaf_gcds": 445699,
+          "norm_tests": 274206,
+          "dead_leaves": 27791,
+          "full_factorizations": 224,
+          "divisor_searches": 224
+        }
+      },
+      "matched": {
+        "per_hit": {
+          "cpu_ms": [
+            7.414631205673757,
+            6.578823499999999,
+            8.37122927480916
+          ],
+          "wall_ms": [
+            7.415823524822694,
+            6.579706120577262,
+            8.372970655648853
+          ],
+          "branches": [
+            1249.4326241134752,
+            1035.7179539473684,
+            1493.9399281999092
+          ],
+          "tested": [
+            184.20567375886526,
+            154.25,
+            218.31321127946126
+          ],
+          "failed": [
+            1248.4326241134752,
+            1034.7179539473684,
+            1492.9399281999092
+          ]
+        },
+        "total_cpu_s": 1.045463,
+        "total_wall_s": 1.0456311169999999,
+        "counters": {
+          "moduli": 36507,
+          "generated_slopes_in_yielded_moduli": 176484,
+          "norm_tests": 25973,
+          "full_factorizations": 141,
+          "branches": 176170,
+          "failed_slopes": 176029,
+          "lattice_v_scans": 11269340,
+          "candidate_gcds": 60733,
+          "primitive_incidences": 31416
+        }
+      }
+    },
+    "ratios": {
+      "nodes_guided_over_blind": [
+        0.8595194085027726,
+        0.7877178943313814,
+        0.9308238669872388
+      ],
+      "tests_guided_over_blind": [
+        0.8516808530812602,
+        0.7786865798728174,
+        0.92363813710709
+      ],
+      "cpu_incidence_over_matched": [
+        2.053047310139145,
+        1.9545752916361867,
+        2.1595080395017683
+      ],
+      "cpu_pairs_over_matched": [
+        3.584455882226344,
+        3.409430652029851,
+        3.7780353877243846
+      ],
+      "cpu_incidence_over_blind": [
+        8.275729779957508,
+        7.7394714773582916,
+        8.916179744663356
+      ],
+      "wall_incidence_over_matched": [
+        2.052850594345884,
+        1.9544211242298843,
+        2.159310066823673
+      ]
+    }
+  },
+  "largest_over_smallest": {
+    "nodes_guided_over_blind": [
+      0.9129137759161249,
+      0.8234297566276186,
+      1.0053199799858872
+    ],
+    "tests_guided_over_blind": [
+      0.9076758264637248,
+      0.8168090962550065,
+      1.0012312999747317
+    ],
+    "cpu_incidence_over_matched": [
+      1.4265214239617996,
+      1.2634915032646108,
+      1.6023240216086692
+    ],
+    "cpu_pairs_over_matched": [
+      2.0054720093521383,
+      1.7839951949514476,
+      2.244280736263333
+    ],
+    "cpu_incidence_over_blind": [
+      3.748865724502593,
+      3.4469972457579097,
+      4.099727290820467
+    ],
+    "wall_incidence_over_matched": [
+      1.4264934329229395,
+      1.2633973697829277,
+      1.6022552077280183
+    ]
+  }
+}

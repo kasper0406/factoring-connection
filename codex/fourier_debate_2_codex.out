@@ -1,0 +1,39 @@
+**Claude wins the exponent argument.** The pair-count guide found a real finite-box signal. It visited 6%, 12%, and 14% fewer spatial branches than unguided search at 64, 80, and 96 bits. But even the faster implementation cost **1.44×, 1.55×, and 2.05×** as much CPU time per verified relation as the matched divisor sieve. The cost disadvantage grew with size.
+
+## R1–R4
+
+**R1.** The check escapes the literal scope of weighted Theorem J in one narrow respect. It ranks *regions* using cross-prime counts observed on the target form. The theorem bounds witnesses certified by fixed depth-weight profiles and independent portfolios. But Claude is right about the arithmetic. Conditional on primitivity, the local-density prediction for two good split primes is \(4/((p+1)(q+1))\). Subtracting that prediction leaves the discrepancy of their lattices in the finite box. My proposal supplied no way to obtain that discrepancy cheaply enough. Theorem 1 still identifies successful branch selection with witness search in its stated divisor range. The experiment below also explains why a measurable spatial preference is consistent with the guide study’s null result. [Chase proofs](/Volumes/git/factoring-connection/experiments/chase/ch_L1g/full_proofs.md:18) · [Guide results](/Volumes/git/factoring-connection/notes/guide_results.md)
+
+**R2.** I concede the transfer. The public root table identifies the two possible slopes at a split prime. It does not say which primes divide an unseen smooth norm. Pair counts give a weak preference between two subboxes, but obtaining that preference in this experiment already required processing prime incidences across the box. I have no source of cheap error locations comparable to the known frequency-dependent locations in the paper’s repair theorem. [Paper, §4](https://github.com/openai/math/blob/main/preprints/The-logarithmic-exponent-of-finite-Fourier-transforms-November-24-2026/paper.pdf)
+
+**R3.** Agreed on both points. The \(RM(1,r)\) identity compresses an idealized parity table. The binary Fourier construction requires 2 to be invertible, and I have no construction that controls the exceptional valuations and produces a fruitful dependency. The rectangle test remains a possible tool for proving a barrier. Chase L3 sharpens the question there: modular-equality certificates can create rank with zero fresh smoothness revelations, so any proposed bound must also charge their discovery. [Chase L3](/Volumes/git/factoring-connection/notes/chase_results.md)
+
+**R4.** I concede this one too. Smooth \(p-1\) can help organize arithmetic at chosen factor-base primes. I have no concrete joint check that uses their common exponent to distinguish productive M2 or NFS regions. The pair-count check uses only the two public roots and works identically without the smooth-\(p-1\) restriction.
+
+## Held-out experiment
+
+I locked the protocol before calibration or held-out generation. The archived fixtures selected \(B=384,2048,8192\) for \(64,80,96\) bits, respectively. Each size used **192 fresh forms**, a \(64\times64\) box, and no retries. Mean matched-witness counts were **0.73, 1.39, and 1.40 per form**, close to the requested one-witness threshold. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/fourier_c/prereg.md) · [Calibration](/Volumes/git/factoring-connection/codex/scratch/fourier_c/calibration.json)
+
+All searches stopped at the first primitive point whose norm factored completely over the base and had a good-prime divisor in the archive’s matched range \((2K^2,4K^2]\). Every successful output passed exact factorization and recomposition. An independent full-box sieve checked all 576 outcomes. A fresh relation here means one verified smooth representation on a distinct modulus. Class-group rank and fruitfulness were outside the measurement.
+
+Brackets give **95% paired bootstrap intervals**, resampling whole forms 10,000 times within size. Empty forms contribute their full search cost. Spatial branches are entered tree nodes. Divisor-sieve branches are CRT slopes, so the like-for-like branch comparison is guided versus unguided.
+
+| Bits | Forms yielding a relation | Guided nodes / relation | Unguided nodes / relation | Divisor-sieve slopes / relation |
+|---:|---:|---:|---:|---:|
+| 64 | 99/192 | 655 [534, 817] | 696 [574, 857] | 1,349 [1,072, 1,700] |
+| 80 | 136/192 | 346 [282, 422] | 393 [329, 470] | 1,159 [936, 1,433] |
+| 96 | 141/192 | 343 [285, 410] | 399 [340, 467] | 1,249 [1,036, 1,494] |
+
+I computed the exact score two ways. The explicit implementation intersected every pair of primitive prime-root masks, including empty intersections. The faster implementation accumulated the same pair counts while visiting single-prime incidences. Their score tables and traversals agreed on every form.
+
+| Bits | Explicit pairs, CPU ms / relation | Shared incidences, CPU ms / relation | Matched sieve, CPU ms / relation | Shared / matched |
+|---:|---:|---:|---:|---:|
+| 64 | 6.67 [5.73, 7.93] | 5.37 [4.57, 6.44] | 3.73 [3.01, 4.65] | **1.44 [1.30, 1.61]** |
+| 80 | 8.83 [7.97, 9.87] | 6.23 [5.57, 7.03] | 4.03 [3.41, 4.80] | **1.55 [1.40, 1.71]** |
+| 96 | 26.58 [24.43, 29.12] | 15.22 [13.92, 16.76] | 7.42 [6.58, 8.37] | **2.05 [1.95, 2.16]** |
+
+At 96 bits, the explicit guide paid for **25,089,527 pair intersections**. The shared implementation avoided that loop, but still paid for **12,560,624 root progressions**, **786,432 setup gcds**, and **23,686 dead leaves**. The matched sieve paid for **176,029 failed slopes**. Timings include method-specific setup, primitivity corrections, and verification. The main run, including its audits, took 16.9 seconds elapsed. [Raw form-level counters and outputs](/Volumes/git/factoring-connection/codex/scratch/fourier_c/heldout.jsonl) · [Intervals and totals](/Volumes/git/factoring-connection/codex/scratch/fourier_c/summary.json) · [Run log](/Volumes/git/factoring-connection/codex/scratch/fourier_c/run.log)
+
+**Did the ratio improve?** The guided/unguided branch ratio fell from 0.942 to 0.859. Its 96-bit to 64-bit ratio was **0.913 [0.823, 1.005]**, so the growth in branch savings is uncertain. The CPU ratio against the matched sieve **worsened by 1.43× [1.26, 1.60]** over the same sizes.
+
+One **post hoc diagnostic** answers R1 more directly. On the 199 forms with exactly one matched witness, the score preferred its child **66.0% [62.9%, 69.0%]** of the time on the upper four splits and **90.3% [88.4%, 92.1%]** on the lower four. I then replaced just the witness point’s own \(\binom{\omega_B}{2}\) contribution with its local-density expectation. Accuracy fell to **48.6% [45.1%, 52.3%]** and **50.7% [47.3%, 54.1%]**. That diagnostic uses truth only after search. It indicates where the guidance came from: the scorer had already counted the witness’s own prime incidences. I would retire this check as a sub-\(1/3\) lead. [Diagnostic code](/Volumes/git/factoring-connection/codex/scratch/fourier_c/diagnostic.py) · [Diagnostic results](/Volumes/git/factoring-connection/codex/scratch/fourier_c/diagnostic.json)
