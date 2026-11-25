@@ -1,0 +1,74 @@
+For \(E:y^2=x^3-x+1\), there is an exact Frobenius-free target: **\(M\) is odd if and only if the cubic algebra \(A\) has exactly four square roots of one.** These are precisely the four scalar roots. An equivalent formulation uses the norm-one subgroup. Both lead to a concrete sampling test, provided one can recognize squares in that subgroup. The \(N\)-th power map and the trace form behave quite differently: the first usually has trivial kernel, and the second provably loses the distinction we need.
+
+### K1. What the power map sees
+
+**Proved — orbit data.** Assume distinct odd good primes \(p,q\ne\ell\). The degrees \(k_i\) give exactly the cycle type of Frobenius in the chosen permutation action. The three actions in the question retain different information.
+
+| Algebra or action | What the cycles determine |
+|---|---|
+| Full nonzero vectors \(E[\ell]\setminus0\) | The number of fixed vectors of every \(g^j\) is \(\sum_{k_i\mid j}k_i=\ell^{\dim\ker(g^j-I)}-1\). A length-one cycle on **either** side decides the OR. |
+| Roots of \(\psi_\ell\), odd \(\ell\) | These are vectors modulo \(\pm1\). A fixed root can mean \(gP=P\) or \(gP=-P\). In particular \(I\) and \(-I\) act identically, yet give \(\det(1-g)=0,4\). |
+| Projective lines | The cycles describe the permutation of cyclic subgroups. Every scalar acts trivially, so even local zero-detection can fail. |
+
+Even full-vector cycles can lose the **nonzero residue**. Over \(\mathbb F_3\), \(g=\left(\begin{smallmatrix}0&1\\1&1\end{smallmatrix}\right)\) and \(g^{-1}\) both give one 8-cycle and have the same determinant. Their \(\det(1-g)\) values are 2 and 1. At \(\ell=2\), by contrast, zero-detection gives the entire residue. [Repo’s torsion-algebra analysis](/Volumes/git/factoring-connection/notes/nonsmooth_results.md:313)
+
+**Proved — kernel and order.** Write \(k_{r,i}\) for the field degrees above \(r\). For every positive \(m\),
+\[
+|A^\times[m]|=|A^\times/(A^\times)^m|
+=\prod_{r=p,q}\prod_i\gcd(m,r^{k_{r,i}}-1).
+\]
+For \(m=N\), this collapses to \(q^{c_p}p^{c_q}\), where \(c_p\) counts components with \(q\mid p^{k_{p,i}}-1\), and conversely for \(c_q\). If the exponents differ, the count itself factors \(N\): strip powers of \(N\) and take a gcd. Usually both exponents vanish. For fixed \(p\asymp X\) and algebra degree \(d\), every exceptional partner \(q\asymp X\) divides \(\prod_{k\le d}(p^k-1)\), which has only \(O(d^2)\) prime divisors of that size. This explains why even an exact \(\mu_N\)-kernel oracle usually returns 1.
+
+The **exact order** \(|A^\times|\) always suffices for randomized polynomial-time factoring when \(d\) is polynomial in \(\log N\). The scalar subgroup embeds, so \(\varphi(N)\mid |A^\times|\). Strip the power of two from this known multiple and use repeated squaring on random scalar units to obtain a nontrivial square root of one. No factorization of the supplied order is needed. Its parity alone is always even. A resultant computes the norm of a *specified* element and can expose a factor through a gcd. Counting all solutions for a chosen \(m\) is a different operation.
+
+**Proved — iterates and a sampling bound.** In a field component above \(p\), a unit of order \(t\mid p^k-1\) returns at step \(j\) exactly when \(t\mid (pq)^j-1\). The fixed fraction is therefore
+\[
+\frac{\gcd((pq)^j-1,p^k-1)}{p^k-1}.
+\]
+The iterate equals \(p^j\)-Frobenius on the whole component exactly when \(q^j\equiv1\bmod(p^k-1)\). For an individual unit, remove from \(t\) all prime powers supported on \(N\), leaving \(t_0\). Those removed powers cause a transient, after which the period is \(\operatorname{ord}_{t_0}(N)\), with period one for \(t_0=1\).
+
+For **fixed \(d,j\)**, a uniform unit returns even in *one* component with probability at most \(X^{-1+o(1)}\), averaged over balanced random primes in \([X,2X]\). Here is the bound behind that claim. Put \(w=p^k-1\) and expand \(\gcd((pq)^j-1,w)\) as a sum of \(\varphi(e)\) over qualifying \(e\mid w\). The congruence \((pq)^j=1\bmod e\) allows \(X^{o(1)}\) residue classes for \(q\), since \(j,k\) are fixed. Each contains \(O(X/e+1)\) candidates. Divide by \(w\) and by the number of partner primes, using \(\sum_{e\mid w}\varphi(e)=w\) and \(w\gg X\). A union bound covers the components. This rules out short-return frequencies as an inverse-polynomial signal in that experiment. Growing depths and signed readouts require separate arguments.
+
+### K2. Detecting the OR
+
+**Proved — a square-class test.** For the cubic, let \(t_r\) be the number of field factors above \(r\), and \(s=t_p+t_q\). Each field has two square roots of one and two idempotents. Consequently
+\[
+R(N)=4\iff M\text{ odd}\iff t_p=t_q=1
+\iff |A^\times[2]|=|\operatorname{Idem}(A)|=4.
+\]
+A non-scalar involution certifies the OR. If precisely one fibre is reducible, such an involution is scalar on the irreducible side, and a gcd of its nonconstant coefficients with \(N\) splits the integer. If both fibres are reducible, it can instead exhibit a polynomial factor of matching degree on the two sides. [Quadratic-form identity](/Volumes/git/factoring-connection/notes/coef_results.md)
+
+The distinction for elliptic points is similar. An affine nonzero torsion section needs nonzero points on **both** sides. The full projective group \(E[\ell](\mathbb Z/N)\) contains mixed points, and its cardinality is already greater than one on the **OR**. Producing a point that is infinity on exactly one side exposes a factor through its projective coordinate. Computing the cardinality as a number remains open. [Theorem EXT](/Volumes/git/factoring-connection/notes/tracedata_results.md:467)
+
+**Proved — a sharper sampling reduction.** Let \(T=\ker(\operatorname{Norm}:A^\times\to(\mathbb Z/N)^\times)\). Draw a uniform unit \(a\) and compute \(b=a^3/\operatorname{Norm}(a)\). Then
+\[
+\Pr[b\text{ is a square in }A^\times]=2^{\,2-s}.
+\]
+Indeed, the sampling map lands in \(T\) and contains \(T^3\) in its image, so it samples \(T/T^2\) uniformly. The norm maps the sign choices \(A^\times[2]\) onto the four scalar signs because the degree is odd. Thus \(|T/T^2|=2^{s-2}\). An ambient square root of \(b\) can be adjusted by its scalar norm to lie in \(T\).
+
+This gives a **one-sided constant-gap test**: every draw is square when \(R(N)=4\), while at least half are nonsquares otherwise. The missing operation is recognizing a nonsquare among these norm-one units. Their norm-Jacobi symbol is identically \(+1\).
+
+**Known and proved — trace forms.** In the basis \(1,x,x^2\), the trace pairing has Gram matrix
+\[
+\begin{pmatrix}3&0&2\\0&2&-3\\2&-3&2\end{pmatrix},
+\qquad \det=-23.
+\]
+Over an odd finite field, dimension and determinant square class classify nonsingular quadratic forms. The Brauer group vanishes, so the degree-two Hasse–Witt class carries no additional bit there. Serre’s formula is compatible with this: its degree-two classes specialize to zero. Over \(\mathbb Q_r\) at good odd \(r\), the unimodular trace form also has trivial Hasse sign. Adding the identity point to the torsion algebra appends \(\langle1\rangle\). Even the \(N\)-dependent Hilbert symbol \((N,-23)_r\) at \(r=p,q\) gives just \((-23/r)\), whose product is the familiar Jacobi symbol. This argument concerns these forms and their isometry invariants. Arbitrary \(N\)-dependent constructions remain open. [Serre’s trace-form formula](https://www.college-de-france.fr/media/jean-pierre-serre/UPL4088637057849025347_Serre_CMH_Trx2.pdf)
+
+**Measured — exhaustive trace check.** Across all **4,186** good prime pairs \(5\le p<q\le499\), both local trace Hasse signs were \(+1\). In the strongest ambiguous stratum, where **both individual discriminant signs were \(+1\)**, direct representation counting gave \(R=4\) on **496** pairs and \(R\ne4\) on **450**. Every other sign stratum had zero positive cases. The discriminant therefore gives a genuine partial filter. Even access to the two local trace-form classes leaves the main distinction unresolved.
+
+**Measured — preregistered power experiment.** I tested 1,200 balanced semiprimes at each of 40, 60 and 80 bits. Four random coefficient triples per modulus supplied raw units and norm-one samples. For \(j=1,\ldots,4\), I checked whole-element returns, gcds detecting a return in any component, and Jacobi signs of the norm of the difference. Hidden factors supplied independent polynomial-factorization and elliptic-count ground truth.
+
+| Bits | Proper-gcd splits | Whole-element returns | Exact \(\lvert\ker\mu_N\rvert>1\) | \(R=4\) |
+|---:|---:|---:|---:|---:|
+| 40 | 6 | 0 | 0 | 107 |
+| 60 | 0 | 0 | 0 | 106 |
+| 80 | 0 | 0 | 0 | 143 |
+
+On the 1,769 nonsplit inputs with positive discriminant Jacobi symbol, the largest absolute correlation among eight signed readouts was **0.0271**, with family-wise permutation \(p=0.9145\). The signed statistic gave no detectable gain. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/inp_c/kern_prereg.txt) · [Code](/Volumes/git/factoring-connection/codex/scratch/inp_c/kern_probe.py) · [Results](/Volumes/git/factoring-connection/codex/scratch/inp_c/kern_results.json)
+
+### K3. Verdict
+
+**Open.** The sharpest decision problem is whether **every norm-one unit is a square** in this fixed cubic algebra, on inputs with \((-23/N)=+1\). A factor-free procedure that certifies nonsquareness on even an inverse-polynomial fraction of the normalized draws whenever the OR holds would suffice. It could output one bit and discard the witness. FROB constrains producing the operator, PT constrains pure decision trees, and neither settles this test. Solving the test would give \(u_2\). Recovering the full count still requires more residues. [FROB](/Volumes/git/factoring-connection/notes/nonsmooth_results.md:313) · [PT](/Volumes/git/factoring-connection/notes/factorbits_results.md:303)
+
+**Speculative.** Conditional on classical polynomial-time factoring existing, I assign about **1%** to torsion-algebra unit statistics providing the first such algorithm. The square-class reduction gives this route a precise target. The order, norm character, short power returns and quadratic trace invariants each have a specific obstruction.
