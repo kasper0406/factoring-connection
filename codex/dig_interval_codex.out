@@ -1,0 +1,59 @@
+**There is a polynomial-time distinguisher above \(N^{1/4}\): it is exact out to \(X=N^{1/4}\operatorname{poly}(\log N)\) by Coppersmith subdivision. The open gap begins at a fixed excess exponent, \(X=N^{1/4+\epsilon}\).** I found a coverage bound for a natural class of Lehman–Fermat interval tests at every such exponent. Their near-square residual supplied no reproducible advantage after exact factor hits were removed. [Coppersmith](https://doi.org/10.1007/s001459900030) · [Harvey–Hittmeir’s interval search](https://arxiv.org/abs/2202.12401)
+
+### I1. What a polynomial beam needs
+
+Write \(n=\lceil\log_2 N\rceil\), \(h=n/4+O(1)\), and \(e=1/2-\delta\). Greedy survival is \((1-e)^h\) if the error probability conditional on reaching each true parent is \(e\). Thus constant survival needs \(e=O(1/h)\). Inverse-polynomial survival needs \(e=O(\log n/h)\).
+
+For a beam, marginal sibling accuracy alone gives **no universal threshold**. Consider the model where the score supplies one direction per node, the true path independently disagrees with that direction with probability \(e\le 1/2\), and other observations carry no information. The optimal width-\(B\) list takes the \(B\) most likely error patterns. For \(B=h^k\), these have at most \(k+O(1)\) errors, since there are \(\binom hj\) patterns of weight \(j\). If \(he\to\infty\), their binomial mass tends to zero. Thus even the optimal polynomial beam needs **\(\delta=1/2-O(1/n)\)** for constant survival in this homogeneous model. For inverse-polynomial survival, the upper bound \(B(1-e)^h\) gives the same order of allowable error as greedy.
+
+Correlation changes this conclusion. If one hidden bit determines whether *all* recommendations are correct or reversed, width two suffices at marginal accuracy \(1/2\). A beam can also branch both ways on \(O(\log n)\) identifiable uninformative levels. What matters at every prefix is how many plausible histories survive and whether later evidence arrives before pruning. An inverse-polynomial edge *on each particular true parent*, independently resamplable, suffices by majority voting in \(O(\delta^{-2}\log h)\) calls per level. An average edge measured on fresh moduli gives no such guarantee. At \(\delta=N^{-1/4}\), even independent voting costs order \(N^{1/2}\) for constant confidence. The repo’s exponential leak bounds concern specific observables and targets. [Leak map](</Volumes/git/factoring-connection/notes/leakmap_results.md>)
+
+### I2. What the candidate scores buy
+
+Here \(X\) is **child length**, \(d\asymp\sqrt N\), and costs suppress factors polynomial in \(n\).
+
+| Score | Cost and signal near the threshold |
+|---|---|
+| **Exact or weighted divisor count** | For a child below \(\sqrt N\), the stated floor difference is exactly 0 or 1. Uniform additive error \(<1/2\) decides the bucket. A weight bounded below by a known positive constant on the child preserves this reduction at corresponding precision. Direct scanning costs \(O(X)\). Hiary tests blocks of length \(\asymp N^{1/6}\) here by a continued fraction and a quadratic. Coppersmith subdivision improves the interval cost to \(O(1+X/N^{1/4})\). The ladder’s \(N^{1/(j+2)}\) is conditional on its oracle. General floor-sum hardness leaves balanced top blocks open. [Hiary](https://arxiv.org/abs/1408.2608) · [Floor-sum algorithms](</Volumes/git/factoring-connection/notes/floorsum_results.md>) · [Hardness scope](</Volumes/git/factoring-connection/notes/floorhard_results.md>) |
+| **Smoothed hyperbola / Voronoi** | The full summatory function costs \(O(N^{1/3})\) by Sladkey; Li’s preprint gives expected \(N^{9/28+o(1)}\). Its first difference is 4 for every distinct semiprime. Child localization is essential. The classical length-\(M\) truncation has pointwise error of order at most \(N^\epsilon(1+\sqrt{N/M})\), far above rounding precision for polynomial \(M\) in \(n\). Smoothing in the **product** coordinate over \(H\) shortens the dual sum to roughly \(N/H^2\), while admitting near-divisors of \(N+k\). Under uniform residues their expected count is order \(XH/\sqrt N\) against one planted divisor. No certified sub-half-error gain at a fixed excess exponent follows from these estimates. [Sladkey](https://arxiv.org/abs/1206.3369) · [Li](https://arxiv.org/abs/2609.29949) · [Truncated formula](https://www.sciencedirect.com/science/article/abs/pii/S0022314X25002550) |
+| **Primal, dual and shifted lattices** | A verified root has zero false positives. Under uniform placement, \(K\) predetermined boxes of length \(W\) cover at most \(KW/X\) of the child. For \(W\asymp N^{1/4}\) this explains both finite-size hits and their exponential loss at fixed \(\epsilon\). Prop T transfers the specified mixed-window certificates to the ordinary univariate ideal up to a polynomial degree factor. The dual pilot scored 111/216 and 102/216 at radii \(N^{.28}\) and \(N^{.34}\). A barrier for *arbitrary* functions of the raw primal Gram matrix would be much stronger: its first diagonal and off-diagonal entries \(N^{2m}\) and \(aN^{2m-1}\) already recover \(N,a\). [Prop T](</Volumes/git/factoring-connection/notes/topblock_results.md>) · [Dual pilot](</Volumes/git/factoring-connection/notes/inp_results.md>) |
+| **CF of \(N/c^2\), Lehman/Hart, Fermat** | A convergent \(u/v\) reduces the slope of \(F(x)=ux+vN/x\) near child center \(c\). Testing an integer level \(t\) costs one discriminant square test and verification. Exhausting the levels costs \(O(1+X|u-vN/c^2|+vX^2/\sqrt N)\) per pair. Even at stationary slope the curvature term remains. Ordinary Fermat is \(u=v=1\); favorable ratios explain genuine fast hits. Section I3 bounds a polynomial shortlist. The repo’s CF results for \(a/N\) concern different inputs, and its \(N^{1/6}\) average algorithm uses shared collision searches. [Hart](https://www.cambridge.org/core/journals/journal-of-the-australian-mathematical-society/article/one-line-factoring-algorithm/848A333234F5ECE503E5014BEE40D82E) · [CF results](</Volumes/git/factoring-connection/notes/classE_results.md>) · [Exponent bridge](</Volumes/git/factoring-connection/notes/codex_r8_copp_bridge.md>) · [Average cost](</Volumes/git/factoring-connection/notes/avgtime_results.md>) |
+| **Reciprocal exponential sums** | A divisor contributes exactly \(1\) to \(\sum_{d\in I}e(hN/d)\). One low harmonic can be cheap: on blocks of length \(L\asymp(N/h)^{1/3}\) the remainder after the quadratic phase is bounded, and its exponential admits a polynomial-weight approximation of polylogarithmic degree. Hiary’s weighted quadratic sums then give \(O(1+X/L)\) blocks at fixed absolute precision. Independent random phases would give signal-to-noise \(X^{-1/2}\); actual phases have arithmetic correlations. For a **uniform** Fourier detector \(P(0)=1,\ |P(r/d)|\le1/(2X)\) at every nonzero residue, Parseval and Cauchy–Schwarz require at least \(d/(1+(d-1)/(4X^2))\) occupied frequencies modulo \(d\). That is \(\Omega(\sqrt N)\) throughout the requested widths. This bound covers termwise error certification. [Hiary’s theta algorithm](https://annals.math.princeton.edu/2011/174-2/p03) · [Analytic barrier F](</Volumes/git/factoring-connection/notes/analytic_results.md>) |
+
+### I3. A fixed-exponent barrier for tangent square tests
+
+Fix **any** balanced \(N=pq\). Place \(p\) uniformly within a parent of length \(2X\) by translating the parent. The midpoint \(c\) of its true child then ranges uniformly over \(X\) consecutive integers. Consider a menu of \(M\) positive integer weight pairs, testing levels
+\[
+t=\lfloor F(c)\rfloor+j,\qquad |j|\le J.
+\]
+The algorithm may use the observed continued fraction to select any pairs from the menu. A verified hit requires \(t=F(p)=up+vq\). Consequently
+\[
+|F(c)-F(p)|=\frac{u}{c}|c-p|\,|c-vq/u|\le J+1.
+\]
+Since \(c\asymp\sqrt N\), it must lie within \(O(N^{1/4}\sqrt{(J+1)/u})\) of one of two fixed points. Counting integer centers and taking the union gives
+\[
+\Pr(\text{verified hit})\ \ll\
+\min\!\left(1,\frac{M(1+N^{1/4}\sqrt{J+1})}{X}\right).
+\]
+
+Thus polynomial menus and offsets give at most \(\operatorname{poly}(n)N^{-\epsilon}\) advantage at \(X=N^{1/4+\epsilon}\) if misses receive a fair guess. This holds separately for every modulus under the stated placement law. It permits a signal in the *size* of a nonzero discriminant residual, which is exactly what the experiment tested. It complements the repo’s residue-local and ratio-band coverage bounds. [Local coverage theorem](</Volumes/git/factoring-connection/notes/below16_results.md>) · [Ratio-band curvature bound](</Volumes/git/factoring-connection/notes/unbalanced_results.md>)
+
+### I4. Pre-registered experiment
+
+I used 384 independent balanced semiprimes per cell at 48, 72 and 96 bits. The scorer received only \(N\), the parent start and \(X\). It tried CF weights \(u,v\le2n\), offsets \(-4,\ldots,4\), and one certified Coppersmith subinterval per child. On double misses it preferred the smaller normalized gap to the nearest square. I independently checked primality, placement and both witness labels.
+
+| Child width | Combined correct / 1,152 | Coppersmith / tangent hits (overlap) | Correct on double misses | 95% Wilson interval |
+|---|---:|---:|---:|---:|
+| \(N^{.26}\) | 665 | 67 / 165 (40) | 473/960 | 46.1–52.4% |
+| \(N^{.30}\) | 616 | 16 / 49 (11) | 562/1,098 | 48.2–54.1% |
+| \(N^{.40}\) | 585 | 0 / 1 (0) | 584/1,151 | 47.9–53.6% |
+
+Chance is 576/1,152. The baseline choosing the child with more overlap with the generator’s feasible factor range scored **583, 578 and 690** respectively. This illustrates why a balanced left/right label alone is an inadequate control. At \(N^{.26}\), tangent hits fell from **157 to 8 to 0** across the three bit sizes. No pooled residual passed the registered tests. [Protocol](</Volumes/git/factoring-connection/codex/scratch/dig_int/prereg.txt>) · [Scorer](</Volumes/git/factoring-connection/codex/scratch/dig_int/pilot.py>) · [Cell results](</Volumes/git/factoring-connection/codex/scratch/dig_int/summary.txt>) · [Trial data](</Volumes/git/factoring-connection/codex/scratch/dig_int/trials.csv>)
+
+One cell justified a fresh test: at 96 bits and \(N^{.40}\), the residual scored **223/384** with zero witnesses. I froze a 3,072-trial replication after seeing that cell. It returned **1,512/3,072 = 49.2%**, 95% interval **47.45–50.99%**, again with zero witnesses. The original 58.1% did not replicate. [Replication protocol](</Volumes/git/factoring-connection/codex/scratch/dig_int/replication.txt>) · [Holdout results](</Volumes/git/factoring-connection/codex/scratch/dig_int/holdout_summary.txt>) · [Holdout data](</Volumes/git/factoring-connection/codex/scratch/dig_int/holdout.csv>)
+
+### I5. Verdict
+
+I found **no reproducible interval-ranking signal at a fixed excess exponent once verified factors and public size information are accounted for**. The coverage theorem explains why polynomially many exact tangent tests lose traction. The experiment leaves smaller residual effects open, and the theorem leaves other statistics open.
+
+Conditional on classical factoring being in P, I would put **about 8%** on adaptive interval scoring being the mechanism that first supplies a polynomial-time algorithm, down from the repo’s 16%. That is a subjective route estimate. The main reason for the downgrade is the gap between finding occasional exact witnesses and keeping a polynomial list alive through a linear number of halvings.

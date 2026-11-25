@@ -1,0 +1,42 @@
+Adaptive factor intervals | frozen before generating data
+
+Use independent trials at 48, 72 and 96 product bits and child widths
+X=floor(N^(13/50)), floor(N^(3/10)), floor(N^(2/5)) (integer roots).
+Use 384 trials in each of the nine cells, without tuning or optional stopping.
+Use separate Python Random streams per cell, seeded by 2026112500 + 10*i+j
+for zero-based bit index i and width index j. Draw iid uniform odd half-size
+integers by rejection to primes (deterministic primality for these sizes).
+Sort primes p<q, require exact product bit length. Define
+L=max(2^(n/2-1),ceil(N/(2^(n/2)-1))), H=isqrt(N).
+Require L+2X <= p <= H-2X before drawing a uniform integer U in [0,2X).
+The public parent is [p-U,p-U+2X), so both children are feasible and only
+p can divide N there. Supply only N, parent start and X to the scorer.
+
+Tangent statistic: for midpoint c=lo+floor(X/2) of each child, take all
+positive standard CF convergents u/v of N/c^2 with u,v <= 2n, and include
+1/1. For each pair try floor(uc+vN/c)+j for j=-4,...,4. For each nonnegative
+discriminant D=t^2-4uvN take its nearest integer square k^2 (tie down).
+Require at least one of (t +/- k)/(2u) to lie inside the half-open child.
+A zero gap must yield an integer divisor in that child (verify by division)
+to count as a witness; discard other zero gaps. The soft score is the
+minimum positive |D-k^2|/(2k+1), lower is better; missing score is infinity.
+
+Positive control and combined decision: take one centrally placed certified
+Coppersmith block per child. Use the existing floorsum.lattice_block and
+best_params(N,isqrt(N//2),nmax=10) capped at X; use direct division for a
+singleton. Verify every hit and compare the control against the exact
+planted location within the tested block. A witness of either kind chooses
+its child. Without witnesses use the tangent soft score and fair coin ties.
+Record primary combined accuracy, verified hits by source and overlap,
+and soft accuracy conditional on both witness methods missing. Fair coin,
+always-left, and largest intersection with the public feasible generator
+support [L+2X,H-2X] (ties fair) are baselines. All tie and baseline coin
+flips are independent of the placement.
+
+Report by child width, with bit-size detail retained. The claim of residual
+positive signal requires a one-sided exact binomial tail against 1/2 and
+a one-sided exact paired sign test against the support baseline on the
+same misses, both below 0.05/3 at that width. Report Wilson 95% intervals
+for residual accuracy, unadjusted, and denominator. Keep decisions, sample
+truth and factors for independent checking. No extrapolation from a hit at
+these sizes to an asymptotic advantage at a fixed excess exponent.

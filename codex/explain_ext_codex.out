@@ -1,0 +1,41 @@
+## What the count measures
+
+Fix an elliptic curve \(E\), and let \(N=pq\) with distinct primes \(p<q\). The repo calls \(N\) *good* when \(\gcd(N,6\Delta_E)=1\), where \(\Delta_E\) is the discriminant of the chosen curve equation. This excludes 2, 3, and primes at which that equation becomes singular. EXT states its bound for \(p,q\ge 101\). Smaller factors can be found by trial division.
+
+CRT identifies arithmetic modulo \(N\) with a pair of computations, one modulo \(p\) and one modulo \(q\). The curve equation and its group law respect that identification, so \(E(\mathbb Z/N)\cong E(\mathbb F_p)\times E(\mathbb F_q)\). Here the full projective group matters. A pair consisting of infinity modulo \(p\) and an ordinary point modulo \(q\) is a legitimate point modulo \(N\). Every pair counts once, so the group sizes multiply. Writing \(a_p=p+1-\#E(\mathbb F_p)\), and likewise for \(q\), gives
+\[
+M=(p+1-a_p)(q+1-a_q).
+\]
+The integer \(a_p\) is the *trace of Frobenius*. Hasse’s bound says \(|a_p|\le 2\sqrt p\). [Repo notation and hypotheses](/Volumes/git/factoring-connection/notes/tracedata_results.md:20)
+
+To see why \(M\) might contain factoring information, imagine both traces are zero. Then \(M=N+1+p+q\), so one subtraction gives the sum of two numbers whose product you already know. A quadratic equation gives the factors. For general traces, expanding \(M\) also produces terms such as \(-qa_p\) and \(-pa_q\), large enough to mask \(p+q\). EXT uses a different property of the exact count: **multiplication by \(M\) sends every point of either original prime-field group to infinity.**
+
+## How EXT turns \(M\) into a factor
+
+On the original curve, multiplying a point by \(M\) sends both components to infinity together. To expose a factor, EXT needs that computation to end differently on the two sides. It builds on the Okamoto–Uchiyama twist idea and uses a degree-five auxiliary algebra to guarantee a chance of success for every good semiprime. [Earlier twist reduction](/Volumes/git/factoring-connection/notes/ecount_results.md:172) · [EXT statement and proof](/Volumes/git/factoring-connection/notes/tracedata_results.md:467)
+
+Choose a random monic quintic \(F\) modulo \(N\), and do arithmetic in \(R=(\mathbb Z/N)[z]/(F)\). A favorable event is that \(F\) splits into a linear factor and an irreducible quartic modulo \(p\), while remaining irreducible modulo \(q\). Its probability approaches \(1/20\). On that event the same arithmetic runs in three fields simultaneously: \(\mathbb F_p\), \(\mathbb F_{p^4}\), and \(\mathbb F_{q^5}\). The algorithm never needs to recognize the event.
+
+Write the curve as \(y^2=x^3+ax+b\). Choose random \(x\in R\) and set \(\delta=x^3+ax+b\). The twist \(Y^2=X^3+a\delta^2X+b\delta^3\) comes with an explicit point \(P=(\delta x,\delta^2)\), so sampling requires no square root. EXT computes \([M]P\) by double-and-add. In the \(\mathbb F_p\) component, \(\delta\) is a nonzero square about half the time. There the twist is isomorphic to the original curve, so \([M]P\) is infinity.
+
+Degree five explains why the other side can behave differently. An elliptic-curve group over a finite field has at most two cyclic factors, so its exponent, the largest point order, is at least the square root of its size. Over \(\mathbb F_{q^5}\), Hasse’s bound puts that exponent at least at \(q^{5/2}-1\), larger than \(M\) under the theorem’s bounds. This holds for either twist. Consequently \(M\) kills only a proper subgroup there, and the sampled point survives with probability about one-half or better.
+
+When one component reaches infinity and another stays affine, the affine group-law calculation encounters a nonzero denominator that vanishes in some component. EXT checks inversions using the denominator’s five-by-five multiplication matrix. If the denominator vanishes in a \(p\)-component and survives modulo \(q\), the matrix determinant is zero modulo \(p\) and nonzero modulo \(q\). Its gcd with \(N\) is \(p\). If the denominator vanishes throughout the \(q\)-component, its coefficients instead expose \(q\) by gcd. The proof gives a constant success probability per trial, hence expected polynomial time using one supplied count. [Extraction and probability bounds](/Volumes/git/factoring-connection/notes/tracedata_results.md:479)
+
+## Where Schoof uses the prime
+
+Over \(\mathbb F_p\), Frobenius \(\pi\) raises point coordinates to the \(p\)th power. This preserves the curve equation because \(p\)th powering preserves addition and multiplication in characteristic \(p\). Schoof examines its action on \(E[\ell]\), the points over the algebraic closure killed by a small prime \(\ell\ne p\). On those points,
+\[
+\pi^2-[a_p]\pi+[p]=0,
+\]
+where brackets denote scalar multiplication on the curve. Scalars on \(E[\ell]\) depend only on their residue modulo \(\ell\), so testing the \(\ell\) candidate trace residues in this identity determines \(a_p\bmod\ell\).
+
+For odd \(\ell\), the division polynomial \(\psi_\ell\) encodes the \(x\)-coordinates of the nonzero \(\ell\)-torsion points. Schoof computes \(x^p\bmod(\psi_\ell,p)\) by repeated squaring, handling the \(y\)-coordinate with the curve equation. This lets it test the identity symbolically across the torsion points. Once the product of the chosen small primes exceeds \(4\sqrt p\), CRT and Hasse’s bound select a unique integer \(a_p\), giving the exact count. [Schoof’s account](https://numdam.org/item/JTNB_1995__7_1_219_0/)
+
+Modulo \(N\), one can still construct the division polynomial and its quotient algebra. The break comes when applying Frobenius. The required operator raises elements to the \(p\)th power on one side and the \(q\)th power on the other. Raising to \(N=pq\) introduces an extra \(q\)th power on the \(p\)-side and an extra \(p\)th power on the \(q\)-side. It can even fail to preserve addition: modulo 5, \((1+1)^{35}=3\), while \(1^{35}+1^{35}=2\). Thus \(x^N\) is computable, but need not even map torsion roots to torsion roots. Schoof’s trace test loses its justification. [Composite power-map analysis](/Volumes/git/factoring-connection/notes/nativemod_results.md:171)
+
+The repo’s Proposition FROB sharpens this obstruction. When \(N\) is a quadratic nonresidue modulo \(\ell\), the genuine componentwise Frobenius on Schoof’s algebra has fixed spaces of different dimensions on the two sides. Given its matrix, elimination exposes a nonunit pivot and hence a factor. That result concerns producing the *operator*. A different way to compute the numerical residue \(M\bmod\ell\) remains open. [Proposition FROB](/Volumes/git/factoring-connection/notes/nonsmooth_results.md:313)
+
+## Three-sentence summary
+
+The single missing step on this route is to compute \(M\) efficiently from \(E\) and \(N\), possibly by computing enough small-prime residues to reconstruct it by CRT. EXT turns that one count into a factorization in expected polynomial time, and known factors let Schoof compute the two prime-field counts in polynomial time. Computing \(M\) is therefore equivalent to factoring under randomized polynomial-time reductions, and no factor-free classical polynomial-time analogue of Schoof is known for this task. [Project assessment](/Volumes/git/factoring-connection/notes/inp_results.md:18)
