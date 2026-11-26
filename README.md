@@ -3,9 +3,10 @@
 AI-assisted research on the asymptotic complexity of integer factorization. Claude agents wrote the
 code, proofs and notes; GPT-6.1-sol (Codex CLI) did literature sweeps and adversarial reviews.
 
-> **Status of every result below: proved internally and audited by blind AI referees, but NOT
-> refereed by a human.** The subexponential results share one chain of internal lemmas. Treat them
-> as claims, and the ideas as the main contribution, until an expert has checked that chain.
+> **Status:** the earlier main theorems are internal claims audited by AI referees, not human-refereed.
+> The subexponential results share one chain of internal lemmas. The newer research-frontier notes
+> explicitly distinguish reconstructed proofs, reported results, conditional reductions and open tasks.
+> Treat these claims accordingly until an expert has checked them.
 
 Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 
@@ -17,6 +18,30 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
   congruence of squares in L[1/3], but cannot prove it is non-trivial ("fruitfulness"), so their result
   does not give rigorous factoring.
 - **Deterministic record:** N^{1/5} (Harvey 2021; Harvey–Hittmeir 2022).
+
+## Current research frontier (2026-11-26)
+
+The latest non-sieve work connects multiplication-network counts, structured
+square-weight collisions and quadratic-form minima. These are **partial results
+and conditional reductions, not a new factoring algorithm**. In particular,
+N^{1/8} is a conditional almost-all balanced-semiprime bound, not a replacement
+for the existing N^{1/6} result or an improvement over heuristic L[1/3].
+
+| Direction | Latest result / missing step | Details |
+|---|---|---|
+| **Canonical index (primary)** | One hidden quadratic-form minimum per prime/root branch; reported band coverage would yield N^{1/8}·polylog if that minimum were efficiently computable. Need independent coverage audit and native evaluator. | [Shared collision and canonical index](notes/shared_collision_nov26.md) |
+| **Public ellipse count (primary)** | Modular lattice-point count mod 16 recovers the hidden squared ideal class at bounded cutoffs; exact principal contribution and class-square lifting required. No fast count known. | [Ellipse reduction and ambiguity](notes/shared_collision_nov26.md#4-public-ellipse-count-and-squared-class-decoding) |
+| **Multiplication network (secondary)** | Normalized divisor-prefix count mod 3 suffices on semiprimes, but branch duplicates and intermediate state size must be handled. Cut-rank obstruction; masked-product local counts; reported G^{3/4+o(1)} short-list collision evaluator needs proof/cost audit. | [Network and grid](notes/shared_collision_nov26.md) |
+| **QRP / hidden conductor (parked)** | Local-character oracle, conductor wheels, class-number and Jacobi-prefix identities; variable-endpoint parity factors mixed semiprimes. No efficient conductor decoder or aggregate known. | [QRP and interval targets](notes/qrp_conductor_nov26.md) |
+| **Smooth decoding / binomial midpoint (paused)** | Tested jump and local-state mechanisms stalled; unrestricted adaptive decoding and a native single-index evaluator remain open. | [Priorities and negative results](notes/research_roadmap_nov26.md) |
+
+Start here: [prioritized research roadmap](notes/research_roadmap_nov26.md) and
+[experiment provenance and checks](experiments/nov26_consolidation/README.md).
+The fresh exact checks include 12,697 reduced-form decodings, 700 grid-block
+checks and 40 direct ellipse queries on the two ambiguity examples.
+Original late-stage scratch files were not recovered; the new notes mark
+reported asymptotic results separately from reconstructed proofs and checks.
+Neither these results nor the earlier model barriers settle general factoring.
 
 ## Top findings
 
