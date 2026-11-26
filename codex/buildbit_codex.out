@@ -1,0 +1,68 @@
+**The strongest construction covers T0, T1, and the full T1 lift with a central-binomial divisibility test.** I proved that a factor-blind evaluator returning just one Boolean answer per query would recover the designated T1 factor in \(O(\log N)\) queries. Evaluating that Boolean in classical polynomial time remains open. The strongest working factor-blind algorithm produced verifiable T0 certificates across multiple continued fractions, but its advantage decayed. No public endpoint passed the preregistered 99% criterion. [Yield ledger and proofs](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/ledger.md) · [Preregistration](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/prereg.md)
+
+### R4. One coefficient through the full lift
+
+**Proved.** Put \(m=\lfloor hN/d\rfloor\) and \(B=\binom{2m}{m}\). The following choices give exact tests.
+
+| Target | Public choice | What the coefficient reveals |
+|---|---|---|
+| T0 | \(d=4,\ h=1\) | \(N\mid B\) exactly when both primes are \(3\bmod4\). |
+| T1 | \(d=16\). Use \(h=1\) for \(N\equiv3\bmod16\), \(h=3\) for \(N\equiv11\bmod16\). | \(N\mid B\) exactly when \(r\equiv9\bmod16\). On balanced inputs the other outcome is a unit. |
+| T2, balanced | \(d=7,\ h=1\) | The split pairs \((1,1),(6,6)\bmod7\) give a unit and zero respectively. Either inert pair gives a proper gcd. |
+
+The mechanism is a carry. Write \(N=st\). The low base-\(s\) digit of \(m\) is
+\[
+\frac{s(ht\bmod d)-(hN\bmod d)}{d}.
+\]
+For the powers of two above and \(s>d\), doubling this digit causes a carry exactly when \(ht\bmod d>d/2\). Kummer’s theorem translates that carry into divisibility by \(s\). Small primes up to the fixed denominator can be tried directly. For T0 the coefficient is also, up to sign, the literal Hasse coefficient of \(y^2=x^3-x\). [Binomial carries](https://www.cecm.sfu.ca/organics/papers/granville/)
+
+**The lift.** Suppose \(a=r\bmod 2^{j-1}\) is known, and set \(d=2^j\). The two possible lifts of \(r\) induce two possible lifts of \(q\). I constructed an odd \(h<d/4\) that puts both candidate residues in the same half of \([0,d)\). Changing the lift switches both halves. Thus a single zero test distinguishes the candidates.
+
+Finding \(h\) takes polynomial time. Set \(c=N/a^2\bmod d\). Since \(c\equiv3\bmod8\), \(c^{d/8}=1+d/2\bmod d\). Bisecting the sequence of powers finds adjacent \(c^i,c^{i+1}\) with equal upper-half bits. Starting with \(h=c^i/a\bmod d\) and folding it into \((0,d/4)\) preserves that agreement. The general reduction also works for unbalanced T1 inputs by checking the candidate residues as exact divisors before each lift. This uses a **uniform coefficient oracle** as \(d\) varies. A fixed T0 or T1 decision algorithm alone would require a separate lifting argument. [Multiplier construction](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/lift.py:14) · [General reduction](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/general_lift.py:8)
+
+**Measured.** A factor-backed carry oracle recovered \(r\) on all **768 fresh balanced inputs**, using 16, 26, and 36 Boolean queries at 40, 60, and 80 bits. None of those queries produced a proper binomial gcd. The public shortcut folded the coefficient modulo \(X^L-1\) for \(L=8,16,32\). All 2,304 folds returned units, including all 1,152 observations where the coefficient had to vanish. That rules out these three folds as exact replacements. The T2 proper gcds in the table were also verified with factors and are oracle yields. [Lift measurements](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/lift_counts.json) · [Arithmetic checks](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/verification.json)
+
+### R1. Cross-multiplier continued fractions
+
+**Built and proved.** Each complete denominator \(Q_j\) of \(\sqrt{kN}\) gives a public modular square root of \((-1)^jQ_j\). I pooled 16 steps from each of six fixed and six adaptively selected multipliers. Gcd decomposition and binary linear algebra recover every subset whose positive denominators multiply to a square. A subset with odd total sign gives a checkable square root of \(-1\bmod N\).
+
+For example, at \(N=647442828917\), step 1 for \(k=1\) gives \(517873\), and step 16 for \(k=47\) gives \(9\cdot517873\). Together they give the root \(467763698354\). Every individual multiplier missed this input. [Implementation](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/cf.py:58)
+
+**Measured.** The certificate columns count split-clean inputs with both primes \(1\bmod4\). Each size started with 2,048 inputs per class. Advantage uses a fair guess when the algorithm has no certificate.
+
+| Bits | Eligible inputs | Any individual multiplier | Pooled | Gcd splits, both classes | Balanced advantage |
+|---:|---:|---:|---:|---:|---:|
+| 40 | 1,700 | 174 | 318 | 635 | 4.676% |
+| 52 | 2,012 | 25 | 26 | 57 | 0.3231% |
+| 64 | 2,045 | 3 | 3 | 7 | 0.03667% |
+| 80 | 2,048 | 1 | 1 | 0 | 0.01221% |
+
+Pooling added **144, 1, 0, and 0** certificates beyond the individual union. The effective 40-to-80-bit exponent in \(N^{-\beta}\) was **0.215**, with simultaneous 99% bounds **[0.122, 0.520]**. The single 80-bit hit limits precision. The obstruction for this bank is the supply of odd-sign square relations, in families M/Q. In particular, deliberately forcing a new first denominator to equal a previous positive denominator times a unit square already requires constructing a root of \(-1\). Other adaptive selection rules remain open. [Joint counts and confidence intervals](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/summary.json)
+
+### R2. A public ambiguous class with exactly the target characters
+
+**Built and proved using genus theory.** Set \(d=4N-1\), \(D=-Nd\), and construct
+\[
+f=\left(N,N,\frac{5N-1}{4}\right).
+\]
+This ambiguous form represents \(f(1,2)=8N-1\). Every genus character at a prime dividing \(d\) is \(+1\), because \(8N-1\equiv1\bmod d\). At \(p,q\), the two characters are precisely \((-1/p),(-1/q)\). Consequently **\([f]\) is a square exactly in the \(1,1\) case**. Direct class-group enumeration confirmed all 125 small inputs, including 26 nonfundamental discriminants. [Class-group checks](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/genus_counts.json) · [Genus theorem](https://londmathsoc.onlinelibrary.wiley.com/doi/10.1112/jlms.12921)
+
+This avoids searching for hidden ambiguous forms. The desired class is explicit and has order dividing two in both cases. Its two remaining characters multiply to \(+1\) identically, an exact Q-family cancellation. The unfinished operation is deciding square membership for this one public class.
+
+### R3. A scalar quartic for the norm-one torus
+
+**Built and proved.** In the conductor-seven cubic algebra take \(b=a^3/\operatorname{Norm}(a)\) for a uniform unit \(a\). Set \(T=\operatorname{Tr}(b)\), \(S=\operatorname{Tr}(b^{-1})\), and form
+\[
+H(X)=X^4-2TX^2-8X+T^2-4S.
+\]
+Its roots are the traces of the four geometric norm-one square roots of \(b\). When \(H\) is separable, a scalar root exists locally exactly when \(b\) is a torus square. Both inert primes always admit one. At two split primes the probability is \(1/16\).
+
+**Measured.** The factor-backed square test succeeded on 512/512 inert inputs at each size and on 39, 29, and 32 of 512 split inputs. The public resultant \(\operatorname{Res}(H,X^N-X)\) was a unit on **all 3,072 inputs**, with zero proper gcds. Its Jacobi sign had advantages −0.20, +0.39, and +2.15 percentage points. Every simultaneous 99% interval contained zero. The resultant tests whether a nonzero root’s order divides \(pq-1\), an M-family condition. Recognizing a scalar root of the quartic modulo \(N\) remains the specific gap. [Probe and verification](/Volumes/git/factoring-connection/codex/scratch/buildbit_c/cubic_carry.py)
+
+### Most promising unfinished construction
+
+**Speculative.** I would pursue the **zero test for the binomial coefficient** through the recurrence for \(U_n=\binom{2n}{n}/4^n\),
+\[
+2nU_n=(2n-1)U_{n-1}.
+\]
+Over \(\mathbf F_s\), allowing arbitrary solutions, the possible terminal values at \(m\) are forced to zero exactly when its low base-\(s\) digit is in the upper half. Thus the aligned T0 and T1 queries need only the image of one coordinate. The concrete next step is to derive a doubling rule for that image on dyadic intervals while retaining the midpoint. At T0 the reflection \(n\mapsto(N+1)/2-n\) exchanges the two recurrence coefficients up to sign. A compact rule exploiting that symmetry would address the evaluation gap directly. Ordinary elimination still visits exponentially many indices.
