@@ -65,3 +65,40 @@ Model theorems and negative results, not factoring lower bounds. Summarised in t
     - **Profile (LP_exc^rel)** is closed for fast product growth, few deep embeddings, rank 3, split poles with κ < √2, and shared near-threshold subspaces. Open: the unshared-basis regime.
     - **R** needs a certificate-accounting amendment.
   - Side checks, both negative: RH/GRH claims ([`grhremark`](notes/grhremark_results.md), [`multcopp`](notes/multcopp_results.md), [`masullo`](notes/masullo_results.md)) give no exponent change; "≡ FACT/DL" targets ([`equivtarget`](notes/equivtarget_results.md)); [`subthird`](notes/subthird_results.md) (Theorem KH).
+
+## Conversation follow-up (2026-11-26)
+
+The following are model-specific obstructions and explicit remaining operations,
+not unconditional complexity lower bounds. See the [roadmap](notes/research_roadmap_nov26.md).
+
+- [Multiplication and shared collision](notes/shared_collision_nov26.md):
+  the low/high flattening of the 2-adic product predicate has rank >=2^{k-3}
+  over F_3. Mod-3 normalization does not reduce this cut's rank; duplicate
+  branches must first be removed. Other elimination orders and symbolic
+  composition remain open. Reported separate weighted-level covering and
+  dyadic compatibility bounds have not been re-audited.
+- Short-target grid evaluation: a faster block evaluator does not locate targets.
+  Uniform shortlists lose stationary hits (reported O(m/Y) bound in the stated
+  regime). Inert-prime exclusions are necessary conditions only. Need an
+  arithmetic selector or a batch evaluator that preserves factor-bearing hits.
+- Canonical index: reported coverage threshold is scoped to the oriented
+  polylog square-weight grid. No native minimum evaluator. The known unmixed
+  norm representation cannot supply a mixed root without exposing a factor.
+  Public ellipse counts at the required residue and cutoff are open; C^2
+  need not determine C's minimum (explicit Delta=20 counterexamples).
+- [QRP and conductor](notes/qrp_conductor_nov26.md):
+  uniqueness from a wheel is not decoding. Random large-prime transcripts
+  differ from the consecutive-small-prime target. The quarter-count and moving
+  cutoff identities exactly expose factor information but do not aggregate it.
+  Fixed modulus/known-multiple queries need not lift to growing precision.
+  Constructing a new independent square root is already a factor-extraction
+  route; the open target is decision-only.
+- [Paused mechanisms](notes/research_roadmap_nov26.md):
+  reported binomial midpoint local singularity and reflection cancellation,
+  and two-generation smooth-jump failure, are scoped to those designs;
+  original late proofs are missing. Three-plus adaptive generations and
+  other native index evaluators are not excluded.
+
+Do not promote these obstructions to a universal L[1/3] lower bound. The
+conditional N^{1/8} result is in the exponential deterministic almost-all
+regime and is not a sub-L[1/3] result.
