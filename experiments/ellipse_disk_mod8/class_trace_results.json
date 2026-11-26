@@ -1,0 +1,233 @@
+{
+  "prime_discriminants": [
+    {
+      "N": 138468065327,
+      "delta": 1410683,
+      "h": 311,
+      "generator": [
+        3,
+        -1,
+        117557
+      ],
+      "orbits": [
+        [
+          1,
+          311,
+          155
+        ]
+      ],
+      "observation": [
+        "0x223b4acb0a14b20fac01caf1713433e6f48632a"
+      ],
+      "setup": {
+        "leading_coefficients": 685,
+        "modular_roots": 690,
+        "generator_candidates": 2,
+        "classes": 311,
+        "cyclotomic_degree": 310,
+        "field_degree": 155
+      },
+      "readout": {
+        "public_root_tests": 156,
+        "integer_square_tests": 5476
+      },
+      "setup_seconds": 0.056961865004268475,
+      "readout_seconds": 0.0014604729949496686,
+      "cutoffs": [
+        {
+          "B": 578,
+          "band_parity": 0,
+          "positive_inverse_pairs": 110,
+          "weights": [
+            "0x7a85c3b9838878dc0fdbddc3b6c5d298b5a100"
+          ]
+        },
+        {
+          "B": 579,
+          "band_parity": 1,
+          "positive_inverse_pairs": 112,
+          "weights": [
+            "0x4d13b90a01a4e2f2454c6ef46f8fe65a03ba44a"
+          ]
+        }
+      ],
+      "calibration_and_query_seconds": 0.0019188029982615262,
+      "all_class_checks": 622,
+      "jump_size": 4,
+      "jump_translation_stabilizer_size": 1,
+      "jump_translate_rank": 310,
+      "paired_control": {
+        "N": 539663223977,
+        "control_factors": [
+          705491,
+          764947
+        ],
+        "c": 1469235,
+        "same_proper_character_traces": true,
+        "absolute_cutoffs": [
+          578,
+          579
+        ],
+        "band_parities": [
+          0,
+          0
+        ],
+        "proper_trace_values": [],
+        "readout": {
+          "public_root_tests": 156,
+          "integer_square_tests": 10796
+        }
+      }
+    },
+    {
+      "N": 39866375420117,
+      "delta": 1639243,
+      "h": 119,
+      "generator": [
+        17,
+        -13,
+        24109
+      ],
+      "orbits": [
+        [
+          1,
+          119,
+          24
+        ],
+        [
+          3,
+          119,
+          24
+        ],
+        [
+          7,
+          17,
+          4
+        ],
+        [
+          17,
+          7,
+          3
+        ],
+        [
+          21,
+          17,
+          4
+        ]
+      ],
+      "observation": [
+        "0x12ab1d",
+        "0x1e7c53",
+        "0x7e6cf2",
+        "0x20000",
+        "0xa643ba"
+      ],
+      "setup": {
+        "leading_coefficients": 739,
+        "modular_roots": 254,
+        "generator_candidates": 2,
+        "classes": 119,
+        "cyclotomic_degree": 96,
+        "field_degree": 24
+      },
+      "readout": {
+        "public_root_tests": 60,
+        "integer_square_tests": 31908
+      },
+      "setup_seconds": 0.007578258002467919,
+      "readout_seconds": 0.007837070996174589,
+      "cutoffs": [
+        {
+          "B": 280,
+          "band_parity": 0,
+          "positive_inverse_pairs": 18,
+          "weights": [
+            "0x737ed1",
+            "0x7ad4a9",
+            "0xb25b93",
+            "0x20001",
+            "0x6a74da"
+          ]
+        },
+        {
+          "B": 281,
+          "band_parity": 1,
+          "positive_inverse_pairs": 19,
+          "weights": [
+            "0x61d5cc",
+            "0x64a8fa",
+            "0xcc3761",
+            "0x1",
+            "0xcc3760"
+          ]
+        }
+      ],
+      "calibration_and_query_seconds": 0.0010438470053486526,
+      "all_class_checks": 238,
+      "jump_size": 2,
+      "jump_translation_stabilizer_size": 1,
+      "jump_translate_rank": 118,
+      "paired_control": {
+        "N": 1120192977083,
+        "control_factors": [
+          821941,
+          1362863
+        ],
+        "c": 2116783,
+        "same_proper_character_traces": true,
+        "absolute_cutoffs": [
+          280,
+          281
+        ],
+        "band_parities": [
+          0,
+          0
+        ],
+        "proper_trace_values": [
+          "0x7e6cf2",
+          "0x20000",
+          "0xa643ba"
+        ],
+        "readout": {
+          "public_root_tests": 60,
+          "integer_square_tests": 5356
+        }
+      }
+    }
+  ],
+  "small_sample": {
+    "sample_branches": 194,
+    "outside_prime_discriminant_family": 147,
+    "cutoff_checks": 298,
+    "positive_cutoffs": 78,
+    "eligible_branches": 28,
+    "trivial_class_group": 19
+  },
+  "order_three": {
+    "cases": 128,
+    "histogram": {
+      "trace_1_probe_0": 94,
+      "trace_0_probe_0": 34
+    },
+    "first_examples": {
+      "trace_1_probe_0": {
+        "N": 31877,
+        "c": 357,
+        "control_factors": [
+          127,
+          251
+        ],
+        "divisor_from_probe": null
+      },
+      "trace_0_probe_0": {
+        "N": 252521,
+        "c": 1005,
+        "control_factors": [
+          373,
+          677
+        ],
+        "divisor_from_probe": null
+      }
+    }
+  }
+}

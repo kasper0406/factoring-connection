@@ -6,7 +6,7 @@ complexity, an improved NFS constant, a new reduction, and a new general
 factoring algorithm. The internally audited prior results and their
 hypotheses remain in [STATUS](../STATUS.md).
 
-## 1. Primary: canonical index / public modular ellipse count
+## 1. Canonical index and public modular ellipse count
 
 Read [shared_collision_nov26](shared_collision_nov26.md) first.
 For a public eligible branch (N,ell,c), Delta=(4N-c^2)/ell^2 and
@@ -18,6 +18,15 @@ class, up to inversion, by O(log N) queries at bounded cutoffs; class-square
 lifting remains separate. The principal term must be counted exactly at
 endpoints, not always replaced by floor(sqrt(B)). Fresh small validation is
 in experiments/nov26_consolidation/check_identities.py.
+
+**Priority for polylogarithmic factoring.** Park norm-level scans and class
+catalogues. The primitive band now has an exact formula that sums across its
+levels, but producing its inputs still costs a power of $N$ on growing
+discriminants. Reopen this particular approach on evidence for an evaluator
+that obtains the hidden character information directly from the public input.
+A one-bit test at fixed discriminant is available below. The canonical-index
+coverage audit remains relevant to the separate conditional $N^{1/8}$ goal.
+[Decision, counterexample and reopening test](../experiments/ellipse_disk_mod8/class_trace.md)
 
 **Weighted route.** With ℓ=1 and c chosen next to 2√N, the squared-coordinate
 moment gives a direct factor from N alone. Both the geometric evaluator and
@@ -92,10 +101,15 @@ shows why the 581/582 transition is hard to resolve by cancellation. Below
 √Δ/2 each mixed lattice has at most one direction. Public conductor descent
 produced 24 possible norm levels at 582; verifying them by targeted modular
 roots was cheaper than selecting the prime class. A counting bound rules out a
-polynomial conductor saving on almost all near-square ℓ=1 inputs. Use the
-prime-discriminant 578/579 and 280/281 transitions next. Benchmark aggregate
-evaluation across the remaining levels against the simple targeted-root and
-inert-prime controls, including the cost of producing any class list.
+polynomial conductor saving on almost all near-square ℓ=1 inputs.
+The [class-character experiment](../experiments/ellipse_disk_mod8/class_trace.md)
+then reproduced 578/579 with one trace of degree 155 and 280/281 with five
+traces of total degree 59. Both computations still required the full class
+catalogue and a norm-$N$ representation scan. All lower-order traces together
+miss the relative sign on two actual inputs at the same discriminant.
+For a new public readout, test the order-three bit at $\Delta=59$ before
+building any growing class fields. The substitution of $N$ for the prime
+Frobenius exponent gave the same gcd degree on 128 cases with both bit values.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
