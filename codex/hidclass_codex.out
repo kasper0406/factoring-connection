@@ -1,0 +1,75 @@
+**Proved.** T1 has the requested ternary count, and its binary-theta identity follows from Kaplansky’s theorem. T2 has a root-free formulation with an exact \(15/16\) statistical-distance gap. Neither result supplies a classical polynomial-time decision algorithm. The proposed oracle lifts fail as deductions from known multiples of \(N\). Their unrestricted polynomial-time versions remain open in this review.
+
+## H1. Literature and complexity
+
+**Known.** For distinct odd primes with \(N=pq\equiv1\bmod4\), both primes are \(1\bmod4\) exactly when \(N\) is a sum of two squares, equivalently when \(-1\) is a square modulo \(N\). Thus Blum recognition is the complement of one fixed-base QR query. Seurin explicitly formulates distinguishing Blum from pseudo-Blum moduli as the **\(2\)-\(\Phi/4\)-hiding assumption**. Cachin–Micali–Stadler’s earlier \(\Phi\)-hiding assumption concerns divisibility of the hidden totient by a small odd prime. These are distributional hardness assumptions. [Seurin, §3.1](https://eprint.iacr.org/2013/256.pdf) · [Cachin–Micali–Stadler](https://www.cs.umd.edu/~gasarch/TOPICS/pir/pirpolylog.pdf)
+
+**Proved.** Both targets have precise totient formulations:
+
+- T1 has \(b=1\) exactly when \(v_2(\varphi(N))=4\). The other case has \(32\mid\varphi(N)\), since \(v_2(q-1)=1\).
+- T2 splits exactly when \(\varphi(N)\bmod7\in\{0,4\}\). The inert pairs give \(3,1\), respectively, by \(\varphi(N)\equiv2-p-q\bmod7\).
+
+**Known and proved.** Hittmeir reduces sum-of-two-squares decision to the rational quartic residue symbol and recovery of the two valuations \(v_2(p-1),v_2(q-1)\) to higher rational residue symbols, in randomized polynomial time. For T1, order 16 alone suffices. For a uniform unit \(a\), the rational symbol \((a^8\mid N)_{16}\) is always positive when \(b=1\) and is negative half the time otherwise. This follows by counting sixteenth powers among eighth powers in each cyclic local unit group. Computing that symbol is itself the oracle problem. [Hittmeir, Theorems 1.3–1.5 and Lemma 2.6](https://arxiv.org/pdf/1604.07791)
+
+**Proved.** General QR also gives the full \(O_8\). For each \(d=-1,2,-2\), Jacobi sign \(-1\) gives opposite local signs. With Jacobi sign \(+1\), QR of \(d\) distinguishes two positives from two negatives. These three character sums and the total count recover the multiset by Fourier inversion on \((\mathbb Z/8)^\times\).
+
+**Known.** Van de Graaf–Peralta certify \(P^rQ^s\) with both primes \(3\bmod4\) and both exponents odd. Gennaro–Micciancio–Rabin give zero-knowledge proofs for genuine two-prime products and quasi-safe products. Camenisch–Michels treat committed factors and safe-prime products. These protocols use a prover with additional information. General norm-equation algorithms likewise use arithmetic information such as prime ideals and \(S\)-units. [van de Graaf–Peralta](https://ir.cwi.nl/pub/2041/2041D.pdf) · [Gennaro–Micciancio–Rabin](https://cseweb.ucsd.edu/~daniele/papers/GMR.html) · [Camenisch–Michels](https://www.brics.dk/RS/98/29/BRICS-RS-98-29.pdf) · [Simon](https://doi.org/10.1090/S0025-5718-02-01309-1)
+
+**Proved.** Both promise decisions lie in \(\mathrm{UP}\cap\mathrm{coUP}\) using the unique sorted factorization and polynomial-time primality testing. Both also lie in **SZK**. For T1, uniform eighth and sixteenth powers have statistical distance \(0\) or \(1/2\) by the count above. Two independent coordinates amplify \(1/2\) to \(3/4\). H4 gives the T2 samplers. Unit rejection sampling can be truncated with negligible error. Apply Statistical Difference completeness and closure under complement. [Sahai–Vadhan](https://people.seas.harvard.edu/~salil/research/complete-abs.html)
+
+**Known status, literature search.** Factoring decides both targets, hence both have quantum polynomial-time algorithms. I found no classical polynomial-time decider for either, no reduction from factoring to either fixed decision, and no equivalence with ordinary QR or Paillier DCR. DCR asks about \(N\)-th powers modulo \(N^2\). [Shor](https://arxiv.org/abs/quant-ph/9508027) · [Paillier](https://www.cs.tau.ac.il/~fiat/crypt07/papers/Pai99pai.pdf)
+
+## H2. What a class oracle can lift
+
+**Proved.** Extend \(O_m\) to return the histogram \(H_m\) of prime classes with multiplicity. For every query \(N^e s\) with known factorization of \(s\),
+\[
+H_m(N^e s)=eH_m(N)+H_m(s).
+\]
+One answer at \(N\) therefore simulates every adaptive query of this form. Given the product class and \(\gcd(N,m)=1\), there are at most \(\varphi(m)\) candidate pairs: choosing one class determines its partner. A factoring algorithm using only these queries can try every candidate and verify the resulting divisor. For fixed \(m\) the overhead is constant.
+
+**Proved, restricted model.** Modulo 32, \((1,3)\) and \((17,19)\) have identical product and identical reductions modulo 16. Modulo 8, \((1,1)\) and \((5,5)\) give the analogous obstruction for \(O_4\). On the particular T1 promise, \(O_8\) is already specified. For H2(c), CRT lets either the modulo-4 label or the conductor-7 label vary while holding the other fixed and the product \(1\bmod28\). Dirichlet’s theorem realizes the classes by distinct primes. The examples can preserve any additional fixed public product congruence compatible with the promise by choosing lifts with the prescribed product. Thus the smaller answers do not determine the larger ones. An unrestricted reduction could compute on the integer \(N\) or query unrelated moduli. I found no proof or refutation of those reductions.
+
+**Known.** H2(d) holds. For balanced factors even \(M=2^j\ge N^{1/4}\) suffices. Try each returned residue \(a\). Writing \(p=a+Mx\) gives a small root of \(x+aM^{-1}\bmod p\). For the larger balanced factor, \(p\ge\sqrt N\) and \(x=O(N^{1/4})\). For unbalanced \(p=N^\alpha\), the linear unknown-divisor bound has exponent \(\alpha^2\), and \(\alpha-\alpha^2\le1/4\). The stated fixed \(\varepsilon\) absorbs estimating \(\alpha\) on a finite grid. [Mol, Theorem 5.2.5 and Corollary 3.2.9](https://cseweb.ucsd.edu/~pmol/Publications/thesis.pdf)
+
+## H3. The ternary count and the limit of reciprocity descent
+
+**Proved.** A natural reconstruction is
+\[
+U(N)=\#\{0<x<y<z:x^2+y^2+z^2=N^2\},\qquad
+\boxed{\,8U(N)=N+2r-21\,}.
+\]
+Hurwitz’s formula gives \(6(N+2r)\) signed, ordered triples. There are six axial triples and 24 with exactly one zero, since \(r_2(N^2)=12\). There are 96 with a repeated positive absolute value: \(z^2+2x^2=N^2\) has 18 signed solutions because both primes split in \(\mathbb Z[\sqrt{-2}]\), hence four positive pairs, each giving 24 triples. Every remaining orbit has size 48. Consequently
+\[
+r=4U+(21-N)/2.
+\]
+For public \(N\), \(U\bmod2^j\) and \(r\bmod2^{j+2}\) determine one another. Exact \(U\) factors \(N\). This reconstructs the requested properties; the lost brief’s choice of boundary convention is uncertain. [Hurwitz’s formula, Theorem 1.1](https://sunsite3.icm.edu.pl/packages/EMIS/journals/INTEGERS/papers/o52/o52.pdf)
+
+**Proved.** The binary-theta parity is exact. In the Gaussian integers write \(r=a^2+b^2\) with \(b\) even. Since \(q\) is inert, the only nonaxial representation of \(N^2\) up to signs and interchange comes from \(q(a+bi)^2\). Its even coordinate is divisible by 16 exactly when \(8\mid b\). In \(\mathbb Z[\sqrt{-2}]\), write \(r=c^2+2d^2\) with \(d\) even. A prime above \(q\) has odd \(\sqrt{-2}\)-coordinate. Representations using its square or conjugate square have that coordinate \(2\bmod4\), even after multiplication by a prime square above \(r\). The remaining nonaxial representation comes from \(q(c+d\sqrt{-2})^2\) and qualifies for the \(128\)-term exactly when \(4\mid d\). The two axial terms cancel. The desired parity is therefore the XOR of representability of \(r\) by \(x^2+64y^2\) and \(x^2+32y^2\), precisely Kaplansky’s criterion for \(r\equiv9\bmod16\). [Kaplansky](https://doi.org/10.1090/S0002-9939-03-07022-9)
+
+**Proved, restricted model.** Allow descent routines to expose fixed ray characters on \((N)\), normalized fixed-numerator quadratic Gauss sums and fixed-level multiplier tables indexed by public residues. Permit arbitrary postprocessing of these answers. Their joint value factors through \(N\bmod M\) for a fixed common conductor \(M\): for a ray character, \(N/N'\) is totally positive and ray-trivial when the positive inputs agree modulo the conductor. CRT as in H2 excludes T1. Arbitrary postprocessing gives a *function* of character products. Growing Euclidean state escapes this theorem: Dedekind reciprocity, for example, retains an alternating partial-quotient sum. [Reciprocity theorem and Dedekind decomposition](/Volumes/git/factoring-connection/notes/newfamily_results.md) · [Dedekind–Rademacher reciprocity](https://people.mpim-bonn.mpg.de/zagier/files/acta/73-4/fulltext.pdf)
+
+**Known and open.** For signed theta series, \(T\) supplies phases and \(S\) Fourier-transforms the lattice-coset components. The transformed expansion is at another cusp. Neither rule sends the coefficient index \(N^2\) to a smaller Euclidean remainder. Moreover \(A=(1+\theta)/2\), so reducing the signed theta series modulo 2 before division loses information. Atkin–Lehner changes cusp, and Hecke multiplicativity at hidden primes requires their indices. I found no growing-state coefficient recurrence or \(\Omega(N)\) lower bound. The semiprime promise simplifies the Hurwitz product to the affine formula above. For general odd squarefree inputs its factors are \(\ell\) or \(\ell+2\) according to \(\ell\bmod4\). The affine identity supplies no next bit from preceding bits. [Scheithauer](https://doi.org/10.1093/imrn/rnn166)
+
+## H4. T2 without local Frobenius
+
+**Proved.** Put \(T=\ker(\operatorname{Norm}:A^\times\to(\mathbb Z/N)^\times)\). Handle even \(N\) by division by 2. A uniform unit \(a\) gives a uniform \(t=\sigma(a)/a\) in \(T\): locally the kernel is the scalar units and the image has the full norm-one order. At an inert prime \(\ell\), \(T_\ell\) has odd order \(\ell^2+\ell+1\). At a split prime, \(T_\ell\cong(\mathbb F_\ell^\times)^2\). Thus **uniform \(t\) and \(t^2\) have distance zero when inert and \(15/16\) when split**. A torus square-membership oracle decides T2 with constant advantage. The scalar norm of a uniform unit is uniform in both cases. [Quadratic-residuosity analogue](/Volumes/git/factoring-connection/notes/kern_results.md)
+
+**Proved.** For the twisted test \(a^k=\sigma(a)^m\) on uniform units, local success is kernel size divided by group order. Inert kernel size is \(\gcd(k-m\ell^e,\ell^3-1)\), where \(\sigma=\mathrm{Frob}_\ell^e\), \(e=1,2\). Split kernel size is that of \(kI-mP\) modulo \(\ell-1\), with \(P\) the cyclic permutation matrix. CRT multiplies the probabilities. These formulas identify the order dependence of individual tests. A different rare event is directly observable: the norm of \(a-\sigma(a)\) for uniform algebra \(a\) vanishes locally with probability \(1/\ell^2\) inert and \(3/\ell-2/\ell^2\) split, by counting fixed elements or coordinate collisions. A one-sided local zero yields a gcd factor. An exhaustive order-leak-or-root theorem for adaptive tests remains open.
+
+**Proved.** In the split case two independent uniform roots have independent relative conjugation shifts modulo \(p,q\). With probability \(2/3\) the shifts differ, and comparing one root to the three conjugates of the other by gcd factors \(N\). For a single root \(h\), the lattice \(u-hv=0\bmod N\) has index \(N\). Pigeonholing the grid \([0,\lfloor\sqrt N\rfloor]^2\) gives a nonzero solution within \(\sqrt N\). Inertness forces both coordinates divisible by \(N\). Thus the \(N^{0.9}\)-box decision is **exactly T2**. Random-root access is stronger than anything established for that decision. The global norm equivalence follows from class number one and the fact that inert norm valuations are multiples of three. [Field data](https://www.lmfdb.org/NumberField/data/3.3.49.1)
+
+**Proved.** Summing over all affine solutions modulo \(N\) gives \(1\) inert and \((3p-2)(3q-2)=9N-6(p+q)+4\) split, by counting three lines locally. The exact split count factors \(N\). A Gaussian sum over nonzero integer solutions with weight \(e^{-\pi(u^2+v^2)/N}\) is \(O(e^{-\pi N})\) inert and at least \(e^{-2\pi}\) split. Even fixed additive accuracy below \(e^{-2\pi}/3\) decides T2 for large \(N\). Enumeration needs no lattice oracle; an efficient approximation with that guarantee remains open here.
+
+## H5–H6. Measurements and verdict
+
+**Measured.** The preregistered run used 1,024 examples per label, target and size, totaling 24,576 balanced semiprimes. T1 fixed \(N\equiv3\bmod16\). Entries are signed accuracy advantage in percentage points. The two CF statistics use 64 steps of \(\sqrt{7N}\). The cubic statistic multiplies four Jacobi signs of \(\operatorname{Norm}(a-\sigma(a))\).
+
+| Statistic | 40 bits | 48 | 56 | 64 | 72 | 80 | Pooled advantage, 95% CI |
+|---|---:|---:|---:|---:|---:|---:|---|
+| T1 quotient-sum parity | +0.39 | −0.15 | −0.20 | +0.44 | +1.27 | +1.81 | +0.59 [−0.29, +1.48] |
+| T1 denominator parity | +0.93 | +0.83 | −2.49 | +0.10 | +0.44 | −0.34 | −0.09 [−0.92, +0.74] |
+| T2 cubic sign | −0.54 | +1.07 | +0.54 | −1.42 | +2.15 | −0.54 | +0.21 [−0.67, +1.10] |
+
+**Measured.** No statistic passed the adjusted threshold. No tested gcd split and no cubic symbol vanished. The decay exponent was **unresolved** under the preregistered rule. The earlier repo experiment reported \(0.246\)–\(0.251\) for different CF readouts and targets. Its roughly 30 ppm signal at 80 bits is far below this run’s roughly two-percentage-point per-size interval half-width. **Proved.** Conditional on a nonzero symbol, the cubic sign is exactly fair: scaling one sample by a scalar unit of negative Jacobi sign reverses it. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/hidclass_c/prereg.md) · [Code](/Volumes/git/factoring-connection/codex/scratch/hidclass_c/experiment.py) · [All intervals](/Volumes/git/factoring-connection/codex/scratch/hidclass_c/results.txt) · [Samples](/Volumes/git/factoring-connection/codex/scratch/hidclass_c/samples.csv) · [Earlier CF results](/Volumes/git/factoring-connection/notes/entropy_results.md)
+
+**Speculative.** My subjective probability that at least one target admits a classical randomized polynomial-time algorithm is about **5%**. The sharp questions are whether the eighth- and sixteenth-power images can be distinguished efficiently for T1, and whether the norm-one square classes can be distinguished efficiently for T2. **Proved for the known-multiple query model:** even a perfect fixed-class oracle can be simulated in a factoring search with constant overhead by guessing its answer and verifying the factor. A consequence below \(L[1/3]\) would require a different reduction.
