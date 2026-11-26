@@ -6,6 +6,26 @@ complexity, an improved NFS constant, a new reduction, and a new general
 factoring algorithm. The internally audited prior results and their
 hypotheses remain in [STATUS](../STATUS.md).
 
+## Active question for classical polynomial time
+
+Let $n=\lceil\log_2(N+1)\rceil$. We have polynomial-time reductions to explicit sums and verified divisors on finite inputs. Every public evaluator tested so far still takes more than polynomial work in $n$ in its stated worst-case bound.
+
+| Priority | What the reduction already gives | What a new algorithm must compute |
+|---|---|---|
+| Balanced semiprimes | On one public near-square branch, the first absolute-coordinate moment modulo $N$ at a single cutoff gives a verified divisor. Five even moments at the same cutoff also recover the minimum. | Compute $\sum w\bmod N$ over positive matches in the whole disk. The square-residue join scans a power of $N$. Check a formula at the prescribed cutoff itself, where a common recurrence for all prefixes is unnecessary. [Single-moment proof](../experiments/ellipse_aggregate/weighted_recurrence_single.md) · [Five even moments](../experiments/ellipse_aggregate/weighted_recurrence.md) |
+| General integers | Ordinary signed counts mod 4 on public primitive positive forms suffice for complete factorization. Each split uses $O(n)$ scalar calls. Even factors and prime-power leaves are handled explicitly. | Evaluate the parity of nontrivial roots of $x^2=1\pmod N$ in a selected dyadic class. An alternative uses mod-8 counts on a single fixed diagonal form per odd input. Tangent blocks plus exact Euclidean floor sums give a public root-prefix evaluator with $\Theta(N^{2/3})$ blocks at central cutoffs. [General reduction](../experiments/ellipse_disk_mod8/general_scope.md) · [Prefix algorithm and checks](../experiments/ellipse_disk_mod8/native_dyadic.md) |
+| Independent arithmetic control | For $p<q<2p$, $B=\lfloor\sqrt{pq}\rfloor$ gives $\gcd(\binom{2B}{B},pq)=q$. | Extract that middle coefficient modulo $N$ at the one prescribed index. All 128 tested unweighted cyclic folds miss the divisor on two fixtures. [Valuations, rank bounds and fixtures](direct_split_poly.md) |
+
+First invest in computing a residue on unfactored input. Charge every arithmetic operation needed to build the representation and to answer the query, including empty blocks. A smaller geometric subproblem makes progress only if the number and size of all child calls also give a polynomial bit bound. On the balanced branch, check the two collision inputs and a growing cap. On general inputs, require the same evaluator to handle repeated factors, where points on the horizontal axis can change the parity. Keep factor-supplied calculations as independent controls.
+
+**Next experiment.** Try a formula that sums across rows at the one prescribed cutoff. Integer carries and the ellipse boundary can couple the two prime congruences. A row-prefix finite difference computed only by ring operations loses that coupling on an explicit pair. The usual auxiliary-polynomial certificate also fails on broad boxes. [Restrictions and witness](../experiments/ellipse_aggregate/native_cap.md)
+
+A candidate normalized residue $z$ can be checked immediately by taking $t=\lfloor\sqrt{z^2\bmod N}\rfloor$, checking the square and verifying a divisor by gcd. This also makes weaker randomized mechanisms testable. For a uniform unit $z$ on a balanced $N=pq$, exactly $2(\lfloor\sqrt N\rfloor-1)$ of the $\varphi(N)$ units give a split by this test. Indeed, each positive $t\le\lfloor\sqrt N\rfloor$ except $p$ is a unit, its ordinary square is distinct and below $N$, and two of the four CRT signs give a split. Uniform guessing needs order $\sqrt N$ trials on average. A randomized proposal targeting polynomial expected time needs an inverse-polynomial success guarantee in the **bit length**, together with a polynomial cost per trial. The fixed-cap residue supplies a deterministic successful $z$ or an immediate gcd.
+
+**Why the fixed-discriminant bit moved down.** Suppose a deterministic reduction uses at most $t$ yes/no oracle answers and polynomial additional work to return a verifiable divisor. One can run every answer transcript, verify each claimed divisor, and retain a correct split in $2^t\operatorname{poly}(n)$ time. If only the true path has a proved polynomial runtime, apply that bound to each simulated path. A single bit, or even $O(\log n)$ adaptive bits total, can therefore be eliminated at polynomial cost. The current $-59$ bit also has a sparse input promise. This observation concerns verified search with that total answer budget. A polynomial number of bits, or a residue modulo $N$ carrying $O(n)$ bits, has a different budget. [Endpoint experiment](../experiments/ellipse_disk_mod8/manin59.md) · [Growing-discriminant collisions and coverage](../experiments/ellipse_disk_mod8/growing59.md)
+
+The older canonical-grid target has a separate payoff. Its conditional almost-all $N^{1/8}\operatorname{polylog}N$ bound still has an exponential factor in $n$. Keep the coverage and class-lifting work under that objective.
+
 ## 1. Canonical index and public modular ellipse count
 
 Read [shared_collision_nov26](shared_collision_nov26.md) first.
@@ -29,11 +49,10 @@ now has a quartic formulation and explicit controls. The canonical-index
 coverage audit remains relevant to the separate conditional $N^{1/8}$ goal.
 [Decision, counterexample and reopening test](../experiments/ellipse_disk_mod8/class_trace.md)
 
-**Weighted route.** With ℓ=1 and c chosen next to 2√N, the squared-coordinate
+**Earlier weighted prefix route.** With ℓ=1 and c chosen next to 2√N, the squared-coordinate
 moment gives a direct factor from N alone. Both the geometric evaluator and
 a residue-list join run through verification. Their costs remain powers of N.
-The immediate target is computing a sharp harmonic prefix at multiples of N
-without shell enumeration or a length-√(NB) scan. A full-range product test
+The fixed-cap reduction above removes the need for adaptive prefixes. A full-range product test
 loses local root alignment. See [implemented factorer, measurements and obstruction](../experiments/ellipse_aggregate/README.md).
 This route bypasses class lifting and the canonical-grid coverage hypothesis.
 
@@ -120,9 +139,9 @@ and substituting $N$ in the prime halving exponent missed all 221 unique roots.
 The [level-59 modular-symbol evaluator](../experiments/ellipse_disk_mod8/manin59.md)
 computes this parity from $N$ alone using a sum over every $b/N$. It agreed on
 zero, one, and sixteen roots. The faster selection of seven endpoints lost the
-bit on an explicit matched triple. The next evaluator test is a joint recurrence
-for the parity of continued-fraction edge visits over all $b$ at the branch
-denominator, with all intermediate states charged.
+bit on an explicit matched triple. A joint recurrence for continued-fraction edge
+visits would improve this benchmark. The terminal-edge multiset has an elementary
+formula, and keeping its reduced-denominator weight recovers the known gcd sum.
 The [growing-discriminant test](../experiments/ellipse_disk_mod8/growing59.md)
 shows exactly which part of a class all unramified cubic bits determine. At
 $-4027$ two or three factor-backed oracle answers decoded 288 of 288 hidden

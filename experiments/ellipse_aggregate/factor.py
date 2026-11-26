@@ -39,8 +39,8 @@ class Disk:
         return self.counts[i], self.moments[i]
 
 
-def residue_disk(br, B, work):
-    """All shells through B in one join. B<=cap<min(p,q) is the promised range.
+def positive_matches(br, B, work):
+    """Yield positive (w,y) in one disk. B<=cap<min(p,q) is the promised range.
 
     Coordinates w=|2x+b*y|, y=|y| are strictly positive on nonzero hits.
     Each positive pair represents one four-element conjugation/sign orbit.
@@ -56,13 +56,11 @@ def residue_disk(br, B, work):
     table = {}
     for y in range(1, Y + 1):
         dy2 = br.delta * y * y
-        table.setdefault((-dy2) % mod, []).append((dy2, y * y))
+        table.setdefault((-dy2) % mod, []).append((dy2, y))
     work["y_insertions"] += Y
     work["w_probes"] += X
     work["builds"] += 1
     work["peak_y_entries"] = max(work["peak_y_entries"], Y)
-    # Prefix moments for all B'<=B can be computed from the resulting sparse hits.
-    events = {}
     # Four square roots mod N at most for any target; each w occurs at most
     # ceil(X/N) times per residue. No per-probe scan over the whole short list.
     for w in range(1, X + 1):
@@ -72,11 +70,18 @@ def residue_disk(br, B, work):
             continue
         while bucket and bucket[-1][0] + ww > radius:
             bucket.pop()
-        for dy2, ysq in bucket:
-            j = (ww + dy2) // mod
-            count, weight = events.get(j, (0, 0))
-            events[j] = (count + 1, weight + ysq)
+        for _, y in bucket:
             work["hits"] += 1
+            yield w, y
+
+
+def residue_disk(br, B, work):
+    """Build all prefix counts and second moments through B from one join."""
+    events = {}
+    for w, y in positive_matches(br, B, work):
+        j = (w * w + br.delta * y * y) // (4 * br.n)
+        count, weight = events.get(j, (0, 0))
+        events[j] = (count + 1, weight + y * y)
     indices = [0]
     counts = [0]
     moments = [0]

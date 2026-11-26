@@ -1,5 +1,7 @@
 # Factoring from N alone and evaluating the weighted disk in one pass
 
+The [fixed-cutoff reduction](weighted_recurrence_single.md) now takes one absolute-coordinate sum modulo $N$ and recovers both factors with at most one integer square root. Its public join uses the same positive matches as the prefix code below. The [independent square check](weighted_recurrence_single_audit.py) covers 2,128 branch instances, including 100 with two mixed points of opposite orientation.
+
 The entry point takes a balanced product of two distinct odd primes. It constructs one public principal form, evaluates mixed-orbit moments, and returns two verified factors. Both available evaluators take time polynomial in the *value* of N in the worst-case bounds. A polylogarithmic evaluation of the same moment on the public cutoffs would instead give polylogarithmic factoring for this input family. The existence of the reduction supplies no algorithm with that cost.
 
 ## Public branch construction

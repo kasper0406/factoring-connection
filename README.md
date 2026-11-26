@@ -21,15 +21,20 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 
 ## Current research frontier (2026-11-26)
 
-The latest non-sieve work connects multiplication-network counts, structured
-square-weight collisions and quadratic-form minima. These are **partial results
-and conditional reductions, not a new factoring algorithm**. In particular,
-N^{1/8} is a conditional almost-all balanced-semiprime bound, not a replacement
-for the existing N^{1/6} result or an improvement over heuristic L[1/3].
+**Classical polynomial-time factoring remains open.** On a balanced semiprime,
+one weighted residue from one public disk now suffices for a verified divisor,
+with at most one ordinary integer square root. For general integers, a separate
+reduction uses mod-4 counts on explicit primitive forms with larger discriminants.
+The main research question is how to compute either residue from unfactored
+input in polynomial bit time. The canonical-grid project targets a separate,
+conditional almost-all $N^{1/8}\operatorname{polylog}N$ bound.
 
 | Direction | Latest result / missing step | Details |
 |---|---|---|
-| **Canonical index (primary)** | One hidden quadratic-form minimum per prime/root branch; reported band coverage would yield N^{1/8}·polylog if that minimum were efficiently computable. Need independent coverage audit and native evaluator. | [Shared collision and canonical index](notes/shared_collision_nov26.md) |
+| **Balanced semiprimes, single absolute moment** | On the public near-square branch, the sum of positive $w$ modulo $N$ at the full cutoff gives a divisor without a shell search or class lifting. The square-residue join still scans 7,467,686 candidate coordinates on the 36-bit fixture. | [Proof and worked example](experiments/ellipse_aggregate/weighted_recurrence_single.md) · [Independent audit](experiments/ellipse_aggregate/weighted_recurrence_single_audit.py) |
+| **General integers, counts mod 4** | One odd-parity child locates a nontrivial square root of unity. The reduction handles even factors, multiple distinct odd factors and prime powers. The public reference evaluator factored all integers through 2,000. | [Reduction, cost and branch requirements](experiments/ellipse_disk_mod8/general_scope.md) · [Root-prefix floor sums](experiments/ellipse_disk_mod8/native_dyadic.md) |
+| **Single central binomial coefficient** | For $p<q<2p$, the coefficient at $B=\lfloor\sqrt N\rfloor$ exposes $q$ by a gcd. The tested small cyclic projections lose this property. | [Proof and counterexamples](notes/direct_split_poly.md) |
+| **Canonical index** | One hidden quadratic-form minimum per prime/root branch. Reported band coverage would yield $N^{1/8}\operatorname{polylog}N$ if that minimum were efficiently computable. The coverage audit and native evaluator remain open. | [Shared collision and canonical index](notes/shared_collision_nov26.md) |
 | **Public ellipse count** | Bounded mod-16 queries recover the hidden squared ideal class. Class lifting and the cost of evaluating the queries remain separate. Class and norm-level enumeration are parked for the polylogarithmic goal. | [Ellipse reduction and ambiguity](notes/shared_collision_nov26.md#4-public-ellipse-count-and-squared-class-decoding) · [Decision and reopening test](experiments/ellipse_disk_mod8/class_trace.md) |
 | **Whole-disk parity** | Parity of the positive disk with up to two y-bit filters suffices to extract a factor. A Boolean decision diagram handles all norm levels simultaneously; intermediate carry diagrams still dominate. | [Parity reduction and benchmark](experiments/ellipse_disk_mod8/README.md), [which translation identities already expose a factor](experiments/ellipse_disk_mod8/translation.md) |
 | **Centered form recurrence** | Ordinary signed counts mod 16 on explicitly changed forms suffice for factoring in O(log N) queries. The native traversal still enumerates primitive directions. A 35-bit control has one mixed hit among 8,192 inequivalent locally soluble forms. | [Recurrence, scope and checks](experiments/ellipse_disk_mod8/centered.md) |
@@ -42,7 +47,7 @@ for the existing N^{1/6} result or an improvement over heuristic L[1/3].
 | **One bit at discriminant −59** | The public cubic Jacobi symbol always equals 1. A quartic has exactly one root modulo $N$ for bit 1 and zero or sixteen for bit 0. Two shifted norm-Jacobi symbols have vanishing advantage. Computing the quartic root parity efficiently is open. | [Reciprocity proof and 320 controls](experiments/ellipse_disk_mod8/cubic59.md) |
 | **Level-59 modular symbols** | Summing continued-fraction paths to all $b/N$ gives the exact quartic bit from $N$ alone. All seven tested fast endpoint values coincide on a triple with zero, one and sixteen roots. The evaluator still visits $N$ endpoints. | [Hecke identity, cost and collision](experiments/ellipse_disk_mod8/manin59.md) |
 | **Transfer to growing discriminants** | Cubic-character bits determine the hidden class modulo cubes up to inversion. Two or three oracle queries recover the full inverse pair at $-4027$. At $-1579$ every cubic bit agrees on two different minima. The direct near-square cubic catalogue has vanishing coverage. | [Decoder, counterexample and coverage bound](experiments/ellipse_disk_mod8/growing59.md) |
-| **Weighted ellipse moment** | A branch with ℓ=1 is constructed from N alone. O(log N) weighted queries recover a factor. Two exact evaluators factor all 560 small balanced test pairs; both still take power-of-N work. | [End-to-end CLI and measured costs](experiments/ellipse_aggregate/README.md), [moment proof](experiments/ellipse_row_batches/README.md) |
+| **Weighted prefix method** | The earlier $O(\log N)$-query reduction uses squared-coordinate sums. Two exact evaluators factor all 560 small balanced test pairs. | [End-to-end CLI and measured costs](experiments/ellipse_aggregate/README.md) · [Prefix moment proof](experiments/ellipse_row_batches/README.md) |
 | **Multiplication network (secondary)** | Normalized divisor-prefix count mod 3 suffices on semiprimes, but branch duplicates and intermediate state size must be handled. Cut-rank obstruction; masked-product local counts; reported G^{3/4+o(1)} short-list collision evaluator needs proof/cost audit. | [Network and grid](notes/shared_collision_nov26.md) |
 | **QRP / hidden conductor (parked)** | Local-character oracle, conductor wheels, class-number and Jacobi-prefix identities; variable-endpoint parity factors mixed semiprimes. No efficient conductor decoder or aggregate known. | [QRP and interval targets](notes/qrp_conductor_nov26.md) |
 | **Smooth decoding / binomial midpoint (paused)** | Tested jump and local-state mechanisms stalled; unrestricted adaptive decoding and a native single-index evaluator remain open. | [Priorities and negative results](notes/research_roadmap_nov26.md) |

@@ -50,7 +50,17 @@ For $s=-2,-1,0,1,2$ the five paths have joint period dividing 947,835. We also e
 
 The witnesses were selected using control factorizations. The fast endpoint calculations use only $N$. The collision excludes every postprocessing function of those seven $V$ values alone. It leaves open other endpoints, growing-level symbols, unreduced words at the two growing offsets and algorithms using $N$ in other ways.
 
-**Next blocker.** Sum the interior endpoints collectively while charging the construction of every group. A concrete starting point is a recurrence for the parity of visits to a given projective edge across all continued fractions $b/N$, with $N=t^2+3t+17$. It would have to avoid enumerating either the $N$ numerators or a power-sized set of intermediate states. Use the matched triple before drawing conclusions from another small selection of endpoints. Independent limitations on how these bits transfer across discriminants are recorded in [the growing-discriminant experiment](growing59.md).
+## What survives at the last edge
+
+For any odd $N$, reduce $b/N=a/d$ for $0\le b<N$. At a nonzero endpoint let $r$ be the previous convergent denominator, with the sign that gives $ar\equiv1\pmod d$. The determinant identity for consecutive convergents gives this inverse. The final partial quotient is at least two, so $|r|\le(d-1)/2$ since $d$ is odd. At zero take $(r,d)=(0,1)$. For every $d\mid N$ the numerators $a$ run through the units modulo $d$, and inversion permutes them. Consequently the entire multiset of rational slopes $r/d$ is just
+
+$$\{k/N: -(N-1)/2\le k\le (N-1)/2\}.$$
+
+At level 59 coprime to $N$ this gives the terminal edge histogram by counting an ordinary interval in each residue class. The chart used in the code records the inverse slope with the usual point at infinity. First and intermediate edges still require a separate analysis.
+
+Keeping the **reduced denominator** changes the observable. For $M=2^{\operatorname{bitlength}(N)+2}$, the residue $N d^{-1}\bmod M$ equals $\gcd(b,N)$ because $d$ is odd and $N=d\gcd(b,N)$. On $N=pq$ with distinct odd primes its sum modulo $M$ equals the integer $(2p-1)(2q-1)<4N$, giving $p+q$ and both factors. This recovers the repository's existing Pillai-sum reduction. Producing that sum cheaply from $N$ is still open. The endpoint check covered all 65,535 endpoints for odd $3\le N\le511$, including 96 distinct-prime semiprimes. [Exact last-edge check](manin_terminal_check.py) · [Prior gcd-sum reduction](../../notes/geometry_results.md)
+
+**Research decision.** Keep the full-path recurrence as a fixed-discriminant benchmark. Even a fast evaluation here returns one bit on $N=t^2+3t+17$. A deterministic polynomial-time reduction that could factor using one bit could also try both possible answers and verify the divisor. For the general factoring goal, prioritize observables with a proved route to a divisor across inputs. [Growing-discriminant test](growing59.md) · [Current priorities](../../notes/research_roadmap_nov26.md)
 
 From the repository root, with python-flint, NumPy and SymPy installed:
 
