@@ -72,3 +72,5 @@ The CUDD backend is provided by the dd wheel. Elapsed time and cache counters ca
 The remaining target is computing a *single masked parity of a clipped congruence* with small intermediate state. A useful next test is to sum pairs of coordinate bits before low-column equality fixes their complete carries and retain only a signed or parity-valued boundary condition. A candidate must prove that configurations it merges have the same effect on all future high-bit disk bounds. Reducing the final Boolean relation alone does not meet that test.
 
 The [translation and reflection test](translation.md) gives an exact cancellation law for batches of shifted copies of the mixed weight. It narrows the next recurrence search to the clipped scalar or another representation.
+
+The [centered form recurrence](centered.md) gives a second interface: unmasked signed mod-16 queries on changed forms. All 204 factoring controls passed. Its native geometric evaluation still branches over individual primitive directions.

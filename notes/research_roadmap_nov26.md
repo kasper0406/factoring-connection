@@ -42,6 +42,15 @@ mixed point on the original cone. Splitting both coordinates by low bits shrinks
 decoder tuning. First test an exact recurrence at the required disk center, allowing
 a change of form. Charge the boundary and all child calls. Stress-test it immediately
 before and at the first mixed shell, then check that it supports the intended decoder.
+The [centered projective recurrence](../experiments/ellipse_disk_mod8/centered.md)
+now achieves that exact transformation. Its unmasked mod-16 decoder uses O(log N)
+queries on changed forms, including nonprincipal classes. The native traversal
+takes Θ(NB/√Δ) nodes in the growing principal-branch regime. A stronger next
+test is to evaluate a whole group of sibling slopes without visiting them
+individually. At B=1 the 35-bit and 36-bit controls each give 8,192 inequivalent
+forms representing N locally everywhere. Only the former group contains a
+mixed global representation. Account for building the group and testing its
+residue on both fixtures.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
