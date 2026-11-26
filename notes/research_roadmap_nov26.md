@@ -80,6 +80,13 @@ has vanishing coverage. Move the next evaluator test to a growing nonsquare
 cutoff. At the 47-bit fixture the signed punctured-disk residues at 581 and
 582 are 0 and 4. Test bulk aggregation with all preprocessing and boundary work
 charged. A selector that reaches typical-sized minima remains a separate possibility.
+The [rectangle evaluator](../experiments/ellipse_disk_mod8/rectangle_rays.md)
+now reproduces that cutoff pair and factors the 47-bit input from clipped queries.
+Scaling a primitive point couples multiple norm levels; its coefficient can vanish
+before the final square test. At 582 the filtered parity evaluator still runs
+16,546 of its 18,042 square tests on primitive candidates in nonsquare levels
+above B/4, where the multiplier is one. Prioritize a joint test over these
+progressions that can also avoid listing at least B seed residues.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
