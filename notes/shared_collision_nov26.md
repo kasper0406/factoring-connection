@@ -165,10 +165,14 @@ A query returns one count modulo 16 before division by 2. For B<min(p,q) and
 in the range where the principal form has only axis vectors,
     U_N(B) = 2 floor(sqrt(B)) + 2 V(B) (mod 8),
 where V(B) counts nonzero vectors up to sign in the C^2 form through B.
-More generally the principal term is known and can be evaluated by direct
-form-specific means; charge it. For the promised large-ell balanced branches,
-Delta is small enough that the decoding cutoffs are below p,q; verify the
-precise endpoint and principal-term hypotheses before invoking the decoder.
+**Endpoint correction:** in general subtract the exact principal count P(B),
+not just floor(sqrt(B)). At Delta=20, B=5, a nonaxis vector already enters.
+The exact identity is U_N(B)=2P(B)+2V(B) mod 8. For the decoder's reduced-form
+cutoffs, B<=max(2 sqrt(Delta/3),(Delta+1)/4) (rounding harmless), so P(B)
+is computable in polylog time by enumerating O(1) possible y rows and counting
+the x interval via integer square roots, without enumerating its points.
+Require B<min(p,q); for the promised large-ell balanced branches Delta=O(P/ell),
+so these cutoffs are indeed smaller than p,q for sufficiently large P.
 
 For a reduced form [a,b,d] with |b|<=a<=d, the first doubling endpoint
 reaching a lies below 2a, where there are at most three nonzero vector pairs.
