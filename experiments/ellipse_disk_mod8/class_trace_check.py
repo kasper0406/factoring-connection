@@ -25,9 +25,9 @@ from genusleak.forms import prime_form, reduce_form, sqrt_mod_prime
 HERE = Path(__file__).resolve().parent
 
 
-def balanced_cases(delta):
+def balanced_cases(delta, min_prime=101):
     """Control generation only: p is known here; readers get N alone."""
-    start = max(101, delta // 2)
+    start = max(min_prime, delta // 2)
     for p in primerange(start, start + 1_500_000):
         if pow(-delta, (p - 1) // 2, p) != 1:
             continue

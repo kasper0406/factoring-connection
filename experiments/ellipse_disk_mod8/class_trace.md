@@ -65,6 +65,8 @@ We tried the public computation $\gcd(f,X^N-X)$ over $\mathbb Z/N\mathbb Z$ with
 
 **When to reopen.** A concrete new test is a direct algorithm for this one-bit $\Delta=59$ problem on an unfactored promised input, with a polynomial-in-$\log N$ bit-cost argument. This would warrant testing a growing discriminant. The full reduction would still need affordable cutoff weights and trace fields, additional disk contributions, and enough accessible queries to decode a factor. An algorithm that obtains the disk bit directly from public data could bypass this representation altogether.
 
+The [follow-up on the discriminant −59 bit](cubic59.md) gives a quartic with one versus zero or sixteen roots and checks public reciprocity and square tests on 320 inputs through 81 bits.
+
 From the repository root with python-flint, SymPy and NumPy installed:
 
     python experiments/ellipse_disk_mod8/class_trace.py 138468065327 578 579

@@ -24,7 +24,8 @@ catalogues. The primitive band now has an exact formula that sums across its
 levels, but producing its inputs still costs a power of $N$ on growing
 discriminants. Reopen this particular approach on evidence for an evaluator
 that obtains the hidden character information directly from the public input.
-A one-bit test at fixed discriminant is available below. The canonical-index
+A [one-bit test at fixed discriminant](../experiments/ellipse_disk_mod8/cubic59.md)
+now has a quartic formulation and explicit controls. The canonical-index
 coverage audit remains relevant to the separate conditional $N^{1/8}$ goal.
 [Decision, counterexample and reopening test](../experiments/ellipse_disk_mod8/class_trace.md)
 
@@ -110,6 +111,14 @@ miss the relative sign on two actual inputs at the same discriminant.
 For a new public readout, test the order-three bit at $\Delta=59$ before
 building any growing class fields. The substitution of $N$ for the prime
 Frobenius exponent gave the same gcd degree on 128 cases with both bit values.
+The [fixed-discriminant follow-up](../experiments/ellipse_disk_mod8/cubic59.md)
+connects the cubic residue symbol and the earlier norm-one group tests.
+For $N=t^2+3t+17$ the quartic $X^4-2tX^2-8X+t-5$ has one root at bit 1
+and zero or sixteen at bit 0. All 320 controls agree. The public cubic symbol
+cancels, the tested pair of shifted norm-Jacobi symbols has vanishing advantage,
+and substituting $N$ in the prime halving exponent missed all 221 unique roots.
+Use the quartic to test a new variable-length root-parity calculation, including
+its sixteen-root controls. Efficient evaluation on growing discriminants remains open.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
