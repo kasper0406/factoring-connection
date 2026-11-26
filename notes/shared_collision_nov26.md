@@ -150,15 +150,28 @@ can exclude candidate indices, but no proof of adequate shortlist sparsity.
 ## 4. Public ellipse count and squared-class decoding
 
 Let Q0 be the known principal form of discriminant -Delta<-4, and a_E(j) count
-integral invertible ideals of norm j in class E. To avoid conductor issues,
-use primitive invertible ideals and the appropriate form/ideal correspondence
-(or initially restrict to fundamental discriminants); explicitly audit the
-nonfundamental case. If gcd(j,N)=1, factorization at the unramified primes
+integral invertible ideals of norm j in class E. Assume gcd(N,Delta)=1. All integral invertible ideals are counted, including
+nonprimitive ones. A direct sublattice argument below avoids any issue about
+unique ideal factorization at primes dividing a nonfundamental conductor. If gcd(j,N)=1, factorization at the unramified primes
 above p,q gives
     a_1(Nj)=2 a_1(j)+2 a_{C^2}(j).
 The four ideal choices have classes 1,1,C^2,C^{-2}, and conjugation gives
 equal counts for the last two. With only the units +/-1, the norm representation
 count up to sign is the corresponding principal ideal count.
+
+Direct proof for B<min(p,q): write Q0=[1,b0,d0], b0=Delta mod 2.
+Modulo each s=p,q, 4Q0=(2x+b0*y)^2+Delta*y^2 factors into two lines.
+A counted vector cannot lie on both lines at s: then s divides both coordinates,
+so s^2 and the other prime divide its positive norm, contradicting Q0<=NB<sN.
+Consequently the four CRT sublattices partition the counted vectors. For a root
+t^2=-Delta mod N, choose k=(t-b0)/2 mod N. The line x=k*y mod N has basis
+(N,0),(k,1); dividing Q0 by N gives the integral form
+[N,2k+b0,(k^2+b0*k+d0)/N] of discriminant -Delta. Two roots are unmixed
++/-c/ell, and the associated lattices contain alpha or its conjugate of norm N,
+so the scaled forms represent 1. The other two classes are C^2 and C^(-2),
+by multiplication of the coprime invertible prime ideals. This argument uses
+only the four local lines at the primes coprime to the discriminant, even if
+the order is nonfundamental.
 
 Define U_N(B)= (1/2) #{(x,y) in Z^2: 0<Q0(x,y)<=NB, N | Q0(x,y)} mod 8.
 A query returns one count modulo 16 before division by 2. For B<min(p,q) and
@@ -171,13 +184,20 @@ The exact identity is U_N(B)=2P(B)+2V(B) mod 8. For the decoder's reduced-form
 cutoffs, B<=max(2 sqrt(Delta/3),(Delta+1)/4) (rounding harmless), so P(B)
 is computable in polylog time by enumerating O(1) possible y rows and counting
 the x interval via integer square roots, without enumerating its points.
-Require B<min(p,q); for the promised large-ell balanced branches Delta=O(P/ell),
-so these cutoffs are indeed smaller than p,q for sufficiently large P.
+Require B<min(p,q). Since c is the largest lift of its root below 2sqrt(N),
+0<2sqrt(N)-c<=ell^2, hence Delta<4sqrt(N), not O(P/ell) in general.
+The first search has endpoint <=2sqrt(Delta/3)<p for sufficiently large
+balanced inputs. If a=1 the decoded class is principal and d,b are known,
+so the second search is unnecessary. For a>=2 its endpoint is at most
+Delta/8+a/4 < sqrt(N)/2+O(N^{1/4}) < p for q<=2p and sufficiently large p.
+Thus both searches obey the required cutoff. Small inputs can be handled
+separately.
 
 For a reduced form [a,b,d] with |b|<=a<=d, the first doubling endpoint
 reaching a lies below 2a, where there are at most three nonzero vector pairs.
 The count mod 4 is therefore exact there. Binary search gives a.
-Subtract the floor(sqrt(B/a)) multiples of (1,0); at B<=floor((Delta+a^2)/(4a))
+If a=1, return the principal reduced form immediately.
+Otherwise subtract the floor(sqrt(B/a)) multiples of (1,0); at B<=floor((Delta+a^2)/(4a))
 there are at most two further vector pairs. Indeed d<=that bound, y=+/-1
 is necessary for any such nonaxis vector (complete the square), and the
 allowed interval of x has length <=1 after centering, with endpoint ties
