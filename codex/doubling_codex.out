@@ -1,0 +1,49 @@
+**Proved and implemented.** I found a public hypergeometric zero test for T0 that takes \(\widetilde O(N^{1/4})\) bit operations. It uses only \(N\), eliminates the Lucas cross term from the zero decision, and works for every factor ratio. I did not find a \(\operatorname{poly}(\log N)\) evaluator. The implementation supports native-word inputs through 64 bits. [Evaluator](/Volumes/git/factoring-connection/codex/scratch/doubling_c/hypergeom.py) · [Full yield ledger](/Volumes/git/factoring-connection/codex/scratch/doubling_c/ledger.md)
+
+### D1. A shorter CM truncation
+
+**Built and proved.** Handle \(3\mid N\) by gcd. Otherwise put
+\[
+K=\left\lfloor\frac{\sqrt N}{2}\right\rfloor+1,\qquad
+T_K=\sum_{j=0}^{K-1}\binom{4j}{2j}\binom{2j}{j}72^{-j}\pmod N.
+\]
+This is the truncation of \({}_2F_1(1/4,3/4;1;8/9)\). Its term ratio is \((4j-3)(4j-1)/(18j^2)\). If the accumulated denominator shares a factor with \(N\), its gcd gives exactly the smaller prime \(p\), deciding T0. Otherwise \(q/4<K\le p\).
+
+For either hidden prime \(s\), put \(h=(s-1)/2\). Expanding \([x^{s-1}](x(x^2+3x+2))^h\) gives \(3^hT_K\bmod s\). The local sum terminates at \(\lfloor s/4\rfloor\), so the public cutoff captures it in both fields. Since \(x(x^2+3x+2)\) is the translate of \(x^3-x\) by one, its Hasse coefficient vanishes exactly when \(s\equiv3\bmod4\). Thus \(T_K\) is zero in class \(3,3\) and a unit in class \(1,1\) whenever the denominator gcd is one.
+
+**Measured and costed.** Polynomial matrix blocks evaluate the sum in \(\widetilde O(\sqrt K)\). All 48 local residue checks passed on 24 balanced inputs. Median 64-bit time was 0.50 seconds using the equal-bit-length cutoff. The uniform cutoff passed 147 small and six large inputs, returning 114 proper factors on the small set. The block degree still grows as \(N^{1/4}\). [CM measurements](/Volumes/git/factoring-connection/codex/scratch/doubling_c/hypergeom.json) · [Uniform checks and splits](/Volumes/git/factoring-connection/codex/scratch/doubling_c/uniform.json) · [Block-product method](https://specfun.inria.fr/bostan/publications/BoGaSc07.pdf)
+
+**Proved and measured for the original \(B\).** In class \(1,1\) with \(p<q<2p\), let \(d=(q-p)/4\). Running the normalized binomial recurrence forwards modulo \(p\) and backwards modulo \(q\) gives the *same* rational factor in both fields:
+\[
+U_m\equiv 4a_s^2\prod_{j=1}^{d}\frac{4j-3}{4j-1}\pmod s,\qquad
+\left(\frac BN\right)=\left(\frac{(q-p-1)!!}{N}\right).
+\]
+All 384 Jacobi predictions passed. The Gaussian coordinates disappear from the character formula. The remaining index \(d\) determines the factors through \((p+q)/2=\sqrt{N+4d^2}\). [Gap-product checks](/Volumes/git/factoring-connection/codex/scratch/doubling_c/gap.json) · [Gauss congruence](https://mathweb.ucsd.edu/~revans/ChowlaDwork.pdf)
+
+**Eisenstein candidate refuted.** The pure \(E_4\) coefficient of \(E_{N-1}\) passed all 35 initial small cases. At **\(N=397\cdot2{,}755{,}601=1{,}093{,}973{,}597\)**, it is defined and zero modulo both primes, while **\(B=900{,}609{,}246\) is a unit**. The weight congruence reduces the two checks to weights 232 and 396, where the CM values vanish and both Bernoulli normalizations are units. A factor-blind prime sieve independently reproduced \(B\). This counterexample also rules out testing the reduced numerator. [Certificate](/Volumes/git/factoring-connection/codex/scratch/doubling_c/certificate.json) · [Eisenstein weight congruence](https://arxiv.org/abs/2509.02427)
+
+### D2. Doubling the zero image
+
+**Built and proved.** Let \(G(X)={2m\brack m}_X\) be the Gaussian binomial. Then
+\[
+\gcd\!\left(G(X),\frac{X^N-1}{X-1}\right)=
+\begin{cases}
+1 & \text{in class }1,1,\\
+\Phi_p(X)\Phi_q(X) & \text{in class }3,3.
+\end{cases}
+\]
+The cyclotomic exponent at \(e\) is \(\lfloor2m/e\rfloor-2\lfloor m/e\rfloor\). Evaluating this gcd at one gives exactly **1 or \(N\)**, even on unbalanced inputs. Computing its degree in class \(3,3\) already gives \(p+q-2\) and hence the factors. Fast evaluation at one alone remains open. All 35 direct polynomial checks passed. [Structural checks](/Volumes/git/factoring-connection/codex/scratch/doubling_c/structure.json)
+
+**Proved obstruction.** Even the Boolean carry-support generating function resists exact binary sectioning. Over \(\mathbf F_5\) it satisfies \(H(x)^4=(1+x+x^2)^{-1}\). After \(j\) binary sections, the root-of-unity filter involves \(2^j\) radicals with disjoint branch points. Their independent conjugations give algebraic degree \(4^{2^j}\). A bounded-degree radical representation of the whole section therefore needs \(\Omega(2^j)\) gates. A separate endpoint calculation shows that reflecting the recurrence makes its two outside coordinates independent in both classes, erasing the midpoint distinction. These obstructions leave room for a state tailored to the single promised index. [Proofs](/Volumes/git/factoring-connection/codex/scratch/doubling_c/ledger.md)
+
+**Calibration checked.** An arbitrary-index **nonunit** oracle finds \(p\) by dyadic bracketing and bisection. For equal \(b\)-bit factors, an arbitrary-index **zero modulo all of \(N\)** oracle also factors: bisection up to \(2^{b-1}<p\) finds the first joint zero at \((q+1)/2\). The stated nonunit argument alone gives neither unrestricted Boolean-zero factoring nor full factorial residues.
+
+### D3. Amortisation
+
+**Built and measured.** For equal \(b\)-bit primes, put \(L=2^{b-1}\). The product of integers \(j\equiv3\bmod4\) in \([L,2L)\) contains both hidden primes or neither. One product/remainder tree classified **32,768 of 32,768** 32-bit inputs with zero proper gcds. For \(J\) moduli the total cost is \(\widetilde O(L+J)\), giving polylogarithmic cost per member at \(J=L\). Padding a single target still pays for the explicit product, which has \(\Theta(L\log L)\) bits. [Batch measurements](/Volumes/git/factoring-connection/codex/scratch/doubling_c/batch.json) · [Harvey–Sutherland remainder trees](https://arxiv.org/abs/1402.3246)
+
+### D4. Registered measurements
+
+**Measured.** I computed 768 exact residues, with 128 inputs per class at each of 32, 48 and 64 bits. The main baseline factored \(N\) with FLINT, then used Lucas, modular factorials and CRT. A separate factor-blind sieve matched all four designated 32-bit residues. None of 48 cheap predicates using only \(N\) passed the registered threshold. After supplying \(B\), zero, nonunit and Jacobi zero were exact on the balanced sample. There were no proper feature gcds there. The 147 small pairs, including unbalanced inputs, produced 31 proper binomial gcds. [Preregistration](/Volumes/git/factoring-connection/codex/scratch/doubling_c/prereg.md) · [Counts](/Volumes/git/factoring-connection/codex/scratch/doubling_c/counts.json)
+
+**Measured.** Within class \(1,1\), positive Jacobi counts were **69, 63 and 62 out of 128**. None of 240 registered comparisons with Gaussian-coordinate signs or magnitudes passed. Direct rank tests on the signed coordinates and normalized absolute magnitudes gave family-wise permutation \(p\)-values of **0.981, 0.268 and 0.142**. The tested bank yielded no reproducible hidden-coordinate signal. [Rank results](/Volumes/git/factoring-connection/codex/scratch/doubling_c/ranks.json)

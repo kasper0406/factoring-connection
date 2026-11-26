@@ -1,0 +1,7 @@
+# Hasse truncation validation
+
+Before running any translated Hasse sums, take the first four rows per class at each registered size. For b-bit primes let L=2^(b-1). Given N alone, compute the first L terms of the (1/4,3/4;1;8/9) sum using polynomial matrix blocks over Z/N. Compute the gcd and compare each residue modulo each held prime s with the coefficient of x^(s-1) in (x^3-x)^((s-1)/2), multiplied by (3/s). Require 48/48 local matches and zero proper gcds, including at 64 bits. Check all 32-bit block results against direct term iteration. Separately test that the full length-N unweighted truncation at z=1 fails on N=21; the CM specialization is essential. This is a deterministic-cost identity, excluded from the polylog statistical bank.
+
+Before testing the uniform cutoff K=floor(sqrt(N)/2)+1, check it on every registered small semiprime below 1500 and on the first registered row per class at each large size. If a denominator shares a prime with N, return the proper factor and inspect its residue class. Otherwise the returned sum must have exactly the claimed two local zero statuses. Require zero classification errors. Record every split.
+
+Before evaluating the length-N CM truncation directly, take all distinct same-class prime pairs with 5<=p<q<4p and N<1500. Sum all N terms by exact integer recurrence for binom(4j,2j)binom(2j,j), reducing only the unit power of 72 and the sum. Require exact class agreement and record every proper gcd. This independently checks the full-truncation theorem rather than the short public cutoff.

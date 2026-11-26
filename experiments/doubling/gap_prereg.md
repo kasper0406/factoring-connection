@@ -1,0 +1,3 @@
+# Gap-product identity validation
+
+The 768 original rows are already fixed and their feature counts have been inspected. Before evaluating the new product on any row, predict on every one of the 384 balanced 1,1 rows that U=B/4^m modulo each s equals 4a_s^2 times the same A_d, where d=(q-p)/4 and A_d is the product of (4j-3)/(4j-1), 1<=j<=d. Evaluate numerator and denominator directly modulo composite N by monic polynomial blocks. Separately compute the Jacobi prediction from (q-p-1)!! using factorials modulo the two primes. Pass requires zero errors in every congruence. Include a size and numerical illustration. This is proof validation of a factor-dependent identity, not a new statistical screen.

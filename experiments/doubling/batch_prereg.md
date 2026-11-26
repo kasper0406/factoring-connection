@@ -1,0 +1,3 @@
+# Single-family remainder tree validation
+
+Before running a remainder tree, use each of the 256 registered 32-bit rows as unlabeled target moduli in one batch and fill to K=L=32768 with distinct 32-bit products of two distinct primes in [2^15,2^16) of the same class. Draw the filler deterministically using seed 2026112691, uniformly from prime lists and reject inadmissible products and duplicates. Build the exact class-3 progression product for the dyadic interval once. Reduce it via a product/remainder tree and score every gcd against the held labels. Pass requires no errors and no proper gcd. Report product bit length and run time. This tests a per-member amortisation construction with exponential total batch size.
