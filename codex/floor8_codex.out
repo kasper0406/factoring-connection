@@ -1,0 +1,100 @@
+**H1 holds for individual complete Gauss sums. H2 has the wrong explanation for a complete period, but a stronger factoring reduction holds when the square size is queryable. H3 has the same obstruction even for the fixed genuine floor \(\lfloor x/2\rfloor\).**
+
+For \(Q=x^2+xy+6y^2\) and \(N=pq\) with distinct primes \(p,q\nmid 6D\), a uniform mod‑8 evaluator for either sum factors \(N\) deterministically in \(O(\log N)\) queries whenever at least one prime splits. It decides \(u_2(N)\) on **all** such semiprimes. A single evaluation at \(X=N\) has substantially less information.
+
+### F1. Complete Gauss sums and the complete-period count
+
+**Proved.** Write \(e_N(z)=\exp(2\pi iz/N)\), \(G(t,h)=\sum_{z\bmod N}e_N(tQ(z)+h\cdot z)\), and \(\widehat B(h)=\sum_{z\in B\cap\mathbb Z^2}e_N(-h\cdot z)\). Orthogonality gives
+\[
+S_B=\frac{|B\cap\mathbb Z^2|\,r(N)}{N^2}
++\frac1{N^3}\sum_{h\ne0}\widehat B(h)\sum_{t\bmod N}G(t,h),
+\qquad r(N)=\frac1N\sum_tG(t,0).
+\]
+Thus the spatial density is \(r/N^2\). The box frequencies require **linearly twisted** Gauss sums. Fast evaluation of one term leaves the frequency aggregation unresolved.
+
+**Known.** Put \(g=(t,N)\), \(m=N/g\), \(u=t/g\). For odd \(m\) coprime to \(D\), binary quadratic Gauss evaluation gives
+\[
+G(t,0)=g^2m\left(\frac Dm\right).
+\]
+The normalized phase is just a sign. The Jacobi symbol is computable by Euclid. At bad primes the unit \(u\) can matter, and the sum can vanish.
+
+There is an explicit factor-free reciprocity formula covering those cases. With \(A=\left(\begin{smallmatrix}2a&b\\b&2c\end{smallmatrix}\right)\) and \(e(z)=e^{2\pi iz}\),
+\[
+\frac{G(1,0;m)}m=
+\frac{e(\operatorname{sig}(A)/8)}{\sqrt{|D|}}
+\sum_{v\in\mathbb Z^2/A\mathbb Z^2}e(-m v^TA^{-1}v/2).
+\]
+The right side has exactly \(|D|\) terms. For \(G(t,0;N)\), apply the cyclotomic automorphism \(\zeta_m\mapsto\zeta_m^u\), then multiply by \(g^2\). Its action on the displayed expression uses a compatible unit lift modulo the fixed conductor \(8|D|\). This gives polylogarithmic evaluation for fixed \(Q\), including even \(N\). [Deloup–Turaev, Theorem 1](https://arxiv.org/pdf/math/0512050)
+
+**Proved.** CRT makes \(r\) multiplicative. For \(p\nmid2D\),
+\[
+r(p^e)=
+\begin{cases}
+p^{e-1}((e+1)p-e), &(D/p)=1,\\
+p^{2\lfloor e/2\rfloor}, &(D/p)=-1.
+\end{cases}
+\]
+The split calculation counts \(uv=0\bmod p^e\) by valuation. In the inert case both coordinates must be divisible by \(p^{\lceil e/2\rceil}\). Both answers are \(1\bmod4\). Consequently **complete-period mod 2 and mod 4 are fast for every \(N\)**. Strip the fixed primes dividing \(2D\) by trial division. Their prime-power counts follow from the Gauss formula by grouping \(t\) by valuation and unit residue modulo the fixed conductor.
+
+For good squarefree \(N\) the exact remaining bit is
+\[
+r(N)\equiv1+4\,\#\{p\mid N:p\equiv3\bmod4,\ (D/p)=1\}\pmod8.
+\]
+This is a joint statistic of two local quadratic characters. On \(N=pq\equiv3\bmod4\) with \((D/N)=1\), \(r=5\bmod8\) exactly when \(D\) is a square modulo \(N\). On the split/split stratum, \(r\bmod8\) is determined entirely by \(N\bmod4\), even as \(R\) varies between 4 and 8.
+
+For \(D=-23\) the class group has order **three** and trivial 2-part. The representation bit distinguishes principal and nonprincipal split primes. The repo proves \(u_2=[R=4]\), with \(R\in\{0,4,8\}\). Its sampling reduction goes **from a torus residuosity test to deciding \(u_2\)**. The reverse reduction and unrestricted factoring from that bit alone are open. [coef_results.md:30](/Volumes/git/factoring-connection/notes/coef_results.md:30) · [kern_results.md:19](/Volumes/git/factoring-connection/notes/kern_results.md:19)
+
+### F2. Why varying the square size changes the answer
+
+**Proved.** Write \(S(X)\) for the square count at fixed \(N=pq\), and assume \(pq\) is coprime to \(2acD\). Let \(h(i)\) count solutions in row \(i\) over a complete period. Column \(i\) has the same count. Locally at \(\ell=p,q\), its factor is \(1\) if \(\ell\mid i\), and \(1+(D/\ell)\) otherwise. For \(0\le k<N\), reflection through the origin gives
+\[
+T(k):=2\sum_{i=1}^k h(i)=r-1+S(k+1)-S(N-k).
+\]
+Indeed, partition the nonzero coordinate residues into \(1,\ldots,k\) and their complement. The difference of the two diagonal square counts cancels the two off-diagonal rectangles against the row and column totals. **Every query here has \(X\le N\).**
+
+Modulo 8, \(T(k)/4\bmod2\) is the parity of
+
+- \(\lfloor k/p\rfloor+\lfloor k/q\rfloor\) when both primes split,
+- \(\lfloor k/p\rfloor\) when \(p\) is inert and \(q\) splits,
+- zero when both are inert.
+
+Take \(k=\lfloor N/2^j\rfloor\), \(j\ge1\). In the first case these are the bits of \(p\mathbin{\mathrm{XOR}}q\), in the second the bits of \(q\). Some bit is set in either case. Bisect an interval whose endpoint parities differ. The final jump occurs at a nontrivial multiple of a factor, which a gcd recovers. This works for unbalanced primes too. If every bit vanishes, both primes are inert and \(R=0\). For the fixed form \(x^2-y^2\), both primes split at every odd semiprime, giving a worst-case semiprime factoring reduction.
+
+**Proved for a fixed genuine floor.** Let \(W(X)=\sum\lfloor x/2\rfloor\) over the same points and define \(E(X)=W(X+4N)-2W(X+2N)+W(X)\). Then
+\[
+E(k+1)-E(1)=3N\,T(k).
+\]
+To see the coefficient, tile by blocks of side \(2N\). Translating \(x\) by one block increases its weight by \(N\). In the second difference, the full-block contribution cancels on subtracting \(E(1)\). The horizontal and vertical strips contribute respectively one and two copies of the weight increment times their complete-period row count. Since \(3N\) is odd, **\(W\bmod8\) recovers \(T\bmod8\)**. This reduction uses \(X\le5N\). [Independent exact check: checks.py:54](/Volumes/git/factoring-connection/codex/scratch/floor8_c/checks.py:54)
+
+**Known.** Classical reciprocity for coprime positive \(h,k\) is
+\[
+s(h,k)+s(k,h)=-\tfrac14+\tfrac1{12}(h/k+k/h+1/(hk)).
+\]
+It evaluates a sum with a supplied linear slope by Euclid. The Dedekind–Rademacher and cotangent generalizations likewise take their linear arguments as input. After splitting, these methods do evaluate the lattice contributions. An unsplit extension for the fixed floor above would implement the factoring reduction. [Beck, *Dedekind cotangent sums*](https://arxiv.org/abs/math/0112077) · [classE_results.md:367](/Volumes/git/factoring-connection/notes/classE_results.md:367)
+
+The sawtooth at \(0<j<k\) is \((2j-k)/(2k)\). For the classical unshifted \(s(h,k)\), the **exact 2-part of its reduced denominator** is \(2\) for odd \(k\equiv3\bmod4\), \(2\) for \(k\equiv6\bmod8\), \(2^{1+v_2(k)}\) for \(4\mid k\), and \(1\) otherwise. This follows from reciprocity and \(12ks(h,k)\equiv k+1-2(h/k)\pmod8\) for odd \(k\). Rational shifts introduce their own denominators. Reducing a numerator modulo 8 before an even division loses bits. [Rademacher–Grosswald, ch. 3](https://webhomes.maths.ed.ac.uk/~v1ranick/papers/rademacher2.pdf)
+
+### F3. Pre-registered experiment
+
+**Measured.** At each of 40, 60 and 80 bits I drew 256 training and 512 held-out balanced semiprimes. Both forms used the same inputs. Ground truth used the supplied factors, CRT inclusion–exclusion and exact Euclidean floor moments, checked against literal small-box enumeration. The fixed weight was \(\lfloor x/2\rfloor\), and the short side was \(\lfloor\sqrt N\rfloor+1\). [Registration: prereg.txt:1](/Volumes/git/factoring-connection/codex/scratch/floor8_c/prereg.txt:1) · [Evaluator: experiment.py:40](/Volumes/git/factoring-connection/codex/scratch/floor8_c/experiment.py:40) · [Raw records](/Volumes/git/factoring-connection/codex/scratch/floor8_c/records.jsonl)
+
+Each table entry counts exact held-out matches out of **1,536**, in the order \(S(N),W(N),S(\mathrm{short}),W(\mathrm{short})\), with the argument denoting side length. \(J=(D/N)\) is also the signed Weil phase. \(K=12Ns(2,N)=(N-1)(N-5)/2\) is the registered public reciprocity statistic.
+
+| \(D\) | Literal \(J\bmod8\) | Literal \(K\bmod8\) | Trained on \(J\) | Trained on \(J,N\bmod8,K\bmod8\) |
+|---|---|---|---|---|
+| \(-23\) | 593, 0, 424, 47 | 0, 745, 0, 624 | 969, 969, 1175, 1217 | 980, 972, 1175, 1217 |
+| \(-4\) | 751, 0, 396, 42 | 0, 751, 0, 433 | 1536, 1144, 1181, 1218 | 1536, 1144, 1155, 1218 |
+
+Both complete-period identities passed every case, including \(W(N)=(r-1)(N-1)/4\), obtained by pairing \(x\) with \(N-x\) off the origin. For \(D=-23\), the frequencies of \(r=1,5\bmod8\) were **77, 89** at \(R=4\) and **15, 28** at \(R=8\). Neither direction of determination holds. Short counts also overlapped, with \(S=5\) in 90 and 31 cases respectively. Both registered predictors attained **50% balanced accuracy** on \(R=4\) versus 8. The planted control rose from 50% to 100%. This tests the specified features only. [Contingencies and controls: summary.json:3](/Volumes/git/factoring-connection/codex/scratch/floor8_c/summary.json:3)
+
+The registered bisection recovered **365/365** and **355/355** split/split factors. Post-registration, the folded bit-query algorithm recovered **1,116/1,116** and **1,140/1,140** semiprimes having any split prime. The fixed-floor second difference passed all 3,072 held-out form/input pairs. [checks.py:54](/Volumes/git/factoring-connection/codex/scratch/floor8_c/checks.py:54)
+
+### F4. Verdict by modulus
+
+**Proved.** Complete-period counts are fast modulo \(1,2,4\), and also modulo 8 for \(D=-4\) since every good split prime is \(1\bmod4\). For \(D=-23\), complete-period mod 8 already decides the fixed-\(D\) residuosity subproblem above. Variable-square mod 8, weighted or unweighted, recovers factors and hence the representation bit.
+
+Even **variable-square parity** factors a subfamily for \(D=-23\). Take \(p\) inert, \(q\) split and \((6/q)=-1\). Every solution has both coordinates divisible by \(p\). At \(X=(N+1)/2\), division by \(p\) leaves two lines in the lower half-square modulo \(q\). Gauss’s lemma applied to their slopes, whose product has character \((6/q)\), gives an odd number of nonorigin points. Bisect against \(S(1)=1\). Every change occurs when a multiple of \(p\) enters. This also proves a mod‑4 obstruction and recovered all 364 qualifying held-out factors. [checks.py:9](/Volumes/git/factoring-connection/codex/scratch/floor8_c/checks.py:9)
+
+**Open.** The sharp single-query problem is the prescribed short square for \(D=-23\), with either unit weight or fixed \(\lfloor x/2\rfloor\). The adaptive reductions leave its complexity open. Region choice matters even at this scale. For \(x^2+y^2\) the same short square has count exactly \(1+4[\text{both primes split}]\), since its only possible positive norm divisible by \(N\) is \(N\).
+
+**Speculative.** My probability for a classical factor-free polylogarithmic mod‑8 algorithm uniform in \(X\) for \(D=-23\) is **about 1%**, based on the explicit factoring consequence. The held-out prediction rates do not estimate that probability.

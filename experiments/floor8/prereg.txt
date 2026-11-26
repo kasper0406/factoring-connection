@@ -1,0 +1,23 @@
+Frozen before generating any data. Seeds 823040 + bit length (training),
+824040 + bit length (holdout). At each of 40,60,80 bits draw 256 train and
+512 holdout products of distinct uniformly rejection-sampled primes of half
+the target bit length, rejecting products of incorrect bit length. Reuse the
+same N across forms. Forms (1,1,6) and (1,0,1), D=-23,-4. Boxes X=N and
+X=isqrt(N)+1; fixed nonintegral weight floor(x/2). Exact CRT inclusion-
+exclusion into signed lattices and Euclid floor moments for both counts.
+Validate on literal small squares, also independently on complete periods
+via CRT row counts. Compute R for -23 via local splitting types of x^3-x+1.
+
+Report exact equality counts for the literal signed Weil phase = Jacobi
+product (encoded ±1 mod 8), and K=12N s(2,N) from reciprocity, for both
+targets. Neither is asserted to be an identity. Check the local complete-
+period formula for r mod 8 and any derived complete-period floor formula.
+Report held-out train-cell-majority accuracy (ties smallest residue, unseen
+back off to genus then global) for genus alone versus genus, N mod 8, K mod
+8. For the representation-bit prediction use the R in {4,8} stratum and
+balanced accuracy; also report R-versus-truth contingency tables. Planted
+binary control = indicator N mod 8 in {3,7}, on the same stratum. No
+feature tuning, no amplification. For the mod-8 square-oracle reduction
+validate the prefix identity at k=isqrt(N) by independent signed lattice
+counts, and verify factor recovery on balanced split/split data. Training
+and holdout are independent draws. Keep code, raw records and summary.

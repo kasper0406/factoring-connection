@@ -399,6 +399,7 @@ A reduction "invariant X ⇒ factoring" says nothing about how hard X is nativel
 - 2026-11-26: **grhremark addendum** — lsernau/grh-lean (Anthropic rewrite of Alpöge's Lean RH + Dirichlet GRH; statements faithful, static scan clean, external checkers claimed; not yet built by us). Scope ζ + Dirichlet only; factoring impact unchanged, nothing below L[1/3].
 - 2026-11-26: **doubling** — builder attempt at a fast central-binomial zero test (astra; [notes/doubling_results.md](notes/doubling_results.md); experiments/doubling/). No poly(log N) evaluator. New factor-free T0 test: T_K=Σ_{j<√N/2} C(4j,2j)C(2j,j)72^{−j} mod N (Hasse of x(x+1)(x+2); 4,456/4,456 balanced checks) in Õ(N^{1/4}) — no better than factoring. Gaussian-binomial gcd form; sectioning obstruction; Eisenstein E_{N−1} candidate refuted; batch tree polylog only for √N-size batches. **No sub-1/3.**
 
+
 ## Conversation research consolidation (2026-11-26)
 
 Base 2db67a9. The new results are kept separate from the earlier internal proof chain.
@@ -429,3 +430,5 @@ Base 2db67a9. The new results are kept separate from the earlier internal proof 
   Original late scratch files unavailable; reconstructed notes and fresh checks
   are not the original run logs. No new algorithm below L[1/3], nor unconditional
   improvement of D'', is claimed.
+- 2026-11-26: **floor8** — fast mod-8 eval of 2D floor/count sum with N | Q_0(x,y) without splitting? (astra; [notes/floor8_results.md](notes/floor8_results.md); experiments/floor8/). **No useful one: a variable-size or genuine-floor mod-8 evaluator FACTORS N (proved + verified bisection 1116/1116).** Fast computable shadows: complete-period mod 1/2/4 (Gauss reciprocity, r≡1 mod 4), and mod 8 for D=−4. For D=−23 even complete-period mod 8 = u_2(N) bit. Floor ⌊x/2⌋ obstruction via E(k+1)−E(1)=3N·T(k). Open: single short-square (X≈√N) query mod 8.
+
