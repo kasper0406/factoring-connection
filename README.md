@@ -31,6 +31,7 @@ for the existing N^{1/6} result or an improvement over heuristic L[1/3].
 |---|---|---|
 | **Canonical index (primary)** | One hidden quadratic-form minimum per prime/root branch; reported band coverage would yield N^{1/8}·polylog if that minimum were efficiently computable. Need independent coverage audit and native evaluator. | [Shared collision and canonical index](notes/shared_collision_nov26.md) |
 | **Public ellipse count (primary)** | Modular lattice-point count mod 16 recovers the hidden squared ideal class at bounded cutoffs; exact principal contribution and class-square lifting required. No fast count known. | [Ellipse reduction and ambiguity](notes/shared_collision_nov26.md#4-public-ellipse-count-and-squared-class-decoding) |
+| **Weighted ellipse moment** | On one eligible public branch, a radial sum of squared determinant coordinates modulo N gives a factor in O(log N) queries. Native row and arc evaluators run end to end on small inputs. Their cost still grows as a power of N. | [Proof, code and benchmarks](experiments/ellipse_row_batches/README.md) |
 | **Multiplication network (secondary)** | Normalized divisor-prefix count mod 3 suffices on semiprimes, but branch duplicates and intermediate state size must be handled. Cut-rank obstruction; masked-product local counts; reported G^{3/4+o(1)} short-list collision evaluator needs proof/cost audit. | [Network and grid](notes/shared_collision_nov26.md) |
 | **QRP / hidden conductor (parked)** | Local-character oracle, conductor wheels, class-number and Jacobi-prefix identities; variable-endpoint parity factors mixed semiprimes. No efficient conductor decoder or aggregate known. | [QRP and interval targets](notes/qrp_conductor_nov26.md) |
 | **Smooth decoding / binomial midpoint (paused)** | Tested jump and local-state mechanisms stalled; unrestricted adaptive decoding and a native single-index evaluator remain open. | [Priorities and negative results](notes/research_roadmap_nov26.md) |
@@ -41,6 +42,11 @@ The fresh exact checks include 12,697 reduced-form decodings, 700 grid-block
 checks and 40 direct ellipse queries on the two ambiguity examples.
 Original late-stage scratch files were not recovered; the new notes mark
 reported asymptotic results separately from reconstructed proofs and checks.
+The [global ellipse experiments](experiments/ellipse_global/README.md) give the finite
+Fourier identity, the clipped-row reduction and exact class lifting with factored
+discriminant. The [row experiments](experiments/ellipse_row_batches/README.md)
+include 1,586 independently checked shells and 6,188 interval checks on the two
+preserved collision inputs and a replacement cohort of 192 balanced semiprimes.
 Neither these results nor the earlier model barriers settle general factoring.
 
 ## Top findings
