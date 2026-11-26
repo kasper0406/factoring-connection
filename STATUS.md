@@ -398,3 +398,34 @@ A reduction "invariant X ⇒ factoring" says nothing about how hard X is nativel
 - 2026-11-26: **buildbit** — builder-role attack on the hidden-class bit (astra; [notes/buildbit_results.md](notes/buildbit_results.md); experiments/buildbit/). Proved exact closed form: T0 ⟺ N | C(2⌊N/4⌋,⌊N/4⌋) (Kummer carry; T1 with d=16), and a uniform zero-test oracle over d=2^j recovers r in O(log N) queries — so the bit sits on the factorials-mod-N wall (~N^{1/2}). Also explicit ambiguous class (N,N,(5N−1)/4) whose squareness is T0; pooled CF certificates decay N^{−0.215}; torus quartic null. **No sub-1/3 route; no public statistic passed.**
 - 2026-11-26: **grhremark addendum** — lsernau/grh-lean (Anthropic rewrite of Alpöge's Lean RH + Dirichlet GRH; statements faithful, static scan clean, external checkers claimed; not yet built by us). Scope ζ + Dirichlet only; factoring impact unchanged, nothing below L[1/3].
 - 2026-11-26: **doubling** — builder attempt at a fast central-binomial zero test (astra; [notes/doubling_results.md](notes/doubling_results.md); experiments/doubling/). No poly(log N) evaluator. New factor-free T0 test: T_K=Σ_{j<√N/2} C(4j,2j)C(2j,j)72^{−j} mod N (Hasse of x(x+1)(x+2); 4,456/4,456 balanced checks) in Õ(N^{1/4}) — no better than factoring. Gaussian-binomial gcd form; sectioning obstruction; Eisenstein E_{N−1} candidate refuted; batch tree polylog only for √N-size batches. **No sub-1/3.**
+
+## Conversation research consolidation (2026-11-26)
+
+Base 2db67a9. The new results are kept separate from the earlier internal proof chain.
+- **shared collision / multiplication:** [notes/shared_collision_nov26.md](notes/shared_collision_nov26.md).
+  A normalized mod-3 count suffices for semiprimes (correct for branch multiplicities first);
+  low/high multiplication flattening rank >=2^{k-3}. Local masked-product counts and the
+  structured square-weight block identity. Reported G^{3/4+o(1)} short-target grid bound
+  awaits proof/cost re-audit. No global runtime improvement.
+- **canonical index / ellipse:** same note. Primitive hits with 4j^2<Delta equal the class minimum.
+  Integer square test recovers a factor given a correct minimum. Reported large-sieve coverage
+  at ell~P^{1/4} polylog P would imply conditional almost-all N^{1/8} polylog N time
+  if the minimum could be evaluated cheaply; coverage proof needs re-audit.
+  Exact principal ellipse count mod 16 recovers the squared class with appropriate cutoff
+  conditions, not its unique lift. Fresh checks: two Delta=20 ambiguity examples,
+  40 ellipse queries, 59 locked weights, 12,697 reduced-form decodings, 700 block identities.
+- **QRP / conductor:** [notes/qrp_conductor_nov26.md](notes/qrp_conductor_nov26.md).
+  Local character oracle, random/consecutive wheels, folded sign and half/fifth
+  reciprocity, unspecified-root Jacobi bit and class-group lifts (later lift proofs
+  need reconstruction), first-quarter count phi(N)/8 and reflected prefix parity
+  factoring reduction. No fast evaluator. Original early QRP screen record: all four
+  predictors null on 27,648 held-out rows, planted control worked.
+- **paused tracks and priorities:** [notes/research_roadmap_nov26.md](notes/research_roadmap_nov26.md).
+  Later smooth two-generation jump bound and binomial midpoint obstruction recorded
+  with their limited scopes and missing-proof status. Primary next task: audit
+  canonical band coverage and build a native modular ellipse counter; then lift
+  C^2 and validate candidate minima.
+- **reproduction and provenance:** [experiments/nov26_consolidation](experiments/nov26_consolidation/README.md).
+  Original late scratch files unavailable; reconstructed notes and fresh checks
+  are not the original run logs. No new algorithm below L[1/3], nor unconditional
+  improvement of D'', is claimed.
