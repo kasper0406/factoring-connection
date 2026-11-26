@@ -59,6 +59,19 @@ Discriminant factorization and all product-tree work are charged. For the
 P^{-1/2+o(1)} B^{3/2} for primes of size P. Prioritize a global aggregate
 at growing nonsquare cutoffs; testing more nearby public points only at B=1
 cannot give almost-all coverage by mixed witnesses.
+The [class-prefix decision and measured list budget](../experiments/ellipse_disk_mod8/class_prefix.md)
+provide a second way to handle nonsquare minima. Lift all possible squared classes
+in a proposed interval, then batch linear products to decide whether a listed
+form represents a prime divisor of N. The full-cap version factors without a
+supplied index, but generating its current list costs at least one visit per
+possible minimum. The immediate research question is whether public c can select
+or test a block of classes cheaply. Measure list construction, hit rate, and
+the sum of short coordinate ranges on held-out inputs. For the ℓ=1 integer
+basis formulation, both unrestricted local solubility and continuous balanced
+feasibility hold for every primitive candidate; a selector must combine integer
+constraints with the archimedean bounds. A cheaper selector would address the
+power-exponent track. The supplied-class verifier itself still has a power-of-N
+bound, so a polylogarithmic result would require a further idea.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:

@@ -55,9 +55,9 @@ def small_factor(n, work):
     return n
 
 
-def discriminant_divisors(delta, work):
+def public_factorization(value, work):
     factors = Counter()
-    pending = [delta]
+    pending = [value]
     while pending:
         n = pending.pop()
         if n == 1:
@@ -68,6 +68,11 @@ def discriminant_divisors(delta, work):
             factors[d] += 1
         else:
             pending.extend((d, n // d))
+    return factors
+
+
+def discriminant_divisors(delta, work):
+    factors = public_factorization(delta, work)
     divisors = [1]
     for p, exponent in sorted(factors.items()):
         old = divisors[:]
