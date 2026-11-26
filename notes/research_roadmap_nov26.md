@@ -35,6 +35,13 @@ coordinates over F₂. Its construction is expensive even when the final result
 is tiny. Pursue a different intermediate representation that cancels histories
 before a common w² fixes them; measure peak state and query construction.
 [Proof, implementation and controls](../experiments/ellipse_disk_mod8/README.md).
+The [translation and shear audit](../experiments/ellipse_disk_mod8/translation.md)
+shows that constructing a short exact linear cancellation of translates of the completed
+mixed congruence already gives a factor. Ordinary unit shears lose every primitive
+mixed point on the original cone. Splitting both coordinates by low bits shrinks the disk but creates Ω(√N) nonempty children with distinct translated kernels already at B=1 in the literal recursion. Deprioritize fixed translation identities and
+decoder tuning. First test an exact recurrence at the required disk center, allowing
+a change of form. Charge the boundary and all child calls. Stress-test it immediately
+before and at the first mixed shell, then check that it supports the intended decoder.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:

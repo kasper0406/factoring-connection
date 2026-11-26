@@ -1,0 +1,128 @@
+{
+  "full_period": [
+    {
+      "N": 15,
+      "checks": {
+        "empty": 1,
+        "singleton": 1,
+        "all_shear_parameters": 15,
+        "all_nonzero_reflection_centers": 224,
+        "progression": 45,
+        "factored_parallelogram": 1,
+        "integer_signed_parallelogram": 1,
+        "proper_triangle": 4,
+        "unit_square_subsets": 11
+      },
+      "anchors_per_check": 225
+    },
+    {
+      "N": 21,
+      "checks": {
+        "empty": 1,
+        "singleton": 1,
+        "all_shear_parameters": 21,
+        "all_nonzero_reflection_centers": 440,
+        "progression": 63,
+        "factored_parallelogram": 1,
+        "integer_signed_parallelogram": 1,
+        "proper_triangle": 4,
+        "unit_square_subsets": 11
+      },
+      "anchors_per_check": 441
+    },
+    {
+      "N": 35,
+      "checks": {
+        "empty": 1,
+        "singleton": 1,
+        "all_shear_parameters": 35,
+        "all_nonzero_reflection_centers": 1224,
+        "progression": 105,
+        "factored_parallelogram": 1,
+        "integer_signed_parallelogram": 1,
+        "proper_triangle": 4,
+        "unit_square_subsets": 11
+      },
+      "anchors_per_check": 1225
+    }
+  ],
+  "disks": {
+    "records": {
+      "branches": 194,
+      "triangle_threshold_cutoffs": 11369,
+      "queries": 1383,
+      "candidate_coordinates": 4282578,
+      "parity_one_at_origin": 369,
+      "nonempty_stencils": 1068,
+      "nonempty_injective_in_both_quotients": 770,
+      "first_shell_singletons": 192,
+      "first_shell_ties": 2,
+      "nonempty_through_half_minimum": 267
+    },
+    "tie_controls": {
+      "branches": 10,
+      "triangle_threshold_cutoffs": 674,
+      "queries": 90,
+      "candidate_coordinates": 1021583,
+      "parity_one_at_origin": 13,
+      "nonempty_stencils": 90,
+      "nonempty_injective_in_both_quotients": 52,
+      "nonempty_through_half_minimum": 30,
+      "first_shell_singletons": 0,
+      "first_shell_ties": 10
+    }
+  },
+  "dyadic_descent": [
+    {
+      "N": 11009,
+      "delta": 355,
+      "B": 1,
+      "stride": 8,
+      "distinct_nonempty_children": 64
+    },
+    {
+      "N": 28829,
+      "delta": 395,
+      "B": 1,
+      "stride": 16,
+      "distinct_nonempty_children": 256
+    },
+    {
+      "N": 438751,
+      "delta": 2028,
+      "B": 1,
+      "stride": 16,
+      "distinct_nonempty_children": 256
+    },
+    {
+      "N": 6494011,
+      "delta": 6828,
+      "B": 1,
+      "stride": 32,
+      "distinct_nonempty_children": 1024
+    },
+    {
+      "N": 38942974393,
+      "delta": 384531,
+      "B": 1,
+      "stride": 512,
+      "distinct_nonempty_children": 262144
+    }
+  ],
+  "historical_pair": [
+    {
+      "N": 11009,
+      "B": 1,
+      "candidates": 3785,
+      "mixed": 1,
+      "injective": false
+    },
+    {
+      "N": 28829,
+      "B": 1,
+      "candidates": 9994,
+      "mixed": 1,
+      "injective": false
+    }
+  ]
+}
