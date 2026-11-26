@@ -90,3 +90,26 @@ smooth numbers near kN, or controls principal-character drift.
   - Dirichlet GRH for all moduli and all χ, imprimitive included or with the Euler-factor bridge;
   - for nested/dBPW, Dedekind ζ_K for all number fields and Hecke characters with infinity types.
 - A clean axiom report can still certify a conditional implication. The vacuous-CEP lesson in leanA applies.
+
+## Addendum 2026-11-26: github.com/lsernau/grh-lean (static inspection only, not built)
+- **What it is.** Luke Sernau, commit 72fead1 (2026-11-25), Apache-2.0, © Anthropic. It is a shorter Claude-written
+  rewrite of Alpöge's Lean proof, in two editions: `grh/` (~300k lines) and `grh-compact/` (~76k lines). Lean
+  v4.35.0, Mathlib 56a00585.
+- **Statements** (`src/Statements.lean`, imports only Mathlib; identical in both editions):
+  - Mathlib's `RiemannHypothesis`;
+  - ζ zeros off the trivial ones have re = 1/2;
+  - L(s,χ) ≠ 0 for re s > 1/2, for every N and χ (excluding χ = 1, s = 1);
+  - zeros of L(s,χ) with 0 < re s < 1 lie on re = 1/2, for every χ including imprimitive ones;
+  - the primitive special case.
+  - The statements read as faithful. Scope is **ζ + Dirichlet GRH only**: no Dedekind, Hecke or automorphic L-functions.
+- **Static scan.** `sorry` appears only in `Challenge.lean` (the Comparator template). There are no `axiom`,
+  `native_decide`, `implemented_by`, `extern`, `unsafe`, `opaque`, `#eval`, `run_cmd`, macro or elab code, and no
+  kernel-skipping options. The lakefile is declarative TOML.
+- **Machine checks it claims.** Allowed axioms are propext, Classical.choice and Quot.sound. The export is accepted
+  by nanoda, con-leche and con-ron, and Comparator accepted it. No human has read the proof.
+- **Not yet reproduced by us.** A build needs ~24 GB and 1–2 h; Comparator needs 64 GB. This Mac has 16 GB.
+- **Factoring impact: unchanged from the verdict above.** Only the Dirichlet-GRH items listed above would lose
+  their hypothesis: detGRH/zroute/dsr reductions, Prop IWD, Prop ZA's GRH, the selfred/leakmap model barriers, and
+  wheelgap's consecutive-prime rejection bound (Lamzouri–Li–Soundararajan). Hecke/Dedekind items stay conditional:
+  nested X_ERH, Bach class-group generators, dBPW. Nothing moves below L[1/3]. Keep GRH labels until a local or VM
+  build plus leanchecker replay succeeds.
