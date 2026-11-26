@@ -7,6 +7,7 @@ from math import gcd, isqrt, prod
 
 from bisector import branch_from_n, public_factorization
 from row_batches import first_visible
+from sympy.ntheory.residue_ntheory import sqrt_mod
 
 
 def signed_divisors(primes):
@@ -23,14 +24,16 @@ def multiplicity(low, high, terms):
 
 
 class Rectangles:
-    def __init__(self, br):
+    def __init__(self, br, *, d_factors=None):
         self.br = br
         if br.delta % 4 == 0:
             self.level, self.d = br.n, br.delta // 4
         else:
             self.level, self.d = 4 * br.n, br.delta
         self.work = Counter()
-        factors = public_factorization(self.d, self.work)
+        factors = (
+            public_factorization(self.d, self.work) if d_factors is None else d_factors
+        )
         self.powers = sorted(p**e for p, e in factors.items())
         self.bad = {p for p, e in factors.items() if e >= 2}
         self.terms = signed_divisors(self.bad)
@@ -61,35 +64,62 @@ class Rectangles:
     def metrics(self):
         return {**self.work, "base_level_factorization": dict(self.level_factor_work)}
 
-    def count(self, low, high, ymin=1, ymax=None, *, modulus=4, rays=True, screen=True):
-        """Positive counts. modulus=None gives integers; rays=False tests raw candidates."""
+    def count(
+        self,
+        low,
+        high,
+        ymin=1,
+        ymax=None,
+        *,
+        modulus=4,
+        rays=True,
+        screen=True,
+        base_nonsquares=False,
+        proposed_levels=None,
+    ):
+        """Count positive points in a rectangle, optionally in an integer residue ring.
+
+        base_nonsquares counts only unscaled base vectors on nonsquare levels.
+        proposed_levels restricts that query to the union of the supplied levels.
+        """
         if modulus not in (None, 2, 4):
             raise ValueError("expected exact, parity or mod 4")
         if not (1 <= low <= self.br.cap + 1 and 0 <= high <= self.br.cap and ymin >= 1):
             raise ValueError("rectangle outside the supported range")
+        if base_nonsquares and not rays:
+            raise ValueError("base-vector selection requires the primitive-ray check")
+        if proposed_levels is not None and not base_nonsquares:
+            raise ValueError("level proposals apply to the primitive nonsquare query")
         self.work["queries"] += 1
         if low > high or (ymax is not None and ymax < ymin):
             return 0
         # A scaled point in a narrow level interval can come from below its lower end.
-        first = 1 if rays else low
+        include_multiples = rays and not base_nonsquares
+        first = 1 if include_multiples else low
         width = high - first + 1
-        seed = next(d for d in self.seed_moduli if d >= width)
+        if proposed_levels is None:
+            seed = next(d for d in self.seed_moduli if d >= width)
+            levels = defaultdict(list)
+            inv = pow(self.level, -1, seed)
+            for r in range(seed):
+                t = first + (inv * r * r - first) % seed
+                if t <= high:
+                    levels[t].append(r)
+            self.work["seed_residues"] += seed
+        else:
+            seed = 1
+            levels = {t: [0] for t in proposed_levels if first <= t <= high}
         other = [q for q in self.powers if seed % q]
-        levels = defaultdict(list)
-        inv = pow(self.level, -1, seed)
-        for r in range(seed):
-            t = first + (inv * r * r - first) % seed
-            if t <= high:
-                levels[t].append(r)
-        self.work["seed_residues"] += seed
         self.work["distinct_seed_levels"] += len(levels)
 
         # Every rejection here applies to all x residue lifts and all positive rows.
         active = {}
         clipped_rows = ymin != 1 or ymax is not None
         for t, seeds in levels.items():
-            hmin = 1 + isqrt((low - 1) // t) if rays else 1
-            hmax = isqrt(high // t) if rays else 1
+            if base_nonsquares and isqrt(t) ** 2 == t:
+                continue
+            hmin = 1 + isqrt((low - 1) // t) if include_multiples else 1
+            hmax = isqrt(high // t) if include_multiples else 1
             weight = multiplicity(hmin, hmax, self.terms)
             self.work["inclusion_terms_visited"] += len(self.terms)
             if not weight or (not clipped_rows and modulus and weight % modulus == 0):
@@ -102,13 +132,18 @@ class Rectangles:
         tables = []
         for q in other:
             targets = {(self.level * t) % q for t in active}
-            table = defaultdict(list)
-            for r in range(q):
-                key = r * r % q
-                if key in targets:
-                    table[key].append(r)
+            if proposed_levels is None:
+                table = defaultdict(list)
+                for r in range(q):
+                    key = r * r % q
+                    if key in targets:
+                        table[key].append(r)
+                self.work["local_residues"] += q
+            else:
+                table = {key: sqrt_mod(key, q, all_roots=True) for key in targets}
+                self.work["targeted_root_calls"] += len(targets)
+                self.work["targeted_roots"] += sum(map(len, table.values()))
             tables.append(table)
-            self.work["local_residues"] += q
             self.work["local_target_requests"] += len(active)
         components = [seed, *other]
         crt = [(self.d // q) * pow(self.d // q, -1, q) for q in components]

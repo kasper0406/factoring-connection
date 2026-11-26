@@ -56,6 +56,11 @@ def candidate_lifts(delta, lower, upper, gp, work):
     for a in range(lower, upper + 1):
         work["indices"] += 1
         candidates.update(reduced_forms_at(delta, a, work))
+    return lift_selected_squares(candidates, factors, gp, work)
+
+
+def lift_selected_squares(candidates, factors, gp, work):
+    """Return every prime-class candidate above the supplied reduced squares."""
     work["reduced_squares_to_test"] += len(candidates)
     problems = [(f, factors) for f in sorted(candidates) if locally_square(f, factors)]
     work["conics"] += len(problems)

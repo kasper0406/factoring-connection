@@ -87,6 +87,15 @@ before the final square test. At 582 the filtered parity evaluator still runs
 16,546 of its 18,042 square tests on primitive candidates in nonsquare levels
 above B/4, where the multiplier is one. Prioritize a joint test over these
 progressions that can also avoid listing at least B seed residues.
+The [upper-band experiment](../experiments/ellipse_disk_mod8/conductor_band.md)
+shows why the 581/582 transition is hard to resolve by cancellation. Below
+√Δ/2 each mixed lattice has at most one direction. Public conductor descent
+produced 24 possible norm levels at 582; verifying them by targeted modular
+roots was cheaper than selecting the prime class. A counting bound rules out a
+polynomial conductor saving on almost all near-square ℓ=1 inputs. Use the
+prime-discriminant 578/579 and 280/281 transitions next. Benchmark aggregate
+evaluation across the remaining levels against the simple targeted-root and
+inert-prime controls, including the cost of producing any class list.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
