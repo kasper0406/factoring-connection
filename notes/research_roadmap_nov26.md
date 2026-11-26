@@ -27,6 +27,16 @@ without shell enumeration or a length-√(NB) scan. A full-range product test
 loses local root alignment. See [implemented factorer, measurements and obstruction](../experiments/ellipse_aggregate/README.md).
 This route bypasses class lifting and the canonical-grid coverage hypothesis.
 
+**Whole-disk parity route.** The first shell can be located and decoded using
+only parity of positive-quadrant disk counts with at most two y-bit filters.
+These are stronger queries than the original unmasked count. The native
+Boolean decision diagram shares all j≤B in one carry relation and can eliminate
+coordinates over F₂. Its construction is expensive even when the final result
+is tiny. Pursue a different intermediate representation that cancels histories
+before a common w² fixes them; measure peak state and query construction.
+[Proof, implementation and controls](../experiments/ellipse_disk_mod8/README.md).
+For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
+
 Next tasks for the original unweighted route:
 - Reconstruct and independently audit the canonical band-coverage proof
   (large sieve + Gauss-sum estimate for small Delta), including small-order
