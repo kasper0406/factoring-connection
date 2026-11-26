@@ -79,3 +79,5 @@ Run from the repository root with python-flint, SymPy, NumPy and gmpy2 installed
     python experiments/ellipse_disk_mod8/cubic59_check.py --output rerun.json
 
 [Public probes](cubic59.py) · [Control generator and independent checks](cubic59_check.py) · [Results including all sign-pair histograms](cubic59_results.json)
+
+The [level-59 modular-symbol experiment](manin59.md) gives an exact unfactored-input sum for this bit. The [growing-discriminant experiment](growing59.md) determines what an oracle for these bits can recover about the ideal class in other fields.

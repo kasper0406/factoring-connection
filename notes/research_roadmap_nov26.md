@@ -117,8 +117,19 @@ For $N=t^2+3t+17$ the quartic $X^4-2tX^2-8X+t-5$ has one root at bit 1
 and zero or sixteen at bit 0. All 320 controls agree. The public cubic symbol
 cancels, the tested pair of shifted norm-Jacobi symbols has vanishing advantage,
 and substituting $N$ in the prime halving exponent missed all 221 unique roots.
-Use the quartic to test a new variable-length root-parity calculation, including
-its sixteen-root controls. Efficient evaluation on growing discriminants remains open.
+The [level-59 modular-symbol evaluator](../experiments/ellipse_disk_mod8/manin59.md)
+computes this parity from $N$ alone using a sum over every $b/N$. It agreed on
+zero, one, and sixteen roots. The faster selection of seven endpoints lost the
+bit on an explicit matched triple. The next evaluator test is a joint recurrence
+for the parity of continued-fraction edge visits over all $b$ at the branch
+denominator, with all intermediate states charged.
+The [growing-discriminant test](../experiments/ellipse_disk_mod8/growing59.md)
+shows exactly which part of a class all unramified cubic bits determine. At
+$-4027$ two or three factor-backed oracle answers decoded 288 of 288 hidden
+classes up to inversion. At $-1579$ all such answers collide at two different
+minima. The direct nonnegative-coefficient near-square catalogue also misses
+almost all balanced inputs asymptotically. A general reduction needs both
+branch coverage and a way to distinguish classes lost modulo cubes.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
