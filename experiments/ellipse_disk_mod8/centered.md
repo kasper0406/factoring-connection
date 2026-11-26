@@ -72,3 +72,5 @@ From the repository root run
     python experiments/ellipse_disk_mod8/centered_check.py
 
 **Next decision.** A method to combine a whole block of these inequivalent forms at one center, or to detect which half contains a global representation using less work than examining its slopes, would address the missing evaluator. The two opposite-outcome fixtures give a direct test at $B=1$. Any method using only prime-power solubility gives the same answer on every selected child. The geometric recursion is useful as a reference implementation for a proposed aggregate.
+
+The [equal-norm bisector search](bisector.md) distinguishes these two groups with preprocessing included. It also bounds how frequently a shallow prefix on this near-square branch can contain a mixed point.

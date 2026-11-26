@@ -51,6 +51,14 @@ individually. At B=1 the 35-bit and 36-bit controls each give 8,192 inequivalent
 forms representing N locally everywhere. Only the former group contains a
 mixed global representation. Account for building the group and testing its
 residue on both fixtures.
+The [bisector evaluator and coverage bound](../experiments/ellipse_disk_mod8/bisector.md)
+now solve the opposite-outcome B=1 groups. Exact reflection turns a mixed
+norm-N point into a short linear nonunit search, shared across all slopes.
+Discriminant factorization and all product-tree work are charged. For the
+ℓ=1 near-square family, the fraction with any mixed point through B is at most
+P^{-1/2+o(1)} B^{3/2} for primes of size P. Prioritize a global aggregate
+at growing nonsquare cutoffs; testing more nearby public points only at B=1
+cannot give almost-all coverage by mixed witnesses.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
