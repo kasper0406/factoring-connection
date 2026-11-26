@@ -36,6 +36,17 @@ def locally_square(f, factors):
     return True
 
 
+def reduced_forms_at(delta, a, work):
+    """Generate primitive reduced forms at this leading coefficient up to inversion."""
+    for root in sqrt_mod(-delta, 4 * a, all_roots=True):
+        work["modular_roots"] += 1
+        b = root % (2 * a)
+        b = min(b, 2 * a - b)
+        d = (b * b + delta) // (4 * a)
+        if d >= a and gcd(a, b, d) == 1:
+            yield a, b, d
+
+
 def candidate_lifts(delta, lower, upper, gp, work):
     """Classes whose reduced square or inverse has minimum in [lower,upper]."""
     if lower > upper:
@@ -44,13 +55,7 @@ def candidate_lifts(delta, lower, upper, gp, work):
     candidates = set()
     for a in range(lower, upper + 1):
         work["indices"] += 1
-        for root in sqrt_mod(-delta, 4 * a, all_roots=True):
-            work["modular_roots"] += 1
-            b = root % (2 * a)
-            b = min(b, 2 * a - b)
-            d = (b * b + delta) // (4 * a)
-            if d >= a and gcd(a, b, d) == 1:
-                candidates.add((a, b, d))
+        candidates.update(reduced_forms_at(delta, a, work))
     work["reduced_squares_to_test"] += len(candidates)
     problems = [(f, factors) for f in sorted(candidates) if locally_square(f, factors)]
     work["conics"] += len(problems)

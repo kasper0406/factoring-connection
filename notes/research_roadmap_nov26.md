@@ -72,6 +72,14 @@ feasibility hold for every primitive candidate; a selector must combine integer
 constraints with the archimedean bounds. A cheaper selector would address the
 power-exponent track. The supplied-class verifier itself still has a power-of-N
 bound, so a polylogarithmic result would require a further idea.
+The [public middle-coefficient shortlist test](../experiments/ellipse_disk_mod8/class_selection.md)
+found 14 of 96 fresh inputs with small rational weights, versus 13 for equally many
+low indices and 96 for the full class list. For primes in one dyadic interval,
+selecting only prime-class minima below $N^{1/4-\epsilon}$ on this branch
+has vanishing coverage. Move the next evaluator test to a growing nonsquare
+cutoff. At the 47-bit fixture the signed punctured-disk residues at 581 and
+582 are 0 and 4. Test bulk aggregation with all preprocessing and boundary work
+charged. A selector that reaches typical-sized minima remains a separate possibility.
 For the independent variable-square reflection reduction, see [floor8](floor8_results.md).
 
 Next tasks for the original unweighted route:
