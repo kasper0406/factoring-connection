@@ -19,7 +19,15 @@ lifting remains separate. The principal term must be counted exactly at
 endpoints, not always replaced by floor(sqrt(B)). Fresh small validation is
 in experiments/nov26_consolidation/check_identities.py.
 
-Next tasks (in order):
+**Weighted route.** With ℓ=1 and c chosen next to 2√N, the squared-coordinate
+moment gives a direct factor from N alone. Both the geometric evaluator and
+a residue-list join run through verification. Their costs remain powers of N.
+The immediate target is computing a sharp harmonic prefix at multiples of N
+without shell enumeration or a length-√(NB) scan. A full-range product test
+loses local root alignment. See [implemented factorer, measurements and obstruction](../experiments/ellipse_aggregate/README.md).
+This route bypasses class lifting and the canonical-grid coverage hypothesis.
+
+Next tasks for the original unweighted route:
 - Reconstruct and independently audit the canonical band-coverage proof
   (large sieve + Gauss-sum estimate for small Delta), including small-order
   exceptions, parity, nonfundamental discriminants and square-weight
