@@ -4410,3 +4410,37 @@ Base 2 gives gcd(2^9798−1,n)=n but already at the odd exponent
 every base on all 56 eligible pairs of distinct odd primes below 48
 with B=3. This is a special case of order-based factoring; no
 condition covering arbitrary semiprimes is established.
+
+### Signed residual cofactors with a Jacobi-selected exponent
+
+For n=pq as above choose a uniform unit D, put J=(D/n) and use
+E=(n−J) lcm(1,...,B). Work in (Z/nZ)[w]/(w²−D).
+At p let σ=(D/p), and at q let τ=(D/q), so J=στ. For a uniform
+unit z the quotient g=z/conj(z) is uniform in the norm-one group:
+locally the split algebra gives (u/v,v/u) of order group size p−1,
+while in the field case conjugation is Frobenius and the power map
+z↦z^(1−p) has image of size p+1. Both local groups are cyclic and
+the two samples are independent by CRT. Sample z by drawing its two
+coefficients and testing its norm for invertibility. Return any proper
+gcd. For fixed D the acceptance probability is bounded below by an
+absolute constant even in the split algebras. Resample z at fixed D
+on rejection so that conditioning does not bias the sign probabilities.
+
+Set h=gcd(p−σ,q−τ). Since n−στ=σ(q−τ) mod (p−σ),
+gcd(n−J,p−σ)=h and likewise at q. Therefore E kills the entire
+local group at p iff (p−σ)/h divides lcm(1,...,B). If either
+residual cofactor divides this lcm, the earlier success proof applies:
+split at the final exponent if just one local element is killed,
+or along the repeated-squaring chain when order valuations differ.
+For an element a+bw the identity test returns gcd(n,a−1,b).
+The probability of splitting at the chosen signs is at least 1/2.
+
+If *any* of the four sign pairs meets the criterion, a uniform D
+selects that pair with probability 1/4, giving at most eight outer
+trials in expectation (or earlier success from a nonunit). This
+extends the special-input guarantee while keeping the exponent at
+O(log n+B) bits. The arithmetic is the norm-one group used in
+p+1 factoring. For n=6439=47·137 and B=3 the unsigned residuals
+23 and 68 both fail. For D=3 the local signs are + and −, the
+orders are 46 and 138, and h=46. With z=1+w the identity gcd at
+the odd exponent 2415 gives 137 by direct quadratic-ring powering.
