@@ -636,6 +636,21 @@ recovered q for all 100 mixed-residue pairs of primes from 5 through
 79, testing every level up to 3^h>N. This refines the earlier oracle
 reduction on this promise. Computing V from N alone remains open here.
 
+**Can a congruence table supply the first missing digit?** For every
+fixed input modulus M, mixed semiprimes with the same N mod M can
+give different Φ_(3N)(4) mod 27. Take D=lcm(9,M). Choose q in
+either class 2 or 5 mod 9 and impose q≡1 at each prime power in D
+coprime to 3. Lift the ternary class to a unit modulo the 3-part of D.
+For each resulting unit class choose primes q and p in that class
+and its negative inverse, respectively, by Dirichlet's theorem.
+Then N≡−1 mod D in both cases, p≡1 mod 3, and the fixed-index lift
+at k=1 forces distinct outputs because q mod 9 differs and N mod 9
+agrees. For a small numerical check, 623=7·89 and 299=13·23 both
+equal 56 mod 81 and give outputs 19 and 10 mod 27 respectively.
+This rules out a single fixed congruence table and any finite
+collection of fixed input congruences (take their lcm). It leaves
+algorithms using the whole input or input-dependent moduli open.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
