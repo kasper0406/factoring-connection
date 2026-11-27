@@ -221,3 +221,45 @@ every listed k and |a|<=K. When p,q>2K and a differs from b,
 the matching gcd equals p. This reduction requires no knowledge
 of either prime to perform the search. It assumes access to the
 predictor on random unit shifts and supplies no predictor itself.
+
+## Quantitative advantage and unbalanced semiprimes
+
+The previous reduction has bit cost polynomial in log N, 1/epsilon
+and the cost of querying the predictor. No balance promise on
+distinct odd p,q is necessary. Here are bounds making the dependence
+on epsilon uniform. Assume 0<epsilon<=1/4 and a known lower bound
+3/4+epsilon on accuracy at uniformly random units.
+
+Set K=ceil(C/epsilon²) for a sufficiently large absolute constant C.
+Trial-divide through ceil(C' K²/epsilon), with a sufficiently large
+absolute C'. If this fails then both primes exceed that bound. For
+r=p,q let alpha_r(a) be the normalized DFT coefficient of the public
+quarter sign on the r-grid. The geometric sum of its interval gives
+|alpha_r(a)|<=1/|a| for nonzero centered a. Truncating at K costs
+O(1/sqrt(K)) in normalized L2 by Parseval. On the product grid
+the product of the two truncated series approximates the target
+in L1 with error O(1/sqrt(K)) by telescoping the product and
+Cauchy-Schwarz. Each truncated factor has L2 norm at most one.
+
+For |a|<=K compare alpha_r(a) with the continuous coefficient
+alpha(a). On grid cells avoiding the two sign jumps, the exponential
+varies by at most 2 pi |a|/r; the jump cells cost at most 4/r.
+Hence the coefficient error is O((1+|a|)/r). As all coefficients
+have magnitude at most one, summing errors in diagonal products
+costs O(K²/min(p,q)) uniformly in z. The remaining continuous
+diagonal tail costs O(1/K) by the squared coefficient decay.
+The absolute grid mean of the triangle L differs from 1/2 by
+O(1/N) by Lipschitz continuity. Extending the predictor by zero
+on nonunits costs O(1/min(p,q)) in correlation. The parameter
+choices make all errors together smaller than epsilon. Therefore
+the off-diagonal correlation is at least epsilon.
+
+The sum of the absolute truncated product coefficients is
+O(log²(2K)), by the harmonic sum bound. Some off-diagonal
+frequency thus has magnitude Omega(epsilon/log²(2K)). The sampled
+interval search in quarter-fourier.md lists it in time polynomial
+in log N and 1/epsilon. Trying the 2K+1 possible first coordinates
+by gcd then splits N. In particular any known inverse-polynomial
+advantage in bit length above 75% suffices. This is an oracle
+reduction for each promised input, not an estimator or a practical
+sample-budget claim.
