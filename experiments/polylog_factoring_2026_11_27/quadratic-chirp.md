@@ -5151,3 +5151,22 @@ likewise at q. The exact degrees are q modulo p and p modulo q.
 So even aligning the radix with N leaves a large denominator for
 the very row used by the signed cutoff test. This is a constraint
 on explicit representations of the full selected series only.
+
+### Comparison with ePrint 2026/3020
+
+The abstract of Liu, Zhang and Ren, *A Deterministic
+Subexponential-time Algorithm for the Discrete Logarithm Problem*,
+reports a conditional deterministic bit-time bound
+2^{O(b/sqrt(log log b))} for discrete logarithms over a known prime
+field and on prime-order elliptic curves over a prime field.
+Here b is the field prime's bit length. The stated assumption
+is a Cauchy–Hermite Boolean tensor contraction construction.
+Our input is an unfactored composite N and the required bit bound
+is polynomial in its bit length. The abstract supplies neither
+a reduction of the binomial cutoff test to those group problems
+nor a polynomial bound for the contraction at that scale.
+This comparison is based on the authors' abstract as reproduced
+by Open Cryptology; the original PDF could not be retrieved here.
+
+[Paper record](https://eprint.iacr.org/2026/3020) ·
+[Abstract](https://opencryptology.org/2026/3020)
