@@ -5099,3 +5099,31 @@ least prime divisor p, since J_2>=p^2>=2p. For N=143 the first
 ambiguous degree moves from 11 to 121. This gives uniqueness
 at polynomial bit precision. A dense prefix still has b+1 slots;
 the lemma does not give random access to its scalar projection.
+
+### Denominator growth under binary index extraction
+
+Start with the Pascal generating function 1/(1-Y(1+X)).
+After selecting k low binary digits of each index, put d=2^k
+and let a,c in [0,d) be the row and column residues. The selected
+series has coefficients binom(dn+a,dj+c) at Y^n X^j. Over any
+field of odd characteristic, its reduced denominator in Y over
+the rational function field in X has degree exactly d.
+
+To prove this, extend scalars to contain all d-th roots of unity
+and substitute X=z^d for an indeterminate z. The roots-of-unity
+filter expresses the series as the sum over w^d=1 of
+
+    w^(-c) (1+w z)^a / [d z^c (1-Y (1+w z)^d)].
+
+The filter keeps exactly the column indices dj+c. The d slopes
+(1+w z)^d have distinct linear coefficients d w, and all the
+numerators are nonzero. Each term therefore contributes a distinct
+simple pole. The product of the denominators descends to the
+original field in X by symmetry in the roots and invariance under
+z -> w z. Thus the exact degree is d for every choice of low bits.
+
+For an odd composite modulus, reduction at any prime divisor gives
+this same obstruction to an explicit bounded-degree denominator
+normalized to constant coefficient one in Y. It applies to tracking
+the whole selected series. A compact resultant encoding or a method
+targeting just the final scalar could have different cost.
