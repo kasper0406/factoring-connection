@@ -141,6 +141,11 @@ On semiprimes the always-yes threshold classifier has limiting accuracy
 always-yes rate by an inverse polynomial gives a randomized split.
 [Baseline and weak-advantage reduction](salie-quarter.md#beating-the-always-yes-threshold-classifier-on-a-semiprime)
 
+Every one of the 32 square bins favored yes on both threshold
+benchmarks. For any fixed interval partition, equidistribution
+makes always-yes exactly optimal among bin-only classifiers once
+both factors are sufficiently large. [Counts and proof](salie-quarter.md#a-factor-free-sufficient-test-for-threshold-advantage)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

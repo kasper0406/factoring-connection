@@ -1353,3 +1353,33 @@ bins of the square gave maximum within-bin J frequencies of 0.23837
 at N=10403 and 0.16944 at N=1022117. Thus no union of these bins
 passes this sufficient test on either input. This does not evaluate
 their actual accuracy and does not require any hidden root.
+
+**Optimal threshold decisions for fixed square bins.** Exhaustive
+scoring using the known mixed root gave the following results for
+the 32 equal bins of c² mod N. All bins had a strict yes majority.
+
+| N | Yes labels / unit inputs | Lowest yes fraction in a bin | Best extra correct predictions |
+|---|---:|---:|---:|
+| 10403 | 6248 / 10200 | 0.542169 | 0 |
+| 1022117 | 628556 / 1020096 | 0.609090 | 0 |
+
+The best possible improvement in counts is ∑ max(0,n_j−2y_j),
+where bin j contains n_j examples with y_j yes labels. Thus even
+choosing bin labels using all the true answers gives zero gain.
+The nearest observed distance between a magnitude and 1 exceeded
+4·10^−7 on both inputs.
+
+This persists for any fixed finite partition into intervals of
+positive width in [0,1], as both primes grow. The triple
+(c/N,uc/N,(c² mod N)/N) on uniform units is equidistributed on
+the three-torus (coordinates modulo one). In the Fourier criterion,
+a fixed nonzero coefficient of c² gives a complete quadratic
+Gauss sum of normalized magnitude 1/√N for sufficiently large
+primes; restricting to units costs O(1/p+1/q). With zero quadratic
+coefficient use the earlier two-phase Ramanujan calculation.
+The threshold boundary has area zero, as do bin endpoints.
+Each bin's conditional yes fraction therefore converges to the same
+0.616625 limit. Eventually every bin strictly favors yes, even
+when its output label can be retrained for each N. This conclusion
+uses a fixed partition; it supplies no uniform onset size for a
+growing number of bins.
