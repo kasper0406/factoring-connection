@@ -109,3 +109,23 @@ For a uniformly random start and fixed unit step on an odd semiprime
 with distinct factors, a length-$L$ progression hits either mixed root
 with probability at most $2L/N$ by the union bound. Choosing the step
 alone cannot improve that random-start guarantee.
+
+**Nonlinear changes of coordinate.** The existing [two-evaluation
+identity](../polylog_factoring_2026_11_27/single-quadratic-count.md#two-evaluations-classify-polynomial-maps-on-the-roots-of-one)
+also classifies short windows applied after a public polynomial map
+$F$ with unrestricted output. Put $A=(F(1)-F(-1))/2$ and
+$B=(F(1)+F(-1))/2$ modulo odd $N$. Since $r^2=1$, on every root
+$F(r)=Ar+B$. The same formula holds for a rational circuit when each
+denominator is a unit at both public signs. If $A$ is zero the window
+takes the same answer on every root. A proper gcd of $A$ and $N$ splits
+the modulus. Otherwise the preimage on the root set of a cyclic window
+$[l,l+w)$ is exactly its intersection with the progression starting at
+$(l-B)/A$ with step $1/A$ and length $w$. Both progression parameters
+are obtained with two public evaluations and modular inversion.
+
+A check on 600 sampled degree-at-most-six polynomials over six odd
+moduli gave 357 unit slopes (all interval preimages agreed with explicit
+progressions), 7 constant restrictions and 236 proper gcds. These small
+moduli were chosen for checking the cases, not estimating factoring
+success rates. This reuses the earlier identity and closes the nonlinear
+single-coordinate window variant without a new search algorithm.
