@@ -2784,6 +2784,41 @@ reduction applied to the circle. Producing some point of a prescribed
 norm and halving a specified group point are different tasks; the
 former alone gives no half of G.
 
+### Forcing a split from a unique odd-order half
+
+For two distinct odd primes N=pq, sample a uniformly among units with
+Jacobi symbol (−a/N)=+1. Exactly half these parameters make the square
+subgroup of the norm-one group odd in order. Indeed at ℓ=p or q the
+cyclic local order ℓ−(a/ℓ) is 2 modulo 4 exactly when (−a/ℓ)=−1.
+The public filter leaves the two patterns (+,+) and (−,−) equally
+likely. Recognizing the good pattern itself is quadratic nonresiduosity
+of −a under the positive Jacobi promise; recognizing it is unnecessary
+for the following randomized reduction.
+
+On a good parameter let S be the subgroup of squares. Each G in S
+has a unique half H₀ inside S, since squaring is a bijection there.
+Plant a uniform H conditioned on the negative public square-class
+label from the sampler above, then submit G=H². At each local prime
+the scalar −1 is a nonsquare in its local group (order 2 modulo 4).
+Consequently exactly two of the four halves of each G have negative
+label. They differ from H₀ by the two mixed CRT signs. This proves
+both that the submitted G is uniform in S and that comparing H₀ with
+the planted H gives a proper gcd every time.
+
+Thus a polynomial-time solver returning the unique odd-order half
+with probability η averaged over good parameters and uniform targets
+at each semiprime gives success probability at least η/2 per trial.
+Allow arbitrary outputs on bad parameters and verify the gcd before
+accepting. This is a promise on the solver's correctness, with a
+polynomial runtime cap on all calls. It restricts the search problem
+to uniquely specified outputs while retaining a factoring reduction.
+It supplies no algorithm to invert squaring inside S.
+
+For N=187 exactly 40 of 80 eligible parameters are good. At a=3 the
+group has 180 points and S has 45. Exhaustive squaring found precisely
+two negative-label planted points per target and all 90 comparisons
+with the unique half split N.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
