@@ -4878,3 +4878,24 @@ This gives a deterministic reduction for every composite N using
 O(log p) scalar zero tests with binary-encoded arguments. Only
 equality of binom(N-1,b) to (-1)^b modulo N is required.
 A polylogarithmic implementation of that test remains open here.
+
+### Exact residue in the first cutoff window
+
+Let p be the least prime divisor of composite N and 0<=b<2p.
+The least nonnegative residue D of 1-(-1)^b binom(N-1,b) modulo N
+equals the ordinary integer sum of N/r over distinct primes r|N
+with r<=b. To see this, write the signed binomial as the rational
+product of (1-N/j) for 1<=j<=b. Work locally at each prime power
+r^a exactly dividing N. Denominators coprime to r are invertible
+and their factors are 1 modulo r^a. The sole possible multiple
+of r is j=r, whose factor is the integer 1-N/r. This gives the
+claimed congruence by CRT. There is no wraparound because the
+reciprocal sum over the contributing primes is bounded by the sum
+of 1/j for p<=j<2p, which is strictly below 1.
+
+For N=pq with distinct primes, at the first nonzero dyadic cutoff
+D is either q alone or p+q. In the former case gcd(D,N) returns q.
+In the latter case the gcd is 1 and the roots of X^2-DX+N recover
+both factors. For example at N=143 and b=16, D=24 gives roots 11
+and 13. An equality-only oracle still needs the earlier search;
+a full residue eliminates that refinement for semiprimes.
