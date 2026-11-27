@@ -2039,6 +2039,36 @@ separate analysis.
 For the benchmark, 112716²−4·2989601243=27322², giving the verified
 split 42697·70019=2989601243.
 
+### Certifying an empty interval from rejection moments
+
+Use the first fifteen Jacobi moduli generated above and s=2t with
+54678≤t≤56335 (the lower half). Let r(t) be the number of tests
+rejecting t. Direct enumeration gives the following frequencies for
+r from 0 through 15 in order:
+
+    0 2 0 17 77 141 278 322 318 250 159 68 18 7 1 0
+
+The ordinary even-order Bonferroni upper bound on the survivor count
+is the true count plus the sum of binom(r−1,d) over candidates with
+r>d, by the alternating partial binomial identity. Orders 8, 12 and
+14 give 12463, 20 and 0 respectively.
+
+A different certificate uses only moments through order eight on this
+instance. Any real polynomial P with P(0)=1 gives the survivor upper
+bound Σ_t P(r(t))². Put G_ij=Σ_t r(t)^(i+j) for 0≤i,j≤4, with
+zeroth powers equal to one. G is positive definite because the observed
+support has more than four distinct values. Constrained quadratic
+minimization gives the optimal coefficients G⁻¹e₀/(G⁻¹)₀₀ and the
+exact upper bound 1/(G⁻¹)₀₀ = 279106006052799305/333564824161743793, below one.
+Thus these nine integer moments imply emptiness without requiring a
+table of individual passes. At degree three the optimum is above 2.51.
+
+The moments here came from scanning all 1658 candidates. An arithmetic
+evaluator would need to obtain adequate moments directly from N and
+the endpoints. Each moment of fixed order k expands into intersection
+counts involving at most k tests. This example supplies neither a fast
+intersection counter nor a uniform bound on the degree needed.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
