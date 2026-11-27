@@ -291,6 +291,46 @@ equals d²/[2(p+q+2sqrt(pq))]. This rules out inverse-polynomial
 worst-case success for these uniform tests, without asserting that the
 same inputs resist other factoring methods.
 
+**Choosing x=floor(sqrt(N)).** This deterministic sample also misses
+most inputs in a provable family. Fix 1/2<β<α<2/3, put D=B^α,
+and take B≤p<q≤2B with B^β<d=q−p≤D. Set
+k=(p+q)/2−floor(sqrt(pq)); the midpoint identity above gives
+1≤k=O(1+D²/B). The sample reduces to v=d/2−k modulo p and
+−1−w modulo q with w=d/2+k−1. Both v and w are positive for
+large B (pointwise k=O(1+d²/B)). Reflection x↦−1−x preserves
+zeros of the additive defect since N is odd.
+
+For fixed d,k, a p-side hit requires p to divide the strictly positive
+integer (v+1)^(d+1)−v^(d+1)−1. A q-side hit requires q to divide
+w^(d−1)−(w+1)^(d−1)−[w(w+1)]^(d−1), which is strictly negative:
+this is the cleared inverse-power relation, valid since 0<w<w+1<q.
+Both integers have O(D log B) bits. Each has at most O(D) prime
+divisors of size at least B, and either prime together with d fixes
+the pair. Across all d,k this gives O(D²(1+D²/B)) pairs with a hit.
+The bucket argument above gives Ω(BD/log² B) pairs in the specified
+gap range (subtract O(B^(1+β)) shorter pairs). The hit fraction is
+O(log² B (D/B+D³/B²)), tending to zero for α<2/3. Ordinary Fermat
+search takes Ω(B^(2β−1)) steps on this same family.
+
+Separately, exhaustive experiments on the *previous* band
+B^(2/3)<d≤B^(3/4) compared this one fixed sample with four uniform
+draws per pair. Counts are in ascending lexicographic pair order
+with Python Random(7403) reset for each B. The last column counts
+fixed-sample splits missed by both Fermat gcds on x and x+1.
+
+| B | pairs | sqrt sample splits | uniform splits / draws | additional splits |
+|---:|---:|---:|---:|---:|
+| 128 | 41 | 1 | 12 / 164 | 1 |
+| 512 | 383 | 1 | 18 / 1,532 | 0 |
+| 2,048 | 4,019 | 5 | 53 / 16,076 | 3 |
+| 8,192 | 39,064 | 5 | 108 / 156,256 | 3 |
+| 32,768 | 373,899 | 20 | 248 / 1,495,596 | 17 |
+
+The exact expected uniform split counts for one draw per pair were
+2.1530 and 4.4554 at the first two scales, computed from exhaustive
+local rates. The deterministic proof is specific to this sample and
+gap range; the table does not estimate success on general semiprimes.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
