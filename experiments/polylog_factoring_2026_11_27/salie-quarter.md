@@ -1423,3 +1423,26 @@ For B=1 and 32 the gains in correct predictions were 44 and 712
 of 10,200 at N=10403, and 64 and 1704 of 1,020,096 at N=1022117.
 These are best possible fitted scores for the two finite inputs,
 with no claim that the optimizing partitions are publicly available.
+
+**Factor recovery control with the publicly trained correction.**
+Using the fixed training seed in check_square_bin_magnitude.py,
+evaluate the correction (prediction minus baseline) on every unit,
+extend by zero on nonunits, and rank positive frequencies through
+floor(N/2) by descending absolute FFT coefficient. Exclude frequency
+zero. For each k test gcd(k−d,N) for d=0,1,−1,2,−2 and stop at
+a proper split. The unit checks in training and array construction
+do not return their gcds. Factors are unnecessary for these steps.
+
+| N | Rank of first hit | k | Coefficient magnitude | gcd(k,N) |
+|---|---:|---:|---:|---:|
+| 10403 | 11 | 101 | 0.00228230 | 101 |
+| 1022117 | 27 | 170184 | 0.00007435 | 1013 |
+
+The second input had negative MSE gain. For context, 495 of 5,201
+positive frequencies pass at least one of the five gcd tests on the
+first input, and 5,040 of 511,058 pass on the second. Under a uniform
+random ranking without replacement, the probabilities of a hit by
+the observed ranks are 66.75% and 23.48%. Thus getting a split in
+this full-array diagnostic does not establish predictive advantage
+or efficient frequency recovery. The full FFT alone costs order
+N log N operations, and training used 100,000 public samples.
