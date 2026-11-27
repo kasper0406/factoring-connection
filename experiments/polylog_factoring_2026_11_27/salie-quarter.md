@@ -21,6 +21,28 @@ Suppose a public algorithm approximates the real normalized sum with root-mean-s
 
 For an odd modulus with two distinct prime divisors, the unit average of $g^2$ is at least $1/2$, by the Ramanujan sum at the unit frequency $2u$. Cauchy–Schwarz gives $\mathbb E_{c\in U} F(c)g(c)\ge1/4$. Extend $F$ by zero on nonunits. A uniform gcd probe can supply a factor directly. Otherwise the correlation on all residues is at least $1/8$, since $\varphi(N)/N\ge1/2$. This is the real part of the Fourier coefficient at $u$. The sampled heavy-frequency search recovers $u$ or $-u$ among its list. Test each output frequency minus 1 by gcd. This avoids a harmonic search over an unknown multiple of $u$.
 
+## Grouping summands with the same phase
+
+On the distinct odd semiprime promise, put b=c²/4 for a unit c and
+let h(m)=m+b/m modulo N. The public partner b/m has exactly the
+same complex summand as m. More generally h(t)=h(m) is equivalent
+to (t−m)(tm−b)=0 modulo N. At each prime the choices are m and
+b/m, and they have identical local quadratic character because b is
+a square. Thus every summand in a phase fiber is identical. If a
+third distinct element t is found outside the two public choices,
+it agrees with m at exactly one prime, so gcd(t−m,N) factors N.
+
+Negation conjugates the normalized summand because χ(−1)G_N equals
+the conjugate of G_N. Grouping the negative phase as well therefore
+preserves the sum of absolute real parts. For real orbit weights w,
+the optimal single-orbit unbiased importance estimator has second
+moment (∑|w|)², exactly the same as the optimum for individual real
+terms. Thus the independent-sampling variance bound below persists
+even if these complete groups are supplied. Exhaustive checks on
+N=35,77,143 and all square unit targets verified constant Jacobi sign
+on 1,692 fibers and proper gcds on all 5,856 ordered pairs outside
+the two public choices.
+
 ## Variance of sampling individual terms
 
 The normalized complex summands each have absolute value $N^{-1/2}$. For any positive sampling probabilities $q_m$, the unbiased one-term importance estimator has second moment $\sum_m |a_m|^2/q_m\ge(\sum_m |a_m|)^2=\varphi(N)^2/N$ by Cauchy–Schwarz. On the two-prime-divisor family the target magnitude is at most 4, so the variance is $\Omega(N)$ for large inputs.
