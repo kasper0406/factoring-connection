@@ -510,6 +510,33 @@ with 0.01 absolute error decides whether 5 is a square modulo a Jacobi-positive
 odd semiprime. This concerns specified small prime radicands. It supplies
 neither a reduction from arbitrary radicands nor a factoring algorithm.
 
+### A bounded real norm equation for the fifth-root reading
+
+Under the preceding Jacobi-positive promise with $r=5$, the magnitude is one
+exactly when $4N+5y^2=t^2$ for some integer $1\le y\le\sqrt{N/5}$.
+In that case there are exactly two such positive $y$, and finding both splits $N$.
+Indeed the ring of integers of $\mathbb Q(\sqrt5)$ has class number one
+(Minkowski bound $\sqrt5/2<2$). A split prime gives two prime ideals of
+norm that prime; an inert prime cannot occur to odd exponent in an element
+norm. In the split case the four ideals of norm $N$ each have a totally positive
+generator $\alpha$ of norm $N$, adjusting signs with $-1$ and the norm-minus-one
+unit $\phi=(1+\sqrt5)/2$. Scaling by powers of the fundamental totally positive
+unit $\phi^2$ puts $\alpha/\sqrt N$ between $1/\phi$ and $\phi$ uniquely.
+Equality at the endpoints would make $\sqrt N$ an element of the field, impossible
+here. Write $\alpha=(t+y\sqrt5)/2$. Then
+$|y|=|\alpha-N/\alpha|/\sqrt5<\sqrt{N/5}$ and conjugate ideals pair
+opposite signs. Conversely a positive square test gives a generator since
+$t,y$ have the same parity; the bound places it in this same interval.
+
+Each witness gives a root $t/y$ of 5 modulo $N$: a prime dividing both $y$
+and $N$ would also divide $t$, contradicting squarefreeness. Choosing the
+conjugate ideal above a prime flips that local root's sign. Thus the two
+positive witnesses yield roots differing in sign at exactly one prime, and
+the gcd of their difference with $N$ splits it. For $N=341$ the roots are
+37 and 180, with difference gcd 11. Scanning the reduced interval uses
+$O(\sqrt N)$ square tests. Unit reduction bounds the search but supplies no
+polynomial-bit-time method for finding its two witnesses.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
