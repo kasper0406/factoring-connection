@@ -335,3 +335,26 @@ of the packed count: take the two scales c+Nj and c+N(j+h)
 correction for their difference. The lower digits and signed
 window are unchanged. Uniform polynomial bit cost for this
 one-sided threshold remains the required evaluator assumption.
+
+## Window-sensitive lag bound for arbitrary semiprime ratios
+
+For N=pq, distinct odd primes p<q, each prime-period class g=r
+lies in the two progressions a=±c modulo r. Any cyclic interval of
+width w contains at most 2(w/r+1) such digits. Applying the
+one-step estimate only to these digits, then telescoping, gives
+
+    E_j |R(j+h)-R(j)| <= (8h/N)(w/p+w/q+2).
+
+For a nonpublic stationary slope, its least absolute representative
+m is congruent to ±2 modulo q and m!=2. Hence m>=q-2.
+The good dyadic lag above satisfies h<=N/(2m), giving a mean
+error bound of 4[(w/N)(p+q)+2]/(q-2), with no factor-ratio
+hypothesis. For instance if q>=2048 and w/N<=1/8192 this is
+below 0.005. Smaller q can be handled by trial division through
+2048. For singleton isolation under these width conditions the
+one-sided comparator therefore disagrees on at most 0.02 of the
+shifts; its normalized coefficient at s exceeds 0.20. The bound is
+uniform in the window location and the fixed weights of magnitude
+at most one (with stationary weight ±1). This removes the need for
+the small-square preprocessing on this semiprime argument. The
+actual comparison still needs a polynomial-time evaluator.
