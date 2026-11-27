@@ -2745,6 +2745,45 @@ the gcd is proper with probability one half. The decision equivalence
 alone gives no such factoring reduction. Fixed-a algorithms have a
 different promise and the forward construction need not query them.
 
+### Halving uniform squares on the fixed circle
+
+For search, even the single circle x²+z²=1 (mod N) suffices for all
+odd composites with at least two distinct prime factors. Use complex
+multiplication modulo N as the group law. Plant a uniform point H and
+give a solver only G=H². This is uniform in the subgroup of squares.
+
+Uniform sampling still works with prime powers. Choose random α=v+iw
+with invertible norm and output α/conjugate(α). To see surjectivity
+over each odd prime power, use α=1+H if its norm is a unit, otherwise
+use α=i(1−H). The two norms are 2(1+x) and 2(1−x) for H=x+iz,
+so at least one is a unit locally. Both choices have quotient H.
+CRT yields surjectivity globally, and equal fibers give uniformity.
+For each prime p dividing N, the excluded norm-zero pairs modulo p
+occupy either one point or two lines through the origin. Acceptance
+is therefore at least the product of (1−1/p)², hence at least
+1/(ω(N)+1)² by ordering the primes and telescoping. This bound
+suffices for expected polynomial bit time.
+
+For any verified half H′ of G, the ratio H′/H squares to one. Since
+its inverse equals its conjugate, it is a scalar t, with t²=1 mod N.
+There are 2^ω(N) such scalars, from independent signs on the prime
+powers. Conditional on G and the solver output, the planted H is
+uniform in the fiber, so gcd(t−1,N) is proper with probability
+1−2^(1−ω(N)). If the solver succeeds with probability η on uniform
+squares for this N, one trial splits N with probability exactly
+η times that factor (ignoring any earlier accidental gcd). Detect
+primes and perfect powers separately, strip powers of two, and recurse
+on proper splits. A per-input inverse-polynomial η thus suffices for
+randomized expected polynomial-time factoring if the solver itself is
+polynomial time.
+
+Enumeration with a deterministic canonical returned half for each G
+gave 8/16, 24/48, 96/128 and 120/240 successful planted points for
+N=15,45,105,225 respectively. This is the classical planted-root
+reduction applied to the circle. Producing some point of a prescribed
+norm and halving a specified group point are different tasks; the
+former alone gives no half of G.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
