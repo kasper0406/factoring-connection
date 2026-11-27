@@ -1,0 +1,26 @@
+**Proved — P2.** Halving both inputs gives an exact factorization-free evaluator for \(H(T,X)\bmod 2\). At \(X=\lfloor\sqrt T\rfloor\), its boundary has \(\Theta(\sqrt T)\) terms. I also proved an obstruction to compressing that boundary by binary coefficient extraction. [Evaluator and proofs](/Volumes/git/fc-modrec/codex/scratch/modrec_1_c/modrec.py)
+
+Write \(T=2n+b\), with \(b\in\{0,1\}\). Even divisors give the smaller instance. For odd \(d\), writing \(n=qd+r\) gives the exact descent
+\[
+H(2n+b,X)=H(n,\lfloor X/2\rfloor)
+\;\oplus\!
+\bigoplus_{\substack{d\le X\\d\ {\rm odd}}}
+[\,n\bmod d\ge (d+1)/2-b\,].
+\]
+For \(1\le X\le T\), all levels together use exactly \(X-\lfloor\log_2 X\rfloor-1\) nonconstant threshold tests.
+
+**Experimentally supported.** The descent matched all **66,177** small lattice enumerations and all **128** independent 35–40-bit floor sums. The rational coefficient evaluator matched all **4,257** small cases tested. With \(X=\lfloor\sqrt T\rfloor\), five-run median timings were as follows. [Reproduce the checks](/Volumes/git/fc-modrec/codex/scratch/modrec_1_c/check_modrec.py)
+
+| \(T\) | \(H\bmod2\) | Thresholds tested | Thresholds equal to 1 | Median |
+|---:|---:|---:|---:|---:|
+| \(2^{16}\) | 1 | 247 | 107 | 0.013 ms |
+| \(2^{24}\) | 1 | 4,083 | 2,017 | 0.244 ms |
+| \(2^{32}\) | 0 | 65,519 | 32,542 | 4.05 ms |
+| \(2^{36}\) | 0 | 262,125 | 130,418 | 16.4 ms |
+| \(2^{39}+12,345\) | 0 | 741,435 | 370,156 | 46.3 ms |
+
+**Proved — compression obstruction.** Over \(\mathbf F_2\), the full fixed-\(X\) series has reduced denominator degree \(1+\sum_{d\le X}\varphi(d)\) for \(X\ge1\). For the boundary alone, a primitive root of odd order \(m>1\) survives exactly when \(\lfloor X/m\rfloor\bmod4\in\{1,2\}\). Each odd multiple of \(m\) contributes the same nonzero simple-pole residue, so this criterion accounts for cancellation exactly. Every subsequent even or odd coefficient section preserves the boundary’s entire reduced denominator. At \(X=2^{18}\) its degree is **12,755,176,724**. [Lambert-series identity](https://dlmf.nist.gov/27.7) · [Bostan–Mori coefficient descent, Algorithm 1](https://arxiv.org/html/2008.08822)
+
+Even a sum of fractions with explicit binomial denominators \(1+z^e\) requires **\(\Omega(X)\) exponent bits**. Every odd prime \(X/2<p\le X\) survives, so each must divide some listed \(e\). Their product already has \(\Theta(X)\) bits. This rules out a \(T^{o(1)}\) representation of the whole correction in that model. Computing **one requested coefficient** in \(T^{o(1)}\) remains open here. [Barvinok–Woods representation, §2](https://www2.oberlin.edu/faculty/kwoods/research/gf-jams.pdf)
+
+**Refuted — P1 parity claim.** For distinct primes \(p,q\) with \(pq\equiv1\bmod4\), the strict-octant increment is **2** when both primes are \(1\bmod4\), and **0** when both are \(3\bmod4\). Modulo **4** distinguishes them. At \(65\), the two points are \((1,8)\) and \((4,7)\). For \(p=q\), the strict increment is instead \([p\equiv1\bmod4]\), since the axis representation is excluded. Direct enumeration agreed on 486 distinct-prime products and 45 prime squares. [Jacobi’s two-square formula, Theorem 1](https://web.maths.unsw.edu.au/~mikeh/webpapers/paper68.pdf)
