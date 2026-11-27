@@ -1346,6 +1346,55 @@ Tests on 27 norm-only inputs included empty circles and multiple orbits.
 The bound concerns angular evaluation and enumeration, not factoring every
 integer represented or deciding arbitrary factoring instances.
 
+### All harmonic degrees and the quarter-power exponent
+
+The norm-only construction generalizes to degree $d$ with $s=2d+1$
+basis functions: 1 and the real and imaginary parts of $(x+iy)^j$ for
+$1\le j\le d$. On the unit circle parametrized by $t=\tan(\theta/2)$,
+clear the denominator $(1+t^2)^d$. Each new numerator is the real or
+imaginary part of $(1+it)^{2j}(1+t^2)^{d-j}$. The resulting integer
+coefficient matrix is nonsingular by independence of the Fourier harmonics.
+Its absolute determinant $D_d$ satisfies $D_d^{1/s}\le4^d$ by Hadamard
+and the row coefficient 1-norms. Exact checks for degrees 1 through 6
+gave $D_d=2^{2d^2}$ in those cases; the upper bound suffices.
+
+Write $R=\sqrt N$. Choose the number of parameter blocks
+$B\ge64R^{(d+1)/s}$ within a constant factor of that bound (integer
+power comparisons suffice). Set $K=32s(2B+1)^{2d}$ and use
+$r_j=\lfloor K R^j\rfloor/K$ for each harmonic, computable by integer
+square root. Substitute $t=(h+v)/B$ and multiply the numerators by
+$KB^{2d}$. As in the quadratic case the determinant is
+$K^s D_d B^{ds}\prod_j r_j^2$; this uses translation invariance and the
+sum $0+1+\cdots+2d=ds$. LLL gives a nonzero polynomial $G$ with
+coefficient 1-norm less than $KB^{2d}/4$: after division by $KB^{2d}$
+the bound is $\sqrt{s}\,2^{d/2}4^d R^{d(d+1)/s}B^{-d}<1/4$.
+
+For the radius-transfer step substitute $v=Bt-h$ back into
+$G/(KB^{2d})$. The resulting numerator has coefficient 1-norm at most
+$L=(2B+1)^{2d}/4$. Dividing by $(1+t^2)^d$ bounds the surrogate
+trigonometric polynomial by $L$ on the whole real circle since
+$\max(1,|t|^{2d})\le(1+t^2)^d$. Each of its sine and cosine coefficients
+has magnitude at most $2L$ by Fourier integration. Since $r_j\ge1$, the
+integer basis weights are bounded by $2L$ too. Replacing all $r_j$ by
+$R^j$ costs at most $4dL/K<1/4$ uniformly. On the block the true
+integer-valued auxiliary polynomial therefore vanishes at every lattice
+point. Reduce it modulo $y^2=N-x^2$ to $E(x)+yO(x)$, then extract integer
+roots of $E^2-(N-x^2)O^2$ and check the circle equation. This elimination
+polynomial is nonzero by harmonic independence and the simple roots of
+$N-x^2$. It has degree at most $2d$.
+
+The block exponent in $N$ is $(d+1)/(4d+2)=1/4+1/(8d+4)$.
+Taking $d=\lceil\log_2(2N)\rceil$ gives $O(N^{1/4})$ blocks, with an
+absolute constant: the determinant and LLL losses have already been
+accounted for in the factor 64. Dimension, degrees and entry bit lengths
+(including $\log K$ and the LLL transformation coefficients) are polynomial
+in $\log(2N)$. Standard polynomial-time LLL and rational polynomial
+factorization therefore give an $O(N^{1/4}\operatorname{polylog}N)$
+bit bound for this theoretical enumerator. Only the degree-two norm-only
+implementation has been tested end to end. This is a direct geometric
+bound; it does not supersede the earlier factoring-first baseline on the
+semiprime family or establish optimality of quarter-power arc lengths.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
