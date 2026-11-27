@@ -575,3 +575,22 @@ congruence and gcd. Planted-root recoveries were 24/24, 24/24 and
 floor(sqrt(N)/2) respectively. Each radius uses fresh offsets.
 This fixed dimension is an empirical control; a miss cannot certify
 that the interval is empty. The diagnostic supplies no prefix oracle.
+
+### Certifying empty and nonempty intervals
+
+For a reduced lattice row encoding g(T), the sum of absolute scaled
+coefficients bounds |g(T)| throughout |T|<=radius. If this sum
+is strictly below N², every modular root in the interval is an
+integer zero of g: each generating row takes a multiple of N² at
+such a root, and LLL takes integer linear combinations. The row
+is nonzero since the original lattice has full rank. Listing its
+integer roots and checking the original congruence thus certifies
+completeness, including empty intervals, for the requested
+nonpublic roots. If no row meets the inequality the result is
+inconclusive.
+
+On 48 seeded fixtures per radius (half planted, half randomly
+centered), all 48 lists were certified at each of sqrt(N)/32 and
+sqrt(N)/8, with 24 empty and 24 nonempty in each set. None were
+certified at sqrt(N)/2. All certified lists matched an exhaustive
+interval scan. These are fixed-dimension, small-input measurements.
