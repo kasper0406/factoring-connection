@@ -4025,3 +4025,33 @@ poly(log n) overhead per entry. This bound holds deterministically
 in the simultaneous-base range W≤n^(2/5), and in expected time
 for the single random-base method throughout its original domain.
 It saves a subpower factor while leaving exponent 1/2 in W.
+
+### Limits of the odd-modulus discriminant sieve
+
+Let R(M) count the classes a mod M for which a²−n is a square,
+including zero, with M odd and coprime to n. For M=p^e let
+z=1+(n|p). The exact count is
+((p−1−z)/2)p^(e−1) + z [1 + sum_{1≤j,2j<e} φ(p^(e−2j))/2].
+The first term lifts the classes with nonzero square discriminant.
+On each of the z singular classes the map a ↦ a²−n is bijective
+onto multiples of p modulo p^e by simple-root lifting in a.
+The bracket counts square multiples of p by their even valuation.
+
+For p≥5 the first term alone gives density at least 1/5. For p=3
+and z=0 it gives 1/3. For p=3 and z=2, the two singular classes
+give density at least 2/27: at e≥3 require a²−n=9 mod 27 so the
+remaining unit after division by 9 is a square modulo all higher
+powers of 3. At e≤2 the zero discriminant already suffices.
+CRT now gives R(M)/M ≥ (2/27)^ω(M). Since M exceeds or equals
+the product of the first ω(M) primes, ω(M)=O(log M/log log M).
+Consequently R(M)≥M exp(−O(log M/log log M)).
+
+For the specific search that enumerates every admissible baby class
+and every giant block, the entry budget R(M)+ceil(W/M) is therefore
+at least sqrt(W) exp(−O(log W/log log W)) for 1≤M≤W. This follows
+by taking the geometric mean of the two terms. For M>W, building
+the entire baby table already costs W^(1−o(1)). Together with the
+preceding construction this pins down the scale of savings from
+choosing odd wheel moduli, including prime powers. The bound concerns
+full residue tables; implicit representations and interval-specific
+pruning require a separate analysis.
