@@ -723,3 +723,30 @@ For general [L,U] with L>=2 the exact work of direct level scanning
 is at most floor((U²-1)/N)-ceil((L²-1)/N)+1 integer square tests.
 This provides a polynomial-time base case whenever that count is
 polynomial in log N. It leaves long blocks at macroscopic L open.
+
+### Quarter parity for moduli divisible by four
+
+Suppose 4 divides N, gcd(c,N)=1, and count all solutions to
+a²=c² mod N in [1,N/4]. For N>4 the maps a -> -a and
+a -> a+N/2 preserve the roots and partition them into quartets.
+Each quartet meets each open quarter once: the endpoints are
+nonunits, and the four representatives have the form
+r, N/2-r, N/2+r, N-r with 0<r<N/4. Hence the count is the total
+number of roots divided by four, independently of the unit scale.
+If the evaluator omits the public pair ±c, subtract its explicitly
+testable contribution to the interval.
+
+Write N=2^s m with m odd. CRT and multiplication by c give
+2^omega(m) times 2 roots for s=2, or times 4 for s>=3,
+using the standard square roots of unity modulo prime powers.
+For s=2 and m>1 the quarter count is odd exactly when m is
+a prime power. For s>=3 it is odd exactly when m=1. For N=4
+the inclusive endpoint contributes one. Integer root extraction
+and primality testing decide these cases in polynomial bit time.
+Direct enumeration verified the parity for all multiples of four
+through 512 and all unit scales 1<=c<min(N,18).
+
+For odd N, any translation by t preserving the roots must send
+both c and -c to roots. Subtracting the resulting congruences
+gives 4ct=0 mod N, forcing t=0. This rules out the translation
+step of this quartet argument on odd semiprimes.
