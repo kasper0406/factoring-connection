@@ -1383,3 +1383,43 @@ Each bin's conditional yes fraction therefore converges to the same
 when its output label can be retrained for each N. This conclusion
 uses a fixed partition; it supplies no uniform onset size for a
 growing number of bins.
+
+**Arbitrary interval placement on balanced semiprimes.** Suppose
+the classifier says no on a union of at most B intervals of square
+residues, with endpoints chosen separately for each N, and yes
+elsewhere. Its excess accuracy is O(B log N/√N), uniformly in the
+endpoints, for distinct balanced prime factors. Arbitrary choices
+based on training labels are included. This upper bound also
+applies to bins ordered by an invertible affine map of the square.
+
+For a proof write W(x,y)=2·1[V(x,y)≥1]−1. Its torus mean is
+positive. Choose a fixed real trigonometric polynomial P≤W with
+positive mean γ: start with a continuous ramp rising from −1 to
+1 just above the threshold and use uniform trigonometric
+approximation shifted down by its error. The zero-area boundary
+ensures that a narrow enough ramp still has positive mean.
+Its finitely many nonconstant modes (a,b) give nonzero k=a+bu
+mod N once min(p,q)>2 deg P, by reducing at both primes.
+
+For any interval I of length L in the residue grid, the all-residue
+mean of P(c/N,uc/N)·1_I(c² mod N) is γL/N+O(log N/√N).
+Indeed the zero Fourier mode j of I contributes only the constant
+mode of P. The j≠0 terms obey the complete quadratic Gauss and
+interval harmonic bounds from the square-bin MSE calculation.
+An invertible affine change in the square preserves gcd(j,N)
+in this bound. Restricting to units costs O(1/p+1/q) since P is
+bounded. Consequently the signed yes-minus-no mass is at least
+γL/N−O(log N/√N). Summing over disjoint no intervals gives the
+claim. In particular, an individual beneficial interval can have
+length at most O(√N log N). Polynomially many intervals in log N
+cannot attain inverse-polynomial excess accuracy asymptotically.
+
+As a finite upper control, assign each square position its count
+of no labels minus yes labels. Dynamic programming maximized the
+sum over up to B disjoint ordinary intervals, using all true labels.
+For prefix sums S_i initialize D_0(i)=0 and compute
+D_b(i)=max over j≤i of [S_j+max over h≤j of (D_(b−1)(h)−S_h)].
+For B=1 and 32 the gains in correct predictions were 44 and 712
+of 10,200 at N=10403, and 64 and 1704 of 1,020,096 at N=1022117.
+These are best possible fitted scores for the two finite inputs,
+with no claim that the optimizing partitions are publicly available.
