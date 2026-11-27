@@ -1195,6 +1195,37 @@ certification. It improves the derivative order, but its row count is
 larger than the arc evaluator's block count. Checked against exact shell
 enumeration for 1 through 99 and 221, 341, 703, 10001.
 
+### Can one polynomial approximate a long block of pole-sum rows?
+
+There are infinitely many balanced squarefree semiprimes for which the
+symmetry-weighted real rows, divided by $N^2$, contain a single interior
+spike on the integer interval $[\sqrt N/4,\sqrt N/2]$. Choose split primes
+in the same dyadic norm range with Gaussian angles in $(7,9)$ and $(16,18)$
+degrees, respectively (Hecke's fixed-sector prime number theorem). Gaussian
+factorization gives just two orbits, at angles given by the sum and difference
+up to symmetry. The difference angle lies between 7 and 11 degrees; the sum
+lies between 23 and 27 degrees. Only the smaller coordinate from the sum
+orbit lies in the interval. Its distance to each endpoint is
+$\Omega(\sqrt N)$. Its normalized row contribution there is the cosine
+of four times the sum angle, of absolute value at least $|\cos92^\circ|$.
+All off-shell contributions together have absolute weight below $1/4$ before
+normalization by the pole-filter bound.
+
+Consequently any polynomial uniformly approximating the normalized real rows
+to absolute error 0.005 on the integer block must have degree
+$\Omega(\sqrt N)$. Divide by the signed spike height: for sufficiently large
+$N$ this approximates the indicator of one interior integer to error below
+1/3. Composing the shifted polynomial with Hamming weight gives a polynomial
+approximating the symmetric Boolean function EXACT at that interior weight;
+Paturi's approximate-degree theorem gives linear degree in the block length.
+This excludes uniform polynomial interpolation on the integer rows, even
+when its coefficients can depend on $N$. It does not exclude algorithms
+approximating only a block total or identifying special rows arithmetically.
+
+At $N=173\cdot109=18857$, direct evaluation of the complex-pole row formula
+on rows 35 through 68 gave normalized contribution about $-0.204182$ at
+$x=59$; every other absolute value was below $2.5\cdot10^{-24}$.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
