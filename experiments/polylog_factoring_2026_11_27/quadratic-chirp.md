@@ -5230,6 +5230,12 @@ Write W(S)=χ_u(S)+χ_v(S) for the unnormalized mixed-root moment on a uniform m
 
 For a three-label predictor outputting −2,0,2, use its output divided by two as g. Overall exact-label accuracy at least 3/4+ε implies correct nonzero labels on at least 1/4+ε of all masks. Incorrect opposite signs account for at most 1/4−ε, hence E[g W]≥4ε. At exactly 3/4 accuracy there is a calibration example: a predictor supplied with the zero pattern can return zero there and random signs elsewhere. It attains 3/4 but its expected signed score vanishes everywhere. Thus signed correlation on nonzero masks is the more direct success criterion. The example presumes access to the zero pattern and makes no claim about the difficulty of computing it.
 
+#### A zero test using a quadratic Boolean phase
+
+Let x₀ be the low bit and x′ the remaining bits of a canonical root. For a mask s on those remaining bits define the sign by the Boolean phase x₀(1+s·x′) over the binary field. This requires one parity and one AND after reading the bits. Sum the signs over **all** four canonical roots, without subtracting any hidden contribution. Both even roots give +1. The known odd root 1 gives −1. The remaining odd root u gives −χ_{u′}(s). The resulting sum is 1−χ_{u′}(s), exactly 0 or 2. Thus a callable zero/nonzero predictor with uniform-mask accuracy 1/2+ε yields the parity predictor for u′ with the same accuracy. Goldreich–Levin followed by root verification recovers a factor in randomized time polynomial in the bit length and 1/ε. Exact zero tests on singleton masks recover the bits deterministically. All masks were checked by exhaustive enumeration for all 45 products of distinct odd primes below 35.
+
+This changes the permitted query family from linear Walsh phases to low-bit-gated phases of degree at most two. The ability to specify such a phase with a small Boolean circuit establishes no efficient way to sum it over the modular roots. The zero test is over the integers; reducing the sum modulo two erases the signal, whereas modulo four preserves it.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
