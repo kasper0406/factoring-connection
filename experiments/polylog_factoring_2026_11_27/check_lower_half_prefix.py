@@ -5,6 +5,41 @@ from math import gcd, isqrt
 from bounded_quadratic_roots import quadratic_roots
 
 
+def reflected_parity(n, y, start, width, half_parity):
+    """For a unit square on odd n, return cyclic-window parity or None.
+
+    half_parity is one for a prime power, zero for multiple prime factors.
+    Use the short-root solver on at most floor(sqrt(n)) exceptional positions.
+    """
+    if n <= 1 or n % 2 == 0 or not 0 <= width <= n or half_parity not in (0, 1):
+        raise ValueError("Expected an odd modulus, valid width and parity bit")
+    stop = (n+1)//2
+    end = start + width
+    boundaries = {1, stop}
+    for point in (start, end, 1-end, 1-start):
+        point %= n
+        if 1 < point < stop:
+            boundaries.add(point)
+    groups = [[], []]
+    points = sorted(boundaries)
+    for left, right in zip(points, points[1:]):
+        inside = (left-start) % n < width
+        reflected = (-left-start) % n < width
+        groups[inside ^ reflected].append((left, right))
+    lengths = [sum(right-left for left, right in group) for group in groups]
+    side = int(lengths[1] <= lengths[0])
+    cutoff = isqrt(n)
+    if lengths[side] > cutoff:
+        return None
+    parity = 0 if side else half_parity
+    block = max(1, cutoff//8) + 1
+    for left, right in groups[side]:
+        for origin in range(left, right, block):
+            span = min(block, right-origin) - 1
+            parity ^= len(quadratic_roots(n, 2*origin, origin**2-y, span)) % 2
+    return parity
+
+
 def split(n, prefix_parity):
     """Assume n is odd and has at least two distinct prime divisors.
 
@@ -19,7 +54,10 @@ def split(n, prefix_parity):
         middle = start + size
         if middle >= stop:
             continue
-        parity = prefix_parity(start, size) ^ int(start <= 1 < middle)
+        parity = reflected_parity(n, 1, start, size, half_parity=0)
+        if parity is None:
+            parity = prefix_parity(start, size)
+        parity ^= int(start <= 1 < middle)
         if not parity:
             start = middle
     end = min(start + size, stop)
