@@ -674,3 +674,26 @@ log N. The generator bound supplies no such aggregation algorithm.
 
 Reference: Eric Bach, “Explicit bounds for primality testing and
 related problems”, Mathematics of Computation 55 (1990), 355–380.
+
+### Binary prefixes isolate the interval condition
+
+Use n=ceil(log2 N) bits for the root representative a. Decompose
+[0,B+1) into disjoint aligned binary blocks, one per set bit of
+B+1, largest first. Each block fixes high bits and leaves the low
+bits free, hence is affine over F_2. XOR the root-count parities
+of the blocks and remove the known contribution at a=1 for B>=1.
+This handles the cutoff with O(n) affine restrictions. For the
+quarter cutoff the same decomposition works without knowing factors.
+
+Even on one such block, linear equations over F_2 with auxiliary
+bits cannot in general represent exactly the root witnesses under
+projection onto their ordinary bits. For N=6545, B=1636, the block
+[1024,1535] occurs in the decomposition of [0,1637). Exhaustive
+testing of a² mod 6545 on those 512 inputs gives precisely
+1121, 1189, 1429 as roots. Every nonempty projection of an affine
+solution space is affine and has power-of-two cardinality. The
+same obstruction holds if each valid input must have an odd number
+of lifts and every invalid input an even number, because nonempty
+fibers of a linear projection all have the same size. This example
+does not exclude a representation of aggregate parity alone or
+a nonlinear encoding.
