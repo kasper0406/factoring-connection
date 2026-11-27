@@ -4138,3 +4138,31 @@ and take their product n (b≥2). This satisfies 2j≤sqrt n and
 has exactly 2^b hits, giving zero modulo 2^b. The prime number
 theorem guarantees enough primes for each fixed b. This only
 limits the single difference as a detection rule.
+
+### A restricted exact floor-sum baseline via rational slopes
+
+For m≥1 and 1≤j≤sqrt(m), the dyadic sum admits an
+O(min(j,m^(1/3)) poly(log m)) bit-operation baseline. Below twice
+the ceiling cube root use direct division. Otherwise take blocks
+[c,c+w) inside (j,2j] of length w≤h=floor(j/ceil(m^(1/3))).
+Continued fractions provide integers a,q with 1≤q≤h and
+|a−qm/c²|≤1/h. Put f(x)=ax+qm/x. For x=c+d in the block,
+f(x)−f(c)=(a−qm/c²)d+qm d²/(c²(c+d)).
+Since c≥j, d<h, q≤h and mh³≤j³, this lies between −1 and 2.
+
+Set C=floor(f(c))−1. The baseline sum of floor((C−ax)/q) is
+an affine floor sum computable by the Euclidean algorithm. To
+correct it consider s=C+1,...,C+3. Add the count of block integers
+satisfying ax=s modulo q and ax²−sx+qm≥0. Each such x adds the
+ordinate y=(s−ax)/q between the baseline and m/x. The quadratic
+inequality cuts the block into at most two intervals, whose integer
+endpoints and congruence counts take poly(log m) bit operations,
+also for linear or constant cases. There are O(m^(1/3)) blocks.
+Taking the sum modulo a small power of two changes the accumulator
+size but leaves this block count.
+
+Richard Sladkey gives an O(m^(1/3))-time algorithm for the full
+divisor summatory function by successive approximation:
+https://arxiv.org/abs/1206.3369 . The full sum modulo two equals
+floor(sqrt m) modulo two by pairing (x,y) with (y,x); truncation
+to j<x≤2j prevents that cancellation in general.
