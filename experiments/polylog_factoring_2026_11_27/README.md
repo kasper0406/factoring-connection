@@ -22,6 +22,22 @@ For inputs with exactly two prime divisors, a constant-precision normalized Sali
 
 The Fourier decoder reuses one sample pool across its interval search. It recovered planted noisy signals on inputs up to 36 bits. The public predictor tests found no clear signal for the specified adaptive exponent rules or for the carry and Euclidean feature models on held-out moduli. [Decoder and calibration](quarter-fourier.md) · [Exponent screen](adaptive-exponent-screen.md) · [Held-out feature screen](carry-feature-screen.md)
 
+## Native evaluator audit for the complete sums
+
+Distinguish the summation modulus $M$ from the integer $N$ to factor. The older repo studies pure cubic Weyl sums $\sum_xe_N(ax^3)$ at ordinary modulus $N$. Its nine-value reduction for split semiprimes assumes access to approximate sum values. The small-scale target here uses the fixed phases $P_3(x)=3x-x^3$ and $P_4(x)=x^4-2x^2$ at $M=N^2$. Classical stationary formulas give direct local evaluations for known prime powers. Hiary's fast cubic method for shorter, small-cubic-coefficient sums does not cover the coefficients at the full period length. [Older cubic reduction](../../notes/analytic_results.md#4-reduction-c3-complete-cubic-weyl-sums-mod-n) · [Prime-power stationary phase](https://doi.org/10.4064/aa-80-1-1-48) · [Hiary's cubic method](https://annals.math.princeton.edu/wp-content/uploads/annals-v174-n2-p04-p.pdf)
+
+For an arbitrary odd square $M=B^2$ and unit scale $t$, writing $x=a+By$ gives a direct evaluation from $M$ alone. Sum complete upper-digit blocks first. Exactly those $a\bmod B$ with $P'(a)=0\pmod B$ contribute, each with normalized phase $e_M(tP(a))$. Scan these derivative residues and cache a histogram of exact phase exponents. No factorization or lifting is needed. For the cubic simplified derivative test remove the public prime 3. At ordinary nonsquare composite moduli the implementation uses literal symmetry-paired summation. [Native phase evaluator](native_phase_evaluator.py)
+
+If $M=p^k$ with $k\ge2$, exact perfect-power recognition and primality give the prime publicly. For even $k$ the local critical points $\pm1$ for cubic and $0,\pm1$ for quartic directly give the normalized terms. For odd $k=2r+1$ and $r\ge1$, Taylor expansion in a stationary class has only the quadratic term after the constant, with coefficient $p^{2r}tP''(a)/2$. The remaining local Gauss factor after normalization is $\epsilon_p(tP''(a)/2\mid p)$. The critical roots and their values remain public. This is a polynomial-bit evaluator on these nondegenerate perfect-power branches. The general odd square case still uses $B$ derivative checks; the lattice cache above retains a better worst-case exponent.
+
+The evaluator matched 60 literal sums across ordinary moduli, square moduli, and prime powers. It used two cached phases for both polynomials on a public 90-bit prime power. On $N=11009$, $M=N^2$, the derivative scan used 11,009 exact checks and produced four weighted phases in approximately 0.001–0.002 seconds of setup. The earlier Python lattice cache on the same control took about 1.21 seconds on this run. The scan also prepared four phases at $N=471311$ in about 0.068 seconds. These are measured small-input comparisons. [Evaluator and tests](native_phase_evaluator.py)
+
+### Variance after subtracting the public quartic terms
+
+For distinct odd primes $N=pq$, subtract $1+4e_M(-t)$ from the normalized quartic using the Gaussian completion below. The remaining contribution $R(t)$ is the average of $Z_s=e_M(-s^2/(4t)-s-t)(g_M(s)-N)$ over uniform $s\bmod M$, with $Z_s=0$ outside $1<\gcd(s,N)<N$. Its magnitude is at most four by the CRT product. At gcd $p$, the quadratic Gauss factor is $N\sqrt p$ times a signed fourth root of unity, with signs balanced. At gcd $p^2$ it is $Np$. The corresponding probabilities are $(p-1)(1-1/q)/p^2$ and $(1-1/q)/p^2$. The symmetric $q$ cases give the exact second moment
+$$\mathbb E|Z_s|^2=4N^2(1-1/p)(1-1/q).$$
+Thus independent uniform summand sampling needs order $N^2$ samples for constant squared error on balanced semiprimes. Optimal one-term importance sampling still has second moment at least $(\mathbb E|Z_s|)^2=\Omega(N^{3/2})$ there. This bound follows from Cauchy–Schwarz and the gcd-$p$ terms alone. Both bounds apply at small unit scales because the scale changes only the phase of each summand. They concern independent sampling after subtracting the public terms. Analytic aggregation across the remaining indices is open. The formulas matched five direct controls. [Sampling diagnostic](quartic_sampling_check.py)
+
 ## Degree-eight benchmark and one reciprocal quotient range
 
 The smooth upper-digit moment uses $P_8(t)=B_8(t)/B_8(0)=1-20h^2-40h^3-30h^4$, where $h=t(1-t)$. Average $P_8(z/N)$ over the lifts of each unit lower digit $a$ in the isolation window and subtract the two public stationary blocks. For $d=\gcd(a^2-c_0^2,N)$ the upper digits run through $s+d\mathbb Z$ with multiplicity $d$. Bernoulli multiplication gives the exact block average $(d/N)^8P_8(s/d)$. The remaining stationary block on a singleton trial contributes $P_8(((z_0+2uj)\bmod N)/N)$. [Benchmark](bernoulli_moment.py) · [Isolation](affine-pair-bound.md)
@@ -227,6 +243,8 @@ python stationary_log.py
 python stationary_threshold.py
 python stationary_dual.py
 python stationary_cubic.py
+python native_phase_evaluator.py
+python quartic_sampling_check.py
 python stationary_window_reference.py
 python polynomial_stream_limits.py
 python small_scale_phase_check.py
