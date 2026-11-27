@@ -1588,3 +1588,7 @@ python crt_range.py
 python stationary_hardness.py
 python tangent_progressions.py 38942974393
 ```
+
+### Reducing the complex phases modulo two
+
+An explicit finite-field implementation of a primitive phase of order N needs extension degree ord_N(2) for odd N. This can already be large on balanced squarefree semiprimes. Among primes p in [X,2X], every p with ord_p(2) at most B divides the product of 2^j−1 for 1≤j≤B. Its logarithm is O(B²), so there are O(B²/log X) such primes. Taking B=floor(X^(1/3)), the prime number theorem shows that almost every prime in this interval has larger order. For N=pq with distinct primes in the interval, ord_N(2) is a multiple of ord_p(2). Even storing one general field element in a standard basis then costs more than B bits for almost all such pairs. Pairing a primitive phase z with its inverse can reduce the degree by at most two, since z solves T²−(z+z⁻¹)T+1. This bounds explicit phase arithmetic only. A compact computation of a symmetric aggregate could bypass it, and would still need a decoding argument connecting its finite-field value to a factor-sensitive decision.
