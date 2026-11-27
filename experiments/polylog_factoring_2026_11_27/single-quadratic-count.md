@@ -432,3 +432,25 @@ an exact parity oracle for a different count, without a phase
 digit or Fourier decoding. The swap does not itself evaluate the
 parity in polynomial bit time. Direct enumeration still scales
 with the window width.
+
+## Deterministic starting interval with scale one
+
+Fix c=1. For odd N having k>=2 distinct prime factors, CRT and
+the two roots ±1 on each odd prime power give exactly 2^k roots
+of a²=1 modulo N. Negation pairs them without fixed points. Thus
+[1,(N-1)/2] contains exactly 2^(k-1) roots. Removing 1 leaves
+the public interval [2,(N-1)/2] with odd parity, independently
+of the factorization. Every root there yields a proper gcd(a-1,N).
+
+Consequently exact inverse-pair parity on square boxes [L,U]^2,
+2<=L<=U<=floor(N/2), suffices for deterministic splitting with
+one query per bisection level. Indeed swaps cancel the cross terms
+in parity when an interval is bisected. Even prefix squares
+[2,B]^2 alone suffice: the endpoint prefix parities start at
+zero (empty prefix) and one; keep the half whose endpoints differ.
+The prefix parity can oscillate, so the invariant is differing
+endpoints rather than monotonicity. Primality testing, removing
+factors of two and perfect-power detection handle the other cases;
+recursing on proper splits gives complete factorization with a
+polynomial number of queries in log N. Direct parity scans still
+have width-dependent bit cost.
