@@ -849,3 +849,47 @@ on a single sign is constant or plus/minus that sign, so this
 bounds the best advantage from this symbol alone. This statement
 is about uniform unit scales; it leaves adaptive scales and joint
 features of c open.
+
+### Several Jacobi probes at related scales
+
+For unit c, every multiplicative probe chi(kc)=chi(k)chi(c).
+Thus any number of fixed multipliers, including the dyadic sequence,
+provides only the original sign. This also holds for multipliers
+selected using only N, independent randomness and preceding signs.
+
+Additive shifts require a different argument. For balanced distinct
+odd primes p,q of comparable size, fix k>=1 public shifts t_i
+pairwise distinct modulo each prime. For uniform unit c, a predictor
+using only the vector of chi(c+t_i) has advantage at most
+
+    O(k/sqrt(N) + 2^(k/2) (k+1)^2 log(N)/sqrt(N))
+
+in predicting H(c). The bound is uniform in the shifts and in the
+decision function, for a fixed balance ratio. In particular it tends
+to zero exponentially in the input length for k <= (1-epsilon)log2 N
+with any fixed positive epsilon (absorbing polynomial factors).
+
+Proof: extend the folded quarter sign F=2H-1 to all residues by
+using the same interval test on x=uc. Conditioning on units costs
+O(1/sqrt(N)). A zero probe has probability O(k/sqrt(N)) by a union
+bound; set arbitrary Boolean signs there. Expand the Boolean
+decision function in Walsh characters on k signs. Its coefficient
+l1 norm is at most 2^(k/2) by Parseval. Off the zero set each Walsh
+monomial is a product of Jacobi symbols. To avoid multiplying the
+zero-event cost by the Walsh norm, evaluate the multilinear Walsh
+extension directly at the raw signs including zero: it is an average
+over Boolean completions and stays in [-1,1].
+
+For a nonempty subset S, change variables to x=uc. The sum involves
+the Jacobi character of the product of x+u t_i over S, up to a
+constant sign. At each prime this polynomial has |S| distinct
+simple roots. The standard Weil bounds for complete multiplicative
+and mixed additive-multiplicative character sums bound each local
+Fourier sum by O((|S|+1)sqrt(p)) or its q analogue, including
+frequency zero. CRT multiplies the local bounds. Completing the
+folded quarter interval costs O(log N) in normalized Fourier l1
+norm by the geometric-series bound; the same holds for F. Dividing
+by N gives the stated bound per nonconstant Walsh monomial. The
+constant monomial contributes O(1/N) by interval length. This
+argument leaves shifts chosen from the input scale, growing adaptive
+decision trees, and predictors using other features of c open.
