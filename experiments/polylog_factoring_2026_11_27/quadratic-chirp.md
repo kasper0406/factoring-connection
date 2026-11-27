@@ -4480,3 +4480,38 @@ polylog factoring for this restricted family. For such S one could
 also enlarge stage one's lcm bound to BS: the entire residual u
 then divides lcm(1,...,BS) since each prime power in u is ≤BS.
 The second stage reduces the dependence on the search bound.
+
+### A simultaneous obstruction to all four signed orders
+
+Choose four distinct primes r₁,...,r₄ in [R,2R] for large R.
+On these four moduli prescribe residues (1,−1,2,2) for p and
+(2,2,1,−1) for q. CRT gives two distinct reduced classes modulo
+their product. Linnik's least-prime theorem gives primes in both
+classes of size R^O(1); hence for n=pq we have R≥n^c for an
+absolute c>0 for sufficiently large R. Both primes tend to infinity.
+
+For every σ,τ in {1,−1}, one of r₁,r₂ divides p−σ, and q is 2
+modulo that prime. Thus n−στ is σ(2−τ) there and is nonzero.
+Symmetrically one of r₃,r₄ divides q−τ and does not divide n−στ.
+For any B<R both private primes survive E=(n−στ)lcm(1,...,B).
+Both residual group sizes consequently exceed or equal R for all
+four sign pairs at once. For every fixed polylogarithmic B,S these
+bounds beat S on infinitely many n.
+
+There is also a probability bound for the specific second-stage
+test. After sampling a uniform norm-one element and powering by E,
+each local image element is uniform in its cyclic image group.
+The chance its order omits the designated prime r is at most 1/r.
+With probability at least 1−2/R both local orders have their
+designated prime divisor. For b=ceil(sqrt S), if b²+b<R,
+no positive multiplier jb±i tested in either stage is divisible by
+either designated prime. Thus no trace hit or identity gcd occurs
+on this event. This bound conditions on sampling units, as in the
+signed method. Incidental nonunits during sampling cost O(1/p+1/q)
+in probability per draw. The claim applies to these exponents and
+this bounded collision search, not to other factoring algorithms.
+
+At (r₁,r₂,r₃,r₄)=(11,13,17,19) the least positive prime
+representatives are p=1064933 and q=393109. For B=10 the four
+residual pairs, in (++,+−,−+,−−) order, are (266233,32759),
+(266233,39311), (481,799), and (59163,39311).
