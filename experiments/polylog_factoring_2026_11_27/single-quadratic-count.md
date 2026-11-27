@@ -536,6 +536,29 @@ would itself cover the candidate. Thus on this family the hint already
 supplies one of a bounded list of linear gcd witnesses. Generating the
 hint from N remains open.
 
+**Exact random-input baseline.** The residue classes modulo q above
+are precisely the distinct reduced fractions t/j in the signed box
+|t|≤K, 1≤j≤K. Two fractions equal modulo q have cross difference
+of magnitude at most 2K²≤2q/p<q, so they agree as rationals.
+The positive coprime pairs in the K by K square number
+2·sum(phi(i), i=1..K)−1 by reflection across its diagonal. Including
+negative fractions and zero gives exactly
+S=4·sum(phi(i), i=1..K)−1 classes, with phi(1)=1. Uniform sampling
+therefore hits the set with probability S/q. This counts the existence
+of some short nonunit denominator; a specific decoder can miss it.
+The formula matched exhaustive class counts on all 561 pairs of distinct
+odd primes below 150. A single gcd(x,N) splits on (p+q−2)/(pq) of
+uniform residues, already at least 1/p, so the earlier 3/p bound limits
+the per-draw gain of this denominator event to a factor of three.
+
+More generally let x=F(z) modulo N for a uniform residue z and a public
+polynomial whose reduction modulo q is nonconstant of degree d. Each
+of the S classes has at most d preimages modulo q, so the hit probability
+is at most min(1,dS/q). Polynomial degree in the bit length cannot make
+this a polynomial-success sampler on balanced semiprimes. This argument
+leaves open high-degree succinct maps, distributions on nonuniform
+seeds, and reductions that become constant at a hidden prime.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
