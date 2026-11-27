@@ -5024,3 +5024,28 @@ then a one: its characteristic polynomial gives a monic recurrence
 of order d. This argument concerns consecutive block indices.
 At dyadic cutoffs the number of initial zeros is only logarithmic,
 and a nonlinear gcd readout is outside the scalar-linear model.
+
+### Recovering the primes in a prefix from small cyclic reductions
+
+For p<=b<2p, where p is the least prime divisor of N, reduce P_b
+modulo X^ell-1. Its coefficient c_j at X^j sums N/r over primes
+r|N with r<=b and r=j modulo ell. Consequently N/gcd(N,c_j)
+is exactly the squarefree product of the primes in that class.
+Indeed for r in the class, only its own summand survives after
+division by r^(v_r(N)-1) and reduction modulo r. For every other
+prime divisor of N the full prime power divides c_j.
+
+Start with the product at ell=1, and refine it by taking gcds with
+these class products and splitting whenever the gcd is proper.
+Stop increasing ell once lcm(1,...,ell)>N. Every pair of distinct
+primes in the prefix differs by less than N, so some ell tested
+separates it. The surviving pieces are therefore exactly the
+individual primes in the prefix, even for nonsquarefree N.
+
+The maximum ell is O(log N): every binomial coefficient in row k
+divides lcm(1,...,k) for k>=1, by the factorial valuation formula
+(each power of a prime contributes at most one carry). The maximum
+entry is at least 2^k/(k+1). Thus the rings and the full collection
+of requested residues have polynomial size in log N. Obtaining the
+*truncated* cyclic reductions in polynomial time remains open.
+For N=143, b=16 and ell=3 the reduction is 11X+13X^2.
