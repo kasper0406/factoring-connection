@@ -1817,3 +1817,24 @@ Jacobi-negative u a switch flips the normalized sign. Guessing the
 single initial orientation costs only two candidate prefixes. This
 reuses the existing binary-prefix decoder; the additional assumption
 is access to the scale-dependent bit or character selection.
+
+### Exact shifted low-bit correlation returns the complementary factor
+
+Let f be the signed low bit on units, extended by zero elsewhere. For
+N=pq write p for the prime selected by f. For every unit shift h,
+the integer sum of f(x)f(x+h) over x modulo N is 2−q. CRT gives
+q−2 choices avoiding 0 and −h at q. At p the sum of the Legendre
+symbol of x(x+h) is −1: away from x=−h it equals the character of
+x/(x+h), which runs once over all residues except 1. The omitted
+summand is zero. Thus one exact sum at h=1 gives q by subtraction.
+
+Conditional on x and x+h both being units, a uniform sample of the
+sign product has mean −1/(p−2). On balanced semiprimes, distinguishing
+this Bernoulli sign distribution from a fair sign from independent
+products alone needs Ω(p²) samples for constant advantage: its
+single-sample relative entropy from fair is O(1/p²), and Pinsker's
+inequality bounds the product-distribution advantage. Every unit shift
+has this same law. Shifts with a proper nonunit gcd already split N.
+This only bounds using the sampled sign products as independent bits;
+the positions, correlated queries, and structured summation remain
+available. The exact identity gives no fast way to sum the primitive.
