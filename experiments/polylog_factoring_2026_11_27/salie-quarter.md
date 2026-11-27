@@ -724,3 +724,31 @@ not a monotonicity claim. At N=15 the label is exactly balanced
 on every unit square. This obstruction concerns predicting a random
 preimage label; the aggregate window parity is deterministic on the
 square, and the bound does not transfer to that target.
+
+## Factored evaluation for all odd moduli and scales
+
+For the normalized complete sum T(c)=S_N(1,c²/4)/G_N, suppose the
+prime powers r=p^e exactly dividing N are supplied. Put v_r=(N/r)⁻¹
+modulo r. The root-sum identity and CRT give T(c) as the product
+over these r of the following real numbers.
+
+* If p does not divide c, the factor is 2 cos(2π(c v_r mod r)/r).
+* If p divides c and e=1, the factor is 1.
+* If p divides c and e≥2, the factor is 0.
+
+Indeed the additive phase factors over CRT; locally the roots are
+±c in the first case and only 0 in the second. In the last case all
+roots are divisible by p. Translation by r/p preserves the root
+set, and multiplies its sum by a nontrivial p-th root of unity. The
+sum is therefore zero. This covers nonunit scales and repeated
+prime factors without enumerating roots.
+
+With k distinct prime divisors, absolute error 2^(−t) costs polynomial
+bit time in log N and t. For example enclose each local factor to
+error 2^(−t)/(k·3^k), so the telescoping product error is at most
+2^(−t) even allowing approximate factors of magnitude up to 3,
+using exact dyadic multiplication afterwards. A direct FFT of the
+original summands agreed on every scale of every odd N from 3 through
+251 (15,875 values, maximum absolute discrepancy below 5·10^(−15)).
+The supplied factors determine the CRT phases; obtaining them from the
+unfactored index remains the computational issue for this formula.
