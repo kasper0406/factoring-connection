@@ -1329,3 +1329,27 @@ primes; otherwise testing gcd(k−a−b,N) over the resulting list and
 the candidate pairs recovers a factor as in the MSE reduction.
 This proof uses the *finite-input* baseline and does not require
 knowing its value to execute recovery when a gain bound is supplied.
+
+### A factor-free sufficient test for threshold advantage
+
+Let a fixed classifier answer no with probability D(c² mod N), so
+its prediction probability is the same on all four roots. For
+uniform unit c put s(c)=2cos(2πc/N) and J(c)=1[|s(c)|<1/2].
+When J(c)=J(uc)=1, the true magnitude |s(c)+s(uc)| is below one.
+Pointwise the true no indicator is at least J(c)+J(uc)−1. The
+permutation c→uc preserves the square. Hence the excess accuracy
+over always yes is at least E[D(c²)(4J(c)−3)]. Every term on the
+right can be sampled from N alone. Equivalently, a positive-frequency
+no set with conditional small-cosine probability above 3/4 certifies
+positive gain. A negative lower bound is inconclusive.
+
+For m independent validation draws after freezing the classifier,
+the mean score minus sqrt(8 log(1/α)/m) is a one-sided lower bound
+with confidence 1−α by Hoeffding (scores range from −3 to 1).
+Actual randomized no decisions may replace the probabilities.
+One can use a stricter certified cosine cutoff to handle numerical
+uncertainty conservatively. Direct public enumeration for 32 equal
+bins of the square gave maximum within-bin J frequencies of 0.23837
+at N=10403 and 0.16944 at N=1022117. Thus no union of these bins
+passes this sufficient test on either input. This does not evaluate
+their actual accuracy and does not require any hidden root.
