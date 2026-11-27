@@ -131,6 +131,11 @@ A single fixed decision |T_m(d)|≥1 also suffices on requested unit
 inputs across odd moduli. Known auxiliary factors set the comparison
 level by CRT. [Threshold calibration and precision](salie-quarter.md#one-fixed-magnitude-threshold-on-augmented-inputs)
 
+The fixed threshold at the original N already suffices for a split:
+some prime-power frequency has coefficient Ω(1/ω(N)). Thus a
+semiprime-only bit evaluator suffices for semiprime factoring.
+[Same-modulus proof](salie-quarter.md#splitting-the-original-modulus-with-the-fixed-threshold)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

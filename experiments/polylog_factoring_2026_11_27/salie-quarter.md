@@ -1237,3 +1237,51 @@ at all 60 unit scales gave maximum midpoint error below 0.00850.
 This tests calibration with ideal answers, not the threshold oracle.
 The reduction requires correctness on the selected CRT inputs; an
 average error guarantee on random units alone does not imply it.
+
+## Splitting the original modulus with the fixed threshold
+
+The bit 1[|T_N(c)|≥1] on requested unit scales at N itself suffices
+to split N in randomized polynomial time whenever w=ω(N)≥2. In
+particular a semiprime-only procedure suffices for semiprime inputs.
+This uses a different argument from calibration by auxiliary primes.
+
+Extend the bit to all CRT coordinates by thresholding the product of
+local absolute cosines, including at nonunits. For uniform residues
+write it as B=1[∑Y_r≥0] with the independent local log magnitudes
+from the constant additive accuracy proof. Its variance is bounded
+below by an absolute constant. Indeed the mean of the sum is
+(log 2)∑1/r=O(log(w+1)), since the r are distinct positive integers.
+Its variance is at least w/32 and the individual centered third
+absolute moments are uniformly bounded by the fourth-moment estimate
+above. Berry–Esseen for independent summands gives normal approximation
+error O(1/√w). Hence both sides of zero have probability tending to
+1/2 uniformly as w grows (use left limits for a strict inequality).
+For bounded w, at each r a constant fraction of the grid has local
+magnitude greater than 1, and a constant fraction has magnitude less
+than 1 when r≥5. This follows by grid convergence and for finite r
+by using the grid point nearest a cosine zero. At r=3 the low choice
+equals 1 with probability 2/3. At least one r≥5, so independence
+again gives an absolute positive lower bound for both outcomes.
+
+By the Efron–Stein variance inequality, some r has expected conditional
+variance at least Var(B)/w when all other coordinates are fixed.
+Conditionally B is an upper threshold on z=cos(4πx/r), with x the
+local coordinate multiplied by v_r, and let α be its acceptance
+probability. Since E z=0, |z|≤1 and E z²=1/2, the positive and
+negative parts each have expectation at least 1/4. If the threshold
+is nonnegative, the mean z among accepted coordinates is at least
+1/4 by monotonicity. If it is negative, the mean of −z among rejected
+coordinates is at least 1/4. Thus E[Bz]≥α(1−α)/4, including constant
+thresholds. Averaging leaves a real Fourier coefficient Ω(1/w) at
+k=2v_r(N/r), whose gcd with N is N/r.
+
+As in the earlier reductions, proper nonunit queries already split N,
+and at zero the extended bit is known to be one. Run the sampled
+heavy-frequency search with threshold of order 1/log N and verify
+candidate gcds. An error probability smaller than a sufficiently
+small absolute constant divided by w over uniform unit inputs also
+preserves the coefficient (fresh randomness for randomized answers).
+The guarantee is a bound on bit errors, not merely positive agreement
+over chance. A direct FFT diagnostic for all 676 eligible N≤2000
+gave a maximum among the predicted coefficients of at least 0.1471
+on each proof extension; these spectra used the supplied factors.
