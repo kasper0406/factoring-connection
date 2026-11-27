@@ -882,6 +882,27 @@ most frequent sum for each product class separately at primes through
 all such tables on the sample. The necessary log₂(2H) is at least
 15.288 bits up to rounding on this interval.
 
+**Combining several public residues per prediction.** For each
+target prime ℓ≤(log X)^A allow an arbitrary function of N mod m_ℓ,
+where the modulus is fixed before seeing N. Put D=lcm(ℓ,m_ℓ).
+If D≤X^(1−ε) for fixed ε>0 at every target, the same expected
+correct-weight bound holds with a constant depending on ε.
+
+For each unit product u mod D, the proposed sum fixes a quadratic
+equation for the first factor mod ℓ. At most two roots are possible.
+The reduction map on units modulo D onto units modulo ℓ is surjective,
+so each root lifts to φ(D)/(ℓ−1) unit classes modulo D. The second
+factor is then fixed modulo D by u. There are therefore at most
+2φ(D)²/(ℓ−1) successful ordered class pairs over all u. For primes
+drawn in [X,2X], Brun–Titchmarsh bounds each individual class
+probability by O(log X/(φ(D) log(X/D)))=O_ε(1/φ(D)). The two-draw
+argument above proves correctness probability O_ε(1/(ℓ−1)), and
+summing gives expected log G of order at most log log X.
+Enumeration verified the fiber bound for all 211 pairs (D,ℓ) with
+2≤D≤120 and ℓ prime dividing D. Each prediction may combine
+several fixed residues by taking their lcm. Unrestricted arithmetic
+on N and input-dependent choices of modulus are outside this model.
+
 ### Evaluation at multiples of three
 
 For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
