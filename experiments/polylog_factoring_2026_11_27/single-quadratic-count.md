@@ -559,6 +559,30 @@ this a polynomial-success sampler on balanced semiprimes. This argument
 leaves open high-degree succinct maps, distributions on nonuniform
 seeds, and reductions that become constant at a hidden prime.
 
+**Succinct powers.** For a uniform unit z and public positive exponent
+e, the image of z^e modulo q is uniform on a subgroup of order
+m=(q−1)/gcd(q−1,e). If the denominator event has probability at least
+δ, the preceding S favorable residues give m≤S/δ. For q/p≤C with
+known constant C, use S≤3C, and set B=ceil(3C/δ). Then q−1 divides
+E=e·lcm(1,...,B), since m divides the lcm. Given an inverse-polynomial
+lower bound δ and a polynomial-bit exponent e, E has polynomial bit
+length and is constructible in polynomial bit time. The same argument
+covers a polynomial of degree D applied after powering if it remains
+nonconstant of degree D modulo q: replace S by DS in the image bound.
+
+This E suffices to split N without the window. Write E=u·2^s with u
+odd. For a fresh uniform unit w test gcd(w^(u·2^i)−1,N) for i=0..s.
+The q component reaches one by the last step, and its first hitting
+index is the base-two logarithm of the order of a uniform element in
+the Sylow 2-subgroup modulo q. Each index has probability at most 1/2
+since q is odd. The independent p component either never reaches one
+or reaches it at a fixed index conditional on its local input. With
+probability at least 1/2 the hitting indices differ and some gcd splits.
+This is the standard group-order splitting mechanism. Exhausting the
+unit bases on 330 choices of small semiprime and exponent multiple of
+q−1 confirmed the bound. The argument supplies a decoder for a promised
+concentrating exponent, not a way to construct that exponent from N.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
