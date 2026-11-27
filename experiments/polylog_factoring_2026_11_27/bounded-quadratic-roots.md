@@ -65,6 +65,33 @@ For m bounded by a polynomial in log N, the same extractor accepts division-free
 
 A planted check at N=175, m=4, A=3 and y=4 squared T+A successively 128 times, reducing each gate. Call the resulting power U. For H=U c(T+A−2) f³ the decoder returned root 2 for c=1 and divisor 7 for c=7. For H=U f⁴ it returned no relation. The power has degree 2^128 before reduction. These examples exercise compressed evaluation only; the useful linear factor was supplied.
 
+### Integer-valued auxiliary polynomials given by evaluations
+
+Suppose a proposed auxiliary H is rational of known degree at most d,
+integer-valued on the integers, and publicly evaluable at 0 through d
+modulo N^m. This is a conditional interface for a CM proposal.
+No evaluation oracle of this type with improved divisibility is assumed.
+Newton interpolation writes H as a sum of binom(T,j) times the jth
+forward difference at zero. Thus D=d! clears every denominator. If
+N≤d, trial division costs polynomial time in d. Otherwise check the
+integers through d against N: a nonunit gives a proper factor, or D
+is a unit modulo N^m. In the latter case the differences computed
+from d+1 samples reconstruct the ordinary monomial coefficients of
+H modulo N^m using inverses of j! modulo N^m. Multiplying these by D
+also gives the coefficients of the integer polynomial DH at the same
+precision. All costs beyond the samples are polynomial in d,m,log N.
+
+Divisibility of H on promised integer lifts is preserved on multiplying
+by D. Since the standard ideal (N,f)^m contains N^m, membership of DH
+is determined by those coefficient residues. Changing representatives
+modulo N^m preserves all the required lift congruences as well. Hence
+the previous one-sided extractor applies to a nonstandard DH under its
+stated lift hypotheses, even if the public construction exposes only
+integer values. This argument does not preserve an archimedean norm
+bound on clearing denominators and supplies no obstruction to a
+certificate valid only at one clipped representative. Neither a new
+size bound nor a public CM evaluator follows from interpolation.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
