@@ -488,6 +488,27 @@ Exhaustive checks found a covering denominator at all 22,800 residues
 of odd moduli 3 through 301 and verified the nonunit conclusion at
 every mixed root (even allowing the closed integer radius there).
 
+The converse fails even on unit residues that pass the elementary gcd
+checks. Take primes $p>3$, $q>9p$, $N=pq$, and $x=jq+2$ for
+$1\le j<p$. For any coprime denominator $1\le b\le\sqrt N$,
+the least distance of $bjq$ from a multiple of $N$ is at least $q$,
+because $p$ does not divide $bj$. Hence the least distance of $bx$
+is at least $q-2b>\sqrt N$. In contrast $b=p$ covers this candidate
+since $2p<\sqrt N$. Every such candidate is a nonroot already modulo
+$q$. Excluding the at most three indices where $x=0,1,-1$ modulo
+$p$ leaves at least $p-4$ candidates with $\gcd(x(x^2-1),N)=1$.
+
+Choose $9p<q<18p$ (Bertrand's postulate). These survivors occupy
+$\Omega(\sqrt N)$ distinct blocks in the canonical partition of width
+$2\lfloor\sqrt N/16\rfloor+1$, since they are spaced at least $q$
+apart. At most four blocks contain any genuine root. Consequently even
+an ideal test of complete coprime-strip coverage leaves power-many
+empty blocks uncertified on this infinite family. For $p=101,q=1009$,
+exhaustive denominator checks verified all 97 gcd-clean examples.
+Locating even one uncovered candidate still gives a possible factoring
+route: any short covering denominator for that candidate is nonunit.
+The obstruction concerns certifying empty blocks by complete coverage.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
