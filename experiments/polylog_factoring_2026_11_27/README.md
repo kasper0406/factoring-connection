@@ -1438,6 +1438,27 @@ has a surviving height for sufficiently large $N$. This applies also to
 simultaneous tests whose combined modulus satisfies that bound. It
 concerns pruning cells by modular squareness alone.
 
+For odd squarefree combined modulus $M$ coprime to $N$, a density
+bound extends the obstruction through $M\le H=\lfloor\sqrt{N/2}\rfloor$.
+For each prime $p\mid M$, let $h_p$ count heights passing modular
+squareness, including zero as a square, and let $\chi$ be its quadratic
+character. Counting $(y-z)(y+z)=N$ gives $p-1$ pairs and thus
+$\sum_y\chi(y^2-N)=-1$. Counting the fibers of $x^2=N-y^2$ gives
+$2h_p=p-\chi(-1)+1+\chi(N)$, so $h_p/p\ge1/3$.
+Direct enumeration checked the identity for all 4,180 nonzero residues
+over odd primes below 200.
+
+By CRT at least $M3^{-k}$ heights per period survive for $k=\omega(M)$.
+Since $M\ge k!$, we have $k=O(\log N/\log\log N)$. The first $H$
+positive heights contain at least $\lfloor H/M\rfloor$ full periods,
+covering at least $H/2$ positions. Hence at least $N^{1/2-o(1)}$
+heights survive, even after dropping the public height. Each certified
+grid cell holds $O(N^{1/4})$ integer heights by the derivative bound,
+leaving at least $N^{1/4-o(1)}$ occupied cells. This lower bound is for
+the set of cells passing the sieve. A different computation that handles
+many surviving cells together would need a separate analysis. Products
+larger than the height range have no guaranteed full period here.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
