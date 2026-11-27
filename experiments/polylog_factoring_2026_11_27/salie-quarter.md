@@ -263,3 +263,35 @@ by gcd then splits N. In particular any known inverse-polynomial
 advantage in bit length above 75% suffices. This is an oracle
 reduction for each promised input, not an estimator or a practical
 sample-budget claim.
+
+## Public intervals with Jacobi-dependent decisions
+
+On balanced growing semiprimes, partition the public residue h
+into B contiguous intervals, and in each choose an arbitrary sign
+rule on chi(h). Even the best such table for that N, with B
+polynomial in log N, cannot attain 3/4 plus an inverse-polynomial
+advantage in the bit length on uniform units.
+
+Indeed write its expected output on units as A(h)+chi(h)D(h),
+where A,D are constant on each interval and bounded by one.
+Extend it by zero on nonunits. The unmasked A on all residues
+has normalized Fourier coefficient O(B/|k|_N) at k nonzero
+by the geometric sum. Removing nonunits changes this by at most
+1/p+1/q. The chi D term is already zero on nonunits. At every
+frequency its coefficient is O(B log(N)/sqrt(N)): the normalized
+Fourier transform of the primitive Jacobi character has sup norm
+1/sqrt(N), and the normalized Fourier l1 norm of an interval is
+O(log N). Multiplication by the interval convolves these spectra.
+
+If accuracy reached 3/4+epsilon, the preceding quantitative proof
+would yield a coefficient of magnitude Omega(epsilon/log²(2K))
+with residues a,b of size <=K=O(epsilon^-2), a different from b.
+Its centered representative must have magnitude >=min(p,q)-K:
+otherwise the two congruences force it to equal both a and b.
+For inverse-polylog epsilon and polylog B the preceding upper
+bound there is polylog(N)/sqrt(N), contradicting the required
+coefficient for sufficiently large balanced N. The result allows
+arbitrary interval endpoints but does not cover general functions
+of the bits of h. Exhaustive majority fitting for N=1009*1013
+with 32 equal-width bins and both Jacobi signs gave 0.74950593
+accuracy, the public baseline to the displayed precision.
