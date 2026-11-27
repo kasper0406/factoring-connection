@@ -1037,3 +1037,28 @@ bit in the dyadic decoder. D(h) modulo two always vanishes.
 This reduction does not supply a fast mod-four counter.
 Direct enumeration checked all shifts for the 21 semiprimes formed
 from distinct odd primes through 19.
+
+### Reflection shows the mod-four counter is point evaluation
+
+For every Boolean F on residues modulo odd N with F(-x)=F(x),
+let D_F(h) be the number of disagreements between F and its shift
+by h. Then
+
+    D_F(2c) mod 4 = 2 (F(0) XOR F(c)).
+
+Write D_F(2c)/2 as the support size of F minus the overlap
+sum_x F(x)F(x+2c). The support size has parity F(0) by negation.
+Reflection x -> -2c-x preserves the overlap summand and fixes
+exactly -c. Thus overlap parity is F(-c)F(c)=F(c). This also
+follows by squaring the support polynomial in the binary cyclic
+group algebra: reflection identifies autocorrelation with convolution
+and Frobenius doubles every exponent.
+
+For the extended hidden quarter bit F(0)=1, so the mod-four
+disagreement oracle and the point oracle are interchangeable with
+one call in either direction, since two is invertible modulo N.
+The exact integer disagreement count still carries the magnitude
+information in the previous identity. Reflection alone supplies no
+new way to compute the surviving fixed-point value. Checked all
+15,364 choices of odd modulus 3 through 17, symmetric Boolean
+predicate and shift parameter in that range.
