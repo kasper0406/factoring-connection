@@ -52,6 +52,20 @@ on balanced semiprimes. A classical polylogarithmic sampler for the
 spectral distribution would suffice; the energy identity provides no
 such sampler. [Earlier Ramanujan spectrum and sampling analysis](../../notes/conn_ana.md)
 
+**Can the existing heavy-frequency search sample this spectrum?**
+For any nonzero complex weighting supported on s of the N residues,
+Cauchy–Schwarz gives |f̂(k)|²≤s∑|f(x)|². Parseval therefore bounds
+each frequency's share of total energy by s/N. For the nonunit mask,
+s=p+q−1, so on balanced semiprimes even arbitrary phase weights leave
+every individual share O(1/√N). A union of L translates gives the same
+bound multiplied by L. For bounded weights the normalized mean Fourier
+coefficient itself is at most s/N by the triangle inequality. These
+bounds do not address direct sampling of the aggregate spectrum.
+The existing [Salié-sum reduction](salie-quarter.md#recover-a-factor-from-approximate-values)
+does obtain a constant individual coefficient from a dense function;
+it needs a public approximation to the normalized sum with RMS error
+at most 1/2 over unit scales. That approximation is the open operation.
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
