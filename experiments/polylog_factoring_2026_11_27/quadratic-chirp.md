@@ -4663,3 +4663,33 @@ then repeat at q. Nonunits and nonsquarefree sampling have the same
 exception bounds as above. This controls the norm and characteristic-
 polynomial discriminant tests only; other coefficient identities
 can behave differently.
+
+### Scalar rescaling bounds a Frobenius-style norm test
+
+Take distinct odd primes p<q and n=pq. In any fixed commutative
+unital algebra free of rank d over Z/nZ, choose a uniform unit z
+and a fixed base-linear algebra automorphism σ. Extract a candidate
+factor by gcd(n,Norm(z^n−σ(z))). This includes a cyclotomic
+automorphism chosen using n when it is defined. Put h=gcd(p−1,q−1),
+x=h/(p−1), y=h/(q−1). The probability of a proper factor is at
+most d(x+y), even for nonreduced algebras.
+
+Indeed the norm is a multiplication determinant. Modulo p it
+vanishes precisely if the difference belongs to one of the at most
+d maximal ideals of the local algebra. Fix such an ideal and a unit
+z. On the scalar orbit cz for c in F_p^*, the equality in its
+residue field requires c^(n−1)=σ(z)/z^n in that field. Both sides
+used in the ratio are units. There are at most gcd(n−1,p−1)=h
+solutions among p−1 possible c. Uniform units are invariant under
+this scaling. Union bounds over the ideals and the two primes prove
+the estimate without requiring the automorphism to preserve each
+ideal.
+
+For comparison, a uniform scalar unit a extracts a proper factor
+by gcd(a^(n−1)−1,n) with probability x(1−y)+y(1−x)≥x/2,
+since y≤1/2 and y≤x. Thus the algebra norm test's per-trial
+probability is at most 4d times the scalar test's. With d polynomial
+in log n, inverse-polynomial success of the former implies the same
+for the latter on the same inputs. The bound assumes σ and the algebra
+are fixed before sampling z; norm-normalized or deliberately
+structured samples need a different argument.
