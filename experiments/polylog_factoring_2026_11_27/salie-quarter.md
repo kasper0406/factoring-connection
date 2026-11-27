@@ -977,3 +977,45 @@ s=2cos θ gives 2/3+20/π², yielding the stated error. Enumeration
 over all unit scales gave RMS 1.13857 at N=101·103 and 1.14275 at
 N=1009·1013, versus 1.16258 and 1.17044 for the best constants on
 those inputs. The hidden root was used to score predictions only.
+
+## Factoring from any inverse-polynomial MSE gain over the public cosine
+
+Fix an odd distinct-prime semiprime N. Suppose a queryable magnitude
+predictor beats the preceding explicit g by δ>0 in **mean squared
+error on this N**, over uniform units and its own independent coins.
+Then N can be split in randomized time polynomial in log N and 1/δ,
+counting predictor calls at unit cost. The comparison uses g's actual
+finite-input error. It requires no equidistribution rate.
+
+Write x=c/N, y=uc/N and V(x,y)=|2cos(2πx)+2cos(2πy)|.
+The torus average over y equals g(2cos(2πx)); abbreviate this by G.
+Clip predictions to [0,4] and write D for the correction to G.
+Expanding the two squared errors gives
+2 E[D(V−G)]≥δ+E[D²]. Thus there is correlation with the residual
+at least δ/2 on units. The needed sampled function is D itself and
+is computable wherever the predictor is queryable.
+
+To locate the correlation, put f(t)=|cos(πt)|, of period one.
+Then V=4f(x+y)f(x−y). The Fourier coefficients of f are O(1/(1+j²))
+by integration by parts on its smooth pieces. In the product, indices
+j,l yield (a,b)=(j+l,j−l). Removing the b=0 terms gives V−G
+exactly. Truncating |j|,|l|≤K leaves uniform error O(1/K), and the
+sum of absolute coefficients stays bounded by an absolute constant.
+Take K a sufficiently large constant times 1/δ. Since |D|≤4, some
+remaining frequency k=a+bu has correlation Ω(δ) with D. Extending
+D by zero on nonunits changes the normalization by φ(N)/N≥1/2.
+For randomized predictors use their mean in this identity and fresh
+calls in the sampled Fourier search. Evaluate G to error o(δ).
+
+Run the existing bounded-function heavy-frequency search and try all
+|a|,|b|≤2K, b≠0, for each returned k, treating both frequency signs.
+For the correct pair, k−a−b≡b(u−1) modulo N. If b is coprime to
+N, the gcd gives one prime. Trial division through 2K first handles
+smaller prime factors. All loops are polynomial in log N and 1/δ.
+
+As a planted control at 101·103, giving the predictor one eighth
+of the exact residual improved MSE by 0.30383. The direct FFT of
+the zero-extended correction had largest absolute coefficient 0.06562
+at k=±101, with k=−1+u at the positive frequency under the chosen
+CRT orientation. The control deliberately used the factors. The
+reduction leaves open finding a public predictor with this gain.
