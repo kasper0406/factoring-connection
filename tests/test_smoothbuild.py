@@ -62,6 +62,14 @@ def test_hidden_root_factoring_structural():
         assert res["kind"] == "STRUCTURAL"
 
 
+def test_hidden_root_uses_later_dependencies(monkeypatch):
+    roots = iter([1] * 8 + [34])  # All nine squares are 1 modulo 77.
+    monkeypatch.setattr(random.Random, "randrange", lambda self, a, b: next(roots))
+    result = hidden_root_class_factor(77, 2, 0, lambda n, t: (t, 1), max_targets=9)
+    assert result["factor"] == 11
+    assert result["dependencies"] == 9
+
+
 def test_lemma_AT_atom_optimality():
     """Any K pairwise coprime atoms > 1 compose at most Psi(X, p_K) integers <= X."""
     rng = random.Random(11)

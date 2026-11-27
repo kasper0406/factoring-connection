@@ -76,25 +76,6 @@ def gauss_split(t: int, N: int) -> Tuple[int, int]:
 # Prop EQ1 (operational): hidden-root reduction from smooth-class construction to a congruence of squares
 
 
-def _gf2_dependency(rows: List[int]) -> Optional[int]:
-    """Return a nonempty subset (bitmask over row indices) whose rows XOR to zero, or None."""
-    pivots: Dict[int, Tuple[int, int]] = {}
-    for i, r in enumerate(rows):
-        comb = 1 << i
-        while r:
-            lead = r.bit_length() - 1
-            if lead in pivots:
-                pr, pc = pivots[lead]
-                r ^= pr
-                comb ^= pc
-            else:
-                pivots[lead] = (r, comb)
-                break
-        if r == 0:
-            return comb
-    return None
-
-
 def hidden_root_class_factor(N: int, y: int, seed: int,
                              constructor: Optional[Callable[[int, int], Tuple[int, int]]] = None,
                              max_targets: int = 10 ** 6) -> Dict[str, object]:
@@ -111,7 +92,7 @@ def hidden_root_class_factor(N: int, y: int, seed: int,
     rng = random.Random(f"smoothbuild-eq1|{N}|{y}|{seed}")
     P = primes_upto(y)
     idx = {p: i + 1 for i, p in enumerate(P)}  # column 0 = sign
-    K = len(P) + 1
+    pivots: Dict[int, Tuple[int, int]] = {}
     rels: List[Tuple[int, Dict[int, int], int]] = []  # (r, exponent dict incl. -1 key, row parity)
     counters = {"targets": 0, "splits": 0, "tests": 0, "gcd": 0, "relations": 0, "dependencies": 0}
     for _ in range(max_targets):
@@ -145,48 +126,44 @@ def hidden_root_class_factor(N: int, y: int, seed: int,
                 row |= 1 << idx[p]
         rels.append((r, e, sgn))
         counters["relations"] += 1
-        if len(rels) < K + 1 and len(rels) % 8:
-            continue
-        rows = [0] * len(rels)
-        for i, (_, ee, sg) in enumerate(rels):
-            rr = sg
-            for p, k in ee.items():
-                if k % 2:
-                    rr |= 1 << idx[p]
-            rows[i] = rr
-        # try dependencies, removing one member each time to get fresh ones
-        work = list(range(len(rels)))
-        for _attempt in range(8):
-            dep = _gf2_dependency([rows[i] for i in work])
-            if dep is None:
+        combination = 1 << (len(rels) - 1)
+        while row:
+            lead = row.bit_length() - 1
+            if lead not in pivots:
+                pivots[lead] = (row, combination)
                 break
-            counters["dependencies"] += 1
-            S = [work[j] for j in range(len(work)) if dep >> j & 1]
-            X = 1
-            tot: Dict[int, int] = {}
-            neg = 0
-            for i in S:
-                ri, ee, sg = rels[i]
-                X = X * ri % N
-                neg ^= sg
-                for p, k in ee.items():
-                    tot[p] = tot.get(p, 0) + k
-            assert neg == 0 and all(k % 2 == 0 for k in tot.values())
-            Y = 1
-            for p, k in tot.items():
-                if k >= 0:
-                    Y = Y * pow(p, k // 2, N) % N
-                else:
-                    gp = math.gcd(p, N)
-                    counters["gcd"] += 1
-                    if gp != 1:
-                        return {"factor": gp, "kind": "ACCIDENTAL", **counters}
-                    Y = Y * pow(pow(p, -1, N), (-k) // 2, N) % N
-            g = math.gcd((X - Y) % N, N)
-            counters["gcd"] += 1
-            if 1 < g < N:
-                return {"factor": g, "kind": "STRUCTURAL", **counters}
-            work.remove(S[0])
+            pivot, provenance = pivots[lead]
+            row ^= pivot
+            combination ^= provenance
+        if row:
+            continue
+        counters["dependencies"] += 1
+        S = [i for i in range(len(rels)) if combination >> i & 1]
+        X = 1
+        tot: Dict[int, int] = {}
+        neg = 0
+        for i in S:
+            ri, ee, sg = rels[i]
+            X = X * ri % N
+            neg ^= sg
+            for p, k in ee.items():
+                tot[p] = tot.get(p, 0) + k
+        assert neg == 0 and all(k % 2 == 0 for k in tot.values())
+        Y = 1
+        for p, k in tot.items():
+            if k >= 0:
+                Y = Y * pow(p, k // 2, N) % N
+            else:
+                gp = math.gcd(p, N)
+                counters["gcd"] += 1
+                if gp != 1:
+                    return {"factor": gp, "kind": "ACCIDENTAL", **counters}
+                Y = Y * pow(pow(p, -1, N), (-k) // 2, N) % N
+        g = math.gcd((X - Y) % N, N)
+        counters["gcd"] += 1
+        if 1 < g < N:
+            return {"factor": g, "kind": "STRUCTURAL", **counters}
+        rels.pop()  # Only independent rows are needed for future reductions.
     return {"factor": None, "kind": None, **counters}
 
 
