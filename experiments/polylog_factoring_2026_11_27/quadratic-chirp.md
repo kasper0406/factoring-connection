@@ -5230,3 +5230,21 @@ factors. For a promised ratio q/p<R with integer R>=2, at most R-1
 residue queries suffice. For N=55 the middle column misses but d=3
 gives b=18 and gcd(binom(54,18),55)=5. A large factor ratio can
 make this scan long; each scalar evaluation also needs a bit-cost bound.
+
+### Powers of two can miss every fractional-column witness
+
+Let q=kp+s, 0<s<p. When s<=p/2, the first power of two d
+above q/p satisfies d<=2q/p<=q/s, so the preceding sufficient
+condition guarantees success. But for primes p>=7 and q=3p-2
+prime, every power-of-two denominator d>=2 misses. In base p the
+digits of q-1 are (2,p-3). For d=2 the high column floor(q/d)
+has digits (1,(p-3)/2); for d>=4 it is at most p-3 because
+(3p-2)/4<p-2. Lucas therefore leaves a unit modulo p at all
+these columns. The coefficient is also a unit modulo q as above.
+At d=3 the high column is p-1 and the gcd is p. This family
+statement requires no infinitude assumption.
+
+For N=133=7*19, all positive columns from dyadic denominators
+are 66,33,16,8,4,2,1. All seven gcds equal 1, while column 44
+from d=3 gives gcd 7. This tests the unsigned gcd of fractional
+columns; the earlier signed first-window cutoff test is different.
