@@ -596,3 +596,30 @@ This includes piecewise-affine predictors with polynomially many
 pieces. It does not bound arbitrary polynomial-bit slopes of
 superpolynomial magnitude, or a nonlinear rule with no short
 affine menu. Prime-power decompositions are used only in the proof.
+
+### Extension of the same coverage test to polynomial selectors
+
+The fixed-level and affine tests above address the same witness
+mechanism. For k=P(y) with integer coefficients, degree and coefficient
+bit lengths polynomial in log N, the existing additive large-sieve
+coverage inequality (see ../../notes/codex_r15_lean_faithfulness.md)
+also gives O(sqrt(N) log N) hits per polynomial. Here is the extra
+hypothesis check needed to apply it. F(X)=X+NP(X) reduces to X
+at every prime dividing N, so cannot be a constant times a square
+over Q: write any such representation as an integer constant times
+the square of a primitive integer polynomial and reduce it modulo
+that prime. Thus F=c H² G with integer factors and a nonconstant
+squarefree primitive G. Outside primes dividing
+2c lc(H) lc(G) disc(G), G stays nonconstant and squarefree.
+The exceptional integer has polynomial bit length by the polynomial
+factor height bound and the determinant formula for the discriminant.
+At good primes r between sqrt(N)/2 and sqrt(N), the quadratic
+character bound for G gives at most r/2+O(deg(F) sqrt(r)+deg(F))
+residues on which F is square, counting zeros of H separately.
+This is <=3r/4 for sufficiently large N. Only poly(log N) primes are
+exceptional, leaving order sqrt(N)/log N good primes. For a hit set
+of size M each such prime contributes at least M²/3 nonzero Fourier
+energy by Parseval and Cauchy-Schwarz on occupied residue classes.
+The additive large sieve bounds their sum by 2NM, proving the claim.
+A polylogarithmic menu still covers a negligible fraction of unit
+squares. This reuses the earlier sieve and is a coverage bound only.
