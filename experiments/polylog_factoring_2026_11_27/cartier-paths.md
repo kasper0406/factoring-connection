@@ -230,3 +230,39 @@ then reducing gave first terms 3T^13 modulo 13 and T^49 modulo 7.
 The coefficient at degree 13 is 42 modulo 91, yielding gcd 7.
 This cutoff concerns the elliptic multiplication map and is distinct
 from the normalized correction series in the Lean comparison.
+
+## Scalar evaluations at multiples of the modulus
+
+In the same coordinate define A(Z)=L(NZ)/N. Its degree-d coefficient
+for d=4j+1 is N^(d−1) binom(2j,j)/(4^j d). For every prime ℓ|N
+the valuation is at least d−1−v_ℓ(d), since N is odd and squarefree.
+Thus every nonlinear coefficient is divisible by N in the localized
+coefficient ring, and all terms of degree d>2K+1 vanish modulo N^K.
+The reduced rational coefficients have denominators coprime to N
+and can be computed with integer arithmetic without its factors.
+
+The relation L([N](T))=NL(T) gives exactly
+
+    [N](Nz)/N = A⁻¹(N A(z)).
+
+Modulo N^K, solve A(w)=y starting with w=y and iterating
+w←y−(A(w)−w). The nonlinear part has coefficients divisible by N,
+so each iteration gains at least one digit modulo N. Truncation and
+K iterations cost polynomial bit time in K and log N. At each hidden
+prime A preserves valuation since it is the identity plus nonlinear
+terms divisible by that prime. Consequently a unit z gives
+v_ℓ([N](Nz))=2 at both primes; more precisely [N](Nz)/N²≡z mod N.
+For the latter congruence use A(z)≡z mod N and A(w)≡w mod N³ when
+w is a multiple of N.
+
+In the unscaled multiplication series all coefficients are integral
+at the odd primes (the formal coordinate change is integral there).
+After T=Nz, every term of degree at least p is therefore invisible
+modulo N^K for K≤p. In particular a scalar evaluation at that
+precision cannot read off the degree-p term from the preceding
+section. This observation is specific to this substitution and
+precision, and does not preclude arithmetic on the compact map.
+
+For N=91 and K=16, the scaled-log calculation for z=1,2,11,23
+verified A(w)=91A(z) mod 91^16 and w/91≡z modulo 91 in all four
+cases. Here w=[91](91z)/91.
