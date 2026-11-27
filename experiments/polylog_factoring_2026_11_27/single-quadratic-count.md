@@ -1600,3 +1600,19 @@ prefix parities differ. For N=77 and k=1, the same collision already
 occurs at t=33 and 34, since 34²−1=15·77. This rules out reading parity
 from the product residue alone. It leaves open methods that also use the
 endpoint, subdivide the interval, or recover more than the truncated product.
+
+For the marked product F_t(Z)=∏_{x=2}^t (Z+x²−1), the same obstruction
+covers coefficients through degree d. If t−1 ≥ (k+d) max(p,q), then
+at least k+d constant factors are divisible by p, and likewise by q.
+A term of degree j ≤ d omits only j constants. Every such term is
+divisible by N^k. Taking t=r−1 and t=r as above gives opposite parities
+with identical low coefficients for polynomial-in-log-N choices of k,d.
+
+The first surviving coefficient can itself encode a factor. On the full
+residue system let G(Z)=∏_{x=0}^{N−1}(Z+x²−1). Modulo p its order
+of vanishing at zero is exactly 2q: there are q copies of each sign
+class and every remaining constant is a unit modulo p. Modulo q the
+order is 2p. Thus for p<q the first nonzero coefficient modulo N is
+at degree 2p, and its gcd with N is p. This gives an exact reduction
+from semiprime factoring to finding that degree for this implicitly
+specified product. Scanning to it costs order √N on balanced inputs.
