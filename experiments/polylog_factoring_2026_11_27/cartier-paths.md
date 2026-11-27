@@ -189,3 +189,44 @@ feature is its position beside the missing middle term of this CM
 cubic. The earlier growing menu covers more inputs. The Lucas proof
 uses the hidden primes to explain the coefficient; a fast computation
 from N alone is still needed.
+
+## Formal multiplication on the Gaussian CM curve
+
+On E: y²=x³−x at odd N=pq as above, use a local parameter T at
+infinity and let F=[N](T) be its formal multiplication series. The
+standard height theorem for elliptic formal groups gives order p at
+the ordinary prime p≡1 mod 4 and q² at the supersingular prime
+q≡3 mod 4. Multiplication by the other prime is invertible on the
+formal group locally and preserves the order. Equivalently the
+inseparable parts of the respective isogenies factor through the
+first and second relative Frobenius. Consequently the entire reduced
+series belongs to F_p[[T^p]] and F_q[[T^(q²)]], respectively.
+
+For balanced factors put B=floor(√(2N)). Then p≤B<q², so the gcd
+of N and *all* coefficients through degree B is exactly q. In fact
+the first nonzero coefficient modulo N has index p, itself a factor.
+In contrast the ordinary formal derivative vanishes identically modulo
+N. For the jth Hasse derivative, Lucas's theorem on monomials shows
+that it too vanishes on the p component unless p divides j, and on
+the q component unless q² divides j. In particular no positive
+derivative order coprime to N exposes either component this way.
+
+Ordinary truncated series through degree less than p vanish on both
+components in the balanced case. More generally, in a unital algebra
+of dimension d over either residue field, any nilpotent has index
+at most d, by its multiplication operator. Evaluation on a nilpotent
+in dimension at most min(p,q²) therefore gives zero on both sides.
+The argument concerns explicit nilpotent evaluations. It gives no
+lower bound for extracting order or content directly from a succinct
+description of the multiplication map.
+
+As an independent check at N=91 use the formal coordinate with
+x=T^(−2) and y=−T^(−3)√(1−T⁴); its change from −x/y has unit
+linear term and only powers of two in its denominators. The normalized
+logarithm has coefficient binom(2j,j)/(4^j(4j+1)) at degree 4j+1,
+by integrating the invariant differential. Solving L(F)=91L(T)
+coefficient by coefficient over the rationals through degree 49 and
+then reducing gave first terms 3T^13 modulo 13 and T^49 modulo 7.
+The coefficient at degree 13 is 42 modulo 91, yielding gcd 7.
+This cutoff concerns the elliptic multiplication map and is distinct
+from the normalized correction series in the Lean comparison.
