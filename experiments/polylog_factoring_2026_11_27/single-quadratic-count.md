@@ -1252,3 +1252,41 @@ stabilizer in the product Galois group has size four, proving the
 degree claim. Consequently explicitly expanding a dense rational
 minimal polynomial for D would take linear-scale output. This
 does not constrain a succinct expression or direct sign test.
+
+### Extending the quarter determinant to any odd modulus
+
+For odd N>1, unit h and m=2^(omega(N)-1) opposite pairs of roots
+of unity, take one representative r per pair and let lambda_r be
+cos(2 pi h r/N). The quarter count Q is the number of positive
+lambda_r. Therefore its parity is read from the sign of their
+product and the parity of m. Write t_j=sum_r cos(2 pi j h r/N),
+with t_0=m. For 1<=j<=m and gcd(j,N)=1, twice t_j is the public
+normalized Salie sum at scale jh. A proper gcd(j,N) itself splits
+the modulus in a factoring reduction. Here m<N, so no j in this
+range is a multiple of N. This qualification matters: a nonunit
+scale cannot simply be substituted into the unit-scale formula.
+
+Given m and t_1,...,t_m, the i-th power sum of the lambdas is
+2^(-i) sum_{j=0}^i binom(i,j)t_|i-2j| by expanding cosine.
+Newton identities then give the product e_m in O(m²) arithmetic
+operations. Absolute errors delta in the t_j propagate to at most
+delta in each power sum since the displayed weights sum to one.
+To bound the final error, use the generating series for elementary
+symmetric functions: perturbing the power sums multiplies it,
+through degree m, by exp(sum_{i=1}^m (-1)^(i-1) Delta_i z^i/i).
+The sum of absolute coefficients of the perturbing factor minus
+one is bounded by exp(delta H_m)-1, with H_m the harmonic sum.
+The original polynomial has coefficient l1 norm <=2^m. Each
+|lambda_r|>=sin(pi/(2N))>=1/N because N is odd. Consequently
+delta=(4N)^(-m)/(4m) suffices to preserve the product sign.
+Dyadic input rounding to this tolerance followed by exact rational
+arithmetic uses polynomially many bits in m and log N (denominators
+from binomial averaging and Newton divisions also have polynomial
+bit length). Numerical checks covered 9,45,105,315,385,1155 and
+all unit h below min(N,30), using root lists as reference data.
+
+This is a conditional postprocessing bound. It needs the pair
+count m or a promise fixing it, plus the indicated traces. For
+omega(N)=O(log log N) the processing and requested precision are
+polynomial in log N. At unrestricted omega(N) even this matrix
+dimension can exceed any polynomial in the input bit length.
