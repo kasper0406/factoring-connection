@@ -30,3 +30,41 @@ Even estimating just the real part has average variance $\Omega(N)$ on balanced 
 ## Checks
 
 The diagnostic compared the public normalization with the factor-supplied cosine identity on 138 unit scales across five moduli, including two repeated-factor inputs. It also computed the minimum possible variance of a real one-term estimator for each tested scale. Run `python check_salie_quarter.py`.
+
+## Fixed sparse linear combinations on square arguments
+
+Suppose N=pq has comparable distinct odd prime factors. Even after
+the public cosine is supplied exactly, fitting arbitrary fixed
+complex weights to polynomially many individual summands leaves
+mean-square error close to 2 on uniform unit shifts. The weights and
+chosen summand indices may depend on N but are fixed across shifts.
+This is a statement about this linear approximation class and the
+uniform unit distribution, not the particular short decoder query list.
+
+Indeed the shift dependence of each summand is a chirp
+f_a(h)=e_N(a h²) with unit coefficient a=(4m)^(-1). Absorb all
+constant phases and normalization in the fitted weights. The target
+after public subtraction is g(h)=e_N(uh)+e_N(-uh). Use the inner
+product given by averaging on unit h. Put B_r=(sqrt(r)+1)/(r-1)
+for r=p,q. Each target-chirp inner product has magnitude at most
+2 B_p B_q: CRT factors each quadratic-linear sum into two prime
+sums, and deleting zero costs at most one from the complete Gauss
+bound sqrt(r). For two distinct chirps the same argument applies
+wherever their coefficients differ modulo a prime. The local
+factor is one where they agree. For sufficiently large p,q every
+off-diagonal Gram entry therefore has magnitude <= mu=max(B_p,B_q).
+
+For k distinct chirps with (k-1)mu<1 the least Gram eigenvalue
+is at least 1-(k-1)mu by Gershgorin. The squared norm of the
+orthogonal projection of g onto their span is consequently at most
+
+    4 k B_p² B_q² / (1-(k-1)mu).
+
+The target squared norm is 2+2/phi(N) by the unit Ramanujan sum
+at 2u. Thus for k=poly(log N) the best mean-square error tends
+to 2. Taking real parts of fitted sums only doubles the dictionary
+size by adding conjugate chirps; duplicate coefficients can be
+merged. This rules out fixed sparse reweighting as a uniform
+unit-scale approximation at absolute error 0.2, even with optimal
+weights. Shift-dependent selection and nonlinear aggregation remain
+outside the argument.
