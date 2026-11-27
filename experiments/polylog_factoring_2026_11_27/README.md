@@ -1089,6 +1089,35 @@ $O(N\log N)$ arithmetic operations. This is a direct evaluation baseline,
 slower than the tangent-arc method. The grid count is a cost of this
 construction, not a general lower bound for complex evaluation.
 
+### A fast individual complex sample by Poisson summation
+
+[circle_poisson_sample.py](circle_poisson_sample.py) evaluates the infinite
+raw fourth harmonic series $\sum C(j)\exp(-j/N+2\pi i j\theta)$ at any
+rational phase. For $Q=\lfloor\sqrt N\rfloor$ take the last continued-fraction
+convergent $a/q$ with $q\le Q$. Then $|q\theta-a|\le1/Q$ (phase modulo one).
+Set $w=1/N-2\pi i(\theta-a/q)$. Split the Gaussian lattice sum into residue
+classes modulo $q$ and apply Poisson summation. With $H(x,y)=\Re((x+iy)^4)$
+the transformed summand has prefactor $\pi^5/(4q^6w^5)$, polynomial $H(h,k)$,
+Gaussian $\exp(-\pi^2(h^2+k^2)/(q^2w))$, and the product of complete
+quadratic Gauss sums $G(a,h;q)G(a,k;q)$. The Fourier transform has this
+simple form because $H$ is harmonic. Completing the squares and using the
+classical quadratic Gauss sum evaluation removes enumeration modulo $q$,
+including even denominators. Separability reduces the dual sum to three
+one-dimensional moments.
+
+The decay coefficient satisfies
+$\Re(\pi^2/(q^2w))=\pi^2/(q^2/N+4\pi^2N(q\theta-a)^2)
+\ge\pi^2/(1+16\pi^2)$. Thus Gaussian tails, even after the degree-four
+weight and a polynomial-in-$N$ prefactor, require only
+$O(\sqrt{b+\log N})$ indices per moment for absolute accuracy $2^{-b}$.
+Phase reduction and arithmetic take polynomial time in $b$, the bit length
+of $N$, and the rational phase input length. The mpmath implementation uses
+guard precision, not interval certification. Against independent direct
+Gaussian sums the largest discrepancy in 24 tests was below $4\cdot10^{-57}$
+at requested 60-bit absolute accuracy. This computes a full infinite-series
+sample; the finite-polynomial grid evaluator above uses different samples.
+Recovering a single coefficient from few such fast samples is still open.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
