@@ -1314,6 +1314,38 @@ known exponent $1/5$ on the earlier semiprime family.
 Eight supplied-point checks, including $59+124i$, matched exhaustive orbit
 enumeration. Run from the repository root using its Python package path.
 
+### Quadratic arcs from the norm alone
+
+The function `orbits_from_norm` in [the quadratic arc implementation](circle_quadratic_arcs.py)
+removes the known-point hypothesis with the same $O(N^{3/10}\operatorname{polylog}N)$
+bit bound. Use the angular parameter $t=\tan(\theta/2)$ on $0\le\theta\le\pi/4$.
+It need not be rational. Take $8N^{3/10}\le B=O(N^{3/10})$ and
+$K=16(2B+1)^5$. In the arc lattice approximate only the first harmonic's
+radius by $r=\lfloor K\sqrt N\rfloor/K$; keep the second harmonic's
+multiplier $N$ exact. Clear the extra common denominator $K$. The previous
+determinant becomes $256K^5 r^2N^2 B^{10}\le256K^5N^3B^{10}$.
+Thus the reduced row $G(v)$ has coefficient 1-norm below $KB^4/4$.
+
+Write the integer auxiliary polynomial as
+$P(x,y)=a+bx+cy+d(x^2-y^2)+2exy$. To bound the error from replacing
+$r$ by $\sqrt N$, substitute $v=Bt-j$ in $G/(KB^4)$ on block $j$.
+The resulting coefficient 1-norm is at most $(2B+1)^4/4$ by the binomial
+theorem. In that polynomial the difference between the constant and quartic
+coefficients is $2br$; the sum of the linear and cubic coefficients is $4cr$.
+Since $r\ge1$, $(|b|+|c|)/K<1/4$. Hence the auxiliary value on the true
+arc has magnitude below $1/2$ and is zero at every integer point.
+Each block also checks the transfer inequality directly.
+
+Intersect with the original circle using the integer quartic
+$(a+bx+d(2x^2-N))^2-(N-x^2)(c+2ex)^2$.
+It cannot vanish identically: $N-x^2$ has simple roots and is not a
+rational-function square, and both polynomial pieces cannot vanish for
+a nonzero lattice combination. Extract its integer roots and verify the
+circle equation. This covers every orbit since $\tan(\pi/8)<1/2$.
+Tests on 27 norm-only inputs included empty circles and multiple orbits.
+The bound concerns angular evaluation and enumeration, not factoring every
+integer represented or deciding arbitrary factoring instances.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
