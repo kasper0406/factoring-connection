@@ -1727,3 +1727,25 @@ exponent a and denominator exponent b satisfy a−b ≡ (p−1)/2 mod p−1.
 Thus the list of nonzero absolute differences |a−b| passes the preceding
 exponent test. Its length is at most the product of the support sizes,
 and it uses neither the coefficients nor an expansion of 1/B.
+
+The same support extraction tolerates errors. Fix A and B, assume B is
+a unit on every unit input, and let T be their total number of terms.
+If A/B returns S modulo N with error strictly below 1/T on a uniform
+unit, the preceding exponent list still factors N. For each p dividing N
+the local discrepancy D=A−X^((p−1)/2)B on F_p^× has error probability
+at most the global one, because projection of a uniform unit is uniform.
+Collect exponents modulo p−1. If D has t>0 surviving terms, then in the
+cyclic sequence D(g^j) for a generator g no t consecutive values vanish:
+such values would give a homogeneous Vandermonde system on t distinct
+nodes g^d with nonzero coefficients multiplied by units. Each cyclic
+window of length t therefore contains an error. Counting windows gives
+error fraction at least 1/t ≥ 1/T, a contradiction. Thus the local
+function identity holds at every prime, enough for exponent extraction
+even if some values still disagree at prime-power precision.
+
+For N=pq with distinct odd primes, the same proof works when uniform
+sampling is restricted to Jacobi symbol −1. Every nonzero residue at
+p then has exactly (q−1)/2 allowed partners at q, and conversely, so
+both projections remain uniform. The error bound concerns the actual
+distribution for one fixed formula. A finite run of successful tests
+alone does not certify it.
