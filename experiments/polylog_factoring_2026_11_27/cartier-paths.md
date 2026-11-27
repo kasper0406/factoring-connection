@@ -245,6 +245,22 @@ The argument concerns explicit nilpotent evaluations. It gives no
 lower bound for extracting order or content directly from a succinct
 description of the multiplication map.
 
+The same dimension threshold applies over repeated prime powers, even
+when a lifted matrix has longer nilpotency index than its reduction.
+Let A be a d by d matrix modulo p^e whose reduction is nilpotent.
+Then A^d is divisible by p, so A^(de)=0. For a formal group of finite
+height h and d≤p^h, [p](A) is divisible by p by the residue-field
+order statement. On an argument divisible by p^j, j≥1, [p] takes
+values divisible by p^(j+1): its linear term is pT and each higher
+power is divisible by p^(2j). After e applications [p^e](A)=0.
+Composition with the remaining cofactor gives [N](A)=0. This
+works for one matrix since all its evaluated powers commute. The same
+proof applies to a finite free algebra of rank d using its regular
+representation. The bound is sharp locally: the shift Jordan block of
+size p^h+1 keeps the first surviving coefficient on its top diagonal
+modulo p^e. A direct binomial check in the algebra T^d=p confirmed
+vanishing on all 45 cases p=3,5,7, e=1,2,3 and 1≤d≤p.
+
 As an independent check at N=91 use the formal coordinate with
 x=T^(−2) and y=−T^(−3)√(1−T⁴); its change from −x/y has unit
 linear term and only powers of two in its denominators. The normalized
