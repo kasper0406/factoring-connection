@@ -5049,3 +5049,30 @@ entry is at least 2^k/(k+1). Thus the rings and the full collection
 of requested residues have polynomial size in log N. Obtaining the
 *truncated* cyclic reductions in polynomial time remains open.
 For N=143, b=16 and ell=3 the reduction is 11X+13X^2.
+
+### Ambiguity of full cyclic evaluations even with the Pascal recurrence
+
+Fix a finite list L of positive cyclic moduli, s=sum(L), and N=pq
+with distinct primes p<q and q>2(1+s). Work modulo N. Put
+
+    V(X)=q X^p product_{ell in L}(1-X^(p ell)),
+    W(X)=V(X)+X^N V(1/X).
+
+The degree of V is p(1+s)<N/2, so the two supports in W are disjoint.
+W is reciprocal about degree N, has zero endpoints and coefficient
+q at degree p. Both summands vanish modulo every X^ell-1 in the
+list (reciprocation preserves vanishing because X is a unit there).
+Every exponent in W is divisible by p and every coefficient by q,
+so W'=0 modulo N.
+
+Thus (1+X)^N and (1+X)^N-W have identical full cyclic evaluations,
+endpoints, reciprocity and the same differential equation
+(1+X)F'=NF, equivalently the adjacent Pascal coefficient recurrence.
+Yet their coefficients at the least-factor cutoff p differ by q.
+The second polynomial even has zero coefficient at p modulo N.
+The construction uses known factors to prove nonuniqueness. It
+does not produce a second binomial or a computational lower bound
+for algorithms using the exact powering identity.
+
+For N=143 and L={1,2}, deg V=44<143/2 and the cutoff coefficients
+are respectively 13 and 0 modulo 143.
