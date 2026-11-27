@@ -5170,3 +5170,25 @@ by Open Cryptology; the original PDF could not be retrieved here.
 
 [Paper record](https://eprint.iacr.org/2026/3020) ·
 [Abstract](https://opencryptology.org/2026/3020)
+
+### Exact success probability for a uniformly sampled column
+
+For N=pq with primes p<q, sample b uniformly from 0 through N-1
+and take gcd(binom(N-1,b),N). This gcd is either 1 or p.
+Indeed Lucas at q splits the coefficient into a low digit from
+row q-1 and a high digit from row p-1. Both are nonzero modulo q
+because the high column floor(b/q) is at most p-1<q.
+
+At p the low digit from row p-1 also never vanishes. The high column
+floor(b/p) is uniform from 0 to q-1. Write q-1 in base p with
+digits d_i. Exactly product_i(d_i+1) high columns survive Lucas'
+digit inequalities. The exact probability of recovering p is
+
+    1 - product_i(d_i+1)/q.
+
+The same gcd is obtained from the signed residue, before subtracting
+1. For p<q<2p the probability simplifies to (2p-q)/q. Thus at
+p=19,q=23 it is 15/23, but at p=19,q=37 it is only 1/37.
+This formula characterizes random sampling given a scalar evaluator;
+it gives neither that evaluator nor a uniform constant success
+bound. The examples do not assume an infinite family of prime pairs.
