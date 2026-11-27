@@ -495,3 +495,26 @@ splits N. All boxes and scales are fixed from N before the answers
 arrive. If N has more distinct primes the bit is instead a parity
 over multiple hidden pairs, so this single-root decoder does not
 apply. Uniform fast evaluation of even these fixed-box parities is open.
+
+## Symmetric binary hashing for nonadaptive decoding on general inputs
+
+For odd N with k>=2 distinct prime divisors there are M=2^(k-1)-1
+nonpublic root pairs. Represent each by v=min(u,N-u), using L bits
+where L=bit_length(N). Sample an affine binary hash H(v)=Av+b with
+t output bits and independent fair entries. On both coordinates x
+of the quarter box at scale c impose the same extra test: normalize
+r=x/c mod N, require v=min(r,N-r)>1 and H(v)=0. The pair count
+remains swap invariant. Its parity counts surviving diagonal roots
+and the hash retains or discards both signs together at every scale.
+
+Try t=1,...,L+1. At t=ceil(log2(2M)) the mean number of surviving
+pairs is lambda=M/2^t in (1/4,1/2]. Pairwise independence gives
+Pr(exactly one)>=E[X]-E[X(X-1)]>=lambda-lambda²>=3/16.
+On such a trial all dyadic-scale bits decode that one root by the
+previous argument. Generate the hash once per trial and keep it
+across scales. Independently sampled trials can be batched before
+any answers arrive; accept only a candidate yielding a verified
+proper divisor. This uses a fixed outer box with an additional
+polynomial-bit predicate inside it. The unfiltered arbitrary-prefix
+reduction remains simpler for adaptive queries. No efficient oracle
+for these hash-filtered counts is implied by efficient hash evaluation.
