@@ -331,6 +331,30 @@ This is an evaluator equivalence for semiprimes. With factors the four powers ar
 From $N$ alone, the formula for $z^N-1$ includes roots of every order dividing
 $N$; extracting the primitive-root contribution in polynomial bit time is the open step here.
 
+### Constant absolute precision via conjugate samples
+
+For each auxiliary prime $r\ge17$ coprime to $N=pq$ (distinct primes), put
+$z_k=\exp(2\pi i k/r)$. Use indices for which both $k$ and $Nk$ modulo $r$
+lie in $[r/8,7r/8]$. The four-chord formula bounds
+$|\Phi_N(z_k)|\ge\sin^2(\pi/8)>0.14$ there. Reciprocity gives
+$\Phi_N(z_k)/\overline{\Phi_N(z_k)}=z_k^{\varphi(N)}$.
+Given complex values within 0.01 in absolute distance, their ratios to their
+conjugates err by at most $0.02/(0.14-0.01)<0.16$.
+Enumerate the residues $a$ modulo $r$ and retain those whose predicted ratios
+$z_k^a$ lie within 0.2 of every observed ratio. For any wrong $a$, multiplication
+by $a-\varphi(N)$ permutes residues. There is a $k$ for which all three of
+$k,Nk,(a-\varphi(N))k$ are in the indicated interval modulo $r$: each
+condition excludes at most $r/4+1$ indices and $3(r/4+1)<r$.
+At this index the two predicted ratios differ by at least $2\sin(\pi/8)>0.76$.
+Hence the surviving residue is unique. CRT over primes with product exceeding
+$N$ recovers the totient. The prime number theorem allows $r=O(\log N)$
+asymptotically, and an auxiliary prime dividing $N$ already splits it.
+This reduces the numerical specification of a sufficient evaluator to constant
+absolute accuracy on small-order roots. It still requires a way to evaluate the
+primitive contribution from $N$ alone. In particular $N$ modulo one probe
+order cannot generally give the local answer: $33$ and $305$ are both $16$
+modulo $17$, but their totients are $20$ and $240$, distinct modulo $17$.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
