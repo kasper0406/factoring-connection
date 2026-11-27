@@ -2456,6 +2456,33 @@ does not follow from the Jacobi symbol or the divisor-sum identity.
 The statement does not automatically transfer to 15N with more than
 two distinct prime factors.
 
+### A single quartic test for the first ambiguous bit
+
+The [earlier rational quartic audit](../../notes/newfamily_results.md)
+already identifies the hidden-prime character in a quartic test on
+squares. In the preceding semiprime case the exact specialization is
+
+    p+q ≡ N+1 (mod 16)  iff  x⁴ ≡ 4 (mod N) has a solution.
+
+For any unit t, locally x⁴=t² requires x²=t or x²=−t. At q≡3
+modulo four exactly one sign is square. At p≡1 modulo four both signs
+are squares precisely when (t/p)=+1, otherwise neither is. Taking t=2
+and applying the preceding sum-bit formula proves the specialization.
+Exhaustive fourth-power tables verified the general t identity on
+23936 units across all eligible prime pairs below 50.
+
+For the fixed target there are exactly eight roots on each yes input.
+Four choose distinct signs at p and q, so gcd(x²−2,N) splits N for
+exactly half of the roots. This extraction needs a root with suitable
+signs. A decision bit alone does not provide it. For general t, an
+ordinary quadratic-residuosity oracle on N can answer the quartic
+question: choose u from ±t to have Jacobi symbol +1 (possible since
+(−1/N)=−1). Its two local signs agree and (u/p)=(t/p). Conversely
+the quartic test on t² decides whether t is a square modulo N whenever
+(t/N)=+1; a negative Jacobi symbol already excludes a square. These
+oracle reductions concern variable t. They imply no such equivalence
+for the single target 4.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
