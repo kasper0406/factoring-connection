@@ -71,6 +71,11 @@ the optimal real single-sample variance. A third partner of the same
 phase outside the public inverse pair gives a factor by gcd.
 [Identity and exhaustive checks](salie-quarter.md#grouping-summands-with-the-same-phase)
 
+The [public part of the signed interval](salie-phase-bins.md#computing-the-two-public-translates-at-the-required-scale)
+admits a factor-free truncated Fourier evaluation with RMS error at
+most 1/16 after normalization. The same function at the unknown
+mixed-root shift remains to be evaluated.
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

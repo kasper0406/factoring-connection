@@ -39,3 +39,32 @@ The normalized four-translate extension $B(c)=A(c)/\sqrt N$ has $L^2$ norm at mo
 Clip at absolute value 4. The change in any Fourier coefficient is at most $\mathbb E(|B|-4)_+\le\mathbb E B^2/16\le1/4$, using $(x-a)_+\le x^2/(4a)$ for $x\ge0$. Clipping is Lipschitz, so the promised normalized RMS oracle error costs at most a further $1/8$. After division by 4, a constant-size coefficient at the hidden frequency survives on sufficiently large balanced semiprimes. This removes the logarithmic normalization from the first decoder.
 
 The noisy-interval diagnostic uses the factor-supplied array as an oracle, adds independent bounded integer errors, clips at 4, and runs the sampled frequency search with the direct gcd probes disabled. Run `python check_salie_interval_recovery.py`.
+
+## Computing the two public translates at the required scale
+
+Put P(c)=∑_{t∈I}(χ(t+c)+χ(t−c))/√N. This part of the normalized
+interval target has a public polynomial-time RMS approximation.
+With Î(k)=∑_{t∈I}e_N(−kt)/N, the single +c translate is
+(G_N/√N)∑_k χ(k)Î(k)e_N(−kc). Here N is an odd squarefree
+semiprime, so the Jacobi character is primitive. The normalized
+Gauss factor is 1 or i according to N modulo 4. A geometric sum
+computes each Î(k), and the coefficient at k=0 vanishes after
+multiplication by χ(0).
+
+Keep only frequencies with 0<|k|_N≤K. Since |Î(k)|≤1/(2|k|_N),
+Parseval bounds the one-translate mean-square tail on all c by
+1/(2K). Adding the two translates and restricting to uniform units
+gives RMS at most √(2N/(φ(N)K)). Thus K=1024 gives at most 1/16
+on odd distinct semiprimes, as φ(N)/N>1/2. The calculation uses
+O(K) Jacobi symbols and geometric sums per query. Standard complex
+arithmetic with O(log N + log K + log(1/δ)) bits suffices for
+additional absolute error δ, since nonzero geometric denominators
+have magnitude at least of order 1/N.
+
+The full target decomposes as P(c)+P(uc) for a mixed root u.
+Only the first argument is publicly available. Evaluating P(c)
+at extra precision leaves positive room in the full 1/8 RMS budget
+for a separate approximation to P(uc). For K=1024 the RMS errors
+on all unit shifts were 0.01354 at N=10403 and 0.01943 at N=11009,
+using a full Fourier transform for verification. This calculation
+requires no factorization in the truncated evaluator.
