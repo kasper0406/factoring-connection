@@ -41,3 +41,25 @@ and a one-sided matrix entry on unplanted inputs. If the proposed
 shortcut requires p,q as transition labels it assumes away the main
 difficulty. The curve and Cartier–Manin operator are established tools;
 no literature-priority claim is made for this interpretation.
+
+## Scope of the finite-state analogy
+
+The arrows above read hidden prime labels, not digits of the public N.
+They describe coefficient support and do not constitute a factoring
+automaton. The [earlier coefficient analysis](../../notes/coef_results.md)
+rules out a fixed digit automaton for its u₂ coefficient on all integers
+and explicitly leaves the semiprime promise open. [Proposition
+AUT](../../notes/nativeinv_results.md) also excludes integer-weighted
+digit automata for specified multiplicative functions on all integers.
+The curve example supplies no exception to either result.
+
+There is a useful arithmetic control for the order identity. In the
+cubic quotient T³=T+1, define C_m to have columns the coordinates of
+1, T^m and T^(2m). Compute C_N modulo N by binary powering. Modulo p
+the map with matrix C_p is Frobenius and is linear on base-field
+coefficients, so C_N=C_p C_q. Modulo q the order reverses. This
+uses modular arithmetic registers whose number of possible contents
+grows with N. On the 200 larger unplanted controls, the [check](check_power_substitution.py) verified both identities and found zero
+proper factors from gcds of the entries or determinant of C_N.
+Thus fast computation and the order identity alone do not give a
+one-sided zero. No speedup follows from the finite-state analogy.
