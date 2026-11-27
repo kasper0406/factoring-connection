@@ -4324,3 +4324,28 @@ has valuation one and larger primes have valuation zero. The explicit
 length lower bound leaves open a uniform short division-free arithmetic
 circuit for any admissible witness. Such a circuit could be evaluated
 gate by gate modulo m and would suffice without materializing U.
+
+### Limits of products of short-base power differences as gcd witnesses
+
+Consider a positive witness of the previous type that is a product of
+terms a^k−1 or a^k+1, with a≥2, k≥1 and log a≤(log j)^C for fixed C.
+Each term must have all its prime divisors ≤2j. Set K=k for the
+minus sign and K=2k for the plus sign. For K>6, Zsigmondy's primitive
+divisor theorem for a^K−1 supplies a prime of multiplicative order
+K for a. For K=2k that prime divides a^k+1. Its size is at least
+K+1, hence K<2j. Small exceptional exponents cause no asymptotic
+change.
+
+Group the band primes p dividing a term by d=ord_p(a), a divisor of
+K. Each group has at most d log(a)/log(j) members by taking their
+product inside a^d−1. It also has at most 1+j/d members since all
+are 1 mod d. Splitting d at sqrt(j), each group thus has size
+j^(1/2+o(1)). Uniformly for K≤2j the divisor bound τ(K)=j^o(1)
+as an upper bound gives at most j^(1/2+o(1)) hits per term.
+The full band contains Θ(j/log j) primes. Hence every witness of
+this form needs at least j^(1/2−o(1)) distinct terms. Raising terms
+to powers or multiplying by j-smooth padding cannot add band hits.
+The argument applies to universal, input-independent positive gcd
+witnesses and bases of the stated bit length. General circuits can
+use additions between products or succinct bases with much larger
+integer bit length.
