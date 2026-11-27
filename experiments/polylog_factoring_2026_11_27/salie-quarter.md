@@ -794,3 +794,51 @@ success. FFTs of the proof extension for every odd N≤2000 with two
 or more distinct prime factors checked all predicted frequencies on
 676 moduli. The smallest observed real coefficient exceeded 0.2310.
 These checks use the factors and test the reduction.
+
+## Constant additive accuracy for the magnitude
+
+There is an absolute ε>0 such that an evaluator of |T(c)| with RMS
+additive error at most ε over uniform unit c suffices for randomized
+polynomial-time factoring of arbitrary odd N. Use the transform
+log(1+|T|). Its Lipschitz constant on nonnegative inputs is one.
+The following signal estimate is uniform in the number of distinct
+prime powers.
+
+On the same all-residue proof extension, fix a local factor r and
+condition on the product A of all the other absolute cosine factors.
+The CRT coordinates of uniform c are independent. With z as above,
+the function of this coordinate is g(z)=log(1+A√(2+2z)). Its
+derivative is at least A/(2(1+2A)), so the covariance with z is
+nonnegative for every A, and at least 1/12 when A≥1. Here Var(z)=1/2.
+This covariance averaged over A is the real Fourier coefficient at
+the same factor-revealing frequency 2v_r(N/r).
+
+To see that Pr(A≥1) has an absolute positive lower bound, write log A
+as a sum of independent variables Y_s=log(2|cos(2πx/s)|) over the
+other odd prime powers. Their means are (log 2)/s, since the product
+of |1+exp(4πix/s)| over x mod s is 2. Each variance is at least
+1/32 by the preceding covariance bound and Cauchy–Schwarz. Their
+fourth moments are uniformly bounded: the positive part is bounded
+by log 2, and counting grid points around the two cosine zeros gives
+Pr(Y_s<−t)≤C(exp(−t)+1/s) for t≥0. For t>log s the event is empty,
+so integrating the resulting exponential tail suffices.
+
+For the centered sum Z of these variables let σ²=E Z². Independence,
+the individual variance lower bound and the uniform fourth moments
+give E Z⁴≤C'σ⁴ by expanding the fourth power. Interpolation yields
+E|Z|≥σ³/(E Z⁴)^(1/2), hence E max(Z,0)=E|Z|/2≥cσ.
+Cauchy–Schwarz gives Pr(Z>0)≥c². The sum of the means is positive,
+so this proves the desired bound; an empty product is identically one.
+Thus the target coefficient is bounded below by an absolute η>0.
+
+Use ε<η/4. Project approximate magnitudes onto the nonnegative reals,
+apply log1p and clip to [0,log(1+N)]. The coefficient changes by
+at most ε from the unit errors by Cauchy–Schwarz (also for independent
+oracle randomness). Use the preceding gcd simulation for nonunits
+and allow O(log N/N) error for the zero input. After dividing by
+log(1+N) the heavy-frequency search retains an inverse-logarithmic
+coefficient. This gives the claimed reduction. It assumes access
+to the evaluator at requested scales with the stated RMS guarantee.
+FFTs of the proof extension on the same 676 moduli gave a smallest
+target coefficient of 0.13633 to five decimal places truncated.
+The observed minimum is not used as a uniform tolerance.

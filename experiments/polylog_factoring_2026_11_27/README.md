@@ -83,6 +83,11 @@ many distinct prime factors. Each local cosine contributes a Fourier
 frequency with gcd N/r for a prime power r exactly dividing N.
 [Reduction and checks](salie-quarter.md#factoring-from-the-logarithm-of-the-magnitude)
 
+Using log(1+|T|) retains a factor-revealing coefficient even for
+unboundedly many prime powers. A sufficiently small absolute constant
+RMS additive error on the magnitude over unit scales suffices.
+[Regularized magnitude reduction](salie-quarter.md#constant-additive-accuracy-for-the-magnitude)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
