@@ -3392,3 +3392,7 @@ gives a factor. If y=0, use gcd(x−1,N) on the mixed scalar root.
 If y≠0, the inert-field root is ±1, hence q divides y and gcd(y,N)
 is proper. Uniform sampling from these eight roots would split with
 probability 3/4. The decision test by itself supplies no such sampler.
+
+### How often an empty-interval certificate must be constructible
+
+For N=pq with distinct odd primes, the even sums 2√N≤s<N+1 contain exactly one square discriminant: a square gives the integer factor pair (s±√(s²−4N))/2, and the upper bound excludes (1,N). A complete deterministic emptiness test is stronger than needed. Bisect this list of even sums and run independent polynomial-time certificate attempts on both children. Accept only certificates whose sound verifier certifies emptiness, then keep the other child. It suffices that on each empty sibling on this particular bisection path a fresh attempt succeeds with probability at least ε=1/poly(log N). At most ceil(log₂ N) splits and at most 2/ε expected attempts per split give a Las Vegas reduction. The last sum gives both factors by integer square root. Conversely the two primes are themselves a short, deterministically checkable emptiness certificate for any empty interval under this promise. Certificate length alone therefore cannot demonstrate progress. The outstanding requirement is a public constructor with a success guarantee on those siblings. Average success over unrelated empty intervals need not give this guarantee.
