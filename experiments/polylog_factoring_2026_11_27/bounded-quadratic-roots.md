@@ -542,6 +542,37 @@ primes below 50. This is a deterministic semiprime reduction to
 modular evaluation at base four. Generating these residues without
 factor information is the unresolved step.
 
+**One fixed-base query for general inputs.** Remove factors 2 and 3
+first; the following identity holds for any n>2 coprime to 3.
+Take L=3^k the least power of three exceeding n and M=L². Query
+V=Φ_(Ln)(4) mod M. Put y=4^(L/3) mod M, z=y³ mod M, and take
+Δ=(z−y) mod M. Then
+
+    φ(n) = [2 ((V−1)/L) · (Δ/L)^(-1)] mod L.
+
+Use least nonnegative residues before the exact divisions. Indeed
+v_3(4^(3^(k−1))−1)=k by repeated cubing, and z−y has the
+same valuation since y(y+1) is a unit. The cyclotomic identity for
+3 not dividing n gives Φ_(Ln)(4)=Φ_n(4^L)/Φ_n(4^(L/3)).
+Writing A=Φ_n(1), the constant A is a 3-adic unit (it is one or
+a prime divisor of n). Reciprocity gives Φ'_n(1)/A=φ(n)/2.
+Both Taylor arguments are 1 modulo L. In the ratio modulo L² all
+quadratic terms vanish, leaving V=1+Δ φ(n)/2. Since φ(n)<L
+this recovers the exact totient. Both index and modulus are O(n²)
+in numerical size and therefore O(log n) bits. Given φ(n) use the
+preceding randomized splitting reduction; this needs no additional
+cyclotomic queries.
+
+For n=77 the query index is 6237, M=6561, V=5590 and Δ=2592,
+yielding 60. Modular Horner evaluation of the numerator and denominator
+using explicit Φ_n coefficients checked 100 inputs, all 3≤n≤150
+coprime to three plus 385 and 1225. This verifies the decoder using
+reference polynomials. Conversely, on this query family the displayed
+linear formula constructs V directly from φ(n). Thus the new oracle
+interface has exactly the totient content even away from semiprimes;
+constructing its residue in polynomial time from the index alone
+remains open.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
