@@ -159,3 +159,33 @@ with direct integer binomial gcds on the small cohort of 110 pairs,
 up to its first split or trial-division cutoff. On the 200 larger
 unplanted controls, factor-assisted path labels predicted a split on
 every input by d≤17. Large coefficient residues were not evaluated.
+
+## The coefficient beside the Gaussian CM middle term
+
+For N=pq with p≡1 and q≡3 modulo four, put k=(N−1)/2 and
+j=(N−3)/4. In (X³−X)^k = X^k (X²−1)^k, the coefficient at
+X^(N−1) is identically zero by parity. The coefficients at X^(N−2)
+and X^N both have magnitude C=binom(k,j). This polynomial comes
+from the cubic for y²=x³−x; at a composite index the calculation is
+ordinary coefficient extraction.
+
+Modulo p, the low digits of k and j are (p−1)/2 and 3(p−1)/4,
+respectively. Lucas's theorem gives C≡0 mod p. Modulo q the exact
+first-digit decomposition gives
+
+    C ≡ binom((q−1)/2,(q−3)/4) · binom((p−1)/2,(p−1)/4) mod q.
+
+The first factor is a unit. The second is a unit whenever (p−1)/2<q,
+which includes all balanced inputs of this residue type. Hence
+gcd(C,N)=p on that family. Outside this range, the same identity
+characterizes the extra zero by a carry when adding two copies of
+(p−1)/4 in base q. At N=91 the unsigned coefficient is 39 modulo 91
+and yields 13. Direct integer binomials checked all 65 balanced pairs
+of this type with both primes below 100.
+
+This is a d=4 instance of the adjacent-binomial mechanism: the lower
+index is floor(N/4) and the upper one is floor(2N/4). The special
+feature is its position beside the missing middle term of this CM
+cubic. The earlier growing menu covers more inputs. The Lucas proof
+uses the hidden primes to explain the coefficient; a fast computation
+from N alone is still needed.
