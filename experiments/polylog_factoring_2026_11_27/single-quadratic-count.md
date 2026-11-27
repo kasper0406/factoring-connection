@@ -228,3 +228,32 @@ in this linear statistic. Other stationary pairs can interfere.
 This statement precedes the nonlinear threshold comparison.
 Orthogonality in the full Fourier sum does not imply small
 pointwise error or cheap access to an individual comparison bit.
+
+## Sparse rational shifts that cancel a prime-period lift block
+
+Suppose g=gcd(a²-c²,N)=p is a proper odd prime divisor. For a
+fixed lower digit, the clipped count as a function of j is a
+constant plus p times the indicator of an interval in z_j modulo p.
+The interval length is (H+1) mod p=(p+1)/2, and z_j runs affinely
+through all residues with unit slope. Its first nonconstant harmonic
+is nonzero: summing a nontrivial p-th root over a proper nonempty
+interval gives a nonzero geometric series. Subtracting the reference
+only changes the constant.
+
+Consider an explicit linear combination of t<p distinct shifts
+modulo N with nonzero rational weights. If the resulting block
+vanishes for every j, its shift polynomial F must vanish at a
+primitive p-th root. Reduce exponents modulo p and collect weights
+in each class. The resulting polynomial of degree at most p-1 is
+a rational multiple of 1+X+...+X^(p-1) by cyclotomic irreducibility.
+Since t<p, some residue class is empty, so all collected weights
+are zero. In particular any chosen shift has a distinct companion
+congruent to it modulo p. Taking gcds of its differences with all
+other shifts exposes a proper divisor in at most t-1 tests: such a
+difference is divisible by p and is nonzero modulo N.
+
+This argument needs exact cancellation of even one actual block of
+prime period, for all shifts of the input digit j. It allows signed
+weights and does not assume cancellation of arbitrary periodic
+functions. Approximation, cancellation only after summing blocks,
+and nonlinear comparisons remain outside the statement.
