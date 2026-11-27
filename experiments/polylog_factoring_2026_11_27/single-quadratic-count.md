@@ -709,6 +709,42 @@ and recover p by bisection. Dense truncation reaches order p; the
 binary degree of D_N makes ordinary evaluation cheap, but does not
 supply this high-order zero test.
 
+**Exact first degree for arbitrary odd N.** For each exact prime
+power p^e dividing N set a=floor((e+1)/2), b=ceil((e+1)/2).
+The first positive degree surviving modulo p^e is (p^a+p^b)/2.
+Take the minimum over the prime-power components for the first degree
+modulo N. For example, at N=45 the local degrees are 6 modulo 9
+and 5 modulo 5, giving first degree 5 and gcd(5,45)=5.
+
+To prove the local formula substitute X=T²/(1+T). The trace identity
+turns D_N(2+X)−2 into ((1+T)^N−1)²/(1+T)^N.
+The denominator is a unit and the substitution doubles the first
+nonzero degree, also over the ring modulo p^e. From
+i·binom(N,i)=N·binom(N−1,i−1), the valuation of binom(N,i) is at
+least e−v_p(i). At i=p^j for 0≤j≤e equality holds because the
+bottom j base-p digits of N−1 are all p−1 (Lucas' theorem).
+A surviving product in the square therefore requires indices i,l
+with v_p(i)+v_p(l)≥e+1. The smallest possible sum i+l is p^a+p^b:
+at fixed exponent sum, balancing the exponents minimizes the sum of
+their powers, with equality only at the balanced pair up to swapping.
+At this first sum the minimizing product has valuation e−1. There
+are one or two orderings, which cannot cancel for odd p. This proves
+the formula. Direct coefficient recurrence verified all 1,828 local
+thresholds for every odd N from 3 through 1,999.
+
+For composite odd N the first degree k is below N (also for a single
+prime power of exponent at least two), and the preceding coefficient
+identity gives 1<gcd(k,N)<N. Binary search using a succinct prefix-zero
+test thus splits every odd composite; recurse and handle even factors
+directly. Conversely the displayed local formula evaluates the test
+in polynomial bit time given the factors, regardless of their number.
+This gives polynomial-time Turing equivalence for this particular
+scalar on general inputs. The simpler binomial series (1+T)^N−1
+already has first nonzero degree modulo N equal to the least prime
+factor, by the same valuation identity at i=p. Chebyshev changes the
+threshold through squaring and substitution but supplies no known fast
+method to compute either threshold from unfactored N.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
