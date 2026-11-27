@@ -62,3 +62,32 @@ This rules out a polylogarithmic cost for *listing* all crossed poles
 in this window. It leaves open a collective evaluation of their
 contributions. A candidate identity would need to bound total bit cost
 and absolute error uniformly, including endpoint contributions.
+
+## Grouping by the product error
+
+Consider a variant that takes the power before summing over integer
+multiples. Let I be a finite interval of W positive integers. Write
+D_I(m) for the number of x in I dividing m, including D_I(0)=W.
+For any integer k≥1 the following identity is exact:
+
+$$
+\sum_{x\in I}\sum_{j\in\mathbb Z}
+ (1+4\pi^2(xj-N)^2)^{-k}
+ =
+ \sum_{h\in\mathbb Z}\frac{D_I(N+h)}{(1+4\pi^2 h^2)^k}.
+$$
+
+All terms are nonnegative. For each x and h, the equation xj=N+h
+has exactly one integer solution when x divides N+h. This proves
+the identity. The contribution from nonzero h is at most
+$2W\zeta(2k)/(4\pi^2)^k < 4W/(4\pi^2)^k$.
+Thus taking $k=\lceil\log(16W)/\log(4\pi^2)\rceil$ gives leakage
+below 1/4 uniformly. An additional absolute evaluation error at most
+1/4 still permits correct rounding.
+
+Grouping the terms makes the precision requirement explicit. The
+central term is the desired count itself. Even perfect estimates for
+every off-center term only bound the difference between two unknowns
+(the total and the central term). This regrouping supplies no independent
+way to compute the total. Revisit it if a fast evaluation of the
+left-hand side becomes available.
