@@ -4,7 +4,18 @@ The objective is a classical factoring algorithm with polynomial bit complexity,
 
 ## Working ledger for the quarter-parity evaluator
 
-**Open question.** Can a public kernel or weighted subspace sum evaluate the clipped root parity in polynomial bit time? The fixed translated-window reduction covers general odd inputs; several quarter-window decoders below assume two distinct prime factors. [General reduction](fixed-window-split.md)
+**Current target.** Given an unfactored odd modulus N and an aligned binary interval I in its lower half, compute the parity of the solutions to x² ≡ 1 (mod N) in I in polynomial bit time. A general evaluator remains open.
+
+| Approach | What we know | What would advance it |
+|---|---|---|
+| Prefix descent | At most half the bit length in parity queries, then lattice recovery. Verified on 676 odd moduli using exhaustive queries. [Decoder](check_lower_half_prefix.py) | Evaluate a wide query from N and I. |
+| Inverse pairs | Swapping the two coordinates gives exactly the same parity. Separate prime-factor counts lose their overlap. [Identity](single-quadratic-count.md#swap-symmetry-gives-an-exact-interval-parity-target) · [Counterexample](quadratic-chirp.md#separate-local-sign-counts-lose-prefix-parity) | Compute the joint parity without scanning the interval. |
+| Lean and CM | The Gaussian-binomial identity sums over subspaces. A one-sided CM divisibility relation with enough lifts would yield a root or factor. [Lean comparison](single-quadratic-count.md#comparison-with-the-finite-subspace-identity-in-grh-lean) · [Extractor](check_auxiliary_relation.py) | Construct the relation from public inputs and prove its divisibility. |
+| Tensor contraction and masks | The root predicate has a small circuit. Dense elimination is expensive. A weak mask predictor already suffices on distinct odd semiprimes. [Circuit](quadratic-chirp.md#a-public-tensor-network-for-the-prefix-query) · [Prediction criterion](quadratic-chirp.md#a-zero-test-using-a-quadratic-boolean-phase) | Give a compact contraction or a predictor with a proved advantage at each modulus. |
+| Exponents and square lifts | Several public exponent formulas have negligible mean coverage. A sufficiently accurate quotient interval enables lattice recovery. [Exponent bounds](bounded-quadratic-roots.md#fixed-polynomial-exponents-on-separated-balanced-primes) · [Quotient accuracy](bounded-quadratic-roots.md#square-root-cutoff-for-approximate-quotients) | Prove coverage for a public construction outside the tested families. |
+
+<details>
+<summary>Full attempt ledger, including individual tests and sources</summary>
 
 | Approach tried | Established result | What would justify reopening it |
 |---|---|---|
@@ -23,6 +34,8 @@ The objective is a classical factoring algorithm with polynomial bit complexity,
 | Public features | Interval tables, inverse bins, sparse phase fits and fixed shifted Jacobi probes have model-specific bounds. Held-out square-only scoring needs no factors. An inverse-polynomial advantage on the sampled-root label suffices for a split at any odd modulus with at least two distinct prime factors. [Reduction](salie-quarter.md#distinct-prime-dependence-of-two-sign-reductions). The advantage itself is impossible on families with ω(N) growing faster than log log N. [Information limit](salie-quarter.md#information-limit-for-the-sampled-root-label-at-many-prime-factors) [Scoring method](salie-quarter.md#public-labels-for-square-only-learning-and-held-out-scoring) | A feature outside the recorded bound with reproducible held-out advantage. |
 | Individual square witnesses | The best fixed L-level list for distinct odd semiprimes has hit rate Θ(√(L/N)) for 1≤L≤N. Choosing among K such lists gives at most O(√(KL/N)) for KL≤N. Affine selectors and bounded-degree polynomial lift menus have negligible coverage under the stated size bounds. [Coverage proofs](salie-quarter.md#coverage-of-searching-integer-square-lifts) | A selector outside those families with a coverage argument. |
 | Approximate square-lift quotient | A nonzero root has a representative in the upper half by changing sign if needed. Given a predicted interval [a,b] containing its quotient k=(x²−y)/N, restrict x to the upper half and to y+aN≤x²≤y+bN. The integer endpoints differ by at most b−a since their sum is at least N. The [shifted quadratic solver](bounded_quadratic_roots.py) therefore suffices for b−a≤X with the current X of order N^(2/5). Checked containment on all 5858 upper-half representatives for N=35,77,205,1001,10403 using intervals supplied from the true quotient. | The quotient routine now splits wider intervals into square-root-scale blocks and adjusts lattice rank per block. The [variable-rank bound](bounded-quadratic-roots.md#square-root-cutoff-for-approximate-quotients) permits width √N times a fixed polylogarithmic factor in polynomial bit time. Open: predict such an interval from (N,y) with inverse-polylogarithmic coverage on uniform unit squares at each modulus. |
+
+</details>
 
 For each proposed experiment, check the closest row and its linked proof first. Record the changed assumption, the result, and what remains open in that row. Add a row when the mathematical mechanism changes. Detailed proofs and runs belong in the linked notes.
 
