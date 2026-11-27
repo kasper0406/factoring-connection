@@ -23,12 +23,18 @@ def factor_classes(n, residue, bits):
         return modulus, []
     shift = valuation//2
     unit = delta >> valuation
-    roots = [1]
-    for j in range(1, bits-valuation):
-        mask = (2 << j)-1
-        roots = [v for r in roots for v in (r,r+(1 << j)) if (v*v-unit) & mask == 0]
+    roots = odd_square_roots(unit, bits-valuation)
     stride = 1 << (bits-shift)
     return stride, [(half+(r << shift)) % stride for r in roots]
+
+
+def odd_square_roots(unit, bits):
+    """Lift the at most four roots of an odd unit modulo 2**bits."""
+    roots = [1]
+    for j in range(1, bits):
+        mask = (2 << j)-1
+        roots = [v for r in roots for v in (r,r+(1 << j)) if (v*v-unit) & mask == 0]
+    return roots
 
 
 if __name__ == '__main__':
