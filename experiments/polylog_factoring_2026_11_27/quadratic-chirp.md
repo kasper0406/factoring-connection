@@ -4778,3 +4778,33 @@ map u↦u^k gives exactly gcd(kE,m_r)/m_r, so this particular
 high-degree map is already captured by substituting kE for E.
 Compact high-degree nonmonomial maps and maps degenerating to a
 constant at just one prime are outside the stated comparison.
+
+### Extracting a formal one-prime degeneration from a succinct circuit
+
+Let n=pq with distinct primes, and suppose division-free arithmetic
+circuits over Z/nZ describe P,Q of degree at most Δ. For a rational
+map constant modulo p and nonconstant modulo q (with both local
+denominators nonzero polynomials), the two-variable circuit
+H(X,Y)=P(X)Q(Y)−P(Y)Q(X) is identically zero modulo p and nonzero
+modulo q. This is a formal distinction: agreement on every base-field
+point does not by itself imply a polynomial identity.
+
+Choose k=max(2,ceil(log₂(8 max(1,Δ)))). Sample a uniform monic f of
+degree k over Z/nZ and evaluate H at two independent uniform elements
+of (Z/nZ)[T]/f. Take the gcd of n with all k output coefficients.
+They are always zero modulo p. With probability at least 1/(2k)
+the reduction of f modulo q is irreducible: the elements of degree
+less than k in F_(q^k) are in proper subfields, with union bounded
+by sum_{i=1}^{floor(k/2)} q^i≤q^k/2 for k≥2. Each degree-k irreducible
+accounts for k elements. Conditional on irreducibility, Schwartz–Zippel
+bounds the zero probability by 2Δ/q^k≤1/4. Thus a single trial
+gives p with probability at least 3/(8k). No irreducibility test
+or factorization is needed. With s arithmetic gates on degree-one
+inputs one may use Δ≤2^s, so expected bit complexity is polynomial
+in s and log n even if the expanded coefficient list is exponential.
+
+As a diagnostic, at n=35 the polynomial 5(X^7−X) vanishes at every
+scalar modulo n. In the quotient by T²+1 its value at T is −10T,
+whose coefficient gcd is 5. The known factor in this toy polynomial
+makes it a check on extraction only. A uniform construction of
+suitable circuits from unfactored n remains open.
