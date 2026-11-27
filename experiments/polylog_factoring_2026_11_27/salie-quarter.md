@@ -1285,3 +1285,47 @@ The guarantee is a bound on bit errors, not merely positive agreement
 over chance. A direct FFT diagnostic for all 676 eligible N≤2000
 gave a maximum among the predicted coefficients of at least 0.1471
 on each proof extension; these spectra used the supplied factors.
+
+## Beating the always-yes threshold classifier on a semiprime
+
+For odd distinct primes write V=|s+t| with s=2cos(2πc/N) and
+t=2cos(2πuc/N). For an independent uniform angle θ, the probability
+that |s+2cos θ|≥1 is at least 1/2 for every s. Indeed for v=|s| it is
+(acos((1−v)/2)+acos((1+v)/2))/π on [0,1], decreasing to 1/2,
+and acos((1−v)/2)/π on [1,2], increasing from 1/2. Integrating
+over the public angle gives the limiting always-yes accuracy
+0.616625 by numerical quadrature, using the two-phase equidistribution
+proved above (the threshold boundary has torus measure zero).
+The exact-input numerical rates at 10403 and 1022117 were 0.612549
+and 0.616173 over all units.
+
+More strongly, a queryable classifier beating the always-yes accuracy
+on its own N by δ>0 splits N in randomized time polynomial in
+log N and 1/δ, counting classifier calls. Let D(c) be the probability
+of predicting no. The accuracy gain is E[D(c)(2·1[V<1]−1)] over
+units. A one-sided approximation avoids any assumptions about how
+often the actual input is close to the threshold.
+
+Majorize 2·1[V<1]−1 by a ramp equal to +1 through V=1, decreasing
+linearly to −1 at V=1+τ and constant thereafter. For fixed s, its
+independent-angle mean is at most O(√τ): the extra arcsine mass in
+the two boundary intervals of width τ is O(√τ) uniformly, including
+at the endpoints of the cosine range. View the ramp as a function
+of s+t on [−4,4]. Its Bernstein polynomial of degree d approximates
+it uniformly to O(1/(τ√d)) by the Lipschitz bound and binomial
+variance. Add that error bound to retain a majorant. Take τ a small
+constant times δ² and d sufficiently large polynomial in 1/δ so the
+majorant's independent-angle mean stays below δ/2 at every s.
+
+Inserting the two cosines yields a bounded trigonometric polynomial
+of degree at most d in each angle. Its terms without the hidden
+angle sum to that same independent-angle mean. Because D≥0 and
+D≤1, the remaining modes have total correlation at least δ/2 with D.
+There are O(d²) modes with individually bounded coefficients, hence
+some a+bu, b≠0 and |a|,|b|≤d, has correlation Ω(δ/d²).
+Zero-extend D from units and run the sampled heavy-frequency search
+with fresh classifier calls. Trial division through d handles small
+primes; otherwise testing gcd(k−a−b,N) over the resulting list and
+the candidate pairs recovers a factor as in the MSE reduction.
+This proof uses the *finite-input* baseline and does not require
+knowing its value to execute recovery when a gain bound is supplied.
