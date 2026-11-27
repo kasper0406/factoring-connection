@@ -1460,3 +1460,42 @@ spectral gap does not supply a small global kernel. A direct diagonal
 encoding of the root predicate would have the same dimension. Checked
 the Gram identity and zero coordinates at 310 unit inputs across
 seven odd moduli, including nonsquare unit inputs.
+
+### Choosing the zero-prefix length with more prime factors
+
+Suppose the existence evaluator accepts a prefix length as input.
+For odd N with s>=2 distinct prime factors, including repeated
+powers, set R=2^s and B=2^(n-s-2) for n=bit_length(N). This
+requests s+2 leading zeros, giving alpha=B/N between 1/(4R) and
+1/(2R). The exponent is nonnegative since N>=3*5*3^(s-2).
+For a proof on all residues put A(h)=[0<=h mod N<B] and
+F(h)=max_u A(uh), with u over square roots of unity. At units
+F is exactly the requested existence bit. At zero F=1; if a
+sampled nonzero h is a nonunit, its gcd already finishes the split.
+Thus the Fourier search can simulate this full-grid signal or stop
+successfully, without having to solve a nonunit existence query.
+
+The same covariance argument now gives Cov(F,A)>=alpha(1-R alpha)
+>=1/(8R). The interval Fourier tail beyond K costs <=sqrt(2/K).
+Choose K a sufficiently large multiple of R². For N<=2K+1 use
+trial division; otherwise a nonzero |a|<=K has predictor Fourier
+magnitude Omega(1/(R log(2K))). If a is a nonunit, trying small
+divisors succeeds. For unit a, invariance gives the same magnitude
+at au for any mixed root u; gcd(au-a,N) then splits N. Searching
+the heavy list and trying offsets takes time polynomial in R and
+log N with a unit-square prefix-existence oracle.
+
+No supplied s is needed. Try guesses t=2,3,... with prefix length
+t+2 and the corresponding search threshold and explicit work cap.
+For an expected-time guarantee, dovetail repeated independent
+bounded runs for guesses: at stage j run each guess t<=j for
+j-t+1 fresh trials (skip invalid prefix lengths). Raise confidence
+per trial at the true t to a sufficiently large constant, or note
+that failure through stage s+k is exp(-Omega(k²)); even exponentially
+growing per-stage budgets then have finite expected overhead.
+Verify every returned gcd. On the promised inputs this costs
+poly(log N,2^s) in expectation assuming polynomial-time existence
+queries. Thus the prefix length is logarithmic in bit length when
+s=O(log log N). The reduction gives no efficient existence evaluator.
+Checks of the orbit mask, unit existence bit and covariance bound
+covered five moduli from 45 through 15015, including repeated powers.
