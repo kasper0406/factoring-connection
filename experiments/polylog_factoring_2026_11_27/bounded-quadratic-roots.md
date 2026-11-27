@@ -407,6 +407,40 @@ these shift-one primitive resultants, even with adaptive choice among
 all the allowed orders. The identity for A is a counting device:
 constructing it as written uses the unknown gap.
 
+**Powering to any conjugate.** The preceding gap argument extends to
+a polynomial-size shared menu of monic irreducible integer polynomials
+f whose degrees k and coefficient bit lengths are polynomial in log B.
+Exclude zero and roots of unity as characteristic-zero roots. For each
+prime divisor r of N, allow a hit whenever some root x of f in the
+algebraic closure of F_r has x^N again a root of f. This is more
+permissive than specifying one particular conjugate.
+
+For a gap d=q−p>2 let a_i denote the complex roots of f and form
+
+    C(f,d) = product over all i,j,t of (a_i^d a_j − a_t).
+
+It is a rational integer by Galois invariance and integrality. Every
+factor is nonzero: the absolute logarithmic Weil heights of the three
+conjugates are equal to the same positive h, while a_i^d=a_t/a_j
+would imply d h≤2h. Positivity here uses Kronecker's theorem. Cauchy's
+root bound gives log(2+|C|)=O(k³(d+1) log(2+max |coeff(f)|)).
+No bound on the degree of the splitting field is needed.
+
+The local root set is permuted by r-th powering, even if the reduction
+has repeated roots. Thus x^N in the root set implies x^s in it for
+the partner s=N/r. Both x^p and x^q are then roots and x^d x^p=x^q.
+Reduce the product defining C at a prime of the splitting field above
+r: all local roots occur among the reductions, so r divides C.
+For a fixed d, each menu entry therefore covers O(d polylog B) pairs,
+since knowing either divisor prime and its side determines the pair.
+Sum over d≤D=B^α and compare with the Ω(BD/log² B) pairs in
+B^β<d≤D, 1/2<β<α<1. Even the union of all menu hits covers at most
+a B^(α−1) polylog B fraction. This includes shifted cyclotomic inputs
+a+ζ_l when their defining polynomials meet the stated size and
+non-torsion conditions and powering is tested against a conjugate.
+It does not analyze input-specific polynomial construction outside a
+shared menu, or tests comparing powers to nonconjugate targets.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
