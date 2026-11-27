@@ -406,3 +406,29 @@ This gives a common modular inverse graph for all scales and
 shifts at fixed N. Batching the masks against a succinct
 representation of its windowed phase distribution is the open
 evaluation step. Materializing the graph costs phi(N²) entries.
+
+## Swap symmetry gives an exact interval parity target
+
+There is a variant on modulus N itself. For an odd N, a public
+unit c and interval I, count ordered pairs x,y in I with
+xy=c² modulo N, taking residues once. Swap is an involution
+preserving the window on both coordinates. Modulo two the count
+therefore equals the number of a in I with a²=c² modulo N.
+XOR away the contributions of the two public roots ±c. The
+remaining bit is exactly the parity of the nonpublic roots in I.
+Requiring *both* coordinates in I makes the cancellation exact.
+
+On a singleton isolation trial from square-input-isolation.md the
+corrected bit is one. More generally any odd interval suffices.
+Halve it and query one child: corrected root parity is additive
+on disjoint children, so the other child's parity follows from the
+parent. Descend to a singleton in O(log N) queries. Its residue a
+gives a proper divisor gcd(a-c,N) for odd N, since the two signs
+partition the odd prime powers dividing N and a is nonpublic.
+This handles repeated prime factors when there are at least two
+distinct primes. The earlier isolation routine and perfect-power
+preprocessing supply the remaining cases. This is a reduction to
+an exact parity oracle for a different count, without a phase
+digit or Fourier decoding. The swap does not itself evaluate the
+parity in polynomial bit time. Direct enumeration still scales
+with the window width.
