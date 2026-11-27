@@ -121,6 +121,38 @@ positive amount. This extends the existing integer-shift grid bound
 to factorial denominators; it does not assume a bound between integers
 or cover relations outside the standard ideal.
 
+### Taking a field norm of standard CM shifts
+
+Let K be a number field of degree r with integer ring O, let
+I=(N,f) in Z[X] for the same monic quadratic f, and take a nonzero
+H in K[X] of degree d≥1 with H(t) in O for every integer t. Suppose
+d!H belongs to the extended ideal I^m O[X]. This hypothesis specifies
+which divisibility argument is being tested. Define P as the determinant
+of multiplication by H in K[X] on a rational basis of K. Then P has
+degree rd (its leading coefficient is the nonzero norm of the leading
+coefficient of H), and P(t) is a rational integer at every integer t.
+
+In an integral basis, multiplication by d!H has every matrix entry in
+I^m, by the integral structure constants for multiplication in O.
+Its determinant is (d!)^r P and belongs to I^(rm). The multinomial
+coefficient (rd)!/(d!)^r is integral, so (rd)!P belongs to the same
+ideal. Thus if the product of the conjugate absolute values of H(t)
+is strictly less than N^(rm) throughout the integer interval, the
+preceding grid bound gives endpoint span less than rd(2 sqrt(N)+1).
+In an imaginary quadratic field that product is simply |H(t)|².
+For example, a Gaussian-integer shift H=U+iV yields P=U²+V².
+This argument concerns the norm as a mathematical certificate and
+requires no algorithm for finding an integral basis.
+
+For a proposed asymmetric local divisor, the quantity to check instead
+is v_p(Norm H(t)) = sum over primes P above p of
+f(P/p) v_P(H(t)), with v_P normalized by v_P(P)=1. At a split prime
+of a quadratic field, divisibility of order m at only one prime above
+p guarantees only p^m in the norm. At an inert prime the same order
+guarantees p^(2m). Any claimed improvement needs both this local
+accounting and the product bound across all embeddings. The standard
+ideal hypothesis above need not hold for such an asymmetric construction.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
