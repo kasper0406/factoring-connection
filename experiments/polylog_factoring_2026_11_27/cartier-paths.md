@@ -400,3 +400,28 @@ construction and gives no bound for implicit modular evaluation.
 For the 3030 primes in [32768,65536], direct decomposition of 4p−1
 gave v≤15 on 2944 primes and maximum v=295. This count used the
 primes to measure coverage, without predicting D from N.
+
+## Joint square class gives a uniform balanced decoder
+
+Suppose N=pq with 1<p≤q≤2p. Let H be the squarefree part of
+K=(4p−1)(4q−1), or any supplied positive integer for which K=Hz²
+with z integral. Knowing H suffices even when the two individual
+square factors are large. In particular the product of the two
+individual discriminant magnitudes works directly, without removing
+their common square factors.
+
+Write S=p+q. The identity K=16N+1−4S and the bounds
+2√N≤S≤3√(N/2) give (4√N−2)²<K≤(4√N−1)². In particular
+0<4√(N/H)−z<2. Try floor(4√(N/H)) and that integer minus one
+for z, recover S=(16N+1−Hz²)/4, then check the two roots of
+X²−SX+N. This gives an integer-arithmetic polynomial-time decoder
+with at most two trials per hint. It applies to every balanced
+factor pair; the input-specific hint is essential.
+
+At N=703, the two local quantities are 75=3·5² and 147=3·7².
+Their product is 105², so the joint squarefree hint is just one.
+The decoder returns 19 and 37. The [implementation and control](check_cm_discriminant_product.py)
+verified all 1883 distinct balanced odd prime pairs below 500, using
+the known factors only to generate the test hints. Computing the joint
+square class from N, or giving a short list guaranteed to include it,
+remains open.
