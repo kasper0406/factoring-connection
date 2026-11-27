@@ -930,3 +930,30 @@ small advantage in bit length. The leaf bound also applies to
 polynomial-size binary trees of polynomial depth. It does not give
 a comparable result for arbitrary polynomial-time branching
 programs, whose unfolded trees can have exponentially many leaves.
+
+### A signed return in the dyadic quarter sequence
+
+For odd N>1 write b(x)=1 if the residue x mod N exceeds N/2 and
+zero otherwise. For nonzero x let H(x) indicate that its least
+absolute residue has magnitude below N/4. Then over F_2,
+
+    H(x) = 1 + b(x) + b(2x).
+
+This is the adjacent-digit identity above. Summing d consecutive
+bits cancels the interior terms. Given a signed return
+2^d = e mod N with e equal to +1 or -1, the XOR is therefore
+(d mod 2) XOR [e=-1], for *every* nonzero starting residue.
+Computing that output and verifying the supplied return need only
+modular exponentiation and parity of d. Finding such a d efficiently
+is a separate question.
+
+In particular the two sign pairs of a unit-scale semiprime give
+the same cycle parity, so the full quarter sequence (public and
+nonpublic together) has XOR zero over a return. Dropping the public
+pair gives the formula above. For any odd modulus the corresponding
+aggregate simply repeats the per-pair parity once per sign pair.
+This explains why the cycle checksum alone cannot distinguish the
+hidden semiprime pair from the public one. A different return,
+where 2^d squares to one but is neither sign of one, already splits
+the modulus by gcd(2^d-1,N). Verified the formula at first signed
+returns for all 6,566 units at odd moduli from 3 through 179.
