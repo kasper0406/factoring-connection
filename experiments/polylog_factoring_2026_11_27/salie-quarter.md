@@ -295,3 +295,36 @@ arbitrary interval endpoints but does not cover general functions
 of the bits of h. Exhaustive majority fitting for N=1009*1013
 with 32 equal-width bins and both Jacobi signs gave 0.74950593
 accuracy, the public baseline to the displayed precision.
+
+## Interval tests on a shift and its modular inverse
+
+Take a predictor made of R rectangular cells I x J in the public
+pair (h, inverse(h) mod N), with bounded weights of magnitude <=1
+and zero output off units. For a partition this includes an arbitrary
+sign table. For balanced N=pq its normalized Fourier coefficient
+at a nonzero k has magnitude at most
+
+    O(R (1/|k|_N + log²(N)/sqrt(min(p,q)))).
+
+For one cell expand both interval indicators in additive Fourier
+series. At k the complete unit sum in modes a,b, divided by N,
+has phase (a-k)h+b/h. When (a,b)=(k,0) this contributes at most
+the magnitude of the k-th interval coefficient, O(1/|k|_N).
+Otherwise at least one prime has a nonzero coefficient pair.
+At that prime the normalized complete Kloosterman sum is
+O(1/sqrt(r)) by Weil if both coefficients are nonzero, and of
+magnitude 1/r if precisely one is nonzero. The other CRT factor
+has magnitude at most one. Each interval has normalized Fourier
+l1 norm O(log N), giving the stated error after summing all modes.
+
+For R polynomial in log N the bound at the off-diagonal frequencies
+from the quantitative reduction is negligible in bit length:
+|k|_N >= min(p,q)-K there. Consequently this model cannot reach
+75% plus an inverse-polynomial advantage on uniform unit shifts for
+large balanced semiprimes. This is specific to a short rectangle
+description, not general arithmetic with modular inverses.
+
+For p=1009, q=1013, exhaustive majority fitting with 32 equal
+bins on each axis got 764584 of 1020096 unit shifts correct
+(74.95216%). These are best in-sample labels using known-factor
+ground truth; they do not constitute a public training method.
