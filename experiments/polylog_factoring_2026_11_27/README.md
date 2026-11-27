@@ -987,6 +987,20 @@ which generally leave the original semiprime family.
 
 ### Two fixed-degree readings separate the hidden local denominators
 
+**Prior result.** The two-index elimination and denominator gcd below
+instantiate the Bach–Charles proof strategy (Section 2, equations 1–3).
+The repo previously recorded the non-CM density-one theorem and implemented
+the weight-two reduction. The Gaussian calculation here checks the odd-weight
+CM instance explicitly, including its exact inert-prime exception. The earlier
+padding lemma addresses the absolute precision of an unrestricted evaluator.
+No composite-index coefficient algorithm follows from either reduction.
+Reopen this route on evidence for an evaluator, rather than another change
+of eigenform yielding the same elimination.
+[Paper](https://arxiv.org/abs/0708.1192) ·
+[Prior survey](../../notes/polyimpl_results.md) ·
+[Composite-index evaluator audit](../../notes/nativemod_results.md) ·
+[Weight-two implementation](../../src/tracedata/reductions.py)
+
 Let $N=pq$ for distinct odd primes, with no supplied circle point. Write
 $v=A(N)$ and $w=A(N^2)$ using the preceding normalization.
 For a split prime $p=x^2+y^2$, $a_p=A(p)=2-16x^2y^2/p^2$ has reduced
