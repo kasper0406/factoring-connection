@@ -331,6 +331,24 @@ The exact expected uniform split counts for one draw per pair were
 local rates. The deterministic proof is specific to this sample and
 gap range; the table does not estimate success on general semiprimes.
 
+**Checking the exceptional hits against the six symmetries.** For
+F(x)=(x+1)^N−x^N−1 with odd N, F(−1−x)=F(x) and
+F(1/x)=F(x)/x^N. When x and x+1 are units, reflection and inversion
+generate six fractional linear transforms: x, −1−x, 1/x, −1/(1+x),
+−(1+x)/x and −x/(1+x). Every transformed sample has exactly the
+same additive gcd with N; scanning this orbit gives no new probes.
+
+A separate post-hoc check asks whether the *output* y=x^N at a hit
+is itself one of these six transforms of the input modulo the factor.
+Replaying all 373,899 pairs at B=32,768 reproduced the 17 additive
+splits missed by both previous Fermat gcds. In all 17 cases no orbit
+equality held modulo the recovered factor, and none of the six
+cross-multiplied comparisons gave any proper gcd with N. For example
+p=32,783, q=35,081 gives x=33,912, y=6,579 modulo p, and additive
+gcd p. Thus these witnesses do include nontrivial preservation of
+addition beyond the checked comparisons. The replay identifies no
+public feature that predicts which input pairs give such a witness.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
