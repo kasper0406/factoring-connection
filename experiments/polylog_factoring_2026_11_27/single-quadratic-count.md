@@ -2605,6 +2605,38 @@ The geometric series evaluates the transform given r. A useful advance
 here would need an independent computation from N and a; changing
 frequency or sharpening the continuity estimate does not supply one.
 
+### Uniform sampling on the norm-one conic and the accuracy needed
+
+Keep (a/N)=−1 with split prime r and inert prime u, and replace zero
+by one in x²−az²=1. This is the [previously audited norm-one
+group](../../notes/codex_r1_mechanisms.md).
+Its local orders are r−1 and u+1: in the split algebra a pair of units
+must have product one; in the quadratic field the norm has kernel of
+size u+1. Hence the cardinality C is N−1+r−u.
+
+Exact uniform sampling uses random v,w modulo N, keeping pairs for
+which d=v²−aw² is invertible. Output ((v²+aw²)/d,2vw/d) modulo N.
+This is the quadratic-algebra homomorphism α↦α/conjugate(α). Its
+kernel has (r−1)(u−1) elements, the scalar units. Its image has
+(r−1)(u+1) elements by division of the unit-group size, so every
+norm-one point occurs equally often. Acceptance probability is
+(1−1/r)²(1−1/u²), bounded below by a positive constant. On N=187
+with a=−1 exhaustive enumeration gives 192 outputs, each with
+160 preimages.
+
+An independently computed confidence interval for C of width W gives
+an interval of width at most W for r, even when the primes are very
+close. In fact D=C−(N−1)=r−u and
+r=(D+√(D²+4N))/2 has derivative strictly between zero and one
+everywhere. The same Lipschitz bound holds for u as a function of D.
+On balanced inputs W=O(N^(1/4−ε)) for fixed 0<ε<1/4 therefore
+suffices for the existing unknown-divisor lattice (use smaller slack
+for fixed constants). Exact uniform sampling alone supplies no such
+estimate. In particular the probability of any repeated output in m
+independent draws is at most m(m−1)/(2C), negligible at polylogarithmic
+m for balanced inputs. This addresses collision-based size estimation
+only. The earlier norm-one audit already treats public exponentiation.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
