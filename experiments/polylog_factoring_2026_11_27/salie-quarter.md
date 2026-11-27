@@ -1158,3 +1158,46 @@ gcd(c−d,N), as in the usual square-root collision reduction.
 For all 2,106 unit scales across odd N=3,…,101, exact polynomial
 remainders modulo Φ_N identified the squared magnitudes. Their
 equality classes coincided with the square residues in every case.
+
+## Factoring with magnitude comparisons alone
+
+Suppose comparisons of |T_N(c)| and |T_N(d)| are available in
+polynomial time at requested unit scales. Randomized polynomial-time
+factoring follows for arbitrary odd N. The comparison supplies one
+bit (greater than or equal); the preceding equality test handles ties.
+
+Use the all-residue extension H of log(1+|T|) from the constant
+additive accuracy proof. Set H(0)=0, changing each normalized Fourier
+coefficient by O(log N/N). Thus at some factor-revealing k the real
+coefficient exceeds an absolute η>0 for sufficiently large N with
+at least two prime factors. Put R=log(1+N), so 0≤H≤R.
+
+Draw m independent uniform reference scales. For each t in [0,R]
+replace the threshold indicator 1[H(c)≥t] by the indicator at the
+smallest sampled height ≥t, or by zero if none exists. This
+replacement is pointwise smaller. For an independent uniform c
+the probability of a discrepancy is at most 1/(m+1): among c and
+the m references, c would have to be the unique smallest eligible
+height. This argument includes discrete distributions with ties.
+Integrating in t, the original indicators give H and the expected
+normalized L¹ loss of their replacement is at most R/(m+1).
+Take m of order R/η with a sufficiently large constant. With
+probability at least 3/4 the loss is below η/2 by Markov. Then some
+sampled comparison indicator has a Fourier coefficient of magnitude
+at least η/(2R) at k, by the integral triangle inequality.
+
+Run the existing heavy-frequency search for every sampled reference
+and verify all returned frequencies by gcd. The proof uses unknown
+heights to show one reference works; the algorithm never needs to
+compute them or sort them. As before a proper nonunit reference or
+query immediately splits N. At zero implement the artificial height
+zero (unit heights are positive). This simulates the proof until a
+factor is found. Recurse on verified splits, handling primes and
+prime powers separately.
+
+A finite FFT diagnostic with 32 sampled unit references on each of
+77,385,1001,10403 gave factor-revealing coefficient magnitudes of
+at least 0.209,0.213,0.171,0.194 respectively up to rounding.
+The diagnostic used factored extensions to inspect the spectrum;
+the result is an oracle reduction. The repo supplies no general
+polynomial-time ordering procedure.
