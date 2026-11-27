@@ -5170,6 +5170,12 @@ The official IACR abstract confirms these parameters. Its two ingredients are a 
 [Paper record](https://eprint.iacr.org/2026/3020) ·
 [Abstract](https://opencryptology.org/2026/3020)
 
+#### A public tensor network for the prefix query
+
+For a b-bit modulus M and canonical target Y, introduce unsigned x and k, with b bits for x. Fix the prescribed leading bits of x, and impose x<M if canonical representatives are required. Test x²=Y+kM as an exact integer equality. For 0≤x<2^b any valid nonnegative quotient is less than 2^(b+1) since M≥2^(b−1); for canonical x<M it is less than M. Thus use b+1 quotient bits in the unrestricted-cutoff version and b bits in the canonical version. Every qualifying root has exactly one quotient. Use full-width arithmetic (2b+2 bits suffice) to avoid modular overflow.
+
+Schoolbook multiplication, constant multiplication, binary addition and equality use O(b²) bounded-fan-in Boolean gates. Replace each gate by its zero-one truth-table tensor, fix the output to one, and sum over all wire values with equality tensors at fanout. All internal values are uniquely determined by the input wires. Consequently the integer contraction equals the exact number of qualifying roots, an integer at most 2^b. Comparing it with zero gives existence. This construction uses only M, Y and the prescribed prefix. A public encoding of polynomial size is therefore available. The unresolved requirement for transfer is a polynomial-bit-time contraction of this particular network or an equivalent encoding, including the work at the boundary. The IACR version archive also returned HTTP 403 on the follow-up check.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
