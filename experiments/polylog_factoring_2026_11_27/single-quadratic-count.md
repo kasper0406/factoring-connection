@@ -697,3 +697,29 @@ of lifts and every invalid input an even number, because nonempty
 fibers of a linear projection all have the same size. This example
 does not exclude a representation of aggregate parity alone or
 a nonlinear encoding.
+
+### Degree of the prefix indicator
+
+For an aligned block [L,L+2^d), write a=L+sum_i 2^i b_i.
+Represent the root predicate by its unique multilinear polynomial
+over F_2 in the d free bits. The block parity is exactly the
+coefficient of the product of all d bits: a monomial on s bits
+contributes 2^(d-s) ones to the truth-table sum. Thus a degree
+bound strictly below d can certify even parity only.
+
+The full degree occurs even on blocks containing just one nonpublic
+root, with arbitrarily many free bits. Take H=2^d, d>=2, x=2H-2,
+N=x²-1 and the block [H,2H). Every a here has 0<a²-1<2N:
+the upper bound follows from (x+1)²-1<2(x²-1) for x>=6.
+Hence divisibility forces a=x. Its low-bit pattern consists of
+ones except at bit zero, giving indicator (1+b_0) times the
+product of b_1 through b_(d-1). This block lies below the quarter
+cutoff for d>=3. Its degree is d, of order log N, despite its
+short factored expression. Exhaustive checks agree for d=2..12.
+The example concerns arbitrary aligned subblocks and does not
+assert balanced semiprimality or a circuit-size lower bound.
+
+For general [L,U] with L>=2 the exact work of direct level scanning
+is at most floor((U²-1)/N)-ceil((L²-1)/N)+1 integer square tests.
+This provides a polynomial-time base case whenever that count is
+polynomial in log N. It leaves long blocks at macroscopic L open.
