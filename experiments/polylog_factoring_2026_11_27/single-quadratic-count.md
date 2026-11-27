@@ -2577,6 +2577,34 @@ integer-frequency evaluator does not apply there. For N=187, a=−1,
 a direct numerical 2D FFT reproduced 30976 entries at −1, 3872 at
 16 and 121 at 33, with maximum deviation below 10⁻¹³.
 
+### Exact fractional frequencies on a coordinate axis
+
+Take canonical coordinates in [0,N). At the inert prime u both
+coordinates must vanish. At the split prime r the two distinct lines
+give exactly two choices of z for each nonzero x, and one at x=0.
+Consequently the projection to x has multiplicity two on the nonzero
+multiples of u and multiplicity one at zero. For all real or complex t,
+
+    F(t,0) = 2 Σ_{j=0}^{r−1} exp(2πitj/r) − 1.
+
+For t outside r times the integers this is
+2(1−exp(2πit))/(1−exp(2πit/r))−1. At a removable singularity the
+value is 2r−1. In particular F(1/2,0)=1+2i cot(π/(2r)).
+The real part at this half frequency is constant; the imaginary part
+determines r. Its derivative with respect to real r is
+π csc²(π/(2r))/r² ≥ 4/π, by sin(x)≤x. Thus even absolute error
+1/2 in the imaginary part allows unique integer recovery, e.g. by
+monotone bisection with sufficient numerical guard precision.
+On N=187 direct summation gave 1+21.5834373i at t=1/2 and real
+part 32.9941563 at t=1/N, consistent with r=17.
+
+For this axis the apparent analytic continuation problem is exactly
+the transform of an arithmetic progression of hidden spacing N/r.
+All integer probes before the first nonzero multiple of r return −1.
+The geometric series evaluates the transform given r. A useful advance
+here would need an independent computation from N and a; changing
+frequency or sharpening the continuity estimate does not supply one.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
