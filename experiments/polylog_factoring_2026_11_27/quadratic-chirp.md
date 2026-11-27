@@ -4853,3 +4853,28 @@ therefore give deterministic polylog-time complete factorization
 by primality testing and recursive division. Conversely a factorization
 immediately decides the predicate. The lcm expression alone offers
 no efficient way to evaluate it at binary-encoded b.
+
+### A single signed binomial residue per cutoff suffices
+
+For composite N let p be its least prime divisor and set
+S(b)=(-1)^b binom(N-1,b)-1 modulo N. Pascal's identity gives
+S(b)=sum_{j=1}^b (-1)^j binom(N,j). This is zero for b<p.
+For p<=b<2p it is always nonzero modulo N, even if other
+prime divisors of N occur in the same interval. Indeed write p^a
+for the exact power dividing N. For every j in the sum except p,
+p does not divide j, so j binom(N,j)=N binom(N-1,j-1)
+forces divisibility by p^a. At j=p the valuation is exactly a-1
+since binom(N-1,p-1) is 1 modulo p by the product formula.
+Thus S(b) has valuation exactly a-1 throughout that interval.
+
+Probe b=1,2,4,... until the first nonzero S(b). The stopping
+cutoff B is the smallest power of two at least p and satisfies
+p<=B<2p. Binary search between B/2 and B for the first nonzero
+value to recover p. Monotonicity outside this bracket is unnecessary.
+For instance N=45 gives residues 0,0,30 at b=1,2,4 and residue
+30 at b=3, locating p=3.
+
+This gives a deterministic reduction for every composite N using
+O(log p) scalar zero tests with binary-encoded arguments. Only
+equality of binom(N-1,b) to (-1)^b modulo N is required.
+A polylogarithmic implementation of that test remains open here.
