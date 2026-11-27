@@ -63,3 +63,35 @@ estimator; it does not construct that estimator. The separate
 heavy-Fourier recovery in salie-quarter.md tolerates a looser RMS
 promise when only factoring, rather than answering a chosen phase
 query, is required.
+
+## Linear prediction at nearby additive arguments
+
+Let F(b)=S_N(1,b)/G_N with b uniform on all residues. This changes
+the argument being shifted from c to b in the earlier calculation.
+The defining sum has one Fourier coefficient of magnitude 1/√N at
+each unit frequency and zero elsewhere, since inversion permutes
+the units. Therefore E[F(b)conj(F(b+d))]=c_N(d)/N. For distinct
+odd primes p,q this equals 1/N at unit lags and φ(N)/N at zero.
+
+Even access to exact values at b+1,…,b+H, with H<min(p,q), explains
+only H/(φ(N)(φ(N)+H−1)) of the target's mean-square energy by the
+best fixed linear combination. Indeed the predictor Gram matrix is
+((φ(N)−1)I+J)/N and its target cross moment is the all-ones vector
+divided by N. The optimal coefficients are all 1/(φ(N)+H−1).
+Direct FFT and least-squares checks agreed at H=4 for 35,77,143.
+The distribution here is all b, so this calculation does not rule
+out a method conditioned on being given a square.
+
+There is a weaker bound on joint square inputs. For unit d,
+F(b)F(b+d) vanishes when either argument is a nonsquare unit by
+the Salié root formula. It has magnitude at most 16 everywhere.
+Deleting b with a nonunit argument removes at most 2(1/p+1/q) of
+all residues. Thus the unconditioned product moment restricted by
+both square-unit indicators has magnitude O(1/p+1/q). The event
+has density tending to 1/16 as both primes grow: at each prime r
+the count of b with both b and b+d nonzero squares is r/4+O(1)
+by expanding (1+χ(b))(1+χ(b+d))/4 and using the quadratic
+character sum −1, then removing the two endpoints. CRT multiplies
+the densities. The conditional raw cross moment is therefore also
+O(1/p+1/q). This controls a single unit lag; nonlinear predictors
+and conditioning an entire window on squareness are outside the bound.
