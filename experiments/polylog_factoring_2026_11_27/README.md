@@ -1143,6 +1143,33 @@ and nome $\rho\zeta$. At $N=221$ grids of 1, 14, and 221 samples all gave
 $C(N)=-76636$; the binary scaling exponents rounded up were 7514, 537,
 and 34, respectively.
 
+### Isolating a shell by a radial derivative
+
+Let $F(z)=\sum C(j)z^j$. Apply $(z\,d/dz)^m$, evaluate at
+$z=\exp(-m/N)$, and multiply by $(e/N)^m$. The resulting real sum has
+weights $K_m(j)=\exp[-m(j/N-1-\log(j/N))]$ and $K_m(N)=1$.
+For $N\ge2$, $m=\lceil64N^2\log(2N)\rceil$ suffices to recover the integer
+$C(N)$ from this normalized derivative to additive error $1/4$ by rounding.
+Indeed for $0<x<2$ the exponent function $x-1-\log x$ is at least
+$(x-1)^2/8$ by its second derivative. The total off-target contribution
+from $j<2N$ is at most $32N^4(2N)^{-8}$ using $|C(j)|\le2j^3$.
+For $x\ge2$ the exponent is at least $x/8$; from $j=2N$ onward the
+majorant $2j^3 e^{-mj/(8N)}$ decays by a factor below $1/2$ at each
+step. Both tails together give less than $1/4$.
+
+This order is sharp up to constants for suppressing absolute leakage on
+all inputs. At $N=4^k+1$, shell $N-1$ has only the four axis points
+and $C(N-1)=(N-1)^2$. Since
+$-1/N-\log(1-1/N)\le1/N^2$ for $N\ge2$, suppressing just this term
+below $1/4$ requires $m\ge N^2\log(4(N-1)^2)$. This lower bound applies to
+absolute leakage, independent of possible cancellation in the signed total.
+It does not assert infinitely many semiprimes in this family.
+The filter uses one normalized derivative reading, but computing an ordinary
+derivative jet through this order visits exponentially many entries in the
+input bit length. A fast evaluator for the single high-order derivative
+has not been obtained. Numerical checks summed explicit shell coefficients
+below $2N$ at $N=5,17,65,257$; the infinite tail is controlled analytically.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
