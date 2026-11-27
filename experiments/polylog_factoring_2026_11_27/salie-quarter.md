@@ -623,3 +623,38 @@ energy by Parseval and Cauchy-Schwarz on occupied residue classes.
 The additive large sieve bounds their sum by 2NM, proving the claim.
 A polylogarithmic menu still covers a negligible fraction of unit
 squares. This reuses the earlier sieve and is a coverage bound only.
+
+## Distinct-prime dependence of two sign reductions
+
+For odd N with s>=2 distinct primes, let d_i be their full prime
+powers. On unit h the normalized Salié value is the sum of e_N(x)
+over the roots of h². Write h=sum_i (N/d_i) j_i by CRT. Independent
+local sign choices give a product of 2 cos(2 pi j_i/d_i). Thus
+the exact sign, extended by zero off units, has a Fourier coefficient
+at every mixed root of one equal to the product of local quantities
+(d_i)^(-1) sum_{j unit mod d_i} |cos(2 pi j/d_i)|. Imaginary parts
+cancel by reflection. Each factor is >=1/6: the unit density is
+>=2/3 and the unit average of cosine squared is >=1/4 by the
+Ramanujan sum at frequency two. This gives a threshold 6^(-s)
+for the sampled Fourier search. Independent of any factorization,
+one can try decreasing thresholds and verify gcds. The resulting
+oracle reduction is polynomial in log N and 6^s, hence polynomial
+in bit length for s=O(log log N). A predictor with error rho on
+unit shifts changes each normalized coefficient by at most 2 rho.
+This bound for the full Salié sign degrades with s.
+
+There is a different conclusion for the sampled-root public label.
+Given only h², any predictor for sign(cos(2 pi h/N)) with advantage
+epsilon yields a split in time polynomial in log N and 1/epsilon,
+for any s>=2. Indeed extend the expected predictor by zero off
+units. Its correlation with the public square wave on all residues
+is >=2 epsilon phi(N)/N >=2 epsilon/(s+1), since the i-th distinct
+prime is at least i+1. The one-dimensional Fourier truncation in
+quarter-fourier.md yields a heavy frequency with nonzero small
+centered index a (trial division handles small N). If gcd(a,N)>1
+it already splits N. Otherwise invariance under h -> uh guarantees
+the same coefficient at au for every mixed root u. The sampled
+list and gcd(k-a,N) recover a split without knowing u or s, using
+s<=log2 N to set thresholds. This promise concerns predicting the
+sampled root's label, not the full Salié sign on all its conjugates.
+It supplies no predictor with that advantage.
