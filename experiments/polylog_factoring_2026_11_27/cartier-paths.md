@@ -296,3 +296,47 @@ value six and the degree-three group size is coprime to 299
 kernel in degree three, without a general method for finding its
 points efficiently. The torsion at 23 in this example has order 13;
 it is distinct from the characteristic-23 formal height phenomenon.
+
+## How often small extensions can contain N-torsion
+
+Let p and q be distinct uniformly chosen primes in [B,2B]. Even allowing
+the elliptic curve to depend on N=pq, suppose it has good reduction and
+a rational point of order two at each hidden prime. The probability
+that *any* such curve at either component has nonidentity N-torsion
+over *any* extension of degree d≤D is O(D² log B / √B). In particular
+this probability is negligible in the input bit length for polylogarithmic
+D. This is an existence bound; it grants the curve selector the factors.
+
+At base prime p let t be the Frobenius trace. It is even, and Hasse
+gives |t|≤2√p. Define S₀=2, S₁=t, S_d=t S_(d−1)−p S_(d−2).
+The extension group size H=p^d+1−S_d is positive. By Cauchy's
+theorem a nontrivial N-kernel requires and suffices for p|H or q|H.
+
+* For p|H one needs p|t^d−1, since S_d≡t^d modulo p for d≥1.
+  For each even integer t in the Hasse range across the scale and each
+  d this is a nonzero integer of magnitude at most (2√(2B))^d+1.
+  It has O(d) prime divisors at least B. Summing over O(√B) traces
+  and d≤D gives O(√B D²) eligible base primes.
+* For q|H fix p and allow every trace in its Hasse range. For each
+  trace that occurs for a curve and each d, the bound
+  H≤(p^(d/2)+1)² again permits O(d) prime divisors at least B.
+  This gives O(√B D²) eligible partner primes per p, even for
+  adaptive curve choice. For the fixed Gaussian CM curve there is
+  just one trace per p, improving this part alone to O(D²) partners.
+
+Divide by the Θ(B/log B) available primes and allow both component
+orientations. Excluding equal primes changes only the constant.
+The even-trace hypothesis matters in the first case: trace one would
+make t^d−1 zero. The result concerns actual points in finite residue
+fields under multiplication by N; formal coefficients, nonreduced
+algebras and other multiplication scalars are outside the argument.
+
+For the fixed curve y²=x³−x, exact prime-field counts and the trace
+recurrence gave the following numbers of pairs admitting any nonzero
+kernel (including a kernel on both sides):
+
+| B | Pairs | Degrees 1–3 | Degrees 1–8 |
+|---|---:|---:|---:|
+| 128 | 253 | 0 | 31 |
+| 512 | 2775 | 5 | 31 |
+| 2048 | 32385 | 29 | 379 |
