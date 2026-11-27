@@ -27,6 +27,25 @@ def recover_root(n, y, exists):
             # The three signed children partition the occupied parent.
             residue += 2 * period
         period = next_period
+    return finish_progression(n, y, bound, period, residue)
+
+
+def recover_root_binary(n, y, exists):
+    """Recover a square root for odd n > 1 using even oracle moduli."""
+    bound = 1 << n.bit_length()
+    period, residue = 4, 1
+    limit = interval_limit(n)
+    while (bound - 1) // period > limit:
+        # Squaring modulo 4D selects one signed class modulo 2D.
+        scale = 4 * period
+        square = y + n * (((residue**2 - y) * pow(n, -1, scale)) % scale)
+        if not exists(n * scale, square, scale.bit_length() - 1):
+            residue += period
+        period *= 2
+    return finish_progression(n, y, bound, period, residue)
+
+
+def finish_progression(n, y, bound, period, residue):
     inverse = pow(period, -1, n)
     for origin in (residue, period - residue):
         if origin >= bound:
@@ -55,3 +74,11 @@ if __name__ == "__main__":
             assert root*root % n == y
             cases += 1
     print(f"Verified {cases} unit squares with {calls} prefix queries.")
+
+    cases = calls = 0
+    for n in range(3, 256, 2):
+        for y in {h*h % n for h in range(n)}:
+            root = recover_root_binary(n, y, direct_oracle)
+            assert root*root % n == y
+            cases += 1
+    print(f"Binary decoder verified {cases} squares with {calls} prefix queries.")
