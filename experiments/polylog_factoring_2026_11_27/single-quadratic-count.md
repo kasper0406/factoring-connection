@@ -2856,6 +2856,40 @@ and the exact cyclic-group probabilities. The argument concerns these
 affine exponent menus; it leaves other ways to compute the unique
 half open, including exponents obtained from further arithmetic of N.
 
+### An interval logarithm for the signed prime difference
+
+Let r,u be the split and inert primes of a mixed norm-one conic,
+with max(r,u)≤2 min(r,u). Write D=r−u. Its group order N−1+D
+gives the public target relation G^D=G^(1−N) for every point G.
+The same holds for a tuple of independent points. We have
+|D|≤W=floor(√(N/2)), by the balance promise. A returned candidate
+d can be checked by testing d²+4N for a square and verifying the
+resulting factors. Checking both signs is inexpensive.
+
+Two independent uniform points, viewed as one tuple in a product
+group, have order equal to λ=lcm(r−1,u+1) with probability at least
+1/ζ(2)=6/π². For each prime ℓ dividing λ choose a local cyclic
+component attaining the maximum ℓ-adic valuation in λ. At least one
+of the two local samples has full ℓ-part there with probability
+1−1/ℓ². The events across ℓ are independent by primary decomposition.
+Their product bounds the success probability from below. This proof
+does not require computing λ or recognizing successful tuples.
+
+On success the tuple order exceeds W, since λ≥max(r−1,u+1)≥√N−1
+and √N−1>√(N/2) for N≥15. Thus each of the two signed windows
+[−W,0], [0,W] contains at most one solution, and one contains D.
+An interval-log solver may report any solution in each window or
+report emptiness. Verify both answers, and resample on failure.
+For N=187,a=−1 the local orders are 16 and 12, the target D is 6,
+and 24576 of 36864 ordered sample pairs have full exponent 48.
+
+Classical baby-step giant-step on the tuple gives a reference search
+of O(√W) group operations and stored entries per window, using
+canonical residue coordinates for equality. This is the N^(1/4)
+scale and supplies no polylogarithmic discrete logarithm. The tuple
+argument isolates the computational cost from possible ambiguity of
+the signed difference.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
