@@ -2483,6 +2483,37 @@ the quartic test on t² decides whether t is a square modulo N whenever
 oracle reductions concern variable t. They imply no such equivalence
 for the single target 4.
 
+### Where the norm conic first detects the missing bit
+
+Keep the preceding semiprime promise and sign a. Consider primitive
+solutions of x²−Ny²=a z² modulo m, meaning gcd(x,y,z,m)=1.
+On the yes branch there is a primitive solution for every m. On the
+no branch the exact obstruction is p² dividing m or q² dividing m.
+
+For an odd prime ℓ away from N, set z=1. The two sets of residues
+x² and a+Ny² each have (ℓ+1)/2 elements, so they intersect. At a
+solution x and y cannot both vanish, and a nonzero partial derivative
+lifts the solution through all powers of ℓ. At 2 take y=z=1:
+N+a≡1 modulo eight, so it is a square at all binary precisions.
+
+At a prime r dividing N, the two local Legendre symbols agree by the
+sign choice for a. On the yes branch a square root of a lifts, giving
+a solution with y=0 and z=1. On the no branch reduction modulo r
+forces x=z=0 modulo r, so (0,1,0) is still a primitive solution at
+that precision. Modulo r² the equation now forces N y²=0 modulo r².
+Since r divides N exactly once, this forces r to divide y as well.
+CRT combines the local criteria. There is also a real point in both
+cases. The Hasse–Minkowski theorem therefore identifies rational
+solubility with the yes branch.
+
+For N=91 and a=−2, every squarefree modulus passes. The first failing
+modulus is 49. Direct enumeration checked the criterion on 91,187,39,55
+at moduli 2 through 35 and at 49 (140 checks). One can form m=N²
+without the factors, and primitive solubility there decides the bit
+exactly. Efficiently testing that composite modulus remains open here.
+This calculation concerns existence; counting or constructing points
+requires separate analysis.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
