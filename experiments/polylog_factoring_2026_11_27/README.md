@@ -803,6 +803,36 @@ coefficient at a composite index in polynomial bit time is the missing step;
 the direct sum enumerates the circle points. This observation is restricted
 to the stated input family.
 
+### Coarse harmonic readings at several degrees
+
+On the same two-representation family use the normalized sum
+$\frac18\sum_{x^2+y^2=N}\operatorname{Re}(((x+iy)/\sqrt N)^{4m})$.
+After subtracting the publicly known orbit it gives $c_m=\cos(m\theta)$,
+where $\theta=4\arctan(y/t)\in(0,\pi)$. Allow total absolute error 0.001
+per residual reading. Only $O(\log N)$ readings with $m=O(\sqrt N)$ suffice.
+The known orbit at binary-encoded $m$ is computable by repeated squaring
+with $O(\log N)$ bits of working precision.
+
+To see this, find a power of two $h$ with observed $|c_h|\le0.8$ by doubling.
+The distance of $\theta$ to $\{0,\pi\}$ is $\Omega(1/\sqrt N)$ because
+$y\ge1$ and $t-y\ge1$ (the latter gives
+$\tan((\pi-\theta)/4)=(t-y)/(t+y)$). Doubling that endpoint distance
+until it first reaches $\pi/4$ gives an angle with absolute cosine at most
+$1/\sqrt2$, including the case already between $\pi/4$ and $\pi/2$.
+Thus $h=O(\sqrt N)$. Choose the global sign of the angle so $\sin(h\theta)>0$.
+For $k=1,2,4,\dots$ estimate $\sin(k\theta)$ by
+$(c_{|k-h|}-c_{k+h})/(2\sqrt{1-c_h^2})$ using the noisy readings.
+The true and estimated denominating square roots exceed 0.59 and differ by
+less than 0.002, so the sine error is below 0.006. Together with $c_k$ this
+determines $k\theta$ modulo $2\pi$ within 0.02 radians. At each doubling
+lift the measured angle to the multiple-of-$2\pi$ branch nearest twice the
+previous lifted angle; the accumulated discrepancy before choosing the branch
+is at most 0.06 radians. Dividing the final lift by $k\ge\sqrt N$ gives
+angle error at most $0.02/\sqrt N$. Fold to $[0,\pi]$, divide by four,
+and round the radius-$\sqrt N$ Cartesian coordinates to recover $t,y$.
+This trades coefficient precision for growing harmonic degree. The unknown
+operation remains evaluating the normalized sums from $N$ in polynomial bit time.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
