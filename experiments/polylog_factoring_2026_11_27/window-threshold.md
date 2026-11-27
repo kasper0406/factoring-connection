@@ -1,0 +1,12 @@
+# Stationary recurrence bound for the fixed window
+
+On an odd semiprime the shifted mixed-root window has exactly one possible transition. Its initial constant run has length at least half the smaller prime, up to rounding. A stationary linear representation over $\mathbb F_2$ that supplies all the shifted parities therefore needs dimension $\Omega(\sqrt N)$ on balanced inputs. This concerns the window start as index. It does not bound representations indexed by the class exponent or algorithms which evaluate only selected shifts. [Fixed-window reduction](fixed-window-split.md) · [Class indexing](cyclic-class-queries.md)
+
+Let $N=pq$ with odd primes $p<q$, set $M=(N-1)/2$, $K=\lfloor M/2\rfloor$, and let $u\in[2,M]$ be the lower mixed root. The only mixed roots are $u$ and $N-u$. In the window $[a+1,a+M]$, for $0\le a\le K$, the first is present precisely when $a<u$, and the second precisely when $a\ge M+1-u$. Since $u+(M+1-u)=M+1>2K$, these two transition positions cannot both lie in the search range. Thus the mixed parity is exactly $[a<T]$ with
+$$T=\min(u,M+1-u).$$
+
+The root $u$ has residue $-1$ at one of the primes, so $u\ge p-1$. For the other possible threshold, the positive integer $2(M+1-u)=N+1-2u$ also has residue $-1$ at one prime, so it is at least $p-1$. Hence $T\ge(p-1)/2$. Moreover $|4u-N|\ge p-4$: any integer of smaller absolute value with residue $4$ at one prime and $-4$ at the other would have to equal both $4$ and $-4$ as ordinary integers. Now $4T=N+1-|4u-(N+1)|$ and $4K\ge N-3$, so $4(K-T)\ge p-9$. In particular the transition is inside the search range for $p\ge11$.
+
+Suppose the mixed parity equals $\lambda A^a v$ over $\mathbb F_2$ for the whole search range, with $A$ of dimension $d$. The complement of this sequence has a representation of dimension $d+1$ by adjoining a constant state. It begins with $T$ zeros and has a one at $T$. By Cayley–Hamilton a sequence with a representation of dimension $d+1$ and its first $d+1$ values zero must stay zero. Consequently $d\ge T$. This bound allows the representation to depend on $N$ and even to use its factors. A comparison circuit with the threshold supplied remains short because it reads the bits of $a$ and is not a stationary recurrence in $a$.
+
+The check script verified the transition and spacing bounds for all 13,861 products of distinct odd primes below 1,000. The diagnostic supplies those primes to construct a reference root. Run `python check_window_threshold.py`.

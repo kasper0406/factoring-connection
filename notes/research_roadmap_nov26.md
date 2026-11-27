@@ -6,6 +6,8 @@ complexity, an improved NFS constant, a new reduction, and a new general
 factoring algorithm. The internally audited prior results and their
 hypotheses remain in [STATUS](../STATUS.md).
 
+The [November 27 checkpoint](../experiments/polylog_factoring_2026_11_27/README.md) records follow-up reductions, reference evaluators, and predictor tests. The open objective is a native polynomial-bit-time evaluator.
+
 ## Active question for classical polynomial time
 
 Let $n=\lceil\log_2(N+1)\rceil$. We have polynomial-time reductions to explicit sums and verified divisors on finite inputs. Every public evaluator tested so far still takes more than polynomial work in $n$ in its stated worst-case bound.
