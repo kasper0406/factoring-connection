@@ -94,3 +94,9 @@ P(r²)−hQ(r²)±rQ(r²)=0 modulo ℓ.
 This polynomial is nonzero: its odd part is ±rQ(r²) while the remaining terms have even degree. Its degree is at most 2d+1. Consequently the local hit-or-pole probability is at most (2d+2g(2d+1))/(ℓ−1). Summing over the two primes bounds global coverage. Polynomial shifts use Q=1 and have no poles.
 
 The earlier separated-prime average therefore gives O((d+1)log³ N/√N). A union bound applies even if the target selects among polynomially many such formulas after evaluating them. This argument allows a large image of the shift. Its restriction is on the degrees of P and Q; a short repeated-squaring circuit can exceed that degree range.
+
+### Monomial shifts of arbitrary degree
+
+For c=a y^k (a,k chosen from N alone, k≥0), the local bound can be made independent of k. Fix a prime ℓ dividing N, a sign ε=±1, and a subgroup element h≠0. Put e=2k. If r and tr are distinct nonzero solutions of a r^e+εr=h, eliminating a r^e gives ε(t−t^e)r=h(1−t^e). For t≠1 the two coefficients cannot both vanish. Thus each nonidentity ratio t occurs for at most one ordered pair of distinct solutions. A solution set of size S has S(S−1)≤ℓ−2. Summing over the g possible h and two signs gives local probability O(g/√ℓ) for uniform unit-square targets. A direct enumeration checked the inequality for all odd primes below 100, every local coefficient a, and every distinct exponent 2k modulo ℓ−1.
+
+On the separated balanced-prime distribution the mean global norm-hit probability is O(log³ N/N^(1/4)), even when the monomial has exponential degree. A polynomial-size menu of such powers still has negligible coverage. Adding a constant b to the shift changes the right side to h−b; the proof requires that value to be nonzero.
