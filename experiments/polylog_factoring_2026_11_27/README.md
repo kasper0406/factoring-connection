@@ -1390,8 +1390,12 @@ accounted for in the factor 64. Dimension, degrees and entry bit lengths
 (including $\log K$ and the LLL transformation coefficients) are polynomial
 in $\log(2N)$. Standard polynomial-time LLL and rational polynomial
 factorization therefore give an $O(N^{1/4}\operatorname{polylog}N)$
-bit bound for this theoretical enumerator. Only the degree-two norm-only
-implementation has been tested end to end. This is a direct geometric
+bit bound for this theoretical enumerator. The norm-only implementation accepts a harmonic degree and subdivides arcs
+until certified. Its full orbit lists matched exhaustive coordinate scans for
+$(N,d)=(3,3),(5,4),(9,5),(65,3),(325,2)$.
+The algorithm still visits the entire angular domain. A distinct open problem
+is to decide from $N$ whether a specified coarse arc contains a qualifying
+point, with cost polynomial in the input bits even for empty arcs. This is a direct geometric
 bound; it does not supersede the earlier factoring-first baseline on the
 semiprime family or establish optimality of quarter-power arc lengths.
 

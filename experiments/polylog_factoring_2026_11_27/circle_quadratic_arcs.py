@@ -38,39 +38,60 @@ def circle_orbits(real, imag):
                     result.add(tuple(sorted((abs(int(xx)), abs(int(yy))))))
     return result
 
-def orbits_from_norm(n):
-    """List circle orbits without a starting point or a factorization."""
-    if n < 1:
-        raise ValueError("expected a positive norm")
-    blocks = 8 << ((3*n.bit_length() + 9) // 10)
-    scale = 16 * (2*blocks + 1)**5
-    radius_numerator = isqrt(n * scale**2)
-    v = symbols("v")
+def orbits_from_norm(n, degree=2):
+    """List all circle orbits using certified harmonic arcs of the given degree."""
+    if n < 1 or degree < 1:
+        raise ValueError("expected a positive norm and a positive degree")
+    variable = symbols("v")
+    v = Poly(variable, variable)
+    dimension = 2*degree + 1
+    blocks = 2
+    # Store only the arcs still awaiting a certificate at this resolution.
+    offsets = [0]
     result = set()
-    for offset in range((blocks + 1) // 2):
-        h = Poly(v + offset, v)
-        u = blocks**2 + h**2
-        cosine = blocks**2 - h**2
-        sine = 2*blocks*h
-        polys = [scale*u*u, radius_numerator*cosine*u, radius_numerator*sine*u,
-                 scale*n*(cosine*cosine-sine*sine), scale*n*2*cosine*sine]
-        basis = Matrix([[p.nth(i) for i in range(5)] for p in polys])
-        try:
-            reduced, transform = basis.lll_transform()
-            short, weights = reduced[0, :], transform[0, :]
-        except AssertionError:
-            short = Matrix([lll_reduce(basis.tolist())[0]])
-            weights = short * basis.inv()
-        a, b, c, d, e = weights
-        # The surrogate error is at most (|b|+|c|)/scale.
-        if sum(map(abs, short)) + (abs(b)+abs(c))*blocks**4 >= scale*blocks**4:
-            raise ArithmeticError("radius-transfer certificate failed")
-        even = a + b*v + d*(2*v*v-n)
-        odd = c + 2*e*v
-        equation = Poly(even**2 - (n-v*v)*odd**2, v)
-        for x in equation.ground_roots():
-            if x.is_Integer and 0 <= x*x <= n:
-                y = isqrt(n - int(x)**2)
-                if x*x + y*y == n:
-                    result.add(tuple(sorted((abs(int(x)), y))))
+    while offsets:
+        scale = 32*dimension*(2*blocks + 1)**(2*degree)
+        denominator = blocks**(2*degree)
+        radial = [isqrt(scale**2 * n**j) for j in range(1, degree + 1)]
+        children = []
+        for offset in offsets:
+            h = v + offset
+            u = blocks**2 + h*h
+            cosine, sine = blocks**2 - h*h, 2*blocks*h
+            re, im = v.one, v.zero
+            polys = [scale*u**degree]
+            for j, multiplier in enumerate(radial, 1):
+                re, im = cosine*re - sine*im, sine*re + cosine*im
+                factor = multiplier*u**(degree-j)
+                polys.extend((factor*re, factor*im))
+            basis = Matrix([[p.nth(i) for i in range(dimension)] for p in polys])
+            try:
+                reduced, transform = basis.lll_transform()
+                short, weights = reduced[0, :], transform[0, :]
+            except AssertionError:
+                rows = [[int(c) for c in row] for row in basis.tolist()]
+                short = Matrix([lll_reduce(rows)[0]])
+                weights = short * basis.inv()
+            error_weight = sum(abs(weights[2*j-1]) + abs(weights[2*j])
+                               for j, multiplier in enumerate(radial, 1)
+                               if multiplier**2 != scale**2 * n**j)
+            if sum(map(abs, short)) + error_weight*denominator >= scale*denominator:
+                children.extend((2*offset, 2*offset+1))
+                continue
+            # Represent (x+iy)^j as re(x) + iy*im(x), with y^2=n-x^2.
+            re, im = v.one, v.zero
+            y_squared = n-v*v
+            even, odd = weights[0]*v.one, v.zero
+            for j in range(1, degree+1):
+                re, im = v*re - y_squared*im, re + v*im
+                even += weights[2*j-1]*re
+                odd += weights[2*j]*im
+            equation = even**2 - y_squared*odd**2
+            for x in equation.ground_roots():
+                if x.is_Integer and x*x <= n:
+                    y = isqrt(n-int(x)**2)
+                    if x*x + y*y == n:
+                        result.add(tuple(sorted((abs(int(x)), y))))
+        offsets = children
+        blocks *= 2
     return result
