@@ -5212,3 +5212,21 @@ with 703 is 19. Outside this range N=55 gives gcd 1 because
 q-1=10 has base-5 digits 2,0. This gives a single fixed evaluation
 target for balanced odd semiprimes. Computing that residue at
 polylogarithmic bit cost remains the missing step.
+
+### Fractional columns for arbitrary semiprime ratios
+
+Let N=pq with distinct primes p<q. Write q=kp+s with 1<=s<p.
+For every integer d with q/p<d<=q/s, put b=floor(N/d).
+Then gcd(binom(N-1,b),N)=p. Indeed floor(b/p)=floor(q/d)
+is between s and p-1, whereas q-1 has units digit s-1 in base p.
+Lucas' theorem therefore makes binom(q-1,floor(b/p)) zero modulo p.
+It is the high-index factor in the Lucas decomposition of binom(N-1,b).
+Modulo q the high factor comes from row p-1 with column <=p-1
+and the low factor comes from row q-1, so neither vanishes.
+
+The interval always contains d=k+1 since (k+1)s<=kp+s.
+Thus scanning d=2,3,... succeeds by ceil(q/p) without knowing the
+factors. For a promised ratio q/p<R with integer R>=2, at most R-1
+residue queries suffice. For N=55 the middle column misses but d=3
+gives b=18 and gcd(binom(54,18),55)=5. A large factor ratio can
+make this scan long; each scalar evaluation also needs a bit-cost bound.
