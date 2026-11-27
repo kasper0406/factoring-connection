@@ -5204,6 +5204,12 @@ Let B be the indicator of the two known roots, H=F−B the indicator of the two 
 
 Compute S by the doubled-core contraction and retain prefixes with residual energy at least δS/4. The indicated leaf survives, while disjointness bounds the number of retained prefixes per depth by 4/δ. For b-bit inputs this takes O(b/δ) prefix evaluations. More generally, an inverse-polynomial *share* of squared residual energy on either hidden leaf suffices however small the overall residual amplitude is. Doubling the width budget (halving the fractional threshold) removes the need to supply a lower bound in advance when such a share is promised. The flat public baseline correction in the preceding paragraph attains exactly δ/4 at each hidden leaf, showing sharpness of the single-leaf share inequality.
 
+#### Exact Walsh approximation error for the mixed-root pair
+
+On D=2^b binary strings let H be the indicator of the two distinct mixed roots u,v. In the orthonormal Walsh basis, coefficient s is ((−1)^(s·u)+(−1)^(s·v))/√D, with binary dot products. Exactly half the characters have s·(u XOR v)=0; their coefficients have squared magnitude 4/D. The rest vanish. For any K-term Walsh correction to the public two-root baseline, orthogonal projection shows that the best possible improvement over total squared error 2 is min(2,4K/D). This holds even if the frequencies and coefficients can be chosen with the factorization in hand. Thus the inverse-polynomial margin required by the approximation decoder costs at least D/poly(b) explicit characters.
+
+For the scale-independent residual criterion, any nonzero sum of K Walsh characters has squared mass share at most K/D at every single string by Cauchy–Schwarz and Parseval. Both bounds concern explicit spectral sparsity. A product of b one-bit tests can have full Walsh support while having tensor-train width one, so structured representations of many characters remain open.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
