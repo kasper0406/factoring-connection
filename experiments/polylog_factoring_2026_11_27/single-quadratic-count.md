@@ -1616,3 +1616,27 @@ order is 2p. Thus for p<q the first nonzero coefficient modulo N is
 at degree 2p, and its gcd with N is p. This gives an exact reduction
 from semiprime factoring to finding that degree for this implicitly
 specified product. Scanning to it costs order √N on balanced inputs.
+
+### A single value of the full product splits a semiprime
+
+For N=pq with distinct odd primes, choose a unit u with Jacobi symbol
+(u/N)=−1. Exactly half the units qualify and the Jacobi test uses only
+N. Set Z=1−u in G. A prime factor of N divides G(1−u) exactly when
+x²=u has a solution modulo that prime. The two Legendre symbols are
+opposite, so gcd(G(1−u),N) returns the prime where u is a square.
+
+Conversely, given p,q one can evaluate every point in polynomial time.
+In F_p the one-period product ∏(x²−u) is
+−u (u^((p−1)/2)−1)², since every nonzero square occurs twice.
+Raise this to q for the full product modulo p, interchange p and q
+for the other residue, and apply CRT. This proves randomized
+polynomial-time equivalence of full-product point evaluation and
+factoring on distinct odd semiprimes. It removes the coefficient scan
+from the reduction but supplies no public fast product algorithm.
+
+More generally, for any odd N with h≥2 distinct prime factors, a random
+unit gives independent uniform local Legendre signs by CRT. A mixed
+sign pattern occurs with probability 1−2^(1−h) and guarantees a proper
+gcd, even with repeated prime factors. Sampling a nonunit already
+yields a factor when sampling from 1 through N−1. Prime powers can be
+handled by exact integer root and primality tests.
