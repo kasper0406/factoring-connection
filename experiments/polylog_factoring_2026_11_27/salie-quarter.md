@@ -68,3 +68,31 @@ merged. This rules out fixed sparse reweighting as a uniform
 unit-scale approximation at absolute error 0.2, even with optimal
 weights. Shift-dependent selection and nonlinear aggregation remain
 outside the argument.
+
+## Polynomial combinations of a fixed set of summands
+
+Take k fixed quadratic phases f_a(h)=e_N(a h²), allow their complex
+conjugates, and fit a polynomial of total degree d with arbitrary
+coefficients independent of h. Each monomial is again one quadratic
+phase, since multiplication adds its coefficients modulo N. Padding
+products with ones shows that at most K=(2k+1)^d distinct phases
+occur, including the constant. This covers polynomials in real and
+imaginary parts through their expressions using conjugates.
+
+The sparse projection estimate above applies to all these phases.
+One extension needs checking: a combined coefficient a can be a
+nonunit or zero. Locally where a vanishes, its correlation with
+either linear target is -1/(r-1) since the target frequency is a
+unit. This satisfies the same B_r bound. The off-diagonal estimate
+already allows a difference divisible by one prime. Thus if the
+actual number of distinct phases is M and (M-1)mu<1, the projection
+bound holds with k replaced by M.
+
+In particular, if k is poly(log N) and d=o(log N/log log N), then
+M<=K=N^o(1). For balanced growing primes the root-mean-square error
+of the best such fit to the hidden cosine pair tends to sqrt(2).
+The public cosine pair may be added separately without changing
+this residual bound. The shift distribution here is uniform on
+units. This degree argument does not bound general arithmetic
+circuit size: repeated squaring produces large formal degree with
+few operations, and dense phase support can have a short expression.
