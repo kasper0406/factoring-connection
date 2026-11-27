@@ -108,6 +108,20 @@ Quadratic completion identifies where the quartic loses cancellation. Write $g_M
 $$G(t)=1+\frac{e_M(-t)}M\sum_{s\bmod M}e_M(-s^2/(4t)-s)\big(g_M(s)-N\big).$$
 Here the denominator $4t$ is inverted modulo $M$. Unit $s$ give $g_M(s)=N$ because $M$ is an odd square. The terms $s=Nj$ contribute exactly $2^{\omega(N)}e_M(-t)$ by orthogonality on $y^2=1\pmod N$. Every remaining nonzero term has a proper $\gcd(s,N)$. On balanced two-prime inputs these indices have density $O(N^{-1/2})$. This rules out a direct uniform sampler over the remaining terms as a polynomial-bit way to access them. An aggregate that evaluates their contribution implicitly remains open. The diagnostic verified 30 decompositions against the literal quartic sums. [Gaussian completion checks](stationary_cubic.py)
 
+### Precompute the stationary phases from one square-congruence scan
+
+For the quartic, a critical residue $y$ has $y^2=s$, where $s$ is an idempotent. Over a local component, $s=0$ has one critical root and $s=1$ has two. The phase value is $-s$. Enumerate roots of $u^2=1\pmod N$ by the certified square-root-width lattice blocks, lift them to $N^2$, and set $s=(1+u)/2$. The multiplicity of $-s$ is the number of lower idempotents $a$ with $sa=a\pmod N$. This equals the number of subsets of the local components on which $s=1$. The cubic phases are the same lifted roots multiplied by two.
+
+This produces a reference from $N$ with no supplied prime factors. Its preprocessing uses $O(\sqrt N\operatorname{poly}(\log N))$ bit work for the lattice blocks and $O(4^{\omega(N)}\operatorname{poly}(\log N))$ for incidence tests. The second term is $N^{o(1)}$ since the components contain distinct primes. Each query then uses $2^{\omega(N)}$ cached weighted phases. The tests checked roots and multiplicities on eight inputs, along with 24 quartic and 15 cubic sums by literal evaluation. At $N=11009$, the reference used 787 lattice blocks and 16 incidence tests in setup, followed by four weighted phases per query. The literal symmetric calculation uses 60,599,041 phases per query. The cache reuses the same work across scales, and the preprocessing still has exponential cost in $\log N$. [Cached reference](stationary_window_reference.py)
+
+### Limits of lower-degree pieces and linear updates
+
+Approximating the literal phase by a lower-degree polynomial on a long unit-step progression has a direct obstruction. More generally, on a progression of unit stride modulo $M$, the degree-$d$ leading coefficient is $b/M$ with $b$ a unit. Suppose an arbitrary real polynomial of degree below $d$ matches the phase modulo one to error $\varepsilon<2^{-d-1}$ on a consecutive index interval of length $L$. Write the phase difference as $k_x+r_x$ with $k_x\in\mathbb Z$ and $|r_x|\le\varepsilon$. Each $\Delta^d k_x$ must be the unique integer within $2^d\varepsilon$ of $d!b/M$. Thus $\Delta^d r_x$ is constant and has magnitude at least $1/M$ for $M>d!$. For a stride $h$ with $dh<L$, $\Delta_h^d r_x=h^d\Delta^d r_x$, yet $|\Delta_h^d r_x|\le2^d\varepsilon$. Consequently $L=O_d(1+(\varepsilon M)^{1/d})$. A polynomial number of such pieces cannot cover the full period. The argument concerns pointwise approximation modulo one.
+
+Even the short nonlinear forward-difference update gives a long exact linear recurrence for the literal term stream. For squarefree $N=pq$ with $p,q\nmid d$, write $M=N^2$ and $f(y)=e_M(tP(y))$ for either degree-$d$ phase and unit scale $t$. In its length-$M$ transform, the coefficient at $k_0+Nj$ is
+$$\widehat f(k_0+Nj)=\frac1N\sum_{a\bmod N:\,tP'(a)=k_0\bmod N}e_M(tP(a)-k_0a)e_N(-ja).$$
+Each derivative fiber contains at most $R=(d-1)^2$ points by CRT. Hence every coefficient has magnitude at most $R/N$. By Parseval, at least $M/R^2$ coefficients are nonzero. Any approximation supported on $r$ frequencies of the same period has squared RMS error at least $1-rR^2/M$. An exact constant-coefficient recurrence for the period also needs order at least $M/R^2$, since its characteristic polynomial must vanish at every supported root of unity. These bounds apply even to the small-scale queries. The diagnostic checked 40 full-grid transforms against the fiber formula, with maximum discrepancy $1.25\times10^{-16}$. The smallest observed support fraction was $0.2746$. [Frequency diagnostic](polynomial_stream_limits.py)
+
 ## Factor-supplied range control and hardness of arbitrary windows
 
 The retained reciprocal spectrum can be evaluated with $O((K+1)2^{\lceil\omega(N)/2\rceil}\operatorname{poly}(\log N))$ work per digit at fixed accuracy and a fixed number of denominator intervals, given the prime powers of $N$. For a retained slope $b$, square roots of $(1-b)^{-1}$ modulo the prime-power components of $N^2$ give CRT sign choices. Lift a candidate lower digit to $r=a+Nh$ with $(1-b)r^2=c^2\pmod{N^2}$. Then the phase at $a$ is $(2-2b)r+ba\pmod{N^2}$ by subtracting the lift change $Nbh$ from the phase at $r$. Its exponential factors across two half lists, with a single wrap correction $e_N(-b)$ when the lower digits sum to at least $N$. Sort the right half list by lower digit and take prefix sums of phase weights. Each left choice queries shifted right intervals where the geometric lift weight is constant. The ordering is reused between digits. Square roots and lifting are included in the setup. The input factorization is supplied. [CRT evaluator](crt_range.py)
@@ -149,6 +163,8 @@ python stationary_log.py
 python stationary_threshold.py
 python stationary_dual.py
 python stationary_cubic.py
+python stationary_window_reference.py
+python polynomial_stream_limits.py
 python crt_range.py
 python stationary_hardness.py
 python tangent_progressions.py 38942974393
