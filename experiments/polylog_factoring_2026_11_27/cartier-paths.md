@@ -365,3 +365,38 @@ allows perfect selection from the menu after seeing N. It applies to
 the trace-one discriminant condition, independently of the cost of
 constructing the curves. A discriminant computed from N outside a
 small shared menu or a different trace mechanism is outside its scope.
+
+## What an input-specific trace-one CM field would reveal
+
+For a prime p in [B,2B], write 4p−1=Dv² with D squarefree and v>0.
+Since D≡3 mod 8, −D is the fundamental discriminant of the ordinary
+trace-one Frobenius field. For 2≤Y≤√(8B), the fraction of primes
+with v≥Y is O(log B / Y + log B / √B). Indeed for each possible
+v≥Y there are O(B/v²+1) integers of the form 4p−1 divisible by v².
+Sum to √(8B) and divide by Θ(B/log B) primes. This proof uses no
+assumption on primes in short progressions.
+
+Taking Y=ceil((log B)²) gives two consequences on a fraction tending
+to one of the primes.
+
+* Given the actual D, enumerate v≤Y, form (Dv²+1)/4 when integral,
+  and test proper divisibility into N. This decoder costs polynomial
+  time in log N for balanced N. A polynomial-size list of candidate
+  discriminants containing the true D suffices as well. B need not
+  be known to the decoder: a cutoff of (bit length of N)² dominates Y.
+* Here D≥(4B−1)/Y². The Hilbert class polynomial of the field has
+  degree h(−D) ≫_ε D^(1/2−ε) for each fixed ε>0 by Siegel's
+  imaginary quadratic class-number lower bound (ineffective constant).
+  Thus writing its dense coefficient list costs B^(1/2−o(1)) slots
+  or more on typical inputs. Choosing a nonmaximal order cannot
+  remove that scale: the ring class-number formula multiplies h by
+  f times ∏_{ℓ|f}(1−χ(ℓ)/ℓ), divided by the unit index at most
+  three. This factor is at least φ(f)/3.
+
+Accordingly the typical-input bottleneck is deriving D or a short list
+from public data. Once given D, one can often skip the CM curve and
+the class polynomial entirely. The degree statement concerns dense
+construction and gives no bound for implicit modular evaluation.
+For the 3030 primes in [32768,65536], direct decomposition of 4p−1
+gave v≤15 on 2944 primes and maximum v=295. This count used the
+primes to measure coverage, without predicting D from N.
