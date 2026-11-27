@@ -583,6 +583,35 @@ unit bases on 330 choices of small semiprime and exponent multiple of
 q−1 confirmed the bound. The argument supplies a decoder for a promised
 concentrating exponent, not a way to construct that exponent from N.
 
+**Chebyshev specialization.** Let D_e be the normalized Chebyshev
+polynomial D_e(z+1/z)=z^e+z^(−e). For X uniform modulo q, every
+input trace X arises twice in the disjoint union of the split cyclic
+group of order q−1 and the norm-one group of order q+1 in the quadratic
+extension. Indeed the two roots of z²−Xz+1 are inverse, and at X=±2
+the single root belongs to both groups. Each output trace has at most
+two lifts in each group. Consequently for any S target residues the hit
+probability is at most S·(gcd(e,q−1)+gcd(e,q+1))/q. Enumeration
+verified the single-target bound for all exponents 1 through 100 and odd
+primes below 160 (3,600 prime/exponent pairs).
+
+If the hit probability is at least δ, one of the two groups has power
+image order at most 4S/δ. On q/p≤C, the public multiple
+E=e·lcm(1,...,ceil(12C/δ)) is therefore divisible by q−1 or q+1.
+The previous scalar decoder handles q−1. For q+1 choose a uniform
+unit D modulo N and work in the quadratic algebra t²=D. With probability
+1/2, D is nonsquare modulo q. Sample a uniform algebra unit z by
+rejecting nonunit norms (a proper gcd already splits N). Then
+w=z/conjugate(z) is uniform in the q-side norm-one group by cyclicity
+of the extension-field units, independently of its p component. Apply
+the same successive squarings as in the scalar decoder, testing for
+local identity by taking the gcd of N and both coefficients of w^k−1.
+Conditional on the nonsquare choice the mismatch probability is at least
+1/2 by the same hitting-index argument. Trying both decoders thus costs
+expected polynomial bit time under the stated concentration promise and
+a polynomial-bit exponent. This connects this specific proposed sampler
+to the classical multiplicative and norm-one order methods. It provides
+no exponent with the concentration promise.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
