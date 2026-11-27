@@ -5076,3 +5076,26 @@ for algorithms using the exact powering identity.
 
 For N=143 and L={1,2}, deg V=44<143/2 and the cutoff coefficients
 are respectively 13 and 0 modulo 143.
+
+### Precision needed for uniqueness in the coefficient recurrence
+
+Fix N>=2 and t>=1. Impose F(0)=1 and (1+X)F'=NF modulo N^t
+through degree b-1. Then F through degree b is unique modulo N
+exactly when b<J_t, where
+
+    J_t = min_{r^a exactly dividing N, r prime} r^((t-1)a+1).
+
+Indeed let U=(1+X)^N and G=F/U as formal series; U has invertible
+constant coefficient. The equation becomes G'=0 through degree b-1,
+so each g_j for 1<=j<=b is a multiple of N^t/gcd(j,N^t).
+All these multiples vanish modulo N up to the stated threshold,
+as seen at each prime divisor separately. At j=J_t take G=1+cX^j
+with c=N^t/gcd(j,N^t). This satisfies the equation and changes
+the degree-j coefficient modulo N. The sharp threshold concerns
+the recurrence with its initial value alone.
+
+In particular one lift to N^2 suffices throughout b<2p for the
+least prime divisor p, since J_2>=p^2>=2p. For N=143 the first
+ambiguous degree moves from 11 to 121. This gives uniqueness
+at polynomial bit precision. A dense prefix still has b+1 slots;
+the lemma does not give random access to its scalar projection.
