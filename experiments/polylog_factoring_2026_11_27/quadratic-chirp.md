@@ -5190,6 +5190,14 @@ Conversely, suppose a public deterministic constructor produces from N an exact 
 
 Starting at the empty prefix, evaluate both children of each occupied prefix and keep those with positive count. At most four prefixes survive per depth, so at most 8b child counts list all four roots. Any root outside ±1 gives a proper factor by gcd(r−1,N). Thus on this semiprime promise the proposed deterministic constructor is equivalent to deterministic polynomial-bit-time splitting, already at Y=1. It is unnecessary to predict unrelated random targets. The dense network width and the final predicate rank concern different objects; constructing the compressed representation is the substantive step.
 
+#### Approximation in squared error suffices with a margin
+
+Let F be that four-root indicator on all 2^b strings, zero outside the canonical range. The public indicator of ±1 has squared Euclidean error 2. Suppose a polynomial-width rational tensor train G with polynomial-bit entries achieves total squared error at most 2−δ, for a known rational 0<δ≤2 with polynomially bounded 1/δ. At the two mixed roots at least one value of G is at least 1−sqrt(1−δ/2)≥δ/4: otherwise the errors on those entries alone exceed the budget. Also the total squared norm of G is at most (2+√2)²<12 by the triangle inequality.
+
+For each binary prefix compute its energy, the sum of G(x)² on its completions. Take the tensor product of each bit matrix with itself and contract the prefix as above; the resulting width is at most the square of the original width. Retain prefixes with energy at least δ²/16. The indicated mixed root survives every depth. Disjoint prefixes at a depth have disjoint energy, so fewer than 192/δ² survive per depth. Check each final string by modular squaring and gcd. This yields a deterministic polynomial-bit-time split even with signed entries and without pointwise accuracy.
+
+An arbitrarily small strict improvement has an elementary explanation: assign one to the two public roots and the constant 2/(2^b−2) everywhere else. This has constant tensor-train width and squared error 2−4/(2^b−2), using no hidden root information. Thus the inverse-polynomial margin is material to the stated decoding guarantee. The error here is a sum over strings; divide by four to express it relative to the squared norm of F.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
