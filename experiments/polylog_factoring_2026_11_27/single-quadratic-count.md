@@ -797,3 +797,29 @@ Any exclusion of the two public residues is handled on the lifted
 instance by checking those residues against its actual cutoff.
 Direct enumeration verified the exact counts in all 10,464
 instances with odd 3<=m<=65, unit residues d, and 1<=h<=12.
+
+### Arbitrary scales and the square part of a gcd
+
+For any N>=2 and integer c, put D=gcd(N,c²), m=N/D. Write
+D=s²t with t squarefree, and put h=st. Then multiplication by h
+bijects the following finite sets, including when m=1:
+
+    {1<=b<=floor(sm/4) : b²=(c/h)² mod m}
+    {1<=a<=floor(N/4) : a²=c² mod N}.
+
+Indeed D divides c² and must divide a², precisely forcing h|c and
+h|a respectively. After substitution and division by D the
+congruence has common coefficient t. For p|m the valuation of D
+at p equals that of c² and is even, so p does not divide t and
+c/h is a unit modulo m. Cancellation is therefore exact. The
+cutoff follows from N/h=sm. If m=1 the count is simply floor(s/4).
+Full counts can be adjusted for public roots by checking distinct
+public residues in the original interval.
+
+For promised squarefree N this reduction uses gcd arithmetic alone:
+D=gcd(N,c), s=1, h=D, and the cutoff is exactly the original
+quarter cutoff at the smaller modulus m. For unrestricted N the
+formula requires the largest square divisor of D, for which the
+identity supplies no polynomial-time algorithm. The unit case D=1
+is unchanged. Verified the witness bijection for every residue c
+at each N from 2 through 179, including zero scales.
