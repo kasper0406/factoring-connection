@@ -4295,3 +4295,32 @@ it need not be computed by the evaluator. The restriction is one
 fixed additive score and one threshold. Nonlinear combinations
 of separate prime tests, input-dependent scores and the polynomial-
 in-j input range are separate cases.
+
+### Nonlinear residue queries and a single gcd witness
+
+On the same rough CRT family, allowing arbitrary nonlinear postprocessing
+of residue queries with modulus ≤2j drops the deterministic worst-case
+query count to exactly π(2j)−π(j), when the input is accessible only
+through these queries. Test each band prime for the upper bound.
+On an all-miss path, any unqueried band prime can have its coordinate
+changed to zero without affecting the transcript: among moduli ≤2j
+only that prime itself can see its coordinate. This works for adaptive
+queries too. This query model excludes direct arithmetic on the input.
+
+For a different model let a fixed positive integer U(j) serve as a
+gcd witness for every promised composite input m: gcd(m,U)>1 iff
+some band prime divides m. Every band prime p must divide U. Indeed
+choose one prime q in (2j,4j) with pq≥4j², or simply choose q in
+(4j,8j). The negative input q² forces q not to divide U; the positive
+input pq forces p to divide U. Both inputs have O(log j) bits.
+Similarly every prime q>2j is forbidden in U by q². These conditions
+are sufficient, since factors ≤j cannot divide promised inputs.
+The smallest positive witness is consequently the band primorial.
+Its binary length is Θ(j) by the prime number theorem. Moreover its
+gcd with m gives exactly the squarefree product of the band hits.
+
+The central binomial coefficient is another witness: each band prime
+has valuation one and larger primes have valuation zero. The explicit
+length lower bound leaves open a uniform short division-free arithmetic
+circuit for any admissible witness. Such a circuit could be evaluated
+gate by gate modulo m and would suffice without materializing U.
