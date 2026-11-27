@@ -96,3 +96,30 @@ this residual bound. The shift distribution here is uniform on
 units. This degree argument does not bound general arithmetic
 circuit size: repeated squaring produces large formal degree with
 few operations, and dense phase support can have a short expression.
+
+## What a square argument determines
+
+Write A(h)=2 cos(2 pi h/N), g(h)=A(uh), T=A+g. Each unit
+square fiber consists of ±h and ±uh, so its conditional mean of
+g is T/2. For uniform units the minimum mean-square error among
+*all* functions of h² estimating g is exactly N/phi(N). Indeed
+the conditional residual is (g-A)/2. Both A and g have second
+moment 2+2/phi(N). Their cross moment is
+-2/(p-1)-2/(q-1): the four additive frequencies ±1±u are
+divisible by exactly one prime and each normalized unit sum is
+-1/(r-1) for the other prime r. Substitution gives N/phi(N).
+Enumeration over square fibers confirmed this for all 45 pairs of
+distinct odd primes through 31.
+
+Consequently learning the hidden summand solely as a function of
+the square has irreducible error even with unlimited degree.
+The full normalized Salié sum T is constant on every fiber and
+has no such ambiguity. To apply the sparse bound to T directly,
+sum the four target-chirp correlation bounds (at frequencies
+±1 and ±u). The projection numerator becomes 16 M B_p² B_q²
+with the same Gram denominator. The full target second moment is
+4+4/phi(N)-4/(p-1)-4/(q-1). Thus a fit with M=N^o(1) phases has
+optimal RMS error tending to 2 for balanced growing primes. The
+decoder uses h separately when subtracting A from an estimate of
+T. These calculations distinguish that procedure from fitting g
+on square arguments alone.
