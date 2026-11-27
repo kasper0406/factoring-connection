@@ -4628,3 +4628,38 @@ These exceptional events also have vanishing probability over
 poly(log n) fresh trials. This limits the terminal coefficient-gcd
 test of g^E−1 for the specified exponent. Other ways to exploit
 the algebra, and larger extension degrees, are outside the proof.
+
+### Partial component hits and eigenvalue collisions
+
+The scalar gcd of Norm(g^E−1) with n can succeed when the gcd of
+all coefficients is 1. For n=143, f=X(X−1)(X−2), choose z with
+values (2,3,5) at the three roots (interpolation is valid since 2
+is a unit). At E=n³−1 the components of g^E−1 are (22,41,48)
+modulo n. Their common gcd with n is 1 and their product gives 11.
+
+On the preceding CRT family, however, even this partial-hit test
+and the discriminant of the characteristic polynomial of multiplication
+by g^E have combined probability O(d²/R) of vanishing locally,
+conditioned on squarefree f and a uniform unit. To see this at p,
+split the local algebra into fields, whose embeddings label the d
+eigenvalues. The units are uniform on the product. For one field
+component only, the preceding index-d argument bounds the chance
+of identity by 1/R. For multiple components, test an eigenvalue
+in one component while multiplying z in another component of degree
+s by a scalar of order r>R dividing p−1 (the index-one auxiliary).
+The eigenvalue of g^E changes by the scalar to power −sE, coprime
+to r. Uniformity on each such orbit bounds the hit probability by
+1/r. The same argument works for a prescribed target scalar.
+
+For equality of two eigenvalues the common norm denominator cancels.
+Between distinct field components, scale just one by the order-r
+scalar; the ratio changes by its dE-th power. Within one field
+of degree k, the two embeddings differ by a Frobenius power i
+with 1≤i<k. Equality requires z_component^(dE(p^i−1))=1, after
+applying an inverse Frobenius if necessary. The index-k auxiliary
+prime divides p^k−1, divides none of d,E,p^i−1, and therefore gives
+probability ≤1/R. Sum over d eigenvalues and their unordered pairs,
+then repeat at q. Nonunits and nonsquarefree sampling have the same
+exception bounds as above. This controls the norm and characteristic-
+polynomial discriminant tests only; other coefficient identities
+can behave differently.
