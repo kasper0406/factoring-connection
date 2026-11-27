@@ -156,3 +156,25 @@ The certificate bypasses upper-digit sampling on a successful
 window but still requires a fast product or a different detector
 for a wide interval. It supplies a factor-or-zero interface, not
 the value of a nonzero comparison.
+
+## An exact factorial specialization of the window detector
+
+For odd composite N take 1<=w<N/2. If gcd(w,N)>1 we already have
+a proper divisor. Otherwise set 2c=w modulo N and choose the cyclic
+window a=c+i for 1<=i<=w. Neither public digit is present, because
+a-c=i and a+c=w+i modulo N and both representatives lie in [1,2w].
+Thus the window product is exactly (2w)! modulo N. Its nonunit bit
+tests whether the least prime divisor p is at most 2w. In particular
+the first positive width is (p+1)/2. Binary search up to (N-1)/2
+therefore recovers p in O(log N) queries, or splits N early via
+gcd(w,N). Recurse and primality-test to factor completely.
+
+Conversely, given the distinct prime divisors r of N, the general
+window-product nonunit bit is easy. Split the cyclic window at wrap
+and the excluded public digits. On each remaining interval [L,U],
+test whether it contains an integer congruent to c or -c modulo r
+by comparing floor quotients at U and L-1. This gives a deterministic
+polynomial-time oracle equivalence for the Boolean detector on arbitrary
+public windows. It does not assert the same encoding inside a promised
+distribution of isolated signed comparisons: the factor-or-zero
+detector can succeed where the actual signed contrast vanishes.
