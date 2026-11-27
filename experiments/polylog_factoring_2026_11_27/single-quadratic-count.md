@@ -257,3 +257,30 @@ prime period, for all shifts of the input digit j. It allows signed
 weights and does not assume cancellation of arbitrary periodic
 functions. Approximation, cancellation only after summing blocks,
 and nonlinear comparisons remain outside the statement.
+
+## One-step differences suppress the aggregate semiprime remainder
+
+Let N=pq for distinct odd primes. Take the difference at j+1 and j
+before thresholding. At any nonstationary block with g=r in {p,q},
+the upper class moves by 2c/a=±2 modulo r because a²=c² modulo r.
+The clipped count is a constant plus r times a half-interval
+indicator on these classes. Its difference has magnitude r on at
+most four shifts per period r and vanishes elsewhere. The expected
+absolute normalized difference is therefore at most 4/N for a
+uniform shift j. Blocks with g=1 vanish identically.
+
+There are at most 2N/r lower digits having g=r, even before
+windowing. Consequently for *any* fixed lower window and weights
+of absolute value at most one independent of j, the nonstationary
+sum R, normalized by N, satisfies
+
+    E_j |R(j+1)-R(j)| <= 8/p + 8/q.
+
+This uses only the triangle inequality, without assuming independent
+phases or signs. Markov's inequality bounds the fraction exceeding
+1/4 in magnitude by 32/p+32/q. A stationary block has a unit slope
+s=2c/a modulo N. Its fundamental Fourier coefficient is multiplied
+in magnitude by 2|sin(pi s/N)| under the same difference. That
+factor can be small, so the remainder estimate alone does not give
+a uniform decoder. Nor does sparsity per block locate the active
+digits in polynomial bit time.
