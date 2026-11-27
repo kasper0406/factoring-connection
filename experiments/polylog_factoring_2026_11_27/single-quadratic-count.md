@@ -78,3 +78,30 @@ the Gaussian coefficient polynomial at q=1 recovers ordinary choose
 numbers and supplies no new fast individual-coefficient procedure.
 
 [Subspace identity](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Combinatorics.lean#L89) · [Kernel restriction](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean#L166)
+
+## A two-dimensional kernel and the missing aggregate
+
+For each candidate pair put A=[[x,c],[c,t-x]] over Z/(N^2), with
+c a unit. Its determinant is exactly the tested residual. Using c as
+a unit pivot reduces A by invertible operations to diag(1,det A)
+up to a unit on the second diagonal. Hence the number of kernel
+vectors equals gcd(det A,N^2), and the candidate passes exactly when
+this number equals N^2. This converts the pointwise predicate into a
+kernel-size test over the ring. It still leaves the sum over candidates.
+
+Even the complete collection of residue-field ranks of this matrix
+loses the lift digit: for c=x=1 compare t=2 and t=2+N. Both give
+rank one at every prime dividing N. Their kernel sizes modulo N^2
+are respectively N^2 and N. Both phase digits are allowed for odd
+N>=3. The same information loss occurs for any matrix polynomial in
+the undivided coordinates reduced modulo N. An encoding using the
+upper digits separately need not suffer that loss.
+
+A sufficient alternative target is a polynomial-size matrix built
+from public input whose ranks at two prime divisors of N differ.
+Scan the remaining matrix modulo N for a nonzero entry. A nonunit
+gives a proper factor by gcd. A unit permits row and column elimination
+and decreases both field ranks by one. Reaching a zero remainder
+would imply equal initial ranks. Thus constructing a separating matrix
+already suffices for a split without computing any subspace sum.
+No such construction from the aggregated comparison is supplied here.
