@@ -328,3 +328,33 @@ For p=1009, q=1013, exhaustive majority fitting with 32 equal
 bins on each axis got 764584 of 1020096 unit shifts correct
 (74.95216%). These are best in-sample labels using known-factor
 ground truth; they do not constitute a public training method.
+
+## Exact finite-modulus score of the public cosine rule
+
+With known distinct odd primes p,q put P=(p-1)/2 and Q=(q-1)/2.
+The public rule is correct on exactly
+
+    2 P Q + 2 floor_sum(P, 2p, 2q, q)
+
+of the 4PQ unit shifts. The repository floor_sum(n,m,a,b) sums
+floor((ai+b)/m) for 0<=i<n by Euclidean recursion. Thus one can
+calibrate planted benchmarks with polynomial bit cost.
+
+To derive the count, subtract the nearest half-integer from each
+CRT angle i/p,j/q (in turns). The residuals are signed v/(2p),
+w/(2q), with each 1<=v<=P and 1<=w<=Q taking both signs once:
+doubling and centering permutes the nonzero residues. The cosine
+sign picked up from the two half-integers is exactly the product
+of the local cosine signs. Agreement therefore asks whether the
+sum of residuals has magnitude below 1/4. Opposite signs always
+agree. Equal signs agree iff v/p+w/q<1/2. At fixed v there are
+floor(q(p-2v)/(2p)) such w, with no endpoint tie. Reverse the
+v order to obtain the displayed sum. Reflection of the rectangle
+by (v,w)->(P+1-v,Q+1-w) sends every point below the line to one
+strictly above it. Hence the exact public score never exceeds 75%,
+even at small or unbalanced moduli.
+
+Verified against full unit enumeration for all 45 pairs of distinct
+odd primes through 31 and for 1009*1013. On the latter benchmark
+the public rule gets 764568 correct, exactly 16 fewer than the
+best in-sample shift/inverse bin table.
