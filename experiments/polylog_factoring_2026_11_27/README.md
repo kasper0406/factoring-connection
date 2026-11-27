@@ -80,6 +80,34 @@ Apply the sampled heavy-frequency decoder to the bounded bit. At any properly no
 
 With logarithmic gap $1/64$, an assignment minimizing the total covariance inside the gap still yielded a split on all ten dense comparison runs. The strongest factor-revealing frequencies had magnitudes between $0.1227$ and $0.1913$. Independent CRT samples also checked total and local covariances on five- and twelve-prime controls. The fixtures synthesize comparison bits from known factors. [Reproduction](stationary_threshold.py)
 
+### Evaluating a supplied frequency and retaining the upper digit
+
+For the unmodified $L(t)=\log|F(t)|$, any supplied nonzero Fourier frequency $f$ admits an evaluation without a supplied factorization. Compute its conductor $d=M/\gcd(M,f)$. If $d$ is a prime power, exact power and primality tests give its base $p$ and successive divisions give the full component $q=p^{v_p(M)}$. Otherwise the coefficient is zero, since each local logarithm has frequencies in a single prime-power component.
+
+For $q$ in the support, write $r\equiv f\cdot4^{-1}\pmod q$ and $s=\min(r,q-r)$ with canonical $1\le r<q$. Aliasing the log-cosine harmonic series gives
+$$\widehat L(f)=\frac{(-1)^{s-1}}2\int_0^1\frac{x^{s-1}-x^{q-s-1}}{1+x^q}\,dx.$$
+This is nonzero with the displayed sign because $q$ is odd and $s<q-s$. Substitute $u=x^q$ and expand $(1+u)^{-1}=\sum_{j\ge0}2^{-j-1}(1-u)^j$. The integrals of each power are rational beta integrals. Truncating after $J$ terms gives a one-sided absolute error bounded by $2^{-J-1}(1/s-1/(q-s))$. The bit cost is polynomial in $\log M$ and the requested precision using polynomial-time primality. The executable uses exact rational arithmetic and documents its primality backends. It checked 43,984 frequencies against full-grid transforms. [Dual evaluator](stationary_dual.py)
+
+The nonzero support contains exactly $\sum_i(q_i-1)$ frequencies across the components. For a balanced semiprime and $M=N^2$, uniform probes require order $N$ samples to reach this support. Each hit itself gives a proper gcd via its conductor. The pointwise result leaves the bulk search over frequencies open.
+
+There is a direct loss from taking $t$ only modulo $N$. If $P_i=\sqrt{q_i}=p_i^{v_{p_i}(N)}$, averaging $X_i(t)=\log|1+e_{q_i}(4a_it)|$ over the lifts of one residue modulo $N$ gives $P_i^{-1}\log|1+e_{P_i}(4a_it)|$, where $a_i=(M/q_i)^{-1}\pmod{q_i}$. This follows by multiplying the $P_i$ factors along that local lift orbit. The conditional centered log has $L^2$ norm $O(\sum_i1/P_i)$, and the same bound holds for its difference under doubling. Thus any bounded predictor depending only on $t\bmod N$ has covariance at most this size with the centered sum used in the comparison proof. For balanced semiprimes the bound goes to zero, while an admissible bit has covariance bounded below. The lift digit must be retained by a predictor for this target.
+
+### Complete cubic and quartic sums
+
+There is an exact polynomial-phase alternative to the inverse sum. If $\gcd(3t,N)=1$ and $M=N^2$, then
+$$K_M(1,t^2)=\sum_{y\bmod M}e_M(t(3y-y^3)).$$
+Writing $y=a+Nz$ cancels all blocks except $a^2=1\pmod N$. Each stationary $a$ has a unique lift $u^2=1\pmod M$ and polynomial phase $2tu$. This is the same stationary trace. The fixed comparison at normalized magnitude $1$ therefore also applies to this complete cubic sum. Small factors of $3$ can be detected before calling the evaluator. [Polynomial-phase diagnostic](stationary_cubic.py)
+
+The quartic $y^4-2y^2$ gives a separate target for every odd $N$. For unit $t$,
+$$G(t)=\frac1N\sum_{y\bmod M}e_M(t(y^4-2y^2))=\prod_i(1+2e_M(-e_i t)).$$
+Its derivative is $4y(y-1)(y+1)$. At each prime power the three stationary lifts $0,1,-1$ give the phase values $0,-1,-1$. In particular $|G(t)|\ge1$, and
+$$\log|G(t)|=k\log2+\Re\sum_i\sum_{h\ge1}\frac{(-1)^{h-1}}{h\,2^h}e_M(h e_i t).$$
+The coefficient at $e_i$ has magnitude at least $0.24$. The leading term is $1/4$, and all aliases are at index at least $q_i-1\ge8$. After clamping a coarse magnitude estimate below at one, its logarithm is 1-Lipschitz. The same bounded Fourier decoder and conductor gcd give a split from sufficiently small constant additive error, with no clipping window or logarithmic singularity. The exact polynomial diagnostics checked 30 cubic and 45 quartic sums on odd fixtures, including repeated factors. Literal complete sums still scale with the modulus. [Cubic and quartic checks](stationary_cubic.py)
+
+Quadratic completion identifies where the quartic loses cancellation. Write $g_M(s)=\sum_y e_M(sy^2)$. Completing the square in the Fourier transform of $e_M(tz^2)$ gives
+$$G(t)=1+\frac{e_M(-t)}M\sum_{s\bmod M}e_M(-s^2/(4t)-s)\big(g_M(s)-N\big).$$
+Here the denominator $4t$ is inverted modulo $M$. Unit $s$ give $g_M(s)=N$ because $M$ is an odd square. The terms $s=Nj$ contribute exactly $2^{\omega(N)}e_M(-t)$ by orthogonality on $y^2=1\pmod N$. Every remaining nonzero term has a proper $\gcd(s,N)$. On balanced two-prime inputs these indices have density $O(N^{-1/2})$. This rules out a direct uniform sampler over the remaining terms as a polynomial-bit way to access them. An aggregate that evaluates their contribution implicitly remains open. The diagnostic verified 30 decompositions against the literal quartic sums. [Gaussian completion checks](stationary_cubic.py)
+
 ## Factor-supplied range control and hardness of arbitrary windows
 
 The retained reciprocal spectrum can be evaluated with $O((K+1)2^{\lceil\omega(N)/2\rceil}\operatorname{poly}(\log N))$ work per digit at fixed accuracy and a fixed number of denominator intervals, given the prime powers of $N$. For a retained slope $b$, square roots of $(1-b)^{-1}$ modulo the prime-power components of $N^2$ give CRT sign choices. Lift a candidate lower digit to $r=a+Nh$ with $(1-b)r^2=c^2\pmod{N^2}$. Then the phase at $a$ is $(2-2b)r+ba\pmod{N^2}$ by subtracting the lift change $Nbh$ from the phase at $r$. Its exponential factors across two half lists, with a single wrap correction $e_N(-b)$ when the lower digits sum to at least $N$. Sort the right half list by lower digit and take prefix sums of phase weights. Each left choice queries shifted right intervals where the geometric lift weight is constant. The ordering is reused between digits. Square roots and lifting are included in the setup. The input factorization is supplied. [CRT evaluator](crt_range.py)
@@ -119,6 +147,8 @@ python bernoulli_moment.py
 python reciprocal_range.py
 python stationary_log.py
 python stationary_threshold.py
+python stationary_dual.py
+python stationary_cubic.py
 python crt_range.py
 python stationary_hardness.py
 python tangent_progressions.py 38942974393
