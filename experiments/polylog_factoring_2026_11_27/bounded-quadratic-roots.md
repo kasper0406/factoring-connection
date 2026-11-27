@@ -266,6 +266,31 @@ inputs for sufficiently large B. The bound gives no lower bound on P
 on arbitrary inputs, and does not treat chosen z or individual-coordinate
 gcds.
 
+**A family where uniform additive tests fail.** For p<q in [B,2B]
+write d=q−p and assume d+1<p. On F_p the exponent N acts as d+1,
+so the additive defect is a nonzero polynomial of degree d. On F_q
+the inverse-power bound above gives at most 2d roots including 0,−1.
+Thus the scalar per-draw split probability is at most d/p+2d/q.
+A public unit shift a in (x+a)^N−x^N−a^N gives the same rate by
+substitution x=at. This covers a union of polynomially many prescribed
+unit shifts on a uniform sample, or adaptive shifts with fresh uniform
+samples. Exhaustive local counts at (1009,1163) and (10007,10771)
+gave scalar splitting probabilities 0.0056704 and 0.0011279.
+
+For all sufficiently large B there are Ω(B^(7/4)/(log B)^2) pairs in
+this dyadic interval with B^(2/3)<d≤B^(3/4). Indeed partition into
+O(B^(1/4)) intervals of length at most B^(3/4). By Cauchy–Schwarz
+on the bucket populations and the prime number theorem, same-bucket
+pairs number Ω(B^(7/4)/(log B)^2). At most O(B^(5/3)) pairs of
+integers in the entire range have separation at most B^(2/3).
+Subtracting leaves the claim. On these inputs the scalar test and
+the preceding Gaussian full-coordinate test both have per-draw
+probability O(B^(−1/4)). Ordinary multiplier-one Fermat search also
+takes Ω(B^(1/3)) midpoint increments since (p+q)/2−sqrt(pq)
+equals d²/[2(p+q+2sqrt(pq))]. This rules out inverse-polynomial
+worst-case success for these uniform tests, without asserting that the
+same inputs resist other factoring methods.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
