@@ -147,3 +147,33 @@ polynomial in the bit length only for polynomial-size lists
 (or under an independently established faster bound); this result
 does not construct such lists. Repeated coefficients modulo N
 must first be merged so that gcd=N cannot mask a proper collision.
+
+## Sign-only prediction on uniform units
+
+For N=pq with distinct odd primes write h=qi+pj mod N and choose
+u=1 mod p, -1 mod q. Put C(h)=cos(2 pi uh/N). The full normalized
+sum T(h) factors as 4 cos(2 pi i/p) cos(2 pi j/q). On uniform
+units i,j are independently uniform nonzero residues. The sign
+never vanishes. Multiplication by u exchanges the public and
+hidden cosines while preserving T. Consequently
+
+    E[sign(T(h)) C(h)] = E|T(h)|/4 = m_p m_q,
+
+where m_r=(csc(pi/(2r))-1)/(r-1). To see the finite sum, reduce
+2i modulo r to the centered representative in [-(r-1)/2,(r-1)/2].
+Then |cos(2 pi i/r)| is cos(pi times that representative/r).
+Summing this geometric progression gives csc(pi/(2r)); remove
+i=0. Hence m_3=1/2, and m_r>=1/2 for r>=5 by csc(x)>=1/x.
+As both primes grow the product tends to 4/pi².
+
+Any sign predictor with error probability rho on uniform units
+(including internal randomness) therefore has hidden cosine
+correlation at least m_p m_q - 2 rho. Extend the predictor by
+zero on nonunits. The real part of its normalized Fourier
+coefficient at u is at least phi(N)/N times this bound. At 90%
+accuracy this is uniformly positive for every such semiprime.
+For sufficiently large balanced inputs even 80% accuracy suffices,
+since 4/pi²>0.4. The sampled heavy-frequency algorithm described
+above can list the hidden frequency; a proper gcd verifies the
+split. This trades numerical approximation for a single binary
+classification target. No efficient predictor is supplied.
