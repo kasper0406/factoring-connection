@@ -1838,3 +1838,28 @@ has this same law. Shifts with a proper nonunit gcd already split N.
 This only bounds using the sampled sign products as independent bits;
 the positions, correlated queries, and structured summation remain
 available. The exact identity gives no fast way to sum the primitive.
+
+### Counting consecutive units already contains the factors
+
+For distinct odd primes N=pq the number C(2) of x modulo N with x
+and x+1 both units equals (p−2)(q−2). Thus p+q=(N+4−C(2))/2.
+In fact C(2)=2φ(N)−N+2, so the unsigned support count here
+is affinely equivalent to the totient. Membership is public by gcd.
+
+More generally C(k) counts runs of k units, the Schemmel totient of
+order k. If k does not exceed the smallest prime divisor, CRT gives
+C(k)=N∏_{p|N}(1−k/p), since k distinct residue classes are forbidden
+at each p. This identity yields a deterministic polynomial-time
+reduction from arbitrary integer factoring to exact run counts of
+logarithmic length. Trial-divide out all primes ≤ L=bitlength(N);
+let M be the remaining cofactor. When M>1 every remaining prime
+exceeds L, and there are at most L distinct primes. The counts on M
+at k=0,...,L (with C(0)=M) interpolate the integer polynomial
+(M/rad(M))∏_{p|M}(p−k). Its integer roots are precisely the distinct
+remaining primes. Polynomial factorization over the rationals and
+exact division recover them and their multiplicities in polynomial
+bit time. The interpolant has degree at most L and polynomial-bit
+coefficients, for example by bounding its coefficient norm by
+(M/rad(M))∏(p+1) ≤ M·2^L. This identifies the cost as counting
+points exactly even for a public predicate; it gives no shortcut
+for computing a Schemmel totient without the factors.
