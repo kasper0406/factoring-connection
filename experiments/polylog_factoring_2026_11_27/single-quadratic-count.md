@@ -1317,3 +1317,33 @@ postprocessing step. The determinant sign still requires finer
 traces as above. Tests with seeded perturbations recovered m in
 93 unit-scale instances across 9,45,105,315,385,1155,5005, using
 root-enumerated traces. No public fast trace evaluator is assumed.
+
+### Randomized linear summaries for translated windows
+
+The exact shared-rank obstruction above changes if each fixed query
+may fail with probability delta. Let a square have at most R roots,
+and use n=bit_length(N) bits (including for endpoint N). At each bit
+position j choose a random binary matrix mapping the more significant
+prefix to b bits, with 2^b>=2Rn/delta. Store one parity per (j,bucket):
+the number mod 2 of roots x with x_j=0 whose higher prefix hashes to
+that bucket. This vector depends on the square and the public coins.
+
+For cutoff z, XOR the bucket of its higher prefix whenever z_j=1.
+With exact prefix comparisons each root x<z contributes at its first
+differing bit; all others contribute zero. Each false prefix match
+has probability 2^-b, since the difference is nonzero. For [a,b')
+XOR the answers for both endpoints. A union bound over at most 2Rn
+comparisons gives error <=delta per fixed query. Wrapping windows
+also need the total parity, one extra coordinate. Thus the binary
+dot product uses O(R n²/delta) coordinates, polynomial for a unit
+square modulo a semiprime at constant error. Fresh coins handle
+adaptive queries; correctness for all translations simultaneously
+is a stronger requirement. This differs from symmetric hashing for
+root isolation: the target here is the parity of the whole interval.
+
+Each bucket is an aggregate over roots satisfying affine bit tests.
+Forming it from an explicit root list is easy; an efficient way to
+obtain it directly from the square would be needed for factoring.
+A seeded root-list diagnostic on N=101*103 with 2048 buckets per
+position had 27 errors in 2000 random interval queries (union bound
+112/2048 per query). This tests decoding only.
