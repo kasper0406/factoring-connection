@@ -1045,6 +1045,24 @@ on all 5,000 positive odd inputs below 10,000 by direct enumeration.
 This checks a low-precision modular starting point; it supplies no general
 polynomial-time composite-index evaluator.
 
+### The ninth bit detects simultaneous quadratic residuosity of 2
+
+Suppose $N=pq\equiv1\pmod8$ with distinct $p,q\equiv1\pmod4$. Then
+$$C(N)\equiv4N^2+256\,1_{p\equiv q\equiv5\bmod8}\pmod{512}.$$
+For $p=x^2+y^2$ with even $y$, write $C(p)=2p^2-64u_p$ where
+$u_p=(xy/2)^2$. This square is 0 modulo 4 when $p=1\bmod8$ and 1 when
+$p=5\bmod8$. Multiply the local formulas and use $p^2=q^2=1\bmod4$
+and the equality of the two primes' residues modulo 8. By the supplement
+to quadratic reciprocity, the zero correction is precisely the case where
+2 has a square root modulo $N$. On this family $r_2(N)/4=4$ identically.
+
+For every fixed $b\ge9$, both outcomes occur with $N=1\bmod 2^b$.
+Choose the two prime residues modulo $2^b$ to be $1,1$ or $5,5^{-1}$;
+Dirichlet's theorem supplies infinitely many distinct choices.
+Thus the eight-bit count equivalence is sharp for any rule using only
+the count and a fixed-length binary suffix of $N$. This gives a test of
+a proposed evaluator, not an efficient construction of that bit.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
