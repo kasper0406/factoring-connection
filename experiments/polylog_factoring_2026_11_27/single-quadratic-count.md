@@ -2286,6 +2286,39 @@ pair is (326232907,345001035), with gcds 1009 and 1000003.
 The padding introduces many known prime factors. An oracle promised
 only semiprime inputs is outside this reduction.
 
+### Fermat search after primorial balancing
+
+Consider distinct primes p,q in [B,2B], N=pq. Fix any menu of
+poly(log B) odd multipliers K≤B^C with C fixed, allowing the choice
+within the menu to depend arbitrarily on N. For 1≤H≤B, the fraction
+of these semiprimes admitting a split via the first H ordinary Fermat
+midpoints on some KN is at most B^o(1) √(H/B). In particular it
+tends to zero for H≤B^(1−ε) with fixed ε>0. All primorials used by
+the preceding reduction on this input range form such a menu.
+
+Indeed, for each K discard inputs sharing a prime with K, counting
+them all as successes. K has O(1) prime factors in [B,2B], so their
+combined fraction over the menu is B^(−1+o(1)). For coprime inputs,
+a pair exposing a factor by gcd must be a=pd, c=qK/d with d dividing
+K, up to exchange. Set M=KN and u=log(a/c)/2. Its Fermat midpoint is
+(a+c)/2=√M cosh(u). Reaching it in H tests starting at ceil(√M)
+requires √M (cosh(u)−1)≤H. Since cosh(u)−1≥u²/2 and √M≥B,
+this forces |log(q/p)−log(d²/K)|≤√(8H/B).
+
+For fixed p,K,d the allowed q in [B,2B] therefore occupy an interval
+of length O(√(BH)), by the mean value theorem for the exponential
+on log(q/p) in [−log 2,log 2]. Counting all integers there gives
+O(1+√(BH)) possibilities. The classical divisor bound gives
+τ(K)=B^o(1) uniformly for K≤B^C. Sum over divisors, multipliers and
+the O(B/log B) primes p, and divide by the Θ((B/log B)²) prime pairs.
+This proves the bound, including rounding and the discarded inputs.
+
+This result is specific to consecutive Fermat midpoints and to a
+small shared menu. It permits choosing a different menu at each scale.
+A method that selects among many more multipliers from the arithmetic
+of N, or skips large sets of midpoints, needs separate analysis.
+The balancing reduction itself uses interval occupancy and still holds.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
