@@ -4084,3 +4084,33 @@ reduction of general factoring to parity of truncated reciprocal
 floor sums on small-modulus progressions. It requires no factorization
 for the reduction steps. A polylog evaluator for these parity sums
 is still missing; enumerating the terms would cost up to Θ(j).
+
+### Unfiltered interval parity factors every squarefree input
+
+Let H(n,t) denote the parity of the number of divisors in [1,t].
+To obtain it from unfiltered dyadic floor-sum parities, put j=floor(t/2).
+XOR H(n,j) with the dyadic floor-sum difference at n and n−1 and,
+when t is odd, the directly tested bit [t divides n]. Use H(n,0)=0
+and handle t=1 directly. Each prefix therefore needs O(log(t+1))
+unfiltered queries, even when j exceeds the least prime factor.
+
+For nonsquare n, divisor pairing shows that [2,floor(sqrt n)]
+contains precisely τ(n)/2−1 divisors. If 4 divides τ(n), this is
+odd. Its parity is directly observable, so the algorithm needs no
+prior knowledge of τ(n). Bisect this interval, querying child parity
+from prefix differences and keeping an odd child. The final singleton
+is a verified proper divisor. For squarefree composite n, τ(n)=2^r
+with r≥2, and both sides of every split are squarefree. Recursive
+splitting with a primality test therefore factors any squarefree n
+using polynomially many unfiltered calls. Per split the bound is
+O(log² n) oracle calls. There is no progression restriction on x.
+The oracle must allow dyadic intervals up to sqrt n, including ones
+containing composite divisors.
+
+For general n, exact square roots handle squares. The same odd-child
+argument succeeds on nonsquares with 4 dividing τ(n). If it fails,
+n has precisely one odd prime exponent, congruent to 1 mod 4, all
+other exponents even. This follows from v₂(τ(n))=1. For example
+45 has the two divisors 3 and 5 in the initial interval, so its
+parity is even. The previous progression-filtered reduction still
+covers these cases.
