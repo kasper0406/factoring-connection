@@ -454,3 +454,23 @@ factors of two and perfect-power detection handle the other cases;
 recursing on proper splits gives complete factorization with a
 polynomial number of queries in log N. Direct parity scans still
 have width-dependent bit cost.
+
+## Exact prefix evaluation near either known endpoint
+
+For an odd N with at least two distinct prime factors let F(B)
+be the inverse-pair parity on [2,B], 1<=B<=H=(N-1)/2. From the
+left endpoint enumerate integers k>=1 with 1+kN<=B² and count
+the perfect squares among them modulo two. Each square has exactly
+one positive root in [2,B]. From the right endpoint start at F(H)=1.
+A root a in (B,H] corresponds bijectively to an odd positive
+t=N-2a<N-2B with t²=4 modulo N; invertibility of 2 gives the
+converse. Enumerate squares 4+kN for 0<=k and 4+kN<(N-2B)²,
+counting only odd square roots, and XOR their parity with one.
+There are no negative k for N>=15. Both procedures use integer
+square roots on O(log N)-bit operands and need no factors of N.
+
+Choosing the nearer endpoint in these coordinates costs
+O(1+min(B²,(N-2B)²)/N) square tests. Thus both endpoint regions
+of width O(sqrt(N)*poly(log N)) admit exact polylogarithmic bit
+time. At B near N/4, including the first midpoint in the earlier
+bisection, the cheaper bound still scales linearly in N.
