@@ -2069,6 +2069,34 @@ the endpoints. Each moment of fixed order k expands into intersection
 counts involving at most k tests. This example supplies neither a fast
 intersection counter nor a uniform bound on the degree needed.
 
+### Computing fixed-order moments from small prime filters
+
+The [CRT moment calculation](check_factor_sum_moments.py) uses the ten
+odd primes through 31 on the same lower half. The kth binomial moment
+is the sum, over k-test subsets, of their simultaneous rejection counts.
+Split a subset into coprime products A and B and form the two lists of
+rejecting residues. For a left residue a write t=a+Aj. The allowed
+values of j+a/A modulo B are precisely the right residues multiplied by
+the inverse of A modulo B. Two binary searches in that sorted list,
+with whole periods accounted for, count hits between the endpoints.
+Here a/A denotes modular division. The empty side has modulus one.
+
+With T primes at most L, moments through fixed order k cost at most
+O((T+1)^k L^ceil(k/2) poly(log N, k, log L)) bit operations for
+endpoints of O(log N) bits, independent of interval width except for
+endpoint arithmetic. Thus fixed-order moments are polynomial-time
+computable when T and L are polynomial in the input bit length.
+
+The ten-prime benchmark gave a squared-polynomial survivor bound of
+1.54719 at degree four and 0.55330 at degree five (rounding to five
+decimal places), certifying emptiness at moment order ten. Direct
+enumeration verified every binomial moment. The largest half-list had
+31,104 residues for an interval of only 1,658 candidates. Here order
+ten uses every subset of the ten tests, so the certificate gives no
+degree saving over exact inclusion–exclusion. A general algorithm
+would need a choice of small primes that separates the target and a
+uniformly sufficient, efficiently computable moment order.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
