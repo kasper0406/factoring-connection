@@ -4923,3 +4923,28 @@ where P_b(T)=-2T. Its difference from 24T has coefficient -26
 with gcd(26,143)=13. This calculation assumes access to the
 prefix. Evaluating the full power in that ring would also include
 higher degrees.
+
+### Evaluating the first-window scalar with block products
+
+For b<2p compute A=product_{j=1}^b (j-N) and B=b! modulo N^2.
+Their exact integer ratio is C=(-1)^b binom(N-1,b). Set
+g=gcd(B,N^2) using the residue. Each prime r|N occurs at most
+once in b!, to the first power, since b<2p<=2r<=r^2.
+Hence g divides N. Both residue representatives are multiples
+of g, and B/g is invertible modulo N^2/g. Dividing the two
+representatives by g and multiplying by the inverse recovers C
+modulo N^2/g, a multiple of N. Thus one additional power of N
+in the working modulus suffices to cancel all nonunit denominators
+simultaneously, including when N has repeated factors.
+
+A classical Strassen-style block product computes both products.
+For m=ceil(sqrt(b)), form H(X)=product_{i=1}^m(X+i) modulo N^2
+using a product tree. Evaluate it at km and km-N for
+0<=k<floor(b/m) using monic remainder trees. Multiply the block
+values on each side and append the fewer than m tail factors.
+With fast polynomial arithmetic this takes softly O(sqrt(b))
+ring operations. For the Boolean least-factor cutoff, simply test
+gcd(B,N)>1, which is valid for every b. Dyadic search through
+the first crossing therefore costs softly O(sqrt(p)) ring
+operations. The dense block polynomial still has m+1 coefficients.
+This is a classical baseline, not a polylogarithmic evaluator.
