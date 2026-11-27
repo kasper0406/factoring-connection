@@ -90,4 +90,10 @@ Summing disjoint blocks evaluates an interval of length $T$ in
 $O((1+T/\sqrt N)\operatorname{polylog}N)$ bit operations. This improves
 the direct tangent-block bound above at long cutoffs using a classical
 small-root theorem. A central query still uses order $\sqrt N$ blocks.
-This is a proof-level comparison with the existing implementation.
+[The certified implementation](small_root_window.py) centers each block,
+tries increasing lattice dimensions, and accepts a row only after its
+coefficient 1-norm passes the strict bound. Exhaustive scanning agreed on
+126 windows over ten odd moduli from 3 to 124,568,113, including primes,
+semiprimes and repeated factors. The windows included known-root
+neighborhoods as well as pseudorandom starts. This checks correctness
+on those inputs; it is not a runtime comparison with the tangent method.
