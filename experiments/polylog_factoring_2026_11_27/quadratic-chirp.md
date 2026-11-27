@@ -5192,3 +5192,23 @@ p=19,q=23 it is 15/23, but at p=19,q=37 it is only 1/37.
 This formula characterizes random sampling given a scalar evaluator;
 it gives neither that evaluator nor a uniform constant success
 bound. The examples do not assume an infinite family of prime pairs.
+
+### A deterministic middle column for comparable odd primes
+
+Let N=pq for odd primes p<q and set b=(N-1)/2. The gcd of
+binom(N-1,b) with N equals p exactly when q-1 has an odd digit
+in base p; otherwise it equals 1. Indeed, by Kummer's theorem
+r divides this central binomial coefficient exactly when b+b
+has a carry in base r. For odd r, doubling is carry-free exactly
+when all digits of its result are even: halving even digits
+digitwise constructs the unique carry-free summand. In base p the
+digits of N-1 consist of the digits of q-1 followed by p-1.
+In base q the two digits p-1 and q-1 are both even.
+
+In particular if p<q<2p, the leading base-p digit of q-1 is 1.
+The middle column therefore always recovers p, even when very few
+uniformly sampled columns work. For N=703 the gcd of binom(702,351)
+with 703 is 19. Outside this range N=55 gives gcd 1 because
+q-1=10 has base-5 digits 2,0. This gives a single fixed evaluation
+target for balanced odd semiprimes. Computing that residue at
+polylogarithmic bit cost remains the missing step.
