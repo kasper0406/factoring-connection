@@ -598,6 +598,27 @@ computation uses the factors. At the median the oracle supplies 17
 ternary digits of the totient (about 27 bits), while its raw residue
 is taken modulo 3^34.
 
+**The first ternary digit.** At L=3 the formula simplifies to
+Φ_(3N)(4) ≡ 1+3φ(N) mod 9, since y=4 and z=64. For N=pq with
+distinct odd primes greater than three, N≡2 mod 3 forces one factor
+to be 1 mod 3, hence the residue is always 1. For N≡1 mod 3 the
+factors are either both 1 or both 2 mod 3. The residue is 1 in the
+first case and 4 in the second. This distinguishes exactly whether
+−3 is a square modulo N: over either prime, completing the square
+identifies a square root of −3 with a root of X²+X+1, which exists
+precisely when the local multiplicative group has an element of order
+three. CRT combines the local tests. The Jacobi symbol is +1 in both
+ambiguous cases. Either decision oracle on this promise computes the
+other; no extraction of a square root from the decision is asserted.
+
+Exact integer cyclotomic quotients over all 190 pairs of primes from
+5 through 79 gave 100 forced residues and 45 of each ambiguous type.
+Exhaustive square testing agreed on all 90 ambiguous inputs. Compare
+the [earlier dyadic sum-bit result](single-quadratic-count.md#the-first-ambiguous-sum-bit-as-quadratic-residuosity):
+both low-precision formulations reach a fixed quadratic-residuosity
+question. The ternary calculation identifies the specific target and
+the input class on which the residue is informative.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
