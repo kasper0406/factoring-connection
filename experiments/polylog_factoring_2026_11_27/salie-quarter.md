@@ -567,6 +567,12 @@ Exact covered-residue counts for L=1,16,64 respectively were
 of 255024 at N=1009*1013, by enumerating and deduplicating the
 unit square residues up to the stated root cutoff.
 
+### Tight order for quotient lists
+
+For distinct odd primes and 1≤L≤N, the best target-independent list has hit probability of order sqrt(L/N), uniformly in the modulus. The preceding upper bound gives this order since L≤sqrt(LN). For the matching lower bound use levels 0 through L−1, and put R=isqrt(LN−1)<N. Of the integers from 1 to R at least R(1−1/p−1/q)≥7R/15 are units. Each unit square can occur at most four times in that interval since it has four roots modulo N. Dividing by the number of unit squares gives the claimed lower bound. Thus choosing scattered or very large levels cannot improve the asymptotic order.
+
+If the target chooses from K menus of at most L levels, their union has at most KL levels. Even perfect menu selection therefore gives O(sqrt(KL/N)) average success for KL≤N. To reach inverse-polylogarithmic success this family needs KL at least N/polylog(N). This counts distinct quotient choices and applies even when selection uses the full target. It leaves open how to compute a useful quotient from a large implicit family.
+
 ## Integer-affine choices of the lift level
 
 Let the input representative range over 0<=y<N. An integer-affine
