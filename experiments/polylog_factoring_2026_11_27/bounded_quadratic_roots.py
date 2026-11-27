@@ -1,6 +1,6 @@
 """Recover roots in short public intervals via a five-dimensional lattice."""
 
-from math import gcd
+from math import gcd, isqrt
 from random import Random
 
 from sympy import Matrix, Poly, Symbol, integer_nthroot
@@ -40,6 +40,18 @@ def quadratic_roots(n, linear, constant, limit):
         if root.is_Integer and 0 <= root <= limit and
         (root*root+linear*root+constant) % n == 0
     )
+
+
+def roots_from_quotient_interval(n, y, low, high):
+    """Find roots in [ceil(n/2), n) whose square is y+k*n, low <= k <= high."""
+    if not (0 <= y < n and 0 <= low <= high and high-low <= interval_limit(n)):
+        raise ValueError("Expected a canonical target and a short quotient interval")
+    start = max((n+1)//2, isqrt(max(0, y+low*n-1))+1)
+    end = min(n-1, isqrt(y+high*n))
+    if end < start:
+        return []
+    offsets = quadratic_roots(n, 2*start, start**2-y, end-start)
+    return [start+t for t in offsets]
 
 
 def progression_roots(n, origin, step, limit):
