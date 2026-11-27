@@ -460,6 +460,33 @@ of those inputs. This removes the flags at polynomial overhead for a typical
 balanced input in this model. It gives no worst-case simulation, and it does
 not cover the full magnitudes or predicates with variable target residues.
 
+### Choosing a short list of probe points from public data
+
+Fix a prime $r\ge7$ coprime to $N$. For each nonzero residue $a$ set
+$b=N/a\bmod r$. The candidate denominator spectrum at $z_k=e^{2\pi i k/r}$
+is $D_a(k)=|1-z_k^a|^2|1-z_k^b|^2$. Group candidates by the unordered
+pair $\{a^2,b^2\}$ (with multiplicity); members have identical spectra.
+Distinct groups have distinct sums of squares since their products are fixed.
+The sixth-moment identity above thus makes their integer coefficient vectors
+different modulo $X^r-1$. Parseval gives
+$r^{-1}\sum_k|D_a(k)-D_c(k)|^2\ge1$ for distinct groups.
+Since each spectrum lies in $[0,16]$, at least $(1-0.9^2)/256$ of all
+indices have difference exceeding 0.9.
+
+A deterministic greedy choice now separates every pair of groups using
+$O(\log r)$ points. From the remaining pairs pick an index distinguishing
+the most pairs, and remove those it distinguishes. Compute the public spectra
+within 0.01 and count a difference above 0.85 as distinguishing.
+Every difference above 0.9 is counted, and every counted difference exceeds
+0.83 in truth. Averaging removes a fixed fraction of the outstanding pairs
+each time. Index zero never distinguishes a pair. The candidate table and
+the greedy search have polynomial cost in $r$. One-percent relative magnitude
+estimates at just the selected points give denominator estimates within 0.33,
+so matching the approximate table to tolerance 0.35 recovers the unique group
+(allow another 0.005 for decoder arithmetic). This determines whether *either*
+factor is $\pm a\bmod r$ for every target $a$ simultaneously. The public
+selection uses only $N\bmod r$; evaluation at the selected points is still open.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
