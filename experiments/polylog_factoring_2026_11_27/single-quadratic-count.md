@@ -53,3 +53,28 @@ Choose $\sigma$ uniformly once per isolation trial. In a singleton trial the sig
 ## Checks
 
 The diagnostic verified 30 packed counts and threshold comparisons against independently counted congruences for both polarities on three small moduli, including a repeated-prime input. It counts nonunit pairs in the complement. Run `python check_single_quadratic_count.py`.
+
+## Comparison with the finite-subspace identity in grh-lean
+
+At commit 72fead1 of lsernau/grh-lean, New.q_binomial_submodule
+sums over subspaces U of an m-dimensional space over a field of
+order q. Each dimension-i subspace has weight (-X)^i q^(i(i-1)/2).
+The total equals the product of (1-q^j X) for 0<=j<m. Grouping by
+dimension gives the Gaussian binomial coefficients. In the Hecke
+transfer application an integrality constraint restricts U to the
+subspaces of a single residue kernel. The same product then uses
+the kernel dimension. At X=1 this sum is the indicator of zero
+nullity, including the empty-product case.
+
+The analogous step for the present comparison would be a public
+encoding that collapses its weighted fibers while preserving the
+threshold gap. Even over a known odd prime field and before applying
+the interval filters, x(t-x)=c^2 for c nonzero is not an affine
+subspace: it contains (c,2c) and (-c,-2c) but omits their midpoint.
+Thus rank-nullity on the existing coordinates does not yield that
+encoding. This leaves auxiliary-variable representations open.
+The product identity computes a full weighted sum; specializing
+the Gaussian coefficient polynomial at q=1 recovers ordinary choose
+numbers and supplies no new fast individual-coefficient procedure.
+
+[Subspace identity](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Combinatorics.lean#L89) · [Kernel restriction](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean#L166)
