@@ -1796,3 +1796,24 @@ be positive). This observation supplies no classical polynomial-time
 procedure for extracting the hidden prime from character values. The
 random-mask decoding argument above requires queries on many masks
 of a fixed root, which this single-bit oracle does not provide.
+
+For a public unit scale a, the signed low bit of [a S(u)]_N (least
+nonnegative residue), divided by the signed low bit of [a]_N, again
+equals one of the two local Legendre characters. The signs at the
+two equal-sign inputs are +1 and −1 after normalization; the two mixed
+roots receive opposite signs because their scaled representatives add
+to odd N. Thus the selected prime can depend on the scale. Changing u
+in the unscaled character never changes which prime it selects.
+
+With a scaled-bit evaluator, fix any Jacobi-negative u and set r=[S(u)]_N.
+For j≥1, the ordinary parity bit of [2^j r]_N equals
+floor(2^j r/N) modulo two, since 2^j r is even and N is odd.
+These are consecutive binary digits of r/N. After
+ceil(bitlength(N)/2) nonadaptive queries the compatible interval has
+width at most √N, so the earlier shifted quadratic solver recovers the
+mixed root among its candidates. Equivalently, tracking whether the
+selected character changes relative to scale one suffices: at a
+Jacobi-negative u a switch flips the normalized sign. Guessing the
+single initial orientation costs only two candidate prefixes. This
+reuses the existing binary-prefix decoder; the additional assumption
+is access to the scale-dependent bit or character selection.
