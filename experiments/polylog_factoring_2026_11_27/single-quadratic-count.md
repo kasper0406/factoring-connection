@@ -594,3 +594,20 @@ centered), all 48 lists were certified at each of sqrt(N)/32 and
 sqrt(N)/8, with 24 empty and 24 nonempty in each set. None were
 certified at sqrt(N)/2. All certified lists matched an exhaustive
 interval scan. These are fixed-dimension, small-input measurements.
+
+### Bounded nonzero levels for a completeness certificate
+
+Let S be the sum of absolute scaled coefficients of a nonconstant
+reduced row g. Throughout the interval every modular root must obey
+g(T)=j N² for an integer |j|<=floor(S/N²). Solving every integer
+level in that range and checking the modular congruence certifies
+the complete list. A constant row must be skipped since its matching
+level would vanish identically. Setting a fixed maximum level K
+bounds the number of degree-at-most-five equations by 2K+1 per
+accepted row.
+
+On exactly the same 48 widest intervals in the diagnostic, K=8
+certified 14 empty and 20 nonempty lists compared with zero
+certificates for K=0. The other 14 remained inconclusive. All
+certified lists matched exhaustive enumeration. These results
+concern small generated inputs and a fixed six-row basis.
