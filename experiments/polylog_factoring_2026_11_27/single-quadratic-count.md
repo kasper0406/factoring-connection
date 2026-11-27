@@ -105,3 +105,27 @@ and decreases both field ranks by one. Reaching a zero remainder
 would imply equal initial ranks. Thus constructing a separating matrix
 already suffices for a split without computing any subspace sum.
 No such construction from the aggregated comparison is supplied here.
+
+## Projecting the linear lift onto the upper phase digit
+
+Fix a unit lower digit a and a unit scale c. Let b be the least
+residue of a+c²/a modulo N, and h=(a(b-a)-c²)/N. Substituting
+x=a+Ny, t=b+Nz and scale c+Nj into the quadratic congruence
+gives exactly (b-2a)y+az=2cj-h modulo N. The full row has rank
+one at every prime divisor since a is a unit. The projection onto
+z is more informative: with g=gcd(b-2a,N)=gcd(a²-c²,N), its
+image is one residue class z=z_j modulo g, where
+z_j=a^(-1)(2cj-h) modulo g. Each element of the image has g
+preimages. For H=(N-1)/2 and 0<=z_j<g, the exact clipped count
+is g floor((H+g-z_j)/g). Thus the N upper lifts of one lower
+digit cost only polynomially many bit operations in log N.
+
+If g=1 the clipped count is independent of j and cancels against
+the reference. If 1<g<N the computation already supplies a divisor.
+If g=N then a²=c² modulo N. Outside the two publicly corrected
+digits a=±c modulo N, gcd(a-c,N) is proper: odd prime powers
+dividing N must divide one of a-c and a+c exclusively.
+Consequently *any* explicitly located lower digit with nonzero
+corrected contrast yields a verified divisor. This explains why
+collapsing the inner lifts still leaves the outer search. It gives
+no bound on the work of locating such a digit in a wide window.
