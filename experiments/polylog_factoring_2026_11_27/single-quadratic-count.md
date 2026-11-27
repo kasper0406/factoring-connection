@@ -383,3 +383,26 @@ variant comparing two public shifts. It retains that reduction's
 assumptions and preprocessing, including separate primality and
 perfect-power handling. The remaining computational problem is
 evaluating the packed one-sided comparison on unfactored inputs.
+
+## All upper shifts act on one fixed congruence by a phase shear
+
+Fix unit c and M=N². For shift j set k=j/c modulo N and
+u=1+Nk modulo M. Multiplication by u on both x and t maps
+x(t-x)=c² modulo M bijectively to x'(t'-x')=(c+Nj)² modulo M:
+u c=c+Nj modulo M and u is a unit. This bijection fixes both
+lower digits modulo N. In particular the public input window and
+its affine weight are unchanged. For t=b+Nz with 0<=b,z<N the
+new phase digits are exactly (b,z+kb modulo N).
+
+Thus on the single base graph at c, each lag contrast can be
+computed using the signed mask I(z+k' b)-I(z+k b), where k'=(j+h)/c
+modulo N. The mask consists of two modular linear interval tests.
+The two public stationary blocks can equivalently be removed at
+the lower-input filter. Even the base graph can be normalized to
+uv=1 modulo M by writing u=x/c, v=(t-x)/c; the input window is
+then tested on cu modulo N and t=c(u+v) modulo M.
+
+This gives a common modular inverse graph for all scales and
+shifts at fixed N. Batching the masks against a succinct
+representation of its windowed phase distribution is the open
+evaluation step. Materializing the graph costs phi(N²) entries.
