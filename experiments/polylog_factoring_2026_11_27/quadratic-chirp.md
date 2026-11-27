@@ -4444,3 +4444,39 @@ p+1 factoring. For n=6439=47·137 and B=3 the unsigned residuals
 23 and 68 both fail. For D=3 the local signs are + and −, the
 orders are 46 and 138, and h=46. With z=1+w the identity gcd at
 the odd exponent 2415 gives 137 by direct quadratic-ring powering.
+
+### A batched second stage for a surviving signed order
+
+Keep the signed exponent E above, with M=lcm(1,...,B). On the
+chosen sign pair the image group at p after powering by E has
+order R_p=u/gcd(u,M), where u=(p−σ)/h. This follows by dividing
+p−σ and n−J by their exact gcd h. Define R_q similarly. If
+min(R_p,R_q)≤S, there is a square-root-cost search at bound S.
+
+Write v=g^E, b=ceil(sqrt S), and T_i=v^i+v^(−i), a scalar since
+conjugation inverts v. Build the monic polynomial
+P(X)=∏_{0≤i<b}(X−T_i) mod n. Evaluate at T_(jb), 1≤j≤b, by
+monic multipoint evaluation. Generate both trace lists by the
+second-order trace recurrence. If a local order d of v is ≤S,
+write d=jb−i in these ranges. The corresponding evaluation has
+nonunit gcd with n. An individual nonunit difference of traces can
+be found by scanning the b babies at one nonunit evaluation.
+
+Take a proper gcd directly. If the individual difference vanishes
+at both primes, try the two positive multipliers jb−i and jb+i.
+Locally equality of traces implies equality or inversion of the
+corresponding powers: in the field model they are roots of the
+same quadratic, and in the split model use the first coordinate.
+Thus at least one multiplier times E kills the local g at one
+prime. If it kills only one, the identity gcd splits n; if it
+kills both, the 2-adic squaring chain succeeds whenever the two
+original local order valuations differ. This latter event alone
+has probability at least 1/2 for uniform g and suffices for any
+chosen nonunit trace difference. Including random D, any qualifying
+sign pair gives at most eight expected outer trials. With B polylog n
+each trial costs (1+sqrt S) poly(log n,log(S+1)) bit operations
+by fast polynomial arithmetic. A polylog S still gives expected
+polylog factoring for this restricted family. For such S one could
+also enlarge stage one's lcm bound to BS: the entire residual u
+then divides lcm(1,...,BS) since each prime power in u is ≤BS.
+The second stage reduces the dependence on the search bound.
