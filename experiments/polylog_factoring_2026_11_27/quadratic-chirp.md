@@ -5165,8 +5165,7 @@ Our input is an unfactored composite N and the required bit bound
 is polynomial in its bit length. The abstract supplies neither
 a reduction of the binomial cutoff test to those group problems
 nor a polynomial bound for the contraction at that scale.
-This comparison is based on the authors' abstract as reproduced
-by Open Cryptology; the original PDF could not be retrieved here.
+The official IACR abstract confirms these parameters. Its two ingredients are a deterministic affine-interval factor base for group sumsets and a partial contraction retaining Θ(b) boundary wires before exact digitwise contraction. A transfer would require a public encoding of our composite-modulus prefix predicate and a polynomial bound on its complete contraction. A linear number of retained wires alone supplies neither. The PDF endpoint returned HTTP 403 during this check; this comparison is at abstract level.
 
 [Paper record](https://eprint.iacr.org/2026/3020) ·
 [Abstract](https://opencryptology.org/2026/3020)
