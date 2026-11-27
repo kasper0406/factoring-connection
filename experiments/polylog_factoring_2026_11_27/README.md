@@ -662,6 +662,32 @@ by $N$, the slope is vertical at both primes and gives the opposite signs
 at both by the same homogeneous formulas. This accounts for one-step rational
 parametrization from a known integral witness.
 
+### Three input-selected fields suffice; seven fixed fields are sharp
+
+Compute the Jacobi signs at $N$ on the basis $2,3,5$. Their kernel in the
+three-dimensional squareclass space has dimension at least two. Choose a
+two-dimensional plane in the kernel. Its three nonzero classes are the whole
+input-specific menu: both hidden primes have identical Legendre signs on
+this plane, and a linear functional on a plane has a nonzero kernel vector.
+Explicitly, keep all three Jacobi-positive menu entries when there are three;
+when all seven are positive, use $2,3,6$. This preserves the previous
+small norm multipliers. On the all-positive Jacobi pattern even two entries
+can both have negative local signs, so Jacobi data on this basis alone
+cannot guarantee a shorter list of its entries.
+
+For comparison, no fixed list of six nonsquare rational squareclasses covers
+all semiprimes. In their binary span a uniformly chosen nonzero linear
+functional vanishes at each listed class with probability strictly below
+one half. Some such functional thus vanishes on at most two listed classes.
+A second functional can take value one on both remaining classes, since
+two distinct nonzero binary vectors are independent. Their common kernel
+misses the list. Any prescribed sign functional occurs at infinitely many
+unramified primes by Chebotarev in the multiquadratic extension attached to
+a basis of the span. Choose two distinct primes realizing the two functionals.
+The same realization justifies the sharpness assertion on the all-positive
+Jacobi pattern by taking the two local functionals equal. These bounds
+concern field selection, not the cost of producing norm witnesses.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
