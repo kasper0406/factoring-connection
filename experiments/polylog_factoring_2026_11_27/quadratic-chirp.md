@@ -5295,3 +5295,29 @@ recurrences and give a fast block-product factoring baseline.
 
 [Arithmetic-term formulas](https://eprint.iacr.org/2024/1002.pdf) ·
 [Linear recurrences and integer factorization](https://specfun.inria.fr/bostan/publications/BoGaSc07.pdf)
+
+### Degree of a binary subsequence of the central binomial series
+
+Write C_n=binom(2n,n), and set G(X)=sum_{n>=0} C_{dn+a} X^n
+for d=2^k and 0<=a<d. Over an algebraically closed field K of odd
+characteristic, the algebraic degree of G over K(X) is exactly 2^d.
+
+Put X=z^d. Filtering (1-4z)^(-1/2) by roots of unity gives
+
+    G(z^d) = (1/(d z^a)) sum_{w^d=1} w^(-a) / sqrt(1-4wz),
+
+where each square root has constant term one. The d linear forms
+have independent square classes over K(z): each has a distinct
+simple zero. Their square roots therefore admit all independent
+sign changes. The inverse radicals are linearly independent over
+K(z), since flipping one sign in a purported linear relation and
+subtracting isolates its coefficient. Thus the displayed sum has
+2^d conjugates. The product of the linear factors in an auxiliary
+variable over these conjugates has coefficients in K(z), and is
+invariant under rotating z by a d-th root of unity (which permutes
+the sign choices after accounting for z^(-a)). Its coefficients
+therefore lie in K(z^d), proving the matching upper bound.
+
+This rules out maintaining an explicit equation of bounded degree
+for the whole decimated algebraic series, even for the central
+column alone. It leaves circuits and direct scalar algorithms open.
