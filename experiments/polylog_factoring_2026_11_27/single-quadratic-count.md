@@ -1222,3 +1222,33 @@ A single fixed cutoff, the general splitting reduction at fixed
 scale, nonlinear readout, and a kernel built jointly from the query
 parameters are different models. In particular it gives no lower
 bound on their evaluation time.
+
+### A two-dimensional quarter determinant over a large number field
+
+For distinct odd primes N=pq and a unit h, put A=2cos(2 pi h/N),
+B=2cos(2 pi hu/N) for a mixed root u of one. Each positive
+eigenvalue among A,B contributes one first-quarter root. Neither
+vanishes, so sign(AB)=(-1)^Q for the full quarter count Q.
+A real two-dimensional companion matrix with characteristic
+polynomial X²-T(h)X+D has the desired determinant sign. Here
+T(h)=A+B is the normalized Salié sum and
+D=AB=(T(h)²-T(2h)-4)/2 by double-angle. This is a determinant-sign
+encoding, not a nullity formula. The entries have public sum
+expressions; the known direct evaluation still scans the units.
+
+In particular D itself has rational algebraic degree phi(N)/4.
+Indeed AB is the sum of the two cosine pairs at frequencies
+h(1+u) and h(1-u); these have respective conductors p,q in some
+order. Write their values as x in Q(zeta_p) and z in Q(zeta_q).
+The two cyclotomic fields have intersection Q since their
+compositum has degree (p-1)(q-1). An automorphism fixing x+z
+has its change in x equal to minus its change in z, hence rational.
+A finite-order automorphism cannot translate x by a nonzero rational
+(apply it repeatedly). Thus both terms are fixed separately.
+Within each prime field the stabilizer of a primitive cosine pair
+consists exactly of the signs, since the two roots of the associated
+quadratic are the primitive root of unity and its inverse. The
+stabilizer in the product Galois group has size four, proving the
+degree claim. Consequently explicitly expanding a dense rational
+minimal polynomial for D would take linear-scale output. This
+does not constrain a succinct expression or direct sign test.
