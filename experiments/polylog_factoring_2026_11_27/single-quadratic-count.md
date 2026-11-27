@@ -475,6 +475,39 @@ for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
 1,258,233 / 3,625,283,755 for N=14,501,135,021. Direct squaring
 verified the exclusion on every covered integer.
 
+### A compact rational filter for the second quarter
+
+A uniformly bounded trigonometric polynomial making a constant-size
+transition across W residue positions needs degree Ω(N/W) by Bernstein's
+derivative inequality on the circle. Even granting a √N-wide guard
+band leaves degree Ω(√N) in this bounded, consecutive-frequency model.
+The degree requirement changes when division is available.
+
+For odd N put L=bitlength(N), k=⌈log_9(8N)⌉, and define
+A(t)=∏_{j=0}^L(t+2^(−j))² and F(t)=A(t)^k/(A(t)^k+A(−t)^k).
+The denominator is positive for every real t. For 1/N≤t≤1 choose
+a dyadic s with t/2≤s≤t. Its factor in A(−t)/A(t) is at most 1/9;
+the rest are at most one. Hence F(t)≥1−9^(−k), and by symmetry
+F(−t)≤9^(−k). The rational degree is O(log² N). For each nonzero
+residue x let θ=2πx/N. Both |sin θ| and |cos θ| are at least 1/N,
+by the grid spacing for odd N and the sine chord bound. Thus
+F(sin θ)F(−cos θ) approximates the strict second-quarter indicator
+N/4<x<N/2 with pointwise error at most 2·9^(−k). Summing over all
+roots of one incurs error at most 1/4, so rounding gives the exact
+count. For intervals specified using floored endpoints, individually
+check the at most two differing residues by modular squaring.
+
+The expression is small even in bit complexity for known x: on
+either sign one product A(±t) has all its unsquared factors of
+magnitude at least 2^(−L), giving a denominator lower bound
+2^(−2kL(L+1)). Polynomially many precision bits suffice.
+Independent direct evaluation and rounding agreed with enumeration
+for all 127 odd N from 3 through 255. These checks supplied the
+roots by enumeration. The missing computation is summing the
+rational weight over the implicit roots. This filter removes the
+need for a high-degree polynomial mask; it gives no fast evaluation
+of that sum from N alone.
+
 ## Deterministic starting interval with scale one
 
 Fix c=1. For odd N having k>=2 distinct prime factors, CRT and
