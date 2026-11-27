@@ -8,7 +8,7 @@ from check_sum_low_bits import odd_square_roots
 from check_sum_residue_lattice import _rigorous_ok, query_classes
 
 
-def shared_suffix_split(n):
+def suffix_precision(n):
     """Assume n=pq with distinct odd primes p<q<=2p."""
     low, high = isqrt(4*n-1)+1, isqrt(9*n//2)
     lower_factor_bound = isqrt(n)+1
@@ -19,9 +19,14 @@ def shared_suffix_split(n):
         stride = 1 << bits
         radius = max(1, ((last-first)//stride+1)//2)
         if _rigorous_ok(n,lower_factor_bound,radius,9,4):
-            roots = odd_square_roots(n,bits)
-            return bits, query_classes(n,low,high,stride,roots,1,0)
+            return low, high, bits
     raise ValueError('No certified lattice radius')
+
+
+def shared_suffix_split(n):
+    low, high, bits = suffix_precision(n)
+    roots = odd_square_roots(n,bits)
+    return bits, query_classes(n,low,high,1 << bits,roots,1,0)
 
 
 if __name__ == '__main__':
