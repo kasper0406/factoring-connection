@@ -118,6 +118,11 @@ doublings is within log(N)/L of zero. Exact vanishing is equivalent to 4^L≡1 m
 at accuracy 1/(64L) per length suffice to recover the single-scale
 log magnitude. [Exact telescoping identity](salie-quarter.md#averaging-log-magnitudes-along-doubling-scales)
 
+Exact equality of complete Salié magnitudes on unit scales is decidable
+by comparing c² and d² modulo N. The squared value at scale one
+generates the compositum of the local real cyclotomic fields.
+[Proof and exact checks](salie-quarter.md#equality-of-magnitudes-at-two-unit-scales)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

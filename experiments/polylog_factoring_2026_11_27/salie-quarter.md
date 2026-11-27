@@ -1132,3 +1132,29 @@ Direct root sums at every unit for odd moduli 3 through 201 and
 1≤L≤32 agreed with the test on 265,024 windows, including 12,164
 zeros. The proof establishes exactness independently of the
 floating-point check.
+
+## Equality of magnitudes at two unit scales
+
+For every odd N>1 and units c,d, the following are equivalent:
+|T_N(c)|=|T_N(d)| and c²=d² modulo N. To see necessity, square
+the CRT cosine product and take the ratio at c and d. Each local
+ratio of cosine squares is positive, lies in Q(ζ_r), and has norm
+one because its numerator and denominator are Galois conjugates.
+If their product equals one, independent CRT automorphisms force
+each local ratio to be rational and hence one, as in the window
+proof. Equality of cosine squares on an odd grid is equivalent to
+c≡±d modulo r. Conversely those local signs preserve the product.
+
+More precisely, T_N(1)² generates the compositum of the maximal
+real cyclotomic subfields Q(ζ_r+ζ_r⁻¹) for the exact prime powers
+r dividing N. It belongs to that compositum by the cosine formula.
+Its stabilizer in Gal(Q(ζ_N)/Q) consists exactly of independent
+local signs by the equality criterion. The fixed field of these
+signs is the stated compositum, of degree φ(N)/2^ω(N).
+Thus exact magnitude equality has the same fibers as the public
+squaring map. A new collision d outside ±c would give a factor via
+gcd(c−d,N), as in the usual square-root collision reduction.
+
+For all 2,106 unit scales across odd N=3,…,101, exact polynomial
+remainders modulo Φ_N identified the squared magnitudes. Their
+equality classes coincided with the square residues in every case.
