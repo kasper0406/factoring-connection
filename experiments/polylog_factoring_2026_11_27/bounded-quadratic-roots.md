@@ -619,6 +619,23 @@ both low-precision formulations reach a fixed quadratic-residuosity
 question. The ternary calculation identifies the specific target and
 the input class on which the residue is informative.
 
+**Fixed index at higher precision.** For N=pq with p≡1 and q≡2 mod 3,
+the same V=Φ_(3N)(4) determines q mod 3^h from V mod 3^(h+1).
+Write G(u)=(4^(2u)+4^u+1)/3. The cyclotomic quotient gives
+V G(p)G(q)=G(1)G(N). Starting from b=2 mod 3, try the three lifts
+of b modulo 3^(k+1), setting a=N/b in that ring. Keep the lift
+satisfying the quotient identity modulo 3^(k+2).
+
+For k≥1 put w=4^(3^k)−1, of ternary valuation k+1. Writing y=4^u,
+the increment in G under u→u+3^k equals w(2y²+y)/3 modulo 3^(k+2).
+The coefficient is 1+2u modulo 3. Thus the change on the a branch
+vanishes at this precision and the three b lifts give distinct outputs,
+since every G is 1 modulo 3. The same increment bound ensures that
+the test is independent of representatives. Exact integer quotients
+recovered q for all 100 mixed-residue pairs of primes from 5 through
+79, testing every level up to 3^h>N. This refines the earlier oracle
+reduction on this promise. Computing V from N alone remains open here.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
