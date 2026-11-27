@@ -2050,3 +2050,42 @@ block. Every cyclic interval of 622,224 positions contains an entire
 block, including at wraparound. Consequently each ending has a
 passing lift. This is a benchmark-specific certificate and does
 not apply to extra predicates or narrower sum intervals.
+
+### Which ranks can see a split quadratic algebra?
+
+For odd N=pq and (a/N)=−1, the algebra A=R[T]/(T²−a) splits
+at exactly one prime. Suppose a linear map constructed from the
+unmarked algebra is invariant up to change of bases under algebra
+isomorphism, and its construction commutes with extension of the
+base field. At each prime ℓ its rank equals that for the split
+algebra F_ℓ×F_ℓ: after extending to the algebraic closure the
+algebras are isomorphic and matrix rank is unchanged. A rank gap
+between the two characteristics in such a construction already
+occurs for the public split-algebra control. Multiplication and
+trace give a concrete example: the trace pairing has Gram matrix
+diag(2,2a), of rank two on both sides. Its determinant square class
+does distinguish the local algebras, with its orientation hidden.
+
+There is also a bound permitting a marked generator and explicit
+dependence on a. Fix N before sampling a. Let M(U) be a public
+matrix with polynomial entries in U of degree at most d. Suppose
+the generic ranks over F_p(U) and F_q(U) agree and equal r. At
+each prime choose one generically nonzero r-minor (r=0 is trivial).
+Its degree is at most rd, so the specialized rank can drop on at
+most rd field elements. A uniform unit a conditioned on Jacobi −1
+has uniform projection to each local unit group, since either
+local sign has equally many partners of the required opposite sign.
+Thus the probability of unequal ranks is bounded by
+min(1, rd/(p−1)+rd/(q−1)). Fixed lists of matrices obey the union
+bound. For unequal generic ranks, unconditioned random unit
+specialization preserves both generic ranks except with probability
+bounded by the corresponding sum of minor-degree bounds; that route
+already supplies a rank gap without selecting split versus inert.
+
+For multiplication by T−1 the determinant is 1−a. The rank drops
+precisely at a=1 locally, and the two drops are mutually exclusive
+under the Jacobi condition. Its exact gap probability is therefore
+1/(p−1)+1/(q−1). Direct enumeration verified this on all 21 distinct
+semiprimes with primes from 3 through 19. These arguments do not
+bound the degree of a compact exponentiation circuit or cover a
+matrix whose entries encode a ground-field point search.
