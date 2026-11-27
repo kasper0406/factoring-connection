@@ -593,3 +593,42 @@ three signs and scoring the true majority within each group. Even allowing
 the truth to choose the optimal eight-entry table gave 50.9662% at 10091
 and 50.3960% at 65537. These are ceilings for those features at those
 probes, not achieved scores of a trained public predictor.
+
+## Polynomial character features: test their roots first
+
+Let the predictor's shift-dependent inputs be the binary quadratic characters
+of explicit polynomials $f_1(c),\ldots,f_k(c)$ over the probe field, of
+total degree $D$. The combining Boolean function may vary with $N,\ell$.
+Discard identically zero polynomials as constant inputs. Away from primes
+dividing $N(p-q)$, if either of $p,q$ modulo $\ell$ is absent from the
+union of the polynomial root sets, every Fourier monomial times the target
+character has nonsquare polynomial argument: that missing linear factor
+has odd multiplicity. The degree is at most $D+2$. The multiplicative
+character bound for a nonsquare times a constant or, equivalently, removal
+of even-multiplicity factors followed by the squarefree Weil bound, gives
+absolute raw sum at most $(D+1)\sqrt\ell$ (the missing zeros from removed
+factors fit within this bound). Changing zero characters to positive signs
+costs at most $D+2$ terms. Thus absolute correlation is at most
+$2^{k/2}((D+1)/\sqrt\ell+(D+2)/\ell)$ by Boolean Fourier expansion.
+Here the nonsquare condition is over the algebraic closure, up to constants.
+
+Above this threshold both factor residues occur as roots. Enumerate the
+at most $D$ roots of the nonzero features, and for each nonzero root $u$
+list $u+N/u\bmod\ell$. This directly yields a candidate sum list containing
+the truth at every above-threshold probe. No fitted combining function is needed.
+
+If the features reduce a common list of nonzero integer polynomials at all
+probes, first extract their integer roots and gcd-test them against $N$.
+Otherwise, assuming no factor root was found, every above-threshold prime
+away from $N(p-q)$ divides the nonzero integer $\prod_i f_i(p)$.
+Its log magnitude is polynomial in the input bit length for polynomially
+bounded degrees, coefficient bit sizes and number of features. This gives
+the same log-weight budget argument as for candidate sums. For
+$k=O(\log\log N)$ and polynomial total degree, both the probe-size and total
+log-modulus thresholds can be chosen polynomial for inverse-polynomial bias.
+This does not address high-degree succinct features or general shift algorithms.
+
+For $1009\cdot2221$ the signs of $N+c,N-c^2,N+c^3$ gave optimal truth-fitted
+table accuracies of 50.9067% at 10091 and 50.5073% at 65537, by exhaustive
+grouping over shifts. These are illustrative upper ceilings for those three
+features; the proof also allows coefficients using other parts of the input.
