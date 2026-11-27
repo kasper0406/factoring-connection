@@ -86,6 +86,57 @@ def bounded_roots(modulus, band, offset, width, table, work):
     return [int(root) for root in polynomial.ground_roots() if root.is_Integer and 0 <= root <= width]
 
 
+def find_component_in_residue(modulus, step, residue, work):
+    """Find a complete prime-power component in one coprime progression."""
+    if modulus < 1 or step < 2 or gcd(modulus, step) != 1:
+        raise ValueError('Expected a positive input modulus and a coprime progression step')
+    target = residue % step
+    if modulus == 1 or gcd(target, step) != 1:
+        return None
+    if modulus % step == target:
+        work['prime_power_tests'] += 1
+        if prime_power_base(modulus) is not None:
+            return modulus
+
+    limit = isqrt(modulus)
+    inverse_step = pow(step, -1, modulus)
+    companion = modulus * pow(target, -1, step) % step
+    table = {}
+    bit_length = modulus.bit_length()
+    for residue, complement in ((target, False), (companion, True)):
+        for band in range(1, limit.bit_length()):
+            low = 1 << band
+            high = min(limit, 2 * low - 1)
+            first = low + (residue - low) % step
+            if first > high:
+                work['empty_bands'] += 1
+                continue
+            last_index = (high - first) // step
+            block_limit = 1 << max(0, band * band // bit_length - 4)
+            work['nonempty_bands'] += 1
+            for start in range(0, last_index + 1, block_limit + 1):
+                width = min(block_limit, last_index - start)
+                offset = (first * inverse_step + start) % modulus
+                roots = bounded_roots(modulus, band, offset, width, table, work)
+                work['blocks'] += 1
+                work['represented_terms'] += width + 1
+                for root in roots:
+                    work['root_tests'] += 1
+                    candidate = first + step * (start + root)
+                    if modulus % candidate:
+                        continue
+                    cofactor = modulus // candidate
+                    if gcd(candidate, cofactor) != 1:
+                        continue
+                    work['unitary_candidates'] += 1
+                    work['prime_power_tests'] += 1
+                    component = cofactor if complement else candidate
+                    if prime_power_base(component) is not None:
+                        work['complement_hit' if complement else 'component_hit'] += 1
+                        return component
+    return None
+
+
 def zero_residue_bit(modulus, prime, selector_count):
     """Return the complete idempotent count's zero bit modulo a supplied prime."""
     if modulus < 1 or prime < 2:
@@ -98,49 +149,7 @@ def zero_residue_bit(modulus, prime, selector_count):
         work['removed_prime_exponent'] += 1
     if target == 0:
         return residual != modulus, work
-    if residual == 1:
-        return False, work
-    if residual % prime == target:
-        work['prime_power_tests'] += 1
-        if prime_power_base(residual) is not None:
-            return True, work
-
-    limit = isqrt(residual)
-    inverse_step = pow(prime, -1, residual)
-    companion = residual * pow(target, -1, prime) % prime
-    table = {}
-    bit_length = residual.bit_length()
-    for residue, complement in ((target, False), (companion, True)):
-        for band in range(1, limit.bit_length()):
-            low = 1 << band
-            high = min(limit, 2 * low - 1)
-            first = low + (residue - low) % prime
-            if first > high:
-                work['empty_bands'] += 1
-                continue
-            last_index = (high - first) // prime
-            block_limit = 1 << max(0, band * band // bit_length - 4)
-            work['nonempty_bands'] += 1
-            for start in range(0, last_index + 1, block_limit + 1):
-                width = min(block_limit, last_index - start)
-                offset = (first * inverse_step + start) % residual
-                roots = bounded_roots(residual, band, offset, width, table, work)
-                work['blocks'] += 1
-                work['represented_terms'] += width + 1
-                for root in roots:
-                    work['root_tests'] += 1
-                    candidate = first + prime * (start + root)
-                    if residual % candidate:
-                        continue
-                    cofactor = residual // candidate
-                    if gcd(candidate, cofactor) != 1:
-                        continue
-                    work['unitary_candidates'] += 1
-                    work['prime_power_tests'] += 1
-                    if prime_power_base(cofactor if complement else candidate) is not None:
-                        work['complement_hit' if complement else 'component_hit'] += 1
-                        return True, work
-    return False, work
+    return find_component_in_residue(residual, prime, target, work) is not None, work
 
 
 def check():
