@@ -1010,3 +1010,30 @@ a specified hidden bit within the word, averaged over unit scales.
 This is a restriction on the observed information; c itself is
 available to the general evaluator. For p=1009,q=1013,k=4 exact
 enumeration gave joint total variation distance 0.006657 (rounded).
+
+### Additive shifts recover folded root multiples from disagreement counts
+
+For N=pq with distinct odd primes, write |x|_N for the least
+absolute residue magnitude, choose a nonpublic root u of unity,
+and extend the hidden unit-scale bit to all c by
+F(c)=[4|cu|_N<N]. On nonunits this extension equals the public
+folded-quarter bit, since cu equals c or -c modulo N whenever
+p or q divides c. In particular F(0)=1 by convention.
+
+Let D(h) count all c mod N with F(c) different from F(c+h).
+Then D(h)=2|hu|_N. Multiplication by u turns this into the size
+of the symmetric difference of a circular interval with its shift.
+The interval has 2 floor(N/4)+1 points, so the smaller of its
+length and its complement length is (N-1)/2. For a shift of folded
+length d <= (N-1)/2, exactly d points leave and d enter.
+
+In particular D(1)/2 recovers the canonical hidden root and hence
+a factor by gcd. More weakly D(2c) modulo 4 equals zero exactly
+when F(c)=1: doubling the folded representative gives an even
+representative in the first quarter, while folding back from the
+second quarter subtracts an even number from odd N. Thus a fast
+mod-four disagreement counter alone suffices for every unit-scale
+bit in the dyadic decoder. D(h) modulo two always vanishes.
+This reduction does not supply a fast mod-four counter.
+Direct enumeration checked all shifts for the 21 semiprimes formed
+from distinct odd primes through 19.
