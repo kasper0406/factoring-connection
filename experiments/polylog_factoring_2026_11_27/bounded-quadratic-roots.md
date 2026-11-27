@@ -441,6 +441,45 @@ non-torsion conditions and powering is tested against a conjugate.
 It does not analyze input-specific polynomial construction outside a
 shared menu, or tests comparing powers to nonconjugate targets.
 
+### Powering from one algebraic root set into another
+
+Allow distinct monic integer source and target polynomials f,g from
+a shared menu of polylogarithmic size, degrees and coefficient bit
+lengths at scale B. On N=pq test the gcd of N with Res(f,g(X^N)).
+Equivalently, at each prime test existence of a source root whose
+N-th power belongs to the target set over the algebraic closure.
+The same vanishing coverage bound holds for proper gcds on the gap
+band above, even for reducible polynomials.
+
+First take a nonzero, non-torsion irreducible source component. Denote
+its roots by a_i and the target roots by b_j. At the smaller prime a
+hit forces divisibility of the product over i,k,j of a_i^d a_k−b_j.
+At the larger prime use the product of a_i^d b_j−a_k. Indeed Frobenius
+permutes each root set, so at the smaller prime x^p is a source root
+and x^q a target root; the roles reverse at the larger prime. Both
+products are rational integers. A triple can vanish in characteristic
+zero for at most one positive gap d, since powers of a_i are distinct
+and a_k is nonzero (a zero b_j never causes an exception).
+The entire menu thus has only polylogarithmically many exceptional
+gaps. Allowing every pair at those gaps costs O(B polylog B).
+At other gaps the previous root-size bound gives O(D polylog B) bits
+per product, hence O(D² polylog B) covered pairs in total. Bounds
+remain uniform for source factors: their roots are among those of f.
+
+A zero source root hits exactly when the prime divides g(0). For a
+cyclotomic source component Φ_m, φ(m)≤deg f implies m≤2(deg f)²
+by the prime-power product formula for φ. Hence for large B the primes
+are coprime to m and N-th powering permutes the primitive m-th roots
+at either prime. Existence is measured by the fixed integer Res(Φ_m,g).
+If a fixed integer here is zero the full query hits both primes and
+cannot split. Otherwise it has polynomially many bits in log B (bound
+the product of g over roots of unity). It contributes at most
+O(B polylog B) pairs across the menu. Combining the cases and dividing
+by Ω(BD/log² B) gives a proper-split fraction at most
+(D/B+1/D) polylog B. This is an aggregate root-existence result.
+An algorithm using other information in the resultant or constructing
+a different menu for each N is outside the count.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
