@@ -651,3 +651,26 @@ in this periodic sieve model. This includes primes selected in
 response to N as long as the product bound holds. It makes no
 survivor claim for Q>V and gives no lower bound for algorithms
 that determine parity without visiting the survivors.
+
+### A conditional exact sieve with polynomial description length
+
+Assume Dirichlet GRH. For each positive nonsquare D=1+kN <= B²,
+the Kronecker symbol (D/u) defines a nonprincipal quadratic
+character on the units modulo 8D. Bach's GRH bound gives generators
+of that group among primes coprime to 8D of size O(log²(8D)).
+At least one generator r has character value -1. Thus D fails the
+square-residue test modulo r, and r cannot divide N since D=1 mod r
+for any r dividing N. A square passes every test, allowing residue
+zero. For B<=N the same list of odd primes up to C log²(8N²), for
+a sufficiently large absolute C, therefore singles out exactly the
+square levels throughout the interval. This list is computable in
+polynomial time in log N. Its combined period can exceed V.
+
+This reduces the evaluator to the parity of an interval intersection
+of explicitly given modular residue sets. Testing membership at one
+level already takes polynomial time by integer square root. The open
+step is to aggregate the intersection parity in polynomial time in
+log N. The generator bound supplies no such aggregation algorithm.
+
+Reference: Eric Bach, “Explicit bounds for primality testing and
+related problems”, Mathematics of Computation 55 (1990), 355–380.
