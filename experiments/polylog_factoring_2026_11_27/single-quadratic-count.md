@@ -2423,6 +2423,39 @@ give optimal single-guess hit counts 15352, 16405, and 19821 for
 H=1,8,64 respectively. In each (bin,residue) cell the best guess
 is the most frequent sum residue. These are exact finite optima.
 
+### The first ambiguous sum bit as quadratic residuosity
+
+For distinct odd primes N=pq≡3 mod 4, label p≡1 and q≡3 modulo
+four. Let a=−2 when N≡3 mod 8 and a=2 when N≡7 mod 8. Then
+
+    p+q ≡ N+1     (mod 16)  if a is a square modulo N,
+    p+q ≡ N+1+8   (mod 16)  otherwise.
+
+Indeed N+1−(p+q)=(p−1)(q−1). The second factor has exactly one
+factor of two. The product vanishes modulo 16 precisely for p≡1
+modulo eight. The supplementary laws give Jacobi symbol (a/N)=+1
+in both branches. Thus the two local Legendre symbols agree, and
+(a/p)=(2/p) because −1 is a square modulo p. This common sign
+is positive exactly when p≡1 modulo eight. CRT proves the formula.
+
+Another expression for the same bit is the divisor sum of the
+quadratic character χ(d)=(a/d) over positive d dividing N. The sum
+is (1+χ(p))(1+χ(q)), hence four or zero. In the negative-sign choice
+a=−2, the classical norm form x²+2y² represents N precisely in the
+four case: each split prime is a norm in the Euclidean ring Z[√−2],
+whereas an inert prime divides any norm to even order. For example
+187=17·11 and 91=13·7 are both 11 modulo 16. The former equals
+13²+2·3² and has sum 28; the latter has no such representation
+and has sum 20. Exhaustively checking squares modulo N verified the
+bit formula on all 143 eligible prime pairs below 100.
+
+This identifies one missing bit on the semiprime promise with a
+specific residuosity decision on the public input. A method to evaluate
+the bit quickly, or to obtain the further bits needed for the lattice,
+does not follow from the Jacobi symbol or the divisor-sum identity.
+The statement does not automatically transfer to 15N with more than
+two distinct prime factors.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
