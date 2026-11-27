@@ -509,3 +509,32 @@ fibers are invisible to this score. At N=1009*1013 exactly
 74.95059%. Exhaustive fiber enumeration confirmed the floor-sum
 ceiling for the 45 products of distinct odd primes through 31 and
 also for 101*103 and 1009*1013.
+
+## Recognizing unanimous fibers is the original quarter-parity task
+
+For a unit square y=h² modulo a distinct odd semiprime let Q(y)
+count its roots in the first quarter. Each of the two sign pairs
+contributes one iff its folded root has positive cosine. Consequently
+Q is 0 or 2 on unanimous fibers and 1 on tied fibers. With +1
+denoting unanimity, the recognition target is exactly
+
+    (-1)^Q(y) = s(h/N) s(uh/N).
+
+Thus a proposed recognizer on y (or one given h as well) can be
+turned into a hidden-quarter predictor by multiplying its output
+by the computable s(h/N). This preserves correctness on every
+individual query and hence preserves average advantage exactly.
+The reverse operation also works when h is given. Exact recognition
+is the full original parity evaluator on unit scales in sign form;
+the previous heavy-frequency reduction already covers a noisy version.
+
+A method may abstain on difficult scales. If it returns a recognition
+answer on a fraction alpha of uniform unit scales and has conditional
+accuracy 1/2+gamma there, filling abstentions with independent fair
+signs gives advantage alpha*gamma. No independence between coverage
+and the true class is needed. A public efficiently recognizable subset
+with both coverage and conditional advantage inverse-polynomial in
+bit length would therefore suffice. The public single-root labels
+from the training experiment do not certify recognition accuracy:
+on tied fibers they cannot reveal which of the two classes applies
+from the observed label alone.
