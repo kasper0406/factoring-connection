@@ -1255,6 +1255,35 @@ numerical residual for the boundary term on this input, not a uniform bound
 or an independently integrated contour. Aggregating poles without enumerating
 their ordinates remains outside this test.
 
+### Changing rational directions cannot shorten a full strip cover asymptotically
+
+Fix an angular interval of positive length and a constant $W>0$. On the
+circle of radius $R=\sqrt N$, a strip means any constraint
+$c\le ux+vy\le c+W$ with a nonzero integer normal $(u,v)$ and arbitrary
+real $c$. Covering the **continuous arc** requires $\Omega(R^{2/3})$ such
+strips, even when their directions and offsets are chosen independently for
+each input. This matches the earlier $O(N^{1/3})$ rational-tangent cover.
+
+To prove it, set $T=R^{1/3}$. For each normal of length $d\le T$, remove
+angles within $\epsilon/(dT)$ of its two radial directions. The number
+of integer vectors in the annulus $j\le d<j+1$ is $O(j)$ by covering
+them with disjoint unit squares. Hence the removed angular measure is
+$O(\epsilon)$, leaving a fixed positive measure for sufficiently small
+fixed $\epsilon$. On the remaining set the absolute derivative of
+$Rd\cos(\theta-\arg(u+iv))$ is $\gg \epsilon R/T$ for such a normal.
+On each of the two monotone semicircles a strip therefore covers remaining
+angle of measure $O(WT/(\epsilon R))$, by change of variables, including
+when the remaining set is disconnected. For $d>T$ the preimage of any
+interval of width $W/(Rd)$ under cosine has total measure
+$O(\sqrt{W/(Rd)})$ (integrate the inverse-cosine density at the endpoints).
+In both cases a strip covers only $O(R^{-2/3})$ of the retained angular
+measure. Summing proves the claim.
+
+Larger strips charged by the number of consecutive levels plus one obey the
+same cost bound by subdivision. The proof requires coverage of a real arc;
+arithmetic tests which exclude entire regions without covering them, nonlinear
+coordinates, and formulas summing many levels at once remain outside its scope.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
