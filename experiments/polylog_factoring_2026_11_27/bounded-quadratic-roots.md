@@ -480,6 +480,35 @@ by Ω(BD/log² B) gives a proper-split fraction at most
 An algorithm using other information in the resultant or constructing
 a different menu for each N is outside the count.
 
+### One residue of the input-indexed cyclotomic polynomial
+
+A benchmark outside the shared menu is V=Φ_N(1+N) mod N², taken in
+[0,N²). For odd N with at least two distinct prime divisors,
+
+    V = 1 + N φ(N)/2.
+
+Indeed Φ_N(1)=1 for such N. Differentiating the reciprocal identity
+Φ_N(X)=X^φ(N) Φ_N(1/X) at one gives 2Φ'_N(1)=φ(N)Φ_N(1).
+Taylor reduction modulo N² proves the claim, with no wraparound since
+0<φ(N)<N. At N=77 this yields V=2311 and φ(N)=60, hence p+q=18.
+Explicit cyclotomic coefficients and modular Horner evaluation agreed
+on all 143 odd N below 501 having at least two distinct prime factors.
+
+On a distinct semiprime the one residue therefore gives deterministic
+quadratic recovery. In general φ(N) supplies a multiple of every local
+unit group exponent. Using random units and gcds along the successive
+squarings of the odd part of φ(N) splits any modulus with at least two
+distinct odd primes with probability at least one half per trial
+(the first identity indices at two primes are independent and each
+atom has probability at most one half). Recurse with the same exponent
+or query again. Remove powers of two and handle odd prime powers by
+primality and exact root tests. Conversely given the factors the
+displayed residue is immediate on the stated domain. The
+factorization used by standard divisor-product evaluation of Φ_N
+would already suffice. The input-index notation alone does not give
+an efficient circuit for the residue. This is a scalar equivalent to
+totient evaluation on the stated domain, not a new factoring algorithm.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
