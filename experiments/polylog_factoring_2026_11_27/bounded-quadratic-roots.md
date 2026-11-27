@@ -758,6 +758,32 @@ exponent e gives the same gcd as the direct powering test at 3e−1.
 The cube substitution therefore contributes no additional splitting
 power to this implementation. See [earlier exponent coverage](#fixed-polynomial-exponents-on-separated-balanced-primes).
 
+### Evaluation from the prime factorization
+
+Given the complete factorization of n, let R be its radical and
+replace the base b by c=b^(n/R) modulo 3^h using repeated squaring.
+The identity Φ_n(X)=Φ_R(X^(n/R)) absorbs all multiplicities.
+For n=1 return b−1. Otherwise compute Φ_R(1+T) in
+(Z/3^h Z)[T]/(T^h). Evaluation at T=c−1 is well-defined since 3
+divides c−1. Start with any prime p of R other than 3 if available.
+The kth coefficient of Φ_p(1+T) is binom(p,k+1). For each remaining
+prime l, compute Φ_(ml)(X)=Φ_m(X^l)/Φ_m(X). The substitution
+T↦(1+T)^l−1 preserves the truncation ideal. The denominator's
+constant is p at the first division and 1 at every subsequent
+division. Hence each division uses a unit; a lone prime 3 requires
+no division. Ordinary Horner composition takes O(h³) coefficient
+operations per distinct prime. The binomial coefficients used have
+O(h log(n+1)) bits before reduction, and there are at most log₂ n
+prime steps. This is polynomial in h and the bit lengths of n and b
+even when the number of prime divisors grows.
+
+The [implementation](factored_cyclotomic.py) agreed with independent
+exact divisor recursion in 4,500 evaluations for indices 1 through
+500. The factorization is an input. Combined with the reciprocal-base
+totient reduction, this gives randomized polynomial-time equivalence
+between general factoring and this near-one modular evaluation problem
+(at polynomial precision). Strip powers of 3 before totient recovery.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
