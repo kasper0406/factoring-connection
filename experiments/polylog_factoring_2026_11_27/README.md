@@ -1226,6 +1226,35 @@ At $N=173\cdot109=18857$, direct evaluation of the complex-pole row formula
 on rows 35 through 68 gave normalized contribution about $-0.204182$ at
 $x=59$; every other absolute value was below $2.5\cdot10^{-24}$.
 
+### Rectangular contour summation of an interior row block
+
+Continue the symmetry-weighted positive-$x$ row in the variable $z$ using
+the polynomial $H(z,y)=z^4-6z^2y^2+y^4$ and the same pole filter as above.
+Multiply it by $\pi\cot(\pi z)$ and enclose the integer block in a rectangle
+with half-integer vertical edges and horizontal edges at heights $\pm1$.
+The integer residues give the block total. On the positive-real side each
+additional pole is at $z_y=\sqrt{N-y^2-i\eta}$ (positive real part);
+the negative-index ordinate is already included by symmetry. For a block
+with edges $a\sqrt N+O(1),b\sqrt N+O(1)$, $0<a<b<1$, its pole count is
+$(\sqrt{1-a^2}-\sqrt{1-b^2})\sqrt N+O(1)$. Indeed if $u=\Re z_y$ then
+$\Im z_y=-\eta/(2u)$ and $y^2=N-u^2+\eta^2/(4u^2)$.
+Each positive-$y$ pole contributes the third derivative at $z_y$, divided
+by $3!$, of
+$\eta^4 H(z,y)\pi\cot(\pi z)/(z+z_y)^4$.
+The block total equals the normalized boundary integral minus these residues.
+The contour switch can reduce the constant in the enumeration appreciably.
+For fixed interior arc angles, explicit residue enumeration still takes
+order $\sqrt N$ terms.
+
+For $N=18857$, the 34 rows from 35 through 68 gave 13 additional poles.
+The dominant one was at ordinate $y=124$, corresponding to $59^2+124^2=N$.
+At 55 decimal digits, the directly computed block total (real part
+$-72604399.0$ to the digits shown) plus the independently computed pole
+residues had magnitude below $2.3\cdot10^{-20}$. This last number is a
+numerical residual for the boundary term on this input, not a uniform bound
+or an independently integrated contour. Aggregating poles without enumerating
+their ordinates remains outside this test.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
