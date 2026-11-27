@@ -4055,3 +4055,32 @@ preceding construction this pins down the scale of savings from
 choosing odd wheel moduli, including prime powers. The bound concerns
 full residue tables; implicit representations and interval-specific
 pruning require a separate analysis.
+
+### A parity floor-sum target for the promised interval
+
+Let F(m,j,ℓ,r) be the parity of the sum of floor(m/x) over
+j<x≤2j with x=r mod ℓ. XOR the answers at m=n and m=n−1.
+Their difference counts, modulo two, the divisors of n in that
+slice: the two floors differ exactly when x divides n. Under
+p_min(n)>j, every divisor in the interval is prime, since a product
+of two primes greater than j exceeds 2j for j≥1. For semiprimes
+with 2j≤√n there is at most one such divisor (also for squares).
+Hence in this case the unfiltered parity, ℓ=1, suffices.
+
+For general inputs let L=bitlength(n) and S be the set of prime
+divisors in the interval. If S is nonempty, fix one p in S in the
+proof. A prime ℓ failing to isolate p must divide the product of
+|p−q| for q in S other than p. That product is less than or equal
+to n^L, including the empty product. Enumerate consecutive primes
+until their product exceeds n^L; some ℓ isolates p and its residue
+class returns odd parity. Try all residues at all these primes.
+An empty S always returns zero. The largest prime tested is O(L²)
+by the primorial bound, so the number and sizes of calls are
+polynomial in L. For example n=5·7·11, j=4 has two hits at 5 and 7:
+unfiltered parity vanishes and the two classes modulo 3 separate them.
+
+Combined with the promised binomial search this is a deterministic
+reduction of general factoring to parity of truncated reciprocal
+floor sums on small-modulus progressions. It requires no factorization
+for the reduction steps. A polylog evaluator for these parity sums
+is still missing; enumerating the terms would cost up to Θ(j).
