@@ -319,6 +319,18 @@ Full-period totals, local CRT counts taken independently, and representations su
 | Universal shift certificates for mixed roots | Removing the public roots leaves the low-degree ideal of vanishing certificates unchanged. The argument is for every integer lift and leaves interval-specific certificates open. [Proof](mixed-root-certificates.md) |
 | Fixed finite families of unweighted cyclic binomial folds | Infinitely many balanced semiprimes make all individual folds units although the exact middle coefficient splits. The proof uses bounded gaps in a fixed progression and does not address growing width families or combined outputs. [Proof](fixed-cyclic-folds.md) |
 
+## Complex phase of a cyclotomic polynomial
+
+For distinct primes $p,q$ and $N=pq$, take $z=\exp(i\pi/N)$. The identity
+$\Phi_N(z)=(1-z^N)(1-z)/((1-z^p)(1-z^q))$ gives principal argument
+$\pi(N+1-p-q)/(2N)$: each factor $1-e^{it}$ has argument $t/2-\pi/2$ for $0<t\le\pi$.
+Thus rounding $2N\arg(\Phi_N(z))/\pi$ recovers the totient, then the factor sum.
+The modulus is at least $4/\pi^2$ by $2x/\pi\le\sin x\le x$ on $[0,\pi/2]$.
+Absolute error $1/(10N)$ suffices, so precision costs only $O(\log N)$ bits.
+This is an evaluator equivalence for semiprimes. With factors the four powers are cheap.
+From $N$ alone, the formula for $z^N-1$ includes roots of every order dividing
+$N$; extracting the primitive-root contribution in polynomial bit time is the open step here.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
