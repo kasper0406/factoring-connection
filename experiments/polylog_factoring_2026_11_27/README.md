@@ -639,6 +639,29 @@ by squarefreeness. Thus constructing a nontrivial norm-divisible lattice
 already supplies a root or factor before reduction. This applies only to
 additive lattices with this exact divisibility property.
 
+### Rational secants from one norm witness
+
+Start at an integral point $(t,y)$ of $t^2-dy^2=kN$ with $\gcd(2dky,N)=1$,
+and put $u=t/y\bmod N$. Intersect the conic again with the line through the
+point of integer slope $m$ in the $(y,t)$ plane. Write the second point as
+$(T/Z,Y/Z)$ with $Z=m^2-d$, $Y=y(m^2+d)-2mt$, $T=mY+(t-my)Z$.
+Reduce the homogeneous triple by its common gcd. For each $s=p,q$, the new
+ratio $T/Y$ after reduction is $+u\bmod s$ if $m=u\bmod s$ and $-u$
+otherwise. Indeed $yY=(my-t)^2-kN$. Off the exceptional residue,
+$Y=y(m-u)^2\ne0\bmod s$ and the formulas give $T=-uY\bmod s$.
+On the exceptional residue $Y$ has valuation exactly one, $s\mid Z$,
+and $s^2\mid T-mY$. Cancellation therefore gives $T/Y=m\bmod s$.
+
+Consequently a secant gives an incompatible root exactly when
+$1<\gcd(m-u,N)<N$. For uniform integer slopes modulo $N$ this has probability
+$(p+q-2)/N$. The gcd already splits $N$ before the intersection.
+Rational slopes $a/b$ with $b$ invertible modulo $N$ have the same criterion
+after replacing $m$ by $a/b$ locally (clear denominators by the unit $b^2$).
+A reduced denominator sharing just one prime already splits $N$; if divisible
+by $N$, the slope is vertical at both primes and gives the opposite signs
+at both by the same homogeneous formulas. This accounts for one-step rational
+parametrization from a known integral witness.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
