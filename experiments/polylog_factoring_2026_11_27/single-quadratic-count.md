@@ -776,3 +776,24 @@ the other with a single oracle call. When excluding the public
 pair on both sides the right-hand side decreases by one, by the
 same sign-pair correspondence. Verified the exact full-count
 identity for all 13,230 unit scales at odd moduli 3 through 255.
+
+### Square lifts of a unit-scale instance
+
+For odd m>1, gcd(d,m)=1 and any positive h, set N=h²m and c=hd.
+These choices need no coprimality between h and m. A solution has
+h² dividing a², hence h dividing a. Substituting a=hb identifies
+the lifted quarter count with the count of roots b²=d² mod m
+in 1<=b<=floor(hm/4). Write R=2^omega(m) and Q=Q(m,d).
+Each complete period contributes R. With j=h mod 4, the remaining
+partial period contributes respectively 0, Q, R/2, R-Q for
+j=0,1,2,3. The last two cases follow by reflection b -> m-b,
+and no roots occur at the fractional endpoints since m is odd.
+
+Thus for odd h the full lifted parity equals Q mod 2. For h
+divisible by four it vanishes; for h=2 mod 4 it indicates that
+m is a prime power. In particular h=2 places the problem on a
+modulus divisible by four but erases the unknown quarter bit.
+Any exclusion of the two public residues is handled on the lifted
+instance by checking those residues against its actual cutoff.
+Direct enumeration verified the exact counts in all 10,464
+instances with odd 3<=m<=65, unit residues d, and 1<=h<=12.
