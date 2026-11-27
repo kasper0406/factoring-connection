@@ -509,6 +509,33 @@ Locating even one uncovered candidate still gives a possible factoring
 route: any short covering denominator for that candidate is nonunit.
 The obstruction concerns certifying empty blocks by complete coverage.
 
+**Decoding and density.** On a semiprime N=pq with p<q, set
+H=floor(√N) and K=floor(H/p). A short nonunit denominator must be
+pj for 1≤j≤K. Its signed remainder is pt with |t|≤K, so jx=t modulo
+q. Conversely each such congruence gives a short nonunit denominator.
+Since j<q, each pair covers one residue modulo q. Hence at most
+K(2K+1)/q ≤ 3/p of all candidates admit even one such denominator.
+Uniform independent trials take at least p/3 draws in expectation.
+For 9p<q<18p the examples above give an order-matching lower bound
+on the success probability.
+
+Given x, run Euclid starting at N,x until the first remainder r≤H,
+and take its signed coefficient b of x. Initially b=1 for r=x.
+At later steps the consecutive-remainder identity
+r_prev |b| + r |b_prev| = N gives |b|<√N since r_prev>H.
+This supplies a short denominator in polynomial bit time. Every
+candidate escaping all coprime strips therefore yields a proper gcd.
+For 101·1009, 1,515 of 101,909 residues admitted some short nonunit
+denominator and this Euclidean choice split on 1,072 residues.
+
+For a promised bounded ratio q/p<C and p>√C, a simpler decoder tries
+gcd(jx−t,N) for 1≤j≤floor(√C), |t|≤floor(√C). At an escaping
+candidate the true pair above has gcd divisible by q. It cannot have
+gcd N, since j<p is a unit and jx=t modulo N with |t|≤K<√N
+would itself cover the candidate. Thus on this family the hint already
+supplies one of a bounded list of linear gcd witnesses. Generating the
+hint from N remains open.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
