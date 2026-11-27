@@ -1535,3 +1535,11 @@ by the fixed four-bit oracle, or by a splitter which simply returns
 the known factor 3 of an auxiliary modulus. The executable
 check_prefix_root_recovery.py verified all 181 unit squares across
 six moduli using a direct, exhaustive prefix-existence oracle.
+
+### A probability bound sufficient for binary root recovery
+
+The binary decoder only needs one occupied terminal progression. Let L be its depth, and let a polynomial-time predictor assign complementary rational probabilities to the two children of each visited node using only public inputs. Sample a complete path according to those probabilities and run the existing short-root solver at its leaf. Check any returned root by squaring modulo N. If the total probability of occupied leaves is at least 1/P(log N) for every promised input, independent trials give expected polynomial time when P is polynomial. The predictor may be wrong at particular nodes. A single occupied path with cumulative negative log probability O(log log N) suffices, as does the same total mass spread over many paths.
+
+There is also a deterministic version under the single-path guarantee. For a fixed threshold 1/K, expand only prefixes whose probability product is at least 1/K. There are at most K such prefixes per depth because their probabilities sum to at most one. Every prefix of a leaf of weight at least 1/K survives. Thus O(K(L+1)) node visits suffice, including the terminal root checks. Doubling K removes the need to know the threshold in advance. Exact products of L rational predictions of polynomial bit length still have polynomial bit length.
+
+A constant per-digit probability of following a particular occupied path can yield exponentially small path mass. The required estimate is on the complete path or on total occupied mass. A public predictor meeting either bound on general inputs remains open.
