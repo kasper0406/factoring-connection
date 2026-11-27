@@ -433,6 +433,25 @@ digit or Fourier decoding. The swap does not itself evaluate the
 parity in polynomial bit time. Direct enumeration still scales
 with the window width.
 
+### Empty corners in the inverse-pair box
+
+For the second-quarter interval, test rectangles near its endpoints
+N/b and N/d for b,d in {2,4}. If xy≡1 mod odd N>16, then
+(bx−N)(dy−N)≡bd mod N. Both factors on the left are odd, while bd
+is even. Consequently their product cannot equal bd as integers,
+and its absolute value is at least N−bd. A whole rectangle can be
+discarded whenever the product of its two maximum absolute endpoint
+offsets in these scaled coordinates is smaller than N−bd. This works
+directly on public interval bounds. Across the 55 pairs of distinct
+primes from 7 through 43, all 7,156 combinations of endpoint choices
+and inverse pairs inside the discrete second quarter passed the bound.
+
+This batch test still leaves the interior square [N/3,3N/8]² for
+large N: all four endpoint offsets there are at least N/4 in
+absolute value. In particular a row scan using just these corner
+exclusions still has Θ(N) interior rows to handle. The test prunes
+rectangles but supplies no asymptotic improvement for the wide query.
+
 ## Deterministic starting interval with scale one
 
 Fix c=1. For odd N having k>=2 distinct prime factors, CRT and
