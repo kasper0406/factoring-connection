@@ -985,6 +985,29 @@ a fixed relative error or a constant-error orbit average does not obtain
 this rounding guarantee. The evaluator must accept the padded indices,
 which generally leave the original semiprime family.
 
+### Two fixed-degree readings separate the hidden local denominators
+
+Let $N=pq$ for distinct odd primes, with no supplied circle point. Write
+$v=A(N)$ and $w=A(N^2)$ using the preceding normalization.
+For a split prime $p=x^2+y^2$, $a_p=A(p)=2-16x^2y^2/p^2$ has reduced
+denominator exactly $p^2$. The three Gaussian-factor choices at $p^2$
+give $A(p^2)=a_p^2-1$. For an inert prime the corresponding readings
+are $A(p)=0$, $A(p^2)=1$.
+
+If both primes split, put $X=a_p^2$, $Y=a_q^2$. Multiplicativity yields
+$XY=v^2$ and $X+Y=v^2+1-w$. Solve this rational quadratic using an exact
+square root of its discriminant. The reduced denominators of its roots are
+$p^4$ and $q^4$; a gcd with $N$ splits it. In the mixed case $v=0$ and
+$w=a_s^2-1$ for the split prime $s$, so $\gcd(N,\operatorname{den}(w))=s$.
+If both primes are inert then $(v,w)=(0,1)$, and more generally
+$A(N^j)$ is zero for odd $j$ and one for even $j$. Consequently this particular
+power sequence carries no factor information in that case.
+
+The amplification lemma recovers each of the two exact readings with one
+fixed-absolute-error query at a padded input. Coverage now includes every
+odd distinct-prime semiprime with at least one prime equal to 1 modulo 4.
+The missing algorithm is for the angular evaluator itself.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
