@@ -909,6 +909,25 @@ $\varphi(L)\le4Q$. This bound concerns arithmetic means on a common grid
 size at the two degrees and complex mean-square error. It neither assumes
 noise in a theta evaluation nor covers arbitrary deterministic quadrature.
 
+### Direct circle evaluator by rational tangents
+
+[circle_tangent_arcs.py](circle_tangent_arcs.py) lists all representations
+in $0\le x\le y$ from $N$ alone in $O(N^{1/3}\operatorname{polylog}N)$ bit
+operations. Let $R=\sqrt N$, take block width $H\asymp R^{1/3}$ with
+$H\le R^{1/3}$, and write $f(x)=\sqrt{N-x^2}$. At each block start $b$
+the last rational convergent $p/q$ to $b/\lfloor f(b)\rfloor$ with $q\le H$
+has $|q b/\lfloor f(b)\rfloor-p|\le1/H$. Replacing the floor by the true
+value changes the slope by at most $2/R$ since $b\le f(b)$ and
+$\lfloor f(b)\rfloor\ge1$ (equivalently use $b\le\lfloor f(b)\rfloor$).
+On the sector $|f''|\le2\sqrt2/R$. Taylor's theorem bounds the variation
+of $px+qf(x)$ from its starting value by $1+2H^2/R+\sqrt2 H^3/R<5$.
+Only constantly many integer levels need testing. On a level $px+qy=L$,
+$(qx-py)^2=(p^2+q^2)N-L^2$ gives both possible points by an exact
+square test and two divisions. There are $O(R/H)$ blocks.
+The list suffices for angular evaluation, or directly for the gcd split on
+the preceding two-representation family. This improves the coordinate-scan
+bound for this evaluator. It remains exponential in input bit length.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
