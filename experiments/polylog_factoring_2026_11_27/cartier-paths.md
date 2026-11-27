@@ -202,6 +202,31 @@ inseparable parts of the respective isogenies factor through the
 first and second relative Frobenius. Consequently the entire reduced
 series belongs to F_p[[T^p]] and F_q[[T^(q²)]], respectively.
 
+**Repeated factors and other formal groups.** Let p^e exactly divide N.
+For an integral one-dimensional commutative formal group at p whose
+reduction has finite height h, the first nonzero coefficient of [N](T)
+modulo p^e is at degree d=p^h for every e≥1. Its p-adic valuation
+is exactly e−1. To see this, write f=[p] and use the height definition:
+f starts with pT, all degrees below d have coefficients divisible by p,
+and f_d is a unit. Induct on e for the e-fold composition of f.
+Through degree d the linear outer term multiplies the previous series
+by p. Any outer term of degree at least two uses only inner coefficients
+strictly below d, since the inner constant is zero. Their products are
+divisible by p^(2(e−1)), hence by p^e for e≥2. Finally, composing
+with [N/p^e] preserves the first surviving degree and valuation because
+its linear coefficient is a unit. If the height is infinite, f is zero
+coefficientwise modulo p, and induction gives [N]=0 modulo p^e.
+
+Thus the global first degree is the minimum of p^h over finite-height
+components (if any). This statement uses a genuine formal parameter,
+so it does not apply directly to the trace coordinate at 2, which has
+ramification degree two. The multiplicative formal group has height one.
+An elliptic formal group at a good prime has height one or two, giving
+first degree p or p². For the Gaussian CM curve the result extends the
+ordinary/supersingular distinction above to repeated factors. Neither
+height places the first local term below p. This addresses the dense
+prefix approach and does not preclude fast collective evaluation.
+
 For balanced factors put B=floor(√(2N)). Then p≤B<q², so the gcd
 of N and *all* coefficients through degree B is exactly q. In fact
 the first nonzero coefficient modulo N has index p, itself a factor.
