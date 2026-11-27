@@ -833,6 +833,32 @@ and round the radius-$\sqrt N$ Cartesian coordinates to recover $t,y$.
 This trades coefficient precision for growing harmonic degree. The unknown
 operation remains evaluating the normalized sums from $N$ in polynomial bit time.
 
+### Precision barrier for real heat samples, even on circle radii
+
+Consider a black-box radial sum $F(t)=\sum_n b_n e^{-tn}$ for real $t\ge0$.
+Suppose only that the shell weights are bounded and supported on sums of two
+squares. At $N=a^2+1$ there are two such nonnegative spectra, with target
+coefficients differing by 1, whose heat readings differ by at most
+$4^{-2m}$ uniformly in $t$, where $m=\lfloor a/32\rfloor\ge1$.
+To construct their difference put alternating binomial weights
+$(-1)^{j+m}\binom{2m}{j+m}/\binom{2m}{m}$ at the distinct radii
+$(a+j)^2+1$, $-m\le j\le m$, and split into positive and negative parts.
+
+For $f(x)=\exp(-t((a+x)^2+1))$ the resulting heat difference is the
+normalized $2m$th forward difference at $-m$. On the complex disk of
+radius $a/4$ about any real $x\in[-m,m]$ one has
+$\operatorname{Re}((a+z)^2+1)>0$, hence $|f(z)|\le1$. Cauchy's bound
+and the repeated unit-interval integral formula for finite differences give
+an absolute difference at most $(2m)!(4/a)^{2m}/\binom{2m}{m}
+\le(8m/a)^{2m}\le4^{-2m}$.
+Thus even adaptive real heat queries with independent worst-case absolute
+errors of half this size can have identical transcripts on these two spectra.
+Recovering the target uniformly to error below $1/2$ needs
+$\Omega(\sqrt N)$ bits of absolute precision. This is a black-box bound
+with the actual sum-of-two-squares support restriction. The constructed weights
+are not asserted to be the harmonic theta coefficients; arithmetic relations
+between those coefficients and complex-time queries fall outside the bound.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
