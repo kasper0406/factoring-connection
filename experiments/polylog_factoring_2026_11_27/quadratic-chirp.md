@@ -4202,3 +4202,32 @@ This bound concerns enumeration of constant-oscillation affine blocks.
 It does not cover algorithms combining corrections across blocks,
 allowing many correction levels with implicit evaluation, or computing
 only the modular difference of the two sums.
+
+### Sparse additive Fourier approximation of the floor-sum difference
+
+Write A_j(m)=sum_{j<x≤2j} [x divides m]. Expand each divisibility
+indicator as the average of exp(2πiam/x) over a modulo x. For every
+reduced frequency with denominator d in (j,2j], the coefficient is
+exactly 1/d: no second multiple of d occurs in the band. Their
+total squared coefficient mass is
+sum_{j<d≤2j} φ(d)/d² = (6/π²)log 2 + o(1), about 0.4214,
+by partial summation of sum_{d≤u} φ(d)=3u²/π²+O(u log u).
+
+This gives a finite-input obstruction. Use the dictionary of all
+reduced rational frequencies modulo 1 of denominator at most 2j.
+On any consecutive T=j³ integers its normalized Gram matrix has
+diagonal one and off-diagonal row sums in absolute value
+O(j² log j/T). Indeed the circular separation is at least 1/(4j²),
+and the exponential-sum bound at distance δ is at most 1/(2Tδ).
+Sum over neighboring frequencies in both directions. Hence mean
+squared error of any coefficient approximation is at least
+(1−o(1)) times the squared coefficient error. Retaining k frequencies
+with arbitrary weights can remove at most k/j² of the indicated
+mass from omitted coordinates. Uniform absolute error <1/2 thus
+requires k≥((6/π²)log 2−1/4−o(1))j². One can take m starting
+at 4j², so all these input integers have O(log j) bits.
+
+This bound concerns a single linear Fourier approximation, with
+frequencies and coefficients fixed across the full interval of m.
+It leaves open grouped or nonlinear evaluations, frequencies outside
+the dictionary, and approximations on the promised rough inputs alone.
