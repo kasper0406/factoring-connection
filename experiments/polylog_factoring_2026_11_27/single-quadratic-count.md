@@ -204,3 +204,27 @@ Thus enforcing equal reflection weights on an isolated stationary
 pair loses the constant-size Fourier signal used by the existing
 decoder. This calculation does not cover opposite weights or an
 unpaired digit in the actual isolation window.
+
+## Opposite reflection weights preserve the primitive harmonic
+
+For a stationary unit digit a (a²=c² modulo odd N), put s=2c/a
+modulo N. Its lower phase digit b=2a modulo N is nonzero. Its
+upper phase z=z_0+sj runs through all residues as j varies. The
+oppositely weighted pair (C_j(a)-C_j(-a))/N is +1 at z<H, zero
+at z=H and -1 at z>H. Centering at H and taking the normalized
+Fourier transform in j gives magnitude at frequency s equal to
+
+    (2/N) sum_{k=1}^H sin(2 pi k/N) = cot(pi/(2N))/N.
+
+Reference subtraction affects only frequency zero. The magnitude
+therefore tends to 2/pi. In contrast, every nonstationary raw
+block is periodic in j with period g=gcd(a²-c²,N)<N by the lift
+formula. Its Fourier transform is supported on multiples of N/g,
+so it contributes exactly zero at all frequencies coprime to N,
+even with a j-independent window or sign. Since s is a unit, an
+isolated stationary pair has no nonstationary contamination at s
+in this linear statistic. Other stationary pairs can interfere.
+
+This statement precedes the nonlinear threshold comparison.
+Orthogonality in the full Fourier sum does not imply small
+pointwise error or cheap access to an individual comparison bit.
