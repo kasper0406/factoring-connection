@@ -634,3 +634,20 @@ enumerates every multiple of N² between the extrema. This argument
 does not require every intervening multiple to be attained. Using
 congruences to skip levels or computing their combined parity
 directly would be a different method.
+
+### Survivors of a periodic square sieve at the quarter cutoff
+
+At B=floor(N/4) and scale one, the left-endpoint test has
+V=floor((B²-1)/N) candidate levels k=1,...,V. For distinct odd
+auxiliary primes r coprime to N, filter k by requiring 1+kN to
+be a square modulo every r, including zero. Let Q be their product.
+In each complete period of length Q the count of survivors is
+exactly product_r ((r+1)/2): the affine map permutes residues at
+each prime and CRT combines the tests. If Q<=V then the complete
+periods alone retain at least V/(2*2^t) candidates, with t the
+number of primes. Since t!<=Q<=V, t=O(log V/log log V).
+Thus scanning surviving levels still takes V^(1-o(1)) visits
+in this periodic sieve model. This includes primes selected in
+response to N as long as the product bound holds. It makes no
+survivor claim for Q>V and gives no lower bound for algorithms
+that determine parity without visiting the survivors.
