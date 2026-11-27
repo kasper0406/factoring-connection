@@ -1022,6 +1022,29 @@ fixed-absolute-error query at a padded input. Coverage now includes every
 odd distinct-prime semiprime with at least one prime equal to 1 modulo 4.
 The missing algorithm is for the angular evaluator itself.
 
+### What a low-bit coefficient evaluator would actually compute
+
+For odd $n$ put $R=r_2(n)/4$, $s=1$ for a square and zero otherwise,
+and $h=(R-s)/2$. There are $h$ off-axis orbits of size eight. Their coordinate
+parities are opposite. The integer fourth harmonic coefficient therefore satisfies
+$$C(n)=n^2R-16\sum_{\rm off\text{-}axis\ orbits} x^2y^2
+\equiv n^2 R-64\,1_{n\equiv5\bmod8}\,h\pmod{256}.$$
+Indeed $x^2y^2$ is 4 modulo 16 if the even coordinate is 2 modulo 4
+and zero otherwise. The first case occurs exactly for $n=5\bmod8$.
+In particular $C(n)=n^2 R\bmod64$; the bound is sharp already at $n=5$.
+Conversely $C(n)=(n^2-32I)R+32Is\bmod256$ for that indicator $I$.
+The coefficient of $R$ is odd and invertible. Thus these eight bits are
+efficiently interconvertible with the ordinary representation count modulo
+256 from $n$ alone; they contain no additional angular information.
+
+Even a modulo-8 evaluator has a specific arithmetic burden. For $n=pq=1\bmod4$
+with distinct odd primes, $C(n)\bmod8$ is 4 if both primes split and zero
+if both are inert, by the two-squares theorem. This decides whether $-1$
+is a square modulo $n$ on that promise. Verified the full modulo-256 identity
+on all 5,000 positive odd inputs below 10,000 by direct enumeration.
+This checks a low-precision modular starting point; it supplies no general
+polynomial-time composite-index evaluator.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
