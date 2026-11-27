@@ -122,3 +122,40 @@ inputs correctly: 2,055/4,096 (50.17%; balanced guessing gives 50%).
 This measures one predictor on one distribution. It provides no
 evidence of useful predictive gain and gives no impossibility
 result for nonlinear statistics or other arithmetic observables.
+
+## Guaranteed witness menu from adjacent binomial carries
+
+Changing the coefficient family removes the need for a favorable degree-five
+residue pair. Suppose N=pq with distinct odd primes p<q<2p. For auxiliary
+prime d≥5 and j from 1 to g=(d−1)/2, set m_j=⌊jN/d⌋ and take the
+gcd of N with binomial(m_j,m_(j−1)). When d<p, m_j<N/2<p².
+The low base-p digit of m_j is ⌊p(jq mod d)/d⌋, a strictly increasing
+function of jq mod d. Its high digit never decreases with j. By Lucas's
+theorem the binomial vanishes modulo p exactly when jq mod d descends
+from the preceding residue. At q the corresponding multiplier is p.
+
+For u in [1,d−1] there are exactly ⌊gu/d⌋ descents in the first g steps
+of repeatedly adding u modulo d, since each wrap subtracts d. If the
+least positive residues of p and q differ by at least three, these two
+counts differ (3g>d). Some j therefore gives a proper gcd.
+
+The auxiliary primes can be selected from N alone. Handle q−p=2 by
+checking whether N+1 is a square. Otherwise the nonzero integer
+∏_{h=−2}^2(q−p+h) has absolute value at most (⌊√N⌋+2)^5.
+List consecutive primes starting at 5 until their product exceeds this
+bound. One of them divides none of the five terms; for it the two
+residues differ by at least three. If the list reaches p, trial division
+already splits N. By Chebyshev's primorial estimate the largest d is
+O(log N), so there are O(log² N) public binomial indices to test.
+This proves witness coverage for the modified family, not for the
+original fixed curve matrices. It does not improve the evaluation
+cost: some tops have order N, and the argument gives no polylogarithmic
+algorithm for their residues modulo N. More elementary binomial
+witnesses already exist, for example the central binomial with lower
+index ⌊√N/2⌋+1 for separated balanced primes.
+
+The [check](check_adjacent_carries.py) compared the carry predictions
+with direct integer binomial gcds on the small cohort of 110 pairs,
+up to its first split or trial-division cutoff. On the 200 larger
+unplanted controls, factor-assisted path labels predicted a split on
+every input by d≤17. Large coefficient residues were not evaluated.
