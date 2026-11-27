@@ -4586,3 +4586,45 @@ X³+X+12 is irreducible at both primes (no local roots). For z=X
 the quotient g is 1+X/12. Direct powering modulo n and f returned
 g^E=7875+51243X+54994X²; the coefficient gcd of g^E−1 with n
 is 31. This example compares the first-stage guarantees only.
+
+### Simultaneous obstruction for the degree-d norm-quotient extension
+
+Consider precisely the extension using g=z^d/Norm(z), a uniform monic
+degree-d algebra, and E=(n^d−1)lcm(1,...,B). There are infinitely
+many odd semiprimes on which every degree 2≤d≤c sqrt(log n) has a
+large surviving local prime at both factors for every squarefree
+splitting pattern. Here c>0 is an absolute constant and B may be
+any fixed polynomial in log n.
+
+Construction: take D=floor(log R) and T=lcm(1,...,D)=exp(O(D)).
+Choose a prime t between 2R and 4R. Use 2D distinct residues between
+ceil(t/2) and t−1 modulo t, also requiring residue 1 modulo T.
+Linnik's theorem gives 2D distinct auxiliary primes r>R of size
+R^O(1), each 1 modulo every d≤D. Designate one r for each local
+side and each index 1,...,D. At the auxiliary prime for side p,
+index k, prescribe p of multiplicative order k and prescribe pq
+to be a primitive root modulo r (this fixes q). Reverse roles for
+side q. CRT and Linnik again give p,q with log(pq)=O(D log R).
+They are distinct: at the index-one modulus the designated prime
+is 1 and the other is a primitive root. Both exceed R by their
+own index-one conditions. Thus D≥c sqrt(log n), R grows faster
+than any fixed polynomial in log n, and no auxiliary r divides
+n^d−1 for d≤D.
+
+For an irreducible degree-d algebra at p, the index-d auxiliary r
+divides p^d−1 but not p−1. Take an element z of order r. Its norm
+lies in the scalar group and hence equals 1; z^d retains order r.
+For a squarefree reducible algebra use the index-one r dividing
+p−1. In one field component take z to be a scalar of order r and
+in every other component set z=1. In the quotient z^d/Norm(z)
+the ratio between these scalar coordinates still has order r.
+Thus the image order is divisible by r in either case, independently
+at both primes. A uniform unit maps uniformly to the image. Since
+r does not divide E, the probability of the identity at either
+local side is at most 2/R by the union bound. Uniform monic f
+has a repeated factor with probability 1/p locally for d≥2;
+sampling a nonunit z costs at most d/p locally for squarefree f.
+These exceptional events also have vanishing probability over
+poly(log n) fresh trials. This limits the terminal coefficient-gcd
+test of g^E−1 for the specified exponent. Other ways to exploit
+the algebra, and larger extension degrees, are outside the proof.
