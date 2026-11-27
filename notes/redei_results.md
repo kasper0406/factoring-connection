@@ -40,8 +40,9 @@ duplicates being enriched among key hits. The rerun with distinct N is the one r
 ## 3. Own ideas (both killed)
 - **Short Kronecker–Hurwitz window** (E5/E5b). The centre window |t| ≤ 40 is null (perm p=0.21). The edge window t ≈ 2√N
   does leak q mod 4 (perm p<0.005), but the whole leak comes from square discriminants 4N−t² = (2s)². Those are just
-  sum-of-two-squares representations N = (t/2)²+s² found by search: 6H ≡ 2 (4) occurred 87 times with q≡1 and 0 times
-  with q≡3. Held-out accuracy overall was 0.516 vs 0.511. This is Fermat-type search, costing √N in general.
+  sum-of-two-squares representations N = (t/2)²+s² found by search: 6H ≡ 2 (4) occurred 85 times with q≡1 and 0 times
+  with q≡3 (saved run, `e5b_edge.out.json`; an earlier run gave 87/0). Held-out accuracy overall was 0.512 vs 0.467 base
+  (0.516 vs 0.511 in the earlier run). This is Fermat-type search, costing √N in general.
 - **Bounded norm search for r4>0 on N≡1 (8)** (codex Q4). Here [r4>0] ⇔ N = x²+y² or N = x²−2y². A cutoff y ≤ log₂N
   gives 87 TP / 0 FP / 342 FN on all pairs 101 ≤ p < q ≤ 499, and it can recognise only O(√X log X) inputs up to X.
   Reproduced via `experiments/redei/codex1_check.gp`.
