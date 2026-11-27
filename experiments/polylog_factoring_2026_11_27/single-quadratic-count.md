@@ -2089,3 +2089,30 @@ under the Jacobi condition. Its exact gap probability is therefore
 semiprimes with primes from 3 through 19. These arguments do not
 bound the degree of a compact exponentiation circuit or cover a
 matrix whose entries encode a ground-field point search.
+
+### Scalar squares in the quadratic algebra and the hidden character
+
+Fix a Jacobi-negative unit a for a distinct odd semiprime N, and
+label the split prime p and the inert prime q. For a scalar unit b,
+the class of b is a square in A=(Z/N)[T]/(T²−a) exactly when
+(b/p)=+1. Over p the two coordinates of the scalar are (b,b).
+Over q every scalar unit is a square in F_(q²), since q+1 is even.
+This gives the oriented local character as a ground-field property.
+
+There is an exact public reduction to ordinary quadratic residuosity
+on Jacobi-positive inputs. Form t=b if (b/N)=+1, otherwise t=ab.
+Then (t/N)=+1 and (t/p)=(b/p), since (a/p)=+1. Thus t is a
+square modulo N exactly when b is a square in A. Conversely a
+Jacobi-positive input is a square modulo N exactly when it is a
+scalar square in A. This is decision equivalence; it does not
+supply a polynomial-time algorithm for quadratic residuosity.
+Direct enumeration of pairs x,y with 2xy=0 modulo N checked
+3,192 (a,b) cases across the six semiprimes formed from 3,5,7,11.
+
+Extraction is stronger in a concrete sense. The element 1 has eight
+square roots in A, four choices at the split prime and two at the
+inert prime. Each root x+yT other than the two public scalars ±1
+gives a factor. If y=0, use gcd(x−1,N) on the mixed scalar root.
+If y≠0, the inert-field root is ±1, hence q divides y and gcd(y,N)
+is proper. Uniform sampling from these eight roots would split with
+probability 3/4. The decision test by itself supplies no such sampler.
