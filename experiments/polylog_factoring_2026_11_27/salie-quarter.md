@@ -392,3 +392,36 @@ fresh predictor calls on squared sample inputs and test all small
 offsets by gcd. A square-only algorithm with inverse-polylog
 advantage is sufficient. A predictor given a particular square
 root can break the required symmetry, as the public baseline does.
+
+## Fourier tests on the square argument itself
+
+For uniform unit h let Y=h² mod N and S be the full sign. Every
+additive Fourier mode on Y satisfies
+
+    |E[S e_N(aY)]| = O(log(2p) log(2q) / sqrt(N))
+
+uniformly in a, including zero and nonunits. Indeed write
+h=qi+pj. The mixed quadratic term vanishes modulo N, so the
+expectation factors into averages of s(i/p)e_p(aq i²) and
+s(j/q)e_q(ap j²) on nonzero local residues. At a prime r with
+nonzero quadratic coefficient, expand the square wave in its
+additive Fourier series. Its coefficient l1 norm is O(log(2r)),
+and each completed quadratic sum has magnitude sqrt(r); removing
+zero changes the unnormalized sum by one. With zero quadratic
+coefficient the unnormalized sign sum on nonzero inputs has
+absolute value at most two. Both cases meet the stated bound.
+
+For a bounded predictor B(Y), Fourier expansion therefore bounds
+its absolute sign correlation by its normalized Fourier l1 norm
+times the displayed bound. A predictor constant on L intervals has
+l1 norm O(L log(2N)), even with arbitrary fitted interval boundaries.
+This also applies after relabeling Y by a public invertible affine
+map, which preserves that norm. Polylogarithmically many intervals
+give negligible advantage in bit length for growing semiprimes.
+The same test applies to any proposed square-only predictor whose
+Fourier l1 norm can be bounded, regardless of its implementation.
+
+Exhaustive majority fits using 32 equal intervals gave 5628/10200
+for 101*103 and 514124/1020096 for 1009*1013. These retrospective
+scores use known factors to choose the labels independently for each
+modulus. Summing over h weights every unit square equally.
