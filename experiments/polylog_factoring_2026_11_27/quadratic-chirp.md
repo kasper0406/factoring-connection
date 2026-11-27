@@ -5248,3 +5248,26 @@ For N=133=7*19, all positive columns from dyadic denominators
 are 66,33,16,8,4,2,1. All seven gcds equal 1, while column 44
 from d=3 gives gcd 7. This tests the unsigned gcd of fractional
 columns; the earlier signed first-window cutoff test is different.
+
+### Multiplier Fermat check for sparse witness examples
+
+Write q=Kp-t with 0<t<p and 2<=K<=p. The base-p digits of q-1
+are K-1 and p-t-1. The preceding uniform-column count gives success
+probability (K-1)t/q. Small t also makes the classical multiplier
+Fermat test for K cheap. Set S=Kp+q, so S^2-4KN=t^2. The distance
+from the starting point is exactly
+
+    S - 2 sqrt(KN) = t^2 / (S + 2 sqrt(KN)).
+
+In particular t^2<4 sqrt(KN) suffices for S=ceil(2 sqrt(KN)).
+Try this integer S, check whether S^2-4KN is a square, and test
+the gcds with N of (S +/- sqrt(S^2-4KN))/2 when integral. At the
+target S one of these numbers is q. With unknown K, trying every
+multiplier through a fixed poly(log N) bound preserves polynomial
+bit cost for inputs satisfying the proximity condition in that range.
+
+For the dyadic failure family q=3p-2 this works with K=3 and
+t=2. Equivalently 3N+1=(3p-1)^2, so one integer square root
+recovers p=(sqrt(3N+1)+1)/3. This is an application of classical
+difference-of-squares factoring to the identified family. Dyadic
+failure alone does not imply the proximity bound.
