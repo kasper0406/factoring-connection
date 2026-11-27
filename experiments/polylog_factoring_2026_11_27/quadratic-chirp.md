@@ -4808,3 +4808,27 @@ scalar modulo n. In the quotient by T²+1 its value at T is −10T,
 whose coefficient gcd is 5. The known factor in this toy polynomial
 makes it a check on extraction only. A uniform construction of
 suitable circuits from unfactored n remains open.
+
+### What a truncated shifted binomial would have to compute
+
+Let N=pq with primes p<q, let B=floor(sqrt(N)), and set
+F(T)=(1+T)^N-1. Modulo p this is (1+T^p)^q-1, whose lowest
+nonzero term is q T^p. Modulo q its lowest nonzero term is p T^q.
+Consequently the polynomial consisting of terms of F of degrees
+at most B vanishes formally modulo q and survives modulo p.
+This threshold is computable from N alone.
+
+In fact the gcd of N and the coefficients through degree b is N
+for 0<=b<p, q for p<=b<q, and 1 for b>=q. Thus even a test for
+whether this prefix is zero modulo N, uniformly in b<=B, would
+recover p by binary search. A polynomial-size division-free circuit
+for the prefix at B, constructible in polynomial time in log N,
+would suffice by the extension-field extraction above. Repeated
+squaring constructs the untruncated power succinctly. Performing it
+with dense truncated arithmetic uses B+1 coefficient slots, which
+is exponential in the input bit length. Reducing the untruncated
+power in a small extension ring mixes in degrees above B and does
+not implement the projection.
+
+For N=35 the coefficients in degrees 1 through 5 are 35, 595,
+6545, 52360, and 324632. Their common gcd with 35 is 7.
