@@ -1664,3 +1664,24 @@ CRT and modular exponentiation now evaluate the full product at any
 point in polynomial bit complexity given the prime factorization.
 Together with recursive random-unit splitting above, this establishes
 expected polynomial-time oracle equivalence for every N≥2.
+
+### Normalizing the product gives the local quadratic characters
+
+For odd N and a unit u, put C=(−4u)^N modulo N. At every exact
+prime power p^e dividing N, P_N(u) is zero if u is a square modulo p
+and equals C otherwise. Indeed N−N/p is divisible by φ(p^e), and
+replacing the base residue b by −4u in the nonsquare case is valid
+after raising to N/p by the lifting congruence above. Consequently
+E=P_N(u)/C is the CRT idempotent with value one on the nonsquare
+components. The root of unity S=1−2E has local values (u/p) lifted
+as the integers ±1 modulo p^e.
+
+Can a single exponent k give S=u^k for every unit? Modulo p^e the
+unit group is cyclic of order m=φ(p^e). Testing a generator forces
+k ≡ m/2 modulo m, and this condition suffices. These congruences
+are compatible exactly when all v₂(p−1) agree: necessity follows
+from v₂(k)=v₂(m)−1. For sufficiency take k=lcm(m)/2, since the lcm
+divided by each m is then odd. This exponent uses the factorization.
+For N=15 the requirements already conflict modulo 2 and 4. Thus
+even an exponent chosen separately for each N cannot implement the
+normalized sign on every modulus and every unit.
