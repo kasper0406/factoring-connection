@@ -1063,6 +1063,32 @@ Thus the eight-bit count equivalence is sharp for any rule using only
 the count and a fixed-length binary suffix of $N$. This gives a test of
 a proposed evaluator, not an efficient construction of that bit.
 
+### Direct evaluation on a finite complex grid
+
+[circle_fourier_grid.py](circle_fourier_grid.py) takes an unfactored $N$
+and computes the fourth angular coefficient. Truncate each one-dimensional
+theta polynomial $T_j(z)=\sum_{|x|\le\sqrt N}x^j z^{x^2}$ for
+$j=0,2,4$, with constant term 1 for $T_0$. Expanding the fourth power gives
+$C(N)=[z^N](T_0 T_4-3T_2^2)/2$. This polynomial has degree at most $2N$.
+On the $(N+1)$st roots of unity the Fourier bin of index $N$ has no other
+representative in $[0,2N]$. Averaging its demodulated samples therefore
+gives the desired integer exactly in exact arithmetic.
+
+There is no exponential precision cost on this grid. For example, evaluate
+each unit phase (including the demodulator) to absolute error
+$\epsilon=(10000(N+1)^4)^{-1}$ and round subsequent operations to a fixed
+absolute grid of that spacing. The theta sums have magnitude at most
+$3(N+1)^{(j+1)/2}$, and termwise phase errors and additive roundoffs
+sum to at most $10\epsilon(N+1)^{(j+1)/2}$ for each. The product,
+demodulation and averaging errors are consequently below $1/4$. Both
+integer and fractional bit requirements are $O(\log N)$. The reference
+uses mpmath guard bits and conjugate symmetry; its rounding was compared
+with exact coordinate sums on 69 inputs. It uses $\Theta(N)$ grid points
+and $O(N^{3/2})$ phase terms; FFT convolution can compute the same bin with
+$O(N\log N)$ arithmetic operations. This is a direct evaluation baseline,
+slower than the tangent-arc method. The grid count is a cost of this
+construction, not a general lower bound for complex evaluation.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
