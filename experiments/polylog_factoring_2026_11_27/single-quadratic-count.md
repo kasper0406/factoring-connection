@@ -129,3 +129,30 @@ Consequently *any* explicitly located lower digit with nonzero
 corrected contrast yields a verified divisor. This explains why
 collapsing the inner lifts still leaves the outer search. It gives
 no bound on the work of locating such a digit in a wide window.
+
+## Window product as a factor-or-zero certificate
+
+Remove the two public digits ±c from the cyclic interval I, and
+compute P=product_{a remaining in I}(a-c)(a+c) modulo N. If
+gcd(P,N)=1, every remaining unit block has g=1 and cancels, and
+nonunits have no solutions. Thus the corrected contrast is exactly
+zero for every upper shift and affine sign on this window.
+
+If the gcd is proper it gives a divisor directly. If it equals N,
+bisect the product, descending into a child with gcd greater than
+one until a proper gcd appears or a single digit remains. At a
+leaf with gcd N, neither linear factor vanishes modulo N because
+the two public digits were removed. Their product vanishes, hence
+gcd(a-c,N) is proper. This branch can give a factor even on a
+window whose signed contrast happens to cancel.
+
+Splitting at the cyclic wrap and removed points gives a constant
+number of ordinary intervals. Each of their two shifted factorial
+products can be computed with the classical square-root block
+product and monic multipoint evaluation. Bisection on one path
+keeps the total at softly O(sqrt(|I|)) modular operations by the
+geometric series for the square roots of the subinterval lengths.
+The certificate bypasses upper-digit sampling on a successful
+window but still requires a fast product or a different detector
+for a wide interval. It supplies a factor-or-zero interface, not
+the value of a nonzero comparison.
