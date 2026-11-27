@@ -22,7 +22,7 @@ A guide may instead flag uncertain children. If along a target path it flags at 
 
 | Approach tried | What we learned |
 | --- | --- |
-| Decode at fixed index 3N | Each additional ternary digit of the supplied residue gives one more digit of q. [Lift and checks](https://github.com/kasper0406/factoring-connection/commit/e4d999c) |
+| Decode at fixed index 3N | Each additional ternary digit of the supplied residue gives one more digit of q. [Runnable exact check](check_fixed_index_lift.py) · [Proof](https://github.com/kasper0406/factoring-connection/commit/e4d999c) |
 | Predict the residue modulo 27 from fixed tests | Even combining N modulo a fixed M with exact root counts for any finite list of fixed integer polynomials admits collisions. On the balanced family conditioned on N≡−1 modulo lcm(M,9), the sharp limiting success rate with these observables is 2/3. [Collision proof](https://github.com/kasper0406/factoring-connection/commit/f443a4e) |
 | Extract a cube root at the hidden prime | An extractor correct on random cubes with inverse-polynomial probability already gives randomized polynomial-time factoring on this promise, assuming polynomial extraction time. [Reduction](https://github.com/kasper0406/factoring-connection/commit/b23aa9b) |
 | Construct the root by public exponentiation | For a private unit x and a=x³, testing a^e against x gives the same gcd as the existing powering test with exponent 3e−1. [Identity](https://github.com/kasper0406/factoring-connection/commit/b5023cf) |
