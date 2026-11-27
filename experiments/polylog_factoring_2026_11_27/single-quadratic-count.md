@@ -2819,6 +2819,43 @@ group has 180 points and S has 45. Exhaustive squaring found precisely
 two negative-label planted points per target and all 90 comparisons
 with the unique half split N.
 
+### Coverage of affine exponents for unique halving
+
+On a favorable conic the local square subgroup at p is cyclic of odd
+order A=(p+σ)/2, where σ=1 for p≡1 mod 4 and −1 otherwise.
+For uniform G in the square subgroup, G^e is its correct half at p
+with probability gcd(A,2e−1)/A. Thus an exponent that works for
+every G must invert 2 modulo both local square-subgroup orders.
+
+Take N=pq uniformly over distinct primes in [B,2B]. At each scale
+allow a shared menu of poly(log B) formulas e=(cN+d)/s with integer
+coefficients of magnitude at most B^K for fixed K and s>0. Use a
+formula only on inputs where it gives an integer. The probability
+that ANY formula gives the correct half at even ONE prime component
+of a uniform square on a favorable conic is at most B^(−1+o(1)).
+Selection from the menu may use N and the observed target.
+
+Proof for one formula and one labeled prime: replace 2e−1 by its
+integer multiple s(2e−1) to upper-bound the gcd. Modulo A this becomes
+Cq+D, with C=−2cσ and D=2d−s. If C=D=0 the formula is never integral.
+Otherwise put g=gcd(|C|,|D|)>0. Expand gcd(A,Cq+D) as a sum of φ(h)
+over common divisors. For each h≤B+1 and fixed σ, at most O(B/h+1)
+integers p in range satisfy h|A, since p≡−σ mod 2h. The congruence
+Cq≡−D mod h has no solutions unless gcd(C,h)|D, and otherwise
+at most O(B gcd(g,h)/h+1) integers q in range solve it. Counting all
+integers here gives a valid upper bound on prime pairs. The weight
+φ(h)/A is O(h/B). Summing the resulting products gives
+O(B log B τ(g)+B), since Σ_{h≤B+1} gcd(g,h)/h ≤ O(τ(g) log B).
+Now τ(g)=B^o(1) by the classical divisor bound. Divide by the
+Θ(B²/log² B) prime pairs and sum over signs, components and formulas.
+
+As a numerical check, for e=(N+1)/2 the mean probabilities of a
+correct half at either component were 0.021805, 0.005398 and 0.001358
+at B=128,512,2048, from all 253,2775,32385 unordered pairs respectively
+and the exact cyclic-group probabilities. The argument concerns these
+affine exponent menus; it leaves other ways to compute the unique
+half open, including exponents obtained from further arithmetic of N.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
