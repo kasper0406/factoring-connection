@@ -982,3 +982,31 @@ but gives no coupling to the correct transcript at a specified c.
 Histograms alone cannot verify an evaluator. Exhaustively checked
 the count bound for all 45 semiprimes formed from odd primes
 through 31, for k=1 through the bit length of each modulus.
+
+### Joint law of public and hidden dyadic words at the same scale
+
+For N=pq, distinct odd primes, write c=qi+pj mod N. Uniform
+units correspond to independent nonzero residues i mod p, j mod q.
+Choose the nonpublic u=1 mod p, -1 mod q. Then the public and
+hidden fractional parts are i/p+j/q and i/p-j/q modulo one.
+
+For k consecutive quarter bits at each coordinate, the joint law
+has total variation distance from 2k fair bits at most
+(1+2^(k+3))*(1/p+1/q). To see this, take independent continuous
+uniform A,B on the circle. A+B,A-B are independent uniform:
+the integer matrix is a surjective endomorphism of the two-torus
+and hence preserves normalized Haar measure. Round A,B down to
+the p- and q-grids. The two output coordinates each move by at
+most delta=1/p+1/q in circular distance. The quarter word can
+change only within delta of a multiple of 1/2^(k+1), by the
+adjacent-digit description. A union bound over both coordinates
+costs at most 2^(k+3)*delta. Conditioning the grid inputs to be
+nonzero costs at most delta. The continuous words are independent
+and uniform, since each word has two complementary prefixes.
+
+For balanced primes and k below (1/2-epsilon)log2(N), observing
+the public word gives exponentially small advantage for predicting
+a specified hidden bit within the word, averaged over unit scales.
+This is a restriction on the observed information; c itself is
+available to the general evaluator. For p=1009,q=1013,k=4 exact
+enumeration gave joint total variation distance 0.006657 (rounded).
