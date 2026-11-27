@@ -1749,3 +1749,29 @@ p then has exactly (q−1)/2 allowed partners at q, and conversely, so
 both projections remain uniform. The error bound concerns the actual
 distribution for one fixed formula. A finite run of successful tests
 alone does not certify it.
+
+### Weak predictions on Jacobi-negative inputs
+
+For a fixed distinct odd semiprime N, a random unit u of Jacobi symbol
+−1 always gives a mixed root S(u). If a trial outputs either S(u) or
+−S(u) with probability ε, gcd(output−1,N) finds a proper factor with
+probability at least ε. Independent trials therefore suffice in expected
+1/ε attempts. Every gcd is verifiable even when the other outputs are
+arbitrary. No sparsity hypothesis enters this test.
+
+There is also a one-bit version. The two possible mixed roots are a
+single opposite pair modulo N. Exactly one representative in [0,N)
+is even; call it r. This r depends only on N. Encode it in n=bitlength(N)
+bits. Suppose a predictor given N, a fresh uniform Jacobi-negative unit
+u, and an independent uniform n-bit mask m guesses the binary inner
+product of m with r modulo two with probability at least 1/2+δ.
+Regard the predictor as a randomized oracle on m, resampling u and
+its internal coins each call. Its expected signed output then has
+Walsh coefficient at r at least 2δ. The Goldreich–Levin list decoder
+recovers a list containing r with constant probability in time polynomial
+in n and 1/δ (use independent oracle samples for its correlation
+estimates). Test list entries by gcd with N after subtracting one.
+This suffices at inverse-polynomial advantage for each N, even though
+predictions of individual fixed bits need not have that advantage.
+The assumption concerns random *masks* of the even representative;
+an ordinary bit guess with a skewed marginal does not imply it.
