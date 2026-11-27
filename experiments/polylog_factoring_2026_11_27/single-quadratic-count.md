@@ -2355,6 +2355,39 @@ the entire balanced factor interval [√M,√(2M)] at this scale still
 takes order M^(1/4+ε) blocks. This provides a rigorous local stopping
 condition for an interval search.
 
+### Avoiding precision loss when decoding low sum bits
+
+Suppose odd N>30 has a balanced pair a≤b≤2a. Handle a common
+factor with 15 directly. Set M=N when N≡3 mod 4, and M=15N
+otherwise. In the second case 5a and 3b give a balanced pair:
+their ratio 5a/(3b) lies in [5/6,5/3]. Every balanced pair on M
+splits N by gcd since a factor coprime to N would divide 15,
+leaving a companion at least N>30. The multiplier also preserves
+squarefreeness when applied after the coprimality check.
+
+Now M≡3 mod 4, so the two factors of any pair have opposite residues
+modulo four. Their sum is zero modulo four. Given its residue s modulo
+2^k for k≥3, use the even half h=s/2 of the canonical representative.
+The larger factor satisfies (x−h)²≡h²−M modulo 2^k, and the right
+side is odd. For a genuine hint it has exactly four roots, each a
+single residue at full stride 2^k (lift by testing both next bits).
+Thus this preprocessing eliminates the singular cases in the existing
+low-bit decoder, even when the hint may describe any balanced pair.
+
+The larger-factor interval has width O(√M). In each residue class its
+index width is O(√M/2^k). For any fixed ε in (0,1/4), taking
+2^k≥M^(1/4+ε) puts that width within the degree-one unknown-divisor
+lattice regime (use slack ε/2 to absorb constants). Its affine
+polynomial is monic after division by 2^k modulo the odd input.
+Check roots for exact divisibility and balance before taking gcds.
+This needs a supplied residue of a genuine sum on the transformed
+input. Multiplying by 15 does not compute it.
+
+Exhaustive direct congruence checks at k=8 on all 109 eligible
+balanced inputs from 31 through 3999 coprime to 15 verified the
+existence of a balanced pair and four residue classes containing the
+larger factor for every such pair.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
