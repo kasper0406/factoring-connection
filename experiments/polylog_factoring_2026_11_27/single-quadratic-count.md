@@ -1985,3 +1985,37 @@ including seven odd answers. The same width resolved 1,050 such starts
 at N=5^5·101·109, also with seven odd answers. Reference values used
 all roots computed independently by SymPy, while the evaluator used
 only N, the interval, the target one and the existing half-parity bit.
+
+### A common Jacobi sieve for all candidate factor sums
+
+Let b be the bit length of odd N. Sample m uniformly among the odd
+integers in [1,8N]. Reject a candidate sum s when the Jacobi symbol
+((s²−4N)/m) is −1. Every nonnegative square discriminant passes,
+including when the symbol is zero. For a fixed nonsquare integer
+1≤D≤N, quadratic reciprocity gives a nonprincipal real character on
+the units modulo Q=4D, taking m to (D/m). Indeed, after removing
+square factors its primitive character has the fundamental discriminant
+of the nontrivial squarefree part of D as conductor, dividing 4D.
+Exactly half the units of a period give −1. Complete periods cover
+at least half of [1,8N], and all these witnesses are odd. Hence one
+test rejects D with probability at least φ(Q)/(2Q). If Q has h
+distinct prime divisors, its i-th smallest prime is at least i+1;
+multiplying the totient factors gives φ(Q)/Q≥1/(h+1)≥1/(b+3).
+
+With T=4(b+3)b independent choices the probability any particular
+nonsquare survives is at most exp(−2b). A union bound over *every*
+D≤N gives failure probability ≤N exp(−2b)<1/N. Thus the same short
+list of unfactored public moduli works simultaneously throughout
+the balanced factor-sum range (where 0≤s²−4N≤N/2). This is an
+unconditional randomized statement. Computing each Jacobi symbol
+costs polynomial bit time. In the 2,989,601,243 benchmark, scanning
+the 3,316 even sums with m=2·randrange(4N)+1 from Python Random
+seed 20261127 left 1,636 after one test, 197 after four, 19 after
+eight and just 112,716 after fifteen.
+
+This gives a local-property description with a short public list.
+A proposed sum already admits a deterministic integer square test.
+The outstanding search cost is locating a sum satisfying the tests
+without scanning the interval. For large composite m the acceptable
+classes are implicit; the small-prime wheel cannot list them in
+polynomial space just from the short description.
