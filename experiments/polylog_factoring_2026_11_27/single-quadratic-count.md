@@ -2890,6 +2890,45 @@ scale and supplies no polylogarithmic discrete logarithm. The tuple
 argument isolates the computational cost from possible ambiguity of
 the signed difference.
 
+### A known order on both components shortens the interval logarithm
+
+Suppose a conic point has known exact order m with known prime
+factorization, on the mixed conic for N=ru from the preceding
+interval-log reduction. For each prime ℓ dividing m, raise the point
+to m/ℓ. This cannot be the global identity. If it is the identity in
+one component, gcd(N,x−1,z) of the resulting point gives a split.
+Otherwise both local orders contain the full ℓ-part of m. After all
+tests succeed without a split, m divides both r−1 and u+1. Hence
+
+    m² divides (r−1)(u+1) = N−1+D, where D=r−u.
+
+Choose d₀≡1−N modulo m² and write D=d₀+m²j. For the public tuple G,
+solve (G^(m²))^j=G^(1−N−d₀). Each signed half-window now has
+O(1+√N/m²) candidate indices. On the full-exponent tuple event
+the original uniqueness in that window also gives uniqueness after
+substitution. Baby-step giant-step uses O(1+N^(1/4)/m) group
+operations after logarithmic-cost exponent setup.
+
+For an example requiring no search for torsion, take a=−3 on odd
+semiprimes N≡2 mod 3 coprime to 3. The point (1/2,1/2) has order six
+in both components: it satisfies T²−T+1=0 and its cube is −1, with
+neither component of order two. The split prime is 1 modulo three by
+quadratic reciprocity. Thus D≡1−N modulo 36. At N=221 only −4 lies
+in the balanced difference window with that residue, recovering 13
+and 17. All 223 prime pairs 5≤p<150, p<q<2p with pq≡2 mod 3 verified
+the congruence.
+
+Large common orders have a distributional limitation independent of
+how the conic is selected. For primes in [B,2B], any common order
+belongs to one of the four gcds gcd(p±1,q±1). For each 2≤T≤2B+1
+the fraction of pairs admitting any common order at least T is
+O(log²(B)/T): union-bound over signs and divisors T≤m≤2B+1, with
+O((B/m+1)²) integer pairs per divisor, then divide by the
+Θ(B²/log² B) distinct prime pairs. This rules out a power-size
+common order on most balanced semiprimes. It leaves open how often
+one can construct a point of known order whose local orders differ,
+which is the immediate-split case above.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
