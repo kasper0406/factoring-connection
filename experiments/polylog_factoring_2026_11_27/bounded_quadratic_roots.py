@@ -1,4 +1,4 @@
-"""Recover roots in short public intervals via a five-dimensional lattice."""
+"""Recover roots in short public intervals via a small-root lattice."""
 
 from math import gcd, isqrt
 from random import Random
@@ -17,22 +17,26 @@ def quadratic_roots(n, linear, constant, limit):
     """Find all 0 <= x <= limit with x^2 + linear*x + constant = 0 mod n."""
     if limit <= 1:
         return [x for x in range(limit+1) if (x*x+linear*x+constant) % n == 0]
-    if limit > interval_limit(n):
+    if limit > max(1, isqrt(n)//4):
         raise ValueError("Interval exceeds the proven lattice bound")
+    m = 2
+    while (3*limit)**(2*m+1) > n**m:
+        m += 1
     linear %= n
     constant %= n
-    rows = [
-        [n*n, 0, 0, 0, 0],
-        [0, n*n, 0, 0, 0],
-        [n*constant, n*linear, n, 0, 0],
-        [0, n*constant, n*linear, n, 0],
-        [constant**2, 2*constant*linear, linear**2+2*constant, 2*linear, 1],
-    ]
-    scales = [limit**i for i in range(5)]
+    x = Symbol("x")
+    quadratic = Poly(x*x + linear*x + constant, x)
+    rows = []
+    rank = 2*m + 1
+    for i in range(m+1):
+        coefficients = list(reversed(((quadratic**i) * n**(m-i)).all_coeffs()))
+        for shift in range(2 if i < m else 1):
+            row = [0]*shift + coefficients
+            rows.append(row + [0]*(rank-len(row)))
+    scales = [limit**i for i in range(rank)]
     lattice = Matrix([[value*scale for value, scale in zip(row, scales)] for row in rows])
     short = list(lattice.lll()[0, :])
-    assert sum(abs(entry) for entry in short) < n*n
-    x = Symbol("x")
+    assert sum(abs(entry) for entry in short) < n**m
     auxiliary = Poly(sum((entry//scale)*x**i for i, (entry, scale) in
                          enumerate(zip(short, scales))), x)
     return sorted(
@@ -44,14 +48,19 @@ def quadratic_roots(n, linear, constant, limit):
 
 def roots_from_quotient_interval(n, y, low, high):
     """Find roots in [ceil(n/2), n) whose square is y+k*n, low <= k <= high."""
-    if not (0 <= y < n and 0 <= low <= high and high-low <= interval_limit(n)):
-        raise ValueError("Expected a canonical target and a short quotient interval")
+    if not (0 <= y < n and 0 <= low <= high):
+        raise ValueError("Expected a canonical target and an ordered nonnegative quotient interval")
     start = max((n+1)//2, isqrt(max(0, y+low*n-1))+1)
     end = min(n-1, isqrt(y+high*n))
     if end < start:
         return []
-    offsets = quadratic_roots(n, 2*start, start**2-y, end-start)
-    return [start+t for t in offsets]
+    roots = []
+    size = max(1, isqrt(n)//4) + 1
+    for origin in range(start, end+1, size):
+        span = min(size-1, end-origin)
+        offsets = quadratic_roots(n, 2*origin, origin**2-y, span)
+        roots.extend(origin+t for t in offsets)
+    return roots
 
 
 def progression_roots(n, origin, step, limit):
