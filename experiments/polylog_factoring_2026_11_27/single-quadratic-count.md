@@ -1378,3 +1378,30 @@ not a fast method to compute that intersection parity. Exhaustive
 unit-shift checks on 45 products of distinct odd primes through
 31 verified removal of the public pair; the smallest fundamental
 coefficient magnitude there was 0.376945.
+
+### Splitting the free bits of the 000 prefix
+
+Let R=F_2[Z]/(Z^N-1). On the prefix 000 let the remaining d=n-3
+bits give x=i+2^a j, with 0<=i<2^a and 0<=j<2^(d-a). Summing
+Z^(x²) in R and reading coefficient y gives the desired parity.
+Could the individual monomials first be represented as a sum of
+a few products of separate low- and high-bit functions over R?
+
+Any exact pointwise decomposition requires at least
+min(2^a,2^(d-a)) products. Evaluate Z at a primitive N-th root
+zeta in an algebraic closure of F_2 (N is odd). Each separate
+product specializes to a rank-one matrix at most. But after
+removing nonzero row and column factors the matrix has entries
+(zeta^(2^(a+1)j))^i. Its nodes are distinct since 2 is coprime to
+N and the number of columns is at most N. Its leading square minor
+of the claimed size is Vandermonde and invertible. A balanced
+split thus requires order sqrt(N) products in this representation.
+
+For a *specified* unit square y on a distinct odd semiprime, the
+binary coefficient matrix [x²=y mod N] on the same split has at
+most two ones: x<B<N/2 and the four roots form two opposite pairs.
+Thus its rank is at most two. This low rank by itself gives no
+efficient way to locate or count its entries. The argument rules
+out compressing every pointwise phase across this split before
+coefficient extraction; it gives no lower bound on computing the
+single summed coefficient, even via a different phase-sum identity.
