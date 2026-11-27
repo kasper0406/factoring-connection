@@ -561,3 +561,17 @@ application; the wide prefix from 2 to floor(N/4) still spans
 Theta(sqrt(N)) such intervals if covered directly.
 
 [Don Coppersmith, Finding Small Solutions to Small Degree Polynomials, sections 1–3](https://cr.yp.to/bib/2001/coppersmith.pdf)
+
+### Fixed-dimension recovery diagnostic
+
+The reproducible check_quarter_lattice.py uses 24 seeded semiprime
+draws with primes near 2^10 to 2^11. Known factors generate the
+target and an interval containing it. Recovery receives only N,
+the center and radius. Its six lattice rows come from T^i f^j N^(2-j)
+for i=0,1 and j=0,1,2, scaling column k by radius^k. It inspects
+integer roots of the LLL-reduced row polynomials and verifies the
+congruence and gcd. Planted-root recoveries were 24/24, 24/24 and
+14/24 at radii floor(sqrt(N)/32), floor(sqrt(N)/8) and
+floor(sqrt(N)/2) respectively. Each radius uses fresh offsets.
+This fixed dimension is an empirical control; a miss cannot certify
+that the interval is empty. The diagnostic supplies no prefix oracle.
