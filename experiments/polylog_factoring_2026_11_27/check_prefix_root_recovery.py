@@ -17,14 +17,15 @@ def recover_root(n, y, exists):
         modulus = n * next_period
         zeros = modulus.bit_length() - bits
         inverse = pow(n, -1, next_period)
-        for digit in range(3):
+        for digit in range(2):
             candidate = residue + digit * period
             square = y + n * (((candidate*candidate-y)*inverse) % next_period)
             if exists(modulus, square, zeros):
                 residue = candidate
                 break
         else:
-            raise ValueError("No consistent digit from the oracle")
+            # The three signed children partition the occupied parent.
+            residue += 2 * period
         period = next_period
     inverse = pow(period, -1, n)
     for origin in (residue, period - residue):
@@ -39,7 +40,11 @@ def recover_root(n, y, exists):
 
 
 if __name__ == "__main__":
+    calls = 0
+
     def direct_oracle(modulus, square, zeros):
+        global calls
+        calls += 1
         bound = 1 << (modulus.bit_length() - zeros)
         return any(x*x % modulus == square for x in range(bound))
 
@@ -49,4 +54,4 @@ if __name__ == "__main__":
             root = recover_root(n, y, direct_oracle)
             assert root*root % n == y
             cases += 1
-    print(f"Verified {cases} unit squares.")
+    print(f"Verified {cases} unit squares with {calls} prefix queries.")
